@@ -2,19 +2,24 @@
 // See COPYING file for licensing information.
 
 #include "podcastsettings.h"
+#include "podcastsettingsbase.h"
 
 #include <klineedit.h>
 #include <knuminput.h>
 #include <kurlrequester.h>
 #include <kwin.h>
+#include <klocale.h>
 
 #include <qcheckbox.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
 
-PodcastSettings::PodcastSettings( QString& url, QString& save, bool &autoScan, int &interval,
-                                  int &fetch, bool &purge, int &purgeCount, QWidget* parent )
-                    : PodcastSettingsDialogBase( parent )
+PodcastSettings::PodcastSettings( const QString& url, const QString& save, bool autoScan, int interval,
+                                  int fetch, bool purge, int purgeCount, QWidget* parent )
+                    : KDialogBase(  parent, 0, true, i18n("Configure Podcast Stream"),
+                                    KDialogBase::Ok|KDialogBase::Cancel,
+                                    KDialogBase::Ok, true )
+                    , m_ps( new PodcastSettingsDialogBase(this) )
                     , m_url( url )
                     , m_save( save )
                     , m_autoScan( autoScan )
@@ -23,56 +28,51 @@ PodcastSettings::PodcastSettings( QString& url, QString& save, bool &autoScan, i
                     , m_purge( purge )
                     , m_purgeCount( purgeCount )
 {
-    // Gives the window a small title bar, and skips a taskbar entry
-    KWin::setType( winId(), NET::Utility );
-    KWin::setState( winId(), NET::SkipTaskbar );
 
-    m_urlLine->setText( url );
-    m_saveLocation->setMode( KFile::Directory | KFile::ExistingOnly );
-    m_saveLocation->setURL( save );
+    setMainWidget(m_ps);
+    m_ps->m_urlLine->setText( url );
+    m_ps->m_saveLocation->setMode( KFile::Directory | KFile::ExistingOnly );
+    m_ps->m_saveLocation->setURL( save );
 
-    m_autoFetchCheck->setChecked( autoScan );
+    m_ps->m_autoFetchCheck->setChecked( autoScan );
 
     if( fetch == DOWNLOAD )
     {
-        m_downloadRequestRadio->setChecked( true );
-        m_streamRadio->setChecked( false );
-        m_downloadRadio->setChecked( false );
+        m_ps->m_downloadRequestRadio->setChecked( true );
+        m_ps->m_streamRadio->setChecked( false );
+        m_ps->m_downloadRadio->setChecked( false );
     }
     else if( fetch == STREAM )
     {
-        m_downloadRequestRadio->setChecked( false );
-        m_streamRadio->setChecked( true );
-        m_downloadRadio->setChecked( false );
+        m_ps->m_downloadRequestRadio->setChecked( false );
+        m_ps->m_streamRadio->setChecked( true );
+        m_ps->m_downloadRadio->setChecked( false );
     }
     else if( fetch == AVAILABLE )
     {
-        m_downloadRequestRadio->setChecked( false );
-        m_streamRadio->setChecked( false );
-        m_downloadRadio->setChecked( true );
+        m_ps->m_downloadRequestRadio->setChecked( false );
+        m_ps->m_streamRadio->setChecked( false );
+        m_ps->m_downloadRadio->setChecked( true );
     }
 
-    m_purgeCheck->setChecked( purge );
-    m_purgeCountSpinBox->setValue( purgeCount );
+    m_ps->m_purgeCheck->setChecked( purge );
+    m_ps->m_purgeCountSpinBox->setValue( purgeCount );
 
     if( !purge )
-        m_purgeCountSpinBox->setEnabled( false );
-    pushButton_ok->setEnabled( false );
+        m_ps->m_purgeCountSpinBox->setEnabled( false );
 
-    connect( m_purgeCountSpinBox->child( "qt_spinbox_edit" ),  SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
+    enableButtonOK( false );
+
+    connect( m_ps->m_purgeCountSpinBox->child( "qt_spinbox_edit" ),  SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
 
     // Connects for modification check
-    connect( m_urlLine,        SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
-    connect( m_saveLocation,   SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
-    connect( m_autoFetchCheck, SIGNAL(clicked()),                     SLOT(checkModified()) );
-    connect( m_streamRadio,    SIGNAL(clicked()),                     SLOT(checkModified()) );
-    connect( m_downloadRadio,  SIGNAL(clicked()),                     SLOT(checkModified()) );
-    connect( m_downloadRequestRadio,  SIGNAL(clicked()),              SLOT(checkModified()) );
-    connect( m_purgeCheck,     SIGNAL(clicked()),                     SLOT(checkModified()) );
-
-
-    connect( pushButton_cancel,SIGNAL(clicked()), SLOT(cancelPressed()) );
-    connect( pushButton_ok,    SIGNAL(clicked()), SLOT(accept()) );
+    connect( m_ps->m_urlLine,        SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
+    connect( m_ps->m_saveLocation,   SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
+    connect( m_ps->m_autoFetchCheck, SIGNAL(clicked()),                     SLOT(checkModified()) );
+    connect( m_ps->m_streamRadio,    SIGNAL(clicked()),                     SLOT(checkModified()) );
+    connect( m_ps->m_downloadRadio,  SIGNAL(clicked()),                     SLOT(checkModified()) );
+    connect( m_ps->m_downloadRequestRadio,  SIGNAL(clicked()),              SLOT(checkModified()) );
+    connect( m_ps->m_purgeCheck,     SIGNAL(clicked()),                     SLOT(checkModified()) );
 }
 
 bool
@@ -80,18 +80,18 @@ PodcastSettings::hasChanged()
 {
     bool fetchTypeChanged = true;
 
-    if( m_downloadRequestRadio->isChecked() && m_fetch == DOWNLOAD  ||
-        m_streamRadio->isChecked()          && m_fetch == STREAM    ||
-        m_downloadRadio->isChecked()        && m_fetch == AVAILABLE  )
+    if( m_ps->m_downloadRequestRadio->isChecked() && m_fetch == DOWNLOAD  ||
+        m_ps->m_streamRadio->isChecked()          && m_fetch == STREAM    ||
+        m_ps->m_downloadRadio->isChecked()        && m_fetch == AVAILABLE  )
 
         fetchTypeChanged = false;
 
-    return  !m_urlLine->text().isEmpty() &&
-           ( m_url             != m_urlLine->text()             ||
-             m_save            != m_saveLocation->url()         ||
-             m_autoScan        != m_autoFetchCheck->isChecked() ||
-             m_purge           != m_purgeCheck->isChecked()     ||
-             m_purgeCount      != m_purgeCountSpinBox->value()  ||
+    return  !m_ps->m_urlLine->text().isEmpty() &&
+           ( m_url             != m_ps->m_urlLine->text()             ||
+             m_save            != m_ps->m_saveLocation->url()         ||
+             m_autoScan        != m_ps->m_autoFetchCheck->isChecked() ||
+             m_purge           != m_ps->m_purgeCheck->isChecked()     ||
+             m_purgeCount      != m_ps->m_purgeCountSpinBox->value()  ||
              fetchTypeChanged );
 
 }
@@ -99,34 +99,28 @@ PodcastSettings::hasChanged()
 void
 PodcastSettings::checkModified() //slot
 {
-    pushButton_ok->setEnabled( hasChanged() );
+    enableButtonOK( hasChanged() );
 }
 
 void
-PodcastSettings::cancelPressed() //slot
+PodcastSettings::slotOk()       //slot
 {
-    reject();
-}
+    enableButtonOK( false ); //visual feedback
 
-void
-PodcastSettings::accept()       //slot
-{
-    pushButton_ok->setEnabled( false ); //visual feedback
+    m_url             = m_ps->m_urlLine->text();
+    m_save            = m_ps->m_saveLocation->url();
+    m_autoScan        = m_ps->m_autoFetchCheck->isChecked();
+    m_purge           = m_ps->m_purgeCheck->isChecked();
+    m_purgeCount      = m_ps->m_purgeCountSpinBox->value();
 
-    m_url             = m_urlLine->text();
-    m_save            = m_saveLocation->url();
-    m_autoScan        = m_autoFetchCheck->isChecked();
-    m_purge           = m_purgeCheck->isChecked();
-    m_purgeCount      = m_purgeCountSpinBox->value();
-
-    if( m_streamRadio->isChecked() )
+    if( m_ps->m_streamRadio->isChecked() )
         m_fetch = STREAM;
-    else if( m_downloadRequestRadio->isChecked() )
+    else if( m_ps->m_downloadRequestRadio->isChecked() )
         m_fetch = DOWNLOAD;
     else
         m_fetch = AVAILABLE;
 
-    QDialog::accept();
+    KDialogBase::slotOk();
 }
 
 #include "podcastsettings.moc"

@@ -81,7 +81,7 @@ PlaylistCategory::PlaylistCategory( PlaylistCategory *parent, QListViewItem *aft
 }
 
 
-PlaylistCategory::PlaylistCategory( QListView *parent, QListViewItem *after, QDomElement xmlDefinition, bool isFolder )
+PlaylistCategory::PlaylistCategory( QListView *parent, QListViewItem *after, const QDomElement &xmlDefinition, bool isFolder )
     : PlaylistBrowserEntry( parent, after )
     , m_folder( isFolder )
 {
@@ -93,7 +93,7 @@ PlaylistCategory::PlaylistCategory( QListView *parent, QListViewItem *after, QDo
 }
 
 
-PlaylistCategory::PlaylistCategory( PlaylistCategory *parent, QListViewItem *after, QDomElement xmlDefinition )
+PlaylistCategory::PlaylistCategory( PlaylistCategory *parent, QListViewItem *after, const QDomElement &xmlDefinition )
     : PlaylistBrowserEntry( parent, after )
     , m_folder( true )
 {
@@ -105,7 +105,7 @@ PlaylistCategory::PlaylistCategory( PlaylistCategory *parent, QListViewItem *aft
 }
 
 
-void PlaylistCategory::setXml( QDomElement xml )
+void PlaylistCategory::setXml( const QDomElement &xml )
 {
     PlaylistBrowser *pb = PlaylistBrowser::instance();
     QString tname = xml.tagName();
@@ -223,7 +223,7 @@ PlaylistEntry::PlaylistEntry( QListViewItem *parent, QListViewItem *after, const
 }
 
 
-PlaylistEntry::PlaylistEntry( QListViewItem *parent, QListViewItem *after, QDomElement xmlDefinition )
+PlaylistEntry::PlaylistEntry( QListViewItem *parent, QListViewItem *after, const QDomElement &xmlDefinition )
     : PlaylistBrowserEntry( parent, after )
     , m_loading( false )
     , m_loaded( false )
@@ -694,7 +694,7 @@ StreamEntry::StreamEntry( QListViewItem *parent, QListViewItem *after, const KUR
     setText( 0, m_title );
 }
 
-StreamEntry::StreamEntry( QListViewItem *parent, QListViewItem *after, QDomElement xmlDefinition )
+StreamEntry::StreamEntry( QListViewItem *parent, QListViewItem *after, const QDomElement &xmlDefinition )
     : PlaylistBrowserEntry( parent, after )
 {
     setDragEnabled( true );
@@ -843,7 +843,7 @@ StreamEditor::StreamEditor( QWidget *parent, const char *name )
 }
 
 // For editing
-StreamEditor::StreamEditor( QWidget *parent, QString title, QString url, const char *name )
+StreamEditor::StreamEditor( QWidget *parent, const QString &title, const QString &url, const char *name )
     : KDialogBase( parent, name, true, i18n("Edit Radio Stream"), Ok|Cancel)
 {
     makeGridMainWidget( 2, Qt::Horizontal );
@@ -883,7 +883,7 @@ PartyEntry::PartyEntry( QListViewItem *parent, QListViewItem *after, const QStri
     setText( 0, name );
 }
 
-PartyEntry::PartyEntry( QListViewItem *parent, QListViewItem *after, QDomElement xmlDefinition )
+PartyEntry::PartyEntry( QListViewItem *parent, QListViewItem *after, const QDomElement &xmlDefinition )
         : PlaylistBrowserEntry( parent, after )
 {
     setPixmap( 0, SmallIcon( "dynamic" ) );
@@ -1000,7 +1000,7 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
 
 
 PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
-                                const KURL &url, QDomNode channelSettings, QDomDocument xmlDefinition )
+                                const KURL &url, const QDomNode &channelSettings, const QDomDocument &xmlDefinition )
     : PlaylistBrowserEntry( parent, after )
     , m_url( url )
     , m_saveLocation( channelSettings.namedItem( "savelocation").toElement().text() )
@@ -1044,9 +1044,18 @@ PodcastChannel::configure()
 
     PodcastSettings *settings = new PodcastSettings( url, save, m_autoScan, m_interval,
                                                      m_mediaFetch, m_purgeItems, m_purgeCount );
-
     if( settings->exec() == QDialog::Accepted )
     {
+        debug() << "Accepted: " << url << " : " <<settings->url() << endl;
+        m_url        = KURL::fromPathOrURL( settings->url() );
+        m_saveLocation.setPath( settings->saveLocation() );
+        m_autoScan   = settings->hasAutoScan();
+        m_interval   = settings->interval();
+        m_mediaFetch = settings->fetch();
+        m_purgeCount = settings->hasPurge();
+        m_purgeCount = settings->purgeCount();
+
+
         bool downloadMedia = ( (mediaFetch != m_mediaFetch) && (m_mediaFetch == AVAILABLE) );
 
         if( url != m_url.prettyURL() )
@@ -1264,7 +1273,7 @@ PodcastChannel::setNew( bool n )
 
 /// DONT TOUCH m_url!!!  The podcast has no mention to the location of the xml file, idiots.
 void
-PodcastChannel::setXml( QDomNode xml )
+PodcastChannel::setXml( const QDomNode &xml )
 {
     m_title = xml.namedItem( "title" ).toElement().text();
     setText( 0, m_title );
@@ -1433,7 +1442,7 @@ PodcastChannel::slotAnimation()
 ///    @note we fucking hate itunes for taking over podcasts and inserting
 ///          their own attributes.
 ////////////////////////////////////////////////////////////////////////////
-PodcastItem::PodcastItem( QListViewItem *parent, QListViewItem *after, QDomElement xml )
+PodcastItem::PodcastItem( QListViewItem *parent, QListViewItem *after, const QDomElement &xml )
     : PlaylistBrowserEntry( parent, after )
       , m_parent( parent )
       , m_localUrl( 0 )
@@ -1635,7 +1644,7 @@ SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, const
 }
 
 
-SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, QDomElement xmlDefinition )
+SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QDomElement &xmlDefinition )
         : PlaylistBrowserEntry( parent, after )
         , m_after ( after )
         , m_dynamic( false )
@@ -1645,7 +1654,7 @@ SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, QDomE
     setDragEnabled( !m_sqlForTags.isEmpty() );
 }
 
-void SmartPlaylist::setXml( QDomElement xml ) {
+void SmartPlaylist::setXml( const QDomElement &xml ) {
     m_xml = xml;
     m_title = xml.attribute( "name" );
     setText( 0, m_title );

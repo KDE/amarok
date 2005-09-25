@@ -1,7 +1,7 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>PodcastSettingsDialogBase</class>
 <author>Seb Ruiz</author>
-<widget class="QDialog">
+<widget class="QWidget">
     <property name="name">
         <cstring>Form1</cstring>
     </property>
@@ -10,7 +10,7 @@
             <x>0</x>
             <y>0</y>
             <width>481</width>
-            <height>399</height>
+            <height>336</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -41,7 +41,7 @@
                         <cstring>m_autoFetchCheck</cstring>
                     </property>
                     <property name="text">
-                        <string>Enable auto-fetching</string>
+                        <string>Enable &amp;auto-fetching</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>When checked, amaroK will automatically scan the podcast for updates</string>
@@ -114,81 +114,6 @@
                 </size>
             </property>
         </spacer>
-        <widget class="Line" row="10" column="0">
-            <property name="name">
-                <cstring>line6</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-        </widget>
-        <widget class="QLayoutWidget" row="11" column="0">
-            <property name="name">
-                <cstring>layout35</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>pushButton_ok</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;OK</string>
-                    </property>
-                    <property name="autoDefault">
-                        <bool>true</bool>
-                    </property>
-                    <property name="default">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer1</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>MinimumExpanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>322</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>pushButton_cancel</cstring>
-                    </property>
-                    <property name="autoMask">
-                        <bool>false</bool>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Cancel</string>
-                    </property>
-                    <property name="autoDefault">
-                        <bool>true</bool>
-                    </property>
-                    <property name="default">
-                        <bool>false</bool>
-                    </property>
-                    <property name="flat">
-                        <bool>false</bool>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
         <widget class="QButtonGroup" row="6" column="0">
             <property name="name">
                 <cstring>buttonGroup1</cstring>
@@ -211,7 +136,7 @@
                         <cstring>m_downloadRequestRadio</cstring>
                     </property>
                     <property name="text">
-                        <string>Download on request</string>
+                        <string>&amp;Download on request</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Download media and save to disk only when asked.  An entry will not be playable until the file has been explicitly saved.</string>
@@ -225,7 +150,7 @@
                         <cstring>m_streamRadio</cstring>
                     </property>
                     <property name="text">
-                        <string>Stream on request</string>
+                        <string>Stream on re&amp;quest</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Play media from remote location, but do not save to disk</string>
@@ -239,7 +164,7 @@
                         <cstring>m_downloadRadio</cstring>
                     </property>
                     <property name="text">
-                        <string>Download when available</string>
+                        <string>Download when a&amp;vailable</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Download media as soon as it becomes available</string>
@@ -307,23 +232,6 @@
                 </widget>
             </hbox>
         </widget>
-        <spacer row="9" column="0">
-            <property name="name">
-                <cstring>spacer18</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>31</width>
-                    <height>38</height>
-                </size>
-            </property>
-        </spacer>
         <widget class="QLayoutWidget" row="8" column="0">
             <property name="name">
                 <cstring>layout34</cstring>
@@ -337,7 +245,7 @@
                         <cstring>m_purgeCheck</cstring>
                     </property>
                     <property name="text">
-                        <string>Limit number of items</string>
+                        <string>Limit &amp;number of items</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>If checked, amaroK will throw away old podcasts</string>
@@ -409,21 +317,7 @@
         </spacer>
     </grid>
 </widget>
-<customwidgets>
-</customwidgets>
 <connections>
-    <connection>
-        <sender>pushButton_cancel</sender>
-        <signal>clicked()</signal>
-        <receiver>Form1</receiver>
-        <slot>close()</slot>
-    </connection>
-    <connection>
-        <sender>pushButton_ok</sender>
-        <signal>clicked()</signal>
-        <receiver>Form1</receiver>
-        <slot>accept()</slot>
-    </connection>
     <connection>
         <sender>m_purgeCheck</sender>
         <signal>toggled(bool)</signal>

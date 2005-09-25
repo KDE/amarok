@@ -55,7 +55,7 @@ class PartyEntry : public PlaylistBrowserEntry
 {
     public:
         PartyEntry( QListViewItem *parent, QListViewItem *after, const QString &title );
-        PartyEntry( QListViewItem *parent, QListViewItem *after, QDomElement xmlDefinition );
+        PartyEntry( QListViewItem *parent, QListViewItem *after, const QDomElement &xmlDefinition );
         ~PartyEntry() { };
 
         enum  Mode { RANDOM=0, SUGGESTION=1, CUSTOM=2 };
@@ -101,8 +101,8 @@ class PlaylistCategory : public PlaylistBrowserEntry
     public:
         PlaylistCategory( QListView *parent, QListViewItem *after, const QString &, bool isFolder=false );
         PlaylistCategory( PlaylistCategory *parent, QListViewItem *after, const QString &, bool isFolder=true );
-        PlaylistCategory( QListView *parent, QListViewItem *after, QDomElement xmlDefinition, bool isFolder=false);
-        PlaylistCategory( PlaylistCategory *parent, QListViewItem *after, QDomElement xmlDefinition );
+        PlaylistCategory( QListView *parent, QListViewItem *after, const QDomElement &xmlDefinition, bool isFolder=false);
+        PlaylistCategory( PlaylistCategory *parent, QListViewItem *after, const QDomElement &xmlDefinition );
 
         ~PlaylistCategory() { };
 
@@ -118,7 +118,7 @@ class PlaylistCategory : public PlaylistBrowserEntry
 
     private:
 
-        void setXml( QDomElement xml );
+        void setXml( const QDomElement &xml );
 
         QString m_title;
         bool    m_folder;
@@ -135,7 +135,7 @@ class PlaylistEntry :  public QObject, public PlaylistBrowserEntry
 
     public:
         PlaylistEntry( QListViewItem *parent, QListViewItem *after, const KURL &, int tracks=0, int length=0 );
-        PlaylistEntry( QListViewItem *parent, QListViewItem *after, QDomElement xmlDefinition );
+        PlaylistEntry( QListViewItem *parent, QListViewItem *after, const QDomElement &xmlDefinition );
         ~PlaylistEntry();
 
         void sortChildItems ( int /*column*/, bool /*ascending*/ ) { /* Don't sort its children */ }; //reimplemented
@@ -216,7 +216,7 @@ class PodcastItem : public QObject, public PlaylistBrowserEntry
         Q_OBJECT
 
     public:
-        PodcastItem( QListViewItem *parent, QListViewItem *after, QDomElement xml );
+        PodcastItem( QListViewItem *parent, QListViewItem *after, const QDomElement &xml );
 
         void  downloadMedia();
         const bool hasDownloaded() { return m_downloaded; }
@@ -279,7 +279,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
     public:
         PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url );
         PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url,
-                        QDomNode channelSettings, QDomDocument xml );
+                        const QDomNode &channelSettings, const QDomDocument &xml );
 
         enum MediaFetch{ STREAM=0, DOWNLOAD=1, AVAILABLE=2 };
 
@@ -299,7 +299,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         const bool autoScan() { return m_autoScan; }
         const KURL &saveLocation() { return m_saveLocation; }
 
-        void setXml( QDomNode xml );
+        void setXml( const QDomNode &xml );
         QDomElement xml();
 
         int rtti() const { return RTTI; }
@@ -349,7 +349,7 @@ class StreamEntry : public PlaylistBrowserEntry
 {
     public:
         StreamEntry( QListViewItem *parent, QListViewItem *after, const KURL &, const QString &t );
-        StreamEntry( QListViewItem *parent, QListViewItem *after, QDomElement xmlDefinition );
+        StreamEntry( QListViewItem *parent, QListViewItem *after, const QDomElement &xmlDefinition );
         ~StreamEntry() { };
 
         void  setURL  ( KURL u )    { m_url = u; }
@@ -376,7 +376,7 @@ class StreamEditor : public KDialogBase
 {
     public:
         StreamEditor( QWidget *parent, const char *name=0 );
-        StreamEditor( QWidget *parent, QString title, QString url, const char *name=0 );
+        StreamEditor( QWidget *parent, const QString &title, const QString &url, const char *name=0 );
 
         KURL    url()  const { return KURL::KURL( m_urlLineEdit->text() ); }
         QString name() const { return m_nameLineEdit->text(); }
@@ -393,7 +393,7 @@ class SmartPlaylist : public PlaylistBrowserEntry
         SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QString &name, const QString &query );
         SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QString &name,
                                                         const QString &urls, const QString &tags );
-        SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QDomElement xmlDefinition );
+        SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QDomElement &xmlDefinition );
 
         bool isEditable() const { return !m_xml.isNull(); }
 
@@ -401,7 +401,7 @@ class SmartPlaylist : public PlaylistBrowserEntry
         QString title() { return m_title; }
 
         QDomElement xml() { return m_xml; }
-        void setXml( QDomElement xml );
+        void setXml( const QDomElement &xml );
 
         bool  isDynamic() { return m_dynamic; }
         void  setDynamic( bool );
