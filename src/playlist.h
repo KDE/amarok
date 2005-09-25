@@ -42,7 +42,7 @@ class QBoxLayout;
 class QLabel;
 class QTimer;
 
-/*
+/**
  * @authors Mark Kretschmann && Max Howell
  *
  * Playlist inherits KListView privately and thus is no longer a ListView

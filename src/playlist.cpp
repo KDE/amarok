@@ -473,8 +473,6 @@ Playlist::addSpecialTracks( uint songCount, const QString type )
     if( required > remainder )
         songCount = required - remainder;
 
-
-    QString text;
     if( type == "Random" )
     {
         songCount > 1 ?
@@ -493,11 +491,6 @@ Playlist::addSpecialTracks( uint songCount, const QString type )
     }
     else //we have playlists to choose from.
     {
-        if( songCount > 1 )
-            text = i18n("Adding tracks from custom filter.");
-        else
-            text = i18n("Adding track from custom filter.");
-
         songCount > 1 ?
             amaroK::StatusBar::instance()->shortMessage( i18n("Adding tracks from custom filter.") ):
             amaroK::StatusBar::instance()->shortMessage( i18n("Adding track from custom filter.") );
