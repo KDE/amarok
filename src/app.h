@@ -65,6 +65,9 @@ class App : public KApplication, public EngineObserver
         void slotConfigEqualizer();
         void firstRunWizard();
 
+    private slots:
+        void showHyperThreadingWarning() const;
+
     private:
         void initGlobalShortcuts();
         void applyColorScheme();

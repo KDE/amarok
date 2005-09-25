@@ -23,7 +23,6 @@ email                : markey@web.de
 #include "configdialog.h"
 #include "debug.h"
 #include "collectionbrowser.h"
-
 #include "effectwidget.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
@@ -64,6 +63,7 @@ email                : markey@web.de
 #include <qpalette.h>            //applyColorScheme()
 #include <qpixmap.h>             //QPixmap::setDefaultOptimization()
 #include <qpopupmenu.h>          //genericEventHandler
+#include <qtimer.h>              //showHyperThreadingWarning()
 #include <qtooltip.h>            //default tooltip for trayicon
 
 
@@ -145,6 +145,20 @@ App::App()
     new RefreshImages();
     pruneCoverImages();
     #endif
+
+    // Check for HyperThreading, see BUG 99199
+    QString line;
+    QFile cpuinfo( "/proc/cpuinfo" );
+    if ( cpuinfo.open( IO_ReadOnly ) ) {
+        while ( cpuinfo.readLine( line, 20000 ) != -1 ) {
+            if ( line.startsWith( "flags" ) ) {
+                const QString flagsLine = line.section( ":", 1 );
+                const QStringList flags = QStringList::split( " ", flagsLine );
+                if ( flags.contains( "ht" ) )
+                    QTimer::singleShot( 0, this, SLOT( showHyperThreadingWarning() ) );
+            }
+        }
+    }
 
     // Trigger collection scan if folder setup was changed by wizard
     if ( oldCollectionFolders != AmarokConfig::collectionFolders() )
@@ -874,6 +888,21 @@ void App::firstRunWizard()
 
         config->updateSettings();
     }
+}
+
+
+void App::showHyperThreadingWarning() const //SLOT
+{
+    const QString text =
+        i18n( "<p>You are using a processor with the <i>HyperThreading</i> "
+              "feature enabled. Please note that amaroK may be unstable with this "
+              "configuration.</p>"
+              "<p>If you are experiencing problems, use the Linux kernel option 'NOHT', "
+              "or disable <i>HyperThreading</i> in your BIOS setup.</p>"
+              "<p>More information can be found in the README file. For further assistance "
+              "join us at #amarok on irc.freenode.net.</p>" );
+
+    KMessageBox::information( 0, text, i18n( "Warning" ), "showHyperThreadingWarning" );
 }
 
 
