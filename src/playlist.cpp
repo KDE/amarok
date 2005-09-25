@@ -556,11 +556,10 @@ Playlist::addSpecialCustomTracks( uint songCount )
 
         for( uint i=0; i < songCount; i++ )
         {
-            int x = KApplication::random() % trackList.count();
-            KURL::List::Iterator it = trackList.at( x );
-
-            if( (*it).isValid() )
+            KURL::List::Iterator it = trackList.at( KApplication::random() % trackList.count() );
+            if( (*it).isValid())
                 urls << (*it).path();
+            trackList.remove(it);
         }
 
         if( urls.isEmpty() )
@@ -639,11 +638,13 @@ Playlist::addSpecialCustomTracks( uint songCount )
 
         // we have to randomly select tracks from the returned query since we can't have
         // ORDER BY RAND() for some statements
-        for( uint i=0; !useDirect && i < songCount; i++ )
-        {
-            int x = KApplication::random() % urls.count();
-            addMe << urls[x];
-        }
+        if(!useDirect)
+            for( uint i=0; i < songCount; i++ )
+            {
+                KURL::List::iterator newItem = urls.at(KApplication::random() % urls.count());
+                addMe << (*newItem);
+                urls.remove(newItem);
+            }
 
         insertMedia( useDirect ? urls : addMe );
 
