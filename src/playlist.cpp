@@ -2294,8 +2294,7 @@ Playlist::customMenuClicked(int id)  //adapted from burnSelectedTracks
     for( ; it.current(); ++it ) {
         PlaylistItem *item = static_cast<PlaylistItem*>(*it);
         KURL url = item->url().url();
-        if( url.isLocalFile() )
-            message += " " + url.url();
+        message += " " + url.url();
     }
     ScriptManager::instance()->customMenuClicked( message );
 }
