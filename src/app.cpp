@@ -154,8 +154,10 @@ App::App()
             if ( line.startsWith( "flags" ) ) {
                 const QString flagsLine = line.section( ":", 1 );
                 const QStringList flags = QStringList::split( " ", flagsLine );
-                if ( flags.contains( "ht" ) )
+                if ( flags.contains( "ht" ) ) {
                     QTimer::singleShot( 0, this, SLOT( showHyperThreadingWarning() ) );
+                    break;
+                }
             }
         }
     }
