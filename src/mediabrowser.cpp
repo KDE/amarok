@@ -22,6 +22,7 @@
 #include <qpainter.h>
 #include <qregexp.h>
 #include <qsimplerichtext.h>
+#include <qtimer.h>
 #include <qtooltip.h>       //QToolTip::add()
 #include <qfileinfo.h>
 #include <qdir.h>
@@ -293,7 +294,7 @@ MediaDeviceList::viewportPaintEvent( QPaintEvent *e )
 
     // Superimpose bubble help:
 
-    if ( !m_parent->m_device->isConnected() )
+    if ( !m_parent->m_connectButton->isOn() )
     {
         QPainter p( viewport() );
 
@@ -420,7 +421,7 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     QToolTip::add( m_configButton,   i18n( "Configure mount commands" ) );
 
     m_connectButton->setToggleButton( true );
-    m_connectButton->setOn( m_device->isConnected() );
+    m_connectButton->setOn( m_device->isConnected() ||  m_deviceList->childCount() != 0 );
     m_transferButton->setDisabled( true );
 
     m_progress->setFixedHeight( m_transferButton->sizeHint().height() );
@@ -527,7 +528,7 @@ MediaDevice::addURL( const KURL& url )
 
         m_transferURLs << url;
         m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_parent->m_transferList->childCount() ) );
-        m_parent->m_transferButton->setEnabled( m_parent->m_device->isConnected() );
+        m_parent->m_transferButton->setEnabled( m_parent->m_device->isConnected() || m_parent->m_deviceList->childCount() != 0 );
     } else
         amaroK::StatusBar::instance()->longMessage( i18n( "Track already exists on iPod: " + url.path().local8Bit() ) );
 }
@@ -805,7 +806,14 @@ MediaDevice::deleteFiles( const KURL::List& urls )
 {
     //NOTE we assume that currentItem is the main target
     int count  = urls.count();
-    int button = KMessageBox::warningContinueCancel( m_parent->m_parent,
+
+    //Enable after string freeze.
+    //m_parent->m_stats->setText( i18n( "1 track to be deleted", "%n tracks to be deleted", count ) );
+    m_parent->m_progress->setProgress( 0 );
+    m_parent->m_progress->setTotalSteps( count );
+    m_parent->m_progress->show();
+
+    int button = KMessageBox::warningContinueCancel( m_parent,
                                                      i18n( "<p>You have selected 1 file to be <b>irreversibly</b> deleted.",
                                                            "<p>You have selected %n files to be <b>irreversibly</b> deleted.",
                                                            count
@@ -815,7 +823,13 @@ MediaDevice::deleteFiles( const KURL::List& urls )
 
     if ( button == KMessageBox::Continue )
     {
-        KIO::del( urls, false, true );
+
+        KURL::List::ConstIterator it = urls.begin();
+        for ( ; it != urls.end(); ++it )
+        {
+            m_parent->m_progress->setProgress( m_parent->m_progress->progress() + 1 );
+            KIO::del( *it, false, false );
+        }
         if ( m_ipod->ensureConsistency() )
         {
             m_ipod->lock( true );
@@ -826,6 +840,9 @@ MediaDevice::deleteFiles( const KURL::List& urls )
         else
             debug() << "iPod inconsistent!" << endl;
     }
+    QTimer::singleShot( 1500, m_parent->m_progress, SLOT(hide()) );
+    //Enable after string freeze
+    //m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_parent->m_transferList->childCount() ) );
 }
 
 
@@ -904,17 +921,17 @@ MediaDevice::ipodConnection() //SLOT
         openIPod();
         m_parent->m_deviceList->renderView( 0 );
 
-        if( isConnected() )
+        if( isConnected() || m_parent->m_deviceList->childCount() != 0 )
         {
             m_parent->m_connectButton->setOn( true );
             m_parent->m_transferButton->setEnabled( m_parent->m_transferList->childCount() != 0 );
         }
         else
         {
+            m_parent->m_connectButton->setOn( false );
             KMessageBox::error( m_parent->m_parent,
                 i18n( "Could not find device, please mount it and try again." ),
                 i18n( "Media Device Browser" ) );
-            m_parent->m_connectButton->setOn( false );
         }
     }
     else
