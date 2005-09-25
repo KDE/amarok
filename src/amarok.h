@@ -109,6 +109,13 @@ namespace amaroK
     {
         return fileName.section( '/', 0, -2 );
     }
+  /** Due to xine-lib, we have to make KProcess close all fds, otherwise we get "device is busy" messages
+  * Used by AmaroKProcIO and AmaroKProcess, exploiting commSetupDoneC(), a virtual method that 
+  * happens to be called in the forked process
+  * See bug #103750 for more information.
+  */
+  //TODO ugly hack, fix KProcess for KDE 4.0
+    void closeOpenFiles(int out, int in, int err); //defined in scriptmanager.cpp
 }
 
 /**

@@ -57,20 +57,26 @@
 #include <knewstuff/knewstuff.h>      // "
 #include <knewstuff/provider.h>       // "
 
-
+namespace amaroK {
+    void closeOpenFiles(int out, int in, int err) {
+        for (int i = sysconf(_SC_OPEN_MAX) - 1; i > 2; i--)
+            if (i!=out && i!=in && i!=err)
+                close(i);
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // class AmaroKProcIO
 ////////////////////////////////////////////////////////////////////////////////
-/** Due to xine-lib, we have to make KProcIO close all fds, otherwise we get "device is busy" messages
+/** Due to xine-lib, we have to make KProcess close all fds, otherwise we get "device is busy" messages
+  * Used by AmaroKProcIO and AmaroKProcess, exploiting commSetupDoneC(), a virtual method that 
+  * happens to be called in the forked process
   * See bug #103750 for more information.
   */
 class AmaroKProcIO : public KProcIO {
     public:
     virtual int commSetupDoneC() {
-        for (int i = sysconf(_SC_OPEN_MAX) - 1; i > 2; i--)
-            if (i!=KProcIO::out[0] && i!=KProcIO::in[0] && i!=KProcIO::err[0])
-                close(i);
+        amaroK::closeOpenFiles(KProcIO::out[0],KProcIO::in[0],KProcIO::err[0]);
         return KProcIO::commSetupDoneC();
     };
 };
