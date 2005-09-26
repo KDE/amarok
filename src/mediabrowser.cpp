@@ -924,7 +924,16 @@ MediaDevice::ipodConnection() //SLOT
         if( isConnected() || m_parent->m_deviceList->childCount() != 0 )
         {
             m_parent->m_connectButton->setOn( true );
-            m_parent->m_transferButton->setEnabled( m_parent->m_transferList->childCount() != 0 );
+            if ( m_parent->m_transferList->childCount() != 0 )
+            {
+                m_parent->m_transferButton->setEnabled( true );
+                //Enable after string freeze
+                //m_parent->m_stats->setText( i18n( "Checking device for duplicate files." ) );
+                KURL::List urls;
+                urls = m_transferURLs;
+                clearItems();
+                addURLs( urls );
+           }
         }
         else
         {
