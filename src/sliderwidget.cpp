@@ -25,14 +25,12 @@
 #include <qbrush.h>
 #include <qimage.h>
 #include <qpainter.h>
-#include <qpixmap.h>
 #include <qsize.h>
 #include <qtimer.h>
 
 #include <klocale.h>
 #include <kimageeffect.h>
 #include <kpixmapeffect.h>
-#include <kpixmap.h>
 #include <kpopupmenu.h>
 #include <kstandarddirs.h>
 
@@ -226,11 +224,10 @@ amaroK::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
     : amaroK::Slider( Qt::Horizontal, parent, max )
     , m_animCount( 0 )
     , m_animTimer( new QTimer( this ) )
+    , m_pixmapInset( QPixmap( locate( "data","amarok/images/volumeslider-inset.png" ) ) )
 {
     setWFlags( getWFlags() | WNoAutoErase );
     setFocusPolicy( QWidget::NoFocus );
-
-    m_pixmapInset = KPixmap( locate( "data","amarok/images/volumeslider-inset.png" ) );
 
     // BEGIN Calculate handle animation pixmaps for mouse-over effect
     QImage pixmapHandle    ( locate( "data","amarok/images/volumeslider-handle.png" ) );
@@ -242,7 +239,7 @@ amaroK::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
     for ( int i = 0; i < ANIM_MAX; ++i ) {
         dst = pixmapHandle;
         KImageEffect::blend( pixmapHandleGlow, dst, opacity );
-        m_handlePixmaps.append( KPixmap( dst ) );
+        m_handlePixmaps.append( QPixmap( dst ) );
         opacity += step;
     }
     // END
@@ -274,14 +271,14 @@ void
 amaroK::VolumeSlider::slotAnimTimer() //SLOT
 {
     if ( m_animEnter ) {
-        m_animCount += 1;
+        m_animCount++;
         repaint( false );
-        if ( m_animCount >= ANIM_MAX - 1 )
+        if ( m_animCount == ANIM_MAX - 1 )
             m_animTimer->stop();
     } else {
-        m_animCount -= 1;
+        m_animCount--;
         repaint( false );
-        if ( m_animCount <= 0 )
+        if ( m_animCount == 0 )
             m_animTimer->stop();
     }
 }

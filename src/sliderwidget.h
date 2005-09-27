@@ -124,10 +124,10 @@ namespace amaroK
             int     m_animCount;
             QTimer* m_animTimer;
 
-            KPixmap m_pixmapInset;
+            QPixmap m_pixmapInset;
             KPixmap m_pixmapGradient;
 
-            QValueVector<KPixmap> m_handlePixmaps;
+            QValueVector<QPixmap> m_handlePixmaps;
     };
 }
 
