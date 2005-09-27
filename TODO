@@ -70,6 +70,8 @@ SHORT-TERM (URGENT):
 
 
 MID-TERM:
+  <mp8> File migration function for collectiondb.
+
   <sebr>   Make the player window scroll the text in the opposite direction if using right-2-left text
            (eg hebrew or arabic)
 
