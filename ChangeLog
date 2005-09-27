@@ -10,6 +10,7 @@ VERSION 1.3.3:
 
   CHANGES:
     * Added a warning dialog when HyperThreading is enabled. (BR 99199)
+    * Blacklisted GStreamer's autoaudiosink, which is really a crapsink.
     * Added a context menu to the volume slider.
     * When viewing covers in fullsize, the window has a maximum size, and
       scrollbars are shown if necessary. The user can also scroll the cover
