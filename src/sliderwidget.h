@@ -21,9 +21,11 @@
 #define AMAROKSLIDER_H
 
 #include <qslider.h>
+#include <qvaluevector.h>
 #include <kpixmap.h>
 
 class QPalette;
+class QTimer;
 
 namespace amaroK
 {
@@ -89,6 +91,8 @@ namespace amaroK
 
     class VolumeSlider: public Slider
     {
+        Q_OBJECT
+
         public:
             VolumeSlider( QWidget *parent, uint max = 0 );
 
@@ -103,16 +107,27 @@ namespace amaroK
             virtual void mousePressEvent( QMouseEvent* );
             virtual void wheelEvent( QWheelEvent *e );
 
+        private slots:
+            virtual void slotAnimTimer();
+
         private:
             void generateGradient();
 
-            KPixmap m_pixmapHandle;
-            KPixmap m_pixmapHandleGlow;
+            VolumeSlider( const VolumeSlider& ); //undefined
+            VolumeSlider &operator=( const VolumeSlider& ); //undefined
+
+            ////////////////////////////////////////////////////////////////
+            static const int ANIM_INTERVAL = 18;
+            static const int ANIM_MAX = 20;
+
+            bool    m_animEnter;
+            int     m_animCount;
+            QTimer* m_animTimer;
+
             KPixmap m_pixmapInset;
             KPixmap m_pixmapGradient;
 
-            VolumeSlider( const VolumeSlider& ); //undefined
-            VolumeSlider &operator=( const VolumeSlider& ); //undefined
+            QValueVector<KPixmap> m_handlePixmaps;
     };
 }
 

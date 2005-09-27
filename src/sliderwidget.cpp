@@ -23,11 +23,14 @@
 #include <qapplication.h>
 #include <qbitmap.h>
 #include <qbrush.h>
+#include <qimage.h>
 #include <qpainter.h>
 #include <qpixmap.h>
 #include <qsize.h>
+#include <qtimer.h>
 
 #include <klocale.h>
+#include <kimageeffect.h>
 #include <kpixmapeffect.h>
 #include <kpixmap.h>
 #include <kpopupmenu.h>
@@ -221,17 +224,35 @@ amaroK::PrettySlider::sizeHint() const
 
 amaroK::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
     : amaroK::Slider( Qt::Horizontal, parent, max )
+    , m_animCount( 0 )
+    , m_animTimer( new QTimer( this ) )
 {
     setWFlags( getWFlags() | WNoAutoErase );
     setFocusPolicy( QWidget::NoFocus );
 
-    m_pixmapInset      = QPixmap( locate( "data","amarok/images/volumeslider-inset.png" ) );
-    m_pixmapHandle     = QPixmap( locate( "data","amarok/images/volumeslider-handle.png" ) );
-    m_pixmapHandleGlow = QPixmap( locate( "data","amarok/images/volumeslider-handle_glow.png" ) );
+    m_pixmapInset = KPixmap( locate( "data","amarok/images/volumeslider-inset.png" ) );
+
+    // BEGIN Calculate handle animation pixmaps for mouse-over effect
+    QImage pixmapHandle    ( locate( "data","amarok/images/volumeslider-handle.png" ) );
+    QImage pixmapHandleGlow( locate( "data","amarok/images/volumeslider-handle_glow.png" ) );
+
+    float opacity = 0.0;
+    const float step = 1.0 / ANIM_MAX;
+    QImage dst;
+    for ( int i = 0; i < ANIM_MAX; ++i ) {
+        dst = pixmapHandle;
+        KImageEffect::blend( pixmapHandleGlow, dst, opacity );
+        m_handlePixmaps.append( KPixmap( dst ) );
+        opacity += step;
+    }
+    // END
+
     generateGradient();
 
     setMinimumWidth( m_pixmapInset.width() );
     setMinimumHeight( m_pixmapInset.height() );
+
+    connect( m_animTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
 }
 
 void
@@ -247,6 +268,22 @@ amaroK::VolumeSlider::generateGradient()
     KPixmapEffect::gradient( m_pixmapGradient, colorGroup().background(), colorGroup().highlight(),
                              KPixmapEffect::HorizontalGradient );
     m_pixmapGradient.setMask( mask );
+}
+
+void
+amaroK::VolumeSlider::slotAnimTimer() //SLOT
+{
+    if ( m_animEnter ) {
+        m_animCount += 1;
+        repaint( false );
+        if ( m_animCount >= ANIM_MAX - 1 )
+            m_animTimer->stop();
+    } else {
+        m_animCount -= 1;
+        repaint( false );
+        if ( m_animCount <= 0 )
+            m_animTimer->stop();
+    }
 }
 
 void
@@ -311,7 +348,7 @@ amaroK::VolumeSlider::paintEvent( QPaintEvent * )
 
     bitBlt( &buf, 0, 0, &m_pixmapGradient, 0, 0, offset + padding );
     bitBlt( &buf, 0, 0, &m_pixmapInset );
-    bitBlt( &buf, offset - m_pixmapHandle.width() / 2 + padding, 0, hasMouse() ? &m_pixmapHandleGlow : &m_pixmapHandle );
+    bitBlt( &buf, offset - m_handlePixmaps[0].width() / 2 + padding, 0, &m_handlePixmaps[m_animCount] );
 
     // Draw percentage number
     QPainter p( &buf );
@@ -343,13 +380,21 @@ amaroK::VolumeSlider::showEvent( QShowEvent* )
 void
 amaroK::VolumeSlider::enterEvent( QEvent* )
 {
-    update();
+    m_animEnter = true;
+    m_animCount = 0;
+
+    m_animTimer->start( ANIM_INTERVAL );
 }
 
 void
 amaroK::VolumeSlider::leaveEvent( QEvent* )
 {
-    update();
+    // This can happen if you enter and leave the widget quickly
+    if ( m_animCount == 0 )
+        m_animCount = 1;
+
+    m_animEnter = false;
+    m_animTimer->start( ANIM_INTERVAL );
 }
 
 void
