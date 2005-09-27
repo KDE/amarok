@@ -37,7 +37,6 @@ libsqlite_la_SOURCES = \
     printf.c \
     random.c \
     select.c \
-    shell.c \
     table.c \
     tokenize.c \
     trigger.c \
