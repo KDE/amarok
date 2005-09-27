@@ -5,6 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.3.3:
   FEATURES:
+    * New DCOP call "collection: migrateFile". Updates the collection db for
+       changes made to filenames, keeping stats intact.
     * Smartplaylist has Length property. (BR 113039)
     * Added a mouse-over effect for the volume slider.
 
