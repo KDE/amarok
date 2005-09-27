@@ -107,8 +107,8 @@ namespace amaroK
             void generateGradient();
 
             KPixmap m_pixmapHandle;
+            KPixmap m_pixmapHandleGlow;
             KPixmap m_pixmapInset;
-            KPixmap m_pixmapInsetHilight;
             KPixmap m_pixmapGradient;
 
             VolumeSlider( const VolumeSlider& ); //undefined

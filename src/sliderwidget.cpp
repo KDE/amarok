@@ -225,8 +225,9 @@ amaroK::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
     setWFlags( getWFlags() | WNoAutoErase );
     setFocusPolicy( QWidget::NoFocus );
 
-    m_pixmapInset  = QPixmap( locate( "data","amarok/images/volumeslider-inset.png" ) );
-    m_pixmapHandle = QPixmap( locate( "data","amarok/images/volumeslider-handle.png" ) );
+    m_pixmapInset      = QPixmap( locate( "data","amarok/images/volumeslider-inset.png" ) );
+    m_pixmapHandle     = QPixmap( locate( "data","amarok/images/volumeslider-handle.png" ) );
+    m_pixmapHandleGlow = QPixmap( locate( "data","amarok/images/volumeslider-handle_glow.png" ) );
     generateGradient();
 
     setMinimumWidth( m_pixmapInset.width() );
@@ -246,10 +247,6 @@ amaroK::VolumeSlider::generateGradient()
     KPixmapEffect::gradient( m_pixmapGradient, colorGroup().background(), colorGroup().highlight(),
                              KPixmapEffect::HorizontalGradient );
     m_pixmapGradient.setMask( mask );
-
-    // Generate pixmap for mouse-over effect
-    m_pixmapInsetHilight = m_pixmapInset;
-    KPixmapEffect::fade( m_pixmapInsetHilight, 0.3, colorGroup().highlight() );
 }
 
 void
@@ -313,8 +310,8 @@ amaroK::VolumeSlider::paintEvent( QPaintEvent * )
     const int offset = int( double( ( width() - 2 * padding ) * value() ) / maxValue() );
 
     bitBlt( &buf, 0, 0, &m_pixmapGradient, 0, 0, offset + padding );
-    bitBlt( &buf, 0, 0, hasMouse() ? &m_pixmapInsetHilight : &m_pixmapInset );
-    bitBlt( &buf, offset - m_pixmapHandle.width() / 2 + padding, 0, &m_pixmapHandle );
+    bitBlt( &buf, 0, 0, &m_pixmapInset );
+    bitBlt( &buf, offset - m_pixmapHandle.width() / 2 + padding, 0, hasMouse() ? &m_pixmapHandleGlow : &m_pixmapHandle );
 
     // Draw percentage number
     QPainter p( &buf );

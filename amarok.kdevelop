@@ -87,7 +87,7 @@
     </groups>
     <tree>
       <hidenonprojectfiles>false</hidenonprojectfiles>
-      <hidepatterns>*.o,*.lo,CVS,amarokapp,*.moc,*~</hidepatterns>
+      <hidepatterns>*.o,*.lo,CVS</hidepatterns>
       <showvcsfields>true</showvcsfields>
     </tree>
   </kdevfileview>

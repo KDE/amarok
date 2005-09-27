@@ -38,6 +38,7 @@ images_DATA = \
     vol_speaker.png \
     volumeslider-gradient.png \
     volumeslider-handle.png \
+    volumeslider-handle_glow.png \
     volumeslider-inset.png \
     wizard_compact.png \
     wizard_xmms.png \
