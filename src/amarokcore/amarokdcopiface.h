@@ -143,6 +143,7 @@ k_dcop:
    virtual int totalTracks() = 0;                       ///< Returns the total of tracks in the collection.
    virtual QStringList query(const QString& sql) = 0;       ///< Queries the database via SQL.
    virtual QStringList similarArtists( int artists ) = 0;       ///< Return similar artists of the current tracks, limit to int artists.
+   virtual void migrateFile( const QString &oldURL, const QString &newURL ) = 0; ///<Move a file in the collection, keeping stats intact.
    virtual void scanCollection() = 0;                       ///< Scan the collection.
    virtual void scanCollectionChanges() = 0;                ///< Scan the collection for changes only.
 };

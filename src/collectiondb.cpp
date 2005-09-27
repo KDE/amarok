@@ -1424,6 +1424,18 @@ CollectionDB::getPlayCount( const QString &url  )
 }
 
 void
+CollectionDB::migrateFile( const QString &oldURL, const QString &newURL )
+{
+    query( QString( "UPDATE tags SET url = '%1' WHERE url = '%2';" )
+        .arg( escapeString( newURL ) )
+        .arg( escapeString( oldURL ) ) );
+
+    query( QString( "UPDATE statistics SET url = '%1' WHERE url = '%2';" )
+        .arg( escapeString( newURL ) )
+        .arg( escapeString( oldURL ) ) );
+}
+
+void
 CollectionDB::updateDirStats( QString path, const long datetime, DbConnection *conn )
 {
     if ( path.endsWith( "/" ) )

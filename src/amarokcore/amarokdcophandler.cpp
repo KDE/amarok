@@ -610,6 +610,11 @@ namespace amaroK
         return CollectionDB::instance()->similarArtists( EngineController::instance()->bundle().artist(), artists );
     }
 
+    void DcopCollectionHandler::migrateFile( const QString &oldURL, const QString &newURL )
+    {
+        CollectionDB::instance()->migrateFile( oldURL, newURL );
+    }
+
     void DcopCollectionHandler::scanCollection()
     {
         CollectionDB::instance()->startScan();

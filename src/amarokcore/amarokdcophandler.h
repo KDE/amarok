@@ -143,6 +143,7 @@ class DcopCollectionHandler : public QObject, virtual public AmarokCollectionInt
       virtual int totalTracks();
       virtual QStringList query(const QString& sql);
       virtual QStringList similarArtists( int artists );
+      virtual void migrateFile( const QString &oldURL, const QString &newURL );
       virtual void scanCollection();
       virtual void scanCollectionChanges();
 };
