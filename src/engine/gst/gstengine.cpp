@@ -563,12 +563,10 @@ GstEngine::seek( uint ms )  //SLOT
 {
     RETURN_IF_PIPELINE_EMPTY
 
-    if ( ms > 0 ) {
-        const int seekType = GST_FORMAT_TIME | GST_SEEK_METHOD_SET | GST_SEEK_FLAG_FLUSH;
-        GstEvent* event = gst_event_new_seek( (GstSeekType) seekType, ms * GST_MSECOND );
+    const int seekType = GST_FORMAT_TIME | GST_SEEK_METHOD_SET | GST_SEEK_FLAG_FLUSH;
+    GstEvent* event = gst_event_new_seek( (GstSeekType) seekType, ms * GST_MSECOND );
 
-        gst_element_send_event( m_gst_audiosink, event );
-    }
+    gst_element_send_event( m_gst_audiosink, event );
 }
 
 
