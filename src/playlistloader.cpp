@@ -141,7 +141,7 @@ UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, bool playFir
         else {
             // this is the best way I found for recursing if required
             // and not recusring if not required
-            KURL::List urls = recurse( url );
+            const KURL::List urls = recurse( url );
 
             // recurse only works on directories, else it swallows the URL
             if( urls.isEmpty() )
@@ -307,7 +307,8 @@ UrlLoader::recurse( const KURL &url )
     KDirLister lister( false );
     lister.setAutoUpdate( false );
     lister.setAutoErrorHandlingEnabled( false, 0 );
-    lister.openURL( url );
+    if ( !lister.openURL( url ) )
+        return KURL::List();
 
     while( !lister.isFinished() && !isAborted() )
         kapp->eventLoop()->processEvents( QEventLoop::ExcludeUserInput );
