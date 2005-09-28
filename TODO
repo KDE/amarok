@@ -5,7 +5,9 @@ TODO-list for amaroK
 
 
 SHORT-TERM (URGENT):
- <markey>  When clicking sidebar tabs, the whole text plus icon moves down a few pixels.
+ <markey>  When you save the current playlist with playlist-browser, the playlist will show
+           up in the browser, but it has no contents and you can't load it. Restarting amaroK
+           fixes the playlist.
 
  <sebr>    Reflect lyrics text to say "unfetchable" when there is a server timeout or whatnot.  Currently
            stays stuck at "Fetching lyrics..."
