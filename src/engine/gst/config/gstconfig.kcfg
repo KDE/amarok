@@ -30,7 +30,7 @@
         </entry>
         <entry key="Fadeout Duration" type="Int">
             <label>Duration of Fade-out at trackend</label>
-            <default>2000</default>
+            <default>1800</default>
             <min>0</min>
             <max>10000</max>
         </entry>
