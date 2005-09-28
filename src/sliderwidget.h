@@ -118,7 +118,7 @@ namespace amaroK
 
             ////////////////////////////////////////////////////////////////
             static const int ANIM_INTERVAL = 18;
-            static const int ANIM_MAX = 20;
+            static const int ANIM_MAX = 18;
 
             bool    m_animEnter;
             int     m_animCount;
