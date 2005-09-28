@@ -1393,9 +1393,9 @@ Playlist::isTrackAfter() const
     //TODO randomMode will end if everything is in prevTracks
 
    return !currentTrack() && !isEmpty() ||
-            !m_nextTracks.isEmpty() ||
-            currentTrack() && currentTrack()->itemBelow() ||
-            totalTrackCount() > 1 && ( AmarokConfig::randomMode() || AmarokConfig::repeatPlaylist() );
+          !m_nextTracks.isEmpty() ||
+          currentTrack() && currentTrack()->itemBelow() ||
+          ( totalTrackCount() > 1 && ( AmarokConfig::randomMode() || AmarokConfig::repeatPlaylist() ) );
 }
 
 bool

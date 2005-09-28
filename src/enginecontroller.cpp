@@ -17,6 +17,7 @@
 #include "debug.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
+#include "playlist.h"
 #include "pluginmanager.h"
 #include "statusbar.h"
 #include "streamprovider.h"
@@ -592,7 +593,8 @@ void EngineController::slotMainTimer() //SLOT
     // Crossfading
     if ( m_engine->state() == Engine::Playing &&
          m_xFadeThisTrack &&
-         ( m_bundle.length()*1000 - position < (uint) AmarokConfig::crossfadeLength() ) )
+         Playlist::instance()->isTrackAfter() &&
+         m_bundle.length()*1000 - position < (uint) AmarokConfig::crossfadeLength() )
     {
         debug() << "Crossfading to next track...\n";
         next(false);
