@@ -1395,7 +1395,7 @@ Playlist::isTrackAfter() const
    return !currentTrack() && !isEmpty() ||
           !m_nextTracks.isEmpty() ||
           currentTrack() && currentTrack()->itemBelow() ||
-          ( totalTrackCount() > 1 && ( AmarokConfig::randomMode() || AmarokConfig::repeatPlaylist() ) );
+          totalTrackCount() > 1 && ( AmarokConfig::randomMode() || AmarokConfig::repeatPlaylist() );
 }
 
 bool
