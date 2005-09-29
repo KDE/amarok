@@ -1123,6 +1123,7 @@ bool PlaylistBrowser::savePlaylist( const QString &path, const QValueList<KURL> 
         stream << "\n";
     }
 
+    file.close(); // Flushes the file, before we read it
     PlaylistBrowser::instance()->addPlaylist( path, 0, true );
 
     return true;
