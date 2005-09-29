@@ -50,19 +50,19 @@ AMAROK_EXPORT_PLUGIN( NmmEngine )
 
 NmmEngine::NmmEngine()
   : EngineBase(),
-    __track_length(0),
     __position(0),
+    __track_length(0),
     __state(Engine::Empty),
-    __composite(0),
     __app(0),
     __endTrack_listener(this, &NmmEngine::endTrack),
     __syncReset_listener(this, &NmmEngine::syncReset),
     __setProgress_listener(this, &NmmEngine::setProgress),
     __trackDuration_listener(this, &NmmEngine::trackDuration),
+    __composite(0),
     __playback(0),
     __seeking(false),
-    __running(true),
     __track_ended(false),
+    __running(true),
     __cond(__mutex)
 {
   // start the secondary thread
