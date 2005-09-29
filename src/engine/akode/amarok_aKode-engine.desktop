@@ -36,6 +36,7 @@ ServiceTypes=amaroK/Plugin
 X-KDE-Library=libamarok_aKode-engine
 Comment=aKode audio-engine for amaroK
 Comment[bg]=Аудио модул aKode за amaroK
+Comment[br]=Keflusker klevet aKode evit amaroK
 Comment[cs]=Zvukový systém aKode pro amaroK
 Comment[da]=aKode lyd-motor for amaroK
 Comment[de]=aKode-Ausgabe-Modul für amaroK
