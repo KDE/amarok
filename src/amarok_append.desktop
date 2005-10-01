@@ -1,5 +1,5 @@
 [Desktop Entry]
-ServiceTypes=audio/basic;application/x-ogg;application/ogg;audio/x-vorbis;audio/vorbis;audio/x-oggflac;audio/oggflac;audio/x-flac;audio/flac;audio/x-mp3;audio/mp3;audio/x-mpeg-url;audio/mpeg-url;audio/x-mpegurl;audio/mpegurl;audio/x-wav;audio/wav;audio/x-mod;audio/mod;audio/x-scpls;audio/scpls;audio/x-sid;audio/sid;audio/x-aiff;audio/aiff;audio/x-mid;audio/mid;audio/x-midi;audio/midi;inode/directory
+ServiceTypes=audio/basic,application/x-ogg,application/ogg,audio/x-vorbis,audio/vorbis,audio/x-oggflac,audio/oggflac,audio/x-flac,audio/flac,audio/x-mp3,audio/mp3,audio/x-mpeg-url,audio/mpeg-url,audio/x-mpegurl,audio/mpegurl,audio/x-wav,audio/wav,audio/x-mod,audio/mod,audio/x-scpls,audio/scpls,audio/x-sid,audio/sid,audio/x-aiff,audio/aiff,audio/x-mid,audio/mid,audio/x-midi,audio/midi,inode/directory
 Actions=addToPlaylist;
 
 [Desktop Action addToPlaylist]
