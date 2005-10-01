@@ -299,7 +299,6 @@ Playlist::Playlist( QWidget *parent )
     m_undoButton->setEnabled( false );
     m_redoButton->setEnabled( false );
 
-
     engineStateChanged( EngineController::engine()->state() ); //initialise state of UI
     paletteChange( palette() ); //sets up glowColors
     restoreLayout( KGlobal::config(), "PlaylistColumnsLayout" );

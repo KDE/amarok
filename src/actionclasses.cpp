@@ -461,8 +461,7 @@ BurnMenu::slotActivated( int index )
 
 StopAction::StopAction( KActionCollection *ac )
   : KAction( i18n( "Stop" ), "player_stop", 0, EngineController::instance(), SLOT( stop() ), ac, "stop" )
-{
-}
+{}
 
 int
 StopAction::plug( QWidget *w, int index )
@@ -483,6 +482,7 @@ StopAction::plug( QWidget *w, int index )
         button->setDelayedPopup( amaroK::StopMenu::instance() );
         button->setName( "toolbutton_stop_menu" );
         button->setIcon( "player_stop" );
+        button->setEnabled( false ); // Required, otherwise the button is always enabled at startup
 
         return containerCount() - 1;
     }
