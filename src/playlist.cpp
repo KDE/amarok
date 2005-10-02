@@ -1879,22 +1879,19 @@ Playlist::viewportResizeEvent( QResizeEvent *e )
     //makes this much quicker
     header()->blockSignals( true );
 
-    if( e->size().width() != e->oldSize().width() )
-    {
-        const double W = (double)e->size().width() - negativeWidth;
+    const double W = (double)e->size().width() - negativeWidth;
 
-        for( uint c = 0; c < m_columnFraction.size(); ++c ) {
-            switch( c ) {
-            case PlaylistItem::Track:
-            case PlaylistItem::Bitrate:
-            case PlaylistItem::Score:
-            case PlaylistItem::Length:
-            case PlaylistItem::Year:
-                break; //these columns retain their width - their items tend to have uniform size
-            default:
-                if( m_columnFraction[c] > 0 )
-                   setColumnWidth( c, int(W * m_columnFraction[c]) );
-            }
+    for( uint c = 0; c < m_columnFraction.size(); ++c ) {
+        switch( c ) {
+        case PlaylistItem::Track:
+        case PlaylistItem::Bitrate:
+        case PlaylistItem::Score:
+        case PlaylistItem::Length:
+        case PlaylistItem::Year:
+            break; //these columns retain their width - their items tend to have uniform size
+        default:
+            if( m_columnFraction[c] > 0 )
+                setColumnWidth( c, int(W * m_columnFraction[c]) );
         }
     }
 
@@ -2023,7 +2020,11 @@ Playlist::eventFilter( QObject *o, QEvent *e )
 
         switch( col ) {
         case HIDE:
-            hideColumn( mouseOverColumn );
+            {
+                hideColumn( mouseOverColumn );
+                QResizeEvent e( size(), QSize() );
+                viewportResizeEvent( &e );
+            }
             break;
 
         case CUSTOM:
