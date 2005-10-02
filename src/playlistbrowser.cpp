@@ -1993,8 +1993,9 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     }
     else if( isPodcastItem( item ) ) {
         #define item static_cast<PodcastItem*>(item)
-        enum Actions { LOAD, INFO, GET, MEDIA_DEVICE };
+        enum Actions { LOAD, QUEUE, INFO, GET, MEDIA_DEVICE };
         menu.insertItem( SmallIconSet( "player_play" ), i18n( "&Play" ), LOAD );
+        menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue" ), QUEUE );
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( "info" ), i18n( "Show &Information" ), INFO );
 
@@ -2014,6 +2015,13 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         {
             case LOAD:
                 slotDoubleClicked( item );
+                break;
+
+            case QUEUE:
+                if( item->hasDownloaded() )
+                    Playlist::instance()->insertMedia( item->localUrl(), Playlist::Queue );
+                else
+                    Playlist::instance()->insertMedia( item->url(), Playlist::Queue );
                 break;
 
             case INFO:
