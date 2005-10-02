@@ -203,7 +203,7 @@ Party::applySettings() //SLOT
     AmarokConfig::setDynamicCycleTracks( cycleTracks() );
     AmarokConfig::setDynamicAppendCount( appendCount() );
 
-    amaroK::actionCollection()->action( "prev" )->setEnabled( !AmarokConfig::dynamicMode() );
+//     amaroK::actionCollection()->action( "prev" )->setEnabled( !AmarokConfig::dynamicMode() );
     amaroK::actionCollection()->action( "random_mode" )->setEnabled( !AmarokConfig::dynamicMode() );
     amaroK::actionCollection()->action( "playlist_shuffle" )->setEnabled( !AmarokConfig::dynamicMode() );
 }
