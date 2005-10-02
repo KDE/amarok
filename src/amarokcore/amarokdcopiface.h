@@ -68,6 +68,7 @@ k_dcop:
    virtual QString title() = 0;                             ///< Return the title of the currently playing track.
    virtual QString totalTime() = 0;                         ///< Return the total length of the currently playing track ([h:]mm:ss format).
    virtual QString track() = 0;                             ///< Return the track number.
+   virtual QString type() = 0;                             ///< Return the file type.
    virtual QString year() = 0;                              ///< Return the year of the currently playing track.
    virtual void configEqualizer() = 0;                      ///< Toggle equalizer config dialog.
    virtual void enableDynamicMode(bool enable) = 0;         ///< Switch Dynamic Mode on or off.

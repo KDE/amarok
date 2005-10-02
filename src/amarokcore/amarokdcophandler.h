@@ -62,8 +62,9 @@ class DcopPlayerHandler : public QObject, virtual public AmarokPlayerInterface
       virtual QString path();
       virtual QString setContextStyle(const QString&);
       virtual QString title();
-      virtual QString track();
       virtual QString totalTime();
+      virtual QString track();
+      virtual QString type();
       virtual QString year();
       virtual void configEqualizer();
       virtual void enableDynamicMode( bool enable );

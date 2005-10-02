@@ -234,6 +234,11 @@ namespace amaroK
         return EngineController::instance()->bundle().track();
     }
 
+    QString DcopPlayerHandler::type()
+    {
+        return EngineController::instance()->bundle().type();
+    }
+
     QString DcopPlayerHandler::year()
     {
         return EngineController::instance()->bundle().year();
