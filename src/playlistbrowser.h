@@ -53,6 +53,7 @@ class PlaylistBrowser : public QVBox
         void addDynamic( QListViewItem *parent = 0 );
         void addPlaylist( const QString &path, QListViewItem *parent = 0, bool force=false );
         void addPodcast( QListViewItem *parent = 0 );
+        void addPodcast( const QString &url, QListViewItem *parent = 0 );
 
         static bool savePlaylist( const QString &path, const QValueList<KURL> &urls,
                                   const QValueList<QString> &titles = QValueList<QString>(),
@@ -78,6 +79,7 @@ class PlaylistBrowser : public QVBox
 
     public slots:
         void openPlaylist( QListViewItem *parent = 0 );
+        void scanPodcasts();
 
     private slots:
         void addToDynamic();
@@ -88,7 +90,6 @@ class PlaylistBrowser : public QVBox
         void removeSelectedItems();
         void renamePlaylist( QListViewItem*, const QString&, int );
         void renameSelectedItem();
-        void scanPodcasts();
         void slotDoubleClicked( QListViewItem *item );
         void subFromDynamic();
 

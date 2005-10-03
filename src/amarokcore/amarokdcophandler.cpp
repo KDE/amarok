@@ -29,6 +29,7 @@
 #include "mediabrowser.h"
 #include "osd.h"
 #include "playlist.h"
+#include "playlistbrowser.h"
 #include "playlistitem.h"
 #include "playlistwindow.h"
 #include "scriptmanager.h"
@@ -463,8 +464,6 @@ namespace amaroK
         //delete[] argv;
     }
 
-
-
 /////////////////////////////////////////////////////////////////////////////////////
 // class DcopPlaylistHandler
 /////////////////////////////////////////////////////////////////////////////////////
@@ -558,6 +557,30 @@ namespace amaroK
     void DcopPlaylistHandler::togglePlaylist()
     {
         PlaylistWindow::self()->showHide();
+    }
+
+/////////////////////////////////////////////////////////////////////////////////////
+// class DcopPlaylistHandler
+/////////////////////////////////////////////////////////////////////////////////////
+
+    DcopPlaylistBrowserHandler::DcopPlaylistBrowserHandler()
+        : DCOPObject( "playlistbrowser" )
+        , QObject( kapp )
+    {}
+
+    void DcopPlaylistBrowserHandler::addPodcast( const QString &url )
+    {
+        PlaylistBrowser::instance()->addPodcast( url );
+    }
+
+    void DcopPlaylistBrowserHandler::scanPodcasts()
+    {
+        PlaylistBrowser::instance()->scanPodcasts();
+    }
+
+    void DcopPlaylistBrowserHandler::addPlaylist( const QString &url )
+    {
+        PlaylistBrowser::instance()->addPlaylist( url );
     }
 
 /////////////////////////////////////////////////////////////////////////////////////

@@ -909,25 +909,30 @@ void PlaylistBrowser::addPodcast( QListViewItem *parent )
 
     if( ok && !name.isEmpty() )
     {
-        if( !parent ) parent = static_cast<QListViewItem*>(m_podcastCategory);
-
-        PodcastChannel *pc = new PodcastChannel( parent, 0, KURL( name ) );
-
-        if( m_podcastItemsToScan.isEmpty() )
-        {
-            m_podcastItemsToScan.append( pc );
-            m_podcastTimer->start( m_podcastTimerInterval );
-        }
-        else
-        {
-            m_podcastItemsToScan.append( pc );
-        }
-
-        parent->sortChildItems( 0, true );
-        parent->setOpen( true );
-
-        savePodcasts();
+        addPodcast( name, parent );
     }
+}
+
+void PlaylistBrowser::addPodcast( const QString &url, QListViewItem *parent )
+{
+    if( !parent ) parent = static_cast<QListViewItem*>(m_podcastCategory);
+
+    PodcastChannel *pc = new PodcastChannel( parent, 0, KURL( url ) );
+
+    if( m_podcastItemsToScan.isEmpty() )
+    {
+        m_podcastItemsToScan.append( pc );
+        m_podcastTimer->start( m_podcastTimerInterval );
+    }
+    else
+    {
+        m_podcastItemsToScan.append( pc );
+    }
+
+    parent->sortChildItems( 0, true );
+    parent->setOpen( true );
+
+    savePodcasts();
 }
 
 void PlaylistBrowser::changePodcastInterval()

@@ -106,8 +106,8 @@ class DcopPlaylistHandler : public QObject, virtual public AmarokPlaylistInterfa
 {
         Q_OBJECT
 
-    public:
-        DcopPlaylistHandler();
+   public:
+      DcopPlaylistHandler();
 
    public:
       virtual int     getActiveIndex();
@@ -126,6 +126,19 @@ class DcopPlaylistHandler : public QObject, virtual public AmarokPlaylistInterfa
       virtual void    shortStatusMessage(const QString&);
       virtual void    shufflePlaylist();
       virtual void    togglePlaylist();
+};
+
+class DcopPlaylistBrowserHandler : public QObject, virtual public AmarokPlaylistBrowserInterface
+{
+        Q_OBJECT
+
+   public:
+      DcopPlaylistBrowserHandler();
+
+   public:
+      virtual void addPodcast( const QString &url );
+      virtual void scanPodcasts();
+      virtual void addPlaylist( const QString &url );
 };
 
 

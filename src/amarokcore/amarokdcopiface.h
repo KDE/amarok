@@ -131,6 +131,15 @@ k_dcop:
    virtual void togglePlaylist() = 0;                       ///< Toggle the Playlist-window.
 };
 
+class AmarokPlaylistBrowserInterface : virtual public DCOPObject
+{
+   K_DCOP
+
+k_dcop:
+   virtual void addPodcast(const QString &) = 0;            ///< Add a podcast entry to the playlist browser.
+   virtual void scanPodcasts() = 0;                         ///< Scan all podcasts for updates.
+   virtual void addPlaylist(const QString &) = 0;           ///< Add a playlist to the playlist browser.
+};
 
 class AmarokCollectionInterface : virtual public DCOPObject
 {

@@ -81,6 +81,7 @@ App::App()
     //needs to be created before the wizard
     new amaroK::DcopPlayerHandler(); // Must be created first
     new amaroK::DcopPlaylistHandler();
+    new amaroK::DcopPlaylistBrowserHandler();
     new amaroK::DcopCollectionHandler();
     new amaroK::DcopScriptHandler();
 
