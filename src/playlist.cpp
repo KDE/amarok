@@ -448,7 +448,7 @@ Playlist::insertMediaSql( const QString& sql, int options )
 void
 Playlist::addSpecialTracks( uint songCount, const QString type )
 {
-    if( !songCount ) return;
+    if( songCount < 1 ) return;
 
     QueryBuilder qb;
     qb.setOptions( QueryBuilder::optRandomize | QueryBuilder::optRemoveDuplicates );
@@ -2400,7 +2400,21 @@ Playlist::removeSelectedItems() //SLOT
 
     if( isDynamic() )
     {
-        addSpecialTracks( list.count() - dontReplaceDynamic, AmarokConfig::dynamicType() );
+        int currentTracks = childCount();
+        int minTracks     = AmarokConfig::dynamicUpcomingCount();
+
+        if( m_currentTrack )
+            currentTracks -= currentTrackIndex() + 1;
+
+        int difference = currentTracks - minTracks;
+
+        if( difference >= 0 )
+            difference -= list.count();
+
+        if( difference < 0 )
+        {
+            addSpecialTracks( -difference, AmarokConfig::dynamicType() );
+        }
     }
 
     //remove the items
