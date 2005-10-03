@@ -649,6 +649,8 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
             }
 
             menu.changeTitle( TITLE, i18n("Album") );
+            menu.changeItem( INFO,   i18n("Edit Album &Information..." ) );
+            menu.changeItem( ASNEXT, i18n("&Queue Album") );
         }
         if ( url.protocol() == "compilation" )
         {
@@ -667,6 +669,8 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
             }
 
             menu.changeTitle( TITLE, i18n("Compilation") );
+            menu.changeItem( INFO,   i18n("Edit Album &Information..." ) );
+            menu.changeItem( ASNEXT, i18n("&Queue Album") );
         }
     }
 
