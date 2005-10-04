@@ -5,6 +5,11 @@ amaroK ChangeLog
 
 VERSION 1.3.3:
   FEATURES:
+    * CoverManager allows for downloads from Amazon Canada. (BR 113238)
+    * New DCOP call "playlistbrowser: addPlaylist".
+    * New DCOP call "playlistbrowser: scanPodcasts". Will check all podcasts
+      for new episodes.
+    * New DCOP call "playlistbrowser: addPodcast".
     * New DCOP call "player: type". Returns the current track's file type.
     * New DCOP call "collection: migrateFile". Updates the collection db for
       changes made to filenames, keeping stats intact.
