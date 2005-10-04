@@ -94,8 +94,8 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     saveMenu->insertItem( i18n("Dynamic Playlist..."), DYNAMIC );
     connect( saveMenu, SIGNAL( activated(int) ), SLOT( slotSaveMenu(int) ) );
 
-    renameButton   = new KAction( i18n("Rename"), "editclear", 0, this, SLOT( renameSelectedItem() ), m_ac, "Rename" );
-    removeButton   = new KAction( i18n("Remove"), "edittrash", 0, this, SLOT( removeSelectedItems() ), m_ac, "Remove" );
+    renameButton   = new KAction( i18n("Rename"), "editclear", 0, this, SLOT( renameSelectedItem() ), m_ac );
+    removeButton   = new KAction( i18n("Remove"), "edittrash", 0, this, SLOT( removeSelectedItems() ), m_ac );
 
     viewMenuButton = new KActionMenu( i18n("View"), "configure", m_ac );
     viewMenuButton->setDelayed( false );

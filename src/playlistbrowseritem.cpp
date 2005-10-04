@@ -1046,13 +1046,12 @@ PodcastChannel::configure()
                                                      m_mediaFetch, m_purgeItems, m_purgeCount );
     if( settings->exec() == QDialog::Accepted )
     {
-        debug() << "Accepted: " << url << " : " <<settings->url() << endl;
         m_url        = KURL::fromPathOrURL( settings->url() );
         m_saveLocation.setPath( settings->saveLocation() );
         m_autoScan   = settings->hasAutoScan();
         m_interval   = settings->interval();
         m_mediaFetch = settings->fetch();
-        m_purgeCount = settings->hasPurge();
+        m_purgeItems = settings->hasPurge();
         m_purgeCount = settings->purgeCount();
 
 
@@ -1075,7 +1074,6 @@ PodcastChannel::configure()
          */
         if( save != m_saveLocation.path() )
         {
-            debug() << save << " != " << m_saveLocation.path() << endl;
             KURL::List copyList;
             m_saveLocation = KURL::fromPathOrURL( save );
 
