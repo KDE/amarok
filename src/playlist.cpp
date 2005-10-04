@@ -936,8 +936,8 @@ Playlist::advancePartyTrack( PlaylistItem *item )
     //keep upcomingTracks requirement, this seems to break StopAfterCurrent
     if( m_stopAfterTrack != m_currentTrack )
     {
-        int appendNo = AmarokConfig::dynamicAppendCount();
-        if( appendNo ) addSpecialTracks( appendNo, AmarokConfig::dynamicType() );
+        const int appendNo = AmarokConfig::dynamicAppendCount();
+        if( appendNo ) addSpecialTracks( appendNo, AmarokConfig::dynamicType() );
     }
     m_partyDirt = true;
 }
