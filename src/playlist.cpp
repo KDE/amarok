@@ -995,10 +995,32 @@ void
 Playlist::queueSelected()
 {
     PLItemList in, out;
+    QPtrList<QListViewItem> dynamicList;
+
     for( MyIt it( this, MyIt::Selected ); *it; ++it )
     {
-        queue( *it, true );
+        // Dequeuing selection with dynamic doesnt work due to the moving of the track after the last queued
+        if( isDynamic() )
+            dynamicList.append( *it );
+        else
+            queue( *it, true );
+
         ( m_nextTracks.containsRef( *it ) ? in : out ).append( *it );
+    }
+
+    if( isDynamic() )
+    {
+        QListViewItem *item = dynamicList.first();
+        if( m_nextTracks.containsRef( static_cast<PlaylistItem*>(item) ) )
+        {
+            for( item = dynamicList.last(); item; item = dynamicList.prev() )
+                queue( item, true );
+        }
+        else
+        {
+            for( ; item; item = dynamicList.next() )
+                queue( item, true );
+        }
     }
 
     emit queueChanged( in, out );
