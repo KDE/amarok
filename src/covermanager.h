@@ -69,7 +69,7 @@ class CoverManager : public QSplitter
 
     private:
         enum View { AllAlbums=0, AlbumsWithCover, AlbumsWithoutCover };
-        enum Locale { International=0, France, Germany, Japan, UK };
+        enum Locale { International=0, France, Germany, Japan, UK, Canada };
 
         void loadCover( const QString &, const QString & );
         void setCustomSelectedCovers();

@@ -137,6 +137,7 @@ CoverManager::CoverManager()
     // amazon locale menu
     m_amazonLocaleMenu = new KPopupMenu( this );
     m_amazonLocaleMenu->insertItem( i18n("International"), International );
+    m_amazonLocaleMenu->insertItem( i18n("Canada"), Canada );
     m_amazonLocaleMenu->insertItem( i18n("France"), France );
     m_amazonLocaleMenu->insertItem( i18n("Germany"), Germany );
     m_amazonLocaleMenu->insertItem( i18n("Japan"), Japan);
@@ -158,6 +159,7 @@ CoverManager::CoverManager()
     else if( locale == "de" ) m_currentLocale = Germany;
     else if( locale == "jp" ) m_currentLocale = Japan;
     else if( locale == "uk" ) m_currentLocale = UK;
+    else if( locale == "ca" ) m_currentLocale = Canada;
     else {
         // make sure we handle old config files correctly
         locale = "us";
@@ -282,6 +284,8 @@ QString CoverManager::amazonTld() //static
         return "co.jp";
             else if (AmarokConfig::amazonLocale() == "uk")
         return "co.uk";
+            else if (AmarokConfig::amazonLocale() == "ca")
+        return "ca";
             else
         return AmarokConfig::amazonLocale();
 }
@@ -602,6 +606,9 @@ void CoverManager::changeLocale( int id ) //SLOT
     {
         case International:
             AmarokConfig::setAmazonLocale( "us" );
+            break;
+        case Canada:
+            AmarokConfig::setAmazonLocale( "ca" );
             break;
         case France:
             AmarokConfig::setAmazonLocale( "fr" );
