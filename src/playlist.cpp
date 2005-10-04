@@ -936,18 +936,8 @@ Playlist::advancePartyTrack( PlaylistItem *item )
     //keep upcomingTracks requirement, this seems to break StopAfterCurrent
     if( m_stopAfterTrack != m_currentTrack )
     {
-        int currentTracks = childCount();
-        int minTracks     = AmarokConfig::dynamicUpcomingCount();
-
-        if( m_currentTrack )
-            currentTracks -= currentTrackIndex() + 1;
-
-        if( currentTracks < minTracks )
-        {
-            int appendNo = AmarokConfig::dynamicAppendCount();
-            if( appendNo )
-                addSpecialTracks( appendNo, AmarokConfig::dynamicType() );
-        }
+        int appendNo = AmarokConfig::dynamicAppendCount();
+        if( appendNo ) addSpecialTracks( appendNo, AmarokConfig::dynamicType() );
     }
     m_partyDirt = true;
 }
@@ -1050,7 +1040,7 @@ Playlist::queue( QListViewItem *item, bool multi )
     else if( !isDynamic() )
         m_nextTracks.append( item );
 
-    else
+    else // Dynamic mode
     {
         PlaylistItem *after;
         m_nextTracks.isEmpty() ?
