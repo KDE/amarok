@@ -161,7 +161,7 @@ void
 amaroK::PrettySlider::paintEvent( QPaintEvent* )
 {
     const int w   = orientation() == Qt::Horizontal ? width() : height();
-    const int pos = int(double((w-2) * Slider::value()) / maxValue());
+    const int pos = int( double( w-2 ) / maxValue() * Slider::value() );
     const int h   = THICKNESS;
 
     QPixmap  buf( size() );
