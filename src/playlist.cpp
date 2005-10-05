@@ -1188,7 +1188,7 @@ Playlist::activate( QListViewItem *item )
 
     #define item static_cast<PlaylistItem*>(item)
 
-    if( isDynamic() && !m_partyDirt )
+    if( isDynamic() && !m_partyDirt && item != firstChild() )
     {
         if( m_currentTrack && item->isEnabled() )
             this->moveItem( item, 0, m_currentTrack );
