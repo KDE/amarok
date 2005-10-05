@@ -271,6 +271,10 @@ void PlaylistEntry::load()
     //starts loading animation
     ((PlaylistBrowserView *)listView())->startAnimation( this );
 
+    //delete all children, so that we don't duplicate things
+    while( firstChild() )
+        delete firstChild();
+
      //read the playlist file in a thread
     ThreadWeaver::instance()->queueJob( new PlaylistReader( this, m_url.path() ) );
 }
