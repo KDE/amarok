@@ -70,7 +70,7 @@ namespace Engine
         /**
          * Shows a long message in a non-invasive manner, you should prefer
          * this over KMessageBoxes, but do use KMessageBox when you must
-         * interupt the user or the message is very important.
+         * interrupt the user or the message is very important.
          */
         void infoMessage( const QString& );
 
