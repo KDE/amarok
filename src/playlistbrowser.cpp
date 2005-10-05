@@ -1773,7 +1773,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
     if( isPlaylist( item ) ) {
         #define item static_cast<PlaylistEntry*>(item)
-        enum Id { LOAD, ADD, DYNADD, DYNSUB, SAVE, RESTORE, RENAME, REMOVE, DELETE };
+        enum Id { LOAD, ADD, DYNADD, DYNSUB, SAVE, RESTORE, RENAME, DELETE };
 
         menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), LOAD );
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), ADD );
@@ -1794,12 +1794,11 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             menu.insertSeparator();
         }
         menu.insertItem( SmallIconSet("editclear"), i18n( "&Rename" ), RENAME );
-        menu.insertItem( SmallIconSet("edittrash"), i18n( "R&emove" ), REMOVE );
         menu.insertItem( SmallIconSet("editdelete"), i18n( "&Delete" ), DELETE );
         menu.setAccel( Key_Space, LOAD );
         menu.setAccel( Key_F2, RENAME );
-        menu.setAccel( Key_Delete, REMOVE );
         menu.setAccel( SHIFT+Key_Delete, DELETE );
+        menu.setAccel( CTRL+Key_S, SAVE );
 
         switch( menu.exec( p ) )
         {
@@ -1823,9 +1822,6 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 break;
             case RENAME:
                 renameSelectedItem();
-                break;
-            case REMOVE:
-                removeSelectedItems();
                 break;
             case DELETE:
                 deleteSelectedPlaylists();
