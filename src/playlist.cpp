@@ -39,7 +39,7 @@
 #include <qevent.h>
 #include <qfile.h>           //undo system
 #include <qheader.h>         //eventFilter()
-#include <qlabel.h>           //showUsageMessage()
+#include <qlabel.h>          //showUsageMessage()
 #include <qmap.h>            //dragObject()
 #include <qpainter.h>
 #include <qpen.h>            //slotGlowTimer()
@@ -2083,6 +2083,18 @@ Playlist::eventFilter( QObject *o, QEvent *e )
         item->isSelected() ?
             queueSelected():
             queue( item );
+
+        return true; //yum!
+    }
+    else if( o == viewport() && e->type() == QEvent::MouseButtonPress && me->button() == MidButton )
+    {
+        PlaylistItem *item = (PlaylistItem*)itemAt( me->pos() );
+
+        if( !item )
+            return true;
+
+        if( item == m_currentTrack )
+            EngineController::instance()->playPause();
 
         return true; //yum!
     }
