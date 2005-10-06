@@ -952,7 +952,44 @@ void PlaylistBrowser::changePodcastInterval()
             m_podcastTimer->changeInterval( m_podcastTimerInterval );
         }
     }
+}
 
+bool PlaylistBrowser::deletePodcasts( QPtrList<PodcastChannel> items )
+{
+    if ( items.isEmpty() ) return false;
+
+    int button = KMessageBox::warningContinueCancel( this, i18n( "<p>You have selected 1 podcast to be <b>irreversibly</b> deleted. "
+                                                                 "All downloaded episodes will also be deleted.",
+                                                                 "<p>You have selected %n podcasts to be <b>irreversibly</b> deleted. "
+                                                                 "All downloaded episodes will also be deleted.",
+                                                                 items.count() ),
+                                                     QString::null,
+                                                     KStdGuiItem::del() );
+
+    if ( button == KMessageBox::Continue )
+    {
+        KURL::List urls;
+        foreachType( QPtrList<PodcastChannel>, items )
+        {
+            for( QListViewItem *ch = (*it)->firstChild(); ch; ch = ch->nextSibling() )
+            {
+                #define ch static_cast<PodcastItem*>(ch)
+                debug() << "channel: " << (*it)->title() << endl;
+                if( ch->hasDownloaded() )
+                {
+                    debug() << "\tepisode: " << ch->localUrl() << endl;
+                    urls.append( ch->localUrl() );
+                }
+                //TODO remove xml
+                #undef  ch
+            }
+        }
+        debug() << "Deleting " << urls.count() << " episodes" << endl;
+        // TODO We need to check which files have been deleted successfully
+        KIO::del( urls );
+        return true;
+    }
+    return false;
 }
 
 /**
@@ -1165,6 +1202,55 @@ void PlaylistBrowser::savePlaylists()
     stream.setEncoding( QTextStream::UnicodeUTF8 );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     stream << doc.toString();
+}
+
+bool PlaylistBrowser::deletePlaylists( QPtrList<PlaylistEntry> items )
+{
+    KURL::List urls;
+    foreachType( QPtrList<PlaylistEntry>, items )
+    {
+        urls.append( (*it)->url() );
+    }
+    if( !urls.isEmpty() )
+        return deletePlaylists( urls );
+
+    return false;
+}
+
+bool PlaylistBrowser::deletePlaylists( KURL::List items )
+{
+    if ( items.isEmpty() ) return false;
+
+    int button = KMessageBox::warningContinueCancel( this, i18n( "<p>You have selected 1 playlist to be <b>irreversibly</b> deleted.",
+                                                                 "<p>You have selected %n playlists to be <b>irreversibly</b> deleted.",
+                                                                 items.count() ),
+                                                     QString::null,
+                                                     KStdGuiItem::del() );
+
+    if ( button == KMessageBox::Continue )
+    {
+        // TODO We need to check which files have been deleted successfully
+        KIO::del( items );
+        return true;
+    }
+    return false;
+}
+
+void PlaylistBrowser::savePlaylist( PlaylistEntry *item )
+{
+    bool append = false;
+
+    if( item->trackList().count() == 0 ) //the playlist hasn't been loaded so we append the dropped tracks
+        append = true;
+
+    //save the modified playlist in m3u or pls format
+    const QString ext = fileExtension( item->url().path() );
+    if( ext.lower() == "m3u" )
+        saveM3U( item, append );
+    else
+        savePLS( item, append );
+
+    item->setModified( false );    //don't show the save icon
 }
 
 /**
@@ -1383,7 +1469,9 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
     }
 
     QPtrList<PlaylistEntry> playlistsToDelete;
-    QPtrList<PlaylistCategory> foldersToDelete;
+    QPtrList<PlaylistCategory> playlistFoldersToDelete;
+    QPtrList<PodcastChannel> podcastsToDelete;
+    QPtrList<PlaylistCategory> podcastFoldersToDelete;
 
     bool playlistsChanged = false;
     bool streamsChanged = false;
@@ -1393,9 +1481,10 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
 
     for( QListViewItem *item = selected.first(); item; item = selected.next() )
     {
+        bool keepItem = false;
         if( isPlaylist( item ) )
         {
-            playlistsChanged = true;
+            keepItem = playlistsChanged = true;
             playlistsToDelete.append( static_cast<PlaylistEntry*>(item) );
         }
         if( isCategory( item ) )
@@ -1404,9 +1493,18 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
             {
                 for( QListViewItem *ch = item->firstChild(); ch; ch = ch->nextSibling() )
                 {
-                    playlistsChanged = true;
+                    keepItem = playlistsChanged = true;
                     playlistsToDelete.append( static_cast<PlaylistEntry*>(ch) );
-                    foldersToDelete.append( static_cast<PlaylistCategory*>(item) );
+                    playlistFoldersToDelete.append( static_cast<PlaylistCategory*>(item) );
+                }
+            }
+            if( isPodcastChannel( item->firstChild() ) )
+            {
+                for( QListViewItem *ch = item->firstChild(); ch; ch = ch->nextSibling() )
+                {
+                    keepItem = podcastsChanged = true;
+                    podcastsToDelete.append( static_cast<PodcastChannel*>(ch) );
+                    podcastFoldersToDelete.append( static_cast<PlaylistCategory*>(item) );
                 }
             }
         }
@@ -1425,9 +1523,9 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
         {
             podcastsChanged = true;
             m_podcastItemsToScan.remove( static_cast<PodcastChannel*>(item) );
-            delete item;
+            podcastsToDelete.append( static_cast<PodcastChannel*>(item) );
         }
-        else if( !playlistsChanged )
+        else if( !keepItem )
         {
             m_dynamicEntries.remove(item); // if it's not there, no problem, it just returns false.
             delete item;
@@ -1450,16 +1548,31 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
                 delete (*it);
             }
 
-            foreachType( QPtrList<PlaylistCategory>, foldersToDelete )
+            foreachType( QPtrList<PlaylistCategory>, playlistFoldersToDelete )
+            {
+                delete (*it);
+            }
+            savePlaylists();
+        }
+    }
+
+    if( podcastsChanged )
+    {
+        if( deletePodcasts( podcastsToDelete ) )
+        {
+            foreachType( QPtrList<PodcastChannel>, podcastsToDelete )
             {
                 delete (*it);
             }
 
-            savePlaylists();
+            foreachType( QPtrList<PlaylistCategory>, podcastFoldersToDelete )
+            {
+                delete (*it);
+            }
+            savePodcasts();
         }
     }
 }
-
 
 void PlaylistBrowser::renameSelectedItem() //SLOT
 {
@@ -1514,56 +1627,6 @@ void PlaylistBrowser::renamePlaylist( QListViewItem* item, const QString& newNam
     }
 
     item->setRenameEnabled( 0, false );
-}
-
-
-bool PlaylistBrowser::deletePlaylists( QPtrList<PlaylistEntry> items )
-{
-    KURL::List urls;
-    foreachType( QPtrList<PlaylistEntry>, items )
-    {
-        urls.append( (*it)->url() );
-    }
-    if( !urls.isEmpty() )
-        return deletePlaylists( urls );
-
-    return false;
-}
-
-bool PlaylistBrowser::deletePlaylists( KURL::List items )
-{
-    if ( items.isEmpty() ) return false;
-
-    int button = KMessageBox::warningContinueCancel( this, i18n( "<p>You have selected 1 playlist to be <b>irreversibly</b> deleted.",
-                                                                 "<p>You have selected %n playlists to be <b>irreversibly</b> deleted.",
-                                                                 items.count() ),
-                                                     QString::null,
-                                                     KStdGuiItem::del() );
-
-    if ( button == KMessageBox::Continue )
-    {
-        // TODO We need to check which files have been deleted successfully
-        KIO::del( items );
-        return true;
-    }
-    return false;
-}
-
-void PlaylistBrowser::savePlaylist( PlaylistEntry *item )
-{
-    bool append = false;
-
-    if( item->trackList().count() == 0 ) //the playlist hasn't been loaded so we append the dropped tracks
-        append = true;
-
-    //save the modified playlist in m3u or pls format
-    const QString ext = fileExtension( item->url().path() );
-    if( ext.lower() == "m3u" )
-        saveM3U( item, append );
-    else
-        savePLS( item, append );
-
-    item->setModified( false );    //don't show the save icon
 }
 
 
@@ -1969,10 +2032,10 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     }
     else if( isPodcastChannel( item ) ) {
         #define item static_cast<PodcastChannel*>(item)
-        enum Actions { LOAD, ADD, REMOVE, INFO, RESCAN, CONFIG};
+        enum Actions { LOAD, ADD, DELETE, INFO, RESCAN, CONFIG};
         menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), LOAD );
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), ADD );
-        menu.insertItem( SmallIconSet( "edittrash" ), i18n( "R&emove" ), REMOVE );
+        menu.insertItem( SmallIconSet( "editdelete" ), i18n( "&Delete" ), DELETE );
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( "info" ), i18n( "Show &Information" ), INFO );
         menu.insertItem( SmallIconSet( "reload" ), i18n( "&Check for Updates" ), RESCAN );
@@ -2006,7 +2069,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 item->rescan();
                 break;
 
-            case REMOVE:
+            case DELETE:
                 removeSelectedItems();
                 break;
 

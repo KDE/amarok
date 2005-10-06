@@ -19,6 +19,7 @@ VERSION 1.3.3:
     * Added a mouse-over effect for the volume slider.
 
   CHANGES:
+    * Removing podcasts will delete all downloaded media.
     * Playlists in the playlistbrowser can no longer be removed, only deleted.
     * Removing tracks when in dynamic mode will only replace up to the minimum
       upcoming tracks requirement.
