@@ -360,6 +360,12 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     m_coverView->clear();
     m_coverItems.clear();
 
+    // reset current view mode state to "AllAlbum" which is the default on artist change in left panel
+    m_currentView = AllAlbums;
+    m_viewMenu->setItemChecked( AllAlbums, true );
+    m_viewMenu->setItemChecked( AlbumsWithCover, false );
+    m_viewMenu->setItemChecked( AlbumsWithoutCover, false );
+
     QProgressDialog progress( this, 0, true );
     progress.setLabelText( i18n("Loading Thumbnails...") );
     progress.QDialog::setCaption( i18n("...") );
