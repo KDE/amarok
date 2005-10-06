@@ -99,9 +99,23 @@ UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, bool playFir
             m_playFirstUrl = false;
         }
 
-        else if( protocol == "fetchcover" )
-            continue;
+        else if( protocol == "fetchcover" ) {
+            // url looks like:   fetchcover:<artist_name> @@@ <album_name>
+           QString myUrl = url.path();
+           if ( myUrl.endsWith( " @@@" ) )
+               myUrl += ' ';
+           const QStringList list = QStringList::split( " @@@ ", myUrl, true );
+           Q_ASSERT( !list.isEmpty() );
+           QString artist_name = list.front();
+           QString album_name  = list.back();
 
+           QStringList trackUrls = CollectionDB::instance()->albumTracks( artist_name, album_name, true );
+           KURL url;
+           foreach( trackUrls ) {
+                url.setPath( *it );
+                m_URLs += url;
+           }
+        }
         else if( protocol == "seek" )
             continue;
 

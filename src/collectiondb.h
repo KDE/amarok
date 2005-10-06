@@ -308,7 +308,7 @@ class CollectionDB : public QObject, public EngineObserver
         QStringList albumListOfArtist( const QString &artist, bool withUnknown = true, bool withCompilations = true );
         QStringList artistAlbumList( bool withUnknown = true, bool withCompilations = true );
 
-        QStringList albumTracks( const QString &artist_id, const QString &album_id );
+        QStringList albumTracks( const QString &artist_id, const QString &album_id, const bool isValue = false );
 
         //cover management methods
         /** Returns the image from a given URL, network-transparently.

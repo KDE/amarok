@@ -5,6 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.3.3:
   FEATURES:
+    * Dragging an album cover into the playlist from the context browser
+      will append the album.
     * Middle mouse button on the current track will toggle play/pause.
     * Ctrl-Right click on a selection of tracks will queue all of them, not
       just the track below the cursor. (BR 112841)

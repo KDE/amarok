@@ -663,8 +663,16 @@ CollectionDB::albumIsCompilation( const QString &album_id )
 }
 
 QStringList
-CollectionDB::albumTracks( const QString &artist_id, const QString &album_id )
+CollectionDB::albumTracks( const QString &artist_id, const QString &album_id, const bool isValue )
 {
+    if ( isValue)
+    {
+        return query( QString( "SELECT tags.url FROM tags INNER JOIN artist ON artist.id=tags.artist INNER JOIN album ON "
+                        "album.id=tags.album WHERE (album.name = \"%1\" ) AND (artist.name = \"%2\" ) ORDER BY tags.track;" )
+                        .arg( album_id )
+                        .arg( artist_id ) );
+    }
+
     if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) {
         return query( QString( "SELECT tags.url, tags.track AS __discard FROM tags, year WHERE tags.album = %1 AND "
                                "( tags.sampler = %2 OR tags.artist = %3 ) AND year.id = tags.year "
