@@ -974,17 +974,16 @@ bool PlaylistBrowser::deletePodcasts( QPtrList<PodcastChannel> items )
             for( QListViewItem *ch = (*it)->firstChild(); ch; ch = ch->nextSibling() )
             {
                 #define ch static_cast<PodcastItem*>(ch)
-                debug() << "channel: " << (*it)->title() << endl;
                 if( ch->hasDownloaded() )
                 {
-                    debug() << "\tepisode: " << ch->localUrl() << endl;
+                    //delete downloaded media
                     urls.append( ch->localUrl() );
                 }
-                //TODO remove xml
                 #undef  ch
             }
+            //delete downloaded xml
+            urls.append( (*it)->xmlUrl() );
         }
-        debug() << "Deleting " << urls.count() << " episodes" << endl;
         // TODO We need to check which files have been deleted successfully
         KIO::del( urls );
         return true;

@@ -293,6 +293,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         void  rescan();
         void  showAbout();
         const KURL &url() { return m_url; }
+        const KURL xmlUrl();
         const QString &title() { return m_title; }
         const int timeout() { return m_interval; }
         const int mediaFetch() { return m_mediaFetch; }
@@ -317,7 +318,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         void startAnimation();
         void stopAnimation();
 
-        KURL        m_url;                         //xml url
+        KURL        m_url;                         //remote xml url
         KURL        m_link;                        //webpage
         KURL        m_saveLocation;
         QString     m_title;

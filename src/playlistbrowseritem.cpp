@@ -1132,6 +1132,12 @@ PodcastChannel::configure()
     }
 }
 
+const KURL
+PodcastChannel::xmlUrl()
+{
+    return KURL::fromPathOrURL( amaroK::saveLocation( "podcasts/" ) +  m_cache );
+}
+
 void
 PodcastChannel::fetch()
 {
