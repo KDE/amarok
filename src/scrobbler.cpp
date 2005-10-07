@@ -123,9 +123,9 @@ void Scrobbler::similarArtists( const QString & artist )
         job->addMetaData( "content-type", "Content-Type: text/xml" );
 
         connect( job, SIGNAL( result( KIO::Job* ) ),
-                this,  SLOT( audioScrobblerSimilarArtistsResult( KIO::Job* ) ) );
+                this,   SLOT( audioScrobblerSimilarArtistsResult( KIO::Job* ) ) );
         connect( job, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
-                this,  SLOT( audioScrobblerSimilarArtistsData( KIO::Job*, const QByteArray& ) ) );
+                this,   SLOT( audioScrobblerSimilarArtistsData( KIO::Job*, const QByteArray& ) ) );
     }
 }
 
