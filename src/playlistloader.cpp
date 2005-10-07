@@ -11,22 +11,26 @@
 #define DEBUG_PREFIX "PlaylistLoader"
 
 #include "amarok.h"
-#include "debug.h"
-#include "playlist.h"
 #include "collectiondb.h"
+#include "debug.h"
 #include "enginecontroller.h"
-#include <kapplication.h>
-#include <kdirlister.h>
-#include <kurl.h>
+#include "playlist.h"
 #include "playlistitem.h"
 #include "playlistloader.h"
+#include "statusbar.h"
+
+#include <qdatetime.h>   //::recurse()
 #include <qfile.h>       //::loadPlaylist()
 #include <qlistview.h>
 #include <qregexp.h>
 #include <qstringlist.h>
 #include <qtextstream.h> //::loadPlaylist()
-#include "statusbar.h"
+
 #include <dcopref.h>
+#include <kapplication.h>
+#include <kdirlister.h>
+#include <kurl.h>
+
 
 
 typedef QValueList<QDomNode> NodeList;
@@ -324,7 +328,12 @@ UrlLoader::recurse( const KURL &url )
     if ( !lister.openURL( url ) )
         return KURL::List();
 
-    while( !lister.isFinished() && !isAborted() )
+    // Fucking KDirLister sometimes hangs on remote media, so we add a timeout
+    const int timeout = 400; // ms
+    QTime watchdog;
+    watchdog.start();
+
+    while( !lister.isFinished() && !isAborted() && watchdog.elapsed() < timeout )
         kapp->eventLoop()->processEvents( QEventLoop::ExcludeUserInput );
 
     KFileItemList items = lister.items(); //returns QPtrList, so we MUST only do it once!
