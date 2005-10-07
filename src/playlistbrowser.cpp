@@ -1900,7 +1900,6 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         menu.setAccel( Key_Space, LOAD );
         menu.setAccel( Key_F2, RENAME );
         menu.setAccel( SHIFT+Key_Delete, DELETE );
-        menu.setAccel( CTRL+Key_S, SAVE );
 
         switch( menu.exec( p ) )
         {
