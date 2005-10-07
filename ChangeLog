@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.3.3:
   FEATURES:
+    * Saving a playlist will cleverly pick a default name if possible.
     * Dragging an album cover into the playlist from the context browser
       will append the album.
     * Middle mouse button on the current track will toggle play/pause.

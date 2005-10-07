@@ -598,7 +598,37 @@ QSize PlaylistWindow::sizeHint() const
 
 void PlaylistWindow::savePlaylist() const //SLOT
 {
-    QString path = PlaylistDialog::getSaveFileName( i18n( "Untitled" ) );
+    Playlist *pl = Playlist::instance();
+
+    PlaylistItem *item = pl->firstChild();
+
+    QString artist = item->artist();
+    QString album  = item->album();
+
+    bool useArtist = true, useAlbum = true;
+
+    item = static_cast<PlaylistItem*>( item->itemBelow() );
+
+    for( ; item; item = static_cast<PlaylistItem*>( item->itemBelow() ) )
+    {
+        if( artist != item->artist() )
+            useArtist = false;
+        if( album  != item->album() )
+            useAlbum = false;
+
+        if( !useArtist && !useAlbum )
+            break;
+    }
+
+    QString title = i18n( "Untitled" );
+    if( useArtist && useAlbum )
+        title = artist + " - " + album;
+    else if( useArtist )
+        title = artist;
+    else if( useAlbum )
+        title = album;
+
+    QString path = PlaylistDialog::getSaveFileName( title );
 
     if( !path.isEmpty() && Playlist::instance()->saveM3U( path ) )
         PlaylistWindow::self()->showBrowser( "PlaylistBrowser" );

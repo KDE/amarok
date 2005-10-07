@@ -91,7 +91,6 @@ class Playlist : private KListView, public EngineObserver
         void advancePartyTrack( PlaylistItem *item = 0 );
         void alterHistoryItems( bool enable = false, bool entire = false );
 
-
         void burnPlaylist      ( int projectType = -1 );
         void burnSelectedTracks( int projectType = -1 );
         int  currentTrackIndex();
@@ -113,8 +112,11 @@ class Playlist : private KListView, public EngineObserver
         void setFont( const QFont &f ) { KListView::setFont( f ); } //made public for convenience
         void unsetFont()               { KListView::unsetFont(); }
 
-        int visibleColumns() const;
-        int mapToLogicalColumn( int physical ); // Converts physical PlaylistItem column position to logical
+        PlaylistItem *firstChild() const { return (PlaylistItem*)KListView::firstChild(); }
+        PlaylistItem *lastItem()   const { return (PlaylistItem*)KListView::lastItem(); }
+
+        int  visibleColumns() const;
+        int  mapToLogicalColumn( int physical ); // Converts physical PlaylistItem column position to logical
         QString columnText( int c ) const { return KListView::columnText( c ); };
 
         /** Call this to prevent items being removed from the playlist, it is mostly for internal use only
@@ -206,9 +208,6 @@ class Playlist : private KListView, public EngineObserver
 
         PlaylistItem *currentTrack() const { return m_currentTrack; }
         PlaylistItem *restoreCurrentTrack();
-
-        PlaylistItem *firstChild() const { return (PlaylistItem*)KListView::firstChild(); }
-        PlaylistItem *lastItem()   const { return (PlaylistItem*)KListView::lastItem(); }
 
         void insertMediaInternal( const KURL::List&, PlaylistItem*, bool directPlay = false );
         bool isAdvancedQuery( const QString &query );
