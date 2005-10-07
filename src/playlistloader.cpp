@@ -239,7 +239,12 @@ UrlLoader::customEvent( QCustomEvent *e )
     #define e static_cast<TagsEvent*>(e)
     switch( e->type() ) {
     case 1000:
-        foreachType( BundleList, e->bundles ) {
+        foreachType( BundleList, e->bundles )
+        {
+            //Only add files that exist to the playlist
+            if( !(*it).exists() )
+                continue;
+
             PlaylistItem *item = new PlaylistItem( *it, m_markerListViewItem );
 
             if( m_playFirstUrl ) {
