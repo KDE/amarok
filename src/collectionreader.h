@@ -9,6 +9,10 @@
 #include "threadweaver.h"
 #include <qstringlist.h>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 class DbConnection;
 
 
@@ -48,7 +52,13 @@ protected:
     bool m_importPlaylists;
     bool m_incremental;
 
-    QStringList m_processedDirs;
+    
+    struct direntry {
+      dev_t dev;
+      ino_t ino;
+    };
+
+    QMemArray<direntry> m_processedDirs;       
 
     std::ofstream log;
 };

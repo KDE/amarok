@@ -23,7 +23,6 @@
 #include <sys/types.h> //stat
 #include <unistd.h>    //stat
 
-
 CollectionReader::CollectionReader( CollectionDB* parent, const QStringList& folders )
         : DependentJob( parent, "CollectionReader" )
         , m_db( CollectionDB::instance()->getStaticDbConnection() )
@@ -155,17 +154,10 @@ void
 CollectionReader::readDir( const QString& dir, QStringList& entries )
 {
     // linux specific, but this fits the 90% rule
-    if ( dir == "/dev" || dir == "/sys" || dir == "/proc" )
+    if ( dir.startsWith("/dev") || dir.startsWith("/sys") || dir.startsWith("/proc") )
         return;
 
     QCString dir8Bit = QFile::encodeName( dir );
-
-    if ( m_processedDirs.contains( dir ) ) {
-        debug() << "Skipping, already scanned: " << dir << endl;
-        return;
-    }
-
-    m_processedDirs << dir;
 
     struct stat statBuf;
     //update dir statistics for rescanning purposes
@@ -179,6 +171,17 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
         return;
     }
 
+    struct direntry de;
+    de.dev = statBuf.st_dev;
+    de.ino = statBuf.st_ino;
+
+    if ( ! S_ISDIR ( statBuf.st_mode) || m_processedDirs.find(de) != -1 ) {
+        debug() << "Skipping, already scanned: " << dir << endl;
+        return;
+    }
+
+    m_processedDirs.resize(m_processedDirs.size()+1);
+    m_processedDirs[m_processedDirs.size()-1] = de;
 
     DIR *d = opendir( dir8Bit );
     if( d == NULL ) {
@@ -188,7 +191,7 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
     }
 
     for( dirent *ent; (ent = readdir( d )) && !isAborted(); ) {
-        QCString entry = ent->d_name;
+        QCString entry (ent->d_name);
 
         if ( entry == "." || entry == ".." )
             continue;
@@ -198,27 +201,25 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
         if ( stat( entry, &statBuf ) != 0 )
             continue;
 
+        // loop protection
+        if ( ! ( S_ISDIR( statBuf.st_mode ) || S_ISREG( statBuf.st_mode ) ) )
+            continue;
+
         if ( S_ISDIR( statBuf.st_mode ) && m_recursively )
         {
             const QString file = QFile::decodeName( entry );
-            const QFileInfo info( file );
-            const QString readLink = info.readLink();
 
-            if ( readLink == "/" || info.isSymLink() && m_processedDirs.contains( readLink ) )
-                warning() << "Skipping symlink which points to: " << readLink << endl;
-
-            else if( !m_incremental || !CollectionDB::instance()->isDirInCollection( file ) )
+            if( !m_incremental || !CollectionDB::instance()->isDirInCollection( file ) )
                 // we MUST add a '/' after the dirname
                 readDir( file + '/', entries );
         }
 
         else if( S_ISREG( statBuf.st_mode ) )
         {
-            const QString file = QFile::decodeName( entry );
+            QString file = QFile::decodeName( entry );
 
             if ( m_importPlaylists ) {
-                QString ext = file.right( 4 ).lower();
-                if ( ext == ".m3u" || ext == ".pls" )
+                if ( file.endsWith(".m3u") || file.endsWith(".pls") )
                     QApplication::postEvent( PlaylistBrowser::instance(), new PlaylistFoundEvent( file ) );
             }
 
