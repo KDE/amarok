@@ -25,14 +25,26 @@
 
 CollectionReader::CollectionReader( CollectionDB* parent, const QStringList& folders )
         : DependentJob( parent, "CollectionReader" )
-        , m_db( CollectionDB::instance()->getStaticDbConnection() )
-        , m_folders( folders )
-        , m_recursively( AmarokConfig::scanRecursively() )
         , m_importPlaylists( AmarokConfig::importPlaylists() )
         , m_incremental( false )
+        , m_folders( folders )
+        , m_db( CollectionDB::instance()->getStaticDbConnection() )
+        , m_recursively( AmarokConfig::scanRecursively() )
         , log( QFile::encodeName( amaroK::saveLocation( QString::null ) + "collection_scan.log" ) )
 {
     setDescription( i18n( "Building Collection" ) );
+
+    // don't traverse /
+    struct stat statBuf;
+    if ( stat( "/", &statBuf ) == 0 ) {
+        struct direntry de;
+	memset(&de, 0, sizeof(struct direntry));
+	de.dev = statBuf.st_dev;
+	de.ino = statBuf.st_ino;
+
+	m_processedDirs.resize(m_processedDirs.size()+1);
+	m_processedDirs[m_processedDirs.size()-1] = de;
+    }
 }
 
 
@@ -110,7 +122,7 @@ CollectionReader::doJob()
     setProgressTotalSteps( 100 );
 
 
-    QStringList entries;
+    QStrList entries;
     foreach( m_folders ) {
         if( (*it).isEmpty() )
             //apparently somewhere empty strings get into the mix
@@ -125,7 +137,7 @@ CollectionReader::doJob()
         readDir( dir, entries );
     }
 
-    if ( !entries.empty() ) {
+    if ( !entries.isEmpty() ) {
         setStatus( i18n("Reading metadata") );
         setProgressTotalSteps( entries.count() );
         readTags( entries );
@@ -151,7 +163,7 @@ CollectionReader::doJob()
 
 
 void
-CollectionReader::readDir( const QString& dir, QStringList& entries )
+CollectionReader::readDir( const QString& dir, QStrList& entries )
 {
     // linux specific, but this fits the 90% rule
     if ( dir.startsWith("/dev") || dir.startsWith("/sys") || dir.startsWith("/proc") )
@@ -172,6 +184,7 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
     }
 
     struct direntry de;
+    memset(&de, 0, sizeof(struct direntry));
     de.dev = statBuf.st_dev;
     de.ino = statBuf.st_ino;
 
@@ -205,7 +218,7 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
         if ( ! ( S_ISDIR( statBuf.st_mode ) || S_ISREG( statBuf.st_mode ) ) )
             continue;
 
-        if ( S_ISDIR( statBuf.st_mode ) && m_recursively )
+        if ( S_ISDIR( statBuf.st_mode ) && m_recursively && entry.length() && entry[0] != '.' )
         {
             const QString file = QFile::decodeName( entry );
 
@@ -223,7 +236,7 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
                     QApplication::postEvent( PlaylistBrowser::instance(), new PlaylistFoundEvent( file ) );
             }
 
-            entries += file;
+            entries.append( entry );
         }
     }
 
@@ -231,7 +244,7 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
 }
 
 void
-CollectionReader::readTags( const QStringList& entries )
+CollectionReader::readTags( const QStrList& entries )
 {
     DEBUG_BLOCK
 
@@ -243,18 +256,18 @@ CollectionReader::readTags( const QStringList& entries )
     QValueList<CoverBundle> covers;
     QStringList images;
 
-    foreach( entries )
-    {
+    for(QStrListIterator it(entries); it.current(); ++it) {
+
         // Check if we shall abort the scan
         if( isAborted() )
            return;
 
         incrementProgress();
 
-        const QString path = *it;
+        const QString path = it.current();
         KURL url; url.setPath( path );
-        const QString ext = amaroK::extension( *it );
-        const QString dir = amaroK::directory( *it );
+        const QString ext = amaroK::extension( path );
+        const QString dir = amaroK::directory( path );
 
         // Append path to logfile
         log << path.local8Bit() << std::endl;
@@ -289,7 +302,7 @@ CollectionReader::readTags( const QStringList& entries )
 
         // Update Compilation-flag, when this is the last loop-run
         // or we're going to switch to another dir in the next run
-        if( it == entries.fromLast() || dir != amaroK::directory( *++QStringList::ConstIterator( it ) ) )
+        if( path == entries.getLast() || dir != amaroK::directory( QFile::decodeName(++QStrListIterator( it )) ) )
         {
             // we entered the next directory
             foreach( images )

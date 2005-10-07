@@ -41,22 +41,23 @@ public:
 
 protected:
     virtual bool doJob();
-
-    void readDir( const QString& dir, QStringList& entries );
-    void readTags( const QStringList& entries );
-
-    DbConnection* const m_db;
-    QStringList m_folders;
-
-    bool m_recursively;
+ 
     bool m_importPlaylists;
     bool m_incremental;
+    QStringList m_folders;
 
+private:
+    void readDir( const QString& dir, QStrList& entries );
+    void readTags( const QStrList& entries );
+
+    DbConnection* const m_db;
+
+    bool m_recursively;
     
     struct direntry {
       dev_t dev;
       ino_t ino;
-    };
+    } KDE_PACKED;
 
     QMemArray<direntry> m_processedDirs;       
 
