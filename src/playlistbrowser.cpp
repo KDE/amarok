@@ -2236,7 +2236,8 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 if( c ) name = i18n("Folder %1").arg(c);
                 if( tracker == item->firstChild() && !isCategory( tracker ) ) tracker = 0;
 
-                new PlaylistCategory( item, tracker, name, true );
+                PlaylistCategory *p = new PlaylistCategory( item, tracker, name, true );
+                p->startRename( 0 );
 
                 break;
 
