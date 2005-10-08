@@ -19,7 +19,7 @@
 #include <qpainter.h>          //paintCell()
 #include <qpixmap.h>           //paintCell()
 
-#include <kapplication.h>      //KDE_VERSION ifndefs.  Remove this once we reach a kde 4 dep
+#include <kdeversion.h>        //KDE_VERSION ifndefs.  Remove this once we reach a kde 4 dep
 #include <kiconloader.h>       //smallIcon
 #include <kio/job.h>           //podcast retrieval
 #include <kio/jobclasses.h>    //podcast retrieval
