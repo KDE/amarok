@@ -339,9 +339,9 @@ void PlaylistEntry::insertTracks( QListViewItem *after, KURL::List list, QMap<QS
 
     }
 
-    setModified( true );    //show a save icon to save changes
+//     setModified( true );    //show a save icon to save changes
+    PlaylistBrowser::instance()->savePlaylist( this );
 }
-
 
 void PlaylistEntry::removeTrack( QListViewItem *item )
 {
