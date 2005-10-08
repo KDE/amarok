@@ -158,7 +158,9 @@ class PlaylistEntry :  public QObject, public PlaylistBrowserEntry
         int         compare( QListViewItem* i, int col ) const; //reimpl.
         KURL::List  tracksURL();    //returns the list of tracks url
         void        insertTracks( QListViewItem *after, KURL::List list, QMap<QString,QString> map );
-        void        removeTrack( QListViewItem *item );
+        // isLast is used to avoid saving the playlist to disk every time a track is removed
+        // when removing a list of tracks from the playlist
+        void        removeTrack( QListViewItem *item, bool isLast = true );
 
         QPtrList<TrackItemInfo> trackList()       { return m_trackList; }    //returns the list of tracks information
         QPtrList<TrackItemInfo> droppedTracks()   { return tmp_droppedTracks; }

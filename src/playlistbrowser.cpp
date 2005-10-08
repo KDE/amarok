@@ -1471,6 +1471,7 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
     QPtrList<PlaylistCategory> playlistFoldersToDelete;
     QPtrList<PodcastChannel> podcastsToDelete;
     QPtrList<PlaylistCategory> podcastFoldersToDelete;
+    QPtrList<PlaylistTrackItem> tracksToDelete;
 
     bool playlistsChanged = false;
     bool streamsChanged = false;
@@ -1478,9 +1479,26 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
     bool dynamicsChanged = false;
     bool podcastsChanged = false;
 
+    QListViewItem* tmpItem;
+
     for( QListViewItem *item = selected.first(); item; item = selected.next() )
     {
         bool keepItem = false;
+        // Delete all playlist tracks if the item is
+        if( tmpItem && tmpItem != item->parent() && !tracksToDelete.isEmpty() )
+        {
+            foreachType( QPtrList<PlaylistTrackItem>, tracksToDelete )
+            {
+                bool isLast = false;
+                if( (*it) == tracksToDelete.getLast() )
+                    isLast = true;
+
+                static_cast<PlaylistEntry*>(tmpItem)->removeTrack( *it, isLast );
+            }
+            tracksToDelete.clear();
+        }
+
+
         if( isPlaylist( item ) )
         {
             keepItem = playlistsChanged = true;

@@ -339,11 +339,10 @@ void PlaylistEntry::insertTracks( QListViewItem *after, KURL::List list, QMap<QS
 
     }
 
-//     setModified( true );    //show a save icon to save changes
     PlaylistBrowser::instance()->savePlaylist( this );
 }
 
-void PlaylistEntry::removeTrack( QListViewItem *item )
+void PlaylistEntry::removeTrack( QListViewItem *item, bool isLast )
 {
     #define item static_cast<PlaylistTrackItem*>(item)
     //remove a track and update playlist stats
@@ -359,7 +358,8 @@ void PlaylistEntry::removeTrack( QListViewItem *item )
 
     #undef item
 
-    setModified( true );    //show a save icon to save changes
+    if( isLast )
+        PlaylistBrowser::instance()->savePlaylist( this );
 }
 
 
