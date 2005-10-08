@@ -43,6 +43,7 @@ Scrobbler* Scrobbler::instance()
 
 Scrobbler::Scrobbler()
     : EngineObserver( EngineController::instance() )
+    , m_similarArtistsJob( 0 )
     , m_validForSending( true )
     , m_submitter( new ScrobblerSubmitter() )
     , m_item( 0 )
@@ -111,7 +112,7 @@ void Scrobbler::similarArtists( const QString & artist )
         methodCall.appendChild( params );
         reqdoc.appendChild( methodCall );
 
-        QString xmlRequest = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + reqdoc.toString();
+        const QString xmlRequest = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + reqdoc.toString();
 
         QByteArray postData;
         QDataStream stream( postData, IO_WriteOnly );
@@ -120,13 +121,17 @@ void Scrobbler::similarArtists( const QString & artist )
         m_similarArtistsBuffer = QString::null;
         m_artist = artist;
 
-        KIO::TransferJob* job = KIO::http_post( "http://ws.audioscrobbler.com/xmlrpc", postData, false );
-        job->addMetaData( "content-type", "Content-Type: text/xml" );
+        // Make sure that we don't run multiple jobs at the same time, it could mess things up
+        if ( m_similarArtistsJob )
+            m_similarArtistsJob->kill();
 
-        connect( job, SIGNAL( result( KIO::Job* ) ),
-                this,   SLOT( audioScrobblerSimilarArtistsResult( KIO::Job* ) ) );
-        connect( job, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
-                this,   SLOT( audioScrobblerSimilarArtistsData( KIO::Job*, const QByteArray& ) ) );
+        m_similarArtistsJob = KIO::http_post( "http://ws.audioscrobbler.com/xmlrpc", postData, false );
+        m_similarArtistsJob->addMetaData( "content-type", "Content-Type: text/xml" );
+
+        connect( m_similarArtistsJob, SIGNAL( result( KIO::Job* ) ),
+                 this,                  SLOT( audioScrobblerSimilarArtistsResult( KIO::Job* ) ) );
+        connect( m_similarArtistsJob, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
+                 this,                  SLOT( audioScrobblerSimilarArtistsData( KIO::Job*, const QByteArray& ) ) );
     }
 }
 

@@ -48,6 +48,7 @@ class Scrobbler : public QObject, public EngineObserver
 
     private:
         QString m_similarArtistsBuffer;
+        KIO::Job* m_similarArtistsJob;
         QString m_artist;
         bool m_validForSending;
         ScrobblerSubmitter* m_submitter;
