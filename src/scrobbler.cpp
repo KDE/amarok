@@ -6,23 +6,25 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "debug.h"
-#include "playlist.h"
 #include "collectiondb.h"
 #include "config.h"
+#include "debug.h"
 #include "enginecontroller.h"
+#include "playlist.h"
 #include "scrobbler.h"
 #include "statusbar.h"
 
+#include <unistd.h>
+
+#include <qdatetime.h>
+
 #include <kapplication.h>
+#include <kio/job.h>
+#include <kio/jobclasses.h>
+#include <klocale.h>
 #include <kmdcodec.h>
 #include <kstandarddirs.h>
 #include <kurl.h>
-#include <kio/job.h>
-#include <kio/jobclasses.h>
-#include <qdatetime.h>
-#include <unistd.h>
-#include <klocale.h>
 
 //some setups require this
 #undef PROTOCOL_VERSION
@@ -39,19 +41,18 @@ Scrobbler* Scrobbler::instance()
 }
 
 
-Scrobbler::Scrobbler() :
-    EngineObserver( EngineController::instance() ),
-    m_validForSending( true ),
-    m_submitter( new ScrobblerSubmitter() ),
-    m_item( NULL )
+Scrobbler::Scrobbler()
+    : EngineObserver( EngineController::instance() )
+    , m_validForSending( true )
+    , m_submitter( new ScrobblerSubmitter() )
+    , m_item( 0 )
 {}
 
 
 Scrobbler::~Scrobbler()
 {
     delete m_submitter;
-    if ( m_item != NULL )
-        delete m_item;
+    delete m_item;
 }
 
 
@@ -211,7 +212,7 @@ void Scrobbler::engineNewMetaData( const MetaBundle& bundle, bool trackChanged )
         // TODO: In this case submit could be enabled if the artist or title
         // tag was missing initially and disabled submit
         debug() << "It's still the same track." << endl;
-        if ( m_item != NULL )
+        if ( m_item )
         {
             m_item->setArtist( bundle.artist() );
             m_item->setAlbum( bundle.album() );
@@ -228,8 +229,7 @@ void Scrobbler::engineNewMetaData( const MetaBundle& bundle, bool trackChanged )
     }
     else
     {
-        if ( m_item != NULL )
-            delete m_item;
+        delete m_item;
 
         // Songs with no artist or title data or a duration of less than
         // 30 seconds must not be submitted.
@@ -240,7 +240,7 @@ void Scrobbler::engineNewMetaData( const MetaBundle& bundle, bool trackChanged )
         }
         else
         {
-            m_item = NULL;
+            m_item = 0;
             m_validForSending = false;
             debug() << "Won't submit: No artist, no title, or less than 30 seconds." << endl;;
         }
@@ -268,7 +268,7 @@ void Scrobbler::engineTrackPositionChanged( long position, bool userSeek )
     if ( position > 240 * 1000 || position > 0.5 * m_item->length() * 1000 )
     {
         m_submitter->submitItem( m_item );
-        m_item = NULL;
+        m_item = 0;
         m_validForSending = false;
     }
 }
@@ -414,14 +414,14 @@ QString ScrobblerSubmitter::CLIENT_VERSION = "0.1";
 QString ScrobblerSubmitter::HANDSHAKE_URL = "http://post.audioscrobbler.com/?hs=true";
 
 
-ScrobblerSubmitter::ScrobblerSubmitter() :
-    m_username( NULL ),
-    m_password( NULL ),
-    m_submitUrl( NULL ),
-    m_challenge( NULL ),
-    m_scrobblerEnabled( false ),
-    m_prevSubmitTime( 0 ),
-    m_interval( 0 )
+ScrobblerSubmitter::ScrobblerSubmitter()
+    : m_username( 0 )
+    , m_password( 0 )
+    , m_submitUrl( 0 )
+    , m_challenge( 0 )
+    , m_scrobblerEnabled( false )
+    , m_prevSubmitTime( 0 )
+    , m_interval( 0 )
 {
     readSubmitQueue();
 }
@@ -874,8 +874,8 @@ SubmitItem* ScrobblerSubmitter::dequeueItem()
  */
 void ScrobblerSubmitter::enqueueJob( KIO::Job* job )
 {
-    SubmitItem *lastItem = NULL;
-    SubmitItem *item = NULL;
+    SubmitItem *lastItem = 0;
+    SubmitItem *item = 0;
     int counter = 0;
     while ( ( item = m_ongoingSubmits.take( job ) ) != 0 )
     {
@@ -895,13 +895,13 @@ void ScrobblerSubmitter::enqueueJob( KIO::Job* job )
  */
 void ScrobblerSubmitter::finishJob( KIO::Job* job )
 {
-    SubmitItem *firstItem = NULL;
-    SubmitItem *item = NULL;
+    SubmitItem *firstItem = 0;
+    SubmitItem *item = 0;
     int counter = 0;
     while ( ( item = m_ongoingSubmits.take( job ) ) != 0 )
     {
         counter++;
-        if ( firstItem == NULL )
+        if ( firstItem == 0 )
             firstItem = item;
         else
             delete item;
