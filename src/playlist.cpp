@@ -2090,13 +2090,11 @@ Playlist::eventFilter( QObject *o, QEvent *e )
     {
         PlaylistItem *item = (PlaylistItem*)itemAt( me->pos() );
 
-        if( !item )
-            return true;
-
         if( item == m_currentTrack )
+        {
             EngineController::instance()->playPause();
-
-        return true; //yum!
+            return true; //yum!
+        }
     }
 
     //allow the header to process this
