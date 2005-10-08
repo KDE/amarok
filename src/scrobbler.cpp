@@ -141,6 +141,8 @@ void Scrobbler::similarArtists( const QString & artist )
  */
 void Scrobbler::audioScrobblerSimilarArtistsResult( KIO::Job* job ) //SLOT
 {
+    m_similarArtistsJob = 0;
+
     if ( job->error() )
     {
         warning() << "KIO error! errno: " << job->error() << endl;
