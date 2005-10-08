@@ -19,6 +19,7 @@
 #include <qpainter.h>          //paintCell()
 #include <qpixmap.h>           //paintCell()
 
+#include <kapplication.h>      //KDE_VERSION ifndefs.  Remove this once we reach a kde 4 dep
 #include <kiconloader.h>       //smallIcon
 #include <kio/job.h>           //podcast retrieval
 #include <kio/jobclasses.h>    //podcast retrieval
@@ -529,7 +530,11 @@ void PlaylistEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, i
 
     QPainter pBuf( &buffer, true );
     // use alternate background
+#if KDE_VERSION < KDE_MAKE_VERSION(3,3,91)
     pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor() );
+#else
+    pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor(0) );
+#endif
 
     KListView *lv = (KListView *)listView();
 
@@ -759,7 +764,11 @@ void StreamEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, int
 
     QPainter pBuf( &buffer, true );
     // use alternate background
+#if KDE_VERSION < KDE_MAKE_VERSION(3,3,91)
     pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor() );
+#else
+    pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor(0) );
+#endif
 
     KListView *lv = (KListView *)listView();
 
