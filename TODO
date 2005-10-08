@@ -5,6 +5,10 @@ TODO-list for amaroK
 
 
 SHORT-TERM (URGENT):
+ <markey>  Fix SQLite threading problems by opening a new DB handle for each thread.
+           Currently there are sometimes bad locking issues, especially with the Retrieve
+           Similar Artists feature, which can lead to 100% CPU usage.
+
  <sebr>    Downloading multiple podcasts at once should throw them into a download queue.
 
  <sebr>    Reflect lyrics text to say "unfetchable" when there is a server timeout or whatnot.  Currently
