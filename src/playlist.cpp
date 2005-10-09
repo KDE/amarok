@@ -1266,7 +1266,7 @@ Playlist::setCurrentTrack( PlaylistItem *item )
     {
         if( !prev )
             //if nothing is current and then playback starts, we must show the currentTrack
-            ensureItemVisible( item ); //handles 0 gracefully
+            ensureItemCentered( item ); //handles 0 gracefully
 
         else {
             const int prevY = itemPos( prev );
