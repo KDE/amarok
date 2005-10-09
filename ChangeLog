@@ -5,6 +5,10 @@ amaroK ChangeLog
 
 VERSION 1.3.3:
   FEATURES:
+    * New DCOP call "contextbrowser: showHome".
+    * New DCOP call "contextbrowser: showCurrentTrack".
+    * New DCOP call "contextbrowser: showLyrics".
+    * New DCOP call "contextbrowser: showWiki".
     * Saving a playlist will cleverly pick a default name if possible.
     * Dragging an album cover into the playlist from the context browser
       will append the album.

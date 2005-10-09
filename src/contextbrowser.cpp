@@ -2379,7 +2379,7 @@ void ContextBrowser::showLyrics( const QString &hash )
     if ( currentPage() != m_lyricsTab )
     {
         blockSignals( true );
-        showPage( m_homePage->view() );
+        showPage( m_lyricsTab );
         blockSignals( false );
     }
 
@@ -2620,7 +2620,7 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
     if ( currentPage() != m_wikiTab )
     {
         blockSignals( true );
-        showPage( m_homePage->view() );
+        showPage( m_wikiTab );
         blockSignals( false );
     }
     if ( !m_dirtyWikiPage || m_wikiJob ) return;
