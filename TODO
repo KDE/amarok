@@ -65,8 +65,6 @@ SHORT-TERM (URGENT):
   <mxcl>   Playlist with files that exist that gst can't play + repeat-playlist = infinite loop - presumably
            load() and play() return true so the controller doesn't stop the playback
 
-  <muesli> Enabling "stop playing after current track" and enqueueing a song at the same time confuses amarok.
-
   <mxcl>   If you inline set the title tag to "", prettyTitle gets inserted as the title tag.
 
   <markey> When the KDE color scheme is changed while amaroK is running, all toolbar buttons (those with text)
