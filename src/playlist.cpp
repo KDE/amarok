@@ -2086,11 +2086,12 @@ Playlist::eventFilter( QObject *o, QEvent *e )
 
         return true; //yum!
     }
+    // Toggle play/pause if user middle-clicks on current track
     else if( o == viewport() && e->type() == QEvent::MouseButtonPress && me->button() == MidButton )
     {
         PlaylistItem *item = (PlaylistItem*)itemAt( me->pos() );
 
-        if( item == m_currentTrack )
+        if( item && item == m_currentTrack )
         {
             EngineController::instance()->playPause();
             return true; //yum!
