@@ -4,6 +4,7 @@
     begin                : Sat Oct 11 2003
     copyright            : (C) 2003 by Stanislav Karchebny
                            (C) 2005 Ian Monroe
+                           (C) 2005 Seb Ruiz
     email                : berkus@users.sf.net
  ***************************************************************************/
 
@@ -139,6 +140,20 @@ class DcopPlaylistBrowserHandler : public QObject, virtual public AmarokPlaylist
       virtual void addPodcast( const QString &url );
       virtual void scanPodcasts();
       virtual void addPlaylist( const QString &url );
+};
+
+class DcopContextBrowserHandler : public QObject, virtual public AmarokContextBrowserInterface
+{
+        Q_OBJECT
+
+   public:
+      DcopContextBrowserHandler();
+
+   public:
+      virtual void showHome();
+      virtual void showCurrentTrack();
+      virtual void showLyrics();
+      virtual void showWiki();
 };
 
 

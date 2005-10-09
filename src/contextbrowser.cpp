@@ -2370,7 +2370,7 @@ void ContextBrowser::showScanning()
 
 // THE FOLLOWING CODE IS COPYRIGHT BY
 // Christian Muehlhaeuser, Seb Ruiz
-// <chris at chris.de>, <seb100 at optusnet.com.au>
+// <chris at chris.de>, <me at sebruiz.net>
 // If I'm violating any copyright or such
 // please contact / sue me. Thanks.
 

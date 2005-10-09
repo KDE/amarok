@@ -82,6 +82,7 @@ App::App()
     new amaroK::DcopPlayerHandler(); // Must be created first
     new amaroK::DcopPlaylistHandler();
     new amaroK::DcopPlaylistBrowserHandler();
+    new amaroK::DcopContextBrowserHandler();
     new amaroK::DcopCollectionHandler();
     new amaroK::DcopScriptHandler();
 

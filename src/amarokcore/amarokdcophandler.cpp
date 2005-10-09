@@ -4,6 +4,7 @@
    begin                : Sat Oct 11 2003
    copyright            : (C) 2003 by Stanislav Karchebny
                           (C) 2005 Ian Monroe
+                          (C) 2005 Seb Ruiz
    email                : berkus@users.sf.net
 ***************************************************************************/
 
@@ -560,7 +561,7 @@ namespace amaroK
     }
 
 /////////////////////////////////////////////////////////////////////////////////////
-// class DcopPlaylistHandler
+// class DcopPlaylistBroserHandler
 /////////////////////////////////////////////////////////////////////////////////////
 
     DcopPlaylistBrowserHandler::DcopPlaylistBrowserHandler()
@@ -581,6 +582,35 @@ namespace amaroK
     void DcopPlaylistBrowserHandler::addPlaylist( const QString &url )
     {
         PlaylistBrowser::instance()->addPlaylist( url );
+    }
+
+/////////////////////////////////////////////////////////////////////////////////////
+// class DcopPlaylistHandler
+/////////////////////////////////////////////////////////////////////////////////////
+
+    DcopContextBrowserHandler::DcopContextBrowserHandler()
+        : DCOPObject( "contextbrowser" )
+        , QObject( kapp )
+    {}
+
+    void DcopContextBrowserHandler::showHome()
+    {
+        ContextBrowser::instance()->showHome();
+    }
+
+    void DcopContextBrowserHandler::showCurrentTrack()
+    {
+        ContextBrowser::instance()->showCurrentTrack();
+    }
+
+    void DcopContextBrowserHandler::showLyrics()
+    {
+        ContextBrowser::instance()->showLyrics();
+    }
+
+    void DcopContextBrowserHandler::showWiki()
+    {
+        ContextBrowser::instance()->showWikipedia();
     }
 
 /////////////////////////////////////////////////////////////////////////////////////

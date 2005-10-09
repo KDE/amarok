@@ -7,6 +7,7 @@
 #ifndef AMAROK_CONTEXTBROWSER_H
 #define AMAROK_CONTEXTBROWSER_H
 
+#include "amarokdcophandler.h"
 #include "engineobserver.h"
 #include <kurl.h>
 #include <ktabwidget.h>
@@ -32,6 +33,7 @@ class ContextBrowser : public KTabWidget, public EngineObserver
     Q_OBJECT
 
         friend class CurrentTrackJob;
+        friend class amaroK::DcopContextBrowserHandler;
 
         static ContextBrowser *s_instance;
 
