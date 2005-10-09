@@ -170,6 +170,8 @@ QueueList::moveSelectedUp() // SLOT
 
         moveItem( item, 0, after );
     }
+
+    ensureItemVisible( selected.first() );
 }
 
 void
@@ -186,6 +188,8 @@ QueueList::moveSelectedDown() // SLOT
 
         moveItem( item, 0, after );
     }
+
+    ensureItemVisible( list.last() );
 }
 
 void
