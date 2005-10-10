@@ -45,7 +45,6 @@ class PlaylistBrowser : public QVBox
         enum AddMode  { PLAYLIST, STREAM, SMARTPLAYLIST, PODCAST };
         enum SaveMode { CURRENT, DYNAMIC };
 
-        PlaylistBrowser( const char* name=0 );
         ~PlaylistBrowser();
 
         void addStream( QListViewItem *parent = 0 );
@@ -72,7 +71,9 @@ class PlaylistBrowser : public QVBox
 
         ViewMode viewMode() const { return m_viewMode; }
 
-        static PlaylistBrowser *instance() { return s_instance; }
+        static PlaylistBrowser *instance() { 
+        if(!s_instance)  s_instance = new PlaylistBrowser("PlaylistBrowser");
+        return s_instance; }
 
     signals:
         void selectionChanged();
@@ -98,6 +99,7 @@ class PlaylistBrowser : public QVBox
         void showContextMenu( QListViewItem*, const QPoint&, int );
 
     private:
+        PlaylistBrowser( const char* name=0 );
         void polish();
 
         bool m_polished;

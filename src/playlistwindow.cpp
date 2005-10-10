@@ -340,9 +340,13 @@ PlaylistWindow::init()
             Debug::Block block( name ); \
             m_browsers->addBrowser( new Type( name ), text, icon ); }
 
+        #define addInstBrowserMacro( Type, name, text, icon ) { \
+            Debug::Block block( name ); \
+            m_browsers->addBrowser( Type::instance(), text, icon ); }
+
         addBrowserMacro( ContextBrowser, "ContextBrowser", i18n( "Context" ), "info" )
         addBrowserMacro( CollectionBrowser, "CollectionBrowser", i18n( "Collection" ), "collection" )
-        addBrowserMacro( PlaylistBrowser, "PlaylistBrowser", i18n( "Playlists" ), "player_playlist_2" )
+        addInstBrowserMacro( PlaylistBrowser, "PlaylistBrowser", i18n( "Playlists" ), "player_playlist_2" )
 
         if( MediaBrowser::isAvailable() )
             addBrowserMacro( MediaBrowser, "MediaBrowser", i18n( "Media Device" ), "usbpendrive_unmount" )
@@ -350,6 +354,7 @@ PlaylistWindow::init()
         addBrowserMacro( FileBrowser, "FileBrowser", i18n( "Files" ), "folder" )
 
         #undef addBrowserMacro
+        #undef addInstBrowserMacro
     }
     //</Browsers>
 
