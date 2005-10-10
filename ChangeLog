@@ -9,6 +9,7 @@ VERSION 1.3.4:
   CHANGES:
 
   BUGFIXES:
+    * Podcast settings failed to save the save location. (BR 114128)
 
 
 VERSION 1.3.3:
