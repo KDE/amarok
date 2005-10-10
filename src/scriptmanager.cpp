@@ -69,7 +69,7 @@ namespace amaroK {
 // class AmaroKProcIO
 ////////////////////////////////////////////////////////////////////////////////
 /** Due to xine-lib, we have to make KProcess close all fds, otherwise we get "device is busy" messages
-  * Used by AmaroKProcIO and AmaroKProcess, exploiting commSetupDoneC(), a virtual method that 
+  * Used by AmaroKProcIO and AmaroKProcess, exploiting commSetupDoneC(), a virtual method that
   * happens to be called in the forked process
   * See bug #103750 for more information.
   */
@@ -491,6 +491,10 @@ ScriptManager::slotStopScript()
 
     QListViewItem* const li = m_gui->listView->currentItem();
     const QString name = li->text( 0 );
+
+    // Just a sanity check
+    if ( m_scripts.find( name ) == m_scripts.end() )
+        return;
 
     // Kill script process (with SIGTERM)
     m_scripts[name].process->kill();
