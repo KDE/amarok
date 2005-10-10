@@ -70,6 +70,7 @@ public slots:
     // forceNext make we go to next track even if Repeat Track is on
     //NOTE If the track ended normally, call next(false) !
     void next( const bool forceNext = true );
+    void trackFinished() { next(false); };
     void play();
     void play( const MetaBundle& );
     void pause();
@@ -101,7 +102,7 @@ private slots:
     void slotTrackEnded();
     void slotStateChanged( Engine::State );
     void streamError();
-	void slotSigError();
+    void slotSigError();
 protected:
     EngineController();
    ~EngineController();

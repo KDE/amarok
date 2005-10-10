@@ -597,7 +597,7 @@ void EngineController::slotMainTimer() //SLOT
          m_bundle.length()*1000 - position < (uint) AmarokConfig::crossfadeLength() )
     {
         debug() << "Crossfading to next track...\n";
-        next(false);
+        trackFinished();
     }
 }
 
@@ -608,12 +608,12 @@ void EngineController::slotTrackEnded() //SLOT
         //FIXME not perfect
         if ( !m_isTiming )
         {
-            QTimer::singleShot( AmarokConfig::trackDelayLength(), this, SLOT(next()) );
+            QTimer::singleShot( AmarokConfig::trackDelayLength(), this, SLOT(trackFinished()) );
             m_isTiming = true;
         }
 
     }
-    else next(false);
+    else trackFinished();
 }
 
 void EngineController::slotStateChanged( Engine::State newState ) //SLOT
