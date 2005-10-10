@@ -289,6 +289,8 @@ class Playlist : private KListView, public EngineObserver
         bool          m_undoDirt;           //Make sure we dont repopulate the playlist when dynamic mode and undo()
 
         QListViewItem *m_itemToReallyCenter;
+        QListViewItem *m_renameItem;
+        int            m_renameColumn;
 
         QMap<QString, QStringList> m_customSubmenuItem;
         QMap<int, QString>         m_customIdItem;

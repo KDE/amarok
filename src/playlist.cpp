@@ -199,6 +199,7 @@ Playlist::Playlist( QWidget *parent )
         , m_queueDirt( false )
         , m_undoDirt( false )
         , m_itemToReallyCenter( 0 )
+        , m_renameItem( 0 )
         , m_lockStack( 0 )
         , m_columnFraction( 14, 0 )
 {
@@ -314,6 +315,8 @@ Playlist::Playlist( QWidget *parent )
     connect( header(), SIGNAL(sizeChange( int, int, int )), SLOT(columnResizeEvent( int, int, int )) );
 
     header()->installEventFilter( this );
+    renameLineEdit()->installEventFilter( this );
+    setTabOrderedRenaming( false );
 
     m_filtertimer = new QTimer( this );
     connect( m_filtertimer, SIGNAL(timeout()), this, SLOT(setDelayedFilter()) );
@@ -1624,6 +1627,9 @@ Playlist::rename( QListViewItem *item, int column ) //SLOT
     m_editOldTag = static_cast<PlaylistItem *>(item)->exactText( column );
 
     KListView::rename( item, column );
+
+    m_renameItem = item;
+    m_renameColumn = column;
 }
 
 void
@@ -2013,6 +2019,7 @@ bool
 Playlist::eventFilter( QObject *o, QEvent *e )
 {
     #define me static_cast<QMouseEvent*>(e)
+    #define ke static_cast<QKeyEvent*>(e)
 
     if( o == header() && e->type() == QEvent::MouseButtonPress && me->button() == Qt::RightButton )
     {
@@ -2098,10 +2105,100 @@ Playlist::eventFilter( QObject *o, QEvent *e )
         }
     }
 
+    else if( o == renameLineEdit() && e->type() == QEvent::KeyPress && m_renameItem )
+    {
+        int visibleCols = visibleColumns(), physicalColumn = visibleCols - 1;
+        while( mapToLogicalColumn( physicalColumn ) != m_renameColumn && physicalColumn >= 0 )
+          physicalColumn--;
+        if( physicalColumn < 0 )
+        {
+            warning() << "the column counting code is wrong! tell illissius." << endl;
+            return false;
+        }
+
+        int column = m_renameColumn;
+        QListViewItem *item = m_renameItem;
+
+        if( ke->state() & Qt::AltButton )
+        {
+            if( ke->key() == Qt::Key_Up && m_visCount > 1 )
+                if( !( item = m_renameItem->itemAbove() ) )
+                {
+                    item = *MyIt( this, MyIt::Visible );
+                    while( item->itemBelow() )
+                        item = item->itemBelow();
+                }
+            if( ke->key() == Qt::Key_Down && m_visCount > 1 )
+                if( !( item = m_renameItem->itemBelow() ) )
+                    item = *MyIt( this, MyIt::Visible );
+            if( ke->key() == Qt::Key_Left )
+                do
+                {
+                    if( physicalColumn == 0 )
+                        physicalColumn = visibleCols - 1;
+                    else
+                        physicalColumn--;
+                    column = mapToLogicalColumn( physicalColumn );
+                } while( !isRenameable( column ) );
+            if( ke->key() == Qt::Key_Right )
+                do
+                {
+                    if( physicalColumn == visibleCols - 1 )
+                        physicalColumn = 0;
+                    else
+                        physicalColumn++;
+                    column = mapToLogicalColumn( physicalColumn );
+                } while( !isRenameable( column ) );
+        }
+
+        if( ke->key() == Qt::Key_Tab )
+            do
+            {
+                if( physicalColumn == visibleCols - 1 )
+                {
+                    if( !( item = m_renameItem->itemBelow() ) )
+                        item = *MyIt( this, MyIt::Visible );
+                    physicalColumn = 0;
+                }
+                else
+                    physicalColumn++;
+                column = mapToLogicalColumn( physicalColumn );
+            } while( !isRenameable( column ) );
+        if( ke->key() == Qt::Key_Backtab )
+            do
+            {
+                if( physicalColumn == 0 )
+                {
+                    if( !( item = m_renameItem->itemAbove() ) )
+                    {
+                        item = *MyIt( this, MyIt::Visible );
+                        while( item->itemBelow() )
+                            item = item->itemBelow();
+                    }
+                    physicalColumn = visibleCols - 1;
+                }
+                else
+                    physicalColumn--;
+                column = mapToLogicalColumn( physicalColumn );
+            } while( !isRenameable( column ) );
+
+        if( item != m_renameItem || column != m_renameColumn )
+        {
+            rename( item, column );
+            return true;
+        }
+    }
+
+    else if( o == renameLineEdit() && ( e->type() == QEvent::Hide || e->type() == QEvent::Close ) )
+    {
+        m_renameItem = 0;
+    }
+
     //allow the header to process this
     return KListView::eventFilter( o, e );
 
     #undef me
+    #undef ke
 }
 
 void
