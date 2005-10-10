@@ -7,6 +7,8 @@ VERSION 1.3.4:
   FEATURES:
 
   CHANGES:
+    * After filtering the collection browser, if only a single item is left
+      visible, it will automatically be expanded.
     * Added items for the Equalizer, Visualizations, and Queue Manager to
       the context menus of the volume slider, analyzer, and statusbar queue
       icon, respectively.

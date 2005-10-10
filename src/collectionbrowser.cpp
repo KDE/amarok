@@ -587,6 +587,15 @@ CollectionView::renderView()  //SLOT
                 item->setPixmap( 0, pixmap );
             }
         }
+
+        int count = childCount();
+        QListViewItem *item = firstChild();
+        while( count == 1 && item && item->isExpandable() )
+        {
+            item->setOpen( true );
+            count = item->childCount();
+            item = item->firstChild();
+        }
     }
     restoreView();
 }
