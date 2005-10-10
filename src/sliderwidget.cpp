@@ -18,6 +18,8 @@
  ***************************************************************************/
 
 #include "amarok.h"
+#include "app.h"
+#include "enginecontroller.h"
 #include "sliderwidget.h"
 
 #include <qapplication.h>
@@ -28,6 +30,7 @@
 #include <qsize.h>
 #include <qtimer.h>
 
+#include <kiconloader.h>
 #include <klocale.h>
 #include <kimageeffect.h>
 #include <kpixmapeffect.h>
@@ -290,6 +293,12 @@ amaroK::VolumeSlider::mousePressEvent( QMouseEvent *e )
     {
         KPopupMenu menu;
         menu.insertTitle( i18n( "Volume" ) );
+        if( EngineController::hasEngineProperty( "HasEqualizer" ) )
+        {
+            menu.insertItem( SmallIconSet( "equalizer"), i18n("&Equalizer"),
+                kapp, SLOT( slotConfigEqualizer() ) );
+            menu.insertSeparator();
+        }
         menu.insertItem(  i18n(   "100%" ), 100 );
         menu.insertItem(  i18n(    "80%" ),  80 );
         menu.insertItem(  i18n(    "60%" ),  60 );

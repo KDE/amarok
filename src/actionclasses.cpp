@@ -301,6 +301,12 @@ AnalyzerContainer::mousePressEvent( QMouseEvent *e)
         AmarokConfig::setCurrentPlaylistAnalyzer( AmarokConfig::currentPlaylistAnalyzer() + 1 );
         changeAnalyzer();
     }
+    else if( e->button() == Qt::RightButton ) {
+        KPopupMenu menu;
+        menu.insertItem( SmallIconSet( "visualizations" ), i18n("&Visualizations"), Menu::ID_SHOW_VIS_SELECTOR );
+        if( menu.exec( mapToGlobal( e->pos() ) ) == Menu::ID_SHOW_VIS_SELECTOR )
+            Menu::instance()->slotActivated( Menu::ID_SHOW_VIS_SELECTOR );
+    }
 }
 
 

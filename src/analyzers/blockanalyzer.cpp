@@ -5,11 +5,13 @@
 
 #define DEBUG_PREFIX "BlockAnalyzer"
 
+#include "actionclasses.h"   //mousePressEvent
 #include "blockanalyzer.h"
 #include <cmath>
 #include "debug.h"
 #include <kconfig.h>
 #include <kglobalsettings.h> //paletteChange()
+#include <kiconloader.h>     //mousePressEvent
 #include <klocale.h>         //mousePressEvent
 #include <kpopupmenu.h>      //mousePressEvent
 #include <qevent.h>          //mousePressEvent
@@ -435,9 +437,15 @@ BlockAnalyzer::mousePressEvent( QMouseEvent *e )
             menu.setItemChecked( v, v == timeout() );
         }
 
+        menu.insertSeparator();
+        menu.insertItem( SmallIconSet( "visualizations" ), i18n("&Visualizations"),
+            amaroK::Menu::ID_SHOW_VIS_SELECTOR );
+
         const int id = menu.exec( e->globalPos() );
 
-        if( id != -1 ) {
+        if( id == amaroK::Menu::ID_SHOW_VIS_SELECTOR )
+            amaroK::Menu::instance()->slotActivated( amaroK::Menu::ID_SHOW_VIS_SELECTOR );
+        else if( id != -1 ) {
             changeTimeout( id );
             determineStep();
         }
