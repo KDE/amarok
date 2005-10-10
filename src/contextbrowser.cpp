@@ -2505,9 +2505,9 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
                         + i18n( "Error" ) +
                         "</span>"
                     "</div>"
-                    "<div id='lyrics_box-body' class='box-body'>"
+                    "<div id='lyrics_box-body' class='box-body'><p>"
                         + i18n( "Lyrics could not be retrieved because the server was not reachable." ) +
-                    "</div>"
+                    "</p></div>"
                 "</div>"
                 "</html>"
                         );
@@ -2517,7 +2517,7 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
         m_lyricJob = NULL;
         saveHtmlData(); // Send html code to file
 
-        kdWarning() << "[LyricsFetcher] KIO error! errno: " << job->error() << endl;
+        warning() << "[LyricsFetcher] KIO error! errno: " << job->error() << endl;
         return;
     }
     if ( job != m_lyricJob )
@@ -2823,8 +2823,31 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
 {
     DEBUG_BLOCK
 
-    if ( !job->error() == 0 ) {
-        kdWarning() << "[WikiFetcher] KIO error! errno: " << job->error() << endl;
+    if ( !job->error() == 0 )
+    {
+        m_wikiPage->begin();
+        m_HTMLSource="";
+        m_wikiPage->setUserStyleSheet( m_styleSheet );
+
+    m_HTMLSource.append(
+            "<div id='wiki_box' class='box'>"
+                "<div id='wiki_box-header' class='box-header'>"
+                    "<span id='wiki_box-header-title' class='box-header-title'>"
+                    + i18n( "Error" ) +
+                    "</span>"
+                "</div>"
+                "<div id='wiki_box-body' class='box-body'><p>"
+                    + i18n( "Artist information could not be retrieved because the server was not reachable." ) +
+                "</p></div>"
+            "</div>"
+                        );
+        m_wikiPage->write( m_HTMLSource );
+        m_wikiPage->end();
+        m_dirtyWikiPage = false;
+        m_wikiPage = NULL;
+        saveHtmlData(); // Send html code to file
+
+        warning() << "[WikiFetcher] KIO error! errno: " << job->error() << endl;
         return;
     }
     if ( job != m_wikiJob )
