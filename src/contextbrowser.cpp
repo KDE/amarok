@@ -2491,7 +2491,32 @@ void ContextBrowser::showLyrics( const QString &hash )
 void
 ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
 {
-    if ( !job->error() == 0 ) {
+    if ( !job->error() == 0 )
+    {
+        m_lyricsPage->begin();
+        m_HTMLSource="";
+        m_lyricsPage->setUserStyleSheet( m_styleSheet );
+
+        m_HTMLSource.append(
+                "<html>"
+                "<div id='lyrics_box' class='box'>"
+                    "<div id='lyrics_box-header' class='box-header'>"
+                        "<span id='lyrics_box-header-title' class='box-header-title'>"
+                        + i18n( "Error" ) +
+                        "</span>"
+                    "</div>"
+                    "<div id='lyrics_box-body' class='box-body'>"
+                        + i18n( "Lyrics could not be retrieved because the server was not reachable." ) +
+                    "</div>"
+                "</div>"
+                "</html>"
+                        );
+        m_lyricsPage->write( m_HTMLSource );
+        m_lyricsPage->end();
+        m_dirtyLyricsPage = false;
+        m_lyricJob = NULL;
+        saveHtmlData(); // Send html code to file
+
         kdWarning() << "[LyricsFetcher] KIO error! errno: " << job->error() << endl;
         return;
     }
