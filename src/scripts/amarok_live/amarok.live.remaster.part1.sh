@@ -31,15 +31,13 @@ cleanup () {
 
 if [ `/usr/bin/whoami` = 'root' ]; then
 
-dcop --all-users amarok playlist popupMessage "Welcome to the amaroK live cd remaster utility. The first step is to select the iso image"
-
-iso=`kdialog --title "Choose the amaroK Live ISO" --getopenfilename /home "*.iso"`
+iso=$2
 
 if [ $iso = 0 ] ; then
     exit
 fi
 
-WORK=`kdialog --title "Choose working directory" --getexistingdirectory .`
+WORK=$1
 
 if [ $WORK = 0 ] ; then
     exit
@@ -86,9 +84,7 @@ while [ "$redo" = "0" ]; do
     fi
 done
 
-echo $WORK > /tmp/amarok.script
-
-# Mount the iso if not already mounted
+#Mount the iso if not already mounted
 if [ ! -d "$DATADIR" ]; then
    DATADIR=$WORK/livecd_data$$
    mkdir -p "$DATADIR"

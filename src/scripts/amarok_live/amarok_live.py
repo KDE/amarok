@@ -35,39 +35,134 @@ except:
 debug_prefix = "LiveCD Remastering"
 
 
-class ConfigDialog:
+class ConfigDialog ( QDialog ):
     """ Configuration widget """
 
     def __init__( self ):
+        QDialog.__init__( self )
+        self.setWFlags( Qt.WDestructiveClose )
+        self.setCaption("amaroK Live! Configuration")
+
+        self.lay = QGridLayout( self, 3, 2)
+
+        self.lay.addColSpacing( 0, 300 )
+
+        self.isopath = QLineEdit( self )
+        self.isopath.setText( "Path to amaroK Live! iso" )
+        self.tmppath = QLineEdit( self )
+        self.tmppath.setText( "Temporary directory used, 2.5gb free needed" )
+
+        self.lay.addWidget( self.isopath, 0, 0 )
+        self.lay.addWidget( self.tmppath, 1, 0 )
+
+        self.isobutton = QPushButton( self )
+        self.isobutton.setText("Browse..." )
+        self.tmpbutton = QPushButton( self )
+        self.tmpbutton.setText("Browse..." )
+
+        self.cancel = QPushButton( self )
+        self.cancel.setText( "Cancel" )
+        self.ok = QPushButton( self )
+        self.ok.setText( "Ok" )
+
+        self.lay.addWidget( self.isobutton, 0, 1 )
+        self.lay.addWidget( self.tmpbutton, 1, 1 )
+        self.lay.addWidget( self.cancel, 2, 1 )
+        self.lay.addWidget( self.ok, 2, 0)
+
+        self.connect( self.isobutton, SIGNAL( "clicked()" ), self.browseISO )
+        self.connect( self.tmpbutton, SIGNAL( "clicked()" ), self.browsePath )
+
+        self.connect( self.ok, SIGNAL( "clicked()" ), self.save )
+        self.connect( self.ok, SIGNAL( "clicked()" ), self.unpack )
+#        self.connect( self.ok, SIGNAL( "clicked()" ), self.destroy )
+        self.connect( self.cancel, SIGNAL( "clicked()" ), self, SLOT("reject()") )
+
+        self.adjustSize()
+
         path = None
         try:
             config = ConfigParser.ConfigParser()
             config.read( "remasterrc" )
             path = config.get( "General", "path" )
+            iso = config.get( "General", "iso")
+               
+            if not path == "": self.tmppath.setText(path)
+            if not iso == "": self.isopath.setText(iso)
         except:
             pass
 
 
 
-    def save( self, path ):
+    def save( self ):
         """ Saves configuration to file """
         self.file = file( "remasterrc", 'w' )
         self.config = ConfigParser.ConfigParser()
         self.config.add_section( "General" )
-        self.config.set( "General", "path", path )
+        self.config.set( "General", "path", self.tmppath.text() )
+        self.config.set( "General", "iso", self.isopath.text() )
         self.config.write( self.file )
         self.file.close()
+
+        self.accept()
+
+    def clear():
+
+        self.file = file( "remasterrc", 'w' )
+        self.config = ConfigParser.ConfigParser()
+        self.config.add_section( "General" )
+        self.config.set( "General", "path", ""  )
+        self.config.set( "General", "iso", "" )
+        self.config.write( self.file )
+        self.file.close()
+
+    def browseISO( self ):
+
+        path = QFileDialog.getOpenFileName( "/home",
+                                                 "CD Images (*.iso)",
+                                                 self,
+                                                 "iso choose dialogr",
+                                                 "Choose ISO to remaster")
+        self.isopath.setText( path )
+
+    def browsePath( self ):
+       
+        tmp = QFileDialog.getExistingDirectory( "/home",
+                                                self,
+                                                "get tmp dir",
+                                                "Choose working directory",
+                                                1)
+        self.tmppath.setText( tmp )
+
+
+    def unpack( self ):
+
+        # now the fun part, we run part 1
+        fd = os.popen("kde-config --prefix", "r")
+        kdedir = fd.readline()
+        kdedir = kdedir.strip()
+        scriptdir = kdedir + "/share/apps/amarok/scripts/amarok_live"
+        fd.close()
+
+        path, iso = self.readConfig()
+        os.system("kdesu -t sh %s/amarok.live.remaster.part1.sh %s %s" % (scriptdir, path, iso))
+        #os.wait()
+        print "got path: %s" % path
+
+
 
 
     def readConfig( self ) :
         path = ""
+        iso = ""
         try:
             config = ConfigParser.ConfigParser()
             config.read("remasterrc")
             path = config.get("General", "path")
+            iso = config.get("General", "iso")
         except:
             pass
-        return path
+        return (path, iso)
 
 
 
@@ -165,29 +260,13 @@ class Remasterer( QApplication ):
         debug( "configuration" )
 
         self.dia = ConfigDialog()
-        #self.dia.show()
+        self.dia.show()
         #self.connect( self.dia, SIGNAL( "destroyed()" ), self.readSettings )
-
-        # now the fun part, we run part 1
-        fd = os.popen("kde-config --prefix", "r")
-        kdedir = fd.readline()
-        kdedir = kdedir.strip()
-        scriptdir = kdedir + "/share/apps/amarok/scripts/amarok_live"
-        fd.close()
-
-        os.system("kdesu -t sh %s/amarok.live.remaster.part1.sh" % scriptdir)
-        #os.wait()
-        fd = open("/tmp/amarok.script", 'r')
-        path = fd.readline()
-        print "got path: %s" % path
-        fd.close()
-
-        self.dia.save(path)
 
     def clearCD( self ):
         
         self.dia = ConfigDialog()
-        path = self.dia.readConfig()
+        path, iso = self.dia.readConfig()
 
         os.system("rm -rf %s/amarok.live/music/* %s/amarok.live/playlist/* %s/amarok.live/home/amarok/.kde/share/apps/amarok/current.xml" % (path, path, path))
 
@@ -209,7 +288,7 @@ class Remasterer( QApplication ):
     def copyPlaylist( self ):
 
         self.dia = ConfigDialog()
-        path = self.dia.readConfig()
+        path, iso = self.dia.readConfig()
         if path == "":
             os.system("dcop amarok playlist popupMessage 'Please run configure first.'")
             return
@@ -267,7 +346,7 @@ class Remasterer( QApplication ):
         debug( event )
         self.dia = ConfigDialog()
 
-        path = self.dia.readConfig()
+        path,iso = self.dia.readConfig()
         if path == "":
             os.system("kdialog --sorry 'You have not specified where the amaroK live iso is. Please click configure and do so first.'")
         else:
@@ -288,7 +367,7 @@ class Remasterer( QApplication ):
     def createCD( self ):
         
         self.dia = ConfigDialog()
-        path = self.dia.readConfig()
+        path,iso = self.dia.readConfig()
         if path == "":
             os.system("kdialog --sorry 'You have not configured amaroK live! Please run configure.")
 
@@ -304,7 +383,7 @@ class Remasterer( QApplication ):
         y = fd.readline()
         y = y.strip()
         if y == "end": # user said no more, clear path
-            self.dia.save("")
+            self.dia.clear()
         fd.close()
 
 
@@ -333,10 +412,6 @@ def main():
 
     # not sure if it works or not...  playing it safe
     dia = ConfigDialog()
-    if dia.readConfig() == "":
-        #app.configure()
-        os.system("dcop amarok playlist popupMessage 'Please click configure to begin.'")
-
 
     app.exec_loop()
 

@@ -25,7 +25,7 @@ if [ `/usr/bin/whoami` = 'root' ]; then
 
 	WORK=$1
 
-	dcop --all-users amarok playlist shortStatusMessage "The music that you added is now being squashed and added to the livecd. Please be VERY patient as this step can take a LONG time."
+	dcop --all-users amarok playlist popupMessage "The music that you added is now being squashed and added to the livecd. Please be VERY patient as this step can take a LONG time."
 	
 	which mksquashfs
     if [[ $? == 0 ]]; then
@@ -68,8 +68,8 @@ if [ `/usr/bin/whoami` = 'root' ]; then
     kdialog --title "amaroK livecd remaster" --yesno "Do you want to make more cds later? If so, please click yes, and you can simply add more songs. If you are done, click no and the temporary files will be erased. You will need to rerun configure to make another cd."
 
 	if [[ $? = 1 ]]; then
-		rm -rf $WORK/mklivecd/
-		rm -rf $WORK/amarok.live/
+		rm -rf $WORK/mklivecd
+		rm -rf $WORK/amarok.*
         echo "end" > /tmp/amarok.script
 	fi
 
