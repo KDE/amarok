@@ -5,6 +5,13 @@ TODO-list for amaroK
 
 
 SHORT-TERM (URGENT):
+ <sebr>    Dragging items from the collection browser -> playlist browser and making a new playlist uses
+           the url and not the meta data.
+           
+ <sebr>    Multiple job statusbar widget is broken.
+ 
+ <sebr>    Use a download queue when downloading lots of podcasts simulateously.
+ 
  <markey>  Fix SQLite threading problems by opening a new DB handle for each thread.
            Currently there are sometimes bad locking issues, especially with the Retrieve
            Similar Artists feature, which can lead to 100% CPU usage.
