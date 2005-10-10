@@ -1060,7 +1060,7 @@ PodcastChannel::configure()
     if( settings->exec() == QDialog::Accepted )
     {
         m_url        = KURL::fromPathOrURL( settings->url() );
-        m_saveLocation.setPath( settings->saveLocation() );
+        save         = settings->saveLocation();
         m_autoScan   = settings->hasAutoScan();
         m_interval   = settings->interval();
         m_mediaFetch = settings->fetch();
@@ -1126,7 +1126,6 @@ PodcastChannel::configure()
 
         if( downloadMedia )
         {
-            debug() << "Downloading podcast media!" << endl;
             PodcastItem *item = static_cast<PodcastItem*>( firstChild() );
             while( item )
             {
