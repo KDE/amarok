@@ -214,7 +214,10 @@ Playlist::Playlist( QWidget *parent )
     setShowSortIndicator( true );
     setDropVisualizer( false );   //we handle the drawing for ourselves
     setDropVisualizerWidth( 3 );
-    setItemsRenameable( true );
+
+    // FIXME: This doesn't work, and steals focus when an item is clicked twice.
+    //setItemsRenameable( true );
+
     setAcceptDrops( true );
     setSelectionMode( QListView::Extended );
     setAllColumnsShowFocus( true );
