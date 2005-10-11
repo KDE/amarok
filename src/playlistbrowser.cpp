@@ -2325,6 +2325,9 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 PlaylistBrowserView::PlaylistBrowserView( QWidget *parent, const char *name )
     : KListView( parent, name )
     , m_marker( 0 )
+    , m_animationTimer( new QTimer() )
+    , m_loading1( new QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
+    , m_loading2( new QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
 {
     addColumn( i18n("Playlists") );
 
@@ -2334,21 +2337,16 @@ PlaylistBrowserView::PlaylistBrowserView( QWidget *parent, const char *name )
     setRootIsDecorated( true );
 
     setDropVisualizer( true );    //the visualizer (a line marker) is drawn when dragging over tracks
-    setDropHighlighter( true );    //and the highligther (a focus rect) is drawn when dragging over playlists
+    setDropHighlighter( true );   //and the highligther (a focus rect) is drawn when dragging over playlists
     setDropVisualizerWidth( 3 );
     setAcceptDrops( true );
 
     setTreeStepSize( 20 );
 
-    //<loading animation>
-    m_loading1 = new QPixmap( locate("data", "amarok/images/loading1.png" ) );
-    m_loading2 = new QPixmap( locate("data", "amarok/images/loading2.png" ) );
-    m_animationTimer = new QTimer();
     connect( m_animationTimer, SIGNAL(timeout()), this, SLOT(slotAnimation()) );
-    //</loading animation>
 
     connect( this, SIGNAL( mouseButtonPressed ( int, QListViewItem *, const QPoint &, int ) ),
-            this, SLOT( mousePressed( int, QListViewItem *, const QPoint &, int ) ) );
+             this,   SLOT( mousePressed( int, QListViewItem *, const QPoint &, int ) ) );
 
     //TODO moving tracks
     //connect( this, SIGNAL( moved(QListViewItem *, QListViewItem *, QListViewItem * )),
@@ -2564,12 +2562,8 @@ void PlaylistBrowserView::mousePressed( int button, QListViewItem *item, const Q
                         break;
                 }
             }
-
         }
-
     }
-
-
 }
 
 
@@ -2675,6 +2669,10 @@ void PlaylistBrowserView::startDrag()
     drag->dragCopy();
 
 }
+
+/////////////////////////////////////////////////////////////////////////////
+//    CLASS PlaylistDialog
+////////////////////////////////////////////////////////////////////////////
 
 QString PlaylistDialog::getSaveFileName( const QString &suggestion ) //static
 {
