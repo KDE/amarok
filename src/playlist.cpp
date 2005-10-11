@@ -2105,11 +2105,13 @@ Playlist::eventFilter( QObject *o, QEvent *e )
         }
     }
 
-    else if( o == renameLineEdit() && e->type() == QEvent::KeyPress && m_renameItem )
+    else if( o == renameLineEdit() && e->type() == 6 /*QEvent::KeyPress*/ && m_renameItem )
     {
-        int visibleCols = visibleColumns(), physicalColumn = visibleCols - 1;
+        const int visibleCols = visibleColumns();
+        int physicalColumn = visibleCols - 1;
+
         while( mapToLogicalColumn( physicalColumn ) != m_renameColumn && physicalColumn >= 0 )
-          physicalColumn--;
+            physicalColumn--;
         if( physicalColumn < 0 )
         {
             warning() << "the column counting code is wrong! tell illissius." << endl;
