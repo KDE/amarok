@@ -19,6 +19,8 @@ SHORT-TERM (URGENT):
  <markey>  Fix SQLite threading problems by opening a new DB handle for each thread.
            Currently there are sometimes bad locking issues, especially with the Retrieve
            Similar Artists feature, which can lead to 100% CPU usage.
+          <mxcl>   With retrieve similar artists amaroK hangs just after song-change. Disabling this feature removes
+                    the hang. This is annoying me so much now I've disabled the feature. I use sqlite.
 
  <sebr>    Downloading multiple podcasts at once should throw them into a download queue.
 
@@ -38,9 +40,6 @@ SHORT-TERM (URGENT):
            to work entirely)
 
   <markey> Figure out why ScriptManager can't read from stdout.
-
-  <mxcl>   With retrieve similar artists amaroK hangs just after song-change. Disabling this feature removes
-           the hang. This is annoying me so much now I've disabled the feature. I use sqlite.
 
   <markey> amaroK fails to download any stream playlist from http://dir.xiph.org. Part of the problem is
            PlaylistLoader::isPlaylistFile(const KURL&), which only looks at the filename's extension. This
@@ -65,8 +64,6 @@ SHORT-TERM (URGENT):
            Update: This is now fixed except if you build with MySQL support. Reason is the MySQL password
            KConfigXT entry. Fix this properly for 1.2.1.
 
-  <mxcl>   Tabbing in inline-edit mode in playlist visits hidden columns and invisible ones. - KDElibs bug
-
   <mxcl>   Playlist with files that exist that gst can't play + repeat-playlist = infinite loop - presumably
            load() and play() return true so the controller doesn't stop the playback
 
@@ -79,6 +76,9 @@ SHORT-TERM (URGENT):
 
 
 MID-TERM:
+  <eean>   When the player window shades, it should lose its title bar and be replaced with something more
+           compactish. This would probably have to be created manually.
+
   <sebr>   Make the player window scroll the text in the opposite direction if using right-2-left text
            (eg hebrew or arabic)
 
@@ -173,15 +173,6 @@ LONG-TERM:
                        -- is TBD.
 
            Make windows magnetic / sticking together (difficult).
-
-           Make PlayerWidget shadeable (like XMMS)
-  <mxcl>   Doesn't the systray provide this functionality already?
-  <berkus> No it doesn't, double click the winamp/xmms window and see for yourself
-  <larson> How do you propose this should work? Since we are handled by kwin and have
-           normal window borders, double clicking the titlebar is handled by kwin. Also, should
-           the playlist be shadable?
-
-           Support for compressed archives / tarballs
 
   <mxcl>   Implement beat detection (thread?), interface should glow/move to
            the beat, visualisations have access to beat/bpm info.
