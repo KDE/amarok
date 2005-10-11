@@ -2723,7 +2723,7 @@ void PlaylistDialog::slotOk()
 
 void PlaylistDialog::slotTextChanged( const QString &s )
 {
-   enableButtonOK( !s.isEmpty() );
+    enableButtonOK( !s.isEmpty() );
 }
 
 void PlaylistDialog::slotCustomPath()

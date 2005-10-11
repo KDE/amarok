@@ -337,11 +337,11 @@ void PlaylistEntry::insertTracks( QListViewItem *after, KURL::List list, QMap<QS
             else
                 tmp_droppedTracks.append( newInfo );
         }
-
     }
 
     PlaylistBrowser::instance()->savePlaylist( this );
 }
+
 
 void PlaylistEntry::removeTrack( QListViewItem *item, bool isLast )
 {
@@ -419,20 +419,14 @@ void PlaylistEntry::setOpen( bool open )
             load();
             return;
         }
-
     }
     else if( !isDynamic() || !m_dynamic ) {    //collapse
 
-        QListViewItem* child = firstChild();
-        QListViewItem* childTmp;
         //delete all children
-        while ( child ) {
-            childTmp = child;
-            child = child->nextSibling();
-            delete childTmp;
-        }
-        m_lastTrack = 0;
+        while( firstChild() )
+            delete firstChild();
 
+        m_lastTrack = 0;
     }
 
     QListViewItem::setOpen( open );
