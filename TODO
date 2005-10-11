@@ -5,13 +5,17 @@ TODO-list for amaroK
 
 
 SHORT-TERM (URGENT):
+ <markey>  A posting in our forum reports that our kde-apps.org GHNS feed is not updating.
+           Check what's going on here.
+           http://amarok.kde.org/component/option,com_simpleboard/Itemid,57/func,view/id,8536/catid,8/
+
  <sebr>    Dragging items from the collection browser -> playlist browser and making a new playlist uses
            the url and not the meta data.
-           
+
  <sebr>    Multiple job statusbar widget is broken.
- 
+
  <sebr>    Use a download queue when downloading lots of podcasts simulateously.
- 
+
  <markey>  Fix SQLite threading problems by opening a new DB handle for each thread.
            Currently there are sometimes bad locking issues, especially with the Retrieve
            Similar Artists feature, which can lead to 100% CPU usage.
@@ -60,9 +64,6 @@ SHORT-TERM (URGENT):
   <markey> In the settings dialog the "Apply" button is broken (always enabled).
            Update: This is now fixed except if you build with MySQL support. Reason is the MySQL password
            KConfigXT entry. Fix this properly for 1.2.1.
-
-  <mxcl>   Hitting the DEL key in the playlist activates the file-browser delete shortcut, offering to trash
-           whatever is selected there. Nice!
 
   <mxcl>   Tabbing in inline-edit mode in playlist visits hidden columns and invisible ones. - KDElibs bug
 
