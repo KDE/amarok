@@ -325,7 +325,6 @@ UrlLoader::completeJob()
     QApplication::sendEvent( dependent(), this );
 }
 
-#include <qeventloop.h>
 KURL::List
 UrlLoader::recurse( const KURL &url )
 {
@@ -338,12 +337,12 @@ UrlLoader::recurse( const KURL &url )
         return KURL::List();
 
     // Fucking KDirLister sometimes hangs on remote media, so we add a timeout
-    const int timeout = 2000; // ms
+    const int timeout = 3000; // ms
     QTime watchdog;
     watchdog.start();
 
     while( !lister.isFinished() && !isAborted() && watchdog.elapsed() < timeout )
-        kapp->eventLoop()->processEvents( QEventLoop::ExcludeUserInput );
+        kapp->processEvents();
 
     KFileItemList items = lister.items(); //returns QPtrList, so we MUST only do it once!
     KURL::List urls;
