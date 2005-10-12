@@ -338,7 +338,7 @@ UrlLoader::recurse( const KURL &url )
         return KURL::List();
 
     // Fucking KDirLister sometimes hangs on remote media, so we add a timeout
-    const int timeout = 400; // ms
+    const int timeout = 2500; // ms
     QTime watchdog;
     watchdog.start();
 
