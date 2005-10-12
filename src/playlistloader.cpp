@@ -258,6 +258,7 @@ UrlLoader::customEvent( QCustomEvent *e )
     {
         const QString QUEUE_INDEX = "queue_index";
         const QString STOP_AFTER = "stop_after";
+        const QString DISABLED = "disabled";
         foreachType( NodeList, e->nodes )
         {
             if( (*it).isNull() ) //safety
@@ -289,6 +290,9 @@ UrlLoader::customEvent( QCustomEvent *e )
             }
             if( element.hasAttribute( STOP_AFTER ) )
                 Playlist::instance()->m_stopAfterTrack = item;
+
+            if( element.hasAttribute( DISABLED ) )
+                item->setEnabled( false );
         }
         break;
     }

@@ -68,7 +68,7 @@ class PlaylistItem : public KListViewItem
         void setText( const MetaBundle& bundle );
         void setText( int, const QString& ); //virtual
 
-        bool isEnabled() { return m_enabled; }
+        bool isEnabled() const { return m_enabled; }
         void setEnabled( bool enable );
 
         void setSelected( bool selected );
