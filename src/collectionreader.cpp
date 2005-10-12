@@ -38,12 +38,12 @@ CollectionReader::CollectionReader( CollectionDB* parent, const QStringList& fol
     struct stat statBuf;
     if ( stat( "/", &statBuf ) == 0 ) {
         struct direntry de;
-	memset(&de, 0, sizeof(struct direntry));
-	de.dev = statBuf.st_dev;
-	de.ino = statBuf.st_ino;
+        memset(&de, 0, sizeof(struct direntry));
+        de.dev = statBuf.st_dev;
+        de.ino = statBuf.st_ino;
 
-	m_processedDirs.resize(m_processedDirs.size()+1);
-	m_processedDirs[m_processedDirs.size()-1] = de;
+        m_processedDirs.resize(m_processedDirs.size()+1);
+        m_processedDirs[m_processedDirs.size()-1] = de;
     }
 }
 
@@ -199,7 +199,7 @@ CollectionReader::readDir( const QString& dir, QStrList& entries )
     f = m_processedDirs.find(de);
 #endif
 
-    if ( ! S_ISDIR ( statBuf.st_mode) || m_processedDirs.find(de) != -1 ) {
+    if ( ! S_ISDIR ( statBuf.st_mode) || f != -1 ) {
         debug() << "Skipping, already scanned: " << dir << endl;
         return;
     }

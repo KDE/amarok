@@ -41,7 +41,7 @@ public:
 
 protected:
     virtual bool doJob();
- 
+
     bool m_importPlaylists;
     bool m_incremental;
     QStringList m_folders;
@@ -53,13 +53,13 @@ private:
     DbConnection* const m_db;
 
     bool m_recursively;
-    
+
     struct direntry {
       dev_t dev;
       ino_t ino;
     } KDE_PACKED;
 
-    QMemArray<direntry> m_processedDirs;       
+    QMemArray<direntry> m_processedDirs;
 
     std::ofstream log;
 };
