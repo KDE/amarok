@@ -1906,11 +1906,10 @@ CollectionDB::similarArtistsFetched( const QString& artist, const QStringList& s
 // PRIVATE
 //////////////////////////////////////////////////////////////////////////////////////////
 
-
 void
 CollectionDB::initialize()
 {
-    m_dbConnPool = new DbConnectionPool( this );
+    m_dbConnPool = new DbConnectionPool( m_isTemporary );
     DbConnection *dbConn = m_dbConnPool->getDbConnection();
     m_dbConnPool->putDbConnection( dbConn );
 
