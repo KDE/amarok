@@ -15,8 +15,10 @@ VERSION 1.3.4:
 
   BUGFIXES:
     * Fixed issue with loading playlists containing remote URL's.
+    * Dynamic mode history tracks would be forgotten if there was no current
+      track on startup. (BR 110160)
     * Fixed problems with "Retrieve Similar Artists" feature in combination
-      with SQLite, which could lead to 100% CPU usage. (BUG 104447)
+      with SQLite, which could lead to 100% CPU usage. (BR 104447)
     * Tabbing between items and cells in the playlist while editing them now
       works much nicer (goes in order and doesn't tab to invisible columns),
       and you can also now use Alt+Up, Down, Left, Right to navigate between
