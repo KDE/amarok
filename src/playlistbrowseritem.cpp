@@ -170,7 +170,7 @@ QDomElement PlaylistCategory::xml()
           //FIXME: this is a very ugly and bad hack not to save the default smart and stream lists.
             if ( it->text(0) == i18n("Cool-Streams") || it->text(0) == i18n("Collection") )
                 continue;
-            i.appendChild( it->xml() );
+            i.appendChild( d.importNode( it->xml(), true ) );
         }
         return i;
 }
