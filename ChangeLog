@@ -14,6 +14,7 @@ VERSION 1.3.4:
       icon, respectively.
 
   BUGFIXES:
+    * Fixed issue with loading playlists containing remote URL's.
     * Fixed problems with "Retrieve Similar Artists" feature in combination
       with SQLite, which could lead to 100% CPU usage. (BUG 104447)
     * Tabbing between items and cells in the playlist while editing them now
