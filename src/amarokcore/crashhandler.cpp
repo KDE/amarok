@@ -70,7 +70,6 @@ namespace amaroK
             // we are the child process (the result of the fork)
             debug() << "amaroK is crashing...\n";
 
-            QString path = amaroK::saveLocation() + "backtrace";
             QString subject = APP_VERSION " ";
             QString body = i18n(
                     "amaroK has crashed! We're terribly sorry about this :(\n\n"
@@ -78,8 +77,13 @@ namespace amaroK
                     "amaroK has attached a backtrace that describes the crash, so just click send, "
                     "or if you have time, write a brief description of how the crash happened first.\n\n"
                     "Many thanks.\n\n" );
+            body += i18n( "\n\n\n\n\n\n"
+                    "The information below is to help the developers identify the problem, "
+                    "please do not modify it.\n\n\n\n" );
 
-            body += "Engine:     %1\n"
+
+            body += "======== DEBUG INFORMATION  =======\n"
+                    "Engine:     %1\n"
                     "Build date: " __DATE__ "\n"
                     "CC version: " __VERSION__ "\n" //assuming we're using GCC
                     "KDElibs:    " KDE_VERSION_STRING "\n"
@@ -93,6 +97,7 @@ namespace amaroK
             #ifdef NDEBUG
             body += "NDEBUG:     true";
             #endif
+            body += "\n";
 
             /// obtain the backtrace with gdb
 
@@ -168,15 +173,12 @@ namespace amaroK
             //TODO -O optimization can rearrange execution and stuff so show a warning for the developer
             //TODO pass the CXXFLAGS used with the email
 
-            {   /// write a file to contain the backtrace
-                //TODO using Qt is dodgy as may depend on corrupted QApplication instance
-                QFile file( path );
-                file.open( IO_WriteOnly );
-                QTextStream( &file )
-                        << "==== file `which amarokapp` =======\n" << fileCommandOutput << "\n\n"
-                        << "==== (gdb) bt =====================\n" << bt << "\n\n"
-                        << "==== kdBacktrace() ================\n" << kdBacktrace();
-            }
+            body += "==== file `which amarokapp` =======\n";
+            body += fileCommandOutput + "\n\n";
+            body += "==== (gdb) bt =====================\n";
+            body += bt + "\n\n";
+            body += "==== kdBacktrace() ================\n";
+            body += kdBacktrace();
 
             //TODO startup notification
             kapp->invokeMailer(
@@ -186,7 +188,7 @@ namespace amaroK
                     /*subject*/     subject,
                     /*body*/        body,
                     /*messageFile*/ QString(),
-                    /*attachURLs*/  QStringList( path ),
+                    /*attachURLs*/  QStringList(),
                     /*startup_id*/  "" );
 
             //_exit() exits immediately, otherwise this
