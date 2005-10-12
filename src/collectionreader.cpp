@@ -188,6 +188,17 @@ CollectionReader::readDir( const QString& dir, QStrList& entries )
     de.dev = statBuf.st_dev;
     de.ino = statBuf.st_ino;
 
+    int f = -1;
+
+#if __GNUC__ < 4
+    for (unsigned int i = 0; i < m_processedDirs.size(); ++i)
+        if (memcmp(&m_processedDirs[i], &de, sizeof(direntry)) == 0) {
+            f = i; break;
+        }
+#else
+    f = m_processedDirs.find(de);
+#endif
+
     if ( ! S_ISDIR ( statBuf.st_mode) || m_processedDirs.find(de) != -1 ) {
         debug() << "Skipping, already scanned: " << dir << endl;
         return;
