@@ -72,8 +72,9 @@ CollectionDB* CollectionDB::instance()
 }
 
 
-CollectionDB::CollectionDB()
+CollectionDB::CollectionDB( bool temporary )
         : EngineObserver( EngineController::instance() )
+        , m_isTemporary( temporary )
         , m_cacheDir( amaroK::saveLocation() )
         , m_coverDir( amaroK::saveLocation() )
         , m_noCover ( locate( "data", "amarok/images/nocover.png" ) )
@@ -94,15 +95,18 @@ CollectionDB::CollectionDB()
     initialize();
     //</OPEN DATABASE>
 
-    // TODO: Should write to config in dtor, but it crashes...
-    KConfig* config = amaroK::config( "Collection Browser" );
-    config->writeEntry( "Database Version", DATABASE_VERSION );
-    config->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
+    if ( !temporary )
+    {
+        // TODO Should write to config in dtor, but it crashes...
+        KConfig* config = amaroK::config( "Collection Browser" );
+        config->writeEntry( "Database Version", DATABASE_VERSION );
+        config->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
 
-    startTimer( MONITOR_INTERVAL * 1000 );
+        startTimer( MONITOR_INTERVAL * 1000 );
 
-    connect( Scrobbler::instance(), SIGNAL( similarArtistsFetched( const QString&, const QStringList& ) ),
-             this,                  SLOT( similarArtistsFetched( const QString&, const QStringList& ) ) );
+        connect( Scrobbler::instance(), SIGNAL( similarArtistsFetched( const QString&, const QStringList& ) ),
+                 this,                    SLOT( similarArtistsFetched( const QString&, const QStringList& ) ) );
+    }
 }
 
 CollectionDB::~CollectionDB()
@@ -110,11 +114,6 @@ CollectionDB::~CollectionDB()
     DEBUG_FUNC_INFO
 
     destroy();
-
-//     This crashes so it's done at the end of ctor.
-//     KConfig* const config = amaroK::config( "Collection Browser" );
-//     config->writeEntry( "Database Version", DATABASE_VERSION );
-//     config->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
 }
 
 
@@ -1865,11 +1864,14 @@ class SimilarArtistsInsertionJob : public ThreadWeaver::DependentJob
 {
     virtual bool doJob()
     {
-        CollectionDB::instance()->query( QString( "DELETE FROM related_artists WHERE artist = '%1';" ).arg( escapedArtist ) );
+        // Create a temporary CollectionDB object, to prevent threading problems
+        CollectionDB db( true );
+
+        db.query( QString( "DELETE FROM related_artists WHERE artist = '%1';" ).arg( escapedArtist ) );
 
         const QString sql = "INSERT INTO related_artists ( artist, suggestion, changedate ) VALUES ( '%1', '%2', 0 );";
         foreach( suggestions )
-            CollectionDB::instance()->insert( sql
+            db.insert( sql
                     .arg( escapedArtist )
                     .arg( CollectionDB::instance()->escapeString( *it ) ), NULL );
 
@@ -1908,7 +1910,7 @@ CollectionDB::similarArtistsFetched( const QString& artist, const QStringList& s
 void
 CollectionDB::initialize()
 {
-    m_dbConnPool = new DbConnectionPool();
+    m_dbConnPool = new DbConnectionPool( this );
     DbConnection *dbConn = m_dbConnPool->getDbConnection();
     m_dbConnPool->putDbConnection( dbConn );
 
@@ -2491,15 +2493,16 @@ MySqlConfig::MySqlConfig(
 PostgresqlConfig::PostgresqlConfig(
     const QString& conninfo )
     : m_conninfo( conninfo )
-{
-}
+{}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS DbConnectionPool
 //////////////////////////////////////////////////////////////////////////////////////////
 
-DbConnectionPool::DbConnectionPool() : m_semaphore( POOL_SIZE )
+DbConnectionPool::DbConnectionPool( bool temporary )
+    : m_isTemporary( temporary )
+    , m_semaphore( POOL_SIZE )
 {
 #ifdef USE_MYSQL
     if ( AmarokConfig::databaseEngine().toInt() == DbConnection::mysql )
@@ -2554,7 +2557,7 @@ DbConnectionPool::~DbConnectionPool()
 {
     m_semaphore += POOL_SIZE;
     DbConnection *conn;
-    bool vacuum = true;
+    bool vacuum = !m_isTemporary;
 
     while ( ( conn = dequeue() ) != 0 )
     {

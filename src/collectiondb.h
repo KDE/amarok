@@ -164,7 +164,7 @@ class PostgresqlConnection : public DbConnection
 class DbConnectionPool : QPtrQueue<DbConnection>
 {
     public:
-        DbConnectionPool();
+        DbConnectionPool( bool temporary );
        ~DbConnectionPool();
 
         const DbConnection::DbConnectionType getDbConnectionType() const { return m_dbConnType; }
@@ -188,6 +188,8 @@ class DbConnectionPool : QPtrQueue<DbConnection>
 
     private:
         static const int POOL_SIZE = 5;
+
+        bool m_isTemporary;
         QSemaphore m_semaphore;
         DbConnection::DbConnectionType m_dbConnType;
         DbConfig *m_dbConfig;
@@ -214,6 +216,9 @@ class CollectionDB : public QObject, public EngineObserver
         void tagsChanged( const MetaBundle &bundle );
 
     public:
+        CollectionDB( bool temporary = false );
+        ~CollectionDB();
+
         static CollectionDB *instance();
 
         const QString escapeString( const QString &string ) { return m_dbConnPool->escapeString(string); }
@@ -343,9 +348,6 @@ class CollectionDB : public QObject, public EngineObserver
         QStringList staleImages();
 
     protected:
-        CollectionDB();
-        ~CollectionDB();
-
         QCString md5sum( const QString& artist, const QString& album, const QString& file = QString::null );
         void engineTrackEnded( int finalPosition, int trackLength );
         /** Manages regular folder monitoring scan */
@@ -398,6 +400,7 @@ class CollectionDB : public QObject, public EngineObserver
 
         DbConnectionPool *m_dbConnPool;
 
+        bool m_isTemporary;
         bool m_monitor;
         QDir m_cacheDir;
         QDir m_coverDir;
