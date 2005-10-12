@@ -452,8 +452,6 @@ void PlaylistBrowser::saveStreams()
 {
     QFile file( streamBrowserCache() );
 
-    if( !file.open( IO_WriteOnly ) ) return;
-
     QDomDocument doc;
     QDomElement streamB = m_streamsCategory->xml();
     streamB.setAttribute( "product", "amaroK" );
@@ -462,10 +460,15 @@ void PlaylistBrowser::saveStreams()
     QDomNode streamsNode = doc.importNode( streamB, true );
     doc.appendChild( streamsNode );
 
+    QString temp( doc.toString() );
+
+    // Only open the file after all data is ready. If it crashes, data is not lost!
+    if ( !file.open( IO_WriteOnly ) ) return;
+
     QTextStream stream( &file );
     stream.setEncoding( QTextStream::UnicodeUTF8 );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-    stream << doc.toString();
+    stream << temp;
 }
 
 /**
@@ -653,7 +656,7 @@ void PlaylistBrowser::saveSmartPlaylists()
     QFile file( smartplaylistBrowserCache() );
 
     // If the user hadn't set a collection, we didn't create the Smart Playlist Item
-    if( !m_smartCategory || !file.open( IO_WriteOnly ) ) return;
+    if( !m_smartCategory ) return;
 
     QDomDocument doc;
     QDomElement smartB = m_smartCategory->xml();
@@ -663,10 +666,15 @@ void PlaylistBrowser::saveSmartPlaylists()
     QDomNode smartplaylistsNode = doc.importNode( smartB, true );
     doc.appendChild( smartplaylistsNode );
 
+    QString temp( doc.toString() );
+
+    // Only open the file after all data is ready. If it crashes, data is not lost!
+    if ( !file.open( IO_WriteOnly ) ) return;
+
     QTextStream smart( &file );
     smart.setEncoding( QTextStream::UnicodeUTF8 );
     smart << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-    smart << doc.toString();
+    smart << temp;
 }
 
 /**
@@ -763,8 +771,6 @@ void PlaylistBrowser::saveDynamics()
     QFile file( partyBrowserCache() );
     QTextStream stream( &file );
 
-    if( !file.open( IO_WriteOnly ) ) return;
-
     QDomDocument doc;
     QDomElement dynamicB = m_dynamicCategory->xml();
     dynamicB.setAttribute( "product", "amaroK" );
@@ -773,10 +779,14 @@ void PlaylistBrowser::saveDynamics()
     QDomNode dynamicsNode = doc.importNode( dynamicB, true );
     doc.appendChild( dynamicsNode );
 
+    QString temp( doc.toString() );
+
+    // Only open the file after all data is ready. If it crashes, data is not lost!
+    if ( !file.open( IO_WriteOnly ) ) return;
+
     stream.setEncoding( QTextStream::UnicodeUTF8 );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-    stream << doc.toString();
-
+    stream << temp;
 }
 
 void PlaylistBrowser::loadDynamicItems()
@@ -874,8 +884,6 @@ void PlaylistBrowser::savePodcasts()
     QFile file( podcastBrowserCache() );
     QTextStream stream( &file );
 
-    if( !file.open( IO_WriteOnly ) ) return;
-
     QDomDocument doc;
     QDomElement podcastB = m_podcastCategory->xml();
     podcastB.setAttribute( "product", "amaroK" );
@@ -884,9 +892,14 @@ void PlaylistBrowser::savePodcasts()
     QDomNode podcastNode = doc.importNode( podcastB, true );
     doc.appendChild ( podcastNode );
 
+    QString temp( doc.toString() );
+
+    // Only open the file after all data is ready. If it crashes, data is not lost!
+    if ( !file.open( IO_WriteOnly ) ) return;
+
     stream.setEncoding( QTextStream::UnicodeUTF8 );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-    stream << doc.toString();
+    stream << temp;
 }
 
 void PlaylistBrowser::scanPodcasts()
@@ -1187,8 +1200,6 @@ void PlaylistBrowser::savePlaylists()
 {
     QFile file( playlistBrowserCache() );
 
-    if( !file.open( IO_WriteOnly ) ) return;
-
     QDomDocument doc;
     QDomElement playlistsB = m_playlistCategory->xml();
     playlistsB.setAttribute( "product", "amaroK" );
@@ -1197,10 +1208,15 @@ void PlaylistBrowser::savePlaylists()
     QDomNode playlistsNode = doc.importNode( playlistsB, true );
     doc.appendChild( playlistsNode );
 
+    QString temp( doc.toString() );
+
+    // Only open the file after all data is ready. If it crashes, data is not lost!
+    if ( !file.open( IO_WriteOnly ) ) return;
+
     QTextStream stream( &file );
     stream.setEncoding( QTextStream::UnicodeUTF8 );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-    stream << doc.toString();
+    stream << temp;
 }
 
 bool PlaylistBrowser::deletePlaylists( QPtrList<PlaylistEntry> items )
