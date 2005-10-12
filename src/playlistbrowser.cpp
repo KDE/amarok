@@ -1320,7 +1320,7 @@ void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
         #define item static_cast<PlaylistEntry *>(item)
         //don't replace, it generally makes people think amaroK behaves like JuK
         //and we don't so they then get really confused about things
-        Playlist::instance()->insertMedia( item->tracksURL(), Playlist::Replace );
+        Playlist::instance()->insertMedia( item->url(), Playlist::Replace );
         #undef  item
     }
     else if( isPodcastChannel( item ) )
@@ -1941,7 +1941,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 slotDoubleClicked( item );
                 break;
             case ADD:
-                Playlist::instance()->insertMedia( item->tracksURL() );
+                Playlist::instance()->insertMedia( item->url() );
                 break;
             case DYNADD:
                 addToDynamic();
@@ -2631,7 +2631,7 @@ void PlaylistBrowserView::startDrag()
     for( ; it.current(); ++it )
     {
         if( isPlaylist( *it ) )
-            urls += ((PlaylistEntry*)*it)->tracksURL();
+            urls += ((PlaylistEntry*)*it)->url();
 
         else if( isStream( *it ) )
             urls += ((StreamEntry*)*it)->url();
