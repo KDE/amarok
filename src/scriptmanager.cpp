@@ -36,6 +36,7 @@
 #include <qfont.h>
 #include <qtimer.h>
 
+#include <kaboutdialog.h>
 #include <kapplication.h>
 #include <kfiledialog.h>
 #include <kiconloader.h>
@@ -539,21 +540,17 @@ ScriptManager::slotAboutScript()
         return;
     }
 
-    KTextEdit* editor = new KTextEdit();
-    kapp->setTopWidget( editor );
-    editor->setCaption( kapp->makeStdCaption( i18n( "About %1" ).arg( name ) ) );
-    editor->setReadOnly( true );
-
-    QFont font( "fixed" );
-    font.setFixedPitch( true );
-    font.setStyleHint( QFont::TypeWriter );
-    editor->setFont( font );
+    KAboutDialog* about = new KAboutDialog( KAboutDialog::AbtAppStandard,
+                                          kapp->caption(),
+                                          KDialogBase::Ok, KDialogBase::Ok, this, 0, TRUE );
+    kapp-> setTopWidget( about );
+    about->setCaption( kapp->makeStdCaption( i18n( "About %1" ).arg( name ) ) );
+    about->setProduct( name, "", "", "");
 
     QTextStream stream( &file );
-    editor->setText( stream.read() );
-    editor->setTextFormat( QTextEdit::PlainText );
-    editor->resize( 640, 480 );
-    editor->show();
+    QString text = stream.read();
+    about->addTextPage( i18n( "About" ), text, TRUE );
+    about->show();
 }
 
 
