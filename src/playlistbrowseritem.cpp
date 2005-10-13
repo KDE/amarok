@@ -669,19 +669,22 @@ TrackItemInfo::TrackItemInfo( const KURL &u, const QString &t, const int l )
         , m_title( t )
         , m_length( l )
 {
-    MetaBundle *mb = new MetaBundle( u );
-    if( mb->isValidMedia() )
+    if( m_title.isEmpty() )
     {
-        m_title = mb->prettyTitle();
-        m_length = mb->length();
-    }
-    else
-    {
-        if( m_title.isEmpty() )
+        MetaBundle *mb = new MetaBundle( u );
+        if( mb->isValidMedia() )
+        {
+            m_title = mb->prettyTitle();
+            m_length = mb->length();
+        }
+        else
+        {
             m_title = MetaBundle::prettyTitle( fileBaseName( m_url.path() ) );
-        if( m_length < 0 )
-            m_length = 0;
+        }
     }
+
+    if( m_length < 0 )
+        m_length = 0;
 }
 
 /////////////////////////////////////////////////////////////////////////////
