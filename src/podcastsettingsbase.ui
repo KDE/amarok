@@ -10,7 +10,7 @@
             <x>0</x>
             <y>0</y>
             <width>481</width>
-            <height>308</height>
+            <height>238</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -97,23 +97,6 @@
                 </widget>
             </hbox>
         </widget>
-        <spacer row="1" column="0">
-            <property name="name">
-                <cstring>spacer18_2</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Fixed</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>31</width>
-                    <height>5</height>
-                </size>
-            </property>
-        </spacer>
         <widget class="QButtonGroup" row="6" column="0">
             <property name="name">
                 <cstring>buttonGroup1</cstring>
@@ -167,40 +150,6 @@
                 </widget>
             </grid>
         </widget>
-        <spacer row="5" column="0">
-            <property name="name">
-                <cstring>spacer7</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Fixed</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>20</width>
-                    <height>16</height>
-                </size>
-            </property>
-        </spacer>
-        <spacer row="3" column="0">
-            <property name="name">
-                <cstring>spacer18_2_2</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Fixed</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>31</width>
-                    <height>16</height>
-                </size>
-            </property>
-        </spacer>
         <widget class="QLayoutWidget" row="2" column="0">
             <property name="name">
                 <cstring>layout5</cstring>
@@ -290,23 +239,6 @@
                 </widget>
             </hbox>
         </widget>
-        <spacer row="7" column="0">
-            <property name="name">
-                <cstring>spacer7_2</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Fixed</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>20</width>
-                    <height>16</height>
-                </size>
-            </property>
-        </spacer>
     </grid>
 </widget>
 <customwidgets>
