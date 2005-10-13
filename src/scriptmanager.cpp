@@ -533,6 +533,7 @@ ScriptManager::slotAboutScript()
 
     const QString name = m_gui->listView->currentItem()->text( 0 );
     QFile file( m_scripts[name].url.directory( false ) + "README" );
+    QFile license( m_scripts[name].url.directory( false ) + "COPYING" );
 
     if ( !file.open( IO_ReadOnly ) ) {
         KMessageBox::sorry( 0, i18n( "There is no information available for this script." ) );
@@ -549,6 +550,13 @@ ScriptManager::slotAboutScript()
     QTextStream stream( &file );
     QString text = stream.read();
     about->addTextPage( i18n( "About" ), text, true );
+
+    if ( license.open( IO_ReadOnly ) ) {
+        QTextStream lic( &license );
+        QString lictext = lic.read();
+        about->addLicensePage( i18n( "License" ), lictext );
+    }
+
     about->setInitialSize( QSize( 500, 350 ) );
 
     about->show();
