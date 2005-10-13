@@ -1,23 +1,13 @@
-ALARM-SCRIPT
-============
-
-ABOUT
------
-Makes amaroK play music at a given time. Can be used as an alarm clock for waking up.
-
-
-DEPENDENCIES
-------------
-Python 2.2
-PyQt Bindings
-
-
-LICENSE
--------
-GPL V2
-
-
-AUTHOR
-------
+<div align="center"><b>Alarm Script</b></div>
+<b>About:</b><br>
+Makes amaroK play music at a given time. Can be used as an alarm clock for waking up.<br>
+<br>
+<b>Dependencies:</b><br>
+Python 2.2<br>
+PyQt Bindings<br>
+<br>
+<b>License:</b><br>
+GPL V2<br>
+<br>
+<b>Author:</b><br>
 Mark Kretschmann <markey@web.de>
-
