@@ -533,23 +533,24 @@ ScriptManager::slotAboutScript()
 
     const QString name = m_gui->listView->currentItem()->text( 0 );
     QFile file( m_scripts[name].url.directory( false ) + "README" );
-    debug() << "Path: " << file.name() << endl;
 
     if ( !file.open( IO_ReadOnly ) ) {
         KMessageBox::sorry( 0, i18n( "There is no information available for this script." ) );
         return;
     }
 
-    KAboutDialog* about = new KAboutDialog( KAboutDialog::AbtAppStandard,
-                                          kapp->caption(),
-                                          KDialogBase::Ok, KDialogBase::Ok, this, 0, TRUE );
-    kapp-> setTopWidget( about );
+    KAboutDialog* about = new KAboutDialog( KAboutDialog::AbtTabbed|KAboutDialog::AbtProduct,
+                                            QString::null,
+                                            KDialogBase::Ok, KDialogBase::Ok, this );
+    kapp->setTopWidget( about );
     about->setCaption( kapp->makeStdCaption( i18n( "About %1" ).arg( name ) ) );
-    about->setProduct( name, "", "", "");
+    about->setProduct( i18n( "%1 amaroK Script" ).arg( name ), "", "", "" );
 
     QTextStream stream( &file );
     QString text = stream.read();
-    about->addTextPage( i18n( "About" ), text, TRUE );
+    about->addTextPage( i18n( "About" ), text, true );
+    about->setInitialSize( QSize( 500, 350 ) );
+
     about->show();
 }
 
