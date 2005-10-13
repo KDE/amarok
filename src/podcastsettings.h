@@ -38,7 +38,7 @@ class PodcastSettings : public KDialogBase
         void    checkModified();
 
     private:
-        enum MediaFetch{ STREAM=0, DOWNLOAD=1, AVAILABLE=2 };
+        enum MediaFetch{ STREAM=0, AUTOMATIC=1 };
 
         PodcastSettingsDialogBase *m_ps;
 
