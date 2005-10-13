@@ -1495,32 +1495,22 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
     bool dynamicsChanged = false;
     bool podcastsChanged = false;
 
-    QListViewItem* tmpItem;
-
+    /// @note the variable keepItem is used to tell us if there is a more sinister operation which is needed,
+    /// being deleting from disk - this includes deleting playlists and deleting all downloaded podcast media.
     for( QListViewItem *item = selected.first(); item; item = selected.next() )
     {
         bool keepItem = false;
-        // Delete all playlist tracks if the item is
-        if( tmpItem && tmpItem != item->parent() && !tracksToDelete.isEmpty() )
-        {
-            foreachType( QPtrList<PlaylistTrackItem>, tracksToDelete )
-            {
-                bool isLast = false;
-                if( (*it) == tracksToDelete.getLast() )
-                    isLast = true;
-
-                static_cast<PlaylistEntry*>(tmpItem)->removeTrack( *it, isLast );
-            }
-            tracksToDelete.clear();
-        }
-
 
         if( isPlaylist( item ) )
         {
             keepItem = playlistsChanged = true;
             playlistsToDelete.append( static_cast<PlaylistEntry*>(item) );
         }
-        if( isCategory( item ) )
+
+        /// @note when we delete a category, we have to check if it contains either playlists or podcasts which
+        /// need deleting to occur.  We set keepItem = true to delete the folder after we have deleted the
+        /// playlists/podcasts, and only then do we remove the folder.
+        else if( isCategory( item ) )
         {
             if( isPlaylist( item->firstChild() ))
             {
@@ -1541,19 +1531,27 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
                 }
             }
         }
-        if( isStream( item ) )        streamsChanged = true;
-        if( isSmartPlaylist( item ) ) smartPlaylistsChanged = true;
-        if( isDynamic( item ) )       dynamicsChanged = true;
+        else if( isStream( item ) )        streamsChanged = true;
+        else if( isSmartPlaylist( item ) ) smartPlaylistsChanged = true;
+        else if( isDynamic( item ) )       dynamicsChanged = true;
 
         if( isPlaylistTrackItem( item ) )
         {
+            //we are going to be deleting the parent playlist, dont bother removing it
+            if( playlistsToDelete.find( static_cast<PlaylistEntry*>(item->parent()) ) != -1 )
+                continue;
+
             playlistsChanged = true;
             //remove the track
-            PlaylistEntry *playlist = (PlaylistEntry *)item->parent();
+            PlaylistEntry *playlist = static_cast<PlaylistEntry*>(item->parent());
             playlist->removeTrack( item );
         }
         else if( isPodcastChannel( item ) )
         {
+            //we are going to be deleting the parent podcast, dont bother removing it
+            if( podcastsToDelete.find( static_cast<PodcastChannel*>(item->parent()) ) != -1 )
+                continue;
+
             podcastsChanged = true;
             m_podcastItemsToScan.remove( static_cast<PodcastChannel*>(item) );
             podcastsToDelete.append( static_cast<PodcastChannel*>(item) );
@@ -1578,7 +1576,6 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
             foreachType( QPtrList<PlaylistEntry>, playlistsToDelete )
             {
                 m_dynamicEntries.remove(*it);
-                delete (*it);
             }
 
             foreachType( QPtrList<PlaylistCategory>, playlistFoldersToDelete )
@@ -1593,11 +1590,6 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
     {
         if( deletePodcasts( podcastsToDelete ) )
         {
-            foreachType( QPtrList<PodcastChannel>, podcastsToDelete )
-            {
-                delete (*it);
-            }
-
             foreachType( QPtrList<PlaylistCategory>, podcastFoldersToDelete )
             {
                 delete (*it);
