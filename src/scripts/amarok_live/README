@@ -3,14 +3,14 @@ AMAROK LIVE
 
 ABOUT
 -----
-This script lets you create your own amaroK live! cd with music on it. It is very simple to use: click configure, and follow the instructions. When it is done, you can add music to the cd by selecting tracks and using the right click menu.
+This script lets you create your own amaroK live! cd with music on it. It is very simple to use: click configure, and choose the iso as well as a temporary work directory. Clicking ok will start the unpacking, and when it is done, you can add music to the cd by selecting tracks and using the right click menu.
 
 When you are done selecting tracks, click Create Remastered CD. the iso will be created in the work dir that you selected during configure.
 
 DEPENDENCIES
 ------------
 A kernel with squashfs as either a module or compiled in
-squashfs-tools
+squashfs-tools (see NOTE below)
 cdrtools (for mkisofs)
 Python 2.2
 PyQt
@@ -22,9 +22,16 @@ LICENSE
 -------
 GPL V2
 
+NOTE
+----
+
+If you are using the amarok_live-1.3.iso cd, (not amarok_live-1.3-update1.iso) then you will not be able to remaster successfully unless you are using squashfs-tools version 2.1. Version 2.2 will create a cd that cannot boot. Please make sure to downgrade, or download the updated version of the iso. An xdelta (binary patch) is availible too instead of the full iso.
+
 CHANGELOG
 --------
 
+Version 0.2:
+    Added new Qt config dialog, much faster and more streamlined.
 Version 0.2:
     Support for playlist transferring - shows up as a playlist on the livecd too!
     Added Clear Music menu option
