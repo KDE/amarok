@@ -18,6 +18,7 @@ VERSION 1.3.4:
       icon, respectively.
 
   BUGFIXES:
+    * Collection scanner ignored files with non-ascii characters. (BR 114195)
     * Don't show "Change Collection Setup"-box for non-local files.
     * Fixed issue with loading playlists containing remote URL's.
     * Dynamic mode history tracks would be forgotten if there was no current
