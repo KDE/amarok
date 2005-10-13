@@ -14,6 +14,7 @@ VERSION 1.3.4:
       icon, respectively.
 
   BUGFIXES:
+    * Don't show "Change Collection Setup"-box for non-local files.
     * Fixed issue with loading playlists containing remote URL's.
     * Dynamic mode history tracks would be forgotten if there was no current
       track on startup. (BR 110160)

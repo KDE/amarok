@@ -1654,7 +1654,7 @@ bool CurrentTrackJob::doJob()
         "</div>" );
     // </Current Track Information>
 
-    if ( !CollectionDB::instance()->isFileInCollection( currentTrack.url().path() ) )
+    if ( currentTrack.url().isLocalFile() && !CollectionDB::instance()->isFileInCollection( currentTrack.url().path() ) )
     {
         m_HTMLSource.append(
         "<div id='notindb_box' class='box'>"
