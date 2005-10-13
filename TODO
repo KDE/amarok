@@ -19,12 +19,6 @@ SHORT-TERM (URGENT):
 		 :: might be an illusion of akregator's different use of it).
  <sebr>    Use a download queue when downloading lots of podcasts simulateously.
 
- <markey>  Fix SQLite threading problems by opening a new DB handle for each thread.
-           Currently there are sometimes bad locking issues, especially with the Retrieve
-           Similar Artists feature, which can lead to 100% CPU usage.
-          <mxcl>   With retrieve similar artists amaroK hangs just after song-change. Disabling this feature removes
-                    the hang. This is annoying me so much now I've disabled the feature. I use sqlite.
-
  <sebr>    Downloading multiple podcasts at once should throw them into a download queue.
 
  <sebr>    Cancelling a podcast download shows an empty popup message and i can't figure out where from
