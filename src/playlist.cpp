@@ -848,6 +848,8 @@ Playlist::playNextTrack( bool forceNext )
             {
                 //we have played everything
 
+                item = 0;
+
                 if ( m_prevTracks.count() <= 80 ) {
                     m_prevTracks.clear();
 

@@ -6,9 +6,6 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
- <illis.>  With repeat playlist off and random mode on, with a single track in the playlist, it
-           repeats indefinitely.
-
  <markey>  A posting in our forum reports that our kde-apps.org GHNS feed is not updating.
            Check what's going on here.
            http://amarok.kde.org/component/option,com_simpleboard/Itemid,57/func,view/id,8536/catid,8/
