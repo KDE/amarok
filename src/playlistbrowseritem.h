@@ -283,7 +283,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url,
                         const QDomNode &channelSettings, const QDomDocument &xml );
 
-        enum MediaFetch{ STREAM=0, DOWNLOAD=1, AVAILABLE=2 };
+        enum MediaFetch{ STREAM=0, AUTOMATIC=1 };
 
         void sortChildItems ( int /*column*/, bool /*ascending*/ ) { /* Don't sort its children */ }; //reimplemented
 

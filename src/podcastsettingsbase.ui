@@ -10,7 +10,7 @@
             <x>0</x>
             <y>0</y>
             <width>481</width>
-            <height>336</height>
+            <height>308</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -131,32 +131,21 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QRadioButton" row="0" column="0">
-                    <property name="name">
-                        <cstring>m_downloadRequestRadio</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Download on request</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Download media and save to disk only when asked.  An entry will not be playable until the file has been explicitly saved.</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Download media and save to disk only when asked.  An entry will not be playable until the file has been explicitly saved.</string>
-                    </property>
-                </widget>
                 <widget class="QRadioButton" row="1" column="0">
                     <property name="name">
                         <cstring>m_streamRadio</cstring>
                     </property>
                     <property name="text">
-                        <string>Stream on re&amp;quest</string>
+                        <string>Stream or download on re&amp;quest</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+Q</string>
                     </property>
                     <property name="toolTip" stdset="0">
-                        <string>Play media from remote location, but do not save to disk</string>
+                        <string>Media must be downloaded, otherwise the podcast will be played from the remote server.</string>
                     </property>
                     <property name="whatsThis" stdset="0">
-                        <string>Play media from remote location, but do not save to disk</string>
+                        <string>Media must be downloaded, otherwise the podcast will be played from the remote server.</string>
                     </property>
                 </widget>
                 <widget class="QRadioButton" row="2" column="0">
@@ -165,6 +154,9 @@
                     </property>
                     <property name="text">
                         <string>Download when a&amp;vailable</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+V</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Download media as soon as it becomes available</string>
@@ -317,6 +309,8 @@
         </spacer>
     </grid>
 </widget>
+<customwidgets>
+</customwidgets>
 <connections>
     <connection>
         <sender>m_purgeCheck</sender>

@@ -37,21 +37,13 @@ PodcastSettings::PodcastSettings( const QString& url, const QString& save, bool 
 
     m_ps->m_autoFetchCheck->setChecked( autoScan );
 
-    if( fetch == DOWNLOAD )
+    if( fetch == STREAM )
     {
-        m_ps->m_downloadRequestRadio->setChecked( true );
-        m_ps->m_streamRadio->setChecked( false );
-        m_ps->m_downloadRadio->setChecked( false );
-    }
-    else if( fetch == STREAM )
-    {
-        m_ps->m_downloadRequestRadio->setChecked( false );
         m_ps->m_streamRadio->setChecked( true );
         m_ps->m_downloadRadio->setChecked( false );
     }
-    else if( fetch == AVAILABLE )
+    else if( fetch == AUTOMATIC )
     {
-        m_ps->m_downloadRequestRadio->setChecked( false );
         m_ps->m_streamRadio->setChecked( false );
         m_ps->m_downloadRadio->setChecked( true );
     }
@@ -72,7 +64,6 @@ PodcastSettings::PodcastSettings( const QString& url, const QString& save, bool 
     connect( m_ps->m_autoFetchCheck, SIGNAL(clicked()),                     SLOT(checkModified()) );
     connect( m_ps->m_streamRadio,    SIGNAL(clicked()),                     SLOT(checkModified()) );
     connect( m_ps->m_downloadRadio,  SIGNAL(clicked()),                     SLOT(checkModified()) );
-    connect( m_ps->m_downloadRequestRadio,  SIGNAL(clicked()),              SLOT(checkModified()) );
     connect( m_ps->m_purgeCheck,     SIGNAL(clicked()),                     SLOT(checkModified()) );
 }
 
@@ -81,9 +72,8 @@ PodcastSettings::hasChanged()
 {
     bool fetchTypeChanged = true;
 
-    if( m_ps->m_downloadRequestRadio->isChecked() && m_fetch == DOWNLOAD  ||
-        m_ps->m_streamRadio->isChecked()          && m_fetch == STREAM    ||
-        m_ps->m_downloadRadio->isChecked()        && m_fetch == AVAILABLE  )
+    if( m_ps->m_streamRadio->isChecked()          && m_fetch == STREAM   ||
+        m_ps->m_downloadRadio->isChecked()        && m_fetch == AUTOMATIC  )
 
         fetchTypeChanged = false;
 
@@ -116,10 +106,8 @@ PodcastSettings::slotOk()       //slot
 
     if( m_ps->m_streamRadio->isChecked() )
         m_fetch = STREAM;
-    else if( m_ps->m_downloadRequestRadio->isChecked() )
-        m_fetch = DOWNLOAD;
     else
-        m_fetch = AVAILABLE;
+        m_fetch = AUTOMATIC;
 
     KDialogBase::slotOk();
 }

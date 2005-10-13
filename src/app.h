@@ -83,6 +83,8 @@ class App : public KApplication, public EngineObserver
         PlayerWidget        *m_pPlayerWindow;
         PlaylistWindow      *m_pPlaylistWindow;
         amaroK::TrayIcon    *m_pTray;
+
+        static char cwd[PATH_MAX];
 };
 
 #define pApp static_cast<App*>(kapp)

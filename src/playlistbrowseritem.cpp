@@ -989,7 +989,7 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
     , m_hasProblem( false )
     , m_autoScan( true )
     , m_interval( 4 )
-    , m_mediaFetch( DOWNLOAD )
+    , m_mediaFetch( STREAM )
     , m_purgeItems( false )
     , m_purgeCount( 2 ) // we do a small hack here to make sure we only download the first 2 items of a new pc.
     , m_last( 0 )
@@ -1023,8 +1023,8 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
     , m_purgeCount( channelSettings.namedItem( "purgecount").toElement().text().toInt() )
     , m_last( 0 )
 {
-    if( channelSettings.namedItem( "fetch").toElement().text() == "download" )
-        m_mediaFetch = DOWNLOAD;
+    if( channelSettings.namedItem( "fetch").toElement().text() == "automatic" )
+        m_mediaFetch = AUTOMATIC;
     else
         m_mediaFetch = STREAM;
 
@@ -1062,7 +1062,7 @@ PodcastChannel::configure()
         m_purgeCount = settings->purgeCount();
 
 
-        bool downloadMedia = ( (mediaFetch != m_mediaFetch) && (m_mediaFetch == AVAILABLE) );
+        bool downloadMedia = ( (mediaFetch != m_mediaFetch) && (m_mediaFetch == AUTOMATIC) );
 
         if( url != m_url.prettyURL() )
         {
@@ -1304,7 +1304,7 @@ PodcastChannel::setXml( const QDomNode &xml )
 
     QDomNode n = xml.namedItem( "item" );
     int  children = 0;
-    bool downloadMedia = ( m_mediaFetch == AVAILABLE );
+    bool downloadMedia = ( m_mediaFetch == AUTOMATIC );
     for( ; !n.isNull(); n = n.nextSibling() )
     {
         if( m_updating )
@@ -1406,7 +1406,7 @@ PodcastChannel::xml()
         i.appendChild( attr );
 
         attr = doc.createElement( "fetch" );
-        t = doc.createTextNode( ( m_mediaFetch == DOWNLOAD ) ? "download" : "stream" );
+        t = doc.createTextNode( ( m_mediaFetch == AUTOMATIC ) ? "automatic" : "stream" );
         attr.appendChild( t );
         i.appendChild( attr );
 
@@ -1473,7 +1473,7 @@ PodcastItem::PodcastItem( QListViewItem *parent, QListViewItem *after, const QDo
     m_date        = xml.namedItem( "pubDate" ).toElement().text();
     m_duration    = xml.namedItem( "enclosure" ).toElement().attribute( "length" ).toInt();
     m_type        = xml.namedItem( "enclosure" ).toElement().attribute( "type" );
-    const QString url   = xml.namedItem( "enclosure" ).toElement().attribute( "url" );
+    const QString url = xml.namedItem( "enclosure" ).toElement().attribute( "url" );
 
     m_url         = KURL::fromPathOrURL( url );
 
