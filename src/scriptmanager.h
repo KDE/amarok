@@ -47,7 +47,7 @@ class KProcIO;
  *   trackChange
  *   volumeChange: newVolume (range: 0-100)
  *
- * @see http://amarok.kde.org/wiki/index.php/Script-Writing_HowTo
+ * @see http://amarok.kde.org/amarokwiki/index.php/Script-Writing_HowTo
  */
 
 class ScriptManager : public KDialogBase, public EngineObserver
