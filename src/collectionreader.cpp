@@ -275,7 +275,7 @@ CollectionReader::readTags( const QStrList& entries )
 
         incrementProgress();
 
-        const QString path = it.current();
+        const QString path = QFile::decodeName ( it.current() );
         KURL url; url.setPath( path );
         const QString ext = amaroK::extension( path );
         const QString dir = amaroK::directory( path );
