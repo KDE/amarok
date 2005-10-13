@@ -2445,7 +2445,6 @@ void PlaylistBrowserView::contentsDragLeaveEvent( QDragLeaveEvent* )
 
 void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
 {
-    debug() << "Drop event caught" << endl;
     QListViewItem *parent = 0;
     QListViewItem *after;
 
@@ -2463,11 +2462,9 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
 
     if( e->source() == this )
     {
-        debug() << "e->source() == this" << endl;
         moveSelectedItems( item ); // D&D sucks, do it ourselves
     }
     else {
-        debug() << "e->source() == else" << endl;
         KURL::List list;
         QMap<QString, QString> map;
         if( KURLDrag::decode( e, list, map ) ) {
@@ -2589,7 +2586,6 @@ void PlaylistBrowserView::mousePressed( int button, QListViewItem *item, const Q
 
 void PlaylistBrowserView::moveSelectedItems( QListViewItem *newParent )
 {
-    debug() << "Moving some items" << endl;
     if( !newParent || isDynamic( newParent ) || isPodcastChannel( newParent ) ||
          isSmartPlaylist( newParent ) || isPodcastItem( newParent ) )
         return;
@@ -2611,8 +2607,6 @@ void PlaylistBrowserView::moveSelectedItems( QListViewItem *newParent )
     for( QListViewItem *item = selected.first(); item; item = selected.next() )
     {
         QListViewItem *itemParent = item->parent();
-        debug() << "\titem->text(0): " << item->text(0) << endl;
-        debug() << "\tnewParent->text(0): " << newParent->text(0) << endl;
         if( isPlaylistTrackItem( item ) )
         {
             if( !isPlaylist( newParent ) )
@@ -2625,7 +2619,7 @@ void PlaylistBrowserView::moveSelectedItems( QListViewItem *newParent )
         }
         else if( !isCategory( newParent ) )
             continue;
-        debug() << "Droping onto a Category!" << endl;
+
         QListViewItem *base = newParent;
         while( base->parent() )
             base = base->parent();

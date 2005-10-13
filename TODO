@@ -9,9 +9,6 @@ SHORT-TERM (URGENT):
            Check what's going on here.
            http://amarok.kde.org/component/option,com_simpleboard/Itemid,57/func,view/id,8536/catid,8/
 
- <sebr>    Dragging items from the collection browser -> playlist browser and making a new playlist uses
-           the url and not the meta data.
-
  <sebr>    Multiple job statusbar widget is broken.
            ::eean:: akregator has a multiple job statusbar widget that appears to work fine (though it
            ::       might be an illusion of akregator's different use of it).

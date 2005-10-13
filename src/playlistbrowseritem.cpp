@@ -319,7 +319,7 @@ void PlaylistEntry::insertTracks( QListViewItem *after, KURL::List list, QMap<QS
         QString title = str.section(';',0,0);
         int length = str.section(';',1,1).toUInt();
 
-        TrackItemInfo *newInfo = new TrackItemInfo( *it, title.isEmpty() ? key : title, length );
+        TrackItemInfo *newInfo = new TrackItemInfo( *it, title, length );
         m_length += newInfo->length();
         m_trackCount++;
 
@@ -669,11 +669,19 @@ TrackItemInfo::TrackItemInfo( const KURL &u, const QString &t, const int l )
         , m_title( t )
         , m_length( l )
 {
-    if( m_title.isEmpty() )
-        m_title = MetaBundle::prettyTitle( fileBaseName( m_url.path() ) );
-
-    if( m_length < 0 )
-        m_length = 0;
+    MetaBundle *mb = new MetaBundle( u );
+    if( mb->isValidMedia() )
+    {
+        m_title = mb->prettyTitle();
+        m_length = mb->length();
+    }
+    else
+    {
+        if( m_title.isEmpty() )
+            m_title = MetaBundle::prettyTitle( fileBaseName( m_url.path() ) );
+        if( m_length < 0 )
+            m_length = 0;
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////
