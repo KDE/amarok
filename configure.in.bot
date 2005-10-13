@@ -183,7 +183,7 @@ else
         echo " =   + MAS-engine"
     fi
 
-    if test x$build_helix = xyes; then
+    if test x$build_helix != xno; then
         echo " =   + Helix-engine"
     fi
 
