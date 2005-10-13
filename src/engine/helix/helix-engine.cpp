@@ -16,6 +16,8 @@
 #include <cmath>
 #include <stdarg.h>
 
+#include <config.h>
+
 #include <iostream>
 
 #include "debug.h"
@@ -57,9 +59,9 @@ static inline QCString configPath() { return QFile::encodeName( QDir::homeDirPat
 HelixEngine::HelixEngine()
    : EngineBase(), HelixSimplePlayer(),
      m_state(Engine::Empty),
-     m_coredir("/usr/local/RealPlayer/common"),
-     m_pluginsdir("/usr/local/RealPlayer/plugins"),
-     m_codecsdir("/usr/local/RealPlayer/codecs"),
+     m_coredir(HELIX_LIBS "/common"),
+     m_pluginsdir(HELIX_LIBS "/plugins"),
+     m_codecsdir(HELIX_LIBS "/codecs"),
      m_inited(false),
      m_item(0),
 #ifdef DEBUG_PURPOSES_ONLY
@@ -142,16 +144,16 @@ HelixEngine::init()
    m_current = 1;
 
    m_coredir = HelixConfig::coreDirectory();
-   if (!m_coredir.length())
-      m_coredir = "/usr/local/RealPlayer/common";
+   if (m_coredir.isEmpty())
+      m_coredir = HELIX_LIBS "/common";
 
    m_pluginsdir = HelixConfig::pluginDirectory();
-   if (!m_pluginsdir.length())
-      m_pluginsdir = "/usr/local/RealPlayer/plugins";
+   if (m_pluginsdir.isEmpty())
+      m_pluginsdir = HELIX_LIBS "/plugins";
 
    m_codecsdir = HelixConfig::codecsDirectory();
-   if (!m_codecsdir.length())
-      m_codecsdir = "/usr/local/RealPlayer/codecs";
+   if (m_codecsdir.isEmpty())
+      m_codecsdir = HELIX_LIBS "/codecs";
 
    if (!stat(m_coredir.utf8(), &s) && !stat(m_pluginsdir.utf8(), &s) && !stat(m_codecsdir.utf8(), &s))
    {

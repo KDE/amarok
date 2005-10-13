@@ -269,27 +269,31 @@ AC_MSG_CHECKING([for RealPlayer or HelixPlayer])
 HXPLAY=`type -p hxplay`
 RPLAY=`type -p realplay`
 if test "$RPLAY" != "" -a -x "$RPLAY"; then
-      HELIX_LIBS=`grep 'HELIX_LIBS=/' $RPLAY|cut -d';' -f1|cut -d'=' -f2|cut -d' ' -f1`
+      HELIX_LIBS=`grep 'HELIX_LIBS=' $RPLAY|cut -d';' -f1|cut -d'=' -f2|cut -d' ' -f1 | head -n 1`
       if test -e "$HELIX_LIBS/common/clntcore.so"; then
          echo "found RealPlayer"
-         build_helix=yes
+         build_helix=$HELIX_LIBS
       fi
 elif test "$HXPLAY" != "" -a -x "$HXPLAY"; then
-      HELIX_LIBS=`grep 'HELIX_LIBS=/' $HXPLAY|cut -d';' -f1|cut -d'=' -f2|cut -d' ' -f1`
+      HELIX_LIBS=`grep 'HELIX_LIBS=' $HXPLAY|cut -d';' -f1|cut -d'=' -f2|cut -d' ' -f1 | head -n 1`
       if test -e "$HELIX_LIBS/common/clntcore.so"; then
          echo "found HelixPlayer"
-         build_helix=yes
+         build_helix=$HELIX_LIBS
       fi
 fi
 
 
 if test "$build_helix" != "no"; then
     AC_DEFINE(HAVE_HELIX, 1, [have HELIX])
+    if test "$build_helix" = "yes"; then
+      HELIX_LIBS="/usr/local/RealPlayer"
+    fi
+    AC_DEFINE_UNQUOTED(HELIX_LIBS, ${HELIX_LIBS}, [location of helix libs])
 else
     echo "no"
 fi
 
-AM_CONDITIONAL(with_helix, test x$build_helix = xyes)
+AM_CONDITIONAL(with_helix, test x$build_helix != xno)
 
 ###############################################################################
 # END HELIX CHECK

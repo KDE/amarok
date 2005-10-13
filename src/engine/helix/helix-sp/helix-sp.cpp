@@ -1827,7 +1827,7 @@ int main( int argc, char *argv[] )
     pthread_t thr1, thr2;
     struct pt_t x = { 1, &splay };
 
-    splay.init("/usr/local/RealPlayer/common","/usr/local/RealPlayer/plugins","/usr/local/RealPlayer/codecs", 2);
+    splay.init(HELIX_DIR "/common", HELIX_DIR "/plugins", HELIX_DIR "/codecs", 2);
     
     pthread_create(&thr1, 0, play_thread, (void *) &x);
 

@@ -28,6 +28,7 @@
 #include "helix-engine.h"
 
 #include "config/helixconfig.h"
+#include <config.h>
 
 #include <iostream>
 
@@ -157,10 +158,10 @@ HelixConfigDialog::HelixConfigDialog( HelixEngine *engine, QWidget *p )
     // lets find the logo if we can
     QPixmap *pm = 0;
     QString logo = HelixConfig::coreDirectory();
-    if (logo[logo.length() - 1] == '/')
-       logo.append("../share/");
-    else
-       logo.append("/../share/");
+    if (logo.isEmpty()) 
+       logo = HELIX_LIBS "/common";
+
+    logo.append("/../share/");
 
     QString tmp = logo;
     tmp.append("hxplay/logo.png");

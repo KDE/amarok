@@ -225,9 +225,9 @@ int main( int argc, char *argv[] )
     }
 
     HXSplay splay;
-    splay.init("/usr/local/RealPlayer/common",
-               "/usr/local/RealPlayer/plugins",
-               "/usr/local/RealPlayer/codecs");
+    splay.init(HELIX_DIR "/common",
+               HELIX_DIR "/plugins",
+               HELIX_DIR "/codecs");
     splay.setURL(argv[i-1]);
 
     sleep(5);

@@ -5,22 +5,23 @@
       xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
       http://www.kde.org/standards/kcfg/1.0/kcfg.xsd" >
     <kcfgfile name="amarokrc"/>
+    <include>config.h</include>
 
     <group name="Helix-Engine">
         <entry key="Core Directory" type="String">
             <label>Helix/Realplay core directory</label>
             <whatsthis>This is the directory where clntcore.so is located</whatsthis>
-            <default>/usr/local/RealPlayer/common</default>
+            <default code="true">HELIX_LIBS "/common"</default>
         </entry>
         <entry key="Plugin Directory" type="String">
             <label>Helix/Realplay plugins directory</label>
             <whatsthis>This is the directory where, for example, vorbisrend.so is located</whatsthis>
-            <default>/usr/local/RealPlayer/plugins</default>
+            <default code="true">HELIX_LIBS "/plugins"</default>
         </entry>
         <entry key="Codecs Directory" type="String">
             <label>Helix/Realplay codecs directory</label>
             <whatsthis>This is the directory where, for example, cvt1.so is located</whatsthis>
-            <default>/usr/local/RealPlayer/codecs</default>
+            <default code="true">HELIX_LIBS "/codecs"</default>
         </entry>
     </group>
 
