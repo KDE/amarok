@@ -2411,7 +2411,7 @@ void PlaylistBrowserView::slotAnimation() //SLOT
 
 void PlaylistBrowserView::contentsDragEnterEvent( QDragEnterEvent *e )
 {
-    e->accept( e->source() != viewport() && KURLDrag::canDecode( e ) );
+    e->accept( e->source() == viewport() || KURLDrag::canDecode( e ) );
 }
 
 void PlaylistBrowserView::contentsDragMoveEvent( QDragMoveEvent* e )
@@ -2445,6 +2445,7 @@ void PlaylistBrowserView::contentsDragLeaveEvent( QDragLeaveEvent* )
 
 void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
 {
+    debug() << "Drop event caught" << endl;
     QListViewItem *parent = 0;
     QListViewItem *after;
 
@@ -2460,9 +2461,13 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
 
     eraseMarker();
 
-    if( e->source() == viewport() )
-        e->ignore();    //TODO add support to move tracks
+    if( e->source() == this )
+    {
+        debug() << "e->source() == this" << endl;
+        moveSelectedItems( item ); // D&D sucks, do it ourselves
+    }
     else {
+        debug() << "e->source() == else" << endl;
         KURL::List list;
         QMap<QString, QString> map;
         if( KURLDrag::decode( e, list, map ) ) {
@@ -2582,6 +2587,60 @@ void PlaylistBrowserView::mousePressed( int button, QListViewItem *item, const Q
     }
 }
 
+void PlaylistBrowserView::moveSelectedItems( QListViewItem *newParent )
+{
+    debug() << "Moving some items" << endl;
+    if( !newParent || isDynamic( newParent ) || isPodcastChannel( newParent ) ||
+         isSmartPlaylist( newParent ) || isPodcastItem( newParent ) )
+        return;
+
+    if( newParent == PlaylistBrowser::instance()->m_coolStreams ||
+        newParent == PlaylistBrowser::instance()->m_smartDefaults )
+        return;
+
+    QPtrList<QListViewItem> selected;
+    QListViewItemIterator it( this, QListViewItemIterator::Selected );
+    for( ; it.current(); ++it )
+    {
+        if( !(*it)->parent() ) //must be a base category we are draggin'
+            continue;
+
+        selected.append( *it );
+    }
+
+    for( QListViewItem *item = selected.first(); item; item = selected.next() )
+    {
+        QListViewItem *itemParent = item->parent();
+        debug() << "\titem->text(0): " << item->text(0) << endl;
+        debug() << "\tnewParent->text(0): " << newParent->text(0) << endl;
+        if( isPlaylistTrackItem( item ) )
+        {
+            if( !isPlaylist( newParent ) )
+                continue;
+            else
+            {
+                itemParent->takeItem( item );
+                newParent->insertItem( item );
+            }
+        }
+        else if( !isCategory( newParent ) )
+            continue;
+        debug() << "Droping onto a Category!" << endl;
+        QListViewItem *base = newParent;
+        while( base->parent() )
+            base = base->parent();
+
+        if( base == PlaylistBrowser::instance()->m_playlistCategory && isPlaylist( item )   ||
+            base == PlaylistBrowser::instance()->m_streamsCategory && isStream( item )      ||
+            base == PlaylistBrowser::instance()->m_smartCategory && isSmartPlaylist( item ) ||
+            base == PlaylistBrowser::instance()->m_dynamicCategory && isDynamic( item )     ||
+            base == PlaylistBrowser::instance()->m_podcastCategory && isPodcastChannel( item ) )
+        {
+            itemParent->takeItem( item );
+            newParent->insertItem( item );
+        }
+    }
+}
 
 void PlaylistBrowserView::rename( QListViewItem *item, int c )
 {

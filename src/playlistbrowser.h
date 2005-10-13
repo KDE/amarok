@@ -71,7 +71,7 @@ class PlaylistBrowser : public QVBox
 
         ViewMode viewMode() const { return m_viewMode; }
 
-        static PlaylistBrowser *instance() { 
+        static PlaylistBrowser *instance() {
         if(!s_instance)  s_instance = new PlaylistBrowser("PlaylistBrowser");
         return s_instance; }
 
@@ -187,6 +187,7 @@ class PlaylistBrowserView : public KListView
 
     private slots:
         void mousePressed( int, QListViewItem *, const QPoint &, int );
+        void moveSelectedItems( QListViewItem* newParent );
         void slotAnimation();
 
     private:

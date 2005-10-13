@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.3.4:
   FEATURES:
+    * Playlistbrowser items can be dragged into folders.
 
   CHANGES:
     * Podcast settings "download on request" and "stream on request" have
