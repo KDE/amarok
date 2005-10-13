@@ -8,7 +8,7 @@ VERSION 1.3.4:
 
   CHANGES:
     * About button in script manager now uses a KAboutDialog and supports
-      rich text format in the README file.
+      rich text format in the README file. (BR 110961)
     * After filtering the collection browser, if only a single item is left
       visible, it will automatically be expanded.
     * Added items for the Equalizer, Visualizations, and Queue Manager to
