@@ -121,9 +121,6 @@
                     <property name="text">
                         <string>Stream or download on re&amp;quest</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+Q</string>
-                    </property>
                     <property name="toolTip" stdset="0">
                         <string>Media must be downloaded, otherwise the podcast will be played from the remote server.</string>
                     </property>
@@ -137,9 +134,6 @@
                     </property>
                     <property name="text">
                         <string>Download when a&amp;vailable</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+V</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Download media as soon as it becomes available</string>
