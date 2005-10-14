@@ -154,6 +154,12 @@ App::App()
     QFile cpuinfo( "/proc/cpuinfo" );
     if ( cpuinfo.open( IO_ReadOnly ) ) {
         while ( cpuinfo.readLine( line, 20000 ) != -1 ) {
+            if ( line.startsWith( "vendor_id" ) && line.contains( "AuthenticAMD" ) ) {
+                // Special case for AMD CPU's like the Athlon 64 X2, which reports a bogus
+                // HT flag. @see BUG 114190
+                cpuCount = 1;
+                break;
+            }
             if ( line.startsWith( "flags" ) ) {
                 const QString flagsLine = line.section( ":", 1 );
                 const QStringList flags = QStringList::split( " ", flagsLine );
