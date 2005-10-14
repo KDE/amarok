@@ -533,10 +533,10 @@ ScriptManager::slotAboutScript()
     DEBUG_BLOCK
 
     const QString name = m_gui->listView->currentItem()->text( 0 );
-    QFile file( m_scripts[name].url.directory( false ) + "README" );
+    QFile readme( m_scripts[name].url.directory( false ) + "README" );
     QFile license( m_scripts[name].url.directory( false ) + "COPYING" );
 
-    if ( !file.open( IO_ReadOnly ) ) {
+    if ( !readme.open( IO_ReadOnly ) ) {
         KMessageBox::sorry( 0, i18n( "There is no information available for this script." ) );
         return;
     }
@@ -547,23 +547,15 @@ ScriptManager::slotAboutScript()
     kapp->setTopWidget( about );
     about->setCaption( kapp->makeStdCaption( i18n( "About %1" ).arg( name ) ) );
     about->setProduct( "", "", "", "" );
-    //Get rid of the confusing KDE version thing
-    QLabel* product = static_cast<QLabel*>(about->mainWidget()->child("version"));
-    if(product)
-        product->setText(i18n( "%1 amaroK Script" ).arg( name ));
-    
-    QTextStream stream( &file );
-    QString text = stream.read();
-    about->addTextPage( i18n( "About" ), text, true );
+    // Get rid of the confusing KDE version text
+    QLabel* product = static_cast<QLabel*>( about->mainWidget()->child( "version" ) );
+    if ( product ) product->setText( i18n( "%1 amaroK Script" ).arg( name ) );
 
-    if ( license.open( IO_ReadOnly ) ) {
-        QTextStream lic( &license );
-        QString lictext = lic.read();
-        about->addLicensePage( i18n( "License" ), lictext );
-    }
+    about->addTextPage( i18n( "About" ), readme.readAll(), true );
+    if ( license.open( IO_ReadOnly ) )
+        about->addLicensePage( i18n( "License" ), license.readAll() );
 
     about->setInitialSize( QSize( 500, 350 ) );
-
     about->show();
 }
 
