@@ -277,7 +277,7 @@
     <include location="local" impldecl="in implementation">amarokconfig.h</include>
     <include location="local" impldecl="in implementation">config.h</include>
     <include location="local" impldecl="in implementation">debug.h</include>
-    <include location="local" impldecl="in implementation">DbSetup.ui.h</include>
+    <include location="local" impldecl="in implementation">dbsetup.ui.h</include>
 </includes>
 <slots>
     <slot access="private" specifier="non virtual">databaseEngineChanged()</slot>
