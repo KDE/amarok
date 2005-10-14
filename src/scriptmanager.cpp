@@ -548,7 +548,7 @@ ScriptManager::slotAboutScript()
     about->setCaption( kapp->makeStdCaption( i18n( "About %1" ).arg( name ) ) );
     about->setProduct( "", "", "", "" );
     //Get rid of the confusing KDE version thing
-    QLabel* product = dynamic_cast<QLabel*>(about->mainWidget()->child("version"));
+    QLabel* product = static_cast<QLabel*>(about->mainWidget()->child("version"));
     if(product)
         product->setText(i18n( "%1 amaroK Script" ).arg( name ));
     
