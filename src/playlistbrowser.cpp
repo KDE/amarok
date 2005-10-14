@@ -1012,7 +1012,10 @@ void PlaylistBrowser::downloadSelectedPodcasts()
     {
         if( isPodcastItem( *it ) )
         {
-            m_podcastDownloadQueue.append( static_cast<PodcastItem*>(*it) );
+            #define item static_cast<PodcastItem*>(*it)
+            if( !item->hasDownloaded() )
+                m_podcastDownloadQueue.append( item );
+            #undef  item
         }
     }
     downloadPodcastQueue();

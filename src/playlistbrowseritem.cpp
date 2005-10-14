@@ -1138,7 +1138,8 @@ PodcastChannel::downloadChildren()
     while( item )
     {
         #define item static_cast<PodcastItem*>(item)
-        m_podcastDownloadQueue.append( item );
+        if( !item->hasDownloaded() )
+            m_podcastDownloadQueue.append( item );
         #undef  item
 
         item = item->nextSibling();
@@ -1343,10 +1344,6 @@ PodcastChannel::setXml( const QDomNode &xml )
             if( !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
             {
                 updatingLast = new PodcastItem( this, updatingLast, n.toElement() );
-
-                if( downloadMedia )
-                    updatingLast->downloadMedia();
-
                 updatingLast->setNew();
             }
         }
@@ -1360,8 +1357,6 @@ PodcastChannel::setXml( const QDomNode &xml )
             if( !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
             {
                 m_last = new PodcastItem( this, m_last, n.toElement() );
-                if( downloadMedia )
-                    m_last->downloadMedia();
                 children++;
             }
         }
@@ -1370,6 +1365,9 @@ PodcastChannel::setXml( const QDomNode &xml )
 
     if( childCount() > m_purgeCount )
         purge();
+
+    if( downloadMedia )
+        downloadChildren();
 
     if( firstChild() && static_cast<PodcastItem *>( firstChild() )->isNew() && m_updating )
     {
