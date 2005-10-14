@@ -1096,6 +1096,7 @@ PodcastChannel::configure()
             m_saveLocation = KURL::fromPathOrURL( save );
 
             PodcastItem *item = static_cast<PodcastItem*>( firstChild() );
+            // get a list of the urls of already downloaded items
             while( item )
             {
                 if( item->hasDownloaded() )
@@ -1103,22 +1104,16 @@ PodcastChannel::configure()
                     copyList << item->localUrl();
                     item->setLocalUrlBase( save );
                 }
-                else if( downloadMedia )
-                {
-                    item->setLocalUrlBase( save );
-                    item->downloadMedia();
-                }
 
                 item = static_cast<PodcastItem*>( item->nextSibling() );
             }
+            // move the items
             if( !copyList.isEmpty() )
             {
                 KIO::CopyJob* m_podcastMoveJob = new KIO::CopyJob( copyList, m_saveLocation, KIO::CopyJob::Move, false, false );
                 amaroK::StatusBar::instance()->newProgressOperation( m_podcastMoveJob )
                         .setDescription( i18n( "Moving Podcasts" ) );
             }
-
-            downloadMedia = false;
         }
 
         if( autoScan != m_autoScan )
@@ -1131,18 +1126,36 @@ PodcastChannel::configure()
 
         if( downloadMedia )
         {
-            PodcastItem *item = static_cast<PodcastItem*>( firstChild() );
-            while( item )
-            {
-                if( !item->hasDownloaded() )
-                {
-                    item->downloadMedia();
-                }
-
-                item = static_cast<PodcastItem*>( item->nextSibling() );
-            }
+            downloadChildren();
         }
     }
+}
+
+void
+PodcastChannel::downloadChildren()
+{
+    QListViewItem *item = firstChild();
+    while( item )
+    {
+        #define item static_cast<PodcastItem*>(item)
+        m_podcastDownloadQueue.append( item );
+        #undef  item
+
+        item = item->nextSibling();
+    }
+    downloadChildQueue();
+}
+
+void
+PodcastChannel::downloadChildQueue()
+{
+    if( m_podcastDownloadQueue.isEmpty() ) return;
+
+    PodcastItem *first = m_podcastDownloadQueue.first();
+    first->downloadMedia();
+    m_podcastDownloadQueue.removeFirst();
+
+    connect( first, SIGNAL( downloadFinished() ), this, SLOT( downloadChildQueue() ) );
 }
 
 const KURL

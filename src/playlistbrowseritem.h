@@ -313,11 +313,13 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
 
     private slots:
         void abortFetch();
+        void downloadChildQueue();
         void fetchResult( KIO::Job* job );
         void slotAnimation();
 
     private:
         bool containsItem( QDomElement xml );
+        void downloadChildren();
         void purge();
         void removeChildren();
         void startAnimation();
@@ -349,6 +351,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         PodcastItem         *m_last;
         KIO::TransferJob    *m_podcastJob;
         QString              m_podcastCurrentUrl;
+        QPtrList<PodcastItem> m_podcastDownloadQueue;
 };
 
 class StreamEntry : public PlaylistBrowserEntry
