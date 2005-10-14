@@ -34,6 +34,7 @@
 #include <qdir.h>
 #include <qfileinfo.h>
 #include <qfont.h>
+#include <qlabel.h>
 #include <qtimer.h>
 
 #include <kaboutdialog.h>
@@ -545,8 +546,12 @@ ScriptManager::slotAboutScript()
                                             KDialogBase::Ok, KDialogBase::Ok, this );
     kapp->setTopWidget( about );
     about->setCaption( kapp->makeStdCaption( i18n( "About %1" ).arg( name ) ) );
-    about->setProduct( i18n( "%1 amaroK Script" ).arg( name ), "", "", "" );
-
+    about->setProduct( "", "", "", "" );
+    //Get rid of the confusing KDE version thing
+    QLabel* product = dynamic_cast<QLabel*>(about->mainWidget()->child("version"));
+    if(product)
+        product->setText(i18n( "%1 amaroK Script" ).arg( name ));
+    
     QTextStream stream( &file );
     QString text = stream.read();
     about->addTextPage( i18n( "About" ), text, true );
