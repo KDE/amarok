@@ -38,7 +38,7 @@
 
 using namespace NMM;
 
-class NmmEngine : public EngineBase, public ThreadedObject
+class NmmEngine : public Engine::Base, public ThreadedObject
 {
 Q_OBJECT
 public:
@@ -93,6 +93,8 @@ private:
      * is emitted from a secondary thread, allowing the endTrack method to return.
      */
     void run();
+
+    void customEvent( QCustomEvent* );
 
     /**
      * The current track position in milliseconds.

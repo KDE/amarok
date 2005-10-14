@@ -28,7 +28,9 @@
 
 #ifdef HAVE_NMM
 
+#include "debug.h"
 #include "plugin/plugin.h"
+
 #include <nmm/base/graph/GraphBuilder2.hpp>
 #include <nmm/base/registry/NodeDescription.hpp>
 #include <nmm/base/ProxyApplication.hpp>
@@ -41,6 +43,9 @@
 #include <nmm/interfaces/general/ITrackDuration.hpp>
 #include <nmm/interfaces/device/audio/IAudioDevice.hpp>
 #include <nmm/base/ProxyObject.hpp>
+
+#include <qapplication.h>
+
 #include <kfileitem.h>
 #include <kmimetype.h>
 #include <iostream>
@@ -49,7 +54,7 @@
 AMAROK_EXPORT_PLUGIN( NmmEngine )
 
 NmmEngine::NmmEngine()
-  : EngineBase(),
+  : Engine::Base(),
     __position(0),
     __track_length(0),
     __state(Engine::Empty),
@@ -356,7 +361,7 @@ void NmmEngine::run()
   while (__running) {
     __cond.wait();
     if (__running) {
-      emit trackEnded();
+      QApplication::postEvent(this, new QCustomEvent(3000) );
     }
   }
 }
@@ -373,6 +378,20 @@ Result NmmEngine::endTrack()
   __mutex.unlock();
 
   return SUCCESS;
+}
+
+void NmmEngine::customEvent( QCustomEvent *e )
+{
+    switch( e->type() )
+    {
+        case 3000:
+            // emit signal from GUI thread
+            emit trackEnded();
+            break;
+
+        default:
+            ;
+    }
 }
 
 Result NmmEngine::syncReset()
