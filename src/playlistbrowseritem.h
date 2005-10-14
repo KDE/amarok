@@ -242,6 +242,9 @@ class PodcastItem : public QObject, public PlaylistBrowserEntry
         int rtti() const { return RTTI; }
         static const int RTTI = 1007;              //podcastitem
 
+    signals:
+        void downloadFinished();
+
     private slots:
         void abortDownload();
         void downloadResult( KIO::Job* job );

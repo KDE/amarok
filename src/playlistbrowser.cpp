@@ -1004,6 +1004,31 @@ bool PlaylistBrowser::deletePodcasts( QPtrList<PodcastChannel> items )
     return false;
 }
 
+void PlaylistBrowser::downloadSelectedPodcasts()
+{
+    QListViewItemIterator it( m_listview, QListViewItemIterator::Selected );
+
+    for( ; it.current(); ++it )
+    {
+        if( isPodcastItem( *it ) )
+        {
+            m_podcastDownloadQueue.append( static_cast<PodcastItem*>(*it) );
+        }
+    }
+    downloadPodcastQueue();
+}
+
+void PlaylistBrowser::downloadPodcastQueue() //SLOT
+{
+    if( m_podcastDownloadQueue.isEmpty() ) return;
+
+    PodcastItem *first = m_podcastDownloadQueue.first();
+    first->downloadMedia();
+    m_podcastDownloadQueue.removeFirst();
+
+    connect( first, SIGNAL( downloadFinished() ), this, SLOT( downloadPodcastQueue() ) );
+}
+
 /**
  *************************************************************************
  *  PLAYLISTS
@@ -2126,10 +2151,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue" ), QUEUE );
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( "info" ), i18n( "Show &Information" ), INFO );
-
-        PodcastChannel *chan = dynamic_cast<PodcastChannel*>(item->itemChannel());
-        if( chan && chan->mediaFetch() != PodcastChannel::STREAM )
-            menu.insertItem( SmallIconSet( "down" ), i18n( "&Download Media" ), GET );
+        menu.insertItem( SmallIconSet( "down" ), i18n( "&Download Media" ), GET );
 
         menu.setItemEnabled( GET, !item->hasDownloaded() );
 
@@ -2157,7 +2179,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 break;
 
             case GET:
-                item->downloadMedia();
+                downloadSelectedPodcasts();
                 break;
 
             case MEDIA_DEVICE:
@@ -2323,7 +2345,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 else KMessageBox::sorry( this, i18n( "This file does not exist: %1" ).arg( item->url().path() ) );
         }
         #undef item
-   }
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////

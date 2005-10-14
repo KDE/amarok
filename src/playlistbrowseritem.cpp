@@ -1547,6 +1547,8 @@ PodcastItem::abortDownload() //SLOT
 void
 PodcastItem::downloadResult( KIO::Job* job ) //SLOT
 {
+    emit downloadFinished();
+
     stopAnimation();
     setText( 0, m_title );
     if ( !job->error() == 0 ) {

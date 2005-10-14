@@ -13,9 +13,6 @@ SHORT-TERM (URGENT):
  <sebr>    Multiple job statusbar widget is broken.
            ::eean:: akregator has a multiple job statusbar widget that appears to work fine (though it
            ::       might be an illusion of akregator's different use of it).
- <sebr>    Use a download queue when downloading lots of podcasts simulateously.
-
- <sebr>    Downloading multiple podcasts at once should throw them into a download queue.
 
  <sebr>    Cancelling a podcast download shows an empty popup message and i can't figure out where from
 

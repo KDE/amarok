@@ -5,6 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.3.4:
   FEATURES:
+    * Downloading multiple podcasts will throw them into a queue, and
+      each will be downloaded sequentially. (BR 114370)
     * Playlistbrowser items can be dragged into folders.
 
   CHANGES:

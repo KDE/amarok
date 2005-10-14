@@ -86,6 +86,7 @@ class PlaylistBrowser : public QVBox
         void addToDynamic();
         void collectionScanDone();
         void currentItemChanged( QListViewItem * );
+        void downloadPodcastQueue();
         void editStreamURL( StreamEntry *item );
         void removeSelectedItems();
         void renamePlaylist( QListViewItem*, const QString&, int );
@@ -121,6 +122,7 @@ class PlaylistBrowser : public QVBox
         void savePodcasts();
         void changePodcastInterval();
         bool deletePodcasts( QPtrList<PodcastChannel> items );
+        void downloadSelectedPodcasts();
 
         PlaylistCategory* loadPlaylists();
         void loadOldPlaylists();
@@ -162,6 +164,7 @@ class PlaylistBrowser : public QVBox
         QTimer              *m_podcastTimer;
         int                  m_podcastTimerInterval;        //in ms
         QPtrList<PodcastChannel> m_podcastItemsToScan;
+        QPtrList<PodcastItem> m_podcastDownloadQueue;
 
         bool                 m_removeDirt;
 };
