@@ -49,7 +49,7 @@ namespace Log
     static uint bufferCount = 0;
     static uint scopeCallCount = 1; //prevent divideByZero
     static uint noSuitableBuffer = 0;
-};
+}
 
 ///returns the configuration we will use. there is no KInstance, so using this hacked up method.
 //static inline QCString configPath() { return QFile::encodeName(KStandardDirs().localkdedir() + KStandardDirs::kde_default("data") + "amarok/xine-config"); }
