@@ -152,7 +152,7 @@ if test x$no_amarok = xyes; then
     echo " = Some mandatory dependencies are either not installed or not installed"
     echo " = correctly. See the amaroK README for help with this issue. Further assistance"
     echo " = can be found at http://amarok.kde.org or in amarok on irc.freenode.net."
-    echo " = You will still be able to build other modules from kde-extragear1."
+    echo " = You will still be able to build other modules from extragear/multimedia."
     echo " ="
 
 else
