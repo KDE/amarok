@@ -22,7 +22,7 @@ interface, that really makes playlist handling easy.
     * Automatic play-statistics generation (iRate style)
     * Full lyrics download
     * Learn about your music with integrated Wikipedia
-    * Full Audioscrobbler support
+    * Full last.fm support
     * Visualisations with libvisual
     * Streaming from any KIO source
     * Crossfading
