@@ -264,7 +264,7 @@ QDomElement SmartPlaylistEditor::result() {
         // Iterate through all criteria list
         CriteriaEditor *criteriaeditor = m_criteriaEditorList.first();
         for( int i=0; criteriaeditor; criteriaeditor = m_criteriaEditorList.next(), ++i ) {
-            matches.appendChild( criteriaeditor->getDomSearchCriteria( doc ) );
+            matches.appendChild( doc.importNode( criteriaeditor->getDomSearchCriteria( doc ), true ) );
         }
         if ( m_criteriaEditorList.count() > 1 ) {
             matches.setAttribute( "glue", m_matchCombo->currentItem() == 0 ? "AND" : "OR" );
