@@ -1635,6 +1635,7 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
             foreachType( QPtrList<PlaylistEntry>, playlistsToDelete )
             {
                 m_dynamicEntries.remove(*it);
+                delete (*it);
             }
 
             foreachType( QPtrList<PlaylistCategory>, playlistFoldersToDelete )
