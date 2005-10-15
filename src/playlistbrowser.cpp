@@ -371,7 +371,9 @@ PlaylistCategory* PlaylistBrowser::loadStreams()
     else {
         e = d.namedItem( "category" ).toElement();
         if ( e.attribute("formatversion") =="1.1" ) {
-            return new PlaylistCategory(m_listview, m_playlistCategory, e );
+            PlaylistCategory* p = new PlaylistCategory(m_listview, m_playlistCategory, e );
+            p->setText(0, i18n("Radio Streams") );
+            return p;
         }
         else { // Old unversioned format
             PlaylistCategory* p = new PlaylistCategory(m_listview, m_playlistCategory, i18n("Radio Streams") );
@@ -516,7 +518,9 @@ PlaylistCategory* PlaylistBrowser::loadSmartPlaylists()
     else {
         e = d.namedItem( "category" ).toElement();
         if ( e.attribute("formatversion") =="1.1" ) {
-            return new PlaylistCategory(m_listview, m_streamsCategory, e );
+            PlaylistCategory* p = new PlaylistCategory(m_listview, m_streamsCategory, e );
+            p->setText( 0, i18n("Smart Playlists") );
+            return p;
         }
         else { // Old unversioned format
             PlaylistCategory* p = new PlaylistCategory(m_listview, m_streamsCategory , i18n("Smart Playlists") );
@@ -752,7 +756,9 @@ PlaylistCategory* PlaylistBrowser::loadDynamics()
     else {
         e = d.namedItem( "category" ).toElement();
         if ( e.attribute("formatversion") =="1.1" ) {
-            return new PlaylistCategory( m_listview, after , e );
+            PlaylistCategory* p = new PlaylistCategory( m_listview, after , e );
+            p->setText( 0, i18n("Dynamic Playlists") );
+            return p;
         }
         else { // Old unversioned format
             PlaylistCategory* p = new PlaylistCategory( m_listview, after, i18n("Dynamic Playlists") );
@@ -871,6 +877,7 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
 
         e = d.namedItem( "category" ).toElement();
         PlaylistCategory *p = new PlaylistCategory( m_listview, m_playlistCategory , e );
+        p->setText( 0, i18n("Podcasts") );
 
         if( !m_podcastItemsToScan.isEmpty() )
             m_podcastTimer->start( m_podcastTimerInterval );
@@ -1083,7 +1090,9 @@ PlaylistCategory* PlaylistBrowser::loadPlaylists()
     else {
         e = d.namedItem( "category" ).toElement();
         if ( e.attribute("formatversion") =="1.1" ) {
-            return new PlaylistCategory(m_listview, 0 , e );
+            PlaylistCategory* p = new PlaylistCategory(m_listview, 0 , e );
+            p->setText( 0, i18n("Playlists") );
+            return p;
         }
         else { // Old unversioned format
             PlaylistCategory* p = new PlaylistCategory(m_listview, 0 , i18n("Playlists") );
