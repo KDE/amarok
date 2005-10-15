@@ -237,7 +237,7 @@ class PodcastItem : public QObject, public PlaylistBrowserEntry
         const QString &description() { return m_description; }
         const int     &duration() { return m_duration; }
         const KURL    &localUrl() { return m_localUrl; }
-        void  setLocalUrlBase( QString &s );
+        void  setLocalUrlBase( const QString &s );
 
         int rtti() const { return RTTI; }
         static const int RTTI = 1007;              //podcastitem
@@ -288,7 +288,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
 
         enum MediaFetch{ STREAM=0, AUTOMATIC=1 };
 
-        void sortChildItems ( int /*column*/, bool /*ascending*/ ) { /* Don't sort its children */ }; //reimplemented
+        void sortChildItems( int /*column*/, bool /*ascending*/ ) { /* Don't sort its children */ }; //reimplemented
 
         void setNew( bool n = true );
         bool hasNew() { return m_new; }
@@ -296,14 +296,20 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         void  configure();
         void  fetch();
         void  rescan();
+        void  setSettings( const QString &save, const bool autoFetch, const int fetchType,
+                           const bool purgeItems, const int purgeCount );
         void  showAbout();
+
         const KURL &url() { return m_url; }
         const KURL xmlUrl();
         const QString &title() { return m_title; }
-        const int timeout() { return m_interval; }
-        const int mediaFetch() { return m_mediaFetch; }
+
         const bool autoScan() { return m_autoScan; }
+        const int  mediaFetch() { return m_mediaFetch; }
+        const bool hasPurge() { return m_purgeItems; }
+        const int  purgeCount() { return m_purgeCount; }
         const KURL &saveLocation() { return m_saveLocation; }
+        const int  timeout() { return m_interval; }
 
         void setXml( const QDomNode &xml );
         QDomElement xml();
@@ -348,9 +354,9 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         bool        m_purgeItems;
         int         m_purgeCount;
 
-        PodcastItem         *m_last;
-        KIO::TransferJob    *m_podcastJob;
-        QString              m_podcastCurrentUrl;
+        PodcastItem          *m_last;
+        KIO::TransferJob     *m_podcastJob;
+        QString               m_podcastCurrentUrl;
         QPtrList<PodcastItem> m_podcastDownloadQueue;
 };
 

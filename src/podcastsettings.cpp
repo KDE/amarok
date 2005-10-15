@@ -17,8 +17,9 @@
 PodcastSettings::PodcastSettings( const QString& url, const QString& save, bool autoScan, int interval,
                                   int fetch, bool purge, int purgeCount, QWidget* parent )
                     : KDialogBase(  parent, 0, true, i18n("Configure Podcast Stream"),
-                                    KDialogBase::Ok|KDialogBase::Cancel,
-                                    KDialogBase::Ok, true )
+                                    KDialogBase::User1|KDialogBase::Ok|KDialogBase::Cancel,
+                                    KDialogBase::Ok, true,
+                                    KGuiItem(i18n("Apply to all Podcasts"), "apply" ) )
                     , m_ps( new PodcastSettingsDialogBase(this) )
                     , m_url( url )
                     , m_save( save )
@@ -27,6 +28,7 @@ PodcastSettings::PodcastSettings( const QString& url, const QString& save, bool 
                     , m_fetch( fetch )
                     , m_purge( purge )
                     , m_purgeCount( purgeCount )
+                    , m_applyToAll( false )
 {
     KWin::setState( winId(), NET::SkipTaskbar );
 
@@ -110,6 +112,13 @@ PodcastSettings::slotOk()       //slot
         m_fetch = AUTOMATIC;
 
     KDialogBase::slotOk();
+}
+
+void
+PodcastSettings::slotUser1()    //slot
+{
+    m_applyToAll = true;
+    slotOk();
 }
 
 #include "podcastsettings.moc"

@@ -1128,6 +1128,9 @@ PodcastChannel::configure()
         {
             downloadChildren();
         }
+
+        if( settings->applyToAll() )
+            PlaylistBrowser::instance()->setGlobalPodcastSettings( this );
     }
 }
 
@@ -1276,6 +1279,71 @@ PodcastChannel::rescan()
 }
 
 void
+PodcastChannel::setSettings( const QString &save, const bool autoFetch, const int fetchType,
+                             const bool purgeItems, const int purgeCount )
+{
+    m_purgeItems = purgeItems;
+    if( m_purgeItems )
+    {
+        m_purgeItems = purgeItems;
+        if( purgeCount < m_purgeCount )
+        {
+            m_purgeCount = purgeCount;
+            purge();
+        }
+    }
+    m_purgeCount = purgeCount;
+
+    /**
+     * Rewrite local url
+     * Move any downloaded media to the new location
+     */
+    if( save != m_saveLocation.path() )
+    {
+        KURL::List copyList;
+        m_saveLocation = KURL::fromPathOrURL( save );
+
+        PodcastItem *item = static_cast<PodcastItem*>( firstChild() );
+        // get a list of the urls of already downloaded items
+        while( item )
+        {
+            if( item->hasDownloaded() )
+            {
+                copyList << item->localUrl();
+                item->setLocalUrlBase( save );
+            }
+
+            item = static_cast<PodcastItem*>( item->nextSibling() );
+        }
+        // move the items
+        if( !copyList.isEmpty() )
+        {
+            KIO::CopyJob* m_podcastMoveJob = new KIO::CopyJob( copyList, m_saveLocation, KIO::CopyJob::Move, false, false );
+            amaroK::StatusBar::instance()->newProgressOperation( m_podcastMoveJob )
+                    .setDescription( i18n( "Moving Podcasts" ) );
+        }
+    }
+
+    if( m_autoScan != autoFetch )
+    {
+        m_autoScan = autoFetch;
+        if( m_autoScan )
+            PlaylistBrowser::instance()->m_podcastItemsToScan.append( this );
+        else
+            PlaylistBrowser::instance()->m_podcastItemsToScan.remove( this );
+    }
+
+    if( m_mediaFetch != fetchType )
+    {
+        m_mediaFetch = fetchType;
+        if( fetchType == AUTOMATIC )
+        {
+            downloadChildren();
+        }
+    }
+}
+
+void
 PodcastChannel::showAbout()
 {
     const QString body = "<tr><td>%1</td><td>%2</td></tr>";
@@ -1385,6 +1453,7 @@ PodcastChannel::purge()
 
     for( uint i=0; i < removeCount; i++ )
     {
+        debug() << "\t\tPurging, item " << i << " of " << removeCount << endl;
         PodcastItem *newLast = 0;
 
         if( m_last && m_last != firstChild() )
@@ -1589,7 +1658,7 @@ PodcastItem::hasXml( const QDomNode& xml )
 }
 
 void
-PodcastItem::setLocalUrlBase( QString &s )
+PodcastItem::setLocalUrlBase( const QString &s )
 {
     QString filename = m_localUrl.filename();
     QString newL = s + filename;

@@ -1032,6 +1032,28 @@ void PlaylistBrowser::downloadPodcastQueue() //SLOT
     connect( first, SIGNAL( downloadFinished() ), this, SLOT( downloadPodcastQueue() ) );
 }
 
+void PlaylistBrowser::setGlobalPodcastSettings( PodcastChannel *item )
+{
+    debug() << "Playlistbrowser is modifying global podcastsettings" << endl;
+    const QString save   = item->saveLocation().path();
+    const bool autoFetch = item->autoScan();
+    const int mediaType  = item->mediaFetch();
+    const bool purge     = item->hasPurge();
+    const int purgeCount = item->purgeCount();
+
+    QListViewItem *channel = m_podcastCategory->firstChild();
+
+    for( ; channel; channel = channel->itemBelow() )
+    {
+        if( !isPodcastChannel( channel ) || channel == item )
+            continue;
+        #define channel static_cast<PodcastChannel*>(channel)
+        debug() << "Settings are being saved for: " << channel->title() << endl;
+        channel->setSettings( save, autoFetch, mediaType, purge, purgeCount );
+        #undef  channel
+    }
+}
+
 /**
  *************************************************************************
  *  PLAYLISTS

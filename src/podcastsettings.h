@@ -30,12 +30,15 @@ class PodcastSettings : public KDialogBase
         bool    hasPurge()    { return m_purge; }
         int     purgeCount()  { return m_purgeCount; }
 
+        bool    applyToAll()  { return m_applyToAll; }
+
     protected:
         bool    hasChanged();
 
     protected slots:
-        void    slotOk();
         void    checkModified();
+        void    slotOk();
+        void    slotUser1();
 
     private:
         enum MediaFetch{ STREAM=0, AUTOMATIC=1 };
@@ -50,6 +53,7 @@ class PodcastSettings : public KDialogBase
         bool    m_purge;
         int     m_purgeCount;
 
+        bool    m_applyToAll;
 };
 
 #endif /*AMAROK_PODCASTSETTINGS_H*/

@@ -123,6 +123,7 @@ class PlaylistBrowser : public QVBox
         void changePodcastInterval();
         bool deletePodcasts( QPtrList<PodcastChannel> items );
         void downloadSelectedPodcasts();
+        void setGlobalPodcastSettings( PodcastChannel *item );
 
         PlaylistCategory* loadPlaylists();
         void loadOldPlaylists();
