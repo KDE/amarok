@@ -310,12 +310,13 @@ ScriptManager::slotInstallScript( const QString& path )
     QString _path = path;
 
     if ( path.isNull() ) {
-        KFileDialog dia( QString::null, "*.amarokscript.tar *.amarokscript.tar.bz2 *.amarokscript.tar.gz|" + i18n( "Script Packages (*.amarokscript.tar, *.amarokscript.tar.bz2, *.amarokscript.tar.gz)" ), 0, 0, true );
-        kapp->setTopWidget( &dia );
-        dia.setCaption( kapp->makeStdCaption( i18n( "Select Script Package" ) ) );
-        dia.setMode( KFile::File | KFile::ExistingOnly );
-        if ( !dia.exec() ) return false;
-        _path = dia.selectedURL().path();
+        
+        _path = KFileDialog::getOpenFileName(QString::null, 
+            "*.amarokscript.tar *.amarokscript.tar.bz2 *.amarokscript.tar.gz|"
+            + i18n( "Script Packages (*.amarokscript.tar, *.amarokscript.tar.bz2, *.amarokscript.tar.gz)")
+            , this
+            , i18n( "Select Script Package" ) );
+        if(_path == QString::null) return false;
     }
 
     KTar archive( _path );
