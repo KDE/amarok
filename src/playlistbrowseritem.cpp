@@ -1449,11 +1449,12 @@ PodcastChannel::setXml( const QDomNode &xml )
 void
 PodcastChannel::purge()
 {
-    uint removeCount = childCount() - m_purgeCount;
+    int removeCount = childCount() - m_purgeCount;
+    if( removeCount <= 0 )
+        return;
 
-    for( uint i=0; i < removeCount; i++ )
+    for( int i=0; i < removeCount; i++ )
     {
-        debug() << "\t\tPurging, item " << i << " of " << removeCount << endl;
         PodcastItem *newLast = 0;
 
         if( m_last && m_last != firstChild() )

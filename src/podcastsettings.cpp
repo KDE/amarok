@@ -6,6 +6,7 @@
 
 #include <klineedit.h>
 #include <knuminput.h>
+#include <kmessagebox.h>    //global changes confirmation
 #include <kurlrequester.h>
 #include <klocale.h>
 #include <kwin.h>
@@ -117,8 +118,14 @@ PodcastSettings::slotOk()       //slot
 void
 PodcastSettings::slotUser1()    //slot
 {
-    m_applyToAll = true;
-    slotOk();
+    int button = KMessageBox::warningContinueCancel( this, i18n( "<p>This will set podcast settings globally. Are you sure?" ) );
+
+    if ( button == KMessageBox::Continue )
+    {
+        // TODO We need to check which files have been deleted successfully
+        slotOk();
+        return;
+    }
 }
 
 #include "podcastsettings.moc"
