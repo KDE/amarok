@@ -25,7 +25,7 @@ VERSION 1.3.4:
   BUGFIXES:
     * Changing the podcast purge count could sometimes cause amaroK to hang.
     * NMM-engine: Fixed crash after playing a song to the end, the trackEnd
-      signal was not emitted from the GUI thread
+      signal was not emitted from the GUI thread.
     * Don't show a HyperThreading warning for Athlon 64 X2 CPU. (BR 114190)
     * With Random Mode enabled and Repeat Playlist disabled, when it got to
       the last track, it would play it a second time and then keep on playing
