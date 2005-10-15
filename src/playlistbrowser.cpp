@@ -1640,6 +1640,10 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
     {
         if( deletePodcasts( podcastsToDelete ) )
         {
+            foreachType( QPtrList<PodcastChannel>, podcastsToDelete )
+            {
+                delete (*it);
+            }
             foreachType( QPtrList<PlaylistCategory>, podcastFoldersToDelete )
             {
                 delete (*it);
