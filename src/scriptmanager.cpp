@@ -506,6 +506,7 @@ ScriptManager::slotStopScript()
 
     delete m_scripts[name].process;
     m_scripts[name].process = 0;
+    m_scripts[name].log = QString::null;
     slotCurrentChanged( m_gui->listView->currentItem() );
 
     li->setPixmap( 0, SmallIcon( "stop" ) );
