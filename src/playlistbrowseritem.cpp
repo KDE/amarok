@@ -1212,8 +1212,9 @@ PodcastChannel::abortFetch()
     m_podcastJob->kill();
 
     stopAnimation();
-    setText( 0, m_url.prettyURL() );
-    setPixmap( 0, SmallIcon("cancel") );
+    m_title.isEmpty() ?
+        setText( 0, m_url.prettyURL() ) :
+        setText( 0, m_title );
 }
 
 

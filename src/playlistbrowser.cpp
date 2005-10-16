@@ -876,7 +876,7 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
         connect( m_podcastTimer, SIGNAL(timeout()), this, SLOT(scanPodcasts()) );
 
         e = d.namedItem( "category" ).toElement();
-        PlaylistCategory *p = new PlaylistCategory( m_listview, m_playlistCategory , e );
+        PlaylistCategory *p = new PlaylistCategory( m_listview, m_playlistCategory, e );
         p->setText( 0, i18n("Podcasts") );
 
         if( !m_podcastItemsToScan.isEmpty() )
