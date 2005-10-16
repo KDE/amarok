@@ -1436,9 +1436,7 @@ PodcastChannel::setXml( const QDomNode &xml )
         }
         else
         {
-            //only download two episodes initially -> current and 1 back issue
-            //Make configurable?
-            if( children > m_purgeCount )
+            if( m_purgeItems && children > m_purgeCount )
                 break;
 
             if( !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
@@ -1450,7 +1448,7 @@ PodcastChannel::setXml( const QDomNode &xml )
 
     }
 
-    if( childCount() > m_purgeCount )
+    if( m_purgeItems && childCount() > m_purgeCount )
         purge();
 
     if( downloadMedia )
