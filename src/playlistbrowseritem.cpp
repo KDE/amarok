@@ -51,6 +51,24 @@ class PlaylistReader : public ThreadWeaver::DependentJob
 };
 
 /////////////////////////////////////////////////////////////////////////////
+///    CLASS PlaylistBrowserEntry
+////////////////////////////////////////////////////////////////////////////
+
+int
+PlaylistBrowserEntry::compare( QListViewItem* i, int col, bool ascending ) const
+{
+    bool i1 = rtti() == PlaylistCategory::RTTI;
+    bool i2 = i->rtti() == PlaylistCategory::RTTI;
+
+    if ( i1 != i2 )
+        return i1 ? -1 : 1;
+    else
+        return KListViewItem::compare(i, col, ascending);
+}
+
+
+
+/////////////////////////////////////////////////////////////////////////////
 ///    CLASS PlaylistCategory
 ////////////////////////////////////////////////////////////////////////////
 

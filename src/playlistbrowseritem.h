@@ -48,6 +48,9 @@ class PlaylistBrowserEntry : public KListViewItem
         void    setNotify( bool n ) { m_notify = n; }   // stop podcasts displaying multiple popups
 
     private:
+
+        virtual int compare( QListViewItem*, int, bool ) const; //reimplemented
+
         bool    m_notify;
 };
 
