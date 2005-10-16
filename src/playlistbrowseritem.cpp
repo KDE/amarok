@@ -1402,6 +1402,7 @@ PodcastChannel::setXml( const QDomNode &xml )
 
     m_cache = m_title;
     m_cache.replace( " ", "_" );
+    m_cache.replace( "/", "_" );
     m_cache += "_" + m_url.fileName();
 
     QString weblink = xml.namedItem( "link" ).toElement().text();
