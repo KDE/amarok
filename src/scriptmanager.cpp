@@ -78,7 +78,7 @@ namespace amaroK {
 class AmaroKProcIO : public KProcIO {
     public:
     virtual int commSetupDoneC() {
-        int i = KProcIO::commSetupDoneC();
+        const int i = KProcIO::commSetupDoneC();
         amaroK::closeOpenFiles(KProcIO::out[0],KProcIO::in[0],KProcIO::err[0]);
         return i;
     };

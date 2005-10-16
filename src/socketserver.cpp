@@ -47,7 +47,7 @@
 class AmaroKProcess : public KProcess {
     public:
     virtual int commSetupDoneC() {
-        int i = KProcess::commSetupDoneC();
+        const int i = KProcess::commSetupDoneC();
         amaroK::closeOpenFiles(KProcess::out[0],KProcess::in[0], KProcess::err[0]);
         return i;
     };
