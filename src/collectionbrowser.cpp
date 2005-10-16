@@ -178,25 +178,43 @@ CollectionBrowser::refreshInfo()
     if( !m_infoA || !m_infoB )
         return;
 
-    QStringList a = CollectionDB::instance()->query( "SELECT COUNT( url ) FROM tags;" );
+    int q_cat1 = m_view->m_cat1, q_cat2 = m_view->m_cat2, q_cat3 = m_view->m_cat3;
+    if( q_cat1 == IdVisYearAlbum )
+        q_cat1 = IdAlbum;
+    if( q_cat2 == IdVisYearAlbum )
+        q_cat2 = IdAlbum;
+    if( q_cat3 == IdVisYearAlbum )
+        q_cat3 = IdAlbum;
+
+    QueryBuilder qb;
+    qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabSong, QueryBuilder::valURL );
+    qb.setGoogleFilter( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, m_view->m_filter );
+    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    QStringList a = qb.run();
 
     QStringList b;
     QString descriptor;
+    qb.clear();
+    qb.setGoogleFilter( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, m_view->m_filter );
+    qb.setOptions( QueryBuilder::optRemoveDuplicates );
     if( m_view )
     {
-        switch( m_view->m_cat1 )
+        switch( q_cat1 )
         {
             case IdArtist:
-                b = CollectionDB::instance()->query( "SELECT COUNT( id ) FROM artist;" );
-                descriptor = i18n( "1 Artist", "%n Artists", b[0].toInt() );
+                qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valID );
+                b = qb.run();
+                descriptor = i18n( "1 Artist", "%n Artists", b.count() );
                 break;
             case IdAlbum:
-                b = CollectionDB::instance()->query( "SELECT COUNT( id ) FROM album;" );
-                descriptor = i18n( "1 Album", "%n Albums", b[0].toInt() );
+                qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
+                b = qb.run();
+                descriptor = i18n( "1 Album", "%n Albums", b.count() );
                 break;
             case IdGenre:
-                b = CollectionDB::instance()->query( "SELECT COUNT( id ) FROM genre;" );
-                descriptor = i18n( "1 Genre", "%n Genres", b[0].toInt() );
+                qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valID );
+                b = qb.run();
+                descriptor = i18n( "1 Genre", "%n Genres", b.count() );
                 break;
         }
     }
@@ -208,7 +226,7 @@ CollectionBrowser::refreshInfo()
     else
     {
         m_infoA->setText( i18n("1 Track","%n Tracks", a[0].toInt()) );
-    m_infoA->show();
+        m_infoA->show();
     }
     if( b.isEmpty() )
     {
@@ -216,7 +234,7 @@ CollectionBrowser::refreshInfo()
     }
     else
     {
-    m_infoB->setText( descriptor );
+        m_infoB->setText( descriptor );
         m_infoB->show();
     }
 }
@@ -644,11 +662,7 @@ CollectionView::scanDone( bool changed ) //SLOT
 {
     DEBUG_BLOCK
 
-    if ( changed )
-    {
-        renderView();
-        m_parent->refreshInfo();
-    }
+    renderView();
     m_parent->m_scanAction->setEnabled( !AmarokConfig::monitorChanges() );
 }
 

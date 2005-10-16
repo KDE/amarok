@@ -12,6 +12,8 @@ VERSION 1.3.4:
     * Playlistbrowser items can be dragged into folders.
 
   CHANGES:
+    * Totals in the collection browser will now reflect the visible items
+      if you set a filter.
     * Podcast settings "download on request" and "stream on request" have
       been merged.
     * About button in script manager now uses a KAboutDialog and supports
