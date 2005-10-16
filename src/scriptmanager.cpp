@@ -465,7 +465,7 @@ ScriptManager::slotRunScript()
 
     const KURL url = m_scripts[name].url;
     AmaroKProcIO* script = new AmaroKProcIO();
-//     script->setComm( (KProcess::Communication) ( KProcess::Stdin | KProcess::Stdout | KProcess::Stderr ) );
+//     script->setComm( (KProcess::Communication) ( KProcess::Stdin|KProcess::Stdout|KProcess::Stderr ) );
 
     *script << url.path();
     script->setWorkingDirectory( amaroK::saveLocation( "scripts-data/" ) );
@@ -594,7 +594,7 @@ ScriptManager::slotShowContextMenu( QListViewItem* item, const QPoint& pos )
             while ( it.data().process->readln( line ) != -1 )
                 it.data().log += line;
 
-            KTextEdit* editor = new KTextEdit();
+            KTextEdit* editor = new KTextEdit( it.data().log );
             kapp->setTopWidget( editor );
             editor->setCaption( kapp->makeStdCaption( i18n( "Output Log for %1" ).arg( it.key() ) ) );
             editor->setReadOnly( true );
@@ -604,7 +604,6 @@ ScriptManager::slotShowContextMenu( QListViewItem* item, const QPoint& pos )
             font.setStyleHint( QFont::TypeWriter );
             editor->setFont( font );
 
-            editor->setText( it.data().log );
             editor->setTextFormat( QTextEdit::PlainText );
             editor->resize( 640, 480 );
             editor->show();
