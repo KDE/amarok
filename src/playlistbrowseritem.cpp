@@ -60,6 +60,7 @@ PlaylistBrowserEntry::compare( QListViewItem* i, int col, bool ascending ) const
     bool i1 = rtti() == PlaylistCategory::RTTI;
     bool i2 = i->rtti() == PlaylistCategory::RTTI;
 
+    // If only one of them is a category, make it show up before
     if ( i1 != i2 )
         return i1 ? -1 : 1;
     else
