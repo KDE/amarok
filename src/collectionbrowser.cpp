@@ -1135,13 +1135,11 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         }
 
         #ifdef AMAZON_SUPPORT
-        enum Actions { APPEND, QUEUE, MAKE, SAVE, MEDIA_DEVICE, BURN_ARTIST, BURN_ALBUM,
-                       BURN_DATACD, BURN_AUDIOCD, COVER, INFO,
+        enum Actions { APPEND, QUEUE, MAKE, SAVE, MEDIA_DEVICE, BURN_ARTIST, BURN_ALBUM, BURN_CD, COVER, INFO,
                        COMPILATION_SET, COMPILATION_UNSET  };
         #else
-        enum Actions { APPEND, QUEUE, MAKE, SAVE, BURN_ARTIST, BURN_ALBUM,
-                       BURN_DATACD, BURN_AUDIOCD, INFO,
-                       COMPILATION_SET, COMPILATION_UNSET, MEDIA_DEVICE };
+        enum Actions { APPEND, QUEUE, MAKE, SAVE, MEDIA_DEVICE, BURN_ARTIST, BURN_ALBUM, BURN_CD, INFO,
+                       COMPILATION_SET, COMPILATION_UNSET  };
         #endif
         KURL::List selection = listSelected();
         menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), MAKE );
@@ -1169,10 +1167,8 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         }
         else if( !item->isExpandable() )
         {
-            menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn to CD as Data"), BURN_DATACD );
-            menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
-            menu.insertItem( SmallIconSet( "cdaudio_unmount" ), i18n("Burn to CD as Audio"), BURN_AUDIOCD );
-            menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
+            menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn to CD"), BURN_CD );
+            menu.setItemEnabled( BURN_CD, K3bExporter::isAvailable() );
         }
 
         menu.insertSeparator();
@@ -1220,11 +1216,8 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                 else
                     K3bExporter::instance()->exportAlbum( item->text(0) );
                 break;
-            case BURN_DATACD:
-                K3bExporter::instance()->exportTracks( selection, K3bExporter::DataCD );
-                break;
-            case BURN_AUDIOCD:
-                K3bExporter::instance()->exportTracks( selection, K3bExporter::AudioCD );
+            case BURN_CD:
+                K3bExporter::instance()->exportTracks( selection );
                 break;
             case COMPILATION_SET:
                 CollectionDB::instance()->setCompilation( item->text(0), true );
