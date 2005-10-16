@@ -94,6 +94,10 @@ main( int argc, char *argv[] )
         // We transmit our DESKTOP_STARTUP_ID, so amarokapp can stop the startup animation
         dcop_args += std::getenv( "DESKTOP_STARTUP_ID" ); //will be interptreted as latin1
 
+        // relative URLs should be interpreted correctly by amarokapp
+        // so we need to pass the current working directory
+        dcop_args << "--cwd" << QDir::currentDirPath();
+
         dcop_args += args;
         dcop_args += "]";
 

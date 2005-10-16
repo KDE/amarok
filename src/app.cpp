@@ -66,6 +66,7 @@ email                : markey@web.de
 #include <qtimer.h>              //showHyperThreadingWarning()
 #include <qtooltip.h>            //default tooltip for trayicon
 
+char App::cwd[PATH_MAX];
 
 App::App()
         : KApplication()
@@ -229,6 +230,13 @@ void App::handleCliArgs() //static
 {
     KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
 
+    if ( args->isSet( "cwd" ) )
+    {
+        strncpy(cwd, args->getOption( "cwd" ), sizeof(cwd) );
+        cwd[sizeof(cwd)-1] = '\0';
+        KCmdLineArgs::setCwd( cwd );
+    }
+
     if ( args->count() > 0 )
     {
         KURL::List list;
@@ -306,6 +314,7 @@ void App::initCliArgs( int argc, char *argv[] ) //static
             { "toggle-playlist-window", I18N_NOOP("Toggle the Playlist-window"), 0 },
             { "wizard", I18N_NOOP( "Run first-run wizard" ), 0 },
             { "engine <name>", I18N_NOOP( "Use the <name> engine" ), 0 },
+            { "cwd <directory>", I18N_NOOP( "Base for relative filenames/URLs" ), 0 },
             { 0, 0, 0 }
         };
 

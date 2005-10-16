@@ -23,6 +23,8 @@ VERSION 1.3.4:
       icon, respectively.
 
   BUGFIXES:
+    * Enqueuing files with amarok -e would not work for relative paths if the
+      working directories of the new and the running instance of amarok differ.
     * Visualizations would only work when amarok was run as amarokapp.
       (BR 99627)
     * The number of podcasts items would be limited even when the user didn't
