@@ -2686,6 +2686,7 @@ void PlaylistBrowserView::moveSelectedItems( QListViewItem *newParent )
         {
             itemParent->takeItem( item );
             newParent->insertItem( item );
+            newParent->sortChildItems( 0, true );
         }
     }
 }
