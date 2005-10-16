@@ -2390,48 +2390,6 @@ void ContextBrowser::showLyrics( const QString &hash )
     m_lyricsPage->begin();
     m_lyricsPage->setUserStyleSheet( m_styleSheet );
 
-    if ( !m_lyrics.isEmpty() && hash.isEmpty() )
-    {
-        m_HTMLSource = QString (
-            "<html>"
-            "<div id='lyrics_box' class='box'>"
-                "<div id='lyrics_box-header' class='box-header'>"
-                    "<span id='lyrics_box-header-title' class='box-header-title'>"
-                    + i18n( "Cached Lyrics" ) +
-                    "</span>"
-                "</div>"
-                "<div id='lyrics_box-body' class='box-body'>"
-                    + m_lyrics +
-                "</div>"
-            "</div>"
-            "</html>"
-            );
-        m_lyricsPage->write( m_HTMLSource );
-        m_lyricsPage->end();
-        m_dirtyLyricsPage = false;
-        m_lyricJob = NULL;
-        saveHtmlData(); // Send html code to file
-        return;
-    }
-    else
-    {
-        m_HTMLSource = QString (
-            "<html>"
-            "<div id='lyrics_box' class='box'>"
-                "<div id='lyrics_box-header' class='box-header'>"
-                    "<span id='lyrics_box-header-title' class='box-header-title'>"
-                    + i18n( "Fetching Lyrics" ) +
-                    "</span>"
-                "</div>"
-                "<div id='lyrics_box-body' class='box-body'>"
-                    "<div class='info'><p>" + i18n( "Fetching Lyrics" ) + "</p></div>"
-                "</div>"
-            "</div>"
-            "</html>"
-            );
-        m_lyricsPage->write( m_HTMLSource );
-        m_lyricsPage->end();
-    }
 
     //remove all matches to the regExp and the song production type.
     //NOTE: use i18n'd and english equivalents since they are very common int'lly.
@@ -2469,7 +2427,6 @@ void ContextBrowser::showLyrics( const QString &hash )
 
     debug() << "Using this url: " << m_lyricCurrentUrl << endl;
 
-    m_lyrics = QString::null;
     m_lyricAddUrl = QString( "http://lyrc.com.ar/en/add/add.php?grupo=%1&tema=%2&disco=%3&ano=%4" ).arg(
             KURL::encode_string_no_slash( EngineController::instance()->bundle().artist() ),
             KURL::encode_string_no_slash( title ),
@@ -2479,12 +2436,55 @@ void ContextBrowser::showLyrics( const QString &hash )
         .arg( KURL::encode_string_no_slash( '"'+EngineController::instance()->bundle().artist()+'"', 106 /*utf-8*/ ),
               KURL::encode_string_no_slash( '"'+title+'"', 106 /*utf-8*/ ) );
 
-    m_lyricJob = KIO::storedGet( m_lyricCurrentUrl, false, false );
+    m_lyricsToolBar->getButton( LYRICS_BROWSER )->setEnabled(false);
 
-    amaroK::StatusBar::instance()->newProgressOperation( m_lyricJob )
+    if ( !m_lyrics.isEmpty() && hash.isEmpty() )
+    {
+        m_HTMLSource = QString (
+            "<html>"
+            "<div id='lyrics_box' class='box'>"
+                "<div id='lyrics_box-header' class='box-header'>"
+                    "<span id='lyrics_box-header-title' class='box-header-title'>"
+                    + i18n( "Cached Lyrics" ) +
+                    "</span>"
+                "</div>"
+                "<div id='lyrics_box-body' class='box-body'>"
+                    + m_lyrics +
+                "</div>"
+            "</div>"
+            "</html>"
+            );
+        m_lyricsPage->write( m_HTMLSource );
+        m_lyricsPage->end();
+        m_dirtyLyricsPage = false;
+        m_lyricJob = NULL;
+        saveHtmlData(); // Send html code to file
+    }
+    else
+    {
+        m_HTMLSource = QString (
+            "<html>"
+            "<div id='lyrics_box' class='box'>"
+                "<div id='lyrics_box-header' class='box-header'>"
+                    "<span id='lyrics_box-header-title' class='box-header-title'>"
+                    + i18n( "Fetching Lyrics" ) +
+                    "</span>"
+                "</div>"
+                "<div id='lyrics_box-body' class='box-body'>"
+                    "<div class='info'><p>" + i18n( "Fetching Lyrics" ) + "</p></div>"
+                "</div>"
+            "</div>"
+            "</html>"
+            );
+        m_lyricsPage->write( m_HTMLSource );
+        m_lyricsPage->end();
+        m_lyricJob = KIO::storedGet( m_lyricCurrentUrl, false, false );
+
+        amaroK::StatusBar::instance()->newProgressOperation( m_lyricJob )
             .setDescription( i18n( "Fetching Lyrics" ) );
 
-    connect( m_lyricJob, SIGNAL( result( KIO::Job* ) ), SLOT( lyricsResult( KIO::Job* ) ) );
+        connect( m_lyricJob, SIGNAL( result( KIO::Job* ) ), SLOT( lyricsResult( KIO::Job* ) ) );
+    }
 }
 
 
@@ -2574,6 +2574,7 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
                        );
     m_lyricsPage->write( m_HTMLSource );
     m_lyricsPage->end();
+    m_lyricsToolBar->getButton( LYRICS_BROWSER )->setEnabled(true);
     m_dirtyLyricsPage = false;
     m_lyricJob = NULL;
     saveHtmlData(); // Send html code to file
