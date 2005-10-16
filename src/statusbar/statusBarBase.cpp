@@ -116,12 +116,11 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     connect( b1, SIGNAL(clicked()), SLOT(abortAllProgressOperations()) );
     connect( b2, SIGNAL(toggled( bool )), SLOT(toggleProgressWindow( bool )) );
 
-    m_popupProgress = new PopupMessage( this, mainProgressBarBox, 0, "popupProgress" );
-    m_popupProgress->showCloseButton( false );
-    m_popupProgress->showCounter( false );
+    m_popupProgress = new OverlayWidget( this, mainProgressBarBox, "popupProgress" );
     m_popupProgress->setMargin( 1 );
     m_popupProgress->setFrameStyle( QFrame::Box | QFrame::Raised );
     m_popupProgress->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
+   (new QGridLayout( m_popupProgress, 1 /*rows*/, 3 /*cols*/, 6, 3 ))->setAutoAdd( true );
 }
 
 void
@@ -317,9 +316,7 @@ StatusBar::newProgressOperation( QObject *owner )
     else
         static_cast<QWidget*>(progressBox()->child("showAllProgressDetails"))->show();
     QLabel *label = new QLabel( m_popupProgress );
-    ProgressBar *pBar = new ProgressBar( m_popupProgress, label );
-    m_popupProgress->addWidget( pBar );
-    m_progressMap.insert( owner, pBar );
+    m_progressMap.insert( owner, new ProgressBar( m_popupProgress, label ) );
 
 
     connect( owner, SIGNAL(destroyed( QObject* )), SLOT(endProgressOperation( QObject* )) );
@@ -423,7 +420,7 @@ StatusBar::hideMainProgressBar()
         resetMainText();
 
         m_mainProgressBar->setProgress( 0 );
-        progressBox()->close();
+        progressBox()->hide();
     }
 }
 
