@@ -78,8 +78,9 @@ namespace amaroK {
 class AmaroKProcIO : public KProcIO {
     public:
     virtual int commSetupDoneC() {
+        int i = KProcIO::commSetupDoneC();
         amaroK::closeOpenFiles(KProcIO::out[0],KProcIO::in[0],KProcIO::err[0]);
-        return KProcIO::commSetupDoneC();
+        return i;
     };
 };
 
@@ -310,8 +311,8 @@ ScriptManager::slotInstallScript( const QString& path )
     QString _path = path;
 
     if ( path.isNull() ) {
-        
-        _path = KFileDialog::getOpenFileName(QString::null, 
+
+        _path = KFileDialog::getOpenFileName(QString::null,
             "*.amarokscript.tar *.amarokscript.tar.bz2 *.amarokscript.tar.gz|"
             + i18n( "Script Packages (*.amarokscript.tar, *.amarokscript.tar.bz2, *.amarokscript.tar.gz)")
             , this
