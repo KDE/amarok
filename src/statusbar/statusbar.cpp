@@ -142,10 +142,13 @@ StatusBar::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
 void
 StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
-    QString title  = bundle.title();
-    QString artist = bundle.artist();
-    QString album  = bundle.album();
-    QString length = bundle.prettyLength();
+    #define escapeHTML(s) QString(s).replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" )
+    QString title       = escapeHTML( bundle.title() );
+    QString prettyTitle = escapeHTML( bundle.prettyTitle() );
+    QString artist      = escapeHTML( bundle.artist() );
+    QString album       = escapeHTML( bundle.album() );
+    QString length      = escapeHTML( bundle.prettyLength() );
+    #undef escapeHTML
 
     if ( bundle.artist() == "Mike Oldfield" && bundle.title() == "Amarok" ) {
         longMessage( i18n(
@@ -167,9 +170,9 @@ StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
     else if( !album.isEmpty() )
         // we try for pretty title as it may come out better
         title = i18n( "track on album", "<b>%1</b> on <b>%2</b>" )
-               .arg( bundle.prettyTitle(), album );
+               .arg( prettyTitle, album );
     else
-        title = "<b>" + bundle.prettyTitle() + "</b>";
+        title = "<b>" + prettyTitle + "</b>";
 
     if( title.isEmpty() )
         title = i18n( "Unknown track" );
