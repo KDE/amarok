@@ -40,15 +40,16 @@
 // class AmaroKProcess
 ////////////////////////////////////////////////////////////////////////////////
 /** Due to xine-lib, we have to make KProcess close all fds, otherwise we get "device is busy" messages
-  * Used by AmaroKProcIO and AmaroKProcess, exploiting commSetupDoneC(), a virtual method that 
+  * Used by AmaroKProcIO and AmaroKProcess, exploiting commSetupDoneC(), a virtual method that
   * happens to be called in the forked process
   * See bug #103750 for more information.
   */
 class AmaroKProcess : public KProcess {
     public:
     virtual int commSetupDoneC() {
+        int i = KProcess::commSetupDoneC();
         amaroK::closeOpenFiles(KProcess::out[0],KProcess::in[0], KProcess::err[0]);
-        return KProcess::commSetupDoneC();
+        return i;
     };
 };
 
