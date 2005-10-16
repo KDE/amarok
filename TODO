@@ -6,10 +6,6 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
- <sebr>    Multiple job statusbar widget is broken.
-           ::eean:: akregator has a multiple job statusbar widget that appears to work fine (though it
-           ::       might be an illusion of akregator's different use of it).
-
  <sebr>    Cancelling a podcast download shows an empty popup message and i can't figure out where from
 
  <illis.>  A whole lot (all?) of my mp3s have their titles truncated at 30-ish characters. This is almost

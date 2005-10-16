@@ -2304,7 +2304,8 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 tracker = item->firstChild();
                 for( ; tracker; tracker = tracker->nextSibling() )
                 {
-                    static_cast<PodcastChannel*>( tracker )->rescan();
+                    if( isPodcastChannel( tracker ) )
+                        static_cast<PodcastChannel*>( tracker )->rescan();
                 }
                 break;
 
