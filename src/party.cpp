@@ -235,7 +235,7 @@ Party::setDynamicMode( bool enable, bool showDialog ) //SLOT
                            "Dynamic mode is a powerful method to manipulate your playlist. amaroK can automatically remove played"
                            "items and insert new ones to suit your taste!<br>"
                            "<br>"
-                           "If you select <i>Playlist Shuffle</i>, make sure you choose some playlists or smart playlists by right-clicking"
+                           "If you select <i>Playlist Shuffle</i>, make sure you choose some playlists or smart playlists by right-clicking "
                            "on the items in the playlist browser" );
 
             int info = KMessageBox::messageBox( this, KMessageBox::Information, text, i18n("Dynamic Mode Introduction"),
