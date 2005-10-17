@@ -61,8 +61,8 @@
 
 namespace amaroK {
     void closeOpenFiles(int out, int in, int err) {
-        for (int i = sysconf(_SC_OPEN_MAX) - 1; i > 2; i--)
-            if (i!=out && i!=in && i!=err)
+        for(int i = sysconf(_SC_OPEN_MAX) - 1; i > 2; i--)
+            if(i!=out && i!=in && i!=err)
                 close(i);
     }
 }
@@ -168,13 +168,13 @@ ScriptManager::~ScriptManager()
 {
     DEBUG_BLOCK
 
-    debug() << "Killing running scripts.\n";
+    debug() << "Terminating running scripts.\n";
 
     QStringList runningScripts;
     ScriptMap::Iterator it;
     ScriptMap::Iterator end( m_scripts.end() );
-    for ( it = m_scripts.begin(); it != end; ++it ) {
-        if ( it.data().process ) {
+    for( it = m_scripts.begin(); it != end; ++it ) {
+        if( it.data().process ) {
             delete it.data().process;
             runningScripts << it.key();
         }
@@ -196,7 +196,7 @@ ScriptManager::~ScriptManager()
 bool
 ScriptManager::runScript( const QString& name )
 {
-    if ( !m_scripts.contains( name ) )
+    if( !m_scripts.contains( name ) )
         return false;
 
     m_gui->listView->setCurrentItem( m_scripts[name].li );
@@ -207,7 +207,7 @@ ScriptManager::runScript( const QString& name )
 bool
 ScriptManager::stopScript( const QString& name )
 {
-    if ( !m_scripts.contains( name ) )
+    if( !m_scripts.contains( name ) )
         return false;
 
     m_gui->listView->setCurrentItem( m_scripts[name].li );
@@ -223,8 +223,8 @@ ScriptManager::listRunningScripts()
     QStringList runningScripts;
     ScriptMap::ConstIterator it;
     ScriptMap::ConstIterator end(m_scripts.end() );
-    for ( it = m_scripts.begin(); it != end; ++it )
-        if ( it.data().process )
+    for( it = m_scripts.begin(); it != end; ++it )
+        if( it.data().process )
             runningScripts << it.key();
 
     return runningScripts;
@@ -253,8 +253,8 @@ ScriptManager::findScripts() //SLOT
 
     QStringList::ConstIterator it;
     QStringList::ConstIterator end( allFiles.end() );
-    for ( it = allFiles.begin(); it != end; ++it )
-        if ( QFileInfo( *it ).isExecutable() )
+    for( it = allFiles.begin(); it != end; ++it )
+        if( QFileInfo( *it ).isExecutable() )
             loadScript( *it );
 
     // Handle auto-run:
@@ -263,13 +263,13 @@ ScriptManager::findScripts() //SLOT
     const bool autoRun = config->readBoolEntry( "Auto Run", false );
     m_gui->checkBox_autoRun->setChecked( autoRun );
 
-    if ( autoRun ) {
+    if( autoRun ) {
         const QStringList runningScripts = config->readListEntry( "Running Scripts" );
 
         QStringList::ConstIterator it;
         QStringList::ConstIterator end( runningScripts.end() );
-        for ( it = runningScripts.begin(); it != end; ++it ) {
-            if ( m_scripts.contains( *it ) ) {
+        for( it = runningScripts.begin(); it != end; ++it ) {
+            if( m_scripts.contains( *it ) ) {
                 debug() << "Auto-running script: " << *it << endl;
                 m_gui->listView->setCurrentItem( m_scripts[*it].li );
                 slotRunScript();
@@ -285,7 +285,7 @@ ScriptManager::findScripts() //SLOT
 void
 ScriptManager::slotCurrentChanged( QListViewItem* item )
 {
-    if ( item ) {
+    if( item ) {
         const QString name = item->text( 0 );
         m_gui->uninstallButton->setEnabled( true );
         m_gui->runButton->setEnabled( !m_scripts[name].process );
@@ -310,18 +310,17 @@ ScriptManager::slotInstallScript( const QString& path )
 
     QString _path = path;
 
-    if ( path.isNull() ) {
-
-        _path = KFileDialog::getOpenFileName(QString::null,
+    if( path.isNull() ) {
+        _path = KFileDialog::getOpenFileName( QString::null,
             "*.amarokscript.tar *.amarokscript.tar.bz2 *.amarokscript.tar.gz|"
-            + i18n( "Script Packages (*.amarokscript.tar, *.amarokscript.tar.bz2, *.amarokscript.tar.gz)")
+            + i18n( "Script Packages (*.amarokscript.tar, *.amarokscript.tar.bz2, *.amarokscript.tar.gz)" )
             , this
             , i18n( "Select Script Package" ) );
-        if(_path == QString::null) return false;
+        if( _path == QString::null ) return false;
     }
 
     KTar archive( _path );
-    if ( !archive.open( IO_ReadOnly ) ) {
+    if( !archive.open( IO_ReadOnly ) ) {
         KMessageBox::sorry( 0, i18n( "Could not read this package." ) );
         return false;
     }
@@ -331,7 +330,7 @@ ScriptManager::slotInstallScript( const QString& path )
 
     // Prevent installing a script that's already installed
     const QString scriptFolder = destination + archiveDir->entries().first();
-    if ( QFile::exists( scriptFolder ) ) {
+    if( QFile::exists( scriptFolder ) ) {
         KMessageBox::error( 0, i18n( "A script with the name '%1' is already installed. "
                                      "Please uninstall it first." ).arg( archiveDir->entries().first() ) );
         return false;
@@ -341,7 +340,7 @@ ScriptManager::slotInstallScript( const QString& path )
     m_installSuccess = false;
     recurseInstall( archiveDir, destination );
 
-    if ( m_installSuccess ) {
+    if( m_installSuccess ) {
         KMessageBox::information( 0, i18n( "Script successfully installed." ) );
         return true;
     }
@@ -365,18 +364,18 @@ ScriptManager::recurseInstall( const KArchiveDirectory* archiveDir, const QStrin
 
     QStringList::ConstIterator it;
     QStringList::ConstIterator end( entries.end() );
-    for ( it = entries.begin(); it != end; ++it ) {
+    for( it = entries.begin(); it != end; ++it ) {
         const QString entry = *it;
         const KArchiveEntry* const archEntry = archiveDir->entry( entry );
 
-        if ( archEntry->isDirectory() ) {
+        if( archEntry->isDirectory() ) {
             KArchiveDirectory* const dir = (KArchiveDirectory*) archEntry;
             recurseInstall( dir, destination + entry + "/" );
         }
         else {
             ::chmod( QFile::encodeName( destination + entry ), archEntry->permissions() );
 
-            if ( QFileInfo( destination + entry ).isExecutable() ) {
+            if( QFileInfo( destination + entry ).isExecutable() ) {
                 loadScript( destination + entry );
                 m_installSuccess = true;
             }
@@ -414,17 +413,17 @@ ScriptManager::slotUninstallScript()
 
     const QString name = m_gui->listView->currentItem()->text( 0 );
 
-    if ( KMessageBox::warningContinueCancel( 0, i18n( "Are you sure you want to uninstall the script '%1'?" ).arg( name ), i18n("Uninstall Script"), i18n("Uninstall") ) == KMessageBox::Cancel )
+    if( KMessageBox::warningContinueCancel( 0, i18n( "Are you sure you want to uninstall the script '%1'?" ).arg( name ), i18n("Uninstall Script"), i18n("Uninstall") ) == KMessageBox::Cancel )
         return;
 
-    if ( m_scripts.find( name ) == m_scripts.end() )
+    if( m_scripts.find( name ) == m_scripts.end() )
         return;
 
     const QString directory = m_scripts[name].url.directory();
 
     // Delete directory recursively
     const KURL url = KURL::fromPathOrURL( directory );
-    if ( !KIO::NetAccess::del( url, 0 ) ) {
+    if( !KIO::NetAccess::del( url, 0 ) ) {
         KMessageBox::sorry( 0, i18n( "<p>Could not uninstall this script.</p><p>The ScriptManager can only uninstall scripts which have been installed as packages.</p>" ) );
         return;
     }
@@ -433,16 +432,16 @@ ScriptManager::slotUninstallScript()
     QStringList keys;
     ScriptMap::Iterator it;
     ScriptMap::Iterator end( m_scripts.end() );
-    for ( it = m_scripts.begin(); it != end; ++it )
-        if ( it.data().url.directory() == directory )
+    for( it = m_scripts.begin(); it != end; ++it )
+        if( it.data().url.directory() == directory )
             keys << it.key();
 
     // Kill script processes, remove entries from script list
     QStringList::Iterator itKeys;
-    for ( itKeys = keys.begin(); itKeys != keys.end(); ++itKeys ) {
+    for( itKeys = keys.begin(); itKeys != keys.end(); ++itKeys ) {
         delete m_scripts[*itKeys].li;
-        if ( m_scripts[*itKeys].process ) {
-            // Kill script process (with SIGTERM)
+        if( m_scripts[*itKeys].process ) {
+            // Terminate script process (with SIGTERM)
             m_scripts[*itKeys].process->kill();
             m_scripts[*itKeys].process->detach();
             delete m_scripts[*itKeys].process;
@@ -461,7 +460,7 @@ ScriptManager::slotRunScript()
     const QString name = li->text( 0 );
 
     // Don't start a script twice
-    if ( m_scripts[name].process ) return false;
+    if( m_scripts[name].process ) return false;
 
     const KURL url = m_scripts[name].url;
     AmaroKProcIO* script = new AmaroKProcIO();
@@ -470,7 +469,7 @@ ScriptManager::slotRunScript()
     *script << url.path();
     script->setWorkingDirectory( amaroK::saveLocation( "scripts-data/" ) );
 
-    if ( !script->start( KProcess::NotifyOnExit, true ) ) {
+    if( !script->start( KProcess::NotifyOnExit, true ) ) {
         KMessageBox::sorry( 0, i18n( "<p>Could not start the script <i>%1</i>.</p>"
                                      "<p>Please make sure that the file has execute (+x) permissions.</p>" ).arg( name ) );
         delete script;
@@ -497,10 +496,10 @@ ScriptManager::slotStopScript()
     const QString name = li->text( 0 );
 
     // Just a sanity check
-    if ( m_scripts.find( name ) == m_scripts.end() )
+    if( m_scripts.find( name ) == m_scripts.end() )
         return;
 
-    // Kill script process (with SIGTERM)
+    // Terminate script process (with SIGTERM)
     m_scripts[name].process->kill();
     m_scripts[name].process->detach();
 
@@ -519,7 +518,7 @@ ScriptManager::slotConfigureScript()
     DEBUG_BLOCK
 
     const QString name = m_gui->listView->currentItem()->text( 0 );
-    if ( !m_scripts[name].process ) return;
+    if( !m_scripts[name].process ) return;
 
     const KURL url = m_scripts[name].url;
     QDir::setCurrent( url.directory() );
@@ -539,7 +538,7 @@ ScriptManager::slotAboutScript()
     QFile readme( m_scripts[name].url.directory( false ) + "README" );
     QFile license( m_scripts[name].url.directory( false ) + "COPYING" );
 
-    if ( !readme.open( IO_ReadOnly ) ) {
+    if( !readme.open( IO_ReadOnly ) ) {
         KMessageBox::sorry( 0, i18n( "There is no information available for this script." ) );
         return;
     }
@@ -552,10 +551,10 @@ ScriptManager::slotAboutScript()
     about->setProduct( "", "", "", "" );
     // Get rid of the confusing KDE version text
     QLabel* product = static_cast<QLabel*>( about->mainWidget()->child( "version" ) );
-    if ( product ) product->setText( i18n( "%1 amaroK Script" ).arg( name ) );
+    if( product ) product->setText( i18n( "%1 amaroK Script" ).arg( name ) );
 
     about->addTextPage( i18n( "About" ), readme.readAll(), true );
-    if ( license.open( IO_ReadOnly ) )
+    if( license.open( IO_ReadOnly ) )
         about->addLicensePage( i18n( "License" ), license.readAll() );
 
     about->setInitialSize( QSize( 500, 350 ) );
@@ -567,13 +566,13 @@ void
 ScriptManager::slotShowContextMenu( QListViewItem* item, const QPoint& pos )
 {
     DEBUG_BLOCK
-    if ( !item ) return;
+    if( !item ) return;
 
     // Look up script entry in our map
     ScriptMap::Iterator it;
     ScriptMap::Iterator end( m_scripts.end() );
-    for ( it = m_scripts.begin(); it != end; ++it )
-        if ( it.data().li == item ) break;
+    for( it = m_scripts.begin(); it != end; ++it )
+        if( it.data().li == item ) break;
 
     enum { SHOW_LOG, EDIT };
     KPopupMenu menu;
@@ -583,7 +582,7 @@ ScriptManager::slotShowContextMenu( QListViewItem* item, const QPoint& pos )
     menu.setItemEnabled( SHOW_LOG, it.data().process );
     const int id = menu.exec( pos );
 
-    switch ( id )
+    switch( id )
     {
         case EDIT:
             KRun::runCommand( "kwrite " + it.data().url.path() );
@@ -591,7 +590,7 @@ ScriptManager::slotShowContextMenu( QListViewItem* item, const QPoint& pos )
 
         case SHOW_LOG:
             QString line;
-            while ( it.data().process->readln( line ) != -1 )
+            while( it.data().process->readln( line ) != -1 )
                 it.data().log += line;
 
             KTextEdit* editor = new KTextEdit( it.data().log );
@@ -620,8 +619,8 @@ ScriptManager::slotReceivedStdout( KProcess* process, char* buf, int len )
     // Look up script entry in our map
     ScriptMap::Iterator it;
     ScriptMap::Iterator end( m_scripts.end() );
-    for ( it = m_scripts.begin(); it != end; ++it )
-        if ( it.data().process == process ) break;
+    for( it = m_scripts.begin(); it != end; ++it )
+        if( it.data().process == process ) break;
 
     it.data().log += QString::fromLatin1( buf, len );
 }
@@ -635,15 +634,15 @@ ScriptManager::scriptFinished( KProcess* process ) //SLOT
     // Look up script entry in our map
     ScriptMap::Iterator it;
     ScriptMap::Iterator end( m_scripts.end() );
-    for ( it = m_scripts.begin(); it != end; ++it )
-        if ( it.data().process == process ) break;
+    for( it = m_scripts.begin(); it != end; ++it )
+        if( it.data().process == process ) break;
 
     // Check if there was an error on exit
-    if ( process->normalExit() && process->exitStatus() != 0 ) {
+    if( process->normalExit() && process->exitStatus() != 0 ) {
         // Read Stderr log
         KProcIO* proc = static_cast<KProcIO*>( process );
         QString line, details;
-        while ( proc->readln( line ) != -1 )
+        while( proc->readln( line ) != -1 )
             details += line;
 
         KMessageBox::detailedError( 0, i18n( "The script '%1' exited with error code: %2" )
@@ -671,9 +670,9 @@ ScriptManager::notifyScripts( const QString& message )
 
     ScriptMap::Iterator it;
     ScriptMap::Iterator end( m_scripts.end() );
-    for ( it = m_scripts.begin(); it != end; ++it ) {
+    for( it = m_scripts.begin(); it != end; ++it ) {
         KProcIO* const proc = it.data().process;
-        if ( proc ) proc->writeStdin( message );
+        if( proc ) proc->writeStdin( message );
     }
 }
 
@@ -683,7 +682,7 @@ ScriptManager::loadScript( const QString& path )
 {
     DEBUG_BLOCK
 
-    if ( !path.isEmpty() ) {
+    if( !path.isEmpty() ) {
         const KURL url = KURL::fromPathOrURL( path );
 
         KListViewItem* li = new KListViewItem( m_gui->listView, url.fileName() );
@@ -707,7 +706,7 @@ ScriptManager::engineStateChanged( Engine::State state, Engine::State /*oldState
 {
     DEBUG_BLOCK
 
-    switch ( state )
+    switch( state )
     {
         case Engine::Empty:
             notifyScripts( "engineStateChange: empty" );
