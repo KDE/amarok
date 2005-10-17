@@ -6,6 +6,8 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+ <markey>  We really need to fix the crashes with the OpenGL analyzers that many users get.
+
  <sebr>    Cancelling a podcast download shows an empty popup message and i can't figure out where from
 
  <illis.>  A whole lot (all?) of my mp3s have their titles truncated at 30-ish characters. This is almost
