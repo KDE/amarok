@@ -622,8 +622,11 @@ ScriptManager::slotReceivedStderr( KProcess* process, char* buf, int len )
         if( it.data().process == process ) break;
 
     const QString text = QString::fromLatin1( buf, len );
-    it.data().log += text;
     error() << it.key() << ":\n" << text << endl;
+
+    if( it.data().log.length() > 20000 )
+        it.data().log = "==== LOG TRUNCATED HERE ====\n";
+    it.data().log += text;
 }
 
 
