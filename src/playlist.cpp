@@ -478,28 +478,14 @@ Playlist::addSpecialTracks( uint songCount, const QString type )
     if( required > remainder )
         songCount = required - remainder;
 
-    if( type == "Random" )
-    {
-        songCount > 1 ?
-            amaroK::StatusBar::instance()->shortMessage( i18n("Adding random tracks.") ):
-            amaroK::StatusBar::instance()->shortMessage( i18n("Adding random track.") );
-
-    }
-    else if( type == "Suggestion" )
+    if( type == "Suggestion" )
     {
         if( !m_currentTrack ) return;
         QStringList suggestions = CollectionDB::instance()->similarArtists( currentTrack()->artist(), 16 );
         qb.addMatches( QueryBuilder::tabArtist, suggestions );
-        songCount > 1 ?
-            amaroK::StatusBar::instance()->shortMessage( i18n("Adding suggested tracks.") ):
-            amaroK::StatusBar::instance()->shortMessage( i18n("Adding suggested track.") );
     }
-    else //we have playlists to choose from.
+    else if( type != "Random" ) //we have playlists to choose from.
     {
-        songCount > 1 ?
-            amaroK::StatusBar::instance()->shortMessage( i18n("Adding tracks from custom filter.") ):
-            amaroK::StatusBar::instance()->shortMessage( i18n("Adding track from custom filter.") );
-
         addSpecialCustomTracks( songCount );
         return;
     }
