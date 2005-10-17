@@ -178,8 +178,7 @@ FileBrowser::FileBrowser( const char * name )
         menu->insertSeparator();
 
         menu->insertItem( SmallIconSet( "usbpendrive_unmount" ), i18n( "Add to Media Device &Transfer Queue" ), MediaDevice );
-        menu->insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn to CD as Data"), BurnDataCd );
-        menu->insertItem( SmallIconSet( "cdaudio_unmount" ), i18n("Burn to CD as Audio"), BurnAudioCd );
+        menu->insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn to CD"), BurnCd );
         menu->insertSeparator();
         menu->insertItem( i18n( "&Select All Files" ), SelectAllFiles );
         menu->insertSeparator();
@@ -187,8 +186,7 @@ FileBrowser::FileBrowser( const char * name )
         menu->insertSeparator();
         actionCollection->action( "properties" )->plug( menu );
 
-        menu->setItemEnabled( BurnDataCd, K3bExporter::isAvailable() );
-        menu->setItemEnabled( BurnAudioCd, K3bExporter::isAvailable() );
+        menu->setItemEnabled( BurnCd, K3bExporter::isAvailable() );
 
         connect( menu, SIGNAL(aboutToShow()), SLOT(prepareContextMenu()) );
         connect( menu, SIGNAL(activated( int )), SLOT(contextMenuActivated( int )) );
@@ -376,12 +374,8 @@ FileBrowser::contextMenuActivated( int id )
         break;
     }
 
-    case BurnDataCd:
-        K3bExporter::instance()->exportTracks( selectedItems(), K3bExporter::DataCD );
-        break;
-
-    case BurnAudioCd:
-        K3bExporter::instance()->exportTracks( selectedItems(), K3bExporter::AudioCD );
+    case BurnCd:
+        K3bExporter::instance()->exportTracks( selectedItems() );
         break;
     }
 }

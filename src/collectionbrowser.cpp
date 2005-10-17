@@ -658,7 +658,7 @@ CollectionView::scanStarted() // SLOT
 
 
 void
-CollectionView::scanDone( bool changed ) //SLOT
+CollectionView::scanDone( bool /*changed*/ ) //SLOT
 {
     DEBUG_BLOCK
 
