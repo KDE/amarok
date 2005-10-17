@@ -1427,7 +1427,7 @@ void
 Playlist::updateNextPrev()
 {
     amaroK::actionCollection()->action( "play" )->setEnabled( !isEmpty() );
-    amaroK::actionCollection()->action( "prev" )->setEnabled( isTrackBefore() && !isDynamic() );
+    amaroK::actionCollection()->action( "prev" )->setEnabled( isTrackBefore() );
     amaroK::actionCollection()->action( "next" )->setEnabled( isTrackAfter() );
     amaroK::actionCollection()->action( "playlist_clear" )->setEnabled( !isEmpty() );
 
