@@ -32,6 +32,8 @@
 #include <kstdguiitem.h>
 
 #include <qapplication.h>
+#include <qdatetime.h>      //writeLogFile()
+#include <qfile.h>          //writeLogFile()
 #include <qpushbutton.h>
 #include <qlabel.h>
 #include <qlayout.h>
@@ -211,6 +213,8 @@ StatusBar::shortMessage( const QString &text )
     m_mainTextLabel->setPalette( QToolTip::palette() );
 
     SingleShotPool::startTimer( 5000, this, SLOT(resetMainText()) );
+
+    writeLogFile( text );
 }
 
 void
@@ -272,6 +276,8 @@ StatusBar::longMessage( const QString &text, int /*type*/ )
     raise();
 
     m_messageQueue += message;
+
+    writeLogFile( text );
 }
 
 void
@@ -530,6 +536,19 @@ StatusBar::pruneProgressBars()
         static_cast<QWidget*>(progressBox()->child("showAllProgressDetails"))->hide();
         m_popupProgress->setShown(false);
     }
+}
+
+void
+StatusBar::writeLogFile( const QString &text )
+{
+    QFile file( amaroK::saveLocation() + "statusbar.log" );
+
+    if ( !file.open( IO_WriteOnly|IO_Append ) ) return;
+
+    QTextStream stream( &file );
+    stream.setEncoding( QTextStream::UnicodeUTF8 );
+
+    stream << "[" << QDateTime::currentDateTime().toString() << "] " << text << endl;
 }
 
 } //namespace KDE

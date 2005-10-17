@@ -206,6 +206,7 @@ namespace KDE
         void updateTotalProgress();
         bool allDone(); ///@return true if all progress operations are complete
         void pruneProgressBars(); /// deletes old progress bars
+        void writeLogFile( const QString &text );
 
         QWidget *cancelButton() { return (QWidget*)child( "cancelButton" ); }
         QWidget *toggleProgressWindowButton() { return (QWidget*)child( "showAllProgressDetails" ); }
