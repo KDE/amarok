@@ -462,14 +462,16 @@ ScriptManager::slotRunScript()
     // Don't start a script twice
     if( m_scripts[name].process ) return false;
 
-    const KURL url = m_scripts[name].url;
     AmaroKProcIO* script = new AmaroKProcIO();
-//     script->setComm( (KProcess::Communication) ( KProcess::Stdin|KProcess::Stdout|KProcess::Stderr ) );
-
+    script->setComm( (KProcess::Communication) ( KProcess::Stdin|KProcess::Stderr ) );
+    const KURL url = m_scripts[name].url;
     *script << url.path();
     script->setWorkingDirectory( amaroK::saveLocation( "scripts-data/" ) );
 
-    if( !script->start( KProcess::NotifyOnExit, true ) ) {
+    connect( script, SIGNAL( receivedStderr( KProcess*, char*, int ) ), SLOT( slotReceivedStderr( KProcess*, char*, int ) ) );
+    connect( script, SIGNAL( processExited( KProcess* ) ), SLOT( scriptFinished( KProcess* ) ) );
+
+    if( !script->start( KProcess::NotifyOnExit ) ) {
         KMessageBox::sorry( 0, i18n( "<p>Could not start the script <i>%1</i>.</p>"
                                      "<p>Please make sure that the file has execute (+x) permissions.</p>" ).arg( name ) );
         delete script;
@@ -481,8 +483,6 @@ ScriptManager::slotRunScript()
 
     m_scripts[name].process = script;
     slotCurrentChanged( m_gui->listView->currentItem() );
-//     connect( script, SIGNAL( receivedStdout( KProcess*, char*, int ) ), SLOT( slotReceivedStdout( KProcess*, char*, int ) ) );
-    connect( script, SIGNAL( processExited( KProcess* ) ), SLOT( scriptFinished( KProcess* ) ) );
     return true;
 }
 
@@ -565,7 +565,6 @@ ScriptManager::slotAboutScript()
 void
 ScriptManager::slotShowContextMenu( QListViewItem* item, const QPoint& pos )
 {
-    DEBUG_BLOCK
     if( !item ) return;
 
     // Look up script entry in our map
@@ -604,7 +603,7 @@ ScriptManager::slotShowContextMenu( QListViewItem* item, const QPoint& pos )
             editor->setFont( font );
 
             editor->setTextFormat( QTextEdit::PlainText );
-            editor->resize( 640, 480 );
+            editor->resize( 500, 380 );
             editor->show();
             break;
     }
@@ -612,7 +611,7 @@ ScriptManager::slotShowContextMenu( QListViewItem* item, const QPoint& pos )
 
 
 void
-ScriptManager::slotReceivedStdout( KProcess* process, char* buf, int len )
+ScriptManager::slotReceivedStderr( KProcess* process, char* buf, int len )
 {
     DEBUG_BLOCK
 
@@ -622,7 +621,9 @@ ScriptManager::slotReceivedStdout( KProcess* process, char* buf, int len )
     for( it = m_scripts.begin(); it != end; ++it )
         if( it.data().process == process ) break;
 
-    it.data().log += QString::fromLatin1( buf, len );
+    const QString text = QString::fromLatin1( buf, len );
+    it.data().log += text;
+    error() << it.key() << ":\n" << text << endl;
 }
 
 
@@ -638,20 +639,15 @@ ScriptManager::scriptFinished( KProcess* process ) //SLOT
         if( it.data().process == process ) break;
 
     // Check if there was an error on exit
-    if( process->normalExit() && process->exitStatus() != 0 ) {
-        // Read Stderr log
-        KProcIO* proc = static_cast<KProcIO*>( process );
-        QString line, details;
-        while( proc->readln( line ) != -1 )
-            details += line;
-
+    if( process->normalExit() && process->exitStatus() != 0 )
         KMessageBox::detailedError( 0, i18n( "The script '%1' exited with error code: %2" )
-                                           .arg( it.key() ).arg( process->exitStatus() ), details );
-    }
+                                           .arg( it.key() ).arg( process->exitStatus() )
+                                           ,it.data().log );
 
     // Destroy script process
     delete it.data().process;
     it.data().process = 0;
+    it.data().log = QString::null;
     it.data().li->setPixmap( 0, SmallIcon( "stop" ) );
     slotCurrentChanged( m_gui->listView->currentItem() );
 }

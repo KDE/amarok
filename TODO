@@ -21,8 +21,6 @@ SHORT-TERM (URGENT):
            possibly download.kde.org or similar. (When our site is down, the GHNS feature fails
            to work entirely)
 
-  <markey> Figure out why ScriptManager can't read from stdout.
-
   <markey> amaroK fails to download any stream playlist from http://dir.xiph.org. Part of the problem is
            PlaylistLoader::isPlaylistFile(const KURL&), which only looks at the filename's extension. This
            fails for URLs like http://dir.xiph.org/listen.php?pid=669641&file=listen.m3u, because the filename
