@@ -751,7 +751,9 @@ CollectionDB::setAlbumImage( const QString& artist, const QString& album, QImage
     if ( !amazonUrl.isEmpty() )
         img.setText( "amazon-url", 0, amazonUrl );
 
-    return img.save( largeCoverDir.filePath( key ), "PNG");
+    const bool b = img.save( largeCoverDir.filePath( key ), "PNG");
+    emit coverChanged( artist, album );
+    return b;
 }
 
 

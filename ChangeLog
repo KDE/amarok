@@ -14,6 +14,8 @@ VERSION 1.3.4:
     * Playlistbrowser items can be dragged into folders.
 
   CHANGES:
+    * Tooltip for the queue icon in the statusbar will now show the album
+      cover of the upcoming track.
     * Totals in the collection browser will now reflect the visible items
       if you set a filter.
     * Podcast settings "download on request" and "stream on request" have

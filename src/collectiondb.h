@@ -208,7 +208,8 @@ class CollectionDB : public QObject, public EngineObserver
         void databaseEngineChanged();
 
         void scoreChanged( const QString &url, int score );
-        void coverFetched( const QString &artist, const QString &album );
+        void coverChanged( const QString &artist, const QString &album ); //whenever a cover changes
+        void coverFetched( const QString &artist, const QString &album ); //only when fetching from amazon
         void coverRemoved( const QString &artist, const QString &album );
         void coverFetcherError( const QString &error );
 

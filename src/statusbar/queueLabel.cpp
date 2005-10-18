@@ -17,8 +17,9 @@
  *   51 Franklin Steet, Fifth Floor, Boston, MA  02111-1307, USA.          *
  ***************************************************************************/
 
-#include "amarok.h"
 #include "queueLabel.h"
+#include "amarok.h"
+#include "collectiondb.h"
 #include "metabundle.h"
 #include "playlist.h"
 #include "playlistitem.h"
@@ -47,14 +48,32 @@ QueueLabel::QueueLabel( QWidget *parent, const char *name )
 {
     connect( this,                 SIGNAL( queueChanged( const PLItemList &, const PLItemList & ) ),
              Playlist::instance(), SIGNAL( queueChanged( const PLItemList &, const PLItemList & ) ) );
+
+    connect( CollectionDB::instance(), SIGNAL( coverChanged( const QString &, const QString & ) ),
+             this, SLOT( slotCoverChanged( const QString &, const QString & ) ) );
 }
 
 
 void QueueLabel::update() //SLOT
 {
-    Playlist *pl = Playlist::instance();
-    const uint count = pl->m_nextTracks.count();
-    setNum( count );
+    PLItemList &queue = Playlist::instance()->m_nextTracks;
+    setNum( queue.count() );
+    if( isVisible() )
+        getCover( queue.getFirst()->artist(), queue.getFirst()->album() );
+}
+
+void QueueLabel::slotCoverChanged( const QString &artist, const QString &album ) //SLOT
+{
+    PLItemList &queue = Playlist::instance()->m_nextTracks;
+    if( isVisible() && queue.getFirst()->artist() == artist && queue.getFirst()->album() == album )
+        getCover( artist, album );
+}
+
+void QueueLabel::getCover( const QString &artist, const QString &album )
+{
+    m_cover = CollectionDB::instance()->albumImage( artist, album, 50 );
+    if( m_cover == CollectionDB::instance()->notAvailCover( 50 ) )
+        m_cover = KGlobal::iconLoader()->iconPath( "goto", -KIcon::SizeHuge );
 }
 
 void QueueLabel::setNum( int num )
@@ -228,7 +247,7 @@ void QueueLabel::showToolTip()
     m_tooltip->showCounter( false );
     m_tooltip->setMaskEffect( KDE::PopupMessage::Plain );
     m_tooltip->setText( text );
-    m_tooltip->setImage( KGlobal::iconLoader()->iconPath( "goto", -KIcon::SizeHuge ) );
+    m_tooltip->setImage( m_cover );
 
     m_tooltip->move( x(), y() + m_tooltip->height() );
 

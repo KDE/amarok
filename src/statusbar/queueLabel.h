@@ -44,6 +44,7 @@ class QueueLabel: public QLabel //homonym, heh heh
 
     private slots:
         void aboutToShow();
+        void slotCoverChanged( const QString &artist, const QString &album );
 
     protected:
         virtual void mousePressEvent( QMouseEvent* e );
@@ -52,11 +53,14 @@ class QueueLabel: public QLabel //homonym, heh heh
         void    showToolTip();
         void    hideToolTip();
         QString veryNiceTitle( PlaylistItem * item ) const;
+        void    getCover( const QString &artist, const QString &album );
 
         inline int mapXToGlobal( int x ) { return mapToGlobal( QPoint( x, 0 ) ).x(); }
         inline int mapYToGlobal( int y ) { return mapToGlobal( QPoint( 0, y ) ).y(); }
 
         QTimer  m_timer;
+
+        QString m_cover;
 
         KDE::PopupMessage *m_tooltip;
         bool               m_tooltipShowing;
