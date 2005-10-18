@@ -1065,7 +1065,7 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
     if( !type.isNull() )
         setXml( type.namedItem("channel"), RSS );
     else
-        setXml( xmlDefinition, ATOM );
+        setXml( xmlDefinition.namedItem("feed"), ATOM );
 
     setDragEnabled( true );
     setRenameEnabled( 0, false );
