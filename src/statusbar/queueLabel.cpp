@@ -51,6 +51,8 @@ QueueLabel::QueueLabel( QWidget *parent, const char *name )
 
     connect( CollectionDB::instance(), SIGNAL( coverChanged( const QString &, const QString & ) ),
              this, SLOT( slotCoverChanged( const QString &, const QString & ) ) );
+
+    setNum( 0 );
 }
 
 
