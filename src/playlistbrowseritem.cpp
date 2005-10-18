@@ -1061,7 +1061,11 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
     if( m_saveLocation.isEmpty() )
         m_saveLocation = KURL::fromPathOrURL( amaroK::saveLocation( "podcasts/data/" ) );
 
-    setXml( xmlDefinition.namedItem("rss").namedItem("channel") );
+    QDomNode type = xmlDefinition.namedItem("rss");
+    if( !type.isNull() )
+        setXml( type.namedItem("channel"), RSS );
+    else
+        setXml( xmlDefinition, ATOM );
 
     setDragEnabled( true );
     setRenameEnabled( 0, false );
@@ -1243,7 +1247,7 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
     {
         amaroK::StatusBar::instance()->shortMessage( i18n("Podcast returned invalid data.") );
 
-        if( !m_title )
+        if( m_title.isEmpty() )
             setText( 0, m_url.prettyURL() );
 
         setPixmap( 0, SmallIcon("cancel") );
@@ -1252,17 +1256,27 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
     QDomNode type = d.namedItem("rss");
     if( type.isNull() || type.toElement().attribute( "version" ) != "2.0" )
     {
-        amaroK::StatusBar::instance()->shortMessage( i18n("Sorry, only RSS 2.0 feeds for podcasts!") );
+        type = d.namedItem("feed");
+        if( type.isNull() )
+        {
+            //FIXME: Update error message after string freeze
+            amaroK::StatusBar::instance()->shortMessage( i18n("Sorry, only RSS 2.0 feeds for podcasts!") );
 
-        if( !m_title )
-            setText( 0, m_url.prettyURL() );
+            if( m_title.isEmpty() )
+                setText( 0, m_url.prettyURL() );
 
-        setPixmap( 0, SmallIcon("cancel") );
-        return;
+            setPixmap( 0, SmallIcon("cancel") );
+            return;
+        }
+        // feed is ATOM
+        else
+        {
+            setXml( type, ATOM );
+        }
     }
-
-
-    setXml( type.namedItem("channel") );
+    // feed is rss 2.0
+    else
+        setXml( type.namedItem("channel"), RSS );
 
     ///BEGIN Cache the xml
     QFile file( amaroK::saveLocation( "podcasts/" ) +  m_cache );
@@ -1396,8 +1410,10 @@ PodcastChannel::setNew( bool n )
 
 /// DONT TOUCH m_url!!!  The podcast has no mention to the location of the xml file, idiots.
 void
-PodcastChannel::setXml( const QDomNode &xml )
+PodcastChannel::setXml( const QDomNode &xml, const int feedType )
 {
+    const bool isAtom = ( feedType == ATOM );
+
     m_title = xml.namedItem( "title" ).toElement().text();
     setText( 0, m_title );
 
@@ -1406,7 +1422,14 @@ PodcastChannel::setXml( const QDomNode &xml )
     m_cache.replace( "/", "_" );
     m_cache += "_" + m_url.fileName();
 
-    QString weblink = xml.namedItem( "link" ).toElement().text();
+    QString weblink = QString::null;
+    if( isAtom )
+    {
+        weblink = xml.namedItem( "link" ).toElement().attribute( "rel" );
+    }
+    else
+        weblink = xml.namedItem( "link" ).toElement().text();
+
     m_link = KURL::fromPathOrURL( weblink );
 
     m_description = xml.namedItem( "description" ).toElement().text();
@@ -1414,9 +1437,16 @@ PodcastChannel::setXml( const QDomNode &xml )
 
     PodcastItem *updatingLast = 0;
 
-    PodcastItem* first = (PodcastItem*)firstChild();
+    PodcastItem *first = (PodcastItem*)firstChild();
 
-    QDomNode n = xml.namedItem( "item" );
+    QDomNode n;
+    if( isAtom )
+    {
+        n = xml.namedItem( "entry" );
+    }
+    else
+        n = xml.namedItem( "item" );
+
     int  children = 0;
     bool downloadMedia = ( m_mediaFetch == AUTOMATIC );
     for( ; !n.isNull(); n = n.nextSibling() )
@@ -1425,14 +1455,28 @@ PodcastChannel::setXml( const QDomNode &xml )
         {
             // podcasts get inserted in a chronological order,
             // no need to continue traversing, we must have them already
-            if( first && first->hasXml( n ) )
+            if( first && first->hasXml( n, feedType ) )
             {
                 break;
             }
 
-            if( !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
+            if( isAtom )
             {
-                updatingLast = new PodcastItem( this, updatingLast, n.toElement() );
+                // Atom feeds have multiple nodes called link, only one which has an enclosure.
+                QDomNode nodes = n.namedItem("link");
+                for( ; !nodes.isNull(); nodes = nodes.nextSibling() )
+                {
+                    if( nodes.toElement().attribute("rel") == "enclosure" )
+                    {
+                        updatingLast = new PodcastItem( this, updatingLast, n.toElement(), feedType );
+                        updatingLast->setNew();
+                        break;
+                    }
+                }
+            }
+            else if( !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
+            {
+                updatingLast = new PodcastItem( this, updatingLast, n.toElement(), feedType );
                 updatingLast->setNew();
             }
         }
@@ -1441,9 +1485,23 @@ PodcastChannel::setXml( const QDomNode &xml )
             if( m_purgeItems && children > m_purgeCount )
                 break;
 
-            if( !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
+            if( isAtom )
             {
-                m_last = new PodcastItem( this, m_last, n.toElement() );
+                // Atom feeds have multiple nodes called link, only one which has an enclosure.
+                QDomNode nodes = n.namedItem("link");
+                for( ; !nodes.isNull(); nodes = nodes.nextSibling() )
+                {
+                    if( nodes.toElement().attribute("rel") == "enclosure" )
+                    {
+                        updatingLast = new PodcastItem( this, updatingLast, n.toElement(), feedType );
+                        updatingLast->setNew();
+                        break;
+                    }
+                }
+            }
+            else if( !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
+            {
+                m_last = new PodcastItem( this, m_last, n.toElement(), feedType );
                 children++;
             }
         }
@@ -1563,7 +1621,7 @@ PodcastChannel::slotAnimation()
 ///    @note we fucking hate itunes for taking over podcasts and inserting
 ///          their own attributes.
 ////////////////////////////////////////////////////////////////////////////
-PodcastItem::PodcastItem( QListViewItem *parent, QListViewItem *after, const QDomElement &xml )
+PodcastItem::PodcastItem( QListViewItem *parent, QListViewItem *after, const QDomElement &xml, const int feedType )
     : PlaylistBrowserEntry( parent, after )
       , m_parent( parent )
       , m_localUrl( 0 )
@@ -1573,20 +1631,41 @@ PodcastItem::PodcastItem( QListViewItem *parent, QListViewItem *after, const QDo
       , m_downloaded( false )
       , m_new( false )
 {
+    const bool isAtom = ( feedType == ATOM );
     m_title       = xml.namedItem( "title" ).toElement().text();
 
-    m_description = xml.namedItem( "description" ).toElement().text();
+    if( isAtom )
+    {
+        for( QDomNode n = xml.firstChild(); !n.isNull(); n = n.nextSibling() )
+        {
+            if( n.nodeName() == "summary" )         m_description = n.toElement().text();
+            else if ( n.nodeName() == "author" )    m_author      = n.toElement().text();
+            else if ( n.nodeName() == "published" ) m_date        = n.toElement().text();
+            else if ( n.nodeName() == "link" )
+            {
+                if( n.toElement().attribute( "rel" ) == "enclosure" )
+                {
+                    const QString url = n.toElement().attribute( "href" );
+                    m_url = KURL::fromPathOrURL( url );
+                }
+            }
+        }
+    }
+    else
+    {
+        m_description = xml.namedItem( "description" ).toElement().text();
 
-    if( m_description.isEmpty() )
-        m_description = xml.namedItem( "itunes:summary" ).toElement().text();
+        if( m_description.isEmpty() )
+            m_description = xml.namedItem( "itunes:summary" ).toElement().text();
 
-    m_author      = xml.namedItem( "author" ).toElement().text();
-    m_date        = xml.namedItem( "pubDate" ).toElement().text();
-    m_duration    = xml.namedItem( "enclosure" ).toElement().attribute( "length" ).toInt();
-    m_type        = xml.namedItem( "enclosure" ).toElement().attribute( "type" );
-    const QString url = xml.namedItem( "enclosure" ).toElement().attribute( "url" );
+        m_author      = xml.namedItem( "author" ).toElement().text();
+        m_date        = xml.namedItem( "pubDate" ).toElement().text();
+        m_duration    = xml.namedItem( "enclosure" ).toElement().attribute( "length" ).toInt();
+        m_type        = xml.namedItem( "enclosure" ).toElement().attribute( "type" );
+        const QString url = xml.namedItem( "enclosure" ).toElement().attribute( "url" );
 
-    m_url         = KURL::fromPathOrURL( url );
+        m_url         = KURL::fromPathOrURL( url );
+    }
 
     if( m_title.isEmpty() )
         m_title = m_url.fileName();
@@ -1665,8 +1744,30 @@ PodcastItem::downloadResult( KIO::Job* job ) //SLOT
 
 
 const bool
-PodcastItem::hasXml( const QDomNode& xml )
+PodcastItem::hasXml( const QDomNode& xml, const int feedType )
 {
+    if( feedType == ATOM )
+    {
+        bool same = true;
+        for( QDomNode n = xml.firstChild(); !n.isNull(); n = n.nextSibling() )
+        {
+            if( n.nodeName() == "summary" )         same &= ( m_description == n.toElement().text() );
+            else if ( n.nodeName() == "author" )    same &= ( m_author      == n.toElement().text() );
+            else if ( n.nodeName() == "published" ) same &= ( m_date        == n.toElement().text() );
+            else if ( n.nodeName() == "link" )
+            {
+                if( n.toElement().attribute( "rel" ) == "enclosure" )
+                {
+                    const QString url = n.toElement().attribute( "href" );
+                    same &= ( m_url.prettyURL() == url );
+                }
+            }
+            if( !same )
+                break;
+        }
+        return same;
+    }
+    //rss
     bool a = m_title           == xml.namedItem( "title" ).toElement().text();
     bool b = m_author          == xml.namedItem( "author" ).toElement().text();
     bool c = m_date            == xml.namedItem( "pubDate" ).toElement().text();

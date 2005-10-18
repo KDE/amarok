@@ -221,11 +221,11 @@ class PodcastItem : public QObject, public PlaylistBrowserEntry
         Q_OBJECT
 
     public:
-        PodcastItem( QListViewItem *parent, QListViewItem *after, const QDomElement &xml );
+        PodcastItem( QListViewItem *parent, QListViewItem *after, const QDomElement &xml, const int feedType );
 
         void  downloadMedia();
         const bool hasDownloaded() { return m_downloaded; }
-        const bool hasXml( const QDomNode &xml );
+        const bool hasXml( const QDomNode &xml, const int feedType );
         void  showAbout();
         QListViewItem *itemChannel() { return m_parent; }
 
@@ -254,6 +254,8 @@ class PodcastItem : public QObject, public PlaylistBrowserEntry
         void slotAnimation();
 
     private:
+        enum FeedType{ RSS=0, ATOM=1 };
+
         void startAnimation();
         void stopAnimation();
 
@@ -314,7 +316,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         const KURL &saveLocation() { return m_saveLocation; }
         const int  timeout() { return m_interval; }
 
-        void setXml( const QDomNode &xml );
+        void setXml( const QDomNode &xml, const int feedType );
         QDomElement xml();
 
         int rtti() const { return RTTI; }
@@ -327,6 +329,8 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         void slotAnimation();
 
     private:
+        enum FeedType{ RSS=0, ATOM=1 };
+
         bool containsItem( QDomElement xml );
         void downloadChildren();
         void purge();

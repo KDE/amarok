@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.3.4:
   FEATURES:
+    * Atom feed compatibility for podcasts.
     * Statusbar messages are logged to a file, statusbar.log. (BR 99899)
     * Podcast configuration now provides the ability to set the values for
       all podcasts. (BR 114371)
