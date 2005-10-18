@@ -466,11 +466,16 @@ void ContextBrowser::engineStateChanged( Engine::State state, Engine::State oldS
 {
     DEBUG_BLOCK
 
-    m_dirtyHomePage = true;
-    m_dirtyCurrentTrackPage = true;
-    m_dirtyLyricsPage = true;
-    m_lyricJob = 0; //let's forget previous lyric-fetching jobs
-    m_wikiJob = 0; //let's forget previous wiki-fetching jobs
+    if( state != Engine::Paused /*pause*/ && oldState != Engine::Paused /*resume*/)
+    {
+        debug() << "Stopping all jobs" << endl;
+        // Pause shouldn't clear everything
+        m_dirtyHomePage = true;
+        m_dirtyCurrentTrackPage = true;
+        m_dirtyLyricsPage = true;
+        m_lyricJob = 0; //let's forget previous lyric-fetching jobs
+        m_wikiJob = 0; //let's forget previous wiki-fetching jobs
+    }
 
     switch( state )
     {
