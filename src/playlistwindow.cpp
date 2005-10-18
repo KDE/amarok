@@ -663,7 +663,10 @@ void PlaylistWindow::slotAddLocation( bool directPlay ) //SLOT
     const KURL::List::ConstIterator end  = files.constEnd();
 
     for(  KURL::List::ConstIterator it = files.constBegin(); it != end; ++it )
-        Playlist::instance()->insertMedia( *it, options );
+        if( it == files.constBegin() )
+            Playlist::instance()->insertMedia( *it, options );
+        else
+            Playlist::instance()->insertMedia( *it, Playlist::Append );
 }
 
 
