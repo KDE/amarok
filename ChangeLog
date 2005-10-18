@@ -27,6 +27,7 @@ VERSION 1.3.4:
       icon, respectively.
 
   BUGFIXES:
+    * Dynamic mode did not respect repeat track mode. (BR 114585)
     * The Script Manager no longer captures the script's stdout.
     * Enqueuing files with amarok -e would not work for relative paths if the
       working directories of the new and the running instance of amarok differ.
