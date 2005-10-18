@@ -970,7 +970,7 @@ MediaDevice::ipodConnection() //SLOT
         m_ipod = new IPod::IPod();
         m_parent->m_deviceList->renderView( 0 );
         m_parent->m_connectButton->setOn( false );
-        KMessageBox::error( m_parent->m_parent, text, i18n( "Media Device Browser" ) );
+        KMessageBox::information( m_parent->m_parent, text, i18n( "Media Device Browser" ) );
     }
 }
 
