@@ -208,6 +208,8 @@ namespace KDE
         void pruneProgressBars(); /// deletes old progress bars
         void writeLogFile( const QString &text );
 
+        int  m_logCounter;
+
         QWidget *cancelButton() { return (QWidget*)child( "cancelButton" ); }
         QWidget *toggleProgressWindowButton() { return (QWidget*)child( "showAllProgressDetails" ); }
         QWidget *progressBox() { return (QWidget*)child( "progressBox" ); }

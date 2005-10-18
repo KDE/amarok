@@ -85,6 +85,7 @@ namespace SingleShotPool
 
 StatusBar::StatusBar( QWidget *parent, const char *name )
         : QWidget( parent, name )
+        , m_logCounter( -1 )
 {
     QBoxLayout *mainlayout = new QHBoxLayout( this, 2, /*spacing*/5 );
 
@@ -538,12 +539,44 @@ StatusBar::pruneProgressBars()
     }
 }
 
+/// Method which writes to a rotating log file.
 void
 StatusBar::writeLogFile( const QString &text )
 {
-    QFile file( amaroK::saveLocation() + "statusbar.log" );
+    int counter = 4; // number of logs to keep
+    QString logBase = amaroK::saveLocation() + "statusbar.log.";
+    QFile file;
 
-    if ( !file.open( IO_WriteOnly|IO_Append ) ) return;
+    if( m_logCounter < 0 ) //find which log to write to
+    {
+        for( ; counter > 0; counter-- )
+        {
+            QString log = logBase + QString::number(counter);
+
+            if( QFile::exists( log ) )
+            {
+                file.setName( log );
+            }
+        }
+        if( counter == 0 ) file.setName( logBase + "0" );
+        m_logCounter = counter;
+    }
+    else
+    {
+        file.setName( logBase + QString::number(m_logCounter) );
+    }
+
+    if( file.size() > 30000 ) // approximately 1000 lines per log file
+    {
+        m_logCounter++;
+        m_logCounter = m_logCounter % counter;
+        file.setName( logBase + QString::number(m_logCounter) );
+        // if we have overflown the log, then we want to overwrite the previous content
+        if( !file.open( IO_WriteOnly ) ) return;
+    }
+    else if( !file.open( IO_WriteOnly|IO_Append ) ) return;
+
+
 
     QTextStream stream( &file );
     stream.setEncoding( QTextStream::UnicodeUTF8 );
