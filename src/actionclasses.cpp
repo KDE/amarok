@@ -304,6 +304,12 @@ AnalyzerContainer::mousePressEvent( QMouseEvent *e)
     else if( e->button() == Qt::RightButton ) {
         KPopupMenu menu;
         menu.insertItem( SmallIconSet( "visualizations" ), i18n("&Visualizations"), Menu::ID_SHOW_VIS_SELECTOR );
+#if defined HAVE_XMMS || defined HAVE_LIBVISUAL
+        menu.setItemEnabled( amaroK::Menu::ID_SHOW_VIS_SELECTOR, true );
+#else
+        menu.setItemEnabled( amaroK::Menu::ID_SHOW_VIS_SELECTOR, false );
+#endif        
+
         if( menu.exec( mapToGlobal( e->pos() ) ) == Menu::ID_SHOW_VIS_SELECTOR )
             Menu::instance()->slotActivated( Menu::ID_SHOW_VIS_SELECTOR );
     }
