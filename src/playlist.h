@@ -25,6 +25,7 @@
 #include "playlistwindow.h"  //friend
 #include "playlistitem.h"
 #include "metabundle.h"
+#include "tracktooltip.h"
 
 #include <klistview.h>       //baseclass
 #include <kurl.h>            //KURL::List
@@ -134,12 +135,14 @@ class Playlist : private KListView, public EngineObserver
         friend class QueueLabel;
         friend void amaroK::DcopPlaylistHandler::removeCurrentTrack(); //calls removeItem() and currentTrack()
         friend void PlaylistWindow::init(); //setting up connections etc.
+        friend TrackToolTip::TrackToolTip();
         friend bool PlaylistWindow::eventFilter( QObject*, QEvent* ); //for convenience we handle some playlist events here
 
     signals:
         void aboutToClear();
         void itemCountChanged( int newCount, int newLength, int visCount, int visLength, int selCount, int selLength );
         void queueChanged( const PLItemList &queued, const PLItemList &dequeued );
+        void columnsChanged();
 
     public slots:
         void activateByIndex(int);

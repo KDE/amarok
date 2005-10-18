@@ -434,6 +434,8 @@ void App::applySettings( bool firstTime )
     //determine and apply colors first
     applyColorScheme();
 
+    TrackToolTip::instance()->removeFromWidget( m_pTray );
+
     if( AmarokConfig::showPlayerWindow() )
     {
         if( !m_pPlayerWindow )
@@ -481,6 +483,7 @@ void App::applySettings( bool firstTime )
     CollectionDB::instance()->applySettings();
     amaroK::StatusBar::instance()->setShown( AmarokConfig::showStatusBar() );
     m_pTray->setShown( AmarokConfig::showTrayIcon() );
+    TrackToolTip::instance()->addToWidget( m_pTray );
 
 
     // we check > 0 because textCodecForIndex( 0 ) crashes amaroK for unknown
@@ -762,7 +765,7 @@ void App::engineStateChanged( Engine::State state, Engine::State oldState )
         if ( AmarokConfig::showPlayerWindow() )
             m_pPlaylistWindow->setCaption( kapp->makeStdCaption( i18n("Playlist") ) );
         else m_pPlaylistWindow->setCaption( "amaroK" );
-        QToolTip::add( m_pTray, i18n( "amaroK - rediscover your music" ) );
+        TrackToolTip::instance()->clear();
         break;
 
     case Engine::Playing:
@@ -794,12 +797,12 @@ void App::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
     if ( !bundle.prettyTitle().isEmpty() )
         m_pPlaylistWindow->setCaption( "amaroK - " + bundle.veryNiceTitle() );
 
-    TrackToolTip::add( m_pTray, bundle, EngineController::instance()->engine()->position() );
+    TrackToolTip::instance()->setTrack( bundle );
 }
 
 void App::engineTrackPositionChanged( long position, bool /*userSeek*/ )
 {
-    TrackToolTip::add( m_pTray, EngineController::instance()->bundle(), position );
+    TrackToolTip::instance()->setPos( position );
 }
 
 void App::engineVolumeChanged( int newVolume )

@@ -1660,6 +1660,8 @@ Playlist::columnOrderChanged() //SLOT
         m_currentTrack->setPixmap( prevColumn, QPixmap() );
         setCurrentTrackPixmap();
     }
+
+    emit columnsChanged();
 }
 
 void
@@ -2000,6 +2002,7 @@ Playlist::columnResizeEvent( int col, int oldw, int neww )
         //then this column has been inserted or removed, we need to update all the column widths
         QResizeEvent e( size(), QSize() );
         viewportResizeEvent( &e );
+        emit columnsChanged();
     }
 }
 

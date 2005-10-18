@@ -15,12 +15,42 @@
 #ifndef TRACKTOOLTIP_H
 #define TRACKTOOLTIP_H
 
-class MetaBundle;
+#include <qobject.h>
+#include <qptrlist.h>
+#include <metabundle.h>
+
 class QWidget;
 
-namespace TrackToolTip
+class TrackToolTip: public QObject
 {
-    void add( QWidget * widget, const MetaBundle & tags, int pos );
-}
+    Q_OBJECT
+
+    public:
+    TrackToolTip();
+    static TrackToolTip* instance();
+
+    void addToWidget( QWidget *widget );
+    void removeFromWidget( QWidget *widget );
+
+    void setTrack( const MetaBundle &tags, bool force = false );
+    void setPos( int pos );
+    void clear();
+
+    private slots:
+    void slotCoverChanged( const QString &artist, const QString &album );
+    void slotColumnsChanged();
+
+    private:
+    QString tooltip();
+    void updateWidgets();
+
+    static TrackToolTip *s_instance;
+    QPtrList<QWidget> m_widgets;
+    MetaBundle m_tags;
+    int        m_pos;
+    QString    m_cover;
+    QString    m_tooltip;
+    bool       m_haspos;
+};
 
 #endif

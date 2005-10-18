@@ -211,6 +211,8 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
     //KWin::setOnAllDesktops( winId(), true );
 
     connect( m_pAnimTimer, SIGNAL( timeout() ), SLOT( drawScroll() ) );
+
+    TrackToolTip::instance()->addToWidget( m_pScrollFrame );
 }
 
 
@@ -218,6 +220,7 @@ PlayerWidget::~PlayerWidget()
 {
     AmarokConfig::setPlayerPos( pos() );
     AmarokConfig::setPlaylistWindowEnabled( m_pPlaylistButton->isOn() );
+    TrackToolTip::instance()->removeFromWidget( m_pScrollFrame );
 }
 
 
@@ -373,9 +376,6 @@ void PlayerWidget::engineNewMetaData( const MetaBundle &bundle, bool )
     if( bundle.length() ) list << bundle.prettyLength();
     setScroll( list );
 
-    //update image tooltip
-    TrackToolTip::add( m_pScrollFrame, bundle, EngineController::instance()->engine()->position() );
-
     update(); //we need to update rateString
 }
 
@@ -385,8 +385,6 @@ void PlayerWidget::engineTrackPositionChanged( long position, bool /*userSeek*/ 
     m_pSlider->setValue( position );
 
     if( !m_pSlider->isEnabled() ) timeDisplay( position );
-
-    TrackToolTip::add( m_pScrollFrame, EngineController::instance()->bundle(), position );
 }
 
 
