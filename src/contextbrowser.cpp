@@ -468,7 +468,6 @@ void ContextBrowser::engineStateChanged( Engine::State state, Engine::State oldS
 
     if( state != Engine::Paused /*pause*/ && oldState != Engine::Paused /*resume*/)
     {
-        debug() << "Stopping all jobs" << endl;
         // Pause shouldn't clear everything
         m_dirtyHomePage = true;
         m_dirtyCurrentTrackPage = true;
