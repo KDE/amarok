@@ -203,6 +203,7 @@ XineEngine::load( const KURL &url, bool isStream )
     if( m_xfadeLength > 0 && xine_get_status( m_stream ) == XINE_STATUS_PLAY )
     {
        s_fader = new Fader( this );
+       setEqualizerParameters( m_intPreamp, m_equalizerGains );
     }
 
    // for users who stubbonly refuse to use DMIX or buy a good soundcard
