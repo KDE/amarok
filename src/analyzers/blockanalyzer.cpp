@@ -437,13 +437,15 @@ BlockAnalyzer::mousePressEvent( QMouseEvent *e )
             menu.setItemChecked( v, v == timeout() );
         }
 
+        #if defined HAVE_XMMS || defined HAVE_LIBVISUAL
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( "visualizations" ), i18n("&Visualizations"),
-            amaroK::Menu::ID_SHOW_VIS_SELECTOR );
+            0 );
+        #endif
 
         const int id = menu.exec( e->globalPos() );
 
-        if( id == amaroK::Menu::ID_SHOW_VIS_SELECTOR )
+        if( id == 0 )
             amaroK::Menu::instance()->slotActivated( amaroK::Menu::ID_SHOW_VIS_SELECTOR );
         else if( id != -1 ) {
             changeTimeout( id );
