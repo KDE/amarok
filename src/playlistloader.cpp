@@ -317,10 +317,6 @@ UrlLoader::completeJob()
             debug() << "\t" << m_badURLs[it] << endl;
     }
 
-    // delete now or the playlist count in the statusbar will be wrong
-    delete m_markerListViewItem;
-    m_markerListViewItem = 0;
-
     //syncronous, ie not using eventLoop
     QApplication::sendEvent( dependent(), this );
 }
