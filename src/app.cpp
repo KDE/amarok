@@ -143,35 +143,13 @@ App::App()
         EngineController::instance()->restoreSession();
     }
 
+    fixHyperThreading();
+
     // Refetch covers every 80 days or delete every 90 days to comply with Amazon license
     #ifdef AMAZON_SUPPORT
     new RefreshImages();
     pruneCoverImages();
     #endif
-
-    // BEGIN Check for HyperThreading, see BUG 99199
-    QString line;
-    uint cpuCount = 0;
-    QFile cpuinfo( "/proc/cpuinfo" );
-    if ( cpuinfo.open( IO_ReadOnly ) ) {
-        while ( cpuinfo.readLine( line, 20000 ) != -1 ) {
-            if ( line.startsWith( "vendor_id" ) && line.contains( "AuthenticAMD" ) ) {
-                // Special case for AMD CPU's like the Athlon 64 X2, which reports a bogus
-                // HT flag. @see BUG 114190
-                cpuCount = 1;
-                break;
-            }
-            if ( line.startsWith( "flags" ) ) {
-                const QString flagsLine = line.section( ":", 1 );
-                const QStringList flags = QStringList::split( " ", flagsLine );
-                if ( flags.contains( "ht" ) ) ++cpuCount;
-            }
-        }
-    }
-    // If multiple CPUs are listed with the HT flag, we got HyperThreading enabled
-    if ( cpuCount > 1 )
-        QTimer::singleShot( 0, this, SLOT( showHyperThreadingWarning() ) );
-    // END
 
     // Trigger collection scan if folder setup was changed by wizard
     if ( oldCollectionFolders != AmarokConfig::collectionFolders() )
@@ -381,6 +359,64 @@ void App::initGlobalShortcuts()
         }
     }
 }
+
+
+void App::fixHyperThreading()
+{
+    // Workaround for instability issues with HyperThreading CPU's, see BUG 99199.
+    // First we detect the presence of HyperThreading. If active, we bind amarokapp
+    // to the first CPU only (hard affinity).
+
+    DEBUG_BLOCK
+
+    #ifdef __linux__
+    QString line;
+    uint cpuCount = 0;
+    QFile cpuinfo( "/proc/cpuinfo" );
+    if ( cpuinfo.open( IO_ReadOnly ) ) {
+        while ( cpuinfo.readLine( line, 20000 ) != -1 ) {
+            if ( line.startsWith( "vendor_id" ) && !line.contains( "GenuineIntel" ) ) {
+                // Ignore non-Intel CPU's, because some AMD CPU's (like Athlon 64 X2) report
+                // a bogus HT flag. @see BUG 114190
+                cpuCount = 1;
+                break;
+            }
+            if ( line.startsWith( "flags" ) ) {
+                const QString flagsLine = line.section( ":", 1 );
+                const QStringList flags = QStringList::split( " ", flagsLine );
+                if ( flags.contains( "ht" ) ) ++cpuCount;
+            }
+        }
+    }
+    // If multiple CPUs are listed with the HT flag, we got HyperThreading enabled
+    if ( cpuCount > 1 ) {
+        debug() << "CPU with active HyperThreading detected. Enabling WORKAROUND.\n";
+
+        #include <linux/version.h>
+        #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0)
+        #include <sched.h>
+        cpu_set_t mask;
+        CPU_ZERO( &mask ); // Initializes all the bits in the mask to zero
+        CPU_SET( 0, &mask ); // Sets only the bit corresponding to cpu
+        if ( sched_setaffinity( 0, sizeof(mask), &mask ) == -1 )
+        #endif // LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0)
+        {
+            warning() << "sched_setaffinity() call failed or unavailable." << endl;
+            const QString text =
+                i18n( "<p>You are using a processor with the <i>HyperThreading</i> "
+                      "feature enabled. Please note that amaroK may be unstable with this "
+                      "configuration.</p>"
+                      "<p>If you are experiencing problems, use the Linux kernel option 'NOHT', "
+                      "or disable <i>HyperThreading</i> in your BIOS setup.</p>"
+                      "<p>More information can be found in the README file. For further assistance "
+                      "join us at #amarok on irc.freenode.net.</p>" );
+
+            KMessageBox::information( 0, text, i18n( "Warning" ), "showHyperThreadingWarning" );
+        }
+    }
+    #endif //__linux__
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////////
 // METHODS
@@ -912,21 +948,6 @@ void App::firstRunWizard()
 
         config->updateSettings();
     }
-}
-
-
-void App::showHyperThreadingWarning() const //SLOT
-{
-    const QString text =
-        i18n( "<p>You are using a processor with the <i>HyperThreading</i> "
-              "feature enabled. Please note that amaroK may be unstable with this "
-              "configuration.</p>"
-              "<p>If you are experiencing problems, use the Linux kernel option 'NOHT', "
-              "or disable <i>HyperThreading</i> in your BIOS setup.</p>"
-              "<p>More information can be found in the README file. For further assistance "
-              "join us at #amarok on irc.freenode.net.</p>" );
-
-    KMessageBox::information( 0, text, i18n( "Warning" ), "showHyperThreadingWarning" );
 }
 
 

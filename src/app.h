@@ -65,10 +65,10 @@ class App : public KApplication, public EngineObserver
         void slotConfigEqualizer();
         void firstRunWizard();
 
-    private slots:
-        void showHyperThreadingWarning() const;
-
     private:
+        /** Workaround for HyperThreading CPU's, @see BUG 99199 */
+        void fixHyperThreading();
+
         void initGlobalShortcuts();
         void applyColorScheme();
 
