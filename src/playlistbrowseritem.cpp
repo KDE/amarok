@@ -55,16 +55,35 @@ class PlaylistReader : public ThreadWeaver::DependentJob
 ////////////////////////////////////////////////////////////////////////////
 
 int
-PlaylistBrowserEntry::compare( QListViewItem* i, int col, bool ascending ) const
+PlaylistBrowserEntry::compare( QListViewItem* item, int col, bool ascending ) const
 {
     bool i1 = rtti() == PlaylistCategory::RTTI;
-    bool i2 = i->rtti() == PlaylistCategory::RTTI;
+    bool i2 = item->rtti() == PlaylistCategory::RTTI;
 
     // If only one of them is a category, make it show up before
     if ( i1 != i2 )
         return i1 ? -1 : 1;
-    else
-        return KListViewItem::compare(i, col, ascending);
+    else if ( i1 ) //both are categories
+    {
+        PlaylistBrowser * const pb = PlaylistBrowser::instance();
+
+        QValueList<PlaylistCategory*> toplevels; //define a static order for the toplevel categories
+        toplevels << pb->m_playlistCategory
+                  << pb->m_smartCategory
+                  << pb->m_dynamicCategory
+                  << pb->m_streamsCategory
+                  << pb->m_podcastCategory;
+
+        for( int i = 0, n = toplevels.count(); i < n; ++i )
+        {
+            if( this == toplevels[i] )
+                return ascending ? -1 : 1; //same order whether or not it's ascending
+            if( item == toplevels[i] )
+                return ascending ? 1 : -1;
+        }
+    }
+
+    return KListViewItem::compare(item, col, ascending);
 }
 
 

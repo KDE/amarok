@@ -162,18 +162,17 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     m_polished = true;
 
     m_playlistCategory = loadPlaylists();
-    m_streamsCategory  = loadStreams();
-    loadCoolStreams();
-
     if( !CollectionDB::instance()->isEmpty() ) {
         m_smartCategory = loadSmartPlaylists();
         loadDefaultSmartPlaylists();
         m_smartCategory->setOpen( true );
     }
+    m_dynamicCategory = loadDynamics();
+    m_streamsCategory  = loadStreams();
+    loadCoolStreams();
+
     // must be loaded after streams
     m_podcastCategory = loadPodcasts();
-
-    m_dynamicCategory = loadDynamics();
 
     m_playlistCategory->setOpen( true );
     m_podcastCategory->setOpen( true );
@@ -364,19 +363,21 @@ PlaylistCategory* PlaylistBrowser::loadStreams()
     QDomDocument d;
     QDomElement e;
 
+    QListViewItem *after = m_dynamicCategory;
+
     if( !file.open( IO_ReadOnly ) || !d.setContent( stream.read() ) )
     { /*Couldn't open the file or it had invalid content, so let's create an empty element*/
-        return new PlaylistCategory(m_listview, m_playlistCategory , i18n("Radio Streams") );
+        return new PlaylistCategory(m_listview, after , i18n("Radio Streams") );
     }
     else {
         e = d.namedItem( "category" ).toElement();
         if ( e.attribute("formatversion") =="1.1" ) {
-            PlaylistCategory* p = new PlaylistCategory(m_listview, m_playlistCategory, e );
+            PlaylistCategory* p = new PlaylistCategory(m_listview, after, e );
             p->setText(0, i18n("Radio Streams") );
             return p;
         }
         else { // Old unversioned format
-            PlaylistCategory* p = new PlaylistCategory(m_listview, m_playlistCategory, i18n("Radio Streams") );
+            PlaylistCategory* p = new PlaylistCategory(m_listview, after, i18n("Radio Streams") );
             QListViewItem *last = 0;
             QDomNode n = d.namedItem( "streambrowser" ).namedItem("stream");
             for( ; !n.isNull();  n = n.nextSibling() ) {
@@ -507,23 +508,24 @@ PlaylistCategory* PlaylistBrowser::loadSmartPlaylists()
     QFile file( smartplaylistBrowserCache() );
     QTextStream stream( &file );
     stream.setEncoding( QTextStream::UnicodeUTF8 );
+    QListViewItem *after = m_playlistCategory;
 
     QDomDocument d;
     QDomElement e;
 
     if( !file.open( IO_ReadOnly ) || !d.setContent( stream.read() ) )
     { /*Couldn't open the file or it had invalid content, so let's create an empty element*/
-        return new PlaylistCategory(m_listview, m_streamsCategory , i18n("Smart Playlists") );
+        return new PlaylistCategory(m_listview, after, i18n("Smart Playlists") );
     }
     else {
         e = d.namedItem( "category" ).toElement();
         if ( e.attribute("formatversion") =="1.1" ) {
-            PlaylistCategory* p = new PlaylistCategory(m_listview, m_streamsCategory, e );
+            PlaylistCategory* p = new PlaylistCategory(m_listview, after, e );
             p->setText( 0, i18n("Smart Playlists") );
             return p;
         }
         else { // Old unversioned format
-            PlaylistCategory* p = new PlaylistCategory(m_listview, m_streamsCategory , i18n("Smart Playlists") );
+            PlaylistCategory* p = new PlaylistCategory(m_listview, after , i18n("Smart Playlists") );
             QListViewItem *last = 0;
             QDomNode n = d.namedItem( "smartplaylists" ).namedItem("smartplaylist");
             for( ; !n.isNull();  n = n.nextSibling() ) {
@@ -865,9 +867,11 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
     QDomDocument d;
     QDomElement e;
 
+    QListViewItem *after = m_streamsCategory;
+
     if( !file.open( IO_ReadOnly ) || !d.setContent( stream.read() ) )
     { /*Couldn't open the file or it had invalid content, so let's create an empty element*/
-        return new PlaylistCategory( m_listview, m_playlistCategory, i18n("Podcasts") );
+        return new PlaylistCategory( m_listview, after, i18n("Podcasts") );
     }
     else {
         m_podcastItemsToScan.clear();
@@ -876,7 +880,7 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
         connect( m_podcastTimer, SIGNAL(timeout()), this, SLOT(scanPodcasts()) );
 
         e = d.namedItem( "category" ).toElement();
-        PlaylistCategory *p = new PlaylistCategory( m_listview, m_playlistCategory, e );
+        PlaylistCategory *p = new PlaylistCategory( m_listview, after, e );
         p->setText( 0, i18n("Podcasts") );
 
         if( !m_podcastItemsToScan.isEmpty() )

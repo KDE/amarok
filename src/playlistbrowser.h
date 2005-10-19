@@ -36,6 +36,7 @@ class PlaylistBrowser : public QVBox
         Q_OBJECT
     friend class Party;
     friend class PlaylistBrowserView;
+    friend class PlaylistBrowserEntry;
     friend class PlaylistCategory;
     friend class PlaylistEntry;
     friend class PodcastChannel;  //for changing podcast timer list

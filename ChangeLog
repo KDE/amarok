@@ -14,6 +14,10 @@ VERSION 1.3.4:
     * Playlistbrowser items can be dragged into folders.
 
   CHANGES:
+    * Categories in the playlist browser are now always in the order of:
+      Playlists, Smart Playlists, Dynamic Playlists, Radio Streams, then
+      Podcasts, regardless of sorting options. (Items in the categories
+      are still sorted normally.)
     * Reworked systray icon handling -- mostly under the hood, but it'll
       now update properly f. ex. when you change the cover. (BR 111014)
     * Tooltip for the queue icon in the statusbar will now show the album
