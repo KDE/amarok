@@ -363,9 +363,12 @@ void App::initGlobalShortcuts()
 
 void App::fixHyperThreading()
 {
-    // Workaround for instability issues with HyperThreading CPU's, see BUG 99199.
+    // Workaround for instability issues with HyperThreading CPU's, @see BUG 99199.
     // First we detect the presence of HyperThreading. If active, we bind amarokapp
     // to the first CPU only (hard affinity).
+    //
+    // @see http://www-128.ibm.com/developerworks/linux/library/l-affinity.html
+    // (article on processor affinity with the linux kernel)
 
     DEBUG_BLOCK
 
