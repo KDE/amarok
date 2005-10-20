@@ -32,6 +32,7 @@
 #include "kbookmarkhandler.h"
 #include <kdiroperator.h>
 #include <kiconloader.h>
+#include <kio/netaccess.h>
 #include <klistview.h>
 #include <klocale.h>
 #include <kpopupmenu.h>
@@ -39,11 +40,13 @@
 #include <ktoolbarbutton.h>  ///@see ctor
 #include <kurlcombobox.h>
 #include <kurlcompletion.h>
+
 #include "mediabrowser.h"
 #include "playlist.h"
 #include "playlistbrowser.h"
 #include "playlistloader.h"
 #include "playlistwindow.h"
+
 #include <qdir.h>
 #include <qhbox.h>
 #include <qiconview.h>
@@ -107,8 +110,7 @@ FileBrowser::FileBrowser( const char * name )
 
     KURL location( config->readPathEntry( "Location", QDir::homeDirPath() ) );
 
-    KFileItem currentFolder( KFileItem::Unknown, KFileItem::Unknown, location );
-    if ( !currentFolder.isReadable() ) {
+    if ( !KIO::NetAccess::exists(location, true /*read-only access?*/, qApp->mainWidget()) ) {
         location.setPath( QDir::homeDirPath() );
     }
 

@@ -35,6 +35,8 @@ VERSION 1.3.4:
       icon, respectively.
 
   BUGFIXES:
+    * File browser now correctly checks for the availibity of remote 
+      directories
     * Podcast settings would not add a trailing slash to podcast save
       locations. (BR 114712)
     * Workaround for stability issues with HyperThreading on Linux. (BR 99199)
