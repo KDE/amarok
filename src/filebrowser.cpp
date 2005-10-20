@@ -112,6 +112,7 @@ FileBrowser::FileBrowser( const char * name )
 
     if ( !KIO::NetAccess::exists(location, true /*read-only access?*/, qApp->mainWidget()) ) {
         location.setPath( QDir::homeDirPath() );
+        location.setProtocol("file");
     }
 
 
