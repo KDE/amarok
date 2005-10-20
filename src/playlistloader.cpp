@@ -371,11 +371,15 @@ UrlLoader::loadXml( const KURL &url )
     stream.setEncoding( QTextStream::UnicodeUTF8 );
 
     QDomDocument d;
-    if( !d.setContent( stream.read() ) ) {
+    QString er;
+    int l, c;
+    if( !d.setContent( stream.read(), &er, &l, &c ) ) { // return error values
         amaroK::StatusBar::instance()->longMessageThreadSafe( i18n(
                 //TODO add a link to the path to the playlist
                 "The XML in the playlist was invalid. Please report this as a bug to the amaroK "
                 "developers. Thank you." ), KDE::StatusBar::Error );
+        error() << "[PLAYLISTLOADER]: Error loading xml file: " << url.prettyURL() << "(" << er << ")"
+                << " at line " << l << ", column " << c << endl;
         return;
     }
 
