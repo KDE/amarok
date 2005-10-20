@@ -567,6 +567,8 @@ StatusBar::pruneProgressBars()
 void
 StatusBar::writeLogFile( const QString &text )
 {
+    if( text.isEmpty() ) return;
+
     int counter = 4; // number of logs to keep
     QString logBase = amaroK::saveLocation() + "statusbar.log.";
     QFile file;
@@ -599,8 +601,6 @@ StatusBar::writeLogFile( const QString &text )
         if( !file.open( IO_WriteOnly ) ) return;
     }
     else if( !file.open( IO_WriteOnly|IO_Append ) ) return;
-
-
 
     QTextStream stream( &file );
     stream.setEncoding( QTextStream::UnicodeUTF8 );
