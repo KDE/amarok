@@ -55,6 +55,7 @@ namespace KDE
         void showCloseButton( const bool show );
         void showCounter( const bool show );
         void setImage( const QString &location );
+        void setImage( const QPixmap &pix );
         void setMaskEffect( const MaskEffect type ) { m_maskEffect = type; }
         void setText( const QString &text );
         void setTimeout( const int time ) { m_timeout = time; }

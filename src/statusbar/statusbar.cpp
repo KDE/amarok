@@ -155,7 +155,7 @@ StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
                 "<p>One of Mike Oldfield's best pieces of work, Amarok, inspired the name behind "
                 "the audio-player you are currently using. Thanks for choosing amaroK!</p>"
                 "<p align=right>Mark Kretschmann<br>Max Howell<br>Chris Muehlhaeuser<br>"
-                "The many other people who have helped make amaroK what it is</p>" ) );
+                "The many other people who have helped make amaroK what it is</p>" ), KDE::StatusBar::Information );
     }
 
     // ugly because of translation requirements

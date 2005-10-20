@@ -558,7 +558,7 @@ Playlist::addSpecialCustomTracks( uint songCount )
                 "<div align=\"center\"><b>Warning</b></div>"
                 "The playlist titled <i>%1</i> contains no tracks."
                 "<br><br>"
-                "Please modify your playlist or choose a different source." ).arg( item->text(0) ) );
+                "Please modify your playlist or choose a different source." ).arg( item->text(0) ), KDE::StatusBar::Warning );
         else
             insertMedia( urls );
 
@@ -623,7 +623,7 @@ Playlist::addSpecialCustomTracks( uint songCount )
                 "<div align=\"center\"><b>Warning</b></div>"
                 "The smart-playlist titled <i>%1</i> contains no tracks."
                 "<br><br>"
-                "Please modify your smart-playlist or choose a different source." ).arg( item->text(0) ) );
+                "Please modify your smart-playlist or choose a different source." ).arg( item->text(0) ), KDE::StatusBar::Warning );
             return;
         }
 
@@ -3924,7 +3924,7 @@ TagWriter::completeJob()
         // we write a space for some reason I cannot recall
         m_item->setText( m_tagType, m_oldTagString.isEmpty() ? " " : m_oldTagString );
         amaroK::StatusBar::instance()->longMessage( i18n(
-                "Sorry, the tag for %1 could not be changed." ).arg( m_item->url().fileName() ) );
+                "Sorry, the tag for %1 could not be changed." ).arg( m_item->url().fileName() ), KDE::StatusBar::Sorry );
         break;
 
     case false:

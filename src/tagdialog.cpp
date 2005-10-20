@@ -535,7 +535,7 @@ TagDialog::saveTags()
                 Playlist::instance()->updateMetaData( it.data() );
             else
                 amaroK::StatusBar::instance()->longMessage( i18n(
-                    "Sorry, the tag for %1 could not be changed." ).arg( it.data().prettyURL() ) );
+                    "Sorry, the tag for %1 could not be changed." ).arg( it.data().prettyURL() ), KDE::StatusBar::Error );
         }
         QMap<QString, int>::ConstIterator end( storedScores.end() );
         for(QMap<QString, int>::ConstIterator it = storedScores.begin(); it != end; ++it ) {
@@ -600,7 +600,7 @@ TagDialog::saveMultipleTracks()
                 Playlist::instance()->updateMetaData( mb );
             else
                 amaroK::StatusBar::instance()->longMessage( i18n(
-                    "Sorry, the tag for %1 could not be changed." ).arg( mb.prettyURL() ) );
+                    "Sorry, the tag for %1 could not be changed." ).arg( mb.prettyURL() ), KDE::StatusBar::Error );
         }
         anyTrack |= tagsChanged;
     }
@@ -619,7 +619,7 @@ TagDialog::writeTag( MetaBundle mb, bool updateCB )
     QCString path = QFile::encodeName( mb.url().path() );
     if ( !TagLib::File::isWritable( path ) ) {
         amaroK::StatusBar::instance()->longMessage( i18n(
-           "TagLib claims %1 file is not writable." ).arg( path ) );
+           "TagLib claims %1 file is not writable." ).arg( path ), KDE::StatusBar::Error );
 
         return false;
     }

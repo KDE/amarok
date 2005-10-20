@@ -293,7 +293,7 @@ Vis::Selector::viewportPaintEvent( QPaintEvent *e )
                 "<li>No libvisual plugins are installed</li>"
                 "</ul>"
                  "Please check these possibilities and restart amaroK."
-                "</div>" ) );
+                "</div>" ), KDE::StatusBar::Sorry );
     }
     else { QListView::viewportPaintEvent( e ); }
 }

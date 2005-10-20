@@ -115,6 +115,12 @@ void PopupMessage::setImage( const QString &location )
     adjustSize();
 }
 
+void PopupMessage::setImage( const QPixmap &pix )
+{
+    static_cast<QLabel*>(child( "image" ))->setPixmap( pix );
+    adjustSize();
+}
+
 
 ////////////////////////////////////////////////////////////////////////
 //     Public Slots

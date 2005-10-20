@@ -242,7 +242,7 @@ bool EngineController::canDecode( const KURL &url ) //static
                  "<p>You may want to choose a different engine from the <i>Configure Dialog</i>, or examine "
                  "the installation of the multimedia-framework that the current engine uses. "
                  "<p>You may find useful information in the <i>FAQ</i> section of the <i>amaroK HandBook</i>." )
-            .arg( AmarokConfig::soundSystem() ) );
+            .arg( AmarokConfig::soundSystem() ), KDE::StatusBar::Error );
 
     // Cache this result for the next lookup
     if ( !ext.isEmpty() )

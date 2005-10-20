@@ -82,7 +82,7 @@ namespace KDE
     public:
         StatusBar( QWidget *parent, const char *name = "mainStatusBar" );
 
-        enum MessageType { Information, Question, Sorry, Warning, Error, ShowAgainCheckBox };
+        enum MessageType { Information, Question, Sorry, Warning, Error, ShowAgainCheckBox, None };
 
         /**
          * Start a progress operation, if owner is 0, the return value is

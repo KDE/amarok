@@ -375,7 +375,7 @@ UrlLoader::loadXml( const KURL &url )
         amaroK::StatusBar::instance()->longMessageThreadSafe( i18n(
                 //TODO add a link to the path to the playlist
                 "The XML in the playlist was invalid. Please report this as a bug to the amaroK "
-                "developers. Thank you." ) );
+                "developers. Thank you." ), KDE::StatusBar::Error );
         return;
     }
 

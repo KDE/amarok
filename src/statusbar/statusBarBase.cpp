@@ -262,11 +262,35 @@ StatusBar::shortLongMessage( const QString &_short, const QString &_long )
 }
 
 void
-StatusBar::longMessage( const QString &text, int /*type*/ )
+StatusBar::longMessage( const QString &text, int type )
 {
+    if( text.isEmpty() )
+        return;
+
     PopupMessage * message;
     message = new PopupMessage( this, m_mainTextLabel );
     message->setText( text );
+
+    QString image;
+
+    switch( type )
+    {
+        case Information:
+        case Question:
+            image = KGlobal::iconLoader()->iconPath( "messagebox_info", -KIcon::SizeHuge );
+            break;
+
+        case Sorry:
+        case Warning:
+            image = KGlobal::iconLoader()->iconPath( "messagebox_warning", -KIcon::SizeHuge );
+            break;
+
+        case Error:
+            image = KGlobal::iconLoader()->iconPath( "messagebox_critical", -KIcon::SizeHuge );
+            break;
+    }
+    if( !image.isEmpty() )
+        message->setImage( image );
 
     if ( !m_messageQueue.isEmpty() )
          message->stackUnder( m_messageQueue.last() );
