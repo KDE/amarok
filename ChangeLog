@@ -35,6 +35,8 @@ VERSION 1.3.4:
       icon, respectively.
 
   BUGFIXES:
+    * Podcast settings would not add a trailing slash to podcast save
+      locations. (BR 114712)
     * Workaround for stability issues with HyperThreading on Linux. (BR 99199)
     * xine-engine: Equalizer became inactive on trackchange when crossfading
       was enabled. (BR 114492)

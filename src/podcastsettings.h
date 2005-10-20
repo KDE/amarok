@@ -32,6 +32,8 @@ class PodcastSettings : public KDialogBase
 
         bool    applyToAll()  { return m_applyToAll; }
 
+        QString requesterSaveLocation();
+
     protected:
         bool    hasChanged();
 

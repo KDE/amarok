@@ -82,7 +82,7 @@ PodcastSettings::hasChanged()
 
     return  !m_ps->m_urlLine->text().isEmpty() &&
            ( m_url             != m_ps->m_urlLine->text()             ||
-             m_save            != m_ps->m_saveLocation->url()         ||
+             m_save            != requesterSaveLocation()             ||
              m_autoScan        != m_ps->m_autoFetchCheck->isChecked() ||
              m_purge           != m_ps->m_purgeCheck->isChecked()     ||
              m_purgeCount      != m_ps->m_purgeCountSpinBox->value()  ||
@@ -102,7 +102,7 @@ PodcastSettings::slotOk()       //slot
     enableButtonOK( false ); //visual feedback
 
     m_url             = m_ps->m_urlLine->text();
-    m_save            = m_ps->m_saveLocation->url();
+    m_save            = requesterSaveLocation();
     m_autoScan        = m_ps->m_autoFetchCheck->isChecked();
     m_purge           = m_ps->m_purgeCheck->isChecked();
     m_purgeCount      = m_ps->m_purgeCountSpinBox->value();
@@ -126,6 +126,17 @@ PodcastSettings::slotUser1()    //slot
         slotOk();
         return;
     }
+}
+
+// KUrlRequester doesn't provide us with convenient functions for adding trailing slashes
+QString
+PodcastSettings::requesterSaveLocation()
+{
+    QString url = m_ps->m_saveLocation->url();
+    if( url.endsWith( "/" ) )
+        return url;
+    else
+        return url + "/";
 }
 
 #include "podcastsettings.moc"
