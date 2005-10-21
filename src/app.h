@@ -56,6 +56,9 @@ class App : public KApplication, public EngineObserver
         void engineTrackPositionChanged( long position, bool /*userSeek*/ );
         void engineVolumeChanged( int );
 
+    private slots:
+        void showHyperThreadingWarning();
+
     public slots:
         void applySettings( bool firstTime = false );
         void slotConfigAmarok( const QCString& page = QCString() );

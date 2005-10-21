@@ -368,7 +368,8 @@ void App::fixHyperThreading()
     // to the first CPU only (hard affinity).
     //
     // @see http://www-128.ibm.com/developerworks/linux/library/l-affinity.html
-    // (article on processor affinity with the linux kernel)
+    // @see http://www.linuxjournal.com/article/6799
+    // (articles on processor affinity with the linux kernel)
 
     DEBUG_BLOCK
 
@@ -391,27 +392,37 @@ void App::fixHyperThreading()
 
         #include <linux/version.h>
         #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0)
+        #include <errno.h>
         #include <sched.h>
         cpu_set_t mask;
         CPU_ZERO( &mask ); // Initializes all the bits in the mask to zero
         CPU_SET( 0, &mask ); // Sets only the bit corresponding to cpu
-        if ( sched_setaffinity( 0, sizeof(mask), &mask ) == -1 )
-        #endif // LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0)
-        {
-            warning() << "sched_setaffinity() call failed or unavailable." << endl;
-            const QString text =
-                i18n( "<p>You are using a processor with the <i>HyperThreading</i> "
-                      "feature enabled. Please note that amaroK may be unstable with this "
-                      "configuration.</p>"
-                      "<p>If you are experiencing problems, use the Linux kernel option 'NOHT', "
-                      "or disable <i>HyperThreading</i> in your BIOS setup.</p>"
-                      "<p>More information can be found in the README file. For further assistance "
-                      "join us at #amarok on irc.freenode.net.</p>" );
-
-            KMessageBox::information( 0, text, i18n( "Warning" ), "showHyperThreadingWarning" );
+        if ( sched_setaffinity( 0, sizeof(mask), &mask ) == -1 ) {
+            warning() << "sched_setaffinity() call failed with error code: " << errno << endl;
+            QTimer::singleShot( 0, this, SLOT( showHyperThreadingWarning() ) );
+            return;
         }
+        #else
+        warning() << "Linux 2.6 kernel headers not found. sched_setaffinity() is unvailable." << endl;
+        QTimer::singleShot( 0, this, SLOT( showHyperThreadingWarning() ) );
+        #endif // LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0)
     }
     #endif //__linux__
+}
+
+
+void App::showHyperThreadingWarning() // SLOT
+{
+    const QString text =
+        i18n( "<p>You are using a processor with the <i>HyperThreading</i> "
+              "feature enabled. Please note that amaroK may be unstable with this "
+              "configuration.</p>"
+              "<p>If you are experiencing problems, use the Linux kernel option 'NOHT', "
+              "or disable <i>HyperThreading</i> in your BIOS setup.</p>"
+              "<p>More information can be found in the README file. For further assistance "
+              "join us at #amarok on irc.freenode.net.</p>" );
+
+    KMessageBox::information( 0, text, i18n( "Warning" ), "showHyperThreadingWarning" );
 }
 
 
