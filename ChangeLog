@@ -82,7 +82,12 @@ VERSION 1.3.4:
       and you can also now use Alt+Up, Down, Left, Right to navigate between
       cells as well.
     * Podcast settings failed to remember the save location. (BR 114128)
-
+    * Tray icon would stop filling up and showing play/pause icon if show
+      player window was toggled. (BR 93711)
+    * Crossfade length would be enabled in Playback options when "No 
+      crossfading" was selected.
+    * If an engine does not support crossfading, "No crossfading" is now
+      selected in Playback options.
 
 VERSION 1.3.3:
   FEATURES:
