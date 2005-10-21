@@ -290,15 +290,15 @@ CollectionDB::createTables( DbConnection *conn )
     QString yearAutoIncrement = "";
     if ( m_dbConnPool->getDbConnectionType() == DbConnection::postgresql )
     {
-        query( QString( "CREATE SEQUENCE album_seq;" ), conn );
-        query( QString( "CREATE SEQUENCE artist_seq;" ), conn );
-        query( QString( "CREATE SEQUENCE genre_seq;" ), conn );
-        query( QString( "CREATE SEQUENCE year_seq;" ), conn );
+        query( QString( "CREATE %1 SEQUENCE album_seq%2;" ).arg( conn ? "TEMPORARY" : "").arg( conn ? "_temp" : ""), conn );
+        query( QString( "CREATE %1 SEQUENCE artist_seq%2;" ).arg( conn ? "TEMPORARY" : "").arg( conn ? "_temp" : ""), conn );
+        query( QString( "CREATE %1 SEQUENCE genre_seq%2;" ).arg( conn ? "TEMPORARY" : "").arg( conn ? "_temp" : ""), conn );
+        query( QString( "CREATE %1 SEQUENCE year_seq%2;" ).arg( conn ? "TEMPORARY" : "").arg( conn ? "_temp" : ""), conn );
 
-        albumAutoIncrement = QString("DEFAULT nextval('album_seq')");
-        artistAutoIncrement = QString("DEFAULT nextval('artist_seq')");
-        genreAutoIncrement = QString("DEFAULT nextval('genre_seq')");
-        yearAutoIncrement = QString("DEFAULT nextval('year_seq')");
+        albumAutoIncrement = QString("DEFAULT nextval('album_seq%1')").arg( conn ? "_temp" : "");
+        artistAutoIncrement = QString("DEFAULT nextval('artist_seq%1')").arg( conn ? "_temp" : "");
+        genreAutoIncrement = QString("DEFAULT nextval('genre_seq%1')").arg( conn ? "_temp" : "");
+        yearAutoIncrement = QString("DEFAULT nextval('year_seq%1')").arg( conn ? "_temp" : "");
     }
     else if ( m_dbConnPool->getDbConnectionType() == DbConnection::mysql )
     {
@@ -412,12 +412,10 @@ CollectionDB::dropTables( DbConnection *conn )
 
     if ( m_dbConnPool->getDbConnectionType() == DbConnection::postgresql )
     {
-        if (conn == NULL) {
-            query( QString( "DROP SEQUENCE album_seq;" ), conn );
-            query( QString( "DROP SEQUENCE artist_seq;" ), conn );
-            query( QString( "DROP SEQUENCE genre_seq;" ), conn );
-            query( QString( "DROP SEQUENCE year_seq;" ), conn );
-        }
+            query( QString( "DROP SEQUENCE album_seq%1;" ).arg( conn ? "_temp" : ""), conn );
+            query( QString( "DROP SEQUENCE artist_seq%1;" ).arg( conn ? "_temp" : ""), conn );
+            query( QString( "DROP SEQUENCE genre_seq%1;" ).arg( conn ? "_temp" : ""), conn );
+            query( QString( "DROP SEQUENCE year_seq%1;" ).arg( conn ? "_temp" : ""), conn );
     }
 }
 
@@ -428,7 +426,7 @@ CollectionDB::clearTables( DbConnection *conn )
     DEBUG_FUNC_INFO
 
     QString clearCommand = "DELETE FROM";
-    if ( m_dbConnPool->getDbConnectionType() == DbConnection::mysql )
+    if ( m_dbConnPool->getDbConnectionType() == DbConnection::mysql || m_dbConnPool->getDbConnectionType() == DbConnection::postgresql)
     {
         // TRUNCATE TABLE is faster than DELETE FROM TABLE, so use it when supported.
         clearCommand = "TRUNCATE TABLE";
@@ -2419,7 +2417,9 @@ int PostgresqlConnection::insert( const QString& statement, const QString& table
     QString _table = table;
     if (table.find("_temp") > 0) _table = table.left(table.find("_temp"));
 
-    curvalSql = QString("SELECT currval('%1_seq');").arg(_table);
+    /* this does not work with postgres 
+    curvalSql = QString("SELECT currval('%1_seq');").arg(_table); */
+    curvalSql = QString("SELECT last_value FROM %1_seq;").arg(_table);
     result = PQexec(m_db, curvalSql.utf8());
     if (result == NULL)
     {
