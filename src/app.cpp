@@ -74,7 +74,6 @@ email                : markey@web.de
         #include <sched.h>
     #endif //LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0)
 #endif //__linux__
-char App::cwd[PATH_MAX];
 
 App::App()
         : KApplication()
@@ -214,6 +213,7 @@ App::~App()
 
 void App::handleCliArgs() //static
 {
+    static char cwd[PATH_MAX];
     KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
 
     if ( args->isSet( "cwd" ) )

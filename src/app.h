@@ -37,7 +37,6 @@ class PlaylistWindow;
 class App : public KApplication, public EngineObserver
 {
     Q_OBJECT
-
     public:
         App();
        ~App();
@@ -49,7 +48,6 @@ class App : public KApplication, public EngineObserver
 
         // FRIENDS ------
         friend class PlaylistWindow; //requires access to applySettings()
-
     protected: /* for OSD, tray, and dcop */
         void engineStateChanged( Engine::State state, Engine::State oldState = Engine::Empty );
         void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
@@ -86,8 +84,6 @@ class App : public KApplication, public EngineObserver
         PlayerWidget        *m_pPlayerWindow;
         PlaylistWindow      *m_pPlaylistWindow;
         amaroK::TrayIcon    *m_pTray;
-
-        static char cwd[PATH_MAX];
 };
 
 #define pApp static_cast<App*>(kapp)
