@@ -1,5 +1,8 @@
 noinst_LTLIBRARIES = libhelix-sp.la
 
+# must disable HX_LOG_SUBSYSTEM before commiting!!
+#    -DHX_LOG_SUBSYSTEM \
+
 AM_CPPFLAGS = \
     -D_UNIX \
     -Wall -Wreturn-type -DHELIX_CONFIG_DISABLE_ATOMIC_OPERATORS \
@@ -13,6 +16,7 @@ AM_CPPFLAGS = \
     -I$(srcdir)/helix-include/common/system \
     -I$(srcdir)/helix-include/common/dbgtool \
     -I$(srcdir)/helix-include/common/util \
+    -I$(srcdir)/helix-include/common/log \
     -include $(srcdir)/helixdefines.h \
     $(all_includes)
 

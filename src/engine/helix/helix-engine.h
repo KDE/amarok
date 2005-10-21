@@ -49,6 +49,8 @@ public:
    virtual void onContacting(const char *host);
    virtual void onBuffering(int pcnt);
 
+   virtual void fallbackToOSS();
+
 protected:
    virtual void setVolumeSW( uint );
 

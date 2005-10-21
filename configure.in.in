@@ -288,6 +288,12 @@ if test "$build_helix" != "no"; then
         echo "not found, using default dir"
     fi
     AC_DEFINE_UNQUOTED(HELIX_LIBS, "${HELIX_LIBS}", [location of helix libs])
+    if test "$PKGCONFIGFOUND" = "yes" ; then
+       PKG_CHECK_MODULES([ALSALIB], alsa, have_alsa=yes,have_alsa=no)
+       if test "$have_alsa" = "yes" ; then
+          AC_DEFINE(USE_HELIX_ALSA, 1, [support ALSA in the helix-engine])
+       fi
+    fi
 fi
 
 AM_CONDITIONAL(with_helix, test x$build_helix != xno)

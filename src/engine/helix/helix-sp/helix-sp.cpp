@@ -38,6 +38,8 @@
 
 #include "dllpath.h"
 
+#include <config.h>
+
 #include "helix-sp.h"
 #include "hspvoladvise.h"
 #include "utils.h"
@@ -45,6 +47,14 @@
 #include "hsphook.h"
 #endif
 #include "hxfiles.h"
+
+#ifdef USE_HELIX_ALSA
+#include <alsa/asoundlib.h>
+#endif
+
+#ifdef HX_LOG_SUBSYSTEM
+#include "hxtlogutil.h"
+#endif
 
 #ifdef __FreeBSD__
 #define PTHREAD_MUTEX_FAST_NP PTHREAD_MUTEX_NORMAL
@@ -323,8 +333,19 @@ HelixSimplePlayer::HelixSimplePlayer() :
    scopecount(0),
    scopebufhead(0),
    scopebuftail(0),
+   m_outputsink(OSS),
+   m_device(0),
+#ifdef USE_HELIX_ALSA
+   m_direct(ALSA),  // TODO: out why my alsa direct HW reader doesnt pickup changes in kmix (the whole purpose of this!)
+#else
    m_direct(OSS),
+#endif
+   m_AlsaCapableCore(false),
    m_nDevID(-1),
+   //m_pAlsaPCMHandle(NULL),
+   m_pAlsaMixerHandle(NULL),
+   m_pAlsaMixerElem(NULL),
+   m_alsaDevice("default"),
    m_urlchanged(0),
    m_volBefore(-1),
    m_volAtStart(-1),
@@ -459,9 +480,19 @@ void HelixSimplePlayer::init(const char *corelibhome, const char *pluginslibhome
       STDERR("no engine setup interface\n");
    else
    {
-      pEngineContext = new HSPEngineContext(pCommonClassFactory);
+      pEngineContext = new HSPEngineContext(this, pCommonClassFactory);
       pEngineContext->AddRef();
+#ifdef HX_LOG_SUBSYSTEM
+      HX_ENABLE_LOGGING(pEngineContext);
+#endif
       pEngineSetup->Setup(pEngineContext);
+      if (m_outputsink == ALSA && m_AlsaCapableCore)
+         m_direct = ALSA;
+      else if (m_outputsink == ALSA)
+      {
+         m_direct = OSS;
+	 fallbackToOSS();
+      }
    }
 
    // get the client engine selector
@@ -828,7 +859,40 @@ void HelixSimplePlayer::tearDown()
    scopebufhead = 0;
    scopebuftail = 0;
    m_preamp = 0;
+
+   delete [] m_device;
 }
+
+
+void HelixSimplePlayer::setOutputSink( HelixSimplePlayer::AUDIOAPI out ) 
+{ 
+#ifdef USE_HELIX_ALSA
+   m_outputsink = out;
+#else
+   m_outputsink = OSS;
+#endif
+}
+
+HelixSimplePlayer::AUDIOAPI HelixSimplePlayer::getOutputSink() 
+{ 
+   return m_outputsink; 
+}
+
+void HelixSimplePlayer::setDevice( const char *dev ) 
+{ 
+   delete [] m_device;
+
+   int len = strlen(dev);
+   m_device = new char [len + 1];
+   strcpy(m_device, dev); 
+   STDERR("SET DEVICE: %s\n", m_device);
+}
+
+const char *HelixSimplePlayer::getDevice() 
+{ 
+   return m_device; 
+}
+
 
 #define MAX_DEV_NAME 255
 #define HX_VOLUME  SOUND_MIXER_PCM
@@ -868,6 +932,88 @@ void HelixSimplePlayer::openAudioDevice()
       }
       break;
 
+      case ALSA:
+      {
+#ifdef USE_HELIX_ALSA
+         int err;
+         
+         STDERR("Opening ALSA mixer device PCM\n");
+
+         err = snd_mixer_open(&m_pAlsaMixerHandle, 0);
+         if (err < 0)
+            STDERR("snd_mixer_open: %s\n", snd_strerror (err));
+  
+         if (err == 0)
+         {
+            err = snd_mixer_attach(m_pAlsaMixerHandle, m_alsaDevice);
+            if (err < 0) 
+               STDERR("snd_mixer_attach: %s\n", snd_strerror (err));
+         }
+
+         if (err == 0)
+         {
+            err = snd_mixer_selem_register(m_pAlsaMixerHandle, NULL, NULL);
+            if (err < 0) 
+               STDERR("snd_mixer_selem_register: %s\n", snd_strerror (err));
+         }
+
+         if (err == 0)
+         {
+            err = snd_mixer_load(m_pAlsaMixerHandle);
+            if(err < 0 )
+               STDERR("snd_mixer_load: %s\n", snd_strerror (err));
+         }
+
+         if (err == 0)
+         {
+            /* Find the mixer element */
+            snd_mixer_elem_t* elem = snd_mixer_first_elem(m_pAlsaMixerHandle);
+            snd_mixer_elem_type_t type;
+            const char* elem_name = NULL;
+            snd_mixer_selem_id_t *sid = NULL;
+
+            snd_mixer_selem_id_alloca(&sid);
+
+            while (elem)
+            {
+               type = snd_mixer_elem_get_type(elem);
+               if (type == SND_MIXER_ELEM_SIMPLE)
+               {
+                  snd_mixer_selem_get_id(elem, sid);
+
+                  /* We're only interested in playback volume controls */
+                  if(snd_mixer_selem_has_playback_volume(elem) && !snd_mixer_selem_has_common_volume(elem) )
+                  {
+                     elem_name = snd_mixer_selem_id_get_name(sid);
+                     if (strcmp(elem_name, "PCM") == 0) // take the first PCM element we find
+                        break;
+                  }
+               }
+            
+               elem = snd_mixer_elem_next(elem);
+            }
+
+            if (!elem)
+            {
+               STDERR("Could not find a usable mixer element\n", snd_strerror(err));
+               err = -1;
+            }
+            
+            m_pAlsaMixerElem = elem;
+         }
+         
+         if (err != 0)
+         {
+            if(m_pAlsaMixerHandle)
+            {
+               snd_mixer_close(m_pAlsaMixerHandle);
+               m_pAlsaMixerHandle = NULL;
+            }
+         }
+#endif
+      }
+      break;
+
       default:
          STDERR("Unknown audio interface in openAudioDevice()\n");
    }
@@ -881,6 +1027,34 @@ void HelixSimplePlayer::closeAudioDevice()
       {
          if( m_nDevID >= 0 )
             ::close( m_nDevID );
+      }
+      break;
+
+      case ALSA:
+      {
+#ifdef USE_HELIX_ALSA
+         int err;
+
+         if (m_pAlsaMixerHandle && m_pAlsaMixerElem)
+         {
+            err = snd_mixer_detach(m_pAlsaMixerHandle, "PCM");
+            if (err < 0)
+               STDERR("snd_mixer_detach: %s\n", snd_strerror(err));
+  
+            if(err == 0)
+            {
+               err = snd_mixer_close(m_pAlsaMixerHandle);
+               if(err < 0)
+                  STDERR("snd_mixer_close: %s\n", snd_strerror (err));            
+            }
+            
+            if(err == 0)
+            {
+               m_pAlsaMixerHandle = NULL;
+               m_pAlsaMixerElem = NULL;
+            }
+         }
+#endif
       }
       break;
 
@@ -914,6 +1088,57 @@ int HelixSimplePlayer::getDirectHWVolume()
       }
       break;
 
+      case ALSA:
+      {
+#ifdef USE_HELIX_ALSA
+         if (!m_pAlsaMixerElem)
+            return nRetVolume;
+
+         snd_mixer_elem_type_t type;    
+         int err = 0;
+         type = snd_mixer_elem_get_type(m_pAlsaMixerElem);
+            
+         if (type == SND_MIXER_ELEM_SIMPLE)
+         {
+            long volumeL, volumeR, min_volume, max_volume; 
+
+            if(snd_mixer_selem_has_playback_volume(m_pAlsaMixerElem) || 
+               snd_mixer_selem_has_playback_volume_joined(m_pAlsaMixerElem))
+            {
+               err = snd_mixer_selem_get_playback_volume(m_pAlsaMixerElem,
+                                                         SND_MIXER_SCHN_FRONT_LEFT, 
+                                                         &volumeL);
+               if (err < 0)
+                  STDERR("snd_mixer_selem_get_playback_volume (L): %s\n", snd_strerror (err));
+               else
+               {
+                  if ( snd_mixer_selem_is_playback_mono ( m_pAlsaMixerElem )) 
+                     volumeR = volumeL;
+                  else
+                  {
+                     err = snd_mixer_selem_get_playback_volume(m_pAlsaMixerElem,
+                                                               SND_MIXER_SCHN_FRONT_RIGHT, 
+                                                               &volumeR);
+                     if (err < 0)
+                        STDERR("snd_mixer_selem_get_playback_volume (R): %s\n", snd_strerror (err));
+                  }
+               }
+                  
+               if (err == 0)
+               {
+                  snd_mixer_selem_get_playback_volume_range(m_pAlsaMixerElem,
+                                                            &min_volume,
+                                                            &max_volume);
+
+                  if(max_volume > min_volume)
+                     nRetVolume = (UINT16) (0.5 + (100.0 * (double)(volumeL + volumeR) / (2.0 * (max_volume - min_volume))));
+               }
+            }        
+         }
+#endif
+      }
+      break;
+
       default:
          STDERR("Unknown audio interface in getDirectHWVolume()\n");
    }
@@ -934,6 +1159,54 @@ void HelixSimplePlayer::setDirectHWVolume(int vol)
     
          if (::ioctl( m_nDevID, MIXER_WRITE(HX_VOLUME), &nNewVolume) < 0)
             STDERR("Unable to set direct HW volume\n");
+      }
+      break;
+
+      case ALSA:
+      {
+#ifdef USE_HELIX_ALSA
+         if (!m_pAlsaMixerElem)
+            return;
+
+         snd_mixer_elem_type_t type;    
+         int err = 0;
+         type = snd_mixer_elem_get_type(m_pAlsaMixerElem);
+
+         
+         if (type == SND_MIXER_ELEM_SIMPLE)
+         {
+            long volume, min_volume, max_volume, range; 
+            
+            if(snd_mixer_selem_has_playback_volume(m_pAlsaMixerElem) || 
+               snd_mixer_selem_has_playback_volume_joined(m_pAlsaMixerElem))
+            {
+               snd_mixer_selem_get_playback_volume_range(m_pAlsaMixerElem,
+                                                         &min_volume,
+                                                         &max_volume);
+               
+               range = max_volume - min_volume;
+               volume = (long) (((double)vol / 100) * range + min_volume);
+
+               STDERR("Setting Volume %ld, min = %ld\n", volume, min_volume);
+
+               err = snd_mixer_selem_set_playback_volume( m_pAlsaMixerElem,
+                                                          SND_MIXER_SCHN_FRONT_LEFT, 
+                                                          volume);            
+               if (err < 0)
+                  STDERR("snd_mixer_selem_set_playback_volume: %s\n", snd_strerror (err));
+
+               if (!snd_mixer_selem_is_playback_mono (m_pAlsaMixerElem))
+               {
+                  /* Set the right channel too */
+                  err = snd_mixer_selem_set_playback_volume( m_pAlsaMixerElem,
+                                                             SND_MIXER_SCHN_FRONT_RIGHT, 
+                                                             volume);            
+                  if (err < 0)
+                     STDERR("snd_mixer_selem_set_playback_volume: %s\n", snd_strerror (err));
+               }
+            }        
+         }    
+#endif
       }
       break;
 

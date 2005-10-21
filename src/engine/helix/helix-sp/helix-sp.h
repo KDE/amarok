@@ -24,6 +24,7 @@ class HelixSimplePlayerAudioStreamInfoResponse;
 #include <sys/param.h>
 #include <pthread.h>
 #include <vector>
+#include <config.h>
 using std::vector;
 
 #define MAX_PATH PATH_MAX
@@ -52,6 +53,10 @@ class IHXCommonClassFactory;
 class IHXPluginEnumerator;
 class IHXPlugin2Handler;
 class IHXPreferences;
+#ifdef USE_HELIX_ALSA
+struct _snd_mixer;
+struct _snd_mixer_elem;
+#endif
 
 // scope delay queue
 struct DelayQueue
@@ -263,11 +268,31 @@ private:
    // equalizer
    bool                 m_eq_enabled;
 
+public:
+   // 0 = OSS
+   // 1 = OldOSSsupport
+   // 2 = ESound
+   // 3 = Alsa
+   // 4 = USound
    enum AUDIOAPI
    {
       OSS,
-      ALSA
+      OLDOSS,
+      ESOUND,
+      ALSA,
+      USOUND
    };
+
+   void setOutputSink( AUDIOAPI out );
+   AUDIOAPI getOutputSink();
+   void setDevice( const char *dev );
+   const char *getDevice();
+   void setAlsaCapableCore() { m_AlsaCapableCore = true; }
+   virtual void fallbackToOSS() {}
+
+private:
+   AUDIOAPI m_outputsink;
+   char *m_device;
 
    // work around the annoying problem of the core reseting the PCM volume on every url change
    void openAudioDevice();
@@ -275,7 +300,13 @@ private:
    int getDirectHWVolume();
    void setDirectHWVolume(int vol);
    AUDIOAPI m_direct;
+   bool m_AlsaCapableCore;
    int m_nDevID;
+#ifdef USE_HELIX_ALSA
+   struct _snd_mixer* m_pAlsaMixerHandle;
+   struct _snd_mixer_elem* m_pAlsaMixerElem;
+#endif
+   char *m_alsaDevice;
    bool m_urlchanged;
    int m_volBefore;
    int m_volAtStart;
@@ -293,6 +324,7 @@ protected:
    friend class HSPPreMixAudioHook;
    friend class HSPPostMixAudioHook;
    friend class HelixSimplePlayerVolumeAdvice;
+   friend class HSPEngineContext;
 };
 
 #endif

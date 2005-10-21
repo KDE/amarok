@@ -1,0 +1,5 @@
+- Crossfade!!
+- check with untouch about the audio device error
+- figure out why the ALSA direct HW volume reader implementation doesnt pick up
+  changes in kmix, but the same mixer can write value that kmix picks up
+

@@ -17,6 +17,8 @@
 #include <qvbox.h>
 
 class QGridLayout;
+class KComboBox;
+class QCheckBox;
 class KLineEdit;
 class HelixEngine;
 
@@ -39,7 +41,7 @@ public:
    int numValue() const { return m_numValue; }
 
 private slots:
-    void slotStringChanged( const QString& );
+   void slotStringChanged( const QString& );
 
 private:
    KLineEdit *m_w;
@@ -49,25 +51,45 @@ private:
    QString    m_stringValue;
 };
 
+class HelixSoundDevice : public QObject
+{
+Q_OBJECT
+public:
+   HelixSoundDevice( QWidget *parent, int &row, HelixEngine *engine );
+   bool save();
+
+private slots:
+   void slotNewDevice( const QString& );
+   void slotStringChanged( const QString& );
+
+private:
+   KComboBox* deviceComboBox;
+   QCheckBox* checkBox_outputDevice;
+   KLineEdit* lineEdit_outputDevice;
+   bool m_changed;
+   HelixEngine *m_engine;
+};
+
 
 class HelixConfigDialog : public amaroK::PluginConfig, public QTabWidget
 {
 public:
-    HelixConfigDialog( HelixEngine *engine, QWidget *parent = 0 );
-    ~HelixConfigDialog();
+   HelixConfigDialog( HelixEngine *engine, QWidget *parent = 0 );
+   ~HelixConfigDialog();
 
-    virtual QWidget *view() { return this; }
-    virtual bool hasChanged() const;
-    virtual bool isDefault() const;
+   virtual QWidget *view() { return this; }
+   virtual bool hasChanged() const;
+   virtual bool isDefault() const;
 
-    /** Save view state into configuration */
-    virtual void save();
+   /** Save view state into configuration */
+   virtual void save();
 
 private:
    QPtrList<HelixConfigEntry> entries;
    HelixConfigEntry *m_core;
    HelixConfigEntry *m_plugin;
    HelixConfigEntry *m_codec;
+   HelixSoundDevice *m_device;
    HelixEngine *m_engine;
 };
 

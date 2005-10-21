@@ -25,7 +25,7 @@ class HelixSimplePlayer;
 class HSPEngineContext : public IHXPreferences
 {
 public:
-   HSPEngineContext(IHXCommonClassFactory *pCommonClassFactory);
+   HSPEngineContext(HelixSimplePlayer *splayer, IHXCommonClassFactory *pCommonClassFactory);
    virtual ~HSPEngineContext();
    void Init(IUnknown*	       /*IN*/ pUnknown);
    void Close();
@@ -50,6 +50,7 @@ public:
 private:
    LONG32			 m_lRefCount;
    IHXCommonClassFactory        *m_CommonClassFactory;
+   HelixSimplePlayer            *m_splayer;
 };
 
 class HSPClientContext : public IHXPreferences

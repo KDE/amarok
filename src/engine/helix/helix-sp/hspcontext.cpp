@@ -33,7 +33,7 @@
 
 extern BOOL bEnableAdviceSink;
 
-HSPEngineContext::HSPEngineContext(IHXCommonClassFactory *pCommonClassFactory) : m_lRefCount(0), m_CommonClassFactory(pCommonClassFactory)
+HSPEngineContext::HSPEngineContext(HelixSimplePlayer *splayer, IHXCommonClassFactory *pCommonClassFactory) : m_lRefCount(0), m_CommonClassFactory(pCommonClassFactory), m_splayer(splayer)
 {
 }
 
@@ -121,13 +121,13 @@ STDMETHODIMP
 HSPEngineContext::ReadPref(const char* pref_key, IHXBuffer*& buffer)
 {
     HX_RESULT hResult	= HXR_OK;
-    
-    //m_splayer->STDERR("in engine context, key is <%s>\n", pref_key);
-    if ((stricmp(pref_key, "OpenAudioDeviceOnPlayback") == 0))
-    {
-       unsigned char *outbuf;
-       IHXBuffer *ibuf;
+    unsigned char *outbuf;
+    IHXBuffer *ibuf;
 
+    
+    m_splayer->STDERR("in engine context, key is <%s>\n", pref_key);
+    if (0 == (stricmp(pref_key, "OpenAudioDeviceOnPlayback")))
+    {
        m_CommonClassFactory->CreateInstance(CLSID_IHXBuffer, (void **) &ibuf);
        if (ibuf)
        {
@@ -138,6 +138,46 @@ HSPEngineContext::ReadPref(const char* pref_key, IHXBuffer*& buffer)
 
           //m_splayer->STDERR("value = %d\n",atol((const char*) buffer->GetBuffer()));
        }
+    }
+    else if (0 == (stricmp(pref_key, "SoundDriver")))
+    {
+       m_CommonClassFactory->CreateInstance(CLSID_IHXBuffer, (void **) &ibuf);
+       if (ibuf)
+       {
+          ibuf->SetSize(2);
+          outbuf = ibuf->GetBuffer();
+
+          // 0 = OSS
+          // 1 = OldOSSsupport
+          // 2 = ESound
+          // 3 = Alsa
+          // 4 = USound
+
+          if (m_splayer->getOutputSink() == HelixSimplePlayer::ALSA)
+             strcpy((char *)outbuf, "3"); // set SoundDriver = kALSA (ie 3) for Alsa native support
+          else if (m_splayer->getOutputSink() == HelixSimplePlayer::OSS)
+             strcpy((char *)outbuf, "0"); // set SoundDriver = kOSS (ie 0) for OSS
+          buffer = ibuf;
+
+          m_splayer->STDERR("Setting Sound System to %s\n", m_splayer->getOutputSink() == HelixSimplePlayer::ALSA ? "ALSA" : "OSS");
+       }
+    }
+    // also need to allow setting of "AlsaMixerDeviceName"
+    else if (0 == (stricmp(pref_key, "AlsaMixerDeviceName")))
+    {
+       m_splayer->setAlsaCapableCore(); // this just lets everyone know that this helix core is Alsa-capable
+       m_CommonClassFactory->CreateInstance(CLSID_IHXBuffer, (void **) &ibuf);
+       if (ibuf)
+       {
+          ibuf->SetSize(2);
+          outbuf = ibuf->GetBuffer();
+          strcpy((char *)outbuf, m_splayer->getDevice());
+          buffer = ibuf;
+          m_splayer->STDERR("Setting Sound Device to \"%s\"\n", m_splayer->getDevice());
+       }
+    }
+    else if (0 == (stricmp(pref_key, "AlsaPCMDeviceName")))
+    {
     }
     else
     {

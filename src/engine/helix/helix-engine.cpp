@@ -69,10 +69,10 @@ HelixEngine::HelixEngine()
 #endif
      m_lasttime(0), m_lastpos(0), m_scopeindex(0)
 {
-   addPluginProperty( "StreamingMode", "NoStreaming" ); // this is counter intuitive :-)
+   addPluginProperty( "StreamingMode", "NoStreaming" ); // this means we'll handle streaming (not using KIO)
    addPluginProperty( "HasConfigure", "true" );
    addPluginProperty( "HasEqualizer", "true" );
-   //addPluginProperty( "HasCrossfade", "true" );
+   addPluginProperty( "HasCrossfade", "true" );
 
    memset(&m_md, 0, sizeof(m_md));
 
@@ -132,6 +132,10 @@ HelixEngine::configure() const
     return new HelixConfigDialog( (HelixEngine *)this );
 }
 
+void HelixEngine::fallbackToOSS()
+{
+   KMessageBox::information( 0, i18n("The helix library you have configured does not support ALSA, the helix-engine has fallen back to OSS") );
+}
 
 bool
 HelixEngine::init()
@@ -155,6 +159,12 @@ HelixEngine::init()
    if (m_codecsdir.isEmpty())
       m_codecsdir = HELIX_LIBS "/codecs";
 
+   if (HelixConfig::outputplugin() == "oss")
+      setOutputSink( OSS );
+   else
+      setOutputSink( ALSA );
+   setDevice( HelixConfig::device().utf8() );
+
    if (!stat(m_coredir.utf8(), &s) && !stat(m_pluginsdir.utf8(), &s) && !stat(m_codecsdir.utf8(), &s))
    {
       if (m_inited)
@@ -163,6 +173,7 @@ HelixEngine::init()
       HelixSimplePlayer::init(m_coredir.utf8(), m_pluginsdir.utf8(), m_codecsdir.utf8(), 2);
       m_inited = exists = true;
    }
+
 
    if (!exists || HelixSimplePlayer::getError())
    {

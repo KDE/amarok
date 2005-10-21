@@ -19,10 +19,12 @@
 #include <qtextedit.h>
 #include <qtextview.h>
 #include <qfileinfo.h>
+#include <qcheckbox.h>
 
 #include <klineedit.h>
 #include <kseparator.h>
 #include <klocale.h>
+#include <kcombobox.h>
 
 #include "helix-configdialog.h"
 #include "helix-engine.h"
@@ -100,6 +102,100 @@ HelixConfigEntry::slotStringChanged( const QString& )
    m_valueChanged = true;
 }
 
+HelixSoundDevice::HelixSoundDevice( QWidget *parent, int &row, HelixEngine *engine )
+   : deviceComboBox(0), checkBox_outputDevice(0), lineEdit_outputDevice(0), m_changed(false), m_engine(engine)
+{
+   QGridLayout *grid = (QGridLayout*)parent->layout();
+
+   deviceComboBox = new KComboBox( FALSE, parent, "deviceComboBox" );
+   deviceComboBox->insertItem("oss");  // I believe these are not subject to translation (they dont seem to be in xine, 
+   deviceComboBox->insertItem("alsa"); // and neither are the equivalents in gst (osssink and alsasink)
+   deviceComboBox->setCurrentItem(HelixConfig::outputplugin());
+   QLabel* op = new QLabel( i18n("Output plugin:"), parent );
+   op->setAlignment( QLabel::WordBreak | QLabel::AlignVCenter );
+   grid->addWidget( op, row, 0 );
+   grid->addWidget( deviceComboBox, row, 1);
+   connect( (QWidget *)deviceComboBox, SIGNAL( activated( const QString& ) ), this, SLOT( slotNewDevice( const QString& )) );
+
+   ++row;
+
+   checkBox_outputDevice = new QCheckBox( parent, "checkBox_outputDevice" );
+   checkBox_outputDevice->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)5, (QSizePolicy::SizeType)5, 0, 0, checkBox_outputDevice->sizePolicy().hasHeightForWidth() ) );
+   grid->addWidget( checkBox_outputDevice, row, 0 );
+   checkBox_outputDevice->setText( i18n( "Device:" ) );
+
+    lineEdit_outputDevice = new KLineEdit( HelixConfig::device(), parent );
+    connect( (QWidget *) lineEdit_outputDevice, SIGNAL(textChanged( const QString& )), this, SLOT(slotStringChanged( const QString& )) );
+    connect( checkBox_outputDevice, SIGNAL( toggled(bool) ), lineEdit_outputDevice, SLOT( setEnabled(bool) ) );
+    grid->addWidget( (QWidget *) lineEdit_outputDevice, row, 1 );
+
+    if (HelixConfig::deviceenabled())
+    {
+       checkBox_outputDevice->setChecked( true );
+       lineEdit_outputDevice->setEnabled( true );
+    }
+    else
+    {
+       checkBox_outputDevice->setChecked( false );
+       lineEdit_outputDevice->setEnabled( false );
+    }
+
+    if (HelixConfig::outputplugin() == "oss")
+    {
+       checkBox_outputDevice->setEnabled( false );
+       lineEdit_outputDevice->setEnabled( false );
+    }
+}
+
+void 
+HelixSoundDevice::slotNewDevice( const QString &dev )
+{
+   debug() << "SELECT STRING WAS: " << dev.utf8() << endl;
+   if (dev == "oss")
+   {
+      checkBox_outputDevice->setEnabled( false );
+      lineEdit_outputDevice->setEnabled(false);
+   }
+   else
+   {
+      checkBox_outputDevice->setEnabled( true );
+      if (checkBox_outputDevice->isChecked())
+         lineEdit_outputDevice->setEnabled( true );      
+      else
+         lineEdit_outputDevice->setEnabled( false );
+   }
+
+   m_changed = true;
+}
+
+void 
+HelixSoundDevice::slotStringChanged( const QString& )
+{
+   m_changed = true;
+}
+
+bool 
+HelixSoundDevice::save()
+{
+   if (m_changed)
+   {
+      HelixConfig::setOutputplugin(deviceComboBox->currentText());
+      if (deviceComboBox->currentText() == "oss")
+         m_engine->setOutputSink(HelixSimplePlayer::OSS);
+      else
+         m_engine->setOutputSink(HelixSimplePlayer::ALSA);
+
+      HelixConfig::setDevice( lineEdit_outputDevice->text() );
+      if (checkBox_outputDevice->isChecked())
+         m_engine->setDevice( lineEdit_outputDevice->text().utf8() );
+      else
+         m_engine->setDevice("default");
+      HelixConfig::setDeviceenabled( checkBox_outputDevice->isChecked() );
+   }
+
+   return m_changed;
+}
+
 
 HelixConfigDialog::HelixConfigDialog( HelixEngine *engine, QWidget *p )
    : amaroK::PluginConfig()
@@ -107,6 +203,7 @@ HelixConfigDialog::HelixConfigDialog( HelixEngine *engine, QWidget *p )
      , m_core(0)
      , m_plugin(0)
      , m_codec(0)
+     , m_device(0)
      , m_engine( engine )
 {
     int row = 0;
@@ -154,6 +251,9 @@ HelixConfigDialog::HelixConfigDialog( HelixEngine *engine, QWidget *p )
                                      i18n("This is the directory where, for example, cvt1.so is located"));
     ++row;
     grid->addMultiCellWidget( new KSeparator( KSeparator::Horizontal, parent ), row, row, 0, 1 );
+
+    ++row;
+    m_device = new HelixSoundDevice( parent, row, engine );
 
     // lets find the logo if we can
     QPixmap *pm = 0;
@@ -273,6 +373,8 @@ HelixConfigDialog::save()
       HelixConfig::setCodecsDirectory(m_engine->m_codecsdir);
       writeIt = true;
    }
+
+   writeIt |= m_device->save();
 
    // not really doing anything here yet
    for( HelixConfigEntry *entry = entries.first(); entry; entry = entries.next() )
