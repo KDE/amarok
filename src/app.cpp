@@ -508,7 +508,7 @@ void App::applySettings( bool firstTime )
 
             delete m_pTray; m_pTray = new amaroK::TrayIcon( m_pPlayerWindow );
 
-            //hack to make tray icon behave properly after selecting to show or hide player window
+            //make tray icon behave properly after selecting to show or hide player window
             m_pTray->engineStateChanged(EngineController::instance()->engine()->state(), EngineController::instance()->engine()->state());
             m_pTray->engineNewMetaData(EngineController::instance()->bundle(), false);
 
@@ -524,7 +524,13 @@ void App::applySettings( bool firstTime )
         m_pTray->engineNewMetaData(EngineController::instance()->bundle(), false);
         delete m_pPlayerWindow; m_pPlayerWindow = 0;
 
-        m_pPlaylistWindow->setCaption( "amaroK" );
+        //Set the caption correctly.
+        if ( !EngineController::instance()->bundle().prettyTitle().isEmpty() )
+            m_pPlaylistWindow->setCaption( "amaroK - " + EngineController::instance()->bundle().veryNiceTitle() );
+        else
+            m_pPlaylistWindow->setCaption( "amaroK" );
+    
+
         //m_pPlaylistWindow->show(); //must be shown //we do below now
 
         //ensure that at least one Menu is plugged into an accessible UI element
@@ -845,7 +851,6 @@ void App::engineStateChanged( Engine::State state, Engine::State oldState )
         ;
     }
 }
-
 
 void App::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {

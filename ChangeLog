@@ -84,6 +84,8 @@ VERSION 1.3.4:
     * Podcast settings failed to remember the save location. (BR 114128)
     * Tray icon would stop filling up and showing play/pause icon if show
       player window was toggled. (BR 93711)
+    * If player window is toggled during playback, playlist window's caption
+      now correctly shows the current track's name.
     * Crossfade length would be enabled in Playback options when "No 
       crossfading" was selected.
     * If an engine does not support crossfading, "No crossfading" is now
