@@ -1,7 +1,7 @@
 noinst_LTLIBRARIES = libhelix-sp.la
 
 # must disable HX_LOG_SUBSYSTEM before commiting!!
-#    -DHX_LOG_SUBSYSTEM \
+#    -DHX_LOG_SUBSYSTEM
 
 AM_CPPFLAGS = \
     -D_UNIX \
