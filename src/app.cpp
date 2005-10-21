@@ -507,6 +507,11 @@ void App::applySettings( bool firstTime )
             //KWin::setSystemTrayWindowFor( m_pTray->winId(), m_pPlayerWindow->winId() );
 
             delete m_pTray; m_pTray = new amaroK::TrayIcon( m_pPlayerWindow );
+
+            //hack to make tray icon behave properly after selecting to show or hide player window
+            m_pTray->engineStateChanged(EngineController::instance()->engine()->state(), EngineController::instance()->engine()->state());
+            m_pTray->engineNewMetaData(EngineController::instance()->bundle(), false);
+
         }
         else
             //this is called in the PlayerWindow ctor, hence the else
@@ -515,6 +520,8 @@ void App::applySettings( bool firstTime )
     } else if( m_pPlayerWindow ) {
 
         delete m_pTray; m_pTray = new amaroK::TrayIcon( m_pPlaylistWindow );
+        m_pTray->engineStateChanged(EngineController::instance()->engine()->state(), EngineController::instance()->engine()->state());
+        m_pTray->engineNewMetaData(EngineController::instance()->bundle(), false);
         delete m_pPlayerWindow; m_pPlayerWindow = 0;
 
         m_pPlaylistWindow->setCaption( "amaroK" );

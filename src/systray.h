@@ -13,12 +13,15 @@
 #include <ksystemtray.h>
 #include <qpixmap.h>
 
+class App;
+
 namespace amaroK {
 
 class TrayIcon : public KSystemTray, public EngineObserver
 {
 public:
     TrayIcon( QWidget* );
+    friend class App;
 
 protected:
     // reimpl from engineobserver
