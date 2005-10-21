@@ -258,7 +258,7 @@ gst_equalizer_chain ( GstPad* pad, GstData* data_in )
     gint length = GST_BUFFER_SIZE( inbuf );
 
     if ( !obj->active ) {
-        gst_pad_push( obj->srcpad, GST_DATA( inbuf ) );
+        gst_pad_push( obj->srcpad, data_in );
         return;
     }
     /* Indexes for the history arrays
