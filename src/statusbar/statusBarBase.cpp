@@ -569,23 +569,24 @@ StatusBar::writeLogFile( const QString &text )
 {
     if( text.isEmpty() ) return;
 
-    int counter = 4; // number of logs to keep
+    const int counter = 4; // number of logs to keep
+    int c = counter;
     QString logBase = amaroK::saveLocation() + "statusbar.log.";
     QFile file;
 
     if( m_logCounter < 0 ) //find which log to write to
     {
-        for( ; counter > 0; counter-- )
+        for( ; c > 0; c-- )
         {
-            QString log = logBase + QString::number(counter);
+            QString log = logBase + QString::number(c);
 
             if( QFile::exists( log ) )
             {
                 file.setName( log );
             }
         }
-        if( counter == 0 ) file.setName( logBase + "0" );
-        m_logCounter = counter;
+        if( c == 0 ) file.setName( logBase + "0" );
+        m_logCounter = c;
     }
     else
     {
@@ -596,6 +597,7 @@ StatusBar::writeLogFile( const QString &text )
     {
         m_logCounter++;
         m_logCounter = m_logCounter % counter;
+
         file.setName( logBase + QString::number(m_logCounter) );
         // if we have overflown the log, then we want to overwrite the previous content
         if( !file.open( IO_WriteOnly ) ) return;
