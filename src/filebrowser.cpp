@@ -109,12 +109,13 @@ FileBrowser::FileBrowser( const char * name )
     SearchPane *searchPane;
 
     KURL location( config->readPathEntry( "Location", QDir::homeDirPath() ) );
-
-    if ( !KIO::NetAccess::exists(location, true /*read-only access?*/, qApp->mainWidget()) ) {
-        location.setPath( QDir::homeDirPath() );
-        location.setProtocol("file");
+    KFileItem currentFolder( KFileItem::Unknown, KFileItem::Unknown, location );
+    //KIO sucks, NetAccess::exists puts up a dialog and has annoying error message boxes
+    //if there is a problem so there is no point in using it anyways.
+    //so... setting the diroperator to ~ is the least sucky option
+    if ( !location.isLocalFile() || !currentFolder.isReadable() ) {
+        location = QDir::homeDirPath() ;
     }
-
 
     KToolBar *toolbar = new Browser::ToolBar( this );
 
@@ -160,7 +161,6 @@ FileBrowser::FileBrowser( const char * name )
         m_dir->readConfig( config );
         m_dir->setView( KFile::Default ); //will set userconfigured view, will load URL
         m_dir->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Expanding );
-
         static_cast<QFrame*>(m_dir->viewWidget())->setFrameStyle( QFrame::NoFrame );
         static_cast<QIconView*>(m_dir->viewWidget())->setSpacing( 1 );
 
