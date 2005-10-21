@@ -21,7 +21,7 @@ class TrayIcon : public KSystemTray, public EngineObserver
 {
 public:
     TrayIcon( QWidget* );
-    friend class App;
+    friend class ::App;
 
 protected:
     // reimpl from engineobserver
