@@ -66,6 +66,14 @@ email                : markey@web.de
 #include <qtimer.h>              //showHyperThreadingWarning()
 #include <qtooltip.h>            //default tooltip for trayicon
 
+//for the HT fix
+#ifdef __linux__
+    #include <linux/version.h>
+    #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0)
+        #include <errno.h>
+        #include <sched.h>
+    #endif //LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0)
+#endif //__linux__
 char App::cwd[PATH_MAX];
 
 App::App()
@@ -390,10 +398,7 @@ void App::fixHyperThreading()
     if ( cpuCount > 1 ) {
         debug() << "CPU with active HyperThreading detected. Enabling WORKAROUND.\n";
 
-        #include <linux/version.h>
         #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0)
-        #include <errno.h>
-        #include <sched.h>
         cpu_set_t mask;
         CPU_ZERO( &mask ); // Initializes all the bits in the mask to zero
         CPU_SET( 0, &mask ); // Sets only the bit corresponding to cpu
