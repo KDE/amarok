@@ -1,27 +1,18 @@
-PLAYLIST2HTML AND PLAYLISTSERVER
-================================
+<div align="center"><b>PLAYLIST2HTML and PLAYLISTSERVER</b></div>
 
-ABOUT PLAYLIST2HTML
---------------------
-Generates a HTML file with the contents of the current playlist.
-
-
-ABOUT PLAYLISTSERVER
---------------------
+<b>About: PLAYLIST2HTML</b><br>
+<br>
+Generates a HTML file with the contents of the current playlist.<br>
+<br>
+<b>About: PLAYLISTSERVER</b><br>
 This scripts starts a small http-server that serves the current-playlist as
-HTML. Start it and point your browser to http://localhost:4773/
-
-
-DEPENDENCIES
-------------
-Python 2.3
-
-
-LICENSE
--------
-GPL V2
-
-
-AUTHOR
-------
-Author: André Kelpe <fs111 at web dot de>
+HTML. Start it and point your browser to http://localhost:4773/<br>
+<br>
+<b>Dependencies:</b><br>
+Python 2.3<br>
+<br>
+<b>License:</b><br>
+GPL V2<br>
+<br>
+<b>Author:</b><br>
+André Kelpe ( fs111 at web dot de )<br>

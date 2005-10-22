@@ -1,14 +1,14 @@
-Graph Equalizer by Ian Monroe
-
+<div align="center"><b>Graph Equalizer by Ian Monroe</b></div>
+<b>About:</b><br>
 Idea comes from an aRTs plugin; it's an equalizer that works by plotting and dragging
 points on a graph. Gives a lot more control in fewer clicks. I'm releasing it as a
-"script"  with the idea of integrating it into amaroK 1.3 after user feedback.
-
-_Instructions_
+"script"  with the idea of integrating it into amaroK 1.3 after user feedback.<br>
+<br>
+<b>Using:</b><br>
 Just click 'Run' in the Script Manager and the equalizer will open. To
 open the dialog again click 'Configure.' Points are added by double clicking on the
-line. The equalizer settings take affect once you release the point from a drag.
-
-_Todo_
-*delete points
-*remember settings between runs
+line. The equalizer settings take affect once you release the point from a drag.<br>
+<br>
+<b>TODO:</b><br>
+*delete points<br>
+*remember settings between runs<br>
