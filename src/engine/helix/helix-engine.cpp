@@ -122,27 +122,32 @@ void HelixEngine::onContacting(const char *host)
 
 void HelixEngine::onBuffering(int pcnt)
 {
-   emit statusText( i18n( "Buffering %1%" ).arg( pcnt ) );
+   if (pcnt != 100) // let's not report that...
+      emit statusText( i18n( "Buffering %1%" ).arg( pcnt ) );
 }
 
 
 amaroK::PluginConfig*
 HelixEngine::configure() const
 {
-    return new HelixConfigDialog( (HelixEngine *)this );
+   debug() << "Starting HelixConfigDialog\n";
+   return new HelixConfigDialog( (HelixEngine *)this );
 }
 
-void HelixEngine::fallbackToOSS()
+int HelixEngine::fallbackToOSS()
 {
    KMessageBox::information( 0, i18n("The helix library you have configured does not support ALSA, the helix-engine has fallen back to OSS") );
+   debug() << "Falling back to OSS\n";
+   return (HelixConfigDialog::setSoundSystem( (int) OSS ));
 }
 
 bool
 HelixEngine::init()
 {
-   //debug() << "Initializing HelixEngine\n";
+   debug() << "Initializing HelixEngine\n";
    struct stat s;
    bool exists = false;
+   stop();
 
    m_numPlayers = 2;
    m_current = 1;
@@ -167,10 +172,35 @@ HelixEngine::init()
 
    if (!stat(m_coredir.utf8(), &s) && !stat(m_pluginsdir.utf8(), &s) && !stat(m_codecsdir.utf8(), &s))
    {
+      long vol;
+      bool eqenabled;
+      int savedpreamp;
+      QValueList<int> savedequalizerGains;
+
       if (m_inited)
+      {
+         vol = HelixSimplePlayer::getVolume(m_current);
+         eqenabled = HelixSimplePlayer::isEQenabled();
+         for (unsigned int i=0; i < m_equalizerGains.size(); i++)
+            savedequalizerGains[i] = m_equalizerGains[i];
+         savedpreamp = m_preamp;
          HelixSimplePlayer::tearDown();
+      }
 
       HelixSimplePlayer::init(m_coredir.utf8(), m_pluginsdir.utf8(), m_codecsdir.utf8(), 2);
+      if (HelixSimplePlayer::initDirectSS())
+      {
+         fallbackToOSS();
+
+         HelixSimplePlayer::initDirectSS();
+         if (m_inited)
+         {
+            HelixSimplePlayer::setVolume(vol);
+            setEqualizerParameters(savedpreamp, savedequalizerGains);
+            setEqualizerEnabled(eqenabled);
+         }
+      }
+
       m_inited = exists = true;
    }
 

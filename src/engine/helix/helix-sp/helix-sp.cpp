@@ -43,9 +43,7 @@
 #include "helix-sp.h"
 #include "hspvoladvise.h"
 #include "utils.h"
-#ifndef TEST_APP
 #include "hsphook.h"
-#endif
 #include "hxfiles.h"
 
 #ifdef USE_HELIX_ALSA
@@ -144,9 +142,7 @@ STDMETHODIMP HelixSimplePlayerAudioStreamInfoResponse::OnStream(IHXAudioStream *
    m_Player->ppctrl[m_index]->pStream = pAudioStream;
    m_Player->ppctrl[m_index]->pPreMixHook = new HSPPreMixAudioHook(m_Player, m_index, pAudioStream);
 
-#ifndef TEST_APP
    pAudioStream->AddPreMixHook(m_Player->ppctrl[m_index]->pPreMixHook, false);
-#endif
    m_Player->ppctrl[m_index]->bStarting = false;
 
    return HXR_OK;
@@ -157,12 +153,6 @@ const int DEFAULT_TIME_DELTA = 2000;
 const int DEFAULT_STOP_TIME =  -1;
 const int SLEEP_TIME         = 10;
 const int GUID_LEN           = 64;
-
-#ifdef TEST_APP
-// Function prototypes
-void  PrintUsage(const char* pszAppName);
-char* GetAppName(char* pszArgv0);
-#endif
 
 // *** IUnknown methods ***
 
@@ -224,7 +214,6 @@ STDMETHODIMP_(ULONG32) HelixSimplePlayerVolumeAdvice::Release()
 
 STDMETHODIMP HelixSimplePlayerVolumeAdvice::OnVolumeChange(const UINT16 uVolume)
 {
-   m_Player->STDERR("Volume change: %d\n", uVolume);
    m_Player->onVolumeChange(m_index);
 #ifdef HELIX_SW_VOLUME_INTERFACE
    m_Player->ppctrl[m_index]->volume = uVolume;
@@ -234,7 +223,6 @@ STDMETHODIMP HelixSimplePlayerVolumeAdvice::OnVolumeChange(const UINT16 uVolume)
 
 STDMETHODIMP HelixSimplePlayerVolumeAdvice::OnMuteChange(const BOOL bMute)
 {
-   m_Player->STDERR("Mute change: %d\n", bMute);
    m_Player->onMuteChange(m_index);
    m_Player->ppctrl[m_index]->ismute = bMute;
    return HXR_OK;
@@ -249,10 +237,8 @@ void HelixSimplePlayer::cleanUpStream(int playerIndex)
 
 void HelixSimplePlayer::updateEQgains()
 {
-#ifndef TEST_APP
    for (int i = 0; i<nNumPlayers; i++)
       ((HSPPostMixAudioHook *)ppctrl[i]->pPostMixHook)->updateEQgains(m_preamp, m_equalizerGains);
-#endif
 }
 
 /*
@@ -486,13 +472,6 @@ void HelixSimplePlayer::init(const char *corelibhome, const char *pluginslibhome
       HX_ENABLE_LOGGING(pEngineContext);
 #endif
       pEngineSetup->Setup(pEngineContext);
-      if (m_outputsink == ALSA && m_AlsaCapableCore)
-         m_direct = ALSA;
-      else if (m_outputsink == ALSA)
-      {
-         m_direct = OSS;
-	 fallbackToOSS();
-      }
    }
 
    // get the client engine selector
@@ -571,12 +550,36 @@ void HelixSimplePlayer::init(const char *corelibhome, const char *pluginslibhome
          }
       }
    }
-
-   openAudioDevice();
-   m_volBefore = m_volAtStart = getDirectHWVolume();
-   STDERR("***VolAtStart is %d\n", m_volAtStart);
 }
 
+int HelixSimplePlayer::initDirectSS()
+{
+   if (m_outputsink == ALSA && m_AlsaCapableCore)
+   {
+      closeAudioDevice();
+      m_direct = ALSA;
+      openAudioDevice();
+   }
+   else if (m_outputsink == ALSA)
+   {
+      closeAudioDevice();
+      m_direct = OSS;
+      m_outputsink = OSS;
+      openAudioDevice();
+      return -1;
+   }
+   else
+   {
+      closeAudioDevice();
+      m_direct = OSS;
+      openAudioDevice();
+   }
+
+   m_volBefore = m_volAtStart = getDirectHWVolume();
+   STDERR("***VolAtStart is %d\n", m_volAtStart);
+   setDirectHWVolume(m_volAtStart);
+   return 0;
+}
 
 int HelixSimplePlayer::addPlayer()
 {
@@ -670,11 +673,8 @@ int HelixSimplePlayer::addPlayer()
    {
       // ...and now the volume interface
       //ppctrl[nNumPlayers]->pVolume = ppctrl[nNumPlayers]->pAudioPlayer->GetAudioVolume();
-      // let's get the Device Volume (like realplayer/helixplayer does)
-      ppctrl[nNumPlayers]->pVolume = ppctrl[nNumPlayers]->pAudioPlayer->GetDeviceVolume();
-      if (!ppctrl[nNumPlayers]->pVolume)
-         STDERR("No Volume Interface - how can we play music!!\n");
-      else
+      //ppctrl[nNumPlayers]->pVolume = ppctrl[nNumPlayers]->pAudioPlayer->GetDeviceVolume();
+      if (ppctrl[nNumPlayers]->pVolume)
       {
 #ifndef HELIX_SW_VOLUME_INTERFACE
          HelixSimplePlayerVolumeAdvice *pVA = new HelixSimplePlayerVolumeAdvice(this, nNumPlayers);
@@ -696,12 +696,10 @@ int HelixSimplePlayer::addPlayer()
       ppctrl[nNumPlayers]->pAudioPlayer->SetStreamInfoResponse(pASIR);
       ppctrl[nNumPlayers]->pStreamInfoResponse = pASIR;
 
-#ifndef TEST_APP
       // add the post-mix hook (for the scope and the equalizer)
       HSPPostMixAudioHook *pPMAH = new HSPPostMixAudioHook(this, nNumPlayers);
       ppctrl[nNumPlayers]->pAudioPlayer->AddPostMixHook(pPMAH, false /* DisableWrite */, true /* final hook */);
       ppctrl[nNumPlayers]->pPostMixHook = pPMAH;
-#endif
 
       // ...and get the CrossFader
       ppctrl[nNumPlayers]->pAudioPlayer->QueryInterface(IID_IHXAudioCrossFade, (void **) &(ppctrl[nNumPlayers]->pCrossFader));
@@ -740,6 +738,7 @@ void HelixSimplePlayer::tearDown()
 
       if (ppctrl[i]->pAudioPlayer)
       {
+         
          ppctrl[i]->pAudioPlayer->RemovePostMixHook((IHXAudioHook *)ppctrl[i]->pPostMixHook);
          ppctrl[i]->pPostMixHook->Release(); 
 
@@ -831,7 +830,7 @@ void HelixSimplePlayer::tearDown()
 
    closeAudioDevice();
    
-   theErr = HXR_OK;
+   theErr = HXR_FAILED;
    pErrorSink = NULL;
    pErrorSinkControl = NULL;
    pPluginE = 0;
@@ -885,7 +884,6 @@ void HelixSimplePlayer::setDevice( const char *dev )
    int len = strlen(dev);
    m_device = new char [len + 1];
    strcpy(m_device, dev); 
-   STDERR("SET DEVICE: %s\n", m_device);
 }
 
 const char *HelixSimplePlayer::getDevice() 
@@ -1026,7 +1024,10 @@ void HelixSimplePlayer::closeAudioDevice()
       case OSS:
       {
          if( m_nDevID >= 0 )
+         {
             ::close( m_nDevID );
+            m_nDevID = -1;
+         }
       }
       break;
 
@@ -1077,14 +1078,17 @@ int HelixSimplePlayer::getDirectHWVolume()
     
          if (m_nDevID < 0 || (::ioctl( m_nDevID, MIXER_READ(HX_VOLUME), &nVolume) < 0))
          {
-            STDERR("ioctl fails when reading HW volume\n");
-            nRetVolume = -1;
+            STDERR("ioctl fails when reading HW volume: mnDevID=%d, errno=%d\n", m_nDevID, errno);
+            nRetVolume = 50; // sensible default
          }
-         nLeftVolume  = (nVolume & 0x000000ff); 
-         nRightVolume = (nVolume & 0x0000ff00) >> 8;
+         else
+         {
+            nLeftVolume  = (nVolume & 0x000000ff); 
+            nRightVolume = (nVolume & 0x0000ff00) >> 8;
          
-         //Which one to use? Average them?
-         nRetVolume = nLeftVolume ;
+            //Which one to use? Average them?
+            nRetVolume = nLeftVolume ;
+         }
       }
       break;
 
@@ -1187,7 +1191,6 @@ void HelixSimplePlayer::setDirectHWVolume(int vol)
                range = max_volume - min_volume;
                volume = (long) (((double)vol / 100) * range + min_volume);
 
-               STDERR("Setting Volume %ld, min = %ld\n", volume, min_volume);
 
                err = snd_mixer_selem_set_playback_volume( m_pAlsaMixerElem,
                                                           SND_MIXER_SCHN_FRONT_LEFT, 
@@ -1231,8 +1234,6 @@ int HelixSimplePlayer::setURL(const char *file, int playerIndex)
       if (len >= MAXPATHLEN)
          return -1;;
 
-      STDERR("Trying to setURL: %s\n", file);
-      
       if (ppctrl[playerIndex]->pszURL)
          delete [] ppctrl[playerIndex]->pszURL;
       
@@ -1679,11 +1680,12 @@ unsigned long HelixSimplePlayer::getVolume(int playerIndex)
 {
    unsigned long vol;
 
-   if (playerIndex < nNumPlayers && ppctrl[playerIndex]->pVolume)
+   if (playerIndex < nNumPlayers)
    {
       pthread_mutex_lock(&m_engine_m);
       vol = ppctrl[playerIndex]->volume;
-//pVolume->GetVolume();
+      //if (ppctrl[playerIndex]->pVolume)
+         //pVolume->GetVolume();
       pthread_mutex_unlock(&m_engine_m);
 
       return (vol);
@@ -1707,9 +1709,7 @@ void HelixSimplePlayer::setVolume(unsigned long vol, int playerIndex)
          pthread_mutex_lock(&m_engine_m);
 #ifndef HELIX_SW_VOLUME_INTERFACE
          ppctrl[playerIndex]->volume = vol;
-#ifndef TEST_APP
          ((HSPPostMixAudioHook *)ppctrl[playerIndex]->pPostMixHook)->setGain(vol);
-#endif
 #else
          ppctrl[playerIndex]->pVolume->SetVolume(vol);
 #endif
@@ -1845,324 +1845,3 @@ void HelixSimplePlayer::clearScopeQ()
       delete item;
 }
 
-
-
-#ifdef TEST_APP
-char* GetAppName(char* pszArgv0)
-{
-    char* pszAppName;
-
-    pszAppName = strrchr(pszArgv0, '\\');
-
-    if (NULL == pszAppName)
-    {
-        return pszArgv0;
-    }
-    else
-    {
-        return pszAppName + 1;
-    }
-}
-
-void PrintUsage(const char* pszAppName)
-{
-    STDOUT("\n");
-
-#if defined _DEBUG || defined DEBUG
-    STDOUT("USAGE:\n%s [-as0] [-d D] [-n N] [-t T] [-st ST] [-g file] [-u username] [-p password] <URL>\n", pszAppName);
-#else
-    STDOUT("USAGE:\n%s [-as0] [-n N] [-t T] [-g file] [-u username] [-p password] <URL>\n", pszAppName);
-#endif
-    STDOUT("       -a : optional flag to show advise sink output\n");
-    STDOUT("       -s : optional flag to output useful status messages\n");
-    STDOUT("       -0 : optional flag to disable all output windows\n");
-    STDOUT("       -l : optional flag to tell the player where to find its DLLs\n");
-
-#if defined _DEBUG || defined DEBUG
-    STDOUT("       -d : HEX flag to print out DEBUG info\n");
-    STDOUT("            0x8000 -- for audio methods calling sequence\n"
-            "0x0002 -- for variable values\n");
-#endif
-    STDOUT("       -n : optional flag to spawn N players\n");
-    STDOUT("       -rn: optional flag to repeat playback N times\n");
-    STDOUT("       -t : wait T milliseconds between starting players (default: %d)\n", DEFAULT_TIME_DELTA);
-    STDOUT("       -st: wait ST milliseconds util stoping players (default: %d)\n", DEFAULT_STOP_TIME);
-    STDOUT("       -g : use the list of GUIDS in the specified newline-delimited file\n");
-    STDOUT("            to give each of the N players a different GUID\n");
-    STDOUT("       -u : username to use in authentication response\n");
-    STDOUT("       -p : password to use in authentication response\n");
-    STDOUT("\n");
-}
-
-#include <pthread.h>
-
-struct pt_t
-{
-   int playerIndex;
-   HelixSimplePlayer *splay;
-};
-
-void *play_thread(void *arg)
-{
-   struct pt_t *pt = (struct pt_t *) arg;
-   
-   STDERR("play_thread started for player %d\n",pt->playerIndex);
-   pt->splay->play(pt->playerIndex);
-}
-
-
-int main( int argc, char *argv[] )
-{
-   int   i;
-   char  dllhome[MAX_PATH];
-   int   nNumPlayers = 1;
-   int   nNumPlayRepeats = 1;
-   int   nTimeDelta = DEFAULT_TIME_DELTA;
-   int   nStopTime = DEFAULT_STOP_TIME;
-   bool  bURLFound = false;
-
-    //See if the user has set their HELIX_LIBS env var. This is overridden by the
-    //-l option.
-    const char* pszHelixLibs = getenv("HELIX_LIBS");
-    if( pszHelixLibs )
-        SafeStrCpy( dllhome,  pszHelixLibs, MAX_PATH);
-
-    int volscale = 100;
-
-    for (i = 1; i < argc; i++)
-    {
-       if (0 == stricmp(argv[i], "-v"))
-       {
-          if (++i == argc)
-          {
-             STDOUT("\nError: Invalid value for -n option.\n\n");
-             PrintUsage(GetAppName(argv[0]));
-             return -1;
-          }
-          volscale = atoi(argv[i]);
-       }
-       else if (0 == stricmp(argv[i], "-n"))
-       {
-          if (++i == argc)
-          {
-             STDOUT("\nError: Invalid value for -n option.\n\n");
-             PrintUsage(GetAppName(argv[0]));
-             return -1;
-          }
-          nNumPlayers = atoi(argv[i]);
-          if (nNumPlayers < 1)
-          {
-             STDOUT("\nError: Invalid value for -n option.\n\n");
-             PrintUsage(GetAppName(argv[0]));
-             return -1;
-          }
-       }
-       else if (0 == stricmp(argv[i], "-rn"))
-       {
-          if (++i == argc)
-          {
-             STDOUT("\nError: Invalid value for -rn option.\n\n");
-             PrintUsage(GetAppName(argv[0]));
-             return -1;
-          }
-          nNumPlayRepeats = atoi(argv[i]);
-          if (nNumPlayRepeats < 1)
-          {
-             STDOUT("\nError: Invalid value for -rn option.\n\n");
-             PrintUsage(GetAppName(argv[0]));
-             return -1;
-          }
-       }
-       else if (0 == stricmp(argv[i], "-t"))
-       {
-          if (++i == argc)
-          {
-             STDOUT("\nError: Invalid value for -t option.\n\n");
-             PrintUsage(GetAppName(argv[0]));
-             return -1;
-          }
-          nTimeDelta = atoi(argv[i]);
-          if (nTimeDelta < 0)
-          {
-             STDOUT("\nError: Invalid value for -t option.\n\n");
-             PrintUsage(GetAppName(argv[0]));
-             return -1;
-          }
-       }
-       else if (0 == stricmp(argv[i], "-st"))
-       {
-          if (++i == argc)
-          {
-             STDOUT("\nError: Invalid value for -st option.\n\n");
-             PrintUsage(GetAppName(argv[0]));
-             return -1;
-          }
-          nStopTime = atoi(argv[i]);
-          if (nStopTime < 0)
-          {
-             STDOUT("\nError: Invalid value for -st option.\n\n");
-             PrintUsage(GetAppName(argv[0]));
-             return -1;
-          }
-       }
-#if defined _DEBUG || defined DEBUG
-       else if (0 == stricmp(argv[i], "-d"))
-       {
-          if (++i == argc)
-          {
-             STDOUT("\nError: Invalid value for -d option.\n\n");
-             PrintUsage(GetAppName(argv[0]));
-             return -1;
-          }
-          debug_level() = (int)strtoul(argv[i], 0, 0);
-       }
-#endif
-       else if (0 == stricmp(argv[i], "-u"))
-       {
-          char *puser = new char[1024];
-          strcpy(puser, "");
-          if (++i == argc)
-          {
-             STDOUT("\nError: Invalid value for -u option.\n\n");
-             PrintUsage(GetAppName(argv[0]));
-             return -1;
-          }
-          SafeStrCpy(puser,  argv[i], 1024);
-          //HelixSimplePlayer::setUsername(puser);
-       }
-       else if (0 == stricmp(argv[i], "-p"))
-       {
-          char *ppass = new char[1024];
-          strcpy(ppass, ""); /* Flawfinder: ignore */
-          if (++i == argc)
-          {
-             STDOUT("\nError: Invalid value for -p option.\n\n");
-             PrintUsage(GetAppName(argv[0]));
-             return -1;
-          }
-          SafeStrCpy(ppass,  argv[i], 1024);
-          //HelixSimplePlayer::setPassword(ppass);
-       }
-       else if (0 == stricmp(argv[i], "-g"))
-       {
-          char *pfile = new char[1024];
-          strcpy(pfile, ""); /* Flawfinder: ignore */
-          if (++i == argc)
-          {
-             STDOUT("\nError: Invalid value for -g option.\n\n");
-             PrintUsage(GetAppName(argv[0]));
-             return -1;
-          }
-          SafeStrCpy(pfile, HelixSimplePlayer::RemoveWrappingQuotes(argv[i]), 1024);
-          //HelixSimplePlayer::setGUIDFile(pfile);
-          //if (!HelixSimplePlayer::ReadGUIDFile())
-          //{
-          //   STDOUT("\nError: Unable to read file specified by -g option.\n\n");
-          //   return -1;
-          //}
-       }
-       else if (0 == stricmp(argv[i], "-l"))
-       {
-          if (++i == argc)
-          {
-             STDOUT("\nError: Invalid value for -l option.\n\n");
-             PrintUsage(GetAppName(argv[0]));
-             return -1;
-          }
-          SafeStrCpy(dllhome, HelixSimplePlayer::RemoveWrappingQuotes(argv[i]), MAX_PATH);
-       }
-       else if (!bURLFound)
-       {
-          bURLFound  = true;
-          //if no "://" was found lets add file:// by default so that you
-          //can refer to local content as just ./splay ~/Content/startrek.rm,
-          //for example, and not ./splay file:///home/gregory/Content/startrek.rm
-       }
-       else
-       {
-//            PrintUsage(GetAppName(argv[0]));
-//            return -1;
-       }
-    }
-    
-    if (!bURLFound)
-    {
-       if (argc > 1)
-       {
-          STDOUT("\nError: No media file or URL was specified.\n\n");
-       }
-       PrintUsage(GetAppName(argv[0]));
-       return -1;
-    }
-    // start first player
-    
-    HelixSimplePlayer splay;
-    pthread_t thr1, thr2;
-    struct pt_t x = { 1, &splay };
-
-    splay.init(HELIX_DIR "/common", HELIX_DIR "/plugins", HELIX_DIR "/codecs", 2);
-    
-    pthread_create(&thr1, 0, play_thread, (void *) &x);
-
-    //splay.enableCrossFader(0, 1);
-    splay.setURL(argv[1],1);
-    bool xfstart = 0, didseek = 0, xfsetup = 0;
-    unsigned long d = 15000;
-    unsigned long xfpos;
-    unsigned long counter = 0;
-    int nowplayingon = 0;
-
-    //splay.dispatch();
-    STDERR("Before sleep\n");
-    sleep(2);
-
-    //splay.start(0);
-    while (!splay.done())
-    {
-       //splay.dispatch();
-       sleep(1);
-       if (!(counter % 10))
-          STDERR("time: %ld/%ld %ld/%ld count %d\n", splay.where(0), splay.duration(0), splay.where(1), splay.duration(1), counter);
-       
-       counter++;
-       
-       if (splay.duration(x.playerIndex))
-          xfpos = splay.duration(x.playerIndex) - d;
-
-       if (!xfsetup && splay.where(x.playerIndex) > xfpos - 2000)
-       {
-          xfsetup = 1;
-          //splay.crossFade(argv[i-1], splay.where(splay.xf().fromIndex), d);
-          x.playerIndex = 0;
-          splay.setURL(argv[i-1],1);
-          pthread_create(&thr2, 0, play_thread, (void *) &x);
-       }
-
-       //if (!xfstart && splay.where(splay.xf().fromIndex) > xfpos - 1000)
-       //{
-       //   xfstart = 1;
-       //   splay.startCrossFade();
-       //}
-    }
-
-
-//    if (splay.getError() == HXR_OK)
-//    {
-//       int vol = splay.getVolume(0);
-//       bool mute;
-//
-//       splay.setMute(false);
-//       mute = splay.getMute(0);
-//       if (mute)
-//          STDERR("Mute is ON\n");
-//       else
-//          STDERR("Mute is OFF\n");
-//
-//       splay.setVolume(volscale);
-//       vol = splay.getVolume(0);
-//       splay.play(argv[i-1]);
-//    }
-}
-
-
-#endif // TEST_APP

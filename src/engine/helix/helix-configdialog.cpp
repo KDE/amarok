@@ -41,6 +41,8 @@
 
 using namespace std;
 
+HelixConfigDialogBase *HelixConfigDialog::instance = NULL;
+
 HelixConfigEntry::HelixConfigEntry( QWidget *parent, 
                                     amaroK::PluginConfig *pluginConfig, 
                                     int row, 
@@ -102,21 +104,27 @@ HelixConfigEntry::slotStringChanged( const QString& )
    m_valueChanged = true;
 }
 
-HelixSoundDevice::HelixSoundDevice( QWidget *parent, int &row, HelixEngine *engine )
+HelixSoundDevice::HelixSoundDevice( QWidget *parent, 
+                                    amaroK::PluginConfig *pluginConfig, 
+                                    int &row, 
+                                    HelixEngine *engine )
    : deviceComboBox(0), checkBox_outputDevice(0), lineEdit_outputDevice(0), m_changed(false), m_engine(engine)
 {
    QGridLayout *grid = (QGridLayout*)parent->layout();
 
    deviceComboBox = new KComboBox( FALSE, parent, "deviceComboBox" );
    deviceComboBox->insertItem("oss");  // I believe these are not subject to translation (they dont seem to be in xine, 
+#ifdef USE_HELIX_ALSA
    deviceComboBox->insertItem("alsa"); // and neither are the equivalents in gst (osssink and alsasink)
+#endif
    deviceComboBox->setCurrentItem(HelixConfig::outputplugin());
    QLabel* op = new QLabel( i18n("Output plugin:"), parent );
    op->setAlignment( QLabel::WordBreak | QLabel::AlignVCenter );
    grid->addWidget( op, row, 0 );
    grid->addWidget( deviceComboBox, row, 1);
    connect( (QWidget *)deviceComboBox, SIGNAL( activated( const QString& ) ), this, SLOT( slotNewDevice( const QString& )) );
-
+   connect( (QWidget *)deviceComboBox, SIGNAL( activated( const QString& )), pluginConfig, SIGNAL(viewChanged()) );
+    
    ++row;
 
    checkBox_outputDevice = new QCheckBox( parent, "checkBox_outputDevice" );
@@ -126,7 +134,9 @@ HelixSoundDevice::HelixSoundDevice( QWidget *parent, int &row, HelixEngine *engi
 
     lineEdit_outputDevice = new KLineEdit( HelixConfig::device(), parent );
     connect( (QWidget *) lineEdit_outputDevice, SIGNAL(textChanged( const QString& )), this, SLOT(slotStringChanged( const QString& )) );
+    connect( (QWidget *) lineEdit_outputDevice, SIGNAL( textChanged( const QString& )), pluginConfig, SIGNAL(viewChanged()) );
     connect( checkBox_outputDevice, SIGNAL( toggled(bool) ), lineEdit_outputDevice, SLOT( setEnabled(bool) ) );
+    connect( checkBox_outputDevice, SIGNAL( toggled(bool) ), pluginConfig, SIGNAL(viewChanged()) );
     grid->addWidget( (QWidget *) lineEdit_outputDevice, row, 1 );
 
     if (HelixConfig::deviceenabled())
@@ -196,10 +206,38 @@ HelixSoundDevice::save()
    return m_changed;
 }
 
+void HelixSoundDevice::setSoundSystem( int api )
+{
+   debug() << "SETTING SOUND SYSTEM to " << api << endl;
+   switch (api)
+   {
+      case HelixSimplePlayer::OSS:
+         deviceComboBox->setCurrentItem("oss");
+         checkBox_outputDevice->setEnabled( false );
+         lineEdit_outputDevice->setEnabled(false);
+         break;
 
-HelixConfigDialog::HelixConfigDialog( HelixEngine *engine, QWidget *p )
-   : amaroK::PluginConfig()
-     , QTabWidget( p )
+      case HelixSimplePlayer::ALSA:
+         deviceComboBox->setCurrentItem("alsa");
+         checkBox_outputDevice->setEnabled( true );
+         if (checkBox_outputDevice->isChecked())
+            lineEdit_outputDevice->setEnabled( true );      
+         else
+            lineEdit_outputDevice->setEnabled( false );
+         break;
+   };
+   HelixConfig::setOutputplugin(deviceComboBox->currentText());
+   HelixConfig::writeConfig();
+}
+
+void HelixConfigDialogBase::setSoundSystem( int api )
+{
+   m_device->setSoundSystem(api);
+}
+
+
+HelixConfigDialogBase::HelixConfigDialogBase( HelixEngine *engine, amaroK::PluginConfig *config, QWidget *p )
+     : QTabWidget( p )
      , m_core(0)
      , m_plugin(0)
      , m_codec(0)
@@ -231,21 +269,21 @@ HelixConfigDialog::HelixConfigDialog( HelixEngine *engine, QWidget *p )
 
     engine->m_coredir = HelixConfig::coreDirectory();
     m_core = new HelixConfigEntry( parent, engine->m_coredir, 
-                                   this, row, 
+                                   config, row, 
                                    i18n("Helix/Realplay core directory"), 
                                    HelixConfig::coreDirectory().utf8(),
                                    i18n("This is the directory where clntcore.so is located"));
     ++row;
     engine->m_pluginsdir = HelixConfig::pluginDirectory();
     m_plugin = new HelixConfigEntry( parent, engine->m_pluginsdir, 
-                                     this, row, 
+                                     config, row, 
                                      i18n("Helix/Realplay plugins directory"), 
                                      HelixConfig::pluginDirectory().utf8(),
                                      i18n("This is the directory where, for example, vorbisrend.so is located"));
     ++row;
     engine->m_codecsdir = HelixConfig::codecsDirectory();
     m_codec = new HelixConfigEntry( parent, engine->m_codecsdir, 
-                                     this, row, 
+                                     config, row, 
                                      i18n("Helix/Realplay codecs directory"), 
                                      HelixConfig::codecsDirectory().utf8(),
                                      i18n("This is the directory where, for example, cvt1.so is located"));
@@ -253,7 +291,7 @@ HelixConfigDialog::HelixConfigDialog( HelixEngine *engine, QWidget *p )
     grid->addMultiCellWidget( new KSeparator( KSeparator::Horizontal, parent ), row, row, 0, 1 );
 
     ++row;
-    m_device = new HelixSoundDevice( parent, row, engine );
+    m_device = new HelixSoundDevice( parent, config, row, engine );
 
     // lets find the logo if we can
     QPixmap *pm = 0;
@@ -323,35 +361,38 @@ HelixConfigDialog::HelixConfigDialog( HelixEngine *engine, QWidget *p )
     le->setContentsPos(0,0);
 }
 
-HelixConfigDialog::~HelixConfigDialog()
+HelixConfigDialogBase::~HelixConfigDialogBase()
 {
    delete m_core;
    delete m_plugin;
    delete m_codec;
+   delete m_device;
 }
 
 bool
-HelixConfigDialog::hasChanged() const
+HelixConfigDialogBase::hasChanged() const
 {
    for( QPtrListIterator<HelixConfigEntry> it( entries ); *it != 0; ++it )
       if ( (*it)->isChanged() )
          return true;
-   if (m_core->isChanged() || m_plugin->isChanged() || m_codec->isChanged())
+   if (m_core->isChanged() || m_plugin->isChanged() || m_codec->isChanged() || m_device->isChanged())
       return true;
 
    return false;
 }
 
 bool
-HelixConfigDialog::isDefault() const
+HelixConfigDialogBase::isDefault() const
 {
    return false;
 }
 
 void
-HelixConfigDialog::save()
+HelixConfigDialogBase::save()
 {
    bool writeIt = false;
+
+   debug() << "SAVING in HelixConfigDialog\n";
 
    if (m_core->isChanged())
    {
@@ -387,6 +428,9 @@ HelixConfigDialog::save()
       }
    }
 
+   if (m_device->isChanged())
+      m_device->setUnchanged();
+
    if (writeIt)
    {
       HelixConfig::writeConfig();
@@ -394,6 +438,33 @@ HelixConfigDialog::save()
       m_engine->init();
    }
 
+}
+
+HelixConfigDialog::HelixConfigDialog( HelixEngine *engine, QWidget *p ) : amaroK::PluginConfig()
+{
+   if (!instance)
+      instance = new HelixConfigDialogBase( engine, this, p );
+}
+
+HelixConfigDialog::~HelixConfigDialog()
+{
+   delete instance;
+   instance = 0;
+}
+
+int HelixConfigDialog::setSoundSystem( int api ) 
+{ 
+   if (instance) 
+   { 
+      instance->setSoundSystem(api); 
+      return 0;
+   }
+   else
+   {
+      HelixConfig::setOutputplugin(api ? "alsa" : "oss");
+      HelixConfig::writeConfig();
+      return 1;
+   }
 }
 
 #include "helix-configdialog.moc"

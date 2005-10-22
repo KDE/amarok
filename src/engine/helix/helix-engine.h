@@ -49,7 +49,7 @@ public:
    virtual void onContacting(const char *host);
    virtual void onBuffering(int pcnt);
 
-   virtual void fallbackToOSS();
+   virtual int fallbackToOSS();
 
 protected:
    virtual void setVolumeSW( uint );
@@ -97,7 +97,7 @@ private:
    int print2stdout(const char *fmt, ...);
    int print2stderr(const char *fmt, ...);
 
-   friend class HelixConfigDialog;
+   friend class HelixConfigDialogBase;
 };
 
 

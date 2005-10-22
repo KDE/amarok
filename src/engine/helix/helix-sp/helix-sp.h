@@ -96,6 +96,7 @@ public:
 
    void init(const char *corelibpath, const char *pluginslibpath, const char *codecspath, int numPlayers = 1);
    void tearDown();
+   int  initDirectSS();
    int  addPlayer();                                                 // add another player
    void play(int playerIndex = ALL_PLAYERS, 
              bool fadein = false, bool fadout = false,
@@ -288,17 +289,20 @@ public:
    void setDevice( const char *dev );
    const char *getDevice();
    void setAlsaCapableCore() { m_AlsaCapableCore = true; }
-   virtual void fallbackToOSS() {}
+   virtual int fallbackToOSS() { return 0; }
 
 private:
    AUDIOAPI m_outputsink;
    char *m_device;
 
    // work around the annoying problem of the core reseting the PCM volume on every url change
+protected:
    void openAudioDevice();
    void closeAudioDevice();
    int getDirectHWVolume();
    void setDirectHWVolume(int vol);
+
+private:
    AUDIOAPI m_direct;
    bool m_AlsaCapableCore;
    int m_nDevID;

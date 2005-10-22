@@ -29,10 +29,12 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <iostream>
 #include "hxassert.h"
-#include "print.h"
 
 #include "gain.h"
+
+using namespace std;
 
 #define INT8_CEILING  255
 #define INT16_CEILING 32767
@@ -237,7 +239,7 @@ static void gainFeedStereo(unsigned char* signal, unsigned char *outsignal, int 
    float tgtGain = g->tgtGain ;
    float gain = g->instGain ;
    unsigned char *bufferEnd = signal + len;
-   
+
    if (gain == tgtGain)
    { // steady state
       while (signal < bufferEnd)

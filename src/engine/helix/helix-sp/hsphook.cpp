@@ -264,7 +264,6 @@ STDMETHODIMP HSPPostMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioDat
          // finally adjust the volume
          len = volumeize(data, outbuf, len);
 
-
       pAudioOutData->pData = ibuf;
       pAudioOutData->ulAudioTime = pAudioInData->ulAudioTime;
       pAudioOutData->uAudioStreamType = pAudioInData->uAudioStreamType;
@@ -294,7 +293,7 @@ STDMETHODIMP HSPPostMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioDat
 
 STDMETHODIMP HSPPostMixAudioHook::OnInit(HXAudioFormat *pFormat)
 {
-   m_Player->STDERR("POST MIX HOOK OnInit AudioFormat: ch %d, bps %d, sps %d, mbs %d\n", pFormat->uChannels,
+   m_Player->STDERR("POST MIX HOOK OnInit AudioFormat: idx %d ch %d, bps %d, sps %d, mbs %d\n", m_index, pFormat->uChannels,
           pFormat->uBitsPerSample,
           pFormat->ulSamplesPerSec,
           pFormat->uMaxBlockSize);

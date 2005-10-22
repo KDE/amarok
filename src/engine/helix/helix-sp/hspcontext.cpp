@@ -125,7 +125,7 @@ HSPEngineContext::ReadPref(const char* pref_key, IHXBuffer*& buffer)
     IHXBuffer *ibuf;
 
     
-    m_splayer->STDERR("in engine context, key is <%s>\n", pref_key);
+    //m_splayer->STDERR("in engine context, key is <%s>\n", pref_key);
     if (0 == (stricmp(pref_key, "OpenAudioDeviceOnPlayback")))
     {
        m_CommonClassFactory->CreateInstance(CLSID_IHXBuffer, (void **) &ibuf);

@@ -55,8 +55,11 @@ class HelixSoundDevice : public QObject
 {
 Q_OBJECT
 public:
-   HelixSoundDevice( QWidget *parent, int &row, HelixEngine *engine );
+   HelixSoundDevice( QWidget *parent, amaroK::PluginConfig *config, int &row, HelixEngine *engine );
    bool save();
+   void setSoundSystem( int api );
+   bool isChanged() const { return m_changed; }
+   void setUnchanged() { m_changed = false; }
 
 private slots:
    void slotNewDevice( const QString& );
@@ -71,11 +74,11 @@ private:
 };
 
 
-class HelixConfigDialog : public amaroK::PluginConfig, public QTabWidget
+class HelixConfigDialogBase : public QTabWidget
 {
 public:
-   HelixConfigDialog( HelixEngine *engine, QWidget *parent = 0 );
-   ~HelixConfigDialog();
+   HelixConfigDialogBase( HelixEngine *engine, amaroK::PluginConfig *config, QWidget *parent = 0 );
+   ~HelixConfigDialogBase();
 
    virtual QWidget *view() { return this; }
    virtual bool hasChanged() const;
@@ -83,6 +86,8 @@ public:
 
    /** Save view state into configuration */
    virtual void save();
+
+   void setSoundSystem( int api );
 
 private:
    QPtrList<HelixConfigEntry> entries;
@@ -92,5 +97,23 @@ private:
    HelixSoundDevice *m_device;
    HelixEngine *m_engine;
 };
+
+class HelixConfigDialog : public amaroK::PluginConfig
+{
+public:
+   HelixConfigDialog( HelixEngine *engine, QWidget *parent = 0 );
+   ~HelixConfigDialog();
+
+   virtual QWidget *view() { return instance->view(); }
+   virtual bool hasChanged() const { return instance->hasChanged(); }
+   virtual bool isDefault() const { return instance->isDefault(); }
+
+   virtual void save() { instance->save(); }
+   static int setSoundSystem( int api );
+
+private:
+   static HelixConfigDialogBase *instance;
+};
+
 
 #endif
