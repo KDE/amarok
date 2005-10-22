@@ -1433,12 +1433,24 @@ CollectionDB::getPlayCount( const QString &url  )
 void
 CollectionDB::migrateFile( const QString &oldURL, const QString &newURL )
 {
+    query( QString( "DELETE FROM tags WHERE url = '%1';" )
+        .arg( escapeString( newURL ) ) );
+
+    query( QString( "DELETE FROM statistics WHERE url = '%1';" )
+        .arg( escapeString( newURL ) ) );
+
     query( QString( "UPDATE tags SET url = '%1' WHERE url = '%2';" )
         .arg( escapeString( newURL ) )
         .arg( escapeString( oldURL ) ) );
 
     query( QString( "UPDATE statistics SET url = '%1' WHERE url = '%2';" )
         .arg( escapeString( newURL ) )
+        .arg( escapeString( oldURL ) ) );
+
+    query( QString( "DELETE FROM tags WHERE url = '%1';" )
+        .arg( escapeString( oldURL ) ) );
+
+    query( QString( "DELETE FROM statistics WHERE url = '%1';" )
         .arg( escapeString( oldURL ) ) );
 }
 
@@ -2417,7 +2429,7 @@ int PostgresqlConnection::insert( const QString& statement, const QString& table
     QString _table = table;
     if (table.find("_temp") > 0) _table = table.left(table.find("_temp"));
 
-    /* this does not work with postgres 
+    /* this does not work with postgres
     curvalSql = QString("SELECT currval('%1_seq');").arg(_table); */
     curvalSql = QString("SELECT last_value FROM %1_seq;").arg(_table);
     result = PQexec(m_db, curvalSql.utf8());
