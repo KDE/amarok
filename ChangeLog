@@ -38,7 +38,7 @@ VERSION 1.3.4:
   BUGFIXES:
     * Fix amaroK attempting to destroy your computer, reach through the
       monitor and violently strangle you if you attempt to exit while the
-      collection is being scanned. (BR 114597, 114859)
+      collection is being scanned. (BR 114597) (BR 114859)
     * Postgresql code cleanup and fixed regression for manual collection
       scanning. Autoscan still does not work. (BR 111209)
     * File browser now sets to home if it was on a remote directory to prevent
@@ -89,7 +89,7 @@ VERSION 1.3.4:
       player window was toggled. (BR 93711)
     * If player window is toggled during playback, playlist window's caption
       now correctly shows the current track's name.
-    * Crossfade length would be enabled in Playback options when "No 
+    * Crossfade length would be enabled in Playback options when "No
       crossfading" was selected.
     * If an engine does not support crossfading, "No crossfading" is now
       selected in Playback options.
