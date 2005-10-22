@@ -66,13 +66,13 @@ email                : markey@web.de
 #include <qtimer.h>              //showHyperThreadingWarning()
 #include <qtooltip.h>            //default tooltip for trayicon
 
-//for the HT fix
+// For the HyperThreading fix
 #ifdef __linux__
-    #include <linux/version.h>
-    #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0)
+    #include <features.h>
+    #if defined(__GLIBC_PREREQ) && __GLIBC_PREREQ(2,3)
         #include <errno.h>
         #include <sched.h>
-    #endif //LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0)
+    #endif //__GLIBC_PREREQ && __GLIBC_PREREQ(2,3)
 #endif //__linux__
 
 App::App()
@@ -398,7 +398,8 @@ void App::fixHyperThreading()
     if ( cpuCount > 1 ) {
         debug() << "CPU with active HyperThreading detected. Enabling WORKAROUND.\n";
 
-        #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0)
+        // If the library is new enough try and call sched_setaffinity.
+        #if defined(__GLIBC_PREREQ) && __GLIBC_PREREQ(2,3)
         cpu_set_t mask;
         CPU_ZERO( &mask ); // Initializes all the bits in the mask to zero
         CPU_SET( 0, &mask ); // Sets only the bit corresponding to cpu
@@ -408,9 +409,9 @@ void App::fixHyperThreading()
             return;
         }
         #else
-        warning() << "Linux 2.6 kernel headers not found. sched_setaffinity() is unvailable." << endl;
+        warning() << "GLIBC version < 2.3: sched_setaffinity() is unvailable." << endl;
         QTimer::singleShot( 0, this, SLOT( showHyperThreadingWarning() ) );
-        #endif // LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0)
+        #endif // __GLIBC_PREREQ && __GLIBC_PREREQ(2,3)
     }
     #endif //__linux__
 }
@@ -529,7 +530,7 @@ void App::applySettings( bool firstTime )
             m_pPlaylistWindow->setCaption( "amaroK - " + EngineController::instance()->bundle().veryNiceTitle() );
         else
             m_pPlaylistWindow->setCaption( "amaroK" );
-    
+
 
         //m_pPlaylistWindow->show(); //must be shown //we do below now
 
