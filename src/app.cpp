@@ -39,6 +39,7 @@ email                : markey@web.de
 #include "scrobbler.h"
 #include "statusbar.h"
 #include "systray.h"
+#include "threadweaver.h"
 #include "tracktooltip.h"        //engineNewMetaData()
 
 #include <iostream>
@@ -194,6 +195,9 @@ App::~App()
 
     // do even if trayicon is not shown, it is safe
     amaroK::config()->writeEntry( "HiddenOnExit", mainWindow()->isHidden() );
+
+    CollectionDB::instance()->stopScan();
+    ThreadWeaver::deleteInstance(); //waits for jobs to finish
 
     delete m_pPlayerWindow;   //sets some XT keys
     delete m_pPlaylistWindow; //sets some XT keys

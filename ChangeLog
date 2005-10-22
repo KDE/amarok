@@ -36,6 +36,9 @@ VERSION 1.3.4:
       icon, respectively.
 
   BUGFIXES:
+    * Fix amaroK attempting to destroy your computer, reach through the
+      monitor and violently strangle you if you attempt to exit while the
+      collection is being scanned. (BR 114597, 114859)
     * Postgresql code cleanup and fixed regression for manual collection
       scanning. Autoscan still does not work. (BR 111209)
     * File browser now sets to home if it was on a remote directory to prevent

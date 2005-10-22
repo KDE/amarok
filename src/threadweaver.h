@@ -93,6 +93,7 @@ public:
     typedef QValueList<Job*> JobList;
 
     static ThreadWeaver *instance();
+    static void deleteInstance();
 
     /**
      * If the ThreadWeaver is already handling a job of this type then the job
@@ -381,9 +382,15 @@ protected:
 inline ThreadWeaver*
 ThreadWeaver::instance()
 {
-    static ThreadWeaver instance;
+    static ThreadWeaver* instance = new ThreadWeaver();
 
-    return &instance;
+    return instance;
+}
+
+inline void
+ThreadWeaver::deleteInstance()
+{
+    delete instance();
 }
 
 #endif
