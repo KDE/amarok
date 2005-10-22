@@ -125,7 +125,7 @@ HSPEngineContext::ReadPref(const char* pref_key, IHXBuffer*& buffer)
     IHXBuffer *ibuf;
 
     
-    //m_splayer->STDERR("in engine context, key is <%s>\n", pref_key);
+    m_splayer->STDERR("in engine context, key is <%s>\n", pref_key);
     if (0 == (stricmp(pref_key, "OpenAudioDeviceOnPlayback")))
     {
        m_CommonClassFactory->CreateInstance(CLSID_IHXBuffer, (void **) &ibuf);
@@ -162,8 +162,21 @@ HSPEngineContext::ReadPref(const char* pref_key, IHXBuffer*& buffer)
           m_splayer->STDERR("Setting Sound System to %s\n", m_splayer->getOutputSink() == HelixSimplePlayer::ALSA ? "ALSA" : "OSS");
        }
     }
-    // also need to allow setting of "AlsaMixerDeviceName"
-    else if (0 == (stricmp(pref_key, "AlsaMixerDeviceName")))
+    // maybe also need to allow setting of "AlsaMixerDeviceName"?
+    else if (0 == (stricmp(pref_key, "AlsaMixerElementName")))
+    {
+       m_splayer->setAlsaCapableCore(); // this just lets everyone know that this helix core is Alsa-capable
+       m_CommonClassFactory->CreateInstance(CLSID_IHXBuffer, (void **) &ibuf);
+       if (ibuf)
+       {
+          ibuf->SetSize(2);
+          outbuf = ibuf->GetBuffer();
+          strcpy((char *)outbuf, "PCM");
+          buffer = ibuf;
+          m_splayer->STDERR("Setting Mixer Element to use the PCM mixer\n");
+       }
+    }
+    else if (0 == (stricmp(pref_key, "AlsaPCMDeviceName")))
     {
        m_splayer->setAlsaCapableCore(); // this just lets everyone know that this helix core is Alsa-capable
        m_CommonClassFactory->CreateInstance(CLSID_IHXBuffer, (void **) &ibuf);

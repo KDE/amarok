@@ -167,8 +167,14 @@ HelixEngine::init()
    if (HelixConfig::outputplugin() == "oss")
       setOutputSink( OSS );
    else
+   {
       setOutputSink( ALSA );
-   setDevice( HelixConfig::device().utf8() );
+      if (HelixConfig::deviceenabled())
+         setDevice( HelixConfig::device().utf8() );
+      else
+         setDevice("default");
+   }
+   
 
    if (!stat(m_coredir.utf8(), &s) && !stat(m_pluginsdir.utf8(), &s) && !stat(m_codecsdir.utf8(), &s))
    {
