@@ -188,7 +188,7 @@ HelixEngine::init()
          vol = HelixSimplePlayer::getVolume(m_current);
          eqenabled = HelixSimplePlayer::isEQenabled();
          for (unsigned int i=0; i < m_equalizerGains.size(); i++)
-            savedequalizerGains[i] = m_equalizerGains[i];
+            savedequalizerGains.append(m_equalizerGains[i]);
          savedpreamp = m_preamp;
          HelixSimplePlayer::tearDown();
       }
