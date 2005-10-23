@@ -1549,6 +1549,7 @@ PodcastChannel::purge()
     if( removeCount <= 0 )
         return;
 
+    KURL::List urls;
     for( int i=0; i < removeCount; i++ )
     {
         PodcastItem *newLast = 0;
@@ -1556,9 +1557,14 @@ PodcastChannel::purge()
         if( m_last && m_last != firstChild() )
             newLast = (PodcastItem *)m_last->itemAbove();
 
+        if( m_last->hasDownloaded() )
+            urls.append( m_last->localUrl() );
+
         delete m_last;
         m_last = newLast;
     }
+    if( !urls.isEmpty() )
+        KIO::del( urls );
 }
 
 QDomElement
