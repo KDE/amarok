@@ -5,6 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.3.4:
   FEATURES:
+    * helix-engine won't change emit new metaData if only the bitrate 
+      of the stream changes (BR 114348).
     * Helix-engine supports ALSA (using RealPlayer 11). (BR 113909)
     * Atom feed compatibility for podcasts.
     * Statusbar messages are logged to a file, statusbar.log. (BR 99899)

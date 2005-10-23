@@ -475,9 +475,11 @@ HelixEngine::timerEvent( QTimerEvent * )
 
    HelixSimplePlayer::metaData *md = getMetaData(m_current);
    if (m_isStream &&
-       (strcmp(m_md.title, md->title) || strcmp(m_md.artist, md->artist) || m_md.bitrate != md->bitrate))
+       (strcmp(m_md.title, md->title) || strcmp(m_md.artist, md->artist)))
    {
       memcpy(&m_md, md, sizeof(m_md));
+
+      //debug() << "Title: " << md->title << " Artist: " << md->artist << " Bitrate: " << md->bitrate << endl;
 
       // Ok, helix sends the title of the song in the artist string for streams.
       // this prevents context lookup, so we split it here (the artist and title are separated by a '-'
