@@ -1,29 +1,29 @@
 /* ***** BEGIN LICENSE BLOCK *****
  *
  * This software is released under the provisions of the GPL version 2.
- * see file "COPYING".  If that file is not available, the full statement 
+ * see file "COPYING".  If that file is not available, the full statement
  * of the license can be found at
  *
  * http://www.fsf.org/licensing/licenses/gpl.txt
  *
  * Portions Copyright (c) 1995-2004 RealNetworks, Inc. All Rights Reserved.
  * Copyright (c) 2005 Paul Cifarelli All Rights Reserved.
- * 
- * 
+ *
+ *
  * This file is part of the Helix DNA Technology. RealNetworks is the
  * developer of the Original Code and owns the copyrights in the
  * portions it created.
- * 
+ *
  * This file, and the files included with this file, is distributed
  * and made available on an 'AS IS' basis, WITHOUT WARRANTY OF ANY
  * KIND, EITHER EXPRESS OR IMPLIED, AND REALNETWORKS HEREBY DISCLAIMS
  * ALL SUCH WARRANTIES, INCLUDING WITHOUT LIMITATION, ANY WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, QUIET
  * ENJOYMENT OR NON-INFRINGEMENT.
- * 
+ *
  * Technology Compatibility Kit Test Suite(s) Location:
  *    http://www.helixcommunity.org/content/tck
- * 
+ *
  * ***** END LICENSE BLOCK ***** */
 
 #include <stdlib.h>
@@ -137,7 +137,7 @@ int gainSetTimeConstant(float millis, GAIN_STATE* g)
    if (shift > 31)
       shift = 31 ;
 
-   g->decay = pow(2.0, (float) shift);
+   g->decay = ::pow(2.0, (float) shift);
 
    return 1 ; // OK
 }
@@ -147,7 +147,7 @@ static void gainFeedMono(unsigned char* signal, unsigned char *outsignal, int le
    float tgtGain = g->tgtGain ;
    float gain = g->instGain ;
    unsigned char *bufferEnd = signal + len;
-   
+
    if (gain == tgtGain)
    { // steady state
       while (signal < bufferEnd)
@@ -193,7 +193,7 @@ static void gainFeedMono(unsigned char* signal, unsigned char *outsignal, int le
       while (signal < bufferEnd)
       {
          int rc = (tgtGain > gain) - (tgtGain < gain) ; // -1,0,1 for x<y, x=y, x>y
-         
+
          switch (g->bytesPerSample)
          {
             case 1:
@@ -297,7 +297,7 @@ static void gainFeedStereo(unsigned char* signal, unsigned char *outsignal, int 
       while (signal < bufferEnd)
       {
          int rc = (tgtGain > gain) - (tgtGain < gain) ; // -1,0,1 for x<y, x=y, x>y
-         
+
          switch (g->bytesPerSample)
          {
             case 1:
@@ -420,7 +420,7 @@ static void gainFeedMulti(unsigned char* signal, unsigned char *outsignal, int l
        {
           int rc = (tgtGain > gain) - (tgtGain < gain) ; // -1,0,1 for x<y, x=y, x>y
           int i ;
-          
+
           switch (g->bytesPerSample)
           {
              case 1:
