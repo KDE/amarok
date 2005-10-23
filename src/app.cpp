@@ -385,7 +385,8 @@ void App::fixHyperThreading()
 
     DEBUG_BLOCK
 
-    #ifdef __linux__
+    #ifdef __linux__ 
+    debug() << "SCHEDAFFINITY_SUPPORT enabled. Testing to see if HT fix should be enabled..." << endl;
     QString line;
     uint cpuCount = 0;
     QFile cpuinfo( "/proc/cpuinfo" );
@@ -403,20 +404,28 @@ void App::fixHyperThreading()
         debug() << "CPU with active HyperThreading detected. Enabling WORKAROUND.\n";
 
         // If the library is new enough try and call sched_setaffinity.
-        #if defined(__GLIBC_PREREQ) && __GLIBC_PREREQ(2,3)
+        #if defined(__GLIBC_PREREQ) && __GLIBC_PREREQ(2,3) 
         cpu_set_t mask;
         CPU_ZERO( &mask ); // Initializes all the bits in the mask to zero
         CPU_SET( 0, &mask ); // Sets only the bit corresponding to cpu
-        if ( sched_setaffinity( 0, sizeof(mask), &mask ) == -1 ) {
+        #ifdef SCHEDAFFINITY_SUPPORT
+        if ( sched_setaffinity( 0, sizeof(mask), &mask ) == -1 ) 
+        #else  //SCHEDAFFINITY_SUPPORT
+        if ( sched_setaffinity( 0, &mask ) == -1 )
+        #endif //SCHEDAFFINITY_SUPPORT
+        {
             warning() << "sched_setaffinity() call failed with error code: " << errno << endl;
             QTimer::singleShot( 0, this, SLOT( showHyperThreadingWarning() ) );
             return;
         }
-        #else
-        warning() << "GLIBC version < 2.3: sched_setaffinity() is unvailable." << endl;
+        #else //defined(__GLIBC_PREREQ) && __GLIBC_PREREQ(2,3)
+             warning()<<"glibc too old (<2.3) for sched_setaffinity" << endl;
         QTimer::singleShot( 0, this, SLOT( showHyperThreadingWarning() ) );
-        #endif // __GLIBC_PREREQ && __GLIBC_PREREQ(2,3)
+        #endif //defined(__GLIBC_PREREQ) && __GLIBC_PREREQ(2,3)
     }
+    else { debug() << "Fix not enabled" << endl; }
+    #else //__linux__
+    debug() << "SCHEDAFFINITY_SUPPORT disabled since this isn't Linux" << endl;
     #endif //__linux__
 }
 
