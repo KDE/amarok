@@ -58,7 +58,8 @@ main( int argc, char** argv )
         while( (ent = readdir( dir )) )
         {
             filename = ent->d_name;
-            const uint index = filename.find_last_of( '.' );
+            string::size_type index;
+            index = filename.find_last_of( '.' );
 
             if( index == string::npos ) continue;
 
