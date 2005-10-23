@@ -36,6 +36,9 @@ VERSION 1.3.4:
       icon, respectively.
 
   BUGFIXES:
+    * If you queue an album from the context browser and then undo, the
+      queue icon in the statusbar is now updated properly (and hence
+      doesn't crash if you click on it).
     * helix-engine no longer emits new metaData if only the bitrate of a
       stream changes. (BR 114348)
     * Fix amaroK attempting to destroy your computer, reach through the

@@ -3549,11 +3549,15 @@ Playlist::switchState( QStringList &loadFromMe, QStringList &saveToMe )
     //save current state
     saveState( saveToMe );
 
-    //blockSignals so that we don't cause a saveUndoState()
-    //FIXME, but this will stop the search lineEdit from being cleared..
-    blockSignals( true );
-      clear();
-    blockSignals( false );
+    //this is clear() minus some parts, for instance we don't want to cause a saveUndoState() here
+    m_currentTrack = 0;
+    Glow::reset();
+    m_prevTracks.clear();
+    const PLItemList prev = m_nextTracks;
+    m_nextTracks.clear();
+    emit queueChanged( PLItemList(), prev );
+    ThreadWeaver::instance()->abortAllJobsNamed( "TagWriter" );
+    KListView::clear();
 
     insertMediaInternal( url, 0 ); //because the listview is empty, undoState won't be forced
 
