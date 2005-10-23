@@ -212,7 +212,7 @@ STDMETHODIMP_(ULONG32) HelixSimplePlayerVolumeAdvice::Release()
     return 0;
 }
 
-STDMETHODIMP HelixSimplePlayerVolumeAdvice::OnVolumeChange(const UINT16 uVolume)
+STDMETHODIMP HelixSimplePlayerVolumeAdvice::OnVolumeChange(const UINT16 /*uVolume*/)
 {
    m_Player->onVolumeChange(m_index);
 #ifdef HELIX_SW_VOLUME_INTERFACE
@@ -238,7 +238,8 @@ void HelixSimplePlayer::cleanUpStream(int playerIndex)
 void HelixSimplePlayer::updateEQgains()
 {
    for (int i = 0; i<nNumPlayers; i++)
-      ((HSPPostMixAudioHook *)ppctrl[i]->pPostMixHook)->updateEQgains(m_preamp, m_equalizerGains);
+      if (ppctrl[i]->pPostMixHook && isEQenabled())
+         ((HSPPostMixAudioHook *)ppctrl[i]->pPostMixHook)->updateEQgains(m_preamp, m_equalizerGains);
 }
 
 /*
