@@ -35,15 +35,6 @@ interface, that really makes playlist handling easy.
 --------------------------------------------------------------------------------
 
 
- RELEASE NOTES
-===============
-
-amaroK can be unstable on certain Linux kernel versions with a Pentium 4
-processor and HyperThreading enabled. Passing the kernel option "NOHT" at
-boot time fixes these issues.
---------------------------------------------------------------------------------
-
-
  DEPENDENCIES
 ==============
 
