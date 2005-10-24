@@ -665,7 +665,6 @@ AM_CONDITIONAL(with_konqsidebar, [test x$have_konqsidebar = xyes])
 
 #CPPFLAGS="$amarok_save_cppflags"
 #AM_CONDITIONAL(with_libgpod, [test x$have_libgpod = xyes])
-
 AC_ARG_WITH(libgpod,
     AC_HELP_STRING([--without-libgpod],[build amaroK with iPod support from libgpod]),
     [build_libgpod=$withval],
@@ -678,7 +677,7 @@ if test "$build_libgpod" != "no"; then
         have_libgpod=no
 
         PKG_CHECK_MODULES(LIBGPOD, libgpod-1.0, have_libgpod=yes,have_libgpod=no)
-
+        AC_MSG_RESULT($have_libgpod)
         if test "x$have_libgpod" != "xno"; then
             AC_DEFINE(HAVE_LIBGPOD, 1, [have libgpod])
         fi
