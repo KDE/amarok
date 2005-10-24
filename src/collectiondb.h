@@ -295,6 +295,7 @@ class CollectionDB : public QObject, public EngineObserver
         int getPlayCount( const QString &url );
         void setSongPercentage( const QString &url , int percentage );
         void migrateFile( const QString &oldURL, const QString &newURL );
+        bool moveFile( const QString &src, const QString &dest, bool overwrtie );
 
         //artist methods
         QStringList similarArtists( const QString &artist, uint count );

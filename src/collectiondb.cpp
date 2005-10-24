@@ -30,7 +30,6 @@
 #include <kconfig.h>
 #include <kglobal.h>
 #include <kinputdialog.h>         //setupCoverFetcher()
-#include <kio/job.h>
 #include <klineedit.h>            //setupCoverFetcher()
 #include <klocale.h>
 #include <kmdcodec.h>
@@ -1452,6 +1451,50 @@ CollectionDB::migrateFile( const QString &oldURL, const QString &newURL )
 
     query( QString( "DELETE FROM statistics WHERE url = '%1';" )
         .arg( escapeString( oldURL ) ) );
+}
+
+bool
+CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite )
+{
+    if ( isFileInCollection( src ) )
+    {
+        if(src == dest){
+            debug() << "Source and destination URLs are the same, aborting."  << endl;
+            return false;
+        }
+        else
+        {
+            // Escape URL.
+            KURL srcURL = KURL::fromPathOrURL( src );
+            KURL dstURL = KURL::fromPathOrURL( dest );
+
+            // Clean it.
+            srcURL.cleanPath();
+            dstURL.cleanPath();
+
+            // Make sure it is valid.
+            if(!srcURL.isValid() || !dstURL.isValid())
+                debug() << "Invalid URL "  << endl;
+
+                // Get just the directory.
+                KURL dir = dstURL;
+                dir.setFileName(QString::null);
+
+            // Create the directory.
+            if(!KStandardDirs::exists(dir.path()))
+                if(!KStandardDirs::makeDir(dir.path())) {
+                    debug() << "Unable to create directory " << dir.path() << endl;
+                }
+
+            // Move the file and update DB
+            if ( KIO::NetAccess::file_move( srcURL, dstURL, -1, overwrite ) );{
+                migrateFile( src, dest );
+                return true;
+            }
+        }
+    }
+    else
+        return false;
 }
 
 void

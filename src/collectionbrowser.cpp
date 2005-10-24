@@ -31,6 +31,7 @@
 #include <qdragobject.h>
 #include <qlayout.h>        //infobox
 #include <qpainter.h>
+#include <qpixmap.h>
 #include <qptrlist.h>
 #include <qpushbutton.h>
 #include <qsimplerichtext.h>
@@ -44,6 +45,7 @@
 #include <kglobal.h>
 #include <kiconloader.h>    //renderView()
 #include <klocale.h>
+#include <kmessagebox.h>
 #include <kpopupmenu.h>
 #include <ktoolbarbutton.h> //ctor
 #include <kurldrag.h>       //dragObject()
@@ -1150,10 +1152,10 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 
         #ifdef AMAZON_SUPPORT
         enum Actions { APPEND, QUEUE, MAKE, SAVE, MEDIA_DEVICE, BURN_ARTIST, BURN_ALBUM, BURN_CD, COVER, INFO,
-                       COMPILATION_SET, COMPILATION_UNSET  };
+                       COMPILATION_SET, COMPILATION_UNSET, ORGANIZE, DELETE, FILE_MENU  };
         #else
         enum Actions { APPEND, QUEUE, MAKE, SAVE, MEDIA_DEVICE, BURN_ARTIST, BURN_ALBUM, BURN_CD, INFO,
-                       COMPILATION_SET, COMPILATION_UNSET  };
+                       COMPILATION_SET, COMPILATION_UNSET, ORGANIZE, DELETE, FILE_MENU  };
         #endif
         KURL::List selection = listSelected();
         menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), MAKE );
@@ -1184,6 +1186,15 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
             menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn to CD"), BURN_CD );
             menu.setItemEnabled( BURN_CD, K3bExporter::isAvailable() );
         }
+
+        menu.insertSeparator();
+
+        KPopupMenu fileMenu;
+        fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18n("Organize File...", "Organize %n Files..." , selection.count() )
+                , ORGANIZE );
+        fileMenu.insertItem( SmallIconSet( "editdelete" ), i18n("Delete File...", "Delete %n Files..." , selection.count() )
+                , DELETE );
+        menu.insertItem( SmallIconSet( "folder" ), i18n("Manage Files"), &fileMenu, FILE_MENU );
 
         menu.insertSeparator();
 
@@ -1238,6 +1249,12 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                 break;
             case COMPILATION_UNSET:
                 CollectionDB::instance()->setCompilation( item->text(0), false );
+                break;
+            case ORGANIZE:
+                organizeFiles();
+                break;
+            case DELETE:
+                deleteSelectedFiles();
                 break;
         }
     }
@@ -1342,6 +1359,151 @@ CollectionView::showTrackInfo() //SLOT
      }
 }
 
+void
+CollectionView::deleteSelectedFiles() //SLOT
+{
+
+     KURL::List urls = listSelected();
+
+    const int count  = urls.count();
+    QString text = i18n( "<p>You have selected one file to be <b>irreversibly</b> deleted.",
+                     "<p>You have selected %n files to be <b>irreversibly</b> deleted.", count );
+
+    int button = KMessageBox::warningContinueCancel( this,
+                                                     text,
+                                                     QString::null,
+                                                     KStdGuiItem::del() );
+
+    if ( button == KMessageBox::Continue )
+    {
+        // TODO We need to check which files have been deleted successfully
+        KIO::DeleteJob* job = KIO::del( urls );
+
+        job->setAutoErrorHandlingEnabled( false );
+
+        amaroK::StatusBar::instance()->newProgressOperation( job )
+                .setDescription( i18n("Deleting files") );
+
+        // we must handle delete errors somehow
+        CollectionDB::instance()->removeSongs( urls );
+        QTimer::singleShot( 0, this, SLOT( renderView() ) );
+    }
+}
+
+void
+CollectionView::organizeFiles()  //SLOT
+{
+    QStringList folders;
+    folders = AmarokConfig::collectionFolders();
+
+    KDialogBase dialog( m_parent, 0, false );
+    kapp->setTopWidget( &dialog );
+    dialog.setCaption( kapp->makeStdCaption( i18n("Organize Collection Files") ) );
+    dialog.showButtonApply( false );
+    QVBox *box = dialog.makeVBoxMainWidget();
+
+    QLabel *choice = new QLabel( box );
+    choice->setText( i18n( "Choose collection folder:" ) );
+    QComboBox *dirs = new QComboBox( false, box );
+    dirs->setEditable( false );
+    dirs->insertStringList( folders, 0 );
+
+    QCheckBox *overwrite = new QCheckBox( box );
+    overwrite->setText( i18n( "Overwrite existing files" ) );
+
+    QCheckBox *extended = new QCheckBox( box );
+    extended->setText( i18n( "Group artists alphabetically" ) );
+
+    QCheckBox *covers = new QCheckBox( box );
+    covers->setText( i18n( "Use cover art for folder icons" ) );
+
+    if ( dialog.exec() != QDialog::Rejected )
+    {
+        bool write = overwrite->isChecked();
+        int skipped = 0;
+        KURL src;
+        QString base = dirs->currentText() + "/";
+        QString artist;
+        QString album;
+        QString title;
+        QString dest;
+        QString type;
+
+        KURL::List urls = listSelected();
+
+        KURL::List::ConstIterator it = urls.begin();
+        for ( ; it != urls.end(); ++it ){
+                src = ( *it );
+
+                //Building destination here.
+                MetaBundle mb( src.path() );
+
+                if ( !mb.artist().isEmpty() ){
+                    artist = cleanPath( mb.artist() );
+                }
+               else
+                    artist = "Unknown";
+
+                if ( !mb.album().isEmpty() ){
+                    album = cleanPath( mb.album() );
+                }
+                else
+                    album = "Unknown";
+
+            type = mb.type();
+
+                if ( !mb.title().isEmpty() ){
+                    if ( !mb.track().isEmpty() )
+                        title = mb.track() + " - " + cleanPath( mb.title() );
+                    else
+                         title = cleanPath( mb.title() );
+                    title.replace( type, "" );
+                }
+                else
+                    title = "Unknown";
+
+            dest = base;
+
+            if ( extended->isChecked() )
+                dest += artist.upper()[ 0 ] + "/";
+            dest += artist + "/" + album + "/" + title + "." + type;
+
+            debug() << "Destination: " << dest << endl;
+
+            if ( !CollectionDB::instance()->moveFile( src.path(), dest, write ) );
+                skipped++;
+            //Use cover image for folder icon
+            if ( covers->isChecked() && !mb.artist().isEmpty() && !mb.album().isEmpty() ){
+                KURL dstURL = KURL::fromPathOrURL( dest );
+                dstURL.cleanPath();
+
+                QString path = dstURL.directory();
+                QString cover = CollectionDB::instance()->albumImage( mb.artist(), mb.album(), 1 );
+
+                if( !QFile::exists(path + "/.directory") && !cover.endsWith( "nocover.png" ) ){
+                    //QPixmap thumb;        //Not amazon nice.
+                    //if ( thumb.load( cover ) ){
+                        //thumb.save(path + "/.front.png", "PNG", -1 ); //hide files
+
+                        KSimpleConfig config(path + "/.directory");
+                        config.setGroup("Desktop Entry");
+
+                        if(!config.hasKey("Icon")) {
+                            //config.writeEntry("Icon", QString("%1/.front.png").arg( path ));
+                            config.writeEntry( "Icon", cover );
+                          config.sync();
+                        debug() << "Using this cover as icon for: " << path << endl;
+                        debug() << cover << endl;
+                       }
+                    //}         //Not amazon nice.
+                }
+            }
+        }
+        QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
+        if ( skipped > 0 )
+            debug() << "Some files skipped!" << endl;  //TODO Status bar message.
+    }
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // private
@@ -1729,6 +1891,7 @@ CollectionView::listSelected()
     return list;
 }
 
+
 void
 CollectionView::playlistFromURLs( const KURL::List &urls )
 {
@@ -1788,7 +1951,6 @@ CollectionView::iconForCategory( const int cat ) const
 
     return KGlobal::iconLoader()->loadIcon( icon, KIcon::Toolbar, KIcon::SizeSmall );
 }
-
 
 QString
 CollectionView::captionForCategory( const int cat ) const

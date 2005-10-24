@@ -658,6 +658,11 @@ namespace amaroK
         return final;
     }
 
+    bool DcopCollectionHandler::moveFile( const QString &oldURL, const QString &newURL, bool overwrite )
+    {
+        return CollectionDB::instance()->moveFile( oldURL, newURL, overwrite );
+    }
+
     QStringList DcopCollectionHandler::query( const QString& sql )
     {
         return CollectionDB::instance()->query( sql );

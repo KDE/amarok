@@ -118,6 +118,9 @@ class CollectionView : public KListView
         static CollectionView* instance() { return m_instance; }
         void setFilter( const QString &filter ) { m_filter = filter; }
         QString filter() { return m_filter; }
+        QString cleanPath( QString string ) {
+            return string.replace( "/", "-" ).replace( ".", "" ).replace( "*", "" ).simplifyWhiteSpace();
+        }
         CollectionItem* currentItem() { return static_cast<CollectionItem*>( KListView::currentItem() ); }
 
         int trackDepth() { return m_trackDepth; }
@@ -150,6 +153,8 @@ class CollectionView : public KListView
         void fetchCover();
         /** Shows dialog with information on selected track */
         void showTrackInfo();
+        void deleteSelectedFiles();
+        void organizeFiles();
 
     private:
         void setViewMode( int mode, bool rerender = true );
@@ -157,7 +162,6 @@ class CollectionView : public KListView
         KURL::List listSelected();
 
         void playlistFromURLs( const KURL::List &urls );
-
         QPixmap iconForCategory( const int cat ) const;
         QString captionForCategory( const int cat ) const;
 
