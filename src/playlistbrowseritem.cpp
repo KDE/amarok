@@ -415,12 +415,22 @@ void PlaylistEntry::customEvent( QCustomEvent *e )
                m_lastTrack = new PlaylistTrackItem( this, m_lastTrack, info );
         }
 
+	//Current behavior when tracks are dropped onto the Playlists folder is to create a new playlist
+	//containing those tracks, but each track appears twice in the newly-created playlist (but not in the
+	//file!). I believe this to be caused by load() getting called by the constructor above (which zeroes out
+	//the playlist first), and then this routine getting called by events. So this code shouldn't really be 
+	//necessary and commenting it out fixes the double-addition behavior.  I leave it here for the moment, 
+	//though, in case I introduce a really lame bug by doing this :-)  This comment will be removed in due
+	//time once I know things are okay.
+	
         //the tracks dropped on the playlist while it wasn't loaded are added to the track list
         if( tmp_droppedTracks.count() ) {
+        /*
             for ( TrackItemInfo *info = tmp_droppedTracks.first(); info; info = tmp_droppedTracks.next() ) {
                 m_trackList.append( info );
                 m_length += info->length();
             }
+	*/
             tmp_droppedTracks.clear();
         }
 
