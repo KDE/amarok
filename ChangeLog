@@ -2,10 +2,16 @@ amaroK ChangeLog
 ================
 (C) 2002-2005 the amaroK authors.
 
+
 VERSION 1.4:
   FEATURES:
     * Option to crossfade only on manual track changes. Useful for
       listening to consecutive tracks on a single album.
+
+  CHANGES:
+
+  BUGFIXES:
+
 
 VERSION 1.3.4:
   FEATURES:
@@ -54,7 +60,7 @@ VERSION 1.3.4:
       annoying error messages. (BR 114498)
     * Podcast settings would not add a trailing slash to podcast save
       locations. (BR 114712)
-    * Workaround for stability issues with HyperThreading on Linux. 
+    * Workaround for stability issues with HyperThreading on Linux.
       Added a configure check to deal with buggy GLIBC's. (BR 99199)
     * xine-engine: Equalizer became inactive on trackchange when crossfading
       was enabled. (BR 114492)
