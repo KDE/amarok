@@ -110,6 +110,7 @@ VERSION 1.3.4:
     * If an engine does not support crossfading, "No crossfading" is now
       selected in Playback options.
 
+
 VERSION 1.3.3:
   FEATURES:
     * New DCOP call "contextbrowser: showHome".
