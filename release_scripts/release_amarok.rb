@@ -9,11 +9,11 @@
 
 branch = ""
 tag = ""
-
+useStableBranch=false
 unless $*.empty?()
     case $*[0]
         when "--branch"
-            branch = `kdialog --inputbox "Enter branch name: "`.chomp()
+            useStableBranch=true
         when "--tag"
             tag = `kdialog --inputbox "Enter tag name: "`.chomp()
         else
@@ -41,17 +41,20 @@ ENV["UNSERMAKE"] = "no"
 
 Dir.mkdir( folder )
 Dir.chdir( folder )
+branch="trunk"
 
-
-if not branch.empty?()
-    `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/branches/amarok/#{branch}`
+if useStableBranch
+    branch="branches/stable/"
+    `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/#{branch}/extragear/multimedia/`
+    Dir.chdir( "multimedia" )
 elsif not tag.empty?()
     `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/tags/amarok/#{tag}`
+    Dir.chdir( tag )
 else
     `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/trunk/extragear/multimedia`
+     Dir.chdir( "multimedia" )
 end
 
-Dir.chdir( "multimedia" )
 `svn up amarok`
 `svn up -N doc`
 `svn up doc/amarok`
@@ -63,7 +66,7 @@ if do_l10n == "yes"
     puts "**** l10n ****"
     puts "\n"
 
-    i18nlangs = `svn cat #{protocol}://#{user}@svn.kde.org/home/kde/trunk/l10n/subdirs`
+    i18nlangs = `svn cat #{protocol}://#{user}@svn.kde.org/home/kde/#{branch}/l10n/subdirs`
     Dir.mkdir( "l10n" )
     Dir.chdir( "l10n" )
 
@@ -73,7 +76,7 @@ if do_l10n == "yes"
         `rm -Rf ../doc/#{lang}`
         `rm -rf amarok`
         docdirname = "l10n/#{lang}/docs/extragear-multimedia/amarok"
-        `svn co -q #{protocol}://#{user}@svn.kde.org/home/kde/trunk/#{docdirname} > /dev/null 2>&1`
+        `svn co -q #{protocol}://#{user}@svn.kde.org/home/kde/#{branch}/#{docdirname} > /dev/null 2>&1`
         next unless FileTest.exists?( "amarok" )
         print "Copying #{lang}'s #{name} documentation over..  "
         `cp -R amarok/ ../doc/#{lang}`
@@ -99,7 +102,7 @@ if do_l10n == "yes"
     for lang in i18nlangs
         lang.chomp!()
         pofilename = "l10n/#{lang}/messages/extragear-multimedia/amarok.po"
-        `svn cat #{protocol}://#{user}@svn.kde.org/home/kde/trunk/#{pofilename} 2> /dev/null | tee l10n/amarok.po`
+        `svn cat #{protocol}://#{user}@svn.kde.org/home/kde/#{branch}/#{pofilename} 2> /dev/null | tee l10n/amarok.po`
         next if FileTest.size( "l10n/amarok.po" ) == 0
 
         dest = "po/#{lang}"
