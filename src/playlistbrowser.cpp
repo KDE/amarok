@@ -168,7 +168,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
         m_smartCategory->setOpen( true );
     }
     m_dynamicCategory = loadDynamics();
-    m_streamsCategory  = loadStreams();
+    m_streamsCategory = loadStreams();
     loadCoolStreams();
 
     // must be loaded after streams
@@ -744,7 +744,7 @@ PlaylistCategory* PlaylistBrowser::loadDynamics()
 
     PlaylistCategory *after = m_smartCategory;
     if( CollectionDB::instance()->isEmpty() || !m_smartCategory ) // incase of no collection
-        after = m_streamsCategory;
+        after = m_playlistCategory;
 
     if( !file.open( IO_ReadOnly ) || !d.setContent( stream.read() ) )
     { /*Couldn't open the file or it had invalid content, so let's create some defaults*/
