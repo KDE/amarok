@@ -5,8 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.4:
   FEATURES:
-    * Option to crossfade only on manual track changes. Useful for
-      listening to consecutive tracks on a single album.
+    * Option to crossfade only on manual track changes. Useful for listening
+      to consecutive tracks on a single album.
 
   CHANGES:
 
