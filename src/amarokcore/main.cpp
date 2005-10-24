@@ -35,10 +35,16 @@ KAboutData aboutData( "amarok",
 
 int main( int argc, char *argv[] )
 {
+    aboutData.addAuthor( "Alexandre '" I18N_NOOP("Ain't afraid of no bugs") "' Oliveira",
+            I18N_NOOP( "Developer (Untouchable)" ), "aleprj@gmail.co" );
     aboutData.addAuthor( "Christian '" I18N_NOOP("Babe-Magnet") "' Muehlhaeuser",
             I18N_NOOP( "Stud (muesli)" ), "chris@chris.de", "http://www.chris.de" );
     aboutData.addAuthor( "Frederik 'Ich bin kein Deustcher!' Holljen",
             I18N_NOOP( "733t code, OSD improvement, patches (Larson)" ), "fh@ez.no" );
+    aboutData.addAuthor( "G�bor '" I18N_NOOP("Opera owns your mom") "' Lehel",
+            I18N_NOOP( "Developer (illissius)" ), "illissius@gmail.com" );
+    aboutData.addAuthor( "Ian '" I18N_NOOP("The Beard") "' Monroe",
+            I18N_NOOP( "Developer (eean)" ), "ian@monroe.nu" );
     aboutData.addAuthor( "Mark '"I18N_NOOP("It's good, but it's not irssi") "' Kretschmann",
             I18N_NOOP( "Project founder (markey)" ), "markey@web.de" );
     aboutData.addAuthor( "Max '" I18N_NOOP("Turtle-Power'") "Howell",
@@ -57,7 +63,6 @@ int main( int argc, char *argv[] )
 
     aboutData.addCredit( "Adam Pigg", I18N_NOOP( "Analyzers, patches" ), "adam@piggz.fsnet.co.uk" );
     aboutData.addCredit( "Adeodato Simó", I18N_NOOP( "Patches" ), "asp16@alu.ua.es" );
-    aboutData.addCredit( "Alexandre Oliveira", I18N_NOOP( "Improvements, Bugfixes" ), "aleprj@gmail.com" );
     aboutData.addCredit( "Andreas Mair", I18N_NOOP( "MySQL support" ), "am_ml@linogate.com" );
     aboutData.addCredit( "Andrew de Quincey", I18N_NOOP( "Postgresql support" ), "adq_dvb@lidskialf.net" );
     aboutData.addCredit( "Dan Leinir Turthra Jensen", I18N_NOOP( "First-run wizard, usability" ), "admin@REMOVEleinir.dk" );
@@ -66,7 +71,6 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Gérard Dürrmeyer", I18N_NOOP( "icons and image work" ), "gerard@randomtree.com" );
     aboutData.addCredit( "Greg Meyer", I18N_NOOP( "Fabulous help with our pre 1.2 bug-avalanche" ), "greg@gkmweb.com" );
     aboutData.addCredit( "Harald Sitter", I18N_NOOP( "handbook enhancements, translations, bug fixes, screenshots (apachelogger)" ), "harald.sitter@kdemail.net" );
-    aboutData.addCredit( "Ian Monroe", I18N_NOOP( "Patches, Ruby script template (eean)" ), "ian@monroe.nu" );
     aboutData.addCredit( "Jarkko Lehti", I18N_NOOP( "Tester, IRC channel operator, whipping" ), "grue@iki.fi" );
     aboutData.addCredit( "Kenneth Wesley Wimer II", I18N_NOOP( "Icons" ), "kwwii@bootsplash.org" );
     aboutData.addCredit( "Kenny Lemieux", I18N_NOOP( "amaroK webmaster" ), "swaft@pwsp.net" );
