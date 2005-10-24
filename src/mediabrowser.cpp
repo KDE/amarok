@@ -52,11 +52,7 @@ MediaDevice *MediaDevice::s_instance = 0;
 
 bool MediaBrowser::isAvailable() //static
 {
-    #ifdef HAVE_LIBGPOD
-        return true;
-    #else 
-        return false;
-    #endif
+    return true;
 }
 
 
