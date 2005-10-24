@@ -364,6 +364,14 @@ RandomAction::RandomAction( KActionCollection *ac ) :
     setIcon( "random" );
 }
 
+void
+RandomAction::setChecked( bool b )
+{
+    if( b )
+        static_cast<KToggleAction*>( actionCollection()->action( "dynamic_mode" ) )->setChecked( false );
+    ToggleAction::setChecked( b );
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // RepeatTrackAction
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -392,6 +400,14 @@ DynamicAction::DynamicAction( KActionCollection *ac ) :
 {
     KToggleAction::setChecked( AmarokConfig::dynamicMode() );
     setIcon( "dynamic" );
+}
+
+void
+DynamicAction::setChecked( bool b )
+{
+    if( b )
+        static_cast<KToggleAction*>( actionCollection()->action( "random_mode" ) )->setChecked( false );
+    ToggleAction::setChecked( b );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

@@ -134,6 +134,7 @@ namespace amaroK
     {
         public:
             RandomAction( KActionCollection *ac );
+            virtual void setChecked( bool b );
     };
 
 
@@ -155,6 +156,7 @@ namespace amaroK
     {
         public:
             DynamicAction( KActionCollection *ac );
+            virtual void setChecked( bool b );
     };
 
     class BurnMenu : public KPopupMenu

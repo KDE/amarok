@@ -10,7 +10,10 @@ VERSION 1.4:
       to consecutive tracks on a single album.
 
   CHANGES:
-    * The menu from the queue icon in the statusbar now shows the total length of the queued tracks.
+    * When turning either random or dynamic mode on, turn the other off,
+      instead of completely disabling random mode when dynamic is on.
+    * The menu from the queue icon in the statusbar now shows the total
+      length of the queued tracks.
 
   BUGFIXES:
 

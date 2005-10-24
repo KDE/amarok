@@ -99,7 +99,6 @@ Party::Party( QWidget *parent, const char *name )
     {
 //         Although random mode should be off, we uncheck it, just in case (eg amarokrc tinkering)
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( false );
-        amaroK::actionCollection()->action( "random_mode" )->setEnabled( false );
     }
     else
     {
@@ -204,7 +203,6 @@ Party::applySettings() //SLOT
     AmarokConfig::setDynamicAppendCount( appendCount() );
 
 //     amaroK::actionCollection()->action( "prev" )->setEnabled( !AmarokConfig::dynamicMode() );
-    amaroK::actionCollection()->action( "random_mode" )->setEnabled( !AmarokConfig::dynamicMode() );
     amaroK::actionCollection()->action( "playlist_shuffle" )->setEnabled( !AmarokConfig::dynamicMode() );
 }
 
@@ -246,8 +244,6 @@ Party::setDynamicMode( bool enable, bool showDialog ) //SLOT
         }
 
         // uncheck before disabling
-        static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( false );
-        amaroK::actionCollection()->action( "random_mode" )->setEnabled( false );
         amaroK::actionCollection()->action( "playlist_shuffle" )->setEnabled( false );
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "dynamic_mode" ))->setChecked( true );
     }
@@ -256,9 +252,6 @@ Party::setDynamicMode( bool enable, bool showDialog ) //SLOT
         Playlist::instance()->alterHistoryItems( true, true ); //enable all items
 
         // Random mode was being enabled without notification on leaving dynamic mode.  Remember to re-enable first!
-        amaroK::actionCollection()->action( "random_mode" )->setEnabled( true );
-        static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( false );
-        amaroK::actionCollection()->action( "playlist_shuffle" )->setEnabled( true );
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "dynamic_mode" ))->setChecked( false );
     }
     m_repopulate->setEnabled( enable );
