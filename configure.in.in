@@ -624,6 +624,7 @@ fi
 
 AC_MSG_CHECKING([if sched_setaffinity should be enabled])
 
+AC_LANG_CPLUSPLUS
 AC_TRY_COMPILE([
     #include <sched.h>
 ],
