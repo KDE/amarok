@@ -5,7 +5,6 @@
 #include <fileref.h>
 #include "mp4/taglib_mp4filetyperesolver.h"
 #include "wma/taglib_wmafiletyperesolver.h"
-#include "audible/taglib_audcomfiletyperesolver.h"
 
 void registerTaglibPlugins()
 {
