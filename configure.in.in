@@ -420,7 +420,7 @@ if test "$enable_mysql" = "yes"; then
     if test x$MYSQL_CONFIG = xyes; then
         AC_DEFINE(USE_MYSQL, 1, [MySql database support enabled])
 
-        mysql_includes=`mysql_config --include`
+        mysql_includes=`mysql_config --cflags`
         mysql_libs=`mysql_config --libs`
     else
         amarok_warning_mysql_notfound=yes
@@ -651,7 +651,33 @@ AM_CONDITIONAL(with_konqsidebar, [test x$have_konqsidebar = xyes])
 # END KDEBASE CHECK
 ###############################################################################
 
+###############################################################################
+# BEGIN MP4V2 CHECK
+###############################################################################
+AC_ARG_WITH(mp4v2,
+    AC_HELP_STRING([--with-mp4v2],[build amaroK with MP4 tag support from mp4v2/faad2]),
+    [build_mp4v2=$withval],
+    [build_mp4v2=no]
+)
 
+AC_ARG_WITH(mp4v2-dir,
+    AC_HELP_STRING([--with-mp4v2-dir],[path to mp4v2  [default=/usr]]),
+    [mp4v2_dir="$withval"],
+    [mp4v2_dir=/usr]
+)
+
+if test "$build_mp4v2" != "no"; then
+    MP4V2_INCLUDES="-I$mp4v2_dir/include"
+    MP4V2_LIBS="-L$mp4v2_dir/lib -lmp4v2"
+    AC_DEFINE(HAVE_MP4V2, 1, [have mp4v2])
+fi
+
+AC_SUBST(MP4V2_INCLUDES)
+AC_SUBST(MP4V2_LIBS)
+
+###############################################################################
+# END MP4V2 CHECK
+###############################################################################
 
 ###############################################################################
 # BEGIN DO_NOT_COMPILE CHECK
@@ -667,3 +693,4 @@ fi
 ###############################################################################
 # END DO_NOT_COMPILE CHECK
 ###############################################################################
+

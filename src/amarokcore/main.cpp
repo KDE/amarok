@@ -20,6 +20,8 @@
 #include "crashhandler.h"
 #include <kaboutdata.h>
 
+#include "metadata/tplugins.h"
+
 //#define AMAROK_USE_DRKONQI
 
 
@@ -90,6 +92,8 @@ int main( int argc, char *argv[] )
     #ifndef AMAROK_USE_DRKONQI
     KCrash::setCrashHandler( amaroK::Crash::crashHandler );
     #endif
+
+    registerTaglibPlugins();
 
     return app.exec();
 }
