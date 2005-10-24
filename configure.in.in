@@ -651,6 +651,48 @@ AM_CONDITIONAL(with_konqsidebar, [test x$have_konqsidebar = xyes])
 # END KDEBASE CHECK
 ###############################################################################
 
+
+###############################################################################
+# BEGIN LIBGPOD CHECK
+###############################################################################
+### mediabrowser.cpp can use libgpod if available
+
+
+#amarok_save_cppflags="$CPPFLAGS"
+#CPPFLAGS="$CPPFLAGS $CFLAGS_LIBGPOD"
+#PKG_CHECK_MODULES(LIBGPOD, glib-2.0)
+#PKG_CHECK_MODULES(LIBGPOD, libgpod-1.0)
+
+#CPPFLAGS="$amarok_save_cppflags"
+#AM_CONDITIONAL(with_libgpod, [test x$have_libgpod = xyes])
+
+AC_ARG_WITH(libgpod,
+    AC_HELP_STRING([--without-libgpod],[build amaroK with iPod support from libgpod]),
+    [build_libgpod=$withval],
+    [build_libgpod=yes]
+)
+
+if test "$build_libgpod" != "no"; then
+    if test "$PKGCONFIGFOUND" = "yes" ; then
+        # check for libgpod
+        have_libgpod=no
+
+        PKG_CHECK_MODULES(LIBGPOD, libgpod-1.0, have_libgpod=yes,have_libgpod=no)
+
+        if test "x$have_libgpod" != "xno"; then
+            AC_DEFINE(HAVE_LIBGPOD, 1, [have libgpod])
+        fi
+    fi
+fi
+
+AC_SUBST(LIBGPOD_INCLUDES)
+AC_SUBST(LIBGPOD_LIBS)
+
+
+###############################################################################
+# END LIBGPOD CHECK
+###############################################################################
+
 ###############################################################################
 # BEGIN MP4V2 CHECK
 ###############################################################################

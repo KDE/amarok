@@ -2200,7 +2200,12 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
         if( MediaDevice::instance()->isConnected() )
         {
-            menu.insertItem( SmallIconSet( "usbpendrive_unmount" ), i18n( "Add to Media Device &Transfer Queue" ), MEDIA_DEVICE );
+            if( item->isSelected() )
+                menu.insertItem( SmallIconSet( "usbpendrive_unmount" ),
+                        i18n( "Add Selection to Media Device &Transfer Queue" ), MEDIA_DEVICE );
+            else
+                menu.insertItem( SmallIconSet( "usbpendrive_unmount" ),
+                        i18n( "Add to Media Device &Transfer Queue" ), MEDIA_DEVICE );
             menu.setItemEnabled( MEDIA_DEVICE, item->hasDownloaded() );
         }
 
@@ -2226,9 +2231,41 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 break;
 
             case MEDIA_DEVICE:
-                MediaDevice::instance()->addURLs( item->localUrl() );
+                // tags on podcasts are sometimes bad, thus use other meta information if available
+                if( item->isSelected() )
+                {
+                    for(QListViewItemIterator it(m_listview, QListViewItemIterator::Selected);
+                            *it;
+                            ++it)
+                    {
+                        if(isPodcastItem( *it ) )
+                        {
+                            PodcastItem *podcast = static_cast<PodcastItem*>(*it);
+                            if(podcast->hasDownloaded())
+                            {
+                                MetaBundle *bundle = new MetaBundle( item->localUrl() );
+                                PodcastChannel *channel = static_cast<PodcastChannel*>(podcast->QListViewItem::parent());
+                                if(!channel->title().isEmpty())
+                                    bundle->setAlbum(channel->title());
+                                if(!podcast->title().isEmpty())
+                                    bundle->setTitle(podcast->title());
+                                MediaDevice::instance()->addURLs( podcast->localUrl(), bundle );
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    MetaBundle *bundle = new MetaBundle( item->localUrl() );
+                    PodcastChannel *channel = static_cast<PodcastChannel*>(item->QListViewItem::parent());
+                    if(!channel->title().isEmpty())
+                        bundle->setAlbum(channel->title());
+                    if(!item->title().isEmpty())
+                        bundle->setTitle(item->title());
+                    MediaDevice::instance()->addURLs( item->localUrl(), bundle);
+                }
                 break;
-       }
+        }
         #undef item
     }
     else if( isCategory( item ) ) {

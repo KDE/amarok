@@ -509,6 +509,10 @@
 </group>
 
 <group name="MediaDevice">
+    <entry key="MountPoint" type="String">
+        <label>MountPoint</label>
+        <whatsthis>The mount point used for the media device connection.</whatsthis>
+    </entry>
     <entry key="MountCommand" type="String">
         <label>MountCommand</label>
         <whatsthis>The mount command used for the media device connection.</whatsthis>

@@ -18,12 +18,12 @@ SUBDIRS = \
     data \
     plugin \
     engine \
-    ipod \
     images \
     loader \
     scripts \
     themes \
     vis \
+    metadata \
     $(KONQSIDEBAR_SUBDIR) \
     statusbar
 
@@ -40,6 +40,7 @@ INCLUDES = \
     $(sqlite_includes) \
     $(mysql_includes) \
     $(postgresql_includes) \
+    $(LIBGPOD_CFLAGS) \
     $(all_includes)
 
 amarokapp_SOURCES = \
@@ -78,6 +79,7 @@ amarokapp_SOURCES = \
     kbookmarkhandler.cpp \
     ktrm.cpp \
     mediabrowser.cpp \
+    gpodmediadevice.cpp \
     metabundle.cpp \
     multitabbar.cpp \
     osd.cpp \
@@ -117,11 +119,11 @@ amarokapp_LDADD = \
     $(top_builddir)/amarok/src/analyzers/libanalyzers.la \
     $(top_builddir)/amarok/src/engine/libengine.la \
     $(top_builddir)/amarok/src/plugin/libplugin.la \
-    $(top_builddir)/amarok/src/ipod/libipod.la \
-    $(top_builddir)/amarok/src/ipod/itunesdb/libitunesdb.la \
     $(top_builddir)/amarok/src/statusbar/libstatusbar.la \
+    $(top_builddir)/amarok/src/metadata/libmetadata.la \
     $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KHTML) $(LIB_KNEWSTUFF) \
     $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) $(LIB_TUNEPIMP) \
+    $(LIBGPOD_LIBS) \
     $(mysql_libs) \
     $(postgresql_libs)
 

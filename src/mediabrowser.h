@@ -4,8 +4,6 @@
 #ifndef AMAROK_MEDIABROWSER_H
 #define AMAROK_MEDIABROWSER_H
 
-#include "ipod/ipod.h"
-
 #include <qhbox.h>
 #include <qvbox.h>
 
@@ -14,6 +12,7 @@
 #include <klistview.h>       //baseclass
 #include <kprocess.h>
 #include <kurl.h>            //stack allocated
+#include "debug.h"
 
 class MediaDevice;
 class MediaDeviceView;
@@ -28,15 +27,31 @@ class MediaItem : public KListViewItem
 {
     public:
         MediaItem( QListView* parent )
-            : KListViewItem( parent ) {};
+            : KListViewItem( parent ) { m_bundle=NULL; track=0; }
         MediaItem( QListViewItem* parent )
-            : KListViewItem( parent ) {};
+            : KListViewItem( parent ) { m_bundle=NULL;  track=0; }
+        MediaItem( QListView* parent, QListViewItem* after )
+            : KListViewItem( parent, after ) { m_bundle=NULL;  track=0; }
+        MediaItem( QListViewItem* parent, QListViewItem* after )
+            : KListViewItem( parent, after ) { m_bundle=NULL;  track=0; }
 
         void setUrl( const QString& url ) { m_url.setPath( url ); }
         const KURL& url() const { return m_url; }
+        int track;
+        MetaBundle *bundle() const { return m_bundle; }
 
         //attributes:
         KURL m_url;
+        MetaBundle *m_bundle;
+
+        int compare(QListViewItem *i, int col, bool ascending) const
+        {
+            MediaItem *item = (MediaItem *)i;
+            if(col==0 && item->track != track)
+                return ascending ? track-item->track : item->track-track;
+
+            return KListViewItem::compare(i, col, ascending);
+        }
 };
 
 
@@ -65,6 +80,7 @@ class MediaDeviceList : public KListView
     Q_OBJECT
     friend class MediaBrowser;
     friend class MediaDevice;
+    friend class GpodMediaDevice;
     friend class Item;
 
     public:
@@ -75,7 +91,7 @@ class MediaDeviceList : public KListView
         void slotCollapse( QListViewItem* );
         void rmbPressed( QListViewItem*, const QPoint&, int );
         void renderView( QListViewItem* parent );
-        void renderNode( QListViewItem* parent, const KURL& url );
+        void renameItem( QListViewItem* item );
 
     private:
         void startDrag();
@@ -88,6 +104,7 @@ class MediaDeviceList : public KListView
         void viewportPaintEvent( QPaintEvent* );
 
         MediaDeviceView* m_parent;
+        QString m_renameFrom;
 };
 
 
@@ -97,6 +114,8 @@ class MediaDeviceView : public QVBox
     friend class MediaBrowser;
     friend class MediaDevice;
     friend class MediaDeviceList;
+    friend class IpodMediaDevice;
+    friend class GpodMediaDevice;
 
     public:
         MediaDeviceView( MediaBrowser* parent );
@@ -127,15 +146,21 @@ class MediaDevice : public QObject
 
     public:
         MediaDevice( MediaDeviceView* parent );
-        ~MediaDevice();
+        virtual ~MediaDevice();
 
-        void        addURL( const KURL& url );
-        void        addURLs( const KURL::List urls );
-        bool        isConnected() { return m_ipod->isStillConnected(); }
-        QStringList items( QListViewItem* item );
-        KURL::List  songsByArtist( const QString& artist );
-        KURL::List  songsByArtistAlbum( const QString& artist, const QString& album );
+        void        addURL( const KURL& url, MetaBundle *bundle=NULL );
+        void        addURLs( const KURL::List urls, MetaBundle *bundle=NULL );
+        virtual bool        isConnected() = 0;
+        virtual QStringList items( QListViewItem* item ) = 0;
+        virtual KURL::List  songsByArtist( const QString& artist ) = 0;
+        virtual KURL::List  songsByArtistAlbum( const QString& artist, const QString& album ) = 0;
+        virtual bool renameArtist( const QString& oldArtist, const QString& newArtist ) = 0;
+        virtual bool renameAlbum( const QString& artist,
+                const QString& oldAlbum, const QString& newAlbum ) = 0;
+        virtual bool renameTrack( const QString& artist, const QString& album,
+                const QString& oldTrack, const QString& newTrack ) = 0;
 
+        QString     m_mntpnt;
         QString     m_mntcmd;
         QString     m_umntcmd;
 
@@ -144,31 +169,30 @@ class MediaDevice : public QObject
     public slots:
         void clearItems();
         void config();
-        void deleteFiles( const KURL::List& urls );
-        void deleteFromIPod( MediaItem* item );
-        void ipodConnection();
+        virtual void deleteFiles( const KURL::List& urls ) = 0;
+        virtual void connectDevice() = 0;
         int  mount();
         void removeSelected();
+        void setMountPoint(const QString & mntpnt);
         void setMountCommand(const QString & mnt);
         void setUmountCommand(const QString & umnt);
         int  umount();
-        void transferFiles();
+        virtual void transferFiles() = 0;
 
     private slots:
         void fileTransferred();
+    protected slots:
         void fileTransferFinished();
-        void syncIPod();
 
     private:
         int              sysCall(const QString & command);
-        void             openIPod();
-        bool             fileExists( const MetaBundle& bundle );
-        KURL::List       m_transferURLs;
-        KShellProcess   *sysProc;
+        virtual bool     fileExists( const MetaBundle& bundle ) = 0;
 
-        bool             m_wait;
+    protected:
+        KShellProcess   *sysProc;
         MediaDeviceView* m_parent;
-        IPod::IPod*      m_ipod;
+        bool             m_wait;
+
 
         static MediaDevice *s_instance;
 };
