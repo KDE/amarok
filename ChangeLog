@@ -19,9 +19,11 @@ VERSION 1.4:
     * Creating a new playlist via drag-and-drop no longer shows duplicates
       of each song until amaroK is restarted.
 
+
 VERSION 1.3.5:
   BUGFIXES:
-    * Fix potential crash at startup. (BR 114983)
+    * Fixed a build issue.
+    * Fixed potential crash at startup. (BR 114983)
 
 
 VERSION 1.3.4:
