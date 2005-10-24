@@ -2,7 +2,7 @@
 // See COPYING file for licensing information
 
 
-#include <fileref.h>
+#include <taglib/fileref.h>
 #include "mp4/taglib_mp4filetyperesolver.h"
 #include "wma/taglib_wmafiletyperesolver.h"
 
