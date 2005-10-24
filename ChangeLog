@@ -3,6 +3,11 @@ amaroK ChangeLog
 (C) 2002-2005 the amaroK authors.
 
 
+VERSION 1.3.5:
+  BUGFIXES:
+    * Fix potential crash at startup. (BR 114983)
+
+
 VERSION 1.3.4:
   FEATURES:
     * Helix-engine supports ALSA (using RealPlayer 11). (BR 113909)
@@ -50,7 +55,7 @@ VERSION 1.3.4:
       annoying error messages. (BR 114498)
     * Podcast settings would not add a trailing slash to podcast save
       locations. (BR 114712)
-    * Workaround for stability issues with HyperThreading on Linux. 
+    * Workaround for stability issues with HyperThreading on Linux.
       Added a configure check to deal with buggy GLIBC's. (BR 99199)
     * xine-engine: Equalizer became inactive on trackchange when crossfading
       was enabled. (BR 114492)
@@ -99,6 +104,7 @@ VERSION 1.3.4:
       crossfading" was selected.
     * If an engine does not support crossfading, "No crossfading" is now
       selected in Playback options.
+
 
 VERSION 1.3.3:
   FEATURES:
