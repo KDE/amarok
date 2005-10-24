@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Author: Joerg Bakker, joerg@hakker.de -->
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
+      http://www.kde.org/standards/kcfg/1.0/kcfg.xsd" >
+    <kcfgfile name="amarokrc"/>
+
+    <group name="NMM-Engine">
+        <entry key="Audio Output Plugin" type="String">
+            <label>Audio output method to use</label>
+            <whatsthis>Select the audio output plugin.</whatsthis>
+            <default>PlaybackNode</default>
+        </entry>
+        <entry key="Audio Location" type="Enum">
+            <label>Type of source for location of audio sink</label>
+            <whatsthis>Type of location of audio sink: environment variable, fixed host name or localhost only.</whatsthis>
+            <choices>
+                <choice name="AudioSinkLocalOnly"/>
+                <choice name="AudioSinkHostName"/>
+                <choice name="AudioSinkEnvVariable"/>
+            </choices>
+            <default>AudioSinkLocalOnly</default>
+        </entry>
+        <entry key="Audio Host" type="StringList">
+            <label>Hostnames of audio sink</label>
+            <whatsthis>Names of hosts where your audio sink is located if Audio Location equals AudioSinkHostName.</whatsthis>
+            <default></default>
+        </entry>
+        <entry key="Video Location" type="Enum">
+            <label>Type of source for location of video sink</label>
+            <whatsthis>Type of location of video sink: environment variable, fixed host name or localhost only.</whatsthis>
+            <choices>
+                <choice name="VideoSinkLocalOnly"/>
+                <choice name="VideoSinkHostName"/>
+                <choice name="VideoSinkEnvVariable"/>
+            </choices>
+            <default>VideoSinkLocalOnly</default>
+        </entry>
+        <entry key="Video Host" type="StringList">
+            <label>Location of video sinks</label>
+            <whatsthis>Names of hosts where your video sink is located if Video Location equals VideoSinkHostName.</whatsthis>
+            <default></default>
+        </entry>
+    </group>
+
+</kcfg>
+

@@ -51,6 +51,8 @@ public:
 
     Engine::State state() const;
 
+    amaroK::PluginConfig* configure() const;
+
 public slots:
     bool  load(const KURL&, bool stream = false);
     bool  play(unsigned int offset = 0);
@@ -61,6 +63,16 @@ public slots:
     void  setVolumeSW(uint = 0);
 
 private:
+    /**
+     * Returns the location of the audio sink or empty, if none is specified.
+     */
+    QString getAudioSinkHost();
+
+    /**
+     * Returns the location of the video sink or empty, if none is specified.
+     */
+    QString getVideoSinkHost();
+
     /**
      * This method is called when a setProgress event is received. The two parameters represent a rational number
      * (numerator and denominator) containing the amount of progress as a value between 0 and 1.

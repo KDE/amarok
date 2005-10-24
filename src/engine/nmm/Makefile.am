@@ -13,7 +13,10 @@ libamarok_nmmengine_plugin_la_LIBADD = \
     -lnmmbase -lnmmgraphmgr -lnmmiprogress -lnmmiaudiodevice -lnmmigeneral
 
 libamarok_nmmengine_plugin_la_SOURCES = \
-    nmm_engine.cpp
+    nmm_engine.cpp \
+    nmm_configdialog.cpp \
+    nmm_configdialogbase.ui \
+    nmm_kdeconfig.kcfgc
 
 libamarok_nmmengine_plugin_la_LDFLAGS = \
     -module \
@@ -28,3 +31,5 @@ KDE_CXXFLAGS = $(USE_EXCEPTIONS)
 
 kde_services_DATA = \
     amarok_nmmengine_plugin.desktop
+
+kde_kcfg_DATA = nmm_kdeconfig.kcfg

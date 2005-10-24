@@ -28,6 +28,8 @@
 
 #ifdef HAVE_NMM
 
+#include "nmm_kdeconfig.h"
+#include "nmm_configdialog.h"
 #include "debug.h"
 #include "plugin/plugin.h"
 
@@ -72,6 +74,8 @@ NmmEngine::NmmEngine()
 {
   // start the secondary thread
   activateThread();
+
+  addPluginProperty( "HasConfigure", "true" );
 }
 
 bool NmmEngine::init()
@@ -108,6 +112,15 @@ Engine::State NmmEngine::state() const
   return __state;
 }
 
+amaroK::PluginConfig* NmmEngine::configure() const
+{
+    NmmConfigDialog* dialog = new NmmConfigDialog();
+
+    // connect...
+    
+    return dialog;
+}
+
 bool NmmEngine::load(const KURL& url, bool stream)
 {
   // play only local files
@@ -119,9 +132,18 @@ bool NmmEngine::load(const KURL& url, bool stream)
 
   // make the GraphBuilder construct an appropriate graph for the given URL
   try {
+    QString host;
+
     // these nodes will be used for audio and video playback
     NodeDescription playback_nd("PlaybackNode");
+    if( NmmKDEConfig::audioOutputPlugin() == "ALSAPlaybackNode" )
+        playback_nd = NodeDescription("ALSAPlaybackNode");
+    if (!(host=getAudioSinkHost()).isEmpty())
+        playback_nd.setLocation(host.ascii());
+
     NodeDescription display_nd("XDisplayNode");
+    if (!(host=getVideoSinkHost()).isEmpty())
+        display_nd.setLocation(host.ascii());
 
     GraphBuilder2 gb;
 
@@ -137,7 +159,7 @@ bool NmmEngine::load(const KURL& url, bool stream)
       list<Response> playback_response = registry.initRequest(playback_nd);
 
       if (playback_response.empty()) {
-	throw Exception("PlaybackNode is not available");
+        throw Exception("PlaybackNode is not available");
       }
       
       __playback = registry.requestNode(playback_response.front());
@@ -336,6 +358,45 @@ void NmmEngine::setVolumeSW(uint percent)
   char s[50];
   str.getline(s, 50);
   system(s);
+}
+
+// minimum of two positive numbers a and b
+// negativ numbers are ignored (if both are negative return 0)
+int minpos(int a, int b)
+{
+    return std::max(std::min(a,b), 0);
+}
+
+QString NmmEngine::getAudioSinkHost()
+{
+    if (NmmKDEConfig::audioLocation() == NmmKDEConfig::EnumAudioLocation::AudioSinkEnvVariable)
+    {
+        QString host(getenv("SOUND"));
+        if (!host.isEmpty())
+            return host;
+
+        host = getenv("DISPLAY");
+        return host.left( minpos( host.find('.'), host.find(':') ) );
+    }
+    else if (NmmKDEConfig::audioLocation() == NmmKDEConfig::EnumAudioLocation::AudioSinkHostName)
+    {
+        return NmmKDEConfig::audioHost()[0]; // TODO: for now we return the first host in the list.
+    }
+    return QString();
+}
+
+QString NmmEngine::getVideoSinkHost()
+{
+    if( NmmKDEConfig::videoLocation() == NmmKDEConfig::EnumVideoLocation::VideoSinkEnvVariable )
+    {
+        QString host(getenv("DISPLAY"));
+        return host.left( minpos( host.find('.'), host.find(':') ) );
+    }
+    else if( NmmKDEConfig::videoLocation() == NmmKDEConfig::EnumVideoLocation::VideoSinkHostName )
+    {
+        return NmmKDEConfig::videoHost()[0]; // TODO: for now we return the first host in the list.
+    }
+    return QString();
 }
 
 
