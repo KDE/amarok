@@ -20,7 +20,7 @@
             <verstretch>0</verstretch>
         </sizepolicy>
     </property>
-    <grid>
+    <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
@@ -30,7 +30,7 @@
         <property name="spacing">
             <number>12</number>
         </property>
-        <widget class="QButtonGroup" row="0" column="0">
+        <widget class="QButtonGroup">
             <property name="name">
                 <cstring>opt_crossfade</cstring>
             </property>
@@ -152,7 +152,7 @@
                 </widget>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>layout5</cstring>
+                        <cstring>layout16</cstring>
                     </property>
                     <vbox>
                         <property name="name">
@@ -256,43 +256,63 @@
                                 </widget>
                             </hbox>
                         </widget>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>layout15</cstring>
+                            </property>
+                            <hbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <spacer>
+                                    <property name="name">
+                                        <cstring>spacer3</cstring>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Horizontal</enum>
+                                    </property>
+                                    <property name="sizeType">
+                                        <enum>Fixed</enum>
+                                    </property>
+                                    <property name="sizeHint">
+                                        <size>
+                                            <width>18</width>
+                                            <height>20</height>
+                                        </size>
+                                    </property>
+                                </spacer>
+                                <widget class="QCheckBox">
+                                    <property name="name">
+                                        <cstring>kcfg_CrossfadeManualOnly</cstring>
+                                    </property>
+                                    <property name="enabled">
+                                        <bool>false</bool>
+                                    </property>
+                                    <property name="text">
+                                        <string>Crossfade on man&amp;ual track change only</string>
+                                    </property>
+                                    <property name="toolTip" stdset="0">
+                                        <string>When enabled, crossfading will only occur when manually changing tracks.</string>
+                                    </property>
+                                </widget>
+                            </hbox>
+                        </widget>
                     </vbox>
                 </widget>
             </vbox>
         </widget>
-        <widget class="QLayoutWidget" row="1" column="0">
+        <widget class="QCheckBox">
             <property name="name">
-                <cstring>layout17</cstring>
+                <cstring>kcfg_ResumePlayback</cstring>
             </property>
-            <vbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>kcfg_ResumePlayback</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Resume playback on start</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>If checked, amaroK will&lt;br&gt;resume playback from where you left it the previous session -- just like a tape-player.</string>
-                    </property>
-                </widget>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>kcfg_CrossfadeManualOnly</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Crossfade on man&amp;ual track change only</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>When enabled, crossfading will only occur when manually changing tracks.</string>
-                    </property>
-                </widget>
-            </vbox>
+            <property name="text">
+                <string>&amp;Resume playback on start</string>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>If checked, amaroK will&lt;br&gt;resume playback from where you left it the previous session -- just like a tape-player.</string>
+            </property>
         </widget>
-        <spacer row="2" column="0">
+        <spacer>
             <property name="name">
                 <cstring>spacer2</cstring>
             </property>
@@ -309,7 +329,7 @@
                 </size>
             </property>
         </spacer>
-    </grid>
+    </vbox>
 </widget>
 <connections>
     <connection>
