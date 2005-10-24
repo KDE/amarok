@@ -181,7 +181,11 @@ class MultiTabBarButton: public QPushButton
         QSize sizeHint() const;
 
     protected:
+        #ifdef HAVE_LIBGPOD
         static const int NUM_TABS = 5; //HACK
+        #else
+        static const int NUM_TABS = 4;
+        #endif
         static const int ANIM_INTERVAL = 18;
         static const int ANIM_MAX = 20;
 
