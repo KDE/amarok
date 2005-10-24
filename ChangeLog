@@ -10,6 +10,7 @@ VERSION 1.4:
       to consecutive tracks on a single album.
 
   CHANGES:
+    * The menu from the queue icon in the statusbar now shows the total length of the queued tracks.
 
   BUGFIXES:
 

@@ -87,6 +87,7 @@ class PlaylistItem : public KListViewItem
 
         /// @return the length of the PlaylistItem in seconds
         QString seconds() const;
+        int length() const;
 
         /// @return does the file exist?
         bool exists() const { return !m_missing; }

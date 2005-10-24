@@ -160,16 +160,27 @@ void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
     if( queue.isEmpty() )
         return;
 
+    int length = 0;
+    for( QPtrListIterator<PlaylistItem> it( queue ); *it; ++it )
+    {
+        const int s = (*it)->length();
+        if( s > 0 ) length += s;
+    }
+
     QPtrList<KPopupMenu> menus;
     menus.setAutoDelete( true );
     KPopupMenu *menu = new KPopupMenu;
     menus.append( menu );
 
     const uint count = queue.count();
-    menu->insertTitle( i18n( "1 Queued Track", "%n Queued Tracks", count ) );
+    if( length )
+        menu->insertTitle( i18n( "1 Queued Track (%1)", "%n Queued Tracks (%1)", count )
+                           .arg( MetaBundle::prettyLength( length, true ) ) );
+    else
+        menu->insertTitle( i18n( "1 Queued Track", "%n Queued Tracks", count ) );
     amaroK::actionCollection()->action( "queue_manager" )->plug( menu );
     menu->insertItem( SmallIconSet( "2leftarrow" ),
-                      count > 1 ? i18n( "Dequeue All Tracks" ) : i18n( "&Dequeue Track" ), 0 );
+                      i18n( "&Dequeue Track", "&Dequeue All Tracks", count ), 0 );
     menu->insertSeparator();
 
     uint i = 1;

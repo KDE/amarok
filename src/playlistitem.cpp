@@ -199,19 +199,28 @@ QString PlaylistItem::text( int column ) const
 QString
 PlaylistItem::seconds() const
 {
-    QString length = exactText( Length );
+    return QString::number( length() );
+}
 
-    if( length == "?" ) return QString();
-    if( length == "-" ) length += '1';
-    else if( !length.isEmpty() )
+int
+PlaylistItem::length() const
+{
+    const QString text = exactText( Length );
+
+    if( text.isEmpty() || text == "?" ) return 0;
+    else if( text == "-" ) return -1;
+    else
     {
-        int m = length.section( ':', 0, 0 ).toInt();
-        int s = length.section( ':', 1, 1 ).toInt();
+        int len = 0;
+        const QStringList parts = QStringList::split( ':',  text );
+        for( int i = parts.count(), mul = 1; i; --i )
+        {
+            len += parts[i-1].toInt() * mul;
+            mul *= 60;
+        }
 
-        length.setNum( m * 60 + s );
+        return len;
     }
-
-    return length;
 }
 
 void PlaylistItem::setEnabled( bool enabled )
