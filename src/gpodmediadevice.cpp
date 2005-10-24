@@ -765,7 +765,7 @@ GpodMediaDevice::writeITunesDB()
     {
         bool ok = true;
         GError *error = NULL;
-        if (!itdb_write (m_itdb, NULL, &error))
+        if (!itdb_write (m_itdb, &error))
         {   /* an error occured */
             ok = false;
             if(error)
