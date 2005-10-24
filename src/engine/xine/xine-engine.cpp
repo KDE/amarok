@@ -408,7 +408,7 @@ XineEngine::canDecode( const KURL &url ) const
     {
         char* exts = xine_get_file_extensions( m_xine );
         list = QStringList::split( ' ', exts );
-        delete [] exts; exts = NULL;
+        free( exts ); exts = NULL;
         //images
         list.remove("png");
         list.remove("jpg");
