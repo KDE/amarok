@@ -323,8 +323,7 @@ void AmarokConfigDialog::soundSystemChanged()
     m_opt4->kcfg_Crossfade->setEnabled( hasCrossfade );
     m_opt4->kcfg_CrossfadeLength->setEnabled( hasCrossfade && crossfadeOn );
     m_opt4->crossfadeLengthLabel->setEnabled( hasCrossfade && crossfadeOn );
-    //will enable after 1.3.4 string freeze is over
-    //m_opt4->kcfg_CrossfadeManualOnly->setEnabled( hasCrossfade && crossfadeOn );
+    m_opt4->kcfg_CrossfadeManualOnly->setEnabled( hasCrossfade && crossfadeOn );
 
     if (!hasCrossfade)
     {

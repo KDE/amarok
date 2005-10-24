@@ -222,6 +222,11 @@
         <default>3000</default>
         <min>1500</min>
     </entry>
+    <entry key="Crossfade Manual Only" type="Bool">
+        <label>Only crossfade when manually changing tracks</label>
+        <whatsthis>When enabled, crossfading will only occur when manually changing tracks.</whatsthis>
+        <default>false</default>
+    </entry>
     <entry key="Sound System" type="String">
         <label>Sound system to use</label>
         <whatsthis>Select the sound system used to play media. amaroK currently support aRts, GStreamer, xine, and NMM; however, their availability depends on the configuration used at compile time.</whatsthis>

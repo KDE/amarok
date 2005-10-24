@@ -593,6 +593,7 @@ void EngineController::slotMainTimer() //SLOT
     // Crossfading
     if ( m_engine->state() == Engine::Playing &&
          m_xFadeThisTrack &&
+         !AmarokConfig::crossfadeManualOnly() &&
          Playlist::instance()->isTrackAfter() &&
          m_bundle.length()*1000 - position < (uint) AmarokConfig::crossfadeLength() )
     {

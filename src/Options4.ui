@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>337</width>
-            <height>247</height>
+            <width>407</width>
+            <height>322</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -20,7 +20,7 @@
             <verstretch>0</verstretch>
         </sizepolicy>
     </property>
-    <vbox>
+    <grid>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
@@ -30,7 +30,7 @@
         <property name="spacing">
             <number>12</number>
         </property>
-        <widget class="QButtonGroup">
+        <widget class="QButtonGroup" row="0" column="0">
             <property name="name">
                 <cstring>opt_crossfade</cstring>
             </property>
@@ -260,9 +260,9 @@
                 </widget>
             </vbox>
         </widget>
-        <widget class="QLayoutWidget">
+        <widget class="QLayoutWidget" row="1" column="0">
             <property name="name">
-                <cstring>layout9</cstring>
+                <cstring>layout17</cstring>
             </property>
             <vbox>
                 <property name="name">
@@ -279,9 +279,20 @@
                         <string>If checked, amaroK will&lt;br&gt;resume playback from where you left it the previous session -- just like a tape-player.</string>
                     </property>
                 </widget>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>kcfg_CrossfadeManualOnly</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Crossfade on man&amp;ual track change only</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>When enabled, crossfading will only occur when manually changing tracks.</string>
+                    </property>
+                </widget>
             </vbox>
         </widget>
-        <spacer>
+        <spacer row="2" column="0">
             <property name="name">
                 <cstring>spacer2</cstring>
             </property>
@@ -294,11 +305,11 @@
             <property name="sizeHint">
                 <size>
                     <width>31</width>
-                    <height>16</height>
+                    <height>90</height>
                 </size>
             </property>
         </spacer>
-    </vbox>
+    </grid>
 </widget>
 <connections>
     <connection>
@@ -323,6 +334,12 @@
         <sender>kcfg_Crossfade</sender>
         <signal>toggled(bool)</signal>
         <receiver>crossfadeLengthLabel</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg_Crossfade</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>kcfg_CrossfadeManualOnly</receiver>
         <slot>setEnabled(bool)</slot>
     </connection>
 </connections>
