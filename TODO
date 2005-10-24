@@ -56,6 +56,8 @@ SHORT-TERM (URGENT):
 
 
 MID-TERM:
+  <mp8> Album covers as icons from filebrowser.
+
   <eean>   When the player window shades, it should lose its title bar and be replaced with something more
            compactish. This would probably have to be created manually.
 
