@@ -624,6 +624,9 @@ fi
 
 AC_MSG_CHECKING([if sched_setaffinity should be enabled])
 
+AC_LANG_SAVE
+AC_LANG_CPLUSPLUS
+
 AC_TRY_COMPILE([
     #include <sched.h>
 ],
@@ -634,6 +637,8 @@ AC_TRY_COMPILE([
     amarok_glibcsched_works=yes,
     amarok_glibcsched_works=no
 )
+
+AC_LANG_RESTORE
 
 AC_MSG_RESULT($amarok_glibcsched_works)
 
