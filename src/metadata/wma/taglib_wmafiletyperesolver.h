@@ -4,8 +4,8 @@
 #ifndef TAGLIB_WMAFILETYPERESOLVER_H
 #define TAGLIB_WMAFILETYPERESOLVER_H
 
-#include <tfile.h>
-#include <fileref.h>
+#include <taglib/tfile.h>
+#include <taglib/fileref.h>
 
 
 class WMAFileTypeResolver : public TagLib::FileRef::FileTypeResolver

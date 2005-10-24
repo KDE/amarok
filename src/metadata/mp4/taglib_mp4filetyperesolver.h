@@ -4,8 +4,8 @@
 #ifndef TAGLIB_MP4FILETYPERESOLVER_H
 #define TAGLIB_MP4FILETYPERESOLVER_H
 
-#include <tfile.h>
-#include <fileref.h>
+#include <taglib/tfile.h>
+#include <taglib/fileref.h>
 
 
 class MP4FileTypeResolver : public TagLib::FileRef::FileTypeResolver
