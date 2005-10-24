@@ -616,28 +616,36 @@ fi
 # END AMAZON CHECK
 ###############################################################################
 
+
+
 ###############################################################################
 # BEGIN SCHED_SETAFFINITY BUGGY GLIBC CHECK
 ###############################################################################
+
 AC_MSG_CHECKING([if sched_setaffinity should be enabled])
+
 AC_TRY_COMPILE([
-#include <sched.h>
-],[
-        cpu_set_t mask;
-        CPU_ZERO( &mask ); 
-        CPU_SET( 0, &mask );
+    #include <sched.h>
+],
+[
+    cpu_set_t mask;
     sched_setaffinity( 0, sizeof(mask), &mask );
-], amarok_glibcsched_works=yes,
-   amarok_glibcsched_works=no
+],
+    amarok_glibcsched_works=yes,
+    amarok_glibcsched_works=no
 )
+
 AC_MSG_RESULT($amarok_glibcsched_works)
-if test "$amarok_glibcsched_works" == "yes"; then
+
+if test "$amarok_glibcsched_works" = "yes"; then
     AC_DEFINE(SCHEDAFFINITY_SUPPORT, 1, [sched_setaffinity works correctly])
 fi
 
 ###############################################################################
 # END SCHED_SETAFFINITY BUGGY GLIBC CHECK
 ###############################################################################
+
+
 
 ###############################################################################
 # BEGIN KDEBASE CHECK
