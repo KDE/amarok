@@ -125,6 +125,7 @@ class PlaylistBrowser : public QVBox
         bool deletePodcasts( QPtrList<PodcastChannel> items );
         void downloadSelectedPodcasts();
         void setGlobalPodcastSettings( PodcastChannel *item );
+        void refreshPodcasts( QListViewItem *category );
 
         PlaylistCategory* loadPlaylists();
         void loadOldPlaylists();

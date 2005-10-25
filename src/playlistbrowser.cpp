@@ -926,6 +926,19 @@ void PlaylistBrowser::scanPodcasts()
     }
 }
 
+void PlaylistBrowser::refreshPodcasts( QListViewItem *parent )
+{
+    for( QListViewItem *child = parent->firstChild();
+            child;
+            child = child->nextSibling() )
+    {
+        if( isPodcastChannel( child ) )
+            static_cast<PodcastChannel*>( child )->rescan();
+        else if( isCategory( child ) )
+            refreshPodcasts( child );
+    }
+}
+
 void PlaylistBrowser::addPodcast( QListViewItem *parent )
 {
     bool ok;
@@ -2342,12 +2355,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 break;
 
             case REFRESH:
-                tracker = item->firstChild();
-                for( ; tracker; tracker = tracker->nextSibling() )
-                {
-                    if( isPodcastChannel( tracker ) )
-                        static_cast<PodcastChannel*>( tracker )->rescan();
-                }
+                refreshPodcasts(item);
                 break;
 
             case CREATE:
