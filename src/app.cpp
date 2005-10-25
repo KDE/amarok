@@ -385,7 +385,7 @@ void App::fixHyperThreading()
 
     DEBUG_BLOCK
 
-    #ifdef __linux__ 
+    #ifdef __linux__
     debug() << "SCHEDAFFINITY_SUPPORT enabled. Testing to see if HT fix should be enabled..." << endl;
     QString line;
     uint cpuCount = 0;
@@ -404,12 +404,12 @@ void App::fixHyperThreading()
         debug() << "CPU with active HyperThreading detected. Enabling WORKAROUND.\n";
 
         // If the library is new enough try and call sched_setaffinity.
-        #if defined(__GLIBC_PREREQ) && __GLIBC_PREREQ(2,3) 
+        #if defined(__GLIBC_PREREQ) && __GLIBC_PREREQ(2,3) && defined(CPU_ZERO) && defined(CPU_SET)
         cpu_set_t mask;
         CPU_ZERO( &mask ); // Initializes all the bits in the mask to zero
         CPU_SET( 0, &mask ); // Sets only the bit corresponding to cpu
         #ifdef SCHEDAFFINITY_SUPPORT
-        if ( sched_setaffinity( 0, sizeof(mask), &mask ) == -1 ) 
+        if ( sched_setaffinity( 0, sizeof(mask), &mask ) == -1 )
         #else  //SCHEDAFFINITY_SUPPORT
         if ( sched_setaffinity( 0, &mask ) == -1 )
         #endif //SCHEDAFFINITY_SUPPORT
