@@ -85,12 +85,48 @@ END:VCARD
 BEGIN:VCARD
 CATEGORIES:packers_amarok
 CLASS:PUBLIC
+EMAIL:jtate@rpath.com
+FN:jtate@rpath.com
+N:jtate@rpath.com;;;;
+NAME:jtate@rpath.com
+ORG:rPath Linux
+UID:Y12wcubfva
+VERSION:3.0
+END:VCARD
+
+BEGIN:VCARD
+CATEGORIES:packers_amarok
+CLASS:PUBLIC
+EMAIL:lmontel@mandriva.com
+FN:lmontel@mandriva.com
+N:lmontel@mandriva.com;;;;
+NAME:lmontel@mandriva.com
+ORG:Mandriva Linux (Cooker)
+UID:avH6MAjOzR
+VERSION:3.0
+END:VCARD
+
+BEGIN:VCARD
+CATEGORIES:packers_amarok
+CLASS:PUBLIC
 EMAIL:jriddell@ubuntu.com
 FN:jriddell@ubuntu.com
 N:jriddell@ubuntu.com;;;;
 ORG:(K)Ubuntu
 REV:2005-10-23T15:44:51Z
 UID:cn2rXQIi5O
+VERSION:3.0
+END:VCARD
+
+BEGIN:VCARD
+CATEGORIES:packers_amarok
+CLASS:PUBLIC
+EMAIL:neoclust@mandriva.com
+FN:neoclust@mandriva.com
+N:neoclust@mandriva.com;;;;
+NAME:neoclust@mandriva.com
+ORG:Mandriva Linux (Cooker)
+UID:hemW9ybn6c
 VERSION:3.0
 END:VCARD
 
