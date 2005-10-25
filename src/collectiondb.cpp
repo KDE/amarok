@@ -1456,8 +1456,7 @@ CollectionDB::migrateFile( const QString &oldURL, const QString &newURL )
 bool
 CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite )
 {
-    if ( isFileInCollection( src ) )
-    {
+    if ( isFileInCollection( src ) ){
         if(src == dest){
             debug() << "Source and destination URLs are the same, aborting."  << endl;
             return false;
@@ -1487,10 +1486,12 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite 
                 }
 
             // Move the file and update DB
-            if ( KIO::NetAccess::file_move( srcURL, dstURL, -1, overwrite ) );{
+            if ( KIO::NetAccess::file_move( srcURL, dstURL, -1, overwrite ) ){
                 migrateFile( src, dest );
                 return true;
             }
+            else
+                return false;
         }
     }
     else
