@@ -1189,6 +1189,15 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 
         menu.insertSeparator();
 
+        #ifdef AMAZON_SUPPORT
+        menu.insertItem( SmallIconSet( "www" ), i18n( "&Fetch Cover Image" ), this, SLOT( fetchCover() ), 0, COVER );
+        menu.setItemEnabled(COVER, cat == CollectionBrowser::IdAlbum || cat == CollectionBrowser::IdVisYearAlbum );
+        #endif
+
+        menu.insertItem( SmallIconSet( "info" )
+            , i18n( "Edit Track &Information...",  "Edit &Information for %n Tracks...", selection.count())
+            , this, SLOT( showTrackInfo() ), 0, INFO );
+
         KPopupMenu fileMenu;
         fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18n("Organize File...", "Organize %n Files..." , selection.count() )
                 , ORGANIZE );
@@ -1196,17 +1205,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                 , DELETE );
         menu.insertItem( SmallIconSet( "folder" ), i18n("Manage Files"), &fileMenu, FILE_MENU );
 
-        menu.insertSeparator();
-
-        #ifdef AMAZON_SUPPORT
-        menu.insertItem( SmallIconSet( "www" ), i18n( "&Fetch Cover Image" ), this, SLOT( fetchCover() ), 0, COVER );
-        menu.setItemEnabled(COVER, cat == CollectionBrowser::IdAlbum || cat == CollectionBrowser::IdVisYearAlbum );
-        #endif
-        menu.insertItem( SmallIconSet( "info" )
-            , i18n( "Edit Track &Information...",  "Edit &Information for %n Tracks...", selection.count())
-            , this, SLOT( showTrackInfo() ), 0, INFO );
-
-        if ( cat == CollectionBrowser::IdAlbum )
+       if ( cat == CollectionBrowser::IdAlbum )
         {
             menu.insertSeparator();
             menu.insertItem( SmallIconSet( "ok" ), i18n( "&Mark as Compilation" ), COMPILATION_SET );
@@ -1393,8 +1392,7 @@ CollectionView::deleteSelectedFiles() //SLOT
 void
 CollectionView::organizeFiles()  //SLOT
 {
-    QStringList folders;
-    folders = AmarokConfig::collectionFolders();
+    QStringList folders = AmarokConfig::collectionFolders();
 
     KDialogBase dialog( m_parent, 0, false );
     kapp->setTopWidget( &dialog );
@@ -1465,13 +1463,14 @@ CollectionView::organizeFiles()  //SLOT
             dest = base;
 
             if ( extended->isChecked() )
-                dest += artist.upper()[ 0 ] + "/";
+                dest += artist.upper()[ 0 ] + "/";      // Group artists i.e. A/Artist/Album
             dest += artist + "/" + album + "/" + title + "." + type;
 
             debug() << "Destination: " << dest << endl;
 
-            if ( !CollectionDB::instance()->moveFile( src.path(), dest, write ) );
+            if ( !CollectionDB::instance()->moveFile( src.path(), dest, write ) )
                 skipped++;
+
             //Use cover image for folder icon
             if ( covers->isChecked() && !mb.artist().isEmpty() && !mb.album().isEmpty() ){
                 KURL dstURL = KURL::fromPathOrURL( dest );
@@ -1499,9 +1498,10 @@ CollectionView::organizeFiles()  //SLOT
                 }
             }
         }
-        QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
         if ( skipped > 0 )
-            debug() << "Some files skipped!" << endl;  //TODO Status bar message.
+            amaroK::StatusBar::instance()->longMessage( i18n(
+                        "Sorry, some files could not be organized." ) );
+        QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
     }
 }
 
