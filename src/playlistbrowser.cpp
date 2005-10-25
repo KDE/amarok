@@ -2560,9 +2560,22 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
         moveSelectedItems( item ); // D&D sucks, do it ourselves
     }
     else {
-        KURL::List list;
+        KURL::List list, decodedList;
         QMap<QString, QString> map;
-        if( KURLDrag::decode( e, list, map ) ) {
+        if( KURLDrag::decode( e, decodedList, map ) )
+        {
+            for ( KURL::List::ConstIterator it = decodedList.begin(); it != decodedList.end(); ++it )
+            {
+                QString filename = (*it).fileName();
+
+                if( filename.endsWith("m3u") || filename.endsWith("pls") )
+                    PlaylistBrowser::instance()->addPlaylist( (*it).path() );
+                else //TODO: check canDecode ?
+                    list.append(*it);
+            }
+
+            if( list.isEmpty() ) return;
+
             if( parent && isPlaylist( parent ) ) {
                 //insert the dropped tracks
                 PlaylistEntry *playlist = (PlaylistEntry *)parent;
@@ -2571,8 +2584,8 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
             else //dropped on a playlist item
             {
                 QListViewItem *parent = item;
-
                 bool isPlaylistFolder = false;
+
                 while( parent )
                 {
                     if( parent == PlaylistBrowser::instance()->m_playlistCategory )

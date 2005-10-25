@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.4:
   FEATURES:
+    * Dragging external playlists into the playlist browser will add them.
     * Collection scanner now supports WMA and MP4/AAC.
     * Option to crossfade only on manual track changes. Useful for listening
       to consecutive tracks on a single album.
