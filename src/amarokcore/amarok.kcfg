@@ -449,6 +449,10 @@
     <entry key="Collection Folders" type="StringList">
         <label>List of folders in the Collection</label>
     </entry>
+    <entry key="Current Tablespace" type="String">
+        <label>The table prefix used for the current collection</label>
+        <default>amaroK</default>
+    </entry>
 </group>
 
 <group name="MySql">

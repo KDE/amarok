@@ -7,6 +7,7 @@
 #ifndef AMAROK_COLLECTIONDB_H
 #define AMAROK_COLLECTIONDB_H
 
+#include "amarokconfig.h"
 #include "engineobserver.h"
 #include <kurl.h>
 #include <qdir.h>            //stack allocated
@@ -253,6 +254,10 @@ class CollectionDB : public QObject, public EngineObserver
         //sql helper methods
         QStringList query( const QString& statement, DbConnection *conn = NULL );
         int insert( const QString& statement, const QString& table, DbConnection *conn = NULL );
+
+	//collection management methods
+	QString getCurrentCollection(){ return AmarokConfig::currentTablespace(); }
+	void setCurrentCollection( const QString& name );
 
         //table management methods
         bool isEmpty();

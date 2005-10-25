@@ -663,12 +663,17 @@ namespace amaroK
         return CollectionDB::instance()->moveFile( oldURL, newURL, overwrite );
     }
 
+    QString DcopCollectionHandler::getCurrentCollection()
+    {
+	return CollectionDB::instance()->getCurrentCollection();
+    }
+    
     QStringList DcopCollectionHandler::query( const QString& sql )
     {
         return CollectionDB::instance()->query( sql );
     }
 
-   QStringList DcopCollectionHandler::similarArtists( int artists )
+    QStringList DcopCollectionHandler::similarArtists( int artists )
     {
         return CollectionDB::instance()->similarArtists( EngineController::instance()->bundle().artist(), artists );
     }
@@ -686,6 +691,11 @@ namespace amaroK
     void DcopCollectionHandler::scanCollectionChanges()
     {
         CollectionDB::instance()->scanMonitor();
+    }
+
+    void DcopCollectionHandler::setCurrentCollection( const QString& name )
+    {
+        CollectionDB::instance()->setCurrentCollection(name);
     }
 
 /////////////////////////////////////////////////////////////////////////////////////
