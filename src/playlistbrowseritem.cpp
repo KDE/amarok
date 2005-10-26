@@ -1718,9 +1718,20 @@ PodcastItem::PodcastItem( QListViewItem *parent, QListViewItem *after, const QDo
         m_downloaded = true;
 
     setText( 0, m_title );
-    setPixmap( 0, SmallIcon("player_playlist_2") );
+    updatePixmap();
     setDragEnabled( true );
     setRenameEnabled( 0, false );
+}
+
+void
+PodcastItem::updatePixmap()
+{
+    if( m_new )
+        setPixmap( 0, SmallIcon("favorites") );
+    else if( m_downloaded )
+        setPixmap( 0, SmallIcon( "sound" ) );
+    else
+        setPixmap( 0, SmallIcon("player_playlist_2") );
 }
 
 void
@@ -1729,6 +1740,7 @@ PodcastItem::downloadMedia()
     if( QFile::exists( m_localUrlString ) )
     {
         m_downloaded = true;
+        updatePixmap();
         return;
     }
 
@@ -1756,6 +1768,7 @@ PodcastItem::abortDownload() //SLOT
     stopAnimation();
     setText( 0, m_title );
     m_downloaded = false;
+    updatePixmap();
 }
 
 void
@@ -1775,6 +1788,7 @@ PodcastItem::downloadResult( KIO::Job* job ) //SLOT
     }
 
     m_downloaded = true;
+    updatePixmap();
 }
 
 
@@ -1824,12 +1838,8 @@ PodcastItem::setLocalUrlBase( const QString &s )
 void
 PodcastItem::setNew( bool n )
 {
-    if( n )
-        setPixmap( 0, SmallIcon("favorites") );
-    else
-        setPixmap( 0, SmallIcon("player_playlist_2") );
-
     m_new = n;
+    updatePixmap();
 }
 
 void
@@ -1861,7 +1871,7 @@ void
 PodcastItem::stopAnimation()
 {
     m_animationTimer.stop();
-    setPixmap( 0, SmallIcon("player_playlist_2") );
+    updatePixmap();
 }
 
 void

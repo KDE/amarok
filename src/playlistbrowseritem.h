@@ -258,6 +258,7 @@ class PodcastItem : public QObject, public PlaylistBrowserEntry
 
         void startAnimation();
         void stopAnimation();
+        void updatePixmap();
 
         QListViewItem *m_parent;                   //podcast channel it belongs to
         QString     m_author;
