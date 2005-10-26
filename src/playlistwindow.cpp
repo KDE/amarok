@@ -348,7 +348,8 @@ PlaylistWindow::init()
         addBrowserMacro( CollectionBrowser, "CollectionBrowser", i18n( "Collection" ), "collection" )
         addInstBrowserMacro( PlaylistBrowser, "PlaylistBrowser", i18n( "Playlists" ), "player_playlist_2" )
 
-        if( MediaBrowser::isAvailable() )
+        // disable this check for now as isAvailable() returned always true before
+        //if( MediaBrowser::isAvailable() )
             addBrowserMacro( MediaBrowser, "MediaBrowser", i18n( "Media Device" ), "usbpendrive_unmount" )
 
         addBrowserMacro( FileBrowser, "FileBrowser", i18n( "Files" ), "folder" )

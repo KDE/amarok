@@ -1168,7 +1168,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 
         menu.insertSeparator();
 
-        if( MediaDevice::instance()->isConnected() )
+        if( MediaBrowser::isAvailable() )
             menu.insertItem( SmallIconSet( "usbpendrive_unmount" ), i18n( "Add to Media Device &Transfer Queue" ), MEDIA_DEVICE );
 
         if( cat == CollectionBrowser::IdArtist )

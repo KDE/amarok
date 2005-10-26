@@ -2211,7 +2211,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
         menu.setItemEnabled( GET, !item->hasDownloaded() );
 
-        if( MediaDevice::instance()->isConnected() )
+        if( MediaBrowser::isAvailable() )
         {
             if( item->isSelected() )
                 menu.insertItem( SmallIconSet( "usbpendrive_unmount" ),

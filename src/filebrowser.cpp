@@ -342,7 +342,7 @@ FileBrowser::prepareContextMenu()
     ((KActionMenu*)m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( SavePlaylist,
         items.count() > 1 || ( items.count() == 1 && items.getFirst()->isDir() ) );
     ((KActionMenu*)m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( MediaDevice,
-        MediaDevice::instance()->isConnected() );
+        MediaBrowser::isAvailable() );
 }
 
 inline void
