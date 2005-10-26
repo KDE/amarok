@@ -69,11 +69,10 @@ email                : markey@web.de
 
 // For the HyperThreading fix
 #ifdef __linux__
-    #include <features.h>
-    #if defined(__GLIBC_PREREQ) && __GLIBC_PREREQ(2,3)
+    #if SCHEDAFFINITY_SUPPORT
         #include <errno.h>
         #include <sched.h>
-    #endif //__GLIBC_PREREQ && __GLIBC_PREREQ(2,3)
+    #endif //SCHEDAFFINITY_SUPPORT
 #endif //__linux__
 
 App::App()
@@ -386,7 +385,6 @@ void App::fixHyperThreading()
     DEBUG_BLOCK
 
     #ifdef __linux__
-    debug() << "SCHEDAFFINITY_SUPPORT enabled. Testing to see if HT fix should be enabled..." << endl;
     QString line;
     uint cpuCount = 0;
     QFile cpuinfo( "/proc/cpuinfo" );
@@ -404,24 +402,24 @@ void App::fixHyperThreading()
         debug() << "CPU with active HyperThreading detected. Enabling WORKAROUND.\n";
 
         // If the library is new enough try and call sched_setaffinity.
-        #if defined(__GLIBC_PREREQ) && __GLIBC_PREREQ(2,3) && defined(CPU_ZERO) && defined(CPU_SET)
+        #if SCHEDAFFINITY_SUPPORT 
         cpu_set_t mask;
         CPU_ZERO( &mask ); // Initializes all the bits in the mask to zero
         CPU_SET( 0, &mask ); // Sets only the bit corresponding to cpu
-        #ifdef SCHEDAFFINITY_SUPPORT
+        #ifdef SCHEDAFFINITY_3PARAMS
         if ( sched_setaffinity( 0, sizeof(mask), &mask ) == -1 )
-        #else  //SCHEDAFFINITY_SUPPORT
+        #else  //SCHEDAFFINITY_3PARAMS
         if ( sched_setaffinity( 0, &mask ) == -1 )
-        #endif //SCHEDAFFINITY_SUPPORT
+        #endif //SCHEDAFFINITY_3PARAMS
         {
             warning() << "sched_setaffinity() call failed with error code: " << errno << endl;
             QTimer::singleShot( 0, this, SLOT( showHyperThreadingWarning() ) );
             return;
         }
-        #else //defined(__GLIBC_PREREQ) && __GLIBC_PREREQ(2,3)
-             warning()<<"glibc too old (<2.3) for sched_setaffinity" << endl;
+        #else //SCHEDAFFINITY_SUPPORT
+             warning()<<"glibc failed checks for sched_setaffinity" << endl;
         QTimer::singleShot( 0, this, SLOT( showHyperThreadingWarning() ) );
-        #endif //defined(__GLIBC_PREREQ) && __GLIBC_PREREQ(2,3)
+        #endif //SCHEDAFFINITY_SUPPORT
     }
     else { debug() << "Fix not enabled" << endl; }
     #else //__linux__
