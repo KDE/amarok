@@ -82,7 +82,7 @@ Comment[zh_CN]=amaroK，开启您的音乐探秘之旅
 Comment[zh_TW]=Uncle Rodney 說："10/10, amaroK is seriously super!"
 Icon=amarok
 #don't add inode/directory to mimetypes it leads to misbehavior
-MimeType=application/x-ogg;audio/aac;audio/ac3;audio/basic;audio/midi;audio/mp4;audio/mpeg;audio/mpegurl;audio/prs.sid;audio/vnd.rn-realaudio;audio/vorbis;audio/x-adpcm;audio/x-aac;audio/x-aiff;audio/x-flac;audio/x-m4a;audio/x-matroska;audio/x-midi;audio/x-mod;audio/x-mp2;audio/x-mp3;audio/x-mpegurl;audio/x-ms-wma;audio/x-musepack;audio/x-oggflac;audio/x-pn-realaudioaudio/x-scpls;audio/x-speex;audio/x-vorbis;audio/x-wav;
+MimeType=application/x-ogg;audio/aac;audio/ac3;audio/basic;audio/midi;audio/mp4;audio/mpeg;audio/mpegurl;audio/prs.sid;audio/vnd.rn-realaudio;audio/vorbis;audio/x-adpcm;audio/x-aac;audio/x-aiff;audio/x-flac;audio/x-m4a;audio/x-matroska;audio/x-midi;audio/x-mod;audio/x-mp2;audio/x-mp3;audio/x-mpegurl;audio/x-ms-wma;audio/x-musepack;audio/x-oggflac;audio/x-pn-realaudio;audio/x-scpls;audio/x-speex;audio/x-vorbis;audio/x-wav;
 DocPath=amarok/index.html
 Terminal=false
 Categories=Qt;KDE;AudioVideo;Player;
