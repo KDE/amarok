@@ -15,26 +15,35 @@
  *                                                                         *
  ***************************************************************************/
 
+#define DEBUG_PREFIX "PlaylistItem"
+
 #include "amarok.h"
 #include "amarokconfig.h"
-#include <cmath>
-#include "debug.h"
-#include "playlist.h"
 #include "collectiondb.h"
-#include <kfilemetainfo.h>
-#include <kiconloader.h>
-#include <kstringhandler.h>
-#include <kglobal.h>
+#include "debug.h"
 #include "metabundle.h"
+#include "playlist.h"
 #include "playlistitem.h"
+
+#include <cmath>
+
+#include <qimage.h>
 #include <qpainter.h>
 #include <qpen.h>
 #include <qpixmap.h>
 #include <qrect.h>
 
-QColor PlaylistItem::glowText = Qt::white;
-QColor PlaylistItem::glowBase = Qt::white;
-bool   PlaylistItem::s_pixmapChanged = false;
+#include <kfilemetainfo.h>
+#include <kglobal.h>
+#include <kiconloader.h>
+#include <kiconeffect.h>
+#include <kstandarddirs.h>
+#include <kstringhandler.h>
+
+
+QColor  PlaylistItem::glowText = Qt::white;
+QColor  PlaylistItem::glowBase = Qt::white;
+bool    PlaylistItem::s_pixmapChanged = false;
 
 
 /// These are untranslated and used for storing/retrieving XML playlist
@@ -396,6 +405,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
     //TODO add spacing on either side of items
     //p->translate( 2, 0 ); width -= 3;
 
+    static const QImage currentTrackImg = QImage( locate( "data", "amarok/images/currenttrack_bar.png" ) );
     const bool isCurrent = this == listView()->currentTrack();
 
     if( isCurrent && !isSelected() )
@@ -436,18 +446,17 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
             // Don't try to draw if width or height is 0, as this crashes Qt
             if ( paintCache[column].map[colorKey].isNull() ) return;
 
+            paintCache[column].map[colorKey].fill( listView()->viewport()->backgroundColor() );
             QPainter paint( &paintCache[column].map[colorKey], true );
 
-            // Here we draw the shaded background
-            int h, s, v;
-            glowBase.getHsv( &h, &s, &v );
-            QColor col;
+            // Here we draw the background bar image
+//             int h, s, v;
+//             glowBase.getHsv( &h, &s, &v );
+//             QColor col;
 
-            for ( int i = 0; i < height(); i++ ) {
-                col.setHsv( h, s, static_cast<int>( sin( (float)i / ( (float)height() / 4 ) ) * 32.0 + 196 ) );
-                paint.setPen( col );
-                paint.drawLine( 0, i, width, i );
-            }
+            QImage tmpImage = currentTrackImg.smoothScale( width, height() );
+            KIconEffect::colorize( tmpImage, glowBase, 0.5 );
+            paint.drawImage( 0, 0, tmpImage );
 
             // Draw the pixmap, if present
             const int margin = listView()->itemMargin();
@@ -469,7 +478,8 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
                 minbearing = p->fontMetrics().minLeftBearing() + p->fontMetrics().minRightBearing();
             }
             paint.setFont( font );
-            paint.setPen( glowText );
+            paint.setPen( cg.highlightedText() );
+//             paint.setPen( glowText );
             const int _width = width - leftMargin - margin + minbearing - 1; // -1 seems to be necessary *shrug*
             const QString _text = KStringHandler::rPixelSqueeze( text( column ), p->fontMetrics(), _width );
             paint.drawText( leftMargin, 0, _width, height(), align, _text );
