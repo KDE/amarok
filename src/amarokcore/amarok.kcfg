@@ -201,6 +201,27 @@
         <whatsthis>If set, amaroK manually saved playlists will contain a relative path to the tracks, not absolute.</whatsthis>
         <default>false</default>
     </entry>
+    <entry key="Overwrite Files" type="Bool">
+        <label>Whether organize files will overwrite existing files.</label>
+        <whatsthis>If set, Organize files will overwrite any existing destination..</whatsthis>
+        <default>false</default>
+    </entry>
+    <entry key="Group Artists" type="Bool">
+        <label>Whether organize files will group artist starting in the same character.</label>
+        <whatsthis>If set, Organize files will group artist starting in the same character.</whatsthis>
+        <default>true</default>
+    </entry>
+    <entry key="Cover Icons" type="Bool">
+        <label>Whether organize files will use cover art as folder icons.</label>
+        <whatsthis>If set, Organize files will use cover art as folder icons.</whatsthis>
+        <default>true</default>
+    </entry>
+    <entry key="Organize Directory" type="Int">
+        <label>Index of collection folder destination for Organize files.</label>
+        <whatsthis>The ID of the collection folder destination fo Organize files.</whatsthis>
+        <default>0</default>
+    </entry>
+
 </group>
 
 <group name="Playback">

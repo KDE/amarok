@@ -1405,18 +1405,26 @@ CollectionView::organizeFiles()  //SLOT
     QComboBox *dirs = new QComboBox( false, box );
     dirs->setEditable( false );
     dirs->insertStringList( folders, 0 );
+    dirs->setCurrentItem( AmarokConfig::organizeDirectory() );
 
     QCheckBox *overwrite = new QCheckBox( box );
     overwrite->setText( i18n( "Overwrite existing files" ) );
+    overwrite->setChecked( AmarokConfig::overwriteFiles() );
 
     QCheckBox *extended = new QCheckBox( box );
     extended->setText( i18n( "Group artists alphabetically" ) );
+    extended->setChecked( AmarokConfig::groupArtists() );
 
     QCheckBox *covers = new QCheckBox( box );
     covers->setText( i18n( "Use cover art for folder icons" ) );
+    covers->setChecked( AmarokConfig::coverIcons() );
 
     if ( dialog.exec() != QDialog::Rejected )
     {
+        AmarokConfig::setOrganizeDirectory( dirs->currentItem() );
+        AmarokConfig::setOverwriteFiles( overwrite->isChecked() );
+        AmarokConfig::setGroupArtists( extended->isChecked() );
+        AmarokConfig::setCoverIcons( covers->isChecked() );
         bool write = overwrite->isChecked();
         int skipped = 0;
         KURL src;
