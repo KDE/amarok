@@ -211,6 +211,11 @@
         <whatsthis>If set, Organize files will group artist starting in the same character.</whatsthis>
         <default>true</default>
     </entry>
+    <entry key="Ignore The" type="Bool">
+        <label>Whether organize files will ignore The in artist names.</label>
+        <whatsthis>If set, Organize files will ignore The in artist names.</whatsthis>
+        <default>true</default>
+    </entry>
     <entry key="Cover Icons" type="Bool">
         <label>Whether organize files will use cover art as folder icons.</label>
         <whatsthis>If set, Organize files will use cover art as folder icons.</whatsthis>

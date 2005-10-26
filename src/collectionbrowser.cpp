@@ -1415,6 +1415,10 @@ CollectionView::organizeFiles()  //SLOT
     extended->setText( i18n( "Group artists alphabetically" ) );
     extended->setChecked( AmarokConfig::groupArtists() );
 
+    QCheckBox *ignore = new QCheckBox( box );
+    ignore->setText( i18n( "Ignore 'The' in artist names." ) );
+    ignore->setChecked( AmarokConfig::ignoreThe() );
+
     QCheckBox *covers = new QCheckBox( box );
     covers->setText( i18n( "Use cover art for folder icons" ) );
     covers->setChecked( AmarokConfig::coverIcons() );
@@ -1424,6 +1428,7 @@ CollectionView::organizeFiles()  //SLOT
         AmarokConfig::setOrganizeDirectory( dirs->currentItem() );
         AmarokConfig::setOverwriteFiles( overwrite->isChecked() );
         AmarokConfig::setGroupArtists( extended->isChecked() );
+        AmarokConfig::setIgnoreThe( ignore->isChecked() );
         AmarokConfig::setCoverIcons( covers->isChecked() );
         bool write = overwrite->isChecked();
         int skipped = 0;
@@ -1446,6 +1451,8 @@ CollectionView::organizeFiles()  //SLOT
 
                 if ( !mb.artist().isEmpty() ){
                     artist = cleanPath( mb.artist() );
+                    if ( ignore->isChecked() && artist.startsWith( "the ", false ) )
+                        manipulateThe( artist, true );
                 }
                else
                     artist = "Unknown";
