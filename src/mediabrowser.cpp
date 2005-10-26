@@ -15,6 +15,7 @@
 #include "statusbar.h"
 #include "mediabrowser.h"
 #include "gpodmediadevice.h"
+#include "amarok.h"
 
 #include <qdatetime.h>
 #include <qgroupbox.h>
@@ -52,6 +53,7 @@ MediaDevice *MediaDevice::s_instance = 0;
 
 bool MediaBrowser::isAvailable() //static
 {
+    // perhaps the user should configure if he wants to use a media device?
 #ifdef HAVE_LIBGPOD
     return true;
 #else
@@ -155,7 +157,7 @@ MediaDeviceList::renderView( QListViewItem* parent )  //SLOT
         if ( track )
         {
             item->setUrl( items[i+1] );
-            item->track = items[i+2].toInt();
+            item->m_track = items[i+2].toInt();
         }
     }
 }
@@ -430,6 +432,8 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     connect( m_configButton,   SIGNAL( clicked() ), MediaDevice::instance(), SLOT( config() ) );
     connect( m_transferList, SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
              this,   SLOT( slotShowContextMenu( QListViewItem*, const QPoint&, int ) ) );
+
+    m_device->loadTransferList( amaroK::saveLocation() + "transferlist.xml" );
 }
 
 void
@@ -459,6 +463,8 @@ MediaDeviceView::slotShowContextMenu( QListViewItem* item, const QPoint& point, 
 
 MediaDeviceView::~MediaDeviceView()
 {
+    m_device->saveTransferList( amaroK::saveLocation() + "transferlist.xml" );
+
     delete m_transferList;
     delete m_deviceList;
     delete m_device;
@@ -482,10 +488,11 @@ MediaDevice::~MediaDevice()
 }
 
 void
-MediaDevice::addURL( const KURL& url, MetaBundle *bundle )
+MediaDevice::addURL( const KURL& url, MetaBundle *bundle, bool isPodcast )
 {
-    MetaBundle mb( url );
-    if ( !fileExists( mb ) && ( m_parent->m_transferList->findItem( url.path(), 0 ) == NULL ) )
+    if(!bundle)
+        bundle = new MetaBundle( url );
+    if ( !fileExists( *bundle ) && ( m_parent->m_transferList->findItem( url.path(), 0 ) == NULL ) )
     {
         MediaItem* item = new MediaItem( m_parent->m_transferList, m_parent->m_transferList->lastItem() );
         item->setExpandable( false );
@@ -493,6 +500,7 @@ MediaDevice::addURL( const KURL& url, MetaBundle *bundle )
         item->setUrl( url.path() );
         item->setText( 0, url.path() );
         item->m_bundle = bundle;
+        item->m_podcast = isPodcast;
 
         m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_parent->m_transferList->childCount() ) );
         m_parent->m_transferButton->setEnabled( m_parent->m_device->isConnected() || m_parent->m_deviceList->childCount() != 0 );
@@ -506,7 +514,7 @@ MediaDevice::addURLs( const KURL::List urls, MetaBundle *bundle )
 {
         KURL::List::ConstIterator it = urls.begin();
         for ( ; it != urls.end(); ++it )
-            addURL( *it, bundle );
+            addURL( *it, bundle, bundle!=NULL );
 }
 
 
@@ -639,6 +647,154 @@ MediaDevice::fileTransferFinished()  //SLOT
     m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_parent->m_transferList->childCount() ) );
     m_parent->m_progress->hide();
     m_parent->m_transferButton->setDisabled( true );
+}
+
+void
+MediaDevice::saveTransferList( const QString &path )
+{
+    QFile file( path );
+
+    if( !file.open( IO_WriteOnly ) ) return;
+
+    QDomDocument newdoc;
+    QDomElement transferlist = newdoc.createElement( "playlist" );
+    transferlist.setAttribute( "product", "amaroK" );
+    transferlist.setAttribute( "version", APP_VERSION );
+    newdoc.appendChild( transferlist );
+
+    for( const MediaItem *item = static_cast<MediaItem *>( m_parent->m_transferList->firstChild() );
+            item;
+            item = static_cast<MediaItem *>( item->nextSibling() ) )
+    {
+        QDomElement i = newdoc.createElement("item");
+        i.setAttribute("url", item->url().url());
+
+        if(item->bundle())
+        {
+            QDomElement attr = newdoc.createElement( "Title" );
+            QDomText t = newdoc.createTextNode( item->bundle()->title() );
+            attr.appendChild( t );
+            i.appendChild( attr );
+
+            attr = newdoc.createElement( "Artist" );
+            t = newdoc.createTextNode( item->bundle()->artist() );
+            attr.appendChild( t );
+            i.appendChild( attr );
+
+            attr = newdoc.createElement( "Album" );
+            t = newdoc.createTextNode( item->bundle()->album() );
+            attr.appendChild( t );
+            i.appendChild( attr );
+
+            attr = newdoc.createElement( "Year" );
+            t = newdoc.createTextNode( item->bundle()->year() );
+            attr.appendChild( t );
+            i.appendChild( attr );
+
+            attr = newdoc.createElement( "Comment" );
+            t = newdoc.createTextNode( item->bundle()->comment() );
+            attr.appendChild( t );
+            i.appendChild( attr );
+
+            attr = newdoc.createElement( "Genre" );
+            t = newdoc.createTextNode( item->bundle()->genre() );
+            attr.appendChild( t );
+            i.appendChild( attr );
+
+            attr = newdoc.createElement( "Track" );
+            t = newdoc.createTextNode( item->bundle()->track() );
+            attr.appendChild( t );
+            i.appendChild( attr );
+        }
+
+        if(item->m_podcast)
+        {
+            i.setAttribute( "podcast", "1" );
+        }
+
+        transferlist.appendChild( i );
+    }
+
+    QTextStream stream( &file );
+    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+    stream << newdoc.toString();
+}
+
+
+void
+MediaDevice::loadTransferList( const QString& filename )
+{
+    QFile file( filename );
+    if( !file.open( IO_ReadOnly ) ) {
+        debug() << "failed to restore media device transfer list" << endl;
+        return;
+    }
+
+    clearItems();
+
+    QTextStream stream( &file );
+    stream.setEncoding( QTextStream::UnicodeUTF8 );
+
+    QDomDocument d;
+    QString er;
+    int l, c;
+    if( !d.setContent( stream.read(), &er, &l, &c ) ) { // return error values
+        amaroK::StatusBar::instance()->longMessageThreadSafe( i18n(
+                //TODO add a link to the path to the playlist
+                "The XML in the transferlist was invalid. Please report this as a bug to the amaroK "
+                "developers. Thank you." ), KDE::StatusBar::Error );
+        error() << "[TRANSFERLISTLOADER]: Error loading xml file: " << filename << "(" << er << ")"
+                << " at line " << l << ", column " << c << endl;
+        return;
+    }
+
+    QValueList<QDomNode> nodes;
+    const QString ITEM( "item" ); //so we don't construct this QString all the time
+    for( QDomNode n = d.namedItem( "playlist" ).firstChild(); !n.isNull(); n = n.nextSibling() )
+    {
+        if( n.nodeName() != ITEM ) continue;
+
+        QDomElement elem = n.toElement();
+        if( !elem.isNull() )
+            nodes += n;
+
+        if( !elem.hasAttribute( "url" ) )
+        {
+            continue;
+        }
+        KURL url(elem.attribute("url"));
+
+        bool isPodcast = false;
+        if(elem.hasAttribute( "podcast" ))
+        {
+            isPodcast = true;
+        }
+
+        MetaBundle *bundle = new MetaBundle( url );
+        for(QDomNode node = elem.firstChild();
+                !node.isNull();
+                node = node.nextSibling())
+        {
+            if(node.firstChild().isNull())
+                continue;
+
+            if(node.nodeName() == "Title" )
+                bundle->setTitle(node.firstChild().toText().nodeValue());
+            else if(node.nodeName() == "Artist" )
+                bundle->setArtist(node.firstChild().toText().nodeValue());
+            else if(node.nodeName() == "Album" )
+                bundle->setAlbum(node.firstChild().toText().nodeValue());
+            else if(node.nodeName() == "Year" )
+                bundle->setYear(node.firstChild().toText().nodeValue());
+            else if(node.nodeName() == "Genre" )
+                bundle->setGenre(node.firstChild().toText().nodeValue());
+            else if(node.nodeName() == "Comment" )
+                bundle->setComment(node.firstChild().toText().nodeValue());
+        }
+
+        addURL( url, bundle, isPodcast );
+    }
 }
 
 #include "mediabrowser.moc"

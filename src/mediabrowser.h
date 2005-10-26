@@ -13,6 +13,7 @@
 #include <kprocess.h>
 #include <kurl.h>            //stack allocated
 #include "debug.h"
+#include "metabundle.h"
 
 class MediaDevice;
 class MediaDeviceView;
@@ -27,28 +28,30 @@ class MediaItem : public KListViewItem
 {
     public:
         MediaItem( QListView* parent )
-            : KListViewItem( parent ) { m_bundle=NULL; track=0; }
+            : KListViewItem( parent ) { m_bundle=NULL; m_track=0; m_podcast=false; }
         MediaItem( QListViewItem* parent )
-            : KListViewItem( parent ) { m_bundle=NULL;  track=0; }
+            : KListViewItem( parent ) { m_bundle=NULL;  m_track=0; m_podcast=false; }
         MediaItem( QListView* parent, QListViewItem* after )
-            : KListViewItem( parent, after ) { m_bundle=NULL;  track=0; }
+            : KListViewItem( parent, after ) { m_bundle=NULL;  m_track=0; m_podcast=false; }
         MediaItem( QListViewItem* parent, QListViewItem* after )
-            : KListViewItem( parent, after ) { m_bundle=NULL;  track=0; }
+            : KListViewItem( parent, after ) { m_bundle=NULL;  m_track=0; m_podcast=false; }
 
         void setUrl( const QString& url ) { m_url.setPath( url ); }
         const KURL& url() const { return m_url; }
-        int track;
-        MetaBundle *bundle() const { return m_bundle; }
+        int m_track;
+        bool m_podcast;
+        const MetaBundle *bundle() const { if(m_bundle == NULL) m_bundle = new MetaBundle( url() ); return m_bundle; }
+        MetaBundle *bundle() { if(m_bundle == NULL) m_bundle = new MetaBundle( url() ); return m_bundle; }
 
         //attributes:
         KURL m_url;
-        MetaBundle *m_bundle;
+        mutable MetaBundle *m_bundle;
 
         int compare(QListViewItem *i, int col, bool ascending) const
         {
             MediaItem *item = (MediaItem *)i;
-            if(col==0 && item->track != track)
-                return ascending ? track-item->track : item->track-track;
+            if(col==0 && item->m_track != m_track)
+                return ascending ? m_track-item->m_track : item->m_track-m_track;
 
             return KListViewItem::compare(i, col, ascending);
         }
@@ -148,7 +151,7 @@ class MediaDevice : public QObject
         MediaDevice( MediaDeviceView* parent );
         virtual ~MediaDevice();
 
-        void        addURL( const KURL& url, MetaBundle *bundle=NULL );
+        void        addURL( const KURL& url, MetaBundle *bundle=NULL, bool isPodcast=false );
         void        addURLs( const KURL::List urls, MetaBundle *bundle=NULL );
         virtual bool        isConnected() = 0;
         virtual QStringList items( QListViewItem* item ) = 0;
@@ -193,6 +196,8 @@ class MediaDevice : public QObject
         MediaDeviceView* m_parent;
         bool             m_wait;
 
+        void loadTransferList( const QString &path );
+        void saveTransferList( const QString &path );
 
         static MediaDevice *s_instance;
 };

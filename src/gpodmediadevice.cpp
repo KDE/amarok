@@ -28,7 +28,6 @@ class TrackList : public QPtrList<Itdb_Track>
 {
     int compareItems ( QPtrCollection::Item track1, QPtrCollection::Item track2 )
     {
-        debug() << "compare" << endl;
         Itdb_Track *t1 = (Itdb_Track *)track1;
         Itdb_Track *t2 = (Itdb_Track *)track2;
 
@@ -320,14 +319,9 @@ GpodMediaDevice::transferFiles()  //SLOT
             cur =  dynamic_cast<MediaItem *>(m_parent->m_transferList->firstChild()) )
     {
         debug() << "Transfering: " << cur->url().path() << endl;
-        bool isPodcast = false;
+
         MetaBundle *bundle = cur->bundle();
-        if(bundle)
-        {
-            // currently only podcasts bring their own bundle
-            isPodcast = true;
-        }
-        else
+        if(!bundle)
         {
             bundle = new MetaBundle( cur->url() );
         }
@@ -391,7 +385,7 @@ GpodMediaDevice::transferFiles()  //SLOT
         }
         else
         {
-            addDBTrack(track, isPodcast);
+            addDBTrack(track, cur->m_podcast);
             //writeITunesDB();
 
             m_parent->m_transferList->takeItem( cur );
