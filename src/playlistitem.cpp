@@ -40,11 +40,9 @@
 #include <kstandarddirs.h>
 #include <kstringhandler.h>
 
-
 QColor  PlaylistItem::glowText = Qt::white;
 QColor  PlaylistItem::glowBase = Qt::white;
 bool    PlaylistItem::s_pixmapChanged = false;
-
 
 /// These are untranslated and used for storing/retrieving XML playlist
 const QString PlaylistItem::columnName( int c ) //static
@@ -405,7 +403,10 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
     //TODO add spacing on either side of items
     //p->translate( 2, 0 ); width -= 3;
 
-    static const QImage currentTrackImg = QImage( locate( "data", "amarok/images/currenttrack_bar.png" ) );
+    static const QImage currentTrackLeft  = locate( "data", "amarok/images/currenttrack_bar_left.png" );
+    static const QImage currentTrackMid   = locate( "data", "amarok/images/currenttrack_bar_mid.png" );
+    static const QImage currentTrackRight = locate( "data", "amarok/images/currenttrack_bar_right.png" );
+
     const bool isCurrent = this == listView()->currentTrack();
 
     if( isCurrent && !isSelected() )
@@ -449,14 +450,33 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
             paintCache[column].map[colorKey].fill( listView()->viewport()->backgroundColor() );
             QPainter paint( &paintCache[column].map[colorKey], true );
 
-            // Here we draw the background bar image
-//             int h, s, v;
-//             glowBase.getHsv( &h, &s, &v );
-//             QColor col;
+            // Here we draw the background bar image:
 
-            QImage tmpImage = currentTrackImg.smoothScale( width, height() );
+            int leftPadding  = 0;
+            int rightPadding = 0;
+
+            // Left part
+            if( column == listView()->m_firstColumn ) {
+                QImage tmpImage = currentTrackLeft.smoothScale( currentTrackLeft.width(), height() );
+                KIconEffect::colorize( tmpImage, glowBase, 0.5 );
+                paint.drawImage( 0, 0, tmpImage );
+                leftPadding = currentTrackLeft.width();
+            }
+
+            // Right part
+            if( column == Playlist::instance()->mapToLogicalColumn( Playlist::instance()->visibleColumns() - 1 ) ) {
+                QImage tmpImage = currentTrackRight.smoothScale( currentTrackRight.width(), height() );
+                KIconEffect::colorize( tmpImage, glowBase, 0.5 );
+                paint.drawImage( width - currentTrackRight.width(), 0, tmpImage );
+                rightPadding = currentTrackRight.width();
+            }
+
+            // Middle part
+            QImage tmpImage = currentTrackMid.smoothScale( currentTrackMid.width(), height() );
             KIconEffect::colorize( tmpImage, glowBase, 0.5 );
-            paint.drawImage( 0, 0, tmpImage );
+            for ( int x = leftPadding; x < width - rightPadding; ++x )
+                paint.drawImage( x, 0, tmpImage );
+
 
             // Draw the pixmap, if present
             const int margin = listView()->itemMargin();
