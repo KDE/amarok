@@ -218,13 +218,6 @@ CollectionDB::insert( const QString& statement, const QString& table, DbConnecti
     return id;
 }
 
-void
-CollectionDB::setCurrentCollection( const QString& name )
-{
-    AmarokConfig::setCurrentTablespace(name);
-    //now actually perform updating logic necessary
-}
-
 bool
 CollectionDB::isEmpty()
 {
@@ -269,8 +262,6 @@ CollectionDB::createTables( DbConnection *conn )
 {
     DEBUG_FUNC_INFO
 
-    QString tabspace = getCurrentCollection();
-	    
     //create tag table
     query( QString( "CREATE %1 TABLE tags%2 ("
                     "url " + textColumnType() + ","
