@@ -472,10 +472,10 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
             }
 
             // Middle part
-            QImage tmpImage = currentTrackMid.smoothScale( currentTrackMid.width(), height() );
+            QImage tmpImage = currentTrackMid.copy();
             KIconEffect::colorize( tmpImage, glowBase, 0.5 );
-            for ( int x = leftPadding; x < width - rightPadding; ++x )
-                paint.drawImage( x, 0, tmpImage );
+            tmpImage = tmpImage.smoothScale( width - leftPadding - rightPadding, height() );
+            paint.drawImage( leftPadding, 0, tmpImage );
 
 
             // Draw the pixmap, if present
