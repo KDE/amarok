@@ -465,6 +465,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
 
             int leftOffset  = 0;
             int rightOffset = 0;
+            int margin      = listView()->itemMargin();
 
             // Left part
             if( column == listView()->m_firstColumn ) {
@@ -473,6 +474,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
                 KIconEffect::colorize( tmpImage, glowBase, 0.43 );
                 paint.drawImage( 0, 0, tmpImage );
                 leftOffset = currentTrackLeft.width();
+                margin += 5;
             }
 
             // Right part
@@ -483,6 +485,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
                 KIconEffect::colorize( tmpImage, glowBase, 0.43 );
                 paint.drawImage( width - currentTrackRight.width(), 0, tmpImage );
                 rightOffset = currentTrackRight.width();
+                margin += 5;
             }
 
             // Middle part
@@ -495,11 +498,10 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
 
 
             // Draw the pixmap, if present
-            const int margin = listView()->itemMargin();
             int leftMargin = margin;
             if ( pixmap( column ) ) {
                 paint.drawPixmap( leftMargin, height() / 2 - pixmap( column )->height() / 2, *pixmap( column ) );
-                leftMargin += pixmap( column )->width() + margin;
+                leftMargin += pixmap( column )->width();
             }
 
             if( align != Qt::AlignCenter )
