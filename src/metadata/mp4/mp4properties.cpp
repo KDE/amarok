@@ -27,7 +27,10 @@ email                : andrew.leadbetter@gmail.com
 
 #include "taglib_mp4file.h"
 #include <mp4.h>
+
+#ifdef HAVE_SYSTEMS_H
 #include <systems.h>
+#endif
 
 using namespace TagLib;
 

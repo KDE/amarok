@@ -693,14 +693,6 @@ AM_CONDITIONAL(with_konqsidebar, [test x$have_konqsidebar = xyes])
 ###############################################################################
 ### mediabrowser.cpp can use libgpod if available
 
-#amarok_save_cppflags="$CPPFLAGS"
-#CPPFLAGS="$CPPFLAGS $CFLAGS_LIBGPOD"
-#PKG_CHECK_MODULES(LIBGPOD, glib-2.0)
-#PKG_CHECK_MODULES(LIBGPOD, libgpod-1.0)
-
-#CPPFLAGS="$amarok_save_cppflags"
-#AM_CONDITIONAL(with_libgpod, [test x$have_libgpod = xyes])
-
 AC_ARG_WITH(libgpod,
     AC_HELP_STRING([--with-libgpod],[build amaroK with iPod support from libgpod]),
     [build_libgpod=$withval],
@@ -731,8 +723,10 @@ AC_SUBST(LIBGPOD_LIBS)
 ###############################################################################
 # BEGIN MP4V2 CHECK
 ###############################################################################
+# m4a/aac tag reading and writing needs libmp4v2 from faad2 or better mpeg4ip
+
 AC_ARG_WITH(mp4v2,
-    AC_HELP_STRING([--with-mp4v2],[build amaroK with MP4 tag support from mp4v2/faad2]),
+    AC_HELP_STRING([--with-mp4v2],[build amaroK with M4A/AAC tag support from mp4v2/faad2]),
     [build_mp4v2=$withval],
     [build_mp4v2=no]
 )
@@ -747,6 +741,15 @@ if test "$build_mp4v2" != "no"; then
     MP4V2_INCLUDES="-I$mp4v2_dir/include"
     MP4V2_LIBS="-L$mp4v2_dir/lib -lmp4v2"
     AC_DEFINE(HAVE_MP4V2, 1, [have mp4v2])
+
+    # not even everyone using faad2 has <systems.h>
+    if ! test -f config.h; then
+        echo "#include \"confdefs.h\"" > config.h 
+    fi
+    ac_cppflags_save=$CPPFLAGS
+    CPPFLAGS="$CPPFLAGS -I."
+    AC_CHECK_HEADERS(systems.h)
+    CPPFLAGS=$ac_cppflags_save
 fi
 
 AC_SUBST(MP4V2_INCLUDES)
