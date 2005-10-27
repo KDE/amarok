@@ -454,6 +454,9 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
 
             QPainter paint( &paintCache[column].map[colorKey], true );
 
+            // Draw column divider line
+            paint.setPen( listView()->viewport()->colorGroup().mid() );
+            paint.drawLine( width - 1, 0, width - 1, height() - 1 );
 
             // Here we draw the background bar graphics for the current track:
             //
