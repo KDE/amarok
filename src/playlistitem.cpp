@@ -450,32 +450,39 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
             paintCache[column].map[colorKey].fill( listView()->viewport()->backgroundColor() );
             QPainter paint( &paintCache[column].map[colorKey], true );
 
-            // Here we draw the background bar image:
+            // Here we draw the background bar graphics for the current track:
+            //
+            // Illustration of design, L = Left, M = Middle, R = Right:
+            // <LMMMMMMMMMMMMMMMR>
 
-            int leftPadding  = 0;
-            int rightPadding = 0;
+            int leftOffset  = 0;
+            int rightOffset = 0;
 
             // Left part
             if( column == listView()->m_firstColumn ) {
                 QImage tmpImage = currentTrackLeft.smoothScale( currentTrackLeft.width(), height() );
-                KIconEffect::colorize( tmpImage, glowBase, 0.5 );
+                KIconEffect::colorize( tmpImage, cg.highlight(), 0.7 );
+                KIconEffect::colorize( tmpImage, glowBase, 0.4 );
                 paint.drawImage( 0, 0, tmpImage );
-                leftPadding = currentTrackLeft.width();
+                leftOffset = currentTrackLeft.width();
             }
 
             // Right part
             if( column == Playlist::instance()->mapToLogicalColumn( Playlist::instance()->visibleColumns() - 1 ) ) {
                 QImage tmpImage = currentTrackRight.smoothScale( currentTrackRight.width(), height() );
-                KIconEffect::colorize( tmpImage, glowBase, 0.5 );
+                KIconEffect::colorize( tmpImage, cg.highlight(), 0.7 );
+                KIconEffect::colorize( tmpImage, glowBase, 0.4 );
                 paint.drawImage( width - currentTrackRight.width(), 0, tmpImage );
-                rightPadding = currentTrackRight.width();
+                rightOffset = currentTrackRight.width();
             }
 
             // Middle part
+            // Here we scale the one pixel wide middel image to stretch to the full column width.
             QImage tmpImage = currentTrackMid.copy();
-            KIconEffect::colorize( tmpImage, glowBase, 0.5 );
-            tmpImage = tmpImage.smoothScale( width - leftPadding - rightPadding, height() );
-            paint.drawImage( leftPadding, 0, tmpImage );
+            KIconEffect::colorize( tmpImage, cg.highlight(), 0.7 );
+            KIconEffect::colorize( tmpImage, glowBase, 0.4 );
+            tmpImage = tmpImage.smoothScale( width - leftOffset - rightOffset, height() );
+            paint.drawImage( leftOffset, 0, tmpImage );
 
 
             // Draw the pixmap, if present
@@ -503,8 +510,6 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
             const int _width = width - leftMargin - margin + minbearing - 1; // -1 seems to be necessary *shrug*
             const QString _text = KStringHandler::rPixelSqueeze( text( column ), p->fontMetrics(), _width );
             paint.drawText( leftMargin, 0, _width, height(), align, _text );
-
-            paint.end();
         }
 
         p->drawPixmap( 0, 0, paintCache[column].map[colorKey] );
