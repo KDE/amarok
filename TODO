@@ -6,6 +6,8 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+ <markey>  Regression: Using Undo/Redo does not restore the animation part of current track.
+
  <markey>  We really need to fix the crashes with the OpenGL analyzers that many users get.
 
  <illis.>  A whole lot (all?) of my mp3s have their titles truncated at 30-ish characters. This is almost
