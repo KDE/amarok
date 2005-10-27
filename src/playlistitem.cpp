@@ -445,10 +445,15 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
             paintCache[column].map[colorKey] = QPixmap( width, height() );
 
             // Don't try to draw if width or height is 0, as this crashes Qt
-            if ( paintCache[column].map[colorKey].isNull() ) return;
+            if( paintCache[column].map[colorKey].isNull() ) return;
 
-            paintCache[column].map[colorKey].fill( listView()->viewport()->backgroundColor() );
+            const QColor bg = isAlternate() ? listView()->alternateBackground() :
+                                              listView()->viewport()->backgroundColor();
+
+            paintCache[column].map[colorKey].fill( bg );
+
             QPainter paint( &paintCache[column].map[colorKey], true );
+
 
             // Here we draw the background bar graphics for the current track:
             //
@@ -468,6 +473,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
             }
 
             // Right part
+            else
             if( column == Playlist::instance()->mapToLogicalColumn( Playlist::instance()->visibleColumns() - 1 ) ) {
                 QImage tmpImage = currentTrackRight.smoothScale( currentTrackRight.width(), height() );
                 KIconEffect::colorize( tmpImage, cg.highlight(), 0.7 );
