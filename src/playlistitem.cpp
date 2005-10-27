@@ -469,7 +469,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
             // Left part
             if( column == listView()->m_firstColumn ) {
                 QImage tmpImage = currentTrackLeft.smoothScale( currentTrackLeft.width(), height() );
-                KIconEffect::colorize( tmpImage, cg.highlight(), 0.7 );
+                KIconEffect::colorize( tmpImage, cg.highlight(), 0.6 );
                 KIconEffect::colorize( tmpImage, glowBase, 0.43 );
                 paint.drawImage( 0, 0, tmpImage );
                 leftOffset = currentTrackLeft.width();
@@ -479,7 +479,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
             else
             if( column == Playlist::instance()->mapToLogicalColumn( Playlist::instance()->visibleColumns() - 1 ) ) {
                 QImage tmpImage = currentTrackRight.smoothScale( currentTrackRight.width(), height() );
-                KIconEffect::colorize( tmpImage, cg.highlight(), 0.7 );
+                KIconEffect::colorize( tmpImage, cg.highlight(), 0.6 );
                 KIconEffect::colorize( tmpImage, glowBase, 0.43 );
                 paint.drawImage( width - currentTrackRight.width(), 0, tmpImage );
                 rightOffset = currentTrackRight.width();
@@ -488,7 +488,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
             // Middle part
             // Here we scale the one pixel wide middel image to stretch to the full column width.
             QImage tmpImage = currentTrackMid.copy();
-            KIconEffect::colorize( tmpImage, cg.highlight(), 0.7 );
+            KIconEffect::colorize( tmpImage, cg.highlight(), 0.6 );
             KIconEffect::colorize( tmpImage, glowBase, 0.43 );
             tmpImage = tmpImage.smoothScale( width - leftOffset - rightOffset, height() );
             paint.drawImage( leftOffset, 0, tmpImage );
@@ -513,6 +513,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
                 font = p->font();
                 minbearing = p->fontMetrics().minLeftBearing() + p->fontMetrics().minRightBearing();
             }
+            font.setItalic( true );
             paint.setFont( font );
             paint.setPen( cg.highlightedText() );
 //             paint.setPen( glowText );
