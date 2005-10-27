@@ -6,6 +6,8 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+ <markey>  Make mousewheel up/down over the playlist move the selected track.
+
  <markey>  Regression: Using Undo/Redo deactivates the current track animation.
 
  <markey>  We really need to fix the crashes with the OpenGL analyzers that many users get.
