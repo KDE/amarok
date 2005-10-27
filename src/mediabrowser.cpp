@@ -404,7 +404,7 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     m_transferList->setDropHighlighter( true );    //and the highligther (a focus rect) is drawn when dragging over playlists
     m_transferList->setDropVisualizerWidth( 3 );
     m_transferList->setAcceptDrops( true );
-    m_transferList->addColumn( i18n( "URL" ) );
+    m_transferList->addColumn( i18n( "Track" ) );
 
     m_stats = new QLabel( i18n( "1 track in queue", "%n tracks in queue", m_transferList->childCount() ), this );
     m_progress = new KProgress( this );
@@ -498,9 +498,15 @@ MediaDevice::addURL( const KURL& url, MetaBundle *bundle, bool isPodcast )
         item->setExpandable( false );
         item->setDropEnabled( true );
         item->setUrl( url.path() );
-        item->setText( 0, url.path() );
         item->m_bundle = bundle;
         item->m_podcast = isPodcast;
+
+        QString text = item->bundle()->prettyTitle();
+        if(item->m_podcast)
+        {
+            text += " (" + i18n("Podcast") + ")";
+        }
+        item->setText( 0, text);
 
         m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_parent->m_transferList->childCount() ) );
         m_parent->m_transferButton->setEnabled( m_parent->m_device->isConnected() || m_parent->m_deviceList->childCount() != 0 );
