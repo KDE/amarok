@@ -276,7 +276,7 @@ Statistics::buildArtistInfo()
     QString text = "<b>" + i18n("Favourite Artists") + "</b><br>";
     for( uint i=0; i < faveArtists.count(); i += qb.countReturnValues() )
     {
-        text += faveArtists[i] + i18n(" (Score: ") + faveArtists[i+1] + i18n(")");
+        text += "<i>" + faveArtists[i] + "</i>" + i18n(" (Score: ") + faveArtists[i+1] + i18n(")");
         if( i + qb.countReturnValues() != faveArtists.count() )
              text += "<br>";
     }
@@ -284,8 +284,8 @@ Statistics::buildArtistInfo()
 
     qb.clear();
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-    qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabSong, QueryBuilder::valTitle );
-    qb.sortByFunction( QueryBuilder::funcCount, QueryBuilder::tabSong, QueryBuilder::valTitle, true );
+    qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabSong, QueryBuilder::valTrack );
+    qb.sortByFunction( QueryBuilder::funcCount, QueryBuilder::tabSong, QueryBuilder::valTrack, true );
     qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valName);
     qb.setLimit( 0, 4 );
     QStringList mostSongs = qb.run();
@@ -294,7 +294,7 @@ Statistics::buildArtistInfo()
     text = "<b>" + i18n("Artist Dominance") + "</b><br>"; // sebr: dominance an appropriate word?! :)
     for( uint i=0; i < mostSongs.count(); i += qb.countReturnValues() )
     {
-        text += mostSongs[i] + i18n(" (") + mostSongs[i+1] + i18n(" songs)");
+        text += "<i>" + mostSongs[i] + "</i>" + i18n(" (") + mostSongs[i+1] + i18n(" songs)");
         if( i + qb.countReturnValues() != mostSongs.count() )
              text += "<br>";
     }
