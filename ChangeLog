@@ -5,6 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.3.6:
   BUGFIXES:
+    * Don't crash when attempting to save an empty playlist from the
+      Playlist menu.
     * Loading dynamic playlists with sources did not work properly.
     * Fix build issue on some Linux kernel 2.4 distros. (BR 115068)
 

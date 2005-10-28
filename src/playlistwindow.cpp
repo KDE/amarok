@@ -606,32 +606,38 @@ void PlaylistWindow::savePlaylist() const //SLOT
     Playlist *pl = Playlist::instance();
 
     PlaylistItem *item = pl->firstChild();
-
-    QString artist = item->artist();
-    QString album  = item->album();
-
-    bool useArtist = true, useAlbum = true;
-
-    item = static_cast<PlaylistItem*>( item->itemBelow() );
-
-    for( ; item; item = static_cast<PlaylistItem*>( item->itemBelow() ) )
-    {
-        if( artist != item->artist() )
-            useArtist = false;
-        if( album  != item->album() )
-            useAlbum = false;
-
-        if( !useArtist && !useAlbum )
-            break;
-    }
+    if( item && !item->isVisible() )
+        item = static_cast<PlaylistItem*>( item->itemBelow() );
 
     QString title = i18n( "Untitled" );
-    if( useArtist && useAlbum )
-        title = artist + " - " + album;
-    else if( useArtist )
-        title = artist;
-    else if( useAlbum )
-        title = album;
+
+    if( item )
+    {
+        QString artist = item->artist();
+        QString album  = item->album();
+
+        bool useArtist = true, useAlbum = true;
+
+        item = static_cast<PlaylistItem*>( item->itemBelow() );
+
+        for( ; item; item = static_cast<PlaylistItem*>( item->itemBelow() ) )
+        {
+            if( artist != item->artist() )
+                useArtist = false;
+            if( album  != item->album() )
+                useAlbum = false;
+
+            if( !useArtist && !useAlbum )
+                break;
+        }
+
+        if( useArtist && useAlbum )
+            title = artist + " - " + album;
+        else if( useArtist )
+            title = artist;
+        else if( useAlbum )
+            title = album;
+    }
 
     QString path = PlaylistDialog::getSaveFileName( title );
 
