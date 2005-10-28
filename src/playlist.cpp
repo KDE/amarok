@@ -547,6 +547,8 @@ Playlist::addSpecialCustomTracks( uint songCount )
 
         for( uint i=0; i < songCount; i++ )
         {
+            if( trackList.isEmpty() )
+                break;
             KURL::List::Iterator it = trackList.at( KApplication::random() % trackList.count() );
             if( (*it).isValid())
                 urls << (*it).path();
