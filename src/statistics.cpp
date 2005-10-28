@@ -184,7 +184,7 @@ Statistics::buildAlbumInfo()
     QString text = "<b>" + i18n("Favourite Albums") + "</b><br>";
     for( uint i=0; i < faveAlbums.count(); i += qb.countReturnValues() )
     {
-        text += faveAlbums[i] + i18n(" - " ) + faveAlbums[i+1]
+        text += "<i>" + faveAlbums[i] + "</i>" + i18n(" - " ) + faveAlbums[i+1]
              /*+ i18n(" (Score: ") + faveAlbums[i+2] + i18n(")")*/;
         if( i + qb.countReturnValues() != faveAlbums.count() )
              text += "<br>";
@@ -210,7 +210,7 @@ Statistics::buildAlbumInfo()
     text = "<b>" + i18n("Newest Albums") + "</b><br>";
     for( uint i=0; i < recentAlbums.count(); i += qb.countReturnValues() )
     {
-        text += recentAlbums[i] + i18n(" - " ) + recentAlbums[i+1];
+        text += "<i>" + recentAlbums[i] + "</i>" + i18n(" - " ) + recentAlbums[i+1];
         if( i + qb.countReturnValues() != recentAlbums.count() )
              text += "<br>";
     }
@@ -233,7 +233,7 @@ Statistics::buildTrackInfo()
     QString text = "<b>" + i18n("Favourite Songs") + "</b><br>";
     for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
     {
-        text += fave[i] + i18n(" - " ) + fave[i+1]
+        text += "<i>" + fave[i] + "</i>" + i18n(" - " ) + fave[i+1]
               + i18n(" (Score: ") + fave[i+2] + i18n(")");
         if( i + qb.countReturnValues() != fave.count() )
              text += "<br>";
@@ -252,7 +252,7 @@ Statistics::buildTrackInfo()
     text = "<b>" + i18n("Most Played Songs") + "</b><br>";
     for( uint i=0; i < mostPlayed.count(); i += qb.countReturnValues() )
     {
-        text += mostPlayed[i] + i18n(" - " ) + mostPlayed[i+1]
+        text += "<i>" + mostPlayed[i] + "</i>" + i18n(" - " ) + mostPlayed[i+1]
               + i18n(" (Playcount: ") + mostPlayed[i+2] + i18n(")");
         if( i + qb.countReturnValues() != mostPlayed.count() )
              text += "<br>";
