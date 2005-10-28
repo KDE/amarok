@@ -1063,7 +1063,7 @@ void ContextBrowser::showHome() //SLOT
             "<div id='introduction_box' class='box'>"
                 "<div id='introduction_box-header' class='box-header'>"
                     "<span id='introduction_box-header-title' class='box-header-title'>"
-                    + i18n( "No track playing" ) +
+                    + i18n( "No Track Playing" ) +
                     "</span>"
                 "</div>"
                 "<div id='introduction_box-body' class='box-body'>"
