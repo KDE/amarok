@@ -256,10 +256,16 @@ MediaDeviceList::contentsDropEvent( QDropEvent *e )
 
 
 void
-MediaDeviceList::contentsDragMoveEvent( QDragMoveEvent* /*e*/ )
+MediaDeviceList::contentsDragMoveEvent( QDragMoveEvent *e )
 {
 //    const QPoint p = contentsToViewport( e->pos() );
 //    QListViewItem *item = itemAt( p );
+    e->accept( e->source() != this
+            && e->source() != viewport()
+            && e->source() != m_parent
+            && e->source() != m_parent->m_transferList
+            && e->source() != m_parent->m_transferList->viewport()
+            && KURLDrag::canDecode( e ) );
 }
 
 
@@ -389,23 +395,9 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     : QVBox( parent )
     , m_device ( new GpodMediaDevice( this ) )
     , m_deviceList( new MediaDeviceList( this ) )
-    , m_transferList( new KListView( this ) )
+    , m_transferList( new MediaDeviceTransferList( this ) )
     , m_parent( parent )
 {
-    m_transferList->setFixedHeight( 200 );
-    m_transferList->setSelectionMode( QListView::Extended );
-    m_transferList->setItemsMovable( true );
-    m_transferList->setDragEnabled( true );
-    m_transferList->setShowSortIndicator( false );
-    m_transferList->setSorting( -1 );
-    m_transferList->setFullWidth( true );
-    m_transferList->setRootIsDecorated( false );
-    m_transferList->setDropVisualizer( true );    //the visualizer (a line marker) is drawn when dragging over tracks
-    m_transferList->setDropHighlighter( true );    //and the highligther (a focus rect) is drawn when dragging over playlists
-    m_transferList->setDropVisualizerWidth( 3 );
-    m_transferList->setAcceptDrops( true );
-    m_transferList->addColumn( i18n( "Track" ) );
-
     m_stats = new QLabel( i18n( "1 track in queue", "%n tracks in queue", m_transferList->childCount() ), this );
     m_progress = new KProgress( this );
 
@@ -492,7 +484,7 @@ MediaDevice::addURL( const KURL& url, MetaBundle *bundle, bool isPodcast )
 {
     if(!bundle)
         bundle = new MetaBundle( url );
-    if ( !fileExists( *bundle ) && ( m_parent->m_transferList->findItem( url.path(), 0 ) == NULL ) )
+    if ( !fileExists( *bundle ) && ( m_parent->m_transferList->findPath( url.path() ) == NULL ) )
     {
         MediaItem* item = new MediaItem( m_parent->m_transferList, m_parent->m_transferList->lastItem() );
         item->setExpandable( false );
@@ -802,5 +794,104 @@ MediaDevice::loadTransferList( const QString& filename )
         addURL( url, bundle, isPodcast );
     }
 }
+
+
+MediaDeviceTransferList::MediaDeviceTransferList(MediaDeviceView *parent)
+    : KListView( parent ), m_parent( parent )
+{
+    setFixedHeight( 200 );
+    setSelectionMode( QListView::Extended );
+    setItemsMovable( true );
+    setDragEnabled( true );
+    setShowSortIndicator( false );
+    setSorting( -1 );
+    setFullWidth( true );
+    setRootIsDecorated( false );
+    setDropVisualizer( true );     //the visualizer (a line marker) is drawn when dragging over tracks
+    setDropHighlighter( true );    //and the highligther (a focus rect) is drawn when dragging over playlists
+    setDropVisualizerWidth( 3 );
+    setAcceptDrops( true );
+    addColumn( i18n( "Track" ) );
+}
+
+void
+MediaDeviceTransferList::dragEnterEvent( QDragEnterEvent *e )
+{
+    debug() << "Items dropping to list?" << endl;
+    e->accept( e->source() != viewport()
+            && e->source() != m_parent
+            && e->source() != m_parent->m_deviceList
+            && e->source() != m_parent->m_deviceList->viewport()
+            && KURLDrag::canDecode( e ) );
+}
+
+
+void
+MediaDeviceTransferList::dropEvent( QDropEvent *e )
+{
+    KURL::List list;
+    if ( KURLDrag::decode( e, list ) )
+    {
+        KURL::List::Iterator it = list.begin();
+        for ( ; it != list.end(); ++it )
+        {
+            MediaDevice::instance()->addURL( *it );
+        }
+    }
+}
+
+void
+MediaDeviceTransferList::contentsDragEnterEvent( QDragEnterEvent *e )
+{
+    debug() << "Items dropping to list?" << endl;
+    e->accept( e->source() != viewport()
+            && e->source() != m_parent
+            && e->source() != m_parent->m_deviceList
+            && e->source() != m_parent->m_deviceList->viewport()
+            && KURLDrag::canDecode( e ) );
+}
+
+
+void
+MediaDeviceTransferList::contentsDropEvent( QDropEvent *e )
+{
+    KURL::List list;
+    if ( KURLDrag::decode( e, list ) )
+    {
+        KURL::List::Iterator it = list.begin();
+        for ( ; it != list.end(); ++it )
+        {
+            MediaDevice::instance()->addURL( *it );
+        }
+    }
+}
+
+void
+MediaDeviceTransferList::contentsDragMoveEvent( QDragMoveEvent *e )
+{
+//    const QPoint p = contentsToViewport( e->pos() );
+//    QListViewItem *item = itemAt( p );
+    e->accept( e->source() != viewport()
+            && e->source() != m_parent
+            && e->source() != m_parent->m_deviceList
+            && e->source() != m_parent->m_deviceList->viewport()
+            && KURLDrag::canDecode( e ) );
+}
+
+MediaItem*
+MediaDeviceTransferList::findPath( QString path )
+{
+    for( QListViewItem *item = firstChild();
+            item;
+            item = item->nextSibling())
+    {
+        if(static_cast<MediaItem *>(item)->url().path() == path)
+            return static_cast<MediaItem *>(item);
+    }
+
+    return NULL;
+}
+
+
 
 #include "mediabrowser.moc"

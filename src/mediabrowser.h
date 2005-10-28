@@ -57,6 +57,26 @@ class MediaItem : public KListViewItem
         }
 };
 
+class MediaDeviceTransferList : public KListView
+{
+    Q_OBJECT
+
+    public:
+        MediaDeviceTransferList(MediaDeviceView *parent);
+
+        // Reimplemented from KListView
+        void dragEnterEvent( QDragEnterEvent* );
+        void dropEvent( QDropEvent *e );
+        void contentsDragEnterEvent( QDragEnterEvent* );
+        void contentsDropEvent( QDropEvent *e );
+        void contentsDragMoveEvent( QDragMoveEvent* e );
+
+        MediaItem *findPath( QString path );
+
+    private:
+        MediaDeviceView *m_parent;
+};
+
 
 class MediaBrowser : public QVBox
 {
@@ -117,8 +137,8 @@ class MediaDeviceView : public QVBox
     friend class MediaBrowser;
     friend class MediaDevice;
     friend class MediaDeviceList;
-    friend class IpodMediaDevice;
     friend class GpodMediaDevice;
+    friend class MediaDeviceTransferList;
 
     public:
         MediaDeviceView( MediaBrowser* parent );
@@ -132,7 +152,8 @@ class MediaDeviceView : public QVBox
         KProgress*       m_progress;
         MediaDevice*     m_device;
         MediaDeviceList* m_deviceList;
-        KListView*       m_transferList;
+        MediaDeviceTransferList*
+                         m_transferList;
         KPushButton*     m_transferButton;
         KPushButton*     m_connectButton;
         KPushButton*     m_configButton;
