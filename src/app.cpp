@@ -69,7 +69,7 @@ email                : markey@web.de
 
 // For the HyperThreading fix
 #ifdef __linux__
-    #if SCHEDAFFINITY_SUPPORT
+    #ifdef SCHEDAFFINITY_SUPPORT
         #include <errno.h>
         #include <sched.h>
     #endif //SCHEDAFFINITY_SUPPORT
@@ -402,7 +402,7 @@ void App::fixHyperThreading()
         debug() << "CPU with active HyperThreading detected. Enabling WORKAROUND.\n";
 
         // If the library is new enough try and call sched_setaffinity.
-        #if SCHEDAFFINITY_SUPPORT 
+        #ifdef SCHEDAFFINITY_SUPPORT
         cpu_set_t mask;
         CPU_ZERO( &mask ); // Initializes all the bits in the mask to zero
         CPU_SET( 0, &mask ); // Sets only the bit corresponding to cpu
