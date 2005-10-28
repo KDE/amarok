@@ -25,8 +25,6 @@
 #include "playlist.h"
 #include "playlistitem.h"
 
-#include <cmath>
-
 #include <qimage.h>
 #include <qpainter.h>
 #include <qpen.h>
@@ -474,7 +472,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
                 KIconEffect::colorize( tmpImage, glowBase, 0.43 );
                 paint.drawImage( 0, 0, tmpImage );
                 leftOffset = currentTrackLeft.width();
-                margin += 5;
+                margin += 6;
             }
 
             // Right part
@@ -485,7 +483,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
                 KIconEffect::colorize( tmpImage, glowBase, 0.43 );
                 paint.drawImage( width - currentTrackRight.width(), 0, tmpImage );
                 rightOffset = currentTrackRight.width();
-                margin += 5;
+                margin += 6;
             }
 
             // Middle part
