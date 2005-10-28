@@ -491,17 +491,23 @@ GpodMediaDevice::connectDevice() //SLOT
     {
         if ( m_parent->m_transferList->childCount() != 0 &&  isConnected() )
         {
-            int button = KMessageBox::warningContinueCancel( m_parent->m_parent,
+            KGuiItem transfer = KGuiItem(i18n("&Transfer"),"rebuild");
+            KGuiItem disconnect = KGuiItem(i18n("Disconnect immediately"),"rebuild");
+            int button = KMessageBox::warningYesNo( m_parent->m_parent,
                     i18n( "There are tracks queued for transfer."
                         " Would you like to transfer them before disconnecting?"),
                     i18n( "Media Device Browser" ),
-                    KGuiItem(i18n("&Transfer"),"rebuild") );
+                    transfer, disconnect);
 
-            if ( button == KMessageBox::Continue )
+            if ( button == KMessageBox::Yes )
+            {
                 transferFiles();
+                fileTransferFinished();
+            }
         }
 
-        fileTransferFinished();
+        m_parent->m_transferButton->setEnabled( false );
+
         closeIPod();
         QString text = i18n( "Your device is now in sync, please unmount it and disconnect now." );
 
