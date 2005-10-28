@@ -20,6 +20,8 @@ VERSION 1.4:
       length of the queued tracks.
 
   BUGFIXES:
+    * Don't crash when attempting to save an empty playlist from the
+      Playlist menu.
     * Loading dynamic playlists with sources did not work properly.
     * Creating a new playlist via drag-and-drop no longer shows duplicates
       of each song until amaroK is restarted.
