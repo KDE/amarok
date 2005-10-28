@@ -121,8 +121,11 @@ class PlaylistItem : public KListViewItem
 
         static QString filename( const KURL &u ) { return u.protocol() == "http" ? u.prettyURL() : u.fileName(); }
 
-        /** Paints a focus indicator on the rectangle (current item). We just disable this. */
-        void paintFocus( QPainter*, const QColorGroup&, const QRect& ) { return; }
+        /**
+        * Paints a focus indicator on the rectangle (current item). We disable it
+        * over the currentTrack, cause it would look like crap and flicker.
+        */
+        void paintFocus( QPainter*, const QColorGroup&, const QRect& );
 
         const KURL m_url;
         bool m_missing;

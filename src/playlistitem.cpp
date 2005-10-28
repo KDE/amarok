@@ -647,6 +647,13 @@ void PlaylistItem::setup()
 }
 
 
+void PlaylistItem::paintFocus( QPainter* p, const QColorGroup& cg, const QRect& r )
+{
+    if( this != listView()->currentTrack() )
+        KListViewItem::paintFocus( p, cg, r );
+}
+
+
 const QString &PlaylistItem::attemptStore( const QString &candidate ) //static
 {
     //principal is to cause collisions at reasonable rate to reduce memory
