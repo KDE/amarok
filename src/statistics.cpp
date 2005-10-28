@@ -17,6 +17,7 @@
 
 #include <kapplication.h>
 #include <klocale.h>
+#include <knuminput.h>
 #include <kwin.h>
 
 #include <qcombobox.h>
@@ -35,6 +36,7 @@ Statistics *Statistics::s_instance = 0;
 Statistics::Statistics( QWidget *parent, const char *name )
     : KDialogBase( KDialogBase::Swallow, 0, parent, name, false, 0, Ok )
     , m_gui( new StatisticsBase( this ) )
+    , m_resultCount( 4 )
 {
     s_instance = this;
 
@@ -49,7 +51,8 @@ Statistics::Statistics( QWidget *parent, const char *name )
 
     m_gui->m_tabWidget->setTabEnabled( m_gui->m_databaseTab, false );
 
-    connect( m_gui->m_optionCombo, SIGNAL( activated(int) ), this, SLOT( loadDetails(int) ) );
+    connect( m_gui->m_optionCombo,   SIGNAL( activated(int) ),    this, SLOT( loadDetails(int) ) );
+    connect( m_gui->m_resultIntSpin, SIGNAL( valueChanged(int) ), this, SLOT( resultCountChanged(int) ) );
 
     loadSummary();
     loadChooser();
@@ -129,10 +132,11 @@ void
 Statistics::loadChooser()
 {
     loadDetails( m_gui->m_optionCombo->currentItem() );
+    m_gui->m_resultIntSpin->setValue( m_resultCount );
 }
 
 void
-Statistics::loadDetails( int index )
+Statistics::loadDetails( int index ) //SLOT
 {
     m_gui->m_btrLabel->setText( i18n("Please hold...") );
     m_gui->m_bbrLabel->clear();
@@ -162,6 +166,16 @@ Statistics::loadDetails( int index )
 }
 
 void
+Statistics::resultCountChanged( int value ) //SLOT
+{
+    if( value == m_resultCount )
+        return;
+
+    m_resultCount = value;
+    loadDetails( m_gui->m_optionCombo->currentItem() );
+}
+
+void
 Statistics::buildAlbumInfo()
 {
     QueryBuilder qb;
@@ -173,7 +187,7 @@ Statistics::buildAlbumInfo()
     qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
     qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID);
     qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName);
-    qb.setLimit( 0, 4 );
+    qb.setLimit( 0, m_resultCount );
     QStringList faveAlbums = qb.run();
 
     ///Favourites
@@ -199,7 +213,7 @@ Statistics::buildAlbumInfo()
     qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
     qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID);
     qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName);
-    qb.setLimit( 0, 4 );
+    qb.setLimit( 0, m_resultCount );
     QStringList recentAlbums = qb.run();
 
     ///Newest
@@ -226,7 +240,7 @@ Statistics::buildTrackInfo()
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
     qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
-    qb.setLimit( 0, 4 );
+    qb.setLimit( 0, m_resultCount );
     QStringList fave = qb.run();
 
     ///Favourites
@@ -245,7 +259,7 @@ Statistics::buildTrackInfo()
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
     qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, true );
-    qb.setLimit( 0, 4 );
+    qb.setLimit( 0, m_resultCount );
     QStringList mostPlayed = qb.run();
 
     ///Most Played
@@ -269,7 +283,7 @@ Statistics::buildArtistInfo()
     qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage );
     qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
     qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valName);
-    qb.setLimit( 0, 4 );
+    qb.setLimit( 0, m_resultCount );
     QStringList faveArtists = qb.run();
 
     ///Favourites
@@ -287,7 +301,7 @@ Statistics::buildArtistInfo()
     qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabSong, QueryBuilder::valTrack );
     qb.sortByFunction( QueryBuilder::funcCount, QueryBuilder::tabSong, QueryBuilder::valTrack, true );
     qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valName);
-    qb.setLimit( 0, 4 );
+    qb.setLimit( 0, m_resultCount );
     QStringList mostSongs = qb.run();
 
     ///Artists with the Most Songs

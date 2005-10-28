@@ -35,6 +35,7 @@ class Statistics : public KDialogBase
 
     private slots:
         void loadDetails( int index );
+        void resultCountChanged( int value );
 
     private:
         enum View { TRACK, ARTIST, ALBUM, GENRE };
@@ -47,6 +48,8 @@ class Statistics : public KDialogBase
         void buildTrackInfo();
 
         StatisticsBase *m_gui;
+        int m_resultCount;
+        int m_viewMode;
 
         static Statistics *s_instance;
 };
