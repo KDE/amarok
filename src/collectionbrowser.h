@@ -40,7 +40,6 @@ class CollectionBrowser: public QVBox
 
     public:
         CollectionBrowser( const char* name );
-        void refreshInfo();
         virtual bool eventFilter( QObject*, QEvent* );
 
     public slots:
@@ -66,8 +65,6 @@ class CollectionBrowser: public QVBox
         KPopupMenu* m_cat3Menu;
         KLineEdit*  m_searchEdit;
         CollectionView* m_view;
-        QLabel*     m_infoA;
-        QLabel*     m_infoB;
         QTimer*     m_timer;
 
     friend class CollectionItem; // for CatMenuId

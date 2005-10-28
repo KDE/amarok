@@ -12,7 +12,6 @@
  ***************************************************************************/
 
 #include "amarokconfig.h"     //check if dynamic mode
-#include "debug.h"
 #include "playlist.h"
 #include "queuemanager.h"
 

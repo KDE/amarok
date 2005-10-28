@@ -33,6 +33,7 @@
 #include "playlistbrowser.h"
 #include "playlistwindow.h"
 #include "scriptmanager.h"
+#include "statistics.h"
 #include "statusbar.h"
 
 #include <qevent.h>           //eventFilter()
@@ -125,6 +126,7 @@ PlaylistWindow::PlaylistWindow()
     new KAction( i18n("Play Audio CD"), "cdaudio_unmount", 0, this, SLOT(playAudioCD()), ac, "play_audiocd" );
     new KAction( i18n("Script Manager"), "pencil", 0, this, SLOT(showScriptSelector()), ac, "script_manager" );
     new KAction( i18n("Queue Manager"), "goto", 0, this, SLOT(showQueueManager()), ac, "queue_manager" );
+    new KAction( i18n("Statistics"), "info", 0, this, SLOT(showStatistics()), ac, "statistics" );
 
     ac->action( "options_configure_globals" )->setText( i18n( "Configure &Global Shortcuts..." ) );
 
@@ -259,6 +261,7 @@ PlaylistWindow::init()
     m_toolsMenu->insertItem( SmallIconSet( "visualizations"), i18n("&Visualizations"), amaroK::Menu::ID_SHOW_VIS_SELECTOR );
     m_toolsMenu->insertItem( SmallIconSet( "equalizer"), i18n("&Equalizer"), kapp, SLOT( slotConfigEqualizer() ), 0, amaroK::Menu::ID_CONFIGURE_EQUALIZER );
     actionCollection()->action("script_manager")->plug( m_toolsMenu );
+    actionCollection()->action("statistics")->plug( m_toolsMenu );
     m_toolsMenu->insertSeparator();
     m_toolsMenu->insertItem( SmallIconSet( "wizard"), i18n("&First-Run Wizard"), amaroK::Menu::ID_SHOW_WIZARD );
     m_toolsMenu->insertItem( SmallIconSet( "reload" ), i18n("&Rescan Collection"), amaroK::Menu::ID_RESCAN_COLLECTION );
@@ -687,6 +690,12 @@ void PlaylistWindow::showScriptSelector() //SLOT
 void PlaylistWindow::showQueueManager() //SLOT
 {
     Playlist::instance()->showQueueManager();
+}
+
+void PlaylistWindow::showStatistics() //SLOT
+{
+    Statistics::instance()->show();
+    Statistics::instance()->raise();
 }
 
 void PlaylistWindow::slotToggleMenu() //SLOT

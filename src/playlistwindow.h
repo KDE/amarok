@@ -62,6 +62,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
         void playAudioCD();
         void showQueueManager();
         void showScriptSelector();
+        void showStatistics();
         void slotMenuActivated( int );
         void actionsMenuAboutToShow();
         void toolsMenuAboutToShow();

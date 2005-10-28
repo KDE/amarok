@@ -57,8 +57,6 @@ CollectionBrowser::CollectionBrowser( const char* name )
     , m_cat1Menu( new KPopupMenu( this ) )
     , m_cat2Menu( new KPopupMenu( this ) )
     , m_cat3Menu( new KPopupMenu( this ) )
-    , m_infoA( 0 )
-    , m_infoB( 0 )
     , m_timer( new QTimer( this ) )
 {
     setSpacing( 4 );
@@ -162,83 +160,8 @@ CollectionBrowser::CollectionBrowser( const char* name )
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
     connect( m_searchEdit, SIGNAL( returnPressed() ), SLOT( slotSetFilter() ) );
 
-    QHBox *hb = new QHBox( this );
-    m_infoA = new QLabel( hb );
-    m_infoB = new QLabel( hb );
-    m_infoA->setAlignment( Qt::AlignCenter );
-    m_infoB->setAlignment( Qt::AlignCenter );
-
-    refreshInfo(); // Need to call this here because CollectionView is created before the labels
-
     setFocusProxy( m_view ); //default object to get focus
     setMinimumWidth( toolbar->sizeHint().width() + 2 ); //set a reasonable minWidth
-}
-
-void
-CollectionBrowser::refreshInfo()
-{
-    if( !m_infoA || !m_infoB )
-        return;
-
-    int q_cat1 = m_view->m_cat1, q_cat2 = m_view->m_cat2, q_cat3 = m_view->m_cat3;
-    if( q_cat1 == IdVisYearAlbum )
-        q_cat1 = IdAlbum;
-    if( q_cat2 == IdVisYearAlbum )
-        q_cat2 = IdAlbum;
-    if( q_cat3 == IdVisYearAlbum )
-        q_cat3 = IdAlbum;
-
-    QueryBuilder qb;
-    qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabSong, QueryBuilder::valURL );
-    qb.setGoogleFilter( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, m_view->m_filter );
-    qb.setOptions( QueryBuilder::optRemoveDuplicates );
-    QStringList a = qb.run();
-
-    QStringList b;
-    QString descriptor;
-    qb.clear();
-    qb.setGoogleFilter( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, m_view->m_filter );
-    qb.setOptions( QueryBuilder::optRemoveDuplicates );
-    if( m_view )
-    {
-        switch( q_cat1 )
-        {
-            case IdArtist:
-                qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valID );
-                b = qb.run();
-                descriptor = i18n( "1 Artist", "%n Artists", b.count() );
-                break;
-            case IdAlbum:
-                qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
-                b = qb.run();
-                descriptor = i18n( "1 Album", "%n Albums", b.count() );
-                break;
-            case IdGenre:
-                qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valID );
-                b = qb.run();
-                descriptor = i18n( "1 Genre", "%n Genres", b.count() );
-                break;
-        }
-    }
-
-    if( a.isEmpty() )
-    {
-        m_infoA->hide();
-    }
-    else
-    {
-        m_infoA->setText( i18n("1 Track","%n Tracks", a[0].toInt()) );
-        m_infoA->show();
-    }
-    if( b.isEmpty() )
-    {
-        m_infoB->hide();
-    }
-    else
-    {
-        m_infoB->setText( descriptor );
-        m_infoB->show();
-    }
 }
 
 void
@@ -414,8 +337,6 @@ void
 CollectionView::renderView()  //SLOT
 {
     DEBUG_FUNC_INFO
-
-    m_parent->refreshInfo();
 
     if ( childCount() )
         cacheView();

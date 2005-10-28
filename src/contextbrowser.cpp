@@ -24,6 +24,7 @@
 #include "playlist.h"      //appendMedia()
 #include "qstringx.h"
 #include "statusbar.h"
+#include "statistics.h"
 #include "tagdialog.h"
 #include "threadweaver.h"
 
@@ -87,7 +88,6 @@ ContextBrowser *ContextBrowser::s_instance = 0;
 ContextBrowser::ContextBrowser( const char *name )
         : KTabWidget( 0, name )
         , EngineObserver( EngineController::instance() )
-        , m_dirtyHomePage( true )
         , m_dirtyCurrentTrackPage( true )
         , m_dirtyLyricsPage( true )
         , m_dirtyWikiPage( true )
@@ -105,8 +105,6 @@ ContextBrowser::ContextBrowser( const char *name )
 {
     s_instance = this;
 
-    m_homePage = new KHTMLPart( this, "home_page" );
-    m_homePage->setDNDEnabled( true );
     m_currentTrackPage = new KHTMLPart( this, "current_track_page" );
     m_currentTrackPage->setJScriptEnabled( true );
     m_currentTrackPage->setDNDEnabled( true );
@@ -150,12 +148,10 @@ ContextBrowser::ContextBrowser( const char *name )
     connect( m_cuefile, SIGNAL(metaData( const MetaBundle& )),
              EngineController::instance(), SLOT(slotStreamMetaData( const MetaBundle& )) );
 
-    addTab( m_homePage->view(),         SmallIconSet( "gohome" ),   i18n( "Home" ) );
-    addTab( m_currentTrackPage->view(), SmallIconSet( "today" ),    i18n( "Current" ) );
+    addTab( m_currentTrackPage->view(), SmallIconSet( "today" ),    i18n( "Music" ) );
     addTab( m_lyricsTab,                SmallIconSet( "document" ), i18n( "Lyrics" ) );
     addTab( m_wikiTab,                  SmallIconSet( "personal" ),     i18n( "Artist" ) );
 
-    setTabEnabled( m_currentTrackPage->view(), false );
     setTabEnabled( m_lyricsTab, false );
     setTabEnabled( m_wikiTab, false );
 
@@ -165,10 +161,6 @@ ContextBrowser::ContextBrowser( const char *name )
 
     connect( this, SIGNAL( currentChanged( QWidget* ) ), SLOT( tabChanged( QWidget* ) ) );
 
-    connect( m_homePage->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
-             this,                             SLOT( openURLRequest( const KURL & ) ) );
-    connect( m_homePage,                     SIGNAL( popupMenu( const QString&, const QPoint& ) ),
-             this,                             SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
     connect( m_currentTrackPage->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
              this,                                     SLOT( openURLRequest( const KURL & ) ) );
     connect( m_currentTrackPage,                     SIGNAL( popupMenu( const QString&, const QPoint& ) ),
@@ -320,12 +312,16 @@ void ContextBrowser::openURLRequest( const KURL &url )
             m_dirtyLyricsPage = true;
             showLyrics( hash );
         }
+        else if ( url.path() == "statistics" )
+        {
+            Statistics::instance()->show();
+            Statistics::instance()->raise();
+        }
         else if ( url.path() == "collectionSetup" )
         {
             CollectionView::instance()->setupDirs();
         }
         // Konqueror sidebar needs these
-        if( url.path() == "home") { m_dirtyHomePage=true; showHome(); saveHtmlData(); }
         if (url.path() == "context") { m_dirtyCurrentTrackPage=true; showCurrentTrack(); saveHtmlData(); }
         if (url.path() == "wiki") { m_dirtyLyricsPage=true; showWikipedia(); saveHtmlData(); }
         if (url.path() == "lyrics") { m_dirtyWikiPage=true; m_wikiJob=false; showLyrics(); saveHtmlData(); }
@@ -400,7 +396,6 @@ void ContextBrowser::collectionScanDone()
 
 void ContextBrowser::renderView()
 {
-    m_dirtyHomePage = true;
     m_dirtyCurrentTrackPage = true;
     m_dirtyLyricsPage = true;
     m_dirtyWikiPage = true;
@@ -423,7 +418,6 @@ void ContextBrowser::renderView()
 void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChanged )
 {
     bool newMetaData = false;
-    m_dirtyHomePage = true;
     m_dirtyCurrentTrackPage = true;
     m_dirtyLyricsPage = true;
     m_dirtyWikiPage = true;
@@ -438,11 +432,9 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
         m_metadataHistory.prepend( QString( "<td valign='top'>" + timeString + "&nbsp;</td><td align='left'>" + escapeHTML( bundle.prettyTitle() ) + "</td>" ) );
     }
 
-    if ( currentPage() == m_homePage->view() )
+    if ( currentPage() == m_currentTrackPage->view() && ( bundle.url() != m_currentURL || newMetaData || !trackChanged ) )
         showCurrentTrack();
-    else if ( currentPage() == m_currentTrackPage->view() && ( bundle.url() != m_currentURL || newMetaData || !trackChanged ) )
-        showCurrentTrack();
-    if ( currentPage() == m_lyricsTab )
+    else if ( currentPage() == m_lyricsTab )
         showLyrics();
     else if ( CollectionDB::instance()->isEmpty() || !CollectionDB::instance()->isValid() )
         showIntroduction();
@@ -469,7 +461,6 @@ void ContextBrowser::engineStateChanged( Engine::State state, Engine::State oldS
     if( state != Engine::Paused /*pause*/ && oldState != Engine::Paused /*resume*/)
     {
         // Pause shouldn't clear everything
-        m_dirtyHomePage = true;
         m_dirtyCurrentTrackPage = true;
         m_dirtyLyricsPage = true;
         m_lyricJob = 0; //let's forget previous lyric-fetching jobs
@@ -483,7 +474,6 @@ void ContextBrowser::engineStateChanged( Engine::State state, Engine::State oldS
             if ( currentPage() == m_currentTrackPage->view() || currentPage() == m_lyricsTab )
                 showHome();
             blockSignals( true );
-            setTabEnabled( m_currentTrackPage->view(), false );
             setTabEnabled( m_lyricsTab, false );
             if ( currentPage() != m_wikiTab ) {
                 setTabEnabled( m_wikiTab, false );
@@ -502,7 +492,6 @@ void ContextBrowser::engineStateChanged( Engine::State state, Engine::State oldS
             if ( oldState != Engine::Paused )
                 m_metadataHistory.clear();
             blockSignals( true );
-            setTabEnabled( m_currentTrackPage->view(), true );
             setTabEnabled( m_lyricsTab, true );
             setTabEnabled( m_wikiTab, true );
             m_wikiToolBar->setItemEnabled( WIKI_ARTIST, true );
@@ -569,9 +558,7 @@ void ContextBrowser::wheelDelta( int delta )
 void ContextBrowser::tabChanged( QWidget *page )
 {
     setFocusProxy( page ); //so focus is given to a sensible widget when the tab is opened
-    if ( m_dirtyHomePage && ( page == m_homePage->view() ) )
-        showHome();
-    else if ( m_dirtyCurrentTrackPage && ( page == m_currentTrackPage->view() ) )
+    if ( m_dirtyCurrentTrackPage && ( page == m_currentTrackPage->view() ) )
         showCurrentTrack();
     else if ( m_dirtyLyricsPage && ( page == m_lyricsTab ) )
         showLyrics();
@@ -695,12 +682,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         if ( button == KMessageBox::Continue )
         {
             CollectionDB::instance()->removeAlbumImage( artist, album );
-            if( currentPage() == m_homePage->view() )
-            {
-                m_dirtyHomePage = true;
-                showHome();
-            }
-            else if( currentPage() == m_currentTrackPage->view() )
+            if( currentPage() == m_currentTrackPage->view() )
             {
                 m_dirtyCurrentTrackPage = true;
                 showCurrentTrack();
@@ -763,12 +745,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         if ( !file.isEmpty() ) {
             CollectionDB::instance()->setAlbumImage( artist, album, file );
 
-            if( currentPage() == m_homePage->view() )
-            {
-                m_dirtyHomePage = true;
-                showHome();
-            }
-            else if( currentPage() == m_currentTrackPage->view() )
+            if( currentPage() == m_currentTrackPage->view() )
             {
                 m_dirtyCurrentTrackPage = true;
                 showCurrentTrack();
@@ -1037,54 +1014,13 @@ void ContextBrowser::showHome() //SLOT
 {
     DEBUG_BLOCK
 
-    if ( currentPage() != m_homePage->view() )
-    {
+    if ( currentPage() != m_currentTrackPage->view() ) {
         blockSignals( true );
-        showPage( m_homePage->view() );
+        showPage( m_currentTrackPage->view() );
         blockSignals( false );
     }
 
-    if ( CollectionDB::instance()->isEmpty() || !CollectionDB::instance()->isValid() )
-    {
-        //TODO show scanning message if scanning, not the introduction
-        showIntroduction();
-        return;
-    }
-
-    // Do we have to rebuild the page?
-    if ( !m_dirtyHomePage ) return;
-
-    if (!AmarokConfig::showStatByAlbums())
-    {
-        ContextBrowser::showHomeBySongs();
-    }
-    else
-    {
-        ContextBrowser::showHomeByAlbums();
-    }
-
-    m_homePage->write( m_HTMLSource );
-    m_homePage->end();
-
-    m_dirtyHomePage = false;
-    saveHtmlData(); // Send html code to file
-
-}
-
-
-void ContextBrowser::showHomeBySongs()
-{
     QueryBuilder qb;
-    qb.clear();
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
-    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
-    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
-    qb.setLimit( 0, 10 );
-    QStringList fave = qb.run();
-
     qb.clear();
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
@@ -1094,22 +1030,59 @@ void ContextBrowser::showHomeBySongs()
     qb.setLimit( 0, 10 );
     QStringList lastplayed = qb.run();
 
-    qb.clear();
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
-    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valCreateDate, true );
-    qb.setLimit( 0, 10 );
-    QStringList newest = qb.run();
+    qb.clear(); //Song count
+    qb.addReturnFunctionValue(QueryBuilder::funcCount, QueryBuilder::tabSong, QueryBuilder::valURL );
+    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    QStringList a = qb.run();
+    QString songCount = a[0];
 
-    m_homePage->begin();
+    qb.clear(); //Artist count
+    qb.addReturnFunctionValue(QueryBuilder::funcCount, QueryBuilder::tabArtist, QueryBuilder::valID );
+    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    a = qb.run();
+    QString artistCount = a[0];
+
+    qb.clear(); //Album count
+    qb.addReturnFunctionValue(QueryBuilder::funcCount, QueryBuilder::tabAlbum, QueryBuilder::valID );
+    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    a = qb.run();
+    QString albumCount = a[0];
+
+    qb.clear(); //Genre count
+    qb.addReturnFunctionValue(QueryBuilder::funcCount, QueryBuilder::tabGenre, QueryBuilder::valID );
+    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    a = qb.run();
+    QString genreCount = a[0];
+
+    m_currentTrackPage->begin();
     m_HTMLSource="";
-    m_homePage->setUserStyleSheet( m_styleSheet );
+    m_currentTrackPage->setUserStyleSheet( m_styleSheet );
+
+    m_HTMLSource.append(
+            "<html>"
+            "<div id='introduction_box' class='box'>"
+                "<div id='introduction_box-header' class='box-header'>"
+                    "<span id='introduction_box-header-title' class='box-header-title'>"
+                    + i18n( "No track playing" ) +
+                    "</span>"
+                "</div>"
+                "<div id='introduction_box-body' class='box-body'>"
+                    "<div class='info'><p>" +
+                        songCount   + " " + i18n( "Songs" ) + "<br>" +
+                        artistCount + " " + i18n( "Artists" ) + "<br>" +
+                        albumCount  + " " + i18n( "Albums" ) + "<br>" +
+                        genreCount  + " " + i18n( "Genres" ) + "<br>" +
+                    "</p></div>"
+                    "<div align='center'>"
+                    "<input type='button' onClick='window.location.href=\"show:statistics\";' value='" +
+                    i18n( "Detailed Statistics..." ) +
+                    "'></div><br />"
+                "</div>"
+            "</div>"
+                       );
 
     // <Recent Tracks Information>
     m_HTMLSource.append(
-            "<html>"
             "<div id='newest_box' class='box'>"
                 "<div id='newest_box-header' class='box-header'>"
                     "<span id='newest_box-header-title' class='box-header-title'>"
@@ -1155,244 +1128,16 @@ void ContextBrowser::showHomeBySongs()
         m_HTMLSource.append("</table> </div>");
     }
     m_HTMLSource.append(
-            "</div>");
+            "</div></html>");
 
     // </Recent Tracks Information>
+    m_currentTrackPage->write( m_HTMLSource );
+    m_currentTrackPage->end();
+    saveHtmlData(); // Send html code to file
 
-
-    // <Favorite Tracks Information>
-    m_HTMLSource.append(
-            "<html>"
-            "<div id='favorites_box' class='box'>"
-                "<div id='favorites_box-header' class='box-header'>"
-                    "<span id='favorites_box-header-title' class='box-header-title'>"
-                    + i18n( "Your Favorite Tracks" ) +
-                    "</span>"
-                "</div>" );
-
-    if ( fave.count() == 0 )
-    {
-        m_HTMLSource.append(
-                "<div id='favorites_box-body' class='box-body'><p>" +
-                i18n( "A list of your favorite tracks will appear here, once you have played a few of your songs." ) +
-                "</p></div>" );
-    }
-    else
-    {
-        m_HTMLSource.append(
-                "<div id='favorites_box-body' class='box-body'>"
-                             "<table border='0' cellspacing='0' cellpadding='0' width='100%' class='song'>" );
-
-        for( uint i = 0; i < fave.count(); i = i + 5 )
-        {
-            m_HTMLSource.append(
-                        "<tr class='" + QString( (i % 10) ? "box-row-alt" : "box-row" ) + "'>"
-                                    "<td width='30' align='center' class='song-place'>" + QString::number( ( i / 5 ) + 1 ) + "</td>"
-                                    "<td>"
-                                        "<a href=\"file:" + fave[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
-                                            "<span class='song-title'>" + escapeHTML( fave[i] ) + "</span><br /> "
-                                            "<span class='song-artist'>" + escapeHTML( fave[i + 3] ) + "</span>" );
-
-            if ( !fave[i + 4].isEmpty() )
-            m_HTMLSource.append(        "<span class='song-separator'>"
-                                            + i18n("&#xa0;&#8211; ") +
-                                         "</span><span class='song-album'>"+ escapeHTML( fave[i + 4] ) +"</span>" );
-
-            m_HTMLSource.append(
-                                "</a>"
-                                    "</td>"
-                                    "<td class='sbtext' width='1'>" + fave[i + 2] + "</td>"
-                                    "<td width='1' title='" + i18n( "Score" ) + "'>"
-                                        "<div class='sbouter'>"
-                                            "<div class='sbinner' style='width: " + QString::number( fave[i + 2].toInt() / 2 ) + "px;'></div>"
-                                        "</div>"
-                                    "</td>"
-                                    "<td width='1'></td>"
-                                "</tr>" );
-        }
-
-        m_HTMLSource.append(
-                    "</table>"
-                             "</div>" );
-    }
-    m_HTMLSource.append(
-            "</div>");
-
-    // </Favorite Tracks Information>
-
-    // <Newest Tracks Information>
-    m_HTMLSource.append(
-            "<div id='newest_box' class='box'>"
-                "<div id='newest_box-header' class='box-header'>"
-                    "<span id='newest_box-header-title' class='box-header-title'>"
-                    + i18n( "Your Newest Tracks" ) +
-                    "</span>"
-                "</div>"
-                "<div id='newest_box-body' class='box-body'>" );
-
-    for( uint i = 0; i < newest.count(); i = i + 4 )
-    {
-        m_HTMLSource.append(
-                 "<div class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
-                    "<div class='song'>"
-                        "<a href=\"file:" + newest[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
-                        "<span class='song-title'>" + escapeHTML( newest[i] ) + "</span><br />"
-                        "<span class='song-artist'>" + escapeHTML( newest[i + 2] ) + "</span>"
-                    );
-
-        if ( !newest[i + 3].isEmpty() )
-            m_HTMLSource.append(
-                "<span class='song-separator'>"
-                + i18n("&#xa0;&#8211 ") +
-                "</span><span class='song-album'>" + escapeHTML( newest[i + 3] ) + "</span>"
-                        );
-
-        m_HTMLSource.append(
-                        "</a>"
-                    "</div>"
-                    "</div>");
-    }
-    m_HTMLSource.append(
-                "</div>"
-            "</div>"
-            "</html>" );
-
-    // </Newest Tracks Information>
 }
 
 
-void ContextBrowser::showHomeByAlbums()
-{
-
-    QueryBuilder qb;
-    qb.clear();
-    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
-    qb.addReturnFunctionValue(QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage);
-    qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
-    qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
-    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID);
-    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName);
-    qb.setLimit( 0, 5 );
-    QStringList faveAlbums = qb.run();
-
-    qb.clear();
-    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
-    qb.addReturnFunctionValue(QueryBuilder::funcMax, QueryBuilder::tabSong, QueryBuilder::valCreateDate);
-    qb.sortByFunction( QueryBuilder::funcMax, QueryBuilder::tabSong, QueryBuilder::valCreateDate, true );
-    qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
-    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID);
-    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName);
-    qb.setLimit( 0, 5 );
-    QStringList recentAlbums = qb.run();
-
-    qb.clear();
-    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
-    qb.addReturnFunctionValue(QueryBuilder::funcMax, QueryBuilder::tabStats, QueryBuilder::valAccessDate);
-    qb.sortByFunction( QueryBuilder::funcMax, QueryBuilder::tabStats, QueryBuilder::valAccessDate, false );
-    qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
-    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID);
-    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName);
-    qb.setLimit( 0, 5 );
-    QStringList leastAlbums = qb.run();
-
-    m_homePage->begin();
-    m_HTMLSource="";
-    m_homePage->setUserStyleSheet( m_styleSheet );
-
-    m_HTMLSource.append("<html>");
-
-    // write the script to toggle blocks visibility
-    m_HTMLSource.append( "<script type='text/javascript'>"
-                         //Toggle visibility of a block. NOTE: if the block ID starts with the T
-                         //letter, 'Table' display will be used instead of the 'Block' one.
-                         "function toggleBlock(ID) {"
-                         "if ( document.getElementById(ID).style.display != 'none' ) {"
-                         "document.getElementById(ID).style.display = 'none';"
-                         "} else {"
-                         "if ( ID[0] != 'T' ) {"
-                         "document.getElementById(ID).style.display = 'block';"
-                         "} else {"
-                         "document.getElementById(ID).style.display = 'table';"
-                         "}"
-                         "}"
-                         "}"
-                         "</script>" );
-
-    // <Favorite Albums Information>
-    m_HTMLSource.append(
-        "<div id='albums_box' class='box'>"
-        "<div id='albums_box-header' class='box-header'>"
-        "<span id='albums_box-header-title' class='box-header-title'>"
-        + i18n( "Favorite Albums" ) +
-        "</span>"
-        "</div>"
-        "<table id='albums_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='0'>" );
-
-    if ( faveAlbums.count() == 0 )
-    {
-        m_HTMLSource.append(
-            "<div id='favorites_box-body' class='box-body'><p>" +
-            i18n( "A list of your favorite albums will appear here, once you have played a few of your songs." ) +
-            "</p></div>" );
-    }
-    else
-    {
-        ContructHTMLAlbums(faveAlbums, m_HTMLSource, "1", SHOW_ALBUM_SCORE);
-    }
-
-    m_HTMLSource.append("</div>");
-
-    // </Favorite Tracks Information>
-
-    m_HTMLSource.append(
-        "<div id='least_box' class='box'>"
-        "<div id='least_box-header' class='box-header'>"
-        "<span id='least_box-header-title' class='box-header-title'>"
-        + i18n( "Your Newest Albums" ) +
-        "</span>"
-        "</div>"
-        "<div id='least_box-body' class='box-body'>" );
-    ContructHTMLAlbums(recentAlbums, m_HTMLSource, "2", SHOW_ALBUM_NORMAL);
-
-    m_HTMLSource.append(
-        "</div>"
-        "</div>");
-
-    // </Recent Tracks Information>
-
-    // <Songs least listened Information>
-    m_HTMLSource.append(
-        "<div id='least_box' class='box'>"
-        "<div id='least_box-header' class='box-header'>"
-        "<span id='least_box-header-title' class='box-header-title'>"
-        + i18n( "Least Played Albums" ) +
-        "</span>"
-        "</div>"
-        "<div id='least_box-body' class='box-body'>" );
-
-    if (leastAlbums.count() == 0)
-    {
-        m_HTMLSource.append(
-            "<div class='info'><p>" +
-            i18n( "A list of albums, which you have not played for a long time, will appear here." ) +
-            "</p></div>"
-        );
-    }
-    else
-    {
-        ContructHTMLAlbums(leastAlbums, m_HTMLSource, "3", SHOW_ALBUM_LEAST_PLAY);
-    }
-
-    m_HTMLSource.append(
-                "</div>"
-            "</div>"
-            "</html>"
-                       );
-    // </Songs least listened Information>
-}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -1433,6 +1178,12 @@ private:
 
 void ContextBrowser::showCurrentTrack() //SLOT
 {
+    if( !EngineController::engine()->loaded() )
+    {
+        showHome();
+        return;
+    }
+
     if ( currentPage() != m_currentTrackPage->view() ) {
         blockSignals( true );
         showPage( m_currentTrackPage->view() );
@@ -2119,7 +1870,6 @@ void ContextBrowser::setStyleSheet()
     else
         setStyleSheet_Default( m_styleSheet );
 
-    m_homePage->setUserStyleSheet( m_styleSheet );
     m_currentTrackPage->setUserStyleSheet( m_styleSheet );
     m_lyricsPage->setUserStyleSheet( m_styleSheet );
     m_wikiPage->setUserStyleSheet( m_styleSheet );
@@ -2291,17 +2041,17 @@ void ContextBrowser::showIntroduction()
 {
     DEBUG_BLOCK
 
-    if ( currentPage() != m_homePage->view() )
+    if ( currentPage() != m_currentTrackPage->view() )
     {
         blockSignals( true );
-        showPage( m_homePage->view() );
+        showPage( m_currentTrackPage->view() );
         blockSignals( false );
     }
 
     // Do we have to rebuild the page? I don't care
-    m_homePage->begin();
+    m_currentTrackPage->begin();
     m_HTMLSource = QString::null;
-    m_homePage->setUserStyleSheet( m_styleSheet );
+    m_currentTrackPage->setUserStyleSheet( m_styleSheet );
 
     m_HTMLSource.append(
             "<html>"
@@ -2327,25 +2077,25 @@ void ContextBrowser::showIntroduction()
             "</html>"
                        );
 
-    m_homePage->write( m_HTMLSource );
-    m_homePage->end();
+    m_currentTrackPage->write( m_HTMLSource );
+    m_currentTrackPage->end();
     saveHtmlData(); // Send html code to file
 }
 
 
 void ContextBrowser::showScanning()
 {
-    if ( currentPage() != m_homePage->view() )
+    if ( currentPage() != m_currentTrackPage->view() )
     {
         blockSignals( true );
-        showPage( m_homePage->view() );
+        showPage( m_currentTrackPage->view() );
         blockSignals( false );
     }
 
     // Do we have to rebuild the page? I don't care
-    m_homePage->begin();
+    m_currentTrackPage->begin();
     m_HTMLSource="";
-    m_homePage->setUserStyleSheet( m_styleSheet );
+    m_currentTrackPage->setUserStyleSheet( m_styleSheet );
 
     m_HTMLSource.append(
             "<html>"
@@ -2362,8 +2112,8 @@ void ContextBrowser::showScanning()
             "</html>"
                        );
 
-    m_homePage->write( m_HTMLSource );
-    m_homePage->end();
+    m_currentTrackPage->write( m_HTMLSource );
+    m_currentTrackPage->end();
     saveHtmlData(); // Send html code to file
 }
 
@@ -2972,12 +2722,7 @@ ContextBrowser::coverFetched( const QString &artist, const QString &album ) //SL
     if ( currentTrack.artist().isEmpty() && currentTrack.album().isEmpty() )
         return;
 
-    if( currentPage() == m_homePage->view() )
-    {
-        m_dirtyHomePage = true;
-        showHome();
-    }
-    else if ( currentPage() == m_currentTrackPage->view() &&
+    if ( currentPage() == m_currentTrackPage->view() &&
        ( currentTrack.artist() == artist || currentTrack.album() == album ) ) // this is for compilations or artist == ""
     {
         if( currentPage() == m_currentTrackPage->view() )
@@ -2996,12 +2741,7 @@ ContextBrowser::coverRemoved( const QString &artist, const QString &album ) //SL
     if ( currentTrack.artist().isEmpty() && currentTrack.album().isEmpty() )
         return;
 
-    if( currentPage() == m_homePage->view() )
-    {
-        m_dirtyHomePage = true;
-        showHome();
-    }
-    else if ( currentPage() == m_currentTrackPage->view() &&
+    if ( currentPage() == m_currentTrackPage->view() &&
        ( currentTrack.artist() == artist || currentTrack.album() == album ) ) // this is for compilations or artist == ""
     {
         if( currentPage() == m_currentTrackPage->view() )
@@ -3033,12 +2773,7 @@ void ContextBrowser::tagsChanged( const MetaBundle &bundle ) //SLOT
     if( bundle.artist() != currentTrack.artist() && bundle.album() != currentTrack.album() )
         return;
 
-    if( currentPage() == m_homePage->view() )
-    {
-        m_dirtyHomePage = true;
-        showHome();
-    }
-    else if ( currentPage() == m_currentTrackPage->view() ) // this is for compilations or artist == ""
+    if ( currentPage() == m_currentTrackPage->view() ) // this is for compilations or artist == ""
     {
         if( currentPage() == m_currentTrackPage->view() )
         {

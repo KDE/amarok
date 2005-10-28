@@ -101,22 +101,18 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         void showIntroduction();
         void saveHtmlData();
         void showScanning();
-        void showHomeBySongs();
-        void showHomeByAlbums();
         static QString makeShadowedImage( const QString& albumImage );
 
         void   ContructHTMLAlbums(const QStringList & reqResult, QString & htmlCode, QString stID, T_SHOW_ALBUM_TYPE showAlbumType);
 
-        KHTMLPart    *m_homePage;
         KHTMLPart    *m_currentTrackPage;
         KHTMLPart    *m_lyricsPage;
         KHTMLPart    *m_wikiPage;
 
         QVBox        *m_lyricsTab;
         QVBox        *m_wikiTab;
-        // These control if is needed to rewrite the html for the pages
+        // These controls are used to dictate whether the page should be rebuilt
         // true -> need rebuild
-        bool          m_dirtyHomePage;
         bool          m_dirtyCurrentTrackPage;
         bool          m_dirtyLyricsPage;
         bool          m_dirtyWikiPage;

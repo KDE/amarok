@@ -104,6 +104,8 @@ amarokapp_SOURCES = \
     sliderwidget.cpp \
     smartplaylisteditor.cpp \
     socketserver.cpp \
+    statistics.cpp \
+    statisticsbase.ui \
     streamprovider.cpp \
     systray.cpp \
     tagdialog.cpp \
