@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.3.6:
   BUGFIXES:
+    * Loading dynamic playlists with sources did not work properly.
     * Fix build issue on some Linux kernel 2.4 distros. (BR 115068)
 
 
