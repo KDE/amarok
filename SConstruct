@@ -12,10 +12,25 @@ configure  -> scons configure prefix=/tmp/ita debug=full
 
 Run from a subdirectory -> scons -u
 """
+import sys, os
+sys.path.append('bksys')
+from generic import configure
+
+
+config = {
+        'modules'  : 'generic default kde3',
+        'builddir' : 'build', # put all object files under 'build/'
+        'config.h' : 0,
+        'rpath'    : 1,
+        'bootstrap': 1,
+        'colorful' : not os.environ.has_key('NOCOLORS'),
+}
+
+env=configure(config)
 
 
 ## this loads the bksys modules and stuff
-env = Environment( tools=['default', 'generic', 'kde3'], toolpath=['./', './bksys'])
+#env = Environment( tools=['default', 'generic', 'kde3'], toolpath=['./', './bksys'])
 
 
 ## some settings bksys will apply to the build, eg threaded libs
@@ -27,7 +42,7 @@ env.SConsignFile('bksys/signatures')
 
 
 ## tell scons what to build
-#env.subdirs( 'src' )
+env.subdirs( 'src' )
 env.SConscript( "src/SConscript", build_dir='build', duplicate=0 )
 
 
