@@ -61,7 +61,7 @@ TrackPickerDialog::TrackPickerDialog(const QString &name, const KTRMResultList &
     setMainWidget(m_base);
 
     m_base->fileLabel->setText(name);
-    m_base->trackList->setSorting(-1);
+//    m_base->trackList->setSorting(-1);
     KTRMResultList::ConstIterator end( results.end() );
     for(KTRMResultList::ConstIterator it = results.begin(); it != end; ++it)
         new TrackPickerItem(m_base->trackList, *it);
