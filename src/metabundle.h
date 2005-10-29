@@ -83,6 +83,8 @@ public:
     /** used by PlaylistItem, should be true for everything but local files that aren't there */
     bool exists() const { return true; }
 
+    int track()      const { return m_track; }
+    int year()       const { return m_year; }
     int length()     const { return m_length > 0 ? m_length : 0; }
     int bitrate()    const { return m_bitrate; }
     int sampleRate() const { return m_sampleRate; }
@@ -94,10 +96,8 @@ public:
     const QString &title()      const { return m_title; }
     const QString &artist()     const { return m_artist; }
     const QString &album()      const { return m_album; }
-    const QString &year()       const { return m_year; }
     const QString &comment()    const { return m_comment; }
     const QString &genre()      const { return m_genre; }
-    const QString &track()      const { return m_track; }
     const QString &streamName() const { return m_streamName; }
     const QString &streamUrl()  const { return m_streamUrl; }
     QString type( bool detectstream = true ) const
@@ -137,10 +137,10 @@ public:
     void setTitle( const QString &title ) { m_title = title; }
     void setArtist( const QString &artist ) { m_artist = artist; }
     void setAlbum( const QString &album ) { m_album = album; }
-    void setYear( const QString &year ) { m_year = year; }
     void setComment( const QString &comment ) { m_comment = comment; }
     void setGenre( const QString &genre ) { m_genre = genre; }
-    void setTrack( const QString &track ) { m_track = track; }
+    void setYear( int year) { m_year = year; }
+    void setTrack( int track ) { m_track = track; }
     void setLength( int length ) { m_length = length; }
     void setBitrate( int bitrate ) { m_bitrate = bitrate; }
     void setSampleRate( int sampleRate ) { m_sampleRate = sampleRate; }
@@ -150,13 +150,13 @@ protected:
     QString m_title;
     QString m_artist;
     QString m_album;
-    QString m_year;
     QString m_comment;
     QString m_genre;
-    QString m_track;
     QString m_streamName;
     QString m_streamUrl;
 
+    int m_year;
+    int m_track;
     int m_bitrate;
     int m_length;
     int m_sampleRate;

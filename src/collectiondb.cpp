@@ -1144,11 +1144,11 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental, DbConnection 
     command += escapeString( QString::number( albumID( bundle->album(),   true, !incremental, false, conn ) ) ) + ",";
     command += escapeString( QString::number( artistID( bundle->artist(), true, !incremental, false, conn ) ) ) + ",";
     command += escapeString( QString::number( genreID( bundle->genre(),   true, !incremental, false, conn ) ) ) + ",'";
-    command += escapeString( QString::number( yearID( bundle->year(),     true, !incremental, false, conn ) ) ) + "','";
+    command += escapeString( QString::number( yearID( QString::number( bundle->year() ), true, !incremental, false, conn ) ) ) + "','";
 
     command += escapeString( bundle->title() ) + "','";
     command += escapeString( bundle->comment() ) + "', ";
-    command += ( bundle->track().isEmpty() ? "NULL" : escapeString( bundle->track() ) ) + " , ";
+    command += ( !bundle->track() ? "NULL" : escapeString( QString::number( bundle->track() ) ) ) + " , ";
     command += artist == i18n( "Various Artists" ) ? boolT() + "," : boolF() + ",";
 
     // NOTE any of these may be -1 or -2, this is what we want
@@ -1179,9 +1179,9 @@ fillInBundle( QStringList values, MetaBundle &bundle )
     bundle.setArtist    ( *it ); ++it;
     bundle.setGenre     ( *it ); ++it;
     bundle.setTitle     ( *it ); ++it;
-    bundle.setYear      ( *it ); ++it;
+    bundle.setYear      ( (*it).toInt() ); ++it;
     bundle.setComment   ( *it ); ++it;
-    bundle.setTrack     ( *it ); ++it;
+    bundle.setTrack     ( (*it).toInt() ); ++it;
     bundle.setBitrate   ( (*it).toInt() ); ++it;
     bundle.setLength    ( (*it).toInt() ); ++it;
     bundle.setSampleRate( (*it).toInt() );
@@ -1249,9 +1249,9 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
                 b.setArtist    (  *++it );
                 b.setGenre     (  *++it );
                 b.setTitle     (  *++it );
-                b.setYear      (  *++it );
+                b.setYear      ( (*++it).toInt() );
                 b.setComment   (  *++it );
-                b.setTrack     (  *++it );
+                b.setTrack     ( (*++it).toInt() );
                 b.setBitrate   ( (*++it).toInt() );
                 b.setLength    ( (*++it).toInt() );
                 b.setSampleRate( (*++it).toInt() );
@@ -1656,9 +1656,9 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
     command += "artist = " + QString::number( artistID( bundle.artist(), true, false, true ) ) + ", ";
     command += "album = "  + QString::number( albumID( bundle.album(), true, false, true ) ) + ", ";
     command += "genre = "  + QString::number( genreID( bundle.genre(), true, false, true ) ) + ", ";
-    command += "year = "   + QString::number( yearID( bundle.year(), true, false, true ) ) + ", ";
-    if ( !bundle.track().isEmpty() )
-        command += "track = " + bundle.track() + ", ";
+    command += "year = "   + QString::number( yearID( QString::number( bundle.year() ), true, false, true ) ) + ", ";
+    if ( bundle.track() )
+        command += "track = " + QString::number( bundle.track() ) + ", ";
     command += "comment = '" + escapeString( bundle.comment() ) + "' ";
     command += "WHERE url = '" + escapeString( url ) + "';";
 

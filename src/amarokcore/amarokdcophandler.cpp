@@ -233,7 +233,7 @@ namespace amaroK
 
     QString DcopPlayerHandler::track()
     {
-        return EngineController::instance()->bundle().track();
+        return QString::number( EngineController::instance()->bundle().track() );
     }
 
     QString DcopPlayerHandler::type()
@@ -243,7 +243,7 @@ namespace amaroK
 
     QString DcopPlayerHandler::year()
     {
-        return EngineController::instance()->bundle().year();
+        return QString::number( EngineController::instance()->bundle().year() );
     }
 
     void DcopPlayerHandler::configEqualizer()

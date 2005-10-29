@@ -215,8 +215,8 @@ TagDialog::fillSelected( KTRMResult selected ) //SLOT
         if ( !selected.title().isEmpty() )    mb.setTitle( selected.title() );
         if ( !selected.artist().isEmpty() )   mb.setArtist( selected.artist() );
         if ( !selected.album().isEmpty() )    mb.setAlbum( selected.album() );
-        if ( selected.track() != 0 )          mb.setTrack( QString::number( selected.track() ) );
-        if ( selected.year() != 0 )           mb.setYear( QString::number( selected.year() ) );
+        if ( selected.track() != 0 )          mb.setTrack( selected.track() );
+        if ( selected.year() != 0 )           mb.setYear( selected.year() );
 
         storedTags.insert( m_mbTrack, mb );
     }
@@ -324,8 +324,8 @@ void TagDialog::readTags()
     kComboBox_artist->setCurrentText( m_bundle.artist() );
     kComboBox_album->setCurrentText( m_bundle.album() );
     kComboBox_genre->setCurrentText( m_bundle.genre() );
-    kIntSpinBox_track->setValue( m_bundle.track().toInt() );
-    kIntSpinBox_year->setValue( m_bundle.year().toInt() );
+    kIntSpinBox_track->setValue( m_bundle.track() );
+    kIntSpinBox_year->setValue( m_bundle.year() );
     kIntSpinBox_score->setValue( m_score );
     kLineEdit_comment->setText( m_bundle.comment() );
     kLineEdit_length->setText( m_bundle.prettyLength() );
@@ -449,7 +449,7 @@ TagDialog::readMultipleTracks()
     }
     if (year) {
         m_bundle.setYear( first.year() );
-        kIntSpinBox_year->setValue( first.year().toInt() );
+        kIntSpinBox_year->setValue( first.year() );
     }
     if (score) {
         m_score = scoreFirst;
@@ -477,12 +477,12 @@ TagDialog::changes()
     modified |= !equalString( kComboBox_artist->lineEdit()->text(), m_bundle.artist() );
     modified |= !equalString( kComboBox_album->lineEdit()->text(), m_bundle.album() );
     modified |= !equalString( kComboBox_genre->lineEdit()->text(), m_bundle.genre() );
-    modified |= kIntSpinBox_year->value()  != m_bundle.year().toInt();
+    modified |= kIntSpinBox_year->value()  != m_bundle.year();
 
     modified |= !equalString( kLineEdit_comment->text(), m_bundle.comment() );
     if (!m_urlList.count()) { //ignore these on MultipleTracksMode
         modified |= !equalString( kLineEdit_title->text(), m_bundle.title() );
-        modified |= kIntSpinBox_track->value() != m_bundle.track().toInt();
+        modified |= kIntSpinBox_track->value() != m_bundle.track();
     }
     if (modified)
         result |= TagDialog::TAGSCHANGED;
@@ -507,8 +507,8 @@ TagDialog::storeTags()
         mb.setAlbum( kComboBox_album->currentText() );
         mb.setComment( kLineEdit_comment->text() );
         mb.setGenre( kComboBox_genre->currentText() );
-        mb.setTrack( QString::number( kIntSpinBox_track->value() ) );
-        mb.setYear( QString::number( kIntSpinBox_year->value() ) );
+        mb.setTrack( kIntSpinBox_track->value() );
+        mb.setYear( kIntSpinBox_year->value() );
         mb.setLength( m_bundle.length() );
         mb.setBitrate( m_bundle.bitrate() );
         mb.setSampleRate( m_bundle.sampleRate() );
@@ -586,9 +586,9 @@ TagDialog::saveMultipleTracks()
             mb.setComment( kLineEdit_comment->text() );
             tagsChanged = true;
         }
-        if( kIntSpinBox_year->value() && kIntSpinBox_year->value() != mb.year().toInt() ||
-            !kIntSpinBox_year->value() && m_bundle.year().toInt() ) {
-            mb.setYear( QString::number( kIntSpinBox_year->value() ) );
+        if( kIntSpinBox_year->value() && kIntSpinBox_year->value() != mb.year() ||
+            !kIntSpinBox_year->value() && m_bundle.year() ) {
+            mb.setYear( kIntSpinBox_year->value() );
             tagsChanged = true;
         }
         if( kIntSpinBox_score->value() && kIntSpinBox_score->value() != m_score ||
@@ -635,8 +635,8 @@ TagDialog::writeTag( MetaBundle mb, bool updateCB )
         t->setTitle( QStringToTString( mb.title() ) );
         t->setArtist( QStringToTString( mb.artist() ) );
         t->setAlbum( QStringToTString( mb.album() ) );
-        t->setTrack( mb.track().toInt() );
-        t->setYear( mb.year().toInt() );
+        t->setTrack( mb.track() );
+        t->setYear( mb.year() );
         t->setComment( QStringToTString( mb.comment() ) );
         t->setGenre( QStringToTString( mb.genre() ) );
 

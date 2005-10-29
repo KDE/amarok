@@ -1387,8 +1387,8 @@ CollectionView::organizeFiles()  //SLOT
             type = mb.type();
 
                 if ( !mb.title().isEmpty() ){
-                    if ( !mb.track().isEmpty() )
-                        title = mb.track() + " - " + cleanPath( mb.title() );
+                    if ( mb.track() )
+                        title = QString::number( mb.track() ) + " - " + cleanPath( mb.title() );
                     else
                          title = cleanPath( mb.title() );
                     title.replace( type, "" );

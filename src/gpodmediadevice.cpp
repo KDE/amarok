@@ -913,8 +913,8 @@ GpodMediaDevice::newDBTrack(const MetaBundle &bundle)
     track->genre = g_strdup( bundle.genre().utf8() );
     track->filetype = g_strdup( (type + "-file").utf8() );
     track->comment = g_strdup( bundle.comment().utf8() );
-    track->track_nr = bundle.track().toUInt();
-    track->year = bundle.year().toUInt();
+    track->track_nr = bundle.track();
+    track->year = bundle.year();
     //track->size = 0;
     track->bitrate = bundle.bitrate();
     track->samplerate = bundle.sampleRate();

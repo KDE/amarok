@@ -94,7 +94,7 @@ bool TrackMetadata::readFromBundle( const MetaBundle& bundle )
     setGenre( "" );
 
     tracklen = bundle.length() * 1000;
-    tracknum = bundle.track().toInt();
+    tracknum = bundle.track();
     bitrate = bundle.bitrate();
     vbr = 0;
     type = 1;

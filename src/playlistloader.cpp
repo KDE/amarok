@@ -728,9 +728,9 @@ SqlLoader::doJob()
         b.setArtist    (  *++it );
         b.setGenre     (  *++it );
         b.setTitle     (  *++it );
-        b.setYear      (  *++it );
+        b.setYear      ( (*++it).toInt() );
         b.setComment   (  *++it );
-        b.setTrack     (  *++it );
+        b.setTrack     ( (*++it).toInt() );
         b.setBitrate   ( (*++it).toInt() );
         b.setLength    ( (*++it).toInt() );
         b.setSampleRate( (*++it).toInt() );

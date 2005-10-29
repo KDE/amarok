@@ -685,7 +685,7 @@ MediaDevice::saveTransferList( const QString &path )
             i.appendChild( attr );
 
             attr = newdoc.createElement( "Year" );
-            t = newdoc.createTextNode( item->bundle()->year() );
+            t = newdoc.createTextNode( QString::number( item->bundle()->year() ) );
             attr.appendChild( t );
             i.appendChild( attr );
 
@@ -700,7 +700,7 @@ MediaDevice::saveTransferList( const QString &path )
             i.appendChild( attr );
 
             attr = newdoc.createElement( "Track" );
-            t = newdoc.createTextNode( item->bundle()->track() );
+            t = newdoc.createTextNode( QString::number( item->bundle()->track() ) );
             attr.appendChild( t );
             i.appendChild( attr );
         }
@@ -784,7 +784,7 @@ MediaDevice::loadTransferList( const QString& filename )
             else if(node.nodeName() == "Album" )
                 bundle->setAlbum(node.firstChild().toText().nodeValue());
             else if(node.nodeName() == "Year" )
-                bundle->setYear(node.firstChild().toText().nodeValue());
+                bundle->setYear(node.firstChild().toText().nodeValue().toUInt());
             else if(node.nodeName() == "Genre" )
                 bundle->setGenre(node.firstChild().toText().nodeValue());
             else if(node.nodeName() == "Comment" )

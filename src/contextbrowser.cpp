@@ -2185,7 +2185,7 @@ void ContextBrowser::showLyrics( const QString &hash )
             KURL::encode_string_no_slash( EngineController::instance()->bundle().artist() ),
             KURL::encode_string_no_slash( title ),
             KURL::encode_string_no_slash( EngineController::instance()->bundle().album() ),
-            KURL::encode_string_no_slash( EngineController::instance()->bundle().year() ) );
+            KURL::encode_string_no_slash( QString::number( EngineController::instance()->bundle().year() ) ) );
     m_lyricSearchUrl = QString( "http://www.google.com/search?ie=UTF-8&q=lyrics %1 %2" )
         .arg( KURL::encode_string_no_slash( '"'+EngineController::instance()->bundle().artist()+'"', 106 /*utf-8*/ ),
               KURL::encode_string_no_slash( '"'+title+'"', 106 /*utf-8*/ ) );

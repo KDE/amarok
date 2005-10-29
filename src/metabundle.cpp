@@ -20,6 +20,8 @@
 
 MetaBundle::MetaBundle( const KURL &url, TagLib::AudioProperties::ReadStyle readStyle )
     : m_url( url )
+    , m_year( 0 )
+    , m_track( 0 )
     , m_exists( url.protocol() == "file" && QFile::exists( url.path() ) )
     , m_isValidMedia( false ) //will be updated
 {
@@ -44,6 +46,8 @@ MetaBundle::MetaBundle( const QString& title,
         , m_genre     ( genre )
         , m_streamName( streamName )
         , m_streamUrl ( streamUrl )
+        , m_year( 0 )
+        , m_track( 0 )
         , m_bitrate   ( bitrate )
         , m_length    ( Irrelevant )
         , m_sampleRate( Unavailable )
@@ -67,10 +71,10 @@ MetaBundle::MetaBundle( const PlaylistItem *item )
         , m_title  ( item->title() )        //because you override text()
         , m_artist ( item->exactText( 2 ) ) //because you override text()
         , m_album  ( item->exactText( 3 ) ) //etc.
-        , m_year   ( item->exactText( 4 ) ) //..
-        , m_comment( item->exactText( 5 ) ) //.
+        , m_comment( item->exactText( 5 ) )
         , m_genre  ( item->exactText( 6 ) )
-        , m_track  ( item->exactText( 7 ) )
+        , m_year   ( item->exactText( 4 ).toInt() )
+        , m_track  ( item->exactText( 7 ).toInt() )
         , m_exists ( true ) //FIXME
         , m_isValidMedia( true )
 {
@@ -119,10 +123,10 @@ MetaBundle::init( const KFileMetaInfo& info )
     {
         m_artist     = info.item( "Artist" ).string();
         m_album      = info.item( "Album" ).string();
-        m_year       = info.item( "Year" ).string();
         m_comment    = info.item( "Comment" ).string();
         m_genre      = info.item( "Genre" ).string();
-        m_track      = info.item( "Track" ).string();
+        m_year       = info.item( "Year" ).string().toInt();
+        m_track      = info.item( "Track" ).string().toInt();
         m_bitrate    = info.item( "Bitrate" ).value().toInt();
         m_length     = info.item( "Length" ).value().toInt();
         m_sampleRate = info.item( "Sample Rate" ).value().toInt();
@@ -137,10 +141,8 @@ MetaBundle::init( const KFileMetaInfo& info )
         QString null;
         makeSane( m_artist );
         makeSane( m_album );
-        makeSane( m_year );
         makeSane( m_comment );
         makeSane( m_genre  );
-        makeSane( m_track );
         makeSane( m_title );
         #undef makeSane
 
@@ -188,8 +190,8 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
             m_album   = strip( tag->album() );
             m_comment = strip( tag->comment() );
             m_genre   = strip( tag->genre() );
-            m_year    = tag->year() ? QString::number( tag->year() ) : QString();
-            m_track   = tag->track() ? QString::number( tag->track() ) : QString();
+            m_year    = tag->year();
+            m_track   = tag->track();
             #undef strip
 
             m_isValidMedia = true;
@@ -248,10 +250,10 @@ MetaBundle::infoByColumn( int column, bool pretty ) const
         case PlaylistItem::Title:     return title();
         case PlaylistItem::Artist:    return artist();
         case PlaylistItem::Album:     return album();
-        case PlaylistItem::Year:      return year();
+        case PlaylistItem::Year:      return QString::number( year() );
         case PlaylistItem::Comment:   return comment();
         case PlaylistItem::Genre:     return genre();
-        case PlaylistItem::Track:     return track();
+        case PlaylistItem::Track:     return QString::number( track() );
         case PlaylistItem::Directory: return directory();
         case PlaylistItem::Length:    return pretty ? prettyLength() : QString::number( length() );
         case PlaylistItem::Bitrate:   return pretty ? prettyBitrate() : QString::number( bitrate() );
