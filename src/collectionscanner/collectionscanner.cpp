@@ -52,6 +52,8 @@ CollectionScanner::CollectionScanner( const QStringList& folders bool incrementa
         m_processedDirs.resize(m_processedDirs.size()+1);
         m_processedDirs[m_processedDirs.size()-1] = de;
     }
+
+    doJob();
 }
 
 
@@ -114,16 +116,12 @@ CollectionScanner::~CollectionScanner()
 bool
 CollectionScanner::doJob()
 {
-    if( !m_db->isConnected() )
-        return false;
-
     log << "Collection Scan Log\n";
     log << "===================\n";
     log << i18n( "Report this file if amaroK crashes when building the Collection." ).local8Bit();
     log << "\n\n\n";
 
     // we need to create the temp tables before readDir gets called ( for the dir stats )
-    CollectionDB::instance()->createTables( m_db );
     setProgressTotalSteps( 100 );
 
 
@@ -145,21 +143,8 @@ CollectionScanner::doJob()
     if( !entries.isEmpty() ) {
         setStatus( i18n("Reading metadata") );
         setProgressTotalSteps( entries.count() );
-        readTags( entries );
+        scanFiles( entries );
     }
-
-    if( !isAborted() ) {
-        if( !m_incremental )
-            CollectionDB::instance()->clearTables();
-        else
-            foreach( m_folders )
-                CollectionDB::instance()->removeSongsInDir( *it );
-
-        // rename tables
-        CollectionDB::instance()->moveTempTables( m_db );
-    }
-
-    CollectionDB::instance()->dropTables( m_db );
 
     log.close();
 
@@ -259,8 +244,9 @@ CollectionScanner::readDir( const QString& dir, QStrList& entries )
     closedir( d );
 }
 
+
 void
-CollectionScanner::readTags( const QStrList& entries )
+CollectionScanner::scanFiles( const QStrList& entries )
 {
     DEBUG_BLOCK
 
@@ -332,3 +318,55 @@ CollectionScanner::readTags( const QStrList& entries )
         }
     }
 }
+
+
+void
+CollectionScanner::readTags( TagLib::AudioProperties::ReadStyle readStyle )
+{
+    if( m_url.protocol() != "file" )
+        return;
+
+    const QString path = m_url.path();
+    TagLib::FileRef fileref;
+    TagLib::Tag *tag = 0;
+
+    if( AmarokConfig::recodeID3v1Tags() && path.endsWith( ".mp3", false ) )
+    {
+        TagLib::MPEG::File *mpeg = new TagLib::MPEG::File( QFile::encodeName( path ), true, readStyle );
+        fileref = TagLib::FileRef( mpeg );
+
+        if( mpeg->isValid() )
+            // we prefer ID3v1 over ID3v2 if recoding tags because
+            // apparently this is what people who ignore ID3 standards want
+            tag = mpeg->ID3v1Tag() ? (TagLib::Tag*)mpeg->ID3v1Tag() : (TagLib::Tag*)mpeg->ID3v2Tag();
+    }
+
+    else {
+        fileref = TagLib::FileRef( QFile::encodeName( path ), true, readStyle );
+
+        if( !fileref.isNull() )
+            tag = fileref.tag();
+    }
+
+    if( !fileref.isNull() ) {
+        if ( tag ) {
+            #define strip( x ) TStringToQString( x ).stripWhiteSpace()
+            m_title   = strip( tag->title() );
+            m_artist  = strip( tag->artist() );
+            m_album   = strip( tag->album() );
+            m_comment = strip( tag->comment() );
+            m_genre   = strip( tag->genre() );
+            m_year    = tag->year() ? QString::number( tag->year() ) : QString();
+            m_track   = tag->track() ? QString::number( tag->track() ) : QString();
+            #undef strip
+
+            m_isValidMedia = true;
+        }
+
+        init( fileref.audioProperties() );
+    }
+}
+
+
+#include "collectionscanner.moc"
+

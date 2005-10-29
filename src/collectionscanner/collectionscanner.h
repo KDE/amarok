@@ -25,6 +25,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <taglib/audioproperties.h>
+
 #include <qstringlist.h>
 
 #include <kapplication.h>
@@ -56,7 +58,10 @@ protected:
 
 private:
     void readDir( const QString& dir, QStrList& entries );
-    void readTags( const QStrList& entries );
+    void scanFiles( const QStrList& entries );
+
+    /** If you want Accurate reading say so */
+    void readTags( TagLib::AudioProperties::ReadStyle );
 
     bool m_recursively;
 
