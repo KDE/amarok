@@ -36,7 +36,7 @@ KAboutData aboutData( "amarok",
 int main( int argc, char *argv[] )
 {
     aboutData.addAuthor( "Alexandre '" I18N_NOOP("Ain't afraid of no bugs") "' Oliveira",
-            I18N_NOOP( "Developer (Untouchable)" ), "aleprj@gmail.co" );
+            I18N_NOOP( "Developer (Untouchable)" ), "aleprj@gmail.com" );
     aboutData.addAuthor( "Christian '" I18N_NOOP("Babe-Magnet") "' Muehlhaeuser",
             I18N_NOOP( "Stud (muesli)" ), "chris@chris.de", "http://www.chris.de" );
     aboutData.addAuthor( "Frederik 'Ich bin kein Deustcher!' Holljen",
