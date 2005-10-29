@@ -27,18 +27,16 @@
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
 
-#include <kapplication.h>
 #include <kglobal.h>
 #include <klocale.h>
 
 
-CollectionScanner::CollectionScanner( CollectionDB* parent, const QStringList& folders )
-        : DependentJob( parent, "CollectionScanner" )
-        , m_importPlaylists( AmarokConfig::importPlaylists() )
-        , m_incremental( false )
+CollectionScanner::CollectionScanner( const QStringList& folders bool incremental, bool recursive, bool importPlaylists )
+        : KApplication()
+        , m_importPlaylists( importPlaylists )
+        , m_incremental( incremental )
         , m_folders( folders )
-        , m_db( CollectionDB::instance()->getStaticDbConnection() )
-        , m_recursively( AmarokConfig::scanRecursively() )
+        , m_recursively( recursive )
         , log( QFile::encodeName( amaroK::saveLocation( QString::null ) + "collection_scan.log" ) )
 {
     setDescription( i18n( "Building Collection" ) );
@@ -58,62 +56,60 @@ CollectionScanner::CollectionScanner( CollectionDB* parent, const QStringList& f
 
 
 CollectionScanner::~CollectionScanner()
-{
-    CollectionDB::instance()->returnStaticDbConnection( m_db );
-}
+{}
 
 
+// IncrementalCollectionScanner::IncrementalCollectionScanner( CollectionDB *parent )
+//         : CollectionScanner( parent, QStringList() )
+//         , m_hasChanged( false )
+// {
+//     m_importPlaylists = false;
+//     m_incremental = true;
+//
+//     setDescription( i18n( "Updating Collection" ) );
+// }
+//
+// bool
+// IncrementalCollectionScanner::doJob()
+// {
+//     /**
+//      * The Incremental Reader works as follows: Here we check the mtime of every directory in the "directories"
+//      * table and store all changed directories in m_folders.
+//      *
+//      * These directories are then scanned in CollectionScanner::doJob(), with m_recursively set according to the
+//      * user's preference, so the user can add directories or whole directory trees, too. Since we don't want to
+//      * rescan unchanged subdirectories, CollectionScanner::readDir() checks if we are scanning recursively and
+//      * prevents that.
+//      */
+//
+//     struct stat statBuf;
+//     const QStringList values = CollectionDB::instance()->query( "SELECT dir, changedate FROM directories;" );
+//
+//     foreach( values ) {
+//         const QString folder = *it;
+//         const QString mtime  = *++it;
+//
+//         if( stat( QFile::encodeName( folder ), &statBuf ) == 0 ) {
+//             if( QString::number( (long)statBuf.st_mtime ) != mtime ) {
+//                 m_folders << folder;
+//                 debug() << "Collection dir changed: " << folder << endl;
+//             }
+//         }
+//         else {
+//             // this folder has been removed
+//             m_folders << folder;
+//             debug() << "Collection dir removed: " << folder << endl;
+//         }
+//     }
+//
+//     if( !m_folders.isEmpty() ) {
+//         m_hasChanged = true;
+//         amaroK::StatusBar::instance()->shortMessage( i18n( "Updating Collection..." ) );
+//     }
+//
+//     return CollectionScanner::doJob();
+// }
 
-IncrementalCollectionScanner::IncrementalCollectionScanner( CollectionDB *parent )
-        : CollectionScanner( parent, QStringList() )
-        , m_hasChanged( false )
-{
-    m_importPlaylists = false;
-    m_incremental = true;
-
-    setDescription( i18n( "Updating Collection" ) );
-}
-
-bool
-IncrementalCollectionScanner::doJob()
-{
-    /**
-     * The Incremental Reader works as follows: Here we check the mtime of every directory in the "directories"
-     * table and store all changed directories in m_folders.
-     *
-     * These directories are then scanned in CollectionScanner::doJob(), with m_recursively set according to the
-     * user's preference, so the user can add directories or whole directory trees, too. Since we don't want to
-     * rescan unchanged subdirectories, CollectionScanner::readDir() checks if we are scanning recursively and
-     * prevents that.
-     */
-
-    struct stat statBuf;
-    const QStringList values = CollectionDB::instance()->query( "SELECT dir, changedate FROM directories;" );
-
-    foreach( values ) {
-        const QString folder = *it;
-        const QString mtime  = *++it;
-
-        if( stat( QFile::encodeName( folder ), &statBuf ) == 0 ) {
-            if( QString::number( (long)statBuf.st_mtime ) != mtime ) {
-                m_folders << folder;
-                debug() << "Collection dir changed: " << folder << endl;
-            }
-        }
-        else {
-            // this folder has been removed
-            m_folders << folder;
-            debug() << "Collection dir removed: " << folder << endl;
-        }
-    }
-
-    if( !m_folders.isEmpty() ) {
-        m_hasChanged = true;
-        amaroK::StatusBar::instance()->shortMessage( i18n( "Updating Collection..." ) );
-    }
-
-    return CollectionScanner::doJob();
-}
 
 bool
 CollectionScanner::doJob()

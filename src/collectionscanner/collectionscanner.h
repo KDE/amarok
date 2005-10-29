@@ -27,31 +27,25 @@
 
 #include <qstringlist.h>
 
+#include <kapplication.h>
+
 
 /**
  * @class CollectionScanner
  * @short Scans directories and builds the Collection
  */
 
-class CollectionScanner : public QObject
+class CollectionScanner : public KApplication
 {
     Q_OBJECT
 
 public:
-    static const int PlaylistFoundEventType = 8890;
+    CollectionScanner( const QStringList& folders,
+                       bool incremental = false,
+                       bool recursive = false,
+                       bool importPlaylists = false );
 
-    class PlaylistFoundEvent : public QCustomEvent {
-    public:
-        PlaylistFoundEvent( QString path )
-            : QCustomEvent( PlaylistFoundEventType )
-            , m_path( path ) {}
-        QString path() { return m_path; }
-    private:
-        QString m_path;
-    };
-
-    CollectionScanner( CollectionDB* parent, const QStringList& folders );
-   ~CollectionScanner();
+    ~CollectionScanner();
 
 protected:
     virtual bool doJob();
@@ -63,8 +57,6 @@ protected:
 private:
     void readDir( const QString& dir, QStrList& entries );
     void readTags( const QStrList& entries );
-
-    DbConnection* const m_db;
 
     bool m_recursively;
 
@@ -84,17 +76,17 @@ private:
  * @short Only scans directories that have been modified since the last scan
  */
 
-class IncrementalCollectionScanner : public CollectionScanner
-{
-public:
-    IncrementalCollectionScanner( CollectionDB* );
-
-    bool hasChanged() const { return m_hasChanged; }
-
-protected:
-    virtual bool doJob();
-
-    bool m_hasChanged;
-};
+// class IncrementalCollectionScanner : public CollectionScanner
+// {
+// public:
+//     IncrementalCollectionScanner( CollectionDB* );
+//
+//     bool hasChanged() const { return m_hasChanged; }
+//
+// protected:
+//     virtual bool doJob();
+//
+//     bool m_hasChanged;
+// };
 
 #endif // COLLECTIONSCANNER_H
