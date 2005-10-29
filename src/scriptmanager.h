@@ -53,7 +53,7 @@ class KProcIO;
 
 class ScriptManager : public KDialogBase, public EngineObserver
 {
-        Q_OBJECT
+    Q_OBJECT
 
     friend class AmarokScriptNewStuff;
 
