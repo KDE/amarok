@@ -20,17 +20,19 @@ VERSION 1.4:
       length of the queued tracks.
 
   BUGFIXES:
-    * Podcast download directory would only be effective next time the
-      application started
-    * Don't crash when attempting to save an empty playlist from the
-      Playlist menu.
-    * Loading dynamic playlists with sources did not work properly.
     * Creating a new playlist via drag-and-drop no longer shows duplicates
       of each song until amaroK is restarted.
 
 
 VERSION 1.3.6:
   BUGFIXES:
+    * last.fm queue wouldn't be saved to disk. Patch by John Patterson
+      <kde-bugs@ninecats.org>. (BR 115212)
+    * Podcast download directory would only be effective next time the
+      application started.
+    * Don't crash when attempting to save an empty playlist from the Playlist
+      menu.
+    * Loading dynamic playlists with sources did not work properly.
     * Fix build issue on some Linux kernel 2.4 distros. (BR 115068)
 
 
