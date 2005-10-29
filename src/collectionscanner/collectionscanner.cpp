@@ -1,30 +1,36 @@
-// (c) The amaroK developers 2003-4
-// See COPYING file that comes with this distribution
-//
+/***************************************************************************
+ *   Copyright (C) 2003-2005 by The amaroK Developers                      *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   51 Franklin Steet, Fifth Floor, Boston, MA  02111-1307, USA.          *
+ ***************************************************************************/
 
-#define DEBUG_PREFIX "CollectionReader"
-
-#include "amarok.h"
-#include "amarokconfig.h"
 #include <cerrno>
-#include "debug.h"
-#include "collectiondb.h"
-#include "collectionreader.h"
-
 #include <dirent.h>    //stat
-#include <kapplication.h>
-#include <kglobal.h>
-#include <klocale.h>
 #include <iostream>
-#include "metabundle.h"
-#include "playlistbrowser.h"
-#include "statusbar.h"
 #include <sys/stat.h>  //stat
 #include <sys/types.h> //stat
 #include <unistd.h>    //stat
 
-CollectionReader::CollectionReader( CollectionDB* parent, const QStringList& folders )
-        : DependentJob( parent, "CollectionReader" )
+#include <kapplication.h>
+#include <kglobal.h>
+#include <klocale.h>
+
+
+CollectionScanner::CollectionScanner( CollectionDB* parent, const QStringList& folders )
+        : DependentJob( parent, "CollectionScanner" )
         , m_importPlaylists( AmarokConfig::importPlaylists() )
         , m_incremental( false )
         , m_folders( folders )
@@ -48,15 +54,15 @@ CollectionReader::CollectionReader( CollectionDB* parent, const QStringList& fol
 }
 
 
-CollectionReader::~CollectionReader()
+CollectionScanner::~CollectionScanner()
 {
     CollectionDB::instance()->returnStaticDbConnection( m_db );
 }
 
 
 
-IncrementalCollectionReader::IncrementalCollectionReader( CollectionDB *parent )
-        : CollectionReader( parent, QStringList() )
+IncrementalCollectionScanner::IncrementalCollectionScanner( CollectionDB *parent )
+        : CollectionScanner( parent, QStringList() )
         , m_hasChanged( false )
 {
     m_importPlaylists = false;
@@ -66,15 +72,15 @@ IncrementalCollectionReader::IncrementalCollectionReader( CollectionDB *parent )
 }
 
 bool
-IncrementalCollectionReader::doJob()
+IncrementalCollectionScanner::doJob()
 {
     /**
      * The Incremental Reader works as follows: Here we check the mtime of every directory in the "directories"
      * table and store all changed directories in m_folders.
      *
-     * These directories are then scanned in CollectionReader::doJob(), with m_recursively set according to the
+     * These directories are then scanned in CollectionScanner::doJob(), with m_recursively set according to the
      * user's preference, so the user can add directories or whole directory trees, too. Since we don't want to
-     * rescan unchanged subdirectories, CollectionReader::readDir() checks if we are scanning recursively and
+     * rescan unchanged subdirectories, CollectionScanner::readDir() checks if we are scanning recursively and
      * prevents that.
      */
 
@@ -103,11 +109,11 @@ IncrementalCollectionReader::doJob()
         amaroK::StatusBar::instance()->shortMessage( i18n( "Updating Collection..." ) );
     }
 
-    return CollectionReader::doJob();
+    return CollectionScanner::doJob();
 }
 
 bool
-CollectionReader::doJob()
+CollectionScanner::doJob()
 {
     if ( !m_db->isConnected() )
         return false;
@@ -163,7 +169,7 @@ CollectionReader::doJob()
 
 
 void
-CollectionReader::readDir( const QString& dir, QStrList& entries )
+CollectionScanner::readDir( const QString& dir, QStrList& entries )
 {
     // linux specific, but this fits the 90% rule
     if ( dir.startsWith("/dev") || dir.startsWith("/sys") || dir.startsWith("/proc") )
@@ -255,7 +261,7 @@ CollectionReader::readDir( const QString& dir, QStrList& entries )
 }
 
 void
-CollectionReader::readTags( const QStrList& entries )
+CollectionScanner::readTags( const QStrList& entries )
 {
     DEBUG_BLOCK
 
