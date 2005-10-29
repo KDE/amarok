@@ -174,6 +174,9 @@ bool NmmEngine::load(const KURL& url, bool stream)
     // create the graph represented by a composite node
     __composite = gb.createGraph(*__app);
 
+    // set volume for playback node
+    setVolume( m_volume );
+
     // register the needed event listeners at the playback node
    
     __playback->getParentObject()->registerEventListener(IProgressListener::setProgress_event, 
@@ -209,7 +212,7 @@ bool NmmEngine::load(const KURL& url, bool stream)
     }
       
     __composite->reachStarted();
-      
+ 
     __seeking = false;
     __track_ended = false;
     __state = Engine::Playing;
@@ -353,11 +356,11 @@ bool NmmEngine::canDecode(const KURL& url) const
 
 void NmmEngine::setVolumeSW(uint percent)
 {
-  strstream str;
-  str << "/usr/bin/aumix -v " << percent;
-  char s[50];
-  str.getline(s, 50);
-  system(s);
+    if( __playback )
+    {
+        IAudioDevice_var audio(__playback->getParentObject()->getCheckedInterface<IAudioDevice>());
+        audio->setVolume( percent );
+    }
 }
 
 // minimum of two positive numbers a and b

@@ -58,9 +58,10 @@ public slots:
     bool  play(unsigned int offset = 0);
     void  stop();
     void  pause();
-
     void  seek(uint);
-    void  setVolumeSW(uint = 0);
+
+protected:
+    void  setVolumeSW( uint );
 
 private:
     /**
