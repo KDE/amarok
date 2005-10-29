@@ -940,7 +940,6 @@ Playlist::playPrevTrack()
 {
     PlaylistItem *item = m_currentTrack;
 
-    //Replaced obfuscated code two lines below 
     if ( !AmarokConfig::randomMode() || m_prevTracks.count() <= 1 )
         item = *static_cast<MyIt&>(--MyIt( item )); //the previous track to item that is visible
 
