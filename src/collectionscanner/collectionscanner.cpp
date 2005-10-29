@@ -24,6 +24,9 @@
 #include <sys/types.h> //stat
 #include <unistd.h>    //stat
 
+#include <taglib/fileref.h>
+#include <taglib/tag.h>
+
 #include <kapplication.h>
 #include <kglobal.h>
 #include <klocale.h>
