@@ -5,6 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.3.6:
   BUGFIXES:
+    * Podcast download directory would only be effective next time
+      the application started.
     * Don't crash when attempting to save an empty playlist from the
       Playlist menu.
     * Loading dynamic playlists with sources did not work properly.

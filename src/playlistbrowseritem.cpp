@@ -1142,11 +1142,9 @@ PodcastChannel::configure()
             while( item )
             {
                 if( item->hasDownloaded() )
-                {
                     copyList << item->localUrl();
-                    item->setLocalUrlBase( save );
-                }
-
+                
+                item->setLocalUrlBase( save );
                 item = static_cast<PodcastItem*>( item->nextSibling() );
             }
             // move the items
