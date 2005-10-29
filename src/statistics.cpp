@@ -182,8 +182,8 @@ Statistics::buildAlbumInfo()
     qb.clear();
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-    qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage );
-    qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
+    qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valScore );
+    qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valScore, true );
     qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
     qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID);
     qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName);
@@ -239,7 +239,7 @@ Statistics::buildTrackInfo()
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
-    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
+    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valScore, true );
     qb.setLimit( 0, m_resultCount );
     QStringList fave = qb.run();
 
@@ -247,8 +247,10 @@ Statistics::buildTrackInfo()
     QString text = "<b>" + i18n("Favourite Songs") + "</b><br>";
     for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
     {
-        text += "<i>" + fave[i] + "</i>" + i18n(" - " ) + fave[i+1]
-              + i18n(" (Score: ") + fave[i+2] + i18n(")");
+        text += i18n("<i>%1</i> - %2 (Score: %3)")
+                    .arg( fave[i] )
+                    .arg( fave[i+1] )
+                    .arg( fave[i+2] );
         if( i + qb.countReturnValues() != fave.count() )
              text += "<br>";
     }
@@ -266,8 +268,10 @@ Statistics::buildTrackInfo()
     text = "<b>" + i18n("Most Played Songs") + "</b><br>";
     for( uint i=0; i < mostPlayed.count(); i += qb.countReturnValues() )
     {
-        text += "<i>" + mostPlayed[i] + "</i>" + i18n(" - " ) + mostPlayed[i+1]
-              + i18n(" (Playcount: ") + mostPlayed[i+2] + i18n(")");
+        text += i18n("<i>%1</i> - %2 (Playcount: %3)")
+                    .arg( mostPlayed[i] )
+                    .arg( mostPlayed[i+1] )
+                    .arg( mostPlayed[i+2] );
         if( i + qb.countReturnValues() != mostPlayed.count() )
              text += "<br>";
     }
@@ -280,8 +284,8 @@ Statistics::buildArtistInfo()
     QueryBuilder qb;
     qb.clear();
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-    qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage );
-    qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
+    qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valScore );
+    qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valScore, true );
     qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valName);
     qb.setLimit( 0, m_resultCount );
     QStringList faveArtists = qb.run();
@@ -290,7 +294,9 @@ Statistics::buildArtistInfo()
     QString text = "<b>" + i18n("Favourite Artists") + "</b><br>";
     for( uint i=0; i < faveArtists.count(); i += qb.countReturnValues() )
     {
-        text += "<i>" + faveArtists[i] + "</i>" + i18n(" (Score: ") + faveArtists[i+1] + i18n(")");
+        text += i18n("<i>%1</i> (Score: %2)")
+                    .arg( faveArtists[i] )
+                    .arg( faveArtists[i+1] );
         if( i + qb.countReturnValues() != faveArtists.count() )
              text += "<br>";
     }
@@ -308,7 +314,9 @@ Statistics::buildArtistInfo()
     text = "<b>" + i18n("Artist Dominance") + "</b><br>"; // sebr: dominance an appropriate word?! :)
     for( uint i=0; i < mostSongs.count(); i += qb.countReturnValues() )
     {
-        text += "<i>" + mostSongs[i] + "</i>" + i18n(" (") + mostSongs[i+1] + i18n(" songs)");
+        text += i18n("<i>%1</i> (Count: %2)")
+                    .arg( mostSongs[i] )
+                    .arg( mostSongs[i+1] );
         if( i + qb.countReturnValues() != mostSongs.count() )
              text += "<br>";
     }
