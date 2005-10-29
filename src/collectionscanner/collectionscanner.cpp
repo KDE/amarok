@@ -25,7 +25,10 @@
 #include <unistd.h>    //stat
 
 #include <taglib/fileref.h>
+#include <taglib/id3v1genres.h> //used to load genre list
+#include <taglib/mpegfile.h>
 #include <taglib/tag.h>
+#include <taglib/tstring.h>
 
 #include <kglobal.h>
 #include <klocale.h>
@@ -39,8 +42,6 @@ CollectionScanner::CollectionScanner( const QStringList& folders bool incrementa
         , m_recursively( recursive )
         , log( QFile::encodeName( amaroK::saveLocation( QString::null ) + "collection_scan.log" ) )
 {
-    setDescription( i18n( "Building Collection" ) );
-
     // don't traverse /
     struct stat statBuf;
     if( stat( "/", &statBuf ) == 0 ) {
@@ -292,30 +293,30 @@ CollectionScanner::scanFiles( const QStrList& entries )
         if( validImages.contains( ext ) )
            images += path;
 
-        else if( bundle.isValidMedia() )
-        {
-            CoverBundle cover( bundle.artist(), bundle.album() );
+//         else if( bundle.isValidMedia() )
+//         {
+//             CoverBundle cover( bundle.artist(), bundle.album() );
+//
+//             if( !covers.contains( cover ) )
+//                 covers += cover;
+//
+//            CollectionDB::instance()->addSong( &bundle, m_incremental, m_db );
+//         }
 
-            if( !covers.contains( cover ) )
-                covers += cover;
-
-           CollectionDB::instance()->addSong( &bundle, m_incremental, m_db );
-        }
-
-        // Update Compilation-flag, when this is the last loop-run
-        // or we're going to switch to another dir in the next run
-        if( path == entries.getLast() || dir != amaroK::directory( QFile::decodeName(++QStrListIterator( it )) ) )
-        {
-            // we entered the next directory
-            foreach( images )
-                CollectionDB::instance()->addImageToAlbum( *it, covers, m_db );
-
-            CollectionDB::instance()->checkCompilations( dir, !m_incremental, m_db );
-
-            // clear now because we've processed them
-            covers.clear();
-            images.clear();
-        }
+//         // Update Compilation-flag, when this is the last loop-run
+//         // or we're going to switch to another dir in the next run
+//         if( path == entries.getLast() || dir != amaroK::directory( QFile::decodeName(++QStrListIterator( it )) ) )
+//         {
+//             // we entered the next directory
+//             foreach( images )
+//                 CollectionDB::instance()->addImageToAlbum( *it, covers, m_db );
+//
+//             CollectionDB::instance()->checkCompilations( dir, !m_incremental, m_db );
+//
+//             // clear now because we've processed them
+//             covers.clear();
+//             images.clear();
+//         }
     }
 }
 
@@ -351,13 +352,13 @@ CollectionScanner::readTags( TagLib::AudioProperties::ReadStyle readStyle )
     if( !fileref.isNull() ) {
         if ( tag ) {
             #define strip( x ) TStringToQString( x ).stripWhiteSpace()
-            m_title   = strip( tag->title() );
-            m_artist  = strip( tag->artist() );
-            m_album   = strip( tag->album() );
-            m_comment = strip( tag->comment() );
-            m_genre   = strip( tag->genre() );
-            m_year    = tag->year() ? QString::number( tag->year() ) : QString();
-            m_track   = tag->track() ? QString::number( tag->track() ) : QString();
+            std::cout << strip( tag->title() ) << endl;
+            std::cout << strip( tag->artist() ) << endl;
+            std::cout << strip( tag->album() ) << endl;
+            std::cout << strip( tag->comment() ) << endl;
+            std::cout << strip( tag->genre() ) << endl;
+            std::cout << ( tag->year() ? QString::number( tag->year() ) : QString() ) << endl;
+            std::cout << ( tag->track() ? QString::number( tag->track() ) : QString() ) << endl;
             #undef strip
 
             m_isValidMedia = true;
