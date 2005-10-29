@@ -986,8 +986,6 @@ void ScrobblerSubmitter::saveSubmitQueue()
     QDomElement submitQueue = newdoc.createElement( "submit" );
     submitQueue.setAttribute( "product", "amaroK" );
     submitQueue.setAttribute( "version", APP_VERSION );
-    QDomNode submitNode = newdoc.importNode( submitQueue, true );
-    newdoc.appendChild( submitNode );
 
     m_submitQueue.first();
     for ( uint idx = 0; idx < m_submitQueue.count(); idx++ )
@@ -996,6 +994,9 @@ void ScrobblerSubmitter::saveSubmitQueue()
         QDomElement i = item->toDomElement( newdoc );
         submitQueue.appendChild( i );
     }
+
+    QDomNode submitNode = newdoc.importNode( submitQueue, true );
+    newdoc.appendChild( submitNode );
 
     QTextStream stream( &file );
     stream.setEncoding( QTextStream::UnicodeUTF8 );
