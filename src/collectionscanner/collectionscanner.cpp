@@ -42,7 +42,7 @@ CollectionScanner::CollectionScanner( CollectionDB* parent, const QStringList& f
 
     // don't traverse /
     struct stat statBuf;
-    if ( stat( "/", &statBuf ) == 0 ) {
+    if( stat( "/", &statBuf ) == 0 ) {
         struct direntry de;
         memset(&de, 0, sizeof(struct direntry));
         de.dev = statBuf.st_dev;
@@ -91,8 +91,8 @@ IncrementalCollectionScanner::doJob()
         const QString folder = *it;
         const QString mtime  = *++it;
 
-        if ( stat( QFile::encodeName( folder ), &statBuf ) == 0 ) {
-            if ( QString::number( (long)statBuf.st_mtime ) != mtime ) {
+        if( stat( QFile::encodeName( folder ), &statBuf ) == 0 ) {
+            if( QString::number( (long)statBuf.st_mtime ) != mtime ) {
                 m_folders << folder;
                 debug() << "Collection dir changed: " << folder << endl;
             }
@@ -104,7 +104,7 @@ IncrementalCollectionScanner::doJob()
         }
     }
 
-    if ( !m_folders.isEmpty() ) {
+    if( !m_folders.isEmpty() ) {
         m_hasChanged = true;
         amaroK::StatusBar::instance()->shortMessage( i18n( "Updating Collection..." ) );
     }
@@ -115,7 +115,7 @@ IncrementalCollectionScanner::doJob()
 bool
 CollectionScanner::doJob()
 {
-    if ( !m_db->isConnected() )
+    if( !m_db->isConnected() )
         return false;
 
     log << "Collection Scan Log\n";
@@ -136,21 +136,21 @@ CollectionScanner::doJob()
             continue;
 
         QString dir = *it;
-        if ( !dir.endsWith( "/" ) )
+        if( !dir.endsWith( "/" ) )
             dir += '/';
 
         setStatus( i18n("Reading directory structure") );
         readDir( dir, entries );
     }
 
-    if ( !entries.isEmpty() ) {
+    if( !entries.isEmpty() ) {
         setStatus( i18n("Reading metadata") );
         setProgressTotalSteps( entries.count() );
         readTags( entries );
     }
 
-    if ( !isAborted() ) {
-        if ( !m_incremental )
+    if( !isAborted() ) {
+        if( !m_incremental )
             CollectionDB::instance()->clearTables();
         else
             foreach( m_folders )
@@ -172,17 +172,17 @@ void
 CollectionScanner::readDir( const QString& dir, QStrList& entries )
 {
     // linux specific, but this fits the 90% rule
-    if ( dir.startsWith("/dev") || dir.startsWith("/sys") || dir.startsWith("/proc") )
+    if( dir.startsWith("/dev") || dir.startsWith("/sys") || dir.startsWith("/proc") )
         return;
 
     QCString dir8Bit = QFile::encodeName( dir );
 
     struct stat statBuf;
     //update dir statistics for rescanning purposes
-    if ( stat( dir8Bit, &statBuf ) == 0 )
+    if( stat( dir8Bit, &statBuf ) == 0 )
         CollectionDB::instance()->updateDirStats( dir, (long)statBuf.st_mtime, !m_incremental ? m_db : 0 );
     else {
-        if ( m_incremental ) {
+        if( m_incremental ) {
             CollectionDB::instance()->removeSongsInDir( dir );
             CollectionDB::instance()->removeDirFromCollection( dir );
         }
@@ -197,15 +197,15 @@ CollectionScanner::readDir( const QString& dir, QStrList& entries )
     int f = -1;
 
 #if __GNUC__ < 4
-    for (unsigned int i = 0; i < m_processedDirs.size(); ++i)
-        if (memcmp(&m_processedDirs[i], &de, sizeof(direntry)) == 0) {
+    for(unsigned int i = 0; i < m_processedDirs.size(); ++i)
+        if(memcmp(&m_processedDirs[i], &de, sizeof(direntry)) == 0) {
             f = i; break;
         }
 #else
     f = m_processedDirs.find(de);
 #endif
 
-    if ( ! S_ISDIR ( statBuf.st_mode) || f != -1 ) {
+    if( ! S_ISDIR ( statBuf.st_mode) || f != -1 ) {
         debug() << "Skipping, already scanned: " << dir << endl;
         return;
     }
@@ -223,19 +223,19 @@ CollectionScanner::readDir( const QString& dir, QStrList& entries )
     for( dirent *ent; (ent = readdir( d )) && !isAborted(); ) {
         QCString entry (ent->d_name);
 
-        if ( entry == "." || entry == ".." )
+        if( entry == "." || entry == ".." )
             continue;
 
         entry.prepend( dir8Bit );
 
-        if ( stat( entry, &statBuf ) != 0 )
+        if( stat( entry, &statBuf ) != 0 )
             continue;
 
         // loop protection
-        if ( ! ( S_ISDIR( statBuf.st_mode ) || S_ISREG( statBuf.st_mode ) ) )
+        if( ! ( S_ISDIR( statBuf.st_mode ) || S_ISREG( statBuf.st_mode ) ) )
             continue;
 
-        if ( S_ISDIR( statBuf.st_mode ) && m_recursively && entry.length() && entry[0] != '.' )
+        if( S_ISDIR( statBuf.st_mode ) && m_recursively && entry.length() && entry[0] != '.' )
         {
             const QString file = QFile::decodeName( entry );
 
@@ -248,8 +248,8 @@ CollectionScanner::readDir( const QString& dir, QStrList& entries )
         {
             QString file = QFile::decodeName( entry );
 
-            if ( m_importPlaylists ) {
-                if ( file.endsWith(".m3u") || file.endsWith(".pls") )
+            if( m_importPlaylists ) {
+                if( file.endsWith(".m3u") || file.endsWith(".pls") )
                     QApplication::postEvent( PlaylistBrowser::instance(), new PlaylistFoundEvent( file ) );
             }
 
