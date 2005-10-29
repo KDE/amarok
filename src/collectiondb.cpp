@@ -100,6 +100,12 @@ CollectionDB::CollectionDB( bool temporary )
         KConfig* config = amaroK::config( "Collection Browser" );
         config->writeEntry( "Database Version", DATABASE_VERSION );
         config->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
+        config->writeEntry( "Database Persistent Tables Version", DATABASE_PERSISTENT_TABLES_VERSION );
+
+        setAdminValue( "Database Version", QString::number(DATABASE_VERSION) );
+        setAdminValue( "Database Stats Version", QString::number(DATABASE_STATS_VERSION) );
+        setAdminValue( "Database Persistent Tables Version", QString::number(DATABASE_PERSISTENT_TABLES_VERSION) );
+
 
         startTimer( MONITOR_INTERVAL * 1000 );
 
@@ -257,6 +263,35 @@ CollectionDB::isValid()
 }
 
 
+QString
+CollectionDB::adminValue( QString noption ) {
+    QStringList values;
+    values = query (
+        QString( "SELECT value FROM admin WHERE noption = '%1';").arg(noption)
+    );
+    return values.isEmpty() ? "" : values.first();
+}
+
+
+void
+CollectionDB::setAdminValue( QString noption, QString value ) {
+
+    DbConnection *conn = m_dbConnPool->getDbConnection();
+    QStringList values = query(QString("SELECT value FROM admin WHERE noption = '%1';").arg( noption ));
+    if(values.count() > 0)
+    {
+        query( QString( "UPDATE admin SET value = '%1' WHERE noption = '%2';" ).arg( value, noption ) );
+    }
+    else
+    {
+        insert( QString( "INSERT INTO admin (value, noption) values ( '%1', '%2' );" ).arg( value, noption ),
+         NULL, conn );
+    }
+
+}
+
+
+
 void
 CollectionDB::createTables( DbConnection *conn )
 {
@@ -273,7 +308,6 @@ CollectionDB::createTables( DbConnection *conn )
                     "title " + textColumnType() + ","
                     "year INTEGER,"
                     "comment " + textColumnType() + ","
-                    "lyrics " + longTextColumnType() + ","
                     "track NUMERIC(4),"
                     "bitrate INTEGER,"
                     "length INTEGER,"
@@ -351,11 +385,6 @@ CollectionDB::createTables( DbConnection *conn )
                     "changedate INTEGER );" )
                     .arg( conn ? "TEMPORARY" : "" )
                     .arg( conn ? "_temp" : "" ), conn );
-    query(          "CREATE TABLE amazon ( "
-                    "asin " + textColumnType(20) + ", "
-                    "locale " + textColumnType(2) + ", "
-                    "filename " + textColumnType(33) + ", "
-                    "refetchdate INTEGER );", conn );
 
     //create indexes
     query( QString( "CREATE INDEX album_idx%1 ON album%2( name );" )
@@ -369,6 +398,12 @@ CollectionDB::createTables( DbConnection *conn )
 
     if ( !conn )
     {
+
+        //create admin table -- holds the db version, put here other stuff if necessary
+        query( QString( "CREATE TABLE admin ("
+                    "noption " + textColumnType() + ", "
+                    "value " + textColumnType() + ");" ) );
+
         // create related artists cache
         query( QString( "CREATE TABLE related_artists ("
                         "artist " + textColumnType() + ","
@@ -484,6 +519,44 @@ CollectionDB::dropStatsTable()
     query( "DROP TABLE statistics;" );
 }
 
+
+void
+CollectionDB::createPersistentTables()
+{
+    DEBUG_FUNC_INFO
+
+    // create amazon table
+    query(          "CREATE TABLE amazon ( "
+            "asin " + textColumnType(20) + ", "
+            "locale " + textColumnType(2) + ", "
+            "filename " + textColumnType(33) + ", "
+            "refetchdate INTEGER );" );
+
+    // create lyrics table
+    query( QString( "CREATE TABLE lyrics ("
+            "url " + textColumnType() + ","
+            "lyrics " + longTextColumnType() + ");" ) );
+
+    // create labels table
+    query( QString( "CREATE TABLE label ("
+        "url " + textColumnType() + ","
+        "label " + textColumnType() + ");" ) );
+
+    query( "CREATE INDEX url_label ON label( url );" );
+    query( "CREATE INDEX label_label ON label( label );" );
+
+}
+
+
+void
+CollectionDB::dropPersistentTables()
+{
+    DEBUG_FUNC_INFO
+
+    query( "DROP TABLE amazon;" );
+    query( "DROP TABLE lyrics;" );
+    query( "DROP TABLE labels;" );
+}
 
 uint
 CollectionDB::artistID( QString value, bool autocreate, const bool temporary, const bool updateSpelling, DbConnection *conn )
@@ -1694,13 +1767,23 @@ CollectionDB::updateURL( const QString &url, const bool updateView )
 void
 CollectionDB::setLyrics( const QString &url, const QString &lyrics )
 {
-    query( QString( "UPDATE tags SET lyrics = '%1' WHERE url = '%2';" ).arg( escapeString( lyrics ), escapeString( url ) ) );
+    DbConnection *conn = m_dbConnPool->getDbConnection();
+    QStringList values = query(QString("SELECT lyrics FROM lyrics WHERE url = '%1';").arg( escapeString( url ) ));
+    if(values.count() > 0)
+    {
+        query( QString( "UPDATE lyrics SET lyrics = '%1' WHERE url = '%2';" ).arg( escapeString( lyrics ), escapeString( url ) ) );
+    }
+    else
+    {
+        insert( QString( "INSERT INTO lyrics (url, lyrics) values ( '%1', '%2' );" ).arg( escapeString( url ), escapeString( lyrics ) ),
+         NULL, conn );
+    }
 }
 
 QString
 CollectionDB::getLyrics( const QString &url )
 {
-    QStringList values = query( QString( "SELECT lyrics FROM tags WHERE url = '%1';" ).arg( escapeString( url ) ) );
+    QStringList values = query( QString( "SELECT lyrics FROM lyrics WHERE url = '%1';" ).arg( escapeString( url ) ) );
     return values[0];
 }
 
@@ -1978,14 +2061,37 @@ CollectionDB::initialize()
     }
     else
     {
+
+
+        if ( adminValue( "Database Persistent Tables Version" ).isEmpty() ) {
+            /* persistent tables didn't have a version on 1.3X and older, but let's be nice and try to
+               copy/keep the good information instead of just deleting the tables */
+            debug() << "Detected old schema for tables with important data. amaroK will convert the tables, ignore any \"table already exists\" errors." << endl;
+            createPersistentTables();
+            /* Copy lyrics */
+            debug() << "Trying to get lyrics from old db schema." << endl;
+            insert( "INSERT INTO lyrics SELECT url, lyrics FROM tags where tags.lyrics IS NOT NULL;", NULL, dbConn );
+        }
+        else {
+            if ( adminValue( "Database Persistent Tables Version" ).toInt() != DATABASE_PERSISTENT_TABLES_VERSION ) {
+                debug() << "Rebuilding persistent tables database!" << endl;
+                dropPersistentTables();
+                createPersistentTables();
+            }
+        }
+
         //remove database file if version is incompatible
-        if ( config->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION )
+        if ( config->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION
+             || adminValue( "Database Version" ).toInt() != DATABASE_VERSION )
         {
             debug() << "Rebuilding database!" << endl;
             dropTables();
             createTables();
         }
-        if ( config->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION )
+
+        if ( config->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION
+             || ( config->readNumEntry( "Database Stats Version", 0 ) > 3 && /* on 3, there was no version on the db.*/
+                  adminValue( "Database Stats Version" ).toInt() != DATABASE_STATS_VERSION ) )
         {
             debug() << "Rebuilding stats-database!" << endl;
             dropStatsTable();
@@ -2708,6 +2814,9 @@ QueryBuilder::linkTables( int tables )
             m_tables += " INNER JOIN " + tableName( tabYear) + " ON year.id=tags.year";
         if ( tables & tabStats )
             m_tables += " INNER JOIN " + tableName( tabStats) + " ON statistics.url=tags.url";
+        if ( tables & tabLyrics )
+            m_tables += " INNER JOIN " + tableName( tabLyrics) + " ON lyrics.url=tags.url";
+
     }
 }
 
@@ -2927,7 +3036,7 @@ QueryBuilder::setGoogleFilter( int defaultTables, QString query )
             }
             else if( field == "lyrics" )
             {
-                table = tabSong;
+                table = tabLyrics;
                 value = valLyrics;
             }
 
@@ -3448,6 +3557,7 @@ QueryBuilder::tableName( int table )
     if ( table & tabGenre )  tables += ",genre";
     if ( table & tabYear )   tables += ",year";
     if ( table & tabStats )  tables += ",statistics";
+    if ( table & tabLyrics )  tables += ",lyrics";
     if (CollectionDB::instance()->getType() == DbConnection::postgresql)
     {
         if ( table & tabSong )   tables += ",tags";

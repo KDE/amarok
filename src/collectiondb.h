@@ -257,6 +257,8 @@ class CollectionDB : public QObject, public EngineObserver
         //table management methods
         bool isEmpty();
         bool isValid();
+        QString adminValue( QString noption );
+        void setAdminValue( QString noption, QString value );
         void createTables( DbConnection *conn = NULL );
         void dropTables( DbConnection *conn = NULL );
         void clearTables( DbConnection *conn = NULL );
@@ -367,9 +369,14 @@ class CollectionDB : public QObject, public EngineObserver
         void similarArtistsFetched( const QString& artist, const QStringList& suggestions );
 
     private:
-        //bump DATABASE_VERSION whenever changes to the table structure are made. will remove old db file.
-        static const int DATABASE_VERSION = 20;
+        //bump DATABASE_VERSION whenever changes to the table structure are made.
+        // This erases tags, album, artist, genre, year, images, directory and related_artists tables.
+        static const int DATABASE_VERSION = 21;
+        // Persistent Tables hold data that is somehow valuable to the user, and can't be erased when rescaning.
+        static const int DATABASE_PERSISTENT_TABLES_VERSION = 1;
+        // Bumping this erases stats table. If you ever need to, write code to convert the data!
         static const int DATABASE_STATS_VERSION = 3;
+
         static const int MONITOR_INTERVAL = 60; //sec
         static const bool DEBUG = false;
 
@@ -380,6 +387,8 @@ class CollectionDB : public QObject, public EngineObserver
         //general management methods
         void createStatsTable();
         void dropStatsTable();
+        void createPersistentTables();
+        void dropPersistentTables();
         void scanModifiedDirs();
 
         QCString makeWidthKey( uint width );
@@ -415,7 +424,7 @@ class QueryBuilder
     public:
         //attributes:
         enum qBuilderTables  { tabAlbum = 1, tabArtist = 2, tabGenre = 4, tabYear = 8, tabSong = 32,
-                               tabStats = 64, tabDummy = 0 };
+                               tabStats = 64, tabLyrics = 128, tabDummy = 0 };
         enum qBuilderOptions { optNoCompilations = 1, optOnlyCompilations = 2, optRemoveDuplicates = 4,
                                optRandomize = 8 };
         enum qBuilderValues  { valID = 1, valName = 2, valURL = 4, valTitle = 8, valTrack = 16, valScore = 32,
