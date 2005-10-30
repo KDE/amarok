@@ -17,6 +17,10 @@
  *   51 Franklin Steet, Fifth Floor, Boston, MA  02111-1307, USA.          *
  ***************************************************************************/
 
+#define DEBUG_PREFIX "CollectionScanner"
+
+#include "debug.h"
+
 #include <cerrno>
 #include <dirent.h>    //stat
 #include <iostream>
@@ -123,7 +127,7 @@ CollectionScanner::doJob()
     log << "\n\n\n";
 
     // we need to create the temp tables before readDir gets called ( for the dir stats )
-    setProgressTotalSteps( 100 );
+//     setProgressTotalSteps( 100 );
 
 
     QStrList entries;
@@ -143,7 +147,7 @@ CollectionScanner::doJob()
 
     if( !entries.isEmpty() ) {
         setStatus( i18n("Reading metadata") );
-        setProgressTotalSteps( entries.count() );
+//         setProgressTotalSteps( entries.count() );
         scanFiles( entries );
     }
 
@@ -265,10 +269,9 @@ CollectionScanner::scanFiles( const QStrList& entries )
         if( isAborted() )
            return;
 
-        incrementProgress();
+//         incrementProgress();
 
         const QString path = QFile::decodeName ( it.current() );
-        KURL url; url.setPath( path );
         const QString ext = amaroK::extension( path );
         const QString dir = amaroK::directory( path );
 
@@ -285,10 +288,7 @@ CollectionScanner::scanFiles( const QStrList& entries )
         //  Average                     Untested
         //  Accurate                    Untested
 
-        // don't use the KURL ctor as it checks the db first
-        MetaBundle bundle;
-        bundle.setPath( path );
-        bundle.readTags( TagLib::AudioProperties::Fast );
+        readTags( path );
 
         if( validImages.contains( ext ) )
            images += path;
@@ -322,12 +322,8 @@ CollectionScanner::scanFiles( const QStrList& entries )
 
 
 void
-CollectionScanner::readTags( TagLib::AudioProperties::ReadStyle readStyle )
+CollectionScanner::readTags( const QString& path, TagLib::AudioProperties::ReadStyle readStyle )
 {
-    if( m_url.protocol() != "file" )
-        return;
-
-    const QString path = m_url.path();
     TagLib::FileRef fileref;
     TagLib::Tag *tag = 0;
 

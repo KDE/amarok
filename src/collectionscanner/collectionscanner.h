@@ -61,7 +61,7 @@ private:
     void scanFiles( const QStrList& entries );
 
     /** If you want Accurate reading say so */
-    void readTags( TagLib::AudioProperties::ReadStyle );
+    void readTags( const QString& path, TagLib::AudioProperties::ReadStyle );
 
     bool m_recursively;
 
