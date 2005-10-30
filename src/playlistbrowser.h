@@ -43,7 +43,7 @@ class PlaylistBrowser : public QVBox
 
     public:
         enum ViewMode { DETAILEDVIEW, LISTVIEW, UNSORTED, ASCENDING, DESCENDING };
-        enum AddMode  { PLAYLIST, STREAM, SMARTPLAYLIST, PODCAST };
+        enum AddMode  { PLAYLIST, STREAM, SMARTPLAYLIST, PODCAST, ADDDYNAMIC };
         enum SaveMode { CURRENT, DYNAMIC };
 
         ~PlaylistBrowser();
