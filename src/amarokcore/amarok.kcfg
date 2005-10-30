@@ -181,11 +181,6 @@
         <whatsthis>Automatically switches to ContextBrowser when playback is started.</whatsthis>
         <default>true</default>
     </entry>
-    <entry key="Show Stat By Albums" type="Bool">
-        <label>Whether ContextBrowser should show statistics by albums when it is possible.</label>
-        <whatsthis>Show statistics by albums in ContextBrowser.</whatsthis>
-        <default>false</default>
-    </entry>
     <entry key="ContextBrowser StyleSheet" type="String">
         <label>Set CSS stylesheet used to customize ContextBrowser's rendering</label>
         <whatsthis>Set this to the style dir you want to use.</whatsthis>

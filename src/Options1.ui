@@ -277,20 +277,6 @@
                         <string>Check to enable the statusbar on the playlist window.</string>
                     </property>
                 </widget>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>kcfg_ShowStatByAlbums</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Show statistics by a&amp;lbums</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Show statistics by albums in the context browser.&lt;br&gt;</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Show statistics by albums in the context browser.</string>
-                    </property>
-                </widget>
             </vbox>
         </widget>
         <widget class="QGroupBox">

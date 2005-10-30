@@ -103,8 +103,6 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         void showScanning();
         static QString makeShadowedImage( const QString& albumImage );
 
-        void   ContructHTMLAlbums(const QStringList & reqResult, QString & htmlCode, QString stID, T_SHOW_ALBUM_TYPE showAlbumType);
-
         KHTMLPart    *m_currentTrackPage;
         KHTMLPart    *m_lyricsPage;
         KHTMLPart    *m_wikiPage;
