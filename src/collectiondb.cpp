@@ -287,7 +287,7 @@ CollectionDB::setAdminValue( QString noption, QString value ) {
         insert( QString( "INSERT INTO admin (value, noption) values ( '%1', '%2' );" ).arg( value, noption ),
          NULL, conn );
     }
-
+    m_dbConnPool->putDbConnection(conn);
 }
 
 
@@ -2082,7 +2082,9 @@ CollectionDB::initialize()
             createPersistentTables();
             /* Copy lyrics */
             debug() << "Trying to get lyrics from old db schema." << endl;
+            DbConnection *conn = m_dbConnPool->getDbConnection();
             insert( "INSERT INTO lyrics SELECT url, lyrics FROM tags where tags.lyrics IS NOT NULL;", NULL, dbConn );
+            m_dbConnPool->putDbConnection( conn );
         }
         else {
             if ( adminValue( "Database Persistent Tables Version" ).toInt() != DATABASE_PERSISTENT_TABLES_VERSION ) {
