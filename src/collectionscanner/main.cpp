@@ -30,7 +30,7 @@ int main( int argc, char *argv[] )
 
         static KCmdLineOptions options[] =
         {
-            { "+[Folders(s)]", I18N_NOOP( "Folders to scan" ), 0 },
+            { "+[Folder(s)]", I18N_NOOP( "Folders to scan" ), 0 },
             { "i", 0, 0 },
             { "incremental", I18N_NOOP( "Update scan" ), 0 },
             { "r", 0, 0 },

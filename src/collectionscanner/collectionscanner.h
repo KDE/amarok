@@ -50,7 +50,7 @@ public:
     ~CollectionScanner();
 
 private slots:
-    bool doJob();
+    void doJob();
 
 private:
     void readDir( const QString& dir, QStrList& entries );

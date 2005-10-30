@@ -134,7 +134,7 @@ CollectionScanner::~CollectionScanner()
 // }
 
 
-bool
+void
 CollectionScanner::doJob() //SLOT
 {
     log << "Collection Scan Log\n";
@@ -169,7 +169,7 @@ CollectionScanner::doJob() //SLOT
 
     log.close();
 
-    return !isAborted();
+    quit();
 }
 
 
