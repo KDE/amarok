@@ -82,6 +82,7 @@ amarokapp_SOURCES = \
     gpodmediadevice.cpp \
     metabundle.cpp \
     multitabbar.cpp \
+    newdynamic.ui \
     osd.cpp \
     party.cpp \
     partydialogbase.ui \
@@ -91,6 +92,7 @@ amarokapp_SOURCES = \
     playlistbrowseritem.cpp \
     playlistitem.cpp \
     playlistloader.cpp \
+    playlistselection.cpp \
     playlistwindow.cpp \
     pluginmanager.cpp \
     podcastsettings.cpp \

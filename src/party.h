@@ -41,7 +41,6 @@
 class QLabel;
 class KAction;
 class KActionCollection;
-class PartyDialogBase;
 class PartyEntry;
 
 class Party : public QVBox
@@ -58,12 +57,13 @@ class Party : public QVBox
         void    loadConfig( PartyEntry *config = 0 ); // 0 -> load amarokrc config
 
         bool    isChecked();
-        int     previousCount();
-        int     upcomingCount();
-        int     appendCount();
-        int     appendType();
-        bool    cycleTracks();
-        bool    markHistory();
+
+        int     previousCount() { return m_previousCount; }
+        int     upcomingCount() { return m_upcomingCount; }
+        int     appendCount() { return m_appendCount; }
+        int     appendType() { return m_appendType; }
+        bool    cycleTracks() { return m_cycleTracks; }
+        bool    markHistory() { return m_markHistory; }
         QString customList();
 
         static  Party *instance() { return s_instance; }
@@ -74,21 +74,19 @@ class Party : public QVBox
     private slots:
         void    applySettings();
         void    setDynamicMode( bool enable, bool showDialog = true );
-        void    showConfig( bool show );
 
     private:
+        int     m_previousCount;
+        int     m_upcomingCount;
+        int     m_appendCount;
+        int     m_appendType;
+        bool    m_cycleTracks;
+        bool    m_markHistory;
+
         enum    UpdateMe{ PARTY, CYCLE, HISTORY, PREVIOUS, UPCOMING, APPEND, TYPE };
-
-        PartyDialogBase *m_base;
-
-        void    blockSignals( const bool b );
-        void    createWidget();
 
         KActionCollection *m_ac;
         KAction    *m_repopulate;
-        KToolBar   *m_toolbar;
-        QLabel     *m_tooltip;
-        bool        m_visible;
 
         QPtrList<QListViewItem> m_selected;
 

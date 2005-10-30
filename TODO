@@ -62,6 +62,15 @@ SHORT-TERM (URGENT):
 
 
 MID-TERM:
+ <eean>    Basically need to re-add some of the functionality I removed in re-doing dynamic
+ --><eean> custom playlist creation.
+           1) the default dynamic playlists need to be more insistent, the same way the 
+              the default smart playlists are.
+           2) ability to add/remove playlists and smart playlists to the current dynamic 
+              playlist without opening a dialog. The change to the loaded dynamic playlist 
+              would be immediate, no "saving current dynamic playlists".
+           3) ability to edit dynamic playlists using the add dynamic dialog as well.
+
   <mp8> Album covers as icons from filebrowser.
 
   <eean>   When the player window shades, it should lose its title bar and be replaced with something more

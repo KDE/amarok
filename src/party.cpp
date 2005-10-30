@@ -46,48 +46,17 @@ Party *Party::s_instance = 0;
 Party::Party( QWidget *parent, const char *name )
     : QVBox( parent, name )
     , m_ac( new KActionCollection( this ) )
-    , m_visible( true )
 {
     s_instance = this;
 
-    QFrame *container = new QVBox( this, "container" );
-    container->hide();
-
-    //<Toolbar>
     m_repopulate = new KAction( i18n("Repopulate"), "rebuild", 0,
                                        this, SLOT( repopulate() ), m_ac, "Repopulate Upcoming Tracks" );
 
-    m_toolbar = new Browser::ToolBar( container );
-    m_toolbar->setIconText( KToolBar::IconTextRight, false ); //we want the buttons to have text on right
-    m_repopulate->plug( m_toolbar );
-
-    m_base = new PartyDialogBase( container );
-    m_base->m_previousIntSpinBox->setEnabled( m_base->m_cycleTracks->isEnabled() );
-
-    connect( m_base->m_cycleTracks, SIGNAL( toggled(bool) ), m_base->m_previousIntSpinBox, SLOT( setEnabled(bool) ) );
-
-    //Update buttons
-    connect( m_base->m_appendCountIntSpinBox, SIGNAL( valueChanged( int ) ), SLOT( applySettings() ) );
-    connect( m_base->m_previousIntSpinBox,    SIGNAL( valueChanged( int ) ), SLOT( applySettings() ) );
-    connect( m_base->m_upcomingIntSpinBox,    SIGNAL( valueChanged( int ) ), SLOT( applySettings() ) );
-    connect( m_base->m_cycleTracks,           SIGNAL( stateChanged( int ) ), SLOT( applySettings() ) );
-    connect( m_base->m_markHistory,           SIGNAL( stateChanged( int ) ), SLOT( applySettings() ) );
-    connect( m_base->m_appendType,            SIGNAL( activated( int ) ),    SLOT( applySettings() ) );
-
     QHBox *buttonBox = new QVBox( this );
     QCheckBox   *enableButton = new QCheckBox( i18n("Enable dynamic mode"), buttonBox, "dynamic" );
-    KPushButton *configButton = new KPushButton( KGuiItem( i18n("Show Options"), "configure" ), buttonBox );
-
-    configButton->setToggleButton( true );
-    connect( configButton, SIGNAL(toggled( bool )), SLOT(showConfig( bool )) );
-
     connect( amaroK::actionCollection()->action( "dynamic_mode" ), SIGNAL( toggled( bool ) ),
              enableButton, SLOT( setChecked( bool ) ) );
 
-    loadConfig();
-
-    if( !m_base->m_cycleTracks->isChecked() )
-        m_base->m_previousIntSpinBox->setEnabled( false );
     /*
      * We don't want to show the info dialog on startup, so we set the dynamic parameter manually and connect
      * the signal afterwards
@@ -101,63 +70,26 @@ Party::Party( QWidget *parent, const char *name )
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( false );
     }
     else
-    {
         m_repopulate->setEnabled( false );
-        m_base->setEnabled( false );
-    }
-
-    KConfig *config = amaroK::config( "PlaylistBrowser" );
-    if( config->readBoolEntry( "Show Dynamic Config", false ) )
-        configButton->toggle();
 }
 
 Party::~Party()
-{
-    KConfig *config = amaroK::config( "PlaylistBrowser" );
-    bool isShown = static_cast<QWidget*>(child("container"))->isShown();
-    config->writeEntry( "Show Dynamic Config", isShown );
-}
+{ }
 
 void
 Party::loadConfig( PartyEntry *config )
 {
-    if( !config )
-    {
-        blockSignals(true); // else valueChanged() etc get connected
+    //if(!config)
+//        return;
+    m_upcomingCount = config->upcoming();
+    m_previousCount = config->previous();
+    m_appendCount = config->appendCount();
+    m_cycleTracks = config->isCycled();
+    m_markHistory= config->isMarked();
+    m_appendType = config->appendType();
 
-        m_base->m_upcomingIntSpinBox->setValue( AmarokConfig::dynamicUpcomingCount() );
-        m_base->m_previousIntSpinBox->setValue( AmarokConfig::dynamicPreviousCount() );
-        m_base->m_appendCountIntSpinBox->setValue( AmarokConfig::dynamicAppendCount() );
-        m_base->m_cycleTracks->setChecked( AmarokConfig::dynamicCycleTracks() );
-        m_base->m_markHistory->setChecked( AmarokConfig::dynamicMarkHistory() );
-        if ( AmarokConfig::dynamicType() == "Random" )
-            m_base->m_appendType->setCurrentItem( RANDOM );
-
-        else if ( AmarokConfig::dynamicType() == "Suggestion" )
-            m_base->m_appendType->setCurrentItem( SUGGESTION );
-
-        else // Custom
-            m_base->m_appendType->setCurrentItem( CUSTOM );
-
-        blockSignals(false);
-    }
-    else
-    {
-        blockSignals(true);
-
-        m_base->m_upcomingIntSpinBox->setValue( config->upcoming() );
-        m_base->m_previousIntSpinBox->setValue( config->previous() );
-        m_base->m_appendCountIntSpinBox->setValue( config->appendCount() );
-        m_base->m_cycleTracks->setChecked( config->isCycled() );
-        m_base->m_markHistory->setChecked( config->isMarked() );
-        m_base->m_appendType->setCurrentItem( config->appendType() );
-
-        AmarokConfig::setDynamicCustomList( config->items() );
-
-        blockSignals(false);
-
-        applySettings();
-    }
+    AmarokConfig::setDynamicCustomList( config->items() );
+    applySettings();
 }
 
 void
@@ -207,19 +139,6 @@ Party::applySettings() //SLOT
 }
 
 void
-Party::blockSignals( const bool b )
-{
-    m_base->m_upcomingIntSpinBox->blockSignals( b );
-    m_base->m_previousIntSpinBox->blockSignals( b );
-    m_base->m_appendCountIntSpinBox->blockSignals( b );
-    m_base->m_cycleTracks->blockSignals( b );
-    m_base->m_markHistory->blockSignals( b );
-    m_base->m_appendType->blockSignals( b );
-
-    QVBox::blockSignals( b );  // respect inheritance
-}
-
-void
 Party::setDynamicMode( bool enable, bool showDialog ) //SLOT
 {
     if( enable )
@@ -255,21 +174,6 @@ Party::setDynamicMode( bool enable, bool showDialog ) //SLOT
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "dynamic_mode" ))->setChecked( false );
     }
     m_repopulate->setEnabled( enable );
-    m_base->setEnabled( enable );
 }
-
-void
-Party::showConfig( bool show ) //SLOT
-{
-    static_cast<QWidget*>(child("container"))->setShown( show );
-}
-
-int     Party::previousCount() { return m_base->m_previousIntSpinBox->value(); }
-int     Party::upcomingCount() { return m_base->m_upcomingIntSpinBox->value(); }
-int     Party::appendCount()   { return m_base->m_appendCountIntSpinBox->value(); }
-int     Party::appendType()    { return m_base->m_appendType->currentItem(); }
-bool    Party::cycleTracks()   { return m_base->m_cycleTracks->isChecked(); }
-bool    Party::markHistory()   { return m_base->m_markHistory->isChecked(); }
-
 
 #include "party.moc"

@@ -17,6 +17,7 @@
 #include "playlist.h"
 #include "playlistbrowser.h"
 #include "playlistbrowseritem.h"
+#include "playlistselection.h"
 #include "smartplaylisteditor.h"
 #include "tagdialog.h"         //showContextMenu()
 #include "threadweaver.h"
@@ -81,8 +82,9 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     KPopupMenu *addMenu  = addMenuButton->popupMenu();
     addMenu->insertItem( i18n("Playlist..."), PLAYLIST );
-    addMenu->insertItem( i18n("Radio Stream..."), STREAM );
     addMenu->insertItem( i18n("Smart Playlist..."), SMARTPLAYLIST );
+    addMenu->insertItem( i18n("Dynamic Playlists..."), DYNAMIC);
+    addMenu->insertItem( i18n("Radio Stream..."), STREAM );
     addMenu->insertItem( i18n("Podcast..."), PODCAST );
     connect( addMenu, SIGNAL( activated(int) ), SLOT( slotAddMenu(int) ) );
 
@@ -692,44 +694,6 @@ void PlaylistBrowser::saveSmartPlaylists()
 QString PlaylistBrowser::partyBrowserCache() const
 {
     return amaroK::saveLocation() + "partybrowser_save.xml";
-}
-
-void PlaylistBrowser::addDynamic( QListViewItem *parent )
-{
-    Party *current = Party::instance();
-
-    if( !parent ) parent = m_dynamicCategory;
-
-    bool ok;
-    QString name = KInputDialog::getText(i18n("Save Dynamic Playlist"), i18n("Enter playlist name:"), i18n("Untitled"), &ok, this);
-
-    if( ok )
-    {
-        PartyEntry *saveMe = new PartyEntry( parent, 0, name );
-
-        saveMe->setCycled( current->cycleTracks() );
-        saveMe->setMarked( current->markHistory() );
-        saveMe->setUpcoming( current->upcomingCount() );
-        saveMe->setPrevious( current->previousCount() );
-        saveMe->setAppendCount( current->appendCount() );
-        saveMe->setAppendType( current->appendType() );
-
-        QStringList list;
-        if( current->appendType() == 2 )
-        {
-            debug() << "Saving custom list..." << endl;
-            for( uint c = 0; c < m_dynamicEntries.count(); c++ )
-            {
-                debug() << "Appending: " << ( m_dynamicEntries.at(c) )->text(0) << endl;
-                list.append( ( m_dynamicEntries.at(c) )->text(0) );
-            }
-        }
-        saveMe->setItems( list );
-        parent->sortChildItems( 0, true );
-        parent->setOpen( true );
-
-        saveDynamics();
-    }
 }
 
 PlaylistCategory* PlaylistBrowser::loadDynamics()
@@ -1921,7 +1885,7 @@ void PlaylistBrowser::slotSaveMenu( int id ) // SLOT
             break;
 
         case DYNAMIC:
-            addDynamic();
+//            addDynamic();
             break;
 
         default:
@@ -2309,7 +2273,8 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             menu.insertItem( SmallIconSet("edit_add"), i18n("Add Radio Stream..."), STREAM );
 
         else if( parentCat == static_cast<QListViewItem*>(m_dynamicCategory) )
-            menu.insertItem( SmallIconSet("edit_add"), i18n("Save Dynamic Configuration..."), DYNAMIC );
+            menu.insertItem( SmallIconSet("edit_add"), i18n("New Dynamic Playlist"), DYNAMIC );
+            //menu.insertItem( SmallIconSet("edit_add"), i18n("Save Dynamic Configuration..."), DYNAMIC );
 
         else if( parentCat == static_cast<QListViewItem*>(m_podcastCategory) )
         {
@@ -2348,7 +2313,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 break;
 
             case DYNAMIC:
-                addDynamic( item );
+                ConfigDynamic::dynamicDialog(this);
                 break;
 
             case PODCAST:

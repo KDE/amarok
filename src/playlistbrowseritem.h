@@ -81,7 +81,7 @@ class PartyEntry : public PlaylistBrowserEntry
         int   previous() { return m_previous; }
         int   appendCount() { return m_appendCount; }
         int   appendType() { return m_appendType; }
-
+        
         QDomElement xml();
 
         int   rtti() const { return RTTI; }

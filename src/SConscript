@@ -72,12 +72,6 @@ amarok_sources = """
     playlistbrowser.cpp
     playlistbrowseritem.cpp
 
-    amarokcore/main.cpp
-    amarokcore/amarokdcopiface.skel
-    amarokcore/amarokconfig.kcfgc
-    amarokcore/crashhandler.cpp
-    amarokcore/amarokdcophandler.cpp
-
     analyzers/analyzerbase.cpp
     analyzers/analyzerfactory.cpp
     analyzers/baranalyzer.cpp
@@ -130,7 +124,6 @@ amarok_sources = """
     sqlite/printf.c
     sqlite/random.c
     sqlite/select.c
-    sqlite/shell.c
     sqlite/table.c
     sqlite/tokenize.c
     sqlite/trigger.c
@@ -166,6 +159,12 @@ amarok_sources = """
     Options5.ui
     Options7.ui
     Options8.ui
+
+    amarokcore/main.cpp
+    amarokcore/amarokdcopiface.skel
+    amarokcore/amarokconfig.kcfgc
+    amarokcore/crashhandler.cpp
+    amarokcore/amarokdcophandler.cpp
 """
 
 amarok_libs = """
@@ -175,12 +174,13 @@ amarok_libs = """
 """
 
 amarok_includes = """
+    .
     amarokcore
     analyzers
     engine
     plugin
     statusbar
-    /usr/include/taglib
+    /usr/kde/cvs/include/taglib
 """
 
 amarok          = env.kobject( 'program' )
