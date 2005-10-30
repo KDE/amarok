@@ -63,8 +63,6 @@ UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, bool playFir
             .setAbortSlot( this, SLOT(abort()) )
             .setTotalSteps( 100 );
 
-    m_markerListViewItem->setText( 0, "MARKERITEM" );
-
     foreachType( KURL::List, urls ) {
         const KURL &url = *it;
         const QString protocol = url.protocol();
@@ -380,6 +378,19 @@ UrlLoader::loadXml( const KURL &url )
                 "developers. Thank you." ), KDE::StatusBar::Error );
         error() << "[PLAYLISTLOADER]: Error loading xml file: " << url.prettyURL() << "(" << er << ")"
                 << " at line " << l << ", column " << c << endl;
+        return;
+    }
+
+    QDomElement plElement = d.namedItem( "playlist" ).toElement();
+    //increase this whenever the format changes, in Playlist::saveXML() also
+    if( !plElement.hasAttribute("version") || plElement.attribute("version") != "2.0" )
+    {
+        if( !plElement.firstChild().isNull() ) //no point in notifying if the playlist was empty anyways
+            amaroK::StatusBar::instance()->longMessageThreadSafe( i18n(
+                "Your last playlist was saved with a different version of amaroK than this one, "
+                "and this version can no longer read it.\n"
+                "You will have to create a new one.\n"
+                "Sorry :(." ) );
         return;
     }
 

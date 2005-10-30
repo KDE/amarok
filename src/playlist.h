@@ -252,6 +252,10 @@ class Playlist : private KListView, public EngineObserver
 
         /// ATTRIBUTES
 
+        class PlaylistToolTip;
+        friend class PlaylistToolTip;
+        PlaylistToolTip *m_tooltip;
+
         PlaylistItem  *m_currentTrack;          //the track that is playing
         QListViewItem *m_marker;                //track that has the drag/drop marker under it
 

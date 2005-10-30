@@ -1165,7 +1165,7 @@ void PlaylistBrowser::addPlaylist( const QString &path, QListViewItem *parent, b
 }
 
 bool PlaylistBrowser::savePlaylist( const QString &path, const QValueList<KURL> &in_urls,
-                                    const QValueList<QString> &titles, const QValueList<QString> &seconds,
+                                    const QValueList<QString> &titles, const QValueList<int> &lengths,
                                     bool relative )
 {
     if( path.isEmpty() )
@@ -1196,10 +1196,10 @@ bool PlaylistBrowser::savePlaylist( const QString &path, const QValueList<KURL> 
     {
         const KURL &url = urls[i];
 
-        if( !titles.isEmpty() && !seconds.isEmpty() )
+        if( !titles.isEmpty() && !lengths.isEmpty() )
         {
             stream << "#EXTINF:";
-            stream << seconds[i];
+            stream << QString::number( lengths[i] );
             stream << ',';
             stream << titles[i];
             stream << '\n';

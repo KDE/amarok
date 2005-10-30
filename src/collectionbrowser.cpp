@@ -1847,17 +1847,17 @@ CollectionView::playlistFromURLs( const KURL::List &urls )
     CollectionDB* db = CollectionDB::instance();
 
     QValueList<QString> titles;
-    QValueList<QString> seconds;
+    QValueList<int> lengths;
     for( KURL::List::ConstIterator it = urls.constBegin(), end = urls.constEnd(); it != end; ++it )
     {
         const QString query = QString("SELECT title, length FROM tags WHERE url = '%1';")
                               .arg( db->escapeString( (*it).path() ) ); //no operator->, how suck!
         QStringList result = db->query( query );
         titles << result[0];
-        seconds << result[1];
+        lengths << result[1].toInt();
     }
 
-    if( PlaylistBrowser::savePlaylist( path, urls, titles, seconds ) )
+    if( PlaylistBrowser::savePlaylist( path, urls, titles, lengths ) )
         PlaylistWindow::self()->showBrowser( "PlaylistBrowser" );
 }
 

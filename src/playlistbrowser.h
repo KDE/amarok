@@ -57,7 +57,7 @@ class PlaylistBrowser : public QVBox
 
         static bool savePlaylist( const QString &path, const QValueList<KURL> &urls,
                                   const QValueList<QString> &titles = QValueList<QString>(),
-                                  const QValueList<QString> &seconds = QValueList<QString>(),
+                                  const QValueList<int> &lengths = QValueList<int>(),
                                   bool relative = AmarokConfig::relativePlaylist() );
 
         QString partyBrowserCache() const;

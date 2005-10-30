@@ -278,12 +278,12 @@ void QueueLabel::hideToolTip()
 
 QString QueueLabel::veryNiceTitle( PlaylistItem* item ) const
 {
-    const QString artist = item->exactText( PlaylistItem::Artist ).stripWhiteSpace(),
-                  title =  item->exactText( PlaylistItem::Title  ).stripWhiteSpace();
+    const QString artist = item->artist().stripWhiteSpace(),
+                  title =  item->title().stripWhiteSpace();
     if( !artist.isEmpty() && !title.isEmpty() )
        return i18n( "%1 by %2" ).arg( title ).arg( artist );
     else
-       return MetaBundle::prettyTitle( item->exactText( PlaylistItem::Filename ) );
+       return MetaBundle::prettyTitle( item->filename() );
 }
 
 

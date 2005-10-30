@@ -68,13 +68,13 @@ MetaBundle::MetaBundle( const QString& title,
 /// NOT THREAD-SAFE!!
 MetaBundle::MetaBundle( const PlaylistItem *item )
         : m_url    ( item->url() )
-        , m_title  ( item->title() )        //because you override text()
-        , m_artist ( item->exactText( 2 ) ) //because you override text()
-        , m_album  ( item->exactText( 3 ) ) //etc.
-        , m_comment( item->exactText( 5 ) )
-        , m_genre  ( item->exactText( 6 ) )
-        , m_year   ( item->exactText( 4 ).toInt() )
-        , m_track  ( item->exactText( 7 ).toInt() )
+        , m_title  ( item->title() )
+        , m_artist ( item->artist() )
+        , m_album  ( item->album() )
+        , m_comment( item->comment() )
+        , m_genre  ( item->genre() )
+        , m_year   ( item->year() )
+        , m_track  ( item->track() )
         , m_exists ( true ) //FIXME
         , m_isValidMedia( true )
 {
@@ -84,7 +84,7 @@ MetaBundle::MetaBundle( const PlaylistItem *item )
     else {
         // is a stream
         //FIXME not correct handling, say is ftp://file
-        m_bitrate    = item->exactText( 10 ).left( 3 ).toInt();
+        m_bitrate    = item->bitrate();
         m_sampleRate = Undetermined;
         m_length     = Irrelevant;
     }

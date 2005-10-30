@@ -45,6 +45,7 @@
 #include <qpen.h>            //slotGlowTimer()
 #include <qsortedlist.h>
 #include <qtimer.h>
+#include <qtooltip.h>
 #include <qvaluelist.h>      //addHybridTracks()
 #include <qvaluevector.h>    //playNextTrack()
 #include <qlayout.h>
@@ -113,6 +114,52 @@ public:
 
 typedef MyIterator MyIt;
 
+// why, why, why?!
+// (because we reimplement QListViewItem::paintCell(), which disables QListView's tooltipping)
+// inspiration and code taken from qlistview.cpp, Copyright (C) 1992-2005 Trolltech AS.
+class Playlist::PlaylistToolTip: public QToolTip
+{
+    Playlist *view;
+
+    public:
+    PlaylistToolTip::PlaylistToolTip( QWidget *parent, Playlist *pl ): QToolTip( parent ), view( pl ) { }
+
+    void maybeTip( const QPoint &pos )
+    {
+        if ( !parentWidget() || !view || !view->showToolTips() )
+            return;
+
+        PlaylistItem *item = static_cast<PlaylistItem*>( view->itemAt( pos ) );
+        if( !item )
+            return;
+
+        const QPoint contentsPos = view->viewportToContents( pos );
+        const int col = view->header()->sectionAt( contentsPos.x() );
+
+        QString text = item->text( col );
+
+        QRect r = view->itemRect( item );
+        int headerPos = view->header()->sectionPos( col );
+        r.setLeft( headerPos );
+        r.setRight( headerPos + view->header()->sectionSize( col ) );
+
+        int width = r.width() - view->itemMargin() * 2 + view->fontMetrics().minLeftBearing()
+                                                       + view->fontMetrics().minRightBearing() - 1;
+        if( item->pixmap( col ) )
+            width -= item->pixmap( col )->width();
+        if( item == view->m_currentTrack )
+        {
+            if( col == view->m_firstColumn )
+                width -= 12;
+            if( col == view->mapToLogicalColumn( view->visibleColumns() - 1 ) )
+                width -= 12;
+        }
+
+        if( view->fontMetrics().width( text ) > width )
+            tip( r, text.replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" ) );
+    }
+};
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// CLASS TagWriter : Threaded tag-updating
@@ -180,6 +227,7 @@ Playlist *Playlist::s_instance = 0;
 Playlist::Playlist( QWidget *parent )
         : KListView( parent, "ThePlaylist" )
         , EngineObserver( EngineController::instance() )
+        , m_tooltip( new PlaylistToolTip( viewport(), this ) )
         , m_currentTrack( 0 )
         , m_marker( 0 )
         , m_firstColumn( 0 )
@@ -338,6 +386,7 @@ Playlist::~Playlist()
 
     //speed up quit a little
     KListView::clear();   //our implementation is slow
+    delete m_tooltip;
     blockSignals( true ); //might help
 }
 
@@ -427,7 +476,7 @@ Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool
 
         // prevent association with something that is about to be deleted
         // TODO improve the playlist with a list of items that are volatile or something
-        while( after && after->exactText( 0 ) == "MARKERITEM" )
+        while( after && after->url().isEmpty() )
             after = (PlaylistItem*)after->itemAbove();
 
         ThreadWeaver::instance()->queueJob( new UrlLoader( list, after, directPlay ) );
@@ -766,7 +815,7 @@ Playlist::alterHistoryItems( bool enable /*false*/, bool entire /*FALSE*/ )
         if( (*it)->isEnabled() != enable )
         {
             (*it)->setEnabled( enable );
-            repaintItem( *it );
+            (*it)->update();
         }
     }
 }
@@ -1098,9 +1147,9 @@ void Playlist::setStopAfterCurrent( bool on )
         m_stopAfterTrack = 0;
 
     if( m_stopAfterTrack )
-        repaintItem( m_stopAfterTrack );
+        m_stopAfterTrack->update();
     if( prev_stopafter )
-        repaintItem( prev_stopafter );
+        prev_stopafter->update();
 }
 
 void Playlist::setStopAfterMode( int mode )
@@ -1121,9 +1170,9 @@ void Playlist::setStopAfterMode( int mode )
     }
 
     if( prevStopAfter )
-        repaintItem( prevStopAfter );
+        prevStopAfter->update();
     if( m_stopAfterTrack )
-        repaintItem( m_stopAfterTrack );
+        m_stopAfterTrack->update();
 }
 
 int Playlist::stopAfterMode() const
@@ -1452,10 +1501,10 @@ Playlist::engineNewMetaData( const MetaBundle &bundle, bool trackChanged )
         //this is a hack, I repeat a hack! FIXME FIXME
         //we do it because often the stream title is from the pls file and is informative
         //we don't want to lose it when we get the meta data
-        if ( m_currentTrack->exactText( PlaylistItem::Artist ).isEmpty() ) {
-            QString comment = m_currentTrack->exactText( PlaylistItem::Title );
+        if ( m_currentTrack->artist().isEmpty() ) {
+            QString comment = m_currentTrack->title();
             m_currentTrack->setText( bundle );
-            m_currentTrack->setText( PlaylistItem::Comment, comment );
+            m_currentTrack->setComment( comment );
         }
         else
             m_currentTrack->setText( bundle );
@@ -1827,7 +1876,7 @@ Playlist::dragObject()
         const KURL &url = item->url();
         list += url;
         const QString key = url.isLocalFile() ? url.path() : url.url();
-        map[ key ] = QString("%1;%2").arg( item->title() ).arg( item->seconds() );
+        map[ key ] = QString("%1;%2").arg( item->title() ).arg( item->length() );
     }
 
     //it returns a KURLDrag with a QMap containing the title and the length of the track
@@ -2294,14 +2343,14 @@ Playlist::saveM3U( const QString &path, bool relative ) const
 {
     QValueList<KURL> urls;
     QValueList<QString> titles;
-    QValueList<QString> seconds;
+    QValueList<int> lengths;
     for( const PlaylistItem *item = firstChild(); item; item = item->nextSibling() )
     {
         urls << item->url();
         titles << item->title();
-        seconds << item->seconds();
+        lengths << item->length();
     }
-    return PlaylistBrowser::savePlaylist( path, urls, titles, seconds, relative );
+    return PlaylistBrowser::savePlaylist( path, urls, titles, lengths, relative );
 }
 
 void
@@ -2314,7 +2363,9 @@ Playlist::saveXML( const QString &path )
     QDomDocument newdoc;
     QDomElement playlist = newdoc.createElement( "playlist" );
     playlist.setAttribute( "product", "amaroK" );
-    playlist.setAttribute( "version", APP_VERSION );
+
+    //increase this whenever the format changes, in PlaylistLoader::loadXml() also
+    playlist.setAttribute( "version", "2.0" );
     newdoc.appendChild( playlist );
 
     for( const PlaylistItem *item = firstChild(); item; item = item->nextSibling() )
@@ -2948,9 +2999,10 @@ Playlist::setFilterForItem( const QString &query, PlaylistItem *item )
     if( isAdvancedQuery( query ) )
     {
         QStringMap defaults, all;
-        for( x = 0; x < n; ++x ) {
-            if ( columnWidth( x ) ) defaults[PlaylistItem::columnName( x ).lower()] = item->exactText( x );
-            all[PlaylistItem::columnName( x ).lower()] = item->exactText( x );
+        for( x = 0; x < n; ++x )
+        {
+            if ( columnWidth( x ) ) defaults[PlaylistItem::columnName( x ).lower()] = item->text( x );
+            all[PlaylistItem::columnName( x ).lower()] = item->text( x );
         }
 
         visible = googleMatch( query, defaults, all );
@@ -2962,7 +3014,7 @@ Playlist::setFilterForItem( const QString &query, PlaylistItem *item )
         for( x = 0; visible && x < terms.count(); ++x )
         {
             for( y = 0; y < n; ++y )
-                if ( columnWidth( y ) && item->exactText( y ).lower().contains( terms[x] ) )
+                if ( columnWidth( y ) && item->text( y ).lower().contains( terms[x] ) )
                     break;
             visible = ( y < n );
         }
@@ -2989,7 +3041,7 @@ Playlist::scoreChanged( const QString &path, int score )
         PlaylistItem *item = (PlaylistItem*)*it;
         if ( item->url().path() == path )
         {
-            item->setText( PlaylistItem::Score, QString::number( score ) );
+            item->setScore( score );
             setFilterForItem( m_filter, item );
         }
     }
@@ -3002,7 +3054,7 @@ Playlist::countChanged( const QString &path )
     {
         PlaylistItem *item = (PlaylistItem*)*it;
         if ( item->url().path() == path )
-            item->setText( PlaylistItem::Playcount, QString::number( CollectionDB::instance()->getPlayCount( path ) ) );
+            item->setPlaycount( CollectionDB::instance()->getPlayCount( path ) );
     }
 }
 
@@ -3045,7 +3097,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     const bool isPlaying   = EngineController::engine()->state() == Engine::Playing;
     const bool trackColumn = col == PlaylistItem::Track;
     const QString tagName  = columnText( col );
-    const QString tag      = item->exactText( col );
+    const QString tag      = item->text( col );
 
     uint itemCount = 0;
     for( MyIt it( this, MyIt::Selected ); *it; ++it )
@@ -3228,11 +3280,11 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         {
             m_stopAfterTrack = item;
             item->setSelected( false );
-            repaintItem( item );
+            item->update();
         }
 
         if( prev_stopafter )
-            repaintItem( prev_stopafter );
+            prev_stopafter->update();
         break;
 
     case VIEW:
@@ -3261,7 +3313,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
             MyIt it( this, MyIt::Selected );
 
             //special handling for track column
-            uint trackNo = (*it)->exactText( PlaylistItem::Track ).toInt(); //returns 0 if it is not a number
+            uint trackNo = (*it)->track();
 
             //we should start at the next row if we are doing track number
             //and the first row has a number set
@@ -3279,8 +3331,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
                     //skip the one we are copying
                     continue;
 
-                //FIXME fix this hack!
-                if ( (*it)->exactText( col ) != i18n("Writing tag...") )
+                if ( !(*it)->isEditing( col ) )
                     jobs.prepend( new TagWriter( *it, (*it)->exactText( col ), newTag, col, updateView ) );
 
                 updateView = false;
@@ -3443,8 +3494,11 @@ Playlist::removeItem( PlaylistItem *item, bool multi )
         {
             //*MyIt( item ) returns either "item" or if item is hidden, the next visible playlistitem
             PlaylistItem* const next = *MyIt( item );
-            m_nextTracks.append( next );
-            repaintItem( next );
+            if( next )
+            {
+                m_nextTracks.append( next );
+                next->update();
+            }
         }
     }
 
@@ -3494,7 +3548,7 @@ Playlist::refreshNextTracks( int from )
          item;
          item = m_nextTracks.next() )
     {
-        repaintItem( item );
+        item->update();
     }
 }
 
@@ -3576,16 +3630,14 @@ Playlist::saveSelectedAsPlaylist()
     MyIt it( this, MyIt::Visible | MyIt::Selected );
     if( !(*it) )
         return; //safety
-    const QString album = (*it)->exactText( PlaylistItem::Album ),
-                  artist = (*it)->exactText( PlaylistItem::Artist );
+    const QString album = (*it)->album(),
+                  artist = (*it)->artist();
     int suggestion = !album.stripWhiteSpace().isEmpty() ? 1 : !artist.stripWhiteSpace().isEmpty() ? 2 : 3;
     while( *it )
     {
-        if( suggestion == 1 && (*it)->exactText( PlaylistItem::Album ).lower().stripWhiteSpace()
-                                                              != album.lower().stripWhiteSpace() )
+        if( suggestion == 1 && (*it)->album().lower().stripWhiteSpace() != album.lower().stripWhiteSpace() )
             suggestion = 2;
-        if( suggestion == 2 && (*it)->exactText( PlaylistItem::Artist ).lower().stripWhiteSpace()
-                                                              != artist.lower().stripWhiteSpace() )
+        if( suggestion == 2 && (*it)->artist().lower().stripWhiteSpace() != artist.lower().stripWhiteSpace() )
             suggestion = 3;
         if( suggestion == 3 )
             break;
@@ -3600,15 +3652,15 @@ Playlist::saveSelectedAsPlaylist()
 
     QValueList<KURL> urls;
     QValueList<QString> titles;
-    QValueList<QString> seconds;
+    QValueList<int> lengths;
     for( it = MyIt( this, MyIt::Visible | MyIt::Selected ); *it; ++it )
     {
         urls << (*it)->url();
         titles << (*it)->title();
-        seconds << (*it)->seconds();
+        lengths << (*it)->length();
     }
 
-    if( PlaylistBrowser::savePlaylist( path, urls, titles, seconds ) )
+    if( PlaylistBrowser::savePlaylist( path, urls, titles, lengths ) )
         PlaylistWindow::self()->showBrowser( "PlaylistBrowser" );
 }
 
@@ -3643,7 +3695,7 @@ void
 Playlist::slotQueueChanged( const PLItemList &in, const PLItemList &out)
 {
     for( QPtrListIterator<PlaylistItem> it( out ); *it; ++it )
-        repaintItem( *it );
+        (*it)->update();
     for( QPtrListIterator<PlaylistItem> it( in ); *it; ++it )
         (*it)->setSelected( false ); //for prettiness
     refreshNextTracks( 0 );
@@ -3672,7 +3724,8 @@ Playlist::slotGlowTimer() //SLOT
             PlaylistItem::glowText = QColor( r + int(d*dr), g + int(d*dg), b + int(d*db) );
         }
 
-        repaintItem( currentTrack() );
+        if( currentTrack() )
+            currentTrack()->update();
     }
 
     ++counter &= 63; //built in bounds checking with &=
@@ -3682,7 +3735,7 @@ void
 Playlist::slotRepeatTrackToggled( bool /* enabled */ )
 {
     if( m_currentTrack )
-        repaintItem( m_currentTrack );
+        m_currentTrack->update();
 }
 
 void
@@ -3866,7 +3919,7 @@ TagWriter::TagWriter( PlaylistItem *item, const QString &oldTag, const QString &
 {
     Playlist::instance()->lock();
 
-    item->setText( col, i18n( "Writing tag..." ) );
+    item->setEditing( col );
 }
 
 TagWriter::~TagWriter()

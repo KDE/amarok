@@ -26,23 +26,22 @@ class PlaylistItem : public KListViewItem
 {
     public:
         enum Column {
-            Filename  = 0,
-            Title     = 1,
-            Artist    = 2,
-            Album     = 3,
-            Year      = 4,
-            Comment   = 5,
-            Genre     = 6,
-            Track     = 7,
-            Directory = 8,
-            Length    = 9,
-            Bitrate   = 10,
-            Score     = 11,
-            Type      = 12,
-            Playcount = 13
+            Filename = 0,
+            Title,
+            Artist,
+            Album ,
+            Year,
+            Comment,
+            Genre,
+            Track,
+            Directory,
+            Length,
+            Bitrate,
+            Score,
+            Type,
+            Playcount,
+            NUM_COLUMNS
         };
-
-        static const int NUM_COLUMNS = 14;
 
         /// Indicates that the current-track pixmap has changed. Animation must be redrawn.
         static void setPixmapChanged() { s_pixmapChanged = true; }
@@ -58,15 +57,24 @@ class PlaylistItem : public KListViewItem
         PlaylistItem( QDomNode, QListViewItem* );
         ~PlaylistItem();
 
-        QString exactText( int col ) const { return KListViewItem::text( col ); }
-
         /**
          * Sets the information like the title, artist and album of the PlaylistItem
          * according to the MetaBundle @p bundle. If the PlaylistItem has a score
          * it will also be set.
          */
         void setText( const MetaBundle& bundle );
-        void setText( int, const QString& ); //virtual
+
+        /// pass 'raw' data here, for example "92" for Length, and not "1:32"
+        virtual void setText( int column, const QString& );
+
+        /// @return the exact same thing you set with setText()
+        QString exactText( int column ) const;
+
+        /**
+        * @return The text of the column @p column, formatted for display purposes.
+        * (For example, if the Length is 92, "1:32".)
+        */
+        virtual QString text( int column ) const;
 
         bool isEnabled() const { return m_enabled; }
         void setEnabled( bool enable );
@@ -74,23 +82,53 @@ class PlaylistItem : public KListViewItem
         void setSelected( bool selected );
         void setVisible( bool visible );
 
+        void setEditing( int column );
+        bool isEditing( int column ) const;
+
         /// convenience functions
         Playlist *listView() const { return (Playlist*)KListViewItem::listView(); }
         PlaylistItem *nextSibling() const { return (PlaylistItem*)KListViewItem::nextSibling(); }
 
         /// some accessors
-        const KURL &url() const { return m_url; }
-        QString filename() const { return KListViewItem::text( Filename ); }
-        QString title() const { return KListViewItem::text( Title ); }
-        QString artist() const { return KListViewItem::text( Artist ); }
-        QString album() const { return KListViewItem::text( Album ); }
+        inline const KURL &url()   const { return m_url; }
+        inline QString filename()  const { return m_url.fileName(); }
+        inline QString title()     const { return KListViewItem::text( Title ); }
+        inline QString artist()    const { return KListViewItem::text( Artist ); }
+        inline QString album()     const { return KListViewItem::text( Album ); }
+        inline int     year()      const { return m_year; }
+        inline QString comment()   const { return KListViewItem::text( Comment ); }
+        inline QString genre()     const { return KListViewItem::text( Genre ); }
+        inline int     track()     const { return m_track; }
+        inline QString directory() const { return m_url.directory(); }
+        inline int     length()    const { return m_length; }
+        inline int     bitrate()   const { return m_bitrate; }
+        inline int     score()     const { return m_score; }
+        inline QString type()      const { return filename().mid( filename().findRev( '.' ) + 1 ); }
+        inline int     playcount() const { return m_playcount; }
 
-        /// @return the length of the PlaylistItem in seconds
-        QString seconds() const;
-        int length() const;
+        /// some setters
+        inline void setTitle(     const QString &title )     { KListViewItem::setText(
+                                                               Title,   title );                  update(); }
+        inline void setArtist(    const QString &artist )    { KListViewItem::setText(
+                                                               Artist,  attemptStore( artist ) ); update(); }
+        inline void setAlbum(     const QString &album )     { KListViewItem::setText(
+                                                               Album,   attemptStore( album ) );  update(); }
+        inline void setComment(   const QString &comment )   { KListViewItem::setText(
+                                                               Comment, comment );                update(); }
+        inline void setGenre(     const QString &genre )     { KListViewItem::setText(
+                                                               Genre,   attemptStore( genre ) );  update(); }
+        inline void setYear(      int            year )      { m_year      = year;      update(); }
+        inline void setTrack(     int            track )     { m_track     = track;     update(); }
+        inline void setLength(    int            length )    { m_length    = length;    update(); }
+        inline void setBitrate(   int            bitrate )   { m_bitrate   = bitrate;   update(); }
+        inline void setScore(     int            score )     { m_score     = score;     update(); }
+        inline void setPlaycount( int            playcount ) { m_playcount = playcount; update(); }
 
         /// @return does the file exist?
         bool exists() const { return !m_missing; }
+
+        /// like QWidget::update()
+        void update() const;
 
         //used by class Playlist
         virtual void setup();
@@ -108,12 +146,6 @@ class PlaylistItem : public KListViewItem
             QMap<QString, QPixmap> map;
         };
 
-        /**
-        * @return The text of the column @p column. If there is no text set for
-        * the title this method returns a pretty version of the filename
-        */
-        virtual QString text( int column ) const;
-
         virtual void paintCell( QPainter*, const QColorGroup&, int, int, int );
 
         // Used for sorting
@@ -128,6 +160,12 @@ class PlaylistItem : public KListViewItem
         void paintFocus( QPainter*, const QColorGroup&, const QRect& );
 
         const KURL m_url;
+        int m_year;
+        int m_track;
+        int m_length;
+        int m_bitrate;
+        int m_score;
+        int m_playcount;
         bool m_missing;
         bool m_enabled;
 

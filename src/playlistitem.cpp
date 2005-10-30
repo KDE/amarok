@@ -78,6 +78,12 @@ PlaylistItem::PlaylistItem( QListView *listview, QListViewItem *item )
 PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi )
         : KListViewItem( lvi->listView(), lvi->itemAbove(), filename( bundle.url() ) )
         , m_url( bundle.url() )
+        , m_year( 0 )
+        , m_track( 0 )
+        , m_length( 0 )
+        , m_bitrate( 0 )
+        , m_score( 0 )
+        , m_playcount( 0 )
         , m_missing( false )
         , m_enabled( true )
 {
@@ -85,18 +91,17 @@ PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi )
 
     setText( bundle );
 
-    const int length = seconds().toInt();
     listView()->m_totalCount++;
-    listView()->m_totalLength += length;
+    listView()->m_totalLength += length();
     if( isSelected() )
     {
         listView()->m_selCount++;
-        listView()->m_selLength += length;
+        listView()->m_selLength += length();
     }
     if( isVisible() )
     {
         listView()->m_visCount++;
-        listView()->m_visLength += length;
+        listView()->m_visLength += length();
     }
 
     listView()->setFilterForItem( listView()->m_filter, this );
@@ -107,50 +112,63 @@ PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi )
 PlaylistItem::PlaylistItem( QDomNode node, QListViewItem *item )
         : KListViewItem( item->listView(), item->itemAbove() )
         , m_url( node.toElement().attribute( "url" ) )
+        , m_year( 0 )
+        , m_track( 0 )
+        , m_length( 0 )
+        , m_bitrate( 0 )
+        , m_score( 0 )
+        , m_playcount( 0 )
         , m_missing( false )
         , m_enabled( true )
 {
     setDragEnabled( true );
-    KListViewItem::setText( Filename, filename( m_url ) );
 
     //NOTE we use base versions to speed this up (this function is called 100s of times during startup)
     for( uint x = 1, n = listView()->columns(); x < n; ++x ) {
         const QString text = node.namedItem( columnName( x ) ).toElement().text();
 
         switch( x ) {
+        case Title:
+        case Comment:
+            KListViewItem::setText( x, text );
+            continue;
         case Artist:
         case Album:
         case Genre:
-        case Year:
-        case Directory:
             KListViewItem::setText( x, attemptStore( text ) );
             continue;
+        case Year:
+            m_year = text.toInt();
+            continue;
+        case Track:
+            m_track = text.toInt();
+            continue;
+        case Length:
+            m_length = text.toInt();
+            continue;
+        case Bitrate:
+            m_bitrate = text.toInt();
+            continue;
         case Score:
-            KListViewItem::setText( x,
-                    QString::number( CollectionDB::instance()->getSongPercentage( m_url.path() ) ) );
+            m_score = CollectionDB::instance()->getSongPercentage( m_url.path() );
             continue;
         case Playcount:
-            KListViewItem::setText( x,
-                    QString::number( CollectionDB::instance()->getPlayCount( m_url.path() ) ) );
+            m_playcount = CollectionDB::instance()->getPlayCount( m_url.path() );
             continue;
-        case Type:
-        default:
-            KListViewItem::setText( x, text );
         }
     }
 
-    const int length = seconds().toInt();
     listView()->m_totalCount++;
-    listView()->m_totalLength += length;
+    listView()->m_totalLength += length();
     if( isSelected() )
     {
         listView()->m_selCount++;
-        listView()->m_selLength += length;
+        listView()->m_selLength += length();
     }
     if( isVisible() )
     {
         listView()->m_visCount++;
-        listView()->m_visLength += length;
+        listView()->m_visLength += length();
     }
 
     listView()->setFilterForItem( listView()->m_filter, this );
@@ -160,21 +178,20 @@ PlaylistItem::PlaylistItem( QDomNode node, QListViewItem *item )
 
 PlaylistItem::~PlaylistItem()
 {
-    if( text( 0 ) == "MARKERITEM" )
+    if( m_url.isEmpty() ) //constructed with the generic constructor, for PlaylistLoader's marker item
         return;
 
-    const int length = seconds().toInt();
     listView()->m_totalCount--;
-    listView()->m_totalLength -= length;
+    listView()->m_totalLength -= length();
     if( isSelected() )
     {
         listView()->m_selCount--;
-        listView()->m_selLength -= length;
+        listView()->m_selLength -= length();
     }
     if( isVisible() )
     {
         listView()->m_visCount--;
-        listView()->m_visLength -= length;
+        listView()->m_visLength -= length();
     }
 
     listView()->countChanged();
@@ -185,47 +202,97 @@ PlaylistItem::~PlaylistItem()
 // PUBLIC METHODS
 /////////////////////////////////////////////////////////////////////////////////////
 
+void PlaylistItem::setText( const MetaBundle &bundle )
+{
+    setTitle( bundle.title() );
+    setArtist( bundle.artist() );
+    setAlbum( bundle.album() );
+    setYear( bundle.year() );
+    setComment( bundle.comment() );
+    setGenre( bundle.genre() );
+    setTrack( bundle.track() );
+    setLength( bundle.length() );
+    setBitrate( bundle.bitrate() );
+    setScore( CollectionDB::instance()->getSongPercentage( bundle.url().path() ) );
+    setPlaycount( CollectionDB::instance()->getPlayCount( bundle.url().path() ) );
+
+    m_missing = !bundle.exists();
+}
+
+
+void PlaylistItem::setText( int column, const QString &newText )
+{
+    switch( column )
+    {
+        case Title:     setTitle(     newText );         break;
+        case Artist:    setArtist(    newText );         break;
+        case Album:     setAlbum(     newText );         break;
+        case Year:      setYear(      newText.toInt() ); break;
+        case Genre:     setGenre(     newText );         break;
+        case Comment:   setComment(   newText );         break;
+        case Track:     setTrack(     newText.toInt() ); break;
+        case Length:    setLength(    newText.toInt() ); break;
+        case Bitrate:   setBitrate(   newText.toInt() ); break;
+        case Score:     setScore(     newText.toInt() ); break;
+        case Playcount: setPlaycount( newText.toInt() ); break;
+        default: warning() << "Tried to set the text of an immutable or nonexistent column!" << endl;
+   }
+}
+
+QString PlaylistItem::exactText( int column ) const
+{
+    switch( column )
+    {
+        case Filename:  return filename();
+        case Title:     return title();
+        case Artist:    return artist();
+        case Album:     return album();
+        case Year:      return QString::number( year() );
+        case Comment:   return comment();
+        case Genre:     return genre();
+        case Track:     return QString::number( track() );
+        case Directory: return directory();
+        case Length:    return QString::number( length() );
+        case Bitrate:   return QString::number( bitrate() );
+        case Score:     return QString::number( score() );
+        case Type:      return type();
+        case Playcount: return QString::number( playcount() );
+        default: warning() << "Tried to get the text of a nonexistent column!" << endl;
+    }
+
+    return KListViewItem::text( column ); //shouldn't happen
+}
+
 
 QString PlaylistItem::text( int column ) const
 {
     //if there is no text set for the title, return a pretty version of the filename
 
-    if( column == Title && KListViewItem::text( Title ).isEmpty()
-            // this is important, as we don't want to show the filename twice
-            && listView()->columnWidth( Filename ) == 0 )
+    static const QString editing = i18n( "Writing tag..." );
+
+    switch( column )
     {
-        return MetaBundle::prettyTitle( KListViewItem::text( Filename ) );
+        case Filename:  return filename( m_url );
+        case Title:     return ( title().isEmpty() && listView()->columnWidth( Filename ) == 0 )
+                               ? MetaBundle::prettyTitle( filename() )
+                               : title();
+        case Artist:    return artist();
+        case Album:     return album();
+        case Year:      return year() == -4623894 ? editing : year() ? QString::number( year() ) : QString::null;
+        case Comment:   return comment();
+        case Genre:     return genre();
+        case Track:     return track() == -1 ? editing : track() ? QString::number( track() ) : QString::null;
+        case Directory: return m_url.isLocalFile() ? m_url.directory() : m_url.upURL().prettyURL();
+        case Length:    return length() == -1 ? editing : MetaBundle::prettyLength( length(), true );
+        case Bitrate:   return bitrate() == -1 ? editing : MetaBundle::prettyBitrate( bitrate() );
+        case Score:     return score() == -1 ? editing : QString::number( score() );
+        case Type:      return ( m_url.protocol() == "http" ) ? i18n( "Stream" )
+                               : filename().mid( filename().findRev( '.' ) + 1 );
+        case Playcount: return playcount() == -1 ? editing : QString::number( playcount() );
+        default: warning() << "Tried to get the text of a nonexistent column!" << endl;
     }
 
-    return KListViewItem::text( column );
-}
-
-
-QString
-PlaylistItem::seconds() const
-{
-    return QString::number( length() );
-}
-
-int
-PlaylistItem::length() const
-{
-    const QString text = exactText( Length );
-
-    if( text.isEmpty() || text == "?" ) return 0;
-    else if( text == "-" ) return -1;
-    else
-    {
-        int len = 0;
-        const QStringList parts = QStringList::split( ':',  text );
-        for( int i = parts.count(), mul = 1; i; --i )
-        {
-            len += parts[i-1].toInt() * mul;
-            mul *= 60;
-        }
-
-        return len;
-    }
+    return KListViewItem::text( column ); //shouldn't happen
 }
 
 void PlaylistItem::setEnabled( bool enabled )
@@ -241,18 +308,17 @@ void PlaylistItem::setSelected( bool selected )
     if( isVisible() )
     {
         const bool prevSelected = isSelected();
-        const int length = seconds().toInt();
         KListViewItem::setSelected( selected );
         if( prevSelected && !isSelected() )
         {
             listView()->m_selCount--;
-            listView()->m_selLength -= length;
+            listView()->m_selLength -= length();
             listView()->countChanged();
         }
         else if( !prevSelected && isSelected() )
         {
             listView()->m_selCount++;
-            listView()->m_selLength += length;
+            listView()->m_selLength += length();
             listView()->countChanged();
         }
     }
@@ -260,11 +326,10 @@ void PlaylistItem::setSelected( bool selected )
 
 void PlaylistItem::setVisible( bool visible )
 {
-    const int length = seconds().toInt();
     if( !visible && isSelected() )
     {
         listView()->m_selCount--;
-        listView()->m_selLength -= length;
+        listView()->m_selLength -= length();
         KListViewItem::setSelected( false );
         listView()->countChanged();
     }
@@ -274,70 +339,65 @@ void PlaylistItem::setVisible( bool visible )
     if( prevVisible && !isVisible() )
     {
         listView()->m_visCount--;
-        listView()->m_visLength -= length;
+        listView()->m_visLength -= length();
         listView()->countChanged();
     }
     else if( !prevVisible && isVisible() )
     {
         listView()->m_visCount++;
-        listView()->m_visLength += length;
+        listView()->m_visLength += length();
         listView()->countChanged();
     }
 }
 
-void PlaylistItem::setText( const MetaBundle &bundle )
+void PlaylistItem::setEditing( int column )
 {
-    for( int i = 0; i < NUM_COLUMNS; ++i )
-        setText( i, bundle.infoByColumn( i, true ) );
+    const QString editing = i18n( "Writing tag..." );
+    switch( column )
+    {
+        case Title: 
+        case Artist:
+        case Album:
+        case Genre:
+        case Comment:
+            KListViewItem::setText( column, editing );
+            break;
+        case Year:      m_year      = -4623894; break;
+        case Track:     m_track     = -1; break;
+        case Length:    m_length    = -1; break;
+        case Bitrate:   m_bitrate   = -1; break;
+        case Score:     m_score     = -1; break;
+        case Playcount: m_playcount = -1; break;
+        default: warning() << "Tried to set the text of an immutable or nonexistent column!" << endl;
+    }
 
-    m_missing = !bundle.exists();
-
-    const int score = CollectionDB::instance()->getSongPercentage( bundle.url().path() );
-    if ( score )
-        setText( Score, QString::number( score ) );
-
-    const int playcount = CollectionDB::instance()->getPlayCount( bundle.url().path() );
-    if ( playcount )
-        setText( Playcount, QString::number( playcount ) );
-    else
-        setText( Playcount, QString::number( 0 ) );  //Never played before.
+    update();
 }
 
-
-void PlaylistItem::setText( int column, const QString &newText )
+bool PlaylistItem::isEditing( int column ) const
 {
-    //NOTE prettyBitrate() is special and the returned string should not be modified
-    //     as it is implicately shared for the common values in class MetaBundle
-    //NOTE track() may also be special
-
-    switch( column ) {
-    case Artist:
-    case Album:
-    case Genre:
-    case Directory:
-
-        //these are good candidates for the stringStore
-        //NOTE title is not a good candidate, it probably will never repeat in the playlist
-        KListViewItem::setText( column, attemptStore( newText ) );
-        break;
-
-    case Length:
-        //TODO consider making this a dynamically generated string
-        KListViewItem::setText( Length, newText.isEmpty() ? newText : newText + ' ' ); //padding makes it neater
-        break;
-
-    case Track:
-    case Year:
-        KListViewItem::setText( column, newText == "0" ? QString::null : attemptStore( newText ) );
-        break;
-
-     case Type:
-     case Playcount:
-
-    default:
-        KListViewItem::setText( column, newText );
-        break;
+    const QString editing = i18n( "Writing tag..." );
+    switch( column )
+    {
+        case Title: 
+        case Artist:
+        case Album:
+        case Genre:
+        case Comment: //FIXME fix this hack!
+            return KListViewItem::text( column ) == editing;
+        case Year:      return m_year == -4623894;
+        case Track:     return m_track     < 0;
+        case Length:    return m_length    < 0;
+        case Bitrate:   return m_bitrate   < 0;
+        case Score:     return m_score     < 0;
+        case Playcount: return m_playcount < 0;
+        default: return false;
     }
+}
+
+void PlaylistItem::update() const
+{
+    listView()->repaintItem( this );
 }
 
 bool
@@ -359,53 +419,67 @@ PlaylistItem::operator< ( const PlaylistItem & item ) const
 int
 PlaylistItem::compare( QListViewItem *i, int col, bool ascending ) const
 {
+    //damn C++ and its lack of operator<=>
+    #define cmp(a,b) ( (a < b ) ? -1 : ( a > b ) ? 1 : 0 )
+    #define i static_cast<PlaylistItem*>(i)
+    switch( col )
+    {
+        case Track:     return cmp( track(),     i->track() );
+        case Score:     return cmp( score(),     i->score() );
+        case Length:    return cmp( length(),    i->length() );
+        case Playcount: return cmp( playcount(), i->playcount() );
+        case Bitrate:   return cmp( bitrate(),   i->bitrate() );
+        case Year:
+            if( year() == i->year() )
+                return compare( i, Artist, ascending );
+            return cmp( year(), i->year() );
+    }
+    #undef cmp
+    #undef i
+
     QString a =    text( col ).lower();
     QString b = i->text( col ).lower();
 
-    switch( col )  //we must pad numbers to sort them lexically, so we must special case those columns
+    switch( col )
     {
-        case Track:
-        case Score:
-        case Length:
         case Type:
-        case Playcount:
-        case Bitrate:
-            a = a.rightJustify( b.length(), '0' ); //all these columns shouldn't become negative
-            b = b.rightJustify( a.length(), '0' ); //so simply left-padding is sufficient
-            break;
-
-        case Year:
-            if( a == b )
-                return this->compare( i, Artist, ascending );
+            a = a.rightJustify( b.length(), '0' );
+            b = b.rightJustify( a.length(), '0' );
             break;
 
         case Artist:
             if( a == b ) //if same artist, try to sort by album
-                return this->compare( i, Album, ascending );
+                return compare( i, Album, ascending );
             break;
 
         case Album:
             if( a == b ) //if same album, try to sort by track
                 //TODO only sort in ascending order?
-                return this->compare( i, Track, true ) * (ascending ? 1 : -1);
+                return compare( i, Track, true ) * (ascending ? 1 : -1);
             break;
-
-        default:;
     }
 
     return QString::localeAwareCompare( a, b );
 }
 
-void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
+void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int column, int width, int align )
 {
     //TODO add spacing on either side of items
     //p->translate( 2, 0 ); width -= 3;
+
+    // Don't try to draw if width or height is 0, as this crashes Qt
+    if( !painter || !listView() || width == 0 || height() == 0 )
+        return;
 
     static const QImage currentTrackLeft  = locate( "data", "amarok/images/currenttrack_bar_left.png" );
     static const QImage currentTrackMid   = locate( "data", "amarok/images/currenttrack_bar_mid.png" );
     static const QImage currentTrackRight = locate( "data", "amarok/images/currenttrack_bar_right.png" );
 
+    const QString colText = text( column );
     const bool isCurrent = this == listView()->currentTrack();
+
+    QPixmap buf( width, height() );
+    QPainter p( &buf, true );
 
     if( isCurrent && !isSelected() )
     {
@@ -420,8 +494,8 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         const bool cacheValid =
             paintCache[column].width == width &&
             paintCache[column].height == height() &&
-            paintCache[column].text == text( column ) &&
-            paintCache[column].font == p->font() &&
+            paintCache[column].text == colText &&
+            paintCache[column].font == painter->font() &&
             !s_pixmapChanged;
 
         // If any parameter changed, we must regenerate all pixmaps
@@ -438,23 +512,17 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
             // Update painting cache
             paintCache[column].width = width;
             paintCache[column].height = height();
-            paintCache[column].text = text( column );
-            paintCache[column].font = p->font();
-            paintCache[column].map[colorKey] = QPixmap( width, height() );
-
-            // Don't try to draw if width or height is 0, as this crashes Qt
-            if( paintCache[column].map[colorKey].isNull() ) return;
+            paintCache[column].text = colText;
+            paintCache[column].font = painter->font();
 
             const QColor bg = isAlternate() ? listView()->alternateBackground() :
                                               listView()->viewport()->backgroundColor();
 
-            paintCache[column].map[colorKey].fill( bg );
-
-            QPainter paint( &paintCache[column].map[colorKey], true );
+            buf.fill( bg );
 
             // Draw column divider line
-            paint.setPen( listView()->viewport()->colorGroup().mid() );
-            paint.drawLine( width - 1, 0, width - 1, height() - 1 );
+            p.setPen( listView()->viewport()->colorGroup().mid() );
+            p.drawLine( width - 1, 0, width - 1, height() - 1 );
 
             // Here we draw the background bar graphics for the current track:
             //
@@ -470,7 +538,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
                 QImage tmpImage = currentTrackLeft.smoothScale( currentTrackLeft.width(), height() );
                 KIconEffect::colorize( tmpImage, cg.highlight(), 0.6 );
                 KIconEffect::colorize( tmpImage, glowBase, 0.41 );
-                paint.drawImage( 0, 0, tmpImage );
+                p.drawImage( 0, 0, tmpImage );
                 leftOffset = currentTrackLeft.width();
                 margin += 6;
             }
@@ -481,7 +549,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
                 QImage tmpImage = currentTrackRight.smoothScale( currentTrackRight.width(), height() );
                 KIconEffect::colorize( tmpImage, cg.highlight(), 0.6 );
                 KIconEffect::colorize( tmpImage, glowBase, 0.41 );
-                paint.drawImage( width - currentTrackRight.width(), 0, tmpImage );
+                p.drawImage( width - currentTrackRight.width(), 0, tmpImage );
                 rightOffset = currentTrackRight.width();
                 margin += 6;
             }
@@ -492,13 +560,13 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
             KIconEffect::colorize( tmpImage, cg.highlight(), 0.6 );
             KIconEffect::colorize( tmpImage, glowBase, 0.43 );
             tmpImage = tmpImage.smoothScale( width - leftOffset - rightOffset, height() );
-            paint.drawImage( leftOffset, 0, tmpImage );
+            p.drawImage( leftOffset, 0, tmpImage );
 
 
             // Draw the pixmap, if present
             int leftMargin = margin;
             if ( pixmap( column ) ) {
-                paint.drawPixmap( leftMargin, height() / 2 - pixmap( column )->height() / 2, *pixmap( column ) );
+                p.drawPixmap( leftMargin, height() / 2 - pixmap( column )->height() / 2, *pixmap( column ) );
                 leftMargin += pixmap( column )->width();
             }
 
@@ -508,30 +576,87 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
             // Draw the text
             static QFont font;
             static int minbearing = 1337 + 666;
-            if( minbearing == 2003 || font != p->font() )
+            if( minbearing == 2003 || font != painter->font() )
             {
-                font = p->font();
-                minbearing = p->fontMetrics().minLeftBearing() + p->fontMetrics().minRightBearing();
+                font = painter->font();
+                minbearing = painter->fontMetrics().minLeftBearing() + painter->fontMetrics().minRightBearing();
             }
             font.setItalic( true );
-            paint.setFont( font );
-            paint.setPen( cg.highlightedText() );
+            p.setFont( font );
+            p.setPen( cg.highlightedText() );
 //             paint.setPen( glowText );
             const int _width = width - leftMargin - margin + minbearing - 1; // -1 seems to be necessary *shrug*
-            const QString _text = KStringHandler::rPixelSqueeze( text( column ), p->fontMetrics(), _width );
-            paint.drawText( leftMargin, 0, _width, height(), align, _text );
+            const QString _text = KStringHandler::rPixelSqueeze( colText, painter->fontMetrics(), _width );
+            p.drawText( leftMargin, 0, _width, height(), align, _text );
+
+            paintCache[column].map[colorKey] = buf;
+        }
+        else
+            p.drawPixmap( 0, 0, paintCache[column].map[colorKey] );
+    }
+    else
+    {
+        const QColorGroup _cg = ( !exists() || !isEnabled() )
+                              ? listView()->palette().disabled()
+                              : listView()->palette().active();
+
+        QColor bg = isSelected()  ? _cg.highlight()
+                    : isAlternate() ? listView()->alternateBackground()
+                    : listView()->viewport()->backgroundColor();
+        if( listView()->shadeSortColumn() && !isSelected() && listView()->columnSorted() == column )
+        {
+            /* from klistview.cpp
+               Copyright (C) 2000 Reginald Stadlbauer <reggie@kde.org>
+               Copyright (C) 2000,2003 Charles Samuels <charles@kde.org>
+               Copyright (C) 2000 Peter Putzer */
+            if ( bg == Qt::black )
+                bg = QColor(55, 55, 55);  // dark gray
+            else
+            {
+                int h,s,v;
+                bg.hsv(&h, &s, &v);
+                if ( v > 175 )
+                    bg = bg.dark(104);
+                else
+                    bg = bg.light(120);
+            }
         }
 
-        p->drawPixmap( 0, 0, paintCache[column].map[colorKey] );
-    }
-    else {
-        QColorGroup _cg = cg;
-        //FIXME not acceptable to hardcode the colour
-        QColor disabledText = QColor( 172, 172, 172 );
-        if( m_missing || !m_enabled )
-            _cg.setColor( QColorGroup::Text, disabledText );
+        const QColor textc = isSelected() ? _cg.highlightedText()
+                           : _cg.text();
 
-        KListViewItem::paintCell( p, _cg, column, width, align );
+        buf.fill( bg );
+
+        // Draw column divider line
+        if( !isSelected() )
+        {
+            p.setPen( listView()->viewport()->colorGroup().mid() );
+            p.drawLine( width - 1, 0, width - 1, height() - 1 );
+        }
+
+        // Draw the pixmap, if present
+        int margin = listView()->itemMargin(), leftMargin = margin;
+        if ( pixmap( column ) ) {
+            p.drawPixmap( leftMargin, height() / 2 - pixmap( column )->height() / 2, *pixmap( column ) );
+            leftMargin += pixmap( column )->width();
+        }
+
+        if( align != Qt::AlignCenter )
+           align |= Qt::AlignVCenter;
+
+        // Draw the text
+        static QFont font;
+        static int minbearing = 1337 + 666;
+        if( minbearing == 2003 || font != painter->font() )
+        {
+            font = painter->font();
+            minbearing = painter->fontMetrics().minLeftBearing() + painter->fontMetrics().minRightBearing();
+        }
+        p.setFont( font );
+        p.setPen( textc );
+        const int _width = width - leftMargin - margin + minbearing - 1; // -1 seems to be necessary *shrug*
+        const QString _text = KStringHandler::rPixelSqueeze( colText, painter->fontMetrics(), _width );
+        p.drawText( leftMargin, 0, _width, height(), align, _text );
     }
 
     /// Track action symbols
@@ -552,8 +677,8 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
 
         const QString str = QString::number( queue );
 
-        const uint qw = p->fontMetrics().width( str ), sw = pixstop.width(),  rw = pixrepeat.width(),
-                   qh = p->fontMetrics().height(),     sh = pixstop.height(), rh = pixrepeat.height();
+        const uint qw = painter->fontMetrics().width( str ), sw = pixstop.width(),  rw = pixrepeat.width(),
+                   qh = painter->fontMetrics().height(),     sh = pixstop.height(), rh = pixrepeat.height();
 
         //maxwidth
         const uint mw = kMax( qw, kMax( rw, sw ) );
@@ -569,12 +694,12 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
 
         //ellipse width, total width
         const uint ew = 16, tw = w1 + w2 + m * ( w2 ? 2 : 1 );
-        p->setBrush( cg.highlight() );
-        p->setPen( cg.highlight().dark() ); //TODO blend with background color
-        p->drawEllipse( width - tw - ew/2, m / 2, ew, h );
-        p->drawRect( width - tw, m / 2, tw, h );
-        p->setPen( cg.highlight() );
-        p->drawLine( width - tw, m/2 + 1, width - tw, h - m/2 );
+        p.setBrush( cg.highlight() );
+        p.setPen( cg.highlight().dark() ); //TODO blend with background color
+        p.drawEllipse( width - tw - ew/2, m / 2, ew, h );
+        p.drawRect( width - tw, m / 2, tw, h );
+        p.setPen( cg.highlight() );
+        p.drawLine( width - tw, m/2 + 1, width - tw, h - m/2 );
 
         int x = width - m - mw, y = height() / 2, tmp = 0;
         const bool multi = ( isCurrent && num >= 2 );
@@ -593,8 +718,8 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
             if( !multi )
                 tmp = -(qh / 2);
             y += tmp;
-            p->setPen( cg.highlightedText() );
-            p->drawText( x, y, -x + width, multi ? h/2 : qh, Qt::AlignCenter, str );
+            p.setPen( cg.highlightedText() );
+            p.drawText( x, y, -x + width, multi ? h/2 : qh, Qt::AlignCenter, str );
             y -= tmp;
             if( isCurrent )
                 y -= height() / 2;
@@ -608,7 +733,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
             else
                 tmp = -(rh / 2);
             y += tmp;
-            p->drawPixmap( x, y, pixrepeat );
+            p.drawPixmap( x, y, pixrepeat );
             y -= tmp;
             if( num == 3 )
             {
@@ -625,16 +750,19 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
             else
                 tmp = -(sh / 2);
             y += tmp;
-            p->drawPixmap( x, y, pixstop );
+            p.drawPixmap( x, y, pixstop );
             y -= tmp;
         }
     }
 
     if( this != listView()->currentTrack() && !isSelected() )
     {
-        p->setPen( QPen( cg.mid(), 0, Qt::SolidLine ) );
-        p->drawLine( width - 1, 0, width - 1, height() - 1 );
+        p.setPen( QPen( cg.mid(), 0, Qt::SolidLine ) );
+        p.drawLine( width - 1, 0, width - 1, height() - 1 );
     }
+
+    p.end();
+    painter->drawPixmap( 0, 0, buf );
 }
 
 
@@ -653,7 +781,7 @@ void PlaylistItem::paintFocus( QPainter* p, const QColorGroup& cg, const QRect& 
         KListViewItem::paintFocus( p, cg, r );
 }
 
-
+//this works because QString is implicitly shared
 const QString &PlaylistItem::attemptStore( const QString &candidate ) //static
 {
     //principal is to cause collisions at reasonable rate to reduce memory
