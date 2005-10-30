@@ -107,19 +107,16 @@ MediaDeviceList::MediaDeviceList( MediaDeviceView* parent )
     setAcceptDrops( true );
 
     addColumn( i18n( "Artist" ) );
-    renderView( 0 );
+    expandItem( 0 );
 
     connect( this, SIGNAL( expanded( QListViewItem* ) ),
-             this,   SLOT( renderView( QListViewItem* ) ) );
+             this,   SLOT( expandItem( QListViewItem* ) ) );
 
     connect( this, SIGNAL( collapsed( QListViewItem* ) ),
-             this,   SLOT( slotCollapse( QListViewItem* ) ) );
+             this,   SLOT( collapseItem( QListViewItem* ) ) );
 
     connect( this, SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
              this,   SLOT( rmbPressed( QListViewItem*, const QPoint&, int ) ) );
-
-    connect( this, SIGNAL( itemRenamed( QListViewItem* ) ),
-             this,   SLOT( renameItem( QListViewItem* ) ) );
 }
 
 
@@ -128,10 +125,13 @@ MediaDeviceList::~MediaDeviceList()
 
 
 void
-MediaDeviceList::renderView( QListViewItem* parent )  //SLOT
+MediaDeviceList::expandItem( QListViewItem* parent )  //SLOT
 {
     if ( parent == 0 )
         clear();
+
+    if ( m_parent->m_device == NULL )
+        return;
 
     KIconLoader iconLoader;
     QPixmap pixmap = iconLoader.loadIcon( "usbpendrive_unmount", KIcon::Toolbar, KIcon::SizeSmall );
@@ -164,7 +164,7 @@ MediaDeviceList::renderView( QListViewItem* parent )  //SLOT
 
 
 void
-MediaDeviceList::slotCollapse( QListViewItem* item )  //SLOT
+MediaDeviceList::collapseItem( QListViewItem* item )  //SLOT
 {
     DEBUG_FUNC_INFO
 
@@ -192,27 +192,39 @@ MediaDeviceList::startDrag()
 
 
 KURL::List
-MediaDeviceList::nodeBuildDragList( MediaItem* item )
+MediaDeviceList::nodeBuildDragList( MediaItem* item, bool onlySelected )
 {
     KURL::List items;
     MediaItem* fi;
 
     if ( !item )
+    {
         fi = (MediaItem*)firstChild();
+    }
     else
         fi = item;
 
     while ( fi )
     {
-        if ( fi->isSelected() )
+        if ( fi->isSelected() || !onlySelected )
         {
+            debug() << "drag depth: " << fi->depth() << endl;
             switch ( fi->depth() )
             {
                 case 0:
-                    items += m_parent->m_device->songsByArtist( fi->text( 0 ) );
-                    break;
                 case 1:
-                    items += m_parent->m_device->songsByArtistAlbum( fi->parent()->text( 0 ), fi->text( 0 ) );
+                    {
+                        bool collapse = false;
+                        if(fi->childCount() == 0)
+                        {
+                            expandItem( fi );
+                            collapse = true;
+                        }
+                        if(fi->childCount())
+                            items += nodeBuildDragList( (MediaItem*)fi->firstChild(), false );
+                        if(collapse)
+                            collapseItem(fi);
+                    }
                     break;
                 case 2:
                     items += fi->url().path();
@@ -222,7 +234,7 @@ MediaDeviceList::nodeBuildDragList( MediaItem* item )
         else
         {
             if ( fi->childCount() )
-                items += nodeBuildDragList( (MediaItem*)fi->firstChild() );
+                items += nodeBuildDragList( (MediaItem*)fi->firstChild(), true );
         }
 
         fi = (MediaItem*)fi->nextSibling();
@@ -263,8 +275,8 @@ MediaDeviceList::contentsDragMoveEvent( QDragMoveEvent *e )
     e->accept( e->source() != this
             && e->source() != viewport()
             && e->source() != m_parent
-            && e->source() != m_parent->m_transferList
-            && e->source() != m_parent->m_transferList->viewport()
+            && e->source() != m_parent->m_device->m_transferList
+            && e->source() != m_parent->m_device->m_transferList->viewport()
             && KURLDrag::canDecode( e ) );
 }
 
@@ -308,7 +320,7 @@ MediaDeviceList::rmbPressed( QListViewItem* item, const QPoint& point, int ) //S
         KPopupMenu menu( this );
 
         enum Actions { APPEND, MAKE, QUEUE, BURN_ARTIST, BURN_ALBUM,
-                       BURN_DATACD, BURN_AUDIOCD, RENAME, DELETE };
+                       BURN_DATACD, BURN_AUDIOCD, DELETE };
 
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue Track" ), QUEUE );
@@ -336,7 +348,6 @@ MediaDeviceList::rmbPressed( QListViewItem* item, const QPoint& point, int ) //S
         }
 
         menu.insertSeparator();
-        menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n( "Rename on Media Device" ), RENAME );
         menu.insertItem( SmallIconSet( "editdelete" ), i18n( "Delete File" ), DELETE );
 
         switch( menu.exec( point ) )
@@ -362,10 +373,6 @@ MediaDeviceList::rmbPressed( QListViewItem* item, const QPoint& point, int ) //S
             case BURN_AUDIOCD:
                 K3bExporter::instance()->exportTracks( urls, K3bExporter::AudioCD );
                 break;
-            case RENAME:
-                m_renameFrom = item->text(0);
-                rename(item, 0);
-                break;
             case DELETE:
                 m_parent->m_device->deleteFiles( urls );
                 break;
@@ -373,32 +380,14 @@ MediaDeviceList::rmbPressed( QListViewItem* item, const QPoint& point, int ) //S
     }
 }
 
-void
-MediaDeviceList::renameItem( QListViewItem* item ) // SLOT
-{
-    switch(item->depth())
-    {
-        case 0:
-            m_parent->m_device->renameArtist( m_renameFrom, item->text(0) );
-            break;
-        case 1:
-            m_parent->m_device->renameAlbum( item->parent()->text(0), m_renameFrom, item->text(0) );
-            break;
-        case 2:
-            m_parent->m_device->renameTrack( item->parent()->parent()->text(0), item->parent()->text(0),
-                    m_renameFrom, item->text(0) );
-            break;
-    }
-}
-
 MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     : QVBox( parent )
-    , m_device ( new GpodMediaDevice( this ) )
+    , m_stats( NULL )
+    , m_device( NULL )
     , m_deviceList( new MediaDeviceList( this ) )
-    , m_transferList( new MediaDeviceTransferList( this ) )
     , m_parent( parent )
 {
-    m_stats = new QLabel( i18n( "1 track in queue", "%n tracks in queue", m_transferList->childCount() ), this );
+    m_device = new GpodMediaDevice( this );
     m_progress = new KProgress( this );
 
     QHBox* hb = new QHBox( this );
@@ -407,6 +396,8 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     m_transferButton = new KPushButton( SmallIconSet( "rebuild" ), i18n( "Transfer" ), hb );
     m_configButton   = new KPushButton( KGuiItem( QString::null, "configure" ), hb );
     m_configButton->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred ); // too big!
+
+    m_stats = new QLabel( i18n( "1 track in queue", "%n tracks in queue", m_device->m_transferList->childCount() ), this );
 
     QToolTip::add( m_connectButton,  i18n( "Connect media device" ) );
     QToolTip::add( m_transferButton, i18n( "Transfer tracks to media device" ) );
@@ -422,10 +413,12 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     connect( m_connectButton,  SIGNAL( clicked() ), MediaDevice::instance(), SLOT( connectDevice() ) );
     connect( m_transferButton, SIGNAL( clicked() ), MediaDevice::instance(), SLOT( transferFiles() ) );
     connect( m_configButton,   SIGNAL( clicked() ), MediaDevice::instance(), SLOT( config() ) );
-    connect( m_transferList, SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
+    connect( m_device->m_transferList, SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
              this,   SLOT( slotShowContextMenu( QListViewItem*, const QPoint&, int ) ) );
 
     m_device->loadTransferList( amaroK::saveLocation() + "transferlist.xml" );
+
+    m_device->openDevice();
 }
 
 void
@@ -456,8 +449,8 @@ MediaDeviceView::slotShowContextMenu( QListViewItem* item, const QPoint& point, 
 MediaDeviceView::~MediaDeviceView()
 {
     m_device->saveTransferList( amaroK::saveLocation() + "transferlist.xml" );
+    m_device->closeDevice();
 
-    delete m_transferList;
     delete m_deviceList;
     delete m_device;
 }
@@ -465,6 +458,7 @@ MediaDeviceView::~MediaDeviceView()
 
 MediaDevice::MediaDevice( MediaDeviceView* parent )
     : m_parent( parent )
+    , m_transferList( new MediaDeviceTransferList( parent ) )
 {
     s_instance = this;
 
@@ -477,6 +471,7 @@ MediaDevice::MediaDevice( MediaDeviceView* parent )
 
 MediaDevice::~MediaDevice()
 {
+    delete m_transferList;
 }
 
 void
@@ -484,9 +479,9 @@ MediaDevice::addURL( const KURL& url, MetaBundle *bundle, bool isPodcast )
 {
     if(!bundle)
         bundle = new MetaBundle( url );
-    if ( !fileExists( *bundle ) && ( m_parent->m_transferList->findPath( url.path() ) == NULL ) )
+    if ( !trackExists( *bundle ) && ( m_transferList->findPath( url.path() ) == NULL ) )
     {
-        MediaItem* item = new MediaItem( m_parent->m_transferList, m_parent->m_transferList->lastItem() );
+        MediaItem* item = new MediaItem( m_transferList, m_transferList->lastItem() );
         item->setExpandable( false );
         item->setDropEnabled( true );
         item->setUrl( url.path() );
@@ -500,7 +495,7 @@ MediaDevice::addURL( const KURL& url, MetaBundle *bundle, bool isPodcast )
         }
         item->setText( 0, text);
 
-        m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_parent->m_transferList->childCount() ) );
+        m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_transferList->childCount() ) );
         m_parent->m_transferButton->setEnabled( m_parent->m_device->isConnected() || m_parent->m_deviceList->childCount() != 0 );
         m_parent->m_progress->setTotalSteps( m_parent->m_progress->totalSteps() + 1 );
     } else
@@ -519,23 +514,25 @@ MediaDevice::addURLs( const KURL::List urls, MetaBundle *bundle )
 void
 MediaDevice::clearItems()
 {
-    m_parent->m_transferList->clear();
-    m_parent->m_stats->setText( i18n( "0 tracks in queue" ) );
-    m_parent->m_transferButton->setEnabled( false );
+    m_transferList->clear();
+    if(m_parent && m_parent->m_stats)
+        m_parent->m_stats->setText( i18n( "0 tracks in queue" ) );
+    if(m_parent && m_parent->m_transferButton)
+        m_parent->m_transferButton->setEnabled( false );
 }
 
 void
 MediaDevice::removeSelected()
 {
-    QPtrList<QListViewItem>  selected = m_parent->m_transferList->selectedItems();
+    QPtrList<QListViewItem>  selected = m_transferList->selectedItems();
 
     for( QListViewItem *item = selected.first(); item; item = selected.next() )
     {
-        m_parent->m_transferList->takeItem( item );
+        m_transferList->takeItem( item );
         delete item;
     }
-    m_parent->m_transferButton->setEnabled( m_parent->m_transferList->childCount() != 0 );
-    m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_parent->m_transferList->childCount() ) );
+    m_parent->m_transferButton->setEnabled( m_transferList->childCount() != 0 );
+    m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_transferList->childCount() ) );
 }
 
 void
@@ -626,6 +623,81 @@ int MediaDevice::sysCall(const QString & command)
     return (sysProc->exitStatus());
 }
 
+void
+MediaDevice::connectDevice()
+{
+    if ( m_parent->m_connectButton->isOn() )
+    {
+        if ( !m_mntcmd.isEmpty() )
+        {
+            mount();
+        }
+
+        openDevice();
+        updateView();
+
+        if( isConnected() || m_parent->m_deviceList->childCount() != 0 )
+        {
+            m_parent->m_connectButton->setOn( true );
+            if ( m_transferList->childCount() != 0 )
+            {
+                m_parent->m_transferButton->setEnabled( true );
+                m_parent->m_stats->setText( i18n( "Checking device for duplicate files." ) );
+                KURL::List urls;
+                for( MediaItem *cur = dynamic_cast<MediaItem *>(m_transferList->firstChild());
+                        cur != NULL;
+                        cur = dynamic_cast<MediaItem *>(cur->nextSibling()) )
+                {
+                    urls.append( cur->url() );
+                }
+                clearItems();
+                addURLs( urls );
+            }
+        }
+        else
+        {
+            m_parent->m_connectButton->setOn( false );
+            KMessageBox::error( m_parent->m_parent,
+                    i18n( "Could not find device, please mount it and try again." ),
+                    i18n( "Media Device Browser" ) );
+        }
+    }
+    else
+    {
+        if ( m_transferList->childCount() != 0 &&  isConnected() )
+        {
+            KGuiItem transfer = KGuiItem(i18n("&Transfer"),"rebuild");
+            KGuiItem disconnect = KGuiItem(i18n("Disconnect immediately"),"rebuild");
+            int button = KMessageBox::warningYesNo( m_parent->m_parent,
+                    i18n( "There are tracks queued for transfer."
+                        " Would you like to transfer them before disconnecting?"),
+                    i18n( "Media Device Browser" ),
+                    transfer, disconnect);
+
+            if ( button == KMessageBox::Yes )
+            {
+                transferFiles();
+                fileTransferFinished();
+            }
+        }
+
+        m_parent->m_transferButton->setEnabled( false );
+
+        closeDevice();
+        QString text = i18n( "Your device is now in sync, please unmount it and disconnect now." );
+
+        if ( !m_umntcmd.isEmpty() )
+        {
+            umount();
+            text=i18n( "Your device is now in sync, you can disconnect now." );
+        }
+
+        updateView();
+        m_parent->m_connectButton->setOn( false );
+        KMessageBox::information( m_parent->m_parent, text, i18n( "Media Device Browser" ) );
+    }
+}
+
 
 void
 MediaDevice::fileTransferred()  //SLOT
@@ -633,18 +705,203 @@ MediaDevice::fileTransferred()  //SLOT
     m_wait = false;
     m_parent->m_progress->setProgress( m_parent->m_progress->progress() + 1 );
     // the track just transferred has not yet been removed from the queue
-    m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_parent->m_transferList->childCount()-1 ) );
+    m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_transferList->childCount()-1 ) );
+}
+
+void
+MediaDevice::transferFiles()
+{
+    m_parent->m_transferButton->setEnabled( false );
+
+    m_parent->m_progress->setProgress( 0 );
+    m_parent->m_progress->setTotalSteps( m_transferList->childCount() );
+    m_parent->m_progress->show();
+
+    // ok, let's copy the stuff to the device
+    lockDevice( true );
+
+    // iterate through items
+    for( MediaItem *cur =  dynamic_cast<MediaItem *>(m_transferList->firstChild());
+            cur != NULL;
+            cur =  dynamic_cast<MediaItem *>(m_transferList->firstChild()) )
+    {
+        debug() << "Transfering: " << cur->url().path() << endl;
+
+        MetaBundle *bundle = cur->bundle();
+        if(!bundle)
+        {
+            bundle = new MetaBundle( cur->url() );
+        }
+
+        QString trackpath = createPathname(*bundle);
+
+        // check if path exists and make it if needed
+        QFileInfo finfo( trackpath );
+        QDir dir = finfo.dir();
+        while ( !dir.exists() )
+        {
+            QString path = dir.absPath();
+            QDir parentdir;
+            QDir create;
+            do
+            {
+                create.setPath(path);
+                path = path.section("/", 0, path.contains('/')-1);
+                parentdir.setPath(path);
+            }
+            while( !path.isEmpty() && !(path==m_mntpnt) && !parentdir.exists() );
+            debug() << "trying to create \"" << path << "\"" << endl;
+            if(!create.mkdir( create.absPath() ))
+            {
+                break;
+            }
+        }
+
+        if ( !dir.exists() )
+        {
+            KMessageBox::error( m_parent->m_parent,
+                    i18n("Could not create directory for file") + trackpath,
+                    i18n( "Media Device Browser" ) );
+            delete bundle;
+            break;
+        }
+
+        m_wait = true;
+
+        KIO::CopyJob *job = KIO::copy( cur->url(), KURL( trackpath ), false );
+        connect( job, SIGNAL( copyingDone( KIO::Job *, const KURL &, const KURL &, bool, bool ) ),
+                this,  SLOT( fileTransferred() ) );
+
+        while ( m_wait )
+        {
+            usleep(10000);
+            kapp->processEvents( 100 );
+        }
+
+
+        KURL url;
+        url.setPath(trackpath);
+        MetaBundle bundle2(url);
+        if(!bundle2.isValidMedia())
+        {
+            // probably s.th. went wrong
+            debug() << "Reading tags failed! File not added!" << endl;
+            QFile::remove( trackpath );
+        }
+        else
+        {
+            addTrackToDevice(trackpath, *bundle, cur->m_podcast);
+
+            m_transferList->takeItem( cur );
+            delete cur;
+            cur = NULL;
+        }
+        delete bundle;
+    }
+    unlockDevice();
+    synchronizeDevice();
+    fileTransferFinished();
+
+    m_parent->m_transferButton->setEnabled( m_transferList->childCount()>0 );
 }
 
 
 void
 MediaDevice::fileTransferFinished()  //SLOT
 {
-    m_parent->m_transferList->clear();
+    m_transferList->clear();
 
-    m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_parent->m_transferList->childCount() ) );
+    m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_transferList->childCount() ) );
     m_parent->m_progress->hide();
     m_parent->m_transferButton->setDisabled( true );
+}
+
+void
+MediaDevice::deleteFiles( const KURL::List& urls )
+{
+    //NOTE we assume that currentItem is the main target
+    int count  = urls.count();
+
+    m_parent->m_stats->setText( i18n( "1 track to be deleted", "%n tracks to be deleted", count ) );
+    m_parent->m_progress->setProgress( 0 );
+    m_parent->m_progress->setTotalSteps( count );
+    m_parent->m_progress->show();
+
+    int button = KMessageBox::warningContinueCancel( m_parent,
+            i18n( "<p>You have selected 1 file to be <b>irreversibly</b> deleted.",
+                "<p>You have selected %n files to be <b>irreversibly</b> deleted.",
+                count
+                ),
+            QString::null,
+            KGuiItem(i18n("&Delete"),"editdelete") );
+
+    if ( button == KMessageBox::Continue )
+    {
+
+        lockDevice( true );
+        KURL::List::ConstIterator it = urls.begin();
+        for ( ; it != urls.end(); ++it )
+        {
+            m_parent->m_progress->setProgress( m_parent->m_progress->progress() + 1 );
+            debug() << "deleting " << (*it).prettyURL() << endl;
+            //KIO::del( *it, false, false );
+            KIO::file_delete( *it, false );
+        }
+        deleteFromDevice( 0 );
+        unlockDevice();
+        synchronizeDevice();
+    }
+    QTimer::singleShot( 1500, m_parent->m_progress, SLOT(hide()) );
+    m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_transferList->childCount() ) );
+}
+
+void
+MediaDevice::deleteFromDevice(MediaItem *item, bool onlySelected)
+{
+    MediaItem* fi;
+
+    if ( !item )
+    {
+        fi = (MediaItem*)m_parent->m_deviceList->firstChild();
+    }
+    else
+        fi = item;
+
+    while ( fi )
+    {
+        if ( fi->isSelected() || !onlySelected )
+        {
+            debug() << "depth=" << fi->depth() << endl;
+            switch ( fi->depth() )
+            {
+            case 0:
+            case 1:
+                {
+                    bool collapse = false;
+                    if(fi->childCount() == 0)
+                    {
+                        m_parent->m_deviceList->expandItem( fi );
+                        collapse = true;
+                    }
+                    if ( fi->childCount() )
+                        deleteFromDevice( (MediaItem*)fi->firstChild(), false);
+                    if(collapse)
+                        m_parent->m_deviceList->collapseItem(fi);
+                }
+                break;
+            case 2:
+                deleteTrackFromDevice(fi->parent()->parent()->text( 0 ), fi->parent()->text( 0 ), fi->text( 0 ));
+                break;
+            }
+        }
+        else
+        {
+            if ( fi->childCount() )
+                deleteFromDevice( (MediaItem*)fi->firstChild(), true );
+        }
+
+        fi = (MediaItem*)fi->nextSibling();
+    }
 }
 
 void
@@ -660,7 +917,7 @@ MediaDevice::saveTransferList( const QString &path )
     transferlist.setAttribute( "version", APP_VERSION );
     newdoc.appendChild( transferlist );
 
-    for( const MediaItem *item = static_cast<MediaItem *>( m_parent->m_transferList->firstChild() );
+    for( const MediaItem *item = static_cast<MediaItem *>( m_transferList->firstChild() );
             item;
             item = static_cast<MediaItem *>( item->nextSibling() ) )
     {

@@ -27,31 +27,28 @@ class GpodMediaDevice : public MediaDevice
 
         bool        isConnected();
         QStringList items( QListViewItem* item );
-        KURL::List  songsByArtist( const QString& artist );
-        KURL::List  songsByArtistAlbum( const QString& artist, const QString& album );
 
-        bool        renameArtist( const QString& oldArtist, const QString& newArtist );
-        bool        renameAlbum( const QString& artist, const QString& oldAlbum, const QString& newAlbum );
-        bool        renameTrack( const QString& artist, const QString& album,
-                        const QString& oldTrack, const QString& newTrack );
+    protected:
+        bool             trackExists( const MetaBundle& bundle );
 
-    public slots:
-        void deleteFiles( const KURL::List& urls );
-        void connectDevice();
-        void transferFiles();
+        bool             openDevice(bool useDialogs=true);
+        bool             closeDevice();
+        void lockDevice(bool) {}
+        void unlockDevice() {}
+
+        void synchronizeDevice();
+        QString createPathname(const MetaBundle& bundle);
+        bool addTrackToDevice(const QString& pathname, const MetaBundle& bundle, bool isPodcast);
+        bool deleteTrackFromDevice(const QString& artist, const QString& album, const QString& track);
 
     private:
-        bool             fileExists( const MetaBundle& bundle );
-
 #ifdef HAVE_LIBGPOD
-        void             deleteFromIPod( MediaItem* item );
-        void             openIPod(bool useDialogs=true);
-        void             closeIPod();
         void             writeITunesDB();
         void             addTrackToList(Itdb_Track *track);
         void             addPlaylistToList(Itdb_Playlist *playlist);
 
         QString          realPath(const char *ipodPath);
+        QString          ipodPath(const char *realPath);
 
         Itdb_iTunesDB*   m_itdb;
 
@@ -85,20 +82,10 @@ class GpodMediaDevice : public MediaDevice
         IpodAlbum *getAlbum(const QString &artist, const QString &album);
         Itdb_Track *getTitle(const QString &artist, const QString &album, const QString &title);
 
-        bool deleteArtist(const QString &artistName);
-        bool deleteAlbum(const QString &artistName, const QString &albumName);
-        bool deleteTrack(const QString &artistName, const QString &albumName, Itdb_Track *track);
-
-        Itdb_Track *newDBTrack(const MetaBundle &bundle);
-        bool addDBTrack(Itdb_Track *track, bool isPodcast=false);
         bool removeDBTrack(Itdb_Track *track);
-
-        void lock(bool) {}
-        void unlock() {}
 
         bool dbChanged;
 
-        void syncIPod();
 #endif
 };
 

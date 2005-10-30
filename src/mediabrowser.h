@@ -103,7 +103,6 @@ class MediaDeviceList : public KListView
     Q_OBJECT
     friend class MediaBrowser;
     friend class MediaDevice;
-    friend class GpodMediaDevice;
     friend class Item;
 
     public:
@@ -111,14 +110,13 @@ class MediaDeviceList : public KListView
         ~MediaDeviceList();
 
     private slots:
-        void slotCollapse( QListViewItem* );
+        void collapseItem( QListViewItem* );
+        void expandItem( QListViewItem* parent );
         void rmbPressed( QListViewItem*, const QPoint&, int );
-        void renderView( QListViewItem* parent );
-        void renameItem( QListViewItem* item );
 
     private:
         void startDrag();
-        KURL::List nodeBuildDragList( MediaItem* item );
+        KURL::List nodeBuildDragList( MediaItem* item, bool onlySelected=true );
 
         // Reimplemented from KListView
         void contentsDragEnterEvent( QDragEnterEvent* );
@@ -127,7 +125,6 @@ class MediaDeviceList : public KListView
         void viewportPaintEvent( QPaintEvent* );
 
         MediaDeviceView* m_parent;
-        QString m_renameFrom;
 };
 
 
@@ -137,8 +134,8 @@ class MediaDeviceView : public QVBox
     friend class MediaBrowser;
     friend class MediaDevice;
     friend class MediaDeviceList;
-    friend class GpodMediaDevice;
     friend class MediaDeviceTransferList;
+    friend class GpodMediaDevice;
 
     public:
         MediaDeviceView( MediaBrowser* parent );
@@ -152,8 +149,6 @@ class MediaDeviceView : public QVBox
         KProgress*       m_progress;
         MediaDevice*     m_device;
         MediaDeviceList* m_deviceList;
-        MediaDeviceTransferList*
-                         m_transferList;
         KPushButton*     m_transferButton;
         KPushButton*     m_connectButton;
         KPushButton*     m_configButton;
@@ -167,6 +162,7 @@ class MediaDevice : public QObject
     Q_OBJECT
     friend class MediaBrowser;
     friend class MediaDeviceView;
+    friend class MediaDeviceList;
 
     public:
         MediaDevice( MediaDeviceView* parent );
@@ -176,32 +172,21 @@ class MediaDevice : public QObject
         void        addURLs( const KURL::List urls, MetaBundle *bundle=NULL );
         virtual bool        isConnected() = 0;
         virtual QStringList items( QListViewItem* item ) = 0;
-        virtual KURL::List  songsByArtist( const QString& artist ) = 0;
-        virtual KURL::List  songsByArtistAlbum( const QString& artist, const QString& album ) = 0;
-        virtual bool renameArtist( const QString& oldArtist, const QString& newArtist ) = 0;
-        virtual bool renameAlbum( const QString& artist,
-                const QString& oldAlbum, const QString& newAlbum ) = 0;
-        virtual bool renameTrack( const QString& artist, const QString& album,
-                const QString& oldTrack, const QString& newTrack ) = 0;
-
-        QString     m_mntpnt;
-        QString     m_mntcmd;
-        QString     m_umntcmd;
 
         static MediaDevice *instance() { return s_instance; }
 
     public slots:
         void clearItems();
         void config();
-        virtual void deleteFiles( const KURL::List& urls ) = 0;
-        virtual void connectDevice() = 0;
+        void deleteFiles( const KURL::List& urls );
+        void connectDevice();
         int  mount();
         void removeSelected();
         void setMountPoint(const QString & mntpnt);
         void setMountCommand(const QString & mnt);
         void setUmountCommand(const QString & umnt);
         int  umount();
-        virtual void transferFiles() = 0;
+        void transferFiles();
 
     private slots:
         void fileTransferred();
@@ -210,15 +195,35 @@ class MediaDevice : public QObject
 
     private:
         int              sysCall(const QString & command);
-        virtual bool     fileExists( const MetaBundle& bundle ) = 0;
+        virtual bool     trackExists( const MetaBundle& bundle ) = 0;
 
     protected:
+
+        void updateView() { m_parent->m_deviceList->expandItem( 0 ); }
+
+        QString     m_mntpnt;
+        QString     m_mntcmd;
+        QString     m_umntcmd;
+
         KShellProcess   *sysProc;
         MediaDeviceView* m_parent;
         bool             m_wait;
 
+        MediaDeviceTransferList* m_transferList;
         void loadTransferList( const QString &path );
         void saveTransferList( const QString &path );
+
+        virtual void lockDevice( bool ) = 0;
+        virtual void unlockDevice() = 0;
+        virtual bool openDevice( bool useDialogs=true ) = 0;
+        virtual bool closeDevice() = 0;
+        virtual void synchronizeDevice() = 0;
+        virtual bool addTrackToDevice(const QString& pathname, const MetaBundle& bundle, bool isPodcast) = 0;
+
+        void deleteFromDevice( MediaItem *item, bool onlySelected=true );
+        virtual bool deleteTrackFromDevice(const QString& artist, const QString& album, const QString& title) = 0;
+
+        virtual QString createPathname(const MetaBundle& bundle) = 0;
 
         static MediaDevice *s_instance;
 };
