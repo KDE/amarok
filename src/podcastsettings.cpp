@@ -123,6 +123,7 @@ PodcastSettings::slotUser1()    //slot
     if ( button == KMessageBox::Continue )
     {
         // TODO We need to check which files have been deleted successfully
+        m_applyToAll = true;
         slotOk();
         return;
     }
