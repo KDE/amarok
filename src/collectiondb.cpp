@@ -1768,16 +1768,17 @@ void
 CollectionDB::setLyrics( const QString &url, const QString &lyrics )
 {
     DbConnection *conn = m_dbConnPool->getDbConnection();
-    QStringList values = query(QString("SELECT lyrics FROM lyrics WHERE url = '%1';").arg( escapeString( url ) ));
+    QStringList values = query(QString("SELECT lyrics FROM lyrics WHERE url = '%1';").arg( escapeString( url ) ), conn );
     if(values.count() > 0)
     {
-        query( QString( "UPDATE lyrics SET lyrics = '%1' WHERE url = '%2';" ).arg( escapeString( lyrics ), escapeString( url ) ) );
+        query( QString( "UPDATE lyrics SET lyrics = '%1' WHERE url = '%2';" ).arg( escapeString( lyrics ), escapeString( url ) ), conn );
     }
     else
     {
         insert( QString( "INSERT INTO lyrics (url, lyrics) values ( '%1', '%2' );" ).arg( escapeString( url ), escapeString( lyrics ) ),
          NULL, conn );
     }
+    m_dbConnPool->putDbConnection(conn);
 }
 
 QString
