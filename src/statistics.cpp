@@ -82,9 +82,18 @@ Statistics::loadSummary()
     }
 
     QueryBuilder qb;
-    qb.addReturnFunctionValue(QueryBuilder::funcCount, QueryBuilder::tabSong, QueryBuilder::valURL );
-    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    qb.addReturnFunctionValue( QueryBuilder::funcSum, QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
     QStringList a = qb.run();
+    if( !a.isEmpty() )
+    {
+        mainText += i18n("1 Play","%n Plays", a[0].toInt());
+        mainText += "<br>";
+    }
+
+    qb.clear();
+    qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabSong, QueryBuilder::valURL );
+    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    a = qb.run();
 
     if( !a.isEmpty() )
     {
@@ -93,7 +102,7 @@ Statistics::loadSummary()
     }
 
     qb.clear();
-    qb.addReturnFunctionValue(QueryBuilder::funcCount, QueryBuilder::tabArtist, QueryBuilder::valID );
+    qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabArtist, QueryBuilder::valID );
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     a = qb.run();
 
@@ -104,7 +113,7 @@ Statistics::loadSummary()
     }
 
     qb.clear();
-    qb.addReturnFunctionValue(QueryBuilder::funcCount, QueryBuilder::tabAlbum, QueryBuilder::valID );
+    qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabAlbum, QueryBuilder::valID );
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     a = qb.run();
 
@@ -115,7 +124,7 @@ Statistics::loadSummary()
     }
 
     qb.clear();
-    qb.addReturnFunctionValue(QueryBuilder::funcCount, QueryBuilder::tabGenre, QueryBuilder::valID );
+    qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabGenre, QueryBuilder::valID );
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     a = qb.run();
 
