@@ -1332,9 +1332,9 @@ CollectionView::organizeFiles()  //SLOT
     overwrite->setText( i18n( "Overwrite existing files" ) );
     overwrite->setChecked( AmarokConfig::overwriteFiles() );
 
-    QCheckBox *extended = new QCheckBox( box );
-    extended->setText( i18n( "Group artists alphabetically" ) );
-    extended->setChecked( AmarokConfig::groupArtists() );
+    QCheckBox *group = new QCheckBox( box );
+    group->setText( i18n( "Group artists alphabetically" ) );
+    group->setChecked( AmarokConfig::groupArtists() );
 
     QCheckBox *ignore = new QCheckBox( box );
     ignore->setText( i18n( "Ignore 'The' in artist names." ) );
@@ -1348,7 +1348,7 @@ CollectionView::organizeFiles()  //SLOT
     {
         AmarokConfig::setOrganizeDirectory( dirs->currentItem() );
         AmarokConfig::setOverwriteFiles( overwrite->isChecked() );
-        AmarokConfig::setGroupArtists( extended->isChecked() );
+        AmarokConfig::setGroupArtists( group->isChecked() );
         AmarokConfig::setIgnoreThe( ignore->isChecked() );
         AmarokConfig::setCoverIcons( covers->isChecked() );
         bool write = overwrite->isChecked();
@@ -1398,7 +1398,7 @@ CollectionView::organizeFiles()  //SLOT
 
             dest = base;
 
-            if ( extended->isChecked() )
+            if ( group->isChecked() )
                 dest += artist.upper()[ 0 ] + "/";      // Group artists i.e. A/Artist/Album
             dest += artist + "/" + album + "/" + title + "." + type;
 
@@ -1436,7 +1436,8 @@ CollectionView::organizeFiles()  //SLOT
         }
         if ( skipped > 0 )
             amaroK::StatusBar::instance()->longMessage( i18n(
-                        "Sorry, some files could not be organized." ) );
+                    "Sorry, one file could not be organized.",
+                    "Sorry %n files could not be organized.", skipped ) );
         QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
     }
 }
