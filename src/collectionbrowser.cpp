@@ -1344,7 +1344,7 @@ CollectionView::organizeFiles()  //SLOT
     covers->setText( i18n( "Use cover art for folder icons" ) );
     covers->setChecked( AmarokConfig::coverIcons() );
 
-    if ( dialog.exec() != QDialog::Rejected )
+    if( dialog.exec() != QDialog::Rejected )
     {
         AmarokConfig::setOrganizeDirectory( dirs->currentItem() );
         AmarokConfig::setOverwriteFiles( overwrite->isChecked() );
@@ -1353,7 +1353,6 @@ CollectionView::organizeFiles()  //SLOT
         AmarokConfig::setCoverIcons( covers->isChecked() );
         bool write = overwrite->isChecked();
         int skipped = 0;
-        KURL src;
         QString base = dirs->currentText() + "/";
         QString artist;
         QString album;
@@ -1364,80 +1363,83 @@ CollectionView::organizeFiles()  //SLOT
         KURL::List urls = listSelected();
 
         KURL::List::ConstIterator it = urls.begin();
-        for ( ; it != urls.end(); ++it ){
-                src = ( *it );
+        for( ; it != urls.end(); ++it )
+        {
+            KURL src = ( *it );
 
-                //Building destination here.
-                MetaBundle mb( src.path() );
+            //Building destination here.
+            MetaBundle mb( src.path() );
 
-                if ( !mb.artist().isEmpty() ){
-                    artist = cleanPath( mb.artist() );
-                    if ( ignore->isChecked() && artist.startsWith( "the ", false ) )
-                        manipulateThe( artist, true );
-                }
-               else
-                    artist = "Unknown";
+            if( !mb.artist().isEmpty() )
+            {
+                artist = cleanPath( mb.artist() );
+                if( ignore->isChecked() && artist.startsWith( "the ", false ) )
+                    manipulateThe( artist, true );
+            }
+            else
+                artist = i18n("Unknown");
 
-                if ( !mb.album().isEmpty() ){
-                    album = cleanPath( mb.album() );
-                }
-                else
-                    album = "Unknown";
+            mb.album().isEmpty() ?
+                album = i18n("Unknown") :
+                album = cleanPath( mb.album() );
 
             type = mb.type();
 
-                if ( !mb.title().isEmpty() ){
-                    if ( mb.track() )
-                        title = QString::number( mb.track() ) + " - " + cleanPath( mb.title() );
-                    else
-                         title = cleanPath( mb.title() );
-                    title.replace( type, "" );
-                }
-                else
-                    title = "Unknown";
+            if( !mb.title().isEmpty() )
+            {
+                mb.track() ?
+                    title = QString::number( mb.track() ) + " - " + cleanPath( mb.title() ):
+                    title = cleanPath( mb.title() );
+                title.replace( type, "" );
+            }
+            else
+                title = i18n("Unknown");
 
             dest = base;
 
-            if ( group->isChecked() )
+            if( group->isChecked() )
                 dest += artist.upper()[ 0 ] + "/";      // Group artists i.e. A/Artist/Album
             dest += artist + "/" + album + "/" + title + "." + type;
 
             debug() << "Destination: " << dest << endl;
 
-            if ( !CollectionDB::instance()->moveFile( src.path(), dest, write ) )
+            if( !CollectionDB::instance()->moveFile( src.path(), dest, write ) )
                 skipped++;
 
             //Use cover image for folder icon
-            if ( covers->isChecked() && !mb.artist().isEmpty() && !mb.album().isEmpty() ){
+            if( covers->isChecked() && !mb.artist().isEmpty() && !mb.album().isEmpty() )
+            {
                 KURL dstURL = KURL::fromPathOrURL( dest );
                 dstURL.cleanPath();
 
-                QString path = dstURL.directory();
+                QString path  = dstURL.directory();
                 QString cover = CollectionDB::instance()->albumImage( mb.artist(), mb.album(), 1 );
 
-                if( !QFile::exists(path + "/.directory") && !cover.endsWith( "nocover.png" ) ){
+                if( !QFile::exists(path + "/.directory") && !cover.endsWith( "nocover.png" ) )
+                {
                     //QPixmap thumb;        //Not amazon nice.
                     //if ( thumb.load( cover ) ){
-                        //thumb.save(path + "/.front.png", "PNG", -1 ); //hide files
+                    //thumb.save(path + "/.front.png", "PNG", -1 ); //hide files
 
-                        KSimpleConfig config(path + "/.directory");
-                        config.setGroup("Desktop Entry");
+                    KSimpleConfig config(path + "/.directory");
+                    config.setGroup("Desktop Entry");
 
-                        if(!config.hasKey("Icon")) {
-                            //config.writeEntry("Icon", QString("%1/.front.png").arg( path ));
-                            config.writeEntry( "Icon", cover );
-                          config.sync();
+                    if( !config.hasKey("Icon") )
+                    {
+                        //config.writeEntry("Icon", QString("%1/.front.png").arg( path ));
+                        config.writeEntry( "Icon", cover );
+                        config.sync();
                         debug() << "Using this cover as icon for: " << path << endl;
                         debug() << cover << endl;
-                       }
+                    }
                     //}         //Not amazon nice.
                 }
             }
         }
-        if ( skipped > 0 )
+        if( skipped > 0 )
             amaroK::StatusBar::instance()->longMessage( i18n(
                     "Sorry, one file could not be organized.",
-                    "Sorry %n files could not be organized.", skipped ) );
+                    "Sorry %n files could not be organized.", skipped ), KDE::StatusBar::Sorry );
         QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
     }
 }

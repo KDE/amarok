@@ -1500,7 +1500,11 @@ CollectionDB::getPlayCount( const QString &url  )
 
     return 0;
 }
-
+/*!
+ *  @short: exchange url references in the database for a particular file
+ *  @note: deletes all items for newURL, changes oldURL->newURL, deletes oldURL.
+ *  FIXME: should we check if lyrics etc exist in the newURL and keep them if necessary?
+ */
 void
 CollectionDB::migrateFile( const QString &oldURL, const QString &newURL )
 {
