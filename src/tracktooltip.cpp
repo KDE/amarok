@@ -162,10 +162,11 @@ void TrackToolTip::setPos( int pos )
 
 void TrackToolTip::clear()
 {
-    m_tags    = MetaBundle();
     m_pos     = 0;
     m_cover   = QString::null;
     m_tooltip = i18n( "amaroK - rediscover your music" );
+    m_tags    = MetaBundle();
+    m_tags.setUrl( KURL() );
 
     updateWidgets();
 }
@@ -190,7 +191,7 @@ void TrackToolTip::slotColumnsChanged()
 QString TrackToolTip::tooltip()
 {
     QString tip = m_tooltip;;
-    if( m_tags != MetaBundle() )
+    if( !m_tags.isEmpty() )
     {
         if( !m_cover.isEmpty() )
             tip = tip.arg( QString( "<td><table cellpadding='0' cellspacing='0'><tr><td>"
