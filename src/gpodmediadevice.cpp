@@ -43,10 +43,10 @@ class TrackList : public QPtrList<Itdb_Track>
 GpodMediaDevice::GpodMediaDevice( MediaDeviceView* parent )
 : MediaDevice( parent )
 {
+#ifdef HAVE_LIBGPOD
     debug() << "sizeof(MediaItem)=" << sizeof(MediaItem) << endl;
     debug() << "sizeof(Itdb_Track)=" << sizeof(Itdb_Track) << endl;
     debug() << "sizeof(IpodAlbum)=" << sizeof(IpodAlbum) << endl;
-#ifdef HAVE_LIBGPOD
     dbChanged = false;
     m_itdb = NULL;
 #endif
@@ -134,7 +134,7 @@ GpodMediaDevice::addTrackToDevice(const QString &pathname, const MetaBundle &bun
 #else
     (void)pathname;
     (void)bundle;
-    (void)podcast;
+//     (void)podcast; //FIXME
     return false;
 #endif
 }
@@ -569,10 +569,12 @@ GpodMediaDevice::getTitle(const QString &artist, const QString &album, const QSt
 
     return (*a)[title];
 }
+#endif // HAVE_LIBGPOD
 
 QString
 GpodMediaDevice::createPathname(const MetaBundle &bundle)
 {
+#ifdef HAVE_LIBGPOD
     QString local = bundle.filename();
     QString type = local.section('.', -1);
 
@@ -590,8 +592,10 @@ GpodMediaDevice::createPathname(const MetaBundle &bundle)
     while(exists);
 
     return realPath(trackpath.latin1());
+#endif // HAVE_LIBGPOD
 }
 
+#ifdef HAVE_LIBGPOD
 bool
 GpodMediaDevice::removeDBTrack(Itdb_Track *track)
 {
