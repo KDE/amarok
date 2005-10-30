@@ -7,15 +7,15 @@ INCLUDES = \
     $(taglib_includes) \
     $(all_includes)
 
-amarok_SOURCES = \
+amarokcollectionscanner_SOURCES = \
     main.cpp \
     collectionscanner.cpp
 
-amarok_LDADD = \
+amarokcollectionscanner_LDADD = \
     $(LIB_QT) \
     $(LIB_KDECORE) \
     $(taglib_libs)
 
-amarok_LDFLAGS = \
+amarokcollectionscanner_LDFLAGS = \
     $(all_libraries) \
     $(KDE_RPATH)

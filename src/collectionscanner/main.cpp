@@ -26,7 +26,7 @@
 
 int main( int argc, char *argv[] )
 {
-    KAboutData about( "amarokcollectionscanner," "CollectionScanner", "0.1" );
+    KAboutData about( "amarokcollectionscanner", "CollectionScanner", "0.1" );
 
         static KCmdLineOptions options[] =
         {
@@ -42,7 +42,7 @@ int main( int argc, char *argv[] )
 
 
     KCmdLineArgs::reset();
-    KCmdLineArgs::init( argc, argv, &aboutData ); //calls KApplication::addCmdLineOptions()
+    KCmdLineArgs::init( argc, argv, &about ); //calls KApplication::addCmdLineOptions()
     KCmdLineArgs::addCmdLineOptions( options );   //add our own options
 
 

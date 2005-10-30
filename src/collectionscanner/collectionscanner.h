@@ -49,12 +49,8 @@ public:
 
     ~CollectionScanner();
 
-protected:
-    virtual bool doJob();
-
-    bool m_importPlaylists;
-    bool m_incremental;
-    QStringList m_folders;
+private slots:
+    bool doJob();
 
 private:
     void readDir( const QString& dir, QStrList& entries );
@@ -63,6 +59,30 @@ private:
     /** If you want Accurate reading say so */
     void readTags( const QString& path, TagLib::AudioProperties::ReadStyle );
 
+    // FIXME
+    bool isAborted() const { return false; }
+
+    /**
+     * @return the LOWERCASE file extension without the preceding '.', or "" if there is none
+     */
+    inline QString extension( const QString &fileName )
+    {
+        return fileName.contains( '.' ) ? fileName.mid( fileName.findRev( '.' ) + 1 ).lower() : "";
+    }
+
+    /**
+     * @return the last directory in @param fileName
+     */
+    inline QString directory( const QString &fileName )
+    {
+        return fileName.section( '/', 0, -2 );
+    }
+
+
+
+    bool m_importPlaylists;
+    bool m_incremental;
+    QStringList m_folders;
     bool m_recursively;
 
     struct direntry {

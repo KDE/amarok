@@ -19,6 +19,7 @@
 
 #define DEBUG_PREFIX "CollectionScanner"
 
+#include "collectionscanner.h"
 #include "debug.h"
 
 #include <cerrno>
@@ -34,17 +35,32 @@
 #include <taglib/tag.h>
 #include <taglib/tstring.h>
 
+#include <qfile.h>
+#include <qtimer.h>
+
 #include <kglobal.h>
 #include <klocale.h>
 
+/**
+ * Use this to const-iterate over QStringLists, if you like.
+ * Watch out for the definition of last in the scope of your for.
+ *
+ *     QStringList strings;
+ *     foreach( strings )
+ *         debug() << *it << endl;
+ */
+#define foreach( x ) \
+    for( QStringList::ConstIterator it = x.begin(), end = x.end(); it != end; ++it )
 
-CollectionScanner::CollectionScanner( const QStringList& folders bool incremental, bool recursive, bool importPlaylists )
+
+
+CollectionScanner::CollectionScanner( const QStringList& folders, bool incremental, bool recursive, bool importPlaylists )
         : KApplication()
         , m_importPlaylists( importPlaylists )
         , m_incremental( incremental )
         , m_folders( folders )
         , m_recursively( recursive )
-        , log( QFile::encodeName( amaroK::saveLocation( QString::null ) + "collection_scan.log" ) )
+        , log( "~/collection_scanner.log" )
 {
     // don't traverse /
     struct stat statBuf;
@@ -58,7 +74,7 @@ CollectionScanner::CollectionScanner( const QStringList& folders bool incrementa
         m_processedDirs[m_processedDirs.size()-1] = de;
     }
 
-    doJob();
+    QTimer::singleShot( 0, this, SLOT( doJob() ) );
 }
 
 
@@ -119,7 +135,7 @@ CollectionScanner::~CollectionScanner()
 
 
 bool
-CollectionScanner::doJob()
+CollectionScanner::doJob() //SLOT
 {
     log << "Collection Scan Log\n";
     log << "===================\n";
@@ -141,12 +157,12 @@ CollectionScanner::doJob()
         if( !dir.endsWith( "/" ) )
             dir += '/';
 
-        setStatus( i18n("Reading directory structure") );
+//         setStatus( i18n("Reading directory structure") );
         readDir( dir, entries );
     }
 
     if( !entries.isEmpty() ) {
-        setStatus( i18n("Reading metadata") );
+//         setStatus( i18n("Reading metadata") );
 //         setProgressTotalSteps( entries.count() );
         scanFiles( entries );
     }
@@ -167,16 +183,21 @@ CollectionScanner::readDir( const QString& dir, QStrList& entries )
     QCString dir8Bit = QFile::encodeName( dir );
 
     struct stat statBuf;
-    //update dir statistics for rescanning purposes
-    if( stat( dir8Bit, &statBuf ) == 0 )
-        CollectionDB::instance()->updateDirStats( dir, (long)statBuf.st_mtime, !m_incremental ? m_db : 0 );
-    else {
-        if( m_incremental ) {
-            CollectionDB::instance()->removeSongsInDir( dir );
-            CollectionDB::instance()->removeDirFromCollection( dir );
-        }
+
+    // FIXME
+    if( stat( dir8Bit, &statBuf ) != 0 )
         return;
-    }
+
+//     //update dir statistics for rescanning purposes
+//     if( stat( dir8Bit, &statBuf ) == 0 )
+//         CollectionDB::instance()->updateDirStats( dir, (long)statBuf.st_mtime, !m_incremental ? m_db : 0 );
+//     else {
+//         if( m_incremental ) {
+//             CollectionDB::instance()->removeSongsInDir( dir );
+//             CollectionDB::instance()->removeDirFromCollection( dir );
+//         }
+//         return;
+//     }
 
     struct direntry de;
     memset(&de, 0, sizeof(struct direntry));
@@ -228,7 +249,7 @@ CollectionScanner::readDir( const QString& dir, QStrList& entries )
         {
             const QString file = QFile::decodeName( entry );
 
-            if( !m_incremental || !CollectionDB::instance()->isDirInCollection( file ) )
+            if( !m_incremental /*|| !CollectionDB::instance()->isDirInCollection( file )*/ )
                 // we MUST add a '/' after the dirname
                 readDir( file + '/', entries );
         }
@@ -237,10 +258,10 @@ CollectionScanner::readDir( const QString& dir, QStrList& entries )
         {
             QString file = QFile::decodeName( entry );
 
-            if( m_importPlaylists ) {
-                if( file.endsWith(".m3u") || file.endsWith(".pls") )
-                    QApplication::postEvent( PlaylistBrowser::instance(), new PlaylistFoundEvent( file ) );
-            }
+//             if( m_importPlaylists ) {
+//                 if( file.endsWith(".m3u") || file.endsWith(".pls") )
+//                     QApplication::postEvent( PlaylistBrowser::instance(), new PlaylistFoundEvent( file ) );
+//             }
 
             entries.append( entry );
         }
@@ -272,8 +293,8 @@ CollectionScanner::scanFiles( const QStrList& entries )
 //         incrementProgress();
 
         const QString path = QFile::decodeName ( it.current() );
-        const QString ext = amaroK::extension( path );
-        const QString dir = amaroK::directory( path );
+        const QString ext = extension( path );
+        const QString dir = directory( path );
 
         // Append path to logfile
         log << path.local8Bit() << std::endl;
@@ -288,7 +309,7 @@ CollectionScanner::scanFiles( const QStrList& entries )
         //  Average                     Untested
         //  Accurate                    Untested
 
-        readTags( path );
+        readTags( path, TagLib::AudioProperties::Fast );
 
         if( validImages.contains( ext ) )
            images += path;
@@ -327,18 +348,18 @@ CollectionScanner::readTags( const QString& path, TagLib::AudioProperties::ReadS
     TagLib::FileRef fileref;
     TagLib::Tag *tag = 0;
 
-    if( AmarokConfig::recodeID3v1Tags() && path.endsWith( ".mp3", false ) )
-    {
-        TagLib::MPEG::File *mpeg = new TagLib::MPEG::File( QFile::encodeName( path ), true, readStyle );
-        fileref = TagLib::FileRef( mpeg );
+//     if( AmarokConfig::recodeID3v1Tags() && path.endsWith( ".mp3", false ) )
+//     {
+//         TagLib::MPEG::File *mpeg = new TagLib::MPEG::File( QFile::encodeName( path ), true, readStyle );
+//         fileref = TagLib::FileRef( mpeg );
+//
+//         if( mpeg->isValid() )
+//             // we prefer ID3v1 over ID3v2 if recoding tags because
+//             // apparently this is what people who ignore ID3 standards want
+//             tag = mpeg->ID3v1Tag() ? (TagLib::Tag*)mpeg->ID3v1Tag() : (TagLib::Tag*)mpeg->ID3v2Tag();
+//     }
 
-        if( mpeg->isValid() )
-            // we prefer ID3v1 over ID3v2 if recoding tags because
-            // apparently this is what people who ignore ID3 standards want
-            tag = mpeg->ID3v1Tag() ? (TagLib::Tag*)mpeg->ID3v1Tag() : (TagLib::Tag*)mpeg->ID3v2Tag();
-    }
-
-    else {
+    /*else*/ {
         fileref = TagLib::FileRef( QFile::encodeName( path ), true, readStyle );
 
         if( !fileref.isNull() )
@@ -347,20 +368,16 @@ CollectionScanner::readTags( const QString& path, TagLib::AudioProperties::ReadS
 
     if( !fileref.isNull() ) {
         if ( tag ) {
-            #define strip( x ) TStringToQString( x ).stripWhiteSpace()
-            std::cout << strip( tag->title() ) << endl;
-            std::cout << strip( tag->artist() ) << endl;
-            std::cout << strip( tag->album() ) << endl;
-            std::cout << strip( tag->comment() ) << endl;
-            std::cout << strip( tag->genre() ) << endl;
-            std::cout << ( tag->year() ? QString::number( tag->year() ) : QString() ) << endl;
-            std::cout << ( tag->track() ? QString::number( tag->track() ) : QString() ) << endl;
+            #define strip( x ) TStringToQString( x ).stripWhiteSpace().latin1()
+            std::cout << strip( tag->title() ) << std::endl;
+            std::cout << strip( tag->artist() ) << std::endl;
+            std::cout << strip( tag->album() ) << std::endl;
+            std::cout << strip( tag->comment() ) << std::endl;
+            std::cout << strip( tag->genre() ) << std::endl;
+//             std::cout << ( tag->year() ? QString::number( tag->year() ) : QString() ) << std::endl;
+//             std::cout << ( tag->track() ? QString::number( tag->track() ) : QString() ) << std::endl;
             #undef strip
-
-            m_isValidMedia = true;
         }
-
-        init( fileref.audioProperties() );
     }
 }
 

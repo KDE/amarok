@@ -25,7 +25,8 @@ SUBDIRS = \
     vis \
     metadata \
     $(KONQSIDEBAR_SUBDIR) \
-    statusbar
+    statusbar \
+    collectionscanner
 
 
 INCLUDES = \
