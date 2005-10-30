@@ -1504,12 +1504,16 @@ CollectionDB::getPlayCount( const QString &url  )
 void
 CollectionDB::migrateFile( const QString &oldURL, const QString &newURL )
 {
+    //  Ensure destination is clear.
     query( QString( "DELETE FROM tags WHERE url = '%1';" )
         .arg( escapeString( newURL ) ) );
 
     query( QString( "DELETE FROM statistics WHERE url = '%1';" )
         .arg( escapeString( newURL ) ) );
 
+    query( QString( "DELETE FROM lyrics WHERE url = '%1';" )
+        .arg( escapeString( newURL ) ) );
+    //  Migrate
     query( QString( "UPDATE tags SET url = '%1' WHERE url = '%2';" )
         .arg( escapeString( newURL ) )
         .arg( escapeString( oldURL ) ) );
@@ -1518,10 +1522,17 @@ CollectionDB::migrateFile( const QString &oldURL, const QString &newURL )
         .arg( escapeString( newURL ) )
         .arg( escapeString( oldURL ) ) );
 
+    query( QString( "UPDATE lyrics SET url = '%1' WHERE url = '%2';" )
+        .arg( escapeString( newURL ) )
+        .arg( escapeString( oldURL ) ) );
+    //  Clean up.
     query( QString( "DELETE FROM tags WHERE url = '%1';" )
         .arg( escapeString( oldURL ) ) );
 
     query( QString( "DELETE FROM statistics WHERE url = '%1';" )
+        .arg( escapeString( oldURL ) ) );
+
+    query( QString( "DELETE FROM lyrics WHERE url = '%1';" )
         .arg( escapeString( oldURL ) ) );
 }
 
