@@ -77,8 +77,8 @@ k_dcop:
    virtual void enableRandomMode(bool enable) = 0;          ///< Switch Random Mode on or off.
    virtual void enableRepeatPlaylist(bool enable) = 0;      ///< Switch Repeat Playlist on or off.
    virtual void enableRepeatTrack(bool enable) = 0;         ///< Switch Repeat Track on or off.
-   virtual void mediaDeviceMount() = 0;               ///< Sets the command used for mounting media device.
-   virtual void mediaDeviceUmount() = 0;             ///< Sets the comment used for umounting media device.
+   virtual void mediaDeviceMount() = 0;               ///< Mounts the media device.
+   virtual void mediaDeviceUmount() = 0;             ///< Unmounts the media device.
    virtual void mute() = 0;                                 ///< Toggle mute.
    virtual void next() = 0;                                 ///< Equivalent to pressing "Next" button.
    virtual void pause() = 0;                                ///< Equivalent to pressing "Pause" button.
@@ -147,7 +147,6 @@ class AmarokContextBrowserInterface : virtual public DCOPObject
    K_DCOP
 
 k_dcop:
-   virtual void showHome() = 0;                             ///< Show the home tab in the context browser.
    virtual void showCurrentTrack() = 0;                     ///< Show the current track in the context browser.
    virtual void showLyrics() = 0;                           ///< Show the lyrics tab in the context browser.
    virtual void showWiki() = 0;                             ///< Show the wikipedia tab in the context browser.

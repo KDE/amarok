@@ -150,7 +150,6 @@ class DcopContextBrowserHandler : public QObject, virtual public AmarokContextBr
       DcopContextBrowserHandler();
 
    public:
-      virtual void showHome();
       virtual void showCurrentTrack();
       virtual void showLyrics();
       virtual void showWiki();

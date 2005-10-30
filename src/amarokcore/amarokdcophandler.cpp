@@ -593,11 +593,6 @@ namespace amaroK
         , QObject( kapp )
     {}
 
-    void DcopContextBrowserHandler::showHome()
-    {
-        ContextBrowser::instance()->showHome();
-    }
-
     void DcopContextBrowserHandler::showCurrentTrack()
     {
         ContextBrowser::instance()->showCurrentTrack();
