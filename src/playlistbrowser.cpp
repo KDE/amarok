@@ -841,14 +841,14 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
         m_podcastItemsToScan.clear();
         if( !m_podcastTimerInterval ) m_podcastTimerInterval = 14400000;  // 4 hours
 
-        connect( m_podcastTimer, SIGNAL(timeout()), this, SLOT(scanPodcasts()) );
-
         e = d.namedItem( "category" ).toElement();
         PlaylistCategory *p = new PlaylistCategory( m_listview, after, e );
         p->setText( 0, i18n("Podcasts") );
 
         if( !m_podcastItemsToScan.isEmpty() )
             m_podcastTimer->start( m_podcastTimerInterval );
+
+        connect( m_podcastTimer, SIGNAL(timeout()), this, SLOT(scanPodcasts()) );
 
         return p;
     }
@@ -879,15 +879,14 @@ void PlaylistBrowser::savePodcasts()
 
 void PlaylistBrowser::scanPodcasts()
 {
-    //restart timer
-    m_podcastTimer->start( m_podcastTimerInterval );
-
     for( uint i=0; i < m_podcastItemsToScan.count(); i++ )
     {
         QListViewItem  *item = m_podcastItemsToScan.at( i );
         PodcastChannel *pc   = static_cast<PodcastChannel*>(item);
         pc->rescan();
     }
+    //restart timer
+    m_podcastTimer->start( m_podcastTimerInterval );
 }
 
 void PlaylistBrowser::refreshPodcasts( QListViewItem *parent )

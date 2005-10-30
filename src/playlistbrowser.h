@@ -75,7 +75,7 @@ class PlaylistBrowser : public QVBox
         static PlaylistBrowser *instance() {
         if(!s_instance)  s_instance = new PlaylistBrowser("PlaylistBrowser");
         return s_instance; }
-        
+
         //following used by PlaylistSelection.cpp
         PlaylistBrowserView* getListView() const { return m_listview; }
         PlaylistCategory* getDynamicCategory() const { return m_dynamicCategory; }

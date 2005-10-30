@@ -20,6 +20,7 @@ VERSION 1.4:
       length of the queued tracks.
 
   BUGFIXES:
+    * Podcast apply to all button was faulty.
     * Cached lyrics are not erased when rescanning. (BR 110489)
     * No more "can't create amazon table" warnings. (BR 113930)
     * Creating a new playlist via drag-and-drop no longer shows duplicates
