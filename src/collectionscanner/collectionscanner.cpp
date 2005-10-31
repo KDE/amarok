@@ -35,6 +35,7 @@
 #include <taglib/tag.h>
 #include <taglib/tstring.h>
 
+#include <qdom.h>
 #include <qfile.h>
 #include <qtimer.h>
 
@@ -176,6 +177,9 @@ CollectionScanner::doJob() //SLOT
 void
 CollectionScanner::readDir( const QString& dir, QStrList& entries )
 {
+    // FIXME Replace all Unix calls here with portable Qt code (QDir)
+
+
     // linux specific, but this fits the 90% rule
     if( dir.startsWith("/dev") || dir.startsWith("/sys") || dir.startsWith("/proc") )
         return;
@@ -348,37 +352,36 @@ CollectionScanner::readTags( const QString& path, TagLib::AudioProperties::ReadS
     TagLib::FileRef fileref;
     TagLib::Tag *tag = 0;
 
-//     if( AmarokConfig::recodeID3v1Tags() && path.endsWith( ".mp3", false ) )
-//     {
-//         TagLib::MPEG::File *mpeg = new TagLib::MPEG::File( QFile::encodeName( path ), true, readStyle );
-//         fileref = TagLib::FileRef( mpeg );
-//
-//         if( mpeg->isValid() )
-//             // we prefer ID3v1 over ID3v2 if recoding tags because
-//             // apparently this is what people who ignore ID3 standards want
-//             tag = mpeg->ID3v1Tag() ? (TagLib::Tag*)mpeg->ID3v1Tag() : (TagLib::Tag*)mpeg->ID3v2Tag();
-//     }
+    fileref = TagLib::FileRef( QFile::encodeName( path ), true, readStyle );
 
-    /*else*/ {
-        fileref = TagLib::FileRef( QFile::encodeName( path ), true, readStyle );
+    if( !fileref.isNull() )
+        tag = fileref.tag();
 
-        if( !fileref.isNull() )
-            tag = fileref.tag();
-    }
+    if( fileref.isNull() || !tag )
+        return;
 
-    if( !fileref.isNull() ) {
-        if ( tag ) {
-            #define strip( x ) TStringToQString( x ).stripWhiteSpace().latin1()
-            std::cout << strip( tag->title() ) << std::endl;
-            std::cout << strip( tag->artist() ) << std::endl;
-            std::cout << strip( tag->album() ) << std::endl;
-            std::cout << strip( tag->comment() ) << std::endl;
-            std::cout << strip( tag->genre() ) << std::endl;
-//             std::cout << ( tag->year() ? QString::number( tag->year() ) : QString() ) << std::endl;
-//             std::cout << ( tag->track() ? QString::number( tag->track() ) : QString() ) << std::endl;
-            #undef strip
-        }
-    }
+    QDomDocument doc;
+    QDomElement tags = doc.createElement( "tags" );
+    tags.setAttribute( "product", "amaroK Collection Scanner" );
+    doc.appendChild( tags );
+
+    QDomElement e = doc.createElement( "track" );
+    e.setAttribute( "path", path );
+
+    #define strip( x ) TStringToQString( x ).stripWhiteSpace()
+    e.setAttribute( "title", strip( tag->title() ) );
+    e.setAttribute( "artist", strip( tag->artist() ) );
+    e.setAttribute( "album", strip( tag->album() ) );
+    e.setAttribute( "comment", strip( tag->comment() ) );
+    e.setAttribute( "genre", strip( tag->genre() ) );
+    e.setAttribute( "year", tag->year() ? QString::number( tag->year() ) : QString() );
+    e.setAttribute( "track", tag->track() ? QString::number( tag->track() ) : QString() );
+    #undef strip
+
+    tags.appendChild( e );
+
+
+    std::cout << doc.toCString() << std::endl;
 }
 
 
