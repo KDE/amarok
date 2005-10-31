@@ -26,28 +26,40 @@
 
 int main( int argc, char *argv[] )
 {
-    KAboutData about( "amarokcollectionscanner", "CollectionScanner", "0.1" );
+    const KAboutData about( "amarokcollectionscanner",
+    I18N_NOOP( "amaroK Collection Scanner" ), "0.1",
+    I18N_NOOP( "Collection Scanner for amaroK" ), KAboutData::License_GPL,
+    I18N_NOOP( "(C) 2003-2005, The amaroK Developers" ),
+    I18N_NOOP( "IRC:\nserver: irc.freenode.net / channels: #amarok #amarok.de\n\nFeedback:\namarok-devel@lists.sourceforge.net" ),
+    I18N_NOOP( "http://amarok.kde.org" ) );
 
-        static KCmdLineOptions options[] =
-        {
-            { "+[Folder(s)]", I18N_NOOP( "Folders to scan" ), 0 },
-            { "i", 0, 0 },
-            { "incremental", I18N_NOOP( "Update scan" ), 0 },
-            { "r", 0, 0 },
-            { "recursive", I18N_NOOP( "Scan folders recursively" ), 0 },
-            { "p", 0, 0 },
-            { "importplaylists", I18N_NOOP( "Import playlist" ), 0 },
-            { 0, 0, 0 }
-        };
+
+    static KCmdLineOptions options[] =
+    {
+        { "+[Folder(s)]", I18N_NOOP( "Folders to scan" ), 0 },
+        { "i", 0, 0 },
+        { "incremental", I18N_NOOP( "Update scan" ), 0 },
+        { "r", 0, 0 },
+        { "recursive", I18N_NOOP( "Scan folders recursively" ), 0 },
+        { "p", 0, 0 },
+        { "importplaylists", I18N_NOOP( "Import playlist" ), 0 },
+        { 0, 0, 0 }
+    };
 
 
     KCmdLineArgs::reset();
     KCmdLineArgs::init( argc, argv, &about ); //calls KApplication::addCmdLineOptions()
-    KCmdLineArgs::addCmdLineOptions( options );   //add our own options
+    KCmdLineArgs::addCmdLineOptions( options );  //add our own options
+
+    // Parse list of folder arguments
+    const KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
+    QStringList folders;
+    for( int i = 0; i < args->count(); i++ )
+        folders << args->arg( i );
 
 
-    CollectionScanner cs( "/home/mark/mp3" );
-    return cs.exec();
+    CollectionScanner scanner( folders );
+    return scanner.exec();
 }
 
 
