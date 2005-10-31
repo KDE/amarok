@@ -19,19 +19,40 @@
 
 #define DEBUG_PREFIX "CollectionScanController"
 
+#include "amarok.h"
 #include "amarokconfig.h"
 #include "collectiondb.h"
 #include "debug.h"
 
 #include <kprocio.h>
 
+////////////////////////////////////////////////////////////////////////////////
+// class ScannerProcIO
+////////////////////////////////////////////////////////////////////////////////
+/** Due to xine-lib, we have to make KProcess close all fds, otherwise we get "device is busy" messages
+  * Used by AmaroKProcIO and AmaroKProcess, exploiting commSetupDoneC(), a virtual method that
+  * happens to be called in the forked process
+  * See bug #103750 for more information.
+  */
+class ScannerProcIO : public KProcIO {
+    public:
+    virtual int commSetupDoneC() {
+        const int i = KProcIO::commSetupDoneC();
+        amaroK::closeOpenFiles(KProcIO::out[0],KProcIO::in[0],KProcIO::err[0]);
+        return i;
+    };
+};
+
+
+////////////////////////////////////////////////////////////////////////////////
+// class CollectionScanController
+////////////////////////////////////////////////////////////////////////////////
 
 CollectionScanController::CollectionScanController( QObject* parent, QStringList folders )
     : QXmlDefaultHandler()
     , QObject( parent )
-    , m_scanner( new KProcIO() )
+    , m_scanner( new ScannerProcIO() )
 {
-
     m_scanner << "amarokcollectionscanner";
     if ( AmarokConfig::importPlaylists() )
         m_scanner << "-i";
