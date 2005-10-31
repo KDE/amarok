@@ -17,10 +17,39 @@
  *   51 Franklin Steet, Fifth Floor, Boston, MA  02111-1307, USA.          *
  ***************************************************************************/
 
+#define DEBUG_PREFIX "CollectionScanController"
+
+#include "amarokconfig.h"
 #include "collectiondb.h"
+#include "debug.h"
+
+#include <kprocio.h>
+
+
+CollectionScanController::CollectionScanController( QObject* parent, QStringList folders )
+    : QXmlDefaultHandler()
+    , QObject( parent )
+    , m_scanner( new KProcIO )
+{
+
+    m_scanner << "amarokcollectionscanner";
+    if ( AmarokConfig::importPlaylists() )
+        m_scanner << "-i";
+    if ( AmarokConfig::scanRecursively() )
+        m_scanner << "-r";
+    m_scanner << folders;
+
+    connect( m_scanner, SIGNAL( readReady( KProcIO* ) ), this, SLOT( slotReadReady() ) );
+
+    m_scanner->start();
+}
+
+
+CollectionScanController::slotReadReady()
+{
+}
 
 
 #include "collectionscancontroller.moc"
-
 
 

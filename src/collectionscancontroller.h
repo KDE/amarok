@@ -20,13 +20,26 @@
 #ifndef AMAROK_COLLECTIONSCANCONTROLLER_H
 #define AMAROK_COLLECTIONSCANCONTROLLER_H
 
+#include <qobject.h>
 #include <qxml.h>
+
+class KProcIO;
 
 /**
  * @author Mark Kretschmann <markey@web.de>
  */
-class CollectionScanController : public QXmlDefaultHandler
+class CollectionScanController : public QXmlDefaultHandler : QObject
 {
+    Q_OBJECT
+
+    public:
+        CollectionScanController( QObject* parent, QStringList folders );
+
+    private slots:
+        slotReadReady();
+
+    private:
+        KProcIO* m_scanner;
 };
 
 
