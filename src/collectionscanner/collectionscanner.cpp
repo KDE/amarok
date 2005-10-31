@@ -307,28 +307,26 @@ CollectionScanner::readTags( const QString& path, TagLib::AudioProperties::ReadS
     if( fileref.isNull() || !tag )
         return;
 
-    QDomDocument doc;
+    QDomDocument doc; // A dummy. We don't really use DOM, but SAX2
     QDomElement tags = doc.createElement( "tags" );
-    tags.setAttribute( "product", "amaroK Collection Scanner" );
-    doc.appendChild( tags );
-
-    QDomElement e = doc.createElement( "track" );
-    e.setAttribute( "path", path );
+    tags.setAttribute( "path", path );
 
     #define strip( x ) TStringToQString( x ).stripWhiteSpace()
-    e.setAttribute( "title", strip( tag->title() ) );
-    e.setAttribute( "artist", strip( tag->artist() ) );
-    e.setAttribute( "album", strip( tag->album() ) );
-    e.setAttribute( "comment", strip( tag->comment() ) );
-    e.setAttribute( "genre", strip( tag->genre() ) );
-    e.setAttribute( "year", tag->year() ? QString::number( tag->year() ) : QString() );
-    e.setAttribute( "track", tag->track() ? QString::number( tag->track() ) : QString() );
+    tags.setAttribute( "title", strip( tag->title() ) );
+    tags.setAttribute( "artist", strip( tag->artist() ) );
+    tags.setAttribute( "album", strip( tag->album() ) );
+    tags.setAttribute( "comment", strip( tag->comment() ) );
+    tags.setAttribute( "genre", strip( tag->genre() ) );
+    tags.setAttribute( "year", tag->year() ? QString::number( tag->year() ) : QString() );
+    tags.setAttribute( "track", tag->track() ? QString::number( tag->track() ) : QString() );
     #undef strip
 
-    tags.appendChild( e );
+    QString text;
+    QTextStream stream( &text, IO_WriteOnly );
+    tags.save( stream, 0 );
 
 
-    std::cout << doc.toCString() << std::endl;
+    std::cout << text.latin1() << std::endl;
 }
 
 
