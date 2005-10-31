@@ -29,7 +29,7 @@
 CollectionScanController::CollectionScanController( QObject* parent, QStringList folders )
     : QXmlDefaultHandler()
     , QObject( parent )
-    , m_scanner( new KProcIO )
+    , m_scanner( new KProcIO() )
 {
 
     m_scanner << "amarokcollectionscanner";
