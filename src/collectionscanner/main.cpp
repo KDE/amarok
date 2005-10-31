@@ -51,14 +51,19 @@ int main( int argc, char *argv[] )
     KCmdLineArgs::init( argc, argv, &about ); //calls KApplication::addCmdLineOptions()
     KCmdLineArgs::addCmdLineOptions( options );  //add our own options
 
-    // Parse list of folder arguments
     const KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
+
+    // Parse list of folder arguments
     QStringList folders;
     for( int i = 0; i < args->count(); i++ )
         folders << args->arg( i );
 
+    const bool incremental      = args->isSet( "incremental" );
+    const bool recursive        = args->isSet( "recursive" );
+    const bool importplaylists  = args->isSet( "importplaylists" );
 
-    CollectionScanner scanner( folders );
+
+    CollectionScanner scanner( folders, incremental, recursive, importplaylists );
     return scanner.exec();
 }
 
