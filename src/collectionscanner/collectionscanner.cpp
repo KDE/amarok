@@ -323,6 +323,7 @@ CollectionScanner::readTags( const QString& path, TagLib::AudioProperties::ReadS
 
     QString text;
     QTextStream stream( &text, IO_WriteOnly );
+    stream.setEncoding( QTextStream::UnicodeUTF8 );
     tags.save( stream, 0 );
 
 
