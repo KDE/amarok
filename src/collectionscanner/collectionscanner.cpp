@@ -55,10 +55,9 @@
 
 
 
-CollectionScanner::CollectionScanner( const QStringList& folders, bool incremental, bool recursive, bool importPlaylists )
+CollectionScanner::CollectionScanner( const QStringList& folders, bool recursive, bool importPlaylists )
         : KApplication()
         , m_importPlaylists( importPlaylists )
-        , m_incremental( incremental )
         , m_folders( folders )
         , m_recursively( recursive )
         , log( "~/collection_scanner.log" )
@@ -81,58 +80,6 @@ CollectionScanner::CollectionScanner( const QStringList& folders, bool increment
 
 CollectionScanner::~CollectionScanner()
 {}
-
-
-// IncrementalCollectionScanner::IncrementalCollectionScanner( CollectionDB *parent )
-//         : CollectionScanner( parent, QStringList() )
-//         , m_hasChanged( false )
-// {
-//     m_importPlaylists = false;
-//     m_incremental = true;
-//
-//     setDescription( i18n( "Updating Collection" ) );
-// }
-//
-// bool
-// IncrementalCollectionScanner::doJob()
-// {
-//     /**
-//      * The Incremental Reader works as follows: Here we check the mtime of every directory in the "directories"
-//      * table and store all changed directories in m_folders.
-//      *
-//      * These directories are then scanned in CollectionScanner::doJob(), with m_recursively set according to the
-//      * user's preference, so the user can add directories or whole directory trees, too. Since we don't want to
-//      * rescan unchanged subdirectories, CollectionScanner::readDir() checks if we are scanning recursively and
-//      * prevents that.
-//      */
-//
-//     struct stat statBuf;
-//     const QStringList values = CollectionDB::instance()->query( "SELECT dir, changedate FROM directories;" );
-//
-//     foreach( values ) {
-//         const QString folder = *it;
-//         const QString mtime  = *++it;
-//
-//         if( stat( QFile::encodeName( folder ), &statBuf ) == 0 ) {
-//             if( QString::number( (long)statBuf.st_mtime ) != mtime ) {
-//                 m_folders << folder;
-//                 debug() << "Collection dir changed: " << folder << endl;
-//             }
-//         }
-//         else {
-//             // this folder has been removed
-//             m_folders << folder;
-//             debug() << "Collection dir removed: " << folder << endl;
-//         }
-//     }
-//
-//     if( !m_folders.isEmpty() ) {
-//         m_hasChanged = true;
-//         amaroK::StatusBar::instance()->shortMessage( i18n( "Updating Collection..." ) );
-//     }
-//
-//     return CollectionScanner::doJob();
-// }
 
 
 void
@@ -253,7 +200,7 @@ CollectionScanner::readDir( const QString& dir, QStrList& entries )
         {
             const QString file = QFile::decodeName( entry );
 
-            if( !m_incremental /*|| !CollectionDB::instance()->isDirInCollection( file )*/ )
+//             if( !m_incremental || !CollectionDB::instance()->isDirInCollection( file ) )
                 // we MUST add a '/' after the dirname
                 readDir( file + '/', entries );
         }

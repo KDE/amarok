@@ -43,7 +43,6 @@ class CollectionScanner : public KApplication
 
 public:
     CollectionScanner( const QStringList& folders,
-                       bool incremental = false,
                        bool recursive = false,
                        bool importPlaylists = false );
 
@@ -79,9 +78,7 @@ private:
     }
 
 
-
     bool m_importPlaylists;
-    bool m_incremental;
     QStringList m_folders;
     bool m_recursively;
 
@@ -95,23 +92,5 @@ private:
     std::ofstream log;
 };
 
-
-/**
- * @class IncrementalCollectionScanner
- * @short Only scans directories that have been modified since the last scan
- */
-
-// class IncrementalCollectionScanner : public CollectionScanner
-// {
-// public:
-//     IncrementalCollectionScanner( CollectionDB* );
-//
-//     bool hasChanged() const { return m_hasChanged; }
-//
-// protected:
-//     virtual bool doJob();
-//
-//     bool m_hasChanged;
-// };
 
 #endif // COLLECTIONSCANNER_H

@@ -37,11 +37,9 @@ int main( int argc, char *argv[] )
     static KCmdLineOptions options[] =
     {
         { "+[Folder(s)]", I18N_NOOP( "Folders to scan" ), 0 },
-        { "i", 0, 0 },
-        { "incremental", I18N_NOOP( "Update scan" ), 0 },
         { "r", 0, 0 },
         { "recursive", I18N_NOOP( "Scan folders recursively" ), 0 },
-        { "p", 0, 0 },
+        { "i", 0, 0 },
         { "importplaylists", I18N_NOOP( "Import playlist" ), 0 },
         { 0, 0, 0 }
     };
@@ -58,12 +56,11 @@ int main( int argc, char *argv[] )
     for( int i = 0; i < args->count(); i++ )
         folders << args->arg( i );
 
-    const bool incremental      = args->isSet( "incremental" );
     const bool recursive        = args->isSet( "recursive" );
     const bool importplaylists  = args->isSet( "importplaylists" );
 
 
-    CollectionScanner scanner( folders, incremental, recursive, importplaylists );
+    CollectionScanner scanner( folders, recursive, importplaylists );
     return scanner.exec();
 }
 
