@@ -17,7 +17,7 @@
  *   51 Franklin Steet, Fifth Floor, Boston, MA  02111-1307, USA.          *
  ***************************************************************************/
 
-#include <collectionscanner.h>
+#include "collectionscanner.h"
 
 #include <kaboutdata.h>
 #include <kcmdlineargs.h>
