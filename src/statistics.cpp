@@ -51,8 +51,8 @@ Statistics::Statistics( QWidget *parent, const char *name )
 
     m_gui->m_tabWidget->setTabEnabled( m_gui->m_databaseTab, false );
 
-    connect( m_gui->m_optionCombo,   SIGNAL( activated(int) ),    this, SLOT( loadDetails(int) ) );
-    connect( m_gui->m_resultIntSpin, SIGNAL( valueChanged(int) ), this, SLOT( resultCountChanged(int) ) );
+    connect( m_gui->m_optionCombo, SIGNAL( activated(int) ), this, SLOT( loadDetails(int) ) );
+    connect( m_gui->m_resultCombo, SIGNAL( activated(int) ), this, SLOT( resultCountChanged(int) ) );
 
     loadSummary();
     loadChooser();
@@ -140,8 +140,17 @@ Statistics::loadSummary()
 void
 Statistics::loadChooser()
 {
-    loadDetails( m_gui->m_optionCombo->currentItem() );
-    m_gui->m_resultIntSpin->setValue( m_resultCount );
+    m_gui->m_optionCombo->insertItem( i18n("Track"),  TRACK );
+    m_gui->m_optionCombo->insertItem( i18n("Artist"), ARTIST );
+    m_gui->m_optionCombo->insertItem( i18n("Album"),  ALBUM );
+//     m_gui->m_optionCombo->insertItem( i18n("Genre"),  GENRE );
+
+    m_gui->m_resultCombo->insertItem( QString::number(5)  );
+    m_gui->m_resultCombo->insertItem( QString::number(10) );
+    m_gui->m_resultCombo->insertItem( QString::number(25) );
+    m_gui->m_resultCombo->insertItem( QString::number(50) );
+
+    loadDetails( TRACK );
 }
 
 void
@@ -177,10 +186,11 @@ Statistics::loadDetails( int index ) //SLOT
 void
 Statistics::resultCountChanged( int value ) //SLOT
 {
-    if( value == m_resultCount )
+    int v = m_gui->m_resultCombo->text( value ).toInt();
+    if( v == m_resultCount )
         return;
 
-    m_resultCount = value;
+    m_resultCount = v;
     loadDetails( m_gui->m_optionCombo->currentItem() );
 }
 
