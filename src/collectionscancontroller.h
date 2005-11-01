@@ -39,6 +39,10 @@ class CollectionScanController : public QXmlDefaultHandler : QObject
         slotReadReady();
 
     private:
+        bool startElement( const QString&, const QString &localName, const QString&, const QXmlAttributes &attrs );
+        bool endElement( const QString& namespaceURI, const QString &localName, const QString& qName );
+
+
         KProcIO* m_scanner;
 };
 

@@ -66,6 +66,16 @@ CollectionScanController::CollectionScanController( QObject* parent, QStringList
 }
 
 
+bool CollectionScanController::startElement(const QString&, const QString &localName, const QString&, const QXmlAttributes &attrs)
+{
+}
+
+
+bool CollectionScanController::endElement( const QString&, const QString& localName, const QString& )
+{
+}
+
+
 CollectionScanController::slotReadReady()
 {
 }
