@@ -39,7 +39,7 @@ class ScannerProcIO : public KProcIO {
     public:
     virtual int commSetupDoneC() {
         const int i = KProcIO::commSetupDoneC();
-        amaroK::closeOpenFiles(KProcIO::out[0],KProcIO::in[0],KProcIO::err[0]);
+        amaroK::closeOpenFiles( KProcIO::out[0],KProcIO::in[0],KProcIO::err[0] );
         return i;
     };
 };
@@ -65,9 +65,19 @@ ScanController::ScanController( QObject* parent, QStringList folders )
         *m_scanner << "-r";
     *m_scanner << folders;
 
-    connect( m_scanner, SIGNAL( readReady( KProcIO* ) ), this, SLOT( slotReadReady() ) );
+    connect( m_scanner, SIGNAL( readReady( KProcIO* ) ),      SLOT( slotReadReady() ) );
+    connect( m_scanner, SIGNAL( processExited( KProcess* ) ), SLOT( slotProcessExited() ) );
 
     m_scanner->start();
+}
+
+
+ScanController::~ScanController()
+{
+    DEBUG_BLOCK
+
+    m_scanner->kill();
+    delete m_scanner;
 }
 
 
@@ -75,6 +85,8 @@ bool
 ScanController::startElement( const QString&, const QString &localName, const QString&, const QXmlAttributes &attrs )
 {
     DEBUG_BLOCK
+
+    return true;
 }
 
 
@@ -82,6 +94,8 @@ bool
 ScanController::endElement( const QString&, const QString& localName, const QString& )
 {
     DEBUG_BLOCK
+
+    return true;
 }
 
 
@@ -95,6 +109,18 @@ ScanController::slotReadReady()
         data += line;
 
     m_source.setData( data );
+}
+
+
+void
+ScanController::slotProcessExited()
+{
+    DEBUG_BLOCK
+
+    if( !m_scanner->normalExit() )
+        ::error() << "CollectionScanner has crashed." << endl;
+
+    deleteLater();
 }
 
 

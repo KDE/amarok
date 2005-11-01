@@ -34,9 +34,11 @@ class ScanController : public QObject, public QXmlDefaultHandler
 
     public:
         ScanController( QObject* parent, QStringList folders );
+        ~ScanController();
 
     private slots:
         void slotReadReady();
+        void slotProcessExited();
 
     private:
         bool startElement( const QString&, const QString &localName, const QString&, const QXmlAttributes &attrs );
