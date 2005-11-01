@@ -74,8 +74,11 @@ void RefreshImages::finishedXmlFetch( KIO::Job* xmlJob ) //SLOT
        .namedItem("URL").firstChild().toText().data();
     debug() << "setting up " << imageUrl << endl;
     KURL testUrl(imageUrl);
-    if(!testUrl.isValid())
+    if(!testUrl.isValid()) //KIO crashs on empty strings!!!
+    {
+        debug() << "Image url not returned, cover not being refreshed" << endl;
         return;
+    }
     KIO::TransferJob* imageJob = KIO::storedGet( imageUrl, false, false );
     KIO::Scheduler::scheduleJob(imageJob);
     amaroK::StatusBar::instance()->newProgressOperation( imageJob );
