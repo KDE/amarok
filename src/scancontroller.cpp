@@ -23,6 +23,7 @@
 #include "amarokconfig.h"
 #include "collectiondb.h"
 #include "debug.h"
+#include "metabundle.h"
 #include "scancontroller.h"
 
 #include <kprocio.h>
@@ -52,17 +53,22 @@ class ScannerProcIO : public KProcIO {
 ScanController::ScanController( QObject* parent, QStringList folders )
     : QObject( parent )
     , QXmlDefaultHandler()
+    , m_db( CollectionDB::instance()->getStaticDbConnection() )
     , m_scanner( new ScannerProcIO() )
 {
     DEBUG_BLOCK
 
+    if( !m_db->isConnected() ) {
+        deleteLater();
+        return;
+    }
+    CollectionDB::instance()->createTables( m_db );
+
     m_reader.setContentHandler( this );
 
     *m_scanner << "amarokcollectionscanner";
-    if ( AmarokConfig::importPlaylists() )
-        *m_scanner << "-i";
-    if ( AmarokConfig::scanRecursively() )
-        *m_scanner << "-r";
+    if( AmarokConfig::importPlaylists() ) *m_scanner << "-i";
+    if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
     *m_scanner << folders;
 
     connect( m_scanner, SIGNAL( readReady( KProcIO* ) ),      SLOT( slotReadReady() ) );
@@ -78,20 +84,39 @@ ScanController::~ScanController()
 
     m_scanner->kill();
     delete m_scanner;
+
+    CollectionDB::instance()->clearTables();
+    CollectionDB::instance()->moveTempTables( m_db ); // rename tables
+    CollectionDB::instance()->dropTables( m_db );
+
+    emit CollectionDB::instance()->scanDone( true ); //FIXME
+
+    CollectionDB::instance()->returnStaticDbConnection( m_db );
 }
 
 
 bool
 ScanController::startElement( const QString&, const QString& localName, const QString&, const QXmlAttributes& attrs )
 {
-    DEBUG_BLOCK
+//     debug() << "localName: " << localName << endl;
+//     debug() << "title    : " << attrs.value( "title" ) << endl;
+//     debug() << "artist   : " << attrs.value( "artist" ) << endl;
+//     debug() << "album    : " << attrs.value( "album" ) << endl;
+//     debug() << "comment  : " << attrs.value( "comment" ) << endl;
+//     debug() << endl;
 
-    debug() << "localName: " << localName << endl;
-    debug() << "title    : " << attrs.value( "title" ) << endl;
-    debug() << "artist   : " << attrs.value( "artist" ) << endl;
-    debug() << "album    : " << attrs.value( "album" ) << endl;
-    debug() << "comment  : " << attrs.value( "comment" ) << endl;
-    debug() << endl;
+    MetaBundle bundle;
+    bundle.setPath   ( attrs.value( "path" ) );
+    bundle.setTitle  ( attrs.value( "title" ) );
+    bundle.setArtist ( attrs.value( "artist" ) );
+    bundle.setAlbum  ( attrs.value( "album" ) );
+    bundle.setComment( attrs.value( "comment" ) );
+    bundle.setGenre  ( attrs.value( "genre" ) );
+    bundle.setYear   ( attrs.value( "year" ).toInt() );
+    bundle.setTrack  ( attrs.value( "track" ).toInt() );
+
+
+    CollectionDB::instance()->addSong( &bundle, false /*m_incremental*/, m_db );
 
     return true;
 }
@@ -100,8 +125,6 @@ ScanController::startElement( const QString&, const QString& localName, const QS
 void
 ScanController::slotReadReady()
 {
-    DEBUG_BLOCK
-
     QString line, data;
     bool partial;
 

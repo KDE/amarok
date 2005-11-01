@@ -23,6 +23,7 @@
 #include <qobject.h>
 #include <qxml.h>
 
+class DbConnection;
 class KProcIO;
 
 /**
@@ -44,6 +45,7 @@ class ScanController : public QObject, public QXmlDefaultHandler
         bool startElement( const QString&, const QString &localName, const QString&, const QXmlAttributes &attrs );
 
 
+        DbConnection* const m_db;
         KProcIO* m_scanner;
         QXmlInputSource m_source;
         QXmlSimpleReader m_reader;
