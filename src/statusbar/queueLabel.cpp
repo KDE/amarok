@@ -252,8 +252,17 @@ void QueueLabel::showToolTip()
     if( !item )
         return;
 
-    QString text = i18n( "1 track queued: %1", "%n tracks queued, next one is: %1", count )
-                    .arg( veryNiceTitle( item ) );
+    QString text = i18n( "One track queued: %1", "%n tracks queued, next one is: %1", count )
+                   .arg( veryNiceTitle( item ) );
+
+    int length = 0;
+    for( QPtrListIterator<PlaylistItem> it( pl->m_nextTracks ); *it; ++it )
+    {
+        const int s = (*it)->length();
+        if( s > 0 ) length += s;
+    }
+    if( length )
+        text += QString( "<br>" ) + i18n( "Length of the queue is: %1" ).arg( MetaBundle::prettyLength( length, true ) );
 
     m_tooltip = new KDE::PopupMessage( parentWidget()->parentWidget(), this, 0 );
     m_tooltip->showCloseButton( false );

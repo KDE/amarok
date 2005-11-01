@@ -12,14 +12,14 @@ VERSION 1.4:
       to consecutive tracks on a single album.
 
   CHANGES:
+    * The tooltip and the menu from the queue icon in the statusbar now show
+      the total length of the queued tracks.
     * Reduced memory usage for large playlists.
     * The Home tab has been merged into the Current tab, now called Music.
     * New look for the current track marker in the playlist. Pimp my roK!
     * When turning either random or dynamic mode on, turn the other off,
       instead of completely disabling random mode when dynamic is on.
-    * The menu from the queue icon in the statusbar now shows the total
-      length of the queued tracks.
-
+    
   BUGFIXES:
     * Cached lyrics are not erased when rescanning. (BR 110489)
     * No more "can't create amazon table" warnings. (BR 113930)
