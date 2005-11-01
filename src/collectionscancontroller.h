@@ -44,6 +44,8 @@ class CollectionScanController : public QXmlDefaultHandler : QObject
 
 
         KProcIO* m_scanner;
+        QXmlInputSource m_source;
+        QXmlSimpleReader m_reader;
 };
 
 

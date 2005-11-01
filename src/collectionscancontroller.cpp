@@ -53,6 +53,10 @@ CollectionScanController::CollectionScanController( QObject* parent, QStringList
     , QObject( parent )
     , m_scanner( new ScannerProcIO() )
 {
+    DEBUG_BLOCK
+
+    m_reader.setContentHandler( this );
+
     m_scanner << "amarokcollectionscanner";
     if ( AmarokConfig::importPlaylists() )
         m_scanner << "-i";
@@ -66,18 +70,27 @@ CollectionScanController::CollectionScanController( QObject* parent, QStringList
 }
 
 
-bool CollectionScanController::startElement(const QString&, const QString &localName, const QString&, const QXmlAttributes &attrs)
+bool CollectionScanController::startElement( const QString&, const QString &localName, const QString&, const QXmlAttributes &attrs )
 {
+    DEBUG_BLOCK
 }
 
 
 bool CollectionScanController::endElement( const QString&, const QString& localName, const QString& )
 {
+    DEBUG_BLOCK
 }
 
 
 CollectionScanController::slotReadReady()
 {
+    QString line;
+    QString data;
+
+    while( m_scanner->readln( line ) != -1 )
+        data += line;
+
+    m_source.setData( data );
 }
 
 
