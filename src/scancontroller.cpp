@@ -96,7 +96,7 @@ ScanController::~ScanController()
 
 
 bool
-ScanController::startElement( const QString&, const QString& localName, const QString&, const QXmlAttributes& attrs )
+ScanController::startElement( const QString&, const QString& /*localName*/, const QString&, const QXmlAttributes& attrs )
 {
 //     debug() << "localName: " << localName << endl;
 //     debug() << "title    : " << attrs.value( "title" ) << endl;
@@ -134,7 +134,7 @@ ScanController::slotReadReady()
     m_source.setData( data );
 
     if( !m_reader.parse( &m_source, false ) )
-        ::warning() << "parse() failed: " << errorString() << endl;
+        ::warning() << "parse() failed: " << errorString() << endl << data << endl;
 }
 
 
