@@ -28,7 +28,7 @@ class KProcIO;
 /**
  * @author Mark Kretschmann <markey@web.de>
  */
-class ScanController : public QXmlDefaultHandler : QObject
+class ScanController : public QObject, public QXmlDefaultHandler
 {
     Q_OBJECT
 

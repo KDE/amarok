@@ -50,20 +50,20 @@ class ScannerProcIO : public KProcIO {
 ////////////////////////////////////////////////////////////////////////////////
 
 ScanController::ScanController( QObject* parent, QStringList folders )
-    : QXmlDefaultHandler()
-    , QObject( parent )
+    : QObject( parent )
+    , QXmlDefaultHandler()
     , m_scanner( new ScannerProcIO() )
 {
     DEBUG_BLOCK
 
     m_reader.setContentHandler( this );
 
-    m_scanner << "amarokcollectionscanner";
+    *m_scanner << "amarokcollectionscanner";
     if ( AmarokConfig::importPlaylists() )
-        m_scanner << "-i";
+        *m_scanner << "-i";
     if ( AmarokConfig::scanRecursively() )
-        m_scanner << "-r";
-    m_scanner << folders;
+        *m_scanner << "-r";
+    *m_scanner << folders;
 
     connect( m_scanner, SIGNAL( readReady( KProcIO* ) ), this, SLOT( slotReadReady() ) );
 

@@ -101,6 +101,7 @@ amarokapp_SOURCES = \
     prettypopupmenu.cpp \
     queuemanager.cpp \
     refreshimages.cpp \
+    scancontroller.cpp \
     scriptmanager.cpp \
     scriptmanagerbase.ui \
     scrobbler.cpp \
