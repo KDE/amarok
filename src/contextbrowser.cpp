@@ -1944,8 +1944,10 @@ void ContextBrowser::showLyrics( const QString &hash )
     QStringList production;
     production << i18n( "live" ) << i18n( "acoustic" ) << i18n( "cover" ) << i18n( "mix" )
                << i18n( "edit" ) << i18n( "medley" ) << i18n( "unplugged" ) << i18n( "bonus" )
+               << i18n( "version" )
                << QString( "live" ) << QString( "acoustic" ) << QString( "cover" ) << QString( "mix" )
-               << QString( "edit" ) << QString( "medley" ) << QString( "unplugged" ) << QString( "bonus" );
+               << QString( "edit" ) << QString( "medley" ) << QString( "unplugged" ) << QString( "bonus" )
+               << QString( "version" );
 
     QString title  = EngineController::instance()->bundle().title();
 
