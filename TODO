@@ -69,7 +69,6 @@ MID-TERM:
            2) ability to add/remove playlists and smart playlists to the current dynamic 
               playlist without opening a dialog. The change to the loaded dynamic playlist 
               would be immediate, no "saving current dynamic playlists".
-           3) ability to edit dynamic playlists using the add dynamic dialog as well.
 
   <mp8> Album covers as icons from filebrowser.
 

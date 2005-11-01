@@ -1,3 +1,13 @@
+/***************************************************************************
+ *   Copyright (C) 2005 Ian Monroe <ian@monroe.nu>                         *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+#include "amarok.h" //foreach
 #include "debug.h"
 #include "newdynamic.h"
 #include "party.h"
@@ -5,10 +15,14 @@
 #include "playlistselection.h"
 
 #include <qcheckbox.h>
+#include <qgroupbox.h>
+#include <qlabel.h>
 #include <qlistview.h>
+#include <qsizepolicy.h>
 #include <qstringlist.h>
 
 #include <kapplication.h>
+#include <kiconloader.h>
 #include <knuminput.h>
 #include <klistview.h>
 #include <klocale.h>
@@ -47,40 +61,107 @@ void PlaylistSelection::loadChildren(QListViewItem* browserParent, QListViewItem
 ////////////////////////////////
 /// ConfigDynamic
 ////////////////////////////////
-void ConfigDynamic::dynamicDialog(QWidget* parent)
-{
-    KDialogBase dialog(parent, "new dynamic", true, i18n("Create Dynamic Playlist"), KDialogBase::Ok | KDialogBase::Cancel);
-    kapp->setTopWidget( &dialog );
-    NewDynamic* nd = new NewDynamic( &dialog, "new dynamic");
-    dialog.setMainWidget(nd);
-    if(dialog.exec() == QDialog::Accepted)
-        addDynamic(nd);
-}
-void ConfigDynamic::addDynamic(NewDynamic* dialog)
-{
-    QListViewItem* parent =PlaylistBrowser::instance()->getDynamicCategory();
-
-    PartyEntry *saveMe = new PartyEntry( parent, 0, dialog->m_name->text() );
-
-    saveMe->setCycled( dialog->m_cycleTracks->isChecked() );
-    saveMe->setMarked( dialog->m_markHistory->isChecked() );
-    saveMe->setUpcoming( dialog->m_upcomingIntSpinBox->value() );
-    saveMe->setPrevious( dialog->m_previousIntSpinBox->value() );
-    saveMe->setAppendCount( dialog->m_appendCountIntSpinBox->value() );
-    saveMe->setAppendType( Party::CUSTOM );
-
-    QStringList list;
-    debug() << "Saving custom list..." << endl;
-    QListViewItemIterator it(dialog->selectPlaylist, QListViewItemIterator::Checked);
-    while(it.current()) {
-        list.append( it.current()->text(0) );
-        ++it;
+namespace ConfigDynamic {
+    KDialogBase* basicDialog(QWidget* parent)
+    {
+        KDialogBase* dialog = new KDialogBase(parent
+            , "new dynamic"
+            , true
+            , i18n("Create Dynamic Playlist")
+            , KDialogBase::Ok | KDialogBase::Cancel);
+        kapp->setTopWidget( dialog );
+        NewDynamic* nd = new NewDynamic( dialog, "new dynamic");
+       // QSizePolicy policy;
+       // policy.setHorData(QSizePolicy::Maximum);
+       // dialog->setSizePolicy(policy);
+        dialog->setMainWidget(nd);
+        return dialog;
     }
-    saveMe->setItems( list );
-    parent->sortChildItems( 0, true );
-    parent->setOpen( true );
+    
+    void ConfigDynamic::dynamicDialog(QWidget* parent)
+    {
+        KDialogBase* dialog = basicDialog(parent);
+        if(dialog->exec() == QDialog::Accepted)
+            addDynamic(static_cast<NewDynamic*>(dialog->mainWidget()));
+    }
+    
+    void ConfigDynamic::editDynamicPlaylist(QWidget* parent, PartyEntry* entry)
+    {
+        KDialogBase* dialog = basicDialog(parent);
+        NewDynamic* nd = static_cast<NewDynamic*>(dialog->mainWidget());
+        nd->m_cycleTracks->setChecked(entry->isCycled());
+        nd->m_markHistory->setChecked(entry->isMarked());
+        nd->m_upcomingIntSpinBox->setValue(entry->upcoming());
+        nd->m_previousIntSpinBox->setValue(entry->previous());
+        nd->m_appendCountIntSpinBox->setValue(entry->appendCount());
+        nd->m_name->setText(entry->title());
+        if(entry->appendType() == Party::CUSTOM)
+        {
+            //check items in the custom playlist
+            QStringList items = entry->items();
+            foreach(items)
+            {
+                QCheckListItem* current = static_cast<QCheckListItem*>(nd->selectPlaylist->findItem((*it),0));
+                if(current)
+                    current->setOn(true);
+            }
+            nd->m_mixGroupBox->setShown(false);
+        }
+        else //if its a suggested song or a random mix...
+        {
+           nd->selectPlaylist->setShown(false);
+           if(entry->appendType() == Party::RANDOM)
+           {
+              nd->m_image->setPixmap(KGlobal::iconLoader()->loadIcon("random",KIcon::Toolbar,KIcon::SizeLarge));
+           }
+           else
+              nd->m_mixLabel->setText("<h3>" + i18n("Suggested Songs") + "</h3>");
+        }
+        if(dialog->exec() == QDialog::Accepted)
+        {
+            PartyEntry* newEntry = loadPartyEntry(nd); 
+            entry = newEntry; //PartyEntry::operator=
+            PlaylistBrowser::instance()->getDynamicCategory()->sortChildItems( 0, true );
+            PlaylistBrowser::instance()->saveDynamics();
+            delete entry;
+        }
+        
+    }
+    
+    PartyEntry* ConfigDynamic::loadPartyEntry(NewDynamic* dialog)
+    {
+         QListViewItem* parent =PlaylistBrowser::instance()->getDynamicCategory();
+        PartyEntry *saveMe = new PartyEntry( parent, 0, dialog->m_name->text() );
+    
+        saveMe->setCycled( dialog->m_cycleTracks->isChecked() );
+        saveMe->setMarked( dialog->m_markHistory->isChecked() );
+        saveMe->setUpcoming( dialog->m_upcomingIntSpinBox->value() );
+        saveMe->setPrevious( dialog->m_previousIntSpinBox->value() );
+        saveMe->setAppendCount( dialog->m_appendCountIntSpinBox->value() );
+        saveMe->setAppendType( Party::CUSTOM );
+    
+        QStringList list;
+        debug() << "Saving custom list..." << endl;
+        QListViewItemIterator it(dialog->selectPlaylist, QListViewItemIterator::Checked);
+        while(it.current()) {
+            list.append( it.current()->text(0) );
+            ++it;
+        }
+        saveMe->setItems( list );
+        return saveMe;
+    }
+    
+    void ConfigDynamic::addDynamic(NewDynamic* dialog)
+    {
+       
+        loadPartyEntry(dialog);
+        QListViewItem* parent =PlaylistBrowser::instance()->getDynamicCategory();
+        parent->sortChildItems( 0, true );
+        parent->setOpen( true );
+    
+        PlaylistBrowser::instance()->saveDynamics();
+    }
 
-    PlaylistBrowser::instance()->saveDynamics();
 }
 ////////////////////////////////
 /// SelectionListItem

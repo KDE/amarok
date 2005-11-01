@@ -74,6 +74,7 @@ class PartyEntry : public PlaylistBrowserEntry
         void  setPrevious( int c ) { m_previous = c; }
         void  setAppendCount( int c ) { m_appendCount = c; }
         void  setAppendType( int type ) { m_appendType = type; }
+        PartyEntry &operator=(const PartyEntry &);
 
         bool  isCycled() { return m_cycled; }
         bool  isMarked() { return m_marked; }

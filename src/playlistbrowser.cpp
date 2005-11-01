@@ -2081,10 +2081,10 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     }
     else if( isDynamic( item ) ) {
         #define item static_cast<PartyEntry*>(item)
-        enum Actions { LOAD, RENAME, REMOVE };
+        enum Actions { LOAD, RENAME, REMOVE, EDIT };
         menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), LOAD );
         menu.insertSeparator();
-        menu.insertItem( SmallIconSet("editclear"), i18n( "&Rename" ), RENAME );
+        menu.insertItem( SmallIconSet("editclear"), i18n( "E&dit" ), EDIT );
         menu.insertItem( SmallIconSet("edittrash"), i18n( "R&emove" ), REMOVE );
 
         switch( menu.exec( p ) )
@@ -2092,8 +2092,8 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             case LOAD:
                 slotDoubleClicked( item );
                 break;
-            case RENAME:
-                renameSelectedItem();
+            case EDIT:
+                ConfigDynamic::editDynamicPlaylist(this,item); //fn may delete item
                 break;
             case REMOVE:
                 removeSelectedItems();

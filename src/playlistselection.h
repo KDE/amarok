@@ -1,3 +1,12 @@
+/***************************************************************************
+ *   Copyright (C) 2005 Ian Monroe <ian@monroe.nu>                         *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #ifndef PLAYLISTSELECTION_H
 #define PLAYLISTSELECTION_H
 
@@ -5,6 +14,8 @@
 #include <qlistview.h>
 
 class NewDynamic;
+class KDialogBase;
+class PartyEntry;
 
 //this is a widget used in newdynamic.ui
 class PlaylistSelection : public KListView
@@ -16,13 +27,13 @@ class PlaylistSelection : public KListView
     void loadChildren(QListViewItem* browserParent, QListViewItem* selectionParent);
 };
 
-class ConfigDynamic
+namespace ConfigDynamic
 {
-  public:
-    static void dynamicDialog(QWidget* parent);
-  private:
-    ConfigDynamic::ConfigDynamic() {} //class isn't meant to be an object
-    static void ConfigDynamic::addDynamic(NewDynamic* dialog);
+    void dynamicDialog(QWidget* parent);
+    void editDynamicPlaylist(QWidget* parent, PartyEntry* entry);
+    KDialogBase* basicDialog(QWidget* parent);
+    PartyEntry* loadPartyEntry(NewDynamic* dialog);
+    void ConfigDynamic::addDynamic(NewDynamic* dialog);
 };
 
 class SelectionListItem : public QCheckListItem
