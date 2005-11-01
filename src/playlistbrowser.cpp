@@ -83,7 +83,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     KPopupMenu *addMenu  = addMenuButton->popupMenu();
     addMenu->insertItem( i18n("Playlist..."), PLAYLIST );
     addMenu->insertItem( i18n("Smart Playlist..."), SMARTPLAYLIST );
-    addMenu->insertItem( i18n("Dynamic Playlists..."), ADDDYNAMIC);
+    addMenu->insertItem( i18n("Dynamic Playlist..."), ADDDYNAMIC);
     addMenu->insertItem( i18n("Radio Stream..."), STREAM );
     addMenu->insertItem( i18n("Podcast..."), PODCAST );
     connect( addMenu, SIGNAL( activated(int) ), SLOT( slotAddMenu(int) ) );
