@@ -98,30 +98,21 @@ ScanController::startElement( const QString&, const QString& localName, const QS
 }
 
 
-bool
-ScanController::endElement( const QString&, const QString& localName, const QString& )
-{
-    DEBUG_BLOCK
-
-    return true;
-}
-
-
 void
 ScanController::slotReadReady()
 {
     DEBUG_BLOCK
 
-    QString line;
+    QString line, data;
     bool partial;
 
     while( m_scanner->readln( line, true, &partial ) != -1 )
-        m_xmlData += line;
+        data += line;
 
-    m_source.setData( m_xmlData );
+    m_source.setData( data );
 
     if( !m_reader.parseContinue() )
-        ::warning() << "parseContinue() failed." << endl;
+        ::warning() << "parseContinue() failed: " << errorString() << endl;
 }
 
 
