@@ -73,7 +73,9 @@ void RefreshImages::finishedXmlFetch( KIO::Job* xmlJob ) //SLOT
        .namedItem("LargeImage")
        .namedItem("URL").firstChild().toText().data();
     debug() << "setting up " << imageUrl << endl;
-
+    KURL testUrl(imageUrl);
+    if(!testUrl.isValid())
+        return;
     KIO::TransferJob* imageJob = KIO::storedGet( imageUrl, false, false );
     KIO::Scheduler::scheduleJob(imageJob);
     amaroK::StatusBar::instance()->newProgressOperation( imageJob );
