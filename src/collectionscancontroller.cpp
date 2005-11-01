@@ -17,12 +17,13 @@
  *   51 Franklin Steet, Fifth Floor, Boston, MA  02111-1307, USA.          *
  ***************************************************************************/
 
-#define DEBUG_PREFIX "CollectionScanController"
+#define DEBUG_PREFIX "ScanController"
 
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "collectiondb.h"
 #include "debug.h"
+#include "scancontroller.h"
 
 #include <kprocio.h>
 
@@ -45,10 +46,10 @@ class ScannerProcIO : public KProcIO {
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// class CollectionScanController
+// class ScanController
 ////////////////////////////////////////////////////////////////////////////////
 
-CollectionScanController::CollectionScanController( QObject* parent, QStringList folders )
+ScanController::ScanController( QObject* parent, QStringList folders )
     : QXmlDefaultHandler()
     , QObject( parent )
     , m_scanner( new ScannerProcIO() )
@@ -70,19 +71,22 @@ CollectionScanController::CollectionScanController( QObject* parent, QStringList
 }
 
 
-bool CollectionScanController::startElement( const QString&, const QString &localName, const QString&, const QXmlAttributes &attrs )
+bool
+ScanController::startElement( const QString&, const QString &localName, const QString&, const QXmlAttributes &attrs )
 {
     DEBUG_BLOCK
 }
 
 
-bool CollectionScanController::endElement( const QString&, const QString& localName, const QString& )
+bool
+ScanController::endElement( const QString&, const QString& localName, const QString& )
 {
     DEBUG_BLOCK
 }
 
 
-CollectionScanController::slotReadReady()
+void
+ScanController::slotReadReady()
 {
     QString line;
     QString data;
@@ -94,6 +98,6 @@ CollectionScanController::slotReadReady()
 }
 
 
-#include "collectionscancontroller.moc"
+#include "scancontroller.moc"
 
 

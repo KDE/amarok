@@ -17,8 +17,8 @@
  *   51 Franklin Steet, Fifth Floor, Boston, MA  02111-1307, USA.          *
  ***************************************************************************/
 
-#ifndef AMAROK_COLLECTIONSCANCONTROLLER_H
-#define AMAROK_COLLECTIONSCANCONTROLLER_H
+#ifndef AMAROK_SCANCONTROLLER_H
+#define AMAROK_SCANCONTROLLER_H
 
 #include <qobject.h>
 #include <qxml.h>
@@ -28,15 +28,15 @@ class KProcIO;
 /**
  * @author Mark Kretschmann <markey@web.de>
  */
-class CollectionScanController : public QXmlDefaultHandler : QObject
+class ScanController : public QXmlDefaultHandler : QObject
 {
     Q_OBJECT
 
     public:
-        CollectionScanController( QObject* parent, QStringList folders );
+        ScanController( QObject* parent, QStringList folders );
 
     private slots:
-        slotReadReady();
+        void slotReadReady();
 
     private:
         bool startElement( const QString&, const QString &localName, const QString&, const QXmlAttributes &attrs );
@@ -50,5 +50,5 @@ class CollectionScanController : public QXmlDefaultHandler : QObject
 
 
 
-#endif // AMAROK_COLLECTIONSCANCONTROLLER_H
+#endif // AMAROK_SCANCONTROLLER_H
 
