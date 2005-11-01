@@ -356,7 +356,7 @@ void PlaylistItem::setEditing( int column )
     const QString editing = i18n( "Writing tag..." );
     switch( column )
     {
-        case Title: 
+        case Title:
         case Artist:
         case Album:
         case Genre:
@@ -380,7 +380,7 @@ bool PlaylistItem::isEditing( int column ) const
     const QString editing = i18n( "Writing tag..." );
     switch( column )
     {
-        case Title: 
+        case Title:
         case Artist:
         case Album:
         case Genre:
@@ -534,11 +534,14 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
             int rightOffset = 0;
             int margin      = listView()->itemMargin();
 
+            const float colorize1 = 0.6;
+            const float colorize2 = 0.44;
+
             // Left part
             if( column == listView()->m_firstColumn ) {
                 QImage tmpImage = currentTrackLeft.smoothScale( currentTrackLeft.width(), height() );
-                KIconEffect::colorize( tmpImage, cg.highlight(), 0.6 );
-                KIconEffect::colorize( tmpImage, glowBase, 0.41 );
+                KIconEffect::colorize( tmpImage, cg.highlight(), colorize1 );
+                KIconEffect::colorize( tmpImage, glowBase, colorize2 );
                 p.drawImage( 0, 0, tmpImage );
                 leftOffset = currentTrackLeft.width();
                 margin += 6;
@@ -548,8 +551,8 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
             else
             if( column == Playlist::instance()->mapToLogicalColumn( Playlist::instance()->visibleColumns() - 1 ) ) {
                 QImage tmpImage = currentTrackRight.smoothScale( currentTrackRight.width(), height() );
-                KIconEffect::colorize( tmpImage, cg.highlight(), 0.6 );
-                KIconEffect::colorize( tmpImage, glowBase, 0.41 );
+                KIconEffect::colorize( tmpImage, cg.highlight(), colorize1 );
+                KIconEffect::colorize( tmpImage, glowBase, colorize2 );
                 p.drawImage( width - currentTrackRight.width(), 0, tmpImage );
                 rightOffset = currentTrackRight.width();
                 margin += 6;
@@ -558,8 +561,8 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
             // Middle part
             // Here we scale the one pixel wide middel image to stretch to the full column width.
             QImage tmpImage = currentTrackMid.copy();
-            KIconEffect::colorize( tmpImage, cg.highlight(), 0.6 );
-            KIconEffect::colorize( tmpImage, glowBase, 0.43 );
+            KIconEffect::colorize( tmpImage, cg.highlight(), colorize1 );
+            KIconEffect::colorize( tmpImage, glowBase, colorize2 );
             tmpImage = tmpImage.smoothScale( width - leftOffset - rightOffset, height() );
             p.drawImage( leftOffset, 0, tmpImage );
 
