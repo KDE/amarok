@@ -652,10 +652,10 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
 
         // Draw the text
         static QFont font;
-        static int minbearing = 1337 + 666;
+        static int minbearing = 1337 + 666; //can be 0 or negative, 2003 is less likely
         if( minbearing == 2003 || font != painter->font() )
         {
-            font = painter->font();
+            font = painter->font(); //getting your bearings can be expensive, so we cache them
             minbearing = painter->fontMetrics().minLeftBearing() + painter->fontMetrics().minRightBearing();
         }
         p.setFont( font );
