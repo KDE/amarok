@@ -57,6 +57,7 @@ ScanController::ScanController( QObject* parent, QStringList folders )
     DEBUG_BLOCK
 
     m_reader.setContentHandler( this );
+    m_reader.parse( &m_source, true );
 
     *m_scanner << "amarokcollectionscanner";
     if ( AmarokConfig::importPlaylists() )
@@ -102,13 +103,15 @@ ScanController::endElement( const QString&, const QString& localName, const QStr
 void
 ScanController::slotReadReady()
 {
-    QString line;
-    QString data;
+    DEBUG_BLOCK
+
+    QString line, data;
 
     while( m_scanner->readln( line ) != -1 )
         data += line;
 
     m_source.setData( data );
+    m_reader.parseContinue();
 }
 
 
