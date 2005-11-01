@@ -48,6 +48,7 @@ class ScanController : public QObject, public QXmlDefaultHandler
         KProcIO* m_scanner;
         QXmlInputSource m_source;
         QXmlSimpleReader m_reader;
+        QString m_xmlData;
 };
 
 

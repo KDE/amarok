@@ -83,9 +83,16 @@ ScanController::~ScanController()
 
 
 bool
-ScanController::startElement( const QString&, const QString &localName, const QString&, const QXmlAttributes &attrs )
+ScanController::startElement( const QString&, const QString& localName, const QString&, const QXmlAttributes& attrs )
 {
     DEBUG_BLOCK
+
+    debug() << "localName: " << localName << endl;
+    debug() << "title    : " << attrs.value( "title" ) << endl;
+    debug() << "artist   : " << attrs.value( "artist" ) << endl;
+    debug() << "album    : " << attrs.value( "album" ) << endl;
+    debug() << "comment  : " << attrs.value( "comment" ) << endl;
+    debug() << endl;
 
     return true;
 }
@@ -105,13 +112,16 @@ ScanController::slotReadReady()
 {
     DEBUG_BLOCK
 
-    QString line, data;
+    QString line;
+    bool partial;
 
-    while( m_scanner->readln( line ) != -1 )
-        data += line;
+    while( m_scanner->readln( line, true, &partial ) != -1 )
+        m_xmlData += line;
 
-    m_source.setData( data );
-    m_reader.parseContinue();
+    m_source.setData( m_xmlData );
+
+    if( !m_reader.parseContinue() )
+        ::warning() << "parseContinue() failed." << endl;
 }
 
 
