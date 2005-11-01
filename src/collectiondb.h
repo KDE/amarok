@@ -201,6 +201,7 @@ class CollectionDB : public QObject, public EngineObserver
     Q_OBJECT
 
     friend class SimilarArtistsInsertionJob;
+    friend class ScanController; //FIXME currently needed for a signal emit
 
     signals:
         void scanStarted();
