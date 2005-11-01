@@ -20,6 +20,7 @@
 #include "statusbar.h"
 
 #include <qdatetime.h>   //::recurse()
+#include <qeventloop.h>  //::recurse()
 #include <qfile.h>       //::loadPlaylist()
 #include <qlistview.h>
 #include <qregexp.h>
@@ -338,7 +339,7 @@ UrlLoader::recurse( const KURL &url )
     watchdog.start();
 
     while( !lister.isFinished() && !isAborted() && watchdog.elapsed() < timeout )
-        kapp->processEvents();
+        kapp->eventLoop()->processEvents( QEventLoop::ExcludeUserInput );
 
     KFileItemList items = lister.items(); //returns QPtrList, so we MUST only do it once!
     KURL::List urls;
