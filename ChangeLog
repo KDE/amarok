@@ -21,7 +21,6 @@ VERSION 1.4:
       length of the queued tracks.
 
   BUGFIXES:
-    * Podcast apply to all button was faulty.
     * Cached lyrics are not erased when rescanning. (BR 110489)
     * No more "can't create amazon table" warnings. (BR 113930)
     * Creating a new playlist via drag-and-drop no longer shows duplicates
@@ -30,6 +29,7 @@ VERSION 1.4:
 
 VERSION 1.3.6:
   BUGFIXES:
+    * Podcast apply to all button was faulty.
     * last.fm queue wouldn't be saved to disk. Patch by John Patterson
       <kde-bugs@ninecats.org>. (BR 115212)
     * Podcast download directory would only be effective next time the
