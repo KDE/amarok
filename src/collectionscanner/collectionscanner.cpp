@@ -77,6 +77,7 @@ CollectionScanner::doJob() //SLOT
 
     // we need to create the temp tables before readDir gets called ( for the dir stats )
 
+    std::cout << "<?xml version='1.0' encoding='utf-8' ?>";
     std::cout << "<scanner>";
 
     QStringList entries;
@@ -248,11 +249,10 @@ CollectionScanner::readTags( const QString& path )
 
     QString text;
     QTextStream stream( &text, IO_WriteOnly );
-    stream.setEncoding( QTextStream::UnicodeUTF8 );
     tags.save( stream, 0 );
 
 
-    std::cout << text.utf8() << std::endl;
+    std::cout << text.local8Bit() << std::endl;
 }
 
 
