@@ -302,8 +302,10 @@ CollectionScanner::readTags( const QString& path, TagLib::AudioProperties::ReadS
     if( !fileref.isNull() )
         tag = fileref.tag();
 
-    if( fileref.isNull() || !tag )
+    if( fileref.isNull() || !tag ) {
+        std::cout << "<dud/>";
         return;
+    }
 
     QDomDocument doc; // A dummy. We don't really use DOM, but SAX2
     QDomElement tags = doc.createElement( "tags" );

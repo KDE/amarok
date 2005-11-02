@@ -60,6 +60,7 @@ ScanController::ScanController( QObject* parent, QStringList folders )
     , QXmlDefaultHandler()
     , m_db( CollectionDB::instance()->getStaticDbConnection() )
     , m_scanner( new ScannerProcIO() )
+    , m_steps( 0 )
 {
     DEBUG_BLOCK
 
@@ -110,12 +111,17 @@ bool
 ScanController::startElement( const QString&, const QString& localName, const QString&, const QXmlAttributes& attrs )
 {
     if( localName == "itemcount") {
-        debug() << "itemcount event: " << attrs.value( "count" ).toInt() << endl;
+        m_totalSteps = attrs.value( "count" ).toInt();
+        debug() << "itemcount event: " << m_totalSteps << endl;
+    }
+
+    if( localName == "dud" || localName == "tags" ) { // Dud means invalid item
+        m_steps++;
+        const int newPercent = int( (100 * m_steps) / m_totalSteps);
+        StatusBar::instance()->setProgress( this, newPercent );
     }
 
     if( localName == "tags") {
-        StatusBar::instance()->incrementProgress( this );
-
         MetaBundle bundle;
         bundle.setPath   ( attrs.value( "path" ) );
         bundle.setTitle  ( attrs.value( "title" ) );
@@ -128,6 +134,7 @@ ScanController::startElement( const QString&, const QString& localName, const QS
 
         CollectionDB::instance()->addSong( &bundle, false /*m_incremental*/, m_db );
     }
+
 
     return true;
 }
