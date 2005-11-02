@@ -181,7 +181,7 @@ CollectionScanner::readDir( const QString& dir, QStrList& entries )
         return;
     }
 
-    for( dirent *ent; (ent = readdir( d )) && !isAborted(); ) {
+    for( dirent *ent; ( ent = readdir( d ) ); ) {
         QCString entry (ent->d_name);
 
         if( entry == "." || entry == ".." )
@@ -236,10 +236,6 @@ CollectionScanner::scanFiles( const QStrList& entries )
     QStringList images;
 
     for(QStrListIterator it(entries); it.current(); ++it) {
-
-        // Check if we shall abort the scan
-        if( isAborted() )
-           return;
 
         const QString path = QFile::decodeName ( it.current() );
         const QString ext = extension( path );

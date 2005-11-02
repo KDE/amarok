@@ -58,9 +58,6 @@ private:
     /** If you want Accurate reading say so */
     void readTags( const QString& path, TagLib::AudioProperties::ReadStyle );
 
-    // FIXME
-    bool isAborted() const { return false; }
-
     /**
      * @return the LOWERCASE file extension without the preceding '.', or "" if there is none
      */
