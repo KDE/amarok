@@ -2,6 +2,7 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // (c) 2005 Gábor Lehel <illissius@gmail.com>
 // (c) 2005 Alexandre Pereira de Oliveira <aleprj@gmail.com>
+// (c) 2005 Christan Baumgart <christianbaumgart@web.de>
 // See COPYING file for licensing information.
 
 #include <config.h>
@@ -37,6 +38,7 @@
 #include <qsimplerichtext.h>
 #include <qtimer.h>
 #include <qtooltip.h>       //QToolTip::add()
+#include <qheader.h>
 
 #include <kactioncollection.h>
 #include <kapplication.h>   //kapp
@@ -101,6 +103,9 @@ CollectionBrowser::CollectionBrowser( const char* name )
     KActionMenu* tagfilterMenuButton = new KActionMenu( i18n( "Group By" ), "filter", ac );
     tagfilterMenuButton->setDelayed( false );
     m_categoryMenu = tagfilterMenuButton->popupMenu();
+
+    tagfilterMenuButton->setEnabled( m_view->m_viewMode == CollectionView::modeTreeView );
+    connect ( m_treeViewAction, SIGNAL ( toggled(bool) ), tagfilterMenuButton, SLOT( setEnabled (bool) ) );
 
     toolbar->setIconText( KToolBar::IconTextRight, false );
     tagfilterMenuButton->plug( toolbar );
@@ -315,6 +320,8 @@ CollectionView::CollectionView( CollectionBrowser* parent )
              this,             SLOT( invokeItem( QListViewItem* ) ) );
     connect( this,           SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
              this,             SLOT( rmbPressed( QListViewItem*, const QPoint&, int ) ) );
+    connect( header(),       SIGNAL( sizeChange( int, int, int ) ),
+             this,             SLOT( triggerUpdate() ) );
 }
 
 
@@ -342,38 +349,10 @@ CollectionView::renderView()  //SLOT
         cacheView();
 
     clear();
-    QPixmap pixmap = iconForCategory( m_cat1 );
 
     //query database for all records with the specified category
     QStringList values;
     QueryBuilder qb;
-
-    int VisYearAlbum = -1;
-    int q_cat1=m_cat1;
-    int q_cat2=m_cat2;
-    int q_cat3=m_cat3;
-    if( m_cat1 == CollectionBrowser::IdVisYearAlbum ||
-        m_cat2 == CollectionBrowser::IdVisYearAlbum ||
-        m_cat3 == CollectionBrowser::IdVisYearAlbum )
-    {
-        if( m_cat1==CollectionBrowser::IdVisYearAlbum )
-        {
-            VisYearAlbum = 1;
-            q_cat1 = CollectionBrowser::IdAlbum;
-        }
-        if( m_cat2==CollectionBrowser::IdVisYearAlbum )
-        {
-            VisYearAlbum = 2;
-            q_cat2 = CollectionBrowser::IdAlbum;
-        }
-        if( m_cat3==CollectionBrowser::IdVisYearAlbum )
-        {
-            VisYearAlbum = 3;
-            q_cat3 = CollectionBrowser::IdAlbum;
-        }
-    }
-
-
 
     // MODE FLATVIEW
     if ( m_viewMode == modeFlatView )
@@ -384,70 +363,137 @@ CollectionView::renderView()  //SLOT
             return;
         }
 
+        QValueList<Tag> visibleColumns;
+        for ( int c = 0; c < columns(); ++c )
+            if ( columnWidth( c ) != 0 )
+                visibleColumns.append( (Tag)c );
+
+        //always fetch URL
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
-        qb.addReturnValue( q_cat1, QueryBuilder::valName );
 
-        if( q_cat2 != CollectionBrowser::IdNone )
-            qb.addReturnValue( q_cat2, QueryBuilder::valName );
+        int filterTables = 0;
+        for ( QValueList<Tag>::ConstIterator it = visibleColumns.constBegin(); it != visibleColumns.constEnd(); ++it )
+        {
+            switch ( *it )
+            {
+                case Artist: {
+                    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+                    filterTables |= QueryBuilder::tabArtist;
+                    }
+                    break;
+                case Album: {
+                    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
+                    filterTables |= QueryBuilder::tabAlbum;
+                    }
+                    break;
+                case Genre: {
+                    qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
+                    filterTables |= QueryBuilder::tabGenre;
+                    }
+                    break;
+                case Title: {
+                    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+                    filterTables |= QueryBuilder::tabSong;
+                    }
+                    break;
+                case Length: {
+                    qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valLength );
+                    filterTables |= QueryBuilder::tabSong;
+                    }
+                    break;
+                case Track: {
+                    qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valTrack );
+                    filterTables |= QueryBuilder::tabSong;
+                    }
+                    break;
+                case Year: {
+                    qb.addReturnValue ( QueryBuilder::tabYear, QueryBuilder::valName );
+                    filterTables |= QueryBuilder::tabYear;
+                    }
+                    break;
+                case Comment: {
+                    qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valComment );
+                    filterTables |= QueryBuilder::tabSong;
+                    }
+                    break;
+                case Playcount:
+                    qb.addReturnValue ( QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
+                    break;
+                case Score:
+                    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
+                    break;
+                case Filename:
+                    qb.addReturnValue ( QueryBuilder::tabStats, QueryBuilder::valURL );
+                    break;
+                case Firstplay:
+                    qb.addReturnValue ( QueryBuilder::tabStats, QueryBuilder::valCreateDate );
+                    break;
+                case Lastplay:
+                    qb.addReturnValue ( QueryBuilder::tabStats, QueryBuilder::valAccessDate );
+                    break;
+                case Modified:
+                    qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valCreateDate );
+                    break;
+                case Bitrate:
+                    qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valBitrate );
+                    break;
+                default:
+                    qb.addReturnValue( QueryBuilder::tabDummy, QueryBuilder::valDummy );
+                    break;
+            }
+        }
 
-        if( q_cat3 != CollectionBrowser::IdNone )
-            qb.addReturnValue( q_cat3, QueryBuilder::valName );
-
-        if( VisYearAlbum != 0 )
-            qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
-
-        if( VisYearAlbum == 1 )
-            qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName );
-
-        qb.sortBy( m_cat1, QueryBuilder::valName );
-
-        if( VisYearAlbum == 2 )
-            qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName );
-
-        if( q_cat2 != CollectionBrowser::IdNone )
-            qb.sortBy( q_cat2, QueryBuilder::valName );
-
-        if( VisYearAlbum == 3 )
-            qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName );
-
-        if( q_cat3 != CollectionBrowser::IdNone )
-            qb.sortBy( q_cat3, QueryBuilder::valName );
-
-        qb.setGoogleFilter( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, m_filter );
+        qb.setGoogleFilter( filterTables, m_filter );
+        qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTitle );
         qb.setOptions( QueryBuilder::optRemoveDuplicates );
 
-        values = qb.run();
+        //we leftjoin the query so it can return mysql NULL cells, i.e. for score and playcount
+        QString leftQuery = qb.query();
+        leftQuery.replace( "INNER JOIN", "LEFT JOIN" );
+        values = CollectionDB::instance()->query( leftQuery );
 
-        //add items to the view
-        for ( int i = values.count() - qb.countReturnValues(); i >= 0; i -= qb.countReturnValues() )
+        //construct items
+        QStringList::ConstIterator it = values.constBegin();
+        QStringList::ConstIterator end = values.constEnd();
+        while ( it != end )
         {
-            if( values[i].stripWhiteSpace().isEmpty() )
-                values[i] = i18n( "Unknown" );
-
             CollectionItem* item = new CollectionItem( this );
             item->setDragEnabled( true );
             item->setDropEnabled( false );
+            item->setUrl( *it );
+            ++it;
 
-            item->setUrl( values[ i ] );
-
-            if( VisYearAlbum != 0 )
+            for ( QValueList<Tag>::ConstIterator it_c = visibleColumns.constBegin(); it_c != visibleColumns.constEnd(); ++it_c )
             {
-                 for ( uint j = 1; j < qb.countReturnValues()-1; j++ )
-                 {
-                    QString value;
-                    if( j == qb.countReturnValues() - 2 )
-                        value = ( values[ i+j+1 ].isEmpty() ? "?" : values [i+j+1] ) + i18n( " - " ) +
-                                ( values[ i+j ]  .isEmpty() ? i18n( "Unknown" ) : values[i+j] );
-                    else
-                        value = values[i + j];
-                    item->setText( j - 1, value );
-                 }
-            }
-            else
-            {
-                for ( uint j = 1; j < qb.countReturnValues(); j++ )
-                    item->setText( j - 1, values[ i + j ] );
+                switch ( *it_c )
+                {
+                    case Length:
+                        item->setText( *it_c, MetaBundle::prettyLength( (*it).toInt(), false) );
+                        break;
+                    case Bitrate:
+                        item->setText( *it_c, MetaBundle::prettyBitrate( (*it).toInt() ) );
+                        break;
+                    case Firstplay:
+                    case Lastplay:
+                    case Modified: {
+                        QDateTime time = QDateTime();
+                        time.setTime_t( (*it).toUInt() );
+                        item->setText( *it_c, time.date().toString( Qt::LocalDate ) );
+                        break;
+                    }
+                    case Playcount:
+                    case Score: {
+                        item->setText( *it_c, (*it).isNull() ? "0" : (*it) );
+                        break;
+                    }
+                    case Filename:
+                        item->setText( *it_c, KURL::fromPathOrURL(*it).filename() );
+                        break;
+                    default:
+                        item->setText( *it_c, (*it) );
+                        break;
+                }
+                ++it;
             }
         }
     }
@@ -455,6 +501,32 @@ CollectionView::renderView()  //SLOT
     // MODE TREEVIEW
     if( m_viewMode == modeTreeView )
     {
+        int VisYearAlbum = -1;
+        int q_cat1=m_cat1;
+        int q_cat2=m_cat2;
+        int q_cat3=m_cat3;
+        if( m_cat1 == CollectionBrowser::IdVisYearAlbum ||
+            m_cat2 == CollectionBrowser::IdVisYearAlbum ||
+            m_cat3 == CollectionBrowser::IdVisYearAlbum )
+        {
+            if( m_cat1==CollectionBrowser::IdVisYearAlbum )
+            {
+                VisYearAlbum = 1;
+                q_cat1 = CollectionBrowser::IdAlbum;
+            }
+            if( m_cat2==CollectionBrowser::IdVisYearAlbum )
+            {
+                VisYearAlbum = 2;
+                q_cat2 = CollectionBrowser::IdAlbum;
+            }
+            if( m_cat3==CollectionBrowser::IdVisYearAlbum )
+            {
+                VisYearAlbum = 3;
+                q_cat3 = CollectionBrowser::IdAlbum;
+            }
+        }
+        QPixmap pixmap = iconForCategory( m_cat1 );
+
         qb.addReturnValue( q_cat1, QueryBuilder::valName );
 
         if( VisYearAlbum == 1 )
@@ -1058,17 +1130,19 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         KPopupMenu menu( this );
 
         int cat = 0;
-        switch ( item->depth() )
-        {
-            case 0:
-                cat = m_cat1;
-                break;
-            case 1:
-                cat = m_cat2;
-                break;
-            case 2:
-                cat = m_cat3;
-                break;
+        if ( m_viewMode != modeFlatView ) {
+            switch ( item->depth() )
+            {
+                case 0:
+                    cat = m_cat1;
+                    break;
+                case 1:
+                    cat = m_cat2;
+                    break;
+                case 2:
+                    cat = m_cat3;
+                    break;
+            }
         }
 
         #ifdef AMAZON_SUPPORT
@@ -1201,17 +1275,44 @@ CollectionView::setViewMode( int mode, bool rerender )
         addColumn( headerText );
         setResizeMode( QListView::LastColumn );
         setRootIsDecorated( true );
-        setFullWidth( true );
     }
     else
     {
-        addColumn( i18n( "Title" ) );
-        addColumn( captionForCategory( m_cat1 ) );
-        if( m_cat2 != CollectionBrowser::IdNone ) addColumn( captionForCategory( m_cat2 ) );
-        if( m_cat3 != CollectionBrowser::IdNone ) addColumn( captionForCategory( m_cat3 ) );
-
-        setResizeMode( QListView::AllColumns );
         setRootIsDecorated( false );
+        setResizeMode( QListView::NoColumn );
+
+        addColumn( captionForTag( Title ) );
+        addColumn( captionForTag( Artist ) );
+        addColumn( captionForTag( Album ) );
+        addColumn( captionForTag( Genre ), 0  );
+        addColumn( captionForTag( Length ),0  );
+        addColumn( captionForTag( Track ), 0 );
+        addColumn( captionForTag( Year ), 0 );
+        addColumn( captionForTag( Comment ), 0 );
+        addColumn( captionForTag( Playcount ), 0 );
+        addColumn( captionForTag( Score ), 0 );
+        addColumn( captionForTag( Filename ), 0 );
+        addColumn( captionForTag( Firstplay ), 0 );
+        addColumn( captionForTag( Lastplay ), 0 );
+        addColumn( captionForTag( Modified ), 0 );
+        addColumn( captionForTag( Bitrate ), 0 );
+
+        setColumnAlignment( Track, Qt::AlignCenter );
+        setColumnAlignment( Length, Qt::AlignRight );
+        setColumnAlignment( Bitrate, Qt::AlignCenter );
+        setColumnAlignment( Score, Qt::AlignCenter );
+        setColumnAlignment( Playcount, Qt::AlignCenter );
+
+        //QListView allows invisible columns to be resized, so we disable resizing for them
+        for ( int i = 0; i < columns(); ++i ) {
+            setColumnWidthMode ( i, QListView::Manual );
+            if ( columnWidth( i ) == 0 )
+                header()->setResizeEnabled( false, i );
+        }
+
+        //manage column widths
+        QResizeEvent rev( size(), QSize() );
+        viewportResizeEvent( &rev );
     }
 
     m_viewMode = mode;
@@ -1918,6 +2019,32 @@ CollectionView::captionForCategory( const int cat ) const
     return QString::null;
 }
 
+QString
+CollectionView::captionForTag( const Tag tag) const
+{
+    QString caption;
+    switch( tag )
+    {
+        case Artist:    caption = i18n( "Artist" ); break;
+        case Album:     caption = i18n( "Album" );  break;
+        case Genre:     caption = i18n( "Genre" );  break;
+        case Title:     caption = i18n( "Title" );  break;
+        case Length:    caption = i18n( "Length" ); break;
+        case Track:     caption = i18n( "Track" );  break;
+        case Year:      caption = i18n( "Year" );   break;
+        case Comment:   caption = i18n( "Comment" ); break;
+        case Playcount: caption = i18n( "Playcount" ); break;
+        case Score:     caption = i18n( "Score" );  break;
+        case Filename:  caption = i18n( "Filename" ); break;
+        case Firstplay: caption = i18n( "First Play" ); break;
+        case Lastplay:  caption = i18n( "Last Play" ); break;
+        case Modified:  caption = i18n( "Modified Date" ); break;
+        case Bitrate:   caption = i18n( "Bitrate" ); break;
+        default: break;
+    }
+    return caption;
+}
+
 void
 CollectionView::cacheView()
 {
@@ -2080,12 +2207,74 @@ CollectionView::updateTrackDepth() {
 }
 
 void
-CollectionView::viewportResizeEvent( QResizeEvent* )
+CollectionView::viewportResizeEvent( QResizeEvent* e)
 {
+    header()->blockSignals( true );
+
+    const double width = e->size().width();
+
+    int visibleColumns = 0;
+    for ( int i = 0; i < columns(); ++i )
+        if ( columnWidth( i ) != 0 )
+            visibleColumns ++;
+
+    if ( visibleColumns != 0 ) {
+        for ( int c = 0; c < columns(); ++c ) {
+            if ( columnWidth( c ) != 0 )
+                setColumnWidth( c, int( width/visibleColumns) );
+        }
+    }
+
+    header()->blockSignals( false );
+
     // Needed for correct redraw of bubble help
     triggerUpdate();
 }
 
+bool
+CollectionView::eventFilter( QObject* o, QEvent* e )
+{
+    if( o == header()
+        && e->type() == QEvent::MouseButtonPress
+        && ( (QMouseEvent*)e )->button() == Qt::RightButton
+        && m_viewMode == modeFlatView )
+    {
+        KPopupMenu popup;
+        popup.setCheckable( true );
+        popup.insertTitle( i18n( "Flat View Columns" ), /*id*/ -1, /*index*/ 1 );
+
+        for ( int i = 0; i < columns(); ++i )
+        {
+            popup.insertItem( captionForTag( (Tag)i ), i );
+            popup.setItemChecked( i, ( columnWidth(i) != 0 ) );
+
+            //title column should always be shown
+            if ( i == Title )
+                popup.setItemEnabled ( i, false );
+        }
+
+        const int returnID = popup.exec( static_cast<QMouseEvent *>(e)->globalPos() );
+
+        if ( returnID != -1 )
+        {
+            if ( columnWidth( returnID ) == 0 ) {
+                adjustColumn( returnID );   // show column
+                header()->setResizeEnabled( true, returnID );
+                renderView();
+                }
+            else {
+                setColumnWidth ( returnID, 0 ); // hide column
+                header()->setResizeEnabled( false, returnID );
+            }
+            //manage column widths
+            QResizeEvent rev ( size(), QSize() );
+            viewportResizeEvent( &rev );
+        }
+        return true;
+    }
+
+    return KListView::eventFilter( o, e );
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS CollectionItem

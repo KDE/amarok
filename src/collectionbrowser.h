@@ -1,6 +1,7 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // (c) 2005 Gábor Lehel <illissius@gmail.com>
+// (c) 2005 Christan Baumgart <christianbaumgart@web.de>
 // See COPYING file for licensing information.
 
 #ifndef AMAROK_COLLECTIONBROWSER_H
@@ -154,6 +155,8 @@ class CollectionView : public KListView
         void organizeFiles();
 
     private:
+        enum Tag { Title, Artist, Album, Genre, Length, Track, Year, Comment, Playcount, Score, Filename, Firstplay, Lastplay, Modified, Bitrate };
+
         void setViewMode( int mode, bool rerender = true );
         void startDrag();
         KURL::List listSelected();
@@ -161,6 +164,7 @@ class CollectionView : public KListView
         void playlistFromURLs( const KURL::List &urls );
         QPixmap iconForCategory( const int cat ) const;
         QString captionForCategory( const int cat ) const;
+        inline QString captionForTag( const Tag ) const;
 
         /** Rebuild selections, viewport and expanded items after reloads */
         void cacheView();
@@ -177,6 +181,7 @@ class CollectionView : public KListView
         // Reimplemented from KListView
         void viewportPaintEvent( QPaintEvent* );
         void viewportResizeEvent( QResizeEvent* );
+        bool eventFilter( QObject*, QEvent* );
 
     //attributes:
         static CollectionView* m_instance;
