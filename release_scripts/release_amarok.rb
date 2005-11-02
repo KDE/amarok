@@ -37,7 +37,7 @@ ENV["UNSERMAKE"] = "no"
 
 # Remove old folder, if exists
 `rm -rf #{folder} 2> /dev/null`
-`rm -rf folder.tar.bz2 2> /dev/null`
+`rm -rf #{folder}.tar.bz2 2> /dev/null`
 
 Dir.mkdir( folder )
 Dir.chdir( folder )
