@@ -49,8 +49,9 @@ class ScanController : public QObject, public QXmlDefaultHandler
         KProcIO* m_scanner;
         QXmlInputSource m_source;
         QXmlSimpleReader m_reader;
+        int m_steps;
+        int m_totalSteps;
 };
-
 
 
 #endif // AMAROK_SCANCONTROLLER_H
