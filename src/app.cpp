@@ -105,6 +105,8 @@ App::App()
         amaroK::config()->sync();
     }
 
+    fixHyperThreading();
+
     m_pGlobalAccel    = new KGlobalAccel( this );
     m_pPlaylistWindow = new PlaylistWindow();
     m_pTray           = new amaroK::TrayIcon( m_pPlaylistWindow );
@@ -150,8 +152,6 @@ App::App()
         //do this after applySettings() so OSD displays correctly
         EngineController::instance()->restoreSession();
     }
-
-    fixHyperThreading();
 
     // Refetch covers every 80 days or delete every 90 days to comply with Amazon license
     #ifdef AMAZON_SUPPORT
