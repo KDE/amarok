@@ -61,6 +61,7 @@ ScanController::ScanController( QObject* parent, QStringList folders )
     , m_db( CollectionDB::instance()->getStaticDbConnection() )
     , m_scanner( new ScannerProcIO() )
     , m_steps( 0 )
+    , m_success( false )
 {
     DEBUG_BLOCK
 
@@ -97,13 +98,12 @@ ScanController::~ScanController()
     m_scanner->kill();
     delete m_scanner;
 
-    CollectionDB::instance()->clearTables();
-    CollectionDB::instance()->moveTempTables( m_db ); // rename tables
-    CollectionDB::instance()->dropTables( m_db );
+    if( m_db->isConnected() ) {
+        CollectionDB::instance()->dropTables( m_db );
+        CollectionDB::instance()->returnStaticDbConnection( m_db );
+    }
 
-    emit CollectionDB::instance()->scanDone( true ); //FIXME
-
-    CollectionDB::instance()->returnStaticDbConnection( m_db );
+    emit CollectionDB::instance()->scanDone( m_success ); //FIXME
 }
 
 
@@ -161,8 +161,13 @@ ScanController::slotProcessExited()
 {
     DEBUG_BLOCK
 
-    if( !m_scanner->normalExit() )
-        ::error() << "CollectionScanner has crashed." << endl;
+    if( m_scanner->normalExit() ) {
+        m_success = true;
+        CollectionDB::instance()->clearTables();
+        CollectionDB::instance()->moveTempTables( m_db ); // rename tables
+    }
+    else
+        ::error() << "CollectionScanner has crashed! Scan aborted." << endl;
 
     deleteLater();
 }

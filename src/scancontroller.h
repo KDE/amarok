@@ -51,6 +51,7 @@ class ScanController : public QObject, public QXmlDefaultHandler
         QXmlSimpleReader m_reader;
         int m_steps;
         int m_totalSteps;
+        bool m_success;
 };
 
 
