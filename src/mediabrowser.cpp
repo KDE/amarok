@@ -906,14 +906,17 @@ MediaDevice::connectDevice()
                 m_parent->m_transferButton->setEnabled( true );
                 m_parent->m_stats->setText( i18n( "Checking device for duplicate files." ) );
                 KURL::List urls;
+                MediaItem *next = NULL;
                 for( MediaItem *cur = dynamic_cast<MediaItem *>(m_transferList->firstChild());
                         cur != NULL;
-                        cur = dynamic_cast<MediaItem *>(cur->nextSibling()) )
+                        cur = next)
                 {
-                    urls.append( cur->url() );
+                    next = dynamic_cast<MediaItem *>(cur->nextSibling());
+                    if ( trackExists( *cur->bundle() ) )
+                    {
+                        delete cur;
+                    }
                 }
-                clearItems();
-                addURLs( urls );
             }
         }
         else

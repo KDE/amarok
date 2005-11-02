@@ -111,7 +111,7 @@ GpodMediaDevice::addTrackToDevice(const QString &pathname, const MetaBundle &bun
     QString type = pathname.section('.', -1);
 
     track->ipod_path = g_strdup( ipodPath(pathname.latin1()).latin1() );
-    debug() << "on iPod: " << track->ipod_path << endl;
+    debug() << "on iPod: " << track->ipod_path << ", podcast=" << isPodcast << endl;
 
     track->title = g_strdup( bundle.title().isEmpty() ? i18n("Unknown").utf8() : bundle.title().utf8() );
     track->album = g_strdup( bundle.album().isEmpty() ? i18n("Unknown").utf8() : bundle.album().utf8() );
@@ -914,7 +914,19 @@ GpodMediaDevice::getTitle(const QString &artist, const QString &album, const QSt
 {
     GpodMediaItem *item = getAlbum(artist, album);
     if(item)
-        return dynamic_cast<GpodMediaItem *>(item->findItem(title));
+    {
+        GpodMediaItem *track = dynamic_cast<GpodMediaItem *>(item->findItem(title));
+        if(track)
+            return track;
+    }
+
+    item = dynamic_cast<GpodMediaItem *>(m_podcastItem->findItem(album));
+    if(item)
+    {
+        GpodMediaItem *track = dynamic_cast<GpodMediaItem *>(item->findItem(title));
+        if(track)
+            return track;
+    }
 
     return NULL;
 }
