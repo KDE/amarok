@@ -58,18 +58,6 @@ CollectionScanner::CollectionScanner( const QStringList& folders, bool recursive
         , m_recursively( recursive )
         , log( "~/collection_scanner.log" )
 {
-    // don't traverse /
-    struct stat statBuf;
-    if( stat( "/", &statBuf ) == 0 ) {
-        struct direntry de;
-        memset(&de, 0, sizeof(struct direntry));
-        de.dev = statBuf.st_dev;
-        de.ino = statBuf.st_ino;
-
-        m_processedDirs.resize(m_processedDirs.size()+1);
-        m_processedDirs[m_processedDirs.size()-1] = de;
-    }
-
     QTimer::singleShot( 0, this, SLOT( doJob() ) );
 }
 
@@ -128,17 +116,19 @@ CollectionScanner::readDir( const QString& path, QStringList& entries )
 
     QDir dir( path );
 
-    //BEGIN files
+
+    // FILES:
     const QStringList files = dir.entryList( QDir::Files | QDir::Readable );
 
     // Append file paths to list
     for( QStringList::ConstIterator it = files.begin(); it != files.end(); ++it )
         entries += dir.absFilePath( *it );
-    //END
+
 
     if( !m_recursively ) return;
 
-    //BEGIN folders
+
+    // FOLDERS:
     const QStringList dirs = dir.entryList( QDir::Dirs | QDir::Readable );
 
     // Recurse folders
@@ -146,7 +136,6 @@ CollectionScanner::readDir( const QString& path, QStringList& entries )
         if( (*it).startsWith( "." ) ) continue;
         readDir( dir.absFilePath( *it ), entries );
     }
-    //END
 }
 
 

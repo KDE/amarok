@@ -21,14 +21,10 @@
 #define COLLECTIONSCANNER_H
 
 #include <fstream>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
 
 #include <taglib/audioproperties.h>
 
 #include <qstringlist.h>
-
 #include <kapplication.h>
 
 
@@ -75,16 +71,9 @@ private:
     }
 
 
-    bool m_importPlaylists;
+    bool        m_importPlaylists;
     QStringList m_folders;
-    bool m_recursively;
-
-    struct direntry {
-      dev_t dev;
-      ino_t ino;
-    } KDE_PACKED;
-
-    QMemArray<direntry> m_processedDirs;
+    bool        m_recursively;
 
     std::ofstream log;
 };
