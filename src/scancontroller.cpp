@@ -65,6 +65,7 @@ ScanController::ScanController( QObject* parent, QStringList folders )
     CollectionDB::instance()->createTables( m_db );
 
     m_reader.setContentHandler( this );
+    m_reader.parse( &m_source, true );
 
     *m_scanner << "amarokcollectionscanner";
     if( AmarokConfig::importPlaylists() ) *m_scanner << "-i";
@@ -133,8 +134,8 @@ ScanController::slotReadReady()
 
     m_source.setData( data );
 
-    if( !m_reader.parse( &m_source, false ) )
-        ::warning() << "parse() failed: " << errorString() << endl << data << endl;
+    if( !m_reader.parseContinue() )
+        ::warning() << "parseContinue() failed: " << errorString() << endl << data << endl;
 }
 
 

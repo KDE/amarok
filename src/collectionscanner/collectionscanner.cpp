@@ -112,7 +112,9 @@ CollectionScanner::doJob() //SLOT
     if( !entries.isEmpty() ) {
 //         setStatus( i18n("Reading metadata") );
 //         setProgressTotalSteps( entries.count() );
+        std::cout << "<scanner>";
         scanFiles( entries );
+        std::cout << "</scanner>";
     }
 
     log.close();
