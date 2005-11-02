@@ -19,6 +19,7 @@
 #include "metabundle.h"           //updateTags()
 #include "playlist.h"
 #include "playlistbrowser.h"
+#include "scancontroller.h"
 #include "scrobbler.h"
 #include "statusbar.h"
 #include "threadweaver.h"
@@ -1971,8 +1972,7 @@ CollectionDB::startScan()  //SLOT
     else if( PlaylistBrowser::instance() )
     {
         emit scanStarted();
-
-        ThreadWeaver::instance()->queueJob( new CollectionReader( this, folders ) );
+        new ScanController( this, folders );
     }
 }
 
