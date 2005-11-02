@@ -557,8 +557,8 @@ CollectionView::setupDirs()  //SLOT
     dialog.setMainWidget( setup );
     dialog.showButtonApply( false );
     dialog.adjustSize();
-    // Make the dialog a bit wider, default is too narrow to be useful
-    dialog.resize( dialog.width() + 50, dialog.height() );
+    // Make the dialog a bit bigger, default is too small to be useful
+    dialog.resize( dialog.width() + 50, dialog.height() + 150 );
 
     if ( dialog.exec() != QDialog::Rejected )
     {
