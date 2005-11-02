@@ -5,6 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.4:
   FEATURES:
+    * New Collection Scanner, running in an external process. Now amaroK can't
+      crash any more while scanning the Collection :)
     * Statistics tool!
     * Dragging external playlists into the playlist browser will add them.
     * Collection scanner now supports WMA and MP4/AAC.
