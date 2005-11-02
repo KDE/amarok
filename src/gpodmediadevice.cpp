@@ -579,7 +579,8 @@ GpodMediaDevice::openDevice(bool useDialogs)
         for(unsigned j=0; j<hashdir.count(); j++)
         {
             QString filename = hashpath + "/" + hashdir[j];
-            Itdb_Track *track = m_files[filename];
+            QString ipodPath = ":iPod_Control:Music:" + dir[i] + ":" + hashdir[j];
+            Itdb_Track *track = m_files[ipodPath.lower()];
             if(!track)
             {
                 debug() << "file: " << filename << " is orphaned" << endl;
@@ -690,7 +691,7 @@ GpodMediaDevice::addTrackToList(Itdb_Track *track)
     }
     else
     {
-        m_files.insert(path, track);
+        m_files.insert( QString(track->ipod_path).lower(), track );
     }
 #endif // CHECK_FOR_INTEGRITY
 
