@@ -91,8 +91,8 @@ CollectionScanner::doJob() //SLOT
     log << "\n\n\n";
 
     // we need to create the temp tables before readDir gets called ( for the dir stats )
-//     setProgressTotalSteps( 100 );
 
+    std::cout << "<scanner>";
 
     QStrList entries;
     foreach( m_folders ) {
@@ -105,18 +105,16 @@ CollectionScanner::doJob() //SLOT
         if( !dir.endsWith( "/" ) )
             dir += '/';
 
-//         setStatus( i18n("Reading directory structure") );
         readDir( dir, entries );
     }
 
     if( !entries.isEmpty() ) {
-//         setStatus( i18n("Reading metadata") );
-//         setProgressTotalSteps( entries.count() );
-        std::cout << "<scanner>";
+        const QString str = QString( "<itemcount count='%1'/>" ).arg( entries.count() );
+        std::cout << str.utf8();
         scanFiles( entries );
-        std::cout << "</scanner>";
     }
 
+    std::cout << "</scanner>";
     log.close();
 
     quit();
@@ -243,8 +241,6 @@ CollectionScanner::scanFiles( const QStrList& entries )
         if( isAborted() )
            return;
 
-//         incrementProgress();
-
         const QString path = QFile::decodeName ( it.current() );
         const QString ext = extension( path );
         const QString dir = directory( path );
@@ -329,7 +325,7 @@ CollectionScanner::readTags( const QString& path, TagLib::AudioProperties::ReadS
     tags.save( stream, 0 );
 
 
-    std::cout << text.latin1() << std::endl;
+    std::cout << text.utf8() << std::endl;
 }
 
 

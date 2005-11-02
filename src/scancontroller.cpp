@@ -25,8 +25,13 @@
 #include "debug.h"
 #include "metabundle.h"
 #include "scancontroller.h"
+#include "statusbar.h"
 
+#include <klocale.h>
 #include <kprocio.h>
+
+using amaroK::StatusBar;
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // class ScannerProcIO
@@ -64,6 +69,11 @@ ScanController::ScanController( QObject* parent, QStringList folders )
     }
     CollectionDB::instance()->createTables( m_db );
 
+    StatusBar::instance()->newProgressOperation( this )
+            .setDescription( i18n( "Building Collection" ) )
+            .setAbortSlot( this, SLOT( deleteLater() ) )
+            .setTotalSteps( 100 );
+
     m_reader.setContentHandler( this );
     m_reader.parse( &m_source, true );
 
@@ -97,27 +107,27 @@ ScanController::~ScanController()
 
 
 bool
-ScanController::startElement( const QString&, const QString& /*localName*/, const QString&, const QXmlAttributes& attrs )
+ScanController::startElement( const QString&, const QString& localName, const QString&, const QXmlAttributes& attrs )
 {
-//     debug() << "localName: " << localName << endl;
-//     debug() << "title    : " << attrs.value( "title" ) << endl;
-//     debug() << "artist   : " << attrs.value( "artist" ) << endl;
-//     debug() << "album    : " << attrs.value( "album" ) << endl;
-//     debug() << "comment  : " << attrs.value( "comment" ) << endl;
-//     debug() << endl;
+    if( localName == "itemcount") {
+        debug() << "itemcount event: " << attrs.value( "count" ).toInt() << endl;
+    }
 
-    MetaBundle bundle;
-    bundle.setPath   ( attrs.value( "path" ) );
-    bundle.setTitle  ( attrs.value( "title" ) );
-    bundle.setArtist ( attrs.value( "artist" ) );
-    bundle.setAlbum  ( attrs.value( "album" ) );
-    bundle.setComment( attrs.value( "comment" ) );
-    bundle.setGenre  ( attrs.value( "genre" ) );
-    bundle.setYear   ( attrs.value( "year" ).toInt() );
-    bundle.setTrack  ( attrs.value( "track" ).toInt() );
+    if( localName == "tags") {
+        StatusBar::instance()->incrementProgress( this );
 
+        MetaBundle bundle;
+        bundle.setPath   ( attrs.value( "path" ) );
+        bundle.setTitle  ( attrs.value( "title" ) );
+        bundle.setArtist ( attrs.value( "artist" ) );
+        bundle.setAlbum  ( attrs.value( "album" ) );
+        bundle.setComment( attrs.value( "comment" ) );
+        bundle.setGenre  ( attrs.value( "genre" ) );
+        bundle.setYear   ( attrs.value( "year" ).toInt() );
+        bundle.setTrack  ( attrs.value( "track" ).toInt() );
 
-    CollectionDB::instance()->addSong( &bundle, false /*m_incremental*/, m_db );
+        CollectionDB::instance()->addSong( &bundle, false /*m_incremental*/, m_db );
+    }
 
     return true;
 }
