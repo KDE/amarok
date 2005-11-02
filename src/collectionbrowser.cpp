@@ -1469,7 +1469,7 @@ CollectionView::organizeFiles()  //SLOT
             KURL src = ( *it );
 
             //Building destination here.
-            MetaBundle mb( src.path() );
+            MetaBundle mb( src );
 
             if( !mb.artist().isEmpty() )
             {
