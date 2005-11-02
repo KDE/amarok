@@ -19,7 +19,7 @@ VERSION 1.4:
     * New look for the current track marker in the playlist. Pimp my roK!
     * When turning either random or dynamic mode on, turn the other off,
       instead of completely disabling random mode when dynamic is on.
-    
+
   BUGFIXES:
     * Cached lyrics are not erased when rescanning. (BR 110489)
     * No more "can't create amazon table" warnings. (BR 113930)
@@ -29,6 +29,7 @@ VERSION 1.4:
 
 VERSION 1.3.6:
   BUGFIXES:
+    * Potential crash when loading media from the Collection. (BR 115234)
     * Podcast apply to all button was faulty.
     * last.fm queue wouldn't be saved to disk. Patch by John Patterson
       <kde-bugs@ninecats.org>. (BR 115212)
