@@ -52,8 +52,8 @@ private slots:
     void doJob();
 
 private:
-    void readDir( const QString& dir, QStrList& entries );
-    void scanFiles( const QStrList& entries );
+    void readDir( const QString& path, QStringList& entries );
+    void scanFiles( const QStringList& entries );
 
     /** If you want Accurate reading say so */
     void readTags( const QString& path, TagLib::AudioProperties::ReadStyle );

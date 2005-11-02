@@ -22,12 +22,7 @@
 #include "collectionscanner.h"
 #include "debug.h"
 
-#include <cerrno>
-#include <dirent.h>    //stat
 #include <iostream>
-#include <sys/stat.h>  //stat
-#include <sys/types.h> //stat
-#include <unistd.h>    //stat
 
 #include <taglib/fileref.h>
 #include <taglib/id3v1genres.h> //used to load genre list
@@ -35,6 +30,7 @@
 #include <taglib/tag.h>
 #include <taglib/tstring.h>
 
+#include <qdir.h>
 #include <qdom.h>
 #include <qfile.h>
 #include <qtimer.h>
@@ -94,7 +90,7 @@ CollectionScanner::doJob() //SLOT
 
     std::cout << "<scanner>";
 
-    QStrList entries;
+    QStringList entries;
     foreach( m_folders ) {
         if( (*it).isEmpty() )
             //apparently somewhere empty strings get into the mix
@@ -122,108 +118,40 @@ CollectionScanner::doJob() //SLOT
 
 
 void
-CollectionScanner::readDir( const QString& dir, QStrList& entries )
+CollectionScanner::readDir( const QString& path, QStringList& entries )
 {
-    // FIXME Replace all Unix calls here with portable Qt code (QDir)
-
+    //TODO Add recursive symlink loop protection
 
     // linux specific, but this fits the 90% rule
-    if( dir.startsWith("/dev") || dir.startsWith("/sys") || dir.startsWith("/proc") )
+    if( path.startsWith( "/dev" ) || path.startsWith( "/sys" ) || path.startsWith( "/proc" ) )
         return;
 
-    QCString dir8Bit = QFile::encodeName( dir );
+    QDir dir( path );
 
-    struct stat statBuf;
+    //BEGIN files
+    const QStringList files = dir.entryList( QDir::Files | QDir::Readable );
 
-    // FIXME
-    if( stat( dir8Bit, &statBuf ) != 0 )
-        return;
+    // Append file paths to list
+    for( QStringList::ConstIterator it = files.begin(); it != files.end(); ++it )
+        entries += dir.absFilePath( *it );
+    //END
 
-//     //update dir statistics for rescanning purposes
-//     if( stat( dir8Bit, &statBuf ) == 0 )
-//         CollectionDB::instance()->updateDirStats( dir, (long)statBuf.st_mtime, !m_incremental ? m_db : 0 );
-//     else {
-//         if( m_incremental ) {
-//             CollectionDB::instance()->removeSongsInDir( dir );
-//             CollectionDB::instance()->removeDirFromCollection( dir );
-//         }
-//         return;
-//     }
+    if( !m_recursively ) return;
 
-    struct direntry de;
-    memset(&de, 0, sizeof(struct direntry));
-    de.dev = statBuf.st_dev;
-    de.ino = statBuf.st_ino;
+    //BEGIN folders
+    const QStringList dirs = dir.entryList( QDir::Dirs | QDir::Readable );
 
-    int f = -1;
-
-#if __GNUC__ < 4
-    for(unsigned int i = 0; i < m_processedDirs.size(); ++i)
-        if(memcmp(&m_processedDirs[i], &de, sizeof(direntry)) == 0) {
-            f = i; break;
-        }
-#else
-    f = m_processedDirs.find(de);
-#endif
-
-    if( ! S_ISDIR ( statBuf.st_mode) || f != -1 ) {
-        debug() << "Skipping, already scanned: " << dir << endl;
-        return;
+    // Recurse folders
+    for( QStringList::ConstIterator it = dirs.begin(); it != dirs.end(); ++it ) {
+        if( (*it).startsWith( "." ) ) continue;
+        readDir( dir.absFilePath( *it ), entries );
     }
-
-    m_processedDirs.resize(m_processedDirs.size()+1);
-    m_processedDirs[m_processedDirs.size()-1] = de;
-
-    DIR *d = opendir( dir8Bit );
-    if( d == NULL ) {
-        if( errno == EACCES )
-            warning() << "Skipping, no access permissions: " << dir << endl;
-        return;
-    }
-
-    for( dirent *ent; ( ent = readdir( d ) ); ) {
-        QCString entry (ent->d_name);
-
-        if( entry == "." || entry == ".." )
-            continue;
-
-        entry.prepend( dir8Bit );
-
-        if( stat( entry, &statBuf ) != 0 )
-            continue;
-
-        // loop protection
-        if( ! ( S_ISDIR( statBuf.st_mode ) || S_ISREG( statBuf.st_mode ) ) )
-            continue;
-
-        if( S_ISDIR( statBuf.st_mode ) && m_recursively && entry.length() && entry[0] != '.' )
-        {
-            const QString file = QFile::decodeName( entry );
-
-//             if( !m_incremental || !CollectionDB::instance()->isDirInCollection( file ) )
-                // we MUST add a '/' after the dirname
-                readDir( file + '/', entries );
-        }
-
-        else if( S_ISREG( statBuf.st_mode ) )
-        {
-            QString file = QFile::decodeName( entry );
-
-//             if( m_importPlaylists ) {
-//                 if( file.endsWith(".m3u") || file.endsWith(".pls") )
-//                     QApplication::postEvent( PlaylistBrowser::instance(), new PlaylistFoundEvent( file ) );
-//             }
-
-            entries.append( entry );
-        }
-    }
-
-    closedir( d );
+    //END
 }
 
 
 void
-CollectionScanner::scanFiles( const QStrList& entries )
+CollectionScanner::scanFiles( const QStringList& entries )
 {
     DEBUG_BLOCK
 
@@ -235,11 +163,11 @@ CollectionScanner::scanFiles( const QStrList& entries )
     QValueList<CoverBundle> covers;
     QStringList images;
 
-    for(QStrListIterator it(entries); it.current(); ++it) {
+    for( QStringList::ConstIterator it = entries.begin(); it != entries.end(); ++it ) {
 
-        const QString path = QFile::decodeName ( it.current() );
-        const QString ext = extension( path );
-        const QString dir = directory( path );
+        const QString path = *it;
+        const QString ext  = extension( path );
+        const QString dir  = directory( path );
 
         // Append path to logfile
         log << path.local8Bit() << std::endl;
