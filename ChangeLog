@@ -12,6 +12,7 @@ VERSION 1.4:
     * Collection scanner now supports WMA and MP4/AAC.
     * Option to crossfade only on manual track changes. Useful for listening
       to consecutive tracks on a single album.
+    * Edit dumb iPod playlists with media browser.
 
   CHANGES:
     * The tooltip and the menu from the queue icon in the statusbar now show
@@ -21,6 +22,8 @@ VERSION 1.4:
     * New look for the current track marker in the playlist. Pimp my roK!
     * When turning either random or dynamic mode on, turn the other off,
       instead of completely disabling random mode when dynamic is on.
+    * libgpod from gtkpod replaces kio based iPod support for improved
+      compatability with various iPod models.
 
   BUGFIXES:
     * Cached lyrics are not erased when rescanning. (BR 110489)
