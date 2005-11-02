@@ -16,12 +16,16 @@
 #include <kpushbutton.h>
 #include <kprogress.h>
 #include <kmessagebox.h>
+#include <kiconloader.h>
 #include <qfileinfo.h>
 #include <qdir.h>
 #include <qtimer.h>
 #include <qlabel.h>
 
 #include <cstdlib>
+
+// disable if it takes too long for you
+#define CHECK_FOR_INTEGRITY 1
 
 #ifdef HAVE_LIBGPOD
 class TrackList : public QPtrList<Itdb_Track>
@@ -37,19 +41,32 @@ class TrackList : public QPtrList<Itdb_Track>
         return strcasecmp(t1->title, t2->title);
     }
 };
-#endif
+
+class GpodMediaItem : public MediaItem
+{
+    public:
+        GpodMediaItem(QListView *parent ) : MediaItem(parent) { init(); }
+        GpodMediaItem(QListViewItem *parent ) : MediaItem(parent) { init(); }
+        GpodMediaItem(QListView *parent, QListViewItem *after) : MediaItem(parent, after) { init(); }
+        GpodMediaItem(QListViewItem *parent, QListViewItem *after) : MediaItem(parent, after) { init(); }
+        void init() {m_track=NULL; m_playlist=NULL;}
+        Itdb_Track *m_track;
+        Itdb_Playlist *m_playlist;
+};
+#endif // HAVE_LIBGPOD
 
 
-GpodMediaDevice::GpodMediaDevice( MediaDeviceView* parent )
-: MediaDevice( parent )
+GpodMediaDevice::GpodMediaDevice( MediaDeviceView* parent, MediaDeviceList *listview )
+    : MediaDevice( parent, listview )
+#ifdef HAVE_LIBGPOD
+    , m_masterPlaylist( NULL )
+    , m_podcastPlaylist( NULL )
+#endif // HAVE_LIBGPOD
 {
 #ifdef HAVE_LIBGPOD
-    debug() << "sizeof(MediaItem)=" << sizeof(MediaItem) << endl;
-    debug() << "sizeof(Itdb_Track)=" << sizeof(Itdb_Track) << endl;
-    debug() << "sizeof(IpodAlbum)=" << sizeof(IpodAlbum) << endl;
     dbChanged = false;
     m_itdb = NULL;
-#endif
+#endif // HAVE_LIBGPOD
 }
 
 GpodMediaDevice::~GpodMediaDevice()
@@ -58,7 +75,7 @@ GpodMediaDevice::~GpodMediaDevice()
     if(m_itdb)
         itdb_free(m_itdb);
 
-    m_database.clear();
+    m_files.clear();
 #endif
 }
 
@@ -71,6 +88,17 @@ GpodMediaDevice::isConnected()
     return false;
 #endif
 }
+
+#ifdef HAVE_LIBGPOD
+void
+GpodMediaDevice::updateRootItems()
+{
+    m_podcastItem->setVisible(m_podcastItem->childCount() > 0);
+    m_invisibleItem->setVisible(m_invisibleItem->childCount() > 0);
+    m_staleItem->setVisible(m_staleItem->childCount() > 0);
+    m_orphanedItem->setVisible(m_orphanedItem->childCount() > 0);
+}
+#endif
 
 bool
 GpodMediaDevice::addTrackToDevice(const QString &pathname, const MetaBundle &bundle, bool isPodcast)
@@ -111,11 +139,9 @@ GpodMediaDevice::addTrackToDevice(const QString &pathname, const MetaBundle &bun
     itdb_track_add(m_itdb, track, -1);
     if(isPodcast)
     {
-        debug() << "adding podcast" << endl;
         Itdb_Playlist *podcasts = itdb_playlist_podcasts(m_itdb);
         if(!podcasts)
         {
-            debug() << "creating podcast playlist" << endl;
             podcasts = itdb_playlist_new("Podcasts", false);
             itdb_playlist_set_podcasts(podcasts);
             itdb_playlist_add(m_itdb, podcasts, -1);
@@ -130,120 +156,245 @@ GpodMediaDevice::addTrackToDevice(const QString &pathname, const MetaBundle &bun
         itdb_playlist_add_track(mpl, track, -1);
     }
 
+    addTrackToList(track);
+
     return true;
-#else
+#else // HAVE_LIBGPOD
     (void)pathname;
     (void)bundle;
-//     (void)podcast; //FIXME
+    (void)isPodcast;
     return false;
-#endif
+#endif // HAVE_LIBGPOD
 }
 
 
 void
 GpodMediaDevice::synchronizeDevice()
 {
-    closeDevice();
-
-    openDevice();
-
-    updateView();
-}
-
-// should probably return MediaItems instead
-QStringList
-GpodMediaDevice::items( QListViewItem* item )
-{
-    QStringList items;
-
 #ifdef HAVE_LIBGPOD
-    if(!item)
-    {
-        for(QDictIterator<IpodArtist> it(m_database);
-                it.current();
-                ++it)
-            items << it.currentKey();
-    }
-    else if(!item->parent())
-    {
-        IpodArtist *artist = m_database[item->text(0)];
-        if(artist)
-            for(QDictIterator<IpodAlbum> it(*artist);
-                    it.current();
-                    ++it)
-                items << it.currentKey();
-    }
-    else
-    {
-        IpodArtist *artist = m_database[item->parent()->text(0)];
-        IpodAlbum *album = NULL;
-        if(artist)
-            album = (*artist)[item->text(0)];
-        if(album)
-        {
-            for(QDictIterator<Itdb_Track> it(*album);
-                    it.current();
-                    ++it)
-            {
-                items << it.currentKey();
-                items << realPath(it.current()->ipod_path);
-                QString track;
-                track.setNum(it.current()->track_nr);
-                items << track;
-            }
-        }
-    }
-#else
-    (void)item;
-#endif
-
-    return items;
+    writeITunesDB();
+#endif // HAVE_LIBGPOD
 }
-
 
 bool
 GpodMediaDevice::trackExists( const MetaBundle& bundle )
 {
 #ifdef HAVE_LIBGPOD
 
-    Itdb_Track *track = getTitle( bundle.artist(),
+    GpodMediaItem *item = getTitle( bundle.artist(),
             bundle.album().isEmpty() ? i18n( "Unknown" ) : bundle.album(),
             bundle.title());
 
-    return (track != NULL);
-#else
+    return (item != NULL);
+#else // HAVE_LIBGPOD
     (void)bundle;
     return false;
-#endif
+#endif // HAVE_LIBGPOD
 }
 
-
-bool
-GpodMediaDevice::deleteTrackFromDevice(const QString& artist, const QString& album, const QString& title)
+MediaItem *
+GpodMediaDevice::newPlaylist(const QString &name, MediaItem *parent, QPtrList<MediaItem> items)
 {
 #ifdef HAVE_LIBGPOD
-    debug() << "deleting: " << artist << " - " << album << " - " << title << endl;
-    Itdb_Track *track = getTitle(artist, album, title);
-    if(!track)
+    dbChanged = true;
+    GpodMediaItem *item = new GpodMediaItem(parent);
+    item->setType(MediaItem::PLAYLIST);
+    item->setText(0, name);
+
+    addToPlaylist(item, NULL, items);
+
+    return item;
+#else // HAVE_LIBGPOD
+    (void)name;
+    (void)parent;
+    (void)items;
+    return NULL;
+#endif // HAVE_LIBGPOD
+}
+
+
+void
+GpodMediaDevice::addToPlaylist(MediaItem *mlist, MediaItem *after, QPtrList<MediaItem> items)
+{
+#ifdef HAVE_LIBGPOD
+    GpodMediaItem *list = dynamic_cast<GpodMediaItem *>(mlist);
+    if(!list)
+        return;
+
+    dbChanged = true;
+
+    if(list->m_playlist)
     {
-        debug() << "not found" << endl;
-        return false;
+        itdb_playlist_remove(list->m_playlist);
+        list->m_playlist = NULL;
     }
 
-    return removeDBTrack(track);
-#else
-    (void)artist;
-    (void)album;
-    (void)title;
-    return false;
-#endif
+    int order;
+    GpodMediaItem *it;
+    if(after)
+    {
+        order = after->m_order;
+        it = dynamic_cast<GpodMediaItem*>(after->nextSibling());
+    }
+    else
+    {
+        order = 0;
+        it = dynamic_cast<GpodMediaItem*>(list->firstChild());
+    }
+
+    for( ; it; it = dynamic_cast<GpodMediaItem *>(it->nextSibling()))
+    {
+        it->m_order += items.count();
+    }
+
+    for(GpodMediaItem *it = dynamic_cast<GpodMediaItem *>(items.first());
+            it;
+            it = dynamic_cast<GpodMediaItem *>(items.next()) )
+    {
+        if(!it->m_track)
+            continue;
+
+        GpodMediaItem *add;
+        if(it->parent() == list)
+        {
+            add = it;
+            if(after)
+            {
+                it->moveItem(after);
+            }
+            else
+            {
+                list->takeItem(it);
+                list->insertItem(it);
+            }
+        }
+        else
+        {
+            if(after)
+            {
+                add = new GpodMediaItem(list, after);
+            }
+            else
+            {
+                add = new GpodMediaItem(list);
+            }
+        }
+
+        add->setType(MediaItem::PLAYLISTITEM);
+        add->m_track = it->m_track;
+        add->setText(0, QString::fromUtf8(it->m_track->artist) + " - " + QString::fromUtf8(it->m_track->title) );
+        add->m_order = order;
+        order++;
+    }
+
+    // make numbering consecutive
+    int i=0;
+    for(GpodMediaItem *it = dynamic_cast<GpodMediaItem *>(list->firstChild());
+            it;
+            it = dynamic_cast<GpodMediaItem *>(it->nextSibling()))
+    {
+        it->m_order = i;
+        i++;
+    }
+
+    playlistFromItem(list);
+#else // HAVE_LIBGPOD
+    (void)mlist;
+    (void)after;
+    (void)items;
+#endif // HAVE_LIBGPOD
 }
+
+bool
+GpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem)
+{
+#ifdef HAVE_LIBGPOD
+    GpodMediaItem *item = dynamic_cast<GpodMediaItem *>(mediaitem);
+    if(!item)
+        return false;
+
+    bool ret = true;
+
+    switch(item->type())
+    {
+    case MediaItem::TRACK:
+    case MediaItem::INVISIBLE:
+    case MediaItem::PODCASTITEM:
+        {
+            KURL url;
+            url.setPath(realPath(item->m_track->ipod_path));
+            deleteFile( url );
+            ret = removeDBTrack(item->m_track);
+            delete item;
+        }
+        break;
+    case MediaItem::STALE:
+        ret = removeDBTrack(item->m_track);
+        delete item;
+        break;
+    case MediaItem::ORPHANED:
+        deleteFile( item->url() );
+        delete item;
+        ret = true;
+        break;
+    case MediaItem::PLAYLISTSROOT:
+    case MediaItem::PODCASTSROOT:
+    case MediaItem::INVISIBLEROOT:
+    case MediaItem::STALEROOT:
+    case MediaItem::ORPHANEDROOT:
+    case MediaItem::ARTIST:
+    case MediaItem::ALBUM:
+    case MediaItem::PODCASTCHANNEL:
+    case MediaItem::PLAYLIST:
+        // just recurse
+        {
+            GpodMediaItem *next = NULL;
+            for(GpodMediaItem *it = dynamic_cast<GpodMediaItem *>(item->firstChild());
+                    it;
+                    it = next)
+            {
+                next = dynamic_cast<GpodMediaItem *>(it->nextSibling());
+                ret = ret && deleteItemFromDevice(it);
+            }
+        }
+        if(item->type() == MediaItem::PLAYLIST)
+        {
+            dbChanged = true;
+            itdb_playlist_remove(item->m_playlist);
+        }
+        if(item->type() != MediaItem::PLAYLISTSROOT
+                && item->type() != MediaItem::PODCASTSROOT
+                && item->type() != MediaItem::INVISIBLEROOT)
+        {
+            delete item;
+        }
+        break;
+    case MediaItem::PLAYLISTITEM:
+        // FIXME possibly wrong instance of track is removed
+        itdb_playlist_remove_track(item->m_playlist, item->m_track);
+        delete item;
+        dbChanged = true;
+        break;
+    case MediaItem::UNKNOWN:
+        ret = false;
+        break;
+    }
+
+    updateRootItems();
+
+    return ret;
+#else // HAVE_LIBGPOD
+    (void)mediaitem;
+    return false;
+#endif // HAVE_LIBGPOD
+}
+
 bool
 GpodMediaDevice::openDevice(bool useDialogs)
 {
 #ifdef HAVE_LIBGPOD
     dbChanged = false;
-    m_database.clear();
+    m_files.clear();
 
     GError *err = NULL;
 
@@ -370,17 +521,32 @@ GpodMediaDevice::openDevice(bool useDialogs)
         m_itdb->musicdirs = 20;
     }
 
-    GList *cur = m_itdb->tracks;
-    while(cur)
-    {
-        Itdb_Track *track = (Itdb_Track *)cur->data;
+    m_playlistItem = new GpodMediaItem( m_listview );
+    m_playlistItem->setText( 0, i18n("Playlists") );
+    m_playlistItem->m_order = -5;
+    m_playlistItem->setType( MediaItem::PLAYLISTSROOT );
 
-        addTrackToList(track);
+    m_podcastItem = new GpodMediaItem( m_listview );
+    m_podcastItem->setText( 0, i18n("Podcasts") );
+    m_podcastItem->m_order = -4;
+    m_podcastItem->setType( MediaItem::PODCASTSROOT );
 
-        cur = cur->next;
-    }
+    m_invisibleItem = new GpodMediaItem( m_listview );
+    m_invisibleItem->setText( 0, i18n("Invisible") );
+    m_invisibleItem->m_order = -3;
+    m_invisibleItem->setType( MediaItem::INVISIBLEROOT );
 
-    cur = m_itdb->playlists;
+    m_staleItem = new GpodMediaItem( m_listview );
+    m_staleItem->setText( 0, i18n("Stale") );
+    m_staleItem->m_order = -2;
+    m_staleItem->setType( MediaItem::STALEROOT );
+
+    m_orphanedItem = new GpodMediaItem( m_listview );
+    m_orphanedItem->setText( 0, i18n("Orphaned") );
+    m_orphanedItem->m_order = -2;
+    m_orphanedItem->setType( MediaItem::ORPHANEDROOT );
+
+    GList *cur = m_itdb->playlists;
     while(cur)
     {
         Itdb_Playlist *playlist = (Itdb_Playlist *)cur->data;
@@ -390,59 +556,225 @@ GpodMediaDevice::openDevice(bool useDialogs)
         cur = cur->next;
     }
 
+    cur = m_itdb->tracks;
+    while(cur)
+    {
+        Itdb_Track *track = (Itdb_Track *)cur->data;
+
+        addTrackToList(track);
+
+        cur = cur->next;
+    }
+
+#ifdef CHECK_FOR_INTEGRITY
+    QString musicpath = QString(m_itdb->mountpoint) + "/iPod_Control/Music";
+    QDir dir( musicpath, QString::null, QDir::Name | QDir::IgnoreCase, QDir::Dirs );
+    for(unsigned i=0; i<dir.count(); i++)
+    {
+        if(dir[i] == "." || dir[i] == "..")
+            continue;
+
+        QString hashpath = musicpath + "/" + dir[i];
+        QDir hashdir( hashpath, QString::null, QDir::Name | QDir::IgnoreCase, QDir::Files );
+        for(unsigned j=0; j<hashdir.count(); j++)
+        {
+            QString filename = hashpath + "/" + hashdir[j];
+            Itdb_Track *track = m_files[filename];
+            if(!track)
+            {
+                debug() << "file: " << filename << " is orphaned" << endl;
+                GpodMediaItem *item = new GpodMediaItem(m_orphanedItem);
+                item->setType(MediaItem::ORPHANED);
+                KURL url;
+                url.setPath(filename);
+                MetaBundle *bundle = new MetaBundle(url);
+                QString title = bundle->artist() + " - " + bundle->title();
+                item->setText(0, title);
+                item->m_bundle = bundle;
+                item->setUrl(filename);
+            }
+        }
+    }
+#endif // CHECK_FOR_INTEGRITY
+
+    updateRootItems();
+
     return true;
-#else
+#else // HAVE_LIBGPOD
     (void)useDialogs;
     return false;
-#endif
+#endif // HAVE_LIBGPOD
 }
 
 bool
 GpodMediaDevice::closeDevice()  //SLOT
 {
 #ifdef HAVE_LIBGPOD
-    debug() << "Syncing IPod!" << endl;
+    debug() << "Syncing iPod!" << endl;
+
+    m_listview->clear();
 
     writeITunesDB();
 
-    m_database.clear();
+    m_files.clear();
     itdb_free(m_itdb);
     m_itdb = NULL;
-
-    updateView();
+    m_masterPlaylist = NULL;
+    m_podcastPlaylist = NULL;
 
     return true;
-#else
+#else // HAVE_LIBGPOD
     return false;
-#endif
+#endif // HAVE_LIBGPOD
+}
+
+void
+GpodMediaDevice::renameItem( QListViewItem *i ) // SLOT
+{
+#ifdef HAVE_LIBGPOD
+    GpodMediaItem *item = dynamic_cast<GpodMediaItem *>(i);
+    if(!item)
+        return;
+
+    if(!item->type() == MediaItem::PLAYLIST)
+        return;
+
+    dbChanged = true;
+
+    g_free(item->m_playlist->name);
+    item->m_playlist->name = g_strdup( item->text( 0 ).utf8() );
+#else // HAVE_LIBGPOD
+    (void)i;
+#endif // HAVE_LIBGPOD
 }
 
 #ifdef HAVE_LIBGPOD
 void
+GpodMediaDevice::playlistFromItem(GpodMediaItem *item)
+{
+    dbChanged = true;
+
+    item->m_playlist = itdb_playlist_new(item->text(0).utf8(), false /* dumb playlist */ );
+    itdb_playlist_add(m_itdb, item->m_playlist, -1);
+    for(GpodMediaItem *it = dynamic_cast<GpodMediaItem *>(item->firstChild());
+            it;
+            it = dynamic_cast<GpodMediaItem *>(it->nextSibling()) )
+    {
+        itdb_playlist_add_track(item->m_playlist, it->m_track, -1);
+        it->m_playlist = item->m_playlist;
+    }
+}
+
+
+void
 GpodMediaDevice::addTrackToList(Itdb_Track *track)
 {
-    QString artistName(QString::fromUtf8(track->artist));
-    IpodArtist *artist = m_database[artistName];
-    if(!artist)
+    bool visible = false;
+    bool stale = false;
+    GpodMediaItem *item = NULL;
+
+#ifdef CHECK_FOR_INTEGRITY
+    QString path = realPath(track->ipod_path);
+    QFileInfo finfo(path.latin1());
+    if(!finfo.exists())
     {
-        artist = new IpodArtist();
-        m_database.insert(artistName, artist);
+        stale = true;
+        debug() << "track: " << track->artist << " - " << track->album << " - " << track->title << " is stale: " << track->ipod_path << " does not exist" << endl;
+        item = new GpodMediaItem(m_staleItem);
+        item->setType(MediaItem::STALE);
+        QString title = QString::fromUtf8(track->artist) + " - "
+            + QString::fromUtf8(track->title);
+        item->setText( 0, title );
+        item->m_track = track;
+        item->setUrl(realPath(track->ipod_path));
+    }
+    else
+    {
+        m_files.insert(path, track);
+    }
+#endif // CHECK_FOR_INTEGRITY
+
+    if(!stale && m_masterPlaylist && itdb_playlist_contains_track(m_masterPlaylist, track))
+    {
+        visible = true;
+
+        QString artistName(QString::fromUtf8(track->artist));
+        GpodMediaItem *artist = getArtist(artistName);
+        if(!artist)
+        {
+            artist = new GpodMediaItem(m_listview);
+            artist->setText( 0, artistName );
+            artist->setType( MediaItem::ARTIST );
+        }
+
+        QString albumName(QString::fromUtf8(track->album));
+        MediaItem *album = artist->findItem(albumName);
+        if(!album)
+        {
+            album = new GpodMediaItem( artist );
+            album->setText( 0, albumName );
+            album->setType( MediaItem::ALBUM );
+        }
+
+        item = new GpodMediaItem( album );
+        QString titleName = QString::fromUtf8(track->title);
+        item->setText( 0, titleName );
+        item->setType( MediaItem::TRACK );
+        item->m_track = track;
+        item->m_order = track->track_nr;
+        item->setUrl(realPath(track->ipod_path));
     }
 
-    QString albumName(QString::fromUtf8(track->album));
-    IpodAlbum *album = (*artist)[albumName];
-    if(!album)
+    if(!stale && m_podcastPlaylist && itdb_playlist_contains_track(m_podcastPlaylist, track))
     {
-        album = new IpodAlbum();
-        artist->insert(albumName, album);
+        visible = true;
+
+        QString channelName(QString::fromUtf8(track->album));
+        MediaItem *channel = m_podcastItem->findItem(channelName);
+        if(!channel)
+        {
+            channel = new GpodMediaItem(m_podcastItem);
+            channel->setText( 0, channelName );
+            channel->setType( MediaItem::PODCASTCHANNEL );
+        }
+
+        item = new GpodMediaItem(channel);
+        item->setText( 0, QString::fromUtf8(track->title) );
+        item->setType( MediaItem::PODCASTITEM );
+        item->m_track = track;
+        item->setUrl(realPath(track->ipod_path));
     }
 
-    album->insert(QString::fromUtf8(track->title), track);
+    if(!stale && !visible)
+    {
+        debug() << "invisible, title=" << track->title << endl;
+        item = new GpodMediaItem(m_invisibleItem);
+        QString title = QString::fromUtf8(track->artist) + " - "
+            + QString::fromUtf8(track->title);
+        item->setText( 0, title );
+        item->setType( MediaItem::INVISIBLE );
+        item->m_track = track;
+        item->setUrl(realPath(track->ipod_path));
+    }
+
+    updateRootItems();
 }
 
 void
 GpodMediaDevice::addPlaylistToList(Itdb_Playlist *pl)
 {
+    if(itdb_playlist_is_mpl(pl))
+    {
+        m_masterPlaylist = pl;
+        return;
+    }
+
+    if(itdb_playlist_is_podcasts(pl))
+    {
+        m_podcastPlaylist = pl;
+        return;
+    }
+
     if(pl->is_spl)
     {
         debug() << "playlist " << pl->name << " is a smart playlist, ignored" << endl;
@@ -450,23 +782,32 @@ GpodMediaDevice::addPlaylistToList(Itdb_Playlist *pl)
     }
 
     QString name(QString::fromUtf8(pl->name));
-    IpodPlaylist *playlist = m_playlists[name];
-    if(playlist == NULL)
+    GpodMediaItem *playlist = dynamic_cast<GpodMediaItem *>(m_playlistItem->findItem(name));
+    if(!playlist)
     {
-        playlist = new IpodPlaylist();
-        m_playlists.insert(name, playlist);
-
-        playlist->m_dbPlaylist = pl;
+        playlist = new GpodMediaItem( m_playlistItem );
+        playlist->setText( 0, name );
+        playlist->setType( MediaItem::PLAYLIST );
+        playlist->m_playlist = pl;
     }
 
+    int i=0;
     GList *cur = pl->members;
     while(cur)
     {
         Itdb_Track *track = (Itdb_Track *)cur->data;
-
-        playlist->append(track);
+        GpodMediaItem *item = new GpodMediaItem(playlist);
+        QString title = QString::fromUtf8(track->artist) + " - "
+            + QString::fromUtf8(track->title);
+        item->setText( 0, title );
+        item->setType( MediaItem::PLAYLISTITEM );
+        item->m_playlist = pl;
+        item->m_track = track;
+        item->m_order = i;
+        item->setUrl(realPath(track->ipod_path));
 
         cur = cur->next;
+        i++;
     }
 }
 
@@ -544,30 +885,38 @@ GpodMediaDevice::writeITunesDB()
 }
 
 
-GpodMediaDevice::IpodArtist *
+GpodMediaItem *
 GpodMediaDevice::getArtist(const QString &artist)
 {
-    return m_database[artist];
+    for(GpodMediaItem *it = dynamic_cast<GpodMediaItem *>(m_listview->firstChild());
+            it;
+            it = dynamic_cast<GpodMediaItem *>(it->nextSibling()))
+    {
+        if(it->m_type==MediaItem::ARTIST && artist == it->text(0))
+            return it;
+    }
+
+    return NULL;
 }
 
-GpodMediaDevice::IpodAlbum *
+GpodMediaItem *
 GpodMediaDevice::getAlbum(const QString &artist, const QString &album)
 {
-    IpodArtist *a = getArtist(artist);
-    if(!a)
-        return NULL;
+    GpodMediaItem *item = getArtist(artist);
+    if(item)
+        return dynamic_cast<GpodMediaItem *>(item->findItem(album));
 
-    return (*a)[album];
+    return NULL;
 }
 
-Itdb_Track *
+GpodMediaItem *
 GpodMediaDevice::getTitle(const QString &artist, const QString &album, const QString &title)
 {
-    IpodAlbum *a = getAlbum(artist, album);
-    if(!a)
-        return NULL;
+    GpodMediaItem *item = getAlbum(artist, album);
+    if(item)
+        return dynamic_cast<GpodMediaItem *>(item->findItem(title));
 
-    return (*a)[title];
+    return NULL;
 }
 #endif // HAVE_LIBGPOD
 
@@ -592,6 +941,9 @@ GpodMediaDevice::createPathname(const MetaBundle &bundle)
     while(exists);
 
     return realPath(trackpath.latin1());
+#else // HAVE_LIBGPOD
+    (void)bundle;
+    return QString::null;
 #endif // HAVE_LIBGPOD
 }
 
@@ -602,6 +954,9 @@ GpodMediaDevice::removeDBTrack(Itdb_Track *track)
     if(!m_itdb)
         return false;
 
+    if(!track)
+        return false;
+
     if(track->itdb != m_itdb)
     {
         return false;
@@ -610,7 +965,7 @@ GpodMediaDevice::removeDBTrack(Itdb_Track *track)
     dbChanged = true;
 
     Itdb_Playlist *mpl = itdb_playlist_mpl(m_itdb);
-    if(itdb_playlist_contains_track(mpl, track))
+    while(itdb_playlist_contains_track(mpl, track))
     {
         itdb_playlist_remove_track(mpl, track);
     }
@@ -619,7 +974,7 @@ GpodMediaDevice::removeDBTrack(Itdb_Track *track)
     while(cur)
     {
         Itdb_Playlist *pl = (Itdb_Playlist *)cur->data;
-        if(itdb_playlist_contains_track(pl, track))
+        while(itdb_playlist_contains_track(pl, track))
         {
             itdb_playlist_remove_track(pl, track);
         }

@@ -27,34 +27,39 @@ class QPalette;
 class MediaItem : public KListViewItem
 {
     public:
-        MediaItem( QListView* parent )
-            : KListViewItem( parent ) { m_bundle=NULL; m_track=0; m_podcast=false; }
-        MediaItem( QListViewItem* parent )
-            : KListViewItem( parent ) { m_bundle=NULL;  m_track=0; m_podcast=false; }
-        MediaItem( QListView* parent, QListViewItem* after )
-            : KListViewItem( parent, after ) { m_bundle=NULL;  m_track=0; m_podcast=false; }
-        MediaItem( QListViewItem* parent, QListViewItem* after )
-            : KListViewItem( parent, after ) { m_bundle=NULL;  m_track=0; m_podcast=false; }
+        MediaItem( QListView* parent );
+        MediaItem( QListViewItem* parent );
+        MediaItem( QListView* parent, QListViewItem* after );
+        MediaItem( QListViewItem* parent, QListViewItem* after );
+        void init();
 
-        void setUrl( const QString& url ) { m_url.setPath( url ); }
+        void setUrl( const QString& url );
         const KURL& url() const { return m_url; }
-        int m_track;
-        bool m_podcast;
-        const MetaBundle *bundle() const { if(m_bundle == NULL) m_bundle = new MetaBundle( url() ); return m_bundle; }
-        MetaBundle *bundle() { if(m_bundle == NULL) m_bundle = new MetaBundle( url() ); return m_bundle; }
+        const MetaBundle *bundle() const;
+        MetaBundle *bundle();
+        enum Type { UNKNOWN, ARTIST, ALBUM, TRACK, PODCASTSROOT, PODCASTCHANNEL, PODCASTITEM, PLAYLISTSROOT, PLAYLIST, PLAYLISTITEM, INVISIBLEROOT, INVISIBLE, STALEROOT, STALE, ORPHANEDROOT, ORPHANED };
+        void setType( Type type );
+        Type type() const { return m_type; }
+        MediaItem *findItem(const QString &key) const;
+        bool isLeaveItem() const;
 
         //attributes:
         KURL m_url;
         mutable MetaBundle *m_bundle;
 
-        int compare(QListViewItem *i, int col, bool ascending) const
-        {
-            MediaItem *item = (MediaItem *)i;
-            if(col==0 && item->m_track != m_track)
-                return ascending ? m_track-item->m_track : item->m_track-m_track;
+        int m_order;
+        Type m_type;
+        int compare(QListViewItem *i, int col, bool ascending) const;
 
-            return KListViewItem::compare(i, col, ascending);
-        }
+        static QPixmap *s_pixFile;
+        static QPixmap *s_pixArtist;
+        static QPixmap *s_pixAlbum;
+        static QPixmap *s_pixPlaylist;
+        static QPixmap *s_pixPodcast;
+        static QPixmap *s_pixTrack;
+        static QPixmap *s_pixInvisible;
+        static QPixmap *s_pixStale;
+        static QPixmap *s_pixOrphaned;
 };
 
 class MediaDeviceTransferList : public KListView
@@ -63,6 +68,7 @@ class MediaDeviceTransferList : public KListView
 
     public:
         MediaDeviceTransferList(MediaDeviceView *parent);
+        MediaItem *findPath( QString path );
 
         // Reimplemented from KListView
         void dragEnterEvent( QDragEnterEvent* );
@@ -70,8 +76,6 @@ class MediaDeviceTransferList : public KListView
         void contentsDragEnterEvent( QDragEnterEvent* );
         void contentsDropEvent( QDropEvent *e );
         void contentsDragMoveEvent( QDragMoveEvent* e );
-
-        MediaItem *findPath( QString path );
 
     private:
         MediaDeviceView *m_parent;
@@ -103,20 +107,19 @@ class MediaDeviceList : public KListView
     Q_OBJECT
     friend class MediaBrowser;
     friend class MediaDevice;
-    friend class Item;
 
     public:
         MediaDeviceList( MediaDeviceView* parent );
         ~MediaDeviceList();
 
     private slots:
-        void collapseItem( QListViewItem* );
-        void expandItem( QListViewItem* parent );
         void rmbPressed( QListViewItem*, const QPoint&, int );
+        void renameItem( QListViewItem *item );
 
     private:
         void startDrag();
         KURL::List nodeBuildDragList( MediaItem* item, bool onlySelected=true );
+        int getSelectedLeaves(MediaItem *parent, QPtrList<MediaItem> *list, bool onlySelected=true); // leaves of selected items, returns no. of files within leaves
 
         // Reimplemented from KListView
         void contentsDragEnterEvent( QDragEnterEvent* );
@@ -125,6 +128,7 @@ class MediaDeviceList : public KListView
         void viewportPaintEvent( QPaintEvent* );
 
         MediaDeviceView* m_parent;
+        QString m_renameFrom;
 };
 
 
@@ -165,20 +169,20 @@ class MediaDevice : public QObject
     friend class MediaDeviceList;
 
     public:
-        MediaDevice( MediaDeviceView* parent );
+        MediaDevice( MediaDeviceView* parent, MediaDeviceList* listview );
         virtual ~MediaDevice();
 
         void        addURL( const KURL& url, MetaBundle *bundle=NULL, bool isPodcast=false );
-        void        addURLs( const KURL::List urls, MetaBundle *bundle=NULL );
+        void        addURLs( const KURL::List urls );
         virtual bool        isConnected() = 0;
-        virtual QStringList items( QListViewItem* item ) = 0;
+        virtual void        addToPlaylist(MediaItem *playlist, MediaItem *after, QPtrList<MediaItem> items) = 0;
+        virtual MediaItem * newPlaylist(const QString &name, MediaItem *parent, QPtrList<MediaItem> items) = 0;
 
         static MediaDevice *instance() { return s_instance; }
 
     public slots:
         void clearItems();
         void config();
-        void deleteFiles( const KURL::List& urls );
         void connectDevice();
         int  mount();
         void removeSelected();
@@ -187,6 +191,7 @@ class MediaDevice : public QObject
         void setUmountCommand(const QString & umnt);
         int  umount();
         void transferFiles();
+        virtual void renameItem( QListViewItem *item ) {(void)item; }
 
     private slots:
         void fileTransferred();
@@ -199,14 +204,13 @@ class MediaDevice : public QObject
 
     protected:
 
-        void updateView() { m_parent->m_deviceList->expandItem( 0 ); }
-
         QString     m_mntpnt;
         QString     m_mntcmd;
         QString     m_umntcmd;
 
         KShellProcess   *sysProc;
         MediaDeviceView* m_parent;
+        MediaDeviceList* m_listview;
         bool             m_wait;
 
         MediaDeviceTransferList* m_transferList;
@@ -220,8 +224,9 @@ class MediaDevice : public QObject
         virtual void synchronizeDevice() = 0;
         virtual bool addTrackToDevice(const QString& pathname, const MetaBundle& bundle, bool isPodcast) = 0;
 
-        void deleteFromDevice( MediaItem *item, bool onlySelected=true );
-        virtual bool deleteTrackFromDevice(const QString& artist, const QString& album, const QString& title) = 0;
+        void deleteFromDevice( MediaItem *item );
+        void deleteFile( const KURL &url);
+        virtual bool deleteItemFromDevice( MediaItem *item ) = 0;
 
         virtual QString createPathname(const MetaBundle& bundle) = 0;
 

@@ -2228,7 +2228,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                                     bundle->setAlbum(channel->title());
                                 if(!podcast->title().isEmpty())
                                     bundle->setTitle(podcast->title());
-                                MediaDevice::instance()->addURLs( podcast->localUrl(), bundle );
+                                MediaDevice::instance()->addURL( podcast->localUrl(), bundle, true );
                             }
                         }
                     }
@@ -2241,7 +2241,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                         bundle->setAlbum(channel->title());
                     if(!item->title().isEmpty())
                         bundle->setTitle(item->title());
-                    MediaDevice::instance()->addURLs( item->localUrl(), bundle);
+                    MediaDevice::instance()->addURL( item->localUrl(), bundle, true);
                 }
                 break;
         }

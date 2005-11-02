@@ -16,17 +16,19 @@ extern "C" {
 
 #include <qptrlist.h>
 #include <qdict.h>
+#include <qpixmap.h>
+
+class GpodMediaItem;
 
 class GpodMediaDevice : public MediaDevice
 {
     Q_OBJECT
 
     public:
-        GpodMediaDevice( MediaDeviceView* parent );
+        GpodMediaDevice( MediaDeviceView* parent, MediaDeviceList* listview );
         virtual ~GpodMediaDevice();
 
         bool        isConnected();
-        QStringList items( QListViewItem* item );
 
     protected:
         bool             trackExists( const MetaBundle& bundle );
@@ -39,53 +41,52 @@ class GpodMediaDevice : public MediaDevice
         void synchronizeDevice();
         QString createPathname(const MetaBundle& bundle);
         bool addTrackToDevice(const QString& pathname, const MetaBundle& bundle, bool isPodcast);
-        bool deleteTrackFromDevice(const QString& artist, const QString& album, const QString& track);
+        bool deleteItemFromDevice(MediaItem *item);
+        void        addToPlaylist(MediaItem *list, MediaItem *after, QPtrList<MediaItem> items);
+        MediaItem*  newPlaylist(const QString &name, MediaItem *list, QPtrList<MediaItem> items);
+
+    protected slots:
+        void renameItem( QListViewItem *item );
 
     private:
 #ifdef HAVE_LIBGPOD
+        void             updateRootItems();
         void             writeITunesDB();
         void             addTrackToList(Itdb_Track *track);
         void             addPlaylistToList(Itdb_Playlist *playlist);
+        void             playlistFromItem(GpodMediaItem *item);
 
         QString          realPath(const char *ipodPath);
         QString          ipodPath(const char *realPath);
 
+        // ipod database
         Itdb_iTunesDB*   m_itdb;
+        Itdb_Playlist*   m_masterPlaylist;
+        QDict<Itdb_Track> m_files;
 
-        struct IpodAlbum : public QDict<Itdb_Track>
-        {
-           typedef QDictIterator<Itdb_Track> Iterator;
-        };
-        struct IpodArtist : public QDict<IpodAlbum>
-        {
-              IpodArtist() { setAutoDelete(true); }
-              typedef QDictIterator<IpodAlbum> Iterator;
-        };
-        struct IpodDB : public QDict<IpodArtist>
-        {
-              IpodDB() { setAutoDelete(true); }
-              typedef QDictIterator<IpodDB> Iterator;
-        };
+        // root listview items
+        GpodMediaItem *m_playlistItem;
 
-        IpodDB m_database;
+        // podcasts
+        Itdb_Playlist*   m_podcastPlaylist;
+        GpodMediaItem *m_podcastItem;
 
-        struct IpodPlaylist : public QPtrList<Itdb_Track>
-        {
-            IpodPlaylist() { m_dbPlaylist=NULL; }
-            Itdb_Playlist *m_dbPlaylist;
-            typedef QPtrListIterator<Itdb_Track> Iterator;
-        };
+        // items not on the master playlist and not on the podcast playlist are not visible on the ipod
+        GpodMediaItem *m_invisibleItem;
 
-        QDict<IpodPlaylist> m_playlists;
+        // items in the database for which the file is missing
+        GpodMediaItem *m_staleItem;
 
-        IpodArtist *getArtist(const QString &artist);
-        IpodAlbum *getAlbum(const QString &artist, const QString &album);
-        Itdb_Track *getTitle(const QString &artist, const QString &album, const QString &title);
+        // files without database entry
+        GpodMediaItem *m_orphanedItem;
+
+        GpodMediaItem *getArtist(const QString &artist);
+        GpodMediaItem *getAlbum(const QString &artist, const QString &album);
+        GpodMediaItem *getTitle(const QString &artist, const QString &album, const QString &title);
 
         bool removeDBTrack(Itdb_Track *track);
 
         bool dbChanged;
-
 #endif
 };
 

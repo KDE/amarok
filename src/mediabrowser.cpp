@@ -51,6 +51,16 @@
 
 MediaDevice *MediaDevice::s_instance = 0;
 
+QPixmap *MediaItem::s_pixArtist = NULL;
+QPixmap *MediaItem::s_pixAlbum = NULL;
+QPixmap *MediaItem::s_pixFile = NULL;
+QPixmap *MediaItem::s_pixTrack = NULL;
+QPixmap *MediaItem::s_pixPodcast = NULL;
+QPixmap *MediaItem::s_pixPlaylist = NULL;
+QPixmap *MediaItem::s_pixInvisible = NULL;
+QPixmap *MediaItem::s_pixStale = NULL;
+QPixmap *MediaItem::s_pixOrphaned = NULL;
+
 bool MediaBrowser::isAvailable() //static
 {
     // perhaps the user should configure if he wants to use a media device?
@@ -65,6 +75,25 @@ bool MediaBrowser::isAvailable() //static
 MediaBrowser::MediaBrowser( const char *name )
         : QVBox( 0, name )
 {
+    KIconLoader iconLoader;
+    MediaItem::s_pixTrack = new QPixmap(iconLoader.loadIcon( "player_playlist_2", KIcon::Toolbar, KIcon::SizeSmall ));
+    MediaItem::s_pixFile = new QPixmap(iconLoader.loadIcon( "sound", KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixPodcast = new QPixmap(iconLoader.loadIcon( "favorites", KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixPlaylist = new QPixmap(iconLoader.loadIcon( "player_playlist_2", KIcon::Toolbar, KIcon::SizeSmall ) );
+    // history
+    // favorites
+    // collection
+    // folder
+    // folder_red
+    // player_playlist_2
+    // cancel
+    // sound
+    MediaItem::s_pixArtist = new QPixmap(iconLoader.loadIcon( "personal", KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixAlbum = new QPixmap(iconLoader.loadIcon( "cdrom_unmount", KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixInvisible = new QPixmap(iconLoader.loadIcon( "cancel", KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixStale = new QPixmap(iconLoader.loadIcon( "cancel", KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixOrphaned = new QPixmap(iconLoader.loadIcon( "cancel", KIcon::Toolbar, KIcon::SizeSmall ) );
+
     setSpacing( 4 );
 
     { //<Search LineEdit>
@@ -92,6 +121,167 @@ MediaBrowser::~MediaBrowser()
 }
 
 
+MediaItem::MediaItem( QListView* parent )
+: KListViewItem( parent )
+{ 
+    init();
+}
+
+MediaItem::MediaItem( QListViewItem* parent )
+: KListViewItem( parent )
+{ 
+    init();
+}
+
+MediaItem::MediaItem( QListView* parent, QListViewItem* after )
+: KListViewItem( parent, after )
+{
+    init();
+}
+
+MediaItem::MediaItem( QListViewItem* parent, QListViewItem* after )
+: KListViewItem( parent, after )
+{ 
+    init();
+}
+
+void
+MediaItem::init()
+{
+    m_bundle=NULL;
+    m_order=0;
+    m_type=UNKNOWN;
+    setExpandable( false );
+    setDragEnabled( true );
+    setDropEnabled( true );
+}
+
+void MediaItem::setUrl( const QString& url )
+{
+    m_url.setPath( url );
+}
+
+const MetaBundle *
+MediaItem::bundle() const
+{ 
+    if(m_bundle == NULL)
+        m_bundle = new MetaBundle( url() );
+    return m_bundle;
+}
+
+MetaBundle *
+MediaItem::bundle()
+{ 
+    if(m_bundle == NULL) 
+        m_bundle = new MetaBundle( url() );
+    return m_bundle;
+}
+
+void
+MediaItem::setType( Type type )
+{ 
+    m_type=type; 
+
+    setDragEnabled(true);
+    setDropEnabled(false);
+
+    switch(m_type)
+    {
+        case UNKNOWN:
+            break;
+        case INVISIBLE:
+        case TRACK:
+        case PODCASTITEM:
+            setPixmap(0, *s_pixFile);
+            break;
+        case PLAYLISTITEM:
+            setPixmap(0, *s_pixTrack);
+            setDropEnabled(true);
+            break;
+        case ARTIST:
+            setPixmap(0, *s_pixArtist);
+            break;
+        case ALBUM:
+            setPixmap(0, *s_pixAlbum);
+            break;
+        case PODCASTSROOT:
+        case PODCASTCHANNEL:
+            setPixmap(0, *s_pixPodcast);
+            break;
+        case PLAYLISTSROOT:
+        case PLAYLIST:
+            setPixmap(0, *s_pixPlaylist);
+            setDropEnabled(true);
+            break;
+        case INVISIBLEROOT:
+            setPixmap(0, *s_pixInvisible);
+            break;
+        case STALEROOT:
+        case STALE:
+            setPixmap(0, *s_pixStale);
+            break;
+        case ORPHANEDROOT:
+        case ORPHANED:
+            setPixmap(0, *s_pixOrphaned);
+            break;
+    }
+}
+
+bool
+MediaItem::isLeaveItem() const
+{
+    switch(type())
+    {
+        case UNKNOWN:
+            return false;
+
+        case INVISIBLE:
+        case TRACK:
+        case PODCASTITEM:
+        case PLAYLISTITEM:
+        case STALE:
+        case ORPHANED:
+            return true;
+
+        case ARTIST:
+        case ALBUM:
+        case PODCASTSROOT:
+        case PODCASTCHANNEL:
+        case PLAYLISTSROOT:
+        case PLAYLIST:
+        case INVISIBLEROOT:
+        case STALEROOT:
+        case ORPHANEDROOT:
+            return false;
+    }
+
+    return false;
+}
+
+MediaItem *
+MediaItem::findItem( const QString &key ) const
+{
+    for(MediaItem *it = dynamic_cast<MediaItem *>(firstChild());
+            it;
+            it = dynamic_cast<MediaItem *>(it->nextSibling()))
+    {
+        if(key == it->text(0))
+            return it;
+    }
+    return NULL;
+}
+
+int
+MediaItem::compare(QListViewItem *i, int col, bool ascending) const
+{
+    MediaItem *item = dynamic_cast<MediaItem *>(i);
+    if(item && col==0 && item->m_order != m_order)
+        return ascending ? m_order-item->m_order : item->m_order-m_order;
+
+    return KListViewItem::compare(i, col, ascending);
+}
+
+
 MediaDeviceList::MediaDeviceList( MediaDeviceView* parent )
     : KListView( parent )
     , m_parent( parent )
@@ -101,84 +291,31 @@ MediaDeviceList::MediaDeviceList( MediaDeviceView* parent )
     setShowSortIndicator( true );
     setFullWidth( true );
     setRootIsDecorated( true );
+    setDragEnabled( true );
     setDropVisualizer( true );    //the visualizer (a line marker) is drawn when dragging over tracks
     setDropHighlighter( true );    //and the highligther (a focus rect) is drawn when dragging over playlists
     setDropVisualizerWidth( 3 );
     setAcceptDrops( true );
 
     addColumn( i18n( "Artist" ) );
-    expandItem( 0 );
-
-    connect( this, SIGNAL( expanded( QListViewItem* ) ),
-             this,   SLOT( expandItem( QListViewItem* ) ) );
-
-    connect( this, SIGNAL( collapsed( QListViewItem* ) ),
-             this,   SLOT( collapseItem( QListViewItem* ) ) );
 
     connect( this, SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
              this,   SLOT( rmbPressed( QListViewItem*, const QPoint&, int ) ) );
+
+    connect( this, SIGNAL( itemRenamed( QListViewItem* ) ),
+             this,   SLOT( renameItem( QListViewItem* ) ) );
+}
+
+void
+MediaDeviceList::renameItem( QListViewItem *item )
+{
+    if(m_parent && m_parent->m_device)
+        m_parent->m_device->renameItem( item );
 }
 
 
 MediaDeviceList::~MediaDeviceList()
 {}
-
-
-void
-MediaDeviceList::expandItem( QListViewItem* parent )  //SLOT
-{
-    if ( parent == 0 )
-        clear();
-
-    if ( m_parent->m_device == NULL )
-        return;
-
-    KIconLoader iconLoader;
-    QPixmap pixmap = iconLoader.loadIcon( "usbpendrive_unmount", KIcon::Toolbar, KIcon::SizeSmall );
-
-    QStringList items;
-    items = m_parent->m_device->items( parent );
-
-    bool track = ( parent && parent->parent() );
-    for ( uint i = 0; i < items.count(); track ? i+=3 : ++i )
-    {
-        MediaItem* item;
-        if ( !parent )
-            item = new MediaItem( this );
-        else
-            item = new MediaItem( parent );
-
-        item->setExpandable( !track );
-        item->setDragEnabled( true );
-        item->setDropEnabled( true );
-        item->setText( 0, items[ i ] );
-        item->setPixmap( 0, pixmap );
-
-        if ( track )
-        {
-            item->setUrl( items[i+1] );
-            item->m_track = items[i+2].toInt();
-        }
-    }
-}
-
-
-void
-MediaDeviceList::collapseItem( QListViewItem* item )  //SLOT
-{
-    DEBUG_FUNC_INFO
-
-    QListViewItem* child = item->firstChild();
-    QListViewItem* childTmp;
-
-    //delete all children
-    while ( child )
-    {
-        childTmp = child;
-        child = child->nextSibling();
-        delete childTmp;
-    }
-}
 
 
 void
@@ -208,27 +345,14 @@ MediaDeviceList::nodeBuildDragList( MediaItem* item, bool onlySelected )
     {
         if ( fi->isSelected() || !onlySelected )
         {
-            debug() << "drag depth: " << fi->depth() << endl;
-            switch ( fi->depth() )
+            if(fi->isLeaveItem())
             {
-                case 0:
-                case 1:
-                    {
-                        bool collapse = false;
-                        if(fi->childCount() == 0)
-                        {
-                            expandItem( fi );
-                            collapse = true;
-                        }
-                        if(fi->childCount())
-                            items += nodeBuildDragList( (MediaItem*)fi->firstChild(), false );
-                        if(collapse)
-                            collapseItem(fi);
-                    }
-                    break;
-                case 2:
-                    items += fi->url().path();
-                    break;
+                items += fi->url().path();
+            }
+            else
+            {
+                if(fi->childCount())
+                    items += nodeBuildDragList( (MediaItem*)fi->firstChild(), false );
             }
         }
         else
@@ -243,25 +367,118 @@ MediaDeviceList::nodeBuildDragList( MediaItem* item, bool onlySelected )
     return items;
 }
 
+int
+MediaDeviceList::getSelectedLeaves(MediaItem *parent, QPtrList<MediaItem> *list, bool onlySelected)
+{
+    int numFiles = 0;
+    if(list==NULL)
+        list = new QPtrList<MediaItem>;
+
+    MediaItem *it;
+    if(parent==NULL)
+        it = dynamic_cast<MediaItem *>(firstChild());
+    else
+        it = dynamic_cast<MediaItem *>(parent->firstChild());
+
+    for( ; it; it = dynamic_cast<MediaItem*>(it->nextSibling()))
+    {
+        if(it->childCount())
+        {
+            numFiles += getSelectedLeaves(it, list, onlySelected && !it->isSelected());
+        }
+        else if(it->isSelected() || !onlySelected)
+        {
+            if(it->type() == MediaItem::TRACK
+                    || it->type() == MediaItem::PODCASTITEM
+                    || it->type() == MediaItem::INVISIBLE
+                    || it->type() == MediaItem::ORPHANED)
+            {
+                numFiles++;
+            }
+            if(it->isLeaveItem())
+                list->append( it );
+        }
+    }
+
+    return numFiles;
+}
+
 
 void
 MediaDeviceList::contentsDragEnterEvent( QDragEnterEvent *e )
 {
     debug() << "Items dropping?" << endl;
-    e->accept( e->source() != viewport() && KURLDrag::canDecode( e ) );
+    e->accept( e->source() == viewport() || KURLDrag::canDecode( e ) );
 }
 
 
 void
 MediaDeviceList::contentsDropEvent( QDropEvent *e )
 {
-    KURL::List list;
-    if ( KURLDrag::decode( e, list ) )
+    if(e->source() == viewport() || e->source() == this)
     {
-        KURL::List::Iterator it = list.begin();
-        for ( ; it != list.end(); ++it )
+        const QPoint p = contentsToViewport( e->pos() );
+        MediaItem *item = dynamic_cast<MediaItem *>(itemAt( p ));
+        QPtrList<MediaItem> items;
+        if(item->type()==MediaItem::PLAYLIST)
         {
-            MediaDevice::instance()->addURL( *it );
+            MediaItem *list = item;
+            MediaItem *after = NULL;
+            for(MediaItem *it = dynamic_cast<MediaItem *>(item->firstChild());
+                    it;
+                    it = dynamic_cast<MediaItem *>(it->nextSibling()))
+                after = it;
+
+            getSelectedLeaves(NULL, &items);
+            m_parent->m_device->addToPlaylist(list, after, items);
+        }
+        else if(item->type()==MediaItem::PLAYLISTITEM)
+        {
+            MediaItem *list = dynamic_cast<MediaItem *>(item->parent());
+            MediaItem *after = NULL;
+            for(MediaItem *it = dynamic_cast<MediaItem*>(item->parent()->firstChild());
+                    it;
+                    it = dynamic_cast<MediaItem *>(it->nextSibling()))
+            {
+                if(it == item)
+                    break;
+                after = it;
+            }
+
+            getSelectedLeaves(NULL, &items);
+            m_parent->m_device->addToPlaylist(list, after, items);
+        }
+        else if(item->type()==MediaItem::PLAYLISTSROOT)
+        {
+            QPtrList<MediaItem> items;
+            getSelectedLeaves(NULL, &items);
+            QString base(i18n("New Playlist"));
+            QString name = base;
+            int i=1;
+            while(item->findItem(name))
+            {
+                QString num;
+                num.setNum(i);
+                name = base + " " + num;
+                i++;
+            }
+            MediaItem *pl = m_parent->m_device->newPlaylist(name, item, items);
+            ensureItemVisible(pl);
+            m_renameFrom = pl->text(0);
+            rename(pl, 0);
+        }
+    }
+    else
+    {
+
+        KURL::List list;
+        if ( KURLDrag::decode( e, list ) )
+        {
+            KURL::List::Iterator it = list.begin();
+            for ( ; it != list.end(); ++it )
+            {
+                MediaDevice::instance()->addURL( *it );
+            }
         }
     }
 }
@@ -272,12 +489,13 @@ MediaDeviceList::contentsDragMoveEvent( QDragMoveEvent *e )
 {
 //    const QPoint p = contentsToViewport( e->pos() );
 //    QListViewItem *item = itemAt( p );
-    e->accept( e->source() != this
-            && e->source() != viewport()
-            && e->source() != m_parent
-            && e->source() != m_parent->m_device->m_transferList
-            && e->source() != m_parent->m_device->m_transferList->viewport()
-            && KURLDrag::canDecode( e ) );
+    e->accept( e->source() == viewport()
+            || e->source() == this
+            || (e->source() != m_parent
+                && e->source() != m_parent->m_device->m_transferList
+                && e->source() != m_parent->m_device->m_transferList->viewport()
+                && KURLDrag::canDecode( e )) );
+
 }
 
 
@@ -320,7 +538,7 @@ MediaDeviceList::rmbPressed( QListViewItem* item, const QPoint& point, int ) //S
         KPopupMenu menu( this );
 
         enum Actions { APPEND, MAKE, QUEUE, BURN_ARTIST, BURN_ALBUM,
-                       BURN_DATACD, BURN_AUDIOCD, DELETE };
+                       BURN_DATACD, BURN_AUDIOCD, RENAME, ADD, DELETE };
 
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue Track" ), QUEUE );
@@ -348,7 +566,18 @@ MediaDeviceList::rmbPressed( QListViewItem* item, const QPoint& point, int ) //S
         }
 
         menu.insertSeparator();
-        menu.insertItem( SmallIconSet( "editdelete" ), i18n( "Delete File" ), DELETE );
+
+        if( dynamic_cast<MediaItem *>(item) && static_cast<MediaItem *>(item)->type() == MediaItem::PLAYLIST )
+        {
+            menu.insertItem( SmallIconSet( "editrename" ), i18n( "Rename" ), RENAME );
+        }
+
+        if( dynamic_cast<MediaItem *>(item) && static_cast<MediaItem *>(item)->type() == MediaItem::ORPHANED || static_cast<MediaItem *>(item)->type() == MediaItem::ORPHANEDROOT )
+        {
+            menu.insertItem( SmallIconSet( "editrename" ), i18n( "Add to Database" ), ADD );
+        }
+
+        menu.insertItem( SmallIconSet( "editdelete" ), i18n( "Delete" ), DELETE );
 
         switch( menu.exec( point ) )
         {
@@ -373,8 +602,42 @@ MediaDeviceList::rmbPressed( QListViewItem* item, const QPoint& point, int ) //S
             case BURN_AUDIOCD:
                 K3bExporter::instance()->exportTracks( urls, K3bExporter::AudioCD );
                 break;
+            case RENAME:
+                m_renameFrom = item->text(0);
+                rename(item, 0);
+                break;
+            case ADD:
+                if(dynamic_cast<MediaItem *>(item) && static_cast<MediaItem *>(item)->type() == MediaItem::ORPHANEDROOT)
+                {
+                    MediaItem *next = NULL;
+                    for(MediaItem *it = dynamic_cast<MediaItem *>(item->firstChild());
+                            it;
+                            it = next)
+                    {
+                        next = dynamic_cast<MediaItem *>(it->nextSibling());
+                        item->takeItem(it);
+                        m_parent->m_device->addTrackToDevice(it->url().path(), *it->bundle(), false);
+                        delete it;
+                    }
+                }
+                else
+                {
+                    for(selectedItems().first();
+                            selectedItems().current();
+                            selectedItems().next())
+                    {
+                        MediaItem *it = dynamic_cast<MediaItem *>(selectedItems().current());
+                        if(it->type() == MediaItem::ORPHANED)
+                        {
+                            it->parent()->takeItem(it);
+                            m_parent->m_device->addTrackToDevice(it->url().path(), *it->bundle(), false);
+                            delete it;
+                        }
+                    }
+                }
+                break;
             case DELETE:
-                m_parent->m_device->deleteFiles( urls );
+                m_parent->m_device->deleteFromDevice( NULL );
                 break;
         }
     }
@@ -387,7 +650,7 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     , m_deviceList( new MediaDeviceList( this ) )
     , m_parent( parent )
 {
-    m_device = new GpodMediaDevice( this );
+    m_device = new GpodMediaDevice( this, m_deviceList );
     m_progress = new KProgress( this );
 
     QHBox* hb = new QHBox( this );
@@ -417,8 +680,6 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
              this,   SLOT( slotShowContextMenu( QListViewItem*, const QPoint&, int ) ) );
 
     m_device->loadTransferList( amaroK::saveLocation() + "transferlist.xml" );
-
-    m_device->openDevice();
 }
 
 void
@@ -456,8 +717,9 @@ MediaDeviceView::~MediaDeviceView()
 }
 
 
-MediaDevice::MediaDevice( MediaDeviceView* parent )
+MediaDevice::MediaDevice( MediaDeviceView* parent, MediaDeviceList *listview )
     : m_parent( parent )
+    , m_listview( listview )
     , m_transferList( new MediaDeviceTransferList( parent ) )
 {
     s_instance = this;
@@ -486,10 +748,11 @@ MediaDevice::addURL( const KURL& url, MetaBundle *bundle, bool isPodcast )
         item->setDropEnabled( true );
         item->setUrl( url.path() );
         item->m_bundle = bundle;
-        item->m_podcast = isPodcast;
+        if(isPodcast)
+            item->m_type = MediaItem::PODCASTITEM;
 
         QString text = item->bundle()->prettyTitle();
-        if(item->m_podcast)
+        if(item->type() == MediaItem::PODCASTITEM)
         {
             text += " (" + i18n("Podcast") + ")";
         }
@@ -503,11 +766,11 @@ MediaDevice::addURL( const KURL& url, MetaBundle *bundle, bool isPodcast )
 }
 
 void
-MediaDevice::addURLs( const KURL::List urls, MetaBundle *bundle )
+MediaDevice::addURLs( const KURL::List urls )
 {
         KURL::List::ConstIterator it = urls.begin();
         for ( ; it != urls.end(); ++it )
-            addURL( *it, bundle, bundle!=NULL );
+            addURL( *it, NULL, false );
 }
 
 
@@ -634,7 +897,6 @@ MediaDevice::connectDevice()
         }
 
         openDevice();
-        updateView();
 
         if( isConnected() || m_parent->m_deviceList->childCount() != 0 )
         {
@@ -677,7 +939,6 @@ MediaDevice::connectDevice()
             if ( button == KMessageBox::Yes )
             {
                 transferFiles();
-                fileTransferFinished();
             }
         }
 
@@ -688,11 +949,10 @@ MediaDevice::connectDevice()
 
         if ( !m_umntcmd.isEmpty() )
         {
-            umount();
-            text=i18n( "Your device is now in sync, you can disconnect now." );
+            if(umount()==0)
+                text=i18n( "Your device is now in sync, you can disconnect now." );
         }
 
-        updateView();
         m_parent->m_connectButton->setOn( false );
         KMessageBox::information( m_parent->m_parent, text, i18n( "Media Device Browser" ) );
     }
@@ -790,7 +1050,7 @@ MediaDevice::transferFiles()
         }
         else
         {
-            addTrackToDevice(trackpath, *bundle, cur->m_podcast);
+            addTrackToDevice(trackpath, *bundle, cur->type() == MediaItem::PODCASTITEM);
 
             m_transferList->takeItem( cur );
             delete cur;
@@ -798,8 +1058,8 @@ MediaDevice::transferFiles()
         }
         delete bundle;
     }
-    unlockDevice();
     synchronizeDevice();
+    unlockDevice();
     fileTransferFinished();
 
     m_parent->m_transferButton->setEnabled( m_transferList->childCount()>0 );
@@ -817,51 +1077,44 @@ MediaDevice::fileTransferFinished()  //SLOT
 }
 
 void
-MediaDevice::deleteFiles( const KURL::List& urls )
+MediaDevice::deleteFile( const KURL &url )
 {
-    //NOTE we assume that currentItem is the main target
-    int count  = urls.count();
-
-    m_parent->m_stats->setText( i18n( "1 track to be deleted", "%n tracks to be deleted", count ) );
-    m_parent->m_progress->setProgress( 0 );
-    m_parent->m_progress->setTotalSteps( count );
-    m_parent->m_progress->show();
-
-    int button = KMessageBox::warningContinueCancel( m_parent,
-            i18n( "<p>You have selected 1 file to be <b>irreversibly</b> deleted.",
-                "<p>You have selected %n files to be <b>irreversibly</b> deleted.",
-                count
-                ),
-            QString::null,
-            KGuiItem(i18n("&Delete"),"editdelete") );
-
-    if ( button == KMessageBox::Continue )
-    {
-
-        lockDevice( true );
-        KURL::List::ConstIterator it = urls.begin();
-        for ( ; it != urls.end(); ++it )
-        {
-            m_parent->m_progress->setProgress( m_parent->m_progress->progress() + 1 );
-            debug() << "deleting " << (*it).prettyURL() << endl;
-            //KIO::del( *it, false, false );
-            KIO::file_delete( *it, false );
-        }
-        deleteFromDevice( 0 );
-        unlockDevice();
-        synchronizeDevice();
-    }
-    QTimer::singleShot( 1500, m_parent->m_progress, SLOT(hide()) );
-    m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_transferList->childCount() ) );
+    debug() << "deleting " << url.prettyURL() << endl;
+    KIO::file_delete( url, false );
+    m_parent->m_progress->setProgress( m_parent->m_progress->progress() + 1 );
 }
 
 void
-MediaDevice::deleteFromDevice(MediaItem *item, bool onlySelected)
+MediaDevice::deleteFromDevice(MediaItem *item)
 {
     MediaItem* fi;
 
     if ( !item )
     {
+        QPtrList<MediaItem> list;
+        //NOTE we assume that currentItem is the main target
+        int numFiles  = m_parent->m_deviceList->getSelectedLeaves(NULL, &list);
+
+        m_parent->m_stats->setText( i18n( "1 track to be deleted", "%n tracks to be deleted", numFiles ) );
+        m_parent->m_progress->setProgress( 0 );
+        m_parent->m_progress->setTotalSteps( numFiles );
+        m_parent->m_progress->show();
+
+        if(numFiles > 0)
+        {
+            int button = KMessageBox::warningContinueCancel( m_parent,
+                    i18n( "<p>You have selected 1 track to be <b>irreversibly</b> deleted.",
+                        "<p>You have selected %n tracks to be <b>irreversibly</b> deleted.",
+                        numFiles
+                        ),
+                    QString::null,
+                    KGuiItem(i18n("&Delete"),"editdelete") );
+
+            if ( button != KMessageBox::Continue )
+                return;
+        }
+
+        lockDevice(true);
         fi = (MediaItem*)m_parent->m_deviceList->firstChild();
     }
     else
@@ -869,38 +1122,28 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlySelected)
 
     while ( fi )
     {
-        if ( fi->isSelected() || !onlySelected )
+        MediaItem *next = (MediaItem*)fi->nextSibling();
+
+        if ( fi->isSelected() )
         {
-            debug() << "depth=" << fi->depth() << endl;
-            switch ( fi->depth() )
-            {
-            case 0:
-            case 1:
-                {
-                    bool collapse = false;
-                    if(fi->childCount() == 0)
-                    {
-                        m_parent->m_deviceList->expandItem( fi );
-                        collapse = true;
-                    }
-                    if ( fi->childCount() )
-                        deleteFromDevice( (MediaItem*)fi->firstChild(), false);
-                    if(collapse)
-                        m_parent->m_deviceList->collapseItem(fi);
-                }
-                break;
-            case 2:
-                deleteTrackFromDevice(fi->parent()->parent()->text( 0 ), fi->parent()->text( 0 ), fi->text( 0 ));
-                break;
-            }
+            deleteItemFromDevice(fi);
         }
         else
         {
             if ( fi->childCount() )
-                deleteFromDevice( (MediaItem*)fi->firstChild(), true );
+                deleteFromDevice( (MediaItem*)fi->firstChild() );
         }
 
-        fi = (MediaItem*)fi->nextSibling();
+        fi = next;
+    }
+
+    if(!item)
+    {
+        synchronizeDevice();
+        unlockDevice();
+
+        QTimer::singleShot( 1500, m_parent->m_progress, SLOT(hide()) );
+        m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_transferList->childCount() ) );
     }
 }
 
@@ -962,7 +1205,7 @@ MediaDevice::saveTransferList( const QString &path )
             i.appendChild( attr );
         }
 
-        if(item->m_podcast)
+        if(item->type() == MediaItem::PODCASTITEM)
         {
             i.setAttribute( "podcast", "1" );
         }
@@ -1074,6 +1317,8 @@ MediaDeviceTransferList::MediaDeviceTransferList(MediaDeviceView *parent)
 void
 MediaDeviceTransferList::dragEnterEvent( QDragEnterEvent *e )
 {
+    KListView::dragEnterEvent( e );
+
     debug() << "Items dropping to list?" << endl;
     e->accept( e->source() != viewport()
             && e->source() != m_parent
@@ -1086,6 +1331,8 @@ MediaDeviceTransferList::dragEnterEvent( QDragEnterEvent *e )
 void
 MediaDeviceTransferList::dropEvent( QDropEvent *e )
 {
+    KListView::dropEvent( e );
+
     KURL::List list;
     if ( KURLDrag::decode( e, list ) )
     {
@@ -1100,6 +1347,8 @@ MediaDeviceTransferList::dropEvent( QDropEvent *e )
 void
 MediaDeviceTransferList::contentsDragEnterEvent( QDragEnterEvent *e )
 {
+    KListView::contentsDragEnterEvent( e );
+
     debug() << "Items dropping to list?" << endl;
     e->accept( e->source() != viewport()
             && e->source() != m_parent
@@ -1112,6 +1361,8 @@ MediaDeviceTransferList::contentsDragEnterEvent( QDragEnterEvent *e )
 void
 MediaDeviceTransferList::contentsDropEvent( QDropEvent *e )
 {
+    KListView::contentsDropEvent( e );
+
     KURL::List list;
     if ( KURLDrag::decode( e, list ) )
     {
@@ -1126,13 +1377,23 @@ MediaDeviceTransferList::contentsDropEvent( QDropEvent *e )
 void
 MediaDeviceTransferList::contentsDragMoveEvent( QDragMoveEvent *e )
 {
-//    const QPoint p = contentsToViewport( e->pos() );
-//    QListViewItem *item = itemAt( p );
+    KListView::contentsDragMoveEvent( e );
+
+    //    const QPoint p = contentsToViewport( e->pos() );
+    //    QListViewItem *item = itemAt( p );
     e->accept( e->source() != viewport()
             && e->source() != m_parent
             && e->source() != m_parent->m_deviceList
             && e->source() != m_parent->m_deviceList->viewport()
             && KURLDrag::canDecode( e ) );
+
+#if 0
+    const QPoint p = contentsToViewport( e->pos() );
+    MediaItem *item = dynamic_cast<MediaItem *>( itemAt( p ) );
+    if( item )
+        if(p.y() - itemRect( item ).top() < (item->height()/2))
+            item = dynamic_cast<MediaItem *>(item->itemAbove());
+#endif
 }
 
 MediaItem*
