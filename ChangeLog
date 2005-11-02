@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.3.6:
   BUGFIXES:
+    * Potential crash when loading media from the Collection. (BR 115234)
     * Podcast apply to all button was faulty.
     * last.fm queue wouldn't be saved to disk. Patch by John Patterson
       <kde-bugs@ninecats.org>. (BR 115212)
