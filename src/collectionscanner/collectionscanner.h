@@ -22,8 +22,6 @@
 
 #include <fstream>
 
-#include <taglib/audioproperties.h>
-
 #include <qstringlist.h>
 #include <kapplication.h>
 
@@ -52,7 +50,7 @@ private:
     void scanFiles( const QStringList& entries );
 
     /** If you want Accurate reading say so */
-    void readTags( const QString& path, TagLib::AudioProperties::ReadStyle );
+    void readTags( const QString& path );
 
     /**
      * @return the LOWERCASE file extension without the preceding '.', or "" if there is none

@@ -24,6 +24,7 @@
 
 #include <iostream>
 
+#include <taglib/audioproperties.h>
 #include <taglib/fileref.h>
 #include <taglib/id3v1genres.h> //used to load genre list
 #include <taglib/mpegfile.h>
@@ -171,7 +172,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
         //  Average                     Untested
         //  Accurate                    Untested
 
-        readTags( path, TagLib::AudioProperties::Fast );
+        readTags( path );
 
         if( validImages.contains( ext ) )
            images += path;
@@ -205,12 +206,12 @@ CollectionScanner::scanFiles( const QStringList& entries )
 
 
 void
-CollectionScanner::readTags( const QString& path, TagLib::AudioProperties::ReadStyle readStyle )
+CollectionScanner::readTags( const QString& path )
 {
     TagLib::FileRef fileref;
     TagLib::Tag *tag = 0;
 
-    fileref = TagLib::FileRef( QFile::encodeName( path ), true, readStyle );
+    fileref = TagLib::FileRef( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );
 
     if( !fileref.isNull() )
         tag = fileref.tag();
@@ -233,6 +234,17 @@ CollectionScanner::readTags( const QString& path, TagLib::AudioProperties::ReadS
     tags.setAttribute( "year", tag->year() ? QString::number( tag->year() ) : QString() );
     tags.setAttribute( "track", tag->track() ? QString::number( tag->track() ) : QString() );
     #undef strip
+
+    TagLib::AudioProperties* ap = fileref.audioProperties();
+    if( ap ) {
+        tags.setAttribute( "audioproperties", "true" );
+        tags.setAttribute( "bitrate",    QString::number( ap->bitrate() ) );
+        tags.setAttribute( "length",     QString::number( ap->length() ) );
+        tags.setAttribute( "samplerate", QString::number( ap->sampleRate() ) );
+    }
+    else
+        tags.setAttribute( "audioproperties", "false" );
+
 
     QString text;
     QTextStream stream( &text, IO_WriteOnly );

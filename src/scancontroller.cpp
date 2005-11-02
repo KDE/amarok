@@ -123,7 +123,6 @@ ScanController::startElement( const QString&, const QString& localName, const QS
 
     if( localName == "tags") {
         MetaBundle bundle;
-        bundle.setValidMedia( true );
 
         bundle.setPath   ( attrs.value( "path" ) );
         bundle.setTitle  ( attrs.value( "title" ) );
@@ -133,6 +132,12 @@ ScanController::startElement( const QString&, const QString& localName, const QS
         bundle.setGenre  ( attrs.value( "genre" ) );
         bundle.setYear   ( attrs.value( "year" ).toInt() );
         bundle.setTrack  ( attrs.value( "track" ).toInt() );
+
+        if( attrs.value( "audioproperties" ) == "true" ) {
+            bundle.setBitrate   ( attrs.value( "bitrate" ).toInt() );
+            bundle.setLength    ( attrs.value( "length" ).toInt() );
+            bundle.setSampleRate( attrs.value( "samplerate" ).toInt() );
+        }
 
         CollectionDB::instance()->addSong( &bundle, false /*m_incremental*/, m_db );
     }

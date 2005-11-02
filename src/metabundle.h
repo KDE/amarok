@@ -71,9 +71,6 @@ public:
     /** Is it media that has metadata? Note currently we don't check for an audio mimetype */
     bool isValidMedia() const { return m_isValidMedia; }
 
-    /** Explicitly set the metadata validity. */
-    void setValidMedia( bool valid ) { m_isValidMedia = valid; }
-
     /** The bundle doesn't yet know its audioProperties */
     bool audioPropertiesUndetermined() const
     {
