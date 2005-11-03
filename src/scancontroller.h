@@ -20,8 +20,8 @@
 #ifndef AMAROK_SCANCONTROLLER_H
 #define AMAROK_SCANCONTROLLER_H
 
-#include <qobject.h>
-#include <qxml.h>
+#include <qobject.h>     //baseclass
+#include <qxml.h>        //baseclass
 
 class DbConnection;
 class KProcIO;
@@ -34,7 +34,7 @@ class ScanController : public QObject, public QXmlDefaultHandler
     Q_OBJECT
 
     public:
-        ScanController( QObject* parent, QStringList folders );
+        ScanController( QObject* parent, const QStringList& folders, bool incremental = false );
         ~ScanController();
 
     private slots:
@@ -42,15 +42,20 @@ class ScanController : public QObject, public QXmlDefaultHandler
         void slotProcessExited();
 
     private:
+        void initIncrementalScanner();
         bool startElement( const QString&, const QString &localName, const QString&, const QXmlAttributes &attrs );
 
 
         DbConnection* const m_db;
-        KProcIO* m_scanner;
-        QXmlInputSource m_source;
+        KProcIO*            m_scanner;
+        QStringList         m_folders;
+
+        QXmlInputSource  m_source;
         QXmlSimpleReader m_reader;
-        int m_steps;
-        int m_totalSteps;
+
+        bool m_incremental;
+        int  m_steps;
+        int  m_totalSteps;
         bool m_success;
 };
 

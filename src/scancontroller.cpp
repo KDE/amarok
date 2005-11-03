@@ -27,6 +27,10 @@
 #include "scancontroller.h"
 #include "statusbar.h"
 
+#include <sys/stat.h>  //stat
+#include <sys/types.h> //stat
+#include <unistd.h>    //stat
+
 #include <klocale.h>
 #include <kprocio.h>
 
@@ -55,11 +59,13 @@ class ScannerProcIO : public KProcIO {
 // class ScanController
 ////////////////////////////////////////////////////////////////////////////////
 
-ScanController::ScanController( QObject* parent, QStringList folders )
+ScanController::ScanController( QObject* parent, const QStringList& folders, bool incremental )
     : QObject( parent )
     , QXmlDefaultHandler()
     , m_db( CollectionDB::instance()->getStaticDbConnection() )
     , m_scanner( new ScannerProcIO() )
+    , m_folders( folders )
+    , m_incremental( incremental )
     , m_steps( 0 )
     , m_success( false )
 {
@@ -69,10 +75,13 @@ ScanController::ScanController( QObject* parent, QStringList folders )
         deleteLater();
         return;
     }
+    if( m_incremental )
+        initIncrementalScanner();
+
     CollectionDB::instance()->createTables( m_db );
 
     StatusBar::instance()->newProgressOperation( this )
-            .setDescription( i18n( "Building Collection" ) )
+            .setDescription( m_incremental ? i18n( "Updating Collection" ) : i18n( "Building Collection" ) )
             .setAbortSlot( this, SLOT( deleteLater() ) )
             .setTotalSteps( 100 );
 
@@ -80,9 +89,9 @@ ScanController::ScanController( QObject* parent, QStringList folders )
     m_reader.parse( &m_source, true );
 
     *m_scanner << "amarokcollectionscanner";
-    if( AmarokConfig::importPlaylists() ) *m_scanner << "-i";
+    if( AmarokConfig::importPlaylists() && !m_incremental ) *m_scanner << "-i";
     if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
-    *m_scanner << folders;
+    *m_scanner << m_folders;
 
     connect( m_scanner, SIGNAL( readReady( KProcIO* ) ),      SLOT( slotReadReady() ) );
     connect( m_scanner, SIGNAL( processExited( KProcess* ) ), SLOT( slotProcessExited() ) );
@@ -104,6 +113,50 @@ ScanController::~ScanController()
     }
 
     emit CollectionDB::instance()->scanDone( m_success ); //FIXME
+}
+
+
+void
+ScanController::initIncrementalScanner()
+{
+    /**
+     * The Incremental Reader works as follows: Here we check the mtime of every directory in the "directories"
+     * table and store all changed directories in m_folders.
+     *
+     * These directories are then scanned in CollectionReader::doJob(), with m_recursively set according to the
+     * user's preference, so the user can add directories or whole directory trees, too. Since we don't want to
+     * rescan unchanged subdirectories, CollectionReader::readDir() checks if we are scanning recursively and
+     * prevents that.
+     */
+
+    //TODO Replace stat() with Qt methods
+
+    DEBUG_BLOCK
+
+    struct stat statBuf;
+    const QStringList values = CollectionDB::instance()->query( "SELECT dir, changedate FROM directories;" );
+
+    foreach( values ) {
+        const QString folder = *it;
+        const QString mtime  = *++it;
+
+        if( stat( QFile::encodeName( folder ), &statBuf ) == 0 ) {
+            if( QString::number( (long)statBuf.st_mtime ) != mtime ) {
+                m_folders << folder;
+                debug() << "Collection dir changed: " << folder << endl;
+            }
+        }
+        else {
+            // this folder has been removed
+            m_folders << folder;
+            debug() << "Collection dir removed: " << folder << endl;
+        }
+    }
+
+    if( !m_folders.isEmpty() ) {
+//         m_hasChanged = true;
+        StatusBar::instance()->shortMessage( i18n( "Updating Collection..." ) );
+    }
 }
 
 
@@ -139,7 +192,7 @@ ScanController::startElement( const QString&, const QString& localName, const QS
             bundle.setSampleRate( attrs.value( "samplerate" ).toInt() );
         }
 
-        CollectionDB::instance()->addSong( &bundle, false /*m_incremental*/, m_db );
+        CollectionDB::instance()->addSong( &bundle, m_incremental, m_db );
     }
 
 
@@ -169,8 +222,12 @@ ScanController::slotProcessExited()
     DEBUG_BLOCK
 
     if( m_scanner->normalExit() ) {
+        if ( m_incremental )
+            foreach( m_folders ) CollectionDB::instance()->removeSongsInDir( *it );
+        else
+            CollectionDB::instance()->clearTables();
+
         m_success = true;
-        CollectionDB::instance()->clearTables();
         CollectionDB::instance()->moveTempTables( m_db ); // rename tables
     }
     else
@@ -181,5 +238,3 @@ ScanController::slotProcessExited()
 
 
 #include "scancontroller.moc"
-
-
