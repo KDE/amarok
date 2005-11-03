@@ -27,7 +27,7 @@
 #include "scancontroller.h"
 #include "statusbar.h"
 
-#include "qfileinfo.h"
+#include <qfileinfo.h>
 
 #include <klocale.h>
 #include <kprocio.h>
@@ -194,11 +194,11 @@ ScanController::startElement( const QString&, const QString& localName, const QS
         const QString folder = attrs.value( "path" );
         const QFileInfo info( folder );
 
-        //update dir statistics for rescanning purposes
-        if ( info.exists() )
+        // Update dir statistics for rescanning purposes
+        if( info.exists() )
             CollectionDB::instance()->updateDirStats( folder, info.lastModified().toTime_t(), !m_incremental ? m_db : 0 );
         else {
-            if ( m_incremental ) {
+            if( m_incremental ) {
                 CollectionDB::instance()->removeSongsInDir( folder );
                 CollectionDB::instance()->removeDirFromCollection( folder );
             }
