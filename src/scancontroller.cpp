@@ -57,6 +57,9 @@ class ScannerProcIO : public KProcIO {
 // class ScanController
 ////////////////////////////////////////////////////////////////////////////////
 
+ScanController* ScanController::s_instance = 0;
+
+
 ScanController::ScanController( QObject* parent, bool incremental, const QStringList& folders )
     : QObject( parent )
     , QXmlDefaultHandler()
@@ -67,6 +70,8 @@ ScanController::ScanController( QObject* parent, bool incremental, const QString
     , m_steps( 0 )
 {
     DEBUG_BLOCK
+
+    s_instance = this;
 
     if( !m_db->isConnected() ) {
         deleteLater();
@@ -110,6 +115,8 @@ ScanController::~ScanController()
     }
 
     emit CollectionDB::instance()->scanDone( !m_folders.isEmpty() );
+
+    s_instance = 0;
 }
 
 

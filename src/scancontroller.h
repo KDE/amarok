@@ -37,6 +37,8 @@ class ScanController : public QObject, public QXmlDefaultHandler
         ScanController( QObject* parent, bool incremental, const QStringList& folders = QString::null );
         ~ScanController();
 
+        static ScanController* instance() { return s_instance; }
+
     private slots:
         void slotReadReady();
         void slotProcessExited();
@@ -45,6 +47,7 @@ class ScanController : public QObject, public QXmlDefaultHandler
         void initIncrementalScanner();
         bool startElement( const QString&, const QString &localName, const QString&, const QXmlAttributes &attrs );
 
+        static ScanController* s_instance;
 
         DbConnection* const m_db;
         KProcIO*            m_scanner;

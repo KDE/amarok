@@ -1979,7 +1979,7 @@ CollectionDB::startScan()  //SLOT
 void
 CollectionDB::stopScan() //SLOT
 {
-    ThreadWeaver::instance()->abortAllJobsNamed( "CollectionReader" );
+    delete ScanController::instance();
 }
 
 
@@ -2132,7 +2132,7 @@ void
 CollectionDB::scanModifiedDirs()
 {
     //we check if a job is pending because we don't want to abort incremental collection readings
-    if ( !ThreadWeaver::instance()->isJobPending( "CollectionReader" ) && PlaylistBrowser::instance() ) {
+    if ( !ScanController::instance() && PlaylistBrowser::instance() ) {
         emit scanStarted();
         new ScanController( this, true ); // Incremental scanning mode
     }
