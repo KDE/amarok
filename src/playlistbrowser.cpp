@@ -2222,7 +2222,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                             PodcastItem *podcast = static_cast<PodcastItem*>(*it);
                             if(podcast->hasDownloaded())
                             {
-                                MetaBundle *bundle = new MetaBundle( item->localUrl() );
+                                MetaBundle *bundle = new MetaBundle( podcast->localUrl() );
                                 PodcastChannel *channel = static_cast<PodcastChannel*>(podcast->QListViewItem::parent());
                                 if(!channel->title().isEmpty())
                                     bundle->setAlbum(channel->title());
