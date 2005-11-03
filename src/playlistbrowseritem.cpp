@@ -934,7 +934,6 @@ StreamEditor::StreamEditor( QWidget *parent, const QString &title, const QString
 ////////////////////////////////////////////////////////////////////////////
 PartyEntry::PartyEntry( QListViewItem *parent, QListViewItem *after, const QString &name )
         : PlaylistBrowserEntry( parent, after, name )
-        , m_title( name )
         , m_items( NULL )
         , m_cycled( true )
         , m_marked( true )
@@ -946,16 +945,15 @@ PartyEntry::PartyEntry( QListViewItem *parent, QListViewItem *after, const QStri
     setPixmap( 0, SmallIcon("dynamic") );
     setDragEnabled( false );
 
-    setText( 0, name );
+    setTitle( name );
 }
-
 PartyEntry::PartyEntry( QListViewItem *parent, QListViewItem *after, const QDomElement &xmlDefinition )
         : PlaylistBrowserEntry( parent, after )
 {
     setPixmap( 0, SmallIcon( "dynamic" ) );
     setDragEnabled( false );
 
-    m_title  = xmlDefinition.attribute( "name" );
+    setTitle(xmlDefinition.attribute( "name" ));
 
     QDomElement e;
 
@@ -971,7 +969,6 @@ PartyEntry::PartyEntry( QListViewItem *parent, QListViewItem *after, const QDomE
     if ( m_appendType == 2 ) {
         setItems( QStringList::split( ',', xmlDefinition.namedItem( "items" ).toElement().text() ) );
     }
-    setText( 0, m_title );
 }
 
 

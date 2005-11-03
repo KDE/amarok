@@ -63,7 +63,7 @@ class PartyEntry : public PlaylistBrowserEntry
 
         enum  Mode { RANDOM=0, SUGGESTION=1, CUSTOM=2 };
 
-        const QString &title() const { return m_title; }
+        QString title() const { return text(0); }
 
         QStringList items() { return m_items; }
 
@@ -74,7 +74,8 @@ class PartyEntry : public PlaylistBrowserEntry
         void  setPrevious( int c ) { m_previous = c; }
         void  setAppendCount( int c ) { m_appendCount = c; }
         void  setAppendType( int type ) { m_appendType = type; }
-        PartyEntry &operator=(const PartyEntry &);
+        void  setTitle( const QString& title ) { setText(0,title); }
+       
 
         bool  isCycled() { return m_cycled; }
         bool  isMarked() { return m_marked; }
@@ -89,7 +90,6 @@ class PartyEntry : public PlaylistBrowserEntry
         static const int RTTI = 1005;
 
     private:
-        QString m_title;
         QStringList m_items;
 
         bool    m_cycled;
