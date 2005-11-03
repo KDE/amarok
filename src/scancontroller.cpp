@@ -126,8 +126,6 @@ ScanController::initIncrementalScanner()
      * prevents that.
      */
 
-    //TODO Replace stat() with Qt methods
-
     DEBUG_BLOCK
 
     const QStringList values = CollectionDB::instance()->query( "SELECT dir, changedate FROM directories;" );
