@@ -700,8 +700,12 @@ void PlaylistWindow::showQueueManager() //SLOT
 
 void PlaylistWindow::showStatistics() //SLOT
 {
-    Statistics::instance()->show();
-    Statistics::instance()->raise();
+    if( Statistics::instance() ) {
+        Statistics::instance()->raise();
+        return;
+    }
+    Statistics dialog;
+    dialog.exec();
 }
 
 void PlaylistWindow::slotToggleMenu() //SLOT

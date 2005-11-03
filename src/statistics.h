@@ -31,7 +31,7 @@ class Statistics : public KDialogBase
         Statistics( QWidget *parent = 0, const char *name = 0 );
         ~Statistics();
 
-        static Statistics *instance() { return s_instance ? s_instance : new Statistics( PlaylistWindow::self() ); }
+        static Statistics *instance() { return s_instance; }
 
     private slots:
         void loadDetails( int index );

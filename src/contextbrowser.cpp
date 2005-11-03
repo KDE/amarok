@@ -314,8 +314,12 @@ void ContextBrowser::openURLRequest( const KURL &url )
         }
         else if ( url.path() == "statistics" )
         {
-            Statistics::instance()->show();
-            Statistics::instance()->raise();
+            if( Statistics::instance() ) {
+                Statistics::instance()->raise();
+                return;
+            }
+            Statistics dialog;
+            dialog.exec();
         }
         else if ( url.path() == "collectionSetup" )
         {
