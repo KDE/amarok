@@ -1169,7 +1169,7 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
         fi = next;
     }
 
-    if(!item)
+    if(!recursing)
     {
         synchronizeDevice();
         unlockDevice();
