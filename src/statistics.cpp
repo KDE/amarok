@@ -10,8 +10,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
-#include "amarokconfig.h"     //check if dynamic mode
 #include "collectiondb.h"
 #include "statistics.h"
 
@@ -25,7 +23,6 @@
 #include <qlayout.h>
 #include <qpixmap.h>
 #include <qtabwidget.h>
-
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// CLASS Statistics
@@ -48,8 +45,6 @@ Statistics::Statistics( QWidget *parent, const char *name )
     setCaption( kapp->makeStdCaption( i18n("Statistics") ) );
 
     setMainWidget( m_gui );
-
-    m_gui->m_tabWidget->setTabEnabled( m_gui->m_databaseTab, false );
 
     connect( m_gui->m_optionCombo, SIGNAL( activated(int) ), this, SLOT( loadDetails(int) ) );
     connect( m_gui->m_resultCombo, SIGNAL( activated(int) ), this, SLOT( resultCountChanged(int) ) );
@@ -143,7 +138,7 @@ Statistics::loadChooser()
     m_gui->m_optionCombo->insertItem( i18n("Track"),  TRACK );
     m_gui->m_optionCombo->insertItem( i18n("Artist"), ARTIST );
     m_gui->m_optionCombo->insertItem( i18n("Album"),  ALBUM );
-//     m_gui->m_optionCombo->insertItem( i18n("Genre"),  GENRE );
+    m_gui->m_optionCombo->insertItem( i18n("Genre"),  GENRE );
 
     m_gui->m_resultCombo->insertItem( QString::number(5)  );
     m_gui->m_resultCombo->insertItem( QString::number(10) );
@@ -178,7 +173,7 @@ Statistics::loadDetails( int index ) //SLOT
             break;
 
         case GENRE:
-//             buildGenreInfo();
+            buildGenreInfo();
             break;
     }
 }
@@ -341,6 +336,54 @@ Statistics::buildArtistInfo()
                     .arg( mostSongs[i] )
                     .arg( mostSongs[i+1] );
         if( i + qb.countReturnValues() != mostSongs.count() )
+             text += "<br>";
+    }
+    m_gui->m_bbrLabel->setText( text );
+}
+
+void
+Statistics::buildGenreInfo()
+{
+    QueryBuilder qb;
+    qb.clear();
+    qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
+    qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valScore );
+    qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valScore, true );
+    qb.excludeMatch( QueryBuilder::tabGenre, i18n( "Unknown" ) );
+    qb.groupBy( QueryBuilder::tabGenre, QueryBuilder::valName );
+    qb.setLimit( 0, m_resultCount );
+    QStringList faveGenres = qb.run();
+
+    ///Favourites
+    QString text = "<b>" + i18n("Favourite Genres") + "</b><br>";
+    for( uint i=0; i < faveGenres.count(); i += qb.countReturnValues() )
+    {
+        text += i18n("<i>%1</i> (Score: %2)")
+                    .arg( faveGenres[i] )
+                    .arg( faveGenres[i+1] );
+        if( i + qb.countReturnValues() != faveGenres.count() )
+             text += "<br>";
+    }
+    m_gui->m_btrLabel->setText( text );
+
+
+    qb.clear();
+    qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
+    qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabSong, QueryBuilder::valTrack );
+    qb.sortByFunction( QueryBuilder::funcCount, QueryBuilder::tabSong, QueryBuilder::valTrack, true );
+    qb.excludeMatch( QueryBuilder::tabGenre, i18n( "Unknown" ) );
+    qb.groupBy( QueryBuilder::tabGenre, QueryBuilder::valName);
+    qb.setLimit( 0, m_resultCount );
+    QStringList mostGenres = qb.run();
+
+    ///Genres with the Most Songs
+    text = "<b>" + i18n("Genre Population") + "</b><br>"; // sebr: dominance an appropriate word?! :)
+    for( uint i=0; i < mostGenres.count(); i += qb.countReturnValues() )
+    {
+        text += i18n("<i>%1</i> (Count: %2)")
+                    .arg( mostGenres[i] )
+                    .arg( mostGenres[i+1] );
+        if( i + qb.countReturnValues() != mostGenres.count() )
              text += "<br>";
     }
     m_gui->m_bbrLabel->setText( text );

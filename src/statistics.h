@@ -45,6 +45,7 @@ class Statistics : public KDialogBase
 
         void buildAlbumInfo();
         void buildArtistInfo();
+        void buildGenreInfo();
         void buildTrackInfo();
 
         StatisticsBase *m_gui;
