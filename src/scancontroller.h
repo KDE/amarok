@@ -34,7 +34,7 @@ class ScanController : public QObject, public QXmlDefaultHandler
     Q_OBJECT
 
     public:
-        ScanController( QObject* parent, const QStringList& folders, bool incremental = false );
+        ScanController( QObject* parent, bool incremental, const QStringList& folders = QString::null );
         ~ScanController();
 
     private slots:
@@ -56,7 +56,6 @@ class ScanController : public QObject, public QXmlDefaultHandler
         bool m_incremental;
         int  m_steps;
         int  m_totalSteps;
-        bool m_success;
 };
 
 

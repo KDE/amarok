@@ -118,6 +118,7 @@ CollectionScanner::readDir( const QString& path, QStringList& entries )
         return;
 
     m_processedFolders += path;
+    std::cout << "<folder path='" << path.local8Bit() << "'/>";
 
     QDir dir( path );
 
@@ -152,7 +153,6 @@ CollectionScanner::scanFiles( const QStringList& entries )
     typedef QPair<QString, QString> CoverBundle;
 
     QStringList validImages; validImages << "jpg" << "png" << "gif" << "jpeg";
-//    QStringList validMusic; validMusic << "mp3" << "ogg" << "wav" << "flac";
 
     QValueList<CoverBundle> covers;
     QStringList images;
@@ -167,44 +167,10 @@ CollectionScanner::scanFiles( const QStringList& entries )
         log << path.local8Bit() << std::endl;
         log.flush();
 
-        // Tests reveal the following:
-        //
-        // TagLib::AudioProperties   Relative Time Taken
-        //
-        //  No AudioProp Reading        1
-        //  Fast                        1.18
-        //  Average                     Untested
-        //  Accurate                    Untested
-
         readTags( path );
 
         if( validImages.contains( ext ) )
            images += path;
-
-//         else if( bundle.isValidMedia() )
-//         {
-//             CoverBundle cover( bundle.artist(), bundle.album() );
-//
-//             if( !covers.contains( cover ) )
-//                 covers += cover;
-//
-//            CollectionDB::instance()->addSong( &bundle, m_incremental, m_db );
-//         }
-
-//         // Update Compilation-flag, when this is the last loop-run
-//         // or we're going to switch to another dir in the next run
-//         if( path == entries.getLast() || dir != amaroK::directory( QFile::decodeName(++QStrListIterator( it )) ) )
-//         {
-//             // we entered the next directory
-//             foreach( images )
-//                 CollectionDB::instance()->addImageToAlbum( *it, covers, m_db );
-//
-//             CollectionDB::instance()->checkCompilations( dir, !m_incremental, m_db );
-//
-//             // clear now because we've processed them
-//             covers.clear();
-//             images.clear();
-//         }
     }
 }
 
@@ -212,6 +178,15 @@ CollectionScanner::scanFiles( const QStringList& entries )
 void
 CollectionScanner::readTags( const QString& path )
 {
+    // Tests reveal the following:
+    //
+    // TagLib::AudioProperties   Relative Time Taken
+    //
+    //  No AudioProp Reading        1
+    //  Fast                        1.18
+    //  Average                     Untested
+    //  Accurate                    Untested
+
     TagLib::FileRef fileref;
     TagLib::Tag *tag = 0;
 

@@ -27,9 +27,7 @@
 #include "scancontroller.h"
 #include "statusbar.h"
 
-#include <sys/stat.h>  //stat
-#include <sys/types.h> //stat
-#include <unistd.h>    //stat
+#include "qfileinfo.h"
 
 #include <klocale.h>
 #include <kprocio.h>
@@ -59,7 +57,7 @@ class ScannerProcIO : public KProcIO {
 // class ScanController
 ////////////////////////////////////////////////////////////////////////////////
 
-ScanController::ScanController( QObject* parent, const QStringList& folders, bool incremental )
+ScanController::ScanController( QObject* parent, bool incremental, const QStringList& folders )
     : QObject( parent )
     , QXmlDefaultHandler()
     , m_db( CollectionDB::instance()->getStaticDbConnection() )
@@ -67,7 +65,6 @@ ScanController::ScanController( QObject* parent, const QStringList& folders, boo
     , m_folders( folders )
     , m_incremental( incremental )
     , m_steps( 0 )
-    , m_success( false )
 {
     DEBUG_BLOCK
 
@@ -112,7 +109,7 @@ ScanController::~ScanController()
         CollectionDB::instance()->returnStaticDbConnection( m_db );
     }
 
-    emit CollectionDB::instance()->scanDone( m_success ); //FIXME
+    emit CollectionDB::instance()->scanDone( !m_folders.isEmpty() );
 }
 
 
@@ -133,15 +130,15 @@ ScanController::initIncrementalScanner()
 
     DEBUG_BLOCK
 
-    struct stat statBuf;
     const QStringList values = CollectionDB::instance()->query( "SELECT dir, changedate FROM directories;" );
 
     foreach( values ) {
         const QString folder = *it;
         const QString mtime  = *++it;
 
-        if( stat( QFile::encodeName( folder ), &statBuf ) == 0 ) {
-            if( QString::number( (long)statBuf.st_mtime ) != mtime ) {
+        const QFileInfo info( folder );
+        if( info.exists() ) {
+            if( info.lastModified().toTime_t() != mtime.toUInt() ) {
                 m_folders << folder;
                 debug() << "Collection dir changed: " << folder << endl;
             }
@@ -153,10 +150,8 @@ ScanController::initIncrementalScanner()
         }
     }
 
-    if( !m_folders.isEmpty() ) {
-//         m_hasChanged = true;
+    if( !m_folders.isEmpty() )
         StatusBar::instance()->shortMessage( i18n( "Updating Collection..." ) );
-    }
 }
 
 
@@ -195,6 +190,20 @@ ScanController::startElement( const QString&, const QString& localName, const QS
         CollectionDB::instance()->addSong( &bundle, m_incremental, m_db );
     }
 
+    if( localName == "folder" ) {
+        const QString folder = attrs.value( "path" );
+        const QFileInfo info( folder );
+
+        //update dir statistics for rescanning purposes
+        if ( info.exists() )
+            CollectionDB::instance()->updateDirStats( folder, info.lastModified().toTime_t(), !m_incremental ? m_db : 0 );
+        else {
+            if ( m_incremental ) {
+                CollectionDB::instance()->removeSongsInDir( folder );
+                CollectionDB::instance()->removeDirFromCollection( folder );
+            }
+        }
+    }
 
     return true;
 }
@@ -227,11 +236,12 @@ ScanController::slotProcessExited()
         else
             CollectionDB::instance()->clearTables();
 
-        m_success = true;
         CollectionDB::instance()->moveTempTables( m_db ); // rename tables
     }
-    else
+    else {
         ::error() << "CollectionScanner has crashed! Scan aborted." << endl;
+        m_folders.clear();
+    }
 
     deleteLater();
 }

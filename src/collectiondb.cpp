@@ -13,7 +13,6 @@
 #include "debug.h"
 #include "collectionbrowser.h"    //updateTags()
 #include "collectiondb.h"
-#include "collectionreader.h"
 #include "coverfetcher.h"
 #include "enginecontroller.h"
 #include "metabundle.h"           //updateTags()
@@ -1972,7 +1971,7 @@ CollectionDB::startScan()  //SLOT
     else if( PlaylistBrowser::instance() )
     {
         emit scanStarted();
-        new ScanController( this, folders );
+        new ScanController( this, false, folders );
     }
 }
 
@@ -1993,7 +1992,7 @@ CollectionDB::dirDirty( const QString& path )
 {
     debug() << k_funcinfo << "Dirty: " << path << endl;
 
-    ThreadWeaver::instance()->queueJob( new CollectionReader( this, path ) );
+    new ScanController( this, false, path );
 }
 
 
@@ -2135,25 +2134,7 @@ CollectionDB::scanModifiedDirs()
     //we check if a job is pending because we don't want to abort incremental collection readings
     if ( !ThreadWeaver::instance()->isJobPending( "CollectionReader" ) && PlaylistBrowser::instance() ) {
         emit scanStarted();
-        ThreadWeaver::instance()->onlyOneJob( new IncrementalCollectionReader( this ) );
-    }
-}
-
-
-void
-CollectionDB::customEvent( QCustomEvent *e )
-{
-    DEBUG_BLOCK
-
-    if ( e->type() == (int)CollectionReader::JobFinishedEvent ) {
-        if ( dynamic_cast<IncrementalCollectionReader*>( e ) ) {
-            debug() << "Event from IncrementalCollectionReader received.\n";
-            emit scanDone( static_cast<IncrementalCollectionReader*>(e)->hasChanged() );
-        }
-        else {
-            debug() << "Event from CollectionReader received.\n";
-            emit scanDone( static_cast<CollectionReader*>(e)->wasSuccessful() );
-        }
+        new ScanController( this, true ); // Incremental scanning mode
     }
 }
 
