@@ -33,7 +33,7 @@ namespace ConfigDynamic
     void editDynamicPlaylist(QWidget* parent, PartyEntry* entry);
     KDialogBase* basicDialog(QWidget* parent);
     void loadPartyEntry(PartyEntry* saveMe, NewDynamic* dialog);
-    void ConfigDynamic::addDynamic(NewDynamic* dialog);
+    void addDynamic(NewDynamic* dialog);
 };
 
 class SelectionListItem : public QCheckListItem
