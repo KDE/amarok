@@ -250,10 +250,10 @@ MetaBundle::infoByColumn( int column, bool pretty ) const
         case PlaylistItem::Title:     return title();
         case PlaylistItem::Artist:    return artist();
         case PlaylistItem::Album:     return album();
-        case PlaylistItem::Year:      return QString::number( year() );
+        case PlaylistItem::Year:      return ( pretty && !year() ) ? QString() : QString::number( year() );
         case PlaylistItem::Comment:   return comment();
         case PlaylistItem::Genre:     return genre();
-        case PlaylistItem::Track:     return QString::number( track() );
+        case PlaylistItem::Track:     return ( pretty && !track() ) ? QString() : QString::number( track() );
         case PlaylistItem::Directory: return directory();
         case PlaylistItem::Length:    return pretty ? prettyLength() : QString::number( length() );
         case PlaylistItem::Bitrate:   return pretty ? prettyBitrate() : QString::number( bitrate() );
