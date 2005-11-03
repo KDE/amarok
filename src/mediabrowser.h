@@ -42,6 +42,7 @@ class MediaItem : public KListViewItem
         Type type() const { return m_type; }
         MediaItem *findItem(const QString &key) const;
         bool isLeaveItem() const;
+        virtual int played() const { return 0; }
 
         //attributes:
         KURL m_url;
@@ -119,7 +120,7 @@ class MediaDeviceList : public KListView
     private:
         void startDrag();
         KURL::List nodeBuildDragList( MediaItem* item, bool onlySelected=true );
-        int getSelectedLeaves(MediaItem *parent, QPtrList<MediaItem> *list, bool onlySelected=true); // leaves of selected items, returns no. of files within leaves
+        int getSelectedLeaves(MediaItem *parent, QPtrList<MediaItem> *list, bool onlySelected=true, bool onlyPlayed=false ); // leaves of selected items, returns no. of files within leaves
 
         // Reimplemented from KListView
         void contentsDragEnterEvent( QDragEnterEvent* );
@@ -224,9 +225,9 @@ class MediaDevice : public QObject
         virtual void synchronizeDevice() = 0;
         virtual bool addTrackToDevice(const QString& pathname, const MetaBundle& bundle, bool isPodcast) = 0;
 
-        void deleteFromDevice( MediaItem *item );
+        void deleteFromDevice( MediaItem *item, bool onlyPlayed=false, bool recursing=false );
         void deleteFile( const KURL &url);
-        virtual bool deleteItemFromDevice( MediaItem *item ) = 0;
+        virtual bool deleteItemFromDevice( MediaItem *item, bool onlyPlayed=false ) = 0;
 
         virtual QString createPathname(const MetaBundle& bundle) = 0;
 

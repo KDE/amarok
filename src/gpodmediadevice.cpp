@@ -52,6 +52,23 @@ class GpodMediaItem : public MediaItem
         void init() {m_track=NULL; m_playlist=NULL;}
         Itdb_Track *m_track;
         Itdb_Playlist *m_playlist;
+        int played() const { if(m_track) return m_track->playcount; else return 0; }
+        GpodMediaItem *findTrack(Itdb_Track *track)
+        {
+            if(m_track == track)
+                return this;
+
+            for(GpodMediaItem *it=dynamic_cast<GpodMediaItem *>(firstChild());
+                    it;
+                    it = dynamic_cast<GpodMediaItem *>(it->nextSibling()))
+            {
+                GpodMediaItem *found = it->findTrack(track);
+                if(found)
+                    return found;
+            }
+
+            return NULL;
+        }
 };
 #endif // HAVE_LIBGPOD
 
@@ -66,6 +83,11 @@ GpodMediaDevice::GpodMediaDevice( MediaDeviceView* parent, MediaDeviceList *list
 #ifdef HAVE_LIBGPOD
     dbChanged = false;
     m_itdb = NULL;
+    m_podcastItem = NULL;
+    m_staleItem = NULL;
+    m_orphanedItem = NULL;
+    m_invisibleItem = NULL;
+    m_playlistItem = NULL;
 #endif // HAVE_LIBGPOD
 }
 
@@ -306,7 +328,7 @@ GpodMediaDevice::addToPlaylist(MediaItem *mlist, MediaItem *after, QPtrList<Medi
 }
 
 bool
-GpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem)
+GpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
 {
 #ifdef HAVE_LIBGPOD
     GpodMediaItem *item = dynamic_cast<GpodMediaItem *>(mediaitem);
@@ -320,17 +342,37 @@ GpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem)
     case MediaItem::TRACK:
     case MediaItem::INVISIBLE:
     case MediaItem::PODCASTITEM:
+        if(!onlyPlayed || item->played() > 0)
         {
+            // delete from playlists
+            GpodMediaItem *i = m_playlistItem->findTrack(item->m_track);
+            while(i)
+            {
+                delete i;
+                i = m_playlistItem->findTrack(item->m_track);
+            }
+
+            // delete file
             KURL url;
             url.setPath(realPath(item->m_track->ipod_path));
             deleteFile( url );
+
+            // remove from database
             ret = removeDBTrack(item->m_track);
             delete item;
         }
         break;
     case MediaItem::STALE:
-        ret = removeDBTrack(item->m_track);
-        delete item;
+        {
+            GpodMediaItem *i = m_playlistItem->findTrack(item->m_track);
+            while(i)
+            {
+                delete i;
+                i = m_playlistItem->findTrack(item->m_track);
+            }
+            ret = removeDBTrack(item->m_track);
+            delete item;
+        }
         break;
     case MediaItem::ORPHANED:
         deleteFile( item->url() );
@@ -354,7 +396,7 @@ GpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem)
                     it = next)
             {
                 next = dynamic_cast<GpodMediaItem *>(it->nextSibling());
-                ret = ret && deleteItemFromDevice(it);
+                ret = ret && deleteItemFromDevice(it, onlyPlayed);
             }
         }
         if(item->type() == MediaItem::PLAYLIST)
@@ -364,9 +406,16 @@ GpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem)
         }
         if(item->type() != MediaItem::PLAYLISTSROOT
                 && item->type() != MediaItem::PODCASTSROOT
-                && item->type() != MediaItem::INVISIBLEROOT)
+                && item->type() != MediaItem::INVISIBLEROOT
+                && item->type() != MediaItem::STALEROOT
+                && item->type() != MediaItem::ORPHANEDROOT)
         {
-            delete item;
+            if(!onlyPlayed || item->played() > 0)
+            {
+                if(item->childCount() > 0)
+                    debug() << "recursive deletion should have removed all children from " << item << "(" << item->text(0) << ")" << endl;
+                delete item;
+            }
         }
         break;
     case MediaItem::PLAYLISTITEM:
@@ -614,6 +663,11 @@ GpodMediaDevice::closeDevice()  //SLOT
     debug() << "Syncing iPod!" << endl;
 
     m_listview->clear();
+    m_podcastItem = NULL;
+    m_playlistItem = NULL;
+    m_orphanedItem = NULL;
+    m_staleItem = NULL;
+    m_invisibleItem = NULL;
 
     writeITunesDB();
 
@@ -921,12 +975,15 @@ GpodMediaDevice::getTitle(const QString &artist, const QString &album, const QSt
             return track;
     }
 
-    item = dynamic_cast<GpodMediaItem *>(m_podcastItem->findItem(album));
-    if(item)
+    if(m_podcastItem)
     {
-        GpodMediaItem *track = dynamic_cast<GpodMediaItem *>(item->findItem(title));
-        if(track)
-            return track;
+        item = dynamic_cast<GpodMediaItem *>(m_podcastItem->findItem(album));
+        if(item)
+        {
+            GpodMediaItem *track = dynamic_cast<GpodMediaItem *>(item->findItem(title));
+            if(track)
+                return track;
+        }
     }
 
     return NULL;

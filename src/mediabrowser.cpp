@@ -368,7 +368,7 @@ MediaDeviceList::nodeBuildDragList( MediaItem* item, bool onlySelected )
 }
 
 int
-MediaDeviceList::getSelectedLeaves(MediaItem *parent, QPtrList<MediaItem> *list, bool onlySelected)
+MediaDeviceList::getSelectedLeaves(MediaItem *parent, QPtrList<MediaItem> *list, bool onlySelected, bool onlyPlayed )
 {
     int numFiles = 0;
     if(list==NULL)
@@ -384,7 +384,7 @@ MediaDeviceList::getSelectedLeaves(MediaItem *parent, QPtrList<MediaItem> *list,
     {
         if(it->childCount())
         {
-            numFiles += getSelectedLeaves(it, list, onlySelected && !it->isSelected());
+            numFiles += getSelectedLeaves(it, list, onlySelected && !it->isSelected(), onlyPlayed);
         }
         else if(it->isSelected() || !onlySelected)
         {
@@ -393,9 +393,17 @@ MediaDeviceList::getSelectedLeaves(MediaItem *parent, QPtrList<MediaItem> *list,
                     || it->type() == MediaItem::INVISIBLE
                     || it->type() == MediaItem::ORPHANED)
             {
-                numFiles++;
+                if(onlyPlayed)
+                {
+                    if(it->played() > 0)
+                        numFiles++;
+                }
+                else
+                {
+                    numFiles++;
+                }
             }
-            if(it->isLeaveItem())
+            if(it->isLeaveItem() && (!onlyPlayed || it->played()>0))
                 list->append( it );
         }
     }
@@ -530,15 +538,16 @@ MediaDeviceList::viewportPaintEvent( QPaintEvent *e )
 
 
 void
-MediaDeviceList::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SLOT
+MediaDeviceList::rmbPressed( QListViewItem* qitem, const QPoint& point, int ) //SLOT
 {
+    MediaItem *item = dynamic_cast<MediaItem *>(qitem);
     if ( item )
     {
         KURL::List urls = nodeBuildDragList( 0 );
         KPopupMenu menu( this );
 
         enum Actions { APPEND, MAKE, QUEUE, BURN_ARTIST, BURN_ALBUM,
-                       BURN_DATACD, BURN_AUDIOCD, RENAME, ADD, DELETE };
+                       BURN_DATACD, BURN_AUDIOCD, RENAME, ADD, DELETE_PLAYED, DELETE };
 
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue Track" ), QUEUE );
@@ -567,14 +576,19 @@ MediaDeviceList::rmbPressed( QListViewItem* item, const QPoint& point, int ) //S
 
         menu.insertSeparator();
 
-        if( dynamic_cast<MediaItem *>(item) && static_cast<MediaItem *>(item)->type() == MediaItem::PLAYLIST )
+        if( item->type() == MediaItem::PLAYLIST )
         {
             menu.insertItem( SmallIconSet( "editrename" ), i18n( "Rename" ), RENAME );
         }
 
-        if( dynamic_cast<MediaItem *>(item) && static_cast<MediaItem *>(item)->type() == MediaItem::ORPHANED || static_cast<MediaItem *>(item)->type() == MediaItem::ORPHANEDROOT )
+        if( item->type() == MediaItem::ORPHANED || item->type() == MediaItem::ORPHANEDROOT )
         {
             menu.insertItem( SmallIconSet( "editrename" ), i18n( "Add to Database" ), ADD );
+        }
+
+        if( item->type() == MediaItem::PODCASTSROOT || item->type() == MediaItem::PODCASTCHANNEL )
+        {
+            menu.insertItem( SmallIconSet( "editdelete" ), i18n( "Delete Podcasts Already Played" ), DELETE_PLAYED );
         }
 
         menu.insertItem( SmallIconSet( "editdelete" ), i18n( "Delete" ), DELETE );
@@ -607,7 +621,7 @@ MediaDeviceList::rmbPressed( QListViewItem* item, const QPoint& point, int ) //S
                 rename(item, 0);
                 break;
             case ADD:
-                if(dynamic_cast<MediaItem *>(item) && static_cast<MediaItem *>(item)->type() == MediaItem::ORPHANEDROOT)
+                if(item->type() == MediaItem::ORPHANEDROOT)
                 {
                     MediaItem *next = NULL;
                     for(MediaItem *it = dynamic_cast<MediaItem *>(item->firstChild());
@@ -634,6 +648,16 @@ MediaDeviceList::rmbPressed( QListViewItem* item, const QPoint& point, int ) //S
                             delete it;
                         }
                     }
+                }
+                break;
+            case DELETE_PLAYED:
+                {
+                    MediaItem *podcasts = NULL;
+                    if(item->type() == MediaItem::PODCASTCHANNEL)
+                        podcasts = dynamic_cast<MediaItem *>(item->parent());
+                    else
+                        podcasts = item;
+                    m_parent->m_device->deleteFromDevice( podcasts, true );
                 }
                 break;
             case DELETE:
@@ -756,6 +780,7 @@ MediaDevice::addURL( const KURL& url, MetaBundle *bundle, bool isPodcast )
         {
             text += " (" + i18n("Podcast") + ")";
         }
+        debug() << "item text=" << item->text(0) << endl;
         item->setText( 0, text);
 
         m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_transferList->childCount() ) );
@@ -1088,21 +1113,17 @@ MediaDevice::deleteFile( const KURL &url )
 }
 
 void
-MediaDevice::deleteFromDevice(MediaItem *item)
+MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
 {
-    MediaItem* fi;
+    MediaItem* fi = item;
 
-    if ( !item )
+    if ( !recursing )
     {
         QPtrList<MediaItem> list;
         //NOTE we assume that currentItem is the main target
-        int numFiles  = m_parent->m_deviceList->getSelectedLeaves(NULL, &list);
+        int numFiles  = m_parent->m_deviceList->getSelectedLeaves(item, &list, onlyPlayed);
 
         m_parent->m_stats->setText( i18n( "1 track to be deleted", "%n tracks to be deleted", numFiles ) );
-        m_parent->m_progress->setProgress( 0 );
-        m_parent->m_progress->setTotalSteps( numFiles );
-        m_parent->m_progress->show();
-
         if(numFiles > 0)
         {
             int button = KMessageBox::warningContinueCancel( m_parent,
@@ -1114,14 +1135,22 @@ MediaDevice::deleteFromDevice(MediaItem *item)
                     KGuiItem(i18n("&Delete"),"editdelete") );
 
             if ( button != KMessageBox::Continue )
+            {
+                m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_transferList->childCount() ) );
                 return;
+            }
+
+            m_parent->m_progress->setProgress( 0 );
+            m_parent->m_progress->setTotalSteps( numFiles );
+            m_parent->m_progress->show();
+
         }
+        // don't return if numFiles==0: playlist items might be to delete
 
         lockDevice(true);
-        fi = (MediaItem*)m_parent->m_deviceList->firstChild();
+        if(fi==NULL)
+            fi = (MediaItem*)m_parent->m_deviceList->firstChild();
     }
-    else
-        fi = item;
 
     while ( fi )
     {
@@ -1129,12 +1158,12 @@ MediaDevice::deleteFromDevice(MediaItem *item)
 
         if ( fi->isSelected() )
         {
-            deleteItemFromDevice(fi);
+            deleteItemFromDevice(fi, onlyPlayed);
         }
         else
         {
             if ( fi->childCount() )
-                deleteFromDevice( (MediaItem*)fi->firstChild() );
+                deleteFromDevice( (MediaItem*)fi->firstChild(), onlyPlayed, true );
         }
 
         fi = next;
