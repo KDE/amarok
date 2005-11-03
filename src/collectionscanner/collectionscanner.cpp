@@ -110,11 +110,14 @@ CollectionScanner::doJob() //SLOT
 void
 CollectionScanner::readDir( const QString& path, QStringList& entries )
 {
-    //TODO Add recursive symlink loop protection
-
     // linux specific, but this fits the 90% rule
     if( path.startsWith( "/dev" ) || path.startsWith( "/sys" ) || path.startsWith( "/proc" ) )
         return;
+    // Protect against dupes and symlink loops
+    if( m_processedFolders.contains( path ) )
+        return;
+
+    m_processedFolders += path;
 
     QDir dir( path );
 

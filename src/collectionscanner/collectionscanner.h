@@ -71,6 +71,7 @@ private:
 
     bool        m_importPlaylists;
     QStringList m_folders;
+    QStringList m_processedFolders;
     bool        m_recursively;
 
     std::ofstream log;
