@@ -9,7 +9,6 @@
 #include "amarok.h"            //actionCollection()
 #include "browserToolBar.h"
 #include "collectiondb.h"      //smart playlists
-#include "collectionreader.h"
 #include "debug.h"
 #include "k3bexporter.h"
 #include "mediabrowser.h"
@@ -1847,11 +1846,12 @@ void PlaylistBrowser::currentItemChanged( QListViewItem *item )    //SLOT
 
 void PlaylistBrowser::customEvent( QCustomEvent *e )
 {
-    //if a playlist is found in collection folders it will be automatically added to the playlist browser
+    // If a playlist is found in collection folders it will be automatically added to the playlist browser
+    // The CollectionReader sends a PlaylistFoundEvent when a playlist is found
 
-    // the CollectionReader sends a PlaylistFoundEvent when a playlist is found
-    CollectionReader::PlaylistFoundEvent* p = (CollectionReader::PlaylistFoundEvent*)e;
-    addPlaylist( p->path() );
+    //FIXME
+//     CollectionReader::PlaylistFoundEvent* p = (CollectionReader::PlaylistFoundEvent*)e;
+//     addPlaylist( p->path() );
 }
 
 void PlaylistBrowser::slotAddMenu( int id ) //SLOT
