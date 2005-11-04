@@ -57,14 +57,16 @@ CollectionScanner::CollectionScanner( const QStringList& folders, bool recursive
         , m_importPlaylists( importPlaylists )
         , m_folders( folders )
         , m_recursively( recursive )
-        , log( "~/collection_scanner.log" )
+        , log( "~/collection_scanner.log" ) //FIXME
 {
     QTimer::singleShot( 0, this, SLOT( doJob() ) );
 }
 
 
 CollectionScanner::~CollectionScanner()
-{}
+{
+    DEBUG_BLOCK
+}
 
 
 void
@@ -95,12 +97,14 @@ CollectionScanner::doJob() //SLOT
     }
 
     if( !entries.isEmpty() ) {
-        const QString str = QString( "<itemcount count='%1'/>" ).arg( entries.count() );
-        std::cout << str.utf8();
+        AttributeMap attributes;
+        attributes["count"] = QString::number( entries.count() );
+        writeElement( "itemcount", attributes );
+
         scanFiles( entries );
     }
 
-    std::cout << "</scanner>";
+    std::cout << "</scanner>" << std::endl;
     log.close();
 
     quit();
@@ -117,18 +121,11 @@ CollectionScanner::readDir( const QString& path, QStringList& entries )
     if( m_processedFolders.contains( path ) )
         return;
 
+    AttributeMap attributes;
+    attributes["path"] = path;
+    writeElement( "folder", attributes );
+
     m_processedFolders += path;
-
-    QDomDocument doc; // A dummy. We don't really use DOM, but SAX2
-    QDomElement folder = doc.createElement( "folder" );
-    folder.setAttribute( "path", path );
-
-    QString text;
-    QTextStream stream( &text, IO_WriteOnly );
-    folder.save( stream, 0 );
-
-    std::cout << text.local8Bit() << std::endl;
-
     QDir dir( path );
 
 
@@ -209,35 +206,47 @@ CollectionScanner::readTags( const QString& path )
         return;
     }
 
-    QDomDocument doc; // A dummy. We don't really use DOM, but SAX2
-    QDomElement tags = doc.createElement( "tags" );
-    tags.setAttribute( "path", path );
+    AttributeMap attributes;
 
     #define strip( x ) TStringToQString( x ).stripWhiteSpace()
-    tags.setAttribute( "title", strip( tag->title() ) );
-    tags.setAttribute( "artist", strip( tag->artist() ) );
-    tags.setAttribute( "album", strip( tag->album() ) );
-    tags.setAttribute( "comment", strip( tag->comment() ) );
-    tags.setAttribute( "genre", strip( tag->genre() ) );
-    tags.setAttribute( "year", tag->year() ? QString::number( tag->year() ) : QString() );
-    tags.setAttribute( "track", tag->track() ? QString::number( tag->track() ) : QString() );
+    attributes["path"]    = path;
+    attributes["title"]   = strip( tag->title() );
+    attributes["artist"]  = strip( tag->artist() );
+    attributes["album"]   = strip( tag->album() );
+    attributes["comment"] = strip( tag->comment() );
+    attributes["genre"]   = strip( tag->genre() );
+    attributes["year"]    = tag->year() ? QString::number( tag->year() ) : QString();
+    attributes["track"]   = tag->track() ? QString::number( tag->track() ) : QString();
     #undef strip
 
     TagLib::AudioProperties* ap = fileref.audioProperties();
     if( ap ) {
-        tags.setAttribute( "audioproperties", "true" );
-        tags.setAttribute( "bitrate",    QString::number( ap->bitrate() ) );
-        tags.setAttribute( "length",     QString::number( ap->length() ) );
-        tags.setAttribute( "samplerate", QString::number( ap->sampleRate() ) );
+        attributes["audioproperties"] = "true";
+        attributes["bitrate"]         = QString::number( ap->bitrate() );
+        attributes["length"]          = QString::number( ap->length() );
+        attributes["samplerate"]      = QString::number( ap->sampleRate() );
     }
     else
-        tags.setAttribute( "audioproperties", "false" );
+        attributes["audioproperties"] = "false";
 
+
+    writeElement( "tags", attributes );
+}
+
+
+void
+CollectionScanner::writeElement( const QString& name, const AttributeMap& attributes )
+{
+    QDomDocument doc; // A dummy. We don't really use DOM, but SAX2
+    QDomElement element = doc.createElement( name );
+
+    AttributeMap::ConstIterator it;
+    for( it = attributes.begin(); it != attributes.end(); ++it )
+        element.setAttribute( it.key(), it.data() );
 
     QString text;
     QTextStream stream( &text, IO_WriteOnly );
-    tags.save( stream, 0 );
-
+    element.save( stream, 0 );
 
     std::cout << text.local8Bit() << std::endl;
 }

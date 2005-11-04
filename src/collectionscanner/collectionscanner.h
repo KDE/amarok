@@ -22,7 +22,9 @@
 
 #include <fstream>
 
+#include <qmap.h>
 #include <qstringlist.h>
+
 #include <kapplication.h>
 
 
@@ -51,6 +53,17 @@ private:
 
     /** If you want Accurate reading say so */
     void readTags( const QString& path );
+
+
+    typedef QMap<QString, QString> AttributeMap;
+
+    /**
+     * Helper method for writing XML elements to stdout.
+     * @name Name of the element.
+     * @attributes Key/value map of attributes.
+     */
+    void writeElement( const QString& name, const AttributeMap& attributes );
+
 
     /**
      * @return the LOWERCASE file extension without the preceding '.', or "" if there is none
