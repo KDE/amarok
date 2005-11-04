@@ -28,7 +28,7 @@
 #include <klocale.h>
 
 PlaylistSelection::PlaylistSelection( QWidget* parent, char* name )
-    : KListView( parent, name
+    : KListView( parent, name )
 {
     addColumn( i18n("Select Playlists") );
     setRootIsDecorated( true );
