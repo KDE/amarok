@@ -57,7 +57,6 @@ amarokapp_SOURCES = \
     clicklineedit.cpp \
     collectionbrowser.cpp \
     collectiondb.cpp \
-    collectionreader.cpp \
     configdialog.cpp \
     contextbrowser.cpp \
     coverfetcher.cpp \
