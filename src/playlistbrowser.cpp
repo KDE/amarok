@@ -1466,6 +1466,8 @@ void PlaylistBrowser::addToDynamic()
             }
         }
     }
+
+    Party::instance()->setDynamicItems(m_dynamicEntries);
 }
 
 void PlaylistBrowser::subFromDynamic()
@@ -1489,6 +1491,8 @@ void PlaylistBrowser::subFromDynamic()
             }
         }
     }
+
+    Party::instance()->setDynamicItems(m_dynamicEntries);
 }
 
 void PlaylistBrowser::removeSelectedItems() //SLOT
@@ -1956,9 +1960,9 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         if( isDynamicEnabled() && AmarokConfig::dynamicType() == "Custom" )
         {
             if( static_cast<PlaylistEntry*>(item)->isDynamic() )
-                menu.insertItem( SmallIconSet( "edit_remove" ), i18n( "Remove From Dynamic Mode" ), DYNSUB );
+                menu.insertItem( SmallIconSet( "edit_remove" ), i18n( "Remove From %1" ).arg(Party::instance()->title()), DYNSUB );
             else
-                menu.insertItem( SmallIconSet( "edit_add" ), i18n( "Add to Dynamic Mode" ), DYNADD );
+                menu.insertItem( SmallIconSet( "edit_add" ), i18n( "Add to the %1 Entries" ).arg(Party::instance()->title()), DYNADD );
         }
 
         menu.insertSeparator();
@@ -2013,9 +2017,9 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         if( isDynamicEnabled() && AmarokConfig::dynamicType() == "Custom" )
         {
             if( static_cast<SmartPlaylist*>(item)->isDynamic() )
-                menu.insertItem( SmallIconSet( "edit_remove" ), i18n( "Remove From Dynamic Mode" ), DYNSUB );
+                menu.insertItem( SmallIconSet( "edit_remove" ), i18n( "Remove From %1" ).arg(Party::instance()->title()), DYNSUB );
             else
-                menu.insertItem( SmallIconSet( "edit_add" ), i18n( "Add to Dynamic Mode" ), DYNADD );
+                menu.insertItem( SmallIconSet( "edit_add" ), i18n( "Add to the %1 Entries" ).arg(Party::instance()->title()), DYNADD );
         }
 
         menu.insertSeparator();

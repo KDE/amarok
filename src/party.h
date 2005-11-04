@@ -33,8 +33,6 @@
 #ifndef AMAROK_PARTY_H
 #define AMAROK_PARTY_H
 
-#include "playlist.h"
-
 #include <qlistview.h>
 #include <qvbox.h>          //baseclass
 
@@ -58,30 +56,26 @@ class Party : public QVBox
 
         bool    isChecked();
 
-        int     previousCount() { return m_previousCount; }
-        int     upcomingCount() { return m_upcomingCount; }
-        int     appendCount() { return m_appendCount; }
-        int     appendType() { return m_appendType; }
-        bool    cycleTracks() { return m_cycleTracks; }
-        bool    markHistory() { return m_markHistory; }
-        QString customList();
+        int     previousCount();
+        int     upcomingCount();
+        int     appendCount();
+        int     appendType();
+        bool    cycleTracks();
+        bool    markHistory();
+        QString title(); //title of currently running playlist
+        void    setDynamicItems(const QPtrList<QListViewItem>& newList);
 
         static  Party *instance() { return s_instance; }
 
     public slots:
-        void    repopulate()      { Playlist::instance()->repopulate(); }
+        void    repopulate();
 
     private slots:
         void    applySettings();
         void    setDynamicMode( bool enable, bool showDialog = true );
 
     private:
-        int     m_previousCount;
-        int     m_upcomingCount;
-        int     m_appendCount;
-        int     m_appendType;
-        bool    m_cycleTracks;
-        bool    m_markHistory;
+        PartyEntry* m_currentParty;
 
         enum    UpdateMe{ PARTY, CYCLE, HISTORY, PREVIOUS, UPCOMING, APPEND, TYPE };
 

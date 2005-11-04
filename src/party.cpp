@@ -45,6 +45,7 @@ Party *Party::s_instance = 0;
 
 Party::Party( QWidget *parent, const char *name )
     : QVBox( parent, name )
+    , m_currentParty(0)
     , m_ac( new KActionCollection( this ) )
 {
     s_instance = this;
@@ -79,17 +80,49 @@ Party::~Party()
 void
 Party::loadConfig( PartyEntry *config )
 {
-    //if(!config)
-//        return;
-    m_upcomingCount = config->upcoming();
-    m_previousCount = config->previous();
-    m_appendCount = config->appendCount();
-    m_cycleTracks = config->isCycled();
-    m_markHistory= config->isMarked();
-    m_appendType = config->appendType();
-
+    m_currentParty = config;
     AmarokConfig::setDynamicCustomList( config->items() );
     applySettings();
+}
+
+#define partyInfo(function, default) { \
+    if (m_currentParty) return m_currentParty->function(); \
+    else return default; }
+    //do something sane if m_currentParty has been deleted
+
+int  Party::previousCount() { partyInfo(previous,5); }
+int  Party::upcomingCount() { partyInfo(upcoming,20); } 
+int  Party::appendCount() { partyInfo(appendCount,1); }
+int  Party::appendType() { partyInfo(appendType,0); }
+bool Party::cycleTracks() { partyInfo(isCycled,true); }
+bool Party::markHistory() { partyInfo(isMarked,true); }
+QString Party::title() { partyInfo(title,"Invalid"); } //no i18n since its just a fallback
+#undef partyInfo
+
+
+void Party::setDynamicItems(const QPtrList<QListViewItem>& newList)
+{
+    if(!m_currentParty)
+       { warning() << "Party has a 0 for m_currentParty." << endl;  return; }
+    
+    QStringList strListEntries;
+    QListViewItem* entry;
+    QPtrListIterator<QListViewItem> it( newList );
+
+    while ((entry = it.current()) != 0)
+    {
+        ++it;
+        strListEntries << entry->text(0);
+    }
+
+    m_currentParty->setItems(strListEntries);
+    PlaylistBrowser::instance()->saveDynamics();
+}
+
+void 
+Party::repopulate() //SLOT
+{ 
+    Playlist::instance()->repopulate(); 
 }
 
 void
