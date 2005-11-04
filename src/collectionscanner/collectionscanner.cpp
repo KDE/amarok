@@ -146,7 +146,8 @@ CollectionScanner::readDir( const QString& path, QStringList& entries )
     // Recurse folders
     for( QStringList::ConstIterator it = dirs.begin(); it != dirs.end(); ++it ) {
         if( (*it).startsWith( "." ) ) continue;
-        readDir( dir.absFilePath( *it ), entries );
+        // we must add a '/' after the dirname, to avoid dupes
+        readDir( dir.absFilePath( *it ) + "/", entries );
     }
 }
 
