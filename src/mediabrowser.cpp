@@ -1121,7 +1121,7 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
     {
         QPtrList<MediaItem> list;
         //NOTE we assume that currentItem is the main target
-        int numFiles  = m_parent->m_deviceList->getSelectedLeaves(item, &list, onlyPlayed);
+        int numFiles  = m_parent->m_deviceList->getSelectedLeaves(item, &list, true /* only selected */, onlyPlayed);
 
         m_parent->m_stats->setText( i18n( "1 track to be deleted", "%n tracks to be deleted", numFiles ) );
         if(numFiles > 0)
