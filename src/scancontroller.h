@@ -61,7 +61,7 @@ class ScanController : public QObject, public QXmlDefaultHandler
         static ScanController* s_instance;
 
         DbConnection* const m_db;
-        KProcIO*            m_scanner;
+        KProcIO*      const m_scanner;
         QStringList         m_folders;
 
         QXmlInputSource  m_source;

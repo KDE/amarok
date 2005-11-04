@@ -14,6 +14,7 @@
 #include "k3bexporter.h"
 #include "playlistwindow.h"
 #include "playlist.h"
+#include "scancontroller.h"
 #include "socketserver.h"       //Vis::Selector::showInstance()
 
 #include <qpixmap.h>
@@ -101,11 +102,13 @@ Menu::Menu()
     insertItem( SmallIconSet( "visualizations"), i18n( "&Visualizations" ), ID_SHOW_VIS_SELECTOR );
     insertItem( SmallIconSet( "equalizer"), i18n( "E&qualizer" ), kapp, SLOT( slotConfigEqualizer() ), 0, ID_CONFIGURE_EQUALIZER );
     safePlug( ac, "script_manager", this );
+    safePlug( ac, "statistics", this );
 
     insertSeparator();
 
     insertItem( SmallIconSet( "wizard" ), i18n( "First-Run &Wizard" ), ID_SHOW_WIZARD );
     insertItem( i18n("&Rescan Collection"), ID_RESCAN_COLLECTION );
+    setItemEnabled( ID_RESCAN_COLLECTION, !ScanController::instance() );
 
     insertSeparator();
 

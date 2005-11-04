@@ -32,6 +32,7 @@
 #include "playlist.h"
 #include "playlistbrowser.h"
 #include "playlistwindow.h"
+#include "scancontroller.h"
 #include "scriptmanager.h"
 #include "statistics.h"
 #include "statusbar.h"
@@ -758,6 +759,7 @@ void PlaylistWindow::actionsMenuAboutToShow() //SLOT
 void PlaylistWindow::toolsMenuAboutToShow() //SLOT
 {
     m_toolsMenu->setItemEnabled( amaroK::Menu::ID_CONFIGURE_EQUALIZER, EngineController::hasEngineProperty( "HasEqualizer" ) );
+    m_toolsMenu->setItemEnabled( amaroK::Menu::ID_RESCAN_COLLECTION, !ScanController::instance() );
 }
 
 

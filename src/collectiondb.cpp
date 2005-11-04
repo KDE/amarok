@@ -1968,7 +1968,7 @@ CollectionDB::startScan()  //SLOT
         dropTables();
         createTables();
     }
-    else if( PlaylistBrowser::instance() )
+    else if( PlaylistBrowser::instance() && !ScanController::instance() )
     {
         emit scanStarted();
         new ScanController( this, false, folders );
