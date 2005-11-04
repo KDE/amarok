@@ -27,122 +27,127 @@
 #include <klistview.h>
 #include <klocale.h>
 
-PlaylistSelection::PlaylistSelection(QWidget* parent, char* name)
-: KListView(parent, name)
-{ 
-    addColumn(i18n("Select Playlists"));
-    setRootIsDecorated(true);
+PlaylistSelection::PlaylistSelection( QWidget* parent, char* name )
+    : KListView( parent, name
+{
+    addColumn( i18n("Select Playlists") );
+    setRootIsDecorated( true );
     PlaylistBrowserView* browserTree = PlaylistBrowser::instance()->getListView();
-    QListViewItem* browserItem = browserTree->firstChild();
+    QListViewItem*       browserItem = browserTree->firstChild();
     //load into the tree the first two items, which is the smart playlist and the playlist
-    for(int i = 0; i<2; i++)
+    for( int i = 0; i<2; i++ )
     {
-        QListViewItem* newItem = new QListViewItem(this, browserItem->text(0));
-        newItem->setPixmap(0,*browserItem->pixmap(0));
-        loadChildren(browserItem, newItem);
-        newItem->setOpen(true);
-        browserItem= browserItem->nextSibling();
+        QListViewItem* newItem = new QListViewItem( this, browserItem->text(0) );
+        newItem->setPixmap( 0, *browserItem->pixmap(0) );
+        loadChildren( browserItem, newItem );
+        newItem->setOpen( true );
+        browserItem = browserItem->nextSibling();
     }
 
 }
 
-void PlaylistSelection::loadChildren(QListViewItem* browserParent, QListViewItem* selectionParent)
+void PlaylistSelection::loadChildren( QListViewItem* browserParent, QListViewItem* selectionParent )
 {
     QListViewItem* browserChild = browserParent->firstChild();
-    while(browserChild) 
+
+    while( browserChild )
     {
-        SelectionListItem* selectionChild = new SelectionListItem(selectionParent, browserChild->text(0), browserChild);
-        selectionChild->setPixmap(0,*browserChild->pixmap(0));
-        if(browserChild->childCount() > 0)
-            loadChildren(browserChild, selectionChild);
+        SelectionListItem* selectionChild = new SelectionListItem( selectionParent, browserChild->text(0), browserChild );
+                           selectionChild->setPixmap( 0,*browserChild->pixmap(0) );
+
+        if( browserChild->childCount() > 0 )
+            loadChildren( browserChild, selectionChild );
+
         browserChild = browserChild->nextSibling();
     }
 }
+
 ////////////////////////////////
 /// ConfigDynamic
 ////////////////////////////////
-namespace ConfigDynamic 
+namespace ConfigDynamic
 {
-    KDialogBase* basicDialog(QWidget* parent)
+    KDialogBase* basicDialog( QWidget* parent )
     {
-        KDialogBase* dialog = new KDialogBase(parent
-            , "new dynamic"
-            , true
-            , i18n("Create Dynamic Playlist")
-            , KDialogBase::Ok | KDialogBase::Cancel);
+        KDialogBase* dialog = new KDialogBase( parent, "new dynamic", true, i18n("Create Dynamic Playlist")
+                                             , KDialogBase::Ok | KDialogBase::Cancel );
         kapp->setTopWidget( dialog );
         NewDynamic* nd = new NewDynamic( dialog, "new dynamic");
         //QSizePolicy policy;
         //policy.setHorData(QSizePolicy::Maximum);
         //dialog->setSizePolicy(policy);
-        dialog->setMainWidget(nd);
+        dialog->setMainWidget( nd );
         return dialog;
     }
-    
-    void dynamicDialog(QWidget* parent)
+
+    void dynamicDialog( QWidget* parent )
     {
-        KDialogBase* dialog = basicDialog(parent);
-        if(dialog->exec() == QDialog::Accepted)
+        KDialogBase* dialog = basicDialog( parent );
+        if( dialog->exec() == QDialog::Accepted )
             addDynamic(static_cast<NewDynamic*>(dialog->mainWidget()));
     }
-    
-    void editDynamicPlaylist(QWidget* parent, PartyEntry* entry)
+
+    void editDynamicPlaylist( QWidget* parent, PartyEntry* entry )
     {
-        KDialogBase* dialog = basicDialog(parent);
-        NewDynamic* nd = static_cast<NewDynamic*>(dialog->mainWidget());
-        nd->m_cycleTracks->setChecked(entry->isCycled());
-        nd->m_markHistory->setChecked(entry->isMarked());
-        nd->m_upcomingIntSpinBox->setValue(entry->upcoming());
-        nd->m_previousIntSpinBox->setValue(entry->previous());
-        nd->m_appendCountIntSpinBox->setValue(entry->appendCount());
-        nd->m_name->setText(entry->title());
-        if(entry->appendType() == Party::CUSTOM)
+        KDialogBase* dialog = basicDialog( parent );
+        NewDynamic*  nd     = static_cast<NewDynamic*>(dialog->mainWidget());
+
+        nd->m_name->setText( entry->title() );
+        nd->m_cycleTracks->setChecked( entry->isCycled() );
+        nd->m_markHistory->setChecked( entry->isMarked() );
+        nd->m_upcomingIntSpinBox->setValue( entry->upcoming() );
+        nd->m_previousIntSpinBox->setValue( entry->previous() );
+        nd->m_appendCountIntSpinBox->setValue( entry->appendCount() );
+
+        if( entry->appendType() == Party::CUSTOM )
         {
             //check items in the custom playlist
             QStringList items = entry->items();
-            foreach(items)
+            foreach( items )
             {
-                QCheckListItem* current = static_cast<QCheckListItem*>(nd->selectPlaylist->findItem((*it),0));
-                if(current)
+                QCheckListItem* current = static_cast<QCheckListItem*>( nd->selectPlaylist->findItem((*it),0) );
+                if( current )
                     current->setOn(true);
             }
-            nd->m_mixGroupBox->setShown(false);
+            nd->m_mixGroupBox->setShown( false );
         }
         else //if its a suggested song or a random mix...
         {
-           nd->selectPlaylist->setShown(false);
-           if(entry->appendType() == Party::RANDOM)
+           nd->selectPlaylist->setShown( false );
+           if( entry->appendType() == Party::RANDOM )
            {
-              nd->m_image->setPixmap(KGlobal::iconLoader()->loadIcon("random",KIcon::Toolbar,KIcon::SizeLarge));
+              nd->m_image->setPixmap( KGlobal::iconLoader()->loadIcon( "random", KIcon::Toolbar,KIcon::SizeLarge ) );
            }
            else
-              nd->m_mixLabel->setText("<h3>" + i18n("Suggested Songs") + "</h3>");
+              nd->m_mixLabel->setText( "<h3>" + i18n("Suggested Songs") + "</h3>" );
         }
         //dialog->setMinimumWidth(nd->minimumWidth());
         //dialog->setMaximumWidth(nd->maximumWidth());
         //dialog->adjustSize();
-        if(dialog->exec() == QDialog::Accepted)
+        if( dialog->exec() == QDialog::Accepted )
         {
-            loadPartyEntry(entry,nd); 
+            loadPartyEntry( entry,nd );
             PlaylistBrowser::instance()->getDynamicCategory()->sortChildItems( 0, true );
             PlaylistBrowser::instance()->saveDynamics();
         }
-        
+
     }
-    
-    void loadPartyEntry(PartyEntry* saveMe, NewDynamic* dialog)
+
+    void loadPartyEntry( PartyEntry* saveMe, NewDynamic* dialog )
     {
+        saveMe->setTitle(dialog->m_name->text());
         saveMe->setCycled( dialog->m_cycleTracks->isChecked() );
         saveMe->setMarked( dialog->m_markHistory->isChecked() );
         saveMe->setUpcoming( dialog->m_upcomingIntSpinBox->value() );
         saveMe->setPrevious( dialog->m_previousIntSpinBox->value() );
         saveMe->setAppendCount( dialog->m_appendCountIntSpinBox->value() );
-        saveMe->setTitle(dialog->m_name->text());
-    
+
         QStringList list;
         debug() << "Saving custom list..." << endl;
-        QListViewItemIterator it(dialog->selectPlaylist, QListViewItemIterator::Checked);
-        while(it.current()) {
+        QListViewItemIterator it( dialog->selectPlaylist, QListViewItemIterator::Checked );
+
+        while( it.current() )
+        {
             list.append( it.current()->text(0) );
             ++it;
         }
@@ -151,11 +156,14 @@ namespace ConfigDynamic
 
     void addDynamic(NewDynamic* dialog)
     {
-        QListViewItem* parent =PlaylistBrowser::instance()->getDynamicCategory();
-        PartyEntry *saveMe = new PartyEntry( parent, 0, dialog->m_name->text() );
-        loadPartyEntry(saveMe, dialog);
+        QListViewItem   *parent = PlaylistBrowser::instance()->getDynamicCategory();
+        PartyEntry      *saveMe = new PartyEntry( parent, 0, dialog->m_name->text() );
+
+        loadPartyEntry( saveMe, dialog );
+
         parent->sortChildItems( 0, true );
         parent->setOpen( true );
+
         PlaylistBrowser::instance()->saveDynamics();
     }
 
@@ -163,22 +171,23 @@ namespace ConfigDynamic
 ////////////////////////////////
 /// SelectionListItem
 ////////////////////////////////
-SelectionListItem::SelectionListItem(QCheckListItem * parent, const QString& text, QListViewItem* browserEquivalent)
-    : QCheckListItem(parent, text, QCheckListItem::CheckBox)
-    , m_browserEquivalent(browserEquivalent)
+SelectionListItem::SelectionListItem( QCheckListItem * parent, const QString& text, QListViewItem* browserEquivalent )
+    : QCheckListItem( parent, text, QCheckListItem::CheckBox )
+    , m_browserEquivalent( browserEquivalent )
 { }
 
-SelectionListItem::SelectionListItem(QListViewItem * parent, const QString& text, QListViewItem* browserEquivalent)
-    : QCheckListItem(parent, text, QCheckListItem::CheckBox)
-    , m_browserEquivalent(browserEquivalent)
+SelectionListItem::SelectionListItem( QListViewItem * parent, const QString& text, QListViewItem* browserEquivalent )
+    : QCheckListItem( parent, text, QCheckListItem::CheckBox )
+    , m_browserEquivalent( browserEquivalent )
 { }
 
-void SelectionListItem::stateChange(bool b)
+void SelectionListItem::stateChange( bool b )
 {
     QListViewItem* it = firstChild();
-    while (it) {
-        static_cast<SelectionListItem*>(it)->setOn(b); //calls stateChange, so is recursive
-        it=it->nextSibling();
+    while( it )
+    {
+        static_cast<SelectionListItem*>(it)->setOn( b ); //calls stateChange, so is recursive
+        it = it->nextSibling();
     }
 }
 #include "playlistselection.moc"

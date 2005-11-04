@@ -20,30 +20,35 @@ class PartyEntry;
 //this is a widget used in newdynamic.ui
 class PlaylistSelection : public KListView
 {
- Q_OBJECT
- public:
-    PlaylistSelection(QWidget* parent, char* name);
- private:
-    void loadChildren(QListViewItem* browserParent, QListViewItem* selectionParent);
+        Q_OBJECT
+    public:
+        PlaylistSelection(QWidget* parent, char* name);
+
+    private:
+        void loadChildren(QListViewItem* browserParent, QListViewItem* selectionParent);
 };
 
 namespace ConfigDynamic
 {
-    void dynamicDialog(QWidget* parent);
-    void editDynamicPlaylist(QWidget* parent, PartyEntry* entry);
-    KDialogBase* basicDialog(QWidget* parent);
-    void loadPartyEntry(PartyEntry* saveMe, NewDynamic* dialog);
-    void addDynamic(NewDynamic* dialog);
+    void addDynamic( NewDynamic* dialog );
+    void dynamicDialog( QWidget* parent );
+    void editDynamicPlaylist( QWidget* parent, PartyEntry* entry );
+    void loadPartyEntry( PartyEntry* saveMe, NewDynamic* dialog );
+
+    KDialogBase* basicDialog( QWidget* parent );
 };
 
 class SelectionListItem : public QCheckListItem
 {
- public:
-    SelectionListItem(QListViewItem  * parent, const QString& text, QListViewItem* browserEquivalent);
-    SelectionListItem(QCheckListItem * parent, const QString& text, QListViewItem* browserEquivalent);
- protected:
-    virtual void stateChange(bool);
- private:
-    QListViewItem* m_browserEquivalent;
+    public:
+        SelectionListItem( QListViewItem  * parent, const QString& text, QListViewItem* browserEquivalent );
+        SelectionListItem( QCheckListItem * parent, const QString& text, QListViewItem* browserEquivalent );
+
+    protected:
+        virtual void stateChange( bool );
+
+    private:
+        QListViewItem* m_browserEquivalent;
 };
-#endif
+
+#endif /*PLAYLISTSELECTION_H*/
