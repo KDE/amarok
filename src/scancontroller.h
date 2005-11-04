@@ -27,7 +27,18 @@ class DbConnection;
 class KProcIO;
 
 /**
+ * @class ScanController
+ * @short Starts and controls the external amarokcollectionscanner application.
  * @author Mark Kretschmann <markey@web.de>
+ *
+ * The collection scanner itself is run in an external process, unlike before, where it
+ * used to be thread. The advantage is that the scanner cannot crash the amaroK main
+ * application any more. If it crashes we can simply restart it.
+ *
+ * amaroK communicates with the scanner via the ScanController class, which processes
+ * XML entities written to stdout by the scanner process. For XML parsing an event
+ * driven SAX2 parser is used, which can process the entities as they arrive, without
+ * the need for a DOM document structure.
  */
 class ScanController : public QObject, public QXmlDefaultHandler
 {
