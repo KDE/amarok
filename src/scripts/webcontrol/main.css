@@ -23,7 +23,7 @@ div.topfixed {
 	left: 0px;
 	right: 0px;
 	background-color: #9cb2cd;
-#	margin-right: 8px;
+/* 	margin-right: 8px;*/
 }
 
 table { 
@@ -48,26 +48,26 @@ table.trackheader {
 
 tr.tr_one {
 	background-color: red;
-#	visibility: collapse;
+/*	visibility: collapse; */
 	background-color: #394062;
-#	display: none;
+/*	display: none; */
 }
 
 tr.tr_two {
 	background-color: red;
-#	display: none;
-#	visibility: collapse;
+/*	display: none; */
+/*	visibility: collapse; */
 	background-color: #202050;
 }
 
 tr#trackheader {
-#	z-index: 10;
-#	top: 30px;
+/*	z-index: 10; */
+/*	top: 30px; */
 	visibility: visible;
 	display: table-row;
 	font-weight: bold;
 	background-color:#596082;
-#	background-color: red;
+/*	background-color: red; */
 }
 
 div.trackshmove {
