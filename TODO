@@ -6,6 +6,9 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+ <sebr>    Playlistbrowser 'save' popup menu no longer requires Save Dynamic Playlist.  Figure out what
+           to do with this popup menu. I think 'Save' as a button is too ambiguous.
+
  <markey>  Make it so that the Playlist Browser remembers its item open/closed states
            more reliably. Right now it forgets them like on every second startup :|
 
