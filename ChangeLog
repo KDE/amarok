@@ -24,7 +24,7 @@ VERSION 1.4:
     * When turning either random or dynamic mode on, turn the other off,
       instead of completely disabling random mode when dynamic is on.
     * libgpod from gtkpod replaces kio based iPod support for improved
-      compatability with various iPod models.
+      compatibility with various iPod models.
 
   BUGFIXES:
     * Cached lyrics are not erased when rescanning. (BR 110489)
