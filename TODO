@@ -6,8 +6,11 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+ <markey>  Use tabs for Collection Browser switching between tree and flat view. The buttons
+           suck.
+
  <eean>    Smart playlists bypass checks on whether the media is playable or not.
-           Or perhaps such media shouldn't be in the collection at all? This is the sort of 
+           Or perhaps such media shouldn't be in the collection at all? This is the sort of
            thing we're going to have to worry about now that we have m4a and wma tag support.
 
  <markey>  Regression: Using Undo/Redo deactivates the current track animation.
@@ -64,10 +67,10 @@ SHORT-TERM (URGENT):
 MID-TERM:
  <eean>    Basically need to re-add some of the functionality I removed in re-doing dynamic
  --><eean> custom playlist creation.
-           1) the default dynamic playlists need to be more insistent, the same way the 
+           1) the default dynamic playlists need to be more insistent, the same way the
               the default smart playlists are.
-           2) ability to add/remove playlists and smart playlists to the current dynamic 
-              playlist without opening a dialog. The change to the loaded dynamic playlist 
+           2) ability to add/remove playlists and smart playlists to the current dynamic
+              playlist without opening a dialog. The change to the loaded dynamic playlist
               would be immediate, no "saving current dynamic playlists".
 
   <mp8> Album covers as icons from filebrowser.
