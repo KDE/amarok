@@ -118,7 +118,16 @@ CollectionScanner::readDir( const QString& path, QStringList& entries )
         return;
 
     m_processedFolders += path;
-    std::cout << "<folder path='" << path.local8Bit() << "'/>";
+
+    QDomDocument doc; // A dummy. We don't really use DOM, but SAX2
+    QDomElement folder = doc.createElement( "folder" );
+    folder.setAttribute( "path", path );
+
+    QString text;
+    QTextStream stream( &text, IO_WriteOnly );
+    folder.save( stream, 0 );
+
+    std::cout << text.local8Bit() << std::endl;
 
     QDir dir( path );
 
