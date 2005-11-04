@@ -20,9 +20,6 @@
             <verstretch>0</verstretch>
         </sizepolicy>
     </property>
-    <property name="caption">
-        <string>Options2</string>
-    </property>
     <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
@@ -455,9 +452,6 @@
                             </property>
                             <property name="text">
                                 <string>The current &amp;KDE color-scheme</string>
-                            </property>
-                            <property name="accel">
-                                <string>Alt+K</string>
                             </property>
                             <property name="buttonGroupId">
                                 <number>0</number>
