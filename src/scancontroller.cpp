@@ -28,6 +28,7 @@
 #include "statusbar.h"
 
 #include <qfileinfo.h>
+#include <qtextcodec.h>
 
 #include <klocale.h>
 #include <kprocio.h>
@@ -38,19 +39,33 @@ using amaroK::StatusBar;
 ////////////////////////////////////////////////////////////////////////////////
 // class ScannerProcIO
 ////////////////////////////////////////////////////////////////////////////////
-/** Due to xine-lib, we have to make KProcess close all fds, otherwise we get "device is busy" messages
-  * Used by AmaroKProcIO and AmaroKProcess, exploiting commSetupDoneC(), a virtual method that
-  * happens to be called in the forked process
-  * See bug #103750 for more information.
-  */
+/**
+ * Due to xine-lib, we have to make KProcess close all fds, otherwise we get "device is busy" messages
+ * Used by AmaroKProcIO and AmaroKProcess, exploiting commSetupDoneC(), a virtual method that
+ * happens to be called in the forked process
+ * See bug #103750 for more information.
+ */
 class ScannerProcIO : public KProcIO {
     public:
+    ScannerProcIO();
     virtual int commSetupDoneC() {
         const int i = KProcIO::commSetupDoneC();
         amaroK::closeOpenFiles( KProcIO::out[0],KProcIO::in[0],KProcIO::err[0] );
         return i;
     };
 };
+
+/**
+ * This constructor is needed so that the correct codec is used. KProcIO defaults
+ * to latin1, while the scanner uses UTF-8.
+ */
+ScannerProcIO::ScannerProcIO()
+{
+    codec = QTextCodec::codecForName( "UTF-8" );
+    if( !codec ) {
+        ::error() << "Could not create UTF-8 codec for ScannerProcIO!" << endl;
+    }
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////
