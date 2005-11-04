@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.4:
   FEATURES:
+    * Ability to uninstall context-browser themes. (BR 111449)
     * New Collection Scanner, running in an external process. Now amaroK can't
       crash any more while scanning the Collection :)
     * Statistics tool!

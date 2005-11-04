@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>369</width>
-            <height>514</height>
+            <width>632</width>
+            <height>719</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -19,6 +19,9 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
         </sizepolicy>
+    </property>
+    <property name="caption">
+        <string>Options2</string>
     </property>
     <vbox>
         <property name="name">
@@ -453,6 +456,9 @@
                             <property name="text">
                                 <string>The current &amp;KDE color-scheme</string>
                             </property>
+                            <property name="accel">
+                                <string>Alt+K</string>
+                            </property>
                             <property name="buttonGroupId">
                                 <number>0</number>
                             </property>
@@ -537,7 +543,7 @@
                 </widget>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>layout7</cstring>
+                        <cstring>layout5</cstring>
                     </property>
                     <hbox>
                         <property name="name">
@@ -569,6 +575,37 @@
                             </property>
                             <property name="whatsThis" stdset="0">
                                 <string>Select and download new Context Browser styles.</string>
+                            </property>
+                        </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer2</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>40</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>uninstallPushButton</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Uninstall Style</string>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Click to uninstall the selected Context Browser style.</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Uninstall the selected Context Browser style.</string>
                             </property>
                         </widget>
                     </hbox>
@@ -619,6 +656,18 @@
         <receiver>Options2</receiver>
         <slot>retrievePushButton_clicked()</slot>
     </connection>
+    <connection>
+        <sender>uninstallPushButton</sender>
+        <signal>clicked()</signal>
+        <receiver>Options2</receiver>
+        <slot>uninstallPushButton_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>styleComboBox</sender>
+        <signal>activated(const QString&amp;)</signal>
+        <receiver>Options2</receiver>
+        <slot>styleComboBox_activated(const QString&amp;)</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">Options2.ui.h</include>
@@ -626,10 +675,20 @@
 <slots>
     <slot>installPushButton_clicked()</slot>
     <slot>retrievePushButton_clicked()</slot>
+    <slot>uninstallPushButton_clicked()</slot>
+    <slot>styleComboBox_activated( const QString &amp; s )</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
     <function access="private" specifier="non virtual">updateStyleComboBox()</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kfontrequester.h</includehint>
+    <includehint>kfontrequester.h</includehint>
+    <includehint>kfontrequester.h</includehint>
+    <includehint>kcolorbutton.h</includehint>
+    <includehint>kcolorbutton.h</includehint>
+    <includehint>kcombobox.h</includehint>
+</includehints>
 </UI>

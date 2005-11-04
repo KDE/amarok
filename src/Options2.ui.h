@@ -13,6 +13,7 @@
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "debug.h"
+#include "contextbrowser.h"
 
 #include <kapplication.h>
 #include <kfiledialog.h>
@@ -23,6 +24,7 @@
 #include <knewstuff/provider.h>       // "
 #include <kstandarddirs.h>
 #include <ktar.h>
+#include <kio/netaccess.h>
 
 #include <qdir.h>
 #include <qfileinfo.h>
@@ -70,6 +72,7 @@ class AmarokThemeNewStuff : public KNewStuff
 void Options2::init()
 {
     updateStyleComboBox();
+    uninstallPushButton->setEnabled ( styleComboBox->currentText() != "Default" );
 }
 
 
@@ -129,4 +132,42 @@ void Options2::retrievePushButton_clicked()
 
     styleComboBox->clear();
     updateStyleComboBox();
+}
+
+
+void Options2::uninstallPushButton_clicked()
+{
+    const QString name = styleComboBox->currentText();
+
+    if ( name == "Default" )
+        return;
+
+    if( KMessageBox::warningContinueCancel( 0,
+        i18n( "<p>Are you sure you want to uninstall the theme <strong>%1</strong>?</p>" ).arg( name ),
+        i18n("Uninstall Theme"), i18n("Uninstall") ) == KMessageBox::Cancel )
+        return;
+
+    if ( name == AmarokConfig::contextBrowserStyleSheet() ) {
+        AmarokConfig::setContextBrowserStyleSheet( "Default" );
+        ContextBrowser::instance()->setStyleSheet();
+    }
+
+    KURL themeDir( KURL::fromPathOrURL( amaroK::saveLocation( "themes/" ) ) );
+    themeDir.addPath( name );
+
+    if( !KIO::NetAccess::del( themeDir, 0 ) ) {
+        KMessageBox::sorry( 0, i18n( "<p>Could not uninstall this theme.</p>"
+            "<p>You may not have sufficient permissions to delete the folder <strong>%1<strong></p>."
+            ).arg( themeDir.isLocalFile() ? themeDir.path() : themeDir.url() ) );
+        return;
+    }
+
+    styleComboBox->clear();
+    updateStyleComboBox();
+}
+
+
+void Options2::styleComboBox_activated(const QString& s)
+{
+    uninstallPushButton->setEnabled ( s != "Default" );
 }
