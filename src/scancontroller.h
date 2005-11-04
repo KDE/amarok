@@ -55,7 +55,7 @@ class ScanController : public QObject, public QXmlDefaultHandler
         void slotProcessExited();
 
     private:
-        void initIncrementalScanner();
+        bool initIncrementalScanner();
         bool startElement( const QString&, const QString &localName, const QString&, const QXmlAttributes &attrs );
 
         static ScanController* s_instance;

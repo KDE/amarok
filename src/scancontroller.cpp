@@ -73,12 +73,10 @@ ScanController::ScanController( QObject* parent, bool incremental, const QString
 
     s_instance = this;
 
-    if( !m_db->isConnected() ) {
+    if( !m_db->isConnected() || ( m_incremental && !initIncrementalScanner() ) ) {
         deleteLater();
         return;
     }
-    if( m_incremental )
-        initIncrementalScanner();
 
     CollectionDB::instance()->createTables( m_db );
 
@@ -120,7 +118,7 @@ ScanController::~ScanController()
 }
 
 
-void
+bool
 ScanController::initIncrementalScanner()
 {
     /**
@@ -155,8 +153,11 @@ ScanController::initIncrementalScanner()
         }
     }
 
-    if( !m_folders.isEmpty() )
-        StatusBar::instance()->shortMessage( i18n( "Updating Collection..." ) );
+    if( m_folders.isEmpty() )
+        return false;
+
+    StatusBar::instance()->shortMessage( i18n( "Updating Collection..." ) );
+    return true;
 }
 
 
