@@ -45,7 +45,7 @@ class ScanController : public QObject, public QXmlDefaultHandler
     Q_OBJECT
 
     public:
-        ScanController( QObject* parent, bool incremental, const QStringList& folders = QString::null );
+        ScanController( QObject* parent, bool incremental, const QStringList& folders = QStringList() );
         ~ScanController();
 
         static ScanController* instance() { return s_instance; }

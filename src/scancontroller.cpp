@@ -107,7 +107,7 @@ ScanController::~ScanController()
     m_scanner->kill();
     delete m_scanner;
 
-    if( m_db->isConnected() ) {
+    if( m_db->isConnected() && !m_folders.isEmpty() ) {
         CollectionDB::instance()->dropTables( m_db );
         CollectionDB::instance()->returnStaticDbConnection( m_db );
     }
