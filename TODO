@@ -6,6 +6,9 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+ <markey>  Make it so that the Collection Browser remembers its item open/closed states
+           more reliably. Right now it forgets them like on every second startup :|
+
  <markey>  Use tabs for Collection Browser switching between tree and flat view. The buttons
            suck.
 
