@@ -18,6 +18,7 @@
 
 #include "browserbar.h"
 
+#include <qhbox.h>          //baseclass for DynamicBox
 #include <qwidget.h>        //baseclass
 #include <kxmlguiclient.h>  //baseclass (for XMLGUI)
 
@@ -27,6 +28,7 @@ class ContextBrowser;
 class KMenuBar;
 class KPopupMenu;
 class KToolBar;
+class QLabel;
 class QTimer;
 
 
@@ -90,5 +92,17 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
         static PlaylistWindow *s_instance;
 };
 
-
+class DynamicBar : public QHBox
+{
+    Q_OBJECT
+    public:
+        DynamicBar(QWidget* parent);
+    public slots:
+        void toggledDynamic(bool on);
+        void changeTitle(const QString& title);
+    signals:
+        void repopulate();
+    private:
+        QLabel* m_titleLabel;
+};
 #endif //AMAROK_PLAYLISTWINDOW_H

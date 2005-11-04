@@ -70,6 +70,9 @@ class Party : public QVBox
     public slots:
         void    repopulate();
 
+    signals:
+        void titleChanged(const QString&);
+
     private slots:
         void    applySettings();
         void    setDynamicMode( bool enable, bool showDialog = true );

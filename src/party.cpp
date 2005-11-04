@@ -82,6 +82,7 @@ Party::loadConfig( PartyEntry *config )
 {
     m_currentParty = config;
     AmarokConfig::setDynamicCustomList( config->items() );
+    emit titleChanged(config->title());
     applySettings();
 }
 
@@ -97,8 +98,8 @@ int  Party::appendType() { partyInfo(appendType,0); }
 bool Party::cycleTracks() { partyInfo(isCycled,true); }
 bool Party::markHistory() { partyInfo(isMarked,true); }
 QString Party::title() { partyInfo(title,"Invalid"); } //no i18n since its just a fallback
-#undef partyInfo
 
+#undef partyInfo
 
 void Party::setDynamicItems(const QPtrList<QListViewItem>& newList)
 {

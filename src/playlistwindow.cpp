@@ -40,6 +40,7 @@
 #include <qevent.h>           //eventFilter()
 #include <qlayout.h>
 #include <qlabel.h>           //search filter label
+#include <qsizepolicy.h>      //qspaceritem in dynamic bar
 #include <qtimer.h>           //search filter timer
 #include <qtooltip.h>         //QToolTip::add()
 #include <qvbox.h>            //contains the playlist
@@ -54,6 +55,7 @@
 #include <kmenubar.h>
 #include <kmessagebox.h>       //savePlaylist()
 #include <kpopupmenu.h>
+#include <kpushbutton.h>
 #include <kstandarddirs.h>    //Welcome Tab, locate welcome.html
 #include <ktoolbar.h>
 #include <ktoolbarbutton.h>   //createGUI()
@@ -178,6 +180,14 @@ PlaylistWindow::init()
     //the above ctor returns it causes a crash unless we do the initialisation in 2 stages.
 
     m_browsers = new BrowserBar( this );
+    
+    { //<Dynamic Mode Status Bar>
+        PlaylistBrowser::instance(); //make sure Party is initialized
+        DynamicBar *bar = new DynamicBar( m_browsers->container());
+        connect(actionCollection()->action("dynamic_mode"), SIGNAL(toggled(bool)), bar, SLOT(toggledDynamic(bool)));
+        connect(Party::instance(), SIGNAL(titleChanged(const QString&)), bar, SLOT( changeTitle(const QString&)));
+        connect(bar, SIGNAL(repopulate()), Party::instance(), SLOT( repopulate() ));
+    } //</Dynamic Mode Status Bar>
 
     { //<Search LineEdit>
         KToolBar *bar = new KToolBar( m_browsers->container(), "NotMainToolBar" );
@@ -799,5 +809,27 @@ void PlaylistWindow::showHide() //SLOT
 
     if( isShown() ) KWin::deIconifyWindow( winId() );
 }
+//////////////////////////////////////////////////////////////////////////////////////////
+/// DynamicBar
+//////////////////////////////////////////////////////////////////////////////////////////
+DynamicBar::DynamicBar(QWidget* parent)
+    : QHBox( parent, "DynamicModeStatusBar" )
+{ 
+    m_titleLabel = new QLabel( this, "DynamicModeTitle" );
+    new QSpacerItem(1,0, QSizePolicy::Minimum, QSizePolicy::Maximum);
+    KPushButton* repopButton = new KPushButton("Repopulate", this, "DynamicModeRepopulate");
+    connect(repopButton, SIGNAL(clicked()), this, SIGNAL(repopulate()));
+    toggledDynamic( AmarokConfig::dynamicMode() );
+}
+void DynamicBar::toggledDynamic(bool on)
+{
+    setShown( on );
+    if( on ) //Make sure Party() has been initialized
+        changeTitle(Party::instance()->title());
+}
 
+void DynamicBar::changeTitle(const QString& title)
+{
+   m_titleLabel->setText(title);
+}
 #include "playlistwindow.moc"
