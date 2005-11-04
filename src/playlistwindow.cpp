@@ -818,6 +818,8 @@ DynamicBar::DynamicBar(QWidget* parent)
     m_titleLabel = new QLabel( this, "DynamicModeTitle" );
     new QSpacerItem(1,0, QSizePolicy::Minimum, QSizePolicy::Maximum);
     KPushButton* repopButton = new KPushButton("Repopulate", this, "DynamicModeRepopulate");
+    QSizePolicy sp(QSizePolicy::Maximum,QSizePolicy::Minimum);
+    repopButton->setSizePolicy(sp);
     connect(repopButton, SIGNAL(clicked()), this, SIGNAL(repopulate()));
     toggledDynamic( AmarokConfig::dynamicMode() );
 }
@@ -830,6 +832,6 @@ void DynamicBar::toggledDynamic(bool on)
 
 void DynamicBar::changeTitle(const QString& title)
 {
-   m_titleLabel->setText(title);
+   m_titleLabel->setText(i18n("Dynamic Mode: ") + title);
 }
 #include "playlistwindow.moc"
