@@ -14,6 +14,7 @@
 #include <qcheckbox.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
+#include <qlabel.h>
 
 PodcastSettings::PodcastSettings( const QString& url, const QString& save, bool autoScan, int interval,
                                   int fetch, bool purge, int purgeCount, QWidget* parent )
@@ -55,7 +56,10 @@ PodcastSettings::PodcastSettings( const QString& url, const QString& save, bool 
     m_ps->m_purgeCountSpinBox->setValue( purgeCount );
 
     if( !purge )
+    {
         m_ps->m_purgeCountSpinBox->setEnabled( false );
+        m_ps->m_purgeCountLabel->setEnabled( false );
+    }
 
     enableButtonOK( false );
 
