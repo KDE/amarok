@@ -36,7 +36,7 @@ int main( int argc, char *argv[] )
 
     static KCmdLineOptions options[] =
     {
-        { "+[Folder(s)]", I18N_NOOP( "Folders to scan" ), 0 },
+        { "+Folder(s)", I18N_NOOP( "Folders to scan" ), 0 },
         { "r", 0, 0 },
         { "recursive", I18N_NOOP( "Scan folders recursively" ), 0 },
         { "i", 0, 0 },
