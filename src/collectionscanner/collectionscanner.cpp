@@ -39,17 +39,16 @@
 #include <kglobal.h>
 #include <klocale.h>
 
-/**
- * Use this to const-iterate over QStringLists, if you like.
- * Watch out for the definition of last in the scope of your for.
- *
- *     QStringList strings;
- *     foreach( strings )
- *         debug() << *it << endl;
- */
-#define foreach( x ) \
-    for( QStringList::ConstIterator it = x.begin(), end = x.end(); it != end; ++it )
 
+/**
+ * Convenience macro for const-iterating. Use like this:
+ *
+ *     BundleList bundles;
+ *     foreachType( BundleList, bundles )
+ *         debug() << *it.url() << endl;
+ */
+#define foreachType( Type, x ) \
+    for( Type::ConstIterator it = x.begin(), end = x.end(); it != end; ++it )
 
 
 CollectionScanner::CollectionScanner( const QStringList& folders, bool recursive, bool importPlaylists )
@@ -83,7 +82,8 @@ CollectionScanner::doJob() //SLOT
     std::cout << "<scanner>";
 
     QStringList entries;
-    foreach( m_folders ) {
+
+    foreachType( QStringList, m_folders ) {
         if( (*it).isEmpty() )
             //apparently somewhere empty strings get into the mix
             //which results in a full-system scan! Which we can't allow
@@ -133,7 +133,7 @@ CollectionScanner::readDir( const QString& path, QStringList& entries )
     const QStringList files = dir.entryList( QDir::Files | QDir::Readable );
 
     // Append file paths to list
-    for( QStringList::ConstIterator it = files.begin(); it != files.end(); ++it )
+    foreachType( QStringList, files )
         entries += dir.absFilePath( *it );
 
 
@@ -141,10 +141,10 @@ CollectionScanner::readDir( const QString& path, QStringList& entries )
 
 
     // FOLDERS:
-    const QStringList dirs = dir.entryList( QDir::Dirs | QDir::Readable );
+    const QStringList folders = dir.entryList( QDir::Dirs | QDir::Readable );
 
     // Recurse folders
-    for( QStringList::ConstIterator it = dirs.begin(); it != dirs.end(); ++it ) {
+    foreachType( QStringList, folders ) {
         if( (*it).startsWith( "." ) ) continue;
         // we must add a '/' after the dirname, to avoid dupes
         readDir( dir.absFilePath( *it ) + "/", entries );
@@ -164,8 +164,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
     QValueList<CoverBundle> covers;
     QStringList images;
 
-    for( QStringList::ConstIterator it = entries.begin(); it != entries.end(); ++it ) {
-
+    foreachType( QStringList, entries ) {
         const QString path = *it;
         const QString ext  = extension( path );
         const QString dir  = directory( path );
@@ -241,8 +240,7 @@ CollectionScanner::writeElement( const QString& name, const AttributeMap& attrib
     QDomDocument doc; // A dummy. We don't really use DOM, but SAX2
     QDomElement element = doc.createElement( name );
 
-    AttributeMap::ConstIterator it;
-    for( it = attributes.begin(); it != attributes.end(); ++it )
+    foreachType( AttributeMap, attributes )
         element.setAttribute( it.key(), it.data() );
 
     QString text;
