@@ -1226,12 +1226,14 @@ PodcastChannel::fetch()
 
     m_podcastJob = KIO::storedGet( m_url, false, false );
 
-    amaroK::StatusBar::instance()->newProgressOperation( m_podcastJob )
+    if( amaroK::StatusBar::instance() ) //FIXME: avoid segfault due to playlistbrowser init from dynamic bar
+    {
+        amaroK::StatusBar::instance()->newProgressOperation( m_podcastJob )
             .setDescription( i18n( "Fetching Podcast" ) )
             .setAbortSlot( this, SLOT( abortFetch() ) );
+    }
 
     connect( m_podcastJob, SIGNAL( result( KIO::Job* ) ), SLOT( fetchResult( KIO::Job* ) ) );
-
 }
 
 void
