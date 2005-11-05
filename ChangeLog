@@ -31,6 +31,8 @@ VERSION 1.4:
     * No more "can't create amazon table" warnings. (BR 113930)
     * Creating a new playlist via drag-and-drop no longer shows duplicates
       of each song until amaroK is restarted.
+    * Fix autoscan with PostgreSQL. (BR 111209)
+    * Fix problem with sequences in PostgreSQL support. (BR 115075)
 
 
 VERSION 1.3.6:
