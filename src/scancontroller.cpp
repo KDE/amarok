@@ -31,6 +31,7 @@
 #include <qtextcodec.h>
 
 #include <klocale.h>
+#include <kmessagebox.h>
 #include <kprocio.h>
 
 using amaroK::StatusBar;
@@ -111,6 +112,7 @@ ScanController::ScanController( QObject* parent, bool incremental, const QString
     *m_scanner << "amarokcollectionscanner";
     if( AmarokConfig::importPlaylists() && !m_incremental ) *m_scanner << "-i";
     if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
+    *m_scanner << "-l" << ( amaroK::saveLocation( QString::null ) + "collection_scan.log" );
     *m_scanner << m_folders;
 
     connect( m_scanner, SIGNAL( readReady( KProcIO* ) ),      SLOT( slotReadReady() ) );
@@ -266,6 +268,19 @@ ScanController::slotProcessExited()
     }
     else {
         ::error() << "CollectionScanner has crashed! Scan aborted." << endl;
+
+        QFile log( amaroK::saveLocation( QString::null ) + "collection_scan.log" );
+        log.open( IO_ReadOnly );
+        const QString& path = log.readAll();
+        if( path.isEmpty() )
+            KMessageBox::error( 0, i18n( "The Collection Scanner has crashed." ),
+                                   i18n( "Collection Scan Error" ) );
+        else
+            KMessageBox::error( 0, i18n( "<p>The Collection Scanner has crashed while "
+                                         "scanning the file:</p><p><i>%1</i></p><p>Please remove this "
+                                         "file from your collection, then rescan the collection.</p>" )
+                                         .arg( path ), i18n( "Collection Scan Error" ) );
+
         m_folders.clear();
     }
 

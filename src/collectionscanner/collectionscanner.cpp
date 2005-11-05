@@ -51,13 +51,18 @@
     for( Type::ConstIterator it = x.begin(), end = x.end(); it != end; ++it )
 
 
-CollectionScanner::CollectionScanner( const QStringList& folders, bool recursive, bool importPlaylists )
+CollectionScanner::CollectionScanner( const QStringList& folders,
+                                      bool recursive,
+                                      bool importPlaylists,
+                                      const QString& logfile )
         : KApplication()
         , m_importPlaylists( importPlaylists )
         , m_folders( folders )
         , m_recursively( recursive )
-        , log( "~/collection_scanner.log" ) //FIXME
+        , m_logfile( logfile )
 {
+    QFile::remove( m_logfile );
+
     QTimer::singleShot( 0, this, SLOT( doJob() ) );
 }
 
@@ -71,11 +76,6 @@ CollectionScanner::~CollectionScanner()
 void
 CollectionScanner::doJob() //SLOT
 {
-    log << "Collection Scan Log\n";
-    log << "===================\n";
-    log << i18n( "Report this file if amaroK crashes when building the Collection." ).local8Bit();
-    log << "\n\n\n";
-
     // we need to create the temp tables before readDir gets called ( for the dir stats )
 
     std::cout << "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>";
@@ -105,7 +105,6 @@ CollectionScanner::doJob() //SLOT
     }
 
     std::cout << "</scanner>" << std::endl;
-    log.close();
 
     quit();
 }
@@ -169,9 +168,12 @@ CollectionScanner::scanFiles( const QStringList& entries )
         const QString ext  = extension( path );
         const QString dir  = directory( path );
 
-        // Append path to logfile
-        log << path.local8Bit() << std::endl;
-        log.flush();
+        // Write path to logfile
+        if( !m_logfile.isEmpty() ) {
+            QFile log( m_logfile );
+            if( log.open( IO_WriteOnly ) )
+                log.writeBlock( path.local8Bit(), path.length() );
+        }
 
         readTags( path );
 

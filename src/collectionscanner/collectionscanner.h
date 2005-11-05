@@ -20,8 +20,6 @@
 #ifndef COLLECTIONSCANNER_H
 #define COLLECTIONSCANNER_H
 
-#include <fstream>
-
 #include <qmap.h>
 #include <qstringlist.h>
 
@@ -39,8 +37,9 @@ class CollectionScanner : public KApplication
 
 public:
     CollectionScanner( const QStringList& folders,
-                       bool recursive = false,
-                       bool importPlaylists = false );
+                       bool recursive,
+                       bool importPlaylists,
+                       const QString& logfile );
 
     ~CollectionScanner();
 
@@ -82,12 +81,12 @@ private:
     }
 
 
-    bool        m_importPlaylists;
-    QStringList m_folders;
-    QStringList m_processedFolders;
-    bool        m_recursively;
+    const bool    m_importPlaylists;
+    QStringList   m_folders;
+    const bool    m_recursively;
+    const QString m_logfile;
 
-    std::ofstream log;
+    QStringList   m_processedFolders;
 };
 
 

@@ -41,6 +41,8 @@ int main( int argc, char *argv[] )
         { "recursive", I18N_NOOP( "Scan folders recursively" ), 0 },
         { "i", 0, 0 },
         { "importplaylists", I18N_NOOP( "Import playlist" ), 0 },
+        { "l", 0, 0 },
+        { "logfile <path>", I18N_NOOP( "Log the last processed track" ), "" },
         { 0, 0, 0 }
     };
 
@@ -58,9 +60,10 @@ int main( int argc, char *argv[] )
 
     const bool recursive        = args->isSet( "recursive" );
     const bool importplaylists  = args->isSet( "importplaylists" );
+    const QString logfile       = args->getOption( "logfile" );
 
 
-    CollectionScanner scanner( folders, recursive, importplaylists );
+    CollectionScanner scanner( folders, recursive, importplaylists, logfile );
     return scanner.exec();
 }
 
