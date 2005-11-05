@@ -23,6 +23,10 @@ class PlaylistSelection : public KListView
         Q_OBJECT
     public:
         PlaylistSelection(QWidget* parent, char* name);
+        virtual QSize sizeHint() const
+        {
+            return minimumSizeHint();
+        }
 
     private:
         void loadChildren(QListViewItem* browserParent, QListViewItem* selectionParent);

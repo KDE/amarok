@@ -17,6 +17,7 @@
 #include <qcheckbox.h>
 #include <qgroupbox.h>
 #include <qlabel.h>
+#include <qlayout.h>
 #include <qlistview.h>
 #include <qsizepolicy.h>
 #include <qstringlist.h>
@@ -43,7 +44,6 @@ PlaylistSelection::PlaylistSelection( QWidget* parent, char* name )
         newItem->setOpen( true );
         browserItem = browserItem->nextSibling();
     }
-
 }
 
 void PlaylistSelection::loadChildren( QListViewItem* browserParent, QListViewItem* selectionParent )
@@ -69,8 +69,10 @@ namespace ConfigDynamic
 {
     KDialogBase* basicDialog( QWidget* parent )
     {
-        KDialogBase* dialog = new KDialogBase( parent, "new dynamic", true, i18n("Create Dynamic Playlist")
-                                             , KDialogBase::Ok | KDialogBase::Cancel );
+        KDialogBase* dialog = new KDialogBase( parent, "new dynamic", true,
+                              i18n("Create Dynamic Playlist"),
+                              KDialogBase::Ok | KDialogBase::Cancel,
+                              KDialogBase::Ok, true );
         kapp->setTopWidget( dialog );
         NewDynamic* nd = new NewDynamic( dialog, "new dynamic");
         //QSizePolicy policy;
@@ -83,6 +85,9 @@ namespace ConfigDynamic
     void dynamicDialog( QWidget* parent )
     {
         KDialogBase* dialog = basicDialog( parent );
+        NewDynamic*  nd     = static_cast<NewDynamic*>(dialog->mainWidget());
+        nd->m_mixLabel->setText( i18n("Add Dynamic Playlist") );
+
         if( dialog->exec() == QDialog::Accepted )
             addDynamic(static_cast<NewDynamic*>(dialog->mainWidget()));
     }
@@ -109,21 +114,24 @@ namespace ConfigDynamic
                 if( current )
                     current->setOn(true);
             }
-            nd->m_mixGroupBox->setShown( false );
         }
         else //if its a suggested song or a random mix...
         {
-           nd->selectPlaylist->setShown( false );
+           nd->selectPlaylist->hide();
+           nd->layout()->remove( nd->selectPlaylist );
            if( entry->appendType() == Party::RANDOM )
            {
-              nd->m_image->setPixmap( KGlobal::iconLoader()->loadIcon( "random", KIcon::Toolbar,KIcon::SizeLarge ) );
+              nd->m_mixLabel->setText( i18n("Random Mix") );
            }
            else
-              nd->m_mixLabel->setText( "<h3>" + i18n("Suggested Songs") + "</h3>" );
+           {
+              nd->m_mixLabel->setText( i18n("Suggested Songs") );
+           }
         }
-        //dialog->setMinimumWidth(nd->minimumWidth());
-        //dialog->setMaximumWidth(nd->maximumWidth());
-        //dialog->adjustSize();
+
+        nd->updateGeometry();
+        dialog->resize( nd->minimumSizeHint() );
+
         if( dialog->exec() == QDialog::Accepted )
         {
             loadPartyEntry( entry,nd );
