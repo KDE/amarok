@@ -212,6 +212,57 @@ else
     fi
 
     echo " ="
+    echo " = The following extra functionality will NOT be included:"
+
+    if test x$build_arts != xyes; then
+        echo " =   + aRts-engine"
+    fi
+
+    if test x$have_gst != xyes; then
+        echo " =   + GStreamer-engine"
+    fi
+
+    if test x$build_xine != xyes; then
+        echo " =   + xine-engine"
+    fi
+
+    if test x$build_nmm != xyes; then
+        echo " =   + NMM-engine"
+    fi
+
+    if test x$build_mas != xyes; then
+        echo " =   + MAS-engine"
+    fi
+
+    if test x$build_helix = xno; then
+        echo " =   + Helix-engine"
+    fi
+
+    if test x$build_libvisual != xyes; then
+        echo " =   + libvisual Support"
+    fi
+
+    if test x$build_xmmswrapper != xyes; then
+        echo " =   + XMMS Visualization Wrapper"
+    fi
+
+    if test x$enable_mysql != xyes; then
+        echo " =   + MySql support"
+    fi
+
+    if test x$enable_postgresql != xyes; then
+        echo " =   + Postgresql support"
+    fi
+
+    if test x$have_konqsidebar != xyes; then
+        echo " =   + Konqueror Sidebar"
+    fi
+
+    if test x$have_tunepimp != xyes; then
+        echo " =   + MusicBrainz Support"
+    fi
+
+    echo " ="
 fi
 
 echo " ==============================================================================="
