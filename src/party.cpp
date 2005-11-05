@@ -51,27 +51,13 @@ Party::Party( QWidget *parent, const char *name )
     s_instance = this;
 
     m_repopulate = new KAction( i18n("Repopulate"), "rebuild", 0,
-                                       this, SLOT( repopulate() ), m_ac, "Repopulate Upcoming Tracks" );
+                                this, SLOT( repopulate() ), m_ac, "Repopulate Upcoming Tracks" );
 
-    QHBox *buttonBox = new QVBox( this );
-    QCheckBox   *enableButton = new QCheckBox( i18n("Enable dynamic mode"), buttonBox, "dynamic" );
-    connect( amaroK::actionCollection()->action( "dynamic_mode" ), SIGNAL( toggled( bool ) ),
-             enableButton, SLOT( setChecked( bool ) ) );
-
-    /*
-     * We don't want to show the info dialog on startup, so we set the dynamic parameter manually and connect
-     * the signal afterwards
-     */
-    enableButton->setChecked( AmarokConfig::dynamicMode() );
-    connect( enableButton, SIGNAL(toggled( bool )), SLOT(setDynamicMode( bool )) );
-
-    if( enableButton->isChecked() )
+    if( AmarokConfig::dynamicMode() )
     {
 //         Although random mode should be off, we uncheck it, just in case (eg amarokrc tinkering)
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( false );
     }
-    else
-        m_repopulate->setEnabled( false );
 }
 
 Party::~Party()
@@ -81,8 +67,11 @@ void
 Party::loadConfig( PartyEntry *config )
 {
     m_currentParty = config;
+
     AmarokConfig::setDynamicCustomList( config->items() );
-    emit titleChanged(config->title());
+
+    emit titleChanged( config->title() );
+
     applySettings();
 }
 
@@ -92,7 +81,7 @@ Party::loadConfig( PartyEntry *config )
     //do something sane if m_currentParty has been deleted
 
 int  Party::previousCount() { partyInfo(previous,5); }
-int  Party::upcomingCount() { partyInfo(upcoming,20); } 
+int  Party::upcomingCount() { partyInfo(upcoming,20); }
 int  Party::appendCount() { partyInfo(appendCount,1); }
 int  Party::appendType() { partyInfo(appendType,0); }
 bool Party::cycleTracks() { partyInfo(isCycled,true); }
@@ -105,7 +94,7 @@ void Party::setDynamicItems(const QPtrList<QListViewItem>& newList)
 {
     if(!m_currentParty)
        { warning() << "Party has a 0 for m_currentParty." << endl;  return; }
-    
+
     QStringList strListEntries;
     QListViewItem* entry;
     QPtrListIterator<QListViewItem> it( newList );
@@ -120,10 +109,10 @@ void Party::setDynamicItems(const QPtrList<QListViewItem>& newList)
     PlaylistBrowser::instance()->saveDynamics();
 }
 
-void 
+void
 Party::repopulate() //SLOT
-{ 
-    Playlist::instance()->repopulate(); 
+{
+    Playlist::instance()->repopulate();
 }
 
 void
