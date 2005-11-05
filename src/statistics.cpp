@@ -23,6 +23,7 @@
 #include <qlayout.h>
 #include <qpixmap.h>
 #include <qtabwidget.h>
+#include <qtextedit.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// CLASS Statistics
@@ -151,8 +152,7 @@ Statistics::loadChooser()
 void
 Statistics::loadDetails( int index ) //SLOT
 {
-    m_gui->m_btrLabel->setText( i18n("Please hold...") );
-    m_gui->m_bbrLabel->clear();
+    m_gui->m_btrView->setText( i18n("Please hold...") );
     m_gui->m_topCoverLabel->clear();
     m_gui->m_topCoverLabel->setFrameShape( QFrame::NoFrame );
     m_gui->m_bottomCoverLabel->clear();
@@ -221,7 +221,8 @@ Statistics::buildAlbumInfo()
         if( i + qb.countReturnValues() != faveAlbums.count() )
              text += "<br>";
     }
-    m_gui->m_btrLabel->setText( text );
+
+    text += "<br><br>";
 
     qb.clear();
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
@@ -239,14 +240,15 @@ Statistics::buildAlbumInfo()
     m_gui->m_bottomCoverLabel->setPixmap( QPixmap( image_recent ) );
     m_gui->m_bottomCoverLabel->setFrameShape( QFrame::StyledPanel );
 
-    text = "<b>" + i18n("Newest Albums") + "</b><br>";
+    text += "<b>" + i18n("Newest Albums") + "</b><br>";
     for( uint i=0; i < recentAlbums.count(); i += qb.countReturnValues() )
     {
         text += "<i>" + recentAlbums[i] + "</i>" + i18n(" - " ) + recentAlbums[i+1];
         if( i + qb.countReturnValues() != recentAlbums.count() )
              text += "<br>";
     }
-    m_gui->m_bbrLabel->setText( text );
+
+    m_gui->m_btrView->setText( text );
 }
 
 void
@@ -272,7 +274,8 @@ Statistics::buildTrackInfo()
         if( i + qb.countReturnValues() != fave.count() )
              text += "<br>";
     }
-    m_gui->m_btrLabel->setText( text );
+
+    text += "<br><br>";
 
     qb.clear();
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
@@ -283,7 +286,7 @@ Statistics::buildTrackInfo()
     QStringList mostPlayed = qb.run();
 
     ///Most Played
-    text = "<b>" + i18n("Most Played Songs") + "</b><br>";
+    text += "<b>" + i18n("Most Played Songs") + "</b><br>";
     for( uint i=0; i < mostPlayed.count(); i += qb.countReturnValues() )
     {
         text += i18n("<i>%1</i> - %2 (Playcount: %3)")
@@ -293,7 +296,8 @@ Statistics::buildTrackInfo()
         if( i + qb.countReturnValues() != mostPlayed.count() )
              text += "<br>";
     }
-    m_gui->m_bbrLabel->setText( text );
+
+    m_gui->m_btrView->setText( text );
 }
 
 void
@@ -318,7 +322,8 @@ Statistics::buildArtistInfo()
         if( i + qb.countReturnValues() != faveArtists.count() )
              text += "<br>";
     }
-    m_gui->m_btrLabel->setText( text );
+
+    text += "<br><br>";
 
     qb.clear();
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
@@ -329,7 +334,7 @@ Statistics::buildArtistInfo()
     QStringList mostSongs = qb.run();
 
     ///Artists with the Most Songs
-    text = "<b>" + i18n("Artist Dominance") + "</b><br>"; // sebr: dominance an appropriate word?! :)
+    text += "<b>" + i18n("Artist Dominance") + "</b><br>"; // sebr: dominance an appropriate word?! :)
     for( uint i=0; i < mostSongs.count(); i += qb.countReturnValues() )
     {
         text += i18n("<i>%1</i> (Count: %2)")
@@ -338,7 +343,8 @@ Statistics::buildArtistInfo()
         if( i + qb.countReturnValues() != mostSongs.count() )
              text += "<br>";
     }
-    m_gui->m_bbrLabel->setText( text );
+
+    m_gui->m_btrView->setText( text );
 }
 
 void
@@ -364,8 +370,8 @@ Statistics::buildGenreInfo()
         if( i + qb.countReturnValues() != faveGenres.count() )
              text += "<br>";
     }
-    m_gui->m_btrLabel->setText( text );
 
+    text += "<br><br>";
 
     qb.clear();
     qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
@@ -377,7 +383,7 @@ Statistics::buildGenreInfo()
     QStringList mostGenres = qb.run();
 
     ///Genres with the Most Songs
-    text = "<b>" + i18n("Genre Population") + "</b><br>"; // sebr: dominance an appropriate word?! :)
+    text += "<b>" + i18n("Genre Population") + "</b><br>"; // sebr: dominance an appropriate word?! :)
     for( uint i=0; i < mostGenres.count(); i += qb.countReturnValues() )
     {
         text += i18n("<i>%1</i> (Count: %2)")
@@ -386,7 +392,8 @@ Statistics::buildGenreInfo()
         if( i + qb.countReturnValues() != mostGenres.count() )
              text += "<br>";
     }
-    m_gui->m_bbrLabel->setText( text );
+
+    m_gui->m_btrView->setText( text );
 }
 
 #include "statistics.moc"
