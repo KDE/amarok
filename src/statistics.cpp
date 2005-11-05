@@ -31,7 +31,7 @@
 Statistics *Statistics::s_instance = 0;
 
 Statistics::Statistics( QWidget *parent, const char *name )
-    : KDialogBase( KDialogBase::Swallow, 0, parent, name, false, 0, Ok )
+    : KDialogBase( KDialogBase::Swallow, 0, parent, name, false, 0, Close )
     , m_gui( new StatisticsBase( this ) )
     , m_resultCount( 4 )
 {
