@@ -19,6 +19,8 @@
 
 #include "collectionscanner.h"
 
+#include "metadata/tplugins.h"
+
 #include <kaboutdata.h>
 #include <kcmdlineargs.h>
 #include <klocale.h>
@@ -62,8 +64,11 @@ int main( int argc, char *argv[] )
     const bool importplaylists  = args->isSet( "importplaylists" );
     const QString logfile       = args->getOption( "logfile" );
 
-
     CollectionScanner scanner( folders, recursive, importplaylists, logfile );
+
+    registerTaglibPlugins();
+
+
     return scanner.exec();
 }
 

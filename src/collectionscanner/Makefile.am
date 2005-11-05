@@ -12,6 +12,7 @@ amarokcollectionscanner_SOURCES = \
     collectionscanner.cpp
 
 amarokcollectionscanner_LDADD = \
+    $(top_builddir)/amarok/src/metadata/libmetadata.la \
     $(LIB_QT) \
     $(LIB_KDECORE) \
     $(taglib_libs)
