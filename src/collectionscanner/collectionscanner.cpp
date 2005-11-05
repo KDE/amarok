@@ -243,7 +243,27 @@ CollectionScanner::writeElement( const QString& name, const AttributeMap& attrib
     QDomElement element = doc.createElement( name );
 
     foreachType( AttributeMap, attributes )
+    {
+        // There are at least some characters that Qt cannot categorize which make the resulting
+        // xml document ill-formed and prevent the parser from processing the remaining document.
+        // Because of this we skip attributes containing characters not belonging to any category.
+        QString data = it.data();
+        unsigned len = data.length();
+        bool nonPrint = false;
+        for( unsigned i = 0; i < len; i++ )
+        {
+            if( !data.ref(i).isPrint() || data.ref( i ).category() == QChar::NoCategory )
+            {
+                nonPrint = true;
+                break;
+            }
+        }
+
+        if(nonPrint)
+            continue;
+
         element.setAttribute( it.key(), it.data() );
+    }
 
     QString text;
     QTextStream stream( &text, IO_WriteOnly );
