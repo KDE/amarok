@@ -75,8 +75,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
 
     // Sound System
     opt6->setName( "Engine" );
-    opt6->setSpacing( 12 );
-    opt6->setMargin( 11 );
+    opt6->setSpacing( KDialog::spacingHint() );
     QWidget *groupBox, *aboutEngineButton;
     groupBox            = new QGroupBox( 2, Qt::Horizontal, i18n("Sound System"), opt6 );
     m_engineConfigFrame = new QGroupBox( 1, Qt::Horizontal, opt6 );
