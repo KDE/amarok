@@ -141,8 +141,6 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     m_podcastTimerInterval = config->readNumEntry( "Podcast Interval", 14400000 );
 
-    new Party( browserBox );
-
     // signals and slots connections
     connect( m_listview, SIGNAL( rightButtonPressed( QListViewItem *, const QPoint &, int ) ),
              this,         SLOT( showContextMenu( QListViewItem *, const QPoint &, int ) ) );

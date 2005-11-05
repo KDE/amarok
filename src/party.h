@@ -34,27 +34,24 @@
 #define AMAROK_PARTY_H
 
 #include <qlistview.h>
-#include <qvbox.h>          //baseclass
 
 class QLabel;
 class KAction;
 class KActionCollection;
 class PartyEntry;
 
-class Party : public QVBox
+class Party : public QObject
 {
         Q_OBJECT
     friend class PlaylistBrowser;
 
     public:
-        Party( QWidget *parent, const char *name = 0 );
+        
        ~Party();
 
         enum    Mode{ RANDOM=0, SUGGESTION=1, CUSTOM=2 };
 
         void    loadConfig( PartyEntry *config = 0 ); // 0 -> load amarokrc config
-
-        bool    isChecked();
 
         int     previousCount();
         int     upcomingCount();
@@ -65,10 +62,11 @@ class Party : public QVBox
         QString title(); //title of currently running playlist
         void    setDynamicItems(const QPtrList<QListViewItem>& newList);
 
-        static  Party *instance() { return s_instance; }
+        static  Party *instance();
 
     public slots:
         void    repopulate();
+        void    editActiveParty();
 
     signals:
         void titleChanged(const QString&);
@@ -78,6 +76,7 @@ class Party : public QVBox
         void    setDynamicMode( bool enable, bool showDialog = true );
 
     private:
+        Party( QWidget *parent, const char *name = 0 );
         PartyEntry* m_currentParty;
 
         enum    UpdateMe{ PARTY, CYCLE, HISTORY, PREVIOUS, UPCOMING, APPEND, TYPE };
@@ -86,7 +85,6 @@ class Party : public QVBox
         KAction    *m_repopulate;
 
         QPtrList<QListViewItem> m_selected;
-
 
         static Party *s_instance;
 };

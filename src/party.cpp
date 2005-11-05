@@ -21,6 +21,7 @@
 #include "partydialogbase.h"
 #include "playlist.h"
 #include "playlistbrowser.h"
+#include "playlistselection.h"
 #include "statusbar.h"
 
 #include <qcheckbox.h>
@@ -43,8 +44,16 @@
 
 Party *Party::s_instance = 0;
 
+Party*
+Party::instance()
+{
+    if( s_instance )
+        return s_instance;
+    return new Party( PlaylistWindow::self(), "PartySettings" );
+}
+
 Party::Party( QWidget *parent, const char *name )
-    : QVBox( parent, name )
+    : QObject(parent, name)
     , m_currentParty(0)
     , m_ac( new KActionCollection( this ) )
 {
@@ -73,6 +82,14 @@ Party::loadConfig( PartyEntry *config )
     emit titleChanged( config->title() );
 
     applySettings();
+}
+
+void
+Party::editActiveParty()
+{
+    if(m_currentParty == 0)
+        return;
+    ConfigDynamic::editDynamicPlaylist(PlaylistWindow::self(), m_currentParty);
 }
 
 #define partyInfo(function, default) { \
@@ -178,7 +195,7 @@ Party::setDynamicMode( bool enable, bool showDialog ) //SLOT
                            "If you select <i>Playlist Shuffle</i>, make sure you choose some playlists or smart playlists by right-clicking "
                            "on the items in the playlist browser" );
 
-            int info = KMessageBox::messageBox( this, KMessageBox::Information, text, i18n("Dynamic Mode Introduction"),
+            int info = KMessageBox::messageBox( static_cast<QWidget*>(parent()), KMessageBox::Information, text, i18n("Dynamic Mode Introduction"),
                                                 i18n("Continue"), i18n("Cancel"), "showDynamicInfo" );
 
             if( info != KMessageBox::Ok )

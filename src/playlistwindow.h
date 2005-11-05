@@ -97,11 +97,11 @@ class DynamicBar : public QHBox
     Q_OBJECT
     public:
         DynamicBar(QWidget* parent);
+
     public slots:
         void toggledDynamic(bool on);
         void changeTitle(const QString& title);
-    signals:
-        void repopulate();
+
     private:
         QLabel* m_titleLabel;
 };

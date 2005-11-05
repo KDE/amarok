@@ -182,11 +182,8 @@ PlaylistWindow::init()
     m_browsers = new BrowserBar( this );
     
     { //<Dynamic Mode Status Bar>
-        PlaylistBrowser::instance(); //make sure Party is initialized
         DynamicBar *bar = new DynamicBar( m_browsers->container());
         connect(actionCollection()->action("dynamic_mode"), SIGNAL(toggled(bool)), bar, SLOT(toggledDynamic(bool)));
-        connect(Party::instance(), SIGNAL(titleChanged(const QString&)), bar, SLOT( changeTitle(const QString&)));
-        connect(bar, SIGNAL(repopulate()), Party::instance(), SLOT( repopulate() ));
     } //</Dynamic Mode Status Bar>
 
     { //<Search LineEdit>
@@ -817,16 +814,23 @@ DynamicBar::DynamicBar(QWidget* parent)
 { 
     m_titleLabel = new QLabel( this, "DynamicModeTitle" );
     new QSpacerItem(1,0, QSizePolicy::Minimum, QSizePolicy::Maximum);
-    KPushButton* repopButton = new KPushButton("Repopulate", this, "DynamicModeRepopulate");
-    QSizePolicy sp(QSizePolicy::Maximum,QSizePolicy::Minimum);
-    repopButton->setSizePolicy(sp);
-    connect(repopButton, SIGNAL(clicked()), this, SIGNAL(repopulate()));
+
+    QSizePolicy sp( QSizePolicy::Maximum,QSizePolicy::Minimum );
+    KPushButton* editDynamicButton = new KPushButton( "Edit this Dynamic Mode", this, "DynamicModeEdit" );
+    editDynamicButton->setSizePolicy(sp);
+    connect( editDynamicButton, SIGNAL(clicked()), Party::instance(), SLOT(editActiveParty()) );
+
+    KPushButton* repopButton = new KPushButton( "Repopulate", this, "DynamicModeRepopulate" ); 
+    repopButton->setSizePolicy( sp );
+    connect( repopButton, SIGNAL(clicked()), Party::instance(), SLOT(repopulate()) );
+
+    connect(Party::instance(), SIGNAL(titleChanged(const QString&)), this, SLOT( changeTitle(const QString&)));
     toggledDynamic( AmarokConfig::dynamicMode() );
 }
 void DynamicBar::toggledDynamic(bool on)
 {
     setShown( on );
-    if( on ) //Make sure Party() has been initialized
+    if( on )
         changeTitle(Party::instance()->title());
 }
 
