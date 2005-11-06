@@ -20,6 +20,8 @@ SHORT-TERM (URGENT):
  <markey>  Make it so that the Playlist Browser remembers its item open/closed states
            more reliably. Right now it forgets them like on every second startup :|
 
+           UPDATE: Seb had the idea to store the state in the XML files. Let's try that.
+
  <markey>  Use tabs for Collection Browser switching between tree and flat view. The buttons
            suck.
 
