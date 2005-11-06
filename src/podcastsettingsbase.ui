@@ -111,6 +111,20 @@
                         <string>Download media as soon as it becomes available</string>
                     </property>
                 </widget>
+                <widget class="QCheckBox" row="3" column="0" rowspan="1" colspan="6">
+                    <property name="name">
+                        <cstring>m_addToMediaDeviceCheck</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Add to media device &amp;transfer queue</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>When checked, amaroK will automatically add newly downloaded podcast shows to the media device transfer queue</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>When checked, amaroK will automatically add newly downloaded podcast shows to the media device transfer queue</string>
+                    </property>
+                </widget>
             </vbox>
         </widget>
         <widget class="QCheckBox" row="4" column="0" rowspan="1" colspan="3">

@@ -18,7 +18,7 @@ class PodcastSettings : public KDialogBase
 
     public:
         PodcastSettings( const QString &url, const QString &save, bool autoScan, int interval,
-                         int fetch, bool purge, int purgeCount, QWidget* parent = 0 );
+                         int fetch, bool addToMediaDevice, bool purge, int purgeCount, QWidget* parent = 0 );
 
 
 
@@ -27,6 +27,7 @@ class PodcastSettings : public KDialogBase
         bool    hasAutoScan() { return m_autoScan; }
         int     interval()    { return m_interval; }
         int     fetch()       { return m_fetch; }
+        bool    addToMediaDevice() { return m_addToMediaDevice; }
         bool    hasPurge()    { return m_purge; }
         int     purgeCount()  { return m_purgeCount; }
 
@@ -52,6 +53,7 @@ class PodcastSettings : public KDialogBase
         bool    m_autoScan;
         int     m_interval;
         int     m_fetch;
+        bool    m_addToMediaDevice;
         bool    m_purge;
         int     m_purgeCount;
 

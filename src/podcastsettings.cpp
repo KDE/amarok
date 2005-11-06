@@ -17,7 +17,7 @@
 #include <qlabel.h>
 
 PodcastSettings::PodcastSettings( const QString& url, const QString& save, bool autoScan, int interval,
-                                  int fetch, bool purge, int purgeCount, QWidget* parent )
+                                  int fetch, bool addToMediaDevice, bool purge, int purgeCount, QWidget* parent )
                     : KDialogBase(  parent, 0, true, i18n("Configure Podcast Stream"),
                                     KDialogBase::User1|KDialogBase::Ok|KDialogBase::Cancel,
                                     KDialogBase::Ok, true,
@@ -28,6 +28,7 @@ PodcastSettings::PodcastSettings( const QString& url, const QString& save, bool 
                     , m_autoScan( autoScan )
                     , m_interval( interval )
                     , m_fetch( fetch )
+                    , m_addToMediaDevice( addToMediaDevice )
                     , m_purge( purge )
                     , m_purgeCount( purgeCount )
                     , m_applyToAll( false )
@@ -52,6 +53,8 @@ PodcastSettings::PodcastSettings( const QString& url, const QString& save, bool 
         m_ps->m_downloadRadio->setChecked( true );
     }
 
+    m_ps->m_addToMediaDeviceCheck->setChecked( addToMediaDevice );
+
     m_ps->m_purgeCheck->setChecked( purge );
     m_ps->m_purgeCountSpinBox->setValue( purgeCount );
 
@@ -70,6 +73,7 @@ PodcastSettings::PodcastSettings( const QString& url, const QString& save, bool 
     connect( m_ps->m_saveLocation,   SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
     connect( m_ps->m_autoFetchCheck, SIGNAL(clicked()),                     SLOT(checkModified()) );
     connect( m_ps->m_streamRadio,    SIGNAL(clicked()),                     SLOT(checkModified()) );
+    connect( m_ps->m_addToMediaDeviceCheck, SIGNAL(clicked()),              SLOT(checkModified()) );
     connect( m_ps->m_downloadRadio,  SIGNAL(clicked()),                     SLOT(checkModified()) );
     connect( m_ps->m_purgeCheck,     SIGNAL(clicked()),                     SLOT(checkModified()) );
 }
@@ -88,6 +92,7 @@ PodcastSettings::hasChanged()
            ( m_url             != m_ps->m_urlLine->text()             ||
              m_save            != requesterSaveLocation()             ||
              m_autoScan        != m_ps->m_autoFetchCheck->isChecked() ||
+             m_addToMediaDevice!= m_ps->m_addToMediaDeviceCheck->isChecked() ||
              m_purge           != m_ps->m_purgeCheck->isChecked()     ||
              m_purgeCount      != m_ps->m_purgeCountSpinBox->value()  ||
              fetchTypeChanged );
@@ -108,6 +113,7 @@ PodcastSettings::slotOk()       //slot
     m_url             = m_ps->m_urlLine->text();
     m_save            = requesterSaveLocation();
     m_autoScan        = m_ps->m_autoFetchCheck->isChecked();
+    m_addToMediaDevice= m_ps->m_addToMediaDeviceCheck->isChecked();
     m_purge           = m_ps->m_purgeCheck->isChecked();
     m_purgeCount      = m_ps->m_purgeCountSpinBox->value();
 

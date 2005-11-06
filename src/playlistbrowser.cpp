@@ -1022,6 +1022,7 @@ void PlaylistBrowser::setGlobalPodcastSettings( PodcastChannel *item )
     const QString save   = item->saveLocation().path();
     const bool autoFetch = item->autoScan();
     const int mediaType  = item->mediaFetch();
+    const int addToMediaDevice = item->addToMediaDevice();
     const bool purge     = item->hasPurge();
     const int purgeCount = item->purgeCount();
 
@@ -1033,7 +1034,7 @@ void PlaylistBrowser::setGlobalPodcastSettings( PodcastChannel *item )
             continue;
         #define channel static_cast<PodcastChannel*>(channel)
         debug() << "Settings are being saved for: " << channel->title() << endl;
-        channel->setSettings( save, autoFetch, mediaType, purge, purgeCount );
+        channel->setSettings( save, autoFetch, mediaType, addToMediaDevice, purge, purgeCount );
         #undef  channel
     }
 }

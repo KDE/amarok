@@ -14,6 +14,7 @@
 #include "metabundle.h"
 #include "statusbar.h"
 #include "threadweaver.h"
+#include "mediabrowser.h"
 
 #include <qfile.h>             //loadPlaylists(), renamePlaylist()
 #include <qlabel.h>
@@ -1047,6 +1048,7 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
     , m_autoScan( true )
     , m_interval( 4 )
     , m_mediaFetch( STREAM )
+    , m_addToMediaDevice( false )
     , m_purgeItems( false )
     , m_purgeCount( 2 ) // we do a small hack here to make sure we only download the first 2 items of a new pc.
     , m_last( 0 )
@@ -1076,6 +1078,7 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
     , m_hasProblem( false )
     , m_autoScan( channelSettings.namedItem( "autoscan").toElement().text() == "true" )
     , m_interval( channelSettings.namedItem( "scaninterval").toElement().text().toInt() )
+    , m_addToMediaDevice( channelSettings.namedItem( "autotransfer").toElement().text() == "true" )
     , m_purgeItems( channelSettings.namedItem( "purge").toElement().text() == "true" )
     , m_purgeCount( channelSettings.namedItem( "purgecount").toElement().text().toInt() )
     , m_last( 0 )
@@ -1111,7 +1114,8 @@ PodcastChannel::configure()
     int purgeCount = m_purgeCount;
 
     PodcastSettings *settings = new PodcastSettings( url, save, m_autoScan, m_interval,
-                                                     m_mediaFetch, m_purgeItems, m_purgeCount );
+                                                     m_mediaFetch, m_addToMediaDevice,
+                                                     m_purgeItems, m_purgeCount );
     if( settings->exec() == QDialog::Accepted )
     {
         m_url        = KURL::fromPathOrURL( settings->url() );
@@ -1119,6 +1123,7 @@ PodcastChannel::configure()
         m_autoScan   = settings->hasAutoScan();
         m_interval   = settings->interval();
         m_mediaFetch = settings->fetch();
+        m_addToMediaDevice = settings->addToMediaDevice();
         m_purgeItems = settings->hasPurge();
         m_purgeCount = settings->purgeCount();
 
@@ -1338,7 +1343,7 @@ PodcastChannel::rescan()
 
 void
 PodcastChannel::setSettings( const QString &save, const bool autoFetch, const int fetchType,
-                             const bool purgeItems, const int purgeCount )
+                             bool addToMediaDevice, const bool purgeItems, const int purgeCount )
 {
     m_purgeItems = purgeItems;
     if( m_purgeItems )
@@ -1390,6 +1395,8 @@ PodcastChannel::setSettings( const QString &save, const bool autoFetch, const in
         else
             PlaylistBrowser::instance()->m_podcastItemsToScan.remove( this );
     }
+
+    m_addToMediaDevice = addToMediaDevice;
 
     if( m_mediaFetch != fetchType )
     {
@@ -1609,6 +1616,11 @@ PodcastChannel::xml()
         attr.appendChild( t );
         i.appendChild( attr );
 
+        attr = doc.createElement( "autotransfer" );
+        t = doc.createTextNode( ( m_addToMediaDevice ) ? "true" : "false" );
+        attr.appendChild( t );
+        i.appendChild( attr );
+
         attr = doc.createElement( "purge" );
         t = doc.createTextNode( m_purgeItems ? "true" : "false" );
         attr.appendChild( t );
@@ -1783,6 +1795,18 @@ PodcastItem::downloadResult( KIO::Job* job ) //SLOT
     }
 
     m_downloaded = true;
+
+    PodcastChannel *channel = dynamic_cast<PodcastChannel *>( m_parent );
+    if( channel && channel->addToMediaDevice() )
+    {
+        MetaBundle *bundle = new MetaBundle( localUrl() );
+        if(!channel->title().isEmpty())
+            bundle->setAlbum(channel->title());
+        if(!title().isEmpty())
+            bundle->setTitle(title());
+        MediaDevice::instance()->addURL( localUrl(), bundle, true );
+    }
+
     updatePixmap();
 }
 

@@ -302,7 +302,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         void  fetch();
         void  rescan();
         void  setSettings( const QString &save, const bool autoFetch, const int fetchType,
-                           const bool purgeItems, const int purgeCount );
+                           bool addToMediaDevice, const bool purgeItems, const int purgeCount );
         void  showAbout();
 
         const KURL &url() { return m_url; }
@@ -311,6 +311,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
 
         const bool autoScan() { return m_autoScan; }
         const int  mediaFetch() { return m_mediaFetch; }
+        const bool addToMediaDevice() { return m_addToMediaDevice; }
         const bool hasPurge() { return m_purgeItems; }
         const int  purgeCount() { return m_purgeCount; }
         const KURL &saveLocation() { return m_saveLocation; }
@@ -358,6 +359,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         bool        m_autoScan;
         int         m_interval;                     //how many hours to wait b/w scans
         int         m_mediaFetch;                   //Download or stream?
+        bool        m_addToMediaDevice;             //automatically add newly downloaded shows to media device?
         bool        m_purgeItems;
         int         m_purgeCount;
 
