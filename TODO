@@ -6,9 +6,11 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
- <eean>    Currently custom dynamic playlist selection is simply based on the titles. So its less then 
+ <markey>  "Add Dynamic Playlist" widget has the window title "amaroK <2>"  o.O
+
+ <eean>    Currently custom dynamic playlist selection is simply based on the titles. So its less then
            ideal. Via some method, each playlist should be assigned iteratively a number paired with its
-           type.. Dynamic playlists and static playlists should probably have seperate numbering so 
+           type.. Dynamic playlists and static playlists should probably have seperate numbering so
            that the "next" number can be determined by looking at one XML file.
            Remembering which PartyEntry was used on close should be remembered with the same method.
 
