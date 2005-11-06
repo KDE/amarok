@@ -1,6 +1,6 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>Options8</class>
-<widget class="QDialog">
+<widget class="QWidget">
     <property name="name">
         <cstring>Options8</cstring>
     </property>
