@@ -7,6 +7,13 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+ <markey>  In EngineController::play(), add a sanity check when querying the track length
+           from the engine. Apparently AAC can deliver ridiculous values with GST and Helix,
+           like 1192479:38:49. If length is too extreme, default to the TagLib provided
+           value.
+
+ <markey>  "Add Dynamic Playlist" widget has the window title "amaroK <2>"  o.O
+
  <eean>    Currently custom dynamic playlist selection is simply based on the titles. So its less then
            ideal. Via some method, each playlist should be assigned iteratively a number paired with its
            type.. Dynamic playlists and static playlists should probably have seperate numbering so
