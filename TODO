@@ -7,16 +7,11 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
- <markey>  "Add Dynamic Playlist" widget has the window title "amaroK <2>"  o.O
-
  <eean>    Currently custom dynamic playlist selection is simply based on the titles. So its less then
            ideal. Via some method, each playlist should be assigned iteratively a number paired with its
            type.. Dynamic playlists and static playlists should probably have seperate numbering so
            that the "next" number can be determined by looking at one XML file.
            Remembering which PartyEntry was used on close should be remembered with the same method.
-
- <sebr>    Playlistbrowser 'save' popup menu no longer requires Save Dynamic Playlist.  Figure out what
-           to do with this popup menu. I think 'Save' as a button is too ambiguous.
 
  <markey>  Use tabs for Collection Browser switching between tree and flat view. The buttons
            suck.

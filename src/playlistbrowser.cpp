@@ -87,13 +87,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     addMenu->insertItem( i18n("Podcast..."), PODCAST );
     connect( addMenu, SIGNAL( activated(int) ), SLOT( slotAddMenu(int) ) );
 
-    saveMenuButton = new KActionMenu( i18n("Save"), "filesave", m_ac );
-    saveMenuButton->setDelayed( false );
-
-    KPopupMenu *saveMenu = saveMenuButton->popupMenu();
-    saveMenu->insertItem( i18n("Current Playlist..."), CURRENT );
-    saveMenu->insertItem( i18n("Dynamic Playlist..."), DYNAMIC );
-    connect( saveMenu, SIGNAL( activated(int) ), SLOT( slotSaveMenu(int) ) );
+    KAction *saveButton = new KAction( i18n("Save"), "filesave", 0, this, SLOT( slotSave() ), m_ac );
 
     renameButton   = new KAction( i18n("Rename"), "editclear", 0, this, SLOT( renameSelectedItem() ), m_ac );
     removeButton   = new KAction( i18n("Remove"), "edittrash", 0, this, SLOT( removeSelectedItems() ), m_ac );
@@ -116,7 +110,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     m_toolbar = new Browser::ToolBar( browserBox );
     m_toolbar->setIconText( KToolBar::IconTextRight, false ); //we want the open button to have text on right
     addMenuButton->plug( m_toolbar );
-    saveMenuButton->plug( m_toolbar );
+    saveButton->plug( m_toolbar );
 
     m_toolbar->setIconText( KToolBar::IconOnly, false );      //default appearance
     m_toolbar->insertLineSeparator();
@@ -1838,21 +1832,9 @@ void PlaylistBrowser::slotAddMenu( int id ) //SLOT
     }
 }
 
-void PlaylistBrowser::slotSaveMenu( int id ) // SLOT
+void PlaylistBrowser::slotSave() // SLOT
 {
-    switch( id )
-    {
-        case PLAYLIST:
-            createPlaylist();
-            break;
-
-        case DYNAMIC:
-//            addDynamic();
-            break;
-
-        default:
-            break;
-    }
+    createPlaylist();
 }
 
 void PlaylistBrowser::slotViewMenu( int id ) //SL0T
@@ -2236,7 +2218,6 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
         else if( parentCat == static_cast<QListViewItem*>(m_dynamicCategory) )
             menu.insertItem( SmallIconSet("edit_add"), i18n("New Dynamic Playlist"), DYNAMIC );
-            //menu.insertItem( SmallIconSet("edit_add"), i18n("Save Dynamic Configuration..."), DYNAMIC );
 
         else if( parentCat == static_cast<QListViewItem*>(m_podcastCategory) )
         {

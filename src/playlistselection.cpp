@@ -74,6 +74,7 @@ namespace ConfigDynamic
                               KDialogBase::Ok | KDialogBase::Cancel,
                               KDialogBase::Ok, true );
         kapp->setTopWidget( dialog );
+        dialog->setCaption( i18n("Dynamic Mode") );
         NewDynamic* nd = new NewDynamic( dialog, "new dynamic");
         //QSizePolicy policy;
         //policy.setHorData(QSizePolicy::Maximum);
