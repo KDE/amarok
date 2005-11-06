@@ -52,10 +52,6 @@ Statistics::Statistics( QWidget *parent, const char *name )
 
     loadSummary();
     loadChooser();
-
-    QSize sz = sizeHint();
-    setMinimumSize( kMax( 550, sz.width() ), kMax( 350, sz.height() ) );
-    resize( sizeHint() );
 }
 
 Statistics::~Statistics()
