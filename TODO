@@ -6,6 +6,12 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+ <eean>    Currently custom dynamic playlist selection is simply based on the titles. So its less then 
+           ideal. Via some method, each playlist should be assigned iteratively a number paired with its
+           type.. Dynamic playlists and static playlists should probably have seperate numbering so 
+           that the "next" number can be determined by looking at one XML file.
+           Remembering which PartyEntry was used on close should be remembered with the same method.
+
  <sebr>    Playlistbrowser 'save' popup menu no longer requires Save Dynamic Playlist.  Figure out what
            to do with this popup menu. I think 'Save' as a button is too ambiguous.
 
@@ -75,9 +81,6 @@ MID-TERM:
  --><eean> custom playlist creation.
            1) the default dynamic playlists need to be more insistent, the same way the
               the default smart playlists are.
-           2) ability to add/remove playlists and smart playlists to the current dynamic
-              playlist without opening a dialog. The change to the loaded dynamic playlist
-              would be immediate, no "saving current dynamic playlists".
 
   <mp8> Album covers as icons from filebrowser.
 
