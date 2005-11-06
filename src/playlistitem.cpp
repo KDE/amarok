@@ -283,11 +283,12 @@ QString PlaylistItem::text( int column ) const
         case Comment:   return comment();
         case Genre:     return genre();
         case Track:     return track() == -1 ? editing : track() ? QString::number( track() ) : QString::null;
-        case Directory: return m_url.isLocalFile() ? m_url.directory() : m_url.upURL().prettyURL();
+        case Directory: return m_url.isEmpty()     ? QString()
+                             : m_url.isLocalFile() ? m_url.directory() : m_url.upURL().prettyURL();
         case Length:    return length() == -1 ? editing : MetaBundle::prettyLength( length(), true );
         case Bitrate:   return bitrate() == -1 ? editing : MetaBundle::prettyBitrate( bitrate() );
         case Score:     return score() == -1 ? editing : QString::number( score() );
-        case Type:      return ( m_url.protocol() == "http" ) ? i18n( "Stream" )
+        case Type:      return m_url.isEmpty() ? QString() : ( m_url.protocol() == "http" ) ? i18n( "Stream" )
                                : filename().mid( filename().findRev( '.' ) + 1 );
         case Playcount: return playcount() == -1 ? editing : QString::number( playcount() );
         default: warning() << "Tried to get the text of a nonexistent column!" << endl;

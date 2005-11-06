@@ -91,7 +91,7 @@ class PlaylistItem : public KListViewItem
 
         /// some accessors
         inline const KURL &url()   const { return m_url; }
-        inline QString filename()  const { return m_url.fileName(); }
+        inline QString filename()  const { return m_url.isEmpty() ? QString() : m_url.fileName(); }
         inline QString title()     const { return KListViewItem::text( Title ); }
         inline QString artist()    const { return KListViewItem::text( Artist ); }
         inline QString album()     const { return KListViewItem::text( Album ); }
@@ -99,7 +99,7 @@ class PlaylistItem : public KListViewItem
         inline QString comment()   const { return KListViewItem::text( Comment ); }
         inline QString genre()     const { return KListViewItem::text( Genre ); }
         inline int     track()     const { return m_track; }
-        inline QString directory() const { return m_url.directory(); }
+        inline QString directory() const { return m_url.isEmpty() ? QString() : m_url.directory(); }
         inline int     length()    const { return m_length; }
         inline int     bitrate()   const { return m_bitrate; }
         inline int     score()     const { return m_score; }
@@ -151,7 +151,7 @@ class PlaylistItem : public KListViewItem
         // Used for sorting
         virtual int  compare( QListViewItem*, int, bool ) const;
 
-        static QString filename( const KURL &u ) { return u.protocol() == "http" ? u.prettyURL() : u.fileName(); }
+        static QString filename( const KURL &u ) { return u.isEmpty() ? QString() : u.protocol() == "http" ? u.prettyURL() : u.fileName(); }
 
         /**
         * Paints a focus indicator on the rectangle (current item). We disable it
