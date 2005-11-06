@@ -90,9 +90,6 @@
                     <property name="text">
                         <string>Stream or download on re&amp;quest</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+Q</string>
-                    </property>
                     <property name="toolTip" stdset="0">
                         <string>Media must be downloaded, otherwise the podcast will be played from the remote server.</string>
                     </property>
@@ -122,9 +119,6 @@
             </property>
             <property name="text">
                 <string>Limit &amp;number of items</string>
-            </property>
-            <property name="accel">
-                <string>Alt+N</string>
             </property>
             <property name="toolTip" stdset="0">
                 <string>If checked, amaroK will throw away old podcasts</string>
@@ -181,9 +175,6 @@
             </property>
             <property name="text">
                 <string>Enable &amp;auto-fetching</string>
-            </property>
-            <property name="accel">
-                <string>Alt+A</string>
             </property>
             <property name="toolTip" stdset="0">
                 <string>When checked, amaroK will automatically scan the podcast for updates</string>

@@ -64,7 +64,7 @@ Party::Party( QWidget *parent, const char *name )
 
     if( AmarokConfig::dynamicMode() )
     {
-//         Although random mode should be off, we uncheck it, just in case (eg amarokrc tinkering)
+        //Although random mode should be off, we uncheck it, just in case (eg amarokrc tinkering)
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( false );
     }
 }
@@ -87,7 +87,7 @@ Party::loadConfig( PartyEntry *config )
 void
 Party::editActiveParty()
 {
-    if(m_currentParty == 0)
+    if( m_currentParty == 0 )
         return;
     ConfigDynamic::editDynamicPlaylist(PlaylistWindow::self(), m_currentParty);
 }
@@ -97,13 +97,13 @@ Party::editActiveParty()
     else return default; }
     //do something sane if m_currentParty has been deleted
 
-int  Party::previousCount() { partyInfo(previous,5); }
-int  Party::upcomingCount() { partyInfo(upcoming,20); }
-int  Party::appendCount() { partyInfo(appendCount,1); }
-int  Party::appendType() { partyInfo(appendType,0); }
-bool Party::cycleTracks() { partyInfo(isCycled,true); }
-bool Party::markHistory() { partyInfo(isMarked,true); }
-QString Party::title() { partyInfo(title,"Invalid"); } //no i18n since its just a fallback
+int  Party::previousCount() { partyInfo( previous, 5); }
+int  Party::upcomingCount() { partyInfo( upcoming, 20); }
+int  Party::appendCount()   { partyInfo( appendCount, 1); }
+int  Party::appendType()    { partyInfo( appendType, 0); }
+bool Party::cycleTracks()   { partyInfo( isCycled, true); }
+bool Party::markHistory()   { partyInfo( isMarked, true); }
+QString Party::title()      { partyInfo( title, "Invalid"); } //no i18n since its just a fallback
 
 #undef partyInfo
 

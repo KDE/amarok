@@ -8,12 +8,9 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>568</width>
-            <height>285</height>
+            <width>560</width>
+            <height>287</height>
         </rect>
-    </property>
-    <property name="caption">
-        <string>Form1</string>
     </property>
     <grid>
         <property name="name">
@@ -67,7 +64,7 @@
                 </size>
             </property>
         </spacer>
-        <spacer row="5" column="2" rowspan="1" colspan="2">
+        <spacer row="5" column="2" rowspan="1" colspan="3">
             <property name="name">
                 <cstring>spacer3</cstring>
             </property>
@@ -84,24 +81,7 @@
                 </size>
             </property>
         </spacer>
-        <widget class="QCheckBox" row="3" column="3">
-            <property name="name">
-                <cstring>m_markHistory</cstring>
-            </property>
-            <property name="text">
-                <string>M&amp;ark history</string>
-            </property>
-            <property name="accel">
-                <string>Alt+A</string>
-            </property>
-            <property name="toolTip" stdset="0">
-                <string>Once played, tracks will be greyed out</string>
-            </property>
-            <property name="whatsThis" stdset="0">
-                <string>Once played, tracks will be greyed out</string>
-            </property>
-        </widget>
-        <widget class="KIntSpinBox" row="6" column="4">
+        <widget class="KIntSpinBox" row="6" column="5">
             <property name="name">
                 <cstring>m_upcomingIntSpinBox</cstring>
             </property>
@@ -154,7 +134,7 @@
                 <string>Dynamic playlist name:</string>
             </property>
         </widget>
-        <widget class="QLineEdit" row="2" column="2" rowspan="1" colspan="3">
+        <widget class="QLineEdit" row="2" column="2" rowspan="1" colspan="4">
             <property name="name">
                 <cstring>m_name</cstring>
             </property>
@@ -170,7 +150,7 @@
                 <string>Untitled</string>
             </property>
         </widget>
-        <spacer row="6" column="2" rowspan="1" colspan="2">
+        <spacer row="6" column="2" rowspan="1" colspan="3">
             <property name="name">
                 <cstring>spacer4</cstring>
             </property>
@@ -187,7 +167,7 @@
                 </size>
             </property>
         </spacer>
-        <widget class="KIntSpinBox" row="5" column="4">
+        <widget class="KIntSpinBox" row="5" column="5">
             <property name="name">
                 <cstring>m_previousIntSpinBox</cstring>
             </property>
@@ -227,7 +207,7 @@
                 <string>How many played items to show before removal</string>
             </property>
         </widget>
-        <spacer row="7" column="2" rowspan="1" colspan="2">
+        <spacer row="7" column="2" rowspan="1" colspan="3">
             <property name="name">
                 <cstring>spacer5</cstring>
             </property>
@@ -244,7 +224,7 @@
                 </size>
             </property>
         </spacer>
-        <widget class="KIntSpinBox" row="7" column="4">
+        <widget class="KIntSpinBox" row="7" column="5">
             <property name="name">
                 <cstring>m_appendCountIntSpinBox</cstring>
             </property>
@@ -269,32 +249,12 @@
                 <string>How many tracks to add to the playlist after each song</string>
             </property>
         </widget>
-        <spacer row="3" column="4">
-            <property name="name">
-                <cstring>spacer7</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Preferred</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>55</width>
-                    <height>21</height>
-                </size>
-            </property>
-        </spacer>
         <widget class="QCheckBox" row="3" column="1" rowspan="1" colspan="2">
             <property name="name">
                 <cstring>m_cycleTracks</cstring>
             </property>
             <property name="text">
                 <string>Remove pla&amp;yed tracks</string>
-            </property>
-            <property name="accel">
-                <string>Alt+Y</string>
             </property>
             <property name="toolTip" stdset="0">
                 <string>Automatically remove played tracks to the playlist</string>
@@ -322,7 +282,7 @@
                 </size>
             </property>
         </widget>
-        <widget class="Line" row="4" column="1" rowspan="1" colspan="4">
+        <widget class="Line" row="4" column="1" rowspan="1" colspan="5">
             <property name="name">
                 <cstring>line1</cstring>
             </property>
@@ -344,7 +304,7 @@
                 <enum>Horizontal</enum>
             </property>
         </widget>
-        <widget class="Line" row="1" column="0" rowspan="1" colspan="5">
+        <widget class="Line" row="1" column="0" rowspan="1" colspan="6">
             <property name="name">
                 <cstring>line1_2</cstring>
             </property>
@@ -366,7 +326,7 @@
                 <enum>Horizontal</enum>
             </property>
         </widget>
-        <widget class="QLabel" row="0" column="0" rowspan="1" colspan="4">
+        <widget class="QLabel" row="0" column="0" rowspan="1" colspan="5">
             <property name="name">
                 <cstring>m_mixLabel</cstring>
             </property>
@@ -380,6 +340,37 @@
             </property>
             <property name="alignment">
                 <set>AlignVCenter</set>
+            </property>
+        </widget>
+        <spacer row="3" column="3">
+            <property name="name">
+                <cstring>spacer7</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Preferred</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>60</width>
+                    <height>21</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QCheckBox" row="3" column="4" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>m_markHistory</cstring>
+            </property>
+            <property name="text">
+                <string>M&amp;ark history</string>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>Once played, tracks will be greyed out</string>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>Once played, tracks will be greyed out</string>
             </property>
         </widget>
     </grid>
