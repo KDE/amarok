@@ -501,7 +501,7 @@ Playlist::insertMediaSql( const QString& sql, int options )
 }
 
 void
-Playlist::addSpecialTracks( uint songCount, const QString type )
+Playlist::addSpecialTracks( uint songCount, const int type )
 {
     if( songCount < 1 ) return;
 
@@ -527,13 +527,13 @@ Playlist::addSpecialTracks( uint songCount, const QString type )
     if( required > remainder )
         songCount = required - remainder;
 
-    if( type == "Suggestion" )
+    if( type == Party::SUGGESTION )
     {
         if( !m_currentTrack ) return;
         QStringList suggestions = CollectionDB::instance()->similarArtists( currentTrack()->artist(), 16 );
         qb.addMatches( QueryBuilder::tabArtist, suggestions );
     }
-    else if( type != "Random" ) //we have playlists to choose from.
+    else if( type != Party::RANDOM ) //we have playlists to choose from.
     {
         addSpecialCustomTracks( songCount );
         return;
@@ -700,7 +700,7 @@ Playlist::addSpecialCustomTracks( uint songCount )
  */
 
 void
-Playlist::adjustPartyUpcoming( uint songCount, const QString type )
+Playlist::adjustPartyUpcoming( uint songCount, const int type )
 {
     bool requireTracks = false;
     int  currentPos = 0;

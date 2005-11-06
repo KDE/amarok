@@ -62,6 +62,9 @@ Party::Party( QWidget *parent, const char *name )
     m_repopulate = new KAction( i18n("Repopulate"), "rebuild", 0,
                                 this, SLOT( repopulate() ), m_ac, "Repopulate Upcoming Tracks" );
 
+    connect( amaroK::actionCollection()->action( "dynamic_mode" ), SIGNAL( toggled(bool) ),
+             this, SLOT( setDynamicMode(bool) ) );
+
     if( AmarokConfig::dynamicMode() )
     {
         //Although random mode should be off, we uncheck it, just in case (eg amarokrc tinkering)
@@ -109,14 +112,14 @@ QString Party::title()      { partyInfo( title, "Invalid"); } //no i18n since it
 
 void Party::setDynamicItems(const QPtrList<QListViewItem>& newList)
 {
-    if(!m_currentParty)
+    if( !m_currentParty )
        { warning() << "Party has a 0 for m_currentParty." << endl;  return; }
 
     QStringList strListEntries;
     QListViewItem* entry;
     QPtrListIterator<QListViewItem> it( newList );
 
-    while ((entry = it.current()) != 0)
+    while( (entry = it.current()) != 0 )
     {
         ++it;
         strListEntries << entry->text(0);
@@ -139,13 +142,7 @@ Party::applySettings() //SLOT
     if( CollectionDB::instance()->isEmpty() )
         return;
 
-    QString type;
-    if( appendType() == RANDOM )
-        type = "Random";
-    else if( appendType() == SUGGESTION )
-        type = "Suggestion";
-    else if( appendType() == CUSTOM )
-        type = "Custom";
+    int type = appendType();
 
     if( type != AmarokConfig::dynamicType() )
     {

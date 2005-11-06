@@ -46,10 +46,10 @@ class Party : public QObject
     friend class PlaylistBrowser;
 
     public:
-        
+
        ~Party();
 
-        enum    Mode{ RANDOM=0, SUGGESTION=1, CUSTOM=2 };
+        enum    Mode { RANDOM=0, SUGGESTION=1, CUSTOM=2 };
 
         void    loadConfig( PartyEntry *config = 0 ); // 0 -> load amarokrc config
 

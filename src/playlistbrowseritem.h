@@ -61,8 +61,6 @@ class PartyEntry : public PlaylistBrowserEntry
         PartyEntry( QListViewItem *parent, QListViewItem *after, const QDomElement &xmlDefinition );
         ~PartyEntry() { };
 
-        enum  Mode { RANDOM=0, SUGGESTION=1, CUSTOM=2 };
-
         QString title() const { return text(0); }
 
         QStringList items() { return m_items; }
@@ -75,7 +73,7 @@ class PartyEntry : public PlaylistBrowserEntry
         void  setAppendCount( int c ) { m_appendCount = c; }
         void  setAppendType( int type ) { m_appendType = type; }
         void  setTitle( const QString& title ) { setText(0,title); }
-       
+
 
         bool  isCycled() { return m_cycled; }
         bool  isMarked() { return m_marked; }
@@ -83,7 +81,7 @@ class PartyEntry : public PlaylistBrowserEntry
         int   previous() { return m_previous; }
         int   appendCount() { return m_appendCount; }
         int   appendType() { return m_appendType; }
-        
+
         QDomElement xml();
 
         int   rtti() const { return RTTI; }

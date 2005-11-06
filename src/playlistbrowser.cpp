@@ -713,7 +713,7 @@ PlaylistCategory* PlaylistBrowser::loadDynamics()
         QListViewItem *random = new PartyEntry( p, 0, i18n("Random Mix") );
         //new PartyEntry has all the features we want for random mix
         PartyEntry *suggested = new PartyEntry( p, random, i18n("Suggested Songs" ) );
-        suggested->setAppendType( PartyEntry::SUGGESTION );
+        suggested->setAppendType( Party::SUGGESTION );
         return p;
     }
     else {
@@ -782,7 +782,7 @@ void PlaylistBrowser::loadDynamicItems()
     m_dynamicEntries.clear();  // Dont use remove(), since we do i++, which would cause skip overs!!!
 
     // Mark appropriate items as used
-    if( AmarokConfig::dynamicType() == "Custom" )
+    if( AmarokConfig::dynamicType() == Party::CUSTOM )
     {
         QStringList playlists = AmarokConfig::dynamicCustomList();
         for( uint i=0; i < playlists.count(); i++ )
@@ -1955,7 +1955,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), LOAD );
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), ADD );
 
-        if( isDynamicEnabled() && AmarokConfig::dynamicType() == "Custom" )
+        if( isDynamicEnabled() && AmarokConfig::dynamicType() == Party::CUSTOM )
         {
             if( static_cast<PlaylistEntry*>(item)->isDynamic() )
                 menu.insertItem( SmallIconSet( "edit_remove" ), i18n( "Remove From %1" ).arg(Party::instance()->title()), DYNSUB );
@@ -2012,7 +2012,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), LOAD );
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), ADD );
 
-        if( isDynamicEnabled() && AmarokConfig::dynamicType() == "Custom" )
+        if( isDynamicEnabled() && AmarokConfig::dynamicType() == Party::CUSTOM )
         {
             if( static_cast<SmartPlaylist*>(item)->isDynamic() )
                 menu.insertItem( SmallIconSet( "edit_remove" ), i18n( "Remove From %1" ).arg(Party::instance()->title()), DYNSUB );

@@ -6,6 +6,7 @@
 #include "amarok.h"
 #include "collectiondb.h"
 #include "debug.h"
+#include "party.h"
 #include "playlistbrowser.h"
 #include "playlistbrowseritem.h"
 #include "playlistloader.h"    //load()
@@ -940,7 +941,7 @@ PartyEntry::PartyEntry( QListViewItem *parent, QListViewItem *after, const QStri
         , m_upcoming( 20 )
         , m_previous( 5 )
         , m_appendCount( 1 )
-        , m_appendType( RANDOM )
+        , m_appendType( Party::RANDOM )
 {
     setPixmap( 0, SmallIcon("dynamic") );
     setDragEnabled( false );

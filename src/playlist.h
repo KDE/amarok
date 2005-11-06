@@ -22,6 +22,7 @@
 #include "amarokconfig.h"
 #include "amarokdcophandler.h"
 #include "engineobserver.h"  //baseclass
+#include "party.h"
 #include "playlistwindow.h"  //friend
 #include "playlistitem.h"
 #include "metabundle.h"
@@ -85,9 +86,9 @@ class Playlist : private KListView, public EngineObserver
         void insertMediaSql( const QString& sql, int options = Append );
 
         /// Dynamic mode functions
-        void addSpecialTracks( uint songCount, const QString type = "Random" );
+        void addSpecialTracks( uint songCount, const int type = Party::RANDOM );
         void addSpecialCustomTracks( uint songCount );
-        void adjustPartyUpcoming( uint songCount, const QString type = "Random" );
+        void adjustPartyUpcoming( uint songCount, const int type = Party::RANDOM );
         void adjustPartyPrevious( uint songCount );
         void advancePartyTrack( PlaylistItem *item = 0 );
         void alterHistoryItems( bool enable = false, bool entire = false );
