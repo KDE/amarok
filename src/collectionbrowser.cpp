@@ -1487,9 +1487,17 @@ CollectionView::organizeFiles()  //SLOT
 
             if( !mb.title().isEmpty() )
             {
-                mb.track() ?
-                    title = QString::number( mb.track() ) + " - " + cleanPath( mb.title() ):
+                if( mb.track() )
+                {
+                       if( (QString::number( mb.track() )).length() == 1 )
+                               title = "0" + QString::number( mb.track() ) + " - " + cleanPath( mb.title() );
+                       else
+                       title = QString::number( mb.track() ) + " - " + cleanPath( mb.title() );
+                }
+                else
+                {
                     title = cleanPath( mb.title() );
+                }
                 title.replace( type, "" );
             }
             else
