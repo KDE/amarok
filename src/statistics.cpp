@@ -183,10 +183,6 @@ Statistics::resultCountChanged( int value ) //SLOT
 
     m_resultCount = v;
     loadDetails( m_gui->m_optionCombo->currentItem() );
-
-    QSize sz = sizeHint();
-    setMinimumSize( kMax( 550, sz.width() ), kMax( 350, sz.height() ) );
-    resize( sizeHint() );
 }
 
 void
