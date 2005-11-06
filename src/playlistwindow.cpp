@@ -819,10 +819,10 @@ DynamicBar::DynamicBar(QWidget* parent)
     QWidget *spacer = new QWidget( this );
     setStretchFactor( spacer, 10 );
 
-    KPushButton* editDynamicButton = new KPushButton( "Edit this Dynamic Mode", this, "DynamicModeEdit" );
+    KPushButton* editDynamicButton = new KPushButton( i18n("Edit this Dynamic Mode"), this, "DynamicModeEdit" );
     connect( editDynamicButton, SIGNAL(clicked()), Party::instance(), SLOT(editActiveParty()) );
 
-    KPushButton* repopButton = new KPushButton( "Repopulate", this, "DynamicModeRepopulate" ); 
+    KPushButton* repopButton = new KPushButton( i18n("Repopulate"), this, "DynamicModeRepopulate" ); 
     connect( repopButton, SIGNAL(clicked()), Party::instance(), SLOT(repopulate()) );
 
     connect(Party::instance(), SIGNAL(titleChanged(const QString&)), this, SLOT( changeTitle(const QString&)));
