@@ -34,7 +34,8 @@ QStringList m_expandableDbFields;
 
 
 SmartPlaylistEditor::SmartPlaylistEditor( QString defaultName, QWidget *parent, const char *name )
-    : KDialogBase( parent, name, true, i18n("Create Smart Playlist"), Ok|Cancel)
+    : KDialogBase( parent, name, true, i18n("Create Smart Playlist"),
+      Ok|Cancel, Ok, true )
 {
     init(defaultName);
     addCriteria();
@@ -42,7 +43,8 @@ SmartPlaylistEditor::SmartPlaylistEditor( QString defaultName, QWidget *parent, 
 
 
 SmartPlaylistEditor::SmartPlaylistEditor( QWidget *parent, QDomElement xml, const char *name)
-    : KDialogBase( parent, name, true, i18n("Edit Smart Playlist"), Ok|Cancel)
+    : KDialogBase( parent, name, true, i18n("Edit Smart Playlist"),
+      Ok|Cancel, Ok, true )
 {
     init( xml.attribute( "name" ) );
     // matches
@@ -740,6 +742,7 @@ void CriteriaEditor::loadEditWidgets()
             m_comboBox = new KComboBox( true, m_editBox );
             m_lineEdit = (KLineEdit*)m_comboBox->lineEdit();
             m_lineEdit->setFocus();
+            m_comboBox->setMinimumSize( QSize( 240, 20 ) );
             m_comboBox->show();
             break;
         }
