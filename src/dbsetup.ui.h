@@ -16,15 +16,13 @@
 
 void DbSetup::init()
 {
-    //Assume no db connections, hide all!
-    mySqlFrame->setShown( false );
-    postgreSqlFrame->setShown( false );
+    configStack->raiseWidget( 0 );
 #ifdef USE_MYSQL
     databaseEngine->insertItem( "MySQL", -1 );
     if (AmarokConfig::databaseEngine() == QString::number(DbConnection::mysql))
     {
         databaseEngine->setCurrentItem("MySQL");
-        mySqlFrame->setShown( true );
+        configStack->raiseWidget( 1 );
     }
 #endif
 
@@ -33,18 +31,8 @@ void DbSetup::init()
     if (AmarokConfig::databaseEngine() == QString::number(DbConnection::postgresql))
     {
         databaseEngine->setCurrentItem("Postgresql");
-        postgreSqlFrame->setShown( true );
+        configStack->raiseWidget( 2 );
     }
 #endif
-
-    connect(databaseEngine, SIGNAL(activated( int )), SLOT(databaseEngineChanged()) );
 }
 
-void DbSetup::databaseEngineChanged()
-{
-    bool pg = ( databaseEngine->currentText() == "Postgresql" );
-    bool sq = ( databaseEngine->currentText() == "MySQL" );
-
-    mySqlFrame->setShown( sq );
-    postgreSqlFrame->setShown( pg );
-}
