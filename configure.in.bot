@@ -196,11 +196,11 @@ else
     fi
 
     if test x$enable_mysql = xyes; then
-        echo " =   + MySql support"
+        echo " =   + MySql Support"
     fi
 
     if test x$enable_postgresql = xyes; then
-        echo " =   + Postgresql support"
+        echo " =   + Postgresql Support"
     fi
 
     if test x$have_konqsidebar = xyes; then
@@ -209,6 +209,10 @@ else
 
     if test x$have_tunepimp = xyes; then
         echo " =   + MusicBrainz Support"
+    fi
+
+    if test x$have_libgpod = xyes; then
+        echo " =   + iPod Support"
     fi
 
     echo " ="
@@ -247,11 +251,11 @@ else
     fi
 
     if test x$enable_mysql != xyes; then
-        echo " =   + MySql support"
+        echo " =   + MySql Support"
     fi
 
     if test x$enable_postgresql != xyes; then
-        echo " =   + Postgresql support"
+        echo " =   + Postgresql Support"
     fi
 
     if test x$have_konqsidebar != xyes; then
@@ -260,6 +264,10 @@ else
 
     if test x$have_tunepimp != xyes; then
         echo " =   + MusicBrainz Support"
+    fi
+
+    if test x$have_libgpod != xyes; then
+        echo " =   + iPod Support"
     fi
 
     echo " ="
