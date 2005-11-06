@@ -811,17 +811,18 @@ void PlaylistWindow::showHide() //SLOT
 //////////////////////////////////////////////////////////////////////////////////////////
 DynamicBar::DynamicBar(QWidget* parent)
     : QHBox( parent, "DynamicModeStatusBar" )
-{ 
+{
+    setSpacing( KDialog::spacingHint() );
+    new QLabel( i18n( "Dynamic Mode: " ), this );
     m_titleLabel = new QLabel( this, "DynamicModeTitle" );
-    new QSpacerItem(1,0, QSizePolicy::Minimum, QSizePolicy::Maximum);
 
-    QSizePolicy sp( QSizePolicy::Maximum,QSizePolicy::Minimum );
+    QWidget *spacer = new QWidget( this );
+    setStretchFactor( spacer, 10 );
+
     KPushButton* editDynamicButton = new KPushButton( "Edit this Dynamic Mode", this, "DynamicModeEdit" );
-    editDynamicButton->setSizePolicy(sp);
     connect( editDynamicButton, SIGNAL(clicked()), Party::instance(), SLOT(editActiveParty()) );
 
     KPushButton* repopButton = new KPushButton( "Repopulate", this, "DynamicModeRepopulate" ); 
-    repopButton->setSizePolicy( sp );
     connect( repopButton, SIGNAL(clicked()), Party::instance(), SLOT(repopulate()) );
 
     connect(Party::instance(), SIGNAL(titleChanged(const QString&)), this, SLOT( changeTitle(const QString&)));
@@ -836,6 +837,6 @@ void DynamicBar::toggledDynamic(bool on)
 
 void DynamicBar::changeTitle(const QString& title)
 {
-   m_titleLabel->setText(i18n("Dynamic Mode: ") + title);
+   m_titleLabel->setText(title);
 }
 #include "playlistwindow.moc"

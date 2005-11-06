@@ -107,7 +107,7 @@ namespace ConfigDynamic
         if( entry->appendType() == Party::CUSTOM )
         {
             //check items in the custom playlist
-            nd->m_mixLabel->setText( i18n("Custom Dynamic Playlist") );
+            nd->m_mixLabel->setText( i18n("Edit Dynamic Playlist") );
             QStringList items = entry->items();
             foreach( items )
             {
