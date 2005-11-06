@@ -150,7 +150,9 @@ void PlaylistCategory::setXml( const QDomElement &xml )
 {
     PlaylistBrowser *pb = PlaylistBrowser::instance();
     QString tname = xml.tagName();
-    if ( tname == "category" ) {
+    if ( tname == "category" )
+    {
+        setOpen( xml.attribute( "isOpen" ) == "true" );
         QListViewItem *last = 0;
         for( QDomNode n = xml.firstChild() ; !n.isNull(); n = n.nextSibling() )
         {
@@ -195,6 +197,7 @@ void PlaylistCategory::setXml( const QDomElement &xml )
                     pb->m_podcastItemsToScan.append( item );
                 #undef  item
             }
+            last->setOpen( e.attribute( "isOpen" ) == "true" );
         }
         setText( 0, xml.attribute("name") );
     }
@@ -206,7 +209,10 @@ QDomElement PlaylistCategory::xml()
         QDomDocument d;
         QDomElement i = d.createElement("category");
         i.setAttribute( "name", text(0) );
-        for( PlaylistBrowserEntry *it = (PlaylistBrowserEntry*)firstChild(); it; it = (PlaylistBrowserEntry*)it->nextSibling() ) {
+        if( isOpen() )
+            i.setAttribute( "isOpen", "true" );
+        for( PlaylistBrowserEntry *it = (PlaylistBrowserEntry*)firstChild(); it; it = (PlaylistBrowserEntry*)it->nextSibling() )
+        {
           //FIXME: this is a very ugly and bad hack not to save the default smart and stream lists.
             if ( it->text(0) == i18n("Cool-Streams") || it->text(0) == i18n("Collection") )
                 continue;
@@ -670,6 +676,8 @@ QDomElement PlaylistEntry::xml() {
         QDomDocument doc;
         QDomElement i = doc.createElement("playlist");
         i.setAttribute( "file", url().path() );
+        if( isOpen() )
+            i.setAttribute( "isOpen", "true" );
 
         QDomElement attr = doc.createElement( "tracks" );
         QDomText t = doc.createTextNode( QString::number( trackCount() ) );
@@ -783,6 +791,8 @@ QDomElement StreamEntry::xml() {
         QDomDocument doc;
         QDomElement i = doc.createElement("stream");
         i.setAttribute( "name", m_title );
+        if( isOpen() )
+            i.setAttribute( "isOpen", "true" );
         QDomElement url = doc.createElement( "url" );
         url.appendChild( doc.createTextNode( escapeHTML( m_url.prettyURL() ) ));
         i.appendChild( url );
@@ -980,6 +990,8 @@ QDomElement PartyEntry::xml() {
 
     i = doc.createElement("party");
     i.setAttribute( "name", text(0) );
+    if( isOpen() )
+        i.setAttribute( "isOpen", "true" );
 
     QDomElement attr = doc.createElement( "cycleTracks" );
     QDomText t = doc.createTextNode( isCycled() ? "true" : "false" );
@@ -1585,6 +1597,8 @@ PodcastChannel::xml()
         QDomDocument doc;
         QDomElement i = doc.createElement("podcast");
         i.setAttribute( "title", m_title );
+        if( isOpen() )
+            i.setAttribute( "isOpen", "true" );
 
         QDomElement attr = doc.createElement( "url" );
         QDomText t = doc.createTextNode( m_url.prettyURL() );

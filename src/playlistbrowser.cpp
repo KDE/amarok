@@ -164,7 +164,6 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     if( !CollectionDB::instance()->isEmpty() ) {
         m_smartCategory = loadSmartPlaylists();
         loadDefaultSmartPlaylists();
-        m_smartCategory->setOpen( true );
     }
     m_dynamicCategory = loadDynamics();
     m_streamsCategory = loadStreams();
@@ -172,11 +171,6 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     // must be loaded after streams
     m_podcastCategory = loadPodcasts();
-
-    m_playlistCategory->setOpen( true );
-    m_podcastCategory->setOpen( true );
-    m_streamsCategory->setOpen( true );
-    m_dynamicCategory->setOpen( true );
 
     QStringList playlists = AmarokConfig::dynamicCustomList();
 
@@ -190,32 +184,6 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
                 static_cast<PlaylistEntry*>( item )->setDynamic( true );
             if ( item->rtti() == SmartPlaylist::RTTI )
                 static_cast<SmartPlaylist*>( item )->setDynamic( true );
-        }
-    }
-
-    // ListView item state restoration:
-    // First we check if the number of items in the listview is the same as it was on last
-    // application exit. If true, we iterate over all items and restore their open/closed state.
-    // Note: We ignore podcast items, because they are added dynamically added to the ListView.
-
-    QValueList<int> stateList = config->readIntListEntry( "Item State" );
-    QListViewItemIterator it( m_listview );
-    uint count = 0;
-    while ( it.current() ) {
-        if( !isPodcastItem( it.current() ) )
-            ++count;
-        ++it;
-    }
-
-    if ( count == stateList.count() ) {
-        uint index = 0;
-        it = QListViewItemIterator( m_listview );
-        while ( it.current() ) {
-            if( !isPodcastItem( it.current() ) ) {
-                it.current()->setOpen( stateList[index] );
-                ++index;
-            }
-            ++it;
         }
     }
 }
@@ -325,16 +293,6 @@ PlaylistBrowser::~PlaylistBrowser()
         KConfig *config = amaroK::config( "PlaylistBrowser" );
         config->writeEntry( "View", m_viewMode );
         config->writeEntry( "Sorting", m_sortMode );
-
-        // Save open/closed state of each listview item
-        QValueList<int> stateList;
-        QListViewItemIterator it( m_listview );
-        while ( it.current() ) {
-            if( !isPodcastItem( it.current() ) )
-                stateList.append( it.current()->isOpen() ? 1 : 0 );
-            ++it;
-        }
-        config->writeEntry( "Item State", stateList );
         config->writeEntry( "Podcast Interval", m_podcastTimerInterval );
     }
 }
