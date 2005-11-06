@@ -552,20 +552,21 @@ CollectionView::renderView()  //SLOT
 
         //add items to the view
 
-        // if year - artist is cat 1 rebuild the list
-        if( VisYearAlbum == 1 )
-        {
-            QStringList tmpvalues;
-            for( unsigned int i=0; i < values.count()-1 ; i += 2 )
-            {
-                tmpvalues += ( values[i+1].isEmpty() ? "?" : values[i+1]) +
-                               i18n( " - " ) +
-                             ( values[i].isEmpty() ? i18n( "Unknown" ) : values[i] );
-            }
-            values = tmpvalues;
-        }
-
         if( values.count() )
+        {
+            // if year - artist is cat 1 rebuild the list
+            if( VisYearAlbum == 1 )
+            {
+                QStringList tmpvalues;
+                for( uint i = 0; i < values.count(); i += 2 )
+                {
+                    tmpvalues += ( values[i+1].isEmpty() ? "?" : values[i+1]) +
+                    i18n( " - " ) +
+                    ( values[i].isEmpty() ? i18n( "Unknown" ) : values[i] );
+                }
+                values = tmpvalues;
+            }
+
             for ( QStringList::Iterator it = values.fromLast(), begin = values.begin(); true; --it )
             {
                 if ( (*it).stripWhiteSpace().isEmpty() )
@@ -584,6 +585,7 @@ CollectionView::renderView()  //SLOT
                 if ( it == begin )
                     break;
             }
+        }
 
         //check if we need to add a Various Artists node
         if ( q_cat1 == QueryBuilder::tabArtist )
