@@ -135,7 +135,7 @@ namespace ConfigDynamic
 
         if( dialog->exec() == QDialog::Accepted )
         {
-            loadPartyEntry( entry,nd );
+            loadPartyEntry( entry, nd );
             PlaylistBrowser::instance()->getDynamicCategory()->sortChildItems( 0, true );
             PlaylistBrowser::instance()->saveDynamics();
         }
@@ -144,7 +144,7 @@ namespace ConfigDynamic
 
     void loadPartyEntry( PartyEntry* saveMe, NewDynamic* dialog )
     {
-        saveMe->setTitle(dialog->m_name->text());
+        saveMe->setTitle( dialog->m_name->text() );
         saveMe->setCycled( dialog->m_cycleTracks->isChecked() );
         saveMe->setMarked( dialog->m_markHistory->isChecked() );
         saveMe->setUpcoming( dialog->m_upcomingIntSpinBox->value() );
@@ -163,10 +163,11 @@ namespace ConfigDynamic
         saveMe->setItems( list );
     }
 
-    void addDynamic(NewDynamic* dialog)
+    void addDynamic( NewDynamic* dialog )
     {
-        QListViewItem   *parent = PlaylistBrowser::instance()->getDynamicCategory();
-        PartyEntry      *saveMe = new PartyEntry( parent, 0, dialog->m_name->text() );
+        QListViewItem *parent = PlaylistBrowser::instance()->getDynamicCategory();
+        PartyEntry    *saveMe = new PartyEntry( parent, 0, dialog->m_name->text() );
+        saveMe->setAppendType( Party::CUSTOM );
 
         loadPartyEntry( saveMe, dialog );
 
