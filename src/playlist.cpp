@@ -1100,9 +1100,11 @@ Playlist::queue( QListViewItem *item, bool multi )
             }
         }
 
-        if( item->isEnabled() && item != m_currentTrack )
+        if( item->isEnabled() )
         {
-            this->moveItem( item, 0, after );
+            if( item != m_currentTrack )
+                this->moveItem( item, 0, after );
+
             m_nextTracks.append( item );
         }
         else
