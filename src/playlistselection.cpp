@@ -89,7 +89,7 @@ namespace ConfigDynamic
         nd->m_mixLabel->setText( i18n("Add Dynamic Playlist") );
 
         if( dialog->exec() == QDialog::Accepted )
-            addDynamic(static_cast<NewDynamic*>(dialog->mainWidget()));
+            addDynamic( nd );
     }
 
     void editDynamicPlaylist( QWidget* parent, PartyEntry* entry )
@@ -107,6 +107,7 @@ namespace ConfigDynamic
         if( entry->appendType() == Party::CUSTOM )
         {
             //check items in the custom playlist
+            nd->m_mixLabel->setText( i18n("Custom Dynamic Playlist") );
             QStringList items = entry->items();
             foreach( items )
             {
