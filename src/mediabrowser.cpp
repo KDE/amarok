@@ -547,8 +547,11 @@ MediaDeviceList::rmbPressed( QListViewItem* qitem, const QPoint& point, int ) //
         KURL::List urls = nodeBuildDragList( 0 );
         KPopupMenu menu( this );
 
-        enum Actions { APPEND, LOAD, QUEUE, BURN_ARTIST, BURN_ALBUM,
-                       BURN_DATACD, BURN_AUDIOCD, RENAME, ADD, DELETE_PLAYED, DELETE };
+        enum Actions { APPEND, LOAD, QUEUE,
+            BURN_ARTIST, BURN_ALBUM, BURN_DATACD, BURN_AUDIOCD,
+            RENAME, MAKE_PLAYLIST, ADD_TO_PLAYLIST,
+            ADD, DELETE_PLAYED, DELETE,
+            FIRST_PLAYLIST};
 
         menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Load" ), LOAD );
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
@@ -557,44 +560,75 @@ MediaDeviceList::rmbPressed( QListViewItem* qitem, const QPoint& point, int ) //
 
         switch ( item->depth() )
         {
-            case 0:
-                menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n( "Burn All Tracks by This Artist" ), BURN_ARTIST );
-                menu.setItemEnabled( BURN_ARTIST, K3bExporter::isAvailable() );
-                break;
+        case 0:
+            menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n( "Burn All Tracks by This Artist" ), BURN_ARTIST );
+            menu.setItemEnabled( BURN_ARTIST, K3bExporter::isAvailable() );
+            break;
 
-            case 1:
-                menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n( "Burn This Album" ), BURN_ALBUM );
-                menu.setItemEnabled( BURN_ALBUM, K3bExporter::isAvailable() );
-                break;
+        case 1:
+            menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n( "Burn This Album" ), BURN_ALBUM );
+            menu.setItemEnabled( BURN_ALBUM, K3bExporter::isAvailable() );
+            break;
 
-            case 2:
-                menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n( "Burn to CD as Data" ), BURN_DATACD );
-                menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
-                menu.insertItem( SmallIconSet( "cdaudio_unmount" ), i18n( "Burn to CD as Audio" ), BURN_AUDIOCD );
-                menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
-                break;
+        case 2:
+            menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n( "Burn to CD as Data" ), BURN_DATACD );
+            menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
+            menu.insertItem( SmallIconSet( "cdaudio_unmount" ), i18n( "Burn to CD as Audio" ), BURN_AUDIOCD );
+            menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
+            break;
         }
 
         menu.insertSeparator();
 
-        if( item->type() == MediaItem::PLAYLIST )
+        KPopupMenu *playlistsMenu = NULL;
+        switch( item->type() )
         {
-            menu.insertItem( SmallIconSet( "editrename" ), i18n( "Rename" ), RENAME );
-        }
+        case MediaItem::ARTIST:
+        case MediaItem::ALBUM:
+        case MediaItem::TRACK:
+        case MediaItem::PODCASTCHANNEL:
+        case MediaItem::PODCASTSROOT:
+        case MediaItem::PODCASTITEM:
+            if(m_parent->m_device->m_playlistItem)
+            {
+                menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "Make Media Device Playlist" ), MAKE_PLAYLIST );
 
-        if( item->type() == MediaItem::ORPHANED || item->type() == MediaItem::ORPHANEDROOT )
-        {
+                playlistsMenu = new KPopupMenu(&menu);
+                int i=0;
+                for(MediaItem *it = dynamic_cast<MediaItem *>(m_parent->m_device->m_playlistItem->firstChild());
+                        it;
+                        it = dynamic_cast<MediaItem *>(it->nextSibling()))
+                {
+                    playlistsMenu->insertItem( SmallIconSet( "player_playlist_2" ), it->text(0), FIRST_PLAYLIST+i );
+                    i++;
+                }
+                menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n("Add to Playlist"), playlistsMenu, ADD_TO_PLAYLIST );
+                menu.setItemEnabled( ADD_TO_PLAYLIST, m_parent->m_device->m_playlistItem->childCount()>0 );
+                menu.insertSeparator();
+            }
+            break;
+
+        case MediaItem::ORPHANED:
+        case MediaItem::ORPHANEDROOT:
             menu.insertItem( SmallIconSet( "editrename" ), i18n( "Add to Database" ), ADD );
+            break;
+
+        case MediaItem::PLAYLIST:
+            menu.insertItem( SmallIconSet( "editrename" ), i18n( "Rename" ), RENAME );
+            break;
+
+        default:
+            break;
         }
 
         if( item->type() == MediaItem::PODCASTSROOT || item->type() == MediaItem::PODCASTCHANNEL )
         {
             menu.insertItem( SmallIconSet( "editdelete" ), i18n( "Delete Podcasts Already Played" ), DELETE_PLAYED );
         }
-
         menu.insertItem( SmallIconSet( "editdelete" ), i18n( "Delete" ), DELETE );
 
-        switch( menu.exec( point ) )
+        int id =  menu.exec( point );
+        switch( id )
         {
             case LOAD:
                 Playlist::instance()->insertMedia( urls, Playlist::Replace );
@@ -620,6 +654,26 @@ MediaDeviceList::rmbPressed( QListViewItem* qitem, const QPoint& point, int ) //
             case RENAME:
                 m_renameFrom = item->text(0);
                 rename(item, 0);
+                break;
+            case MAKE_PLAYLIST:
+                {
+                    QPtrList<MediaItem> items;
+                    getSelectedLeaves(NULL, &items);
+                    QString base(i18n("New Playlist"));
+                    QString name = base;
+                    int i=1;
+                    while(m_parent->m_device->m_playlistItem->findItem(name))
+                    {
+                        QString num;
+                        num.setNum(i);
+                        name = base + " " + num;
+                        i++;
+                    }
+                    MediaItem *pl = m_parent->m_device->newPlaylist(name, m_parent->m_device->m_playlistItem, items);
+                    ensureItemVisible(pl);
+                    m_renameFrom = pl->text(0);
+                    rename(pl, 0);
+                }
                 break;
             case ADD:
                 if(item->type() == MediaItem::ORPHANEDROOT)
@@ -663,6 +717,27 @@ MediaDeviceList::rmbPressed( QListViewItem* qitem, const QPoint& point, int ) //
                 break;
             case DELETE:
                 m_parent->m_device->deleteFromDevice( NULL );
+                break;
+            default:
+                if(id >= FIRST_PLAYLIST)
+                {
+                    QString name = playlistsMenu->text(id);
+                    if(name != QString::null)
+                    {
+                        MediaItem *list = m_parent->m_device->m_playlistItem->findItem(name);
+                        if(list)
+                        {
+                            MediaItem *after = NULL;
+                            for(MediaItem *it = dynamic_cast<MediaItem *>(list->firstChild());
+                                    it;
+                                    it = dynamic_cast<MediaItem *>(it->nextSibling()))
+                                after = it;
+                            QPtrList<MediaItem> items;
+                            getSelectedLeaves(NULL, &items);
+                            m_parent->m_device->addToPlaylist(list, after, items);
+                        }
+                    }
+                }
                 break;
         }
     }

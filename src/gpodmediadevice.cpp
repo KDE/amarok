@@ -247,7 +247,7 @@ GpodMediaDevice::addToPlaylist(MediaItem *mlist, MediaItem *after, QPtrList<Medi
     GpodMediaItem *it;
     if(after)
     {
-        order = after->m_order;
+        order = after->m_order + 1;
         it = dynamic_cast<GpodMediaItem*>(after->nextSibling());
     }
     else
