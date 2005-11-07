@@ -1784,6 +1784,7 @@ PodcastItem::downloadMedia()
 void
 PodcastItem::abortDownload() //SLOT
 {
+    emit downloadAborted();
     m_podcastItemJob->kill();
 
     stopAnimation();

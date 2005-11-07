@@ -246,6 +246,7 @@ class PodcastItem : public QObject, public PlaylistBrowserEntry
 
     signals:
         void downloadFinished();
+        void downloadAborted();
 
     private slots:
         void abortDownload();

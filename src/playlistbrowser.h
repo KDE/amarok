@@ -87,6 +87,7 @@ class PlaylistBrowser : public QVBox
         void scanPodcasts();
 
     private slots:
+        void abortPodcastQueue();
         void addToDynamic();
         void collectionScanDone();
         void currentItemChanged( QListViewItem * );

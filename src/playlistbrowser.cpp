@@ -966,6 +966,12 @@ void PlaylistBrowser::downloadPodcastQueue() //SLOT
     m_podcastDownloadQueue.removeFirst();
 
     connect( first, SIGNAL( downloadFinished() ), this, SLOT( downloadPodcastQueue() ) );
+    connect( first, SIGNAL( downloadAborted() ),  this, SLOT( abortPodcastQueue()  ) );
+}
+
+void PlaylistBrowser::abortPodcastQueue() //SLOT
+{
+    m_podcastDownloadQueue.clear();
 }
 
 void PlaylistBrowser::setGlobalPodcastSettings( PodcastChannel *item )
