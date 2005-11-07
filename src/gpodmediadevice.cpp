@@ -293,9 +293,11 @@ GpodMediaDevice::addToPlaylist(MediaItem *mlist, MediaItem *after, QPtrList<Medi
                 add = new GpodMediaItem(list);
             }
         }
+        after = add;
 
         add->setType(MediaItem::PLAYLISTITEM);
         add->m_track = it->m_track;
+        add->setUrl( realPath( it->m_track->ipod_path ) );
         add->setText(0, QString::fromUtf8(it->m_track->artist) + " - " + QString::fromUtf8(it->m_track->title) );
         add->m_order = order;
         order++;
