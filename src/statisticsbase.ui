@@ -111,6 +111,9 @@
                             <property name="scaledContents">
                                 <bool>true</bool>
                             </property>
+                            <property name="alignment">
+                                <set>AlignCenter</set>
+                            </property>
                         </widget>
                         <spacer>
                             <property name="name">
@@ -152,6 +155,9 @@
                             </property>
                             <property name="scaledContents">
                                 <bool>true</bool>
+                            </property>
+                            <property name="alignment">
+                                <set>AlignCenter</set>
                             </property>
                         </widget>
                     </vbox>

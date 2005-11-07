@@ -20,6 +20,7 @@
 #include <kdialogbase.h>    //baseclass
 
 #include <qlabel.h>
+#include <qvaluelist.h>
 #include <qvbox.h>
 
 
@@ -47,8 +48,16 @@ class Statistics : public KDialogBase
         void buildArtistInfo();
         void buildGenreInfo();
         void buildTrackInfo();
+        void drawPie( QLabel *parent, QValueList<double> data, QStringList text=0 );
 
         StatisticsBase *m_gui;
+
+        /// Pie graph text and values
+        QValueList<double> m_dataLower;
+        QValueList<double> m_dataUpper;
+        QStringList m_textLower;
+        QStringList m_textUpper;
+
         int m_resultCount;
         int m_viewMode;
 

@@ -10,20 +10,23 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "amarok.h"         //foreach macro
 #include "collectiondb.h"
 #include "statistics.h"
 
 #include <kapplication.h>
 #include <klocale.h>
-#include <knuminput.h>
 #include <kwin.h>
 
+#include <qcheckbox.h>
 #include <qcombobox.h>
 #include <qframe.h>
 #include <qlayout.h>
+#include <qpainter.h>
 #include <qpixmap.h>
-#include <qtabwidget.h>
 #include <qtextedit.h>
+
+#include <cmath>
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// CLASS Statistics
@@ -153,6 +156,11 @@ Statistics::loadDetails( int index ) //SLOT
     m_gui->m_topCoverLabel->setFrameShape( QFrame::NoFrame );
     m_gui->m_bottomCoverLabel->clear();
     m_gui->m_bottomCoverLabel->setFrameShape( QFrame::NoFrame );
+
+    m_dataUpper.clear();
+    m_textUpper.clear();
+    m_dataLower.clear();
+    m_textLower.clear();
 
     switch( index )
     {
@@ -326,7 +334,7 @@ Statistics::buildArtistInfo()
     QStringList mostSongs = qb.run();
 
     ///Artists with the Most Songs
-    text += "<b>" + i18n("Artist Dominance") + "</b><br>"; // sebr: dominance an appropriate word?! :)
+    text += "<b>" + i18n("Artist Count") + "</b><br>"; // sebr: dominance an appropriate word?! :)
     for( uint i=0; i < mostSongs.count(); i += qb.countReturnValues() )
     {
         text += i18n("<i>%1</i> (Count: %2)")
@@ -334,7 +342,13 @@ Statistics::buildArtistInfo()
                     .arg( mostSongs[i+1] );
         if( i + qb.countReturnValues() != mostSongs.count() )
              text += "<br>";
+
+        m_textLower.append( mostSongs[i] );
+        m_dataLower.append( mostSongs[i+1].toDouble() );
     }
+
+    m_gui->m_topCoverLabel->setText( i18n("<b>Artist Count</b>") );
+    drawPie( m_gui->m_bottomCoverLabel, m_dataLower );
 
     m_gui->m_btrView->setText( text );
 }
@@ -375,7 +389,7 @@ Statistics::buildGenreInfo()
     QStringList mostGenres = qb.run();
 
     ///Genres with the Most Songs
-    text += "<b>" + i18n("Genre Population") + "</b><br>"; // sebr: dominance an appropriate word?! :)
+    text += "<b>" + i18n("Genre Count") + "</b><br>";
     for( uint i=0; i < mostGenres.count(); i += qb.countReturnValues() )
     {
         text += i18n("<i>%1</i> (Count: %2)")
@@ -383,9 +397,58 @@ Statistics::buildGenreInfo()
                     .arg( mostGenres[i+1] );
         if( i + qb.countReturnValues() != mostGenres.count() )
              text += "<br>";
+
+        m_textLower.append( mostGenres[i] );
+        m_dataLower.append( mostGenres[i+1].toDouble() );
     }
 
+    m_gui->m_topCoverLabel->setText( i18n("<b>Genre Count</b>") );
+    drawPie( m_gui->m_bottomCoverLabel, m_dataLower );
+
     m_gui->m_btrView->setText( text );
+}
+
+void
+Statistics::drawPie( QLabel *parent, QValueList<double> data, QStringList /*text*/ )
+{
+    double total = 0.0;
+
+    foreachType( QValueList<double>, data )
+        total += *it;
+
+    if( !total ) return;
+
+    //TODO: Make resizeable
+    const int w = 200;
+    const int h = 200;
+
+    const int xd = w - w/8;
+    const int yd = h - h/8;
+
+    QPixmap pm;
+    pm.resize( w, h);
+    pm.fill  ( backgroundColor() );
+
+    QPainter p( &pm );
+
+    int apos = 0;
+    int i = 0;
+
+    foreachType( QValueList<double>, data )
+    {
+        ///Draw graph
+        QColor c;
+
+        c.setHsv( ( i * 255) / data.count(), 255, 255 );// rainbow effect
+        p.setBrush( c );                                // solid fill with color c
+
+        int a = int( ( (*it) * 360.0 ) / total * 16.0 + 0.5);
+        p.drawPie( 0, h/10, xd, yd, -apos, -a );
+        apos += a;
+        i++;
+    }
+
+    parent->setPixmap( pm );
 }
 
 #include "statistics.moc"
