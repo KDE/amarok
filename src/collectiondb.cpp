@@ -322,13 +322,13 @@ CollectionDB::createTables( DbConnection *conn )
     QString yearAutoIncrement = "";
     if ( m_dbConnPool->getDbConnectionType() == DbConnection::postgresql )
     {
-	if(!conn) 
-	{
-	    query( QString( "CREATE SEQUENCE album_seq;" ), conn );
-	    query( QString( "CREATE SEQUENCE artist_seq;" ), conn );
-	    query( QString( "CREATE SEQUENCE genre_seq;" ), conn );
-	    query( QString( "CREATE SEQUENCE year_seq;" ), conn );
-	}
+    if(!conn)
+    {
+        query( QString( "CREATE SEQUENCE album_seq;" ), conn );
+        query( QString( "CREATE SEQUENCE artist_seq;" ), conn );
+        query( QString( "CREATE SEQUENCE genre_seq;" ), conn );
+        query( QString( "CREATE SEQUENCE year_seq;" ), conn );
+    }
 
         albumAutoIncrement = QString("DEFAULT nextval('album_seq')");
         artistAutoIncrement = QString("DEFAULT nextval('artist_seq')");
@@ -448,12 +448,12 @@ CollectionDB::dropTables( DbConnection *conn )
 
     if ( m_dbConnPool->getDbConnectionType() == DbConnection::postgresql )
     {
-	if (conn == NULL) {
-		query( QString( "DROP SEQUENCE album_seq;" ), conn );
-		query( QString( "DROP SEQUENCE artist_seq;" ), conn );
-		query( QString( "DROP SEQUENCE genre_seq;" ), conn );
-		query( QString( "DROP SEQUENCE year_seq;" ), conn );
-	}
+    if (conn == NULL) {
+        query( QString( "DROP SEQUENCE album_seq;" ), conn );
+        query( QString( "DROP SEQUENCE artist_seq;" ), conn );
+        query( QString( "DROP SEQUENCE genre_seq;" ), conn );
+        query( QString( "DROP SEQUENCE year_seq;" ), conn );
+    }
     }
 }
 
@@ -1598,26 +1598,26 @@ CollectionDB::updateDirStats( QString path, const long datetime, DbConnection *c
         path = path.left( path.length() - 1 );
 
     if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) {
-	// REPLACE INTO is not valid SQL for postgres, so we need to check whether we 
-	// should UPDATE() or INSERT()
-	QStringList values = query(QString("SELECT * FROM directories%1 WHERE dir='%2';")
-	    .arg( conn ? "_temp" : "")
-	    .arg( escapeString( path ) ), conn );
+    // REPLACE INTO is not valid SQL for postgres, so we need to check whether we
+    // should UPDATE() or INSERT()
+    QStringList values = query(QString("SELECT * FROM directories%1 WHERE dir='%2';")
+        .arg( conn ? "_temp" : "")
+        .arg( escapeString( path ) ), conn );
 
-	if(values.count() > 0 )
-	{
-	    query( QString( "UPDATE directories%1 SET changedate=%2 WHERE dir='%3';")
-		.arg( conn ? "_temp" : "" )
-		.arg( datetime )
-		.arg( escapeString( path ) ), conn );
-	}
-	else
-	{
-	    query( QString( "INSERT INTO directories%1 (dir,changedate) VALUES ('%2','%3');")
-		.arg( conn ? "_temp" : "")
-		.arg( escapeString( path ) )
-		.arg( datetime ), conn );
-	}
+    if(values.count() > 0 )
+    {
+        query( QString( "UPDATE directories%1 SET changedate=%2 WHERE dir='%3';")
+        .arg( conn ? "_temp" : "" )
+        .arg( datetime )
+        .arg( escapeString( path ) ), conn );
+    }
+    else
+    {
+        query( QString( "INSERT INTO directories%1 (dir,changedate) VALUES ('%2','%3');")
+        .arg( conn ? "_temp" : "")
+        .arg( escapeString( path ) )
+        .arg( datetime ), conn );
+    }
     }
     else
     {
@@ -2094,13 +2094,14 @@ CollectionDB::initialize()
     if ( !dbConn->isInitialized() || !isValid() )
     {
         createTables();
+        createPersistentTables();
         createStatsTable();
     }
     else
     {
 
-
-        if ( adminValue( "Database Persistent Tables Version" ).isEmpty() ) {
+        QString PersistentVersion = adminValue( "Database Persistent Tables Version" );
+        if ( PersistentVersion.isEmpty() ) {
             /* persistent tables didn't have a version on 1.3X and older, but let's be nice and try to
                copy/keep the good information instead of just deleting the tables */
             debug() << "Detected old schema for tables with important data. amaroK will convert the tables, ignore any \"table already exists\" errors." << endl;
@@ -2110,6 +2111,10 @@ CollectionDB::initialize()
             DbConnection *conn = m_dbConnPool->getDbConnection();
             insert( "INSERT INTO lyrics SELECT url, lyrics FROM tags where tags.lyrics IS NOT NULL;", NULL, dbConn );
             m_dbConnPool->putDbConnection( conn );
+        }
+        else if ( PersistentVersion == "1" ) {
+            createPersistentTables(); /* From 1 to 2 nothing changed. There was just a bug on the code, and
+                                         on some cases the table wouldn't be created. */
         }
         else {
             if ( adminValue( "Database Persistent Tables Version" ).toInt() != DATABASE_PERSISTENT_TABLES_VERSION ) {
