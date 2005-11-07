@@ -652,11 +652,13 @@ CollectionView::scanStarted() // SLOT
 
 
 void
-CollectionView::scanDone( bool /*changed*/ ) //SLOT
+CollectionView::scanDone( bool changed ) //SLOT
 {
     DEBUG_BLOCK
 
-    renderView();
+    if( changed )
+        renderView();
+
     m_parent->m_scanAction->setEnabled( !AmarokConfig::monitorChanges() );
 }
 
