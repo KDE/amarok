@@ -26,6 +26,8 @@ VERSION 1.4:
       instead of completely disabling random mode when dynamic is on.
     * libgpod from gtkpod replaces kio based iPod support for improved
       compatibility with various iPod models.
+    * "Update"-button is now hidden in the collection browser if "Watch
+      folders for changes" is enabled in the options.
 
   BUGFIXES:
     * Cached lyrics are not erased when rescanning. (BR 110489)

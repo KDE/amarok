@@ -51,14 +51,18 @@ class CollectionBrowser: public QVBox
         void slotSetFilter();
 
     private:
+        void layoutToolbar();
+
         //attributes:
         enum CatMenuId { IdAlbum = 1, IdArtist = 2, IdGenre = 4, IdYear = 8 , IdScan = 16, IdNone = 32,
                     IdArtistAlbum = 64, IdGenreArtist = 128, IdGenreArtistAlbum = 256, IdVisYearAlbum = 512, IdArtistVisYearAlbum = 1024 };
 
+        class KToolBar* m_toolbar;
         KAction* m_configureAction;
         KAction* m_scanAction;
         KRadioAction* m_treeViewAction;
         KRadioAction* m_flatViewAction;
+        class KActionMenu* m_tagfilterMenuButton;
 
         KPopupMenu* m_categoryMenu;
         KPopupMenu* m_cat1Menu;

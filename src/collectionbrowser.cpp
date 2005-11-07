@@ -60,12 +60,11 @@ CollectionBrowser::CollectionBrowser( const char* name )
 {
     setSpacing( 4 );
 
-    KToolBar* toolbar = new Browser::ToolBar( this );
+    m_toolbar = new Browser::ToolBar( this );
 
     { //<Search LineEdit>
         KToolBarButton *button;
         KToolBar* searchToolBar = new Browser::ToolBar( this );
-
 
         button       = new KToolBarButton( "locationbar_erase", 0, searchToolBar );
         m_searchEdit = new ClickLineEdit( i18n( "Filter here..." ), searchToolBar );
@@ -96,28 +95,14 @@ CollectionBrowser::CollectionBrowser( const char* name )
     else
         m_flatViewAction->setChecked(true);
 
+    m_tagfilterMenuButton = new KActionMenu( i18n( "Group By" ), "filter", ac );
+    m_tagfilterMenuButton->setDelayed( false );
+    m_tagfilterMenuButton->setEnabled( m_view->m_viewMode == CollectionView::modeTreeView );
+    connect ( m_treeViewAction, SIGNAL ( toggled(bool) ), m_tagfilterMenuButton, SLOT( setEnabled (bool) ) );
 
-    KActionMenu* tagfilterMenuButton = new KActionMenu( i18n( "Group By" ), "filter", ac );
-    tagfilterMenuButton->setDelayed( false );
-    m_categoryMenu = tagfilterMenuButton->popupMenu();
+    layoutToolbar();
 
-    tagfilterMenuButton->setEnabled( m_view->m_viewMode == CollectionView::modeTreeView );
-    connect ( m_treeViewAction, SIGNAL ( toggled(bool) ), tagfilterMenuButton, SLOT( setEnabled (bool) ) );
-
-    toolbar->setIconText( KToolBar::IconTextRight, false );
-    tagfilterMenuButton->plug( toolbar );
-    toolbar->insertLineSeparator();
-
-    toolbar->setIconText( KToolBar::IconOnly, false );
-    m_treeViewAction->plug( toolbar );
-    m_flatViewAction->plug( toolbar );
-    toolbar->insertLineSeparator();
-
-    toolbar->setIconText( KToolBar::IconOnly, false );
-    m_scanAction->plug( toolbar );
-    m_scanAction->setEnabled( !AmarokConfig::monitorChanges() );
-    m_configureAction->plug( toolbar );
-
+    m_categoryMenu = m_tagfilterMenuButton->popupMenu();
     m_categoryMenu->insertItem( i18n( "Artist" ), m_view, SLOT( presetMenu( int ) ), 0, IdArtist );
     m_categoryMenu->insertItem( i18n( "Artist / Album" ), m_view, SLOT( presetMenu( int ) ), 0, IdArtistAlbum );
     m_categoryMenu->insertItem( i18n( "Artist" )+" / "+ i18n( "Year" ) + i18n( " - " ) + i18n( "Album" ), m_view, SLOT( presetMenu( int ) ), 0, IdArtistVisYearAlbum );
@@ -163,7 +148,6 @@ CollectionBrowser::CollectionBrowser( const char* name )
     connect( m_searchEdit, SIGNAL( returnPressed() ), SLOT( slotSetFilter() ) );
 
     setFocusProxy( m_view ); //default object to get focus
-    setMinimumWidth( toolbar->sizeHint().width() + 2 ); //set a reasonable minWidth
 }
 
 void
@@ -266,6 +250,30 @@ bool CollectionBrowser::eventFilter( QObject *o, QEvent *e )
     }
 
     return QVBox::eventFilter( o, e );
+}
+
+void
+CollectionBrowser::layoutToolbar()
+{
+    if ( !m_toolbar ) return;
+
+    m_toolbar->clear();
+
+    m_toolbar->setIconText( KToolBar::IconTextRight, false );
+    m_tagfilterMenuButton->plug( m_toolbar );
+    m_toolbar->setIconText( KToolBar::IconOnly, false );
+
+    m_toolbar->insertLineSeparator();
+    m_treeViewAction->plug( m_toolbar );
+    m_flatViewAction->plug( m_toolbar );
+    m_toolbar->insertLineSeparator();
+
+    if ( !AmarokConfig::monitorChanges() )
+        m_scanAction->plug( m_toolbar );
+
+    m_configureAction->plug( m_toolbar );
+
+    setMinimumWidth( m_toolbar->sizeHint().width() + 2 ); //set a reasonable minWidth
 }
 
 
@@ -640,6 +648,7 @@ CollectionView::setupDirs()  //SLOT
             CollectionDB::instance()->startScan();
 
         m_parent->m_scanAction->setEnabled( !AmarokConfig::monitorChanges() );
+        m_parent->layoutToolbar();
     }
 }
 
