@@ -30,6 +30,7 @@
 #include <qfileinfo.h>
 #include <qtextcodec.h>
 
+#include <kapplication.h>
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kprocio.h>
@@ -173,6 +174,9 @@ ScanController::initIncrementalScanner()
             m_folders << folder;
             debug() << "Collection dir removed: " << folder << endl;
         }
+
+        // Don't block the GUI
+        kapp->processEvents();
     }
 
     if( m_folders.isEmpty() )
