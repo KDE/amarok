@@ -8,7 +8,7 @@ VERSION 1.4:
     * configure: report not included extra features (BR 115057)
     * Ability to uninstall context-browser themes. (BR 111449)
     * New Collection Scanner, running in an external process. No longer can
-      amaroK crash any more while scanning the Collection :)
+      amaroK crash while scanning the Collection :)
     * Statistics tool!
     * Dragging external playlists into the playlist browser will add them.
     * Collection scanner now supports WMA and MP4/AAC.
