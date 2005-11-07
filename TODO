@@ -83,7 +83,13 @@ MID-TERM:
  --><eean> custom playlist creation.
            1) the default dynamic playlists need to be more insistent, the same way the
               the default smart playlists are.
-
+  <eean>   Implement leinir's mockup: 
+           www.leinir.dk/temp/gallery/?image=pictures/amarok-playlist-bar-dynamic-mode.png
+          <leinir> The idea with the look of the top is, as you can probably see from the colours 
+            otherwise present, that it's the active window titlebar/colour/font, with the name of the 
+            playlist being un-bolded (if the window title is bold)...  
+          <leinir> eean: Some people will identify the active window by titlebar colour alone :)
+  
   <mp8> Album covers as icons from filebrowser.
 
   <eean>   When the player window shades, it should lose its title bar and be replaced with something more
