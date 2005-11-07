@@ -542,6 +542,10 @@
         <label>UmountCommand</label>
         <whatsthis>The umount command used for the media device connection.</whatsthis>
     </entry>
+    <entry key="AutoDeletePodcasts" type="Bool">
+        <label>AutoDeletePodcasts</label>
+        <whatsthis>Whether podcasts shows already played are automatically deleted when media device is connected.</whatsthis>
+    </entry>
 </group>
 
 </kcfg>

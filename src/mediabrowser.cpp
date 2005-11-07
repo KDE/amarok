@@ -21,6 +21,7 @@
 #include <qgroupbox.h>
 #include <qimage.h>
 #include <qlabel.h>
+#include <qcheckbox.h>
 #include <qpainter.h>
 #include <qregexp.h>
 #include <qsimplerichtext.h>
@@ -546,12 +547,12 @@ MediaDeviceList::rmbPressed( QListViewItem* qitem, const QPoint& point, int ) //
         KURL::List urls = nodeBuildDragList( 0 );
         KPopupMenu menu( this );
 
-        enum Actions { APPEND, MAKE, QUEUE, BURN_ARTIST, BURN_ALBUM,
+        enum Actions { APPEND, LOAD, QUEUE, BURN_ARTIST, BURN_ALBUM,
                        BURN_DATACD, BURN_AUDIOCD, RENAME, ADD, DELETE_PLAYED, DELETE };
 
+        menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Load" ), LOAD );
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
-        menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue Track" ), QUEUE );
-        menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
+        menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue Tracks" ), QUEUE );
         menu.insertSeparator();
 
         switch ( item->depth() )
@@ -595,11 +596,11 @@ MediaDeviceList::rmbPressed( QListViewItem* qitem, const QPoint& point, int ) //
 
         switch( menu.exec( point ) )
         {
+            case LOAD:
+                Playlist::instance()->insertMedia( urls, Playlist::Replace );
+                break;
             case APPEND:
                 Playlist::instance()->insertMedia( urls, Playlist::Append );
-                break;
-            case MAKE:
-                Playlist::instance()->insertMedia( urls, Playlist::Replace );
                 break;
             case QUEUE:
                 Playlist::instance()->insertMedia( urls, Playlist::Queue );
@@ -745,6 +746,11 @@ MediaDevice::MediaDevice( MediaDeviceView* parent, MediaDeviceList *listview )
     : m_parent( parent )
     , m_listview( listview )
     , m_transferList( new MediaDeviceTransferList( parent ) )
+    , m_playlistItem( NULL )
+    , m_podcastItem( NULL )
+    , m_invisibleItem( NULL )
+    , m_staleItem( NULL )
+    , m_orphanedItem( NULL )
 {
     s_instance = this;
 
@@ -753,11 +759,25 @@ MediaDevice::MediaDevice( MediaDeviceView* parent, MediaDeviceList *listview )
     m_mntpnt = AmarokConfig::mountPoint();
     m_mntcmd = AmarokConfig::mountCommand();
     m_umntcmd = AmarokConfig::umountCommand();
+    m_autoDeletePodcasts = AmarokConfig::autoDeletePodcasts();
 }
 
 MediaDevice::~MediaDevice()
 {
     delete m_transferList;
+}
+
+void
+MediaDevice::updateRootItems()
+{
+    if(m_podcastItem)
+        m_podcastItem->setVisible(m_podcastItem->childCount() > 0);
+    if(m_invisibleItem)
+        m_invisibleItem->setVisible(m_invisibleItem->childCount() > 0);
+    if(m_staleItem)
+        m_staleItem->setVisible(m_staleItem->childCount() > 0);
+    if(m_orphanedItem)
+        m_orphanedItem->setVisible(m_orphanedItem->childCount() > 0);
 }
 
 void
@@ -780,7 +800,6 @@ MediaDevice::addURL( const KURL& url, MetaBundle *bundle, bool isPodcast )
         {
             text += " (" + i18n("Podcast") + ")";
         }
-        debug() << "item text=" << item->text(0) << endl;
         item->setText( 0, text);
 
         m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_transferList->childCount() ) );
@@ -797,7 +816,6 @@ MediaDevice::addURLs( const KURL::List urls )
         for ( ; it != urls.end(); ++it )
             addURL( *it, NULL, false );
 }
-
 
 void
 MediaDevice::clearItems()
@@ -850,11 +868,19 @@ MediaDevice::config()
     umntLabel->setBuddy( umntcmd );
     QToolTip::add( umntcmd, i18n( "Set the command to unmount your device here, empty commands are not executed." ) );
 
+    QHBox *hbox = new QHBox( box );
+    QCheckBox *autoDeletePodcasts = new QCheckBox( hbox );
+    QLabel *autoDeleteLabel = new QLabel( hbox );
+    autoDeleteLabel->setBuddy( autoDeletePodcasts );
+    autoDeleteLabel->setText( i18n( "Automatically delete podcasts" ) );
+    QToolTip::add( autoDeletePodcasts, i18n( "Automatically delete podcast shows already played on connect" ) );
+
     if ( dialog.exec() != QDialog::Rejected )
     {
         setMountPoint( mntpnt->text() );
         setMountCommand( mntcmd->text() );
         setUmountCommand( umntcmd->text() );
+        setAutoDeletePodcasts( autoDeletePodcasts->isChecked() );
     }
 }
 
@@ -874,6 +900,12 @@ void MediaDevice::setUmountCommand(const QString & umnt)
 {
     AmarokConfig::setUmountCommand( umnt );
     m_umntcmd = umnt;        //Update for umount()
+}
+
+void MediaDevice::setAutoDeletePodcasts( bool value )
+{
+    AmarokConfig::setAutoDeletePodcasts( value );
+    m_autoDeletePodcasts = value; //Update
 }
 
 int MediaDevice::mount()
@@ -943,6 +975,35 @@ MediaDevice::connectDevice()
                     }
                 }
             }
+
+            // delete podcasts already played
+            if(m_podcastItem)
+            {
+                QPtrList<MediaItem> list;
+                //NOTE we assume that currentItem is the main target
+                int numFiles  = m_parent->m_deviceList->getSelectedLeaves(m_podcastItem, &list, false /* not only selected */, true /* only played */ );
+
+                if(numFiles > 0)
+                {
+                    m_parent->m_stats->setText( i18n( "1 track to be deleted", "%n tracks to be deleted", numFiles ) );
+
+                    m_parent->m_progress->setProgress( 0 );
+                    m_parent->m_progress->setTotalSteps( numFiles );
+                    m_parent->m_progress->show();
+
+                    lockDevice(true);
+
+                    deleteItemFromDevice(m_podcastItem, true);
+
+                    synchronizeDevice();
+                    unlockDevice();
+
+                    QTimer::singleShot( 1500, m_parent->m_progress, SLOT(hide()) );
+                    m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_transferList->childCount() ) );
+                }
+            }
+
+            updateRootItems();
         }
         else
         {

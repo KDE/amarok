@@ -6,17 +6,16 @@
 
 #include "config.h"
 
-#include "mediabrowser.h"
-
 #ifdef HAVE_LIBGPOD
 extern "C" {
 #include <gpod/itdb.h>
-};
+}
 #endif
+
+#include "mediabrowser.h"
 
 #include <qptrlist.h>
 #include <qdict.h>
-#include <qpixmap.h>
 
 class GpodMediaItem;
 
@@ -50,7 +49,6 @@ class GpodMediaDevice : public MediaDevice
 
     private:
 #ifdef HAVE_LIBGPOD
-        void             updateRootItems();
         void             writeITunesDB();
         void             addTrackToList(Itdb_Track *track);
         void             addPlaylistToList(Itdb_Playlist *playlist);
@@ -64,21 +62,8 @@ class GpodMediaDevice : public MediaDevice
         Itdb_Playlist*   m_masterPlaylist;
         QDict<Itdb_Track> m_files;
 
-        // root listview items
-        GpodMediaItem *m_playlistItem;
-
         // podcasts
         Itdb_Playlist*   m_podcastPlaylist;
-        GpodMediaItem *m_podcastItem;
-
-        // items not on the master playlist and not on the podcast playlist are not visible on the ipod
-        GpodMediaItem *m_invisibleItem;
-
-        // items in the database for which the file is missing
-        GpodMediaItem *m_staleItem;
-
-        // files without database entry
-        GpodMediaItem *m_orphanedItem;
 
         GpodMediaItem *getArtist(const QString &artist);
         GpodMediaItem *getAlbum(const QString &artist, const QString &album);

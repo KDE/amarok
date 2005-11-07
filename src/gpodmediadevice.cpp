@@ -1,13 +1,13 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>, 2005 Martin Aumueller <aumuell@reserv.at>
 // See COPYING file for licensing information
 
-
 #define DEBUG_PREFIX "GpodMediaDevice"
+
+#include "gpodmediadevice.h"
 
 #include "debug.h"
 #include "metabundle.h"
 
-#include "gpodmediadevice.h"
 #include "collectiondb.h"
 
 
@@ -112,14 +112,6 @@ GpodMediaDevice::isConnected()
 }
 
 #ifdef HAVE_LIBGPOD
-void
-GpodMediaDevice::updateRootItems()
-{
-    m_podcastItem->setVisible(m_podcastItem->childCount() > 0);
-    m_invisibleItem->setVisible(m_invisibleItem->childCount() > 0);
-    m_staleItem->setVisible(m_staleItem->childCount() > 0);
-    m_orphanedItem->setVisible(m_orphanedItem->childCount() > 0);
-}
 #endif
 
 bool
@@ -345,11 +337,11 @@ GpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
         if(!onlyPlayed || item->played() > 0)
         {
             // delete from playlists
-            GpodMediaItem *i = m_playlistItem->findTrack(item->m_track);
+            GpodMediaItem *i = static_cast<GpodMediaItem *>(m_playlistItem)->findTrack(item->m_track);
             while(i)
             {
                 delete i;
-                i = m_playlistItem->findTrack(item->m_track);
+                i = static_cast<GpodMediaItem *>(m_playlistItem)->findTrack(item->m_track);
             }
 
             // delete file
@@ -364,11 +356,11 @@ GpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
         break;
     case MediaItem::STALE:
         {
-            GpodMediaItem *i = m_playlistItem->findTrack(item->m_track);
+            GpodMediaItem *i = static_cast<GpodMediaItem *>(m_playlistItem)->findTrack(item->m_track);
             while(i)
             {
                 delete i;
-                i = m_playlistItem->findTrack(item->m_track);
+                i = static_cast<GpodMediaItem *>(m_playlistItem)->findTrack(item->m_track);
             }
             ret = removeDBTrack(item->m_track);
             delete item;
@@ -410,7 +402,7 @@ GpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
                 && item->type() != MediaItem::STALEROOT
                 && item->type() != MediaItem::ORPHANEDROOT)
         {
-            if(!onlyPlayed || item->played() > 0)
+            if(!onlyPlayed || item->played() > 0 || item->childCount() == 0)
             {
                 if(item->childCount() > 0)
                     debug() << "recursive deletion should have removed all children from " << item << "(" << item->text(0) << ")" << endl;

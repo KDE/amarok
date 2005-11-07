@@ -190,6 +190,7 @@ class MediaDevice : public QObject
         void setMountPoint(const QString & mntpnt);
         void setMountCommand(const QString & mnt);
         void setUmountCommand(const QString & umnt);
+        void setAutoDeletePodcasts(bool value);
         int  umount();
         void transferFiles();
         virtual void renameItem( QListViewItem *item ) {(void)item; }
@@ -208,6 +209,7 @@ class MediaDevice : public QObject
         QString     m_mntpnt;
         QString     m_mntcmd;
         QString     m_umntcmd;
+        bool        m_autoDeletePodcasts;
 
         KShellProcess   *sysProc;
         MediaDeviceView* m_parent;
@@ -224,6 +226,7 @@ class MediaDevice : public QObject
         virtual bool closeDevice() = 0;
         virtual void synchronizeDevice() = 0;
         virtual bool addTrackToDevice(const QString& pathname, const MetaBundle& bundle, bool isPodcast) = 0;
+        virtual void updateRootItems();
 
         void deleteFromDevice( MediaItem *item, bool onlyPlayed=false, bool recursing=false );
         void deleteFile( const KURL &url);
@@ -232,6 +235,17 @@ class MediaDevice : public QObject
         virtual QString createPathname(const MetaBundle& bundle) = 0;
 
         static MediaDevice *s_instance;
+
+        // root listview items
+        MediaItem *m_playlistItem;
+        MediaItem *m_podcastItem;
+        // items not on the master playlist and not on the podcast playlist are not visible on the ipod
+        MediaItem *m_invisibleItem;
+        // items in the database for which the file is missing
+        MediaItem *m_staleItem;
+        // files without database entry
+        MediaItem *m_orphanedItem;
+
 };
 
 
