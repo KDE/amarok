@@ -1,4 +1,7 @@
-// (c) 2005 Martin Aumueller <aumuell@reserv.at>
+// (C) 2005 Martin Aumueller <aumuell@reserv.at>
+// portions are (C) 2005 Umesh Shankar <ushankar@cs.berkeley.edu>
+//          and (C) 2005 Andy Leadbetter <andrew.leadbetter@gmail.com>
+//
 // See COPYING file for licensing information
 
 #include "audibleproperties.h"
