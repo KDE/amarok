@@ -1,4 +1,4 @@
-SUBDIRS = wma mp4
+SUBDIRS = wma mp4 audible
 
 INCLUDES           = $(all_includes) $(taglib_includes)
 METASOURCES        = AUTO
@@ -13,4 +13,5 @@ noinst_HEADERS = \
 
 libmetadata_la_LIBADD = \
                      wma/libtagwma.la \
-                     mp4/libtagmp4.la
+                     mp4/libtagmp4.la \
+                     audible/libtagaudible.la

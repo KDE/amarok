@@ -7,9 +7,7 @@
 
 #include "debug.h"
 #include "metabundle.h"
-
 #include "collectiondb.h"
-
 
 #include <kapplication.h>
 #include <kmountpoint.h>
@@ -31,7 +29,10 @@
 
 
 #ifdef HAVE_LIBGPOD
+#include "metadata/audible/taglib_audiblefile.h"
+
 #include <glib-object.h>
+
 // the gobject system needs this - otherwise ipod-device enabled libgpod crashes
 static class GobjectInitializer {
     public:
@@ -159,6 +160,10 @@ GpodMediaDevice::addTrackToDevice(const QString &pathname, const MetaBundle &bun
     {
         track->filetype = g_strdup( "audible" );
         track->unk164 |= 0x10000; // remember current position in track
+
+        TagLib::Audible::File *f = new TagLib::Audible::File( QFile::encodeName( bundle.url().path() ) );
+        TagLib::Audible::Tag *t = f->getAudibleTag();
+        track->drm_userid = t->userID();
     }
     else
     {

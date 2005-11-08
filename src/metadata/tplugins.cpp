@@ -5,9 +5,11 @@
 #include <taglib/fileref.h>
 #include "mp4/taglib_mp4filetyperesolver.h"
 #include "wma/taglib_wmafiletyperesolver.h"
+#include "audible/taglib_audiblefiletyperesolver.h"
 
 void registerTaglibPlugins()
 {
     TagLib::FileRef::addFileTypeResolver(new MP4FileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new WMAFileTypeResolver);
+    TagLib::FileRef::addFileTypeResolver(new AudibleFileTypeResolver);
 }
