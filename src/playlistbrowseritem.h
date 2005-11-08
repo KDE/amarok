@@ -143,7 +143,6 @@ class PlaylistEntry :  public QObject, public PlaylistBrowserEntry
         void sortChildItems ( int /*column*/, bool /*ascending*/ ) { /* Don't sort its children */ }; //reimplemented
 
         void load();
-        void restore();
 
         const KURL &url() const                   { return m_url; }
         void        setUrl( const QString &u )    { m_url.setPath( u ); }
@@ -151,11 +150,9 @@ class PlaylistEntry :  public QObject, public PlaylistBrowserEntry
         int         length()                      { return m_length; }
         bool        isDynamic()                   { return m_dynamic; }
         bool        isLoaded()                    { return m_loaded; }
-        bool        isModified()                  { return m_modified; }
 
         void        setDynamic( bool );
         void        setLoadingPix( QPixmap *pix ) { m_loadingPix = pix; repaint();}
-        void        setModified( bool );
 
         int         compare( QListViewItem* i, int col ) const; //reimpl.
         KURL::List  tracksURL();    //returns the list of tracks url
@@ -191,10 +188,8 @@ class PlaylistEntry :  public QObject, public PlaylistBrowserEntry
         QPtrList<TrackItemInfo> tmp_droppedTracks;  //tracks dropped to the playlist while it wasn't been loaded
         bool                 m_loading;
         bool                 m_loaded;              //playlist loaded
-        bool                 m_modified;            //the playlist has been modified
         bool                 m_dynamic;             //the playlist is scheduled for dynamic mode rotation
         QPixmap             *m_dynamicPix;
-        QPixmap             *m_savePix;
         QPixmap             *m_loadingPix;
         PlaylistTrackItem   *m_lastTrack;
 };

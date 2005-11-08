@@ -1259,8 +1259,6 @@ void PlaylistBrowser::savePlaylist( PlaylistEntry *item )
         saveM3U( item, append );
     else
         savePLS( item, append );
-
-    item->setModified( false );    //don't show the save icon
 }
 
 /**
@@ -1295,9 +1293,7 @@ bool PlaylistBrowser::createPlaylist( QListViewItem *parent, bool current )
     }
     else
     {
-        debug() << "not current!" << endl;
         m_lastPlaylist = new PlaylistEntry( parent, 0, path );
-        parent->setOpen( true );
         parent->sortChildItems( 0, true );
     }
 
@@ -1897,7 +1893,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
     if( isPlaylist( item ) ) {
         #define item static_cast<PlaylistEntry*>(item)
-        enum Id { LOAD, ADD, DYNADD, DYNSUB, SAVE, RESTORE, RENAME, DELETE };
+        enum Id { LOAD, ADD, DYNADD, DYNSUB, RENAME, DELETE };
 
         menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), LOAD );
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), ADD );
@@ -1911,12 +1907,6 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         }
 
         menu.insertSeparator();
-        if( item->isModified() )
-        {
-            menu.insertItem( SmallIconSet("filesave"), i18n( "&Save" ), SAVE );
-            menu.insertItem( i18n( "Res&tore" ), RESTORE );
-            menu.insertSeparator();
-        }
         menu.insertItem( SmallIconSet("editclear"), i18n( "&Rename" ), RENAME );
         menu.insertItem( SmallIconSet("editdelete"), i18n( "&Delete" ), DELETE );
         menu.setAccel( Key_Space, LOAD );
@@ -1936,12 +1926,6 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 break;
             case DYNSUB:
                 subFromDynamic();
-                break;
-            case SAVE:
-                savePlaylist( item );
-                break;
-            case RESTORE:
-                item->restore();
                 break;
             case RENAME:
                 renameSelectedItem();
@@ -2591,27 +2575,6 @@ void PlaylistBrowserView::mousePressed( int button, QListViewItem *item, const Q
             return;
         }
 
-        if( static_cast<PlaylistEntry*>(item)->isModified() ) {
-            QRect saveRect = QRect( 23, itemrect.y() + 3, 16, 16 );
-            if( saveRect.contains( p ) ) {
-
-                enum Id { SAVE, RESTORE };
-
-                KPopupMenu saveMenu( this );
-                saveMenu.insertItem( SmallIconSet("filesave"), i18n( "&Save" ), SAVE );
-                saveMenu.insertItem( i18n( "&Restore" ), RESTORE );
-
-                switch( saveMenu.exec( pnt ) ) {
-                    case SAVE:
-                        PlaylistBrowser::instance()->savePlaylist( static_cast<PlaylistEntry*>(item) );
-                        break;
-
-                    case RESTORE:
-                        static_cast<PlaylistEntry*>(item)->restore();
-                        break;
-                }
-            }
-        }
     }
 }
 

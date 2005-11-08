@@ -248,10 +248,8 @@ PlaylistEntry::PlaylistEntry( QListViewItem *parent, QListViewItem *after, const
     , m_trackCount( tracks )
     , m_loading( false )
     , m_loaded( false )
-    , m_modified( false )
     , m_dynamic( false )
     , m_dynamicPix( 0 )
-    , m_savePix( 0 )
     , m_loadingPix( 0 )
     , m_lastTrack( 0 )
 {
@@ -274,10 +272,8 @@ PlaylistEntry::PlaylistEntry( QListViewItem *parent, QListViewItem *after, const
     : PlaylistBrowserEntry( parent, after )
     , m_loading( false )
     , m_loaded( false )
-    , m_modified( false )
     , m_dynamic( false )
     , m_dynamicPix( 0 )
-    , m_savePix( 0 )
     , m_loadingPix( 0 )
     , m_lastTrack( 0 )
 {
@@ -324,27 +320,6 @@ void PlaylistEntry::load()
 
      //read the playlist file in a thread
     ThreadWeaver::instance()->queueJob( new PlaylistReader( this, m_url.path() ) );
-}
-
-
-void PlaylistEntry::restore()
-{
-    setOpen( false );
-
-    if( !m_loaded ) {
-        TrackItemInfo *info = tmp_droppedTracks.first();
-        while( info ) {
-            m_length -= info->length();
-            m_trackCount--;
-            tmp_droppedTracks.remove();    //remove current item
-            delete info;
-            info = tmp_droppedTracks.current();    //the new current item
-        }
-    }
-    else
-        load();    //reload the playlist
-
-    setModified( false );
 }
 
 
@@ -531,30 +506,11 @@ void PlaylistEntry::setDynamic( bool enable )
     repaint();
 }
 
-void PlaylistEntry::setModified( bool chg )
-{
-    if( chg != m_modified ) {
-        if( chg )
-            m_savePix = new QPixmap( KGlobal::iconLoader()->loadIcon( "filesave", KIcon::NoGroup, 16 ) );
-        else {
-            delete m_savePix;
-            m_savePix = 0;
-            tmp_droppedTracks.clear();
-        }
-
-        m_modified = chg;
-    }
-    //this function is also called every time a track is inserted or removed
-    //we repaint the item to update playlist info
-    repaint();
-}
-
-
 void PlaylistEntry::setup()
 {
     QFontMetrics fm( listView()->font() );
     int margin = listView()->itemMargin()*2;
-    int h = m_savePix ? QMAX( m_savePix->height(), fm.lineSpacing() ) : fm.lineSpacing();
+    int h = fm.lineSpacing();
     if ( h % 2 > 0 )
         h++;
     if( PlaylistBrowser::instance()->viewMode() == PlaylistBrowser::DETAILEDVIEW )
@@ -607,12 +563,7 @@ void PlaylistEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, i
 
     pBuf.setPen( isSelected() ? cg.highlightedText() : cg.text() );
 
-    if( m_modified && m_savePix )
-    {
-        pBuf.drawPixmap( text_x, (textHeight - m_savePix->height())/2, *m_savePix );
-        text_x += m_savePix->width()+4;
-    }
-    else if( m_dynamic && m_dynamicPix && AmarokConfig::dynamicMode() )
+    if( m_dynamic && m_dynamicPix && AmarokConfig::dynamicMode() )
     {
         pBuf.drawPixmap( text_x, (textHeight - m_dynamicPix->height())/2, *m_dynamicPix );
         text_x += m_dynamicPix->width()+4;
