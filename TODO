@@ -7,6 +7,10 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+ <sebr>    Dragging items from the playlist creates a drag object and uses a decode map, which is total
+           crap.  We should pass the url and use metabundle where appropriate like everywhere else in the
+           application.  This should also solve some problems for dragging urls into the playlistbrowser.
+
  <sebr>    Use KIO queues for podcast download queues.  Should simplify the lot.  Problems atm included 
            selecting multiple downloads individually, and automatic downloads occuring for more that one
            podcast item.
