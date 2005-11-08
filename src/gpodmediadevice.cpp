@@ -24,10 +24,19 @@
 
 #include <cstdlib>
 
+
 // disable if it takes too long for you
 #define CHECK_FOR_INTEGRITY 1
 
+
+
 #ifdef HAVE_LIBGPOD
+// the gobject system needs this - otherwise ipod-device enabled libgpod crashes
+static class GobjectInitializer {
+    public:
+    GobjectInitializer() { g_type_init(); }
+} gobjectInitializer;
+
 class TrackList : public QPtrList<Itdb_Track>
 {
     int compareItems ( QPtrCollection::Item track1, QPtrCollection::Item track2 )
@@ -131,7 +140,30 @@ GpodMediaDevice::addTrackToDevice(const QString &pathname, const MetaBundle &bun
     track->album = g_strdup( bundle.album().isEmpty() ? i18n("Unknown").utf8() : bundle.album().utf8() );
     track->artist = g_strdup( bundle.artist().isEmpty() ? i18n("Unknown").utf8() : bundle.artist().utf8() );
     track->genre = g_strdup( bundle.genre().utf8() );
-    track->filetype = g_strdup( (type + "-file").utf8() );
+    if(type=="wav" || type=="WAV")
+    {
+        track->filetype = g_strdup( "wav" );
+    }
+    else if(type=="mp3" || type=="MP3" || type=="mpeg" || type=="MPEG")
+    {
+        track->filetype = g_strdup( "mpeg" );
+    }
+    else if(type=="mp4" || type=="MP4" || type=="aac" || type=="AAC"
+            || type=="m4a" || type=="M4A" || type=="m4b" || type=="M4B"
+            || type=="m4p" || type=="M4P")
+    {
+        track->filetype = g_strdup( "mp4" );
+    }
+    else if(type=="aa" || type=="AA")
+    {
+        track->filetype = g_strdup( "audible" );
+        track->unk164 |= 0x10000; // remember current position in track
+    }
+    else
+    {
+        track->filetype = g_strdup( type.utf8() );
+    }
+
     track->comment = g_strdup( bundle.comment().utf8() );
     track->track_nr = bundle.track();
     track->year = bundle.year();
