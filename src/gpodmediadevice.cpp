@@ -31,6 +31,7 @@
 
 
 #ifdef HAVE_LIBGPOD
+#include <glib-object.h>
 // the gobject system needs this - otherwise ipod-device enabled libgpod crashes
 static class GobjectInitializer {
     public:
