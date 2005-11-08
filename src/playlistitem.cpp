@@ -28,6 +28,7 @@
 #include "playlistitem.h"
 #include "sliderwidget.h"
 #include "moodbar.h"
+#include "config.h"
 
 #include <qmutex.h>
 #include <qimage.h>
@@ -308,12 +309,14 @@ bool ReadMood::doJob()
         theArray = a;
         return true;
     }
+#ifdef HAVE_EXSCALIBAR
     else if(AmarokConfig::calculateMoodOnQueue())
     {
         amaroK::CreateMood *c = new amaroK::CreateMood( thePath );
         Playlist::instance()->connect(c, SIGNAL(completed(const QString)), SLOT(fileHasMood( const QString )));
         ThreadWeaver::instance()->queueJob( c );
     }
+#endif
     return false;
 }
 

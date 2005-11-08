@@ -290,7 +290,7 @@ Playlist::Playlist( QWidget *parent )
     addColumn( i18n( "Score"      ),   0 );
     addColumn( i18n( "Type"       ),   0 );
     addColumn( i18n( "Playcount"  ),   0 );
-    addColumn( i18n( "Moodbar"    ),  40 );
+    addColumn( i18n( "Moodbar"    ),  AmarokConfig::showMoodbar() ? 40 : 0 );
 
     setRenameable( 0, false ); //TODO allow renaming of the filename
     setRenameable( 1 );

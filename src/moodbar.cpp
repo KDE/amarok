@@ -155,6 +155,8 @@ QValueVector<QColor> amaroK::readMood(const QString path)
 		}
 		if(AmarokConfig::makeMoodier())
 		{
+//			int threshold = 
+//			int rangeStart AmarokConfig::redShades()
 			for(int i = 0; i < 360; i++) if(huedist[i] > s / 360 * 5) total++;
 			if(total < 360)
 			{

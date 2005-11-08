@@ -260,8 +260,8 @@ amaroK::TrackSlider::paintEvent( QPaintEvent* )
     else
         p.fillRect( 0, 0, pos, h, QColor( amaroK::ColorScheme::Background ) );
 
-      p.setPen( amaroK::ColorScheme::Foreground );
-      p.drawRect( 0, 0, w, h );
+    p.setPen( amaroK::ColorScheme::Foreground );
+    p.drawRect( 0, 0, w, h );
     p.translate( 0, -MARGIN );
 
     //<Triangle Marker>
@@ -295,14 +295,15 @@ void amaroK::TrackSlider::engineNewMetaData( const MetaBundle &bundle, bool /*tr
     if(bundle.url().isLocalFile())
     {
         QValueVector<QColor> array = amaroK::readMood(bundle.url().path());
+#ifdef HAVE_EXSCALIBAR
         if(!array.size() && AmarokConfig::calculateMoodOnPlay())
         {
-            qDebug("Queueing job...");
             CreateMood *c = new CreateMood( bundle.url().path() );
             connect(c, SIGNAL(completed(const QString)), SLOT(newMoodData()));
             connect(c, SIGNAL(completed(const QString)), static_cast<QObject *>(Playlist::instance()), SLOT(fileHasMood( const QString )));
             ThreadWeaver::instance()->queueJob( c );
         }
+#endif
         if(array.size())
         {
             qDebug("Loaded mood data with %d samples", array.size());
