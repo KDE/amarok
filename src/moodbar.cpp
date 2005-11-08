@@ -36,6 +36,7 @@ using namespace std;
 #include <qsize.h>
 #include <qtimer.h>
 #include <qfile.h>
+#include <qmemarray.h>
 
 #include <kiconloader.h>
 #include <klocale.h>
@@ -147,7 +148,8 @@ QValueVector<QColor> amaroK::readMood(const QString path)
 	{
 		qDebug("ReadMood: File opened. Proceeding to read contents...");
 		int r, g, b, s = mood.size() / 3;
-		int huedist[360], total = 0, mx = 0;
+		QMemArray<int> huedist(360);
+		int total = 0, mx = 0;
 		for(int i = 0; i < 360; i++) huedist[i] = 0;
 		theArray.resize(s);
 		for(int i = 0; i < s; i++)
@@ -155,7 +157,7 @@ QValueVector<QColor> amaroK::readMood(const QString path)
 			r = mood.getch();
 			g = mood.getch();
 			b = mood.getch();
-			theArray[i] = QColor(r, g, b, QColor::Rgb);
+			theArray[i] = QColor(min(255, max(0, r)), min(255, max(0, g)), min(255, max(0, b)), QColor::Rgb);
 			int h, s, v;
 			theArray[i].getHsv(&h, &s, &v);
 			if(h < 0) h = 0;

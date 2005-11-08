@@ -19,6 +19,8 @@
 
 #define DEBUG_PREFIX "PlaylistItem"
 
+inline const int clamp(const int n, const int v, const int x) { return v < n ? n : v > x ? x : v; }
+
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "collectiondb.h"
@@ -577,14 +579,14 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                         b += 220;
                     }
                 int h, s, v;
-                QColor(int(r / float(aa - a)), int(g / float(aa - a)), int(b / float(aa - a)), QColor::Rgb).getHsv(&h, &s, &v);
+                QColor(clamp(0, int(r / float(aa - a)), 255), clamp(0, int(g / float(aa - a)), 255), clamp(0, int(b / float(aa - a)), 255), QColor::Rgb).getHsv(&h, &s, &v);
                 for(int y = 0; y <= height() / 2; y++)
                 {
                     float coeff = float(y) / float(height() / 2);
                     float coeff2 = 1.f - ((1.f - coeff) * (1.f - coeff));
                     coeff = 1.f - (1.f - coeff) / 2.f;
                     coeff2 = 1.f - (1.f - coeff2) / 2.f;
-                    paint.setPen( QColor(h, int(s * coeff), int(255 - (255 - v) * coeff2), QColor::Hsv) );
+                    paint.setPen( QColor(h, clamp(0, int(s * coeff), 255), clamp(0, int(255 - (255 - v) * coeff2), 255), QColor::Hsv) );
                     paint.drawPoint(x, y);
                     paint.drawPoint(x, height() - 1 - y);
                 }
