@@ -137,6 +137,12 @@ puts "\n"
 # Remove SVN data folder
 `find -name ".svn" | xargs rm -rf`
 
+if useStableBranch
+    `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/trunk/extragear/multimedia`
+    `mv multimedia/* .`
+    `rmdir multimedia`
+end
+
 Dir.chdir( "amarok" )
 
 # Move some important files to the root folder
@@ -165,8 +171,6 @@ Dir.chdir( ".." ) # multimedia
 puts( "\n" )
 
 `find | xargs touch`
-
-
 puts "**** Generating Makefiles..  "
 `make -f Makefile.cvs`
 puts "done.\n"
