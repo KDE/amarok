@@ -360,6 +360,9 @@ void PlaylistEntry::insertTracks( QListViewItem *after, KURL::List list, QMap<QS
         }
     }
 
+    if( PlaylistBrowser::instance()->viewMode() == PlaylistBrowser::DETAILEDVIEW && !isOpen() )
+        repaint(); //update the info count, don't repaing if open, since new PlaylistTrackItem will do this.
+
     PlaylistBrowser::instance()->savePlaylist( this );
 }
 

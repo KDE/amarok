@@ -1276,7 +1276,6 @@ PlaylistBrowser::findItem( QString &t, int c ) const
 bool PlaylistBrowser::createPlaylist( QListViewItem *parent, bool current )
 {
     const QString path = PlaylistDialog::getSaveFileName( i18n("Untitled") );
-    debug() << "Creating playlist" << endl;
     if( path.isEmpty() )
         return false;
 
@@ -2512,7 +2511,10 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
                 {
                     PlaylistBrowser *pb = PlaylistBrowser::instance();
                     if ( pb->createPlaylist( item, false ) )
+                    {
                         pb->m_lastPlaylist->insertTracks( 0, list, map );
+                        pb->m_lastPlaylist->load(); //we need to ensure that insertTracks gets registered. Why?!
+                    }
                 }
             }
         }
