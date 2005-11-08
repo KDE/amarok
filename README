@@ -110,6 +110,10 @@ Optional
       (CD burning support)
       http://www.k3b.org
 
+    * Exscalibar >= 1.0.1
+      (Moodbar support)
+      http://www.sf.net/projects/exscalibar
+
 
 Please note, if compiling from source you must also install the devel versions
 of these packages.

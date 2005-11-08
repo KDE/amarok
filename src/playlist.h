@@ -139,6 +139,7 @@ class Playlist : private KListView, public EngineObserver
         friend class UrlLoader;
         friend class QueueManager;
         friend class QueueLabel;
+        friend class PlaylistWindow;
         friend void amaroK::DcopPlaylistHandler::removeCurrentTrack(); //calls removeItem() and currentTrack()
         friend void PlaylistWindow::init(); //setting up connections etc.
         friend TrackToolTip::TrackToolTip();

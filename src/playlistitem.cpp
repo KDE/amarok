@@ -535,7 +535,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
     //p->translate( 2, 0 ); width -= 3;
 
     // Don't try to draw if width or height is 0, as this crashes Qt
-    if( !painter || !listView() || width == 0 || height() == 0 )
+    if( !painter || !listView() || width <= 0 || height() == 0 )
         return;
 
     static const QImage currentTrackLeft  = locate( "data", "amarok/images/currenttrack_bar_left.png" );

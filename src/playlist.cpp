@@ -249,7 +249,7 @@ Playlist::Playlist( QWidget *parent )
         , m_itemToReallyCenter( 0 )
         , m_renameItem( 0 )
         , m_lockStack( 0 )
-        , m_columnFraction( 15, 0 )
+        , m_columnFraction( PlaylistItem::NUM_COLUMNS, 0 )
 {
     s_instance = this;
 
@@ -290,7 +290,7 @@ Playlist::Playlist( QWidget *parent )
     addColumn( i18n( "Score"      ),   0 );
     addColumn( i18n( "Type"       ),   0 );
     addColumn( i18n( "Playcount"  ),   0 );
-    addColumn( i18n( "Moodbar"    ),  AmarokConfig::showMoodbar() ? 40 : 0 );
+    addColumn( i18n( "Moodbar"    ),  AmarokConfig::showMoodbar() ? 100 : 0 );
 
     setRenameable( 0, false ); //TODO allow renaming of the filename
     setRenameable( 1 );
@@ -2079,10 +2079,11 @@ Playlist::eventFilter( QObject *o, QEvent *e )
         popup.setItemEnabled( HIDE, mouseOverColumn != -1 );
 
         for( int i = 0; i < columns(); ++i ) //columns() references a property
-        {
-            popup.insertItem( columnText( i ), i, i + 1 );
-            popup.setItemChecked( i, columnWidth( i ) != 0 );
-        }
+            if(i != PlaylistItem::Moodbar || AmarokConfig::showMoodbar())
+            {
+                popup.insertItem( columnText( i ), i, i + 1 );
+                popup.setItemChecked( i, columnWidth( i ) != 0 );
+            }
 
         //TODO for 1.2.1
         //popup.insertSeparator();
