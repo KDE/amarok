@@ -179,6 +179,9 @@
                             <property name="name">
                                 <cstring>kcfg_MakeMoodier</cstring>
                             </property>
+                            <property name="enabled">
+                                <bool>false</bool>
+                            </property>
                             <property name="text">
                                 <string>&amp;Maximise colour spread of Moodbar</string>
                             </property>
@@ -222,6 +225,9 @@
                         <widget class="QCheckBox">
                             <property name="name">
                                 <cstring>kcfg_MoodsWithMusic</cstring>
+                            </property>
+                            <property name="enabled">
+                                <bool>false</bool>
                             </property>
                             <property name="text">
                                 <string>Stor&amp;e Mood data files with music</string>
@@ -546,6 +552,18 @@
         <sender>kcfg_ShowTrayIcon</sender>
         <signal>toggled(bool)</signal>
         <receiver>kcfg_AnimateTrayIcon</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg_ShowMoodbar</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>kcfg_MakeMoodier</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg_ShowMoodbar</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>kcfg_MoodsWithMusic</receiver>
         <slot>setEnabled(bool)</slot>
     </connection>
 </connections>

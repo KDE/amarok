@@ -16,11 +16,11 @@
  ***************************************************************************/
 
 #include <cmath>
-using namespace std;
 
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "app.h"
+#include "debug.h"
 #include "enginecontroller.h"
 #include "sliderwidget.h"
 #include "threadweaver.h"
@@ -64,8 +64,8 @@ bool amaroK::CreateMood::doJob()
 	QString theMoodName = theFilename;
 	QString ext = theMoodName.right(3).lower();
 	if(ext != "wav" && ext != "mp3" && ext != "ogg")
-	{	
-		qDebug("CreateMood: Format not recognised.");
+	{
+		debug() << "CreateMood: Format not recognised." << endl;
 		return false;
 	}
 	theMoodName.truncate(theMoodName.findRev('.'));
@@ -85,7 +85,7 @@ bool amaroK::CreateMood::doJob()
 		if(!testopen.open(IO_ReadOnly)) return false;
 	}
 #ifdef HAVE_EXSCALIBAR
-	qDebug("MakeMood: Creating mood with Exscalibar. Hold onto your hats...");
+	debug() << "MakeMood: Creating mood with Exscalibar. Hold onto your hats..." << endl;
 	ProcessorGroup g;
 	ProcessorFactory::create("Player")->init("P", g, Properties("Filename", theFilename));
 	SubProcessorFactory::createDom("Mean")->init("M", g);
@@ -104,16 +104,16 @@ bool amaroK::CreateMood::doJob()
 	(*N) >>= g["D"];
 	if(g.go())
 	{
-		qDebug("MakeMood: Processing...");
+		debug() << "MakeMood: Processing..." << endl;;
 		g["D"].waitUntilDone();
-		qDebug("MakeMood: Done processing. Cleaning up...");
+		debug() << "MakeMood: Done processing. Cleaning up..." << endl;
 		g.stop();
 	}
 	else
-		qDebug("MakeMood: Exscalibar reports a problem analysing the song.");
+		debug() << "MakeMood: Exscalibar reports a problem analysing the song." << endl;
 	g.disconnectAll();
 	g.deleteAll();
-	qDebug("MakeMood: All tidied up.");
+	debug() << "MakeMood: All tidied up." << endl;
 	if(!QFile::exists(theMoodName)) return false;
 	QFile mood(theMoodName);
 	if(!mood.open(IO_ReadOnly)) return false;
@@ -131,7 +131,7 @@ void amaroK::CreateMood::completeJob()
 
 QValueVector<QColor> amaroK::readMood(const QString path)
 {
-	qDebug("MakeMood: Reading mood file %s...", path.latin1());
+	debug() << "MakeMood: Reading mood file " << path << endl;
 	QString filebase = path;
 	QValueVector<QColor> theArray;
 	filebase.truncate(filebase.findRev('.'));
@@ -146,18 +146,18 @@ QValueVector<QColor> amaroK::readMood(const QString path)
 	if(QFile::exists(homefilebase)) mood.setName(homefilebase);
 	if(mood.name() != "" && mood.open(IO_ReadOnly))
 	{
-		qDebug("ReadMood: File opened. Proceeding to read contents...");
+		debug() << "ReadMood: File opened. Proceeding to read contents..." << endl;
 		int r, g, b, s = mood.size() / 3;
 		QMemArray<int> huedist(360);
 		int total = 0, mx = 0;
 		for(int i = 0; i < 360; i++) huedist[i] = 0;
 		theArray.resize(s);
 		for(int i = 0; i < s; i++)
-		{	
+		{
 			r = mood.getch();
 			g = mood.getch();
 			b = mood.getch();
-			theArray[i] = QColor(min(255, max(0, r)), min(255, max(0, g)), min(255, max(0, b)), QColor::Rgb);
+			theArray[i] = QColor(kMin(255, kMax(0, r)), kMin(255, kMax(0, g)), kMin(255, kMax(0, b)), QColor::Rgb);
 			int h, s, v;
 			theArray[i].getHsv(&h, &s, &v);
 			if(h < 0) h = 0;
@@ -166,8 +166,8 @@ QValueVector<QColor> amaroK::readMood(const QString path)
 		}
 		if(AmarokConfig::makeMoodier())
 		{
-			qDebug("ReadMood: Making moodier!");
-//			int threshold = 
+			debug() << "ReadMood: Making moodier!" << endl;
+//			int threshold =
 //			int rangeStart AmarokConfig::redShades()
 			for(int i = 0; i < 360; i++) if(huedist[i] > s / 360 * 5) total++;
 			if(total < 360 && total > 0)
@@ -178,11 +178,11 @@ QValueVector<QColor> amaroK::readMood(const QString path)
 				{	int h, s, v;
 					theArray[i].getHsv(&h, &s, &v);
 					if(h < 0) h = 0;
-					theArray[i].setHsv(max(0, min(359, huedist[h])), s, v);
+					theArray[i].setHsv(kMax(0, kMin(359, huedist[h])), s, v);
 				}
 			}
 		}
 	}
-	qDebug("ReadMood: All done.");
+	debug() << "ReadMood: All done." << endl;
 	return theArray;
 }
