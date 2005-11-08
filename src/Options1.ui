@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>365</width>
-            <height>548</height>
+            <height>664</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -48,6 +48,9 @@
                     <property name="text">
                         <string>Show splash-screen on start&amp;up</string>
                     </property>
+                    <property name="accel">
+                        <string>Alt+U</string>
+                    </property>
                     <property name="toolTip" stdset="0">
                         <string>Check to enable the splashscreen during amaroK startup.</string>
                     </property>
@@ -60,7 +63,7 @@
                         <cstring>kcfg_ShowTrayIcon</cstring>
                     </property>
                     <property name="text">
-                        <string>Show tra&amp;y icon</string>
+                        <string>Show tray &amp;icon</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Check to enable the amaroK system tray icon.</string>
@@ -120,12 +123,152 @@
                     <property name="text">
                         <string>Show player window (like &amp;XMMS)</string>
                     </property>
+                    <property name="accel">
+                        <string>Alt+X</string>
+                    </property>
                     <property name="toolTip" stdset="0">
                         <string>Check to enable an extra player window.</string>
                     </property>
                     <property name="whatsThis" stdset="0">
                         <string>Check to enable an extra player window.</string>
                     </property>
+                </widget>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>kcfg_ShowMoodbar</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Sho&amp;w the Moodbar in player window</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+W</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Displays a visual representation of the current track in the slider bar of the player window.</string>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout7</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer3_2_2</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Fixed</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>16</width>
+                                    <height>21</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget class="QCheckBox">
+                            <property name="name">
+                                <cstring>kcfg_MoodsWithMusic</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Stor&amp;e Mood data files with music</string>
+                            </property>
+                            <property name="accel">
+                                <string>Alt+E</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Enabling this option stores Mood data files with the music files. Disabling stores them in your home folder.</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout7_2</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer3_2_2_2</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Fixed</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>16</width>
+                                    <height>21</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget class="QCheckBox">
+                            <property name="name">
+                                <cstring>kcfg_CalculateMoodOnQueue</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Calculate Mood data on queue</string>
+                            </property>
+                            <property name="accel">
+                                <string>Alt+C</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Calculates the Mood data (if necessary) for a track whenever it is inserted into the playlist.</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout7_2_2</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer3_2_2_2_2</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Fixed</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>16</width>
+                                    <height>21</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget class="QCheckBox">
+                            <property name="name">
+                                <cstring>kcfg_MakeMoodier</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Maximise colour spread of Moodbar</string>
+                            </property>
+                            <property name="accel">
+                                <string>Alt+M</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>When enabled, the hue distribution is quantised and respread evenly, giving a prettier but less meaningful output.</string>
+                            </property>
+                        </widget>
+                    </hbox>
                 </widget>
                 <widget class="QLayoutWidget">
                     <property name="name">
@@ -140,7 +283,7 @@
                                 <cstring>textLabel1</cstring>
                             </property>
                             <property name="text">
-                                <string>Default size for &amp;cover previews:</string>
+                                <string>Default si&amp;ze for cover previews:</string>
                             </property>
                             <property name="buddy" stdset="0">
                                 <cstring>kcfg_CoverPreviewSize</cstring>
@@ -226,7 +369,7 @@
                         <cstring>kcfg_RelativePlaylist</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Manually saved playlists use relative path</string>
+                        <string>Manuall&amp;y saved playlists use relative path</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>If checked, amaroK uses a relative path for the tracks of manually saved playlists</string>
@@ -254,7 +397,7 @@
                         <cstring>kcfg_AutoShowContextBrowser</cstring>
                     </property>
                     <property name="text">
-                        <string>Switch to Context Browser on track ch&amp;ange</string>
+                        <string>Switch to Context &amp;Browser on track change</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Switch to the context browser, when playing a track.&lt;br&gt;</string>
@@ -424,7 +567,7 @@
             <property name="sizeHint">
                 <size>
                     <width>20</width>
-                    <height>40</height>
+                    <height>20</height>
                 </size>
             </property>
         </spacer>

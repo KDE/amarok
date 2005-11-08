@@ -116,6 +116,31 @@
         <whatsthis>Makes amaroK more like XMMS and other Winamp clones with separate player and playlist windows.</whatsthis>
         <default>false</default>
     </entry>
+    <entry key="Show Moodbar" type="Bool">
+        <label>Whether to show the moodbar in the player window</label>
+        <whatsthis>Displays a visual representation of the current track in the slider bar of the player window.</whatsthis>
+        <default>false</default>
+    </entry>
+    <entry key="Calculate Mood On Play" type="Bool">
+        <label>Calculate the Mood data whenever a track is played</label>
+        <whatsthis>Calculates the Mood data (if necessary) for a track whenever it is played.</whatsthis>
+        <default>true</default>
+    </entry>
+    <entry key="Calculate Mood On Queue" type="Bool">
+        <label>Calculate the Mood data whenever a track is in the playlist</label>
+        <whatsthis>Calculates the Mood data (if necessary) for a track whenever it is inserted into the playlist.</whatsthis>
+        <default>true</default>
+    </entry>
+    <entry key="Moods With Music" type="Bool">
+        <label>Store Mood data files with music</label>
+        <whatsthis>Enabling this option stores Mood data files with the music files. Disabling stores them in your home folder.</whatsthis>
+        <default>false</default>
+    </entry>
+    <entry key="Make Moodier" type="Bool">
+        <label>Maximise colour spread of Moodbar</label>
+        <whatsthis>When enabled, the hue distribution is quantised and respread evenly, giving a prettier but less meaningful output.</whatsthis>
+        <default>true</default>
+    </entry>
     <entry key="Show Toolbar" type="Bool">
         <label>Whether to show the toolbar in the playlist window.</label>
         <whatthis>At the bottom of the playlist window, the toolbar can be used for buttons such as play and stop.</whatthis>

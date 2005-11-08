@@ -721,6 +721,37 @@ AC_SUBST(LIBGPOD_LIBS)
 
 
 ###############################################################################
+# BEGIN EXSCALIBAR CHECK
+###############################################################################
+
+AC_ARG_WITH(exscalibar,
+    AC_HELP_STRING([--without-exscalibar],[build amaroK without exscalibar (i.e. Moodbar) support]),
+    [with_exscalibar=$withval],
+    [with_exscalibar=yes]
+)
+
+if test "$with_exscalibar" = "yes"; then
+    if test "$PKGCONFIGFOUND" = "yes"; then
+        have_exscalibar=no
+        PKG_CHECK_MODULES(EXSCALIBAR, exscalibar >= 1.0, have_exscalibar=yes, have_exscalibar=no)
+        if test "$have_exscalibar" = "yes"; then
+            AC_DEFINE(HAVE_EXSCALIBAR, 1, [have exscalibar])
+        else
+            AC_MSG_RESULT($have_exscalibar)
+        fi
+    fi
+fi
+AM_CONDITIONAL(with_exscalibar, test "$have_exscalibar" = "yes")
+AC_SUBST(EXSCALIBAR_CFLAGS)
+AC_SUBST(EXSCALIBAR_LIBS)
+
+###############################################################################
+# END EXSCALIBAR CHECK
+###############################################################################
+
+
+
+###############################################################################
 # BEGIN MP4V2 CHECK
 ###############################################################################
 # m4a/aac tag reading and writing needs libmp4v2 from faad2 or better mpeg4ip

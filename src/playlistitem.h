@@ -11,6 +11,9 @@
 #include <klistview.h> //baseclass
 #include <kurl.h>      //stack allocated
 
+#include <qpixmap.h>
+#include <qvaluevector.h>
+#include <qmutex.h>
 #include <qcolor.h>    //stack allocated
 #include <qfont.h>     //stack allocated
 #include <qmap.h>
@@ -22,8 +25,9 @@ class QPainter;
 class MetaBundle;
 class Playlist;
 
-class PlaylistItem : public KListViewItem
+class PlaylistItem : public QObject, public KListViewItem
 {
+Q_OBJECT
     public:
         enum Column {
             Filename = 0,
@@ -40,8 +44,16 @@ class PlaylistItem : public KListViewItem
             Score,
             Type,
             Playcount,
+            Moodbar,
             NUM_COLUMNS
         };
+
+        QMutex theArrayLock;
+        QValueVector<QColor> theArray;
+        QPixmap theMoodbar;
+
+        void setArray(const QValueVector<QColor> array);
+
 
         /// Indicates that the current-track pixmap has changed. Animation must be redrawn.
         static void setPixmapChanged() { s_pixmapChanged = true; }
@@ -126,6 +138,9 @@ class PlaylistItem : public KListViewItem
 
         /// @return does the file exist?
         bool exists() const { return !m_missing; }
+
+        void checkMood();
+        bool readMood();
 
         /// like QWidget::update()
         void update() const;

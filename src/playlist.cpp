@@ -249,7 +249,7 @@ Playlist::Playlist( QWidget *parent )
         , m_itemToReallyCenter( 0 )
         , m_renameItem( 0 )
         , m_lockStack( 0 )
-        , m_columnFraction( 14, 0 )
+        , m_columnFraction( 15, 0 )
 {
     s_instance = this;
 
@@ -290,6 +290,7 @@ Playlist::Playlist( QWidget *parent )
     addColumn( i18n( "Score"      ),   0 );
     addColumn( i18n( "Type"       ),   0 );
     addColumn( i18n( "Playcount"  ),   0 );
+    addColumn( i18n( "Moodbar"    ),  40 );
 
     setRenameable( 0, false ); //TODO allow renaming of the filename
     setRenameable( 1 );
@@ -302,6 +303,7 @@ Playlist::Playlist( QWidget *parent )
     setRenameable( 11 );
     setRenameable( 12, false );
     setRenameable( 13, false );
+    setRenameable( 14, false );
     setColumnAlignment(  7, Qt::AlignCenter ); //track
     setColumnAlignment(  9, Qt::AlignRight );  //length
     setColumnAlignment( 10, Qt::AlignCenter ); //bitrate
@@ -2749,6 +2751,14 @@ Playlist::updateMetaData( const MetaBundle &mb ) //SLOT
             (*it)->setText( mb );
             setFilterForItem( m_filter, *it );
         }
+}
+
+void
+Playlist::fileHasMood( const QString path )
+{
+    for( MyIt it( this, MyIt::All ); *it; ++it )
+        if( (*it)->url().isLocalFile() && (*it)->url().path() == path )
+            (*it)->checkMood();
 }
 
 void

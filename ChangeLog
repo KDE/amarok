@@ -15,6 +15,7 @@ VERSION 1.4:
     * Option to crossfade only on manual track changes. Useful for listening
       to consecutive tracks on a single album.
     * Edit dumb iPod playlists with media browser.
+    * Moodbar!
 
   CHANGES:
     * "Update"-button is now hidden in the collection browser if "Watch

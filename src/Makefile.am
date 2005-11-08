@@ -42,6 +42,7 @@ INCLUDES = \
     $(mysql_includes) \
     $(postgresql_includes) \
     $(LIBGPOD_CFLAGS) \
+    $(EXSCALIBAR_CFLAGS) \
     $(all_includes)
 
 amarokapp_SOURCES = \
@@ -82,6 +83,7 @@ amarokapp_SOURCES = \
     gpodmediadevice.cpp \
     metabundle.cpp \
     multitabbar.cpp \
+    moodbar.cpp \
     newdynamic.ui \
     osd.cpp \
     party.cpp \
@@ -118,7 +120,6 @@ amarokapp_SOURCES = \
     trackpickerdialog.cpp \
     trackpickerdialogbase.ui
 
-
 amarokapp_LDADD = \
     $(top_builddir)/amarok/src/amarokcore/libamarokcore.la \
     $(top_builddir)/amarok/src/analyzers/libanalyzers.la \
@@ -127,8 +128,8 @@ amarokapp_LDADD = \
     $(top_builddir)/amarok/src/statusbar/libstatusbar.la \
     $(top_builddir)/amarok/src/metadata/libmetadata.la \
     $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KHTML) $(LIB_KNEWSTUFF) \
-    $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) $(LIB_TUNEPIMP) \
-    $(LIBGPOD_LIBS) \
+    $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) $(EXSCALIBAR_LIBS) \
+    $(LIB_TUNEPIMP) $(LIBGPOD_LIBS) \
     $(mysql_libs) \
     $(postgresql_libs)
 

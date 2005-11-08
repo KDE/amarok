@@ -44,6 +44,9 @@ class QBoxLayout;
 class QLabel;
 class QTimer;
 
+class ReadMood;
+namespace amaroK { class TrackSlider; }
+
 /**
  * @authors Mark Kretschmann && Max Howell
  *
@@ -130,6 +133,8 @@ class Playlist : private KListView, public EngineObserver
         enum StopAfterMode { DoNotStop, StopAfterCurrent, StopAfterQueue, StopAfterOther };
 
         class QDragObject *dragObject();
+        friend class amaroK::TrackSlider;
+        friend class ReadMood;
         friend class PlaylistItem;
         friend class UrlLoader;
         friend class QueueManager;
@@ -175,6 +180,7 @@ class Playlist : private KListView, public EngineObserver
         void shuffle();
         void undo();
         void updateMetaData( const MetaBundle& );
+        void fileHasMood( const QString path );
 
     private slots:
         void slotCountChanged();

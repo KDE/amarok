@@ -130,6 +130,17 @@ if test x$amarok_warning_postgresql_notfound = xyes; then
 
 fi
 
+if test x$have_exscalibar = xno; then
+    echo " =========================="
+    echo " ===  amaroK - INFORMATION  ===================================================="
+    echo " =========================="
+    echo " ="
+    echo " = exscalibar could not be found, this means that support for Moodbar"
+    echo " = will be disabled."
+    echo " ="
+
+fi
+
 if test x$no_engine = xyes; then
     all_tests=bad
     echo " =================================="
@@ -211,6 +222,10 @@ else
         echo " =   + MusicBrainz Support"
     fi
 
+    if test x$have_exscalibar = xyes; then
+        echo " =   + Moodbar Support"
+    fi
+
     if test x$have_libgpod = xyes; then
         echo " =   + iPod Support"
     fi
@@ -270,7 +285,11 @@ else
         echo " =   + iPod Support"
     fi
 
-    echo " ="
+    if test x$have_exscalibar != xyes; then
+        echo " =   + Moodbar Support"
+    fi
+
+   echo " ="
 fi
 
 echo " ==============================================================================="

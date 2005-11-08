@@ -4,6 +4,8 @@
   begin                : Die Dez 3 2002
   copyright            : (C) 2002 by Mark Kretschmann
   email                : markey@web.de
+  copyright            : (C) 2005 by Gav Wood
+  email                : gav@kde.org
 ***************************************************************************/
 
 /***************************************************************************
@@ -24,7 +26,10 @@
 #include "metabundle.h"
 #include "playlist.h"
 #include "playlistitem.h"
+#include "sliderwidget.h"
+#include "moodbar.h"
 
+#include <qmutex.h>
 #include <qimage.h>
 #include <qpainter.h>
 #include <qpen.h>
@@ -61,6 +66,7 @@ const QString PlaylistItem::columnName( int c ) //static
         case Score:     return "Score";
         case Type:      return "Type";
         case Playcount: return "Playcount";
+        case Moodbar:   return "Moodbar";
     }
     return "<ERROR>";
 }
@@ -89,6 +95,7 @@ PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi )
         , m_enabled( true )
 {
     setDragEnabled( true );
+    checkMood();
 
     setText( bundle );
 
@@ -175,6 +182,8 @@ PlaylistItem::PlaylistItem( QDomNode node, QListViewItem *item )
     listView()->setFilterForItem( listView()->m_filter, this );
 
     listView()->countChanged();
+
+    checkMood();
 }
 
 PlaylistItem::~PlaylistItem()
@@ -236,7 +245,7 @@ void PlaylistItem::setText( int column, const QString &newText )
         case Bitrate:   setBitrate(   newText.toInt() ); break;
         case Score:     setScore(     newText.toInt() ); break;
         case Playcount: setPlaycount( newText.toInt() ); break;
-        default: warning() << "Tried to set the text of an immutable or nonexistent column!" << endl;
+        default: warning() << "Tried to set the text of an immutable or nonexistent column! [" << column << endl;
    }
 }
 
@@ -258,12 +267,64 @@ QString PlaylistItem::exactText( int column ) const
         case Score:     return QString::number( score() );
         case Type:      return type();
         case Playcount: return QString::number( playcount() );
-        default: warning() << "Tried to get the text of a nonexistent column!" << endl;
+        case Moodbar:   return "";
+        default: warning() << "Tried to get the text of a nonexistent column! [" << column << endl;
     }
 
     return KListViewItem::text( column ); //shouldn't happen
 }
 
+void PlaylistItem::setArray(const QValueVector<QColor> array)
+{
+    QMutexLocker lock(&theArrayLock);
+    theArray = array;
+}
+
+class ReadMood : public ThreadWeaver::DependentJob
+{
+    QString thePath;
+    QValueVector<QColor> theArray;
+public:
+    ReadMood( PlaylistItem *i ): DependentJob(i, "ReadMood"), thePath(i->url().path()) {}
+    virtual bool doJob();
+    virtual void completeJob();
+};
+
+void ReadMood::completeJob()
+{
+    if(dynamic_cast<PlaylistItem *>(dependent()))
+    {
+            dynamic_cast<PlaylistItem *>(dependent())->setArray(theArray);
+            dynamic_cast<PlaylistItem *>(dependent())->repaint();
+    }
+}
+
+bool ReadMood::doJob()
+{
+    // attempt to open .mood file:
+    QValueVector<QColor> a = amaroK::readMood(thePath);
+    if(a.size())
+    {
+        theArray = a;
+        return true;
+    }
+    else if(AmarokConfig::calculateMoodOnQueue())
+    {
+        amaroK::CreateMood *c = new amaroK::CreateMood( thePath );
+        Playlist::instance()->connect(c, SIGNAL(completed(const QString)), SLOT(fileHasMood( const QString )));
+        ThreadWeaver::instance()->queueJob( c );
+    }
+    return false;
+}
+
+void PlaylistItem::checkMood()
+{
+    if(m_url.isLocalFile())
+    {
+        ReadMood *c = new ReadMood( this );
+        ThreadWeaver::instance()->queueJob( c );
+    }
+}
 
 QString PlaylistItem::text( int column ) const
 {
@@ -291,6 +352,7 @@ QString PlaylistItem::text( int column ) const
         case Type:      return m_url.isEmpty() ? QString() : ( m_url.protocol() == "http" ) ? i18n( "Stream" )
                                : filename().mid( filename().findRev( '.' ) + 1 );
         case Playcount: return playcount() == -1 ? editing : QString::number( playcount() );
+        case Moodbar:   return "";
         default: warning() << "Tried to get the text of a nonexistent column!" << endl;
     }
 
@@ -483,6 +545,53 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
     QPixmap buf( width, height() );
     QPainter p( &buf, true );
 
+    QMutexLocker lock(&theArrayLock);
+    if( column == Moodbar && theArray.size() )
+    {
+        if(theMoodbar.width() != width || theMoodbar.height() != height())
+        {
+            theMoodbar.resize(width, height());
+            QPainter paint(&theMoodbar);
+            // paint the moodbar
+            int samples = width;
+            int aSize = theArray.size() * 180 / length();
+            for(int x = 0; x < width; x++)
+            {
+                uint a = x * aSize / samples, aa = ((x + 1) * aSize / samples);
+                if(a == aa) aa = a + 1;
+                float r = 0., g = 0., b = 0.;
+                for(uint j = a; j < aa; j++)
+                    if(j < theArray.size())
+                    {
+                        r += theArray[j].red();
+                        g += theArray[j].green();
+                        b += theArray[j].blue();
+                    }
+                    else
+                    {
+                        r += 220;
+                        g += 220;
+                        b += 220;
+                    }
+                int h, s, v;
+                QColor(int(r / float(aa - a)), int(g / float(aa - a)), int(b / float(aa - a)), QColor::Rgb).getHsv(&h, &s, &v);
+                for(int y = 0; y <= height() / 2; y++)
+                {
+                    float coeff = float(y) / float(height() / 2);
+                    float coeff2 = 1.f - ((1.f - coeff) * (1.f - coeff));
+                    coeff = 1.f - (1.f - coeff) / 2.f;
+                    coeff2 = 1.f - (1.f - coeff2) / 2.f;
+                    paint.setPen( QColor(h, int(s * coeff), int(255 - (255 - v) * coeff2), QColor::Hsv) );
+                    paint.drawPoint(x, y);
+                    paint.drawPoint(x, height() - 1 - y);
+                }
+            }
+        }
+        p.drawPixmap( 0, 0, theMoodbar );
+    }
+    else
+    {
+
     if( isCurrent && !isSelected() )
     {
         static paintCacheItem paintCache[NUM_COLUMNS];
@@ -665,7 +774,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
         const QString _text = KStringHandler::rPixelSqueeze( colText, painter->fontMetrics(), _width );
         p.drawText( leftMargin, 0, _width, height(), align, _text );
     }
-
+}
     /// Track action symbols
     const int  queue       = listView()->m_nextTracks.findRef( this ) + 1;
     const bool stop        = ( this == listView()->m_stopAfterTrack );
