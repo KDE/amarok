@@ -579,7 +579,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                         b += 220;
                     }
                 int h, s, v;
-                QColor(clamp(0, int(r / float(aa - a)), 255), clamp(0, int(g / float(aa - a)), 255), clamp(0, int(b / float(aa - a)), 255), QColor::Rgb).getHsv(&h, &s, &v);
+//                 QColor(clamp(0, int(r / float(aa - a)), 255), clamp(0, int(g / float(aa - a)), 255), clamp(0, int(b / float(aa - a)), 255), QColor::Rgb).getHsv(&h, &s, &v);
                 for(int y = 0; y <= height() / 2; y++)
                 {
                     float coeff = float(y) / float(height() / 2);
