@@ -84,6 +84,7 @@ bool amaroK::CreateMood::doJob()
 		if(!testopen.open(IO_ReadOnly)) return false;
 	}
 #ifdef HAVE_EXSCALIBAR
+	qDebug("MakeMood: Creating mood with Exscalibar. Hold onto your hats...");
 	ProcessorGroup g;
 	ProcessorFactory::create("Player")->init("P", g, Properties("Filename", theFilename));
 	SubProcessorFactory::createDom("Mean")->init("M", g);
@@ -101,11 +102,17 @@ bool amaroK::CreateMood::doJob()
 	(*W) >>= (*N);
 	(*N) >>= g["D"];
 	if(g.go())
-	{	g["D"].waitUntilDone();
+	{
+		qDebug("MakeMood: Processing...");
+		g["D"].waitUntilDone();
+		qDebug("MakeMood: Done processing. Cleaning up...");
 		g.stop();
 	}
+	else
+		qDebug("MakeMood: Exscalibar reports a problem analysing the song.");
 	g.disconnectAll();
 	g.deleteAll();
+	qDebug("MakeMood: All tidied up.");
 	if(!QFile::exists(theMoodName)) return false;
 	QFile mood(theMoodName);
 	if(!mood.open(IO_ReadOnly)) return false;
@@ -123,6 +130,7 @@ void amaroK::CreateMood::completeJob()
 
 QValueVector<QColor> amaroK::readMood(const QString path)
 {
+	qDebug("MakeMood: Reading mood file %s...", path.latin1());
 	QString filebase = path;
 	QValueVector<QColor> theArray;
 	filebase.truncate(filebase.findRev('.'));
@@ -137,6 +145,7 @@ QValueVector<QColor> amaroK::readMood(const QString path)
 	if(QFile::exists(homefilebase)) mood.setName(homefilebase);
 	if(mood.name() != "" && mood.open(IO_ReadOnly))
 	{
+		qDebug("ReadMood: File opened. Proceeding to read contents...");
 		int r, g, b, s = mood.size() / 3;
 		int huedist[360], total = 0, mx = 0;
 		for(int i = 0; i < 360; i++) huedist[i] = 0;
@@ -155,6 +164,7 @@ QValueVector<QColor> amaroK::readMood(const QString path)
 		}
 		if(AmarokConfig::makeMoodier())
 		{
+			qDebug("ReadMood: Making moodier!");
 //			int threshold = 
 //			int rangeStart AmarokConfig::redShades()
 			for(int i = 0; i < 360; i++) if(huedist[i] > s / 360 * 5) total++;
@@ -171,5 +181,6 @@ QValueVector<QColor> amaroK::readMood(const QString path)
 			}
 		}
 	}
+	qDebug("ReadMood: All done.");
 	return theArray;
 }

@@ -469,7 +469,8 @@ void PlaylistWindow::applySettings()
         ContextBrowser::instance()->unsetFont();
         break;
     }
-    Playlist::instance()->setColumnWidth( PlaylistItem::Moodbar, AmarokConfig::showMoodbar() ? 100 : 0 );
+    if( AmarokConfig::showMoodbar() != (Playlist::instance()->columnWidth( PlaylistItem::Moodbar ) != 0) )
+        Playlist::instance()->setColumnWidth( PlaylistItem::Moodbar, AmarokConfig::showMoodbar() ? 100 : 0 );
 }
 
 
