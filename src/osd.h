@@ -105,6 +105,15 @@ public slots:
     void setDrawShadow( bool b ) { OSDWidget::setDrawShadow( b ); doUpdate(); }
     void setFont( const QFont &font ) { OSDWidget::setFont( font ); doUpdate(); }
     void setScreen( int screen ) { OSDWidget::setScreen( screen ); doUpdate(); }
+    void setUseCustomColors( const bool use, const QColor &fg, const QColor &bg )
+    {
+        if( use ) {
+            OSDWidget::setTextColor( fg );
+            OSDWidget::setBackgroundColor( bg );
+        } else
+            unsetColors();
+        doUpdate();
+    }
 
 private:
     inline void doUpdate() { if( isShown() ) show(); }

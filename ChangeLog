@@ -31,6 +31,8 @@ VERSION 1.4:
       compatibility with various iPod models.
 
   BUGFIXES:
+    * OSD Preview did not update colours when toggling 'Use custom colours'
+      option. (BR 115965)
     * Cached lyrics are not erased when rescanning. (BR 110489)
     * No more "can't create amazon table" warnings. (BR 113930)
     * Creating a new playlist via drag-and-drop no longer shows duplicates

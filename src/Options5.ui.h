@@ -43,6 +43,7 @@ void Options5::init()
 
     connect( kcfg_OsdDrawShadow, SIGNAL(toggled(bool)), m_pOSDPreview, SLOT(setDrawShadow(bool)) );
     connect( kcfg_OsdTextColor, SIGNAL(changed(const QColor&)), m_pOSDPreview, SLOT(setTextColor(const QColor&)) );
+    connect( kcfg_OsdUseCustomColors, SIGNAL(toggled(bool)), this, SLOT( useCustomColorsToggled(bool) ) );
     connect( kcfg_OsdBackgroundColor, SIGNAL(changed(const QColor&)), m_pOSDPreview, SLOT(setBackgroundColor(const QColor&)) );
     connect( kcfg_OsdFont, SIGNAL(fontSelected(const QFont&)), m_pOSDPreview, SLOT(setFont(const QFont&)) );
     connect( kcfg_OsdScreen, SIGNAL(activated(int)), m_pOSDPreview, SLOT(setScreen(int)) );
@@ -109,11 +110,5 @@ Options5::showEvent( QShowEvent* )
 void
 Options5::useCustomColorsToggled( bool on )
 {
-    if( on ) {
-        //use base functions so we don't call show() 3 times
-        m_pOSDPreview->OSDWidget::setTextColor( kcfg_OsdTextColor->color() );
-        m_pOSDPreview->OSDWidget::setBackgroundColor( kcfg_OsdBackgroundColor->color() );
-    }
-    else
-        m_pOSDPreview->unsetColors();
+    m_pOSDPreview->setUseCustomColors( on, kcfg_OsdTextColor->color(), kcfg_OsdBackgroundColor->color() );
 }
