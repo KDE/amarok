@@ -98,7 +98,9 @@ PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi )
         , m_enabled( true )
 {
     setDragEnabled( true );
-    checkMood();
+
+    if( AmarokConfig::showMoodbar() )
+        checkMood();
 
     setText( bundle );
 
@@ -324,7 +326,7 @@ bool ReadMood::doJob()
 
 void PlaylistItem::checkMood()
 {
-    if(m_url.isLocalFile())
+    if( m_url.isLocalFile() )
     {
         ReadMood *c = new ReadMood( this );
         ThreadWeaver::instance()->queueJob( c );
