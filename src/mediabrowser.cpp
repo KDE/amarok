@@ -75,6 +75,7 @@ bool MediaBrowser::isAvailable() //static
 
 MediaBrowser::MediaBrowser( const char *name )
         : QVBox( 0, name )
+        , m_timer( new QTimer( this ) )
 {
     KIconLoader iconLoader;
     MediaItem::s_pixTrack = new QPixmap(iconLoader.loadIcon( "player_playlist_2", KIcon::Toolbar, KIcon::SizeSmall ));
@@ -113,7 +114,25 @@ MediaBrowser::MediaBrowser( const char *name )
 
     m_view = new MediaDeviceView( this );
 
+    connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
+    connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
+    connect( m_searchEdit, SIGNAL( returnPressed() ), SLOT( slotSetFilter() ) );
+
     setFocusProxy( m_view ); //default object to get focus
+}
+
+void
+MediaBrowser::slotSetFilterTimeout() //SLOT
+{
+    m_timer->start( 280, true ); //stops the timer for us first
+}
+
+void
+MediaBrowser::slotSetFilter() //SLOT
+{
+    m_timer->stop();
+
+    m_view->setFilter( m_searchEdit->text() );
 }
 
 MediaBrowser::~MediaBrowser()
@@ -344,22 +363,25 @@ MediaDeviceList::nodeBuildDragList( MediaItem* item, bool onlySelected )
 
     while ( fi )
     {
-        if ( fi->isSelected() || !onlySelected )
+        if( fi->isVisible() )
         {
-            if(fi->isLeaveItem())
+            if ( fi->isSelected() || !onlySelected )
             {
-                items += fi->url().path();
+                if( fi->isLeaveItem() )
+                {
+                    items += fi->url().path();
+                }
+                else
+                {
+                    if(fi->childCount() )
+                        items += nodeBuildDragList( (MediaItem*)fi->firstChild(), false );
+                }
             }
             else
             {
-                if(fi->childCount())
-                    items += nodeBuildDragList( (MediaItem*)fi->firstChild(), false );
+                if ( fi->childCount() )
+                    items += nodeBuildDragList( (MediaItem*)fi->firstChild(), true );
             }
-        }
-        else
-        {
-            if ( fi->childCount() )
-                items += nodeBuildDragList( (MediaItem*)fi->firstChild(), true );
         }
 
         fi = (MediaItem*)fi->nextSibling();
@@ -383,29 +405,32 @@ MediaDeviceList::getSelectedLeaves(MediaItem *parent, QPtrList<MediaItem> *list,
 
     for( ; it; it = dynamic_cast<MediaItem*>(it->nextSibling()))
     {
-        if(it->childCount())
+        if( it->isVisible() )
         {
-            numFiles += getSelectedLeaves(it, list, onlySelected && !it->isSelected(), onlyPlayed);
-        }
-        else if(it->isSelected() || !onlySelected)
-        {
-            if(it->type() == MediaItem::TRACK
-                    || it->type() == MediaItem::PODCASTITEM
-                    || it->type() == MediaItem::INVISIBLE
-                    || it->type() == MediaItem::ORPHANED)
+            if(it->childCount())
             {
-                if(onlyPlayed)
-                {
-                    if(it->played() > 0)
-                        numFiles++;
-                }
-                else
-                {
-                    numFiles++;
-                }
+                numFiles += getSelectedLeaves(it, list, onlySelected && !it->isSelected(), onlyPlayed);
             }
-            if(it->isLeaveItem() && (!onlyPlayed || it->played()>0))
-                list->append( it );
+            else if(it->isSelected() || !onlySelected)
+            {
+                if(it->type() == MediaItem::TRACK
+                        || it->type() == MediaItem::PODCASTITEM
+                        || it->type() == MediaItem::INVISIBLE
+                        || it->type() == MediaItem::ORPHANED)
+                {
+                    if(onlyPlayed)
+                    {
+                        if(it->played() > 0)
+                            numFiles++;
+                    }
+                    else
+                    {
+                        numFiles++;
+                    }
+                }
+                if(it->isLeaveItem() && (!onlyPlayed || it->played()>0))
+                    list->append( it );
+            }
         }
     }
 
@@ -818,6 +843,68 @@ MediaDeviceView::~MediaDeviceView()
 
     delete m_deviceList;
     delete m_device;
+}
+
+bool
+MediaDeviceView::setFilter( const QString &filter, MediaItem *parent )
+{
+    MediaItem *it;
+    if(parent==NULL)
+    {
+        it = dynamic_cast<MediaItem *>(m_deviceList->firstChild());
+    }
+    else
+    {
+        it = dynamic_cast<MediaItem *>(parent->firstChild());
+    }
+
+    bool childrenVisible = false;
+    for( ; it; it = dynamic_cast<MediaItem *>(it->nextSibling()))
+    {
+        bool visible = true;
+        if(it->isLeaveItem())
+        {
+            visible = match(it, filter);
+        }
+        else
+        {
+            if(it->type()==MediaItem::PLAYLISTSROOT || it->type()==MediaItem::PLAYLIST)
+            {
+                visible = true;
+                setFilter(filter, it);
+            }
+            else
+                visible = setFilter(filter, it);
+        }
+        it->setVisible( visible );
+        if(visible)
+            childrenVisible = true;
+    }
+
+    return childrenVisible;
+}
+
+bool
+MediaDeviceView::match( const MediaItem *it, const QString &filter )
+{
+    if(filter.isNull() || filter.isEmpty())
+        return true;
+
+    if(it->text(0).lower().contains(filter.lower()))
+        return true;
+
+    QListViewItem *p = it->parent();
+    if(p && p->text(0).lower().contains(filter.lower()))
+        return true;
+
+    if(p)
+    {
+        p = p->parent();
+        if(p && p->text(0).lower().contains(filter.lower()))
+            return true;
+    }
+
+    return false;
 }
 
 

@@ -96,10 +96,15 @@ class MediaBrowser : public QVBox
         MediaBrowser( const char *name );
         ~MediaBrowser();
 
+    private slots:
+        void slotSetFilterTimeout();
+        void slotSetFilter();
+
     private:
         MediaDeviceView* m_view;
 
         KLineEdit* m_searchEdit;
+        QTimer *m_timer;
 };
 
 
@@ -145,11 +150,13 @@ class MediaDeviceView : public QVBox
     public:
         MediaDeviceView( MediaBrowser* parent );
         ~MediaDeviceView();
+        bool setFilter( const QString &filter, MediaItem *parent=NULL );
 
     private slots:
         void slotShowContextMenu( QListViewItem* item, const QPoint& point, int );
 
     private:
+        bool             match( const MediaItem *item, const QString &filter );
         QLabel*          m_stats;
         KProgress*       m_progress;
         MediaDevice*     m_device;
