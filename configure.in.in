@@ -709,14 +709,20 @@ if test "$build_libgpod" != "no"; then
         have_libgpod=no
 
         PKG_CHECK_MODULES(LIBGPOD, libgpod-1.0, have_libgpod=yes,have_libgpod=no)
-        AC_MSG_RESULT($have_libgpod)
         if test "x$have_libgpod" != "xno"; then
             AC_DEFINE(HAVE_LIBGPOD, 1, [have libgpod])
+            IPOD_SOURCES=gpodmediadevice.cpp
+        else
+            AC_MSG_RESULT($have_libgpod)
+            #IPOD_SOURCES=gpodmediadevice.cpp
         fi
     fi
 fi
+AC_SUBST(IPOD_SOURCES)
 AC_SUBST(LIBGPOD_INCLUDES)
 AC_SUBST(LIBGPOD_LIBS)
+
+AM_CONDITIONAL(with_libgpod, [test x$have_libgpod = xyes])
 
 ###############################################################################
 # END LIBGPOD CHECK
@@ -762,8 +768,8 @@ AC_SUBST(EXSCALIBAR_LIBS)
 
 AC_ARG_WITH(mp4v2,
     AC_HELP_STRING([--with-mp4v2],[build amaroK with M4A/AAC tag support from mp4v2/faad2]),
-    [build_mp4v2=$withval],
-    [build_mp4v2=no]
+    [have_mp4v2=$withval],
+    [have_mp4v2=no]
 )
 
 AC_ARG_WITH(mp4v2-dir,
@@ -772,7 +778,7 @@ AC_ARG_WITH(mp4v2-dir,
     [mp4v2_dir=/usr]
 )
 
-if test "$build_mp4v2" != "no"; then
+if test "$have_mp4v2" != "no"; then
     MP4V2_INCLUDES="-I$mp4v2_dir/include"
     MP4V2_LIBS="-L$mp4v2_dir/lib -lmp4v2"
     AC_DEFINE(HAVE_MP4V2, 1, [have mp4v2])
@@ -789,6 +795,8 @@ fi
 
 AC_SUBST(MP4V2_INCLUDES)
 AC_SUBST(MP4V2_LIBS)
+
+AM_CONDITIONAL(with_mp4v2, [test x$have_mp4v2 != xno ])
 
 ###############################################################################
 # END MP4V2 CHECK

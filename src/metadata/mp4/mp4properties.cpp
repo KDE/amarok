@@ -21,7 +21,6 @@ email                : andrew.leadbetter@gmail.com
 
 #include "mp4properties.h"
 
-#ifdef HAVE_MP4V2
 
 #include <tstring.h>
 
@@ -115,5 +114,3 @@ void MP4::Properties::readAudioTrackProperties(MP4FileHandle mp4File,  MP4TrackI
 
 
 }
-
-#endif

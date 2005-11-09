@@ -24,8 +24,6 @@ email                : andrew.leadbetter@gmail.com
 
 #include <config.h>
 
-#ifdef HAVE_MP4V2
-
 #include <tfile.h>
 #include "mp4properties.h"
 #include "mp4tag.h"
@@ -88,7 +86,5 @@ namespace TagLib {
         };
     }
 }
-
-#endif
 
 #endif

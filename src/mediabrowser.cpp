@@ -14,8 +14,11 @@
 #include "playlist.h"      //appendMedia()
 #include "statusbar.h"
 #include "mediabrowser.h"
-#include "gpodmediadevice.h"
 #include "amarok.h"
+
+#ifdef HAVE_LIBGPOD
+#include "gpodmediadevice.h"
+#endif
 
 #include <qdatetime.h>
 #include <qgroupbox.h>
@@ -71,6 +74,25 @@ bool MediaBrowser::isAvailable() //static
     return false;
 #endif
 }
+
+class DummyMediaDevice : public MediaDevice
+{
+    public:
+    DummyMediaDevice( MediaDeviceView *view, MediaDeviceList *list ) : MediaDevice( view, list ) {}
+    virtual ~DummyMediaDevice() {}
+    virtual bool isConnected() { return false; }
+    virtual void addToPlaylist(MediaItem*, MediaItem*, QPtrList<MediaItem>) {}
+    virtual MediaItem* newPlaylist(const QString&, MediaItem*, QPtrList<MediaItem>) { return NULL; }
+    virtual bool trackExists(const MetaBundle&) { return false; }
+    virtual void lockDevice(bool) {}
+    virtual void unlockDevice() {} 
+    virtual bool openDevice(bool) { return false; }
+    virtual bool closeDevice() { return false; }
+    virtual void synchronizeDevice() {}
+    virtual MediaItem* addTrackToDevice(const QString&, const MetaBundle&, bool) { return NULL; }
+    virtual bool deleteItemFromDevice(MediaItem*, bool) { return false; }
+    virtual QString createPathname(const MetaBundle&) { return QString(""); }
+};
 
 
 MediaBrowser::MediaBrowser( const char *name )
@@ -775,7 +797,11 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     , m_deviceList( new MediaDeviceList( this ) )
     , m_parent( parent )
 {
+#ifdef HAVE_LIBGPOD
     m_device = new GpodMediaDevice( this, m_deviceList );
+#else
+    m_device = new DummyMediaDevice( this, m_deviceList );
+#endif
     m_progress = new KProgress( this );
 
     QHBox* hb = new QHBox( this );

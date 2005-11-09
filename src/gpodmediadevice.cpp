@@ -28,7 +28,6 @@
 
 
 
-#ifdef HAVE_LIBGPOD
 #include "metadata/audible/taglib_audiblefile.h"
 
 #include <glib-object.h>
@@ -81,17 +80,13 @@ class GpodMediaItem : public MediaItem
             return NULL;
         }
 };
-#endif // HAVE_LIBGPOD
 
 
 GpodMediaDevice::GpodMediaDevice( MediaDeviceView* parent, MediaDeviceList *listview )
     : MediaDevice( parent, listview )
-#ifdef HAVE_LIBGPOD
     , m_masterPlaylist( NULL )
     , m_podcastPlaylist( NULL )
-#endif // HAVE_LIBGPOD
 {
-#ifdef HAVE_LIBGPOD
     dbChanged = false;
     m_itdb = NULL;
     m_podcastItem = NULL;
@@ -99,33 +94,25 @@ GpodMediaDevice::GpodMediaDevice( MediaDeviceView* parent, MediaDeviceList *list
     m_orphanedItem = NULL;
     m_invisibleItem = NULL;
     m_playlistItem = NULL;
-#endif // HAVE_LIBGPOD
 }
 
 GpodMediaDevice::~GpodMediaDevice()
 {
-#ifdef HAVE_LIBGPOD
     if(m_itdb)
         itdb_free(m_itdb);
 
     m_files.clear();
-#endif
 }
 
 bool
 GpodMediaDevice::isConnected()
 {
-#ifdef HAVE_LIBGPOD
     return (m_itdb != NULL);
-#else
-    return false;
-#endif
 }
 
 MediaItem *
 GpodMediaDevice::addTrackToDevice(const QString &pathname, const MetaBundle &bundle, bool isPodcast)
 {
-#ifdef HAVE_LIBGPOD
     Itdb_Track *track = itdb_track_new();
     if(!track)
         return NULL;
@@ -206,43 +193,28 @@ GpodMediaDevice::addTrackToDevice(const QString &pathname, const MetaBundle &bun
     }
 
     return addTrackToList(track);
-#else // HAVE_LIBGPOD
-    (void)pathname;
-    (void)bundle;
-    (void)isPodcast;
-    return NULL;
-#endif // HAVE_LIBGPOD
 }
 
 
 void
 GpodMediaDevice::synchronizeDevice()
 {
-#ifdef HAVE_LIBGPOD
     writeITunesDB();
-#endif // HAVE_LIBGPOD
 }
 
 bool
 GpodMediaDevice::trackExists( const MetaBundle& bundle )
 {
-#ifdef HAVE_LIBGPOD
-
     GpodMediaItem *item = getTitle( bundle.artist(),
             bundle.album().isEmpty() ? i18n( "Unknown" ) : bundle.album(),
             bundle.title());
 
     return (item != NULL);
-#else // HAVE_LIBGPOD
-    (void)bundle;
-    return false;
-#endif // HAVE_LIBGPOD
 }
 
 MediaItem *
 GpodMediaDevice::newPlaylist(const QString &name, MediaItem *parent, QPtrList<MediaItem> items)
 {
-#ifdef HAVE_LIBGPOD
     dbChanged = true;
     GpodMediaItem *item = new GpodMediaItem(parent);
     item->setType(MediaItem::PLAYLIST);
@@ -251,19 +223,12 @@ GpodMediaDevice::newPlaylist(const QString &name, MediaItem *parent, QPtrList<Me
     addToPlaylist(item, NULL, items);
 
     return item;
-#else // HAVE_LIBGPOD
-    (void)name;
-    (void)parent;
-    (void)items;
-    return NULL;
-#endif // HAVE_LIBGPOD
 }
 
 
 void
 GpodMediaDevice::addToPlaylist(MediaItem *mlist, MediaItem *after, QPtrList<MediaItem> items)
 {
-#ifdef HAVE_LIBGPOD
     GpodMediaItem *list = dynamic_cast<GpodMediaItem *>(mlist);
     if(!list)
         return;
@@ -347,17 +312,11 @@ GpodMediaDevice::addToPlaylist(MediaItem *mlist, MediaItem *after, QPtrList<Medi
     }
 
     playlistFromItem(list);
-#else // HAVE_LIBGPOD
-    (void)mlist;
-    (void)after;
-    (void)items;
-#endif // HAVE_LIBGPOD
 }
 
 bool
 GpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
 {
-#ifdef HAVE_LIBGPOD
     GpodMediaItem *item = dynamic_cast<GpodMediaItem *>(mediaitem);
     if(!item)
         return false;
@@ -459,16 +418,11 @@ GpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
     updateRootItems();
 
     return ret;
-#else // HAVE_LIBGPOD
-    (void)mediaitem;
-    return false;
-#endif // HAVE_LIBGPOD
 }
 
 bool
 GpodMediaDevice::openDevice(bool silent)
 {
-#ifdef HAVE_LIBGPOD
     dbChanged = false;
     m_files.clear();
 
@@ -489,7 +443,7 @@ GpodMediaDevice::openDevice(bool silent)
             if(!dir.exists())
             {
                 if(!silent)
-                    KMessageBox::error( m_parent->m_parent, i18n("Media device mount point does not exist"),
+                    KMessageBox::error( m_parent, i18n("Media device mount point does not exist"),
                             i18n( "Media Device Browser" ) );
                 return false;
             }
@@ -499,7 +453,7 @@ GpodMediaDevice::openDevice(bool silent)
             if(m_itdb==NULL)
             {
                 if(!silent)
-                    KMessageBox::error( m_parent->m_parent, i18n("Failed to initialize iPod mounted at ") + m_mntpnt,
+                    KMessageBox::error( m_parent, i18n("Failed to initialize iPod mounted at ") + m_mntpnt,
                             i18n( "Media Device Browser" ) );
 
                 return false;
@@ -530,7 +484,7 @@ GpodMediaDevice::openDevice(bool silent)
                 dir.mkdir(dir.absPath());
 
             if(!silent)
-                KMessageBox::information( m_parent->m_parent, i18n("Initialized iPod mounted at ") + m_mntpnt,
+                KMessageBox::information( m_parent, i18n("Initialized iPod mounted at ") + m_mntpnt,
                         i18n( "Media Device Browser" ) );
         }
     }
@@ -677,16 +631,11 @@ GpodMediaDevice::openDevice(bool silent)
     updateRootItems();
 
     return true;
-#else // HAVE_LIBGPOD
-    //(void)useDialogs;
-    return false;
-#endif // HAVE_LIBGPOD
 }
 
 bool
 GpodMediaDevice::closeDevice()  //SLOT
 {
-#ifdef HAVE_LIBGPOD
     debug() << "Syncing iPod!" << endl;
 
     m_listview->clear();
@@ -705,15 +654,11 @@ GpodMediaDevice::closeDevice()  //SLOT
     m_podcastPlaylist = NULL;
 
     return true;
-#else // HAVE_LIBGPOD
-    return false;
-#endif // HAVE_LIBGPOD
 }
 
 void
 GpodMediaDevice::renameItem( QListViewItem *i ) // SLOT
 {
-#ifdef HAVE_LIBGPOD
     GpodMediaItem *item = dynamic_cast<GpodMediaItem *>(i);
     if(!item)
         return;
@@ -725,12 +670,8 @@ GpodMediaDevice::renameItem( QListViewItem *i ) // SLOT
 
     g_free(item->m_playlist->name);
     item->m_playlist->name = g_strdup( item->text( 0 ).utf8() );
-#else // HAVE_LIBGPOD
-    (void)i;
-#endif // HAVE_LIBGPOD
 }
 
-#ifdef HAVE_LIBGPOD
 void
 GpodMediaDevice::playlistFromItem(GpodMediaItem *item)
 {
@@ -1017,12 +958,10 @@ GpodMediaDevice::getTitle(const QString &artist, const QString &album, const QSt
 
     return NULL;
 }
-#endif // HAVE_LIBGPOD
 
 QString
 GpodMediaDevice::createPathname(const MetaBundle &bundle)
 {
-#ifdef HAVE_LIBGPOD
     QString local = bundle.filename();
     QString type = local.section('.', -1);
 
@@ -1040,13 +979,8 @@ GpodMediaDevice::createPathname(const MetaBundle &bundle)
     while(exists);
 
     return realPath(trackpath.latin1());
-#else // HAVE_LIBGPOD
-    (void)bundle;
-    return QString::null;
-#endif // HAVE_LIBGPOD
 }
 
-#ifdef HAVE_LIBGPOD
 bool
 GpodMediaDevice::removeDBTrack(Itdb_Track *track)
 {
@@ -1085,6 +1019,5 @@ GpodMediaDevice::removeDBTrack(Itdb_Track *track)
 
     return true;
 }
-#endif // HAVE_LIBGPOD
 
 #include "gpodmediadevice.moc"

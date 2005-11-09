@@ -21,8 +21,6 @@ email                : andrew.leadbetter@gmail.com
 
 #include "taglib_mp4file.h"
 
-#ifdef HAVE_MP4V2
-
 #include "mp4tag.h"
 #include <tfile.h>
 #include <audioproperties.h>
@@ -203,7 +201,3 @@ void MP4::File::read(bool readProperties, Properties::ReadStyle propertiesStyle)
 }
 
 }
-
-
-
-#endif

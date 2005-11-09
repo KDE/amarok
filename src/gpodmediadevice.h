@@ -6,11 +6,9 @@
 
 #include "config.h"
 
-#ifdef HAVE_LIBGPOD
 extern "C" {
 #include <gpod/itdb.h>
 }
-#endif
 
 #include "mediabrowser.h"
 
@@ -48,7 +46,6 @@ class GpodMediaDevice : public MediaDevice
         void renameItem( QListViewItem *item );
 
     private:
-#ifdef HAVE_LIBGPOD
         void             writeITunesDB();
         GpodMediaItem   *addTrackToList(Itdb_Track *track);
         void             addPlaylistToList(Itdb_Playlist *playlist);
@@ -72,7 +69,6 @@ class GpodMediaDevice : public MediaDevice
         bool removeDBTrack(Itdb_Track *track);
 
         bool dbChanged;
-#endif
 };
 
 #endif

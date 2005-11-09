@@ -145,7 +145,6 @@ class MediaDeviceView : public QVBox
     friend class MediaDevice;
     friend class MediaDeviceList;
     friend class MediaDeviceTransferList;
-    friend class GpodMediaDevice;
 
     public:
         MediaDeviceView( MediaBrowser* parent );

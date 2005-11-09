@@ -8,6 +8,10 @@ if with_konqsidebar
     KONQSIDEBAR_SUBDIR = konquisidebar
 endif
 
+if with_libgpod
+    IPOD_OBJS = gpodmediadevice.$(OBJEXT)
+endif
+
 
 bin_PROGRAMS = amarokapp
 
@@ -80,7 +84,6 @@ amarokapp_SOURCES = \
     kbookmarkhandler.cpp \
     ktrm.cpp \
     mediabrowser.cpp \
-    gpodmediadevice.cpp \
     metabundle.cpp \
     multitabbar.cpp \
     moodbar.cpp \
@@ -120,7 +123,10 @@ amarokapp_SOURCES = \
     trackpickerdialog.cpp \
     trackpickerdialogbase.ui
 
+EXTRA_amarokapp_SOURCES = gpodmediadevice.cpp
+
 amarokapp_LDADD = \
+    $(IPOD_OBJS) \
     $(top_builddir)/amarok/src/amarokcore/libamarokcore.la \
     $(top_builddir)/amarok/src/analyzers/libanalyzers.la \
     $(top_builddir)/amarok/src/engine/libengine.la \

@@ -22,8 +22,6 @@ email                : andrew.leadbetter@gmail.com
 
 #include "mp4tag.h"
 
-#ifdef HAVE_MP4V2
-
 #include <tag.h>
 #include <mp4.h>
 
@@ -92,5 +90,3 @@ void MP4::Tag::readTags( MP4FileHandle mp4file )
         free(value);
     }
 }
-
-#endif

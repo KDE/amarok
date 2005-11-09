@@ -4,15 +4,12 @@
 #include "taglib_mp4filetyperesolver.h"
 #include "taglib_mp4file.h"
 
-#ifdef HAVE_MP4V2
 #include <mp4.h>
-#endif
 
 TagLib::File *MP4FileTypeResolver::createFile(const char *fileName,
         bool readProperties,
         TagLib::AudioProperties::ReadStyle propertiesStyle) const
 {
-#ifdef HAVE_MP4V2
     const char *ext = strrchr(fileName, '.');
     if(ext && (!strcasecmp(ext, ".m4a")
                 || !strcasecmp(ext, ".m4b") || !strcasecmp(ext, ".m4p")
@@ -26,10 +23,6 @@ TagLib::File *MP4FileTypeResolver::createFile(const char *fileName,
 
         return new TagLib::MP4::File(fileName, readProperties, propertiesStyle, h);
     }
-#else
-    (void)fileName;
-    (void)readProperties;
-    (void)propertiesStyle;
-#endif
+
     return 0;
 }
