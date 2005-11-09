@@ -42,7 +42,7 @@ class PlaylistBrowser : public QVBox
     friend class PodcastChannel;  //for changing podcast timer list
 
     public:
-        enum ViewMode { DETAILEDVIEW, LISTVIEW, ASCENDING, DESCENDING };
+        enum ViewMode { DETAILEDVIEW, LISTVIEW };
         enum AddMode  { PLAYLIST, STREAM, SMARTPLAYLIST, PODCAST, ADDDYNAMIC };
 
         ~PlaylistBrowser();
@@ -161,7 +161,6 @@ class PlaylistBrowser : public QVBox
         KActionMenu         *addMenuButton;
         KToolBar            *m_toolbar;
         ViewMode             m_viewMode;
-        int                  m_sortMode;
         QValueList<int>      m_partySizeSave;
         QPtrList<QListViewItem> m_dynamicEntries;
 

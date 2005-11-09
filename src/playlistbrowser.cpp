@@ -100,10 +100,6 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     viewMenu->setCheckable( true );
     viewMenu->insertItem( i18n("Detailed View"), DETAILEDVIEW );
     viewMenu->insertItem( i18n("List View"), LISTVIEW );
-    viewMenu->insertSeparator();
-    viewMenu->insertItem( i18n("Sort Ascending"), ASCENDING );
-    viewMenu->insertItem( i18n("Sort Descending"), DESCENDING );
-    viewMenu->setItemChecked( ASCENDING, true );
     connect( viewMenu, SIGNAL( activated(int) ), SLOT( slotViewMenu(int) ) );
 
     m_toolbar = new Browser::ToolBar( browserBox );
@@ -129,8 +125,9 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     KConfig *config = amaroK::config( "PlaylistBrowser" );
     m_viewMode = (ViewMode)config->readNumEntry( "View", LISTVIEW );  //restore the view mode
     viewMenu->setItemChecked( m_viewMode, true );
-    m_sortMode = config->readNumEntry( "Sorting", ASCENDING );
-    slotViewMenu( m_sortMode );
+
+    int sort = config->readNumEntry( "Sorting", Qt::Ascending );
+    m_listview->setSorting( 0, sort == Qt::Ascending ? true : false );
 
     m_podcastTimerInterval = config->readNumEntry( "Podcast Interval", 14400000 );
 
@@ -285,7 +282,7 @@ PlaylistBrowser::~PlaylistBrowser()
 
         KConfig *config = amaroK::config( "PlaylistBrowser" );
         config->writeEntry( "View", m_viewMode );
-        config->writeEntry( "Sorting", m_sortMode );
+        config->writeEntry( "Sorting", m_listview->sortOrder() );
         config->writeEntry( "Podcast Interval", m_podcastTimerInterval );
     }
 }
@@ -1835,23 +1832,6 @@ void PlaylistBrowser::slotViewMenu( int id ) //SL0T
 {
     if( m_viewMode == (ViewMode) id )
         return;
-
-    switch ( id ) {
-        case ASCENDING:
-            m_sortMode = id;
-            m_listview->setSorting( 0, true );
-            viewMenuButton->popupMenu()->setItemChecked( ASCENDING, true );
-            viewMenuButton->popupMenu()->setItemChecked( DESCENDING, false );
-            return;
-        case DESCENDING:
-            m_sortMode = id;
-            m_listview->setSorting( 0, false );
-            viewMenuButton->popupMenu()->setItemChecked( ASCENDING, false );
-            viewMenuButton->popupMenu()->setItemChecked( DESCENDING, true );
-            return;
-        default:
-            break;
-    }
 
     viewMenuButton->popupMenu()->setItemChecked( m_viewMode, false );
     viewMenuButton->popupMenu()->setItemChecked( id, true );
