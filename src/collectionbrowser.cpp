@@ -1518,8 +1518,9 @@ CollectionView::organizeFiles()  //SLOT
 
             if( group->isChecked() )
                 dest += artist.upper()[ 0 ] + "/";      // Group artists i.e. A/Artist/Album
-            dest += artist + "/" + album + "/" + title + "." + type;
 
+            dest += artist + "/" + album + "/" + title + "." + type;
+            dest.remove( "?" );
             debug() << "Destination: " << dest << endl;
 
             if( !CollectionDB::instance()->moveFile( src.path(), dest, write ) )
