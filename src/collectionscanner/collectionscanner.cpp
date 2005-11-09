@@ -248,7 +248,7 @@ CollectionScanner::writeElement( const QString& name, const AttributeMap& attrib
         // xml document ill-formed and prevent the parser from processing the remaining document.
         // Because of this we skip attributes containing characters not belonging to any category.
         QString data = it.data();
-        unsigned len = data.length();
+        const unsigned len = data.length();
         bool nonPrint = false;
         for( unsigned i = 0; i < len; i++ )
         {
@@ -259,7 +259,7 @@ CollectionScanner::writeElement( const QString& name, const AttributeMap& attrib
             }
         }
 
-        if(nonPrint)
+        if( nonPrint )
             continue;
 
         element.setAttribute( it.key(), it.data() );
