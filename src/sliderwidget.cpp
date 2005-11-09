@@ -19,6 +19,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <config.h>
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "app.h"
@@ -26,7 +27,6 @@
 #include "sliderwidget.h"
 #include "threadweaver.h"
 #include "playlist.h"
-#include "config.h"
 #include "moodbar.h"
 
 #include <qapplication.h>

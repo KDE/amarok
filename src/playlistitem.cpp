@@ -19,6 +19,7 @@
 
 #define DEBUG_PREFIX "PlaylistItem"
 
+#include <config.h>
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "collectiondb.h"
@@ -28,7 +29,6 @@
 #include "playlistitem.h"
 #include "sliderwidget.h"
 #include "moodbar.h"
-#include "config.h"
 
 #include <qmutex.h>
 #include <qimage.h>
