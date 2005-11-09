@@ -8,18 +8,46 @@
 # License: GNU General Public License V2
 
 
+useStableBranch = false
+unless $*.empty?()
+    case $*[0]
+        when "--branch"
+            useStableBranch = true
+        else
+            puts("Unknown option #{$1}. Known options: --branch.\n")
+    end
+end
+
 # Ask user for tag name
 tagname  = `kdialog --inputbox "Enter tag name (e.g. "1.3-beta3"): "`.chomp()
 user = `kdialog --inputbox "Your SVN user:"`.chomp()
 protocol = `kdialog --radiolist "Do you use https or svn+ssh?" https https 0 "svn+ssh" "svn+ssh" 1`.chomp()
 
-source = "#{protocol}://#{user}@svn.kde.org/home/kde/trunk/extragear/multimedia"
+# Show safety check dialog
+`kdialog --warningcontinuecancel "Really create the tag '#{tagname}' NOW in the svn repository?"`
+if $?.exitstatus() == 2
+    print "Aborted.\n"
+    exit()
+end
 
-`svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/tags/amarok/`
-Dir.chdir('amarok')
-`svn mkdir #{tagname}`
-`svn mkdir #{tagname}/doc`
-`svn cp #{source}/amarok #{tagname}/amarok`
-`svn cp #{source}/doc/amarok #{tagname}/doc`
+# Create destination folder
+target = "#{protocol}://#{user}@svn.kde.org/home/kde/tags/amarok/#{tagname}/"
+`svn mkdir -m "Create tag #{tagname} root directory" #{target}`
+`svn mkdir -m "Create tag #{tagname} multimedia directory" #{target}/multimedia`
+`svn mkdir -m "Create tag #{tagname} doc directory" #{target}/multimedia/doc`
 
-print "Now commit tag #{tagname} with svn ci."
+if useStableBranch
+    source = "#{protocol}://#{user}@svn.kde.org/home/kde/branches/stable/extragear/multimedia/amarok"
+    docs   = "#{protocol}://#{user}@svn.kde.org/home/kde/branches/stable/extragear/multimedia/doc/amarok"
+else
+    source = "#{protocol}://#{user}@svn.kde.org/home/kde/trunk/extragear/multimedia/amarok"
+    docs   = "#{protocol}://#{user}@svn.kde.org/home/kde/trunk/extragear/multimedia/doc/amarok"
+end
+
+
+# Copy the files in the repository
+`svn cp -m "Tag amaroK." #{source} #{target}/multimedia`
+`svn cp -m "Tag amaroK docs." #{docs} #{target}/multimedia/doc`
+
+
+print "Tag created.\n"
