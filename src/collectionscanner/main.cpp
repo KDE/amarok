@@ -18,8 +18,9 @@
  ***************************************************************************/
 
 #include "collectionscanner.h"
-
 #include "metadata/tplugins.h"
+
+#include <qfile.h>
 
 #include <kaboutdata.h>
 #include <kcmdlineargs.h>
@@ -58,7 +59,7 @@ int main( int argc, char *argv[] )
     // Parse list of folder arguments
     QStringList folders;
     for( int i = 0; i < args->count(); i++ )
-        folders << QString::fromLocal8Bit( args->arg( i ) );
+        folders << QFile::decodeName( args->arg( i ) );
 
     const bool recursive        = args->isSet( "recursive" );
     const bool importplaylists  = args->isSet( "importplaylists" );
