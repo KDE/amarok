@@ -115,6 +115,15 @@ Optional
       (Moodbar support)
       http://www.sf.net/projects/exscalibar
 
+    * libgpod (from cvs, libgpod-0.1.6 does not work)
+      (iPod support)
+      http://www.gtkpod.org/libgpod.html
+
+    * libmp4v2 (mpeg4ip 1.3 is recommended, faad2 is less reliable)
+      (MP4/AAC tag reading & writing)
+      http://www.sf.net/projects/mpeg4ip
+      http://www.audiocoding.com
+
 
 Please note, if compiling from source you must also install the devel versions
 of these packages.
