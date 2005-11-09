@@ -678,7 +678,7 @@ GpodMediaDevice::openDevice(bool silent)
 
     return true;
 #else // HAVE_LIBGPOD
-    (void)useDialogs;
+    //(void)useDialogs;
     return false;
 #endif // HAVE_LIBGPOD
 }
