@@ -757,6 +757,9 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     hb->setSpacing( 1 );
     m_connectButton  = new KPushButton( SmallIconSet( "usbpendrive_mount" ), i18n( "Connect"), hb );
     m_transferButton = new KPushButton( SmallIconSet( "rebuild" ), i18n( "Transfer" ), hb );
+    m_playlistButton = new KPushButton( KGuiItem( QString::null, "player_playlist_2" ), hb );
+    m_playlistButton->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
+    m_playlistButton->setToggleButton( true );
     m_configButton   = new KPushButton( KGuiItem( QString::null, "configure" ), hb );
     m_configButton->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred ); // too big!
 
@@ -764,7 +767,8 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
 
     QToolTip::add( m_connectButton,  i18n( "Connect media device" ) );
     QToolTip::add( m_transferButton, i18n( "Transfer tracks to media device" ) );
-    QToolTip::add( m_configButton,   i18n( "Configure mount commands" ) );
+    QToolTip::add( m_playlistButton, i18n( "Append transferred items to playlist \"New amaroK additions\"" ) );
+    QToolTip::add( m_configButton,   i18n( "Configure media device" ) );
 
     m_connectButton->setToggleButton( true );
     m_connectButton->setOn( m_device->isConnected() ||  m_deviceList->childCount() != 0 );
@@ -1141,9 +1145,22 @@ MediaDevice::transferFiles()
     m_parent->m_progress->setTotalSteps( m_transferList->childCount() );
     m_parent->m_progress->show();
 
+    MediaItem *playlist = NULL;
+    if(m_playlistItem && m_parent->m_playlistButton->isOn())
+    {
+        QString name = i18n("New amaroK additions");
+        playlist = m_playlistItem->findItem( name );
+        if(!playlist)
+        {
+            QPtrList<MediaItem> items;
+            playlist = newPlaylist(name, m_playlistItem, items);
+        }
+    }
+
     // ok, let's copy the stuff to the device
     lockDevice( true );
 
+    MediaItem *after = NULL; // item after which to insert into playlist
     // iterate through items
     for( MediaItem *cur =  dynamic_cast<MediaItem *>(m_transferList->firstChild());
             cur != NULL;
@@ -1214,7 +1231,14 @@ MediaDevice::transferFiles()
         }
         else
         {
-            addTrackToDevice(trackpath, *bundle, cur->type() == MediaItem::PODCASTITEM);
+            MediaItem *item = addTrackToDevice(trackpath, *bundle, cur->type() == MediaItem::PODCASTITEM);
+            if(playlist)
+            {
+                QPtrList<MediaItem> items;
+                items.append(item);
+                addToPlaylist(playlist, after, items);
+                after = item;
+            }
 
             m_transferList->takeItem( cur );
             delete cur;

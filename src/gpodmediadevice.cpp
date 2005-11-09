@@ -122,16 +122,13 @@ GpodMediaDevice::isConnected()
 #endif
 }
 
-#ifdef HAVE_LIBGPOD
-#endif
-
-bool
+MediaItem *
 GpodMediaDevice::addTrackToDevice(const QString &pathname, const MetaBundle &bundle, bool isPodcast)
 {
 #ifdef HAVE_LIBGPOD
     Itdb_Track *track = itdb_track_new();
     if(!track)
-        return false;
+        return NULL;
 
     QString type = pathname.section('.', -1);
 
@@ -208,14 +205,12 @@ GpodMediaDevice::addTrackToDevice(const QString &pathname, const MetaBundle &bun
         itdb_playlist_add_track(mpl, track, -1);
     }
 
-    addTrackToList(track);
-
-    return true;
+    return addTrackToList(track);
 #else // HAVE_LIBGPOD
     (void)pathname;
     (void)bundle;
     (void)isPodcast;
-    return false;
+    return NULL;
 #endif // HAVE_LIBGPOD
 }
 
@@ -753,7 +748,7 @@ GpodMediaDevice::playlistFromItem(GpodMediaItem *item)
 }
 
 
-void
+GpodMediaItem *
 GpodMediaDevice::addTrackToList(Itdb_Track *track)
 {
     bool visible = false;
@@ -845,6 +840,8 @@ GpodMediaDevice::addTrackToList(Itdb_Track *track)
     }
 
     updateRootItems();
+
+    return item;
 }
 
 void

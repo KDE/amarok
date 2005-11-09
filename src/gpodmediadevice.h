@@ -39,7 +39,7 @@ class GpodMediaDevice : public MediaDevice
 
         void synchronizeDevice();
         QString createPathname(const MetaBundle& bundle);
-        bool addTrackToDevice(const QString& pathname, const MetaBundle& bundle, bool isPodcast);
+        MediaItem *addTrackToDevice(const QString& pathname, const MetaBundle& bundle, bool isPodcast);
         bool deleteItemFromDevice(MediaItem *item, bool onlyPlayed=false );
         void        addToPlaylist(MediaItem *list, MediaItem *after, QPtrList<MediaItem> items);
         MediaItem*  newPlaylist(const QString &name, MediaItem *list, QPtrList<MediaItem> items);
@@ -50,7 +50,7 @@ class GpodMediaDevice : public MediaDevice
     private:
 #ifdef HAVE_LIBGPOD
         void             writeITunesDB();
-        void             addTrackToList(Itdb_Track *track);
+        GpodMediaItem   *addTrackToList(Itdb_Track *track);
         void             addPlaylistToList(Itdb_Playlist *playlist);
         void             playlistFromItem(GpodMediaItem *item);
 

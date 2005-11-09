@@ -156,6 +156,7 @@ class MediaDeviceView : public QVBox
         MediaDeviceList* m_deviceList;
         KPushButton*     m_transferButton;
         KPushButton*     m_connectButton;
+        KPushButton*     m_playlistButton;
         KPushButton*     m_configButton;
 
         MediaBrowser* m_parent;
@@ -225,7 +226,7 @@ class MediaDevice : public QObject
         virtual bool openDevice( bool useDialogs=true ) = 0;
         virtual bool closeDevice() = 0;
         virtual void synchronizeDevice() = 0;
-        virtual bool addTrackToDevice(const QString& pathname, const MetaBundle& bundle, bool isPodcast) = 0;
+        virtual MediaItem *addTrackToDevice(const QString& pathname, const MetaBundle& bundle, bool isPodcast) = 0;
         virtual void updateRootItems();
 
         void deleteFromDevice( MediaItem *item, bool onlyPlayed=false, bool recursing=false );
