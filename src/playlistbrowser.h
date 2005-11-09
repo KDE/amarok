@@ -42,7 +42,7 @@ class PlaylistBrowser : public QVBox
     friend class PodcastChannel;  //for changing podcast timer list
 
     public:
-        enum ViewMode { DETAILEDVIEW, LISTVIEW, UNSORTED, ASCENDING, DESCENDING };
+        enum ViewMode { DETAILEDVIEW, LISTVIEW, ASCENDING, DESCENDING };
         enum AddMode  { PLAYLIST, STREAM, SMARTPLAYLIST, PODCAST, ADDDYNAMIC };
 
         ~PlaylistBrowser();

@@ -101,10 +101,9 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     viewMenu->insertItem( i18n("Detailed View"), DETAILEDVIEW );
     viewMenu->insertItem( i18n("List View"), LISTVIEW );
     viewMenu->insertSeparator();
-    viewMenu->insertItem( i18n("Unsorted"), UNSORTED );
     viewMenu->insertItem( i18n("Sort Ascending"), ASCENDING );
     viewMenu->insertItem( i18n("Sort Descending"), DESCENDING );
-    viewMenu->setItemChecked( UNSORTED, true );
+    viewMenu->setItemChecked( ASCENDING, true );
     connect( viewMenu, SIGNAL( activated(int) ), SLOT( slotViewMenu(int) ) );
 
     m_toolbar = new Browser::ToolBar( browserBox );
@@ -1838,24 +1837,15 @@ void PlaylistBrowser::slotViewMenu( int id ) //SL0T
         return;
 
     switch ( id ) {
-        case UNSORTED:
-            m_sortMode = id;
-            m_listview->setSorting( -1 );
-            viewMenuButton->popupMenu()->setItemChecked( UNSORTED, true );
-            viewMenuButton->popupMenu()->setItemChecked( ASCENDING, false );
-            viewMenuButton->popupMenu()->setItemChecked( DESCENDING, false );
-            return;
         case ASCENDING:
             m_sortMode = id;
             m_listview->setSorting( 0, true );
-            viewMenuButton->popupMenu()->setItemChecked( UNSORTED, false );
             viewMenuButton->popupMenu()->setItemChecked( ASCENDING, true );
             viewMenuButton->popupMenu()->setItemChecked( DESCENDING, false );
             return;
         case DESCENDING:
             m_sortMode = id;
             m_listview->setSorting( 0, false );
-            viewMenuButton->popupMenu()->setItemChecked( UNSORTED, false );
             viewMenuButton->popupMenu()->setItemChecked( ASCENDING, false );
             viewMenuButton->popupMenu()->setItemChecked( DESCENDING, true );
             return;
