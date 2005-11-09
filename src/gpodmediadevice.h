@@ -4,8 +4,6 @@
 #ifndef AMAROK_GPODMEDIADEVICE_H
 #define AMAROK_GPODMEDIADEVICE_H
 
-#include "config.h"
-
 extern "C" {
 #include <gpod/itdb.h>
 }

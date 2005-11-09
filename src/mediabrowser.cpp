@@ -4,6 +4,8 @@
 
 #define DEBUG_PREFIX "MediaBrowser"
 
+#include <config.h>
+
 #include "amarokconfig.h"
 #include "browserToolBar.h"
 #include "clicklineedit.h"
