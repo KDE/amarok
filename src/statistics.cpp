@@ -53,8 +53,15 @@ Statistics::Statistics( QWidget *parent, const char *name )
     connect( m_gui->m_optionCombo, SIGNAL( activated(int) ), this, SLOT( loadDetails(int) ) );
     connect( m_gui->m_resultCombo, SIGNAL( activated(int) ), this, SLOT( resultCountChanged(int) ) );
 
+    if( CollectionDB::instance()->isEmpty() )
+    {
+        m_gui->m_chooserFrame->hide();
+        m_gui->m_infoFrame->hide();
+    }
+    else
+        loadChooser();
+
     loadSummary();
-    loadChooser();
 }
 
 Statistics::~Statistics()

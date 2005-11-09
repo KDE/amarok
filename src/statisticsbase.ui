@@ -39,7 +39,7 @@
         </property>
         <widget class="QFrame" row="1" column="0" rowspan="1" colspan="2">
             <property name="name">
-                <cstring>frame5</cstring>
+                <cstring>m_infoFrame</cstring>
             </property>
             <property name="sizePolicy">
                 <sizepolicy>
@@ -166,7 +166,7 @@
         </widget>
         <widget class="QFrame" row="0" column="0">
             <property name="name">
-                <cstring>frame3</cstring>
+                <cstring>m_SummaryFrame</cstring>
             </property>
             <property name="sizePolicy">
                 <sizepolicy>
@@ -218,7 +218,7 @@
         </widget>
         <widget class="QFrame" row="0" column="1">
             <property name="name">
-                <cstring>frame4</cstring>
+                <cstring>m_chooserFrame</cstring>
             </property>
             <property name="sizePolicy">
                 <sizepolicy>
