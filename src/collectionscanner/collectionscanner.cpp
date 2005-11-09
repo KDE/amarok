@@ -158,7 +158,8 @@ CollectionScanner::scanFiles( const QStringList& entries )
 
     typedef QPair<QString, QString> CoverBundle;
 
-    QStringList validImages; validImages << "jpg" << "png" << "gif" << "jpeg";
+    QStringList validImages;    validImages    << "jpg" << "png" << "gif" << "jpeg";
+    QStringList validPlaylists; validPlaylists << "m3u" << "pls";
 
     QValueList<CoverBundle> covers;
     QStringList images;
@@ -175,19 +176,26 @@ CollectionScanner::scanFiles( const QStringList& entries )
                 log.writeBlock( path.local8Bit(), path.length() );
         }
 
-        const AttributeMap attributes = readTags( path );
-
         if( validImages.contains( ext ) )
-           images += path;
+            images += path;
 
-        else if( !attributes.empty() )
-        {
-            writeElement( "tags", attributes );
+        else if( m_importPlaylists && validPlaylists.contains( ext ) ) {
+            AttributeMap attributes;
+            attributes["path"] = path;
+            writeElement( "playlist", attributes );
+        }
 
-            CoverBundle cover( attributes["artist"], attributes["album"] );
+        else {
+            const AttributeMap attributes = readTags( path );
 
-            if( !covers.contains( cover ) )
-                covers += cover;
+            if( !attributes.empty() ) {
+                writeElement( "tags", attributes );
+
+                CoverBundle cover( attributes["artist"], attributes["album"] );
+
+                if( !covers.contains( cover ) )
+                    covers += cover;
+            }
         }
 
 #if 0
@@ -197,9 +205,9 @@ CollectionScanner::scanFiles( const QStringList& entries )
         {
             // we entered the next directory
             foreach( images )
-                AttributeMap image;
-                image["path"] = *it;
-                writeElement( "image", image );
+                AttributeMap attributes;
+                attributes["path"] = *it;
+                writeElement( "image", attributes );
 
 //             CollectionDB::instance()->checkCompilations( dir, !m_incremental, m_db );
 

@@ -1798,16 +1798,6 @@ void PlaylistBrowser::currentItemChanged( QListViewItem *item )    //SLOT
 }
 
 
-void PlaylistBrowser::customEvent( QCustomEvent* /* e */)
-{
-    // If a playlist is found in collection folders it will be automatically added to the playlist browser
-    // The CollectionReader sends a PlaylistFoundEvent when a playlist is found
-
-    //FIXME
-//     CollectionReader::PlaylistFoundEvent* p = (CollectionReader::PlaylistFoundEvent*)e;
-//     addPlaylist( p->path() );
-}
-
 void PlaylistBrowser::slotAddMenu( int id ) //SLOT
 {
     switch( id )
@@ -1835,10 +1825,12 @@ void PlaylistBrowser::slotAddMenu( int id ) //SLOT
     }
 }
 
+
 void PlaylistBrowser::slotSave() // SLOT
 {
     createPlaylist();
 }
+
 
 void PlaylistBrowser::slotViewMenu( int id ) //SL0T
 {

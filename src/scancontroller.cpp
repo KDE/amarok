@@ -24,6 +24,7 @@
 #include "collectiondb.h"
 #include "debug.h"
 #include "metabundle.h"
+#include "playlistbrowser.h"
 #include "scancontroller.h"
 #include "statusbar.h"
 
@@ -190,12 +191,22 @@ ScanController::initIncrementalScanner()
 bool
 ScanController::startElement( const QString&, const QString& localName, const QString&, const QXmlAttributes& attrs )
 {
+    // List of entity names:
+    //
+    // itemcount   Number of files overall
+    // folder      Folder which is being processed
+    // dud         Invalid audio file
+    // tags        Valid audio file with metadata
+    // playlist    Playlist file
+    // image       Cover image
+
+
     if( localName == "itemcount") {
         m_totalSteps = attrs.value( "count" ).toInt();
         debug() << "itemcount event: " << m_totalSteps << endl;
     }
 
-    if( localName == "dud" || localName == "tags" ) { // Dud means invalid item
+    if( localName == "dud" || localName == "tags" || localName == "playlist" ) {
         m_steps++;
         const int newPercent = int( (100 * m_steps) / m_totalSteps);
         StatusBar::instance()->setProgress( this, newPercent );
@@ -237,8 +248,14 @@ ScanController::startElement( const QString&, const QString& localName, const QS
         }
     }
 
-//     if( localName == "image" )
-//         CollectionDB::instance()->addImageToAlbum( *it, covers, m_db );
+    if( localName == "playlist" )
+        PlaylistBrowser::instance()->addPlaylist( attrs.value( "path" ) );
+
+
+#if 0
+    if( localName == "image" )
+        CollectionDB::instance()->addImageToAlbum( *it, covers, m_db );
+#endif
 
 
     return true;
