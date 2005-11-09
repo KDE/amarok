@@ -58,7 +58,7 @@ int main( int argc, char *argv[] )
     // Parse list of folder arguments
     QStringList folders;
     for( int i = 0; i < args->count(); i++ )
-        folders << args->arg( i );
+        folders << QString::fromLocal8Bit( args->arg( i ) );
 
     const bool recursive        = args->isSet( "recursive" );
     const bool importplaylists  = args->isSet( "importplaylists" );
