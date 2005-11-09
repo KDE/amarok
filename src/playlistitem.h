@@ -51,6 +51,7 @@ Q_OBJECT
         QMutex theArrayLock;
         QValueVector<QColor> theArray;
         QPixmap theMoodbar;
+        int theHueOrder;
 
         void setArray(const QValueVector<QColor> array);
 
@@ -139,6 +140,7 @@ Q_OBJECT
         /// @return does the file exist?
         bool exists() const { return !m_missing; }
 
+        void refreshMood();
         void checkMood();
         bool readMood();
 

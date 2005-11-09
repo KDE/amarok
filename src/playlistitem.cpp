@@ -19,8 +19,6 @@
 
 #define DEBUG_PREFIX "PlaylistItem"
 
-inline const int clamp(const int n, const int v, const int x) { return v < n ? n : v > x ? x : v; }
-
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "collectiondb.h"
@@ -299,8 +297,8 @@ void ReadMood::completeJob()
 {
     if(dynamic_cast<PlaylistItem *>(dependent()))
     {
-            dynamic_cast<PlaylistItem *>(dependent())->setArray(theArray);
-            dynamic_cast<PlaylistItem *>(dependent())->repaint();
+        dynamic_cast<PlaylistItem *>(dependent())->setArray(theArray);
+        dynamic_cast<PlaylistItem *>(dependent())->refreshMood();
     }
 }
 
@@ -322,6 +320,12 @@ bool ReadMood::doJob()
     }
 #endif
     return false;
+}
+
+void PlaylistItem::refreshMood()
+{
+    theMoodbar.resize( 1, height() );
+    repaint();
 }
 
 void PlaylistItem::checkMood()
@@ -500,6 +504,7 @@ PlaylistItem::compare( QListViewItem *i, int col, bool ascending ) const
         case Length:    return cmp( length(),    i->length() );
         case Playcount: return cmp( playcount(), i->playcount() );
         case Bitrate:   return cmp( bitrate(),   i->bitrate() );
+        case Moodbar:   return cmp( theHueOrder, i->theHueOrder );
         case Year:
             if( year() == i->year() )
                 return compare( i, Artist, ascending );
@@ -562,6 +567,8 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
             // paint the moodbar
             int samples = width;
             int aSize = theArray.size() * 180 / length();
+            QMemArray<int> modalHue(36);
+            for(int i = 0; i < 36; i++) modalHue[i] = 0;
             for(int x = 0; x < width; x++)
             {
                 uint a = x * aSize / samples, aa = ((x + 1) * aSize / samples);
@@ -581,18 +588,28 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                         b += 220;
                     }
                 int h, s, v;
-//                 QColor(clamp(0, int(r / float(aa - a)), 255), clamp(0, int(g / float(aa - a)), 255), clamp(0, int(b / float(aa - a)), 255), QColor::Rgb).getHsv(&h, &s, &v);
+                QColor(CLAMP(0, int(r / float(aa - a)), 255), CLAMP(0, int(g / float(aa - a)), 255), CLAMP(0, int(b / float(aa - a)), 255), QColor::Rgb).getHsv(&h, &s, &v);
+                modalHue[CLAMP(0, h / 10, 35)] += v;
                 for(int y = 0; y <= height() / 2; y++)
                 {
                     float coeff = float(y) / float(height() / 2);
                     float coeff2 = 1.f - ((1.f - coeff) * (1.f - coeff));
                     coeff = 1.f - (1.f - coeff) / 2.f;
                     coeff2 = 1.f - (1.f - coeff2) / 2.f;
-                    paint.setPen( QColor(h, clamp(0, int(s * coeff), 255), clamp(0, int(255 - (255 - v) * coeff2), 255), QColor::Hsv) );
+                    paint.setPen( QColor(h, CLAMP(0, int(s * coeff), 255), CLAMP(0, int(255 - (255 - v) * coeff2), 255), QColor::Hsv) );
                     paint.drawPoint(x, y);
                     paint.drawPoint(x, height() - 1 - y);
                 }
             }
+            int mx = 0;
+            for(int i = 1; i < 36; i++) if(modalHue[i] > modalHue[mx]) mx = i;
+            theHueOrder = mx * 36 * 36;
+            modalHue[mx] = 0;
+            for(int i = 0; i < 36; i++) if(modalHue[i] > modalHue[mx]) mx = i;
+            theHueOrder += mx * 36;
+            modalHue[mx] = 0;
+            for(int i = 0; i < 36; i++) if(modalHue[i] > modalHue[mx]) mx = i;
+            theHueOrder += mx;
         }
         p.drawPixmap( 0, 0, theMoodbar );
     }

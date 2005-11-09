@@ -141,6 +141,11 @@
         <whatsthis>When enabled, the hue distribution is quantised and respread evenly, giving a prettier but less meaningful output.</whatsthis>
         <default>true</default>
     </entry>
+    <entry key="AlterMood" type="Int">
+        <label>Alter Mood data according to theme</label>
+        <whatsthis>The hues are distributed according to a colour theme, giving a customisable look.</whatsthis>
+        <default>0</default>
+    </entry>
     <entry key="Show Toolbar" type="Bool">
         <label>Whether to show the toolbar in the playlist window.</label>
         <whatthis>At the bottom of the playlist window, the toolbar can be used for buttons such as play and stop.</whatthis>

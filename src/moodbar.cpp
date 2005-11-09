@@ -146,8 +146,8 @@ QValueVector<QColor> amaroK::readMood(const QString path)
 	if(QFile::exists(homefilebase)) mood.setName(homefilebase);
 	if(mood.name() != "" && mood.open(IO_ReadOnly))
 	{
-		debug() << "ReadMood: File opened. Proceeding to read contents..." << endl;
 		int r, g, b, s = mood.size() / 3;
+		debug() << "ReadMood: File opened. Proceeding to read contents... s=" << s << endl;
 		QMemArray<int> huedist(360);
 		int total = 0, mx = 0;
 		for(int i = 0; i < 360; i++) huedist[i] = 0;
@@ -157,28 +157,40 @@ QValueVector<QColor> amaroK::readMood(const QString path)
 			r = mood.getch();
 			g = mood.getch();
 			b = mood.getch();
-			theArray[i] = QColor(kMin(255, kMax(0, r)), kMin(255, kMax(0, g)), kMin(255, kMax(0, b)), QColor::Rgb);
+			theArray[i] = QColor(CLAMP(0, r, 255), CLAMP(0, g, 255), CLAMP(0, b, 255), QColor::Rgb);
 			int h, s, v;
 			theArray[i].getHsv(&h, &s, &v);
-			if(h < 0) h = 0;
+			if(h < 0) h = 0; else h = h % 360;
 			huedist[h]++;
 			if(mx < huedist[h]) mx = huedist[h];
 		}
+		debug() << "ReadMood: File read. Maximum hue bin size = " <<  mx << endl;
 		if(AmarokConfig::makeMoodier())
 		{
 			debug() << "ReadMood: Making moodier!" << endl;
-//			int threshold =
-//			int rangeStart AmarokConfig::redShades()
-			for(int i = 0; i < 360; i++) if(huedist[i] > s / 360 * 5) total++;
+			int threshold, rangeStart = 0, rangeDelta = 359, sat = 100, val = 100;
+			switch(AmarokConfig::alterMood())
+			{	
+				// Angry
+				case 1: threshold = s / 360 * 9; rangeStart = 45; rangeDelta = -45; sat = 200; val = 100; break;
+				// Frozen
+				case 2: threshold = s / 360 * 1; rangeStart = 140; rangeDelta = 160; sat = 50; val = 100; break;
+				// Happy
+				default: threshold = s / 360 * 2; rangeStart = 0; rangeDelta = 359; sat = 150; val = 250;
+			}
+			debug() << "ReadMood: Appling filter t=" << threshold << ", rS=" << rangeStart << ", rD=" << rangeDelta << ", s=" << sat << "%, v=" << val << "%" << endl;
+			for(int i = 0; i < 360; i++) if(huedist[i] > threshold) total++;
+			debug() << "ReadMood: Total=" << total << endl;
 			if(total < 360 && total > 0)
 			{
 				for(int i = 0, n = 0; i < 360; i++)
-					huedist[i] = (huedist[i] > s / 360 * 5 ? n++ : n) * 360 / total;
+					huedist[i] = ((huedist[i] > threshold ? n++ : n) * rangeDelta / total + rangeStart) % 360;
 				for(uint i = 0; i < theArray.size(); i++)
 				{	int h, s, v;
 					theArray[i].getHsv(&h, &s, &v);
-					if(h < 0) h = 0;
-					theArray[i].setHsv(kMax(0, kMin(359, huedist[h])), s, v);
+					if(h < 0) h = 0; else h = h % 360;
+					if(h > 359) debug() << "ReadMood: Bad hue in array[" << i << "]: " << h << endl;
+					theArray[i].setHsv(CLAMP(0, huedist[h], 359), CLAMP(0, s * sat / 100, 255), CLAMP(0, v * val / 100, 255));
 				}
 			}
 		}

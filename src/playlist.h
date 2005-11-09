@@ -182,6 +182,8 @@ class Playlist : private KListView, public EngineObserver
         void undo();
         void updateMetaData( const MetaBundle& );
         void fileHasMood( const QString path );
+        void refreshMoods();
+        void applySettings();
 
     private slots:
         void slotCountChanged();

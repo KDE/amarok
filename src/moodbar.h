@@ -36,6 +36,8 @@
 #define WANT_MOODBAR false
 #endif
 
+#define CLAMP(n, v, x) ((v) < (n) ? (n) : (v) > (x) ? (x) : (v))
+
 class QPalette;
 class QTimer;
 

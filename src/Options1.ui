@@ -46,10 +46,10 @@
                         <cstring>kcfg_ShowSplashscreen</cstring>
                     </property>
                     <property name="text">
-                        <string>Show splash-screen on start&amp;up</string>
+                        <string>Sho&amp;w splash-screen on startup</string>
                     </property>
                     <property name="accel">
-                        <string>Alt+U</string>
+                        <string>Alt+W</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Check to enable the splashscreen during amaroK startup.</string>
@@ -152,7 +152,7 @@
                 </widget>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>layout7_2_2</cstring>
+                        <cstring>layout8</cstring>
                     </property>
                     <hbox>
                         <property name="name">
@@ -183,7 +183,7 @@
                                 <bool>false</bool>
                             </property>
                             <property name="text">
-                                <string>&amp;Maximise colour spread of Moodbar</string>
+                                <string>&amp;Make Moodier:</string>
                             </property>
                             <property name="accel">
                                 <string>Alt+M</string>
@@ -195,6 +195,46 @@
                                 <string>When enabled, the hue distribution is quantised and respread evenly, giving a prettier but less meaningful output.</string>
                             </property>
                         </widget>
+                        <widget class="QComboBox">
+                            <item>
+                                <property name="text">
+                                    <string>Happy Like a Rainbow</string>
+                                </property>
+                            </item>
+                            <item>
+                                <property name="text">
+                                    <string>Angry as Hell</string>
+                                </property>
+                            </item>
+                            <item>
+                                <property name="text">
+                                    <string>Frozen in the Arctic</string>
+                                </property>
+                            </item>
+                            <property name="name">
+                                <cstring>kcfg_AlterMood</cstring>
+                            </property>
+                            <property name="enabled">
+                                <bool>false</bool>
+                            </property>
+                        </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer7_2</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>39</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
                     </hbox>
                 </widget>
                 <widget class="QLayoutWidget">
@@ -555,6 +595,12 @@
         <slot>setEnabled(bool)</slot>
     </connection>
     <connection>
+        <sender>kcfg_MakeMoodier</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>kcfg_AlterMood</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
         <sender>kcfg_ShowMoodbar</sender>
         <signal>toggled(bool)</signal>
         <receiver>kcfg_MakeMoodier</receiver>
@@ -565,6 +611,12 @@
         <signal>toggled(bool)</signal>
         <receiver>kcfg_MoodsWithMusic</receiver>
         <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg_ShowMoodbar</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>kcfg_MakeMoodier</receiver>
+        <slot>setChecked(bool)</slot>
     </connection>
 </connections>
 <layoutdefaults spacing="6" margin="11"/>
