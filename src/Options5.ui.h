@@ -35,19 +35,26 @@ void Options5::init()
     m_pOSDPreview->setAlignment( (OSDWidget::Alignment)AmarokConfig::osdAlignment() );
     m_pOSDPreview->setOffset( AmarokConfig::osdYOffset() );
 
-    connect( m_pOSDPreview, SIGNAL(positionChanged()), SLOT(slotPositionChanged()) );
+    connect( m_pOSDPreview, SIGNAL( positionChanged() ), SLOT( slotPositionChanged() ) );
 
     const int numScreens = QApplication::desktop()->numScreens();
     for( int i = 0; i < numScreens; i++ )
         kcfg_OsdScreen->insertItem( QString::number( i ) );
 
-    connect( kcfg_OsdDrawShadow, SIGNAL(toggled(bool)), m_pOSDPreview, SLOT(setDrawShadow(bool)) );
-    connect( kcfg_OsdTextColor, SIGNAL(changed(const QColor&)), m_pOSDPreview, SLOT(setTextColor(const QColor&)) );
-    connect( kcfg_OsdUseCustomColors, SIGNAL(toggled(bool)), this, SLOT( useCustomColorsToggled(bool) ) );
-    connect( kcfg_OsdBackgroundColor, SIGNAL(changed(const QColor&)), m_pOSDPreview, SLOT(setBackgroundColor(const QColor&)) );
-    connect( kcfg_OsdFont, SIGNAL(fontSelected(const QFont&)), m_pOSDPreview, SLOT(setFont(const QFont&)) );
-    connect( kcfg_OsdScreen, SIGNAL(activated(int)), m_pOSDPreview, SLOT(setScreen(int)) );
-    connect( kcfg_OsdEnabled, SIGNAL(toggled(bool)), m_pOSDPreview, SLOT(setShown(bool)) );
+    connect( kcfg_OsdDrawShadow,      SIGNAL( toggled(bool) ),
+             m_pOSDPreview,           SLOT( setDrawShadow(bool) ) );
+    connect( kcfg_OsdTextColor,       SIGNAL( changed(const QColor&) ),
+             m_pOSDPreview,           SLOT( setTextColor(const QColor&) ) );
+    connect( kcfg_OsdUseCustomColors, SIGNAL( toggled(bool) ),
+             this,                    SLOT( useCustomColorsToggled(bool) ) );
+    connect( kcfg_OsdBackgroundColor, SIGNAL( changed(const QColor&) ),
+             m_pOSDPreview,           SLOT( setBackgroundColor(const QColor&) ) );
+    connect( kcfg_OsdFont,            SIGNAL( fontSelected(const QFont&) ),
+             m_pOSDPreview,           SLOT( setFont(const QFont&) ) );
+    connect( kcfg_OsdScreen,          SIGNAL( activated(int) ),
+             m_pOSDPreview,           SLOT( setScreen(int) ) );
+    connect( kcfg_OsdEnabled,         SIGNAL( toggled(bool) ),
+             m_pOSDPreview,           SLOT( setShown(bool) ) );
 
     amaroK::QStringx text = i18n(
             "<h3>Tags Displayed in OSD</h3>"
