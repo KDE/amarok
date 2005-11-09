@@ -25,6 +25,8 @@
 
 #include <kapplication.h>
 
+typedef QMap<QString, QString> AttributeMap;
+
 
 /**
  * @class CollectionScanner
@@ -50,11 +52,13 @@ private:
     void readDir( const QString& path, QStringList& entries );
     void scanFiles( const QStringList& entries );
 
-    /** If you want Accurate reading say so */
-    void readTags( const QString& path );
+    /**
+     * Read metadata tags of a given file.
+     * @path Path of the file.
+     * @return QMap containing tags, or empty QMap on failure.
+     */
+    AttributeMap readTags( const QString& path );
 
-
-    typedef QMap<QString, QString> AttributeMap;
 
     /**
      * Helper method for writing XML elements to stdout.

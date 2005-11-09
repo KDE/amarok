@@ -175,15 +175,44 @@ CollectionScanner::scanFiles( const QStringList& entries )
                 log.writeBlock( path.local8Bit(), path.length() );
         }
 
-        readTags( path );
+        const AttributeMap attributes = readTags( path );
 
         if( validImages.contains( ext ) )
            images += path;
+
+        else if( !attributes.empty() )
+        {
+            writeElement( "tags", attributes );
+
+            CoverBundle cover( attributes["artist"], attributes["album"] );
+
+            if( !covers.contains( cover ) )
+                covers += cover;
+        }
+
+#if 0
+        // Update Compilation-flag, when this is the last loop-run
+        // or we're going to switch to another dir in the next run
+        if( path == entries.getLast() || dir != ++QStringListIterator( it ) )
+        {
+            // we entered the next directory
+            foreach( images )
+                AttributeMap image;
+                image["path"] = *it;
+                writeElement( "image", image );
+
+//             CollectionDB::instance()->checkCompilations( dir, !m_incremental, m_db );
+
+            // clear now because we've processed them
+            covers.clear();
+            images.clear();
+        }
+#endif
     }
 }
 
 
-void
+AttributeMap
 CollectionScanner::readTags( const QString& path )
 {
     // Tests reveal the following:
@@ -195,6 +224,8 @@ CollectionScanner::readTags( const QString& path )
     //  Average                     Untested
     //  Accurate                    Untested
 
+    AttributeMap attributes;
+
     TagLib::FileRef fileref;
     TagLib::Tag *tag = 0;
 
@@ -205,10 +236,8 @@ CollectionScanner::readTags( const QString& path )
 
     if( fileref.isNull() || !tag ) {
         std::cout << "<dud/>";
-        return;
+        return attributes;
     }
-
-    AttributeMap attributes;
 
     #define strip( x ) TStringToQString( x ).stripWhiteSpace()
     attributes["path"]    = path;
@@ -232,7 +261,7 @@ CollectionScanner::readTags( const QString& path )
         attributes["audioproperties"] = "false";
 
 
-    writeElement( "tags", attributes );
+    return attributes;
 }
 
 

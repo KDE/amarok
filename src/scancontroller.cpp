@@ -237,6 +237,10 @@ ScanController::startElement( const QString&, const QString& localName, const QS
         }
     }
 
+//     if( localName == "image" )
+//         CollectionDB::instance()->addImageToAlbum( *it, covers, m_db );
+
+
     return true;
 }
 
