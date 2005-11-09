@@ -5,8 +5,9 @@
 #ifndef AMAROK_ENGINEBASE_H
 #define AMAROK_ENGINEBASE_H
 
-#include <kurl.h>
 #include "plugin/plugin.h" //baseclass
+
+#include <kurl.h>
 #include <qobject.h>       //baseclass
 #include <qvaluelist.h>    //stack alloc
 #include <vector>
