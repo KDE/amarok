@@ -134,7 +134,7 @@ class PlaylistBrowser : public QVBox
         void loadOldPlaylists();
         void savePlaylists();
         void savePlaylist( PlaylistEntry * );
-        bool createPlaylist( QListViewItem *parent = 0, bool current = true );
+        bool createPlaylist( QListViewItem *parent = 0, bool current = true, QString title = 0 );
         bool deletePlaylists( QPtrList<PlaylistEntry> items );
         bool deletePlaylists( KURL::List items );
 

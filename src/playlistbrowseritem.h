@@ -14,6 +14,7 @@
 #include <qdom.h>
 #include <qtimer.h>     // Podcast loading animation
 
+class MetaBundle;
 class PlaylistTrackItem;
 class TrackItemInfo;
 
@@ -156,7 +157,8 @@ class PlaylistEntry :  public QObject, public PlaylistBrowserEntry
 
         int         compare( QListViewItem* i, int col ) const; //reimpl.
         KURL::List  tracksURL();    //returns the list of tracks url
-        void        insertTracks( QListViewItem *after, KURL::List list, QMap<QString,QString> map );
+        void        insertTracks( QListViewItem *after, KURL::List list );
+        void        insertTracks( QListViewItem *after, QValueList<MetaBundle> bundles );
         // isLast is used to avoid saving the playlist to disk every time a track is removed
         // when removing a list of tracks from the playlist
         void        removeTrack( QListViewItem *item, bool isLast = true );

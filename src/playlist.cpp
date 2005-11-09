@@ -40,7 +40,6 @@
 #include <qfile.h>           //undo system
 #include <qheader.h>         //eventFilter()
 #include <qlabel.h>          //showUsageMessage()
-#include <qmap.h>            //dragObject()
 #include <qpainter.h>
 #include <qpen.h>            //slotGlowTimer()
 #include <qsortedlist.h>
@@ -1867,25 +1866,16 @@ Playlist::dragObject()
 {
     DEBUG_FUNC_INFO
 
-    //TODO use of the map is pointless
-    //TODO just get the tags with metabundle like every other part of amaroK does, the performance issues are negligible
-    //     and this is just code-bloat
-
     KURL::List list;
-    QMap<QString,QString> map;
 
     for( MyIt it( this, MyIt::Selected ); *it; ++it )
     {
         const PlaylistItem *item = (PlaylistItem*)*it;
         const KURL &url = item->url();
         list += url;
-        const QString key = url.isLocalFile() ? url.path() : url.url();
-        map[ key ] = QString("%1;%2").arg( item->title() ).arg( item->length() );
     }
 
-    //it returns a KURLDrag with a QMap containing the title and the length of the track
-    //this is used by the playlistbrowser to insert tracks in playlists without re-reading tags
-    return new KURLDrag( list, map, viewport() );
+    return new KURLDrag( list, viewport() );
 }
 
 #include <qsimplerichtext.h>

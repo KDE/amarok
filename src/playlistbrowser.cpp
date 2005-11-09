@@ -1273,9 +1273,11 @@ PlaylistBrowser::findItem( QString &t, int c ) const
     return (PlaylistBrowserEntry *)m_listview->findItem( t, c, Qt::ExactMatch );
 }
 
-bool PlaylistBrowser::createPlaylist( QListViewItem *parent, bool current )
+bool PlaylistBrowser::createPlaylist( QListViewItem *parent, bool current, QString title )
 {
-    const QString path = PlaylistDialog::getSaveFileName( i18n("Untitled") );
+    if( title.isEmpty() ) title = i18n("Untitled");
+
+    const QString path = PlaylistDialog::getSaveFileName( title );
     if( path.isEmpty() )
         return false;
 
@@ -2466,26 +2468,40 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
         moveSelectedItems( item ); // D&D sucks, do it ourselves
     }
     else {
-        KURL::List list, decodedList;
-        QMap<QString, QString> map;
-        if( KURLDrag::decode( e, decodedList, map ) )
+        KURL::List decodedList;
+        QValueList<MetaBundle> bundles;
+        if( KURLDrag::decode( e, decodedList ) )
         {
-            for ( KURL::List::ConstIterator it = decodedList.begin(); it != decodedList.end(); ++it )
+            KURL::List::ConstIterator it = decodedList.begin();
+            MetaBundle first( *it );
+            const QString album  = first.album();
+            const QString artist = first.artist();
+
+            int suggestion = !album.stripWhiteSpace().isEmpty() ? 1 : !artist.stripWhiteSpace().isEmpty() ? 2 : 3;
+
+            for ( ; it != decodedList.end(); ++it )
             {
                 QString filename = (*it).fileName();
 
                 if( filename.endsWith("m3u") || filename.endsWith("pls") )
                     PlaylistBrowser::instance()->addPlaylist( (*it).path() );
                 else //TODO: check canDecode ?
-                    list.append(*it);
+                {
+                    MetaBundle mb(*it);
+                    bundles.append( mb );
+                    if( suggestion == 1 && mb.album().lower().stripWhiteSpace() != album.lower().stripWhiteSpace() )
+                        suggestion = 2;
+                    if( suggestion == 2 && mb.artist().lower().stripWhiteSpace() != artist.lower().stripWhiteSpace() )
+                        suggestion = 3;
+                }
             }
 
-            if( list.isEmpty() ) return;
+            if( bundles.isEmpty() ) return;
 
             if( parent && isPlaylist( parent ) ) {
                 //insert the dropped tracks
                 PlaylistEntry *playlist = (PlaylistEntry *)parent;
-                playlist->insertTracks( after, list, map );
+                playlist->insertTracks( after, bundles );
             }
             else //dropped on a playlist item
             {
@@ -2505,14 +2521,17 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
                 if( isPlaylist( item ) ) {
                     PlaylistEntry *playlist = (PlaylistEntry *)item;
                     //append the dropped tracks
-                    playlist->insertTracks( 0, list, map );
+                    playlist->insertTracks( 0, bundles );
                 }
                 else if( isCategory( item ) && isPlaylistFolder )
                 {
                     PlaylistBrowser *pb = PlaylistBrowser::instance();
-                    if ( pb->createPlaylist( item, false ) )
+                    QString title = suggestion == 1 ? album
+                                                  : suggestion == 2 ? artist
+                                                  : QString::null;
+                    if ( pb->createPlaylist( item, false, title ) )
                     {
-                        pb->m_lastPlaylist->insertTracks( 0, list, map );
+                        pb->m_lastPlaylist->insertTracks( 0, bundles );
                         pb->m_lastPlaylist->load(); //we need to ensure that insertTracks gets registered. Why?!
                     }
                 }
