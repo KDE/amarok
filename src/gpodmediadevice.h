@@ -32,7 +32,7 @@ class GpodMediaDevice : public MediaDevice
     protected:
         bool             trackExists( const MetaBundle& bundle );
 
-        bool             openDevice(bool useDialogs=true);
+        bool             openDevice(bool silent=false);
         bool             closeDevice();
         void lockDevice(bool) {}
         void unlockDevice() {}

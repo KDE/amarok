@@ -466,7 +466,7 @@ GpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
 }
 
 bool
-GpodMediaDevice::openDevice(bool useDialogs)
+GpodMediaDevice::openDevice(bool silent)
 {
 #ifdef HAVE_LIBGPOD
     dbChanged = false;
@@ -488,7 +488,7 @@ GpodMediaDevice::openDevice(bool useDialogs)
             QDir dir(m_mntpnt);
             if(!dir.exists())
             {
-                if(useDialogs)
+                if(!silent)
                     KMessageBox::error( m_parent->m_parent, i18n("Media device mount point does not exist"),
                             i18n( "Media Device Browser" ) );
                 return false;
@@ -498,7 +498,7 @@ GpodMediaDevice::openDevice(bool useDialogs)
             m_itdb = itdb_new();
             if(m_itdb==NULL)
             {
-                if(useDialogs)
+                if(!silent)
                     KMessageBox::error( m_parent->m_parent, i18n("Failed to initialize iPod mounted at ") + m_mntpnt,
                             i18n( "Media Device Browser" ) );
 
@@ -529,7 +529,7 @@ GpodMediaDevice::openDevice(bool useDialogs)
             if(!dir.exists())
                 dir.mkdir(dir.absPath());
 
-            if(useDialogs)
+            if(!silent)
                 KMessageBox::information( m_parent->m_parent, i18n("Initialized iPod mounted at ") + m_mntpnt,
                         i18n( "Media Device Browser" ) );
         }

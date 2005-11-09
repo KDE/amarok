@@ -192,7 +192,7 @@ class MediaDevice : public QObject
     public slots:
         void clearItems();
         void config();
-        void connectDevice();
+        void connectDevice( bool silent=false );
         int  mount();
         void removeSelected();
         void setMountPoint(const QString & mntpnt);
@@ -230,7 +230,7 @@ class MediaDevice : public QObject
 
         virtual void lockDevice( bool ) = 0;
         virtual void unlockDevice() = 0;
-        virtual bool openDevice( bool useDialogs=true ) = 0;
+        virtual bool openDevice( bool silent=false ) = 0;
         virtual bool closeDevice() = 0;
         virtual void synchronizeDevice() = 0;
         virtual MediaItem *addTrackToDevice(const QString& pathname, const MetaBundle& bundle, bool isPodcast) = 0;

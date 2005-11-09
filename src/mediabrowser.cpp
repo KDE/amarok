@@ -796,6 +796,8 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     QToolTip::add( m_configButton,   i18n( "Configure media device" ) );
 
     m_connectButton->setToggleButton( true );
+    m_connectButton->setOn( true );
+    m_device->connectDevice( true );
     m_connectButton->setOn( m_device->isConnected() ||  m_deviceList->childCount() != 0 );
     m_transferButton->setDisabled( true );
 
@@ -1110,7 +1112,7 @@ int MediaDevice::sysCall(const QString & command)
 }
 
 void
-MediaDevice::connectDevice()
+MediaDevice::connectDevice( bool silent )
 {
     if ( m_parent->m_connectButton->isOn() )
     {
@@ -1119,7 +1121,7 @@ MediaDevice::connectDevice()
             mount();
         }
 
-        openDevice();
+        openDevice( silent );
 
         if( isConnected() || m_parent->m_deviceList->childCount() != 0 )
         {
@@ -1174,9 +1176,12 @@ MediaDevice::connectDevice()
         else
         {
             m_parent->m_connectButton->setOn( false );
-            KMessageBox::error( m_parent->m_parent,
-                    i18n( "Could not find device, please mount it and try again." ),
-                    i18n( "Media Device Browser" ) );
+            if(!silent)
+            {
+                KMessageBox::error( m_parent->m_parent,
+                        i18n( "Could not find device, please mount it and try again." ),
+                        i18n( "Media Device Browser" ) );
+            }
         }
     }
     else
