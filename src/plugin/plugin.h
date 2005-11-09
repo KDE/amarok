@@ -4,6 +4,8 @@
 #ifndef AMAROK_PLUGIN_H
 #define AMAROK_PLUGIN_H
 
+#include <config.h>
+
 #define AMAROK_EXPORT_PLUGIN( classname ) \
     extern "C" { \
           KDE_EXPORT amaroK::Plugin* create_plugin() { return new classname; } \
