@@ -634,6 +634,8 @@ AC_TRY_COMPILE([
 ],
 [
     cpu_set_t mask;
+    CPU_ZERO( &mask );
+    CPU_SET( 0, &mask );
     sched_setaffinity( 0, sizeof(mask), &mask );
 ],
     amarok_sched_3params=yes,
@@ -652,6 +654,8 @@ if test "x$amarok_sched_3params" = "xno"; then
     ],
     [
         cpu_set_t mask;
+        CPU_ZERO( &mask );
+        CPU_SET( 0, &mask );
         sched_setaffinity( 0, &mask );
     ],
         amarok_sched_2params=yes,
@@ -775,7 +779,7 @@ if test "$build_mp4v2" != "no"; then
 
     # not even everyone using faad2 has <systems.h>
     if ! test -f config.h; then
-        echo "#include \"confdefs.h\"" > config.h 
+        echo "#include \"confdefs.h\"" > config.h
     fi
     ac_cppflags_save=$CPPFLAGS
     CPPFLAGS="$CPPFLAGS -I."
