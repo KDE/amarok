@@ -15,7 +15,16 @@ VERSION 1.4:
     * Collection scanner now supports WMA and MP4/AAC.
     * Option to crossfade only on manual track changes. Useful for listening
       to consecutive tracks on a single album.
+    * Automatic scanning for stale and orphaned iPod items.
+    * Incremental update of media device view.
+    * Persistent media device transfer queue.
+    * Add podcast shows to the Podcast folder on iPods.
+    * Optionally add new podcasts to media device transfer queue on download
+      and remove podcasts already listened to on media device connect.
     * Edit dumb iPod playlists with media browser.
+    * Create playlist from items transferred to iPod.
+    * Ability to read audible.com .aa file metadata and to transfer audiobooks
+      to iPod via file browser.
 
   CHANGES:
     * "Update"-button is now hidden in the collection browser if "Watch
