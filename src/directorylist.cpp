@@ -182,7 +182,7 @@ Item::newItems( const KFileItemList &list ) //SLOT
             CollectionSetup::instance()->m_dirs.contains( item->fullPath() ) )
         {
             item->setOn( true );
-            CollectionSetup::instance()->m_zombieDirs.remove( (*it)->localPath() );
+            CollectionSetup::instance()->m_zombieDirs.remove( (*it)->url().path() );
         }
 
         item->setPixmap( 0, (*it)->pixmap( KIcon::SizeSmall ) );
