@@ -4,7 +4,6 @@
 
 #define DEBUG_PREFIX "MetaBundle"
 
-#include "amarokconfig.h"
 #include "collectiondb.h"
 #include <kfilemetainfo.h>
 #include <kmimetype.h>
@@ -164,25 +163,12 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
     TagLib::FileRef fileref;
     TagLib::Tag *tag = 0;
 
-    if( AmarokConfig::recodeID3v1Tags() && path.endsWith( ".mp3", false ) )
-    {
-        TagLib::MPEG::File *mpeg = new TagLib::MPEG::File( QFile::encodeName( path ), true, readStyle );
-        fileref = TagLib::FileRef( mpeg );
 
-        if( mpeg->isValid() )
-            // we prefer ID3v1 over ID3v2 if recoding tags because
-            // apparently this is what people who ignore ID3 standards want
-            tag = mpeg->ID3v1Tag() ? (TagLib::Tag*)mpeg->ID3v1Tag() : (TagLib::Tag*)mpeg->ID3v2Tag();
-    }
-
-    else {
-        fileref = TagLib::FileRef( QFile::encodeName( path ), true, readStyle );
-
-        if( !fileref.isNull() )
-            tag = fileref.tag();
-    }
+    fileref = TagLib::FileRef( QFile::encodeName( path ), true, readStyle );
 
     if( !fileref.isNull() ) {
+        tag = fileref.tag();
+
         if ( tag ) {
             #define strip( x ) TStringToQString( x ).stripWhiteSpace()
             m_title   = strip( tag->title() );

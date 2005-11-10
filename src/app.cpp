@@ -560,16 +560,6 @@ void App::applySettings( bool firstTime )
     TrackToolTip::instance()->addToWidget( m_pTray );
 
 
-    // we check > 0 because textCodecForIndex( 0 ) crashes amaroK for unknown
-    // reasons, also now we assign index 0 to "" in the config combobox
-    if( AmarokConfig::recodeID3v1Tags() )
-    if( AmarokConfig::recodeEncoding() > 0 )
-        TagLib::ID3v1::Tag::setStringHandler( new ID3v1StringHandler( AmarokConfig::recodeEncoding() ) );
-    else
-        // otherwise the locale encoding is used
-        TagLib::ID3v1::Tag::setStringHandler( new ID3v1StringHandler( QTextCodec::codecForLocale() ) );
-
-
     //on startup we need to show the window, but only if it wasn't hidden on exit
     //and always if the trayicon isn't showing
     if( firstTime && !amaroK::config()->readBoolEntry( "HiddenOnExit", false ) || !AmarokConfig::showTrayIcon() )

@@ -76,9 +76,6 @@
             <property name="text">
                 <string>&amp;Install Script</string>
             </property>
-            <property name="accel">
-                <string>Alt+I</string>
-            </property>
         </widget>
         <widget class="QPushButton" row="1" column="1">
             <property name="name">
@@ -125,9 +122,6 @@
             <property name="text">
                 <string>&amp;Stop</string>
             </property>
-            <property name="accel">
-                <string>Alt+S</string>
-            </property>
         </widget>
         <widget class="QPushButton" row="6" column="1">
             <property name="name">
@@ -151,9 +145,6 @@
             </property>
             <property name="text">
                 <string>R&amp;estart running scripts on application startup</string>
-            </property>
-            <property name="accel">
-                <string>Alt+E</string>
             </property>
             <property name="toolTip" stdset="0">
                 <string>If enabled, amaroK will automatically restart scripts that were running when you exited the application.</string>

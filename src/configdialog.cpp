@@ -94,14 +94,6 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
         m_pluginAmarokName[(*it)->property( "X-KDE-amaroK-name" ).toString()] = (*it)->name();
     }
 
-    // KConfigXT doesn't like Comboboxes, still, 2 versions after
-    // it was created. How shit. Hence we can't make recodeEncoding
-    // a string (which we need to because by index is not consistent)
-    QTextCodec *codec;
-    m_opt1->kcfg_RecodeEncoding->insertItem( i18n("Locale Encoding") );
-    for( int i = 1; (codec = QTextCodec::codecForIndex( i )); i++ )
-        m_opt1->kcfg_RecodeEncoding->insertItem( codec->name() );
-
     // Collection
 #if !defined(USE_MYSQL) && !defined(USE_POSTGRESQL)
     m_opt7->databaseBox->hide();

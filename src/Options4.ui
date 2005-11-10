@@ -20,9 +20,6 @@
             <verstretch>0</verstretch>
         </sizepolicy>
     </property>
-    <property name="caption">
-        <string>Options4</string>
-    </property>
     <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
@@ -60,9 +57,6 @@
                     </property>
                     <property name="text">
                         <string>&amp;No crossfading</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+N</string>
                     </property>
                     <property name="checked">
                         <bool>true</bool>
@@ -152,9 +146,6 @@
                     <property name="text">
                         <string>&amp;Crossfading</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+C</string>
-                    </property>
                     <property name="checked">
                         <bool>false</bool>
                     </property>
@@ -199,9 +190,6 @@
                     </property>
                     <property name="text">
                         <string>Crossfade on man&amp;ual track change only</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+U</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>When enabled, crossfading will only occur when manually changing tracks.</string>
@@ -257,9 +245,6 @@
             </property>
             <property name="text">
                 <string>&amp;Resume playback on start</string>
-            </property>
-            <property name="accel">
-                <string>Alt+R</string>
             </property>
             <property name="toolTip" stdset="0">
                 <string>If checked, amaroK will&lt;br&gt;resume playback from where you left it the previous session -- just like a tape-player.</string>

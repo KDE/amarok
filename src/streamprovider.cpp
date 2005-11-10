@@ -18,7 +18,6 @@ email                : markey@web.de
 #define DEBUG_PREFIX "StreamProvider"
 
 #include "amarok.h"
-#include "amarokconfig.h"
 #include "debug.h"
 #include "metabundle.h"
 #include "statusbar.h"
@@ -313,21 +312,11 @@ StreamProvider::transmitData( const QString &data )
 
     debug() << "Received MetaData: " << data << endl;
 
-    // because we assumed latin1 earlier this codec conversion works
-    QTextCodec *codec = ( AmarokConfig::recodeShoutcastMetadata() && AmarokConfig::recodeEncoding() )
-            ? QTextCodec::codecForIndex( AmarokConfig::recodeEncoding() )
-            : QTextCodec::codecForName( "ISO8859-1" ); //Latin1 returns 0
-
-    if ( !codec ) {
-        error() << "QTextCodec* codec == NULL!" << endl;
-        return;
-    }
-
-    const MetaBundle bundle( codec->toUnicode( extractStr( data, "StreamTitle" ).latin1() ),
+    const MetaBundle bundle( extractStr( data, "StreamTitle" ),
                              m_streamUrl,
                              m_bitRate,
-                             codec->toUnicode( m_streamGenre.latin1() ),
-                             codec->toUnicode( m_streamName.latin1() ),
+                             m_streamGenre,
+                             m_streamName,
                              m_url );
 
     emit metaData( bundle );
