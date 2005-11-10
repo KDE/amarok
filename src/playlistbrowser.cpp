@@ -319,12 +319,12 @@ PlaylistCategory* PlaylistBrowser::loadStreams()
     else {
         e = d.namedItem( "category" ).toElement();
         if ( e.attribute("formatversion") =="1.1" ) {
-            PlaylistCategory* p = new PlaylistCategory(m_listview, after, e );
+            PlaylistCategory* p = new PlaylistCategory( m_listview, after, e );
             p->setText(0, i18n("Radio Streams") );
             return p;
         }
         else { // Old unversioned format
-            PlaylistCategory* p = new PlaylistCategory(m_listview, after, i18n("Radio Streams") );
+            PlaylistCategory* p = new PlaylistCategory( m_listview, after, i18n("Radio Streams") );
             QListViewItem *last = 0;
             QDomNode n = d.namedItem( "streambrowser" ).namedItem("stream");
             for( ; !n.isNull();  n = n.nextSibling() ) {
@@ -353,6 +353,7 @@ void PlaylistBrowser::loadCoolStreams()
     }
 
     m_coolStreams = new PlaylistCategory( m_streamsCategory, 0, i18n("Cool-Streams") );
+    m_coolStreams->setOpen( m_coolStreamsOpen );
     KListViewItem *last = 0;
 
     QDomNode n = d.namedItem( "coolstreams" ).firstChild();
@@ -493,6 +494,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     QListViewItem *last = 0;
 
     m_smartDefaults = new PlaylistCategory( m_smartCategory, 0, i18n("Collection") );
+    m_smartDefaults->setOpen( m_smartDefaultsOpen );
 
     /********** All Collection **************/
     qb.initSQLDrag();

@@ -160,6 +160,13 @@ void PlaylistCategory::setXml( const QDomElement &xml )
             if ( e.tagName() == "category" ) {
                 last = new PlaylistCategory( this, last, e);
             }
+            else if ( e.tagName() == "default" ) {
+                if( e.attribute( "type" ) == "stream" )
+                    pb->m_coolStreamsOpen   = (e.attribute( "isOpen" ) == "true");
+                if( e.attribute( "type" ) == "smartplaylist" )
+                    pb->m_smartDefaultsOpen = (e.attribute( "isOpen" ) == "true");
+                continue;
+            }
             else if ( e.tagName() == "stream" ) {
                 last = new StreamEntry( this, last, e );
             }
@@ -213,10 +220,26 @@ QDomElement PlaylistCategory::xml()
             i.setAttribute( "isOpen", "true" );
         for( PlaylistBrowserEntry *it = (PlaylistBrowserEntry*)firstChild(); it; it = (PlaylistBrowserEntry*)it->nextSibling() )
         {
-          //FIXME: this is a very ugly and bad hack not to save the default smart and stream lists.
-            if ( it->text(0) == i18n("Cool-Streams") || it->text(0) == i18n("Collection") )
-                continue;
-            i.appendChild( d.importNode( it->xml(), true ) );
+            if( it == PlaylistBrowser::instance()->m_coolStreams )
+            {
+                QDomDocument doc;
+                QDomElement e = doc.createElement("default");
+                e.setAttribute( "type", "stream" );
+                if( it->isOpen() )
+                    e.setAttribute( "isOpen", "true" );
+                i.appendChild( d.importNode( e, true ) );
+            }
+            else if( it == PlaylistBrowser::instance()->m_smartDefaults )
+            {
+                QDomDocument doc;
+                QDomElement e = doc.createElement("default");
+                e.setAttribute( "type", "smartplaylist" );
+                if( it->isOpen() )
+                    e.setAttribute( "isOpen", "true" );
+                i.appendChild( d.importNode( e, true ) );
+            }
+            else
+                i.appendChild( d.importNode( it->xml(), true ) );
         }
         return i;
 }

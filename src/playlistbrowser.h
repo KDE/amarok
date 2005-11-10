@@ -154,6 +154,9 @@ class PlaylistBrowser : public QVBox
         PlaylistCategory    *m_smartDefaults;
         PlaylistEntry       *m_lastPlaylist;
 
+        bool                 m_coolStreamsOpen;
+        bool                 m_smartDefaultsOpen;
+
         PlaylistBrowserView *m_listview;
         KActionCollection   *m_ac;
         KAction             *removeButton, *renameButton;
