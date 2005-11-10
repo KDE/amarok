@@ -12,8 +12,6 @@
 *****************************************************************************/
 
 #include <config.h>
-#include <qsizepolicy.h>
-#include <qrect.h>
 
 void Options1::init()
 {
