@@ -193,12 +193,13 @@ ScanController::startElement( const QString&, const QString& localName, const QS
 {
     // List of entity names:
     //
-    // itemcount   Number of files overall
-    // folder      Folder which is being processed
-    // dud         Invalid audio file
-    // tags        Valid audio file with metadata
-    // playlist    Playlist file
-    // image       Cover image
+    // itemcount     Number of files overall
+    // folder        Folder which is being processed
+    // dud           Invalid audio file
+    // tags          Valid audio file with metadata
+    // playlist      Playlist file
+    // image         Cover image
+    // compilation   Folder to check for compilation
 
 
     if( localName == "itemcount") {
@@ -251,11 +252,21 @@ ScanController::startElement( const QString&, const QString& localName, const QS
     if( localName == "playlist" )
         PlaylistBrowser::instance()->addPlaylist( attrs.value( "path" ) );
 
+    if( localName == "compilation" )
+        CollectionDB::instance()->checkCompilations( attrs.value( "path" ), !m_incremental );
 
-#if 0
-    if( localName == "image" )
-        CollectionDB::instance()->addImageToAlbum( *it, covers, m_db );
-#endif
+    if( localName == "image" ) {
+        // Deserialize CoverBundle list
+        QStringList list = QStringList::split( attrs.value( "list" ), "\n", true );
+        QValueList< QPair<QString, QString> > covers;
+
+        for( int i = 0; i < list.size(); ) {
+            covers += qMakePair( list[i], list[i + 1] );
+            i += 2;
+        }
+
+        CollectionDB::instance()->addImageToAlbum( attrs.value( "path" ), covers );
+    }
 
 
     return true;

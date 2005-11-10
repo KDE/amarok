@@ -198,24 +198,33 @@ CollectionScanner::scanFiles( const QStringList& entries )
             }
         }
 
-#if 0
         // Update Compilation-flag, when this is the last loop-run
         // or we're going to switch to another dir in the next run
-        if( path == entries.getLast() || dir != ++QStringListIterator( it ) )
+        QStringList::ConstIterator itTemp( it );
+        ++itTemp;
+        if( path == entries.last() || dir != directory( *itTemp ) )
         {
             // we entered the next directory
-            foreach( images )
+            foreachType( QStringList, images ) {
+                // Serialize CoverBundle list with \n as separator
+                QString string;
+                foreachType( QValueList<CoverBundle>, covers )
+                    string += (*it).first + "\n" + (*it).second + "\n";
+
                 AttributeMap attributes;
                 attributes["path"] = *it;
+                attributes["list"] = string;
                 writeElement( "image", attributes );
+            }
 
-//             CollectionDB::instance()->checkCompilations( dir, !m_incremental, m_db );
+            AttributeMap attributes;
+            attributes["path"] = dir;
+            writeElement( "compilation", attributes );
 
             // clear now because we've processed them
             covers.clear();
             images.clear();
         }
-#endif
     }
 }
 
