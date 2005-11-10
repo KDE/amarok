@@ -43,14 +43,17 @@ class MediaItem : public KListViewItem
         void setType( Type type );
         Type type() const { return m_type; }
         MediaItem *findItem(const QString &key) const;
-        bool isLeaveItem() const;
+        virtual bool isLeaveItem() const;
+        virtual bool isFileBacked() const;
         virtual int played() const { return 0; }
+        virtual long size() const;
 
         //attributes:
         KURL m_url;
         mutable MetaBundle *m_bundle;
 
         int m_order;
+        mutable long m_size;
         Type m_type;
         QString m_playlistName;
         int compare(QListViewItem *i, int col, bool ascending) const;
@@ -80,6 +83,7 @@ class MediaDeviceTransferList : public KListView
         void contentsDragEnterEvent( QDragEnterEvent* );
         void contentsDropEvent( QDropEvent *e );
         void contentsDragMoveEvent( QDragMoveEvent* e );
+        unsigned totalSize() const; // total size of items to transfer in KB
 
     private:
         MediaDeviceView *m_parent;
@@ -153,6 +157,7 @@ class MediaDeviceView : public QVBox
         MediaDeviceView( MediaBrowser* parent );
         ~MediaDeviceView();
         bool setFilter( const QString &filter, MediaItem *parent=NULL );
+        void updateStats();
 
     private slots:
         void slotShowContextMenu( QListViewItem* item, const QPoint& point, int );
@@ -178,6 +183,7 @@ class MediaDevice : public QObject
     friend class MediaBrowser;
     friend class MediaDeviceView;
     friend class MediaDeviceList;
+    friend class MediaDeviceTransferList;
 
     public:
         MediaDevice( MediaDeviceView* parent, MediaDeviceList* listview );

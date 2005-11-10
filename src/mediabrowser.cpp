@@ -199,6 +199,7 @@ MediaItem::init()
     setExpandable( false );
     setDragEnabled( true );
     setDropEnabled( true );
+    m_size=-1;
 }
 
 void MediaItem::setUrl( const QString& url )
@@ -220,6 +221,54 @@ MediaItem::bundle()
     if(m_bundle == NULL) 
         m_bundle = new MetaBundle( url() );
     return m_bundle;
+}
+
+bool
+MediaItem::isFileBacked() const
+{
+    switch( type() )
+    {
+    case ARTIST:
+    case ALBUM:
+    case PODCASTSROOT:
+    case PODCASTCHANNEL:
+    case PLAYLISTSROOT:
+    case PLAYLIST:
+    case PLAYLISTITEM:
+    case INVISIBLEROOT:
+    case STALEROOT:
+    case STALE:
+    case ORPHANEDROOT:
+        return false;
+
+    case UNKNOWN:
+    case TRACK:
+    case ORPHANED:
+    case INVISIBLE:
+    case PODCASTITEM:
+        return true;
+    }
+
+    return false;
+}
+
+long
+MediaItem::size() const
+{
+    if(m_size < 0)
+    {
+        if(!isFileBacked())
+        {
+            m_size = 0;
+        }
+        else
+        {
+            QFile file( url().path() );
+            m_size = file.size();
+        }
+    }
+
+    return m_size;
 }
 
 void
@@ -831,7 +880,8 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     m_configButton   = new KPushButton( KGuiItem( QString::null, "configure" ), hb );
     m_configButton->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred ); // too big!
 
-    m_stats = new QLabel( i18n( "1 track in queue", "%n tracks in queue", m_device->m_transferList->childCount() ), this );
+    m_stats = new QLabel(this);
+    updateStats();
 
     QToolTip::add( m_connectButton,  i18n( "Connect media device" ) );
     QToolTip::add( m_transferButton, i18n( "Transfer tracks to media device" ) );
@@ -854,6 +904,26 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
              this,   SLOT( slotShowContextMenu( QListViewItem*, const QPoint&, int ) ) );
 
     m_device->loadTransferList( amaroK::saveLocation() + "transferlist.xml" );
+}
+
+void
+MediaDeviceView::updateStats()
+{
+    QString text = i18n( "1 track in queue", "%n tracks in queue", m_device->m_transferList->childCount() );
+    if(m_device->m_transferList->childCount() > 0)
+    {
+        long size = m_device->m_transferList->totalSize();
+        if(size < 1000)
+            text += QString(" (%1 KB)").arg(size);
+        else if(size < 10*1024)
+            text += QString(" (%1.%2 MB)").arg(size/1024).arg((size%1024)*10/1024);
+        else if(size < 1000*1024)
+            text += QString(" (%1 MB)").arg(size/(1024));
+        else
+            text += QString(" (%1.%2 GB)").arg(size/(1024*1024)).arg((size%(1024*1024))*10/(1024*1024));
+    }
+    if(m_stats)
+        m_stats->setText(text);
 }
 
 void
@@ -1014,7 +1084,7 @@ MediaDevice::addURL( const KURL& url, MetaBundle *bundle, bool isPodcast, const 
         }
         item->setText( 0, text);
 
-        m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_transferList->childCount() ) );
+        m_parent->updateStats();
         m_parent->m_transferButton->setEnabled( m_parent->m_device->isConnected() || m_parent->m_deviceList->childCount() != 0 );
         m_parent->m_progress->setTotalSteps( m_parent->m_progress->totalSteps() + 1 );
     } else
@@ -1033,8 +1103,9 @@ void
 MediaDevice::clearItems()
 {
     m_transferList->clear();
-    if(m_parent && m_parent->m_stats)
-        m_parent->m_stats->setText( i18n( "0 tracks in queue" ) );
+    if(m_parent)
+        m_parent->updateStats();
+
     if(m_parent && m_parent->m_transferButton)
         m_parent->m_transferButton->setEnabled( false );
 }
@@ -1050,7 +1121,7 @@ MediaDevice::removeSelected()
         delete item;
     }
     m_parent->m_transferButton->setEnabled( m_transferList->childCount() != 0 );
-    m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_transferList->childCount() ) );
+    m_parent->updateStats();
 }
 
 void
@@ -1187,6 +1258,7 @@ MediaDevice::connectDevice( bool silent )
                     }
                 }
             }
+            m_parent->updateStats();
 
             // delete podcasts already played
             if(m_podcastItem)
@@ -1211,7 +1283,7 @@ MediaDevice::connectDevice( bool silent )
                     unlockDevice();
 
                     QTimer::singleShot( 1500, m_parent->m_progress, SLOT(hide()) );
-                    m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_transferList->childCount() ) );
+                    m_parent->updateStats();
                 }
             }
 
@@ -1262,15 +1334,6 @@ MediaDevice::connectDevice( bool silent )
     }
 }
 
-
-void
-MediaDevice::fileTransferred()  //SLOT
-{
-    m_wait = false;
-    m_parent->m_progress->setProgress( m_parent->m_progress->progress() + 1 );
-    // the track just transferred has not yet been removed from the queue
-    m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_transferList->childCount()-1 ) );
-}
 
 void
 MediaDevice::transferFiles()
@@ -1400,12 +1463,11 @@ MediaDevice::transferFiles()
                     addToPlaylist(pl, pl->lastChild(), items);
                 }
             }
-
-            m_transferList->takeItem( cur );
-            delete cur->m_bundle;
-            delete cur;
-            cur = NULL;
         }
+
+        delete cur->m_bundle;
+        delete cur;
+        cur = NULL;
     }
     synchronizeDevice();
     unlockDevice();
@@ -1416,11 +1478,21 @@ MediaDevice::transferFiles()
 
 
 void
+MediaDevice::fileTransferred()  //SLOT
+{
+    m_wait = false;
+    m_parent->m_progress->setProgress( m_parent->m_progress->progress() + 1 );
+
+    // the track just transferred has not yet been removed from the queue
+    m_transferList->takeItem( m_transferList->firstChild() );
+    m_parent->updateStats();
+}
+
+
+void
 MediaDevice::fileTransferFinished()  //SLOT
 {
-    m_transferList->clear();
-
-    m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_transferList->childCount() ) );
+    m_parent->updateStats();
     m_parent->m_progress->hide();
     m_parent->m_transferButton->setDisabled( true );
 }
@@ -1496,7 +1568,7 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
         unlockDevice();
 
         QTimer::singleShot( 1500, m_parent->m_progress, SLOT(hide()) );
-        m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_transferList->childCount() ) );
+        m_parent->updateStats();
     }
 }
 
@@ -1767,6 +1839,23 @@ MediaDeviceTransferList::findPath( QString path )
     }
 
     return NULL;
+}
+
+unsigned
+MediaDeviceTransferList::totalSize() const
+{
+    unsigned total = 0;
+    for( QListViewItem *it = firstChild();
+            it;
+            it = it->nextSibling())
+    {
+        MediaItem *item = static_cast<MediaItem *>(it);
+
+        if(!m_parent->m_device->isConnected() || !m_parent->m_device->trackExists(*item->bundle()) )
+            total += (item->size()+1023)/1024;
+    }
+
+    return total;
 }
 
 
