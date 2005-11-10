@@ -37,7 +37,7 @@ h6 { font-size: AMAROK_FONTSIZEpx; background-color: ButtonFace; color: ButtonTe
 .album-year { }
 .album-song a { display: block; padding: 1px 2px; font-weight: normal; text-decoration: none; }
 .album-song a:hover { color: HighlightText; background-color: Highlight; }
-.album-song-trackno { text-align: right; width: 2em; display: block; float: left;}
+.album-song-trackno { text-align: right; width: 2em; display: block; float: left; font-weight: bold; }
 .album-song-title { }
 .album-song-time { }
 .sbtext { padding: 0px 4px; border-left: solid Highlight 1px; font-size: AMAROK_FONTSIZEpx; }
