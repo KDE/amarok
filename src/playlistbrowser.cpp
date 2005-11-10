@@ -385,9 +385,10 @@ void PlaylistBrowser::addStream( QListViewItem *parent )
 }
 
 
-void PlaylistBrowser::editStreamURL( StreamEntry *item )
+void PlaylistBrowser::editStreamURL( StreamEntry *item, const bool readOnly )
 {
     StreamEditor dialog( this, item->title(), item->url().prettyURL() );
+    dialog.setReadOnly( readOnly );
 
     if( dialog.exec() == QDialog::Accepted )
     {
@@ -1947,7 +1948,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     }
     else if( isStream( item ) )
     {
-        enum Actions { LOAD, ADD, EDIT, REMOVE };
+        enum Actions { LOAD, ADD, EDIT, REMOVE, INFO };
 
         menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), LOAD );
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), ADD );
@@ -1958,22 +1959,29 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             menu.insertItem( SmallIconSet("editclear"), i18n( "E&dit" ), EDIT );
             menu.insertItem( SmallIconSet("edittrash"), i18n( "R&emove" ), REMOVE );
         }
+        else
+            menu.insertItem( SmallIconSet("info"), i18n( "Show &Information" ), INFO );
 
+        #define item static_cast<StreamEntry *>(item)
         switch( menu.exec( p ) )
         {
             case LOAD:
                 slotDoubleClicked( item );
                 break;
             case ADD:
-                Playlist::instance()->insertMedia( static_cast<StreamEntry *>(item)->url() );
+                Playlist::instance()->insertMedia( item->url() );
                 break;
             case EDIT:
-                editStreamURL( static_cast<StreamEntry *>(item) );
+                editStreamURL( item );
+                break;
+            case INFO:
+                editStreamURL( item, true );
                 break;
             case REMOVE:
                 removeSelectedItems();
                 break;
         }
+        #undef  item
     }
     else if( isDynamic( item ) ) {
         #define item static_cast<PartyEntry*>(item)

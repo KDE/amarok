@@ -400,6 +400,8 @@ class StreamEditor : public KDialogBase
         StreamEditor( QWidget *parent, const char *name=0 );
         StreamEditor( QWidget *parent, const QString &title, const QString &url, const char *name=0 );
 
+        void setReadOnly( const bool ro );
+
         KURL    url()  const { return KURL::KURL( m_urlLineEdit->text() ); }
         QString name() const { return m_nameLineEdit->text(); }
 

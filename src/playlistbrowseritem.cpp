@@ -876,7 +876,6 @@ StreamEditor::StreamEditor( QWidget *parent, const char *name )
     setInitialSize( min );
 
     m_nameLineEdit->setFocus();
-
 }
 
 // For editing
@@ -897,7 +896,13 @@ StreamEditor::StreamEditor( QWidget *parent, const QString &title, const QString
     setInitialSize( min );
 
     m_nameLineEdit->setFocus();
+}
 
+void
+StreamEditor::setReadOnly( const bool ro )
+{
+    m_nameLineEdit->setReadOnly( ro );
+    m_urlLineEdit->setReadOnly( ro );
 }
 
 /////////////////////////////////////////////////////////////////////////////

@@ -92,7 +92,7 @@ class PlaylistBrowser : public QVBox
         void collectionScanDone();
         void currentItemChanged( QListViewItem * );
         void downloadPodcastQueue();
-        void editStreamURL( StreamEntry *item );
+        void editStreamURL( StreamEntry *item, const bool readOnly=false );
         void removeSelectedItems();
         void renamePlaylist( QListViewItem*, const QString&, int );
         void renameSelectedItem();
