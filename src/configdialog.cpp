@@ -120,7 +120,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
 
     // add pages
     addPage( m_opt1, i18n( "General" ), "misc", i18n( "Configure General Options" ) );
-    addPage( m_opt2,   i18n( "Appearance" ), "colors", i18n( "Configure amaroK's Appearance" ) );
+    addPage( m_opt2, i18n( "Appearance" ), "colors", i18n( "Configure amaroK's Appearance" ) );
     addPage( m_opt4, i18n( "Playback" ), "kmix", i18n( "Configure Playback" ) );
     addPage( opt5,   i18n( "OSD" ), "tv", i18n( "Configure On-Screen-Display" ) );
     addPage( opt6,   i18n( "Engine" ), "amarok", i18n( "Configure Engine" ) );
