@@ -9,6 +9,10 @@
 ** These will automatically be called by the form's constructor and
 ** destructor.
 *****************************************************************************/
+
+#include <config.h>
+
+
 void Options1::init()
 {
 #ifndef HAVE_EXSCALIBAR
