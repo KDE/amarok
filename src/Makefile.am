@@ -9,7 +9,8 @@ if with_konqsidebar
 endif
 
 if with_libgpod
-    IPOD_OBJS = gpodmediadevice.$(OBJEXT)
+    IPOD_SUBDIR = gpodmediadevice
+    IPOD_LIBS = gpodmediadevice/libgpodmediadevice.la
 endif
 
 
@@ -29,6 +30,7 @@ SUBDIRS = \
     vis \
     metadata \
     $(KONQSIDEBAR_SUBDIR) \
+    $(IPOD_SUBDIR) \
     statusbar \
     collectionscanner
 
@@ -123,8 +125,6 @@ amarokapp_SOURCES = \
     trackpickerdialog.cpp \
     trackpickerdialogbase.ui
 
-EXTRA_amarokapp_SOURCES = gpodmediadevice.cpp
-
 amarokapp_LDADD = \
     $(IPOD_OBJS) \
     $(top_builddir)/amarok/src/amarokcore/libamarokcore.la \
@@ -136,6 +136,7 @@ amarokapp_LDADD = \
     $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KHTML) $(LIB_KNEWSTUFF) \
     $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) $(EXSCALIBAR_LIBS) \
     $(LIB_TUNEPIMP) $(LIBGPOD_LIBS) \
+    $(IPOD_LIBS) \
     $(mysql_libs) \
     $(postgresql_libs)
 

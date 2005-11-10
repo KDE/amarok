@@ -19,7 +19,7 @@
 #include "amarok.h"
 
 #ifdef HAVE_LIBGPOD
-#include "gpodmediadevice.h"
+#include "gpodmediadevice/gpodmediadevice.h"
 #endif
 
 #include <qdatetime.h>
