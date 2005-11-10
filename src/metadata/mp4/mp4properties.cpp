@@ -31,6 +31,8 @@ email                : andrew.leadbetter@gmail.com
 #include <systems.h>
 #endif
 
+#include <stdint.h>
+
 using namespace TagLib;
 
 
