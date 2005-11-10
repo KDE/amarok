@@ -768,8 +768,7 @@ AC_SUBST(EXSCALIBAR_LIBS)
 
 AC_ARG_WITH(mp4v2,
     AC_HELP_STRING([--with-mp4v2],[build amaroK with M4A/AAC tag support from mp4v2/faad2]),
-    [have_mp4v2=$withval],
-    [have_mp4v2=yes]
+    [have_mp4v2=$withval]
 )
 
 AC_ARG_WITH(mp4v2-dir,
@@ -779,29 +778,40 @@ AC_ARG_WITH(mp4v2-dir,
 )
 
 if test "$have_mp4v2" != "no"; then
-    ac_cflags_save=$CFLAGS
-    CFLAGS="$CFLAGS -I$mp4v2_dir/include"
+    AC_LANG_SAVE
+    AC_LANG_CPLUSPLUS
+    ac_cxxflags_save=$CXXFLAGS
+    CXXFLAGS="$CXXFLAGS -I$mp4v2_dir/include"
     ac_ldflags_save=$LDFLAGS
     LDFLAGS="$LDFLAGS -L$mp4v2_dir/lib"
+
+    # not even everyone using faad2 has <systems.h>
+    if ! test -f config.h; then
+        echo "#include \"confdefs.h\"" > config.h
+    fi
+    ac_cppflags_save=$CPPFLAGS
+    CPPFLAGS="$CPPFLAGS -I."
+    AC_CHECK_HEADERS(systems.h)
+    AC_CHECK_HEADERS([mp4.h], [have_mp4_h=yes], [],
+        [#ifdef HAVE_SYSTEMS_H
+         # include <systems.h>
+         #endif
+        ])
+
     AC_CHECK_LIB( mp4v2, MP4Read, have_mp4v2=yes, have_mp4v2=no )
 
-    if test "$have_mp4v2" = "yes"; then
+    if test "$have_mp4v2" = "yes" -a "$have_mp4_h" = "yes"; then
         AC_DEFINE(HAVE_MP4V2, 1, [have mp4v2])
         MP4V2_INCLUDES="-I$mp4v2_dir/include"
         MP4V2_LIBS="-L$mp4v2_dir/lib -lmp4v2"
-
-        # not even everyone using faad2 has <systems.h>
-        if ! test -f config.h; then
-            echo "#include \"confdefs.h\"" > config.h
-        fi
-        ac_cppflags_save=$CPPFLAGS
-        CPPFLAGS="$CPPFLAGS -I."
-        AC_CHECK_HEADERS(systems.h)
-        CPPFLAGS=$ac_cppflags_save
+    else
+        have_mp4v2=no
     fi
 
-    CFLAGS=$ac_cflags_save
+    CPPFLAGS=$ac_cppflags_save
+    CXXFLAGS=$ac_cxxflags_save
     LDFLAGS=$ac_ldflags_save
+    AC_LANG_RESTORE
 fi
 
 AC_SUBST(MP4V2_INCLUDES)
