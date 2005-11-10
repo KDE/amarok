@@ -202,14 +202,14 @@ GpodMediaDevice::synchronizeDevice()
     writeITunesDB();
 }
 
-bool
+MediaItem *
 GpodMediaDevice::trackExists( const MetaBundle& bundle )
 {
     GpodMediaItem *item = getTitle( bundle.artist(),
             bundle.album().isEmpty() ? i18n( "Unknown" ) : bundle.album(),
             bundle.title());
 
-    return (item != NULL);
+    return item;
 }
 
 MediaItem *

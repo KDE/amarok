@@ -20,53 +20,53 @@ class GpodMediaDevice : public MediaDevice
     Q_OBJECT
 
     public:
-        GpodMediaDevice( MediaDeviceView* parent, MediaDeviceList* listview );
-        virtual ~GpodMediaDevice();
+                          GpodMediaDevice( MediaDeviceView* parent, MediaDeviceList* listview );
+        virtual           ~GpodMediaDevice();
 
-        bool        isConnected();
+        bool              isConnected();
 
     protected:
-        bool             trackExists( const MetaBundle& bundle );
+        MediaItem        *trackExists( const MetaBundle& bundle );
 
-        bool             openDevice(bool silent=false);
-        bool             closeDevice();
-        void lockDevice(bool) {}
-        void unlockDevice() {}
+        bool              openDevice(bool silent=false);
+        bool              closeDevice();
+        void              lockDevice(bool) {}
+        void              unlockDevice() {}
 
-        void synchronizeDevice();
-        QString createPathname(const MetaBundle& bundle);
-        MediaItem *addTrackToDevice(const QString& pathname, const MetaBundle& bundle, bool isPodcast);
-        bool deleteItemFromDevice(MediaItem *item, bool onlyPlayed=false );
-        void        addToPlaylist(MediaItem *list, MediaItem *after, QPtrList<MediaItem> items);
-        MediaItem*  newPlaylist(const QString &name, MediaItem *list, QPtrList<MediaItem> items);
+        void              synchronizeDevice();
+        QString           createPathname(const MetaBundle& bundle);
+        MediaItem        *addTrackToDevice(const QString& pathname, const MetaBundle& bundle, bool isPodcast);
+        bool              deleteItemFromDevice(MediaItem *item, bool onlyPlayed=false );
+        void              addToPlaylist(MediaItem *list, MediaItem *after, QPtrList<MediaItem> items);
+        MediaItem        *newPlaylist(const QString &name, MediaItem *list, QPtrList<MediaItem> items);
 
     protected slots:
-        void renameItem( QListViewItem *item );
+        void              renameItem( QListViewItem *item );
 
     private:
-        void             writeITunesDB();
-        GpodMediaItem   *addTrackToList(Itdb_Track *track);
-        void             addPlaylistToList(Itdb_Playlist *playlist);
-        void             playlistFromItem(GpodMediaItem *item);
+        void              writeITunesDB();
+        GpodMediaItem    *addTrackToList(Itdb_Track *track);
+        void              addPlaylistToList(Itdb_Playlist *playlist);
+        void              playlistFromItem(GpodMediaItem *item);
 
-        QString          realPath(const char *ipodPath);
-        QString          ipodPath(const char *realPath);
+        QString           realPath(const char *ipodPath);
+        QString           ipodPath(const char *realPath);
 
         // ipod database
-        Itdb_iTunesDB*   m_itdb;
-        Itdb_Playlist*   m_masterPlaylist;
+        Itdb_iTunesDB    *m_itdb;
+        Itdb_Playlist    *m_masterPlaylist;
         QDict<Itdb_Track> m_files;
 
         // podcasts
-        Itdb_Playlist*   m_podcastPlaylist;
+        Itdb_Playlist*    m_podcastPlaylist;
 
-        GpodMediaItem *getArtist(const QString &artist);
-        GpodMediaItem *getAlbum(const QString &artist, const QString &album);
-        GpodMediaItem *getTitle(const QString &artist, const QString &album, const QString &title);
+        GpodMediaItem    *getArtist(const QString &artist);
+        GpodMediaItem    *getAlbum(const QString &artist, const QString &album);
+        GpodMediaItem    *getTitle(const QString &artist, const QString &album, const QString &title);
 
-        bool removeDBTrack(Itdb_Track *track);
+        bool              removeDBTrack(Itdb_Track *track);
 
-        bool dbChanged;
+        bool              dbChanged;
 };
 
 #endif

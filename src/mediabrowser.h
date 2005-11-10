@@ -33,6 +33,8 @@ class MediaItem : public KListViewItem
         MediaItem( QListViewItem* parent, QListViewItem* after );
         void init();
 
+        MediaItem *lastChild() const;
+
         void setUrl( const QString& url );
         const KURL& url() const { return m_url; }
         const MetaBundle *bundle() const;
@@ -50,6 +52,7 @@ class MediaItem : public KListViewItem
 
         int m_order;
         Type m_type;
+        QString m_playlistName;
         int compare(QListViewItem *i, int col, bool ascending) const;
 
         static QPixmap *s_pixFile;
@@ -180,8 +183,8 @@ class MediaDevice : public QObject
         MediaDevice( MediaDeviceView* parent, MediaDeviceList* listview );
         virtual ~MediaDevice();
 
-        void        addURL( const KURL& url, MetaBundle *bundle=NULL, bool isPodcast=false );
-        void        addURLs( const KURL::List urls );
+        void        addURL( const KURL& url, MetaBundle *bundle=NULL, bool isPodcast=false, const QString &playlistName=QString::null );
+        void        addURLs( const KURL::List urls, const QString &playlistName=QString::null );
         virtual bool        isConnected() = 0;
         virtual void        addToPlaylist(MediaItem *playlist, MediaItem *after, QPtrList<MediaItem> items) = 0;
         virtual MediaItem * newPlaylist(const QString &name, MediaItem *parent, QPtrList<MediaItem> items) = 0;
@@ -209,7 +212,7 @@ class MediaDevice : public QObject
 
     private:
         int              sysCall(const QString & command);
-        virtual bool     trackExists( const MetaBundle& bundle ) = 0;
+        virtual MediaItem *trackExists( const MetaBundle& bundle ) = 0;
 
     protected:
 

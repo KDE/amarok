@@ -25,6 +25,7 @@ VERSION 1.4:
     * Create playlist from items transferred to iPod.
     * Ability to read audible.com .aa file metadata and to transfer audiobooks
       to iPod via file browser.
+    * Copy amaroK playlists to media device.
 
   CHANGES:
     * Viewing track information of remote media will show the url.

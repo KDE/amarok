@@ -110,7 +110,7 @@ void MP4::Properties::readAudioTrackProperties(MP4FileHandle mp4File,  MP4TrackI
 
     m_bitrate = (avgBitRate + 500) / 1000;
     m_sampleRate = timeScale;
-    m_length = msDuration / 1000.0;
+    m_length = (int)(msDuration / 1000.0);
     m_channels = 2;
 
 

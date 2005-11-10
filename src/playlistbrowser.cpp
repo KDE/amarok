@@ -1857,7 +1857,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
     if( isPlaylist( item ) ) {
         #define item static_cast<PlaylistEntry*>(item)
-        enum Id { LOAD, ADD, DYNADD, DYNSUB, RENAME, DELETE };
+        enum Id { LOAD, ADD, DYNADD, DYNSUB, RENAME, DELETE, MEDIA_DEVICE };
 
         menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), LOAD );
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), ADD );
@@ -1876,6 +1876,13 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         menu.setAccel( Key_Space, LOAD );
         menu.setAccel( Key_F2, RENAME );
         menu.setAccel( SHIFT+Key_Delete, DELETE );
+
+        if( MediaBrowser::isAvailable() )
+        {
+            menu.insertItem( SmallIconSet( "usbpendrive_unmount" ),
+                    i18n( "Add to Media Device &Transfer Queue" ), MEDIA_DEVICE );
+        }
+
 
         switch( menu.exec( p ) )
         {
@@ -1896,6 +1903,9 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 break;
             case DELETE:
                 removeSelectedItems();
+                break;
+            case MEDIA_DEVICE:
+                MediaDevice::instance()->addURLs( item->tracksURL(), item->text(0) );
                 break;
         }
         #undef item

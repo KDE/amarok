@@ -85,7 +85,7 @@ class DummyMediaDevice : public MediaDevice
     virtual bool isConnected() { return false; }
     virtual void addToPlaylist(MediaItem*, MediaItem*, QPtrList<MediaItem>) {}
     virtual MediaItem* newPlaylist(const QString&, MediaItem*, QPtrList<MediaItem>) { return NULL; }
-    virtual bool trackExists(const MetaBundle&) { return false; }
+    virtual MediaItem* trackExists(const MetaBundle&) { return NULL; }
     virtual void lockDevice(bool) {}
     virtual void unlockDevice() {} 
     virtual bool openDevice(bool) { return false; }
@@ -195,6 +195,7 @@ MediaItem::init()
     m_bundle=NULL;
     m_order=0;
     m_type=UNKNOWN;
+    m_playlistName=QString::null;
     setExpandable( false );
     setDragEnabled( true );
     setDropEnabled( true );
@@ -269,6 +270,20 @@ MediaItem::setType( Type type )
             setPixmap(0, *s_pixOrphaned);
             break;
     }
+}
+
+MediaItem *
+MediaItem::lastChild() const
+{
+    QListViewItem *last = NULL;
+    for( QListViewItem *it = firstChild();
+            it;
+            it = it->nextSibling() )
+    {
+        last = it;
+    }
+
+    return dynamic_cast<MediaItem *>(last);
 }
 
 bool
@@ -977,17 +992,18 @@ MediaDevice::updateRootItems()
 }
 
 void
-MediaDevice::addURL( const KURL& url, MetaBundle *bundle, bool isPodcast )
+MediaDevice::addURL( const KURL& url, MetaBundle *bundle, bool isPodcast, const QString &playlistName )
 {
     if(!bundle)
         bundle = new MetaBundle( url );
-    if ( !trackExists( *bundle ) && ( m_transferList->findPath( url.path() ) == NULL ) )
+    if ( !playlistName.isNull() || (!trackExists( *bundle ) && ( m_transferList->findPath( url.path() ) == NULL )) )
     {
         MediaItem* item = new MediaItem( m_transferList, m_transferList->lastItem() );
         item->setExpandable( false );
         item->setDropEnabled( true );
         item->setUrl( url.path() );
         item->m_bundle = bundle;
+        item->m_playlistName = playlistName;
         if(isPodcast)
             item->m_type = MediaItem::PODCASTITEM;
 
@@ -1006,11 +1022,11 @@ MediaDevice::addURL( const KURL& url, MetaBundle *bundle, bool isPodcast )
 }
 
 void
-MediaDevice::addURLs( const KURL::List urls )
+MediaDevice::addURLs( const KURL::List urls, const QString &playlistName )
 {
         KURL::List::ConstIterator it = urls.begin();
         for ( ; it != urls.end(); ++it )
-            addURL( *it, NULL, false );
+            addURL( *it, NULL, false, playlistName );
 }
 
 void
@@ -1265,6 +1281,9 @@ MediaDevice::transferFiles()
     m_parent->m_progress->setTotalSteps( m_transferList->childCount() );
     m_parent->m_progress->show();
 
+    // ok, let's copy the stuff to the device
+    lockDevice( true );
+
     MediaItem *playlist = NULL;
     if(m_playlistItem && m_parent->m_playlistButton->isOn())
     {
@@ -1277,9 +1296,6 @@ MediaDevice::transferFiles()
         }
     }
 
-    // ok, let's copy the stuff to the device
-    lockDevice( true );
-
     MediaItem *after = NULL; // item after which to insert into playlist
     // iterate through items
     for( MediaItem *cur =  dynamic_cast<MediaItem *>(m_transferList->firstChild());
@@ -1291,67 +1307,76 @@ MediaDevice::transferFiles()
         MetaBundle *bundle = cur->bundle();
         if(!bundle)
         {
-            bundle = new MetaBundle( cur->url() );
+            cur->m_bundle = new MetaBundle( cur->url() );
+            bundle = cur->m_bundle;
         }
 
-        QString trackpath = createPathname(*bundle);
-
-        // check if path exists and make it if needed
-        QFileInfo finfo( trackpath );
-        QDir dir = finfo.dir();
-        while ( !dir.exists() )
+        MediaItem *item = trackExists( *bundle );
+        if(!item)
         {
-            QString path = dir.absPath();
-            QDir parentdir;
-            QDir create;
-            do
+            QString trackpath = createPathname(*bundle);
+
+            // check if path exists and make it if needed
+            QFileInfo finfo( trackpath );
+            QDir dir = finfo.dir();
+            while ( !dir.exists() )
             {
-                create.setPath(path);
-                path = path.section("/", 0, path.contains('/')-1);
-                parentdir.setPath(path);
+                QString path = dir.absPath();
+                QDir parentdir;
+                QDir create;
+                do
+                {
+                    create.setPath(path);
+                    path = path.section("/", 0, path.contains('/')-1);
+                    parentdir.setPath(path);
+                }
+                while( !path.isEmpty() && !(path==m_mntpnt) && !parentdir.exists() );
+                debug() << "trying to create \"" << path << "\"" << endl;
+                if(!create.mkdir( create.absPath() ))
+                {
+                    break;
+                }
             }
-            while( !path.isEmpty() && !(path==m_mntpnt) && !parentdir.exists() );
-            debug() << "trying to create \"" << path << "\"" << endl;
-            if(!create.mkdir( create.absPath() ))
+
+            if ( !dir.exists() )
             {
+                KMessageBox::error( m_parent->m_parent,
+                        i18n("Could not create directory for file") + trackpath,
+                        i18n( "Media Device Browser" ) );
+                delete bundle;
                 break;
             }
+
+            m_wait = true;
+
+            KIO::CopyJob *job = KIO::copy( cur->url(), KURL( trackpath ), false );
+            connect( job, SIGNAL( copyingDone( KIO::Job *, const KURL &, const KURL &, bool, bool ) ),
+                    this,  SLOT( fileTransferred() ) );
+
+            while ( m_wait )
+            {
+                usleep(10000);
+                kapp->processEvents( 100 );
+            }
+
+
+            KURL url;
+            url.setPath(trackpath);
+            MetaBundle bundle2(url);
+            if(!bundle2.isValidMedia())
+            {
+                // probably s.th. went wrong
+                debug() << "Reading tags failed! File not added!" << endl;
+                QFile::remove( trackpath );
+            }
+            else
+            {
+                item = addTrackToDevice(trackpath, *bundle, cur->type() == MediaItem::PODCASTITEM);
+            }
         }
 
-        if ( !dir.exists() )
+        if(item)
         {
-            KMessageBox::error( m_parent->m_parent,
-                    i18n("Could not create directory for file") + trackpath,
-                    i18n( "Media Device Browser" ) );
-            delete bundle;
-            break;
-        }
-
-        m_wait = true;
-
-        KIO::CopyJob *job = KIO::copy( cur->url(), KURL( trackpath ), false );
-        connect( job, SIGNAL( copyingDone( KIO::Job *, const KURL &, const KURL &, bool, bool ) ),
-                this,  SLOT( fileTransferred() ) );
-
-        while ( m_wait )
-        {
-            usleep(10000);
-            kapp->processEvents( 100 );
-        }
-
-
-        KURL url;
-        url.setPath(trackpath);
-        MetaBundle bundle2(url);
-        if(!bundle2.isValidMedia())
-        {
-            // probably s.th. went wrong
-            debug() << "Reading tags failed! File not added!" << endl;
-            QFile::remove( trackpath );
-        }
-        else
-        {
-            MediaItem *item = addTrackToDevice(trackpath, *bundle, cur->type() == MediaItem::PODCASTITEM);
             if(playlist)
             {
                 QPtrList<MediaItem> items;
@@ -1360,11 +1385,27 @@ MediaDevice::transferFiles()
                 after = item;
             }
 
+            if(m_playlistItem && cur->m_playlistName!=QString::null)
+            {
+                MediaItem *pl = m_playlistItem->findItem( cur->m_playlistName );
+                if(!pl)
+                {
+                    QPtrList<MediaItem> items;
+                    pl = newPlaylist(cur->m_playlistName, m_playlistItem, items);
+                }
+                if(pl)
+                {
+                    QPtrList<MediaItem> items;
+                    items.append(item);
+                    addToPlaylist(pl, pl->lastChild(), items);
+                }
+            }
+
             m_transferList->takeItem( cur );
+            delete cur->m_bundle;
             delete cur;
             cur = NULL;
         }
-        delete bundle;
     }
     synchronizeDevice();
     unlockDevice();
