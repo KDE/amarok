@@ -186,7 +186,8 @@ PlaylistItem::PlaylistItem( QDomNode node, QListViewItem *item )
 
     listView()->countChanged();
 
-    checkMood();
+    if( AmarokConfig::showMoodbar() )
+        checkMood();
 }
 
 PlaylistItem::~PlaylistItem()
