@@ -253,19 +253,19 @@ ScanController::startElement( const QString&, const QString& localName, const QS
         PlaylistBrowser::instance()->addPlaylist( attrs.value( "path" ) );
 
     if( localName == "compilation" )
-        CollectionDB::instance()->checkCompilations( attrs.value( "path" ), !m_incremental );
+        CollectionDB::instance()->checkCompilations( attrs.value( "path" ), !m_incremental, m_db );
 
     if( localName == "image" ) {
         // Deserialize CoverBundle list
         QStringList list = QStringList::split( attrs.value( "list" ), "\n", true );
         QValueList< QPair<QString, QString> > covers;
 
-        for( int i = 0; i < list.size(); ) {
+        for( uint i = 0; i < list.size(); ) {
             covers += qMakePair( list[i], list[i + 1] );
             i += 2;
         }
 
-        CollectionDB::instance()->addImageToAlbum( attrs.value( "path" ), covers );
+        CollectionDB::instance()->addImageToAlbum( attrs.value( "path" ), covers, m_db );
     }
 
 
