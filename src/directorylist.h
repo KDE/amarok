@@ -62,6 +62,7 @@ private:
 
     QFixedListView *m_view;
     QStringList m_dirs;
+    QStringList m_zombieDirs;       // To keep all directories which don't exist/aren't used any more.
     QCheckBox *m_recursive;
     QCheckBox *m_monitor;
     QCheckBox *m_playlists;
