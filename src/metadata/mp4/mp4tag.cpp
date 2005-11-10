@@ -24,6 +24,7 @@ email                : andrew.leadbetter@gmail.com
 
 #include <tag.h>
 #include <mp4.h>
+#include <stdint.h>
 
 using namespace TagLib;
 
