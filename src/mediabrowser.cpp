@@ -1181,7 +1181,7 @@ MediaDevice::connectDevice( bool silent )
                         cur = next)
                 {
                     next = dynamic_cast<MediaItem *>(cur->nextSibling());
-                    if ( trackExists( *cur->bundle() ) )
+                    if ( cur->m_playlistName == QString::null && trackExists( *cur->bundle() ) )
                     {
                         delete cur;
                     }
@@ -1563,6 +1563,11 @@ MediaDevice::saveTransferList( const QString &path )
             i.setAttribute( "podcast", "1" );
         }
 
+        if(item->m_playlistName != QString::null)
+        {
+            i.setAttribute( "playlist", item->m_playlistName );
+        }
+
         transferlist.appendChild( i );
     }
 
@@ -1644,7 +1649,8 @@ MediaDevice::loadTransferList( const QString& filename )
                 bundle->setComment(node.firstChild().toText().nodeValue());
         }
 
-        addURL( url, bundle, isPodcast );
+        QString playlist = elem.attribute( "playlist" );
+        addURL( url, bundle, isPodcast, playlist );
     }
 }
 
