@@ -1,3 +1,4 @@
+//Released under GPLv2 or later. (C) 2005 Ian Monroe <ian@monroe.nu>
 /****************************************************************************
 ** ui.h extension file, included from the uic-generated form implementation.
 **
@@ -11,11 +12,12 @@
 *****************************************************************************/
 
 #include <config.h>
-
+#include <qsizepolicy.h>
+#include <qrect.h>
 
 void Options1::init()
 {
 #ifndef HAVE_EXSCALIBAR
-    moodBox->hide();
+    moodFrame->hide();
 #endif
 }
