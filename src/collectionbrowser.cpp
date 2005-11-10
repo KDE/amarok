@@ -1523,8 +1523,11 @@ CollectionView::organizeFiles()  //SLOT
             dest.remove( "?" );
             debug() << "Destination: " << dest << endl;
 
-            if( !CollectionDB::instance()->moveFile( src.path(), dest, write ) )
-                skipped++;
+            if( src.path() != dest ) //supress error warning that file couldn't be moved
+            {
+                if( !CollectionDB::instance()->moveFile( src.path(), dest, write ) )
+                    skipped++;
+            }
 
             //Use cover image for folder icon
             if( covers->isChecked() && !mb.artist().isEmpty() && !mb.album().isEmpty() )

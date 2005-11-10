@@ -27,6 +27,7 @@ VERSION 1.4:
       to iPod via file browser.
 
   CHANGES:
+    * Viewing track information of remote media will show the url.
     * "Update"-button is now hidden in the collection browser if "Watch
       folders for changes" is enabled in the options.
     * The tooltip and the menu from the queue icon in the statusbar now show
