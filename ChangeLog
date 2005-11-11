@@ -28,6 +28,8 @@ VERSION 1.4:
     * Copy amaroK playlists to media device.
 
   CHANGES:
+    * Recoding mp3 tags has been removed due to many unjustified
+      complications.
     * Viewing track information of remote media will show the url.
     * "Update"-button is now hidden in the collection browser if "Watch
       folders for changes" is enabled in the options.
@@ -42,6 +44,8 @@ VERSION 1.4:
       compatibility with various iPod models.
 
   BUGFIXES:
+    * Zombie directories are removed automatically from the collection
+      scanner. (BR 115779)
     * OSD Preview did not update colours when toggling 'Use custom colours'
       option. (BR 115965)
     * Cached lyrics are not erased when rescanning. (BR 110489)
