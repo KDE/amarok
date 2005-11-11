@@ -1520,7 +1520,7 @@ CollectionView::organizeFiles()  //SLOT
                 dest += artist.upper()[ 0 ] + "/";      // Group artists i.e. A/Artist/Album
 
             dest += artist + "/" + album + "/" + title + "." + type;
-            dest.remove( "?" );
+            dest.remove( "?" ).remove( ":" );
             debug() << "Destination: " << dest << endl;
 
             if( src.path() != dest ) //supress error warning that file couldn't be moved
