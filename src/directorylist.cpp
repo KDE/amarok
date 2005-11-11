@@ -20,6 +20,7 @@
 #include "directorylist.h"
 #include <kfileitem.h>
 #include <klocale.h>
+#include <qfile.h>
 #include <qlabel.h>
 #include <qtooltip.h>
 
