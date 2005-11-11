@@ -924,6 +924,9 @@ StreamEditor::StreamEditor( QWidget *parent, const QString &title, const QString
 void
 StreamEditor::setReadOnly( const bool ro )
 {
+    ro ?
+        setCaption( i18n("Radio Stream") ):
+        setCaption( i18n("Edit Radio Stream") );
     m_nameLineEdit->setReadOnly( ro );
     m_urlLineEdit->setReadOnly( ro );
 }

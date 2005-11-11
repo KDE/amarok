@@ -26,6 +26,7 @@
 #include "playlist.h"
 #include "playlistitem.h"
 #include "playlistbrowser.h"
+#include "playlistbrowseritem.h" //for stream editor dialog
 #include "playlistloader.h"
 #include "queuemanager.h"
 #include "prettypopupmenu.h"
@@ -3780,7 +3781,11 @@ Playlist::showTagDialog( QPtrList<QListViewItem> items )
         PlaylistItem *item = static_cast<PlaylistItem*>( items.first() );
 
         if ( !item->url().isLocalFile() )
-            KMessageBox::information( this, item->url().prettyURL(), i18n( "Track Information" ) );
+        {
+            StreamEditor dialog( this, item->title(), item->url().prettyURL() );
+            dialog.setReadOnly( true );
+            dialog.exec();
+        }
         else if ( QFile::exists( item->url().path() ) ) {
             //NOTE we are modal because, eg, user clears playlist while
             //this dialog is shown, then the dialog operates on the playlistitem
