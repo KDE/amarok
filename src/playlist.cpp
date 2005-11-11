@@ -632,23 +632,25 @@ Playlist::addSpecialCustomTracks( uint songCount )
             sql.replace( limit, QString(" ORDER BY RAND() LIMIT 0, %1;").arg( songCount ) );
             useDirect = true;
         }
-        // if we do not limit the sql, it takes a long time to populate for large collections
-        // we also dont want stupid limits such as LIMIT 0, 5 which would return the same results always
-        QRegExp limitSearch( "LIMIT.*\\d.*\\d" );
-        int findLocation = sql.find( limitSearch, false );
-        if( findLocation == -1 ) //not found, add to end
-        {
-            uint tmpSongCount = songCount < 10 ? 10 : songCount; // increase range to min of 350 songs
-            QRegExp limit( ";$" );
-             //increase the limit to ensure that we get a good selection.
-            sql.replace( limit, QString(" LIMIT 0, %1;" ).arg( tmpSongCount * 35 ) );
-        }
-        else //LIMIT found
-        {
-            // we don't increase the max to 350 because otherwise we break LastPlayed etc.
-            // 20 as a minimum set of tracks seems reasonable
-            uint tmpSongCount = songCount < 20 ? 20 : songCount;
-            sql.replace( limitSearch, QString("LIMIT 0, %1" ).arg( tmpSongCount ) );
+        else {
+            // if we do not limit the sql, it takes a long time to populate for large collections
+            // we also dont want stupid limits such as LIMIT 0, 5 which would return the same results always
+            QRegExp limitSearch( "LIMIT.*\\d.*\\d" );
+            int findLocation = sql.find( limitSearch, false );
+            if( findLocation == -1 ) //not found, add to end
+            {
+                uint tmpSongCount = songCount < 10 ? 10 : songCount; // increase range to min of 350 songs
+                QRegExp limit( ";$" );
+                //increase the limit to ensure that we get a good selection.
+                sql.replace( limit, QString(" LIMIT 0, %1;" ).arg( tmpSongCount * 35 ) );
+            }
+            else //LIMIT found
+            {
+                // we don't increase the max to 350 because otherwise we break LastPlayed etc.
+                // 20 as a minimum set of tracks seems reasonable
+                uint tmpSongCount = songCount < 20 ? 20 : songCount;
+                sql.replace( limitSearch, QString("LIMIT 0, %1" ).arg( tmpSongCount ) );
+            }
         }
         QStringList queryResult = CollectionDB::instance()->query( sql );
 
