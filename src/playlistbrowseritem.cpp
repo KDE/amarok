@@ -1717,7 +1717,7 @@ PodcastItem::PodcastItem( QListViewItem *parent, QListViewItem *after, const QDo
     m_localUrlString += filename.replace( " ", "_" ).replace( "/", "_" );;
     m_localUrlString += "_" + m_url.fileName();
 
-// [23:31:34] <sebr> +Nr.12, Bürokratiehilfe :: http://bommel.podspot.de/files/Nr.12%2C%20B%FCrokratiehilfe.MP3
+// [23:31:34] <sebr> +Nr.12, Brokratiehilfe :: http://bommel.podspot.de/files/Nr.12%2C%20B%FCrokratiehilfe.MP3
 
     m_localUrl = KURL::fromPathOrURL( m_localUrlString );
 
@@ -1902,6 +1902,116 @@ PodcastItem::slotAnimation()
         setPixmap( 0, m_loading2 );
 
     m_iconCounter++;
+}
+
+void
+PodcastItem::setup()
+{
+    QFontMetrics fm( listView()->font() );
+    int margin = listView()->itemMargin()*2;
+    int h = fm.lineSpacing();
+    if ( h % 2 > 0 )
+        h++;
+    if( PlaylistBrowser::instance()->viewMode() == PlaylistBrowser::DETAILEDVIEW )
+        setHeight( h + fm.lineSpacing() + margin );
+    else
+        setHeight( h + margin );
+}
+
+void
+PodcastItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
+{
+    bool detailedView = PlaylistBrowser::instance()->viewMode() == PlaylistBrowser::DETAILEDVIEW;
+
+    //flicker-free drawing
+    static QPixmap buffer;
+    buffer.resize( width, height() );
+
+    if( buffer.isNull() )
+    {
+        KListViewItem::paintCell( p, cg, column, width, align );
+        return;
+    }
+
+    QPainter pBuf( &buffer, true );
+    // use alternate background
+#if KDE_VERSION < KDE_MAKE_VERSION(3,3,91)
+    pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor() );
+#else
+    pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor(0) );
+#endif
+
+    KListView *lv = (KListView *)listView();
+
+    QFont font( p->font() );
+    QFontMetrics fm( p->fontMetrics() );
+
+    int text_x = 0;// lv->treeStepSize() + 3;
+    int textHeight;
+
+    if( detailedView )
+        textHeight = fm.lineSpacing() + lv->itemMargin() + 1;
+    else
+        textHeight = height();
+
+    pBuf.setPen( isSelected() ? cg.highlightedText() : cg.text() );
+
+    if( pixmap( column ) )
+    {
+        int y = (textHeight - pixmap(column)->height())/2;
+        if( detailedView ) y++;
+        pBuf.drawPixmap( text_x, y, *pixmap(column) );
+        text_x += pixmap(column)->width()+4;
+    }
+
+    // draw the podcast name in italics
+    font.setBold( PlaylistBrowser::instance()->viewMode() == PlaylistBrowser::DETAILEDVIEW );
+    font.setItalic( PlaylistBrowser::instance()->viewMode() == PlaylistBrowser::DETAILEDVIEW );
+    pBuf.setFont( font );
+    QFontMetrics fmName( font );
+
+    QString name = text(column);
+    if( fmName.width( name ) + text_x + lv->itemMargin()*2 > width )
+    {
+        int ellWidth = fmName.width( i18n("...") );
+        QString text = QString::fromLatin1("");
+        int i = 0;
+        int len = name.length();
+        while ( i < len && fmName.width( text + name[ i ] ) + ellWidth < width - text_x - lv->itemMargin()*2  ) {
+            text += name[ i ];
+            i++;
+        }
+        name = text + i18n("...");
+    }
+
+    pBuf.drawText( text_x, 0, width, textHeight, AlignVCenter, name );
+
+    if( detailedView ) {
+
+        text_x = lv->treeStepSize() + 3;
+        font.setBold( false );
+        pBuf.setFont( font );
+        QFontMetrics fmInfo( font );
+        QString info = m_description;
+
+        if( fmInfo.width( info ) + text_x + lv->itemMargin()*2 > width )
+        {
+            int ellWidth = fmInfo.width( i18n("...") );
+            QString text = QString::fromLatin1("");
+            int i = 0;
+            int len = info.length();
+            while ( i < len && fmInfo.width( text + info[ i ] ) + ellWidth < width - text_x - lv->itemMargin()*2  ) {
+                text += info[ i ];
+                i++;
+            }
+            info = text + i18n("...");
+        }
+
+        pBuf.drawText( text_x, textHeight, width, fm.lineSpacing(), AlignVCenter, info );
+    }
+
+    pBuf.end();
+    p->drawPixmap( 0, 0, buffer );
 }
 
 /////////////////////////////////////////////////////////////////////////////

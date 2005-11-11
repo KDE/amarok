@@ -238,6 +238,9 @@ class PodcastItem : public QObject, public PlaylistBrowserEntry
         const KURL    &localUrl() { return m_localUrl; }
         void  setLocalUrlBase( const QString &s );
 
+        void  setup();
+        void  paintCell( QPainter*, const QColorGroup&, int, int, int );
+
         int rtti() const { return RTTI; }
         static const int RTTI = 1007;              //podcastitem
 
