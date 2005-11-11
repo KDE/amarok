@@ -39,6 +39,7 @@ class GpodMediaDevice : public MediaDevice
         bool              deleteItemFromDevice(MediaItem *item, bool onlyPlayed=false );
         void              addToPlaylist(MediaItem *list, MediaItem *after, QPtrList<MediaItem> items);
         MediaItem        *newPlaylist(const QString &name, MediaItem *list, QPtrList<MediaItem> items);
+        bool              getCapacity(unsigned long *total, unsigned long *available);
 
     protected slots:
         void              renameItem( QListViewItem *item );

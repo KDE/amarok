@@ -1020,4 +1020,29 @@ GpodMediaDevice::removeDBTrack(Itdb_Track *track)
     return true;
 }
 
+bool
+GpodMediaDevice::getCapacity( unsigned long *total, unsigned long *available )
+{
+    if(!m_itdb)
+        return false;
+
+    if(!m_itdb->device)
+        return false;
+
+    guint64 vol_size, vol_avail;
+
+    g_object_get(m_itdb->device,
+            "volume-size", &vol_size,
+            "volume-available", &vol_avail,
+            NULL);
+
+    if(total)
+        *total = vol_size/1024;
+
+    if(available)
+        *available = vol_avail/1024;
+
+    return true;
+}
+
 #include "gpodmediadevice.moc"

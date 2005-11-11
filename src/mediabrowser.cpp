@@ -77,6 +77,67 @@ bool MediaBrowser::isAvailable() //static
 #endif
 }
 
+class SpaceLabel : public QLabel {
+    public:
+    SpaceLabel(QWidget *parent)
+        : QLabel(parent)
+    {
+        m_total = m_used = m_scheduled = 0;
+        setBackgroundMode(Qt::NoBackground);
+    }
+
+    void paintEvent(QPaintEvent *e)
+    {
+        QPainter p(this);
+        int used = int(float(m_used)/float(m_total)*width());
+        int scheduled = int(float(m_used + m_scheduled)/float(m_total)*width());
+
+        if(m_used > 0)
+        {
+            QColor blueish(70,120,255);
+            if(e->rect().left() < used)
+            {
+                int right = used;
+                if(e->rect().right() < right)
+                    right = e->rect().right();
+                p.fillRect(QRect(e->rect().left(), e->rect().top(),
+                            used, e->rect().bottom()), QBrush(blueish, Qt::SolidPattern));
+            }
+        }
+
+        if(m_scheduled > 0)
+        {
+            QColor sched(70, 230, 120);
+            if(m_used + m_scheduled > m_total - m_total/1000)
+            {
+                sched.setRgb( 255, 120, 120 );
+            }
+            int left = e->rect().left();
+            if(used > left)
+                left = used;
+            int right = e->rect().right();
+            if(scheduled < right)
+                right = scheduled;
+            p.fillRect(left, e->rect().top(), right, e->rect().bottom(), QBrush(sched, Qt::SolidPattern));
+        }
+
+        if(m_used + m_scheduled < m_total)
+        {
+            QColor grey(180, 180, 180);
+            int left = e->rect().left();
+            if(scheduled > left)
+                left = scheduled;
+            int right = e->rect().right();
+            p.fillRect(left, e->rect().top(), right, e->rect().bottom(), colorGroup().brush(QColorGroup::Background));
+        }
+        QLabel::paintEvent(e);
+    }
+
+    unsigned long m_total;
+    unsigned long m_used;
+    unsigned long m_scheduled;
+};
+
 class DummyMediaDevice : public MediaDevice
 {
     public:
@@ -94,6 +155,7 @@ class DummyMediaDevice : public MediaDevice
     virtual MediaItem* addTrackToDevice(const QString&, const MetaBundle&, bool) { return NULL; }
     virtual bool deleteItemFromDevice(MediaItem*, bool) { return false; }
     virtual QString createPathname(const MetaBundle&) { return QString(""); }
+    virtual bool getCapacity( unsigned long *, unsigned long * ) { return false; }
 };
 
 
@@ -880,7 +942,7 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     m_configButton   = new KPushButton( KGuiItem( QString::null, "configure" ), hb );
     m_configButton->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred ); // too big!
 
-    m_stats = new QLabel(this);
+    m_stats = new SpaceLabel(this);
     updateStats();
 
     QToolTip::add( m_connectButton,  i18n( "Connect media device" ) );
@@ -906,24 +968,50 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     m_device->loadTransferList( amaroK::saveLocation() + "transferlist.xml" );
 }
 
+QString
+MediaDeviceView::prettySize( unsigned long size )
+{
+    if(size < 1000)
+        return QString("%1 KB").arg(size);
+    else if(size < 10*1024)
+        return QString("%1.%2 MB").arg(size/1024).arg((size%1024)*10/1024);
+    else if(size < 1000*1024)
+        return QString("%1 MB").arg(size/(1024));
+    else if(size < 10*1024*1024)
+        return QString("%1.%2 GB").arg(size/(1024*1024)).arg((size%(1024*1024))*10/(1024*1024));
+    else
+        return QString("%1 GB").arg(size/(1024*1024));
+}
+
 void
 MediaDeviceView::updateStats()
 {
+    if(!m_stats)
+        return;
+
     QString text = i18n( "1 track in queue", "%n tracks in queue", m_device->m_transferList->childCount() );
     if(m_device->m_transferList->childCount() > 0)
     {
-        long size = m_device->m_transferList->totalSize();
-        if(size < 1000)
-            text += QString(" (%1 KB)").arg(size);
-        else if(size < 10*1024)
-            text += QString(" (%1.%2 MB)").arg(size/1024).arg((size%1024)*10/1024);
-        else if(size < 1000*1024)
-            text += QString(" (%1 MB)").arg(size/(1024));
-        else
-            text += QString(" (%1.%2 GB)").arg(size/(1024*1024)).arg((size%(1024*1024))*10/(1024*1024));
+        text += " (" + prettySize( m_device->m_transferList->totalSize() ) + ")";
     }
-    if(m_stats)
-        m_stats->setText(text);
+
+    unsigned long total, avail;
+    if(m_device->getCapacity(&total, &avail))
+    {
+        text += " - " + prettySize( avail ) + i18n(" of ") + prettySize( total ) + " available";
+
+        m_stats->m_used = total-avail;
+        m_stats->m_total = total;
+        m_stats->m_scheduled = m_device->m_transferList->totalSize();
+    }
+    else
+    {
+        m_stats->m_used = 0;
+        m_stats->m_total = 0;
+        m_stats->m_scheduled = m_device->m_transferList->totalSize();
+    }
+
+    m_stats->setText(text);
 }
 
 void

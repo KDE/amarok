@@ -18,6 +18,7 @@
 class MediaDevice;
 class MediaDeviceView;
 class MetaBundle;
+class SpaceLabel;
 
 class KProgress;
 class KPushButton;
@@ -163,8 +164,9 @@ class MediaDeviceView : public QVBox
         void slotShowContextMenu( QListViewItem* item, const QPoint& point, int );
 
     private:
+        QString          prettySize( unsigned long size ); // KB to QString
         bool             match( const MediaItem *item, const QString &filter );
-        QLabel*          m_stats;
+        SpaceLabel*      m_stats;
         KProgress*       m_progress;
         MediaDevice*     m_device;
         MediaDeviceList* m_deviceList;
@@ -236,6 +238,7 @@ class MediaDevice : public QObject
         void loadTransferList( const QString &path );
         void saveTransferList( const QString &path );
 
+        virtual bool getCapacity( unsigned long *total, unsigned long *available ) = 0;
         virtual void lockDevice( bool ) = 0;
         virtual void unlockDevice() = 0;
         virtual bool openDevice( bool silent=false ) = 0;
