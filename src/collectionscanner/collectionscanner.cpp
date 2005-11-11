@@ -209,7 +209,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
                 // Serialize CoverBundle list with \n as separator
                 QString string;
                 foreachType( QValueList<CoverBundle>, covers )
-                    string += (*it).first + "\n" + (*it).second + "\n";
+                    string += (*it).first + "AMAROK_MAGIC" + (*it).second + "AMAROK_MAGIC";
 
                 AttributeMap attributes;
                 attributes["path"] = *it;
@@ -298,7 +298,7 @@ CollectionScanner::writeElement( const QString& name, const AttributeMap& attrib
         bool nonPrint = false;
         for( unsigned i = 0; i < len; i++ )
         {
-            if( !data.ref(i).isPrint() || data.ref( i ).category() == QChar::NoCategory )
+            if( !data.ref( i ).isPrint() || data.ref( i ).category() == QChar::NoCategory )
             {
                 nonPrint = true;
                 break;

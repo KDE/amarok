@@ -257,10 +257,10 @@ ScanController::startElement( const QString&, const QString& localName, const QS
 
     if( localName == "image" ) {
         // Deserialize CoverBundle list
-        QStringList list = QStringList::split( attrs.value( "list" ), "\n", true );
+        QStringList list = QStringList::split( "AMAROK_MAGIC", attrs.value( "list" ), true );
         QValueList< QPair<QString, QString> > covers;
 
-        for( uint i = 0; i < list.size(); ) {
+        for( uint i = 0; i < list.count(); ) {
             covers += qMakePair( list[i], list[i + 1] );
             i += 2;
         }
