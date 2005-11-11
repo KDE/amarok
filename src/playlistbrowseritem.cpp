@@ -1447,10 +1447,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
     m_title = xml.namedItem( "title" ).toElement().text();
     setText( 0, m_title );
 
-    m_cache = m_title;
-    m_cache.replace( " ", "_" );
-    m_cache.replace( "/", "_" );
-    m_cache += "_" + m_url.fileName();
+    m_cache = KURL::encode_string( m_title + "_" + m_url.fileName() );
 
     QString weblink = QString::null;
     if( isAtom )
@@ -1719,6 +1716,8 @@ PodcastItem::PodcastItem( QListViewItem *parent, QListViewItem *after, const QDo
 
     m_localUrlString += filename.replace( " ", "_" ).replace( "/", "_" );;
     m_localUrlString += "_" + m_url.fileName();
+
+// [23:31:34] <sebr> +Nr.12, Bürokratiehilfe :: http://bommel.podspot.de/files/Nr.12%2C%20B%FCrokratiehilfe.MP3
 
     m_localUrl = KURL::fromPathOrURL( m_localUrlString );
 
