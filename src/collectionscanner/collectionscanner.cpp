@@ -26,8 +26,6 @@
 
 #include <taglib/audioproperties.h>
 #include <taglib/fileref.h>
-#include <taglib/id3v1genres.h> //used to load genre list
-#include <taglib/mpegfile.h>
 #include <taglib/tag.h>
 #include <taglib/tstring.h>
 
