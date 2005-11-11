@@ -47,8 +47,6 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 
     // Read config values
     m_dirs = AmarokConfig::collectionFolders();
-    // Assume none of the directories in the config exist, and reduce this list as we iterate later on
-    m_zombieDirs = m_dirs;
     m_recursive->setChecked( AmarokConfig::scanRecursively() );
     m_monitor->setChecked( AmarokConfig::monitorChanges() );
     m_playlists->setChecked( AmarokConfig::importPlaylists() );
@@ -68,8 +66,13 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 void
 CollectionSetup::writeConfig()
 {
-    for( uint i=0; i < m_zombieDirs.count(); i++ )
-        m_dirs.remove( m_zombieDirs[i] );
+    QStringList freshDirs;
+    for( uint i=0; i < m_dirs.count(); i++ )
+    {
+        if( QFile::exists( m_dirs[i] ) )
+            freshDirs << m_dirs[i];
+    }
+
 
     AmarokConfig::setCollectionFolders( m_dirs );
     AmarokConfig::setScanRecursively( recursive() );
@@ -151,12 +154,9 @@ Item::stateChange( bool b )
     if ( isOn() ) {
         if ( it == CollectionSetup::instance()->m_dirs.end() )
             CollectionSetup::instance()->m_dirs << m_url.path();
-        CollectionSetup::instance()->m_zombieDirs.remove( m_url.path() );
     }
-    else {
+    else
         CollectionSetup::instance()->m_dirs.erase( it );
-        CollectionSetup::instance()->m_zombieDirs << m_url.path();
-    }
 
     // Redraw parent items
     listView()->triggerUpdate();
@@ -182,7 +182,6 @@ Item::newItems( const KFileItemList &list ) //SLOT
             CollectionSetup::instance()->m_dirs.contains( item->fullPath() ) )
         {
             item->setOn( true );
-            CollectionSetup::instance()->m_zombieDirs.remove( (*it)->url().path() );
         }
 
         item->setPixmap( 0, (*it)->pixmap( KIcon::SizeSmall ) );
