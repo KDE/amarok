@@ -44,6 +44,7 @@ VERSION 1.4:
       compatibility with various iPod models.
 
   BUGFIXES:
+    * Fix possible bug when saving unencoded podcasts to strange file systems.
     * Zombie directories are removed automatically from the collection
       scanner. (BR 115779)
     * OSD Preview did not update colours when toggling 'Use custom colours'
