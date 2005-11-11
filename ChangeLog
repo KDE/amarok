@@ -5,6 +5,18 @@ amaroK ChangeLog
 
 VERSION 1.4:
   FEATURES:
+    * Display disk space on media device.
+    * Copy amaroK playlists to media device.
+    * Create playlist from items transferred to iPod.
+    * Edit dumb iPod playlists with media browser.
+    * Ability to read audible.com .aa file metadata and to transfer audiobooks
+      to iPod via file browser.
+    * Optionally add new podcasts to media device transfer queue on download
+      and remove podcasts already listened to on media device connect.
+    * Add podcast shows to the Podcast folder on iPods.
+    * Persistent media device transfer queue.
+    * Incremental update of media device view.
+    * Automatic scanning for stale and orphaned iPod items.
     * Moodbar!
     * configure: report not included extra features (BR 115057)
     * Ability to uninstall context-browser themes. (BR 111449)
@@ -15,18 +27,6 @@ VERSION 1.4:
     * Collection scanner now supports WMA and MP4/AAC.
     * Option to crossfade only on manual track changes. Useful for listening
       to consecutive tracks on a single album.
-    * Automatic scanning for stale and orphaned iPod items.
-    * Incremental update of media device view.
-    * Persistent media device transfer queue.
-    * Add podcast shows to the Podcast folder on iPods.
-    * Optionally add new podcasts to media device transfer queue on download
-      and remove podcasts already listened to on media device connect.
-    * Edit dumb iPod playlists with media browser.
-    * Create playlist from items transferred to iPod.
-    * Ability to read audible.com .aa file metadata and to transfer audiobooks
-      to iPod via file browser.
-    * Copy amaroK playlists to media device.
-    * Display disk space on media device.
 
   CHANGES:
     * Recoding mp3 tags has been removed due to many unjustified
