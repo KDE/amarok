@@ -26,6 +26,7 @@ VERSION 1.4:
     * Ability to read audible.com .aa file metadata and to transfer audiobooks
       to iPod via file browser.
     * Copy amaroK playlists to media device.
+    * Display disk space on media device.
 
   CHANGES:
     * Recoding mp3 tags has been removed due to many unjustified

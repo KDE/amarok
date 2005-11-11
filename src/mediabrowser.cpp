@@ -100,8 +100,8 @@ class SpaceLabel : public QLabel {
                 int right = used;
                 if(e->rect().right() < right)
                     right = e->rect().right();
-                p.fillRect(QRect(e->rect().left(), e->rect().top(),
-                            used, e->rect().bottom()), QBrush(blueish, Qt::SolidPattern));
+                p.fillRect(e->rect().left(), e->rect().top(),
+                            used, e->rect().bottom()+1, QBrush(blueish, Qt::SolidPattern));
             }
         }
 
@@ -118,7 +118,7 @@ class SpaceLabel : public QLabel {
             int right = e->rect().right();
             if(scheduled < right)
                 right = scheduled;
-            p.fillRect(left, e->rect().top(), right, e->rect().bottom(), QBrush(sched, Qt::SolidPattern));
+            p.fillRect(left, e->rect().top(), right, e->rect().bottom()+1, QBrush(sched, Qt::SolidPattern));
         }
 
         if(m_used + m_scheduled < m_total)
@@ -128,7 +128,7 @@ class SpaceLabel : public QLabel {
             if(scheduled > left)
                 left = scheduled;
             int right = e->rect().right();
-            p.fillRect(left, e->rect().top(), right, e->rect().bottom(), colorGroup().brush(QColorGroup::Background));
+            p.fillRect(left, e->rect().top(), right, e->rect().bottom()+1, colorGroup().brush(QColorGroup::Background));
         }
         QLabel::paintEvent(e);
     }
