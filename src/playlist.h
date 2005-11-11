@@ -160,6 +160,7 @@ class Playlist : private KListView, public EngineObserver
         void copyToClipboard( const QListViewItem* = 0 ) const;
         void countChanged( const QString &path );
         void deleteSelectedFiles();
+        void ensureItemCentered( QListViewItem* item );
         void playCurrentTrack();
         void playNextTrack( const bool forceNext = true );
         void playPrevTrack();
@@ -168,6 +169,7 @@ class Playlist : private KListView, public EngineObserver
         void removeDuplicates();
         void removeSelectedItems();
         void repopulate();
+        void safeClear();
         void scoreChanged( const QString &path, int score );
         void selectAll() { QListView::selectAll( true ); }
         void setFilter( const QString &filter );                           //for the entire playlist
@@ -175,7 +177,6 @@ class Playlist : private KListView, public EngineObserver
         void setFilterSlot( const QString &filter );                       //uses a delay where applicable
         void setStopAfterCurrent( bool on );
         void setStopAfterMode( int mode );
-        void ensureItemCentered( QListViewItem* item );
         void showCurrentTrack() { ensureItemCentered( m_currentTrack ); }
         void showQueueManager();
         void shuffle();
