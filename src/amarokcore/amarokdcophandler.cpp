@@ -233,7 +233,10 @@ namespace amaroK
 
     QString DcopPlayerHandler::track()
     {
-        return QString::number( EngineController::instance()->bundle().track() );
+        if ( EngineController::instance()->bundle().track() != 0 )
+            return QString::number( EngineController::instance()->bundle().track() );
+        else
+            return QString();
     }
 
     QString DcopPlayerHandler::type()
