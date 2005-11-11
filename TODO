@@ -7,13 +7,16 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+ <markey>  When scanning with no folders selected, hell breaks lose. DB errors, etc.
+           Only way to repair it is delete the DB.
+
  <sebr>    More consistent playlistbrowser drag and drop actions; No dropping of default streams, set
            e->accept( false ) if dropping one type onto another.
 
- <sebr>    Use KIO queues for podcast download queues.  Should simplify the lot.  Problems atm included 
+ <sebr>    Use KIO queues for podcast download queues.  Should simplify the lot.  Problems atm included
            selecting multiple downloads individually, and automatic downloads occuring for more that one
            podcast item.
- 
+
  <markey>  In EngineController::play(), add a sanity check when querying the track length
            from the engine. Apparently AAC can deliver ridiculous values with GST and Helix,
            like 1192479:38:49. If length is too extreme, default to the TagLib provided
@@ -88,13 +91,13 @@ MID-TERM:
  --><eean> custom playlist creation.
            1) the default dynamic playlists need to be more insistent, the same way the
               the default smart playlists are.
-  <eean>   Implement leinir's mockup: 
+  <eean>   Implement leinir's mockup:
            www.leinir.dk/temp/gallery/?image=pictures/amarok-playlist-bar-dynamic-mode.png
-          <leinir> The idea with the look of the top is, as you can probably see from the colours 
-            otherwise present, that it's the active window titlebar/colour/font, with the name of the 
-            playlist being un-bolded (if the window title is bold)...  
+          <leinir> The idea with the look of the top is, as you can probably see from the colours
+            otherwise present, that it's the active window titlebar/colour/font, with the name of the
+            playlist being un-bolded (if the window title is bold)...
           <leinir> eean: Some people will identify the active window by titlebar colour alone :)
-  
+
   <mp8> Album covers as icons from filebrowser.
 
   <eean>   When the player window shades, it should lose its title bar and be replaced with something more
@@ -243,11 +246,11 @@ BACKTRACES/DEBUG/VALGRIND:
 
 if( m_similarArtistsJob )
     m_similarArtistsJob->kill();
-     
-      
-       
+
+
+
 BACKTRACE:
-        
+
 (gdb) bt
 #3  0xb623fcbb in abort () from /lib/tls/libc.so.6
 #4  0xb71bd913 in kdbgstream::flush () from /opt/kde/lib/libkdecore.so.4
@@ -256,7 +259,7 @@ BACKTRACE:
 #7  0xb7746011 in KIO::Scheduler::_cancelJob () from /opt/kde/lib/libkio.so.4
 #8  0xb7758df2 in KIO::SimpleJob::kill () from /opt/kde/lib/libkio.so.4
 #9  0x081cde8d in Scrobbler::similarArtists (this=0x82e5d20, artist=@0x82e5504) at /home/kde/extragear/multimedia/amarok/src/scrobbler.cpp:126
-#10 0x080c7f01 in CollectionDB::similarArtists (this=0x82e52e0, artist=@0x82e5504, count=10) 
+#10 0x080c7f01 in CollectionDB::similarArtists (this=0x82e52e0, artist=@0x82e5504, count=10)
     at /home/kde/extragear/multimedia/amarok/src/collectiondb.cpp:1695
 #11 0x080f4d42 in CurrentTrackJob::doJob (this=0x8aa6b18) at /home/kde/extragear/multimedia/amarok/src/contextbrowser.cpp:1270
 #12 0x081f3b17 in ThreadWeaver::Thread::run (this=0x84c0f50) at /home/kde/extragear/multimedia/amarok/src/threadweaver.cpp:231
