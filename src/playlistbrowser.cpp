@@ -34,6 +34,7 @@
 #include <kactioncollection.h>
 #include <kapplication.h>
 #include <kfiledialog.h>       //openPlaylist()
+#include <khtml_part.h>
 #include <kio/job.h>           //deleteSelectedPlaylists()
 #include <kiconloader.h>       //smallIcon
 #include <kinputdialog.h>
@@ -42,6 +43,7 @@
 #include <kmessagebox.h>       //renamePlaylist(), deleteSelectedPlaylist()
 #include <kmultipledrag.h>     //dragObject()
 #include <kpopupmenu.h>
+#include <kpushbutton.h>
 #include <kstandarddirs.h>     //KGlobal::dirs()
 #include <kurldrag.h>          //dragObject()
 
@@ -144,6 +146,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     setMinimumWidth( m_toolbar->sizeHint().width() );
 
+    m_infoPane = new InfoPane( this );
 
     // FIXME the following code moved here from polish(), until the width
     // forgetting issue is fixed:
@@ -285,6 +288,13 @@ PlaylistBrowser::~PlaylistBrowser()
         config->writeEntry( "Sorting", m_listview->sortOrder() );
         config->writeEntry( "Podcast Interval", m_podcastTimerInterval );
     }
+}
+
+
+void
+PlaylistBrowser::setInfo( const QString &info )
+{
+    m_infoPane->setInfo( info );
 }
 
 
@@ -1789,11 +1799,12 @@ void PlaylistBrowser::currentItemChanged( QListViewItem *item )    //SLOT
     else
         enable_remove = true;
 
-
     enable_buttons:
 
     removeButton->setEnabled( enable_remove );
     renameButton->setEnabled( enable_rename );
+
+    static_cast<PlaylistBrowserEntry*>(item)->updateInfo();
 }
 
 
@@ -2803,6 +2814,48 @@ void PlaylistDialog::slotCustomPath()
       enableButtonOK( true );
       customChosen = true;
    }
+}
+
+
+InfoPane::InfoPane( PlaylistBrowser *parent )
+        : QVBox( parent )
+{
+    QFrame *container = new QVBox( this, "container" );
+    container->hide();
+
+    {
+        QFrame *box = new QHBox( container );
+        box->setMargin( 5 );
+        box->setBackgroundMode( Qt::PaletteBase );
+
+        m_infoBrowser = new KHTMLPart( box, "extended_info" );
+
+        container->setFrameStyle( box->frameStyle() );
+        container->setMargin( 5 );
+        container->setBackgroundMode( Qt::PaletteBase );
+    }
+
+    KPushButton *button = new KPushButton( KGuiItem( i18n("&Show Extended Info"), "info" ), this );
+    button->setToggleButton( true );
+    connect( button, SIGNAL(toggled( bool )), SLOT(toggle( bool )) );
+}
+
+
+void
+InfoPane::toggle( bool toggled )
+{
+    static_cast<QWidget*>(child("container"))->setShown( toggled );
+}
+
+
+void
+InfoPane::setInfo( const QString &info )
+{
+//     m_infoBrowser->setUserStyleSheet( m_styleSheet );
+
+    m_infoBrowser->begin();
+    m_infoBrowser->write( info );
+    m_infoBrowser->end();
 }
 
 #include "playlistbrowser.moc"

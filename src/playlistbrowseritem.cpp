@@ -1720,8 +1720,6 @@ PodcastItem::PodcastItem( QListViewItem *parent, QListViewItem *after, const QDo
     m_localUrlString += filename.replace( " ", "_" ).replace( "/", "_" );;
     m_localUrlString += "_" + m_url.fileName();
 
-// [23:31:34] <sebr> +Nr.12, Brokratiehilfe :: http://bommel.podspot.de/files/Nr.12%2C%20B%FCrokratiehilfe.MP3
-
     m_localUrl = KURL::fromPathOrURL( m_localUrlString );
 
     if( QFile::exists( m_localUrlString ) )
@@ -2016,6 +2014,17 @@ PodcastItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int widt
     pBuf.end();
     p->drawPixmap( 0, 0, buffer );
 }
+
+void
+PodcastItem::updateInfo()
+{
+    PlaylistBrowser::instance()->setInfo( QString( "<html>Title: %1<br />Author: %2<br />Date: %3<br />Description: %4<br /></html>" )
+                                                              .arg( title() )
+                                                              .arg( author() )
+                                                              .arg( date() )
+                                                              .arg( description() ) );
+}
+
 
 /////////////////////////////////////////////////////////////////////////////
 ///    CLASS SmartPlaylist

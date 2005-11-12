@@ -48,6 +48,8 @@ class PlaylistBrowserEntry : public KListViewItem
         bool    notify() { return m_notify; }           // use as you like ;-).  eg:
         void    setNotify( bool n ) { m_notify = n; }   // stop podcasts displaying multiple popups
 
+        virtual void updateInfo() { return; }
+
     private:
 
         virtual int compare( QListViewItem*, int, bool ) const; //reimplemented
@@ -240,6 +242,8 @@ class PodcastItem : public QObject, public PlaylistBrowserEntry
 
         void  setup();
         void  paintCell( QPainter*, const QColorGroup&, int, int, int );
+
+        void  updateInfo();
 
         int rtti() const { return RTTI; }
         static const int RTTI = 1007;              //podcastitem

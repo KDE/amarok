@@ -18,7 +18,11 @@
 #include <qvbox.h>
 
 #define escapeHTML(s)     QString(s).replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" )
+
+class KHTMLPart;
+class KTextBrowser;
 class KToolBar;
+
 class QCustomEvent;
 class QColorGroup;
 class QDragObject;
@@ -31,6 +35,7 @@ class QTimer;
 class PlaylistBrowserView;
 class PlaylistTrackItem;
 
+
 class PlaylistBrowser : public QVBox
 {
         Q_OBJECT
@@ -40,12 +45,15 @@ class PlaylistBrowser : public QVBox
     friend class PlaylistCategory;
     friend class PlaylistEntry;
     friend class PodcastChannel;  //for changing podcast timer list
+    friend class InfoPane;
 
     public:
         enum ViewMode { DETAILEDVIEW, LISTVIEW };
         enum AddMode  { PLAYLIST, STREAM, SMARTPLAYLIST, PODCAST, ADDDYNAMIC };
 
         ~PlaylistBrowser();
+
+        void setInfo( const QString &info );
 
         void addStream( QListViewItem *parent = 0 );
         void addSmartPlaylist( QListViewItem *parent = 0 );
@@ -72,13 +80,15 @@ class PlaylistBrowser : public QVBox
         ViewMode viewMode() const { return m_viewMode; }
 
         static PlaylistBrowser *instance() {
-        if(!s_instance)  s_instance = new PlaylistBrowser("PlaylistBrowser");
-        return s_instance; }
+            if(!s_instance)  s_instance = new PlaylistBrowser("PlaylistBrowser");
+            return s_instance;
+        }
 
         //following used by PlaylistSelection.cpp
         PlaylistBrowserView* getListView() const { return m_listview; }
         PlaylistCategory* getDynamicCategory() const { return m_dynamicCategory; }
         void saveDynamics();
+
     signals:
         void selectionChanged();
 
@@ -171,6 +181,8 @@ class PlaylistBrowser : public QVBox
         int                  m_podcastTimerInterval;        //in ms
         QPtrList<PodcastChannel> m_podcastItemsToScan;
         QPtrList<PodcastItem> m_podcastDownloadQueue;
+
+        InfoPane *m_infoPane;
 
         bool                 m_removeDirt;
 };
@@ -322,6 +334,25 @@ fileDirPath( const QString &filePath )
 {
     return filePath.left( filePath.findRev( '/' )+1 );
 }
+
+
+
+class InfoPane : public QVBox
+{
+    Q_OBJECT
+
+public:
+    InfoPane( PlaylistBrowser *parent );
+
+public slots:
+    void setInfo( const QString &info );
+
+private slots:
+    void toggle( bool );
+
+private:
+    KHTMLPart *m_infoBrowser;
+};
 
 
 #endif
