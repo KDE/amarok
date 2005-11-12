@@ -337,7 +337,7 @@ Playlist::~Playlist()
         m_undoDir.remove( *it );
 
     //speed up quit a little
-    KListView::clear();   //our implementation is slow
+    safeClear();   //our implementation is slow
     blockSignals( true ); //might help
 }
 
@@ -1570,7 +1570,29 @@ Playlist::clear() //SLOT
     // something to bear in mind, if there is any event in the loop
     // that depends on a PlaylistItem, we are about to crash amaroK
     // never unlock() the Playlist until it is safe!
-    KListView::clear();
+    safeClear();
+}
+
+/*!
+ * Fix qt bug in QListView::clear()
+ * @see http://lists.kde.org/?l=kde-devel&m=113113845120155&w=2 
+ */
+
+void
+Playlist::safeClear()
+{
+    bool block = signalsBlocked();
+    blockSignals( true );
+    clearSelection();
+
+    QListViewItem *c = firstChild();
+    QListViewItem *n;
+    while( c ) {
+        n = c->nextSibling();
+        c = n;
+    }
+    blockSignals( block );
+    triggerUpdate();
 }
 
 void
