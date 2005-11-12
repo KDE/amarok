@@ -2830,7 +2830,7 @@ InfoPane::InfoPane( PlaylistBrowser *parent )
 
         m_infoBrowser = new KHTMLPart( box, "extended_info" );
 
-        container->setFrameStyle( box->frameStyle() );
+        container->setFrameStyle( QFrame::StyledPanel );
         container->setMargin( 5 );
         container->setBackgroundMode( Qt::PaletteBase );
     }

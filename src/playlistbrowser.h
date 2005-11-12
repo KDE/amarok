@@ -45,7 +45,6 @@ class PlaylistBrowser : public QVBox
     friend class PlaylistCategory;
     friend class PlaylistEntry;
     friend class PodcastChannel;  //for changing podcast timer list
-    friend class InfoPane;
 
     public:
         enum ViewMode { DETAILEDVIEW, LISTVIEW };
