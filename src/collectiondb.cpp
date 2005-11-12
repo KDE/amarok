@@ -1499,11 +1499,31 @@ CollectionDB::getPlayCount( const QString &url  )
 {
     QStringList values = query( QString( "SELECT playcounter FROM statistics WHERE url = '%1';" )
                                          .arg( escapeString( url ) ) );
-
     if( values.count() )
         return values.first().toInt();
-
     return 0;
+}
+
+QDateTime
+CollectionDB::getFirstPlay( const QString &url  )
+{
+    QDateTime dt = QDateTime();
+    QStringList values = query( QString( "SELECT createdate FROM statistics WHERE url = '%1';" )
+                                         .arg( escapeString( url ) ) );
+    if( values.count() )
+        dt.setTime_t( values.first().toUInt() );
+    return dt;
+}
+
+QDateTime
+CollectionDB::getLastPlay( const QString &url  )
+{
+    QDateTime dt = QDateTime();
+    QStringList values = query( QString( "SELECT accessdate FROM statistics WHERE url = '%1';" )
+                                         .arg( escapeString( url ) ) );
+    if( values.count() )
+        dt.setTime_t( values.first().toUInt() );
+    return dt;
 }
 /*!
  *  @short: exchange url references in the database for a particular file

@@ -10,8 +10,10 @@
 #include "ktrm.h"
 #include "metabundle.h"       //stack alloc
 #include "tagdialogbase.h"    //baseclass
+#include "qwidget.h"
 
 #include <kurl.h>             //stack alloc
+#include <qdatetime.h>
 #include <qmap.h>
 
 
@@ -23,7 +25,7 @@ class TagDialog : public TagDialogBase
 
     public:
 
-        enum Changes { NOCHANGE=0, SCORECHANGED=1, TAGSCHANGED=2 };
+        enum Changes { NOCHANGE=0, SCORECHANGED=1, TAGSCHANGED=2, LYRICSCHANGED=4 };
 
         TagDialog( const KURL& url, QWidget* parent = 0 );
         TagDialog( const KURL::List list, QWidget* parent = 0 );
@@ -57,9 +59,12 @@ class TagDialog : public TagDialogBase
         MetaBundle m_bundle;
         int m_score;
         int m_playcount;
+        QDateTime m_firstPlay;
+        QDateTime m_lastPlay;
         PlaylistItem* m_playlistItem;
         QMap<QString, MetaBundle> storedTags;
         QMap<QString, int> storedScores;
+        QMap<QString, QString> storedLyrics;
         KURL::List m_urlList;
         QString m_buttonMbText;
         QString m_path;

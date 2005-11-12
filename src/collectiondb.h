@@ -10,6 +10,7 @@
 #include "engineobserver.h"
 #include <kurl.h>
 #include <qdir.h>            //stack allocated
+#include <qdatetime.h>
 #include <qimage.h>
 #include <qobject.h>         //baseclass
 #include <qptrqueue.h>       //baseclass
@@ -295,8 +296,10 @@ class CollectionDB : public QObject, public EngineObserver
         //statistics methods
         int addSongPercentage( const QString &url, int percentage );
         int getSongPercentage( const QString &url  );
-        int getPlayCount( const QString &url );
         void setSongPercentage( const QString &url , int percentage );
+        int getPlayCount( const QString &url );
+        QDateTime getFirstPlay( const QString &url );
+        QDateTime getLastPlay( const QString &url );
         void migrateFile( const QString &oldURL, const QString &newURL );
         bool moveFile( const QString &src, const QString &dest, bool overwrtie );
 
