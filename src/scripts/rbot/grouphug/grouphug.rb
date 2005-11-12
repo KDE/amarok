@@ -23,7 +23,9 @@ class OpinionPlugin < Plugin
    end
 end
 
-plugin = OpinionPlugin.new
-plugin.register("grouphug")
 
+plugin = OpinionPlugin.new
+
+plugin.register("grouphug")
+plugin.register("confess")
 
