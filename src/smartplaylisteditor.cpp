@@ -494,9 +494,13 @@ CriteriaEditor::CriteriaEditor( SmartPlaylistEditor *editor, QWidget *parent, QD
                         m_dateCombo->setCurrentItem(2);
                 }
                 else {
-                    m_dateEdit1->setDate( QDate::fromString( values.first() ) );
-                    if( condition == i18n("is between") )
-                        m_dateEdit2->setDate( QDate::fromString( values.last() ) );
+                    QDateTime dt;
+                    dt.setTime_t( values.first().toUInt() );
+                    m_dateEdit1->setDate( dt.date() );
+                    if( condition == i18n("is between") ) {
+                        dt.setTime_t( values.last().toUInt() );
+                        m_dateEdit2->setDate( dt.date() );
+                    }
                 }
                 break;
             }
