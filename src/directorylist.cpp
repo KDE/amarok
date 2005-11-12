@@ -17,10 +17,10 @@
  ***************************************************************************/
 
 #include "amarokconfig.h"
-#include "debug.h"
 #include "directorylist.h"
 #include <kfileitem.h>
 #include <klocale.h>
+#include <qfile.h>
 #include <qlabel.h>
 #include <qtooltip.h>
 
@@ -67,7 +67,14 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 void
 CollectionSetup::writeConfig()
 {
-    AmarokConfig::setCollectionFolders( m_dirs );
+    QStringList freshDirs;
+    for( uint i=0; i < m_dirs.count(); i++ )
+    {
+        if( QFile::exists( m_dirs[i] ) )
+            freshDirs << m_dirs[i];
+    }
+
+    AmarokConfig::setCollectionFolders( freshDirs );
     AmarokConfig::setScanRecursively( recursive() );
     AmarokConfig::setMonitorChanges( monitor() );
     AmarokConfig::setImportPlaylists( importPlaylists() );
