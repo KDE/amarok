@@ -34,9 +34,6 @@
                     <property name="text">
                         <string>&amp;Previous</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+P</string>
-                    </property>
                 </widget>
                 <widget class="QPushButton">
                     <property name="name">
@@ -44,9 +41,6 @@
                     </property>
                     <property name="text">
                         <string>&amp;Next</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+N</string>
                     </property>
                 </widget>
                 <spacer>
@@ -71,7 +65,7 @@
                         <cstring>pushButton_ok</cstring>
                     </property>
                     <property name="text">
-                        <string>Sa&amp;ve &amp; Close</string>
+                        <string>Sa&amp;ve &amp;&amp; Close</string>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>
@@ -89,9 +83,6 @@
                     </property>
                     <property name="text">
                         <string>&amp;Cancel</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+C</string>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>
@@ -150,14 +141,14 @@
                 <cstring>kTabWidget</cstring>
             </property>
             <property name="currentPage">
-                <number>1</number>
+                <number>0</number>
             </property>
             <widget class="QWidget">
                 <property name="name">
                     <cstring>summaryTab</cstring>
                 </property>
                 <attribute name="title">
-                    <string>S&amp;ummary</string>
+                    <string>S&amp;&amp;ummary</string>
                 </attribute>
                 <grid>
                     <property name="name">
@@ -246,7 +237,7 @@
                     <cstring>tagsTab</cstring>
                 </property>
                 <attribute name="title">
-                    <string>Meta Info&amp;&amp;rmation</string>
+                    <string>Meta Info&amp;&amp;&amp;&amp;rmation</string>
                 </attribute>
                 <grid>
                     <property name="name">
@@ -324,9 +315,6 @@
                         </property>
                         <property name="text">
                             <string>Fill-In Tags Using MusicBrain&amp;z</string>
-                        </property>
-                        <property name="accel">
-                            <string>Alt+Z</string>
                         </property>
                         <property name="autoDefault">
                             <bool>false</bool>
@@ -483,7 +471,7 @@
                     <cstring>lyricsTab</cstring>
                 </property>
                 <attribute name="title">
-                    <string>L&amp;yrics</string>
+                    <string>L&amp;&amp;yrics</string>
                 </attribute>
                 <hbox>
                     <property name="name">
@@ -507,7 +495,7 @@
                     <cstring>statisticsTab</cstring>
                 </property>
                 <attribute name="title">
-                    <string>St&amp;atistics</string>
+                    <string>St&amp;&amp;atistics</string>
                 </attribute>
                 <grid>
                     <property name="name">
