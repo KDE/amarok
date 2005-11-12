@@ -1626,11 +1626,11 @@ Playlist::clear() //SLOT
     safeClear();
 }
 
-/*!
- * Fix qt bug in QListView::clear()
+/**
+ * Workaround for Qt bug in QListView::clear()
  * @see http://lists.kde.org/?l=kde-devel&m=113113845120155&w=2
+ * @see BUG 116004
  */
-
 void
 Playlist::safeClear()
 {
