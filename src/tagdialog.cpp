@@ -349,30 +349,33 @@ void TagDialog::readTags()
     );
 
     QString summaryText;
+    const QString body = "<tr><td>%1:</td><td width=100%><b>%2</b></td></tr>";
+    const QString date = "<tr><td colspan=2>%1 <b>%2</b> at <b>%3</b></td></tr>\n";
 
-    kLineEdit_title->setText( m_bundle.title() );
-    kComboBox_artist->setCurrentText( m_bundle.artist() );
-    kComboBox_album->setCurrentText( m_bundle.album() );
-    kComboBox_genre->setCurrentText( m_bundle.genre() );
-    kIntSpinBox_track->setValue( m_bundle.track() );
-    kIntSpinBox_year->setValue( m_bundle.year() );
-    kIntSpinBox_score->setValue( m_score );
-    kTextEdit_comment->setText( m_bundle.comment() );
+    kLineEdit_title    ->setText( m_bundle.title() );
+    kComboBox_artist   ->setCurrentText( m_bundle.artist() );
+    kComboBox_album    ->setCurrentText( m_bundle.album() );
+    kComboBox_genre    ->setCurrentText( m_bundle.genre() );
+    kIntSpinBox_track  ->setValue( m_bundle.track() );
+    kIntSpinBox_year   ->setValue( m_bundle.year() );
+    kIntSpinBox_score  ->setValue( m_score );
+    kTextEdit_comment  ->setText( m_bundle.comment() );
     kLineEdit_playcount->setText( QString::number( m_playcount ) );
+
     summaryText = "<table>";
-    summaryText += i18n( "<tr><td>Length:</td><td width=100%><b>%1</b></td></tr>" ).arg( m_bundle.prettyLength() );
-    summaryText += i18n( "<tr><td>Bitrate:</td><td width=100%><b>%1</b></td></tr>" ).arg( m_bundle.prettyBitrate() );
-    summaryText += i18n( "<tr><td>Samplerate:</td><td width=100%><b>%1</b></td></tr>" ).arg( m_bundle.prettySampleRate() );
+    summaryText += body.arg( i18n("Length"), m_bundle.prettyLength() );
+    summaryText += body.arg( i18n("Bitrate"), m_bundle.prettyBitrate() );
+    summaryText += body.arg( i18n("Samplerate"), m_bundle.prettySampleRate() );
+
     if ( m_playcount ) {
-        summaryText += i18n( "<tr><td>Playcount:</td><td width=100%><b>%1</b></td></tr>" ).arg( QString::number( m_playcount ) );
-        summaryText += i18n( "<tr><td colspan=2>First Played on <b>%1</b> at <b>%2</b></td></tr>\n" )
-            .arg ( m_firstPlay.date().toString( Qt::TextDate ) )
-            .arg ( m_firstPlay.time().toString( Qt::TextDate ) );
-        summaryText += i18n( "<tr><td colspan=2>Last Played on <b>%1</b> at <b>%2</b></td></tr>\n" )
-            .arg ( m_lastPlay.date().toString( Qt::TextDate ) )
-            .arg ( m_lastPlay.time().toString( Qt::TextDate ) );
+        summaryText += body.arg( i18n("Playcount"),QString::number( m_playcount ) );
+        summaryText += date.arg( i18n("First Played on"), m_firstPlay.date().toString( Qt::TextDate )
+                                                        , m_firstPlay.time().toString( Qt::TextDate ) );
+        summaryText += date.arg( i18n("Last Played on "), m_lastPlay.date().toString( Qt::TextDate )
+                                                        , m_lastPlay.time().toString( Qt::TextDate ) );
     }
     summaryText += "</table>";
+
     kLineEdit_firstplayed->setText( m_firstPlay.toString( Qt::LocalDate ) );
     kLineEdit_lastplayed->setText( m_lastPlay.toString( Qt::LocalDate ) );
 
