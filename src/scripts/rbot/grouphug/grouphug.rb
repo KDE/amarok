@@ -7,7 +7,7 @@ require "net/http"
 
 class OpinionPlugin < Plugin
     def help(plugin, topic="")
-        "Grouphug plugin. Confess now!"
+        "Grouphug plugin. Confess!"
     end
 
     def privmsg(m)
