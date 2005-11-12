@@ -34,7 +34,7 @@ class QTimer;
 
 class PlaylistBrowserView;
 class PlaylistTrackItem;
-
+class InfoPane;
 
 class PlaylistBrowser : public QVBox
 {

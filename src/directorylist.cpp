@@ -74,7 +74,6 @@ CollectionSetup::writeConfig()
             freshDirs << m_dirs[i];
     }
 
-
     AmarokConfig::setCollectionFolders( m_dirs );
     AmarokConfig::setScanRecursively( recursive() );
     AmarokConfig::setMonitorChanges( monitor() );
