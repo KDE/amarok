@@ -116,6 +116,9 @@
                     <property name="name">
                         <cstring>kLineEdit_location</cstring>
                     </property>
+                    <property name="focusPolicy">
+                        <enum>NoFocus</enum>
+                    </property>
                     <property name="readOnly">
                         <bool>true</bool>
                     </property>
@@ -148,7 +151,7 @@
                     <cstring>summaryTab</cstring>
                 </property>
                 <attribute name="title">
-                    <string>S&amp;&amp;ummary</string>
+                    <string>S&amp;ummary</string>
                 </attribute>
                 <grid>
                     <property name="name">
@@ -237,7 +240,7 @@
                     <cstring>tagsTab</cstring>
                 </property>
                 <attribute name="title">
-                    <string>Meta Info&amp;&amp;&amp;&amp;rmation</string>
+                    <string>Ta&amp;gs</string>
                 </attribute>
                 <grid>
                     <property name="name">
@@ -296,6 +299,9 @@
                         </property>
                         <property name="text">
                             <string></string>
+                        </property>
+                        <property name="tabChangesFocus">
+                            <bool>true</bool>
                         </property>
                     </widget>
                     <widget class="QLabel" row="1" column="0">
@@ -471,7 +477,7 @@
                     <cstring>lyricsTab</cstring>
                 </property>
                 <attribute name="title">
-                    <string>L&amp;&amp;yrics</string>
+                    <string>L&amp;yrics</string>
                 </attribute>
                 <hbox>
                     <property name="name">
@@ -487,6 +493,9 @@
                         <property name="text">
                             <string></string>
                         </property>
+                        <property name="tabChangesFocus">
+                            <bool>true</bool>
+                        </property>
                     </widget>
                 </hbox>
             </widget>
@@ -495,7 +504,7 @@
                     <cstring>statisticsTab</cstring>
                 </property>
                 <attribute name="title">
-                    <string>St&amp;&amp;atistics</string>
+                    <string>St&amp;atistics</string>
                 </attribute>
                 <grid>
                     <property name="name">
@@ -504,6 +513,9 @@
                     <widget class="KLineEdit" row="1" column="1">
                         <property name="name">
                             <cstring>kLineEdit_playcount</cstring>
+                        </property>
+                        <property name="focusPolicy">
+                            <enum>NoFocus</enum>
                         </property>
                         <property name="frameShadow">
                             <enum>Sunken</enum>
@@ -554,6 +566,9 @@
                         <property name="name">
                             <cstring>kLineEdit_firstplayed</cstring>
                         </property>
+                        <property name="focusPolicy">
+                            <enum>NoFocus</enum>
+                        </property>
                         <property name="frameShadow">
                             <enum>Sunken</enum>
                         </property>
@@ -572,6 +587,9 @@
                     <widget class="KLineEdit" row="0" column="3">
                         <property name="name">
                             <cstring>kLineEdit_lastplayed</cstring>
+                        </property>
+                        <property name="focusPolicy">
+                            <enum>NoFocus</enum>
                         </property>
                         <property name="frameShadow">
                             <enum>Sunken</enum>
@@ -614,24 +632,21 @@
 </customwidgets>
 <tabstops>
     <tabstop>kTabWidget</tabstop>
+    <tabstop>kLineEdit_title</tabstop>
+    <tabstop>kComboBox_artist</tabstop>
+    <tabstop>kComboBox_album</tabstop>
     <tabstop>kComboBox_genre</tabstop>
     <tabstop>kIntSpinBox_track</tabstop>
     <tabstop>kIntSpinBox_year</tabstop>
-    <tabstop>kComboBox_album</tabstop>
-    <tabstop>kComboBox_artist</tabstop>
+    <tabstop>kTextEdit_comment</tabstop>
     <tabstop>pushButton_musicbrainz</tabstop>
+    <tabstop>kTextEdit_lyrics</tabstop>
+    <tabstop>kIntSpinBox_score</tabstop>
+    <tabstop>pushButton_open</tabstop>
     <tabstop>pushButton_previous</tabstop>
     <tabstop>pushButton_next</tabstop>
     <tabstop>pushButton_ok</tabstop>
     <tabstop>pushButton_cancel</tabstop>
-    <tabstop>kLineEdit_playcount</tabstop>
-    <tabstop>kLineEdit_firstplayed</tabstop>
-    <tabstop>kLineEdit_lastplayed</tabstop>
-    <tabstop>kIntSpinBox_score</tabstop>
-    <tabstop>kTextEdit_comment</tabstop>
-    <tabstop>kLineEdit_location</tabstop>
-    <tabstop>pushButton_open</tabstop>
-    <tabstop>kTextEdit_lyrics</tabstop>
 </tabstops>
 <pixmapinproject/>
 <layoutdefaults spacing="6" margin="11"/>
