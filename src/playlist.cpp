@@ -3240,7 +3240,9 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     popup.insertSeparator();
 
     popup.insertItem( SmallIconSet( "info" )
-        , i18n( "Edit Track &Information...",  "Edit &Information for %n Tracks...", itemCount)
+        , item->url().isLocalFile() ? 
+              i18n( "Edit Track &Information...",  "Edit &Information for %n Tracks...", itemCount):
+              i18n( "Track &Information...",  "&Information for %n Tracks...", itemCount)
         , VIEW );
 
     popup.setItemEnabled( EDIT, canRename ); //only enable for columns that have editable tags

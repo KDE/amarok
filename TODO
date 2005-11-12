@@ -6,9 +6,7 @@ TODO-list for amaroK
 
 
 SHORT-TERM (URGENT):
- <sebr>    Context items for streams should not include delete or rename. does this apply for other types
-           of remote media? ftp?
-           
+ 
  <markey>  When scanning with no folders selected, hell breaks lose. DB errors, etc.
            Only way to repair it is delete the DB.
 
