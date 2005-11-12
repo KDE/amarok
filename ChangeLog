@@ -5,7 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.3.7:
   BUGFIXES:
-    * Dates wouldn't be properly loaded when editing Smart Playlits.
+    * Dates wouldn't be properly loaded when editing Smart Playlists.
     * Number of songs to add when using dynamic mode wouldn't be respected,
       if the smartplaylist didn't have a ORDER BY statement. (BR 115860)
     * Fix visibility related build problem on some distros.
