@@ -174,6 +174,8 @@ class PlaylistEntry :  public QObject, public PlaylistBrowserEntry
 
         QDomElement xml();
 
+        void  updateInfo();
+
         //rtti is used to distinguish different kinds of list view items
         int   rtti() const { return RTTI; }
         static const int RTTI = 1001;    //playlist item
@@ -324,6 +326,8 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
 
         void setXml( const QDomNode &xml, const int feedType );
         QDomElement xml();
+
+        void  updateInfo();
 
         int rtti() const { return RTTI; }
         static const int RTTI = 1006;              //podcastchannel

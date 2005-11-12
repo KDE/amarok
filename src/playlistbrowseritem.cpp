@@ -518,6 +518,21 @@ KURL::List PlaylistEntry::tracksURL()
     return list;
 }
 
+void PlaylistEntry::updateInfo()
+{
+    const QString body = "<tr><td><b>%1</b></td><td>%2</td></tr>";
+
+    QString str  = "<html><body><table width=\"100%\" border=\"0\">";
+
+    str += body.arg( i18n( "Playlist" ),         text(0) );
+    str += body.arg( i18n( "Number of tracks" ), QString::number(m_trackCount) );
+    str += body.arg( i18n( "Length" ),           QString::number(m_length) );
+    str += body.arg( i18n( "Location" ),         m_url.prettyURL() );
+    str += "</table></body></html>";
+
+    PlaylistBrowser::instance()->setInfo( str );
+}
+
 void PlaylistEntry::setDynamic( bool enable )
 {
     if( enable != m_dynamic )
@@ -1411,24 +1426,6 @@ PodcastChannel::setSettings( const QString &save, const bool autoFetch, const in
 }
 
 void
-PodcastChannel::showAbout()
-{
-    const QString body = "<tr><td>%1</td><td>%2</td></tr>";
-
-    QString str  = "<html><body><table width=\"100%\" border=\"1\">";
-
-    str += body.arg( i18n( "Title" ),       m_title );
-    str += body.arg( i18n( "Url" ),         m_url.prettyURL() );
-    str += body.arg( i18n( "Website" ),     m_link.prettyURL() );
-    str += body.arg( i18n( "Copyright" ),   m_copyright );
-    str += body.arg( i18n( "Description" ), m_description );
-
-    str += "</table></body></html>";
-
-    KMessageBox::information( 0, str, i18n( "Podcast Information" ) );
-}
-
-void
 PodcastChannel::setNew( bool n )
 {
     if( n )
@@ -1551,6 +1548,28 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
     }
 }
 
+void
+PodcastChannel::updateInfo()
+{
+    const QString body = "<tr><td><b>%1</b></td><td>%2</td></tr>";
+
+    QString str  = "<html><body><table width=\"100%\" border=\"0\">";
+
+    str += body.arg( i18n( "Title" ),       m_title );
+    str += body.arg( i18n( "Url" ),         m_url.prettyURL() );
+    str += body.arg( i18n( "Website" ),     m_link.prettyURL() );
+    str += body.arg( i18n( "Copyright" ),   m_copyright );
+    str += body.arg( i18n( "Description" ), m_description );
+    str += "</table><ul>";
+    for( QListViewItem *c = firstChild(); c; c = c->nextSibling() )
+    {
+        str += QString("<li>%1</li>").arg( static_cast<PodcastItem*>(c)->title() );
+    }
+
+    str += "</ul></body></html>";
+
+    PlaylistBrowser::instance()->setInfo( str );
+}
 
 //maintain max items property
 void
@@ -1864,24 +1883,6 @@ PodcastItem::setNew( bool n )
 }
 
 void
-PodcastItem::showAbout()
-{
-    const QString body = "<tr><td>%1</td><td>%2</td></tr>";
-
-    QString str  = "<html><body><table width=\"100%\" border=\"1\">";
-
-    str += body.arg( i18n( "Title" ),       m_title );
-    str += body.arg( i18n( "Author" ),      m_author );
-    str += body.arg( i18n( "Date" ),        m_date );
-
-    str += body.arg( i18n( "Type" ),        m_type );
-    str += body.arg( i18n( "Description" ), m_description );
-    str += "</table></body></html>";
-
-    KMessageBox::information( 0, str, i18n( "Podcast Information" ) );
-}
-
-void
 PodcastItem::startAnimation()
 {
     if( !m_animationTimer.isActive() )
@@ -2018,11 +2019,18 @@ PodcastItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int widt
 void
 PodcastItem::updateInfo()
 {
-    PlaylistBrowser::instance()->setInfo( QString( "<html>Title: %1<br />Author: %2<br />Date: %3<br />Description: %4<br /></html>" )
-                                                              .arg( title() )
-                                                              .arg( author() )
-                                                              .arg( date() )
-                                                              .arg( description() ) );
+    const QString body = "<tr><td><b>%1</b></td><td>%2</td></tr>";
+
+    QString str  = "<html><body><table width=\"100%\" border=\"0\">";
+
+    str += body.arg( i18n( "Title" ),       m_title );
+    str += body.arg( i18n( "Author" ),      m_author );
+    str += body.arg( i18n( "Date" ),        m_date );
+    str += body.arg( i18n( "Type" ),        m_type );
+    str += body.arg( i18n( "Description" ), m_description );
+    str += "</table></body></html>";
+
+    PlaylistBrowser::instance()->setInfo( str );
 }
 
 
