@@ -47,7 +47,7 @@ namespace amaroK
         /** update total song count */
         void slotItemCountChanged( int newCount, int newLength, int, int, int, int ); //TODO improve
         void updateQueueLabel() { m_queueLabel->update(); }
-
+        void drawTimeDisplay( int position );
     protected:  /* reimpl from engineobserver */
         virtual void engineStateChanged( Engine::State state, Engine::State oldState = Engine::Empty );
         virtual void engineTrackPositionChanged( long position, bool /*userSeek*/ );
@@ -55,7 +55,6 @@ namespace amaroK
 
     private slots:
         void slotPauseTimer();
-        void drawTimeDisplay( int position );
 
     private:
         QLabel *m_timeLabel;

@@ -45,10 +45,8 @@ public:
             menu.insertTitle( i18n( "Time Display" ) );
             menu.insertItem( i18n( "Normal" ), NORMAL );
             menu.insertItem( i18n( "Remaining" ), REMAIN );
-            menu.insertItem( i18n( "Length" ), LENGTH );
             menu.setItemChecked( NORMAL, !AmarokConfig::timeDisplayRemaining() );
             menu.setItemChecked( REMAIN, AmarokConfig::timeDisplayRemaining() );
-            menu.setItemEnabled( LENGTH, false );
 
             switch ( menu.exec( e->globalPos() ) ) {
             case NORMAL:
@@ -57,10 +55,9 @@ public:
             case REMAIN:
                 AmarokConfig::setTimeDisplayRemaining( true );
                 break;
-            case LENGTH:
-                break;
             }
         }
+        amaroK::StatusBar::instance()->drawTimeDisplay(EngineController::engine()->position());
     }
 };
 #endif
