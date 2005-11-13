@@ -510,29 +510,35 @@
                     <property name="name">
                         <cstring>unnamed</cstring>
                     </property>
-                    <widget class="KLineEdit" row="1" column="1">
+                    <spacer row="2" column="2">
                         <property name="name">
-                            <cstring>kLineEdit_playcount</cstring>
+                            <cstring>spacer3_2</cstring>
                         </property>
-                        <property name="focusPolicy">
-                            <enum>NoFocus</enum>
+                        <property name="orientation">
+                            <enum>Vertical</enum>
                         </property>
-                        <property name="frameShadow">
-                            <enum>Sunken</enum>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
                         </property>
-                        <property name="readOnly">
-                            <bool>true</bool>
+                        <property name="sizeHint">
+                            <size>
+                                <width>20</width>
+                                <height>220</height>
+                            </size>
                         </property>
-                    </widget>
-                    <widget class="QLabel" row="0" column="0">
+                    </spacer>
+                    <widget class="QLabel" row="1" column="0" rowspan="1" colspan="3">
                         <property name="name">
-                            <cstring>firstplayedLabel</cstring>
+                            <cstring>statisticsLabel</cstring>
                         </property>
                         <property name="text">
-                            <string>First Played:</string>
+                            <string></string>
+                        </property>
+                        <property name="alignment">
+                            <set>WordBreak|AlignTop</set>
                         </property>
                     </widget>
-                    <widget class="KIntSpinBox" row="1" column="3">
+                    <widget class="KIntSpinBox" row="0" column="2">
                         <property name="name">
                             <cstring>kIntSpinBox_score</cstring>
                         </property>
@@ -554,29 +560,7 @@
                             <number>0</number>
                         </property>
                     </widget>
-                    <widget class="QLabel" row="1" column="0">
-                        <property name="name">
-                            <cstring>playcountLabel</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Playcount:</string>
-                        </property>
-                    </widget>
-                    <widget class="KLineEdit" row="0" column="1">
-                        <property name="name">
-                            <cstring>kLineEdit_firstplayed</cstring>
-                        </property>
-                        <property name="focusPolicy">
-                            <enum>NoFocus</enum>
-                        </property>
-                        <property name="frameShadow">
-                            <enum>Sunken</enum>
-                        </property>
-                        <property name="readOnly">
-                            <bool>true</bool>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="1" column="2">
+                    <widget class="QLabel" row="0" column="1">
                         <property name="name">
                             <cstring>playcountLabel2</cstring>
                         </property>
@@ -584,42 +568,20 @@
                             <string>Score:</string>
                         </property>
                     </widget>
-                    <widget class="KLineEdit" row="0" column="3">
+                    <spacer row="0" column="0">
                         <property name="name">
-                            <cstring>kLineEdit_lastplayed</cstring>
-                        </property>
-                        <property name="focusPolicy">
-                            <enum>NoFocus</enum>
-                        </property>
-                        <property name="frameShadow">
-                            <enum>Sunken</enum>
-                        </property>
-                        <property name="readOnly">
-                            <bool>true</bool>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="0" column="2">
-                        <property name="name">
-                            <cstring>lastplayedLabel</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Last Played:</string>
-                        </property>
-                    </widget>
-                    <spacer row="2" column="1">
-                        <property name="name">
-                            <cstring>spacer3_2</cstring>
+                            <cstring>spacer5</cstring>
                         </property>
                         <property name="orientation">
-                            <enum>Vertical</enum>
+                            <enum>Horizontal</enum>
                         </property>
                         <property name="sizeType">
                             <enum>Expanding</enum>
                         </property>
                         <property name="sizeHint">
                             <size>
-                                <width>20</width>
-                                <height>240</height>
+                                <width>431</width>
+                                <height>21</height>
                             </size>
                         </property>
                     </spacer>
@@ -664,9 +626,6 @@
     <includehint>klineedit.h</includehint>
     <includehint>klineedit.h</includehint>
     <includehint>ktextedit.h</includehint>
-    <includehint>klineedit.h</includehint>
     <includehint>knuminput.h</includehint>
-    <includehint>klineedit.h</includehint>
-    <includehint>klineedit.h</includehint>
 </includehints>
 </UI>

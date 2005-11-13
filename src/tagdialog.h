@@ -55,6 +55,8 @@ class TagDialog : public TagDialogBase
         void saveTags();
         void saveMultipleTracks();
         bool writeTag( MetaBundle mb, bool updateCB=true );
+        const QString unknownSafe( QString );
+        const QStringList statisticsData();
 
         MetaBundle m_bundle;
         int m_score;

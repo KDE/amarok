@@ -335,6 +335,76 @@ void TagDialog::init()
 }
 
 
+inline const QString TagDialog::unknownSafe( QString s ) {
+    return ( s.isNull() || s.isEmpty() || s == "?" || s == "-" )
+           ? i18n ( "Unknown" )
+           : s;
+}
+
+const QStringList TagDialog::statisticsData() {
+
+    QStringList data, values;
+    const uint artist_id = CollectionDB::instance()->artistID( m_bundle.artist() );
+    const uint album_id  = CollectionDB::instance()->albumID ( m_bundle.album() );
+
+    QueryBuilder qb;
+
+    if ( !m_bundle.artist().isEmpty() ) {
+        // tracks by this artist
+        qb.clear();
+        qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabSong, QueryBuilder::valTitle );
+        qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
+        values = qb.run();
+        data += i18n( "Tracks by this Artist" );
+        data += values[0];
+
+
+        // albums by this artist
+        qb.clear();
+        qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabAlbum, QueryBuilder::valID );
+        qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
+        qb.groupBy( QueryBuilder::tabSong, QueryBuilder::valAlbumID );
+        qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
+        qb.setOptions( QueryBuilder::optNoCompilations );
+        values = qb.run();
+        data += i18n( "Albums by this Artist" );
+        data += QString::number( values.count() );
+
+
+        // Favorite track by this artist
+        qb.clear();
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+        qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
+        qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
+        qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
+        qb.setLimit( 0, 1 );
+        values = qb.run();
+        data += i18n( "Favorite by this Artist" );
+        data += values[0];
+
+        if ( !m_bundle.album().isEmpty() ) {
+            // Favorite track on this album
+            qb.clear();
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+            qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
+            qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, QString::number( album_id ) );
+            qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
+            qb.setLimit( 0, 1 );
+            values = qb.run();
+            data += i18n( "Favorite on this Album" );
+            data += values[0];
+        }
+
+        // Related Artists
+        const QString sArtists = CollectionDB::instance()->similarArtists( m_bundle.artist(), 4 ).join(", ");
+        if ( !sArtists.isEmpty() ) {
+            data += i18n( "Related Artists" );
+            data += sArtists;
+        }
+    }
+    return data;
+}
+
 void TagDialog::readTags()
 {
     bool local = m_bundle.url().isLocalFile();
@@ -357,10 +427,6 @@ void TagDialog::readTags()
     }
     trackArtistAlbumLabel->setText( niceTitle );
 
-    QString summaryText;
-    const QString body = "<tr><td>%1:</td><td width=100%><b>%2</b></td></tr>";
-    const QString emptyLine = "<tr><td colspan=2></td></tr>";
-
     kLineEdit_title    ->setText( m_bundle.title() );
     kComboBox_artist   ->setCurrentText( m_bundle.artist() );
     kComboBox_album    ->setCurrentText( m_bundle.album() );
@@ -369,25 +435,38 @@ void TagDialog::readTags()
     kIntSpinBox_year   ->setValue( m_bundle.year() );
     kIntSpinBox_score  ->setValue( m_score );
     kTextEdit_comment  ->setText( m_bundle.comment() );
-    kLineEdit_playcount->setText( QString::number( m_playcount ) );
+
+    QString summaryText, statisticsText;
+    const QString body2cols = i18n( "<tr><td>Label:</td><td><b>Value</b></td></tr>", "<tr><td><nobr>%1:</nobr></td><td><b>%2</b></td></tr>" );
+    const QString body1col = "<tr><td colspan=2>%1</td></td></tr>";
+    const QString emptyLine = "<tr><td colspan=2></td></tr>";
 
     summaryText = "<table>";
-    summaryText += body.arg( i18n("Length"), m_bundle.prettyLength() );
-    summaryText += body.arg( i18n("Bitrate"), m_bundle.prettyBitrate() );
-    summaryText += body.arg( i18n("Samplerate"), m_bundle.prettySampleRate() );
+    summaryText += body2cols.arg( i18n("Length"), unknownSafe( m_bundle.prettyLength() ) );
+    summaryText += body2cols.arg( i18n("Bitrate"), unknownSafe( m_bundle.prettyBitrate() ) );
+    summaryText += body2cols.arg( i18n("Samplerate"), unknownSafe( m_bundle.prettySampleRate() ) );
 
-    if ( m_playcount ) {
-        summaryText += emptyLine;
-        summaryText += body.arg( i18n("Playcount"),QString::number( m_playcount ) );
-        summaryText += body.arg( i18n("First Played"), m_firstPlay.date().toString( Qt::TextDate ) );
-        summaryText += body.arg( i18n("Last Played"), m_lastPlay.date().toString( Qt::TextDate ) );
-    }
+    summaryText += emptyLine;
+    summaryText += body2cols.arg( i18n("Score"), QString::number( m_score ) );
+
+    summaryText += body2cols.arg( i18n("Playcount"), QString::number( m_playcount ) );
+    summaryText += body2cols.arg( i18n("First Played"), m_playcount ? KGlobal::locale()->formatDate( m_firstPlay.date() , true ) : i18n("Never") );
+    summaryText += body2cols.arg( i18n("Last Played"), m_playcount ? KGlobal::locale()->formatDate( m_firstPlay.date() , true ) : i18n("Never") );
+
     summaryText += "</table>";
-
-    kLineEdit_firstplayed->setText( m_firstPlay.toString( Qt::LocalDate ) );
-    kLineEdit_lastplayed->setText( m_lastPlay.toString( Qt::LocalDate ) );
-
     summaryLabel->setText( summaryText );
+
+    statisticsText = "<table>";
+    statisticsText += emptyLine;
+
+    QStringList sData = statisticsData();
+    for ( uint i = 0; i<sData.count(); i+=2 ) {
+        statisticsText += body2cols.arg( sData[i], sData[i+1] );
+    }
+
+    statisticsText += "</table>";
+
+    statisticsLabel->setText( statisticsText );
 
     kLineEdit_location->setText( local ? m_bundle.url().path() : m_bundle.url().url() );
     // draw the album cover on the dialog
