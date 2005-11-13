@@ -339,18 +339,27 @@ void TagDialog::readTags()
 {
     bool local = m_bundle.url().isLocalFile();
 
-    setCaption( kapp->makeStdCaption( i18n("Track Information: %1 by %2").arg( m_bundle.title() ).arg( m_bundle.artist() ) ) );
+    setCaption( kapp->makeStdCaption( i18n("Track Information: %1 by %2").arg( m_bundle.title(),  m_bundle.artist() ) ) );
 
-    trackArtistAlbumLabel->setText(
-        i18n("<b>%1</b> by <b>%2</b> on <b>%3</b>")
-        .arg( m_bundle.title() )
-        .arg( m_bundle.artist() )
-        .arg( m_bundle.album() )
-    );
+    QString niceTitle;
+    if ( m_bundle.album().isEmpty() ) {
+        if( !m_bundle.title().isEmpty() ) {
+            if( !m_bundle.artist().isEmpty() )
+                niceTitle = i18n( "<b>%1</b> by <b>%2</b>" ).arg( m_bundle.title(),  m_bundle.artist() );
+            else
+                niceTitle = QString( "<b>%s</b>" ).arg( m_bundle.title() );
+        }
+        else niceTitle = m_bundle.prettyTitle();
+    }
+    else {
+        niceTitle = i18n( "<b>%1</b> by <b>%2</b> on <b>%3</b>" )
+            .arg( m_bundle.title(), m_bundle.artist(), m_bundle.album() );
+    }
+    trackArtistAlbumLabel->setText( niceTitle );
 
     QString summaryText;
     const QString body = "<tr><td>%1:</td><td width=100%><b>%2</b></td></tr>";
-    const QString date = "<tr><td colspan=2>%1 <b>%2</b> at <b>%3</b></td></tr>\n";
+    const QString emptyLine = "<tr><td colspan=2></td></tr>";
 
     kLineEdit_title    ->setText( m_bundle.title() );
     kComboBox_artist   ->setCurrentText( m_bundle.artist() );
@@ -368,11 +377,10 @@ void TagDialog::readTags()
     summaryText += body.arg( i18n("Samplerate"), m_bundle.prettySampleRate() );
 
     if ( m_playcount ) {
+        summaryText += emptyLine;
         summaryText += body.arg( i18n("Playcount"),QString::number( m_playcount ) );
-        summaryText += date.arg( i18n("First Played on"), m_firstPlay.date().toString( Qt::TextDate )
-                                                        , m_firstPlay.time().toString( Qt::TextDate ) );
-        summaryText += date.arg( i18n("Last Played on "), m_lastPlay.date().toString( Qt::TextDate )
-                                                        , m_lastPlay.time().toString( Qt::TextDate ) );
+        summaryText += body.arg( i18n("First Played"), m_firstPlay.date().toString( Qt::TextDate ) );
+        summaryText += body.arg( i18n("Last Played"), m_lastPlay.date().toString( Qt::TextDate ) );
     }
     summaryText += "</table>";
 
