@@ -330,7 +330,8 @@ void TagDialog::init()
     else
         readTags();
 
-    adjustSize();
+    // make it as small as possible
+    resize( minimumSize() );
 
 }
 
@@ -441,19 +442,19 @@ void TagDialog::readTags()
     const QString body1col = "<tr><td colspan=2>%1</td></td></tr>";
     const QString emptyLine = "<tr><td colspan=2></td></tr>";
 
-    summaryText = "<table>";
+    summaryText = "<table width=100%><tr><td width=50%><table>";
     summaryText += body2cols.arg( i18n("Length"), unknownSafe( m_bundle.prettyLength() ) );
     summaryText += body2cols.arg( i18n("Bitrate"), unknownSafe( m_bundle.prettyBitrate() ) );
     summaryText += body2cols.arg( i18n("Samplerate"), unknownSafe( m_bundle.prettySampleRate() ) );
 
-    summaryText += emptyLine;
+    summaryText += "</table></td><td width=50%><table>";
     summaryText += body2cols.arg( i18n("Score"), QString::number( m_score ) );
 
     summaryText += body2cols.arg( i18n("Playcount"), QString::number( m_playcount ) );
     summaryText += body2cols.arg( i18n("First Played"), m_playcount ? KGlobal::locale()->formatDate( m_firstPlay.date() , true ) : i18n("Never") );
     summaryText += body2cols.arg( i18n("Last Played"), m_playcount ? KGlobal::locale()->formatDate( m_firstPlay.date() , true ) : i18n("Never") );
 
-    summaryText += "</table>";
+    summaryText += "</table></td></tr></table>";
     summaryLabel->setText( summaryText );
 
     statisticsText = "<table>";
