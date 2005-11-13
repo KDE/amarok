@@ -2271,7 +2271,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     //******** track menu ***********
         #define item static_cast<PlaylistTrackItem*>(item)
 
-        enum Actions { MAKE, APPEND, QUEUE, BURN_DATACD, BURN_AUDIOCD, REMOVE, INFO };
+        enum Actions { MAKE, APPEND, QUEUE, BURN, REMOVE, INFO };
 
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue Track" ), QUEUE );
@@ -2280,10 +2280,8 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
         menu.insertSeparator();
 
-        menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn to CD as Data"), BURN_DATACD );
-        menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() && item->url().isLocalFile() );
-        menu.insertItem( SmallIconSet( "cdaudio_unmount" ), i18n("Burn to CD as Audio"), BURN_AUDIOCD );
-        menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() && item->url().isLocalFile() );
+        menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn to CD"), BURN );
+        menu.setItemEnabled( BURN, K3bExporter::isAvailable() && item->url().isLocalFile() );
 
         menu.insertSeparator();
 
@@ -2299,11 +2297,8 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             case QUEUE:
                 Playlist::instance()->insertMedia( item->url(), Playlist::Queue );
                 break;
-            case BURN_DATACD:
-                 K3bExporter::instance()->exportTracks( item->url(), K3bExporter::DataCD );
-                 break;
-            case BURN_AUDIOCD:
-                 K3bExporter::instance()->exportTracks( item->url(), K3bExporter::AudioCD );
+            case BURN:
+                 K3bExporter::instance()->exportTracks( item->url() );
                  break;
             case REMOVE:
                 removeSelectedItems();
