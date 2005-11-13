@@ -20,13 +20,12 @@ if not path.include?( ".mp3" ) #FIXME
     exit()
 end
 
-file = File.new( path, "r" )
-
-if not file.exist?()
+if not FileTest::exist?( path )
     puts( "Error: File not found.\n" )
     exit()
 end
 
+file = File.new( path, "r" )
 
 data = file.read()
 
