@@ -39,11 +39,15 @@
 #include <qstyle.h>
 #include <qtimer.h>
 
+#include <kconfig.h>
 #include <kdebug.h>
 #include <kiconloader.h>
+#include <kpopupmenu.h>
 #include <kstringhandler.h>
 
 #define NEARBYINT(i) ((int(float(i) + 0.5)))
+
+namespace amaroK { extern KConfig *config( const QString& ); }
 
 class MultiTabBarTabPrivate
 {
@@ -76,7 +80,7 @@ MultiTabBarInternal::MultiTabBarInternal( QWidget *parent, MultiTabBar::MultiTab
     addChild( box );
     setFrameStyle( NoFrame );
     viewport() ->setBackgroundMode( Qt::PaletteBackground );
-    /*	box->setPaletteBackgroundColor(Qt::red);
+    /*  box->setPaletteBackgroundColor(Qt::red);
         setPaletteBackgroundColor(Qt::green);*/
 }
 
@@ -159,16 +163,45 @@ void MultiTabBarInternal::contentsMousePressEvent( QMouseEvent *ev )
 
 void MultiTabBarInternal::mousePressEvent( QMouseEvent *ev )
 {
-    ev->ignore();
+    if ( ev->button() != QMouseEvent::RightButton ){
+        ev->ignore();
+        return;
+    }
+
+    // right button pressed
+    KPopupMenu popup;
+    // TODO i18n ()
+    popup.insertTitle(  "Show/Hide Browsers" , /*id*/ -1, /*index*/ 1 );
+    popup.setCheckable( true );
+    for( uint i = 0; i < m_tabs.count(); i++ ) {
+        MultiTabBarTab* tab = m_tabs.at( i );
+        popup.insertItem( tab->text(), i );
+        popup.setItemChecked(i, tab->visible() ? true : false);
+    }
+
+    int col = popup.exec( static_cast<QMouseEvent *>(ev)->globalPos() );
+    if ( col >= 0 ) {
+        MultiTabBarTab* tab = m_tabs.at( col );
+        tab->setVisible( !popup.isItemChecked(col) );
+
+        amaroK::config( "BrowserBar" )->writeEntry( tab->text(), tab->visible() );
+
+        if ( tab->visible() )
+            tab->show();
+        else
+            tab->hide();
+
+        resizeEvent( 0 );
+    }
 }
 
 
 #define CALCDIFF(m_tabs,diff,i) if (m_lines>(int)lines) {\
-                    /*kdDebug()<<"i="<<i<<" tabCount="<<tabCount<<" space="<<space<<endl;*/ \
+                    /*kdDebug()<<"i="<<i<<" visibleTabCount="<<visibleTabCount()<<" space="<<space<<endl;*/ \
                     uint ulen=0;\
                     diff=0; \
-                    for (uint i2=i;i2<tabCount;i2++) {\
-                        uint l1=m_tabs.at(i2)->neededSize();\
+                    for (uint i2=i;i2<visibleTabCount();i2++) {\
+                        uint l1=sizePerTab();\
                         if ((ulen+l1)>space){\
                             if (ulen==0) diff=0;\
                             else diff=((float)(space-ulen))/(i2-i);\
@@ -181,7 +214,7 @@ void MultiTabBarInternal::mousePressEvent( QMouseEvent *ev )
 
 void MultiTabBarInternal::resizeEvent( QResizeEvent *ev )
 {
-    /*	kdDebug()<<"MultiTabBarInternal::resizeEvent"<<endl;
+    /*  kdDebug()<<"MultiTabBarInternal::resizeEvent"<<endl;
         kdDebug()<<"MultiTabBarInternal::resizeEvent - box geometry"<<box->geometry()<<endl;
         kdDebug()<<"MultiTabBarInternal::resizeEvent - geometry"<<geometry()<<endl;*/
     if ( ev ) QScrollView::resizeEvent( ev );
@@ -201,9 +234,11 @@ void MultiTabBarInternal::resizeEvent( QResizeEvent *ev )
         int cnt = 0;
         //CALCULATE LINES
         const uint tabCount = m_tabs.count();
+
         for ( uint i = 0;i < tabCount;i++ ) {
+            if ( ! m_tabs.at( i ) ->visible() ) continue;
             cnt++;
-            tmp += m_tabs.at( i ) ->neededSize();
+            tmp += sizePerTab();
             if ( tmp > space ) {
                 if ( cnt > 1 ) i--;
                 else if ( i == ( tabCount - 1 ) ) break;
@@ -264,6 +299,7 @@ void MultiTabBarInternal::resizeEvent( QResizeEvent *ev )
                 }
             }
         } else {
+            // Left or Right
             setFixedWidth( lines * 24 );
             box->setFixedWidth( lines * 24 );
             m_lines = lines = width() / 24;
@@ -273,8 +309,9 @@ void MultiTabBarInternal::resizeEvent( QResizeEvent *ev )
 
             for ( uint i = 0;i < tabCount;i++ ) {
                 MultiTabBarTab *tab = m_tabs.at( i );
+                if ( ! tab->visible() ) continue;
                 cnt++;
-                tmp += tab->neededSize() + diff;
+                tmp += sizePerTab() + diff;
                 if ( tmp > space ) {
                     if ( cnt > 1 ) {
                         CALCDIFF( m_tabs, diff, i );
@@ -282,7 +319,7 @@ void MultiTabBarInternal::resizeEvent( QResizeEvent *ev )
                         i--;
                     } else {
                         tab->removeEventFilter( this );
-                        tab->move( lines * 24, NEARBYINT( tmp - tab->neededSize() ) );
+                        tab->move( lines * 24, NEARBYINT( tmp - sizePerTab() ) );
                         tab->setFixedHeight( NEARBYINT( tmp + diff ) - tab->y() );;
                         tab->installEventFilter( this );
                     }
@@ -291,8 +328,8 @@ void MultiTabBarInternal::resizeEvent( QResizeEvent *ev )
                     lines++;
                 } else {
                     tab->removeEventFilter( this );
-                    tab->move( lines * 24, NEARBYINT( tmp - tab->neededSize() ) );
-                    tab->setFixedHeight( NEARBYINT( tmp + diff ) - tab->y() );;
+                    tab->move( lines * 24, NEARBYINT( tmp - sizePerTab() ) );
+                    tab->setFixedHeight( NEARBYINT( tmp + diff ) - tab->y() );
                     tab->installEventFilter( this );
                 }
             }
@@ -316,7 +353,6 @@ void MultiTabBarInternal::showActiveTabTexts( bool show )
 {
     m_showActiveTabTexts = show;
 }
-
 
 MultiTabBarTab* MultiTabBarInternal::tab( int id ) const
 {
@@ -362,6 +398,7 @@ int MultiTabBarInternal::appendTab( const QPixmap &pic , int id, const QString& 
     m_tabs.append( tab = new MultiTabBarTab( pic, text, id, box, m_position, m_style ) );
     tab->installEventFilter( this );
     tab->showActiveTabText( m_showActiveTabTexts );
+    tab->setVisible( amaroK::config( "BrowserBar" )->readBoolEntry( text, true ) );
 
     if ( m_style == MultiTabBar::KONQSBC ) {
         if ( m_expandedTabSize < tab->neededSize() ) {
@@ -371,8 +408,12 @@ int MultiTabBarInternal::appendTab( const QPixmap &pic , int id, const QString& 
 
         } else tab->setSize( m_expandedTabSize );
     } else tab->updateState();
-    tab->show();
-    resizeEvent( 0 );
+
+    if ( tab->visible() ) {
+        tab->show();
+        resizeEvent( 0 );
+    } else tab->hide();
+
     return 0;
 }
 
@@ -393,6 +434,21 @@ void MultiTabBarInternal::setPosition( enum MultiTabBar::MultiTabBarPosition pos
     for ( uint i = 0;i < m_tabs.count();i++ )
         m_tabs.at( i ) ->setTabsPosition( m_position );
     viewport() ->repaint();
+}
+
+
+uint MultiTabBarInternal::visibleTabCount()
+{
+    uint visibleTabCount = 0;
+    for ( uint i = 0; i < m_tabs.count(); i++ )
+        if ( m_tabs.at( i ) ->visible() ) visibleTabCount++;
+
+    return visibleTabCount;
+}
+
+uint MultiTabBarInternal::sizePerTab()
+{
+    return (height() - 3 ) / visibleTabCount();
 }
 
 
@@ -574,7 +630,7 @@ QSize MultiTabBarButton::sizeHint() const
         if ( !empty || !h )
             h = QMAX( h, sz.height() );
     }
-
+                                         
     //PATCH by markey
     if ( ( m_style == MultiTabBar::AMAROK ) )
         w = ( parentWidget()->height() - 3 ) / NUM_TABS;
@@ -588,6 +644,7 @@ MultiTabBarTab::MultiTabBarTab( const QPixmap& pic, const QString& text,
                                 int id, QWidget *parent, MultiTabBar::MultiTabBarPosition pos,
                                 MultiTabBar::MultiTabBarStyle style )
         : MultiTabBarButton( text, 0, id, parent, pos, style ),
+        m_visible(true),
         m_showActiveTabText( false )
 {
     d = new MultiTabBarTabPrivate();
@@ -617,7 +674,7 @@ void MultiTabBarTab::setTabsPosition( MultiTabBar::MultiTabBarPosition pos )
     }
 
     setPosition( pos );
-    //	repaint();
+    // repaint();
 }
 
 void MultiTabBarTab::setIcon( const QString& icon )
@@ -700,11 +757,11 @@ void MultiTabBarTab::updateState()
 
 int MultiTabBarTab::neededSize()
 {
-    //PATCH by markey
+/*    //PATCH by markey
     if ( m_style == MultiTabBar::AMAROK )
         return ( parentWidget() ->height() - 3 ) / NUM_TABS;
     else
-        return ( ( ( m_style != MultiTabBar::KDEV3 ) ? 24 : 0 ) + QFontMetrics( QFont() ).width( m_text ) + 6 );
+ */       return ( ( ( m_style != MultiTabBar::KDEV3 ) ? 24 : 0 ) + QFontMetrics( QFont() ).width( m_text ) + 6 );
 }
 
 void MultiTabBarTab::setSize( int size )
@@ -1092,6 +1149,16 @@ bool MultiTabBar::isTabRaised( int id ) const
 void MultiTabBar::showActiveTabTexts( bool show )
 {
     m_internal->showActiveTabTexts( show );
+}
+
+uint MultiTabBar::visibleTabCount()
+{
+    return m_internal->visibleTabCount( );
+}
+
+uint MultiTabBar::sizePerTab()
+{
+    return m_internal->sizePerTab( );
 }
 
 void MultiTabBar::setStyle( MultiTabBarStyle style )

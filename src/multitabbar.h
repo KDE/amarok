@@ -134,6 +134,16 @@ class MultiTabBar: public QWidget
         * might vanish, not sure yet
         */
         void showActiveTabTexts( bool show = true );
+
+        /**
+        * @return number of visible tabs
+        */
+        uint visibleTabCount();
+        /**
+        * @return height per tab
+        */
+        uint sizePerTab();
+
     protected:
         friend class MultiTabBarButton;
         virtual void fontChange( const QFont& );
@@ -239,7 +249,10 @@ class MultiTabBarTab: public MultiTabBarButton
         */
         void showActiveTabText( bool show );
         void resize() { setSize( neededSize() ); }
+        bool visible() { return m_visible; };
+        void setVisible( bool visible) { m_visible = visible; };
     private:
+        bool m_visible;
         bool m_showActiveTabText;
         int m_expandedSize;
         MultiTabBarTabPrivate *d;

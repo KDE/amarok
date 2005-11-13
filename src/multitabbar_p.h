@@ -39,6 +39,8 @@ public:
         void setStyle(enum MultiTabBar::MultiTabBarStyle style);
         void showActiveTabTexts(bool show);
         QPtrList<MultiTabBarTab>* tabs(){return &m_tabs;}
+        uint visibleTabCount();
+        uint sizePerTab();
 
 private:
         friend class MultiTabBar;

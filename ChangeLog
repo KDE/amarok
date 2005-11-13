@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.4:
   FEATURES:
+    * show/hide browsers via context menu (BR 110823)
     * Display disk space on media device.
     * Copy amaroK playlists to media device.
     * Create playlist from items transferred to iPod.
