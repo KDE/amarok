@@ -2574,11 +2574,8 @@ void ContextBrowser::tagsChanged( const MetaBundle &bundle ) //SLOT
 
     if ( currentPage() == m_currentTrackPage->view() ) // this is for compilations or artist == ""
     {
-        if( currentPage() == m_currentTrackPage->view() )
-        {
-            m_dirtyCurrentTrackPage = true;
-            showCurrentTrack();
-        }
+        m_dirtyCurrentTrackPage = true;
+        showCurrentTrack();
     }
 }
 
