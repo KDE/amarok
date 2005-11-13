@@ -3240,7 +3240,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     popup.insertSeparator();
 
     popup.insertItem( SmallIconSet( "info" )
-        , item->url().isLocalFile() ? 
+        , item->url().isLocalFile() ?
               i18n( "Edit Track &Information...",  "Edit &Information for %n Tracks...", itemCount):
               i18n( "Track &Information...",  "&Information for %n Tracks...", itemCount)
         , VIEW );
@@ -3809,9 +3809,8 @@ Playlist::showTagDialog( QPtrList<QListViewItem> items )
 
         if ( !item->url().isLocalFile() )
         {
-            StreamEditor dialog( this, item->title(), item->url().prettyURL() );
-            dialog.setReadOnly( true );
-            dialog.setCaption( i18n("Remote Media") );
+            StreamEditor dialog( this, item->title(), item->url().prettyURL(), true );
+            dialog.setCaption( i18n( "Remote Media" ) );
             dialog.exec();
         }
         else if ( QFile::exists( item->url().path() ) ) {

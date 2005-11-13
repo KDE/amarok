@@ -381,7 +381,8 @@ void PlaylistBrowser::loadCoolStreams()
 
 void PlaylistBrowser::addStream( QListViewItem *parent )
 {
-    StreamEditor dialog( this );
+    StreamEditor dialog( this, i18n( "Radio Stream" ), QString::null );
+    dialog.setCaption( i18n( "Add Radio Stream" ) );
 
     if( !parent ) parent = static_cast<QListViewItem*>(m_streamsCategory);
 
@@ -396,10 +397,10 @@ void PlaylistBrowser::addStream( QListViewItem *parent )
 }
 
 
-void PlaylistBrowser::editStreamURL( StreamEntry *item, const bool readOnly )
+void PlaylistBrowser::editStreamURL( StreamEntry *item, const bool readonly )
 {
-    StreamEditor dialog( this, item->title(), item->url().prettyURL() );
-    dialog.setReadOnly( readOnly );
+    StreamEditor dialog( this, item->title(), item->url().prettyURL(), readonly );
+    dialog.setCaption( readonly ? i18n( "Radio Stream" ) : i18n( "Edit Radio Stream" ) );
 
     if( dialog.exec() == QDialog::Accepted )
     {

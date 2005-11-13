@@ -896,55 +896,28 @@ void StreamEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, int
 ///    CLASS StreamEditor
 ////////////////////////////////////////////////////////////////////////////
 
-// For creating
-StreamEditor::StreamEditor( QWidget *parent, const char *name )
-    : KDialogBase( parent, name, true, i18n("Add Radio Stream"), Ok|Cancel)
-{
-    makeGridMainWidget( 2, Qt::Horizontal );
-
-    QLabel *nameLabel = new QLabel( i18n("&Name:"), mainWidget() );
-    m_nameLineEdit = new KLineEdit( i18n("Radio Stream"), mainWidget() );
-    nameLabel->setBuddy( m_nameLineEdit );
-
-    QLabel *urlLabel = new QLabel( i18n("&Url:"), mainWidget() );
-    m_urlLineEdit = new KLineEdit( "", mainWidget() );
-    urlLabel->setBuddy( m_urlLineEdit );
-
-    QSize min( 480, 110 );
-    setInitialSize( min );
-
-    m_nameLineEdit->setFocus();
-}
-
-// For editing
-StreamEditor::StreamEditor( QWidget *parent, const QString &title, const QString &url, const char *name )
-    : KDialogBase( parent, name, true, i18n("Edit Radio Stream"), Ok|Cancel)
+StreamEditor::StreamEditor( QWidget *parent, const QString &title, const QString &url, bool readonly )
+    : KDialogBase( parent, "StreamEditor", true, QString::null, Ok|Cancel)
 {
     makeGridMainWidget( 2, Qt::Horizontal );
 
     QLabel *nameLabel = new QLabel( i18n("&Name:"), mainWidget() );
     m_nameLineEdit = new KLineEdit( title, mainWidget() );
+    m_nameLineEdit->setReadOnly( readonly );
     nameLabel->setBuddy( m_nameLineEdit );
 
     QLabel *urlLabel = new QLabel( i18n("&Url:"), mainWidget() );
     m_urlLineEdit = new KLineEdit( url, mainWidget() );
+    m_urlLineEdit->setReadOnly( readonly );
     urlLabel->setBuddy( m_urlLineEdit );
+
+    if( !readonly )
+        m_nameLineEdit->setFocus();
 
     QSize min( 480, 110 );
     setInitialSize( min );
-
-    m_nameLineEdit->setFocus();
 }
 
-void
-StreamEditor::setReadOnly( const bool ro )
-{
-    ro ?
-        setCaption( i18n("Radio Stream") ):
-        setCaption( i18n("Edit Radio Stream") );
-    m_nameLineEdit->setReadOnly( ro );
-    m_urlLineEdit->setReadOnly( ro );
-}
 
 /////////////////////////////////////////////////////////////////////////////
 ///    CLASS PartyEntry
