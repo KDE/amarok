@@ -29,7 +29,7 @@ file = File.new( path, "r" )
 
 data = file.read()
 
-if data[0.3] = "ID3"
+if data[0,3] = "ID3"
     puts( "ID3-V2 detected.\n" )
 else
     puts( "ID3-V1 detected.\n" )
