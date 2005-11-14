@@ -510,34 +510,6 @@
                     <property name="name">
                         <cstring>unnamed</cstring>
                     </property>
-                    <spacer row="2" column="2">
-                        <property name="name">
-                            <cstring>spacer3_2</cstring>
-                        </property>
-                        <property name="orientation">
-                            <enum>Vertical</enum>
-                        </property>
-                        <property name="sizeType">
-                            <enum>Expanding</enum>
-                        </property>
-                        <property name="sizeHint">
-                            <size>
-                                <width>20</width>
-                                <height>220</height>
-                            </size>
-                        </property>
-                    </spacer>
-                    <widget class="QLabel" row="1" column="0" rowspan="1" colspan="3">
-                        <property name="name">
-                            <cstring>statisticsLabel</cstring>
-                        </property>
-                        <property name="text">
-                            <string></string>
-                        </property>
-                        <property name="alignment">
-                            <set>WordBreak|AlignTop</set>
-                        </property>
-                    </widget>
                     <widget class="KIntSpinBox" row="0" column="2">
                         <property name="name">
                             <cstring>kIntSpinBox_score</cstring>
@@ -568,7 +540,46 @@
                             <string>Score:</string>
                         </property>
                     </widget>
-                    <spacer row="0" column="0">
+                    <spacer row="3" column="2">
+                        <property name="name">
+                            <cstring>spacer3_2</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Vertical</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>20</width>
+                                <height>200</height>
+                            </size>
+                        </property>
+                    </spacer>
+                    <widget class="QLabel" row="2" column="0" rowspan="1" colspan="3">
+                        <property name="name">
+                            <cstring>statisticsLabel</cstring>
+                        </property>
+                        <property name="text">
+                            <string></string>
+                        </property>
+                        <property name="alignment">
+                            <set>WordBreak|AlignTop</set>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="0" column="0">
+                        <property name="name">
+                            <cstring>trackArtistAlbumLabel2</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Track by Artist on Album</string>
+                        </property>
+                        <property name="alignment">
+                            <set>WordBreak|AlignVCenter</set>
+                        </property>
+                    </widget>
+                    <spacer row="1" column="0">
                         <property name="name">
                             <cstring>spacer5</cstring>
                         </property>
@@ -581,7 +592,7 @@
                         <property name="sizeHint">
                             <size>
                                 <width>431</width>
-                                <height>21</height>
+                                <height>20</height>
                             </size>
                         </property>
                     </spacer>

@@ -427,6 +427,7 @@ void TagDialog::readTags()
             .arg( m_bundle.title(), m_bundle.artist(), m_bundle.album() );
     }
     trackArtistAlbumLabel->setText( niceTitle );
+    trackArtistAlbumLabel2->setText( niceTitle );
 
     kLineEdit_title    ->setText( m_bundle.title() );
     kComboBox_artist   ->setCurrentText( m_bundle.artist() );
@@ -458,7 +459,6 @@ void TagDialog::readTags()
     summaryLabel->setText( summaryText );
 
     statisticsText = "<table>";
-    statisticsText += emptyLine;
 
     QStringList sData = statisticsData();
     for ( uint i = 0; i<sData.count(); i+=2 ) {

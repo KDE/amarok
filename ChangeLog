@@ -5,6 +5,9 @@ amaroK ChangeLog
 
 VERSION 1.4:
   FEATURES:
+    * New Edit Track Information dialog. Lyrics can be edited there, comments
+      can have more than one line, and some statistics are available.
+      (BR 93982)
     * show/hide browsers via context menu (BR 110823)
     * Display disk space on media device.
     * Copy amaroK playlists to media device.
