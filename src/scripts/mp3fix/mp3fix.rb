@@ -12,13 +12,8 @@ def calcId3v2Size( data )
     # where the real mp3 data starts.
     # @see http://id3lib.sourceforge.net/id3/id3v2com-00.html#sec3.1
 
-    a = data[6]
-    b = data[7]
-    c = data[8]
-    d = data[9]
-
-    size = a*2**21 + b*2**14 + c*2**7 + d
-    size += 10 # Header
+    size = data[6]*2**21 + data[7]*2**14 + data[8]*2**7 + data[9]
+    size = size + 10 # Header
 
     return size
 end
