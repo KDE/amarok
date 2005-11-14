@@ -17,7 +17,7 @@ def calcId3v2Size( data )
     c = data[8]
     d = data[9]
 
-    size = a*2^21 + b*2^14 + c*2^7 + d
+    size = a*2**21 + b*2**14 + c*2**7 + d
     size += 10 # Header
 
     return size
