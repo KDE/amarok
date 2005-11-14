@@ -92,6 +92,8 @@ class SpaceLabel : public QLabel {
         int used = int(float(m_used)/float(m_total)*width());
         int scheduled = int(float(m_used + m_scheduled)/float(m_total)*width());
 
+        p.fillRect(e->rect(), colorGroup().brush(QColorGroup::Background));
+
         if(m_used > 0)
         {
             QColor blueish(70,120,255);
@@ -1325,6 +1327,7 @@ MediaDevice::connectDevice( bool silent )
         }
 
         openDevice( silent );
+        m_parent->updateStats();
 
         if( isConnected() || m_parent->m_deviceList->childCount() != 0 )
         {
@@ -1409,6 +1412,8 @@ MediaDevice::connectDevice( bool silent )
         m_parent->m_transferButton->setEnabled( false );
 
         closeDevice();
+        m_parent->updateStats();
+
         QString text = i18n( "Your device is now in sync, please unmount it and disconnect now." );
 
         if ( !m_umntcmd.isEmpty() )
@@ -1617,7 +1622,7 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
 
             if ( button != KMessageBox::Continue )
             {
-                m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_transferList->childCount() ) );
+                m_parent->updateStats();
                 return;
             }
 
