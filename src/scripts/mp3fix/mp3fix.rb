@@ -85,8 +85,13 @@ while offset < data.length()
     offset += frameSize
 end
 
+
 averageBitrate = bitCount / frameCount
+length = data.length() / averageBitrate * 8
 
 puts( "Number of frames: #{frameCount}\n" )
 puts( "Average bitrate : #{averageBitrate}\n" )
+puts( "Length (seconds): #{length}\n" )
+
+
 
