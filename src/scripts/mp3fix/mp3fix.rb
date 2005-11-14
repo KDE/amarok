@@ -123,3 +123,8 @@ xing << ( ( data.length() & 0x000000ff ) >> 0 )
 data[id3length + 4, 0] = xing
 
 
+destfile = File::open( destination, File::CREAT|File::TRUNC|File::WRONLY )
+destfile << data
+
+puts( "done.\n" )
+
