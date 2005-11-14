@@ -4,6 +4,8 @@
 
 #include <taglib/fileref.h>
 
+#include <config.h>
+
 #ifdef HAVE_MP4V2
 #include "mp4/taglib_mp4filetyperesolver.h"
 #endif
