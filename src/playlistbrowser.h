@@ -58,6 +58,7 @@ class PlaylistBrowser : public QVBox
         void addSmartPlaylist( QListViewItem *parent = 0 );
         void addDynamic( QListViewItem *parent = 0 );
         void addPlaylist( const QString &path, QListViewItem *parent = 0, bool force=false );
+        int loadPlaylist( const QString &playlist, bool force=false );
         void addPodcast( QListViewItem *parent = 0 );
         void addPodcast( const QString &url, QListViewItem *parent = 0 );
 
@@ -73,6 +74,7 @@ class PlaylistBrowser : public QVBox
         QString smartplaylistBrowserCache() const;
 
         PlaylistBrowserEntry *findItem( QString &t, int c ) const;
+        QListViewItem *findItemInTree( const QString &searchstring, int c ) const;
 
         QPtrList<QListViewItem> dynamicEntries() const { return m_dynamicEntries; }
 

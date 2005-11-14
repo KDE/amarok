@@ -1091,6 +1091,59 @@ void PlaylistBrowser::loadOldPlaylists()
     m_playlistCategory->setOpen( true );
 }
 
+QListViewItem *
+PlaylistBrowser::findItemInTree( const QString &searchstring, int c ) const
+{
+    QStringList list = QStringList::split( "/", searchstring, true );
+
+    // select the 1st level
+    QStringList::Iterator it = list.begin();
+    QListViewItem *pli = findItem (*it, c);
+    if ( !pli ) return pli;
+    //debug() << "pli: text: " << pli->text(0) << endl;
+
+    for ( ++it ; it != list.end(); ++it ) {
+        //debug() << "searching for: " << *it << "..." << endl;
+
+        QListViewItemIterator it2( pli );
+        for( ++it2 ; it2.current(); ++it2 )
+        {
+            //debug()<<", rtti: "<<(*it2)->rtti()<< ", text: "<<(*it2)->text(0)<<endl;
+            if ( *it == (*it2)->text(0) ) {
+                //debug() << "detected next level: " << (*it2)->text(0) << endl;
+                pli = *it2;
+                break;
+            }
+            // test, to not go over into the next category
+            if ( isCategory( *it2 ) && (pli->nextSibling() == *it2) ) {
+                //debug() << "run over a sibling category, giving up " << *it << endl;
+                return 0;
+            }
+        }
+        if ( ! it2.current() ) {
+            //debug() << "cannot find element " << *it << endl;
+            return 0;
+        }
+    }
+    return pli;
+}
+
+int PlaylistBrowser::loadPlaylist( const QString &playlist, bool /*force*/ )
+{
+    // roland
+    DEBUG_BLOCK
+
+    QListViewItem *pli = findItemInTree( playlist, 0 );
+    if ( ! pli ) return -1;
+
+    debug() << "pli: text: " << pli->text(0) << endl;
+    debug() << "pli: rtti: " << pli->rtti() << endl;
+
+    slotDoubleClicked( pli );
+    return 0;
+    // roland
+}
+
 void PlaylistBrowser::addPlaylist( const QString &path, QListViewItem *parent, bool force )
 {
     // this function adds a playlist to the playlist browser

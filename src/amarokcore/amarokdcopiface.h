@@ -140,6 +140,7 @@ k_dcop:
    virtual void addPodcast(const QString &) = 0;            ///< Add a podcast entry to the playlist browser.
    virtual void scanPodcasts() = 0;                         ///< Scan all podcasts for updates.
    virtual void addPlaylist(const QString &) = 0;           ///< Add a playlist to the playlist browser.
+   virtual int  loadPlaylist(const QString &) = 0;           ///< load a playlist to the playlist.
 };
 
 class AmarokContextBrowserInterface : virtual public DCOPObject

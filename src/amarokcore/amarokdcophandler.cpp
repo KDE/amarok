@@ -587,6 +587,11 @@ namespace amaroK
         PlaylistBrowser::instance()->addPlaylist( url );
     }
 
+    int DcopPlaylistBrowserHandler::loadPlaylist( const QString &playlist )
+    {
+        return PlaylistBrowser::instance()->loadPlaylist( playlist );
+    }
+
 /////////////////////////////////////////////////////////////////////////////////////
 // class DcopContextBrowserHandler
 /////////////////////////////////////////////////////////////////////////////////////

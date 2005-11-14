@@ -140,6 +140,7 @@ class DcopPlaylistBrowserHandler : public QObject, virtual public AmarokPlaylist
       virtual void addPodcast( const QString &url );
       virtual void scanPodcasts();
       virtual void addPlaylist( const QString &url );
+      virtual int loadPlaylist( const QString &playlist );
 };
 
 class DcopContextBrowserHandler : public QObject, virtual public AmarokContextBrowserInterface
