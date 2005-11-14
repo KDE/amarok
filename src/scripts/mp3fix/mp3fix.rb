@@ -60,6 +60,8 @@ BitRateTable << 112 << 128 << 160 << 192 << 224 << 256 << 320
 SampleRateTable = []
 SampleRateTable << 44100 << 48000 << 32100
 
+frameCount = 0
+bitCount = 0
 
 # Iterate over all frames
 while offset < data.length()
@@ -71,13 +73,20 @@ while offset < data.length()
 
     frameSize = ( SamplesPerFrame / 8 * bitrate ) / samplerate + padding
 
-    puts( "bitrate     : #{bitrate.to_s()}\n" )
-    puts( "samplerate  : #{samplerate.to_s()}\n" )
-    puts( "padding     : #{padding.to_s()}\n" )
-    puts( "framesize   : #{frameSize}\n" )
-    puts( "\n" )
+#     puts( "bitrate     : #{bitrate.to_s()}\n" )
+#     puts( "samplerate  : #{samplerate.to_s()}\n" )
+#     puts( "padding     : #{padding.to_s()}\n" )
+#     puts( "framesize   : #{frameSize}\n" )
+#     puts( "\n" )
+
+    frameCount += 1
+    bitCount += bitrate
 
     offset += frameSize
 end
 
+averageBitrate = bitCount / frameCount
+
+puts( "Number of frames: #{frameCount}\n" )
+puts( "Average bitrate : #{averageBitrate}\n" )
 
