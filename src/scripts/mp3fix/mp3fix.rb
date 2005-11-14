@@ -66,16 +66,18 @@ while offset < data.length()
     header = data[offset+0]*2**24 + data[offset+1]*2**16 + data[offset+2]*2**8 + data[offset+3]
 
     bitrate = BitRateTable[( header & 0x0000f000 ) >> 12] * 1000
-    samplerate = SampleRateTable[( header & 0x00000c00 ) << 10]
-    padding = ( header & 0x00000200 ) << 9
+    samplerate = SampleRateTable[( header & 0x00000c00 ) >> 10]
+    padding = ( header & 0x00000200 ) >> 9
 
-    frameSize = ( SamplesPerFrame / 8 * bitrate ) / samplerate + padding + 4
+    frameSize = ( SamplesPerFrame / 8 * bitrate ) / samplerate + padding
 
     puts( "bitrate     : #{bitrate.to_s()}\n" )
     puts( "samplerate  : #{samplerate.to_s()}\n" )
-    puts( "framesize: #{frameSize}\n" )
+    puts( "padding     : #{padding.to_s()}\n" )
+    puts( "framesize   : #{frameSize}\n" )
+    puts( "\n" )
 
-    offset += frameSize
+    offset += frameSize + 4
 end
 
 
