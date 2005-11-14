@@ -45,7 +45,7 @@ file = File.new( path, "r" )
 data = file.read()
 offset = 0
 
-if data[0,3] = "ID3"
+if data[0,3] == "ID3"
     offset = calcId3v2Size( data )
     puts( "ID3-V2 detected. Tag size: #{offset}\n" )
 else
