@@ -8,6 +8,10 @@
 
 
 def calcId3v2Size( data )
+    # Returns the size of the entire ID3-V2 tag. In other words, the offset from
+    # where the real mp3 data starts.
+    # @see http://id3lib.sourceforge.net/id3/id3v2com-00.html#sec3.1
+
     a = data[6]
     b = data[7]
     c = data[8]
