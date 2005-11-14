@@ -53,7 +53,7 @@ else
 end
 
 
-SamplesPerFrame = 384  # Constant for MPEG1 layer 3
+SamplesPerFrame = 1152  # Constant for MPEG1 layer 3
 BitRateTable = []
 BitRateTable << 0 << 32 << 40 << 48 << 56 << 64 << 80 << 96
 BitRateTable << 112 << 128 << 160 << 192 << 224 << 256 << 320
@@ -65,11 +65,11 @@ SampleRateTable << 44100 << 48000 << 32100
 while offset < data.length()
     header = data[offset+0]*2**24 + data[offset+1]*2**16 + data[offset+2]*2**8 + data[offset+3]
 
-    bitrate = BitRateTable[( header & 0x0000f000 ) >> 12]
+    bitrate = BitRateTable[( header & 0x0000f000 ) >> 12] * 1000
     samplerate = SampleRateTable[( header & 0x00000c00 ) << 10]
     padding = ( header & 0x00000200 ) << 9
 
-    frameSize = ( ( SamplesPerFrame / 8 * bitrate ) / samplerate ) + padding
+    frameSize = ( SamplesPerFrame / 8 * bitrate ) / samplerate + padding + 4
 
     puts( "bitrate     : #{bitrate.to_s()}\n" )
     puts( "samplerate  : #{samplerate.to_s()}\n" )
