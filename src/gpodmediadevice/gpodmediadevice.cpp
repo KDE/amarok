@@ -1042,7 +1042,7 @@ GpodMediaDevice::getCapacity( unsigned long *total, unsigned long *available )
     if(available)
         *available = vol_avail/1024;
 
-    return total > 0;
+    return vol_size > 0;
 }
 
 #include "gpodmediadevice.moc"

@@ -94,43 +94,46 @@ class SpaceLabel : public QLabel {
 
         p.fillRect(e->rect(), colorGroup().brush(QColorGroup::Background));
 
-        if(m_used > 0)
+        if(m_total > 0)
         {
-            QColor blueish(70,120,255);
-            if(e->rect().left() < used)
-            {
-                int right = used;
-                if(e->rect().right() < right)
+           if(m_used > 0)
+           {
+              QColor blueish(70,120,255);
+              if(e->rect().left() < used)
+              {
+                 int right = used;
+                 if(e->rect().right() < right)
                     right = e->rect().right();
-                p.fillRect(e->rect().left(), e->rect().top(),
-                            used, e->rect().bottom()+1, QBrush(blueish, Qt::SolidPattern));
-            }
-        }
+                 p.fillRect(e->rect().left(), e->rect().top(),
+                       used, e->rect().bottom()+1, QBrush(blueish, Qt::SolidPattern));
+              }
+           }
 
-        if(m_scheduled > 0)
-        {
-            QColor sched(70, 230, 120);
-            if(m_used + m_scheduled > m_total - m_total/1000)
-            {
-                sched.setRgb( 255, 120, 120 );
-            }
-            int left = e->rect().left();
-            if(used > left)
-                left = used;
-            int right = e->rect().right();
-            if(scheduled < right)
-                right = scheduled;
-            p.fillRect(left, e->rect().top(), right, e->rect().bottom()+1, QBrush(sched, Qt::SolidPattern));
-        }
+           if(m_scheduled > 0)
+           {
+              QColor sched(70, 230, 120);
+              if(m_used + m_scheduled > m_total - m_total/1000)
+              {
+                 sched.setRgb( 255, 120, 120 );
+              }
+              int left = e->rect().left();
+              if(used > left)
+                 left = used;
+              int right = e->rect().right();
+              if(scheduled < right)
+                 right = scheduled;
+              p.fillRect(left, e->rect().top(), right, e->rect().bottom()+1, QBrush(sched, Qt::SolidPattern));
+           }
 
-        if(m_used + m_scheduled < m_total)
-        {
-            QColor grey(180, 180, 180);
-            int left = e->rect().left();
-            if(scheduled > left)
-                left = scheduled;
-            int right = e->rect().right();
-            p.fillRect(left, e->rect().top(), right, e->rect().bottom()+1, colorGroup().brush(QColorGroup::Background));
+           if(m_used + m_scheduled < m_total)
+           {
+              QColor grey(180, 180, 180);
+              int left = e->rect().left();
+              if(scheduled > left)
+                 left = scheduled;
+              int right = e->rect().right();
+              p.fillRect(left, e->rect().top(), right, e->rect().bottom()+1, colorGroup().brush(QColorGroup::Background));
+           }
         }
         QLabel::paintEvent(e);
     }
