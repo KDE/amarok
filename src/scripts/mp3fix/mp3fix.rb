@@ -6,7 +6,22 @@
 # (c) 2005 Mark Kretschmann <markey@web.de>
 # License: GNU General Public License V2
 
+
+def calcId3v2Size( data )
+    a = data[6]
+    b = data[7]
+    c = data[8]
+    d = data[9]
+
+    size = a*2^21 + b*2^14 + c*2^7 + d
+    size += 10 # Header
+
+    return size
+end
+
+
 path = ""
+
 
 unless $*.empty?()
     path = $*[0]
@@ -25,12 +40,15 @@ if not FileTest::exist?( path )
     exit()
 end
 
+
 file = File.new( path, "r" )
 
 data = file.read()
+offset = 0
 
 if data[0,3] = "ID3"
-    puts( "ID3-V2 detected.\n" )
+    offset = calcId3v2Size( data )
+    puts( "ID3-V2 detected. Tag size: #{offset}\n" )
 else
     puts( "ID3-V1 detected.\n" )
 end
