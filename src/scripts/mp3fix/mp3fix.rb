@@ -77,7 +77,7 @@ while offset < data.length()
     puts( "framesize   : #{frameSize}\n" )
     puts( "\n" )
 
-    offset += frameSize + 4
+    offset += frameSize
 end
 
 
