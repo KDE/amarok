@@ -105,7 +105,7 @@ puts( "Length (seconds) : #{length}\n" )
 xing = String.new()
 xing << "Xing"
 
-flags = 0x0002  # Frames and Bytes fields valid
+flags = 0x0001 | 0x0002  # Frames and Bytes fields valid
 xing << 0 << 0 << 0 << flags
 
 xing << ( ( frameCount & 0xff000000 ) >> 24 )
