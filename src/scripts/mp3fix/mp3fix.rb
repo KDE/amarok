@@ -55,8 +55,8 @@ end
 
 SamplesPerFrame = 384  # Constant for MPEG1 layer 3
 BitRateTable = Array.new()
-BitRateTable << 0 << 32 << 64 << 96 << 128 << 160 << 192 << 224
-BitRateTable << 256 << 288 << 320 << 352 << 384 << 416 << 448
+BitRateTable << 0 << 32 << 40 << 48 << 56 << 64 << 80 << 96
+BitRateTable << 112 << 128 << 160 << 192 << 224 << 256 << 320
 
 # Iterate over all frames
 while offset < data.length()
