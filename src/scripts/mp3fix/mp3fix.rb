@@ -20,13 +20,19 @@ end
 
 
 path = ""
+destination = ""
 
 
 unless $*.empty?()
     path = $*[0]
+    destination = path
 else
     puts( "Error: Please specify an mp3 file for input.\n" )
     exit()
+end
+
+if $*.length() == 2
+    destination = $*[1]
 end
 
 if not path.include?( ".mp3" ) #FIXME
@@ -43,15 +49,17 @@ end
 file = File.new( path, "r" )
 
 data = file.read()
+id3length = 0
 offset = 0
 
 if data[0,3] == "ID3"
-    offset = calcId3v2Size( data )
+    id3length = calcId3v2Size( data )
     puts( "ID3-V2 detected. Tag size: #{offset}\n" )
 else
     puts( "ID3-V1 detected.\n" )
 end
 
+offset = id3length
 
 SamplesPerFrame = 1152  # Constant for MPEG1 layer 3
 BitRateTable = []
@@ -89,9 +97,29 @@ end
 averageBitrate = bitCount / frameCount
 length = data.length() / averageBitrate * 8
 
-puts( "Number of frames: #{frameCount}\n" )
-puts( "Average bitrate : #{averageBitrate}\n" )
-puts( "Length (seconds): #{length}\n" )
+puts( "Number of frames : #{frameCount}\n" )
+puts( "Average bitrate  : #{averageBitrate}\n" )
+puts( "Length (seconds) : #{length}\n" )
 
+
+xing = String.new()
+xing << "Xing"
+
+flags = 0x0002  # Frames and Bytes fields valid
+xing << 0 << 0 << 0 << flags
+
+xing << ( ( frameCount & 0xff000000 ) >> 24 )
+xing << ( ( frameCount & 0x00ff0000 ) >> 16 )
+xing << ( ( frameCount & 0x0000ff00 ) >> 8 )
+xing << ( ( frameCount & 0x000000ff ) >> 0 )
+
+xing << ( ( data.length() & 0xff000000 ) >> 24 )
+xing << ( ( data.length() & 0x00ff0000 ) >> 16 )
+xing << ( ( data.length() & 0x0000ff00 ) >> 8 )
+xing << ( ( data.length() & 0x000000ff ) >> 0 )
+
+
+# Insert XING header into string, after the first MPEG header
+data[id3length + 4, 0] = xing
 
 
