@@ -178,6 +178,9 @@ class MediaDeviceView : public QVBox
         MediaBrowser* m_parent;
 };
 
+/* at least the pure virtual functions have to be implemented by a media device,
+   all items are stored in a hierarchy of MediaItems,
+   when items are manipulated the MediaItems have to be updated accordingly */
 
 class MediaDevice : public QObject
 {
@@ -193,8 +196,14 @@ class MediaDevice : public QObject
 
         void        addURL( const KURL& url, MetaBundle *bundle=NULL, bool isPodcast=false, const QString &playlistName=QString::null );
         void        addURLs( const KURL::List urls, const QString &playlistName=QString::null );
+
+        // true if the device is connected
         virtual bool        isConnected() = 0;
+
+        // add tracks in 'items' to playlist represented by 'playlist' and insert them after 'after'
         virtual void        addToPlaylist(MediaItem *playlist, MediaItem *after, QPtrList<MediaItem> items) = 0;
+
+        // create a new playlist named 'name' consisting of 'items' and add it to 'parent'
         virtual MediaItem * newPlaylist(const QString &name, MediaItem *parent, QPtrList<MediaItem> items) = 0;
 
         static MediaDevice *instance() { return s_instance; }
@@ -220,6 +229,8 @@ class MediaDevice : public QObject
 
     private:
         int              sysCall(const QString & command);
+
+        // return MediaItem corresponding to track described by 'bundle' or NULL if no such track exists on device
         virtual MediaItem *trackExists( const MetaBundle& bundle ) = 0;
 
     protected:
@@ -238,19 +249,37 @@ class MediaDevice : public QObject
         void loadTransferList( const QString &path );
         void saveTransferList( const QString &path );
 
+        // fill 'total' with total and 'available' with available capacity on media device, unit is KB
         virtual bool getCapacity( unsigned long *total, unsigned long *available ) = 0;
+
+        // if possible, lock device for exclusive access
         virtual void lockDevice( bool ) = 0;
+
+        // allow access for others again
         virtual void unlockDevice() = 0;
+
+        // connect to device, do not open any dialog boxes if 'silent' is true,
+        // return true on success and fill m_listview with MediaItems
         virtual bool openDevice( bool silent=false ) = 0;
+
+        // disconnect device
         virtual bool closeDevice() = 0;
+
+        // write changes to device (especially to database)
         virtual void synchronizeDevice() = 0;
+
+        // add track located on media device at 'pathname' to device database,
+        // use metadata from 'bundle', add to podcasts if 'isPodcast' is true
         virtual MediaItem *addTrackToDevice(const QString& pathname, const MetaBundle& bundle, bool isPodcast) = 0;
         virtual void updateRootItems();
 
         void deleteFromDevice( MediaItem *item, bool onlyPlayed=false, bool recursing=false );
         void deleteFile( const KURL &url);
+
+        // recursively remove 'item', only the already played (sub-) if 'onlyPlayed' is true
         virtual bool deleteItemFromDevice( MediaItem *item, bool onlyPlayed=false ) = 0;
 
+        // return a pathname where a new track with metadata 'bundle' has to be transferred for adding to media device database
         virtual QString createPathname(const MetaBundle& bundle) = 0;
 
         static MediaDevice *s_instance;
