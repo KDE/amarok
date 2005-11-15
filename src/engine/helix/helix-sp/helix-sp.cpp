@@ -473,6 +473,7 @@ void HelixSimplePlayer::init(const char *corelibhome, const char *pluginslibhome
       HX_ENABLE_LOGGING(pEngineContext);
 #endif
       pEngineSetup->Setup(pEngineContext);
+      pEngineSetup->Release();
    }
 
    // get the client engine selector
@@ -1664,7 +1665,8 @@ void HelixSimplePlayer::seek(unsigned long pos, int playerIndex)
 unsigned long HelixSimplePlayer::where(int playerIndex) const
 {
    if (playerIndex < nNumPlayers && ppctrl[playerIndex]->pHSPContext)
-      return ppctrl[playerIndex]->pHSPContext->position();
+      //return ppctrl[playerIndex]->pHSPContext->position();
+      return ppctrl[playerIndex]->pPlayer->GetCurrentPlayTime();
    else
       return 0;
 }
