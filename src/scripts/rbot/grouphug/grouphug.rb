@@ -6,13 +6,19 @@ require "net/http"
 
 
 class OpinionPlugin < Plugin
-    def help(plugin, topic="")
-        "Grouphug plugin. Confess!"
+    def help( plugin, topic="" )
+        "Grouphug plugin. Confess! Usage: 'confess' for random concession, 'confess <number>' for specific one."
     end
 
-    def privmsg(m)
+    def privmsg( m )
         h = Net::HTTP.new( "grouphug.us", 80 )
-        resp, data = h.get( "/random" )
+        data = ""
+
+        if m.params()
+            resp, data = h.get( "/confessions/#{m.params()}" )
+        else
+            resp, data = h.get( "/random" )
+        end
 
         reg = Regexp.new( '(<td class="conf-text")(.*?)(<p>)(.*?)(</p>)', Regexp::MULTILINE )
         confession = reg.match( data )[4]
