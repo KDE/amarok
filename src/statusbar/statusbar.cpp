@@ -229,6 +229,12 @@ StatusBar::engineTrackPositionChanged( long position, bool /*userSeek*/ )
 }
 
 void
+StatusBar::engineTrackLengthChanged( long length )
+{
+    m_slider->setMaxValue( length * 1000 );
+}
+
+void
 StatusBar::drawTimeDisplay( int ms )  //SLOT
 {
     int seconds = ms / 1000;

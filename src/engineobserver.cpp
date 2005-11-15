@@ -114,6 +114,18 @@ void EngineSubject::trackPositionChangedNotify( long position, bool userSeek )
 }
 
 
+void EngineSubject::trackLengthChangedNotify( long length )
+{
+    QPtrListIterator<EngineObserver> it( Observers );
+    EngineObserver *observer;
+    while( ( observer = it.current() ) != 0 )
+    {
+        ++it;
+        observer->engineTrackLengthChanged( length );
+    }
+}
+
+
 void EngineSubject::attach( EngineObserver *observer )
 {
     if( !observer || Observers.find( observer ) != -1 )

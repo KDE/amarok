@@ -39,6 +39,7 @@ public:
     virtual void engineTrackEnded( int /*finalPosition*/, int /*trackLength*/ ) {}
     virtual void engineVolumeChanged( int /*percent*/ ) {}
     virtual void engineTrackPositionChanged( long /*position*/ , bool /*userSeek*/ ) {}
+    virtual void engineTrackLengthChanged( long /*length*/ ) {}
 
 private:
     EngineSubject *m_subject;
@@ -64,6 +65,7 @@ protected:
     void volumeChangedNotify( int /*percent*/ );
     /* userSeek means the position didn't change due to normal playback */
     void trackPositionChangedNotify( long /*position*/ , bool userSeek=false );
+    void trackLengthChangedNotify( long /*length*/ );
 
 private:
     QPtrList<EngineObserver> Observers;

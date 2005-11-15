@@ -331,8 +331,6 @@ GstEngine::position() const
 uint
 GstEngine::length() const
 {
-    DEBUG_BLOCK
-
     if ( !m_pipelineFilled ) return 0;
 
     GstFormat fmt = GST_FORMAT_TIME;

@@ -334,9 +334,6 @@ XineEngine::position() const
 uint
 XineEngine::length() const
 {
-    if( m_url.fileName().endsWith( ".ogg", false ) )
-        return 0;
-
     int pos;
     int time;
     int length = 0;

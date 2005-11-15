@@ -344,8 +344,8 @@ void EngineController::play( const MetaBundle &bundle )
         if( m_engine->play() )
         {
             // Ask engine for track length, if available. It's more reliable than TagLib.
-            const uint trackLength = m_engine->length();
-            if ( trackLength ) m_bundle.setLength( trackLength / 1000 );
+            const uint trackLength = m_engine->length() / 1000;
+            if ( trackLength ) m_bundle.setLength( trackLength );
 
             m_xFadeThisTrack = AmarokConfig::crossfade() &&
                                m_engine->hasPluginProperty( "HasCrossfade" ) &&
@@ -586,6 +586,15 @@ void EngineController::slotEngineMetaData( const Engine::SimpleMetaBundle &simpl
 
 void EngineController::slotMainTimer() //SLOT
 {
+    // Ask engine for track length and update if it has changed, so that we get
+    // more precise data. The estimated length can change dynamically with VBR
+    // encoded media, since the first frame's bitrate does not represent the whole track.
+    const uint trackLength = m_engine->length() / 1000;
+    if ( trackLength && trackLength != m_bundle.length() ) {
+        m_bundle.setLength( trackLength );
+        trackLengthChangedNotify( trackLength );
+    }
+
     const uint position = m_engine->position();
 
     trackPositionChangedNotify( position );
