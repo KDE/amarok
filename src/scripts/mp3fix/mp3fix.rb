@@ -58,7 +58,7 @@ offset = 0
 
 if data[0,3] == "ID3"
     id3length = calcId3v2Size( data )
-    puts( "ID3-V2 detected. Tag size: #{offset}\n" )
+    puts( "ID3-V2 detected. Tag size: #{id3length}\n" )
 else
     puts( "ID3-V1 detected.\n" )
 end
