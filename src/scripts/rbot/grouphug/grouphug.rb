@@ -7,7 +7,7 @@ require "net/http"
 
 class OpinionPlugin < Plugin
     def help( plugin, topic="" )
-        "Grouphug plugin. Confess! Usage: 'confess' for random concession, 'confess <number>' for specific one."
+        "Grouphug plugin. Confess! Usage: 'confess' for random confession, 'confess <number>' for specific one."
     end
 
     def privmsg( m )
