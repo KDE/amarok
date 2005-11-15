@@ -68,6 +68,8 @@ BitRateTable << 112 << 128 << 160 << 192 << 224 << 256 << 320
 SampleRateTable = []
 SampleRateTable << 44100 << 48000 << 32100
 
+channelMode = data[offset+3] & 0xc0 >> 6
+
 frameCount = 0
 bitCount = 0
 
@@ -120,7 +122,8 @@ xing << ( ( data.length() & 0x000000ff ) >> 0 )
 
 
 # Insert XING header into string, after the first MPEG header
-data[id3length + 4, 0] = xing
+xingOffset = channelMode == 0x03 ? 17 : 32
+data[id3length + 4 + xingOffset, 0] = xing
 
 
 destfile = File::open( destination, File::CREAT|File::TRUNC|File::WRONLY )
