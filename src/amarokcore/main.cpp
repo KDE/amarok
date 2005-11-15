@@ -65,13 +65,16 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Adeodato Simó", I18N_NOOP( "Patches" ), "asp16@alu.ua.es" );
     aboutData.addCredit( "Andreas Mair", I18N_NOOP( "MySQL support" ), "am_ml@linogate.com" );
     aboutData.addCredit( "Andrew de Quincey", I18N_NOOP( "Postgresql support" ), "adq_dvb@lidskialf.net" );
+    aboutData.addCredit( "Christie Harris", I18N_NOOP( "roKymoter (dangle)" ), "dangle.baby@gmail.com" );
     aboutData.addCredit( "Dan Leinir Turthra Jensen", I18N_NOOP( "First-run wizard, usability" ), "admin@REMOVEleinir.dk" );
+    aboutData.addCredit( "Dan Meltzer", I18N_NOOP( "roKymoter (hydrogen)" ), "hydrogen@notyetimplemented.com" );
     aboutData.addCredit( "Enrico Ros", I18N_NOOP( "Analyzers, Context Browser and systray eye-candy" ), "eros.kde@email.it" );
     aboutData.addCredit( "Florian 'da-flow' Egerer", I18N_NOOP( "amaroK application icon 'Blue Wolf'" ), "flo_for_never@gmx.at" );
     aboutData.addCredit( "Gérard Dürrmeyer", I18N_NOOP( "icons and image work" ), "gerard@randomtree.com" );
     aboutData.addCredit( "Greg Meyer", I18N_NOOP( "Live CD, Bug squashing (oggb4mp3)" ), "greg@gkmweb.com" );
-    aboutData.addCredit( "Harald Sitter", I18N_NOOP( "handbook enhancements, translations, bug fixes, screenshots (apachelogger)" ), "harald.sitter@kdemail.net" );
+    aboutData.addCredit( "Harald Sitter", I18N_NOOP( "handbook enhancements, translations, bug fixes, screenshots, roKymoter (apachelogger)" ), "harald.sitter@kdemail.net" );
     aboutData.addCredit( "Jarkko Lehti", I18N_NOOP( "Tester, IRC channel operator, whipping" ), "grue@iki.fi" );
+    aboutData.addCredit( "Jocke Andersson", I18N_NOOP( "roKymoter (Firetech)" ), "ajocke@gmail.com" );
     aboutData.addCredit( "Kenneth Wesley Wimer II", I18N_NOOP( "Icons" ), "kwwii@bootsplash.org" );
     aboutData.addCredit( "Kenny Lemieux", I18N_NOOP( "amaroK webmaster" ), "swaft@pwsp.net" );
     aboutData.addCredit( "Marco Gulino", I18N_NOOP( "Konqueror Sidebar, some DCOP methods" ), "marco@kmobiletools.org" );
@@ -86,6 +89,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Scott Wheeler", I18N_NOOP( "TagLib & ktrm code" ), "wheeler@kde.org" );
     aboutData.addCredit( "Stefan Bogner", I18N_NOOP( "Loadsa stuff" ), "bochi@online.ms" );
     aboutData.addCredit( "Stefan Siegel", I18N_NOOP( "Patches, Bugfixes" ), "kde@sdas.de" );
+    aboutData.addCredit( "Sven Krohlas", I18N_NOOP( "roKymoter (sven423)" ), "sven@asbest-online.de" );
     aboutData.addCredit( "Whitehawk Stormchaser", I18N_NOOP( "Tester, patches" ), "zerokode@gmx.net" );
 
     KApplication::disableAutoDcopRegistration();
