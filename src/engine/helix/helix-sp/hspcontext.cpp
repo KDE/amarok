@@ -171,9 +171,9 @@ HSPEngineContext::ReadPref(const char* pref_key, IHXBuffer*& buffer)
        {
           ibuf->SetSize(2);
           outbuf = ibuf->GetBuffer();
-          strcpy((char *)outbuf, "PCM");
+          strcpy((char *)outbuf, "default");
           buffer = ibuf;
-          m_splayer->STDERR("Setting Mixer Element to use the PCM mixer\n");
+          m_splayer->STDERR("Setting Mixer Element to use the default mixer\n");
        }
     }
     else if (0 == (stricmp(pref_key, "AlsaPCMDeviceName")))
@@ -189,8 +189,31 @@ HSPEngineContext::ReadPref(const char* pref_key, IHXBuffer*& buffer)
           m_splayer->STDERR("Setting Sound Device to \"%s\"\n", m_splayer->getDevice());
        }
     }
-    else if (0 == (stricmp(pref_key, "AlsaPCMDeviceName")))
+    else if (0 == (stricmp(pref_key, "UseDirectSound")))
     {
+       m_CommonClassFactory->CreateInstance(CLSID_IHXBuffer, (void **) &ibuf);
+       if (ibuf)
+       {
+          ibuf->SetSize(2);
+          outbuf = ibuf->GetBuffer();
+          strcpy((char *)outbuf, "1");
+          buffer = ibuf;
+
+          m_splayer->STDERR("setting UseDirectSound to value = %d\n",atol((const char*) buffer->GetBuffer()));
+       }
+    }
+    else if (0 == (stricmp(pref_key, "MinimumAudioStartupInitalPushdown")))
+    {
+       m_CommonClassFactory->CreateInstance(CLSID_IHXBuffer, (void **) &ibuf);
+       if (ibuf)
+       {
+          ibuf->SetSize(5);
+          outbuf = ibuf->GetBuffer();
+          strcpy((char *)outbuf, "800");
+          buffer = ibuf;
+
+          m_splayer->STDERR("setting initial audio pushdown to value = %d\n",atol((const char*) buffer->GetBuffer()));
+       }
     }
     else
     {

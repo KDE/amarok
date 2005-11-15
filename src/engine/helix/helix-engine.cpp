@@ -532,6 +532,11 @@ const Engine::Scope &HelixEngine::scope()
    /////////////////////////////////////////////////////////////////////
    unsigned long w;
    unsigned long hpos = position();
+
+   //debug() << "hpos=" << hpos << " lastpos=" << m_lastpos << " lasttime=" << m_lasttime << endl;
+   //if (m_item)
+   //   debug() << "      time=" << m_item->time << " etime=" << m_item->etime << endl;
+
    if (hpos == m_lastpos)
    {
       if (m_item && hpos >= m_item->time && hpos <= m_item->etime && (m_lasttime < m_item->time || m_lasttime > m_item->etime) )
