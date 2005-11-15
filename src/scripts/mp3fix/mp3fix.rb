@@ -73,6 +73,13 @@ SampleRateTable = []
 SampleRateTable << 44100 << 48000 << 32100
 
 channelMode = data[offset+3] & 0xc0 >> 6
+xingOffset = channelMode == 0x03 ? 17 : 32
+
+if data[id3length + 4 + xingOffset, 4] == "Xing"
+    puts( "This file already contains a XING header. Aborting." )
+    exit()
+end
+
 
 frameCount = 0
 bitCount = 0
@@ -126,7 +133,6 @@ xing << ( ( data.length() & 0x000000ff ) >> 0 )
 
 
 # Insert XING header into string, after the first MPEG header
-xingOffset = channelMode == 0x03 ? 17 : 32
 data[id3length + 4 + xingOffset, 0] = xing
 
 
