@@ -23,11 +23,11 @@ path = ""
 destination = ""
 
 if $*.empty?() or $*[0] == "--help"
-    puts( "Usage: mp3fix.rb source [destination]\n" )
-    puts( "\n" )
-    puts( "Mp3fix is a tool for fixing VBR encoded mp3 that show a bogus tracklength in your\n" )
-    puts( "audio player. Mp3fix calculates the real track length and adds the missing XING\n" )
-    puts( "header to the file\n" )
+    puts( "Usage: mp3fix.rb source [destination]" )
+    puts()
+    puts( "Mp3fix is a tool for fixing VBR encoded mp3 that show a bogus tracklength in your" )
+    puts( "audio player. Mp3fix calculates the real track length and adds the missing XING" )
+    puts( "header to the file." )
     exit()
 end
 
@@ -40,12 +40,12 @@ end
 
 
 if not FileTest::exist?( path )
-    puts( "Error: File not found.\n" )
+    puts( "Error: File not found." )
     exit()
 end
 
 if not path.include?( ".mp3" ) #FIXME
-    puts( "Error: File is not mp3.\n" )
+    puts( "Error: File is not mp3." )
     exit()
 end
 
@@ -58,9 +58,9 @@ offset = 0
 
 if data[0,3] == "ID3"
     id3length = calcId3v2Size( data )
-    puts( "ID3-V2 detected. Tag size: #{id3length}\n" )
+    puts( "ID3-V2 detected. Tag size: #{id3length}" )
 else
-    puts( "ID3-V1 detected.\n" )
+    puts( "ID3-V1 detected." )
 end
 
 offset = id3length
@@ -94,11 +94,11 @@ while offset < data.length()
 
     frameSize = ( SamplesPerFrame / 8 * bitrate ) / samplerate + padding
 
-#     puts( "bitrate     : #{bitrate.to_s()}\n" )
-#     puts( "samplerate  : #{samplerate.to_s()}\n" )
-#     puts( "padding     : #{padding.to_s()}\n" )
-#     puts( "framesize   : #{frameSize}\n" )
-#     puts( "\n" )
+#     puts( "bitrate     : #{bitrate.to_s()}" )
+#     puts( "samplerate  : #{samplerate.to_s()}" )
+#     puts( "padding     : #{padding.to_s()}" )
+#     puts( "framesize   : #{frameSize}" )
+#     puts()
 
     frameCount += 1
     bitCount += bitrate
@@ -110,9 +110,9 @@ end
 averageBitrate = bitCount / frameCount
 length = data.length() / averageBitrate * 8
 
-puts( "Number of frames : #{frameCount}\n" )
-puts( "Average bitrate  : #{averageBitrate}\n" )
-puts( "Length (seconds) : #{length}\n" )
+puts( "Number of frames : #{frameCount}" )
+puts( "Average bitrate  : #{averageBitrate}" )
+puts( "Length (seconds) : #{length}" )
 
 
 xing = String.new()
@@ -139,5 +139,5 @@ data[id3length + 4 + xingOffset, 0] = xing
 destfile = File::open( destination, File::CREAT|File::TRUNC|File::WRONLY )
 destfile << data
 
-puts( "done.\n" )
+puts( "done." )
 
