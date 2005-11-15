@@ -19,3 +19,10 @@ void Options1::init()
     moodFrame->hide();
 #endif
 }
+
+void Options1::slotUpdateMoodFrame()
+{
+    kcfg_MakeMoodier->setEnabled(kcfg_ShowMoodbar->isChecked());
+    kcfg_AlterMood->setEnabled(kcfg_ShowMoodbar->isChecked() && kcfg_MakeMoodier->isChecked());
+    kcfg_MoodsWithMusic->setEnabled(kcfg_ShowMoodbar->isChecked());
+}

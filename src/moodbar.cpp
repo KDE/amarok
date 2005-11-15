@@ -27,6 +27,7 @@
 #include "threadweaver.h"
 #include "playlist.h"
 #include "moodbar.h"
+#include "statusbar.h"
 
 #include <qapplication.h>
 #include <qbitmap.h>
@@ -63,11 +64,6 @@ bool amaroK::CreateMood::doJob()
 	//do some work in thread...
 	QString theMoodName = theFilename;
 	QString ext = theMoodName.right(3).lower();
-	if(ext != "wav" && ext != "mp3" && ext != "ogg")
-	{
-		debug() << "CreateMood: Format not recognised." << endl;
-		return false;
-	}
 	theMoodName.truncate(theMoodName.findRev('.'));
 	theMoodName += ".mood";
 	if(AmarokConfig::moodsWithMusic())
@@ -88,6 +84,7 @@ bool amaroK::CreateMood::doJob()
 	debug() << "MakeMood: Creating mood with Exscalibar. Hold onto your hats..." << endl;
 	ProcessorGroup g;
 	ProcessorFactory::create("Player")->init("P", g, Properties("Filename", theFilename));
+	if(g["P"].isInitFailed()) { amaroK::StatusBar::instance()->longMessageThreadSafe("<strong>Cannot generate Mood data:</strong> Format <em>"+ext+"</em> not supported by your Exscalibar installation.", KDE::StatusBar::Warning); g.deleteAll(); return false; }
 	SubProcessorFactory::createDom("Mean")->init("M", g);
 	SubProcessorFactory::createDom("FFT")->init("F", g, Properties("Size", 1024)("Step", 512));
 	SubProcessorFactory::createDom("Bark")->init("B", g);
@@ -109,14 +106,12 @@ bool amaroK::CreateMood::doJob()
 		debug() << "MakeMood: Done processing. Cleaning up..." << endl;
 		g.stop();
 	}
-	else
-		debug() << "MakeMood: Exscalibar reports a problem analysing the song." << endl;
 	g.disconnectAll();
 	g.deleteAll();
 	debug() << "MakeMood: All tidied up." << endl;
-	if(!QFile::exists(theMoodName)) return false;
+	if(!QFile::exists(theMoodName)) { amaroK::StatusBar::instance()->longMessageThreadSafe("<strong>Cannot generate Mood data:</strong> Could not create file (check permissions and Exscalibar installation).", KDE::StatusBar::Warning); return false; }
 	QFile mood(theMoodName);
-	if(!mood.open(IO_ReadOnly)) return false;
+	if(!mood.open(IO_ReadOnly)) { amaroK::StatusBar::instance()->longMessageThreadSafe("<strong>Cannot generate Mood data:</strong> Could not verify file (check permissions).", KDE::StatusBar::Warning); return false; }
 	return true;
 #else
 	return false;

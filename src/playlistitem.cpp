@@ -568,8 +568,9 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
             // paint the moodbar
             int samples = width;
             int aSize = theArray.size() * 180 / length();
-            QMemArray<int> modalHue(36);
-            for(int i = 0; i < 36; i++) modalHue[i] = 0;
+            int quantise = 12;
+            QMemArray<int> modalHue(quantise);
+            for(int i = 0; i < quantise; i++) modalHue[i] = 0;
             for(int x = 0; x < width; x++)
             {
                 uint a = x * aSize / samples, aa = ((x + 1) * aSize / samples);
@@ -590,7 +591,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                     }
                 int h, s, v;
                 QColor(CLAMP(0, int(r / float(aa - a)), 255), CLAMP(0, int(g / float(aa - a)), 255), CLAMP(0, int(b / float(aa - a)), 255), QColor::Rgb).getHsv(&h, &s, &v);
-                modalHue[CLAMP(0, h / 10, 35)] += v;
+                modalHue[CLAMP(0, h * quantise / 360, quantise - 1)] += v;
                 for(int y = 0; y <= height() / 2; y++)
                 {
                     float coeff = float(y) / float(height() / 2);
@@ -603,13 +604,13 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                 }
             }
             int mx = 0;
-            for(int i = 1; i < 36; i++) if(modalHue[i] > modalHue[mx]) mx = i;
-            theHueOrder = mx * 36 * 36;
+            for(int i = 1; i < quantise; i++) if(modalHue[i] > modalHue[mx]) mx = i;
+            theHueOrder = mx * quantise * quantise;
             modalHue[mx] = 0;
-            for(int i = 0; i < 36; i++) if(modalHue[i] > modalHue[mx]) mx = i;
-            theHueOrder += mx * 36;
+            for(int i = 0; i < quantise; i++) if(modalHue[i] > modalHue[mx]) mx = i;
+            theHueOrder += mx * quantise;
             modalHue[mx] = 0;
-            for(int i = 0; i < 36; i++) if(modalHue[i] > modalHue[mx]) mx = i;
+            for(int i = 0; i < quantise; i++) if(modalHue[i] > modalHue[mx]) mx = i;
             theHueOrder += mx;
         }
         p.drawPixmap( 0, 0, theMoodbar );

@@ -157,8 +157,17 @@
                             <property name="name">
                                 <cstring>kcfg_ShowMoodbar</cstring>
                             </property>
+                            <property name="enabled">
+                                <bool>true</bool>
+                            </property>
                             <property name="text">
                                 <string>&amp;Use Moodbar</string>
+                            </property>
+                            <property name="accel">
+                                <string>Alt+U</string>
+                            </property>
+                            <property name="checked">
+                                <bool>true</bool>
                             </property>
                             <property name="toolTip" stdset="0">
                                 <string>Displays a visual representation of the current track in the slider bar of the player window and a column in the playlist window.</string>
@@ -197,10 +206,13 @@
                                         <cstring>kcfg_MakeMoodier</cstring>
                                     </property>
                                     <property name="enabled">
-                                        <bool>false</bool>
+                                        <bool>true</bool>
                                     </property>
                                     <property name="text">
                                         <string>&amp;Make Moodier:</string>
+                                    </property>
+                                    <property name="accel">
+                                        <string>Alt+M</string>
                                     </property>
                                     <property name="toolTip" stdset="0">
                                         <string>When enabled, the hue distribution is quantised and respread evenly, giving a prettier but less meaningful output.</string>
@@ -281,10 +293,13 @@
                                         <cstring>kcfg_MoodsWithMusic</cstring>
                                     </property>
                                     <property name="enabled">
-                                        <bool>false</bool>
+                                        <bool>true</bool>
                                     </property>
                                     <property name="text">
                                         <string>Stor&amp;e Mood data files with music</string>
+                                    </property>
+                                    <property name="accel">
+                                        <string>Alt+E</string>
                                     </property>
                                     <property name="toolTip" stdset="0">
                                         <string>Enabling this option stores Mood data files with the music files. Disabling stores them in your home folder.</string>
@@ -438,7 +453,7 @@
                         <cstring>kcfg_ShowStatusBar</cstring>
                     </property>
                     <property name="text">
-                        <string>Show s&amp;tatusbar</string>
+                        <string>&amp;Show statusbar</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Check to enable the statusbar on the playlist window.&lt;br&gt;</string>
@@ -478,22 +493,19 @@
     <connection>
         <sender>kcfg_ShowMoodbar</sender>
         <signal>toggled(bool)</signal>
-        <receiver>kcfg_MoodsWithMusic</receiver>
-        <slot>setEnabled(bool)</slot>
+        <receiver>General</receiver>
+        <slot>slotUpdateMoodFrame()</slot>
     </connection>
     <connection>
-        <sender>kcfg_ShowMoodbar</sender>
+        <sender>kcfg_MakeMoodier</sender>
         <signal>toggled(bool)</signal>
-        <receiver>kcfg_MakeMoodier</receiver>
-        <slot>setEnabled(bool)</slot>
-    </connection>
-    <connection>
-        <sender>kcfg_ShowMoodbar</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>kcfg_AlterMood</receiver>
-        <slot>setEnabled(bool)</slot>
+        <receiver>General</receiver>
+        <slot>slotUpdateMoodFrame()</slot>
     </connection>
 </connections>
+<slots>
+    <slot>slotUpdateMoodFrame()</slot>
+</slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
 </functions>
