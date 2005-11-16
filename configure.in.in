@@ -722,7 +722,7 @@ AC_SUBST(IFP_SOURCES)
 AC_SUBST(IFP_INCLUDES)
 AC_SUBST(IFP_LIBS)
 
-AM_CONDITIONAL(with_ifp, [test x$have_libifp = xyes])
+AM_CONDITIONAL(with_ifp, [test x$have_ifp = xyes])
 
 ###############################################################################
 # END IFP CHECK
