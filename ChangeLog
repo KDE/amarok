@@ -6,7 +6,7 @@ amaroK ChangeLog
 VERSION 1.4:
   FEATURES:
     * Mediabrowser support for the iRiver ifp series!
-    * New dcop call playlistbrowser loadPlaylist (BR 110082)
+    * New dcop call playlistbrowser loadPlaylist. (BR 110082)
     * New Edit Track Information dialog. Lyrics can be edited there, comments
       can have more than one line, and some statistics are available.
       (BR 93982)
