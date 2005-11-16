@@ -193,34 +193,29 @@ IfpMediaDevice::expandItem( QListViewItem *item ) // SLOT
 }
 
 
-/// Add Tracks.  We don't use the bundle b/c ifp reads from the file itself
-
 MediaItem *
 IfpMediaDevice::addTrackToDevice( const QString& pathname, const MetaBundle& bundle, bool /*isPodcast*/ )
 {
     KURL url = KURL::fromPathOrURL( pathname );
 
-
-    const QString src = unEscape( QString( pathname ) );
-    const QString dest = unEscape( QString( "\\" + url.filename() ) );
+    const QCString src = QFile::encodeName( pathname );
+    const QCString dest = QFile::encodeName( "\\" + url.filename() );
 
     int result = uploadTrack( src, dest );
 
     checkResult( result, i18n("Could not upload: %1").arg(dest) );
 
-    addTrackToList( IFP_FILE, bundle.prettyTitle() );
+    addTrackToList( IFP_FILE, url.filename() );
 
     return m_last;
 }
 
 int
-IfpMediaDevice::uploadTrack( const QString& src, const QString& dest )
+IfpMediaDevice::uploadTrack( const QCString& src, const QCString& dest )
 {
-//     empty the buffer (in case the last upload was killed or IFP was full)
-//     uploadData.resize(0);
     debug() << "Transferring " << src << " to: " << dest << endl;
 
-    return ifp_upload_file( &m_ifpdev, src.ascii(), dest.ascii(), 0, 0 /*uploadCallback, this */);
+    return ifp_upload_file( &m_ifpdev, src, dest, 0, 0 /*uploadCallback, this */);
 }
 
 int
@@ -250,7 +245,7 @@ IfpMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/ )
     }
 
     QCString encodedPath = QFile::encodeName( path );
-    debug() << "Deleting encoded file: " << encodedPath << endl;
+    debug() << "Deleting file: " << encodedPath << endl;
     int err;
 
     switch( item->type() )

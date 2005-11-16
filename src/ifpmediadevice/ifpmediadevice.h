@@ -70,7 +70,7 @@ class IfpMediaDevice : public MediaDevice
         void              unEscape( QString &s );
 
         // upload
-        int               uploadTrack( const QString& src, const QString& dest );
+        int               uploadTrack( const QCString& src, const QCString& dest );
         int               uploadCallback( void *pData, ifp_transfer_status *progress );
 
         // listDir
