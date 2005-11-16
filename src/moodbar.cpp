@@ -165,7 +165,7 @@ QValueVector<QColor> amaroK::readMood(const QString path)
 			debug() << "ReadMood: Making moodier!" << endl;
 			int threshold, rangeStart = 0, rangeDelta = 359, sat = 100, val = 100;
 			switch(AmarokConfig::alterMood())
-			{	
+			{
 				// Angry
 				case 1: threshold = s / 360 * 9; rangeStart = 45; rangeDelta = -45; sat = 200; val = 100; break;
 				// Frozen
@@ -193,3 +193,6 @@ QValueVector<QColor> amaroK::readMood(const QString path)
 	debug() << "ReadMood: All done." << endl;
 	return theArray;
 }
+
+
+#include "moodbar.moc"

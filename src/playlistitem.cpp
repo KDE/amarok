@@ -942,3 +942,6 @@ const QString &PlaylistItem::attemptStore( const QString &candidate ) //static
 
     return stringStore[hash];
 }
+
+
+#include "playlistitem.moc"
