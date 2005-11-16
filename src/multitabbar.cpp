@@ -23,6 +23,7 @@
     Boston, MA 02111-1307, USA.
 ***************************************************************************/
 
+#include "debug.h"
 #include "multitabbar.h"
 #include "multitabbar.moc"
 #include "multitabbar_p.h"
@@ -185,6 +186,8 @@ void MultiTabBarInternal::mousePressEvent( QMouseEvent *ev )
         tab->setVisible( !popup.isItemChecked(col) );
 
         amaroK::config( "BrowserBar" )->writeEntry( tab->text(), tab->visible() );
+
+        if ( tab->isOn() ) debug() << "TODO: select another tab !" << endl;
 
         if ( tab->visible() )
             tab->show();
@@ -379,8 +382,20 @@ bool MultiTabBarInternal::eventFilter( QObject *, QEvent *e )
 
         // Calculate index of the new tab to activate
         int newTab = i - delta;
-        if ( newTab < 0 ) newTab = 0;
-        if ( newTab > (int)m_tabs.count() - 1 ) newTab = m_tabs.count() - 1;
+        while (true) {
+            if ( newTab < 0 ) {
+                newTab = i;
+                break;
+            }
+            if ( newTab > (int)m_tabs.count() - 1 ) {
+                newTab = i;
+                break;
+            }
+            if ( m_tabs.at( newTab )->visible() )
+                break;
+            // try one tab more
+            newTab -= delta;
+        }
 
         if ( i < m_tabs.count() && newTab != (int)i )
             m_tabs.at( newTab )->animateClick();
