@@ -183,17 +183,25 @@ void MultiTabBarInternal::mousePressEvent( QMouseEvent *ev )
     int col = popup.exec( static_cast<QMouseEvent *>(ev)->globalPos() );
     if ( col >= 0 ) {
         MultiTabBarTab* tab = m_tabs.at( col );
+
         tab->setVisible( !popup.isItemChecked(col) );
-
         amaroK::config( "BrowserBar" )->writeEntry( tab->text(), tab->visible() );
-
-        if ( tab->isOn() ) debug() << "TODO: select another tab !" << endl;
 
         if ( tab->visible() )
             tab->show();
-        else
+        else {
             tab->hide();
-
+            // if the user wants to hide the currently avtive tab
+            // turn on another tab
+            if ( tab->isOn() )
+                for( uint i = 0; i < m_tabs.count(); i++ ) {
+                    if ( m_tabs.at( i )->visible() ) {
+                        m_tabs.at( i )->animateClick();
+                        break;
+                    }
+                }
+        }
+        // redraw the bar
         resizeEvent( 0 );
     }
 }
