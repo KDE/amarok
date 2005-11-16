@@ -241,11 +241,10 @@ ScanController::startElement( const QString&, const QString& localName, const QS
         // Update dir statistics for rescanning purposes
         if( info.exists() )
             CollectionDB::instance()->updateDirStats( folder, info.lastModified().toTime_t(), !m_incremental ? m_db : 0 );
-        else {
-            if( m_incremental ) {
-                CollectionDB::instance()->removeSongsInDir( folder );
-                CollectionDB::instance()->removeDirFromCollection( folder );
-            }
+
+        if( AmarokConfig::scanRecursively() ) {
+            CollectionDB::instance()->removeSongsInDir( folder );
+            CollectionDB::instance()->removeDirFromCollection( folder );
         }
     }
 
