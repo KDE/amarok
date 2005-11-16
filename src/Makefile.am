@@ -13,6 +13,10 @@ if with_libgpod
     IPOD_LIBS = gpodmediadevice/libgpodmediadevice.la
 endif
 
+#if with_ifp
+    IFP_SUBDIR = ifpmediadevice
+    IFP_LIBS = ifpmediadevice/libifpmediadevice.la -lusb -lifp
+#endif
 
 bin_PROGRAMS = amarokapp
 
@@ -31,6 +35,7 @@ SUBDIRS = \
     metadata \
     $(KONQSIDEBAR_SUBDIR) \
     $(IPOD_SUBDIR) \
+    $(IFP_SUBDIR) \
     statusbar \
     collectionscanner
 
@@ -48,6 +53,7 @@ INCLUDES = \
     $(mysql_includes) \
     $(postgresql_includes) \
     $(LIBGPOD_CFLAGS) \
+    $(IFP_CFLAGS) \
     $(EXSCALIBAR_CFLAGS) \
     $(all_includes)
 
@@ -136,7 +142,7 @@ amarokapp_LDADD = \
     $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KHTML) $(LIB_KNEWSTUFF) \
     $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) $(EXSCALIBAR_LIBS) \
     $(LIB_TUNEPIMP) $(LIBGPOD_LIBS) \
-    $(IPOD_LIBS) \
+    $(IPOD_LIBS) $(IFP_LIBS) \
     $(mysql_libs) \
     $(postgresql_libs)
 

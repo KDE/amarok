@@ -693,6 +693,44 @@ AM_CONDITIONAL(with_konqsidebar, [test x$have_konqsidebar = xyes])
 
 
 ###############################################################################
+# BEGIN IFP CHECK
+###############################################################################
+### mediabrowser.cpp can use libifp if available
+
+AC_ARG_WITH(ifp,
+    AC_HELP_STRING([--with-ifp],[build amaroK with ifp support]),
+    [build_ifp=$withval],
+    [build_ifp=yes]
+)
+
+if test "$build_ifp" != "no"; then
+
+    AC_CHECK_HEADERS([ifp.h], [have_ifp=yes], [], [])
+    AC_CHECK_HEADERS([usb.h], [have_usb=yes], [], [])
+    
+    if test "$have_ifp" = "yes"; then
+        AC_DEFINE(HAVE_IFP, 1, [have ifp])
+        IFP_SOURCES=ifpmediadevice.cpp
+    else
+        AC_MSG_RESULT($have_ifp)
+        have_ifp=no
+    fi
+
+fi
+
+AC_SUBST(IFP_SOURCES)
+AC_SUBST(IFP_INCLUDES)
+AC_SUBST(IFP_LIBS)
+
+AM_CONDITIONAL(with_ifp, [test x$have_libifp = xyes])
+
+###############################################################################
+# END IFP CHECK
+###############################################################################
+
+
+
+###############################################################################
 # BEGIN LIBGPOD CHECK
 ###############################################################################
 ### mediabrowser.cpp can use libgpod if available

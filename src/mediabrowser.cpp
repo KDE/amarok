@@ -22,6 +22,10 @@
 #include "gpodmediadevice/gpodmediadevice.h"
 #endif
 
+#ifdef HAVE_IFP
+#include "ifpmediadevice/ifpmediadevice.h"
+#endif
+
 #include <qdatetime.h>
 #include <qgroupbox.h>
 #include <qimage.h>
@@ -57,6 +61,7 @@
 
 MediaDevice *MediaDevice::s_instance = 0;
 
+QPixmap *MediaItem::s_pixUnknown = NULL;
 QPixmap *MediaItem::s_pixArtist = NULL;
 QPixmap *MediaItem::s_pixAlbum = NULL;
 QPixmap *MediaItem::s_pixFile = NULL;
@@ -66,11 +71,16 @@ QPixmap *MediaItem::s_pixPlaylist = NULL;
 QPixmap *MediaItem::s_pixInvisible = NULL;
 QPixmap *MediaItem::s_pixStale = NULL;
 QPixmap *MediaItem::s_pixOrphaned = NULL;
+QPixmap *MediaItem::s_pixDirectory = NULL;
 
 bool MediaBrowser::isAvailable() //static
 {
     // perhaps the user should configure if he wants to use a media device?
 #ifdef HAVE_LIBGPOD
+    return true;
+#endif
+
+#ifdef HAVE_IFP
     return true;
 #else
     return false;
@@ -153,13 +163,13 @@ class DummyMediaDevice : public MediaDevice
     virtual MediaItem* newPlaylist(const QString&, MediaItem*, QPtrList<MediaItem>) { return NULL; }
     virtual MediaItem* trackExists(const MetaBundle&) { return NULL; }
     virtual void lockDevice(bool) {}
-    virtual void unlockDevice() {} 
+    virtual void unlockDevice() {}
     virtual bool openDevice(bool) { return false; }
     virtual bool closeDevice() { return false; }
     virtual void synchronizeDevice() {}
     virtual MediaItem* addTrackToDevice(const QString&, const MetaBundle&, bool) { return NULL; }
     virtual bool deleteItemFromDevice(MediaItem*, bool) { return false; }
-    virtual QString createPathname(const MetaBundle&) { return QString(""); }
+    virtual QString createPathname(const MetaBundle&) { return QString::null; }
     virtual bool getCapacity( unsigned long *, unsigned long * ) { return false; }
 };
 
@@ -169,6 +179,7 @@ MediaBrowser::MediaBrowser( const char *name )
         , m_timer( new QTimer( this ) )
 {
     KIconLoader iconLoader;
+    MediaItem::s_pixUnknown = new QPixmap(iconLoader.loadIcon( "unknown", KIcon::Toolbar, KIcon::SizeSmall ));
     MediaItem::s_pixTrack = new QPixmap(iconLoader.loadIcon( "player_playlist_2", KIcon::Toolbar, KIcon::SizeSmall ));
     MediaItem::s_pixFile = new QPixmap(iconLoader.loadIcon( "sound", KIcon::Toolbar, KIcon::SizeSmall ) );
     MediaItem::s_pixPodcast = new QPixmap(iconLoader.loadIcon( "favorites", KIcon::Toolbar, KIcon::SizeSmall ) );
@@ -186,6 +197,7 @@ MediaBrowser::MediaBrowser( const char *name )
     MediaItem::s_pixInvisible = new QPixmap(iconLoader.loadIcon( "cancel", KIcon::Toolbar, KIcon::SizeSmall ) );
     MediaItem::s_pixStale = new QPixmap(iconLoader.loadIcon( "cancel", KIcon::Toolbar, KIcon::SizeSmall ) );
     MediaItem::s_pixOrphaned = new QPixmap(iconLoader.loadIcon( "cancel", KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixDirectory = new QPixmap(iconLoader.loadIcon( "folder", KIcon::Toolbar, KIcon::SizeSmall ) );
 
     setSpacing( 4 );
 
@@ -234,13 +246,13 @@ MediaBrowser::~MediaBrowser()
 
 MediaItem::MediaItem( QListView* parent )
 : KListViewItem( parent )
-{ 
+{
     init();
 }
 
 MediaItem::MediaItem( QListViewItem* parent )
 : KListViewItem( parent )
-{ 
+{
     init();
 }
 
@@ -252,7 +264,7 @@ MediaItem::MediaItem( QListView* parent, QListViewItem* after )
 
 MediaItem::MediaItem( QListViewItem* parent, QListViewItem* after )
 : KListViewItem( parent, after )
-{ 
+{
     init();
 }
 
@@ -276,7 +288,7 @@ void MediaItem::setUrl( const QString& url )
 
 const MetaBundle *
 MediaItem::bundle() const
-{ 
+{
     if(m_bundle == NULL)
         m_bundle = new MetaBundle( url() );
     return m_bundle;
@@ -284,8 +296,8 @@ MediaItem::bundle() const
 
 MetaBundle *
 MediaItem::bundle()
-{ 
-    if(m_bundle == NULL) 
+{
+    if(m_bundle == NULL)
         m_bundle = new MetaBundle( url() );
     return m_bundle;
 }
@@ -313,6 +325,7 @@ MediaItem::isFileBacked() const
     case ORPHANED:
     case INVISIBLE:
     case PODCASTITEM:
+    case DIRECTORY:
         return true;
     }
 
@@ -340,8 +353,8 @@ MediaItem::size() const
 
 void
 MediaItem::setType( Type type )
-{ 
-    m_type=type; 
+{
+    m_type=type;
 
     setDragEnabled(true);
     setDropEnabled(false);
@@ -349,6 +362,7 @@ MediaItem::setType( Type type )
     switch(m_type)
     {
         case UNKNOWN:
+            setPixmap(0, *s_pixUnknown);
             break;
         case INVISIBLE:
         case TRACK:
@@ -385,6 +399,10 @@ MediaItem::setType( Type type )
         case ORPHANED:
             setPixmap(0, *s_pixOrphaned);
             break;
+        case DIRECTORY:
+            setExpandable( true );
+            setPixmap(0, *s_pixDirectory);
+            break;
     }
 }
 
@@ -403,7 +421,7 @@ MediaItem::lastChild() const
 }
 
 bool
-MediaItem::isLeaveItem() const
+MediaItem::isLeafItem() const
 {
     switch(type())
     {
@@ -427,6 +445,7 @@ MediaItem::isLeaveItem() const
         case INVISIBLEROOT:
         case STALEROOT:
         case ORPHANEDROOT:
+        case DIRECTORY:
             return false;
     }
 
@@ -479,6 +498,9 @@ MediaDeviceList::MediaDeviceList( MediaDeviceView* parent )
 
     connect( this, SIGNAL( itemRenamed( QListViewItem* ) ),
              this,   SLOT( renameItem( QListViewItem* ) ) );
+
+    connect( this, SIGNAL( expanded( QListViewItem* ) ),
+             this,   SLOT( slotExpand( QListViewItem* ) ) );
 }
 
 void
@@ -486,6 +508,13 @@ MediaDeviceList::renameItem( QListViewItem *item )
 {
     if(m_parent && m_parent->m_device)
         m_parent->m_device->renameItem( item );
+}
+
+void
+MediaDeviceList::slotExpand( QListViewItem *item )
+{
+    if(m_parent && m_parent->m_device)
+        m_parent->m_device->expandItem( item );
 }
 
 
@@ -522,7 +551,7 @@ MediaDeviceList::nodeBuildDragList( MediaItem* item, bool onlySelected )
         {
             if ( fi->isSelected() || !onlySelected )
             {
-                if( fi->isLeaveItem() )
+                if( fi->isLeafItem() )
                 {
                     items += fi->url().path();
                 }
@@ -583,7 +612,7 @@ MediaDeviceList::getSelectedLeaves(MediaItem *parent, QPtrList<MediaItem> *list,
                         numFiles++;
                     }
                 }
-                if(it->isLeaveItem() && (!onlyPlayed || it->played()>0))
+                if(it->isLeafItem() && (!onlyPlayed || it->played()>0))
                     list->append( it );
             }
         }
@@ -695,7 +724,7 @@ MediaDeviceList::viewportPaintEvent( QPaintEvent *e )
 
     // Superimpose bubble help:
 
-    if ( !m_parent->m_connectButton->isOn() )
+    if ( !m_parent->m_connectButton->isOn() && !childCount() )
     {
         QPainter p( viewport() );
 
@@ -932,7 +961,14 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
 {
 #ifdef HAVE_LIBGPOD
     m_device = new GpodMediaDevice( this, m_deviceList );
+#endif
+
+#ifdef HAVE_IFP
+    debug() << "Loading IFP device!" << endl;
+    m_device = new IfpMediaDevice( this, m_deviceList );
+    m_device->setRequireMount( false );
 #else
+    debug() << "Loading dummy device!" << endl;
     m_device = new DummyMediaDevice( this, m_deviceList );
 #endif
     m_progress = new KProgress( this );
@@ -1047,6 +1083,7 @@ MediaDeviceView::slotShowContextMenu( QListViewItem* item, const QPoint& point, 
 MediaDeviceView::~MediaDeviceView()
 {
     m_device->saveTransferList( amaroK::saveLocation() + "transferlist.xml" );
+
     m_device->closeDevice();
 
     delete m_deviceList;
@@ -1070,7 +1107,7 @@ MediaDeviceView::setFilter( const QString &filter, MediaItem *parent )
     for( ; it; it = dynamic_cast<MediaItem *>(it->nextSibling()))
     {
         bool visible = true;
-        if(it->isLeaveItem())
+        if(it->isLeafItem())
         {
             visible = match(it, filter);
         }
@@ -1324,7 +1361,7 @@ MediaDevice::connectDevice( bool silent )
 {
     if ( m_parent->m_connectButton->isOn() )
     {
-        if ( !m_mntcmd.isEmpty() )
+        if ( !m_mntcmd.isEmpty() && m_requireMount )
         {
             mount();
         }
@@ -1473,6 +1510,9 @@ MediaDevice::transferFiles()
         MediaItem *item = trackExists( *bundle );
         if(!item)
         {
+#ifdef HAVE_IFP
+            item = addTrackToDevice(cur->url().path(), *bundle, cur->type() == MediaItem::PODCASTITEM);
+#else
             QString trackpath = createPathname(*bundle);
 
             // check if path exists and make it if needed
@@ -1500,7 +1540,7 @@ MediaDevice::transferFiles()
             if ( !dir.exists() )
             {
                 KMessageBox::error( m_parent->m_parent,
-                        i18n("Could not create directory for file") + trackpath,
+                        i18n("Could not create directory for file ") + trackpath,
                         i18n( "Media Device Browser" ) );
                 delete bundle;
                 break;
@@ -1532,6 +1572,7 @@ MediaDevice::transferFiles()
             {
                 item = addTrackToDevice(trackpath, *bundle, cur->type() == MediaItem::PODCASTITEM);
             }
+#endif
         }
 
         if(item)

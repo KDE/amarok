@@ -40,13 +40,18 @@ class MediaItem : public KListViewItem
         const KURL& url() const { return m_url; }
         const MetaBundle *bundle() const;
         MetaBundle *bundle();
-        enum Type { UNKNOWN, ARTIST, ALBUM, TRACK, PODCASTSROOT, PODCASTCHANNEL, PODCASTITEM, PLAYLISTSROOT, PLAYLIST, PLAYLISTITEM, INVISIBLEROOT, INVISIBLE, STALEROOT, STALE, ORPHANEDROOT, ORPHANED };
+
+        enum Type { UNKNOWN, ARTIST, ALBUM, TRACK, PODCASTSROOT, PODCASTCHANNEL,
+                    PODCASTITEM, PLAYLISTSROOT, PLAYLIST, PLAYLISTITEM, INVISIBLEROOT,
+                    INVISIBLE, STALEROOT, STALE, ORPHANEDROOT, ORPHANED, DIRECTORY };
+
         void setType( Type type );
         Type type() const { return m_type; }
         MediaItem *findItem(const QString &key) const;
-        virtual bool isLeaveItem() const;
-        virtual bool isFileBacked() const;
-        virtual int played() const { return 0; }
+
+        virtual bool isLeafItem() const;        // A leaf node of the tree
+        virtual bool isFileBacked() const;      // Should the file be deleted of the device when removed
+        virtual int  played() const { return 0; }
         virtual long size() const;
 
         //attributes:
@@ -59,6 +64,7 @@ class MediaItem : public KListViewItem
         QString m_playlistName;
         int compare(QListViewItem *i, int col, bool ascending) const;
 
+        static QPixmap *s_pixUnknown;
         static QPixmap *s_pixFile;
         static QPixmap *s_pixArtist;
         static QPixmap *s_pixAlbum;
@@ -68,6 +74,7 @@ class MediaItem : public KListViewItem
         static QPixmap *s_pixInvisible;
         static QPixmap *s_pixStale;
         static QPixmap *s_pixOrphaned;
+        static QPixmap *s_pixDirectory;
 };
 
 class MediaDeviceTransferList : public KListView
@@ -129,11 +136,13 @@ class MediaDeviceList : public KListView
     private slots:
         void rmbPressed( QListViewItem*, const QPoint&, int );
         void renameItem( QListViewItem *item );
+        void slotExpand( QListViewItem* );
 
     private:
         void startDrag();
         KURL::List nodeBuildDragList( MediaItem* item, bool onlySelected=true );
-        int getSelectedLeaves(MediaItem *parent, QPtrList<MediaItem> *list, bool onlySelected=true, bool onlyPlayed=false ); // leaves of selected items, returns no. of files within leaves
+        // leaves of selected items, returns no. of files within leaves
+        int getSelectedLeaves(MediaItem *parent, QPtrList<MediaItem> *list, bool onlySelected=true, bool onlyPlayed=false );
 
         // Reimplemented from KListView
         void contentsDragEnterEvent( QDragEnterEvent* );
@@ -206,6 +215,8 @@ class MediaDevice : public QObject
         // create a new playlist named 'name' consisting of 'items' and add it to 'parent'
         virtual MediaItem * newPlaylist(const QString &name, MediaItem *parent, QPtrList<MediaItem> items) = 0;
 
+        void   setRequireMount( const bool b ) { m_requireMount = b; }
+
         static MediaDevice *instance() { return s_instance; }
 
     public slots:
@@ -221,6 +232,7 @@ class MediaDevice : public QObject
         int  umount();
         void transferFiles();
         virtual void renameItem( QListViewItem *item ) {(void)item; }
+        virtual void expandItem( QListViewItem *item ) {(void)item; }
 
     private slots:
         void fileTransferred();
@@ -244,6 +256,7 @@ class MediaDevice : public QObject
         MediaDeviceView* m_parent;
         MediaDeviceList* m_listview;
         bool             m_wait;
+        bool             m_requireMount;
 
         MediaDeviceTransferList* m_transferList;
         void loadTransferList( const QString &path );

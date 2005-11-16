@@ -234,6 +234,9 @@ else
         echo " =   + iPod Support"
     fi
 
+    if test x$have_ifp = xyes; then
+        echo " =   + ifp Support"
+    fi
 
     echo " ="
     echo " = The following extra functionality will NOT be included:"
@@ -296,6 +299,10 @@ else
 
     if test x$have_libgpod != xyes; then
         echo " =   - iPod Support"
+    fi
+
+    if test x$have_ifp != xyes; then
+        echo " =   - ifp Support"
     fi
 
    echo " ="
