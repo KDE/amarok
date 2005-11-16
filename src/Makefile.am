@@ -13,10 +13,10 @@ if with_libgpod
     IPOD_LIBS = gpodmediadevice/libgpodmediadevice.la
 endif
 
-#if with_ifp
+if with_ifp
     IFP_SUBDIR = ifpmediadevice
     IFP_LIBS = ifpmediadevice/libifpmediadevice.la -lusb -lifp
-#endif
+endif
 
 bin_PROGRAMS = amarokapp
 
