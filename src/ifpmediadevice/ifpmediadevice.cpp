@@ -25,6 +25,9 @@
 #include <kiconloader.h>       //smallIcon
 #include <kmessagebox.h>
 
+#include <qfile.h>
+#include <qcstring.h>
+
 #define unEscape(s) QString(s).replace( "%25", "\\%" ).replace( "%3F", "\\?" ) \
                               .replace( "%20", "\\ " ) \
                               .replace( "%23", "\\#" ).replace( "%27", "\\'" )
@@ -236,26 +239,36 @@ IfpMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/ )
 {
     if( !item )
         return false;
+
+    QString path = item->text(0);
+    QListViewItem *parent = item->parent();
+    while( parent )
+    {
+        path.prepend( "/" ); // forward slash for ifp remote...
+        path.prepend( parent->text(0) );
+        parent = parent->parent();
+    }
+
+    QCString encodedPath = QFile::encodeName( path );
+    debug() << "Deleting encoded file: " << encodedPath << endl;
     int err;
-    QString path = unEscape( item->text(0) );
-    debug() << "Deleting: " << path << endl;
 
     switch( item->type() )
     {
         case MediaItem::DIRECTORY:
-            err = ifp_rmdir( &m_ifpdev, path.ascii() );
-            checkResult( err, i18n("Directory does not exist: '%1'").arg(path) );
+            err = ifp_rmdir( &m_ifpdev, encodedPath );
+            checkResult( err, i18n("Directory does not exist: '%1'").arg(encodedPath) );
             break;
 
         default:
-            err = ifp_delete( &m_ifpdev, path.ascii() );
-            checkResult( err, i18n("File does not exist: '%1'").arg(path) );
+            err = ifp_delete( &m_ifpdev, encodedPath );
+            checkResult( err, i18n("File does not exist: '%1'").arg(encodedPath) );
             break;
     }
     if( err == 0 ) //success
         delete item;
 
-    return err == 0;
+    return (err == 0);
 }
 
 /// Directory Reading
@@ -309,7 +322,6 @@ IfpMediaDevice::addTrackToList( int type, QString name, int /*size*/ )
 bool
 IfpMediaDevice::getCapacity( unsigned long *total, unsigned long *available )
 {
-    DEBUG_BLOCK
     return false;
 //     int totalBytes = ifp_capacity( &m_ifpdev );
 //     int freeBytes = ifp_capacity( &m_ifpdev );

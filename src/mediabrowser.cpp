@@ -1058,24 +1058,26 @@ MediaDeviceView::updateStats()
 void
 MediaDeviceView::slotShowContextMenu( QListViewItem* item, const QPoint& point, int )
 {
-    if ( item )
-    {
-        KPopupMenu menu( this );
+    if( !m_device->m_transferList->childCount() )
+        return;
 
-        enum Actions { REMOVE_SELECTED, CLEAR_ALL };
+    KPopupMenu menu( this );
 
+    enum Actions { REMOVE_SELECTED, CLEAR_ALL };
+
+    if( item )
         menu.insertItem( SmallIconSet( "edittrash" ), i18n( "&Remove From Queue" ), REMOVE_SELECTED );
-        menu.insertItem( SmallIconSet( "view_remove" ), i18n( "&Clear Queue" ), CLEAR_ALL );
 
-        switch( menu.exec( point ) )
-        {
-            case REMOVE_SELECTED:
-                m_device->removeSelected();
-                break;
-            case CLEAR_ALL:
-                m_device->clearItems();
-                break;
-        }
+    menu.insertItem( SmallIconSet( "view_remove" ), i18n( "&Clear Queue" ), CLEAR_ALL );
+
+    switch( menu.exec( point ) )
+    {
+        case REMOVE_SELECTED:
+            m_device->removeSelected();
+            break;
+        case CLEAR_ALL:
+            m_device->clearItems();
+            break;
     }
 }
 
