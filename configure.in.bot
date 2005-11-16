@@ -235,7 +235,7 @@ else
     fi
 
     if test x$have_ifp = xyes; then
-        echo " =   + ifp Support"
+        echo " =   + iRiver iFP Support"
     fi
 
     echo " ="
@@ -302,7 +302,7 @@ else
     fi
 
     if test x$have_ifp != xyes; then
-        echo " =   - ifp Support"
+        echo " =   - iRiver iFP Support"
     fi
 
    echo " ="
