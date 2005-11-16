@@ -76,11 +76,9 @@ QPixmap *MediaItem::s_pixDirectory = NULL;
 bool MediaBrowser::isAvailable() //static
 {
     // perhaps the user should configure if he wants to use a media device?
-#ifdef HAVE_LIBGPOD
+#if defined(HAVE_LIBGPOD)
     return true;
-#endif
-
-#ifdef HAVE_IFP
+#elif defined(HAVE_IFP)
     return true;
 #else
     return false;
@@ -959,11 +957,11 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     , m_deviceList( new MediaDeviceList( this ) )
     , m_parent( parent )
 {
-#ifdef HAVE_LIBGPOD
+#if defined(HAVE_LIBGPOD)
+    debug() << "Loading iPod device!" << endl;
     m_device = new GpodMediaDevice( this, m_deviceList );
-#endif
-
-#ifdef HAVE_IFP
+    m_device->setRequireMount( true );
+#elif defined(HAVE_IFP)
     debug() << "Loading IFP device!" << endl;
     m_device = new IfpMediaDevice( this, m_deviceList );
     m_device->setRequireMount( false );
@@ -1158,6 +1156,8 @@ MediaDeviceView::match( const MediaItem *it, const QString &filter )
 MediaDevice::MediaDevice( MediaDeviceView* parent, MediaDeviceList *listview )
     : m_parent( parent )
     , m_listview( listview )
+    , m_wait( false )
+    , m_requireMount( false )
     , m_transferList( new MediaDeviceTransferList( parent ) )
     , m_playlistItem( NULL )
     , m_podcastItem( NULL )

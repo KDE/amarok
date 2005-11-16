@@ -410,6 +410,7 @@ GpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
         delete item;
         dbChanged = true;
         break;
+    case MediaItem::DIRECTORY:
     case MediaItem::UNKNOWN:
         ret = false;
         break;
