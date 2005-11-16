@@ -194,9 +194,9 @@ IfpMediaDevice::expandItem( QListViewItem *item ) // SLOT
 
 
 MediaItem *
-IfpMediaDevice::addTrackToDevice( const QString& pathname, const MetaBundle& bundle, bool /*isPodcast*/ )
+IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle, bool /*isPodcast*/ )
 {
-    KURL url = KURL::fromPathOrURL( pathname );
+    KURL &url = bundle.url();
 
     const QCString src = QFile::encodeName( pathname );
     const QCString dest = QFile::encodeName( "\\" + url.filename() );

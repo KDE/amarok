@@ -166,6 +166,7 @@ class DummyMediaDevice : public MediaDevice
     virtual bool closeDevice() { return false; }
     virtual void synchronizeDevice() {}
     virtual MediaItem* addTrackToDevice(const QString&, const MetaBundle&, bool) { return NULL; }
+    virtual MediaItem* insertTrackIntoDB(const QString&, const MetaBundle&, bool) { return NULL; }
     virtual bool deleteItemFromDevice(MediaItem*, bool) { return false; }
     virtual QString createPathname(const MetaBundle&) { return QString::null; }
     virtual bool getCapacity( unsigned long *, unsigned long * ) { return false; }
@@ -264,6 +265,11 @@ MediaItem::MediaItem( QListViewItem* parent, QListViewItem* after )
 : KListViewItem( parent, after )
 {
     init();
+}
+
+MediaItem::~MediaItem()
+{
+    delete m_bundle;
 }
 
 void
@@ -728,7 +734,7 @@ MediaDeviceList::viewportPaintEvent( QPaintEvent *e )
 
         QSimpleRichText t( i18n(
                 "<div align=center>"
-                  "<h3>MediaDevice Browser</h3>"
+                  "<h3>Media Device Browser</h3>"
                   "Click the Connect button to access your mounted media device. "
                   "Drag and drop files to enqueue them for transfer."
                 "</div>" ), QApplication::font() );
@@ -892,7 +898,7 @@ MediaDeviceList::rmbPressed( QListViewItem* qitem, const QPoint& point, int ) //
                     {
                         next = dynamic_cast<MediaItem *>(it->nextSibling());
                         item->takeItem(it);
-                        m_parent->m_device->addTrackToDevice(it->url().path(), *it->bundle(), false);
+                        m_parent->m_device->insertTrackIntoDB(it->url().path(), *it->bundle(), false);
                         delete it;
                     }
                 }
@@ -906,7 +912,7 @@ MediaDeviceList::rmbPressed( QListViewItem* qitem, const QPoint& point, int ) //
                         if(it->type() == MediaItem::ORPHANED)
                         {
                             it->parent()->takeItem(it);
-                            m_parent->m_device->addTrackToDevice(it->url().path(), *it->bundle(), false);
+                            m_parent->m_device->insertTrackIntoDB(it->url().path(), *it->bundle(), false);
                             delete it;
                         }
                     }
@@ -1512,69 +1518,12 @@ MediaDevice::transferFiles()
         MediaItem *item = trackExists( *bundle );
         if(!item)
         {
-#ifdef HAVE_IFP
-            item = addTrackToDevice(cur->url().path(), *bundle, cur->type() == MediaItem::PODCASTITEM);
-#else
-            QString trackpath = createPathname(*bundle);
+            item = copyTrackToDevice(*bundle, cur->type() == MediaItem::PODCASTITEM);
+        }
 
-            // check if path exists and make it if needed
-            QFileInfo finfo( trackpath );
-            QDir dir = finfo.dir();
-            while ( !dir.exists() )
-            {
-                QString path = dir.absPath();
-                QDir parentdir;
-                QDir create;
-                do
-                {
-                    create.setPath(path);
-                    path = path.section("/", 0, path.contains('/')-1);
-                    parentdir.setPath(path);
-                }
-                while( !path.isEmpty() && !(path==m_mntpnt) && !parentdir.exists() );
-                debug() << "trying to create \"" << path << "\"" << endl;
-                if(!create.mkdir( create.absPath() ))
-                {
-                    break;
-                }
-            }
-
-            if ( !dir.exists() )
-            {
-                KMessageBox::error( m_parent->m_parent,
-                        i18n("Could not create directory for file ") + trackpath,
-                        i18n( "Media Device Browser" ) );
-                delete bundle;
-                break;
-            }
-
-            m_wait = true;
-
-            KIO::CopyJob *job = KIO::copy( cur->url(), KURL( trackpath ), false );
-            connect( job, SIGNAL( copyingDone( KIO::Job *, const KURL &, const KURL &, bool, bool ) ),
-                    this,  SLOT( fileTransferred() ) );
-
-            while ( m_wait )
-            {
-                usleep(10000);
-                kapp->processEvents( 100 );
-            }
-
-
-            KURL url;
-            url.setPath(trackpath);
-            MetaBundle bundle2(url);
-            if(!bundle2.isValidMedia())
-            {
-                // probably s.th. went wrong
-                debug() << "Reading tags failed! File not added!" << endl;
-                QFile::remove( trackpath );
-            }
-            else
-            {
-                item = addTrackToDevice(trackpath, *bundle, cur->type() == MediaItem::PODCASTITEM);
-            }
-#endif
+        if(!item)
+        {
+            break;
         }
 
         if(item)
@@ -1604,7 +1553,6 @@ MediaDevice::transferFiles()
             }
         }
 
-        delete cur->m_bundle;
         delete cur;
         cur = NULL;
     }

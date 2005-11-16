@@ -111,7 +111,72 @@ GpodMediaDevice::isConnected()
 }
 
 MediaItem *
-GpodMediaDevice::addTrackToDevice(const QString &pathname, const MetaBundle &bundle, bool isPodcast)
+GpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle, bool isPodcast)
+{
+    QString devicePath = createPathname(bundle);
+
+    // check if path exists and make it if needed
+    QFileInfo finfo( devicePath );
+    QDir dir = finfo.dir();
+    while ( !dir.exists() )
+    {
+        QString path = dir.absPath();
+        QDir parentdir;
+        QDir create;
+        do
+        {
+            create.setPath(path);
+            path = path.section("/", 0, path.contains('/')-1);
+            parentdir.setPath(path);
+        }
+        while( !path.isEmpty() && !(path==m_mntpnt) && !parentdir.exists() );
+        debug() << "trying to create \"" << path << "\"" << endl;
+        if(!create.mkdir( create.absPath() ))
+        {
+            break;
+        }
+    }
+
+    if ( !dir.exists() )
+    {
+        KMessageBox::error( m_parent,
+                i18n("Could not create directory for file ") + devicePath,
+                i18n( "Media Device Browser" ) );
+        return NULL;
+    }
+
+    m_wait = true;
+
+    KIO::CopyJob *job = KIO::copy( bundle.url().path(), KURL( devicePath ), false );
+    connect( job, SIGNAL( copyingDone( KIO::Job *, const KURL &, const KURL &, bool, bool ) ),
+            this,  SLOT( fileTransferred() ) );
+
+    while ( m_wait )
+    {
+        usleep(10000);
+        kapp->processEvents( 100 );
+    }
+
+
+    KURL url;
+    url.setPath(devicePath);
+    MetaBundle bundle2(url);
+    if(!bundle2.isValidMedia())
+    {
+        // probably s.th. went wrong
+        debug() << "Reading tags failed! File not added!" << endl;
+        QFile::remove( devicePath );
+    }
+    else
+    {
+        return insertTrackIntoDB(devicePath, bundle, isPodcast);
+    }
+
+    return NULL;
+}
+
+MediaItem *
+GpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bundle, bool isPodcast)
 {
     Itdb_Track *track = itdb_track_new();
     if(!track)

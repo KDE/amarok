@@ -33,6 +33,7 @@ class MediaItem : public KListViewItem
         MediaItem( QListView* parent, QListViewItem* after );
         MediaItem( QListViewItem* parent, QListViewItem* after );
         void init();
+        virtual ~MediaItem();
 
         MediaItem *lastChild() const;
 
@@ -281,9 +282,12 @@ class MediaDevice : public QObject
         // write changes to device (especially to database)
         virtual void synchronizeDevice() = 0;
 
-        // add track located on media device at 'pathname' to device database,
+        // physically transfer bundle().url().path() to device
+        virtual MediaItem *copyTrackToDevice(const MetaBundle& bundle, bool isPodcast) = 0;
+
+        // insert track already located on media device at 'pathname' to device's database of tracks,
         // use metadata from 'bundle', add to podcasts if 'isPodcast' is true
-        virtual MediaItem *addTrackToDevice(const QString& pathname, const MetaBundle& bundle, bool isPodcast) = 0;
+        virtual MediaItem *insertTrackIntoDB(const QString& pathname, const MetaBundle& bundle, bool isPodcast) { (void)pathname; (void)bundle; (void)isPodcast; return NULL; }
         virtual void updateRootItems();
 
         void deleteFromDevice( MediaItem *item, bool onlyPlayed=false, bool recursing=false );
