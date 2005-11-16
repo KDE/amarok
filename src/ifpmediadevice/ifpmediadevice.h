@@ -52,10 +52,10 @@ class IfpMediaDevice : public MediaDevice
         void              synchronizeDevice() {}
 
         MediaItem        *addTrackToDevice( const QString& pathname, const MetaBundle& bundle, bool isPodcast);
+        bool              deleteItemFromDevice( MediaItem *item, bool onlyPlayed = false );
         bool              getCapacity(unsigned long *total, unsigned long *available);
 
         QString           createPathname( const MetaBundle& bundle) { return QString::null; }
-        bool              deleteItemFromDevice( MediaItem *item, bool onlyPlayed=false ) { return false; }
         void              addToPlaylist( MediaItem *list, MediaItem *after, QPtrList<MediaItem> items) {}
         MediaItem        *newPlaylist( const QString &name, MediaItem *list, QPtrList<MediaItem> items) { return 0; }
 
@@ -67,6 +67,7 @@ class IfpMediaDevice : public MediaDevice
         enum              Error { ERR_ACCESS_DENIED, ERR_CANNOT_RENAME, ERR_DISK_FULL, ERR_COULD_NOT_WRITE };
 
         bool              checkResult( int result, QString message );
+        void              unEscape( QString &s );
 
         // upload
         int               uploadTrack( const QString& src, const QString& dest );

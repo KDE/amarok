@@ -25,6 +25,10 @@
 #include <kiconloader.h>       //smallIcon
 #include <kmessagebox.h>
 
+#define unEscape(s) QString(s).replace( "%25", "\\%" ).replace( "%3F", "\\?" ) \
+                              .replace( "%20", "\\ " ) \
+                              .replace( "%23", "\\#" ).replace( "%27", "\\'" )
+
 /**
  * IfpMediaItem Class
  */
@@ -187,9 +191,6 @@ IfpMediaDevice::expandItem( QListViewItem *item ) // SLOT
 
 
 /// Add Tracks.  We don't use the bundle b/c ifp reads from the file itself
-#define unEscape(s) { \
-    QString(s) \
-              }
 
 MediaItem *
 IfpMediaDevice::addTrackToDevice( const QString& pathname, const MetaBundle& bundle, bool /*isPodcast*/ )
@@ -197,12 +198,8 @@ IfpMediaDevice::addTrackToDevice( const QString& pathname, const MetaBundle& bun
     KURL url = KURL::fromPathOrURL( pathname );
 
 
-    const QString src = QString( pathname ).replace( "%25", "\\%" ).replace( "%3F", "\\?" )
-                                           .replace( "%20", "\\ " ).replace( "%23", "\\#" )
-                                           .replace( "%23", "\\#" );
-    const QString dest = QString( "\\" + url.filename() ).replace( "%25", "\\%" ).replace( "%3F", "\\?" )
-                                                  .replace( "%20", "\\ " ).replace( "%23", "\\#" )
-                                                  .replace( "%27", "\\'" );
+    const QString src = unEscape( QString( pathname ) );
+    const QString dest = unEscape( QString( "\\" + url.filename() ) );
 
     int result = uploadTrack( src, dest );
 
@@ -212,7 +209,6 @@ IfpMediaDevice::addTrackToDevice( const QString& pathname, const MetaBundle& bun
 
     return m_last;
 }
-#undef unEscape
 
 int
 IfpMediaDevice::uploadTrack( const QString& src, const QString& dest )
@@ -230,6 +226,36 @@ IfpMediaDevice::uploadCallback( void */*pData*/, ifp_transfer_status */*progress
     return 0;
     // will be called by 'ifp_upload_file_with_callback'
 //     return static_cast<IfpMediaDevice *>(pData)->uploadCallback( buf, size );
+}
+
+
+/// Deleting
+
+bool
+IfpMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/ )
+{
+    if( !item )
+        return false;
+    int err;
+    QString path = unEscape( item->text(0) );
+    debug() << "Deleting: " << path << endl;
+
+    switch( item->type() )
+    {
+        case MediaItem::DIRECTORY:
+            err = ifp_rmdir( &m_ifpdev, path.ascii() );
+            checkResult( err, i18n("Directory does not exist: '%1'").arg(path) );
+            break;
+
+        default:
+            err = ifp_delete( &m_ifpdev, path.ascii() );
+            checkResult( err, i18n("File does not exist: '%1'").arg(path) );
+            break;
+    }
+    if( err == 0 ) //success
+        delete item;
+
+    return err == 0;
 }
 
 /// Directory Reading
