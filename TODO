@@ -6,6 +6,9 @@ TODO-list for amaroK
 
 
 SHORT-TERM (URGENT):
+
+ <sebr>    Better abstraction of MediaDevice::transferFiles and deleteFiles.  ifp doesn't use KIO, don't
+           assume devices will.
  
  <markey>  When scanning with no folders selected, hell breaks lose. DB errors, etc.
            Only way to repair it is delete the DB.
