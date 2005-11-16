@@ -171,8 +171,80 @@ else
     echo " =========================="
     echo " ===  amaroK - PLUGINS  ========================================================"
     echo " =========================="
+
+
+    echo " ="
+    echo " = The following extra functionality will NOT be included:"
+
+
+    if test x$build_arts != xyes; then
+        echo " =   - aRts-engine"
+    fi
+
+    if test x$have_gst != xyes; then
+        echo " =   - GStreamer-engine"
+    fi
+
+    if test x$build_xine != xyes; then
+        echo " =   - xine-engine"
+    fi
+
+    if test x$build_nmm != xyes; then
+        echo " =   - NMM-engine"
+    fi
+
+    if test x$build_mas != xyes; then
+        echo " =   - MAS-engine"
+    fi
+
+    if test x$build_helix = xno; then
+        echo " =   - Helix-engine"
+    fi
+
+    if test x$build_libvisual != xyes; then
+        echo " =   - libvisual Support"
+    fi
+
+    if test x$build_xmmswrapper != xyes; then
+        echo " =   - XMMS Visualization Wrapper"
+    fi
+
+    if test x$enable_mysql != xyes; then
+        echo " =   - MySql Support"
+    fi
+
+    if test x$enable_postgresql != xyes; then
+        echo " =   - Postgresql Support"
+    fi
+
+    if test x$have_konqsidebar != xyes; then
+        echo " =   - Konqueror Sidebar"
+    fi
+
+    if test x$have_tunepimp != xyes; then
+        echo " =   - MusicBrainz Support"
+    fi
+
+    if test x$have_mp4v2 != xyes; then
+        echo " =   - MP4/AAC Tag Support"
+    fi
+
+    if test x$have_exscalibar != xyes; then
+        echo " =   - Moodbar Support"
+    fi
+
+    if test x$have_libgpod != xyes; then
+        echo " =   - iPod Support"
+    fi
+
+    if test x$have_ifp != xyes; then
+        echo " =   - iRiver iFP Support"
+    fi
+
+
     echo " ="
     echo " = The following extra functionality will be included:"
+
 
     if test x$build_arts = xyes -a x$have_kdemm = xyes; then
         echo " =   + aRts-engine"
@@ -238,72 +310,6 @@ else
         echo " =   + iRiver iFP Support"
     fi
 
-    echo " ="
-    echo " = The following extra functionality will NOT be included:"
-
-    if test x$build_arts != xyes; then
-        echo " =   - aRts-engine"
-    fi
-
-    if test x$have_gst != xyes; then
-        echo " =   - GStreamer-engine"
-    fi
-
-    if test x$build_xine != xyes; then
-        echo " =   - xine-engine"
-    fi
-
-    if test x$build_nmm != xyes; then
-        echo " =   - NMM-engine"
-    fi
-
-    if test x$build_mas != xyes; then
-        echo " =   - MAS-engine"
-    fi
-
-    if test x$build_helix = xno; then
-        echo " =   - Helix-engine"
-    fi
-
-    if test x$build_libvisual != xyes; then
-        echo " =   - libvisual Support"
-    fi
-
-    if test x$build_xmmswrapper != xyes; then
-        echo " =   - XMMS Visualization Wrapper"
-    fi
-
-    if test x$enable_mysql != xyes; then
-        echo " =   - MySql Support"
-    fi
-
-    if test x$enable_postgresql != xyes; then
-        echo " =   - Postgresql Support"
-    fi
-
-    if test x$have_konqsidebar != xyes; then
-        echo " =   - Konqueror Sidebar"
-    fi
-
-    if test x$have_tunepimp != xyes; then
-        echo " =   - MusicBrainz Support"
-    fi
-
-    if test x$have_mp4v2 != xyes; then
-        echo " =   - MP4/AAC Tag Support"
-    fi
-
-    if test x$have_exscalibar != xyes; then
-        echo " =   - Moodbar Support"
-    fi
-
-    if test x$have_libgpod != xyes; then
-        echo " =   - iPod Support"
-    fi
-
-    if test x$have_ifp != xyes; then
-        echo " =   - iRiver iFP Support"
-    fi
 
    echo " ="
 fi
