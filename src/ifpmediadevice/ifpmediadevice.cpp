@@ -157,20 +157,24 @@ IfpMediaDevice::closeDevice()  //SLOT
 {
     DEBUG_BLOCK
 
-    m_connected = false;
-
-    if( m_dh )
+    if( m_connected )
     {
-        usb_release_interface( m_dh, m_dev->config->interface->altsetting->bInterfaceNumber );
 
-        if( ifp_release_device( m_dh ) )
-            error() << "warning: release_device failed." << endl;
+        if( m_dh )
+        {
+            usb_release_interface( m_dh, m_dev->config->interface->altsetting->bInterfaceNumber );
 
-        ifp_finalize( &m_ifpdev );
-        m_dh = 0;
+            if( ifp_release_device( m_dh ) )
+                error() << "warning: release_device failed." << endl;
+
+            ifp_finalize( &m_ifpdev );
+            m_dh = 0;
+        }
+
+        m_listview->clear();
+
+        m_connected = false;
     }
-
-    m_listview->clear();
 
     return true;
 }
