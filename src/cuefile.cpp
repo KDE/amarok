@@ -212,6 +212,7 @@ void CueFile::engineTrackPositionChanged( long position, bool userSeek )
                 bundle.setTitle(it.data().getTitle());
                 bundle.setArtist(it.data().getArtist());
                 bundle.setAlbum(it.data().getAlbum());
+                bundle.setTrack(it.data().getTrackNumber());
                 emit metaData(bundle);
                 break;
             }
