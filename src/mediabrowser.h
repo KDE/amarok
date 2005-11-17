@@ -243,7 +243,7 @@ class MediaDevice : public QObject
         virtual void expandItem( QListViewItem *item ) {(void)item; }
 
     private slots:
-        void fileTransferred();
+        void fileTransferred( KIO::Job *job );
     protected slots:
         void fileTransferFinished();
 
@@ -265,6 +265,7 @@ class MediaDevice : public QObject
         MediaDeviceView* m_parent;
         MediaDeviceList* m_listview;
         bool             m_wait;
+        bool             m_copyFailed;
         bool             m_requireMount;
 
         MediaDeviceTransferList* m_transferList;

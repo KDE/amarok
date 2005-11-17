@@ -140,16 +140,16 @@ GpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle, bool isPodcast)
     if ( !dir.exists() )
     {
         KMessageBox::error( m_parent,
-                i18n("Could not create directory for file ") + devicePath,
+                i18n( "Could not create directory for file ") + devicePath,
                 i18n( "Media Device Browser" ) );
         return NULL;
     }
 
     m_wait = true;
 
-    KIO::CopyJob *job = KIO::copy( bundle.url().path(), KURL( devicePath ), false );
-    connect( job, SIGNAL( copyingDone( KIO::Job *, const KURL &, const KURL &, bool, bool ) ),
-            this,  SLOT( fileTransferred() ) );
+    KIO::CopyJob *job = KIO::copy( bundle.url(), KURL( devicePath ), false );
+    connect( job, SIGNAL( result( KIO::Job * ) ),
+            this,  SLOT( fileTransferred( KIO::Job * ) ) );
 
     while ( m_wait )
     {
@@ -157,6 +157,13 @@ GpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle, bool isPodcast)
         kapp->processEvents( 100 );
     }
 
+    if(m_copyFailed)
+    {
+        KMessageBox::error( m_parent,
+                i18n( "Copying ") + bundle.url().prettyURL() + i18n( " to " ) + devicePath + i18n( " failed" ),
+                i18n( "Media Device Browser" ) );
+        return NULL;
+    }
 
     KURL url;
     url.setPath(devicePath);
@@ -164,15 +171,14 @@ GpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle, bool isPodcast)
     if(!bundle2.isValidMedia())
     {
         // probably s.th. went wrong
-        debug() << "Reading tags failed! File not added!" << endl;
+        KMessageBox::error( m_parent,
+                i18n( "Reading tags from " ) + devicePath + i18n( " failed" ),
+                i18n( "Media Device Browser" ) );
         QFile::remove( devicePath );
-    }
-    else
-    {
-        return insertTrackIntoDB(devicePath, bundle, isPodcast);
+        return NULL;
     }
 
-    return NULL;
+    return insertTrackIntoDB(devicePath, bundle, isPodcast);
 }
 
 MediaItem *
@@ -204,6 +210,11 @@ GpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bu
             || type=="m4p" || type=="M4P")
     {
         track->filetype = g_strdup( "mp4" );
+    }
+    else if(type=="m4b" || type=="M4B")
+    {
+        track->filetype = g_strdup( "mp4" );
+        track->unk164 |= 0x10000; // remember current position in track
     }
     else if(type=="aa" || type=="AA")
     {

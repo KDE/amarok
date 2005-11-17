@@ -1571,30 +1571,27 @@ MediaDevice::transferFiles()
             break;
         }
 
-        if(item)
+        if(playlist)
         {
-            if(playlist)
+            QPtrList<MediaItem> items;
+            items.append(item);
+            addToPlaylist(playlist, after, items);
+            after = item;
+        }
+
+        if(m_playlistItem && cur->m_playlistName!=QString::null)
+        {
+            MediaItem *pl = m_playlistItem->findItem( cur->m_playlistName );
+            if(!pl)
+            {
+                QPtrList<MediaItem> items;
+                pl = newPlaylist(cur->m_playlistName, m_playlistItem, items);
+            }
+            if(pl)
             {
                 QPtrList<MediaItem> items;
                 items.append(item);
-                addToPlaylist(playlist, after, items);
-                after = item;
-            }
-
-            if(m_playlistItem && cur->m_playlistName!=QString::null)
-            {
-                MediaItem *pl = m_playlistItem->findItem( cur->m_playlistName );
-                if(!pl)
-                {
-                    QPtrList<MediaItem> items;
-                    pl = newPlaylist(cur->m_playlistName, m_playlistItem, items);
-                }
-                if(pl)
-                {
-                    QPtrList<MediaItem> items;
-                    items.append(item);
-                    addToPlaylist(pl, pl->lastChild(), items);
-                }
+                addToPlaylist(pl, pl->lastChild(), items);
             }
         }
 
@@ -1610,14 +1607,25 @@ MediaDevice::transferFiles()
 
 
 void
-MediaDevice::fileTransferred()  //SLOT
+MediaDevice::fileTransferred( KIO::Job *job )  //SLOT
 {
-    m_wait = false;
-    m_parent->m_progress->setProgress( m_parent->m_progress->progress() + 1 );
+    if(job->error())
+    {
+        m_copyFailed = true;
+        debug() << "file transfer failed: " << job->errorText() << endl;
+    }
+    else
+    {
+        m_copyFailed = false;
 
-    // the track just transferred has not yet been removed from the queue
-    m_transferList->takeItem( m_transferList->firstChild() );
+        m_parent->m_progress->setProgress( m_parent->m_progress->progress() + 1 );
+
+        // the track just transferred has not yet been removed from the queue
+        m_transferList->takeItem( m_transferList->firstChild() );
+    }
     m_parent->updateStats();
+
+    m_wait = false;
 }
 
 
@@ -1627,6 +1635,7 @@ MediaDevice::fileTransferFinished()  //SLOT
     m_parent->updateStats();
     m_parent->m_progress->hide();
     m_parent->m_transferButton->setDisabled( true );
+    m_wait = false;
 }
 
 void
