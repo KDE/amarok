@@ -43,6 +43,27 @@ class IfpMediaItem : public MediaItem
             : MediaItem( parent, after )
         { }
 
+        // List directories first, always
+        int
+        IfpMediaItem::compare( QListViewItem *i, int col, bool ascending ) const
+        {
+            #define i static_cast<IfpMediaItem *>(i)
+            switch( type() )
+            {
+                case MediaItem::DIRECTORY:
+                    if( i->type() == MediaItem::DIRECTORY )
+                        break;
+                    return -1;
+
+                default:
+                    if( i->type() == MediaItem::DIRECTORY )
+                        return 1;
+            }
+            #undef i
+
+            return MediaItem::compare(i, col, ascending);
+        }
+
     private:
         bool m_dir;
 };
