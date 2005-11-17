@@ -1,0 +1,24 @@
+<div align="center"><b>Mp3Fixer Script for amaroK</b></div>
+
+<p>
+<b>About:</b><br>
+Mp3Fixer is a script for fixing VBR encoded mp3 files, which display a bogus track length in your
+audio player. Mp3Fixer calculates the real track length and adds the missing XING
+header to the file.
+</p>
+
+<p>
+<b>Usage:</b><br>
+Select a track in the playlist, then start Mp3Fixer from the context-menu (right mouse click).
+</p>
+
+<p>
+<b>License:</b><br>
+GNU General Public License V2
+</p>
+
+<p>
+<b>Author:</b><br>
+Mark Kretschmann (markey@web.de)
+</p>
+
