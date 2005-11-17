@@ -1937,19 +1937,19 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 menu.insertItem( SmallIconSet( "edit_add" ), i18n( "Add to the %1 Entries" ).arg(Party::instance()->title()), DYNADD );
         }
 
+        if( MediaBrowser::isAvailable() )
+        {
+            menu.insertSeparator();
+            menu.insertItem( SmallIconSet( "usbpendrive_unmount" ),
+                    i18n( "Add to Media Device &Transfer Queue" ), MEDIA_DEVICE );
+        }
+
         menu.insertSeparator();
         menu.insertItem( SmallIconSet("editclear"), i18n( "&Rename" ), RENAME );
         menu.insertItem( SmallIconSet("editdelete"), i18n( "&Delete" ), DELETE );
         menu.setAccel( Key_Space, LOAD );
         menu.setAccel( Key_F2, RENAME );
         menu.setAccel( SHIFT+Key_Delete, DELETE );
-
-        if( MediaBrowser::isAvailable() )
-        {
-            menu.insertItem( SmallIconSet( "usbpendrive_unmount" ),
-                    i18n( "Add to Media Device &Transfer Queue" ), MEDIA_DEVICE );
-        }
-
 
         switch( menu.exec( p ) )
         {
@@ -1979,7 +1979,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     }
     else if( isSmartPlaylist( item ) )
     {
-        enum Actions { LOAD, ADD, DYNADD, DYNSUB, EDIT, REMOVE };
+        enum Actions { LOAD, ADD, DYNADD, DYNSUB, EDIT, REMOVE, MEDIA_DEVICE };
 
         menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), LOAD );
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), ADD );
@@ -1990,6 +1990,13 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 menu.insertItem( SmallIconSet( "edit_remove" ), i18n( "Remove From %1" ).arg(Party::instance()->title()), DYNSUB );
             else
                 menu.insertItem( SmallIconSet( "edit_add" ), i18n( "Add to the %1 Entries" ).arg(Party::instance()->title()), DYNADD );
+        }
+
+        if( MediaBrowser::isAvailable() )
+        {
+            menu.insertSeparator();
+            menu.insertItem( SmallIconSet( "usbpendrive_unmount" ),
+                    i18n( "Add Contents to Media Device &Transfer Queue" ), MEDIA_DEVICE );
         }
 
         menu.insertSeparator();
@@ -2020,6 +2027,21 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 break;
             case REMOVE:
                 removeSelectedItems();
+                break;
+            case MEDIA_DEVICE:
+                {
+                    KURL::List urls;
+                    const QStringList values = CollectionDB::instance()->query( static_cast<SmartPlaylist *>(item)->query() );
+                    int i=0;
+                    for( for_iterators( QStringList, values ); it != end; ++it ) {
+                        if(i%11 == 10)
+                        {
+                            urls << KURL( *it );
+                        }
+                        i++;
+                    }
+                    MediaDevice::instance()->addURLs( urls, item->text(0) );
+                }
                 break;
         }
     }
