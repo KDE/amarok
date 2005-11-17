@@ -177,7 +177,7 @@ else
     echo " = The following extra functionality will NOT be included:"
 
 
-    if test x$build_arts != xyes; then
+    if test x$build_arts != xyes -o x$have_kdemm != xyes; then
         echo " =   - aRts-engine"
     fi
 
