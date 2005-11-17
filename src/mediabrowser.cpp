@@ -996,9 +996,6 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     QToolTip::add( m_configButton,   i18n( "Configure media device" ) );
 
     m_connectButton->setToggleButton( true );
-    m_connectButton->setOn( true );
-    m_device->connectDevice( true );
-    m_connectButton->setOn( m_device->isConnected() ||  m_deviceList->childCount() != 0 );
     m_transferButton->setDisabled( true );
 
     m_progress->setFixedHeight( m_transferButton->sizeHint().height() );
