@@ -5,6 +5,7 @@
 #ifndef THREADWEAVER_H
 #define THREADWEAVER_H
 
+#include "debug.h"
 #include <qevent.h>   //baseclass
 #include <qguardedptr.h>
 #include <qmap.h>
@@ -83,11 +84,10 @@ protected:    bool m_aborted;
 
 class ThreadWeaver : public QObject
 {
+public:
     class Thread;
     friend class Thread;
     typedef QValueList<Thread*> ThreadList;
-
-public:
     class Job;
     friend class Job;
     typedef QValueList<Job*> JobList;
@@ -157,7 +157,19 @@ private:
 
     virtual bool event( QEvent* );
 
+    /// checks the pool for an available thread, creates a new one if required
+    Thread *gimmeThread();
 
+    /// safe disposal for threads that may not have finished
+    void dispose( Thread* );
+
+    /// all pending and running jobs
+    JobList m_jobs;
+
+    /// a thread-pool, ready for use or running jobs currently
+    ThreadList m_threads;
+
+public:
     /**
      * Class Thread
      */
@@ -172,7 +184,9 @@ private:
         void msleep( int ms ) { QThread::msleep( ms ); } //we need to make this public for class Job
 
         Job *job() const { return m_job; }
-
+        
+        static QThread* getRunning();
+        static QString  threadId();
     private:
         Job *m_job;
 
@@ -185,21 +199,7 @@ private:
     protected:
         DISABLE_GENERATED_MEMBER_FUNCTIONS_3( Thread )
     };
-
-
-    /// checks the pool for an available thread, creates a new one if required
-    Thread *gimmeThread();
-
-    /// safe disposal for threads that may not have finished
-    void dispose( Thread* );
-
-    /// all pending and running jobs
-    JobList m_jobs;
-
-    /// a thread-pool, ready for use or running jobs currently
-    ThreadList m_threads;
-
-public:
+    
     /**
      * @class Job
      * @short A small class for doing work in a background thread
@@ -378,6 +378,9 @@ protected:
     ThreadWeaver( const ThreadWeaver& );
     ThreadWeaver &operator=( const ThreadWeaver& );
 };
+
+//useful debug thingy
+#define DEBUG_THREAD_FUNC_INFO kdDebug() << Debug::indent() << k_funcinfo << "thread: " << ThreadWeaver::Thread::threadId() << endl;
 
 inline ThreadWeaver*
 ThreadWeaver::instance()

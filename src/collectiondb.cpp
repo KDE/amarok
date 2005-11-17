@@ -116,7 +116,7 @@ CollectionDB::CollectionDB( bool temporary )
 
 CollectionDB::~CollectionDB()
 {
-    DEBUG_FUNC_INFO
+    DEBUG_THREAD_FUNC_INFO
 
     destroy();
 }
@@ -149,6 +149,7 @@ CollectionDB::returnStaticDbConnection( DbConnection *conn )
 QStringList
 CollectionDB::query( const QString& statement, DbConnection *conn )
 {
+    DEBUG_THREAD_FUNC_INFO
     clock_t start;
     if ( DEBUG )
     {
@@ -191,6 +192,7 @@ CollectionDB::query( const QString& statement, DbConnection *conn )
 int
 CollectionDB::insert( const QString& statement, const QString& table, DbConnection *conn )
 {
+    DEBUG_THREAD_FUNC_INFO
     clock_t start;
     if ( DEBUG )
     {
@@ -295,7 +297,7 @@ CollectionDB::setAdminValue( QString noption, QString value ) {
 void
 CollectionDB::createTables( DbConnection *conn )
 {
-    DEBUG_FUNC_INFO
+    DEBUG_THREAD_FUNC_INFO
 
     //create tag table
     query( QString( "CREATE %1 TABLE tags%2 ("
@@ -432,7 +434,7 @@ CollectionDB::createTables( DbConnection *conn )
 void
 CollectionDB::dropTables( DbConnection *conn )
 {
-    DEBUG_FUNC_INFO
+    DEBUG_THREAD_FUNC_INFO
 
     query( QString( "DROP TABLE tags%1;" ).arg( conn ? "_temp" : "" ), conn );
     query( QString( "DROP TABLE album%1;" ).arg( conn ? "_temp" : "" ), conn );
@@ -461,7 +463,7 @@ CollectionDB::dropTables( DbConnection *conn )
 void
 CollectionDB::clearTables( DbConnection *conn )
 {
-    DEBUG_FUNC_INFO
+    DEBUG_THREAD_FUNC_INFO
 
     QString clearCommand = "DELETE FROM";
     if ( m_dbConnPool->getDbConnectionType() == DbConnection::mysql || m_dbConnPool->getDbConnectionType() == DbConnection::postgresql)
@@ -500,7 +502,7 @@ CollectionDB::moveTempTables( DbConnection *conn )
 void
 CollectionDB::createStatsTable()
 {
-    DEBUG_FUNC_INFO
+    DEBUG_THREAD_FUNC_INFO
 
     // create music statistics database
     query( QString( "CREATE TABLE statistics ("
@@ -519,7 +521,7 @@ CollectionDB::createStatsTable()
 void
 CollectionDB::dropStatsTable()
 {
-    DEBUG_FUNC_INFO
+    DEBUG_THREAD_FUNC_INFO
 
     query( "DROP TABLE statistics;" );
 }
@@ -528,7 +530,7 @@ CollectionDB::dropStatsTable()
 void
 CollectionDB::createPersistentTables()
 {
-    DEBUG_FUNC_INFO
+    DEBUG_THREAD_FUNC_INFO
 
     // create amazon table
     query(          "CREATE TABLE amazon ( "
@@ -556,7 +558,7 @@ CollectionDB::createPersistentTables()
 void
 CollectionDB::dropPersistentTables()
 {
-    DEBUG_FUNC_INFO
+    DEBUG_THREAD_FUNC_INFO
 
     query( "DROP TABLE amazon;" );
     query( "DROP TABLE lyrics;" );

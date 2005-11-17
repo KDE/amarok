@@ -119,6 +119,8 @@ QString RefreshImages::localeToTLD(const QString& locale)
         return "com";
     else if(locale=="jp")
         return "co.jp";
+    else if(locale=="uk")
+        return "co.uk";
     else
         return locale;
 }

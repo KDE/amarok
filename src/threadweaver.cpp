@@ -6,15 +6,16 @@
 #define QT_FATAL_ASSERT
 #define DEBUG_PREFIX "ThreadWeaver"
 
-#include "debug.h"
 #include <kcursor.h>
 #include <qapplication.h>
+
+#include <pthread.h>//we're emulating features of Qt 4, so this can be removed for amaroK 2.0
+
+#include "debug.h"
 #include "statusbar.h"
 #include "threadweaver.h"
 
-
 using amaroK::StatusBar;
-
 
 ThreadWeaver::ThreadWeaver()
 {
@@ -193,16 +194,42 @@ ThreadWeaver::event( QEvent *e )
 }
 
 
-
+//Taken from Qt 4 src/corelib/thread/qthread_unix.cpp
+static pthread_once_t current_thread_key_once = PTHREAD_ONCE_INIT;
+static pthread_key_t current_thread_key;
+static void create_current_thread_key()
+{ pthread_key_create(&current_thread_key, NULL); }
 /// @class ThreadWeaver::Thread
 
 ThreadWeaver::Thread::Thread()
     : QThread()
-{}
+{
+    pthread_once(&current_thread_key_once, create_current_thread_key);
+    pthread_setspecific(current_thread_key, this);
+}
 
 ThreadWeaver::Thread::~Thread()
 {
     Q_ASSERT( finished() );
+}
+
+QThread*
+ThreadWeaver::Thread::getRunning()
+{
+    pthread_once( &current_thread_key_once, create_current_thread_key );
+    return reinterpret_cast<QThread *>( pthread_getspecific( current_thread_key ) );
+}
+
+QString
+ThreadWeaver::Thread::threadId()
+{
+    if( !getRunning() )
+        return "GUIThread";
+    else
+    {
+        QString s;
+        return s.sprintf( "%p", getRunning );
+    }
 }
 
 void
@@ -236,7 +263,6 @@ ThreadWeaver::Thread::run()
     // almost always the thread doesn't finish until after the
     // above event is already finished processing
 }
-
 
 
 /// @class ProgressEvent

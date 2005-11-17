@@ -1890,7 +1890,7 @@ Playlist::contentsDropEvent( QDropEvent *e )
 QDragObject*
 Playlist::dragObject()
 {
-    DEBUG_FUNC_INFO
+    DEBUG_THREAD_FUNC_INFO
 
     KURL::List list;
 
