@@ -1021,7 +1021,7 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
 #else
     debug() << "Loading dummy device!" << endl;
     m_device = new DummyMediaDevice( this, m_deviceList );
-    m_device->setType( MediaDevice::DUMMY );
+    m_device->setDeviceType( MediaDevice::DUMMY );
 #endif
     m_progress = new KProgress( this );
 
