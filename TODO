@@ -7,13 +7,6 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
- <sebr>    CRITICAL: amaroK crashes if toggling the player window! I remember it starting to happen during
-           the period of introducing more options into the config page (moodbar). May or may not be
-           related.
-
- <sebr>    Better abstraction of MediaDevice::transferFiles and deleteFiles.  ifp doesn't use KIO, don't
-           assume devices will.
- 
  <markey>  When scanning with no folders selected, hell breaks lose. DB errors, etc.
            Only way to repair it is delete the DB.
 
