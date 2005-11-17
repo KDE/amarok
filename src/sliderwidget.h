@@ -107,6 +107,7 @@ namespace amaroK
 
         public:
             TrackSlider( QWidget *parent, uint max = 0 );
+            ~TrackSlider();
             virtual void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
             void setArraySize(const unsigned int i) { theArray.resize(i); for(unsigned int i = 0; i < theArray.size(); i++) theArray[i] = QColor("black"); }
             void setArray(const unsigned int i, const QColor &c) { if(theArray.size() <= i) theArray.resize(i + 1); theArray[i] = c; }

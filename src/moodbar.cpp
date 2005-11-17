@@ -84,7 +84,7 @@ bool amaroK::CreateMood::doJob()
 	debug() << "MakeMood: Creating mood with Exscalibar. Hold onto your hats..." << endl;
 	ProcessorGroup g;
 	ProcessorFactory::create("Player")->init("P", g, Properties("Filename", theFilename));
-	if(g["P"].isInitFailed()) { amaroK::StatusBar::instance()->longMessageThreadSafe("<strong>Cannot generate Mood data:</strong> Format <em>"+ext+"</em> not supported by your Exscalibar installation.", KDE::StatusBar::Warning); g.deleteAll(); return false; }
+	if(g["P"].isInitFailed()) { /*amaroK::StatusBar::instance()->longMessageThreadSafe("<strong>Cannot generate Mood data:</strong> Format <em>"+ext+"</em> not supported by your Exscalibar installation.", KDE::StatusBar::Warning);*/ g.deleteAll(); return false; }
 	SubProcessorFactory::createDom("Mean")->init("M", g);
 	SubProcessorFactory::createDom("FFT")->init("F", g, Properties("Size", 1024)("Step", 512));
 	SubProcessorFactory::createDom("Bark")->init("B", g);
@@ -103,15 +103,17 @@ bool amaroK::CreateMood::doJob()
 	{
 		debug() << "MakeMood: Processing..." << endl;;
 		g["D"].waitUntilDone();
-		debug() << "MakeMood: Done processing. Cleaning up..." << endl;
+		debug() << "MakeMood: Done processing. Stoping..." << flush;
 		g.stop();
 	}
+	debug() << "MakeMood: Disconnecting..." << flush;
 	g.disconnectAll();
+	debug() << "MakeMood: Deleting..." << flush;
 	g.deleteAll();
 	debug() << "MakeMood: All tidied up." << endl;
-	if(!QFile::exists(theMoodName)) { amaroK::StatusBar::instance()->longMessageThreadSafe("<strong>Cannot generate Mood data:</strong> Could not create file (check permissions and Exscalibar installation).", KDE::StatusBar::Warning); return false; }
+	if(!QFile::exists(theMoodName)) { /*amaroK::StatusBar::instance()->longMessageThreadSafe("<strong>Cannot generate Mood data:</strong> Could not create file (check permissions and Exscalibar installation).", KDE::StatusBar::Warning);*/ return false; }
 	QFile mood(theMoodName);
-	if(!mood.open(IO_ReadOnly)) { amaroK::StatusBar::instance()->longMessageThreadSafe("<strong>Cannot generate Mood data:</strong> Could not verify file (check permissions).", KDE::StatusBar::Warning); return false; }
+	if(!mood.open(IO_ReadOnly)) { /*amaroK::StatusBar::instance()->longMessageThreadSafe("<strong>Cannot generate Mood data:</strong> Could not verify file (check permissions).", KDE::StatusBar::Warning);*/ return false; }
 	return true;
 #else
 	return false;

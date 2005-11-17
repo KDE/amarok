@@ -208,7 +208,12 @@ amaroK::PrettySlider::paintEvent( QPaintEvent* )
 amaroK::TrackSlider::TrackSlider( QWidget *parent, uint max )
    : amaroK::PrettySlider( Qt::Horizontal, parent, max ), theArrayChanged(true)
 {
-	EngineController::instance()->attach(this);
+    EngineController::instance()->attach(this);
+}
+
+amaroK::TrackSlider::~TrackSlider()
+{
+    EngineController::instance()->detach(this);
 }
 
 void
