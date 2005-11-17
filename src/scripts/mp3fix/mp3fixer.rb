@@ -5,12 +5,11 @@
 
 
 def cleanup()
-#     `dcop amarok script removeCustomMenuItem MP3Fixer FixIt!`.untaint()
-    `kdialog --sorry menuremoved`; return
+    `dcop amarok script removeCustomMenuItem MP3Fixer FixIt!`
 end
 
 
-trap( "SIGTERM", cleanup() )
+trap( "SIGTERM" ) { cleanup() }
 
 `dcop amarok script addCustomMenuItem MP3Fixer FixIt!`
 
