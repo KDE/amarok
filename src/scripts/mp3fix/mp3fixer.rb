@@ -17,13 +17,12 @@ trap( "SIGTERM" ) { cleanup() }
 loop do
     command = gets().chomp()
 
-#     `kdialog --sorry #{command}`
+    case command
+        when "configure"
+            msg  = '"Mp3Fixer does not have configuration options. Simply select a track in the '
+            msg += 'playlist, then start Mp3Fixer from the context-menu (right mouse click)."'
 
-#     case command
-#         when "configure" then `kdialog --sorry configure`
-#     end
+            `kdialog --msgbox #{msg}`
 
+    end
 end
-
-
-
