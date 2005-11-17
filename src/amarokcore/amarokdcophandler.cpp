@@ -3,6 +3,7 @@
                             -------------------
    begin                : Sat Oct 11 2003
    copyright            : (C) 2003 by Stanislav Karchebny
+                          (C) 2004 Christian Muehlhaeuser
                           (C) 2005 Ian Monroe
                           (C) 2005 Seb Ruiz
    email                : berkus@users.sf.net
@@ -213,7 +214,7 @@ namespace amaroK
     QString DcopPlayerHandler::setContextStyle(const QString& msg)
     {
         AmarokConfig::setContextBrowserStyleSheet( msg );
-        ContextBrowser::instance()->setStyleSheet();
+        ContextBrowser::instance()->reloadStyleSheet();
 
         if ( QFile::exists( amaroK::saveLocation( "themes/" + msg + '/' ) + "stylesheet.css" ) )
             return "Context browser theme '"+msg+"' applied.";

@@ -149,7 +149,7 @@ void Options2::uninstallPushButton_clicked()
 
     if ( name == AmarokConfig::contextBrowserStyleSheet() ) {
         AmarokConfig::setContextBrowserStyleSheet( "Default" );
-        ContextBrowser::instance()->setStyleSheet();
+        ContextBrowser::instance()->reloadStyleSheet();
     }
 
     KURL themeDir( KURL::fromPathOrURL( amaroK::saveLocation( "themes/" ) ) );

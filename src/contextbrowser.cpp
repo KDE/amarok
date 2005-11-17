@@ -19,6 +19,7 @@
 #include "covermanager.h"
 #include "cuefile.h"
 #include "enginecontroller.h"
+#include "htmlview.h"
 #include "mediabrowser.h"
 #include "metabundle.h"
 #include "playlist.h"      //appendMedia()
@@ -29,7 +30,6 @@
 #include "threadweaver.h"
 
 #include <qdatetime.h>
-#include <qfile.h> // External CSS opening
 #include <qimage.h>
 #include <qregexp.h>
 #include <qtextstream.h>  // External CSS reading
@@ -39,18 +39,14 @@
 #include <kcalendarsystem.h>  // for verboseTimeSince()
 #include <kfiledialog.h>
 #include <kglobal.h>
-#include <khtml_part.h>
-#include <khtmlview.h>
 #include <kiconloader.h>
-#include <kimageeffect.h> // gradient background image
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 #include <klocale.h>
 #include <kmdcodec.h> // for data: URLs
 #include <kmessagebox.h>
 #include <kpopupmenu.h>
-#include <kstandarddirs.h> //locate file
-#include <ktempfile.h>
+#include <kstandarddirs.h>
 #include <ktoolbarbutton.h>
 #include <kurl.h>
 
@@ -96,18 +92,13 @@ ContextBrowser::ContextBrowser( const char *name )
         , m_wikiBackPopup( new KPopupMenu( this ) )
         , m_wikiForwardPopup( new KPopupMenu( this ) )
         , m_wikiJob( NULL )
-        , m_bgGradientImage( 0 )
-        , m_headerGradientImage( 0 )
-        , m_shadowGradientImage( 0 )
         , m_suggestionsOpen( true )
         , m_favouritesOpen( true )
         , m_cuefile( NULL )
 {
     s_instance = this;
 
-    m_currentTrackPage = new KHTMLPart( this, "current_track_page" );
-    m_currentTrackPage->setJScriptEnabled( true );
-    m_currentTrackPage->setDNDEnabled( true );
+    m_currentTrackPage = new HTMLView( this, "current_track_page", true /* DNDEnabled */ );
 
     m_lyricsTab = new QVBox(this, "lyrics_tab");
 
@@ -118,11 +109,7 @@ ContextBrowser::ContextBrowser( const char *name )
     m_lyricsToolBar->insertLineSeparator();
     m_lyricsToolBar->insertButton( "exec", LYRICS_BROWSER, true, i18n("Open in external browser") );
 
-    m_lyricsPage = new KHTMLPart( m_lyricsTab, "lyrics_page" );
-    m_lyricsPage->setJavaEnabled( false );
-    m_lyricsPage->setJScriptEnabled( false );
-    m_lyricsPage->setPluginsEnabled( false );
-    m_lyricsPage->setDNDEnabled( true );
+    m_lyricsPage = new HTMLView( m_lyricsTab, "lyrics_page", true /* DNDEnabled */, false /* JScriptEnabled */ );
 
     m_wikiTab = new QVBox(this, "wiki_tab");
 
@@ -139,10 +126,7 @@ ContextBrowser::ContextBrowser( const char *name )
     m_wikiToolBar->setDelayedPopup( WIKI_BACK, m_wikiBackPopup );
     m_wikiToolBar->setDelayedPopup( WIKI_FORWARD, m_wikiForwardPopup );
 
-    m_wikiPage = new KHTMLPart( m_wikiTab, "wiki_page" );
-    m_wikiPage->setJavaEnabled( false );
-    m_wikiPage->setPluginsEnabled( false );
-    m_wikiPage->setDNDEnabled( true );
+    m_wikiPage = new HTMLView( m_wikiTab, "wiki_page", true /* DNDEnabled */ );
 
     m_cuefile = CueFile::instance();
     connect( m_cuefile, SIGNAL(metaData( const MetaBundle& )),
@@ -157,7 +141,6 @@ ContextBrowser::ContextBrowser( const char *name )
 
     // Delete folder with the cached coverimage shadow pixmaps
     KIO::del( KURL::fromPathOrURL( amaroK::saveLocation( "covershadow-cache/" ) ), false, false );
-
 
     connect( this, SIGNAL( currentChanged( QWidget* ) ), SLOT( tabChanged( QWidget* ) ) );
 
@@ -193,24 +176,18 @@ ContextBrowser::ContextBrowser( const char *name )
     connect( CollectionDB::instance(), SIGNAL( scanDone( bool ) ), SLOT( collectionScanDone() ) );
     connect( CollectionDB::instance(), SIGNAL( databaseEngineChanged() ), SLOT( renderView() ) );
     connect( CollectionDB::instance(), SIGNAL( coverFetched( const QString&, const QString& ) ),
-             this,                       SLOT( coverFetched( const QString&, const QString& ) ) );
+             this, SLOT( coverFetched( const QString&, const QString& ) ) );
     connect( CollectionDB::instance(), SIGNAL( coverRemoved( const QString&, const QString& ) ),
-             this,                       SLOT( coverRemoved( const QString&, const QString& ) ) );
+             this, SLOT( coverRemoved( const QString&, const QString& ) ) );
     connect( CollectionDB::instance(), SIGNAL( similarArtistsFetched( const QString& ) ),
-             this,                       SLOT( similarArtistsFetched( const QString& ) ) );
+             this, SLOT( similarArtistsFetched( const QString& ) ) );
     connect( CollectionDB::instance(), SIGNAL( tagsChanged( const MetaBundle& ) ),
-             this,                       SLOT( tagsChanged( const MetaBundle& ) ) );
-
-    //the stylesheet will be set up and home will be shown later due to engine signals and doodaa
-    //if we call it here setStyleSheet is called 3 times during startup!!
+             this, SLOT( tagsChanged( const MetaBundle& ) ) );
 }
 
 
 ContextBrowser::~ContextBrowser()
 {
-    delete m_bgGradientImage;
-    delete m_headerGradientImage;
-    delete m_shadowGradientImage;
     m_cuefile->clear();
 }
 
@@ -222,7 +199,7 @@ ContextBrowser::~ContextBrowser()
 void ContextBrowser::setFont( const QFont &newFont )
 {
     QWidget::setFont( newFont );
-    setStyleSheet();
+    reloadStyleSheet();
 }
 
 
@@ -516,7 +493,7 @@ void ContextBrowser::saveHtmlData()
     QTextStream stream( &exportedDocument );
     stream.setEncoding( QTextStream::UnicodeUTF8 );
     stream << m_HTMLSource // the pure html data..
-        .replace("<html>",QString("<html><head><style type=\"text/css\">%1</style></head>").arg(m_styleSheet) ); // and the stylesheet code
+        .replace("<html>",QString("<html><head><style type=\"text/css\">%1</style></head>").arg( HTMLView::loadStyleSheet() ) ); // and the stylesheet code
     exportedDocument.close();
 }
 
@@ -524,7 +501,14 @@ void ContextBrowser::saveHtmlData()
 void ContextBrowser::paletteChange( const QPalette& pal )
 {
     KTabWidget::paletteChange( pal );
-    setStyleSheet();
+    reloadStyleSheet();
+}
+
+void ContextBrowser::reloadStyleSheet()
+{
+    m_currentTrackPage->setUserStyleSheet( HTMLView::loadStyleSheet() );
+    m_lyricsPage->setUserStyleSheet( HTMLView::loadStyleSheet() );
+    m_wikiPage->setUserStyleSheet( HTMLView::loadStyleSheet() );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -851,10 +835,7 @@ void ContextBrowser::showHome() //SLOT
     a = qb.run();
     QString genreCount = a[0];
 
-    m_currentTrackPage->begin();
     m_HTMLSource="";
-    m_currentTrackPage->setUserStyleSheet( m_styleSheet );
-
     m_HTMLSource.append(
             "<html>"
             "<div id='introduction_box' class='box'>"
@@ -928,12 +909,10 @@ void ContextBrowser::showHome() //SLOT
             "</div></html>");
 
     // </Recent Tracks Information>
-    m_currentTrackPage->write( m_HTMLSource );
-    m_currentTrackPage->end();
+    m_currentTrackPage->set( m_HTMLSource );
+
     saveHtmlData(); // Send html code to file
-
 }
-
 
 
 
@@ -957,12 +936,8 @@ private:
         if( b->currentPage() != b->m_currentTrackPage->view() )
             return;
 
-        b->m_currentTrackPage->begin();
         b->m_HTMLSource = m_HTMLSource;
-        b->m_currentTrackPage->setUserStyleSheet( b->m_styleSheet );
-        b->m_currentTrackPage->write( m_HTMLSource );
-        b->m_currentTrackPage->end();
-
+        b->m_currentTrackPage->set( m_HTMLSource );
         b->m_dirtyCurrentTrackPage = false;
         b->saveHtmlData(); // Send html code to file
     }
@@ -1655,185 +1630,6 @@ bool CurrentTrackJob::doJob()
 }
 
 
-void ContextBrowser::setStyleSheet()
-{
-    DEBUG_FUNC_INFO
-
-    QString themeName = AmarokConfig::contextBrowserStyleSheet().latin1();
-    const QString file = kapp->dirs()->findResource( "data","amarok/themes/" + themeName + "/stylesheet.css" );
-
-    if ( themeName != "Default" && QFile::exists( file ) )
-        setStyleSheet_ExternalStyle( m_styleSheet, themeName );
-    else
-        setStyleSheet_Default( m_styleSheet );
-
-    m_currentTrackPage->setUserStyleSheet( m_styleSheet );
-    m_lyricsPage->setUserStyleSheet( m_styleSheet );
-    m_wikiPage->setUserStyleSheet( m_styleSheet );
-}
-
-
-void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
-{
-    //colorscheme/font dependant parameters
-    int pxSize = fontMetrics().height() - 4;
-    const QString fontFamily = AmarokConfig::useCustomFonts() ? AmarokConfig::contextBrowserFont().family() : QApplication::font().family();
-    const QString text = colorGroup().text().name();
-    const QString link = colorGroup().link().name();
-    const QString fg   = colorGroup().highlightedText().name();
-    const QString bg   = colorGroup().highlight().name();
-    const QColor baseColor = colorGroup().base();
-    const QColor bgColor = colorGroup().highlight();
-    const amaroK::Color gradientColor = bgColor;
-
-    delete m_bgGradientImage;
-    delete m_headerGradientImage;
-    delete m_shadowGradientImage;
-
-    m_bgGradientImage = new KTempFile( locateLocal( "tmp", "gradient" ), ".png", 0600 );
-    QImage image = KImageEffect::gradient( QSize( 600, 1 ), gradientColor, gradientColor.light( 130 ), KImageEffect::PipeCrossGradient );
-    image.save( m_bgGradientImage->file(), "PNG" );
-    m_bgGradientImage->close();
-
-    m_headerGradientImage = new KTempFile( locateLocal( "tmp", "gradient_header" ), ".png", 0600 );
-    QImage imageH = KImageEffect::unbalancedGradient( QSize( 1, 10 ), bgColor, gradientColor.light( 130 ), KImageEffect::VerticalGradient, 100, -100 );
-    imageH.copy( 0, 1, 1, 9 ).save( m_headerGradientImage->file(), "PNG" );
-    m_headerGradientImage->close();
-
-    m_shadowGradientImage = new KTempFile( locateLocal( "tmp", "gradient_shadow" ), ".png", 0600 );
-    QImage imageS = KImageEffect::unbalancedGradient( QSize( 1, 10 ), baseColor, Qt::gray, KImageEffect::VerticalGradient, 100, -100 );
-    imageS.save( m_shadowGradientImage->file(), "PNG" );
-    m_shadowGradientImage->close();
-
-    //unlink the files for us on deletion
-    m_bgGradientImage->setAutoDelete( true );
-    m_headerGradientImage->setAutoDelete( true );
-    m_shadowGradientImage->setAutoDelete( true );
-
-    //we have to set the color for body due to a KHTML bug
-    //KHTML sets the base color but not the text color
-    styleSheet = QString( "body { margin: 4px; font-size: %1px; color: %2; background-color: %3; background-image: url( %4 ); background-repeat: repeat; font-family: %5; }" )
-            .arg( pxSize )
-            .arg( text )
-            .arg( AmarokConfig::schemeAmarok() ? fg : gradientColor.name() )
-            .arg( m_bgGradientImage->name() )
-            .arg( fontFamily );
-
-    //text attributes
-    styleSheet += QString( "h1 { font-size: %1px; }" ).arg( pxSize + 8 );
-    styleSheet += QString( "h2 { font-size: %1px; }" ).arg( pxSize + 6 );
-    styleSheet += QString( "h3 { font-size: %1px; }" ).arg( pxSize + 4 );
-    styleSheet += QString( "h4 { font-size: %1px; }" ).arg( pxSize + 3 );
-    styleSheet += QString( "h5 { font-size: %1px; }" ).arg( pxSize + 2 );
-    styleSheet += QString( "h6 { font-size: %1px; }" ).arg( pxSize + 1 );
-    styleSheet += QString( "a { font-size: %1px; color: %2; }" ).arg( pxSize ).arg( text );
-    styleSheet += QString( ".info { display: block; margin-left: 4px; font-weight: normal; }" );
-
-    styleSheet += QString( ".song a { display: block; padding: 1px 2px; font-weight: normal; text-decoration: none; }" );
-    styleSheet += QString( ".song a:hover { color: %1; background-color: %2; }" ).arg( fg ).arg( bg );
-    styleSheet += QString( ".song-title { font-weight: bold; }" );
-    styleSheet += QString( ".song-place { font-size: %1px; font-weight: bold; }" ).arg( pxSize + 3 );
-
-    //box: the base container for every block (border hilighted on hover, 'A' without underlining)
-    styleSheet += QString( ".box { border: solid %1 1px; text-align: left; margin-bottom: 10px; overflow: hidden;}" ).arg( bg );
-    styleSheet += QString( ".box a { text-decoration: none; }" );
-    styleSheet += QString( ".box:hover { border: solid %1 1px; }" ).arg( text );
-
-    //box contents: header, body, rows and alternate-rows
-    styleSheet += QString( ".box-header { color: %1; background-color: %2; background-image: url( %4 ); background-repeat: repeat-x; font-size: %3px; font-weight: bold; padding: 1px 0.5em; border-bottom: 1px solid #000; }" )
-            .arg( fg )
-            .arg( bg )
-            .arg( pxSize + 2 )
-            .arg( m_headerGradientImage->name() );
-
-    styleSheet += QString( ".box-body { padding: 2px; background-color: %1; background-image: url( %2 ); background-repeat: repeat-x; font-size:%3px; }" )
-            .arg( colorGroup().base().name() )
-            .arg( m_shadowGradientImage->name() )
-            .arg( pxSize );
-
-    //"Albums by ..." related styles
-    styleSheet += QString( ".album-header:hover { color: %1; background-color: %2; cursor: pointer; }" ).arg( fg ).arg( bg );
-    styleSheet += QString( ".album-header:hover a { color: %1; }" ).arg( fg );
-    styleSheet += QString( ".album-body { background-color: %1; border-bottom: solid %2 1px; border-top: solid %3 1px; }" ).arg( colorGroup().base().name() ).arg( bg ).arg( bg );
-    styleSheet += QString( ".album-title { font-weight: bold; }" );
-    styleSheet += QString( ".album-info { float:right; padding-right:4px; font-size: %1px }" ).arg( pxSize );
-    styleSheet += QString( ".album-image { padding-right: 4px; }" );
-    styleSheet += QString( ".album-song a { display: block; padding: 1px 2px; font-weight: normal; text-decoration: none; }" );
-    styleSheet += QString( ".album-song a:hover { color: %1; background-color: %2; }" ).arg( fg ).arg( bg );
-    styleSheet += QString( ".album-song-trackno { font-weight: bold; }" );
-
-    styleSheet += QString( ".button { width: 100%; }" );
-
-    //boxes used to display score (sb: score box)
-    styleSheet += QString( ".sbtext { text-align: center; padding: 0px 4px; border-left: solid %1 1px; }" ).arg( colorGroup().base().dark( 120 ).name() );
-    // New score-bar style from Tightcode
-    styleSheet += QString( ".sbinner { width: 40px; height: 10px; background: transparent url(%1) no-repeat top left; border: 0px; border-right: 1px solid transparent; }" )
-                           .arg( locate( "data", "amarok/images/sbinner_stars.png" ) );
-    styleSheet += QString( ".sbouter { border: 0px; background: transparent url(%1) no-repeat top left; width: 54px; height: 10px; text-align: right; }" )
-                           .arg( locate( "data", "amarok/images/back_stars_grey.png" ) );
-
-//     styleSheet += QString( ".sbinner { height: 8px; background-color: %1; border: solid %2 1px; }" ).arg( bg ).arg( fg );
-//     styleSheet += QString( ".sbouter { width: 52px; height: 10px; background-color: %1; border: solid %2 1px; }" ).arg( colorGroup().base().dark( 120 ).name() ).arg( bg );
-
-
-    styleSheet += QString( "#current_box-header-album { font-weight: normal; }" );
-    styleSheet += QString( "#current_box-information-td { text-align: right; vertical-align: bottom; padding: 3px; }" );
-    styleSheet += QString( "#current_box-largecover-td { text-align: left; width: 100px; padding: 0; vertical-align: bottom; }" );
-    styleSheet += QString( "#current_box-largecover-image { padding: 4px; vertical-align: bottom; }" );
-
-    styleSheet += QString( "#wiki_box-body a { color: %1; }" ).arg( link );
-    styleSheet += QString( "#wiki_box-body a:hover { text-decoration: underline; }" );
-}
-
-
-void ContextBrowser::setStyleSheet_ExternalStyle( QString& styleSheet, QString& themeName )
-{
-    //colorscheme/font dependant parameters
-    const QString pxSize = QString::number( fontMetrics().height() - 4 );
-    const QString fontFamily = AmarokConfig::useCustomFonts() ? AmarokConfig::contextBrowserFont().family() : QApplication::font().family();
-    const QString text = colorGroup().text().name();
-    const QString link = colorGroup().link().name();
-    const QString fg   = colorGroup().highlightedText().name();
-    const QString bg   = colorGroup().highlight().name();
-    const QString base   = colorGroup().base().name();
-    const QColor bgColor = colorGroup().highlight();
-    amaroK::Color gradientColor = bgColor;
-
-    //we have to set the color for body due to a KHTML bug
-    //KHTML sets the base color but not the text color
-    styleSheet = QString( "body { margin: 8px; font-size: %1px; color: %2; background-color: %3; font-family: %4; }" )
-            .arg( pxSize )
-            .arg( text )
-            .arg( AmarokConfig::schemeAmarok() ? fg : gradientColor.name() )
-            .arg( fontFamily );
-
-    const QString CSSLocation = kapp->dirs()->findResource( "data","amarok/themes/" + themeName + "/stylesheet.css" );
-
-    QFile ExternalCSS( CSSLocation );
-    if ( !ExternalCSS.open( IO_ReadOnly ) )
-        return;
-
-    QTextStream eCSSts( &ExternalCSS );
-    QString tmpCSS = eCSSts.read();
-    ExternalCSS.close();
-
-    tmpCSS.replace( "./", KURL::fromPathOrURL( CSSLocation ).directory( false ) );
-    tmpCSS.replace( "AMAROK_FONTSIZE-2", pxSize );
-    tmpCSS.replace( "AMAROK_FONTSIZE", pxSize );
-    tmpCSS.replace( "AMAROK_FONTSIZE+2", pxSize );
-    tmpCSS.replace( "AMAROK_FONTFAMILY", fontFamily );
-    tmpCSS.replace( "AMAROK_TEXTCOLOR", text );
-    tmpCSS.replace( "AMAROK_LINKCOLOR", link );
-    tmpCSS.replace( "AMAROK_BGCOLOR", bg );
-    tmpCSS.replace( "AMAROK_FGCOLOR", fg );
-    tmpCSS.replace( "AMAROK_BASECOLOR", base );
-    tmpCSS.replace( "AMAROK_DARKBASECOLOR", colorGroup().base().dark( 120 ).name() );
-    tmpCSS.replace( "AMAROK_GRADIENTCOLOR", gradientColor.name() );
-
-    styleSheet += tmpCSS;
-}
-
-
 void ContextBrowser::showIntroduction()
 {
     DEBUG_BLOCK
@@ -1846,10 +1642,7 @@ void ContextBrowser::showIntroduction()
     }
 
     // Do we have to rebuild the page? I don't care
-    m_currentTrackPage->begin();
     m_HTMLSource = QString::null;
-    m_currentTrackPage->setUserStyleSheet( m_styleSheet );
-
     m_HTMLSource.append(
             "<html>"
             "<div id='introduction_box' class='box'>"
@@ -1874,8 +1667,7 @@ void ContextBrowser::showIntroduction()
             "</html>"
                        );
 
-    m_currentTrackPage->write( m_HTMLSource );
-    m_currentTrackPage->end();
+    m_currentTrackPage->set( m_HTMLSource );
     saveHtmlData(); // Send html code to file
 }
 
@@ -1890,10 +1682,7 @@ void ContextBrowser::showScanning()
     }
 
     // Do we have to rebuild the page? I don't care
-    m_currentTrackPage->begin();
     m_HTMLSource="";
-    m_currentTrackPage->setUserStyleSheet( m_styleSheet );
-
     m_HTMLSource.append(
             "<html>"
             "<div id='building_box' class='box'>"
@@ -1909,8 +1698,7 @@ void ContextBrowser::showScanning()
             "</html>"
                        );
 
-    m_currentTrackPage->write( m_HTMLSource );
-    m_currentTrackPage->end();
+    m_currentTrackPage->set( m_HTMLSource );
     saveHtmlData(); // Send html code to file
 }
 
@@ -1937,10 +1725,6 @@ void ContextBrowser::showLyrics( const QString &hash )
     m_lyrics = CollectionDB::instance()->getLyrics( EngineController::instance()->bundle().url().path() );
 
     if ( !m_dirtyLyricsPage || m_lyricJob ) return;
-
-    m_lyricsPage->begin();
-    m_lyricsPage->setUserStyleSheet( m_styleSheet );
-
 
     //remove all matches to the regExp and the song production type.
     //NOTE: use i18n'd and english equivalents since they are very common int'lly.
@@ -2007,8 +1791,8 @@ void ContextBrowser::showLyrics( const QString &hash )
             "</div>"
             "</html>"
             );
-        m_lyricsPage->write( m_HTMLSource );
-        m_lyricsPage->end();
+        m_lyricsPage->set( m_HTMLSource );
+
         m_dirtyLyricsPage = false;
         m_lyricJob = NULL;
         saveHtmlData(); // Send html code to file
@@ -2029,8 +1813,7 @@ void ContextBrowser::showLyrics( const QString &hash )
             "</div>"
             "</html>"
             );
-        m_lyricsPage->write( m_HTMLSource );
-        m_lyricsPage->end();
+        m_lyricsPage->set( m_HTMLSource );
         m_lyricJob = KIO::storedGet( m_lyricCurrentUrl, false, false );
 
         amaroK::StatusBar::instance()->newProgressOperation( m_lyricJob )
@@ -2046,10 +1829,7 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
 {
     if ( !job->error() == 0 )
     {
-        m_lyricsPage->begin();
         m_HTMLSource="";
-        m_lyricsPage->setUserStyleSheet( m_styleSheet );
-
         m_HTMLSource.append(
                 "<html>"
                 "<div id='lyrics_box' class='box'>"
@@ -2064,8 +1844,8 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
                 "</div>"
                 "</html>"
                         );
-        m_lyricsPage->write( m_HTMLSource );
-        m_lyricsPage->end();
+        m_lyricsPage->set( m_HTMLSource );
+
         m_dirtyLyricsPage = false;
         m_lyricJob = NULL;
         saveHtmlData(); // Send html code to file
@@ -2107,10 +1887,7 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
     }
 
 
-    m_lyricsPage->begin();
     m_HTMLSource="";
-    m_lyricsPage->setUserStyleSheet( m_styleSheet );
-
     m_HTMLSource.append(
             "<html>"
             "<div id='lyrics_box' class='box'>"
@@ -2125,8 +1902,8 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
             "</div>"
             "</html>"
                        );
-    m_lyricsPage->write( m_HTMLSource );
-    m_lyricsPage->end();
+    m_lyricsPage->set( m_HTMLSource );
+
     m_lyricsToolBar->getButton( LYRICS_BROWSER )->setEnabled(true);
     m_dirtyLyricsPage = false;
     m_lyricJob = NULL;
@@ -2207,10 +1984,7 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
     // Disable the Open in a Brower button, because while loading it would open wikipedia main page.
     m_wikiToolBar->setItemEnabled( WIKI_BROWSER, false );
 
-    m_wikiPage->begin();
     m_HTMLSource="";
-    m_wikiPage->setUserStyleSheet( m_styleSheet );
-
     m_HTMLSource.append(
             "<html>"
             "<div id='wiki_box' class='box'>"
@@ -2226,8 +2000,7 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
             "</html>"
                     );
 
-    m_wikiPage->write( m_HTMLSource );
-    m_wikiPage->end();
+    m_wikiPage->set( m_HTMLSource );
     saveHtmlData(); // Send html code to file
 
     if ( url.isEmpty() )
@@ -2379,11 +2152,8 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
 
     if ( !job->error() == 0 )
     {
-        m_wikiPage->begin();
         m_HTMLSource="";
-        m_wikiPage->setUserStyleSheet( m_styleSheet );
-
-    m_HTMLSource.append(
+        m_HTMLSource.append(
             "<div id='wiki_box' class='box'>"
                 "<div id='wiki_box-header' class='box-header'>"
                     "<span id='wiki_box-header-title' class='box-header-title'>"
@@ -2395,8 +2165,8 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
                 "</p></div>"
             "</div>"
                         );
-        m_wikiPage->write( m_HTMLSource );
-        m_wikiPage->end();
+        m_wikiPage->set( m_HTMLSource );
+
         m_dirtyWikiPage = false;
         m_wikiPage = NULL;
         saveHtmlData(); // Send html code to file
@@ -2474,9 +2244,6 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
     m_wiki.replace( QRegExp( "href= *\"/" ), "href=\"" +m_wikiBaseUrl );
     m_wiki.replace( QRegExp( "href= *\"#" ), "href=\"" +m_wikiCurrentUrl + "#" );
 
-    m_wikiPage->begin();
-    m_wikiPage->setUserStyleSheet( m_styleSheet );
-
     m_HTMLSource = "<html><body>";
     m_HTMLSource.append(
             "<div id='wiki_box' class='box'>"
@@ -2506,8 +2273,8 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
         );
     }
     m_HTMLSource.append( "</body></html>" );
-    m_wikiPage->write( m_HTMLSource );
-    m_wikiPage->end();
+    m_wikiPage->set( m_HTMLSource );
+
     m_dirtyWikiPage = false;
     saveHtmlData(); // Send html code to file
     m_wikiJob = NULL;

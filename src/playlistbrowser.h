@@ -19,7 +19,6 @@
 
 #define escapeHTML(s)     QString(s).replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" )
 
-class KHTMLPart;
 class KTextBrowser;
 class KToolBar;
 
@@ -34,6 +33,7 @@ class QTimer;
 
 class PlaylistBrowserView;
 class PlaylistTrackItem;
+class HTMLView;
 class InfoPane;
 
 class PlaylistBrowser : public QVBox
@@ -352,7 +352,7 @@ private slots:
     void toggle( bool );
 
 private:
-    KHTMLPart *m_infoBrowser;
+    HTMLView *m_infoBrowser;
 };
 
 

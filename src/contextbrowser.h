@@ -14,10 +14,9 @@
 
 class CollectionDB;
 class Color;
-class KHTMLPart;
+class HTMLView;
 class KPopupMenu;
 class KTabBar;
-class KTempFile;
 class MetaBundle;
 class QPalette;
 class QVBox;
@@ -44,7 +43,7 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         static ContextBrowser *instance() { return s_instance; }
 
         void setFont( const QFont& );
-        void setStyleSheet();
+        void reloadStyleSheet();
 
     public slots:
         void openURLRequest(const KURL &url );
@@ -96,16 +95,14 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         typedef enum {SHOW_ALBUM_NORMAL, SHOW_ALBUM_SCORE, SHOW_ALBUM_LEAST_PLAY} T_SHOW_ALBUM_TYPE;
         static const uint WIKI_MAX_HISTORY = 20;
 
-        void setStyleSheet_Default( QString& styleSheet );
-        void setStyleSheet_ExternalStyle( QString& styleSheet, QString& themeName );
         void showIntroduction();
         void saveHtmlData();
         void showScanning();
         static QString makeShadowedImage( const QString& albumImage );
 
-        KHTMLPart    *m_currentTrackPage;
-        KHTMLPart    *m_lyricsPage;
-        KHTMLPart    *m_wikiPage;
+        HTMLView    *m_currentTrackPage;
+        HTMLView    *m_lyricsPage;
+        HTMLView    *m_wikiPage;
 
         QVBox        *m_lyricsTab;
         QVBox        *m_wikiTab;
@@ -138,9 +135,6 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         Browser::ToolBar* m_wikiToolBar;
 
         QString       m_HTMLSource;
-        KTempFile    *m_bgGradientImage;
-        KTempFile    *m_headerGradientImage;
-        KTempFile    *m_shadowGradientImage;
         QStringList   m_metadataHistory;
         KURL          m_currentURL;
 

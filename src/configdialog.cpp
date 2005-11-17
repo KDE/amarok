@@ -195,7 +195,7 @@ void AmarokConfigDialog::updateSettings()
     if ( m_opt2->styleComboBox->currentText() != AmarokConfig::contextBrowserStyleSheet() ) {
         //can't use kconfigxt for the style comboxbox's since we need the string, not the index
         AmarokConfig::setContextBrowserStyleSheet( m_opt2->styleComboBox->currentText() );
-        ContextBrowser::instance()->setStyleSheet();
+        ContextBrowser::instance()->reloadStyleSheet();
     }
 
     // can't use kconfigxt for the database comboxbox since we need the DBConnection id and not the index

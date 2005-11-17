@@ -2,6 +2,7 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
 // (c) 2005 Seb Ruiz <me@sebruiz.net>
 // (c) 2005 Gábor Lehel <illissius@gmail.com>
+// (c) 2005 Christian Muehlhaeuser <chris@chris.de>
 // License: GPL V2. See COPYING file for information.
 
 #define DEBUG_PREFIX "PlaylistBrowser"
@@ -10,6 +11,7 @@
 #include "browserToolBar.h"
 #include "collectiondb.h"      //smart playlists
 #include "debug.h"
+#include "htmlview.h"
 #include "k3bexporter.h"
 #include "mediabrowser.h"
 #include "party.h"
@@ -34,7 +36,6 @@
 #include <kactioncollection.h>
 #include <kapplication.h>
 #include <kfiledialog.h>       //openPlaylist()
-#include <khtml_part.h>
 #include <kio/job.h>           //deleteSelectedPlaylists()
 #include <kiconloader.h>       //smallIcon
 #include <kinputdialog.h>
@@ -2889,7 +2890,7 @@ InfoPane::InfoPane( PlaylistBrowser *parent )
         box->setMargin( 5 );
         box->setBackgroundMode( Qt::PaletteBase );
 
-        m_infoBrowser = new KHTMLPart( box, "extended_info" );
+        m_infoBrowser = new HTMLView( box, "extended_info" );
 
         container->setFrameStyle( QFrame::StyledPanel );
         container->setMargin( 5 );
@@ -2912,11 +2913,7 @@ InfoPane::toggle( bool toggled )
 void
 InfoPane::setInfo( const QString &info )
 {
-//     m_infoBrowser->setUserStyleSheet( m_styleSheet );
-
-    m_infoBrowser->begin();
-    m_infoBrowser->write( info );
-    m_infoBrowser->end();
+    m_infoBrowser->set( info );
 }
 
 #include "playlistbrowser.moc"

@@ -88,6 +88,7 @@ amarokapp_SOURCES = \
     fht.cpp \
     filebrowser.cpp \
     firstrunwizard.ui \
+    htmlview.cpp \
     k3bexporter.cpp \
     kbookmarkhandler.cpp \
     ktrm.cpp \
