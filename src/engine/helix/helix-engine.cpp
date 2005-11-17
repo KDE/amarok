@@ -87,7 +87,7 @@ int HelixEngine::print2stdout(const char *fmt, ...)
 {
     va_list args;
     char buf[1024];
-    
+
     va_start(args, fmt);
 
     int ret = vsprintf(buf, fmt, args);
@@ -103,7 +103,7 @@ int HelixEngine::print2stderr(const char *fmt, ...)
 {
     va_list args;
     char buf[1024];
-    
+
     va_start(args, fmt);
 
     int ret = vsprintf(buf, fmt, args);
@@ -174,7 +174,7 @@ HelixEngine::init()
       else
          setDevice("default");
    }
-   
+
 
    if (!stat(m_coredir.utf8(), &s) && !stat(m_pluginsdir.utf8(), &s) && !stat(m_codecsdir.utf8(), &s))
    {
@@ -397,7 +397,7 @@ HelixEngine::length() const
    if (!m_inited)
       return 0;
 
-   debug() << "In length\n";
+   //debug() << "In length\n";
    return HelixSimplePlayer::duration(m_current);
 }
 
@@ -440,8 +440,8 @@ HelixEngine::canDecode( const KURL &url ) const
    if (ext != "txt")
       for (int i=0; i<(int)m_mimes.size(); i++)
       {
-         if (m_mimes[i].type.grep("audio").count() || 
-             m_mimes[i].type.grep("video").count() || 
+         if (m_mimes[i].type.grep("audio").count() ||
+             m_mimes[i].type.grep("video").count() ||
              m_mimes[i].type.grep("application").count())
             if (m_mimes[i].ext.grep(ext).count())
             {
@@ -616,14 +616,14 @@ const Engine::Scope &HelixEngine::scope()
                   b[0] = m_item->buf[k];
                   break;
             }
-            
+
             pint = (short *) &b[0];
-         
+
             a += (int) *pint;
             k += m_item->bps;
          }
          a /= m_item->nchan;
-         
+
          //m_scope[i] = a;
          m_currentScope[m_scopeindex] = a;
          m_scopeindex++;
@@ -659,7 +659,7 @@ const Engine::Scope &HelixEngine::scope()
    for (i=0; i<512; i++)
       m_scope[i] = m_currentScope[i];
    m_scopeindex = 0;
-   
+
    return m_scope;
 }
 
