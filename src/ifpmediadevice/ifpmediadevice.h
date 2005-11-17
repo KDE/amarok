@@ -67,7 +67,9 @@ class IfpMediaDevice : public MediaDevice
         enum              Error { ERR_ACCESS_DENIED, ERR_CANNOT_RENAME, ERR_DISK_FULL, ERR_COULD_NOT_WRITE };
 
         bool              checkResult( int result, QString message );
-        void              unEscape( QString &s );
+        // Will iterate over parents and add directory name to the item.
+        // getFilename = false will return only parent structure, as opposed to returning the filename as well
+        QString           getFullPath( const QListViewItem *item, const bool getFilename = true );
 
         // upload
         int               uploadTrack( const QCString& src, const QCString& dest );

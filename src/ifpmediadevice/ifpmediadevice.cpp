@@ -49,6 +49,18 @@ class IfpMediaItem : public MediaItem
             : MediaItem( parent, after )
         { }
 
+        void
+        IfpMediaItem::setEncodedName( QString &name )
+        {
+            m_encodedName = QFile::encodeName( name );
+        }
+
+        void
+        IfpMediaItem::setEncodedName( QCString &name ) { m_encodedName = name; }
+
+        QCString
+        IfpMediaItem::encodedName() { return m_encodedName; }
+
         // List directories first, always
         int
         IfpMediaItem::compare( QListViewItem *i, int col, bool ascending ) const
@@ -71,7 +83,8 @@ class IfpMediaItem : public MediaItem
         }
 
     private:
-        bool m_dir;
+        bool     m_dir;
+        QCString m_encodedName;
 };
 
 
@@ -190,30 +203,35 @@ IfpMediaDevice::renameItem( QListViewItem *item ) // SLOT
 {
     if( !item )
         return;
+
+    #define item static_cast<IfpMediaItem*>(item)
+
+    QCString src  = QFile::encodeName( getFullPath( item, false ) );
+    src.append( item->encodedName() );
+
+    QCString dest = "\\" + QFile::encodeName( item->text(0) );
+
+    debug() << "Renaming " << src << " to: " << dest << endl;
+
+    if( ifp_rename( &m_ifpdev, src, dest ) ) //success == 0
+        //rename failed
+        item->setText( 0, item->encodedName() );
+
+    #undef item
 }
+
 
 void
 IfpMediaDevice::expandItem( QListViewItem *item ) // SLOT
 {
     if( !item || !item->isExpandable() ) return;
 
-    if( item->childCount() )
-    {
-        while( item->firstChild() )
-            delete item->firstChild();
-    }
+    while( item->firstChild() )
+        delete item->firstChild();
 
     m_tmpParent = item;
 
-    QString path = item->text(0);
-    QListViewItem *parent = item->parent();
-    while( parent )
-    {
-        path.prepend( "\\" );
-        path.prepend( parent->text(0) );
-        parent = parent->parent();
-    }
-
+    QString path = getFullPath( item );
     listDir( path );
 
     m_tmpParent = 0;
@@ -226,7 +244,7 @@ IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle, bool /*isPodcast*/ 
     const KURL &url = bundle.url();
 
     const QCString src = QFile::encodeName( url.path() );
-    const QCString dest = QFile::encodeName( "\\" + url.filename() );
+    const QCString dest = QFile::encodeName( "\\" + url.filename() ); // TODO: add to directory
 
     int result = uploadTrack( src, dest );
 
@@ -263,14 +281,7 @@ IfpMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/ )
     if( !item )
         return false;
 
-    QString path = item->text(0);
-    QListViewItem *parent = item->parent();
-    while( parent )
-    {
-        path.prepend( "\\" ); // backslash for ifp remote...
-        path.prepend( parent->text(0) );
-        parent = parent->parent();
-    }
+    QString path = getFullPath( item );
 
     QCString encodedPath = QFile::encodeName( path );
     debug() << "Deleting file: " << encodedPath << endl;
@@ -336,12 +347,13 @@ IfpMediaDevice::addTrackToList( int type, QString name, int /*size*/ )
         else
             m_last->setType( MediaItem::UNKNOWN );
     }
-
+    m_last->setEncodedName( name );
     m_last->setText( 0, name );
     return 0;
 }
 
-// capacity, in kB
+/// Capacity, in kB
+
 bool
 IfpMediaDevice::getCapacity( unsigned long *total, unsigned long *available )
 {
@@ -357,6 +369,26 @@ IfpMediaDevice::getCapacity( unsigned long *total, unsigned long *available )
 //     return totalBytes > 0;
 }
 
+QString
+IfpMediaDevice::getFullPath( const QListViewItem *item, const bool getFilename )
+{
+    if( !item ) return QString::null;
+
+    QString path;
+
+    if( getFilename ) path = item->text(0);
+
+    QListViewItem *parent = item->parent();
+    while( parent )
+    {
+        path.prepend( "\\" );
+        path.prepend( parent->text(0) );
+        parent = parent->parent();
+    }
+    path.prepend( "\\" );
+
+    return path;
+}
 
 
 #include "ifpmediadevice.moc"

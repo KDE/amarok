@@ -1043,7 +1043,7 @@ MediaDeviceView::updateStats()
     unsigned long total, avail;
     if(m_device->getCapacity(&total, &avail))
     {
-        text += " - " + prettySize( avail ) + i18n(" of ") + prettySize( total ) + " available";
+        text += " - " + prettySize( avail ) + i18n(" of ") + prettySize( total ) + i18n(" available");
 
         m_stats->m_used = total-avail;
         m_stats->m_total = total;
