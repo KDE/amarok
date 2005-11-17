@@ -28,10 +28,6 @@
 #include <qfile.h>
 #include <qcstring.h>
 
-#define unEscape(s) QString(s).replace( "%25", "\\%" ).replace( "%3F", "\\?" ) \
-                              .replace( "%20", "\\ " ) \
-                              .replace( "%23", "\\#" ).replace( "%27", "\\'" )
-
 /**
  * IfpMediaItem Class
  */
@@ -196,16 +192,17 @@ IfpMediaDevice::expandItem( QListViewItem *item ) // SLOT
 MediaItem *
 IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle, bool /*isPodcast*/ )
 {
-    KURL &url = bundle.url();
+    const KURL &url = bundle.url();
 
-    const QCString src = QFile::encodeName( pathname );
+    const QCString src = QFile::encodeName( url.path() );
     const QCString dest = QFile::encodeName( "\\" + url.filename() );
 
     int result = uploadTrack( src, dest );
 
     checkResult( result, i18n("Could not upload: %1").arg(dest) );
 
-    addTrackToList( IFP_FILE, url.filename() );
+    if( !result ) //success
+        addTrackToList( IFP_FILE, url.filename() );
 
     return m_last;
 }
