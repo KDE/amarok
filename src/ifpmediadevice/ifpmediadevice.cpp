@@ -14,6 +14,12 @@
  *                                                                         *
  ***************************************************************************/
 
+ /**
+  *  iRiver ifp media device code
+  *  @see http://ifp-driver.sourceforge.net/libifp/docs/ifp_8h.html
+  *  @note ifp uses a backslash '\' as a directory delimiter for _remote_ files
+  */
+
 #define DEBUG_PREFIX "IfpMediaDevice"
 
 #include "ifpmediadevice.h"
@@ -203,7 +209,7 @@ IfpMediaDevice::expandItem( QListViewItem *item ) // SLOT
     QListViewItem *parent = item->parent();
     while( parent )
     {
-        path.prepend( "//" ); // forward slash for ifp remote...
+        path.prepend( "\\" );
         path.prepend( parent->text(0) );
         parent = parent->parent();
     }
@@ -261,7 +267,7 @@ IfpMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/ )
     QListViewItem *parent = item->parent();
     while( parent )
     {
-        path.prepend( "/" ); // forward slash for ifp remote...
+        path.prepend( "\\" ); // backslash for ifp remote...
         path.prepend( parent->text(0) );
         parent = parent->parent();
     }
