@@ -750,9 +750,54 @@ MediaDeviceList::viewportPaintEvent( QPaintEvent *e )
     }
 }
 
+void
+MediaDeviceList::rmbPressed( QListViewItem *item, const QPoint &p, int i )
+{
+    switch( m_parent->m_device->deviceType() )
+    {
+        case MediaDevice::IPOD:
+            rmbIpod( item, p, i );
+            break;
+
+        case MediaDevice::IFP:
+            rmbIfp( item, p, i );
+            break;
+
+        default:
+            break;
+    }
+}
 
 void
-MediaDeviceList::rmbPressed( QListViewItem* qitem, const QPoint& point, int ) //SLOT
+MediaDeviceList::rmbIfp( QListViewItem* qitem, const QPoint& point, int )
+{
+    MediaItem *item = static_cast<MediaItem *>(qitem);
+    if ( item )
+    {
+        KPopupMenu menu( this );
+
+        enum Actions { RENAME, DELETE };
+
+        menu.insertItem( SmallIconSet( "editclear" ), i18n( "Rename" ), RENAME );
+        menu.insertItem( SmallIconSet( "editdelete" ), i18n( "Delete" ), DELETE );
+
+        int id =  menu.exec( point );
+        switch( id )
+        {
+            case RENAME:
+                m_renameFrom = item->text(0);
+                rename( item, 0 );
+                break;
+
+            case DELETE:
+                m_parent->m_device->deleteFromDevice();
+                break;
+        }
+    }
+}
+
+void
+MediaDeviceList::rmbIpod( QListViewItem* qitem, const QPoint& point, int ) //SLOT
 {
     MediaItem *item = dynamic_cast<MediaItem *>(qitem);
     if ( item )
@@ -827,7 +872,7 @@ MediaDeviceList::rmbPressed( QListViewItem* qitem, const QPoint& point, int ) //
             break;
 
         case MediaItem::PLAYLIST:
-            menu.insertItem( SmallIconSet( "editrename" ), i18n( "Rename" ), RENAME );
+            menu.insertItem( SmallIconSet( "editclear" ), i18n( "Rename" ), RENAME );
             break;
 
         default:
@@ -929,7 +974,7 @@ MediaDeviceList::rmbPressed( QListViewItem* qitem, const QPoint& point, int ) //
                 }
                 break;
             case DELETE:
-                m_parent->m_device->deleteFromDevice( NULL );
+                m_parent->m_device->deleteFromDevice();
                 break;
             default:
                 if(id >= FIRST_PLAYLIST)
@@ -966,14 +1011,17 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
 #if defined(HAVE_LIBGPOD)
     debug() << "Loading iPod device!" << endl;
     m_device = new GpodMediaDevice( this, m_deviceList );
+    m_device->setDeviceType( MediaDevice::IPOD );
     m_device->setRequireMount( true );
 #elif defined(HAVE_IFP)
     debug() << "Loading IFP device!" << endl;
     m_device = new IfpMediaDevice( this, m_deviceList );
+    m_device->setDeviceType( MediaDevice::IFP );
     m_device->setRequireMount( false );
 #else
     debug() << "Loading dummy device!" << endl;
     m_device = new DummyMediaDevice( this, m_deviceList );
+    m_device->setType( MediaDevice::DUMMY );
 #endif
     m_progress = new KProgress( this );
 

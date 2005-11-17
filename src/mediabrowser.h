@@ -151,6 +151,9 @@ class MediaDeviceList : public KListView
         void contentsDragMoveEvent( QDragMoveEvent* e );
         void viewportPaintEvent( QPaintEvent* );
 
+        void rmbIfp( QListViewItem*, const QPoint&, int );
+        void rmbIpod( QListViewItem*, const QPoint&, int );
+
         MediaDeviceView* m_parent;
         QString m_renameFrom;
 };
@@ -204,6 +207,8 @@ class MediaDevice : public QObject
         MediaDevice( MediaDeviceView* parent, MediaDeviceList* listview );
         virtual ~MediaDevice();
 
+        enum        DeviceType { DUMMY, IPOD, IFP };
+
         void        addURL( const KURL& url, MetaBundle *bundle=NULL, bool isPodcast=false, const QString &playlistName=QString::null );
         void        addURLs( const KURL::List urls, const QString &playlistName=QString::null );
 
@@ -216,7 +221,9 @@ class MediaDevice : public QObject
         // create a new playlist named 'name' consisting of 'items' and add it to 'parent'
         virtual MediaItem * newPlaylist(const QString &name, MediaItem *parent, QPtrList<MediaItem> items) = 0;
 
-        void   setRequireMount( const bool b ) { m_requireMount = b; }
+        void        setRequireMount( const bool b ) { m_requireMount = b; }
+        void        setDeviceType( DeviceType type ) { m_type = type; }
+        DeviceType  deviceType() { return m_type; }
 
         static MediaDevice *instance() { return s_instance; }
 
@@ -247,6 +254,7 @@ class MediaDevice : public QObject
         virtual MediaItem *trackExists( const MetaBundle& bundle ) = 0;
 
     protected:
+        DeviceType  m_type;
 
         QString     m_mntpnt;
         QString     m_mntcmd;
@@ -290,7 +298,7 @@ class MediaDevice : public QObject
         virtual MediaItem *insertTrackIntoDB(const QString& pathname, const MetaBundle& bundle, bool isPodcast) { (void)pathname; (void)bundle; (void)isPodcast; return NULL; }
         virtual void updateRootItems();
 
-        void deleteFromDevice( MediaItem *item, bool onlyPlayed=false, bool recursing=false );
+        void deleteFromDevice( MediaItem *item=0, bool onlyPlayed=false, bool recursing=false );
         void deleteFile( const KURL &url);
 
         // recursively remove 'item', only the already played (sub-) if 'onlyPlayed' is true
