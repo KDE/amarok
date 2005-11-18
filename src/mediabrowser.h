@@ -214,13 +214,26 @@ class MediaDevice : public QObject
         void        addURL( const KURL& url, MetaBundle *bundle=NULL, bool isPodcast=false, const QString &playlistName=QString::null );
         void        addURLs( const KURL::List urls, const QString &playlistName=QString::null );
 
-        // true if the device is connected
+        /**
+         * @return true if the device is connected
+         */
         virtual bool        isConnected() = 0;
 
-        // add tracks in 'items' to playlist represented by 'playlist' and insert them after 'after'
+        /**
+         * Adds particular tracks to a playlist
+         * @param playlist parent playlist for tracks to be added to
+         * @param after insert following this item
+         * @param items tracks to add to playlist
+         */
         virtual void        addToPlaylist(MediaItem *playlist, MediaItem *after, QPtrList<MediaItem> items) = 0;
 
-        // create a new playlist named 'name' consisting of 'items' and add it to 'parent'
+        /**
+         * Create a new playlist
+         * @param name playlist title
+         * @param parent parent MediaItem of the new playlist
+         * @param items tracks to add to playlist
+         * @return the newly created playlist
+         */
         virtual MediaItem * newPlaylist(const QString &name, MediaItem *parent, QPtrList<MediaItem> items) = 0;
 
         void        setRequireMount( const bool b ) { m_requireMount = b; }
@@ -253,10 +266,87 @@ class MediaDevice : public QObject
     private:
         int              sysCall(const QString & command);
 
-        // return MediaItem corresponding to track described by 'bundle' or NULL if no such track exists on device
+        /**
+         * Find a particular track
+         * @param bundle The metabundle of the requested media item
+         * @return The MediaItem of the item if found, otherwise NULL
+         * @note This may not be worth implementing for non database driven devices, as it could be slow
+         */
         virtual MediaItem *trackExists( const MetaBundle& bundle ) = 0;
 
     protected:
+        /**
+         * Get the capacity and freespace available on the device, in KB
+         * @return true if successful
+         */
+        virtual bool getCapacity( unsigned long *total, unsigned long *available ) = 0;
+
+        /**
+         * Lock device for exclusive access if possible
+         */
+        virtual void lockDevice( bool ) = 0;
+
+        /**
+         * Unlock device
+         */
+        virtual void unlockDevice() = 0;
+
+        /**
+         * Connect to device, and populate m_listview with MediaItems
+         * @param silent if true, suppress error dialogs
+         * @return true if successful
+         */
+        virtual bool openDevice( bool silent=false ) = 0;
+
+        /**
+         * Wrap up any loose ends and close the device
+         * @return true if successful
+         */
+        virtual bool closeDevice() = 0;
+
+        /**
+         * Write any pending changes to the device, such as database changes
+         */
+        virtual void synchronizeDevice() = 0;
+
+        /**
+         * Copy a track to the device
+         * @param bundle The MetaBundle of the item to transfer. Will move the item specified by bundle().url().path()
+         * @param isPodcast true if item is a podcast
+         * @return If successful, the created MediaItem in transferlist, else 0
+         */
+        virtual MediaItem *copyTrackToDevice(const MetaBundle& bundle, bool isPodcast) = 0;
+
+        /**
+         * Insert track already located on media device into the device's database
+         * @param pathname Location of file on the device to add to the database
+         * @param bundle MetaBundle of track
+         * @param isPodcast true if item is a podcast
+         * @return If successful, the created MediaItem in transferlist, else 0
+         */
+        virtual MediaItem *insertTrackIntoDB( const QString& pathname, const MetaBundle& bundle, bool isPodcast)
+                                            { (void)pathname; (void)bundle; (void)isPodcast; return 0; }
+
+        /**
+         * Recursively remove MediaItem from the tracklist and the device
+         * @param item MediaItem to remove
+         * @param onlyPlayed True if item should be deleted only if it has been played
+         * @return true if successful
+         */
+        virtual bool deleteItemFromDevice( MediaItem *item, bool onlyPlayed=false ) = 0;
+
+        /**
+         * Determine the pathname for which a track should be uploaded to on the device
+         * @param bundle MetaBundle of track to base pathname creation on
+         * @return the pathname to upload the track to
+         */
+        virtual QString determinePathname(const MetaBundle& bundle) = 0;
+
+        virtual void updateRootItems();
+
+        void deleteFromDevice( MediaItem *item=0, bool onlyPlayed=false, bool recursing=false );
+        void deleteFile( const KURL &url);
+
         DeviceType  m_type;
 
         QString     m_mntpnt;
@@ -274,42 +364,6 @@ class MediaDevice : public QObject
         MediaDeviceTransferList* m_transferList;
         void loadTransferList( const QString &path );
         void saveTransferList( const QString &path );
-
-        // fill 'total' with total and 'available' with available capacity on media device, unit is KB
-        virtual bool getCapacity( unsigned long *total, unsigned long *available ) = 0;
-
-        // if possible, lock device for exclusive access
-        virtual void lockDevice( bool ) = 0;
-
-        // allow access for others again
-        virtual void unlockDevice() = 0;
-
-        // connect to device, do not open any dialog boxes if 'silent' is true,
-        // return true on success and fill m_listview with MediaItems
-        virtual bool openDevice( bool silent=false ) = 0;
-
-        // disconnect device
-        virtual bool closeDevice() = 0;
-
-        // write changes to device (especially to database)
-        virtual void synchronizeDevice() = 0;
-
-        // physically transfer bundle().url().path() to device
-        virtual MediaItem *copyTrackToDevice(const MetaBundle& bundle, bool isPodcast) = 0;
-
-        // insert track already located on media device at 'pathname' to device's database of tracks,
-        // use metadata from 'bundle', add to podcasts if 'isPodcast' is true
-        virtual MediaItem *insertTrackIntoDB(const QString& pathname, const MetaBundle& bundle, bool isPodcast) { (void)pathname; (void)bundle; (void)isPodcast; return NULL; }
-        virtual void updateRootItems();
-
-        void deleteFromDevice( MediaItem *item=0, bool onlyPlayed=false, bool recursing=false );
-        void deleteFile( const KURL &url);
-
-        // recursively remove 'item', only the already played (sub-) if 'onlyPlayed' is true
-        virtual bool deleteItemFromDevice( MediaItem *item, bool onlyPlayed=false ) = 0;
-
-        // return a pathname where a new track with metadata 'bundle' has to be transferred for adding to media device database
-        virtual QString createPathname(const MetaBundle& bundle) = 0;
 
         static MediaDevice *s_instance;
 

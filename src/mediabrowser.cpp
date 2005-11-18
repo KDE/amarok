@@ -168,7 +168,7 @@ class DummyMediaDevice : public MediaDevice
     virtual MediaItem* copyTrackToDevice(const MetaBundle&, bool) { return NULL; }
     virtual MediaItem* insertTrackIntoDB(const QString&, const MetaBundle&, bool) { return NULL; }
     virtual bool deleteItemFromDevice(MediaItem*, bool) { return false; }
-    virtual QString createPathname(const MetaBundle&) { return QString::null; }
+    virtual QString determinePathname(const MetaBundle&) { return QString::null; }
     virtual bool getCapacity( unsigned long *, unsigned long * ) { return false; }
 };
 

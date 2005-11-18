@@ -35,7 +35,7 @@ class GpodMediaDevice : public MediaDevice
         void              unlockDevice() {}
 
         void              synchronizeDevice();
-        QString           createPathname(const MetaBundle& bundle);
+        QString           determinePathname(const MetaBundle& bundle);
         MediaItem        *copyTrackToDevice(const MetaBundle& bundle, bool isPodcast);
         MediaItem        *insertTrackIntoDB(const QString& pathname, const MetaBundle& bundle, bool isPodcast);
         bool              deleteItemFromDevice(MediaItem *item, bool onlyPlayed=false );

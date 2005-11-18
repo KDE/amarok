@@ -42,8 +42,6 @@ class IfpMediaDevice : public MediaDevice
         bool              isConnected() { return m_connected; }
 
     protected:
-        MediaItem        *trackExists( const MetaBundle& bundle ) { return 0; }
-
         bool              openDevice( bool silent=false );
         bool              closeDevice();
 
@@ -55,9 +53,9 @@ class IfpMediaDevice : public MediaDevice
         bool              deleteItemFromDevice( MediaItem *item, bool onlyPlayed = false );
         bool              getCapacity(unsigned long *total, unsigned long *available);
 
-        QString           createPathname( const MetaBundle& bundle) { return QString::null; }
-        void              addToPlaylist( MediaItem *list, MediaItem *after, QPtrList<MediaItem> items) {}
-        MediaItem        *newPlaylist( const QString &name, MediaItem *list, QPtrList<MediaItem> items) { return 0; }
+        QString           determinePathname( const MetaBundle& ) { return QString::null; }
+        void              addToPlaylist( MediaItem *, MediaItem *, QPtrList<MediaItem> ) {}
+        MediaItem        *newPlaylist( const QString &, MediaItem *, QPtrList<MediaItem> ) { return 0; }
 
     protected slots:
         void              renameItem( QListViewItem *item );
@@ -65,6 +63,9 @@ class IfpMediaDevice : public MediaDevice
 
     private:
         enum              Error { ERR_ACCESS_DENIED, ERR_CANNOT_RENAME, ERR_DISK_FULL, ERR_COULD_NOT_WRITE };
+
+        // To expensive to implement on a non-database device
+        MediaItem        *trackExists( const MetaBundle& ) { return 0; }
 
         bool              checkResult( int result, QString message );
         // Will iterate over parents and add directory name to the item.
@@ -85,8 +86,6 @@ class IfpMediaDevice : public MediaDevice
         usb_dev_handle    *m_dh;
         struct ifp_device  m_ifpdev;
 
-//         QByteArray         m_uploadData;
-//         int                m_uploadPos;
         bool               m_connected;
 
         IfpMediaItem      *m_last;

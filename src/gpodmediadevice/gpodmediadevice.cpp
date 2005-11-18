@@ -119,7 +119,7 @@ GpodMediaDevice::isConnected()
 MediaItem *
 GpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle, bool isPodcast)
 {
-    QString devicePath = createPathname(bundle);
+    QString devicePath = determinePathname(bundle);
 
     // check if path exists and make it if needed
     QFileInfo finfo( devicePath );
@@ -1060,7 +1060,7 @@ GpodMediaDevice::getTitle(const QString &artist, const QString &album, const QSt
 }
 
 QString
-GpodMediaDevice::createPathname(const MetaBundle &bundle)
+GpodMediaDevice::determinePathname(const MetaBundle &bundle)
 {
     QString local = bundle.filename();
     QString type = local.section('.', -1);
