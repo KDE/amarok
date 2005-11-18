@@ -241,7 +241,7 @@ IfpMediaDevice::expandItem( QListViewItem *item ) // SLOT
 MediaItem *
 IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle, bool /*isPodcast*/ )
 {
-    if( !m_connected ) return;
+    if( !m_connected ) return 0;
 
     const KURL &url = bundle.url();
 

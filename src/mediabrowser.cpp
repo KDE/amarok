@@ -1306,11 +1306,9 @@ MediaDevice::removeSelected()
     QPtrList<QListViewItem>  selected = m_transferList->selectedItems();
 
     for( QListViewItem *item = selected.first(); item; item = selected.next() )
-    {
-        m_transferList->takeItem( item );
         delete item;
-    }
-    m_parent->m_transferButton->setEnabled( m_transferList->childCount() != 0 );
+
+    m_parent->m_transferButton->setEnabled( m_transferList->childCount() != 0 && isConnected() );
     m_parent->updateStats();
 }
 
