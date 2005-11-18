@@ -1083,7 +1083,7 @@ MediaDeviceView::prettySize( unsigned long size )
 void
 MediaDeviceView::updateStats()
 {
-    if( !m_stats || !m_device->isConnected() )
+    if( !m_stats )
         return;
 
     QString text = i18n( "1 track in queue", "%n tracks in queue", m_device->m_transferList->childCount() );
