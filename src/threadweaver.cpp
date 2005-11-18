@@ -206,13 +206,7 @@ static void create_current_thread_key()
 
 ThreadWeaver::Thread::Thread()
     : QThread()
-{
-    m_threadId = ThreadWeaver::getNewThreadId();
-    debug() << "(Thread Constructor) My thread id: " << m_threadId << endl;
-    pthread_once(&current_thread_key_once, create_current_thread_key);
-    pthread_setspecific(current_thread_key, this);
-    debug() << "(Thread Constructor) My address is " << getRunning() << endl;
-}
+{ }
 
 ThreadWeaver::Thread::~Thread()
 {
@@ -230,7 +224,7 @@ QString
 ThreadWeaver::Thread::threadId()
 {
     if( !getRunning() )
-        return "GUIThread";
+        return "None";
     else
     {
         QString s;
@@ -261,6 +255,13 @@ void
 ThreadWeaver::Thread::run()
 {
     // BE THREAD-SAFE!
+
+    //register this thread so that it can be returned in a static getRunning() function
+    m_threadId = ThreadWeaver::getNewThreadId();
+    debug() << "(Thread Constructor) My thread id: " << m_threadId << endl;
+    pthread_once(&current_thread_key_once, create_current_thread_key);
+    pthread_setspecific(current_thread_key, this);
+    debug() << "(Thread Constructor) My address is " << getRunning() << endl;
 
     m_job->m_aborted |= !m_job->doJob();
 
