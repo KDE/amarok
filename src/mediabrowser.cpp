@@ -2004,6 +2004,13 @@ MediaDeviceTransferList::totalSize() const
     return total;
 }
 
-
+void
+MediaDeviceTransferList::keyPressEvent( QKeyEvent *e )
+{
+    if( e->key() == Key_Delete )
+    {
+        m_parent->m_device->removeSelected();
+    }
+}
 
 #include "mediabrowser.moc"

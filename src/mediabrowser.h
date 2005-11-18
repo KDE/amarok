@@ -95,6 +95,8 @@ class MediaDeviceTransferList : public KListView
         unsigned totalSize() const; // total size of items to transfer in KB
 
     private:
+        void keyPressEvent( QKeyEvent *e );
+
         MediaDeviceView *m_parent;
 };
 

@@ -241,6 +241,8 @@ IfpMediaDevice::expandItem( QListViewItem *item ) // SLOT
 MediaItem *
 IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle, bool /*isPodcast*/ )
 {
+    if( !m_connected ) return;
+
     const KURL &url = bundle.url();
 
     const QCString src = QFile::encodeName( url.path() );
@@ -278,8 +280,7 @@ IfpMediaDevice::uploadCallback( void */*pData*/, ifp_transfer_status */*progress
 bool
 IfpMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/ )
 {
-    if( !item )
-        return false;
+    if( !item || !m_connected ) return false;
 
     QString path = getFullPath( item );
 
