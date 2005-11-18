@@ -28,7 +28,7 @@ if $*.empty?() or $*[0] == "--help"
     puts( "Mp3fix is a tool for fixing VBR encoded mp3 that show a bogus tracklength in your" )
     puts( "audio player. Mp3fix calculates the real track length and adds the missing XING" )
     puts( "header to the file." )
-    exit()
+    exit( 1 )
 end
 
 path = $*[0]
@@ -41,12 +41,12 @@ end
 
 if not FileTest::exist?( path )
     puts( "Error: File not found." )
-    exit()
+    exit( 1 )
 end
 
 if not path.include?( ".mp3" ) #FIXME
     puts( "Error: File is not mp3." )
-    exit()
+    exit( 1 )
 end
 
 
@@ -76,8 +76,8 @@ channelMode = data[offset+3] & 0xc0 >> 6
 xingOffset = channelMode == 0x03 ? 17 : 32
 
 if data[id3length + 4 + xingOffset, 4] == "Xing"
-    puts( "This file already contains a XING header. Aborting." )
-    exit()
+    puts( "Error: This file already contains a XING header. Aborting." )
+    exit( 1 )
 end
 
 

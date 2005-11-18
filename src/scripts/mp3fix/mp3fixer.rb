@@ -4,14 +4,17 @@
 # License: GNU General Public License V2
 
 
+MenuItemName = "MP3Fixer FixIt!"
+
+
 def cleanup()
-    `dcop amarok script removeCustomMenuItem MP3Fixer FixIt!`
+    `dcop amarok script removeCustomMenuItem #{MenuItemName}`
 end
 
 
 trap( "SIGTERM" ) { cleanup() }
 
-`dcop amarok script addCustomMenuItem MP3Fixer FixIt!`
+`dcop amarok script addCustomMenuItem #{MenuItemName}`
 
 
 loop do
@@ -26,7 +29,19 @@ loop do
             `kdialog --msgbox #{msg}`
 
         when "customMenuClicked"
-            puts( "customMenuClicked" )
+            if message.include?( MenuItemName )
+                file = message.split()[3]
+                output = `mp3fix #{file}`
+
+                if $?.success?()
+                    `kdialog --msgbox Mp3Fixer was successful :)`
+                else
+                    reg = Regexp.new( "Error:.*", Regexp::MULTILINE )
+                    errormsg = reg.match( output )
+
+                    `kdialog --error #{errormsg}`
+                end
+            end
     end
 end
 
