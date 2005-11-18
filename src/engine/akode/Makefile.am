@@ -8,7 +8,7 @@ libamarok_aKode_engine_la_LIBADD = \
     $(top_builddir)/amarok/src/plugin/libplugin.la \
     -lkdecore -lakode
 
-libamarok_aKode_engine_la_SOURCES = akode-engine.cpp
+libamarok_aKode_engine_la_SOURCES = akode-engine.cpp akode-scope.cpp
 libamarok_aKode_engine_la_LDFLAGS = -module $(KDE_PLUGIN) $(all_libraries)
 
 METASOURCES  = AUTO

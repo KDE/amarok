@@ -9,6 +9,7 @@
  ***************************************************************************/
 
 #include "engine/enginebase.h"
+#include "akode-scope.h"
 
 namespace aKode { class Player; }
 
@@ -25,10 +26,12 @@ class AkodeEngine : public Engine::Base
     virtual void seek( uint );
 
     virtual Engine::State state() const;
+    virtual const Engine::Scope &scope();
 
     virtual bool event( QEvent* );
 
     aKode::Player *m_player;
+    aKodeScope m_scope;
 
 protected:
     ~AkodeEngine();

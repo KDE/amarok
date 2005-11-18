@@ -60,10 +60,11 @@ AkodeEngine::~AkodeEngine()
 bool
 AkodeEngine::init()
 {
-    startTimer( 20 );
+//    startTimer( 20 );
 
     m_player = new aKode::Player();
     m_player->setManager( new amaroK::Manager( this ) );
+    m_player->setMonitor( &m_scope );
 
     return m_player->open( "auto" );
 }
@@ -153,13 +154,14 @@ AkodeEngine::event( QEvent *e )
 {
     switch( e->type() )
     {
+    /*
     case QEvent::Timer:
         if( m_player->decoder() && m_player->decoder()->eof() ) {
             m_player->stop();
             emit trackEnded();
         }
         break;
-
+    */
     case 3000:
         emit stateChanged( state() );
         break;
@@ -170,6 +172,8 @@ AkodeEngine::event( QEvent *e )
         break;
 
     case 3002:
+        m_player->stop();
+        emit trackEnded();
         emit infoMessage( i18n("Unable to decode <i>%1</i>").arg( m_url.prettyURL()) );
         break;
 
@@ -178,4 +182,9 @@ AkodeEngine::event( QEvent *e )
     }
 
     return true;
+}
+
+const Engine::Scope& AkodeEngine::scope()
+{
+    return m_scope.scope();
 }
