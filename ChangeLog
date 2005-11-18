@@ -5,7 +5,6 @@ amaroK ChangeLog
 
 VERSION 1.3.7:
   BUGFIXES:
-    * Fix memory leak in the helix engine (BR 116223)
     * Fix for regression in Qt 3.3.5, causing amaroK to crash when clearing 
       the playlist. (BR 116004)
     * Zombie directories are removed automatically from the collection
