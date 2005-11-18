@@ -85,6 +85,7 @@ SHORT-TERM (URGENT):
 
   <markey> Ctrl-C in Playlist for copying title doesn't work, because the event gets eaten by another widget.
 
+  <jefferai> Why doesn't App::applySettings() execute when you change the database type?
 
 MID-TERM:
  <eean>    Basically need to re-add some of the functionality I removed in re-doing dynamic
