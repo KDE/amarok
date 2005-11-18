@@ -44,6 +44,8 @@ class App : public KApplication, public EngineObserver
         static void handleCliArgs();
         static void initCliArgs( int argc, char *argv[] );
 
+        static int mainThreadId;
+
         PlaylistWindow *playlistWindow() const { return m_pPlaylistWindow; }
 
         // FRIENDS ------

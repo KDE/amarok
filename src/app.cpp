@@ -75,6 +75,8 @@ email                : markey@web.de
     #endif //SCHEDAFFINITY_SUPPORT
 #endif //__linux__
 
+int App::mainThreadId = 0;
+
 App::App()
         : KApplication()
         , m_pPlayerWindow( 0 ) //will be created in applySettings()
@@ -104,6 +106,9 @@ App::App()
         amaroK::config()->sync();
     }
 
+    debug() << "Where do we choke? 0" << endl;
+    DEBUG_THREAD_FUNC_INFO
+
     fixHyperThreading();
 
     m_pGlobalAccel    = new KGlobalAccel( this );
@@ -113,9 +118,15 @@ App::App()
     m_pPlaylistWindow->init(); //creates the playlist, browsers, etc.
     initGlobalShortcuts();
 
+    debug() << "Where do we choke? 1" << endl;
+    DEBUG_THREAD_FUNC_INFO
+
     //load previous playlist in separate thread
     if ( restoreSession && AmarokConfig::savePlaylist() )
         Playlist::instance()->restoreSession();
+
+    debug() << "Where do we choke? 2" << endl;
+    DEBUG_THREAD_FUNC_INFO
 
     if( args->isSet( "engine" ) ) {
         // we correct some common errors (case issues, missing -engine off the end)
@@ -125,6 +136,9 @@ App::App()
 
         AmarokConfig::setSoundSystem( engine );
     }
+
+    debug() << "Where do we choke? 3" << endl;
+    DEBUG_THREAD_FUNC_INFO
 
     //create engine, show PlayerWindow, show TrayIcon etc.
     applySettings( true );
@@ -495,7 +509,13 @@ void App::applySettings( bool firstTime )
     //determine and apply colors first
     applyColorScheme();
 
+    debug() << "Where do we choke? 4" << endl;
+    DEBUG_THREAD_FUNC_INFO
+
     TrackToolTip::instance()->removeFromWidget( m_pTray );
+
+    debug() << "Where do we choke? 5" << endl;
+    DEBUG_THREAD_FUNC_INFO
 
     if( AmarokConfig::showPlayerWindow() )
     {
@@ -550,6 +570,8 @@ void App::applySettings( bool firstTime )
            playlistWindow()->createGUI();
     }
 
+    debug() << "Where do we choke? 6" << endl;
+    DEBUG_THREAD_FUNC_INFO
 
     playlistWindow()->applySettings();
     Scrobbler::instance()->applySettings();
