@@ -629,7 +629,6 @@ MediaDeviceList::getSelectedLeaves(MediaItem *parent, QPtrList<MediaItem> *list,
 void
 MediaDeviceList::contentsDragEnterEvent( QDragEnterEvent *e )
 {
-    debug() << "Items dropping?" << endl;
     e->accept( e->source() == viewport() || KURLDrag::canDecode( e ) );
 }
 
@@ -1084,7 +1083,7 @@ MediaDeviceView::prettySize( unsigned long size )
 void
 MediaDeviceView::updateStats()
 {
-    if(!m_stats)
+    if( !m_stats || !m_device->isConnected() )
         return;
 
     QString text = i18n( "1 track in queue", "%n tracks in queue", m_device->m_transferList->childCount() );
@@ -1426,8 +1425,9 @@ MediaDevice::connectDevice( bool silent )
         {
             mount();
         }
-
+        debug() << "opening device" << endl;
         openDevice( silent );
+        debug() << "updating stats" << endl;
         m_parent->updateStats();
 
         if( isConnected() || m_parent->m_deviceList->childCount() != 0 )
@@ -1898,7 +1898,6 @@ MediaDeviceTransferList::dragEnterEvent( QDragEnterEvent *e )
 {
     KListView::dragEnterEvent( e );
 
-    debug() << "Items dropping to list?" << endl;
     e->accept( e->source() != viewport()
             && e->source() != m_parent
             && e->source() != m_parent->m_deviceList
@@ -1928,7 +1927,6 @@ MediaDeviceTransferList::contentsDragEnterEvent( QDragEnterEvent *e )
 {
     KListView::contentsDragEnterEvent( e );
 
-    debug() << "Items dropping to list?" << endl;
     e->accept( e->source() != viewport()
             && e->source() != m_parent
             && e->source() != m_parent->m_deviceList

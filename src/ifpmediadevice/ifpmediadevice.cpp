@@ -357,16 +357,15 @@ IfpMediaDevice::addTrackToList( int type, QString name, int /*size*/ )
 bool
 IfpMediaDevice::getCapacity( unsigned long *total, unsigned long *available )
 {
-    return false;
-//     int totalBytes = ifp_capacity( &m_ifpdev );
-//     int freeBytes = ifp_capacity( &m_ifpdev );
-//
-//     unsigned long kb;
-//
-//     *total = (unsigned long)totalBytes / kb;
-//     *available = (unsigned long)freeBytes / kb;
-//
-//     return totalBytes > 0;
+    if( !m_connected ) return false;
+
+    int totalBytes = ifp_capacity( &m_ifpdev );
+    int freeBytes = ifp_freespace( &m_ifpdev );
+
+    *total = (unsigned long)totalBytes / 1024;
+    *available = (unsigned long)freeBytes / 1024;
+
+    return totalBytes > 0;
 }
 
 QString
