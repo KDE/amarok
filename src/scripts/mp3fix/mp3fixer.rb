@@ -12,7 +12,7 @@ def cleanup()
 end
 
 
-trap( "SIGTERM" ) { cleanup() }
+trap( "EXIT" ) { cleanup() }
 
 `dcop amarok script addCustomMenuItem #{MenuItemName}`
 
@@ -30,17 +30,21 @@ loop do
 
         when "customMenuClicked"
             if message.include?( MenuItemName )
-                file = message.split()[3]
-                output = `mp3fix #{file}`
+                filereg = Regexp.new( "/.*" )
+                file = filereg.match( message.split()[3] )
+                mp3fix = File.dirname( File.expand_path( __FILE__ ) ) + "/mp3fix.rb"
+                output = `ruby #{mp3fix} #{file}`
 
                 if $?.success?()
-                    `kdialog --msgbox Mp3Fixer was successful :)`
+                    `kdialog --msgbox "Mp3Fixer was successful :)"`
                 else
                     reg = Regexp.new( "Error:.*", Regexp::MULTILINE )
                     errormsg = reg.match( output )
 
-                    `kdialog --error #{errormsg}`
+                    `kdialog --error "Mp3Fixer #{errormsg}"`
                 end
+
+                exit()
             end
     end
 end
