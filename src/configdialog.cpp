@@ -144,6 +144,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     connect( aboutEngineButton, SIGNAL(clicked()), SLOT(aboutEngine()) );
     connect( opt5, SIGNAL(settingsChanged()), SLOT(updateButtons()) ); //see options5.ui.h
     connect( m_opt2->styleComboBox, SIGNAL( activated( int ) ), SLOT( updateButtons() ) );
+    connect( m_opt7->dbSetupFrame->databaseEngine, SIGNAL( activated( int ) ), SLOT( updateButtons() ) );
 }
 
 AmarokConfigDialog::~AmarokConfigDialog()
@@ -207,18 +208,10 @@ void AmarokConfigDialog::updateSettings()
         ContextBrowser::instance()->setStyleSheet();
     }
 
-    // can't use kconfigxt for the database comboxbox since we need the DBConnection id and not the index
-    QString dbType = QString::number(DbConnection::sqlite);
-    if (m_opt7->dbSetupFrame->databaseEngine->currentText() == "MySQL")
-    {
-        dbType = QString::number(DbConnection::mysql);
-    }
-    else if (m_opt7->dbSetupFrame->databaseEngine->currentText() == "Postgresql")
-    {
-        dbType = QString::number(DbConnection::postgresql);
-    }
+    const QString dbType = databaseType();
     if ( dbType != AmarokConfig::databaseEngine() ) {
         AmarokConfig::setDatabaseEngine( dbType );
+        emit settingsChanged();
     }
 }
 
@@ -264,6 +257,7 @@ bool AmarokConfigDialog::hasChanged()
             osd->alignment() != AmarokConfig::osdAlignment() ||
             osd->alignment() != OSDWidget::Center && osd->y() != AmarokConfig::osdYOffset() ||
             m_opt2->styleComboBox->currentText() != AmarokConfig::contextBrowserStyleSheet() ||
+            databaseType() != AmarokConfig::databaseEngine() ||
             m_engineConfig && m_engineConfig->hasChanged();
 }
 
@@ -332,5 +326,21 @@ void AmarokConfigDialog::soundSystemChanged()
     }
 
 }
+
+const QString AmarokConfigDialog::databaseType()
+{
+    // can't use kconfigxt for the database comboxbox since we need the DBConnection id and not the index
+    QString dbType = QString::number(DbConnection::sqlite);
+    if (m_opt7->dbSetupFrame->databaseEngine->currentText() == "MySQL")
+    {
+        dbType = QString::number(DbConnection::mysql);
+    }
+    else if (m_opt7->dbSetupFrame->databaseEngine->currentText() == "Postgresql")
+    {
+        dbType = QString::number(DbConnection::postgresql);
+    }
+    return dbType;
+}
+
 
 #include "configdialog.moc"
