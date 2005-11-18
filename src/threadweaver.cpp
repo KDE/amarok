@@ -17,6 +17,9 @@
 
 using amaroK::StatusBar;
 
+volatile uint ThreadWeaver::threadIdCounter = 1; //main thread grabs zero
+QMutex* ThreadWeaver::threadIdMutex = new QMutex();
+
 ThreadWeaver::ThreadWeaver()
 {
     startTimer( 5 * 60 * 1000 ); // prunes the thread pool every 5 minutes
@@ -198,14 +201,17 @@ ThreadWeaver::event( QEvent *e )
 static pthread_once_t current_thread_key_once = PTHREAD_ONCE_INIT;
 static pthread_key_t current_thread_key;
 static void create_current_thread_key()
-{ pthread_key_create(&current_thread_key, NULL); }
+{ debug() << "Creating pthread key, exit value is " << pthread_key_create(&current_thread_key, NULL) << endl; }
 /// @class ThreadWeaver::Thread
 
 ThreadWeaver::Thread::Thread()
     : QThread()
 {
+    m_threadId = ThreadWeaver::getNewThreadId();
+    debug() << "(Thread Constructor) My thread id: " << m_threadId << endl;
     pthread_once(&current_thread_key_once, create_current_thread_key);
     pthread_setspecific(current_thread_key, this);
+    debug() << "(Thread Constructor) My address is " << getRunning() << endl;
 }
 
 ThreadWeaver::Thread::~Thread()
@@ -228,7 +234,7 @@ ThreadWeaver::Thread::threadId()
     else
     {
         QString s;
-        return s.sprintf( "%p", getRunning );
+        return s.sprintf( "%p", getRunning() );
     }
 }
 
@@ -236,6 +242,7 @@ void
 ThreadWeaver::Thread::runJob( Job *job )
 {
     job->m_thread = this;
+    job->m_parentThreadId = m_threadId;
 
     if ( job->isAborted() )
         QApplication::postEvent( ThreadWeaver::instance(), job );

@@ -12,7 +12,8 @@
 #include <qobject.h>
 #include <qthread.h>
 #include <qvaluelist.h>
-
+#include <qmutex.h>
+#include "debug.h"
 
 #define DISABLE_GENERATED_MEMBER_FUNCTIONS_3( T ) \
     T( const T& ); \
@@ -94,6 +95,10 @@ public:
 
     static ThreadWeaver *instance();
     static void deleteInstance();
+
+    static volatile uint getNewThreadId();
+    static QMutex *threadIdMutex;
+    static volatile uint threadIdCounter;
 
     /**
      * If the ThreadWeaver is already handling a job of this type then the job
@@ -184,11 +189,15 @@ public:
         void msleep( int ms ) { QThread::msleep( ms ); } //we need to make this public for class Job
 
         Job *job() const { return m_job; }
-        
+
         static QThread* getRunning();
         static QString  threadId();
+        const uint localThreadId() const { return m_threadId; }
+
     private:
         Job *m_job;
+
+        uint m_threadId;
 
         //private so I don't break something in the distant future
         ~Thread();
@@ -294,6 +303,8 @@ public:
          */
         //void setVisible( bool );
 
+        uint parentThreadId() { return m_parentThreadId; }
+
     protected:
         /**
          * Executed inside the thread, this should be reimplemented to do the
@@ -320,6 +331,7 @@ public:
         uint m_percentDone;
         uint m_progressDone;
         uint m_totalSteps;
+        uint m_parentThreadId;
 
         QString m_description;
         QString m_status;
@@ -394,6 +406,17 @@ inline void
 ThreadWeaver::deleteInstance()
 {
     delete instance();
+}
+
+inline volatile uint
+ThreadWeaver::getNewThreadId()
+{
+    uint temp;
+    threadIdMutex->lock();
+    temp = threadIdCounter++;
+    debug() << "(ThreadWeaver) In getNewThreadId, value of threadIdcounter is now " << threadIdCounter << endl;
+    threadIdMutex->unlock();
+    return temp;
 }
 
 #endif
