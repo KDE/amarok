@@ -220,12 +220,12 @@ GpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bu
     else if(type=="m4b" || type=="M4B")
     {
         track->filetype = g_strdup( "mp4" );
-        track->unk164 |= 0x10000; // remember current position in track
+        track->flag3 |= 0x01; // remember current position in track
     }
     else if(type=="aa" || type=="AA")
     {
         track->filetype = g_strdup( "audible" );
-        track->unk164 |= 0x10000; // remember current position in track
+        track->flag3 |= 0x01; // remember current position in track
 
         TagLib::Audible::File *f = new TagLib::Audible::File( QFile::encodeName( bundle.url().path() ) );
         TagLib::Audible::Tag *t = f->getAudibleTag();
@@ -982,7 +982,7 @@ GpodMediaDevice::writeITunesDB()
 
         if (ok)
         {   /* write shuffle data */
-            if (!itdb_shuffle_write (m_itdb, NULL, &error))
+            if (!itdb_shuffle_write (m_itdb, &error))
             {   /* an error occured */
                 ok = false;
                 if(error)
