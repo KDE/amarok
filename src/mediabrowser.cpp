@@ -1088,7 +1088,7 @@ MediaDeviceView::updateStats()
     unsigned long total, avail;
     if(m_device->getCapacity(&total, &avail))
     {
-        text += " - " + prettySize( avail ) + i18n(" of ") + prettySize( total ) + i18n(" available");
+        text += " - " + i18n( "%1 of %2 available" ).arg( prettySize( avail ) ).arg( prettySize( total ) );
 
         m_stats->m_used = total-avail;
         m_stats->m_total = total;
@@ -1271,7 +1271,7 @@ MediaDevice::addURL( const KURL& url, MetaBundle *bundle, bool isPodcast, const 
         m_parent->m_transferButton->setEnabled( m_parent->m_device->isConnected() || m_parent->m_deviceList->childCount() != 0 );
         m_parent->m_progress->setTotalSteps( m_parent->m_progress->totalSteps() + 1 );
     } else
-        amaroK::StatusBar::instance()->longMessage( i18n( "Track already exists on media device: " + url.path().local8Bit() ), KDE::StatusBar::Sorry );
+        amaroK::StatusBar::instance()->longMessage( i18n( "Track already exists on media device: %1" ).arg( url.path().local8Bit() ), KDE::StatusBar::Sorry );
 }
 
 void
@@ -1506,16 +1506,15 @@ MediaDevice::connectDevice( bool silent )
 
         closeDevice();
         m_parent->updateStats();
+        m_parent->m_connectButton->setOn( false );
 
-        QString text = i18n( "Your device is now in sync, please unmount it and disconnect now." );
-
-        if ( !m_umntcmd.isEmpty() )
+        if ( !m_umntcmd.isEmpty() && umount() == 0)
         {
-            if(umount()==0)
-                text=i18n( "Your device is now in sync, you can disconnect now." );
+            amaroK::StatusBar::instance()->longMessage( i18n( "Your device is now in sync, you can disconnect now." ), KDE::StatusBar::Information );
+            return;
         }
 
-        m_parent->m_connectButton->setOn( false );
+        QString text = i18n( "Your device is now in sync, please unmount it and disconnect now." );
         KMessageBox::information( m_parent->m_parent, text, i18n( "Media Device Browser" ) );
     }
 }

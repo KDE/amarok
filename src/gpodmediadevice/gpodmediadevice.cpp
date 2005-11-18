@@ -8,6 +8,7 @@
 #include "debug.h"
 #include "metabundle.h"
 #include "collectiondb.h"
+#include "statusbar/statusbar.h"
 
 #include <kapplication.h>
 #include <kmountpoint.h>
@@ -139,9 +140,9 @@ GpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle, bool isPodcast)
 
     if ( !dir.exists() )
     {
-        KMessageBox::error( m_parent,
-                i18n( "Could not create directory for file ") + devicePath,
-                i18n( "Media Device Browser" ) );
+        amaroK::StatusBar::instance()->longMessage(
+                i18n( "Media Device: Creating directory for file %1 failed" ).arg( devicePath ),
+                KDE::StatusBar::Error );
         return NULL;
     }
 
@@ -159,9 +160,9 @@ GpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle, bool isPodcast)
 
     if(m_copyFailed)
     {
-        KMessageBox::error( m_parent,
-                i18n( "Copying ") + bundle.url().prettyURL() + i18n( " to " ) + devicePath + i18n( " failed" ),
-                i18n( "Media Device Browser" ) );
+        amaroK::StatusBar::instance()->longMessage(
+                i18n( "Media Device: Copying %1 to %2 failed" ).arg(bundle.url().prettyURL()).arg(devicePath),
+                KDE::StatusBar::Error );
         return NULL;
     }
 
@@ -171,9 +172,9 @@ GpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle, bool isPodcast)
     if(!bundle2.isValidMedia())
     {
         // probably s.th. went wrong
-        KMessageBox::error( m_parent,
-                i18n( "Reading tags from " ) + devicePath + i18n( " failed" ),
-                i18n( "Media Device Browser" ) );
+        amaroK::StatusBar::instance()->longMessage(
+                i18n( "Media Device: Reading tags from %1 failed" ).arg( devicePath ),
+                KDE::StatusBar::Error );
         QFile::remove( devicePath );
         return NULL;
     }
@@ -520,8 +521,11 @@ GpodMediaDevice::openDevice(bool silent)
             if(!dir.exists())
             {
                 if(!silent)
-                    KMessageBox::error( m_parent, i18n("Media device mount point does not exist"),
-                            i18n( "Media Device Browser" ) );
+                {
+                    amaroK::StatusBar::instance()->longMessage(
+                            i18n("Media device: Mount point %1 does not exist").arg(m_mntpnt),
+                            KDE::StatusBar::Error );
+                }
                 return false;
             }
 
@@ -530,8 +534,11 @@ GpodMediaDevice::openDevice(bool silent)
             if(m_itdb==NULL)
             {
                 if(!silent)
-                    KMessageBox::error( m_parent, i18n("Failed to initialize iPod mounted at ") + m_mntpnt,
-                            i18n( "Media Device Browser" ) );
+                {
+                    amaroK::StatusBar::instance()->longMessage(
+                            i18n("Media Device: Failed to initialize iPod mounted at %1").arg(m_mntpnt),
+                            KDE::StatusBar::Sorry );
+                }
 
                 return false;
             }
@@ -561,8 +568,11 @@ GpodMediaDevice::openDevice(bool silent)
                 dir.mkdir(dir.absPath());
 
             if(!silent)
-                KMessageBox::information( m_parent, i18n("Initialized iPod mounted at ") + m_mntpnt,
-                        i18n( "Media Device Browser" ) );
+            {
+                amaroK::StatusBar::instance()->longMessage(
+                        i18n("Media Device: Initialized iPod mounted at %1").arg(m_mntpnt),
+                        KDE::StatusBar::Information );
+            }
         }
     }
     else
