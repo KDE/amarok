@@ -267,6 +267,7 @@ STDMETHODIMP HSPPostMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioDat
       pAudioOutData->pData = ibuf;
       pAudioOutData->ulAudioTime = pAudioInData->ulAudioTime;
       pAudioOutData->uAudioStreamType = pAudioInData->uAudioStreamType;
+      pAudioInData->pData->Release();;
    }
 #else
    // equalize
@@ -284,6 +285,7 @@ STDMETHODIMP HSPPostMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioDat
          pAudioOutData->pData = ibuf;
          pAudioOutData->ulAudioTime = pAudioInData->ulAudioTime;
          pAudioOutData->uAudioStreamType = pAudioInData->uAudioStreamType;
+         pAudioInData->pData->Release();;
       }
    }
 #endif

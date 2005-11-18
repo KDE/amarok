@@ -170,14 +170,14 @@ STDMETHODIMP
 HSPClientAdviceSink::OnPosLength(UINT32	  ulPosition,
 				   UINT32	  ulLength)
 {
-    if (m_splayer->bEnableAdviceSink)
-    {
-        m_splayer->STDOUT("OnPosLength(%ld, %ld)\n", ulPosition, ulLength);
-    }
-    m_position = ulPosition;
-    m_duration = ulLength;
+   if (m_splayer->bEnableAdviceSink)
+   {
+      m_splayer->STDOUT("OnPosLength(%ld, %ld)\n", ulPosition, ulLength);
+   }
+   m_position = ulPosition;
+   m_duration = ulLength;
 
-    return HXR_OK;
+   return HXR_OK;
 }
 
 /************************************************************************
