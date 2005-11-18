@@ -28,6 +28,7 @@
 #include "engine/enginebase.h"
 #include "enginecontroller.h"
 #include "equalizersetup.h"
+#include "htmlview.h"
 #include "mediabrowser.h"
 #include "osd.h"
 #include "playlist.h"
@@ -518,6 +519,7 @@ namespace amaroK
     {
         /* ContextBrowser::openURLRequest is necessary for konquisidebar */
         ContextBrowser::instance()->openURLRequest( url );
+        HTMLView::openURLRequest( url );
     }
 
     void DcopPlaylistHandler::popupMessage(const QString& msg)

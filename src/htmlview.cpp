@@ -7,6 +7,7 @@
 #include "app.h"
 #include "contextbrowser.h"
 #include "htmlview.h"
+#include "playlist.h"      //appendMedia()
 
 #include <qfile.h> // External CSS opening
 #include <qimage.h> // External CSS opening
@@ -26,6 +27,9 @@ HTMLView::HTMLView( QWidget *parentWidget, const char *widgetname, const bool DN
 
     setDNDEnabled( DNDEnabled );
     setJScriptEnabled( JScriptEnabled );
+
+    connect( browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
+             this, SLOT( openURLRequest( const KURL & ) ) );
 }
 
 
@@ -206,6 +210,15 @@ HTMLView::set( const QString& data )
     setUserStyleSheet( loadStyleSheet() );
     write( data );
     end();
+}
+
+
+void HTMLView::openURLRequest( const KURL &url )
+{
+    // here, http urls are streams. For webpages we use externalurl
+    // NOTE there have been no links to streams! http now used for wiki tab.
+    if ( url.protocol() == "file" )
+        Playlist::instance()->insertMedia( url, Playlist::DirectPlay | Playlist::Unique );
 }
 
 

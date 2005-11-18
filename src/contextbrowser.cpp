@@ -145,17 +145,18 @@ ContextBrowser::ContextBrowser( const char *name )
     connect( this, SIGNAL( currentChanged( QWidget* ) ), SLOT( tabChanged( QWidget* ) ) );
 
     connect( m_currentTrackPage->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
-             this,                                     SLOT( openURLRequest( const KURL & ) ) );
-    connect( m_currentTrackPage,                     SIGNAL( popupMenu( const QString&, const QPoint& ) ),
-             this,                                     SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
+             this, SLOT( openURLRequest( const KURL & ) ) );
     connect( m_lyricsPage->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
-             this,                               SLOT( openURLRequest( const KURL & ) ) );
-    connect( m_lyricsPage,                     SIGNAL( popupMenu( const QString&, const QPoint& ) ),
-             this,                               SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
+             this, SLOT( openURLRequest( const KURL & ) ) );
     connect( m_wikiPage->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
-             this,                               SLOT( openURLRequest( const KURL & ) ) );
-    connect( m_wikiPage,                     SIGNAL( popupMenu( const QString&, const QPoint& ) ),
-             this,                               SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
+             this, SLOT( openURLRequest( const KURL & ) ) );
+
+    connect( m_currentTrackPage, SIGNAL( popupMenu( const QString&, const QPoint& ) ),
+             this, SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
+    connect( m_lyricsPage, SIGNAL( popupMenu( const QString&, const QPoint& ) ),
+             this, SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
+    connect( m_wikiPage, SIGNAL( popupMenu( const QString&, const QPoint& ) ),
+             this, SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
 
     connect( m_lyricsToolBar->getButton( LYRICS_ADD    ), SIGNAL(clicked( int )), SLOT(lyricsAdd()) );
     connect( m_lyricsToolBar->getButton( LYRICS_SEARCH    ), SIGNAL(clicked( int )), SLOT(lyricsSearch()) );
@@ -212,53 +213,6 @@ void ContextBrowser::openURLRequest( const KURL &url )
     QString artist, album, track;
     albumArtistTrackFromUrl( url.path(), artist, album, track );
 
-    if ( url.protocol() == "album" )
-    {
-//         QueryBuilder qb;
-//         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-//         qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, artist );
-//         qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, album );
-//         qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
-//         QStringList values = qb.run();
-//
-//         KURL::List urls;
-//         KURL url;
-//
-//         for( QStringList::ConstIterator it = values.begin(), end = values.end(); it != end; ++it ) {
-//             url.setPath( *it );
-//             urls.append( url );
-//         }
-//
-//         Playlist::instance()->insertMedia( urls, Playlist::Unique );
-
-        return;
-    }
-
-    if ( url.protocol() == "compilation" )
-    {
-//         QueryBuilder qb;
-//         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-//         qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, url.path() );
-//         qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
-//         qb.setOptions( QueryBuilder::optOnlyCompilations );
-//         QStringList values = qb.run();
-//
-//         KURL::List urls;
-//         KURL url;
-//         foreach( values ) {
-//             url.setPath( *it );
-//             urls.append( url );
-//         }
-//
-//         Playlist::instance()->insertMedia( urls, Playlist::Unique );
-
-        return;
-    }
-       // here, http urls are streams. For webpages we use externalurl
-       // NOTE there have been no links to streams! http now used for wiki tab.
-    if ( url.protocol() == "file" )
-        Playlist::instance()->insertMedia( url, Playlist::DirectPlay | Playlist::Unique );
-
     // All http links should be loaded inside wikipedia tab, as that is the only tab that should contain them.
     // Streams should use stream:// protocol.
     if ( url.protocol() == "http" )
@@ -278,7 +232,6 @@ void ContextBrowser::openURLRequest( const KURL &url )
         m_dirtyWikiPage = true;
         showWikipedia( url.url() );
     }
-
 
     if ( url.protocol() == "show" )
     {
@@ -347,7 +300,6 @@ void ContextBrowser::openURLRequest( const KURL &url )
 
     if ( url.protocol() == "seek" )
     {
-        debug() << "[ContextBrowser] Seek requested to pos " << url.path().toLong() << endl;
         EngineController::engine()->seek(url.path().toLong());
     }
 }
