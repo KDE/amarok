@@ -16,20 +16,17 @@ trap( "SIGTERM" ) { cleanup() }
 
 loop do
     message = gets().chomp()
-    command = /[A-Za-z]*/.match( message )
-
-    puts( "RECEIVED: #{command}" )
+    command = /[A-Za-z]*/.match( message ).to_s()
 
     case command
         when "configure"
-            puts( "C0nfig" )
-
             msg  = '"Mp3Fixer does not have configuration options. Simply select a track in the '
             msg += 'playlist, then start Mp3Fixer from the context-menu (right mouse click)."'
 
             `kdialog --msgbox #{msg}`
 
         when "customMenuClicked"
-            i = 1
+            puts( "customMenuClicked" )
     end
 end
+
