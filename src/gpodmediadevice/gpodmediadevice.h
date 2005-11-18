@@ -22,6 +22,7 @@ class GpodMediaDevice : public MediaDevice
     public:
                           GpodMediaDevice( MediaDeviceView* parent, MediaDeviceList* listview );
         virtual           ~GpodMediaDevice();
+        virtual bool      autoConnect() { return true; }
 
         bool              isConnected();
 

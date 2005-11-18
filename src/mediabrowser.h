@@ -224,6 +224,7 @@ class MediaDevice : public QObject
         void        setRequireMount( const bool b ) { m_requireMount = b; }
         void        setDeviceType( DeviceType type ) { m_type = type; }
         DeviceType  deviceType() { return m_type; }
+        virtual bool autoConnect() { return false; }
 
         static MediaDevice *instance() { return s_instance; }
 

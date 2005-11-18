@@ -1056,6 +1056,14 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
              this,   SLOT( slotShowContextMenu( QListViewItem*, const QPoint&, int ) ) );
 
     m_device->loadTransferList( amaroK::saveLocation() + "transferlist.xml" );
+
+    if( m_device->autoConnect() )
+    {
+        m_connectButton->setOn( true );
+        m_device->connectDevice( true );
+        m_connectButton->setOn( m_device->isConnected() );
+        m_transferButton->setEnabled( m_device->m_transferList->childCount() != 0 );
+    }
 }
 
 QString
