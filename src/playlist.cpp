@@ -2790,8 +2790,18 @@ void
 Playlist::applySettings()
 {
     if( AmarokConfig::showMoodbar() ) refreshMoods();
-    if( AmarokConfig::showMoodbar() != (columnWidth( PlaylistItem::Moodbar ) != 0) )
-        setColumnWidth( PlaylistItem::Moodbar, AmarokConfig::showMoodbar() ? 100 : 0 );
+
+    if( !AmarokConfig::showMoodbar() && columnWidth( PlaylistItem::Moodbar ) )
+    {
+        debug() << "========================== Noshow and column width = " << columnWidth( PlaylistItem::Moodbar ) << endl;
+        AmarokConfig::setMoodbarColumnSize( columnWidth( PlaylistItem::Moodbar ) );
+        setColumnWidth( PlaylistItem::Moodbar, 0 );
+    }
+    if( AmarokConfig::showMoodbar() && !columnWidth( PlaylistItem::Moodbar ) )
+    {
+        debug() << "========================== Show and no column width. mCS = " << AmarokConfig::moodbarColumnSize() << endl;
+        setColumnWidth( PlaylistItem::Moodbar, AmarokConfig::moodbarColumnSize() );
+    }
 }
 
 void

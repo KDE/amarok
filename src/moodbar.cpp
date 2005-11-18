@@ -101,7 +101,7 @@ bool amaroK::CreateMood::doJob()
 	(*N) >>= g["D"];
 	if(g.go())
 	{
-		debug() << "MakeMood: Processing..." << endl;;
+		debug() << "MakeMood: Processing..." << endl;
 		g["D"].waitUntilDone();
 		debug() << "MakeMood: Done processing. Stoping..." << flush;
 		g.stop();
