@@ -75,8 +75,8 @@ Comment[zh_TW]=amaroK 的 aKode 音訊解碼引擎
 
 X-KDE-amaroK-plugintype=engine
 X-KDE-amaroK-name=akode-engine
-X-KDE-amaroK-authors=Max Howell
-X-KDE-amaroK-email=max.howell@methylblue.com
+X-KDE-amaroK-authors=Allan Sandfeld, Max Howell
+X-KDE-amaroK-email=kde@carewolf.com
 X-KDE-amaroK-rank=2
 X-KDE-amaroK-version=1
 X-KDE-amaroK-framework-version=16
