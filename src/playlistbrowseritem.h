@@ -224,7 +224,7 @@ class PodcastItem : public QObject, public PlaylistBrowserEntry
         PodcastItem( QListViewItem *parent, QListViewItem *after, const QDomElement &xml, const int feedType );
 
         void  downloadMedia();
-        const bool hasDownloaded() { return m_downloaded; }
+        const bool hasDownloaded();
         const bool hasXml( const QDomNode &xml, const int feedType );
         void  showAbout();
         QListViewItem *itemChannel() { return m_parent; }

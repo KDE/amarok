@@ -1715,8 +1715,7 @@ PodcastItem::PodcastItem( QListViewItem *parent, QListViewItem *after, const QDo
 
     m_localUrl = KURL::fromPathOrURL( m_localUrlString );
 
-    if( QFile::exists( m_localUrlString ) )
-        m_downloaded = true;
+    m_downloaded = QFile::exists( m_localUrlString );
 
     setText( 0, m_title );
     updatePixmap();
@@ -1735,15 +1734,19 @@ PodcastItem::updatePixmap()
         setPixmap( 0, SmallIcon("player_playlist_2") );
 }
 
+const bool
+PodcastItem::hasDownloaded()
+{
+    m_downloaded = QFile::exists( m_localUrlString );
+    updatePixmap();
+    return m_downloaded;
+}
+
 void
 PodcastItem::downloadMedia()
 {
-    if( QFile::exists( m_localUrlString ) )
-    {
-        m_downloaded = true;
-        updatePixmap();
+    if( hasDownloaded() )
         return;
-    }
 
     setText(0, i18n( "Downloading Media..." ) );
 
