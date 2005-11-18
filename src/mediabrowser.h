@@ -313,7 +313,7 @@ class MediaDevice : public QObject
          * Copy a track to the device
          * @param bundle The MetaBundle of the item to transfer. Will move the item specified by bundle().url().path()
          * @param isPodcast true if item is a podcast
-         * @return If successful, the created MediaItem in transferlist, else 0
+         * @return If successful, the created MediaItem in the media device view, else 0
          */
         virtual MediaItem *copyTrackToDevice(const MetaBundle& bundle, bool isPodcast) = 0;
 
@@ -322,7 +322,7 @@ class MediaDevice : public QObject
          * @param pathname Location of file on the device to add to the database
          * @param bundle MetaBundle of track
          * @param isPodcast true if item is a podcast
-         * @return If successful, the created MediaItem in transferlist, else 0
+         * @return If successful, the created MediaItem in the media device view, else 0
          */
         virtual MediaItem *insertTrackIntoDB( const QString& pathname, const MetaBundle& bundle, bool isPodcast)
                                             { (void)pathname; (void)bundle; (void)isPodcast; return 0; }
