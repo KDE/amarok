@@ -108,6 +108,17 @@ App::App()
 
     debug() << "Where do we choke? 0" << endl;
     DEBUG_THREAD_FUNC_INFO
+    debug() << "Should show GUIThread above!" << endl;
+
+    ThreadWeaver::Thread* threadie = new ThreadWeaver::Thread();
+    debug() << "Where do we choke? 0a" << endl;
+    DEBUG_THREAD_FUNC_INFO
+    debug() << "Should show GUIThread above!" << endl;
+
+    ThreadWeaver::Thread* threadie2 = new ThreadWeaver::Thread();
+    debug() << "Where do we choke? 0b" << endl;
+    DEBUG_THREAD_FUNC_INFO
+    debug() << "Should show GUIThread above!" << endl;
 
     fixHyperThreading();
 
