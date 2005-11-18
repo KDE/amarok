@@ -24,9 +24,11 @@
 #include "threadweaver.h"
 
 #include <qfile.h>
+#include <qregexp.h>              //setHTMLLyrics()
 #include <qtimer.h>
 
 #include <kapplication.h>
+#include <kcharsets.h>            //setHTMLLyrics()
 #include <kconfig.h>
 #include <kglobal.h>
 #include <kinputdialog.h>         //setupCoverFetcher()
@@ -1824,6 +1826,33 @@ CollectionDB::updateURL( const QString &url, const bool updateView )
 
 
 void
+CollectionDB::setHTMLLyrics( const QString &url, QString lyrics )
+{
+
+    // remove breaklines
+    lyrics.replace( "\n", QString::null );
+    lyrics.replace( "\r", QString::null );
+    lyrics.replace( "\t", QString::null );
+
+    // Remove Entilities - Lyrc doesn't use any, but anyway...
+    lyrics = KCharsets::resolveEntities( lyrics );
+
+    //<br> and <p> become a breakline
+    lyrics.replace( QRegExp("<[bB][rR][^>]*>[ ]*"), "\n" );
+    lyrics.replace( QRegExp("<[pP][^>]*>[ ]*"), "\n" );
+
+    //add a breakline right after the artist name (Lyrc uses <b>Ttile</b><br><u>Artist</u>)
+    lyrics.replace( QRegExp("<[/][uU][^>]*>"), "\n" );
+
+    // remove all tags
+    lyrics.replace( QRegExp("<[^>]*>"), QString::null );
+
+    setLyrics( url, lyrics );
+}
+
+
+
+void
 CollectionDB::setLyrics( const QString &url, const QString &lyrics )
 {
     DbConnection *conn = m_dbConnPool->getDbConnection();
@@ -1839,6 +1868,17 @@ CollectionDB::setLyrics( const QString &url, const QString &lyrics )
     }
     m_dbConnPool->putDbConnection(conn);
 }
+
+
+QString
+CollectionDB::getHTMLLyrics( const QString &url )
+{
+    QString lyrics = getLyrics( url );
+    lyrics.replace( "\n", "<br />" );
+    //FIXME: It should also handle html entities
+    return lyrics;
+}
+
 
 QString
 CollectionDB::getLyrics( const QString &url )
@@ -2130,13 +2170,19 @@ CollectionDB::initialize()
             createPersistentTables();
             /* Copy lyrics */
             debug() << "Trying to get lyrics from old db schema." << endl;
-            DbConnection *conn = m_dbConnPool->getDbConnection();
-            insert( "INSERT INTO lyrics SELECT url, lyrics FROM tags where tags.lyrics IS NOT NULL;", NULL, dbConn );
-            m_dbConnPool->putDbConnection( conn );
+            QStringList Lyrics = query( "SELECT url, lyrics FROM tags where tags.lyrics IS NOT NULL;" );
+            for (uint i=0; i<Lyrics.count(); i+=2  )
+                setHTMLLyrics( Lyrics[i], Lyrics[i+1]  );
         }
-        else if ( PersistentVersion == "1" ) {
+        else if ( PersistentVersion == "1" || PersistentVersion == "2" ) {
             createPersistentTables(); /* From 1 to 2 nothing changed. There was just a bug on the code, and
-                                         on some cases the table wouldn't be created. */
+                                         on some cases the table wouldn't be created.
+                                         From 2 to 3, lyrics were made plain text, instead of HTML */
+            debug() << "Converting Lyrics to Plain Text." << endl;
+            QStringList Lyrics = query( "SELECT url, lyrics FROM lyrics;" );
+            for (uint i=0; i<Lyrics.count(); i+=2  )
+                setHTMLLyrics( Lyrics[i], Lyrics[i+1]  );
+
         }
         else {
             if ( adminValue( "Database Persistent Tables Version" ).toInt() != DATABASE_PERSISTENT_TABLES_VERSION ) {

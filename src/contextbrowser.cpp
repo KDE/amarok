@@ -1674,7 +1674,7 @@ void ContextBrowser::showLyrics( const QString &hash )
         blockSignals( false );
     }
 
-    m_lyrics = CollectionDB::instance()->getLyrics( EngineController::instance()->bundle().url().path() );
+    m_lyrics = CollectionDB::instance()->getHTMLLyrics( EngineController::instance()->bundle().url().path() );
 
     if ( !m_dirtyLyricsPage || m_lyricJob ) return;
 
@@ -1810,10 +1810,11 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
 
     m_lyrics = QString( static_cast<KIO::StoredTransferJob*>( job )->data() );
 
-    /* We don't want to display any links or images in our lyrics */
-    m_lyrics.replace( QRegExp("<[aA][^>]*>[^<]*</[aA]>"), QString::null );
+    // remove images, links, scripts, and styles
     m_lyrics.replace( QRegExp("<[iI][mM][gG][^>]*>"), QString::null );
+    m_lyrics.replace( QRegExp("<[aA][^>]*>[^<]*</[aA]>"), QString::null );
     m_lyrics.replace( QRegExp("<[sS][cC][rR][iI][pP][tT][^>]*>[^<]*(<!--[^>]*>)*[^<]*</[sS][cC][rR][iI][pP][tT]>"), QString::null );
+    m_lyrics.replace( QRegExp("<[sS][tT][yY][lL][eE][^>]*>[^<]*(<!--[^>]*>)*[^<]*</[sS][tT][yY][lL][eE]>"), QString::null );
 
     if ( m_lyrics.find( "<font size='2'>" ) != -1 )
     {
@@ -1825,7 +1826,7 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
         if ( CollectionDB::instance()->isFileInCollection( EngineController::instance()->bundle().url().path() ) )
         {
             debug() << "Writing Lyrics..." << endl;
-            CollectionDB::instance()->setLyrics( EngineController::instance()->bundle().url().path(), m_lyrics );
+            CollectionDB::instance()->setHTMLLyrics( EngineController::instance()->bundle().url().path(), m_lyrics );
         }
     }
     else if ( m_lyrics.find( "Suggestions : " ) != -1 )

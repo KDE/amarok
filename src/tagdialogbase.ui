@@ -488,7 +488,7 @@
                             <cstring>kTextEdit_lyrics</cstring>
                         </property>
                         <property name="textFormat">
-                            <enum>AutoText</enum>
+                            <enum>PlainText</enum>
                         </property>
                         <property name="text">
                             <string></string>
