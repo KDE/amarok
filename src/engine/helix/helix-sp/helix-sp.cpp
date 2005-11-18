@@ -131,8 +131,6 @@ HelixSimplePlayerAudioStreamInfoResponse::Release()
         return m_lRefCount;
     }
 
-    m_Player->STDERR("DELETING AudioStreamInfoResponse\n");
-
     delete this;
     return 0;
 }
