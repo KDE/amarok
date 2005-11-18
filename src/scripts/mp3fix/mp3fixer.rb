@@ -12,7 +12,7 @@ def cleanup()
 end
 
 
-trap( "EXIT" ) { cleanup() }
+trap( "SIGTERM" ) { cleanup() }
 
 `dcop amarok script addCustomMenuItem #{MenuItemName}`
 
@@ -35,6 +35,8 @@ loop do
                 mp3fix = File.dirname( File.expand_path( __FILE__ ) ) + "/mp3fix.rb"
                 output = `ruby #{mp3fix} #{file}`
 
+                puts( file )
+
                 if $?.success?()
                     `kdialog --msgbox "Mp3Fixer was successful :)"`
                 else
@@ -43,8 +45,6 @@ loop do
 
                     `kdialog --error "Mp3Fixer #{errormsg}"`
                 end
-
-                exit()
             end
     end
 end
