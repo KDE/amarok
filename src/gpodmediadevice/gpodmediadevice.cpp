@@ -3,6 +3,7 @@
 
 #define DEBUG_PREFIX "GpodMediaDevice"
 
+#include <config.h>
 #include "gpodmediadevice.h"
 
 #include "debug.h"
@@ -20,6 +21,10 @@
 #include <qdir.h>
 #include <qtimer.h>
 #include <qlabel.h>
+
+#ifdef HAVE_STATVFS
+#include <sys/statvfs.h>
+#endif
 
 #include <cstdlib>
 
@@ -1113,6 +1118,22 @@ GpodMediaDevice::getCapacity( unsigned long *total, unsigned long *available )
     if(!m_itdb)
         return false;
 
+#ifdef HAVE_STATVFS
+    QString path = m_itdb->mountpoint;
+    path.append("/iPod_Control");
+    struct statvfs buf;
+    if(statvfs(path.latin1(), &buf) != 0)
+    {
+        *total = 0;
+        *available = 0;
+        return false;
+    }
+
+    *total = buf.f_blocks * buf.f_frsize / 1024;
+    *available = buf.f_bavail * buf.f_bsize / 1024;
+
+    return *total > 0;
+#else
     if(!m_itdb->device)
         return false;
 
@@ -1130,6 +1151,7 @@ GpodMediaDevice::getCapacity( unsigned long *total, unsigned long *available )
         *available = vol_avail/1024;
 
     return vol_size > 0;
+#endif
 }
 
 #include "gpodmediadevice.moc"
