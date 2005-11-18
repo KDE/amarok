@@ -668,6 +668,8 @@ GpodMediaDevice::openDevice(bool silent)
     m_orphanedItem->m_order = -2;
     m_orphanedItem->setType( MediaItem::ORPHANEDROOT );
 
+    kapp->processEvents( 100 );
+
     GList *cur = m_itdb->playlists;
     while(cur)
     {
@@ -677,6 +679,8 @@ GpodMediaDevice::openDevice(bool silent)
 
         cur = cur->next;
     }
+
+    kapp->processEvents( 100 );
 
     cur = m_itdb->tracks;
     while(cur)
@@ -696,10 +700,13 @@ GpodMediaDevice::openDevice(bool silent)
         if(dir[i] == "." || dir[i] == "..")
             continue;
 
+        kapp->processEvents( 100 );
+
         QString hashpath = musicpath + "/" + dir[i];
         QDir hashdir( hashpath, QString::null, QDir::Name | QDir::IgnoreCase, QDir::Files );
         for(unsigned j=0; j<hashdir.count(); j++)
         {
+
             QString filename = hashpath + "/" + hashdir[j];
             QString ipodPath = ":iPod_Control:Music:" + dir[i] + ":" + hashdir[j];
             Itdb_Track *track = m_files[ipodPath.lower()];
@@ -719,6 +726,7 @@ GpodMediaDevice::openDevice(bool silent)
         }
     }
 #endif // CHECK_FOR_INTEGRITY
+    kapp->processEvents( 100 );
 
     updateRootItems();
 
