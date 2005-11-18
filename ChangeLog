@@ -52,7 +52,6 @@ VERSION 1.4:
       compatibility with various iPod models.
 
   BUGFIXES:
-    * Fix memory leak in helix engine (BR 116223)
     * Fix possible bug when saving unencoded podcasts to strange file systems.
     * OSD Preview did not update colours when toggling 'Use custom colours'
       option. (BR 115965)
