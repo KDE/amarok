@@ -36,6 +36,7 @@ VERSION 1.4:
       to consecutive tracks on a single album.
 
   CHANGES:
+    * Lyrics are cached on the database as plain text.
     * Recoding mp3 tags has been removed due to many unjustified
       complications.
     * Viewing track information of remote media will show the url.
