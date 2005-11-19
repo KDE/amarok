@@ -245,7 +245,7 @@ IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle, bool /*isPodcast*/ 
     if( !m_connected ) return 0;
 
     const QString  newFilename = bundle.prettyTitle() + "." + bundle.type();
-    const QCString src = QFile::encodeName( bundle.url().path() );
+    const QCString src  = QFile::encodeName( bundle.url().path() );
     const QCString dest = QFile::encodeName( "\\" + newFilename ); // TODO: add to directory
 
     kapp->processEvents( 100 );
@@ -327,7 +327,7 @@ IfpMediaDevice::listDir( const QString &dir )
 int
 IfpMediaDevice::listDirCallback( void *pData, int type, const char *name, int size )
 {
-    QString qName( name );
+    QString qName = QFile::decodeName( name );
     return static_cast<IfpMediaDevice *>(pData)->addTrackToList( type, qName, size );
 }
 
