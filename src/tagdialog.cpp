@@ -4,6 +4,7 @@
 // See COPYING file for licensing information.
 
 #include "debug.h"
+#include "contextbrowser.h"
 #include "collectionbrowser.h"
 #include "collectiondb.h"
 #include "metabundle.h"
@@ -316,6 +317,10 @@ void TagDialog::init()
         pushButton_previous->hide();
         pushButton_next->hide();
     }
+
+    //Update lyrics on Context Browser
+
+    connect( this, SIGNAL(lyricsChanged( const QString& )), ContextBrowser::instance(), SLOT( lyricsChanged( const QString& ) ) );
 
 #if HAVE_TUNEPIMP
     connect( pushButton_musicbrainz, SIGNAL(clicked()), SLOT(musicbrainzQuery()) );
@@ -685,6 +690,7 @@ TagDialog::saveTags()
         QMap<QString, QString>::ConstIterator endLyrics( storedLyrics.end() );
         for(QMap<QString, QString>::ConstIterator it = storedLyrics.begin(); it != endLyrics; ++it ) {
             CollectionDB::instance()->setLyrics( it.key(), it.data() );
+            emit lyricsChanged( it.key() );
         }
     }
 }

@@ -347,6 +347,15 @@ void ContextBrowser::renderView()
     }
 }
 
+
+void ContextBrowser::lyricsChanged( const QString &url ) {
+    if ( url == m_currentURL.path() ) {
+        m_dirtyLyricsPage = true;
+        if ( currentPage() == m_lyricsTab )
+            showLyrics();
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // PROTECTED
 //////////////////////////////////////////////////////////////////////////////////////////

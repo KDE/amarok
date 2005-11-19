@@ -32,6 +32,10 @@ class TagDialog : public TagDialogBase
         TagDialog( const MetaBundle& mb, PlaylistItem* item, QWidget* parent = 0 );
         friend class TagSelect;
 
+    signals:
+        void lyricsChanged( const QString& );
+
+
     private slots:
         void accept();
         void cancelPressed();

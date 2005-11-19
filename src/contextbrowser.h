@@ -50,6 +50,7 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         void collectionScanStarted();
         void collectionScanDone();
         void renderView();
+        void lyricsChanged( const QString& );
 
     protected:
         void engineNewMetaData( const MetaBundle&, bool );
