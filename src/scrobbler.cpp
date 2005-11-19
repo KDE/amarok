@@ -929,8 +929,7 @@ void ScrobblerSubmitter::finishJob( KIO::Job* job )
  * @param tracks Amount of tracks that were submitted
  * @param success Indicates if the submission was successful or not
  */
-void ScrobblerSubmitter::announceSubmit(
-    SubmitItem *item, int tracks, bool success ) const
+void ScrobblerSubmitter::announceSubmit( SubmitItem *item, int tracks, bool success ) const
 {
     QString _long, _short;
 

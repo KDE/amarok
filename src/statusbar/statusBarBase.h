@@ -174,6 +174,7 @@ namespace KDE
         void showMainProgressBar();
         void hideMainProgressBar();
         void updateProgressAppearance();
+        void showShortLongDetails();
 
     protected:
         virtual void polish();
@@ -213,6 +214,7 @@ namespace KDE
         QWidget *cancelButton() { return (QWidget*)child( "cancelButton" ); }
         QWidget *toggleProgressWindowButton() { return (QWidget*)child( "showAllProgressDetails" ); }
         QWidget *progressBox() { return (QWidget*)child( "progressBox" ); }
+        QWidget *shortLongButton() { return (QWidget*)child( "shortLongButton" ); }
 
         OverlayWidget *m_popupProgress;
         QProgressBar  *m_mainProgressBar;
@@ -220,6 +222,7 @@ namespace KDE
         ProgressMap m_progressMap;
         QValueList<QWidget*> m_messageQueue;
         QString m_mainText;
+        QString m_shortLongText;
 
         QLayout *m_otherWidgetLayout;
     };

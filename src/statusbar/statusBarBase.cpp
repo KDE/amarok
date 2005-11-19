@@ -93,6 +93,8 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     QBoxLayout *layout = new QHBoxLayout( mainlayout, /*spacing*/5 );
 
     m_mainTextLabel = new KDE::SqueezedTextLabel( this, "mainTextLabel" );
+    QToolButton *shortLongButton = new QToolButton( this, "shortLongButton" );
+    shortLongButton->hide();
 
     QHBox *mainProgressBarBox = new QHBox( this, "progressBox" );
     QToolButton *b1 = new QToolButton( mainProgressBarBox, "cancelButton" );
@@ -102,6 +104,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     mainProgressBarBox->hide();
 
     layout->add( m_mainTextLabel );
+    layout->add( shortLongButton );
     layout->add( mainProgressBarBox );
     layout->setStretchFactor( m_mainTextLabel, 3 );
     layout->setStretchFactor( mainProgressBarBox, 1 );
@@ -110,6 +113,10 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
 
     mainlayout->setStretchFactor( layout, 6 );
     mainlayout->setStretchFactor( m_otherWidgetLayout, 4 );
+
+    shortLongButton->setIconSet( SmallIconSet( "edit_add" ) );
+    QToolTip::add( shortLongButton, i18n( "Show details" ) );
+    connect( shortLongButton, SIGNAL(clicked()), SLOT(showShortLongDetails()) );
 
     b1->setIconSet( SmallIconSet( "cancel" ) );
     b2->setIconSet( SmallIconSet( "2uparrow") );
@@ -257,7 +264,8 @@ StatusBar::shortLongMessage( const QString &_short, const QString &_long )
     shortMessage( _short );
 
     if ( !_long.isEmpty() ) {
-        AMAROK_NOTIMPLEMENTED
+        m_shortLongText = _long;
+        shortLongButton()->show();
     }
 }
 
@@ -345,7 +353,7 @@ StatusBar::newProgressOperation( QObject *owner )
         // we start anything new or the total progress will not be accurate
         pruneProgressBars();
     else
-        static_cast<QWidget*>(progressBox()->child("showAllProgressDetails"))->show();
+        toggleProgressWindowButton()->show();
     QLabel *label = new QLabel( m_popupProgress );
     m_progressMap.insert( owner, new ProgressBar( m_popupProgress, label ) );
 
@@ -369,7 +377,7 @@ StatusBar::newProgressOperation( KIO::Job *job )
     bar.setTotalSteps( 100 );
 
     if(!allDone())
-        static_cast<QWidget*>(progressBox()->child("showAllProgressDetails"))->show();
+        toggleProgressWindowButton()->show();
     connect( job, SIGNAL(result( KIO::Job* )), SLOT(endProgressOperation()) );
     //TODO connect( job, SIGNAL(infoMessage( KIO::Job *job, const QString& )), SLOT() );
     connect( job, SIGNAL(percent( KIO::Job*, unsigned long )), SLOT(setProgress( KIO::Job*, unsigned long )) );
@@ -435,6 +443,16 @@ StatusBar::toggleProgressWindow( bool show ) //slot
 }
 
 void
+StatusBar::showShortLongDetails()
+{
+    if( !m_shortLongText.isEmpty() )
+        longMessage( m_shortLongText );
+
+    m_shortLongText = QString::null;
+    shortLongButton()->hide();
+}
+
+void
 StatusBar::showMainProgressBar()
 {
     if( !allDone() )
@@ -452,6 +470,7 @@ StatusBar::hideMainProgressBar()
 
         m_mainProgressBar->setProgress( 0 );
         progressBox()->hide();
+        shortLongButton()->hide();
     }
 }
 
@@ -558,7 +577,7 @@ StatusBar::pruneProgressBars()
     if(count==1 && removedBar) //if its gone from 2 or more bars to one bar...
     {
         resetMainText();
-        static_cast<QWidget*>(progressBox()->child("showAllProgressDetails"))->hide();
+        toggleProgressWindowButton()->hide();
         m_popupProgress->setShown(false);
     }
 }
