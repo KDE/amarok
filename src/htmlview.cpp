@@ -27,9 +27,6 @@ HTMLView::HTMLView( QWidget *parentWidget, const char *widgetname, const bool DN
 
     setDNDEnabled( DNDEnabled );
     setJScriptEnabled( JScriptEnabled );
-
-    connect( browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
-             this, SLOT( openURLRequest( const KURL & ) ) );
 }
 
 

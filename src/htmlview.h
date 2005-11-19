@@ -17,10 +17,8 @@ class HTMLView : public KHTMLPart
        ~HTMLView();
 
         static QString loadStyleSheet();
-        void set( const QString& data );
-
-    public slots:
-        static void openURLRequest(const KURL &url );
+        static void    openURLRequest(const KURL &url );
+        void   set( const QString& data );
 };
 
 #endif /* AMAROK_HTMLVIEW_H */
