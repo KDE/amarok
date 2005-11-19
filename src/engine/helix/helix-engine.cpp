@@ -652,7 +652,14 @@ const Engine::Scope &HelixEngine::scope()
          }
       }
       else
+      {
+         if (k >= (int) m_item->len)
+         {
+            delete m_item;
+            m_item = 0;
+         }
          break;
+      }
    }
 
    // ok, we must have a full buffer here, give it to the scope

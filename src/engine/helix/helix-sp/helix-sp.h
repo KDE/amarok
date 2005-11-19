@@ -219,7 +219,7 @@ public:
 
    // scope
    void addScopeBuf(struct DelayQueue *item);
-   struct DelayQueue *getScopeBuf();
+   DelayQueue *getScopeBuf();
    int getScopeCount() { return scopecount; }
    int peekScopeTime(unsigned long &t);
    void clearScopeQ();
