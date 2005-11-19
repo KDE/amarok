@@ -53,7 +53,7 @@ class GpodMediaDevice : public MediaDevice
         void              playlistFromItem(GpodMediaItem *item);
 
         QString           realPath(const char *ipodPath);
-        QString           ipodPath(const char *realPath);
+        QString           ipodPath(const QString &realPath);
 
         // ipod database
         Itdb_iTunesDB    *m_itdb;

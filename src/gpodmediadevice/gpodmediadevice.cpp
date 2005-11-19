@@ -194,35 +194,33 @@ GpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bu
     if(!track)
         return NULL;
 
-    QString type = pathname.section('.', -1);
+    QString type = pathname.section('.', -1).lower();
 
-    track->ipod_path = g_strdup( ipodPath(pathname.latin1()).latin1() );
+    track->ipod_path = g_strdup( ipodPath(pathname).latin1() );
     debug() << "on iPod: " << track->ipod_path << ", podcast=" << isPodcast << endl;
 
     track->title = g_strdup( bundle.title().isEmpty() ? i18n("Unknown").utf8() : bundle.title().utf8() );
     track->album = g_strdup( bundle.album().isEmpty() ? i18n("Unknown").utf8() : bundle.album().utf8() );
     track->artist = g_strdup( bundle.artist().isEmpty() ? i18n("Unknown").utf8() : bundle.artist().utf8() );
     track->genre = g_strdup( bundle.genre().utf8() );
-    if(type=="wav" || type=="WAV")
+    if(type=="wav")
     {
         track->filetype = g_strdup( "wav" );
     }
-    else if(type=="mp3" || type=="MP3" || type=="mpeg" || type=="MPEG")
+    else if(type=="mp3" || type=="mpeg")
     {
         track->filetype = g_strdup( "mpeg" );
     }
-    else if(type=="mp4" || type=="MP4" || type=="aac" || type=="AAC"
-            || type=="m4a" || type=="M4A" || type=="m4b" || type=="M4B"
-            || type=="m4p" || type=="M4P")
+    else if(type=="mp4" || type=="aac" || type=="m4a" || type=="m4p")
     {
         track->filetype = g_strdup( "mp4" );
     }
-    else if(type=="m4b" || type=="M4B")
+    else if(type=="m4b")
     {
         track->filetype = g_strdup( "mp4" );
         track->flag3 |= 0x01; // remember current position in track
     }
-    else if(type=="aa" || type=="AA")
+    else if(type=="aa")
     {
         track->filetype = g_strdup( "audible" );
         track->flag3 |= 0x01; // remember current position in track
@@ -246,12 +244,12 @@ GpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bu
 
     dbChanged = true;
 
-#if 0
+#if 1
     // just for trying: probably leaks memory
     // artwork support not for my nano yet, cannot try
     QString image = CollectionDB::instance()->albumImage(QString(track->artist), QString(track->album), 1);
     debug() << "adding image " << image << " to " << track->artist << ":" << track->album << endl;
-    itdb_track_set_thumbnail(track, image.latin1());
+    itdb_track_set_thumbnail(track, QFile::encodeName(image));
 #endif
 
     itdb_track_add(m_itdb, track, -1);
@@ -515,7 +513,7 @@ GpodMediaDevice::openDevice(bool silent)
     // if existing but empty create initial directories and empty database
     if(!m_itdb && !m_mntpnt.isEmpty())
     {
-        m_itdb = itdb_parse(m_mntpnt.latin1(), &err);
+        m_itdb = itdb_parse(QFile::encodeName(m_mntpnt), &err);
         if(err)
             g_error_free(err);
         err = NULL;
@@ -555,7 +553,7 @@ GpodMediaDevice::openDevice(bool silent)
             itdb_playlist_add(m_itdb, podcasts, -1);
             itdb_playlist_add(m_itdb, mpl, 0);
 
-            itdb_set_mountpoint(m_itdb, m_mntpnt.latin1());
+            itdb_set_mountpoint(m_itdb, QFile::encodeName(m_mntpnt));
 
             QString path = m_mntpnt + "/iPod_Control";
             dir.setPath(path);
@@ -619,7 +617,7 @@ GpodMediaDevice::openDevice(bool silent)
                 if (device.find("/dev/sd") != 0 && device.find("scsi") < 0)
                     continue;
 
-                m_itdb = itdb_parse(mountpoint.latin1(), &err);
+                m_itdb = itdb_parse(QFile::encodeName(mountpoint), &err);
                 if(err)
                     g_error_free(err);
                 err = NULL;
@@ -798,7 +796,7 @@ GpodMediaDevice::addTrackToList(Itdb_Track *track)
 
 #ifdef CHECK_FOR_INTEGRITY
     QString path = realPath(track->ipod_path);
-    QFileInfo finfo(path.latin1());
+    QFileInfo finfo(path);
     if(!finfo.exists())
     {
         stale = true;
@@ -942,7 +940,7 @@ GpodMediaDevice::realPath(const char *ipodPath)
     QString path;
     if(m_itdb)
     {
-        path = m_itdb->mountpoint;
+        path = QFile::decodeName(m_itdb->mountpoint);
         path.append(QString(ipodPath).replace(':', "/"));
     }
 
@@ -950,14 +948,14 @@ GpodMediaDevice::realPath(const char *ipodPath)
 }
 
 QString
-GpodMediaDevice::ipodPath(const char *realPath)
+GpodMediaDevice::ipodPath(const QString &realPath)
 {
-    QString path = realPath;
-    if(m_itdb)
+    if(m_itdb && m_itdb->mountpoint)
     {
-        QString mp = m_itdb->mountpoint;
-        if(path.startsWith(mp))
+        QString mp = QFile::decodeName(m_itdb->mountpoint);
+        if(realPath.startsWith(mp))
         {
+            QString path = realPath;
             path = path.mid(mp.length());
             path = path.replace('/', ":");
             return path;
@@ -1071,8 +1069,7 @@ GpodMediaDevice::determinePathname(const MetaBundle &bundle)
     {
         int num = std::rand() % 1000000;
         int dir = num % itdb_musicdirs_number(m_itdb);
-        trackpath.sprintf( ":iPod_Control:Music:F%02d:%s", dir,
-                (QString("kpod") + QString::number(num) + "." + type).latin1());
+        trackpath.sprintf( ":iPod_Control:Music:F%02d:kpod%d.%s", dir, num, type.latin1() );
         QFileInfo finfo(realPath(trackpath.latin1()));
         exists = finfo.exists();
     }
@@ -1127,10 +1124,10 @@ GpodMediaDevice::getCapacity( unsigned long *total, unsigned long *available )
         return false;
 
 #ifdef HAVE_STATVFS
-    QString path = m_itdb->mountpoint;
+    QString path = QFile::decodeName(m_itdb->mountpoint);
     path.append("/iPod_Control");
     struct statvfs buf;
-    if(statvfs(path.latin1(), &buf) != 0)
+    if(statvfs(QFile::encodeName(path), &buf) != 0)
     {
         *total = 0;
         *available = 0;
