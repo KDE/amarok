@@ -1154,7 +1154,7 @@ PodcastChannel::configure()
             // move the items
             if( !copyList.isEmpty() )
             {
-                KIO::CopyJob* m_podcastMoveJob = new KIO::CopyJob( copyList, m_saveLocation, KIO::CopyJob::Move, false, false );
+                KIO::CopyJob* m_podcastMoveJob = KIO::move( copyList, m_saveLocation, false );
                 amaroK::StatusBar::instance()->newProgressOperation( m_podcastMoveJob )
                         .setDescription( i18n( "Moving Podcasts" ) );
             }
@@ -1372,7 +1372,7 @@ PodcastChannel::setSettings( const QString &save, const bool autoFetch, const in
         // move the items
         if( !copyList.isEmpty() )
         {
-            KIO::CopyJob* m_podcastMoveJob = new KIO::CopyJob( copyList, m_saveLocation, KIO::CopyJob::Move, false, false );
+            KIO::CopyJob* m_podcastMoveJob = KIO::move( copyList, m_saveLocation, false );
             amaroK::StatusBar::instance()->newProgressOperation( m_podcastMoveJob )
                     .setDescription( i18n( "Moving Podcasts" ) );
         }
@@ -1755,7 +1755,7 @@ PodcastItem::downloadMedia()
     connect( &m_animationTimer, SIGNAL(timeout()), this, SLOT(slotAnimation()) );
     KURL::List list( m_url );
 
-    m_podcastItemJob = new KIO::CopyJob( list, m_localUrl, KIO::CopyJob::Copy, false, false );
+    m_podcastItemJob = KIO::copy( list, m_localUrl, false );
 
     amaroK::StatusBar::instance()->newProgressOperation( m_podcastItemJob )
             .setDescription( i18n( "Downloading Podcast Media" ) )
