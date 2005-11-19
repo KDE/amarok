@@ -29,6 +29,7 @@ interface that really makes playlist handling easy.
     * Fully configurable OSD for track changes
     * K3B (CD-burning) integration
     * Podcast support
+    * Access to iPod and iRiver IFP devices
     * Exscalibar interation for Moodbar visualisation
     * Powerful scripting interface
     * Complete DCOP Access
@@ -119,6 +120,10 @@ Optional
       (iPod support)
       http://www.gtkpod.org/libgpod.html
       (currently compatible with libgpod-cvs on 2005-11-18 02:00 UTC)
+
+    * libifp 1.0.0.2
+      (iRiver iFP support)
+      http://ifp-driver.sourceforge.net/libifp/
 
     * libmp4v2 (mpeg4ip 1.3 is recommended, faad2 is less reliable)
       (MP4/AAC tag reading & writing)
@@ -247,4 +252,4 @@ of commits, visit http://commitfilter.kde.org/.
 
 WWW : http://amarok.kde.org
 MAIL: amarok-devel@lists.sourceforge.net
-IRC : irc.freenode.net, #amarok #amarok.de
+IRC : irc.freenode.net, #amarok, #amarok.de

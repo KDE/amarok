@@ -1,4 +1,5 @@
-// (c) 2004 Christian Muehlhaeuser <chris@chris.de>, 2005 Martin Aumueller <aumuell@reserv.at>
+// (c) 2004 Christian Muehlhaeuser <chris@chris.de>
+// (c) 2005 Martin Aumueller <aumuell@reserv.at>
 // See COPYING file for licensing information
 
 #define DEBUG_PREFIX "GpodMediaDevice"

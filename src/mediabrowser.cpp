@@ -1,4 +1,6 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
+// (c) 2005 Martin Aumueller <aumuell@reserv.at>
+// (c) 2005 Seb Ruiz <me@sebruiz.net>
 // See COPYING file for licensing information
 
 

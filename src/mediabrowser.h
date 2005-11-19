@@ -1,4 +1,6 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
+// (c) 2005 Martin Aumueller <aumuell@reserv.at>
+// (c) 2005 Seb Ruiz <me@sebruiz.net>
 // See COPYING file for licensing information
 
 #ifndef AMAROK_MEDIABROWSER_H
@@ -37,10 +39,10 @@ class MediaItem : public KListViewItem
 
         MediaItem *lastChild() const;
 
-        void setUrl( const QString& url );
+        void  setUrl( const QString& url );
         const KURL& url() const { return m_url; }
         const MetaBundle *bundle() const;
-        MetaBundle *bundle();
+              MetaBundle *bundle();
 
         enum Type { UNKNOWN, ARTIST, ALBUM, TRACK, PODCASTSROOT, PODCASTCHANNEL,
                     PODCASTITEM, PLAYLISTSROOT, PLAYLIST, PLAYLISTITEM, INVISIBLEROOT,
@@ -55,15 +57,16 @@ class MediaItem : public KListViewItem
         virtual int  played() const { return 0; }
         virtual long size() const;
 
+        int compare(QListViewItem *i, int col, bool ascending) const;
+
         //attributes:
-        KURL m_url;
         mutable MetaBundle *m_bundle;
 
-        int m_order;
+        KURL         m_url;
+        int          m_order;
         mutable long m_size;
-        Type m_type;
-        QString m_playlistName;
-        int compare(QListViewItem *i, int col, bool ascending) const;
+        Type         m_type;
+        QString      m_playlistName;
 
         static QPixmap *s_pixUnknown;
         static QPixmap *s_pixFile;

@@ -21,7 +21,7 @@
     <general>
       <mainprogram>amarok</mainprogram>
       <useconfiguration>default</useconfiguration>
-      <activetarget>src/konquisidebar/konqsidebar_universalamarok.la</activetarget>
+      <activetarget>src/amarokapp</activetarget>
       <useactivetarget>true</useactivetarget>
     </general>
     <configure>
@@ -163,6 +163,11 @@
       <inlineGet>true</inlineGet>
       <inlineSet>true</inlineSet>
     </creategettersetter>
+    <qt>
+      <used>true</used>
+      <version>3</version>
+      <root>/usr/qt/3</root>
+    </qt>
   </kdevcppsupport>
   <kdevclassview>
     <folderhierarchy>true</folderhierarchy>
