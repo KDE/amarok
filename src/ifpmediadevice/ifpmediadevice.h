@@ -74,7 +74,7 @@ class IfpMediaDevice : public MediaDevice
 
         // upload
         int               uploadTrack( const QCString& src, const QCString& dest );
-        int               uploadCallback( void *pData, ifp_transfer_status *progress );
+        int               uploadCallback( void *pData, struct ifp_transfer_status *progress );
 
         // listDir
         void              listDir( const QString &dir );

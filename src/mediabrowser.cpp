@@ -1030,9 +1030,13 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     hb->setSpacing( 1 );
     m_connectButton  = new KPushButton( SmallIconSet( "usbpendrive_mount" ), i18n( "Connect"), hb );
     m_transferButton = new KPushButton( SmallIconSet( "rebuild" ), i18n( "Transfer" ), hb );
+
     m_playlistButton = new KPushButton( KGuiItem( QString::null, "player_playlist_2" ), hb );
     m_playlistButton->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
     m_playlistButton->setToggleButton( true );
+    if( m_device->deviceType() == MediaDevice::IFP )
+        m_playlistButton->hide();
+
     m_configButton   = new KPushButton( KGuiItem( QString::null, "configure" ), hb );
     m_configButton->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred ); // too big!
 

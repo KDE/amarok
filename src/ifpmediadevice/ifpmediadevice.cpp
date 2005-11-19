@@ -244,20 +244,20 @@ IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle, bool /*isPodcast*/ 
 {
     if( !m_connected ) return 0;
 
-    const KURL &url = bundle.url();
-
-    const QCString src = QFile::encodeName( url.path() );
-    const QCString dest = QFile::encodeName( "\\" + url.filename() ); // TODO: add to directory
+    const QString  newFilename = bundle.prettyTitle() + "." + bundle.type();
+    const QCString src = QFile::encodeName( bundle.url().path() );
+    const QCString dest = QFile::encodeName( "\\" + newFilename ); // TODO: add to directory
 
     kapp->processEvents( 100 );
     int result = uploadTrack( src, dest );
 
-    checkResult( result, i18n("Could not upload: %1").arg(dest) );
-
     if( !result ) //success
-        addTrackToList( IFP_FILE, url.filename() );
+    {
+        addTrackToList( IFP_FILE, newFilename );
+        return m_last;
+    }
 
-    return m_last;
+    return 0;
 }
 
 int
@@ -265,12 +265,14 @@ IfpMediaDevice::uploadTrack( const QCString& src, const QCString& dest )
 {
     debug() << "Transferring " << src << " to: " << dest << endl;
 
-    return ifp_upload_file( &m_ifpdev, src, dest, 0, 0 /*uploadCallback, this */);
+    return ifp_upload_file( &m_ifpdev, src, dest, 0, 0/*, uploadCallback, this*/ );
 }
 
 int
-IfpMediaDevice::uploadCallback( void */*pData*/, ifp_transfer_status */*progress*/ )
+IfpMediaDevice::uploadCallback( void *pData, struct ifp_transfer_status *progress )
 {
+    (void) pData;
+    (void) progress;
     return 0;
     // will be called by 'ifp_upload_file_with_callback'
 //     return static_cast<IfpMediaDevice *>(pData)->uploadCallback( buf, size );
@@ -293,8 +295,8 @@ IfpMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/ )
     switch( item->type() )
     {
         case MediaItem::DIRECTORY:
-            err = ifp_rmdir( &m_ifpdev, encodedPath );
-            checkResult( err, i18n("Directory does not exist: '%1'").arg(encodedPath) );
+            err = ifp_delete_dir_recursive( &m_ifpdev, encodedPath );
+            checkResult( err, i18n("Directory cannot be deleted: '%1'").arg(encodedPath) );
             break;
 
         default:
@@ -317,7 +319,7 @@ IfpMediaDevice::listDir( const QString &dir )
 
     debug() << "listing contents in: '" << dir << "'" << endl;
 
-    int err = ifp_list_dirs( &m_ifpdev, dir.ascii(), listDirCallback, this );
+    int err = ifp_list_dirs( &m_ifpdev, QFile::encodeName( dir ), listDirCallback, this );
     checkResult( err, i18n("Cannot enter directory: '%1'").arg(dir) );
 }
 
