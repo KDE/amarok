@@ -236,6 +236,7 @@ StatusBar::resetMainText()
         return;
 
     m_mainTextLabel->unsetPalette();
+    shortLongButton()->hide();
 
     if( allDone() )
         m_mainTextLabel->setText( m_mainText );
@@ -470,7 +471,6 @@ StatusBar::hideMainProgressBar()
 
         m_mainProgressBar->setProgress( 0 );
         progressBox()->hide();
-        shortLongButton()->hide();
     }
 }
 
