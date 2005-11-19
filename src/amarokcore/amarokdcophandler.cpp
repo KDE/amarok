@@ -75,6 +75,11 @@ namespace amaroK
             return false;
     }
 
+    bool DcopPlayerHandler::osdEnabled()
+    {
+        return AmarokConfig::osdEnabled();
+    }
+
     bool DcopPlayerHandler::isPlaying()
     {
         return EngineController::engine()->state() == Engine::Playing;

@@ -37,6 +37,7 @@ k_dcop:
 
    virtual bool dynamicModeStatus() = 0;                    ///< Return dynamic mode status.
    virtual bool equalizerEnabled() = 0;                     ///< Return the equalizer status.
+   virtual bool osdEnabled() = 0;                           ///< Return the OSD display status.
    virtual bool isPlaying() = 0;                            ///< Return true if something is playing now.
    virtual bool randomModeStatus() = 0;                     ///< Return random mode status.
    virtual bool repeatPlaylistStatus() = 0;                 ///< Return repeat playlist status.
