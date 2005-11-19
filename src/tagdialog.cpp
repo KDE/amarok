@@ -3,6 +3,7 @@
 // (c) 2005 Alexandre Pereira de Oliveira <aleprj@gmail.com>
 // See COPYING file for licensing information.
 
+#include "amarok.h"
 #include "debug.h"
 #include "contextbrowser.h"
 #include "collectionbrowser.h"
@@ -81,6 +82,12 @@ TagDialog::TagDialog( const MetaBundle& mb, PlaylistItem* item, QWidget* parent 
     init();
 }
 
+
+TagDialog::~TagDialog()
+{
+    KConfig *config = amaroK::config( "TagDialog" );
+    config->writeEntry( "CurrentTab", kTabWidget->currentPageIndex() );
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -249,11 +256,13 @@ void TagDialog::init()
     if( parent() != (void*)Playlist::instance() )
         setWFlags( getWFlags() | Qt::WDestructiveClose );
 
+    KConfig *config = amaroK::config( "TagDialog" );
+
     kTabWidget->addTab( summaryTab, i18n( "Summary" ) );
     kTabWidget->addTab( tagsTab, i18n( "Tags" ) );
     kTabWidget->addTab( lyricsTab, i18n( "Lyrics" ) );
     kTabWidget->addTab( statisticsTab, i18n( "Statistics" ) );
-    kTabWidget->setCurrentPage( 0 );
+    kTabWidget->setCurrentPage( config->readNumEntry( "CurrentTab", 0 ) );
 
     const QStringList artists = CollectionDB::instance()->artistList();
     kComboBox_artist->insertStringList( artists );

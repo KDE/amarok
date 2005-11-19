@@ -30,6 +30,7 @@ class TagDialog : public TagDialogBase
         TagDialog( const KURL& url, QWidget* parent = 0 );
         TagDialog( const KURL::List list, QWidget* parent = 0 );
         TagDialog( const MetaBundle& mb, PlaylistItem* item, QWidget* parent = 0 );
+        ~TagDialog();
         friend class TagSelect;
 
     signals:
