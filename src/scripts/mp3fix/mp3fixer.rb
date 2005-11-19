@@ -1,7 +1,12 @@
 #!/usr/bin/env ruby
 #
+# amaroK-Script for fixing VBR encoded mp3 files without XING header. Calculates the real
+# track length and adds the XING header to the file. This script is a frontend for the
+# mp3fix.rb tool.
+#
 # (c) 2005 Mark Kretschmann <markey@web.de>
 # License: GNU General Public License V2
+
 
 require "uri"
 
@@ -33,7 +38,7 @@ loop do
         when "customMenuClicked"
             if message.include?( MenuItemName )
                 filereg = Regexp.new( "/.*" )
-                file = URI::unescape( filereg.match( message.split()[3] ).to_s() )
+                file = URI.unescape( filereg.match( message.split()[3] ).to_s() )
                 mp3fix = File.dirname( File.expand_path( __FILE__ ) ) + "/mp3fix.rb"
                 output = `ruby #{mp3fix} "#{file}"`
 
