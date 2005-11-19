@@ -50,6 +50,10 @@ class PlaylistBrowserEntry : public KListViewItem
 
         virtual void updateInfo() { return; }
 
+    protected:
+        /** Interval of the download pixmap animation, in milliseconds */
+        static const int ANIMATION_INTERVAL = 250;
+
     private:
 
         virtual int compare( QListViewItem*, int, bool ) const; //reimplemented

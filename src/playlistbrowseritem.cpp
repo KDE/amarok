@@ -1632,7 +1632,7 @@ void
 PodcastChannel::startAnimation()
 {
     if( !m_animationTimer.isActive() )
-        m_animationTimer.start( 100 );
+        m_animationTimer.start( ANIMATION_INTERVAL );
 }
 
 void
@@ -1863,7 +1863,7 @@ void
 PodcastItem::startAnimation()
 {
     if( !m_animationTimer.isActive() )
-        m_animationTimer.start( 100 );
+        m_animationTimer.start( ANIMATION_INTERVAL );
 }
 
 void
