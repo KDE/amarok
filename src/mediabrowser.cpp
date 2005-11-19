@@ -1528,15 +1528,11 @@ MediaDevice::connectDevice( bool silent )
         m_parent->updateStats();
         m_parent->m_connectButton->setOn( false );
 
-        if ( !m_umntcmd.isEmpty() && umount() == 0 ) //Unmount was successful
-        {
-            amaroK::StatusBar::instance()->longMessage( i18n( "Your device is now ready to be removed." ),
+        if( !m_requireMount || (!m_umntcmd.isEmpty() && umount() == 0) ) // umount was successful or no umount needed
+            amaroK::StatusBar::instance()->shortMessage( i18n( "Device successfully disconnected" ) );
+        else
+            amaroK::StatusBar::instance()->longMessage( i18n( "Please unmount device before removal." ),
                                                         KDE::StatusBar::Information );
-            return;
-        }
-
-        amaroK::StatusBar::instance()->longMessage( i18n( "Please unmount device before removal." ),
-                                                    KDE::StatusBar::Information );
     }
 }
 
