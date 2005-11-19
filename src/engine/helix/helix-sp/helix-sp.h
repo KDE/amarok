@@ -59,8 +59,9 @@ struct _snd_mixer_elem;
 #endif
 
 // scope delay queue
-struct DelayQueue
+class DelayQueue
 {
+public:
    DelayQueue(int bufsize) : fwd(0), len(bufsize), time(0), etime(0), nchan(0), bps(0),buf(0) { buf = new unsigned char [ bufsize ]; }
    ~DelayQueue() { delete [] buf; }
    struct DelayQueue *fwd;
