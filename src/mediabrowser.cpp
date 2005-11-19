@@ -1440,9 +1440,7 @@ MediaDevice::connectDevice( bool silent )
         {
             mount();
         }
-        debug() << "opening device" << endl;
         openDevice( silent );
-        debug() << "updating stats" << endl;
         m_parent->updateStats();
 
         if( isConnected() || m_parent->m_deviceList->childCount() != 0 )
@@ -1454,21 +1452,20 @@ MediaDevice::connectDevice( bool silent )
                 m_parent->m_stats->setText( i18n( "Checking device for duplicate files." ) );
                 KURL::List urls;
                 MediaItem *next = NULL;
-                for( MediaItem *cur = dynamic_cast<MediaItem *>(m_transferList->firstChild());
-                        cur != NULL;
-                        cur = next)
+                for( MediaItem *cur = static_cast<MediaItem *>(m_transferList->firstChild());
+                                cur; cur = next )
                 {
-                    next = dynamic_cast<MediaItem *>(cur->nextSibling());
+                    next = dynamic_cast<MediaItem *>( cur->nextSibling() );
                     if ( cur->m_playlistName == QString::null && trackExists( *cur->bundle() ) )
                     {
                         delete cur;
                     }
                 }
+                m_parent->updateStats();
             }
-            m_parent->updateStats();
 
             // delete podcasts already played
-            if(m_podcastItem)
+            if( m_podcastItem )
             {
                 QPtrList<MediaItem> list;
                 //NOTE we assume that currentItem is the main target
@@ -1531,14 +1528,15 @@ MediaDevice::connectDevice( bool silent )
         m_parent->updateStats();
         m_parent->m_connectButton->setOn( false );
 
-        if ( !m_umntcmd.isEmpty() && umount() == 0)
+        if ( !m_umntcmd.isEmpty() && umount() == 0 ) //Unmount was successful
         {
-            amaroK::StatusBar::instance()->longMessage( i18n( "Your device is now in sync, you can disconnect now." ), KDE::StatusBar::Information );
+            amaroK::StatusBar::instance()->longMessage( i18n( "Your device is now ready to be removed." ),
+                                                        KDE::StatusBar::Information );
             return;
         }
 
-        QString text = i18n( "Your device is now in sync, please unmount it and disconnect now." );
-        KMessageBox::information( m_parent->m_parent, text, i18n( "Media Device Browser" ) );
+        amaroK::StatusBar::instance()->longMessage( i18n( "Please unmount device before removal." ),
+                                                    KDE::StatusBar::Information );
     }
 }
 
