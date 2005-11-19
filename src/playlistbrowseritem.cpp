@@ -1143,7 +1143,7 @@ PodcastChannel::configure()
             {
                 if( item->hasDownloaded() )
                     copyList << item->localUrl();
-                
+
                 item->setLocalUrlBase( save );
                 item = static_cast<PodcastItem*>( item->nextSibling() );
             }
@@ -1619,7 +1619,7 @@ void
 PodcastChannel::startAnimation()
 {
     if( !m_animationTimer.isActive() )
-        m_animationTimer.start( 100 );
+        m_animationTimer.start( 250 );
 }
 
 void
@@ -1842,7 +1842,7 @@ void
 PodcastItem::startAnimation()
 {
     if( !m_animationTimer.isActive() )
-        m_animationTimer.start( 100 );
+        m_animationTimer.start( 250 );
 }
 
 void
