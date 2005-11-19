@@ -546,7 +546,7 @@ MediaDeviceList::nodeBuildDragList( MediaItem* item, bool onlySelected )
 
     if ( !item )
     {
-        fi = (MediaItem*)firstChild();
+        fi = static_cast<MediaItem*>(firstChild());
     }
     else
         fi = item;
@@ -564,17 +564,17 @@ MediaDeviceList::nodeBuildDragList( MediaItem* item, bool onlySelected )
                 else
                 {
                     if(fi->childCount() )
-                        items += nodeBuildDragList( (MediaItem*)fi->firstChild(), false );
+                        items += nodeBuildDragList( static_cast<MediaItem*>(fi->firstChild()), false );
                 }
             }
             else
             {
                 if ( fi->childCount() )
-                    items += nodeBuildDragList( (MediaItem*)fi->firstChild(), true );
+                    items += nodeBuildDragList( static_cast<MediaItem*>(fi->firstChild()), true );
             }
         }
 
-        fi = (MediaItem*)fi->nextSibling();
+        fi = static_cast<MediaItem*>(fi->nextSibling());
     }
 
     return items;
@@ -1705,23 +1705,23 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
         }
         // don't return if numFiles==0: playlist items might be to delete
 
-        lockDevice(true);
-        if(fi==NULL)
-            fi = (MediaItem*)m_parent->m_deviceList->firstChild();
+        lockDevice( true );
+        if( !fi )
+            fi = static_cast<MediaItem*>(m_parent->m_deviceList->firstChild());
     }
 
-    while ( fi )
+    while( fi )
     {
-        MediaItem *next = (MediaItem*)fi->nextSibling();
+        MediaItem *next = static_cast<MediaItem*>(fi->nextSibling());
 
-        if ( fi->isSelected() )
+        if( fi->isSelected() )
         {
             deleteItemFromDevice(fi, onlyPlayed);
         }
         else
         {
-            if ( fi->childCount() )
-                deleteFromDevice( (MediaItem*)fi->firstChild(), onlyPlayed, true );
+            if( fi->childCount() )
+                deleteFromDevice( static_cast<MediaItem*>(fi->firstChild()), onlyPlayed, true );
         }
 
         fi = next;
@@ -1760,7 +1760,7 @@ MediaDevice::saveTransferList( const QString &path )
         QDomElement i = newdoc.createElement("item");
         i.setAttribute("url", item->url().url());
 
-        if(item->bundle())
+        if( item->bundle() )
         {
             QDomElement attr = newdoc.createElement( "Title" );
             QDomText t = newdoc.createTextNode( item->bundle()->title() );
