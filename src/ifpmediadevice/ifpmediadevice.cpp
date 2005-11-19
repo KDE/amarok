@@ -28,6 +28,7 @@
 #include "metabundle.h"
 #include "collectiondb.h"
 
+#include <kapplication.h>
 #include <kiconloader.h>       //smallIcon
 #include <kmessagebox.h>
 
@@ -110,7 +111,7 @@ IfpMediaDevice::~IfpMediaDevice()
 }
 
 bool
-IfpMediaDevice::checkResult(int result, QString message)
+IfpMediaDevice::checkResult( int result, QString message )
 {
     if( result == 0 )
         return true;
@@ -248,6 +249,7 @@ IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle, bool /*isPodcast*/ 
     const QCString src = QFile::encodeName( url.path() );
     const QCString dest = QFile::encodeName( "\\" + url.filename() ); // TODO: add to directory
 
+    kapp->processEvents( 100 );
     int result = uploadTrack( src, dest );
 
     checkResult( result, i18n("Could not upload: %1").arg(dest) );
