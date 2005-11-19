@@ -1028,7 +1028,7 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
 
     QHBox* hb = new QHBox( this );
     hb->setSpacing( 1 );
-    m_connectButton  = new KPushButton( SmallIconSet( "usbpendrive_mount" ), i18n( "Connect"), hb );
+    m_connectButton  = new KPushButton( SmallIconSet( "connect_creating" ), i18n( "Connect"), hb );
     m_transferButton = new KPushButton( SmallIconSet( "rebuild" ), i18n( "Transfer" ), hb );
 
     m_playlistButton = new KPushButton( KGuiItem( QString::null, "player_playlist_2" ), hb );
@@ -1512,7 +1512,7 @@ MediaDevice::connectDevice( bool silent )
         if ( m_transferList->childCount() != 0 && isConnected() )
         {
             KGuiItem transfer = KGuiItem(i18n("&Transfer"),"rebuild");
-            KGuiItem disconnect = KGuiItem(i18n("Disconnect immediately"),"rebuild");
+            KGuiItem disconnect = KGuiItem(i18n("Disconnect immediately"),"connect_no");
             int button = KMessageBox::warningYesNo( m_parent->m_parent,
                     i18n( "There are tracks queued for transfer."
                         " Would you like to transfer them before disconnecting?"),
