@@ -233,7 +233,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
         showWikipedia( url.url() );
     }
 
-    if ( url.protocol() == "show" )
+    else if ( url.protocol() == "show" )
     {
         if ( url.path().contains( "suggestLyric-" ) )
         {
@@ -262,7 +262,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
     }
 
     // When left-clicking on cover image, open browser with amazon site
-    if ( url.protocol() == "fetchcover" )
+    else if ( url.protocol() == "fetchcover" )
     {
         if ( CollectionDB::instance()->findImageByArtistAlbum (artist, album, 0 )
            == CollectionDB::instance()->notAvailCover( 0 ) ) {
@@ -281,7 +281,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
     }
 
     /* open konqueror with musicbrainz search result for artist-album */
-    if ( url.protocol() == "musicbrainz" )
+    else if ( url.protocol() == "musicbrainz" )
     {
         const QString url = "http://www.musicbrainz.org/taglookup.html?artist=%1&album=%2&track=%3";
         kapp->invokeBrowser( url.arg( KURL::encode_string_no_slash( artist, 106 /*utf-8*/ ),
@@ -289,19 +289,22 @@ void ContextBrowser::openURLRequest( const KURL &url )
         KURL::encode_string_no_slash( track, 106 /*utf-8*/ ) ) );
     }
 
-    if ( url.protocol() == "externalurl" )
+    else if ( url.protocol() == "externalurl" )
         kapp->invokeBrowser( url.url().replace("externalurl:", "http:") );
 
-    if ( url.protocol() == "togglebox" )
+    else if ( url.protocol() == "togglebox" )
     {
         if ( url.path() == "ss" ) m_suggestionsOpen ^= true;
         if ( url.path() == "ft" ) m_favouritesOpen ^= true;
     }
 
-    if ( url.protocol() == "seek" )
+    else if ( url.protocol() == "seek" )
     {
         EngineController::engine()->seek(url.path().toLong());
     }
+
+    else
+        HTMLView::openURLRequest( url );
 }
 
 
