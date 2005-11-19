@@ -245,7 +245,7 @@ GpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bu
 
     dbChanged = true;
 
-#if 1
+#if 0
     // just for trying: probably leaks memory
     // artwork support not for my nano yet, cannot try
     QString image = CollectionDB::instance()->albumImage(QString(track->artist), QString(track->album), 1);

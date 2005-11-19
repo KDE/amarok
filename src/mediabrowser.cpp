@@ -1218,6 +1218,8 @@ MediaDevice::MediaDevice( MediaDeviceView* parent, MediaDeviceList *listview )
     , m_listview( listview )
     , m_wait( false )
     , m_requireMount( false )
+    , m_transferring( false )
+    , m_transferredItem( NULL )
     , m_transferList( new MediaDeviceTransferList( parent ) )
     , m_playlistItem( NULL )
     , m_podcastItem( NULL )
@@ -1308,7 +1310,16 @@ MediaDevice::removeSelected()
     QPtrList<QListViewItem>  selected = m_transferList->selectedItems();
 
     for( QListViewItem *item = selected.first(); item; item = selected.next() )
-        delete item;
+    {
+        if( !isTransferring() || item != transferredItem() )
+        {
+            delete item;
+            if( isTransferring() )
+            {
+                m_parent->m_progress->setTotalSteps( m_parent->m_progress->totalSteps() - 1 );
+            }
+        }
+    }
 
     m_parent->m_transferButton->setEnabled( m_transferList->childCount() != 0 && isConnected() );
     m_parent->updateStats();
@@ -1494,7 +1505,7 @@ MediaDevice::connectDevice( bool silent )
     }
     else
     {
-        if ( m_transferList->childCount() != 0 &&  isConnected() )
+        if ( m_transferList->childCount() != 0 && isConnected() )
         {
             KGuiItem transfer = KGuiItem(i18n("&Transfer"),"rebuild");
             KGuiItem disconnect = KGuiItem(i18n("Disconnect immediately"),"rebuild");
@@ -1531,6 +1542,7 @@ MediaDevice::connectDevice( bool silent )
 void
 MediaDevice::transferFiles()
 {
+    m_transferring = true;
     m_parent->m_transferButton->setEnabled( false );
 
     m_parent->m_progress->setProgress( 0 );
@@ -1554,23 +1566,23 @@ MediaDevice::transferFiles()
 
     MediaItem *after = NULL; // item after which to insert into playlist
     // iterate through items
-    for( MediaItem *cur =  dynamic_cast<MediaItem *>(m_transferList->firstChild());
-            cur != NULL;
-            cur =  dynamic_cast<MediaItem *>(m_transferList->firstChild()) )
+    for( m_transferredItem =  dynamic_cast<MediaItem *>(m_transferList->firstChild());
+            m_transferredItem != NULL;
+            m_transferredItem =  dynamic_cast<MediaItem *>(m_transferList->firstChild()) )
     {
-        debug() << "Transfering: " << cur->url().path() << endl;
+        debug() << "Transferring: " << m_transferredItem->url().path() << endl;
 
-        MetaBundle *bundle = cur->bundle();
+        MetaBundle *bundle = m_transferredItem->bundle();
         if(!bundle)
         {
-            cur->m_bundle = new MetaBundle( cur->url() );
-            bundle = cur->m_bundle;
+            m_transferredItem->m_bundle = new MetaBundle( m_transferredItem->url() );
+            bundle = m_transferredItem->m_bundle;
         }
 
         MediaItem *item = trackExists( *bundle );
         if(!item)
         {
-            item = copyTrackToDevice(*bundle, cur->type() == MediaItem::PODCASTITEM);
+            item = copyTrackToDevice(*bundle, m_transferredItem->type() == MediaItem::PODCASTITEM);
         }
 
         if(!item)
@@ -1586,15 +1598,15 @@ MediaDevice::transferFiles()
             after = item;
         }
 
-        if(m_playlistItem && cur->m_playlistName!=QString::null)
+        if(m_playlistItem && m_transferredItem->m_playlistName!=QString::null)
         {
-            MediaItem *pl = m_playlistItem->findItem( cur->m_playlistName );
-            if(!pl)
+            MediaItem *pl = m_playlistItem->findItem( m_transferredItem->m_playlistName );
+            if( !pl )
             {
                 QPtrList<MediaItem> items;
-                pl = newPlaylist(cur->m_playlistName, m_playlistItem, items);
+                pl = newPlaylist( m_transferredItem->m_playlistName, m_playlistItem, items );
             }
-            if(pl)
+            if( pl )
             {
                 QPtrList<MediaItem> items;
                 items.append(item);
@@ -1602,14 +1614,15 @@ MediaDevice::transferFiles()
             }
         }
 
-        delete cur;
-        cur = NULL;
+        delete m_transferredItem;
+        m_transferredItem = NULL;
     }
     synchronizeDevice();
     unlockDevice();
     fileTransferFinished();
 
     m_parent->m_transferButton->setEnabled( m_transferList->childCount()>0 );
+    m_transferring = false;
 }
 
 
@@ -1650,7 +1663,8 @@ MediaDevice::deleteFile( const KURL &url )
 {
     debug() << "deleting " << url.prettyURL() << endl;
     KIO::file_delete( url, false );
-    m_parent->m_progress->setProgress( m_parent->m_progress->progress() + 1 );
+    if(!isTransferring())
+        m_parent->m_progress->setProgress( m_parent->m_progress->progress() + 1 );
 }
 
 void
@@ -1681,9 +1695,12 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
                 return;
             }
 
-            m_parent->m_progress->setProgress( 0 );
-            m_parent->m_progress->setTotalSteps( numFiles );
-            m_parent->m_progress->show();
+            if(!isTransferring())
+            {
+                m_parent->m_progress->setProgress( 0 );
+                m_parent->m_progress->setTotalSteps( numFiles );
+                m_parent->m_progress->show();
+            }
 
         }
         // don't return if numFiles==0: playlist items might be to delete
@@ -1715,7 +1732,10 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
         synchronizeDevice();
         unlockDevice();
 
-        QTimer::singleShot( 1500, m_parent->m_progress, SLOT(hide()) );
+        if(!isTransferring())
+        {
+            QTimer::singleShot( 1500, m_parent->m_progress, SLOT(hide()) );
+        }
         m_parent->updateStats();
     }
 }

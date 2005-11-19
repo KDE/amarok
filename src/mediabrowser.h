@@ -243,6 +243,8 @@ class MediaDevice : public QObject
         void        setDeviceType( DeviceType type ) { m_type = type; }
         DeviceType  deviceType() { return m_type; }
         virtual bool autoConnect() { return false; }
+        bool        isTransferring() { return m_transferring; }
+        MediaItem  *transferredItem() { return m_transferredItem; }
 
         static MediaDevice *instance() { return s_instance; }
 
@@ -363,6 +365,8 @@ class MediaDevice : public QObject
         bool             m_wait;
         bool             m_copyFailed;
         bool             m_requireMount;
+        bool             m_transferring;
+        MediaItem       *m_transferredItem;
 
         MediaDeviceTransferList* m_transferList;
         void loadTransferList( const QString &path );
