@@ -8,17 +8,17 @@
 
 #include <config.h>
 
+#include "amarok.h"
 #include "amarokconfig.h"
 #include "browserToolBar.h"
 #include "clicklineedit.h"
 #include "colorgenerator.h"
 #include "debug.h"
 #include "k3bexporter.h"
+#include "mediabrowser.h"
 #include "metabundle.h"
 #include "playlist.h"      //appendMedia()
 #include "statusbar.h"
-#include "mediabrowser.h"
-#include "amarok.h"
 
 #ifdef HAVE_LIBGPOD
 #include "gpodmediadevice/gpodmediadevice.h"
@@ -1496,12 +1496,6 @@ MediaDevice::connectDevice( bool silent )
         else
         {
             m_parent->m_connectButton->setOn( false );
-            if(!silent)
-            {
-                KMessageBox::error( m_parent->m_parent,
-                        i18n( "Could not find device, please mount it and try again." ),
-                        i18n( "Media Device Browser" ) );
-            }
         }
     }
     else

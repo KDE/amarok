@@ -27,6 +27,7 @@
 #include "debug.h"
 #include "metabundle.h"
 #include "collectiondb.h"
+#include "statusbar/statusbar.h"
 
 #include <kapplication.h>
 #include <kiconloader.h>       //smallIcon
@@ -130,10 +131,13 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
 
     m_dh = (usb_dev_handle*)ifp_find_device();
 
+    QString genericError = i18n( "Could not open iFP device" );
 
     if( m_dh == NULL )
     {
         error() << "A suitable iRiver iFP device couldn't be found" << endl;
+        amaroK::StatusBar::instance()->shortLongMessage( genericError,
+                                        i18n("iFP: A suitable iRiver iFP device couldn't be found") );
         return false;
     }
 
@@ -141,6 +145,8 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
     if( m_dev == NULL )
     {
         error() << "Could not get usb_device()" << endl;
+        amaroK::StatusBar::instance()->shortLongMessage( genericError,
+                                        i18n("iFP: Could not get a usb device handle") );
         if( ifp_release_device( m_dh ) )
             error() << "warning: release_device failed." << endl;
         return false;
@@ -150,7 +156,8 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
     if( usb_claim_interface( m_dh, m_dev->config->interface->altsetting->bInterfaceNumber ) )
     {
         error() << "Device is busy.  (I was unable to claim its interface.)" << endl;
-
+        amaroK::StatusBar::instance()->shortLongMessage( genericError,
+                                        i18n("iFP: Device is busy") );
         if( ifp_release_device( m_dh ) )
             error() << "warning: release_device failed." << endl;
         return false;
@@ -160,7 +167,8 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
     if( i )
     {
         error() << "IFP device: Device cannot be opened." << endl;
-
+        amaroK::StatusBar::instance()->shortLongMessage( genericError,
+                                        i18n("iFP: Could not open device") );
         usb_release_interface( m_dh, m_dev->config->interface->altsetting->bInterfaceNumber );
         return false;
     }
