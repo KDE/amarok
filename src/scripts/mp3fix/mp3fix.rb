@@ -94,7 +94,7 @@ while offset < data.length()
     # Check for frame sync
     unless header & 0xfff00000 == 0xfff00000
         validHeader = false
-        puts( "Sync check failed." )
+        puts( "Sync check failed. Header: #{header}" )
     end
 
     br = BitRateTable[( header & 0x0000f000 ) >> 12]
@@ -117,11 +117,11 @@ while offset < data.length()
     if validHeader
         frameSize = ( SamplesPerFrame / 8 * bitrate ) / samplerate + padding
 
-        puts( "bitrate     : #{bitrate.to_s()}" )
-        puts( "samplerate  : #{samplerate.to_s()}" )
-        puts( "padding     : #{padding.to_s()}" )
-        puts( "framesize   : #{frameSize}" )
-        puts()
+#         puts( "bitrate     : #{bitrate.to_s()}" )
+#         puts( "samplerate  : #{samplerate.to_s()}" )
+#         puts( "padding     : #{padding.to_s()}" )
+#         puts( "framesize   : #{frameSize}" )
+#         puts()
 
         frameCount += 1
         bitCount += bitrate
@@ -129,8 +129,10 @@ while offset < data.length()
         offset += frameSize
     else
         # Find next frame sync
-        offset += data.index( 0xff, offset )
-        puts( offset )
+        offset += 1
+        offset = data.index( 0xff, offset )
+        puts( "Trying to locate frame sync. New offset: #{offset}" )
+        puts()
     end
 end
 
