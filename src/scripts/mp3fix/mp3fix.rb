@@ -67,7 +67,7 @@ offset = id3length
 
 SamplesPerFrame = 1152  # Constant for MPEG1 layer 3
 BitRateTable = []
-BitRateTable << 0 << 32 << 40 << 48 << 56 << 64 << 80 << 96
+BitRateTable << nil << 32 << 40 << 48 << 56 << 64 << 80 << 96
 BitRateTable << 112 << 128 << 160 << 192 << 224 << 256 << 320
 SampleRateTable = []
 SampleRateTable << 44100 << 48000 << 32100
@@ -86,24 +86,52 @@ bitCount = 0
 
 # Iterate over all frames
 while offset < data.length()
+    validHeader = true
+    bitrate = 0
+    samplerate = 0
     header = data[offset+0]*2**24 + data[offset+1]*2**16 + data[offset+2]*2**8 + data[offset+3]
 
-    bitrate = BitRateTable[( header & 0x0000f000 ) >> 12] * 1000
+    # Check for frame sync
+    unless header & 0xfff00000 == 0xfff00000
+        validHeader = false
+        puts( "Sync check failed." )
+    end
+
+    br = BitRateTable[( header & 0x0000f000 ) >> 12]
+    if br == nil
+        validHeader = false
+        puts( "Bitrate invalid." )
+    else
+        bitrate = br * 1000
+    end
+
     samplerate = SampleRateTable[( header & 0x00000c00 ) >> 10]
+    if samplerate == nil
+        validHeader = false
+        puts( "Samplerate invalid." )
+    end
+
+
     padding = ( header & 0x00000200 ) >> 9
 
-    frameSize = ( SamplesPerFrame / 8 * bitrate ) / samplerate + padding
+    if validHeader
+        frameSize = ( SamplesPerFrame / 8 * bitrate ) / samplerate + padding
 
-#     puts( "bitrate     : #{bitrate.to_s()}" )
-#     puts( "samplerate  : #{samplerate.to_s()}" )
-#     puts( "padding     : #{padding.to_s()}" )
-#     puts( "framesize   : #{frameSize}" )
-#     puts()
+        puts( "bitrate     : #{bitrate.to_s()}" )
+        puts( "samplerate  : #{samplerate.to_s()}" )
+        puts( "padding     : #{padding.to_s()}" )
+        puts( "framesize   : #{frameSize}" )
+        puts()
 
-    frameCount += 1
-    bitCount += bitrate
+        frameCount += 1
+        bitCount += bitrate
 
-    offset += frameSize
+        offset += frameSize
+    else
+        # Find next frame sync
+        offset += data.index( 0xff, offset )
+        puts( offset )
+    end
 end
 
 
