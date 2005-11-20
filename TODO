@@ -6,7 +6,7 @@ TODO-list for amaroK
 
 
 SHORT-TERM (URGENT):
- 
+
  <sebr>    Delete partial (.part) podcast downloads
 
  <markey>  When scanning with no folders selected, hell breaks lose. DB errors, etc.
@@ -89,6 +89,8 @@ SHORT-TERM (URGENT):
 
 
 MID-TERM:
+ <markey>  Write an amaroK Script for embedding cover images into ID3V2. -->markey
+
  <eean>    Basically need to re-add some of the functionality I removed in re-doing dynamic
  --><eean> custom playlist creation.
            1) the default dynamic playlists need to be more insistent, the same way the
