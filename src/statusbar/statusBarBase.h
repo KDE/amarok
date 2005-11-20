@@ -129,7 +129,7 @@ namespace KDE
          * Shows a short message, with a button that can be pushed to show a long
          * message
          */
-        void shortLongMessage( const QString &_short, const QString &_long );
+        void shortLongMessage( const QString &_short, const QString &_long, int type = Information );
 
         /**
          * Set a temporary message over the mainText label, for 2 seconds.
@@ -219,10 +219,11 @@ namespace KDE
         OverlayWidget *m_popupProgress;
         QProgressBar  *m_mainProgressBar;
 
-        ProgressMap m_progressMap;
+        ProgressMap          m_progressMap;
         QValueList<QWidget*> m_messageQueue;
-        QString m_mainText;
-        QString m_shortLongText;
+        QString              m_mainText;
+        QString              m_shortLongText;
+        int                  m_shortLongType;
 
         QLayout *m_otherWidgetLayout;
     };

@@ -589,8 +589,8 @@ void EngineController::slotMainTimer() //SLOT
     // Ask engine for track length and update if it has changed, so that we get
     // more precise data. The estimated length can change dynamically with VBR
     // encoded media, since the first frame's bitrate does not represent the whole track.
-    const uint trackLength = m_engine->length() / 1000;
-    if ( trackLength && trackLength != m_bundle.length() ) {
+    const uint trackLength = (uint) m_engine->length() / 1000;
+    if ( trackLength && trackLength != (uint) m_bundle.length() ) {
         m_bundle.setLength( trackLength );
         trackLengthChangedNotify( trackLength );
     }

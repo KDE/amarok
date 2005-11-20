@@ -92,8 +92,9 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     //we need extra spacing due to the way we paint the surrounding boxes
     QBoxLayout *layout = new QHBoxLayout( mainlayout, /*spacing*/5 );
 
-    m_mainTextLabel = new KDE::SqueezedTextLabel( this, "mainTextLabel" );
-    QToolButton *shortLongButton = new QToolButton( this, "shortLongButton" );
+    QHBox *statusBarTextBox = new QHBox( this, "statusBarTextBox" );
+    m_mainTextLabel = new KDE::SqueezedTextLabel( statusBarTextBox, "mainTextLabel" );
+    QToolButton *shortLongButton = new QToolButton( statusBarTextBox, "shortLongButton" );
     shortLongButton->hide();
 
     QHBox *mainProgressBarBox = new QHBox( this, "progressBox" );
@@ -103,10 +104,9 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     mainProgressBarBox->setSpacing( 2 );
     mainProgressBarBox->hide();
 
-    layout->add( m_mainTextLabel );
-    layout->add( shortLongButton );
+    layout->add( statusBarTextBox );
     layout->add( mainProgressBarBox );
-    layout->setStretchFactor( m_mainTextLabel, 3 );
+    layout->setStretchFactor( statusBarTextBox, 3 );
     layout->setStretchFactor( mainProgressBarBox, 1 );
 
     m_otherWidgetLayout = new QHBoxLayout( mainlayout, /*spacing*/5 );
@@ -260,9 +260,12 @@ StatusBar::resetMainText()
 }
 
 void
-StatusBar::shortLongMessage( const QString &_short, const QString &_long )
+StatusBar::shortLongMessage( const QString &_short, const QString &_long, int type )
 {
-    shortMessage( _short );
+    m_shortLongType = type;
+
+    if( !_short.isEmpty() )
+        shortMessage( _short );
 
     if ( !_long.isEmpty() ) {
         m_shortLongText = _long;
@@ -396,7 +399,7 @@ StatusBar::endProgressOperation()
     // if you try to delete http urls for instance <- KDE SUCKS!
 
     if( job && job->error() )
-        longMessage( job->errorString(), Error );
+        shortLongMessage( QString::null, job->errorString(), Error );
 
     endProgressOperation( owner );
 }
@@ -447,8 +450,9 @@ void
 StatusBar::showShortLongDetails()
 {
     if( !m_shortLongText.isEmpty() )
-        longMessage( m_shortLongText );
+        longMessage( m_shortLongText, m_shortLongType );
 
+    m_shortLongType = Information;
     m_shortLongText = QString::null;
     shortLongButton()->hide();
 }

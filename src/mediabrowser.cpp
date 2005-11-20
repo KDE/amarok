@@ -1264,7 +1264,7 @@ MediaDevice::addURL( const KURL& url, MetaBundle *bundle, bool isPodcast, const 
 {
     if(!bundle)
         bundle = new MetaBundle( url );
-    if ( !playlistName.isNull() || (!trackExists( *bundle ) && ( m_transferList->findPath( url.path() ) == NULL )) )
+    if ( !playlistName.isNull() || (!trackExists( *bundle ) && !m_transferList->findPath( url.path() )) )
     {
         MediaItem* item = new MediaItem( m_transferList, m_transferList->lastItem() );
         item->setExpandable( false );
@@ -1286,7 +1286,8 @@ MediaDevice::addURL( const KURL& url, MetaBundle *bundle, bool isPodcast, const 
         m_parent->m_transferButton->setEnabled( m_parent->m_device->isConnected() || m_parent->m_deviceList->childCount() != 0 );
         m_parent->m_progress->setTotalSteps( m_parent->m_progress->totalSteps() + 1 );
     } else
-        amaroK::StatusBar::instance()->longMessage( i18n( "Track already exists on media device: %1" ).arg( url.path().local8Bit() ), KDE::StatusBar::Sorry );
+        amaroK::StatusBar::instance()->longMessage( i18n( "Track already exists on media device: %1" ).arg( url.path().local8Bit() ),
+                                                    KDE::StatusBar::Sorry );
 }
 
 void
