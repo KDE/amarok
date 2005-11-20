@@ -497,7 +497,7 @@ MediaDeviceList::MediaDeviceList( MediaDeviceView* parent )
     setDropVisualizerWidth( 3 );
     setAcceptDrops( true );
 
-    addColumn( i18n( "Artist" ) );
+    addColumn( i18n( "Remote Media" ) );
 
     connect( this, SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
              this,   SLOT( rmbPressed( QListViewItem*, const QPoint&, int ) ) );
@@ -1641,6 +1641,13 @@ MediaDevice::fileTransferred( KIO::Job *job )  //SLOT
     m_wait = false;
 }
 
+void
+MediaDevice::setProgress( const int total, const int progress )
+{
+    m_parent->m_progress->setTotalSteps( total );
+    m_parent->m_progress->setProgress( progress );
+    m_parent->m_progress->show();
+}
 
 void
 MediaDevice::fileTransferFinished()  //SLOT
@@ -1903,7 +1910,7 @@ MediaDeviceTransferList::MediaDeviceTransferList(MediaDeviceView *parent)
     setDropHighlighter( true );    //and the highligther (a focus rect) is drawn when dragging over playlists
     setDropVisualizerWidth( 3 );
     setAcceptDrops( true );
-    addColumn( i18n( "Track" ) );
+    addColumn( i18n( "Transfer Queue" ) );
 }
 
 void

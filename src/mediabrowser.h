@@ -239,12 +239,14 @@ class MediaDevice : public QObject
          */
         virtual MediaItem * newPlaylist(const QString &name, MediaItem *parent, QPtrList<MediaItem> items) = 0;
 
-        void        setRequireMount( const bool b ) { m_requireMount = b; }
-        void        setDeviceType( DeviceType type ) { m_type = type; }
-        DeviceType  deviceType() { return m_type; }
+        void         setRequireMount( const bool b ) { m_requireMount = b; }
+        void         setDeviceType( DeviceType type ) { m_type = type; }
+        DeviceType   deviceType() { return m_type; }
         virtual bool autoConnect() { return false; }
-        bool        isTransferring() { return m_transferring; }
-        MediaItem  *transferredItem() { return m_transferredItem; }
+        bool         isTransferring() { return m_transferring; }
+        MediaItem   *transferredItem() { return m_transferredItem; }
+
+        void         setProgress( const int total, const int progress );
 
         static MediaDevice *instance() { return s_instance; }
 
@@ -265,6 +267,7 @@ class MediaDevice : public QObject
 
     private slots:
         void fileTransferred( KIO::Job *job );
+
     protected slots:
         void fileTransferFinished();
 

@@ -274,17 +274,22 @@ IfpMediaDevice::uploadTrack( const QCString& src, const QCString& dest )
 {
     debug() << "Transferring " << src << " to: " << dest << endl;
 
-    return ifp_upload_file( &m_ifpdev, src, dest, 0, 0/*, uploadCallback, this*/ );
+    return ifp_upload_file( &m_ifpdev, src, dest, uploadCallback, this );
 }
 
 int
 IfpMediaDevice::uploadCallback( void *pData, struct ifp_transfer_status *progress )
 {
-    (void) pData;
-    (void) progress;
-    return 0;
+    kapp->processEvents( 100 );
     // will be called by 'ifp_upload_file_with_callback'
-//     return static_cast<IfpMediaDevice *>(pData)->uploadCallback( buf, size );
+    return static_cast<IfpMediaDevice *>(pData)->setProgressInfo( progress );
+}
+
+int
+IfpMediaDevice::setProgressInfo( struct ifp_transfer_status *progress )
+{
+    setProgress( progress->file_total, progress->file_bytes );
+    return 0;
 }
 
 
