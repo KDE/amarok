@@ -1941,7 +1941,6 @@ CollectionDB::applySettings()
 
 DbConnection * CollectionDB::getMyConnection()
 {
-    debug() << "pthread_self is: " << pthread_self() << endl;
     connectionMutex->lock();
 
     DbConnection *dbConn;
@@ -1953,7 +1952,6 @@ DbConnection * CollectionDB::getMyConnection()
         QMap<QThread *, DbConnection *>::Iterator it = threadConnections->find(currThread);
         dbConn = it.data();
         connectionMutex->unlock();
-        debug() << "Returning dbConn = " << dbConn << " for currThread = " << currThread << endl;
         return dbConn;
     }
 
@@ -1986,8 +1984,6 @@ DbConnection * CollectionDB::getMyConnection()
         dbConn = new SqliteConnection( static_cast<SqliteConfig*> ( config ) );
     }
 
-    debug() << "Inserting and returning dbConn = " << dbConn << " for currThread = " << currThread << endl;
-
     threadConnections->insert(currThread, dbConn);
 
     m_dbConfig = config;
@@ -2002,6 +1998,14 @@ CollectionDB::destroyConnections()
 {
     connectionMutex->lock();
     threadConnections->clear();
+    connectionMutex->unlock();
+}
+
+void
+CollectionDB::releasePreviousConnection(QThread *currThread)
+{
+    connectionMutex->lock();
+    threadConnections->erase(currThread);
     connectionMutex->unlock();
 }
 

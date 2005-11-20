@@ -317,6 +317,7 @@ class CollectionDB : public QObject, public EngineObserver
 
         const DbConnection::DbConnectionType getDbConnectionType() const { return m_dbConnType; }
         bool isConnected();
+        void releasePreviousConnection(QThread *currThread);
 
     protected:
         QCString md5sum( const QString& artist, const QString& album, const QString& file = QString::null );

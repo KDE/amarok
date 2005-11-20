@@ -14,6 +14,7 @@
 #include "debug.h"
 #include "statusbar.h"
 #include "threadweaver.h"
+#include "collectiondb.h"
 
 using amaroK::StatusBar;
 
@@ -217,7 +218,6 @@ ThreadWeaver::Thread::~Thread()
 QThread*
 ThreadWeaver::Thread::getRunning()
 {
-    debug() << "pthread_self is: " << pthread_self() << endl;
     pthread_once( &current_thread_key_once, create_current_thread_key );
     return reinterpret_cast<QThread *>( pthread_getspecific( current_thread_key ) );
 }
@@ -237,7 +237,6 @@ ThreadWeaver::Thread::threadId()
 void
 ThreadWeaver::Thread::runJob( Job *job )
 {
-    debug() << "pthread_self is: " << pthread_self() << ", threadID is: " << m_threadId << endl;
     job->m_thread = this;
     job->m_parentThreadId = m_threadId;
 
@@ -261,12 +260,13 @@ ThreadWeaver::Thread::run()
 
     DEBUG_BLOCK
 
+    //keep this first, before anything that uses the database, or SQLite may error out
+    CollectionDB::instance()->releasePreviousConnection(this);
+
     //register this thread so that it can be returned in a static getRunning() function
     m_threadId = ThreadWeaver::getNewThreadId();
     pthread_once(&current_thread_key_once, create_current_thread_key);
     pthread_setspecific(current_thread_key, this);
-
-    DEBUG_THREAD_FUNC_INFO
 
     m_job->m_aborted |= !m_job->doJob();
 
@@ -275,6 +275,7 @@ ThreadWeaver::Thread::run()
 
     // almost always the thread doesn't finish until after the
     // above event is already finished processing
+
 }
 
 
