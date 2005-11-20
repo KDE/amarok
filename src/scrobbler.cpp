@@ -121,10 +121,6 @@ void Scrobbler::similarArtists( const QString & artist )
         m_similarArtistsBuffer = QString::null;
         m_artist = artist;
 
-        // Make sure that we don't run multiple jobs at the same time, it could mess things up
-        if ( m_similarArtistsJob )
-            m_similarArtistsJob->kill();
-
         m_similarArtistsJob = KIO::http_post( "http://ws.audioscrobbler.com/xmlrpc", postData, false );
         m_similarArtistsJob->addMetaData( "content-type", "Content-Type: text/xml" );
 
@@ -141,7 +137,8 @@ void Scrobbler::similarArtists( const QString & artist )
  */
 void Scrobbler::audioScrobblerSimilarArtistsResult( KIO::Job* job ) //SLOT
 {
-    m_similarArtistsJob = 0;
+    if ( m_similarArtistsJob != job )
+        return; //not the right job, so let's ignore it
 
     if ( job->error() )
     {
@@ -195,6 +192,8 @@ void Scrobbler::audioScrobblerSimilarArtistsResult( KIO::Job* job ) //SLOT
     debug() << "Suggestions retrieved (" << suggestions.count() << ")" << endl;
     if ( !suggestions.isEmpty() )
         emit similarArtistsFetched( m_artist, suggestions );
+
+    m_similarArtistsJob = 0;
 }
 
 

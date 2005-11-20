@@ -5,6 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.3.7:
   BUGFIXES:
+    * amaroK would crash or hang when fetching similar artists information
+      from last.fm (BR 116399)
     * Fix memory leak in the helix engine (BR 116223)
     * When changing the database type, the apply button wouldn't be enabled,
       and it would be necessary to restart amaroK for it to work properly.
