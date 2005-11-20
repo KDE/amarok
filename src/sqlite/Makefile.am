@@ -14,11 +14,13 @@ libsqlite_la_LDFLAGS = \
 
 libsqlite_la_SOURCES = \
     alter.c \
+    analyze.c \
     attach.c \
     auth.c \
     btree.c \
     build.c \
     callback.c \
+    complete.c \
     date.c \
     delete.c \
     expr.c \
@@ -47,6 +49,7 @@ libsqlite_la_SOURCES = \
     vdbe.c \
     vdbeapi.c \
     vdbeaux.c \
+    vdbefifo.c \
     vdbemem.c \
     where.c
 
