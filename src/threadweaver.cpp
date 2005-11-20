@@ -1,5 +1,6 @@
 // Author: Max Howell (C) Copyright 2004
-// Copyright: See COPYING file that comes with this distribution
+// (c) 2005 Jeff Mitchell <kde-dev@emailgoeshere.com>
+// See COPYING file that comes with this distribution
 //
 
 // the asserts we use in this module prevent crashes, so best to abort the application if they fail
@@ -15,6 +16,7 @@
 #include "statusbar.h"
 #include "threadweaver.h"
 #include "collectiondb.h"
+#include "amarokconfig.h"
 
 using amaroK::StatusBar;
 
@@ -261,7 +263,8 @@ ThreadWeaver::Thread::run()
     DEBUG_BLOCK
 
     //keep this first, before anything that uses the database, or SQLite may error out
-    CollectionDB::instance()->releasePreviousConnection(this);
+    if ( AmarokConfig::databaseEngine().toInt() == DbConnection::sqlite )
+        CollectionDB::instance()->releasePreviousConnection(this);
 
     //register this thread so that it can be returned in a static getRunning() function
     m_threadId = ThreadWeaver::getNewThreadId();

@@ -1,5 +1,6 @@
 // Author: Max Howell (C) Copyright 2004
-// Copyright: See COPYING file that comes with this distribution
+// (c) 2005 Jeff Mitchell <kde-dev@emailgoeshere.com>
+// See COPYING file that comes with this distribution
 //
 
 #ifndef THREADWEAVER_H

@@ -2,6 +2,7 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // (c) 2004 Sami Nieminen <sami.nieminen@iki.fi>
 // (c) 2005 Ian Monroe <ian@monroe.nu>
+// (c) 2005 Jeff Mitchell <kde-dev@emailgoeshere.com>
 // See COPYING file for licensing information.
 
 #define DEBUG_PREFIX "CollectionDB"
@@ -135,7 +136,6 @@ CollectionDB::CollectionDB()
 CollectionDB::~CollectionDB()
 {
     DEBUG_BLOCK
-    debug() << "DESTRUCTOR!" << endl;
     if (getDbConnectionType() == DbConnection::sqlite) {
         debug() << "Running VACUUM" << endl;
         query( "VACUUM; ");
@@ -1941,11 +1941,13 @@ CollectionDB::applySettings()
 
 DbConnection * CollectionDB::getMyConnection()
 {
+    //after some thought, to be thread-safe, must lock at the beginning of this function,
+    //not only if a new connection is made
     connectionMutex->lock();
 
     DbConnection *dbConn;
     DbConfig *config;
-    QThread * currThread = ThreadWeaver::Thread::getRunning();
+    QThread *currThread = ThreadWeaver::Thread::getRunning();
 
     if (threadConnections->contains(currThread))
     {
@@ -1996,6 +1998,11 @@ DbConnection * CollectionDB::getMyConnection()
 void
 CollectionDB::destroyConnections()
 {
+    //do we need or want to delete the actual connection objects as well as clearing them from the QMap?
+    //or does QMap's clear function delete them?
+    //this situation is not at all likely to happen often, so leaving them might be okay to prevent a
+    //thread from having its connection torn out from under it...not likely, but possible
+    //and leaving it should not end up eating much memory at all
     connectionMutex->lock();
     threadConnections->clear();
     connectionMutex->unlock();
@@ -2004,8 +2011,16 @@ CollectionDB::destroyConnections()
 void
 CollectionDB::releasePreviousConnection(QThread *currThread)
 {
+    //if something already exists, delete the object, and erase knowledge of it from the QMap.
     connectionMutex->lock();
-    threadConnections->erase(currThread);
+    DbConnection *dbConn;
+    if (threadConnections->contains(currThread))
+    {
+        QMap<QThread *, DbConnection *>::Iterator it = threadConnections->find(currThread);
+        dbConn = it.data();
+        delete dbConn;
+        threadConnections->erase(currThread);
+    }
     connectionMutex->unlock();
 }
 

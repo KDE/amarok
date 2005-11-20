@@ -2,6 +2,7 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // (c) 2004 Sami Nieminen <sami.nieminen@iki.fi>
 // (c) 2005 Ian Monroe <ian@monroe.nu>
+// (c) 2005 Jeff Mitchell <kde-dev@emailgoeshere.com>
 // See COPYING file for licensing information.
 
 #ifndef AMAROK_COLLECTIONDB_H
