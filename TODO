@@ -9,11 +9,6 @@ SHORT-TERM (URGENT):
  
  <sebr>    Delete partial (.part) podcast downloads
 
- <sebr>    Context menu for deleting podcasts
-
- <sebr>    Helper method PlaylistBrowser::selectedItems( Type ) for getting all selected items for
-           particular types.  There is currently a lot of redundant code which is repeated often ;-).
-
  <markey>  When scanning with no folders selected, hell breaks lose. DB errors, etc.
            Only way to repair it is delete the DB.
 

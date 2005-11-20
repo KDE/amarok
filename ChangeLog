@@ -5,7 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.4:
   FEATURES:
-    * New dcop call osdEnabled 
+    * Downloaded podcast episodes can be deleted from the context menu.
+    * New DCOP call osdEnabled 
     * Add contents of smart amaroK playlists as playlist to media device.
     * Mediabrowser support for the iRiver ifp series!
     * New dcop call playlistbrowser loadPlaylist. (BR 110082)
