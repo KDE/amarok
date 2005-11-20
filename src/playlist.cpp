@@ -4034,7 +4034,6 @@ TagWriter::doJob()
 
         m_failed = !f.save();
     }
-
     return true;
 }
 
@@ -4052,6 +4051,7 @@ TagWriter::completeJob()
     case false:
         m_item->setText( m_tagType, m_newTagString.isEmpty() ? " " : m_newTagString );
         CollectionDB::instance()->updateURL( m_item->url().path(), m_updateView );
+
     }
 }
 

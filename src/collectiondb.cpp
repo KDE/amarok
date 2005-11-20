@@ -26,6 +26,8 @@
 #include <qfile.h>
 #include <qregexp.h>              //setHTMLLyrics()
 #include <qtimer.h>
+#include <qmap.h>
+#include <qthread.h>
 
 #include <kapplication.h>
 #include <kcharsets.h>            //setHTMLLyrics()
@@ -62,6 +64,9 @@
 
 #define DEBUG 0
 
+QMutex* CollectionDB::connectionMutex = new QMutex();
+QMap<QThread *, DbConnection *> *CollectionDB::threadConnections = new QMap<QThread *, DbConnection *>();
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS CollectionDB
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -73,9 +78,8 @@ CollectionDB* CollectionDB::instance()
 }
 
 
-CollectionDB::CollectionDB( bool temporary )
+CollectionDB::CollectionDB()
         : EngineObserver( EngineController::instance() )
-        , m_isTemporary( temporary )
         , m_cacheDir( amaroK::saveLocation() )
         , m_coverDir( amaroK::saveLocation() )
         , m_noCover ( locate( "data", "amarok/images/nocover.png" ) )
@@ -92,34 +96,47 @@ CollectionDB::CollectionDB( bool temporary )
         m_cacheDir.mkdir( "albumcovers/cache", false );
     m_cacheDir.cd( "albumcovers/cache" );
 
+#ifdef USE_MYSQL
+    if ( AmarokConfig::databaseEngine().toInt() == DbConnection::mysql )
+        m_dbConnType = DbConnection::mysql;
+    else
+#endif
+#ifdef USE_POSTGRESQL
+    if ( AmarokConfig::databaseEngine().toInt() == DbConnection::postgresql )
+        m_dbConnType = DbConnection::postgresql;
+    else
+#endif
+        m_dbConnType = DbConnection::sqlite;
+
+
     //<OPEN DATABASE>
     initialize();
     //</OPEN DATABASE>
 
-    if ( !temporary )
-    {
-        // TODO Should write to config in dtor, but it crashes...
-        KConfig* config = amaroK::config( "Collection Browser" );
-        config->writeEntry( "Database Version", DATABASE_VERSION );
-        config->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
-        config->writeEntry( "Database Persistent Tables Version", DATABASE_PERSISTENT_TABLES_VERSION );
+    // TODO Should write to config in dtor, but it crashes...
+    KConfig* config = amaroK::config( "Collection Browser" );
+    config->writeEntry( "Database Version", DATABASE_VERSION );
+    config->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
+    config->writeEntry( "Database Persistent Tables Version", DATABASE_PERSISTENT_TABLES_VERSION );
 
-        setAdminValue( "Database Version", QString::number(DATABASE_VERSION) );
-        setAdminValue( "Database Stats Version", QString::number(DATABASE_STATS_VERSION) );
-        setAdminValue( "Database Persistent Tables Version", QString::number(DATABASE_PERSISTENT_TABLES_VERSION) );
+    setAdminValue( "Database Version", QString::number(DATABASE_VERSION) );
+    setAdminValue( "Database Stats Version", QString::number(DATABASE_STATS_VERSION) );
+    setAdminValue( "Database Persistent Tables Version", QString::number(DATABASE_PERSISTENT_TABLES_VERSION) );
 
 
-        startTimer( MONITOR_INTERVAL * 1000 );
-
-        connect( Scrobbler::instance(), SIGNAL( similarArtistsFetched( const QString&, const QStringList& ) ),
-                 this,                    SLOT( similarArtistsFetched( const QString&, const QStringList& ) ) );
-    }
+    startTimer( MONITOR_INTERVAL * 1000 );
+    connect( Scrobbler::instance(), SIGNAL( similarArtistsFetched( const QString&, const QStringList& ) ),
+             this,                    SLOT( similarArtistsFetched( const QString&, const QStringList& ) ) );
 }
 
 CollectionDB::~CollectionDB()
 {
-    DEBUG_THREAD_FUNC_INFO
-
+    DEBUG_BLOCK
+    debug() << "DESTRUCTOR!" << endl;
+    if (getDbConnectionType() == DbConnection::sqlite) {
+        debug() << "Running VACUUM" << endl;
+        query( "VACUUM; ");
+    }
     destroy();
 }
 
@@ -129,29 +146,14 @@ CollectionDB::~CollectionDB()
 //////////////////////////////////////////////////////////////////////////////////////////
 
 
-DbConnection
-*CollectionDB::getStaticDbConnection()
-{
-    return m_dbConnPool->getDbConnection();
-}
-
-
-void
-CollectionDB::returnStaticDbConnection( DbConnection *conn )
-{
-    m_dbConnPool->putDbConnection( conn );
-}
-
-
 /**
  * Executes a SQL query on the already opened database
  * @param statement SQL program to execute. Only one SQL statement is allowed.
  * @return          The queried data, or QStringList() on error.
  */
 QStringList
-CollectionDB::query( const QString& statement, DbConnection *conn )
+CollectionDB::query( const QString& statement )
 {
-    DEBUG_THREAD_FUNC_INFO
     clock_t start;
     if ( DEBUG )
     {
@@ -160,21 +162,9 @@ CollectionDB::query( const QString& statement, DbConnection *conn )
     }
 
     DbConnection *dbConn;
-    if ( conn != NULL )
-    {
-        dbConn = conn;
-    }
-    else
-    {
-        dbConn = m_dbConnPool->getDbConnection();
-    }
+    dbConn = getMyConnection();
 
     QStringList values = dbConn->query( statement );
-
-    if ( conn == NULL )
-    {
-        m_dbConnPool->putDbConnection( dbConn );
-    }
 
     if ( DEBUG )
     {
@@ -192,9 +182,8 @@ CollectionDB::query( const QString& statement, DbConnection *conn )
  * @return          The rowid of the inserted item.
  */
 int
-CollectionDB::insert( const QString& statement, const QString& table, DbConnection *conn )
+CollectionDB::insert( const QString& statement, const QString& table )
 {
-    DEBUG_THREAD_FUNC_INFO
     clock_t start;
     if ( DEBUG )
     {
@@ -203,21 +192,9 @@ CollectionDB::insert( const QString& statement, const QString& table, DbConnecti
     }
 
     DbConnection *dbConn;
-    if ( conn != NULL )
-    {
-        dbConn = conn;
-    }
-    else
-    {
-        dbConn = m_dbConnPool->getDbConnection();
-    }
+    dbConn = getMyConnection();
 
     int id = dbConn->insert( statement, table );
-
-    if ( conn == NULL )
-    {
-        m_dbConnPool->putDbConnection( dbConn );
-    }
 
     if ( DEBUG )
     {
@@ -229,11 +206,11 @@ CollectionDB::insert( const QString& statement, const QString& table, DbConnecti
 }
 
 bool
-CollectionDB::isEmpty()
+CollectionDB::isEmpty( )
 {
     QStringList values;
 
-    if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql)
+    if (getDbConnectionType() == DbConnection::postgresql)
     {
         values = query( "SELECT COUNT( url ) FROM tags OFFSET 0 LIMIT 1;" );
     }
@@ -247,12 +224,12 @@ CollectionDB::isEmpty()
 
 
 bool
-CollectionDB::isValid()
+CollectionDB::isValid( )
 {
     QStringList values1;
     QStringList values2;
 
-    if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) {
+    if (getDbConnectionType() == DbConnection::postgresql) {
         values1 = query( "SELECT COUNT( url ) FROM tags OFFSET 0 LIMIT 1;" );
         values2 = query( "SELECT COUNT( url ) FROM statistics OFFSET 0 LIMIT 1;" );
     }
@@ -280,8 +257,7 @@ CollectionDB::adminValue( QString noption ) {
 void
 CollectionDB::setAdminValue( QString noption, QString value ) {
 
-    DbConnection *conn = m_dbConnPool->getDbConnection();
-    QStringList values = query(QString("SELECT value FROM admin WHERE noption = '%1';").arg( noption ));
+    QStringList values = query( QString( "SELECT value FROM admin WHERE noption = '%1';").arg( noption ));
     if(values.count() > 0)
     {
         query( QString( "UPDATE admin SET value = '%1' WHERE noption = '%2';" ).arg( value, noption ) );
@@ -289,18 +265,15 @@ CollectionDB::setAdminValue( QString noption, QString value ) {
     else
     {
         insert( QString( "INSERT INTO admin (value, noption) values ( '%1', '%2' );" ).arg( value, noption ),
-         NULL, conn );
+         NULL );
     }
-    m_dbConnPool->putDbConnection(conn);
 }
 
 
 
 void
-CollectionDB::createTables( DbConnection *conn )
+CollectionDB::createTables( const bool temporary )
 {
-    DEBUG_THREAD_FUNC_INFO
-
     //create tag table
     query( QString( "CREATE %1 TABLE tags%2 ("
                     "url " + textColumnType() + ","
@@ -317,21 +290,21 @@ CollectionDB::createTables( DbConnection *conn )
                     "length INTEGER,"
                     "samplerate INTEGER,"
                     "sampler BOOL );" )
-                    .arg( conn ? "TEMPORARY" : "" )
-                    .arg( conn ? "_temp" : "" ), conn );
+                    .arg( temporary ? "TEMPORARY" : "" )
+                    .arg( temporary ? "_temp" : "" ) );
 
     QString albumAutoIncrement = "";
     QString artistAutoIncrement = "";
     QString genreAutoIncrement = "";
     QString yearAutoIncrement = "";
-    if ( m_dbConnPool->getDbConnectionType() == DbConnection::postgresql )
+    if ( getDbConnectionType() == DbConnection::postgresql )
     {
-    if(!conn)
+    if(!temporary)
     {
-        query( QString( "CREATE SEQUENCE album_seq;" ), conn );
-        query( QString( "CREATE SEQUENCE artist_seq;" ), conn );
-        query( QString( "CREATE SEQUENCE genre_seq;" ), conn );
-        query( QString( "CREATE SEQUENCE year_seq;" ), conn );
+        query( QString( "CREATE SEQUENCE album_seq;" ) );
+        query( QString( "CREATE SEQUENCE artist_seq;" ) );
+        query( QString( "CREATE SEQUENCE genre_seq;" ) );
+        query( QString( "CREATE SEQUENCE year_seq;" ) );
     }
 
         albumAutoIncrement = QString("DEFAULT nextval('album_seq')");
@@ -339,7 +312,7 @@ CollectionDB::createTables( DbConnection *conn )
         genreAutoIncrement = QString("DEFAULT nextval('genre_seq')");
         yearAutoIncrement = QString("DEFAULT nextval('year_seq')");
     }
-    else if ( m_dbConnPool->getDbConnectionType() == DbConnection::mysql )
+    else if ( getDbConnectionType() == DbConnection::mysql )
     {
         albumAutoIncrement = "AUTO_INCREMENT";
         artistAutoIncrement = "AUTO_INCREMENT";
@@ -350,60 +323,60 @@ CollectionDB::createTables( DbConnection *conn )
     query( QString( "CREATE %1 TABLE album%2 ("
                     "id INTEGER PRIMARY KEY %3,"
                     "name " + textColumnType() + ");" )
-                    .arg( conn ? "TEMPORARY" : "" )
-                    .arg( conn ? "_temp" : "" )
-                    .arg( albumAutoIncrement ), conn );
+                    .arg( temporary ? "TEMPORARY" : "" )
+                    .arg( temporary ? "_temp" : "" )
+                    .arg( albumAutoIncrement ) );
 
     //create artist table
     query( QString( "CREATE %1 TABLE artist%2 ("
                     "id INTEGER PRIMARY KEY %3,"
                     "name " + textColumnType() + ");" )
-                    .arg( conn ? "TEMPORARY" : "" )
-                    .arg( conn ? "_temp" : "" )
-                    .arg( artistAutoIncrement ), conn );
+                    .arg( temporary ? "TEMPORARY" : "" )
+                    .arg( temporary ? "_temp" : "" )
+                    .arg( artistAutoIncrement ) );
 
     //create genre table
     query( QString( "CREATE %1 TABLE genre%2 ("
                     "id INTEGER PRIMARY KEY %3,"
                     "name " + textColumnType() +");" )
-                    .arg( conn ? "TEMPORARY" : "" )
-                    .arg( conn ? "_temp" : "" )
-                    .arg( genreAutoIncrement ), conn );
+                    .arg( temporary ? "TEMPORARY" : "" )
+                    .arg( temporary ? "_temp" : "" )
+                    .arg( genreAutoIncrement ) );
 
     //create year table
     query( QString( "CREATE %1 TABLE year%2 ("
                     "id INTEGER PRIMARY KEY %3,"
                     "name " + textColumnType() + ");" )
-                    .arg( conn ? "TEMPORARY" : "" )
-                    .arg( conn ? "_temp" : "" )
-                    .arg( yearAutoIncrement ), conn );
+                    .arg( temporary? "TEMPORARY" : "" )
+                    .arg( temporary ? "_temp" : "" )
+                    .arg( yearAutoIncrement ) );
 
     //create images table
     query( QString( "CREATE %1 TABLE images%2 ("
                     "path " + textColumnType() + ","
                     "artist " + textColumnType() + ","
                     "album " + textColumnType() + ");" )
-                    .arg( conn ? "TEMPORARY" : "" )
-                    .arg( conn ? "_temp" : "" ), conn );
+                    .arg( temporary ? "TEMPORARY" : "" )
+                    .arg( temporary ? "_temp" : "" ) );
 
     // create directory statistics table
     query( QString( "CREATE %1 TABLE directories%2 ("
                     "dir " + textColumnType() + " UNIQUE,"
                     "changedate INTEGER );" )
-                    .arg( conn ? "TEMPORARY" : "" )
-                    .arg( conn ? "_temp" : "" ), conn );
+                    .arg( temporary ? "TEMPORARY" : "" )
+                    .arg( temporary ? "_temp" : "" ) );
 
     //create indexes
     query( QString( "CREATE INDEX album_idx%1 ON album%2( name );" )
-                    .arg( conn ? "_temp" : "" ).arg( conn ? "_temp" : "" ), conn );
+                    .arg( temporary ? "_temp" : "" ).arg( temporary ? "_temp" : "" ) );
     query( QString( "CREATE INDEX artist_idx%1 ON artist%2( name );" )
-                    .arg( conn ? "_temp" : "" ).arg( conn ? "_temp" : "" ), conn );
+                    .arg( temporary ? "_temp" : "" ).arg( temporary ? "_temp" : "" ) );
     query( QString( "CREATE INDEX genre_idx%1 ON genre%2( name );" )
-                    .arg( conn ? "_temp" : "" ).arg( conn ? "_temp" : "" ), conn );
+                    .arg( temporary ? "_temp" : "" ).arg( temporary ? "_temp" : "" ) );
     query( QString( "CREATE INDEX year_idx%1 ON year%2( name );" )
-                    .arg( conn ? "_temp" : "" ).arg( conn ? "_temp" : "" ), conn );
+                    .arg( temporary ? "_temp" : "" ).arg( temporary ? "_temp" : "" ) );
 
-    if ( !conn )
+    if ( !temporary )
     {
 
         //create admin table -- holds the db version, put here other stuff if necessary
@@ -434,54 +407,50 @@ CollectionDB::createTables( DbConnection *conn )
 
 
 void
-CollectionDB::dropTables( DbConnection *conn )
+CollectionDB::dropTables( const bool temporary )
 {
-    DEBUG_THREAD_FUNC_INFO
-
-    query( QString( "DROP TABLE tags%1;" ).arg( conn ? "_temp" : "" ), conn );
-    query( QString( "DROP TABLE album%1;" ).arg( conn ? "_temp" : "" ), conn );
-    query( QString( "DROP TABLE artist%1;" ).arg( conn ? "_temp" : "" ), conn );
-    query( QString( "DROP TABLE genre%1;" ).arg( conn ? "_temp" : "" ), conn );
-    query( QString( "DROP TABLE year%1;" ).arg( conn ? "_temp" : "" ), conn );
-    query( QString( "DROP TABLE images%1;" ).arg( conn ? "_temp" : "" ), conn );
-    query( QString( "DROP TABLE directories%1;" ).arg( conn ? "_temp" : "" ), conn );
-    if ( !conn )
+    query( QString( "DROP TABLE tags%1;" ).arg( temporary ? "_temp" : "" ) );
+    query( QString( "DROP TABLE album%1;" ).arg( temporary ? "_temp" : "" ) );
+    query( QString( "DROP TABLE artist%1;" ).arg( temporary ? "_temp" : "" ) );
+    query( QString( "DROP TABLE genre%1;" ).arg( temporary ? "_temp" : "" ) );
+    query( QString( "DROP TABLE year%1;" ).arg( temporary ? "_temp" : "" ) );
+    query( QString( "DROP TABLE images%1;" ).arg( temporary ? "_temp" : "" ) );
+    query( QString( "DROP TABLE directories%1;" ).arg( temporary ? "_temp" : "" ) );
+    if ( !temporary )
     {
         query( QString( "DROP TABLE related_artists;" ) );
     }
 
-    if ( m_dbConnPool->getDbConnectionType() == DbConnection::postgresql )
+    if ( getDbConnectionType() == DbConnection::postgresql )
     {
-    if (conn == NULL) {
-        query( QString( "DROP SEQUENCE album_seq;" ), conn );
-        query( QString( "DROP SEQUENCE artist_seq;" ), conn );
-        query( QString( "DROP SEQUENCE genre_seq;" ), conn );
-        query( QString( "DROP SEQUENCE year_seq;" ), conn );
+    if (temporary == false) {
+        query( QString( "DROP SEQUENCE album_seq;" ) );
+        query( QString( "DROP SEQUENCE artist_seq;" ) );
+        query( QString( "DROP SEQUENCE genre_seq;" ) );
+        query( QString( "DROP SEQUENCE year_seq;" ) );
     }
     }
 }
 
 
 void
-CollectionDB::clearTables( DbConnection *conn )
+CollectionDB::clearTables( const bool temporary )
 {
-    DEBUG_THREAD_FUNC_INFO
-
     QString clearCommand = "DELETE FROM";
-    if ( m_dbConnPool->getDbConnectionType() == DbConnection::mysql || m_dbConnPool->getDbConnectionType() == DbConnection::postgresql)
+    if ( getDbConnectionType() == DbConnection::mysql || getDbConnectionType() == DbConnection::postgresql)
     {
         // TRUNCATE TABLE is faster than DELETE FROM TABLE, so use it when supported.
         clearCommand = "TRUNCATE TABLE";
     }
 
-    query( QString( "%1 tags%2;" ).arg( clearCommand ).arg( conn ? "_temp" : "" ), conn );
-    query( QString( "%1 album%2;" ).arg( clearCommand ).arg( conn ? "_temp" : "" ), conn );
-    query( QString( "%1 artist%2;" ).arg( clearCommand ).arg( conn ? "_temp" : "" ), conn );
-    query( QString( "%1 genre%2;" ).arg( clearCommand ).arg( conn ? "_temp" : "" ), conn );
-    query( QString( "%1 year%2;" ).arg( clearCommand ).arg( conn ? "_temp" : "" ), conn );
-    query( QString( "%1 images%2;" ).arg( clearCommand ).arg( conn ? "_temp" : "" ), conn );
-    query( QString( "%1 directories%2;" ).arg( clearCommand ).arg( conn ? "_temp" : "" ), conn );
-    if ( !conn )
+    query( QString( "%1 tags%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
+    query( QString( "%1 album%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
+    query( QString( "%1 artist%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
+    query( QString( "%1 genre%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
+    query( QString( "%1 year%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
+    query( QString( "%1 images%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
+    query( QString( "%1 directories%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
+    if ( !temporary )
     {
         query( QString( "%1 related_artists;" ).arg( clearCommand ) );
     }
@@ -489,23 +458,21 @@ CollectionDB::clearTables( DbConnection *conn )
 
 
 void
-CollectionDB::moveTempTables( DbConnection *conn )
+CollectionDB::moveTempTables( )
 {
-    insert( "INSERT INTO tags SELECT * FROM tags_temp;", NULL, conn );
-    insert( "INSERT INTO album SELECT * FROM album_temp;", NULL, conn );
-    insert( "INSERT INTO artist SELECT * FROM artist_temp;", NULL, conn );
-    insert( "INSERT INTO genre SELECT * FROM genre_temp;", NULL, conn );
-    insert( "INSERT INTO year SELECT * FROM year_temp;", NULL, conn );
-    insert( "INSERT INTO images SELECT * FROM images_temp;", NULL, conn );
-    insert( "INSERT INTO directories SELECT * FROM directories_temp;", NULL, conn );
+    insert( "INSERT INTO tags SELECT * FROM tags_temp;", NULL );
+    insert( "INSERT INTO album SELECT * FROM album_temp;", NULL );
+    insert( "INSERT INTO artist SELECT * FROM artist_temp;", NULL );
+    insert( "INSERT INTO genre SELECT * FROM genre_temp;", NULL );
+    insert( "INSERT INTO year SELECT * FROM year_temp;", NULL );
+    insert( "INSERT INTO images SELECT * FROM images_temp;", NULL );
+    insert( "INSERT INTO directories SELECT * FROM directories_temp;", NULL );
 }
 
 
 void
 CollectionDB::createStatsTable()
 {
-    DEBUG_THREAD_FUNC_INFO
-
     // create music statistics database
     query( QString( "CREATE TABLE statistics ("
                     "url " + textColumnType() + " UNIQUE,"
@@ -523,8 +490,6 @@ CollectionDB::createStatsTable()
 void
 CollectionDB::dropStatsTable()
 {
-    DEBUG_THREAD_FUNC_INFO
-
     query( "DROP TABLE statistics;" );
 }
 
@@ -532,8 +497,6 @@ CollectionDB::dropStatsTable()
 void
 CollectionDB::createPersistentTables()
 {
-    DEBUG_THREAD_FUNC_INFO
-
     // create amazon table
     query(          "CREATE TABLE amazon ( "
             "asin " + textColumnType(20) + ", "
@@ -560,21 +523,19 @@ CollectionDB::createPersistentTables()
 void
 CollectionDB::dropPersistentTables()
 {
-    DEBUG_THREAD_FUNC_INFO
-
     query( "DROP TABLE amazon;" );
     query( "DROP TABLE lyrics;" );
     query( "DROP TABLE labels;" );
 }
 
 uint
-CollectionDB::artistID( QString value, bool autocreate, const bool temporary, const bool updateSpelling, DbConnection *conn )
+CollectionDB::artistID( QString value, bool autocreate, const bool temporary, const bool updateSpelling )
 {
     // lookup cache
     if ( m_cacheArtist == value )
         return m_cacheArtistID;
 
-    uint id = IDFromValue( "artist", value, autocreate, temporary, updateSpelling, conn );
+    uint id = IDFromValue( "artist", value, autocreate, temporary, updateSpelling );
 
     // cache values
     m_cacheArtist = value;
@@ -603,13 +564,13 @@ CollectionDB::artistValue( uint id )
 
 
 uint
-CollectionDB::albumID( QString value, bool autocreate, const bool temporary, const bool updateSpelling, DbConnection *conn )
+CollectionDB::albumID( QString value, bool autocreate, const bool temporary, const bool updateSpelling )
 {
     // lookup cache
     if ( m_cacheAlbum == value )
         return m_cacheAlbumID;
 
-    uint id = IDFromValue( "album", value, autocreate, temporary, updateSpelling, conn );
+    uint id = IDFromValue( "album", value, autocreate, temporary, updateSpelling );
 
     // cache values
     m_cacheAlbum = value;
@@ -637,9 +598,9 @@ CollectionDB::albumValue( uint id )
 
 
 uint
-CollectionDB::genreID( QString value, bool autocreate, const bool temporary, const bool updateSpelling, DbConnection *conn )
+CollectionDB::genreID( QString value, bool autocreate, const bool temporary, const bool updateSpelling)
 {
-    return IDFromValue( "genre", value, autocreate, temporary, updateSpelling, conn );
+    return IDFromValue( "genre", value, autocreate, temporary, updateSpelling);
 }
 
 
@@ -651,9 +612,9 @@ CollectionDB::genreValue( uint id )
 
 
 uint
-CollectionDB::yearID( QString value, bool autocreate, const bool temporary, const bool updateSpelling, DbConnection *conn )
+CollectionDB::yearID( QString value, bool autocreate, const bool temporary, const bool updateSpelling)
 {
-    return IDFromValue( "year", value, autocreate, temporary, updateSpelling, conn );
+    return IDFromValue( "year", value, autocreate, temporary, updateSpelling);
 }
 
 
@@ -665,18 +626,19 @@ CollectionDB::yearValue( uint id )
 
 
 uint
-CollectionDB::IDFromValue( QString name, QString value, bool autocreate, const bool temporary, const bool updateSpelling, DbConnection *conn )
+CollectionDB::IDFromValue( QString name, QString value, bool autocreate, const bool temporary, const bool updateSpelling )
 {
     if ( temporary )
         name.append( "_temp" );
-    else
-        conn = NULL;
+//    what the hell is the reason for this?
+//    else
+//        conn = NULL;
 
     QStringList values =
         query( QString(
             "SELECT id, name FROM %1 WHERE name LIKE '%2';" )
             .arg( name )
-            .arg( CollectionDB::instance()->escapeString( value ) ), conn );
+            .arg( CollectionDB::instance()->escapeString( value ) ) );
 
     if ( updateSpelling && !values.isEmpty() && ( values[1] != value ) )
     {
@@ -684,7 +646,7 @@ CollectionDB::IDFromValue( QString name, QString value, bool autocreate, const b
                   .arg( name )
                   .arg( values.first() )
                   .arg( CollectionDB::instance()->escapeString( value ) )
-                  .arg( values.first() ), conn );
+                  .arg( values.first() ) );
     }
 
     //check if item exists. if not, should we autocreate it?
@@ -693,7 +655,7 @@ CollectionDB::IDFromValue( QString name, QString value, bool autocreate, const b
     {
         id = insert( QString( "INSERT INTO %1 ( name ) VALUES ( '%2' );" )
                         .arg( name )
-                        .arg( CollectionDB::instance()->escapeString( value ) ), name, conn );
+                        .arg( CollectionDB::instance()->escapeString( value ) ), name );
 
         return id;
     }
@@ -750,7 +712,7 @@ CollectionDB::albumTracks( const QString &artist_id, const QString &album_id, co
                         .arg( artist_id ) );
     }
 
-    if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) {
+    if (getDbConnectionType() == DbConnection::postgresql) {
         return query( QString( "SELECT tags.url, tags.track AS __discard FROM tags, year WHERE tags.album = %1 AND "
                                "( tags.sampler = %2 OR tags.artist = %3 ) AND year.id = tags.year "
                                "ORDER BY tags.track;" )
@@ -770,7 +732,7 @@ CollectionDB::albumTracks( const QString &artist_id, const QString &album_id, co
 
 
 void
-CollectionDB::addImageToAlbum( const QString& image, QValueList< QPair<QString, QString> > info, DbConnection *conn )
+CollectionDB::addImageToAlbum( const QString& image, QValueList< QPair<QString, QString> > info, const bool temporary )
 {
     for ( QValueList< QPair<QString, QString> >::ConstIterator it = info.begin(); it != info.end(); ++it )
     {
@@ -779,10 +741,10 @@ CollectionDB::addImageToAlbum( const QString& image, QValueList< QPair<QString, 
 
         debug() << "Added image for album: " << (*it).first << " - " << (*it).second << ": " << image << endl;
         insert( QString( "INSERT INTO images%1 ( path, artist, album ) VALUES ( '%1', '%2', '%3' );" )
-         .arg( conn ? "_temp" : "" )
+         .arg( temporary ? "_temp" : "" )
          .arg( escapeString( image ) )
          .arg( escapeString( (*it).first ) )
-         .arg( escapeString( (*it).second ) ), NULL, conn );
+         .arg( escapeString( (*it).second ) ), NULL );
     }
 }
 
@@ -1151,7 +1113,7 @@ CollectionDB::yearList( bool withUnknowns, bool withCompilations )
 QStringList
 CollectionDB::albumListOfArtist( const QString &artist, bool withUnknown, bool withCompilations )
 {
-    if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql)
+    if (getDbConnectionType() == DbConnection::postgresql)
     {
         return query( "SELECT DISTINCT album.name, lower( album.name ) AS __discard FROM tags, album, artist WHERE "
                       "tags.album = album.id AND tags.artist = artist.id "
@@ -1175,7 +1137,7 @@ CollectionDB::albumListOfArtist( const QString &artist, bool withUnknown, bool w
 QStringList
 CollectionDB::artistAlbumList( bool withUnknown, bool withCompilations )
 {
-    if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql)
+    if (getDbConnectionType() == DbConnection::postgresql)
     {
         return query( "SELECT DISTINCT artist.name, album.name, lower( album.name ) AS __discard FROM tags, album, artist WHERE "
                       "tags.album = album.id AND tags.artist = artist.id " +
@@ -1195,7 +1157,7 @@ CollectionDB::artistAlbumList( bool withUnknown, bool withCompilations )
 
 
 bool
-CollectionDB::addSong( MetaBundle* bundle, const bool incremental, DbConnection *conn )
+CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
 {
     if ( !QFileInfo( bundle->url().path() ).isReadable() ) return false;
 
@@ -1223,10 +1185,10 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental, DbConnection 
     command += escapeString( bundle->url().directory() ) + "',";
     command += QString::number( QFileInfo( bundle->url().path() ).lastModified().toTime_t() ) + ",";
 
-    command += escapeString( QString::number( albumID( bundle->album(),   true, !incremental, false, conn ) ) ) + ",";
-    command += escapeString( QString::number( artistID( bundle->artist(), true, !incremental, false, conn ) ) ) + ",";
-    command += escapeString( QString::number( genreID( bundle->genre(),   true, !incremental, false, conn ) ) ) + ",'";
-    command += escapeString( QString::number( yearID( QString::number( bundle->year() ), true, !incremental, false, conn ) ) ) + "','";
+    command += escapeString( QString::number( albumID( bundle->album(),   true, !incremental, false ) ) ) + ",";
+    command += escapeString( QString::number( artistID( bundle->artist(), true, !incremental, false ) ) ) + ",";
+    command += escapeString( QString::number( genreID( bundle->genre(),   true, !incremental, false ) ) ) + ",'";
+    command += escapeString( QString::number( yearID( QString::number( bundle->year() ), true, !incremental, false ) ) ) + "','";
 
     command += escapeString( bundle->title() ) + "','";
     command += escapeString( bundle->comment() ) + "', ";
@@ -1241,7 +1203,7 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental, DbConnection 
 
     //FIXME: currently there's no way to check if an INSERT query failed or not - always return true atm.
     // Now it might be possible as insert returns the rowid.
-    insert( command, NULL, conn );
+    insert( command, NULL);
     return true;
 }
 
@@ -1404,7 +1366,7 @@ CollectionDB::addSongPercentage( const QString &url, int percentage )
             // it's the first time track is played
             score = ( ( 50 + percentage ) / 2 );
         // increment playcounter and update accesstime
-        if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) {
+        if (getDbConnectionType() == DbConnection::postgresql) {
             query( QString( "UPDATE statistics SET percentage=%1, playcounter=%2, accessdate=%3 WHERE url='%4';" )
                             .arg( score )
                             .arg( values[0] + " + 1" )
@@ -1442,7 +1404,7 @@ CollectionDB::addSongPercentage( const QString &url, int percentage )
 
 
 int
-CollectionDB::getSongPercentage( const QString &url  )
+CollectionDB::getSongPercentage( const QString &url)
 {
     QStringList values = query( QString( "SELECT round( percentage + 0.4 ) FROM statistics WHERE url = '%1';" )
                                          .arg( escapeString( url ) ) );
@@ -1455,12 +1417,12 @@ CollectionDB::getSongPercentage( const QString &url  )
 
 
 void
-CollectionDB::setSongPercentage( const QString &url , int percentage )
+CollectionDB::setSongPercentage( const QString &url , int percentage)
 {
     QStringList values =
         query( QString(
             "SELECT playcounter, createdate, accessdate FROM statistics WHERE url = '%1';" )
-            .arg( escapeString( url ) ) );
+            .arg( escapeString( url ) ));
 
     // check boundaries
     if ( percentage > 100 ) percentage = 100;
@@ -1468,10 +1430,10 @@ CollectionDB::setSongPercentage( const QString &url , int percentage )
 
     if ( !values.isEmpty() )
     {
-        if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) {
+        if (getDbConnectionType() == DbConnection::postgresql) {
             query( QString( "UPDATE statistics SET percentage=%1 WHERE url='%2';" )
                             .arg( percentage )
-                            .arg( escapeString( url ) ) );
+                            .arg( escapeString( url ) ));
         }
         else
         {
@@ -1499,7 +1461,7 @@ CollectionDB::setSongPercentage( const QString &url , int percentage )
 }
 
 int
-CollectionDB::getPlayCount( const QString &url  )
+CollectionDB::getPlayCount( const QString &url )
 {
     QStringList values = query( QString( "SELECT playcounter FROM statistics WHERE url = '%1';" )
                                          .arg( escapeString( url ) ) );
@@ -1509,7 +1471,7 @@ CollectionDB::getPlayCount( const QString &url  )
 }
 
 QDateTime
-CollectionDB::getFirstPlay( const QString &url  )
+CollectionDB::getFirstPlay( const QString &url )
 {
     QDateTime dt = QDateTime();
     QStringList values = query( QString( "SELECT createdate FROM statistics WHERE url = '%1';" )
@@ -1520,7 +1482,7 @@ CollectionDB::getFirstPlay( const QString &url  )
 }
 
 QDateTime
-CollectionDB::getLastPlay( const QString &url  )
+CollectionDB::getLastPlay( const QString &url )
 {
     QDateTime dt = QDateTime();
     QStringList values = query( QString( "SELECT accessdate FROM statistics WHERE url = '%1';" )
@@ -1616,39 +1578,39 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite 
 }
 
 void
-CollectionDB::updateDirStats( QString path, const long datetime, DbConnection *conn )
+CollectionDB::updateDirStats( QString path, const long datetime, const bool temporary )
 {
     if ( path.endsWith( "/" ) )
         path = path.left( path.length() - 1 );
 
-    if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) {
+    if (getDbConnectionType() == DbConnection::postgresql) {
     // REPLACE INTO is not valid SQL for postgres, so we need to check whether we
     // should UPDATE() or INSERT()
-    QStringList values = query(QString("SELECT * FROM directories%1 WHERE dir='%2';")
-        .arg( conn ? "_temp" : "")
-        .arg( escapeString( path ) ), conn );
+    QStringList values = query( QString("SELECT * FROM directories%1 WHERE dir='%2';")
+        .arg( temporary ? "_temp" : "")
+        .arg( escapeString( path ) ) );
 
     if(values.count() > 0 )
     {
         query( QString( "UPDATE directories%1 SET changedate=%2 WHERE dir='%3';")
-        .arg( conn ? "_temp" : "" )
+        .arg( temporary ? "_temp" : "" )
         .arg( datetime )
-        .arg( escapeString( path ) ), conn );
+        .arg( escapeString( path ) ));
     }
     else
     {
         query( QString( "INSERT INTO directories%1 (dir,changedate) VALUES ('%2','%3');")
-        .arg( conn ? "_temp" : "")
+        .arg( temporary ? "_temp" : "")
         .arg( escapeString( path ) )
-        .arg( datetime ), conn );
+        .arg( datetime ) );
     }
     }
     else
     {
         query( QString( "REPLACE INTO directories%1 ( dir, changedate ) VALUES ( '%2', %3 );" )
-                  .arg( conn ? "_temp" : "" )
+                  .arg( temporary ? "_temp" : "" )
                   .arg( escapeString( path ) )
-                  .arg( datetime ), conn );
+                  .arg( datetime ) );
     }
 }
 
@@ -1705,7 +1667,7 @@ CollectionDB::similarArtists( const QString &artist, uint count )
 {
     QStringList values;
 
-    if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) {
+    if (getDbConnectionType() == DbConnection::postgresql) {
         values = query( QString( "SELECT suggestion FROM related_artists WHERE artist = '%1' OFFSET 0 LIMIT %2;" )
                                  .arg( escapeString( artist ) ).arg( count ) );
     }
@@ -1723,7 +1685,7 @@ CollectionDB::similarArtists( const QString &artist, uint count )
 
 
 void
-CollectionDB::checkCompilations( const QString &path, const bool temporary, DbConnection *conn )
+CollectionDB::checkCompilations( const QString &path, const bool temporary )
 {
     QStringList albums;
     QStringList artists;
@@ -1731,24 +1693,24 @@ CollectionDB::checkCompilations( const QString &path, const bool temporary, DbCo
 
     albums = query( QString( "SELECT DISTINCT album.name FROM tags_temp, album%1 AS album WHERE tags_temp.dir = '%2' AND album.id = tags_temp.album;" )
               .arg( temporary ? "_temp" : "" )
-              .arg( escapeString( path ) ), conn );
+              .arg( escapeString( path ) ));
 
     for ( uint i = 0; i < albums.count(); i++ )
     {
         if ( albums[ i ].isEmpty() ) continue;
 
-        const uint album_id = albumID( albums[ i ], false, temporary, false, conn );
+        const uint album_id = albumID( albums[ i ], false, temporary, false );
         artists = query( QString( "SELECT DISTINCT artist.name FROM tags_temp, artist%1 AS artist WHERE tags_temp.album = '%2' AND tags_temp.artist = artist.id;" )
                             .arg( temporary ? "_temp" : "" )
-                            .arg( album_id ), conn );
+                            .arg( album_id ) );
         dirs    = query( QString( "SELECT DISTINCT dir FROM tags_temp WHERE album = '%1';" )
-                            .arg( album_id ), conn );
+                            .arg( album_id ) );
 
         if ( artists.count() > dirs.count() )
         {
             debug() << "Detected compilation: " << albums[ i ] << " - " << artists.count() << ":" << dirs.count() << endl;
             query( QString( "UPDATE tags_temp SET sampler = %1 WHERE album = '%2';" )
-                            .arg(boolT()).arg( album_id ), conn );
+                            .arg(boolT()).arg( album_id ) );
         }
     }
 }
@@ -1821,7 +1783,7 @@ CollectionDB::updateURL( const QString &url, const bool updateView )
     bundle.setPath( url );
     bundle.readTags( TagLib::AudioProperties::Fast );
 
-    updateTags( url, bundle, updateView );
+    updateTags( url, bundle, updateView);
 }
 
 
@@ -1855,18 +1817,16 @@ CollectionDB::setHTMLLyrics( const QString &url, QString lyrics )
 void
 CollectionDB::setLyrics( const QString &url, const QString &lyrics )
 {
-    DbConnection *conn = m_dbConnPool->getDbConnection();
-    QStringList values = query(QString("SELECT lyrics FROM lyrics WHERE url = '%1';").arg( escapeString( url ) ), conn );
+    QStringList values = query(QString("SELECT lyrics FROM lyrics WHERE url = '%1';").arg( escapeString( url ) ) );
     if(values.count() > 0)
     {
-        query( QString( "UPDATE lyrics SET lyrics = '%1' WHERE url = '%2';" ).arg( escapeString( lyrics ), escapeString( url ) ), conn );
+        query( QString( "UPDATE lyrics SET lyrics = '%1' WHERE url = '%2';" ).arg( escapeString( lyrics ), escapeString( url ) ));
     }
     else
     {
         insert( QString( "INSERT INTO lyrics (url, lyrics) values ( '%1', '%2' );" ).arg( escapeString( url ), escapeString( lyrics ) ),
-         NULL, conn );
+         NULL);
     }
-    m_dbConnPool->putDbConnection(conn);
 }
 
 
@@ -1883,13 +1843,12 @@ CollectionDB::getHTMLLyrics( const QString &url )
 QString
 CollectionDB::getLyrics( const QString &url )
 {
-    QStringList values = query( QString( "SELECT lyrics FROM lyrics WHERE url = '%1';" ).arg( escapeString( url ) ) );
+    QStringList values = query( QString( "SELECT lyrics FROM lyrics WHERE url = '%1';" ).arg( escapeString( url ) ));
     return values[0];
 }
 
-void CollectionDB::newAmazonReloadDate( const QString& asin, const QString& locale, const QString& md5sum )
+void CollectionDB::newAmazonReloadDate( const QString& asin, const QString& locale, const QString& md5sum)
 {
-    DbConnection *conn = m_dbConnPool->getDbConnection();
     QStringList values = query(QString("SELECT filename FROM amazon WHERE filename = '%1'")
         .arg(md5sum));
     if(values.count() > 0)
@@ -1906,9 +1865,8 @@ void CollectionDB::newAmazonReloadDate( const QString& asin, const QString& loca
          .arg(asin)
          .arg(locale)
          .arg(md5sum)
-         .arg(QDateTime::currentDateTime().addDays(80).toTime_t()), NULL, conn );
+         .arg(QDateTime::currentDateTime().addDays(80).toTime_t()), NULL );
     }
-    m_dbConnPool->putDbConnection(conn);
 }
 
 QStringList CollectionDB::staleImages()
@@ -1921,15 +1879,20 @@ void
 CollectionDB::applySettings()
 {
     bool recreateConnections = false;
-    if ( AmarokConfig::databaseEngine().toInt() != m_dbConnPool->getDbConnectionType() )
+    if ( AmarokConfig::databaseEngine().toInt() != getDbConnectionType() )
     {
+        if ( AmarokConfig::databaseEngine().toInt() == DbConnection::mysql )
+            m_dbConnType = DbConnection::mysql;
+        else if ( AmarokConfig::databaseEngine().toInt() == DbConnection::postgresql )
+            m_dbConnType = DbConnection::postgresql;
+        else m_dbConnType = DbConnection::sqlite;
         recreateConnections = true;
     }
     else if ( AmarokConfig::databaseEngine().toInt() == DbConnection::mysql )
     {
         // Using MySQL, so check if MySQL settings were changed
         const MySqlConfig *config =
-            static_cast<const MySqlConfig*> ( m_dbConnPool->getDbConfig() );
+            static_cast<const MySqlConfig*> ( m_dbConfig );
         if ( AmarokConfig::mySqlHost() != config->host() )
         {
             recreateConnections = true;
@@ -1954,7 +1917,7 @@ CollectionDB::applySettings()
     else if ( AmarokConfig::databaseEngine().toInt() == DbConnection::postgresql )
     {
       const PostgresqlConfig *config =
-          static_cast<const PostgresqlConfig*> ( m_dbConnPool->getDbConfig() );
+          static_cast<const PostgresqlConfig*> ( m_dbConfig );
       if ( AmarokConfig::postgresqlConninfo() != config->conninfo() )
       {
           recreateConnections = true;
@@ -1973,6 +1936,76 @@ CollectionDB::applySettings()
     }
 }
 
+DbConnection * CollectionDB::getMyConnection()
+{
+    connectionMutex->lock();
+
+    DbConnection *dbConn;
+    DbConfig *config;
+    QThread * currThread = ThreadWeaver::Thread::getRunning();
+
+    if (threadConnections->contains(currThread))
+    {
+        QMap<QThread *, DbConnection *>::Iterator it = threadConnections->find(currThread);
+        dbConn = it.data();
+        connectionMutex->unlock();
+        debug() << "Returning dbConn = " << dbConn << " for currThread = " << currThread << endl;
+        return dbConn;
+    }
+
+#ifdef USE_MYSQL
+    if ( m_dbConnType == DbConnection::mysql )
+    {
+        config = 
+            new MySqlConfig(
+                AmarokConfig::mySqlHost(),
+                AmarokConfig::mySqlPort(),
+                AmarokConfig::mySqlDbName(),
+                AmarokConfig::mySqlUser(),
+                AmarokConfig::mySqlPassword() );
+        dbConn = new MySqlConnection( static_cast<MySqlConfig*> ( config ) );
+    }
+    else
+#endif
+#ifdef USE_POSTGRESQL
+    if ( m_dbConnType == DbConnection::postgresql )
+    {
+        config =
+            new PostgresqlConfig(
+                AmarokConfig::postgresqlConninfo() );
+        dbConn = new PostgresqlConnection( static_cast<PostgresqlConfig*> ( config ) );
+    }
+    else
+#endif
+    {
+        config = new SqliteConfig( "collection.db" );
+        dbConn = new SqliteConnection( static_cast<SqliteConfig*> ( config ) );
+    }
+
+    debug() << "Inserting and returning dbConn = " << dbConn << " for currThread = " << currThread << endl;
+
+    threadConnections->insert(currThread, dbConn);
+
+    m_dbConfig = config;
+
+    connectionMutex->unlock();
+    return dbConn;
+
+}
+
+void
+CollectionDB::destroyConnections()
+{
+    connectionMutex->lock();
+    threadConnections->clear();
+    connectionMutex->unlock();
+}
+
+bool
+CollectionDB::isConnected()
+{
+    return getMyConnection()->isConnected();
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PROTECTED
@@ -2048,8 +2081,8 @@ CollectionDB::startScan()  //SLOT
     QStringList folders = AmarokConfig::collectionFolders();
 
     if ( folders.isEmpty() ) {
-        dropTables();
-        createTables();
+        dropTables(false);
+        createTables(false);
     }
     else if( PlaylistBrowser::instance() && !ScanController::instance() )
     {
@@ -2102,7 +2135,7 @@ class SimilarArtistsInsertionJob : public ThreadWeaver::DependentJob
     virtual bool doJob()
     {
         // Create a temporary CollectionDB object, to prevent threading problems
-        CollectionDB db( true );
+        CollectionDB db;
 
         db.query( QString( "DELETE FROM related_artists WHERE artist = '%1';" ).arg( escapedArtist ) );
 
@@ -2110,7 +2143,7 @@ class SimilarArtistsInsertionJob : public ThreadWeaver::DependentJob
         foreach( suggestions )
             db.insert( sql
                     .arg( escapedArtist )
-                    .arg( CollectionDB::instance()->escapeString( *it ) ), NULL );
+                    .arg( CollectionDB::instance()->escapeString( *it ) ), NULL);
 
         return true;
     }
@@ -2146,16 +2179,15 @@ CollectionDB::similarArtistsFetched( const QString& artist, const QStringList& s
 void
 CollectionDB::initialize()
 {
-    m_dbConnPool = new DbConnectionPool( m_isTemporary );
-    DbConnection *dbConn = m_dbConnPool->getDbConnection();
-    m_dbConnPool->putDbConnection( dbConn );
+
+    DbConnection *dbConn = getMyConnection( );
 
     KConfig* config = amaroK::config( "Collection Browser" );
     if(!dbConn->isConnected())
         amaroK::MessageQueue::instance()->addMessage(dbConn->lastError());
     if ( !dbConn->isInitialized() || !isValid() )
     {
-        createTables();
+        createTables(false);
         createPersistentTables();
         createStatsTable();
     }
@@ -2197,8 +2229,8 @@ CollectionDB::initialize()
              || adminValue( "Database Version" ).toInt() != DATABASE_VERSION )
         {
             debug() << "Rebuilding database!" << endl;
-            dropTables();
-            createTables();
+            dropTables(false);
+            createTables(false);
         }
 
         if ( config->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION
@@ -2210,15 +2242,13 @@ CollectionDB::initialize()
             createStatsTable();
         }
     }
-
-    m_dbConnPool->createDbConnections();
 }
 
 
 void
 CollectionDB::destroy()
 {
-    delete m_dbConnPool;
+    destroyConnections();
 }
 
 
@@ -2253,6 +2283,9 @@ DbConnection::~DbConnection()
 SqliteConnection::SqliteConnection( SqliteConfig* config )
     : DbConnection( config )
 {
+
+    DEBUG_BLOCK
+
     const QCString path = (amaroK::saveLocation()+"collection.db").local8Bit();
 
     // Open database file and check for correctness
@@ -2305,6 +2338,7 @@ SqliteConnection::~SqliteConnection()
 
 QStringList SqliteConnection::query( const QString& statement )
 {
+
     QStringList values;
     int error;
     const char* tail;
@@ -2370,7 +2404,6 @@ int SqliteConnection::insert( const QString& statement, const QString& /* table 
     int error;
     const char* tail;
     sqlite3_stmt* stmt;
-
     //compile SQL program to virtual machine
     error = sqlite3_prepare( m_db, statement.utf8(), statement.length(), &stmt, &tail );
 
@@ -2444,6 +2477,8 @@ void SqliteConnection::sqlite_power(sqlite3_context *context, int argc, sqlite3_
 MySqlConnection::MySqlConnection( MySqlConfig* config )
     : DbConnection( config )
 {
+    DEBUG_BLOCK
+
     debug() << k_funcinfo << endl;
     m_db = mysql_init(NULL);
     m_initialized = false;
@@ -2748,124 +2783,6 @@ PostgresqlConfig::PostgresqlConfig(
     const QString& conninfo )
     : m_conninfo( conninfo )
 {}
-
-
-//////////////////////////////////////////////////////////////////////////////////////////
-// CLASS DbConnectionPool
-//////////////////////////////////////////////////////////////////////////////////////////
-
-DbConnectionPool::DbConnectionPool( bool temporary )
-    : m_isTemporary( temporary )
-    , m_semaphore( POOL_SIZE )
-{
-#ifdef USE_MYSQL
-    if ( AmarokConfig::databaseEngine().toInt() == DbConnection::mysql )
-        m_dbConnType = DbConnection::mysql;
-    else
-#endif
-#ifdef USE_POSTGRESQL
-    if ( AmarokConfig::databaseEngine().toInt() == DbConnection::postgresql )
-        m_dbConnType = DbConnection::postgresql;
-    else
-#endif
-        m_dbConnType = DbConnection::sqlite;
-
-    m_semaphore += POOL_SIZE;
-    DbConnection *dbConn;
-
-#ifdef USE_MYSQL
-    if ( m_dbConnType == DbConnection::mysql )
-    {
-        m_dbConfig =
-            new MySqlConfig(
-                AmarokConfig::mySqlHost(),
-                AmarokConfig::mySqlPort(),
-                AmarokConfig::mySqlDbName(),
-                AmarokConfig::mySqlUser(),
-                AmarokConfig::mySqlPassword() );
-        dbConn = new MySqlConnection( static_cast<MySqlConfig*> ( m_dbConfig ) );
-    }
-    else
-#endif
-#ifdef USE_POSTGRESQL
-    if ( m_dbConnType == DbConnection::postgresql )
-    {
-        m_dbConfig =
-            new PostgresqlConfig(
-                AmarokConfig::postgresqlConninfo() );
-        dbConn = new PostgresqlConnection( static_cast<PostgresqlConfig*> ( m_dbConfig ) );
-    }
-    else
-#endif
-    {
-        m_dbConfig = new SqliteConfig( "collection.db" );
-        dbConn = new SqliteConnection( static_cast<SqliteConfig*> ( m_dbConfig ) );
-    }
-    enqueue( dbConn );
-    m_semaphore--;
-    debug() << "Available db connections: " << m_semaphore.available() << endl;
-}
-
-
-DbConnectionPool::~DbConnectionPool()
-{
-    m_semaphore += POOL_SIZE;
-    DbConnection *conn;
-    bool vacuum = !m_isTemporary;
-
-    while ( ( conn = dequeue() ) != 0 )
-    {
-        if ( m_dbConnType == DbConnection::sqlite && vacuum )
-        {
-            vacuum = false;
-            debug() << "Running VACUUM" << endl;
-            conn->query( "VACUUM; ");
-        }
-
-        delete conn;
-    }
-
-    delete m_dbConfig;
-}
-
-
-void DbConnectionPool::createDbConnections()
-{
-    for ( int i = 0; i < POOL_SIZE - 1; i++ )
-    {
-        DbConnection *dbConn;
-
-#ifdef USE_MYSQL
-        if ( m_dbConnType == DbConnection::mysql )
-            dbConn = new MySqlConnection( static_cast<MySqlConfig*> ( m_dbConfig ) );
-        else
-#endif
-#ifdef USE_POSTGRESQL
-        if ( m_dbConnType == DbConnection::postgresql )
-            dbConn = new PostgresqlConnection( static_cast<PostgresqlConfig*> ( m_dbConfig ) );
-        else
-#endif
-            dbConn = new SqliteConnection( static_cast<SqliteConfig*> ( m_dbConfig ) );
-        enqueue( dbConn );
-        m_semaphore--;
-    }
-    debug() << "Available db connections: " << m_semaphore.available() << endl;
-}
-
-
-DbConnection *DbConnectionPool::getDbConnection()
-{
-    m_semaphore++;
-    return dequeue();
-}
-
-
-void DbConnectionPool::putDbConnection( const DbConnection *conn )
-{
-    enqueue( conn );
-    m_semaphore--;
-}
-
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS QueryBuilder

@@ -7,6 +7,7 @@
 
 #include <config.h>
 
+#include "amarok.h"
 #include "amarokconfig.h"
 #include "browserToolBar.h"
 #include "clicklineedit.h"

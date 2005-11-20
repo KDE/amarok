@@ -206,7 +206,8 @@ static void create_current_thread_key()
 
 ThreadWeaver::Thread::Thread()
     : QThread()
-{ }
+{
+}
 
 ThreadWeaver::Thread::~Thread()
 {
@@ -256,12 +257,14 @@ ThreadWeaver::Thread::run()
 {
     // BE THREAD-SAFE!
 
+    DEBUG_BLOCK
+
     //register this thread so that it can be returned in a static getRunning() function
     m_threadId = ThreadWeaver::getNewThreadId();
-    debug() << "(Thread Constructor) My thread id: " << m_threadId << endl;
     pthread_once(&current_thread_key_once, create_current_thread_key);
     pthread_setspecific(current_thread_key, this);
-    debug() << "(Thread Constructor) My address is " << getRunning() << endl;
+
+    DEBUG_THREAD_FUNC_INFO
 
     m_job->m_aborted |= !m_job->doJob();
 

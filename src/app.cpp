@@ -106,20 +106,6 @@ App::App()
         amaroK::config()->sync();
     }
 
-    debug() << "Where do we choke? 0" << endl;
-    DEBUG_THREAD_FUNC_INFO
-    debug() << "Should show GUIThread above!" << endl;
-
-    ThreadWeaver::Thread* threadie = new ThreadWeaver::Thread();
-    debug() << "Where do we choke? 0a" << endl;
-    DEBUG_THREAD_FUNC_INFO
-    debug() << "Should show GUIThread above!" << endl;
-
-    ThreadWeaver::Thread* threadie2 = new ThreadWeaver::Thread();
-    debug() << "Where do we choke? 0b" << endl;
-    DEBUG_THREAD_FUNC_INFO
-    debug() << "Should show GUIThread above!" << endl;
-
     fixHyperThreading();
 
     m_pGlobalAccel    = new KGlobalAccel( this );
@@ -129,15 +115,9 @@ App::App()
     m_pPlaylistWindow->init(); //creates the playlist, browsers, etc.
     initGlobalShortcuts();
 
-    debug() << "Where do we choke? 1" << endl;
-    DEBUG_THREAD_FUNC_INFO
-
     //load previous playlist in separate thread
     if ( restoreSession && AmarokConfig::savePlaylist() )
         Playlist::instance()->restoreSession();
-
-    debug() << "Where do we choke? 2" << endl;
-    DEBUG_THREAD_FUNC_INFO
 
     if( args->isSet( "engine" ) ) {
         // we correct some common errors (case issues, missing -engine off the end)
@@ -147,9 +127,6 @@ App::App()
 
         AmarokConfig::setSoundSystem( engine );
     }
-
-    debug() << "Where do we choke? 3" << endl;
-    DEBUG_THREAD_FUNC_INFO
 
     //create engine, show PlayerWindow, show TrayIcon etc.
     applySettings( true );
@@ -520,13 +497,7 @@ void App::applySettings( bool firstTime )
     //determine and apply colors first
     applyColorScheme();
 
-    debug() << "Where do we choke? 4" << endl;
-    DEBUG_THREAD_FUNC_INFO
-
     TrackToolTip::instance()->removeFromWidget( m_pTray );
-
-    debug() << "Where do we choke? 5" << endl;
-    DEBUG_THREAD_FUNC_INFO
 
     if( AmarokConfig::showPlayerWindow() )
     {
@@ -580,9 +551,6 @@ void App::applySettings( bool firstTime )
         if( !AmarokConfig::showMenuBar() && !amaroK::actionCollection()->action( "amarok_menu" )->isPlugged() )
            playlistWindow()->createGUI();
     }
-
-    debug() << "Where do we choke? 6" << endl;
-    DEBUG_THREAD_FUNC_INFO
 
     playlistWindow()->applySettings();
     Scrobbler::instance()->applySettings();

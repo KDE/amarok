@@ -213,7 +213,7 @@ UrlLoader::doJob()
             PlaylistFile playlist( url.path() );
 
             if( !playlist.isError() )
-                QApplication::postEvent( this, new TagsEvent( playlist.bundles() ) );
+                QApplication::postEvent( this, new TagsEvent( playlist.bundles()) );
             else
                 m_badURLs += url;
 
@@ -233,7 +233,7 @@ UrlLoader::doJob()
 }
 
 void
-UrlLoader::customEvent( QCustomEvent *e )
+UrlLoader::customEvent( QCustomEvent *e)
 {
     #define e static_cast<TagsEvent*>(e)
     switch( e->type() ) {
@@ -753,7 +753,7 @@ SqlLoader::doJob()
         if( false && b.length() <= 0 ) {
             // we try to read the tags, despite the slow-down
             debug() << "Audioproperties not known for: " << b.url().fileName() << endl;
-            b.readTags( TagLib::AudioProperties::Fast );
+            b.readTags( TagLib::AudioProperties::Fast);
         }
 
         if( bundles.count() == OPTIMUM_BUNDLE_COUNT || it == last ) {

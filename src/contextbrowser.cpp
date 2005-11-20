@@ -909,6 +909,7 @@ private:
     QString m_HTMLSource;
 
     ContextBrowser *b;
+
 };
 
 
@@ -1033,7 +1034,7 @@ bool CurrentTrackJob::doJob()
 
     //making 2 tables is most probably not the cleanest way to do it, but it works.
     QString albumImageTitleAttr;
-    QString albumImage = CollectionDB::instance()->albumImage( currentTrack );
+    QString albumImage = CollectionDB::instance()->albumImage( currentTrack, 1 );
 
     if ( albumImage == CollectionDB::instance()->notAvailCover( 0 ) )
         albumImageTitleAttr = i18n( "Click to fetch cover from amazon.%1, right-click for menu." ).arg( CoverManager::amazonTld() );

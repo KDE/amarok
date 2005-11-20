@@ -414,7 +414,6 @@ ThreadWeaver::getNewThreadId()
     uint temp;
     threadIdMutex->lock();
     temp = threadIdCounter++;
-    debug() << "(ThreadWeaver) In getNewThreadId, value of threadIdcounter is now " << threadIdCounter << endl;
     threadIdMutex->unlock();
     return temp;
 }

@@ -21,7 +21,7 @@
     <general>
       <mainprogram>amarok</mainprogram>
       <useconfiguration>default</useconfiguration>
-      <activetarget>src/amarokapp</activetarget>
+      <activetarget>src/konquisidebar/konqsidebar_universalamarok.la</activetarget>
       <useactivetarget>true</useactivetarget>
     </general>
     <configure>
@@ -31,7 +31,7 @@
       <abortonerror>false</abortonerror>
       <numberofjobs>1</numberofjobs>
       <dontact>false</dontact>
-      <makebin>unsermake</makebin>
+      <makebin>unsermake install</makebin>
       <envvars>
         <envvar value="1" name="WANT_AUTOCONF_2_5" />
         <envvar value="1" name="WANT_AUTOMAKE_1_6" />
@@ -43,13 +43,13 @@
       <cxxflags>\s-O0 -g3 -Wall</cxxflags>
     </compiler>
     <run>
-      <mainprogram>/usr/kde/cvs/bin/amarokapp</mainprogram>
+      <mainprogram>/opt/kde3.5/bin/amarokapp</mainprogram>
       <programargs/>
       <terminal>false</terminal>
       <autocompile>false</autocompile>
       <envvars/>
       <directoryradio>custom</directoryradio>
-      <customdirectory>/usr/kde/cvs/bin/</customdirectory>
+      <customdirectory>/opt/kde3.5/bin/</customdirectory>
       <runarguments>
         <amarok/>
       </runarguments>
@@ -164,9 +164,9 @@
       <inlineSet>true</inlineSet>
     </creategettersetter>
     <qt>
-      <used>true</used>
+      <used>false</used>
       <version>3</version>
-      <root>/usr/qt/3</root>
+      <root>/home/kde-dev/kde-svn/branches/qt/3.3/qt-copy</root>
     </qt>
   </kdevcppsupport>
   <kdevclassview>

@@ -81,7 +81,6 @@ ScanController* ScanController::s_instance = 0;
 ScanController::ScanController( QObject* parent, bool incremental, const QStringList& folders )
     : QObject( parent )
     , QXmlDefaultHandler()
-    , m_db( CollectionDB::instance()->getStaticDbConnection() )
     , m_scanner( new ScannerProcIO() )
     , m_folders( folders )
     , m_incremental( incremental )
@@ -91,12 +90,12 @@ ScanController::ScanController( QObject* parent, bool incremental, const QString
 
     s_instance = this;
 
-    if( !m_db->isConnected() ) {
+    if( !CollectionDB::instance()->isConnected() ) {
         deleteLater();
         return;
     }
 
-    CollectionDB::instance()->createTables( m_db );
+    CollectionDB::instance()->createTables( CollectionDB::instance()->isConnected() );
 
     if( ( m_incremental && !initIncrementalScanner() ) || m_folders.isEmpty() ) {
         deleteLater();
@@ -131,9 +130,8 @@ ScanController::~ScanController()
     m_scanner->kill();
     delete m_scanner;
 
-    if( m_db->isConnected() ) {
-        CollectionDB::instance()->dropTables( m_db );
-        CollectionDB::instance()->returnStaticDbConnection( m_db );
+    if( CollectionDB::instance()->isConnected() ) {
+        CollectionDB::instance()->dropTables( true );
     }
 
     emit CollectionDB::instance()->scanDone( m_incremental ? !m_folders.isEmpty() : true );
@@ -231,7 +229,7 @@ ScanController::startElement( const QString&, const QString& localName, const QS
             bundle.setSampleRate( attrs.value( "samplerate" ).toInt() );
         }
 
-        CollectionDB::instance()->addSong( &bundle, m_incremental, m_db );
+          CollectionDB::instance()->addSong( &bundle, m_incremental );
     }
 
     if( localName == "folder" ) {
@@ -240,7 +238,7 @@ ScanController::startElement( const QString&, const QString& localName, const QS
 
         // Update dir statistics for rescanning purposes
         if( info.exists() )
-            CollectionDB::instance()->updateDirStats( folder, info.lastModified().toTime_t(), !m_incremental ? m_db : 0 );
+            CollectionDB::instance()->updateDirStats( folder, info.lastModified().toTime_t());
 
         if( AmarokConfig::scanRecursively() ) {
             CollectionDB::instance()->removeSongsInDir( folder );
@@ -252,7 +250,7 @@ ScanController::startElement( const QString&, const QString& localName, const QS
         PlaylistBrowser::instance()->addPlaylist( attrs.value( "path" ) );
 
     if( localName == "compilation" )
-        CollectionDB::instance()->checkCompilations( attrs.value( "path" ), !m_incremental, m_db );
+        CollectionDB::instance()->checkCompilations( attrs.value( "path" ), !m_incremental);
 
     if( localName == "image" ) {
         // Deserialize CoverBundle list
@@ -264,7 +262,7 @@ ScanController::startElement( const QString&, const QString& localName, const QS
             i += 2;
         }
 
-        CollectionDB::instance()->addImageToAlbum( attrs.value( "path" ), covers, m_db );
+        CollectionDB::instance()->addImageToAlbum( attrs.value( "path" ), covers, CollectionDB::instance()->isConnected() );
     }
 
 
@@ -299,7 +297,7 @@ ScanController::slotProcessExited()
         else
             CollectionDB::instance()->clearTables();
 
-        CollectionDB::instance()->moveTempTables( m_db ); // rename tables
+        CollectionDB::instance()->moveTempTables( ); // rename tables
     }
     else {
         ::error() << "CollectionScanner has crashed! Scan aborted." << endl;

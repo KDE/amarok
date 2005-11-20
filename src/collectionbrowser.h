@@ -18,7 +18,6 @@
 
 class ClickLineEdit;
 class CollectionDB;
-class sqlite;
 
 class QCString;
 class QDragObject;

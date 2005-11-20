@@ -16,9 +16,10 @@
 #include <qptrqueue.h>       //baseclass
 #include <qsemaphore.h>      //stack allocated
 #include <qstringlist.h>     //stack allocated
+#include <qptrvector.h>
+#include <qmutex.h>
 
 class DbConnection;
-class DbConnectionPool;
 class CoverFetcher;
 class MetaBundle;
 class Scrobbler;
@@ -161,42 +162,6 @@ class PostgresqlConnection : public DbConnection
 };
 #endif
 
-
-class DbConnectionPool : QPtrQueue<DbConnection>
-{
-    public:
-        DbConnectionPool( bool temporary );
-       ~DbConnectionPool();
-
-        const DbConnection::DbConnectionType getDbConnectionType() const { return m_dbConnType; }
-        const DbConfig *getDbConfig() const { return m_dbConfig; }
-        void createDbConnections();
-
-        DbConnection *getDbConnection();
-        void putDbConnection( const DbConnection* /* conn */ );
-
-        QString escapeString( QString string )
-        {
-            return
-                #ifdef USE_MYSQL
-                    // We have to escape "\" for mysql, but can't do so for sqlite
-                    (m_dbConnType == DbConnection::mysql)
-                            ? string.replace("\\", "\\\\").replace( '\'', "''" )
-                            :
-                #endif
-                    string.replace( '\'', "''" );
-        }
-
-    private:
-        static const int POOL_SIZE = 5;
-
-        bool m_isTemporary;
-        QSemaphore m_semaphore;
-        DbConnection::DbConnectionType m_dbConnType;
-        DbConfig *m_dbConfig;
-};
-
-
 class CollectionDB : public QObject, public EngineObserver
 {
     Q_OBJECT
@@ -219,67 +184,59 @@ class CollectionDB : public QObject, public EngineObserver
         void tagsChanged( const MetaBundle &bundle );
 
     public:
-        CollectionDB( bool temporary = false );
+        CollectionDB();
         ~CollectionDB();
 
         static CollectionDB *instance();
 
-        const QString escapeString( const QString &string ) { return m_dbConnPool->escapeString(string); }
-        const QString boolT() { if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) return "'t'"; else return "1"; }
-        const QString boolF() { if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) return "'f'"; else return "0"; }
-        const QString textColumnType() { if ( m_dbConnPool->getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return "VARCHAR(255)"; }
-        const QString textColumnType(int length){ if ( m_dbConnPool->getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return QString("VARCHAR(%1)").arg(length); }
+        const QString escapeString(QString string ) 
+            {
+                return
+                #ifdef USE_MYSQL
+                    // We have to escape "\" for mysql, but can't do so for sqlite
+                    (m_dbConnType == DbConnection::mysql)
+                        ? string.replace("\\", "\\\\").replace( '\'', "''" ) :
+                #endif
+                    string.replace( '\'', "''" );
+            }
+        const QString boolT() { if (getDbConnectionType() == DbConnection::postgresql) return "'t'"; else return "1"; }
+        const QString boolF() { if (getDbConnectionType() == DbConnection::postgresql) return "'f'"; else return "0"; }
+        const QString textColumnType() { if ( getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return "VARCHAR(255)"; }
+        const QString textColumnType(int length){ if ( getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return QString("VARCHAR(%1)").arg(length); }
         // We might consider using LONGTEXT type, as some lyrics could be VERY long..???
-        const QString longTextColumnType() { if ( m_dbConnPool->getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return "TEXT"; }
-        const QString randomFunc() { if ( m_dbConnPool->getDbConnectionType() == DbConnection::postgresql ) return "random()"; else return "RAND()"; }
+        const QString longTextColumnType() { if ( getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return "TEXT"; }
+        const QString randomFunc() { if ( getDbConnectionType() == DbConnection::postgresql ) return "random()"; else return "RAND()"; }
 
-        int getType() { return m_dbConnPool->getDbConnectionType(); }
-
-
-        /**
-         * This method returns a static DbConnection for components that want to use
-         * the same connection for the whole time. Should not be used anywhere else
-         * but in CollectionReader.
-         *
-         * @return static DbConnection
-         */
-        DbConnection *getStaticDbConnection();
-
-        /**
-         * Returns the DbConnection back to connection pool.
-         *
-         * @param conn DbConnection to be returned
-         */
-        void returnStaticDbConnection( DbConnection *conn );
+        int getType() { return getDbConnectionType(); }
 
         //sql helper methods
-        QStringList query( const QString& statement, DbConnection *conn = NULL );
-        int insert( const QString& statement, const QString& table, DbConnection *conn = NULL );
+        QStringList query( const QString& statement );
+        int insert( const QString& statement, const QString& table );
 
         //table management methods
         bool isEmpty();
         bool isValid();
         QString adminValue( QString noption );
         void setAdminValue( QString noption, QString value );
-        void createTables( DbConnection *conn = NULL );
-        void dropTables( DbConnection *conn = NULL );
-        void clearTables( DbConnection *conn = NULL );
-        void moveTempTables( DbConnection *conn );
+        void createTables( const bool temporary = false);
+        void dropTables( const bool temporary = false);
+        void clearTables( const bool temporary = false);
+        void moveTempTables(  );
 
-        uint artistID( QString value, bool autocreate = true, const bool temporary = false, const bool updateSpelling = false, DbConnection *conn = NULL );
-        uint albumID( QString value, bool autocreate = true, const bool temporary = false, const bool updateSpelling = false, DbConnection *conn = NULL );
-        uint genreID( QString value, bool autocreate = true, const bool temporary = false, const bool updateSpelling = false, DbConnection *conn = NULL );
-        uint yearID( QString value, bool autocreate = true, const bool temporary = false, const bool updateSpelling = false, DbConnection *conn = NULL );
+        uint artistID( QString value, bool autocreate = true, const bool temporary = false, const bool updateSpelling = false );
+        uint albumID( QString value, bool autocreate = true, const bool temporary = false, const bool updateSpelling = false );
+        uint genreID( QString value, bool autocreate = true, const bool temporary = false, const bool updateSpelling = false );
+        uint yearID( QString value, bool autocreate = true, const bool temporary = false, const bool updateSpelling = false );
 
         bool isDirInCollection( QString path );
         bool isFileInCollection( const QString &url );
         void removeDirFromCollection( QString path );
         void removeSongsInDir( QString path );
         void removeSongs( const KURL::List& urls );
-        void updateDirStats( QString path, const long datetime, DbConnection *conn = NULL );
+        void updateDirStats( QString path, const long datetime, const bool temporary = false );
 
         //song methods
-        bool addSong( MetaBundle* bundle, const bool incremental = false, DbConnection *conn = NULL );
+        bool addSong( MetaBundle* bundle, const bool incremental = false );
 
         /**
          * The @p bundle parameter's url() will be looked up in the Collection
@@ -290,12 +247,12 @@ class CollectionDB : public QObject, public EngineObserver
         QValueList<MetaBundle> bundlesByUrls( const KURL::List& urls );
         void addAudioproperties( const MetaBundle& bundle );
 
-        void updateTags( const QString &url, const MetaBundle &bundle, const bool updateView = true );
+        void updateTags( const QString &url, const MetaBundle &bundle, const bool updateView = true);
         void updateURL( const QString &url, const bool updateView = true );
 
         //statistics methods
         int addSongPercentage( const QString &url, int percentage );
-        int getSongPercentage( const QString &url  );
+        int getSongPercentage( const QString &url );
         void setSongPercentage( const QString &url , int percentage );
         int getPlayCount( const QString &url );
         QDateTime getFirstPlay( const QString &url );
@@ -307,7 +264,7 @@ class CollectionDB : public QObject, public EngineObserver
         QStringList similarArtists( const QString &artist, uint count );
 
         //album methods
-        void checkCompilations( const QString &path, const bool temporary = false, DbConnection *conn = NULL );
+        void checkCompilations( const QString &path, const bool temporary = false );
         void setCompilation( const QString &album, const bool enabled, const bool updateView = true );
         QString albumSongCount( const QString &artist_id, const QString &album_id );
         bool albumIsCompilation( const QString &album_id );
@@ -343,7 +300,7 @@ class CollectionDB : public QObject, public EngineObserver
         bool removeAlbumImage( const QString &artist, const QString &album );
 
         //local cover methods
-        void addImageToAlbum( const QString& image, QValueList< QPair<QString, QString> > info, DbConnection *conn = NULL );
+        void addImageToAlbum( const QString& image, QValueList< QPair<QString, QString> > info, const bool temporary );
         QString getImageForAlbum( const QString& artist, const QString& album, uint width = 0 );
         QString notAvailCover( int width = 0 );
 
@@ -356,6 +313,10 @@ class CollectionDB : public QObject, public EngineObserver
 
         void newAmazonReloadDate( const QString& asin, const QString& locale, const QString& md5sum );
         QStringList staleImages();
+
+        DbConnection * getMyConnection ( );
+        const DbConnection::DbConnectionType getDbConnectionType() const { return m_dbConnType; }
+        bool isConnected();
 
     protected:
         QCString md5sum( const QString& artist, const QString& album, const QString& file = QString::null );
@@ -404,9 +365,11 @@ class CollectionDB : public QObject, public EngineObserver
         QString yearValue( uint id );
 
         uint IDFromValue( QString name, QString value, bool autocreate = true, const bool temporary = false,
-                          const bool updateSpelling = false, DbConnection *conn = NULL );
+                          const bool updateSpelling = false );
 
         QString valueFromID( QString table, uint id );
+
+        void destroyConnections();
 
         //member variables
         QString m_amazonLicense;
@@ -414,14 +377,16 @@ class CollectionDB : public QObject, public EngineObserver
         uint m_cacheArtistID;
         QString m_cacheAlbum;
         uint m_cacheAlbumID;
+        static QMutex *connectionMutex;
 
-        DbConnectionPool *m_dbConnPool;
-
-        bool m_isTemporary;
         bool m_monitor;
         QDir m_cacheDir;
         QDir m_coverDir;
         QImage m_noCover;
+
+        static QMap<QThread *, DbConnection *> *threadConnections;
+        DbConnection::DbConnectionType m_dbConnType;
+        DbConfig *m_dbConfig;
 };
 
 
@@ -481,7 +446,7 @@ class QueryBuilder
         QString query() { buildQuery(); return m_query; };
         void clear();
 
-        QStringList run();
+        QStringList run(  );
 
     private:
         QString tableName( int table );

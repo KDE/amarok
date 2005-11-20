@@ -485,7 +485,7 @@ void TagDialog::readTags()
 
     kLineEdit_location->setText( local ? m_bundle.url().path() : m_bundle.url().url() );
     // draw the album cover on the dialog
-    QString cover = CollectionDB::instance()->albumImage( m_bundle );
+    QString cover = CollectionDB::instance()->albumImage( m_bundle, 1 );
 
     //lyrics
     kTextEdit_lyrics->setText( CollectionDB::instance()->getLyrics( m_bundle.url().path() ) );
