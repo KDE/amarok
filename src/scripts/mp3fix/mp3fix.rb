@@ -129,12 +129,16 @@ while offset < data.length()
         offset += frameSize
     else
         # Find next frame sync
-        offset += 1
-        offset = data.index( 0xff, offset )
+        offset = data.index( 0xff, offset + 1 )
         puts( "Trying to locate frame sync. New offset: #{offset}" )
         puts()
     end
 end
+
+
+# Make sure the first frame has a sane header
+data[id3length] = 0xff
+data[id3length+1] = data[id3length+1] | 0xf0
 
 
 averageBitrate = bitCount / frameCount
