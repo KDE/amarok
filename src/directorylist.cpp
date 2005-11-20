@@ -35,7 +35,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 
     (new QLabel( i18n(
         "These folders will be scanned for "
-        "media to make up your collection."), this ))->setAlignment( Qt::WordBreak );
+        "media to make up your collection:"), this ))->setAlignment( Qt::WordBreak );
 
     m_view = new QFixedListView( this );
     m_recursive = new QCheckBox( i18n("&Scan folders recursively"), this );
