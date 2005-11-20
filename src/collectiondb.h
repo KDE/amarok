@@ -314,7 +314,6 @@ class CollectionDB : public QObject, public EngineObserver
         void newAmazonReloadDate( const QString& asin, const QString& locale, const QString& md5sum );
         QStringList staleImages();
 
-        DbConnection * getMyConnection ( );
         const DbConnection::DbConnectionType getDbConnectionType() const { return m_dbConnType; }
         bool isConnected();
 
@@ -350,6 +349,7 @@ class CollectionDB : public QObject, public EngineObserver
 
         void initialize();
         void destroy();
+        DbConnection* getMyConnection();
 
         //general management methods
         void createStatsTable();
