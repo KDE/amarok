@@ -17,6 +17,7 @@
 #include <qsemaphore.h>      //stack allocated
 #include <qstringlist.h>     //stack allocated
 #include <qptrvector.h>
+#include <qthread.h>
 #include <qmutex.h>
 
 class DbConnection;

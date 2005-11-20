@@ -28,6 +28,7 @@
 #include <qtimer.h>
 #include <qmap.h>
 #include <qthread.h>
+#include <pthread.h>              //debugging, can be removed later
 
 #include <kapplication.h>
 #include <kcharsets.h>            //setHTMLLyrics()
@@ -1938,6 +1939,7 @@ CollectionDB::applySettings()
 
 DbConnection * CollectionDB::getMyConnection()
 {
+    debug() << "pthread_self is: " << pthread_self() << endl;
     connectionMutex->lock();
 
     DbConnection *dbConn;

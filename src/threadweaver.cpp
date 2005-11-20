@@ -217,6 +217,7 @@ ThreadWeaver::Thread::~Thread()
 QThread*
 ThreadWeaver::Thread::getRunning()
 {
+    debug() << "pthread_self is: " << pthread_self() << endl;
     pthread_once( &current_thread_key_once, create_current_thread_key );
     return reinterpret_cast<QThread *>( pthread_getspecific( current_thread_key ) );
 }
@@ -236,6 +237,7 @@ ThreadWeaver::Thread::threadId()
 void
 ThreadWeaver::Thread::runJob( Job *job )
 {
+    debug() << "pthread_self is: " << pthread_self() << ", threadID is: " << m_threadId << endl;
     job->m_thread = this;
     job->m_parentThreadId = m_threadId;
 
