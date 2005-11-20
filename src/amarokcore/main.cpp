@@ -74,6 +74,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Greg Meyer", I18N_NOOP( "Live CD, Bug squashing (oggb4mp3)" ), "greg@gkmweb.com" );
     aboutData.addCredit( "Harald Sitter", I18N_NOOP( "handbook enhancements, translations, bug fixes, screenshots, roKymoter (apachelogger)" ), "harald.sitter@kdemail.net" );
     aboutData.addCredit( "Jarkko Lehti", I18N_NOOP( "Tester, IRC channel operator, whipping" ), "grue@iki.fi" );
+    aboutData.addCredit( "Jeff Mitchell", I18N_NOOP( "Fixed longstanding sqlite threading issue (jefferai)" ), "kde-dev@emailgoeshere.com" );
     aboutData.addCredit( "Jocke Andersson", I18N_NOOP( "roKymoter (Firetech)" ), "ajocke@gmail.com" );
     aboutData.addCredit( "Kenneth Wesley Wimer II", I18N_NOOP( "Icons" ), "kwwii@bootsplash.org" );
     aboutData.addCredit( "Kenny Lemieux", I18N_NOOP( "amaroK webmaster" ), "swaft@pwsp.net" );
