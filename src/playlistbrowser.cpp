@@ -2011,6 +2011,12 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
         menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), LOAD );
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), ADD );
+        if( MediaBrowser::isAvailable() )
+        {
+            menu.insertSeparator();
+            menu.insertItem( SmallIconSet( "usbpendrive_unmount" ),
+                    i18n( "Add Contents to Media Device &Transfer Queue" ), MEDIA_DEVICE );
+        }
 
         if( isDynamicEnabled() && AmarokConfig::dynamicType() == Party::CUSTOM )
         {
@@ -2020,12 +2026,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 menu.insertItem( SmallIconSet( "edit_add" ), i18n( "Add to the %1 Entries" ).arg(Party::instance()->title()), DYNADD );
         }
 
-        if( MediaBrowser::isAvailable() )
-        {
-            menu.insertSeparator();
-            menu.insertItem( SmallIconSet( "usbpendrive_unmount" ),
-                    i18n( "Add Contents to Media Device &Transfer Queue" ), MEDIA_DEVICE );
-        }
+
 
         menu.insertSeparator();
         // Forbid removal of Collection
@@ -2197,23 +2198,21 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         enum Actions { LOAD, QUEUE, GET, DELETE, MEDIA_DEVICE };
         menu.insertItem( SmallIconSet( "player_play" ), i18n( "&Play" ), LOAD );
         menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue" ), QUEUE );
+
+        if( MediaBrowser::isAvailable() )
+        {
+            menu.insertSeparator();
+            menu.insertItem( SmallIconSet( "usbpendrive_unmount" ),
+                             i18n( "Add to Media Device &Transfer Queue" ), MEDIA_DEVICE );
+            menu.setItemEnabled( MEDIA_DEVICE, item->hasDownloaded() );
+        }
+
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( "down" ), i18n( "&Download Media" ), GET );
         menu.insertItem( SmallIconSet( "editdelete" ), i18n( "De&lete Podcast" ), DELETE );
 
         menu.setItemEnabled( GET, !item->hasDownloaded() );
         menu.setItemEnabled( DELETE, item->hasDownloaded() );
-
-        if( MediaBrowser::isAvailable() )
-        {
-            if( item->isSelected() )
-                menu.insertItem( SmallIconSet( "usbpendrive_unmount" ),
-                        i18n( "Add Selection to Media Device &Transfer Queue" ), MEDIA_DEVICE );
-            else
-                menu.insertItem( SmallIconSet( "usbpendrive_unmount" ),
-                        i18n( "Add to Media Device &Transfer Queue" ), MEDIA_DEVICE );
-            menu.setItemEnabled( MEDIA_DEVICE, item->hasDownloaded() );
-        }
 
         switch( menu.exec( p ) )
         {
