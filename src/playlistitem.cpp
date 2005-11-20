@@ -838,7 +838,10 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
         const uint ew = 16, tw = w1 + w2 + m * ( w2 ? 2 : 1 );
         p.setBrush( cg.highlight() );
         p.setPen( cg.highlight().dark() ); //TODO blend with background color
-        p.drawEllipse( width - tw - ew/2, m / 2, ew, h );
+        if (isCurrent)
+            p.drawEllipse( width - tw - ew, m / 2, ew * 2, h );
+        else
+            p.drawEllipse( width - tw - ew/2, m / 2, ew, h );
         p.drawRect( width - tw, m / 2, tw, h );
         p.setPen( cg.highlight() );
         p.drawLine( width - tw, m/2 + 1, width - tw, h - m/2 );
