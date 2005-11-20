@@ -131,13 +131,14 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
 
     m_dh = (usb_dev_handle*)ifp_find_device();
 
-    QString genericError = i18n( "Could not open iFP device" );
+    QString genericError = i18n( "Could not connect to iFP device" );
 
     if( m_dh == NULL )
     {
         error() << "A suitable iRiver iFP device couldn't be found" << endl;
         amaroK::StatusBar::instance()->shortLongMessage( genericError,
-                                        i18n("iFP: A suitable iRiver iFP device couldn't be found") );
+                                        i18n("iFP: A suitable iRiver iFP device couldn't be found")
+                                        , KDE::StatusBar::Error );
         return false;
     }
 
@@ -146,7 +147,7 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
     {
         error() << "Could not get usb_device()" << endl;
         amaroK::StatusBar::instance()->shortLongMessage( genericError,
-                                        i18n("iFP: Could not get a usb device handle") );
+                                        i18n("iFP: Could not get a usb device handle"), KDE::StatusBar::Error );
         if( ifp_release_device( m_dh ) )
             error() << "warning: release_device failed." << endl;
         return false;
@@ -157,7 +158,7 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
     {
         error() << "Device is busy.  (I was unable to claim its interface.)" << endl;
         amaroK::StatusBar::instance()->shortLongMessage( genericError,
-                                        i18n("iFP: Device is busy") );
+                                        i18n("iFP: Device is busy"), KDE::StatusBar::Error );
         if( ifp_release_device( m_dh ) )
             error() << "warning: release_device failed." << endl;
         return false;
@@ -168,7 +169,7 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
     {
         error() << "IFP device: Device cannot be opened." << endl;
         amaroK::StatusBar::instance()->shortLongMessage( genericError,
-                                        i18n("iFP: Could not open device") );
+                                        i18n("iFP: Could not open device"), KDE::StatusBar::Error );
         usb_release_interface( m_dh, m_dev->config->interface->altsetting->bInterfaceNumber );
         return false;
     }

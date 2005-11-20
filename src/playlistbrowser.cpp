@@ -914,19 +914,46 @@ void PlaylistBrowser::changePodcastInterval()
     }
 }
 
-bool PlaylistBrowser::deletePodcasts( QPtrList<PodcastChannel> items )
+bool PlaylistBrowser::deletePodcastItems()
 {
-    if ( items.isEmpty() ) return false;
+    KURL::List urls;
+    QListViewItemIterator it( m_listview, QListViewItemIterator::Selected );
 
-    int button = KMessageBox::warningContinueCancel( this, i18n( "<p>You have selected 1 podcast to be <b>irreversibly</b> deleted. "
+    for( ; it.current(); ++it )
+    {
+        if( isPodcastItem( *it ) )
+        {
+            #define item static_cast<PodcastItem*>(*it)
+            if( item->hasDownloaded() )
+                urls.append( item->localUrl() );
+            #undef  item
+        }
+    }
+
+    if( urls.isEmpty() ) return false;
+    int button = KMessageBox::warningContinueCancel( this, i18n( "<p>You have selected 1 podcast episode to be <b>irreversibly</b> deleted. ",
+                                                                 "<p>You have selected %n podcast episodes to be <b>irreversibly</b> deleted. ",
+                                                                 urls.count() ), QString::null, KStdGuiItem::del() );
+    if( button != KMessageBox::Continue )
+        return false;
+
+    KIO::del( urls );
+    return true;
+}
+
+bool PlaylistBrowser::deletePodcasts( QPtrList<PodcastChannel> items, const bool silent )
+{
+    if( items.isEmpty() ) return false;
+
+    int button;
+    if( !silent )
+        button = KMessageBox::warningContinueCancel( this, i18n( "<p>You have selected 1 podcast to be <b>irreversibly</b> deleted. "
                                                                  "All downloaded episodes will also be deleted.",
                                                                  "<p>You have selected %n podcasts to be <b>irreversibly</b> deleted. "
                                                                  "All downloaded episodes will also be deleted.",
-                                                                 items.count() ),
-                                                     QString::null,
-                                                     KStdGuiItem::del() );
+                                                                 items.count() ), QString::null, KStdGuiItem::del() );
 
-    if ( button == KMessageBox::Continue )
+    if( silent || button == KMessageBox::Continue )
     {
         KURL::List urls;
         foreachType( QPtrList<PodcastChannel>, items )
@@ -2167,13 +2194,15 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     }
     else if( isPodcastItem( item ) ) {
         #define item static_cast<PodcastItem*>(item)
-        enum Actions { LOAD, QUEUE, GET, MEDIA_DEVICE };
+        enum Actions { LOAD, QUEUE, GET, DELETE, MEDIA_DEVICE };
         menu.insertItem( SmallIconSet( "player_play" ), i18n( "&Play" ), LOAD );
         menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue" ), QUEUE );
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( "down" ), i18n( "&Download Media" ), GET );
+        menu.insertItem( SmallIconSet( "editdelete" ), i18n( "De&lete Podcast" ), DELETE );
 
         menu.setItemEnabled( GET, !item->hasDownloaded() );
+        menu.setItemEnabled( DELETE, item->hasDownloaded() );
 
         if( MediaBrowser::isAvailable() )
         {
@@ -2201,6 +2230,10 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
             case GET:
                 downloadSelectedPodcasts();
+                break;
+
+            case DELETE:
+                deletePodcastItems();
                 break;
 
             case MEDIA_DEVICE:
