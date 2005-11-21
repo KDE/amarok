@@ -22,6 +22,7 @@
 #include <klocale.h>
 #include <qfile.h>
 #include <qlabel.h>
+#include <qpainter.h>
 #include <qtooltip.h>
 
 
@@ -200,10 +201,18 @@ Item::paintCell( QPainter * p, const QColorGroup & cg, int column, int width, in
             dirty = true;
 
     // Use a different color if this folder has an activated child folder
+    const QFont f = p->font();
     QColorGroup _cg = cg;
-    if ( dirty ) _cg.setColor( QColorGroup::Text, listView()->colorGroup().link() );
+    if ( dirty )
+    {
+        _cg.setColor( QColorGroup::Text, listView()->colorGroup().link() );
+        QFont font = p->font();
+        font.setBold( !font.bold() );
+        p->setFont( font );
+    }
 
     QCheckListItem::paintCell( p, isDisabled() ? listView()->palette().disabled() : _cg, column, width, align );
+    p->setFont( f );
 }
 
 } //namespace Collection
