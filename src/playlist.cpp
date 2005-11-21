@@ -1487,6 +1487,7 @@ Playlist::updateNextPrev()
     amaroK::actionCollection()->action( "prev" )->setEnabled( isTrackBefore() );
     amaroK::actionCollection()->action( "next" )->setEnabled( isTrackAfter() );
     amaroK::actionCollection()->action( "playlist_clear" )->setEnabled( !isEmpty() );
+    amaroK::actionCollection()->action( "playlist_show" )->setEnabled( m_currentTrack );
 
     if( m_currentTrack )
         // ensure currentTrack is shown at correct height
@@ -1530,7 +1531,6 @@ Playlist::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
     case Engine::Playing:
         amaroK::actionCollection()->action( "pause" )->setEnabled( true );
         amaroK::actionCollection()->action( "stop" )->setEnabled( true );
-        amaroK::actionCollection()->action( "playlist_show" )->setEnabled( true );
 
         Glow::startTimer();
 
@@ -1539,7 +1539,6 @@ Playlist::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
     case Engine::Paused:
         amaroK::actionCollection()->action( "pause" )->setEnabled( true );
         amaroK::actionCollection()->action( "stop" )->setEnabled( true );
-        amaroK::actionCollection()->action( "playlist_show" )->setEnabled( true );
 
         Glow::reset();
 
@@ -1551,7 +1550,6 @@ Playlist::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
     case Engine::Empty:
         amaroK::actionCollection()->action( "pause" )->setEnabled( false );
         amaroK::actionCollection()->action( "stop" )->setEnabled( false );
-        amaroK::actionCollection()->action( "playlist_show" )->setEnabled( false );
 
         //leave the glow state at full colour
         Glow::reset();
@@ -3568,6 +3566,8 @@ Playlist::removeItem( PlaylistItem *item, bool multi )
 
     //keep recent buffer synchronised
     m_prevTracks.removeRef( item ); //removes all pointers to item
+
+    updateNextPrev();
 }
 
 void Playlist::ensureItemCentered( QListViewItem *item )
