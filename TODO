@@ -7,6 +7,9 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+ <markey>  When you delete a downloaded podcast from Playlist Browser, the icon stays in
+           "downloaded" state until you open the menu again.
+
  <markey>  Add DCOP functions for showing dialogs, similar to kdialog.
 
  <sebr>    Delete partial (.part) podcast downloads
