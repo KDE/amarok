@@ -1589,6 +1589,7 @@ Playlist::safeClear()
     QListViewItem *n;
     while( c ) {
         n = c->nextSibling();
+        delete c;
         c = n;
     }
     blockSignals( block );
