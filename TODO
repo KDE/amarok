@@ -92,6 +92,7 @@ SHORT-TERM (URGENT):
 
   <markey> Ctrl-C in Playlist for copying title doesn't work, because the event gets eaten by another widget.
 
+  <jefferai> The hell was I thinking...I made the queue label go from squished to elongated, and completely didn't notice I had overshot my goal.  Fix.  Also doesn't seem to only be getting applied to the currently playing track.
 
 MID-TERM:
  <markey>  Write an amaroK Script for embedding cover images into ID3V2. -->markey
