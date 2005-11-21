@@ -7,6 +7,8 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+ <markey>  Add DCOP functions for showing dialogs, similar to kdialog.
+
  <sebr>    Delete partial (.part) podcast downloads
 
  <markey>  When scanning with no folders selected, hell breaks lose. DB errors, etc.
