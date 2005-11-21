@@ -35,6 +35,7 @@ public:
         int appendTab(const QPixmap &,int=-1,const QString& =QString::null);
         MultiTabBarTab *tab(int) const;
         void removeTab(int);
+        void setTabVisible(int id, bool visible);
         void setPosition(enum MultiTabBar::MultiTabBarPosition pos);
         void setStyle(enum MultiTabBar::MultiTabBarStyle style);
         void showActiveTabTexts(bool show);

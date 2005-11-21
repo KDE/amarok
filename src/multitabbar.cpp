@@ -181,29 +181,8 @@ void MultiTabBarInternal::mousePressEvent( QMouseEvent *ev )
     }
 
     int col = popup.exec( static_cast<QMouseEvent *>(ev)->globalPos() );
-    if ( col >= 0 ) {
-        MultiTabBarTab* tab = m_tabs.at( col );
-
-        tab->setVisible( !popup.isItemChecked(col) );
-        amaroK::config( "BrowserBar" )->writeEntry( tab->text(), tab->visible() );
-
-        if ( tab->visible() )
-            tab->show();
-        else {
-            tab->hide();
-            // if the user wants to hide the currently avtive tab
-            // turn on another tab
-            if ( tab->isOn() )
-                for( uint i = 0; i < m_tabs.count(); i++ ) {
-                    if ( m_tabs.at( i )->visible() ) {
-                        m_tabs.at( i )->animateClick();
-                        break;
-                    }
-                }
-        }
-        // redraw the bar
-        resizeEvent( 0 );
-    }
+    if ( col >= 0 )
+        setTabVisible( col, !popup.isItemChecked(col) );
 }
 
 
@@ -447,6 +426,35 @@ void MultiTabBarInternal::removeTab( int id )
             m_tabs.remove( pos );
             resizeEvent( 0 );
             break;
+        }
+    }
+}
+
+void MultiTabBarInternal::setTabVisible( int id, bool visible )
+{
+    for ( uint pos = 0;pos < m_tabs.count();pos++ ) {
+        if ( m_tabs.at( pos ) ->id() == id ) {
+            MultiTabBarTab* tab = m_tabs.at( pos );
+
+            tab->setVisible( visible );
+            amaroK::config( "BrowserBar" )->writeEntry( tab->text(), tab->visible() );
+
+            if ( tab->visible() )
+                tab->show();
+            else {
+                tab->hide();
+                // if the user wants to hide the currently avtive tab
+                // turn on another tab
+                if ( tab->isOn() )
+                    for( uint i = 0; i < m_tabs.count(); i++ ) {
+                        if ( m_tabs.at( i )->visible() ) {
+                            m_tabs.at( i )->animateClick();
+                            break;
+                        }
+                    }
+            }
+            // redraw the bar
+            resizeEvent( 0 );
         }
     }
 }
@@ -1155,6 +1163,8 @@ void MultiTabBar::setTab( int id, bool state )
     MultiTabBarTab * ttab = tab( id );
     if ( ttab ) {
         ttab->setState( state );
+        if( state && !ttab->visible() )
+            m_internal->setTabVisible( id, true );
     }
 }
 
