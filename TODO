@@ -6,6 +6,8 @@ TODO-list for amaroK
 
 
 SHORT-TERM (URGENT):
+ <Untou.>  While rescanning collection, it gets empty. We shouldn't touch tags table at all until rescan
+           is done.
 
  <markey>  When you delete a downloaded podcast from Playlist Browser, the icon stays in
            "downloaded" state until you open the menu again.
@@ -251,32 +253,6 @@ DO-NOT-IMPLEMENT (stuff that was rejected):
 
 
 BACKTRACES/DEBUG/VALGRIND:
-
-<sebr>   Can't isolate the problem, lots of bad things happening to me today...
-
-if( m_similarArtistsJob )
-    m_similarArtistsJob->kill();
-
-
-
-BACKTRACE:
-
-(gdb) bt
-#3  0xb623fcbb in abort () from /lib/tls/libc.so.6
-#4  0xb71bd913 in kdbgstream::flush () from /opt/kde/lib/libkdecore.so.4
-#5  0xb77084a5 in endl () from /opt/kde/lib/libkio.so.4
-#6  0xb7745952 in KIO::Scheduler::_jobFinished () from /opt/kde/lib/libkio.so.4
-#7  0xb7746011 in KIO::Scheduler::_cancelJob () from /opt/kde/lib/libkio.so.4
-#8  0xb7758df2 in KIO::SimpleJob::kill () from /opt/kde/lib/libkio.so.4
-#9  0x081cde8d in Scrobbler::similarArtists (this=0x82e5d20, artist=@0x82e5504) at /home/kde/extragear/multimedia/amarok/src/scrobbler.cpp:126
-#10 0x080c7f01 in CollectionDB::similarArtists (this=0x82e52e0, artist=@0x82e5504, count=10)
-    at /home/kde/extragear/multimedia/amarok/src/collectiondb.cpp:1695
-#11 0x080f4d42 in CurrentTrackJob::doJob (this=0x8aa6b18) at /home/kde/extragear/multimedia/amarok/src/contextbrowser.cpp:1270
-#12 0x081f3b17 in ThreadWeaver::Thread::run (this=0x84c0f50) at /home/kde/extragear/multimedia/amarok/src/threadweaver.cpp:231
-#13 0xb6b96545 in QThreadInstance::start () from /opt/qt/lib/libqt-mt.so.3
-#14 0xb6756290 in start_thread () from /lib/tls/libpthread.so.0
-#15 0xb62d4a9e in clone () from /lib/tls/libc.so.6
-
 
 <markey> This is rather nasty. I think we should change the SubmitItem handling in scrobbler.cpp
          from heap-allocated to stack-allocated to fix it:
