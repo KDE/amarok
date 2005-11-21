@@ -135,8 +135,7 @@ while offset < data.length() - 4
         end
 
         # Find next frame sync
-        offset += 1
-        offset = data.index( 0xff, offset )
+        offset = data.index( 0xff, offset + 1 )
         puts( "Trying to locate frame sync. New offset: #{offset}" )
         puts()
     end
