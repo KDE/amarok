@@ -83,9 +83,11 @@ end
 
 frameCount = 0
 bitCount = 0
+firstFrameBroken = false
+
 
 # Iterate over all frames
-while offset < data.length()
+while offset < data.length() - 4
     validHeader = true
     bitrate = 0
     samplerate = 0
@@ -128,17 +130,45 @@ while offset < data.length()
 
         offset += frameSize
     else
+        if frameCount == 0
+            firstFrameBroken = true
+        end
+
         # Find next frame sync
-        offset = data.index( 0xff, offset + 1 )
+        offset += 1
+        offset = data.index( 0xff, offset )
         puts( "Trying to locate frame sync. New offset: #{offset}" )
         puts()
     end
 end
 
 
-# Make sure the first frame has a sane header
-data[id3length] = 0xff
-data[id3length+1] = data[id3length+1] | 0xf0
+# Repair first frame header, if it is broken:
+
+if firstFrameBroken
+    puts( "Repairing broken header in first frame." )
+
+    firstHeader = data[id3length+0]*2**24 + data[id3length+1]*2**16 + data[id3length+2]*2**8 + data[id3length+3]
+    firstHeader |= 0xfff00000  # Frame sync
+
+    # MPEG ID, Layer, Protection
+    firstHeader &= 0xfff0ffff
+    firstHeader |= 0x000b0000
+
+    # FIXME
+    br = BitRateTable.index( 160 )
+    sr = SampleRateTable.index( 44100 )
+
+    firstHeader &= 0xffff00ff
+    firstHeader |= br << 12
+    firstHeader |= sr << 10
+
+    # Write header back
+    data[id3length+0] = ( firstHeader >> 24 ) & 0xff
+    data[id3length+1] = ( firstHeader >> 16 ) & 0xff
+    data[id3length+2] = ( firstHeader >> 8  ) & 0xff
+    data[id3length+3] = ( firstHeader >> 0  ) & 0xff
+end
 
 
 averageBitrate = bitCount / frameCount
@@ -173,5 +203,6 @@ data[id3length + 4 + xingOffset, 0] = xing
 destfile = File::open( destination, File::CREAT|File::TRUNC|File::WRONLY )
 destfile << data
 
+puts()
 puts( "done." )
 
