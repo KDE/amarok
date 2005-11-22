@@ -161,6 +161,7 @@ class DummyMediaDevice : public MediaDevice
     virtual ~DummyMediaDevice() {}
     virtual bool isConnected() { return false; }
     virtual void addToPlaylist(MediaItem*, MediaItem*, QPtrList<MediaItem>) {}
+    virtual void addToDirectory(MediaItem*, QPtrList<MediaItem>) {}
     virtual MediaItem* newDirectory(const QString&, MediaItem*) { return 0; }
     virtual MediaItem* newPlaylist(const QString&, MediaItem*, QPtrList<MediaItem>) { return 0; }
     virtual MediaItem* trackExists(const MetaBundle&) { return 0; }
@@ -697,7 +698,7 @@ MediaDeviceList::contentsDropEvent( QDropEvent *e )
             debug() << "Dropping items into directory: " << item->text(0) << endl;
             QPtrList<MediaItem> items;
             getSelectedLeaves( 0, &items );
-//             m_parent->m_device->addToDirectory( item, items );
+            m_parent->m_device->addToDirectory( item, items );
         }
     }
     else

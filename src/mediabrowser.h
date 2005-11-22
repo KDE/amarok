@@ -241,6 +241,13 @@ class MediaDevice : public QObject
         virtual MediaItem *newPlaylist(const QString &name, MediaItem *parent, QPtrList<MediaItem> items) = 0;
 
         /**
+         * Move items to a directory
+         * @param directory new parent of dropped items
+         * @param items tracks to add to the directory
+         */
+        virtual void      addToDirectory( MediaItem *directory, QPtrList<MediaItem> items ) = 0;
+
+        /**
          * Create a new directory
          * @param name directory title
          * @param parent parent MediaItem of the new directory

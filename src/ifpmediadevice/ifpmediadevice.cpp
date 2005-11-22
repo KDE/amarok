@@ -221,7 +221,8 @@ IfpMediaDevice::renameItem( QListViewItem *item ) // SLOT
     QCString src  = QFile::encodeName( getFullPath( item, false ) );
     src.append( item->encodedName() );
 
-    QCString dest = "\\" + QFile::encodeName( item->text(0) );
+     //the rename line edit has already changed the QListViewItem text
+    QCString dest = QFile::encodeName( getFullPath( item ) );
 
     debug() << "Renaming " << src << " to: " << dest << endl;
 
@@ -249,6 +250,29 @@ IfpMediaDevice::newDirectory( const QString &name, MediaItem *parent )
     m_tmpParent = parent;
     addTrackToList( IFP_DIR, name );
     return m_last;
+}
+
+void
+IfpMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> items )
+{
+    if( !directory || items.isEmpty() ) return;
+
+    m_tmpParent = directory;
+    for( QPtrListIterator<MediaItem> it(items); *it; ++it )
+    {
+        QCString src  = QFile::encodeName( getFullPath( *it ) );
+        QCString dest = QFile::encodeName( getFullPath( directory ) + "\\" + (*it)->text(0) );
+        debug() << "Moving: " << src << " to: " << dest << endl;
+
+        int err = ifp_rename( &m_ifpdev, src, dest );
+        debug() << "err: " << err << endl;
+        if( err )
+            continue;
+
+        // we need to delete the item and create a new one.  Using QListViewItem::takeItem() / insertItem() is bad, in my exp.
+        addTrackToList( IFP_FILE, (*it)->text(0) );
+        delete (*it);
+    }
 }
 
 /// Uploading
