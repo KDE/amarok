@@ -557,6 +557,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
                     pl->activate( item );
                     pl->showCurrentTrack();
                 }
+                pl->setFocus();
                 return true;
 
             case Key_Escape:
