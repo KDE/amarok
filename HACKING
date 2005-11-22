@@ -1,0 +1,96 @@
+Hacking on amaroK
+-----------------
+
+Please respect these guidelines when coding for amaroK, thanks!
+
+
+Formatting
+----------
+
+* Spaces, not tabs
+* Indentation is 4 spaces
+* Lines should be limited to 90 characters
+* Spaces between brackets and argument functions
+* For pointer and reference variable declarations put a space between the type
+  and the * or & and no space before the variable name.
+* For if, else, while and similar statements put the brackets on the next line,
+  although brackets are not needed for single statements.
+* Function and class definitions have their brackets on separate lines
+* amarok.h contains some helpful macros, foreach and foreachType.  Use them,
+  they improve coding style and readability.
+
+Example:
+
+bool MyClass::myFunction( QPtrList<QListViewItem> items, const QString &name )
+{
+    if( items.isEmpty() )
+        return false;
+
+    foreachType( QPtrList<QListViewItem>, items )
+    {
+        (*it)->setText( 0, name );
+        debug() << "Setting item name: " << name << endl;
+    }
+
+}
+
+Header includes should be listed in the following order:
+    - amaroK includes
+    - KDE includes
+    - Qt includes
+They should also be sorted, for ease of locating them.  A small comment if applicable
+is also helpful.
+
+Example:
+
+#include "amarok.h"
+#include "debug.h"
+#include "playlist.h"
+
+#include "kdialogbase.h"    //baseclass
+#include "kpushbutton.h"    //see function...
+
+#include "qlistviewitem.h"
+#include "qwidget.h"
+
+
+Header Formatting
+-----------------
+
+General rules apply here.  Please keep header function definitions aligned nicely,
+if possible.  It helps greatly when looking through the code.  Sorted methods,
+either by name or by their function (ie, group all related methods together) is
+great too.
+
+
+#ifndef AMAROK_QUEUEMANAGER_H
+#define AMAROK_QUEUEMANAGER_H
+
+class QueueList : public KListView
+{
+        Q_OBJECT
+
+    public:
+        Queuelist( QWidget *parent, const char *name = 0 );
+        ~QueueList() {};
+
+    public slots:
+        void    moveSelectedUp();
+        void    moveSelectedDown();
+}
+
+#endif /* AMAROK_QUEUEMANAGER_H */
+
+
+0 vs NULL
+---------
+The use of 0 to express a null pointer is preferred over the use of NULL.
+0 is not a magic value, it's the defined value of the null pointer in C++.
+NULL, on the other hand, is a preprocessor directive (#define) and not only is
+it more typing than '0' but preprocessor directives are less elegant.
+
+    SomeClass* instance = 0;
+
+
+Thanks, now have fun!
+ -- the amaroK developers
