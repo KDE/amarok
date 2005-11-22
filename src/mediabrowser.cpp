@@ -63,17 +63,17 @@
 
 MediaDevice *MediaDevice::s_instance = 0;
 
-QPixmap *MediaItem::s_pixUnknown = NULL;
-QPixmap *MediaItem::s_pixArtist = NULL;
-QPixmap *MediaItem::s_pixAlbum = NULL;
-QPixmap *MediaItem::s_pixFile = NULL;
-QPixmap *MediaItem::s_pixTrack = NULL;
-QPixmap *MediaItem::s_pixPodcast = NULL;
-QPixmap *MediaItem::s_pixPlaylist = NULL;
-QPixmap *MediaItem::s_pixInvisible = NULL;
-QPixmap *MediaItem::s_pixStale = NULL;
-QPixmap *MediaItem::s_pixOrphaned = NULL;
-QPixmap *MediaItem::s_pixDirectory = NULL;
+QPixmap *MediaItem::s_pixUnknown = 0;
+QPixmap *MediaItem::s_pixArtist = 0;
+QPixmap *MediaItem::s_pixAlbum = 0;
+QPixmap *MediaItem::s_pixFile = 0;
+QPixmap *MediaItem::s_pixTrack = 0;
+QPixmap *MediaItem::s_pixPodcast = 0;
+QPixmap *MediaItem::s_pixPlaylist = 0;
+QPixmap *MediaItem::s_pixInvisible = 0;
+QPixmap *MediaItem::s_pixStale = 0;
+QPixmap *MediaItem::s_pixOrphaned = 0;
+QPixmap *MediaItem::s_pixDirectory = 0;
 
 bool MediaBrowser::isAvailable() //static
 {
@@ -160,15 +160,15 @@ class DummyMediaDevice : public MediaDevice
     virtual ~DummyMediaDevice() {}
     virtual bool isConnected() { return false; }
     virtual void addToPlaylist(MediaItem*, MediaItem*, QPtrList<MediaItem>) {}
-    virtual MediaItem* newPlaylist(const QString&, MediaItem*, QPtrList<MediaItem>) { return NULL; }
-    virtual MediaItem* trackExists(const MetaBundle&) { return NULL; }
+    virtual MediaItem* newPlaylist(const QString&, MediaItem*, QPtrList<MediaItem>) { return 0; }
+    virtual MediaItem* trackExists(const MetaBundle&) { return 0; }
     virtual void lockDevice(bool) {}
     virtual void unlockDevice() {}
     virtual bool openDevice(bool) { return false; }
     virtual bool closeDevice() { return false; }
     virtual void synchronizeDevice() {}
-    virtual MediaItem* copyTrackToDevice(const MetaBundle&, bool) { return NULL; }
-    virtual MediaItem* insertTrackIntoDB(const QString&, const MetaBundle&, bool) { return NULL; }
+    virtual MediaItem* copyTrackToDevice(const MetaBundle&, bool) { return 0; }
+    virtual MediaItem* insertTrackIntoDB(const QString&, const MetaBundle&, bool) { return 0; }
     virtual bool deleteItemFromDevice(MediaItem*, bool) { return false; }
     virtual QString determinePathname(const MetaBundle&) { return QString::null; }
     virtual bool getCapacity( unsigned long *, unsigned long * ) { return false; }
@@ -277,7 +277,7 @@ MediaItem::~MediaItem()
 void
 MediaItem::init()
 {
-    m_bundle=NULL;
+    m_bundle=0;
     m_order=0;
     m_type=UNKNOWN;
     m_playlistName=QString::null;
@@ -295,7 +295,7 @@ void MediaItem::setUrl( const QString& url )
 const MetaBundle *
 MediaItem::bundle() const
 {
-    if(m_bundle == NULL)
+    if( !m_bundle )
         m_bundle = new MetaBundle( url() );
     return m_bundle;
 }
@@ -303,7 +303,7 @@ MediaItem::bundle() const
 MetaBundle *
 MediaItem::bundle()
 {
-    if(m_bundle == NULL)
+    if( !m_bundle )
         m_bundle = new MetaBundle( url() );
     return m_bundle;
 }
@@ -407,6 +407,7 @@ MediaItem::setType( Type type )
             break;
         case DIRECTORY:
             setExpandable( true );
+            setDropEnabled( true );
             setPixmap(0, *s_pixDirectory);
             break;
     }
@@ -415,7 +416,7 @@ MediaItem::setType( Type type )
 MediaItem *
 MediaItem::lastChild() const
 {
-    QListViewItem *last = NULL;
+    QListViewItem *last = 0;
     for( QListViewItem *it = firstChild();
             it;
             it = it->nextSibling() )
@@ -468,11 +469,11 @@ MediaItem::findItem( const QString &key ) const
         if(key == it->text(0))
             return it;
     }
-    return NULL;
+    return 0;
 }
 
 int
-MediaItem::compare(QListViewItem *i, int col, bool ascending) const
+MediaItem::compare( QListViewItem *i, int col, bool ascending ) const
 {
     MediaItem *item = dynamic_cast<MediaItem *>(i);
     if(item && col==0 && item->m_order != m_order)
@@ -581,14 +582,14 @@ MediaDeviceList::nodeBuildDragList( MediaItem* item, bool onlySelected )
 }
 
 int
-MediaDeviceList::getSelectedLeaves(MediaItem *parent, QPtrList<MediaItem> *list, bool onlySelected, bool onlyPlayed )
+MediaDeviceList::getSelectedLeaves( MediaItem *parent, QPtrList<MediaItem> *list, bool onlySelected, bool onlyPlayed )
 {
     int numFiles = 0;
-    if(list==NULL)
+    if( !list )
         list = new QPtrList<MediaItem>;
 
     MediaItem *it;
-    if(parent==NULL)
+    if( !parent )
         it = dynamic_cast<MediaItem *>(firstChild());
     else
         it = dynamic_cast<MediaItem *>(parent->firstChild());
@@ -597,28 +598,26 @@ MediaDeviceList::getSelectedLeaves(MediaItem *parent, QPtrList<MediaItem> *list,
     {
         if( it->isVisible() )
         {
-            if(it->childCount())
+            if( it->childCount() )
             {
                 numFiles += getSelectedLeaves(it, list, onlySelected && !it->isSelected(), onlyPlayed);
             }
-            else if(it->isSelected() || !onlySelected)
+            else if( it->isSelected() || !onlySelected )
             {
-                if(it->type() == MediaItem::TRACK
-                        || it->type() == MediaItem::PODCASTITEM
-                        || it->type() == MediaItem::INVISIBLE
-                        || it->type() == MediaItem::ORPHANED)
+                if( it->type() == MediaItem::TRACK       ||
+                    it->type() == MediaItem::PODCASTITEM ||
+                    it->type() == MediaItem::INVISIBLE   ||
+                    it->type() == MediaItem::ORPHANED     )
                 {
-                    if(onlyPlayed)
+                    if( onlyPlayed )
                     {
-                        if(it->played() > 0)
+                        if( it->played() > 0 )
                             numFiles++;
                     }
                     else
-                    {
                         numFiles++;
-                    }
                 }
-                if(it->isLeafItem() && (!onlyPlayed || it->played()>0))
+                if( it->isLeafItem() && (!onlyPlayed || it->played()>0) )
                     list->append( it );
             }
         }
@@ -643,22 +642,23 @@ MediaDeviceList::contentsDropEvent( QDropEvent *e )
         const QPoint p = contentsToViewport( e->pos() );
         MediaItem *item = dynamic_cast<MediaItem *>(itemAt( p ));
         QPtrList<MediaItem> items;
-        if(item->type()==MediaItem::PLAYLIST)
+
+        if( item->type() == MediaItem::PLAYLIST )
         {
             MediaItem *list = item;
-            MediaItem *after = NULL;
+            MediaItem *after = 0;
             for(MediaItem *it = dynamic_cast<MediaItem *>(item->firstChild());
                     it;
                     it = dynamic_cast<MediaItem *>(it->nextSibling()))
                 after = it;
 
-            getSelectedLeaves(NULL, &items);
-            m_parent->m_device->addToPlaylist(list, after, items);
+            getSelectedLeaves( 0, &items );
+            m_parent->m_device->addToPlaylist( list, after, items );
         }
-        else if(item->type()==MediaItem::PLAYLISTITEM)
+        else if( item->type() == MediaItem::PLAYLISTITEM )
         {
             MediaItem *list = dynamic_cast<MediaItem *>(item->parent());
-            MediaItem *after = NULL;
+            MediaItem *after = 0;
             for(MediaItem *it = dynamic_cast<MediaItem*>(item->parent()->firstChild());
                     it;
                     it = dynamic_cast<MediaItem *>(it->nextSibling()))
@@ -668,17 +668,17 @@ MediaDeviceList::contentsDropEvent( QDropEvent *e )
                 after = it;
             }
 
-            getSelectedLeaves(NULL, &items);
-            m_parent->m_device->addToPlaylist(list, after, items);
+            getSelectedLeaves( 0, &items );
+            m_parent->m_device->addToPlaylist( list, after, items );
         }
-        else if(item->type()==MediaItem::PLAYLISTSROOT)
+        else if( item->type() == MediaItem::PLAYLISTSROOT )
         {
             QPtrList<MediaItem> items;
-            getSelectedLeaves(NULL, &items);
-            QString base(i18n("New Playlist"));
+            getSelectedLeaves( 0, &items );
+            QString base( i18n("New Playlist") );
             QString name = base;
             int i=1;
-            while(item->findItem(name))
+            while( item->findItem(name) )
             {
                 QString num;
                 num.setNum(i);
@@ -689,6 +689,13 @@ MediaDeviceList::contentsDropEvent( QDropEvent *e )
             ensureItemVisible(pl);
             m_renameFrom = pl->text(0);
             rename(pl, 0);
+        }
+        else if( item->type() == MediaItem::DIRECTORY )
+        {
+            debug() << "Dropping items into directory: " << item->text(0) << endl;
+            QPtrList<MediaItem> items;
+            getSelectedLeaves( 0, &items );
+//             m_parent->m_device->addToDirectory( item, items );
         }
     }
     else
@@ -839,7 +846,7 @@ MediaDeviceList::rmbIpod( QListViewItem* qitem, const QPoint& point, int ) //SLO
 
         menu.insertSeparator();
 
-        KPopupMenu *playlistsMenu = NULL;
+        KPopupMenu *playlistsMenu = 0;
         switch( item->type() )
         {
         case MediaItem::ARTIST:
@@ -917,7 +924,7 @@ MediaDeviceList::rmbIpod( QListViewItem* qitem, const QPoint& point, int ) //SLO
             case MAKE_PLAYLIST:
                 {
                     QPtrList<MediaItem> items;
-                    getSelectedLeaves(NULL, &items);
+                    getSelectedLeaves( 0, &items );
                     QString base(i18n("New Playlist"));
                     QString name = base;
                     int i=1;
@@ -937,7 +944,7 @@ MediaDeviceList::rmbIpod( QListViewItem* qitem, const QPoint& point, int ) //SLO
             case ADD:
                 if(item->type() == MediaItem::ORPHANEDROOT)
                 {
-                    MediaItem *next = NULL;
+                    MediaItem *next = 0;
                     for(MediaItem *it = dynamic_cast<MediaItem *>(item->firstChild());
                             it;
                             it = next)
@@ -966,7 +973,7 @@ MediaDeviceList::rmbIpod( QListViewItem* qitem, const QPoint& point, int ) //SLO
                 break;
             case DELETE_PLAYED:
                 {
-                    MediaItem *podcasts = NULL;
+                    MediaItem *podcasts = 0;
                     if(item->type() == MediaItem::PODCASTCHANNEL)
                         podcasts = dynamic_cast<MediaItem *>(item->parent());
                     else
@@ -978,22 +985,22 @@ MediaDeviceList::rmbIpod( QListViewItem* qitem, const QPoint& point, int ) //SLO
                 m_parent->m_device->deleteFromDevice();
                 break;
             default:
-                if(id >= FIRST_PLAYLIST)
+                if( id >= FIRST_PLAYLIST )
                 {
                     QString name = playlistsMenu->text(id);
-                    if(name != QString::null)
+                    if( name != QString::null )
                     {
                         MediaItem *list = m_parent->m_device->m_playlistItem->findItem(name);
                         if(list)
                         {
-                            MediaItem *after = NULL;
+                            MediaItem *after = 0;
                             for(MediaItem *it = dynamic_cast<MediaItem *>(list->firstChild());
                                     it;
                                     it = dynamic_cast<MediaItem *>(it->nextSibling()))
                                 after = it;
                             QPtrList<MediaItem> items;
-                            getSelectedLeaves(NULL, &items);
-                            m_parent->m_device->addToPlaylist(list, after, items);
+                            getSelectedLeaves( 0, &items );
+                            m_parent->m_device->addToPlaylist( list, after, items );
                         }
                     }
                 }
@@ -1004,8 +1011,8 @@ MediaDeviceList::rmbIpod( QListViewItem* qitem, const QPoint& point, int ) //SLO
 
 MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     : QVBox( parent )
-    , m_stats( NULL )
-    , m_device( NULL )
+    , m_stats( 0 )
+    , m_device( 0 )
     , m_deviceList( new MediaDeviceList( this ) )
     , m_parent( parent )
 {
@@ -1158,7 +1165,7 @@ bool
 MediaDeviceView::setFilter( const QString &filter, MediaItem *parent )
 {
     MediaItem *it;
-    if(parent==NULL)
+    if( !parent )
     {
         it = dynamic_cast<MediaItem *>(m_deviceList->firstChild());
     }
@@ -1223,13 +1230,13 @@ MediaDevice::MediaDevice( MediaDeviceView* parent, MediaDeviceList *listview )
     , m_wait( false )
     , m_requireMount( false )
     , m_transferring( false )
-    , m_transferredItem( NULL )
+    , m_transferredItem( 0 )
     , m_transferList( new MediaDeviceTransferList( parent ) )
-    , m_playlistItem( NULL )
-    , m_podcastItem( NULL )
-    , m_invisibleItem( NULL )
-    , m_staleItem( NULL )
-    , m_orphanedItem( NULL )
+    , m_playlistItem( 0 )
+    , m_podcastItem( 0 )
+    , m_invisibleItem( 0 )
+    , m_staleItem( 0 )
+    , m_orphanedItem( 0 )
 {
     s_instance = this;
 
@@ -1295,7 +1302,7 @@ MediaDevice::addURLs( const KURL::List urls, const QString &playlistName )
 {
         KURL::List::ConstIterator it = urls.begin();
         for ( ; it != urls.end(); ++it )
-            addURL( *it, NULL, false, playlistName );
+            addURL( *it, 0, false, playlistName );
 }
 
 void
@@ -1452,7 +1459,7 @@ MediaDevice::connectDevice( bool silent )
                 m_parent->m_transferButton->setEnabled( true );
                 m_parent->m_stats->setText( i18n( "Checking device for duplicate files." ) );
                 KURL::List urls;
-                MediaItem *next = NULL;
+                MediaItem *next = 0;
                 for( MediaItem *cur = static_cast<MediaItem *>(m_transferList->firstChild());
                                 cur; cur = next )
                 {
@@ -1545,7 +1552,7 @@ MediaDevice::transferFiles()
     // ok, let's copy the stuff to the device
     lockDevice( true );
 
-    MediaItem *playlist = NULL;
+    MediaItem *playlist = 0;
     if(m_playlistItem && m_parent->m_playlistButton->isOn())
     {
         QString name = i18n("New amaroK additions");
@@ -1557,11 +1564,9 @@ MediaDevice::transferFiles()
         }
     }
 
-    MediaItem *after = NULL; // item after which to insert into playlist
+    MediaItem *after = 0; // item after which to insert into playlist
     // iterate through items
-    for( m_transferredItem =  dynamic_cast<MediaItem *>(m_transferList->firstChild());
-            m_transferredItem != NULL;
-            m_transferredItem =  dynamic_cast<MediaItem *>(m_transferList->firstChild()) )
+    while( (m_transferredItem = static_cast<MediaItem *>(m_transferList->firstChild())) != 0 )
     {
         debug() << "Transferring: " << m_transferredItem->url().path() << endl;
 
@@ -1573,17 +1578,14 @@ MediaDevice::transferFiles()
         }
 
         MediaItem *item = trackExists( *bundle );
-        if(!item)
-        {
-            item = copyTrackToDevice(*bundle, m_transferredItem->type() == MediaItem::PODCASTITEM);
-        }
 
-        if(!item)
-        {
+        if( !item )
+            item = copyTrackToDevice( *bundle, m_transferredItem->type() == MediaItem::PODCASTITEM );
+
+        if( !item )
             break;
-        }
 
-        if(playlist)
+        if( playlist )
         {
             QPtrList<MediaItem> items;
             items.append(item);
@@ -1591,7 +1593,7 @@ MediaDevice::transferFiles()
             after = item;
         }
 
-        if(m_playlistItem && m_transferredItem->m_playlistName!=QString::null)
+        if( m_playlistItem && m_transferredItem->m_playlistName!=QString::null )
         {
             MediaItem *pl = m_playlistItem->findItem( m_transferredItem->m_playlistName );
             if( !pl )
@@ -1602,13 +1604,13 @@ MediaDevice::transferFiles()
             if( pl )
             {
                 QPtrList<MediaItem> items;
-                items.append(item);
-                addToPlaylist(pl, pl->lastChild(), items);
+                items.append( item );
+                addToPlaylist( pl, pl->lastChild(), items );
             }
         }
 
         delete m_transferredItem;
-        m_transferredItem = NULL;
+        m_transferredItem = 0;
     }
     synchronizeDevice();
     unlockDevice();
@@ -2004,7 +2006,7 @@ MediaDeviceTransferList::findPath( QString path )
             return static_cast<MediaItem *>(item);
     }
 
-    return NULL;
+    return 0;
 }
 
 unsigned

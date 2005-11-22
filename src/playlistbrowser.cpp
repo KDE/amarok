@@ -924,7 +924,7 @@ bool PlaylistBrowser::deletePodcastItems()
         if( isPodcastItem( *it ) )
         {
             #define item static_cast<PodcastItem*>(*it)
-            if( item->hasDownloaded() )
+            if( item->hasDownloaded() ) 
                 urls.append( item->localUrl() );
             #undef  item
         }
