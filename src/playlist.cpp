@@ -1669,6 +1669,9 @@ Playlist::setColumnWidth( int col, int width )
 void
 Playlist::rename( QListViewItem *item, int column ) //SLOT
 {
+    if( !item )
+        return;
+
     switch( column )
     {
         case PlaylistItem::Artist:
@@ -1692,6 +1695,13 @@ Playlist::rename( QListViewItem *item, int column ) //SLOT
 
     m_editOldTag = static_cast<PlaylistItem *>(item)->exactText( column );
 
+    if( m_selCount <= 1 )
+    {
+        if( currentItem() )
+            currentItem()->setSelected( false );
+        item->setSelected( true );
+    }
+    setCurrentItem( item );
     KListView::rename( item, column );
 
     m_renameItem = item;
@@ -2247,6 +2257,9 @@ Playlist::eventFilter( QObject *o, QEvent *e )
 
         if( item != m_renameItem || column != m_renameColumn )
         {
+            if( !item->isSelected() )
+                m_itemsToChangeTagsFor.clear();
+                //the item that actually got changed will get added back, in writeTag()
             rename( item, column );
             return true;
         }
