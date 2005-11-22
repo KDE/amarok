@@ -13,17 +13,14 @@
 #define global variables
 LANG="C" # Make outputs in English, like the script.
 RCFILE="`pwd`/.amarok-svnrc" # Settings file
+KD_TITLE="amaroK-svn" # Title for kdialog windows
 
 #define functions
-function DialogBox {
-  kdialog --title "amaroK-svn" --$1 "$2"
-}
-
 function Error {
   echo
   echo "ERROR: $1"
   if [ "$2" != "--no-dialog" ]; then
-    DialogBox error "$1"
+    kdialog --title "${KD_TITLE}" --error "$1"
   fi
 }
 
@@ -51,8 +48,8 @@ function CheckBinary {
 }
 
 echo
-echo "amaroK-svn (Version 2.9) by Jocke \"Firetech\" Andersson"
-echo "========================================================"
+echo "amaroK-svn (Version 3.0-beta1) by Jocke \"Firetech\" Andersson"
+echo "=============================================================="
 echo
 
 ## Check requirements
@@ -67,7 +64,7 @@ CheckBinary kreadconfig
 CheckBinary kwriteconfig
 
 if [ "`id -u`" = 0 ]; then # if user is root
-  DialogBox warningcontinuecancel "You are running amaroK-svn as root! This is not required, and generally not a good idea.\n(The script will get root privileges by itself when needed, see the settings for details.)\nAre you sure you want to continue the script anyway?"
+  kdialog --title "${KD_TITLE}" --warningcontinuecancel "You are running amaroK-svn as root! This is not required, and generally not a good idea.\n(The script will get root privileges by itself when needed, see the settings for details.)\nAre you sure you want to continue the script anyway?"
   if [ "$?" != 0 ]; then
     exit 1
   fi
@@ -83,22 +80,22 @@ if [ -s "${RCFILE}" -a "$1" != "-r" -a "$1" != "--reset" ]; then # If the settin
   for flag in ${CONF_FLAGS_RAW}; do
     CONF_FLAGS="${CONF_FLAGS} `echo $flag | sed -e \"s/__/--/\"`"
   done
-  USE_SUDO="`ReadConfig use_sudo`"
+  HOW_ROOT="`ReadConfig how_root kdesu`"
 
-  echo "# 1/10 - Settings loaded: (Start the script with -r or --reset to change.)"
+  echo "# 1/12 - Settings loaded: (Start the script with -r or --reset to change.)"
 
 else
 
-  echo "# 1/10 - Asking for settings:"
+  echo "# 1/12 - Asking for settings:"
 
   ## Language
   AUTO_LANG="`kreadconfig --group Locale --key Language | sed -re \"s/:.+//\"`"
-  DialogBox yesno "I detected that you are running KDE with language \"${AUTO_LANG}\".\nIf this is correct (and you want it that way), I will download localization and documentation for amaroK in that language.\nDo you want this language?"
+  kdialog --title "${KD_TITLE}" --yesno "I detected that you are running KDE with language \"${AUTO_LANG}\".\nIf this is correct (and you want it that way), I will download localization and documentation for amaroK in that language.\nDo you want this language?"
   if [ "$?" = "0" ]; then # If the user said yes
     GET_LANG="${AUTO_LANG}"
   else
-    DialogBox msgbox "Which language do you want to download localization and documentation for?\nA list of available languages is available at http://websvn.kde.org/trunk/l10n/ (It is CaSe sensitive!)\nIf you want to use the default language (American English), either leave this empty or set it to \"en_US\" (it's not in the list above).\n(Click Ok to get to the input box.)"
-    GET_LANG="`DialogBox inputbox \"Specify language to download localization and documentation for\"`"
+    kdialog --title "${KD_TITLE}" --msgbox "Which language do you want to download localization and documentation for?\nA list of available languages is available at http://websvn.kde.org/trunk/l10n/ (It is CaSe sensitive!)\nIf you want to use the default language (American English), either leave this empty or set it to \"en_US\" (it's not in the list above).\n(Click Ok to get to the input box.)"
+    GET_LANG="`kdialog --title \"${KD_TITLE}\" --inputbox \"Specify language to download localization and documentation for\"`"
   fi
   if  [ "${GET_LANG}" = "" ]; then
     GET_LANG="en_US"
@@ -106,9 +103,9 @@ else
   WriteConfig get_lang "${GET_LANG}"
 
   ## ./configure flags
-  DialogBox yesno "Do you want to use any extra configuration options (in addition to \"--prefix=`kde-config --prefix` --enable-debug=full\")?\nNo extra options is the default, and that works fine.\n(For a list of available flags, say yes and enter \"help\" (CaSe insensitive) in the box, then wait for the script to get to the configuration step (step 8).)"
+  kdialog --title "${KD_TITLE}" --yesno "Do you want to use any extra configuration options (in addition to \"--prefix=`kde-config --prefix` --enable-debug=full\")?\nNo extra options is the default, and that works fine.\n(For a list of available flags, say yes and enter \"help\" (CaSe insensitive) in the box, then wait for the script to get to the configuration step (step 8).)"
   if [ "$?" = "0" ]; then
-    CONF_FLAGS_RAW="`DialogBox inputbox \"Specify extra configuration options to use\"`"
+    CONF_FLAGS_RAW="`kdialog --title \"${KD_TITLE}\" --inputbox \"Specify extra configuration options to use\"`"
     if [ "`echo $CONF_FLAGS_RAW | tr A-Z a-z`" != "help" ]; then
       CONF_FLAGS=""
       CONF_FLAGS_SAVE=""
@@ -125,8 +122,8 @@ else
   fi
 
   ## Use sudo for installation?
-  USE_SUDO="`DialogBox yesno \"Do you want to use sudo for the install command?\nNo  = (Default) Don't use sudo. (Run 'su -c \\"unsermake install\\"'. This requires the root password.)\nYes = Use sudo. (Run 'sudo unsermake install'.)\" && echo yes || echo no`"
-  WriteConfig use_sudo "${USE_SUDO}"
+  HOW_ROOT="`kdialog --title \"${KD_TITLE}\" --radiolist \"How do you want the script to get root privileges for the install/uninstall commands?\" kdesu \"With  \\"kdesu\\" (default, choose this if unsure)\" on sudo \"With \\"sudo\\"\" off \"su -c\" \"With \\"su -c\\"\" off`"
+  WriteConfig how_root "${HOW_ROOT}"
 fi
 
 SVN_SERVER="`ReadConfig svn_server \"svn://anonsvn.kde.org\"`"
@@ -136,15 +133,11 @@ echo "Will get localization and documentation for language \"${GET_LANG}\"."
 if [ "$CONF_HELP" != "true" -a "`echo $CONF_FLAGS`" != "" ]; then
   echo "Will configure amaroK with the extra options \"`echo ${CONF_FLAGS}`\"."
 fi
-if [ "${USE_SUDO}" = "yes" ]; then 
-  echo "Will use sudo to install."
-else
-  echo "Will not use sudo to install. (This method probably needs the root password to work.)"
-fi
+echo "Will use \"${HOW_ROOT}\" to gain root privileges."
 
 ## Standard checkout
 echo
-echo "# 2/10 - Checking out multimedia base files."
+echo "# 2/12 - Checking out multimedia base files."
 svn co -N ${SVN_SERVER}/home/kde/trunk/extragear/multimedia amarok-svn
 if [ "$?" != "0" ]; then # If the command didn't finish successfully
   Error "The SVN transfer didn't finish successfully."
@@ -152,14 +145,14 @@ if [ "$?" != "0" ]; then # If the command didn't finish successfully
 fi
 cd amarok-svn
 echo
-echo "# 3/10 - Checking out common admin files."
+echo "# 3/12 - Checking out common admin files."
 svn co ${SVN_SERVER}/home/kde/branches/KDE/3.5/kde-common/admin # URL changed since KDE 3.5 branching
 if [ "$?" != "0" ]; then # If the command didn't finish successfully
   Error "The SVN transfer didn't finish successfully."
   exit 1 # Exit with error
 fi
 echo
-echo "# 4/10 - Updating amaroK files."
+echo "# 4/12 - Updating amaroK files."
 svn up amarok
 if [ "$?" != "0" ]; then # If the command didn't finish successfully
   Error "The SVN transfer didn't finish successfully.\nIf the message from svn (in console) is something like \"amarok is not under version control\", you need a never version of svn.\nAt least version 1.1 is needed."
@@ -167,7 +160,7 @@ if [ "$?" != "0" ]; then # If the command didn't finish successfully
 fi
 
 echo
-echo "# 5/10 - Getting localization and documentation:"
+echo "# 5/12 - Getting localization and documentation:"
 STEP_EN=""
 
 if [ "${GET_LANG}" != "en_US" ]; then # If a language (not en_US) is selected
@@ -204,23 +197,23 @@ if [ "${GET_LANG}" != "en_US" ]; then # If a language (not en_US) is selected
     if [ ! -s "${TMP_FILE}" ]; then
       echo "- WARNING: The downloaded file was empty!"
       echo "-          Some error must have occured."
-      rm Makefile.am
-      rm ../Makefile.am
-      rm ${TMP_FILE}
+      rm -f Makefile.am
+      rm -f ../Makefile.am
+      rm -f ${TMP_FILE}
       echo "-          No localization downloaded, so no localization will be installed!"
     elif [ -f "amarok.po" ]; then
       if [ -z "`diff -q ${TMP_FILE} amarok.po 2>&1`" ]; then
         echo "- You already have the current version of the localization file."
-        rm ${TMP_FILE}
+        rm -f ${TMP_FILE}
         echo "- Removed the downloaded version."
       else
         echo "- New localization file downloaded."
-        rm amarok.po
-        mv ${TMP_FILE} amarok.po
+        rm -f amarok.po
+        mv -f ${TMP_FILE} amarok.po
         echo "- Replaced the old copy with the downloaded version."
       fi
     else
-      mv ${TMP_FILE} amarok.po
+      mv -f ${TMP_FILE} amarok.po
       echo "- Localization file downloaded."
     fi
     cd ../..
@@ -277,9 +270,9 @@ if [ "${GET_LANG}" = "en_US" ]; then # If no language (en_US) is selected
 
 fi
 
-## Get unsermake, if not installed already.
+## Get unsermake, if not installed already
 echo
-echo "# 6/10 - Getting unsermake."
+echo "# 6/12 - Getting unsermake."
 if [ -x "`which unsermake`" ]; then # unsermake installed system wide?
   echo "Unsermake is already installed system wide."
 else
@@ -292,9 +285,20 @@ else
   svn co -N ${SVN_SERVER}/home/kde/trunk/kdenonbeta/unsermake
 fi
 
-## Compilation
+## Store the old uninstall commands
 echo
-echo "# 7/10 - Preparing for configuration. (This will take a while.)"
+echo "# 7/12 - Checking used files for the installed revision."
+if [ ! -f "Makefile" ]; then
+  echo "No older revision is installed."
+else
+  TMP_OLD_UNINFO="`mktemp`"
+  unsermake -n uninstall > ${TMP_OLD_UNINFO}
+  echo "Information saved."
+fi
+
+## Preparation
+echo
+echo "# 8/12 - Preparing for configuration. (This will take a while.)"
 WANT_AUTOCONF="2.5" unsermake -f Makefile.cvs
 if [ "$?" != "0" ]; then # If the command didn't finish successfully
   Error "Preparation didn't finish successfully. amaroK was NOT installed/upgraded. Ask the friendly people in #amarok on freenode for help."
@@ -302,13 +306,14 @@ if [ "$?" != "0" ]; then # If the command didn't finish successfully
 fi
 
 if [ "$CONF_HELP" = "true" ]; then
-  echo
-  echo "Configuration help"
-  echo "--------------------"
-  ./configure --help
-  DialogBox yesno "Do you want to use any extra configuration options (in addition to \"--prefix=`kde-config --prefix` --enable-debug=full\")?\nNo extra options is the default, and that works fine.\n(Available options are displayed in the console window where the script is running.)"
+  TMP_FILE="`mktemp`"
+  echo -e "<big><b><u>Configuration help</u></b></big>\n" > ${TMP_FILE}
+  ./configure --help >> ${TMP_FILE}
+  kdialog --title "${KD_TITLE} :: Configuration help" --textbox ${TMP_FILE} 600 5000 & # height 5000 shoulkd be enough even for VERY big desktops. It should be limited to the desktop height anyway. & it to make the user able to watch it while typing the selected options into the input box.
+  rm -f ${TMP_FILE}
+  kdialog --title "${KD_TITLE}" --yesno "Do you want to use any extra configuration options (in addition to \"--prefix=`kde-config --prefix` --enable-debug=full\")?\nNo extra options is the default, and that works fine.\n(Available options are displayed in another window right now.)"
   if [ "$?" = "0" ]; then
-    CONF_FLAGS_RAW="`DialogBox inputbox \"Specify extra configuration options to use\"`"
+    CONF_FLAGS_RAW="`kdialog --title \"${KD_TITLE}\" --inputbox \"Specify extra configuration options to use\"`"
     CONF_FLAGS=""
     CONF_FLAGS_SAVE=""
     for flag in ${CONF_FLAGS_RAW}; do
@@ -321,15 +326,45 @@ if [ "$CONF_HELP" = "true" ]; then
   fi
 fi
 
+## Configuration
 echo
-echo "# 8/10 - Configuring. (This will also take a while.)"
+echo "# 9/12 - Configuring. (This will also take a while.)"
 ./configure --prefix=`kde-config --prefix` --enable-debug=full${CONF_FLAGS}
 if [ "$?" != "0" ]; then # If the command didn't finish successfully
   Error "Configuration wasn't successful. amaroK was NOT installed/upgraded. Ask the friendly people in #amarok on freenode for help."
   exit 1 # Exit with error
 fi
+
+## Store the old uninstall commands
 echo
-echo "# 9/10 - Compiling. (The time of this phase depends on the number of new source files that were downloaded.)"
+echo "# 10/12 - Removing files that will be unused with the new revision."
+if [ -z "${TMP_OLD_UNINFO}" ]; then
+  echo "No older revision is installed."
+else
+  TMP_NEW_UNINFO="`mktemp`"
+  unsermake -n uninstall > ${TMP_NEW_UNINFO}
+  TMP_UNFILES="`mktemp`"
+  diff --old-line-format="%L" --new-line-format="" --unchanged-line-format="" ${TMP_OLD_UNINFO} ${TMP_NEW_UNINFO} > ${TMP_UNFILES} # a diff that only outputs lines that only are in the first file
+  if [ -s "${TMP_UNFILES}" ]; then
+    kdialog --title "${KD_TITLE} :: DEBUG - Check for bad commands here before clicking OK!" --textbox ${TMP_UNFILES} 600 5000 # TODO remove this line when 3.0 goes final.
+    echo -n "Using \"${HOW_ROOT}\" for removal of unused files."
+    if [ "${HOW_ROOT}" = "sudo" ]; then
+      echo " (You might need to enter your password now.)"
+      sudo bash ${TMP_UNFILES}
+    elif [ "${HOW_ROOT}" = "su -c" ]; then
+      echo " (You probably have to enter the root password now.)"
+      su -c "bash ${TMP_UNFILES}"
+    else
+      echo
+      kdesu -t bash ${TMP_UNFILES}
+    fi
+  fi
+  rm -f ${TMP_OLD_UNINFO} ${TMP_NEW_UNINFO} ${TMP_UNFILES}
+fi
+
+## Compilation
+echo
+echo "# 11/12 - Compiling. (The time of this phase depends on the number of new source files that were downloaded.)"
 unsermake
 if [ "$?" != "0" ]; then # If the command didn't finish successfully
   Error "Compilation wasn't successful. amaroK was NOT installed/upgraded. Ask the friendly people in #amarok on freenode for help."
@@ -337,19 +372,25 @@ if [ "$?" != "0" ]; then # If the command didn't finish successfully
 fi
 echo
 echo "Compilation successful."
+
+## Installation
 echo
-echo "# 10/10 - Installing files. (This requires root privileges.)"
-if [ "${USE_SUDO}" = "yes" ]; then
-  echo "Using sudo to install."
+echo "# 12/12 - Installing files. (This requires root privileges.)"
+echo -n "Using \"${HOW_ROOT}\" for installation."
+if [ "${HOW_ROOT}" = "sudo" ]; then
+  echo " (You might need to enter your password now.)"
   sudo `which unsermake` install
-else
-  echo "Not using sudo to install. (You probably have to enter the root password now.)"
+elif [ "${HOW_ROOT}" = "su -c" ]; then
+  echo " (You probably have to enter the root password now.)"
   su -c "`which unsermake` install"
+else
+  echo
+  kdesu -t `which unsermake` install
 fi
 if [ "$?" = "0" ]; then # If the command did finish successfully
   echo
   echo "# DONE - amaroK was successfully installed/updated! Start it from your menu or by typing \"amarok\"."
-  DialogBox msgbox "Done!\namaroK was successfully installed/updated!\nStart it from your menu or by typing \"amarok\"."
+  kdialog --title "${KD_TITLE}" --msgbox "Done!\namaroK was successfully installed/updated!\nStart it from your menu or by typing \"amarok\"."
   exit 0 # Exit succsessfully
 else
   echo
