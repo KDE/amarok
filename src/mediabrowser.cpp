@@ -161,6 +161,7 @@ class DummyMediaDevice : public MediaDevice
     virtual ~DummyMediaDevice() {}
     virtual bool isConnected() { return false; }
     virtual void addToPlaylist(MediaItem*, MediaItem*, QPtrList<MediaItem>) {}
+    virtual MediaItem* newDirectory(const QString&, MediaItem*) { return 0; }
     virtual MediaItem* newPlaylist(const QString&, MediaItem*, QPtrList<MediaItem>) { return 0; }
     virtual MediaItem* trackExists(const MetaBundle&) { return 0; }
     virtual void lockDevice(bool) {}
