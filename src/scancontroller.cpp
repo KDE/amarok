@@ -238,11 +238,10 @@ ScanController::startElement( const QString&, const QString& localName, const QS
 
         // Update dir statistics for rescanning purposes
         if( info.exists() )
-            CollectionDB::instance()->updateDirStats( folder, info.lastModified().toTime_t());
+            CollectionDB::instance()->updateDirStats( folder, info.lastModified().toTime_t(), true);
 
-        if( AmarokConfig::scanRecursively() ) {
-            CollectionDB::instance()->removeSongsInDir( folder );
-            CollectionDB::instance()->removeDirFromCollection( folder );
+        if( m_incremental ) {
+            m_foldersToRemove += folder;
         }
     }
 
@@ -292,8 +291,13 @@ ScanController::slotProcessExited()
     DEBUG_BLOCK
 
     if( m_scanner->normalExit() ) {
-        if ( m_incremental )
-            foreach( m_folders ) CollectionDB::instance()->removeSongsInDir( *it );
+        if ( m_incremental ) {
+            m_foldersToRemove += m_folders;
+            foreach( m_foldersToRemove ) {
+                CollectionDB::instance()->removeSongsInDir( *it );
+                CollectionDB::instance()->removeDirFromCollection( *it );
+            }
+        }
         else
             CollectionDB::instance()->clearTables();
 

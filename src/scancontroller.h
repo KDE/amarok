@@ -62,6 +62,7 @@ class ScanController : public QObject, public QXmlDefaultHandler
 
         KProcIO*      const m_scanner;
         QStringList         m_folders;
+        QStringList         m_foldersToRemove;
 
         QXmlInputSource  m_source;
         QXmlSimpleReader m_reader;
