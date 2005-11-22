@@ -1326,6 +1326,10 @@ MediaDevice::addURL( const KURL& url, MetaBundle *bundle, bool isPodcast, const 
         {
             text += " (" + i18n("Podcast") + ")";
         }
+        if( item->m_playlistName != QString::null )
+        {
+            text += " (" + item->m_playlistName + ")";
+        }
         item->setText( 0, text);
 
         m_parent->updateStats();
@@ -1349,6 +1353,7 @@ void
 MediaDevice::clearItems()
 {
     m_transferList->clear();
+    m_transferList->itemCountChanged();
     if(m_parent)
         m_parent->updateStats();
 
@@ -1375,6 +1380,7 @@ MediaDevice::removeSelected()
 
     m_parent->m_transferButton->setEnabled( m_transferList->childCount() != 0 && isConnected() );
     m_parent->updateStats();
+    m_transferList->itemCountChanged();
 }
 
 void
@@ -1978,9 +1984,6 @@ MediaDeviceTransferList::MediaDeviceTransferList(MediaDeviceView *parent)
     setAcceptDrops( true );
     addColumn( i18n( "Transfer Queue" ) );
 
-    connect( this, SIGNAL( itemAdded( QListViewItem * ) ),   SLOT( itemCountChanged() ) );
-    connect( this, SIGNAL( itemRemoved( QListViewItem * ) ), SLOT( itemCountChanged() ) );
-
     itemCountChanged();
 }
 
@@ -2107,7 +2110,10 @@ MediaDeviceTransferList::keyPressEvent( QKeyEvent *e )
 void
 MediaDeviceTransferList::itemCountChanged()
 {
-    childCount() > 0 ? show() : hide();
+    if( childCount() == 0 )
+        hide();
+    else if( !isShown() )
+        show();
 }
 
 #include "mediabrowser.moc"
