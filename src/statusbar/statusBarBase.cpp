@@ -606,6 +606,7 @@ StatusBar::writeLogFile( const QString &text )
             if( QFile::exists( log ) )
             {
                 file.setName( log );
+                break;
             }
         }
         if( c == 0 ) file.setName( logBase + "0" );
