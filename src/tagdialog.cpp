@@ -602,6 +602,8 @@ TagDialog::readMultipleTracks()
         m_bundle.setYear( first.year() );
         kIntSpinBox_year->setValue( first.year() );
     }
+    else
+        m_bundle.setYear( 0 );
     if (score) {
         m_score = scoreFirst;
         kIntSpinBox_score->setValue( scoreFirst );

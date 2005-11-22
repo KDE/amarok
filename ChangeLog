@@ -56,6 +56,7 @@ VERSION 1.4:
       compatibility with various iPod models.
 
   BUGFIXES:
+    * tag dialog doesn't delete year tags any more when editing multiple tracks
     * Fix memory leak in the helix engine (BR 116223)
     * Fix possible bug when saving unencoded podcasts to strange file systems.
     * OSD Preview did not update colours when toggling 'Use custom colours'
