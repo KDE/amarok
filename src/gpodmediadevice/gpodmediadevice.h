@@ -41,7 +41,9 @@ class GpodMediaDevice : public MediaDevice
         MediaItem        *insertTrackIntoDB(const QString& pathname, const MetaBundle& bundle, bool isPodcast);
         bool              deleteItemFromDevice(MediaItem *item, bool onlyPlayed=false );
         void              addToPlaylist(MediaItem *list, MediaItem *after, QPtrList<MediaItem> items);
+        void              addToDirectory(MediaItem *dir, QPtrList<MediaItem> items);
         MediaItem        *newPlaylist(const QString &name, MediaItem *list, QPtrList<MediaItem> items);
+        virtual MediaItem*newDirectory(const QString&, MediaItem*) { return 0; }
         bool              getCapacity(unsigned long *total, unsigned long *available);
 
     protected slots:

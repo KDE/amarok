@@ -395,6 +395,12 @@ GpodMediaDevice::addToPlaylist(MediaItem *mlist, MediaItem *after, QPtrList<Medi
     playlistFromItem(list);
 }
 
+void
+GpodMediaDevice::addToDirectory(MediaItem *, QPtrList<MediaItem>)
+{
+   debug() << "addToDirectory: not implemented" << endl;
+}
+
 bool
 GpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
 {
