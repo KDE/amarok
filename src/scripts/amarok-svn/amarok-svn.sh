@@ -48,7 +48,7 @@ function CheckBinary {
 }
 
 echo
-echo "amaroK-svn (Version 3.0-beta1) by Jocke \"Firetech\" Andersson"
+echo "amaroK-svn (Version 3.0-beta2) by Jocke \"Firetech\" Andersson"
 echo "=============================================================="
 echo
 
@@ -305,11 +305,12 @@ if [ "$?" != "0" ]; then # If the command didn't finish successfully
   exit 1 # Exit with error
 fi
 
+## Configuration help
 if [ "$CONF_HELP" = "true" ]; then
   TMP_FILE="`mktemp`"
   echo -e "<big><b><u>Configuration help</u></b></big>\n" > ${TMP_FILE}
   ./configure --help >> ${TMP_FILE}
-  kdialog --title "${KD_TITLE} :: Configuration help" --textbox ${TMP_FILE} 600 5000 & # height 5000 shoulkd be enough even for VERY big desktops. It should be limited to the desktop height anyway. & it to make the user able to watch it while typing the selected options into the input box.
+  kdialog --title "${KD_TITLE} :: Configuration help" --textbox ${TMP_FILE} 600 5000 & # height 5000 should be enough even for VERY big desktops. It will be limited to the desktop height anyway. Put it in the background (&) to make the user able to watch it while typing the selected options into the input box.
   rm -f ${TMP_FILE}
   kdialog --title "${KD_TITLE}" --yesno "Do you want to use any extra configuration options (in addition to \"--prefix=`kde-config --prefix` --enable-debug=full\")?\nNo extra options is the default, and that works fine.\n(Available options are displayed in another window right now.)"
   if [ "$?" = "0" ]; then
@@ -335,10 +336,10 @@ if [ "$?" != "0" ]; then # If the command didn't finish successfully
   exit 1 # Exit with error
 fi
 
-## Store the old uninstall commands
+## Compare uninstall commands and remove unused files
 echo
 echo "# 10/12 - Removing files that will be unused with the new revision."
-if [ -z "${TMP_OLD_UNINFO}" ]; then
+if [ -s "${TMP_OLD_UNINFO}" ]; then
   echo "No older revision is installed."
 else
   TMP_NEW_UNINFO="`mktemp`"
@@ -360,6 +361,7 @@ else
     fi
   fi
   rm -f ${TMP_OLD_UNINFO} ${TMP_NEW_UNINFO} ${TMP_UNFILES}
+  echo "Done."
 fi
 
 ## Compilation
@@ -376,15 +378,14 @@ echo "Compilation successful."
 ## Installation
 echo
 echo "# 12/12 - Installing files. (This requires root privileges.)"
-echo -n "Using \"${HOW_ROOT}\" for installation."
+echo "Using \"${HOW_ROOT}\" for installation."
 if [ "${HOW_ROOT}" = "sudo" ]; then
-  echo " (You might need to enter your password now.)"
+  echo "(You might need to enter your password now.)"
   sudo `which unsermake` install
 elif [ "${HOW_ROOT}" = "su -c" ]; then
-  echo " (You probably have to enter the root password now.)"
+  echo "(You probably have to enter the root password now.)"
   su -c "`which unsermake` install"
 else
-  echo
   kdesu -t `which unsermake` install
 fi
 if [ "$?" = "0" ]; then # If the command did finish successfully
