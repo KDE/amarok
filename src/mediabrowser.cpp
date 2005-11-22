@@ -1661,6 +1661,17 @@ MediaDevice::transferFiles()
 
 
 void
+MediaDevice::fileDeleted( KIO::Job *job )  //SLOT
+{
+    if(job->error())
+    {
+        debug() << "file deletion failed: " << job->errorText() << endl;
+    }
+    m_waitForDeletion = false;
+    m_parent->updateStats();
+}
+
+void
 MediaDevice::fileTransferred( KIO::Job *job )  //SLOT
 {
     if(job->error())
@@ -1703,7 +1714,17 @@ void
 MediaDevice::deleteFile( const KURL &url )
 {
     debug() << "deleting " << url.prettyURL() << endl;
-    KIO::file_delete( url, false );
+    KIO::Job *job = KIO::file_delete( url, false );
+    connect( job, SIGNAL( result( KIO::Job * ) ),
+            this,  SLOT( fileDeleted( KIO::Job * ) ) );
+
+    m_waitForDeletion = true;
+    do
+    {
+        kapp->processEvents( 100 );
+        usleep( 10000 );
+    } while( m_waitForDeletion );
+
     if(!isTransferring())
         m_parent->m_progress->setProgress( m_parent->m_progress->progress() + 1 );
 }
@@ -1764,6 +1785,7 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
             if( fi->childCount() )
                 deleteFromDevice( static_cast<MediaItem*>(fi->firstChild()), onlyPlayed, true );
         }
+        m_parent->updateStats();
 
         fi = next;
     }
@@ -1777,8 +1799,8 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
         {
             QTimer::singleShot( 1500, m_parent->m_progress, SLOT(hide()) );
         }
-        m_parent->updateStats();
     }
+    m_parent->updateStats();
 }
 
 void

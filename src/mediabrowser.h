@@ -284,6 +284,7 @@ class MediaDevice : public QObject
 
     private slots:
         void fileTransferred( KIO::Job *job );
+        void fileDeleted( KIO::Job *job );
 
     protected slots:
         void fileTransferFinished();
@@ -383,6 +384,7 @@ class MediaDevice : public QObject
         MediaDeviceView* m_parent;
         MediaDeviceList* m_listview;
         bool             m_wait;
+        bool             m_waitForDeletion;
         bool             m_copyFailed;
         bool             m_requireMount;
         bool             m_transferring;
