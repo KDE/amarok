@@ -158,7 +158,7 @@ class Playlist : private KListView, public EngineObserver
         void appendMedia( const QString &path );
         void clear();
         void copyToClipboard( const QListViewItem* = 0 ) const;
-        void countChanged( const QString &path );
+        void playCountChanged( const QString &path );
         void deleteSelectedFiles();
         void ensureItemCentered( QListViewItem* item );
         void playCurrentTrack();

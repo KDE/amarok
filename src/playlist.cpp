@@ -327,7 +327,7 @@ Playlist::Playlist( QWidget *parent )
     connect( CollectionDB::instance(), SIGNAL( scoreChanged( const QString&, int ) ),
              this,       SLOT( scoreChanged( const QString&, int ) ) );
     connect( CollectionDB::instance(), SIGNAL( scoreChanged( const QString&, int ) ),
-             this,       SLOT( countChanged( const QString& ) ) );
+             this,       SLOT( playCountChanged( const QString& ) ) );
     connect( header(), SIGNAL( indexChange( int, int, int ) ),
              this,       SLOT( columnOrderChanged() ) ),
 
@@ -3114,7 +3114,7 @@ Playlist::scoreChanged( const QString &path, int score )
 }
 
 void
-Playlist::countChanged( const QString &path )
+Playlist::playCountChanged( const QString &path )
 {
     for( MyIt it( this, MyIt::All ); *it; ++it )
     {
