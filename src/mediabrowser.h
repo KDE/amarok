@@ -97,6 +97,9 @@ class MediaDeviceTransferList : public KListView
         void contentsDragMoveEvent( QDragMoveEvent* e );
         unsigned totalSize() const; // total size of items to transfer in KB
 
+    public slots:
+        void itemCountChanged();
+
     private:
         void keyPressEvent( QKeyEvent *e );
 

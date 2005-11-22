@@ -1334,6 +1334,7 @@ MediaDevice::addURL( const KURL& url, MetaBundle *bundle, bool isPodcast, const 
     } else
         amaroK::StatusBar::instance()->longMessage( i18n( "Track already exists on media device: %1" ).arg( url.path().local8Bit() ),
                                                     KDE::StatusBar::Sorry );
+    m_transferList->itemCountChanged();
 }
 
 void
@@ -1506,6 +1507,7 @@ MediaDevice::connectDevice( bool silent )
                     if ( cur->m_playlistName == QString::null && trackExists( *cur->bundle() ) )
                     {
                         delete cur;
+                        m_transferList->itemCountChanged();
                     }
                 }
                 m_parent->updateStats();
@@ -1650,6 +1652,7 @@ MediaDevice::transferFiles()
 
         delete m_transferredItem;
         m_transferredItem = 0;
+        m_transferList->itemCountChanged();
     }
     synchronizeDevice();
     unlockDevice();
@@ -1974,6 +1977,11 @@ MediaDeviceTransferList::MediaDeviceTransferList(MediaDeviceView *parent)
     setDropVisualizerWidth( 3 );
     setAcceptDrops( true );
     addColumn( i18n( "Transfer Queue" ) );
+
+    connect( this, SIGNAL( itemAdded( QListViewItem * ) ),   SLOT( itemCountChanged() ) );
+    connect( this, SIGNAL( itemRemoved( QListViewItem * ) ), SLOT( itemCountChanged() ) );
+
+    itemCountChanged();
 }
 
 void
@@ -2094,6 +2102,12 @@ MediaDeviceTransferList::keyPressEvent( QKeyEvent *e )
     {
         m_parent->m_device->removeSelected();
     }
+}
+
+void
+MediaDeviceTransferList::itemCountChanged()
+{
+    childCount() > 0 ? show() : hide();
 }
 
 #include "mediabrowser.moc"
