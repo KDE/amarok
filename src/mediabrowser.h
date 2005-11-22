@@ -158,6 +158,7 @@ class MediaDeviceList : public KListView
 
         void rmbIfp( QListViewItem*, const QPoint&, int );
         void rmbIpod( QListViewItem*, const QPoint&, int );
+        MediaItem *newDirectory( MediaItem* parent );
 
         MediaDeviceView* m_parent;
         QString m_renameFrom;
@@ -220,7 +221,7 @@ class MediaDevice : public QObject
         /**
          * @return true if the device is connected
          */
-        virtual bool        isConnected() = 0;
+        virtual bool       isConnected() = 0;
 
         /**
          * Adds particular tracks to a playlist
@@ -228,16 +229,25 @@ class MediaDevice : public QObject
          * @param after insert following this item
          * @param items tracks to add to playlist
          */
-        virtual void        addToPlaylist(MediaItem *playlist, MediaItem *after, QPtrList<MediaItem> items) = 0;
+        virtual void       addToPlaylist(MediaItem *playlist, MediaItem *after, QPtrList<MediaItem> items) = 0;
 
         /**
          * Create a new playlist
          * @param name playlist title
          * @param parent parent MediaItem of the new playlist
-         * @param items tracks to add to playlist
+         * @param items tracks to add to the new playlist
          * @return the newly created playlist
          */
-        virtual MediaItem * newPlaylist(const QString &name, MediaItem *parent, QPtrList<MediaItem> items) = 0;
+        virtual MediaItem *newPlaylist(const QString &name, MediaItem *parent, QPtrList<MediaItem> items) = 0;
+
+        /**
+         * Create a new directory
+         * @param name directory title
+         * @param parent parent MediaItem of the new directory
+         * @param items tracks to add to the new directory
+         * @return the newly created directory
+         */
+        virtual MediaItem *newDirectory( const QString &name, MediaItem *parent ) = 0;
 
         void         setRequireMount( const bool b ) { m_requireMount = b; }
         void         setDeviceType( DeviceType type ) { m_type = type; }

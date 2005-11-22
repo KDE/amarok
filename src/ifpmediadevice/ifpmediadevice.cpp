@@ -208,6 +208,8 @@ IfpMediaDevice::closeDevice()  //SLOT
     return true;
 }
 
+/// Renaming
+
 void
 IfpMediaDevice::renameItem( QListViewItem *item ) // SLOT
 {
@@ -230,23 +232,26 @@ IfpMediaDevice::renameItem( QListViewItem *item ) // SLOT
     #undef item
 }
 
+/// Creating a directory
 
-void
-IfpMediaDevice::expandItem( QListViewItem *item ) // SLOT
+MediaItem *
+IfpMediaDevice::newDirectory( const QString &name, MediaItem *parent )
 {
-    if( !item || !item->isExpandable() ) return;
+    if( !m_connected || name.isEmpty() ) return 0;
 
-    while( item->firstChild() )
-        delete item->firstChild();
+    const QCString dirPath = QFile::encodeName( getFullPath( parent ) + "\\" + name );
+    debug() << "Creating directory: " << dirPath << endl;
+    int err = ifp_mkdir( &m_ifpdev, dirPath );
 
-    m_tmpParent = item;
+    if( err ) //failed
+        return 0;
 
-    QString path = getFullPath( item );
-    listDir( path );
-
-    m_tmpParent = 0;
+    m_tmpParent = parent;
+    addTrackToList( IFP_DIR, name );
+    return m_last;
 }
 
+/// Uploading
 
 MediaItem *
 IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle, bool /*isPodcast*/ )
@@ -327,6 +332,22 @@ IfpMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/ )
 /// Directory Reading
 
 void
+IfpMediaDevice::expandItem( QListViewItem *item ) // SLOT
+{
+    if( !item || !item->isExpandable() ) return;
+
+    while( item->firstChild() )
+        delete item->firstChild();
+
+    m_tmpParent = item;
+
+    QString path = getFullPath( item );
+    listDir( path );
+
+    m_tmpParent = 0;
+}
+
+void
 IfpMediaDevice::listDir( const QString &dir )
 {
     DEBUG_BLOCK
@@ -386,6 +407,8 @@ IfpMediaDevice::getCapacity( unsigned long *total, unsigned long *available )
 
     return totalBytes > 0;
 }
+
+/// Helper functions
 
 QString
 IfpMediaDevice::getFullPath( const QListViewItem *item, const bool getFilename )

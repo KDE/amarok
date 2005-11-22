@@ -51,7 +51,8 @@ class IfpMediaDevice : public MediaDevice
 
         MediaItem        *copyTrackToDevice( const MetaBundle& bundle, bool isPodcast);
         bool              deleteItemFromDevice( MediaItem *item, bool onlyPlayed = false );
-        bool              getCapacity(unsigned long *total, unsigned long *available);
+        bool              getCapacity( unsigned long *total, unsigned long *available );
+        MediaItem        *newDirectory( const QString &name, MediaItem *parent );
 
         QString           determinePathname( const MetaBundle& ) { return QString::null; }
         void              addToPlaylist( MediaItem *, MediaItem *, QPtrList<MediaItem> ) {}
