@@ -356,14 +356,40 @@ PlaylistWindow::init()
             m_browsers->addBrowser( Type::instance(), text, icon ); }
 
         addBrowserMacro( ContextBrowser, "ContextBrowser", i18n( "Context" ), "info" )
+        new KAction( i18n( "Show Context Browser" ), "info", CTRL+Key_1,
+            this, SLOT( slotShowContextBrowser() ), actionCollection(), "show_context_browser" );
+        actionCollection()->action( "show_context_browser" )->plug( playlistMenu );
+        actionCollection()->action( "show_context_browser" )->unplug( playlistMenu );
+        // HACK HACK HAAAACK
+        // KAction, or QSomething, or other, is really incredibly moronically fucking stupid
+        // the keyboard shortcuts don't work unless you plug it into a menu -- but they keep working
+        // after you unplug it! (but hey, I aint complaining about that latter part...)
+
         addBrowserMacro( CollectionBrowser, "CollectionBrowser", i18n( "Collection" ), "collection" )
+        new KAction( i18n( "Show Collection Browser" ), "collection", CTRL+Key_2,
+            this, SLOT( slotShowCollectionBrowser() ), actionCollection(), "show_collection_browser" );
+        actionCollection()->action( "show_collection_browser" )->plug( playlistMenu );
+        actionCollection()->action( "show_collection_browser" )->unplug( playlistMenu );
+
         addInstBrowserMacro( PlaylistBrowser, "PlaylistBrowser", i18n( "Playlists" ), "player_playlist_2" )
+        new KAction( i18n( "Show Playlist Browser" ), "player_playlist_2", CTRL+Key_3,
+            this, SLOT( slotShowPlaylistBrowser() ), actionCollection(), "show_playlist_browser" );
+        actionCollection()->action( "show_playlist_browser" )->plug( playlistMenu );
+        actionCollection()->action( "show_playlist_browser" )->unplug( playlistMenu );
 
         // disable this check for now as isAvailable() returned always true before
         //if( MediaBrowser::isAvailable() )
             addBrowserMacro( MediaBrowser, "MediaBrowser", i18n( "Media Device" ), "usbpendrive_unmount" )
+            new KAction( i18n( "Show Media Device Browser" ), "usbpendrive_unmount", CTRL+Key_4,
+                this, SLOT( slotShowMediaBrowser() ), actionCollection(), "show_media_browser" );
+            actionCollection()->action( "show_media_browser" )->plug( playlistMenu );
+            actionCollection()->action( "show_media_browser" )->unplug( playlistMenu );
 
         addBrowserMacro( FileBrowser, "FileBrowser", i18n( "Files" ), "folder" )
+        new KAction( i18n( "Show File Browser" ), "folder", CTRL+Key_5,
+            this, SLOT( slotShowFileBrowser() ), actionCollection(), "show_file_browser" );
+        actionCollection()->action( "show_file_browser" )->plug( playlistMenu );
+        actionCollection()->action( "show_file_browser" )->unplug( playlistMenu );
 
         #undef addBrowserMacro
         #undef addInstBrowserMacro
@@ -808,6 +834,32 @@ void PlaylistWindow::showHide() //SLOT
 
     if( isShown() ) KWin::deIconifyWindow( winId() );
 }
+
+void PlaylistWindow::slotShowContextBrowser()
+{
+    m_browsers->showHideBrowser( "ContextBrowser" );
+}
+
+void PlaylistWindow::slotShowCollectionBrowser()
+{
+    m_browsers->showHideBrowser( "CollectionBrowser" );
+}
+
+void PlaylistWindow::slotShowPlaylistBrowser()
+{
+    m_browsers->showHideBrowser( "PlaylistBrowser" );
+}
+
+void PlaylistWindow::slotShowMediaBrowser()
+{
+    m_browsers->showHideBrowser( "MediaBrowser" );
+}
+
+void PlaylistWindow::slotShowFileBrowser()
+{
+    m_browsers->showHideBrowser( "FileBrowser" );
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 /// DynamicBar
 //////////////////////////////////////////////////////////////////////////////////////////
