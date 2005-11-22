@@ -1141,8 +1141,8 @@ GpodMediaDevice::getCapacity( unsigned long *total, unsigned long *available )
         return false;
     }
 
-    *total = buf.f_blocks * buf.f_frsize / 1024;
-    *available = buf.f_bavail * buf.f_bsize / 1024;
+    *total = buf.f_blocks * (uint64_t)buf.f_frsize / 1024;
+    *available = buf.f_bavail * (uint64_t)buf.f_frsize / 1024;
 
     return *total > 0;
 #else
