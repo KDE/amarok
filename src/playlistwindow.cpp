@@ -623,6 +623,14 @@ void PlaylistWindow::closeEvent( QCloseEvent *e )
 }
 
 
+void PlaylistWindow::showEvent( QShowEvent* )
+{
+    static bool firstTime = true;
+    if( firstTime )
+        Playlist::instance()->setFocus();
+    firstTime = false;
+}
+
 #include <qdesktopwidget.h>
 QSize PlaylistWindow::sizeHint() const
 {

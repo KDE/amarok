@@ -72,6 +72,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
 
     protected:
         virtual void closeEvent( QCloseEvent* );
+        virtual void showEvent( QShowEvent* );
         virtual QSize sizeHint() const;
 
     private:
