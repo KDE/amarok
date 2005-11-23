@@ -92,5 +92,34 @@ it more typing than '0' but preprocessor directives are less elegant.
     SomeClass* instance = 0;
 
 
+Debugging
+---------
+
+debug.h contains some handy functions for our debug console output.  
+Please use there instead of kdDebug().
+
+Usage:
+
+#include "debug.h"
+
+debug()   << "Something is happening" << endl;
+warning() << "Something bad may happen" << endl;
+error()   << "Something bad did happen!" << endl;
+fatal()   << "Uh oh..." << endl;
+
+Additionally, there are some macros for debugging functions:
+
+DEBUG_BLOCK
+DEBUG_FUNC_INFO
+DEBUG_LINE_INFO
+DEBUG_INDENT
+DEBUG_UNINDENT
+
+AMAROK_NOTIMPLEMENTED
+AMAROK_DEPRECATED
+
+
+
 Thanks, now have fun!
  -- the amaroK developers
+
