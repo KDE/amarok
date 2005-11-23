@@ -842,7 +842,11 @@ void HelixSimplePlayer::tearDown()
    {
       delete [] m_pszGUIDList;
    }
-   
+
+   for (i=0; i<m_numPlugins; i++)
+      delete m_pluginInfo[i];
+   delete m_pluginInfo;
+
    if (bEnableVerboseMode)
    {
       STDOUT("\nDone.\n");
