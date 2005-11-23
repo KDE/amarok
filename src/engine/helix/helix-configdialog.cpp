@@ -345,12 +345,12 @@ HelixConfigDialogBase::HelixConfigDialogBase( HelixEngine *engine, amaroK::Plugi
     le->setWordWrap(QTextEdit::NoWrap);
 
     int n = engine->numPlugins();
+    debug() << "NPLUGINS: " << n << "\n";
     const char *description, *copyright, *moreinfourl;
-    unsigned long ver;
     row = 0;
     for (int i=0; i<n; i++)
     {
-       engine->getPluginInfo(i, description, copyright, moreinfourl, ver);
+       engine->getPluginInfo(i, description, copyright, moreinfourl);
        le->append(QString(description));
        le->append(QString(copyright));
        le->append(QString(moreinfourl));
@@ -429,11 +429,15 @@ HelixConfigDialogBase::save()
    }
 
    if (m_device->isChanged())
+   {
       m_device->setUnchanged();
+      writeIt = true;
+   }
 
    if (writeIt)
    {
       HelixConfig::writeConfig();
+
       // reinit...
       m_engine->init();
    }
@@ -448,6 +452,7 @@ HelixConfigDialog::HelixConfigDialog( HelixEngine *engine, QWidget *p ) : amaroK
 
 HelixConfigDialog::~HelixConfigDialog()
 {
+   debug() << "DELETING HelixConfigDialog\n";
    delete instance;
    instance = 0;
 }

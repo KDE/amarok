@@ -515,9 +515,15 @@ void HelixSimplePlayer::init(const char *corelibhome, const char *pluginslibhome
 
       pPluginProps = 0;
       int n = pPlugin2Handler->GetNumOfPlugins2();
+      m_numPlugins = n;
       STDERR("Got the plugin2 handler: numplugins =  %d\n", n);
-      for (int i=0; i<n; i++)
+      m_pluginInfo = new pluginInfo* [n];
+      for (i=0; i<n; i++)
       {
+         m_pluginInfo[i] = new pluginInfo;
+         m_pluginInfo[i]->description = "";
+         m_pluginInfo[i]->copyright = "";
+         m_pluginInfo[i]->moreinfourl = "";
          hasmime = hasexts = false;
          pPlugin2Handler->GetPluginInfo(i, pPluginProps);
          if (pPluginProps)
@@ -525,18 +531,36 @@ void HelixSimplePlayer::init(const char *corelibhome, const char *pluginslibhome
             ret = pPluginProps->GetFirstPropertyCString(szPropName, pPropValue);
             while(SUCCEEDED(ret))
             {
+               value = (char*)pPropValue->GetBuffer();
                if (!strcmp(szPropName, "FileMime"))
                {
-                  value = (char*)pPropValue->GetBuffer();
                   strcpy(mime, value);
                   hasmime = true;
                }
 
                if (!strcmp(szPropName, "FileExtensions"))
                {
-                  value = (char*)pPropValue->GetBuffer();
                   strcpy(ext, value);
                   hasexts = true;
+               }
+
+               if (!strcmp(szPropName, "Description"))
+               {
+                  m_pluginInfo[i]->description = new char[ strlen(value) + 1 ];
+                  strcpy(m_pluginInfo[i]->description, value);
+               }
+
+               if (!strcmp(szPropName, "Copyright"))
+               {
+                  m_pluginInfo[i]->copyright = new char[ strlen(value) + 1 ];
+                  strcpy(m_pluginInfo[i]->copyright, value);
+               }
+
+
+               if (!strcmp(szPropName, "PlgCopy"))
+               {
+                  m_pluginInfo[i]->moreinfourl = new char[ strlen(value) + 1 ];
+                  strcpy(m_pluginInfo[i]->moreinfourl, value);
                }
 
                ret = pPluginProps->GetNextPropertyCString(szPropName, pPropValue);
@@ -733,6 +757,8 @@ void HelixSimplePlayer::tearDown()
    // make sure all players are stopped,
    stop();
 
+   STDERR("TEARDOWN\n");
+
    for (i=nNumPlayers-1; i>=0; i--)
    {
       if (ppctrl[i]->pCrossFader)
@@ -816,7 +842,11 @@ void HelixSimplePlayer::tearDown()
    {
       delete [] m_pszGUIDList;
    }
-   
+
+   for (i=0; i<m_numPlugins; i++)
+      delete m_pluginInfo[i];
+   delete m_pluginInfo;
+
    if (bEnableVerboseMode)
    {
       STDOUT("\nDone.\n");
@@ -1309,21 +1339,14 @@ int HelixSimplePlayer::numPlugins() const
 int HelixSimplePlayer::getPluginInfo(int index, 
                                      const char *&description, 
                                      const char *&copyright, 
-                                     const char *&moreinfourl, 
-                                     unsigned long &ver) const
+                                     const char *&moreinfourl) const
 {
-   IHXPlugin *p = 0;
-   HXBOOL mult;
-
-   description = "";
-   copyright = "";
-   moreinfourl = "";
-   pPluginE->GetPlugin((ULONG32)index, (IUnknown *&)p);
-   if (p)
+   if (index < m_numPlugins)
    {
-      p->AddRef();
-      p->GetPluginInfo(mult, description, copyright, moreinfourl, (ULONG32 &) ver);
-      p->Release();
+      description = m_pluginInfo[index]->description;
+      copyright   = m_pluginInfo[index]->copyright;
+      moreinfourl = m_pluginInfo[index]->moreinfourl;
+   
       return 0;
    }
    return -1;
