@@ -121,11 +121,14 @@ CoverFetcher::startFetch()
     //Amazon Japan isn't on xml.amazon.com
     QString tld = "com";
     int mibenum = 4;  // latin1
-    if (AmarokConfig::amazonLocale() == "jp") {
+    if( AmarokConfig::amazonLocale() == "jp" ) {
         musicMode = "music-jp";
         tld = "co.jp";
         mibenum = 106;  // utf-8
-    }
+    } 
+    else if( AmarokConfig::amazonLocale() == "ca" )
+        musicMode = "music-ca";
+
     QString url;
     // changed to type=lite because it makes less traffic
     url = "http://xml.amazon." + tld
