@@ -171,9 +171,9 @@ HSPEngineContext::ReadPref(const char* pref_key, IHXBuffer*& buffer)
        {
           ibuf->SetSize(2);
           outbuf = ibuf->GetBuffer();
-          strcpy((char *)outbuf, "PCM");
+          strcpy((char *)outbuf, "default");
           buffer = ibuf;
-          m_splayer->STDERR("Setting Mixer Element to use the PCM mixer\n");
+          m_splayer->STDERR("Setting Mixer Element to use the default mixer\n");
        }
     }
     else if (0 == (stricmp(pref_key, "AlsaPCMDeviceName")))
