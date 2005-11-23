@@ -233,8 +233,7 @@ public:
    int getPluginInfo(int index, 
                      const char *&description, 
                      const char *&copyright, 
-                     const char *&moreinfourl, 
-                     unsigned long &ver) const;
+                     const char *&moreinfourl) const;
 
 
    metaData *getMetaData(int playerIndex);
@@ -315,6 +314,15 @@ private:
    bool m_urlchanged;
    int m_volBefore;
    int m_volAtStart;
+
+   int m_numPlugins;
+   struct pluginInfo
+   {
+      char *description; 
+      char *copyright; 
+      char *moreinfourl; 
+   } **m_pluginInfo;
+
 
 protected:
    int                  m_preamp;

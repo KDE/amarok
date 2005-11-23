@@ -88,6 +88,7 @@ public:
    virtual void save();
 
    void setSoundSystem( int api );
+   void setEngine(HelixEngine *e) { m_engine = e; }
 
 private:
    QPtrList<HelixConfigEntry> entries;

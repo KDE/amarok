@@ -199,12 +199,13 @@ HelixEngine::init()
          fallbackToOSS();
 
          HelixSimplePlayer::initDirectSS();
-         if (m_inited)
-         {
-            HelixSimplePlayer::setVolume(vol);
-            setEqualizerParameters(savedpreamp, savedequalizerGains);
-            setEqualizerEnabled(eqenabled);
-         }
+      }
+
+      if (m_inited)
+      {
+         HelixSimplePlayer::setVolume(vol);
+         setEqualizerParameters(savedpreamp, savedequalizerGains);
+         setEqualizerEnabled(eqenabled);
       }
 
       m_inited = exists = true;
