@@ -276,34 +276,36 @@ Playlist::Playlist( QWidget *parent )
     #endif
 
     //NOTE order is critical because we can't set indexes or ids
-    addColumn( i18n( "Filename" ),   0 );
-    addColumn( i18n( "Title"      ), 200 ); //displays filename if no title tag
-    addColumn( i18n( "Artist"     ), 100 );
-    addColumn( i18n( "Album"      ), 100 );
-    addColumn( i18n( "Year"       ),   0 ); //0 means hidden
-    addColumn( i18n( "Comment"    ),   0 );
-    addColumn( i18n( "Genre"      ),   0 );
-    addColumn( i18n( "Track"      ),   0 );
-    addColumn( i18n( "Directory"  ),   0 );
-    addColumn( i18n( "Length"     ),  80 );
-    addColumn( i18n( "Bitrate"    ),   0 );
-    addColumn( i18n( "Score"      ),   0 );
-    addColumn( i18n( "Type"       ),   0 );
-    addColumn( i18n( "Playcount"  ),   0 );
-    addColumn( i18n( "Moodbar"    ),  AmarokConfig::showMoodbar() ? 40 : 0 );
+    addColumn( i18n( "Filename"    ),   0 );
+    addColumn( i18n( "Title"       ), 200 ); //displays filename if no title tag
+    addColumn( i18n( "Artist"      ), 100 );
+    addColumn( i18n( "Album"       ), 100 );
+    addColumn( i18n( "Year"        ),   0 ); //0 means hidden
+    addColumn( i18n( "Comment"     ),   0 );
+    addColumn( i18n( "Genre"       ),   0 );
+    addColumn( i18n( "Track"       ),   0 );
+    addColumn( i18n( "Directory"   ),   0 );
+    addColumn( i18n( "Length"      ),  80 );
+    addColumn( i18n( "Bitrate"     ),   0 );
+    addColumn( i18n( "Score"       ),   0 );
+    addColumn( i18n( "Type"        ),   0 );
+    addColumn( i18n( "Playcount"   ),   0 );
+    addColumn( i18n( "Last Played" ),   0 );
+    addColumn( i18n( "Moodbar"     ),  AmarokConfig::showMoodbar() ? 40 : 0 );
 
-    setRenameable( 0, false ); //TODO allow renaming of the filename
-    setRenameable( 1 );
-    setRenameable( 2 );
-    setRenameable( 3 );
-    setRenameable( 4 );
-    setRenameable( 5 );
-    setRenameable( 6 );
-    setRenameable( 7 );
-    setRenameable( 11 );
-    setRenameable( 12, false );
-    setRenameable( 13, false );
-    setRenameable( 14, false );
+    setRenameable( PlaylistItem::Filename, false ); //TODO allow renaming of the filename
+    setRenameable( PlaylistItem::Title );
+    setRenameable( PlaylistItem::Artist );
+    setRenameable( PlaylistItem::Album );
+    setRenameable( PlaylistItem::Year );
+    setRenameable( PlaylistItem::Comment );
+    setRenameable( PlaylistItem::Genre );
+    setRenameable( PlaylistItem::Track );
+    setRenameable( PlaylistItem::Score );
+    setRenameable( PlaylistItem::Type, false );
+    setRenameable( PlaylistItem::Playcount, false );
+    setRenameable( PlaylistItem::LastPlayed, false );
+    setRenameable( PlaylistItem::Moodbar, false );
     setColumnAlignment(  7, Qt::AlignCenter ); //track
     setColumnAlignment(  9, Qt::AlignRight );  //length
     setColumnAlignment( 10, Qt::AlignCenter ); //bitrate
@@ -2397,7 +2399,7 @@ Playlist::saveXML( const QString &path )
     playlist.setAttribute( "product", "amaroK" );
 
     //increase this whenever the format changes, in PlaylistLoader::loadXml() also
-    playlist.setAttribute( "version", "2.0" );
+    playlist.setAttribute( "version", "2.1" );
     newdoc.appendChild( playlist );
 
     for( const PlaylistItem *item = firstChild(); item; item = item->nextSibling() )

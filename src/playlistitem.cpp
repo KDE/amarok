@@ -53,21 +53,22 @@ bool    PlaylistItem::s_pixmapChanged = false;
 const QString PlaylistItem::columnName( int c ) //static
 {
     switch( c ) {
-        case Filename:  return "Filename";
-        case Title:     return "Title";
-        case Artist:    return "Artist";
-        case Album:     return "Album";
-        case Year:      return "Year";
-        case Comment:   return "Comment";
-        case Genre:     return "Genre";
-        case Track:     return "Track";
-        case Directory: return "Directory";
-        case Length:    return "Length";
-        case Bitrate:   return "Bitrate";
-        case Score:     return "Score";
-        case Type:      return "Type";
-        case Playcount: return "Playcount";
-        case Moodbar:   return "Moodbar";
+        case Filename:   return "Filename";
+        case Title:      return "Title";
+        case Artist:     return "Artist";
+        case Album:      return "Album";
+        case Year:       return "Year";
+        case Comment:    return "Comment";
+        case Genre:      return "Genre";
+        case Track:      return "Track";
+        case Directory:  return "Directory";
+        case Length:     return "Length";
+        case Bitrate:    return "Bitrate";
+        case Score:      return "Score";
+        case Type:       return "Type";
+        case LastPlayed: return "LastPlayed";
+        case Playcount:  return "Playcount";
+        case Moodbar:    return "Moodbar";
     }
     return "<ERROR>";
 }
@@ -91,7 +92,8 @@ PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi )
         , m_length( 0 )
         , m_bitrate( 0 )
         , m_score( 0 )
-        , m_playcount( 0 )
+        , m_playCount( 0 )
+        , m_lastPlay( 0 )
         , m_missing( false )
         , m_enabled( true )
         , m_proxyForMoods( 0 )
@@ -129,7 +131,8 @@ PlaylistItem::PlaylistItem( QDomNode node, QListViewItem *item )
         , m_length( 0 )
         , m_bitrate( 0 )
         , m_score( 0 )
-        , m_playcount( 0 )
+        , m_playCount( 0 )
+        , m_lastPlay( 0 )
         , m_missing( false )
         , m_enabled( true )
 {
@@ -165,8 +168,10 @@ PlaylistItem::PlaylistItem( QDomNode node, QListViewItem *item )
             m_score = CollectionDB::instance()->getSongPercentage( m_url.path() );
             continue;
         case Playcount:
-            m_playcount = CollectionDB::instance()->getPlayCount( m_url.path() );
+            m_playCount = CollectionDB::instance()->getPlayCount( m_url.path() );
             continue;
+        case LastPlayed:
+            m_lastPlay = CollectionDB::instance()->getLastPlay( m_url.path() ).toTime_t();
         }
     }
 
@@ -232,6 +237,7 @@ void PlaylistItem::setText( const MetaBundle &bundle )
     setBitrate( bundle.bitrate() );
     setScore( CollectionDB::instance()->getSongPercentage( bundle.url().path() ) );
     setPlaycount( CollectionDB::instance()->getPlayCount( bundle.url().path() ) );
+    setLastPlay( CollectionDB::instance()->getLastPlay( bundle.url().path() ).toTime_t() );
 
     m_missing = !bundle.exists();
 }
@@ -241,17 +247,18 @@ void PlaylistItem::setText( int column, const QString &newText )
 {
     switch( column )
     {
-        case Title:     setTitle(     newText );         break;
-        case Artist:    setArtist(    newText );         break;
-        case Album:     setAlbum(     newText );         break;
-        case Year:      setYear(      newText.toInt() ); break;
-        case Genre:     setGenre(     newText );         break;
-        case Comment:   setComment(   newText );         break;
-        case Track:     setTrack(     newText.toInt() ); break;
-        case Length:    setLength(    newText.toInt() ); break;
-        case Bitrate:   setBitrate(   newText.toInt() ); break;
-        case Score:     setScore(     newText.toInt() ); break;
-        case Playcount: setPlaycount( newText.toInt() ); break;
+        case Title:      setTitle(     newText );         break;
+        case Artist:     setArtist(    newText );         break;
+        case Album:      setAlbum(     newText );         break;
+        case Year:       setYear(      newText.toInt() ); break;
+        case Genre:      setGenre(     newText );         break;
+        case Comment:    setComment(   newText );         break;
+        case Track:      setTrack(     newText.toInt() ); break;
+        case Length:     setLength(    newText.toInt() ); break;
+        case Bitrate:    setBitrate(   newText.toInt() ); break;
+        case Score:      setScore(     newText.toInt() ); break;
+        case Playcount:  setPlaycount( newText.toInt() ); break;
+        case LastPlayed: setLastPlay(  newText.toInt() ); break;
         default: warning() << "Tried to set the text of an immutable or nonexistent column! [" << column << endl;
    }
 }
@@ -260,21 +267,22 @@ QString PlaylistItem::exactText( int column ) const
 {
     switch( column )
     {
-        case Filename:  return filename();
-        case Title:     return title();
-        case Artist:    return artist();
-        case Album:     return album();
-        case Year:      return QString::number( year() );
-        case Comment:   return comment();
-        case Genre:     return genre();
-        case Track:     return QString::number( track() );
-        case Directory: return directory();
-        case Length:    return QString::number( length() );
-        case Bitrate:   return QString::number( bitrate() );
-        case Score:     return QString::number( score() );
-        case Type:      return type();
-        case Playcount: return QString::number( playcount() );
-        case Moodbar:   return "";
+        case Filename:   return filename();
+        case Title:      return title();
+        case Artist:     return artist();
+        case Album:      return album();
+        case Year:       return QString::number( year() );
+        case Comment:    return comment();
+        case Genre:      return genre();
+        case Track:      return QString::number( track() );
+        case Directory:  return directory();
+        case Length:     return QString::number( length() );
+        case Bitrate:    return QString::number( bitrate() );
+        case Score:      return QString::number( score() );
+        case Type:       return type();
+        case Playcount:  return QString::number( playCount() );
+        case LastPlayed: return QString::number( lastPlay() );
+        case Moodbar:    return QString::null;
         default: warning() << "Tried to get the text of a nonexistent column! [" << column << endl;
     }
 
@@ -352,25 +360,31 @@ QString PlaylistItem::text( int column ) const
 
     switch( column )
     {
-        case Filename:  return filename( m_url );
-        case Title:     return ( title().isEmpty() && listView()->columnWidth( Filename ) == 0 )
-                               ? MetaBundle::prettyTitle( filename() )
-                               : title();
-        case Artist:    return artist();
-        case Album:     return album();
-        case Year:      return year() == -4623894 ? editing : year() ? QString::number( year() ) : QString::null;
-        case Comment:   return comment();
-        case Genre:     return genre();
-        case Track:     return track() == -1 ? editing : track() ? QString::number( track() ) : QString::null;
-        case Directory: return m_url.isEmpty()     ? QString()
-                             : m_url.isLocalFile() ? m_url.directory() : m_url.upURL().prettyURL();
-        case Length:    return length() == -1 ? editing : MetaBundle::prettyLength( length(), true );
-        case Bitrate:   return bitrate() == -1 ? editing : MetaBundle::prettyBitrate( bitrate() );
-        case Score:     return score() == -1 ? editing : QString::number( score() );
-        case Type:      return m_url.isEmpty() ? QString() : ( m_url.protocol() == "http" ) ? i18n( "Stream" )
-                               : filename().mid( filename().findRev( '.' ) + 1 );
-        case Playcount: return playcount() == -1 ? editing : QString::number( playcount() );
-        case Moodbar:   return "";
+        case Filename:   return filename( m_url );
+        case Title:      return ( title().isEmpty() && listView()->columnWidth( Filename ) == 0 )
+                                ? MetaBundle::prettyTitle( filename() )
+                                : title();
+        case Artist:     return artist();
+        case Album:      return album();
+        case Year:       return year() == -4623894 ? editing : year() ? QString::number( year() ) : QString::null;
+        case Comment:    return comment();
+        case Genre:      return genre();
+        case Track:      return track() == -1 ? editing : track() ? QString::number( track() ) : QString::null;
+        case Directory:  return m_url.isEmpty()     ? QString()
+                              : m_url.isLocalFile() ? m_url.directory() : m_url.upURL().prettyURL();
+        case Length:     return length() == -1 ? editing : MetaBundle::prettyLength( length(), true );
+        case Bitrate:    return bitrate() == -1 ? editing : MetaBundle::prettyBitrate( bitrate() );
+        case Score:      return score() == -1 ? editing : QString::number( score() );
+        case Type:       return m_url.isEmpty() ? QString() : ( m_url.protocol() == "http" ) ? i18n( "Stream" )
+                                : filename().mid( filename().findRev( '.' ) + 1 );
+        case Playcount:  return playCount() == -1 ? editing : QString::number( playCount() );
+        case LastPlayed:
+        {
+            QDateTime dt;
+            dt.setTime_t( m_lastPlay );
+            return dt.toString( Qt::LocalDate );
+        }
+        case Moodbar:    return "";
         default: warning() << "Tried to get the text of a nonexistent column!" << endl;
     }
 
@@ -444,12 +458,13 @@ void PlaylistItem::setEditing( int column )
         case Comment:
             KListViewItem::setText( column, editing );
             break;
-        case Year:      m_year      = -4623894; break;
-        case Track:     m_track     = -1; break;
-        case Length:    m_length    = -1; break;
-        case Bitrate:   m_bitrate   = -1; break;
-        case Score:     m_score     = -1; break;
-        case Playcount: m_playcount = -1; break;
+        case Year:       m_year      = -4623894; break;
+        case Track:      m_track     = -1; break;
+        case Length:     m_length    = -1; break;
+        case Bitrate:    m_bitrate   = -1; break;
+        case Score:      m_score     = -1; break;
+        case Playcount:  m_playCount = -1; break;
+        case LastPlayed: m_lastPlay  =  1; break;
         default: warning() << "Tried to set the text of an immutable or nonexistent column!" << endl;
     }
 
@@ -467,12 +482,13 @@ bool PlaylistItem::isEditing( int column ) const
         case Genre:
         case Comment: //FIXME fix this hack!
             return KListViewItem::text( column ) == editing;
-        case Year:      return m_year == -4623894;
-        case Track:     return m_track     < 0;
-        case Length:    return m_length    < 0;
-        case Bitrate:   return m_bitrate   < 0;
-        case Score:     return m_score     < 0;
-        case Playcount: return m_playcount < 0;
+        case Year:       return m_year == -4623894;
+        case Track:      return m_track     < 0;
+        case Length:     return m_length    < 0;
+        case Bitrate:    return m_bitrate   < 0;
+        case Score:      return m_score     < 0;
+        case Playcount:  return m_playCount < 0;
+        case LastPlayed: return m_lastPlay == 1;
         default: return false;
     }
 }
@@ -506,12 +522,13 @@ PlaylistItem::compare( QListViewItem *i, int col, bool ascending ) const
     #define i static_cast<PlaylistItem*>(i)
     switch( col )
     {
-        case Track:     return cmp( track(),     i->track() );
-        case Score:     return cmp( score(),     i->score() );
-        case Length:    return cmp( length(),    i->length() );
-        case Playcount: return cmp( playcount(), i->playcount() );
-        case Bitrate:   return cmp( bitrate(),   i->bitrate() );
-        case Moodbar:   return cmp( theHueOrder, i->theHueOrder );
+        case Track:      return cmp( track(),     i->track() );
+        case Score:      return cmp( score(),     i->score() );
+        case Length:     return cmp( length(),    i->length() );
+        case Playcount:  return cmp( playCount(), i->playCount() );
+        case LastPlayed: return cmp( lastPlay(),  i->lastPlay() );
+        case Bitrate:    return cmp( bitrate(),   i->bitrate() );
+        case Moodbar:    return cmp( theHueOrder, i->theHueOrder );
         case Year:
             if( year() == i->year() )
                 return compare( i, Artist, ascending );

@@ -43,6 +43,7 @@ class PlaylistItem : public KListViewItem
             Score,
             Type,
             Playcount,
+            LastPlayed,
             Moodbar,
             NUM_COLUMNS
         };
@@ -111,7 +112,8 @@ class PlaylistItem : public KListViewItem
         inline int     bitrate()   const { return m_bitrate; }
         inline int     score()     const { return m_score; }
         inline QString type()      const { return filename().mid( filename().findRev( '.' ) + 1 ); }
-        inline int     playcount() const { return m_playcount; }
+        inline int     playCount() const { return m_playCount; }
+        inline uint    lastPlay()  const { return m_lastPlay; }
 
         /// some setters
         inline void setTitle(     const QString &title )     { KListViewItem::setText(
@@ -124,12 +126,13 @@ class PlaylistItem : public KListViewItem
                                                                Comment, comment );                update(); }
         inline void setGenre(     const QString &genre )     { KListViewItem::setText(
                                                                Genre,   attemptStore( genre ) );  update(); }
-        inline void setYear(      int            year )      { m_year      = year;      update(); }
-        inline void setTrack(     int            track )     { m_track     = track;     update(); }
-        inline void setLength(    int            length )    { m_length    = length;    update(); }
-        inline void setBitrate(   int            bitrate )   { m_bitrate   = bitrate;   update(); }
-        inline void setScore(     int            score )     { m_score     = score;     update(); }
-        inline void setPlaycount( int            playcount ) { m_playcount = playcount; update(); }
+        inline void setYear(      int           year )      { m_year      = year;      update(); }
+        inline void setTrack(     int           track )     { m_track     = track;     update(); }
+        inline void setLength(    int           length )    { m_length    = length;    update(); }
+        inline void setBitrate(   int           bitrate )   { m_bitrate   = bitrate;   update(); }
+        inline void setScore(     int           score )     { m_score     = score;     update(); }
+        inline void setPlaycount( int           playcount ) { m_playCount = playcount; update(); }
+        inline void setLastPlay( uint           lastplay )  { m_lastPlay  = lastplay;  update(); }
 
         /// @return does the file exist?
         bool exists() const { return !m_missing; }
@@ -178,7 +181,8 @@ class PlaylistItem : public KListViewItem
         int m_length;
         int m_bitrate;
         int m_score;
-        int m_playcount;
+        int m_playCount;
+        int m_lastPlay;
         bool m_missing;
         bool m_enabled;
 
