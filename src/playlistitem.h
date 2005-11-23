@@ -25,9 +25,8 @@ class QPainter;
 class MetaBundle;
 class Playlist;
 
-class PlaylistItem : public QObject, public KListViewItem
+class PlaylistItem : public KListViewItem
 {
-Q_OBJECT
     public:
         enum Column {
             Filename = 0,
@@ -48,13 +47,8 @@ Q_OBJECT
             NUM_COLUMNS
         };
 
-        QMutex theArrayLock;
-        QValueVector<QColor> theArray;
-        QPixmap theMoodbar;
-        int theHueOrder;
-
-        void setArray(const QValueVector<QColor> array);
-
+        class ReadMood;
+        friend class ReadMood;
 
         /// Indicates that the current-track pixmap has changed. Animation must be redrawn.
         static void setPixmapChanged() { s_pixmapChanged = true; }
@@ -163,6 +157,8 @@ Q_OBJECT
             QMap<QString, QPixmap> map;
         };
 
+        void setArray(const QValueVector<QColor> array);
+
         virtual void paintCell( QPainter*, const QColorGroup&, int, int, int );
 
         // Used for sorting
@@ -185,6 +181,19 @@ Q_OBJECT
         int m_playcount;
         bool m_missing;
         bool m_enabled;
+
+        class MoodProxyObject: public QObject
+        {
+            public:
+            MoodProxyObject( PlaylistItem *i ): item( i ) { }
+            PlaylistItem* item;
+        };
+
+        MoodProxyObject *m_proxyForMoods;
+        QMutex theArrayLock;
+        QValueVector<QColor> theArray;
+        QPixmap theMoodbar;
+        int theHueOrder;
 
         static bool s_pixmapChanged;
         static const uint STRING_STORE_SIZE = 80;

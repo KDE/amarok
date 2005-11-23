@@ -134,7 +134,7 @@ class Playlist : private KListView, public EngineObserver
 
         class QDragObject *dragObject();
         friend class amaroK::TrackSlider;
-        friend class ReadMood;
+        friend class PlaylistItem::ReadMood;
         friend class PlaylistItem;
         friend class UrlLoader;
         friend class QueueManager;

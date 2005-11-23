@@ -94,6 +94,7 @@ PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi )
         , m_playcount( 0 )
         , m_missing( false )
         , m_enabled( true )
+        , m_proxyForMoods( 0 )
 {
     setDragEnabled( true );
 
@@ -209,6 +210,8 @@ PlaylistItem::~PlaylistItem()
     }
 
     listView()->countChanged();
+
+    delete m_proxyForMoods;
 }
 
 
@@ -284,26 +287,28 @@ void PlaylistItem::setArray(const QValueVector<QColor> array)
     theArray = array;
 }
 
-class ReadMood : public ThreadWeaver::DependentJob
+class PlaylistItem::ReadMood : public ThreadWeaver::DependentJob
 {
     QString thePath;
     QValueVector<QColor> theArray;
 public:
-    ReadMood( PlaylistItem *i ): DependentJob(i, "ReadMood"), thePath(i->url().path()) {}
+    ReadMood( MoodProxyObject *o ): DependentJob(o, "ReadMood"), thePath( o->item->url().path()) {}
     virtual bool doJob();
     virtual void completeJob();
 };
 
-void ReadMood::completeJob()
+void PlaylistItem::ReadMood::completeJob()
 {
-    if(dynamic_cast<PlaylistItem *>(dependent()))
+    if(MoodProxyObject *o = dynamic_cast<MoodProxyObject *>(dependent()))
     {
-        dynamic_cast<PlaylistItem *>(dependent())->setArray(theArray);
-        dynamic_cast<PlaylistItem *>(dependent())->refreshMood();
+        o->item->setArray(theArray);
+        o->item->refreshMood();
+        o->item->m_proxyForMoods = 0;
+        o->deleteLater();
     }
 }
 
-bool ReadMood::doJob()
+bool PlaylistItem::ReadMood::doJob()
 {
     // attempt to open .mood file:
     QValueVector<QColor> a = amaroK::readMood(thePath);
@@ -333,7 +338,8 @@ void PlaylistItem::checkMood()
 {
     if( m_url.isLocalFile() )
     {
-        ReadMood *c = new ReadMood( this );
+        m_proxyForMoods = new MoodProxyObject( this );
+        ReadMood *c = new ReadMood( m_proxyForMoods );
         ThreadWeaver::instance()->queueJob( c );
     }
 }
@@ -943,5 +949,3 @@ const QString &PlaylistItem::attemptStore( const QString &candidate ) //static
     return stringStore[hash];
 }
 
-
-#include "playlistitem.moc"
