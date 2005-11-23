@@ -429,7 +429,7 @@ CollectionView::renderView()  //SLOT
                     qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
                     break;
                 case Filename:
-                    qb.addReturnValue ( QueryBuilder::tabStats, QueryBuilder::valURL );
+                    qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valURL );
                     break;
                 case Firstplay:
                     qb.addReturnValue ( QueryBuilder::tabStats, QueryBuilder::valCreateDate );
