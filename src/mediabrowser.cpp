@@ -1531,7 +1531,7 @@ MediaDevice::connectDevice( bool silent )
             }
 
             // delete podcasts already played
-            if( m_podcastItem )
+            if( m_autoDeletePodcasts && m_podcastItem )
             {
                 QPtrList<MediaItem> list;
                 //NOTE we assume that currentItem is the main target
