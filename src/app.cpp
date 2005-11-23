@@ -871,9 +871,6 @@ void App::engineTrackPositionChanged( long position, bool /*userSeek*/ )
 
 void App::engineVolumeChanged( int newVolume )
 {
-    //get the amarok icon to show in osd if not playing - else show album cover.
-    QImage osdImage = QImage::QImage();
-    Engine::Playing ? osdImage = QImage::QImage()  :  osdImage = QImage( KIconLoader().iconPath( "amarok", -KIcon::SizeHuge ) );
     amaroK::OSD::instance()->OSDWidget::show( newVolume ? i18n("Volume: %1%").arg( newVolume ) : i18n("Mute") );
 }
 

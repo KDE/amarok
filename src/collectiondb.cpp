@@ -129,6 +129,8 @@ CollectionDB::CollectionDB()
 
 
     startTimer( MONITOR_INTERVAL * 1000 );
+    connect( this, SIGNAL( coverRemoved( const QString&, const QString& ) ),
+                   SIGNAL( coverChanged( const QString&, const QString& ) ) );
     connect( Scrobbler::instance(), SIGNAL( similarArtistsFetched( const QString&, const QStringList& ) ),
              this,                    SLOT( similarArtistsFetched( const QString&, const QStringList& ) ) );
 }

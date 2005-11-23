@@ -159,7 +159,10 @@ namespace amaroK
         void forceToggleOSD();
 
     private:
-        OSD() : OSDWidget( 0 ) {}
+        OSD();
+
+    private slots:
+        void slotCoverChanged( const QString &artist, const QString &album );
     };
 }
 

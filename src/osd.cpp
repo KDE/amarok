@@ -438,6 +438,12 @@ void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 #include "metabundle.h"
 #include <qregexp.h>
 
+amaroK::OSD::OSD(): OSDWidget( 0 )
+{
+    connect( CollectionDB::instance(), SIGNAL( coverChanged( const QString&, const QString& ) ),
+             this,                   SLOT( slotCoverChanged( const QString&, const QString& ) ) );
+}
+
 template<class T>
 class MyVector: public QValueVector<T> //fucking QValueVector doesn't have operator<<, wtf?
 {
@@ -589,6 +595,21 @@ amaroK::OSD::forceToggleOSD()
     }
     else
         hide();
+}
+
+void
+amaroK::OSD::slotCoverChanged( const QString &artist, const QString &album )
+{
+    if( AmarokConfig::osdCover() && artist == EngineController::instance()->bundle().artist()
+                                 && album  == EngineController::instance()->bundle().album()  )
+    {
+        QString location = CollectionDB::instance()->albumImage( artist, album, 0 );
+
+        if( location.find( "nocover" ) != -1 )
+            setImage( amaroK::icon() );
+        else
+            setImage( location );
+    }
 }
 
 
