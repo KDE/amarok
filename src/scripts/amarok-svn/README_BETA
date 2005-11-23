@@ -1,0 +1,19 @@
+CAUTION NOTES for 3.0-beta
+----------------------------
+
+USE THIS VERION WITH CAUTION, but please try it out and report any bugs to ajocke AT gmail DOT com.
+
+* The use_sudo setting isn't used anymore, you should remove the config file (.amarok-svnrc) in the folder
+where you usually run the script. use_sudo has been replaced with how_root, because the script now also supports kdesu.
+
+* The script now also removes unused files by comparing unsermake -n uninstall before and after the configuration
+and then runs the lines that only are in the older edition of the command. I guess this isn't entirely fool proof,
+and that's the only reason I'm keeping this version as a beta.
+The diff might have the possibility create harmful commands... (I don't know yet, I haven't tried it enough...)
+
+In this beta version, however, there's a big dialog box which shows the commands that will be run, so you can
+check that there are no harmful commands before letting the script run them.
+(If you don't want to let the script run the commands, press Ctrl+C in the console window running the script.
+Then notify me about it.)
+
+If this shows to be harmful, I'll just change the script to run all of the old commands if the commands differ.
