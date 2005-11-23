@@ -38,6 +38,7 @@
 #include "statusbar.h"
 
 #include <qevent.h>           //eventFilter()
+#include <qheader.h>
 #include <qlayout.h>
 #include <qlabel.h>           //search filter label
 #include <qsizepolicy.h>      //qspaceritem in dynamic bar
@@ -480,7 +481,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
     //here we filter some events for the Playlist Search LineEdit and the Playlist
     //this makes life easier since we have more useful functions available from this class
 
-    Playlist *pl = Playlist::instance();
+    Playlist* const pl = Playlist::instance();
     typedef QListViewItemIterator It;
 
     switch( e->type() )
@@ -532,28 +533,9 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
             switch( e->key() )
             {
             case Key_Up:
-                item = *It( pl, It::Visible );
-                if( item )
-                    while( item->itemBelow() )
-                        item = item->itemBelow();
-                if( item )
-                {
-                    pl->setFocus();
-                    pl->setCurrentItem( item );
-                    item->setSelected( true );
-                    pl->ensureItemVisible( item );
-                    return true;
-                }
-                return false;
             case Key_Down:
-                if( ( item = *It( pl, It::Visible ) ) )
-                {
-                    pl->setFocus();
-                    pl->setCurrentItem( item );
-                    item->setSelected( true );
-                    pl->ensureItemVisible( item );
-                    return true;
-                }
+                pl->setFocus();
+                QApplication::sendEvent( pl, e );
                 return false;
 
             case Key_PageDown:
@@ -577,7 +559,6 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
                     pl->activate( item );
                     pl->showCurrentTrack();
                 }
-                pl->setFocus();
                 return true;
 
             case Key_Escape:
@@ -594,11 +575,22 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 
         if( o == pl )
         {
-            if( pl->currentItem() && ( ( e->key() == Key_Up   && pl->currentItem()->itemAbove() == 0 )
-                                    || ( e->key() == Key_Down && pl->currentItem()->itemBelow() == 0 ) ) )
+            if( pl->currentItem() && ( e->key() == Key_Up && pl->currentItem()->itemAbove() == 0 ) )
+            {
+                QListViewItem *lastitem = *It( pl, It::Visible );
+                while( lastitem && lastitem->itemBelow() )
+                    lastitem = lastitem->itemBelow();
+                pl->currentItem()->setSelected( false );
+                pl->setCurrentItem( lastitem );
+                lastitem->setSelected( true );
+                pl->ensureItemVisible( lastitem );
+                return true;
+            }
+            if( pl->currentItem() && ( e->key() == Key_Down && pl->currentItem()->itemBelow() == 0 ) )
             {
                 pl->currentItem()->setSelected( false );
-                m_lineEdit->setFocus();
+                pl->setCurrentItem( *It( pl, It::Visible ) );
+                (*It( pl, It::Visible ))->setSelected( true );
                 pl->ensureItemVisible( *It( pl, It::Visible ) );
                 return true;
             }
