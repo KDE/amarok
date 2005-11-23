@@ -714,6 +714,8 @@ MediaDeviceList::contentsDropEvent( QDropEvent *e )
             }
         }
     }
+
+    MediaDevice::instance()->URLsAdded();
 }
 
 
@@ -1347,6 +1349,15 @@ MediaDevice::addURLs( const KURL::List urls, const QString &playlistName )
         KURL::List::ConstIterator it = urls.begin();
         for ( ; it != urls.end(); ++it )
             addURL( *it, 0, false, playlistName );
+
+        URLsAdded();
+}
+
+void
+MediaDevice::URLsAdded()
+{
+    if( isConnected() && asynchronousTransfer() && !isTransferring() )
+        transferFiles();
 }
 
 void
@@ -1964,6 +1975,8 @@ MediaDevice::loadTransferList( const QString& filename )
         QString playlist = elem.attribute( "playlist" );
         addURL( url, bundle, isPodcast, playlist );
     }
+
+    //URLsAdded();
 }
 
 
@@ -2014,6 +2027,8 @@ MediaDeviceTransferList::dropEvent( QDropEvent *e )
             MediaDevice::instance()->addURL( *it );
         }
     }
+
+    MediaDevice::instance()->URLsAdded();
 }
 
 void
@@ -2043,6 +2058,8 @@ MediaDeviceTransferList::contentsDropEvent( QDropEvent *e )
             MediaDevice::instance()->addURL( *it );
         }
     }
+
+    MediaDevice::instance()->URLsAdded();
 }
 
 void

@@ -24,6 +24,7 @@ class GpodMediaDevice : public MediaDevice
                           GpodMediaDevice( MediaDeviceView* parent, MediaDeviceList* listview );
         virtual           ~GpodMediaDevice();
         virtual bool      autoConnect() { return true; }
+        virtual bool      asynchronousTransfer() { return true; }
 
         bool              isConnected();
 

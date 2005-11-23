@@ -220,6 +220,7 @@ class MediaDevice : public QObject
 
         void        addURL( const KURL& url, MetaBundle *bundle=NULL, bool isPodcast=false, const QString &playlistName=QString::null );
         void        addURLs( const KURL::List urls, const QString &playlistName=QString::null );
+        void        URLsAdded();
 
         /**
          * @return true if the device is connected
@@ -263,6 +264,7 @@ class MediaDevice : public QObject
         void         setDeviceType( DeviceType type ) { m_type = type; }
         DeviceType   deviceType() { return m_type; }
         virtual bool autoConnect() { return false; }
+        virtual bool asynchronousTransfer() { return false; }
         bool         isTransferring() { return m_transferring; }
         MediaItem   *transferredItem() { return m_transferredItem; }
 

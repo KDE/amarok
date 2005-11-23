@@ -2269,6 +2269,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                         bundle->setTitle(item->title());
                     MediaDevice::instance()->addURL( item->localUrl(), bundle, true);
                 }
+                MediaDevice::instance()->URLsAdded();
                 break;
         }
         #undef item
