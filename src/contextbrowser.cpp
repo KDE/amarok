@@ -349,7 +349,7 @@ void ContextBrowser::renderView()
 
 
 void ContextBrowser::lyricsChanged( const QString &url ) {
-    if ( url == m_currentURL.path() ) {
+    if ( url == EngineController::instance()->bundle().url().path() ) {
         m_dirtyLyricsPage = true;
         if ( currentPage() == m_lyricsTab )
             showLyrics();
