@@ -1403,23 +1403,28 @@ MediaDevice::config()
     dialog.showButtonApply( false );
     QVBox *box = dialog.makeVBoxMainWidget();
 
-    QLabel *mntpntLabel = new QLabel( box );
-    mntpntLabel->setText( i18n( "&Mount point:" ) );
-    QLineEdit *mntpnt = new QLineEdit( m_mntpnt, box );
-    mntpntLabel->setBuddy( mntpnt );
-    QToolTip::add( mntpnt, i18n( "Set the mount point of your device here, when empty autodetection is tried." ) );
+    QLabel *mntpntLabel = NULL, *mntLabel = NULL, *umntLabel = NULL;
+    QLineEdit *mntpnt = NULL, *mntcmd = NULL, *umntcmd = NULL;
+    if( m_requireMount )
+    {
+        mntpntLabel = new QLabel( box );
+        mntpntLabel->setText( i18n( "&Mount point:" ) );
+        mntpnt = new QLineEdit( m_mntpnt, box );
+        mntpntLabel->setBuddy( mntpnt );
+        QToolTip::add( mntpnt, i18n( "Set the mount point of your device here, when empty autodetection is tried." ) );
 
-    QLabel *mntLabel = new QLabel( box );
-    mntLabel->setText( i18n( "&Mount command:" ) );
-    QLineEdit *mntcmd = new QLineEdit( m_mntcmd, box );
-    mntLabel->setBuddy( mntcmd );
-    QToolTip::add( mntcmd, i18n( "Set the command to mount your device here, empty commands are not executed." ) );
+        mntLabel = new QLabel( box );
+        mntLabel->setText( i18n( "&Mount command:" ) );
+        mntcmd = new QLineEdit( m_mntcmd, box );
+        mntLabel->setBuddy( mntcmd );
+        QToolTip::add( mntcmd, i18n( "Set the command to mount your device here, empty commands are not executed." ) );
 
-    QLabel *umntLabel = new QLabel( box );
-    umntLabel->setText( i18n( "&Unmount command:" ) );
-    QLineEdit *umntcmd = new QLineEdit( m_umntcmd, box );
-    umntLabel->setBuddy( umntcmd );
-    QToolTip::add( umntcmd, i18n( "Set the command to unmount your device here, empty commands are not executed." ) );
+        umntLabel = new QLabel( box );
+        umntLabel->setText( i18n( "&Unmount command:" ) );
+        umntcmd = new QLineEdit( m_umntcmd, box );
+        umntLabel->setBuddy( umntcmd );
+        QToolTip::add( umntcmd, i18n( "Set the command to unmount your device here, empty commands are not executed." ) );
+    }
 
     QHBox *hbox = new QHBox( box );
     QCheckBox *autoDeletePodcasts = new QCheckBox( hbox );
@@ -1430,9 +1435,12 @@ MediaDevice::config()
 
     if ( dialog.exec() != QDialog::Rejected )
     {
-        setMountPoint( mntpnt->text() );
-        setMountCommand( mntcmd->text() );
-        setUmountCommand( umntcmd->text() );
+        if( m_requireMount )
+        {
+            setMountPoint( mntpnt->text() );
+            setMountCommand( mntcmd->text() );
+            setUmountCommand( umntcmd->text() );
+        }
         setAutoDeletePodcasts( autoDeletePodcasts->isChecked() );
     }
 }
