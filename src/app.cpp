@@ -198,6 +198,7 @@ App::~App()
     amaroK::config()->writeEntry( "HiddenOnExit", mainWindow()->isHidden() );
 
     CollectionDB::instance()->stopScan();
+    ThreadWeaver::instance()->abortAllJobsNamed( "CreateMood" ); //these take forever
     ThreadWeaver::deleteInstance(); //waits for jobs to finish
 
     delete m_pPlayerWindow;   //sets some XT keys
