@@ -67,7 +67,7 @@
 #define DEBUG 0
 
 QMutex* CollectionDB::connectionMutex = new QMutex();
-//we don't have to worry about this map leaking memory since ThreadWeaver limits the total 
+//we don't have to worry about this map leaking memory since ThreadWeaver limits the total
 //number of QThreads ever created
 QMap<QThread *, DbConnection *> *CollectionDB::threadConnections = new QMap<QThread *, DbConnection *>();
 
@@ -1960,7 +1960,7 @@ DbConnection * CollectionDB::getMyConnection()
 #ifdef USE_MYSQL
     if ( m_dbConnType == DbConnection::mysql )
     {
-        config = 
+        config =
             new MySqlConfig(
                 AmarokConfig::mySqlHost(),
                 AmarokConfig::mySqlPort(),
@@ -2157,14 +2157,11 @@ class SimilarArtistsInsertionJob : public ThreadWeaver::DependentJob
 {
     virtual bool doJob()
     {
-        // Create a temporary CollectionDB object, to prevent threading problems
-        CollectionDB db;
-
-        db.query( QString( "DELETE FROM related_artists WHERE artist = '%1';" ).arg( escapedArtist ) );
+        CollectionDB::instance()->query( QString( "DELETE FROM related_artists WHERE artist = '%1';" ).arg( escapedArtist ) );
 
         const QString sql = "INSERT INTO related_artists ( artist, suggestion, changedate ) VALUES ( '%1', '%2', 0 );";
         foreach( suggestions )
-            db.insert( sql
+            CollectionDB::instance()->insert( sql
                     .arg( escapedArtist )
                     .arg( CollectionDB::instance()->escapeString( *it ) ), NULL);
 
