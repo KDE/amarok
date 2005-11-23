@@ -266,6 +266,26 @@ BrowserBar::showHideBrowser( int index )
     }
 }
 
+void
+BrowserBar::showHideVisibleBrowser( int index )
+{
+    int realindex = -1;
+    QPtrList<MultiTabBarTab> tabs = *m_tabBar->tabs();
+    for( int i = 0, n = tabs.count(); i < n; ++i )
+    {
+        if( tabs.at( i )->visible() )
+            index--;
+        if( index < 0 )
+        {
+            realindex = i;
+            break;
+        }
+    }
+
+    if( realindex >= 0 )
+        showHideBrowser( realindex );
+}
+
 QWidget*
 BrowserBar::browser( const QString &name ) const
 {
@@ -274,6 +294,20 @@ BrowserBar::browser( const QString &name ) const
             return *it;
 
     return 0;
+}
+
+int
+BrowserBar::visibleCount() const
+{
+    int num = 0;
+    QPtrList<MultiTabBarTab> tabs = *m_tabBar->tabs();
+    for( int i = 0, n = tabs.count(); i < n; ++i )
+    {
+        if( tabs.at( i )->visible() )
+            num++;
+    }
+
+    return num;
 }
 
 int

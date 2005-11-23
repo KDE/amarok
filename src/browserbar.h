@@ -38,6 +38,9 @@ public:
     QWidget *browser( int index ) const { if( index < 0 ) index = 0; return m_browsers[index]; }
     QWidget *currentBrowser() const { return browser( m_currentIndex ); }
 
+    int count() const { return m_browsers.count(); }
+    int visibleCount() const;
+
     void addBrowser( QWidget*, const QString&, const QString& );
 
     /// for internal use
@@ -55,8 +58,8 @@ protected:
 public slots:
     void showBrowser( const QString& name ) { showBrowser( indexForName( name ) ); }
     void showBrowser( int index ) { if( index != m_currentIndex ) showHideBrowser( index ); }
-    void showHideBrowser( const QString& name ) { showHideBrowser( indexForName( name ) ); }
     void showHideBrowser( int );
+    void showHideVisibleBrowser( int );
     void closeCurrentBrowser() { showHideBrowser( m_currentIndex ); }
 
 private:

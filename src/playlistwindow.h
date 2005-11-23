@@ -69,11 +69,6 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
         void actionsMenuAboutToShow();
         void toolsMenuAboutToShow();
         void slotToggleMenu();
-        void slotShowContextBrowser();
-        void slotShowCollectionBrowser();
-        void slotShowPlaylistBrowser();
-        void slotShowMediaBrowser();
-        void slotShowFileBrowser();
 
     protected:
         virtual void closeEvent( QCloseEvent* );

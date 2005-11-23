@@ -356,46 +356,22 @@ PlaylistWindow::init()
             m_browsers->addBrowser( Type::instance(), text, icon ); }
 
         addBrowserMacro( ContextBrowser, "ContextBrowser", i18n( "Context" ), "info" )
-        new KAction( i18n( "Show Context Browser" ), "info", CTRL+Key_1,
-            this, SLOT( slotShowContextBrowser() ), actionCollection(), "show_context_browser" );
-        actionCollection()->action( "show_context_browser" )->plug( playlistMenu );
-        actionCollection()->action( "show_context_browser" )->unplug( playlistMenu );
-        // HACK HACK HAAAACK
-        // KAction, or QSomething, or other, is really incredibly moronically fucking stupid
-        // the keyboard shortcuts don't work unless you plug it into a menu -- but they keep working
-        // after you unplug it! (but hey, I aint complaining about that latter part...)
-
         addBrowserMacro( CollectionBrowser, "CollectionBrowser", i18n( "Collection" ), "collection" )
-        new KAction( i18n( "Show Collection Browser" ), "collection", CTRL+Key_2,
-            this, SLOT( slotShowCollectionBrowser() ), actionCollection(), "show_collection_browser" );
-        actionCollection()->action( "show_collection_browser" )->plug( playlistMenu );
-        actionCollection()->action( "show_collection_browser" )->unplug( playlistMenu );
-
         addInstBrowserMacro( PlaylistBrowser, "PlaylistBrowser", i18n( "Playlists" ), "player_playlist_2" )
-        new KAction( i18n( "Show Playlist Browser" ), "player_playlist_2", CTRL+Key_3,
-            this, SLOT( slotShowPlaylistBrowser() ), actionCollection(), "show_playlist_browser" );
-        actionCollection()->action( "show_playlist_browser" )->plug( playlistMenu );
-        actionCollection()->action( "show_playlist_browser" )->unplug( playlistMenu );
 
         // disable this check for now as isAvailable() returned always true before
         //if( MediaBrowser::isAvailable() )
             addBrowserMacro( MediaBrowser, "MediaBrowser", i18n( "Media Device" ), "usbpendrive_unmount" )
-            new KAction( i18n( "Show Media Device Browser" ), "usbpendrive_unmount", CTRL+Key_4,
-                this, SLOT( slotShowMediaBrowser() ), actionCollection(), "show_media_browser" );
-            actionCollection()->action( "show_media_browser" )->plug( playlistMenu );
-            actionCollection()->action( "show_media_browser" )->unplug( playlistMenu );
 
         addBrowserMacro( FileBrowser, "FileBrowser", i18n( "Files" ), "folder" )
-        new KAction( i18n( "Show File Browser" ), "folder", CTRL+Key_5,
-            this, SLOT( slotShowFileBrowser() ), actionCollection(), "show_file_browser" );
-        actionCollection()->action( "show_file_browser" )->plug( playlistMenu );
-        actionCollection()->action( "show_file_browser" )->unplug( playlistMenu );
 
         #undef addBrowserMacro
         #undef addInstBrowserMacro
     }
     //</Browsers>
 
+
+    qApp->installEventFilter( this ); // keyboards shortcuts for the browsers
 
     connect( playlist, SIGNAL( itemCountChanged(     int, int, int, int, int, int ) ),
              statusbar,  SLOT( slotItemCountChanged( int, int, int, int, int, int ) ) );
@@ -532,6 +508,24 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
             return true;
         }
 
+        if( e->state() & ControlButton )
+        {
+            int n = 0;
+            switch( e->key() )
+            {
+                case Key_1: n = 1; break;
+                case Key_2: n = 2; break;
+                case Key_3: n = 3; break;
+                case Key_4: n = 4; break;
+                case Key_5: n = 5; break;
+            }
+            if( n && n <= m_browsers->visibleCount() )
+            {
+                m_browsers->showHideVisibleBrowser( n - 1 );
+                return true;
+            }
+        }
+
         if( o == m_lineEdit ) //the search lineedit
         {
             QListViewItem *item;
@@ -598,24 +592,27 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
         //following are for Playlist::instance() only
         //we don't handle these in the playlist because often we manipulate the lineEdit too
 
-        if( pl->currentItem() && ( ( e->key() == Key_Up   && pl->currentItem()->itemAbove() == 0 )
-                                || ( e->key() == Key_Down && pl->currentItem()->itemBelow() == 0 ) ) )
+        if( o == pl )
         {
-            pl->currentItem()->setSelected( false );
-            m_lineEdit->setFocus();
-            pl->ensureItemVisible( *It( pl, It::Visible ) );
-            return true;
-        }
-        if( e->key() == Key_Delete )
-        {
-            pl->removeSelectedItems();
-            return true;
-        }
-        if( ( e->key() >= Key_0 && e->key() <= Key_Z ) || e->key() == Key_Backspace )
-        {
-            m_lineEdit->setFocus();
-            QApplication::sendEvent( m_lineEdit, e );
-            return true;
+            if( pl->currentItem() && ( ( e->key() == Key_Up   && pl->currentItem()->itemAbove() == 0 )
+                                    || ( e->key() == Key_Down && pl->currentItem()->itemBelow() == 0 ) ) )
+            {
+                pl->currentItem()->setSelected( false );
+                m_lineEdit->setFocus();
+                pl->ensureItemVisible( *It( pl, It::Visible ) );
+                return true;
+            }
+            if( e->key() == Key_Delete )
+            {
+                pl->removeSelectedItems();
+                return true;
+            }
+            if( ( e->key() >= Key_0 && e->key() <= Key_Z ) || e->key() == Key_Backspace || e->key() == Key_Escape )
+            {
+                m_lineEdit->setFocus();
+                QApplication::sendEvent( m_lineEdit, e );
+                return true;
+            }
         }
         #undef e
         break;
@@ -834,32 +831,6 @@ void PlaylistWindow::showHide() //SLOT
 
     if( isShown() ) KWin::deIconifyWindow( winId() );
 }
-
-void PlaylistWindow::slotShowContextBrowser()
-{
-    m_browsers->showHideBrowser( "ContextBrowser" );
-}
-
-void PlaylistWindow::slotShowCollectionBrowser()
-{
-    m_browsers->showHideBrowser( "CollectionBrowser" );
-}
-
-void PlaylistWindow::slotShowPlaylistBrowser()
-{
-    m_browsers->showHideBrowser( "PlaylistBrowser" );
-}
-
-void PlaylistWindow::slotShowMediaBrowser()
-{
-    m_browsers->showHideBrowser( "MediaBrowser" );
-}
-
-void PlaylistWindow::slotShowFileBrowser()
-{
-    m_browsers->showHideBrowser( "FileBrowser" );
-}
-
 //////////////////////////////////////////////////////////////////////////////////////////
 /// DynamicBar
 //////////////////////////////////////////////////////////////////////////////////////////
