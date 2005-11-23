@@ -74,7 +74,7 @@ namespace amaroK
             QString body = i18n(
                     "amaroK has crashed! We're terribly sorry about this :(\n\n"
                     "But, all is not lost! You could potentially help us fix the crash. "
-                    "amaroK has attached a backtrace that describes the crash, so just click send, "
+                    "Information describing the crash is below, so just click send, "
                     "or if you have time, write a brief description of how the crash happened first.\n\n"
                     "Many thanks.\n\n" );
             body += i18n( "\n\n\n\n\n\n"
