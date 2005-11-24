@@ -409,7 +409,7 @@ class QueryBuilder
                                valLyrics = 524288, valDummy = 0 };
         enum qBuilderFunctions  { funcCount = 1, funcMax = 2, funcMin = 4, funcAvg = 8, funcSum = 16 };
 
-        enum qBuilderFilter  { modeNormal = 0, modeLess = 1, modeGreater = 2 };
+        enum qBuilderFilter  { modeNormal = 0, modeLess = 1, modeGreater = 2, modeEndMatch = 3 };
 
         QueryBuilder();
 

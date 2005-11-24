@@ -3055,6 +3055,13 @@ QueryBuilder::setGoogleFilter( int defaultTables, QString query )
                 table = tabSong;
                 value = valURL;
             }
+            else if( field == "filetype" )
+            {
+                table = tabSong;
+                value = valURL;
+                mode = modeEndMatch;
+                s = "." + s;
+            }
             else if( field == "bitrate" )
             {
                 table = tabSong;
@@ -3130,12 +3137,15 @@ QueryBuilder::addFilter( int tables, int value, const QString& filter, int mode 
         if (CollectionDB::instance()->getType() == DbConnection::postgresql)
         {
             m = mode == modeLess ? "<" : mode == modeGreater ? ">" : "~*";
-            s = m + " '" + CollectionDB::instance()->escapeString( filter ) + "' ";
+            if( mode == modeEndMatch )
+                s = m + " '" + CollectionDB::instance()->escapeString( filter ) + "$' ";
+            else
+                s = m + " '" + CollectionDB::instance()->escapeString( filter ) + "' ";
         }
         else
         {
             m = mode == modeLess ? "<" : mode == modeGreater ? ">" : "LIKE";
-            s = m + " '" + ( m == "LIKE" ? "%" : "" ) + CollectionDB::instance()->escapeString( filter ) + ( m == "LIKE" ? "%" : "" ) + "' ";
+            s = m + " '" + ( m == "LIKE" ? "%" : "" ) + CollectionDB::instance()->escapeString( filter ) + ( mode == modeNormal ? "%" : "" ) + "' ";
         }
 
         m_where += QString( "OR %1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
@@ -3221,12 +3231,15 @@ QueryBuilder::excludeFilter( int tables, int value, const QString& filter, int m
         if (CollectionDB::instance()->getType() == DbConnection::postgresql)
         {
             m = mode == modeLess ? ">=" : mode == modeGreater ? "<=" : "!~*";
-            s = m + " '" + CollectionDB::instance()->escapeString( filter ) + "' ";
+            if( mode == modeEndMatch )
+                s = m + " '" + CollectionDB::instance()->escapeString( filter ) + "$' ";
+            else
+                s = m + " '" + CollectionDB::instance()->escapeString( filter ) + "' ";
         }
         else
         {
             m = mode == modeLess ? ">=" : mode == modeGreater ? "<=" : "NOT LIKE";
-            s = m + " '" + ( m == "NOT LIKE" ? "%" : "" ) + CollectionDB::instance()->escapeString( filter ) + ( m == "NOT LIKE" ? "%" : "" ) + "' ";
+            s = m + " '" + ( m == "NOT LIKE" ? "%" : "" ) + CollectionDB::instance()->escapeString( filter ) + ( mode == modeNormal ? "%" : "" ) + "' ";
         }
 
         m_where += QString( "AND %1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
