@@ -379,12 +379,7 @@ QString PlaylistItem::text( int column ) const
         case Type:       return m_url.isEmpty() ? QString() : ( m_url.protocol() == "http" ) ? i18n( "Stream" )
                                 : filename().mid( filename().findRev( '.' ) + 1 );
         case Playcount:  return playCount() == -1 ? editing : QString::number( playCount() );
-        case LastPlayed:
-        {
-            QDateTime dt;
-            dt.setTime_t( m_lastPlay );
-            return dt.toString( Qt::LocalDate );
-        }
+        case LastPlayed: return lastPlay() == 1 ? editing : amaroK::verboseTimeSince( lastPlay() );
         case Moodbar:    return "";
         default: warning() << "Tried to get the text of a nonexistent column!" << endl;
     }

@@ -1494,6 +1494,8 @@ CollectionDB::getLastPlay( const QString &url )
                                          .arg( escapeString( url ) ) );
     if( values.count() )
         dt.setTime_t( values.first().toUInt() );
+    else
+        dt.setTime_t( 0 );
     return dt;
 }
 /*!

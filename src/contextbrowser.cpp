@@ -36,7 +36,7 @@
 #include <qvbox.h> //wiki tab
 
 #include <kapplication.h> //kapp
-#include <kcalendarsystem.h>  // for verboseTimeSince()
+#include <kcalendarsystem.h>  // for amaroK::verboseTimeSince()
 #include <kfiledialog.h>
 #include <kglobal.h>
 #include <kiconloader.h>
@@ -54,6 +54,61 @@
 // .replace( "%", "%25" ) has to be the last one, otherwise we would do things like converting spaces into %20 and then convert them into %25%20
 #define escapeHTMLAttr(s) QString(s).replace( "'", "%27" ).replace( "#", "%23" ).replace( "?", "%3F" ).replace( "%", "%25" )
 #define unEscapeHTMLAttr(s) QString(s).replace( "%25", "%" ).replace( "%3F", "?" ).replace( "%23", "#" ).replace( "%27", "'" )
+
+namespace amaroK
+{
+
+    QString verboseTimeSince( const QDateTime &datetime )
+    {
+        const QDateTime now = QDateTime::currentDateTime();
+        const int datediff = datetime.daysTo( now );
+
+        if( datediff >= 6*7 /*six weeks*/ ) {  // return absolute month/year
+            const KCalendarSystem *cal = KGlobal::locale()->calendar();
+            const QDate date = datetime.date();
+            return i18n( "monthname year", "%1 %2" ).arg( cal->monthName(date), cal->yearString(date, false) );
+        }
+
+        //TODO "last week" = maybe within 7 days, but prolly before last sunday
+
+        if( datediff >= 7 )  // return difference in weeks
+            return i18n( "One week ago", "%n weeks ago", (datediff+3)/7 );
+
+        if( datediff == -1 )
+            return i18n( "Tomorrow" );
+
+        const int timediff = datetime.secsTo( now );
+
+        if( timediff >= 24*60*60 /*24 hours*/ )  // return difference in days
+            return datediff == 1 ?
+                    i18n( "Yesterday" ) :
+                    i18n( "One day ago", "%n days ago", (timediff+12*60*60)/(24*60*60) );
+
+        if( timediff >= 90*60 /*90 minutes*/ )  // return difference in hours
+            return i18n( "One hour ago", "%n hours ago", (timediff+30*60)/(60*60) );
+
+        //TODO are we too specific here? Be more fuzzy? ie, use units of 5 minutes, or "Recently"
+
+        if( timediff >= 0 )  // return difference in minutes
+            return timediff/60 ?
+                    i18n( "One minute ago", "%n minutes ago", (timediff+30)/60 ) :
+                    i18n( "Within the last minute" );
+
+        return i18n( "The future" );
+    }
+
+    QString verboseTimeSince( uint time_t )
+    {
+        if( !time_t )
+            return i18n( "Never played" );
+
+        QDateTime dt;
+        dt.setTime_t( time_t );
+        return verboseTimeSince( dt );
+    }
+
+}
+
 
 using amaroK::QStringx;
 
@@ -713,44 +768,6 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 }
 
 
-static QString
-verboseTimeSince( const QDateTime &datetime )
-{
-    const QDateTime now = QDateTime::currentDateTime();
-    const int datediff = datetime.daysTo( now );
-
-    if( datediff >= 6*7 /*six weeks*/ ) {  // return absolute month/year
-        const KCalendarSystem *cal = KGlobal::locale()->calendar();
-        const QDate date = datetime.date();
-        return i18n( "monthname year", "%1 %2" ).arg( cal->monthName(date), cal->yearString(date, false) );
-    }
-
-    //TODO "last week" = maybe within 7 days, but prolly before last sunday
-
-    if( datediff >= 7 )  // return difference in weeks
-        return i18n( "One week ago", "%n weeks ago", (datediff+3)/7 );
-
-    const int timediff = datetime.secsTo( now );
-
-    if( timediff >= 24*60*60 /*24 hours*/ )  // return difference in days
-        return datediff == 1 ?
-                i18n( "Yesterday" ) :
-                i18n( "One day ago", "%n days ago", (timediff+12*60*60)/(24*60*60) );
-
-    if( timediff >= 90*60 /*90 minutes*/ )  // return difference in hours
-        return i18n( "One hour ago", "%n hours ago", (timediff+30*60)/(60*60) );
-
-    //TODO are we too specific here? Be more fuzzy? ie, use units of 5 minutes, or "Recently"
-
-    if( timediff >= 0 )  // return difference in minutes
-        return timediff/60 ?
-                i18n( "One minute ago", "%n minutes ago", (timediff+30)/60 ) :
-                i18n( "Within the last minute" );
-
-    return i18n( "The future" );
-}
-
-
 //////////////////////////////////////////////////////////////////////////////////////////
 // Shows the statistics summary when no track is playing
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -1133,8 +1150,8 @@ bool CurrentTrackJob::doJob()
                                     )
             .arg( i18n( "Track played once", "Track played %n times", playtimes ),
                   scoreBox.arg( score ).arg( score ).arg( score / 2 ),
-                  i18n( "Last played: %1" ).arg( verboseTimeSince( lastPlay ) ),
-                  i18n( "First played: %1" ).arg( verboseTimeSince( firstPlay ) ) ) );
+                  i18n( "Last played: %1" ).arg( amaroK::verboseTimeSince( lastPlay ) ),
+                  i18n( "First played: %1" ).arg( amaroK::verboseTimeSince( firstPlay ) ) ) );
    }
    else
         m_HTMLSource.append( i18n( "Never played before" ) );

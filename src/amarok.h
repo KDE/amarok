@@ -9,6 +9,7 @@
 class KActionCollection;
 class KConfig;
 class QColor;
+class QDateTime;
 class QEvent;
 class QPixmap;
 class QWidget;
@@ -94,6 +95,10 @@ namespace amaroK
      *                  with '/'
      */
     QString saveLocation( const QString &directory = QString::null ); //defined in collectionreader.cpp
+
+    QString verboseTimeSince( const QDateTime &datetime ); //defined in contextbrowser.cpp
+
+    QString verboseTimeSince( uint time_t ); //defined in contextbrowser.cpp
 
     /**
      * @return the LOWERCASE file extension without the preceding '.', or "" if there is none
