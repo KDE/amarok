@@ -135,6 +135,7 @@ PlaylistItem::PlaylistItem( QDomNode node, QListViewItem *item )
         , m_lastPlay( 0 )
         , m_missing( false )
         , m_enabled( true )
+        , m_proxyForMoods( 0 )
 {
     setDragEnabled( true );
 
