@@ -47,7 +47,7 @@ function CheckBinary {
 }
 
 echo
-echo "amaroK-svn (Version 3.0-rc1) by Jocke \"Firetech\" Andersson"
+echo "amaroK-svn (Version 3.0-SVN) by Jocke \"Firetech\" Andersson"
 echo "============================================================"
 echo
 
@@ -284,7 +284,7 @@ if [ ! -f "Makefile" ]; then
   echo "No older revision is installed."
 else
   TMP_OLD_UNINFO="`mktemp`"
-  unsermake -n uninstall > ${TMP_OLD_UNINFO}
+  unsermake -n uninstall | grep "rm -f" > ${TMP_OLD_UNINFO}
   echo "Information saved."
 fi
 
@@ -333,9 +333,9 @@ if [ ! -s "${TMP_OLD_UNINFO}" ]; then
   echo "No older revision is installed."
 else
   TMP_NEW_UNINFO="`mktemp`"
-  unsermake -n uninstall > ${TMP_NEW_UNINFO}
+  unsermake -n uninstall | grep "rm -f" > ${TMP_NEW_UNINFO}
   TMP_UNFILES="`mktemp`"
-  diff --old-line-format="%L" --new-line-format="" --unchanged-line-format="" ${TMP_OLD_UNINFO} ${TMP_NEW_UNINFO} | grep -v "unsermake -c" > ${TMP_UNFILES} # a diff that only outputs lines that only are in the first file, the grep removes some Makefile creation commands that come up all the time.
+  diff --old-line-format="%L" --new-line-format="" --unchanged-line-format="" ${TMP_OLD_UNINFO} ${TMP_NEW_UNINFO} > ${TMP_UNFILES} # a diff that only outputs lines that only are in the first file, the grep removes some Makefile creation commands that come up all the time.
   if [ -s "${TMP_UNFILES}" ]; then
     kdialog --title "${KD_TITLE} :: DEBUG: Check these commands before clicking OK!" --textbox ${TMP_UNFILES} 600 5000 # TODO remove this line when 3.0 goes final.
     echo "Will use '${HOW_ROOT}' to get root privileges for removal of unused files."
