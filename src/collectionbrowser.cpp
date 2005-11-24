@@ -1211,7 +1211,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                 , DELETE );
         menu.insertItem( SmallIconSet( "folder" ), i18n("Manage Files"), &fileMenu, FILE_MENU );
 
-       if ( cat == CollectionBrowser::IdAlbum )
+       if ( cat == CollectionBrowser::IdAlbum || cat == CollectionBrowser::IdVisYearAlbum )
         {
             menu.insertSeparator();
             menu.insertItem( SmallIconSet( "ok" ), i18n( "&Mark as Compilation" ), COMPILATION_SET );
@@ -1250,10 +1250,22 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                 K3bExporter::instance()->exportTracks( selection );
                 break;
             case COMPILATION_SET:
-                CollectionDB::instance()->setCompilation( item->text(0), true );
+                if ( cat == CollectionBrowser::IdVisYearAlbum )
+                    CollectionDB::instance()->setCompilation(
+                        item->text(0).right( item->text(0).length() - item->text(0).find( i18n(" - ") ) - i18n(" - ").length() ),
+                        true
+                    );
+                else
+                    CollectionDB::instance()->setCompilation( item->text(0), true );
                 break;
             case COMPILATION_UNSET:
-                CollectionDB::instance()->setCompilation( item->text(0), false );
+                if ( cat == CollectionBrowser::IdVisYearAlbum )
+                    CollectionDB::instance()->setCompilation(
+                        item->text(0).right( item->text(0).length() - item->text(0).find( i18n(" - ") ) - i18n(" - ").length() ),
+                        false
+                    );
+                else
+                    CollectionDB::instance()->setCompilation( item->text(0), false );
                 break;
             case ORGANIZE:
                 organizeFiles();
