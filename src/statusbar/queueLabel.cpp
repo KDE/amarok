@@ -261,7 +261,7 @@ void QueueLabel::showToolTip()
         const int s = (*it)->length();
         if( s > 0 ) length += s;
     }
-    if( length )
+    if( length && count > 1 )
         text += QString( "<br>" ) + i18n( "Length of the queue is: %1" ).arg( MetaBundle::prettyLength( length, true ) );
 
     m_tooltip = new KDE::PopupMessage( parentWidget()->parentWidget(), this, 0 );
