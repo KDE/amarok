@@ -48,7 +48,7 @@ function CheckBinary {
 
 echo
 echo "amaroK-svn (Version 3.0-rc1) by Jocke \"Firetech\" Andersson"
-echo "=============================================================="
+echo "============================================================"
 echo
 
 ## Check requirements
