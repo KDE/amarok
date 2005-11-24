@@ -6,7 +6,7 @@ TODO-list for amaroK
 
 
 SHORT-TERM (URGENT):
- <foreboy> Fix regression in helix engine where the PCM volume is set to 100 on playing first track
+ <foreboy> emit statusText when helix libs return an error to the errorresponsesink
 -->foreboy
 
  <Untou.>  While rescanning collection, it gets empty. We shouldn't touch tags table at all until rescan
