@@ -116,10 +116,9 @@ Optional
       (Moodbar support)
       http://www.sf.net/projects/exscalibar
 
-    * libgpod (from cvs, libgpod-0.1.6 does not work)
+    * libgpod 0.2.0
       (iPod support)
       http://www.gtkpod.org/libgpod.html
-      (currently compatible with libgpod-cvs on 2005-11-18 02:00 UTC)
 
     * libifp 1.0.0.2
       (iRiver iFP support)
