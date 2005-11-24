@@ -122,7 +122,7 @@ class Playlist::PlaylistToolTip: public QToolTip
     Playlist *view;
 
     public:
-    PlaylistToolTip::PlaylistToolTip( QWidget *parent, Playlist *pl ): QToolTip( parent ), view( pl ) { }
+    PlaylistToolTip( QWidget *parent, Playlist *pl ): QToolTip( parent ), view( pl ) { }
 
     void maybeTip( const QPoint &pos )
     {
