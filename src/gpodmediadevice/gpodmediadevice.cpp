@@ -24,6 +24,7 @@
 #include <qlabel.h>
 
 #ifdef HAVE_STATVFS
+#include <stdint.h>
 #include <sys/statvfs.h>
 #endif
 
