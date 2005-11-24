@@ -27,7 +27,7 @@ function Error {
 
 function ReadConfig {
   if [ "$2" ]; then
-    DEF_VALUE="--default \"$2\""
+    DEF_VALUE=" --default \"$2\""
   fi
   kreadconfig --file "${RCFILE}" --group Settings --key "$1"${DEF_VALUE}
 }
