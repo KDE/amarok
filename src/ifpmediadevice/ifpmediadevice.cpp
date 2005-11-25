@@ -265,13 +265,11 @@ IfpMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> items 
         debug() << "Moving: " << src << " to: " << dest << endl;
 
         int err = ifp_rename( &m_ifpdev, src, dest );
-        debug() << "err: " << err << endl;
-        if( err )
+        if( err ) //failed
             continue;
 
-        // we need to delete the item and create a new one.  Using QListViewItem::takeItem() / insertItem() is bad, in my exp.
-        addTrackToList( IFP_FILE, (*it)->text(0) );
-        delete (*it);
+        m_listview->takeItem( *it );
+        directory->insertItem( *it );
     }
 }
 
