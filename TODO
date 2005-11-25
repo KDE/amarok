@@ -9,8 +9,9 @@ SHORT-TERM (URGENT):
  <foreboy> emit statusText when helix libs return an error to the errorresponsesink
 -->foreboy
 
- <Untou.>  While rescanning collection, it gets empty. We shouldn't touch tags table at all until rescan
-           is done.
+ <jefferai>The hell was I thinking...I made the queue label go from squished to elongated, and
+           completely didn't notice I had overshot my goal.  Fix. Also doesn't seem to only be getting
+           applied to the currently playing track.
 
  <markey>  When you delete a downloaded podcast from Playlist Browser, the icon stays in
            "downloaded" state until you open the menu again.
@@ -51,15 +52,6 @@ SHORT-TERM (URGENT):
 
  <markey>  We really need to fix the crashes with the OpenGL analyzers that many users get.
 
- <illis.>  A whole lot (all?) of my mp3s have their titles truncated at 30-ish characters. This is almost
-           certainly an ID3v1 vs 2 issue, v2 I think allows for unlimited length (or at least very very
-           long), why don't we use it? (not sure whether the problem is in taglib or amarok...)
-           <illissius> just found out via leinir that this was caused by the recoding id3v1 tags option.
-                       disabling it fixed it. I think too many people are enabling this w/o knowing what
-                       it does (case in point: me). Maybe stick a warning in the options dialog, or
-                       make it not do unexpected things in the first place (eg, make id3v1 suck less,
-                       but don't make it the default).
-
   <markey> Consider moving the GHNS provider list to a different server than amarok.kde.org,
            possibly download.kde.org or similar. (When our site is down, the GHNS feature fails
            to work entirely)
@@ -71,9 +63,6 @@ SHORT-TERM (URGENT):
 
   <markey> OSD doesn't show on top of other widgets with Fluxbox and other window managers.
 
-  <mxcl>   Changing the title track to "" does such things as I cannot figure out, it appears to work, but
-           perhaps the collection isn't updated, or maybe the tag, or both. Can't tell.
-
   <mxcl>   On first-ever-run, if amaroK crashes building the sqlite collection, it is impossible to _ever_
            build a collection unless the user's amarokrc file is deleted! This MUST be fixed before 1.2!
            ::muesli:: We could just _always_ try to create the sql tables on startup. This would fail on
@@ -82,10 +71,6 @@ SHORT-TERM (URGENT):
 
   <mxcl>   Just before we load any engine plugin, write to a file, and it we don't succeed the next time
            amaroK starts show a big warning saying "Gah!" and load a different one.
-
-  <markey> In the settings dialog the "Apply" button is broken (always enabled).
-           Update: This is now fixed except if you build with MySQL support. Reason is the MySQL password
-           KConfigXT entry. Fix this properly for 1.2.1.
 
   <mxcl>   Playlist with files that exist that gst can't play + repeat-playlist = infinite loop - presumably
            load() and play() return true so the controller doesn't stop the playback
@@ -97,7 +82,6 @@ SHORT-TERM (URGENT):
 
   <markey> Ctrl-C in Playlist for copying title doesn't work, because the event gets eaten by another widget.
 
-  <jefferai> The hell was I thinking...I made the queue label go from squished to elongated, and completely didn't notice I had overshot my goal.  Fix.  Also doesn't seem to only be getting applied to the currently playing track.
 
 MID-TERM:
  <markey>  Write an amaroK Script for embedding cover images into ID3V2. -->markey
