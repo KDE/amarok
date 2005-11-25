@@ -70,7 +70,7 @@ class HelixSimplePlayerAudioStreamInfoResponse : public IHXAudioStreamInfoRespon
 {
 public:
    HelixSimplePlayerAudioStreamInfoResponse(HelixSimplePlayer *player, int playerIndex) : 
-      m_Player(player), m_index(playerIndex) {}
+      m_Player(player), m_index(playerIndex), m_lRefCount(0) {}
    virtual ~HelixSimplePlayerAudioStreamInfoResponse() {}
 
    /*
@@ -771,7 +771,6 @@ void HelixSimplePlayer::tearDown()
          ppctrl[i]->pPostMixHook->Release(); 
 
          ppctrl[i]->pAudioPlayer->RemoveStreamInfoResponse((IHXAudioStreamInfoResponse *) ppctrl[i]->pStreamInfoResponse);
-         ppctrl[i]->pStreamInfoResponse->Release();
 
          if (ppctrl[i]->pVolume)
          {
