@@ -91,6 +91,7 @@ private:
 
    std::vector<MimeEntry> m_mimes;
 
+   void cleanup();
    void timerEvent( QTimerEvent * );
    void resetScope();
 

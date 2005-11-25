@@ -72,7 +72,7 @@ HelixEngine::HelixEngine()
    addPluginProperty( "StreamingMode", "NoStreaming" ); // this means we'll handle streaming (not using KIO)
    addPluginProperty( "HasConfigure", "true" );
    addPluginProperty( "HasEqualizer", "true" );
-   //addPluginProperty( "HasCrossfade", "true" );
+   addPluginProperty( "HasCrossfade", "true" );
 
    memset(&m_md, 0, sizeof(m_md));
 
@@ -87,7 +87,7 @@ int HelixEngine::print2stdout(const char *fmt, ...)
 {
     va_list args;
     char buf[1024];
-    
+
     va_start(args, fmt);
 
     int ret = vsprintf(buf, fmt, args);
@@ -103,7 +103,7 @@ int HelixEngine::print2stderr(const char *fmt, ...)
 {
     va_list args;
     char buf[1024];
-    
+
     va_start(args, fmt);
 
     int ret = vsprintf(buf, fmt, args);
@@ -148,6 +148,7 @@ HelixEngine::init()
    struct stat s;
    bool exists = false;
    stop();
+   m_state = Engine::Empty;
 
    m_numPlayers = 2;
    m_current = 1;
@@ -174,7 +175,7 @@ HelixEngine::init()
       else
          setDevice("default");
    }
-   
+
 
    if (!stat(m_coredir.utf8(), &s) && !stat(m_pluginsdir.utf8(), &s) && !stat(m_codecsdir.utf8(), &s))
    {
@@ -199,12 +200,13 @@ HelixEngine::init()
          fallbackToOSS();
 
          HelixSimplePlayer::initDirectSS();
-         if (m_inited)
-         {
-            HelixSimplePlayer::setVolume(vol);
-            setEqualizerParameters(savedpreamp, savedequalizerGains);
-            setEqualizerEnabled(eqenabled);
-         }
+      }
+
+      if (m_inited)
+      {
+         HelixSimplePlayer::setVolume(vol);
+         setEqualizerParameters(savedpreamp, savedequalizerGains);
+         setEqualizerEnabled(eqenabled);
       }
 
       m_inited = exists = true;
@@ -264,7 +266,7 @@ HelixEngine::load( const KURL &url, bool isStream )
    {
    }
    else
-      stop();
+      cleanup();
 
    m_isStream = isStream;
    int nextPlayer;
@@ -323,12 +325,11 @@ HelixEngine::play( uint offset )
 }
 
 void
-HelixEngine::stop()
+HelixEngine::cleanup()
 {
    if (!m_inited)
       return;
 
-   debug() << "In stop\n";
    m_url = KURL();
    HelixSimplePlayer::stop(); // stop all players
    resetScope();
@@ -336,11 +337,22 @@ HelixEngine::stop()
    m_lasttime = 0;
    m_lastpos = 0;
    m_scopeindex = 0;
-   m_state = Engine::Empty;
    m_isStream = false;
    memset(&m_md, 0, sizeof(m_md));
-   emit stateChanged( Engine::Empty );
 }
+
+void 
+HelixEngine::stop()
+{
+   if (!m_inited)
+      return;
+
+   debug() << "In stop\n";
+   cleanup();
+   m_state = Engine::Empty;
+   emit stateChanged( m_state );   
+}
+
 
 void HelixEngine::play_finished(int /*playerIndex*/)
 {
@@ -397,7 +409,7 @@ HelixEngine::length() const
    if (!m_inited)
       return 0;
 
-   debug() << "In length\n";
+   //debug() << "In length\n";
    return HelixSimplePlayer::duration(m_current);
 }
 
@@ -440,8 +452,8 @@ HelixEngine::canDecode( const KURL &url ) const
    if (ext != "txt")
       for (int i=0; i<(int)m_mimes.size(); i++)
       {
-         if (m_mimes[i].type.grep("audio").count() || 
-             m_mimes[i].type.grep("video").count() || 
+         if (m_mimes[i].type.grep("audio").count() ||
+             m_mimes[i].type.grep("video").count() ||
              m_mimes[i].type.grep("application").count())
             if (m_mimes[i].ext.grep(ext).count())
             {
@@ -616,14 +628,14 @@ const Engine::Scope &HelixEngine::scope()
                   b[0] = m_item->buf[k];
                   break;
             }
-            
+
             pint = (short *) &b[0];
-         
+
             a += (int) *pint;
             k += m_item->bps;
          }
          a /= m_item->nchan;
-         
+
          //m_scope[i] = a;
          m_currentScope[m_scopeindex] = a;
          m_scopeindex++;
@@ -666,7 +678,7 @@ const Engine::Scope &HelixEngine::scope()
    for (i=0; i<512; i++)
       m_scope[i] = m_currentScope[i];
    m_scopeindex = 0;
-   
+
    return m_scope;
 }
 
