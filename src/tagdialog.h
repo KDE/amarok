@@ -45,6 +45,8 @@ class TagDialog : public TagDialogBase
         void nextTrack();
         void checkModified();
 
+        void loadCover( const QString &artist, const QString &album );
+
         void musicbrainzQuery();
         void queryDone( KTRMResultList results );
         void fillSelected( KTRMResult selected );

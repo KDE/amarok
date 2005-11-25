@@ -8,6 +8,7 @@
 #include "contextbrowser.h"
 #include "collectionbrowser.h"
 #include "collectiondb.h"
+#include "coverfetcher.h"
 #include "metabundle.h"
 #include "playlist.h"
 #include "playlistitem.h"
@@ -178,6 +179,21 @@ TagDialog::checkModified() //SLOT
     pushButton_ok->setEnabled( hasChanged() || storedTags.count() > 0 || storedScores.count() > 0|| storedLyrics.count() > 0 );
 }
 
+void
+TagDialog::loadCover( const QString &artist, const QString &album ) {
+    if ( m_bundle.artist() != artist ||  m_bundle.album()!=album )
+        return;
+
+    // draw the album cover on the dialog
+    QString cover = CollectionDB::instance()->albumImage( m_bundle, 1 );
+
+    if( m_currentCover != cover ) {
+        pixmap_cover->setPixmap( QPixmap( cover, "PNG" ) );
+        m_currentCover = cover;
+    }
+    pixmap_cover->setInformation( m_bundle.artist(), m_bundle.album() );
+}
+
 
 void
 TagDialog::musicbrainzQuery() //SLOT
@@ -328,8 +344,15 @@ void TagDialog::init()
     }
 
     //Update lyrics on Context Browser
-
     connect( this, SIGNAL(lyricsChanged( const QString& )), ContextBrowser::instance(), SLOT( lyricsChanged( const QString& ) ) );
+
+    //Update cover
+    connect( CollectionDB::instance(), SIGNAL( coverFetched( const QString&, const QString& ) ),
+            this, SLOT( loadCover( const QString&, const QString& ) ) );
+    connect( CollectionDB::instance(), SIGNAL( coverChanged( const QString&, const QString& ) ),
+             this, SLOT( loadCover( const QString&, const QString& ) ) );
+
+
 
 #if HAVE_TUNEPIMP
     connect( pushButton_musicbrainz, SIGNAL(clicked()), SLOT(musicbrainzQuery()) );
@@ -484,16 +507,12 @@ void TagDialog::readTags()
     statisticsLabel->setText( statisticsText );
 
     kLineEdit_location->setText( local ? m_bundle.url().path() : m_bundle.url().url() );
-    // draw the album cover on the dialog
-    QString cover = CollectionDB::instance()->albumImage( m_bundle, 1 );
 
     //lyrics
     kTextEdit_lyrics->setText( CollectionDB::instance()->getLyrics( m_bundle.url().path() ) );
 
-    if( m_currentCover != cover ) {
-        pixmap_cover->setPixmap( QPixmap( cover, "PNG" ) );
-        m_currentCover = cover;
-    }
+    loadCover( m_bundle.artist(), m_bundle.album() );
+
 
     // enable only for local files
     kLineEdit_title->setReadOnly( !local );

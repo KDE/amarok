@@ -13,7 +13,6 @@
 #include "collectiondb.h"
 #include "collectionbrowser.h"
 #include "colorgenerator.h"
-#include "config.h"        //for AMAZON_SUPPORT
 #include "contextbrowser.h"
 #include "coverfetcher.h"
 #include "covermanager.h"
@@ -233,7 +232,7 @@ ContextBrowser::ContextBrowser( const char *name )
     connect( CollectionDB::instance(), SIGNAL( databaseEngineChanged() ), SLOT( renderView() ) );
     connect( CollectionDB::instance(), SIGNAL( coverFetched( const QString&, const QString& ) ),
              this, SLOT( coverFetched( const QString&, const QString& ) ) );
-    connect( CollectionDB::instance(), SIGNAL( coverRemoved( const QString&, const QString& ) ),
+    connect( CollectionDB::instance(), SIGNAL( coverChanged( const QString&, const QString& ) ),
              this, SLOT( coverRemoved( const QString&, const QString& ) ) );
     connect( CollectionDB::instance(), SIGNAL( similarArtistsFetched( const QString& ) ),
              this, SLOT( similarArtistsFetched( const QString& ) ) );
@@ -576,7 +575,7 @@ void ContextBrowser::tabChanged( QWidget *page )
 
 void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& point )
 {
-    enum { SHOW, FETCH, CUSTOM, DELETE, APPEND, ASNEXT, MAKE, MEDIA_DEVICE, INFO, MANAGER, TITLE };
+    enum { APPEND, ASNEXT, MAKE, MEDIA_DEVICE, INFO, TITLE };
 
     if( urlString.isEmpty() ||
         urlString.startsWith( "musicbrainz" ) ||
@@ -596,23 +595,8 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
     if ( url.protocol() == "fetchcover" )
     {
-        menu.insertTitle( i18n( "Cover Image" ) );
-
-        menu.insertItem( SmallIconSet( "viewmag" ), i18n( "&Show Fullsize" ), SHOW );
-        menu.insertItem( SmallIconSet( "www" ), i18n( "&Fetch From amazon.%1" ).arg(CoverManager::amazonTld()), FETCH );
-        menu.insertItem( SmallIconSet( "folder_image" ), i18n( "Set &Custom Cover" ), CUSTOM );
-        menu.insertSeparator();
-
-        menu.insertItem( SmallIconSet( "editdelete" ), i18n("&Unset Cover"), DELETE );
-        menu.insertSeparator();
-        menu.insertItem( SmallIconSet( "covermanager" ), i18n( "Cover Manager" ), MANAGER );
-
-        #ifndef AMAZON_SUPPORT
-        menu.setItemEnabled( FETCH, false );
-        #endif
-        bool disable = !CollectionDB::instance()->albumImage( artist, album, 0 ).contains( "nocover" );
-        menu.setItemEnabled( SHOW, disable );
-        menu.setItemEnabled( DELETE, disable );
+        amaroK::coverContextMenu( this, point, artist, album );
+        return;
     }
     else if ( url.protocol() == "file" || url.protocol() == "album" || url.protocol() == "compilation" )
     {
@@ -675,28 +659,6 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
     //Not all these are used in the menu, it depends on the context
     switch( menu.exec( point ) )
     {
-    case SHOW:
-        CoverManager::viewCover( artist, album, this );
-        break;
-
-    case DELETE:
-    {
-        const int button = KMessageBox::warningContinueCancel( this,
-            i18n( "Are you sure you want to remove this cover from the Collection?" ),
-            QString::null,
-            KStdGuiItem::del() );
-
-        if ( button == KMessageBox::Continue )
-        {
-            CollectionDB::instance()->removeAlbumImage( artist, album );
-            if( currentPage() == m_currentTrackPage->view() )
-            {
-                m_dirtyCurrentTrackPage = true;
-                showCurrentTrack();
-            }
-        }
-        break;
-    }
 
     case ASNEXT:
         Playlist::instance()->insertMedia( urls, Playlist::Queue );
@@ -729,41 +691,6 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         MediaDevice::instance()->addURLs( urls );
         break;
 
-    case FETCH:
-    #ifdef AMAZON_SUPPORT
-        CollectionDB::instance()->fetchCover( this, artist, album, false );
-        break;
-    #endif
-
-    case CUSTOM:
-    {
-        QString artist_id; artist_id.setNum( CollectionDB::instance()->artistID( artist ) );
-        QString album_id; album_id.setNum( CollectionDB::instance()->albumID( album ) );
-        QStringList values = CollectionDB::instance()->albumTracks( artist_id, album_id );
-        QString startPath = ":homedir";
-
-        if ( !values.isEmpty() ) {
-            KURL url;
-            url.setPath( values.first() );
-            startPath = url.directory();
-        }
-
-        KURL file = KFileDialog::getImageOpenURL( startPath, this, i18n("Select Cover Image File") );
-        if ( !file.isEmpty() ) {
-            CollectionDB::instance()->setAlbumImage( artist, album, file );
-
-            if( currentPage() == m_currentTrackPage->view() )
-            {
-                m_dirtyCurrentTrackPage = true;
-                showCurrentTrack();
-            }
-        }
-        break;
-    }
-
-    case MANAGER:
-        CoverManager::showOnce( album );
-        break;
     }
 }
 

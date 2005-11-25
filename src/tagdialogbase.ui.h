@@ -15,6 +15,6 @@
 ** These will automatically be called by the form's constructor and
 ** destructor.
 *****************************************************************************/
-
+#include "coverfetcher.h"
 
 #include <ktabwidget.h>

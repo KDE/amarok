@@ -5,9 +5,34 @@
 #ifndef AMAROK_COVERFETCHER_H
 #define AMAROK_COVERFETCHER_H
 
+#include <qlabel.h>       //baseclass
 #include <qimage.h>       //stack allocated
 #include <qobject.h>      //baseclass
 #include <qstringlist.h>  //stack allocated
+
+namespace amaroK {
+    void coverContextMenu(  QWidget *parent, QPoint point, const QString &artist, const QString &album, bool showCoverManager = true );
+}
+
+
+class CoverLabel : public QLabel {
+    public:
+    CoverLabel ( QWidget * parent, const char * name = 0, WFlags f = 0 );
+
+    void setInformation( const QString artist, const QString album ) {
+        m_artist = artist;
+        m_album = album;
+    }
+
+    protected:
+    virtual void mouseReleaseEvent(QMouseEvent *pEvent);
+
+    private:
+    QString m_artist;
+    QString m_album;
+};
+
+
 
 namespace KIO { class Job; }
 

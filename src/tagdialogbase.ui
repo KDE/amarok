@@ -157,7 +157,7 @@
                     <property name="name">
                         <cstring>unnamed</cstring>
                     </property>
-                    <widget class="QLabel" row="0" column="0">
+                    <widget class="CoverLabel" row="0" column="0">
                         <property name="name">
                             <cstring>pixmap_cover</cstring>
                         </property>
