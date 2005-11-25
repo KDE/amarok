@@ -3,12 +3,17 @@
 # # # # # # # # # # # # # # # # # # # # # #   # # # # #   # # #   # #   # #   # #   #   #
 # amaroK-svn
 # ============
-# This script installs the current development (SVN) version of amaroK on your PC.
+# This script installs the current development (SVN) version of amaroK on your computer.
 # If you've run it once, and then run it again, it will update your version of amaroK and only compile the new files.
 #
 # Made by Jocke "Firetech" Andersson.
 # Based on a script by Greg "oggb4mp3" Meyer.
 # # # # # # # # # # # # # # # # # # # # # #   # # # # #   # # #   # #   # #   # #   #   #
+
+echo
+echo "amaroK-svn (Version 2.95) by Jocke \"Firetech\" Andersson"
+echo "========================================================="
+echo
 
 #define global variables
 LANG="C" # Make outputs in English, like the script.
@@ -18,7 +23,7 @@ KD_TITLE="amaroK-svn" # Title for kdialog windows
 #define functions
 function Error {
   echo
-  echo "ERROR: $1"
+  echo -e "ERROR: $1"
   if [ "$2" != "--no-dialog" ]; then
     kdialog --title "${KD_TITLE}" --error "$1"
   fi
@@ -26,6 +31,7 @@ function Error {
 }
 
 function ReadConfig {
+  DEF_VALUE=""
   if [ "$2" ]; then
     DEF_VALUE=" --default \"$2\""
   fi
@@ -45,11 +51,6 @@ function CheckBinary {
     Error "${ERROR_TEXT}" $3
   fi
 }
-
-echo
-echo "amaroK-svn (Version 3.0-SVN) by Jocke \"Firetech\" Andersson"
-echo "============================================================"
-echo
 
 ## Check requirements
 CheckBinary kdialog "" --no-dialog
@@ -77,11 +78,11 @@ if [ -s "${RCFILE}" -a "$1" != "-r" -a "$1" != "--reset" ]; then # If the settin
   done
   HOW_ROOT="`ReadConfig how_root kdesu`"
 
-  echo "# 1/12 - Settings loaded: (Start the script with -r or --reset to change.)"
+  echo "# Settings loaded: (Start the script with -r or --reset to change.)"
 
 else
 
-  echo "# 1/12 - Asking for settings:"
+  echo "# Asking for settings:"
 
   ## Language
   AUTO_LANG="`kreadconfig --group Locale --key Language | sed -re \"s/:.+//\"`"
@@ -133,42 +134,77 @@ if [ "$CONF_HELP" != "true" -a "`echo $CONF_FLAGS`" != "" ]; then
 fi
 echo "Will be using '${HOW_ROOT}' to get root privileges when needed."
 
-## Standard checkout
+## Base checkout
 echo
-echo "# 2/12 - Checking out multimedia base files."
+echo "# 1/11 - Checking out base files."
 svn co -N ${SVN_SERVER}/home/kde/trunk/extragear/multimedia amarok-svn
 if [ "$?" != "0" ]; then # If the command didn't finish successfully
   Error "The SVN transfer didn't finish successfully."
 fi
 cd amarok-svn
+
+## Get unsermake, if not installed already
 echo
-echo "# 3/12 - Checking out common admin files."
+echo "# 2/11 - Getting unsermake."
+if [ -x "`which unsermake`" ]; then # unsermake installed system wide?
+  echo "Unsermake is already installed system wide."
+else
+  PATH="`pwd`/unsermake:${PATH}"
+  if [ -x "`which unsermake`" ]; then # Is unsermake installed and in the $PATH now?
+    echo "Unsermake downloaded by this script. Checking for update."
+  else
+    echo "Unsermake wasn't found. Downloading it to '`pwd`/unsermake'."
+  fi
+  svn co -N ${SVN_SERVER}/home/kde/trunk/kdenonbeta/unsermake
+  if [ "$?" != "0" ]; then # If the command didn't finish successfully
+    Error "The SVN transfer didn't finish successfully."
+  fi
+fi
+
+## Store the old uninstall commands
+echo
+echo "# 3/11 - Checking used files for the installed revision."
+if [ ! -f "Makefile" ]; then
+  echo "No older revision is installed."
+else
+  TMP_OLD_UNINFO="`mktemp`"
+  unsermake -n uninstall | grep "rm -f" > ${TMP_OLD_UNINFO}
+  if [ "$?" != "0" ]; then # If the command didn't finish successfully
+    Error "Couldn't get list of used files in the installed revision."
+  else
+    echo "Done."
+  fi
+fi
+
+## Continue checkout
+echo
+echo "# 4/11 - Checking out common SVN files."
 svn co ${SVN_SERVER}/home/kde/branches/KDE/3.5/kde-common/admin # URL changed since KDE 3.5 branching
 if [ "$?" != "0" ]; then # If the command didn't finish successfully
   Error "The SVN transfer didn't finish successfully."
 fi
 echo
-echo "# 4/12 - Updating amaroK files."
+echo "# 5/11 - Updating amaroK files."
 svn up amarok
 if [ "$?" != "0" ]; then # If the command didn't finish successfully
   Error "The SVN transfer didn't finish successfully.\nIf the message from svn (in console) is something like 'amarok is not under version control', you need a never version of svn.\nAt least version 1.1 is needed."
 fi
 
 echo
-echo "# 5/12 - Getting localization and documentation:"
+echo "# 6/11 - Getting localization and documentation:"
 STEP_EN=""
 
 if [ "${GET_LANG}" != "en_US" ]; then # If a language (not en_US) is selected
 
   ## Localization
-  echo "-"
+  echo
   echo "- # 1/4 - Checking if localization for selected language exists."
-  echo "-"
   svn ls ${SVN_SERVER}/home/kde/trunk/l10n/${GET_LANG}/messages/extragear-multimedia/amarok.po > /dev/null 2>&1 # Check if language exists
   if [ "$?" != "0" ]; then # If the localization wasn't found
     GET_LANG="en_US"
-    echo "- WARNING:  Localization for selected language was not found. Reverting to 'en_US'."
+    echo "WARNING:  Localization for selected language was not found. Reverting to 'en_US'."
   else # If localization exists
+    echo
     echo "- # 2/4 - Updating localization file."
     if [ ! -d "po" ]; then
       mkdir po
@@ -182,46 +218,46 @@ if [ "${GET_LANG}" != "en_US" ]; then # If a language (not en_US) is selected
     echo "KDE_LANG = ${GET_LANG}" > Makefile.am
     echo "SUBDIRS  = \$(AUTODIRS)" >> Makefile.am
     echo "POFILES  = AUTO" >> Makefile.am
-    echo "- Downloading current localization file from server."
+    echo "Downloading current localization file from server."
     TMP_FILE="`mktemp`"
     svn cat ${SVN_SERVER}/home/kde/trunk/l10n/${GET_LANG}/messages/extragear-multimedia/amarok.po 2> /dev/null | tee ${TMP_FILE} > /dev/null
     if [ "$?" != "0" ]; then # If the command didn't finish successfully
       Error "The SVN transfer didn't finish successfully."
     fi
     if [ ! -s "${TMP_FILE}" ]; then
-      echo "- WARNING: The downloaded file was empty!"
-      echo "-          Some error must have occured."
+      echo "WARNING: The downloaded file was empty!"
+      echo "Some error must have occured."
       rm -f Makefile.am
       rm -f ../Makefile.am
       rm -f ${TMP_FILE}
-      echo "-          No localization downloaded, so no localization will be installed!"
+      echo "No localization downloaded, so no localization will be installed!"
     elif [ -f "amarok.po" ]; then
       if [ -z "`diff -q ${TMP_FILE} amarok.po 2>&1`" ]; then
-        echo "- You already have the current version of the localization file."
+        echo "You already have the current version of the localization file."
         rm -f ${TMP_FILE}
-        echo "- Removed the downloaded version."
+        echo "Removed the downloaded version."
       else
-        echo "- New localization file downloaded."
+        echo "New localization file downloaded."
         rm -f amarok.po
         mv -f ${TMP_FILE} amarok.po
-        echo "- Replaced the old copy with the downloaded version."
+        echo "Replaced the old copy with the downloaded version."
       fi
     else
       mv -f ${TMP_FILE} amarok.po
-      echo "- Localization file downloaded."
+      echo "Localization file downloaded."
     fi
     cd ../..
 
     ## Localized documentation
-    echo "-"
+    echo
     echo "- # 3/4 - Checking if localized documentation for selected language exists."
-    echo "-"
     svn ls ${SVN_SERVER}/home/kde/trunk/l10n/${GET_LANG}/docs/extragear-multimedia/amarok > /dev/null 2>&1 # Check if localized documentation exists
     if [ "$?" != "0" ]; then # If the localized documentation wasn't found
       GET_LANG="en_US"
-      echo "- WARNING: Localized documentation for selected language was not found. Reverting to default (American English) documentation."
+      echo "WARNING: Localized documentation for selected language was not found. Reverting to default (American English) documentation."
       STEP_EN="4/4 - "
     else # If a localized documentation exists
+      echo
       echo "- # 4/4 - Checking out localized documentation."
       if [ ! -d "doc" ]; then
         mkdir doc
@@ -241,10 +277,10 @@ if [ "${GET_LANG}" != "en_US" ]; then # If a language (not en_US) is selected
   fi
 fi
 
-if [ "${GET_LANG}" = "en_US" ]; then # If no language (en_US) is selected
+if [ "${GET_LANG}" = "en_US" ]; then # If no language (en_US) is selected. This is a stand alone if-statement to enable fallbacks when selected language isn't found.
 
   ## Default (American English) documentation
-  echo "-"
+  echo
   echo "- # ${STEP_EN}Checking out default (American English) documentation."
   if [ ! -d "doc" ]; then
     mkdir doc
@@ -262,38 +298,12 @@ if [ "${GET_LANG}" = "en_US" ]; then # If no language (en_US) is selected
 
 fi
 
-## Get unsermake, if not installed already
-echo
-echo "# 6/12 - Getting unsermake."
-if [ -x "`which unsermake`" ]; then # unsermake installed system wide?
-  echo "Unsermake is already installed system wide."
-else
-  PATH="`pwd`/unsermake:${PATH}"
-  if [ -x "`which unsermake`" ]; then # Is unsermake installed and in your $PATH?
-    echo "Unsermake downloaded for use with this script. Checking for update."
-  else
-    echo "Unsermake NOT found. Downloading it for use with this script ONLY."
-  fi
-  svn co -N ${SVN_SERVER}/home/kde/trunk/kdenonbeta/unsermake
-fi
-
-## Store the old uninstall commands
-echo
-echo "# 7/12 - Checking used files for the installed revision."
-if [ ! -f "Makefile" ]; then
-  echo "No older revision is installed."
-else
-  TMP_OLD_UNINFO="`mktemp`"
-  unsermake -n uninstall | grep "rm -f" > ${TMP_OLD_UNINFO}
-  echo "Information saved."
-fi
-
 ## Preparation
 echo
-echo "# 8/12 - Preparing for configuration. (This will take a while.)"
+echo "# 7/11 - Preparing for configuration. (This will take a while.)"
 WANT_AUTOCONF="2.5" unsermake -f Makefile.cvs
 if [ "$?" != "0" ]; then # If the command didn't finish successfully
-  Error "Preparation didn't finish successfully. Problems at this step are quite certainly problems with either unsermake or your automake configuration. Ask the friendly people in #amarok on freenode for help."
+  Error "Preparation didn't finish successfully.\nProblems at this step are quite certainly problems with either unsermake or your automake configuration.\nAsk the friendly people in #amarok on freenode for help."
 fi
 
 ## Configuration help
@@ -320,7 +330,7 @@ fi
 
 ## Configuration
 echo
-echo "# 9/12 - Configuring. (This will also take a while.)"
+echo "# 8/11 - Configuring. (This will also take a while.)"
 ./configure --prefix=`kde-config --prefix` --enable-debug=full${CONF_FLAGS}
 if [ "$?" != "0" ]; then # If the command didn't finish successfully
   Error "Configuration wasn't successful. amaroK was NOT installed/upgraded. Ask the friendly people in #amarok on freenode for help."
@@ -328,15 +338,20 @@ fi
 
 ## Compare uninstall commands and remove unused files
 echo
-echo "# 10/12 - Removing files that will be unused with the new revision."
+echo "# 9/11 - Removing files that will be unused with the new revision."
 if [ ! -s "${TMP_OLD_UNINFO}" ]; then
   echo "No older revision is installed."
 else
   TMP_NEW_UNINFO="`mktemp`"
   unsermake -n uninstall | grep "rm -f" > ${TMP_NEW_UNINFO}
+  if [ "$?" != "0" ]; then # If the command didn't finish successfully
+    Error "Couldn't get list of used files in the new revision."
+  fi
   TMP_UNFILES="`mktemp`"
   diff --old-line-format="%L" --new-line-format="" --unchanged-line-format="" ${TMP_OLD_UNINFO} ${TMP_NEW_UNINFO} > ${TMP_UNFILES} # a diff that only outputs lines that only are in the first file, the grep removes some Makefile creation commands that come up all the time.
-  if [ -s "${TMP_UNFILES}" ]; then
+  if [ "$?" != "0" ]; then # If the command didn't finish successfully
+    Error "Couldn't compare the lists with used files."
+  elif [ -s "${TMP_UNFILES}" ]; then
     kdialog --title "${KD_TITLE} :: DEBUG: Check these commands before clicking OK!" --textbox ${TMP_UNFILES} 600 5000 # TODO remove this line when 3.0 goes final.
     echo "Will use '${HOW_ROOT}' to get root privileges for removal of unused files."
     if [ "${HOW_ROOT}" = "sudo" ]; then
@@ -354,14 +369,14 @@ else
       Error "Removal of unused files didn't finish successfully."
     fi
   else
-    echo "There was no changes in file usage."
+    echo "There was no change in file usage since last installation."
   fi
   rm -f ${TMP_OLD_UNINFO} ${TMP_NEW_UNINFO} ${TMP_UNFILES}
 fi
 
 ## Compilation
 echo
-echo "# 11/12 - Compiling. (The time of this step depends on the number of new source files that were downloaded.)"
+echo "# 10/11 - Compiling. (The time of this step depends on the number of new source files that were downloaded.)"
 unsermake
 if [ "$?" != "0" ]; then # If the command didn't finish successfully
   Error "Compilation wasn't successful. amaroK was NOT installed/upgraded. Ask the friendly people in #amarok on freenode for help."
@@ -371,7 +386,7 @@ echo "Compilation successful."
 
 ## Installation
 echo
-echo "# 12/12 - Installing files."
+echo "# 11/11 - Installing files."
 echo "Will use '${HOW_ROOT}' to get root privileges for installation."
 if [ "${HOW_ROOT}" = "sudo" ]; then
   echo "(You might need to enter your password now.)"
