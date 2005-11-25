@@ -17,7 +17,7 @@
 class HelixSimplePlayerVolumeAdvice : public IHXVolumeAdviseSink
 {
 public:
-   HelixSimplePlayerVolumeAdvice(HelixSimplePlayer *player, int playerIndex) : m_Player(player), m_index(playerIndex) {}
+   HelixSimplePlayerVolumeAdvice(HelixSimplePlayer *player, int playerIndex) : m_Player(player),m_index(playerIndex),m_lRefCount(0) {}
    virtual ~HelixSimplePlayerVolumeAdvice() {}
 
    /*
