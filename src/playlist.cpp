@@ -347,6 +347,8 @@ Playlist::Playlist( QWidget *parent )
     new KAction( i18n( "&Goto Current Track" ), "today", CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "playlist_show" );
     new KAction( i18n( "&Remove Duplicate && Dead Entries" ), 0, this, SLOT( removeDuplicates() ), ac, "playlist_remove_duplicates" );
     new KAction( i18n( "&Queue Selected Tracks" ), CTRL+Key_D, this, SLOT( queueSelected() ), ac, "queue_selected" );
+    new KAction( i18n( "&Stop Playing After Track" ), "player_stop", CTRL+ALT+Key_Z,
+        this, SLOT( toggleStopAfterCurrent() ), ac, "stop_after" );
 
     //ensure we update action enabled states when repeat Playlist is toggled
     connect( ac->action( "repeat_playlist" ), SIGNAL(toggled( bool )), SLOT(updateNextPrev()) );
@@ -1156,6 +1158,28 @@ void Playlist::setStopAfterCurrent( bool on )
 
     if( m_stopAfterTrack )
         m_stopAfterTrack->update();
+    if( prev_stopafter )
+        prev_stopafter->update();
+}
+
+void Playlist::toggleStopAfterCurrent()
+{
+    PlaylistItem *item = currentItem();
+    if( !item && m_selCount == 1 )
+        item = *MyIt( this, MyIt::Visible | MyIt::Selected );
+    if( !item )
+        return;
+
+    PlaylistItem *prev_stopafter = m_stopAfterTrack;
+    if( m_stopAfterTrack == item )
+            m_stopAfterTrack = 0;
+    else
+    {
+        m_stopAfterTrack = item;
+        item->setSelected( false );
+        item->update();
+    }
+
     if( prev_stopafter )
         prev_stopafter->update();
 }
@@ -3219,7 +3243,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     }
     if(itemCount == 1)
     {
-        popup.insertItem( SmallIconSet( "player_stop" ), i18n( "&Stop Playing After Track" ), STOP_DONE );
+        amaroK::actionCollection()->action( "stop_after" )->plug( &popup );
         popup.setItemChecked( STOP_DONE, m_stopAfterTrack == item );
     }
 
@@ -3299,7 +3323,6 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     const QPoint pos( p.x() - popup.sidePixmapWidth(), p.y() + 3 );
     int menuItemId = popup.exec( pos );
-    PlaylistItem *prev_stopafter = m_stopAfterTrack;
     PLItemList in, out;
 
     switch( menuItemId )
@@ -3341,20 +3364,6 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         }
 
         emit queueChanged( in, out );
-        break;
-
-    case STOP_DONE:
-        if( m_stopAfterTrack == item )
-            m_stopAfterTrack = 0;
-        else
-        {
-            m_stopAfterTrack = item;
-            item->setSelected( false );
-            item->update();
-        }
-
-        if( prev_stopafter )
-            prev_stopafter->update();
         break;
 
     case VIEW:

@@ -117,8 +117,9 @@ class Playlist : private KListView, public EngineObserver
         void setFont( const QFont &f ) { KListView::setFont( f ); } //made public for convenience
         void unsetFont()               { KListView::unsetFont(); }
 
-        PlaylistItem *firstChild() const { return (PlaylistItem*)KListView::firstChild(); }
-        PlaylistItem *lastItem()   const { return (PlaylistItem*)KListView::lastItem(); }
+        PlaylistItem *firstChild() const { return static_cast<PlaylistItem*>( KListView::firstChild() ); }
+        PlaylistItem *lastItem()   const { return static_cast<PlaylistItem*>( KListView::lastItem() ); }
+        PlaylistItem *currentItem() const { return static_cast<PlaylistItem*>( KListView::currentItem() ); }
 
         int  visibleColumns() const;
         int  mapToLogicalColumn( int physical ); // Converts physical PlaylistItem column position to logical
@@ -176,6 +177,7 @@ class Playlist : private KListView, public EngineObserver
         void setFilterForItem( const QString &query, PlaylistItem *item ); //for a single item
         void setFilterSlot( const QString &filter );                       //uses a delay where applicable
         void setStopAfterCurrent( bool on );
+        void toggleStopAfterCurrent();
         void setStopAfterMode( int mode );
         void showCurrentTrack() { ensureItemCentered( m_currentTrack ); }
         void showQueueManager();
