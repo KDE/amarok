@@ -148,6 +148,7 @@ HelixEngine::init()
    struct stat s;
    bool exists = false;
    stop();
+   m_state = Engine::Empty;
 
    m_numPlayers = 2;
    m_current = 1;
@@ -265,7 +266,7 @@ HelixEngine::load( const KURL &url, bool isStream )
    {
    }
    else
-      stop();
+      cleanup();
 
    m_isStream = isStream;
    int nextPlayer;
@@ -324,12 +325,11 @@ HelixEngine::play( uint offset )
 }
 
 void
-HelixEngine::stop()
+HelixEngine::cleanup()
 {
    if (!m_inited)
       return;
 
-   debug() << "In stop\n";
    m_url = KURL();
    HelixSimplePlayer::stop(); // stop all players
    resetScope();
@@ -337,11 +337,22 @@ HelixEngine::stop()
    m_lasttime = 0;
    m_lastpos = 0;
    m_scopeindex = 0;
-   m_state = Engine::Empty;
    m_isStream = false;
    memset(&m_md, 0, sizeof(m_md));
-   emit stateChanged( Engine::Empty );
 }
+
+void 
+HelixEngine::stop()
+{
+   if (!m_inited)
+      return;
+
+   debug() << "In stop\n";
+   cleanup();
+   m_state = Engine::Empty;
+   emit stateChanged( m_state );   
+}
+
 
 void HelixEngine::play_finished(int /*playerIndex*/)
 {
