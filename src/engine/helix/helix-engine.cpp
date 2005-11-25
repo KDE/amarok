@@ -72,7 +72,7 @@ HelixEngine::HelixEngine()
    addPluginProperty( "StreamingMode", "NoStreaming" ); // this means we'll handle streaming (not using KIO)
    addPluginProperty( "HasConfigure", "true" );
    addPluginProperty( "HasEqualizer", "true" );
-   addPluginProperty( "HasCrossfade", "true" );
+   //addPluginProperty( "HasCrossfade", "true" );
 
    memset(&m_md, 0, sizeof(m_md));
 
