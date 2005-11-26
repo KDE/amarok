@@ -108,23 +108,6 @@ STDMETHODIMP HSPPreMixAudioHook::OnBuffer(HXAudioData */*pAudioInData*/, HXAudio
    }
 #endif
 
-/*
-   unsigned char *outbuf, *data;
-   unsigned long len;
-   IHXBuffer *ibuf;
-
-   m_Player->pCommonClassFactory->CreateInstance(CLSID_IHXBuffer, (void **) &ibuf);
-   if (ibuf)
-   {
-      pAudioInData->pData->Get(data, len);
-      ibuf->SetSize(len);
-      outbuf = ibuf->GetBuffer();
-      memcpy(outbuf, data, len);
-      pAudioOutData->pData = ibuf;
-      pAudioOutData->ulAudioTime = pAudioInData->ulAudioTime;
-      pAudioOutData->uAudioStreamType = pAudioInData->uAudioStreamType;
-   }
-*/
 
    return 0;
 }

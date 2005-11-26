@@ -179,9 +179,9 @@ HelixEngine::init()
 
    if (!stat(m_coredir.utf8(), &s) && !stat(m_pluginsdir.utf8(), &s) && !stat(m_codecsdir.utf8(), &s))
    {
-      long vol;
-      bool eqenabled;
-      int savedpreamp;
+      long vol=0;
+      bool eqenabled=false;
+      int savedpreamp=0;
       QValueList<int> savedequalizerGains;
 
       if (m_inited)
@@ -349,6 +349,7 @@ HelixEngine::stop()
 
    debug() << "In stop\n";
    cleanup();
+   cleanUpStream(m_current);
    m_state = Engine::Empty;
    emit stateChanged( m_state );   
 }
