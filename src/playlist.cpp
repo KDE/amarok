@@ -338,7 +338,7 @@ Playlist::Playlist( QWidget *parent )
 
 
     KActionCollection* const ac = amaroK::actionCollection();
-    KStdAction::copy( this, SLOT( copyToClipboard() ), ac, "playlist_copy" );
+    KAction *copy = KStdAction::copy( this, SLOT( copyToClipboard() ), ac, "playlist_copy" );
     KStdAction::selectAll( this, SLOT( selectAll() ), ac, "playlist_select_all" );
     m_clearButton = KStdAction::clear( this, SLOT( clear() ), ac, "playlist_clear" );
     m_undoButton  = KStdAction::undo( this, SLOT( undo() ), ac, "playlist_undo" );
@@ -347,8 +347,16 @@ Playlist::Playlist( QWidget *parent )
     new KAction( i18n( "&Goto Current Track" ), "today", CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "playlist_show" );
     new KAction( i18n( "&Remove Duplicate && Dead Entries" ), 0, this, SLOT( removeDuplicates() ), ac, "playlist_remove_duplicates" );
     new KAction( i18n( "&Queue Selected Tracks" ), CTRL+Key_D, this, SLOT( queueSelected() ), ac, "queue_selected" );
-    new KAction( i18n( "&Stop Playing After Track" ), "player_stop", CTRL+ALT+Key_Z,
-        this, SLOT( toggleStopAfterCurrent() ), ac, "stop_after" );
+    KAction *stopafter = new KAction( i18n( "&Stop Playing After Track" ), "player_stop", CTRL+ALT+Key_Z,
+                            this, SLOT( toggleStopAfterCurrent() ), ac, "stop_after" );
+
+    { // KAction idiocy -- shortcuts don't work until they've been plugged into a menu
+        KPopupMenu asdf;
+        copy->plug( &asdf );
+        stopafter->plug( &asdf );
+        copy->unplug( &asdf );
+        stopafter->unplug( &asdf );
+    }
 
     //ensure we update action enabled states when repeat Playlist is toggled
     connect( ac->action( "repeat_playlist" ), SIGNAL(toggled( bool )), SLOT(updateNextPrev()) );
@@ -2757,7 +2765,7 @@ Playlist::removeDuplicates() //SLOT
 void
 Playlist::copyToClipboard( const QListViewItem *item ) const //SLOT
 {
-    if( !item ) item = currentTrack();
+    if( !item ) item = currentItem();
 
     if( item )
     {
