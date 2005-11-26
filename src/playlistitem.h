@@ -41,6 +41,7 @@ class PlaylistItem : public KListViewItem
             Length,
             Bitrate,
             Score,
+            Rating,
             Type,
             Playcount,
             LastPlayed,
@@ -111,6 +112,7 @@ class PlaylistItem : public KListViewItem
         inline int     length()    const { return m_length; }
         inline int     bitrate()   const { return m_bitrate; }
         inline int     score()     const { return m_score; }
+        inline int     rating()    const { return m_rating; }
         inline QString type()      const { return filename().mid( filename().findRev( '.' ) + 1 ); }
         inline int     playCount() const { return m_playCount; }
         inline uint    lastPlay()  const { return m_lastPlay; }
@@ -130,6 +132,7 @@ class PlaylistItem : public KListViewItem
         inline void setTrack(     int           track )     { m_track     = track;     update(); }
         inline void setLength(    int           length )    { m_length    = length;    update(); }
         inline void setBitrate(   int           bitrate )   { m_bitrate   = bitrate;   update(); }
+        inline void setRating(    int           rating )    { m_rating    = rating;    update(); }
         inline void setScore(     int           score )     { m_score     = score;     update(); }
         inline void setPlaycount( int           playcount ) { m_playCount = playcount; update(); }
         inline void setLastPlay( uint           lastplay )  { m_lastPlay  = lastplay;  update(); }
@@ -181,6 +184,7 @@ class PlaylistItem : public KListViewItem
         int m_length;
         int m_bitrate;
         int m_score;
+        int m_rating;
         int m_playCount;
         int m_lastPlay;
         bool m_missing;

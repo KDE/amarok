@@ -65,6 +65,7 @@ const QString PlaylistItem::columnName( int c ) //static
         case Length:     return "Length";
         case Bitrate:    return "Bitrate";
         case Score:      return "Score";
+        case Rating:     return "Rating";
         case Type:       return "Type";
         case LastPlayed: return "LastPlayed";
         case Playcount:  return "Playcount";
@@ -92,6 +93,7 @@ PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi )
         , m_length( 0 )
         , m_bitrate( 0 )
         , m_score( 0 )
+        , m_rating( 0 )
         , m_playCount( 0 )
         , m_lastPlay( 0 )
         , m_missing( false )
@@ -168,6 +170,9 @@ PlaylistItem::PlaylistItem( QDomNode node, QListViewItem *item )
         case Score:
             m_score = CollectionDB::instance()->getSongPercentage( m_url.path() );
             continue;
+        case Rating:
+            m_rating = CollectionDB::instance()->getSongRating( m_url.path() );
+            continue;
         case Playcount:
             m_playCount = CollectionDB::instance()->getPlayCount( m_url.path() );
             continue;
@@ -237,6 +242,7 @@ void PlaylistItem::setText( const MetaBundle &bundle )
     setLength( bundle.length() );
     setBitrate( bundle.bitrate() );
     setScore( CollectionDB::instance()->getSongPercentage( bundle.url().path() ) );
+    setRating( CollectionDB::instance()->getSongRating( bundle.url().path() ) );
     setPlaycount( CollectionDB::instance()->getPlayCount( bundle.url().path() ) );
     setLastPlay( CollectionDB::instance()->getLastPlay( bundle.url().path() ).toTime_t() );
 
@@ -258,6 +264,7 @@ void PlaylistItem::setText( int column, const QString &newText )
         case Length:     setLength(    newText.toInt() ); break;
         case Bitrate:    setBitrate(   newText.toInt() ); break;
         case Score:      setScore(     newText.toInt() ); break;
+        case Rating:     setRating(    newText.toInt() ); break;
         case Playcount:  setPlaycount( newText.toInt() ); break;
         case LastPlayed: setLastPlay(  newText.toInt() ); break;
         default: warning() << "Tried to set the text of an immutable or nonexistent column! [" << column << endl;
@@ -280,6 +287,7 @@ QString PlaylistItem::exactText( int column ) const
         case Length:     return QString::number( length() );
         case Bitrate:    return QString::number( bitrate() );
         case Score:      return QString::number( score() );
+        case Rating:     return QString::number( rating() );
         case Type:       return type();
         case Playcount:  return QString::number( playCount() );
         case LastPlayed: return QString::number( lastPlay() );
@@ -376,6 +384,7 @@ QString PlaylistItem::text( int column ) const
         case Length:     return length() == -1 ? editing : MetaBundle::prettyLength( length(), true );
         case Bitrate:    return bitrate() == -1 ? editing : MetaBundle::prettyBitrate( bitrate() );
         case Score:      return score() == -1 ? editing : QString::number( score() );
+        case Rating:     return rating() == -1 ? editing : QString().fill( '*', m_rating );
         case Type:       return m_url.isEmpty() ? QString() : ( m_url.protocol() == "http" ) ? i18n( "Stream" )
                                 : filename().mid( filename().findRev( '.' ) + 1 );
         case Playcount:  return playCount() == -1 ? editing : QString::number( playCount() );
@@ -459,6 +468,7 @@ void PlaylistItem::setEditing( int column )
         case Length:     m_length    = -1; break;
         case Bitrate:    m_bitrate   = -1; break;
         case Score:      m_score     = -1; break;
+        case Rating:     m_rating    = -1; break;
         case Playcount:  m_playCount = -1; break;
         case LastPlayed: m_lastPlay  =  1; break;
         default: warning() << "Tried to set the text of an immutable or nonexistent column!" << endl;
@@ -483,6 +493,7 @@ bool PlaylistItem::isEditing( int column ) const
         case Length:     return m_length    < 0;
         case Bitrate:    return m_bitrate   < 0;
         case Score:      return m_score     < 0;
+        case Rating:     return m_rating    < 0;
         case Playcount:  return m_playCount < 0;
         case LastPlayed: return m_lastPlay == 1;
         default: return false;
@@ -520,6 +531,7 @@ PlaylistItem::compare( QListViewItem *i, int col, bool ascending ) const
     {
         case Track:      return cmp( track(),     i->track() );
         case Score:      return cmp( score(),     i->score() );
+        case Rating:     return cmp( rating(),    i->rating() );
         case Length:     return cmp( length(),    i->length() );
         case Playcount:  return cmp( playCount(), i->playCount() );
         case LastPlayed: return cmp( lastPlay(),  i->lastPlay() );

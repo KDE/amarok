@@ -288,12 +288,13 @@ Playlist::Playlist( QWidget *parent )
     addColumn( i18n( "Length"      ),  80 );
     addColumn( i18n( "Bitrate"     ),   0 );
     addColumn( i18n( "Score"       ),   0 );
+    addColumn( i18n( "Rating"      ),   0 );
     addColumn( i18n( "Type"        ),   0 );
     addColumn( i18n( "Playcount"   ),   0 );
     addColumn( i18n( "Last Played" ),   0 );
     addColumn( i18n( "Moodbar"     ),  AmarokConfig::showMoodbar() ? 40 : 0 );
 
-    setRenameable( PlaylistItem::Filename, false ); //TODO allow renaming of the filename
+    setRenameable( PlaylistItem::Filename,   false ); //TODO allow renaming of the filename
     setRenameable( PlaylistItem::Title );
     setRenameable( PlaylistItem::Artist );
     setRenameable( PlaylistItem::Album );
@@ -302,16 +303,17 @@ Playlist::Playlist( QWidget *parent )
     setRenameable( PlaylistItem::Genre );
     setRenameable( PlaylistItem::Track );
     setRenameable( PlaylistItem::Score );
-    setRenameable( PlaylistItem::Type, false );
-    setRenameable( PlaylistItem::Playcount, false );
+    setRenameable( PlaylistItem::Rating,     false );
+    setRenameable( PlaylistItem::Type,       false );
+    setRenameable( PlaylistItem::Playcount,  false );
     setRenameable( PlaylistItem::LastPlayed, false );
-    setRenameable( PlaylistItem::Moodbar, false );
-    setColumnAlignment(  7, Qt::AlignCenter ); //track
-    setColumnAlignment(  9, Qt::AlignRight );  //length
-    setColumnAlignment( 10, Qt::AlignCenter ); //bitrate
-    setColumnAlignment( 11, Qt::AlignCenter ); //score
-    setColumnAlignment( 12, Qt::AlignCenter ); //extension
-    setColumnAlignment( 13, Qt::AlignCenter ); //playcount
+    setRenameable( PlaylistItem::Moodbar,    false );
+    setColumnAlignment( PlaylistItem::Track,     Qt::AlignCenter );
+    setColumnAlignment( PlaylistItem::Length,    Qt::AlignRight  );
+    setColumnAlignment( PlaylistItem::Bitrate,   Qt::AlignCenter );
+    setColumnAlignment( PlaylistItem::Score,     Qt::AlignCenter );
+    setColumnAlignment( PlaylistItem::Type,      Qt::AlignCenter );
+    setColumnAlignment( PlaylistItem::Playcount, Qt::AlignCenter );
 
 
     connect( this,     SIGNAL( doubleClicked( QListViewItem* ) ),
@@ -1256,9 +1258,8 @@ void Playlist::doubleClicked( QListViewItem *item )
 {
     /* We have to check if the item exists before calling activate, otherwise clicking on an empty
     playlist space would stop playing (check BR #105106)*/
-    if( item )
-        if( item->isEnabled() )
-            activate( item );
+    if( item && item->isEnabled() )
+        activate( item );
 }
 
 void
@@ -2040,8 +2041,12 @@ Playlist::viewportResizeEvent( QResizeEvent *e )
         case PlaylistItem::Track:
         case PlaylistItem::Bitrate:
         case PlaylistItem::Score:
+        case PlaylistItem::Rating:
+        case PlaylistItem::Type:
+        case PlaylistItem::Playcount:
         case PlaylistItem::Length:
         case PlaylistItem::Year:
+        case PlaylistItem::Moodbar:
             break; //these columns retain their width - their items tend to have uniform size
         default:
             if( m_columnFraction[c] > 0 )
@@ -2078,8 +2083,12 @@ Playlist::columnResizeEvent( int col, int oldw, int neww )
             case PlaylistItem::Track:
             case PlaylistItem::Bitrate:
             case PlaylistItem::Score:
+            case PlaylistItem::Rating:
+            case PlaylistItem::Type:
+            case PlaylistItem::Playcount:
             case PlaylistItem::Length:
             case PlaylistItem::Year:
+            case PlaylistItem::Moodbar:
                 break;
             default:
                 if( m_columnFraction[c] > 0 )
@@ -2116,8 +2125,12 @@ Playlist::columnResizeEvent( int col, int oldw, int neww )
         case PlaylistItem::Track:
         case PlaylistItem::Bitrate:
         case PlaylistItem::Score:
+        case PlaylistItem::Rating:
+        case PlaylistItem::Type:
+        case PlaylistItem::Playcount:
         case PlaylistItem::Length:
         case PlaylistItem::Year:
+        case PlaylistItem::Moodbar:
             break;
         default:
             w += columnWidth( x );
@@ -2454,7 +2467,7 @@ Playlist::saveXML( const QString &path )
     playlist.setAttribute( "product", "amaroK" );
 
     //increase this whenever the format changes, in PlaylistLoader::loadXml() also
-    playlist.setAttribute( "version", "2.1" );
+    playlist.setAttribute( "version", "2.2" );
     newdoc.appendChild( playlist );
 
     for( const PlaylistItem *item = firstChild(); item; item = item->nextSibling() )

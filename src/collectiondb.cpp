@@ -1409,7 +1409,7 @@ CollectionDB::addSongPercentage( const QString &url, int percentage )
 
 
 int
-CollectionDB::getSongPercentage( const QString &url)
+CollectionDB::getSongPercentage( const QString &url )
 {
     QStringList values = query( QString( "SELECT round( percentage + 0.4 ) FROM statistics WHERE url = '%1';" )
                                          .arg( escapeString( url ) ) );
@@ -1420,6 +1420,11 @@ CollectionDB::getSongPercentage( const QString &url)
     return 0;
 }
 
+int
+CollectionDB::getSongRating( const QString &url )
+{
+    return ( getSongPercentage( url ) + 10 ) / 20;
+}
 
 void
 CollectionDB::setSongPercentage( const QString &url , int percentage)

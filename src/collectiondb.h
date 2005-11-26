@@ -255,6 +255,7 @@ class CollectionDB : public QObject, public EngineObserver
         //statistics methods
         int addSongPercentage( const QString &url, int percentage );
         int getSongPercentage( const QString &url );
+        int getSongRating( const QString &url );
         void setSongPercentage( const QString &url , int percentage );
         int getPlayCount( const QString &url );
         QDateTime getFirstPlay( const QString &url );
