@@ -82,6 +82,9 @@ class Playlist : private KListView, public EngineObserver
         static const int DirectPlay = 8;     /// start playback of the first item in the list
         static const int Unique     = 16;    /// don't insert anything already in the playlist
 
+        // it's really just the *ListView parts we want to hide...
+        QObject *qobject() const { return (QObject*)this; }
+
         /** Add media to the playlist
          *  @param options you can OR these together, see the enum
          *  @param sql     Sql program to execute */
