@@ -1803,6 +1803,7 @@ PodcastItem::downloadResult( KIO::Job* job ) //SLOT
         if(!title().isEmpty())
             bundle->setTitle(title());
         MediaDevice::instance()->addURL( localUrl(), bundle, true );
+        MediaDevice::instance()->URLsAdded();
     }
 
     updatePixmap();

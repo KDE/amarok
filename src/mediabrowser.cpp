@@ -868,8 +868,6 @@ MediaDeviceList::rmbIpod( QListViewItem* qitem, const QPoint& point, int ) //SLO
         menu.insertSeparator();
 
         menu.insertItem( SmallIconSet( "collection" ), i18n( "&Add to Collection" ), ADD_TO_COLLECTION );
-        menu.insertSeparator();
-
         switch ( item->depth() )
         {
         case 0:
