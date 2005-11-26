@@ -348,7 +348,7 @@ Playlist::Playlist( QWidget *parent )
     new KAction( i18n( "&Remove Duplicate && Dead Entries" ), 0, this, SLOT( removeDuplicates() ), ac, "playlist_remove_duplicates" );
     new KAction( i18n( "&Queue Selected Tracks" ), CTRL+Key_D, this, SLOT( queueSelected() ), ac, "queue_selected" );
     KAction *stopafter = new KAction( i18n( "&Stop Playing After Track" ), "player_stop", CTRL+ALT+Key_Z,
-                            this, SLOT( toggleStopAfterCurrent() ), ac, "stop_after" );
+                            this, SLOT( toggleStopAfterCurrentItem() ), ac, "stop_after" );
 
     { // KAction idiocy -- shortcuts don't work until they've been plugged into a menu
         KPopupMenu asdf;
@@ -1170,7 +1170,7 @@ void Playlist::setStopAfterCurrent( bool on )
         prev_stopafter->update();
 }
 
-void Playlist::toggleStopAfterCurrent()
+void Playlist::toggleStopAfterCurrentItem()
 {
     PlaylistItem *item = currentItem();
     if( !item && m_selCount == 1 )
@@ -1186,6 +1186,29 @@ void Playlist::toggleStopAfterCurrent()
         m_stopAfterTrack = item;
         item->setSelected( false );
         item->update();
+    }
+
+    if( prev_stopafter )
+        prev_stopafter->update();
+}
+
+void Playlist::toggleStopAfterCurrentTrack()
+{
+    PlaylistItem *item = currentTrack();
+    if( !item )
+        return;
+
+    PlaylistItem *prev_stopafter = m_stopAfterTrack;
+    if( m_stopAfterTrack == item ) {
+        m_stopAfterTrack = 0;
+        amaroK::OSD::instance()->OSDWidget::show( i18n("Stop Playing After Track: Off") );
+    }        
+    else
+    {
+        m_stopAfterTrack = item;
+        item->setSelected( false );
+        item->update();
+        amaroK::OSD::instance()->OSDWidget::show( i18n("Stop Playing After Track: On") );
     }
 
     if( prev_stopafter )
