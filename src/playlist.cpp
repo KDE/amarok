@@ -3610,6 +3610,12 @@ Playlist::reallyEnsureItemCentered()
     if( QListViewItem *item = m_itemToReallyCenter )
     {
         m_itemToReallyCenter = 0;
+        if( m_selCount == 1 )
+        {
+            PlaylistItem *previtem = *MyIt( this, MyIt::Selected );
+            if( previtem && previtem != item )
+                previtem->setSelected( false );
+        }
         setCurrentItem( item );
         ensureVisible( contentsX(), item->itemPos() + item->height() / 2, 0, visibleHeight() / 2 );
         triggerUpdate();
