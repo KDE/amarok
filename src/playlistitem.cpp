@@ -649,189 +649,190 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
     else
     {
 
-    if( isCurrent && !isSelected() )
-    {
-        static paintCacheItem paintCache[NUM_COLUMNS];
-
-        // Convert QColor to string for use as key in QMap
-        const QString colorKey =
-            QString::number( glowBase.red() ) +
-            QString::number( glowBase.green() ) +
-            QString::number( glowBase.blue() );
-
-        const bool cacheValid =
-            paintCache[column].width == width &&
-            paintCache[column].height == height() &&
-            paintCache[column].text == colText &&
-            paintCache[column].font == painter->font() &&
-            !s_pixmapChanged;
-
-        // If any parameter changed, we must regenerate all pixmaps
-        if ( !cacheValid )
+        if( isCurrent && !isSelected() )
         {
-            for( int i = 0; i < NUM_COLUMNS; ++i)
-                paintCache[i].map.clear();
-            s_pixmapChanged = false;
+            static paintCacheItem paintCache[NUM_COLUMNS];
+
+            // Convert QColor to string for use as key in QMap
+            const QString colorKey =
+                QString::number( glowBase.red() ) +
+                QString::number( glowBase.green() ) +
+                QString::number( glowBase.blue() );
+
+            const bool cacheValid =
+                paintCache[column].width == width &&
+                paintCache[column].height == height() &&
+                paintCache[column].text == colText &&
+                paintCache[column].font == painter->font() &&
+                !s_pixmapChanged;
+
+            // If any parameter changed, we must regenerate all pixmaps
+            if ( !cacheValid )
+            {
+                for( int i = 0; i < NUM_COLUMNS; ++i)
+                    paintCache[i].map.clear();
+                s_pixmapChanged = false;
+            }
+
+            // Determine if we need to repaint the pixmap, or paint from cache
+            if ( paintCache[column].map.find( colorKey ) == paintCache[column].map.end() )
+            {
+                // Update painting cache
+                paintCache[column].width = width;
+                paintCache[column].height = height();
+                paintCache[column].text = colText;
+                paintCache[column].font = painter->font();
+
+                const QColor bg = isAlternate() ? listView()->alternateBackground() :
+                                                  listView()->viewport()->backgroundColor();
+
+                buf.fill( bg );
+
+                // Draw column divider line
+                p.setPen( listView()->viewport()->colorGroup().mid() );
+                p.drawLine( width - 1, 0, width - 1, height() - 1 );
+
+                // Here we draw the background bar graphics for the current track:
+                //
+                // Illustration of design, L = Left, M = Middle, R = Right:
+                // <LMMMMMMMMMMMMMMMR>
+
+                int leftOffset  = 0;
+                int rightOffset = 0;
+                int margin      = listView()->itemMargin();
+
+                const float colorize1 = 0.6;
+                const float colorize2 = 0.44;
+
+                // Left part
+                if( column == listView()->m_firstColumn ) {
+                    QImage tmpImage = currentTrackLeft.smoothScale( currentTrackLeft.width(), height() );
+                    KIconEffect::colorize( tmpImage, cg.highlight(), colorize1 );
+                    KIconEffect::colorize( tmpImage, glowBase, colorize2 );
+                    p.drawImage( 0, 0, tmpImage );
+                    leftOffset = currentTrackLeft.width();
+                    margin += 6;
+                }
+
+                // Right part
+                else
+                if( column == Playlist::instance()->mapToLogicalColumn( Playlist::instance()->visibleColumns() - 1 ) )
+                {
+                    QImage tmpImage = currentTrackRight.smoothScale( currentTrackRight.width(), height() );
+                    KIconEffect::colorize( tmpImage, cg.highlight(), colorize1 );
+                    KIconEffect::colorize( tmpImage, glowBase, colorize2 );
+                    p.drawImage( width - currentTrackRight.width(), 0, tmpImage );
+                    rightOffset = currentTrackRight.width();
+                    margin += 6;
+                }
+
+                // Middle part
+                // Here we scale the one pixel wide middel image to stretch to the full column width.
+                QImage tmpImage = currentTrackMid.copy();
+                KIconEffect::colorize( tmpImage, cg.highlight(), colorize1 );
+                KIconEffect::colorize( tmpImage, glowBase, colorize2 );
+                tmpImage = tmpImage.smoothScale( width - leftOffset - rightOffset, height() );
+                p.drawImage( leftOffset, 0, tmpImage );
+
+
+                // Draw the pixmap, if present
+                int leftMargin = margin;
+                if ( pixmap( column ) ) {
+                    p.drawPixmap( leftMargin, height() / 2 - pixmap( column )->height() / 2, *pixmap( column ) );
+                    leftMargin += pixmap( column )->width();
+                }
+
+                if( align != Qt::AlignCenter )
+                   align |= Qt::AlignVCenter;
+
+                // Draw the text
+                static QFont font;
+                static int minbearing = 1337 + 666;
+                if( minbearing == 2003 || font != painter->font() )
+                {
+                    font = painter->font();
+                    minbearing = painter->fontMetrics().minLeftBearing() + painter->fontMetrics().minRightBearing();
+                }
+                font.setItalic( true );
+                p.setFont( font );
+                p.setPen( cg.highlightedText() );
+//                 paint.setPen( glowText );
+                const int _width = width - leftMargin - margin + minbearing - 1; // -1 seems to be necessary
+                const QString _text = KStringHandler::rPixelSqueeze( colText, painter->fontMetrics(), _width );
+                p.drawText( leftMargin, 0, _width, height(), align, _text );
+
+                paintCache[column].map[colorKey] = buf;
+            }
+            else
+                p.drawPixmap( 0, 0, paintCache[column].map[colorKey] );
         }
-
-        // Determine if we need to repaint the pixmap, or paint from cache
-        if ( paintCache[column].map.find( colorKey ) == paintCache[column].map.end() )
+        else
         {
-            // Update painting cache
-            paintCache[column].width = width;
-            paintCache[column].height = height();
-            paintCache[column].text = colText;
-            paintCache[column].font = painter->font();
+            const QColorGroup _cg = ( !exists() || !isEnabled() )
+                                  ? listView()->palette().disabled()
+                                  : listView()->palette().active();
 
-            const QColor bg = isAlternate() ? listView()->alternateBackground() :
-                                              listView()->viewport()->backgroundColor();
+            QColor bg = isSelected()  ? _cg.highlight()
+                        : isAlternate() ? listView()->alternateBackground()
+                        : listView()->viewport()->backgroundColor();
+            #if KDE_IS_VERSION( 3, 3, 91 )
+            if( listView()->shadeSortColumn() && !isSelected() && listView()->columnSorted() == column )
+            {
+                /* from klistview.cpp
+                  Copyright (C) 2000 Reginald Stadlbauer <reggie@kde.org>
+                  Copyright (C) 2000,2003 Charles Samuels <charles@kde.org>
+                  Copyright (C) 2000 Peter Putzer */
+                if ( bg == Qt::black )
+                    bg = QColor(55, 55, 55);  // dark gray
+                else
+                {
+                    int h,s,v;
+                    bg.hsv(&h, &s, &v);
+                    if ( v > 175 )
+                        bg = bg.dark(104);
+                    else
+                       bg = bg.light(120);
+                }
+            }
+            #endif
+
+            const QColor textc = isSelected() ? _cg.highlightedText()
+                               : _cg.text();
 
             buf.fill( bg );
 
             // Draw column divider line
-            p.setPen( listView()->viewport()->colorGroup().mid() );
-            p.drawLine( width - 1, 0, width - 1, height() - 1 );
-
-            // Here we draw the background bar graphics for the current track:
-            //
-            // Illustration of design, L = Left, M = Middle, R = Right:
-            // <LMMMMMMMMMMMMMMMR>
-
-            int leftOffset  = 0;
-            int rightOffset = 0;
-            int margin      = listView()->itemMargin();
-
-            const float colorize1 = 0.6;
-            const float colorize2 = 0.44;
-
-            // Left part
-            if( column == listView()->m_firstColumn ) {
-                QImage tmpImage = currentTrackLeft.smoothScale( currentTrackLeft.width(), height() );
-                KIconEffect::colorize( tmpImage, cg.highlight(), colorize1 );
-                KIconEffect::colorize( tmpImage, glowBase, colorize2 );
-                p.drawImage( 0, 0, tmpImage );
-                leftOffset = currentTrackLeft.width();
-                margin += 6;
+            if( !isSelected() )
+            {
+                p.setPen( listView()->viewport()->colorGroup().mid() );
+                p.drawLine( width - 1, 0, width - 1, height() - 1 );
             }
-
-            // Right part
-            else
-            if( column == Playlist::instance()->mapToLogicalColumn( Playlist::instance()->visibleColumns() - 1 ) ) {
-                QImage tmpImage = currentTrackRight.smoothScale( currentTrackRight.width(), height() );
-                KIconEffect::colorize( tmpImage, cg.highlight(), colorize1 );
-                KIconEffect::colorize( tmpImage, glowBase, colorize2 );
-                p.drawImage( width - currentTrackRight.width(), 0, tmpImage );
-                rightOffset = currentTrackRight.width();
-                margin += 6;
-            }
-
-            // Middle part
-            // Here we scale the one pixel wide middel image to stretch to the full column width.
-            QImage tmpImage = currentTrackMid.copy();
-            KIconEffect::colorize( tmpImage, cg.highlight(), colorize1 );
-            KIconEffect::colorize( tmpImage, glowBase, colorize2 );
-            tmpImage = tmpImage.smoothScale( width - leftOffset - rightOffset, height() );
-            p.drawImage( leftOffset, 0, tmpImage );
-
 
             // Draw the pixmap, if present
-            int leftMargin = margin;
+            int margin = listView()->itemMargin(), leftMargin = margin;
             if ( pixmap( column ) ) {
                 p.drawPixmap( leftMargin, height() / 2 - pixmap( column )->height() / 2, *pixmap( column ) );
                 leftMargin += pixmap( column )->width();
             }
 
             if( align != Qt::AlignCenter )
-               align |= Qt::AlignVCenter;
+                align |= Qt::AlignVCenter;
 
             // Draw the text
             static QFont font;
-            static int minbearing = 1337 + 666;
+            static int minbearing = 1337 + 666; //can be 0 or negative, 2003 is less likely
             if( minbearing == 2003 || font != painter->font() )
             {
-                font = painter->font();
+                font = painter->font(); //getting your bearings can be expensive, so we cache them
                 minbearing = painter->fontMetrics().minLeftBearing() + painter->fontMetrics().minRightBearing();
             }
-            font.setItalic( true );
             p.setFont( font );
-            p.setPen( cg.highlightedText() );
-//             paint.setPen( glowText );
+            p.setPen( textc );
             const int _width = width - leftMargin - margin + minbearing - 1; // -1 seems to be necessary *shrug*
             const QString _text = KStringHandler::rPixelSqueeze( colText, painter->fontMetrics(), _width );
             p.drawText( leftMargin, 0, _width, height(), align, _text );
-
-            paintCache[column].map[colorKey] = buf;
         }
-        else
-            p.drawPixmap( 0, 0, paintCache[column].map[colorKey] );
     }
-    else
-    {
-        const QColorGroup _cg = ( !exists() || !isEnabled() )
-                              ? listView()->palette().disabled()
-                              : listView()->palette().active();
-
-        QColor bg = isSelected()  ? _cg.highlight()
-                    : isAlternate() ? listView()->alternateBackground()
-                    : listView()->viewport()->backgroundColor();
-        #if KDE_IS_VERSION( 3, 3, 91 )
-        if( listView()->shadeSortColumn() && !isSelected() && listView()->columnSorted() == column )
-        {
-            /* from klistview.cpp
-               Copyright (C) 2000 Reginald Stadlbauer <reggie@kde.org>
-               Copyright (C) 2000,2003 Charles Samuels <charles@kde.org>
-               Copyright (C) 2000 Peter Putzer */
-            if ( bg == Qt::black )
-                bg = QColor(55, 55, 55);  // dark gray
-            else
-            {
-                int h,s,v;
-                bg.hsv(&h, &s, &v);
-                if ( v > 175 )
-                    bg = bg.dark(104);
-                else
-                    bg = bg.light(120);
-            }
-        }
-        #endif
-
-        const QColor textc = isSelected() ? _cg.highlightedText()
-                           : _cg.text();
-
-        buf.fill( bg );
-
-        // Draw column divider line
-        if( !isSelected() )
-        {
-            p.setPen( listView()->viewport()->colorGroup().mid() );
-            p.drawLine( width - 1, 0, width - 1, height() - 1 );
-        }
-
-        // Draw the pixmap, if present
-        int margin = listView()->itemMargin(), leftMargin = margin;
-        if ( pixmap( column ) ) {
-            p.drawPixmap( leftMargin, height() / 2 - pixmap( column )->height() / 2, *pixmap( column ) );
-            leftMargin += pixmap( column )->width();
-        }
-
-        if( align != Qt::AlignCenter )
-           align |= Qt::AlignVCenter;
-
-        // Draw the text
-        static QFont font;
-        static int minbearing = 1337 + 666; //can be 0 or negative, 2003 is less likely
-        if( minbearing == 2003 || font != painter->font() )
-        {
-            font = painter->font(); //getting your bearings can be expensive, so we cache them
-            minbearing = painter->fontMetrics().minLeftBearing() + painter->fontMetrics().minRightBearing();
-        }
-        p.setFont( font );
-        p.setPen( textc );
-        const int _width = width - leftMargin - margin + minbearing - 1; // -1 seems to be necessary *shrug*
-        const QString _text = KStringHandler::rPixelSqueeze( colText, painter->fontMetrics(), _width );
-        p.drawText( leftMargin, 0, _width, height(), align, _text );
-    }
-}
     /// Track action symbols
     const int  queue       = listView()->m_nextTracks.findRef( this ) + 1;
     const bool stop        = ( this == listView()->m_stopAfterTrack );
