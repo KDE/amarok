@@ -180,7 +180,8 @@ class Playlist : private KListView, public EngineObserver
         void setFilterForItem( const QString &query, PlaylistItem *item ); //for a single item
         void setFilterSlot( const QString &filter );                       //uses a delay where applicable
         void setStopAfterCurrent( bool on );
-        void toggleStopAfterCurrent();
+        void toggleStopAfterCurrentItem();
+        void toggleStopAfterCurrentTrack();
         void setStopAfterMode( int mode );
         void showCurrentTrack() { ensureItemCentered( m_currentTrack ); }
         void showQueueManager();

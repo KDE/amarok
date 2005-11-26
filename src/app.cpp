@@ -330,6 +330,8 @@ void App::initGlobalShortcuts()
                             ec, SLOT( playPause() ), true, true );
     m_pGlobalAccel->insert( "stop", i18n( "Stop" ), 0, KKey("WIN+v"), 0,
                             ec, SLOT( stop() ), true, true );
+    m_pGlobalAccel->insert( "stop_after_global", i18n( "Stop Playing After Current Track" ), 0, KKey("WIN+CTRL+v"), 0,
+                            Playlist::instance()->qobject(), SLOT( toggleStopAfterCurrentTrack() ), true, true );
     m_pGlobalAccel->insert( "next", i18n( "Next Track" ), 0, KKey("WIN+b"), 0,
                             ec, SLOT( next() ), true, true );
     m_pGlobalAccel->insert( "prev", i18n( "Previous Track" ), 0, KKey("WIN+z"), 0,
