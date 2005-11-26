@@ -384,7 +384,7 @@ QString PlaylistItem::text( int column ) const
         case Length:     return length() == -1 ? editing : MetaBundle::prettyLength( length(), true );
         case Bitrate:    return bitrate() == -1 ? editing : MetaBundle::prettyBitrate( bitrate() );
         case Score:      return score() == -1 ? editing : QString::number( score() );
-        case Rating:     return rating() == -1 ? editing : QString().fill( '*', m_rating );
+        case Rating:     return rating() == -1 ? editing : QString::number( rating() );
         case Type:       return m_url.isEmpty() ? QString() : ( m_url.protocol() == "http" ) ? i18n( "Stream" )
                                 : filename().mid( filename().findRev( '.' ) + 1 );
         case Playcount:  return playCount() == -1 ? editing : QString::number( playCount() );
@@ -745,21 +745,27 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                 if( align != Qt::AlignCenter )
                    align |= Qt::AlignVCenter;
 
-                // Draw the text
-                static QFont font;
-                static int minbearing = 1337 + 666;
-                if( minbearing == 2003 || font != painter->font() )
+                if( column == Rating )
+                    drawRating( &p );
+                else
                 {
-                    font = painter->font();
-                    minbearing = painter->fontMetrics().minLeftBearing() + painter->fontMetrics().minRightBearing();
+                    // Draw the text
+                    static QFont font;
+                    static int minbearing = 1337 + 666;
+                    if( minbearing == 2003 || font != painter->font() )
+                    {
+                        font = painter->font();
+                        minbearing = painter->fontMetrics().minLeftBearing()
+                                     + painter->fontMetrics().minRightBearing();
+                    }
+                    font.setItalic( true );
+                    p.setFont( font );
+                    p.setPen( cg.highlightedText() );
+//                  paint.setPen( glowText );
+                    const int _width = width - leftMargin - margin + minbearing - 1; // -1 seems to be necessary
+                    const QString _text = KStringHandler::rPixelSqueeze( colText, painter->fontMetrics(), _width );
+                    p.drawText( leftMargin, 0, _width, height(), align, _text );
                 }
-                font.setItalic( true );
-                p.setFont( font );
-                p.setPen( cg.highlightedText() );
-//                 paint.setPen( glowText );
-                const int _width = width - leftMargin - margin + minbearing - 1; // -1 seems to be necessary
-                const QString _text = KStringHandler::rPixelSqueeze( colText, painter->fontMetrics(), _width );
-                p.drawText( leftMargin, 0, _width, height(), align, _text );
 
                 paintCache[column].map[colorKey] = buf;
             }
@@ -818,19 +824,25 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
             if( align != Qt::AlignCenter )
                 align |= Qt::AlignVCenter;
 
-            // Draw the text
-            static QFont font;
-            static int minbearing = 1337 + 666; //can be 0 or negative, 2003 is less likely
-            if( minbearing == 2003 || font != painter->font() )
+            if( column == Rating )
+                drawRating( &p );
+            else
             {
-                font = painter->font(); //getting your bearings can be expensive, so we cache them
-                minbearing = painter->fontMetrics().minLeftBearing() + painter->fontMetrics().minRightBearing();
+                // Draw the text
+                static QFont font;
+                static int minbearing = 1337 + 666; //can be 0 or negative, 2003 is less likely
+                if( minbearing == 2003 || font != painter->font() )
+                {
+                    font = painter->font(); //getting your bearings can be expensive, so we cache them
+                    minbearing = painter->fontMetrics().minLeftBearing()
+                                 + painter->fontMetrics().minRightBearing();
+                }
+                p.setFont( font );
+                p.setPen( textc );
+                const int _width = width - leftMargin - margin + minbearing - 1; // -1 seems to be necessary
+                const QString _text = KStringHandler::rPixelSqueeze( colText, painter->fontMetrics(), _width );
+                p.drawText( leftMargin, 0, _width, height(), align, _text );
             }
-            p.setFont( font );
-            p.setPen( textc );
-            const int _width = width - leftMargin - margin + minbearing - 1; // -1 seems to be necessary *shrug*
-            const QString _text = KStringHandler::rPixelSqueeze( colText, painter->fontMetrics(), _width );
-            p.drawText( leftMargin, 0, _width, height(), align, _text );
         }
     }
     /// Track action symbols
@@ -937,6 +949,20 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
 
     p.end();
     painter->drawPixmap( 0, 0, buf );
+}
+
+void PlaylistItem::drawRating( QPainter *p  )
+{
+    const int h = ( this == listView()->m_currentTrack ) ? height() / 2 : height();
+    static const QImage star = QImage( locate( "data", "amarok/images/star.png" ) )
+                               .smoothScale( h, h, QImage::ScaleMin );
+
+    int x = 0;
+    for( int i = 1; i <= rating(); ++i )
+    {
+        p->drawImage( x, ( height() - h ) / 2, star );
+        x += star.width() + listView()->itemMargin();
+    }
 }
 
 

@@ -166,6 +166,7 @@ class PlaylistItem : public KListViewItem
         void setArray(const QValueVector<QColor> array);
 
         virtual void paintCell( QPainter*, const QColorGroup&, int, int, int );
+        void drawRating( QPainter *p );
 
         // Used for sorting
         virtual int  compare( QListViewItem*, int, bool ) const;
