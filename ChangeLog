@@ -57,6 +57,12 @@ VERSION 1.4:
       compatibility with various iPod models.
 
   BUGFIXES:
+    * fix small memory leak in helix engine caused by improper reference
+      counting of premixaudiohook
+    * fix crash in helix engine caused by improper reference counting
+      of the audiostreamresponse object
+    * helix engine no longer declares it is "empty" on a track change
+      (caused problems with context browser)
     * tag dialog doesn't delete year tags any more when editing multiple tracks
     * Fix memory leak in the helix engine (BR 116223)
     * Fix possible bug when saving unencoded podcasts to strange file systems.
