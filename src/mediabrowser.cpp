@@ -856,7 +856,7 @@ MediaDeviceList::rmbIpod( QListViewItem* qitem, const QPoint& point, int ) //SLO
         KPopupMenu menu( this );
 
         enum Actions { APPEND, LOAD, QUEUE,
-            ADD_TO_COLLECTION,
+            COPY_TO_COLLECTION,
             BURN_ARTIST, BURN_ALBUM, BURN_DATACD, BURN_AUDIOCD,
             RENAME, MAKE_PLAYLIST, ADD_TO_PLAYLIST,
             ADD, DELETE_PLAYED, DELETE,
@@ -867,7 +867,7 @@ MediaDeviceList::rmbIpod( QListViewItem* qitem, const QPoint& point, int ) //SLO
         menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue Tracks" ), QUEUE );
         menu.insertSeparator();
 
-        menu.insertItem( SmallIconSet( "collection" ), i18n( "&Add to Collection" ), ADD_TO_COLLECTION );
+        menu.insertItem( SmallIconSet( "collection" ), i18n( "&Copy to Collection" ), COPY_TO_COLLECTION );
         switch ( item->depth() )
         {
         case 0:
@@ -949,7 +949,7 @@ MediaDeviceList::rmbIpod( QListViewItem* qitem, const QPoint& point, int ) //SLO
             case QUEUE:
                 Playlist::instance()->insertMedia( urls, Playlist::Queue );
                 break;
-            case ADD_TO_COLLECTION:
+            case COPY_TO_COLLECTION:
                 {
                     QPtrList<MediaItem> items;
                     getSelectedLeaves( 0, &items );

@@ -5,7 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.4:
   FEATURES:
-    * Ability to copy items from iPod to collection.
+    * Ability to copy items from iPod and from filebrowser to collection.
     * Downloaded podcast episodes can be deleted from the context menu.
     * New DCOP call "player: osdEnabled".
     * Add contents of smart amaroK playlists as playlist to media device.
