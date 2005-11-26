@@ -5,6 +5,12 @@ amaroK ChangeLog
 
 VERSION 1.3.7:
   BUGFIXES:
+    * fix small memory leak in helix engine caused by improper reference
+      counting of premixaudiohook
+    * fix crash in helix engine caused by improper reference counting
+      of the audiostreamresponse object
+    * helix engine no longer declares it is "empty" on a track change
+      (caused problems with context browser)
     * amaroK would crash or hang when fetching similar artists information
       from last.fm (BR 116399)
     * Fix memory leak in the helix engine (BR 116223)
