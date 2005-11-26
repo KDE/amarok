@@ -2851,7 +2851,18 @@ QString PlaylistDialog::getSaveFileName( const QString &suggestion ) //static
 {
     PlaylistDialog dialog;
     if( !suggestion.isEmpty() )
-        dialog.edit->setText( suggestion );
+    {
+        QString path = KGlobal::dirs()->saveLocation( "data", "amarok/playlists/", true ) + "%1" + ".m3u";
+        if( QFileInfo( path.arg( suggestion ) ).exists() )
+        {
+            int n = 2;
+            while( QFileInfo( path.arg( suggestion + QString( " (%1)" ).arg( n ) ) ).exists() )
+                n++;
+            dialog.edit->setText( suggestion + QString( " (%1)" ).arg( n ) );
+        }
+        else
+          dialog.edit->setText( suggestion );
+    }
     if( dialog.exec() == Accepted )
         return dialog.result;
     return QString::null;
