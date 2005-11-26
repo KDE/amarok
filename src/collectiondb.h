@@ -260,7 +260,7 @@ class CollectionDB : public QObject, public EngineObserver
         QDateTime getFirstPlay( const QString &url );
         QDateTime getLastPlay( const QString &url );
         void migrateFile( const QString &oldURL, const QString &newURL );
-        bool moveFile( const QString &src, const QString &dest, bool overwrtie );
+        bool moveFile( const QString &src, const QString &dest, bool overwrite, bool copy = false );
 
         //artist methods
         QStringList similarArtists( const QString &artist, uint count );

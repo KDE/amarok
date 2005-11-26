@@ -137,6 +137,7 @@ class CollectionView : public KListView
         void cat1Menu( int id, bool rerender = true );
         void cat2Menu( int id, bool rerender = true );
         void cat3Menu( int id, bool rerender = true );
+        void organizeFiles( const KURL::List &list, bool addToCollection=false );
 
     private slots:
         void setupDirs();
@@ -155,7 +156,6 @@ class CollectionView : public KListView
         /** Shows dialog with information on selected track */
         void showTrackInfo();
         void deleteSelectedFiles();
-        void organizeFiles();
 
     private:
         enum Tag { Title, Artist, Album, Genre, Length, Track, Year, Comment, Playcount, Score, Filename, Firstplay, Lastplay, Modified, Bitrate };

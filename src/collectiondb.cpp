@@ -1540,9 +1540,9 @@ CollectionDB::migrateFile( const QString &oldURL, const QString &newURL )
 }
 
 bool
-CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite )
+CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite, bool copy )
 {
-    if ( isFileInCollection( src ) ){
+    if ( copy || isFileInCollection( src ) ){
         if(src == dest){
             debug() << "Source and destination URLs are the same, aborting."  << endl;
             return false;
@@ -1571,13 +1571,32 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite 
                     debug() << "Unable to create directory " << dir.path() << endl;
                 }
 
-            // Move the file and update DB
-            if ( KIO::NetAccess::file_move( srcURL, dstURL, -1, overwrite ) ){
-                migrateFile( src, dest );
-                return true;
+            if( copy )
+            {
+                // Copy the file and dirty destination directory
+                if ( KIO::NetAccess::file_copy( srcURL, dstURL, -1, overwrite ) ){
+                    MetaBundle bundle( dstURL );
+                    if( bundle.isValidMedia() )
+                    {
+                        addSong( &bundle, true /* XXX: incremental? */ );
+                        return true;
+                    }
+                    return false;
+                }
+                else
+                    return false;
             }
             else
-                return false;
+            {
+                // Move the file and update DB
+                if ( KIO::NetAccess::file_move( srcURL, dstURL, -1, overwrite ) ){
+                    migrateFile( src, dest );
+                    return true;
+                }
+                else
+                    return false;
+            }
+            
         }
     }
     else

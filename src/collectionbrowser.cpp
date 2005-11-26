@@ -1268,7 +1268,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                     CollectionDB::instance()->setCompilation( item->text(0), false );
                 break;
             case ORGANIZE:
-                organizeFiles();
+                organizeFiles( listSelected(), false /* don't add to collection, just move */ );
                 break;
             case DELETE:
                 deleteSelectedFiles();
@@ -1435,7 +1435,7 @@ CollectionView::deleteSelectedFiles() //SLOT
 }
 
 void
-CollectionView::organizeFiles()  //SLOT
+CollectionView::organizeFiles( const KURL::List &urls, bool addToCollection )  //SLOT
 {
     QStringList folders = AmarokConfig::collectionFolders();
 
@@ -1456,9 +1456,17 @@ CollectionView::organizeFiles()  //SLOT
     overwrite->setText( i18n( "Overwrite existing files" ) );
     overwrite->setChecked( AmarokConfig::overwriteFiles() );
 
+    QCheckBox *byFiletype = new QCheckBox( box );
+    byFiletype->setText( i18n( "Group files by type" ) );
+    byFiletype->setChecked( AmarokConfig::groupByFiletype() );
+
     QCheckBox *group = new QCheckBox( box );
     group->setText( i18n( "Group artists alphabetically" ) );
     group->setChecked( AmarokConfig::groupArtists() );
+
+    QCheckBox *replaceSpace = new QCheckBox( box );
+    replaceSpace->setText( i18n( "Replace space with _" ) );
+    replaceSpace->setChecked( AmarokConfig::replaceSpace() );
 
     QCheckBox *ignore = new QCheckBox( box );
     ignore->setText( i18n( "Ignore 'The' in artist names." ) );
@@ -1472,8 +1480,10 @@ CollectionView::organizeFiles()  //SLOT
     {
         AmarokConfig::setOrganizeDirectory( dirs->currentItem() );
         AmarokConfig::setOverwriteFiles( overwrite->isChecked() );
+        AmarokConfig::setGroupByFiletype( byFiletype->isChecked() );
         AmarokConfig::setGroupArtists( group->isChecked() );
         AmarokConfig::setIgnoreThe( ignore->isChecked() );
+        AmarokConfig::setReplaceSpace( replaceSpace->isChecked() );
         AmarokConfig::setCoverIcons( covers->isChecked() );
         bool write = overwrite->isChecked();
         int skipped = 0;
@@ -1483,8 +1493,6 @@ CollectionView::organizeFiles()  //SLOT
         QString title;
         QString dest;
         QString type;
-
-        KURL::List urls = listSelected();
 
         KURL::List::ConstIterator it = urls.begin();
         for( ; it != urls.end(); ++it )
@@ -1528,17 +1536,23 @@ CollectionView::organizeFiles()  //SLOT
                 title = i18n("Unknown");
 
             dest = base;
+            if( byFiletype->isChecked() )
+                dest += src.path().section( ".", -1 ).lower() + "/";
 
             if( group->isChecked() )
                 dest += artist.upper()[ 0 ] + "/";      // Group artists i.e. A/Artist/Album
 
             dest += artist + "/" + album + "/" + title + "." + type;
             dest.remove( "?" ).remove( ":" ).remove( "\"" ).remove( "," );
+
+            if( replaceSpace->isChecked() )
+                dest.replace( " ", "_" );
+
             debug() << "Destination: " << dest << endl;
 
             if( src.path() != dest ) //supress error warning that file couldn't be moved
             {
-                if( !CollectionDB::instance()->moveFile( src.path(), dest, write ) )
+                if( !CollectionDB::instance()->moveFile( src.path(), dest, write, addToCollection ) )
                     skipped++;
             }
 

@@ -236,6 +236,11 @@
         <whatsthis>If set, Organize files will overwrite any existing destination..</whatsthis>
         <default>false</default>
     </entry>
+    <entry key="Group By Filetype" type="Bool">
+        <label>Whether organize files will group directories according to their filetype.</label>
+        <whatsthis>If set, Organize files will group directories containing the same filetype.</whatsthis>
+        <default>false</default>
+    </entry>
     <entry key="Group Artists" type="Bool">
         <label>Whether organize files will group artist starting in the same character.</label>
         <whatsthis>If set, Organize files will group artist starting in the same character.</whatsthis>
@@ -245,6 +250,11 @@
         <label>Whether organize files will ignore The in artist names.</label>
         <whatsthis>If set, Organize files will ignore The in artist names.</whatsthis>
         <default>true</default>
+    </entry>
+    <entry key="Replace Space" type="Bool">
+        <label>Whether organize files will replace spaces in filenames by an underscore.</label>
+        <whatsthis>If set, Organize files will replace spaces in filenames by an underscore.</whatsthis>
+        <default>false</default>
     </entry>
     <entry key="Cover Icons" type="Bool">
         <label>Whether organize files will use cover art as folder icons.</label>

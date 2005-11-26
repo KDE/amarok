@@ -19,6 +19,7 @@
 #include "metabundle.h"
 #include "playlist.h"      //appendMedia()
 #include "statusbar.h"
+#include "collectionbrowser.h"
 
 #ifdef HAVE_LIBGPOD
 #include "gpodmediadevice/gpodmediadevice.h"
@@ -855,6 +856,7 @@ MediaDeviceList::rmbIpod( QListViewItem* qitem, const QPoint& point, int ) //SLO
         KPopupMenu menu( this );
 
         enum Actions { APPEND, LOAD, QUEUE,
+            ADD_TO_COLLECTION,
             BURN_ARTIST, BURN_ALBUM, BURN_DATACD, BURN_AUDIOCD,
             RENAME, MAKE_PLAYLIST, ADD_TO_PLAYLIST,
             ADD, DELETE_PLAYED, DELETE,
@@ -863,6 +865,9 @@ MediaDeviceList::rmbIpod( QListViewItem* qitem, const QPoint& point, int ) //SLO
         menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Load" ), LOAD );
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue Tracks" ), QUEUE );
+        menu.insertSeparator();
+
+        menu.insertItem( SmallIconSet( "collection" ), i18n( "&Add to Collection" ), ADD_TO_COLLECTION );
         menu.insertSeparator();
 
         switch ( item->depth() )
@@ -945,6 +950,23 @@ MediaDeviceList::rmbIpod( QListViewItem* qitem, const QPoint& point, int ) //SLO
                 break;
             case QUEUE:
                 Playlist::instance()->insertMedia( urls, Playlist::Queue );
+                break;
+            case ADD_TO_COLLECTION:
+                {
+                    QPtrList<MediaItem> items;
+                    getSelectedLeaves( 0, &items );
+
+                    KURL::List urls;
+                    for( MediaItem *it = items.first();
+                            it;
+                            it = items.next() )
+                    {
+                        if( it->url().isValid() )
+                            urls << it->url();
+                    }
+
+                    CollectionView::instance()->organizeFiles( urls, true );
+                }
                 break;
             case BURN_ARTIST:
                 K3bExporter::instance()->exportArtist( item->text(0) );
@@ -1742,11 +1764,10 @@ void
 MediaDevice::deleteFile( const KURL &url )
 {
     debug() << "deleting " << url.prettyURL() << endl;
+    m_waitForDeletion = true;
     KIO::Job *job = KIO::file_delete( url, false );
     connect( job, SIGNAL( result( KIO::Job * ) ),
             this,  SLOT( fileDeleted( KIO::Job * ) ) );
-
-    m_waitForDeletion = true;
     do
     {
         kapp->processEvents( 100 );
