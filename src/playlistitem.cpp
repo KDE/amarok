@@ -953,14 +953,15 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
 
 void PlaylistItem::drawRating( QPainter *p  )
 {
-    const int h = ( this == listView()->m_currentTrack ) ? height() / 2 : height();
-    static const QImage star = QImage( locate( "data", "amarok/images/star.png" ) )
-                               .smoothScale( h, h, QImage::ScaleMin );
+    static const int h = listView()->fontMetrics().height() + listView()->itemMargin() * 2 - 4
+                         + ( ( listView()->fontMetrics().height() % 2 ) ? 1 : 0 );
+    static const QPixmap star = QPixmap( QImage( locate( "data", "amarok/images/star.png" ) )
+                                         .smoothScale( h, h, QImage::ScaleMin )               );
 
     int x = 0;
     for( int i = 1; i <= rating(); ++i )
     {
-        p->drawImage( x, ( height() - h ) / 2, star );
+        p->drawPixmap( x, ( this == listView()->m_currentTrack ) ? h / 2 : 2, star );
         x += star.width() + listView()->itemMargin();
     }
 }
