@@ -142,7 +142,9 @@ STDMETHODIMP HelixSimplePlayerAudioStreamInfoResponse::OnStream(IHXAudioStream *
    m_Player->ppctrl[m_index]->pStream = pAudioStream;
    m_Player->ppctrl[m_index]->pPreMixHook = new HSPPreMixAudioHook(m_Player, m_index, pAudioStream);
 
+   // addpremixhook adds another ref
    pAudioStream->AddPreMixHook(m_Player->ppctrl[m_index]->pPreMixHook, false);
+   m_Player->ppctrl[m_index]->pPreMixHook->Release(); // release the addref from the premix constructor
    m_Player->ppctrl[m_index]->bStarting = false;
 
    return HXR_OK;
@@ -229,9 +231,9 @@ STDMETHODIMP HelixSimplePlayerVolumeAdvice::OnMuteChange(const BOOL bMute)
 }
 
 
-void HelixSimplePlayer::cleanUpStream(int playerIndex)
+void HelixSimplePlayer::cleanUpStream(int /* playerIndex */)
 {
-   ppctrl[playerIndex]->pPreMixHook->Release();
+   // dont do anything here for now
 }
 
 
