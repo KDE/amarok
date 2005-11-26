@@ -53,7 +53,8 @@ void PlaylistSelection::loadChildren( QListViewItem* browserParent, QListViewIte
     while( browserChild )
     {
         SelectionListItem* selectionChild = new SelectionListItem( selectionParent, browserChild->text(0), browserChild );
-                           selectionChild->setPixmap( 0,*browserChild->pixmap(0) );
+        if ( browserChild->pixmap(0) )
+            selectionChild->setPixmap( 0, *browserChild->pixmap(0) );
 
         if( browserChild->childCount() > 0 )
             loadChildren( browserChild, selectionChild );
