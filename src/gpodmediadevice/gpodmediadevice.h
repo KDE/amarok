@@ -14,6 +14,8 @@ extern "C" {
 #include <qptrlist.h>
 #include <qdict.h>
 
+#include <KIO/job.h>
+
 class GpodMediaItem;
 
 class GpodMediaDevice : public MediaDevice
@@ -36,25 +38,43 @@ class GpodMediaDevice : public MediaDevice
         void              lockDevice(bool) {}
         void              unlockDevice() {}
 
+        /**
+         * Insert track already located on media device into the device's database
+         * @param pathname Location of file on the device to add to the database
+         * @param bundle MetaBundle of track
+         * @param isPodcast true if item is a podcast
+         * @return If successful, the created MediaItem in the media device view, else 0
+         */
+        virtual MediaItem *insertTrackIntoDB( const QString& pathname, const MetaBundle& bundle, bool isPodcast);
+
+        /**
+         * Determine the url for which a track should be uploaded to on the device
+         * @param bundle MetaBundle of track to base pathname creation on
+         * @return the url to upload the track to
+         */
+        virtual KURL determineURLOnDevice(const MetaBundle& bundle);
+
         void              synchronizeDevice();
-        QString           determinePathname(const MetaBundle& bundle);
         MediaItem        *copyTrackToDevice(const MetaBundle& bundle, bool isPodcast);
-        MediaItem        *insertTrackIntoDB(const QString& pathname, const MetaBundle& bundle, bool isPodcast);
         bool              deleteItemFromDevice(MediaItem *item, bool onlyPlayed=false );
         void              addToPlaylist(MediaItem *list, MediaItem *after, QPtrList<MediaItem> items);
         void              addToDirectory(MediaItem *dir, QPtrList<MediaItem> items);
         MediaItem        *newPlaylist(const QString &name, MediaItem *list, QPtrList<MediaItem> items);
         virtual MediaItem*newDirectory(const QString&, MediaItem*) { return 0; }
         bool              getCapacity(unsigned long *total, unsigned long *available);
+        void              rmbPressed( MediaDeviceList *deviceList, QListViewItem* qitem, const QPoint& point, int );
 
     protected slots:
         void              renameItem( QListViewItem *item );
+        void fileTransferred( KIO::Job *job );
+        void fileDeleted( KIO::Job *job );
 
     private:
         void              writeITunesDB();
         GpodMediaItem    *addTrackToList(Itdb_Track *track);
         void              addPlaylistToList(Itdb_Playlist *playlist);
         void              playlistFromItem(GpodMediaItem *item);
+        void              deleteFile( const KURL &url );
 
         QString           realPath(const char *ipodPath);
         QString           ipodPath(const QString &realPath);

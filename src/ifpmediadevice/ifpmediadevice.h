@@ -55,7 +55,6 @@ class IfpMediaDevice : public MediaDevice
         MediaItem        *newDirectory( const QString &name, MediaItem *parent );
         void              addToDirectory( MediaItem *directory, QPtrList<MediaItem> items );
 
-        QString           determinePathname( const MetaBundle& ) { return QString::null; }
         void              addToPlaylist( MediaItem *, MediaItem *, QPtrList<MediaItem> ) {}
         MediaItem        *newPlaylist( const QString &, MediaItem *, QPtrList<MediaItem> ) { return 0; }
 

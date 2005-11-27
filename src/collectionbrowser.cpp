@@ -49,6 +49,7 @@
 #include <kpopupmenu.h>
 #include <ktoolbarbutton.h> //ctor
 #include <kurldrag.h>       //dragObject()
+#include <kio/job.h>
 
 namespace amaroK { extern KConfig *config( const QString& ); }
 

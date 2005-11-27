@@ -315,7 +315,7 @@ IfpMediaDevice::uploadCallback( void *pData, struct ifp_transfer_status *progres
 int
 IfpMediaDevice::setProgressInfo( struct ifp_transfer_status *progress )
 {
-    setProgress( progress->file_total, progress->file_bytes );
+    setProgress( progress->file_bytes, progress->file_total );
     return 0;
 }
 

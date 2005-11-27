@@ -9,10 +9,7 @@
 #include <qhbox.h>
 #include <qvbox.h>
 
-#include <kio/job.h>
-#include <kio/jobclasses.h>
 #include <klistview.h>       //baseclass
-#include <kprocess.h>
 #include <kurl.h>            //stack allocated
 #include "debug.h"
 #include "metabundle.h"
@@ -23,6 +20,7 @@ class MetaBundle;
 class SpaceLabel;
 
 class KProgress;
+class KShellProcess;
 class KPushButton;
 class QLabel;
 class QPalette;
@@ -141,6 +139,8 @@ class MediaDeviceList : public KListView
     public:
         MediaDeviceList( MediaDeviceView* parent );
         ~MediaDeviceList();
+        KURL::List nodeBuildDragList( MediaItem* item, bool onlySelected=true );
+        int getSelectedLeaves(MediaItem *parent, QPtrList<MediaItem> *list, bool onlySelected=true, bool onlyPlayed=false );
 
     private slots:
         void rmbPressed( QListViewItem*, const QPoint&, int );
@@ -149,9 +149,7 @@ class MediaDeviceList : public KListView
 
     private:
         void startDrag();
-        KURL::List nodeBuildDragList( MediaItem* item, bool onlySelected=true );
         // leaves of selected items, returns no. of files within leaves
-        int getSelectedLeaves(MediaItem *parent, QPtrList<MediaItem> *list, bool onlySelected=true, bool onlyPlayed=false );
 
         // Reimplemented from KListView
         void contentsDragEnterEvent( QDragEnterEvent* );
@@ -160,11 +158,9 @@ class MediaDeviceList : public KListView
         void viewportPaintEvent( QPaintEvent* );
 
         void rmbIfp( QListViewItem*, const QPoint&, int );
-        void rmbIpod( QListViewItem*, const QPoint&, int );
         MediaItem *newDirectory( MediaItem* parent );
 
         MediaDeviceView* m_parent;
-        QString m_renameFrom;
 };
 
 
@@ -222,6 +218,8 @@ class MediaDevice : public QObject
         void        addURLs( const KURL::List urls, const QString &playlistName=QString::null );
         void        URLsAdded();
 
+        virtual void rmbPressed( MediaDeviceList *deviceList, QListViewItem *item, const QPoint &point, int ) { (void)deviceList; (void)item; (void) point; }
+
         /**
          * @return true if the device is connected
          */
@@ -268,7 +266,8 @@ class MediaDevice : public QObject
         bool         isTransferring() { return m_transferring; }
         MediaItem   *transferredItem() { return m_transferredItem; }
 
-        void         setProgress( const int total, const int progress );
+        int          progress() const;
+        void         setProgress( const int progress, const int total = -1 /* leave total unchanged by default */ );
 
         static MediaDevice *instance() { return s_instance; }
 
@@ -286,10 +285,6 @@ class MediaDevice : public QObject
         void transferFiles();
         virtual void renameItem( QListViewItem *item ) {(void)item; }
         virtual void expandItem( QListViewItem *item ) {(void)item; }
-
-    private slots:
-        void fileTransferred( KIO::Job *job );
-        void fileDeleted( KIO::Job *job );
 
     protected slots:
         void fileTransferFinished();
@@ -349,16 +344,6 @@ class MediaDevice : public QObject
         virtual MediaItem *copyTrackToDevice(const MetaBundle& bundle, bool isPodcast) = 0;
 
         /**
-         * Insert track already located on media device into the device's database
-         * @param pathname Location of file on the device to add to the database
-         * @param bundle MetaBundle of track
-         * @param isPodcast true if item is a podcast
-         * @return If successful, the created MediaItem in the media device view, else 0
-         */
-        virtual MediaItem *insertTrackIntoDB( const QString& pathname, const MetaBundle& bundle, bool isPodcast)
-                                            { (void)pathname; (void)bundle; (void)isPodcast; return 0; }
-
-        /**
          * Recursively remove MediaItem from the tracklist and the device
          * @param item MediaItem to remove
          * @param onlyPlayed True if item should be deleted only if it has been played
@@ -366,17 +351,9 @@ class MediaDevice : public QObject
          */
         virtual bool deleteItemFromDevice( MediaItem *item, bool onlyPlayed=false ) = 0;
 
-        /**
-         * Determine the pathname for which a track should be uploaded to on the device
-         * @param bundle MetaBundle of track to base pathname creation on
-         * @return the pathname to upload the track to
-         */
-        virtual QString determinePathname(const MetaBundle& bundle) = 0;
-
         virtual void updateRootItems();
 
         void deleteFromDevice( MediaItem *item=0, bool onlyPlayed=false, bool recursing=false );
-        void deleteFile( const KURL &url);
 
         DeviceType  m_type;
 

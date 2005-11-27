@@ -1,4 +1,4 @@
-INCLUDES           = $(all_includes) $(LIBGPOD_CFLAGS) $(taglib_includes) -I.. -I../engine
+INCLUDES           = $(all_includes) $(LIBGPOD_CFLAGS) $(taglib_includes) -I.. -I../engine -I../amarokcore
 METASOURCES        = AUTO
 
 libgpodmediadevice_la_LDFLAGS  = $(all_libraries)

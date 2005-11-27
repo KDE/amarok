@@ -11,6 +11,9 @@
 #include "metabundle.h"
 #include "collectiondb.h"
 #include "statusbar/statusbar.h"
+#include "k3bexporter.h"
+#include "playlist.h"
+#include "collectionbrowser.h"
 
 #include <kapplication.h>
 #include <kmountpoint.h>
@@ -18,6 +21,7 @@
 #include <kprogress.h>
 #include <kmessagebox.h>
 #include <kiconloader.h>
+#include <kpopupmenu.h>
 #include <qfileinfo.h>
 #include <qdir.h>
 #include <qtimer.h>
@@ -121,10 +125,10 @@ GpodMediaDevice::isConnected()
 MediaItem *
 GpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle, bool isPodcast)
 {
-    QString devicePath = determinePathname(bundle);
+    KURL url = determineURLOnDevice(bundle);
 
     // check if path exists and make it if needed
-    QFileInfo finfo( devicePath );
+    QFileInfo finfo( url.path() );
     QDir dir = finfo.dir();
     while ( !dir.exists() )
     {
@@ -148,14 +152,14 @@ GpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle, bool isPodcast)
     if ( !dir.exists() )
     {
         amaroK::StatusBar::instance()->longMessage(
-                i18n( "Media Device: Creating directory for file %1 failed" ).arg( devicePath ),
+                i18n( "Media Device: Creating directory for file %1 failed" ).arg( url.path() ),
                 KDE::StatusBar::Error );
         return NULL;
     }
 
     m_wait = true;
 
-    KIO::CopyJob *job = KIO::copy( bundle.url(), KURL( devicePath ), false );
+    KIO::CopyJob *job = KIO::copy( bundle.url(), url, false );
     connect( job, SIGNAL( result( KIO::Job * ) ),
             this,  SLOT( fileTransferred( KIO::Job * ) ) );
 
@@ -168,25 +172,23 @@ GpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle, bool isPodcast)
     if(m_copyFailed)
     {
         amaroK::StatusBar::instance()->longMessage(
-                i18n( "Media Device: Copying %1 to %2 failed" ).arg(bundle.url().prettyURL()).arg(devicePath),
+                i18n( "Media Device: Copying %1 to %2 failed" ).arg(bundle.url().prettyURL()).arg(url.prettyURL()),
                 KDE::StatusBar::Error );
         return NULL;
     }
 
-    KURL url;
-    url.setPath(devicePath);
     MetaBundle bundle2(url);
     if(!bundle2.isValidMedia())
     {
         // probably s.th. went wrong
         amaroK::StatusBar::instance()->longMessage(
-                i18n( "Media Device: Reading tags from %1 failed" ).arg( devicePath ),
+                i18n( "Media Device: Reading tags from %1 failed" ).arg( url.prettyURL() ),
                 KDE::StatusBar::Error );
-        QFile::remove( devicePath );
+        QFile::remove( url.path() );
         return NULL;
     }
 
-    return insertTrackIntoDB(devicePath, bundle, isPodcast);
+    return insertTrackIntoDB(url.path(), bundle, isPodcast);
 }
 
 MediaItem *
@@ -1065,8 +1067,8 @@ GpodMediaDevice::getTitle(const QString &artist, const QString &album, const QSt
     return NULL;
 }
 
-QString
-GpodMediaDevice::determinePathname(const MetaBundle &bundle)
+KURL
+GpodMediaDevice::determineURLOnDevice(const MetaBundle &bundle)
 {
     QString local = bundle.filename();
     QString type = local.section('.', -1);
@@ -1165,6 +1167,279 @@ GpodMediaDevice::getCapacity( unsigned long *total, unsigned long *available )
 
     return vol_size > 0;
 #endif
+}
+
+void
+GpodMediaDevice::fileDeleted( KIO::Job *job )  //SLOT
+{
+    if(job->error())
+    {
+        debug() << "file deletion failed: " << job->errorText() << endl;
+    }
+    m_waitForDeletion = false;
+    m_parent->updateStats();
+}
+
+void
+GpodMediaDevice::fileTransferred( KIO::Job *job )  //SLOT
+{
+    if(job->error())
+    {
+        m_copyFailed = true;
+        debug() << "file transfer failed: " << job->errorText() << endl;
+    }
+    else
+    {
+        m_copyFailed = false;
+
+        setProgress( progress() + 1 );
+
+        // the track just transferred has not yet been removed from the queue
+        m_transferList->takeItem( m_transferList->firstChild() );
+    }
+    m_parent->updateStats();
+
+    m_wait = false;
+}
+
+void
+GpodMediaDevice::rmbPressed( MediaDeviceList *deviceList, QListViewItem* qitem, const QPoint& point, int )
+{
+    MediaItem *item = dynamic_cast<MediaItem *>(qitem);
+    if ( item )
+    {
+        KURL::List urls = deviceList->nodeBuildDragList( 0 );
+        KPopupMenu menu( deviceList );
+
+        enum Actions { APPEND, LOAD, QUEUE,
+            COPY_TO_COLLECTION,
+            BURN_ARTIST, BURN_ALBUM, BURN_DATACD, BURN_AUDIOCD,
+            RENAME, MAKE_PLAYLIST, ADD_TO_PLAYLIST,
+            ADD, DELETE_PLAYED, DELETE,
+            FIRST_PLAYLIST};
+
+        menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Load" ), LOAD );
+        menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
+        menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue Tracks" ), QUEUE );
+        menu.insertSeparator();
+
+        menu.insertItem( SmallIconSet( "collection" ), i18n( "&Copy to Collection" ), COPY_TO_COLLECTION );
+        switch ( item->depth() )
+        {
+        case 0:
+            menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n( "Burn All Tracks by This Artist" ), BURN_ARTIST );
+            menu.setItemEnabled( BURN_ARTIST, K3bExporter::isAvailable() );
+            break;
+
+        case 1:
+            menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n( "Burn This Album" ), BURN_ALBUM );
+            menu.setItemEnabled( BURN_ALBUM, K3bExporter::isAvailable() );
+            break;
+
+        case 2:
+            menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n( "Burn to CD as Data" ), BURN_DATACD );
+            menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
+            menu.insertItem( SmallIconSet( "cdaudio_unmount" ), i18n( "Burn to CD as Audio" ), BURN_AUDIOCD );
+            menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
+            break;
+        }
+
+        menu.insertSeparator();
+
+        KPopupMenu *playlistsMenu = 0;
+        switch( item->type() )
+        {
+        case MediaItem::ARTIST:
+        case MediaItem::ALBUM:
+        case MediaItem::TRACK:
+        case MediaItem::PODCASTCHANNEL:
+        case MediaItem::PODCASTSROOT:
+        case MediaItem::PODCASTITEM:
+            if(m_playlistItem)
+            {
+                menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "Make Media Device Playlist" ), MAKE_PLAYLIST );
+
+                playlistsMenu = new KPopupMenu(&menu);
+                int i=0;
+                for(MediaItem *it = dynamic_cast<MediaItem *>(m_playlistItem->firstChild());
+                        it;
+                        it = dynamic_cast<MediaItem *>(it->nextSibling()))
+                {
+                    playlistsMenu->insertItem( SmallIconSet( "player_playlist_2" ), it->text(0), FIRST_PLAYLIST+i );
+                    i++;
+                }
+                menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n("Add to Playlist"), playlistsMenu, ADD_TO_PLAYLIST );
+                menu.setItemEnabled( ADD_TO_PLAYLIST, m_playlistItem->childCount()>0 );
+                menu.insertSeparator();
+            }
+            break;
+
+        case MediaItem::ORPHANED:
+        case MediaItem::ORPHANEDROOT:
+            menu.insertItem( SmallIconSet( "editrename" ), i18n( "Add to Database" ), ADD );
+            break;
+
+        case MediaItem::PLAYLIST:
+            menu.insertItem( SmallIconSet( "editclear" ), i18n( "Rename" ), RENAME );
+            break;
+
+        default:
+            break;
+        }
+
+        if( item->type() == MediaItem::PODCASTSROOT || item->type() == MediaItem::PODCASTCHANNEL )
+        {
+            menu.insertItem( SmallIconSet( "editdelete" ), i18n( "Delete Podcasts Already Played" ), DELETE_PLAYED );
+        }
+        menu.insertItem( SmallIconSet( "editdelete" ), i18n( "Delete" ), DELETE );
+
+        int id =  menu.exec( point );
+        switch( id )
+        {
+            case LOAD:
+                Playlist::instance()->insertMedia( urls, Playlist::Replace );
+                break;
+            case APPEND:
+                Playlist::instance()->insertMedia( urls, Playlist::Append );
+                break;
+            case QUEUE:
+                Playlist::instance()->insertMedia( urls, Playlist::Queue );
+                break;
+            case COPY_TO_COLLECTION:
+                {
+                    QPtrList<MediaItem> items;
+                    deviceList->getSelectedLeaves( 0, &items );
+
+                    KURL::List urls;
+                    for( MediaItem *it = items.first();
+                            it;
+                            it = items.next() )
+                    {
+                        if( it->url().isValid() )
+                            urls << it->url();
+                    }
+
+                    CollectionView::instance()->organizeFiles( urls, true );
+                }
+                break;
+            case BURN_ARTIST:
+                K3bExporter::instance()->exportArtist( item->text(0) );
+                break;
+            case BURN_ALBUM:
+                K3bExporter::instance()->exportAlbum( item->text(0) );
+                break;
+            case BURN_DATACD:
+                K3bExporter::instance()->exportTracks( urls, K3bExporter::DataCD );
+                break;
+            case BURN_AUDIOCD:
+                K3bExporter::instance()->exportTracks( urls, K3bExporter::AudioCD );
+                break;
+            case RENAME:
+                deviceList->rename(item, 0);
+                break;
+            case MAKE_PLAYLIST:
+                {
+                    QPtrList<MediaItem> items;
+                    deviceList->getSelectedLeaves( 0, &items );
+                    QString base(i18n("New Playlist"));
+                    QString name = base;
+                    int i=1;
+                    while(m_playlistItem->findItem(name))
+                    {
+                        QString num;
+                        num.setNum(i);
+                        name = base + " " + num;
+                        i++;
+                    }
+                    MediaItem *pl = newPlaylist(name, m_playlistItem, items);
+                    deviceList->ensureItemVisible(pl);
+                    deviceList->rename(pl, 0);
+                }
+                break;
+            case ADD:
+                if(item->type() == MediaItem::ORPHANEDROOT)
+                {
+                    MediaItem *next = 0;
+                    for(MediaItem *it = dynamic_cast<MediaItem *>(item->firstChild());
+                            it;
+                            it = next)
+                    {
+                        next = dynamic_cast<MediaItem *>(it->nextSibling());
+                        item->takeItem(it);
+                        insertTrackIntoDB(it->url().path(), *it->bundle(), false);
+                        delete it;
+                    }
+                }
+                else
+                {
+                    for(deviceList->selectedItems().first();
+                            deviceList->selectedItems().current();
+                            deviceList->selectedItems().next())
+                    {
+                        MediaItem *it = dynamic_cast<MediaItem *>(deviceList->selectedItems().current());
+                        if(it->type() == MediaItem::ORPHANED)
+                        {
+                            it->parent()->takeItem(it);
+                            insertTrackIntoDB(it->url().path(), *it->bundle(), false);
+                            delete it;
+                        }
+                    }
+                }
+                break;
+            case DELETE_PLAYED:
+                {
+                    MediaItem *podcasts = 0;
+                    if(item->type() == MediaItem::PODCASTCHANNEL)
+                        podcasts = dynamic_cast<MediaItem *>(item->parent());
+                    else
+                        podcasts = item;
+                    deleteFromDevice( podcasts, true );
+                }
+                break;
+            case DELETE:
+                deleteFromDevice();
+                break;
+            default:
+                if( id >= FIRST_PLAYLIST )
+                {
+                    QString name = playlistsMenu->text(id);
+                    if( name != QString::null )
+                    {
+                        MediaItem *list = m_playlistItem->findItem(name);
+                        if(list)
+                        {
+                            MediaItem *after = 0;
+                            for(MediaItem *it = dynamic_cast<MediaItem *>(list->firstChild());
+                                    it;
+                                    it = dynamic_cast<MediaItem *>(it->nextSibling()))
+                                after = it;
+                            QPtrList<MediaItem> items;
+                            deviceList->getSelectedLeaves( 0, &items );
+                            addToPlaylist( list, after, items );
+                        }
+                    }
+                }
+                break;
+        }
+    }
+}
+
+void
+GpodMediaDevice::deleteFile( const KURL &url )
+{
+    debug() << "deleting " << url.prettyURL() << endl;
+    m_waitForDeletion = true;
+    KIO::Job *job = KIO::file_delete( url, false );
+    connect( job, SIGNAL( result( KIO::Job * ) ),
+            this,  SLOT( fileDeleted( KIO::Job * ) ) );
+    do
+    {
+        kapp->processEvents( 100 );
+        usleep( 10000 );
+    } while( m_waitForDeletion );
+
+    if(!isTransferring())
+        setProgress( progress() + 1 );
 }
 
 #include "gpodmediadevice.moc"

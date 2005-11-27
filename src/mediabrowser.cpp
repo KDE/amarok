@@ -14,12 +14,9 @@
 #include "clicklineedit.h"
 #include "colorgenerator.h"
 #include "debug.h"
-#include "k3bexporter.h"
 #include "mediabrowser.h"
 #include "metabundle.h"
-#include "playlist.h"      //appendMedia()
 #include "statusbar.h"
-#include "collectionbrowser.h"
 
 #ifdef HAVE_LIBGPOD
 #include "gpodmediadevice/gpodmediadevice.h"
@@ -41,6 +38,7 @@
 #include <qtooltip.h>       //QToolTip::add()
 #include <qfileinfo.h>
 #include <qdir.h>
+#include <qdom.h>
 
 #include <kapplication.h> //kapp
 #include <kdirlister.h>
@@ -48,7 +46,6 @@
 #include <kglobal.h>
 #include <kiconloader.h>
 #include <kinputdialog.h>
-#include <kio/netaccess.h>
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kmountpoint.h>
@@ -61,6 +58,7 @@
 #include <ktempfile.h>
 #include <ktoolbarbutton.h> //ctor
 #include <kurldrag.h>       //dragObject()
+#include <kprocess.h>
 
 
 MediaDevice *MediaDevice::s_instance = 0;
@@ -172,9 +170,7 @@ class DummyMediaDevice : public MediaDevice
     virtual bool closeDevice() { return false; }
     virtual void synchronizeDevice() {}
     virtual MediaItem* copyTrackToDevice(const MetaBundle&, bool) { return 0; }
-    virtual MediaItem* insertTrackIntoDB(const QString&, const MetaBundle&, bool) { return 0; }
     virtual bool deleteItemFromDevice(MediaItem*, bool) { return false; }
-    virtual QString determinePathname(const MetaBundle&) { return QString::null; }
     virtual bool getCapacity( unsigned long *, unsigned long * ) { return false; }
 };
 
@@ -691,7 +687,6 @@ MediaDeviceList::contentsDropEvent( QDropEvent *e )
             }
             MediaItem *pl = m_parent->m_device->newPlaylist(name, item, items);
             ensureItemVisible(pl);
-            m_renameFrom = pl->text(0);
             rename(pl, 0);
         }
         else if( item->type() == MediaItem::DIRECTORY )
@@ -769,15 +764,13 @@ MediaDeviceList::rmbPressed( QListViewItem *item, const QPoint &p, int i )
 {
     switch( m_parent->m_device->deviceType() )
     {
-        case MediaDevice::IPOD:
-            rmbIpod( item, p, i );
-            break;
 
         case MediaDevice::IFP:
             rmbIfp( item, p, i );
             break;
 
         default:
+            m_parent->m_device->rmbPressed( this, item, p, i );
             break;
     }
 }
@@ -807,7 +800,6 @@ MediaDeviceList::rmbIfp( QListViewItem* qitem, const QPoint& point, int )
                 break;
 
             case RENAME:
-                m_renameFrom = item->text(0);
                 rename( item, 0 );
                 break;
 
@@ -844,230 +836,6 @@ MediaDeviceList::newDirectory( MediaItem *parent )
     }
 
     return 0;
-}
-
-void
-MediaDeviceList::rmbIpod( QListViewItem* qitem, const QPoint& point, int ) //SLOT
-{
-    MediaItem *item = dynamic_cast<MediaItem *>(qitem);
-    if ( item )
-    {
-        KURL::List urls = nodeBuildDragList( 0 );
-        KPopupMenu menu( this );
-
-        enum Actions { APPEND, LOAD, QUEUE,
-            COPY_TO_COLLECTION,
-            BURN_ARTIST, BURN_ALBUM, BURN_DATACD, BURN_AUDIOCD,
-            RENAME, MAKE_PLAYLIST, ADD_TO_PLAYLIST,
-            ADD, DELETE_PLAYED, DELETE,
-            FIRST_PLAYLIST};
-
-        menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Load" ), LOAD );
-        menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
-        menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue Tracks" ), QUEUE );
-        menu.insertSeparator();
-
-        menu.insertItem( SmallIconSet( "collection" ), i18n( "&Copy to Collection" ), COPY_TO_COLLECTION );
-        switch ( item->depth() )
-        {
-        case 0:
-            menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n( "Burn All Tracks by This Artist" ), BURN_ARTIST );
-            menu.setItemEnabled( BURN_ARTIST, K3bExporter::isAvailable() );
-            break;
-
-        case 1:
-            menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n( "Burn This Album" ), BURN_ALBUM );
-            menu.setItemEnabled( BURN_ALBUM, K3bExporter::isAvailable() );
-            break;
-
-        case 2:
-            menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n( "Burn to CD as Data" ), BURN_DATACD );
-            menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
-            menu.insertItem( SmallIconSet( "cdaudio_unmount" ), i18n( "Burn to CD as Audio" ), BURN_AUDIOCD );
-            menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
-            break;
-        }
-
-        menu.insertSeparator();
-
-        KPopupMenu *playlistsMenu = 0;
-        switch( item->type() )
-        {
-        case MediaItem::ARTIST:
-        case MediaItem::ALBUM:
-        case MediaItem::TRACK:
-        case MediaItem::PODCASTCHANNEL:
-        case MediaItem::PODCASTSROOT:
-        case MediaItem::PODCASTITEM:
-            if(m_parent->m_device->m_playlistItem)
-            {
-                menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "Make Media Device Playlist" ), MAKE_PLAYLIST );
-
-                playlistsMenu = new KPopupMenu(&menu);
-                int i=0;
-                for(MediaItem *it = dynamic_cast<MediaItem *>(m_parent->m_device->m_playlistItem->firstChild());
-                        it;
-                        it = dynamic_cast<MediaItem *>(it->nextSibling()))
-                {
-                    playlistsMenu->insertItem( SmallIconSet( "player_playlist_2" ), it->text(0), FIRST_PLAYLIST+i );
-                    i++;
-                }
-                menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n("Add to Playlist"), playlistsMenu, ADD_TO_PLAYLIST );
-                menu.setItemEnabled( ADD_TO_PLAYLIST, m_parent->m_device->m_playlistItem->childCount()>0 );
-                menu.insertSeparator();
-            }
-            break;
-
-        case MediaItem::ORPHANED:
-        case MediaItem::ORPHANEDROOT:
-            menu.insertItem( SmallIconSet( "editrename" ), i18n( "Add to Database" ), ADD );
-            break;
-
-        case MediaItem::PLAYLIST:
-            menu.insertItem( SmallIconSet( "editclear" ), i18n( "Rename" ), RENAME );
-            break;
-
-        default:
-            break;
-        }
-
-        if( item->type() == MediaItem::PODCASTSROOT || item->type() == MediaItem::PODCASTCHANNEL )
-        {
-            menu.insertItem( SmallIconSet( "editdelete" ), i18n( "Delete Podcasts Already Played" ), DELETE_PLAYED );
-        }
-        menu.insertItem( SmallIconSet( "editdelete" ), i18n( "Delete" ), DELETE );
-
-        int id =  menu.exec( point );
-        switch( id )
-        {
-            case LOAD:
-                Playlist::instance()->insertMedia( urls, Playlist::Replace );
-                break;
-            case APPEND:
-                Playlist::instance()->insertMedia( urls, Playlist::Append );
-                break;
-            case QUEUE:
-                Playlist::instance()->insertMedia( urls, Playlist::Queue );
-                break;
-            case COPY_TO_COLLECTION:
-                {
-                    QPtrList<MediaItem> items;
-                    getSelectedLeaves( 0, &items );
-
-                    KURL::List urls;
-                    for( MediaItem *it = items.first();
-                            it;
-                            it = items.next() )
-                    {
-                        if( it->url().isValid() )
-                            urls << it->url();
-                    }
-
-                    CollectionView::instance()->organizeFiles( urls, true );
-                }
-                break;
-            case BURN_ARTIST:
-                K3bExporter::instance()->exportArtist( item->text(0) );
-                break;
-            case BURN_ALBUM:
-                K3bExporter::instance()->exportAlbum( item->text(0) );
-                break;
-            case BURN_DATACD:
-                K3bExporter::instance()->exportTracks( urls, K3bExporter::DataCD );
-                break;
-            case BURN_AUDIOCD:
-                K3bExporter::instance()->exportTracks( urls, K3bExporter::AudioCD );
-                break;
-            case RENAME:
-                m_renameFrom = item->text(0);
-                rename(item, 0);
-                break;
-            case MAKE_PLAYLIST:
-                {
-                    QPtrList<MediaItem> items;
-                    getSelectedLeaves( 0, &items );
-                    QString base(i18n("New Playlist"));
-                    QString name = base;
-                    int i=1;
-                    while(m_parent->m_device->m_playlistItem->findItem(name))
-                    {
-                        QString num;
-                        num.setNum(i);
-                        name = base + " " + num;
-                        i++;
-                    }
-                    MediaItem *pl = m_parent->m_device->newPlaylist(name, m_parent->m_device->m_playlistItem, items);
-                    ensureItemVisible(pl);
-                    m_renameFrom = pl->text(0);
-                    rename(pl, 0);
-                }
-                break;
-            case ADD:
-                if(item->type() == MediaItem::ORPHANEDROOT)
-                {
-                    MediaItem *next = 0;
-                    for(MediaItem *it = dynamic_cast<MediaItem *>(item->firstChild());
-                            it;
-                            it = next)
-                    {
-                        next = dynamic_cast<MediaItem *>(it->nextSibling());
-                        item->takeItem(it);
-                        m_parent->m_device->insertTrackIntoDB(it->url().path(), *it->bundle(), false);
-                        delete it;
-                    }
-                }
-                else
-                {
-                    for(selectedItems().first();
-                            selectedItems().current();
-                            selectedItems().next())
-                    {
-                        MediaItem *it = dynamic_cast<MediaItem *>(selectedItems().current());
-                        if(it->type() == MediaItem::ORPHANED)
-                        {
-                            it->parent()->takeItem(it);
-                            m_parent->m_device->insertTrackIntoDB(it->url().path(), *it->bundle(), false);
-                            delete it;
-                        }
-                    }
-                }
-                break;
-            case DELETE_PLAYED:
-                {
-                    MediaItem *podcasts = 0;
-                    if(item->type() == MediaItem::PODCASTCHANNEL)
-                        podcasts = dynamic_cast<MediaItem *>(item->parent());
-                    else
-                        podcasts = item;
-                    m_parent->m_device->deleteFromDevice( podcasts, true );
-                }
-                break;
-            case DELETE:
-                m_parent->m_device->deleteFromDevice();
-                break;
-            default:
-                if( id >= FIRST_PLAYLIST )
-                {
-                    QString name = playlistsMenu->text(id);
-                    if( name != QString::null )
-                    {
-                        MediaItem *list = m_parent->m_device->m_playlistItem->findItem(name);
-                        if(list)
-                        {
-                            MediaItem *after = 0;
-                            for(MediaItem *it = dynamic_cast<MediaItem *>(list->firstChild());
-                                    it;
-                                    it = dynamic_cast<MediaItem *>(it->nextSibling()))
-                                after = it;
-                            QPtrList<MediaItem> items;
-                            getSelectedLeaves( 0, &items );
-                            m_parent->m_device->addToPlaylist( list, after, items );
-                        }
-                    }
-                }
-                break;
-        }
-    }
 }
 
 MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
@@ -1571,9 +1339,7 @@ MediaDevice::connectDevice( bool silent )
                 {
                     m_parent->m_stats->setText( i18n( "1 track to be deleted", "%n tracks to be deleted", numFiles ) );
 
-                    m_parent->m_progress->setProgress( 0 );
-                    m_parent->m_progress->setTotalSteps( numFiles );
-                    m_parent->m_progress->show();
+                    setProgress( 0, numFiles );
 
                     lockDevice(true);
 
@@ -1633,9 +1399,7 @@ MediaDevice::transferFiles()
     m_transferring = true;
     m_parent->m_transferButton->setEnabled( false );
 
-    m_parent->m_progress->setProgress( 0 );
-    m_parent->m_progress->setTotalSteps( m_transferList->childCount() );
-    m_parent->m_progress->show();
+    setProgress( 0, m_transferList->childCount() );
 
     // ok, let's copy the stuff to the device
     lockDevice( true );
@@ -1709,44 +1473,17 @@ MediaDevice::transferFiles()
     m_transferring = false;
 }
 
-
-void
-MediaDevice::fileDeleted( KIO::Job *job )  //SLOT
+int
+MediaDevice::progress() const
 {
-    if(job->error())
-    {
-        debug() << "file deletion failed: " << job->errorText() << endl;
-    }
-    m_waitForDeletion = false;
-    m_parent->updateStats();
+    return m_parent->m_progress->progress();
 }
 
 void
-MediaDevice::fileTransferred( KIO::Job *job )  //SLOT
+MediaDevice::setProgress( const int progress, const int total )
 {
-    if(job->error())
-    {
-        m_copyFailed = true;
-        debug() << "file transfer failed: " << job->errorText() << endl;
-    }
-    else
-    {
-        m_copyFailed = false;
-
-        m_parent->m_progress->setProgress( m_parent->m_progress->progress() + 1 );
-
-        // the track just transferred has not yet been removed from the queue
-        m_transferList->takeItem( m_transferList->firstChild() );
-    }
-    m_parent->updateStats();
-
-    m_wait = false;
-}
-
-void
-MediaDevice::setProgress( const int total, const int progress )
-{
-    m_parent->m_progress->setTotalSteps( total );
+    if( total != -1 )
+        m_parent->m_progress->setTotalSteps( total );
     m_parent->m_progress->setProgress( progress );
     m_parent->m_progress->show();
 }
@@ -1760,23 +1497,6 @@ MediaDevice::fileTransferFinished()  //SLOT
     m_wait = false;
 }
 
-void
-MediaDevice::deleteFile( const KURL &url )
-{
-    debug() << "deleting " << url.prettyURL() << endl;
-    m_waitForDeletion = true;
-    KIO::Job *job = KIO::file_delete( url, false );
-    connect( job, SIGNAL( result( KIO::Job * ) ),
-            this,  SLOT( fileDeleted( KIO::Job * ) ) );
-    do
-    {
-        kapp->processEvents( 100 );
-        usleep( 10000 );
-    } while( m_waitForDeletion );
-
-    if(!isTransferring())
-        m_parent->m_progress->setProgress( m_parent->m_progress->progress() + 1 );
-}
 
 void
 MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
@@ -1808,9 +1528,7 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
 
             if(!isTransferring())
             {
-                m_parent->m_progress->setProgress( 0 );
-                m_parent->m_progress->setTotalSteps( numFiles );
-                m_parent->m_progress->show();
+                setProgress( 0, numFiles );
             }
 
         }
