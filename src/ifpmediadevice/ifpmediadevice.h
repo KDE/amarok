@@ -40,6 +40,7 @@ class IfpMediaDevice : public MediaDevice
         virtual           ~IfpMediaDevice();
 
         bool              isConnected() { return m_connected; }
+        void              rmbPressed( MediaDeviceList *deviceList, QListViewItem* qitem, const QPoint& point, int );
 
     protected:
         bool              openDevice( bool silent=false );

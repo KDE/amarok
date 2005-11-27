@@ -32,6 +32,7 @@
 #include <kapplication.h>
 #include <kiconloader.h>       //smallIcon
 #include <kmessagebox.h>
+#include <kpopupmenu.h>
 
 #include <qfile.h>
 #include <qcstring.h>
@@ -453,5 +454,54 @@ IfpMediaDevice::getFullPath( const QListViewItem *item, const bool getFilename )
     return path;
 }
 
+
+void
+IfpMediaDevice::rmbPressed( MediaDeviceList *deviceList, QListViewItem* qitem, const QPoint& point, int )
+{
+    enum Actions { DIRECTORY, RENAME, DELETE };
+
+    MediaItem *item = static_cast<MediaItem *>(qitem);
+    if ( item )
+    {
+        KPopupMenu menu( deviceList );
+
+        menu.insertItem( SmallIconSet( "folder" ), i18n("Add Directory" ), DIRECTORY );
+        menu.insertItem( SmallIconSet( "editclear" ), i18n( "Rename" ), RENAME );
+        menu.insertItem( SmallIconSet( "editdelete" ), i18n( "Delete" ), DELETE );
+
+        int id =  menu.exec( point );
+        switch( id )
+        {
+            case DIRECTORY:
+                if( item->type() == MediaItem::DIRECTORY )
+                    deviceList->newDirectory( static_cast<MediaItem*>(item) );
+                else
+                    deviceList->newDirectory( static_cast<MediaItem*>(item->parent()) );
+                break;
+
+            case RENAME:
+                deviceList->rename( item, 0 );
+                break;
+
+            case DELETE:
+                deleteFromDevice();
+                break;
+        }
+        return;
+    }
+
+    if( isConnected() )
+    {
+        KPopupMenu menu( deviceList );
+        menu.insertItem( SmallIconSet( "folder" ), i18n("Add Directory" ), DIRECTORY );
+        int id =  menu.exec( point );
+        switch( id )
+        {
+            case DIRECTORY:
+                deviceList->newDirectory( 0 );
+                break;
+        }
+    }
+}
 
 #include "ifpmediadevice.moc"

@@ -141,6 +141,8 @@ class MediaDeviceList : public KListView
         ~MediaDeviceList();
         KURL::List nodeBuildDragList( MediaItem* item, bool onlySelected=true );
         int getSelectedLeaves(MediaItem *parent, QPtrList<MediaItem> *list, bool onlySelected=true, bool onlyPlayed=false );
+        MediaItem *newDirectory( MediaItem* parent );
+
 
     private slots:
         void rmbPressed( QListViewItem*, const QPoint&, int );
@@ -156,9 +158,6 @@ class MediaDeviceList : public KListView
         void contentsDropEvent( QDropEvent *e );
         void contentsDragMoveEvent( QDragMoveEvent* e );
         void viewportPaintEvent( QPaintEvent* );
-
-        void rmbIfp( QListViewItem*, const QPoint&, int );
-        MediaItem *newDirectory( MediaItem* parent );
 
         MediaDeviceView* m_parent;
 };

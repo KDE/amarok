@@ -762,66 +762,7 @@ MediaDeviceList::viewportPaintEvent( QPaintEvent *e )
 void
 MediaDeviceList::rmbPressed( QListViewItem *item, const QPoint &p, int i )
 {
-    switch( m_parent->m_device->deviceType() )
-    {
-
-        case MediaDevice::IFP:
-            rmbIfp( item, p, i );
-            break;
-
-        default:
-            m_parent->m_device->rmbPressed( this, item, p, i );
-            break;
-    }
-}
-
-void
-MediaDeviceList::rmbIfp( QListViewItem* qitem, const QPoint& point, int )
-{
-    enum Actions { DIRECTORY, RENAME, DELETE };
-
-    MediaItem *item = static_cast<MediaItem *>(qitem);
-    if ( item )
-    {
-        KPopupMenu menu( this );
-
-        menu.insertItem( SmallIconSet( "folder" ), i18n("Add Directory" ), DIRECTORY );
-        menu.insertItem( SmallIconSet( "editclear" ), i18n( "Rename" ), RENAME );
-        menu.insertItem( SmallIconSet( "editdelete" ), i18n( "Delete" ), DELETE );
-
-        int id =  menu.exec( point );
-        switch( id )
-        {
-            case DIRECTORY:
-                if( item->type() == MediaItem::DIRECTORY )
-                    newDirectory( static_cast<MediaItem*>(item) );
-                else
-                    newDirectory( static_cast<MediaItem*>(item->parent()) );
-                break;
-
-            case RENAME:
-                rename( item, 0 );
-                break;
-
-            case DELETE:
-                m_parent->m_device->deleteFromDevice();
-                break;
-        }
-        return;
-    }
-
-    if( m_parent->m_device->isConnected() )
-    {
-        KPopupMenu menu( this );
-        menu.insertItem( SmallIconSet( "folder" ), i18n("Add Directory" ), DIRECTORY );
-        int id =  menu.exec( point );
-        switch( id )
-        {
-            case DIRECTORY:
-                newDirectory( 0 );
-                break;
-        }
-    }
+    m_parent->m_device->rmbPressed( this, item, p, i );
 }
 
 MediaItem *
