@@ -710,7 +710,7 @@ if test "$build_ifp" != "no"; then
     
     if test "$have_ifp" = "yes"; then
         AC_DEFINE(HAVE_IFP, 1, [have ifp])
-        IFP_SOURCES=ifpmediadevice.cpp
+        IFP_LIBS="-lfp -lusb"
     else
         AC_MSG_RESULT($have_ifp)
         have_ifp=no
@@ -718,7 +718,6 @@ if test "$build_ifp" != "no"; then
 
 fi
 
-AC_SUBST(IFP_SOURCES)
 AC_SUBST(IFP_INCLUDES)
 AC_SUBST(IFP_LIBS)
 
@@ -749,14 +748,11 @@ if test "$build_libgpod" != "no"; then
         PKG_CHECK_MODULES(LIBGPOD, libgpod-1.0, have_libgpod=yes,have_libgpod=no)
         if test "x$have_libgpod" != "xno"; then
             AC_DEFINE(HAVE_LIBGPOD, 1, [have libgpod])
-            IPOD_SOURCES=gpodmediadevice.cpp
         else
             AC_MSG_RESULT($have_libgpod)
-            #IPOD_SOURCES=gpodmediadevice.cpp
         fi
     fi
 fi
-AC_SUBST(IPOD_SOURCES)
 AC_SUBST(LIBGPOD_INCLUDES)
 AC_SUBST(LIBGPOD_LIBS)
 

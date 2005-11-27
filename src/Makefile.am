@@ -10,12 +10,12 @@ endif
 
 if with_libgpod
     IPOD_SUBDIR = gpodmediadevice
-    IPOD_LIBS = gpodmediadevice/libgpodmediadevice.la
+    IPOD_SUBLIBS = gpodmediadevice/libgpodmediadevice.la $(LIBGPOD_LIBS)
 endif
 
 if with_ifp
     IFP_SUBDIR = ifpmediadevice
-    IFP_LIBS = ifpmediadevice/libifpmediadevice.la -lusb -lifp
+    IFP_SUBLIBS = ifpmediadevice/libifpmediadevice.la $(IFP_LIBS)
 endif
 
 bin_PROGRAMS = amarokapp
@@ -143,8 +143,8 @@ amarokapp_LDADD = \
     $(top_builddir)/amarok/src/metadata/libmetadata.la \
     $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KHTML) $(LIB_KNEWSTUFF) \
     $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) $(EXSCALIBAR_LIBS) \
-    $(LIB_TUNEPIMP) $(LIBGPOD_LIBS) \
-    $(IPOD_LIBS) $(IFP_LIBS) \
+    $(LIB_TUNEPIMP) \
+    $(IPOD_SUBLIBS) $(IFP_SUBLIBS) \
     $(mysql_libs) \
     $(postgresql_libs)
 
