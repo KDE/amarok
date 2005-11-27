@@ -522,10 +522,21 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
                 case Key_5: n = 5; break;
             }
             if( n == 0 )
+            {
                 m_browsers->closeCurrentBrowser();
+                return true;
+            }
             else if( n > 0 && n <= m_browsers->visibleCount() )
             {
                 m_browsers->showHideVisibleBrowser( n - 1 );
+                return true;
+            }
+            else if( e->key() == Key_Tab || e->key() == Key_Backtab )
+            {
+                if( m_browsers->currentBrowser() && ( Playlist::instance()->hasFocus() || m_lineEdit->hasFocus() ) )
+                    m_browsers->currentBrowser()->setFocus();
+                else
+                    Playlist::instance()->setFocus();
                 return true;
             }
         }
