@@ -353,6 +353,17 @@ void App::initGlobalShortcuts()
     m_pGlobalAccel->insert( "mute", i18n( "Mute Volume" ), 0, KKey("WIN+m"), 0,
                             ec, SLOT( mute() ), true, true );
 
+    m_pGlobalAccel->insert( "rating1", i18n( "Set Rating of Current Track to 1" ), 0, KKey("CTRL+WIN+1"), 0,
+                            this, SLOT( setRating1() ), false, true );
+    m_pGlobalAccel->insert( "rating2", i18n( "Set Rating of Current Track to 2" ), 0, KKey("CTRL+WIN+2"), 0,
+                            this, SLOT( setRating2() ), false, true );
+    m_pGlobalAccel->insert( "rating3", i18n( "Set Rating of Current Track to 3" ), 0, KKey("CTRL+WIN+3"), 0,
+                            this, SLOT( setRating3() ), false, true );
+    m_pGlobalAccel->insert( "rating4", i18n( "Set Rating of Current Track to 4" ), 0, KKey("CTRL+WIN+4"), 0,
+                            this, SLOT( setRating4() ), false, true );
+    m_pGlobalAccel->insert( "rating5", i18n( "Set Rating of Current Track to 5" ), 0, KKey("CTRL+WIN+5"), 0,
+                            this, SLOT( setRating5() ), false, true );
+
     m_pGlobalAccel->setConfigGroup( "Shortcuts" );
     m_pGlobalAccel->readSettings( kapp->config() );
     m_pGlobalAccel->updateConnections();
@@ -1012,6 +1023,16 @@ void App::pruneCoverImages()
                 "<a href='http://www.amazon.com/webservices'>here</a>. "
                 "Please note that this only affects covers downloaded using the Cover Manager's fetch covers feature and the covers downloaded using the context menu in the Context Browser, not manually added covers." ), KDE::StatusBar::Information );
 #endif
+}
+
+void App::setRating( int n )
+{
+    if( EngineController::instance()->engine()->state() == Engine::Playing ||
+        EngineController::instance()->engine()->state() == Engine::Paused  )
+    {
+        CollectionDB::instance()->setSongRating( EngineController::instance()->playingURL().path(), n );
+        amaroK::OSD::instance()->OSDWidget::show( i18n("Rating: %1").arg( QString().fill( '*', n ) ) );
+    }
 }
 
 QWidget *App::mainWindow() const

@@ -58,6 +58,11 @@ class App : public KApplication, public EngineObserver
 
     private slots:
         void showHyperThreadingWarning();
+        void setRating1() { setRating( 1 ); }
+        void setRating2() { setRating( 2 ); }
+        void setRating3() { setRating( 3 ); }
+        void setRating4() { setRating( 4 ); }
+        void setRating5() { setRating( 5 ); }
 
     public slots:
         void applySettings( bool firstTime = false );
@@ -80,6 +85,8 @@ class App : public KApplication, public EngineObserver
 
         /** Removes all covers images older than 90 days, to comply with amazon.com license */
         void pruneCoverImages();
+
+        void setRating( int n );
 
         // ATTRIBUTES ------
         KGlobalAccel        *m_pGlobalAccel;

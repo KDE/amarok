@@ -1383,13 +1383,13 @@ CollectionDB::addSongPercentage( const QString &url, int percentage )
         else
         {
             query( QString( "REPLACE INTO statistics ( url, createdate, accessdate, percentage, playcounter, rating ) "
-                            "VALUES ( '%1', %2, %3, %4, %5, %6 );" )
-                            .arg( escapeString( url ) )
+                            "VALUES ( '%6', %2, %3, %4, %5, %1 );" )
+                            .arg( values[3] )
                             .arg( values[1] )
                             .arg( QDateTime::currentDateTime().toTime_t() )
                             .arg( score )
                             .arg( values[0] + " + 1" )
-                            .arg( values[3] ) );
+                            .arg( escapeString( url ) ) );
         }
     }
     else
@@ -1398,11 +1398,11 @@ CollectionDB::addSongPercentage( const QString &url, int percentage )
         score = ( ( 50 + percentage ) / 2 );
 
         insert( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, playcounter, rating ) "
-                        "VALUES ( '%1', %2, %3, %4, 1, 0 );" )
-                        .arg( escapeString( url ) )
+                        "VALUES ( '%4', %2, %3, %1, 1, 0 );" )
+                        .arg( score )
                         .arg( QDateTime::currentDateTime().toTime_t() )
                         .arg( QDateTime::currentDateTime().toTime_t() )
-                        .arg( score ), NULL );
+                        .arg( escapeString( url ) ), NULL );
     }
 
     int iscore = getSongPercentage( url );
@@ -1458,23 +1458,23 @@ CollectionDB::setSongPercentage( const QString &url , int percentage)
         {
             // entry exists
             query( QString( "REPLACE INTO statistics ( url, createdate, accessdate, percentage, playcounter, rating ) "
-                            "VALUES ( '%1', '%2', '%3', %4, %5, %6 );" )
-                            .arg( escapeString( url ) )
+                            "VALUES ( '%6', '%2', '%3', %4, %5, %1 );" )
+                            .arg( values[3] )
                             .arg( values[1] )
                             .arg( values[2] )
                             .arg( percentage )
                             .arg( values[0] )
-                            .arg( values[3] ) );
+                            .arg( escapeString( url ) ) );
         }
     }
     else
     {
         insert( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, playcounter, rating ) "
-                         "VALUES ( '%1', %2, %3, %4, 0, 0 );" )
-                        .arg( escapeString( url ) )
+                         "VALUES ( '%4', %2, %3, %1, 0, 0 );" )
+                        .arg( percentage )
                         .arg( QDateTime::currentDateTime().toTime_t() )
                         .arg( QDateTime::currentDateTime().toTime_t() )
-                        .arg( percentage ), NULL );
+                        .arg( escapeString( url ) ), NULL );
     }
 
     emit scoreChanged( url, percentage );
@@ -1503,23 +1503,23 @@ CollectionDB::setSongRating( const QString &url, int rating )
         {
             // entry exists
             query( QString( "REPLACE INTO statistics ( url, createdate, accessdate, percentage, rating, playcounter ) "
-                            "VALUES ( '%1', '%2', '%3', %4, %5, %6 );" )
-                            .arg( escapeString( url ) )
+                            "VALUES ( '%6', '%2', '%3', %4, %5, %1 );" )
+                            .arg( values[0] )
                             .arg( values[1] )
                             .arg( values[2] )
                             .arg( values[3] )
                             .arg( rating )
-                            .arg( values[0] ) );
+                            .arg( escapeString( url ) ) );
         }
     }
     else
     {
         insert( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, rating, playcounter ) "
-                         "VALUES ( '%1', %2, %3, 0, %4, 0 );" )
-                        .arg( escapeString( url ) )
+                         "VALUES ( '%4', %2, %3, 0, %1, 0 );" )
+                        .arg( rating )
                         .arg( QDateTime::currentDateTime().toTime_t() )
                         .arg( QDateTime::currentDateTime().toTime_t() )
-                        .arg( rating ), NULL );
+                        .arg( escapeString( url ) ), NULL );
     }
 
     emit ratingChanged( url, rating );
@@ -2334,6 +2334,7 @@ CollectionDB::initialize()
                 debug() << "Updating stats-database!" << endl;
                 query( "ALTER TABLE statistics ADD rating INTEGER DEFAULT 0;" );
                 query( "CREATE INDEX rating_stats ON statistics( rating );" );
+                query( "UPDATE statistics SET rating=0 WHERE " + boolT() + ";" );
             }
             else //it is from before 1.2, or our poor user is otherwise fucked
             {
