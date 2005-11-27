@@ -710,7 +710,7 @@ if test "$build_ifp" != "no"; then
     
     if test "$have_ifp" = "yes"; then
         AC_DEFINE(HAVE_IFP, 1, [have ifp])
-        IFP_LIBS="-lfp -lusb"
+        IFP_LIBS="-lifp -lusb"
     else
         AC_MSG_RESULT($have_ifp)
         have_ifp=no
