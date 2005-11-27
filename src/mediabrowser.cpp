@@ -1137,6 +1137,8 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
         m_connectButton->setOn( m_device->isConnected() );
         m_transferButton->setEnabled( m_device->m_transferList->childCount() != 0 );
     }
+
+    setFocusProxy( m_device->m_transferList );
 }
 
 QString

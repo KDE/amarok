@@ -180,6 +180,8 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
                 static_cast<SmartPlaylist*>( item )->setDynamic( true );
         }
     }
+
+    setFocusProxy( m_listview );
 }
 
 
