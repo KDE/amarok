@@ -511,16 +511,19 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 
         if( e->state() & ControlButton )
         {
-            int n = 0;
+            int n = -1;
             switch( e->key() )
             {
+                case Key_0: n = 0; break;
                 case Key_1: n = 1; break;
                 case Key_2: n = 2; break;
                 case Key_3: n = 3; break;
                 case Key_4: n = 4; break;
                 case Key_5: n = 5; break;
             }
-            if( n && n <= m_browsers->visibleCount() )
+            if( n == 0 )
+                m_browsers->closeCurrentBrowser();
+            else if( n > 0 && n <= m_browsers->visibleCount() )
             {
                 m_browsers->showHideVisibleBrowser( n - 1 );
                 return true;
