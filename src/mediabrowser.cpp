@@ -1077,6 +1077,7 @@ MediaDevice::MediaDevice( MediaDeviceView* parent, MediaDeviceList *listview )
     m_mntcmd = AmarokConfig::mountCommand();
     m_umntcmd = AmarokConfig::umountCommand();
     m_autoDeletePodcasts = AmarokConfig::autoDeletePodcasts();
+    debug() << "auto delete podcasts: " << m_autoDeletePodcasts << endl;
 }
 
 MediaDevice::~MediaDevice()
@@ -1222,6 +1223,7 @@ MediaDevice::config()
     autoDeleteLabel->setBuddy( autoDeletePodcasts );
     autoDeleteLabel->setText( i18n( "Automatically delete podcasts" ) );
     QToolTip::add( autoDeletePodcasts, i18n( "Automatically delete podcast shows already played on connect" ) );
+    autoDeletePodcasts->setChecked( m_autoDeletePodcasts );
 
     if ( dialog.exec() != QDialog::Rejected )
     {
