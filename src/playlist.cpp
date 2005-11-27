@@ -351,7 +351,7 @@ Playlist::Playlist( QWidget *parent )
     new KAction( i18n( "&Goto Current Track" ), "today", CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "playlist_show" );
     new KAction( i18n( "&Remove Duplicate && Dead Entries" ), 0, this, SLOT( removeDuplicates() ), ac, "playlist_remove_duplicates" );
     new KAction( i18n( "&Queue Selected Tracks" ), CTRL+Key_D, this, SLOT( queueSelected() ), ac, "queue_selected" );
-    KAction *stopafter = new KAction( i18n( "&Stop Playing After Track" ), "player_stop", CTRL+ALT+Key_Z,
+    KAction *stopafter = new KAction( i18n( "&Stop Playing After Track" ), "player_stop", CTRL+ALT+Key_V,
                             this, SLOT( toggleStopAfterCurrentItem() ), ac, "stop_after" );
 
     { // KAction idiocy -- shortcuts don't work until they've been plugged into a menu
