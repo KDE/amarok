@@ -105,7 +105,6 @@ Usage:
 debug()   << "Something is happening" << endl;
 warning() << "Something bad may happen" << endl;
 error()   << "Something bad did happen!" << endl;
-fatal()   << "Uh oh..." << endl;
 
 Additionally, there are some macros for debugging functions:
 
