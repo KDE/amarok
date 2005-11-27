@@ -177,6 +177,7 @@ class CollectionDB : public QObject, public EngineObserver
         void databaseEngineChanged();
 
         void scoreChanged( const QString &url, int score );
+        void ratingChanged( const QString &url, int rating );
         void coverChanged( const QString &artist, const QString &album ); //whenever a cover changes
         void coverFetched( const QString &artist, const QString &album ); //only when fetching from amazon
         void coverRemoved( const QString &artist, const QString &album );
@@ -256,7 +257,8 @@ class CollectionDB : public QObject, public EngineObserver
         int addSongPercentage( const QString &url, int percentage );
         int getSongPercentage( const QString &url );
         int getSongRating( const QString &url );
-        void setSongPercentage( const QString &url , int percentage );
+        void setSongPercentage( const QString &url, int percentage );
+        void setSongRating( const QString &url, int percentage );
         int getPlayCount( const QString &url );
         QDateTime getFirstPlay( const QString &url );
         QDateTime getLastPlay( const QString &url );
@@ -346,7 +348,7 @@ class CollectionDB : public QObject, public EngineObserver
         // When bumping this, write code to convert the data!
         static const int DATABASE_PERSISTENT_TABLES_VERSION = 3;
         // Bumping this erases stats table. If you ever need to, write code to convert the data!
-        static const int DATABASE_STATS_VERSION = 3;
+        static const int DATABASE_STATS_VERSION = 4;
 
         static const int MONITOR_INTERVAL = 60; //sec
         static const bool DEBUG = false;
@@ -407,7 +409,7 @@ class QueryBuilder
                                valPlayCounter = 1024, valCreateDate = 2048, valAccessDate = 4096,
                                valPercentage = 8192, valArtistID = 16384, valAlbumID = 32768,
                                valYearID = 65536, valGenreID = 131072, valDirectory = 262144,
-                               valLyrics = 524288, valDummy = 0 };
+                               valLyrics = 524288, valRating = 1048576, valDummy = 0 };
         enum qBuilderFunctions  { funcCount = 1, funcMax = 2, funcMin = 4, funcAvg = 8, funcSum = 16 };
 
         enum qBuilderFilter  { modeNormal = 0, modeLess = 1, modeGreater = 2, modeEndMatch = 3 };

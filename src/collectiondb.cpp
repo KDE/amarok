@@ -484,10 +484,12 @@ CollectionDB::createStatsTable()
                     "createdate INTEGER,"
                     "accessdate INTEGER,"
                     "percentage FLOAT,"
+                    "rating INTEGER DEFAULT 0,"
                     "playcounter INTEGER );" ) );
 
     query( "CREATE INDEX url_stats ON statistics( url );" );
     query( "CREATE INDEX percentage_stats ON statistics( percentage );" );
+    query( "CREATE INDEX rating_stats ON statistics( rating );" );
     query( "CREATE INDEX playcounter_stats ON statistics( playcounter );" );
 }
 
@@ -1354,7 +1356,7 @@ CollectionDB::addSongPercentage( const QString &url, int percentage )
     float score;
     QStringList values =
         query( QString(
-            "SELECT playcounter, createdate, percentage FROM statistics "
+            "SELECT playcounter, createdate, percentage, rating FROM statistics "
             "WHERE url = '%1';" )
             .arg( escapeString( url ) ) );
 
@@ -1380,13 +1382,14 @@ CollectionDB::addSongPercentage( const QString &url, int percentage )
         }
         else
         {
-            query( QString( "REPLACE INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
-                            "VALUES ( '%1', %2, %3, %4, %5 );" )
+            query( QString( "REPLACE INTO statistics ( url, createdate, accessdate, percentage, playcounter, rating ) "
+                            "VALUES ( '%1', %2, %3, %4, %5, %6 );" )
                             .arg( escapeString( url ) )
                             .arg( values[1] )
                             .arg( QDateTime::currentDateTime().toTime_t() )
                             .arg( score )
-                            .arg( values[0] + " + 1" ) );
+                            .arg( values[0] + " + 1" )
+                            .arg( values[3] ) );
         }
     }
     else
@@ -1394,8 +1397,8 @@ CollectionDB::addSongPercentage( const QString &url, int percentage )
         // entry didnt exist yet, create a new one
         score = ( ( 50 + percentage ) / 2 );
 
-        insert( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
-                        "VALUES ( '%1', %2, %3, %4, 1 );" )
+        insert( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, playcounter, rating ) "
+                        "VALUES ( '%1', %2, %3, %4, 1, 0 );" )
                         .arg( escapeString( url ) )
                         .arg( QDateTime::currentDateTime().toTime_t() )
                         .arg( QDateTime::currentDateTime().toTime_t() )
@@ -1423,7 +1426,13 @@ CollectionDB::getSongPercentage( const QString &url )
 int
 CollectionDB::getSongRating( const QString &url )
 {
-    return ( getSongPercentage( url ) + 10 ) / 20;
+    QStringList values = query( QString( "SELECT rating FROM statistics WHERE url = '%1';" )
+                                         .arg( escapeString( url ) ) );
+
+    if( values.count() )
+        return values.first().toInt();
+
+    return 0;
 }
 
 void
@@ -1431,7 +1440,7 @@ CollectionDB::setSongPercentage( const QString &url , int percentage)
 {
     QStringList values =
         query( QString(
-            "SELECT playcounter, createdate, accessdate FROM statistics WHERE url = '%1';" )
+            "SELECT playcounter, createdate, accessdate, rating FROM statistics WHERE url = '%1';" )
             .arg( escapeString( url ) ));
 
     // check boundaries
@@ -1448,19 +1457,20 @@ CollectionDB::setSongPercentage( const QString &url , int percentage)
         else
         {
             // entry exists
-            query( QString( "REPLACE INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
-                            "VALUES ( '%1', '%2', '%3', %4, %5 );" )
+            query( QString( "REPLACE INTO statistics ( url, createdate, accessdate, percentage, playcounter, rating ) "
+                            "VALUES ( '%1', '%2', '%3', %4, %5, %6 );" )
                             .arg( escapeString( url ) )
                             .arg( values[1] )
                             .arg( values[2] )
                             .arg( percentage )
-                            .arg( values[0] ) );
+                            .arg( values[0] )
+                            .arg( values[3] ) );
         }
     }
     else
     {
-        insert( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
-                         "VALUES ( '%1', %2, %3, %4, 0 );" )
+        insert( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, playcounter, rating ) "
+                         "VALUES ( '%1', %2, %3, %4, 0, 0 );" )
                         .arg( escapeString( url ) )
                         .arg( QDateTime::currentDateTime().toTime_t() )
                         .arg( QDateTime::currentDateTime().toTime_t() )
@@ -1468,6 +1478,51 @@ CollectionDB::setSongPercentage( const QString &url , int percentage)
     }
 
     emit scoreChanged( url, percentage );
+}
+
+void
+CollectionDB::setSongRating( const QString &url, int rating )
+{
+    QStringList values =
+        query( QString(
+            "SELECT playcounter, createdate, accessdate, percentage FROM statistics WHERE url = '%1';" )
+            .arg( escapeString( url ) ));
+
+    // check boundaries
+    if ( rating > 5 ) rating = 5;
+    if ( rating < 0 ) rating = 0;
+
+    if ( !values.isEmpty() )
+    {
+        if (getDbConnectionType() == DbConnection::postgresql) {
+            query( QString( "UPDATE statistics SET rating=%1 WHERE url='%2';" )
+                            .arg( rating )
+                            .arg( escapeString( url ) ));
+        }
+        else
+        {
+            // entry exists
+            query( QString( "REPLACE INTO statistics ( url, createdate, accessdate, percentage, rating, playcounter ) "
+                            "VALUES ( '%1', '%2', '%3', %4, %5, %6 );" )
+                            .arg( escapeString( url ) )
+                            .arg( values[1] )
+                            .arg( values[2] )
+                            .arg( values[3] )
+                            .arg( rating )
+                            .arg( values[0] ) );
+        }
+    }
+    else
+    {
+        insert( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, rating, playcounter ) "
+                         "VALUES ( '%1', %2, %3, 0, %4, 0 );" )
+                        .arg( escapeString( url ) )
+                        .arg( QDateTime::currentDateTime().toTime_t() )
+                        .arg( QDateTime::currentDateTime().toTime_t() )
+                        .arg( rating ), NULL );
+    }
+
+    emit ratingChanged( url, rating );
 }
 
 int
@@ -2241,6 +2296,52 @@ CollectionDB::initialize()
     }
     else
     {
+        if ( adminValue( "Database Stats Version" ).toInt() != DATABASE_STATS_VERSION )
+        {
+            debug() << "Different database stats version detected! Stats table will be updated or rebuilt." << endl;
+            debug() << "Creating a backup of the database in "
+                    << amaroK::saveLocation()+"collection-backup.db" << "." << endl;
+            debug() << "Unfortunately, this only works for SQLite databases." << endl;
+
+            bool copied = KIO::NetAccess::file_copy( amaroK::saveLocation()+"collection.db",
+                                                     amaroK::saveLocation()+"collection-backup.db",
+                                                     -1 /*perms*/, true /*overwrite*/, false /*resume*/ );
+
+            if( !copied )
+            {
+                debug() << "Backup failed! Perhaps you are not using SQLite, or the volume is not writable." << endl;
+                debug() << "Error was: " << KIO::NetAccess::lastErrorString() << endl;
+            }
+
+            int prev = adminValue( "Database Stats Version" ).toInt();
+            if( !prev && config->readNumEntry( "Database Stats Version", 0 )
+                      && config->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION )
+                prev = config->readNumEntry( "Database Stats Version", 0 );
+
+            //pre somewhere in the 1.3-1.4 timeframe, the version wasn't stored in the DB, so try to guess it
+            const QString q = "SELECT COUNT( %1 ) FROM statistics;";
+            if( !prev && query( q.arg( "url" ) ).first().toInt()
+                      && query( q.arg( "createdate" ) ).first().toInt()
+                      && query( q.arg( "accessdate" ) ).first().toInt()
+                      && query( q.arg( "percentage" ) ).first().toInt()
+                      && query( q.arg( "playcounter" ) ).first().toInt() )
+            {
+                prev = 3;
+            }
+
+            if( prev == 3 ) //every version from 1.2 forward had a stats version of 3
+            {
+                debug() << "Updating stats-database!" << endl;
+                query( "ALTER TABLE statistics ADD rating INTEGER DEFAULT 0;" );
+                query( "CREATE INDEX rating_stats ON statistics( rating );" );
+            }
+            else //it is from before 1.2, or our poor user is otherwise fucked
+            {
+                debug() << "Rebuilding stats-database!" << endl;
+                dropStatsTable();
+                createStatsTable();
+            }
+        }
 
         QString PersistentVersion = adminValue( "Database Persistent Tables Version" );
         if ( PersistentVersion.isEmpty() ) {
@@ -2279,15 +2380,6 @@ CollectionDB::initialize()
             debug() << "Rebuilding database!" << endl;
             dropTables(false);
             createTables(false);
-        }
-
-        if ( config->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION
-             || ( config->readNumEntry( "Database Stats Version", 0 ) > 3 && /* on 3, there was no version on the db.*/
-                  adminValue( "Database Stats Version" ).toInt() != DATABASE_STATS_VERSION ) )
-        {
-            debug() << "Rebuilding stats-database!" << endl;
-            dropStatsTable();
-            createStatsTable();
         }
     }
 }
@@ -3051,6 +3143,11 @@ QueryBuilder::setGoogleFilter( int defaultTables, QString query )
                 table = tabStats;
                 value = valScore;
             }
+            else if( field == "rating" )
+            {
+                table = tabStats;
+                value = valRating;
+            }
             else if( field == "directory" )
             {
                 table = tabSong;
@@ -3430,7 +3527,7 @@ QueryBuilder::sortBy( int table, int value, bool descending )
 {
     //shall we sort case-sensitively? (not for integer columns!)
     bool b = true;
-    if ( value & valID || value & valTrack || value & valScore || value & valLength || value & valBitrate ||
+    if ( value & valID || value & valTrack || value & valScore || value & valRating || value & valLength || value & valBitrate ||
          value & valSamplerate || value & valPlayCounter || value & valAccessDate || value & valCreateDate || value & valPercentage ||
          table & tabYear )
         b = false;
@@ -3475,7 +3572,7 @@ QueryBuilder::sortByFunction( int function, int table, int value, bool descendin
 
     //shall we sort case-sensitively? (not for integer columns!)
     bool b = true;
-    if ( value & valID || value & valTrack || value & valScore || value & valLength || value & valBitrate ||
+    if ( value & valID || value & valTrack || value & valScore || value & valRating || value & valLength || value & valBitrate ||
          value & valSamplerate || value & valPlayCounter || value & valAccessDate || value & valCreateDate || value & valPercentage ||
          table & tabYear )
         b = false;
@@ -3650,6 +3747,7 @@ QueryBuilder::valueName( int value )
     if ( value & valTitle )       values += "title";
     if ( value & valTrack )       values += "track";
     if ( value & valScore )       values += "percentage";
+    if ( value & valRating )      values += "rating";
     if ( value & valComment )     values += "comment";
     if ( value & valLyrics )      values += "lyrics";
     if ( value & valBitrate )     values += "bitrate";

@@ -175,6 +175,7 @@ class Playlist : private KListView, public EngineObserver
         void repopulate();
         void safeClear();
         void scoreChanged( const QString &path, int score );
+        void ratingChanged( const QString &path, int rating );
         void selectAll() { QListView::selectAll( true ); }
         void setFilter( const QString &filter );                           //for the entire playlist
         void setFilterForItem( const QString &query, PlaylistItem *item ); //for a single item

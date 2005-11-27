@@ -472,8 +472,13 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
         const int score = CollectionDB::instance()->getSongPercentage( bundle.url().path() );
         if( score > 0 )
             tags[PlaylistItem::Score+1] = QString::number( score );
+        const int rating = CollectionDB::instance()->getSongRating( bundle.url().path() );
+        if( rating > 0 )
+            tags[PlaylistItem::Rating+1] = QString().fill( '*', rating );
         tags[PlaylistItem::Playcount+1] = QString::number( CollectionDB::instance()
                                                            ->getPlayCount( bundle.url().path() ) );
+        tags[PlaylistItem::LastPlayed+1] = amaroK::verboseTimeSince(
+            CollectionDB::instance()->getLastPlay( bundle.url().path() ).toTime_t() );
         if( bundle.length() <= 0 )
             tags[PlaylistItem::Length+1] = QString::null;
 
@@ -482,9 +487,9 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
             QString tag;
             MyVector<int> availableTags; //eg, ones that aren't empty
             static const QValueList<int> parens = //display these in parentheses
-                QValueList<int>() << PlaylistItem::Playcount << PlaylistItem::Year   << PlaylistItem::Comment
-                                  << PlaylistItem::Genre     << PlaylistItem::Length << PlaylistItem::Bitrate
-                                  << PlaylistItem::Score;
+                QValueList<int>() << PlaylistItem::Playcount  << PlaylistItem::Year   << PlaylistItem::Comment
+                                  << PlaylistItem::Genre      << PlaylistItem::Length << PlaylistItem::Bitrate
+                                  << PlaylistItem::LastPlayed << PlaylistItem::Rating << PlaylistItem::Score;
 
             for( int n = Playlist::instance()->visibleColumns(), i = 0, column; i < n; ++i )
             {
@@ -513,7 +518,8 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
                 MyVector<QString>() << "%artist - %title" << "%file"      << "%title"      << "%artist"
                                     << "%album"           << "%year"      << "%comment"    << "%genre"
                                     << "%track"           << "%directory" << "%length"     << "%bitrate"
-                                    << "%score"           << "%type"      << "%playcount";
+                                    << "%score"           << "%rating"    << "%type"       << "%playcount"
+                                    << "%lastplayed";
 
             text = AmarokConfig::osdText();
 

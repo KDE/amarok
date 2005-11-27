@@ -303,7 +303,7 @@ Playlist::Playlist( QWidget *parent )
     setRenameable( PlaylistItem::Genre );
     setRenameable( PlaylistItem::Track );
     setRenameable( PlaylistItem::Score );
-    setRenameable( PlaylistItem::Rating,     false );
+    setRenameable( PlaylistItem::Rating );
     setRenameable( PlaylistItem::Type,       false );
     setRenameable( PlaylistItem::Playcount,  false );
     setRenameable( PlaylistItem::LastPlayed, false );
@@ -332,6 +332,8 @@ Playlist::Playlist( QWidget *parent )
              this,       SLOT( scoreChanged( const QString&, int ) ) );
     connect( CollectionDB::instance(), SIGNAL( scoreChanged( const QString&, int ) ),
              this,       SLOT( playCountChanged( const QString& ) ) );
+    connect( CollectionDB::instance(), SIGNAL( ratingChanged( const QString&, int ) ),
+             this,       SLOT( ratingChanged( const QString&, int ) ) );
     connect( header(), SIGNAL( indexChange( int, int, int ) ),
              this,       SLOT( columnOrderChanged() ) ),
 
@@ -1778,6 +1780,8 @@ Playlist::writeTag( QListViewItem *qitem, const QString &newTag, int column ) //
 
         if( column == PlaylistItem::Score )
             CollectionDB::instance()->setSongPercentage( item->url().path(), newTag.toInt() );
+        else if( column == PlaylistItem::Rating )
+            CollectionDB::instance()->setSongRating( item->url().path(), newTag.toInt() );
         else
             if (oldTag != newTag)
                 ThreadWeaver::instance()->queueJob( new TagWriter( item, oldTag, newTag, column ) );
@@ -2330,6 +2334,7 @@ Playlist::eventFilter( QObject *o, QEvent *e )
             if( !item->isSelected() )
                 m_itemsToChangeTagsFor.clear();
                 //the item that actually got changed will get added back, in writeTag()
+            //writeTag( item, renameLineEdit()->text(), column );
             rename( item, column );
             return true;
         }
@@ -3009,6 +3014,7 @@ Playlist::googleMatch( QString query, const QStringMap &defaults, const QStringM
 
                 static const QString
                     Score     = PlaylistItem::columnName( PlaylistItem::Score     ).lower(),
+                    Rating    = PlaylistItem::columnName( PlaylistItem::Rating    ).lower(),
                     Year      = PlaylistItem::columnName( PlaylistItem::Year      ).lower(),
                     Track     = PlaylistItem::columnName( PlaylistItem::Track     ).lower(),
                     Playcount = PlaylistItem::columnName( PlaylistItem::Playcount ).lower(),
@@ -3018,7 +3024,7 @@ Playlist::googleMatch( QString query, const QStringMap &defaults, const QStringM
                 if (q.startsWith(">"))
                 {
                     w = w.mid( 1 );
-                    if( f == Score || f == Year || f == Track || f == Playcount )
+                    if( f == Score || f == Rating || f == Year || f == Track || f == Playcount )
                         condition = v.toInt() > w.toInt();
                     else if( f == Length )
                     {
@@ -3040,7 +3046,7 @@ Playlist::googleMatch( QString query, const QStringMap &defaults, const QStringM
                 else if( q.startsWith( "<" ) )
                 {
                     w = w.mid(1);
-                    if( f == Score || f == Year || f == Track || f == Playcount )
+                    if( f == Score || f == Rating || f == Year || f == Track || f == Playcount )
                         condition = v.toInt() < w.toInt();
                     else if( f == Length )
                     {
@@ -3174,10 +3180,24 @@ Playlist::scoreChanged( const QString &path, int score )
 {
     for( MyIt it( this, MyIt::All ); *it; ++it )
     {
-        PlaylistItem *item = (PlaylistItem*)*it;
+        PlaylistItem *item = static_cast<PlaylistItem*>( *it );
         if ( item->url().path() == path )
         {
             item->setScore( score );
+            setFilterForItem( m_filter, item );
+        }
+    }
+}
+
+void
+Playlist::ratingChanged( const QString &path, int rating )
+{
+    for( MyIt it( this, MyIt::All ); *it; ++it )
+    {
+        PlaylistItem *item = static_cast<PlaylistItem*>( *it );
+        if ( item->url().path() == path )
+        {
+            item->setRating( rating );
             setFilterForItem( m_filter, item );
         }
     }

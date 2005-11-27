@@ -158,7 +158,7 @@ class CollectionView : public KListView
         void deleteSelectedFiles();
 
     private:
-        enum Tag { Title, Artist, Album, Genre, Length, Track, Year, Comment, Playcount, Score, Filename, Firstplay, Lastplay, Modified, Bitrate };
+        enum Tag { Title, Artist, Album, Genre, Length, Track, Year, Comment, Playcount, Score, Rating, Filename, Firstplay, Lastplay, Modified, Bitrate };
 
         void setViewMode( int mode, bool rerender = true );
         void startDrag();

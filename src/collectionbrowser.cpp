@@ -428,6 +428,9 @@ CollectionView::renderView()  //SLOT
                 case Score:
                     qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
                     break;
+                case Rating:
+                    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
+                    break;
                 case Filename:
                     qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valURL );
                     break;
@@ -489,6 +492,10 @@ CollectionView::renderView()  //SLOT
                     }
                     case Playcount:
                     case Score: {
+                        item->setText( *it_c, (*it).isNull() ? "0" : (*it) );
+                        break;
+                    }
+                    case Rating: {
                         item->setText( *it_c, (*it).isNull() ? "0" : (*it) );
                         break;
                     }
@@ -1314,6 +1321,7 @@ CollectionView::setViewMode( int mode, bool rerender )
         addColumn( captionForTag( Comment ), 0 );
         addColumn( captionForTag( Playcount ), 0 );
         addColumn( captionForTag( Score ), 0 );
+        addColumn( captionForTag( Rating ), 0 );
         addColumn( captionForTag( Filename ), 0 );
         addColumn( captionForTag( Firstplay ), 0 );
         addColumn( captionForTag( Lastplay ), 0 );
@@ -2084,6 +2092,7 @@ CollectionView::captionForTag( const Tag tag) const
         case Comment:   caption = i18n( "Comment" ); break;
         case Playcount: caption = i18n( "Playcount" ); break;
         case Score:     caption = i18n( "Score" );  break;
+        case Rating:    caption = i18n( "Rating" ); break;
         case Filename:  caption = i18n( "Filename" ); break;
         case Firstplay: caption = i18n( "First Play" ); break;
         case Lastplay:  caption = i18n( "Last Play" ); break;

@@ -99,7 +99,7 @@ namespace amaroK
     QString verboseTimeSince( uint time_t )
     {
         if( !time_t )
-            return i18n( "Never played" );
+            return i18n( "Never" );
 
         QDateTime dt;
         dt.setTime_t( time_t );

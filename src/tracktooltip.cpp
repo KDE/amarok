@@ -16,6 +16,8 @@
 */
 
 #include "tracktooltip.h"
+
+#include "amarok.h"
 #include "metabundle.h"
 #include "collectiondb.h"
 #include "playlist.h"
@@ -83,6 +85,15 @@ void TrackToolTip::setTrack( const MetaBundle &tags, bool force )
                     left << playlist->columnText( column );
                 }
             }
+            else if( column == PlaylistItem::Rating )
+            {
+                const int rating = CollectionDB::instance()->getSongRating( tags.url().path() );
+                if( rating > 0 )
+                {
+                    right << QString().fill( '*', rating );
+                    left << playlist->columnText( column );
+                }
+            }
             else if( column == PlaylistItem::Playcount )
             {
                 const int count = CollectionDB::instance()->getPlayCount( tags.url().path() );
@@ -91,6 +102,12 @@ void TrackToolTip::setTrack( const MetaBundle &tags, bool force )
                     right << QString::number( count );
                     left << playlist->columnText( column );
                 }
+            }
+            else if( column == PlaylistItem::LastPlayed )
+            {
+                const uint lastPlayed = CollectionDB::instance()->getLastPlay( tags.url().path() ).toTime_t();
+                right << amaroK::verboseTimeSince( lastPlayed );
+                left << playlist->columnText( column );
             }
             else if( column == PlaylistItem::Filename && title.isEmpty() )
                 filename = tags.infoByColumn( column, true );
