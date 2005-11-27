@@ -14,7 +14,7 @@ extern "C" {
 #include <qptrlist.h>
 #include <qdict.h>
 
-#include <KIO/job.h>
+#include <kio/job.h>
 
 class GpodMediaItem;
 
