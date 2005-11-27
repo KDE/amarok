@@ -3329,7 +3329,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     popup.insertSeparator();
 
     KPopupMenu burnMenu;
-    burnMenu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("This Track", "Selected Tracks", itemCount), BURN_SELECTION );
+    burnMenu.insertItem( SmallIconSet( "cdrom_unmount" ), ( itemCount > 1 ) ? i18n( "Selected Tracks" ) : i18n("This Track" ), BURN_SELECTION );
     if ( !item->album().isEmpty() )
         burnMenu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("This Album: %1").arg( item->album() ), BURN_ALBUM );
     if ( !item->artist().isEmpty() )
