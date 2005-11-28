@@ -25,10 +25,11 @@
 #include "threadweaver.h"
 
 #include <qfile.h>
+#include <qmap.h>
+#include <qmutex.h>
 #include <qregexp.h>              //setHTMLLyrics()
 #include <qtimer.h>
-#include <qmap.h>
-#include <qthread.h>
+
 #include <pthread.h>              //debugging, can be removed later
 
 #include <kapplication.h>
@@ -84,21 +85,9 @@ CollectionDB* CollectionDB::instance()
 
 CollectionDB::CollectionDB()
         : EngineObserver( EngineController::instance() )
-        , m_cacheDir( amaroK::saveLocation() )
-        , m_coverDir( amaroK::saveLocation() )
         , m_noCover ( locate( "data", "amarok/images/nocover.png" ) )
 {
     DEBUG_BLOCK
-
-    // create cover dir, if it doesn't exist.
-    if( !m_coverDir.exists( "albumcovers", false ) )
-        m_coverDir.mkdir( "albumcovers", false );
-    m_coverDir.cd( "albumcovers" );
-
-     // create image cache dir, if it doesn't exist.
-    if( !m_cacheDir.exists( "albumcovers/cache", false ) )
-        m_cacheDir.mkdir( "albumcovers/cache", false );
-    m_cacheDir.cd( "albumcovers/cache" );
 
 #ifdef USE_MYSQL
     if ( AmarokConfig::databaseEngine().toInt() == DbConnection::mysql )
@@ -791,14 +780,13 @@ CollectionDB::setAlbumImage( const QString& artist, const QString& album, QImage
     // remove existing album covers
     removeAlbumImage( artist, album );
 
-    QDir largeCoverDir( amaroK::saveLocation( "albumcovers/large/" ) );
     QCString key = md5sum( artist, album );
     newAmazonReloadDate(asin, AmarokConfig::amazonLocale(), key);
     // Save Amazon product page URL as embedded string, for later retreival
     if ( !amazonUrl.isEmpty() )
         img.setText( "amazon-url", 0, amazonUrl );
 
-    const bool b = img.save( largeCoverDir.filePath( key ), "PNG");
+    const bool b = img.save( largeCoverDir().filePath( key ), "PNG");
     emit coverChanged( artist, album );
     return b;
 }
@@ -811,13 +799,13 @@ CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
 
     QCString widthKey = makeWidthKey( width );
     QCString tagKey = md5sum( trackInformation.artist(), trackInformation.album() );
-    QDir tagCoverDir( amaroK::saveLocation( "albumcovers/tagcover/" ) );
 
-    //FIXME: the cached versions will never be refreshed
-    if ( tagCoverDir.exists( widthKey + tagKey ) )
+    //FIXME the cached versions will never be refreshed
+    //FIXME This code is NONSENSE. There are no cached images in tagCoverDir
+    if ( tagCoverDir().exists( widthKey + tagKey ) )
     {
         // cached version
-        return tagCoverDir.filePath( widthKey + tagKey );
+        return tagCoverDir().filePath( widthKey + tagKey );
     }
     else
     {
@@ -854,14 +842,14 @@ CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
                 {
                     if ( width > 1 )
                     {
-                        image.smoothScale( width, width, QImage::ScaleMin ).save( m_cacheDir.filePath( widthKey + tagKey ), "PNG" );
+                        image.smoothScale( width, width, QImage::ScaleMin ).save( cacheCoverDir().filePath( widthKey + tagKey ), "PNG" );
                         delete f;
-                        return m_cacheDir.filePath( widthKey + tagKey );
+                        return cacheCoverDir().filePath( widthKey + tagKey );
                     } else
                     {
-                        image.save( tagCoverDir.filePath( tagKey ), "PNG" );
+                        image.save( tagCoverDir().filePath( tagKey ), "PNG" );
                         delete f;
-                        return tagCoverDir.filePath( tagKey );
+                        return tagCoverDir().filePath( tagKey );
                     }
                 } // image.isNull
             } // apic list is empty
@@ -886,22 +874,23 @@ CollectionDB::findImageByArtistAlbum( const QString &artist, const QString &albu
         QCString key = md5sum( artist, album );
 
         // check cache for existing cover
-        if ( m_cacheDir.exists( widthKey + key ) )
-            return m_cacheDir.filePath( widthKey + key );
+        if ( cacheCoverDir().exists( widthKey + key ) )
+            return cacheCoverDir().filePath( widthKey + key );
         else
         {
             // we need to create a scaled version of this cover
-            QDir largeCoverDir( amaroK::saveLocation( "albumcovers/large/" ) );
-            if ( largeCoverDir.exists( key ) )
+            QDir imageDir = largeCoverDir().exists( key ) ? largeCoverDir() : tagCoverDir();
+
+            if ( imageDir.exists( key ) )
                 if ( width > 1 )
                 {
-                    QImage img( largeCoverDir.filePath( key ) );
-                    img.smoothScale( width, width, QImage::ScaleMin ).save( m_cacheDir.filePath( widthKey + key ), "PNG" );
+                    QImage img( imageDir.filePath( key ) );
+                    img.smoothScale( width, width, QImage::ScaleMin ).save( cacheCoverDir().filePath( widthKey + key ), "PNG" );
 
-                    return m_cacheDir.filePath( widthKey + key );
+                    return cacheCoverDir().filePath( widthKey + key );
                 }
                 else
-                    return largeCoverDir.filePath( key );
+                    return imageDir.filePath( key );
         }
 
         // no amazon cover found, let's try to find a cover in the song's directory
@@ -984,13 +973,13 @@ CollectionDB::getImageForAlbum( const QString& artist, const QString& album, uin
 
         if ( width > 1 )
         {
-            if ( !m_cacheDir.exists( widthKey + key ) )
+            if ( !cacheCoverDir().exists( widthKey + key ) )
             {
                 QImage img = QImage( image );
-                img.smoothScale( width, width, QImage::ScaleMin ).save( m_cacheDir.filePath( widthKey + key ), "PNG" );
+                img.smoothScale( width, width, QImage::ScaleMin ).save( cacheCoverDir().filePath( widthKey + key ), "PNG" );
             }
 
-            return m_cacheDir.filePath( widthKey + key );
+            return cacheCoverDir().filePath( widthKey + key );
         }
         else //large image
         {
@@ -1010,15 +999,13 @@ CollectionDB::removeAlbumImage( const QString &artist, const QString &album )
     query("DELETE FROM amazon WHERE filename='" + key + "'");
 
     // remove scaled versions of images
-    QStringList scaledList = m_cacheDir.entryList( widthKey + key );
+    QStringList scaledList = cacheCoverDir().entryList( widthKey + key );
     if ( scaledList.count() > 0 )
         for ( uint i = 0; i < scaledList.count(); i++ )
-            QFile::remove( m_cacheDir.filePath( scaledList[ i ] ) );
+            QFile::remove( cacheCoverDir().filePath( scaledList[ i ] ) );
 
     // remove large, original image
-    QDir largeCoverDir( amaroK::saveLocation( "albumcovers/large/" ) );
-
-    if ( largeCoverDir.exists( key ) && QFile::remove( largeCoverDir.filePath( key ) ) ) {
+    if ( largeCoverDir().exists( key ) && QFile::remove( largeCoverDir().filePath( key ) ) ) {
         emit coverRemoved( artist, album );
         return true;
     }
@@ -1039,12 +1026,12 @@ CollectionDB::notAvailCover( int width )
     if ( !width ) width = AmarokConfig::coverPreviewSize();
     QString widthKey = QString::number( width ) + "@";
 
-    if( m_cacheDir.exists( widthKey + "nocover.png" ) )
-        return m_cacheDir.filePath( widthKey + "nocover.png" );
+    if( cacheCoverDir().exists( widthKey + "nocover.png" ) )
+        return cacheCoverDir().filePath( widthKey + "nocover.png" );
     else
     {
-        m_noCover.smoothScale( width, width, QImage::ScaleMin ).save( m_cacheDir.filePath( widthKey + "nocover.png" ), "PNG" );
-        return m_cacheDir.filePath( widthKey + "nocover.png" );
+        m_noCover.smoothScale( width, width, QImage::ScaleMin ).save( cacheCoverDir().filePath( widthKey + "nocover.png" ), "PNG" );
+        return cacheCoverDir().filePath( widthKey + "nocover.png" );
     }
 }
 
@@ -2404,12 +2391,34 @@ CollectionDB::scanModifiedDirs()
 }
 
 
+QDir
+CollectionDB::largeCoverDir() //static
+{
+    return QDir( amaroK::saveLocation( "albumcovers/large/" ) );
+}
+
+
+QDir
+CollectionDB::tagCoverDir()  //static
+{
+    return QDir( amaroK::saveLocation( "albumcovers/tagcover/" ) );
+}
+
+
+QDir
+CollectionDB::cacheCoverDir()  //static
+{
+    return QDir( amaroK::saveLocation( "albumcovers/cache/" ) );
+}
+
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS DbConnection
 //////////////////////////////////////////////////////////////////////////////////////////
 
 DbConnection::DbConnection( DbConfig* config )
-    : m_config( config )
+    : m_initialized( false )
+    , m_config( config )
 {}
 
 
@@ -2427,10 +2436,9 @@ SqliteConnection::SqliteConnection( SqliteConfig* config )
 
     DEBUG_BLOCK
 
-    const QCString path = (amaroK::saveLocation()+"collection.db").local8Bit();
+    const QCString path = QFile::encodeName( amaroK::saveLocation() + "collection.db" );
 
     // Open database file and check for correctness
-    m_initialized = false;
     QFile file( path );
     if ( file.open( IO_ReadOnly ) )
     {
@@ -2617,13 +2625,12 @@ void SqliteConnection::sqlite_power(sqlite3_context *context, int argc, sqlite3_
 #ifdef USE_MYSQL
 MySqlConnection::MySqlConnection( MySqlConfig* config )
     : DbConnection( config )
+    , m_connected( false )
 {
     DEBUG_BLOCK
 
     debug() << k_funcinfo << endl;
     m_db = mysql_init(NULL);
-    m_initialized = false;
-    m_connected = false;
     if (m_db)
     {
         if ( config->username().isEmpty() )
@@ -2735,11 +2742,10 @@ MySqlConnection::setMysqlError()
 #ifdef USE_POSTGRESQL
 PostgresqlConnection::PostgresqlConnection( PostgresqlConfig* config )
       : DbConnection( config )
+      , m_connected( false )
 {
     debug() << k_funcinfo << endl;
 
-    m_initialized = false;
-    m_connected = false;
     if ( config->conninfo().isEmpty() )
         pApp->slotConfigAmarok("Postgresql");
 

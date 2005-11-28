@@ -19,13 +19,14 @@
 #include <qstringlist.h>     //stack allocated
 #include <qptrvector.h>
 #include <qthread.h>
-#include <qmutex.h>
+
 
 class DbConnection;
 class CoverFetcher;
 class MetaBundle;
 class Scrobbler;
 
+class QMutex;
 
 class DbConfig
 {};
@@ -192,7 +193,7 @@ class CollectionDB : public QObject, public EngineObserver
 
         static CollectionDB *instance();
 
-        const QString escapeString(QString string ) 
+        const QString escapeString(QString string )
             {
                 return
                 #ifdef USE_MYSQL
@@ -353,6 +354,10 @@ class CollectionDB : public QObject, public EngineObserver
         static const int MONITOR_INTERVAL = 60; //sec
         static const bool DEBUG = false;
 
+        static QDir largeCoverDir();
+        static QDir tagCoverDir();
+        static QDir cacheCoverDir();
+
         void initialize();
         void destroy();
         DbConnection* getMyConnection();
@@ -386,8 +391,6 @@ class CollectionDB : public QObject, public EngineObserver
         static QMutex *connectionMutex;
 
         bool m_monitor;
-        QDir m_cacheDir;
-        QDir m_coverDir;
         QImage m_noCover;
 
         static QMap<QThread *, DbConnection *> *threadConnections;
