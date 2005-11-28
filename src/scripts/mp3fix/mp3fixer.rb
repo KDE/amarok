@@ -33,24 +33,33 @@ loop do
             msg  = '"Mp3Fixer does not have configuration options. Simply select a track in the '
             msg += 'playlist, then start Mp3Fixer from the context-menu (right mouse click)."'
 
-            `kdialog --msgbox #{msg}`
+            `dcop amarok playlist popupMessage "#{msg}"`
 
         when "customMenuClicked"
             if message.include?( MenuItemName )
-                filereg = Regexp.new( "/.*" )
-                file = URI.unescape( filereg.match( message.split()[3] ).to_s() )
-                mp3fix = File.dirname( File.expand_path( __FILE__ ) ) + "/mp3fix.rb"
-                output = `ruby #{mp3fix} "#{file}"`
+                args = message.split()
+                # Remove the command args
+                3.times() { args.delete_at( 0 ) }
 
-                puts( file )
+                # Iterate over all selected files
+                args.each() do |arg|
+                    uri = URI.parse( arg )
+                    file = URI.unescape( uri.path() )
+                    puts file
 
-                if $?.success?()
-                    `kdialog --msgbox "Mp3Fixer was successful :)"`
-                else
-                    reg = Regexp.new( "Error:.*", Regexp::MULTILINE )
-                    errormsg = reg.match( output )
+                    mp3fix = File.dirname( File.expand_path( __FILE__ ) ) + "/mp3fix.rb"
 
-                    `kdialog --error "Mp3Fixer #{errormsg}"`
+                    `dcop amarok playlist shortStatusMessage "Mp3Fixer is analyzing the file.."`
+                    output = `ruby #{mp3fix} "#{file}"`
+
+                    if $?.success?()
+                        `dcop amarok playlist popupMessage "Mp3Fixer has successfully repaired your file."`
+                    else
+                        reg = Regexp.new( "Error:.*", Regexp::MULTILINE )
+                        errormsg = reg.match( output )
+
+                        `dcop amarok playlist popupMessage "Mp3Fixer #{errormsg}"`
+                    end
                 end
             end
     end
