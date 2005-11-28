@@ -1,4 +1,3 @@
-
 TODO-list for amaroK
 ======================
 <nick>  == reported by
@@ -6,8 +5,15 @@ TODO-list for amaroK
 
 
 SHORT-TERM (URGENT):
+
  <foreboy> emit statusText when helix libs return an error to the errorresponsesink
--->foreboy
+ -->foreboy
+
+ <markey>  When all 5 browser tabs are activated, the current tab button is drawn a few
+           pixels below the normal position. This has the side effect that the separator line
+           at the bottom of the bottom becomes invisible.
+           You can see the problem easily when you hide the current browser by clicking twice
+           the button twice. This problem AFAIK also affects 1.3-branch.
 
  <jefferai>The hell was I thinking...I made the queue label go from squished to elongated, and
            completely didn't notice I had overshot my goal.  Fix. Also doesn't seem to only be getting
@@ -84,7 +90,6 @@ SHORT-TERM (URGENT):
 
 
 MID-TERM:
- <markey>  Write an amaroK Script for embedding cover images into ID3V2. -->markey
 
  <eean>    Basically need to re-add some of the functionality I removed in re-doing dynamic
  --><eean> custom playlist creation.
