@@ -151,10 +151,7 @@ void MultiTabBarInternal::drawContents ( QPainter * paint, int clipx, int clipy,
 
                 /*                paint->setPen(colorGroup().shadow());
                                 paint->drawLine(0,0,0,viewport()->height());*/
-
             }
-
-
 }
 
 void MultiTabBarInternal::contentsMousePressEvent( QMouseEvent *ev )
@@ -485,7 +482,10 @@ uint MultiTabBarInternal::sizePerTab()
 
 MultiTabBarButton::MultiTabBarButton( const QPixmap& pic, const QString& text, QPopupMenu *popup,
                                       int id, QWidget *parent, MultiTabBar::MultiTabBarPosition pos, MultiTabBar::MultiTabBarStyle style )
-        : QPushButton( QIconSet(), text, parent ), m_style( style )
+        : QPushButton( QIconSet(), text, parent )
+        , m_position( pos )
+        , m_style( style )
+        , m_id( id )
         , m_animCount( 0 )
         , m_animTimer( new QTimer( this ) )
         , m_dragSwitchTimer( new QTimer( this ) )
@@ -493,13 +493,12 @@ MultiTabBarButton::MultiTabBarButton( const QPixmap& pic, const QString& text, Q
     setAcceptDrops( true );
     setIconSet( pic );
     setText( text );
-    m_position = pos;
     if ( popup ) setPopup( popup );
     setFlat( true );
     setFixedHeight( 24 );
     setFixedWidth( 24 );
-    m_id = id;
-//     QToolTip::add( this, text );
+
+//     QToolTip::add( this, text );  // Deactivated cause it's annoying
     connect( this, SIGNAL( clicked() ), this, SLOT( slotClicked() ) );
     connect( m_animTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
     connect( m_dragSwitchTimer, SIGNAL( timeout() ), this, SLOT( slotDragSwitchTimer() ) );
@@ -661,7 +660,7 @@ QSize MultiTabBarButton::sizeHint() const
         if ( !empty || !h )
             h = QMAX( h, sz.height() );
     }
-                                         
+
     //PATCH by markey
     if ( ( m_style == MultiTabBar::AMAROK ) )
         w = ( parentWidget()->height() - 3 ) / NUM_TABS;
@@ -861,8 +860,6 @@ void MultiTabBarTab::drawButtonStyled( QPainter *paint )
     }
     //	style().drawControl(QStyle::CE_PushButtonLabel,painter,this, QRect(0,0,pixmap.width(),pixmap.height()),
     //		colorGroup(),QStyle::Style_Enabled);
-
-
 }
 
 void MultiTabBarTab::drawButtonClassic( QPainter *paint )
