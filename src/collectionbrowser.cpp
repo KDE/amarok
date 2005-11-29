@@ -1595,6 +1595,12 @@ CollectionView::organizeFiles( const KURL::List &urls, bool addToCollection )  /
                 }
             }
         }
+
+        if( addToCollection )
+        {
+            CollectionDB::instance()->moveTempTables( ); // rename tables
+        }
+
         if( skipped > 0 )
             amaroK::StatusBar::instance()->longMessage( i18n(
                     "Sorry, one file could not be organized.",
