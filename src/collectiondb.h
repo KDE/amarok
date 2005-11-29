@@ -234,6 +234,7 @@ class CollectionDB : public QObject, public EngineObserver
 
         bool isDirInCollection( QString path );
         bool isFileInCollection( const QString &url );
+        QString getURL( const QString &artist, const QString &album, const QString &title );
         void removeDirFromCollection( QString path );
         void removeSongsInDir( QString path );
         void removeSongs( const KURL::List& urls );

@@ -1201,6 +1201,49 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
     return true;
 }
 
+QString
+CollectionDB::getURL( const QString &artist, const QString &album, const QString &title )
+{
+    uint artID = artistID( artist, false );
+    if( !artID )
+        return QString::null;
+
+    uint albID = albumID( album, false );
+    if( !albID )
+        return QString::null;
+
+
+    QStringList urls = query( QString(
+            "SELECT tags.url "
+            "FROM tags "
+            "WHERE tags.album = '%1' AND tags.artist = '%2' AND tags.title = '%3';" )
+                .arg( albID ).arg( artID ).arg( escapeString( title ) ) );
+
+    if( urls.empty() )
+        return QString::null;
+
+    if( urls.size() == 1 )
+    {
+        return urls.first();
+    }
+
+    QString url = urls.first();
+    int maxPlayed = -1;
+    for( QStringList::iterator it = urls.begin();
+            it != urls.end();
+            it++ )
+    {
+        int pc = getPlayCount( *it );
+        if( pc > maxPlayed )
+        {
+            maxPlayed = pc;
+            url = *it;
+        }
+    }
+
+    return url;
+}
+
 
 static void
 fillInBundle( QStringList values, MetaBundle &bundle )

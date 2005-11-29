@@ -18,6 +18,7 @@
 #include "metabundle.h"
 #include "statusbar.h"
 #include "scrobbler.h"
+#include "collectiondb.h"
 
 #ifdef HAVE_LIBGPOD
 #include "gpodmediadevice/gpodmediadevice.h"
@@ -1376,10 +1377,19 @@ MediaDevice::doUpdateStats( MediaItem *root )
                 MetaBundle *bundle = it->bundle();
                 for( int i=0; i<it->recentlyPlayed(); i++ )
                 {
+                    // submit to last.fm
                     playTime -= bundle->length();
                     SubmitItem *sit = new SubmitItem( bundle->artist(), bundle->album(), bundle->title(), bundle->length(), playTime );
                     Scrobbler::instance()->m_submitter->submitItem( sit );
                     debug() << "scrobbling " << bundle->artist() << " - " << bundle->title() << ": " << it->url() << endl;
+
+                    // increase amaroK playcount
+                    QString url = CollectionDB::instance()->getURL( bundle->artist(), bundle->album(), bundle->title() );
+                    if( url != QString::null )
+                    {
+                        CollectionDB::instance()->addSongPercentage( url, 100 );
+                        debug() << "played " << url << endl;
+                    }
                 }
             }
             break;
