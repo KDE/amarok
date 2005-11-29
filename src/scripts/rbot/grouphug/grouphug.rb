@@ -5,7 +5,7 @@
 require "net/http"
 
 
-class OpinionPlugin < Plugin
+class GrouphugPlugin < Plugin
     def help( plugin, topic="" )
         "Grouphug plugin. Confess! Usage: 'confess' for random confession, 'confess <number>' for specific one."
     end
@@ -30,7 +30,7 @@ class OpinionPlugin < Plugin
 end
 
 
-plugin = OpinionPlugin.new
+plugin = GrouphugPlugin.new
 
 plugin.register("grouphug")
 plugin.register("confess")
