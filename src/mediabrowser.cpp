@@ -1377,12 +1377,10 @@ MediaDevice::doUpdateStats( MediaItem *root )
                 for( int i=0; i<it->recentlyPlayed(); i++ )
                 {
                     playTime -= bundle->length();
-                    SubmitItem sit( bundle->artist(), bundle->album(), bundle->title(), bundle->length(), playTime );
-                    Scrobbler::instance()->m_submitter->submitItem( &sit );
+                    SubmitItem *sit = new SubmitItem( bundle->artist(), bundle->album(), bundle->title(), bundle->length(), playTime );
+                    Scrobbler::instance()->m_submitter->submitItem( sit );
                     debug() << "scrobbling " << bundle->artist() << " - " << bundle->title() << ": " << it->url() << endl;
                 }
-
-
             }
             break;
 
