@@ -47,6 +47,7 @@
 #include "playlistloader.h"
 #include "playlistwindow.h"
 #include "collectionbrowser.h"
+#include "tagdialog.h"
 
 #include <qdir.h>
 #include <qhbox.h>
@@ -190,6 +191,7 @@ FileBrowser::FileBrowser( const char * name )
         menu->insertSeparator();
         actionCollection->action( "delete" )->plug( menu );
         menu->insertSeparator();
+        menu->insertItem( SmallIconSet( "info" ), i18n( "Edit Track &Information..." ), EditTags );
         actionCollection->action( "properties" )->plug( menu );
 
         menu->setItemEnabled( BurnCd, K3bExporter::isAvailable() );
@@ -363,6 +365,22 @@ FileBrowser::contextMenuActivated( int id )
 
     case AppendToPlaylist:
         Playlist::instance()->insertMedia( selectedItems() );
+        break;
+
+    case EditTags:
+        {
+            KURL::List list = selectedItems();
+            TagDialog *dialog = NULL;
+            if( list.count() == 1 )
+            {
+                dialog = new TagDialog( list.first(), this );
+            }
+            else
+            {
+                dialog = new TagDialog( list, this );
+            }
+            dialog->show();
+        }
         break;
 
     case CopyToCollection:
