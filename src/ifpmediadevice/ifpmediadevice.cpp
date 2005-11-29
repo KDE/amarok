@@ -53,20 +53,20 @@ class IfpMediaItem : public MediaItem
         { }
 
         void
-        IfpMediaItem::setEncodedName( QString &name )
+        setEncodedName( QString &name )
         {
             m_encodedName = QFile::encodeName( name );
         }
 
         void
-        IfpMediaItem::setEncodedName( QCString &name ) { m_encodedName = name; }
+        setEncodedName( QCString &name ) { m_encodedName = name; }
 
         QCString
-        IfpMediaItem::encodedName() { return m_encodedName; }
+        encodedName() { return m_encodedName; }
 
         // List directories first, always
         int
-        IfpMediaItem::compare( QListViewItem *i, int col, bool ascending ) const
+        compare( QListViewItem *i, int col, bool ascending ) const
         {
             #define i static_cast<IfpMediaItem *>(i)
             switch( type() )
