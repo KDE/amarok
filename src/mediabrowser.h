@@ -53,6 +53,8 @@ class MediaItem : public KListViewItem
         virtual bool isLeafItem() const;        // A leaf node of the tree
         virtual bool isFileBacked() const;      // Should the file be deleted of the device when removed
         virtual int  played() const { return 0; }
+        virtual int  recentlyPlayed() const { return 0; } // no of times played on device since last sync
+        virtual int  rating() const { return 0; } // rating on device, normalized to 100
         virtual long size() const;
 
         int compare(QListViewItem *i, int col, bool ascending) const;
@@ -280,6 +282,7 @@ class MediaDevice : public QObject
         void setMountCommand(const QString & mnt);
         void setUmountCommand(const QString & umnt);
         void setAutoDeletePodcasts(bool value);
+        void setUpdateStats(bool value);
         int  umount();
         void transferFiles();
         virtual void renameItem( QListViewItem *item ) {(void)item; }
@@ -354,12 +357,15 @@ class MediaDevice : public QObject
 
         void deleteFromDevice( MediaItem *item=0, bool onlyPlayed=false, bool recursing=false );
 
+        void doUpdateStats( MediaItem *root=0 );
+
         DeviceType  m_type;
 
         QString     m_mntpnt;
         QString     m_mntcmd;
         QString     m_umntcmd;
         bool        m_autoDeletePodcasts;
+        bool        m_updateStats;
 
         KShellProcess   *sysProc;
         MediaDeviceView* m_parent;

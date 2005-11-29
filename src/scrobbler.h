@@ -23,6 +23,8 @@ class ScrobblerSubmitter;
 
 class Scrobbler : public QObject, public EngineObserver
 {
+    friend class MediaDevice;
+
     Q_OBJECT
 
     public:
@@ -63,7 +65,8 @@ class SubmitItem
             const QString& /*artist*/,
             const QString& /*album*/,
             const QString& /*title*/,
-            int /*length*/ );
+            int /*length*/,
+            uint playStartTime = 0 );
         SubmitItem( const QDomElement& /* domElement */ );
 
         bool operator==( const SubmitItem& item );

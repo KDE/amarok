@@ -72,9 +72,28 @@ class GpodMediaItem : public MediaItem
         GpodMediaItem(QListView *parent, QListViewItem *after) : MediaItem(parent, after) { init(); }
         GpodMediaItem(QListViewItem *parent, QListViewItem *after) : MediaItem(parent, after) { init(); }
         void init() {m_track=NULL; m_playlist=NULL;}
+        void bundleFromTrack( Itdb_Track *track )
+        {
+            if( m_bundle )
+                delete m_bundle;
+
+            m_bundle = new MetaBundle();
+            m_bundle->setArtist( QString::fromUtf8( track->artist ) );
+            m_bundle->setAlbum( QString::fromUtf8( track->album ) );
+            m_bundle->setTitle( QString::fromUtf8( track->title ) );
+            m_bundle->setComment( QString::fromUtf8( track->comment ) );
+            m_bundle->setGenre( QString::fromUtf8( track->genre ) );
+            m_bundle->setYear( track->year );
+            m_bundle->setTrack( track->track_nr );
+            m_bundle->setLength( track->tracklen/1000 );
+            m_bundle->setBitrate( track->bitrate );
+            m_bundle->setSampleRate( track->samplerate );
+        }
         Itdb_Track *m_track;
         Itdb_Playlist *m_playlist;
         int played() const { if(m_track) return m_track->playcount; else return 0; }
+        int recentlyPlayed() const { if(m_track) return m_track->recent_playcount; else return 0; }
+        int rating() const { if(m_track) return m_track->rating; else return 0; }
         GpodMediaItem *findTrack(Itdb_Track *track)
         {
             if(m_track == track)
@@ -380,7 +399,7 @@ GpodMediaDevice::addToPlaylist(MediaItem *mlist, MediaItem *after, QPtrList<Medi
 
         add->setType(MediaItem::PLAYLISTITEM);
         add->m_track = it->m_track;
-        add->setUrl( realPath( it->m_track->ipod_path ) );
+        add->m_url.setPath( realPath( it->m_track->ipod_path ) );
         add->setText(0, QString::fromUtf8(it->m_track->artist) + " - " + QString::fromUtf8(it->m_track->title) );
         add->m_order = order;
         order++;
@@ -730,7 +749,7 @@ GpodMediaDevice::openDevice(bool silent)
                 QString title = bundle->artist() + " - " + bundle->title();
                 item->setText(0, title);
                 item->m_bundle = bundle;
-                item->setUrl(filename);
+                item->m_url.setPath(filename);
             }
         }
     }
@@ -818,7 +837,7 @@ GpodMediaDevice::addTrackToList(Itdb_Track *track)
             + QString::fromUtf8(track->title);
         item->setText( 0, title );
         item->m_track = track;
-        item->setUrl(realPath(track->ipod_path));
+        item->m_url.setPath(realPath(track->ipod_path));
     }
     else
     {
@@ -853,8 +872,10 @@ GpodMediaDevice::addTrackToList(Itdb_Track *track)
         item->setText( 0, titleName );
         item->setType( MediaItem::TRACK );
         item->m_track = track;
+        item->bundleFromTrack( track );
+        item->bundle()->setPath( realPath(track->ipod_path) );
         item->m_order = track->track_nr;
-        item->setUrl(realPath(track->ipod_path));
+        item->m_url.setPath(realPath(track->ipod_path));
     }
 
     if(!stale && m_podcastPlaylist && itdb_playlist_contains_track(m_podcastPlaylist, track))
@@ -874,7 +895,9 @@ GpodMediaDevice::addTrackToList(Itdb_Track *track)
         item->setText( 0, QString::fromUtf8(track->title) );
         item->setType( MediaItem::PODCASTITEM );
         item->m_track = track;
-        item->setUrl(realPath(track->ipod_path));
+        item->bundleFromTrack( track );
+        item->bundle()->setPath( realPath(track->ipod_path) );
+        item->m_url.setPath(realPath(track->ipod_path));
     }
 
     if(!stale && !visible)
@@ -886,7 +909,9 @@ GpodMediaDevice::addTrackToList(Itdb_Track *track)
         item->setText( 0, title );
         item->setType( MediaItem::INVISIBLE );
         item->m_track = track;
-        item->setUrl(realPath(track->ipod_path));
+        item->bundleFromTrack( track );
+        item->bundle()->setPath( realPath(track->ipod_path) );
+        item->m_url.setPath(realPath(track->ipod_path));
     }
 
     updateRootItems();
@@ -937,8 +962,10 @@ GpodMediaDevice::addPlaylistToList(Itdb_Playlist *pl)
         item->setType( MediaItem::PLAYLISTITEM );
         item->m_playlist = pl;
         item->m_track = track;
+        item->bundleFromTrack( track );
+        item->bundle()->setPath( realPath(track->ipod_path) );
         item->m_order = i;
-        item->setUrl(realPath(track->ipod_path));
+        item->m_url.setPath(realPath(track->ipod_path));
 
         cur = cur->next;
         i++;
@@ -979,8 +1006,11 @@ GpodMediaDevice::ipodPath(const QString &realPath)
 void
 GpodMediaDevice::writeITunesDB()
 {
+    dbChanged = true; // write unconditionally for resetting recent_playcount
+
     if(dbChanged)
     {
+        // FIXME: should find out if shuffle or regular ipod
         bool ok = true;
         GError *error = NULL;
         if (!itdb_write (m_itdb, &error))

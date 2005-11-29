@@ -576,6 +576,10 @@
         <label>AutoDeletePodcasts</label>
         <whatsthis>Whether podcasts shows already played are automatically deleted when media device is connected.</whatsthis>
     </entry>
+    <entry key="UpdateStats" type="Bool">
+        <label>UpdateStats</label>
+        <whatsthis>Whether amaroK statistics should be updated from play count/ratings on device and whether tracks played should be submitted to last.fm.</whatsthis>
+    </entry>
 </group>
 
 </kcfg>

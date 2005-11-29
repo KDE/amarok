@@ -313,13 +313,14 @@ SubmitItem::SubmitItem(
     const QString& artist,
     const QString& album,
     const QString& title,
-    int length)
+    int length,
+    uint playStartTime)
 {
     m_artist = artist;
     m_album = album;
     m_title = title;
     m_length = length;
-    m_playStartTime = QDateTime::currentDateTime( Qt::UTC ).toTime_t();
+    m_playStartTime = playStartTime ? playStartTime : QDateTime::currentDateTime( Qt::UTC ).toTime_t();
 }
 
 

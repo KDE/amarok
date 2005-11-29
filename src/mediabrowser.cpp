@@ -17,6 +17,7 @@
 #include "mediabrowser.h"
 #include "metabundle.h"
 #include "statusbar.h"
+#include "scrobbler.h"
 
 #ifdef HAVE_LIBGPOD
 #include "gpodmediadevice/gpodmediadevice.h"
@@ -1018,7 +1019,7 @@ MediaDevice::MediaDevice( MediaDeviceView* parent, MediaDeviceList *listview )
     m_mntcmd = AmarokConfig::mountCommand();
     m_umntcmd = AmarokConfig::umountCommand();
     m_autoDeletePodcasts = AmarokConfig::autoDeletePodcasts();
-    debug() << "auto delete podcasts: " << m_autoDeletePodcasts << endl;
+    m_updateStats = AmarokConfig::updateStats();
 }
 
 MediaDevice::~MediaDevice()
@@ -1158,13 +1159,21 @@ MediaDevice::config()
         QToolTip::add( umntcmd, i18n( "Set the command to unmount your device here, empty commands are not executed." ) );
     }
 
-    QHBox *hbox = new QHBox( box );
-    QCheckBox *autoDeletePodcasts = new QCheckBox( hbox );
-    QLabel *autoDeleteLabel = new QLabel( hbox );
+    QHBox *hbox1 = new QHBox( box );
+    QCheckBox *autoDeletePodcasts = new QCheckBox( hbox1 );
+    QLabel *autoDeleteLabel = new QLabel( hbox1 );
     autoDeleteLabel->setBuddy( autoDeletePodcasts );
     autoDeleteLabel->setText( i18n( "Automatically delete podcasts" ) );
     QToolTip::add( autoDeletePodcasts, i18n( "Automatically delete podcast shows already played on connect" ) );
     autoDeletePodcasts->setChecked( m_autoDeletePodcasts );
+
+    QHBox *hbox2 = new QHBox( box );
+    QCheckBox *updateStats = new QCheckBox( hbox2 );
+    QLabel *updateStatsLabel = new QLabel( hbox2 );
+    updateStatsLabel->setBuddy( updateStats );
+    updateStatsLabel->setText( i18n( "Update amaroK statistics" ) );
+    QToolTip::add( updateStats, i18n( "Update amaroK statistics and submit tracks played to last.fm" ) );
+    updateStats->setChecked( m_updateStats );
 
     if ( dialog.exec() != QDialog::Rejected )
     {
@@ -1175,6 +1184,7 @@ MediaDevice::config()
             setUmountCommand( umntcmd->text() );
         }
         setAutoDeletePodcasts( autoDeletePodcasts->isChecked() );
+        setUpdateStats( updateStats->isChecked() );
     }
 }
 
@@ -1200,6 +1210,12 @@ void MediaDevice::setAutoDeletePodcasts( bool value )
 {
     AmarokConfig::setAutoDeletePodcasts( value );
     m_autoDeletePodcasts = value; //Update
+}
+
+void MediaDevice::setUpdateStats( bool value )
+{
+    AmarokConfig::setUpdateStats( value );
+    m_updateStats = value; //Update
 }
 
 int MediaDevice::mount()
@@ -1276,7 +1292,7 @@ MediaDevice::connectDevice( bool silent )
             {
                 QPtrList<MediaItem> list;
                 //NOTE we assume that currentItem is the main target
-                int numFiles  = m_parent->m_deviceList->getSelectedLeaves(m_podcastItem, &list, false /* not only selected */, true /* only played */ );
+                int numFiles  = m_parent->m_deviceList->getSelectedLeaves( m_podcastItem, &list, false /* not only selected */, true /* only played */ );
 
                 if(numFiles > 0)
                 {
@@ -1286,7 +1302,7 @@ MediaDevice::connectDevice( bool silent )
 
                     lockDevice(true);
 
-                    deleteItemFromDevice(m_podcastItem, true);
+                    deleteItemFromDevice( m_podcastItem, true );
 
                     synchronizeDevice();
                     unlockDevice();
@@ -1294,6 +1310,11 @@ MediaDevice::connectDevice( bool silent )
                     QTimer::singleShot( 1500, m_parent->m_progress, SLOT(hide()) );
                     m_parent->updateStats();
                 }
+            }
+
+            if( m_updateStats )
+            {
+                doUpdateStats( 0 );
             }
 
             updateRootItems();
@@ -1332,6 +1353,43 @@ MediaDevice::connectDevice( bool silent )
         else
             amaroK::StatusBar::instance()->longMessage( i18n( "Please unmount device before removal." ),
                                                         KDE::StatusBar::Information );
+    }
+}
+
+void
+MediaDevice::doUpdateStats( MediaItem *root )
+{
+    MediaItem *it = static_cast<MediaItem *>( m_listview->firstChild() );
+    if( root )
+    {
+        it = static_cast<MediaItem *>( root->firstChild() );
+    }
+
+    uint playTime = QDateTime::currentDateTime( Qt::UTC ).toTime_t();
+    for( ; it; it = static_cast<MediaItem *>( it->nextSibling() ) )
+    {
+        switch( it->type() )
+        {
+        case MediaItem::TRACK:
+            if( !it->parent() || static_cast<MediaItem *>( it->parent() )->type() != MediaItem::PLAYLIST )
+            {
+                MetaBundle *bundle = it->bundle();
+                for( int i=0; i<it->recentlyPlayed(); i++ )
+                {
+                    playTime -= bundle->length();
+                    SubmitItem sit( bundle->artist(), bundle->album(), bundle->title(), bundle->length(), playTime );
+                    Scrobbler::instance()->m_submitter->submitItem( &sit );
+                    debug() << "scrobbling " << bundle->artist() << " - " << bundle->title() << ": " << it->url() << endl;
+                }
+
+
+            }
+            break;
+
+        default:
+            doUpdateStats( it );
+            break;
+        }
     }
 }
 
