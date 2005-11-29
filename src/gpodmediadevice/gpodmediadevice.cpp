@@ -284,6 +284,7 @@ void
 GpodMediaDevice::synchronizeDevice()
 {
     writeITunesDB();
+    //sync();
 }
 
 MediaItem *
@@ -1224,19 +1225,19 @@ GpodMediaDevice::rmbPressed( MediaDeviceList *deviceList, QListViewItem* qitem, 
         menu.insertSeparator();
 
         menu.insertItem( SmallIconSet( "collection" ), i18n( "&Copy to Collection" ), COPY_TO_COLLECTION );
-        switch ( item->depth() )
+        switch ( item->type() )
         {
-        case 0:
+        case MediaItem::ARTIST:
             menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n( "Burn All Tracks by This Artist" ), BURN_ARTIST );
             menu.setItemEnabled( BURN_ARTIST, K3bExporter::isAvailable() );
             break;
 
-        case 1:
+        case MediaItem::ALBUM:
             menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n( "Burn This Album" ), BURN_ALBUM );
             menu.setItemEnabled( BURN_ALBUM, K3bExporter::isAvailable() );
             break;
 
-        case 2:
+        default:
             menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n( "Burn to CD as Data" ), BURN_DATACD );
             menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
             menu.insertItem( SmallIconSet( "cdaudio_unmount" ), i18n( "Burn to CD as Audio" ), BURN_AUDIOCD );
