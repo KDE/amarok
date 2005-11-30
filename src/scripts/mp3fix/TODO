@@ -1,0 +1,10 @@
+ TODO MP3FIXER
+===============
+
+08:57 < sebr> markey: your script repaired my files, thanks! but, it doesn't work so well when
+              fixing multiple files
+08:57 < sebr> keeps poping up messages
+08:57 < sebr> maybe make the statusbar write which one is being fixed
+08:57 < eean> it doesn't use kdialog anymore
+08:58 < sebr> yeah, poping long messag
+08:58 < sebr> markey: won't fix a file with a $ sign in the filename
