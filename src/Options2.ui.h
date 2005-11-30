@@ -115,6 +115,11 @@ void Options2::updateStyleComboBox()
 
 void Options2::retrievePushButton_clicked()
 {
+    // Delete KNewStuff's configuration entries. These entries reflect which styles
+    // are already installed. As we cannot yet keep them in sync after uninstalling
+    // styles, we deactivate the check marks entirely.
+    amaroK::config()->deleteGroup( "KNewStuffStatus" );
+
     // we need this because KNewStuffGeneric's install function isn't clever enough
     AmarokThemeNewStuff *kns = new AmarokThemeNewStuff( "amarok/themes", this );
     KNS::Engine *engine = new KNS::Engine( kns, "amarok/theme", this );
