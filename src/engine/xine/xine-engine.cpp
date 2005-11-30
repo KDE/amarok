@@ -336,13 +336,21 @@ XineEngine::position() const
 uint
 XineEngine::length() const
 {
-    int pos;
-    int time;
-    int length = 0;
+    // xine often delivers nonsense values for VBR files and such, so we only
+    // use the length for remote files
 
-    xine_get_pos_length( m_stream, &pos, &time, &length );
+    if( m_url.isLocalFile() )
+        return 0;
 
-    return length;
+    else {
+        int pos;
+        int time;
+        int length = 0;
+
+        xine_get_pos_length( m_stream, &pos, &time, &length );
+
+        return length;
+    }
 }
 
 void
