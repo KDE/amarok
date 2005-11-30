@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.3.7:
   BUGFIXES:
+    * Fix build issue on PCLinuxOS with "cpu_set undeclared".
     * Fix crash in helix engine caused by improper reference counting
       of the audiostreamresponse object.
     * Helix engine no longer declares it is "empty" on a track change
