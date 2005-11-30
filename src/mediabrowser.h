@@ -48,7 +48,7 @@ class MediaItem : public KListViewItem
 
         void setType( Type type );
         Type type() const { return m_type; }
-        MediaItem *findItem(const QString &key) const;
+        MediaItem *findItem(const QString &key, const MediaItem *after=0) const;
 
         virtual bool isLeafItem() const;        // A leaf node of the tree
         virtual bool isFileBacked() const;      // Should the file be deleted of the device when removed

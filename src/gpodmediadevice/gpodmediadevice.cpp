@@ -309,9 +309,10 @@ GpodMediaDevice::synchronizeDevice()
 MediaItem *
 GpodMediaDevice::trackExists( const MetaBundle& bundle )
 {
-    GpodMediaItem *item = getTitle( bundle.artist(),
+    GpodMediaItem *item = getTrack( bundle.artist(),
             bundle.album().isEmpty() ? i18n( "Unknown" ) : bundle.album(),
-            bundle.title());
+            bundle.title(),
+            bundle.track() );
 
     return item;
 }
@@ -1074,14 +1075,18 @@ GpodMediaDevice::getAlbum(const QString &artist, const QString &album)
 }
 
 GpodMediaItem *
-GpodMediaDevice::getTitle(const QString &artist, const QString &album, const QString &title)
+GpodMediaDevice::getTrack(const QString &artist, const QString &album, const QString &title, int trackNumber)
 {
     GpodMediaItem *item = getAlbum(artist, album);
     if(item)
     {
-        GpodMediaItem *track = dynamic_cast<GpodMediaItem *>(item->findItem(title));
-        if(track)
-            return track;
+        for( GpodMediaItem *track = dynamic_cast<GpodMediaItem *>(item->findItem(title));
+                track;
+                track = dynamic_cast<GpodMediaItem *>(item->findItem(title, track)) )
+        {
+            if( trackNumber==-1 || track->bundle()->track() == trackNumber )
+                return track;
+        }
     }
 
     if(m_podcastItem)
@@ -1089,9 +1094,13 @@ GpodMediaDevice::getTitle(const QString &artist, const QString &album, const QSt
         item = dynamic_cast<GpodMediaItem *>(m_podcastItem->findItem(album));
         if(item)
         {
-            GpodMediaItem *track = dynamic_cast<GpodMediaItem *>(item->findItem(title));
-            if(track)
-                return track;
+            for( GpodMediaItem *track = dynamic_cast<GpodMediaItem *>(item->findItem(title));
+                    track;
+                    track = dynamic_cast<GpodMediaItem *>(item->findItem(title, track)) )
+            {
+                if( trackNumber==-1 || track->bundle()->track() == trackNumber )
+                    return track;
+            }
         }
     }
 

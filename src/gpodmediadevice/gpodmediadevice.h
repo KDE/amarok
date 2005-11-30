@@ -89,7 +89,7 @@ class GpodMediaDevice : public MediaDevice
 
         GpodMediaItem    *getArtist(const QString &artist);
         GpodMediaItem    *getAlbum(const QString &artist, const QString &album);
-        GpodMediaItem    *getTitle(const QString &artist, const QString &album, const QString &title);
+        GpodMediaItem    *getTrack(const QString &artist, const QString &album, const QString &title, int trackNumber=-1);
 
         bool              removeDBTrack(Itdb_Track *track);
 

@@ -462,11 +462,15 @@ MediaItem::isLeafItem() const
 }
 
 MediaItem *
-MediaItem::findItem( const QString &key ) const
+MediaItem::findItem( const QString &key, const MediaItem *after ) const
 {
-    for(MediaItem *it = dynamic_cast<MediaItem *>(firstChild());
-            it;
-            it = dynamic_cast<MediaItem *>(it->nextSibling()))
+    MediaItem *it = 0;
+    if( after )
+        it = dynamic_cast<MediaItem *>( after->nextSibling() );
+    else
+        it = dynamic_cast<MediaItem *>( firstChild() );
+
+    for( ; it; it = dynamic_cast<MediaItem *>(it->nextSibling()))
     {
         if(key == it->text(0))
             return it;
