@@ -577,7 +577,7 @@ GpodMediaDevice::openDevice(bool silent)
                 return false;
             }
 
-            Itdb_Playlist *mpl = itdb_playlist_new("amaroK", false);
+            Itdb_Playlist *mpl = itdb_playlist_new("iPod", false);
             itdb_playlist_set_mpl(mpl);
             Itdb_Playlist *podcasts = itdb_playlist_new("Podcasts", false);
             itdb_playlist_set_podcasts(podcasts);
