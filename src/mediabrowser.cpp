@@ -1315,7 +1315,8 @@ MediaDevice::connectDevice( bool silent )
 
             if( m_updateStats )
             {
-                doUpdateStats( 0 );
+                uint playTime = QDateTime::currentDateTime( Qt::UTC ).toTime_t();
+                doUpdateStats( &playTime, 0 );
             }
 
             updateRootItems();
@@ -1358,7 +1359,7 @@ MediaDevice::connectDevice( bool silent )
 }
 
 void
-MediaDevice::doUpdateStats( MediaItem *root )
+MediaDevice::doUpdateStats( uint *playTime, MediaItem *root )
 {
     MediaItem *it = static_cast<MediaItem *>( m_listview->firstChild() );
     if( root )
@@ -1366,7 +1367,6 @@ MediaDevice::doUpdateStats( MediaItem *root )
         it = static_cast<MediaItem *>( root->firstChild() );
     }
 
-    uint playTime = QDateTime::currentDateTime( Qt::UTC ).toTime_t();
     for( ; it; it = static_cast<MediaItem *>( it->nextSibling() ) )
     {
         switch( it->type() )
@@ -1378,10 +1378,16 @@ MediaDevice::doUpdateStats( MediaItem *root )
                 for( int i=0; i<it->recentlyPlayed(); i++ )
                 {
                     // submit to last.fm
-                    playTime -= bundle->length();
-                    SubmitItem *sit = new SubmitItem( bundle->artist(), bundle->album(), bundle->title(), bundle->length(), playTime );
-                    Scrobbler::instance()->m_submitter->submitItem( sit );
-                    debug() << "scrobbling " << bundle->artist() << " - " << bundle->title() << ": " << it->url() << endl;
+                    *playTime -= bundle->length();
+                    SubmitItem *sit = new SubmitItem( bundle->artist(), bundle->album(), bundle->title(), bundle->length(), *playTime );
+                    if( bundle->length() > 30
+                            && bundle->artist() != QString::null && bundle->artist() != "" && bundle->artist() != i18n( "Unknown" )
+                            && bundle->title() != QString::null && bundle->title() != "" && bundle->title() != i18n( "Unknown" ) )
+                    {
+                        // don't submit tracks shorter than 30 sec or w/o artist/title
+                        Scrobbler::instance()->m_submitter->submitItem( sit );
+                        debug() << "scrobbling " << bundle->artist() << " - " << bundle->title() << ": " << it->url() << endl;
+                    }
 
                     // increase amaroK playcount
                     QString url = CollectionDB::instance()->getURL( bundle->artist(), bundle->album(), bundle->title() );
@@ -1395,7 +1401,7 @@ MediaDevice::doUpdateStats( MediaItem *root )
             break;
 
         default:
-            doUpdateStats( it );
+            doUpdateStats( playTime, it );
             break;
         }
     }

@@ -272,7 +272,7 @@ GpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bu
     // artwork support not for my nano yet, cannot try
     QString image = CollectionDB::instance()->albumImage(QString(track->artist), QString(track->album), 1);
     debug() << "adding image " << image << " to " << track->artist << ":" << track->album << endl;
-    itdb_track_set_thumbnail(track, QFile::encodeName(image));
+    itdb_track_set_thumbnails( track, g_strdup( QFile::encodeName(image) ) );
 #endif
 
     itdb_track_add(m_itdb, track, -1);

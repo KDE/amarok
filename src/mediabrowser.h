@@ -357,7 +357,7 @@ class MediaDevice : public QObject
 
         void deleteFromDevice( MediaItem *item=0, bool onlyPlayed=false, bool recursing=false );
 
-        void doUpdateStats( MediaItem *root=0 );
+        void doUpdateStats( uint *playTime, MediaItem *root=0 );
 
         DeviceType  m_type;
 
