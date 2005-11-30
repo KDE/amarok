@@ -48,6 +48,7 @@ imagepath = $*[0]
 path = $*[1]
 destination = path
 
+
 if $*.length() == 3
     destination = $*[2]
 end
@@ -63,15 +64,25 @@ unless FileTest::readable_real?( path )
     exit( 1 )
 end
 
-unless File.extname( path ) == ".mp3" or File.extname( path ) == ".MP3"
+unless File.extname( path ).downcase() == ".mp3"
     puts( "Error: File is not mp3." )
     exit( 1 )
 end
 
-# unless FileTest.writable_real?( destination )
-#     puts( "Error: Destination file not writable." )
-#     exit( 1 )
-# end
+
+mimetype = case File.extname( imagepath ).downcase()
+    when ".bmp" then "image/bmp"
+
+    when ".gif" then "image/gif"
+
+    when ".jpg" or ".jpeg" then "image/jpeg"
+
+    when ".png" then "image/png"
+
+    else
+        puts( "Error: Image type invalid." )
+        exit( 1 )
+end
 
 
 file = File.new( path, "r" )
@@ -114,7 +125,7 @@ end
 
 apicframe = String.new()
 apicframe << 0x00  # text encoding
-apicframe << "image/png"  #FIXME set according to image format
+apicframe << mimetype
 apicframe << 0x00  # mimetype end
 apicframe << 0x03  # Picture type (Cover front)
 apicframe << 0x00  # Description (empty)
