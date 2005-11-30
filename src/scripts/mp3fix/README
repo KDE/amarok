@@ -23,7 +23,7 @@ Select a track in the playlist, then start Mp3Fixer from the context-menu (right
 </p>
 <p>
 It is also possible to use Mp3Fixer as a command line tool, by calling the mp3fix.rb script
-contained in this package. mp3fix.rb only requires ruby to be installed, not amaroK.
+contained in this package. mp3fix.rb only requires Ruby to be installed, not amaroK.
 The Mp3Fixer amaroK Script is a frontend for this tool.
 </p>
 
