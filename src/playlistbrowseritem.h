@@ -230,7 +230,6 @@ class PodcastItem : public QObject, public PlaylistBrowserEntry
         void  downloadMedia();
         const bool hasDownloaded();
         const bool hasXml( const QDomNode &xml, const int feedType );
-        void  showAbout();
         QListViewItem *itemChannel() { return m_parent; }
 
         void setNew( bool n = true );
@@ -314,7 +313,6 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         void  rescan();
         void  setSettings( const QString &save, const bool autoFetch, const int fetchType,
                            bool addToMediaDevice, const bool purgeItems, const int purgeCount );
-        void  showAbout();
 
         const KURL &url() { return m_url; }
         const KURL xmlUrl();
