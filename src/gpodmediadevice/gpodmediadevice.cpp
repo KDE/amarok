@@ -260,7 +260,7 @@ GpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bu
     track->comment = g_strdup( bundle.comment().utf8() );
     track->track_nr = bundle.track();
     track->year = bundle.year();
-    //track->size = 0;
+    track->size = QFile( pathname ).size();
     track->bitrate = bundle.bitrate();
     track->samplerate = bundle.sampleRate();
     track->tracklen = bundle.length()*1000;
