@@ -111,6 +111,7 @@ class PlayerWidget : public QWidget, public EngineObserver
         void engineVolumeChanged( int percent );
         void engineNewMetaData( const MetaBundle &/*bundle*/, bool /*trackChanged*/ );
         void engineTrackPositionChanged( long /*position*/, bool /*userSeek*/ );
+        void engineTrackLengthChanged( long length );
 
     signals:
         void playlistToggled( bool on );

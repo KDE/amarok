@@ -394,6 +394,12 @@ void PlayerWidget::engineTrackPositionChanged( long position, bool /*userSeek*/ 
 }
 
 
+void PlayerWidget::engineTrackLengthChanged( long length )
+{
+    m_pSlider->setMaxValue( length * 1000 );
+}
+
+
 void PlayerWidget::timeDisplay( int ms )
 {
     int seconds = ms / 1000;
