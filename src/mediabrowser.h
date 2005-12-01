@@ -6,13 +6,10 @@
 #ifndef AMAROK_MEDIABROWSER_H
 #define AMAROK_MEDIABROWSER_H
 
-#include <qhbox.h>
-#include <qvbox.h>
+#include <qvbox.h>           //baseclass
 
 #include <klistview.h>       //baseclass
 #include <kurl.h>            //stack allocated
-#include "debug.h"
-#include "metabundle.h"
 
 class MediaDevice;
 class MediaDeviceView;
@@ -20,8 +17,9 @@ class MetaBundle;
 class SpaceLabel;
 
 class KProgress;
-class KShellProcess;
 class KPushButton;
+class KShellProcess;
+
 class QLabel;
 class QPalette;
 

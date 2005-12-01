@@ -12,13 +12,13 @@
 #include "amarokconfig.h"
 #include "browserToolBar.h"
 #include "clicklineedit.h"
+#include "collectiondb.h"
 #include "colorgenerator.h"
 #include "debug.h"
 #include "mediabrowser.h"
 #include "metabundle.h"
-#include "statusbar.h"
 #include "scrobbler.h"
-#include "collectiondb.h"
+#include "statusbar.h"
 
 #ifdef HAVE_LIBGPOD
 #include "gpodmediadevice/gpodmediadevice.h"
@@ -28,19 +28,19 @@
 #include "ifpmediadevice/ifpmediadevice.h"
 #endif
 
+#include <qcheckbox.h>
 #include <qdatetime.h>
+#include <qdir.h>
+#include <qdom.h>
+#include <qfileinfo.h>
 #include <qgroupbox.h>
 #include <qimage.h>
 #include <qlabel.h>
-#include <qcheckbox.h>
 #include <qpainter.h>
 #include <qregexp.h>
 #include <qsimplerichtext.h>
 #include <qtimer.h>
 #include <qtooltip.h>       //QToolTip::add()
-#include <qfileinfo.h>
-#include <qdir.h>
-#include <qdom.h>
 
 #include <kapplication.h> //kapp
 #include <kdirlister.h>
@@ -52,6 +52,7 @@
 #include <kmessagebox.h>
 #include <kmountpoint.h>
 #include <kpopupmenu.h>
+#include <kprocess.h>
 #include <kprogress.h>
 #include <kpushbutton.h>
 #include <krun.h>
@@ -60,7 +61,6 @@
 #include <ktempfile.h>
 #include <ktoolbarbutton.h> //ctor
 #include <kurldrag.h>       //dragObject()
-#include <kprocess.h>
 
 
 MediaDevice *MediaDevice::s_instance = 0;
