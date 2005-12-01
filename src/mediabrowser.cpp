@@ -1169,17 +1169,13 @@ MediaDevice::config()
 
     QHBox *hbox1 = new QHBox( box );
     QCheckBox *autoDeletePodcasts = new QCheckBox( hbox1 );
-    QLabel *autoDeleteLabel = new QLabel( hbox1 );
-    autoDeleteLabel->setBuddy( autoDeletePodcasts );
-    autoDeleteLabel->setText( i18n( "Automatically delete podcasts" ) );
+    autoDeletePodcasts->setText( i18n( "&Automatically delete podcasts" ) );
     QToolTip::add( autoDeletePodcasts, i18n( "Automatically delete podcast shows already played on connect" ) );
     autoDeletePodcasts->setChecked( m_autoDeletePodcasts );
 
     QHBox *hbox2 = new QHBox( box );
     QCheckBox *updateStats = new QCheckBox( hbox2 );
-    QLabel *updateStatsLabel = new QLabel( hbox2 );
-    updateStatsLabel->setBuddy( updateStats );
-    updateStatsLabel->setText( i18n( "Update amaroK statistics" ) );
+    updateStats->setText( i18n( "&Update amaroK statistics" ) );
     QToolTip::add( updateStats, i18n( "Update amaroK statistics and submit tracks played to last.fm" ) );
     updateStats->setChecked( m_updateStats );
 
