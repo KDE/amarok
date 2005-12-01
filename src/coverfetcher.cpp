@@ -105,7 +105,6 @@ namespace amaroK {
             CoverManager::showOnce( album );
             break;
         }
-
     }
 }
 
@@ -117,7 +116,7 @@ CoverLabel::CoverLabel ( QWidget * parent, const char * name, WFlags f )
 
 
 void CoverLabel::mouseReleaseEvent(QMouseEvent *pEvent) {
-    if (pEvent->button() == RightButton)
+    if (pEvent->button() == LeftButton || pEvent->button() == RightButton)
     {
         amaroK::coverContextMenu( this, pEvent->globalPos(), m_artist, m_album, false );
     }
