@@ -106,6 +106,13 @@ CollectionDB::CollectionDB()
     initialize();
     //</OPEN DATABASE>
 
+
+    // Remove cached "nocover" images, so that a new version actually gets shown
+    const QStringList entryList = cacheCoverDir().entryList( "*nocover.png", QDir::Files );
+    foreach( entryList )
+        cacheCoverDir().remove( *it );
+
+
     // TODO Should write to config in dtor, but it crashes...
     KConfig* config = amaroK::config( "Collection Browser" );
     config->writeEntry( "Database Version", DATABASE_VERSION );
@@ -1686,7 +1693,7 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
                 else
                     return false;
             }
-            
+
         }
     }
     else
