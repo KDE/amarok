@@ -5,7 +5,6 @@ Actions=addToPlaylist;
 [Desktop Action addToPlaylist]
 Name=Add to amaroK Playlist
 Name[bg]=Добавяне към списъка на amaroK
-Name[bn]=Добавяне към списъка на amaroK
 Name[br]=Ouzhpennañ d'ar roll tonioù amaroK
 Name[cs]=Přidat do seznamu skladeb amaroK
 Name[da]=Tilføj til amaroKs spilleliste
@@ -15,7 +14,6 @@ Name[es]=Añadir a la lista de reproducción de amaroK
 Name[et]=Lisa amaroKi lugude nimekirja
 Name[fi]=Lisää amaroKin soittolistaan
 Name[fr]=Ajouter à la liste de lecture d'amaroK
-Name[fy]=Ajouter à la liste de lecture d'amaroK
 Name[he]=הוסף לרשימת השמעה של amaroK
 Name[hi]=अमारोक गीत-सूची में जोड़ें
 Name[hr]=अमारोक गीत-सूची में जोड़ें
