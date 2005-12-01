@@ -25,6 +25,19 @@ class KPushButton;
 class QLabel;
 class QPalette;
 
+struct PodcastInfo
+{
+    // per show
+    QString url;
+    QString description;
+    QString date;
+    QString author;
+
+    // per channel
+    QString rss;
+    QString webpage;
+};
+
 class MediaItem : public KListViewItem
 {
     public:
@@ -41,6 +54,7 @@ class MediaItem : public KListViewItem
         const KURL& url() const { return m_url; }
         const MetaBundle *bundle() const;
               MetaBundle *bundle();
+        PodcastInfo *podcastInfo() const { return m_podcastInfo; }
 
         enum Type { UNKNOWN, ARTIST, ALBUM, TRACK, PODCASTSROOT, PODCASTCHANNEL,
                     PODCASTITEM, PLAYLISTSROOT, PLAYLIST, PLAYLISTITEM, INVISIBLEROOT,
@@ -67,6 +81,7 @@ class MediaItem : public KListViewItem
         mutable long m_size;
         Type         m_type;
         QString      m_playlistName;
+        PodcastInfo *m_podcastInfo;
 
         static QPixmap *s_pixUnknown;
         static QPixmap *s_pixFile;
@@ -215,7 +230,7 @@ class MediaDevice : public QObject
 
         enum        DeviceType { DUMMY, IPOD, IFP };
 
-        void        addURL( const KURL& url, MetaBundle *bundle=NULL, bool isPodcast=false, const QString &playlistName=QString::null );
+        void        addURL( const KURL& url, MetaBundle *bundle=NULL, PodcastInfo *info=NULL, const QString &playlistName=QString::null );
         void        addURLs( const KURL::List urls, const QString &playlistName=QString::null );
         void        URLsAdded();
 
@@ -343,7 +358,7 @@ class MediaDevice : public QObject
          * @param isPodcast true if item is a podcast
          * @return If successful, the created MediaItem in the media device view, else 0
          */
-        virtual MediaItem *copyTrackToDevice(const MetaBundle& bundle, bool isPodcast) = 0;
+        virtual MediaItem *copyTrackToDevice(const MetaBundle& bundle, const PodcastInfo *info) = 0;
 
         /**
          * Recursively remove MediaItem from the tracklist and the device

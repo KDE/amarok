@@ -42,10 +42,10 @@ class GpodMediaDevice : public MediaDevice
          * Insert track already located on media device into the device's database
          * @param pathname Location of file on the device to add to the database
          * @param bundle MetaBundle of track
-         * @param isPodcast true if item is a podcast
+         * @param podcastInfo PodcastInfo of track if it is a podcast, 0 otherwise
          * @return If successful, the created MediaItem in the media device view, else 0
          */
-        virtual MediaItem *insertTrackIntoDB( const QString& pathname, const MetaBundle& bundle, bool isPodcast);
+        virtual MediaItem *insertTrackIntoDB( const QString& pathname, const MetaBundle& bundle, const PodcastInfo *podcastInfo);
 
         /**
          * Determine the url for which a track should be uploaded to on the device
@@ -55,7 +55,7 @@ class GpodMediaDevice : public MediaDevice
         virtual KURL determineURLOnDevice(const MetaBundle& bundle);
 
         void              synchronizeDevice();
-        MediaItem        *copyTrackToDevice(const MetaBundle& bundle, bool isPodcast);
+        MediaItem        *copyTrackToDevice(const MetaBundle& bundle, const PodcastInfo *podcastInfo);
         bool              deleteItemFromDevice(MediaItem *item, bool onlyPlayed=false );
         void              addToPlaylist(MediaItem *list, MediaItem *after, QPtrList<MediaItem> items);
         void              addToDirectory(MediaItem *dir, QPtrList<MediaItem> items);

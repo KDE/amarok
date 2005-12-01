@@ -250,6 +250,8 @@ class PodcastItem : public QObject, public PlaylistBrowserEntry
 
         void  updateInfo();
 
+        void addToMediaDevice();
+
         int rtti() const { return RTTI; }
         static const int RTTI = 1007;              //podcastitem
 
@@ -315,6 +317,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
                            bool addToMediaDevice, const bool purgeItems, const int purgeCount );
 
         const KURL &url() { return m_url; }
+        const KURL &link() { return m_link; }
         const KURL xmlUrl();
         const QString &title() { return m_title; }
 

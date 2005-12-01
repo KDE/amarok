@@ -171,7 +171,7 @@ class DummyMediaDevice : public MediaDevice
     virtual bool openDevice(bool) { return false; }
     virtual bool closeDevice() { return false; }
     virtual void synchronizeDevice() {}
-    virtual MediaItem* copyTrackToDevice(const MetaBundle&, bool) { return 0; }
+    virtual MediaItem* copyTrackToDevice(const MetaBundle&, const PodcastInfo*) { return 0; }
     virtual bool deleteItemFromDevice(MediaItem*, bool) { return false; }
     virtual bool getCapacity( unsigned long *, unsigned long * ) { return false; }
 };
@@ -274,12 +274,14 @@ MediaItem::MediaItem( QListViewItem* parent, QListViewItem* after )
 MediaItem::~MediaItem()
 {
     delete m_bundle;
+    delete m_podcastInfo;
 }
 
 void
 MediaItem::init()
 {
     m_bundle=0;
+    m_podcastInfo=0;
     m_order=0;
     m_type=UNKNOWN;
     m_playlistName=QString::null;
@@ -1046,7 +1048,7 @@ MediaDevice::updateRootItems()
 }
 
 void
-MediaDevice::addURL( const KURL& url, MetaBundle *bundle, bool isPodcast, const QString &playlistName )
+MediaDevice::addURL( const KURL& url, MetaBundle *bundle, PodcastInfo *podcastInfo, const QString &playlistName )
 {
     if(!bundle)
         bundle = new MetaBundle( url );
@@ -1057,9 +1059,10 @@ MediaDevice::addURL( const KURL& url, MetaBundle *bundle, bool isPodcast, const 
         item->setDropEnabled( true );
         item->setUrl( url.path() );
         item->m_bundle = bundle;
-        item->m_playlistName = playlistName;
-        if(isPodcast)
+        item->m_podcastInfo = podcastInfo;
+        if(podcastInfo)
             item->m_type = MediaItem::PODCASTITEM;
+        item->m_playlistName = playlistName;
 
         QString text = item->bundle()->prettyTitle();
         if(item->type() == MediaItem::PODCASTITEM)
@@ -1451,7 +1454,7 @@ MediaDevice::transferFiles()
         MediaItem *item = trackExists( *bundle );
 
         if( !item )
-            item = copyTrackToDevice( *bundle, m_transferredItem->type() == MediaItem::PODCASTITEM );
+            item = copyTrackToDevice( *bundle, m_transferredItem->podcastInfo() );
 
         if( !item )
             break;
@@ -1652,6 +1655,35 @@ MediaDevice::saveTransferList( const QString &path )
             i.setAttribute( "podcast", "1" );
         }
 
+        if(item->type() == MediaItem::PODCASTITEM
+                && item->podcastInfo())
+        {
+            QDomElement attr = newdoc.createElement( "PodcastDescription" );
+            QDomText t = newdoc.createTextNode( item->podcastInfo()->description );
+            attr.appendChild( t );
+            i.appendChild( attr );
+
+            attr = newdoc.createElement( "PodcastAuthor" );
+            t = newdoc.createTextNode( item->podcastInfo()->author );
+            attr.appendChild( t );
+            i.appendChild( attr );
+
+            attr = newdoc.createElement( "PodcastRSS" );
+            t = newdoc.createTextNode( item->podcastInfo()->rss );
+            attr.appendChild( t );
+            i.appendChild( attr );
+
+            attr = newdoc.createElement( "PodcastWebpage" );
+            t = newdoc.createTextNode( item->podcastInfo()->webpage );
+            attr.appendChild( t );
+            i.appendChild( attr );
+
+            attr = newdoc.createElement( "PodcastURL" );
+            t = newdoc.createTextNode( item->podcastInfo()->url );
+            attr.appendChild( t );
+            i.appendChild( attr );
+        }
+
         if(item->m_playlistName != QString::null)
         {
             i.setAttribute( "playlist", item->m_playlistName );
@@ -1710,10 +1742,10 @@ MediaDevice::loadTransferList( const QString& filename )
         }
         KURL url(elem.attribute("url"));
 
-        bool isPodcast = false;
+        PodcastInfo *info = NULL;
         if(elem.hasAttribute( "podcast" ))
         {
-            isPodcast = true;
+            info = new PodcastInfo();
         }
 
         MetaBundle *bundle = new MetaBundle( url );
@@ -1736,10 +1768,20 @@ MediaDevice::loadTransferList( const QString& filename )
                 bundle->setGenre(node.firstChild().toText().nodeValue());
             else if(node.nodeName() == "Comment" )
                 bundle->setComment(node.firstChild().toText().nodeValue());
+            else if(info && node.nodeName() == "PodcastDescription" )
+                info->description = node.firstChild().toText().nodeValue();
+            else if(info && node.nodeName() == "PodcastAuthor" )
+                info->author = node.firstChild().toText().nodeValue();
+            else if(info && node.nodeName() == "PodcastRSS" )
+                info->rss = node.firstChild().toText().nodeValue();
+            else if(info && node.nodeName() == "PodcastWebpage" )
+                info->webpage = node.firstChild().toText().nodeValue();
+            else if(info && node.nodeName() == "PodcastURL" )
+                info->url = node.firstChild().toText().nodeValue();
         }
 
         QString playlist = elem.attribute( "playlist" );
-        addURL( url, bundle, isPodcast, playlist );
+        addURL( url, bundle, info, playlist );
     }
 
     //URLsAdded();

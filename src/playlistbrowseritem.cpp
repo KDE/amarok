@@ -1797,16 +1797,33 @@ PodcastItem::downloadResult( KIO::Job* job ) //SLOT
     PodcastChannel *channel = dynamic_cast<PodcastChannel *>( m_parent );
     if( channel && channel->addToMediaDevice() )
     {
-        MetaBundle *bundle = new MetaBundle( localUrl() );
-        if(!channel->title().isEmpty())
-            bundle->setAlbum(channel->title());
-        if(!title().isEmpty())
-            bundle->setTitle(title());
-        MediaDevice::instance()->addURL( localUrl(), bundle, true );
+        addToMediaDevice();
         MediaDevice::instance()->URLsAdded();
     }
 
     updatePixmap();
+}
+
+void
+PodcastItem::addToMediaDevice()
+{
+    MetaBundle *bundle = new MetaBundle( localUrl() );
+    PodcastChannel *channel = dynamic_cast<PodcastChannel *>( m_parent );
+    if(channel && !channel->title().isEmpty())
+        bundle->setAlbum(channel->title());
+    if(!title().isEmpty())
+        bundle->setTitle(title());
+    PodcastInfo *info = new PodcastInfo;
+    info->url = url().url();
+    info->rss = channel->url().url();
+    info->webpage = channel->link().url();
+    //info->title = title();
+    info->description = description();
+    info->author = author();
+    info->date = date();
+    //info->channel = channel->title();
+    //info->type = type();
+    MediaDevice::instance()->addURL( localUrl(), bundle, info );
 }
 
 

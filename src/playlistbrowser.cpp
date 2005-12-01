@@ -2250,26 +2250,14 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                             PodcastItem *podcast = static_cast<PodcastItem*>(*it);
                             if(podcast->hasDownloaded())
                             {
-                                MetaBundle *bundle = new MetaBundle( podcast->localUrl() );
-                                PodcastChannel *channel = static_cast<PodcastChannel*>(podcast->QListViewItem::parent());
-                                if(!channel->title().isEmpty())
-                                    bundle->setAlbum(channel->title());
-                                if(!podcast->title().isEmpty())
-                                    bundle->setTitle(podcast->title());
-                                MediaDevice::instance()->addURL( podcast->localUrl(), bundle, true );
+                                podcast->addToMediaDevice();
                             }
                         }
                     }
                 }
                 else
                 {
-                    MetaBundle *bundle = new MetaBundle( item->localUrl() );
-                    PodcastChannel *channel = static_cast<PodcastChannel*>(item->QListViewItem::parent());
-                    if(!channel->title().isEmpty())
-                        bundle->setAlbum(channel->title());
-                    if(!item->title().isEmpty())
-                        bundle->setTitle(item->title());
-                    MediaDevice::instance()->addURL( item->localUrl(), bundle, true);
+                    static_cast<PodcastItem *>(item)->addToMediaDevice();
                 }
                 MediaDevice::instance()->URLsAdded();
                 break;

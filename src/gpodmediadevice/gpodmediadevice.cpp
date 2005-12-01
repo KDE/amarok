@@ -142,7 +142,7 @@ GpodMediaDevice::isConnected()
 }
 
 MediaItem *
-GpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle, bool isPodcast)
+GpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle, const PodcastInfo *podcastInfo)
 {
     KURL url = determineURLOnDevice(bundle);
 
@@ -207,11 +207,11 @@ GpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle, bool isPodcast)
         return NULL;
     }
 
-    return insertTrackIntoDB(url.path(), bundle, isPodcast);
+    return insertTrackIntoDB(url.path(), bundle, podcastInfo);
 }
 
 MediaItem *
-GpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bundle, bool isPodcast)
+GpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bundle, const PodcastInfo *podcastInfo)
 {
     Itdb_Track *track = itdb_track_new();
     if(!track)
@@ -220,7 +220,7 @@ GpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bu
     QString type = pathname.section('.', -1).lower();
 
     track->ipod_path = g_strdup( ipodPath(pathname).latin1() );
-    debug() << "on iPod: " << track->ipod_path << ", podcast=" << isPodcast << endl;
+    debug() << "on iPod: " << track->ipod_path << ", podcast=" << podcastInfo << endl;
 
     track->title = g_strdup( bundle.title().isEmpty() ? i18n("Unknown").utf8() : bundle.title().utf8() );
     track->album = g_strdup( bundle.album().isEmpty() ? i18n("Unknown").utf8() : bundle.album().utf8() );
@@ -265,18 +265,43 @@ GpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bu
     track->samplerate = bundle.sampleRate();
     track->tracklen = bundle.length()*1000;
 
+    if(podcastInfo)
+    {
+        track->flag1 = 0x02; // podcast
+        track->flag2 = 0x01; // skip  when shuffling
+        track->flag3 = 0x01; // remember playback position
+        if( !podcastInfo->description.isNull() && !podcastInfo->description.isEmpty() )
+        {
+            track->flag4 = 0x02; // also show description on iPod
+        }
+        track->unk176 = 0x00020000; // for podcasts
+        track->description = g_strdup( podcastInfo->description.utf8() );
+        track->subtitle = g_strdup( podcastInfo->description.utf8() );
+        track->podcasturl = g_strdup( podcastInfo->url.utf8() );
+        track->podcastrss = g_strdup( podcastInfo->rss.utf8() );
+        //track->category = g_strdup( "Unknown" );
+        //track->time_released = podcastInfo->date.toInt();
+    }
+    else
+    {
+        track->unk176 = 0x00010000; // for non-podcasts
+    }
+
     dbChanged = true;
 
 #if 0
     // just for trying: probably leaks memory
     // artwork support not for my nano yet, cannot try
     QString image = CollectionDB::instance()->albumImage(QString(track->artist), QString(track->album), 1);
-    debug() << "adding image " << image << " to " << track->artist << ":" << track->album << endl;
-    itdb_track_set_thumbnails( track, g_strdup( QFile::encodeName(image) ) );
+    if( !image.endsWith( "@nocover.png" ) )
+    {
+        debug() << "adding image " << image << " to " << track->artist << ":" << track->album << endl;
+        itdb_track_set_thumbnails( track, g_strdup( QFile::encodeName(image) ) );
+    }
 #endif
 
     itdb_track_add(m_itdb, track, -1);
-    if(isPodcast)
+    if(podcastInfo)
     {
         Itdb_Playlist *podcasts = itdb_playlist_podcasts(m_itdb);
         if(!podcasts)
@@ -1007,7 +1032,8 @@ GpodMediaDevice::ipodPath(const QString &realPath)
 void
 GpodMediaDevice::writeITunesDB()
 {
-    dbChanged = true; // write unconditionally for resetting recent_playcount
+    if(m_itdb)
+        dbChanged = true; // write unconditionally for resetting recent_playcount
 
     if(dbChanged)
     {

@@ -61,6 +61,8 @@ VERSION 1.4:
   BUGFIXES:
     * Also take track number into account when comparing tags for checking
       if a track is already present on iPod. (BR 117380)
+    * iPod nanos would not switch off during playing songs added with amaroK
+      because of their file size not being set.
     * "Show Fullsize" now works for ID3 embedded cover images. (BR 114517)
       (BACKPORT?)
     * Fix possible bug when saving unencoded podcasts to strange file systems.

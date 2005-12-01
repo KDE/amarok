@@ -50,7 +50,7 @@ class IfpMediaDevice : public MediaDevice
         void              unlockDevice() {}
         void              synchronizeDevice() {}
 
-        MediaItem        *copyTrackToDevice( const MetaBundle& bundle, bool isPodcast);
+        MediaItem        *copyTrackToDevice( const MetaBundle& bundle, const PodcastInfo *info );
         bool              deleteItemFromDevice( MediaItem *item, bool onlyPlayed = false );
         bool              getCapacity( unsigned long *total, unsigned long *available );
         MediaItem        *newDirectory( const QString &name, MediaItem *parent );
