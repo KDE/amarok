@@ -83,9 +83,6 @@ class App : public KApplication, public EngineObserver
         /** returns the leading window, either playerWindow or playlistWindow */
         QWidget *mainWindow() const;
 
-        /** Removes all covers images older than 90 days, to comply with amazon.com license */
-        void pruneCoverImages();
-
         void setRating( int n );
 
         // ATTRIBUTES ------

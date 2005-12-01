@@ -157,7 +157,6 @@ App::App()
     // Refetch covers every 80 days or delete every 90 days to comply with Amazon license
     #ifdef AMAZON_SUPPORT
     new RefreshImages();
-    pruneCoverImages();
     #endif
 
     // Trigger collection scan if folder setup was changed by wizard
@@ -946,7 +945,6 @@ void App::slotConfigToolBars()
     }
 }
 
-
 void App::firstRunWizard()
 {
     ///show firstRunWizard
@@ -987,42 +985,6 @@ void App::firstRunWizard()
 
         config->updateSettings();
     }
-}
-
-
-void App::pruneCoverImages()
-{
-#ifdef AMAZON_SUPPORT
-    const int MAX_DAYS = 90;
-
-    QDir covers( amaroK::saveLocation( "albumcovers/large/" ) );
-    QDir coverCache( amaroK::saveLocation( "albumcovers/cache/" ) );
-
-    QFileInfoList list( *covers.entryInfoList( QDir::Files ) );
-    QFileInfoList listCache( *coverCache.entryInfoList( QDir::Files ) );
-
-    // Merge both lists
-    for ( uint i = 0; i < listCache.count(); i++ )
-        list.append( listCache.at( i ) );
-
-    // Prune files
-    uint count = 0;
-    uint pruneCount = 0;
-    const QDate currentDate = QDate::currentDate();
-    for ( uint i = 0; i < list.count(); ++i, ++count )
-        if ( list.at( i )->created().date().daysTo( currentDate ) > MAX_DAYS ) {
-            pruneCount++;
-            QFile::remove( list.at( i )->absFilePath() );
-        }
-
-    if ( pruneCount )
-        amaroK::StatusBar::instance()->longMessage( i18n(
-                "amaroK has had to delete some of the images that you downloaded from Amazon. "
-                "Amazon's licensing policy require us to remove content within 90 days of its download. "
-                "You can read more about Amazon's policies "
-                "<a href='http://www.amazon.com/webservices'>here</a>. "
-                "Please note that this only affects covers downloaded using the Cover Manager's fetch covers feature and the covers downloaded using the context menu in the Context Browser, not manually added covers." ), KDE::StatusBar::Information );
-#endif
 }
 
 void App::setRating( int n )
