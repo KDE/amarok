@@ -60,6 +60,11 @@ loop do
                     puts( "AlbumId  : #{album_id}" )
                     puts( "Album    : #{album}" )
 
+                    if artist_id.empty?() and album_id.empty?()
+                        `dcop amarok playlist popupMessage "EmbedCover Error: This track is not in your Collection."`
+                        next
+                    end
+
 
                     md5sum = MD5.hexdigest( "#{artist.downcase()}#{album.downcase()}" )
                     imagefolder = "#{ENV['HOME']}/.kde/share/apps/amarok/albumcovers/large/"

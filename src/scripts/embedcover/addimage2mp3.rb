@@ -72,12 +72,11 @@ end
 
 mimetype = case File.extname( imagepath ).downcase()
     when ".bmp" then "image/bmp"
-
     when ".gif" then "image/gif"
-
-    when ".jpg" or ".jpeg" then "image/jpeg"
-
+    when ".jpg" then "image/jpeg"
+    when ".jpeg" then "image/jpeg"
     when ".png" then "image/png"
+    when "" then "image/png"  # amaroK's cover images are always PNG
 
     else
         puts( "Error: Image type invalid." )

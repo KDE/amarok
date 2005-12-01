@@ -4,7 +4,10 @@
 <b>About:</b><br>
 EmbedCover is a script for embedding album cover images in MP3 files. The script will
 automatically look up the image associated to it in amaroK and embed this image in the file.
-The MP3 file must have an ID3-V2 tag, otherwise the script will abort.
+</p>
+<p>
+The MP3 file must have an ID3-V2 tag, otherwise the script will abort, and the file must be
+in your Collection.
 </p>
 <p>
 It is recommended that you <i>back up</i> your MP3 file before using this script on it. Although the
