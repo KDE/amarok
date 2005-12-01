@@ -2012,7 +2012,7 @@ CollectionItem::compare( QListViewItem* i, int col, bool /* ascending */) const
             ia = a.toInt();
             ib = b.toInt();
             if (ia==ib)
-                return 0;
+                return QString::localeAwareCompare( text( col ).lower(), i->text( col ).lower() );
             if (ia<ib)
                 return 1;
             else
