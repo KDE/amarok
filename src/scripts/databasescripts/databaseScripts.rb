@@ -49,6 +49,8 @@ class DatabaseScriptChooser < Qt::Dialog
         @layout1.addWidget(@m_saveText)
 
         @m_saveDir = KDE::URLRequester.new(self, "m_saveDir")
+        @m_saveDir.setMode( KDE::File::Directory | KDE::File::ExistingOnly );
+        
         @layout1.addWidget(@m_saveDir)
         @layout3.addLayout(@layout1)
         @spacer1 = Qt::SpacerItem.new(20, 21, Qt::SizePolicy::Minimum, Qt::SizePolicy::Expanding)
