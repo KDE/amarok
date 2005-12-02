@@ -47,16 +47,26 @@ unless FileTest.writable_real?( destination )
 end
 
 filename = ""
-database = `dcop amarok script readConfig DatabaseEngine`
-database.chomp!()
+database = `dcop amarok script readConfig DatabaseEngine`.chomp!()
 
 case database
 
     when "0" # sqlite
         filename = "collection.db"
+        filename = getFilename( filename )
+        dest = destination + "/" + filename
+        puts dest
+        `cp ~/.kde/share/apps/amarok/collection.db #{dest}`
 
     when "1" # mysql
         filename = "amarokdb.mysql"
+        filename = getFilename( filename )
+        dest = destination + "/" + filename
+        puts dest
+        db   = `dcop amarok script readConfig MySqlDbName`.chomp!()
+        user = `dcop amarok script readConfig MySqlUser`.chomp!()
+        pass = `dcop amarok script readConfig MySqlPassword`.chomp!()
+        `mysqldump -u #{user} -p#{pass} #{db} > #{dest}`
 
     when "2" # postgres
         error = "Sorry, postgresql database backups have not been implemented"
@@ -65,5 +75,5 @@ case database
 
 end
 
-filename = getFilename( filename )
+
 
