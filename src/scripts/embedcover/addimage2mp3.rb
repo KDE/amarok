@@ -37,26 +37,29 @@ def unsynchronize( data )
     until data[index] == 0 or data[index..index+2] == "3DI"
         frametype = data[index..index+3]
         framesize = data[index+4]*2**21 + data[index+5]*2**14 + data[index+6]*2**7 + data[index+7]
-        index += 10
 
         # Check if frame is already unsynced
         if data[index+9] & 0x02 == 0
+            puts( "#{frametype}  unsynced " )
             data[index+9] |= 0x02
-            while index < framesize
-                sync1 = imagesrc[index] == 0xff
-                sync2 = imagesrc[index+1] & 0b11100000 == 0b11100000
+            index += 10
+
+            framesize.times() do
+                sync1 = data[index] == 0xff
+                sync2 = data[index+1] & 0b11100000 == 0b11100000
 
                 if sync1 and sync2 and index < framesize - 2
-                    data[index+1, 0] = 0x00
+                    print( "." )
+                    data[index+1, 0] = 0x00.to_s()
                     index += 3
                     framesize += 1
-                    next
+                else
+                    index += 1
                 end
-
-                index += 1
             end
         else
-            index += framesize
+            puts( "#{frametype}  synced" )
+            index += framesize + 10
         end
     end
 
@@ -155,7 +158,7 @@ apicheader << ( ( apicframe.length() >> 14 ) & 0x7f )
 apicheader << ( ( apicframe.length() >> 7  ) & 0x7f )
 apicheader << ( ( apicframe.length() >> 0  ) & 0x7f )
 apicheader << 0x00  # Flags
-apicheader << 0x02  # Flags (Set: Unsynchronized)
+apicheader << 0x00  # Flags
 
 
 # Find end of last ID3 frame, before padding or footer (if present)
@@ -183,6 +186,7 @@ data[index, 0] = apicheader + apicframe
 id3length += apicheader.length() + apicframe.length()
 
 
+puts()
 puts( "Unsynchronizing tag.." )
 id3length = unsynchronize( data )
 
