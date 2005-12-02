@@ -27,7 +27,7 @@ class DatabaseScriptChooser < Qt::Dialog
     attr_reader :m_saveDir
     attr_reader :m_okayButton
 
-    slots 'optionChanged(int)', 'accept()', 'cancel()'
+    slots 'optionChanged(int)', 'textChanged(const QString &)', 'accept()', 'cancel()'
 
     def initialize(parent = nil, name = nil, modal = false, fl = 0)
         super
@@ -50,7 +50,8 @@ class DatabaseScriptChooser < Qt::Dialog
 
         @m_saveDir = KDE::URLRequester.new(self, "m_saveDir")
         @m_saveDir.setMode( KDE::File::Directory | KDE::File::ExistingOnly );
-        
+        @m_saveDir.setURL( ENV["HOME"] )
+
         @layout1.addWidget(@m_saveDir)
         @layout3.addLayout(@layout1)
         @spacer1 = Qt::SpacerItem.new(20, 21, Qt::SizePolicy::Minimum, Qt::SizePolicy::Expanding)
@@ -68,15 +69,15 @@ class DatabaseScriptChooser < Qt::Dialog
         @layout2.addWidget(@m_okayButton)
         @layout3.addLayout(@layout2)
 
-        connect( @m_optionCombo, SIGNAL( "activated(int)" ), self, SLOT( "optionChanged(int)" ) );
-        connect( @m_okayButton, SIGNAL( "clicked()" ), self, SLOT( "accept()" ) )
-        connect( @m_cancelButton, SIGNAL( "clicked()" ), self, SLOT( "cancel()" ) )
+        connect( @m_optionCombo,  SIGNAL( "activated(int)" ), self, SLOT( "optionChanged(int)" ) );
+        connect( @m_okayButton,   SIGNAL( "clicked()" ),      self, SLOT( "accept()" ) )
+        connect( @m_cancelButton, SIGNAL( "clicked()" ),      self, SLOT( "cancel()" ) )
+
+        connect( @m_saveDir, SIGNAL( "textChanged(const QString &)" ),
+                 self,       SLOT( "textChanged(const QString &)" ) );
 
         @Form1Layout.addLayout(@layout3, 0, 0)
         languageChange()
-
-        @m_optionCombo.setCurrentItem( 1 )
-        optionChanged( 1 )
 
         resize( Qt::Size.new(356, 137).expandedTo(minimumSizeHint()) )
         clearWState( WState_Polished )
@@ -85,19 +86,24 @@ class DatabaseScriptChooser < Qt::Dialog
     def optionChanged( i )
         @m_saveDir.setEnabled( i == 0 )
         @m_saveText.setEnabled( i == 0 )
-        @m_okayButton.setEnabled( i != 0 ) #until written :)
+    end
+
+    def textChanged(s)
+        @m_okayButton.setEnabled( !s.empty?() )
     end
 
     def accept()
+        arg = ""
         case @m_optionCombo.currentItem()
             when 0 # Backup
-                filename = File.dirname( File.expand_path( __FILE__ ) ) + "/databaseBackup.rb"
+                filename = File.dirname( File.expand_path( __FILE__ ) ) + "/backupDatabase.rb"
+                arg      = @m_saveDir.url()
 
             when 1 # Optimise
                 filename = File.dirname( File.expand_path( __FILE__ ) ) + "/staleStatistics.rb"
         end
 
-        `ruby "#{filename}"`
+        `ruby "#{filename}" "#{arg}"`
 
         done( 0 )
     end
