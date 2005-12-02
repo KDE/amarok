@@ -27,6 +27,43 @@ def setId3v2Size( data, size )
     data[9] = size >> 0  & 0x7f
 end
 
+#
+# Unsynchronize the entire ID3-V2 tag, frame by frame (replace 0xfff* with 0xff00f*)
+#
+def unsynchronize( data )
+    data[5] |= 0b10000000  # Set Unsychronization global tag flag
+    index = 10  # Skip ID3 Header
+
+    until data[index] == 0 or data[index..index+2] == "3DI"
+        frametype = data[index..index+3]
+        framesize = data[index+4]*2**21 + data[index+5]*2**14 + data[index+6]*2**7 + data[index+7]
+        index += 10
+
+        # Check if frame is already unsynced
+        if data[index+9] & 0x02 == 0
+            data[index+9] |= 0x02
+            while index < framesize
+                sync1 = imagesrc[index] == 0xff
+                sync2 = imagesrc[index+1] & 0b11100000 == 0b11100000
+
+                if sync1 and sync2 and index < framesize - 2
+                    data[index+1, 0] = 0x00
+                    index += 3
+                    framesize += 1
+                    next
+                end
+
+                index += 1
+            end
+        else
+            index += framesize
+        end
+    end
+
+    # Index == new tag length
+    return index - 10
+end
+
 
 ############################################################################
 # MAIN
@@ -100,26 +137,7 @@ end
 
 
 file = File.new( imagepath, "r" )
-imagesrc = file.read()
-image = String.new()
-
-
-# Unsynchronize image data (replace 0xfff* with 0xff00f*)
-index = 0
-while index < imagesrc.length()
-    if imagesrc[index] == 0xff and index < imagesrc.length() - 2
-        if imagesrc[index+1] & 0b11100000 == 0b11100000
-            image << imagesrc[index]
-            image << 0x00
-            image << imagesrc[index+1]
-            index += 2
-            next
-        end
-    end
-
-    image << imagesrc[index]
-    index += 1
-end
+image = file.read()
 
 
 apicframe = String.new()
@@ -162,10 +180,14 @@ index += 10 if data[index..index+2] == "3DI"  # Footer
 
 # Insert APIC frame into string, after the last ID3 frame
 data[index, 0] = apicheader + apicframe
+id3length += apicheader.length() + apicframe.length()
+
+
+puts( "Unsynchronizing tag.." )
+id3length = unsynchronize( data )
 
 
 # Adjust ID3V2 tag size
-id3length += apicheader.length() + apicframe.length()
 setId3v2Size( data, id3length )
 puts()
 puts( "Adjusting new ID3 size: #{id3length + 10}" )
