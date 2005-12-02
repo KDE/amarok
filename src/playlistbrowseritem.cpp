@@ -331,6 +331,8 @@ PlaylistEntry::~PlaylistEntry()
 void PlaylistEntry::load()
 {
     debug() << "Loading playlist" << endl;
+    if (m_loading)
+	    return;
     m_trackList.clear();
     m_length = 0;
     m_loaded = false;
