@@ -45,7 +45,9 @@ loop do
                 args.each() do |arg|
                     uri = URI.parse( arg )
                     file = URI.unescape( uri.path() )
-                    puts file
+                    file.gsub!( /[']/, '\\\\\'' )  # Escape for SQL
+
+                    puts( "Path: #{file}" )
 
                     mp3fix = File.dirname( File.expand_path( __FILE__ ) ) + "/mp3fix.rb"
 
