@@ -33,7 +33,7 @@ class DatabaseScriptChooser < Qt::Dialog
         super
 
         if name.nil?
-        	setName("Database Script Chooser")
+            setName("Database Script Chooser")
         end
 
         @Form1Layout = Qt::GridLayout.new(self, 1, 1, 2, 2, 'Form1Layout')
@@ -97,11 +97,11 @@ class DatabaseScriptChooser < Qt::Dialog
 
         `ruby "#{filename}"`
 
-        QDialog::accept()
+        done( 0 )
     end
 
     def cancel()
-        QDialog::done()
+        done( 0 )
     end
 
 
