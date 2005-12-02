@@ -234,6 +234,18 @@ class MediaDevice : public QObject
 
         virtual void rmbPressed( MediaDeviceList *deviceList, QListViewItem *item, const QPoint &point, int ) { (void)deviceList; (void)item; (void) point; }
 
+        /*
+         * @return list of filetypes playable on this device
+         *  (empty list is interpreted as all types are good)
+         */
+        virtual QStringList supportedFiletypes() { return QStringList(); }
+
+        /*
+         * @param bundle describes track that should be checked
+         * @return true if the device is capable of playing the track referred to by bundle
+         */
+        bool isPlayable( const MetaBundle &bundle );
+
         /**
          * @return true if the device is connected
          */

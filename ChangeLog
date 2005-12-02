@@ -59,6 +59,8 @@ VERSION 1.4:
       compatibility with various iPod models.
 
   BUGFIXES:
+    * Do not copy files of types an iPod is not capable of playing to the
+      iPod. (BR 117486)
     * Also take track number into account when comparing tags for checking
       if a track is already present on iPod. (BR 117380)
     * iPod nanos would not switch off during playing songs added with amaroK

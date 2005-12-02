@@ -1052,7 +1052,19 @@ MediaDevice::addURL( const KURL& url, MetaBundle *bundle, PodcastInfo *podcastIn
 {
     if(!bundle)
         bundle = new MetaBundle( url );
-    if ( !playlistName.isNull() || (!trackExists( *bundle ) && !m_transferList->findPath( url.path() )) )
+
+    if( !isPlayable( *bundle ) && (playlistName.isNull() || !trackExists( *bundle )) )
+    {
+        amaroK::StatusBar::instance()->longMessage( i18n( "Track is not playable on media device: %1" ).arg( url.path().local8Bit() ),
+                KDE::StatusBar::Sorry );
+    }
+    else if( playlistName.isNull()
+            && (trackExists( *bundle ) || m_transferList->findPath( url.path() ) ) )
+    {
+        amaroK::StatusBar::instance()->longMessage( i18n( "Track already exists on media device: %1" ).arg( url.path().local8Bit() ),
+                KDE::StatusBar::Sorry );
+    }
+    else
     {
         MediaItem* item = new MediaItem( m_transferList, m_transferList->lastItem() );
         item->setExpandable( false );
@@ -1078,10 +1090,8 @@ MediaDevice::addURL( const KURL& url, MetaBundle *bundle, PodcastInfo *podcastIn
         m_parent->updateStats();
         m_parent->m_transferButton->setEnabled( m_parent->m_device->isConnected() || m_parent->m_deviceList->childCount() != 0 );
         m_parent->m_progress->setTotalSteps( m_parent->m_progress->totalSteps() + 1 );
-    } else
-        amaroK::StatusBar::instance()->longMessage( i18n( "Track already exists on media device: %1" ).arg( url.path().local8Bit() ),
-                                                    KDE::StatusBar::Sorry );
-    m_transferList->itemCountChanged();
+        m_transferList->itemCountChanged();
+    }
 }
 
 void
@@ -1282,7 +1292,8 @@ MediaDevice::connectDevice( bool silent )
                                 cur; cur = next )
                 {
                     next = dynamic_cast<MediaItem *>( cur->nextSibling() );
-                    if ( cur->m_playlistName == QString::null && trackExists( *cur->bundle() ) )
+                    if ( cur->m_playlistName == QString::null &&
+                            trackExists( *cur->bundle() ) || !isPlayable( *cur->bundle() ) )
                     {
                         delete cur;
                         m_transferList->itemCountChanged();
@@ -1450,7 +1461,15 @@ MediaDevice::transferFiles()
         MediaItem *item = trackExists( *bundle );
 
         if( !item )
+        {
+            if( !isPlayable( *bundle ) )
+            {
+                amaroK::StatusBar::instance()->longMessage( i18n( "Track is not playable on media device: %1" ).arg( item->url().path().local8Bit() ),
+                        KDE::StatusBar::Sorry );
+                continue;
+            }
             item = copyTrackToDevice( *bundle, m_transferredItem->podcastInfo() );
+        }
 
         if( !item )
             break;
@@ -1781,6 +1800,16 @@ MediaDevice::loadTransferList( const QString& filename )
     }
 
     //URLsAdded();
+}
+
+bool
+MediaDevice::isPlayable( const MetaBundle &bundle )
+{
+    if( supportedFiletypes().isEmpty() )
+        return true;
+
+    QString type = bundle.url().path().section( ".", -1 ).lower();
+    return supportedFiletypes().contains( type );
 }
 
 

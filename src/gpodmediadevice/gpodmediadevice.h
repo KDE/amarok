@@ -27,6 +27,7 @@ class GpodMediaDevice : public MediaDevice
         virtual           ~GpodMediaDevice();
         virtual bool      autoConnect() { return true; }
         virtual bool      asynchronousTransfer() { return true; }
+        QStringList       supportedFiletypes();
 
         bool              isConnected();
 

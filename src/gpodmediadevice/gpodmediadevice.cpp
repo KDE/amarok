@@ -1508,4 +1508,16 @@ GpodMediaDevice::deleteFile( const KURL &url )
         setProgress( progress() + 1 );
 }
 
+QStringList
+GpodMediaDevice::supportedFiletypes()
+{
+    QStringList list;
+    list << "m4a";
+    list << "m4b";
+    list << "mp3";
+    list << "wav";
+    list << "aa";
+    return list;
+}
+
 #include "gpodmediadevice.moc"
