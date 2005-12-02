@@ -45,10 +45,11 @@ def unsynchronize( data )
             index += 10
 
             framesize.times() do
-                sync1 = data[index] == 0xff
-                sync2 = data[index+1] & 0b11100000 == 0b11100000
+                sync = data[index] == 0xff
+                sync1 = data[index+1] & 0b11100000 == 0b11100000
+                sync2 = data[index+1] & 0b11111111 == 0b00000000
 
-                if sync1 and sync2 and index < framesize - 2
+                if sync and ( sync1 or sync2 ) and index < framesize - 2
                     print( "." )
                     data[index+1, 0] = 0x00.to_s()
                     index += 3
