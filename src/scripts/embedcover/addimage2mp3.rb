@@ -189,6 +189,7 @@ id3length += apicheader.length() + apicframe.length()
 puts()
 puts( "Unsynchronizing tag.." )
 id3length = unsynchronize( data )
+data[5] |= 0b10000000  # Set ID3 Unsychronization flag
 
 
 # Adjust ID3V2 tag size
