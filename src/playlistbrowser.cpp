@@ -1387,6 +1387,25 @@ bool PlaylistBrowser::createPlaylist( QListViewItem *parent, bool current, QStri
     }
     else
     {
+        //Remove any items in Listview that have the same path as this one
+        //  Should only happen when overwriting a playlist
+        QListViewItem *item = parent->firstChild();
+        while (item)
+        {
+            if (static_cast<PlaylistEntry*>(item)->url() == path)
+            {
+                QListViewItem *todelete=item;
+                item = item->nextSibling();
+                delete todelete;
+            }
+            else
+                item = item->nextSibling();
+        }
+
+        //Remove existing playlist if it exists
+        if (QFileInfo(path).exists())
+            QFileInfo(path).dir().remove(path);
+
         m_lastPlaylist = new PlaylistEntry( parent, 0, path );
         parent->sortChildItems( 0, true );
     }
