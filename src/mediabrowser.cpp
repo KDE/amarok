@@ -1320,6 +1320,7 @@ MediaDevice::connectDevice( bool silent )
                     lockDevice(true);
 
                     deleteItemFromDevice( m_podcastItem, true );
+                    purgeEmptyItems();
 
                     synchronizeDevice();
                     unlockDevice();
@@ -1648,6 +1649,7 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
 
     if(!recursing)
     {
+        purgeEmptyItems();
         synchronizeDevice();
         unlockDevice();
 
@@ -1657,6 +1659,32 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
         }
     }
     m_parent->updateStats();
+}
+
+void
+MediaDevice::purgeEmptyItems( MediaItem *root )
+{
+    MediaItem *it = 0;
+    if( root )
+    {
+        it = static_cast<MediaItem *>(root->firstChild());
+    }
+    else
+    {
+        it = static_cast<MediaItem *>(m_listview->firstChild());
+    }
+
+    MediaItem *next = 0;
+    for( ; it; it=next )
+    {
+        next = static_cast<MediaItem *>(it->nextSibling());
+        purgeEmptyItems( it );
+        if( it->childCount() == 0 &&
+                (it->type() == MediaItem::ARTIST ||
+                 it->type() == MediaItem::ALBUM ||
+                 it->type() == MediaItem::PODCASTCHANNEL) )
+            delete it;
+    }
 }
 
 void

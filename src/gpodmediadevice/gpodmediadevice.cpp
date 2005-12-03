@@ -458,39 +458,42 @@ GpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
 
     switch(item->type())
     {
+    case MediaItem::STALE:
     case MediaItem::TRACK:
     case MediaItem::INVISIBLE:
     case MediaItem::PODCASTITEM:
         if(!onlyPlayed || item->played() > 0)
         {
+            bool stale = item->type()==MediaItem::STALE;
+            Itdb_Track *track = item->m_track;
+            delete item;
+
             // delete from playlists
-            GpodMediaItem *i = static_cast<GpodMediaItem *>(m_playlistItem)->findTrack(item->m_track);
-            while(i)
+            for( GpodMediaItem *it = static_cast<GpodMediaItem *>(m_playlistItem)->findTrack(track);
+                    it;
+                    it = static_cast<GpodMediaItem *>(m_playlistItem)->findTrack(track) )
             {
-                delete i;
-                i = static_cast<GpodMediaItem *>(m_playlistItem)->findTrack(item->m_track);
+                delete it;
             }
 
-            // delete file
-            KURL url;
-            url.setPath(realPath(item->m_track->ipod_path));
-            deleteFile( url );
+            // delete all other occurences
+            for( GpodMediaItem *it = getTrack( track );
+                    it;
+                    it = getTrack( track ) )
+            {
+                delete it;
+            }
+
+            if( !stale )
+            {
+                // delete file
+                KURL url;
+                url.setPath(realPath(track->ipod_path));
+                deleteFile( url );
+            }
 
             // remove from database
-            ret = removeDBTrack(item->m_track);
-            delete item;
-        }
-        break;
-    case MediaItem::STALE:
-        {
-            GpodMediaItem *i = static_cast<GpodMediaItem *>(m_playlistItem)->findTrack(item->m_track);
-            while(i)
-            {
-                delete i;
-                i = static_cast<GpodMediaItem *>(m_playlistItem)->findTrack(item->m_track);
-            }
-            ret = removeDBTrack(item->m_track);
-            delete item;
+            ret = removeDBTrack(track);
         }
         break;
     case MediaItem::ORPHANED:
@@ -1129,6 +1132,44 @@ GpodMediaDevice::getTrack(const QString &artist, const QString &album, const QSt
 
     return NULL;
 }
+
+GpodMediaItem *
+GpodMediaDevice::getTrack( const Itdb_Track *itrack )
+{
+    QString artist = QString::fromUtf8( itrack->artist );
+    QString album = QString::fromUtf8( itrack->album );
+    QString title = QString::fromUtf8( itrack->title );
+
+    GpodMediaItem *item = getAlbum( artist, album );
+    if(item)
+    {
+        for( GpodMediaItem *track = dynamic_cast<GpodMediaItem *>(item->findItem( title ) );
+                track;
+                track = dynamic_cast<GpodMediaItem *>(item->findItem(title, track)) )
+        {
+            if( track->m_track == itrack )
+                return track;
+        }
+    }
+
+    if(m_podcastItem)
+    {
+        item = dynamic_cast<GpodMediaItem *>(m_podcastItem->findItem(album));
+        if(item)
+        {
+            for( GpodMediaItem *track = dynamic_cast<GpodMediaItem *>(item->findItem(title));
+                    track;
+                    track = dynamic_cast<GpodMediaItem *>(item->findItem(title, track)) )
+            {
+                if( track->m_track == itrack )
+                    return track;
+            }
+        }
+    }
+
+    return NULL;
+}
+
 
 KURL
 GpodMediaDevice::determineURLOnDevice(const MetaBundle &bundle)

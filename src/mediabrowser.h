@@ -386,6 +386,7 @@ class MediaDevice : public QObject
 
         void deleteFromDevice( MediaItem *item=0, bool onlyPlayed=false, bool recursing=false );
 
+        void purgeEmptyItems( MediaItem *root=0 );
         void syncStatsFromDevice( MediaItem *root=0 );
         void syncStatsToDevice( MediaItem *root=0 );
 
