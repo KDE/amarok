@@ -1084,7 +1084,7 @@ CollectionDB::genreList( bool withUnknowns, bool withCompilations )
     qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
 
     //Only report genres that currently have at least one song
-    qb.addFilter(QueryBuilder::tabSong, "");
+    qb.addFilter( QueryBuilder::tabSong, "" );
 
     if ( !withUnknowns )
         qb.excludeMatch( QueryBuilder::tabGenre, i18n( "Unknown" ) );
