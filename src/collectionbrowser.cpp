@@ -680,6 +680,13 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
 
     QueryBuilder qb;
     bool c = false;
+    bool SortbyTrackFirst=false;
+
+    //Sort by track number first if album is in one of the categories, otherwise by track name first
+    if (m_cat1 == CollectionBrowser::IdAlbum ||
+        m_cat2 == CollectionBrowser::IdAlbum ||
+        m_cat3 == CollectionBrowser::IdAlbum)
+            SortbyTrackFirst = true;
 
     // initalization for year - album mode
     QString tmptext;
@@ -691,6 +698,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
         m_cat2 == CollectionBrowser::IdVisYearAlbum ||
         m_cat3 == CollectionBrowser::IdVisYearAlbum )
     {
+        SortbyTrackFirst = true;
         if( m_cat1 == CollectionBrowser::IdVisYearAlbum )
         {
             VisYearAlbum = 1;
@@ -743,7 +751,12 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                 qb.addReturnValue( q_cat2, QueryBuilder::valTitle );
                 qb.addReturnValue( q_cat2, QueryBuilder::valURL );
                 if ( c ) qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-                qb.sortBy( q_cat2, QueryBuilder::valTrack );
+
+                if (SortbyTrackFirst)
+                    qb.sortBy( q_cat2, QueryBuilder::valTrack );
+                qb.sortBy( q_cat2, QueryBuilder::valTitle );
+                if (!SortbyTrackFirst)
+                    qb.sortBy( q_cat2, QueryBuilder::valTrack );
                 qb.sortBy( q_cat2, QueryBuilder::valURL );
             }
             else
@@ -813,7 +826,11 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                 qb.addReturnValue( q_cat3, QueryBuilder::valURL );
                 if ( c ) qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
 
-                qb.sortBy( q_cat3, QueryBuilder::valTrack );
+                if (SortbyTrackFirst)
+                    qb.sortBy( q_cat3, QueryBuilder::valTrack );
+                qb.sortBy( q_cat3, QueryBuilder::valTitle );
+                if (!SortbyTrackFirst)
+                    qb.sortBy( q_cat3, QueryBuilder::valTrack );
                 qb.sortBy( q_cat3, QueryBuilder::valURL );
             }
             else
@@ -909,7 +926,11 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             if( c )
                 qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
 
-            qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+            if (SortbyTrackFirst)
+                qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+            qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTitle );
+            if (!SortbyTrackFirst)
+                qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
             qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valURL );
 
             category = CollectionBrowser::IdNone;
