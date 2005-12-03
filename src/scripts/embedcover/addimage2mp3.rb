@@ -50,8 +50,9 @@ def unsynchronize( data )
                 sync2 = data[index+1] & 0b11111111 == 0b00000000
 
                 if sync and ( sync1 or sync2 ) and index < framesize - 2
-                    print( "." )
-                    data[index+1, 0] = 0x00.to_s()
+                    print( "." ) if sync1
+                    print( "O" ) if sync2
+                    data[index+1, 0] = "\0"
                     index += 3
                     framesize += 1
                 else
