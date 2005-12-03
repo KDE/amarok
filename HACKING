@@ -1,8 +1,10 @@
 Hacking on amaroK
 -----------------
 
-Please respect these guidelines when coding for amaroK, thanks!
+Please respect these guidelines when coding for amaroK, thanks! 
 
+*Where this document isn't clear, refer to amaroK code. 
+*Avoid large commits of formatting fixes, as they easily cause merge conflicts.
 
 Formatting
 ----------
@@ -117,8 +119,24 @@ DEBUG_UNINDENT
 AMAROK_NOTIMPLEMENTED
 AMAROK_DEPRECATED
 
+threadweaver.h has a macro DEBUG_THREAD_FUNC_INFO which also outputs the memory address
+of the current QThread or 'none' if its the original GUI thread.
 
+Errors & Asserts
+-------
+*Never use assert() or fatal(). There must be a better option then crashing a users
+application (its not uncommon for end-users to have debugging enabled).
+
+*KMessageBox is fine to use to prompt the user, but do not use it to display errors
+or informational messages. Instead, KDE::StatusBar has a few handy methods. Refer to
+amarok/src/statusbar/statusBarBase.h
+
+Copyright
+---------
+To comply with the GPL, add your name, email address & the year to the top of any file 
+that you edit. If you bring in code or files from elsewhere, make sure its 
+GPL-compatible and to put the authors name, email & copyright year to the top of 
+those files.
 
 Thanks, now have fun!
  -- the amaroK developers
-
