@@ -314,13 +314,13 @@ SubmitItem::SubmitItem(
     const QString& album,
     const QString& title,
     int length,
-    uint playStartTime)
+    bool now)
 {
     m_artist = artist;
     m_album = album;
     m_title = title;
     m_length = length;
-    m_playStartTime = playStartTime ? playStartTime : QDateTime::currentDateTime( Qt::UTC ).toTime_t();
+    m_playStartTime = now ? QDateTime::currentDateTime( Qt::UTC ).toTime_t() : 0;
 }
 
 
@@ -429,6 +429,7 @@ ScrobblerSubmitter::ScrobblerSubmitter()
     , m_scrobblerEnabled( false )
     , m_prevSubmitTime( 0 )
     , m_interval( 0 )
+    , m_lastSubmissionFinishTime( 0 )
 {
     readSubmitQueue();
 }
@@ -442,6 +443,8 @@ ScrobblerSubmitter::~ScrobblerSubmitter()
     m_ongoingSubmits.clear();
     m_submitQueue.setAutoDelete( true );
     m_submitQueue.clear();
+    m_fakeQueue.setAutoDelete( true );
+    m_fakeQueue.clear();
 }
 
 
@@ -582,7 +585,17 @@ void ScrobblerSubmitter::submitItem( SubmitItem* item )
         {
             SubmitItem* itemFromQueue = dequeueItem();
             if ( itemFromQueue == 0 )
-                break;
+            {
+                if( submitCounter == 0 )
+                {
+                    // this happens if there are only items on the fake submit queue
+                    return;
+                }
+                else
+                {
+                    break;
+                }
+            }
             else
                 data += "&";
 
@@ -667,6 +680,9 @@ void ScrobblerSubmitter::setEnabled( bool enabled )
         m_submitQueue.setAutoDelete( true );
         m_submitQueue.clear();
         m_submitQueue.setAutoDelete( false );
+        m_fakeQueue.setAutoDelete( true );
+        m_fakeQueue.clear();
+        m_fakeQueue.setAutoDelete( false );
     }
 }
 
@@ -846,6 +862,16 @@ void ScrobblerSubmitter::enqueueItem( SubmitItem* item )
 {
     // Maintain max size of the queue, Audioscrobbler won't accept too old
     // submissions anyway.
+    m_fakeQueue.first();
+    for ( uint size = m_fakeQueue.count() + m_submitQueue.count(); size >= 500; size-- )
+    {
+        SubmitItem* itemFromQueue = m_fakeQueue.getFirst();
+        m_fakeQueue.removeFirst();
+        debug() << "Dropping " << itemFromQueue->artist()
+                  << " - " << itemFromQueue->title() << " from fake queue" << endl;
+
+        delete itemFromQueue;
+    }
     m_submitQueue.first();
     for ( uint size = m_submitQueue.count(); size >= 500; size-- )
     {
@@ -857,7 +883,14 @@ void ScrobblerSubmitter::enqueueItem( SubmitItem* item )
         delete itemFromQueue;
     }
 
-    m_submitQueue.inSort( item );
+    if( item->playStartTime() == 0 )
+    {
+        m_fakeQueue.inSort( item );
+    }
+    else
+    {
+        m_submitQueue.inSort( item );
+    }
 
     // Save submit queue to disk so it is more uptodate in case of crash.
     saveSubmitQueue();
@@ -869,7 +902,41 @@ void ScrobblerSubmitter::enqueueItem( SubmitItem* item )
  */
 SubmitItem* ScrobblerSubmitter::dequeueItem()
 {
-    SubmitItem* item = m_submitQueue.take();
+    SubmitItem* item = 0;
+    if( m_lastSubmissionFinishTime > 0 && m_fakeQueue.getFirst() && m_submitQueue.getFirst() )
+    {
+        uint  limit = m_submitQueue.getFirst()->playStartTime();
+        if( limit > QDateTime::currentDateTime().toTime_t() )
+            limit = QDateTime::currentDateTime().toTime_t();
+        if( m_lastSubmissionFinishTime + m_fakeQueue.getFirst()->length() < limit )
+        {
+            m_fakeQueue.first();
+            item = m_fakeQueue.take();
+            item->m_playStartTime = m_lastSubmissionFinishTime;
+        }
+    }
+
+    if( !item )
+    {
+        m_submitQueue.first();
+        item = m_submitQueue.take();
+    }
+
+    if( item )
+    {
+        if( item->playStartTime() < m_lastSubmissionFinishTime )
+        {
+            debug() << "play times screwed up? - " << item->artist() << " - " << item->title() << ": " << item->playStartTime() << " < " << m_lastSubmissionFinishTime << endl;
+        }
+        int add = 30;
+        if( item->length() / 2 + 1 > add )
+            add = item->length() / 2 + 1;
+        if( item->playStartTime() + add > m_lastSubmissionFinishTime )
+            m_lastSubmissionFinishTime = item->playStartTime() + add;
+
+        // Save submit queue to disk so it is more uptodate in case of crash.
+        saveSubmitQueue();
+    }
 
     return item;
 }
@@ -892,7 +959,8 @@ void ScrobblerSubmitter::enqueueJob( KIO::Job* job )
     }
     m_submitQueue.first();
 
-    announceSubmit( lastItem, counter, false );
+    if( lastItem )
+        announceSubmit( lastItem, counter, false );
 }
 
 
@@ -912,12 +980,10 @@ void ScrobblerSubmitter::finishJob( KIO::Job* job )
             firstItem = item;
         else
             delete item;
-
-        m_submitQueue.remove( item );
     }
-    m_submitQueue.first();
 
-    announceSubmit( firstItem, counter, true );
+    if( firstItem )
+        announceSubmit( firstItem, counter, true );
     delete firstItem;
 }
 
@@ -985,11 +1051,19 @@ void ScrobblerSubmitter::saveSubmitQueue()
     QDomElement submitQueue = newdoc.createElement( "submit" );
     submitQueue.setAttribute( "product", "amaroK" );
     submitQueue.setAttribute( "version", APP_VERSION );
+    submitQueue.setAttribute( "lastSubmissionFinishTime", m_lastSubmissionFinishTime );
 
     m_submitQueue.first();
     for ( uint idx = 0; idx < m_submitQueue.count(); idx++ )
     {
         SubmitItem *item = m_submitQueue.at( idx );
+        QDomElement i = item->toDomElement( newdoc );
+        submitQueue.appendChild( i );
+    }
+    m_fakeQueue.first();
+    for ( uint idx = 0; idx < m_fakeQueue.count(); idx++ )
+    {
+        SubmitItem *item = m_fakeQueue.at( idx );
         QDomElement i = item->toDomElement( newdoc );
         submitQueue.appendChild( i );
     }
@@ -1025,6 +1099,12 @@ void ScrobblerSubmitter::readSubmitQueue()
         debug() << "Couldn't read file: " << m_savePath << endl;
         return;
     }
+
+    uint last = 0;
+    if( d.namedItem( "submit" ).isElement() )
+        last = d.namedItem( "submit" ).toElement().attribute( "lastSubmissionFinishTime" ).toUInt();
+    if(last && last > m_lastSubmissionFinishTime)
+        m_lastSubmissionFinishTime = last;
 
     const QString ITEM( "item" ); //so we don't construct these QStrings all the time
 

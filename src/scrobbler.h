@@ -60,13 +60,15 @@ class Scrobbler : public QObject, public EngineObserver
 
 class SubmitItem
 {
+    friend class ScrobblerSubmitter;
+
     public:
         SubmitItem(
             const QString& /*artist*/,
             const QString& /*album*/,
             const QString& /*title*/,
             int /*length*/,
-            uint playStartTime = 0 );
+            bool now = true );
         SubmitItem( const QDomElement& /* domElement */ );
 
         bool operator==( const SubmitItem& item );
@@ -147,9 +149,11 @@ class ScrobblerSubmitter : public QObject
         bool m_scrobblerEnabled;
         uint m_prevSubmitTime;
         uint m_interval;
+        uint m_lastSubmissionFinishTime;
 
         QPtrDict<SubmitItem> m_ongoingSubmits;
-        SubmitQueue m_submitQueue;
+        SubmitQueue m_submitQueue; // songs played by amaroK
+        SubmitQueue m_fakeQueue; // songs for which play times have to be faked (e.g. when submitting from media device)
 };
 
 

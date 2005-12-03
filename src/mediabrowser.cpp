@@ -1329,8 +1329,7 @@ MediaDevice::connectDevice( bool silent )
 
             if( m_updateStats )
             {
-                uint playTime = QDateTime::currentDateTime( Qt::UTC ).toTime_t();
-                doUpdateStats( &playTime, 0 );
+                doUpdateStats( 0 );
             }
 
             updateRootItems();
@@ -1373,7 +1372,7 @@ MediaDevice::connectDevice( bool silent )
 }
 
 void
-MediaDevice::doUpdateStats( uint *playTime, MediaItem *root )
+MediaDevice::doUpdateStats( MediaItem *root )
 {
     MediaItem *it = static_cast<MediaItem *>( m_listview->firstChild() );
     if( root )
@@ -1392,8 +1391,7 @@ MediaDevice::doUpdateStats( uint *playTime, MediaItem *root )
                 for( int i=0; i<it->recentlyPlayed(); i++ )
                 {
                     // submit to last.fm
-                    *playTime -= bundle->length();
-                    SubmitItem *sit = new SubmitItem( bundle->artist(), bundle->album(), bundle->title(), bundle->length(), *playTime );
+                    SubmitItem *sit = new SubmitItem( bundle->artist(), bundle->album(), bundle->title(), bundle->length(), false /* fake playtime */ );
                     if( bundle->length() > 30
                             && bundle->artist() != QString::null && bundle->artist() != "" && bundle->artist() != i18n( "Unknown" )
                             && bundle->title() != QString::null && bundle->title() != "" && bundle->title() != i18n( "Unknown" ) )
@@ -1415,7 +1413,7 @@ MediaDevice::doUpdateStats( uint *playTime, MediaItem *root )
             break;
 
         default:
-            doUpdateStats( playTime, it );
+            doUpdateStats( it );
             break;
         }
     }
