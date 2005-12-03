@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.4:
   FEATURES:
+    * Show extended podcast info on iPod.
     * Optionally update playcount for items played on iPod and submit them
       to last.fm.
     * Ability to copy items from iPod and from filebrowser to collection.

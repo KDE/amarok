@@ -7,6 +7,7 @@
 #define AMAROK_MEDIABROWSER_H
 
 #include <qvbox.h>           //baseclass
+#include <qdatetime.h>
 
 #include <klistview.h>       //baseclass
 #include <kurl.h>            //stack allocated
@@ -28,7 +29,7 @@ struct PodcastInfo
     // per show
     QString url;
     QString description;
-    QString date;
+    QDateTime date;
     QString author;
 
     // per channel

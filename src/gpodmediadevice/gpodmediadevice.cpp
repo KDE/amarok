@@ -94,6 +94,8 @@ class GpodMediaItem : public MediaItem
         int played() const { if(m_track) return m_track->playcount; else return 0; }
         int recentlyPlayed() const { if(m_track) return m_track->recent_playcount; else return 0; }
         int rating() const { if(m_track) return m_track->rating; else return 0; }
+        void setRating(int rating) { if(m_track) m_track->rating = m_track->app_rating = rating; /* dbChanged=true; */ }
+        bool ratingChanged() const { if(m_track) return m_track->rating != m_track->app_rating; else return false; }
         GpodMediaItem *findTrack(Itdb_Track *track)
         {
             if(m_track == track)
@@ -267,20 +269,17 @@ GpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bu
 
     if(podcastInfo)
     {
-        track->flag1 = 0x02; // podcast
-        track->flag2 = 0x01; // skip  when shuffling
-        track->flag3 = 0x01; // remember playback position
-        if( !podcastInfo->description.isNull() && !podcastInfo->description.isEmpty() )
-        {
-            track->flag4 = 0x02; // also show description on iPod
-        }
+        track->flag1 |= 0x02; // podcast
+        track->flag2 |= 0x01; // skip  when shuffling
+        track->flag3 |= 0x01; // remember playback position
+        track->flag4 |= 0x01; // also show description on iPod
         track->unk176 = 0x00020000; // for podcasts
         track->description = g_strdup( podcastInfo->description.utf8() );
         track->subtitle = g_strdup( podcastInfo->description.utf8() );
         track->podcasturl = g_strdup( podcastInfo->url.utf8() );
         track->podcastrss = g_strdup( podcastInfo->rss.utf8() );
         //track->category = g_strdup( "Unknown" );
-        //track->time_released = podcastInfo->date.toInt();
+        track->time_released = itdb_time_host_to_mac( podcastInfo->date.toTime_t() );
     }
     else
     {
@@ -290,8 +289,6 @@ GpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bu
     dbChanged = true;
 
 #if 0
-    // just for trying: probably leaks memory
-    // artwork support not for my nano yet, cannot try
     QString image = CollectionDB::instance()->albumImage(QString(track->artist), QString(track->album), 1);
     if( !image.endsWith( "@nocover.png" ) )
     {
