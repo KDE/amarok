@@ -1212,22 +1212,21 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
 }
 
 QString
-CollectionDB::getURL( const QString &artist, const QString &album, const QString &title )
+CollectionDB::getURL( const MetaBundle &bundle )
 {
-    uint artID = artistID( artist, false );
+    uint artID = artistID( bundle.artist(), false );
     if( !artID )
         return QString::null;
 
-    uint albID = albumID( album, false );
+    uint albID = albumID( bundle.album(), false );
     if( !albID )
         return QString::null;
 
-
-    QStringList urls = query( QString(
-            "SELECT tags.url "
+    QString q = QString( "SELECT tags.url "
             "FROM tags "
-            "WHERE tags.album = '%1' AND tags.artist = '%2' AND tags.title = '%3';" )
-                .arg( albID ).arg( artID ).arg( escapeString( title ) ) );
+            "WHERE tags.album = '%1' AND tags.artist = '%2' AND tags.title = '%3' AND tags.track = '%4';" ).arg( albID ).arg( artID ).arg( escapeString( bundle.title() ) ).arg( bundle.track() );
+
+    QStringList urls = query( q );
 
     if( urls.empty() )
         return QString::null;

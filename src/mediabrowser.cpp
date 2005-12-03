@@ -847,7 +847,7 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
 
     m_device->loadTransferList( amaroK::saveLocation() + "transferlist.xml" );
 
-    if( m_device->autoConnect() )
+    if( m_device->autoConnect() && 0 )
     {
         m_connectButton->setOn( true );
         m_device->connectDevice( true );
@@ -935,6 +935,10 @@ MediaDeviceView::~MediaDeviceView()
 {
     m_device->saveTransferList( amaroK::saveLocation() + "transferlist.xml" );
 
+    if( m_device->m_syncStats )
+    {
+        m_device->syncStatsToDevice();
+    }
     m_device->closeDevice();
 
     delete m_deviceList;
@@ -1026,7 +1030,7 @@ MediaDevice::MediaDevice( MediaDeviceView* parent, MediaDeviceList *listview )
     m_mntcmd = AmarokConfig::mountCommand();
     m_umntcmd = AmarokConfig::umountCommand();
     m_autoDeletePodcasts = AmarokConfig::autoDeletePodcasts();
-    m_updateStats = AmarokConfig::updateStats();
+    m_syncStats = AmarokConfig::syncStats();
 }
 
 MediaDevice::~MediaDevice()
@@ -1177,17 +1181,15 @@ MediaDevice::config()
         QToolTip::add( umntcmd, i18n( "Set the command to unmount your device here, empty commands are not executed." ) );
     }
 
-    QHBox *hbox1 = new QHBox( box );
-    QCheckBox *autoDeletePodcasts = new QCheckBox( hbox1 );
+    QCheckBox *autoDeletePodcasts = new QCheckBox( box );
     autoDeletePodcasts->setText( i18n( "&Automatically delete podcasts" ) );
     QToolTip::add( autoDeletePodcasts, i18n( "Automatically delete podcast shows already played on connect" ) );
     autoDeletePodcasts->setChecked( m_autoDeletePodcasts );
 
-    QHBox *hbox2 = new QHBox( box );
-    QCheckBox *updateStats = new QCheckBox( hbox2 );
-    updateStats->setText( i18n( "&Update amaroK statistics" ) );
-    QToolTip::add( updateStats, i18n( "Update amaroK statistics and submit tracks played to last.fm" ) );
-    updateStats->setChecked( m_updateStats );
+    QCheckBox *syncStats = new QCheckBox( box );
+    syncStats->setText( i18n( "&Synchronize with amaroK statistics" ) );
+    QToolTip::add( syncStats, i18n( "Synchronize with amaroK statistics and submit tracks played to last.fm" ) );
+    syncStats->setChecked( m_syncStats );
 
     if ( dialog.exec() != QDialog::Rejected )
     {
@@ -1198,7 +1200,7 @@ MediaDevice::config()
             setUmountCommand( umntcmd->text() );
         }
         setAutoDeletePodcasts( autoDeletePodcasts->isChecked() );
-        setUpdateStats( updateStats->isChecked() );
+        setSyncStats( syncStats->isChecked() );
     }
 }
 
@@ -1226,10 +1228,10 @@ void MediaDevice::setAutoDeletePodcasts( bool value )
     m_autoDeletePodcasts = value; //Update
 }
 
-void MediaDevice::setUpdateStats( bool value )
+void MediaDevice::setSyncStats( bool value )
 {
-    AmarokConfig::setUpdateStats( value );
-    m_updateStats = value; //Update
+    AmarokConfig::setSyncStats( value );
+    m_syncStats = value; //Update
 }
 
 int MediaDevice::mount()
@@ -1327,9 +1329,9 @@ MediaDevice::connectDevice( bool silent )
                 }
             }
 
-            if( m_updateStats )
+            if( m_syncStats )
             {
-                doUpdateStats( 0 );
+                syncStatsFromDevice( 0 );
             }
 
             updateRootItems();
@@ -1359,6 +1361,11 @@ MediaDevice::connectDevice( bool silent )
 
         m_parent->m_transferButton->setEnabled( false );
 
+        if( m_syncStats )
+        {
+            syncStatsToDevice();
+        }
+
         closeDevice();
         m_parent->updateStats();
         m_parent->m_connectButton->setOn( false );
@@ -1372,7 +1379,7 @@ MediaDevice::connectDevice( bool silent )
 }
 
 void
-MediaDevice::doUpdateStats( MediaItem *root )
+MediaDevice::syncStatsFromDevice( MediaItem *root )
 {
     MediaItem *it = static_cast<MediaItem *>( m_listview->firstChild() );
     if( root )
@@ -1391,34 +1398,79 @@ MediaDevice::doUpdateStats( MediaItem *root )
                 for( int i=0; i<it->recentlyPlayed(); i++ )
                 {
                     // submit to last.fm
-                    SubmitItem *sit = new SubmitItem( bundle->artist(), bundle->album(), bundle->title(), bundle->length(), false /* fake playtime */ );
                     if( bundle->length() > 30
                             && bundle->artist() != QString::null && bundle->artist() != "" && bundle->artist() != i18n( "Unknown" )
                             && bundle->title() != QString::null && bundle->title() != "" && bundle->title() != i18n( "Unknown" ) )
                     {
                         // don't submit tracks shorter than 30 sec or w/o artist/title
+                        debug() << "scrobbling " << bundle->artist() << " - " << bundle->title() << endl;
+                        SubmitItem *sit = new SubmitItem( bundle->artist(), bundle->album(), bundle->title(), bundle->length(), false /* fake time */ );
                         Scrobbler::instance()->m_submitter->submitItem( sit );
-                        debug() << "scrobbling " << bundle->artist() << " - " << bundle->title() << ": " << it->url() << endl;
                     }
 
                     // increase amaroK playcount
-                    QString url = CollectionDB::instance()->getURL( bundle->artist(), bundle->album(), bundle->title() );
+                    QString url = CollectionDB::instance()->getURL( *bundle );
                     if( url != QString::null )
                     {
                         CollectionDB::instance()->addSongPercentage( url, 100 );
                         debug() << "played " << url << endl;
                     }
                 }
+
+                if( it->ratingChanged() )
+                {
+                    // copy rating from media device to amaroK
+                    QString url = CollectionDB::instance()->getURL( *bundle );
+                    if( url != QString::null )
+                    {
+                        CollectionDB::instance()->setSongRating( url, it->rating()/20 );
+                        debug() << "rating changed " << url << ": " << it->rating()/20 << endl;
+                    }
+                }
             }
             break;
 
         default:
-            doUpdateStats( it );
+            syncStatsFromDevice( it );
             break;
         }
     }
 }
 
+void
+MediaDevice::syncStatsToDevice( MediaItem *root )
+{
+    MediaItem *it = static_cast<MediaItem *>( m_listview->firstChild() );
+    if( root )
+    {
+        it = static_cast<MediaItem *>( root->firstChild() );
+    }
+
+    for( ; it; it = static_cast<MediaItem *>( it->nextSibling() ) )
+    {
+        switch( it->type() )
+        {
+        case MediaItem::TRACK:
+            if( !it->parent() || static_cast<MediaItem *>( it->parent() )->type() != MediaItem::PLAYLIST )
+            {
+                MetaBundle *bundle = it->bundle();
+                QString url = CollectionDB::instance()->getURL( *bundle );
+
+                if( url != QString::null )
+                {
+                    // copy amaroK rating to device
+                    int rating = CollectionDB::instance()->getSongRating( url )*20;
+                    it->setRating( rating );
+                }
+            }
+            break;
+
+        default:
+            syncStatsFromDevice( it );
+            break;
+        }
+    }
+}
 
 void
 MediaDevice::transferFiles()
@@ -1467,6 +1519,8 @@ MediaDevice::transferFiles()
                 continue;
             }
             item = copyTrackToDevice( *bundle, m_transferredItem->podcastInfo() );
+            int rating = CollectionDB::instance()->getSongRating( bundle->url().path() ) * 20;
+            item->setRating( rating );
         }
 
         if( !item )

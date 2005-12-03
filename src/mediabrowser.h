@@ -11,6 +11,7 @@
 
 #include <klistview.h>       //baseclass
 #include <kurl.h>            //stack allocated
+#include "scrobbler.h"       //SubmitItem
 
 class MediaDevice;
 class MediaDeviceView;
@@ -68,6 +69,8 @@ class MediaItem : public KListViewItem
         virtual int  played() const { return 0; }
         virtual int  recentlyPlayed() const { return 0; } // no of times played on device since last sync
         virtual int  rating() const { return 0; } // rating on device, normalized to 100
+        virtual void setRating( int rating ) { (void)rating; }
+        virtual bool ratingChanged() const { return false; }
         virtual long size() const;
 
         int compare(QListViewItem *i, int col, bool ascending) const;
@@ -308,7 +311,7 @@ class MediaDevice : public QObject
         void setMountCommand(const QString & mnt);
         void setUmountCommand(const QString & umnt);
         void setAutoDeletePodcasts(bool value);
-        void setUpdateStats(bool value);
+        void setSyncStats(bool value);
         int  umount();
         void transferFiles();
         virtual void renameItem( QListViewItem *item ) {(void)item; }
@@ -383,7 +386,8 @@ class MediaDevice : public QObject
 
         void deleteFromDevice( MediaItem *item=0, bool onlyPlayed=false, bool recursing=false );
 
-        void doUpdateStats( MediaItem *root=0 );
+        void syncStatsFromDevice( MediaItem *root=0 );
+        void syncStatsToDevice( MediaItem *root=0 );
 
         DeviceType  m_type;
 
@@ -391,7 +395,7 @@ class MediaDevice : public QObject
         QString     m_mntcmd;
         QString     m_umntcmd;
         bool        m_autoDeletePodcasts;
-        bool        m_updateStats;
+        bool        m_syncStats;
 
         KShellProcess   *sysProc;
         MediaDeviceView* m_parent;
