@@ -19,6 +19,7 @@ class JobInfo
       m_asin(asin), m_locale(locale), m_last(last) { }
     QString m_asin;
     QString m_locale;
+    QString m_detailUrl;
     bool m_last;
 };
 

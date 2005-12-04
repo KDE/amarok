@@ -38,7 +38,7 @@ RefreshImages::RefreshImages()
         it++;
         QString md5sum = *it;
         QString url =
-            QString("http://webservices.amazon.%1/onca/xml?Service=AWSECommerceService&SubscriptionId=%2&Operation=ItemLookup&ItemId=%3&ResponseGroup=Images")
+            QString("http://webservices.amazon.%1/onca/xml?Service=AWSECommerceService&SubscriptionId=%2&Operation=ItemLookup&ItemId=%3&ResponseGroup=Small,Images")
              .arg(localeToTLD(locale))
              .arg(LICENSE)
              .arg(asin);
@@ -83,15 +83,23 @@ void RefreshImages::finishedXmlFetch( KIO::Job* xmlJob ) //SLOT
     KIO::Scheduler::scheduleJob(imageJob);
     amaroK::StatusBar::instance()->newProgressOperation( imageJob );
     imageJob->setName(xmlJob->name());
-
+    //get the URL of the detail page
+    m_jobInfo[xmlJob->name()].m_detailUrl = doc.documentElement()
+       .namedItem( "Items" )
+       .namedItem("Item")
+       .namedItem("DetailPageURL").firstChild().toText().data();
     connect( imageJob, SIGNAL(result( KIO::Job* )), SLOT(finishedImageFetch( KIO::Job* )) );
 }
 
 void RefreshImages::finishedImageFetch(KIO::Job* imageJob)
 {
+   if( imageJob->error() ) {
+        amaroK::StatusBar::instance()->shortMessage(i18n("There was an error communicating with Amazon."));
+        return;
+    }
     QImage img;
     img.loadFromData(static_cast<KIO::StoredTransferJob*>(imageJob)->data());
-    img.setText( "amazon-url", 0, m_jobInfo[imageJob->name()].m_asin);
+    img.setText( "amazon-url", 0, m_jobInfo[imageJob->name()].m_detailUrl);
     img.save( amaroK::saveLocation("albumcovers/large/") + imageJob->name(), "PNG");
 
     CollectionDB::instance()->newAmazonReloadDate( m_jobInfo[imageJob->name()].m_asin
@@ -111,6 +119,8 @@ QString RefreshImages::localeToTLD(const QString& locale)
         return "com";
     else if(locale=="jp")
         return "co.jp";
+    else if(locale=="uk")
+        return "co.uk";
     else
         return locale;
 }
