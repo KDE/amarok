@@ -1520,12 +1520,13 @@ MediaDevice::transferFiles()
                 continue;
             }
             item = copyTrackToDevice( *bundle, m_transferredItem->podcastInfo() );
-            int rating = CollectionDB::instance()->getSongRating( bundle->url().path() ) * 20;
-            item->setRating( rating );
         }
 
         if( !item )
             break;
+
+        int rating = CollectionDB::instance()->getSongRating( bundle->url().path() ) * 20;
+        item->setRating( rating );
 
         if( playlist )
         {
