@@ -49,8 +49,8 @@ low. This can be achieved by using "forward declarations" instead of includes, l
 "class QListView;" Forward declarations work for pointers and const references.
 
 TIP:
-Kate/KDevelop users can sort the headers automatically. Select the lines
-you want to sort, then Tools -> Filter Selection Through Command -> "sort".
+Kate/KDevelop users can sort the headers automatically. Select the lines you want to sort,
+then Tools -> Filter Selection Through Command -> "sort".
 
 
 Example:
@@ -64,6 +64,40 @@ Example:
 
 #include "qlistviewitem.h"
 #include "qwidget.h"
+
+
+Comments
+--------
+Comment your code. Don't comment what the code does, comment on the purpose of the code. It's
+good for others reading your code, and ultimately it's good for you too.
+
+Example:
+
+/** Due to xine-lib, we have to make KProcess close all fds, otherwise we get "device is busy" messages
+  * Used by AmaroKProcIO and AmaroKProcess, exploiting commSetupDoneC(), a virtual method that
+  * happens to be called in the forked process
+  * See bug #103750 for more information.
+  */
+class AmaroKProcIO : public KProcIO {
+    public:
+    virtual int commSetupDoneC() {
+        const int i = KProcIO::commSetupDoneC();
+        amaroK::closeOpenFiles(KProcIO::out[0],KProcIO::in[0],KProcIO::err[0]);
+        return i;
+    };
+};
+
+
+For headers, use the Doxygen syntax. See http://www.stack.nl/~dimitri/doxygen/
+
+Example:
+
+/**
+ * Start playback.
+ * @param offset Start playing at @p msec position.
+ * @return True for success.
+ */
+virtual bool play( uint offset = 0 ) = 0;
 
 
 Header Formatting
