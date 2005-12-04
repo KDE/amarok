@@ -26,6 +26,7 @@
 #include <qdir.h>
 #include <qtimer.h>
 #include <qlabel.h>
+#include <qregexp.h>
 
 #ifdef HAVE_STATVFS
 #include <stdint.h>
@@ -276,8 +277,10 @@ GpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bu
         track->flag3 |= 0x01; // remember playback position
         track->flag4 |= 0x01; // also show description on iPod
         track->unk176 = 0x00020000; // for podcasts
-        track->description = g_strdup( podcastInfo->description.utf8() );
-        track->subtitle = g_strdup( podcastInfo->description.utf8() );
+        QString plaindesc = podcastInfo->description;
+        plaindesc.replace( QRegExp("<[^>]*>"), "" );
+        track->description = g_strdup( plaindesc.utf8() );
+        track->subtitle = g_strdup( plaindesc.utf8() );
         track->podcasturl = g_strdup( podcastInfo->url.utf8() );
         track->podcastrss = g_strdup( podcastInfo->rss.utf8() );
         //track->category = g_strdup( "Unknown" );
