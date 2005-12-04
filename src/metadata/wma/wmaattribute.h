@@ -19,82 +19,92 @@
  *   USA                                                                   *
  ***************************************************************************/
 
-#ifndef TAGLIB_WMAFILE_H
-#define TAGLIB_WMAFILE_H
+#ifndef TAGLIB_WMAATTRIBUTE_H
+#define TAGLIB_WMAATTRIBUTE_H
 
-#include <tfile.h>
-#include <tag.h>
-#include <wmaproperties.h>
-#include <wmatag.h>
+#include <tstring.h>
+#include <tbytevector.h>
 
 namespace TagLib {
 
   namespace WMA {
-  
-    struct GUID;
-    
-    typedef unsigned char BYTE;
-    typedef unsigned short WORD;
-    typedef unsigned int DWORD;
-    typedef unsigned long long QWORD;
-    
-    class File : public TagLib::File
-    {
-        
-      friend class Attribute;
+ 
+    class File;  
+      
+    class Attribute {
 
+      friend class File;  
+        
     public:
 
-      File(const char *file, bool readProperties = true, Properties::ReadStyle propertiesStyle = Properties::Average);
+      /*!
+       * Enum of types an Attribute can have.
+       */
+      enum AttributeTypes {
+        UnicodeType = 0,
+        BytesType   = 1,
+        BoolType    = 2,
+        DWordType   = 3,
+        QWordType   = 4,
+        WordType    = 5,
+      };
+
+      Attribute();
+      Attribute(const String &name, const String &value);
+      Attribute(const String &name, const ByteVector &value);
+      Attribute(const String &key, unsigned int value);
+      Attribute(const String &key, unsigned long long value);
+      Attribute(const String &key, unsigned short value);
+      Attribute(const String &key, bool value);
       
-      virtual ~File();
-    
-      /*!
-       * Returns the TagLib::Tag for this file. 
-       */
-      virtual TagLib::Tag *tag() const;
+      virtual ~Attribute();
 
       /*!
-       * Returns the WMA::Tag for this file. 
+       * Returns the name.
        */
-      virtual Tag *WMATag() const;
-
+      String name() const;
+      
       /*!
-       * Returns the WMA::Properties for this file. 
+       * Returns type of the value.
        */
-      virtual Properties *audioProperties() const;
-
-
+      AttributeTypes type() const;
+      
       /*!
-       * Save the file. 
-       *
-       * This returns true if the save was successful.
+       * Returns the value as a String.
        */
-      virtual bool save();
-    
+      String toString() const;
+      
+      /*!
+       * Returns the value as a ByteVector.
+       */
+      ByteVector toByteVector() const;
+      
+      /*!
+       * Returns the value as an integer.
+       */
+      int toInt() const;
+      
+      /*!
+       * Returns the value as a long long.
+       */
+      long long toLongLong() const;
+      
+      ByteVector render() const;
+      
     protected:
-
-      int readBYTE();
-      int readWORD();
-      unsigned int readDWORD();
-      long long readQWORD();
-      void readGUID(GUID &g);
-      void readString(int len, String &s);
-
-      ByteVector renderContentDescription();
-      ByteVector renderExtendedContentDescription();
+    
+      Attribute(WMA::File &file);
+      bool parse(WMA::File &file);
       
-      void read(bool readProperties, Properties::ReadStyle propertiesStyle);
-
     private:
       
-      class FilePrivate;
-      FilePrivate *d;
-      
+      class AttributePrivate;
+      AttributePrivate *d;
+    
     };
   
   }
-
-}  
+  
+}
 
 #endif

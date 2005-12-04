@@ -1,6 +1,6 @@
 /***************************************************************************
-copyright            : (C) 2005 by Umesh Shankar
-email                : ushankar@cs.berkeley.edu
+    copyright            : (C) 2005 by Lukas Lalinsky
+    email                : lalinsky@gmail.com
  ***************************************************************************/
 
 /***************************************************************************
@@ -20,45 +20,64 @@ email                : ushankar@cs.berkeley.edu
  ***************************************************************************/
 
 #include <tstring.h>
-
-#include "wmaproperties.h"
-#include "wmafile.h"
-
+#include <wmaproperties.h>
+  
 using namespace TagLib;
 
+class WMA::Properties::PropertiesPrivate
+{
+public:
+  PropertiesPrivate(): length(0), bitrate(0), sampleRate(0), channels(0) {}
+  int length;
+  int bitrate;
+  int sampleRate;
+  int channels;
+};
 
 ////////////////////////////////////////////////////////////////////////////////
 // public members
 ////////////////////////////////////////////////////////////////////////////////
 
-WMA::Properties::Properties(Properties::ReadStyle style) : AudioProperties(style)
+WMA::Properties::Properties() : AudioProperties(AudioProperties::Average)
 {
-    m_length = 0;
-    m_bitrate = 0;
-    m_sampleRate = 0;
-    m_channels = 0;
+  d = new PropertiesPrivate;
 }
 
 WMA::Properties::~Properties()
 {
+  if(d)
+    delete d;  
 }
 
 int WMA::Properties::length() const
 {
-    return m_length;
+  return d->length;
 }
 
 int WMA::Properties::bitrate() const
 {
-    return m_bitrate;
+  return d->bitrate;
 }
 
 int WMA::Properties::sampleRate() const
 {
-    return m_sampleRate;
+  return d->sampleRate;
 }
 
 int WMA::Properties::channels() const
 {
-    return m_channels;
+  return d->channels;
+} 
+
+////////////////////////////////////////////////////////////////////////////////
+// private members
+////////////////////////////////////////////////////////////////////////////////
+
+void WMA::Properties::set(int length, int bitrate, int sampleRate, int channels)
+{
+  d->length = length;
+  d->bitrate = bitrate;
+  d->sampleRate = sampleRate;
+  d->channels = channels;
 }
+

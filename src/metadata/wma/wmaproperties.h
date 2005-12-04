@@ -1,6 +1,6 @@
 /***************************************************************************
-copyright            : (C) 2005 by Umesh Shankar
-email                : ushankar@cs.berkeley.edu
+    copyright            : (C) 2005 by Lukas Lalinsky
+    email                : lalinsky@gmail.com
  ***************************************************************************/
 
 /***************************************************************************
@@ -26,52 +26,46 @@ email                : ushankar@cs.berkeley.edu
 #include <tstring.h>
 
 namespace TagLib {
+    
+  namespace WMA {
+        
+    class File;  
+      
+    class Properties : public AudioProperties
+    {
+        
+      friend class WMA::File;
+      
+    public:
+    
+      /*!
+       * Create an instance of WMA::Properties.
+       */
+      Properties();
+      
+      /*!
+       * Destroys this WMA::Properties instance.
+       */
+      virtual ~Properties();
 
-    namespace WMA {
+      // Reimplementations.
 
-        class File;
+      virtual int length() const;
+      virtual int bitrate() const;
+      virtual int sampleRate() const;
+      virtual int channels() const;
 
-        /*!
-         * This reads the data from a WMA stream to support the
-         * AudioProperties API.
-         */
+      private:
+    
+      class PropertiesPrivate;
+      PropertiesPrivate *d;
+      
+      void set(int length, int bitrate, int sampleRate, int channels);
+      
+    };
 
-        class Properties : public AudioProperties
-        {
-            public:
-                /*!
-                 * Initialize this structure
-                 */
-                Properties(Properties::ReadStyle style);
-
-                /*!
-                 * Destroys this WMA Properties instance.
-                 */
-                virtual ~Properties();
-
-                // Reimplementations.
-
-                virtual int length() const;
-                virtual int bitrate() const;
-                virtual int sampleRate() const;
-                virtual int channels() const;
-
-            private:
-                friend class WMA::File;
-
-                int m_length;
-                int m_bitrate;
-                int m_sampleRate;
-                int m_channels;
-
-                Properties(const Properties &);
-                Properties &operator=(const Properties &);
-
-                void read();
-        };
-
-    }
+  }
 
 }
 
-#endif
+#endif 

@@ -6,14 +6,14 @@ libtagwma_la_LDFLAGS  = $(all_libraries)
 noinst_LTLIBRARIES = libtagwma.la
 
 libtagwma_la_SOURCES =  \
-                     asf.cpp \
+                     wmaattribute.cpp \
                      wmaproperties.cpp \
                      wmatag.cpp \
                      wmafile.cpp \
                      taglib_wmafiletyperesolver.cpp
 
 noinst_HEADERS = \
-                     asf.h \
+                     wmaattribute.h \
                      wmaproperties.h \
                      wmatag.h \
                      wmafile.h \

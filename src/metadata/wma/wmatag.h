@@ -1,6 +1,6 @@
 /***************************************************************************
-copyright            : (C) 2005 by Umesh Shankar
-email                : ushankar@cs.berkeley.edu
+    copyright            : (C) 2005 by Lukas Lalinsky
+    email                : lalinsky@gmail.com
  ***************************************************************************/
 
 /***************************************************************************
@@ -22,141 +22,148 @@ email                : ushankar@cs.berkeley.edu
 #ifndef TAGLIB_WMATAG_H
 #define TAGLIB_WMATAG_H
 
+#include <tmap.h>
 #include <tag.h>
-#include "wmafile.h"
+#include <wmafile.h>
+#include <wmaattribute.h>
 
 namespace TagLib {
 
-    namespace WMA {
-        /*!
-         * This implements the generic TagLib::Tag API
-         */
-        class WMATag : public TagLib::Tag
-        {
-            public:
-                WMATag();
+  namespace WMA {
+  
+    typedef Map<ByteVector, Attribute*> AttributeMap;
+      
+    class Tag : public TagLib::Tag {
+    
+      friend class File;
+      
+    public:
+    
+      Tag();
 
-                /*!
-                 * Detroys this WMATag instance.
-                 */
-                virtual ~WMATag();
+      virtual ~Tag();
 
-                /*!
-                 * Returns the track name; if no track name is present in the tag
-                 * String::null will be returned.
-                 */
-                virtual String title() const { return m_title; }
+      /*!
+       * Returns the track name.
+       */
+      virtual String title() const;
 
-                /*!
-                 * Returns the artist name; if no artist name is present in the tag
-                 * String::null will be returned.
-                 */
-                virtual String artist() const { return m_artist; }
+      /*!
+       * Returns the artist name.
+       */
+      virtual String artist() const;
 
-                /*!
-                 * Returns the album name; if no album name is present in the tag
-                 * String::null will be returned.
-                 */
-                virtual String album() const { return m_album; }
+      /*!
+       * Returns the album name; if no album name is present in the tag
+       * String::null will be returned.
+       */
+      virtual String album() const;
 
-                /*!
-                 * Returns the track comment; if no comment is present in the tag
-                 * String::null will be returned.
-                 */
-                virtual String comment() const { return m_comment; }
+      /*!
+       * Returns the track comment.
+       */
+      virtual String comment() const;
 
-                /*!
-                 * Returns the genre name; if no genre is present in the tag String::null
-                 * will be returned.
-                 */
-                virtual String genre() const { return m_genre; }
+      /*!
+       * Returns the genre name; if no genre is present in the tag String::null
+       * will be returned.
+       */
+      virtual String genre() const;
 
-                /*!
-                 * Returns the year; if there is no year set, this will return 0.
-                 */
-                virtual uint year() const { return m_year; }
+      /*!
+       * Returns the rating.
+       */
+      virtual String rating() const;
 
-                /*!
-                 * Returns the track number; if there is no track number set, this will
-                 * return 0.
-                 */
-                virtual uint track() const { return m_track; }
+      /*!
+       * Returns the genre name; if no genre is present in the tag String::null
+       * will be returned.
+       */
+      virtual String copyright() const;
 
-                /*!
-                 * Sets the title to \a s.  If \a s is String::null then this value will be
-                 * cleared.
-                 */
-                virtual void setTitle(const String &s) { m_title = s; }
+      /*!
+       * Returns the year; if there is no year set, this will return 0.
+       */
+      virtual unsigned year() const;
 
-                /*!
-                 * Sets the artist to \a s.  If \a s is String::null then this value will be
-                 * cleared.
-                 */
-                virtual void setArtist(const String &s) { m_artist = s; }
+      /*!
+       * Returns the track number; if there is no track number set, this will
+       * return 0.
+       */
+      virtual unsigned track() const;
 
-                /*!
-                 * Sets the album to \a s.  If \a s is String::null then this value will be
-                 * cleared.
-                 */
-                virtual void setAlbum(const String &s) { m_album = s; } 
+      /*!
+       * Sets the title to \a s.
+       */
+      virtual void setTitle(const String &s);
 
-                /*!
-                 * Sets the album to \a s.  If \a s is String::null then this value will be
-                 * cleared.
-                 */
-                virtual void setComment(const String &s) { m_comment = s; }
+      /*!
+       * Sets the artist to \a s.
+       */
+      virtual void setArtist(const String &s);
 
-                /*!
-                 * Sets the genre to \a s.  If \a s is String::null then this value will be
-                 * cleared.  For tag formats that use a fixed set of genres, the appropriate
-                 * value will be selected based on a string comparison.  A list of available
-                 * genres for those formats should be available in that type's
-                 * implementation.
-                 */
-                virtual void setGenre(const String &s) { m_genre = s; }
+      /*!
+       * Sets the album to \a s.  If \a s is String::null then this value will be
+       * cleared.
+       */
+      virtual void setAlbum(const String &s);
 
-                /*!
-                 * Sets the year to \a i.  If \a s is 0 then this value will be cleared.
-                 */
-                virtual void setYear(uint i) { m_year = i; }
+      /*!
+       * Sets the comment to \a s.
+       */
+      virtual void setComment(const String &s);
 
-                /*!
-                 * Sets the track to \a i.  If \a s is 0 then this value will be cleared.
-                 */
-                virtual void setTrack(uint i) { m_track = i; }
+      /*!
+       * Sets the rating to \a s. 
+       */
+      virtual void setRating(const String &s);
 
-                /*!
-                 * Returns true if the tag does not contain any data.  This should be
-                 * reimplemented in subclasses that provide more than the basic tagging
-                 * abilities in this class.
-                 */
-                virtual bool isEmpty() const;
+      /*!
+       * Sets the copyright to \a s. 
+       */
+      virtual void setCopyright(const String &s);
 
-                /*!
-                 * Copies the generic data from one tag to another.
-                 *
-                 * \note This will no affect any of the lower level details of the tag.  For
-                 * instance if any of the tag type specific data (maybe a URL for a band) is
-                 * set, this will not modify or copy that.  This just copies using the API
-                 * in this class.
-                 *
-                 * If \a overwrite is true then the values will be unconditionally copied.
-                 * If false only empty values will be overwritten.
-                 */
-                static void duplicate(const Tag *source, Tag *target, bool overwrite = true);
+      /*!
+       * Sets the genre to \a s. 
+       */
+      virtual void setGenre(const String &s);
 
-            protected:
-                String m_title;
-                String m_artist;
-                String m_album;
-                String m_comment;
-                String m_genre;
-                uint m_year;
-                uint m_track;
+      /*!
+       * Sets the year to \a i.  If \a s is 0 then this value will be cleared.
+       */
+      virtual void setYear(unsigned i);
 
-                // The WMA::File class does the reading of the tag itself
+      /*!
+       * Sets the track to \a i.  If \a s is 0 then this value will be cleared.
+       */
+      virtual void setTrack(unsigned i);
 
-        };
-    }
+      /*!
+       * Returns true if the tag does not contain any data.  This should be
+       * reimplemented in subclasses that provide more than the basic tagging
+       * abilities in this class.
+       */
+      virtual bool isEmpty() const;
+
+      /*!
+       * Copies the generic data from one tag to another.
+       *
+       * If \a overwrite is true then the values will be unconditionally copied.
+       * If false only empty values will be overwritten.
+       */
+      static void duplicate(const Tag *source, Tag *target, bool overwrite = true);
+
+      const AttributeMap &attributeMap() const;
+      
+      void setAttribute(const ByteVector &name, const String &value);
+      void setAttribute(const ByteVector &name, Attribute *attribute);
+
+    private:
+      
+      class TagPrivate;
+      TagPrivate *d;
+      
+    };
+  }
 }
 #endif
