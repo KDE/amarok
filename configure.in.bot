@@ -303,7 +303,11 @@ else
     fi
 
     if test x$have_libgpod = xyes; then
-        echo " =   + iPod Support"
+        if test x$have_libgpod_artwork = xyes; then
+            echo " =   + iPod Support (with Artwork)"
+        else
+            echo " =   + iPod Support"
+        fi
     fi
 
     if test x$have_ifp = xyes; then

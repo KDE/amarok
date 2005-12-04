@@ -88,6 +88,9 @@ class GpodMediaDevice : public MediaDevice
         // podcasts
         Itdb_Playlist*    m_podcastPlaylist;
 
+        bool              m_isShuffle;
+        bool              m_supportsArtwork;
+
         GpodMediaItem    *getArtist(const QString &artist);
         GpodMediaItem    *getAlbum(const QString &artist, const QString &album);
         GpodMediaItem    *getTrack(const QString &artist, const QString &album, const QString &title, int trackNumber=-1);

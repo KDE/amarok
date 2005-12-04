@@ -127,6 +127,8 @@ GpodMediaDevice::GpodMediaDevice( MediaDeviceView* parent, MediaDeviceList *list
     m_orphanedItem = NULL;
     m_invisibleItem = NULL;
     m_playlistItem = NULL;
+    m_supportsArtwork = false;
+    m_isShuffle = false;
 }
 
 GpodMediaDevice::~GpodMediaDevice()
@@ -288,12 +290,15 @@ GpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bu
 
     dbChanged = true;
 
-#if 0
-    QString image = CollectionDB::instance()->albumImage(QString(track->artist), QString(track->album), 1);
-    if( !image.endsWith( "@nocover.png" ) )
+#ifdef HAVE_ITDB_TRACK_SET_THUMBNAILS
+    if( m_supportsArtwork )
     {
-        debug() << "adding image " << image << " to " << track->artist << ":" << track->album << endl;
-        itdb_track_set_thumbnails( track, g_strdup( QFile::encodeName(image) ) );
+        QString image = CollectionDB::instance()->albumImage(QString(track->artist), QString(track->album), 1);
+        if( !image.endsWith( "@nocover.png" ) )
+        {
+            debug() << "adding image " << image << " to " << track->artist << ":" << track->album << endl;
+            itdb_track_set_thumbnails( track, g_strdup( QFile::encodeName(image) ) );
+        }
     }
 #endif
 
@@ -560,6 +565,8 @@ GpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
 bool
 GpodMediaDevice::openDevice(bool silent)
 {
+    m_isShuffle = false;
+    m_supportsArtwork = false;
     dbChanged = false;
     m_files.clear();
 
@@ -691,6 +698,72 @@ GpodMediaDevice::openDevice(bool silent)
             return false;
         }
     }
+
+    if( m_itdb->device )
+    {
+        guint model;
+        g_object_get(m_itdb->device,
+                "device-model", &model,
+                NULL);
+
+        switch(model)
+        {
+        case MODEL_TYPE_COLOR:
+        case MODEL_TYPE_COLOR_U2:
+        case MODEL_TYPE_NANO_WHITE:
+        case MODEL_TYPE_NANO_BLACK:
+        case MODEL_TYPE_VIDEO_WHITE:
+        case MODEL_TYPE_VIDEO_BLACK:
+            m_supportsArtwork = true;
+            debug() << "detected iPod photo" << endl;
+            break;
+        case MODEL_TYPE_REGULAR:
+        case MODEL_TYPE_REGULAR_U2:
+        case MODEL_TYPE_MINI:
+        case MODEL_TYPE_MINI_BLUE:
+        case MODEL_TYPE_MINI_PINK:
+        case MODEL_TYPE_MINI_GREEN:
+        case MODEL_TYPE_MINI_GOLD:
+            m_supportsArtwork = false;
+            debug() << "detected regular iPod" << endl;
+            break;
+        case MODEL_TYPE_SHUFFLE:
+            m_supportsArtwork = false;
+            m_isShuffle = true;
+            debug() << "detected iPod shuffle" << endl;
+            break;
+        default:
+        case MODEL_TYPE_INVALID:
+        case MODEL_TYPE_UNKNOWN:
+            m_supportsArtwork = false;
+            debug() << "unknown type" << endl;
+            break;
+        }
+    }
+    else
+    {
+        debug() << "device type detection failed, assuming regular iPod" << endl;
+    }
+
+#ifdef HAVE_ITDB_TRACK_SET_THUMBNAILS
+    if( m_supportsArtwork )
+    {
+        QString path = m_mntpnt + "/iPod_Control/Artwork";
+        QDir dir( path );
+        if(!dir.exists())
+            dir.mkdir(dir.absPath());
+
+        path += "/ArtworkDB";
+        QFile file( path );
+        if( !file.exists() )
+        {
+            file.open( IO_WriteOnly );
+            file.close();
+        }
+    }
+#else
+    m_supportsArtwork = false;
+#endif
 
     if(itdb_musicdirs_number(m_itdb) <= 0)
     {
@@ -1037,25 +1110,11 @@ GpodMediaDevice::writeITunesDB()
 
     if(dbChanged)
     {
-        // FIXME: should find out if shuffle or regular ipod
         bool ok = true;
         GError *error = NULL;
-        if (!itdb_write (m_itdb, &error))
-        {   /* an error occured */
-            ok = false;
-            if(error)
-            {
-                if (error->message)
-                    debug() << "itdb_write error: " << error->message << endl;
-                else
-                    debug() << "itdb_write error: " << "error->message == NULL!" << endl;
-                g_error_free (error);
-            }
-            error = NULL;
-        }
-
-        if (ok)
-        {   /* write shuffle data */
+        if( m_isShuffle )
+        {
+            /* write shuffle data */
             if (!itdb_shuffle_write (m_itdb, &error))
             {   /* an error occured */
                 ok = false;
@@ -1065,6 +1124,22 @@ GpodMediaDevice::writeITunesDB()
                         debug() << "itdb_shuffle_write error: " << error->message << endl;
                     else
                         debug() << "itdb_shuffle_write error: " << "error->message == NULL!" << endl;
+                    g_error_free (error);
+                }
+                error = NULL;
+            }
+        }
+        else
+        {
+            if (!itdb_write (m_itdb, &error))
+            {   /* an error occured */
+                ok = false;
+                if(error)
+                {
+                    if (error->message)
+                        debug() << "itdb_write error: " << error->message << endl;
+                    else
+                        debug() << "itdb_write error: " << "error->message == NULL!" << endl;
                     g_error_free (error);
                 }
                 error = NULL;
