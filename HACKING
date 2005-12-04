@@ -1,14 +1,14 @@
 Hacking on amaroK
 -----------------
 
-Please respect these guidelines when coding for amaroK, thanks! 
+Please respect these guidelines when coding for amaroK, thanks!
 
-*Where this document isn't clear, refer to amaroK code. 
-*Avoid large commits of formatting fixes, as they easily cause merge conflicts.
+* Where this document isn't clear, refer to amaroK code.
+* Avoid large commits of formatting fixes, as they easily cause merge conflicts.
+
 
 Formatting
 ----------
-
 * Spaces, not tabs
 * Indentation is 4 spaces
 * Lines should be limited to 90 characters
@@ -40,8 +40,18 @@ Header includes should be listed in the following order:
     - amaroK includes
     - KDE includes
     - Qt includes
-They should also be sorted, for ease of locating them.  A small comment if applicable
-is also helpful.
+
+They should also be sorted alphabetically , for ease of locating them.  A small comment
+if applicable is also helpful.
+
+Includes in a header file should be kept to the absolute minimum, as to keep compile times
+low. This can be achieved by using "forward declarations" instead of includes, like
+"class QListView;" Forward declarations work for pointers and const references.
+
+TIP:
+Kate/KDevelop users can sort the headers automatically. Select the lines
+you want to sort, then Tools -> Filter Selection Through Command -> "sort".
+
 
 Example:
 
@@ -58,7 +68,6 @@ Example:
 
 Header Formatting
 -----------------
-
 General rules apply here.  Please keep header function definitions aligned nicely,
 if possible.  It helps greatly when looking through the code.  Sorted methods,
 either by name or by their function (ie, group all related methods together) is
@@ -96,8 +105,7 @@ it more typing than '0' but preprocessor directives are less elegant.
 
 Debugging
 ---------
-
-debug.h contains some handy functions for our debug console output.  
+debug.h contains some handy functions for our debug console output.
 Please use there instead of kdDebug().
 
 Usage:
@@ -122,6 +130,7 @@ AMAROK_DEPRECATED
 threadweaver.h has a macro DEBUG_THREAD_FUNC_INFO which also outputs the memory address
 of the current QThread or 'none' if its the original GUI thread.
 
+
 Errors & Asserts
 -------
 *Never use assert() or fatal(). There must be a better option then crashing a users
@@ -131,12 +140,14 @@ application (its not uncommon for end-users to have debugging enabled).
 or informational messages. Instead, KDE::StatusBar has a few handy methods. Refer to
 amarok/src/statusbar/statusBarBase.h
 
+
 Copyright
 ---------
-To comply with the GPL, add your name, email address & the year to the top of any file 
-that you edit. If you bring in code or files from elsewhere, make sure its 
-GPL-compatible and to put the authors name, email & copyright year to the top of 
+To comply with the GPL, add your name, email address & the year to the top of any file
+that you edit. If you bring in code or files from elsewhere, make sure its
+GPL-compatible and to put the authors name, email & copyright year to the top of
 those files.
 
+
 Thanks, now have fun!
- -- the amaroK developers
+  -- the amaroK developers
