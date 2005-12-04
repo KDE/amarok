@@ -139,8 +139,11 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         QStringList   m_metadataHistory;
         KURL          m_currentURL;
 
+        bool          m_relatedOpen;
         bool          m_suggestionsOpen;
         bool          m_favouritesOpen;
+        bool          m_browseArtists;
+        QString       m_artist;
 
         CueFile      *m_cuefile;
 };

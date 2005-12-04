@@ -146,8 +146,10 @@ ContextBrowser::ContextBrowser( const char *name )
         , m_wikiBackPopup( new KPopupMenu( this ) )
         , m_wikiForwardPopup( new KPopupMenu( this ) )
         , m_wikiJob( NULL )
+        , m_relatedOpen( true )
         , m_suggestionsOpen( true )
         , m_favouritesOpen( true )
+        , m_browseArtists( false )
         , m_cuefile( NULL )
 {
     s_instance = this;
@@ -348,6 +350,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
 
     else if ( url.protocol() == "togglebox" )
     {
+        if ( url.path() == "ra" ) m_relatedOpen ^= true;
         if ( url.path() == "ss" ) m_suggestionsOpen ^= true;
         if ( url.path() == "ft" ) m_favouritesOpen ^= true;
     }
@@ -355,6 +358,24 @@ void ContextBrowser::openURLRequest( const KURL &url )
     else if ( url.protocol() == "seek" )
     {
         EngineController::engine()->seek(url.path().toLong());
+    }
+
+    // browse albums of a related artist
+    else if ( url.protocol() == "artist" )
+    {
+        m_browseArtists = true;
+        m_artist = unEscapeHTMLAttr( url.path() );
+        m_dirtyCurrentTrackPage = true;
+        showCurrentTrack();
+    }
+
+    // back to context for current track
+    else if ( url.protocol() == "current" )
+    {
+        m_browseArtists = false;
+        m_artist = QString::null;
+        m_dirtyCurrentTrackPage = true;
+        showCurrentTrack();
     }
 
     else
@@ -849,7 +870,6 @@ private:
         b->m_dirtyCurrentTrackPage = false;
         b->saveHtmlData(); // Send html code to file
     }
-
     QString m_HTMLSource;
 
     ContextBrowser *b;
@@ -887,6 +907,19 @@ bool CurrentTrackJob::doJob()
 
     const MetaBundle &currentTrack = EngineController::instance()->bundle();
 
+    QString artist;
+    if( b->m_browseArtists )
+    {
+        artist = b->m_artist;
+        if( artist == currentTrack.artist() )
+        {
+            b->m_browseArtists = false;
+            b->m_artist = QString::null;
+        }
+    }
+    else
+        artist = currentTrack.artist();
+
     m_HTMLSource.append( "<html>"
                     "<script type='text/javascript'>"
                       //Toggle visibility of a block. NOTE: if the block ID starts with the T
@@ -904,7 +937,7 @@ bool CurrentTrackJob::doJob()
                       "}"
                     "</script>" );
 
-    if ( EngineController::engine()->isStream() )
+    if ( !b->m_browseArtists && EngineController::engine()->isStream() )
     {
         m_HTMLSource.append( QStringx(
                 "<div id='current_box' class='box'>"
@@ -963,196 +996,279 @@ bool CurrentTrackJob::doJob()
         return true;
     }
 
-    const uint artist_id = CollectionDB::instance()->artistID( currentTrack.artist() );
+    const uint artist_id = CollectionDB::instance()->artistID( artist );
     const uint album_id  = CollectionDB::instance()->albumID ( currentTrack.album() );
 
     QueryBuilder qb;
-    // <Current Track Information>
-    qb.clear();
-    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valCreateDate );
-    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valAccessDate );
-    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
-    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
-    qb.addMatch( QueryBuilder::tabStats, QueryBuilder::valURL, currentTrack.url().path() );
-    QStringList values = qb.run();
+    QStringList values;
+    if( b->m_browseArtists )
+    {
+        // <Artist>
+        m_HTMLSource.append(
+                QString(
+                    "<div id='current_box' class='box'>"
+                    "<div id='current_box-header' class='box-header'>"
+                    "<span id='current_box-header-artist' class='box-header-title'>%1</span>"
+                    "<br />"
+                    "<span id='current_box-header-album' class='box-header-title'>%2</span>"
+                    "</div>" )
+                .arg( escapeHTMLAttr( artist ) )
+                .arg( escapeHTMLAttr( i18n( "Browse Artist" ) ) ) );
+        m_HTMLSource.append(
+                QString(
 
-    //making 2 tables is most probably not the cleanest way to do it, but it works.
-    QString albumImageTitleAttr;
-    QString albumImage = CollectionDB::instance()->albumImage( currentTrack, 1 );
-
-    if ( albumImage == CollectionDB::instance()->notAvailCover( 0 ) )
-        albumImageTitleAttr = i18n( "Click to fetch cover from amazon.%1, right-click for menu." ).arg( CoverManager::amazonTld() );
-    else {
-        albumImageTitleAttr = i18n( "Click for information from amazon.%1, right-click for menu." ).arg( CoverManager::amazonTld() );
-        albumImage = ContextBrowser::makeShadowedImage( albumImage );
-    }
-
-    m_HTMLSource.append(
-            "<div id='current_box' class='box'>"
-            "<div id='current_box-header' class='box-header'>"
-            // Show "Title - Artist \n Album", or only "PrettyTitle" if there's no title tag
-            + ( !currentTrack.title().isEmpty()
-            ? QStringx(
-                "<span id='current_box-header-songname' class='box-header-title'>%1</span> "
-                "<span id='current_box-header-separator' class='box-header-title'>-</span> "
-                "<span id='current_box-header-artist' class='box-header-title'>%2</span>"
-                "<br />"
-                "<span id='current_box-header-album' class='box-header-title'>%3</span>"
-            "</div>"
-            "<table id='current_box-table' class='box-body' width='100%' cellpadding='0' cellspacing='0'>"
-                "<tr>"
-                    "<td id='current_box-largecover-td'>"
-                        "<a id='current_box-largecover-a' href='fetchcover:%4 @@@ %5'>"
-                            "<img id='current_box-largecover-image' src='%6' title='%7'>"
+                        "<table id='current_box-table' class='box-body' width='100%' cellpadding='0' cellspacing='0'>"
+                        "<tr>"
+                        "<td id='artist-wikipedia'>"
+                        "<a id='artist-wikipedia-a' href='http://en.wikipedia.org/wiki/%1'>"
+                        + i18n( "Wikipedia Information for %1" ).arg( artist ) +
                         "</a>"
-                    "</td>"
-                    "<td id='current_box-information-td' align='right'>"
-                        "<div id='musicbrainz-div'>"
-                            "<a id='musicbrainz-a' title='%8' href='musicbrainz:%9 @@@ %10 @@@ %11'>"
-                            "<img id='musicbrainz-image' src='%12' />"
-                            "</a>"
+                        "</td>"
+                        "</tr>"
+
+                        "<tr>"
+                        "<td id='current-track'>"
+                        "<a id='current-track-a' href='current://track'>"
+                        "%2"
+                        "</a>" )
+                .arg( escapeHTMLAttr( artist ) )
+                .arg( escapeHTMLAttr( i18n( "Context for Current Track" ) ) )
+                );
+
+        m_HTMLSource.append(
+                "</td>"
+                "</tr>"
+                "</table>"
+                "</div>" );
+        // </Artist>
+    }
+    else
+    {
+        // <Current Track Information>
+        qb.clear();
+        qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valCreateDate );
+        qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valAccessDate );
+        qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
+        qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
+        qb.addMatch( QueryBuilder::tabStats, QueryBuilder::valURL, currentTrack.url().path() );
+        values = qb.run();
+
+        //making 2 tables is most probably not the cleanest way to do it, but it works.
+        QString albumImageTitleAttr;
+        QString albumImage = CollectionDB::instance()->albumImage( currentTrack, 1 );
+
+        if ( albumImage == CollectionDB::instance()->notAvailCover( 0 ) )
+            albumImageTitleAttr = i18n( "Click to fetch cover from amazon.%1, right-click for menu." ).arg( CoverManager::amazonTld() );
+        else {
+            albumImageTitleAttr = i18n( "Click for information from amazon.%1, right-click for menu." ).arg( CoverManager::amazonTld() );
+            albumImage = ContextBrowser::makeShadowedImage( albumImage );
+        }
+
+        m_HTMLSource.append(
+                "<div id='current_box' class='box'>"
+                "<div id='current_box-header' class='box-header'>"
+                // Show "Title - Artist \n Album", or only "PrettyTitle" if there's no title tag
+                + ( !currentTrack.title().isEmpty()
+                    ? QStringx(
+                        "<span id='current_box-header-songname' class='box-header-title'>%1</span> "
+                        "<span id='current_box-header-separator' class='box-header-title'>-</span> "
+                        "<span id='current_box-header-artist' class='box-header-title'>%2</span>"
+                        "<br />"
+                        "<span id='current_box-header-album' class='box-header-title'>%3</span>"
                         "</div>"
-                )
-                .args( QStringList()
-                << escapeHTML( currentTrack.title() )
-                << escapeHTML( currentTrack.artist() )
-                << escapeHTML( currentTrack.album() )
-                << escapeHTMLAttr( currentTrack.artist() )
-                << escapeHTMLAttr( currentTrack.album() )
-                << escapeHTMLAttr( albumImage )
-                << albumImageTitleAttr
-                << i18n( "Look up this track at musicbrainz.org" )
-                << escapeHTMLAttr( currentTrack.artist() )
-                << escapeHTMLAttr( currentTrack.album() )
-                << escapeHTMLAttr( currentTrack.title() )
-                << escapeHTML( locate( "data", "amarok/images/musicbrainz.png" ) ) )
-            : QString ( //no title
-                "<span id='current_box-header-prettytitle' class='box-header-prettytitle'>%1</span> "
-                "</div>"
-                "<table id='current_box-table' class='box-body' width='100%' cellpadding='0' cellspacing='0'>"
-                    "<tr>"
+                        "<table id='current_box-table' class='box-body' width='100%' cellpadding='0' cellspacing='0'>"
+                        "<tr>"
                         "<td id='current_box-largecover-td'>"
-                            "<a id='current_box-largecover-a' href='fetchcover:%2 @@@ %3'>"
-                                "<img id='current_box-largecover-image' src='%4' title='%5'>"
-                            "</a>"
+                        "<a id='current_box-largecover-a' href='fetchcover:%4 @@@ %5'>"
+                        "<img id='current_box-largecover-image' src='%6' title='%7'>"
+                        "</a>"
                         "</td>"
                         "<td id='current_box-information-td' align='right'>"
-                )
-                .arg( escapeHTML( currentTrack.prettyTitle() ) )
-                .arg( escapeHTMLAttr( currentTrack.artist() ) )
-                .arg( escapeHTMLAttr( currentTrack.album() ) )
-                .arg( escapeHTMLAttr( albumImage ) )
-                .arg( albumImageTitleAttr )
-            ) );
-
-    if ( !values.isEmpty() && values[2].toInt() )
-    {
-        QDateTime firstPlay = QDateTime();
-        firstPlay.setTime_t( values[0].toUInt() );
-        QDateTime lastPlay = QDateTime();
-        lastPlay.setTime_t( values[1].toUInt() );
-
-        const uint playtimes = values[2].toInt();
-        const uint score = values[3].toInt();
-
-        const QString scoreBox =
-                "<table class='scoreBox' border='0' cellspacing='0' cellpadding='0' title='" + i18n("Score") + " %2'>"
-                    "<tr>"
-                        "<td nowrap>%1&nbsp;</td>"
-                            "<td>"
-                            "<div class='sbouter'>"
-                                "<div class='sbinner' style='width: %3px;'></div>"
+                        "<div id='musicbrainz-div'>"
+                        "<a id='musicbrainz-a' title='%8' href='musicbrainz:%9 @@@ %10 @@@ %11'>"
+                        "<img id='musicbrainz-image' src='%12' />"
+                        "</a>"
+                        "</div>"
+                        )
+                    .args( QStringList()
+                            << escapeHTML( currentTrack.title() )
+                            << escapeHTML( currentTrack.artist() )
+                            << escapeHTML( currentTrack.album() )
+                            << escapeHTMLAttr( currentTrack.artist() )
+                            << escapeHTMLAttr( currentTrack.album() )
+                            << escapeHTMLAttr( albumImage )
+                            << albumImageTitleAttr
+                            << i18n( "Look up this track at musicbrainz.org" )
+                            << escapeHTMLAttr( currentTrack.artist() )
+                            << escapeHTMLAttr( currentTrack.album() )
+                            << escapeHTMLAttr( currentTrack.title() )
+                            << escapeHTML( locate( "data", "amarok/images/musicbrainz.png" ) ) )
+                    : QString ( //no title
+                            "<span id='current_box-header-prettytitle' class='box-header-prettytitle'>%1</span> "
                             "</div>"
-                        "</td>"
-                    "</tr>"
+                            "<table id='current_box-table' class='box-body' width='100%' cellpadding='0' cellspacing='0'>"
+                            "<tr>"
+                            "<td id='current_box-largecover-td'>"
+                            "<a id='current_box-largecover-a' href='fetchcover:%2 @@@ %3'>"
+                            "<img id='current_box-largecover-image' src='%4' title='%5'>"
+                            "</a>"
+                            "</td>"
+                            "<td id='current_box-information-td' align='right'>"
+                            )
+                    .arg( escapeHTML( currentTrack.prettyTitle() ) )
+                    .arg( escapeHTMLAttr( currentTrack.artist() ) )
+                    .arg( escapeHTMLAttr( currentTrack.album() ) )
+                    .arg( escapeHTMLAttr( albumImage ) )
+                    .arg( albumImageTitleAttr )
+                    ) );
+
+        if ( !values.isEmpty() && values[2].toInt() )
+        {
+            QDateTime firstPlay = QDateTime();
+            firstPlay.setTime_t( values[0].toUInt() );
+            QDateTime lastPlay = QDateTime();
+            lastPlay.setTime_t( values[1].toUInt() );
+
+            const uint playtimes = values[2].toInt();
+            const uint score = values[3].toInt();
+
+            const QString scoreBox =
+                "<table class='scoreBox' border='0' cellspacing='0' cellpadding='0' title='" + i18n("Score") + " %2'>"
+                "<tr>"
+                "<td nowrap>%1&nbsp;</td>"
+                "<td>"
+                "<div class='sbouter'>"
+                "<div class='sbinner' style='width: %3px;'></div>"
+                "</div>"
+                "</td>"
+                "</tr>"
                 "</table>";
 
-        //SAFE   = .arg( x, y )
-        //UNSAFE = .arg( x ).arg( y )
-        m_HTMLSource.append( QString(
-                "<span>%1</span><br />"
-                "%2"
-                "<span>%3</span><br />"
-                "<span>%4</span>"
-                                    )
-            .arg( i18n( "Track played once", "Track played %n times", playtimes ),
-                  scoreBox.arg( score ).arg( score ).arg( score / 2 ),
-                  i18n( "Last played: %1" ).arg( amaroK::verboseTimeSince( lastPlay ) ),
-                  i18n( "First played: %1" ).arg( amaroK::verboseTimeSince( firstPlay ) ) ) );
-   }
-   else
-        m_HTMLSource.append( i18n( "Never played before" ) );
+            //SAFE   = .arg( x, y )
+            //UNSAFE = .arg( x ).arg( y )
+            m_HTMLSource.append( QString(
+                        "<span>%1</span><br />"
+                        "%2"
+                        "<span>%3</span><br />"
+                        "<span>%4</span>"
+                        )
+                    .arg( i18n( "Track played once", "Track played %n times", playtimes ),
+                        scoreBox.arg( score ).arg( score ).arg( score / 2 ),
+                        i18n( "Last played: %1" ).arg( amaroK::verboseTimeSince( lastPlay ) ),
+                        i18n( "First played: %1" ).arg( amaroK::verboseTimeSince( firstPlay ) ) ) );
+        }
+        else
+            m_HTMLSource.append( i18n( "Never played before" ) );
 
-    m_HTMLSource.append(
-                    "</td>"
+        m_HTMLSource.append(
+                "</td>"
                 "</tr>"
-            "</table>"
-        "</div>" );
-    // </Current Track Information>
+                "</table>"
+                "</div>" );
+        // </Current Track Information>
 
-    if ( currentTrack.url().isLocalFile() && !CollectionDB::instance()->isFileInCollection( currentTrack.url().path() ) )
-    {
-        m_HTMLSource.append(
-        "<div id='notindb_box' class='box'>"
-            "<div id='notindb_box-header' class='box-header'>"
-                "<span id='notindb_box-header-title' class='box-header-title'>"
-                + i18n( "This file is not in your Collection!" ) +
-                "</span>"
-            "</div>"
-            "<div id='notindb_box-body' class='box-body'>"
-                "<div class='info'><p>"
-                + i18n( "If you would like to see contextual information about this track,"
+        if ( currentTrack.url().isLocalFile() && !CollectionDB::instance()->isFileInCollection( currentTrack.url().path() ) )
+        {
+            m_HTMLSource.append(
+                    "<div id='notindb_box' class='box'>"
+                    "<div id='notindb_box-header' class='box-header'>"
+                    "<span id='notindb_box-header-title' class='box-header-title'>"
+                    + i18n( "This file is not in your Collection!" ) +
+                    "</span>"
+                    "</div>"
+                    "<div id='notindb_box-body' class='box-body'>"
+                    "<div class='info'><p>"
+                    + i18n( "If you would like to see contextual information about this track,"
                         " you should add it to your Collection." ) +
-                "</p></div>"
-                "<div align='center'>"
-                "<input type='button' onClick='window.location.href=\"show:collectionSetup\";' value='"
-                + i18n( "Change Collection Setup..." ) +
-                "' class='button' /></div><br />"
-            "</div>"
-        "</div>"
-                           );
-    }
+                    "</p></div>"
+                    "<div align='center'>"
+                    "<input type='button' onClick='window.location.href=\"show:collectionSetup\";' value='"
+                    + i18n( "Change Collection Setup..." ) +
+                    "' class='button' /></div><br />"
+                    "</div>"
+                    "</div>"
+                    );
+        }
 
-    /* cue file code */
-    if ( b->m_cuefile && (b->m_cuefile->count() > 0) ) {
-        m_HTMLSource.append(
-        "<div id='cue_box' class='box'>"
-            "<div id='cue_box-header' class='box-header'>"
+        /* cue file code */
+        if ( b->m_cuefile && (b->m_cuefile->count() > 0) ) {
+            m_HTMLSource.append(
+                    "<div id='cue_box' class='box'>"
+                    "<div id='cue_box-header' class='box-header'>"
                     "<span id='cue_box-header-title' class='box-header-title' onClick=\"toggleBlock('T_CC'); window.location.href='togglebox:cc';\" style='cursor: pointer;'>"
                     + i18n( "Cue File" ) +
                     "</span>"
-            "</div>"
-            "<table id='cue_box-body' class='box-body' id='T_CC' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
-                CueFile::Iterator it;
-                uint i = 0;
-                for ( it = b->m_cuefile->begin(); it != b->m_cuefile->end(); ++it ) {
-                    m_HTMLSource.append(
-                    "<tr class='" + QString( (i++ % 2) ? "box-row-alt" : "box-row" ) + "'>"
+                    "</div>"
+                    "<table id='cue_box-body' class='box-body' id='T_CC' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
+            CueFile::Iterator it;
+            uint i = 0;
+            for ( it = b->m_cuefile->begin(); it != b->m_cuefile->end(); ++it ) {
+                m_HTMLSource.append(
+                        "<tr class='" + QString( (i++ % 2) ? "box-row-alt" : "box-row" ) + "'>"
                         "<td class='song'>"
-                            "<a href=\"seek:" + QString::number(it.key()) + "\">"
-                            "<span class='album-song-trackno'>" + QString::number(it.data().getTrackNumber()) + "&nbsp;</span>"
-                            "<span class='album-song-title'>" + escapeHTML( it.data().getTitle() ) + "</span>"
-                            "<span class='song-separator'>"
-                            + i18n("&#xa0;&#8211; ") +
-                            "</span>"
-                            "<span class='album-song-title'>" + escapeHTML( it.data().getArtist() ) + "</span>"
-                            "</a>"
+                        "<a href=\"seek:" + QString::number(it.key()) + "\">"
+                        "<span class='album-song-trackno'>" + QString::number(it.data().getTrackNumber()) + "&nbsp;</span>"
+                        "<span class='album-song-title'>" + escapeHTML( it.data().getTitle() ) + "</span>"
+                        "<span class='song-separator'>"
+                        + i18n("&#xa0;&#8211; ") +
+                        "</span>"
+                        "<span class='album-song-title'>" + escapeHTML( it.data().getArtist() ) + "</span>"
+                        "</a>"
                         "</td>"
-                    ""
-                    );
-                }
+                        ""
+                        );
+            }
             m_HTMLSource.append(
-            "</table>"
-        "</div>"
-        );
+                    "</table>"
+                    "</div>"
+                    );
+        }
     }
 
 
 
-    // <Suggested Songs>
-    QStringList relArtists;
-    relArtists = CollectionDB::instance()->similarArtists( currentTrack.artist(), 10 );
-    if ( !relArtists.isEmpty() ) {
+    QStringList relArtists = CollectionDB::instance()->similarArtists( artist, 10 );
+    if ( !relArtists.isEmpty() )
+    {
+        // <Related Artists>
+        m_HTMLSource.append(
+                "<div id='related_box' class='box'>"
+                "<div id='related_box-header' class='box-header' onClick=\"toggleBlock('T_RA'); window.location.href='togglebox:ra';\" style='cursor: pointer;'>"
+                "<span id='related_box-header-title' class='box-header-title'>"
+                + i18n( "Artists Related to %1" ).arg( artist ) +
+                "</span>"
+                "</div>"
+                "<table class='box-body' id='T_RA' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
+
+        for ( uint i = 0; i < relArtists.count(); i += 1 )
+        {
+            qb.clear();
+            qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+            bool isInCollection = !CollectionDB::instance()->albumListOfArtist( relArtists[i] ).isEmpty();
+            m_HTMLSource.append(
+                    "<tr class='" + QString( (i % 2) ? "box-row-alt" : "box-row" ) + "'>"
+                    "<td class='artist'>"
+                    + ( isInCollection
+                        ? "<a href=\"artist:" + relArtists[i] + "\">" + relArtists[i] + "</a>"
+                        : "<i><a href=\"artist:" + relArtists[i] + "\">" + relArtists[i] + "</a></i>"
+                      ) +
+                    "</td>"
+                    "<td class='sbtext' width='1'>"
+                    "<a href=\"http://en.wikipedia.org/wiki/" + relArtists[i] + "\">Wikipedia</a>"
+                    "</td>"
+                    "<td width='1'></td>"
+                    "</tr>" );
+        }
+
+        m_HTMLSource.append(
+                "</table>"
+                "</div>" );
+
+        if ( !b->m_relatedOpen )
+            m_HTMLSource.append( "<script language='JavaScript'>toggleBlock('T_RA');</script>" );
+        // </Related Artists>
+
+
         QString token;
 
         qb.clear();
@@ -1188,49 +1304,50 @@ bool CurrentTrackJob::doJob()
             }
         }
 
+        // <Suggested Songs>
         if ( !values.isEmpty() )
         {
             m_HTMLSource.append(
-            "<div id='suggested_box' class='box'>"
-                "<div id='suggested_box-header' class='box-header' onClick=\"toggleBlock('T_SS'); window.location.href='togglebox:ss';\" style='cursor: pointer;'>"
+                    "<div id='suggested_box' class='box'>"
+                    "<div id='suggested_box-header' class='box-header' onClick=\"toggleBlock('T_SS'); window.location.href='togglebox:ss';\" style='cursor: pointer;'>"
                     "<span id='suggested_box-header-title' class='box-header-title'>"
                     + i18n( "Suggested Songs" ) +
                     "</span>"
-                "</div>"
-                "<table class='box-body' id='T_SS' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
+                    "</div>"
+                    "<table class='box-body' id='T_SS' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
 
             for ( uint i = 0; i < values.count(); i += 4 )
                 m_HTMLSource.append(
-                    "<tr class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
+                        "<tr class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
                         "<td class='song'>"
-                            "<a href=\"file:" + values[i].replace( '"', QCString( "%22" ) ) + "\">"
-                            "<span class='album-song-title'>"+ escapeHTML( values[i + 2] ) + "</span>"
-                "<span class='song-separator'>"
-                + i18n("&#xa0;&#8211; ") +
-                "</span><span class='album-song-title'>" + escapeHTML( values[i + 1] ) + "</span>"
-                            "</a>"
+                        "<a href=\"file:" + values[i].replace( '"', QCString( "%22" ) ) + "\">"
+                        "<span class='album-song-title'>"+ escapeHTML( values[i + 2] ) + "</span>"
+                        "<span class='song-separator'>"
+                        + i18n("&#xa0;&#8211; ") +
+                        "</span><span class='album-song-title'>" + escapeHTML( values[i + 1] ) + "</span>"
+                        "</a>"
                         "</td>"
                         "<td class='sbtext' width='1'>" + values[i + 3] + "</td>"
                         "<td width='1' title='" + i18n( "Score" ) + "'>"
-                            "<div class='sbouter'>"
-                                "<div class='sbinner' style='width: " + QString::number( values[i + 3].toInt() / 2 ) + "px;'></div>"
-                            "</div>"
+                        "<div class='sbouter'>"
+                        "<div class='sbinner' style='width: " + QString::number( values[i + 3].toInt() / 2 ) + "px;'></div>"
+                        "</div>"
                         "</td>"
                         "<td width='1'></td>"
-                    "</tr>" );
+                        "</tr>" );
 
             m_HTMLSource.append(
-                 "</table>"
-             "</div>" );
+                    "</table>"
+                    "</div>" );
 
             if ( !b->m_suggestionsOpen )
                 m_HTMLSource.append( "<script language='JavaScript'>toggleBlock('T_SS');</script>" );
         }
+        // </Suggested Songs>
     }
-    // </Suggested Songs>
 
-    QString artistName = currentTrack.artist().isEmpty() ? i18n( "This Artist" ) : escapeHTML( currentTrack.artist() );
-    if ( !currentTrack.artist().isEmpty() ) {
+    QString artistName = artist.isEmpty() ? i18n( "This Artist" ) : escapeHTML( artist );
+    if ( !artist.isEmpty() ) {
     // <Favourite Tracks Information>
         qb.clear();
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
@@ -1333,7 +1450,7 @@ bool CurrentTrackJob::doJob()
                         }
                 }
 
-                QString albumImage = CollectionDB::instance()->albumImage( currentTrack.artist(), values[ i ], 50 );
+                QString albumImage = CollectionDB::instance()->albumImage( artist, values[ i ], 50 );
                 if ( albumImage != CollectionDB::instance()->notAvailCover( 50 ) )
                     albumImage = ContextBrowser::makeShadowedImage( albumImage );
 
@@ -1360,7 +1477,7 @@ bool CurrentTrackJob::doJob()
                         "<div class='album-body' style='display:%11;' id='IDA%12'>" )
                     .args( QStringList()
                         << values[ i + 1 ]
-                        << escapeHTMLAttr( currentTrack.artist() ) // artist name
+                        << escapeHTMLAttr( artist ) // artist name
                         << escapeHTMLAttr( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] ) // album.name
                         << i18n( "Click for information from amazon.com, right-click for menu." )
                         << escapeHTMLAttr( albumImage )
@@ -1461,7 +1578,7 @@ bool CurrentTrackJob::doJob()
                         }
                 }
 
-                QString albumImage = CollectionDB::instance()->albumImage( currentTrack.artist(), values[ i ], 50 );
+                QString albumImage = CollectionDB::instance()->albumImage( artist, values[ i ], 50 );
                 if ( albumImage != CollectionDB::instance()->notAvailCover( 50 ) )
                     albumImage = ContextBrowser::makeShadowedImage( albumImage );
 
@@ -2232,7 +2349,7 @@ ContextBrowser::coverRemoved( const QString &artist, const QString &album ) //SL
 void
 ContextBrowser::similarArtistsFetched( const QString &artist ) //SLOT
 {
-    if ( EngineController::instance()->bundle().artist() == artist ) {
+    if( artist == m_artist || EngineController::instance()->bundle().artist() == artist ) {
         m_dirtyCurrentTrackPage = true;
         if ( currentPage() == m_currentTrackPage->view() )
             showCurrentTrack();
