@@ -354,8 +354,8 @@ Statistics::buildArtistInfo()
         m_dataLower.append( mostSongs[i+1].toDouble() );
     }
 
-    m_gui->m_topCoverLabel->setText( i18n("<b>Artist Count</b>") );
-    drawPie( m_gui->m_bottomCoverLabel, m_dataLower );
+//     m_gui->m_topCoverLabel->setText( i18n("<b>Artist Count</b>") );
+//     drawPie( m_gui->m_bottomCoverLabel, m_dataLower );
 
     m_gui->m_btrView->setText( text );
 }
@@ -409,8 +409,8 @@ Statistics::buildGenreInfo()
         m_dataLower.append( mostGenres[i+1].toDouble() );
     }
 
-    m_gui->m_topCoverLabel->setText( i18n("<b>Genre Count</b>") );
-    drawPie( m_gui->m_bottomCoverLabel, m_dataLower );
+//     m_gui->m_topCoverLabel->setText( i18n("<b>Genre Count</b>") );
+//     drawPie( m_gui->m_bottomCoverLabel, m_dataLower );
 
     m_gui->m_btrView->setText( text );
 }
