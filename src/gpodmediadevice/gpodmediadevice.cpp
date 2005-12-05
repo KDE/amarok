@@ -14,6 +14,7 @@
 #include "k3bexporter.h"
 #include "playlist.h"
 #include "collectionbrowser.h"
+#include "playlistbrowser.h"
 
 #include <kapplication.h>
 #include <kmountpoint.h>
@@ -991,6 +992,7 @@ GpodMediaDevice::addTrackToList(Itdb_Track *track)
             channel = new GpodMediaItem(m_podcastItem);
             channel->setText( 0, channelName );
             channel->setType( MediaItem::PODCASTCHANNEL );
+            channel->m_podcastInfo = new PodcastInfo;
         }
 
         item = new GpodMediaItem(channel);
@@ -1000,6 +1002,18 @@ GpodMediaDevice::addTrackToList(Itdb_Track *track)
         item->bundleFromTrack( track );
         item->bundle()->setPath( realPath(track->ipod_path) );
         item->m_url.setPath(realPath(track->ipod_path));
+
+        PodcastInfo *info = new PodcastInfo;
+        item->m_podcastInfo = info;
+        info->url = QString::fromUtf8( track->podcasturl );
+        info->rss = QString::fromUtf8( track->podcastrss );
+        info->description = QString::fromUtf8( track->description );
+        info->date.setTime_t( itdb_time_mac_to_host( track->time_released) );
+
+        if( !info->rss.isEmpty() && channel->podcastInfo()->rss.isEmpty() )
+        {
+           channel->podcastInfo()->rss = info->rss;
+        }
     }
 
     if(!stale && !visible)
@@ -1396,8 +1410,9 @@ GpodMediaDevice::rmbPressed( MediaDeviceList *deviceList, QListViewItem* qitem, 
         enum Actions { APPEND, LOAD, QUEUE,
             COPY_TO_COLLECTION,
             BURN_ARTIST, BURN_ALBUM, BURN_DATACD, BURN_AUDIOCD,
-            RENAME, MAKE_PLAYLIST, ADD_TO_PLAYLIST,
-            ADD, DELETE_PLAYED, DELETE,
+            RENAME, SUBSCRIBE,
+            MAKE_PLAYLIST, ADD_TO_PLAYLIST, ADD,
+            DELETE_PLAYED, DELETE,
             FIRST_PLAYLIST};
 
         menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Load" ), LOAD );
@@ -1406,7 +1421,7 @@ GpodMediaDevice::rmbPressed( MediaDeviceList *deviceList, QListViewItem* qitem, 
         menu.insertSeparator();
 
         menu.insertItem( SmallIconSet( "collection" ), i18n( "&Copy to Collection" ), COPY_TO_COLLECTION );
-        switch ( item->type() )
+        switch( item->type() )
         {
         case MediaItem::ARTIST:
             menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n( "Burn All Tracks by This Artist" ), BURN_ARTIST );
@@ -1427,6 +1442,14 @@ GpodMediaDevice::rmbPressed( MediaDeviceList *deviceList, QListViewItem* qitem, 
         }
 
         menu.insertSeparator();
+
+        if( (item->type() == MediaItem::PODCASTITEM
+                 || item->type() == MediaItem::PODCASTCHANNEL) )
+        {
+            menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n( "Subscribe to Podcast" ), SUBSCRIBE );
+            menu.setItemEnabled( SUBSCRIBE, item->podcastInfo() && !item->podcastInfo()->rss.isEmpty() );
+            menu.insertSeparator();
+        }
 
         KPopupMenu *playlistsMenu = 0;
         switch( item->type() )
@@ -1580,6 +1603,9 @@ GpodMediaDevice::rmbPressed( MediaDeviceList *deviceList, QListViewItem* qitem, 
                 break;
             case DELETE:
                 deleteFromDevice();
+                break;
+            case SUBSCRIBE:
+                PlaylistBrowser::instance()->addPodcast( item->podcastInfo()->rss );
                 break;
             default:
                 if( id >= FIRST_PLAYLIST )
