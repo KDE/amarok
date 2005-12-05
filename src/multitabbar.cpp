@@ -43,6 +43,7 @@
 #include <kconfig.h>
 #include <kdebug.h>
 #include <kiconloader.h>
+#include <klocale.h>
 #include <kpopupmenu.h>
 #include <kstringhandler.h>
 
