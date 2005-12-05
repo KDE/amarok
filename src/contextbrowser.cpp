@@ -36,6 +36,7 @@
 
 #include <kapplication.h> //kapp
 #include <kcalendarsystem.h>  // for amaroK::verboseTimeSince()
+#include <kconfig.h> // suggested/related/favourite box visibility
 #include <kfiledialog.h>
 #include <kglobal.h>
 #include <kiconloader.h>
@@ -106,6 +107,7 @@ namespace amaroK
         return verboseTimeSince( dt );
     }
 
+    extern KConfig *config( const QString& );
 }
 
 
@@ -194,6 +196,10 @@ ContextBrowser::ContextBrowser( const char *name )
 
     setTabEnabled( m_lyricsTab, false );
     setTabEnabled( m_wikiTab, false );
+
+    m_showRelated   = amaroK::config( "ContextBrowser" )->readBoolEntry( "showRelated", true );
+    m_showSuggested = amaroK::config( "ContextBrowser" )->readBoolEntry( "showSuggested", true );
+    m_showFaves     = amaroK::config( "ContextBrowser" )->readBoolEntry( "showFaves", true );
 
     // Delete folder with the cached coverimage shadow pixmaps
     KIO::del( KURL::fromPathOrURL( amaroK::saveLocation( "covershadow-cache/" ) ), false, false );
@@ -596,10 +602,9 @@ void ContextBrowser::tabChanged( QWidget *page )
 
 void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& point )
 {
-    enum { APPEND, ASNEXT, MAKE, MEDIA_DEVICE, INFO, TITLE };
+    enum { APPEND, ASNEXT, MAKE, MEDIA_DEVICE, INFO, TITLE, RELATED, SUGGEST, FAVES };
 
-    if( urlString.isEmpty() ||
-        urlString.startsWith( "musicbrainz" ) ||
+    if( urlString.startsWith( "musicbrainz" ) ||
         urlString.startsWith( "externalurl" ) ||
         urlString.startsWith( "show:suggest" ) ||
         urlString.startsWith( "http" ) ||
@@ -614,12 +619,23 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
     QString artist, album, track; // track unused here
     albumArtistTrackFromUrl( url.path(), artist, album, track );
 
-    if ( url.protocol() == "fetchcover" )
+    if( urlString.isEmpty() )
+    {
+        menu.setCheckable( true );
+        menu.insertItem( i18n("Show Related Artists"), RELATED );
+        menu.insertItem( i18n("Show Suggested Songs"), SUGGEST );
+        menu.insertItem( i18n("Show Favorite Tracks"), FAVES );
+
+        menu.setItemChecked( RELATED, m_showRelated );
+        menu.setItemChecked( SUGGEST, m_showSuggested );
+        menu.setItemChecked( FAVES,   m_showFaves );
+    }
+    else if( url.protocol() == "fetchcover" )
     {
         amaroK::coverContextMenu( this, point, artist, album );
         return;
     }
-    else if ( url.protocol() == "file" || url.protocol() == "album" || url.protocol() == "compilation" )
+    else if( url.protocol() == "file" || url.protocol() == "album" || url.protocol() == "compilation" )
     {
         //TODO it would be handy and more usable to have this menu under the cover one too
 
@@ -680,6 +696,27 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
     //Not all these are used in the menu, it depends on the context
     switch( menu.exec( point ) )
     {
+
+    case RELATED:
+        m_showRelated = !menu.isItemChecked( RELATED );
+        amaroK::config( "ContextBrowser" )->writeEntry( "ShowRelated", m_showRelated );
+        m_dirtyCurrentTrackPage = true;
+        showCurrentTrack();
+        break;
+
+    case SUGGEST:
+        m_showSuggested = !menu.isItemChecked( SUGGEST );
+        amaroK::config( "ContextBrowser" )->writeEntry( "ShowSuggested", m_showSuggested );
+        m_dirtyCurrentTrackPage = true;
+        showCurrentTrack();
+        break;
+
+    case FAVES:
+        m_showFaves = !menu.isItemChecked( FAVES );
+        amaroK::config( "ContextBrowser" )->writeEntry( "ShowFaves", m_showFaves );
+        m_dirtyCurrentTrackPage = true;
+        showCurrentTrack();
+        break;
 
     case ASNEXT:
         Playlist::instance()->insertMedia( urls, Playlist::Queue );
@@ -1230,125 +1267,132 @@ bool CurrentTrackJob::doJob()
     QStringList relArtists = CollectionDB::instance()->similarArtists( artist, 10 );
     if ( !relArtists.isEmpty() )
     {
-        // <Related Artists>
-        m_HTMLSource.append(
-                "<div id='related_box' class='box'>"
-                "<div id='related_box-header' class='box-header' onClick=\"toggleBlock('T_RA'); window.location.href='togglebox:ra';\" style='cursor: pointer;'>"
-                "<span id='related_box-header-title' class='box-header-title'>"
-                + i18n( "Artists Related to %1" ).arg( artist ) +
-                "</span>"
-                "</div>"
-                "<table class='box-body' id='T_RA' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
-
-        for ( uint i = 0; i < relArtists.count(); i += 1 )
+        if( ContextBrowser::instance()->m_showRelated )
         {
-            qb.clear();
-            qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-            bool isInCollection = !CollectionDB::instance()->albumListOfArtist( relArtists[i] ).isEmpty();
+            // <Related Artists>
             m_HTMLSource.append(
-                    "<tr class='" + QString( (i % 2) ? "box-row-alt" : "box-row" ) + "'>"
-                    "<td class='artist'>"
-                    + ( isInCollection
-                        ? "<a href=\"artist:" + relArtists[i] + "\">" + relArtists[i] + "</a>"
-                        : "<i><a href=\"artist:" + relArtists[i] + "\">" + relArtists[i] + "</a></i>"
-                      ) +
-                    "</td>"
-                    "<td class='sbtext' width='1'>"
-                    "<a href=\"http://en.wikipedia.org/wiki/" + relArtists[i] + "\">Wikipedia</a>"
-                    "</td>"
-                    "<td width='1'></td>"
-                    "</tr>" );
-        }
-
-        m_HTMLSource.append(
-                "</table>"
-                "</div>" );
-
-        if ( !b->m_relatedOpen )
-            m_HTMLSource.append( "<script language='JavaScript'>toggleBlock('T_RA');</script>" );
-        // </Related Artists>
-
-
-        QString token;
-
-        qb.clear();
-        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
-        qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-        qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
-        qb.addMatches( QueryBuilder::tabArtist, relArtists );
-        qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valScore, true );
-        qb.setLimit( 0, 5 );
-        values = qb.run();
-
-        // not enough items returned, let's fill the list with score-less tracks
-        if ( values.count() < 10 * qb.countReturnValues() )
-        {
-            qb.clear();
-            qb.exclusiveFilter( QueryBuilder::tabSong, QueryBuilder::tabStats, QueryBuilder::valURL );
-            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
-            qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-            qb.addMatches( QueryBuilder::tabArtist, relArtists );
-            qb.setOptions( QueryBuilder::optRandomize );
-            qb.setLimit( 0, 10 - values.count() / 4 );
-
-            QStringList sl;
-            sl = qb.run();
-            for ( uint i = 0; i < sl.count(); i += qb.countReturnValues() )
-            {
-                values << sl[i];
-                values << sl[i + 1];
-                values << sl[i + 2];
-                values << "0";
-            }
-        }
-
-        // <Suggested Songs>
-        if ( !values.isEmpty() )
-        {
-            m_HTMLSource.append(
-                    "<div id='suggested_box' class='box'>"
-                    "<div id='suggested_box-header' class='box-header' onClick=\"toggleBlock('T_SS'); window.location.href='togglebox:ss';\" style='cursor: pointer;'>"
-                    "<span id='suggested_box-header-title' class='box-header-title'>"
-                    + i18n( "Suggested Songs" ) +
+                    "<div id='related_box' class='box'>"
+                    "<div id='related_box-header' class='box-header' onClick=\"toggleBlock('T_RA'); window.location.href='togglebox:ra';\" style='cursor: pointer;'>"
+                    "<span id='related_box-header-title' class='box-header-title'>"
+                    + i18n( "Artists Related to %1" ).arg( artist ) +
                     "</span>"
                     "</div>"
-                    "<table class='box-body' id='T_SS' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
+                    "<table class='box-body' id='T_RA' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
 
-            for ( uint i = 0; i < values.count(); i += 4 )
+            for ( uint i = 0; i < relArtists.count(); i += 1 )
+            {
+                qb.clear();
+                qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+                bool isInCollection = !CollectionDB::instance()->albumListOfArtist( relArtists[i] ).isEmpty();
                 m_HTMLSource.append(
-                        "<tr class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
-                        "<td class='song'>"
-                        "<a href=\"file:" + values[i].replace( '"', QCString( "%22" ) ) + "\">"
-                        "<span class='album-song-title'>"+ escapeHTML( values[i + 2] ) + "</span>"
-                        "<span class='song-separator'>"
-                        + i18n("&#xa0;&#8211; ") +
-                        "</span><span class='album-song-title'>" + escapeHTML( values[i + 1] ) + "</span>"
-                        "</a>"
+                        "<tr class='" + QString( (i % 2) ? "box-row-alt" : "box-row" ) + "'>"
+                        "<td class='artist'>"
+                        + ( isInCollection
+                            ? "<a href=\"artist:" + relArtists[i] + "\">" + relArtists[i] + "</a>"
+                            : "<i><a href=\"artist:" + relArtists[i] + "\">" + relArtists[i] + "</a></i>"
+                        ) +
                         "</td>"
-                        "<td class='sbtext' width='1'>" + values[i + 3] + "</td>"
-                        "<td width='1' title='" + i18n( "Score" ) + "'>"
-                        "<div class='sbouter'>"
-                        "<div class='sbinner' style='width: " + QString::number( values[i + 3].toInt() / 2 ) + "px;'></div>"
-                        "</div>"
+                        "<td class='sbtext' width='1'>"
+                        "<a href=\"http://en.wikipedia.org/wiki/" + relArtists[i] + "\">Wikipedia</a>"
                         "</td>"
                         "<td width='1'></td>"
                         "</tr>" );
+            }
 
             m_HTMLSource.append(
                     "</table>"
                     "</div>" );
 
-            if ( !b->m_suggestionsOpen )
-                m_HTMLSource.append( "<script language='JavaScript'>toggleBlock('T_SS');</script>" );
+            if ( !b->m_relatedOpen )
+                m_HTMLSource.append( "<script language='JavaScript'>toggleBlock('T_RA');</script>" );
+            // </Related Artists>
         }
-        // </Suggested Songs>
+
+        if( ContextBrowser::instance()->m_showSuggested )
+        {
+            QString token;
+
+            qb.clear();
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+            qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+            qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
+            qb.addMatches( QueryBuilder::tabArtist, relArtists );
+            qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valScore, true );
+            qb.setLimit( 0, 5 );
+            values = qb.run();
+
+            // not enough items returned, let's fill the list with score-less tracks
+            if ( values.count() < 10 * qb.countReturnValues() )
+            {
+                qb.clear();
+                qb.exclusiveFilter( QueryBuilder::tabSong, QueryBuilder::tabStats, QueryBuilder::valURL );
+                qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+                qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+                qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+                qb.addMatches( QueryBuilder::tabArtist, relArtists );
+                qb.setOptions( QueryBuilder::optRandomize );
+                qb.setLimit( 0, 10 - values.count() / 4 );
+
+                QStringList sl;
+                sl = qb.run();
+                for ( uint i = 0; i < sl.count(); i += qb.countReturnValues() )
+                {
+                    values << sl[i];
+                    values << sl[i + 1];
+                    values << sl[i + 2];
+                    values << "0";
+                }
+            }
+
+            // <Suggested Songs>
+            if ( !values.isEmpty() )
+            {
+                m_HTMLSource.append(
+                        "<div id='suggested_box' class='box'>"
+                        "<div id='suggested_box-header' class='box-header' onClick=\"toggleBlock('T_SS'); window.location.href='togglebox:ss';\" style='cursor: pointer;'>"
+                        "<span id='suggested_box-header-title' class='box-header-title'>"
+                        + i18n( "Suggested Songs" ) +
+                        "</span>"
+                        "</div>"
+                        "<table class='box-body' id='T_SS' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
+
+                for ( uint i = 0; i < values.count(); i += 4 )
+                    m_HTMLSource.append(
+                            "<tr class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
+                            "<td class='song'>"
+                            "<a href=\"file:" + values[i].replace( '"', QCString( "%22" ) ) + "\">"
+                            "<span class='album-song-title'>"+ escapeHTML( values[i + 2] ) + "</span>"
+                            "<span class='song-separator'>"
+                            + i18n("&#xa0;&#8211; ") +
+                            "</span><span class='album-song-title'>" + escapeHTML( values[i + 1] ) + "</span>"
+                            "</a>"
+                            "</td>"
+                            "<td class='sbtext' width='1'>" + values[i + 3] + "</td>"
+                            "<td width='1' title='" + i18n( "Score" ) + "'>"
+                            "<div class='sbouter'>"
+                            "<div class='sbinner' style='width: " + QString::number( values[i + 3].toInt() / 2 ) + "px;'></div>"
+                            "</div>"
+                            "</td>"
+                            "<td width='1'></td>"
+                            "</tr>" );
+
+                m_HTMLSource.append(
+                        "</table>"
+                        "</div>" );
+
+                if ( !b->m_suggestionsOpen )
+                    m_HTMLSource.append( "<script language='JavaScript'>toggleBlock('T_SS');</script>" );
+            }
+            // </Suggested Songs>
+        }
     }
 
     QString artistName = artist.isEmpty() ? i18n( "This Artist" ) : escapeHTML( artist );
     if ( !artist.isEmpty() ) {
     // <Favourite Tracks Information>
+    if( ContextBrowser::instance()->m_showFaves )
+    {
         qb.clear();
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
@@ -1395,6 +1439,7 @@ bool CurrentTrackJob::doJob()
                 m_HTMLSource.append( "<script language='JavaScript'>toggleBlock('T_FT');</script>" );
 
         }
+    }
     // </Favourite Tracks Information>
 
     // <Albums by this artist>

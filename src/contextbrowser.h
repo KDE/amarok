@@ -142,6 +142,10 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         bool          m_relatedOpen;
         bool          m_suggestionsOpen;
         bool          m_favouritesOpen;
+        bool          m_showRelated;
+        bool          m_showSuggested;
+        bool          m_showFaves;
+
         bool          m_browseArtists;
         QString       m_artist;
 
