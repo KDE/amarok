@@ -37,7 +37,7 @@
 namespace amaroK {
     void coverContextMenu( QWidget *parent, QPoint point, const QString &artist, const QString &album, bool showCoverManager ) {
         KPopupMenu menu;
-        enum { SHOW, FETCH, CUSTOM, DELETE, MANAGER, };
+        enum { SHOW, FETCH, CUSTOM, DELETE, MANAGER };
 
         menu.insertTitle( i18n( "Cover Image" ) );
 
@@ -120,8 +120,7 @@ void CoverLabel::mouseReleaseEvent(QMouseEvent *pEvent) {
     {
         amaroK::coverContextMenu( this, pEvent->globalPos(), m_artist, m_album, false );
     }
-};
-
+}
 
 
 CoverFetcher::CoverFetcher( QWidget *parent, const QString &artist, QString album )
