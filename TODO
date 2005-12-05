@@ -231,15 +231,6 @@ IDEAS:
            albums, tunes and so on.
 
 
-DISCUSSING:
-
-  <markey> I'd very much appreciate people keeping line length in all amaroK sources/textfiles
-           at 110 characters max. Longer lines cause horrible dynamic line breaks or scrolling when
-           you only have limited screen width, like in console or kdevelop. pretty please with icing =)
-  <mxcl>   I added a 110 char marker to my editor (since ages ago). However I don't always keep to it.
-           Breaking lines is most often ugly :( Mostly I do though. You can praise me now ;)
-
-
 DO-NOT-IMPLEMENT (stuff that was rejected):
 
   <markey> Allow removing of playlist items by dragging back into browser.
