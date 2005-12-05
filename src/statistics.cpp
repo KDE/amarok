@@ -220,7 +220,7 @@ Statistics::buildAlbumInfo()
     m_gui->m_topCoverLabel->setPixmap( QPixmap( image_fave ) );
     m_gui->m_topCoverLabel->setFrameShape( QFrame::StyledPanel );
 
-    QString text = "<b>" + i18n("Favourite Albums") + "</b><br>";
+    QString text = "<b>" + i18n("Favorite Albums") + "</b><br>";
     for( uint i=0; i < faveAlbums.count(); i += qb.countReturnValues() )
     {
         text += "<i>" + faveAlbums[i] + "</i>" + i18n(" - " ) + faveAlbums[i+1]
@@ -271,7 +271,7 @@ Statistics::buildTrackInfo()
     QStringList fave = qb.run();
 
     ///Favourites
-    QString text = "<b>" + i18n("Favourite Songs") + "</b><br>";
+    QString text = "<b>" + i18n("Favorite Songs") + "</b><br>";
     for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
     {
         text += i18n("<i>%1</i> - %2 (Score: %3)")
@@ -320,7 +320,7 @@ Statistics::buildArtistInfo()
     QStringList faveArtists = qb.run();
 
     ///Favourites
-    QString text = "<b>" + i18n("Favourite Artists") + "</b><br>";
+    QString text = "<b>" + i18n("Favorite Artists") + "</b><br>";
     for( uint i=0; i < faveArtists.count(); i += qb.countReturnValues() )
     {
         text += i18n("<i>%1</i> (Score: %2)")
@@ -374,7 +374,7 @@ Statistics::buildGenreInfo()
     QStringList faveGenres = qb.run();
 
     ///Favourites
-    QString text = "<b>" + i18n("Favourite Genres") + "</b><br>";
+    QString text = "<b>" + i18n("Favorite Genres") + "</b><br>";
     for( uint i=0; i < faveGenres.count(); i += qb.countReturnValues() )
     {
         text += i18n("<i>%1</i> (Score: %2)")
