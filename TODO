@@ -5,9 +5,15 @@ TODO-list for amaroK
 
 
 SHORT-TERM (URGENT):
+ <sebr>    Media device should allow for switching between devices (ie, don't assume user has either
+           iPod *or* iRiver. This will also allow for implementation of USB based media players.
+
  <markey>  TagDialog: I was trying to fetch a cover from the dialog. The download job stalled.
            I couldn't cancel it because the dialog is modal, so I could not click the statusbar :(
            So I had to kill amarok. We should try to make the dialog non-modal, if possible.
+           <sebr> I remember this not being possible because tag dialog depends on playlist items.
+           If the dialog is not modal, then removing the playlist item will crash amarok when the
+           tag item is saved.
 
  <foreboy> emit statusText when helix libs return an error to the errorresponsesink
  -->foreboy
@@ -26,8 +32,6 @@ SHORT-TERM (URGENT):
            "downloaded" state until you open the menu again.
 
  <markey>  Add DCOP functions for showing dialogs, similar to kdialog.
-
- <sebr>    Delete partial (.part) podcast downloads
 
  <markey>  When scanning with no folders selected, hell breaks lose. DB errors, etc.
            Only way to repair it is delete the DB.

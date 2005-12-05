@@ -1772,6 +1772,8 @@ PodcastItem::abortDownload() //SLOT
     emit downloadAborted();
     m_podcastItemJob->kill();
 
+    KIO::del( KURL::fromPathOrURL( m_localUrlString + ".part" ) );
+
     stopAnimation();
     setText( 0, m_title );
     m_downloaded = false;
