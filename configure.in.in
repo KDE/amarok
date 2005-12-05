@@ -289,13 +289,7 @@ if test "$build_helix" != "no"; then
 	fi
     else
         HELIX_LIBS=`unset CDPATH; cd $build_helix && pwd`
-	if test -e "$HELIX_LIBS/common/clntcore.so"; then
-	  AC_MSG_RESULT([found HelixPlayer in $HELIX_LIBS])
-	  build_helix=$HELIX_LIBS
-        else
-	  AC_MSG_WARN([could not find helix libs in $HELIX_LIBS])
-          build_helix=no
-	fi
+	build_helix=$HELIX_LIBS
     fi
 
     AC_DEFINE(HAVE_HELIX, 1, [have HELIX])
