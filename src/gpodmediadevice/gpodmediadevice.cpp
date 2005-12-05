@@ -96,7 +96,7 @@ class GpodMediaItem : public MediaItem
         int played() const { if(m_track) return m_track->playcount; else return 0; }
         int recentlyPlayed() const { if(m_track) return m_track->recent_playcount; else return 0; }
         int rating() const { if(m_track) return m_track->rating; else return 0; }
-        void setRating(int rating) { if(m_track) m_track->rating = m_track->app_rating = rating; /* dbChanged=true; */ }
+        void setRating(int rating) { if(m_track) m_track->rating = m_track->app_rating = rating; /* m_dbChanged=true; */ }
         bool ratingChanged() const { if(m_track) return m_track->rating != m_track->app_rating; else return false; }
         GpodMediaItem *findTrack(Itdb_Track *track)
         {
@@ -118,11 +118,11 @@ class GpodMediaItem : public MediaItem
 
 
 GpodMediaDevice::GpodMediaDevice( MediaDeviceView* parent, MediaDeviceList *listview )
-    : MediaDevice( parent, listview )
+    : KioMediaDevice( parent, listview )
     , m_masterPlaylist( NULL )
     , m_podcastPlaylist( NULL )
 {
-    dbChanged = false;
+    m_dbChanged = false;
     m_itdb = NULL;
     m_podcastItem = NULL;
     m_staleItem = NULL;
@@ -145,75 +145,6 @@ bool
 GpodMediaDevice::isConnected()
 {
     return (m_itdb != NULL);
-}
-
-MediaItem *
-GpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle, const PodcastInfo *podcastInfo)
-{
-    KURL url = determineURLOnDevice(bundle);
-
-    // check if path exists and make it if needed
-    QFileInfo finfo( url.path() );
-    QDir dir = finfo.dir();
-    while ( !dir.exists() )
-    {
-        QString path = dir.absPath();
-        QDir parentdir;
-        QDir create;
-        do
-        {
-            create.setPath(path);
-            path = path.section("/", 0, path.contains('/')-1);
-            parentdir.setPath(path);
-        }
-        while( !path.isEmpty() && !(path==m_mntpnt) && !parentdir.exists() );
-        debug() << "trying to create \"" << path << "\"" << endl;
-        if(!create.mkdir( create.absPath() ))
-        {
-            break;
-        }
-    }
-
-    if ( !dir.exists() )
-    {
-        amaroK::StatusBar::instance()->longMessage(
-                i18n( "Media Device: Creating directory for file %1 failed" ).arg( url.path() ),
-                KDE::StatusBar::Error );
-        return NULL;
-    }
-
-    m_wait = true;
-
-    KIO::CopyJob *job = KIO::copy( bundle.url(), url, false );
-    connect( job, SIGNAL( result( KIO::Job * ) ),
-            this,  SLOT( fileTransferred( KIO::Job * ) ) );
-
-    while ( m_wait )
-    {
-        usleep(10000);
-        kapp->processEvents( 100 );
-    }
-
-    if(m_copyFailed)
-    {
-        amaroK::StatusBar::instance()->longMessage(
-                i18n( "Media Device: Copying %1 to %2 failed" ).arg(bundle.url().prettyURL()).arg(url.prettyURL()),
-                KDE::StatusBar::Error );
-        return NULL;
-    }
-
-    MetaBundle bundle2(url);
-    if(!bundle2.isValidMedia())
-    {
-        // probably s.th. went wrong
-        amaroK::StatusBar::instance()->longMessage(
-                i18n( "Media Device: Reading tags from %1 failed" ).arg( url.prettyURL() ),
-                KDE::StatusBar::Error );
-        QFile::remove( url.path() );
-        return NULL;
-    }
-
-    return insertTrackIntoDB(url.path(), bundle, podcastInfo);
 }
 
 MediaItem *
@@ -292,7 +223,7 @@ GpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bu
         track->unk176 = 0x00010000; // for non-podcasts
     }
 
-    dbChanged = true;
+    m_dbChanged = true;
 
 #ifdef HAVE_ITDB_TRACK_SET_THUMBNAILS
     if( m_supportsArtwork )
@@ -351,7 +282,7 @@ GpodMediaDevice::trackExists( const MetaBundle& bundle )
 MediaItem *
 GpodMediaDevice::newPlaylist(const QString &name, MediaItem *parent, QPtrList<MediaItem> items)
 {
-    dbChanged = true;
+    m_dbChanged = true;
     GpodMediaItem *item = new GpodMediaItem(parent);
     item->setType(MediaItem::PLAYLIST);
     item->setText(0, name);
@@ -369,7 +300,7 @@ GpodMediaDevice::addToPlaylist(MediaItem *mlist, MediaItem *after, QPtrList<Medi
     if(!list)
         return;
 
-    dbChanged = true;
+    m_dbChanged = true;
 
     if(list->m_playlist)
     {
@@ -532,7 +463,7 @@ GpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
         }
         if(item->type() == MediaItem::PLAYLIST)
         {
-            dbChanged = true;
+            m_dbChanged = true;
             itdb_playlist_remove(item->m_playlist);
         }
         if(item->type() != MediaItem::PLAYLISTSROOT
@@ -553,7 +484,7 @@ GpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
         // FIXME possibly wrong instance of track is removed
         itdb_playlist_remove_track(item->m_playlist, item->m_track);
         delete item;
-        dbChanged = true;
+        m_dbChanged = true;
         break;
     case MediaItem::DIRECTORY:
     case MediaItem::UNKNOWN:
@@ -571,7 +502,7 @@ GpodMediaDevice::openDevice(bool silent)
 {
     m_isShuffle = false;
     m_supportsArtwork = false;
-    dbChanged = false;
+    m_dbChanged = false;
     m_files.clear();
 
     GError *err = NULL;
@@ -897,7 +828,7 @@ GpodMediaDevice::renameItem( QListViewItem *i ) // SLOT
     if(!item->type() == MediaItem::PLAYLIST)
         return;
 
-    dbChanged = true;
+    m_dbChanged = true;
 
     g_free(item->m_playlist->name);
     item->m_playlist->name = g_strdup( item->text( 0 ).utf8() );
@@ -906,7 +837,7 @@ GpodMediaDevice::renameItem( QListViewItem *i ) // SLOT
 void
 GpodMediaDevice::playlistFromItem(GpodMediaItem *item)
 {
-    dbChanged = true;
+    m_dbChanged = true;
 
     item->m_playlist = itdb_playlist_new(item->text(0).utf8(), false /* dumb playlist */ );
     itdb_playlist_add(m_itdb, item->m_playlist, -1);
@@ -1123,9 +1054,9 @@ void
 GpodMediaDevice::writeITunesDB()
 {
     if(m_itdb)
-        dbChanged = true; // write unconditionally for resetting recent_playcount
+        m_dbChanged = true; // write unconditionally for resetting recent_playcount
 
-    if(dbChanged)
+    if(m_dbChanged)
     {
         bool ok = true;
         GError *error = NULL;
@@ -1163,7 +1094,7 @@ GpodMediaDevice::writeITunesDB()
             }
         }
 
-        dbChanged = false;
+        m_dbChanged = false;
     }
 }
 
@@ -1298,7 +1229,7 @@ GpodMediaDevice::removeDBTrack(Itdb_Track *track)
         return false;
     }
 
-    dbChanged = true;
+    m_dbChanged = true;
 
     Itdb_Playlist *mpl = itdb_playlist_mpl(m_itdb);
     while(itdb_playlist_contains_track(mpl, track))
@@ -1366,39 +1297,6 @@ GpodMediaDevice::getCapacity( unsigned long *total, unsigned long *available )
 }
 
 void
-GpodMediaDevice::fileDeleted( KIO::Job *job )  //SLOT
-{
-    if(job->error())
-    {
-        debug() << "file deletion failed: " << job->errorText() << endl;
-    }
-    m_waitForDeletion = false;
-    m_parent->updateStats();
-}
-
-void
-GpodMediaDevice::fileTransferred( KIO::Job *job )  //SLOT
-{
-    if(job->error())
-    {
-        m_copyFailed = true;
-        debug() << "file transfer failed: " << job->errorText() << endl;
-    }
-    else
-    {
-        m_copyFailed = false;
-
-        setProgress( progress() + 1 );
-
-        // the track just transferred has not yet been removed from the queue
-        m_transferList->takeItem( m_transferList->firstChild() );
-    }
-    m_parent->updateStats();
-
-    m_wait = false;
-}
-
-void
 GpodMediaDevice::rmbPressed( MediaDeviceList *deviceList, QListViewItem* qitem, const QPoint& point, int )
 {
     MediaItem *item = dynamic_cast<MediaItem *>(qitem);
@@ -1446,7 +1344,7 @@ GpodMediaDevice::rmbPressed( MediaDeviceList *deviceList, QListViewItem* qitem, 
         if( (item->type() == MediaItem::PODCASTITEM
                  || item->type() == MediaItem::PODCASTCHANNEL) )
         {
-            menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n( "Subscribe to Podcast" ), SUBSCRIBE );
+            menu.insertItem( SmallIconSet( "favorites" ), i18n( "Subscribe to This Podcast" ), SUBSCRIBE );
             menu.setItemEnabled( SUBSCRIBE, item->podcastInfo() && !item->podcastInfo()->rss.isEmpty() );
             menu.insertSeparator();
         }
@@ -1630,24 +1528,6 @@ GpodMediaDevice::rmbPressed( MediaDeviceList *deviceList, QListViewItem* qitem, 
                 break;
         }
     }
-}
-
-void
-GpodMediaDevice::deleteFile( const KURL &url )
-{
-    debug() << "deleting " << url.prettyURL() << endl;
-    m_waitForDeletion = true;
-    KIO::Job *job = KIO::file_delete( url, false );
-    connect( job, SIGNAL( result( KIO::Job * ) ),
-            this,  SLOT( fileDeleted( KIO::Job * ) ) );
-    do
-    {
-        kapp->processEvents( 100 );
-        usleep( 10000 );
-    } while( m_waitForDeletion );
-
-    if(!isTransferring())
-        setProgress( progress() + 1 );
 }
 
 QStringList

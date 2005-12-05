@@ -9,7 +9,7 @@ extern "C" {
 #include <gpod/itdb.h>
 }
 
-#include "mediabrowser.h"
+#include "kiomediadevice.h"
 
 #include <qptrlist.h>
 #include <qdict.h>
@@ -18,15 +18,14 @@ extern "C" {
 
 class GpodMediaItem;
 
-class GpodMediaDevice : public MediaDevice
+class GpodMediaDevice : public KioMediaDevice
 {
     Q_OBJECT
 
     public:
                           GpodMediaDevice( MediaDeviceView* parent, MediaDeviceList* listview );
         virtual           ~GpodMediaDevice();
-        virtual bool      autoConnect() { return true; }
-        virtual bool      asynchronousTransfer() { return true; }
+        virtual bool      autoConnect() { return false; /* for now b/c of last.fm submissions */ }
         QStringList       supportedFiletypes();
 
         bool              isConnected();
@@ -36,8 +35,6 @@ class GpodMediaDevice : public MediaDevice
 
         bool              openDevice(bool silent=false);
         bool              closeDevice();
-        void              lockDevice(bool) {}
-        void              unlockDevice() {}
 
         /**
          * Insert track already located on media device into the device's database
@@ -56,7 +53,7 @@ class GpodMediaDevice : public MediaDevice
         virtual KURL determineURLOnDevice(const MetaBundle& bundle);
 
         void              synchronizeDevice();
-        MediaItem        *copyTrackToDevice(const MetaBundle& bundle, const PodcastInfo *podcastInfo);
+        //MediaItem        *copyTrackToDevice(const MetaBundle& bundle, const PodcastInfo *podcastInfo);
         bool              deleteItemFromDevice(MediaItem *item, bool onlyPlayed=false );
         void              addToPlaylist(MediaItem *list, MediaItem *after, QPtrList<MediaItem> items);
         void              addToDirectory(MediaItem *dir, QPtrList<MediaItem> items);
@@ -67,15 +64,13 @@ class GpodMediaDevice : public MediaDevice
 
     protected slots:
         void              renameItem( QListViewItem *item );
-        void fileTransferred( KIO::Job *job );
-        void fileDeleted( KIO::Job *job );
 
     private:
         void              writeITunesDB();
         GpodMediaItem    *addTrackToList(Itdb_Track *track);
         void              addPlaylistToList(Itdb_Playlist *playlist);
         void              playlistFromItem(GpodMediaItem *item);
-        void              deleteFile( const KURL &url );
+        //void              deleteFile( const KURL &url );
 
         QString           realPath(const char *ipodPath);
         QString           ipodPath(const QString &realPath);
@@ -98,7 +93,7 @@ class GpodMediaDevice : public MediaDevice
 
         bool              removeDBTrack(Itdb_Track *track);
 
-        bool              dbChanged;
+        bool              m_dbChanged;
 };
 
 #endif

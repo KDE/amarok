@@ -847,7 +847,7 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
 
     m_device->loadTransferList( amaroK::saveLocation() + "transferlist.xml" );
 
-    if( m_device->autoConnect() && 0 )
+    if( m_device->autoConnect() )
     {
         m_connectButton->setOn( true );
         m_device->connectDevice( true );

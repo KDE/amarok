@@ -92,6 +92,7 @@ amarokapp_SOURCES = \
     htmlview.cpp \
     k3bexporter.cpp \
     kbookmarkhandler.cpp \
+    kiomediadevice.cpp \
     ktrm.cpp \
     mediabrowser.cpp \
     metabundle.cpp \
