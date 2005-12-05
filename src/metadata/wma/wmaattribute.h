@@ -46,7 +46,7 @@ namespace TagLib {
         BoolType    = 2,
         DWordType   = 3,
         QWordType   = 4,
-        WordType    = 5,
+        WordType    = 5
       };
 
       Attribute();
