@@ -168,8 +168,7 @@ void MultiTabBarInternal::mousePressEvent( QMouseEvent *ev )
 
     // right button pressed
     KPopupMenu popup;
-    // TODO i18n ()
-    popup.insertTitle(  "Show/Hide Browsers" , /*id*/ -1, /*index*/ 1 );
+    popup.insertTitle(  i18n("Show/Hide Browsers") , /*id*/ -1, /*index*/ 1 );
     popup.setCheckable( true );
     for( uint i = 0; i < m_tabs.count(); i++ ) {
         MultiTabBarTab* tab = m_tabs.at( i );
