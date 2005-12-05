@@ -168,6 +168,7 @@ while offset < data.length() - 4
 
         # Find next frame sync
         offset = data.index( 0xff, offset + 1 )
+        break if offset == nil
         puts( "Trying to locate frame sync. New offset: #{offset}" )
         puts()
     end
