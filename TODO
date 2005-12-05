@@ -14,6 +14,9 @@ SHORT-TERM (URGENT):
            <sebr> I remember this not being possible because tag dialog depends on playlist items.
            If the dialog is not modal, then removing the playlist item will crash amarok when the
            tag item is saved.
+           <markey> Perhaps it could somehow check if the item still exists before writing
+           to it? It could access Playlist::instance(), and ask the playlist if the item
+           exists, I spose.
 
  <foreboy> emit statusText when helix libs return an error to the errorresponsesink
  -->foreboy
@@ -97,7 +100,7 @@ SHORT-TERM (URGENT):
 
 
 MID-TERM:
- <eean>    The FileBrowser doesn't check for recursive symlinks. This is a KDirOperator (or the 
+ <eean>    The FileBrowser doesn't check for recursive symlinks. This is a KDirOperator (or the
            classes it depends on) problem.
 
  <eean>    Basically need to re-add some of the functionality I removed in re-doing dynamic
