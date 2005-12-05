@@ -37,6 +37,11 @@ The Mp3Fixer amaroK Script is a frontend for this tool.
 
 <p>
 <b>ChangeLog:</b><br>
+Version 0.9.1:<br>
+<ul>
+<li>Fixed a bug that could make the script crap out with a runtime error.</li>
+<li>Properly escape paths for SQL.</li>
+</ul>
 Version 0.9:<br>
 <ul>
 <li>mp3fix.rb can now repair broken MPEG frames.</li>
