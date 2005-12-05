@@ -40,7 +40,7 @@ namespace ConfigDynamic
     void loadPartyEntry( PartyEntry* saveMe, NewDynamic* dialog );
 
     KDialogBase* basicDialog( QWidget* parent );
-};
+}
 
 class SelectionListItem : public QCheckListItem
 {
