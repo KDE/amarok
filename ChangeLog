@@ -63,6 +63,7 @@ VERSION 1.4:
       compatibility with various iPod models.
 
   BUGFIXES:
+    * Allow for % and _ in tags, and filter them correctly.
     * Do not copy files of types an iPod is not capable of playing to the
       iPod. (BR 117486)
     * Also take track number into account when comparing tags for checking

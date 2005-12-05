@@ -3,6 +3,7 @@
 // (c) 2004 Sami Nieminen <sami.nieminen@iki.fi>
 // (c) 2005 Ian Monroe <ian@monroe.nu>
 // (c) 2005 Jeff Mitchell <kde-dev@emailgoeshere.com>
+// (c) 2005 Isaiah Damron <xepo@trifault.net>
 // See COPYING file for licensing information.
 
 #define DEBUG_PREFIX "CollectionDB"
@@ -141,6 +142,32 @@ CollectionDB::~CollectionDB()
     destroy();
 }
 
+const QString 
+CollectionDB::likeCondition( const QString &right, bool anyBegin, bool anyEnd )
+{
+    QString escaped = right;
+    escaped.replace( '/', "//" ).replace( '%', "/%" ).replace( '_', "/_" );
+    escaped = instance()->escapeString( escaped );
+
+    QString ret;
+    if ( DbConnection::postgresql == instance()->getDbConnectionType() )
+        ret = " ILIKE "; //case-insensitive according to locale
+    else
+        ret = " LIKE ";
+
+    ret += "'";
+    if ( anyBegin )
+            ret += "%";
+    ret += escaped;
+    if ( anyEnd )
+            ret += "%";
+    ret += "'";
+
+    //Use / as the escape character
+    ret += " ESCAPE '/' ";
+
+    return ret;
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC
@@ -639,9 +666,9 @@ CollectionDB::IDFromValue( QString name, QString value, bool autocreate, const b
 
     QStringList values =
         query( QString(
-            "SELECT id, name FROM %1 WHERE name LIKE '%2';" )
+            "SELECT id, name FROM %1 WHERE name %2;" )
             .arg( name )
-            .arg( CollectionDB::instance()->escapeString( value ) ) );
+            .arg( CollectionDB::likeCondition( value ) ) );
 
     if ( updateSpelling && !values.isEmpty() && ( values[1] != value ) )
     {
@@ -957,9 +984,9 @@ CollectionDB::getImageForAlbum( const QString& artist, const QString& album, uin
 
     QStringList values =
         query( QString(
-            "SELECT path FROM images WHERE artist LIKE '%1' AND album LIKE '%2' ORDER BY path;" )
-            .arg( escapeString( artist ) )
-            .arg( escapeString( album ) ) );
+            "SELECT path FROM images WHERE artist %1 AND album %2 ORDER BY path;" )
+            .arg( CollectionDB::likeCondition( artist ) )
+            .arg( CollectionDB::likeCondition( album ) ) );
 
     if ( !values.isEmpty() )
     {
@@ -3286,21 +3313,16 @@ QueryBuilder::addFilter( int tables, const QString& filter )
     {
         m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
 
-        if (CollectionDB::instance()->getType() == DbConnection::postgresql) {
-            if ( tables & tabAlbum ) m_where += "OR album.name ~* '" + CollectionDB::instance()->escapeString( filter ) + "' ";
-            if ( tables & tabArtist ) m_where += "OR artist.name ~* '" + CollectionDB::instance()->escapeString( filter ) + "' ";
-            if ( tables & tabGenre ) m_where += "OR genre.name ~* '" + CollectionDB::instance()->escapeString( filter ) + "' ";
-            if ( tables & tabYear ) m_where += "OR year.name ~* '" + CollectionDB::instance()->escapeString( filter ) + "' ";
-            if ( tables & tabSong ) m_where += "OR tags.title ~* '" + CollectionDB::instance()->escapeString( filter ) + "' ";
-        }
-        else
-        {
-            if ( tables & tabAlbum ) m_where += "OR album.name LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-            if ( tables & tabArtist ) m_where += "OR artist.name LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-            if ( tables & tabGenre ) m_where += "OR genre.name LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-            if ( tables & tabYear ) m_where += "OR year.name LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-            if ( tables & tabSong ) m_where += "OR tags.title LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-        }
+        if ( tables & tabAlbum ) 
+            m_where += "OR album.name " + CollectionDB::likeCondition( filter, true, true ); 
+        if ( tables & tabArtist ) 
+            m_where += "OR artist.name " + CollectionDB::likeCondition( filter, true, true ); 
+        if ( tables & tabGenre ) 
+            m_where += "OR genre.name " + CollectionDB::likeCondition( filter, true, true );  
+        if ( tables & tabYear ) 
+            m_where += "OR year.name " + CollectionDB::likeCondition( filter, true, true );   
+        if ( tables & tabSong ) 
+            m_where += "OR tags.title " + CollectionDB::likeCondition( filter, true, true );    
 
         m_where += " ) ";
     }
@@ -3326,8 +3348,10 @@ QueryBuilder::addFilter( int tables, int value, const QString& filter, int mode 
         }
         else
         {
-            m = mode == modeLess ? "<" : mode == modeGreater ? ">" : "LIKE";
-            s = m + " '" + ( m == "LIKE" ? "%" : "" ) + CollectionDB::instance()->escapeString( filter ) + ( mode == modeNormal ? "%" : "" ) + "' ";
+            if (mode == modeLess || mode == modeGreater)
+                s = ( mode == modeLess ? "< '" : "> '" ) + CollectionDB::instance()->escapeString( filter ) + "' ";
+            else
+                s = CollectionDB::likeCondition( filter, true, true );
         }
 
         m_where += QString( "OR %1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
@@ -3351,21 +3375,19 @@ QueryBuilder::addFilters( int tables, const QStringList& filter )
         for ( uint i = 0; i < filter.count(); i++ )
         {
             m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
-            if (CollectionDB::instance()->getType() == DbConnection::postgresql) {
-                if ( tables & tabAlbum ) m_where += "OR album.name ~* '" + CollectionDB::instance()->escapeString( filter[i] ) + "' ";
-                if ( tables & tabArtist ) m_where += "OR artist.name ~* '" + CollectionDB::instance()->escapeString( filter[i] ) + "' ";
-                if ( tables & tabGenre ) m_where += "OR genre.name ~* '" + CollectionDB::instance()->escapeString( filter[i] ) + "' ";
-                if ( tables & tabYear ) m_where += "OR year.name ~* '" + CollectionDB::instance()->escapeString( filter[i] ) + "' ";
-                if ( tables & tabSong ) m_where += "OR tags.title ~* '" + CollectionDB::instance()->escapeString( filter[i] ) + "' ";
-            }
-            else
-            {
-                if ( tables & tabAlbum ) m_where += "OR album.name LIKE '%" + CollectionDB::instance()->escapeString( filter[i] ) + "%' ";
-                if ( tables & tabArtist ) m_where += "OR artist.name LIKE '%" + CollectionDB::instance()->escapeString( filter[i] ) + "%' ";
-                if ( tables & tabGenre ) m_where += "OR genre.name LIKE '%" + CollectionDB::instance()->escapeString( filter[i] ) + "%' ";
-                if ( tables & tabYear ) m_where += "OR year.name LIKE '%" + CollectionDB::instance()->escapeString( filter[i] ) + "%' ";
-                if ( tables & tabSong ) m_where += "OR tags.title LIKE '%" + CollectionDB::instance()->escapeString( filter[i] ) + "%' ";
-            }
+
+            if ( tables & tabAlbum ) 
+                m_where += "OR album.name " + CollectionDB::likeCondition( filter[i], true, true ); 
+            if ( tables & tabArtist ) 
+                m_where += "OR artist.name " + CollectionDB::likeCondition( filter[i], true, true ); 
+            if ( tables & tabGenre ) 
+                m_where += "OR genre.name " + CollectionDB::likeCondition( filter[i], true, true );  
+            if ( tables & tabYear ) 
+                m_where += "OR year.name " + CollectionDB::likeCondition( filter[i], true, true );   
+            if ( tables & tabSong ) 
+                m_where += "OR tags.title " + CollectionDB::likeCondition( filter[i], true, true );    
+
+
             m_where += " ) ";
         }
 
@@ -3381,21 +3403,20 @@ QueryBuilder::excludeFilter( int tables, const QString& filter )
     if ( !filter.isEmpty() )
     {
         m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolT() + " ";
-        if (CollectionDB::instance()->getType() == DbConnection::postgresql) {
-          if ( tables & tabAlbum ) m_where += "AND album.name !~* '" + CollectionDB::instance()->escapeString( filter ) + "' ";
-          if ( tables & tabArtist ) m_where += "AND artist.name !~* '" + CollectionDB::instance()->escapeString( filter ) + "' ";
-          if ( tables & tabGenre ) m_where += "AND genre.name !~* '" + CollectionDB::instance()->escapeString( filter ) + "' ";
-          if ( tables & tabYear ) m_where += "AND year.name !~* '" + CollectionDB::instance()->escapeString( filter ) + "' ";
-          if ( tables & tabSong ) m_where += "AND tags.title !~* '" + CollectionDB::instance()->escapeString( filter ) + "' ";
-        }
-        else
-        {
-            if ( tables & tabAlbum ) m_where += "AND album.name NOT LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-            if ( tables & tabArtist ) m_where += "AND artist.name NOT LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-            if ( tables & tabGenre ) m_where += "AND genre.name NOT LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-            if ( tables & tabYear ) m_where += "AND year.name NOT LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-            if ( tables & tabSong ) m_where += "AND tags.title NOT LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-        }
+
+
+        if ( tables & tabAlbum ) 
+            m_where += "AND album.name NOT " + CollectionDB::likeCondition( filter, true, true ); 
+        if ( tables & tabArtist ) 
+            m_where += "AND artist.name NOT " + CollectionDB::likeCondition( filter, true, true ); 
+        if ( tables & tabGenre ) 
+            m_where += "AND genre.name NOT " + CollectionDB::likeCondition( filter, true, true );  
+        if ( tables & tabYear ) 
+            m_where += "AND year.name NOT " + CollectionDB::likeCondition( filter, true, true );   
+        if ( tables & tabSong ) 
+            m_where += "AND tags.title NOT " + CollectionDB::likeCondition( filter, true, true );    
+
+
         m_where += " ) ";
     }
 
@@ -3420,8 +3441,10 @@ QueryBuilder::excludeFilter( int tables, int value, const QString& filter, int m
         }
         else
         {
-            m = mode == modeLess ? ">=" : mode == modeGreater ? "<=" : "NOT LIKE";
-            s = m + " '" + ( m == "NOT LIKE" ? "%" : "" ) + CollectionDB::instance()->escapeString( filter ) + ( mode == modeNormal ? "%" : "" ) + "' ";
+            if (mode == modeLess || mode == modeGreater)
+                s = ( mode == modeLess ? ">= '" : "<= '" ) + CollectionDB::instance()->escapeString( filter ) + "' ";
+            else
+                s = "NOT " + CollectionDB::instance()->likeCondition( filter, true, true ) + " ";
         }
 
         m_where += QString( "AND %1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
@@ -3441,11 +3464,17 @@ QueryBuilder::addMatch( int tables, const QString& match )
     if ( !match.isEmpty() )
     {
         m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
-        if ( tables & tabAlbum ) m_where += "OR album.name LIKE '" + CollectionDB::instance()->escapeString( match ) + "' ";
-        if ( tables & tabArtist ) m_where += "OR artist.name LIKE '" + CollectionDB::instance()->escapeString( match ) + "' ";
-        if ( tables & tabGenre ) m_where += "OR genre.name LIKE '" + CollectionDB::instance()->escapeString( match ) + "' ";
-        if ( tables & tabYear ) m_where += "OR year.name LIKE '" + CollectionDB::instance()->escapeString( match ) + "' ";
-        if ( tables & tabSong ) m_where += "OR tags.title LIKE '" + CollectionDB::instance()->escapeString( match ) + "' ";
+        if ( tables & tabAlbum ) 
+            m_where += "OR album.name " + CollectionDB::likeCondition( match ); 
+        if ( tables & tabArtist ) 
+            m_where += "OR artist.name " + CollectionDB::likeCondition( match );
+        if ( tables & tabGenre ) 
+            m_where += "OR genre.name " + CollectionDB::likeCondition( match );
+        if ( tables & tabYear ) 
+            m_where += "OR year.name " + CollectionDB::likeCondition( match );
+        if ( tables & tabSong ) 
+            m_where += "OR tags.title " + CollectionDB::likeCondition( match );
+
 
         if ( match == i18n( "Unknown" ) )
         {
@@ -3467,7 +3496,7 @@ QueryBuilder::addMatch( int tables, int value, const QString& match )
     if ( !match.isEmpty() )
     {
         m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
-        m_where += QString( "OR %1.%2 LIKE '" ).arg( tableName( tables ) ).arg( valueName( value ) ) + CollectionDB::instance()->escapeString( match ) + "' ";
+        m_where += QString( "OR %1.%2 %3" ).arg( tableName( tables ) ).arg( valueName( value ) ).arg( CollectionDB::likeCondition( match ) );
 
         if ( ( value & valName ) && match == i18n( "Unknown" ) )
             m_where += QString( "OR %1.%2 = '' " ).arg( tableName( tables ) ).arg( valueName( value ) );
@@ -3488,12 +3517,19 @@ QueryBuilder::addMatches( int tables, const QStringList& match )
 
         for ( uint i = 0; i < match.count(); i++ )
         {
-            if ( tables & tabAlbum ) m_where += "OR album.name LIKE '" + CollectionDB::instance()->escapeString( match[i] ) + "' ";
-            if ( tables & tabArtist ) m_where += "OR artist.name LIKE '" + CollectionDB::instance()->escapeString( match[i] ) + "' ";
-            if ( tables & tabGenre ) m_where += "OR genre.name LIKE '" + CollectionDB::instance()->escapeString( match[i] ) + "' ";
-            if ( tables & tabYear ) m_where += "OR year.name LIKE '" + CollectionDB::instance()->escapeString( match[i] ) + "' ";
-            if ( tables & tabSong ) m_where += "OR tags.title LIKE '" + CollectionDB::instance()->escapeString( match[i] ) + "' ";
-            if ( tables & tabStats ) m_where += "OR statistics.url LIKE '" + CollectionDB::instance()->escapeString( match[i] ) + "' ";
+            if ( tables & tabAlbum ) 
+                m_where += "OR album.name " + CollectionDB::likeCondition( match[i] );
+            if ( tables & tabArtist ) 
+                m_where += "OR artist.name " + CollectionDB::likeCondition( match[i] ); 
+            if ( tables & tabGenre ) 
+                m_where += "OR genre.name " + CollectionDB::likeCondition( match[i] );  
+            if ( tables & tabYear ) 
+                m_where += "OR year.name " + CollectionDB::likeCondition( match[i] );   
+            if ( tables & tabSong ) 
+                m_where += "OR tags.title " + CollectionDB::likeCondition( match[i] );    
+            if ( tables & tabStats ) 
+                m_where += "OR statistics.url " + CollectionDB::likeCondition( match[i] );    
+
 
             if ( match[i] == i18n( "Unknown" ) )
             {

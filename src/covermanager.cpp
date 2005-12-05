@@ -1,4 +1,5 @@
 // (c) Pierpaolo Di Panfilo 2004
+// (c) 2005 Isaiah Damron <xepo@trifault.net>
 // See COPYING file for licensing information
 
 #include "amarok.h"
@@ -887,8 +888,8 @@ QDragObject *CoverView::dragObject()
     if( !item )
        return 0;
 
-    const QString sql = "SELECT tags.url FROM tags, album WHERE album.name LIKE '%1' AND tags.album = album.id ORDER BY tags.track;";
-    const QStringList values = CollectionDB::instance()->query( sql.arg( item->album() ) );
+    const QString sql = "SELECT tags.url FROM tags, album WHERE album.name %1 AND tags.album = album.id ORDER BY tags.track;";
+    const QStringList values = CollectionDB::instance()->query( sql.arg( CollectionDB::likeCondition( item->album() ) ) );
 
     KURL::List urls;
     for( QStringList::ConstIterator it = values.begin(), end = values.end(); it != end; ++it )

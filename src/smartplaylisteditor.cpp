@@ -1,5 +1,6 @@
 // (c) Pierpaolo Di Panfilo 2004
 // (c) Alexandre Pereira de Oliveira 2005
+// (c) 2005 Isaiah Damron <xepo@trifault.net>
 // See COPYING file for licensing information
 
 #include "amarok.h" //foreach
@@ -620,9 +621,9 @@ QString CriteriaEditor::getSearchCriteria()
 
 
     if( criteria == i18n("contains") )
-        searchCriteria += " LIKE '%" + value + "%'";
+        searchCriteria += CollectionDB::likeCondition( value, true, true );
     else if( criteria == i18n("does not contain") )
-        searchCriteria += " NOT LIKE '%" + value + "%'";
+        searchCriteria += " NOT " + CollectionDB::likeCondition( value, true, true );
     else if( criteria == i18n("is") ) {
         if( m_currentValueType == Date )
             searchCriteria += " BETWEEN ";
@@ -645,9 +646,9 @@ QString CriteriaEditor::getSearchCriteria()
         searchCriteria += value;
     }
     else if( criteria == i18n("starts with") )
-        searchCriteria += " LIKE '" + value + "%'";
+        searchCriteria += CollectionDB::likeCondition( value, false, true );
     else if( criteria == i18n("ends with") )
-        searchCriteria += " LIKE '%" + value + "'";
+        searchCriteria += CollectionDB::likeCondition( value, true, false );
     else if( criteria == i18n("is greater than") || criteria == i18n("is after") )
         searchCriteria += " > " + value;
     else if( criteria == i18n("is smaller than") || criteria == i18n("is before" ) )

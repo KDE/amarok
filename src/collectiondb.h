@@ -3,6 +3,7 @@
 // (c) 2004 Sami Nieminen <sami.nieminen@iki.fi>
 // (c) 2005 Ian Monroe <ian@monroe.nu>
 // (c) 2005 Jeff Mitchell <kde-dev@emailgoeshere.com>
+// (c) 2005 Isaiah Damron <xepo@trifault.net>
 // See COPYING file for licensing information.
 
 #ifndef AMAROK_COLLECTIONDB_H
@@ -210,6 +211,7 @@ class CollectionDB : public QObject, public EngineObserver
         // We might consider using LONGTEXT type, as some lyrics could be VERY long..???
         const QString longTextColumnType() { if ( getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return "TEXT"; }
         const QString randomFunc() { if ( getDbConnectionType() == DbConnection::postgresql ) return "random()"; else return "RAND()"; }
+        static const QString likeCondition( const QString &right, bool anyBegin=false, bool anyEnd=false );
 
         int getType() { return getDbConnectionType(); }
 
