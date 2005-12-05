@@ -7,6 +7,11 @@ Please respect these guidelines when coding for amaroK, thanks!
 * Avoid large commits of formatting fixes, as they easily cause merge conflicts.
 
 
+This C++ FAQ is a life saver in many situtuations, so you want to keep it handy:
+
+  http://www.parashift.com/c++-faq-lite/
+
+
 Formatting
 ----------
 * Spaces, not tabs
@@ -135,6 +140,14 @@ NULL, on the other hand, is a preprocessor directive (#define) and not only is
 it more typing than '0' but preprocessor directives are less elegant.
 
     SomeClass* instance = 0;
+
+
+Const Correctness
+-----------------
+Try to keep your code const correct. Declare methods const if they don't mutate the object,
+and use const variables. It improves safety, and also makes it easier to understand the code.
+
+See: http://www.parashift.com/c++-faq-lite/const-correctness.html
 
 
 Debugging
