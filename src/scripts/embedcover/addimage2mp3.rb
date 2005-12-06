@@ -188,6 +188,8 @@ data[index, 0] = apicheader + apicframe
 id3length += apicheader.length() + apicframe.length()
 
 
+# Unsynchronization isn't supported by TagLib at this point :|
+#
 # puts()
 # puts( "Unsynchronizing tag.." )
 # id3length = unsynchronize( data )
