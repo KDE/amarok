@@ -266,20 +266,30 @@ AC_ARG_WITH(helix,
 
 if test "$build_helix" != "no"; then
     AC_MSG_CHECKING([for RealPlayer or HelixPlayer])
-    HXPLAY=`type -p hxplay`
-    RPLAY=`type -p realplay`
-    if test "$RPLAY" != "" -a -x "$RPLAY"; then
-        HELIX_LIBS=`dirname $(readlink $RPLAY)`
-        if test -e "$HELIX_LIBS/common/clntcore.so"; then
-            echo "found RealPlayer"
-            build_helix=$HELIX_LIBS
-        fi
-    elif test "$HXPLAY" != "" -a -x "$HXPLAY"; then
-        HELIX_LIBS=`dirname $(readlink $HXPLAY)`
-        if test -e "$HELIX_LIBS/common/clntcore.so"; then
-            echo "found HelixPlayer"
-            build_helix=$HELIX_LIBS
-        fi
+
+    if test "$build_helix" = "yes"; then
+        HXPLAY=`type -p hxplay`
+	RPLAY=`type -p realplay`
+	if test "$RPLAY" != "" -a -x "$RPLAY"; then
+	    HELIX_LINK=`readlink -f $RPLAY`
+	    HELIX_LINK=`dirname $HELIX_LINK`
+	    HELIX_LIBS=`unset CDPATH; cd $HELIX_LINK && pwd`
+	    if test -e "$HELIX_LIBS/common/clntcore.so"; then
+		AC_MSG_RESULT([found RealPlayer in $HELIX_LIBS])
+		build_helix=$HELIX_LIBS
+	    fi
+	elif test "$HXPLAY" != "" -a -x "$HXPLAY"; then
+	    HELIX_LINK=`readlink -f $HXPLAY`
+	    HELIX_LINK=`dirname $HELIX_LINK`
+	    HELIX_LIBS=`unset CDPATH; cd $HELIX_LINK && pwd`
+	    if test -e "$HELIX_LIBS/common/clntcore.so"; then
+		AC_MSG_RESULT([found HelixPlayer in $HELIX_LIBS])
+		build_helix=$HELIX_LIBS
+	    fi
+	fi
+    else
+        HELIX_LIBS=`unset CDPATH; cd $build_helix && pwd`
+	build_helix=$HELIX_LIBS
     fi
 
     AC_DEFINE(HAVE_HELIX, 1, [have HELIX])
