@@ -44,14 +44,15 @@ loop do
                 # Iterate over all selected files
                 args.each() do |arg|
                     uri = URI.parse( arg )
-                    file = URI.unescape( uri.path() )
+                    path = URI.unescape( uri.path() )
+                    filename = path.split( "/" ).last()
 
-                    puts( "Path: #{file}" )
+                    puts( "Path: #{path}" )
 
                     mp3fix = File.dirname( File.expand_path( __FILE__ ) ) + "/mp3fix.rb"
 
-                    `dcop amarok playlist shortStatusMessage "Mp3Fixer is analyzing the file.."`
-                    output = `ruby #{mp3fix} "#{file}"`
+                    `dcop amarok playlist shortStatusMessage "Mp3Fixer is analyzing the file '#{filename}'..."`
+                    output = `ruby #{mp3fix} "#{path}"`
 
                     if $?.success?()
                         `dcop amarok playlist popupMessage "Mp3Fixer has successfully repaired your file."`
