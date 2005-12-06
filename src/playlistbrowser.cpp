@@ -22,6 +22,7 @@
 #include "smartplaylisteditor.h"
 #include "tagdialog.h"         //showContextMenu()
 #include "threadweaver.h"
+#include "statusbar.h"
 
 #include <qevent.h>            //customEvent()
 #include <qheader.h>           //mousePressed()
@@ -875,9 +876,50 @@ void PlaylistBrowser::addPodcast( QListViewItem *parent )
     }
 }
 
-void PlaylistBrowser::addPodcast( const QString &url, QListViewItem *parent )
+PodcastChannel *
+PlaylistBrowser::findPodcastChannel( const KURL &feed, QListViewItem *parent ) const
 {
     if( !parent ) parent = static_cast<QListViewItem*>(m_podcastCategory);
+
+    for( QListViewItem *it = parent->firstChild();
+            it;
+            it = it->nextSibling() )
+    {
+        if( isPodcastChannel( it ) )
+        {
+            PodcastChannel *channel = static_cast<PodcastChannel *>( it );
+            if( channel->url().prettyURL() == feed.prettyURL() )
+            {
+                return channel;
+            }
+        }
+        else if( isCategory( it ) )
+        {
+            PodcastChannel *channel = findPodcastChannel( feed, it );
+            if( channel )
+                return channel;
+        }
+    }
+
+    return NULL;
+}
+
+void PlaylistBrowser::addPodcast( const QString &url, QListViewItem *parent )
+{
+    debug() << "sub to " << url << endl;
+
+    if( !parent ) parent = static_cast<QListViewItem*>(m_podcastCategory);
+
+    PodcastChannel *channel = findPodcastChannel( KURL( url ) );
+    if( channel )
+    {
+        amaroK::StatusBar::instance()->longMessage(
+                i18n( "Already subscribed to feed %1 as %2" )
+                .arg( url )
+                .arg( channel->title() ),
+                KDE::StatusBar::Sorry );
+        return;
+    }
 
     PodcastChannel *pc = new PodcastChannel( parent, 0, KURL( url ) );
 

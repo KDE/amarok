@@ -141,6 +141,7 @@ class PlaylistBrowser : public QVBox
         void downloadSelectedPodcasts();
         void setGlobalPodcastSettings( PodcastChannel *item );
         void refreshPodcasts( QListViewItem *category );
+        PodcastChannel *findPodcastChannel( const KURL &feed, QListViewItem *parent=0 ) const;
 
         PlaylistCategory* loadPlaylists();
         void loadOldPlaylists();
