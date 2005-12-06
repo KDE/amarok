@@ -387,14 +387,14 @@ GpodMediaDevice::addToDirectory(MediaItem *, QPtrList<MediaItem>)
    debug() << "addToDirectory: not implemented" << endl;
 }
 
-bool
+int
 GpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
 {
     GpodMediaItem *item = dynamic_cast<GpodMediaItem *>(mediaitem);
     if(!item)
-        return false;
+        return -1;
 
-    bool ret = true;
+    int count = 0;
 
     switch(item->type())
     {
@@ -430,16 +430,19 @@ GpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
                 KURL url;
                 url.setPath(realPath(track->ipod_path));
                 deleteFile( url );
+                count++;
             }
 
             // remove from database
-            ret = removeDBTrack(track);
+            if( !removeDBTrack(track) )
+                count = -1;
         }
         break;
     case MediaItem::ORPHANED:
         deleteFile( item->url() );
         delete item;
-        ret = true;
+        if( count >= 0 )
+            count++;
         break;
     case MediaItem::PLAYLISTSROOT:
     case MediaItem::PODCASTSROOT:
@@ -458,7 +461,11 @@ GpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
                     it = next)
             {
                 next = dynamic_cast<GpodMediaItem *>(it->nextSibling());
-                ret = ret && deleteItemFromDevice(it, onlyPlayed);
+                int ret = deleteItemFromDevice(it, onlyPlayed);
+                if( ret >= 0 && count >= 0 )
+                    count += ret;
+                else
+                    count = -1;
             }
         }
         if(item->type() == MediaItem::PLAYLIST)
@@ -488,13 +495,14 @@ GpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
         break;
     case MediaItem::DIRECTORY:
     case MediaItem::UNKNOWN:
-        ret = false;
+        // this should not happen
+        count = -1;
         break;
     }
 
     updateRootItems();
 
-    return ret;
+    return count;
 }
 
 bool

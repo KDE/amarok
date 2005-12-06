@@ -172,7 +172,7 @@ class DummyMediaDevice : public MediaDevice
     virtual bool closeDevice() { return false; }
     virtual void synchronizeDevice() {}
     virtual MediaItem* copyTrackToDevice(const MetaBundle&, const PodcastInfo*) { return 0; }
-    virtual bool deleteItemFromDevice(MediaItem*, bool) { return false; }
+    virtual int deleteItemFromDevice(MediaItem*, bool) { return -1; }
     virtual bool getCapacity( unsigned long *, unsigned long * ) { return false; }
 };
 
@@ -1289,9 +1289,10 @@ MediaDevice::connectDevice( bool silent )
                 m_parent->m_transferButton->setEnabled( true );
                 m_parent->m_stats->setText( i18n( "Checking device for duplicate files." ) );
                 KURL::List urls;
+                int numDuplicates = 0;
                 MediaItem *next = 0;
                 for( MediaItem *cur = static_cast<MediaItem *>(m_transferList->firstChild());
-                                cur; cur = next )
+                        cur; cur = next )
                 {
                     next = dynamic_cast<MediaItem *>( cur->nextSibling() );
                     if ( cur->m_playlistName == QString::null &&
@@ -1299,9 +1300,17 @@ MediaDevice::connectDevice( bool silent )
                     {
                         delete cur;
                         m_transferList->itemCountChanged();
+                        numDuplicates++;
                     }
                 }
                 m_parent->updateStats();
+                if( numDuplicates > 0 )
+                {
+                    amaroK::StatusBar::instance()->shortMessage(
+                            i18n( "Removed 1 duplicate item from transfer queue",
+                                "Removed %n duplicate items from transfer queue",
+                                numDuplicates ) );
+                }
             }
 
             // delete podcasts already played
@@ -1319,8 +1328,21 @@ MediaDevice::connectDevice( bool silent )
 
                     lockDevice(true);
 
-                    deleteItemFromDevice( m_podcastItem, true );
+                    int numDeleted = deleteItemFromDevice( m_podcastItem, true );
                     purgeEmptyItems();
+                    if( numDeleted < 0 )
+                    {
+                        amaroK::StatusBar::instance()->longMessage(
+                                i18n( "Failed to purge podcasts already played" ),
+                                KDE::StatusBar::Sorry );
+                    }
+                    else if( numDeleted > 0 )
+                    {
+                        amaroK::StatusBar::instance()->shortMessage(
+                                i18n( "Purged 1 podcasts already played",
+                                    "Purged %n podcasts already played",
+                                    numDeleted ) );
+                    }
 
                     synchronizeDevice();
                     unlockDevice();
@@ -1589,10 +1611,11 @@ MediaDevice::fileTransferFinished()  //SLOT
 }
 
 
-void
+int
 MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
 {
     MediaItem* fi = item;
+    int count = 0;
 
     if ( !recursing )
     {
@@ -1614,7 +1637,7 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
             if ( button != KMessageBox::Continue )
             {
                 m_parent->updateStats();
-                return;
+                return 0;
             }
 
             if(!isTransferring())
@@ -1636,12 +1659,22 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
 
         if( fi->isSelected() )
         {
-            deleteItemFromDevice(fi, onlyPlayed);
+            int ret = deleteItemFromDevice(fi, onlyPlayed);
+            if( ret >= 0 && count >= 0 )
+                count += ret;
+            else
+                count = -1;
         }
         else
         {
             if( fi->childCount() )
-                deleteFromDevice( static_cast<MediaItem*>(fi->firstChild()), onlyPlayed, true );
+            {
+                int ret = deleteFromDevice( static_cast<MediaItem*>(fi->firstChild()), onlyPlayed, true );
+                if( ret >= 0 && count >= 0 )
+                    count += ret;
+                else
+                    count = -1;
+            }
         }
         m_parent->updateStats();
 
@@ -1660,6 +1693,8 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
         }
     }
     m_parent->updateStats();
+
+    return count;
 }
 
 void

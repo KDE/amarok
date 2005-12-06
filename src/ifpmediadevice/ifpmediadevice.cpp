@@ -323,16 +323,17 @@ IfpMediaDevice::setProgressInfo( struct ifp_transfer_status *progress )
 
 /// Deleting
 
-bool
+int
 IfpMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/ )
 {
-    if( !item || !m_connected ) return false;
+    if( !item || !m_connected ) return -1;
 
     QString path = getFullPath( item );
 
     QCString encodedPath = QFile::encodeName( path );
     debug() << "Deleting file: " << encodedPath << endl;
     int err;
+    int count = 0;
 
     switch( item->type() )
     {
@@ -343,13 +344,14 @@ IfpMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/ )
 
         default:
             err = ifp_delete( &m_ifpdev, encodedPath );
+            count += 1;
             checkResult( err, i18n("File does not exist: '%1'").arg(encodedPath) );
             break;
     }
     if( err == 0 ) //success
         delete item;
 
-    return (err == 0);
+    return (err == 0) ? count : -1;
 }
 
 /// Directory Reading

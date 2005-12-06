@@ -378,13 +378,13 @@ class MediaDevice : public QObject
          * Recursively remove MediaItem from the tracklist and the device
          * @param item MediaItem to remove
          * @param onlyPlayed True if item should be deleted only if it has been played
-         * @return true if successful
+         * @return -1 on failure, number of files deleted otherwise
          */
-        virtual bool deleteItemFromDevice( MediaItem *item, bool onlyPlayed=false ) = 0;
+        virtual int deleteItemFromDevice( MediaItem *item, bool onlyPlayed=false ) = 0;
 
         virtual void updateRootItems();
 
-        void deleteFromDevice( MediaItem *item=0, bool onlyPlayed=false, bool recursing=false );
+        int deleteFromDevice( MediaItem *item=0, bool onlyPlayed=false, bool recursing=false );
 
         void purgeEmptyItems( MediaItem *root=0 );
         void syncStatsFromDevice( MediaItem *root=0 );

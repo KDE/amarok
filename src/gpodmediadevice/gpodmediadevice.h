@@ -53,8 +53,7 @@ class GpodMediaDevice : public KioMediaDevice
         virtual KURL determineURLOnDevice(const MetaBundle& bundle);
 
         void              synchronizeDevice();
-        //MediaItem        *copyTrackToDevice(const MetaBundle& bundle, const PodcastInfo *podcastInfo);
-        bool              deleteItemFromDevice(MediaItem *item, bool onlyPlayed=false );
+        int               deleteItemFromDevice(MediaItem *item, bool onlyPlayed=false );
         void              addToPlaylist(MediaItem *list, MediaItem *after, QPtrList<MediaItem> items);
         void              addToDirectory(MediaItem *dir, QPtrList<MediaItem> items);
         MediaItem        *newPlaylist(const QString &name, MediaItem *list, QPtrList<MediaItem> items);
@@ -70,7 +69,6 @@ class GpodMediaDevice : public KioMediaDevice
         GpodMediaItem    *addTrackToList(Itdb_Track *track);
         void              addPlaylistToList(Itdb_Playlist *playlist);
         void              playlistFromItem(GpodMediaItem *item);
-        //void              deleteFile( const KURL &url );
 
         QString           realPath(const char *ipodPath);
         QString           ipodPath(const QString &realPath);

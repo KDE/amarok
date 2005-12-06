@@ -154,14 +154,14 @@ KioMediaDevice::addToDirectory(MediaItem *, QPtrList<MediaItem>)
     debug() << "addToDirectory: not implemented" << endl;
 }
 
-bool
+int
 KioMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
 {
     MediaItem *item = dynamic_cast<MediaItem *>(mediaitem);
     if(!item)
-        return false;
+        return -1;
 
-    bool ret = true;
+    int count = 0;
 
     switch(item->type())
     {
@@ -176,6 +176,8 @@ KioMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
                 if( !stale )
                 {
                     deleteFile( item->url() );
+                    if( count >= 0 )
+                        count++;
                 }
                 delete item;
             }
@@ -183,7 +185,8 @@ KioMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
         case MediaItem::ORPHANED:
             deleteFile( item->url() );
             delete item;
-            ret = true;
+            if( count >= 0 )
+                count++;
             break;
         case MediaItem::PLAYLISTSROOT:
         case MediaItem::PODCASTSROOT:
@@ -202,7 +205,13 @@ KioMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
                         it = next)
                 {
                     next = dynamic_cast<MediaItem *>(it->nextSibling());
-                    ret = ret && deleteItemFromDevice(it, onlyPlayed);
+                    int ret = deleteItemFromDevice(it, onlyPlayed);
+                    if( ret >= 0 && count >= 0 )
+                    {
+                        count += ret;
+                    }
+                    else
+                        count = -1;
                 }
             }
             if(item->type() != MediaItem::PLAYLISTSROOT
@@ -224,13 +233,12 @@ KioMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
             break;
         case MediaItem::DIRECTORY:
         case MediaItem::UNKNOWN:
-            ret = false;
             break;
     }
 
     updateRootItems();
 
-    return ret;
+    return count;
 }
 
 bool

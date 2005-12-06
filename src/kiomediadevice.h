@@ -48,7 +48,7 @@ class KioMediaDevice : public MediaDevice
 
         virtual void      synchronizeDevice();
         virtual MediaItem*copyTrackToDevice(const MetaBundle& bundle, const PodcastInfo *podcastInfo);
-        virtual bool      deleteItemFromDevice(MediaItem *item, bool onlyPlayed=false );
+        virtual int       deleteItemFromDevice(MediaItem *item, bool onlyPlayed=false );
         virtual void      addToDirectory(MediaItem *dir, QPtrList<MediaItem> items);
         virtual MediaItem*newDirectory(const QString&, MediaItem*) { return 0; }
         virtual bool      getCapacity(unsigned long *total, unsigned long *available);
