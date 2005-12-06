@@ -179,7 +179,7 @@ of the current QThread or 'none' if its the original GUI thread.
 
 
 Errors & Asserts
--------
+----------------
 *Never use assert() or fatal(). There must be a better option then crashing a users
 application (its not uncommon for end-users to have debugging enabled).
 
