@@ -73,7 +73,7 @@ class GpodMediaItem : public MediaItem
         GpodMediaItem(QListViewItem *parent ) : MediaItem(parent) { init(); }
         GpodMediaItem(QListView *parent, QListViewItem *after) : MediaItem(parent, after) { init(); }
         GpodMediaItem(QListViewItem *parent, QListViewItem *after) : MediaItem(parent, after) { init(); }
-        void init() {m_track=NULL; m_playlist=NULL;}
+        void init() {m_track=0; m_playlist=0;}
         void bundleFromTrack( Itdb_Track *track )
         {
             if( m_bundle )
@@ -112,23 +112,23 @@ class GpodMediaItem : public MediaItem
                     return found;
             }
 
-            return NULL;
+            return 0;
         }
 };
 
 
 GpodMediaDevice::GpodMediaDevice( MediaDeviceView* parent, MediaDeviceList *listview )
     : KioMediaDevice( parent, listview )
-    , m_masterPlaylist( NULL )
-    , m_podcastPlaylist( NULL )
+    , m_masterPlaylist( 0 )
+    , m_podcastPlaylist( 0 )
 {
     m_dbChanged = false;
-    m_itdb = NULL;
-    m_podcastItem = NULL;
-    m_staleItem = NULL;
-    m_orphanedItem = NULL;
-    m_invisibleItem = NULL;
-    m_playlistItem = NULL;
+    m_itdb = 0;
+    m_podcastItem = 0;
+    m_staleItem = 0;
+    m_orphanedItem = 0;
+    m_invisibleItem = 0;
+    m_playlistItem = 0;
     m_supportsArtwork = false;
     m_isShuffle = false;
 }
@@ -144,7 +144,7 @@ GpodMediaDevice::~GpodMediaDevice()
 bool
 GpodMediaDevice::isConnected()
 {
-    return (m_itdb != NULL);
+    return (m_itdb != 0);
 }
 
 MediaItem *
@@ -152,7 +152,7 @@ GpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bu
 {
     Itdb_Track *track = itdb_track_new();
     if(!track)
-        return NULL;
+        return 0;
 
     QString type = pathname.section('.', -1).lower();
 
@@ -287,7 +287,7 @@ GpodMediaDevice::newPlaylist(const QString &name, MediaItem *parent, QPtrList<Me
     item->setType(MediaItem::PLAYLIST);
     item->setText(0, name);
 
-    addToPlaylist(item, NULL, items);
+    addToPlaylist(item, 0, items);
 
     return item;
 }
@@ -305,7 +305,7 @@ GpodMediaDevice::addToPlaylist(MediaItem *mlist, MediaItem *after, QPtrList<Medi
     if(list->m_playlist)
     {
         itdb_playlist_remove(list->m_playlist);
-        list->m_playlist = NULL;
+        list->m_playlist = 0;
     }
 
     int order;
@@ -455,7 +455,7 @@ GpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
     case MediaItem::PLAYLIST:
         // just recurse
         {
-            GpodMediaItem *next = NULL;
+            GpodMediaItem *next = 0;
             for(GpodMediaItem *it = dynamic_cast<GpodMediaItem *>(item->firstChild());
                     it;
                     it = next)
@@ -513,23 +513,23 @@ GpodMediaDevice::openDevice(bool silent)
     m_dbChanged = false;
     m_files.clear();
 
-    GError *err = NULL;
+    GError *err = 0;
 
     // prefer configured mount point
     // if existing but empty create initial directories and empty database
-    if(!m_itdb && !m_mntpnt.isEmpty())
+    if( !m_itdb && !m_mntpnt.isEmpty() )
     {
-        m_itdb = itdb_parse(QFile::encodeName(m_mntpnt), &err);
-        if(err)
+        m_itdb = itdb_parse( QFile::encodeName(m_mntpnt), &err );
+        if( err )
             g_error_free(err);
-        err = NULL;
+        err = 0;
 
-        if(m_itdb == NULL)
+        if( m_itdb == 0 )
         {
             QDir dir(m_mntpnt);
-            if(!dir.exists())
+            if( !dir.exists() )
             {
-                if(!silent)
+                if( !silent )
                 {
                     amaroK::StatusBar::instance()->longMessage(
                             i18n("Media device: Mount point %1 does not exist").arg(m_mntpnt),
@@ -540,9 +540,9 @@ GpodMediaDevice::openDevice(bool silent)
 
             // initialize iPod
             m_itdb = itdb_new();
-            if(m_itdb==NULL)
+            if( m_itdb == 0 )
             {
-                if(!silent)
+                if( !silent )
                 {
                     amaroK::StatusBar::instance()->longMessage(
                             i18n("Media Device: Failed to initialize iPod mounted at %1").arg(m_mntpnt),
@@ -592,7 +592,7 @@ GpodMediaDevice::openDevice(bool silent)
             m_itdb = itdb_parse("/mnt/ipod", &err);
             if(err)
                 g_error_free(err);
-            err = NULL;
+            err = 0;
         }
 
         if(!m_itdb)
@@ -600,7 +600,7 @@ GpodMediaDevice::openDevice(bool silent)
             m_itdb = itdb_parse("/media/ipod", &err);
             if(err)
                 g_error_free(err);
-            err = NULL;
+            err = 0;
         }
 
         if(!m_itdb)
@@ -608,7 +608,7 @@ GpodMediaDevice::openDevice(bool silent)
             m_itdb = itdb_parse("/media/iPod", &err);
             if(err)
                 g_error_free(err);
-            err = NULL;
+            err = 0;
         }
 
         if ( !m_itdb ) {
@@ -626,7 +626,7 @@ GpodMediaDevice::openDevice(bool silent)
                 m_itdb = itdb_parse(QFile::encodeName(mountpoint), &err);
                 if(err)
                     g_error_free(err);
-                err = NULL;
+                err = 0;
 
                 if (m_itdb)
                 {
@@ -647,7 +647,7 @@ GpodMediaDevice::openDevice(bool silent)
         guint model;
         g_object_get(m_itdb->device,
                 "device-model", &model,
-                NULL);
+                0);
 
         switch(model)
         {
@@ -809,19 +809,19 @@ GpodMediaDevice::closeDevice()  //SLOT
     debug() << "Syncing iPod!" << endl;
 
     m_listview->clear();
-    m_podcastItem = NULL;
-    m_playlistItem = NULL;
-    m_orphanedItem = NULL;
-    m_staleItem = NULL;
-    m_invisibleItem = NULL;
+    m_podcastItem = 0;
+    m_playlistItem = 0;
+    m_orphanedItem = 0;
+    m_staleItem = 0;
+    m_invisibleItem = 0;
 
     writeITunesDB();
 
     m_files.clear();
     itdb_free(m_itdb);
-    m_itdb = NULL;
-    m_masterPlaylist = NULL;
-    m_podcastPlaylist = NULL;
+    m_itdb = 0;
+    m_masterPlaylist = 0;
+    m_podcastPlaylist = 0;
 
     return true;
 }
@@ -864,7 +864,7 @@ GpodMediaDevice::addTrackToList(Itdb_Track *track)
 {
     bool visible = false;
     bool stale = false;
-    GpodMediaItem *item = NULL;
+    GpodMediaItem *item = 0;
 
 #ifdef CHECK_FOR_INTEGRITY
     QString path = realPath(track->ipod_path);
@@ -1067,7 +1067,7 @@ GpodMediaDevice::writeITunesDB()
     if(m_dbChanged)
     {
         bool ok = true;
-        GError *error = NULL;
+        GError *error = 0;
         if( m_isShuffle )
         {
             /* write shuffle data */
@@ -1079,10 +1079,10 @@ GpodMediaDevice::writeITunesDB()
                     if (error->message)
                         debug() << "itdb_shuffle_write error: " << error->message << endl;
                     else
-                        debug() << "itdb_shuffle_write error: " << "error->message == NULL!" << endl;
+                        debug() << "itdb_shuffle_write error: " << "error->message == 0!" << endl;
                     g_error_free (error);
                 }
-                error = NULL;
+                error = 0;
             }
         }
         else
@@ -1095,10 +1095,10 @@ GpodMediaDevice::writeITunesDB()
                     if (error->message)
                         debug() << "itdb_write error: " << error->message << endl;
                     else
-                        debug() << "itdb_write error: " << "error->message == NULL!" << endl;
+                        debug() << "itdb_write error: " << "error->message == 0!" << endl;
                     g_error_free (error);
                 }
-                error = NULL;
+                error = 0;
             }
         }
 
@@ -1118,7 +1118,7 @@ GpodMediaDevice::getArtist(const QString &artist)
             return it;
     }
 
-    return NULL;
+    return 0;
 }
 
 GpodMediaItem *
@@ -1128,7 +1128,7 @@ GpodMediaDevice::getAlbum(const QString &artist, const QString &album)
     if(item)
         return dynamic_cast<GpodMediaItem *>(item->findItem(album));
 
-    return NULL;
+    return 0;
 }
 
 GpodMediaItem *
@@ -1161,7 +1161,7 @@ GpodMediaDevice::getTrack(const QString &artist, const QString &album, const QSt
         }
     }
 
-    return NULL;
+    return 0;
 }
 
 GpodMediaItem *
@@ -1198,7 +1198,7 @@ GpodMediaDevice::getTrack( const Itdb_Track *itrack )
         }
     }
 
-    return NULL;
+    return 0;
 }
 
 
@@ -1292,7 +1292,7 @@ GpodMediaDevice::getCapacity( unsigned long *total, unsigned long *available )
     g_object_get(m_itdb->device,
             "volume-size", &vol_size,
             "volume-available", &vol_avail,
-            NULL);
+            0);
 
     if(total)
         *total = vol_size/1024;

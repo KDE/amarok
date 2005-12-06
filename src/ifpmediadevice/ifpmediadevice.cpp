@@ -99,6 +99,7 @@ IfpMediaDevice::IfpMediaDevice( MediaDeviceView* parent, MediaDeviceList *listvi
     : MediaDevice( parent, listview )
     , m_dev( 0 )
     , m_dh( 0 )
+//    , m_cancel( false )
     , m_connected( false )
     , m_tmpParent( 0 )
 {
@@ -281,7 +282,7 @@ IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle, const PodcastInfo* 
 {
     if( !m_connected ) return 0;
 
-    const QString  newFilename = bundle.prettyTitle() + "." + bundle.type();
+    const QString  newFilename = bundle.prettyTitle().remove( "'" ) + "." + bundle.type();
     const QCString src  = QFile::encodeName( bundle.url().path() );
     const QCString dest = QFile::encodeName( "\\" + newFilename ); // TODO: add to directory
 
@@ -308,8 +309,17 @@ IfpMediaDevice::uploadTrack( const QCString& src, const QCString& dest )
 int
 IfpMediaDevice::uploadCallback( void *pData, struct ifp_transfer_status *progress )
 {
-    kapp->processEvents( 100 );
     // will be called by 'ifp_upload_file_with_callback'
+
+    kapp->processEvents( 100 );
+/*
+    if( m_cancel )
+    {
+        m_cancel = false;
+        setProgress( progress->file_bytes, progress->file_bytes );
+        return 1; //see ifp docs, return 1 for user cancel request
+    }
+*/
     return static_cast<IfpMediaDevice *>(pData)->setProgressInfo( progress );
 }
 
