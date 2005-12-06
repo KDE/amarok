@@ -197,9 +197,9 @@ ContextBrowser::ContextBrowser( const char *name )
     setTabEnabled( m_lyricsTab, false );
     setTabEnabled( m_wikiTab, false );
 
-    m_showRelated   = amaroK::config( "ContextBrowser" )->readBoolEntry( "showRelated", true );
-    m_showSuggested = amaroK::config( "ContextBrowser" )->readBoolEntry( "showSuggested", true );
-    m_showFaves     = amaroK::config( "ContextBrowser" )->readBoolEntry( "showFaves", true );
+    m_showRelated   = amaroK::config( "ContextBrowser" )->readBoolEntry( "ShowRelated", true );
+    m_showSuggested = amaroK::config( "ContextBrowser" )->readBoolEntry( "ShowSuggested", true );
+    m_showFaves     = amaroK::config( "ContextBrowser" )->readBoolEntry( "ShowFaves", true );
 
     // Delete folder with the cached coverimage shadow pixmaps
     KIO::del( KURL::fromPathOrURL( amaroK::saveLocation( "covershadow-cache/" ) ), false, false );
