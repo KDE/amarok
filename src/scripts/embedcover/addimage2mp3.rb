@@ -53,11 +53,11 @@ def unsynchronize( data )
                     print( "." ) if sync1
                     print( "O" ) if sync2
                     data[index+1, 0] = "\0"
-                    index += 3
                     framesize += 1
-                else
                     index += 1
                 end
+
+                index += 1
             end
         else
             puts( "#{frametype}  synced" )
@@ -188,10 +188,10 @@ data[index, 0] = apicheader + apicframe
 id3length += apicheader.length() + apicframe.length()
 
 
-puts()
-puts( "Unsynchronizing tag.." )
-id3length = unsynchronize( data )
-data[5] |= 0b10000000  # Set ID3 Unsychronization flag
+# puts()
+# puts( "Unsynchronizing tag.." )
+# id3length = unsynchronize( data )
+# data[5] |= 0b10000000  # Set ID3 Unsychronization flag
 
 
 # Adjust ID3V2 tag size

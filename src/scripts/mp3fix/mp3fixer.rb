@@ -45,7 +45,6 @@ loop do
                 args.each() do |arg|
                     uri = URI.parse( arg )
                     file = URI.unescape( uri.path() )
-                    file.gsub!( /[']/, '\\\\\'' )  # Escape for SQL
 
                     puts( "Path: #{file}" )
 
