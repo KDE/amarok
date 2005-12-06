@@ -32,6 +32,8 @@ libamarok_artsengine_plugin_la_LDFLAGS = \
 METASOURCES = \
     AUTO
 
+artsengine.lo: amarokarts/amarokarts.h
+
 kde_services_DATA = \
     amarok_artsengine_plugin.desktop
 

@@ -38,3 +38,5 @@ METASOURCES = \
 
 kde_services_DATA = \
     amarok_helixengine_plugin.desktop
+
+helix-configdialog.lo: config/helixconfig.h
