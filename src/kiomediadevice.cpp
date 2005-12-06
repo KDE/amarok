@@ -143,7 +143,7 @@ KioMediaDevice::synchronizeDevice()
 }
 
 MediaItem *
-KioMediaDevice::trackExists( const MetaBundle& bundle )
+KioMediaDevice::trackExists( const MetaBundle& /*bundle*/ )
 {
     return NULL;
 }
@@ -242,7 +242,7 @@ KioMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
 }
 
 bool
-KioMediaDevice::openDevice(bool silent)
+KioMediaDevice::openDevice( bool /*silent*/ )
 {
     m_playlistItem = new MediaItem( m_listview );
     m_playlistItem->setText( 0, i18n("Playlists") );
@@ -430,6 +430,8 @@ KioMediaDevice::getCapacity( unsigned long *total, unsigned long *available )
 
     return *total > 0;
 #else
+    (void) total;
+    (void) available;
     return false;
 #endif
 }
