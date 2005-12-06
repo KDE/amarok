@@ -92,7 +92,7 @@ class AmaroKProcIO : public KProcIO {
 };
 
 
-For headers, use the Doxygen syntax. See http://www.stack.nl/~dimitri/doxygen/
+For headers, use the Doxygen syntax. See: http://www.stack.nl/~dimitri/doxygen/
 
 Example:
 
