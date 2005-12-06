@@ -1,0 +1,10 @@
+** TODO (databasescripts.rb) **
+
+Script Ideas:
+* Script to restore database backup
+* Migration script (move directories)
+
+General:
+* Properly use the ui file, to make it easier to maintain later
+* Maybe pass error messages back to the parent dialog to abstract scripts away from amarok?
+
