@@ -34,15 +34,17 @@ if $*.empty?() or $*[0] == "--help"
     exit( 1 )
 end
 
-destination = $*[0]
+destination = $*[0] + "/"
 
 unless FileTest.directory?( destination )
-    puts( "Error: Save destination must be a directory" )
+    error = "Error: Save destination must be a directory"
+    `dcop amarok playlist popupMessage '#{error}'`
     exit( 1 )
 end
 
 unless FileTest.writable_real?( destination )
-    puts( "Error: Destination directory not writable." )
+    error = "Error: Destination directory not writable."
+    `dcop amarok playlist popupMessage '#{error}'`
     exit( 1 )
 end
 
@@ -72,8 +74,8 @@ case database
         error = "Sorry, postgresql database backups have not been implemented"
         `dcop amarok playlist popupMessage #{error}`
         exit( 1 )
-
 end
 
-
+message = "Database backup saved to: #{destination}/#{filename}"
+`dcop amarok playlist popupMessage '#{message}'`
 
