@@ -28,7 +28,7 @@ Formatting
 
 Example:
 
-bool MyClass::myFunction( QPtrList<QListViewItem> items, const QString &name )
+bool MyClass::myMethod( QPtrList<QListViewItem> items, const QString &name )
 {
     if( items.isEmpty() )
         return false;
@@ -38,7 +38,6 @@ bool MyClass::myFunction( QPtrList<QListViewItem> items, const QString &name )
         (*it)->setText( 0, name );
         debug() << "Setting item name: " << name << endl;
     }
-
 }
 
 Header includes should be listed in the following order:
@@ -148,6 +147,16 @@ Try to keep your code const correct. Declare methods const if they don't mutate 
 and use const variables. It improves safety, and also makes it easier to understand the code.
 
 See: http://www.parashift.com/c++-faq-lite/const-correctness.html
+
+
+Example:
+
+bool MyClass::isValidFile( const QString& path ) const
+{
+    const bool valid = QFile::exist( path );
+
+    return valid;
+}
 
 
 Debugging
