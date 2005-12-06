@@ -352,16 +352,16 @@ void App::initGlobalShortcuts()
     m_pGlobalAccel->insert( "mute", i18n( "Mute Volume" ), 0, KKey("WIN+m"), 0,
                             ec, SLOT( mute() ), true, true );
 
-    m_pGlobalAccel->insert( "rating1", i18n( "Set Rating of Current Track to 1" ), 0, KKey("CTRL+WIN+1"), 0,
-                            this, SLOT( setRating1() ), false, true );
-    m_pGlobalAccel->insert( "rating2", i18n( "Set Rating of Current Track to 2" ), 0, KKey("CTRL+WIN+2"), 0,
-                            this, SLOT( setRating2() ), false, true );
-    m_pGlobalAccel->insert( "rating3", i18n( "Set Rating of Current Track to 3" ), 0, KKey("CTRL+WIN+3"), 0,
-                            this, SLOT( setRating3() ), false, true );
-    m_pGlobalAccel->insert( "rating4", i18n( "Set Rating of Current Track to 4" ), 0, KKey("CTRL+WIN+4"), 0,
-                            this, SLOT( setRating4() ), false, true );
-    m_pGlobalAccel->insert( "rating5", i18n( "Set Rating of Current Track to 5" ), 0, KKey("CTRL+WIN+5"), 0,
-                            this, SLOT( setRating5() ), false, true );
+    m_pGlobalAccel->insert( "rating1", i18n( "Rate Current Track: 1" ), 0, KKey("WIN+1"), 0,
+                            this, SLOT( setRating1() ), true, true );
+    m_pGlobalAccel->insert( "rating2", i18n( "Rate Current Track: 2" ), 0, KKey("WIN+2"), 0,
+                            this, SLOT( setRating2() ), true, true );
+    m_pGlobalAccel->insert( "rating3", i18n( "Rate Current Track: 3" ), 0, KKey("WIN+3"), 0,
+                            this, SLOT( setRating3() ), true, true );
+    m_pGlobalAccel->insert( "rating4", i18n( "Rate Current Track: 4" ), 0, KKey("WIN+4"), 0,
+                            this, SLOT( setRating4() ), true, true );
+    m_pGlobalAccel->insert( "rating5", i18n( "Rate Current Track: 5" ), 0, KKey("WIN+5"), 0,
+                            this, SLOT( setRating5() ), true, true );
 
     m_pGlobalAccel->setConfigGroup( "Shortcuts" );
     m_pGlobalAccel->readSettings( kapp->config() );
