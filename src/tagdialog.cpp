@@ -455,7 +455,7 @@ void TagDialog::readTags()
             if( !m_bundle.artist().isEmpty() )
                 niceTitle = i18n( "<b>%1</b> by <b>%2</b>" ).arg( m_bundle.title(),  m_bundle.artist() );
             else
-                niceTitle = QString( "<b>%s</b>" ).arg( m_bundle.title() );
+                niceTitle = QString( "<b>%1</b>" ).arg( m_bundle.title() );
         }
         else niceTitle = m_bundle.prettyTitle();
     }
