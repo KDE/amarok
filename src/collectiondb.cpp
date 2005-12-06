@@ -1251,7 +1251,7 @@ CollectionDB::getURL( const MetaBundle &bundle )
 
     QString q = QString( "SELECT tags.url "
             "FROM tags "
-            "WHERE tags.album = '%1' AND tags.artist = '%2' AND tags.title = '%3' AND tags.track = '%4';" ).arg( albID ).arg( artID ).arg( escapeString( bundle.title() ) ).arg( bundle.track() );
+            "WHERE tags.album = '%1' AND tags.artist = '%2' AND tags.title = '%3' AND tags.track = '%4';" ).arg( albID ).arg( artID ).arg( escapeString( bundle.title() ), bundle.track() );
 
     QStringList urls = query( q );
 
