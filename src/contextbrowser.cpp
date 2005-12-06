@@ -814,10 +814,10 @@ void ContextBrowser::showHome() //SLOT
                 "</div>"
                 "<div id='introduction_box-body' class='box-body'>"
                     "<div class='info'><p>" +
-                        songCount   + " " + i18n( "Songs" ) + "<br>" +
-                        artistCount + " " + i18n( "Artists" ) + "<br>" +
-                        albumCount  + " " + i18n( "Albums" ) + "<br>" +
-                        genreCount  + " " + i18n( "Genres" ) + "<br>" +
+                        " " + i18n( "1 Song", "%n Songs", songCount.toInt() ) + "<br>" +
+                        " " + i18n( "1 Artist", "%n Artists", artistCount.toInt() ) + "<br>" +
+                        " " + i18n( "1 Album", "%n Albums", albumCount.toInt() ) + "<br>" +
+                        " " + i18n( "1 Genre", "%n Genres", genreCount.toInt() ) + "<br>" +
                     "</p></div>"
                     "<div align='center'>"
                     "<input type='button' onClick='window.location.href=\"show:statistics\";' value='" +
