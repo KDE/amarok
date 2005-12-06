@@ -608,7 +608,9 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         urlString.startsWith( "externalurl" ) ||
         urlString.startsWith( "show:suggest" ) ||
         urlString.startsWith( "http" ) ||
-        urlString.startsWith( "seek" )
+        urlString.startsWith( "seek" ) ||
+        urlString.startsWith( "artist" ) ||
+        urlString.startsWith( "current" )
         )
         return;
 
