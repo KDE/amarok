@@ -527,6 +527,7 @@ void App::applySettings( bool firstTime )
             //we need to explicately set the PL button if it's the first time
             if( !firstTime ) m_pPlayerWindow->show();
 
+
             connect( m_pPlayerWindow, SIGNAL(playlistToggled( bool )), m_pPlaylistWindow, SLOT(showHide()) );
 
             //TODO get this to work!
@@ -539,13 +540,16 @@ void App::applySettings( bool firstTime )
             m_pTray->engineStateChanged(EngineController::instance()->engine()->state(), EngineController::instance()->engine()->state());
             m_pTray->engineNewMetaData(EngineController::instance()->bundle(), false);
 
+            //make player window minimal if it was last time
+            if( AmarokConfig::playerWindowMinimalView() ){
+                m_pPlayerWindow->setMinimalView( true );
+            }
         }
         else
             //this is called in the PlayerWindow ctor, hence the else
             m_pPlayerWindow->applySettings();
 
     } else if( m_pPlayerWindow ) {
-
         delete m_pTray; m_pTray = new amaroK::TrayIcon( m_pPlaylistWindow );
         m_pTray->engineStateChanged(EngineController::instance()->engine()->state(), EngineController::instance()->engine()->state());
         m_pTray->engineNewMetaData(EngineController::instance()->bundle(), false);

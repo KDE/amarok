@@ -511,6 +511,7 @@ void PlayerWidget::setMinimalView( bool enable )
         m_pFrameButtons->setGeometry( 0,space + m_pScrollFrame->height() + m_pSlider->height(), 311,22 );
         uint height = m_pFrameButtons->height() + m_pScrollFrame->height() + m_pSlider->height() + space;
         setFixedSize( 311, height );
+        AmarokConfig::setPlayerWindowMinimalView( true );
     }
     else
     {
@@ -518,6 +519,7 @@ void PlayerWidget::setMinimalView( bool enable )
         m_pSlider->setGeometry( 4,103, 303,WANT_MOODBAR ? 19 : 12 );
         m_pFrameButtons->setGeometry(0, WANT_MOODBAR ? 125 : 118, 311,22);
         setFixedSize( 311, WANT_MOODBAR ? 147 : 140 );
+        AmarokConfig::setPlayerWindowMinimalView( false );
     }
 
     m_minimalView = enable;
