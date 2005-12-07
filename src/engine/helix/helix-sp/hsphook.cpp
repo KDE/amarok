@@ -23,7 +23,6 @@
 #include "hxvsrc.h"
 #include "hxresult.h"
 #include "hxausvc.h"
-#include "print.h"
 #include "helix-sp.h"
 #ifndef HELIX_SW_VOLUME_INTERFACE
 #include "gain.h"
@@ -88,23 +87,23 @@ STDMETHODIMP HSPPreMixAudioHook::OnBuffer(HXAudioData */*pAudioInData*/, HXAudio
 #ifdef DEBUG_PURPOSES_ONLY
    if (!(m_count % 100))
    {
-      m_Player->STDERR("PRE: time: %d  ", pAudioInData->ulAudioTime);
+      m_Player->print2stderr("PRE: time: %d  ", pAudioInData->ulAudioTime);
       switch (pAudioInData->uAudioStreamType)
       {
          case INSTANTANEOUS_AUDIO:
-            m_Player->STDERR(" INSTANTANEOUS_AUDIO ");
+            m_Player->print2stderr(" INSTANTANEOUS_AUDIO ");
             break;
          case STREAMING_AUDIO:
-            m_Player->STDERR(" STREAMING_AUDIO ");
+            m_Player->print2stderr(" STREAMING_AUDIO ");
             break;
          case TIMED_AUDIO:
-            m_Player->STDERR(" TIMED_AUDIO ");
+            m_Player->print2stderr(" TIMED_AUDIO ");
             break;
          case STREAMING_INSTANTANEOUS_AUDIO:
-            m_Player->STDERR(" STREAMING_INSTANTANEOUS_AUDIO ");
+            m_Player->print2stderr(" STREAMING_INSTANTANEOUS_AUDIO ");
             break;
       }
-      m_Player->STDERR("pAudioOutData %lx, data %lx\n", pAudioOutData, pAudioOutData->pData);
+      m_Player->print2stderr("pAudioOutData %lx, data %lx\n", pAudioOutData, pAudioOutData->pData);
    }
 #endif
 
@@ -114,7 +113,7 @@ STDMETHODIMP HSPPreMixAudioHook::OnBuffer(HXAudioData */*pAudioInData*/, HXAudio
 
 STDMETHODIMP HSPPreMixAudioHook::OnInit(HXAudioFormat *pFormat)
 {
-   m_Player->STDERR("PRE MIX HOOK OnInit AudioFormat: ch %d, bps %d, sps %d, mbs %d\n", pFormat->uChannels,
+   m_Player->print2stderr("PRE MIX HOOK OnInit AudioFormat: ch %d, bps %d, sps %d, mbs %d\n", pFormat->uChannels,
           pFormat->uBitsPerSample,
           pFormat->ulSamplesPerSec,
           pFormat->uMaxBlockSize);
@@ -198,26 +197,26 @@ STDMETHODIMP HSPPostMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioDat
 #ifdef DEBUG_PURPOSES_ONLY
    if (!(m_count % 100))
    {
-      m_Player->STDERR("POST: time: %d  ", pAudioInData->ulAudioTime);
+      m_Player->print2stderr("POST: time: %d  ", pAudioInData->ulAudioTime);
       switch (pAudioInData->uAudioStreamType)
       {
          case INSTANTANEOUS_AUDIO:
-            m_Player->STDERR(" INSTANTANEOUS_AUDIO ");
+            m_Player->print2stderr(" INSTANTANEOUS_AUDIO ");
             break;
          case STREAMING_AUDIO:
-            m_Player->STDERR(" STREAMING_AUDIO ");
+            m_Player->print2stderr(" STREAMING_AUDIO ");
             break;
          case TIMED_AUDIO:
-            m_Player->STDERR(" TIMED_AUDIO ");
+            m_Player->print2stderr(" TIMED_AUDIO ");
             break;
          case STREAMING_INSTANTANEOUS_AUDIO:
-            m_Player->STDERR(" STREAMING_INSTANTANEOUS_AUDIO ");
+            m_Player->print2stderr(" STREAMING_INSTANTANEOUS_AUDIO ");
             break;
       }
-      m_Player->STDERR("len %d\n", len);
-      m_Player->STDERR("pAudioOutData %lx, data %lx\n", pAudioOutData, pAudioOutData->pData);
+      m_Player->print2stderr("len %d\n", len);
+      m_Player->print2stderr("pAudioOutData %lx, data %lx\n", pAudioOutData, pAudioOutData->pData);
 
-      m_Player->STDERR("Volume is %d\n",m_Player->getDirectHWVolume());
+      m_Player->print2stderr("Volume is %d\n",m_Player->getDirectHWVolume());
    }
 
 #endif
@@ -278,7 +277,7 @@ STDMETHODIMP HSPPostMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioDat
 
 STDMETHODIMP HSPPostMixAudioHook::OnInit(HXAudioFormat *pFormat)
 {
-   m_Player->STDERR("POST MIX HOOK OnInit AudioFormat: idx %d ch %d, bps %d, sps %d, mbs %d\n", m_index, pFormat->uChannels,
+   m_Player->print2stderr("POST MIX HOOK OnInit AudioFormat: idx %d ch %d, bps %d, sps %d, mbs %d\n", m_index, pFormat->uChannels,
           pFormat->uBitsPerSample,
           pFormat->ulSamplesPerSec,
           pFormat->uMaxBlockSize);
@@ -348,7 +347,7 @@ void HSPPostMixAudioHook::setGain(int volume)
       else
       {
          //m_gaindB = GAIN_MIN_dB + (GAIN_MAX_dB - GAIN_MIN_dB) * (float) volume / 100.0;
-         //m_Player->STDERR("GAIN set to %f\n", m_gaindB);
+         //m_Player->print2stderr("GAIN set to %f\n", m_gaindB);
          //gainSetImmediatedB(m_gaindB, m_gaintool);
 
          gainSetImmediate( (float) volume / 100.0, m_gaintool );

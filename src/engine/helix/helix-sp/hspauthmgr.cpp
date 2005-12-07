@@ -16,8 +16,6 @@
 #include "hxauth.h"
 #include "hspauthmgr.h"
 #include <ctype.h>
-#include "print.h"
-
 
 #include "hxausvc.h"
 #include "helix-sp.h"
@@ -83,7 +81,7 @@ HSPAuthenticationManager::HandleAuthenticationRequest(IHXAuthenticationManagerRe
     {
         res = HXR_OK;
         if (m_splayer->bEnableVerboseMode)
-            m_splayer->STDOUT("\nSending Username and Password...\n");
+            m_splayer->print2stdout("\nSending Username and Password...\n");
 
         SafeStrCpy(username,  m_splayer->m_pszUsername, 1024);
         SafeStrCpy(password,  m_splayer->m_pszPassword, 1024);
@@ -106,7 +104,7 @@ HSPAuthenticationManager::HandleAuthenticationRequest(IHXAuthenticationManagerRe
     }
 
     if (m_splayer->bEnableVerboseMode && FAILED(res) )
-        m_splayer->STDOUT("\nInvalid Username and/or Password.\n");
+        m_splayer->print2stdout("\nInvalid Username and/or Password.\n");
     
     pResponse->AuthenticationRequestDone(res, username, password);
     return res;

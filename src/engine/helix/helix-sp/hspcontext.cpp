@@ -29,7 +29,6 @@
 #include "hxausvc.h"
 #include "helix-sp.h"
 #include "utils.h"
-#include "print.h"
 
 extern BOOL bEnableAdviceSink;
 
@@ -125,7 +124,7 @@ HSPEngineContext::ReadPref(const char* pref_key, IHXBuffer*& buffer)
     IHXBuffer *ibuf;
 
     
-    m_splayer->STDERR("in engine context, key is <%s>\n", pref_key);
+    m_splayer->print2stderr("in engine context, key is <%s>\n", pref_key);
     if (0 == (stricmp(pref_key, "OpenAudioDeviceOnPlayback")))
     {
        m_CommonClassFactory->CreateInstance(CLSID_IHXBuffer, (void **) &ibuf);
@@ -136,7 +135,7 @@ HSPEngineContext::ReadPref(const char* pref_key, IHXBuffer*& buffer)
           strcpy((char *)outbuf, "0");
           buffer = ibuf;
 
-          //m_splayer->STDERR("value = %d\n",atol((const char*) buffer->GetBuffer()));
+          //m_splayer->print2stderr("value = %d\n",atol((const char*) buffer->GetBuffer()));
        }
     }
     else if (0 == (stricmp(pref_key, "SoundDriver")))
@@ -159,7 +158,7 @@ HSPEngineContext::ReadPref(const char* pref_key, IHXBuffer*& buffer)
              strcpy((char *)outbuf, "0"); // set SoundDriver = kOSS (ie 0) for OSS
           buffer = ibuf;
 
-          m_splayer->STDERR("Setting Sound System to %s\n", m_splayer->getOutputSink() == HelixSimplePlayer::ALSA ? "ALSA" : "OSS");
+          m_splayer->print2stderr("Setting Sound System to %s\n", m_splayer->getOutputSink() == HelixSimplePlayer::ALSA ? "ALSA" : "OSS");
        }
     }
     // maybe also need to allow setting of "AlsaMixerDeviceName"?
@@ -173,7 +172,7 @@ HSPEngineContext::ReadPref(const char* pref_key, IHXBuffer*& buffer)
           outbuf = ibuf->GetBuffer();
           strcpy((char *)outbuf, "default");
           buffer = ibuf;
-          m_splayer->STDERR("Setting Mixer Element to use the default mixer\n");
+          m_splayer->print2stderr("Setting Mixer Element to use the default mixer\n");
        }
     }
     else if (0 == (stricmp(pref_key, "AlsaPCMDeviceName")))
@@ -186,7 +185,7 @@ HSPEngineContext::ReadPref(const char* pref_key, IHXBuffer*& buffer)
           outbuf = ibuf->GetBuffer();
           strcpy((char *)outbuf, m_splayer->getDevice());
           buffer = ibuf;
-          m_splayer->STDERR("Setting Sound Device to \"%s\"\n", m_splayer->getDevice());
+          m_splayer->print2stderr("Setting Sound Device to \"%s\"\n", m_splayer->getDevice());
        }
     }
 //    else if (0 == (stricmp(pref_key, "UseDirectSound")))
@@ -199,7 +198,7 @@ HSPEngineContext::ReadPref(const char* pref_key, IHXBuffer*& buffer)
 //          strcpy((char *)outbuf, "1");
 //          buffer = ibuf;
 //
-//          m_splayer->STDERR("setting UseDirectSound to value = %d\n",atol((const char*) buffer->GetBuffer()));
+//          m_splayer->print2stderr("setting UseDirectSound to value = %d\n",atol((const char*) buffer->GetBuffer()));
 //       }
 //    }
 //    else if (0 == (stricmp(pref_key, "MinimumAudioStartupInitalPushdown")))
@@ -212,7 +211,7 @@ HSPEngineContext::ReadPref(const char* pref_key, IHXBuffer*& buffer)
 //          strcpy((char *)outbuf, "800");
 //          buffer = ibuf;
 //
-//          m_splayer->STDERR("setting initial audio pushdown to value = %d\n",atol((const char*) buffer->GetBuffer()));
+//          m_splayer->print2stderr("setting initial audio pushdown to value = %d\n",atol((const char*) buffer->GetBuffer()));
 //       }
 //    }
     else
@@ -232,7 +231,7 @@ HSPEngineContext::ReadPref(const char* pref_key, IHXBuffer*& buffer)
 STDMETHODIMP
 HSPEngineContext::WritePref(const char* /*pref_key*/, IHXBuffer* /*buffer*/)
 {
-   //m_splayer->STDERR("In EngineContext, WritePref, key %s\n", pref_key);
+   //m_splayer->print2stderr("In EngineContext, WritePref, key %s\n", pref_key);
    return HXR_OK; // for now, no one allowed to change it
 }
 

@@ -18,7 +18,6 @@
 #include "hsperror.h"
 
 #include <stdio.h>
-#include "print.h"
 
 #include "hxausvc.h"
 #include "helix-sp.h"
@@ -124,7 +123,7 @@ HSPErrorSink::ErrorOccurred(const UINT8 unSeverity,
 
     ConvertErrorToString(ulHXCode, HXDefine, 256);
 
-    m_splayer->STDOUT("Report(%d, %ld, \"%s\", %ld, \"%s\", \"%s\")\n",
+    m_splayer->print2stdout("Report(%d, %ld, \"%s\", %ld, \"%s\", \"%s\")\n",
                       unSeverity,
                       ulHXCode,
                       (pUserString && *pUserString) ? pUserString : "(NULL)",

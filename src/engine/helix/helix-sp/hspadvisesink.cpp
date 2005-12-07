@@ -21,8 +21,6 @@
 #include "hspadvisesink.h"
 #include "ihxpckts.h"
 
-#include "print.h"
-
 #include "hxausvc.h"
 #include "helix-sp.h"
 #include "utils.h"
@@ -172,7 +170,7 @@ HSPClientAdviceSink::OnPosLength(UINT32	  ulPosition,
 {
    if (m_splayer->bEnableAdviceSink)
    {
-      m_splayer->STDOUT("OnPosLength(%ld, %ld)\n", ulPosition, ulLength);
+      m_splayer->print2stdout("OnPosLength(%ld, %ld)\n", ulPosition, ulLength);
    }
    m_position = ulPosition;
    m_duration = ulLength;
@@ -191,12 +189,12 @@ STDMETHODIMP HSPClientAdviceSink::OnPresentationOpened()
 /*
     if (m_splayer && m_splayer->xf().crossfading && m_lClientIndex == m_splayer->xf().toIndex)
     {
-       m_splayer->STDERR("Crossfading...\n");
+       m_splayer->print2stderr("Crossfading...\n");
        m_splayer->xf().toStream = 0;
        m_splayer->xf().toStream = m_splayer->getAudioPlayer(m_lClientIndex)->GetAudioStream(0);
        if (m_splayer->xf().toStream)
        {
-          m_splayer->STDERR("Got Stream 2\n");
+          m_splayer->print2stderr("Got Stream 2\n");
           m_splayer->startCrossFade();
        }
        else
@@ -207,7 +205,7 @@ STDMETHODIMP HSPClientAdviceSink::OnPresentationOpened()
 
    if (m_splayer->bEnableAdviceSink)
    {
-      m_splayer->STDOUT("OnPresentationOpened()\n");
+      m_splayer->print2stdout("OnPresentationOpened()\n");
    }
 
    return HXR_OK;
@@ -224,7 +222,7 @@ STDMETHODIMP HSPClientAdviceSink::OnPresentationClosed()
 {
     if (m_splayer->bEnableAdviceSink)
     {
-        m_splayer->STDOUT("OnPresentationClosed()\n");
+        m_splayer->print2stdout("OnPresentationClosed()\n");
     }
 
     return HXR_OK;
@@ -288,7 +286,7 @@ void HSPClientAdviceSink::GetStatistics (char* pszRegistryKey)
 	}
 	if (m_splayer->bEnableAdviceSink || (m_splayer->bEnableVerboseMode && m_bOnStop))
 	{
-	    m_splayer->STDOUT("%s = %ld\n", szRegistryValue, lValue);
+	    m_splayer->print2stdout("%s = %ld\n", szRegistryValue, lValue);
 	}
     }
 }
@@ -359,7 +357,7 @@ STDMETHODIMP HSPClientAdviceSink::OnStatisticsChanged(void)
     //if(m_splayer->bEnableAdviceSink)
     {
        if(m_splayer->bEnableAdviceSink)
-          m_splayer->STDOUT("OnStatisticsChanged():\n");
+          m_splayer->print2stdout("OnStatisticsChanged():\n");
         
         SafeSprintf(szBuff, 1024, "Statistics.Player%u", uPlayer );
         while( HXR_OK == res )
@@ -367,9 +365,9 @@ STDMETHODIMP HSPClientAdviceSink::OnStatisticsChanged(void)
             res = DumpRegTree( szBuff, uPlayer );
             if ( HXR_OK == res )
             {
-               //m_splayer->STDERR("%d Title: %s\n", uPlayer, m_splayer->ppctrl[uPlayer]->md.title);
-               //m_splayer->STDERR("%d Author: %s\n", uPlayer, m_splayer->ppctrl[uPlayer]->md.artist);
-               //m_splayer->STDERR("%d Bitrate: %ld\n", uPlayer, m_splayer->ppctrl[uPlayer]->md.bitrate);
+               //m_splayer->print2stderr("%d Title: %s\n", uPlayer, m_splayer->ppctrl[uPlayer]->md.title);
+               //m_splayer->print2stderr("%d Author: %s\n", uPlayer, m_splayer->ppctrl[uPlayer]->md.artist);
+               //m_splayer->print2stderr("%d Bitrate: %ld\n", uPlayer, m_splayer->ppctrl[uPlayer]->md.bitrate);
             }
             uPlayer++;
             SafeSprintf(szBuff, 1024, "Statistics.Player%u", uPlayer );
@@ -434,7 +432,7 @@ HX_RESULT HSPClientAdviceSink::DumpRegTree(const char* pszTreeName, UINT16 index
                nVal = 0;
                m_pRegistry->GetIntById( ulRegID, nVal );
                if(m_splayer->bEnableAdviceSink)
-                  m_splayer->STDOUT("%s : %d\n", pszName, nVal ); 
+                  m_splayer->print2stdout("%s : %d\n", pszName, nVal ); 
                if (bw)
                   m_splayer->ppctrl[index]->md.bitrate = nVal;
                break;
@@ -442,7 +440,7 @@ HX_RESULT HSPClientAdviceSink::DumpRegTree(const char* pszTreeName, UINT16 index
                nVal = 0;
                m_pRegistry->GetIntById( ulRegID, nVal );
                if(m_splayer->bEnableAdviceSink)
-                  m_splayer->STDOUT("%s : %d\n", pszName, nVal ); 
+                  m_splayer->print2stdout("%s : %d\n", pszName, nVal ); 
                if (bw)
                   m_splayer->ppctrl[index]->md.bitrate = nVal;
                break;
@@ -450,12 +448,12 @@ HX_RESULT HSPClientAdviceSink::DumpRegTree(const char* pszTreeName, UINT16 index
                pBuff = NULL;
                m_pRegistry->GetStrById( ulRegID, pBuff );
                if(m_splayer->bEnableAdviceSink)
-                  m_splayer->STDOUT("%s : \"", pszName ); 
+                  m_splayer->print2stdout("%s : \"", pszName ); 
                if( pBuff )
                   if(m_splayer->bEnableAdviceSink)
-                     m_splayer->STDOUT("%s", (const char *)(pBuff->GetBuffer()) );
+                     m_splayer->print2stdout("%s", (const char *)(pBuff->GetBuffer()) );
                if(m_splayer->bEnableAdviceSink)
-                  m_splayer->STDOUT("\"\n" ); 
+                  m_splayer->print2stdout("\"\n" ); 
 
                if (title && pBuff)
                {
@@ -471,16 +469,16 @@ HX_RESULT HSPClientAdviceSink::DumpRegTree(const char* pszTreeName, UINT16 index
                break;
            case PT_BUFFER :
                if(m_splayer->bEnableAdviceSink)
-                  m_splayer->STDOUT("%s : BUFFER TYPE NOT SHOWN\n",
+                  m_splayer->print2stdout("%s : BUFFER TYPE NOT SHOWN\n",
                         pszName, nVal ); 
                break;
            case PT_UNKNOWN:
                if(m_splayer->bEnableAdviceSink)
-                  m_splayer->STDOUT("%s Unkown registry type entry\n", pszName );
+                  m_splayer->print2stdout("%s Unkown registry type entry\n", pszName );
                break;
            default:
                if(m_splayer->bEnableAdviceSink)
-                  m_splayer->STDOUT("%s Unkown registry type entry\n", pszName );
+                  m_splayer->print2stdout("%s Unkown registry type entry\n", pszName );
                break;
         }
         res = pValues->GetNextPropertyULONG32( pszName, ulRegID);
@@ -508,7 +506,7 @@ STDMETHODIMP HSPClientAdviceSink::OnPreSeek(	ULONG32	ulOldTime,
 #if !defined(__TCS__)
     if (m_splayer->bEnableAdviceSink)
     {
-        m_splayer->STDOUT("OnPreSeek(%ld, %ld)\n", ulOldTime, ulNewTime);
+        m_splayer->print2stdout("OnPreSeek(%ld, %ld)\n", ulOldTime, ulNewTime);
     }
 #endif
 
@@ -531,7 +529,7 @@ STDMETHODIMP HSPClientAdviceSink::OnPostSeek(	ULONG32	ulOldTime,
 {
     if (m_splayer->bEnableAdviceSink)
     {
-        m_splayer->STDOUT("OnPostSeek(%ld, %ld)\n", ulOldTime, ulNewTime);
+        m_splayer->print2stdout("OnPostSeek(%ld, %ld)\n", ulOldTime, ulNewTime);
     }
 
     return HXR_OK;
@@ -552,12 +550,12 @@ STDMETHODIMP HSPClientAdviceSink::OnStop(void)
 
     if (m_splayer->bEnableAdviceSink)
     {
-        m_splayer->STDOUT("OnStop()\n");
+        m_splayer->print2stdout("OnStop()\n");
     }
 
     if (m_splayer->bEnableVerboseMode)
     {
-        m_splayer->STDOUT("Player %ld stopped.\n", m_lClientIndex);
+        m_splayer->print2stdout("Player %ld stopped.\n", m_lClientIndex);
         m_bOnStop = true;
 	GetAllStatistics();
     }
@@ -586,7 +584,7 @@ STDMETHODIMP HSPClientAdviceSink::OnPause(ULONG32 ulTime)
 {
     if (m_splayer->bEnableAdviceSink)
     {
-        m_splayer->STDOUT("OnPause(%ld)\n", ulTime);
+        m_splayer->print2stdout("OnPause(%ld)\n", ulTime);
     }
 
     return HXR_OK;
@@ -609,12 +607,12 @@ STDMETHODIMP HSPClientAdviceSink::OnBegin(ULONG32 ulTime)
 #if !defined(__TCS__)
     if (m_splayer->bEnableAdviceSink)
     {
-        m_splayer->STDOUT("OnBegin(%ld)\n", ulTime);
+        m_splayer->print2stdout("OnBegin(%ld)\n", ulTime);
     }
 
     if (m_splayer->bEnableVerboseMode)
     {
-        m_splayer->STDOUT("Player %ld beginning playback...\n", m_lClientIndex);
+        m_splayer->print2stdout("Player %ld beginning playback...\n", m_lClientIndex);
     }
 #endif
 
@@ -642,7 +640,7 @@ STDMETHODIMP HSPClientAdviceSink::OnBuffering(ULONG32	ulFlags,
 {
     if (m_splayer->bEnableAdviceSink)
     {
-        m_splayer->STDOUT("OnBuffering(%ld, %d)\n", ulFlags, unPercentComplete);
+        m_splayer->print2stdout("OnBuffering(%ld, %d)\n", ulFlags, unPercentComplete);
     }
     m_splayer->onBuffering(unPercentComplete);
 
@@ -662,7 +660,7 @@ STDMETHODIMP HSPClientAdviceSink::OnContacting(const char* pHostName)
 {
     if (m_splayer->bEnableAdviceSink)
     {
-        m_splayer->STDOUT("OnContacting(\"%s\")\n", pHostName);
+        m_splayer->print2stdout("OnContacting(\"%s\")\n", pHostName);
     }
     m_splayer->onContacting(pHostName);
     return HXR_OK;

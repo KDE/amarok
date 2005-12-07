@@ -328,8 +328,8 @@ private:
 protected:
    int                  m_preamp;
    vector<int>          m_equalizerGains;
-   virtual int print2stdout(const char *fmt, ...);
-   virtual int print2stderr(const char *fmt, ...);
+   virtual int print2stdout(const char */*fmt*/, ...) { return 0; }
+   virtual int print2stderr(const char */*fmt*/, ...) { return 0; }
    virtual void notifyUser(const char *msg) { print2stdout(msg); }
    virtual void interruptUser(const char *msg) { print2stderr(msg); }
 

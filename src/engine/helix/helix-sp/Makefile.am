@@ -27,7 +27,6 @@ libhelix_sp_la_SOURCES = \
     hspauthmgr.cpp \
     hsphook.cpp \
     iids.cpp \
-    print.cpp \
     utils.cpp \
     gain.cpp \
     helix-sp.cpp
