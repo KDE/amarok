@@ -848,6 +848,7 @@ void App::engineStateChanged( Engine::State state, Engine::State oldState )
             m_pPlaylistWindow->setCaption( kapp->makeStdCaption( i18n("Playlist") ) );
         else m_pPlaylistWindow->setCaption( "amaroK" );
         TrackToolTip::instance()->clear();
+        amaroK::OSD::instance()->setImage( KIconLoader().iconPath( "amarok", -KIcon::SizeHuge ) );
         break;
 
     case Engine::Playing:
