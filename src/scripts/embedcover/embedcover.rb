@@ -18,8 +18,8 @@ def cleanup()
 end
 
 
-def sql_escape!( string )
-    string.gsub!( /[']/, "''" )
+def sql_escape( string )
+    return string.gsub( /[']/, "''" )
 end
 
 
@@ -49,17 +49,16 @@ loop do
                 args.each() do |arg|
                     uri = URI.parse( arg )
                     file = URI.unescape( uri.path() )
-                    sql_escape!( file )
 
                     puts( "Path: #{file}" )
 
                     backend = File.dirname( File.expand_path( __FILE__ ) ) + "/addimage2mp3.rb"
 
                     # Query is two parts, first ID, then name
-                    artist_id = `dcop amarok collection query "SELECT DISTINCT artist FROM tags WHERE url = '#{file}'"`.chomp()
+                    artist_id = `dcop amarok collection query "SELECT DISTINCT artist FROM tags WHERE url = '#{sql_escape( file )}'"`.chomp()
                     artist    = `dcop amarok collection query "SELECT DISTINCT artist.name FROM artist WHERE id = '#{artist_id}'"`.chomp()
 
-                    album_id  = `dcop amarok collection query "SELECT DISTINCT album FROM tags WHERE url = '#{file}'"`.chomp()
+                    album_id  = `dcop amarok collection query "SELECT DISTINCT album FROM tags WHERE url = '#{sql_escape( file )}'"`.chomp()
                     album     = `dcop amarok collection query "SELECT DISTINCT album.name FROM album WHERE id = '#{album_id}'"`.chomp()
 
                     puts( "ArtistId : #{artist_id}" )
@@ -82,9 +81,7 @@ loop do
                         # If there is no imported image, check if there is an image associated
                         # in the music folder
 
-                        sql_escape!( artist )
-                        sql_escape!( album )
-                        sql = "SELECT path FROM images WHERE artist LIKE #{artist} AND album LIKE #{album} ORDER BY path;"
+                        sql = "SELECT path FROM images WHERE artist LIKE #{sql_escape( artist )} AND album LIKE #{sql_escape( album )} ORDER BY path;"
                         images = `dcop amarok collection query #{sql}`.split( "\n" )
 
                         # FIXME select best image from array, like CollectionDB does
