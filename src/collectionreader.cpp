@@ -231,7 +231,7 @@ CollectionReader::readDir( const QString& dir, QStrList& entries )
 
         if ( S_ISDIR( statBuf.st_mode ) && m_recursively && entry.length() && entry[0] != '.' )
         {
-            const QString file = dir + QFile::decodeName( entry );
+            const QString file = QFile::decodeName( entry );
 
             if( !m_incremental || !CollectionDB::instance()->isDirInCollection( file ) )
                 // we MUST add a '/' after the dirname
