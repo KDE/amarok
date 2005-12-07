@@ -115,6 +115,16 @@ int HelixEngine::print2stderr(const char *fmt, ...)
 }
 
 
+void HelixEngine::notifyUser(const char *msg)
+{
+   emit statusText(msg);
+}
+
+void HelixEngine::interruptUser(const char */*msg*/)
+{
+}
+
+
 void HelixEngine::onContacting(const char *host)
 {
    emit statusText( i18n("Contacting: ").arg( QString(host) ) );
@@ -264,6 +274,11 @@ HelixEngine::load( const KURL &url, bool isStream )
    debug() << "xfadeLength is " << m_xfadeLength << endl;
    if( m_xfadeLength > 0 && m_state == Engine::Playing )
    {
+      int nextPlayer = m_current ? 0 : 1;
+
+      Engine::Base::load( url, false ); // we dont crossfade streams ?? do we load the base here ??
+      HelixSimplePlayer::setURL( QFile::encodeName( url.url() ), nextPlayer );
+      m_isStream = false;
    }
    else
       cleanup();
@@ -298,7 +313,9 @@ HelixEngine::play( uint offset )
    if (!m_inited)
       return false;
 
-   startTimer(HELIX_ENGINE_TIMER);
+   if (m_state != Engine::Playing)
+      startTimer(HELIX_ENGINE_TIMER);
+
    nextPlayer = m_current ? 0 : 1;
 
    HelixSimplePlayer::start(nextPlayer);
@@ -369,6 +386,7 @@ HelixEngine::pause()
    if (!m_inited)
       return;
 
+   // TODO: PAUSE in XFADE
    debug() << "In pause\n";
    if( m_state == Engine::Playing )
    {
@@ -469,7 +487,9 @@ void
 HelixEngine::timerEvent( QTimerEvent * )
 {
    HelixSimplePlayer::dispatch(); // dispatch the players
-   if (m_xfadeLength <= 0 && m_state == Engine::Playing && HelixSimplePlayer::done(m_current))
+   if ( ( m_xfadeLength <= 0 && m_state == Engine::Playing && HelixSimplePlayer::done(m_current) ) ||
+        ( m_xfadeLength > 0 && m_state == Engine::Playing && isPlaying(m_current?0:1) && 
+          HelixSimplePlayer::done(m_current?0:1) ) )
       play_finished(m_current);
 
    m_lasttime += HELIX_ENGINE_TIMER;

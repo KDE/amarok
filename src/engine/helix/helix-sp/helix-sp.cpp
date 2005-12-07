@@ -1637,6 +1637,14 @@ void HelixSimplePlayer::dispatch()
 }
 
 
+bool HelixSimplePlayer::isPlaying(int playerIndex)
+{
+   if (playerIndex < nNumPlayers)
+      return ppctrl[playerIndex]->bPlaying;
+   else
+      return false;
+}
+
 void HelixSimplePlayer::pause(int playerIndex)
 {
    int i;

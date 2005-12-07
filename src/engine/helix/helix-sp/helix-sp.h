@@ -126,6 +126,7 @@ public:
    void dispatch();                                                  // dispatch the player(s)
 
    void cleanUpStream(int playerIndex);                              // cleanup after stream complete
+   bool isPlaying(int playerIndex);                                  // is the player currently playing?
 
    virtual void onVolumeChange(int) {}                   // called when the volume is changed
    virtual void onMuteChange(int) {}                     // called when mute is changed
@@ -329,6 +330,8 @@ protected:
    vector<int>          m_equalizerGains;
    virtual int print2stdout(const char *fmt, ...);
    virtual int print2stderr(const char *fmt, ...);
+   virtual void notifyUser(const char *msg) { print2stdout(msg); }
+   virtual void interruptUser(const char *msg) { print2stderr(msg); }
 
    friend class HSPClientAdviceSink;
    friend class HSPErrorSink;
