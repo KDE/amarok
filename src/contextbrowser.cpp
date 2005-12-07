@@ -1676,11 +1676,21 @@ bool CurrentTrackJob::doJob()
                         QString length;
                         if( albumValues[j + 4] != "0" )
                             length = "<span class='album-song-time'>(" + MetaBundle::prettyTime( QString(albumValues[j + 4]).toInt(), false ) + ")</span>";
+
+                        QString tracktitle_formated;
+                        QString tracktitle;
+                        tracktitle = escapeHTML( albumValues[j + 5] ) + i18n(" - ") + escapeHTML( albumValues[j] );
+                        tracktitle_formated = "<span class='album-song-title'>";
+                        if ( currentTrack.artist() == albumValues[j + 5] )
+                             tracktitle_formated += "<b>" + tracktitle + "</b>";
+                        else
+                             tracktitle_formated += tracktitle;
+                        tracktitle_formated += "</span>&nbsp;";
                         m_HTMLSource.append(
                             "<div class='album-song'>"
                                 "<a href=\"file:" + albumValues[j + 1].replace( "\"", QCString( "%22" ) ) + "\">"
-                                + track +
-                        "<span class='album-song-title'>" + escapeHTML( albumValues[j + 5] ) + i18n(" - ") + escapeHTML( albumValues[j] ) + "</span>&nbsp;"
+                                + track
+                                + tracktitle_formated
                                 + length +
                                 "</a>"
                             "</div>" );
