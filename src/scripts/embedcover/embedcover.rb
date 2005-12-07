@@ -18,6 +18,11 @@ def cleanup()
 end
 
 
+def sql_escape!( string )
+    string.gsub!( /[']/, "''" )
+end
+
+
 trap( "SIGTERM" ) { cleanup() }
 
 `dcop amarok script addCustomMenuItem #{MenuItemName}`
@@ -44,7 +49,7 @@ loop do
                 args.each() do |arg|
                     uri = URI.parse( arg )
                     file = URI.unescape( uri.path() )
-                    file.gsub!( /[']/, '\\\\\'' )  # Escape for SQL
+                    sql_escape!( file )
 
                     puts( "Path: #{file}" )
 
@@ -67,7 +72,6 @@ loop do
                         next
                     end
 
-
                     md5sum = MD5.hexdigest( "#{artist.downcase()}#{album.downcase()}" )
                     imagefolder = "#{ENV['HOME']}/.kde/share/apps/amarok/albumcovers/large/"
                     image = "#{imagefolder}#{md5sum}"
@@ -75,8 +79,21 @@ loop do
                     puts( "Imagepath: #{image}" )
 
                     unless FileTest.exist?( image )
-                        `dcop amarok playlist popupMessage "EmbedCover: No image found for this track."`
-                        next
+                        # If there is no imported image, check if there is an image associated
+                        # in the music folder
+
+                        sql_escape!( artist )
+                        sql_escape!( album )
+                        sql = "SELECT path FROM images WHERE artist LIKE #{artist} AND album LIKE #{album} ORDER BY path;"
+                        images = `dcop amarok collection query #{sql}`.split( "\n" )
+
+                        # FIXME select best image from array, like CollectionDB does
+                        image = images.first()
+
+                        if image == nil or not FileTest.exist?( image )
+                            `dcop amarok playlist popupMessage "EmbedCover: No image found for this track."`
+                            next
+                        end
                     end
 
                     output = `ruby #{backend} "#{image}" "#{file}"`
