@@ -99,43 +99,38 @@ class PlaylistItem : public KListViewItem
         PlaylistItem *nextSibling() const { return (PlaylistItem*)KListViewItem::nextSibling(); }
 
         /// some accessors
-        inline const KURL &url()   const { return m_url; }
-        inline QString filename()  const { return m_url.isEmpty() ? QString() : m_url.fileName(); }
-        inline QString title()     const { return KListViewItem::text( Title ); }
-        inline QString artist()    const { return KListViewItem::text( Artist ); }
-        inline QString album()     const { return KListViewItem::text( Album ); }
-        inline int     year()      const { return m_year; }
-        inline QString comment()   const { return KListViewItem::text( Comment ); }
-        inline QString genre()     const { return KListViewItem::text( Genre ); }
-        inline int     track()     const { return m_track; }
-        inline QString directory() const { return m_url.isEmpty() ? QString() : m_url.directory(); }
-        inline int     length()    const { return m_length; }
-        inline int     bitrate()   const { return m_bitrate; }
-        inline int     score()     const { return m_score; }
-        inline int     rating()    const { return m_rating; }
-        inline QString type()      const { return filename().mid( filename().findRev( '.' ) + 1 ); }
-        inline int     playCount() const { return m_playCount; }
-        inline uint    lastPlay()  const { return m_lastPlay; }
+        const KURL &url()   const;
+        QString filename()  const;
+        QString title()     const;
+        QString artist()    const;
+        QString album()     const;
+        int     year()      const;
+        QString comment()   const;
+        QString genre()     const;
+        int     track()     const;
+        QString directory() const;
+        int     length()    const;
+        int     bitrate()   const;
+        int     score()     const;
+        int     rating()    const;
+        QString type()      const;
+        int     playCount() const;
+        uint    lastPlay()  const;
 
         /// some setters
-        inline void setTitle(     const QString &title )     { KListViewItem::setText(
-                                                               Title,   title );                  update(); }
-        inline void setArtist(    const QString &artist )    { KListViewItem::setText(
-                                                               Artist,  attemptStore( artist ) ); update(); }
-        inline void setAlbum(     const QString &album )     { KListViewItem::setText(
-                                                               Album,   attemptStore( album ) );  update(); }
-        inline void setComment(   const QString &comment )   { KListViewItem::setText(
-                                                               Comment, comment );                update(); }
-        inline void setGenre(     const QString &genre )     { KListViewItem::setText(
-                                                               Genre,   attemptStore( genre ) );  update(); }
-        inline void setYear(      int           year )      { m_year      = year;      update(); }
-        inline void setTrack(     int           track )     { m_track     = track;     update(); }
-        inline void setLength(    int           length )    { m_length    = length;    update(); }
-        inline void setBitrate(   int           bitrate )   { m_bitrate   = bitrate;   update(); }
-        inline void setRating(    int           rating )    { m_rating    = rating;    update(); }
-        inline void setScore(     int           score )     { m_score     = score;     update(); }
-        inline void setPlaycount( int           playcount ) { m_playCount = playcount; update(); }
-        inline void setLastPlay( uint           lastplay )  { m_lastPlay  = lastplay;  update(); }
+        void setTitle(   const QString &title );
+        void setArtist(  const QString &artist );
+        void setAlbum(   const QString &album );
+        void setComment( const QString &comment );
+        void setGenre(   const QString &genre );
+        void setYear(      int year );
+        void setTrack(     int track );
+        void setLength(    int length );
+        void setBitrate(   int bitrate );
+        void setRating(    int rating );
+        void setScore(     int score );
+        void setPlaycount( int playcount );
+        void setLastPlay( uint lastplay );
 
         /// @return does the file exist?
         bool exists() const { return !m_missing; }
@@ -219,5 +214,63 @@ class PLItemList: public QPtrList<PlaylistItem>
 
         inline PLItemList &operator<<( PlaylistItem *item ) { append( item ); return *this; }
 };
+
+
+inline const KURL &PlaylistItem::url()   const { return m_url; }
+inline QString PlaylistItem::filename()  const { return m_url.isEmpty() ? QString() : m_url.fileName(); }
+inline QString PlaylistItem::title()     const { return KListViewItem::text( Title ); }
+inline QString PlaylistItem::artist()    const { return KListViewItem::text( Artist ); }
+inline QString PlaylistItem::album()     const { return KListViewItem::text( Album ); }
+inline int     PlaylistItem::year()      const { return m_year; }
+inline QString PlaylistItem::comment()   const { return KListViewItem::text( Comment ); }
+inline QString PlaylistItem::genre()     const { return KListViewItem::text( Genre ); }
+inline int     PlaylistItem::track()     const { return m_track; }
+inline QString PlaylistItem::directory() const { return m_url.isEmpty() ? QString() : m_url.directory(); }
+inline int     PlaylistItem::length()    const { return m_length; }
+inline int     PlaylistItem::bitrate()   const { return m_bitrate; }
+inline int     PlaylistItem::score()     const { return m_score; }
+inline int     PlaylistItem::rating()    const { return m_rating; }
+inline QString PlaylistItem::type()      const { return filename().mid( filename().findRev( '.' ) + 1 ); }
+inline int     PlaylistItem::playCount() const { return m_playCount; }
+inline uint    PlaylistItem::lastPlay()  const { return m_lastPlay; }
+
+inline void PlaylistItem::setTitle( const QString &title )
+{
+    KListViewItem::setText( Title, title );
+    update();
+}
+
+inline void PlaylistItem::setArtist( const QString &artist )
+{
+    KListViewItem::setText( Artist, attemptStore( artist ) );
+    update();
+}
+
+inline void PlaylistItem::setAlbum( const QString &album )
+{
+    KListViewItem::setText( Album, attemptStore( album ) );
+    update();
+}
+
+inline void PlaylistItem::setComment( const QString &comment )
+{
+    KListViewItem::setText( Comment, comment );
+    update();
+}
+
+inline void PlaylistItem::setGenre( const QString &genre )
+{
+    KListViewItem::setText( Genre, attemptStore( genre ) );
+    update();
+}
+
+inline void PlaylistItem::setYear(      int year )      { m_year      = year;      update(); }
+inline void PlaylistItem::setTrack(     int track )     { m_track     = track;     update(); }
+inline void PlaylistItem::setLength(    int length )    { m_length    = length;    update(); }
+inline void PlaylistItem::setBitrate(   int bitrate )   { m_bitrate   = bitrate;   update(); }
+inline void PlaylistItem::setRating(    int rating )    { m_rating    = rating;    update(); }
+inline void PlaylistItem::setScore(     int score )     { m_score     = score;     update(); }
+inline void PlaylistItem::setPlaycount( int playcount ) { m_playCount = playcount; update(); }
+inline void PlaylistItem::setLastPlay( uint lastplay )  { m_lastPlay  = lastplay;  update(); }
 
 #endif
