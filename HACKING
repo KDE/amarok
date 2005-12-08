@@ -45,7 +45,7 @@ Header includes should be listed in the following order:
     - KDE includes
     - Qt includes
 
-They should also be sorted alphabetically , for ease of locating them.  A small comment
+They should also be sorted alphabetically, for ease of locating them.  A small comment
 if applicable is also helpful.
 
 Includes in a header file should be kept to the absolute minimum, as to keep compile times
@@ -126,7 +126,7 @@ class QueueList : public KListView
     public slots:
         void    moveSelectedUp();
         void    moveSelectedDown();
-}
+};
 
 #endif /* AMAROK_QUEUEMANAGER_H */
 
@@ -189,7 +189,7 @@ of the current QThread or 'none' if its the original GUI thread.
 
 Errors & Asserts
 ----------------
-*Never use assert() or fatal(). There must be a better option then crashing a users
+*Never use assert() or fatal(). There must be a better option then crashing a user's
 application (its not uncommon for end-users to have debugging enabled).
 
 *KMessageBox is fine to use to prompt the user, but do not use it to display errors
