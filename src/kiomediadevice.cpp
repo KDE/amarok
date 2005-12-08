@@ -88,14 +88,6 @@ KioMediaDevice::copyTrackToDevice(const MetaBundle &bundle, const PodcastInfo *p
         }
     }
 
-    if ( !dir.exists() )
-    {
-        amaroK::StatusBar::instance()->longMessage(
-                i18n( "Media Device: Creating directory for file %1 failed" ).arg( url.path() ),
-                KDE::StatusBar::Error );
-        return NULL;
-    }
-
     m_wait = true;
 
     KIO::CopyJob *job = KIO::copy( bundle.url(), url, false );
@@ -120,10 +112,19 @@ KioMediaDevice::copyTrackToDevice(const MetaBundle &bundle, const PodcastInfo *p
     {
        if(m_copyFailed)
        {
-          amaroK::StatusBar::instance()->longMessage(
-                i18n( "Media Device: Copying %1 to %2 failed" ).arg(bundle.url().prettyURL()).arg(url.prettyURL()),
-                KDE::StatusBar::Error );
           tryToRemove = true;
+          if ( !dir.exists() )
+          {
+             amaroK::StatusBar::instance()->longMessage(
+                   i18n( "Media Device: Creating directory for file %1 failed" ).arg( url.path() ),
+                   KDE::StatusBar::Error );
+          }
+          else
+          {
+             amaroK::StatusBar::instance()->longMessage(
+                   i18n( "Media Device: Copying %1 to %2 failed" ).arg(bundle.url().prettyURL()).arg(url.prettyURL()),
+                   KDE::StatusBar::Error );
+          }
        }
        else
        {
