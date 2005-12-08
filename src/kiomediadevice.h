@@ -29,6 +29,7 @@ class KioMediaDevice : public MediaDevice
         bool              closeDevice();
         void              lockDevice(bool) {}
         void              unlockDevice() {}
+        void              cancelTransfer() {} // we don't have to do anything, we check m_cancelled
 
         /**
          * Determine the url for which a track should be uploaded to on the device
