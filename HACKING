@@ -88,7 +88,7 @@ class AmaroKProcIO : public KProcIO {
         const int i = KProcIO::commSetupDoneC();
         amaroK::closeOpenFiles(KProcIO::out[0],KProcIO::in[0],KProcIO::err[0]);
         return i;
-    };
+    }
 };
 
 
