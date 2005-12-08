@@ -647,7 +647,7 @@ GpodMediaDevice::openDevice(bool silent)
         guint model;
         g_object_get(m_itdb->device,
                 "device-model", &model,
-                0);
+                NULL); // 0 -> warning about missing sentinel
 
         switch(model)
         {
@@ -1068,7 +1068,21 @@ GpodMediaDevice::writeITunesDB()
     {
         bool ok = true;
         GError *error = 0;
-        if( m_isShuffle )
+        if (!itdb_write (m_itdb, &error))
+        {   /* an error occured */
+            ok = false;
+            if(error)
+            {
+                if (error->message)
+                    debug() << "itdb_write error: " << error->message << endl;
+                else
+                    debug() << "itdb_write error: " << "error->message == 0!" << endl;
+                g_error_free (error);
+            }
+            error = 0;
+        }
+
+        if( ok && m_isShuffle )
         {
             /* write shuffle data */
             if (!itdb_shuffle_write (m_itdb, &error))
@@ -1085,22 +1099,10 @@ GpodMediaDevice::writeITunesDB()
                 error = 0;
             }
         }
-        else
-        {
-            if (!itdb_write (m_itdb, &error))
-            {   /* an error occured */
-                ok = false;
-                if(error)
-                {
-                    if (error->message)
-                        debug() << "itdb_write error: " << error->message << endl;
-                    else
-                        debug() << "itdb_write error: " << "error->message == 0!" << endl;
-                    g_error_free (error);
-                }
-                error = 0;
-            }
-        }
+
+        amaroK::StatusBar::instance()->longMessage(
+                i18n("Media device: failed to write iPod database"),
+                KDE::StatusBar::Error );
 
         m_dbChanged = false;
     }
