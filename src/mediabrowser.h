@@ -203,9 +203,11 @@ class MediaDeviceView : public QVBox
         QString          prettySize( unsigned long size ); // KB to QString
         bool             match( const MediaItem *item, const QString &filter );
         SpaceLabel*      m_stats;
+        QHBox*           m_progressBox;
         KProgress*       m_progress;
         MediaDevice*     m_device;
         MediaDeviceList* m_deviceList;
+        KPushButton*     m_cancelButton;
         KPushButton*     m_transferButton;
         KPushButton*     m_connectButton;
         KPushButton*     m_playlistButton;
@@ -238,13 +240,13 @@ class MediaDevice : public QObject
 
         virtual void rmbPressed( MediaDeviceList *deviceList, QListViewItem *item, const QPoint &point, int ) { (void)deviceList; (void)item; (void) point; }
 
-        /*
+        /**
          * @return list of filetypes playable on this device
          *  (empty list is interpreted as all types are good)
          */
         virtual QStringList supportedFiletypes() { return QStringList(); }
 
-        /*
+        /**
          * @param bundle describes track that should be checked
          * @return true if the device is capable of playing the track referred to by bundle
          */
@@ -295,6 +297,8 @@ class MediaDevice : public QObject
         virtual bool asynchronousTransfer() { return false; }
         bool         isTransferring() { return m_transferring; }
         MediaItem   *transferredItem() { return m_transferredItem; }
+        bool         isCancelled() { return m_cancelled; }
+        void         setCancelled( const bool b ) { m_cancelled = b; }
 
         int          progress() const;
         void         setProgress( const int progress, const int total = -1 /* leave total unchanged by default */ );
@@ -302,6 +306,7 @@ class MediaDevice : public QObject
         static MediaDevice *instance() { return s_instance; }
 
     public slots:
+        void abortTransfer();
         void clearItems();
         void config();
         void connectDevice( bool silent=false );
@@ -381,6 +386,11 @@ class MediaDevice : public QObject
          * @return -1 on failure, number of files deleted otherwise
          */
         virtual int deleteItemFromDevice( MediaItem *item, bool onlyPlayed=false ) = 0;
+        
+        /**
+         * Abort the currently active track transfer
+         */
+        virtual void cancelTransfer() = 0;
 
         virtual void updateRootItems();
 
@@ -405,6 +415,7 @@ class MediaDevice : public QObject
         bool             m_waitForDeletion;
         bool             m_copyFailed;
         bool             m_requireMount;
+        bool             m_cancelled;
         bool             m_transferring;
         MediaItem       *m_transferredItem;
 

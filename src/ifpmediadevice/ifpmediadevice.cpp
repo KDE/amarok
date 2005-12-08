@@ -99,7 +99,6 @@ IfpMediaDevice::IfpMediaDevice( MediaDeviceView* parent, MediaDeviceList *listvi
     : MediaDevice( parent, listview )
     , m_dev( 0 )
     , m_dh( 0 )
-//    , m_cancel( false )
     , m_connected( false )
     , m_tmpParent( 0 )
 {
@@ -312,14 +311,15 @@ IfpMediaDevice::uploadCallback( void *pData, struct ifp_transfer_status *progres
     // will be called by 'ifp_upload_file_with_callback'
 
     kapp->processEvents( 100 );
-/*
-    if( m_cancel )
+
+    if( instance()->isCancelled() )
     {
-        m_cancel = false;
-        setProgress( progress->file_bytes, progress->file_bytes );
+        debug() << "Cancelling transfer operation" << endl;
+        instance()->setCancelled( false );
+        instance()->setProgress( progress->file_bytes, progress->file_bytes );
         return 1; //see ifp docs, return 1 for user cancel request
     }
-*/
+
     return static_cast<IfpMediaDevice *>(pData)->setProgressInfo( progress );
 }
 

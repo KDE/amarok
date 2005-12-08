@@ -161,6 +161,7 @@ class DummyMediaDevice : public MediaDevice
     DummyMediaDevice( MediaDeviceView *view, MediaDeviceList *list ) : MediaDevice( view, list ) {}
     virtual ~DummyMediaDevice() {}
     virtual bool isConnected() { return false; }
+    virtual void cancelTransfer() {}
     virtual void addToPlaylist(MediaItem*, MediaItem*, QPtrList<MediaItem>) {}
     virtual void addToDirectory(MediaItem*, QPtrList<MediaItem>) {}
     virtual MediaItem* newDirectory(const QString&, MediaItem*) { return 0; }
@@ -645,10 +646,11 @@ MediaDeviceList::contentsDragEnterEvent( QDragEnterEvent *e )
 void
 MediaDeviceList::contentsDropEvent( QDropEvent *e )
 {
+    const QPoint p = contentsToViewport( e->pos() );
+    MediaItem *item = dynamic_cast<MediaItem *>(itemAt( p ));
+
     if(e->source() == viewport() || e->source() == this)
     {
-        const QPoint p = contentsToViewport( e->pos() );
-        MediaItem *item = dynamic_cast<MediaItem *>(itemAt( p ));
         QPtrList<MediaItem> items;
 
         if( item->type() == MediaItem::PLAYLIST )
@@ -707,11 +709,10 @@ MediaDeviceList::contentsDropEvent( QDropEvent *e )
     }
     else
     {
-
         KURL::List list;
         if ( KURLDrag::decode( e, list ) )
         {
-            KURL::List::Iterator it = list.begin();
+            KURL::List::ConstIterator it = list.begin();
             for ( ; it != list.end(); ++it )
             {
                 MediaDevice::instance()->addURL( *it );
@@ -809,7 +810,9 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     m_device = new DummyMediaDevice( this, m_deviceList );
     m_device->setDeviceType( MediaDevice::DUMMY );
 #endif
-    m_progress = new KProgress( this );
+    m_progressBox  = new QHBox( this );
+    m_progress     = new KProgress( m_progressBox );
+    m_cancelButton = new KPushButton( SmallIconSet("cancel"), i18n("Cancel"), m_progressBox );
 
     QHBox* hb = new QHBox( this );
     hb->setSpacing( 1 );
@@ -836,9 +839,10 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     m_connectButton->setToggleButton( true );
     m_transferButton->setDisabled( true );
 
-    m_progress->setFixedHeight( m_transferButton->sizeHint().height() );
-    m_progress->hide();
+    m_progressBox->setFixedHeight( m_transferButton->sizeHint().height() );
+    m_progressBox->hide();
 
+    connect( m_cancelButton,   SIGNAL( clicked() ), MediaDevice::instance(), SLOT( abortTransfer() ) );
     connect( m_connectButton,  SIGNAL( clicked() ), MediaDevice::instance(), SLOT( connectDevice() ) );
     connect( m_transferButton, SIGNAL( clicked() ), MediaDevice::instance(), SLOT( transferFiles() ) );
     connect( m_configButton,   SIGNAL( clicked() ), MediaDevice::instance(), SLOT( config() ) );
@@ -1013,6 +1017,7 @@ MediaDevice::MediaDevice( MediaDeviceView* parent, MediaDeviceList *listview )
     , m_listview( listview )
     , m_wait( false )
     , m_requireMount( false )
+    , m_cancelled( false )
     , m_transferring( false )
     , m_transferredItem( 0 )
     , m_transferList( new MediaDeviceTransferList( parent ) )
@@ -1076,12 +1081,12 @@ MediaDevice::addURL( const KURL& url, MetaBundle *bundle, PodcastInfo *podcastIn
         item->setUrl( url.path() );
         item->m_bundle = bundle;
         item->m_podcastInfo = podcastInfo;
-        if(podcastInfo)
+        if( podcastInfo )
             item->m_type = MediaItem::PODCASTITEM;
         item->m_playlistName = playlistName;
 
         QString text = item->bundle()->prettyTitle();
-        if(item->type() == MediaItem::PODCASTITEM)
+        if( item->type() == MediaItem::PODCASTITEM )
         {
             text += " (" + i18n("Podcast") + ")";
         }
@@ -1092,7 +1097,8 @@ MediaDevice::addURL( const KURL& url, MetaBundle *bundle, PodcastInfo *podcastIn
         item->setText( 0, text);
 
         m_parent->updateStats();
-        m_parent->m_transferButton->setEnabled( m_parent->m_device->isConnected() || m_parent->m_deviceList->childCount() != 0 );
+        m_parent->m_transferButton->setEnabled( m_parent->m_device->isConnected() || 
+                                                m_parent->m_deviceList->childCount() );
         m_parent->m_progress->setTotalSteps( m_parent->m_progress->totalSteps() + 1 );
         m_transferList->itemCountChanged();
     }
@@ -1270,6 +1276,13 @@ int MediaDevice::sysCall(const QString & command)
 }
 
 void
+MediaDevice::abortTransfer()
+{
+    m_cancelled = true;
+    cancelTransfer();
+}
+
+void
 MediaDevice::connectDevice( bool silent )
 {
     if ( m_parent->m_connectButton->isOn() )
@@ -1347,7 +1360,7 @@ MediaDevice::connectDevice( bool silent )
                     synchronizeDevice();
                     unlockDevice();
 
-                    QTimer::singleShot( 1500, m_parent->m_progress, SLOT(hide()) );
+                    QTimer::singleShot( 1500, m_parent->m_progressBox, SLOT(hide()) );
                     m_parent->updateStats();
                 }
             }
@@ -1598,14 +1611,14 @@ MediaDevice::setProgress( const int progress, const int total )
     if( total != -1 )
         m_parent->m_progress->setTotalSteps( total );
     m_parent->m_progress->setProgress( progress );
-    m_parent->m_progress->show();
+    m_parent->m_progressBox->show();
 }
 
 void
 MediaDevice::fileTransferFinished()  //SLOT
 {
     m_parent->updateStats();
-    m_parent->m_progress->hide();
+    m_parent->m_progressBox->hide();
     m_parent->m_transferButton->setDisabled( true );
     m_wait = false;
 }
@@ -1689,7 +1702,7 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
 
         if(!isTransferring())
         {
-            QTimer::singleShot( 1500, m_parent->m_progress, SLOT(hide()) );
+            QTimer::singleShot( 1500, m_parent->m_progressBox, SLOT(hide()) );
         }
     }
     m_parent->updateStats();
@@ -1970,7 +1983,7 @@ MediaDeviceTransferList::dropEvent( QDropEvent *e )
     KURL::List list;
     if ( KURLDrag::decode( e, list ) )
     {
-        KURL::List::Iterator it = list.begin();
+        KURL::List::ConstIterator it = list.begin();
         for ( ; it != list.end(); ++it )
         {
             MediaDevice::instance()->addURL( *it );
@@ -2001,7 +2014,7 @@ MediaDeviceTransferList::contentsDropEvent( QDropEvent *e )
     KURL::List list;
     if ( KURLDrag::decode( e, list ) )
     {
-        KURL::List::Iterator it = list.begin();
+        KURL::List::ConstIterator it = list.begin();
         for ( ; it != list.end(); ++it )
         {
             MediaDevice::instance()->addURL( *it );

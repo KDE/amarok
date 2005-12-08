@@ -54,6 +54,7 @@ class KioMediaDevice : public MediaDevice
         virtual bool      getCapacity(unsigned long *total, unsigned long *available);
         virtual void      rmbPressed( MediaDeviceList *deviceList, QListViewItem* qitem, const QPoint& point, int );
         virtual void      deleteFile( const KURL &url );
+        virtual void      abortTransfer() {}
 
     protected slots:
         virtual void      fileTransferred( KIO::Job *job );
