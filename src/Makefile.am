@@ -47,6 +47,7 @@ INCLUDES = \
     -I$(top_srcdir)/amarok/src/engine \
     -I$(top_srcdir)/amarok/src/plugin \
     -I$(top_srcdir)/amarok/src/statusbar \
+    -I$(top_srcdir)/amarok/src \
     -I$(kde_includes)/arts \
     $(taglib_includes) \
     $(sqlite_includes) \
