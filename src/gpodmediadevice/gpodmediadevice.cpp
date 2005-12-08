@@ -1100,9 +1100,12 @@ GpodMediaDevice::writeITunesDB()
             }
         }
 
-        amaroK::StatusBar::instance()->longMessage(
-                i18n("Media device: failed to write iPod database"),
-                KDE::StatusBar::Error );
+        if( !ok )
+        {
+            amaroK::StatusBar::instance()->longMessage(
+                    i18n("Media device: failed to write iPod database"),
+                    KDE::StatusBar::Error );
+        }
 
         m_dbChanged = false;
     }
