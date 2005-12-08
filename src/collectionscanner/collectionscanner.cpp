@@ -127,7 +127,7 @@ CollectionScanner::readDir( const QString& path, QStringList& entries )
 
 
     // FILES:
-    const QStringList files = dir.entryList( QDir::Files | QDir::Readable );
+    const QStringList files = dir.entryList( QDir::Files | QDir::Readable | QDir::Hidden );
 
     // Append file paths to list
     foreachType( QStringList, files )
