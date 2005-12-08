@@ -5,7 +5,7 @@ TODO-list for amaroK
 
 
 SHORT-TERM (URGENT):
- <sebr>    Media device should allow for switching between devices (ie, don't assume user has either
+ <sebr>    Media device should allow for switching between devices: ie, don't assume user has either
            iPod *or* iRiver. This will also allow for implementation of USB based media players.
 
  <markey>  TagDialog: I was trying to fetch a cover from the dialog. The download job stalled.
@@ -17,6 +17,9 @@ SHORT-TERM (URGENT):
            <markey> Perhaps it could somehow check if the item still exists before writing
            to it? It could access Playlist::instance(), and ask the playlist if the item
            exists, I spose.
+           <sebr> TagDialog has 2 constructors - one for a url, and the other a playlistitem. The
+           latter is used so that we can do Next & Prev functions in the playlist, using methods
+           item->above() and item->below().
 
  <foreboy> emit statusText when helix libs return an error to the errorresponsesink
  -->foreboy
