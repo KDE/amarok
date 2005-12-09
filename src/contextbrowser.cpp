@@ -622,7 +622,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
     QString artist, album, track; // track unused here
     albumArtistTrackFromUrl( url.path(), artist, album, track );
 
-    if( urlString.isEmpty() && currentPage() == m_currentTrackPage->view() )
+    if( urlString.isEmpty() )
     {
         menu.setCheckable( true );
         menu.insertItem( i18n("Show Related Artists"), RELATED );
