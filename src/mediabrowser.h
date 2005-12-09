@@ -197,9 +197,12 @@ class MediaDeviceView : public QVBox
         void updateStats();
 
     private slots:
+        void config();
         void slotShowContextMenu( QListViewItem* item, const QPoint& point, int );
 
     private:
+        bool             switchMediaDevice( int newType );
+    
         QString          prettySize( unsigned long size ); // KB to QString
         bool             match( const MediaItem *item, const QString &filter );
         SpaceLabel*      m_stats;
@@ -308,7 +311,6 @@ class MediaDevice : public QObject
     public slots:
         void abortTransfer();
         void clearItems();
-        void config();
         void connectDevice( bool silent=false );
         int  mount();
         void removeSelected();

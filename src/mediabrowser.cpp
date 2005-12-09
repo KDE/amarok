@@ -850,7 +850,7 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     connect( m_cancelButton,   SIGNAL( clicked() ), MediaDevice::instance(), SLOT( abortTransfer() ) );
     connect( m_connectButton,  SIGNAL( clicked() ), MediaDevice::instance(), SLOT( connectDevice() ) );
     connect( m_transferButton, SIGNAL( clicked() ), MediaDevice::instance(), SLOT( transferFiles() ) );
-    connect( m_configButton,   SIGNAL( clicked() ), MediaDevice::instance(), SLOT( config() ) );
+    connect( m_configButton,   SIGNAL( clicked() ), this,                    SLOT( config() ) );
     connect( m_device->m_transferList, SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
              this,   SLOT( slotShowContextMenu( QListViewItem*, const QPoint&, int ) ) );
 
@@ -865,6 +865,131 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     }
 
     setFocusProxy( m_device->m_transferList );
+}
+
+void
+MediaDeviceView::config()
+{
+    KDialogBase dialog( this, 0, false );
+    kapp->setTopWidget( &dialog );
+    dialog.setCaption( kapp->makeStdCaption( i18n("Configure Media Device") ) );
+    dialog.showButtonApply( false );
+    QVBox *box = dialog.makeVBoxMainWidget();
+    
+    QComboBox *devices = new QComboBox( box );
+    //make sure these are in the same order the enum is declared
+    QStringList deviceList; deviceList << "Dummy" << "IPod" << "Ifp";
+    devices->insertStringList( deviceList );
+    
+    devices->setCurrentItem( m_device->deviceType() );
+
+    QLabel *mntpntLabel = 0, *mntLabel = 0, *umntLabel = 0;
+    QLineEdit *mntpnt = 0, *mntcmd = 0, *umntcmd = 0;
+    if( m_device->m_requireMount )
+    {
+        mntpntLabel = new QLabel( box );
+        mntpntLabel->setText( i18n( "&Mount point:" ) );
+        mntpnt = new QLineEdit( m_device->m_mntpnt, box );
+        mntpntLabel->setBuddy( mntpnt );
+        QToolTip::add( mntpnt, i18n( "Set the mount point of your device here, when empty autodetection is tried." ) );
+
+        mntLabel = new QLabel( box );
+        mntLabel->setText( i18n( "&Mount command:" ) );
+        mntcmd = new QLineEdit( m_device->m_mntcmd, box );
+        mntLabel->setBuddy( mntcmd );
+        QToolTip::add( mntcmd, i18n( "Set the command to mount your device here, empty commands are not executed." ) );
+
+        umntLabel = new QLabel( box );
+        umntLabel->setText( i18n( "&Unmount command:" ) );
+        umntcmd = new QLineEdit( m_device->m_umntcmd, box );
+        umntLabel->setBuddy( umntcmd );
+        QToolTip::add( umntcmd, i18n( "Set the command to unmount your device here, empty commands are not executed." ) );
+    }
+
+    QCheckBox *autoDeletePodcasts = new QCheckBox( box );
+    autoDeletePodcasts->setText( i18n( "&Automatically delete podcasts" ) );
+    QToolTip::add( autoDeletePodcasts, i18n( "Automatically delete podcast shows already played on connect" ) );
+    autoDeletePodcasts->setChecked( m_device->m_autoDeletePodcasts );
+
+    QCheckBox *syncStats = new QCheckBox( box );
+    syncStats->setText( i18n( "&Synchronize with amaroK statistics" ) );
+    QToolTip::add( syncStats, i18n( "Synchronize with amaroK statistics and submit tracks played to last.fm" ) );
+    syncStats->setChecked( m_device->m_syncStats );
+
+    if ( dialog.exec() != QDialog::Rejected )
+    {
+        if( devices->currentItem() != m_device->deviceType() )
+        {
+            QString msg = i18n( "The requested media device could not be loaded" );
+            if( switchMediaDevice( devices->currentItem() ) )
+                msg = i18n("Media device successfully changed");
+                
+            amaroK::StatusBar::instance()->shortMessage( msg );
+        }
+    
+        if( m_device->m_requireMount )
+        {
+            m_device->setMountPoint( mntpnt->text() );
+            m_device->setMountCommand( mntcmd->text() );
+            m_device->setUmountCommand( umntcmd->text() );
+        }
+        m_device->setAutoDeletePodcasts( autoDeletePodcasts->isChecked() );
+        m_device->setSyncStats( syncStats->isChecked() );
+    }
+}
+
+bool
+MediaDeviceView::switchMediaDevice( int newType )
+{
+    if( newType == m_device->deviceType() )
+        return true;
+    
+    m_device->closeDevice();
+    
+    debug() << "New type: " << newType << endl;
+        
+    switch( newType )
+    {
+        case MediaDevice::DUMMY:
+            debug() << "Loading Dummy device! " << MediaDevice::DUMMY << endl;
+            delete m_device;
+            m_device = new DummyMediaDevice( this, m_deviceList );
+            m_device->setDeviceType( MediaDevice::DUMMY );
+            break;
+            
+        case MediaDevice::IPOD:
+            debug() << "Loading iPod device! " << MediaDevice::IPOD << endl;
+        #ifdef HAVE_LIBGPOD
+            delete m_device;
+            m_device = new GpodMediaDevice( this, m_deviceList );
+            m_device->setDeviceType( MediaDevice::IPOD );
+            m_device->setRequireMount( true );
+        #else
+            return false;
+        #endif
+            break;
+        
+        case MediaDevice::IFP:
+            debug() << "Loading IFP device! " << MediaDevice::IFP << endl;
+        #ifdef HAVE_IFP
+            delete m_device;
+            m_device = new IfpMediaDevice( this, m_deviceList );
+            m_device->setDeviceType( MediaDevice::IFP );
+            m_device->setRequireMount( false );
+        #else
+            return false;
+        #endif
+            break;
+    }
+    debug() << "New Device type: " << m_device->deviceType() << endl;
+    
+    debug() << "Reconnecting signals" << endl;
+    disconnect( MediaDevice::instance() );
+    connect( m_cancelButton,   SIGNAL( clicked() ), MediaDevice::instance(), SLOT( abortTransfer() ) );
+    connect( m_connectButton,  SIGNAL( clicked() ), MediaDevice::instance(), SLOT( connectDevice() ) );
+    connect( m_transferButton, SIGNAL( clicked() ), MediaDevice::instance(), SLOT( transferFiles() ) );
+    
+    return true;
 }
 
 QString
@@ -1158,61 +1283,6 @@ MediaDevice::removeSelected()
     m_parent->m_transferButton->setEnabled( m_transferList->childCount() != 0 && isConnected() );
     m_parent->updateStats();
     m_transferList->itemCountChanged();
-}
-
-void
-MediaDevice::config()
-{
-    KDialogBase dialog( m_parent, 0, false );
-    kapp->setTopWidget( &dialog );
-    dialog.setCaption( kapp->makeStdCaption( i18n("Configure Media Device") ) );
-    dialog.showButtonApply( false );
-    QVBox *box = dialog.makeVBoxMainWidget();
-
-    QLabel *mntpntLabel = NULL, *mntLabel = NULL, *umntLabel = NULL;
-    QLineEdit *mntpnt = NULL, *mntcmd = NULL, *umntcmd = NULL;
-    if( m_requireMount )
-    {
-        mntpntLabel = new QLabel( box );
-        mntpntLabel->setText( i18n( "&Mount point:" ) );
-        mntpnt = new QLineEdit( m_mntpnt, box );
-        mntpntLabel->setBuddy( mntpnt );
-        QToolTip::add( mntpnt, i18n( "Set the mount point of your device here, when empty autodetection is tried." ) );
-
-        mntLabel = new QLabel( box );
-        mntLabel->setText( i18n( "&Mount command:" ) );
-        mntcmd = new QLineEdit( m_mntcmd, box );
-        mntLabel->setBuddy( mntcmd );
-        QToolTip::add( mntcmd, i18n( "Set the command to mount your device here, empty commands are not executed." ) );
-
-        umntLabel = new QLabel( box );
-        umntLabel->setText( i18n( "&Unmount command:" ) );
-        umntcmd = new QLineEdit( m_umntcmd, box );
-        umntLabel->setBuddy( umntcmd );
-        QToolTip::add( umntcmd, i18n( "Set the command to unmount your device here, empty commands are not executed." ) );
-    }
-
-    QCheckBox *autoDeletePodcasts = new QCheckBox( box );
-    autoDeletePodcasts->setText( i18n( "&Automatically delete podcasts" ) );
-    QToolTip::add( autoDeletePodcasts, i18n( "Automatically delete podcast shows already played on connect" ) );
-    autoDeletePodcasts->setChecked( m_autoDeletePodcasts );
-
-    QCheckBox *syncStats = new QCheckBox( box );
-    syncStats->setText( i18n( "&Synchronize with amaroK statistics" ) );
-    QToolTip::add( syncStats, i18n( "Synchronize with amaroK statistics and submit tracks played to last.fm" ) );
-    syncStats->setChecked( m_syncStats );
-
-    if ( dialog.exec() != QDialog::Rejected )
-    {
-        if( m_requireMount )
-        {
-            setMountPoint( mntpnt->text() );
-            setMountCommand( mntcmd->text() );
-            setUmountCommand( umntcmd->text() );
-        }
-        setAutoDeletePodcasts( autoDeletePodcasts->isChecked() );
-        setSyncStats( syncStats->isChecked() );
-    }
 }
 
 void MediaDevice::setMountPoint(const QString & mntpnt)
