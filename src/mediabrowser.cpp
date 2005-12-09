@@ -169,7 +169,12 @@ class DummyMediaDevice : public MediaDevice
     virtual MediaItem* trackExists(const MetaBundle&) { return 0; }
     virtual void lockDevice(bool) {}
     virtual void unlockDevice() {}
-    virtual bool openDevice(bool) { return false; }
+    virtual bool openDevice( bool )
+    { 
+        QString msg = i18n( "Sorry, you do not have a supported portable music player" );
+        amaroK::StatusBar::instance()->shortLongMessage( msg, KDE::StatusBar::Sorry );
+        return false;
+    }
     virtual bool closeDevice() { return false; }
     virtual void synchronizeDevice() {}
     virtual MediaItem* copyTrackToDevice(const MetaBundle&, const PodcastInfo*) { return 0; }
@@ -1285,6 +1290,7 @@ MediaDevice::abortTransfer()
 void
 MediaDevice::connectDevice( bool silent )
 {
+    // it was just clicked, so isOn() == true.
     if ( m_parent->m_connectButton->isOn() )
     {
         if ( !m_mntcmd.isEmpty() && m_requireMount )
