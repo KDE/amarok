@@ -805,11 +805,11 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     m_device = new GpodMediaDevice( this, m_deviceList );
     m_device->setDeviceType( MediaDevice::IPOD );
     m_device->setRequireMount( true );
-//#elif defined(HAVE_IFP)
-//    debug() << "Loading IFP device!" << endl;
-//    m_device = new IfpMediaDevice( this, m_deviceList );
-//    m_device->setDeviceType( MediaDevice::IFP );
-//    m_device->setRequireMount( false );
+#elif defined(HAVE_IFP)
+    debug() << "Loading IFP device!" << endl;
+    m_device = new IfpMediaDevice( this, m_deviceList );
+    m_device->setDeviceType( MediaDevice::IFP );
+    m_device->setRequireMount( false );
 #else
     debug() << "Loading dummy device!" << endl;
     m_device = new DummyMediaDevice( this, m_deviceList );
