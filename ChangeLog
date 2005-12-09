@@ -3,13 +3,18 @@ amaroK ChangeLog
 (C) 2002-2005 the amaroK authors.
 
 
+VERSION 1.3.8:
+  BUGFIXES:
+
+
 VERSION 1.3.7:
-  CHANGES
+  CHANGES:
     * In the tree view, sort tracks alphabetically first, unless one of the
       categories is by album, then sort by track number first. (BR 112830)
     * No longer delete Amazon covers every 90 days, instead relying on
       RefreshImages to re-download covers every 80 days to comply with
       the TOS of the Amazon web service.
+
   BUGFIXES:
     * Fix weirdness when overwriting a playlist by dragging a file to the
       browser.
