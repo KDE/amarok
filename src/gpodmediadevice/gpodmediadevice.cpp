@@ -508,7 +508,7 @@ GpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
 bool
 GpodMediaDevice::openDevice(bool silent)
 {
-    m_isShuffle = false;
+    m_isShuffle = true;
     m_supportsArtwork = false;
     m_dbChanged = false;
     m_files.clear();
@@ -658,6 +658,7 @@ GpodMediaDevice::openDevice(bool silent)
         case MODEL_TYPE_VIDEO_WHITE:
         case MODEL_TYPE_VIDEO_BLACK:
             m_supportsArtwork = true;
+            m_isShuffle = false;
             debug() << "detected iPod photo" << endl;
             break;
         case MODEL_TYPE_REGULAR:
@@ -668,6 +669,7 @@ GpodMediaDevice::openDevice(bool silent)
         case MODEL_TYPE_MINI_GREEN:
         case MODEL_TYPE_MINI_GOLD:
             m_supportsArtwork = false;
+            m_isShuffle = false;
             debug() << "detected regular iPod" << endl;
             break;
         case MODEL_TYPE_SHUFFLE:
@@ -679,13 +681,15 @@ GpodMediaDevice::openDevice(bool silent)
         case MODEL_TYPE_INVALID:
         case MODEL_TYPE_UNKNOWN:
             m_supportsArtwork = false;
+            m_isShuffle = true;
             debug() << "unknown type" << endl;
             break;
         }
     }
     else
     {
-        debug() << "device type detection failed, assuming regular iPod" << endl;
+        debug() << "device type detection failed, assuming iPod shuffle" << endl;
+        m_isShuffle = true;
     }
 
 #ifdef HAVE_ITDB_TRACK_SET_THUMBNAILS
