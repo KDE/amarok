@@ -1617,7 +1617,7 @@ CollectionView::organizeFiles( const KURL::List &urls, bool addToCollection )  /
 
         if( addToCollection )
         {
-            CollectionDB::instance()->moveTempTables( ); // rename tables
+            CollectionDB::instance()->copyTempTables( ); // copy temp table contents to permanent tables
         }
 
         if( skipped > 0 )

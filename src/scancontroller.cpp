@@ -95,12 +95,12 @@ ScanController::ScanController( QObject* parent, bool incremental, const QString
         return;
     }
 
-    CollectionDB::instance()->createTables( CollectionDB::instance()->isConnected() );
-
     if( ( m_incremental && !initIncrementalScanner() ) || m_folders.isEmpty() ) {
         deleteLater();
         return;
     }
+
+    CollectionDB::instance()->createTables( true, !m_incremental );
 
     StatusBar::instance()->newProgressOperation( this )
             .setDescription( m_incremental ? i18n( "Updating Collection" ) : i18n( "Building Collection" ) )
@@ -130,8 +130,9 @@ ScanController::~ScanController()
     m_scanner->kill();
     delete m_scanner;
 
-    if( CollectionDB::instance()->isConnected() ) {
-        CollectionDB::instance()->dropTables( true );
+    if( m_incremental && CollectionDB::instance()->isConnected() ) {
+        // FIXME: really needed? should be done right after copyTables() right now
+        //CollectionDB::instance()->dropTables( true );
     }
 
     emit CollectionDB::instance()->scanDone( m_incremental ? !m_folders.isEmpty() : true );
@@ -297,11 +298,12 @@ ScanController::slotProcessExited()
                 CollectionDB::instance()->removeSongsInDir( *it );
                 CollectionDB::instance()->removeDirFromCollection( *it );
             }
+            CollectionDB::instance()->copyTempTables( ); // copy temp into permanent tables
+            CollectionDB::instance()->dropTables( true );
         }
-        else
-            CollectionDB::instance()->clearTables();
-
-        CollectionDB::instance()->moveTempTables( ); // rename tables
+        else {
+            CollectionDB::instance()->renameTempTables(); // rename temp tables to permanent
+        }
     }
     else {
         ::error() << "CollectionScanner has crashed! Scan aborted." << endl;

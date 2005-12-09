@@ -300,7 +300,7 @@ CollectionDB::setAdminValue( QString noption, QString value ) {
 
 
 void
-CollectionDB::createTables( const bool temporary )
+CollectionDB::createTables( const bool temporary, const bool rename )
 {
     //create tag table
     query( QString( "CREATE %1 TABLE tags%2 ("
@@ -318,7 +318,7 @@ CollectionDB::createTables( const bool temporary )
                     "length INTEGER,"
                     "samplerate INTEGER,"
                     "sampler BOOL );" )
-                    .arg( temporary ? "TEMPORARY" : "" )
+                    .arg( !rename ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
     QString albumAutoIncrement = "";
@@ -351,7 +351,7 @@ CollectionDB::createTables( const bool temporary )
     query( QString( "CREATE %1 TABLE album%2 ("
                     "id INTEGER PRIMARY KEY %3,"
                     "name " + textColumnType() + ");" )
-                    .arg( temporary ? "TEMPORARY" : "" )
+                    .arg( !rename ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" )
                     .arg( albumAutoIncrement ) );
 
@@ -359,7 +359,7 @@ CollectionDB::createTables( const bool temporary )
     query( QString( "CREATE %1 TABLE artist%2 ("
                     "id INTEGER PRIMARY KEY %3,"
                     "name " + textColumnType() + ");" )
-                    .arg( temporary ? "TEMPORARY" : "" )
+                    .arg( !rename ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" )
                     .arg( artistAutoIncrement ) );
 
@@ -367,7 +367,7 @@ CollectionDB::createTables( const bool temporary )
     query( QString( "CREATE %1 TABLE genre%2 ("
                     "id INTEGER PRIMARY KEY %3,"
                     "name " + textColumnType() +");" )
-                    .arg( temporary ? "TEMPORARY" : "" )
+                    .arg( !rename ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" )
                     .arg( genreAutoIncrement ) );
 
@@ -375,7 +375,7 @@ CollectionDB::createTables( const bool temporary )
     query( QString( "CREATE %1 TABLE year%2 ("
                     "id INTEGER PRIMARY KEY %3,"
                     "name " + textColumnType() + ");" )
-                    .arg( temporary? "TEMPORARY" : "" )
+                    .arg( !rename? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" )
                     .arg( yearAutoIncrement ) );
 
@@ -384,14 +384,14 @@ CollectionDB::createTables( const bool temporary )
                     "path " + textColumnType() + ","
                     "artist " + textColumnType() + ","
                     "album " + textColumnType() + ");" )
-                    .arg( temporary ? "TEMPORARY" : "" )
+                    .arg( !rename ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
     // create directory statistics table
     query( QString( "CREATE %1 TABLE directories%2 ("
                     "dir " + textColumnType() + " UNIQUE,"
                     "changedate INTEGER );" )
-                    .arg( temporary ? "TEMPORARY" : "" )
+                    .arg( !rename ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
     //create indexes
@@ -417,20 +417,26 @@ CollectionDB::createTables( const bool temporary )
                         "artist " + textColumnType() + ","
                         "suggestion " + textColumnType() + ","
                         "changedate INTEGER );" ) );
-
-        query( "CREATE INDEX url_tag ON tags( url );" );
-        query( "CREATE INDEX album_tag ON tags( album );" );
-        query( "CREATE INDEX artist_tag ON tags( artist );" );
-        query( "CREATE INDEX genre_tag ON tags( genre );" );
-        query( "CREATE INDEX year_tag ON tags( year );" );
-        query( "CREATE INDEX sampler_tag ON tags( sampler );" );
-
-        query( "CREATE INDEX images_album ON images( album );" );
-        query( "CREATE INDEX images_artist ON images( artist );" );
-
-        query( "CREATE INDEX directories_dir ON directories( dir );" );
         query( "CREATE INDEX related_artists_artist ON related_artists( artist );" );
+
+        createIndices();
     }
+}
+
+void
+CollectionDB::createIndices()
+{
+    query( "CREATE INDEX url_tag ON tags( url );" );
+    query( "CREATE INDEX album_tag ON tags( album );" );
+    query( "CREATE INDEX artist_tag ON tags( artist );" );
+    query( "CREATE INDEX genre_tag ON tags( genre );" );
+    query( "CREATE INDEX year_tag ON tags( year );" );
+    query( "CREATE INDEX sampler_tag ON tags( sampler );" );
+
+    query( "CREATE INDEX images_album ON images( album );" );
+    query( "CREATE INDEX images_artist ON images( artist );" );
+
+    query( "CREATE INDEX directories_dir ON directories( dir );" );
 }
 
 
@@ -486,8 +492,33 @@ CollectionDB::clearTables( const bool temporary )
 
 
 void
-CollectionDB::moveTempTables( )
+CollectionDB::renameTempTables( )
 {
+    dropTables(false );
+
+    query( "ALTER TABLE tags_temp RENAME TO tags;");
+    query( "ALTER TABLE album_temp RENAME TO album;");
+    query( "ALTER TABLE artist_temp RENAME TO artist;");
+    query( "ALTER TABLE genre_temp RENAME TO genre;");
+    query( "ALTER TABLE year_temp RENAME TO year;");
+    query( "ALTER TABLE images_temp RENAME TO images;");
+    query( "ALTER TABLE directories_temp RENAME TO directories;");
+
+    createIndices();
+
+    // create related artists cache
+    query( QString( "CREATE TABLE related_artists ("
+                "artist " + textColumnType() + ","
+                "suggestion " + textColumnType() + ","
+                "changedate INTEGER );" ) );
+    query( "CREATE INDEX related_artists_artist ON related_artists( artist );" );
+}
+
+
+void
+CollectionDB::copyTempTables( )
+{
+    debug() << "copyTempTables" << endl;
     insert( "INSERT INTO tags SELECT * FROM tags_temp;", NULL );
     insert( "INSERT INTO album SELECT * FROM album_temp;", NULL );
     insert( "INSERT INTO artist SELECT * FROM artist_temp;", NULL );
