@@ -1,4 +1,14 @@
-INCLUDES           = $(all_includes) $(IFP_CFLAGS) -I.. -I../engine
+INCLUDES = \
+    -I$(top_srcdir)/amarok/src \
+    -I$(top_srcdir)/amarok/src/amarokcore \
+    -I$(top_builddir)/amarok/src/amarokcore \
+    -I$(top_srcdir)/amarok/src/engine \
+    -I$(top_builddir)/amarok/src/engine \
+    -I.. \
+    $(IFP_CFLAGS) \
+    $(taglib_includes) \
+    $(all_includes)
+    
 METASOURCES        = AUTO
 
 libifpmediadevice_la_LIBADD = -lusb -lifp
