@@ -81,8 +81,12 @@ VERSION 1.4:
       of each song until amaroK is restarted.
 
 
+VERSION 1.3.8:
+  BUGFIXES:
+
+
 VERSION 1.3.7:
-  CHANGES
+  CHANGES:
     * In the tree view, sort tracks alphabetically first, unless one of the
       categories is by album, then sort by track number first. (BR 112830)
     * No longer delete Amazon covers every 90 days, instead relying on
