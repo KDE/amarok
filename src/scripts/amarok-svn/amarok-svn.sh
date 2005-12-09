@@ -11,7 +11,7 @@
 # # # # # # # # # # # # # # # # # # # # # #   # # # # #   # # #   # #   # #   # #   #   #
 
 echo
-echo "amaroK-svn (Version 2.97) by Jocke \"Firetech\" Andersson"
+echo "amaroK-svn (Version 2.99) by Jocke \"Firetech\" Andersson"
 echo "========================================================="
 echo
 
@@ -19,6 +19,7 @@ echo
 LANG="C" # Make outputs in English, like the script.
 RCFILE="`pwd`/.amarok-svnrc" # Settings file
 KD_TITLE="amaroK-svn" # Title for kdialog windows
+BUILD_ID="`date +%y%m%d%H%M`"
 
 #define functions
 function Error {
@@ -56,7 +57,7 @@ CheckBinary kreadconfig
 CheckBinary kwriteconfig
 
 if [ "`id -u`" = 0 ]; then # if user is root
-  kdialog --title "$KD_TITLE" --warningcontinuecancel "You are running amaroK-svn as root! This is not required, and generally not a good idea.\n(The script will get root privileges by itself when needed, see the settings for details.)\nAre you sure you want to continue the script anyway?"
+  kdialog --title "$KD_TITLE" --warningcontinuecancel "You are running amaroK-svn as root! This is not required, and generally not a good idea.\n(The script will get root privileges by itself when needed, see the settings for details.)\nAre you sure you want to continue the script anyway?" --dontagain $RCFILE:root_warning
   if [ "$?" != 0 ]; then
     exit 1
   fi
@@ -79,14 +80,15 @@ if [ -s "$RCFILE" -a "$1" != "-r" -a "$1" != "--reset" ]; then # If the settings
   HOW_ROOT="`ReadConfig how_root`"
   if  [ -z "$HOW_ROOT" ]; then #Save default value if empty
     HOW_ROOT="kdesu"
-    WriteConfig how_Root "$HOW_ROOT"
+    WriteConfig how_root "$HOW_ROOT"
+  fi
+  USE_ID="`ReadConfig use_id`"
+  if  [ -z "$USE_ID" ]; then #Save default value if empty
+    USE_ID="0"
+    WriteConfig use_id "$USE_ID"
   fi
 
-  echo "# Loading saved settings: (Start the script with -r or --reset to change.)"
-
 else
-
-  echo "# Asking for settings:"
 
   ## Language
   AUTO_LANG="`kreadconfig --group Locale --key Language | sed -re \"s/:.+//\"`"
@@ -127,6 +129,13 @@ else
     HOW_ROOT="kdesu"
   fi
   WriteConfig how_root "$HOW_ROOT"
+
+  USE_ID="0"
+  kdialog --title "$KD_TITLE" --yesno "Do you want to use build ID?\nThis feature is generally not needed, and often makes the compiling time longer.\nIf you use it, you can tell from the About box in amaroK when your revision was compiled.\nRecommended and default answer is No."
+  if [ "$?" = "0" ]; then
+    USE_ID="1"
+  fi
+  WriteConfig use_id "$USE_ID"
 fi
 
 SVN_SERVER="`ReadConfig svn_server`"
@@ -135,12 +144,26 @@ if  [ -z "$SVN_SERVER" ]; then #Save default value if empty
   WriteConfig svn_server "$SVN_SERVER"
 fi
 
-## Echo settings (Doing this outside the if statement above because it's the same for both cases.)
-echo "Will get localization and documentation for language '$GET_LANG'."
+## Echo settings (Doing this outside the if statements above because it's the same for both cases.)
+echo "Settings"
+echo "----------"
+echo  "(Start the script with the -r or --reset flag to change these.)"
+echo 
+
+echo -e "Language for localization and documentation:\t$GET_LANG"
 if [ "$CONF_HELP" != "true" -a "`echo $CONF_FLAGS`" ]; then
-  echo "Will configure amaroK with the extra options '`echo $CONF_FLAGS`'."
+  echo -e "Extra configuration options:\t\t\t`echo $CONF_FLAGS`"
 fi
-echo "Will be using '$HOW_ROOT' to get root privileges when needed."
+echo -e "Command for getting root privileges:\t\t$HOW_ROOT"
+echo -en "Build ID:\t\t\t\t\t"
+if [ "$USE_ID" = "1" ]; then
+  echo "On"
+else
+  echo "Off"
+fi
+
+echo
+echo "###################### #### ### ## ## ## # #"
 
 ## Base checkout
 echo
@@ -196,6 +219,11 @@ echo "# 5/11 - Updating amaroK files."
 svn up amarok
 if [ "$?" != "0" ]; then # If the command didn't finish successfully
   Error "The SVN transfer didn't finish successfully.\nIf the message from svn (in console) is something like 'amarok is not under version control', you need a never version of svn.\nAt least version 1.1 is needed."
+fi
+if [ "$USE_ID" = "1" ]; then
+  # Append build ID (date and time with no punctuation) to version
+  sed -re "s/^#define APP_VERSION \"(.*)-SVN.*\"/#define APP_VERSION \"\1-SVN-$BUILD_ID\"/" -i amarok/src/amarok.h
+  echo "Appended build ID to version number."
 fi
 
 echo
@@ -330,7 +358,7 @@ if [ "$CONF_HELP" = "true" ]; then
     done
     WriteConfig conf_flags "$CONF_FLAGS_SAVE"
     if [ "`echo $CONF_FLAGS`" ]; then
-      echo "Will configure amaroK with the extra options '`echo $CONF_FLAGS`'."
+      echo -e "Extra configuration options:\t\t\t'`echo $CONF_FLAGS`'"
     fi
   fi
 fi
@@ -360,7 +388,6 @@ else
     rm -f $TMP_OLD_UNINFO $TMP_NEW_UNINFO $TMP_UNFILES
     Error "Couldn't compare the lists with used files."
   elif [ -s "$TMP_UNFILES" ]; then
-    kdialog --title "$KD_TITLE :: DEBUG: Check these commands before clicking OK!" --textbox $TMP_UNFILES 600 5000 # TODO remove this line when 3.0 goes final.
     echo "Will use '$HOW_ROOT' to get root privileges for removal of unused files."
     if [ "$HOW_ROOT" = "sudo" ]; then
       echo "(You might need to enter your password now.)"

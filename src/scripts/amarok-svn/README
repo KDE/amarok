@@ -2,17 +2,6 @@ NOTES about amaroK-svn 3.0-SVN (2.90+)
 ========================================
 
 Please try this version out and report any bugs to ajocke AT gmail DOT com.
-I'll hard test the features that might contain bugs during the upcoming weekend (26-27/11) and then probably make it final on Sunday or Monday
 
-* The use_sudo setting isn't used anymore, you should remove the config file (.amarok-svnrc) in the folder
-where you usually run the script. use_sudo has been replaced with how_root, because the script now also supports kdesu.
-
-* The script now also removes unused files by comparing unsermake -n uninstall before and after the configuration
-and then runs the lines that only are in the older edition of the command. I guess this isn't entirely fool proof,
-and that's the only reason I'm keeping this version as a rc.
-The diff might (but shouldn't) have the possibility create harmful commands... (I don't know yet, I haven't tried it enough...)
-
-In this rc version, however, there's a big dialog box which shows the commands that will be run, so you can
-check that there are no harmful commands before letting the script run them.
-(If you don't want to let the script run the commands, press Ctrl+C in the console window running the script.
-Then notify me about it.)
+Read the ChangeLog on http://amarok.kde.org/amarokwiki/index.php/AmaroK-svn#ChangeLog
+It contains some useful information about this version.
