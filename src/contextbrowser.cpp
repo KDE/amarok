@@ -207,22 +207,22 @@ ContextBrowser::ContextBrowser( const char *name )
     connect( this, SIGNAL( currentChanged( QWidget* ) ), SLOT( tabChanged( QWidget* ) ) );
 
     connect( m_currentTrackPage->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
-             this, SLOT( openURLRequest( const KURL & ) ) );
-    connect( m_lyricsPage->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
-             this, SLOT( openURLRequest( const KURL & ) ) );
-    connect( m_wikiPage->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
-             this, SLOT( openURLRequest( const KURL & ) ) );
+             this,                                   SLOT( openURLRequest( const KURL & ) ) );
+    connect( m_lyricsPage->browserExtension(),       SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
+             this,                                   SLOT( openURLRequest( const KURL & ) ) );
+    connect( m_wikiPage->browserExtension(),         SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
+             this,                                   SLOT( openURLRequest( const KURL & ) ) );
 
     connect( m_currentTrackPage, SIGNAL( popupMenu( const QString&, const QPoint& ) ),
-             this, SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
-    connect( m_lyricsPage, SIGNAL( popupMenu( const QString&, const QPoint& ) ),
-             this, SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
-    connect( m_wikiPage, SIGNAL( popupMenu( const QString&, const QPoint& ) ),
-             this, SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
+             this,               SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
+    connect( m_lyricsPage,       SIGNAL( popupMenu( const QString&, const QPoint& ) ),
+             this,               SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
+    connect( m_wikiPage,         SIGNAL( popupMenu( const QString&, const QPoint& ) ),
+             this,               SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
 
-    connect( m_lyricsToolBar->getButton( LYRICS_ADD    ), SIGNAL(clicked( int )), SLOT(lyricsAdd()) );
-    connect( m_lyricsToolBar->getButton( LYRICS_SEARCH    ), SIGNAL(clicked( int )), SLOT(lyricsSearch()) );
-    connect( m_lyricsToolBar->getButton( LYRICS_REFRESH    ), SIGNAL(clicked( int )), SLOT(lyricsRefresh()) );
+    connect( m_lyricsToolBar->getButton( LYRICS_ADD ),     SIGNAL(clicked( int )), SLOT(lyricsAdd()) );
+    connect( m_lyricsToolBar->getButton( LYRICS_SEARCH ),  SIGNAL(clicked( int )), SLOT(lyricsSearch()) );
+    connect( m_lyricsToolBar->getButton( LYRICS_REFRESH ), SIGNAL(clicked( int )), SLOT(lyricsRefresh()) );
     connect( m_lyricsToolBar->getButton( LYRICS_BROWSER ), SIGNAL(clicked( int )), SLOT(lyricsExternalPage()) );
 
     connect( m_wikiToolBar->getButton( WIKI_BACK    ), SIGNAL(clicked( int )), SLOT(wikiHistoryBack()) );
