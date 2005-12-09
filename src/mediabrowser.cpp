@@ -170,8 +170,8 @@ class DummyMediaDevice : public MediaDevice
     virtual void lockDevice(bool) {}
     virtual void unlockDevice() {}
     virtual bool openDevice( bool )
-    { 
-        QString msg = i18n( "Sorry, you do not have a supported portable music player" );
+    {
+        QString msg = i18n( "Sorry, you do not have a supported portable music player." );
         amaroK::StatusBar::instance()->longMessage( msg, KDE::StatusBar::Sorry );
         return false;
     }
@@ -1102,7 +1102,7 @@ MediaDevice::addURL( const KURL& url, MetaBundle *bundle, PodcastInfo *podcastIn
         item->setText( 0, text);
 
         m_parent->updateStats();
-        m_parent->m_transferButton->setEnabled( m_parent->m_device->isConnected() || 
+        m_parent->m_transferButton->setEnabled( m_parent->m_device->isConnected() ||
                                                 m_parent->m_deviceList->childCount() );
         m_parent->m_progress->setTotalSteps( m_parent->m_progress->totalSteps() + 1 );
         m_transferList->itemCountChanged();
