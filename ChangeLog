@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.4:
   FEATURES:
+    * Tagdialog can now attempt to guess tags from the filename.
     * Drag albums and compilations from context browser to media device and
       playlist browser.
     * Add playlist files (.m3u, ...) to media device transfer queue.

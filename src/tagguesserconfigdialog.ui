@@ -1,0 +1,226 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>TagGuesserConfigDialog</class>
+<author>Frerich Raabe &lt;raabe@kde.org&gt;</author>
+<widget class="KDialog">
+    <property name="name">
+        <cstring>Form1</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>467</width>
+            <height>260</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Tag Guesser</string>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="KListView" row="0" column="0" rowspan="7" colspan="1">
+            <column>
+                <property name="text">
+                    <string>File Name Scheme</string>
+                </property>
+                <property name="clickable">
+                    <bool>false</bool>
+                </property>
+                <property name="resizable">
+                    <bool>false</bool>
+                </property>
+            </column>
+            <property name="name">
+                <cstring>lvSchemes</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="fullWidth">
+                <bool>true</bool>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>Here you can see the currently configured file name schemes which the "Suggest" button in the tag editor uses to extract tag information from a file name. Each string may contain one of the following placeholders:&lt;ul&gt;
+&lt;li&gt;%ttile: Song Title&lt;/li&gt;
+&lt;li&gt;%artist: Artist&lt;/li&gt;
+&lt;li&gt;%album: Album&lt;/li&gt;
+&lt;li&gt;%track: Track Number&lt;/li&gt;
+&lt;li&gt;%comment: Comment&lt;/li&gt;
+&lt;/ul&gt;
+For example, the file name scheme "[%track] %artist - %title" would match "[01] Deep Purple - Smoke on the water" but not "(Deep Purple) Smoke on the water". For that second name, you would use the scheme "(%a) %t".&lt;p/&gt;
+Note that the order in which the schemes appear in the list is relevant, since the tag guesser will go through the list from the top to the bottom, and use the first matching scheme.</string>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>Here you can see the currently configured file name schemes which the "Suggest" button in the tag editor uses to extract tag information from a file name. Each string may contain one of the following placeholders:&lt;ul&gt;
+&lt;li&gt;%ttile: Song Title&lt;/li&gt;
+&lt;li&gt;%artist: Artist&lt;/li&gt;
+&lt;li&gt;%album: Album&lt;/li&gt;
+&lt;li&gt;%track: Track Number&lt;/li&gt;
+&lt;li&gt;%comment: Comment&lt;/li&gt;
+&lt;/ul&gt;
+For example, the file name scheme "[%track] %artist - %title" would match "[01] Deep Purple - Smoke on the water" but not "(Deep Purple) Smoke on the water". For that second name, you would use the scheme "(%a) %t".&lt;p/&gt;
+Note that the order in which the schemes appear in the list is relevant, since the tag guesser will go through the list from the top to the bottom, and use the first matching scheme.</string>
+            </property>
+        </widget>
+        <widget class="QToolButton" row="0" column="1">
+            <property name="name">
+                <cstring>bMoveUp</cstring>
+            </property>
+            <property name="text">
+                <string></string>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>Move scheme up</string>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>Press this button to move the currently selected scheme one step upwards.</string>
+            </property>
+        </widget>
+        <widget class="QToolButton" row="0" column="3">
+            <property name="name">
+                <cstring>bMoveDown</cstring>
+            </property>
+            <property name="text">
+                <string></string>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>Move scheme down</string>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>Press this button to move the currently selected scheme one step downwards.</string>
+            </property>
+        </widget>
+        <widget class="KPushButton" row="2" column="1" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>bModify</cstring>
+            </property>
+            <property name="text">
+                <string>Mo&amp;dify</string>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>Modify scheme</string>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>Press this button to modify the currently selected scheme.</string>
+            </property>
+        </widget>
+        <widget class="KPushButton" row="3" column="1" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>bRemove</cstring>
+            </property>
+            <property name="text">
+                <string>&amp;Remove</string>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>Remove scheme</string>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>Press this button to remove the currently selected scheme from the list.</string>
+            </property>
+        </widget>
+        <widget class="KPushButton" row="1" column="1" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>bAdd</cstring>
+            </property>
+            <property name="text">
+                <string>&amp;Add</string>
+            </property>
+            <property name="accel">
+                <string>Alt+A</string>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>Add a new scheme</string>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>Press this button to add a new file name scheme to the end of the list.</string>
+            </property>
+        </widget>
+        <spacer row="4" column="2">
+            <property name="name">
+                <cstring>spacer1</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>60</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="KPushButton" row="5" column="1" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>bOk</cstring>
+            </property>
+            <property name="text">
+                <string>O&amp;k</string>
+            </property>
+            <property name="accel">
+                <string>Alt+K</string>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>Add a new scheme</string>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>Press this button to add a new file name scheme to the end of the list.</string>
+            </property>
+        </widget>
+        <widget class="KPushButton" row="6" column="1" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>bCancel</cstring>
+            </property>
+            <property name="text">
+                <string>&amp;Cancel</string>
+            </property>
+            <property name="accel">
+                <string>Alt+C</string>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>Add a new scheme</string>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>Press this button to add a new file name scheme to the end of the list.</string>
+            </property>
+        </widget>
+    </grid>
+</widget>
+<customwidgets>
+</customwidgets>
+<includes>
+    <include location="global" impldecl="in implementation">kdialog.h</include>
+</includes>
+<slots>
+    <slot specifier="non virtual">slotCurrentChanged( QListViewItem * item )</slot>
+    <slot>accept()</slot>
+    <slot>reject()</slot>
+    <slot specifier="non virtual">slotRenameItem( QListViewItem * item, const QPoint &amp;, int c )</slot>
+    <slot specifier="non virtual">slotMoveUpClicked()</slot>
+    <slot specifier="non virtual">slotMoveDownClicked()</slot>
+    <slot specifier="non virtual">slotAddClicked()</slot>
+    <slot specifier="non virtual">slotModifyClicked()</slot>
+    <slot specifier="non virtual">slotRemoveClicked()</slot>
+</slots>
+<functions>
+    <function access="private" specifier="non virtual">init()</function>
+</functions>
+<layoutdefaults spacing="6" margin="0"/>
+<layoutfunctions spacing="KDialog::spacingHint"/>
+<includehints>
+    <includehint>kdialog.h</includehint>
+    <includehint>klistview.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+</includehints>
+</UI>

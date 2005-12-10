@@ -122,9 +122,6 @@ MID-TERM:
   <sebr>   Make the player window scroll the text in the opposite direction if using right-2-left text
            (eg hebrew or arabic)
 
-  <illiss.>Option to "fill in tags from filename" in the meta-information dialog. Perhaps steal some (more)
-           code from JuK.
-
   <sebr>   Use Metabar's box retraction animation to the context browser. More iCandy. Any Javascript experts around?
 
   <mxcl>   Should be able to open collection browser by right clicking on stuff in contextB, so show the

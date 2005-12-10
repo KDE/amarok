@@ -14,6 +14,8 @@
 #include "playlistitem.h"
 #include "statusbar.h"       //for status messages
 #include "tagdialog.h"
+#include "tagguesser.h"
+#include "tagguesserconfigdialog.h"
 #include "trackpickerdialog.h"
 
 #include <taglib/fileref.h>
@@ -271,6 +273,30 @@ TagDialog::loadCover( const QString &artist, const QString &album ) {
 
 
 void
+TagDialog::setFileNameSchemes() //SLOT
+{
+    TagGuesserConfigDialog* dialog = new TagGuesserConfigDialog(this, "child");
+    dialog->exec();
+}
+
+
+void
+TagDialog::guessFromFilename() //SLOT
+{
+    TagGuesser guesser( m_bundle.url().path() );
+    if( !guesser.title().isNull() )
+        kLineEdit_title->setText( guesser.title() );
+    if( !guesser.artist().isNull() )
+        kComboBox_artist->setCurrentText( guesser.artist() );
+    if( !guesser.album().isNull() )
+        kComboBox_album->setCurrentText( guesser.album() );
+    if( !guesser.track().isNull() )
+        kIntSpinBox_track->setValue( guesser.track().toInt() );
+    if( !guesser.comment().isNull() )
+        kTextEdit_comment->setText( guesser.comment() );
+}
+
+void
 TagDialog::musicbrainzQuery() //SLOT
 {
 #if HAVE_TUNEPIMP
@@ -432,6 +458,9 @@ void TagDialog::init()
 #else
     QToolTip::add( pushButton_musicbrainz, i18n("Please install MusicBrainz to enable this functionality") );
 #endif
+
+    connect( pushButton_guessTags, SIGNAL(clicked()), SLOT( guessFromFilename() ) );
+    connect( pushButton_setFilenameSchemes, SIGNAL(clicked()), SLOT( setFileNameSchemes() ) );
 
     if( m_urlList.count() ) {   //editing multiple tracks
         setMultipleTracksMode();
@@ -659,6 +688,8 @@ TagDialog::setMultipleTracksMode()
     kIntSpinBox_track->setEnabled( false );
 
     pushButton_musicbrainz->hide();
+    pushButton_guessTags->hide();
+    pushButton_setFilenameSchemes->hide();
 
     locationLabel->hide();
     kLineEdit_location->hide();
@@ -682,6 +713,8 @@ TagDialog::setSingleTrackMode()
     kIntSpinBox_track->setEnabled( true );
 
     pushButton_musicbrainz->show();
+    pushButton_guessTags->show();
+    pushButton_setFilenameSchemes->show();
 
     locationLabel->show();
     kLineEdit_location->show();

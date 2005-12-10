@@ -49,6 +49,8 @@ class TagDialog : public TagDialogBase
         void loadCover( const QString &artist, const QString &album );
 
         void musicbrainzQuery();
+        void guessFromFilename();
+        void setFileNameSchemes();
         void queryDone( KTRMResultList results );
         void fillSelected( KTRMResult selected );
 
@@ -72,6 +74,8 @@ class TagDialog : public TagDialogBase
         const QString unknownSafe( QString );
         const QStringList statisticsData();
         void applyToAllTracks();
+
+        const QStringList filenameSchemes();
 
         MetaBundle m_bundle;
         KURL::List::iterator m_currentURL;
