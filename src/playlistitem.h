@@ -179,10 +179,12 @@ class PlaylistItem : public KListViewItem
         int m_track;
         int m_length;
         int m_bitrate;
-        int m_score;
-        int m_rating;
-        int m_playCount;
-        int m_lastPlay;
+
+        int  m_score;
+        int  m_rating;
+        int  m_playCount;
+        uint m_lastPlay;
+
         bool m_missing;
         bool m_enabled;
 
@@ -228,11 +230,7 @@ inline int     PlaylistItem::track()     const { return m_track; }
 inline QString PlaylistItem::directory() const { return m_url.isEmpty() ? QString() : m_url.directory(); }
 inline int     PlaylistItem::length()    const { return m_length; }
 inline int     PlaylistItem::bitrate()   const { return m_bitrate; }
-inline int     PlaylistItem::score()     const { return m_score; }
-inline int     PlaylistItem::rating()    const { return m_rating; }
 inline QString PlaylistItem::type()      const { return filename().mid( filename().findRev( '.' ) + 1 ); }
-inline int     PlaylistItem::playCount() const { return m_playCount; }
-inline uint    PlaylistItem::lastPlay()  const { return m_lastPlay; }
 
 inline void PlaylistItem::setTitle( const QString &title )
 {

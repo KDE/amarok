@@ -92,10 +92,10 @@ PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi )
         , m_track( 0 )
         , m_length( 0 )
         , m_bitrate( 0 )
-        , m_score( 0 )
-        , m_rating( 0 )
-        , m_playCount( 0 )
-        , m_lastPlay( 0 )
+        , m_score( -2 )
+        , m_rating( -2 )
+        , m_playCount( -2 )
+        , m_lastPlay( 2 )
         , m_missing( false )
         , m_enabled( true )
         , m_proxyForMoods( 0 )
@@ -132,9 +132,10 @@ PlaylistItem::PlaylistItem( QDomNode node, QListViewItem *item )
         , m_track( 0 )
         , m_length( 0 )
         , m_bitrate( 0 )
-        , m_score( 0 )
-        , m_playCount( 0 )
-        , m_lastPlay( 0 )
+        , m_score( -2 )
+        , m_rating( -2 )
+        , m_playCount( -2 )
+        , m_lastPlay( 2 )
         , m_missing( false )
         , m_enabled( true )
         , m_proxyForMoods( 0 )
@@ -168,16 +169,10 @@ PlaylistItem::PlaylistItem( QDomNode node, QListViewItem *item )
             m_bitrate = text.toInt();
             continue;
         case Score:
-            m_score = CollectionDB::instance()->getSongPercentage( m_url.path() );
-            continue;
         case Rating:
-            m_rating = CollectionDB::instance()->getSongRating( m_url.path() );
-            continue;
         case Playcount:
-            m_playCount = CollectionDB::instance()->getPlayCount( m_url.path() );
-            continue;
         case LastPlayed:
-            m_lastPlay = CollectionDB::instance()->getLastPlay( m_url.path() ).toTime_t();
+            continue;
         }
     }
 
@@ -230,6 +225,36 @@ PlaylistItem::~PlaylistItem()
 // PUBLIC METHODS
 /////////////////////////////////////////////////////////////////////////////////////
 
+int PlaylistItem::score() const
+{
+    if( m_score == -2 )
+        //const_cast is ugly, but other option was mutable, and then we lose const correctness checking
+        //everywhere else
+        *const_cast<int*>(&m_score) = CollectionDB::instance()->getSongPercentage( m_url.path() );
+    return m_score;
+}
+
+int PlaylistItem::rating() const
+{
+    if( m_rating == -2 )
+        *const_cast<int*>(&m_rating) = CollectionDB::instance()->getSongRating( m_url.path() );
+    return m_rating;
+}
+
+int PlaylistItem::playCount() const
+{
+    if( m_playCount == -2 )
+        *const_cast<int*>(&m_playCount) = CollectionDB::instance()->getPlayCount( m_url.path() );
+    return m_playCount;
+}
+
+uint PlaylistItem::lastPlay() const
+{
+    if( m_lastPlay == 2 )
+        *const_cast<uint*>(&m_lastPlay) = CollectionDB::instance()->getLastPlay( m_url.path() ).toTime_t();
+    return m_lastPlay;
+}
+
 void PlaylistItem::setText( const MetaBundle &bundle )
 {
     setTitle( bundle.title() );
@@ -241,10 +266,6 @@ void PlaylistItem::setText( const MetaBundle &bundle )
     setTrack( bundle.track() );
     setLength( bundle.length() );
     setBitrate( bundle.bitrate() );
-    setScore( CollectionDB::instance()->getSongPercentage( bundle.url().path() ) );
-    setRating( CollectionDB::instance()->getSongRating( bundle.url().path() ) );
-    setPlaycount( CollectionDB::instance()->getPlayCount( bundle.url().path() ) );
-    setLastPlay( CollectionDB::instance()->getLastPlay( bundle.url().path() ).toTime_t() );
 
     m_missing = !bundle.exists();
 }
@@ -489,13 +510,13 @@ bool PlaylistItem::isEditing( int column ) const
         case Comment: //FIXME fix this hack!
             return KListViewItem::text( column ) == editing;
         case Year:       return m_year == -4623894;
-        case Track:      return m_track     < 0;
-        case Length:     return m_length    < 0;
-        case Bitrate:    return m_bitrate   < 0;
-        case Score:      return m_score     < 0;
-        case Rating:     return m_rating    < 0;
-        case Playcount:  return m_playCount < 0;
-        case LastPlayed: return m_lastPlay == 1;
+        case Track:      return m_track     == -1;
+        case Length:     return m_length    == -1;
+        case Bitrate:    return m_bitrate   == -1;
+        case Score:      return m_score     == -1;
+        case Rating:     return m_rating    == -1;
+        case Playcount:  return m_playCount == -1;
+        case LastPlayed: return m_lastPlay  ==  1;
         default: return false;
     }
 }
