@@ -217,6 +217,10 @@ TagDialog::perTrack()
     }
     else
     {
+        if( hasChanged() )
+        {
+            storeTags( *m_currentURL );
+        }
         setMultipleTracksMode();
         readMultipleTracks();
     }
@@ -828,7 +832,7 @@ void
 TagDialog::storeTags( const KURL &url, MetaBundle &mb, int score )
 {
     storedTags.replace( url.path(), mb );
-    storedScores.replace( url.path(), kIntSpinBox_score->value() );
+    storedScores.replace( url.path(), score );
 }
 
 MetaBundle
