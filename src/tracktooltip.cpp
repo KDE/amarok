@@ -24,6 +24,7 @@
 #include "playlistitem.h"
 #include <qtooltip.h>
 #include <qapplication.h>
+#include <kstandarddirs.h>
 
 
 TrackToolTip *TrackToolTip::instance()
@@ -90,7 +91,13 @@ void TrackToolTip::setTrack( const MetaBundle &tags, bool force )
                 const int rating = CollectionDB::instance()->getSongRating( tags.url().path() );
                 if( rating > 0 )
                 {
-                    right << QString().fill( '*', rating );
+                    QString s;
+                    for( int i = 0; i < rating; ++i )
+                        s += QString( "<img src=\"%1\" height=\"%2\" width=\"%3\">" )
+                             .arg( locate( "data", "amarok/images/star.png" ) )
+                             .arg( QFontMetrics( QToolTip::font() ).height() )
+                             .arg( QFontMetrics( QToolTip::font() ).height() );
+                    right << s;
                     left << playlist->columnText( column );
                 }
             }
