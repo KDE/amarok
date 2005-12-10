@@ -79,59 +79,57 @@ bool amarokWidget::eventFilter( QObject *, QEvent *e )
 UniversalAmarok::UniversalAmarok(KInstance *inst,QObject *parent,QWidget *widgetParent, QString &desktopName, const char* name):
                    KonqSidebarPlugin(inst,parent,widgetParent,desktopName,name)
 {
-    KGlobal::iconLoader()->addAppDir("amarok");
-    widget=new amarokWidget(widgetParent);
+    KGlobal::iconLoader()->addAppDir( "amarok" );
+    widget = new amarokWidget( widgetParent );
 //    widgetParent->resize(580,300);
-    KToolBar *topBar=new KToolBar(widget, "Topbar");
+    KToolBar *topBar = new KToolBar( widget, "Topbar" );
     topBar->setIconSize(16);
-    topBar->insertButton("gohome",0,SIGNAL(clicked() ),this, SLOT(cbHome() ) );
-    topBar->insertButton("today",0,SIGNAL(clicked() ),this, SLOT(currentTrack() ) );
-    topBar->insertButton("document",0,SIGNAL(clicked() ),this, SLOT(lyrics() ) );
-    topBar->insertButton( "wiki" ,0,SIGNAL(clicked() ),this, SLOT(wiki() ) );
+    topBar->insertButton( "today",    0, SIGNAL( clicked() ), this, SLOT( currentTrack() ) );
+    topBar->insertButton( "document", 0, SIGNAL( clicked() ), this, SLOT( lyrics() ) );
+    topBar->insertButton( "personal", 0, SIGNAL( clicked() ), this, SLOT( wiki() ) );
 
     browser = new KHTMLPart(widget, "widget-browser");
 //browser=new KHTMLPart(widget);
-kdDebug() << "parentPart() << " << browser->parentPart() << endl;
+    kdDebug() << "parentPart() << " << browser->parentPart() << endl;
     browser->setDNDEnabled( true );
-    browser->setEncoding("utf8", true);
-    updateBrowser(HTML_FILE);
-browser->view()->installEventFilter(widget);
-    amarokDCOP=new DCOPClient();
+    browser->setEncoding( "utf8", true );
+    updateBrowser( HTML_FILE );
+    browser->view()->installEventFilter( widget );
+    amarokDCOP = new DCOPClient();
     amarokDCOP->attach();
-    playerStub=new AmarokPlayerInterface_stub( amarokDCOP, "amarok", "player");
-    playlistStub=new AmarokPlaylistInterface_stub( amarokDCOP, "amarok", "playlist");
+    
+    playerStub   = new AmarokPlayerInterface_stub( amarokDCOP, "amarok", "player");
+    playlistStub = new AmarokPlaylistInterface_stub( amarokDCOP, "amarok", "playlist");
 
     KToolBar* toolBar=new KToolBar(widget, "PlayerControls");
-//     toolBar->setMaximumHeight(48);
+
     toolBar->setIconSize(16);
-    toolBar->insertButton("player_start",0,SIGNAL(clicked() ),this, SLOT(sendPrev() ) );
-    toolBar->insertButton("player_play",0,SIGNAL(clicked() ),this, SLOT(sendPlay() ) );
-    toolBar->insertButton("player_pause",0,SIGNAL(clicked() ),this, SLOT(sendPause() ) );
-    toolBar->insertButton("player_stop",0,SIGNAL(clicked() ),this, SLOT(sendStop() ) );
-    toolBar->insertButton("player_end",0,SIGNAL(clicked() ),this, SLOT(sendNext() ) );
+    toolBar->insertButton( "player_start",0, SIGNAL( clicked() ), this, SLOT( sendPrev() ) );
+    toolBar->insertButton( "player_play", 0, SIGNAL( clicked() ), this, SLOT( sendPlay() ) );
+    toolBar->insertButton( "player_pause",0, SIGNAL( clicked() ), this, SLOT( sendPause() ) );
+    toolBar->insertButton( "player_stop", 0, SIGNAL( clicked() ), this, SLOT( sendStop() ) );
+    toolBar->insertButton( "player_end",  0, SIGNAL( clicked() ), this, SLOT( sendNext() ) );
 
     toolBar->insertSeparator();
-    toolBar->insertButton("arts",0,SIGNAL(clicked() ),this, SLOT(sendMute() ) );
-/*    toolBar->insertSeparator();
-    toolBar->insertButton("gohome",0,SIGNAL(clicked() ),this, SLOT(cbHome() ) );
-    toolBar->insertButton("today",0,SIGNAL(clicked() ),this, SLOT(currentTrack() ) );
-    toolBar->insertButton("document",0,SIGNAL(clicked() ),this, SLOT(lyrics() ) );
-
-*/
-    vol_slider=new QSlider(0,100,1,0,Qt::Horizontal, toolBar,"volume");
+    toolBar->insertButton( "arts",        0, SIGNAL( clicked() ), this, SLOT( sendMute() ) );
+    
+    vol_slider = new QSlider(0,100,1,0,Qt::Horizontal, toolBar,"volume");
     vol_slider->setLineStep(2);
-//    vol_slider->resize( 32, vol_slider->height() );
+    
     connect(vol_slider, SIGNAL( valueChanged(int) ), this, SLOT(volChanged(int ) ) );
     toolBar->insertWidget(1,2, vol_slider);
 
-    fileInfo = new QFileInfo(HTML_FILE);
+    fileInfo  = new QFileInfo(HTML_FILE);
     QTimer *t = new QTimer( this );
+    
     connect( t, SIGNAL(timeout()), SLOT(updateStatus() ) );
     t->start( 2000, false );
-kdDebug() << "Connecting widget signal" << endl;
-    connect( widget, SIGNAL(emitURL( const KURL &)), this, SLOT(openURLRequest( const KURL &) ) );
-        connect( browser->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
-             this,                          SLOT( openURLRequest( const KURL & ) ) );
+    kdDebug() << "Connecting widget signal" << endl;
+    
+    connect( widget,                      SIGNAL( emitURL( const KURL &)), 
+             this,                        SLOT( openURLRequest( const KURL &) ) );
+    connect( browser->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
+             this,                        SLOT( openURLRequest( const KURL & ) ) );
     widget->show();
 }
 

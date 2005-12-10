@@ -91,7 +91,6 @@ public slots:
     void volChanged(int vol);
     void openURLRequest( const KURL & );
     void checkForAmarok();
-    void cbHome() { openURLRequest( KURL("show:home") ) ; }
     void lyrics() { openURLRequest( KURL("show:lyrics") ) ; }
     void currentTrack() { openURLRequest( KURL("show:context") ) ; }
     void wiki() { openURLRequest( KURL("show:wiki") ) ; }
