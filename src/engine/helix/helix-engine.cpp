@@ -44,7 +44,9 @@ extern "C"
     #include <unistd.h>
 }
 
-#define HELIX_ENGINE_TIMER 10  // 10 ms timer
+#define HELIX_ENGINE_TIMER 10     // 10 ms timer
+#define SCOPE_MAX_BEHIND   200    // 200 postmix buffers
+
 
 
 #ifndef LLONG_MAX
@@ -567,6 +569,12 @@ const Engine::Scope &HelixEngine::scope()
    }
    m_lastpos = hpos;
 
+   if ( getScopeCount() > SCOPE_MAX_BEHIND ) // protect against naughty streams
+   {
+      resetScope();
+      return m_scope;
+   }
+
    if (!w || !m_item)
    {
 #ifdef DEBUG_PURPOSES_ONLY
@@ -596,9 +604,9 @@ const Engine::Scope &HelixEngine::scope()
       m_scopebufnone++;
 #endif
       return m_scope;
-   }
+   }      
 
-   if (w < m_item->time) // wait for the player to catchup
+   if ( w < m_item->time ) // wait for the player to catchup
       return m_scope;
 
    int j,k=0;
