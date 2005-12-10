@@ -11,15 +11,14 @@
 # # # # # # # # # # # # # # # # # # # # # #   # # # # #   # # #   # #   # #   # #   #   #
 
 echo
-echo "amaroK-svn (Version 2.99) by Jocke \"Firetech\" Andersson"
-echo "========================================================="
+echo "amaroK-svn (Version 3.0rc1) by Jocke \"Firetech\" Andersson"
+echo "==========================================================="
 echo
 
 #define global variables
 LANG="C" # Make outputs in English, like the script.
 RCFILE="`pwd`/.amarok-svnrc" # Settings file
 KD_TITLE="amaroK-svn" # Title for kdialog windows
-BUILD_ID="`date +%y%m%d%H%M`"
 
 #define functions
 function Error {
@@ -130,9 +129,9 @@ else
   fi
   WriteConfig how_root "$HOW_ROOT"
 
-  USE_ID="0"
-  kdialog --title "$KD_TITLE" --yesno "Do you want to use build ID?\nThis feature is generally not needed, and often makes the compiling time longer.\nIf you use it, you can tell from the About box in amaroK when your revision was compiled.\nRecommended and default answer is No."
-  if [ "$?" = "0" ]; then
+  USE_ID="0" #Assume default answer
+  kdialog --title "$KD_TITLE" --yesno "Do you want to use build ID?\nThis feature is generally not needed, and often makes the compiling time longer.\nIf you use it, you can tell from the About box in amaroK when your revision was compiled.\nDefault answer is No, you can get this information from other places."
+  if [ "$?" = "0" ]; then #If the user said yes
     USE_ID="1"
   fi
   WriteConfig use_id "$USE_ID"
@@ -194,14 +193,14 @@ fi
 
 ## Store the old uninstall commands
 echo
-echo "# 3/11 - Checking used files for the installed revision."
+echo "# 3/11 - Saving uninstall commands for your current revision."
 if [ ! -f "Makefile" ]; then
-  echo "No older revision is installed."
+  echo "No current revision was found."
 else
   TMP_OLD_UNINFO="`mktemp`"
-  unsermake -n uninstall | grep "rm -f" > $TMP_OLD_UNINFO
+  unsermake -n uninstall | grep "rm -" > $TMP_OLD_UNINFO # Stored in a file so we can run it later, in a simple manner. Grep for "rm -" (there are different switches to rm in the commands) to exclude commands that don't need to be run.
   if [ "$?" != "0" ]; then # If the command didn't finish successfully
-    Error "Couldn't get list of used files in the installed revision."
+    Error "Couldn't get uninstall commands for your current revision."
   else
     echo "Done."
   fi
@@ -222,7 +221,7 @@ if [ "$?" != "0" ]; then # If the command didn't finish successfully
 fi
 if [ "$USE_ID" = "1" ]; then
   # Append build ID (date and time with no punctuation) to version
-  sed -re "s/^#define APP_VERSION \"(.*)-SVN.*\"/#define APP_VERSION \"\1-SVN-$BUILD_ID\"/" -i amarok/src/amarok.h
+  sed -re "s/^#define APP_VERSION \"(.*)-SVN.*\"/#define APP_VERSION \"\1-SVN-`date +%y%m%d%H%M`\"/" -i amarok/src/amarok.h
   echo "Appended build ID to version number."
 fi
 
@@ -358,7 +357,7 @@ if [ "$CONF_HELP" = "true" ]; then
     done
     WriteConfig conf_flags "$CONF_FLAGS_SAVE"
     if [ "`echo $CONF_FLAGS`" ]; then
-      echo -e "Extra configuration options:\t\t\t'`echo $CONF_FLAGS`'"
+      echo -e "Extra configuration options:\t'`echo $CONF_FLAGS`'"
     fi
   fi
 fi
@@ -371,42 +370,40 @@ if [ "$?" != "0" ]; then # If the command didn't finish successfully
   Error "Configuration wasn't successful. amaroK was NOT installed/upgraded. Ask the friendly people in #amarok on freenode for help."
 fi
 
-## Compare uninstall commands and remove unused files
+## Compare uninstall commands and , if they differ, uninstall the old revision.
 echo
-echo "# 9/11 - Removing files that will be unused with the new revision."
+echo "# 9/11 - Comparing uninstall commands."
 if [ ! -f "$TMP_OLD_UNINFO" ]; then
-  echo "No older revision is installed."
+  echo "No older revision was found."
 else
   TMP_NEW_UNINFO="`mktemp`"
-  unsermake -n uninstall | grep "rm -f" > $TMP_NEW_UNINFO
-  if [ "$?" != "0" ]; then # If the command didn't finish successfully
-    Error "Couldn't get list of used files in the new revision."
+  unsermake -n uninstall | grep "rm -" > $TMP_NEW_UNINFO # For info about the grepping, se above (Step 3).
+  if [ "$?" != "0" ]; then # If the command didn't finish successfully.
+    rm -f $TMP_OLD_UNINFO $TMP_NEW_UNINFO
+    Error "Couldn't compare the uninstall commands."
   fi
-  TMP_UNFILES="`mktemp`"
-  diff --old-line-format="%L" --new-line-format="" --unchanged-line-format="" $TMP_OLD_UNINFO $TMP_NEW_UNINFO > $TMP_UNFILES # a diff that only outputs lines that only are in the first file, the grep removes some Makefile creation commands that come up all the time.
-  if [ "$?" != "0" -a "$?" != "1" ]; then # If the command didn't finish successfully. diff returns 1 when there are differences.
-    rm -f $TMP_OLD_UNINFO $TMP_NEW_UNINFO $TMP_UNFILES
-    Error "Couldn't compare the lists with used files."
-  elif [ -s "$TMP_UNFILES" ]; then
-    echo "Will use '$HOW_ROOT' to get root privileges for removal of unused files."
+  UN_DIFF="`diff -q $TMP_OLD_UNINFO $TMP_NEW_UNINFO 2>&1`"
+  if [ "$?" != "0" -a "$?" != "1" ]; then # If the command didn't finish successfully. diff strangely (?) returns 1 when there are differences.
+    rm -f $TMP_OLD_UNINFO $TMP_NEW_UNINFO
+    Error "Couldn't compare the uninstall commands."
+  elif [ -z "$UN_DIFF" ]; then # If diff was quiet
+    echo "No differences between your current revision and the new one were found."
+  else
+    echo "Differences in the uninstall commands were found, uninstalling your current revision."
+    echo "Executing '$HOW_ROOT' to get root privileges for uninstallation."
     if [ "$HOW_ROOT" = "sudo" ]; then
       echo "(You might need to enter your password now.)"
-      sudo bash $TMP_UNFILES
+      sudo bash $TMP_OLD_UNINFO
     elif [ "$HOW_ROOT" = "su -c" ]; then
       echo "(You probably have to enter the root password now.)"
-      su -c "bash $TMP_UNFILES"
+      su -c "bash $TMP_OLD_UNINFO"
     else
-      kdesu -t bash $TMP_UNFILES
+      kdesu -t bash $TMP_OLD_UNINFO
     fi
-    if [ "$?" != "0" ]; then # If the command didn't finish successfully
-      echo "Done."
-    else
-      Error "Removal of unused files didn't finish successfully."
-    fi
-  else
-    echo "There were no unused files detected."
+    # No error check here because it seems to trigger even when there is no error, I can't figure out why...
+    # It doesn't matter much if this step fails anyway...
   fi
-  rm -f $TMP_OLD_UNINFO $TMP_NEW_UNINFO $TMP_UNFILES
+  rm -f $TMP_OLD_UNINFO $TMP_NEW_UNINFO
 fi
 
 ## Compilation
@@ -422,7 +419,7 @@ echo "Compilation successful."
 ## Installation
 echo
 echo "# 11/11 - Installing files."
-echo "Will use '$HOW_ROOT' to get root privileges for installation."
+echo "Executing '$HOW_ROOT' to get root privileges for installation."
 if [ "$HOW_ROOT" = "sudo" ]; then
   echo "(You might need to enter your password now.)"
   sudo `which unsermake` install
