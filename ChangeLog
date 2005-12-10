@@ -45,6 +45,9 @@ VERSION 1.4:
       to consecutive tracks on a single album.
 
   CHANGES:
+    * After a full collection scan, rename database tables instead of copying
+      contents. This could require to extend your db user's permissions to
+      ALTER privileges!
     * Upgraded internal SQLite database library to version 3.2.7.
     * Lyrics are cached on the database as plain text.
     * Recoding mp3 tags has been removed due to many unjustified
