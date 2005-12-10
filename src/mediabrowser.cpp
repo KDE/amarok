@@ -1198,7 +1198,7 @@ MediaDevice::addURL( const KURL& url, MetaBundle *bundle, PodcastInfo *podcastIn
 
         if( playlist.isError() )
         {
-            amaroK::StatusBar::instance()->longMessage( i18n( "Failed to load playlist: %1" ).arg( url.path().local8Bit() ),
+            amaroK::StatusBar::instance()->longMessage( i18n( "Failed to load playlist: %1" ).arg( url.path() ),
                     KDE::StatusBar::Sorry );
             return;
         }
@@ -1229,13 +1229,13 @@ MediaDevice::addURL( const KURL& url, MetaBundle *bundle, PodcastInfo *podcastIn
 
     if( !isPlayable( *bundle ) && (playlistName.isNull() || !trackExists( *bundle )) )
     {
-        amaroK::StatusBar::instance()->longMessage( i18n( "Track is not playable on media device: %1" ).arg( url.path().local8Bit() ),
+        amaroK::StatusBar::instance()->longMessage( i18n( "Track is not playable on media device: %1" ).arg( url.path() ),
                 KDE::StatusBar::Sorry );
     }
     else if( playlistName.isNull()
             && (trackExists( *bundle ) || m_transferList->findPath( url.path() ) ) )
     {
-        amaroK::StatusBar::instance()->longMessage( i18n( "Track already exists on media device: %1" ).arg( url.path().local8Bit() ),
+        amaroK::StatusBar::instance()->longMessage( i18n( "Track already exists on media device: %1" ).arg( url.path() ),
                 KDE::StatusBar::Sorry );
     }
     else
@@ -1662,7 +1662,7 @@ MediaDevice::transferFiles()
         {
             if( !isPlayable( *bundle ) )
             {
-                amaroK::StatusBar::instance()->longMessage( i18n( "Track is not playable on media device: %1" ).arg( item->url().path().local8Bit() ),
+                amaroK::StatusBar::instance()->longMessage( i18n( "Track is not playable on media device: %1" ).arg( item->url().path() ),
                         KDE::StatusBar::Sorry );
                 continue;
             }
