@@ -2374,7 +2374,7 @@ ContextBrowser::coverFetched( const QString &artist, const QString &album ) //SL
         return;
 
     if ( currentPage() == m_currentTrackPage->view() &&
-       ( currentTrack.artist() == artist || currentTrack.album() == album ) ) // this is for compilations or artist == ""
+       ( currentTrack.artist() == artist || m_artist == artist || currentTrack.album() == album ) ) // this is for compilations or artist == ""
     {
         if( currentPage() == m_currentTrackPage->view() )
         {
@@ -2389,11 +2389,11 @@ void
 ContextBrowser::coverRemoved( const QString &artist, const QString &album ) //SLOT
 {
     const MetaBundle &currentTrack = EngineController::instance()->bundle();
-    if ( currentTrack.artist().isEmpty() && currentTrack.album().isEmpty() )
+    if ( currentTrack.artist().isEmpty() && currentTrack.album().isEmpty() && m_artist.isNull() )
         return;
 
     if ( currentPage() == m_currentTrackPage->view() &&
-       ( currentTrack.artist() == artist || currentTrack.album() == album ) ) // this is for compilations or artist == ""
+       ( currentTrack.artist() == artist || m_artist == artist || currentTrack.album() == album ) ) // this is for compilations or artist == ""
     {
         if( currentPage() == m_currentTrackPage->view() )
         {
