@@ -19,6 +19,7 @@
 #include "metabundle.h"
 #include "scrobbler.h"
 #include "statusbar.h"
+#include "playlistloader.h"
 
 #ifdef HAVE_LIBGPOD
 #include "gpodmediadevice/gpodmediadevice.h"
@@ -1189,6 +1190,27 @@ MediaDevice::updateRootItems()
 void
 MediaDevice::addURL( const KURL& url, MetaBundle *bundle, PodcastInfo *podcastInfo, const QString &playlistName )
 {
+    if( PlaylistFile::isPlaylistFile( url ) )
+    {
+        QString name = url.path().section( "/", -1 ).section( ".", 0, -2 ).replace( "_", " " );
+        PlaylistFile playlist( url.path() );
+
+        if( playlist.isError() )
+        {
+            amaroK::StatusBar::instance()->longMessage( i18n( "Failed to load playlist: %1" ).arg( url.path().local8Bit() ),
+                    KDE::StatusBar::Sorry );
+            return;
+        }
+
+        for( BundleList::iterator it = playlist.bundles().begin();
+                it != playlist.bundles().end();
+                ++it )
+        {
+            addURL( (*it).url(), 0, 0, name );
+        }
+        return;
+    }
+
     if(!bundle)
         bundle = new MetaBundle( url );
 
