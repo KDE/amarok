@@ -43,6 +43,7 @@ class TagDialog : public TagDialogBase
         void openPressed();
         void previousTrack();
         void nextTrack();
+        void perTrack();
         void checkModified();
 
         void loadCover( const QString &artist, const QString &album );
@@ -56,18 +57,27 @@ class TagDialog : public TagDialogBase
         void readTags();
         void readMultipleTracks();
         void setMultipleTracksMode();
-        bool hasChanged();
-        int changes();
+        void setSingleTrackMode();
+        void enableItems();
+        bool hasChanged( bool singleTrack=false );
+        int changes( bool singleTrack=false );
         void storeTags();
+        void storeTags( const KURL& url );
+        void storeTags( const KURL& url, MetaBundle &mb, int score );
+        MetaBundle bundleForURL( const KURL &url );
+        int scoreForURL( const KURL &url );
         void saveTags();
-        void saveMultipleTracks();
         bool writeTag( MetaBundle mb, bool updateCB=true );
         const QString unknownSafe( QString );
         const QStringList statisticsData();
+        void applyToAllTracks();
 
         MetaBundle m_bundle;
+        KURL::List::iterator m_currentURL;
         int m_score;
         int m_playcount;
+        int m_changedCount;
+        bool m_perTrack;
         QDateTime m_firstPlay;
         QDateTime m_lastPlay;
         PlaylistItem* m_playlistItem;

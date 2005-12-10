@@ -43,6 +43,14 @@
                         <string>&amp;Next</string>
                     </property>
                 </widget>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>checkBox_perTrack</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Per Track</string>
+                    </property>
+                </widget>
                 <spacer>
                     <property name="name">
                         <cstring>spacer1</cstring>

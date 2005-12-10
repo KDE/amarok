@@ -26,6 +26,7 @@
 #include <qlabel.h>
 #include <qpushbutton.h>
 #include <qtooltip.h>
+#include <qcheckbox.h>
 
 #include <kapplication.h>
 #include <kcombobox.h>
@@ -125,25 +126,39 @@ TagDialog::openPressed() //SLOT
 inline void
 TagDialog::previousTrack()
 {
-    if( !m_playlistItem->itemAbove() ) return;
+    if( m_playlistItem )
+    {
+        if( !m_playlistItem->itemAbove() ) return;
 
-    storeTags();
+        storeTags();
 
-    m_playlistItem = (PlaylistItem *)m_playlistItem->itemAbove();
+        m_playlistItem = (PlaylistItem *)m_playlistItem->itemAbove();
 
-    QMap<QString, MetaBundle>::ConstIterator itTags;
-    itTags = storedTags.find( m_playlistItem->url().path() );
-    m_bundle = itTags != storedTags.end() ? itTags.data() : MetaBundle( m_playlistItem );
+        QMap<QString, MetaBundle>::ConstIterator itTags;
+        itTags = storedTags.find( m_playlistItem->url().path() );
+        m_bundle = itTags != storedTags.end() ? itTags.data() : MetaBundle( m_playlistItem );
 
-    QMap<QString, int>::ConstIterator itScores;
-    itScores = storedScores.find( m_playlistItem->url().path() );
-    m_score = itScores != storedScores.end()
-        ? itScores.data()
-        : CollectionDB::instance()->getSongPercentage( m_playlistItem->url().path() );
+        QMap<QString, int>::ConstIterator itScores;
+        itScores = storedScores.find( m_playlistItem->url().path() );
+        m_score = itScores != storedScores.end()
+            ? itScores.data()
+            : CollectionDB::instance()->getSongPercentage( m_playlistItem->url().path() );
 
-    m_playcount = CollectionDB::instance()->getPlayCount( m_playlistItem->url().path() );
-    m_firstPlay = CollectionDB::instance()->getFirstPlay( m_playlistItem->url().path() );
-    m_lastPlay = CollectionDB::instance()->getLastPlay( m_playlistItem->url().path() );
+        m_playcount = CollectionDB::instance()->getPlayCount( m_playlistItem->url().path() );
+        m_firstPlay = CollectionDB::instance()->getFirstPlay( m_playlistItem->url().path() );
+        m_lastPlay = CollectionDB::instance()->getLastPlay( m_playlistItem->url().path() );
+    }
+    else
+    {
+        if( hasChanged( true ) )
+        {
+            storeTags( *m_currentURL );
+        }
+        if( m_currentURL != m_urlList.begin() )
+            --m_currentURL;
+        m_bundle = bundleForURL( *m_currentURL );
+        enableItems();
+    }
     readTags();
 }
 
@@ -151,25 +166,81 @@ TagDialog::previousTrack()
 inline void
 TagDialog::nextTrack()
 {
-    if( !m_playlistItem->itemBelow() ) return;
+    if( m_playlistItem )
+    {
+        if( !m_playlistItem->itemBelow() ) return;
 
-    storeTags();
+        storeTags();
 
-    m_playlistItem = (PlaylistItem *)m_playlistItem->itemBelow();
+        m_playlistItem = (PlaylistItem *)m_playlistItem->itemBelow();
 
-    QMap<QString, MetaBundle>::ConstIterator itTags;
-    itTags = storedTags.find( m_playlistItem->url().path() );
-    m_bundle = itTags != storedTags.end() ? itTags.data() : MetaBundle( m_playlistItem );
+        QMap<QString, MetaBundle>::ConstIterator itTags;
+        itTags = storedTags.find( m_playlistItem->url().path() );
+        m_bundle = itTags != storedTags.end() ? itTags.data() : MetaBundle( m_playlistItem );
 
-    QMap<QString, int>::ConstIterator itScores;
-    itScores = storedScores.find( m_playlistItem->url().path() );
-    m_score = itScores != storedScores.end()
-        ? itScores.data()
-        : CollectionDB::instance()->getSongPercentage( m_playlistItem->url().path() );
-    m_playcount = CollectionDB::instance()->getPlayCount( m_playlistItem->url().path() );
-    m_firstPlay = CollectionDB::instance()->getFirstPlay( m_playlistItem->url().path() );
-    m_lastPlay = CollectionDB::instance()->getLastPlay( m_playlistItem->url().path() );
+        QMap<QString, int>::ConstIterator itScores;
+        itScores = storedScores.find( m_playlistItem->url().path() );
+        m_score = itScores != storedScores.end()
+            ? itScores.data()
+            : CollectionDB::instance()->getSongPercentage( m_playlistItem->url().path() );
+        m_playcount = CollectionDB::instance()->getPlayCount( m_playlistItem->url().path() );
+        m_firstPlay = CollectionDB::instance()->getFirstPlay( m_playlistItem->url().path() );
+        m_lastPlay = CollectionDB::instance()->getLastPlay( m_playlistItem->url().path() );
+    }
+    else
+    {
+        if( hasChanged( true ) )
+        {
+            storeTags( *m_currentURL );
+        }
+        KURL::List::iterator next = m_currentURL;
+        ++next;
+        if( next != m_urlList.end() )
+            ++m_currentURL;
+        m_bundle = bundleForURL( *m_currentURL );
+        enableItems();
+    }
     readTags();
+}
+
+inline void
+TagDialog::perTrack()
+{
+    m_perTrack = !m_perTrack;
+    if( m_perTrack )
+    {
+        // just switched to per track mode
+        applyToAllTracks();
+        setSingleTrackMode();
+        m_bundle = bundleForURL( *m_currentURL );
+        readTags();
+    }
+    else
+    {
+        setMultipleTracksMode();
+        //scanBundles();
+    }
+
+    enableItems();
+}
+
+
+void
+TagDialog::enableItems()
+{
+    checkBox_perTrack->setChecked( m_perTrack );
+    pushButton_previous->setEnabled( m_perTrack && m_currentURL != m_urlList.begin() );
+    KURL::List::ConstIterator next = m_currentURL;
+    ++next;
+    pushButton_next->setEnabled( m_perTrack && next != m_urlList.end());
+    if( m_urlList.count() == 1 )
+    {
+        checkBox_perTrack->setEnabled( false );
+    }
+    else
+    {
+        checkBox_perTrack->setEnabled( true );
+    }
 }
 
 
@@ -268,6 +339,8 @@ TagDialog::fillSelected( KTRMResult selected ) //SLOT
 
 void TagDialog::init()
 {
+    m_perTrack = false;
+
     //NOTE We allocate on the stack in Playlist
     if( parent() != (void*)Playlist::instance() )
         setWFlags( getWFlags() | Qt::WDestructiveClose );
@@ -334,14 +407,10 @@ void TagDialog::init()
     connect( pushButton_open,     SIGNAL(clicked()), SLOT(openPressed()) );
     connect( pushButton_previous, SIGNAL(clicked()), SLOT(previousTrack()) );
     connect( pushButton_next,     SIGNAL(clicked()), SLOT(nextTrack()) );
+    connect( checkBox_perTrack,   SIGNAL(clicked()), SLOT(perTrack()) );
 
     // draw an icon onto the open-in-konqui button
      pushButton_open->setIconSet( kapp->iconLoader()->loadIconSet( "fileopen", KIcon::Small ) );
-
-    if( !m_playlistItem ) {
-        pushButton_previous->hide();
-        pushButton_next->hide();
-    }
 
     //Update lyrics on Context Browser
     connect( this, SIGNAL(lyricsChanged( const QString& )), ContextBrowser::instance(), SLOT( lyricsChanged( const QString& ) ) );
@@ -363,9 +432,33 @@ void TagDialog::init()
     if( m_urlList.count() ) {   //editing multiple tracks
         setMultipleTracksMode();
         readMultipleTracks();
+
+        checkBox_perTrack->setChecked( m_perTrack );
+        if( m_urlList.count() == 1 )
+        {
+            checkBox_perTrack->setEnabled( false );
+            pushButton_previous->setEnabled( false );
+            pushButton_next->setEnabled( false );
+        }
+        else
+        {
+            checkBox_perTrack->setEnabled( true );
+            pushButton_previous->setEnabled( m_perTrack );
+            pushButton_next->setEnabled( m_perTrack );
+        }
     }
     else
+    {
+        checkBox_perTrack->hide();
+
+        if( !m_playlistItem ) {
+            pushButton_previous->hide();
+            pushButton_next->hide();
+        }
+
         readTags();
+    }
+
 
     // make it as small as possible
     resize( minimumSize() );
@@ -569,6 +662,29 @@ TagDialog::setMultipleTracksMode()
     pixmap_cover->hide();
 }
 
+void
+TagDialog::setSingleTrackMode()
+{
+
+    kTabWidget->setTabEnabled( summaryTab, true );
+    kTabWidget->setTabEnabled( lyricsTab, true );
+    kTabWidget->setTabEnabled( statisticsTab, true );
+
+    kComboBox_artist->setCurrentText( "" );
+    kComboBox_album->setCurrentText( "" );
+    kComboBox_genre->setCurrentText( "" );
+
+    kLineEdit_title->setEnabled( true );
+    kIntSpinBox_track->setEnabled( true );
+
+    pushButton_musicbrainz->show();
+
+    locationLabel->show();
+    kLineEdit_location->show();
+    pushButton_open->show();
+    pixmap_cover->show();
+}
+
 
 void
 TagDialog::readMultipleTracks()
@@ -576,17 +692,21 @@ TagDialog::readMultipleTracks()
     //Check which fields are the same for all selected tracks
     const KURL::List::ConstIterator end = m_urlList.end();
     KURL::List::ConstIterator it = m_urlList.begin();
+
+    m_bundle = MetaBundle();
+
     MetaBundle first( *it );
-    bool artist=true, album=true, genre=true, comment=true, year=true, score=true;
     uint scoreFirst = CollectionDB::instance()->getSongPercentage( first.url().path() );
 
+    bool artist=true, album=true, genre=true, comment=true, year=true, score=true;
     for ( ; it != end; ++it ) {
-        if( !(*it).isLocalFile() ) {
+        MetaBundle mb( *it );
+
+        if( !mb.url().isLocalFile() ) {
             // If we have a non local file, don't even lose more time comparing, just leave
             artist=false; album=false; genre=false; comment=false, year=false, score=false;
             break;
         }
-        MetaBundle mb( *it );
         if ( artist && mb.artist()!=first.artist() ) { artist=false; };
         if ( album && mb.album()!=first.album() ) { album=false; };
         if ( genre && mb.genre()!=first.genre() ) { genre=false; };
@@ -627,6 +747,8 @@ TagDialog::readMultipleTracks()
         m_score = scoreFirst;
         kIntSpinBox_score->setValue( scoreFirst );
     }
+
+    m_currentURL = m_urlList.begin();
 }
 
 inline bool
@@ -636,13 +758,13 @@ equalString( const QString &a, const QString &b )
 }
 
 bool
-TagDialog::hasChanged()
+TagDialog::hasChanged( bool singleTrack )
 {
-    return changes();
+    return changes( singleTrack );
 }
 
 int
-TagDialog::changes()
+TagDialog::changes( bool singleTrack )
 {
     int result=TagDialog::NOCHANGE;
     bool modified = false;
@@ -653,7 +775,7 @@ TagDialog::changes()
 
     modified |= !equalString( kTextEdit_comment->text(), m_bundle.comment() );
 
-    if (!m_urlList.count()) { //ignore these on MultipleTracksMode
+    if (!m_urlList.count() || singleTrack) { //ignore these on MultipleTracksMode
         modified |= !equalString( kLineEdit_title->text(), m_bundle.title() );
         modified |= kIntSpinBox_track->value() != m_bundle.track();
     }
@@ -671,8 +793,14 @@ TagDialog::changes()
 void
 TagDialog::storeTags()
 {
+    storeTags( m_bundle.url() );
+}
+
+void
+TagDialog::storeTags( const KURL &kurl )
+{
     int result = changes();
-    QString url = m_bundle.url().path();
+    QString url = kurl.path();
     if( result & TagDialog::TAGSCHANGED ) {
         MetaBundle mb;
 
@@ -688,108 +816,116 @@ TagDialog::storeTags()
         mb.setBitrate( m_bundle.bitrate() );
         mb.setSampleRate( m_bundle.sampleRate() );
 
-        storedTags.insert( url, mb );
+        storedTags.replace( url, mb );
     }
     if( result & TagDialog::SCORECHANGED )
-        storedScores.insert( url, kIntSpinBox_score->value() );
+        storedScores.replace( url, kIntSpinBox_score->value() );
     if( result & TagDialog::LYRICSCHANGED )
-        storedLyrics.insert( url, kTextEdit_lyrics->text() );
+        storedLyrics.replace( url, kTextEdit_lyrics->text() );
 }
+
+void
+TagDialog::storeTags( const KURL &url, MetaBundle &mb, int score )
+{
+    storedTags.replace( url.path(), mb );
+    storedScores.replace( url.path(), kIntSpinBox_score->value() );
+}
+
+MetaBundle
+TagDialog::bundleForURL( const KURL &url )
+{
+    if( storedTags.find( url.path() ) != storedTags.end() )
+        return storedTags[ url.path() ];
+
+    return MetaBundle( url );
+}
+
+int
+TagDialog::scoreForURL( const KURL &url )
+{
+    if( storedScores.find( url.path() ) != storedScores.end() )
+        return storedScores[ url.path() ];
+
+    return CollectionDB::instance()->getSongPercentage( url.path() );
+}
+
 
 void
 TagDialog::saveTags()
 {
-    if( m_urlList.count() )    //editing multiple tracks
-        saveMultipleTracks();
-    else
-    {
-
-        storeTags();
-        QMap<QString, MetaBundle>::ConstIterator endStore( storedTags.end() );
-        for(QMap<QString, MetaBundle>::ConstIterator it = storedTags.begin(); it != endStore; ++it ) {
-            if( writeTag( it.data(), it == --storedTags.end() ) )    //update the collection browser if it's the last track
-                Playlist::instance()->updateMetaData( it.data() );
-            else
-                amaroK::StatusBar::instance()->longMessage( i18n(
-                    "Sorry, the tag for %1 could not be changed." ).arg( it.data().prettyURL() ), KDE::StatusBar::Error );
-        }
-        QMap<QString, int>::ConstIterator endScore( storedScores.end() );
-        for(QMap<QString, int>::ConstIterator it = storedScores.begin(); it != endScore; ++it ) {
-            CollectionDB::instance()->setSongPercentage( it.key(), it.data() );
-        }
-        QMap<QString, QString>::ConstIterator endLyrics( storedLyrics.end() );
-        for(QMap<QString, QString>::ConstIterator it = storedLyrics.begin(); it != endLyrics; ++it ) {
-            CollectionDB::instance()->setLyrics( it.key(), it.data() );
-            emit lyricsChanged( it.key() );
-        }
+    storeTags();
+    QMap<QString, MetaBundle>::ConstIterator endStore( storedTags.end() );
+    for(QMap<QString, MetaBundle>::ConstIterator it = storedTags.begin(); it != endStore; ++it ) {
+        if( writeTag( it.data(), it == --storedTags.end() ) )    //update the collection browser if it's the last track
+            Playlist::instance()->updateMetaData( it.data() );
+        else
+            amaroK::StatusBar::instance()->longMessage( i18n(
+                        "Sorry, the tag for %1 could not be changed." ).arg( it.data().prettyURL() ), KDE::StatusBar::Error );
     }
+    QMap<QString, int>::ConstIterator endScore( storedScores.end() );
+    for(QMap<QString, int>::ConstIterator it = storedScores.begin(); it != endScore; ++it ) {
+        CollectionDB::instance()->setSongPercentage( it.key(), it.data() );
+    }
+    QMap<QString, QString>::ConstIterator endLyrics( storedLyrics.end() );
+    for(QMap<QString, QString>::ConstIterator it = storedLyrics.begin(); it != endLyrics; ++it ) {
+        CollectionDB::instance()->setLyrics( it.key(), it.data() );
+        emit lyricsChanged( it.key() );
+
+    }
+    CollectionView::instance()->renderView();
 }
 
 
 void
-TagDialog::saveMultipleTracks()
+TagDialog::applyToAllTracks()
 {
-    bool tagsChanged = false, anyTrack = false;
     const KURL::List::ConstIterator end = m_urlList.end();
     for ( KURL::List::ConstIterator it = m_urlList.begin(); it != end; ++it ) {
-        if( !(*it).isLocalFile() ) continue;
 
-        MetaBundle mb( *it );
+        /* we have to update the values if they changed, so:
+           1) !kLineEdit_field->text().isEmpty() && kLineEdit_field->text() != mb.field
+           i.e.: The user wrote something on the field, and it's different from
+           what we have in the tag.
+           2) !m_bundle.field().isEmpty() && kLineEdit_field->text().isEmpty()
+           i.e.: The user was shown some value for the field (it was the same
+           for all selected tracks), and he deliberately emptied it.
+           TODO: All this mess is because the dialog uses "" to represent what the user
+                 doesn't want to change, maybe we can think of something better?
+         */
 
-   /* we have to update the values if they changed, so:
-   1) !kLineEdit_field->text().isEmpty() && kLineEdit_field->text() != mb.field
-          i.e.: The user wrote something on the field, and it's different from
-          what we have in the tag.
-   2) !m_bundle.field().isEmpty() && kLineEdit_field->text().isEmpty()
-          i.e.: The user was shown some value for the field (it was the same
-          for all selected tracks), and he deliberately emptied it.
-  TODO: All this mess is because the dialog uses "" to represent what the user
-        doesn't want to change, maybe we can think of something better?
-   */
+        MetaBundle mb = bundleForURL( *it );
+
         if( !kComboBox_artist->currentText().isEmpty() && kComboBox_artist->currentText() != mb.artist() ||
-             kComboBox_artist->currentText().isEmpty() && !m_bundle.artist().isEmpty() ) {
+                kComboBox_artist->currentText().isEmpty() && !m_bundle.artist().isEmpty() ) {
             mb.setArtist( kComboBox_artist->currentText() );
-            tagsChanged = true;
         }
 
         if( !kComboBox_album->currentText().isEmpty() && kComboBox_album->currentText() != mb.album() ||
-             kComboBox_album->currentText().isEmpty() && !m_bundle.album().isEmpty() ) {
+                kComboBox_album->currentText().isEmpty() && !m_bundle.album().isEmpty() ) {
             mb.setAlbum( kComboBox_album->currentText() );
-            tagsChanged = true;
         }
         if( !kComboBox_genre->currentText().isEmpty() && kComboBox_genre->currentText() != mb.genre() ||
-             kComboBox_genre->currentText().isEmpty() && !m_bundle.genre().isEmpty() ) {
+                kComboBox_genre->currentText().isEmpty() && !m_bundle.genre().isEmpty() ) {
             mb.setGenre( kComboBox_genre->currentText() );
-            tagsChanged = true;
         }
         if( !kTextEdit_comment->text().isEmpty() && kTextEdit_comment->text() != mb.comment() ||
-             kTextEdit_comment->text().isEmpty() && !m_bundle.comment().isEmpty() ) {
+                kTextEdit_comment->text().isEmpty() && !m_bundle.comment().isEmpty() ) {
             mb.setComment( kTextEdit_comment->text() );
-            tagsChanged = true;
         }
         if( kIntSpinBox_year->value() && kIntSpinBox_year->value() != mb.year() ||
-            !kIntSpinBox_year->value() && m_bundle.year() ) {
+                !kIntSpinBox_year->value() && m_bundle.year() ) {
             mb.setYear( kIntSpinBox_year->value() );
-            tagsChanged = true;
         }
-        if( kIntSpinBox_score->value() && kIntSpinBox_score->value() != m_score ||
-            !kIntSpinBox_score->value() && m_score )
+
+        int score = scoreForURL( *it );
+        if( kIntSpinBox_score->value() && kIntSpinBox_score->value() != score ||
+                !kIntSpinBox_score->value() && score )
+            score = kIntSpinBox_score->value();
             CollectionDB::instance()->setSongPercentage( mb.url().path(), kIntSpinBox_score->value() );
 
-        if ( tagsChanged ) { // We only try to update the file if one of the tags changed
-            if( writeTag( mb, false ) ) //leave the Collection Browser update to be made after all changes
-                Playlist::instance()->updateMetaData( mb );
-            else
-                amaroK::StatusBar::instance()->longMessage( i18n(
-                    "Sorry, the tag for %1 could not be changed." ).arg( mb.prettyURL() ), KDE::StatusBar::Error );
-        }
-        anyTrack |= tagsChanged;
+        storeTags( *it, mb, score );
     }
-    // if any change was really made for any of the tracks, update Collection Browser.
-    if (anyTrack)
-        CollectionView::instance()->renderView();
 }
-
 
 bool
 TagDialog::writeTag( MetaBundle mb, bool updateCB )
