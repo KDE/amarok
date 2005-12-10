@@ -1211,7 +1211,9 @@ MediaDevice::addURL( const KURL& url, MetaBundle *bundle, PodcastInfo *podcastIn
         }
         return;
     }
-    else if( url.protocol() == "album" || url.protocol() == "compilation" )
+    else if( url.protocol() == "album"
+            || url.protocol() == "compilation"
+            || url.protocol() == "fetchcover" )
     {
         KURL::List urls = ContextBrowser::expandURL( url );
 
