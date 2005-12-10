@@ -49,6 +49,9 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
         //allows us to switch browsers from within other browsers etc
         void showBrowser( const QString& name ) { m_browsers->showBrowser( name ); }
 
+        //takes into account minimized, multiple desktops, etc.
+        bool isReallyShown() const;
+
         virtual bool eventFilter( QObject*, QEvent* );
 
         //instance is declared in KXMLGUI

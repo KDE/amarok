@@ -83,7 +83,7 @@ class Playlist : private KListView, public EngineObserver
         static const int Unique     = 16;    /// don't insert anything already in the playlist
 
         // it's really just the *ListView parts we want to hide...
-        QObject *qobject() const { return (QObject*)this; }
+        QScrollView *qscrollview() const { return (QScrollView*)this; }
 
         /** Add media to the playlist
          *  @param options you can OR these together, see the enum
@@ -169,6 +169,7 @@ class Playlist : private KListView, public EngineObserver
         void playNextTrack( const bool forceNext = true );
         void playPrevTrack();
         void queueSelected();
+        void setSelectedRatings( int rating );
         void redo();
         void removeDuplicates();
         void removeSelectedItems();
@@ -192,6 +193,9 @@ class Playlist : private KListView, public EngineObserver
         void fileHasMood( const QString path );
         void refreshMoods();
         void applySettings();
+
+    protected:
+        void mouseMoveEvent( QMouseEvent *e );
 
     private slots:
         void slotCountChanged();
@@ -276,6 +280,7 @@ class Playlist : private KListView, public EngineObserver
 
         PlaylistItem  *m_currentTrack;          //the track that is playing
         QListViewItem *m_marker;                //track that has the drag/drop marker under it
+        PlaylistItem  *m_hoveredRating;         //if the mouse is hovering over the rating of an item
 
         //NOTE these container types were carefully chosen
         PLItemList m_prevTracks;    //the previous history

@@ -271,6 +271,8 @@ Playlist::Playlist( QWidget *parent )
     setAllColumnsShowFocus( true );
     //setItemMargin( 1 ); //aesthetics
 
+    setMouseTracking( true );
+
     #if KDE_IS_VERSION( 3, 3, 91 )
     setShadeSortColumn( true );
     #endif
@@ -1041,6 +1043,15 @@ Playlist::playCurrentTrack()
     //since the engine is not loaded the first time the user presses play
     //then calling the next() function wont play it
     activate( currentTrack() );
+}
+
+void
+Playlist::setSelectedRatings( int rating )
+{
+    for( MyIt it( this, MyIt::Selected ); *it; ++it )
+        CollectionDB::instance()->setSongRating( (*it)->url().path(), rating );
+    if( currentItem() && !currentItem()->isSelected() )
+        CollectionDB::instance()->setSongRating( currentItem()->url().path(), rating );
 }
 
 void
@@ -3541,6 +3552,21 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     #undef item
 }
 
+////////////////////////////////////////////////////////////////////////////////
+/// Misc Protected Methods
+////////////////////////////////////////////////////////////////////////////////
+
+void
+Playlist::mouseMoveEvent( QMouseEvent *e )
+{
+    if( itemAt( e->pos() ) && e->x() > header()->sectionPos( PlaylistItem::Rating ) &&
+        e->x() < header()->sectionPos( PlaylistItem::Rating ) + header()->sectionSize( PlaylistItem::Rating ) )
+    {
+        m_hoveredRating = static_cast<PlaylistItem*>( itemAt( e->pos() ) );
+    }
+    else
+        m_hoveredRating = 0;
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////

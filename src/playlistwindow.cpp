@@ -845,6 +845,13 @@ void PlaylistWindow::showHide() //SLOT
 
     if( isShown() ) KWin::deIconifyWindow( winId() );
 }
+
+bool PlaylistWindow::isReallyShown() const
+{
+    const KWin::WindowInfo info = KWin::windowInfo( winId() );
+    return isShown() && !info.isMinimized() && info.isOnDesktop( KWin::currentDesktop() );
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 /// DynamicBar
 //////////////////////////////////////////////////////////////////////////////////////////

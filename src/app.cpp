@@ -330,7 +330,7 @@ void App::initGlobalShortcuts()
     m_pGlobalAccel->insert( "stop", i18n( "Stop" ), 0, KKey("WIN+v"), 0,
                             ec, SLOT( stop() ), true, true );
     m_pGlobalAccel->insert( "stop_after_global", i18n( "Stop Playing After Current Track" ), 0, KKey("WIN+CTRL+v"), 0,
-                            Playlist::instance()->qobject(), SLOT( toggleStopAfterCurrentTrack() ), true, true );
+                            Playlist::instance()->qscrollview(), SLOT( toggleStopAfterCurrentTrack() ), true, true );
     m_pGlobalAccel->insert( "next", i18n( "Next Track" ), 0, KKey("WIN+b"), 0,
                             ec, SLOT( next() ), true, true );
     m_pGlobalAccel->insert( "prev", i18n( "Previous Track" ), 0, KKey("WIN+z"), 0,
@@ -995,11 +995,14 @@ void App::firstRunWizard()
 void App::setRating( int n )
 {
     if( EngineController::instance()->engine()->state() == Engine::Playing ||
-        EngineController::instance()->engine()->state() == Engine::Paused  )
+        EngineController::instance()->engine()->state() == Engine::Paused  ||
+        EngineController::instance()->engine()->state() == Engine::Idle    )
     {
         CollectionDB::instance()->setSongRating( EngineController::instance()->playingURL().path(), n );
         amaroK::OSD::instance()->OSDWidget::show( i18n("Rating: %1").arg( QString().fill( '*', n ) ) );
     }
+    else if( PlaylistWindow::self()->isReallyShown() && Playlist::instance()->qscrollview()->hasFocus() )
+        Playlist::instance()->setSelectedRatings( n );
 }
 
 QWidget *App::mainWindow() const
