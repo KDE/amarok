@@ -328,7 +328,7 @@ TagDialog::fillSelected( KTRMResult selected ) //SLOT
         if ( selected.track() != 0 )          mb.setTrack( selected.track() );
         if ( selected.year() != 0 )           mb.setYear( selected.year() );
 
-        storedTags.insert( m_mbTrack, mb );
+        storedTags.replace( m_mbTrack, mb );
     }
 
 
@@ -746,7 +746,10 @@ TagDialog::readMultipleTracks()
         kIntSpinBox_year->setValue( first.year() );
     }
     else
+    {
         m_bundle.setYear( 0 );
+        kIntSpinBox_year->setValue( 0 );
+    }
     if (score) {
         m_score = scoreFirst;
         kIntSpinBox_score->setValue( scoreFirst );
@@ -857,24 +860,35 @@ TagDialog::scoreForURL( const KURL &url )
 void
 TagDialog::saveTags()
 {
-    storeTags();
-    QMap<QString, MetaBundle>::ConstIterator endStore( storedTags.end() );
-    for(QMap<QString, MetaBundle>::ConstIterator it = storedTags.begin(); it != endStore; ++it ) {
-        if( writeTag( it.data(), it == --storedTags.end() ) )    //update the collection browser if it's the last track
-            Playlist::instance()->updateMetaData( it.data() );
+    if( m_urlList.count() > 0 && storedTags.count() == 0 )
+    {
+        saveMultipleTracks();
+    }
+    else
+    {
+        if( m_urlList.count() > 0 )
+            applyToAllTracks();
         else
-            amaroK::StatusBar::instance()->longMessage( i18n(
-                        "Sorry, the tag for %1 could not be changed." ).arg( it.data().prettyURL() ), KDE::StatusBar::Error );
-    }
-    QMap<QString, int>::ConstIterator endScore( storedScores.end() );
-    for(QMap<QString, int>::ConstIterator it = storedScores.begin(); it != endScore; ++it ) {
-        CollectionDB::instance()->setSongPercentage( it.key(), it.data() );
-    }
-    QMap<QString, QString>::ConstIterator endLyrics( storedLyrics.end() );
-    for(QMap<QString, QString>::ConstIterator it = storedLyrics.begin(); it != endLyrics; ++it ) {
-        CollectionDB::instance()->setLyrics( it.key(), it.data() );
-        emit lyricsChanged( it.key() );
+            storeTags();
 
+        QMap<QString, MetaBundle>::ConstIterator endStore( storedTags.end() );
+        for(QMap<QString, MetaBundle>::ConstIterator it = storedTags.begin(); it != endStore; ++it ) {
+            if( writeTag( it.data(), it == --storedTags.end() ) )    //update the collection browser if it's the last track
+                Playlist::instance()->updateMetaData( it.data() );
+            else
+                amaroK::StatusBar::instance()->longMessage( i18n(
+                            "Sorry, the tag for %1 could not be changed." ).arg( it.data().prettyURL() ), KDE::StatusBar::Error );
+        }
+        QMap<QString, int>::ConstIterator endScore( storedScores.end() );
+        for(QMap<QString, int>::ConstIterator it = storedScores.begin(); it != endScore; ++it ) {
+            CollectionDB::instance()->setSongPercentage( it.key(), it.data() );
+        }
+        QMap<QString, QString>::ConstIterator endLyrics( storedLyrics.end() );
+        for(QMap<QString, QString>::ConstIterator it = storedLyrics.begin(); it != endLyrics; ++it ) {
+            CollectionDB::instance()->setLyrics( it.key(), it.data() );
+            emit lyricsChanged( it.key() );
+
+        }
     }
     CollectionView::instance()->renderView();
 }
@@ -940,6 +954,70 @@ TagDialog::applyToAllTracks()
     }
 }
 
+void
+TagDialog::saveMultipleTracks()
+{
+    bool tagsChanged = false, anyTrack = false;
+    const KURL::List::ConstIterator end = m_urlList.end();
+    for ( KURL::List::ConstIterator it = m_urlList.begin(); it != end; ++it ) {
+        if( !(*it).isLocalFile() ) continue;
+
+        MetaBundle mb( *it );
+
+   /* we have to update the values if they changed, so:
+   1) !kLineEdit_field->text().isEmpty() && kLineEdit_field->text() != mb.field
+          i.e.: The user wrote something on the field, and it's different from
+          what we have in the tag.
+   2) !m_bundle.field().isEmpty() && kLineEdit_field->text().isEmpty()
+          i.e.: The user was shown some value for the field (it was the same
+          for all selected tracks), and he deliberately emptied it.
+  TODO: All this mess is because the dialog uses "" to represent what the user
+        doesn't want to change, maybe we can think of something better?
+   */
+        if( !kComboBox_artist->currentText().isEmpty() && kComboBox_artist->currentText() != mb.artist() ||
+             kComboBox_artist->currentText().isEmpty() && !m_bundle.artist().isEmpty() ) {
+            mb.setArtist( kComboBox_artist->currentText() );
+            tagsChanged = true;
+        }
+
+        if( !kComboBox_album->currentText().isEmpty() && kComboBox_album->currentText() != mb.album() ||
+             kComboBox_album->currentText().isEmpty() && !m_bundle.album().isEmpty() ) {
+            mb.setAlbum( kComboBox_album->currentText() );
+            tagsChanged = true;
+        }
+        if( !kComboBox_genre->currentText().isEmpty() && kComboBox_genre->currentText() != mb.genre() ||
+             kComboBox_genre->currentText().isEmpty() && !m_bundle.genre().isEmpty() ) {
+            mb.setGenre( kComboBox_genre->currentText() );
+            tagsChanged = true;
+        }
+        if( !kTextEdit_comment->text().isEmpty() && kTextEdit_comment->text() != mb.comment() ||
+             kTextEdit_comment->text().isEmpty() && !m_bundle.comment().isEmpty() ) {
+            mb.setComment( kTextEdit_comment->text() );
+            tagsChanged = true;
+        }
+        if( kIntSpinBox_year->value() && kIntSpinBox_year->value() != mb.year() ||
+            !kIntSpinBox_year->value() && m_bundle.year() ) {
+            mb.setYear( kIntSpinBox_year->value() );
+            tagsChanged = true;
+        }
+        if( kIntSpinBox_score->value() && kIntSpinBox_score->value() != m_score ||
+            !kIntSpinBox_score->value() && m_score )
+            CollectionDB::instance()->setSongPercentage( mb.url().path(), kIntSpinBox_score->value() );
+
+        if ( tagsChanged ) { // We only try to update the file if one of the tags changed
+            if( writeTag( mb, false ) ) //leave the Collection Browser update to be made after all changes
+                Playlist::instance()->updateMetaData( mb );
+            else
+                amaroK::StatusBar::instance()->longMessage( i18n(
+                    "Sorry, the tag for %1 could not be changed." ).arg( mb.prettyURL() ), KDE::StatusBar::Error );
+        }
+        anyTrack |= tagsChanged;
+    }
+    // if any change was really made for any of the tracks, update Collection Browser.
+    if (anyTrack)
+        CollectionView::instance()->renderView();
+}
+
 bool
 TagDialog::writeTag( MetaBundle mb, bool updateCB )
 {
@@ -981,6 +1059,4 @@ TagDialog::writeTag( MetaBundle mb, bool updateCB )
     }
     else return false;
 }
-
-
 #include "tagdialog.moc"

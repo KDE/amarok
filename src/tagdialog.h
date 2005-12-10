@@ -67,6 +67,7 @@ class TagDialog : public TagDialogBase
         MetaBundle bundleForURL( const KURL &url );
         int scoreForURL( const KURL &url );
         void saveTags();
+        void saveMultipleTracks();
         bool writeTag( MetaBundle mb, bool updateCB=true );
         const QString unknownSafe( QString );
         const QStringList statisticsData();
