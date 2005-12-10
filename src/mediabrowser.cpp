@@ -20,6 +20,7 @@
 #include "scrobbler.h"
 #include "statusbar.h"
 #include "playlistloader.h"
+#include "contextbrowser.h"
 
 #ifdef HAVE_LIBGPOD
 #include "gpodmediadevice/gpodmediadevice.h"
@@ -1207,6 +1208,18 @@ MediaDevice::addURL( const KURL& url, MetaBundle *bundle, PodcastInfo *podcastIn
                 ++it )
         {
             addURL( (*it).url(), 0, 0, name );
+        }
+        return;
+    }
+    else if( url.protocol() == "album" || url.protocol() == "compilation" )
+    {
+        KURL::List urls = ContextBrowser::expandURL( url );
+
+        for( KURL::List::iterator it = urls.begin();
+                it != urls.end();
+                ++it )
+        {
+            addURL( *it );
         }
         return;
     }

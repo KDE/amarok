@@ -44,6 +44,7 @@ class ContextBrowser : public KTabWidget, public EngineObserver
 
         void setFont( const QFont& );
         void reloadStyleSheet();
+        static KURL::List expandURL( const KURL &url ); // expand album: and compilation:
 
     public slots:
         void openURLRequest(const KURL &url );

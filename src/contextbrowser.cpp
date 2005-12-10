@@ -2460,5 +2460,48 @@ ContextBrowser::makeShadowedImage( const QString& albumImage ) //static
     return QString("data:image/png;base64,%1").arg( KCodecs::base64Encode( ba ) );
 }
 
+KURL::List
+ContextBrowser::expandURL( const KURL &url )
+{
+    KURL::List urls;
+    QString protocol = url.protocol();
+
+    if( protocol == "album" ) {
+        // url looks like:   album:<artist_id> @@@ <album_id>
+        QString myUrl = url.path();
+        if ( myUrl.endsWith( " @@@" ) )
+            myUrl += ' ';
+        const QStringList list = QStringList::split( " @@@ ", myUrl, true );
+        Q_ASSERT( !list.isEmpty() );
+        QString artist_id = list.front();
+        QString album_id = list.back();
+
+        QStringList trackUrls = CollectionDB::instance()->albumTracks( artist_id, album_id );
+        KURL url;
+        foreach( trackUrls ) {
+            url.setPath( *it );
+            urls += url;
+        }
+    }
+    else if( protocol == "compilation" ) {
+        QueryBuilder qb;
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+        qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, url.path() );
+        qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+        qb.setOptions( QueryBuilder::optOnlyCompilations );
+        QStringList values = qb.run();
+
+        KURL::List urls;
+        KURL url;
+
+        for( QStringList::ConstIterator it = values.begin(), end = values.end(); it != end; ++it ) {
+            url.setPath( *it );
+            urls += url;
+        }
+    }
+
+    return urls;
+}
+
 
 #include "contextbrowser.moc"

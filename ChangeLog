@@ -5,6 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.4:
   FEATURES:
+    * Drag albums and compilations from context browser to media device and
+      playlist browser.
     * Add playlist files (.m3u, ...) to media device transfer queue.
     * Browse your collection and other related artists with context browser.
     * WMA tag write support.

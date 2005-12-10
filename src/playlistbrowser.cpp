@@ -23,6 +23,7 @@
 #include "tagdialog.h"         //showContextMenu()
 #include "threadweaver.h"
 #include "statusbar.h"
+#include "contextbrowser.h"
 
 #include <qevent.h>            //customEvent()
 #include <qheader.h>           //mousePressed()
@@ -2624,6 +2625,17 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
 
                 if( filename.endsWith("m3u") || filename.endsWith("pls") )
                     PlaylistBrowser::instance()->addPlaylist( (*it).path() );
+                else if( (*it).protocol() == "album" || (*it).protocol() == "compilation" )
+                {
+                    KURL::List urls = ContextBrowser::expandURL( *it );
+                    for( KURL::List::iterator i = urls.begin();
+                            i != urls.end();
+                            i++ )
+                    {
+                        MetaBundle mb(*i);
+                        bundles.append( mb );
+                    }
+                }
                 else //TODO: check canDecode ?
                 {
                     MetaBundle mb(*it);
