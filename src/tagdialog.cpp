@@ -893,16 +893,20 @@ TagDialog::scoreForURL( const KURL &url )
 void
 TagDialog::saveTags()
 {
-    if( m_urlList.count() > 0 && storedTags.count() == 0 )
+    if( m_urlList.count() > 0 && storedTags.count() == 0 && !m_perTrack )
     {
         saveMultipleTracks();
     }
     else
     {
-        if( m_urlList.count() > 0 )
+        if( !m_perTrack )
+        {
             applyToAllTracks();
+        }
         else
+        {
             storeTags();
+        }
 
         QMap<QString, MetaBundle>::ConstIterator endStore( storedTags.end() );
         for(QMap<QString, MetaBundle>::ConstIterator it = storedTags.begin(); it != endStore; ++it ) {
