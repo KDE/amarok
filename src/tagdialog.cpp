@@ -150,7 +150,7 @@ TagDialog::previousTrack()
     }
     else
     {
-        if( hasChanged( true ) )
+        if( hasChanged() )
         {
             storeTags( *m_currentURL );
         }
@@ -189,7 +189,7 @@ TagDialog::nextTrack()
     }
     else
     {
-        if( hasChanged( true ) )
+        if( hasChanged() )
         {
             storeTags( *m_currentURL );
         }
@@ -218,7 +218,7 @@ TagDialog::perTrack()
     else
     {
         setMultipleTracksMode();
-        //scanBundles();
+        readMultipleTracks();
     }
 
     enableItems();
@@ -695,12 +695,12 @@ TagDialog::readMultipleTracks()
 
     m_bundle = MetaBundle();
 
-    MetaBundle first( *it );
+    MetaBundle first = bundleForURL( *it );
     uint scoreFirst = CollectionDB::instance()->getSongPercentage( first.url().path() );
 
     bool artist=true, album=true, genre=true, comment=true, year=true, score=true;
     for ( ; it != end; ++it ) {
-        MetaBundle mb( *it );
+        MetaBundle mb = bundleForURL( *it );
 
         if( !mb.url().isLocalFile() ) {
             // If we have a non local file, don't even lose more time comparing, just leave
@@ -758,13 +758,13 @@ equalString( const QString &a, const QString &b )
 }
 
 bool
-TagDialog::hasChanged( bool singleTrack )
+TagDialog::hasChanged()
 {
-    return changes( singleTrack );
+    return changes();
 }
 
 int
-TagDialog::changes( bool singleTrack )
+TagDialog::changes()
 {
     int result=TagDialog::NOCHANGE;
     bool modified = false;
@@ -775,7 +775,7 @@ TagDialog::changes( bool singleTrack )
 
     modified |= !equalString( kTextEdit_comment->text(), m_bundle.comment() );
 
-    if (!m_urlList.count() || singleTrack) { //ignore these on MultipleTracksMode
+    if (!m_urlList.count() || m_perTrack) { //ignore these on MultipleTracksMode
         modified |= !equalString( kLineEdit_title->text(), m_bundle.title() );
         modified |= kIntSpinBox_track->value() != m_bundle.track();
     }
@@ -895,35 +895,44 @@ TagDialog::applyToAllTracks()
 
         MetaBundle mb = bundleForURL( *it );
 
+        bool changed = false;
         if( !kComboBox_artist->currentText().isEmpty() && kComboBox_artist->currentText() != mb.artist() ||
                 kComboBox_artist->currentText().isEmpty() && !m_bundle.artist().isEmpty() ) {
             mb.setArtist( kComboBox_artist->currentText() );
+            changed = true;
         }
 
         if( !kComboBox_album->currentText().isEmpty() && kComboBox_album->currentText() != mb.album() ||
                 kComboBox_album->currentText().isEmpty() && !m_bundle.album().isEmpty() ) {
             mb.setAlbum( kComboBox_album->currentText() );
+            changed = true;
         }
         if( !kComboBox_genre->currentText().isEmpty() && kComboBox_genre->currentText() != mb.genre() ||
                 kComboBox_genre->currentText().isEmpty() && !m_bundle.genre().isEmpty() ) {
             mb.setGenre( kComboBox_genre->currentText() );
+            changed = true;
         }
         if( !kTextEdit_comment->text().isEmpty() && kTextEdit_comment->text() != mb.comment() ||
                 kTextEdit_comment->text().isEmpty() && !m_bundle.comment().isEmpty() ) {
             mb.setComment( kTextEdit_comment->text() );
+            changed = true;
         }
         if( kIntSpinBox_year->value() && kIntSpinBox_year->value() != mb.year() ||
                 !kIntSpinBox_year->value() && m_bundle.year() ) {
             mb.setYear( kIntSpinBox_year->value() );
+            changed = true;
         }
 
         int score = scoreForURL( *it );
         if( kIntSpinBox_score->value() && kIntSpinBox_score->value() != score ||
                 !kIntSpinBox_score->value() && score )
+        {
             score = kIntSpinBox_score->value();
-            CollectionDB::instance()->setSongPercentage( mb.url().path(), kIntSpinBox_score->value() );
+            changed = true;
+        }
 
-        storeTags( *it, mb, score );
+        if( changed )
+            storeTags( *it, mb, score );
     }
 }
 

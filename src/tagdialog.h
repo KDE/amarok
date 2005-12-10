@@ -59,8 +59,8 @@ class TagDialog : public TagDialogBase
         void setMultipleTracksMode();
         void setSingleTrackMode();
         void enableItems();
-        bool hasChanged( bool singleTrack=false );
-        int changes( bool singleTrack=false );
+        bool hasChanged();
+        int changes();
         void storeTags();
         void storeTags( const KURL& url );
         void storeTags( const KURL& url, MetaBundle &mb, int score );
