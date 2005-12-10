@@ -52,7 +52,7 @@ class QueueLabel: public QLabel //homonym, heh heh
     private:
         void    showToolTip();
         void    hideToolTip();
-        QString veryNiceTitle( PlaylistItem * item ) const;
+        QString veryNiceTitle( PlaylistItem * item, bool bold = false ) const;
         void    getCover( const QString &artist, const QString &album );
 
         inline int mapXToGlobal( int x ) { return mapToGlobal( QPoint( x, 0 ) ).x(); }

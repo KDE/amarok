@@ -252,8 +252,8 @@ void QueueLabel::showToolTip()
     if( !item )
         return;
 
-    QString text = i18n( "One track queued: %1", "%n tracks queued, next one is: %1", count )
-                   .arg( veryNiceTitle( item ) );
+    QString text = i18n( "One track queued: %1", "<b>%n</b> tracks queued, next one is: %1", count )
+                   .arg( veryNiceTitle( item, true /*bold*/ ) );
 
     int length = 0;
     for( QPtrListIterator<PlaylistItem> it( pl->m_nextTracks ); *it; ++it )
@@ -262,7 +262,8 @@ void QueueLabel::showToolTip()
         if( s > 0 ) length += s;
     }
     if( length && count > 1 )
-        text += QString( "<br>" ) + i18n( "Length of the queue is: %1" ).arg( MetaBundle::prettyLength( length, true ) );
+        text += QString( "<br>" ) + i18n( "Length of the queue is: <b>%1</b>" )
+                                    .arg( MetaBundle::prettyLength( length, true ) );
 
     m_tooltip = new KDE::PopupMessage( parentWidget()->parentWidget(), this, 0 );
     m_tooltip->showCloseButton( false );
@@ -285,14 +286,14 @@ void QueueLabel::hideToolTip()
     m_tooltipShowing = false;
 }
 
-QString QueueLabel::veryNiceTitle( PlaylistItem* item ) const
+QString QueueLabel::veryNiceTitle( PlaylistItem* item, bool bold ) const
 {
     const QString artist = item->artist().stripWhiteSpace(),
                   title =  item->title().stripWhiteSpace();
     if( !artist.isEmpty() && !title.isEmpty() )
-       return i18n( "%1 by %2" ).arg( title ).arg( artist );
+       return ( bold ? i18n( "<b>%1</b> by <b>%2</b>" ) : i18n( "%1 by %2" ) ).arg( title ).arg( artist );
     else
-       return MetaBundle::prettyTitle( item->filename() );
+       return QString( "<b>%1</b>" ).arg( MetaBundle::prettyTitle( item->filename() ) );
 }
 
 
