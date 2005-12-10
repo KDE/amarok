@@ -878,7 +878,7 @@ MediaDeviceView::config()
     
     QComboBox *devices = new QComboBox( box );
     //make sure these are in the same order the enum is declared
-    QStringList deviceList; deviceList << "Dummy" << "IPod" << "Ifp";
+    QStringList deviceList; deviceList << "Dummy" << "iPod" << "Ifp";
     devices->insertStringList( deviceList );
     
     devices->setCurrentItem( m_device->deviceType() );
