@@ -66,6 +66,7 @@ class MediaItem : public KListViewItem
 
         virtual bool isLeafItem() const;        // A leaf node of the tree
         virtual bool isFileBacked() const;      // Should the file be deleted of the device when removed
+        virtual QDateTime playTime() const { return QDateTime(); }
         virtual int  played() const { return 0; }
         virtual int  recentlyPlayed() const { return 0; } // no of times played on device since last sync
         virtual int  rating() const { return 0; } // rating on device, normalized to 100

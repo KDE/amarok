@@ -98,6 +98,7 @@ class GpodMediaItem : public MediaItem
         int rating() const { if(m_track) return m_track->rating; else return 0; }
         void setRating(int rating) { if(m_track) m_track->rating = m_track->app_rating = rating; /* m_dbChanged=true; */ }
         bool ratingChanged() const { if(m_track) return m_track->rating != m_track->app_rating; else return false; }
+        QDateTime playTime() const { QDateTime t; if(m_track) t.setTime_t( itdb_time_mac_to_host( m_track->time_played ) ); return t; }
         GpodMediaItem *findTrack(Itdb_Track *track)
         {
             if(m_track == track)

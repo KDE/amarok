@@ -1524,7 +1524,8 @@ MediaDevice::syncStatsFromDevice( MediaItem *root )
                     QString url = CollectionDB::instance()->getURL( *bundle );
                     if( url != QString::null )
                     {
-                        CollectionDB::instance()->addSongPercentage( url, 100 );
+                        QDateTime t = it->playTime();
+                        CollectionDB::instance()->addSongPercentage( url, 100, t.isValid() ? &t : 0 );
                         debug() << "played " << url << endl;
                     }
                 }

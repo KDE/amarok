@@ -1448,7 +1448,7 @@ CollectionDB::addAudioproperties( const MetaBundle& bundle )
 
 
 int
-CollectionDB::addSongPercentage( const QString &url, int percentage )
+CollectionDB::addSongPercentage( const QString &url, int percentage, const QDateTime *playtime )
 {
     float score;
     QStringList values =
@@ -1456,6 +1456,8 @@ CollectionDB::addSongPercentage( const QString &url, int percentage )
             "SELECT playcounter, createdate, percentage, rating FROM statistics "
             "WHERE url = '%1';" )
             .arg( escapeString( url ) ) );
+
+    uint atime = playtime ? playtime->toTime_t() : QDateTime::currentDateTime().toTime_t();
 
     // check boundaries
     if ( percentage > 100 ) percentage = 100;
@@ -1474,7 +1476,7 @@ CollectionDB::addSongPercentage( const QString &url, int percentage )
             query( QString( "UPDATE statistics SET percentage=%1, playcounter=%2, accessdate=%3 WHERE url='%4';" )
                             .arg( score )
                             .arg( values[0] + " + 1" )
-                            .arg( QDateTime::currentDateTime().toTime_t() )
+                            .arg( atime )
                             .arg( escapeString( url ) ) );
         }
         else
@@ -1483,7 +1485,7 @@ CollectionDB::addSongPercentage( const QString &url, int percentage )
                             "VALUES ( '%6', %2, %3, %4, %5, %1 );" )
                             .arg( values[3] )
                             .arg( values[1] )
-                            .arg( QDateTime::currentDateTime().toTime_t() )
+                            .arg( atime )
                             .arg( score )
                             .arg( values[0] + " + 1" )
                             .arg( escapeString( url ) ) );
@@ -1497,8 +1499,8 @@ CollectionDB::addSongPercentage( const QString &url, int percentage )
         insert( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, playcounter, rating ) "
                         "VALUES ( '%4', %2, %3, %1, 1, 0 );" )
                         .arg( score )
-                        .arg( QDateTime::currentDateTime().toTime_t() )
-                        .arg( QDateTime::currentDateTime().toTime_t() )
+                        .arg( atime )
+                        .arg( atime )
                         .arg( escapeString( url ) ), NULL );
     }
 
