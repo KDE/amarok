@@ -45,6 +45,7 @@ extern "C"
 }
 
 #define HELIX_ENGINE_TIMER 10  // 10 ms timer
+#define SCOPE_MAX_BEHIND   200    // 200 postmix buffers
 
 
 #ifndef LLONG_MAX
@@ -586,6 +587,12 @@ const Engine::Scope &HelixEngine::scope()
       m_lasttime = hpos;
    }
    m_lastpos = hpos;
+
+   if ( getScopeCount() > SCOPE_MAX_BEHIND ) // protect against naughty streams
+   {
+      resetScope();
+      return m_scope;
+   }
 
    if (!w || !m_item)
    {
