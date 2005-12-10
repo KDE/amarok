@@ -38,7 +38,7 @@ class TrackToolTip: public QObject
 
     private slots:
     void slotCoverChanged( const QString &artist, const QString &album );
-    void slotColumnsChanged();
+    void slotUpdate( const QString &url = QString::null );
 
     private:
     QString tooltip();

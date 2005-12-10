@@ -37,7 +37,11 @@ TrackToolTip::TrackToolTip(): m_haspos( false )
 {
     connect( CollectionDB::instance(), SIGNAL( coverChanged( const QString &, const QString & ) ),
              this, SLOT( slotCoverChanged( const QString &, const QString & ) ) );
-    connect( Playlist::instance(), SIGNAL( columnsChanged() ), this, SLOT( slotColumnsChanged() ) );
+    connect( Playlist::instance(), SIGNAL( columnsChanged() ), this, SLOT( slotUpdate() ) );
+    connect( CollectionDB::instance(), SIGNAL( scoreChanged( const QString&, int ) ),
+             this, SLOT( slotUpdate( const QString& ) ) );
+    connect( CollectionDB::instance(), SIGNAL( ratingChanged( const QString&, int ) ),
+             this, SLOT( slotUpdate( const QString& ) ) );
     clear();
 }
 
@@ -207,9 +211,10 @@ void TrackToolTip::slotCoverChanged( const QString &artist, const QString &album
     }
 }
 
-void TrackToolTip::slotColumnsChanged()
+void TrackToolTip::slotUpdate( const QString &url )
 {
-    setTrack( m_tags, true );
+    if( url.isNull() || url == m_tags.url().path() )
+        setTrack( m_tags, true );
 }
 
 QString TrackToolTip::tooltip()
