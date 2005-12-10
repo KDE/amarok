@@ -3935,7 +3935,8 @@ Playlist::showTagDialog( QPtrList<QListViewItem> items )
             if ( item->isVisible() )
                 urls << static_cast<PlaylistItem*>( item )->url();
 
-        TagDialog( urls, instance() ).exec();
+        TagDialog *dialog = new TagDialog( urls, instance() );
+        dialog->show();
     }
 
     Playlist::unlock();
