@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Author: Mark Kretschmann, markey@web.de -->
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
+      http://www.kde.org/standards/kcfg/1.0/kcfg.xsd" >
+    <kcfgfile name="amarokrc"/>
+
+    <group name="Gst-Engine">
+        <entry key="Sound Output" type="String">
+            <label>Sound output method to use</label>
+            <whatsthis>Select the sound output plugin ("sink"). Their availability depends on the system configuration.</whatsthis>
+            <default>osssink</default>
+        </entry>
+        <entry key="Use Custom Sound Device" type="Bool">
+            <label>Do not use the autodetected audiosink sound device</label>
+            <whatsthis>When enabled, uses user-specified sound device for audiosink.</whatsthis>
+            <default>false</default>
+        </entry>
+        <entry key="Sound Device" type="String">
+            <label>Sound output device to use</label>
+            <whatsthis>Select the sound output device; this is useful for gstreamer engine sinks.</whatsthis>
+        </entry>
+        <entry key="Use Custom Output Params" type="Bool">
+            <label>Use custom parameters for output sink.</label>
+            <default>false</default>
+        </entry>
+        <entry key="Output Params" type="String">
+            <label>The custom sink parameters.</label>
+        </entry>
+        <entry key="Fadeout Duration" type="Int">
+            <label>Duration of Fade-out at trackend</label>
+            <default>1800</default>
+            <min>0</min>
+            <max>10000</max>
+        </entry>
+    </group>
+
+</kcfg>
+

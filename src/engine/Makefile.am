@@ -13,6 +13,10 @@ if with_gst
     GST_ENGINE_SUBDIR = gst
 endif
 
+if with_gst10
+    GST10_ENGINE_SUBDIR = gst10
+endif
+
 if with_nmm
     NMM_ENGINE_SUBDIR = nmm
 endif
@@ -40,6 +44,7 @@ METASOURCES = \
 SUBDIRS = . \
     void \
     $(GST_ENGINE_SUBDIR) \
+    $(GST10_ENGINE_SUBDIR) \
     $(XINE_ENGINE_SUBDIR) \
     $(ARTS_ENGINE_SUBDIR) \
     $(MAS_ENGINE_SUBDIR) \
