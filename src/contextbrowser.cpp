@@ -51,9 +51,9 @@
 #include <kurl.h>
 
 #define escapeHTML(s)     QString(s).replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" )
-// .replace( "%", "%25" ) has to be the last one, otherwise we would do things like converting spaces into %20 and then convert them into %25%20
-#define escapeHTMLAttr(s) QString(s).replace( "'", "%27" ).replace( "#", "%23" ).replace( "?", "%3F" ).replace( "%", "%25" )
-#define unEscapeHTMLAttr(s) QString(s).replace( "%25", "%" ).replace( "%3F", "?" ).replace( "%23", "#" ).replace( "%27", "'" )
+// .replace( "%", "%25" ) has to be the first(!) one, otherwise we would do things like converting spaces into %20 and then convert them into %25%20
+#define escapeHTMLAttr(s) QString(s).replace( "%", "%25" ).replace( "'", "%27" ).replace( "#", "%23" ).replace( "?", "%3F" )
+#define unEscapeHTMLAttr(s) QString(s).replace( "%3F", "?" ).replace( "%23", "#" ).replace( "%27", "'" ).replace( "%25", "%" )
 
 namespace amaroK
 {
@@ -131,6 +131,12 @@ void albumArtistTrackFromUrl( QString url, QString &artist, QString &album, QStr
     artist = unEscapeHTMLAttr( list[0] );
     album  = unEscapeHTMLAttr( list[1] );
     track  = unEscapeHTMLAttr( list[2] );
+}
+
+static
+QString wikipediaURL( QString item )
+{
+    return "http://en.wikipedia.org/wiki/" + KURL::encode_string_no_slash( item );
 }
 
 
@@ -1052,27 +1058,21 @@ bool CurrentTrackJob::doJob()
                     "<br />"
                     "<span id='current_box-header-album' class='box-header-title'>%2</span>"
                     "</div>" )
-                .arg( escapeHTMLAttr( artist ) )
-                .arg( escapeHTMLAttr( i18n( "Browse Artist" ) ) ) );
+                .arg( escapeHTML( artist ) )
+                .arg( escapeHTML( i18n( "Browse Artist" ) ) ) );
         m_HTMLSource.append(
-                QString(
-
                         "<table id='current_box-table' class='box-body' width='100%' cellpadding='0' cellspacing='0'>"
                         "<tr>"
                         "<td id='artist-wikipedia'>"
-                        "<a id='artist-wikipedia-a' href='http://en.wikipedia.org/wiki/%1'>"
-                        + i18n( "Wikipedia Information for %1" ).arg( artist ) +
+                        + QString( "<a id='artist-wikipedia-a' href='%1'>" ).arg( wikipediaURL( artist ) )
+                        + i18n( "Wikipedia Information for %1" ).arg( escapeHTML( artist ) ) +
                         "</a>"
                         "</td>"
                         "</tr>"
 
                         "<tr>"
                         "<td id='current-track'>"
-                        "<a id='current-track-a' href='current://track'>"
-                        "%2"
-                        "</a>" )
-                .arg( escapeHTMLAttr( artist ) )
-                .arg( escapeHTMLAttr( i18n( "Context for Current Track" ) ) )
+                        + QString( "<a id='current-track-a' href='current://track'>%2</a>" ).arg( escapeHTML( i18n( "Context for Current Track" ) ) )
                 );
 
         m_HTMLSource.append(
@@ -1273,15 +1273,13 @@ bool CurrentTrackJob::doJob()
         if( ContextBrowser::instance()->m_showRelated )
         {
             // <Related Artists>
-            m_HTMLSource.append(
+            m_HTMLSource.append( QString(
                     "<div id='related_box' class='box'>"
                     "<div id='related_box-header' class='box-header' onClick=\"toggleBlock('T_RA'); window.location.href='togglebox:ra';\" style='cursor: pointer;'>"
-                    "<span id='related_box-header-title' class='box-header-title'>"
-                    + i18n( "Artists Related to %1" ).arg( artist ) +
-                    "</span>"
+                    "<span id='related_box-header-title' class='box-header-title'>%1</span>"
                     "</div>"
-                    "<table class='box-body' id='T_RA' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
-
+                    "<table class='box-body' id='T_RA' width='100%' border='0' cellspacing='0' cellpadding='1'>" ) 
+                .arg( i18n( "Artists Related to %1" ).arg( escapeHTML( artist ) ) ) );
             for ( uint i = 0; i < relArtists.count(); i += 1 )
             {
                 qb.clear();
@@ -1290,13 +1288,12 @@ bool CurrentTrackJob::doJob()
                 m_HTMLSource.append(
                         "<tr class='" + QString( (i % 2) ? "box-row-alt" : "box-row" ) + "'>"
                         "<td class='artist'>"
-                        + ( isInCollection
-                            ? "<a href=\"artist:" + relArtists[i] + "\">" + relArtists[i] + "</a>"
-                            : "<i><a href=\"artist:" + relArtists[i] + "\">" + relArtists[i] + "</a></i>"
-                        ) +
-                        "</td>"
+                        + ( isInCollection ? "" : "<i>" )
+                        + "<a href='artist:" + escapeHTMLAttr( relArtists[i] ) + "'>" + escapeHTML( relArtists[i] ) + "</a>"
+                        + ( isInCollection ? "" : "</i>" )
+                        + "</td>"
                         "<td class='sbtext' width='1'>"
-                        "<a href=\"http://en.wikipedia.org/wiki/" + relArtists[i] + "\">Wikipedia</a>"
+                        "<a href='" + wikipediaURL( relArtists[i] ) + "'>Wikipedia</a>"
                         "</td>"
                         "<td width='1'></td>"
                         "</tr>" );
@@ -2096,23 +2093,23 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
         {
             if ( !EngineController::instance()->bundle().artist().isEmpty() )
             {
-                tmpWikiStr = KURL::encode_string( EngineController::instance()->bundle().artist() );
+                tmpWikiStr = EngineController::instance()->bundle().artist();
             }
             else if ( !EngineController::instance()->bundle().title().isEmpty() )
             {
-                tmpWikiStr = KURL::encode_string( EngineController::instance()->bundle().title() );
+                tmpWikiStr = EngineController::instance()->bundle().title();
             }
             else
             {
-                tmpWikiStr = KURL::encode_string( EngineController::instance()->bundle().prettyTitle() );
+                tmpWikiStr = EngineController::instance()->bundle().prettyTitle();
             }
         }
         else
         {
-            tmpWikiStr = KURL::encode_string( EngineController::instance()->bundle().prettyTitle() );
+            tmpWikiStr = EngineController::instance()->bundle().prettyTitle();
         }
 
-        m_wikiCurrentUrl = QString( "http://en.wikipedia.org/wiki/%1" ).arg( tmpWikiStr );
+        m_wikiCurrentUrl = wikipediaURL( tmpWikiStr );
     }
     else
     {
@@ -2209,8 +2206,7 @@ void
 ContextBrowser::wikiAlbumPage() //SLOT
 {
     m_dirtyWikiPage = true;
-    showWikipedia( QString( "http://en.wikipedia.org/wiki/%1" )
-        .arg( KURL::encode_string_no_slash( EngineController::instance()->bundle().album() ) ) );
+    showWikipedia( wikipediaURL( EngineController::instance()->bundle().album() ) );
 }
 
 
@@ -2218,8 +2214,7 @@ void
 ContextBrowser::wikiTitlePage() //SLOT
 {
     m_dirtyWikiPage = true;
-    showWikipedia( QString( "http://en.wikipedia.org/wiki/%1" )
-        .arg( KURL::encode_string_no_slash( EngineController::instance()->bundle().title() ) ) );
+    showWikipedia( wikipediaURL( EngineController::instance()->bundle().title() ) );
 }
 
 
@@ -2418,11 +2413,15 @@ void ContextBrowser::tagsChanged( const MetaBundle &bundle ) //SLOT
 {
     const MetaBundle &currentTrack = EngineController::instance()->bundle();
 
-    if( currentTrack.artist().isEmpty() && currentTrack.album().isEmpty() )
-        return;
+    if( m_artist != bundle.artist() )
+    {
 
-    if( bundle.artist() != currentTrack.artist() && bundle.album() != currentTrack.album() )
-        return;
+        if( currentTrack.artist().isEmpty() && currentTrack.album().isEmpty() )
+            return;
+
+        if( bundle.artist() != currentTrack.artist() && bundle.album() != currentTrack.album() )
+            return;
+    }
 
     if ( currentPage() == m_currentTrackPage->view() ) // this is for compilations or artist == ""
     {
