@@ -1679,7 +1679,6 @@ Playlist::clear() //SLOT
 
     setCurrentTrack( 0 );
     m_prevTracks.clear();
-    m_hoveredRating = 0;
 
     const PLItemList prev = m_nextTracks;
     m_nextTracks.clear();
@@ -3563,9 +3562,14 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 void
 Playlist::contentsMouseMoveEvent( QMouseEvent *e )
 {
+    if( e )
+        KListView::contentsMouseMoveEvent( e );
     PlaylistItem *prev = m_hoveredRating;
-    const QPoint pos = e ? contentsToViewport( e->pos() )
-                         : ( mapFromGlobal( QCursor::pos() ) - QPoint( 0, header()->height() ) );
+    QPoint pos;
+    if( e )
+        pos = contentsToViewport( e->pos() );
+    else
+        pos = mapFromGlobal( QCursor::pos() ) - QPoint( 0, header()->height() );
 
     #define updateRating(item) QScrollView::updateContents( header()->sectionPos( PlaylistItem::Rating ) + 1, itemPos( item ) + 1, header()->sectionSize( PlaylistItem::Rating ) - 2, item->height() - 2 )
 
@@ -3590,6 +3594,10 @@ Playlist::contentsMouseMoveEvent( QMouseEvent *e )
 
 void Playlist::contentsMouseReleaseEvent( QMouseEvent *e )
 {
+    KListView::contentsMouseReleaseEvent( e );
+    if( e->state() & Qt::ControlButton || e->state() & Qt::ShiftButton )
+        return;
+
     const QPoint pos = contentsToViewport( e->pos() );
     PlaylistItem *item = static_cast<PlaylistItem*>( itemAt( pos ) );
     if( item && pos.x() > header()->sectionPos( PlaylistItem::Rating ) &&
@@ -3705,8 +3713,6 @@ Playlist::removeItem( PlaylistItem *item, bool multi )
 
     if( m_stopAfterTrack == item )
         m_stopAfterTrack = 0; //to be safe
-    if( m_hoveredRating == item )
-        m_hoveredRating = 0;
 
     //keep m_nextTracks queue synchronised
     if( m_nextTracks.removeRef( item ) && !multi )

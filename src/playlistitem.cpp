@@ -219,6 +219,9 @@ PlaylistItem::~PlaylistItem()
 
     listView()->countChanged();
 
+    if( listView()->m_hoveredRating == this )
+        listView()->m_hoveredRating = 0;
+
     delete m_proxyForMoods;
 }
 
