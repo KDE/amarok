@@ -495,3 +495,72 @@ int HSPPostMixAudioHook::volumeize(unsigned char *data, unsigned char *outbuf, s
    return len;
 }
 #endif
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+HSPFinalAudioHook::HSPFinalAudioHook(HelixSimplePlayer *player) :
+   m_Player(player), m_lRefCount(0)
+{
+   AddRef();
+}
+
+HSPFinalAudioHook::~HSPFinalAudioHook()
+{
+}
+
+STDMETHODIMP
+HSPFinalAudioHook::QueryInterface(REFIID riid, void**ppvObj)
+{
+    if(IsEqualIID(riid, IID_IUnknown))
+    {
+        AddRef();
+        *ppvObj = (IUnknown*)(IHXAudioHook *)this;
+        return HXR_OK;
+    }
+    else if(IsEqualIID(riid, IID_IHXAudioHook))
+    {
+        AddRef();
+        *ppvObj = (IHXAudioHook *)this;
+        return HXR_OK;
+    }
+    *ppvObj = NULL;
+    return HXR_NOINTERFACE;
+}
+
+STDMETHODIMP_(UINT32)
+HSPFinalAudioHook::AddRef()
+{
+    return InterlockedIncrement(&m_lRefCount);
+}
+
+STDMETHODIMP_(UINT32)
+HSPFinalAudioHook::Release()
+{
+    if (InterlockedDecrement(&m_lRefCount) > 0)
+    {
+        return m_lRefCount;
+    }
+
+    delete this;
+    return 0;
+}
+
+#include <iostream>
+using namespace std;
+
+STDMETHODIMP HSPFinalAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioData */*pAudioOutData*/)
+{
+   m_Player->print2stderr("FINAL HOOK : time: %d\n", pAudioInData->ulAudioTime);
+
+   return 0;
+}
+
+STDMETHODIMP HSPFinalAudioHook::OnInit(HXAudioFormat *pFormat)
+{
+   m_Player->print2stderr("FINAL HOOK OnInit AudioFormat: ch %d, bps %d, sps %d, mbs %d\n", pFormat->uChannels,
+          pFormat->uBitsPerSample,
+          pFormat->ulSamplesPerSec,
+          pFormat->uMaxBlockSize);
+   return 0;
+}
+

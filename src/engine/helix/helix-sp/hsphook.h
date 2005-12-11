@@ -155,4 +155,35 @@ private:
 };
 
 
+class HSPFinalAudioHook : public IHXAudioHook
+{
+public:
+   HSPFinalAudioHook(HelixSimplePlayer *player);
+   virtual ~HSPFinalAudioHook();
+   /*
+    *  IUnknown methods
+    */
+   STDMETHOD(QueryInterface)   (THIS_
+                               REFIID riid,
+                               void** ppvObj);
+   STDMETHOD_(ULONG32,AddRef)  (THIS);
+   STDMETHOD_(ULONG32,Release) (THIS);
+   /*
+    * IHXAudioHook methods
+    */
+   STDMETHOD(OnBuffer) (THIS_
+                        HXAudioData *pAudioInData,
+                        HXAudioData *pAudioOutData);
+   STDMETHOD(OnInit) (THIS_
+                      HXAudioFormat *pFormat);
+
+
+private:
+   HSPFinalAudioHook();
+
+   HelixSimplePlayer *m_Player;
+   LONG32             m_lRefCount;
+};
+
+
 #endif
