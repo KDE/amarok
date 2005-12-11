@@ -72,20 +72,23 @@ class IfpMediaDevice : public MediaDevice
         MediaItem        *trackExists( const MetaBundle& ) { return 0; }
 
         bool              checkResult( int result, QString message );
-        // Will iterate over parents and add directory name to the item.
-        // getFilename = false will return only parent structure, as opposed to returning the filename as well
-        QString           getFullPath( const QListViewItem *item, const bool getFilename = true );
 
-        // upload
+        // file transfer
         int               uploadTrack( const QCString& src, const QCString& dest );
-        static int        uploadCallback( void *pData, struct ifp_transfer_status *progress );
+        void              downloadSelectedItems();
+        int               downloadTrack( const QCString& src, const QCString& dest );
 
         // listDir
         void              listDir( const QString &dir );
         static int        listDirCallback( void *pData, int type, const char *name, int size );
         int               addTrackToList( int type, QString name, int size=0 );
 
+        // miscellaneous methods
+        static int        filetransferCallback( void *pData, struct ifp_transfer_status *progress );
         int               setProgressInfo( struct ifp_transfer_status *progress );
+        // Will iterate over parents and add directory name to the item.
+        // getFilename = false will return only parent structure, as opposed to returning the filename as well
+        QString           getFullPath( const QListViewItem *item, const bool getFilename = true );
 
         // IFP device
         struct usb_device *m_dev;

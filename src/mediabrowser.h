@@ -306,6 +306,7 @@ class MediaDevice : public QObject
 
         int          progress() const;
         void         setProgress( const int progress, const int total = -1 /* leave total unchanged by default */ );
+        void         hideProgress() { m_parent->m_progressBox->hide(); }
 
         static MediaDevice *instance() { return s_instance; }
 

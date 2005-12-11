@@ -33,6 +33,8 @@
 #include <kiconloader.h>       //smallIcon
 #include <kmessagebox.h>
 #include <kpopupmenu.h>
+#include <kurlrequester.h>     //downloadSelectedItems()
+#include <kurlrequesterdlg.h>  //downloadSelectedItems()
 
 #include <qfile.h>
 #include <qcstring.h>
@@ -297,18 +299,54 @@ IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle, const PodcastInfo* 
     return 0;
 }
 
+/// File transfer methods
+
 int
 IfpMediaDevice::uploadTrack( const QCString& src, const QCString& dest )
 {
     debug() << "Transferring " << src << " to: " << dest << endl;
 
-    return ifp_upload_file( &m_ifpdev, src, dest, uploadCallback, this );
+    return ifp_upload_file( &m_ifpdev, src, dest, filetransferCallback, this );
 }
 
 int
-IfpMediaDevice::uploadCallback( void *pData, struct ifp_transfer_status *progress )
+IfpMediaDevice::downloadTrack( const QCString& src, const QCString& dest )
 {
-    // will be called by 'ifp_upload_file_with_callback'
+    debug() << "Downloading " << src << " to: " << dest << endl;
+
+    return ifp_download_file( &m_ifpdev, src, dest, filetransferCallback, this );
+}
+
+void
+IfpMediaDevice::downloadSelectedItems()
+{
+    KURLRequesterDlg dialog( QString::null, 0, 0 );
+    dialog.setCaption( kapp->makeStdCaption( i18n( "Choose a Download Directory" ) ) );
+    dialog.urlRequester()->setMode( KFile::Directory | KFile::ExistingOnly );
+    dialog.exec();
+    
+    KURL destDir = dialog.selectedURL();
+    if( destDir.isEmpty() )
+        return;
+        
+    destDir.adjustPath( 1 ); //add trailing slash
+    
+    QListViewItemIterator it( m_listview, QListViewItemIterator::Selected );
+    for( ; it.current(); ++it )
+    {
+        QCString dest = QFile::encodeName( destDir.path() + (*it)->text(0) );
+        QCString src = QFile::encodeName( getFullPath( *it ) );
+        
+        downloadTrack( src, dest );
+    }
+    
+    hideProgress();
+}
+
+int
+IfpMediaDevice::filetransferCallback( void *pData, struct ifp_transfer_status *progress )
+{
+    // will be called by 'ifp_upload_file' by callback
 
     kapp->processEvents( 100 );
 
@@ -322,7 +360,6 @@ IfpMediaDevice::uploadCallback( void *pData, struct ifp_transfer_status *progres
 
     return static_cast<IfpMediaDevice *>(pData)->setProgressInfo( progress );
 }
-
 int
 IfpMediaDevice::setProgressInfo( struct ifp_transfer_status *progress )
 {
@@ -470,13 +507,14 @@ IfpMediaDevice::getFullPath( const QListViewItem *item, const bool getFilename )
 void
 IfpMediaDevice::rmbPressed( MediaDeviceList *deviceList, QListViewItem* qitem, const QPoint& point, int )
 {
-    enum Actions { DIRECTORY, RENAME, DELETE };
+    enum Actions { DOWNLOAD, DIRECTORY, RENAME, DELETE };
 
     MediaItem *item = static_cast<MediaItem *>(qitem);
     if ( item )
     {
         KPopupMenu menu( deviceList );
-
+        menu.insertItem( SmallIconSet( "down" ), i18n( "Download" ), DOWNLOAD );
+        menu.insertSeparator();
         menu.insertItem( SmallIconSet( "folder" ), i18n("Add Directory" ), DIRECTORY );
         menu.insertItem( SmallIconSet( "editclear" ), i18n( "Rename" ), RENAME );
         menu.insertItem( SmallIconSet( "editdelete" ), i18n( "Delete" ), DELETE );
@@ -484,6 +522,10 @@ IfpMediaDevice::rmbPressed( MediaDeviceList *deviceList, QListViewItem* qitem, c
         int id =  menu.exec( point );
         switch( id )
         {
+            case DOWNLOAD:
+                downloadSelectedItems();
+                break;
+                
             case DIRECTORY:
                 if( item->type() == MediaItem::DIRECTORY )
                     deviceList->newDirectory( static_cast<MediaItem*>(item) );
