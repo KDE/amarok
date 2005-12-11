@@ -1,5 +1,6 @@
 /*
- * tagguesser.cpp - (c) 2003 Frerich Raabe <raabe@kde.org>
+ * (c) 2005 Aleexandre Oliveira <aleprj#gmail.com>
+ * (c) 2003 Frerich Raabe <raabe@kde.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

@@ -45,8 +45,8 @@
                 <bool>true</bool>
             </property>
             <property name="toolTip" stdset="0">
-                <string>Here you can see the currently configured file name schemes which the "Suggest" button in the tag editor uses to extract tag information from a file name. Each string may contain one of the following placeholders:&lt;ul&gt;
-&lt;li&gt;%ttile: Song Title&lt;/li&gt;
+                <string>Here you can see the currently configured file name schemes which the "Guess Tags From Filename" button uses to extract tag information from a file name. Each string may contain one of the following placeholders:&lt;ul&gt;
+&lt;li&gt;%title: Song Title&lt;/li&gt;
 &lt;li&gt;%artist: Artist&lt;/li&gt;
 &lt;li&gt;%album: Album&lt;/li&gt;
 &lt;li&gt;%track: Track Number&lt;/li&gt;
@@ -56,8 +56,8 @@ For example, the file name scheme "[%track] %artist - %title" would match "[01] 
 Note that the order in which the schemes appear in the list is relevant, since the tag guesser will go through the list from the top to the bottom, and use the first matching scheme.</string>
             </property>
             <property name="whatsThis" stdset="0">
-                <string>Here you can see the currently configured file name schemes which the "Suggest" button in the tag editor uses to extract tag information from a file name. Each string may contain one of the following placeholders:&lt;ul&gt;
-&lt;li&gt;%ttile: Song Title&lt;/li&gt;
+                <string>Here you can see the currently configured file name schemes which the "Guess Tags From Filename" button uses to extract tag information from a file name. Each string may contain one of the following placeholders:&lt;ul&gt;
+&lt;li&gt;%title: Song Title&lt;/li&gt;
 &lt;li&gt;%artist: Artist&lt;/li&gt;
 &lt;li&gt;%album: Album&lt;/li&gt;
 &lt;li&gt;%track: Track Number&lt;/li&gt;
