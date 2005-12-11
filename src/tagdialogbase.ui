@@ -474,9 +474,6 @@
                         <property name="text">
                             <string>Fill-In Tags Using MusicBrain&amp;z</string>
                         </property>
-                        <property name="accel">
-                            <string>Alt+Z</string>
-                        </property>
                         <property name="autoDefault">
                             <bool>false</bool>
                         </property>

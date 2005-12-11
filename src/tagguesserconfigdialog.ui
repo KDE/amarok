@@ -130,9 +130,6 @@ Note that the order in which the schemes appear in the list is relevant, since t
             <property name="text">
                 <string>&amp;Add</string>
             </property>
-            <property name="accel">
-                <string>Alt+A</string>
-            </property>
             <property name="toolTip" stdset="0">
                 <string>Add a new scheme</string>
             </property>
@@ -164,9 +161,6 @@ Note that the order in which the schemes appear in the list is relevant, since t
             <property name="text">
                 <string>O&amp;k</string>
             </property>
-            <property name="accel">
-                <string>Alt+K</string>
-            </property>
             <property name="toolTip" stdset="0">
                 <string>Add a new scheme</string>
             </property>
@@ -180,9 +174,6 @@ Note that the order in which the schemes appear in the list is relevant, since t
             </property>
             <property name="text">
                 <string>&amp;Cancel</string>
-            </property>
-            <property name="accel">
-                <string>Alt+C</string>
             </property>
             <property name="toolTip" stdset="0">
                 <string>Add a new scheme</string>
