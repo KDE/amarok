@@ -531,6 +531,12 @@ void PlaylistItem::update() const
     listView()->repaintItem( this );
 }
 
+void PlaylistItem::updateColumn( int column ) const
+{
+    listView()->QScrollView::updateContents( listView()->header()->sectionPos( column ) + 1, itemPos() + 1,
+                                             listView()->header()->sectionSize( column ) - 2, height() - 2 );
+}
+
 bool
 PlaylistItem::operator== ( const PlaylistItem & item ) const
 {
@@ -996,17 +1002,18 @@ void PlaylistItem::drawRating( QPainter *p )
     int i = 1, x = 1;
     for(; i <= rating(); ++i )
     {
-        p->drawPixmap( x, ( this == listView()->m_currentTrack ) ? h / 2 : 2, star );
+        bitBlt( p->device(), x, ( this == listView()->m_currentTrack ) ? h / 2 : 2, &star );
         x += star.width() + listView()->itemMargin();
     }
-    if( this == listView()->m_hoveredRating )
+    if( this == listView()->m_hoveredRating || ( isSelected() && listView()->m_selCount > 1 &&
+        listView()->m_hoveredRating && listView()->m_hoveredRating->isSelected() ) )
     {
-        int pos = listView()->mapFromGlobal( QCursor::pos() ).x() - listView()->header()->sectionPos( Rating );
+        int pos = listView()->mapFromGlobal( QCursor::pos() ).x() - listView()->header()->sectionPos( Rating ) - 1;
         for(; i <= 5; ++i )
         {
             if( x >= pos )
                 return;
-            p->drawPixmap( x, ( this == listView()->m_currentTrack ) ? h / 2 : 2, grayed );
+            bitBlt( p->device(), x, ( this == listView()->m_currentTrack ) ? h / 2 : 2, &grayed );
             x += grayed.width() + listView()->itemMargin();
         }
     }

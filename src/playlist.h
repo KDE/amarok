@@ -196,7 +196,8 @@ class Playlist : private KListView, public EngineObserver
 
     protected slots:
         void contentsMouseMoveEvent( QMouseEvent *e = 0 );
-        void contentsMouseReleaseEvent( QMouseEvent *e );
+        void leaveEvent( QMouseEvent *e );
+        void contentsMousePressEvent( QMouseEvent *e );
 
     private slots:
         void slotCountChanged();

@@ -142,6 +142,9 @@ class PlaylistItem : public KListViewItem
         /// like QWidget::update()
         void update() const;
 
+        //updates only the area of a specific column, avoids flickering of the current item marker
+        void updateColumn( int column ) const;
+
         //used by class Playlist
         virtual void setup();
 
