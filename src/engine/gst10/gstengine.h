@@ -131,9 +131,6 @@ class GstEngine : public Engine::Base
         static void candecode_handoff_cb( GstElement*, GstBuffer*, gpointer );
         /** Called when the KIO buffer is empty */
 //        static void kio_resume_cb();
-        /** Called after the pipeline is shut down */
-        static void shutdown_cb();
-
 
         /** Get a list of available plugins from a specified Class */
         QStringList getPluginList( const QCString& classname ) const;

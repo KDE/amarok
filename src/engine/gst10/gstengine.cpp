@@ -122,7 +122,7 @@ GstEngine::newPad_cb( GstElement*, GstPad* pad, gboolean, gpointer ) //static
 {
     DEBUG_BLOCK
 
-    GstPad* const audiopad = gst_element_get_pad( instance()->m_gst_audioconvert, "sink" );
+    GstPad* const audiopad = gst_element_get_pad( instance()->m_gst_audiobin, "sink" );
 
     if ( GST_PAD_IS_LINKED( audiopad ) ) {
         debug() << "audiopad is already linked. Unlinking old pad." << endl;
@@ -130,11 +130,6 @@ GstEngine::newPad_cb( GstElement*, GstPad* pad, gboolean, gpointer ) //static
     }
 
     gst_pad_link( pad, audiopad );
-
-    if ( gst_element_get_parent( instance()->m_gst_audiobin ) == NULL )
-        gst_bin_add( GST_BIN( instance()->m_gst_thread ), instance()->m_gst_audiobin );
-
-    gst_bin_sync_children_state( GST_BIN( instance()->m_gst_thread ) );
 }
 
 /*
@@ -178,14 +173,6 @@ GstEngine::kio_resume_cb() //static
 }
 */
 
-void
-GstEngine::shutdown_cb() //static
-{
-    instance()->m_shutdown = true;
-    debug() << "Thread is shut down.\n";
-}
-
-
 /////////////////////////////////////////////////////////////////////////////////////
 // CLASS GSTENGINE
 /////////////////////////////////////////////////////////////////////////////////////
@@ -213,21 +200,14 @@ GstEngine::GstEngine()
 GstEngine::~GstEngine()
 {
     DEBUG_BLOCK
-    debug() << "bytes left in gst_adapter: " << gst_adapter_available( m_gst_adapter ) << endl;
+//    debug() << "bytes left in gst_adapter: " << gst_adapter_available( m_gst_adapter ) << endl;
 
-    if ( m_pipelineFilled ) {
-        g_signal_connect( G_OBJECT( m_gst_thread ), "shutdown", G_CALLBACK( shutdown_cb ), m_gst_thread );
-        destroyPipeline();
-        // Wait for pipeline to shut down properly
-        while ( !m_shutdown ) ::usleep( 20000 ); // 20 msec
-    }
-    else
-        destroyPipeline();
+      destroyPipeline();
 
 //    delete[] m_streamBuf;
 
     // Destroy scope adapter
-    g_object_unref( G_OBJECT( m_gst_adapter ) );
+//    g_object_unref( G_OBJECT( m_gst_adapter ) );
 
     // Save configuration
     GstConfig::writeConfig();
@@ -297,8 +277,8 @@ GstEngine::canDecode( const KURL &url ) const
     gst_element_link( filesrc, spider );
     gst_element_link_filtered( spider, fakesink, filtercaps );
 
-    gst_element_set( filesrc, "location", (const char*) QFile::encodeName( url.path() ), NULL );
-    gst_element_set( fakesink, "signal_handoffs", true, NULL );
+    g_object_set( G_OBJECT( filesrc ), "location", (const char*) QFile::encodeName( url.path() ), NULL );
+    g_object_set( G_OBJECT( fakesink ), "signal_handoffs", true, NULL );
     g_signal_connect( G_OBJECT( fakesink ), "handoff", G_CALLBACK( candecode_handoff_cb ), pipeline );
 
     gst_element_set_state( pipeline, GST_STATE_PLAYING );
@@ -478,7 +458,7 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
         }
     }
 */
-    if ( !( m_gst_decodebin = createElement( "decodebin", m_gst_thread ) ) ) { destroyPipeline(); return false; }
+    if ( !( m_gst_decodebin = createElement( "decodebin", m_gst_pipeline ) ) ) { destroyPipeline(); return false; }
     g_signal_connect( G_OBJECT( m_gst_decodebin ), "new-decoded-pad", G_CALLBACK( newPad_cb ), NULL );
 
     // Link elements. The link from decodebin to audioconvert will be made in the newPad-callback
@@ -858,7 +838,7 @@ GstEngine::createPipeline()
     if ( !( m_gst_audioconvert = createElement( "audioconvert", m_gst_audiobin ) ) ) { return false; }
     if ( !( m_gst_identity = createElement( "identity", m_gst_audiobin ) ) ) { return false; }
     if ( !( m_gst_volume = createElement( "volume", m_gst_audiobin ) ) ) { return false; }
-    if ( !( m_gst_audioscale = createElement( "audioscale", m_gst_audiobin ) ) ) { return false; }
+    if ( !( m_gst_audioscale = createElement( "audioresample", m_gst_audiobin ) ) ) { return false; }
 
     GstPad* p = gst_element_get_pad(m_gst_audioconvert, "sink");
     // FIXME: use sink from configuration
