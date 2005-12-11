@@ -123,6 +123,61 @@ AM_CONDITIONAL(with_gst, [test x$have_gst = xyes])
 ###############################################################################
 
 
+###############################################################################
+# BEGIN GSTREAMER CHECK
+###############################################################################
+
+AC_ARG_WITH(gstreamer10,
+    AC_HELP_STRING([--without-gstreamer10],[build amaroK without GStreamer 0.10-engine]),
+    [build_gstreamer10=$withval],
+    [build_gstreamer10=yes]
+)
+
+if test "$build_gstreamer10" != "no"; then
+    if test "$PKGCONFIGFOUND" = "yes" ; then
+        # check for GStreamer
+        dnl Now we're ready to ask for gstreamer libs and cflags
+        dnl And we can also ask for the right version of gstreamer
+        have_gst10=no
+
+        GST10_MAJORMINOR=0.10
+        GST10_REQ=0.10.0
+
+        PKG_CHECK_MODULES(GST10, gstreamer-$GST10_MAJORMINOR >= $GST10_REQ,
+            have_gst10=yes,have_gst10=no)
+
+        PKG_CHECK_MODULES(GST10_PLUGINS, gstreamer-plugins-$GST10_MAJORMINOR >= $GST10_REQ, \
+            have_gst10_plugins=yes,have_gst10_plugins=no)
+
+        dnl Give error if we don't have gstreamer
+        if test "x$have_gst10" = "xno"; then
+            LIB_GST10=""
+            CFLAGS_GST10=""
+        else
+            LIB_GST10=$GST10_LIBS
+            CFLAGS_GST10=$GST10_CFLAGS
+            AC_SUBST(LIB_GST10)
+            AC_SUBST(CFLAGS_GST10)
+            AC_SUBST(GST10_MAJORMINOR)
+            AC_DEFINE(HAVE_GSTREAMER10, 1, [have GStreamer10])
+        fi
+    fi
+fi
+
+### The gstreamer engine subdirectory equalizer/ uses
+### gst/audio/audio.h, which is in gstreamer-plugins (at least for me)
+amarok_save_cppflags="$CPPFLAGS"
+CPPFLAGS="$CPPFLAGS $CFLAGS_GST10"
+AC_CHECK_HEADER(gst/audio/audio.h,[],[have_gst10="no"])
+CPPFLAGS="$amarok_save_cppflags"
+
+AM_CONDITIONAL(with_gst10, [test x$have_gst10 = xyes])
+
+###############################################################################
+# END GSTREAMER CHECK
+###############################################################################
+
+
 
 ###############################################################################
 # BEGIN XINE CHECK
