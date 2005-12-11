@@ -978,13 +978,14 @@ void PlaylistItem::drawRating( QPainter *p )
 {
     static const int h = listView()->fontMetrics().height() + listView()->itemMargin() * 2 - 4
                          + ( ( listView()->fontMetrics().height() % 2 ) ? 1 : 0 );
-    static const QImage star = QImage( locate( "data", "amarok/images/star.png" ) )
-                                         .smoothScale( h, h, QImage::ScaleMin );
-    static QImage grayed = star.copy();
+    static QImage img = QImage( locate( "data", "amarok/images/star.png" ) ).smoothScale( h, h, QImage::ScaleMin );
+    static QPixmap star( img );
+    static QPixmap grayed;
     static bool asdf = true;
     if( asdf )
     {
-        KIconEffect::toGray( grayed, 1.0 );
+        KIconEffect::toGray( img, 1.0 );
+        grayed.convertFromImage( img );
         asdf = false;
     }
 
@@ -992,7 +993,7 @@ void PlaylistItem::drawRating( QPainter *p )
     int i = 1, x = 1;
     for(; i <= rating(); ++i )
     {
-        p->drawImage( x, ( this == listView()->m_currentTrack ) ? h / 2 : 2, star );
+        p->drawPixmap( x, ( this == listView()->m_currentTrack ) ? h / 2 : 2, star );
         x += star.width() + listView()->itemMargin();
     }
     if( this == listView()->m_hoveredRating )
@@ -1002,7 +1003,7 @@ void PlaylistItem::drawRating( QPainter *p )
         {
             if( x >= pos )
                 return;
-            p->drawImage( x, ( this == listView()->m_currentTrack ) ? h / 2 : 2, grayed );
+            p->drawPixmap( x, ( this == listView()->m_currentTrack ) ? h / 2 : 2, grayed );
             x += grayed.width() + listView()->itemMargin();
         }
     }
