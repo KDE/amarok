@@ -226,7 +226,7 @@ GstEngine::init()
     s_instance = this;
 
     // GStreamer initilization
-    GError *err
+    GError *err;
     if ( !gst_init_check( NULL, NULL, &err ) ) {
         KMessageBox::error( 0,
             i18n( "<h3>GStreamer could not be initialized.</h3> "
@@ -262,7 +262,11 @@ GstEngine::canDecode( const KURL &url ) const
          url.fileName().lower().endsWith( ".avi" ) ||
          url.fileName().lower().endsWith( ".wmv" ) )
         return false;
-
+    
+    if ( url.fileName().lower().endsWith( ".mp3" ) ||
+         url.fileName().lower().endsWith( ".ogg" )) return true;
+    return false;
+  /*
     int count = 0;
     m_canDecodeSuccess = false;
     GstElement *pipeline, *filesrc, *spider, *fakesink;
@@ -290,7 +294,7 @@ GstEngine::canDecode( const KURL &url ) const
     gst_element_set_state( pipeline, GST_STATE_NULL );
     gst_object_unref( GST_OBJECT( pipeline ) );
 
-    return m_canDecodeSuccess;
+    return m_canDecodeSuccess; */
 }
 
 
@@ -804,10 +808,10 @@ GstEngine::createPipeline()
 
     destroyPipeline();
 
-    if ( GstConfig::soundOutput().isEmpty()) {
-        QTimer::singleShot( 0, this, SLOT( errorNoOutput() ) );
-        return false;
-    }
+//    if ( GstConfig::soundOutput().isEmpty()) {
+//        QTimer::singleShot( 0, this, SLOT( errorNoOutput() ) );
+//        return false;
+//    }
     debug() << "Sound output method: " << GstConfig::soundOutput() << endl;
     debug() << "CustomSoundDevice: " << ( GstConfig::useCustomSoundDevice() ? "true" : "false" ) << endl;
     debug() << "Sound Device: " << GstConfig::soundDevice() << endl;
@@ -820,12 +824,12 @@ GstEngine::createPipeline()
         output += " ";
         output += GstConfig::outputParams().latin1();
     }
-    GError* err;
+/*    GError* err;
     if ( !( m_gst_audiosink = gst_parse_launch( output, &err ) ) ) {
         QTimer::singleShot( 0, this, SLOT( errorNoOutput() ) );
         return false;
     }
-
+*/
     m_gst_pipeline = gst_pipeline_new( "pipeline" );
     m_gst_audiobin = gst_bin_new( "audiobin" );
 

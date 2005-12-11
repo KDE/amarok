@@ -27,8 +27,7 @@ libamarok_gst10engine_plugin_la_LDFLAGS = \
 libamarok_gst10engine_plugin_la_SOURCES = \
     gstconfigdialog.cpp \
     gstconfigdialogbase.ui \
-    gstengine.cpp \
-    streamsrc.cpp
+    gstengine.cpp 
 
 METASOURCES = \
     AUTO
