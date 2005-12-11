@@ -508,11 +508,6 @@ void HelixSimplePlayer::init(const char *corelibhome, const char *pluginslibhome
    pEngine->QueryInterface(IID_IHXAudioHookManager, (void **) &pAudioHookManager);
    if (!pAudioHookManager)
       print2stderr("no audio device hook manager\n");
-   else
-   {
-      //pFinalAudioHook = new HSPFinalAudioHook(this);
-      //pAudioHookManager->AddHook(pFinalAudioHook);
-   }
 
    // create players
    for (i = 0; i < numPlayers; i++)
