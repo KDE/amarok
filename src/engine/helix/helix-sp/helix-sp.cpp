@@ -240,8 +240,8 @@ void HelixSimplePlayer::cleanUpStream(int /* playerIndex */)
 void HelixSimplePlayer::updateEQgains()
 {
    for (int i = 0; i<nNumPlayers; i++)
-      if (ppctrl[i]->pPostMixHook && isEQenabled())
-         ((HSPPostMixAudioHook *)ppctrl[i]->pPostMixHook)->updateEQgains(m_preamp, m_equalizerGains);
+      if (pFinalAudioHook && isEQenabled())
+         ((HSPPostMixAudioHook *)pFinalAudioHook)->updateEQgains(m_preamp, m_equalizerGains);
 }
 
 /*
@@ -496,11 +496,23 @@ void HelixSimplePlayer::init(const char *corelibhome, const char *pluginslibhome
    if (!pPlugin2Handler)
       STDERR("no plugin enumerator\n");
 
+   pAudioHookManager = 0;
+   pFinalAudioHook = 0;
+   pEngine->QueryInterface(IID_IHXAudioHookManager, (void **) &pAudioHookManager);
+   if (!pAudioHookManager)
+      print2stderr("no audio device hook manager\n");
+
+
    // create players
    for (i = 0; i < numPlayers; i++)
    {
       addPlayer();
    }
+
+   // install hook for visualizations, equalizer, and volume control
+   HSPPostMixAudioHook *pPMAH = new HSPPostMixAudioHook(this, 1);
+   pAudioHookManager->AddHook(pPMAH);
+   pFinalAudioHook = pPMAH;
 
    if (pPlugin2Handler)
    {
@@ -724,11 +736,6 @@ int HelixSimplePlayer::addPlayer()
       ppctrl[nNumPlayers]->pAudioPlayer->SetStreamInfoResponse(pASIR);
       ppctrl[nNumPlayers]->pStreamInfoResponse = pASIR;
 
-      // add the post-mix hook (for the scope and the equalizer)
-      HSPPostMixAudioHook *pPMAH = new HSPPostMixAudioHook(this, nNumPlayers);
-      ppctrl[nNumPlayers]->pAudioPlayer->AddPostMixHook(pPMAH, false /* DisableWrite */, true /* final hook */);
-      ppctrl[nNumPlayers]->pPostMixHook = pPMAH;
-
       // ...and get the CrossFader
       ppctrl[nNumPlayers]->pAudioPlayer->QueryInterface(IID_IHXAudioCrossFade, (void **) &(ppctrl[nNumPlayers]->pCrossFader));
       if (!ppctrl[nNumPlayers]->pCrossFader)
@@ -768,10 +775,6 @@ void HelixSimplePlayer::tearDown()
 
       if (ppctrl[i]->pAudioPlayer)
       {
-         
-         ppctrl[i]->pAudioPlayer->RemovePostMixHook((IHXAudioHook *)ppctrl[i]->pPostMixHook);
-         ppctrl[i]->pPostMixHook->Release(); 
-
          ppctrl[i]->pAudioPlayer->RemoveStreamInfoResponse((IHXAudioStreamInfoResponse *) ppctrl[i]->pStreamInfoResponse);
 
          if (ppctrl[i]->pVolume)
@@ -815,6 +818,12 @@ void HelixSimplePlayer::tearDown()
       pPluginE->Release();
    if (pPlugin2Handler)
       pPlugin2Handler->Release();
+   if (pAudioHookManager)
+   {
+      pAudioHookManager->RemoveHook(pFinalAudioHook);
+      pFinalAudioHook->Release();
+      pAudioHookManager->Release();
+   }
    if (pEngineContext)
       pEngineContext->Release();
 
@@ -1736,7 +1745,7 @@ void HelixSimplePlayer::setVolume(unsigned long vol, int playerIndex)
          pthread_mutex_lock(&m_engine_m);
 #ifndef HELIX_SW_VOLUME_INTERFACE
          ppctrl[playerIndex]->volume = vol;
-         ((HSPPostMixAudioHook *)ppctrl[playerIndex]->pPostMixHook)->setGain(vol);
+         ((HSPPostMixAudioHook *)pFinalAudioHook)->setGain(vol);
 #else
          ppctrl[playerIndex]->pVolume->SetVolume(vol);
 #endif

@@ -52,6 +52,7 @@ class IHXAudioStreamInfoResponse;
 class IHXCommonClassFactory;
 class IHXPluginEnumerator;
 class IHXPlugin2Handler;
+class IHXAudioHookManager;
 class IHXPreferences;
 #ifdef USE_HELIX_ALSA
 struct _snd_mixer;
@@ -161,6 +162,9 @@ private:
    IHXCommonClassFactory*   pCommonClassFactory;
    IHXPluginEnumerator*     pPluginE;
    IHXPlugin2Handler*       pPlugin2Handler;
+   IHXAudioHookManager*     pAudioHookManager;
+   IHXAudioHook*            pFinalAudioHook;
+
 
    struct playerCtrl
    {
@@ -177,7 +181,6 @@ private:
       IHXAudioCrossFade*          pCrossFader;
       IHXVolume*                  pVolume;
       IHXVolumeAdviseSink*        pVolumeAdvise;
-      IHXAudioHook*               pPostMixHook;
       IHXAudioStreamInfoResponse* pStreamInfoResponse;
       IHXAudioHook*               pPreMixHook;
       metaData                    md;
