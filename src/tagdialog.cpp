@@ -48,6 +48,7 @@ TagDialog::TagDialog( const KURL& url, QWidget* parent )
     : TagDialogBase( parent )
     , m_bundle( MetaBundle( url ) )
     , m_score ( CollectionDB::instance()->getSongPercentage( url.path() ) )
+    , m_lyrics ( CollectionDB::instance()->getLyrics( url.path() ) )
     , m_playcount( CollectionDB::instance()->getPlayCount( url.path() ) )
     , m_firstPlay ( CollectionDB::instance()->getFirstPlay( url.path() ) )
     , m_lastPlay ( CollectionDB::instance()->getLastPlay( url.path() ) )
@@ -62,6 +63,7 @@ TagDialog::TagDialog( const KURL::List list, QWidget* parent )
     : TagDialogBase( parent )
     , m_bundle( MetaBundle() )
     , m_score ( 0 )
+    , m_lyrics ( QString::null )
     , m_firstPlay ( QDateTime() )
     , m_lastPlay ( QDateTime()  )
     , m_playlistItem( 0 )
@@ -77,6 +79,7 @@ TagDialog::TagDialog( const MetaBundle& mb, PlaylistItem* item, QWidget* parent 
     : TagDialogBase( parent )
     , m_bundle( mb )
     , m_score ( CollectionDB::instance()->getSongPercentage( mb.url().path() ) )
+    , m_lyrics ( CollectionDB::instance()->getLyrics( mb.url().path() ) )
     , m_playcount( CollectionDB::instance()->getPlayCount( mb.url().path() ) )
     , m_firstPlay ( CollectionDB::instance()->getFirstPlay( mb.url().path() ) )
     , m_lastPlay ( CollectionDB::instance()->getLastPlay( mb.url().path() ) )
@@ -136,29 +139,15 @@ TagDialog::previousTrack()
 
         m_playlistItem = (PlaylistItem *)m_playlistItem->itemAbove();
 
-        QMap<QString, MetaBundle>::ConstIterator itTags;
-        itTags = storedTags.find( m_playlistItem->url().path() );
-        m_bundle = itTags != storedTags.end() ? itTags.data() : MetaBundle( m_playlistItem );
-
-        QMap<QString, int>::ConstIterator itScores;
-        itScores = storedScores.find( m_playlistItem->url().path() );
-        m_score = itScores != storedScores.end()
-            ? itScores.data()
-            : CollectionDB::instance()->getSongPercentage( m_playlistItem->url().path() );
-
-        m_playcount = CollectionDB::instance()->getPlayCount( m_playlistItem->url().path() );
-        m_firstPlay = CollectionDB::instance()->getFirstPlay( m_playlistItem->url().path() );
-        m_lastPlay = CollectionDB::instance()->getLastPlay( m_playlistItem->url().path() );
+        loadTags( m_playlistItem->url() );
     }
     else
     {
-        if( hasChanged() )
-        {
-            storeTags( *m_currentURL );
-        }
+        storeTags( *m_currentURL );
+
         if( m_currentURL != m_urlList.begin() )
             --m_currentURL;
-        m_bundle = bundleForURL( *m_currentURL );
+        loadTags( *m_currentURL );
         enableItems();
     }
     readTags();
@@ -176,30 +165,17 @@ TagDialog::nextTrack()
 
         m_playlistItem = (PlaylistItem *)m_playlistItem->itemBelow();
 
-        QMap<QString, MetaBundle>::ConstIterator itTags;
-        itTags = storedTags.find( m_playlistItem->url().path() );
-        m_bundle = itTags != storedTags.end() ? itTags.data() : MetaBundle( m_playlistItem );
-
-        QMap<QString, int>::ConstIterator itScores;
-        itScores = storedScores.find( m_playlistItem->url().path() );
-        m_score = itScores != storedScores.end()
-            ? itScores.data()
-            : CollectionDB::instance()->getSongPercentage( m_playlistItem->url().path() );
-        m_playcount = CollectionDB::instance()->getPlayCount( m_playlistItem->url().path() );
-        m_firstPlay = CollectionDB::instance()->getFirstPlay( m_playlistItem->url().path() );
-        m_lastPlay = CollectionDB::instance()->getLastPlay( m_playlistItem->url().path() );
+        loadTags( m_playlistItem->url() );
     }
     else
     {
-        if( hasChanged() )
-        {
-            storeTags( *m_currentURL );
-        }
+        storeTags( *m_currentURL );
+
         KURL::List::iterator next = m_currentURL;
         ++next;
         if( next != m_urlList.end() )
             ++m_currentURL;
-        m_bundle = bundleForURL( *m_currentURL );
+        loadTags( *m_currentURL );
         enableItems();
     }
     readTags();
@@ -214,15 +190,12 @@ TagDialog::perTrack()
         // just switched to per track mode
         applyToAllTracks();
         setSingleTrackMode();
-        m_bundle = bundleForURL( *m_currentURL );
+        loadTags( *m_currentURL );
         readTags();
     }
     else
     {
-        if( hasChanged() )
-        {
-            storeTags( *m_currentURL );
-        }
+        storeTags( *m_currentURL );
         setMultipleTracksMode();
         readMultipleTracks();
     }
@@ -369,7 +342,6 @@ TagDialog::fillSelected( KTRMResult selected ) //SLOT
 
 void TagDialog::init()
 {
-    m_perTrack = false;
 
     //NOTE We allocate on the stack in Playlist
     if( parent() != (void*)Playlist::instance() )
@@ -463,6 +435,7 @@ void TagDialog::init()
     connect( pushButton_setFilenameSchemes, SIGNAL(clicked()), SLOT( setFileNameSchemes() ) );
 
     if( m_urlList.count() ) {   //editing multiple tracks
+        m_perTrack = false;
         setMultipleTracksMode();
         readMultipleTracks();
 
@@ -482,6 +455,7 @@ void TagDialog::init()
     }
     else
     {
+        m_perTrack = true;
         checkBox_perTrack->hide();
 
         if( !m_playlistItem ) {
@@ -635,7 +609,7 @@ void TagDialog::readTags()
     kLineEdit_location->setText( local ? m_bundle.url().path() : m_bundle.url().url() );
 
     //lyrics
-    kTextEdit_lyrics->setText( CollectionDB::instance()->getLyrics( m_bundle.url().path() ) );
+    kTextEdit_lyrics->setText( m_lyrics );
 
     loadCover( m_bundle.artist(), m_bundle.album() );
 
@@ -824,7 +798,7 @@ TagDialog::changes()
 
     if (kIntSpinBox_score->value() != m_score)
         result |= TagDialog::SCORECHANGED;
-    if ( !equalString( kTextEdit_lyrics->text(), CollectionDB::instance()->getLyrics( m_bundle.url().path() ) ) )
+    if ( !equalString( kTextEdit_lyrics->text(), m_lyrics ) )
         result |= TagDialog::LYRICSCHANGED;
 
     return result;
@@ -871,6 +845,19 @@ TagDialog::storeTags( const KURL &url, MetaBundle &mb, int score )
     storedScores.replace( url.path(), score );
 }
 
+
+void
+TagDialog::loadTags( const KURL &url )
+{
+    m_bundle = bundleForURL( url.path() );
+    m_score = scoreForURL( url.path() );
+    m_lyrics = lyricsForURL(url.path() );
+
+    m_playcount = CollectionDB::instance()->getPlayCount( url.path() );
+    m_firstPlay = CollectionDB::instance()->getFirstPlay( url.path() );
+    m_lastPlay = CollectionDB::instance()->getLastPlay( url.path() );
+}
+
 MetaBundle
 TagDialog::bundleForURL( const KURL &url )
 {
@@ -889,6 +876,15 @@ TagDialog::scoreForURL( const KURL &url )
     return CollectionDB::instance()->getSongPercentage( url.path() );
 }
 
+
+QString
+TagDialog::lyricsForURL( const KURL &url )
+{
+    if( storedLyrics.find( url.path() ) != storedLyrics.end() )
+        return storedLyrics[ url.path() ];
+
+    return CollectionDB::instance()->getLyrics( url.path() );
+}
 
 void
 TagDialog::saveTags()

@@ -66,8 +66,10 @@ class TagDialog : public TagDialogBase
         void storeTags();
         void storeTags( const KURL& url );
         void storeTags( const KURL& url, MetaBundle &mb, int score );
+        void loadTags( const KURL& url );
         MetaBundle bundleForURL( const KURL &url );
         int scoreForURL( const KURL &url );
+        QString lyricsForURL( const KURL &url );
         void saveTags();
         void saveMultipleTracks();
         bool writeTag( MetaBundle mb, bool updateCB=true );
@@ -80,6 +82,7 @@ class TagDialog : public TagDialogBase
         MetaBundle m_bundle;
         KURL::List::iterator m_currentURL;
         int m_score;
+        QString m_lyrics;
         int m_playcount;
         int m_changedCount;
         bool m_perTrack;
