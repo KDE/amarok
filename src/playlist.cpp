@@ -230,6 +230,7 @@ Playlist::Playlist( QWidget *parent )
         , m_tooltip( new PlaylistToolTip( viewport(), this ) )
         , m_currentTrack( 0 )
         , m_marker( 0 )
+        , m_hoveredRating( 0 )
         , m_firstColumn( 0 )
         , m_totalCount( 0 )
         , m_totalLength( 0 )
@@ -384,6 +385,8 @@ Playlist::Playlist( QWidget *parent )
 
     //do after you resize all the columns
     connect( header(), SIGNAL(sizeChange( int, int, int )), SLOT(columnResizeEvent( int, int, int )) );
+
+    connect( this, SIGNAL( contentsMoving( int, int ) ), SLOT( slotContentsMoving() ) );
 
     header()->installEventFilter( this );
     renameLineEdit()->installEventFilter( this );
@@ -1676,6 +1679,7 @@ Playlist::clear() //SLOT
 
     setCurrentTrack( 0 );
     m_prevTracks.clear();
+    m_hoveredRating = 0;
 
     const PLItemList prev = m_nextTracks;
     m_nextTracks.clear();
@@ -3557,17 +3561,45 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 ////////////////////////////////////////////////////////////////////////////////
 
 void
-Playlist::mouseMoveEvent( QMouseEvent *e )
+Playlist::contentsMouseMoveEvent( QMouseEvent *e )
 {
-    if( itemAt( e->pos() ) && e->x() > header()->sectionPos( PlaylistItem::Rating ) &&
-        e->x() < header()->sectionPos( PlaylistItem::Rating ) + header()->sectionSize( PlaylistItem::Rating ) )
+    PlaylistItem *prev = m_hoveredRating;
+    const QPoint pos = e ? contentsToViewport( e->pos() )
+                         : ( mapFromGlobal( QCursor::pos() ) - QPoint( 0, header()->height() ) );
+
+    #define updateRating(item) QScrollView::updateContents( header()->sectionPos( PlaylistItem::Rating ) + 1, itemPos( item ) + 1, header()->sectionSize( PlaylistItem::Rating ) - 2, item->height() - 2 )
+
+
+    if( itemAt( pos ) && pos.x() > header()->sectionPos( PlaylistItem::Rating ) &&
+        pos.x() < header()->sectionPos( PlaylistItem::Rating ) + header()->sectionSize( PlaylistItem::Rating ) )
     {
-        m_hoveredRating = static_cast<PlaylistItem*>( itemAt( e->pos() ) );
+        m_hoveredRating = static_cast<PlaylistItem*>( itemAt( pos ) );
+        updateRating( m_hoveredRating );
     }
     else
         m_hoveredRating = 0;
+
+    if( prev )
+        updateRating( prev );
+
+    #undef updateRating
+
+    if( !e )
+        triggerUpdate();
 }
 
+void Playlist::contentsMouseReleaseEvent( QMouseEvent *e )
+{
+    const QPoint pos = contentsToViewport( e->pos() );
+    PlaylistItem *item = static_cast<PlaylistItem*>( itemAt( pos ) );
+    if( item && pos.x() > header()->sectionPos( PlaylistItem::Rating ) &&
+        pos.x() < header()->sectionPos( PlaylistItem::Rating ) + header()->sectionSize( PlaylistItem::Rating ) )
+    {
+        const int w = fontMetrics().height() + itemMargin() * 2 - 4 + ( fontMetrics().height() % 2 ? 1 : 0 );
+        CollectionDB::instance()->setSongRating( item->url().path(),
+            ( pos.x() - header()->sectionPos( PlaylistItem::Rating ) ) / (w+1) + 1 );
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 /// Misc Private Methods
@@ -3673,6 +3705,8 @@ Playlist::removeItem( PlaylistItem *item, bool multi )
 
     if( m_stopAfterTrack == item )
         m_stopAfterTrack = 0; //to be safe
+    if( m_hoveredRating == item )
+        m_hoveredRating = 0;
 
     //keep m_nextTracks queue synchronised
     if( m_nextTracks.removeRef( item ) && !multi )
@@ -3867,6 +3901,11 @@ Playlist::slotMouseButtonPressed( int button, QListViewItem *after, const QPoint
     default:
         ;
     }
+}
+
+void Playlist::slotContentsMoving()
+{
+    QTimer::singleShot( 0, this, SLOT( contentsMouseMoveEvent() ) );
 }
 
 void

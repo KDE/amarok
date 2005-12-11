@@ -30,8 +30,10 @@
 #include "sliderwidget.h"
 #include "moodbar.h"
 
-#include <qmutex.h>
+#include <qcursor.h>
+#include <qheader.h>
 #include <qimage.h>
+#include <qmutex.h>
 #include <qpainter.h>
 #include <qpen.h>
 #include <qpixmap.h>
@@ -972,18 +974,37 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
     painter->drawPixmap( 0, 0, buf );
 }
 
-void PlaylistItem::drawRating( QPainter *p  )
+void PlaylistItem::drawRating( QPainter *p )
 {
     static const int h = listView()->fontMetrics().height() + listView()->itemMargin() * 2 - 4
                          + ( ( listView()->fontMetrics().height() % 2 ) ? 1 : 0 );
-    static const QPixmap star = QPixmap( QImage( locate( "data", "amarok/images/star.png" ) )
-                                         .smoothScale( h, h, QImage::ScaleMin )               );
-
-    int x = 0;
-    for( int i = 1; i <= rating(); ++i )
+    static const QImage star = QImage( locate( "data", "amarok/images/star.png" ) )
+                                         .smoothScale( h, h, QImage::ScaleMin );
+    static QImage grayed = star.copy();
+    static bool asdf = true;
+    if( asdf )
     {
-        p->drawPixmap( x, ( this == listView()->m_currentTrack ) ? h / 2 : 2, star );
+        KIconEffect::toGray( grayed, 1.0 );
+        asdf = false;
+    }
+
+
+    int i = 1, x = 1;
+    for(; i <= rating(); ++i )
+    {
+        p->drawImage( x, ( this == listView()->m_currentTrack ) ? h / 2 : 2, star );
         x += star.width() + listView()->itemMargin();
+    }
+    if( this == listView()->m_hoveredRating )
+    {
+        int pos = listView()->mapFromGlobal( QCursor::pos() ).x() - listView()->header()->sectionPos( Rating );
+        for(; i <= 5; ++i )
+        {
+            if( x >= pos )
+                return;
+            p->drawImage( x, ( this == listView()->m_currentTrack ) ? h / 2 : 2, grayed );
+            x += grayed.width() + listView()->itemMargin();
+        }
     }
 }
 

@@ -194,8 +194,9 @@ class Playlist : private KListView, public EngineObserver
         void refreshMoods();
         void applySettings();
 
-    protected:
-        void mouseMoveEvent( QMouseEvent *e );
+    protected slots:
+        void contentsMouseMoveEvent( QMouseEvent *e = 0 );
+        void contentsMouseReleaseEvent( QMouseEvent *e );
 
     private slots:
         void slotCountChanged();
@@ -215,6 +216,7 @@ class Playlist : private KListView, public EngineObserver
         void slotGlowTimer();
         void reallyEnsureItemCentered();
         void slotMouseButtonPressed( int, QListViewItem*, const QPoint&, int );
+        void slotContentsMoving();
         void slotRepeatTrackToggled( bool enabled );
         void slotQueueChanged( const PLItemList &in, const PLItemList &out);
         void updateNextPrev();
