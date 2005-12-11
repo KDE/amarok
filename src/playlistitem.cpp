@@ -533,8 +533,12 @@ void PlaylistItem::update() const
 
 void PlaylistItem::updateColumn( int column ) const
 {
-    listView()->QScrollView::updateContents( listView()->header()->sectionPos( column ) + 1, itemPos() + 1,
-                                             listView()->header()->sectionSize( column ) - 2, height() - 2 );
+    const QRect r = listView()->itemRect( this );
+    if( !r.isValid() )
+        return;
+
+    listView()->viewport()->update( listView()->header()->sectionPos( column ) + 1, r.y() + 1,
+                                    listView()->header()->sectionSize( column ) - 2, height() - 2 );
 }
 
 bool
