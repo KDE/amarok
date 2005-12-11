@@ -190,7 +190,7 @@ GstEngine::GstEngine()
 {
     DEBUG_FUNC_INFO
 
-    addPluginProperty( "StreamingMode", "Signal" );
+    addPluginProperty( "StreamingMode", "NoStreaming" );
     addPluginProperty( "HasConfigure",  "true" );
     addPluginProperty( "HasEqualizer",  "false" );
     addPluginProperty( "HasKIO",        "false" );
@@ -887,7 +887,7 @@ GstEngine::destroyPipeline()
     } */
 }
 
-
+/*
 void
 GstEngine::sendBufferStatus()
 {
@@ -896,6 +896,6 @@ GstEngine::sendBufferStatus()
         emit statusText( i18n( "Buffering.. %1%" ).arg( MIN( percent, 100 ) ) );
     }
 }
-
+*/
 
 #include "gstengine.moc"

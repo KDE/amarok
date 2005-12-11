@@ -142,7 +142,7 @@ class GstEngine : public Engine::Base
         void destroyPipeline();
 
         /** Beams the streaming buffer status to amaroK */
-        void sendBufferStatus();
+//        void sendBufferStatus();
 
         /////////////////////////////////////////////////////////////////////////////////////
         // DATA MEMBERS
