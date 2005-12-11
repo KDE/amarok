@@ -121,18 +121,14 @@ class GstEngine : public Engine::Base
         QStringList getOutputsList() { return getPluginList( "Sink/Audio" ); }
 
         // CALLBACKS:
-        /** Called at end of track */
-        static void eos_cb( GstElement*, gpointer );
+        /** Bus message */
+        static GstBusSyncReply bus_cb( GstBus*, GstMessage*, gpointer );
         /** Called when decodebin has generated a new pad */
         static void newPad_cb( GstElement*, GstPad*, gboolean, gpointer );
         /** Duplicates audio data for application side processing */
-        static void handoff_cb( GstElement*, GstBuffer*, gpointer );
+//        static void handoff_cb( GstElement*, GstBuffer*, gpointer );
         /** Used by canDecode(). When called, the format can be decoded */
         static void candecode_handoff_cb( GstElement*, GstBuffer*, gpointer );
-        /** Called when new metadata tags have been found */
-        static void found_tag_cb( GstElement*, GstElement*, GstTagList*, gpointer );
-        /** Called when the GStreamer pipeline signals an error */
-        static void pipelineError_cb( GstElement*, GstElement*, GError*, gchar*, gpointer );
         /** Called when the KIO buffer is empty */
 //        static void kio_resume_cb();
         /** Called after the pipeline is shut down */
@@ -168,7 +164,7 @@ class GstEngine : public Engine::Base
 
         static GstEngine* s_instance;
 
-        GstElement* m_gst_thread;
+        GstElement* m_gst_pipeline;
 
         GstElement* m_gst_src;
         GstElement* m_gst_decodebin;

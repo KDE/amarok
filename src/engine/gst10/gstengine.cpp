@@ -57,14 +57,63 @@ AMAROK_EXPORT_PLUGIN( GstEngine )
 // CALLBACKS
 /////////////////////////////////////////////////////////////////////////////////////
 
-void
-GstEngine::eos_cb( GstElement* /*element*/, gpointer ) //static
+GstBusSyncReply
+GstEngine::bus_cb(GstBus*, GstMessage* msg, gpointer) // static
 {
-    DEBUG_FUNC_INFO
+   DEBUG_FUNC_INFO
+   switch ( GST_MESSAGE_TYPE(msg)) 
+   {
+   	case GST_MESSAGE_ERROR:
+	{
+	    GError* error;
+	    gchar* debug;
+            gst_message_parse_error(msg,&error,&debug);
+            instance()->m_gst_error = QString::fromAscii( error->message );
+    	    instance()->m_gst_debug = QString::fromAscii( debug );
+            QTimer::singleShot( 0, instance(), SLOT( handlePipelineError() ) );
+	    break;
+	}
+	case GST_MESSAGE_EOS:
+	     QTimer::singleShot( 0, instance(), SLOT( endOfStreamReached() ) );
+	     break;
+	case GST_MESSAGE_TAG:
+	{
+	     gchar* string;
+    	     Engine::SimpleMetaBundle bundle;
+	     GstTagList* taglist;
+	     gst_message_parse_tag(msg,&taglist);
+             bool success = false;
 
-    //this is the Qt equivalent to an idle function: delay the call until all events are finished,
-    //otherwise gst will crash horribly
-    QTimer::singleShot( 0, instance(), SLOT( endOfStreamReached() ) );
+             if ( gst_tag_list_get_string( taglist, GST_TAG_TITLE, &string ) && string ) {
+                  debug() << "received tag 'Title': " << QString( string ) << endl;
+                  bundle.title = QString( string );
+                  success = true;
+             }
+             if ( gst_tag_list_get_string( taglist, GST_TAG_ARTIST, &string ) && string ) {
+                  debug() << "received tag 'Artist': " << QString( string ) << endl;
+                  bundle.artist = QString( string );
+                  success = true;
+             }
+             if ( gst_tag_list_get_string( taglist, GST_TAG_COMMENT, &string ) && string ) {
+                  debug() << "received tag 'Comment': " << QString( string ) << endl;
+                  bundle.comment = QString( string );
+                  success = true;
+             }
+             if ( gst_tag_list_get_string( taglist, GST_TAG_ALBUM, &string ) && string ) {
+                  debug() << "received tag 'Album': " << QString( string ) << endl;
+                  bundle.album = QString( string );
+                  success = true;
+             }
+             gst_tag_list_free(taglist);
+             if ( success ) {
+                  instance()->m_metaBundle = bundle;
+                  QTimer::singleShot( 0, instance(), SLOT( newMetaData() ) );
+             }
+	     break;
+	 }
+	 default: ;
+      }
+      return GST_BUS_DROP;
 }
 
 
@@ -88,7 +137,7 @@ GstEngine::newPad_cb( GstElement*, GstPad* pad, gboolean, gpointer ) //static
     gst_bin_sync_children_state( GST_BIN( instance()->m_gst_thread ) );
 }
 
-
+/*
 void
 GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer ) //static
 {
@@ -108,7 +157,7 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer ) //static
 
     instance()->m_mutexScope.unlock();
 }
-
+*/
 
 void
 GstEngine::candecode_handoff_cb( GstElement*, GstBuffer*, gpointer ) //static
@@ -116,56 +165,6 @@ GstEngine::candecode_handoff_cb( GstElement*, GstBuffer*, gpointer ) //static
     DEBUG_FUNC_INFO
 
     instance()->m_canDecodeSuccess = true;
-}
-
-
-void
-GstEngine::found_tag_cb( GstElement*, GstElement*, GstTagList* taglist, gpointer ) //static
-{
-    DEBUG_BLOCK
-
-    char* string;
-    Engine::SimpleMetaBundle bundle;
-    bool success = false;
-
-    if ( gst_tag_list_get_string( taglist, GST_TAG_TITLE, &string ) && string ) {
-        debug() << "received tag 'Title': " << QString( string ) << endl;
-        bundle.title = QString( string );
-        success = true;
-    }
-    if ( gst_tag_list_get_string( taglist, GST_TAG_ARTIST, &string ) && string ) {
-        debug() << "received tag 'Artist': " << QString( string ) << endl;
-        bundle.artist = QString( string );
-        success = true;
-    }
-    if ( gst_tag_list_get_string( taglist, GST_TAG_COMMENT, &string ) && string ) {
-        debug() << "received tag 'Comment': " << QString( string ) << endl;
-        bundle.comment = QString( string );
-        success = true;
-    }
-    if ( gst_tag_list_get_string( taglist, GST_TAG_ALBUM, &string ) && string ) {
-        debug() << "received tag 'Album': " << QString( string ) << endl;
-        bundle.album = QString( string );
-        success = true;
-    }
-
-    if ( success ) {
-        instance()->m_metaBundle = bundle;
-        QTimer::singleShot( 0, instance(), SLOT( newMetaData() ) );
-    }
-}
-
-
-void
-GstEngine::pipelineError_cb( GstElement* /*element*/, GstElement* /*domain*/, GError* error, gchar* debug, gpointer /*data*/ ) //static
-{
-    DEBUG_FUNC_INFO
-
-    instance()->m_gst_error = QString::fromAscii( error->message );
-    instance()->m_gst_debug = QString::fromAscii( debug );
-
-    // Process error message in application thread
-    QTimer::singleShot( 0, instance(), SLOT( handlePipelineError() ) );
 }
 
 /*
@@ -247,7 +246,8 @@ GstEngine::init()
     s_instance = this;
 
     // GStreamer initilization
-    if ( !gst_init_check( NULL, NULL ) ) {
+    GError *err
+    if ( !gst_init_check( NULL, NULL, &err ) ) {
         KMessageBox::error( 0,
             i18n( "<h3>GStreamer could not be initialized.</h3> "
                   "<p>Please make sure that you have installed all necessary GStreamer plugins (e.g. OGG and MP3), and run <i>'gst-register'</i> afterwards.</p>"
@@ -259,7 +259,7 @@ GstEngine::init()
 
     // Check if registry exists
     GstElement* dummy = gst_element_factory_make ( "fakesink", "fakesink" );
-    if ( !dummy || !gst_scheduler_factory_make( NULL, GST_ELEMENT ( dummy ) ) ) {
+    if ( !dummy ) {
         KMessageBox::error( 0,
             i18n( "<h3>GStreamer is missing a registry.</h3> "
                   "<p>Please make sure that you have installed all necessary GStreamer plugins (e.g. OGG and MP3), and run <i>'gst-register'</i> afterwards.</p>"
@@ -322,7 +322,7 @@ GstEngine::position() const
     GstFormat fmt = GST_FORMAT_TIME;
     // Value will hold the current time position in nanoseconds. Must be initialized!
     gint64 value = 0;
-    gst_element_query( m_gst_decodebin, GST_QUERY_POSITION, &fmt, &value );
+    gst_element_query_position( m_gst_pipeline, &fmt, &value );
 
     return static_cast<uint>( ( value / GST_MSECOND ) ); // nanosec -> msec
 }
@@ -336,7 +336,7 @@ GstEngine::length() const
     GstFormat fmt = GST_FORMAT_TIME;
     // Value will hold the track length in nanoseconds. Must be initialized!
     gint64 value = 0;
-    gst_element_query( m_gst_decodebin, GST_QUERY_TOTAL, &fmt, &value );
+    gst_element_query_duration( m_gst_pipeline,  &fmt, &value );
 
     return static_cast<uint>( ( value / GST_MSECOND ) ); // nanosec -> msec
 }
@@ -348,7 +348,9 @@ GstEngine::state() const
     if ( !m_pipelineFilled )
         return m_url.isEmpty() ? Engine::Empty : Engine::Idle;
 
-    switch ( gst_element_get_state( m_gst_thread ) )
+    GstState s;
+    gst_element_get_state( m_gst_pipeline, &s, NULL, GST_CLOCK_TIME_NONE );
+    switch ( s )
     {
         case GST_STATE_NULL:
             return Engine::Empty;
