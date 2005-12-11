@@ -181,12 +181,6 @@
                                 <height>85</height>
                             </size>
                         </property>
-                        <property name="text">
-                            <string></string>
-                        </property>
-                        <property name="scaledContents">
-                            <bool>true</bool>
-                        </property>
                     </widget>
                     <widget class="QLabel" row="0" column="1">
                         <property name="name">
@@ -642,6 +636,10 @@
     </grid>
 </widget>
 <customwidgets>
+    <customwidget>
+        <class>CoverLabel</class>
+        <header location="local">coverfetcher.h</header>
+    </customwidget>
 </customwidgets>
 <tabstops>
     <tabstop>kTabWidget</tabstop>
