@@ -453,14 +453,11 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     if ( !createPipeline() )
         return false;
 
-    m_gst_thread = gst_thread_new( "thread" );
-    g_signal_connect( G_OBJECT( m_gst_thread ), "error", G_CALLBACK ( pipelineError_cb ), NULL );
-
     if ( url.isLocalFile() ) {
         // Use gst's filesrc element for local files, cause it's less overhead than KIO
-        if ( !( m_gst_src = createElement( "filesrc", m_gst_thread ) ) ) { destroyPipeline(); return false; }
+        if ( !( m_gst_src = createElement( "filesrc", m_gst_pipeline ) ) ) { destroyPipeline(); return false; }
         // Set file path
-        gst_element_set( m_gst_src, "location", static_cast<const char*>( QFile::encodeName( url.path() ) ), NULL );
+        g_object_set( G_OBJECT(m_gst_src), "location", static_cast<const char*>( QFile::encodeName( url.path() ) ), NULL );
     }
 /*    else {
         // Create our custom streamsrc element, which transports data into the pipeline
@@ -483,15 +480,13 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
 */
     if ( !( m_gst_decodebin = createElement( "decodebin", m_gst_thread ) ) ) { destroyPipeline(); return false; }
     g_signal_connect( G_OBJECT( m_gst_decodebin ), "new-decoded-pad", G_CALLBACK( newPad_cb ), NULL );
-    g_signal_connect( G_OBJECT( m_gst_decodebin ), "found-tag", G_CALLBACK( found_tag_cb ), NULL );
-    g_signal_connect( G_OBJECT( m_gst_decodebin ), "eos", G_CALLBACK( eos_cb ), NULL );
 
     // Link elements. The link from decodebin to audioconvert will be made in the newPad-callback
     gst_element_link( m_gst_src, m_gst_decodebin );
 
     setVolume( m_volume );
-    setEqualizerEnabled( m_equalizerEnabled );
-    if ( m_equalizerEnabled ) setEqualizerParameters( m_equalizerPreamp, m_equalizerGains );
+//    setEqualizerEnabled( m_equalizerEnabled );
+//    if ( m_equalizerEnabled ) setEqualizerParameters( m_equalizerPreamp, m_equalizerGains );
 
     return true;
 }
@@ -503,7 +498,7 @@ GstEngine::play( uint offset )  //SLOT
     DEBUG_BLOCK
 
     // Try to play input pipeline; if fails, destroy input bin
-    if ( !gst_element_set_state( m_gst_thread, GST_STATE_PLAYING ) ) {
+    if ( !gst_element_set_state( m_gst_pipeline, GST_STATE_PLAYING ) ) {
         warning() << "Could not set thread to PLAYING.\n";
         destroyPipeline();
         return false;
@@ -547,12 +542,12 @@ GstEngine::pause()  //SLOT
     DEBUG_BLOCK
     RETURN_IF_PIPELINE_EMPTY
 
-    if ( GST_STATE( m_gst_thread ) == GST_STATE_PAUSED ) {
-        gst_element_set_state( m_gst_thread, GST_STATE_PLAYING );
+    if ( GST_STATE( m_gst_pipeline ) == GST_STATE_PAUSED ) {
+        gst_element_set_state( m_gst_pipeline, GST_STATE_PLAYING );
         emit stateChanged( Engine::Playing );
     }
     else {
-        gst_element_set_state( m_gst_thread, GST_STATE_PAUSED );
+        gst_element_set_state( m_gst_pipeline, GST_STATE_PAUSED );
         emit stateChanged( Engine::Paused );
     }
 }
@@ -563,10 +558,10 @@ GstEngine::seek( uint ms )  //SLOT
 {
     RETURN_IF_PIPELINE_EMPTY
 
-    const int seekType = GST_FORMAT_TIME | GST_SEEK_METHOD_SET | GST_SEEK_FLAG_FLUSH;
-    GstEvent* event = gst_event_new_seek( (GstSeekType) seekType, ms * GST_MSECOND );
+    GstEvent* event = gst_event_new_seek(1.0, GST_FORMAT_TIME, GST_SEEK_FLAG_FLUSH, GST_SEEK_TYPE_SET, ms * GST_MSECOND,
+    	GST_SEEK_TYPE_NONE,0 );
 
-    gst_element_send_event( m_gst_audiosink, event );
+    gst_element_send_event( m_gst_pipeline, event );
 }
 
 /*
@@ -636,7 +631,7 @@ GstEngine::setVolumeSW( uint percent )
     else
         fade = 1.0;
 
-    gst_element_set( m_gst_volume, "volume", (double) percent * fade * 0.01, NULL );
+    g_object_set( G_OBJECT(m_gst_volume), "volume", (double) percent * fade * 0.01, NULL );
 }
 
 
@@ -851,27 +846,34 @@ GstEngine::createPipeline()
         return false;
     }
 
+    m_gst_pipeline = gst_pipeline_new( "pipeline" );
     m_gst_audiobin = gst_bin_new( "audiobin" );
 
     /* setting device property for AudioSink*/
-    if ( GstConfig::useCustomSoundDevice() && !GstConfig::soundDevice().isEmpty() )
-        gst_element_set( m_gst_audiosink, "device", GstConfig::soundDevice().latin1(), NULL );
+//    if ( GstConfig::useCustomSoundDevice() && !GstConfig::soundDevice().isEmpty() )
+//        gst_element_set( m_gst_audiosink, "device", GstConfig::soundDevice().latin1(), NULL );
 
-    m_gst_equalizer = GST_ELEMENT( gst_equalizer_new() );
-    gst_bin_add( GST_BIN( m_gst_audiobin ), m_gst_equalizer );
+//    m_gst_equalizer = GST_ELEMENT( gst_equalizer_new() );
+//    gst_bin_add( GST_BIN( m_gst_audiobin ), m_gst_equalizer );
     if ( !( m_gst_audioconvert = createElement( "audioconvert", m_gst_audiobin ) ) ) { return false; }
     if ( !( m_gst_identity = createElement( "identity", m_gst_audiobin ) ) ) { return false; }
     if ( !( m_gst_volume = createElement( "volume", m_gst_audiobin ) ) ) { return false; }
     if ( !( m_gst_audioscale = createElement( "audioscale", m_gst_audiobin ) ) ) { return false; }
 
-    g_signal_connect( G_OBJECT( m_gst_identity ), "handoff", G_CALLBACK( handoff_cb ), NULL );
+    GstPad* p = gst_element_get_pad(m_gst_audioconvert, "sink");
+    // FIXME: use sink from configuration
+    m_gst_audiosink = createElement("alsasink",m_gst_audiobin);
+    gst_element_add_pad(m_gst_audiobin,gst_ghost_pad_new("sink",p));
+    gst_object_unref(p);
+
+//    g_signal_connect( G_OBJECT( m_gst_identity ), "handoff", G_CALLBACK( handoff_cb ), NULL );
 
     /* link elements */
     gst_element_link_many( m_gst_audioconvert,/* m_gst_equalizer,*/ m_gst_identity,
                            m_gst_volume, m_gst_audioscale, m_gst_audiosink, NULL );
 
-    gst_bin_add( GST_BIN( m_gst_audiobin ), m_gst_audiosink );
-    gst_element_set_state( m_gst_audiobin, GST_STATE_PAUSED );
+    gst_bin_add( GST_BIN(m_gst_pipeline), m_gst_audiobin);
+    gst_bus_set_sync_handler(gst_pipeline_get_bus(GST_PIPELINE(m_gst_pipeline)), bus_cb, NULL);
 
     m_pipelineFilled = true;
     return true;
@@ -892,8 +894,8 @@ GstEngine::destroyPipeline()
 */
     if ( m_pipelineFilled ) {
         debug() << "Unreffing pipeline." << endl;
-        gst_element_set_state( m_gst_thread, GST_STATE_NULL );
-        gst_object_unref( GST_OBJECT( m_gst_thread ) );
+        gst_element_set_state( m_gst_pipeline, GST_STATE_NULL );
+        gst_object_unref( GST_OBJECT( m_gst_pipeline ) );
 
         m_pipelineFilled = false;
     }
