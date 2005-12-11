@@ -343,7 +343,6 @@ protected:
    friend class HelixSimplePlayerAudioStreamInfoResponse;
    friend class HSPPreMixAudioHook;
    friend class HSPPostMixAudioHook;
-   friend class HSPFinalAudioHook;
    friend class HelixSimplePlayerVolumeAdvice;
    friend class HSPEngineContext;
 };
