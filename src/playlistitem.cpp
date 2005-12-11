@@ -768,9 +768,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                 if( align != Qt::AlignCenter )
                    align |= Qt::AlignVCenter;
 
-                if( column == Rating )
-                    drawRating( &p );
-                else
+                if( column != Rating )
                 {
                     // Draw the text
                     static QFont font;
@@ -794,6 +792,8 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
             }
             else
                 p.drawPixmap( 0, 0, paintCache[column].map[colorKey] );
+            if( column == Rating )
+                drawRating( &p );
         }
         else
         {
