@@ -3583,8 +3583,8 @@ Playlist::contentsMouseMoveEvent( QMouseEvent *e )
     if( prev )
     {
         if( m_selCount > 1 && prev->isSelected() )
-            for( MyIt it( this, MyIt::Selected ); *it; ++it )
-                (*it)->updateColumn( PlaylistItem::Rating );
+            QScrollView::updateContents( header()->sectionPos( PlaylistItem::Rating ) + 1, contentsY(),
+                                         header()->sectionSize( PlaylistItem::Rating ) - 2, contentsHeight() );
         else
             prev->updateColumn( PlaylistItem::Rating );
     }
