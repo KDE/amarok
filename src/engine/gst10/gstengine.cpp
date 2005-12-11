@@ -22,10 +22,10 @@
 #include "debug.h"
 
 #include "config/gstconfig.h"
-#include "equalizer/gstequalizer.h"
+//#include "equalizer/gstequalizer.h"
 #include "enginebase.h"
 #include "gstengine.h"
-#include "streamsrc.h"
+//#include "streamsrc.h"
 
 #include <math.h>
 #include <unistd.h>
@@ -168,7 +168,7 @@ GstEngine::pipelineError_cb( GstElement* /*element*/, GstElement* /*domain*/, GE
     QTimer::singleShot( 0, instance(), SLOT( handlePipelineError() ) );
 }
 
-
+/*
 void
 GstEngine::kio_resume_cb() //static
 {
@@ -177,7 +177,7 @@ GstEngine::kio_resume_cb() //static
         debug() << "RESUMING kio transfer.\n";
     }
 }
-
+*/
 
 void
 GstEngine::shutdown_cb() //static
@@ -193,21 +193,21 @@ GstEngine::shutdown_cb() //static
 
 GstEngine::GstEngine()
         : Engine::Base()
-        , m_gst_adapter( 0 )
+/*        , m_gst_adapter( 0 )
         , m_streamBuf( new char[STREAMBUF_SIZE] )
         , m_streamBuffering( false )
         , m_transferJob( 0 )
-        , m_pipelineFilled( false )
+*/        , m_pipelineFilled( false )
         , m_fadeValue( 0.0 )
-        , m_equalizerEnabled( false )
+//        , m_equalizerEnabled( false )
         , m_shutdown( false )
 {
     DEBUG_FUNC_INFO
 
     addPluginProperty( "StreamingMode", "Signal" );
     addPluginProperty( "HasConfigure",  "true" );
-    addPluginProperty( "HasEqualizer",  "true" );
-    addPluginProperty( "HasKIO",        "true" );
+    addPluginProperty( "HasEqualizer",  "false" );
+    addPluginProperty( "HasKIO",        "false" );
 }
 
 
@@ -225,7 +225,7 @@ GstEngine::~GstEngine()
     else
         destroyPipeline();
 
-    delete[] m_streamBuf;
+//    delete[] m_streamBuf;
 
     // Destroy scope adapter
     g_object_unref( G_OBJECT( m_gst_adapter ) );
@@ -255,7 +255,7 @@ GstEngine::init()
         return false;
     }
 
-    m_gst_adapter = gst_adapter_new();
+//    m_gst_adapter = gst_adapter_new();
 
     // Check if registry exists
     GstElement* dummy = gst_element_factory_make ( "fakesink", "fakesink" );
@@ -364,7 +364,7 @@ GstEngine::state() const
     }
 }
 
-
+/*
 const Engine::Scope&
 GstEngine::scope()
 {
@@ -423,7 +423,7 @@ GstEngine::scope()
     m_mutexScope.unlock();
     return m_scope;
 }
-
+*/
 
 amaroK::PluginConfig*
 GstEngine::configure() const
@@ -460,7 +460,7 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
         // Set file path
         gst_element_set( m_gst_src, "location", static_cast<const char*>( QFile::encodeName( url.path() ) ), NULL );
     }
-    else {
+/*    else {
         // Create our custom streamsrc element, which transports data into the pipeline
         m_gst_src = GST_ELEMENT( gst_streamsrc_new( m_streamBuf, &m_streamBufIndex, &m_streamBufStop, &m_streamBuffering ) );
         gst_element_set( m_gst_src, "buffer_min", STREAMBUF_MIN, NULL );
@@ -478,7 +478,7 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
             connect( m_transferJob, SIGNAL( result( KIO::Job* ) ), SLOT( kioFinished() ) );
         }
     }
-
+*/
     if ( !( m_gst_decodebin = createElement( "decodebin", m_gst_thread ) ) ) { destroyPipeline(); return false; }
     g_signal_connect( G_OBJECT( m_gst_decodebin ), "new-decoded-pad", G_CALLBACK( newPad_cb ), NULL );
     g_signal_connect( G_OBJECT( m_gst_decodebin ), "found-tag", G_CALLBACK( found_tag_cb ), NULL );
@@ -567,7 +567,7 @@ GstEngine::seek( uint ms )  //SLOT
     gst_element_send_event( m_gst_audiosink, event );
 }
 
-
+/*
 void
 GstEngine::newStreamData( char* buf, int size )  //SLOT
 {
@@ -617,7 +617,7 @@ GstEngine::setEqualizerParameters( int preamp, const QValueList<int>& bandGains 
     gst_element_set( m_gst_equalizer, "gain", &gainsTemp, NULL );
     // END
 }
-
+*/
 
 /////////////////////////////////////////////////////////////////////////////////////
 // PROTECTED
@@ -694,7 +694,7 @@ GstEngine::endOfStreamReached()  //SLOT
     emit trackEnded();
 }
 
-
+/*
 void
 GstEngine::newKioData( KIO::Job*, const QByteArray& array )  //SLOT
 {
@@ -717,7 +717,7 @@ GstEngine::newKioData( KIO::Job*, const QByteArray& array )  //SLOT
     // Adjust index
     m_streamBufIndex += size;
 }
-
+*/
 
 void
 GstEngine::newMetaData()  //SLOT
@@ -725,7 +725,7 @@ GstEngine::newMetaData()  //SLOT
     emit metaData( m_metaBundle );
 }
 
-
+/*
 void
 GstEngine::kioFinished()  //SLOT
 {
@@ -737,7 +737,7 @@ GstEngine::kioFinished()  //SLOT
     // Tell streamsrc: This is the end, my friend
     m_streamBufStop = true;
 }
-
+*/
 
 void
 GstEngine::errorNoOutput() //SLOT
@@ -776,7 +776,7 @@ GstEngine::createElement( const QCString& factoryName, GstElement* bin, const QC
 QStringList
 GstEngine::getPluginList( const QCString& classname ) const
 {
-    GList * pool_registries = NULL;
+/*    GList * pool_registries = NULL;
     GList* registries = NULL;
     GList* plugins = NULL;
     GList* features = NULL;
@@ -815,7 +815,8 @@ GstEngine::getPluginList( const QCString& classname ) const
     g_list_free ( pool_registries );
     pool_registries = NULL;
 
-    return results;
+    return results; */
+    return QStringList("autoaudiosink");
 }
 
 
@@ -864,7 +865,7 @@ GstEngine::createPipeline()
     g_signal_connect( G_OBJECT( m_gst_identity ), "handoff", G_CALLBACK( handoff_cb ), NULL );
 
     /* link elements */
-    gst_element_link_many( m_gst_audioconvert, m_gst_equalizer, m_gst_identity,
+    gst_element_link_many( m_gst_audioconvert,/* m_gst_equalizer,*/ m_gst_identity,
                            m_gst_volume, m_gst_audioscale, m_gst_audiosink, NULL );
 
     gst_bin_add( GST_BIN( m_gst_audiobin ), m_gst_audiosink );
@@ -882,11 +883,11 @@ GstEngine::destroyPipeline()
 
     m_fadeValue = 0.0;
 
-    // Clear the scope adapter
+/*    // Clear the scope adapter
     m_mutexScope.lock();
     gst_adapter_clear( m_gst_adapter );
     m_mutexScope.unlock();
-
+*/
     if ( m_pipelineFilled ) {
         debug() << "Unreffing pipeline." << endl;
         gst_element_set_state( m_gst_thread, GST_STATE_NULL );
@@ -896,10 +897,10 @@ GstEngine::destroyPipeline()
     }
 
     // Destroy KIO transmission job
-    if ( m_transferJob ) {
+/*    if ( m_transferJob ) {
         m_transferJob->kill();
         m_transferJob = 0;
-    }
+    } */
 }
 
 

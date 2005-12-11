@@ -30,7 +30,7 @@
 #include <kio/jobclasses.h>
 
 #include <gst/gst.h>
-#include "adapter.h"
+//#include "adapter.h"
 
 class QTimerEvent;
 class KURL;
@@ -64,7 +64,7 @@ class GstEngine : public Engine::Base
         uint position() const;
         uint length() const;
         Engine::State state() const;
-        const Engine::Scope& scope();
+//        const Engine::Scope& scope();
 
         amaroK::PluginConfig* configure() const;
 
@@ -76,13 +76,13 @@ class GstEngine : public Engine::Base
         void seek( uint ms );
 
         /** Copies incoming radio stream data from StreamProvider into StreamSrc's buffer */
-        void newStreamData( char* data, int size );
+//        void newStreamData( char* data, int size );
 
         /** Set whether equalizer is enabled */
-        void setEqualizerEnabled( bool );
+//        void setEqualizerEnabled( bool );
 
         /** Set equalizer preamp and gains, range -100..100. Gains are 10 values. */
-        void setEqualizerParameters( int preamp, const QValueList<int>& bandGains );
+//        void setEqualizerParameters( int preamp, const QValueList<int>& bandGains );
 
     protected:
         void setVolumeSW( uint percent );
@@ -91,10 +91,10 @@ class GstEngine : public Engine::Base
     private slots:
         void handlePipelineError();
         void endOfStreamReached();
-        void kioFinished();
+//        void kioFinished();
 
         /** Copies incoming data from KIO into StreamSrc's buffer */
-        void newKioData( KIO::Job*, const QByteArray& array );
+//        void newKioData( KIO::Job*, const QByteArray& array );
 
         /** Called when no output sink was selected. Shows the GStreamer engine settings dialog. */
         void errorNoOutput();
@@ -134,7 +134,7 @@ class GstEngine : public Engine::Base
         /** Called when the GStreamer pipeline signals an error */
         static void pipelineError_cb( GstElement*, GstElement*, GError*, gchar*, gpointer );
         /** Called when the KIO buffer is empty */
-        static void kio_resume_cb();
+//        static void kio_resume_cb();
         /** Called after the pipeline is shut down */
         static void shutdown_cb();
 
@@ -176,7 +176,7 @@ class GstEngine : public Engine::Base
         GstElement* m_gst_audiobin;
 
         GstElement* m_gst_audioconvert;
-        GstElement* m_gst_equalizer;
+//        GstElement* m_gst_equalizer;
         GstElement* m_gst_identity;
         GstElement* m_gst_volume;
         GstElement* m_gst_audioscale;
@@ -185,23 +185,23 @@ class GstEngine : public Engine::Base
         QString m_gst_error;
         QString m_gst_debug;
 
-        GstAdapter* m_gst_adapter;
+//        GstAdapter* m_gst_adapter;
 
         // These variables are shared between gst-engine and streamsrc
-        char*    m_streamBuf;
+/*        char*    m_streamBuf;
         int      m_streamBufIndex;
         bool     m_streamBufStop;
         bool     m_streamBuffering;
 
         KIO::TransferJob* m_transferJob;
-        QMutex            m_mutexScope;
+        QMutex            m_mutexScope; */
         bool              m_pipelineFilled;
         float             m_fadeValue;
 
-        bool              m_equalizerEnabled;
+/*        bool              m_equalizerEnabled;
         int               m_equalizerPreamp;
         QValueList<int>   m_equalizerGains;
-
+*/
         Engine::SimpleMetaBundle m_metaBundle;
 
         bool m_shutdown;
