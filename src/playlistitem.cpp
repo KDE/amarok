@@ -344,8 +344,19 @@ void PlaylistItem::ReadMood::completeJob()
 {
     if(MoodProxyObject *o = dynamic_cast<MoodProxyObject *>(dependent()))
     {
-        o->item->setArray(theArray);
-        o->item->refreshMood();
+        if(theArray.size())
+        {
+            o->item->setArray(theArray);
+            o->item->refreshMood();
+        }
+        #ifdef HAVE_EXSCALIBAR
+        else if(AmarokConfig::calculateMoodOnQueue())
+        {
+            amaroK::CreateMood *c = new amaroK::CreateMood( thePath );
+            Playlist::instance()->connect(c, SIGNAL(completed(const QString)), SLOT(fileHasMood( const QString )));
+            ThreadWeaver::instance()->queueJob( c );
+        }
+        #endif
         o->item->m_proxyForMoods = 0;
         o->deleteLater();
     }
@@ -354,21 +365,8 @@ void PlaylistItem::ReadMood::completeJob()
 bool PlaylistItem::ReadMood::doJob()
 {
     // attempt to open .mood file:
-    QValueVector<QColor> a = amaroK::readMood(thePath);
-    if(a.size())
-    {
-        theArray = a;
-        return true;
-    }
-#ifdef HAVE_EXSCALIBAR
-    else if(AmarokConfig::calculateMoodOnQueue())
-    {
-        amaroK::CreateMood *c = new amaroK::CreateMood( thePath );
-        Playlist::instance()->connect(c, SIGNAL(completed(const QString)), SLOT(fileHasMood( const QString )));
-        ThreadWeaver::instance()->queueJob( c );
-    }
-#endif
-    return false;
+    theArray = amaroK::readMood(thePath);
+    return true;
 }
 
 void PlaylistItem::refreshMood()
