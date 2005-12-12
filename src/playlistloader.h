@@ -7,6 +7,7 @@
 #define UrlLoader_H
 
 #include "debug.h"        //stack allocated
+#include <qptrlist.h>
 #include <kurl.h>         //KURL::List
 #include "metabundle.h"   //stack allocated
 #include "threadweaver.h" //baseclass
@@ -117,6 +118,7 @@ private:
     PlaylistItem *m_markerListViewItem;
     bool          m_playFirstUrl;
     Debug::Block  m_block;
+    QPtrList<PlaylistItem> m_oldQueue;
 
 protected:
     UrlLoader( const UrlLoader& ); //undefined

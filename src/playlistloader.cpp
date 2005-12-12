@@ -47,6 +47,7 @@ UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, bool playFir
         , m_markerListViewItem( new PlaylistItem( Playlist::instance(), after ) )
         , m_playFirstUrl( playFirstUrl )
         , m_block( "UrlLoader" )
+        , m_oldQueue( Playlist::instance()->m_nextTracks )
 {
     DEBUG_BLOCK
 
@@ -262,6 +263,16 @@ UrlLoader::customEvent( QCustomEvent *e)
 void
 UrlLoader::completeJob()
 {
+    const PLItemList &newQueue = Playlist::instance()->m_nextTracks;
+    QPtrListIterator<PlaylistItem> it( newQueue );
+    PLItemList added;
+    for( it.toFirst(); *it; ++it )
+        if( !m_oldQueue.containsRef( *it ) )
+            added << (*it);
+
+    if( !added.isEmpty() )
+        emit queueChanged( added, PLItemList() );
+
     if ( !m_badURLs.isEmpty() ) {
         amaroK::StatusBar::instance()->shortLongMessage(
                 i18n("Some media could not be loaded (not playable)."),
@@ -351,7 +362,6 @@ UrlLoader::loadXml( const KURL &url )
         return;
     }
 
-    const PLItemList oldQueue = Playlist::instance()->m_nextTracks;
     NodeList nodes;
     TagsEvent* e = new TagsEvent();
     const QString ITEM( "item" ); //so we don't construct this QString all the time
@@ -368,16 +378,6 @@ UrlLoader::loadXml( const KURL &url )
         }
     }
     QApplication::postEvent( this, e );
-
-    const PLItemList &newQueue = Playlist::instance()->m_nextTracks;
-    QPtrListIterator<PlaylistItem> it( newQueue );
-    PLItemList added;
-    for( it.toFirst(); *it; ++it )
-        if( !oldQueue.containsRef( *it ) )
-            added << (*it);
-
-    if( !added.isEmpty() )
-        emit queueChanged( added, PLItemList() );
 }
 
 
