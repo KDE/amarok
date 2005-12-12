@@ -24,12 +24,14 @@
 
 #include "ifpmediadevice.h"
 
+// #include "amarokconfig.h"
 #include "debug.h"
 #include "metabundle.h"
 #include "collectiondb.h"
 #include "statusbar/statusbar.h"
 
 #include <kapplication.h>
+#include <kconfig.h>           //download saveLocation
 #include <kiconloader.h>       //smallIcon
 #include <kmessagebox.h>
 #include <kpopupmenu.h>
@@ -38,6 +40,8 @@
 
 #include <qfile.h>
 #include <qcstring.h>
+
+namespace amaroK { extern KConfig *config( const QString& ); }
 
 /**
  * IfpMediaItem Class
@@ -104,13 +108,10 @@ IfpMediaDevice::IfpMediaDevice( MediaDeviceView* parent, MediaDeviceList *listvi
     , m_connected( false )
     , m_tmpParent( 0 )
 {
-    DEBUG_BLOCK
 }
 
 IfpMediaDevice::~IfpMediaDevice()
 {
-    DEBUG_BLOCK
-
     closeDevice();
 }
 
@@ -320,7 +321,10 @@ IfpMediaDevice::downloadTrack( const QCString& src, const QCString& dest )
 void
 IfpMediaDevice::downloadSelectedItems()
 {
-    KURLRequesterDlg dialog( QString::null, 0, 0 );
+    KConfig *config = amaroK::config( "MediaDevice" );
+    QString save = config->readEntry( "DownloadLocation", QString::null );  //restore the save directory
+
+    KURLRequesterDlg dialog( save, 0, 0 );
     dialog.setCaption( kapp->makeStdCaption( i18n( "Choose a Download Directory" ) ) );
     dialog.urlRequester()->setMode( KFile::Directory | KFile::ExistingOnly );
     dialog.exec();
@@ -328,8 +332,11 @@ IfpMediaDevice::downloadSelectedItems()
     KURL destDir = dialog.selectedURL();
     if( destDir.isEmpty() )
         return;
-        
+    
     destDir.adjustPath( 1 ); //add trailing slash
+    
+    if( save != destDir.path() )
+        config->writeEntry( "DownloadLocation", destDir.path() );
     
     QListViewItemIterator it( m_listview, QListViewItemIterator::Selected );
     for( ; it.current(); ++it )
