@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.4:
   FEATURES:
+    * Switchable Wikipedia locale. (BR 104383)
     * Tagdialog can now attempt to guess tags from the filename.
     * Drag albums and compilations from context browser to media device and
       playlist browser.

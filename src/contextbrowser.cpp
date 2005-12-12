@@ -33,6 +33,9 @@
 #include <qregexp.h>
 #include <qtextstream.h>  // External CSS reading
 #include <qvbox.h> //wiki tab
+#include <qhbox.h>
+#include <qlineedit.h>
+#include <qtooltip.h>
 
 #include <kapplication.h> //kapp
 #include <kcalendarsystem.h>  // for amaroK::verboseTimeSince()
@@ -133,14 +136,9 @@ void albumArtistTrackFromUrl( QString url, QString &artist, QString &album, QStr
     track  = unEscapeHTMLAttr( list[2] );
 }
 
-static
-QString wikipediaURL( QString item )
-{
-    return "http://en.wikipedia.org/wiki/" + KURL::encode_string_no_slash( item );
-}
-
 
 ContextBrowser *ContextBrowser::s_instance = 0;
+QString ContextBrowser::s_wikiLocale = "en";
 
 
 ContextBrowser::ContextBrowser( const char *name )
@@ -154,6 +152,7 @@ ContextBrowser::ContextBrowser( const char *name )
         , m_wikiBackPopup( new KPopupMenu( this ) )
         , m_wikiForwardPopup( new KPopupMenu( this ) )
         , m_wikiJob( NULL )
+        , m_wikiConfigDialog( NULL )
         , m_relatedOpen( true )
         , m_suggestionsOpen( true )
         , m_favouritesOpen( true )
@@ -161,6 +160,7 @@ ContextBrowser::ContextBrowser( const char *name )
         , m_cuefile( NULL )
 {
     s_instance = this;
+    s_wikiLocale = AmarokConfig::wikipediaLocale();
 
     m_currentTrackPage = new HTMLView( this, "current_track_page", true /* DNDEnabled */ );
 
@@ -186,6 +186,8 @@ ContextBrowser::ContextBrowser( const char *name )
     m_wikiToolBar->insertButton( "contents", WIKI_TITLE, false, i18n("Title Page") );
     m_wikiToolBar->insertLineSeparator();
     m_wikiToolBar->insertButton( "exec", WIKI_BROWSER, true, i18n("Open in external browser") );
+    m_wikiToolBar->insertLineSeparator();
+    m_wikiToolBar->insertButton( "config", WIKI_CONFIG, true, i18n("Change Locale") );
 
     m_wikiToolBar->setDelayedPopup( WIKI_BACK, m_wikiBackPopup );
     m_wikiToolBar->setDelayedPopup( WIKI_FORWARD, m_wikiForwardPopup );
@@ -236,7 +238,7 @@ ContextBrowser::ContextBrowser( const char *name )
     connect( m_wikiToolBar->getButton( WIKI_ARTIST  ), SIGNAL(clicked( int )), SLOT(wikiArtistPage()) );
     connect( m_wikiToolBar->getButton( WIKI_ALBUM   ), SIGNAL(clicked( int )), SLOT(wikiAlbumPage()) );
     connect( m_wikiToolBar->getButton( WIKI_TITLE   ), SIGNAL(clicked( int )), SLOT(wikiTitlePage()) );
-    connect( m_wikiToolBar->getButton( WIKI_BROWSER ), SIGNAL(clicked( int )), SLOT(wikiExternalPage()) );
+    connect( m_wikiToolBar->getButton( WIKI_CONFIG  ), SIGNAL(clicked( int )), SLOT(wikiConfig()) );
 
     connect( m_wikiBackPopup,    SIGNAL(activated( int )), SLOT(wikiBackPopupActivated( int )) );
     connect( m_wikiForwardPopup, SIGNAL(activated( int )), SLOT(wikiForwardPopupActivated( int )) );
@@ -298,6 +300,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
         }
         // new page
         m_dirtyWikiPage = true;
+        m_wikiCurrentEntry = QString::null;
         showWikipedia( url.url() );
     }
 
@@ -388,6 +391,13 @@ void ContextBrowser::openURLRequest( const KURL &url )
         m_artist = QString::null;
         m_dirtyCurrentTrackPage = true;
         showCurrentTrack();
+    }
+
+    else if ( url.protocol() == "wikipedia" )
+    {
+        m_dirtyWikiPage = true;
+        QString entry = unEscapeHTMLAttr( url.path() );
+        showWikipediaEntry( entry );
     }
 
     else
@@ -614,6 +624,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         urlString.startsWith( "externalurl" ) ||
         urlString.startsWith( "show:suggest" ) ||
         urlString.startsWith( "http" ) ||
+        urlString.startsWith( "wikipedia" ) ||
         urlString.startsWith( "seek" ) ||
         urlString.startsWith( "artist" ) ||
         urlString.startsWith( "current" ) ||
@@ -1064,7 +1075,7 @@ bool CurrentTrackJob::doJob()
                         "<table id='current_box-table' class='box-body' width='100%' cellpadding='0' cellspacing='0'>"
                         "<tr>"
                         "<td id='artist-wikipedia'>"
-                        + QString( "<a id='artist-wikipedia-a' href='%1'>" ).arg( wikipediaURL( artist ) )
+                        + QString( "<a id='artist-wikipedia-a' href='wikipedia:%1'>" ).arg( escapeHTMLAttr( artist ) )
                         + i18n( "Wikipedia Information for %1" ).arg( escapeHTML( artist ) ) +
                         "</a>"
                         "</td>"
@@ -1293,7 +1304,7 @@ bool CurrentTrackJob::doJob()
                         + ( isInCollection ? "" : "</i>" )
                         + "</td>"
                         "<td class='sbtext' width='1'>"
-                        "<a href='" + wikipediaURL( relArtists[i] ) + "'>Wikipedia</a>"
+                        "<a href='wikipedia:" + escapeHTMLAttr( relArtists[i] ) + "'>Wikipedia</a>"
                         "</td>"
                         "<td width='1'></td>"
                         "</tr>" );
@@ -2053,6 +2064,131 @@ ContextBrowser::lyricsRefresh() //SLOT
 // Wikipedia-Tab
 //////////////////////////////////////////////////////////////////////////////////////////
 
+void
+ContextBrowser::wikiConfigChanged( int activeItem ) // SLOT
+{
+    // keep in sync with localeList in wikiConfig
+
+    m_wikiLocaleEdit->setEnabled( !activeItem );
+
+    switch( activeItem )
+    {
+    case 1:
+        m_wikiLocaleEdit->setText( "de" );
+        break;
+    case 2:
+        m_wikiLocaleEdit->setText( "en" );
+        break;
+    case 3:
+        m_wikiLocaleEdit->setText( "fr" );
+        break;
+    case 4:
+        m_wikiLocaleEdit->setText( "ja" );
+        break;
+    case 5:
+        m_wikiLocaleEdit->setText( "pl" );
+        break;
+    }
+}
+
+void
+ContextBrowser::wikiConfigApply() // SLOT
+{
+    setWikiLocale( m_wikiLocaleEdit->text() );
+    if ( currentPage() == m_wikiTab )
+    {
+        if( !m_wikiCurrentEntry.isNull() )
+        {
+            m_dirtyWikiPage = true;
+            showWikipediaEntry( m_wikiCurrentEntry );
+        }
+    }
+}
+
+void
+ContextBrowser::wikiConfig() // SLOT
+{
+    QStringList localeList;
+    localeList
+        << i18n( "Other..." )
+        << i18n( "German" )
+        << i18n( "English" )
+        << i18n( "French" )
+        << i18n( "Japanese" )
+        << i18n( "Polish" );
+
+    int index = 0;
+    debug() << "locale=" << wikiLocale() << "." << endl;
+    if( wikiLocale()=="de" )
+        index = 1;
+    else if( wikiLocale()=="en" )
+        index = 2;
+    else if( wikiLocale()=="fr" )
+        index = 3;
+    else if( wikiLocale()=="ja" )
+        index = 4;
+    else if( wikiLocale()=="pl" )
+        index = 5;
+
+    if( !m_wikiConfigDialog )
+    {
+        m_wikiConfigDialog = new KDialogBase( this, 0, false );
+        m_wikiConfigDialog->setCaption( kapp->makeStdCaption( i18n( "Set Wikipedia Locale" ) ) );
+        QVBox *box = m_wikiConfigDialog->makeVBoxMainWidget();
+
+        m_wikiLocaleCombo = new QComboBox( box );
+        m_wikiLocaleCombo->insertStringList( localeList );
+
+        QHBox *hbox = new QHBox( box );
+        QLabel *otherLabel = new QLabel( hbox );
+        otherLabel->setText( i18n( "Locale:" ) + " " );
+        m_wikiLocaleEdit = new QLineEdit( "en", hbox );
+        otherLabel->setBuddy( m_wikiLocaleEdit );
+        QToolTip::add( m_wikiLocaleEdit, i18n( "2-letter language code for your Wikipedia locale" ) );
+
+        connect( m_wikiLocaleCombo, SIGNAL(activated( int )), SLOT(wikiConfigChanged( int )) );
+        connect( m_wikiConfigDialog, SIGNAL(applyClicked()), SLOT(wikiConfigApply()) );
+        connect( m_wikiConfigDialog, SIGNAL(okClicked()), SLOT(wikiConfigApply()) );
+    }
+
+    kapp->setTopWidget( m_wikiConfigDialog );
+    m_wikiLocaleEdit->setEnabled( !index );
+    m_wikiLocaleEdit->setText( wikiLocale() );
+    m_wikiLocaleCombo->setCurrentItem( index );
+
+    m_wikiConfigDialog->show();
+}
+
+QString
+ContextBrowser::wikiLocale()
+{
+    if( s_wikiLocale.isEmpty() || s_wikiLocale.isNull() )
+        return QString( "en" );
+
+    return s_wikiLocale;
+}
+
+void
+ContextBrowser::setWikiLocale( const QString &locale )
+{
+    AmarokConfig::setWikipediaLocale( locale );
+    s_wikiLocale = locale;
+}
+
+QString
+ContextBrowser::wikiURL( const QString &item )
+{
+    return QString( "http://%1.wikipedia.org/wiki/" ).arg( wikiLocale() )
+        + KURL::encode_string_no_slash( item );
+}
+
+void
+ContextBrowser::showWikipediaEntry( const QString &entry )
+{
+    m_wikiCurrentEntry = entry;
+    showWikipedia( wikiURL( entry ) );
+}
+
 void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
 {
     if ( currentPage() != m_wikiTab )
@@ -2063,7 +2199,7 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
     }
     if ( !m_dirtyWikiPage || m_wikiJob ) return;
 
-    // Disable the Open in a Brower button, because while loading it would open wikipedia main page.
+    // Disable the Open in a Browser button, because while loading it would open wikipedia main page.
     m_wikiToolBar->setItemEnabled( WIKI_BROWSER, false );
 
     m_HTMLSource="";
@@ -2108,8 +2244,9 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
         {
             tmpWikiStr = EngineController::instance()->bundle().prettyTitle();
         }
+        m_wikiCurrentEntry = tmpWikiStr;
 
-        m_wikiCurrentUrl = wikipediaURL( tmpWikiStr );
+        m_wikiCurrentUrl = wikiURL( tmpWikiStr );
     }
     else
     {
@@ -2162,6 +2299,7 @@ ContextBrowser::wikiHistoryBack() //SLOT
     m_wikiBackHistory.pop_back();
 
     m_dirtyWikiPage = true;
+    m_wikiCurrentEntry = QString::null;
     showWikipedia( m_wikiBackHistory.last(), true );
 }
 
@@ -2174,6 +2312,7 @@ ContextBrowser::wikiHistoryForward() //SLOT
     m_wikiForwardHistory.pop_back();
 
     m_dirtyWikiPage = true;
+    m_wikiCurrentEntry = QString::null;
     showWikipedia( url, true );
 }
 
@@ -2182,6 +2321,7 @@ void
 ContextBrowser::wikiBackPopupActivated( int id ) //SLOT
 {
     m_dirtyWikiPage = true;
+    m_wikiCurrentEntry = QString::null;
     showWikipedia( m_wikiBackHistory[id] );
 }
 
@@ -2190,6 +2330,7 @@ void
 ContextBrowser::wikiForwardPopupActivated( int id ) //SLOT
 {
     m_dirtyWikiPage = true;
+    m_wikiCurrentEntry = QString::null;
     showWikipedia( m_wikiForwardHistory[id] );
 }
 
@@ -2206,7 +2347,7 @@ void
 ContextBrowser::wikiAlbumPage() //SLOT
 {
     m_dirtyWikiPage = true;
-    showWikipedia( wikipediaURL( EngineController::instance()->bundle().album() ) );
+    showWikipediaEntry( EngineController::instance()->bundle().album() );
 }
 
 
@@ -2214,7 +2355,7 @@ void
 ContextBrowser::wikiTitlePage() //SLOT
 {
     m_dirtyWikiPage = true;
-    showWikipedia( wikipediaURL( EngineController::instance()->bundle().title() ) );
+    showWikipediaEntry( EngineController::instance()->bundle().title() );
 }
 
 

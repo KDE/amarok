@@ -20,6 +20,9 @@ class KTabBar;
 class MetaBundle;
 class QPalette;
 class QVBox;
+class QLineEdit;
+class QComboBox;
+class KDialogBase;
 
 class CueFile;
 
@@ -69,6 +72,7 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         void showLyrics( const QString& hash = QString::null );
         void showLyricSuggestions();
         void showWikipedia( const QString& url = QString::null, bool fromHistory = false );
+        void showWikipediaEntry( const QString& entry );
 
         void lyricsResult( KIO::Job* job );
         void coverFetched( const QString &artist, const QString &album );
@@ -90,10 +94,13 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         void wikiTitlePage();
         void wikiExternalPage();
         void wikiResult( KIO::Job* job );
+        void wikiConfig();
+        void wikiConfigChanged( int activeItem );
+        void wikiConfigApply();
 
     private:
         enum { LYRICS_ADD, LYRICS_SEARCH, LYRICS_REFRESH, LYRICS_BROWSER };
-        enum { WIKI_BACK, WIKI_FORWARD, WIKI_ARTIST, WIKI_ALBUM, WIKI_TITLE, WIKI_BROWSER };
+        enum { WIKI_BACK, WIKI_FORWARD, WIKI_ARTIST, WIKI_ALBUM, WIKI_TITLE, WIKI_BROWSER, WIKI_CONFIG };
         typedef enum {SHOW_ALBUM_NORMAL, SHOW_ALBUM_SCORE, SHOW_ALBUM_LEAST_PLAY} T_SHOW_ALBUM_TYPE;
         static const uint WIKI_MAX_HISTORY = 20;
 
@@ -101,6 +108,9 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         void saveHtmlData();
         void showScanning();
         static QString makeShadowedImage( const QString& albumImage );
+        static QString wikiLocale();
+        static void setWikiLocale( const QString &locale );
+        static QString wikiURL( const QString &item );
 
         HTMLView    *m_currentTrackPage;
         HTMLView    *m_lyricsPage;
@@ -127,14 +137,19 @@ class ContextBrowser : public KTabWidget, public EngineObserver
 
         QString       m_wiki;
         QString       m_wikiLanguages;
+        static QString s_wikiLocale;
         QString       m_wikiBaseUrl;
         QString       m_wikiCurrentUrl;
+        QString       m_wikiCurrentEntry;
         QStringList   m_wikiBackHistory;
         QStringList   m_wikiForwardHistory;
         KPopupMenu*   m_wikiBackPopup;
         KPopupMenu*   m_wikiForwardPopup;
         KIO::TransferJob* m_wikiJob;
         Browser::ToolBar* m_wikiToolBar;
+        QLineEdit*    m_wikiLocaleEdit;
+        QComboBox*    m_wikiLocaleCombo;
+        KDialogBase*  m_wikiConfigDialog;
 
         QString       m_HTMLSource;
         QStringList   m_metadataHistory;
