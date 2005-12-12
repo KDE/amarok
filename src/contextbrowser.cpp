@@ -1186,19 +1186,8 @@ bool CurrentTrackJob::doJob()
             const uint rating = values[4].toInt();
 
             const QString scoreBox =
-                true ? "<table class='scoreBox' border='0' cellspacing='0' cellpadding='0' title='" 
-                    + i18n( "Score:" ) + " %2, " + i18n( "Rating:" ) + " %4'>"
-                "<tr>"
-                "<td nowrap>%1&nbsp;</td>"
-                "<td>"
-                "<div class='sbouter'>"
-                "<div class='sbinner' style='width: %3px;'></div>"
-                "</div>"
-                "</td>"
-                "</tr>"
-                "</table>"
-                : "<table class='scoreBox' border='0' cellspacing='0' cellpadding='0' title='" 
-                    + i18n( "Score" ) + " %2'>"
+                "<table class='scoreBox' border='0' cellspacing='0' cellpadding='0' title='" 
+                    + QString( true ? i18n( "Score:" ) + " %2, " + i18n( "Rating:" ) + " %4'>" : i18n( "Score" ) + " %2'>" ) +
                 "<tr>"
                 "<td nowrap>%1&nbsp;</td>"
                 "<td>"
@@ -1385,7 +1374,7 @@ bool CurrentTrackJob::doJob()
                         "<table class='box-body' id='T_SS' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
 
                 for ( uint i = 0; i < values.count(); i += 5 )
-                    true ? m_HTMLSource.append(
+                    m_HTMLSource.append(
                             "<tr class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
                             "<td class='song'>"
                             "<a href=\"file:" + values[i].replace( '"', QCString( "%22" ) ) + "\">"
@@ -1396,27 +1385,10 @@ bool CurrentTrackJob::doJob()
                             "</a>"
                             "</td>"
                             "<td class='sbtext' width='1' title='Score'>" + values[i + 3] + "</td>"
-                            "<td width='1' title='" + i18n( "Rating" ) + "'>"
+                            "<td width='1' title='" + i18n( true ? "Rating" : "Score" ) + "'>"
                             "<div class='sbouter'>"
-                            "<div class='sbinner' style='width: " + QString::number( values[i + 4].toInt() * 10 ) + "px;'></div>"
-                            "</div>"
-                            "</td>"
-                            "<td width='1'></td>"
-                            "</tr>" )
-                    : m_HTMLSource.append(
-                            "<tr class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
-                            "<td class='song'>"
-                            "<a href=\"file:" + values[i].replace( '"', QCString( "%22" ) ) + "\">"
-                            "<span class='album-song-title'>"+ escapeHTML( values[i + 2] ) + "</span>"
-                            "<span class='song-separator'>"
-                            + i18n("&#xa0;&#8211; ") +
-                            "</span><span class='album-song-title'>" + escapeHTML( values[i + 1] ) + "</span>"
-                            "</a>"
-                            "</td>"
-                            "<td class='sbtext' width='1' title='Score'>" + values[i + 3] + "</td>"
-                            "<td width='1' title='" + i18n( "Score" ) + "'>"
-                            "<div class='sbouter'>"
-                            "<div class='sbinner' style='width: " + QString::number( values[i + 3].toInt() / 2 ) + "px;'></div>"
+                            "<div class='sbinner' style='width: " 
+                                + QString::number( true ? values[i + 4].toInt() * 10 : values[i + 3].toInt() / 2 ) + "px;'></div>"
                             "</div>"
                             "</td>"
                             "<td width='1'></td>"
@@ -1461,32 +1433,17 @@ bool CurrentTrackJob::doJob()
 
             for ( uint i = 0; i < values.count(); i += 4 )
                 m_HTMLSource.append(
-                    true ? "<tr class='" + QString( (i % 6) ? "box-row-alt" : "box-row" ) + "'>"
+                    "<tr class='" + QString( (i % 6) ? "box-row-alt" : "box-row" ) + "'>"
                         "<td class='song'>"
                             "<a href=\"file:" + values[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
                             "<span class='album-song-title'>" + escapeHTML( values[i] ) + "</span>"
                             "</a>"
                         "</td>"
                         "<td class='sbtext' width='1' title='" + i18n( "Score" ) + "'>" + values[i + 2] + "</td>"
-                        "<td width='1' title='" + i18n( "Rating" ) + "'>"
+                        "<td width='1' title='" + i18n( true ? "Rating" : "Score" ) + "'>"
                             "<div class='sbouter'>"
                                 "<div class='sbinner' style='width: " 
-                                    + QString::number( values[i + 3].toInt() * 10 ) + "px;'></div>"
-                            "</div>"
-                        "</td>"
-                        "<td width='1'></td>"
-                    "</tr>"
-                    : "<tr class='" + QString( (i % 6) ? "box-row-alt" : "box-row" ) + "'>"
-                        "<td class='song'>"
-                            "<a href=\"file:" + values[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
-                            "<span class='album-song-title'>" + escapeHTML( values[i] ) + "</span>"
-                            "</a>"
-                        "</td>"
-                        "<td class='sbtext' width='1' title='" + i18n( "Score" ) + "'>" + values[i + 2] + "</td>"
-                        "<td width='1' title='" + i18n( "Rating" ) + "'>"
-                            "<div class='sbouter'>"
-                                "<div class='sbinner' style='width: " 
-                                    + QString::number( values[i + 2].toInt() / 2 ) + "px;'></div>"
+                                    + QString::number( true ? values[i + 3].toInt() * 10 : values[i + 2].toInt() / 2 ) + "px;'></div>"
                             "</div>"
                         "</td>"
                         "<td width='1'></td>"
