@@ -167,6 +167,9 @@ KDE_ICON = \
 
 bin_PROGRAMS = amarokapp
 
+amarokapp_SOURCES = \
+    main.cpp
+
 amarokapp_LDADD = \
     $(IPOD_OBJS) \
     $(top_builddir)/amarok/src/amarokcore/libamarokcore.la \

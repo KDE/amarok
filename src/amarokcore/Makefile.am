@@ -15,7 +15,6 @@ noinst_HEADERS = \
     amarokdcophandler.h
 
 libamarokcore_la_SOURCES = \
-    main.cpp \
     amarokdcopiface.skel \
     amarokdcophandler.cpp \
     amarokconfig.kcfgc \
