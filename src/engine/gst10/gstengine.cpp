@@ -155,13 +155,23 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer ) //static
 */
 
 void
-GstEngine::candecode_handoff_cb( GstElement*, GstBuffer*, gpointer ) //static
+GstEngine::candecode_newPad_cb( GstElement*, GstPad* pad, gboolean, gpointer ) //static
 {
     DEBUG_FUNC_INFO
-
-    instance()->m_canDecodeSuccess = true;
+    GstCaps* caps = gst_pad_get_caps( pad );
+    if (gst_caps_get_size(caps)>0) {
+        GstStructure* str = gst_caps_get_structure( caps,0 );
+        if (g_strrstr(gst_structure_get_name( str ), "audio" )) instance()->m_canDecodeSuccess = true;
+    }
+    gst_caps_unref( caps );
 }
 
+void
+GstEngine::candecode_last_cb( GstElement*, gpointer ) //static
+{
+    DEBUG_FUNC_INFO
+    instance()->m_canDecodeLast = true;
+}
 /*
 void
 GstEngine::kio_resume_cb() //static
@@ -254,7 +264,6 @@ GstEngine::init()
 bool
 GstEngine::canDecode( const KURL &url ) const
 {
-    // TODO Consider using decodebin here as well
 
     // We had some bug reports claiming that video files cause crashes in canDecode(),
     // so don't try to decode them
@@ -262,39 +271,38 @@ GstEngine::canDecode( const KURL &url ) const
          url.fileName().lower().endsWith( ".avi" ) ||
          url.fileName().lower().endsWith( ".wmv" ) )
         return false;
-    
-    if ( url.fileName().lower().endsWith( ".mp3" ) ||
-         url.fileName().lower().endsWith( ".ogg" )) return true;
-    return false;
-  /*
+
+    debug() << "Can decode for " << url.prettyURL() << endl;    
     int count = 0;
     m_canDecodeSuccess = false;
-    GstElement *pipeline, *filesrc, *spider, *fakesink;
+    m_canDecodeLast = false;
+    GstElement *pipeline, *filesrc, *decodebin;
 
     if ( !( pipeline = createElement( "pipeline" ) ) ) return false;
     if ( !( filesrc = createElement( "filesrc", pipeline ) ) ) return false;
-    if ( !( spider = createElement( "spider", pipeline ) ) ) return false;
-    if ( !( fakesink = createElement( "fakesink", pipeline ) ) ) return false;
+    if ( !( decodebin = createElement( "decodebin", pipeline ) ) ) return false;
 
-    GstCaps* filtercaps = gst_caps_new_simple( "audio/x-raw-int", NULL );
 
-    gst_element_link( filesrc, spider );
-    gst_element_link_filtered( spider, fakesink, filtercaps );
+    gst_element_link( filesrc, decodebin );
 
     g_object_set( G_OBJECT( filesrc ), "location", (const char*) QFile::encodeName( url.path() ), NULL );
-    g_object_set( G_OBJECT( fakesink ), "signal_handoffs", true, NULL );
-    g_signal_connect( G_OBJECT( fakesink ), "handoff", G_CALLBACK( candecode_handoff_cb ), pipeline );
+    g_signal_connect( G_OBJECT( decodebin ), "new-decoded-pad", G_CALLBACK( candecode_newPad_cb ), NULL );
+    g_signal_connect( G_OBJECT( decodebin ), "no-more-pads", G_CALLBACK( candecode_last_cb ), NULL );
 
     gst_element_set_state( pipeline, GST_STATE_PLAYING );
 
-    // Try to iterate over the bin until signal "handoff" gets triggered
-    while ( gst_bin_iterate( GST_BIN( pipeline ) ) && !m_canDecodeSuccess && count < 1000 )
+    // Wait until found audio stream 
+    
+    while ( !m_canDecodeSuccess && !m_canDecodeLast && count < 100 ) {
         count++;
+	usleep(1000);
+    }
 
+    debug() << "Got " << m_canDecodeSuccess << " after " << count << " sleeps" << endl;
     gst_element_set_state( pipeline, GST_STATE_NULL );
     gst_object_unref( GST_OBJECT( pipeline ) );
 
-    return m_canDecodeSuccess; */
+    return m_canDecodeSuccess; 
 }
 
 

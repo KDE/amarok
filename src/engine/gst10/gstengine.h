@@ -125,10 +125,12 @@ class GstEngine : public Engine::Base
         static GstBusSyncReply bus_cb( GstBus*, GstMessage*, gpointer );
         /** Called when decodebin has generated a new pad */
         static void newPad_cb( GstElement*, GstPad*, gboolean, gpointer );
+        /** Used by canDecode(). When called, the format probably can be decoded */
+        static void candecode_newPad_cb( GstElement*, GstPad*, gboolean, gpointer );
+        /** Used by canDecode(). Called after last pad so it makes no sense to wait anymore */
+        static void candecode_last_cb( GstElement*, gpointer );
         /** Duplicates audio data for application side processing */
 //        static void handoff_cb( GstElement*, GstBuffer*, gpointer );
-        /** Used by canDecode(). When called, the format can be decoded */
-        static void candecode_handoff_cb( GstElement*, GstBuffer*, gpointer );
         /** Called when the KIO buffer is empty */
 //        static void kio_resume_cb();
 
@@ -199,6 +201,7 @@ class GstEngine : public Engine::Base
 
         bool m_shutdown;
         mutable bool m_canDecodeSuccess;
+        mutable bool m_canDecodeLast;
 };
 
 
