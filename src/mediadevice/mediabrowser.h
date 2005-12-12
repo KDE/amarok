@@ -6,6 +6,9 @@
 #ifndef AMAROK_MEDIABROWSER_H
 #define AMAROK_MEDIABROWSER_H
 
+#include "amarok.h"
+#include "plugin/plugin.h"   //baseclass
+
 #include <qvbox.h>           //baseclass
 #include <qdatetime.h>
 
@@ -206,6 +209,7 @@ class MediaDeviceView : public QVBox
         void slotShowContextMenu( QListViewItem* item, const QPoint& point, int );
 
     private:
+        MediaDevice*     loadDevicePlugin( const QString &deviceName );
         bool             switchMediaDevice( int newType );
     
         QString          prettySize( unsigned long size ); // KB to QString
@@ -228,7 +232,7 @@ class MediaDeviceView : public QVBox
    all items are stored in a hierarchy of MediaItems,
    when items are manipulated the MediaItems have to be updated accordingly */
 
-class MediaDevice : public QObject
+class MediaDevice : public QObject, public amaroK::Plugin
 {
     Q_OBJECT
     friend class MediaBrowser;
@@ -423,6 +427,8 @@ class MediaDevice : public QObject
         bool             m_waitForDeletion;
         bool             m_copyFailed;
         bool             m_requireMount;
+        bool             m_hasPodcast;
+        bool             m_hasStats;
         bool             m_cancelled;
         bool             m_transferring;
         MediaItem       *m_transferredItem;

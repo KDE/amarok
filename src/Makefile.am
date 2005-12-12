@@ -8,16 +8,6 @@ if with_konqsidebar
     KONQSIDEBAR_SUBDIR = konquisidebar
 endif
 
-if with_libgpod
-    IPOD_SUBDIR = gpodmediadevice
-    IPOD_SUBLIBS = gpodmediadevice/libgpodmediadevice.la $(LIBGPOD_LIBS)
-endif
-
-if with_ifp
-    IFP_SUBDIR = ifpmediadevice
-    IFP_SUBLIBS = ifpmediadevice/libifpmediadevice.la $(IFP_LIBS)
-endif
-
 
 noinst_LTLIBRARIES = libamarok.la
 
@@ -35,9 +25,8 @@ SUBDIRS = \
     vis \
     metadata \
     $(KONQSIDEBAR_SUBDIR) \
-    $(IPOD_SUBDIR) \
-    $(IFP_SUBDIR) \
     statusbar \
+    mediadevice \
     collectionscanner
 
 
@@ -48,6 +37,7 @@ INCLUDES = \
     -I$(top_srcdir)/amarok/src/engine \
     -I$(top_srcdir)/amarok/src/plugin \
     -I$(top_srcdir)/amarok/src/statusbar \
+    -I$(top_srcdir)/amarok/src/mediadevice \
     -I$(top_srcdir)/amarok/src \
     -I$(kde_includes)/arts \
     $(taglib_includes) \
@@ -94,9 +84,7 @@ libamarok_la_SOURCES = \
     htmlview.cpp \
     k3bexporter.cpp \
     kbookmarkhandler.cpp \
-    kiomediadevice.cpp \
     ktrm.cpp \
-    mediabrowser.cpp \
     metabundle.cpp \
     multitabbar.cpp \
     moodbar.cpp \
@@ -146,6 +134,7 @@ libamarok_la_LIBADD = \
     $(top_builddir)/amarok/src/plugin/libplugin.la \
     $(top_builddir)/amarok/src/statusbar/libstatusbar.la \
     $(top_builddir)/amarok/src/metadata/libmetadata.la \
+    $(top_builddir)/amarok/src/mediadevice/libmediadevice.la \
     $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KHTML) $(LIB_KNEWSTUFF) \
     $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) $(EXSCALIBAR_LIBS) \
     $(LIB_TUNEPIMP) \
@@ -179,6 +168,7 @@ amarokapp_LDADD = \
     $(top_builddir)/amarok/src/plugin/libplugin.la \
     $(top_builddir)/amarok/src/statusbar/libstatusbar.la \
     $(top_builddir)/amarok/src/metadata/libmetadata.la \
+    $(top_builddir)/amarok/src/mediadevice/libmediadevice.la \
     $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KHTML) $(LIB_KNEWSTUFF) \
     $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) $(EXSCALIBAR_LIBS) \
     $(LIB_TUNEPIMP) \

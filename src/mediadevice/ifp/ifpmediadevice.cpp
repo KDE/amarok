@@ -24,14 +24,13 @@
 
 #include "ifpmediadevice.h"
 
-// #include "amarokconfig.h"
 #include "debug.h"
 #include "metabundle.h"
 #include "collectiondb.h"
 #include "statusbar/statusbar.h"
 
 #include <kapplication.h>
-#include <kconfig.h>           //download saveLocation
+// #include <kconfig.h>           //download saveLocation
 #include <kiconloader.h>       //smallIcon
 #include <kmessagebox.h>
 #include <kpopupmenu.h>
@@ -41,7 +40,7 @@
 #include <qfile.h>
 #include <qcstring.h>
 
-namespace amaroK { extern KConfig *config( const QString& ); }
+// namespace amaroK { extern KConfig *config( const QString& ); }
 
 /**
  * IfpMediaItem Class
@@ -140,9 +139,9 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
     if( m_dh == NULL )
     {
         error() << "A suitable iRiver iFP device couldn't be found" << endl;
-        amaroK::StatusBar::instance()->shortLongMessage( genericError,
-                                        i18n("iFP: A suitable iRiver iFP device couldn't be found")
-                                        , KDE::StatusBar::Error );
+//         pApp()->amaroK::StatusBar::instance()->shortLongMessage( genericError,
+//                                         i18n("iFP: A suitable iRiver iFP device couldn't be found")
+//                                         , KDE::StatusBar::Error );
         return false;
     }
 
@@ -150,8 +149,8 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
     if( m_dev == NULL )
     {
         error() << "Could not get usb_device()" << endl;
-        amaroK::StatusBar::instance()->shortLongMessage( genericError,
-                                        i18n("iFP: Could not get a usb device handle"), KDE::StatusBar::Error );
+//         pApp()->amaroK::StatusBar::instance()->shortLongMessage( genericError,
+//                                         i18n("iFP: Could not get a usb device handle"), KDE::StatusBar::Error );
         if( ifp_release_device( m_dh ) )
             error() << "warning: release_device failed." << endl;
         return false;
@@ -161,8 +160,8 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
     if( usb_claim_interface( m_dh, m_dev->config->interface->altsetting->bInterfaceNumber ) )
     {
         error() << "Device is busy.  (I was unable to claim its interface.)" << endl;
-        amaroK::StatusBar::instance()->shortLongMessage( genericError,
-                                        i18n("iFP: Device is busy"), KDE::StatusBar::Error );
+//         pApp()->amaroK::StatusBar::instance()->shortLongMessage( genericError,
+//                                         i18n("iFP: Device is busy"), KDE::StatusBar::Error );
         if( ifp_release_device( m_dh ) )
             error() << "warning: release_device failed." << endl;
         return false;
@@ -172,8 +171,8 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
     if( i )
     {
         error() << "IFP device: Device cannot be opened." << endl;
-        amaroK::StatusBar::instance()->shortLongMessage( genericError,
-                                        i18n("iFP: Could not open device"), KDE::StatusBar::Error );
+//         pApp()->amaroK::StatusBar::instance()->shortLongMessage( genericError,
+//                                         i18n("iFP: Could not open device"), KDE::StatusBar::Error );
         usb_release_interface( m_dh, m_dev->config->interface->altsetting->bInterfaceNumber );
         return false;
     }
@@ -321,8 +320,9 @@ IfpMediaDevice::downloadTrack( const QCString& src, const QCString& dest )
 void
 IfpMediaDevice::downloadSelectedItems()
 {
-    KConfig *config = amaroK::config( "MediaDevice" );
-    QString save = config->readEntry( "DownloadLocation", QString::null );  //restore the save directory
+//     KConfig *config = amaroK::config( "MediaDevice" );
+//     QString save = config->readEntry( "DownloadLocation", QString::null );  //restore the save directory
+    QString save = QString::null;
 
     KURLRequesterDlg dialog( save, 0, 0 );
     dialog.setCaption( kapp->makeStdCaption( i18n( "Choose a Download Directory" ) ) );
@@ -335,8 +335,8 @@ IfpMediaDevice::downloadSelectedItems()
     
     destDir.adjustPath( 1 ); //add trailing slash
     
-    if( save != destDir.path() )
-        config->writeEntry( "DownloadLocation", destDir.path() );
+//     if( save != destDir.path() )
+//         config->writeEntry( "DownloadLocation", destDir.path() );
     
     QListViewItemIterator it( m_listview, QListViewItemIterator::Selected );
     for( ; it.current(); ++it )

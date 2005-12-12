@@ -5,6 +5,7 @@ INCLUDES = \
     -I$(top_srcdir)/amarok/src/engine \
     -I$(top_srcdir)/amarok/src/plugin \
     -I$(top_srcdir)/amarok/src/statusbar \
+    -I$(top_srcdir)/amarok/src/mediadevice \
     $(all_includes)
 
 noinst_LTLIBRARIES = \

@@ -14,20 +14,21 @@
 #include "clicklineedit.h"
 #include "collectiondb.h"
 #include "colorgenerator.h"
+#include "contextbrowser.h"
 #include "debug.h"
 #include "mediabrowser.h"
 #include "metabundle.h"
+#include "playlistloader.h"
+#include "pluginmanager.h"
 #include "scrobbler.h"
 #include "statusbar.h"
-#include "playlistloader.h"
-#include "contextbrowser.h"
 
 #ifdef HAVE_LIBGPOD
-#include "gpodmediadevice/gpodmediadevice.h"
+#include "gpod/gpodmediadevice.h"
 #endif
 
 #ifdef HAVE_IFP
-#include "ifpmediadevice/ifpmediadevice.h"
+#include "ifp/ifpmediadevice.h"
 #endif
 
 #include <qcheckbox.h>
@@ -806,21 +807,9 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     , m_deviceList( new MediaDeviceList( this ) )
     , m_parent( parent )
 {
-#if defined(HAVE_LIBGPOD)
-    debug() << "Loading iPod device!" << endl;
-    m_device = new GpodMediaDevice( this, m_deviceList );
-    m_device->setDeviceType( MediaDevice::IPOD );
-    m_device->setRequireMount( true );
-#elif defined(HAVE_IFP)
-    debug() << "Loading IFP device!" << endl;
-    m_device = new IfpMediaDevice( this, m_deviceList );
+    m_device = loadDevicePlugin( QString("ifp-mediadevice") );
     m_device->setDeviceType( MediaDevice::IFP );
-    m_device->setRequireMount( false );
-#else
-    debug() << "Loading dummy device!" << endl;
-    m_device = new DummyMediaDevice( this, m_deviceList );
-    m_device->setDeviceType( MediaDevice::DUMMY );
-#endif
+    
     m_progressBox  = new QHBox( this );
     m_progress     = new KProgress( m_progressBox );
     m_cancelButton = new KPushButton( SmallIconSet("cancel"), i18n("Cancel"), m_progressBox );
@@ -873,6 +862,40 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     setFocusProxy( m_device->m_transferList );
 }
 
+MediaDevice *
+MediaDeviceView::loadDevicePlugin( const QString &deviceName )
+{
+    DEBUG_BLOCK
+
+    QString query = "[X-KDE-amaroK-plugintype] == 'mediadevice' and [X-KDE-amaroK-name] == '%1'";
+    amaroK::Plugin *plugin = PluginManager::createFromQuery( query.arg( deviceName ) );
+
+    if( plugin )
+    {
+        debug() << "Returning plugin!" << endl;
+        return (MediaDevice*)plugin;
+    }
+    
+    debug() << "loading dummy" << endl;
+    MediaDevice *device = new DummyMediaDevice( this, m_deviceList );
+    return device;
+// #if defined(HAVE_LIBGPOD)
+//     debug() << "Loading iPod device!" << endl;
+//     m_device = new GpodMediaDevice( this, m_deviceList );
+//     m_device->setDeviceType( MediaDevice::IPOD );
+//     m_device->setRequireMount( true );
+// #elif defined(HAVE_IFP)
+//     debug() << "Loading IFP device!" << endl;
+//     m_device = new IfpMediaDevice( this, m_deviceList );
+//     m_device->setDeviceType( MediaDevice::IFP );
+//     m_device->setRequireMount( false );
+// #else
+//     debug() << "Loading dummy device!" << endl;
+//     m_device = new DummyMediaDevice( this, m_deviceList );
+//     m_device->setDeviceType( MediaDevice::DUMMY );
+// #endif
+}
+
 void
 MediaDeviceView::config()
 {
@@ -889,8 +912,10 @@ MediaDeviceView::config()
     
     devices->setCurrentItem( m_device->deviceType() );
 
-    QLabel *mntpntLabel = 0, *mntLabel = 0, *umntLabel = 0;
-    QLineEdit *mntpnt = 0, *mntcmd = 0, *umntcmd = 0;
+    QLabel    *mntpntLabel = 0, *mntLabel = 0, *umntLabel = 0;
+    QLineEdit *mntpnt      = 0, *mntcmd   = 0, *umntcmd   = 0;
+    QCheckBox *syncStats   = 0, *autoDeletePodcasts = 0;
+    
     if( m_device->m_requireMount )
     {
         mntpntLabel = new QLabel( box );
@@ -911,16 +936,22 @@ MediaDeviceView::config()
         umntLabel->setBuddy( umntcmd );
         QToolTip::add( umntcmd, i18n( "Set the command to unmount your device here, empty commands are not executed." ) );
     }
-
-    QCheckBox *autoDeletePodcasts = new QCheckBox( box );
-    autoDeletePodcasts->setText( i18n( "&Automatically delete podcasts" ) );
-    QToolTip::add( autoDeletePodcasts, i18n( "Automatically delete podcast shows already played on connect" ) );
-    autoDeletePodcasts->setChecked( m_device->m_autoDeletePodcasts );
-
-    QCheckBox *syncStats = new QCheckBox( box );
-    syncStats->setText( i18n( "&Synchronize with amaroK statistics" ) );
-    QToolTip::add( syncStats, i18n( "Synchronize with amaroK statistics and submit tracks played to last.fm" ) );
-    syncStats->setChecked( m_device->m_syncStats );
+    
+    if( m_device->m_hasPodcast )
+    {
+        autoDeletePodcasts = new QCheckBox( box );
+        autoDeletePodcasts->setText( i18n( "&Automatically delete podcasts" ) );
+        QToolTip::add( autoDeletePodcasts, i18n( "Automatically delete podcast shows already played on connect" ) );
+        autoDeletePodcasts->setChecked( m_device->m_autoDeletePodcasts );
+    }
+    
+    if( m_device->m_hasStats )
+    {
+        syncStats = new QCheckBox( box );
+        syncStats->setText( i18n( "&Synchronize with amaroK statistics" ) );
+        QToolTip::add( syncStats, i18n( "Synchronize with amaroK statistics and submit tracks played to last.fm" ) );
+        syncStats->setChecked( m_device->m_syncStats );
+    }
 
     if ( dialog.exec() != QDialog::Rejected )
     {
@@ -939,8 +970,12 @@ MediaDeviceView::config()
             m_device->setMountCommand( mntcmd->text() );
             m_device->setUmountCommand( umntcmd->text() );
         }
-        m_device->setAutoDeletePodcasts( autoDeletePodcasts->isChecked() );
-        m_device->setSyncStats( syncStats->isChecked() );
+        
+        if( m_device->m_hasPodcast )
+            m_device->setAutoDeletePodcasts( autoDeletePodcasts->isChecked() );
+            
+        if( m_device->m_hasStats )
+            m_device->setSyncStats( syncStats->isChecked() );
     }
 }
 
@@ -978,10 +1013,10 @@ MediaDeviceView::switchMediaDevice( int newType )
         case MediaDevice::IFP:
             debug() << "Loading IFP device! " << MediaDevice::IFP << endl;
         #ifdef HAVE_IFP
-            delete m_device;
-            m_device = new IfpMediaDevice( this, m_deviceList );
-            m_device->setDeviceType( MediaDevice::IFP );
-            m_device->setRequireMount( false );
+//             delete m_device;
+//             m_device = new IfpMediaDevice( this, m_deviceList );
+//             m_device->setDeviceType( MediaDevice::IFP );
+//             m_device->setRequireMount( false );
         #else
             return false;
         #endif
@@ -1149,10 +1184,13 @@ MediaDeviceView::match( const MediaItem *it, const QString &filter )
 
 
 MediaDevice::MediaDevice( MediaDeviceView* parent, MediaDeviceList *listview )
-    : m_parent( parent )
+    : amaroK::Plugin()
+    , m_parent( parent )
     , m_listview( listview )
     , m_wait( false )
     , m_requireMount( false )
+    , m_hasPodcast( false )
+    , m_hasStats( false )
     , m_cancelled( false )
     , m_transferring( false )
     , m_transferredItem( 0 )
@@ -1620,7 +1658,7 @@ MediaDevice::syncStatsToDevice( MediaItem *root )
             break;
 
         default:
-            syncStatsToDevice( it );
+            syncStatsFromDevice( it );
             break;
         }
     }

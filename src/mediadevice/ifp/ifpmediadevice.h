@@ -22,7 +22,7 @@ extern "C" {
     #include <usb.h>
 }
 
-#include "mediabrowser.h"
+#include "../mediabrowser.h"
 
 #include <kurl.h>
 

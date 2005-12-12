@@ -575,6 +575,22 @@ CollectionDB::createPersistentTables()
         "url " + textColumnType() + ","
         "label " + textColumnType() + ");" ) );
 
+    // create podcasts table
+//     query( QString( "CREATE TABLE podcasts ("
+//         "url " + textColumnType() + ","
+//         "copyright " + textColumnType() + ","
+//         "description " + textColumnType() + ");" ) );
+        
+    // create podcast item table
+//     query( QString( "CREATE TABLE podcast_items ("
+//         "parent_url " + textColumnType() + ","
+//         "url " + textColumnType() + ","
+//         "saveLocation " + textColumnType() + ","
+//         "autofetch " + boolColumnType() + ","
+//         "enabled " + boolColumnType() + ","
+//         "copyright " + textColumnType() + ","
+//         "description " + textColumnType() + ");" ) );
+
     query( "CREATE INDEX url_label ON label( url );" );
     query( "CREATE INDEX label_label ON label( label );" );
 
@@ -587,6 +603,8 @@ CollectionDB::dropPersistentTables()
     query( "DROP TABLE amazon;" );
     query( "DROP TABLE lyrics;" );
     query( "DROP TABLE labels;" );
+//     query( "DROP TABLE podcasts;" );
+//     query( "DROP TABLE podcast_items;" );
 }
 
 uint
