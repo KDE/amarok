@@ -18,7 +18,8 @@ if with_ifp
     IFP_SUBLIBS = ifpmediadevice/libifpmediadevice.la $(IFP_LIBS)
 endif
 
-bin_PROGRAMS = amarokapp
+
+noinst_LTLIBRARIES = libamarok.la
 
 SUBDIRS = \
     amarokcore \
@@ -58,7 +59,7 @@ INCLUDES = \
     $(EXSCALIBAR_CFLAGS) \
     $(all_includes)
 
-amarokapp_SOURCES = \
+libamarok_la_SOURCES = \
     Options1.ui \
     Options1.ui.h \
     Options2.ui \
@@ -137,7 +138,7 @@ amarokapp_SOURCES = \
     trackpickerdialog.cpp \
     trackpickerdialogbase.ui
 
-amarokapp_LDADD = \
+libamarok_la_LIBADD = \
     $(IPOD_OBJS) \
     $(top_builddir)/amarok/src/amarokcore/libamarokcore.la \
     $(top_builddir)/amarok/src/analyzers/libanalyzers.la \
@@ -152,7 +153,7 @@ amarokapp_LDADD = \
     $(mysql_libs) \
     $(postgresql_libs)
 
-amarokapp_LDFLAGS = \
+libamarok_la_LDFLAGS = \
     $(all_libraries) \
     $(KDE_RPATH)
 
@@ -161,6 +162,27 @@ METASOURCES = \
 
 KDE_ICON = \
     AUTO
+
+
+
+bin_PROGRAMS = amarokapp
+
+amarokapp_LDADD = \
+    $(IPOD_OBJS) \
+    $(top_builddir)/amarok/src/amarokcore/libamarokcore.la \
+    $(top_builddir)/amarok/src/libamarok.la \
+    $(top_builddir)/amarok/src/analyzers/libanalyzers.la \
+    $(top_builddir)/amarok/src/engine/libengine.la \
+    $(top_builddir)/amarok/src/plugin/libplugin.la \
+    $(top_builddir)/amarok/src/statusbar/libstatusbar.la \
+    $(top_builddir)/amarok/src/metadata/libmetadata.la \
+    $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KHTML) $(LIB_KNEWSTUFF) \
+    $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) $(EXSCALIBAR_LIBS) \
+    $(LIB_TUNEPIMP) \
+    $(IPOD_SUBLIBS) $(IFP_SUBLIBS) \
+    $(mysql_libs) \
+    $(postgresql_libs)
+
 
 
 rcdir = \
