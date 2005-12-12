@@ -480,7 +480,6 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     setVolume( m_volume );
 //    setEqualizerEnabled( m_equalizerEnabled );
 //    if ( m_equalizerEnabled ) setEqualizerParameters( m_equalizerPreamp, m_equalizerGains );
-
     return true;
 }
 
@@ -766,47 +765,23 @@ GstEngine::createElement( const QCString& factoryName, GstElement* bin, const QC
 QStringList
 GstEngine::getPluginList( const QCString& classname ) const
 {
-/*    GList * pool_registries = NULL;
-    GList* registries = NULL;
-    GList* plugins = NULL;
     GList* features = NULL;
     QString name;
     QStringList results;
 
-    pool_registries = gst_registry_pool_list ();
-    registries = pool_registries;
-
-    while ( registries ) {
-        GstRegistry * registry = GST_REGISTRY ( registries->data );
-        plugins = registry->plugins;
-
-        while ( plugins ) {
-            GstPlugin * plugin = GST_PLUGIN ( plugins->data );
-            features = gst_plugin_get_feature_list ( plugin );
-
-            while ( features ) {
-                GstPluginFeature * feature = GST_PLUGIN_FEATURE ( features->data );
-
-                if ( GST_IS_ELEMENT_FACTORY ( feature ) ) {
-                    GstElementFactory * factory = GST_ELEMENT_FACTORY ( feature );
-
-                    if ( g_strrstr ( factory->details.klass, classname ) ) {
-                        name = g_strdup ( GST_OBJECT_NAME ( factory ) );
-                        if ( name != "autoaudiosink" )
-                            results << name;
-                    }
-                }
-                features = g_list_next ( features );
+    GstRegistry* registry = gst_registry_get_default();
+    features = gst_registry_get_feature_list(registry,GST_TYPE_ELEMENT_FACTORY);
+        while ( features ) {
+        GstElementFactory * factory = GST_ELEMENT_FACTORY ( features->data );
+        if ( g_strrstr ( factory->details.klass, classname ) ) {
+            name = g_strdup ( GST_PLUGIN_FEATURE_NAME ( features->data ) );
+            if ( name != "autoaudiosink" )
+                results << name;
             }
-            plugins = g_list_next ( plugins );
+        features = g_list_next ( features );
         }
-        registries = g_list_next ( registries );
-    }
-    g_list_free ( pool_registries );
-    pool_registries = NULL;
-
-    return results; */
-    return QStringList("autoaudiosink");
+    gst_plugin_feature_list_free(features);
+    return results; 
 }
 
 
@@ -817,10 +792,10 @@ GstEngine::createPipeline()
 
     destroyPipeline();
 
-//    if ( GstConfig::soundOutput().isEmpty()) {
-//        QTimer::singleShot( 0, this, SLOT( errorNoOutput() ) );
-//        return false;
-//    }
+    if ( GstConfig::soundOutput().isEmpty()) {
+        QTimer::singleShot( 0, this, SLOT( errorNoOutput() ) );
+        return false;
+    }
     debug() << "Sound output method: " << GstConfig::soundOutput() << endl;
     debug() << "CustomSoundDevice: " << ( GstConfig::useCustomSoundDevice() ? "true" : "false" ) << endl;
     debug() << "Sound Device: " << GstConfig::soundDevice() << endl;
@@ -833,18 +808,19 @@ GstEngine::createPipeline()
         output += " ";
         output += GstConfig::outputParams().latin1();
     }
-/*    GError* err;
-    if ( !( m_gst_audiosink = gst_parse_launch( output, &err ) ) ) {
-        QTimer::singleShot( 0, this, SLOT( errorNoOutput() ) );
-        return false;
-    }
-*/
+
     m_gst_pipeline = gst_pipeline_new( "pipeline" );
     m_gst_audiobin = gst_bin_new( "audiobin" );
 
+
+    if ( !( m_gst_audiosink = createElement( output, m_gst_audiobin ) ) ) {
+        QTimer::singleShot( 0, this, SLOT( errorNoOutput() ) );
+        return false;
+    }
+
     /* setting device property for AudioSink*/
-//    if ( GstConfig::useCustomSoundDevice() && !GstConfig::soundDevice().isEmpty() )
-//        gst_element_set( m_gst_audiosink, "device", GstConfig::soundDevice().latin1(), NULL );
+    if ( GstConfig::useCustomSoundDevice() && !GstConfig::soundDevice().isEmpty() )
+        g_object_set( G_OBJECT(m_gst_audiosink), "device", GstConfig::soundDevice().latin1(), NULL );
 
 //    m_gst_equalizer = GST_ELEMENT( gst_equalizer_new() );
 //    gst_bin_add( GST_BIN( m_gst_audiobin ), m_gst_equalizer );
@@ -854,8 +830,6 @@ GstEngine::createPipeline()
     if ( !( m_gst_audioscale = createElement( "audioresample", m_gst_audiobin ) ) ) { return false; }
 
     GstPad* p = gst_element_get_pad(m_gst_audioconvert, "sink");
-    // FIXME: use sink from configuration
-    m_gst_audiosink = createElement("alsasink",m_gst_audiobin);
     gst_element_add_pad(m_gst_audiobin,gst_ghost_pad_new("sink",p));
     gst_object_unref(p);
 
