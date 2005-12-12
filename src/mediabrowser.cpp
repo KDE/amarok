@@ -63,6 +63,7 @@
 #include <ktempfile.h>
 #include <ktoolbarbutton.h> //ctor
 #include <kurldrag.h>       //dragObject()
+#include <kactioncollection.h>
 
 
 MediaDevice *MediaDevice::s_instance = 0;
@@ -515,6 +516,9 @@ MediaDeviceList::MediaDeviceList( MediaDeviceView* parent )
     setAcceptDrops( true );
 
     addColumn( i18n( "Remote Media" ) );
+
+    KActionCollection* ac = new KActionCollection( this );
+    KStdAction::selectAll( this, SLOT( selectAll() ), ac, "mediadeviceview_select_all" );
 
     connect( this, SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
              this,   SLOT( rmbPressed( QListViewItem*, const QPoint&, int ) ) );
@@ -2074,6 +2078,9 @@ MediaDeviceTransferList::MediaDeviceTransferList(MediaDeviceView *parent)
     addColumn( i18n( "Transfer Queue" ) );
 
     itemCountChanged();
+
+    KActionCollection* ac = new KActionCollection( this );
+    KStdAction::selectAll( this, SLOT( selectAll() ), ac, "mediadevicetransferlist_select_all" );
 }
 
 void

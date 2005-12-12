@@ -118,6 +118,9 @@ class MediaDeviceTransferList : public KListView
     public slots:
         void itemCountChanged();
 
+    private slots:
+        void selectAll() {QListView::selectAll(true); }
+
     private:
         void keyPressEvent( QKeyEvent *e );
 
@@ -168,6 +171,7 @@ class MediaDeviceList : public KListView
         void rmbPressed( QListViewItem*, const QPoint&, int );
         void renameItem( QListViewItem *item );
         void slotExpand( QListViewItem* );
+        void selectAll() {QListView::selectAll(true); }
 
     private:
         void startDrag();
