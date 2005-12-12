@@ -120,6 +120,10 @@ FileBrowser::FileBrowser( const char * name )
         location = QDir::homeDirPath() ;
     }
 
+    KActionCollection* ac = new KActionCollection( this );
+    KStdAction::selectAll( this, SLOT( selectAll() ), ac, "filebrowser_select_all" );
+
+
     KToolBar *toolbar = new Browser::ToolBar( this );
 
     { //Filter LineEdit
@@ -392,15 +396,8 @@ FileBrowser::contextMenuActivated( int id )
         break;
 
     case SelectAllFiles:
-    {
-        KFileItemList list( *m_dir->view()->items() );
-
-        // Select all items which represent files
-        for( KFileItem* item = list.first(); item; item = list.next() )
-            m_dir->view()->setSelected( item, item->isFile() );
-
+        selectAll();
         break;
-    }
 
     case BurnCd:
         K3bExporter::instance()->exportTracks( selectedItems() );
@@ -410,7 +407,15 @@ FileBrowser::contextMenuActivated( int id )
 
 //END Private Slots
 
+void
+FileBrowser::selectAll()
+{
+    KFileItemList list( *m_dir->view()->items() );
 
+    // Select all items which represent files
+    for( KFileItem* item = list.first(); item; item = list.next() )
+        m_dir->view()->setSelected( item, item->isFile() );
+}
 
 #include <kurldrag.h>
 #include <qpainter.h>

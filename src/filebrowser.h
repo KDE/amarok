@@ -71,6 +71,9 @@ private slots:
     void contextMenuActivated( int );
     void prepareContextMenu();
     void slotViewChanged( KFileView* );
+    void selectAll();
+
+
 
 private:
     KURL::List selectedItems();
