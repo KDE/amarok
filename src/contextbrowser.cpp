@@ -2094,8 +2094,11 @@ ContextBrowser::wikiConfigChanged( int activeItem ) // SLOT
 void
 ContextBrowser::wikiConfigApply() // SLOT
 {
+    bool changed = m_wikiLocaleEdit->text() != wikiLocale();
+
     setWikiLocale( m_wikiLocaleEdit->text() );
-    if ( currentPage() == m_wikiTab )
+
+    if ( changed && currentPage() == m_wikiTab )
     {
         if( !m_wikiCurrentEntry.isNull() )
         {
@@ -2389,7 +2392,7 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
         m_wikiPage->set( m_HTMLSource );
 
         m_dirtyWikiPage = false;
-        m_wikiPage = NULL;
+        //m_wikiPage = NULL; // FIXME: what for? leads to crashes
         saveHtmlData(); // Send html code to file
 
         warning() << "[WikiFetcher] KIO error! errno: " << job->error() << endl;
