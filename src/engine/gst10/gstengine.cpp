@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2003-2005 by Mark Kretschmann <markey@web.de>           *
+ *   Copyright (C) 2005 by Jakub Stachowski <qbast@go2.pl>                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
