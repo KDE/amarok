@@ -45,6 +45,7 @@ k_dcop:
    virtual int  getVolume() = 0;                            ///< Return volume in range 0-100%.
    virtual int  sampleRate() = 0;                           ///< Return the sample rate of the currently playing track.
    virtual int  score() = 0;                                ///< Return the score of the currently playing track.
+   virtual int  rating() = 0;                               ///< Return the rating of the currently playing track.
    virtual int  status() = 0;                               ///< Return playback status: 0 - stopped, 1 - paused, 2 - playing. < 0 - error
    virtual int  trackCurrentTime() = 0;                     ///< Return current play position in seconds.
    virtual int  trackPlayCounter() = 0;                     ///< Return play counter for current song.
@@ -95,6 +96,8 @@ k_dcop:
    virtual void setLyricsByPath( const QString& url, const QString& lyrics ) = 0;   ///< Set the lyrics of a track by it's path.
    virtual void setScore( int score ) = 0;                  ///< Set the score of the currently playing track.
    virtual void setScoreByPath( const QString &url, int score ) = 0;  ///< Set the score of a track by it's path.
+   virtual void setRating( int rating ) = 0;                ///< Set the rating of the currently playing track.
+   virtual void setRatingByPath( const QString &url, int rating ) = 0;  ///< Set the rating of a track by it's path.
    virtual void setVolume(int volume) = 0;                  ///< Set volume in range 0-100%.
    virtual void showBrowser( QString browser ) = 0;   ///<Shows browsers in the playlist window.
    virtual void showOSD() = 0;                              ///< Show the OSD display on the screen.

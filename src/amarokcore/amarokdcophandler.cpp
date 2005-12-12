@@ -116,6 +116,13 @@ namespace amaroK
         int score = CollectionDB::instance()->getSongPercentage( bundle.url().path() );
         return score;
     }
+    
+    int DcopPlayerHandler::rating()
+    {
+        const MetaBundle &bundle = EngineController::instance()->bundle();
+        int rating = CollectionDB::instance()->getSongRating( bundle.url().path() );
+        return rating;
+    }
 
     int  DcopPlayerHandler::status()
     {
@@ -394,6 +401,17 @@ namespace amaroK
     void DcopPlayerHandler::setScoreByPath( const QString &url, int score )
     {
         CollectionDB::instance()->setSongPercentage(url, score);
+    }
+    
+    void DcopPlayerHandler::setRating( int rating )
+    {
+        const QString &url = EngineController::instance()->bundle().url().path();
+        CollectionDB::instance()->setSongRating(url, rating);
+    }
+    
+    void DcopPlayerHandler::setRatingByPath( const QString &url, int rating )
+    {
+        CollectionDB::instance()->setSongRating(url, rating);
     }
 
     void DcopPlayerHandler::setVolume(int volume)

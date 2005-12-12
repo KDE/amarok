@@ -45,6 +45,7 @@ class DcopPlayerHandler : public QObject, virtual public AmarokPlayerInterface
       virtual int  getVolume();
       virtual int sampleRate();
       virtual int score ();
+      virtual int rating ();
       virtual int  status();
       virtual int  trackCurrentTime();
       virtual int  trackPlayCounter();
@@ -91,6 +92,8 @@ class DcopPlayerHandler : public QObject, virtual public AmarokPlayerInterface
       virtual void setLyricsByPath( const QString& url, const QString& lyrics );
       virtual void setScore( int score );
       virtual void setScoreByPath( const QString &url, int score );
+      virtual void setRating( int rating );
+      virtual void setRatingByPath( const QString &url, int rating );
       virtual void setVolume( int );
       virtual void showBrowser( QString browser );
       virtual void showOSD();
