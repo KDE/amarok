@@ -1620,7 +1620,7 @@ MediaDevice::syncStatsToDevice( MediaItem *root )
             break;
 
         default:
-            syncStatsFromDevice( it );
+            syncStatsToDevice( it );
             break;
         }
     }
