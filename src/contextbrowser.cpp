@@ -1101,6 +1101,7 @@ bool CurrentTrackJob::doJob()
         qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valAccessDate );
         qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
         qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
+        qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
         qb.addMatch( QueryBuilder::tabStats, QueryBuilder::valURL, currentTrack.url().path() );
         values = qb.run();
 
@@ -1182,9 +1183,22 @@ bool CurrentTrackJob::doJob()
 
             const uint playtimes = values[2].toInt();
             const uint score = values[3].toInt();
+            const uint rating = values[4].toInt();
 
             const QString scoreBox =
-                "<table class='scoreBox' border='0' cellspacing='0' cellpadding='0' title='" + i18n("Score") + " %2'>"
+                true ? "<table class='scoreBox' border='0' cellspacing='0' cellpadding='0' title='" 
+                    + i18n( "Score:" ) + " %2, " + i18n( "Rating:" ) + " %4'>"
+                "<tr>"
+                "<td nowrap>%1&nbsp;</td>"
+                "<td>"
+                "<div class='sbouter'>"
+                "<div class='sbinner' style='width: %3px;'></div>"
+                "</div>"
+                "</td>"
+                "</tr>"
+                "</table>"
+                : "<table class='scoreBox' border='0' cellspacing='0' cellpadding='0' title='" 
+                    + i18n( "Score" ) + " %2'>"
                 "<tr>"
                 "<td nowrap>%1&nbsp;</td>"
                 "<td>"
@@ -1204,7 +1218,7 @@ bool CurrentTrackJob::doJob()
                         "<span>%4</span>"
                         )
                     .arg( i18n( "Track played once", "Track played %n times", playtimes ),
-                        scoreBox.arg( score ).arg( score ).arg( score / 2 ),
+                        scoreBox.arg( score ).arg( score ).arg( true ? ( rating * 10 ) : ( score / 2 ) ).arg( rating ),
                         i18n( "Last played: %1" ).arg( amaroK::verboseTimeSince( lastPlay ) ),
                         i18n( "First played: %1" ).arg( amaroK::verboseTimeSince( firstPlay ) ) ) );
         }
@@ -1328,6 +1342,7 @@ bool CurrentTrackJob::doJob()
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
             qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
             qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
+            qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
             qb.addMatches( QueryBuilder::tabArtist, relArtists );
             qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valScore, true );
             qb.setLimit( 0, 5 );
@@ -1341,6 +1356,7 @@ bool CurrentTrackJob::doJob()
                 qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
                 qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
                 qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+                qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
                 qb.addMatches( QueryBuilder::tabArtist, relArtists );
                 qb.setOptions( QueryBuilder::optRandomize );
                 qb.setLimit( 0, 10 - values.count() / 4 );
@@ -1368,8 +1384,8 @@ bool CurrentTrackJob::doJob()
                         "</div>"
                         "<table class='box-body' id='T_SS' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
 
-                for ( uint i = 0; i < values.count(); i += 4 )
-                    m_HTMLSource.append(
+                for ( uint i = 0; i < values.count(); i += 5 )
+                    true ? m_HTMLSource.append(
                             "<tr class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
                             "<td class='song'>"
                             "<a href=\"file:" + values[i].replace( '"', QCString( "%22" ) ) + "\">"
@@ -1379,7 +1395,25 @@ bool CurrentTrackJob::doJob()
                             "</span><span class='album-song-title'>" + escapeHTML( values[i + 1] ) + "</span>"
                             "</a>"
                             "</td>"
-                            "<td class='sbtext' width='1'>" + values[i + 3] + "</td>"
+                            "<td class='sbtext' width='1' title='Score'>" + values[i + 3] + "</td>"
+                            "<td width='1' title='" + i18n( "Rating" ) + "'>"
+                            "<div class='sbouter'>"
+                            "<div class='sbinner' style='width: " + QString::number( values[i + 4].toInt() * 10 ) + "px;'></div>"
+                            "</div>"
+                            "</td>"
+                            "<td width='1'></td>"
+                            "</tr>" )
+                    : m_HTMLSource.append(
+                            "<tr class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
+                            "<td class='song'>"
+                            "<a href=\"file:" + values[i].replace( '"', QCString( "%22" ) ) + "\">"
+                            "<span class='album-song-title'>"+ escapeHTML( values[i + 2] ) + "</span>"
+                            "<span class='song-separator'>"
+                            + i18n("&#xa0;&#8211; ") +
+                            "</span><span class='album-song-title'>" + escapeHTML( values[i + 1] ) + "</span>"
+                            "</a>"
+                            "</td>"
+                            "<td class='sbtext' width='1' title='Score'>" + values[i + 3] + "</td>"
                             "<td width='1' title='" + i18n( "Score" ) + "'>"
                             "<div class='sbouter'>"
                             "<div class='sbinner' style='width: " + QString::number( values[i + 3].toInt() / 2 ) + "px;'></div>"
@@ -1408,6 +1442,7 @@ bool CurrentTrackJob::doJob()
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
         qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
+        qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
         qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
         qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
         qb.setLimit( 0, 10 );
@@ -1424,18 +1459,34 @@ bool CurrentTrackJob::doJob()
                 "</div>"
                 "<table class='box-body' id='T_FT' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
 
-            for ( uint i = 0; i < values.count(); i += 3 )
+            for ( uint i = 0; i < values.count(); i += 4 )
                 m_HTMLSource.append(
-                    "<tr class='" + QString( (i % 6) ? "box-row-alt" : "box-row" ) + "'>"
+                    true ? "<tr class='" + QString( (i % 6) ? "box-row-alt" : "box-row" ) + "'>"
                         "<td class='song'>"
                             "<a href=\"file:" + values[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
                             "<span class='album-song-title'>" + escapeHTML( values[i] ) + "</span>"
                             "</a>"
                         "</td>"
-                        "<td class='sbtext' width='1'>" + values[i + 2] + "</td>"
-                        "<td width='1' title='" + i18n( "Score" ) + "'>"
+                        "<td class='sbtext' width='1' title='" + i18n( "Score" ) + "'>" + values[i + 2] + "</td>"
+                        "<td width='1' title='" + i18n( "Rating" ) + "'>"
                             "<div class='sbouter'>"
-                                "<div class='sbinner' style='width: " + QString::number( values[i + 2].toInt() / 2 ) + "px;'></div>"
+                                "<div class='sbinner' style='width: " 
+                                    + QString::number( values[i + 3].toInt() * 10 ) + "px;'></div>"
+                            "</div>"
+                        "</td>"
+                        "<td width='1'></td>"
+                    "</tr>"
+                    : "<tr class='" + QString( (i % 6) ? "box-row-alt" : "box-row" ) + "'>"
+                        "<td class='song'>"
+                            "<a href=\"file:" + values[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
+                            "<span class='album-song-title'>" + escapeHTML( values[i] ) + "</span>"
+                            "</a>"
+                        "</td>"
+                        "<td class='sbtext' width='1' title='" + i18n( "Score" ) + "'>" + values[i + 2] + "</td>"
+                        "<td width='1' title='" + i18n( "Rating" ) + "'>"
+                            "<div class='sbouter'>"
+                                "<div class='sbinner' style='width: " 
+                                    + QString::number( values[i + 2].toInt() / 2 ) + "px;'></div>"
                             "</div>"
                         "</td>"
                         "<td width='1'></td>"
