@@ -2838,7 +2838,7 @@ Playlist::removeDuplicates() //SLOT
 void
 Playlist::copyToClipboard( const QListViewItem *item ) const //SLOT
 {
-    if( !item ) item = currentItem();
+    if( !item ) item = currentTrack();
 
     if( item )
     {
