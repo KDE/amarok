@@ -5,6 +5,9 @@ TODO-list for amaroK
 
 
 SHORT-TERM (URGENT):
+ <markey>  Regression: Copy-Tags-To-Clipboard shortcut copies the currently selected track,
+           instead of the currently playing one.
+
  <markey>  TagDialog: I was trying to fetch a cover from the dialog. The download job stalled.
            I couldn't cancel it because the dialog is modal, so I could not click the statusbar :(
            So I had to kill amarok. We should try to make the dialog non-modal, if possible.
