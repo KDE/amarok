@@ -30,6 +30,12 @@
  <stream name="Groove Salad [Chill-Out]">
   <url>http://www.somafm.com/groovesalad.pls</url>
  </stream>
+ <stream name="Drone Zone [Ambient]">
+  <url>http://somafm.com/dronezone.pls</url>
+ </stream>
+ <stream name="Tags Trance Trip [Trance]">
+	<url>http://somafm.com/tagstrance.pls</url>
+ </stream>
  <stream name="Indie Pop Rocks [Indie]">
   <url>http://www.somafm.com/indiepop.pls</url>
  </stream>
