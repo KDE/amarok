@@ -641,9 +641,10 @@ Playlist::addSpecialCustomTracks( uint songCount )
     else if( item->rtti() == SmartPlaylist::RTTI  )
     {
         #define sp static_cast<SmartPlaylist *>(item)
-        bool useDirect = false;
+        bool useDirect = true;
         QString sql = sp->query();
 
+        // FIXME: All this SQL magic out of collectiondb is not a good thing
         // Many smart playlists require a special ordering in order to be effective (eg, last played).
         // We respect this, so if there is no order by statement, we add a random ordering and use the result
         // without further processing
@@ -651,30 +652,47 @@ Playlist::addSpecialCustomTracks( uint songCount )
         {
             QRegExp limit( ";$" );
             sql.replace( limit, QString(" ORDER BY RAND() LIMIT 0, %1;").arg( songCount ) );
-            useDirect = true;
         }
         else {
             // if we do not limit the sql, it takes a long time to populate for large collections
             // we also dont want stupid limits such as LIMIT 0, 5 which would return the same results always
-            QRegExp limitSearch( "LIMIT.*\\d.*\\d" );
+            uint low=0, high=0;
+            QRegExp limitSearch( "LIMIT.*(\\d+).*(\\d+)" );
             int findLocation = sql.find( limitSearch, false );
-            if( findLocation == -1 ) //not found, add to end
+            if( findLocation == -1 ) //not found, let's find out the higher limit the hard way
             {
-                uint tmpSongCount = songCount < 10 ? 10 : songCount; // increase range to min of 350 songs
+                QString counting ( sql );
+                counting.replace( QRegExp( "SELECT.*FROM" ), "SELECT COUNT(*) FROM" );
+                QStringList countingResult = CollectionDB::instance()->query( counting );
+                high = countingResult[0].toInt();
+            }
+            else
+            {   // There's a Limit, so we've got to respect it.
+                limitSearch.search( sql );
+                // capturedTexts() gives us the strings that were matched by each subexpression
+                low = limitSearch.capturedTexts()[1].toInt();
+                high = limitSearch.capturedTexts()[2].toInt();
+            }
+            if ( high - low < songCount )
+                // The list is even smaller than the number of songs we want :-(
+                songCount = high - low;
+            else
+            {
+                // Let's get a random limit, repecting the original one.
+                high -= songCount;
+                low += KApplication::random() % ( high-low );
+            }
+
+            if( findLocation == -1 ) //
+            {
                 QRegExp limit( ";$" );
-                //increase the limit to ensure that we get a good selection.
-                sql.replace( limit, QString(" LIMIT 0, %1;" ).arg( tmpSongCount * 35 ) );
+                sql.replace( limit, QString(" LIMIT %1, %2;" ).arg( low ).arg( songCount*35 ) );
+                useDirect = false;
             }
-            else //LIMIT found
-            {
-                // we don't increase the max to 350 because otherwise we break LastPlayed etc.
-                // 20 as a minimum set of tracks seems reasonable
-                uint tmpSongCount = songCount < 20 ? 20 : songCount;
-                sql.replace( limitSearch, QString("LIMIT 0, %1" ).arg( tmpSongCount ) );
-            }
+            else
+                sql.replace( limitSearch, QString("LIMIT %1, %2" ).arg( low ).arg( songCount ) );
         }
         QStringList queryResult = CollectionDB::instance()->query( sql );
-
         QStringList items;
 
         if ( !sp->query().isEmpty() ) {
@@ -1220,7 +1238,7 @@ void Playlist::toggleStopAfterCurrentTrack()
     if( m_stopAfterTrack == item ) {
         m_stopAfterTrack = 0;
         amaroK::OSD::instance()->OSDWidget::show( i18n("Stop Playing After Track: Off") );
-    }        
+    }
     else
     {
         m_stopAfterTrack = item;
