@@ -395,6 +395,10 @@ protected:
 //useful debug thingy
 #define DEBUG_THREAD_FUNC_INFO kdDebug() << Debug::indent() << k_funcinfo << "thread: " << ThreadWeaver::Thread::threadId() << endl;
 
+#define SHOULD_BE_GUI if( ThreadWeaver::Thread::getRunning() ) warning() \
+    << "Should not be Threaded, but is running in" << \
+    ThreadWeaver::Thread::getRunning() <<endl;
+
 inline ThreadWeaver*
 ThreadWeaver::instance()
 {

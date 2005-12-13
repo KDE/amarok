@@ -183,9 +183,12 @@ DEBUG_UNINDENT
 AMAROK_NOTIMPLEMENTED
 AMAROK_DEPRECATED
 
-threadweaver.h has a macro DEBUG_THREAD_FUNC_INFO which also outputs the memory address
-of the current QThread or 'none' if its the original GUI thread.
-
+threadweaver.h has two additional macros: 
+DEBUG_THREAD_FUNC_INFO outputs the memory address of the current QThread or 'none' 
+    if its the original GUI thread.
+SHOULD_BE_GUI outputs a warning message if it occurs in a thread that isn't in 
+    the original "GUI Thread", otherwise it is silent. Useful for documenting
+    functions and to prevent problems in the future.
 
 Errors & Asserts
 ----------------

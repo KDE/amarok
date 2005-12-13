@@ -54,6 +54,8 @@ ThreadWeaver::jobCount( const QCString &name )
 int
 ThreadWeaver::queueJob( Job *job )
 {
+    SHOULD_BE_GUI
+
     if ( !job )
         return -1;
 
@@ -71,6 +73,8 @@ ThreadWeaver::queueJob( Job *job )
 int
 ThreadWeaver::queueJobs( const JobList &jobs )
 {
+    SHOULD_BE_GUI
+
     if ( jobs.isEmpty() )
         return -1;
 
@@ -88,6 +92,8 @@ ThreadWeaver::queueJobs( const JobList &jobs )
 void
 ThreadWeaver::onlyOneJob( Job *job )
 {
+    SHOULD_BE_GUI
+
     const QCString name = job->name();
 
     // first cause all current jobs with this name to be aborted
@@ -107,6 +113,8 @@ ThreadWeaver::onlyOneJob( Job *job )
 int
 ThreadWeaver::abortAllJobsNamed( const QCString &name )
 {
+    SHOULD_BE_GUI
+
     int count = 0;
 
     for( JobList::Iterator it = m_jobs.begin(), end = m_jobs.end(); it != end; ++it )
