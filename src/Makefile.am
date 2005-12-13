@@ -26,6 +26,7 @@ SUBDIRS = \
     metadata \
     $(KONQSIDEBAR_SUBDIR) \
     statusbar \
+    . \
     mediadevice \
     collectionscanner
 
@@ -83,6 +84,7 @@ libamarok_la_SOURCES = \
     k3bexporter.cpp \
     kbookmarkhandler.cpp \
     ktrm.cpp \
+    mediabrowser.cpp \
     metabundle.cpp \
     multitabbar.cpp \
     moodbar.cpp \
@@ -131,7 +133,6 @@ libamarok_la_LIBADD = \
     $(top_builddir)/amarok/src/plugin/libplugin.la \
     $(top_builddir)/amarok/src/statusbar/libstatusbar.la \
     $(top_builddir)/amarok/src/metadata/libmetadata.la \
-    $(top_builddir)/amarok/src/mediadevice/libmediadevice.la \
     $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KHTML) $(LIB_KNEWSTUFF) \
     $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) $(EXSCALIBAR_LIBS) \
     $(LIB_TUNEPIMP) \
@@ -163,7 +164,6 @@ amarokapp_LDADD = \
     $(top_builddir)/amarok/src/plugin/libplugin.la \
     $(top_builddir)/amarok/src/statusbar/libstatusbar.la \
     $(top_builddir)/amarok/src/metadata/libmetadata.la \
-    $(top_builddir)/amarok/src/mediadevice/libmediadevice.la \
     $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KHTML) $(LIB_KNEWSTUFF) \
     $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) $(EXSCALIBAR_LIBS) \
     $(LIB_TUNEPIMP) \

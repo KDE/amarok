@@ -13,7 +13,7 @@ INCLUDES = \
     $(all_includes)
 
 libamarok_ifp_mediadevice_la_LIBADD = \
-    -I$(top_builddir)/amarok/src/libamarok.la \
+    $(top_builddir)/amarok/src/libamarok.la \
     -lusb -lifp \
     -lkdeui -lkdecore -lkio
 

@@ -23,8 +23,10 @@ libamarok_gpod_mediadevice_la_LDFLAGS = \
     $(all_libraries)
 
 libamarok_gpod_mediadevice_la_SOURCES = \
+    kiomediadevice.cpp \
     gpodmediadevice.cpp
 
 noinst_HEADERS = \
+    kiomediadevice.h \
     gpodmediadevice.h
 

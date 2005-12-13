@@ -23,14 +23,6 @@
 #include "scrobbler.h"
 #include "statusbar.h"
 
-#ifdef HAVE_LIBGPOD
-#include "gpod/gpodmediadevice.h"
-#endif
-
-#ifdef HAVE_IFP
-#include "ifp/ifpmediadevice.h"
-#endif
-
 #include <qcheckbox.h>
 #include <qdatetime.h>
 #include <qdir.h>
@@ -83,6 +75,7 @@ QPixmap *MediaItem::s_pixDirectory = 0;
 
 bool MediaBrowser::isAvailable() //static
 {
+   return true;
     // perhaps the user should configure if he wants to use a media device?
 #if defined(HAVE_LIBGPOD)
     return true;
