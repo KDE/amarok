@@ -36,9 +36,9 @@ FileNameScheme::FileNameScheme( const QString &s )
     int fieldNumber = 1;
     int i = s.find( '%' );
     while ( i > -1 ) {
-        if ( artist == i )
-            m_titleField = fieldNumber++;
         if ( title == i )
+            m_titleField = fieldNumber++;
+        if ( artist == i )
             m_artistField = fieldNumber++;
         if ( album == i )
             m_albumField = fieldNumber++;
