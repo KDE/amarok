@@ -242,6 +242,9 @@ TagDialog::loadCover( const QString &artist, const QString &album ) {
         m_currentCover = cover;
     }
     pixmap_cover->setInformation( m_bundle.artist(), m_bundle.album() );
+    const int s = AmarokConfig::coverPreviewSize();
+    pixmap_cover->setMinimumSize( s, s );
+    pixmap_cover->setMaximumSize( s, s );
 }
 
 
