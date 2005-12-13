@@ -242,7 +242,7 @@ class MediaDevice : public QObject, public amaroK::Plugin
 
     public:
         MediaDevice();
-        void init( MediaDeviceView* parent, MediaDeviceList* listview );
+        virtual void init( MediaDeviceView* parent, MediaDeviceList* listview );
         virtual ~MediaDevice();
 
         enum        DeviceType { DUMMY, IPOD, IFP };
