@@ -1,4 +1,4 @@
-This script installs the current development version of amaroK (from SVN) on your computer.
+This bash script (not for amaroK itself) installs the current development version of amaroK (from SVN) on your computer.
 
 There will be a later version (4.0, I guess) written in ruby (maybe python) instead of bash, that version will probably be split into smaller parts
 to make the

@@ -11,16 +11,17 @@
 # # # # # # # # # # # # # # # # # # # # # #   # # # # #   # # #   # #   # #   # #   #   #
 
 echo
-echo "amaroK-svn (Version 3.0rc1) by Jocke \"Firetech\" Andersson"
+echo "amaroK-svn (Version 3.0rc2) by Jocke \"Firetech\" Andersson"
 echo "==========================================================="
 echo
 
-#define global variables
-LANG="C" # Make outputs in English, like the script.
-RCFILE="`pwd`/.amarok-svnrc" # Settings file
-KD_TITLE="amaroK-svn" # Title for kdialog windows
+## Define global variables
+LANG="C" # Make outputs in English, like the script itself.
+RCFILE="amarok-svnrc" # Settings file, will end up in '`kde-config --localprefix`/share/config/'.
+KD_TITLE="amaroK-svn" # Title for kdialog windows.
+S_STEPS="11" # Number of steps in the script.
 
-#define functions
+## Define functions
 function Error {
   echo
   echo -e "ERROR: $1"
@@ -48,6 +49,67 @@ function CheckBinary {
   fi
 }
 
+function FlagUsage {
+  echo "Usage: $0 [options] [builddir]"
+  echo
+  echo "amaroK-svn installs the current development (SVN) version of amaroK on your computer."
+  echo
+  echo "Options:"
+  echo -e "  -r, --reset\t\tAsk for settings again."
+  echo -e "  -c, --clean\t\tClean the source tree before compiling amaroK."
+  echo -e "  -h, --help\t\tShow this message."
+  echo
+  echo "Arguments:"
+  echo -e "  builddir\t\tDownload and build amaroK in this directory. Default is '[your current dir]/amarok-svn'."
+  echo
+  echo "Notes:"
+  echo "  * Options can NOT be fused together! (I.E. You can't use '-cr', you have to use '-c -r'.)"
+  echo "  * amaroK-svn will download the amaroK sources directly into the folder you choose, without creating any subdirectory!"
+  echo
+  exit 1
+}
+
+## Handle --flags
+# set default values
+RESET_CONF="0"
+CLEAN_BUILD="0"
+BUILD_DIR="`pwd`/amarok-svn"
+# read flags values
+BUILD_DIR_SET="0"
+for flag; do
+  case "$flag" in
+    -r|--reset)
+      RESET_CONF="1"
+      ;;
+    -c|--clean)
+      CLEAN_BUILD="1"
+      let S_STEPS=S_STEPS+1
+      ;;
+    -h|--help)
+      FlagUsage
+      ;;
+    -*)
+      echo "Unknown option '$flag'."
+      echo
+      echo "---------------------- ---- --- -- -- -- - -"
+      echo
+      FlagUsage
+      ;;
+    *)
+      if [ "$BUILD_DIR_SET" = "0" ]; then
+        BUILD_DIR="$flag"
+        BUILD_DIR_SET="1"
+      else
+        echo "Excessive argument: '$flag'."
+        echo
+        echo "---------------------- ---- --- -- -- -- - -"
+        echo
+        FlagUsage
+      fi
+      ;;
+  esac
+done
+
 ## Check requirements
 CheckBinary kdialog "" --no-dialog
 CheckBinary svn "Version 1.1 or newer is needed."
@@ -55,16 +117,29 @@ CheckBinary kde-config "kde-config sometimes falls out of the \$PATH for some re
 CheckBinary kreadconfig
 CheckBinary kwriteconfig
 
-if [ "`id -u`" = 0 ]; then # if user is root
-  kdialog --title "$KD_TITLE" --warningcontinuecancel "You are running amaroK-svn as root! This is not required, and generally not a good idea.\n(The script will get root privileges by itself when needed, see the settings for details.)\nAre you sure you want to continue the script anyway?" --dontagain $RCFILE:root_warning
-  if [ "$?" != 0 ]; then
+## Check the build directory
+if [ -e "$BUILD_DIR" -a ! -f "$BUILD_DIR/.amarok-svn-dir" ]; then # if directory exist and isn't watermarked
+  if [ -d "$BUILD_DIR" ]; then
+    kdialog --title "$KD_TITLE" --warningyesno "The directory you chose to build in ($BUILD_DIR) already exists, and it wasn't detected as an amaroK-svn directory.\nFiles in this directory can possibly be overwritten by the amaroK-svn procedures.\nDo you want to use this directory anyway?"
+    if [ "$?" != "0" ]; then # If the user said no, exit.
+      exit 1
+    fi
+  else
+    Error "The build directory you have chosen exists and it's not a directory!"
+  fi
+fi
+
+## Check if user is root
+if [ "`id -u`" = "0" ]; then # if user is root
+  kdialog --title "$KD_TITLE" --warningcontinuecancel "You are running amaroK-svn as root! This is not required, and generally not a good idea.\n(amaroK-svn will get root privileges by itself when needed, see the settings for details.)\nAre you sure you want to continue anyway?" --dontagain $RCFILE:root_warning
+  if [ "$?" != "0" ]; then # If the user said cancel.
     exit 1
   fi
 fi
 
 
 ## Settings
-if [ -s "$RCFILE" -a "$1" != "-r" -a "$1" != "--reset" ]; then # If the settings exists and the script isn't called with -r or --reset.
+if [ -s "`kde-config --localprefix`/share/config/$RCFILE" -a "$RESET_CONF" != "1" ]; then # If the settings exists and the user doesn't want to change them.
 
   GET_LANG="`ReadConfig get_lang`"
   if  [ -z "$GET_LANG" ]; then #Save default value if empty
@@ -104,7 +179,7 @@ else
   WriteConfig get_lang "$GET_LANG"
 
   ## ./configure flags
-  kdialog --title "$KD_TITLE" --yesno "Do you want to use any extra configuration options (in addition to '--prefix=`kde-config --prefix` --enable-debug=full')?\nNo extra options is the default, and that works fine.\n(For a list of available flags, say yes and enter 'help' (CaSe insensitive) in the box, then wait for the script to get to the configuration step (step 8).)"
+  kdialog --title "$KD_TITLE" --yesno "Do you want to use any extra configuration options (in addition to '--prefix=`kde-config --prefix` --enable-debug=full')?\nNo extra options is the default, and that works fine.\n(For a list of available flags, say yes and enter 'help' (CaSe insensitive) in the box, then wait for amaroK-svn to get to the configuration step (step 8).)"
   if [ "$?" = "0" ]; then #If the user said yes
     CONF_FLAGS_RAW="`kdialog --title \"$KD_TITLE\" --inputbox \"Specify extra configuration options to use\"`"
     if [ "`echo $CONF_FLAGS_RAW | tr A-Z a-z`" != "help" ]; then
@@ -123,7 +198,7 @@ else
   fi
 
   ## What to use to get sudo privileges for installation?
-  HOW_ROOT="`kdialog --radiolist \"How do you want the script to get root privileges for the install/uninstall commands?\" kdesu \"With  'kdesu' (default, choose this if unsure)\" on sudo \"With 'sudo'\" off \"su -c\" \"With 'su -c'\" off`"
+  HOW_ROOT="`kdialog --radiolist \"How do you want amaroK-svn to get root privileges for the install/uninstall commands?\" kdesu \"With  'kdesu' (default, choose this if unsure)\" on sudo \"With 'sudo'\" off \"su -c\" \"With 'su -c'\" off`"
   if [ -z "$HOW_ROOT" ]; then #Fallback if the user pressed cancel
     HOW_ROOT="kdesu"
   fi
@@ -144,9 +219,9 @@ if  [ -z "$SVN_SERVER" ]; then #Save default value if empty
 fi
 
 ## Echo settings (Doing this outside the if statements above because it's the same for both cases.)
-echo "Settings"
-echo "----------"
-echo  "(Start the script with the -r or --reset flag to change these.)"
+echo "Used configuration"
+echo "--------------------"
+echo  "(Use --help to get information on how to change it.)"
 echo 
 
 echo -e "Language for localization and documentation:\t$GET_LANG"
@@ -160,30 +235,38 @@ if [ "$USE_ID" = "1" ]; then
 else
   echo "Off"
 fi
+echo -e "Build directory:\t\t\t\t$BUILD_DIR"
+echo -ne "Clean source tree:\t\t\t\t"
+if [ "$CLEAN_BUILD" = "1" ]; then
+  echo "On"
+else
+  echo "Off"
+fi
 
 echo
 echo "###################### #### ### ## ## ## # #"
 
 ## Base checkout
 echo
-echo "# 1/11 - Checking out base files."
-svn co -N $SVN_SERVER/home/kde/trunk/extragear/multimedia amarok-svn
+echo "# 1/$S_STEPS - Checking out base files."
+svn co -N $SVN_SERVER/home/kde/trunk/extragear/multimedia $BUILD_DIR
 if [ "$?" != "0" ]; then # If the command didn't finish successfully
   Error "The SVN transfer didn't finish successfully."
 fi
-cd amarok-svn
+cd $BUILD_DIR
+touch .amarok-svn-dir # Watermark the directory
 
 ## Get unsermake, if not installed already
 echo
-echo "# 2/11 - Getting unsermake."
+echo "# 2/$S_STEPS - Getting unsermake."
 if [ -x "`which unsermake`" ]; then # unsermake installed system wide?
   echo "Unsermake is already installed system wide."
 else
-  PATH="`pwd`/unsermake:$PATH"
+  PATH="$BUILD_DIR/unsermake:$PATH"
   if [ -x "`which unsermake`" ]; then # Is unsermake installed and in the $PATH now?
     echo "Unsermake downloaded by this script. Checking for update."
   else
-    echo "Unsermake wasn't found. Downloading it to '`pwd`/unsermake'."
+    echo "Unsermake wasn't found. Downloading it to '$BUILD_DIR/unsermake'."
   fi
   svn co -N $SVN_SERVER/home/kde/trunk/kdenonbeta/unsermake
   if [ "$?" != "0" ]; then # If the command didn't finish successfully
@@ -193,12 +276,12 @@ fi
 
 ## Store the old uninstall commands
 echo
-echo "# 3/11 - Saving uninstall commands for your current revision."
+echo "# 3/$S_STEPS - Saving uninstall commands for your current revision."
 if [ ! -f "Makefile" ]; then
   echo "No current revision was found."
 else
   TMP_OLD_UNINFO="`mktemp`"
-  unsermake -n uninstall | grep "rm -" > $TMP_OLD_UNINFO # Stored in a file so we can run it later, in a simple manner. Grep for "rm -" (there are different switches to rm in the commands) to exclude commands that don't need to be run.
+  unsermake -n uninstall | grep "rm -" > $TMP_OLD_UNINFO # Stored in a file so we can run it later, in a simple manner. Grep for "rm -" (there are different switches to rm in the commands) to exclude commands that doesn't need to be run.
   if [ "$?" != "0" ]; then # If the command didn't finish successfully
     Error "Couldn't get uninstall commands for your current revision."
   else
@@ -208,13 +291,13 @@ fi
 
 ## Continue checkout
 echo
-echo "# 4/11 - Checking out common SVN files."
+echo "# 4/$S_STEPS - Checking out common SVN files."
 svn co $SVN_SERVER/home/kde/branches/KDE/3.5/kde-common/admin # URL changed since KDE 3.5 branching
 if [ "$?" != "0" ]; then # If the command didn't finish successfully
   Error "The SVN transfer didn't finish successfully."
 fi
 echo
-echo "# 5/11 - Updating amaroK files."
+echo "# 5/$S_STEPS - Updating amaroK files."
 svn up amarok
 if [ "$?" != "0" ]; then # If the command didn't finish successfully
   Error "The SVN transfer didn't finish successfully.\nIf the message from svn (in console) is something like 'amarok is not under version control', you need a never version of svn.\nAt least version 1.1 is needed."
@@ -226,8 +309,8 @@ if [ "$USE_ID" = "1" ]; then
 fi
 
 echo
-echo "# 6/11 - Getting localization and documentation:"
-STEP_EN=""
+echo "# 6/$S_STEPS - Getting localization and documentation:"
+ENGD_STEP=""
 
 if [ "$GET_LANG" != "en_US" ]; then # If a language (not en_US) is selected
 
@@ -288,7 +371,7 @@ if [ "$GET_LANG" != "en_US" ]; then # If a language (not en_US) is selected
     if [ "$?" != "0" ]; then # If the localized documentation wasn't found
       GET_LANG="en_US"
       echo "WARNING: Localized documentation for selected language was not found. Reverting to default (American English) documentation."
-      STEP_EN=" 4/4 -"
+      ENGD_STEP=" 4/4 -"
     else # If a localized documentation exists
       echo "- # 4/4 - Checking out localized documentation."
       if [ ! -d "doc" ]; then
@@ -312,7 +395,7 @@ fi
 if [ "$GET_LANG" = "en_US" ]; then # If no language (en_US) is selected. This is a stand alone if-statement to enable fallbacks when selected language isn't found.
 
   ## Default (American English) documentation
-  echo "- #$STEP_EN Checking out default (American English) documentation."
+  echo "- #$ENGD_STEP Checking out default (American English) documentation."
   if [ ! -d "doc" ]; then
     mkdir doc
   fi
@@ -331,10 +414,10 @@ fi
 
 ## Preparation
 echo
-echo "# 7/11 - Preparing for configuration. (This will take a while.)"
+echo "# 7/$S_STEPS - Preparing for configuration. (This will take a while.)"
 WANT_AUTOCONF="2.5" unsermake -f Makefile.cvs
 if [ "$?" != "0" ]; then # If the command didn't finish successfully
-  Error "Preparation didn't finish successfully.\nProblems at this step are quite certainly problems with either unsermake or your automake configuration.\nAsk the friendly people in #amarok on freenode for help."
+  Error "Preparation didn't finish successfully.\nProblems at this step are quite certainly problems with either unsermake or your automake configuration."
 fi
 
 ## Configuration help
@@ -364,15 +447,15 @@ fi
 
 ## Configuration
 echo
-echo "# 8/11 - Configuring. (This will also take a while.)"
+echo "# 8/$S_STEPS - Configuring. (This will also take a while.)"
 ./configure --prefix=`kde-config --prefix` --enable-debug=full$CONF_FLAGS
 if [ "$?" != "0" ]; then # If the command didn't finish successfully
-  Error "Configuration wasn't successful. amaroK was NOT installed/upgraded. Ask the friendly people in #amarok on freenode for help."
+  Error "Configuration wasn't successful. amaroK was NOT installed/upgraded."
 fi
 
 ## Compare uninstall commands and , if they differ, uninstall the old revision.
 echo
-echo "# 9/11 - Comparing uninstall commands."
+echo "# 9/$S_STEPS - Comparing uninstall commands."
 if [ ! -f "$TMP_OLD_UNINFO" ]; then
   echo "No older revision was found."
 else
@@ -406,19 +489,31 @@ else
   rm -f $TMP_OLD_UNINFO $TMP_NEW_UNINFO
 fi
 
+## Clean build dir if user wanted to.
+if [ "$CLEAN_BUILD" = "1" ]; then
+  echo "# 10/$S_STEPS - Cleaning the source tree."
+  unsermake clean
+  if [ "$?" != "0" ]; then # If the command didn't finish successfully
+    Error "Source tree wasn't cleaned successfully!"
+  fi
+fi
+
+
 ## Compilation
 echo
-echo "# 10/11 - Compiling. (The time of this step depends on the number of new source files that were downloaded.)"
+let COMP_STEP=S_STEPS-1
+echo "# $COMP_STEP/$S_STEPS - Compiling. (The time of this step depends on the number of new source files that were downloaded.)"
 unsermake
 if [ "$?" != "0" ]; then # If the command didn't finish successfully
-  Error "Compilation wasn't successful. amaroK was NOT installed/upgraded. Ask the friendly people in #amarok on freenode for help."
+  Error "Compilation wasn't successful. amaroK was NOT installed/upgraded."
 fi
 echo
 echo "Compilation successful."
 
 ## Installation
 echo
-echo "# 11/11 - Installing files."
+let INST_STEP=S_STEP
+echo "# $INST_STEP/$S_STEPS - Installing files."
 echo "Executing '$HOW_ROOT' to get root privileges for installation."
 if [ "$HOW_ROOT" = "sudo" ]; then
   echo "(You might need to enter your password now.)"
@@ -436,5 +531,5 @@ if [ "$?" = "0" ]; then # If the command did finish successfully
   exit 0 # Exit succsessfully
 else
   echo
-  Error "amaroK was compiled but NOT installed.\nIf the errors above seem to be permission errors, you could try installing amaroK manually.\n(You also might want to have a look at the settings for this script by starting it with -r or --reset.)\nTo install manually, get root privileges in some way and then run 'unsermake install' in the '`pwd`' directory."
+  Error "amaroK was compiled but NOT installed.\nIf the errors above seem to be permission errors, you could try installing amaroK manually.\n(You also might want to have a look at the settings for this script, use --help to see how.)\nTo install manually, get root privileges in some way and then run 'unsermake install' in the '$BUILD_DIR' directory."
 fi
