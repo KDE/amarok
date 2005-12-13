@@ -3611,7 +3611,7 @@ Playlist::contentsMouseMoveEvent( QMouseEvent *e )
         triggerUpdate();
 }
 
-void Playlist::leaveEvent( QMouseEvent *e )
+void Playlist::leaveEvent( QEvent *e )
 {
     KListView::leaveEvent( e );
 
