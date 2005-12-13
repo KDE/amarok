@@ -187,7 +187,7 @@ ContextBrowser::ContextBrowser( const char *name )
     m_wikiToolBar->insertLineSeparator();
     m_wikiToolBar->insertButton( "exec", WIKI_BROWSER, true, i18n("Open in external browser") );
     m_wikiToolBar->insertLineSeparator();
-    m_wikiToolBar->insertButton( "config", WIKI_CONFIG, true, i18n("Change Locale") );
+    m_wikiToolBar->insertButton( "configure", WIKI_CONFIG, true, i18n("Change Locale") );
 
     m_wikiToolBar->setDelayedPopup( WIKI_BACK, m_wikiBackPopup );
     m_wikiToolBar->setDelayedPopup( WIKI_FORWARD, m_wikiForwardPopup );
