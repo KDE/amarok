@@ -186,7 +186,6 @@ ContextBrowser::ContextBrowser( const char *name )
     m_wikiToolBar->insertButton( "contents", WIKI_TITLE, false, i18n("Title Page") );
     m_wikiToolBar->insertLineSeparator();
     m_wikiToolBar->insertButton( "exec", WIKI_BROWSER, true, i18n("Open in external browser") );
-    m_wikiToolBar->insertLineSeparator();
     m_wikiToolBar->insertButton( "configure", WIKI_CONFIG, true, i18n("Change Locale") );
 
     m_wikiToolBar->setDelayedPopup( WIKI_BACK, m_wikiBackPopup );
@@ -1186,7 +1185,7 @@ bool CurrentTrackJob::doJob()
             const uint rating = values[4].toInt();
 
             const QString scoreBox =
-                "<table class='scoreBox' border='0' cellspacing='0' cellpadding='0' title='" 
+                "<table class='scoreBox' border='0' cellspacing='0' cellpadding='0' title='"
                     + QString( true ? i18n( "Score:" ) + " %2, " + i18n( "Rating:" ) + " %4'>" : i18n( "Score" ) + " %2'>" ) +
                 "<tr>"
                 "<td nowrap>%1&nbsp;</td>"
@@ -1292,7 +1291,7 @@ bool CurrentTrackJob::doJob()
                     "<div id='related_box-header' class='box-header' onClick=\"toggleBlock('T_RA'); window.location.href='togglebox:ra';\" style='cursor: pointer;'>"
                     "<span id='related_box-header-title' class='box-header-title'>%1</span>"
                     "</div>"
-                    "<table class='box-body' id='T_RA' width='100%' border='0' cellspacing='0' cellpadding='1'>" ) 
+                    "<table class='box-body' id='T_RA' width='100%' border='0' cellspacing='0' cellpadding='1'>" )
                 .arg( i18n( "Artists Related to %1" ).arg( escapeHTML( artist ) ) ) );
             for ( uint i = 0; i < relArtists.count(); i += 1 )
             {
@@ -1387,7 +1386,7 @@ bool CurrentTrackJob::doJob()
                             "<td class='sbtext' width='1' title='Score'>" + values[i + 3] + "</td>"
                             "<td width='1' title='" + i18n( true ? "Rating" : "Score" ) + "'>"
                             "<div class='sbouter'>"
-                            "<div class='sbinner' style='width: " 
+                            "<div class='sbinner' style='width: "
                                 + QString::number( true ? values[i + 4].toInt() * 10 : values[i + 3].toInt() / 2 ) + "px;'></div>"
                             "</div>"
                             "</td>"
@@ -1442,7 +1441,7 @@ bool CurrentTrackJob::doJob()
                         "<td class='sbtext' width='1' title='" + i18n( "Score" ) + "'>" + values[i + 2] + "</td>"
                         "<td width='1' title='" + i18n( true ? "Rating" : "Score" ) + "'>"
                             "<div class='sbouter'>"
-                                "<div class='sbinner' style='width: " 
+                                "<div class='sbinner' style='width: "
                                     + QString::number( true ? values[i + 3].toInt() * 10 : values[i + 2].toInt() / 2 ) + "px;'></div>"
                             "</div>"
                         "</td>"
@@ -2077,24 +2076,24 @@ ContextBrowser::wikiConfigChanged( int /*activeItem*/ ) // SLOT
 {
     // keep in sync with localeList in wikiConfig
     QString text = m_wikiLocaleCombo->currentText();
-    
+
     m_wikiLocaleEdit->setEnabled( text == i18n("Other...") );
 
     if( text == i18n("English") )
         m_wikiLocaleEdit->setText( "en" );
-        
+
     else if( text == i18n("German") )
         m_wikiLocaleEdit->setText( "de" );
-    
+
     else if( text == i18n("French") )
         m_wikiLocaleEdit->setText( "fr" );
-    
+
     else if( text == i18n("Polish") )
         m_wikiLocaleEdit->setText( "pl" );
-    
+
     else if( text == i18n("Japanese") )
         m_wikiLocaleEdit->setText( "jp" );
-    
+
     else if( text == i18n("Spanish") )
         m_wikiLocaleEdit->setText( "es" );
 }
@@ -2158,7 +2157,7 @@ ContextBrowser::wikiConfig() // SLOT
         QHBox  *hbox       = new QHBox( box );
         QLabel *otherLabel = new QLabel( i18n( "Locale: " ), hbox );
         m_wikiLocaleEdit   = new QLineEdit( "en", hbox );
-        
+
         otherLabel->setBuddy( m_wikiLocaleEdit );
         QToolTip::add( m_wikiLocaleEdit, i18n( "2-letter language code for your Wikipedia locale" ) );
 
