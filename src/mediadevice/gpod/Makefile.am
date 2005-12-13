@@ -7,20 +7,24 @@ INCLUDES = \
     -I$(top_builddir)/amarok/src/amarokcore \
     -I$(top_srcdir)/amarok/src/engine \
     -I$(top_builddir)/amarok/src/engine \
-    -I.. \
+    -I$(top_srcdir)/amarok/src/mediadevice \
     $(LIBGPOD_CFLAGS) \
     $(taglib_includes) \
     $(all_includes)
 
-METASOURCES        = AUTO
+METASOURCES = AUTO
 
-libamarok_gpod_mediadevice_la_LIBADD  = ../../libamarok.la
-libamarok_gpod_mediadevice_la_LDFLAGS  = -module $(KDE_PLUGIN) $(all_libraries) $(LIBGPOD_LIBS)
+libamarok_gpod_mediadevice_la_LIBADD  = \
+    $(top_builddir)/amarok/src/libamarok.la
 
-libamarok_gpod_mediadevice_la_SOURCES =  \
-                     gpodmediadevice.cpp
+libamarok_gpod_mediadevice_la_LDFLAGS = \
+    $(KDE_PLUGIN) \
+    $(LIBGPOD_LIBS) \
+    $(all_libraries)
+
+libamarok_gpod_mediadevice_la_SOURCES = \
+    gpodmediadevice.cpp
 
 noinst_HEADERS = \
-                     gpodmediadevice.h
-
+    gpodmediadevice.h
 

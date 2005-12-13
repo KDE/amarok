@@ -6,20 +6,22 @@ INCLUDES = \
     -I$(top_srcdir)/amarok/src/amarokcore \
     -I$(top_srcdir)/amarok/src/statusbar \
     -I$(top_srcdir)/amarok/src/engine \
-	-I$(top_srcdir)/amarok/src/plugin \
-    -I.. \
+    -I$(top_srcdir)/amarok/src/plugin \
+    -I$(top_srcdir)/amarok/src/mediadevice \
     $(IFP_CFLAGS) \
     $(taglib_includes) \
     $(all_includes)
-    
-METASOURCES        = AUTO
 
 libamarok_ifp_mediadevice_la_LIBADD = \
-	-lusb -lifp \
-        ../../libamarok.la \
-	-lkdeui -lkdecore -lkio
-	
-libamarok_ifp_mediadevice_la_LDFLAGS = -module $(KDE_PLUGIN) $(all_libraries)
+    -I$(top_builddir)/amarok/src/libamarok.la \
+    -lusb -lifp \
+    -lkdeui -lkdecore -lkio
 
-libamarok_ifp_mediadevice_la_SOURCES = ifpmediadevice.cpp
+libamarok_ifp_mediadevice_la_LDFLAGS = \
+    $(KDE_PLUGIN) \
+    $(all_libraries)
 
+libamarok_ifp_mediadevice_la_SOURCES = \
+    ifpmediadevice.cpp
+
+METASOURCES = AUTO

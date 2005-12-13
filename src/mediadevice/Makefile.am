@@ -1,12 +1,11 @@
 noinst_LTLIBRARIES = libmediadevice.la
 
 INCLUDES = \
-	-I$(top_srcdir)/amarok/src/plugin \
-	-I$(top_srcdir)/amarok/src \
-	-I$(top_srcdir)/amarok/src/engine \
-	-I$(top_srcdir)/amarok/src/amarokcore \
-	-I$(top_srcdir)/amarok/src/statusbar \
-    -I.. \
+    -I$(top_srcdir)/amarok/src/plugin \
+    -I$(top_srcdir)/amarok/src \
+    -I$(top_srcdir)/amarok/src/engine \
+    -I$(top_srcdir)/amarok/src/amarokcore \
+    -I$(top_srcdir)/amarok/src/statusbar \
     $(LIBGPOD_CFLAGS) \
     $(IFP_CFLAGS) \
     $(taglib_includes) \
@@ -29,8 +28,7 @@ noinst_HEADERS = mediabrowser.h
 METASOURCES = AUTO
 
 SUBDIRS = \
-	. \
+    . \
     $(IPOD_SUBDIR) \
     $(IFP_SUBDIR)
-	
-	
+
