@@ -24,14 +24,7 @@
 
 //#define AMAROK_USE_DRKONQI
 
-
-KAboutData aboutData( "amarok",
-    I18N_NOOP( "amaroK" ), APP_VERSION,
-    I18N_NOOP( "The audio player for KDE" ), KAboutData::License_GPL,
-    I18N_NOOP( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2005, The amaroK Development Squad" ),
-    I18N_NOOP( "IRC:\nserver: irc.freenode.net / channels: #amarok #amarok.de\n\nFeedback:\namarok-devel@lists.sourceforge.net" ),
-    I18N_NOOP( "http://amarok.kde.org" ) );
-
+extern class KAboutData aboutData; //defined in amarokcore/app.cpp
 
 int main( int argc, char *argv[] )
 {

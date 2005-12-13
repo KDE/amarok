@@ -56,6 +56,7 @@ email                : markey@web.de
 #include <kmessagebox.h>         //applySettings(), genericEventHandler()
 #include <kstandarddirs.h>
 #include <kurldrag.h>            //genericEventHandler()
+#include <kaboutdata.h>
 
 #include <qevent.h>              //genericEventHandler()
 #include <qeventloop.h>          //applySettings()
@@ -76,6 +77,13 @@ email                : markey@web.de
 #endif //__linux__
 
 int App::mainThreadId = 0;
+
+KAboutData aboutData( "amarok",
+    I18N_NOOP( "amaroK" ), APP_VERSION,
+    I18N_NOOP( "The audio player for KDE" ), KAboutData::License_GPL,
+    I18N_NOOP( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2005, The amaroK Development Squad" ),
+    I18N_NOOP( "IRC:\nserver: irc.freenode.net / channels: #amarok #amarok.de\n\nFeedback:\namarok-devel@lists.sourceforge.net" ),
+    I18N_NOOP( "http://amarok.kde.org" ) );
 
 App::App()
         : KApplication()
@@ -279,8 +287,6 @@ void App::handleCliArgs() //static
 
 void App::initCliArgs( int argc, char *argv[] ) //static
 {
-    extern class KAboutData aboutData; //defined in amarokcore/main.cpp
-
     static KCmdLineOptions options[] =
         {
             { "+[URL(s)]", I18N_NOOP( "Files/URLs to open" ), 0 },
@@ -310,7 +316,7 @@ void App::initCliArgs( int argc, char *argv[] ) //static
         };
 
     KCmdLineArgs::reset();
-    KCmdLineArgs::init( argc, argv, &aboutData ); //calls KApplication::addCmdLineOptions()
+    KCmdLineArgs::init( argc, argv, &::aboutData ); //calls KApplication::addCmdLineOptions()
     KCmdLineArgs::addCmdLineOptions( options );   //add our own options
 }
 

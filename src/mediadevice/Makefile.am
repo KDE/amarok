@@ -3,7 +3,11 @@ noinst_LTLIBRARIES = libmediadevice.la
 INCLUDES = \
 	-I$(top_srcdir)/amarok/src/plugin \
 	-I$(top_srcdir)/amarok/src \
+	-I$(top_srcdir)/amarok/src/engine \
+	-I$(top_srcdir)/amarok/src/amarokcore \
+	-I$(top_srcdir)/amarok/src/statusbar \
     -I.. \
+    $(LIBGPOD_CFLAGS) \
     $(IFP_CFLAGS) \
     $(taglib_includes) \
     $(all_includes)

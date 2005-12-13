@@ -24,6 +24,8 @@
 
 #include "ifpmediadevice.h"
 
+AMAROK_EXPORT_PLUGIN( IfpMediaDevice )
+
 #include "debug.h"
 #include "metabundle.h"
 #include "collectiondb.h"
@@ -100,13 +102,19 @@ class IfpMediaItem : public MediaItem
  * IfpMediaDevice Class
  */
 
-IfpMediaDevice::IfpMediaDevice( MediaDeviceView* parent, MediaDeviceList *listview )
-    : MediaDevice( parent, listview )
+IfpMediaDevice::IfpMediaDevice()
+    : MediaDevice()
     , m_dev( 0 )
     , m_dh( 0 )
     , m_connected( false )
     , m_tmpParent( 0 )
 {
+}
+
+void
+IfpMediaDevice::init( MediaDeviceView* parent, MediaDeviceList *listview )
+{
+    MediaDevice::init( parent, listview );
 }
 
 IfpMediaDevice::~IfpMediaDevice()

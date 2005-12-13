@@ -44,8 +44,6 @@ INCLUDES = \
     $(sqlite_includes) \
     $(mysql_includes) \
     $(postgresql_includes) \
-    $(LIBGPOD_CFLAGS) \
-    $(IFP_CFLAGS) \
     $(EXSCALIBAR_CFLAGS) \
     $(all_includes)
 
@@ -127,7 +125,6 @@ libamarok_la_SOURCES = \
     trackpickerdialogbase.ui
 
 libamarok_la_LIBADD = \
-    $(IPOD_OBJS) \
     $(top_builddir)/amarok/src/amarokcore/libamarokcore.la \
     $(top_builddir)/amarok/src/analyzers/libanalyzers.la \
     $(top_builddir)/amarok/src/engine/libengine.la \
@@ -138,7 +135,6 @@ libamarok_la_LIBADD = \
     $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KHTML) $(LIB_KNEWSTUFF) \
     $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) $(EXSCALIBAR_LIBS) \
     $(LIB_TUNEPIMP) \
-    $(IPOD_SUBLIBS) $(IFP_SUBLIBS) \
     $(mysql_libs) \
     $(postgresql_libs)
 
@@ -160,7 +156,6 @@ amarokapp_SOURCES = \
     main.cpp
 
 amarokapp_LDADD = \
-    $(IPOD_OBJS) \
     $(top_builddir)/amarok/src/amarokcore/libamarokcore.la \
     $(top_builddir)/amarok/src/libamarok.la \
     $(top_builddir)/amarok/src/analyzers/libanalyzers.la \
@@ -172,7 +167,6 @@ amarokapp_LDADD = \
     $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KHTML) $(LIB_KNEWSTUFF) \
     $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) $(EXSCALIBAR_LIBS) \
     $(LIB_TUNEPIMP) \
-    $(IPOD_SUBLIBS) $(IFP_SUBLIBS) \
     $(mysql_libs) \
     $(postgresql_libs)
 

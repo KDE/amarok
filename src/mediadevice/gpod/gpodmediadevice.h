@@ -23,7 +23,8 @@ class GpodMediaDevice : public KioMediaDevice
     Q_OBJECT
 
     public:
-                          GpodMediaDevice( MediaDeviceView* parent, MediaDeviceList* listview );
+                          GpodMediaDevice();
+        void              init( MediaDeviceView* parent, MediaDeviceList* listview );
         virtual           ~GpodMediaDevice();
         virtual bool      autoConnect() { return false; /* for now b/c of last.fm submissions */ }
         QStringList       supportedFiletypes();

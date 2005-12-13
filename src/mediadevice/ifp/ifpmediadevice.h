@@ -36,7 +36,8 @@ class IfpMediaDevice : public MediaDevice
     Q_OBJECT
 
     public:
-                          IfpMediaDevice( MediaDeviceView* parent, MediaDeviceList* listview );
+                          IfpMediaDevice();
+        void              init( MediaDeviceView* parent, MediaDeviceList* listview );
         virtual           ~IfpMediaDevice();
 
         bool              isConnected() { return m_connected; }

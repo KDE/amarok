@@ -7,6 +7,8 @@
 #include <config.h>
 #include "gpodmediadevice.h"
 
+AMAROK_EXPORT_PLUGIN( GpodMediaDevice )
+
 #include "debug.h"
 #include "metabundle.h"
 #include "collectiondb.h"
@@ -118,8 +120,8 @@ class GpodMediaItem : public MediaItem
 };
 
 
-GpodMediaDevice::GpodMediaDevice( MediaDeviceView* parent, MediaDeviceList *listview )
-    : KioMediaDevice( parent, listview )
+GpodMediaDevice::GpodMediaDevice()
+    : KioMediaDevice()
     , m_masterPlaylist( 0 )
     , m_podcastPlaylist( 0 )
 {
@@ -132,6 +134,12 @@ GpodMediaDevice::GpodMediaDevice( MediaDeviceView* parent, MediaDeviceList *list
     m_playlistItem = 0;
     m_supportsArtwork = false;
     m_isShuffle = false;
+}
+
+void
+GpodMediaDevice::init( MediaDeviceView* parent, MediaDeviceList *listview )
+{
+    KioMediaDevice::init( parent, listview );
 }
 
 GpodMediaDevice::~GpodMediaDevice()

@@ -41,14 +41,20 @@
 
 
 
-KioMediaDevice::KioMediaDevice( MediaDeviceView* parent, MediaDeviceList *listview )
-: MediaDevice( parent, listview )
+KioMediaDevice::KioMediaDevice()
+: MediaDevice()
 {
     m_podcastItem = NULL;
     m_staleItem = NULL;
     m_orphanedItem = NULL;
     m_invisibleItem = NULL;
     m_playlistItem = NULL;
+}
+
+void
+KioMediaDevice::init( MediaDeviceView* parent, MediaDeviceList *listview )
+{
+    MediaDevice::init( parent, listview );
 }
 
 KioMediaDevice::~KioMediaDevice()

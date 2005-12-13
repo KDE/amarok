@@ -15,12 +15,11 @@ INCLUDES = \
 METASOURCES        = AUTO
 
 libamarok_ifp_mediadevice_la_LIBADD = \
- 	$(top_builddir)/amarok/src/plugin/libplugin.la \
-	$(top_builddir)/amarok/src/engine/libengine.la \
 	-lusb -lifp \
+        ../../libamarok.la \
 	-lkdeui -lkdecore -lkio
 	
-libamarok_ifp_mediadevice_la_LDFLAGS = -module $(all_libraries)
+libamarok_ifp_mediadevice_la_LDFLAGS = -module $(KDE_PLUGIN) $(all_libraries)
 
 libamarok_ifp_mediadevice_la_SOURCES = ifpmediadevice.cpp
 

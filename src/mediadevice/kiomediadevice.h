@@ -16,7 +16,8 @@ class KioMediaDevice : public MediaDevice
     Q_OBJECT
 
     public:
-                          KioMediaDevice( MediaDeviceView* parent, MediaDeviceList* listview );
+                          KioMediaDevice();
+        void              init( MediaDeviceView* parent, MediaDeviceList* listview );
         virtual           ~KioMediaDevice();
         virtual bool      asynchronousTransfer() { return true; }
 

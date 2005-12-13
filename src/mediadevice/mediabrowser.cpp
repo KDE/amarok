@@ -162,7 +162,8 @@ class SpaceLabel : public QLabel {
 class DummyMediaDevice : public MediaDevice
 {
     public:
-    DummyMediaDevice( MediaDeviceView *view, MediaDeviceList *list ) : MediaDevice( view, list ) {}
+    DummyMediaDevice() : MediaDevice() {}
+    void init( MediaDeviceView *view, MediaDeviceList *list ) { MediaDevice::init( view, list ); }
     virtual ~DummyMediaDevice() {}
     virtual bool isConnected() { return false; }
     virtual void cancelTransfer() {}
@@ -808,7 +809,8 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     , m_parent( parent )
 {
     m_device = loadDevicePlugin( QString("ifp-mediadevice") );
-    m_device->setDeviceType( MediaDevice::IFP );
+    m_device->init( this, m_deviceList );
+    m_device->setDeviceType( MediaDevice::IPOD );
     
     m_progressBox  = new QHBox( this );
     m_progress     = new KProgress( m_progressBox );
@@ -877,7 +879,8 @@ MediaDeviceView::loadDevicePlugin( const QString &deviceName )
     }
     
     debug() << "loading dummy" << endl;
-    MediaDevice *device = new DummyMediaDevice( this, m_deviceList );
+    MediaDevice *device = new DummyMediaDevice();
+    device->init( this, m_deviceList );
     return device;
 // #if defined(HAVE_LIBGPOD)
 //     debug() << "Loading iPod device!" << endl;
@@ -994,17 +997,18 @@ MediaDeviceView::switchMediaDevice( int newType )
         case MediaDevice::DUMMY:
             debug() << "Loading Dummy device! " << MediaDevice::DUMMY << endl;
             delete m_device;
-            m_device = new DummyMediaDevice( this, m_deviceList );
+            m_device = new DummyMediaDevice();
+            m_device->init( this, m_deviceList );
             m_device->setDeviceType( MediaDevice::DUMMY );
             break;
             
         case MediaDevice::IPOD:
             debug() << "Loading iPod device! " << MediaDevice::IPOD << endl;
         #ifdef HAVE_LIBGPOD
-            delete m_device;
-            m_device = new GpodMediaDevice( this, m_deviceList );
-            m_device->setDeviceType( MediaDevice::IPOD );
-            m_device->setRequireMount( true );
+            //delete m_device;
+            //m_device = new GpodMediaDevice( this, m_deviceList );
+            //m_device->setDeviceType( MediaDevice::IPOD );
+            //m_device->setRequireMount( true );
         #else
             return false;
         #endif
@@ -1183,10 +1187,10 @@ MediaDeviceView::match( const MediaItem *it, const QString &filter )
 }
 
 
-MediaDevice::MediaDevice( MediaDeviceView* parent, MediaDeviceList *listview )
+MediaDevice::MediaDevice()
     : amaroK::Plugin()
-    , m_parent( parent )
-    , m_listview( listview )
+    , m_parent( NULL )
+    , m_listview( NULL )
     , m_wait( false )
     , m_requireMount( false )
     , m_hasPodcast( false )
@@ -1194,7 +1198,7 @@ MediaDevice::MediaDevice( MediaDeviceView* parent, MediaDeviceList *listview )
     , m_cancelled( false )
     , m_transferring( false )
     , m_transferredItem( 0 )
-    , m_transferList( new MediaDeviceTransferList( parent ) )
+    , m_transferList( NULL )
     , m_playlistItem( 0 )
     , m_podcastItem( 0 )
     , m_invisibleItem( 0 )
@@ -1210,6 +1214,13 @@ MediaDevice::MediaDevice( MediaDeviceView* parent, MediaDeviceList *listview )
     m_umntcmd = AmarokConfig::umountCommand();
     m_autoDeletePodcasts = AmarokConfig::autoDeletePodcasts();
     m_syncStats = AmarokConfig::syncStats();
+}
+
+void MediaDevice::init( MediaDeviceView* parent, MediaDeviceList *listview )
+{
+    m_parent = parent;
+    m_listview = listview;
+    m_transferList = new MediaDeviceTransferList( m_parent );
 }
 
 MediaDevice::~MediaDevice()
