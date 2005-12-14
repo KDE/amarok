@@ -48,12 +48,6 @@ AMAROK_EXPORT_PLUGIN( IpodMediaDevice )
 
 #include <glib-object.h>
 
-// the gobject system needs this - otherwise ipod-device enabled libgpod crashes
-static class GobjectInitializer {
-    public:
-    GobjectInitializer() { g_type_init(); }
-} gobjectInitializer;
-
 class TrackList : public QPtrList<Itdb_Track>
 {
     int compareItems ( QPtrCollection::Item track1, QPtrCollection::Item track2 )
@@ -705,26 +699,6 @@ IpodMediaDevice::openDevice(bool silent)
         debug() << "device type detection failed, assuming iPod shuffle" << endl;
         m_isShuffle = true;
     }
-
-#ifdef HAVE_ITDB_TRACK_SET_THUMBNAILS
-    if( m_supportsArtwork )
-    {
-        QString path = m_mntpnt + "/iPod_Control/Artwork";
-        QDir dir( path );
-        if(!dir.exists())
-            dir.mkdir(dir.absPath());
-
-        path += "/ArtworkDB";
-        QFile file( path );
-        if( !file.exists() )
-        {
-            file.open( IO_WriteOnly );
-            file.close();
-        }
-    }
-#else
-    m_supportsArtwork = false;
-#endif
 
     if(itdb_musicdirs_number(m_itdb) <= 0)
     {
