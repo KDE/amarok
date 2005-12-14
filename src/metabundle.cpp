@@ -295,8 +295,7 @@ MetaBundle::prettyBitrate( int i )
 {
     //the point here is to force sharing of these strings returned from prettyBitrate()
     static const QString bitrateStore[9] = {
-            "?", "32 kbps", "64 kbps", "96 kbps", "128 kbps",
-            "160 kbps", "192 kbps", "224 kbps", "256 kbps" };
+            "?", "32", "64", "96", "128", "160", "192", "224", "256" };
 
     return (i >=0 && i <= 256 && i % 32 == 0)
                 ? bitrateStore[ i / 32 ]

@@ -3069,8 +3069,8 @@ Playlist::googleMatch( QString query, const QStringMap &defaults, const QStringM
                     {
                         if( v.contains( "?" ) )
                             condition = false;
-                        else                      //cut off " kbps"
-                            condition = v.left( v.length() - 5 ).toInt() > w.left( w.length() - 5 ).toInt();
+                        else
+                            condition = v.left( v.length() ).toInt() > w.left( w.length() ).toInt();
                     }
                     else
                         condition = v > w; //compare the strings
