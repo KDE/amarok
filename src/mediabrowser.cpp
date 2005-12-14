@@ -1113,7 +1113,7 @@ MediaDeviceView::~MediaDeviceView()
 {
     m_device->saveTransferList( amaroK::saveLocation() + "transferlist.xml" );
 
-    if( m_device->m_syncStats )
+    if( m_device->isConnected() && m_device->m_syncStats )
     {
         m_device->syncStatsToDevice();
     }
@@ -1226,6 +1226,7 @@ void MediaDevice::init( MediaDeviceView* parent, MediaDeviceList *listview )
 
 MediaDevice::~MediaDevice()
 {
+    delete sysProc;
     delete m_transferList;
 }
 
