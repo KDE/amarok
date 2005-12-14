@@ -31,7 +31,7 @@ public:
         setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
     }
 
-    virtual void mousePressEvent( QMouseEvent* e )
+    virtual void mousePressEvent( QMouseEvent * )
     {
         AmarokConfig::setTimeDisplayRemaining( !AmarokConfig::timeDisplayRemaining() );
 

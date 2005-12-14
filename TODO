@@ -5,6 +5,9 @@ TODO-list for amaroK
 
 
 SHORT-TERM (URGENT):
+ <sebr>    The unknown album should ALWAYS be shown last.  Year has a heigher weighting than album 
+           name.  We should special case the Unknown album.
+
  <sebr>    Popup message flickers when showing.
 
  <markey>  TagDialog: I was trying to fetch a cover from the dialog. The download job stalled.
