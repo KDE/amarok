@@ -11,7 +11,7 @@
 # # # # # # # # # # # # # # # # # # # # # #   # # # # #   # # #   # #   # #   # #   #   #
 
 echo
-echo "amaroK-svn (Version 3.0rc3) by Jocke \"Firetech\" Andersson"
+echo "amaroK-svn (Version 3.0rc4) by Jocke \"Firetech\" Andersson"
 echo "==========================================================="
 echo
 
@@ -166,8 +166,10 @@ else
 
   ## Language
   AUTO_LANG="`kreadconfig --group Locale --key Language | sed -re \"s/:.+//\"`"
-  kdialog --title "$KD_TITLE" --yesno "I detected that you are running KDE with language '$AUTO_LANG'.\nIf this is correct (and you want it that way), I will download localization and documentation for amaroK in that language.\nDo you want this language?"
-  if [ "$?" = "0" ]; then # If the user said yes
+  if [ "$AUTO_LANG" != "" ]; then # Generally, if the user is running KDE
+    kdialog --title "$KD_TITLE" --yesno "I detected that you are running KDE with language '$AUTO_LANG'.\nIf this is correct (and you want it that way), I will download localization and documentation for amaroK in that language.\nDo you want this language?"
+  fi
+  if [ "$?" = "0" -a "$AUTO_LANG" != "" ]; then # If the user said yes, and is running KDE...
     GET_LANG="$AUTO_LANG"
   else
     kdialog --title "$KD_TITLE" --msgbox "Which language do you want to download localization and documentation for?\nA list of available languages is available at http://websvn.kde.org/trunk/l10n/ (It is CaSe sensitive!)\nIf you want to use the default language (American English), either leave this empty or set it to 'en_US' (it's not in the list above).\n(Click Ok to get to the input box.)"
@@ -431,7 +433,7 @@ if [ "$CONF_HELP" = "true" ]; then
   TMP_FILE="`mktemp`"
   echo -e "<big><b><u>Configuration options</u></b></big>\n" > $TMP_FILE
   ./configure --help >> $TMP_FILE
-  kdialog --title "$KD_TITLE :: Configuration options" --textbox $TMP_FILE 600 5000 & # height 5000 should be enough even for VERY big desktops. It will be limited to the desktop height anyway. Put it in the background (&) to make the user able to watch it while typing the selected options into the input box.
+  kdialog --title "$KD_TITLE :: Configuration options" --textbox $TMP_FILE 600 800 & # 800x600 should be enough. Put it in the background (&) to make the user able to watch it while typing the selected options into the input box.
   kdialog --title "$KD_TITLE" --yesno "Do you want to use any extra configuration options (in addition to '--prefix=`kde-config --prefix` --enable-debug=full')?\nNo extra options is the default, and that works fine.\n(Available options are displayed in another window right now.)"
   rm -f $TMP_FILE
   if [ "$?" = "0" ]; then #If the user said yes
