@@ -11,7 +11,7 @@
 # # # # # # # # # # # # # # # # # # # # # #   # # # # #   # # #   # #   # #   # #   #   #
 
 echo
-echo "amaroK-svn (Version 3.0rc2) by Jocke \"Firetech\" Andersson"
+echo "amaroK-svn (Version 3.0rc3) by Jocke \"Firetech\" Andersson"
 echo "==========================================================="
 echo
 
@@ -281,8 +281,9 @@ if [ ! -f "Makefile" ]; then
   echo "No current revision was found."
 else
   TMP_OLD_UNINFO="`mktemp`"
-  unsermake -n uninstall | grep "rm -" > $TMP_OLD_UNINFO # Stored in a file so we can run it later, in a simple manner. Grep for "rm -" (there are different switches to rm in the commands) to exclude commands that doesn't need to be run.
+  unsermake -n uninstall > $TMP_OLD_UNINFO # Stored in a file so we can run it later, in a simple manner.
   if [ "$?" != "0" ]; then # If the command didn't finish successfully
+    rm -f $TMP_OLD_UNINFO
     Error "Couldn't get uninstall commands for your current revision."
   else
     echo "Done."
@@ -294,12 +295,14 @@ echo
 echo "# 4/$S_STEPS - Checking out common SVN files."
 svn co $SVN_SERVER/home/kde/branches/KDE/3.5/kde-common/admin # URL changed since KDE 3.5 branching
 if [ "$?" != "0" ]; then # If the command didn't finish successfully
+  rm -f $TMP_OLD_UNINFO
   Error "The SVN transfer didn't finish successfully."
 fi
 echo
 echo "# 5/$S_STEPS - Updating amaroK files."
 svn up amarok
 if [ "$?" != "0" ]; then # If the command didn't finish successfully
+  rm -f $TMP_OLD_UNINFO
   Error "The SVN transfer didn't finish successfully.\nIf the message from svn (in console) is something like 'amarok is not under version control', you need a never version of svn.\nAt least version 1.1 is needed."
 fi
 if [ "$USE_ID" = "1" ]; then
@@ -338,7 +341,7 @@ if [ "$GET_LANG" != "en_US" ]; then # If a language (not en_US) is selected
     TMP_FILE="`mktemp`"
     svn cat $SVN_SERVER/home/kde/trunk/l10n/$GET_LANG/messages/extragear-multimedia/amarok.po 2> /dev/null | tee $TMP_FILE > /dev/null
     if [ "$?" != "0" ]; then # If the command didn't finish successfully
-      rm -f $TMP_FILE
+      rm -f $TMP_FILE $TMP_OLD_UNINFO
       Error "The SVN transfer didn't finish successfully."
     fi
     if [ ! -s "$TMP_FILE" ]; then
@@ -381,6 +384,7 @@ if [ "$GET_LANG" != "en_US" ]; then # If a language (not en_US) is selected
       echo "SUBDIRS = $GET_LANG" > Makefile.am
       svn co $SVN_SERVER/home/kde/trunk/l10n/$GET_LANG/docs/extragear-multimedia/amarok $GET_LANG
       if [ "$?" != "0" ]; then # If the command didn't finish successfully
+        rm -f $TMP_OLD_UNINFO
         Error "The SVN transfer didn't finish successfully."
       fi
       cd $GET_LANG
@@ -403,6 +407,7 @@ if [ "$GET_LANG" = "en_US" ]; then # If no language (en_US) is selected. This is
   echo "SUBDIRS = en" > Makefile.am
   svn co $SVN_SERVER/home/kde/trunk/extragear/multimedia/doc/amarok en
   if [ "$?" != "0" ]; then # If the command didn't finish successfully
+    rm -f $TMP_OLD_UNINFO
     Error "The SVN transfer didn't finish successfully."
   fi
   cd en
@@ -417,6 +422,7 @@ echo
 echo "# 7/$S_STEPS - Preparing for configuration. (This will take a while.)"
 WANT_AUTOCONF="2.5" unsermake -f Makefile.cvs
 if [ "$?" != "0" ]; then # If the command didn't finish successfully
+  rm -f $TMP_OLD_UNINFO
   Error "Preparation didn't finish successfully.\nProblems at this step are quite certainly problems with either unsermake or your automake configuration."
 fi
 
@@ -450,17 +456,41 @@ echo
 echo "# 8/$S_STEPS - Configuring. (This will also take a while.)"
 ./configure --prefix=`kde-config --prefix` --enable-debug=full$CONF_FLAGS
 if [ "$?" != "0" ]; then # If the command didn't finish successfully
+  rm -f $TMP_OLD_UNINFO
   Error "Configuration wasn't successful. amaroK was NOT installed/upgraded."
 fi
 
+## Clean build dir if user wanted to.
+if [ "$CLEAN_BUILD" = "1" ]; then
+  echo "# 9/$S_STEPS - Cleaning the source tree."
+  unsermake clean
+  if [ "$?" != "0" ]; then # If the command didn't finish successfully
+    rm -f $TMP_OLD_UNINFO
+    Error "Source tree wasn't cleaned successfully!"
+  fi
+fi
+
+## Compilation
+echo
+let CURR_STEP=S_STEPS-2
+echo "# $CURR_STEP/$S_STEPS - Compiling. (The time of this step depends on the number of new source files that were downloaded.)"
+unsermake
+if [ "$?" != "0" ]; then # If the command didn't finish successfully
+  rm -f $TMP_OLD_UNINFO
+  Error "Compilation wasn't successful. amaroK was NOT installed/upgraded."
+fi
+echo
+echo "Compilation successful."
+
 ## Compare uninstall commands and , if they differ, uninstall the old revision.
 echo
-echo "# 9/$S_STEPS - Comparing uninstall commands."
+let CURR_STEP=S_STEPS-1
+echo "# $CURR_STEP/$S_STEPS - Comparing uninstall commands."
 if [ ! -f "$TMP_OLD_UNINFO" ]; then
   echo "No older revision was found."
 else
   TMP_NEW_UNINFO="`mktemp`"
-  unsermake -n uninstall | grep "rm -" > $TMP_NEW_UNINFO # For info about the grepping, se above (Step 3).
+  unsermake -n uninstall > $TMP_NEW_UNINFO
   if [ "$?" != "0" ]; then # If the command didn't finish successfully.
     rm -f $TMP_OLD_UNINFO $TMP_NEW_UNINFO
     Error "Couldn't compare the uninstall commands."
@@ -489,30 +519,9 @@ else
   rm -f $TMP_OLD_UNINFO $TMP_NEW_UNINFO
 fi
 
-## Clean build dir if user wanted to.
-if [ "$CLEAN_BUILD" = "1" ]; then
-  echo "# 10/$S_STEPS - Cleaning the source tree."
-  unsermake clean
-  if [ "$?" != "0" ]; then # If the command didn't finish successfully
-    Error "Source tree wasn't cleaned successfully!"
-  fi
-fi
-
-
-## Compilation
-echo
-let COMP_STEP=S_STEPS-1
-echo "# $COMP_STEP/$S_STEPS - Compiling. (The time of this step depends on the number of new source files that were downloaded.)"
-unsermake
-if [ "$?" != "0" ]; then # If the command didn't finish successfully
-  Error "Compilation wasn't successful. amaroK was NOT installed/upgraded."
-fi
-echo
-echo "Compilation successful."
-
 ## Installation
 echo
-echo "# $S_STEPs/$S_STEPS - Installing files." # Installation is the last step, at least for now.
+echo "# $S_STEPS/$S_STEPS - Installing files." # Installation is the last step, at least for now.
 echo "Executing '$HOW_ROOT' to get root privileges for installation."
 if [ "$HOW_ROOT" = "sudo" ]; then
   echo "(You might need to enter your password now.)"
