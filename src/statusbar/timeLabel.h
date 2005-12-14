@@ -14,13 +14,12 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Steet, Fifth Floor, Boston, MA  02111-1307, USA.             *
+ *   51 Franklin Steet, Fifth Floor, Boston, MA  02111-1307, USA.          *
  ***************************************************************************/
 
 #ifndef AMAROK_TIMELABEL_H
 #define AMAROK_TIMELABEL_H
 
-#include <kpopupmenu.h>
 #include <qlabel.h>
 
 class TimeLabel : public QLabel
@@ -39,4 +38,5 @@ public:
         amaroK::StatusBar::instance()->drawTimeDisplay( EngineController::engine()->position() );
     }
 };
-#endif
+
+#endif /*AMAROK_TIMELABEL_H*/
