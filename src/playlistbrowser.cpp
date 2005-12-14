@@ -969,7 +969,7 @@ bool PlaylistBrowser::deletePodcastItems()
         if( isPodcastItem( *it ) )
         {
             #define item static_cast<PodcastItem*>(*it)
-            if( item->hasDownloaded() ) 
+            if( item->hasDownloaded() )
                 urls.append( item->localUrl() );
             #undef  item
         }
@@ -2683,10 +2683,7 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
                                                   : suggestion == 2 ? artist
                                                   : QString::null;
                     if ( pb->createPlaylist( item, false, title ) )
-                    {
                         pb->m_lastPlaylist->insertTracks( 0, bundles );
-                        pb->m_lastPlaylist->load(); //we need to ensure that insertTracks gets registered. Why?!
-                    }
                 }
             }
         }
