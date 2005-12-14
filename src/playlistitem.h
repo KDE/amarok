@@ -139,6 +139,10 @@ class PlaylistItem : public KListViewItem
         void checkMood();
         bool readMood();
 
+        enum { DrawNormal, DrawGrayed };
+        QPixmap *star( int type = DrawNormal ) const;
+        int ratingAtPoint( int x ) const;
+
         /// like QWidget::update()
         void update() const;
 

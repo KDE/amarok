@@ -136,7 +136,20 @@ class Playlist::PlaylistToolTip: public QToolTip
         const QPoint contentsPos = view->viewportToContents( pos );
         const int col = view->header()->sectionAt( contentsPos.x() );
 
-        QString text = item->text( col );
+        QString text;
+        if( col == PlaylistItem::Rating )
+            switch( item->rating() )
+            {
+                case 0: text = i18n( "Not rated" ); break;
+                case 1: text = i18n( "Crap" ); break;
+                case 2: text = i18n( "Tolerable" ); break;
+                case 3: text = i18n( "Good" ); break;
+                case 4: text = i18n( "Excellent" ); break;
+                case 5: text = i18n( "Inconceivable!" ); break;
+                default: text = "This is a bug.";
+            }
+        else
+            text = item->text( col );
 
         QRect r = view->itemRect( item );
         int headerPos = view->header()->sectionPos( col );
@@ -155,8 +168,11 @@ class Playlist::PlaylistToolTip: public QToolTip
                 width -= 12;
         }
 
-        if( view->fontMetrics().width( text ) > width )
+        if( ( col == PlaylistItem::Rating && item->ratingAtPoint( contentsPos.x() ) <= item->rating() ) ||
+            ( col != PlaylistItem::Rating && view->fontMetrics().width( text ) > width ) )
+        {
             tip( r, text.replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" ) );
+        }
     }
 };
 
@@ -3571,15 +3587,18 @@ Playlist::contentsMouseMoveEvent( QMouseEvent *e )
     PlaylistItem *prev = m_hoveredRating;
     QPoint pos;
     if( e )
-        pos = contentsToViewport( e->pos() );
+        pos = e->pos();
     else
-        pos = mapFromGlobal( QCursor::pos() ) - QPoint( 0, header()->height() );
+        pos = viewportToContents( viewport()->mapFromGlobal( QCursor::pos() ) );
 
-    if( itemAt( pos ) && pos.x() > header()->sectionPos( PlaylistItem::Rating ) &&
+    PlaylistItem *item = static_cast<PlaylistItem*>( itemAt( contentsToViewport( pos ) ) );
+    if( item && pos.x() > header()->sectionPos( PlaylistItem::Rating ) &&
         pos.x() < header()->sectionPos( PlaylistItem::Rating ) + header()->sectionSize( PlaylistItem::Rating ) )
     {
-        m_hoveredRating = static_cast<PlaylistItem*>( itemAt( pos ) );
+        m_hoveredRating = item;
         m_hoveredRating->updateColumn( PlaylistItem::Rating );
+        if( item->ratingAtPoint( pos.x() ) > item->rating() )
+            PlaylistToolTip::hide();
     }
     else
         m_hoveredRating = 0;
@@ -3592,9 +3611,6 @@ Playlist::contentsMouseMoveEvent( QMouseEvent *e )
         else
             prev->updateColumn( PlaylistItem::Rating );
     }
-
-    if( !e )
-        triggerUpdate();
 }
 
 void Playlist::leaveEvent( QEvent *e )
@@ -3609,14 +3625,12 @@ void Playlist::leaveEvent( QEvent *e )
 
 void Playlist::contentsMousePressEvent( QMouseEvent *e )
 {
-    const QPoint pos = contentsToViewport( e->pos() );
-    PlaylistItem *item = static_cast<PlaylistItem*>( itemAt( pos ) );
+    PlaylistItem *item = static_cast<PlaylistItem*>( itemAt( contentsToViewport( e->pos() ) ) );
     if( !( e->state() & Qt::ControlButton || e->state() & Qt::ShiftButton ) && ( e->button() & Qt::LeftButton ) &&
-        item && pos.x() > header()->sectionPos( PlaylistItem::Rating ) &&
-        pos.x() < header()->sectionPos( PlaylistItem::Rating ) + header()->sectionSize( PlaylistItem::Rating ) )
+        item && e->pos().x() > header()->sectionPos( PlaylistItem::Rating ) &&
+        e->pos().x() < header()->sectionPos( PlaylistItem::Rating ) + header()->sectionSize( PlaylistItem::Rating ) )
     {
-        const int w = fontMetrics().height() + itemMargin() * 2 - 4 + ( fontMetrics().height() % 2 ? 1 : 0 );
-        const int rating = ( pos.x() - header()->sectionPos( PlaylistItem::Rating ) ) / (w+1) + 1;
+        const int rating = item->ratingAtPoint( e->pos().x() );
         if( m_selCount > 1 && item->isSelected() )
             setSelectedRatings( rating );
         else
@@ -3928,6 +3942,7 @@ Playlist::slotMouseButtonPressed( int button, QListViewItem *after, const QPoint
 
 void Playlist::slotContentsMoving()
 {
+    PlaylistToolTip::hide();
     QTimer::singleShot( 0, this, SLOT( contentsMouseMoveEvent() ) );
 }
 

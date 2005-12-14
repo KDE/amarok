@@ -524,6 +524,32 @@ bool PlaylistItem::isEditing( int column ) const
     }
 }
 
+QPixmap *PlaylistItem::star( int type ) const
+{
+    static const int h = listView()->fontMetrics().height() + listView()->itemMargin() * 2 - 4
+                         + ( ( listView()->fontMetrics().height() % 2 ) ? 1 : 0 );
+    static QImage img = QImage( locate( "data", "amarok/images/star.png" ) ).smoothScale( h, h, QImage::ScaleMin );
+    static QPixmap normal( img );
+    static QPixmap grayed;
+    static bool asdf = true;
+    if( asdf )
+    {
+        KIconEffect::toGray( img, 1.0 );
+        grayed.convertFromImage( img );
+        asdf = false;
+    }
+
+    if( type == DrawGrayed )
+        return &grayed;
+    return &normal;
+}
+
+int PlaylistItem::ratingAtPoint( int x ) const
+{
+    x -= listView()->header()->sectionPos( Rating );
+    return kClamp( ( x - 1 ) / ( star()->width() + listView()->itemMargin() ) + 1, 1, 5 );
+}
+
 void PlaylistItem::update() const
 {
     listView()->repaintItem( this );
@@ -535,7 +561,8 @@ void PlaylistItem::updateColumn( int column ) const
     if( !r.isValid() )
         return;
 
-    listView()->viewport()->update( listView()->header()->sectionPos( column ) + 1, r.y() + 1,
+    listView()->viewport()->update( listView()->header()->sectionPos( column ) - listView()->contentsX() + 1,
+                                    r.y() + 1,
                                     listView()->header()->sectionSize( column ) - 2, height() - 2 );
 }
 
@@ -987,36 +1014,22 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
 
 void PlaylistItem::drawRating( QPainter *p )
 {
-    static const int h = listView()->fontMetrics().height() + listView()->itemMargin() * 2 - 4
-                         + ( ( listView()->fontMetrics().height() % 2 ) ? 1 : 0 );
-    static QImage img = QImage( locate( "data", "amarok/images/star.png" ) ).smoothScale( h, h, QImage::ScaleMin );
-    static QPixmap star( img );
-    static QPixmap grayed;
-    static bool asdf = true;
-    if( asdf )
-    {
-        KIconEffect::toGray( img, 1.0 );
-        grayed.convertFromImage( img );
-        asdf = false;
-    }
-
-
+    QPixmap *pix = star();
     int i = 1, x = 1;
     for(; i <= rating(); ++i )
     {
-        bitBlt( p->device(), x, ( this == listView()->m_currentTrack ) ? h / 2 : 2, &star );
-        x += star.width() + listView()->itemMargin();
+        bitBlt( p->device(), x, ( this == listView()->m_currentTrack ) ? pix->height() / 2 : 2, pix );
+        x += pix->width() + listView()->itemMargin();
     }
     if( this == listView()->m_hoveredRating || ( isSelected() && listView()->m_selCount > 1 &&
         listView()->m_hoveredRating && listView()->m_hoveredRating->isSelected() ) )
     {
-        int pos = listView()->mapFromGlobal( QCursor::pos() ).x() - listView()->header()->sectionPos( Rating ) - 1;
-        for(; i <= 5; ++i )
+        pix = star( DrawGrayed );
+        const int pos = listView()->viewportToContents( listView()->viewport()->mapFromGlobal( QCursor::pos() ) ).x();
+        for( int n = ratingAtPoint( pos ); i <= n; ++i )
         {
-            if( x >= pos )
-                return;
-            bitBlt( p->device(), x, ( this == listView()->m_currentTrack ) ? h / 2 : 2, &grayed );
-            x += grayed.width() + listView()->itemMargin();
+            bitBlt( p->device(), x, ( this == listView()->m_currentTrack ) ? pix->height() / 2 : 2, pix );
+            x += pix->width() + listView()->itemMargin();
         }
     }
 }
