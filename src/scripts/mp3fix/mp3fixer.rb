@@ -38,6 +38,8 @@ loop do
         when "customMenuClicked"
             if message.include?( MenuItemName )
                 args = message.split()
+                folders = []
+
                 # Remove the command args
                 3.times() { args.delete_at( 0 ) }
 
@@ -56,6 +58,7 @@ loop do
 
                     if $?.success?()
                         `dcop amarok playlist popupMessage "Mp3Fixer has successfully repaired your file."`
+                        folders << path.dirname() unless folders.include?( path.dirname() )
                     else
                         reg = Regexp.new( "Error:.*", Regexp::MULTILINE )
                         errormsg = reg.match( output )
@@ -63,6 +66,17 @@ loop do
                         `dcop amarok playlist popupMessage "Mp3Fixer #{errormsg}"`
                     end
                 end
+
+                # Touch all folders of the modified files, so that the scanner picks then up
+                folders.each do |folder|
+                    `touch #{folder}`
+                end
+                `dcop amarok collection scanCollectionChanges`
+
+                # Refresh the playlist
+                `dcop amarok playlist saveM3u #{Dir.getwd()}/playlist.m3u false`
+                `dcop amarok playlist clearPlaylist`
+                `dcop amarok addMedia #{Dir.getwd()}/playlist.m3u`
             end
     end
 end
