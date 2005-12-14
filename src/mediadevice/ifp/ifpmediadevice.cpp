@@ -32,7 +32,7 @@ AMAROK_EXPORT_PLUGIN( IfpMediaDevice )
 #include "statusbar/statusbar.h"
 
 #include <kapplication.h>
-// #include <kconfig.h>           //download saveLocation
+#include <kconfig.h>           //download saveLocation
 #include <kiconloader.h>       //smallIcon
 #include <kmessagebox.h>
 #include <kpopupmenu.h>
@@ -42,7 +42,7 @@ AMAROK_EXPORT_PLUGIN( IfpMediaDevice )
 #include <qfile.h>
 #include <qcstring.h>
 
-// namespace amaroK { extern KConfig *config( const QString& ); }
+namespace amaroK { extern KConfig *config( const QString& ); }
 
 /**
  * IfpMediaItem Class
@@ -147,9 +147,9 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
     if( m_dh == NULL )
     {
         error() << "A suitable iRiver iFP device couldn't be found" << endl;
-//         pApp()->amaroK::StatusBar::instance()->shortLongMessage( genericError,
-//                                         i18n("iFP: A suitable iRiver iFP device couldn't be found")
-//                                         , KDE::StatusBar::Error );
+        amaroK::StatusBar::instance()->shortLongMessage( genericError,
+                                        i18n("iFP: A suitable iRiver iFP device couldn't be found")
+                                        , KDE::StatusBar::Error );
         return false;
     }
 
@@ -157,8 +157,8 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
     if( m_dev == NULL )
     {
         error() << "Could not get usb_device()" << endl;
-//         pApp()->amaroK::StatusBar::instance()->shortLongMessage( genericError,
-//                                         i18n("iFP: Could not get a usb device handle"), KDE::StatusBar::Error );
+        amaroK::StatusBar::instance()->shortLongMessage( genericError,
+                                        i18n("iFP: Could not get a usb device handle"), KDE::StatusBar::Error );
         if( ifp_release_device( m_dh ) )
             error() << "warning: release_device failed." << endl;
         return false;
@@ -168,8 +168,8 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
     if( usb_claim_interface( m_dh, m_dev->config->interface->altsetting->bInterfaceNumber ) )
     {
         error() << "Device is busy.  (I was unable to claim its interface.)" << endl;
-//         pApp()->amaroK::StatusBar::instance()->shortLongMessage( genericError,
-//                                         i18n("iFP: Device is busy"), KDE::StatusBar::Error );
+        amaroK::StatusBar::instance()->shortLongMessage( genericError,
+                                        i18n("iFP: Device is busy"), KDE::StatusBar::Error );
         if( ifp_release_device( m_dh ) )
             error() << "warning: release_device failed." << endl;
         return false;
@@ -179,8 +179,8 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
     if( i )
     {
         error() << "IFP device: Device cannot be opened." << endl;
-//         pApp()->amaroK::StatusBar::instance()->shortLongMessage( genericError,
-//                                         i18n("iFP: Could not open device"), KDE::StatusBar::Error );
+        amaroK::StatusBar::instance()->shortLongMessage( genericError,
+                                        i18n("iFP: Could not open device"), KDE::StatusBar::Error );
         usb_release_interface( m_dh, m_dev->config->interface->altsetting->bInterfaceNumber );
         return false;
     }
