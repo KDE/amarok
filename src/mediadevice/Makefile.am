@@ -1,5 +1,5 @@
 if with_libgpod
-    IPOD_SUBDIR = gpod
+    IPOD_SUBDIR = ipod
 endif
 
 if with_ifp

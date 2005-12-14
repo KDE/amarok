@@ -1,5 +1,5 @@
-kde_module_LTLIBRARIES = libamarok_gpod-mediadevice.la
-kde_services_DATA = amarok_gpod-mediadevice.desktop
+kde_module_LTLIBRARIES = libamarok_ipod-mediadevice.la
+kde_services_DATA = amarok_ipod-mediadevice.desktop
 
 INCLUDES = \
     -I$(top_srcdir)/amarok/src \
@@ -14,19 +14,19 @@ INCLUDES = \
 
 METASOURCES = AUTO
 
-libamarok_gpod_mediadevice_la_LIBADD  = \
+libamarok_ipod_mediadevice_la_LIBADD  = \
     $(top_builddir)/amarok/src/libamarok.la
 
-libamarok_gpod_mediadevice_la_LDFLAGS = \
+libamarok_ipod_mediadevice_la_LDFLAGS = \
     $(KDE_PLUGIN) \
     $(LIBGPOD_LIBS) \
     $(all_libraries)
 
-libamarok_gpod_mediadevice_la_SOURCES = \
+libamarok_ipod_mediadevice_la_SOURCES = \
     kiomediadevice.cpp \
-    gpodmediadevice.cpp
+    ipodmediadevice.cpp
 
 noinst_HEADERS = \
     kiomediadevice.h \
-    gpodmediadevice.h
+    ipodmediadevice.h
 

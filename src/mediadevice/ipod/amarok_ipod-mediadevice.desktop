@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Service
 Name=Apple iPod Media Device
-X-KDE-Library=libamarok_gpod-mediadevice
+X-KDE-Library=libamarok_ipod-mediadevice
 Comment=Plugin for amaroK
 Comment[bg]=Приставка за amaroK
 Comment[br]=Lugent evit amaroK
@@ -43,7 +43,7 @@ Comment[zh_TW]=amaroK 的外掛程式
 ServiceTypes=amaroK/Plugin
 
 X-KDE-amaroK-plugintype=mediadevice
-X-KDE-amaroK-name=gpod-mediadevice
+X-KDE-amaroK-name=ipod-mediadevice
 X-KDE-amaroK-authors=Martin Aumueller
 X-KDE-amaroK-email=aumuell@reserv.at
 X-KDE-amaroK-rank=100

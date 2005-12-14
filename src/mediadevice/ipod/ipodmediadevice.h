@@ -2,8 +2,8 @@
 // (c) 2005 Martin Aumueller <aumuell@reserv.at>
 // See COPYING file for licensing information
 
-#ifndef AMAROK_GPODMEDIADEVICE_H
-#define AMAROK_GPODMEDIADEVICE_H
+#ifndef AMAROK_IPODMEDIADEVICE_H
+#define AMAROK_IPODMEDIADEVICE_H
 
 extern "C" {
 #include <gpod/itdb.h>
@@ -16,16 +16,16 @@ extern "C" {
 
 #include <kio/job.h>
 
-class GpodMediaItem;
+class IpodMediaItem;
 
-class GpodMediaDevice : public KioMediaDevice
+class IpodMediaDevice : public KioMediaDevice
 {
     Q_OBJECT
 
     public:
-                          GpodMediaDevice();
+                          IpodMediaDevice();
         void              init( MediaDeviceView* parent, MediaDeviceList* listview );
-        virtual           ~GpodMediaDevice();
+        virtual           ~IpodMediaDevice();
         virtual bool      autoConnect() { return false; /* for now b/c of last.fm submissions */ }
         QStringList       supportedFiletypes();
 
@@ -67,9 +67,9 @@ class GpodMediaDevice : public KioMediaDevice
 
     private:
         void              writeITunesDB();
-        GpodMediaItem    *addTrackToList(Itdb_Track *track);
+        IpodMediaItem    *addTrackToList(Itdb_Track *track);
         void              addPlaylistToList(Itdb_Playlist *playlist);
-        void              playlistFromItem(GpodMediaItem *item);
+        void              playlistFromItem(IpodMediaItem *item);
 
         QString           realPath(const char *ipodPath);
         QString           ipodPath(const QString &realPath);
@@ -85,10 +85,10 @@ class GpodMediaDevice : public KioMediaDevice
         bool              m_isShuffle;
         bool              m_supportsArtwork;
 
-        GpodMediaItem    *getArtist(const QString &artist);
-        GpodMediaItem    *getAlbum(const QString &artist, const QString &album);
-        GpodMediaItem    *getTrack(const QString &artist, const QString &album, const QString &title, int trackNumber=-1);
-        GpodMediaItem    *getTrack(const Itdb_Track *itrack);
+        IpodMediaItem    *getArtist(const QString &artist);
+        IpodMediaItem    *getAlbum(const QString &artist, const QString &album);
+        IpodMediaItem    *getTrack(const QString &artist, const QString &album, const QString &title, int trackNumber=-1);
+        IpodMediaItem    *getTrack(const Itdb_Track *itrack);
 
         bool              removeDBTrack(Itdb_Track *track);
 
