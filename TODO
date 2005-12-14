@@ -98,9 +98,6 @@ SHORT-TERM (URGENT):
   <markey> When the KDE color scheme is changed while amaroK is running, all toolbar buttons (those with text)
            lose their texts.
 
-  <markey> Ctrl-C in Playlist for copying title doesn't work, because the event gets eaten by another widget.
-
-
 MID-TERM:
  <eean>    The FileBrowser doesn't check for recursive symlinks. This is a KDirOperator (or the
            classes it depends on) problem.
