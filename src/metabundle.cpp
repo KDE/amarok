@@ -299,7 +299,7 @@ MetaBundle::prettyBitrate( int i )
 
     return (i >=0 && i <= 256 && i % 32 == 0)
                 ? bitrateStore[ i / 32 ]
-                : prettyGeneric( i18n( "Bitrate", "%1 kbps" ), i );
+                : prettyGeneric( "%1", i );
 }
 
 QStringList

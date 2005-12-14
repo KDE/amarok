@@ -3056,7 +3056,7 @@ Playlist::googleMatch( QString query, const QStringMap &defaults, const QStringM
                 if (q.startsWith(">"))
                 {
                     w = w.mid( 1 );
-                    if( f == Score || f == Rating || f == Year || f == Track || f == Playcount )
+                    if( f == Score || f == Rating || f == Year || f == Track || f == Playcount || f == Bitrate )
                         condition = v.toInt() > w.toInt();
                     else if( f == Length )
                     {
@@ -3065,20 +3065,13 @@ Playlist::googleMatch( QString query, const QStringMap &defaults, const QStringM
                                     ( v.left( g ).toInt() == w.left( h ).toInt() &&
                                       v.mid( g + 1 ).toInt() > w.mid( h + 1 ).toInt() );
                     }
-                    else if( f == Bitrate )
-                    {
-                        if( v.contains( "?" ) )
-                            condition = false;
-                        else
-                            condition = v.left( v.length() ).toInt() > w.left( w.length() ).toInt();
-                    }
                     else
                         condition = v > w; //compare the strings
                 }
                 else if( q.startsWith( "<" ) )
                 {
                     w = w.mid(1);
-                    if( f == Score || f == Rating || f == Year || f == Track || f == Playcount )
+                    if( f == Score || f == Rating || f == Year || f == Track || f == Playcount || f == Bitrate )
                         condition = v.toInt() < w.toInt();
                     else if( f == Length )
                     {
@@ -3086,13 +3079,6 @@ Playlist::googleMatch( QString query, const QStringMap &defaults, const QStringM
                         condition = v.left( g ).toInt() < w.left( h ).toInt() ||
                                     ( v.left( g ).toInt() == w.left( h ).toInt() &&
                                       v.mid( g + 1 ).toInt() < w.mid( h + 1 ).toInt() );
-                    }
-                    else if( f == Bitrate )
-                    {
-                        if( v.contains( "?" ) )
-                            condition = true;
-                        else
-                            condition = v.left( v.length() - 5 ).toInt() < w.left( w.length() - 5 ).toInt();
                     }
                     else
                         condition = v < w;
