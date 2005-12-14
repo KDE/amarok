@@ -1,4 +1,4 @@
-<div align="center"><b>Mp3Fixer (v0.9.1)</b></div>
+<div align="center"><b>Mp3Fixer (v0.9.2)</b></div>
 
 <p>
 <b>About:</b><br>
@@ -37,6 +37,11 @@ The Mp3Fixer amaroK Script is a frontend for this tool.
 
 <p>
 <b>ChangeLog:</b><br>
+Version 0.9.2:<br>
+<ul>
+<li>Automatically update the collection after repairing files.</li>
+<li>Automatically refresh the playlist.</li>
+</ul>
 Version 0.9.1:<br>
 <ul>
 <li>Fixed a bug that could make the script crap out with a runtime error.</li>

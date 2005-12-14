@@ -3,9 +3,3 @@
 
 08:58 < sebr> markey: won't fix a file with a $ sign in the filename
 
-Make collection update:
-store processed folders; at end: touch all folders; `dcop amarok collection scanCollectionChanges`
-
-Update playlist:
-saveM3u; clear playlist; reload playlist
-

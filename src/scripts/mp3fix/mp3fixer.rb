@@ -16,6 +16,7 @@ MenuItemName = "MP3Fixer FixIt!"
 
 def cleanup()
     `dcop amarok script removeCustomMenuItem #{MenuItemName}`
+    `rm #{Dir.getwd()}/mp3fixer_playlist.m3u`
 end
 
 
@@ -58,7 +59,7 @@ loop do
 
                     if $?.success?()
                         `dcop amarok playlist popupMessage "Mp3Fixer has successfully repaired your file."`
-                        folders << path.dirname() unless folders.include?( path.dirname() )
+                        folders << File.dirname( path ) unless folders.include?( File.dirname( path ) )
                     else
                         reg = Regexp.new( "Error:.*", Regexp::MULTILINE )
                         errormsg = reg.match( output )
@@ -74,10 +75,9 @@ loop do
                 `dcop amarok collection scanCollectionChanges`
 
                 # Refresh the playlist
-                `dcop amarok playlist saveM3u #{Dir.getwd()}/playlist.m3u false`
+                `dcop amarok playlist saveM3u #{Dir.getwd()}/mp3fixer_playlist.m3u false`
                 `dcop amarok playlist clearPlaylist`
-                `dcop amarok addMedia #{Dir.getwd()}/playlist.m3u`
-                `rm #{Dir.getwd()}/playlist.m3u`
+                `dcop amarok playlist addMedia #{Dir.getwd()}/mp3fixer_playlist.m3u`
             end
     end
 end
