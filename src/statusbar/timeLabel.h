@@ -34,10 +34,9 @@ public:
 
     virtual void mousePressEvent( QMouseEvent* e )
     {
-        if ( e->button() == Qt::LeftButton )
-            AmarokConfig::setTimeDisplayRemaining( !AmarokConfig::timeDisplayRemaining() );
+        AmarokConfig::setTimeDisplayRemaining( !AmarokConfig::timeDisplayRemaining() );
 
-        amaroK::StatusBar::instance()->drawTimeDisplay(EngineController::engine()->position());
+        amaroK::StatusBar::instance()->drawTimeDisplay( EngineController::engine()->position() );
     }
 };
 #endif
