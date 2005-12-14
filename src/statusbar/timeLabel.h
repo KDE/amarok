@@ -37,26 +37,6 @@ public:
         if ( e->button() == Qt::LeftButton )
             AmarokConfig::setTimeDisplayRemaining( !AmarokConfig::timeDisplayRemaining() );
 
-        if ( e->button() == Qt::RightButton ) {
-            enum { NORMAL, REMAIN, LENGTH };
-
-            KPopupMenu menu;
-            menu.setCheckable( true );
-            menu.insertTitle( i18n( "Time Display" ) );
-            menu.insertItem( i18n( "Normal" ), NORMAL );
-            menu.insertItem( i18n( "Remaining" ), REMAIN );
-            menu.setItemChecked( NORMAL, !AmarokConfig::timeDisplayRemaining() );
-            menu.setItemChecked( REMAIN, AmarokConfig::timeDisplayRemaining() );
-
-            switch ( menu.exec( e->globalPos() ) ) {
-            case NORMAL:
-                AmarokConfig::setTimeDisplayRemaining( false );
-                break;
-            case REMAIN:
-                AmarokConfig::setTimeDisplayRemaining( true );
-                break;
-            }
-        }
         amaroK::StatusBar::instance()->drawTimeDisplay(EngineController::engine()->position());
     }
 };
