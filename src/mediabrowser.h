@@ -140,9 +140,10 @@ class MediaBrowser : public QVBox
 
     public:
         static bool isAvailable();
+        static MediaBrowser *instance() { return s_instance; }
 
         MediaBrowser( const char *name );
-        ~MediaBrowser();
+        virtual ~MediaBrowser();
 
     private slots:
         void slotSetFilterTimeout();
@@ -153,6 +154,7 @@ class MediaBrowser : public QVBox
 
         KLineEdit* m_searchEdit;
         QTimer *m_timer;
+        static MediaBrowser *s_instance;
 };
 
 
@@ -164,7 +166,7 @@ class MediaDeviceList : public KListView
 
     public:
         MediaDeviceList( MediaDeviceView* parent );
-        ~MediaDeviceList();
+        virtual ~MediaDeviceList();
         KURL::List nodeBuildDragList( MediaItem* item, bool onlySelected=true );
         int getSelectedLeaves(MediaItem *parent, QPtrList<MediaItem> *list, bool onlySelected=true, bool onlyPlayed=false );
         MediaItem *newDirectory( MediaItem* parent );
@@ -200,7 +202,7 @@ class MediaDeviceView : public QVBox
 
     public:
     MediaDeviceView( MediaBrowser* parent );
-    ~MediaDeviceView();
+    virtual ~MediaDeviceView();
     bool setFilter( const QString &filter, MediaItem *parent=NULL );
     void updateStats();
 
@@ -210,6 +212,7 @@ class MediaDeviceView : public QVBox
 
     private:
     MediaDevice*     loadDevicePlugin( const QString &deviceName );
+    void             unloadDevicePlugin( MediaDevice *device );
     bool             switchMediaDevice( const QString &newType );
 
     QString          prettySize( unsigned long size ); // KB to QString
@@ -264,7 +267,7 @@ class MediaDevice : public QObject, public amaroK::Plugin
          * @param bundle describes track that should be checked
          * @return true if the device is capable of playing the track referred to by bundle
          */
-        bool isPlayable( const MetaBundle &bundle );
+        virtual bool isPlayable( const MetaBundle &bundle );
 
         /**
          * @return true if the device is connected

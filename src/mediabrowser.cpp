@@ -59,6 +59,7 @@
 #include <kactioncollection.h>
 
 
+MediaBrowser *MediaBrowser::s_instance = 0;
 MediaDevice *MediaDevice::s_instance = 0;
 
 QPixmap *MediaItem::s_pixUnknown = 0;
@@ -182,6 +183,8 @@ MediaBrowser::MediaBrowser( const char *name )
         : QVBox( 0, name )
         , m_timer( new QTimer( this ) )
 {
+    s_instance = this;
+
     KIconLoader iconLoader;
     MediaItem::s_pixUnknown = new QPixmap(iconLoader.loadIcon( "unknown", KIcon::Toolbar, KIcon::SizeSmall ));
     MediaItem::s_pixTrack = new QPixmap(iconLoader.loadIcon( "player_playlist_2", KIcon::Toolbar, KIcon::SizeSmall ));
@@ -888,6 +891,26 @@ MediaDeviceView::loadDevicePlugin( const QString &deviceType )
 }
 
 void
+MediaDeviceView::unloadDevicePlugin( MediaDevice *device )
+{
+    DEBUG_BLOCK
+
+    if( !device )
+       return;
+
+    disconnect( device ); // disconnect all signals
+
+    if( dynamic_cast<DummyMediaDevice *>(device) )
+    {
+       delete device;
+    }
+    else
+    {
+        PluginManager::unload( device );
+    }
+}
+
+void
 MediaDeviceView::config()
 {
     KDialogBase dialog( this, 0, false );
@@ -998,19 +1021,8 @@ MediaDeviceView::switchMediaDevice( const QString &newType )
     MediaDevice *oldDevice = MediaDevice::instance();
     if( oldDevice->isConnected() )
         oldDevice->disconnectDevice();
-    // disconnect signals
-    disconnect( oldDevice );
 
-    if( dynamic_cast<DummyMediaDevice *>( oldDevice ) )
-    {
-        delete oldDevice;
-    }
-    else
-    {
-        PluginManager::unload( oldDevice );
-        // FIXME: necessary?
-        //delete oldDevice;
-    }
+    unloadDevicePlugin( oldDevice );
 
     m_device = loadDevicePlugin( newType );
     
@@ -1107,8 +1119,9 @@ MediaDeviceView::~MediaDeviceView()
     }
     m_device->closeDevice();
 
+    unloadDevicePlugin( m_device );
+
     delete m_deviceList;
-    delete m_device;
 }
 
 bool
