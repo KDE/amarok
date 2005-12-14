@@ -3,6 +3,7 @@
 
 #include "podcastsettings.h"
 #include "podcastsettingsbase.h"
+#include "mediabrowser.h"
 
 #include <klineedit.h>
 #include <knuminput.h>
@@ -54,6 +55,7 @@ PodcastSettings::PodcastSettings( const QString& url, const QString& save, bool 
     }
 
     m_ps->m_addToMediaDeviceCheck->setChecked( addToMediaDevice );
+    m_ps->m_addToMediaDeviceCheck->setEnabled( MediaBrowser::isAvailable() );
 
     m_ps->m_purgeCheck->setChecked( purge );
     m_ps->m_purgeCountSpinBox->setValue( purgeCount );

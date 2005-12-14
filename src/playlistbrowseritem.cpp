@@ -1799,7 +1799,7 @@ PodcastItem::downloadResult( KIO::Job* job ) //SLOT
     m_downloaded = true;
 
     PodcastChannel *channel = dynamic_cast<PodcastChannel *>( m_parent );
-    if( channel && channel->addToMediaDevice() )
+    if( channel && channel->addToMediaDevice() && MediaBrowser::isAvailable() )
     {
         addToMediaDevice();
         MediaDevice::instance()->URLsAdded();
