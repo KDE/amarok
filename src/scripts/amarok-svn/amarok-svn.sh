@@ -512,8 +512,7 @@ echo "Compilation successful."
 
 ## Installation
 echo
-let INST_STEP=S_STEP
-echo "# $INST_STEP/$S_STEPS - Installing files."
+echo "# $S_STEPs/$S_STEPS - Installing files." # Installation is the last step, at least for now.
 echo "Executing '$HOW_ROOT' to get root privileges for installation."
 if [ "$HOW_ROOT" = "sudo" ]; then
   echo "(You might need to enter your password now.)"
