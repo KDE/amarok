@@ -134,6 +134,11 @@ GpodMediaDevice::GpodMediaDevice()
     m_playlistItem = 0;
     m_supportsArtwork = false;
     m_isShuffle = false;
+
+    m_hasPodcast = true;
+    m_hasStats = true;
+    m_hasPlaylists = true;
+    m_requireMount = true;
 }
 
 void

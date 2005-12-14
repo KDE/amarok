@@ -565,6 +565,10 @@
 </group>
 
 <group name="MediaDevice">
+    <entry key="DeviceType" type="String">
+        <label>DeviceType</label>
+        <whatsthis>The type of media device.</whatsthis>
+    </entry>
     <entry key="MountPoint" type="String">
         <label>MountPoint</label>
         <whatsthis>The mount point used for the media device connection.</whatsthis>

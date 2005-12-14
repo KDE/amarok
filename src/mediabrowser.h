@@ -193,39 +193,42 @@ class MediaDeviceList : public KListView
 class MediaDeviceView : public QVBox
 {
     Q_OBJECT
-    friend class MediaBrowser;
+        friend class MediaBrowser;
     friend class MediaDevice;
     friend class MediaDeviceList;
     friend class MediaDeviceTransferList;
 
     public:
-        MediaDeviceView( MediaBrowser* parent );
-        ~MediaDeviceView();
-        bool setFilter( const QString &filter, MediaItem *parent=NULL );
-        void updateStats();
+    MediaDeviceView( MediaBrowser* parent );
+    ~MediaDeviceView();
+    bool setFilter( const QString &filter, MediaItem *parent=NULL );
+    void updateStats();
 
     private slots:
         void config();
-        void slotShowContextMenu( QListViewItem* item, const QPoint& point, int );
+    void slotShowContextMenu( QListViewItem* item, const QPoint& point, int );
 
     private:
-        MediaDevice*     loadDevicePlugin( const QString &deviceName );
-        bool             switchMediaDevice( int newType );
-    
-        QString          prettySize( unsigned long size ); // KB to QString
-        bool             match( const MediaItem *item, const QString &filter );
-        SpaceLabel*      m_stats;
-        QHBox*           m_progressBox;
-        KProgress*       m_progress;
-        MediaDevice*     m_device;
-        MediaDeviceList* m_deviceList;
-        KPushButton*     m_cancelButton;
-        KPushButton*     m_transferButton;
-        KPushButton*     m_connectButton;
-        KPushButton*     m_playlistButton;
-        KPushButton*     m_configButton;
+    MediaDevice*     loadDevicePlugin( const QString &deviceName );
+    bool             switchMediaDevice( const QString &newType );
 
-        MediaBrowser* m_parent;
+    QString          prettySize( unsigned long size ); // KB to QString
+    bool             match( const MediaItem *item, const QString &filter );
+    SpaceLabel*      m_stats;
+    QHBox*           m_progressBox;
+    KProgress*       m_progress;
+    MediaDevice*     m_device;
+    MediaDeviceList* m_deviceList;
+    KPushButton*     m_cancelButton;
+    KPushButton*     m_transferButton;
+    KPushButton*     m_connectButton;
+    KPushButton*     m_playlistButton;
+    KPushButton*     m_configButton;
+
+    MediaBrowser* m_parent;
+
+    QMap<QString, QString> m_pluginName;
+    QMap<QString, QString> m_pluginAmarokName;
 };
 
 /* at least the pure virtual functions have to be implemented by a media device,
@@ -244,8 +247,6 @@ class MediaDevice : public QObject, public amaroK::Plugin
         MediaDevice();
         virtual void init( MediaDeviceView* parent, MediaDeviceList* listview );
         virtual ~MediaDevice();
-
-        enum        DeviceType { DUMMY, IPOD, IFP };
 
         void        addURL( const KURL& url, MetaBundle *bundle=NULL, PodcastInfo *info=NULL, const QString &playlistName=QString::null );
         void        addURLs( const KURL::List urls, const QString &playlistName=QString::null );
@@ -304,8 +305,8 @@ class MediaDevice : public QObject, public amaroK::Plugin
         virtual MediaItem *newDirectory( const QString &name, MediaItem *parent ) = 0;
 
         void         setRequireMount( const bool b ) { m_requireMount = b; }
-        void         setDeviceType( DeviceType type ) { m_type = type; }
-        DeviceType   deviceType() { return m_type; }
+        void         setDeviceType( const QString &type ) { m_type = type; }
+        QString      deviceType() { return m_type; }
         virtual bool autoConnect() { return false; }
         virtual bool asynchronousTransfer() { return false; }
         bool         isTransferring() { return m_transferring; }
@@ -322,7 +323,7 @@ class MediaDevice : public QObject, public amaroK::Plugin
     public slots:
         void abortTransfer();
         void clearItems();
-        void connectDevice( bool silent=false );
+        void connectClicked( bool silent=false );
         int  mount();
         void removeSelected();
         void setMountPoint(const QString & mntpnt);
@@ -412,8 +413,10 @@ class MediaDevice : public QObject, public amaroK::Plugin
         void purgeEmptyItems( MediaItem *root=0 );
         void syncStatsFromDevice( MediaItem *root=0 );
         void syncStatsToDevice( MediaItem *root=0 );
+        bool connectDevice( bool silent=false );
+        bool disconnectDevice();
 
-        DeviceType  m_type;
+        QString     m_type;
 
         QString     m_mntpnt;
         QString     m_mntcmd;
@@ -430,6 +433,7 @@ class MediaDevice : public QObject, public amaroK::Plugin
         bool             m_requireMount;
         bool             m_hasPodcast;
         bool             m_hasStats;
+        bool             m_hasPlaylists;
         bool             m_cancelled;
         bool             m_transferring;
         MediaItem       *m_transferredItem;

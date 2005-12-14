@@ -75,15 +75,12 @@ QPixmap *MediaItem::s_pixDirectory = 0;
 
 bool MediaBrowser::isAvailable() //static
 {
-   return true;
-    // perhaps the user should configure if he wants to use a media device?
-#if defined(HAVE_LIBGPOD)
+    if( !MediaDevice::instance() )
+        return false;
+    if( MediaDevice::instance()->deviceType() == "dummy-mediadevice" )
+        return false;
+
     return true;
-#elif defined(HAVE_IFP)
-    return true;
-#else
-    return false;
-#endif
 }
 
 class SpaceLabel : public QLabel {
@@ -801,9 +798,18 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     , m_deviceList( new MediaDeviceList( this ) )
     , m_parent( parent )
 {
-    m_device = loadDevicePlugin( QString("ifp-mediadevice") );
-    m_device->init( this, m_deviceList );
-    m_device->setDeviceType( MediaDevice::IPOD );
+    m_pluginName[ i18n( "Disable" ) ] = "dummy-mediadevice";
+    m_pluginAmarokName["dummy-mediadevice"] = i18n( "Disable" );
+    KTrader::OfferList offers = PluginManager::query( "[X-KDE-amaroK-plugintype] == 'mediadevice'" );
+    KTrader::OfferList::ConstIterator end( offers.end() );
+    for( KTrader::OfferList::ConstIterator it = offers.begin(); it != end; ++it ) {
+        // Save name properties in QMap for lookup
+        m_pluginName[(*it)->name()] = (*it)->property( "X-KDE-amaroK-name" ).toString();
+        m_pluginAmarokName[(*it)->property( "X-KDE-amaroK-name" ).toString()] = (*it)->name();
+    }
+
+    QString devType = AmarokConfig::deviceType();
+    m_device = loadDevicePlugin( devType );
     
     m_progressBox  = new QHBox( this );
     m_progress     = new KProgress( m_progressBox );
@@ -817,7 +823,7 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     m_playlistButton = new KPushButton( KGuiItem( QString::null, "player_playlist_2" ), hb );
     m_playlistButton->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
     m_playlistButton->setToggleButton( true );
-    if( m_device->deviceType() == MediaDevice::IFP )
+    if( !m_device->m_hasPlaylists )
         m_playlistButton->hide();
 
     m_configButton   = new KPushButton( KGuiItem( QString::null, "configure" ), hb );
@@ -838,7 +844,7 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     m_progressBox->hide();
 
     connect( m_cancelButton,   SIGNAL( clicked() ), MediaDevice::instance(), SLOT( abortTransfer() ) );
-    connect( m_connectButton,  SIGNAL( clicked() ), MediaDevice::instance(), SLOT( connectDevice() ) );
+    connect( m_connectButton,  SIGNAL( clicked() ), MediaDevice::instance(), SLOT( connectClicked() ) );
     connect( m_transferButton, SIGNAL( clicked() ), MediaDevice::instance(), SLOT( transferFiles() ) );
     connect( m_configButton,   SIGNAL( clicked() ), this,                    SLOT( config() ) );
     connect( m_device->m_transferList, SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
@@ -849,7 +855,7 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     if( m_device->autoConnect() )
     {
         m_connectButton->setOn( true );
-        m_device->connectDevice( true );
+        m_device->connectClicked( true );
         m_connectButton->setOn( m_device->isConnected() );
         m_transferButton->setEnabled( m_device->m_transferList->childCount() != 0 );
     }
@@ -858,38 +864,27 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
 }
 
 MediaDevice *
-MediaDeviceView::loadDevicePlugin( const QString &deviceName )
+MediaDeviceView::loadDevicePlugin( const QString &deviceType )
 {
     DEBUG_BLOCK
 
     QString query = "[X-KDE-amaroK-plugintype] == 'mediadevice' and [X-KDE-amaroK-name] == '%1'";
-    amaroK::Plugin *plugin = PluginManager::createFromQuery( query.arg( deviceName ) );
+    amaroK::Plugin *plugin = PluginManager::createFromQuery( query.arg( deviceType ) );
 
     if( plugin )
     {
         debug() << "Returning plugin!" << endl;
-        return (MediaDevice*)plugin;
+        MediaDevice *device = static_cast<MediaDevice *>( plugin );
+        device->init( this, m_deviceList );
+        device->m_type = deviceType;
+        return device;
     }
     
     debug() << "loading dummy" << endl;
     MediaDevice *device = new DummyMediaDevice();
     device->init( this, m_deviceList );
+    device->m_type = "dummy-mediadevice";
     return device;
-// #if defined(HAVE_LIBGPOD)
-//     debug() << "Loading iPod device!" << endl;
-//     m_device = new GpodMediaDevice( this, m_deviceList );
-//     m_device->setDeviceType( MediaDevice::IPOD );
-//     m_device->setRequireMount( true );
-// #elif defined(HAVE_IFP)
-//     debug() << "Loading IFP device!" << endl;
-//     m_device = new IfpMediaDevice( this, m_deviceList );
-//     m_device->setDeviceType( MediaDevice::IFP );
-//     m_device->setRequireMount( false );
-// #else
-//     debug() << "Loading dummy device!" << endl;
-//     m_device = new DummyMediaDevice( this, m_deviceList );
-//     m_device->setDeviceType( MediaDevice::DUMMY );
-// #endif
 }
 
 void
@@ -900,18 +895,25 @@ MediaDeviceView::config()
     dialog.setCaption( kapp->makeStdCaption( i18n("Configure Media Device") ) );
     dialog.showButtonApply( false );
     QVBox *box = dialog.makeVBoxMainWidget();
-    
+
     QComboBox *devices = new QComboBox( box );
-    //make sure these are in the same order the enum is declared
-    QStringList deviceList; deviceList << "Dummy" << "iPod" << "Ifp";
-    devices->insertStringList( deviceList );
-    
-    devices->setCurrentItem( m_device->deviceType() );
+    int index = 0;
+    for( QMap<QString,QString>::iterator it = m_pluginAmarokName.begin();
+            it != m_pluginAmarokName.end();
+            ++it )
+    {
+        devices->insertItem( *it );
+        if( *it == m_pluginAmarokName[MediaDevice::instance()->deviceType()] )
+        {
+            devices->setCurrentItem( index );
+        }
+        index++;
+    }
 
     QLabel    *mntpntLabel = 0, *mntLabel = 0, *umntLabel = 0;
     QLineEdit *mntpnt      = 0, *mntcmd   = 0, *umntcmd   = 0;
     QCheckBox *syncStats   = 0, *autoDeletePodcasts = 0;
-    
+
     if( m_device->m_requireMount )
     {
         mntpntLabel = new QLabel( box );
@@ -932,7 +934,7 @@ MediaDeviceView::config()
         umntLabel->setBuddy( umntcmd );
         QToolTip::add( umntcmd, i18n( "Set the command to unmount your device here, empty commands are not executed." ) );
     }
-    
+
     if( m_device->m_hasPodcast )
     {
         autoDeletePodcasts = new QCheckBox( box );
@@ -940,7 +942,7 @@ MediaDeviceView::config()
         QToolTip::add( autoDeletePodcasts, i18n( "Automatically delete podcast shows already played on connect" ) );
         autoDeletePodcasts->setChecked( m_device->m_autoDeletePodcasts );
     }
-    
+
     if( m_device->m_hasStats )
     {
         syncStats = new QCheckBox( box );
@@ -951,80 +953,71 @@ MediaDeviceView::config()
 
     if ( dialog.exec() != QDialog::Rejected )
     {
-        if( devices->currentItem() != m_device->deviceType() )
-        {
-            QString msg = i18n( "The requested media device could not be loaded" );
-            if( switchMediaDevice( devices->currentItem() ) )
-                msg = i18n("Media device successfully changed");
-                
-            amaroK::StatusBar::instance()->shortMessage( msg );
-        }
-    
         if( m_device->m_requireMount )
         {
             m_device->setMountPoint( mntpnt->text() );
             m_device->setMountCommand( mntcmd->text() );
             m_device->setUmountCommand( umntcmd->text() );
         }
-        
+
         if( m_device->m_hasPodcast )
             m_device->setAutoDeletePodcasts( autoDeletePodcasts->isChecked() );
-            
+
         if( m_device->m_hasStats )
             m_device->setSyncStats( syncStats->isChecked() );
+
+        AmarokConfig::setDeviceType( m_pluginName[devices->currentText()] );
+        if( m_pluginName[devices->currentText()] != MediaDevice::instance()->deviceType() )
+        {
+            QString msg = i18n( "The requested media device could not be loaded" );
+            if( switchMediaDevice( m_pluginName[ devices->currentText() ] ) )
+                msg = i18n("Media device successfully changed");
+
+            amaroK::StatusBar::instance()->shortMessage( msg );
+        }
+
+        if( m_device->m_hasPlaylists )
+            m_playlistButton->show();
+        else
+            m_playlistButton->hide();
     }
 }
 
 bool
-MediaDeviceView::switchMediaDevice( int newType )
+MediaDeviceView::switchMediaDevice( const QString &newType )
 {
-    if( newType == m_device->deviceType() )
-        return true;
-    
-    m_device->closeDevice();
-    
     debug() << "New type: " << newType << endl;
+    debug() << "Current type: " << m_device->pluginProperty( QString( "X-KDE-amaroK-name" ) ) << endl;
         
-    switch( newType )
+    if( newType == m_device->pluginProperty( QString( "X-KDE-amaroK-name" ) ) )
     {
-        case MediaDevice::DUMMY:
-            debug() << "Loading Dummy device! " << MediaDevice::DUMMY << endl;
-            delete m_device;
-            m_device = new DummyMediaDevice();
-            m_device->init( this, m_deviceList );
-            m_device->setDeviceType( MediaDevice::DUMMY );
-            break;
-            
-        case MediaDevice::IPOD:
-            debug() << "Loading iPod device! " << MediaDevice::IPOD << endl;
-        #ifdef HAVE_LIBGPOD
-            //delete m_device;
-            //m_device = new GpodMediaDevice( this, m_deviceList );
-            //m_device->setDeviceType( MediaDevice::IPOD );
-            //m_device->setRequireMount( true );
-        #else
-            return false;
-        #endif
-            break;
-        
-        case MediaDevice::IFP:
-            debug() << "Loading IFP device! " << MediaDevice::IFP << endl;
-        #ifdef HAVE_IFP
-//             delete m_device;
-//             m_device = new IfpMediaDevice( this, m_deviceList );
-//             m_device->setDeviceType( MediaDevice::IFP );
-//             m_device->setRequireMount( false );
-        #else
-            return false;
-        #endif
-            break;
+        debug() << "property match" << endl;
+        return true;
     }
-    debug() << "New Device type: " << m_device->deviceType() << endl;
+
+    MediaDevice *oldDevice = MediaDevice::instance();
+    oldDevice->disconnectDevice();
+    // disconnect signals
+    disconnect( oldDevice );
+
+    if( dynamic_cast<DummyMediaDevice *>( oldDevice ) )
+    {
+        delete oldDevice;
+    }
+    else
+    {
+        PluginManager::unload( oldDevice );
+        // FIXME: necessary?
+        //delete oldDevice;
+    }
+
+    m_device = loadDevicePlugin( newType );
+    
+    debug() << "New Device type: " << m_device->pluginProperty( QString( "X-KDE-amaroK-name" ) ) << endl;
     
     debug() << "Reconnecting signals" << endl;
-    disconnect( MediaDevice::instance() );
     connect( m_cancelButton,   SIGNAL( clicked() ), MediaDevice::instance(), SLOT( abortTransfer() ) );
-    connect( m_connectButton,  SIGNAL( clicked() ), MediaDevice::instance(), SLOT( connectDevice() ) );
+    connect( m_connectButton,  SIGNAL( clicked() ), MediaDevice::instance(), SLOT( connectClicked() ) );
     connect( m_transferButton, SIGNAL( clicked() ), MediaDevice::instance(), SLOT( transferFiles() ) );
     
     return true;
@@ -1188,6 +1181,7 @@ MediaDevice::MediaDevice()
     , m_requireMount( false )
     , m_hasPodcast( false )
     , m_hasStats( false )
+    , m_hasPlaylists( false )
     , m_cancelled( false )
     , m_transferring( false )
     , m_transferredItem( 0 )
@@ -1441,49 +1435,16 @@ MediaDevice::abortTransfer()
 }
 
 void
-MediaDevice::connectDevice( bool silent )
+MediaDevice::connectClicked( bool silent )
 {
     // it was just clicked, so isOn() == true.
     if ( m_parent->m_connectButton->isOn() )
     {
-        if ( !m_mntcmd.isEmpty() && m_requireMount )
-        {
-            mount();
-        }
-        openDevice( silent );
-        m_parent->updateStats();
+        connectDevice( silent );
 
-        if( isConnected() || m_parent->m_deviceList->childCount() != 0 )
+        if( isConnected() )
         {
             m_parent->m_connectButton->setOn( true );
-            if ( m_transferList->childCount() != 0 )
-            {
-                m_parent->m_transferButton->setEnabled( true );
-                m_parent->m_stats->setText( i18n( "Checking device for duplicate files." ) );
-                KURL::List urls;
-                int numDuplicates = 0;
-                MediaItem *next = 0;
-                for( MediaItem *cur = static_cast<MediaItem *>(m_transferList->firstChild());
-                        cur; cur = next )
-                {
-                    next = dynamic_cast<MediaItem *>( cur->nextSibling() );
-                    if ( cur->m_playlistName == QString::null &&
-                            trackExists( *cur->bundle() ) || !isPlayable( *cur->bundle() ) )
-                    {
-                        delete cur;
-                        m_transferList->itemCountChanged();
-                        numDuplicates++;
-                    }
-                }
-                m_parent->updateStats();
-                if( numDuplicates > 0 )
-                {
-                    amaroK::StatusBar::instance()->shortMessage(
-                            i18n( "Removed 1 duplicate item from transfer queue",
-                                "Removed %n duplicate items from transfer queue",
-                                numDuplicates ) );
-                }
-            }
 
             // delete podcasts already played
             if( m_autoDeletePodcasts && m_podcastItem )
@@ -1523,13 +1484,6 @@ MediaDevice::connectDevice( bool silent )
                     m_parent->updateStats();
                 }
             }
-
-            if( m_syncStats )
-            {
-                syncStatsFromDevice( 0 );
-            }
-
-            updateRootItems();
         }
         else
         {
@@ -1555,21 +1509,83 @@ MediaDevice::connectDevice( bool silent )
         }
 
         m_parent->m_transferButton->setEnabled( false );
+        disconnectDevice();
+    }
+}
 
-        if( m_syncStats )
+bool
+MediaDevice::connectDevice( bool silent )
+{
+    if ( !m_mntcmd.isEmpty() && m_requireMount )
+    {
+        mount();
+    }
+    openDevice( silent );
+    m_parent->updateStats();
+
+    if( !isConnected() )
+        return false;
+
+    if ( m_transferList->childCount() != 0 )
+    {
+        m_parent->m_stats->setText( i18n( "Checking device for duplicate files." ) );
+        KURL::List urls;
+        int numDuplicates = 0;
+        MediaItem *next = 0;
+        for( MediaItem *cur = static_cast<MediaItem *>(m_transferList->firstChild());
+                cur; cur = next )
         {
-            syncStatsToDevice();
+            next = dynamic_cast<MediaItem *>( cur->nextSibling() );
+            if ( cur->m_playlistName == QString::null &&
+                    trackExists( *cur->bundle() ) || !isPlayable( *cur->bundle() ) )
+            {
+                delete cur;
+                m_transferList->itemCountChanged();
+                numDuplicates++;
+            }
         }
-
-        closeDevice();
         m_parent->updateStats();
-        m_parent->m_connectButton->setOn( false );
+        if( numDuplicates > 0 )
+        {
+            amaroK::StatusBar::instance()->shortMessage(
+                    i18n( "Removed 1 duplicate item from transfer queue",
+                        "Removed %n duplicate items from transfer queue",
+                        numDuplicates ) );
+        }
+    }
 
-        if( !m_requireMount || (!m_umntcmd.isEmpty() && umount() == 0) ) // umount was successful or no umount needed
-            amaroK::StatusBar::instance()->shortMessage( i18n( "Device successfully disconnected" ) );
-        else
-            amaroK::StatusBar::instance()->longMessage( i18n( "Please unmount device before removal." ),
-                                                        KDE::StatusBar::Information );
+    if( m_syncStats )
+    {
+        syncStatsFromDevice( 0 );
+    }
+
+    updateRootItems();
+
+    return true;
+}
+
+bool
+MediaDevice::disconnectDevice()
+{
+    if( m_syncStats )
+    {
+        syncStatsToDevice();
+    }
+
+    closeDevice();
+    m_parent->updateStats();
+    m_parent->m_connectButton->setOn( false );
+
+    if( !m_requireMount || (!m_umntcmd.isEmpty() && umount() == 0) ) // umount was successful or no umount needed
+    {
+        amaroK::StatusBar::instance()->shortMessage( i18n( "Device successfully disconnected" ) );
+        return true;
+    }
+    else
+    {
+        amaroK::StatusBar::instance()->longMessage( i18n( "Please unmount device before removal." ),
+                KDE::StatusBar::Information );
+        return false;
     }
 }
 

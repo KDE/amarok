@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Service
-Name=Apple iPod media device
+Name=Apple iPod Media Device
 X-KDE-Library=libamarok_gpod-mediadevice
 Comment=Plugin for amaroK
 Comment[bg]=Приставка за amaroK
