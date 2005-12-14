@@ -996,7 +996,8 @@ MediaDeviceView::switchMediaDevice( const QString &newType )
     }
 
     MediaDevice *oldDevice = MediaDevice::instance();
-    oldDevice->disconnectDevice();
+    if( oldDevice->isConnected() )
+        oldDevice->disconnectDevice();
     // disconnect signals
     disconnect( oldDevice );
 
