@@ -77,6 +77,7 @@ loop do
                 `dcop amarok playlist saveM3u #{Dir.getwd()}/playlist.m3u false`
                 `dcop amarok playlist clearPlaylist`
                 `dcop amarok addMedia #{Dir.getwd()}/playlist.m3u`
+                `rm #{Dir.getwd()}/playlist.m3u`
             end
     end
 end
