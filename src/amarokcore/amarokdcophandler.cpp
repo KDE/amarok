@@ -25,6 +25,7 @@
 #include "debug.h"
 #include "collectiondb.h"
 #include "contextbrowser.h"
+#include "devicemanager.h"
 #include "engine/enginebase.h"
 #include "enginecontroller.h"
 #include "equalizersetup.h"
@@ -778,6 +779,22 @@ namespace amaroK
         }
         return stringList;
     }
+
+/////////////////////////////////////////////////////////////////////////////////////
+// class DcopDevicesHandler
+/////////////////////////////////////////////////////////////////////////////////////
+
+    DcopDevicesHandler::DcopDevicesHandler()
+        : DCOPObject( "devices" )
+        , QObject( kapp )
+    {}
+
+    void DcopDevicesHandler::displayDevices(QString name)
+    {
+        DeviceManager::instance()->displayDevices(name);
+    }
+
+
 } //namespace amaroK
 
 #include "amarokdcophandler.moc"

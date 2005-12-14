@@ -32,10 +32,6 @@ SHORT-TERM (URGENT):
            You can see the problem easily when you hide the current browser by clicking twice
            the button twice. This problem AFAIK also affects 1.3-branch.
 
- <jefferai>The hell was I thinking...I made the queue label go from squished to elongated, and
-           completely didn't notice I had overshot my goal.  Fix. Also doesn't seem to only be getting
-           applied to the currently playing track.
-
  <markey>  When you delete a downloaded podcast from Playlist Browser, the icon stays in
            "downloaded" state until you open the menu again.
 
@@ -219,6 +215,11 @@ LONG-TERM:
            Audio system info widget, showing all available codecs and similar info.
 
            Resizable playerwidget, like in Winamp3.
+
+<jefferai> Support for generic media devices.  Started implementation using dcop signals, note these
+           are *not* the same as regular signals.  Have to get that to work; once it does should
+           be able to detect changes from HAL, i.e. when devices are added, removed, mounted, etc.
+           Then can support a filebrowser, transfer, etc.
 
 
 IDEAS:

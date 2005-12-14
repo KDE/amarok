@@ -191,5 +191,13 @@ k_dcop:
 
 };
 
+class AmarokDevicesInterface : virtual public DCOPObject
+{
+   K_DCOP
+
+k_dcop:
+   virtual void displayDevices(QString name) = 0;         ///< At the moment, displays all devices, from kded mediamanager.
+
+};
 
 #endif

@@ -200,6 +200,16 @@ class DcopScriptHandler : public QObject, virtual public AmarokScriptInterface
       virtual QStringList readListConfig(const QString& key);
 };
 
+class DcopDevicesHandler : public QObject, virtual public AmarokDevicesInterface
+{
+   Q_OBJECT
+
+   public:
+       DcopDevicesHandler();
+
+   public /* DCOP */ slots:
+      virtual void displayDevices(QString name);
+};
 
 
 } // namespace amaroK

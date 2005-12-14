@@ -70,6 +70,7 @@ libamarok_la_SOURCES = \
     cuefile.cpp \
     dbsetup.ui  \
     dbsetup.ui.h \
+    devicemanager.cpp \
     directorylist.cpp \
     effectwidget.cpp \
     enginecontroller.cpp \

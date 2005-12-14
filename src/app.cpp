@@ -21,8 +21,9 @@ email                : markey@web.de
 #include "app.h"
 #include "config.h"
 #include "configdialog.h"
-#include "debug.h"
 #include "collectionbrowser.h"
+#include "debug.h"
+#include "devicemanager.h"
 #include "effectwidget.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
@@ -103,6 +104,7 @@ App::App()
     new amaroK::DcopContextBrowserHandler();
     new amaroK::DcopCollectionHandler();
     new amaroK::DcopScriptHandler();
+    new amaroK::DcopDevicesHandler();
 
     // Remember old folder setup, so we can detect changes after the wizard was used
     const QStringList oldCollectionFolders = AmarokConfig::collectionFolders();
@@ -115,6 +117,7 @@ App::App()
     }
 
     fixHyperThreading();
+    DeviceManager *dm = DeviceManager::instance();
 
     m_pGlobalAccel    = new KGlobalAccel( this );
     m_pPlaylistWindow = new PlaylistWindow();
@@ -1013,7 +1016,7 @@ void App::setRating( int n )
 
 QWidget *App::mainWindow() const
 {
-   return AmarokConfig::showPlayerWindow() ? (QWidget*)m_pPlayerWindow : (QWidget*)m_pPlaylistWindow;
+    return AmarokConfig::showPlayerWindow() ? (QWidget*)m_pPlayerWindow : (QWidget*)m_pPlaylistWindow;
 }
 
 namespace amaroK
