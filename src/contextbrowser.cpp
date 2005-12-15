@@ -1344,7 +1344,6 @@ bool CurrentTrackJob::doJob()
                 qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
                 qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
                 qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-                qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
                 qb.addMatches( QueryBuilder::tabArtist, relArtists );
                 qb.setOptions( QueryBuilder::optRandomize );
                 qb.setLimit( 0, 10 - values.count() / 4 );
@@ -1356,6 +1355,7 @@ bool CurrentTrackJob::doJob()
                     values << sl[i];
                     values << sl[i + 1];
                     values << sl[i + 2];
+                    values << "0";
                     values << "0";
                 }
             }
