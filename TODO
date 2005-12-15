@@ -5,7 +5,10 @@ TODO-list for amaroK
 
 
 SHORT-TERM (URGENT):
- <sebr>    The unknown album should ALWAYS be shown last.  Year has a heigher weighting than album 
+ <markey>  The analyzer now uses crazy amounts of CPU when amaroK is idle, even if the window
+           is not visible.
+
+ <sebr>    The unknown album should ALWAYS be shown last.  Year has a heigher weighting than album
            name.  We should special case the Unknown album.
 
  <sebr>    Popup message flickers when showing.
