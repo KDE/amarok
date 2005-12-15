@@ -1,6 +1,9 @@
 [Desktop Entry]
 Type=Service
 Name=iRiver iFP Media Device
+Name[pt]=Dispositivo Multimédia iRiver iFP
+Name[pt_BR]=Dispositivo Multimédia iRiver iFP
+Name[sv]=iRiver iFP-mediaenhet
 X-KDE-Library=libamarok_ifp-mediadevice
 Comment=Plugin for amaroK
 Comment[bg]=Приставка за amaroK
