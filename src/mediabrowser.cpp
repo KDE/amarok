@@ -73,6 +73,7 @@ QPixmap *MediaItem::s_pixInvisible = 0;
 QPixmap *MediaItem::s_pixStale = 0;
 QPixmap *MediaItem::s_pixOrphaned = 0;
 QPixmap *MediaItem::s_pixDirectory = 0;
+QPixmap *MediaItem::s_pixRootItem = 0;
 
 bool MediaBrowser::isAvailable() //static
 {
@@ -191,6 +192,7 @@ MediaBrowser::MediaBrowser( const char *name )
     MediaItem::s_pixFile = new QPixmap(iconLoader.loadIcon( "sound", KIcon::Toolbar, KIcon::SizeSmall ) );
     MediaItem::s_pixPodcast = new QPixmap(iconLoader.loadIcon( "favorites", KIcon::Toolbar, KIcon::SizeSmall ) );
     MediaItem::s_pixPlaylist = new QPixmap(iconLoader.loadIcon( "player_playlist_2", KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixRootItem = new QPixmap(iconLoader.loadIcon( "folder_red", KIcon::Toolbar, KIcon::SizeSmall ) );
     // history
     // favorites
     // collection
@@ -295,6 +297,28 @@ MediaItem::init()
     m_size=-1;
 }
 
+void MediaItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
+{
+    switch( type() )
+    {
+    case INVISIBLE:
+    case PODCASTSROOT:
+    case PLAYLISTSROOT:
+    case ORPHANEDROOT:
+    case STALEROOT:
+        {
+            QFont font( p->font() );
+            font.setBold( true );
+            font.setPointSize( font.pointSize() + 1 );
+            p->setFont( font );
+        }
+    default:
+        break;
+    }
+
+    KListViewItem::paintCell( p, cg, column, width, align );
+}
+
 void MediaItem::setUrl( const QString& url )
 {
     m_url.setPath( url );
@@ -394,13 +418,18 @@ MediaItem::setType( Type type )
             setPixmap(0, *s_pixAlbum);
             break;
         case PODCASTSROOT:
+            setPixmap(0, *s_pixRootItem);
+            break;
         case PODCASTCHANNEL:
             setPixmap(0, *s_pixPodcast);
             break;
-        case PLAYLISTSROOT:
         case PLAYLIST:
             setPixmap(0, *s_pixPlaylist);
             setDropEnabled(true);
+            break;
+        case PLAYLISTSROOT:
+            setPixmap(0, *s_pixRootItem);
+            setDropEnabled( true );
             break;
         case INVISIBLEROOT:
             setPixmap(0, *s_pixInvisible);
@@ -494,6 +523,82 @@ MediaItem::compare( QListViewItem *i, int col, bool ascending ) const
     return KListViewItem::compare(i, col, ascending);
 }
 
+class MediaItemTip : public QToolTip
+{
+    public:
+    MediaItemTip( QListView *listview )
+    : QToolTip( listview->viewport() )
+    , m_listView( listview )
+    {}
+    virtual ~MediaItemTip() {}
+    protected:
+    virtual void maybeTip( const QPoint &p )
+    {
+        MediaItem *i = dynamic_cast<MediaItem *>(m_listView->itemAt( m_listView->viewportToContents( p ) ) );
+        if( !i )
+            return;
+
+        QString text;
+        switch( i->type() )
+        {
+        case MediaItem::TRACK:
+            {
+                const MetaBundle *b = i->bundle();
+                text = "";
+                if( b->track() )
+                    text = QString( "%1 - %2 (%3:%4)<br>" )
+                        .arg( b->track() )
+                        .arg( b->title() )
+                        .arg( b->length()/60 )
+                        .arg( b->length()%60 );
+                if( !b->genre().isEmpty() )
+                    text += QString( "<i>Genre: %1</i>" )
+                        .arg( b->genre() );
+            }
+            break;
+        case MediaItem::PODCASTITEM:
+            {
+                const PodcastInfo *p = i->podcastInfo();
+                if( p )
+                {
+                    text += p->description;
+                    if( !p->webpage.isEmpty() )
+                        text += i18n( "<br>Webpage: %1<br>" ).arg( p->webpage );
+                }
+            }
+            break;
+        case MediaItem::PLAYLISTSROOT:
+            text = i18n( "Drag items here to create new playlist" );
+            break;
+        case MediaItem::PLAYLIST:
+            text = i18n( "Drag items here to append to this playlist" );
+            break;
+        case MediaItem::PLAYLISTITEM:
+            text = i18n( "Drag items here to insert before this item" );
+            break;
+        case MediaItem::INVISIBLEROOT:
+        case MediaItem::INVISIBLE:
+            text = i18n( "Not visible on media device" );
+            break;
+        case MediaItem::STALEROOT:
+        case MediaItem::STALE:
+            text = i18n( "In device database, but file is missing" );
+            break;
+        case MediaItem::ORPHANEDROOT:
+        case MediaItem::ORPHANED:
+            text = i18n( "File on device, but not in device database" );
+            break;
+        default:
+            break;
+        }
+
+        if( !text.isEmpty() && !text.isNull() )
+            tip( m_listView->itemRect( i ), text );
+    }
+
+    QListView *m_listView;
+};
+
 
 MediaDeviceList::MediaDeviceList( MediaDeviceView* parent )
     : KListView( parent )
@@ -523,6 +628,8 @@ MediaDeviceList::MediaDeviceList( MediaDeviceView* parent )
 
     connect( this, SIGNAL( expanded( QListViewItem* ) ),
              this,   SLOT( slotExpand( QListViewItem* ) ) );
+
+    m_toolTip = new MediaItemTip( this );
 }
 
 void
@@ -541,7 +648,9 @@ MediaDeviceList::slotExpand( QListViewItem *item )
 
 
 MediaDeviceList::~MediaDeviceList()
-{}
+{
+    delete m_toolTip;
+}
 
 
 void
@@ -1014,7 +1123,6 @@ MediaDeviceView::switchMediaDevice( const QString &newType )
         
     if( newType == m_device->pluginProperty( QString( "X-KDE-amaroK-name" ) ) )
     {
-        debug() << "property match" << endl;
         return true;
     }
 
@@ -1329,11 +1437,11 @@ MediaDevice::addURL( const KURL& url, MetaBundle *bundle, PodcastInfo *podcastIn
 void
 MediaDevice::addURLs( const KURL::List urls, const QString &playlistName )
 {
-        KURL::List::ConstIterator it = urls.begin();
-        for ( ; it != urls.end(); ++it )
-            addURL( *it, 0, false, playlistName );
+    KURL::List::ConstIterator it = urls.begin();
+    for ( ; it != urls.end(); ++it )
+        addURL( *it, 0, false, playlistName );
 
-        URLsAdded();
+    URLsAdded();
 }
 
 void
@@ -1434,10 +1542,10 @@ int MediaDevice::sysCall(const QString & command)
 {
     if ( sysProc->isRunning() )  return -1;
 
-        sysProc->clearArguments();
-        (*sysProc) << command;
-        if (!sysProc->start( KProcess::Block, KProcess::AllOutput ))
-            kdFatal() << i18n("could not execute %1").arg(command.local8Bit().data()) << endl;
+    sysProc->clearArguments();
+    (*sysProc) << command;
+    if (!sysProc->start( KProcess::Block, KProcess::AllOutput ))
+        kdFatal() << i18n("could not execute %1").arg(command.local8Bit().data()) << endl;
 
     return (sysProc->exitStatus());
 }

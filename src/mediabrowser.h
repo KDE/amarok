@@ -27,6 +27,7 @@ class KShellProcess;
 
 class QLabel;
 class QPalette;
+class MediaItemTip;
 
 struct PodcastInfo
 {
@@ -79,6 +80,8 @@ class MediaItem : public KListViewItem
 
         int compare(QListViewItem *i, int col, bool ascending) const;
 
+        void paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align );
+
         //attributes:
         mutable MetaBundle *m_bundle;
 
@@ -90,6 +93,7 @@ class MediaItem : public KListViewItem
         PodcastInfo *m_podcastInfo;
 
         static QPixmap *s_pixUnknown;
+        static QPixmap *s_pixRootItem;
         static QPixmap *s_pixFile;
         static QPixmap *s_pixArtist;
         static QPixmap *s_pixAlbum;
@@ -189,6 +193,7 @@ class MediaDeviceList : public KListView
         void viewportPaintEvent( QPaintEvent* );
 
         MediaDeviceView* m_parent;
+        MediaItemTip *m_toolTip;
 };
 
 
