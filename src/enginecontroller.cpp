@@ -274,6 +274,7 @@ void EngineController::endSession()
         trackEnded( m_engine->position(), m_bundle.length() * 1000 );
 
     PluginManager::unload( m_voidEngine );
+    m_voidEngine = 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

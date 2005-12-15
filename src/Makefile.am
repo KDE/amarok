@@ -9,7 +9,7 @@ if with_konqsidebar
 endif
 
 
-noinst_LTLIBRARIES = libamarok.la
+lib_LTLIBRARIES = libamarok.la
 
 SUBDIRS = \
     amarokcore \
