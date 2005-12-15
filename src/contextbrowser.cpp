@@ -1971,9 +1971,10 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
     m_lyrics.replace( QRegExp("<[sS][cC][rR][iI][pP][tT][^>]*>[^<]*(<!--[^>]*>)*[^<]*</[sS][cC][rR][iI][pP][tT]>"), QString::null );
     m_lyrics.replace( QRegExp("<[sS][tT][yY][lL][eE][^>]*>[^<]*(<!--[^>]*>)*[^<]*</[sS][tT][yY][lL][eE]>"), QString::null );
 
-    if ( m_lyrics.find( "<font size='2'>" ) != -1 )
+    int lyricsPos = m_lyrics.find( QRegExp( "<[fF][oO][nN][tT][ ]*[sS][iI][zZ][eE][ ]*='2'[ ]*>" ) );
+    if ( lyricsPos != -1 )
     {
-        m_lyrics = m_lyrics.mid( m_lyrics.find( "<font size='2'>" ) );
+        m_lyrics = m_lyrics.mid( lyricsPos );
         if ( m_lyrics.find( "<p><hr" ) != -1 )
             m_lyrics = m_lyrics.mid( 0, m_lyrics.find( "<p><hr" ) );
         else
