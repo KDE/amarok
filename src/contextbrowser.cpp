@@ -1837,12 +1837,20 @@ void ContextBrowser::showLyrics( const QString &hash )
                << QString( "version" ) << QString( "feat" ) ;
 
     QString title  = EngineController::instance()->bundle().title();
+    QString artist = EngineController::instance()->bundle().artist();
 
     if ( title.isEmpty() ) {
         /* If title is empty, try to use pretty title.
            The fact that it often (but not always) has artist name together, can be bad,
-           but at least the user will get nice suggestions. */
-        title = EngineController::instance()->bundle().prettyTitle();
+           but at least the user will hopefully get nice suggestions. */
+        QString prettyTitle = EngineController::instance()->bundle().prettyTitle();
+        int h = prettyTitle.find( '-' );
+        if ( h != -1 )
+        {
+            title = prettyTitle.mid( h+1 ).stripWhiteSpace();
+            if ( artist.isEmpty() )
+                artist = prettyTitle.mid( 0, h ).stripWhiteSpace();
+        }
     }
 
     for ( uint x = 0; x < production.count(); ++x )
@@ -1858,13 +1866,13 @@ void ContextBrowser::showLyrics( const QString &hash )
     else
         m_lyricCurrentUrl = QString( "http://lyrc.com.ar/en/tema1en.php?artist=%1&songname=%2" )
                 .arg(
-                KURL::encode_string_no_slash( EngineController::instance()->bundle().artist() ),
+                KURL::encode_string_no_slash( artist ),
                 KURL::encode_string_no_slash( title ) );
 
     debug() << "Using this url: " << m_lyricCurrentUrl << endl;
 
     m_lyricAddUrl = QString( "http://lyrc.com.ar/en/add/add.php?grupo=%1&tema=%2&disco=%3&ano=%4" ).arg(
-            KURL::encode_string_no_slash( EngineController::instance()->bundle().artist() ),
+            KURL::encode_string_no_slash( artist ),
             KURL::encode_string_no_slash( title ),
             KURL::encode_string_no_slash( EngineController::instance()->bundle().album() ),
             KURL::encode_string_no_slash( QString::number( EngineController::instance()->bundle().year() ) ) );
