@@ -25,6 +25,7 @@ class QColor;
 
 class StatisticsList;
 class StatisticsItem;
+class StatisticsDetailedItem;
 
 class Statistics : public KDialogBase
 {
@@ -52,6 +53,7 @@ class StatisticsList : public KListView
 
     private slots:
         void    clearHover();
+        void    itemClicked( QListViewItem *item );
         void    startHover( QListViewItem *item );
 
     private:
@@ -60,6 +62,9 @@ class StatisticsList : public KListView
 //         void    contentsDropEvent( QDropEvent *e );
 //         void    keyPressEvent( QKeyEvent *e );
         void    viewportPaintEvent( QPaintEvent* );
+
+        void    initDisplay();
+        void    expandInformation( StatisticsDetailedItem *item );
 
         StatisticsItem *m_titleItem;
         StatisticsItem *m_trackItem;
@@ -81,7 +86,7 @@ class StatisticsItem : public QObject, public KListViewItem
 
         void    paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align );
         void    paintFocus( QPainter*, const QColorGroup& , const QRect& ) {};  //reimp
-        void    setPixmap( const QString pix );
+        void    setPixmap( const QString &pix );
 
         void    enterHover();
         void    leaveHover();
@@ -110,6 +115,25 @@ class StatisticsItem : public QObject, public KListViewItem
         bool    m_isTitleItem;
 
         bool    m_on;
+};
+
+class StatisticsDetailedItem : public KListViewItem
+{
+    public:
+        StatisticsDetailedItem::StatisticsDetailedItem( QString &text, StatisticsItem *parent,
+                                                        StatisticsDetailedItem *after=0, const char *name=0 );
+        ~StatisticsDetailedItem() {};
+
+        enum ItemType { NONE, SHOW_MORE, SHOW_LESS };
+
+        void    setItemType( const ItemType t );
+        const   ItemType itemType() { return m_type; }
+
+        void    paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align );
+        void    paintFocus( QPainter*, const QColorGroup& , const QRect& ) {};  //reimp
+
+    private:
+        ItemType m_type;
 };
 
 

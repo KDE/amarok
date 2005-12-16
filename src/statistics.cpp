@@ -84,10 +84,20 @@ StatisticsList::StatisticsList( QWidget *parent, const char *name )
 
     connect( this, SIGNAL( onItem( QListViewItem*) ),  SLOT( startHover( QListViewItem* ) ) );
     connect( this, SIGNAL( onViewport() ),             SLOT( clearHover() ) );
-    connect( this, SIGNAL( clicked( QListViewItem*) ), SLOT( expandItem( QListViewItem* ) ) );
+    connect( this, SIGNAL( clicked( QListViewItem*) ), SLOT( itemClicked( QListViewItem* ) ) );
 
     if( CollectionDB::instance()->isEmpty() )
         return;
+
+    initDisplay();
+}
+
+void
+StatisticsList::initDisplay()
+{
+    //ensure cleanliness - this function is not just called from the ctor, but also when returning to the initial display
+    while( firstChild() )
+        delete firstChild();
 
     QueryBuilder qb;
     QStringList a;
@@ -134,10 +144,23 @@ StatisticsList::StatisticsList( QWidget *parent, const char *name )
 }
 
 void
-StatisticsList::expandItem( QListViewItem *item ) //SLOT
+StatisticsList::itemClicked( QListViewItem *item ) //SLOT
 {
-    if( !item || item->depth() != 0 )
+    if( !item )
         return;
+
+    if( item->depth() != 0 ) //not very flexible, *shrug*
+    {
+        #define item static_cast<StatisticsDetailedItem*>(item)
+        if( item->itemType() == StatisticsDetailedItem::SHOW_MORE )
+            expandInformation( item );
+
+        else if( item->itemType() == StatisticsDetailedItem::SHOW_LESS )
+            initDisplay();
+
+        #undef item
+        return;
+    }
 
     #define item static_cast<StatisticsItem*>(item)
 
@@ -172,6 +195,9 @@ StatisticsList::expandItem( QListViewItem *item ) //SLOT
             m_last = new StatisticsDetailedItem( name, item, m_last );
             c++;
         }
+        QString name = i18n("More tracks...");
+        m_last = new StatisticsDetailedItem( name, item, m_last );
+        m_last->setItemType( StatisticsDetailedItem::SHOW_MORE );
     }
     else if( item == m_artistItem )
     {
@@ -186,10 +212,13 @@ StatisticsList::expandItem( QListViewItem *item ) //SLOT
         uint c = 1;
         for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
         {
-            QString name = i18n("%1. %2 (Score: %4)").arg( QString::number(c), fave[i], fave[i+1] );
+            QString name = i18n("%1. %2 (Score: %3)").arg( QString::number(c), fave[i], fave[i+1] );
             m_last = new StatisticsDetailedItem( name, item, m_last );
             c++;
         }
+        QString name = i18n("More artists...");
+        m_last = new StatisticsDetailedItem( name, item, m_last );
+        m_last->setItemType( StatisticsDetailedItem::SHOW_MORE );
     }
     else if( item == m_albumItem )
     {
@@ -211,6 +240,9 @@ StatisticsList::expandItem( QListViewItem *item ) //SLOT
             m_last = new StatisticsDetailedItem( name, item, m_last );
             c++;
         }
+        QString name = i18n("More albums...");
+        m_last = new StatisticsDetailedItem( name, item, m_last );
+        m_last->setItemType( StatisticsDetailedItem::SHOW_MORE );
     }
     else if( item == m_genreItem )
     {
@@ -225,14 +257,123 @@ StatisticsList::expandItem( QListViewItem *item ) //SLOT
         uint c = 1;
         for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
         {
-            QString name = i18n("%1. %2 (Score: %4)").arg( QString::number(c), fave[i], fave[i+1] );
+            QString name = i18n("%1. %2 (Score: %3)").arg( QString::number(c), fave[i], fave[i+1] );
             m_last = new StatisticsDetailedItem( name, item, m_last );
             c++;
         }
+        QString name = i18n("More genres...");
+        m_last = new StatisticsDetailedItem( name, item, m_last );
+        m_last->setItemType( StatisticsDetailedItem::SHOW_MORE );
     }
     item->setOpen( true );
 
     #undef item
+}
+
+void
+StatisticsList::expandInformation( StatisticsDetailedItem *item )
+{
+    StatisticsItem *parent = static_cast<StatisticsItem*>(item->parent());
+    QueryBuilder qb;
+
+    StatisticsDetailedItem *m_last = static_cast<StatisticsDetailedItem*>(item->itemAbove());
+    uint a = 10; // the number of existing items
+    uint c = a+1; // we be sneaky and just add to the other items
+
+    if( parent == m_trackItem )
+    {
+        delete m_titleItem;
+        delete m_artistItem;
+        delete m_albumItem;
+        delete m_genreItem;
+
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+        qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+        qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
+        qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
+        qb.setLimit( 0, 50 );
+        QStringList fave = qb.run();
+
+        for( uint i=a*qb.countReturnValues(); i < fave.count(); i += qb.countReturnValues() )
+        {
+            QString name = i18n("%1. %2 - %3 (Score: %4)").arg( QString::number(c), fave[i], fave[i+1], fave[i+2] );
+            m_last = new StatisticsDetailedItem( name, parent, m_last );
+            c++;
+        }
+    }
+
+    else if( parent == m_albumItem )
+    {
+        delete m_titleItem;
+        delete m_artistItem;
+        delete m_genreItem;
+        delete m_trackItem;
+
+        qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
+        qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+        qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage );
+        qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
+        qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
+        qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID);
+        qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName);
+
+        qb.setLimit( 0, 50 );
+        QStringList fave = qb.run();
+
+        for( uint i=a*qb.countReturnValues(); i < fave.count(); i += qb.countReturnValues() )
+        {
+            QString name = i18n("%1. %2 - %3 (Score: %4)").arg( QString::number(c), fave[i], fave[i+1], fave[i+2] );
+            m_last = new StatisticsDetailedItem( name, parent, m_last );
+            c++;
+        }
+    }
+
+    else if( parent == m_artistItem )
+    {
+        delete m_titleItem;
+        delete m_trackItem;
+        delete m_albumItem;
+        delete m_genreItem;
+
+        qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+        qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage );
+        qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
+        qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valName);
+        qb.setLimit( 0, 50 );
+        QStringList fave = qb.run();
+
+        for( uint i=a*qb.countReturnValues(); i < fave.count(); i += qb.countReturnValues() )
+        {
+            QString name = i18n("%1. %2 (Score: %3)").arg( QString::number(c), fave[i], fave[i+1] );
+            m_last = new StatisticsDetailedItem( name, parent, m_last );
+            c++;
+        }
+    }
+
+    else if( parent == m_genreItem )
+    {
+        delete m_titleItem;
+        delete m_trackItem;
+        delete m_albumItem;
+        delete m_artistItem;
+
+        qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
+        qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valScore );
+        qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valScore, true );
+        qb.groupBy( QueryBuilder::tabGenre, QueryBuilder::valName);
+        qb.setLimit( 0, 50 );
+        QStringList fave = qb.run();
+
+        for( uint i=a*qb.countReturnValues(); i < fave.count(); i += qb.countReturnValues() )
+        {
+            QString name = i18n("%1. %2 (Score: %3)").arg( QString::number(c), fave[i], fave[i+1] );
+            m_last = new StatisticsDetailedItem( name, parent, m_last );
+            c++;
+        }
+    }
+
+    item->setText( 0, i18n("Back") );
+    item->setItemType( StatisticsDetailedItem::SHOW_LESS );
 }
 
 void
@@ -487,12 +628,34 @@ StatisticsItem::blendColors( const QColor& color1, const QColor& color2, int per
 StatisticsDetailedItem::StatisticsDetailedItem( QString &text, StatisticsItem *parent,
                                                 StatisticsDetailedItem *after, const char *name )
     : KListViewItem( parent, after, name )
+    , m_type( NONE )
 {
     setDragEnabled( true );
     setDropEnabled( false );
     setSelectable( false );
 
     setText( 0, text );
+}
+
+void
+StatisticsDetailedItem::setItemType( const ItemType t )
+{
+    m_type = t;
+
+    if( t == SHOW_MORE )
+    {
+        KIconLoader iconloader;
+        QPixmap icon = iconloader.loadIcon( "1rightarrow", KIcon::Small );
+        setPixmap( 0, icon );
+    }
+    else if( t== SHOW_LESS )
+    {
+        KIconLoader iconloader;
+        QPixmap icon = iconloader.loadIcon( "1leftarrow", KIcon::Small );
+        setPixmap( 0, icon );
+    }
+    else
+        setPixmap( 0, QPixmap::QPixmap() ); //clear it
 }
 
 void
