@@ -496,7 +496,7 @@ StatisticsItem::slotAnimTimer()
     if( m_animEnter )
     {
         m_animCount += 1;
-        repaint();
+        listView()->repaintItem( this );  // Better than ::repaint(), flickers less
 
         if( m_animCount >= ANIM_MAX )
             m_animTimer->stop();
@@ -504,7 +504,7 @@ StatisticsItem::slotAnimTimer()
     else
     {
         m_animCount -= 1;
-        repaint();
+        listView()->repaintItem( this );
         if( m_animCount <= 0 )
         {
             m_animTimer->stop();
