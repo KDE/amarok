@@ -210,6 +210,7 @@ class MediaDeviceView : public QVBox
     virtual ~MediaDeviceView();
     bool setFilter( const QString &filter, MediaItem *parent=NULL );
     void updateStats();
+    void updateButtons();
 
     private slots:
         void config();

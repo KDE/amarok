@@ -968,8 +968,7 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     {
         m_connectButton->setOn( true );
         m_device->connectClicked( true );
-        m_connectButton->setOn( m_device->isConnected() );
-        m_transferButton->setEnabled( m_device->m_transferList->childCount() != 0 );
+        updateButtons();
     }
 
     setFocusProxy( m_device->m_transferList );
@@ -1157,6 +1156,16 @@ MediaDeviceView::prettySize( unsigned long size )
         return QString("%1.%2 GB").arg(size/(1024*1024)).arg((size%(1024*1024))*10/(1024*1024));
     else
         return QString("%1 GB").arg(size/(1024*1024));
+}
+
+void
+MediaDeviceView::updateButtons()
+{
+    if( m_connectButton )
+        m_connectButton->setOn( MediaDevice::instance()->isConnected() );
+    if( m_transferButton )
+        m_transferButton->setEnabled( MediaDevice::instance()->isConnected()
+                && MediaDevice::instance()->m_transferList->childCount() > 0 );
 }
 
 void
@@ -1427,8 +1436,7 @@ MediaDevice::addURL( const KURL& url, MetaBundle *bundle, PodcastInfo *podcastIn
         item->setText( 0, text);
 
         m_parent->updateStats();
-        m_parent->m_transferButton->setEnabled( m_parent->m_device->isConnected() ||
-                                                m_parent->m_deviceList->childCount() );
+        m_parent->updateButtons();
         m_parent->m_progress->setTotalSteps( m_parent->m_progress->totalSteps() + 1 );
         m_transferList->itemCountChanged();
     }
@@ -1457,10 +1465,10 @@ MediaDevice::clearItems()
     m_transferList->clear();
     m_transferList->itemCountChanged();
     if(m_parent)
+    {
         m_parent->updateStats();
-
-    if(m_parent && m_parent->m_transferButton)
-        m_parent->m_transferButton->setEnabled( false );
+        m_parent->updateButtons();
+    }
 }
 
 void
@@ -1480,8 +1488,8 @@ MediaDevice::removeSelected()
         }
     }
 
-    m_parent->m_transferButton->setEnabled( m_transferList->childCount() != 0 && isConnected() );
     m_parent->updateStats();
+    m_parent->updateButtons();
     m_transferList->itemCountChanged();
 }
 
@@ -1608,10 +1616,6 @@ MediaDevice::connectClicked( bool silent )
                 }
             }
         }
-        else
-        {
-            m_parent->m_connectButton->setOn( false );
-        }
     }
     else
     {
@@ -1634,6 +1638,8 @@ MediaDevice::connectClicked( bool silent )
         m_parent->m_transferButton->setEnabled( false );
         disconnectDevice();
     }
+    m_parent->updateButtons();
+    m_parent->updateStats();
 }
 
 bool
@@ -1676,6 +1682,8 @@ MediaDevice::connectDevice( bool silent )
                         numDuplicates ) );
         }
     }
+
+    m_parent->updateButtons();
 
     if( m_syncStats )
     {
@@ -1894,7 +1902,7 @@ MediaDevice::transferFiles()
     unlockDevice();
     fileTransferFinished();
 
-    m_parent->m_transferButton->setEnabled( m_transferList->childCount()>0 );
+    m_parent->updateButtons();
     m_transferring = false;
 }
 
