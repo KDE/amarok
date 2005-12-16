@@ -15,14 +15,16 @@
 #define AMAROK_STATISTICS_H
 
 #include "playlistwindow.h"
-#include "statisticsbase.h"
 
 #include <kdialogbase.h>    //baseclass
+#include <klistview.h>      //baseclass
 
-#include <qlabel.h>
-#include <qvaluelist.h>
-#include <qvbox.h>
+#include <qtimer.h>
 
+class QColor;
+
+class StatisticsList;
+class StatisticsItem;
 
 class Statistics : public KDialogBase
 {
@@ -34,34 +36,81 @@ class Statistics : public KDialogBase
 
         static Statistics *instance() { return s_instance; }
 
-    private slots:
-        void loadDetails( int index );
-        void resultCountChanged( int value );
-
     private:
-        enum View { TRACK, ARTIST, ALBUM, GENRE };
-
-        void loadSummary();
-        void loadChooser();
-
-        void buildAlbumInfo();
-        void buildArtistInfo();
-        void buildGenreInfo();
-        void buildTrackInfo();
-        void drawPie( QLabel *parent, QValueList<double> data, QStringList text=0 );
-
-        StatisticsBase *m_gui;
-
-        /// Pie graph text and values
-        QValueList<double> m_dataLower;
-        QValueList<double> m_dataUpper;
-        QStringList m_textLower;
-        QStringList m_textUpper;
-
-        int m_resultCount;
-        int m_viewMode;
+        StatisticsList *m_listview;
 
         static Statistics *s_instance;
 };
+
+class StatisticsList : public KListView
+{
+        Q_OBJECT
+
+    public:
+        StatisticsList( QWidget *parent, const char *name=0 );
+        ~StatisticsList() {};
+
+    private slots:
+        void    clearHover();
+        void    startHover( QListViewItem *item );
+
+    private:
+//         void    contentsDragEnterEvent( QDragEnterEvent *e );
+//         void    contentsDragMoveEvent( QDragMoveEvent* e );
+//         void    contentsDropEvent( QDropEvent *e );
+//         void    keyPressEvent( QKeyEvent *e );
+        void    viewportPaintEvent( QPaintEvent* );
+
+        StatisticsItem *m_titleItem;
+        StatisticsItem *m_trackItem;
+        StatisticsItem *m_artistItem;
+        StatisticsItem *m_albumItem;
+        StatisticsItem *m_genreItem;
+
+        QListViewItem  *m_currentItem;
+
+};
+
+class StatisticsItem : public QObject, public KListViewItem
+{
+        Q_OBJECT
+
+    public:
+        StatisticsItem( QString text, StatisticsList *parent, KListViewItem *after=0, const char *name=0 );
+        ~StatisticsItem() {};
+
+        void    paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align );
+        void    paintFocus( QPainter*, const QColorGroup& , const QRect& ) {};  //reimp
+        void    setPixmap( const QString pix );
+
+        void    enterHover();
+        void    leaveHover();
+
+        void       setOn( const bool b ) { m_on = b; }
+        const bool isOn() { return m_on; }
+
+        void       setTitleItem( const bool b ) { m_isTitleItem = b; }
+        const bool isTitleItem() { return m_isTitleItem; }
+
+    protected:
+        static const int ANIM_INTERVAL = 18;
+        static const int ANIM_MAX = 20;
+
+    private slots:
+        void slotAnimTimer();
+
+    private:
+        QColor  blendColors( const QColor& color1, const QColor& color2, int percent );
+
+        QTimer *m_animTimer;
+        bool    m_animEnter;
+        int     m_animCount;
+
+        bool    m_isActive;
+        bool    m_isTitleItem;
+
+        bool    m_on;
+};
+
 
 #endif /* AMAROK_STATISTICS_H */

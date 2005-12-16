@@ -10,23 +10,24 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "amarok.h"         //foreach macro
 #include "collectiondb.h"
 #include "statistics.h"
 
 #include <kapplication.h>
+#include <kdeversion.h>        //KDE_VERSION ifndefs.  Remove this once we reach a kde 4 dep
+#include <kiconloader.h>
 #include <klocale.h>
 #include <kwin.h>
 
-#include <qcheckbox.h>
-#include <qcombobox.h>
-#include <qframe.h>
-#include <qlayout.h>
+#include <qcolor.h>
+#include <qheader.h>
 #include <qpainter.h>
 #include <qpixmap.h>
-#include <qtextedit.h>
-
-#include <cmath>
+#include <qsimplerichtext.h>
+#include <qtimer.h>
+#include <qvbox.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// CLASS Statistics
@@ -36,8 +37,6 @@ Statistics *Statistics::s_instance = 0;
 
 Statistics::Statistics( QWidget *parent, const char *name )
     : KDialogBase( KDialogBase::Swallow, 0, parent, name, false, 0, Close )
-    , m_gui( new StatisticsBase( this ) )
-    , m_resultCount( 4 )
 {
     s_instance = this;
 
@@ -47,21 +46,15 @@ Statistics::Statistics( QWidget *parent, const char *name )
 
     kapp->setTopWidget( this );
     setCaption( kapp->makeStdCaption( i18n("Statistics") ) );
+    setInitialSize( QSize( 400, 550 ) );
 
-    setMainWidget( m_gui );
+    QVBox *mainBox = new QVBox( this );
+    setMainWidget( mainBox );
 
-    connect( m_gui->m_optionCombo, SIGNAL( activated(int) ), this, SLOT( loadDetails(int) ) );
-    connect( m_gui->m_resultCombo, SIGNAL( activated(int) ), this, SLOT( resultCountChanged(int) ) );
+    QHBox *box = new QHBox( mainWidget() );
+    box->setSpacing( 5 );
 
-    if( CollectionDB::instance()->isEmpty() )
-    {
-        m_gui->m_chooserFrame->hide();
-        m_gui->m_infoFrame->hide();
-    }
-    else
-        loadChooser();
-
-    loadSummary();
+    m_listview = new StatisticsList( box );
 }
 
 Statistics::~Statistics()
@@ -69,393 +62,310 @@ Statistics::~Statistics()
     s_instance = 0;
 }
 
-void
-Statistics::loadSummary()
+
+//////////////////////////////////////////////////////////////////////////////////////////
+/// CLASS StatisticsList
+//////////////////////////////////////////////////////////////////////////////////////////
+
+StatisticsList::StatisticsList( QWidget *parent, const char *name )
+    : KListView( parent, name )
+    , m_currentItem( 0 )
 {
-    CollectionDB *db = CollectionDB::instance();
+    header()->hide();
 
-    QString mainText = "<div align=\"center\"><b>" + i18n("Collection Statistics") + "</b></div>";
+    addColumn( i18n("Name") );
+    setResizeMode( QListView::LastColumn );
+    setSelectionMode( QListView::Extended );
+    setSorting( -1 );
 
-    if( db->isEmpty() )
-    {
-        mainText += "<br>" + i18n("You need a collection to gather statistics") + "<br>";
-        m_gui->m_mainInfoText->setText( mainText );
+    setAcceptDrops( true );
+    setDragEnabled( true );
+    setDropVisualizer( true );    //the visualizer (a line marker) is drawn when dragging over tracks
+    setDropVisualizerWidth( 3 );
+
+    connect( this, SIGNAL( onItem( QListViewItem*) ), SLOT( startHover( QListViewItem* ) ) );
+    connect( this, SIGNAL( onViewport() ),            SLOT( clearHover() ) );
+
+    if( CollectionDB::instance()->isEmpty() )
         return;
-    }
 
     QueryBuilder qb;
-    qb.addReturnFunctionValue( QueryBuilder::funcSum, QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
-    QStringList a = qb.run();
-    if( !a.isEmpty() )
-    {
-        mainText += i18n("1 Play","%n Plays", a[0].toInt());
-        mainText += "<br>";
-    }
+    QStringList a;
+//     qb.addReturnFunctionValue( QueryBuilder::funcSum, QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
+//     a = qb.run();
+//     QString playcount = a[0];
+
+    m_titleItem  = new StatisticsItem( i18n("Your collection statistics"), this );
+    m_titleItem->setTitleItem( true );
 
     qb.clear();
     qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabSong, QueryBuilder::valURL );
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     a = qb.run();
 
-    if( !a.isEmpty() )
-    {
-        mainText += i18n("1 Track","%n Tracks", a[0].toInt());
-        mainText += "<br>";
-    }
+    m_trackItem  = new StatisticsItem( i18n("1 Track","%n Tracks", a[0].toInt()), this, m_titleItem );
 
     qb.clear();
     qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabArtist, QueryBuilder::valID );
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     a = qb.run();
 
-    if( !a.isEmpty() )
-    {
-        mainText += i18n("1 Artist","%n Artists", a[0].toInt());
-        mainText += "<br>";
-    }
+    m_artistItem = new StatisticsItem( i18n("1 Artist","%n Artists", a[0].toInt()), this, m_trackItem );
 
     qb.clear();
     qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabAlbum, QueryBuilder::valID );
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     a = qb.run();
 
-    if( !a.isEmpty() )
-    {
-        mainText += i18n("1 Album","%n Albums", a[0].toInt());
-        mainText += "<br>";
-    }
+    m_albumItem  = new StatisticsItem( i18n("1 Album","%n Albums", a[0].toInt()), this, m_artistItem );
 
     qb.clear();
     qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabGenre, QueryBuilder::valID );
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     a = qb.run();
 
-    if( !a.isEmpty() )
+    m_genreItem  = new StatisticsItem( i18n("1 Genre","%n Genres", a[0].toInt()), this, m_albumItem );
+
+    m_titleItem ->setPixmap( QString("amarok") );
+    m_trackItem ->setPixmap( QString("sound") );
+    m_artistItem->setPixmap( QString("personal") );
+    m_albumItem ->setPixmap( QString("cdrom_unmount") );
+    m_genreItem ->setPixmap( QString("kfm") );
+}
+
+void
+StatisticsList::startHover( QListViewItem *item ) //SLOT
+{
+    if( m_currentItem && item != m_currentItem )
+        static_cast<StatisticsItem*>(m_currentItem)->leaveHover();
+
+    static_cast<StatisticsItem*>(item)->enterHover();
+    m_currentItem = item;
+}
+
+void
+StatisticsList::clearHover() //SLOT
+{
+    static_cast<StatisticsItem*>(m_currentItem)->leaveHover();
+
+    m_currentItem = 0;
+}
+
+void
+StatisticsList::viewportPaintEvent( QPaintEvent *e )
+{
+    if( e ) KListView::viewportPaintEvent( e );
+
+    if( CollectionDB::instance()->isEmpty() && e )
     {
-        mainText += i18n("1 Genre","%n Genres", a[0].toInt());
-        mainText += "\n";
-    }
+        QPainter p( viewport() );
+        QString minimumText(i18n(
+                "<div align=center>"
+                "<h3>Statistics</h3>"
+                    "You need a collection to use statistics!  "
+                    "Create a collection and then start playing  "
+                    "tracks to accumulate data on your play habits!"
+                "</div>" ) );
+        QSimpleRichText t( minimumText, QApplication::font() );
 
-    m_gui->m_mainInfoText->setText( mainText );
-}
+        if ( t.width()+30 >= viewport()->width() || t.height()+30 >= viewport()->height() )
+            //too big, giving up
+            return;
 
-void
-Statistics::loadChooser()
-{
-    m_gui->m_optionCombo->insertItem( i18n("Track"),  TRACK );
-    m_gui->m_optionCombo->insertItem( i18n("Artist"), ARTIST );
-    m_gui->m_optionCombo->insertItem( i18n("Album"),  ALBUM );
-    m_gui->m_optionCombo->insertItem( i18n("Genre"),  GENRE );
+        const uint w = t.width();
+        const uint h = t.height();
+        const uint x = (viewport()->width() - w - 30) / 2 ;
+        const uint y = (viewport()->height() - h - 30) / 2 ;
 
-    m_gui->m_resultCombo->insertItem( QString::number(5)  );
-    m_gui->m_resultCombo->insertItem( QString::number(10) );
-    m_gui->m_resultCombo->insertItem( QString::number(25) );
-    m_gui->m_resultCombo->insertItem( QString::number(50) );
-
-    loadDetails( TRACK );
-}
-
-void
-Statistics::loadDetails( int index ) //SLOT
-{
-    m_gui->m_btrView->setText( i18n("Please hold...") );
-    m_gui->m_topCoverLabel->clear();
-    m_gui->m_topCoverLabel->setFrameShape( QFrame::NoFrame );
-    m_gui->m_bottomCoverLabel->clear();
-    m_gui->m_bottomCoverLabel->setFrameShape( QFrame::NoFrame );
-
-    m_dataUpper.clear();
-    m_textUpper.clear();
-    m_dataLower.clear();
-    m_textLower.clear();
-
-    switch( index )
-    {
-        case TRACK:
-            buildTrackInfo();
-            break;
-
-        case ARTIST:
-            buildArtistInfo();
-            break;
-
-        case ALBUM:
-            buildAlbumInfo();
-            break;
-
-        case GENRE:
-            buildGenreInfo();
-            break;
+        p.setBrush( colorGroup().background() );
+        p.drawRoundRect( x, y, w+30, h+30, (8*200)/w, (8*200)/h );
+        t.draw( &p, x+15, y+15, QRect(), colorGroup() );
     }
 }
 
-void
-Statistics::resultCountChanged( int value ) //SLOT
+//////////////////////////////////////////////////////////////////////////////////////////
+/// CLASS StatisticsItem
+//////////////////////////////////////////////////////////////////////////////////////////
+
+StatisticsItem::StatisticsItem( QString text, StatisticsList *parent, KListViewItem *after, const char *name )
+    : KListViewItem( static_cast<KListView*>(parent), after, name )
+    , m_animTimer( new QTimer( this ) )
+    , m_animCount( 0 )
+    , m_isActive( false )
+    , m_isTitleItem( false )
+    , m_on( false )
 {
-    int v = m_gui->m_resultCombo->text( value ).toInt();
-    if( v == m_resultCount )
+    setText( 0, text );
+    setSelectable( false );
+    setOn( false );
+
+    connect( m_animTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
+}
+
+void
+StatisticsItem::setPixmap( const QString pix )
+{
+    KIconLoader iconloader;
+    QPixmap icon = iconloader.loadIcon( pix, KIcon::Toolbar, KIcon::SizeHuge );
+    KListViewItem::setPixmap( 0, icon );
+}
+
+void
+StatisticsItem::enterHover()
+{
+    if( m_isTitleItem )
         return;
 
-    m_resultCount = v;
-    loadDetails( m_gui->m_optionCombo->currentItem() );
+    m_animEnter = true;
+    m_animCount = 0;
+    m_isActive = true;
+    m_animTimer->start( ANIM_INTERVAL );
 }
 
 void
-Statistics::buildAlbumInfo()
+StatisticsItem::leaveHover()
 {
-    QueryBuilder qb;
-    qb.clear();
-    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-    qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valScore );
-    qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valScore, true );
-    qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
-    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID);
-    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName);
-    qb.setLimit( 0, m_resultCount );
-    QStringList faveAlbums = qb.run();
+    if( m_isTitleItem )
+        return;
 
-    ///Favourites
-    QString image_fave = CollectionDB::instance()->albumImage( faveAlbums[1], faveAlbums[0], 100 );
-    m_gui->m_topCoverLabel->setPixmap( QPixmap( image_fave ) );
-    m_gui->m_topCoverLabel->setFrameShape( QFrame::StyledPanel );
+    // This can happen if you enter and leave the tab quickly
+    if( m_animCount == 0 )
+        m_animCount = 1;
 
-    QString text = "<b>" + i18n("Favorite Albums") + "</b><br>";
-    for( uint i=0; i < faveAlbums.count(); i += qb.countReturnValues() )
-    {
-        text += "<i>" + faveAlbums[i] + "</i>" + i18n(" - " ) + faveAlbums[i+1]
-             /*+ i18n(" (Score: ") + faveAlbums[i+2] + i18n(")")*/;
-        if( i + qb.countReturnValues() != faveAlbums.count() )
-             text += "<br>";
-    }
-
-    text += "<br><br>";
-
-    qb.clear();
-    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-    qb.addReturnFunctionValue( QueryBuilder::funcMax, QueryBuilder::tabSong, QueryBuilder::valCreateDate );
-    qb.sortByFunction( QueryBuilder::funcMax, QueryBuilder::tabSong, QueryBuilder::valCreateDate, true );
-    qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
-    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID);
-    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName);
-    qb.setLimit( 0, m_resultCount );
-    QStringList recentAlbums = qb.run();
-
-    ///Newest
-    QString image_recent = CollectionDB::instance()->albumImage( recentAlbums[1], recentAlbums[0], 100 );
-    m_gui->m_bottomCoverLabel->setPixmap( QPixmap( image_recent ) );
-    m_gui->m_bottomCoverLabel->setFrameShape( QFrame::StyledPanel );
-
-    text += "<b>" + i18n("Newest Albums") + "</b><br>";
-    for( uint i=0; i < recentAlbums.count(); i += qb.countReturnValues() )
-    {
-        text += "<i>" + recentAlbums[i] + "</i>" + i18n(" - " ) + recentAlbums[i+1];
-        if( i + qb.countReturnValues() != recentAlbums.count() )
-             text += "<br>";
-    }
-
-    m_gui->m_btrView->setText( text );
+    m_animEnter = false;
+    m_isActive = true;
+    m_animTimer->start( ANIM_INTERVAL );
 }
 
 void
-Statistics::buildTrackInfo()
+StatisticsItem::slotAnimTimer()
 {
-    QueryBuilder qb;
-    qb.clear();
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
-    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
-    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valScore, true );
-    qb.setLimit( 0, m_resultCount );
-    QStringList fave = qb.run();
-
-    ///Favourites
-    QString text = "<b>" + i18n("Favorite Songs") + "</b><br>";
-    for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
+    if( m_animEnter )
     {
-        text += i18n("<i>%1</i> - %2 (Score: %3)")
-                    .arg( fave[i] )
-                    .arg( fave[i+1] )
-                    .arg( fave[i+2] );
-        if( i + qb.countReturnValues() != fave.count() )
-             text += "<br>";
+        m_animCount += 1;
+        repaint();
+
+        if( m_animCount >= ANIM_MAX )
+            m_animTimer->stop();
     }
-
-    text += "<br><br>";
-
-    qb.clear();
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
-    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
-    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, true );
-    qb.setLimit( 0, m_resultCount );
-    QStringList mostPlayed = qb.run();
-
-    ///Most Played
-    text += "<b>" + i18n("Most Played Songs") + "</b><br>";
-    for( uint i=0; i < mostPlayed.count(); i += qb.countReturnValues() )
+    else
     {
-        text += i18n("<i>%1</i> - %2 (Playcount: %3)")
-                    .arg( mostPlayed[i] )
-                    .arg( mostPlayed[i+1] )
-                    .arg( mostPlayed[i+2] );
-        if( i + qb.countReturnValues() != mostPlayed.count() )
-             text += "<br>";
+        m_animCount -= 1;
+        repaint();
+        if( m_animCount <= 0 )
+        {
+            m_animTimer->stop();
+            m_isActive = false;
+        }
     }
-
-    m_gui->m_btrView->setText( text );
 }
 
 void
-Statistics::buildArtistInfo()
+StatisticsItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
 {
-    QueryBuilder qb;
-    qb.clear();
-    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-    qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valScore );
-    qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valScore, true );
-    qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valName);
-    qb.setLimit( 0, m_resultCount );
-    QStringList faveArtists = qb.run();
-
-    ///Favourites
-    QString text = "<b>" + i18n("Favorite Artists") + "</b><br>";
-    for( uint i=0; i < faveArtists.count(); i += qb.countReturnValues() )
+    if( isTitleItem() )
     {
-        text += i18n("<i>%1</i> (Score: %2)")
-                    .arg( faveArtists[i] )
-                    .arg( faveArtists[i+1] );
-        if( i + qb.countReturnValues() != faveArtists.count() )
-             text += "<br>";
+        QFont font( p->font() );
+        font.setBold( true );
+        font.setPointSize( font.pointSize() + 1 );
+        p->setFont( font );
+
+        KListViewItem::paintCell( p, cg, column, width, align );
+        return;
     }
 
-    text += "<br><br>";
+    QColor fillColor, textColor;
 
-    qb.clear();
-    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-    qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabSong, QueryBuilder::valTrack );
-    qb.sortByFunction( QueryBuilder::funcCount, QueryBuilder::tabSong, QueryBuilder::valTrack, true );
-    qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valName);
-    qb.setLimit( 0, m_resultCount );
-    QStringList mostSongs = qb.run();
-
-    ///Artists with the Most Songs
-    text += "<b>" + i18n("Artist Count") + "</b><br>"; // sebr: dominance an appropriate word?! :)
-    for( uint i=0; i < mostSongs.count(); i += qb.countReturnValues() )
+    if( m_isActive ) //glowing animation
     {
-        text += i18n("<i>%1</i> (Count: %2)")
-                    .arg( mostSongs[i] )
-                    .arg( mostSongs[i+1] );
-        if( i + qb.countReturnValues() != mostSongs.count() )
-             text += "<br>";
-
-        m_textLower.append( mostSongs[i] );
-        m_dataLower.append( mostSongs[i+1].toDouble() );
+        if ( isOn() ) {
+            fillColor = blendColors( cg.highlight(), cg.background(), static_cast<int>( m_animCount * 3.5 ) );
+            textColor = blendColors( cg.highlightedText(), cg.text(), static_cast<int>( m_animCount * 4.5 ) );
+        } else {
+            fillColor = blendColors( cg.background(), cg.highlight(), static_cast<int>( m_animCount * 3.5 ) );
+            textColor = blendColors( cg.text(), cg.highlightedText(), static_cast<int>( m_animCount * 4.5 ) );
+        }
+    }
+    else
+    {
+    #if KDE_VERSION < KDE_MAKE_VERSION(3,3,91)
+        fillColor = isSelected() ? cg.highlight() : backgroundColor();
+    #else
+        fillColor = isSelected() ? cg.highlight() : backgroundColor(0);
+    #endif
+        textColor = isSelected() ? cg.highlightedText() : cg.text();
     }
 
-//     m_gui->m_topCoverLabel->setText( i18n("<b>Artist Count</b>") );
-//     drawPie( m_gui->m_bottomCoverLabel, m_dataLower );
+    //flicker-free drawing
+    static QPixmap buffer;
+    buffer.resize( width, height() );
 
-    m_gui->m_btrView->setText( text );
+    if( buffer.isNull() )
+    {
+        KListViewItem::paintCell( p, cg, column, width, align );
+        return;
+    }
+
+    buffer.fill( fillColor );
+
+    QPainter pBuf( &buffer, true );
+
+    KListView *lv = (KListView *)listView();
+
+    QFont font( p->font() );
+    QFontMetrics fm( p->fontMetrics() );
+
+    int textHeight;
+    int text_x = 0;
+
+    textHeight = height();
+
+    pBuf.setPen( textColor );
+
+    if( pixmap( column ) )
+    {
+        int y = (textHeight - pixmap(column)->height())/2;
+        pBuf.drawPixmap( 0, y, *pixmap(column) );
+        text_x += pixmap(column)->width() + 4;
+    }
+
+    pBuf.setFont( font );
+    QFontMetrics fmName( font );
+
+    QString name = text(column);
+    if( fmName.width( name ) + text_x + lv->itemMargin()*2 > width )
+    {
+        int ellWidth = fmName.width( i18n("...") );
+        QString text = QString::fromLatin1("");
+        int i = 0;
+        int len = name.length();
+        while ( i < len && fmName.width( text + name[ i ] ) + ellWidth < width - text_x - lv->itemMargin()*2  ) {
+            text += name[ i ];
+            i++;
+        }
+        name = text + i18n("...");
+    }
+
+    pBuf.drawText( text_x, 0, width, textHeight, AlignVCenter, name );
+
+    pBuf.end();
+    p->drawPixmap( 0, 0, buffer );
 }
 
-void
-Statistics::buildGenreInfo()
+QColor
+StatisticsItem::blendColors( const QColor& color1, const QColor& color2, int percent )
 {
-    QueryBuilder qb;
-    qb.clear();
-    qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
-    qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valScore );
-    qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valScore, true );
-    qb.excludeMatch( QueryBuilder::tabGenre, i18n( "Unknown" ) );
-    qb.groupBy( QueryBuilder::tabGenre, QueryBuilder::valName );
-    qb.setLimit( 0, m_resultCount );
-    QStringList faveGenres = qb.run();
+    const float factor1 = ( 100 - ( float ) percent ) / 100;
+    const float factor2 = ( float ) percent / 100;
 
-    ///Favourites
-    QString text = "<b>" + i18n("Favorite Genres") + "</b><br>";
-    for( uint i=0; i < faveGenres.count(); i += qb.countReturnValues() )
-    {
-        text += i18n("<i>%1</i> (Score: %2)")
-                    .arg( faveGenres[i] )
-                    .arg( faveGenres[i+1] );
-        if( i + qb.countReturnValues() != faveGenres.count() )
-             text += "<br>";
-    }
+    const int r = static_cast<int>( color1.red()   * factor1 + color2.red()   * factor2 );
+    const int g = static_cast<int>( color1.green() * factor1 + color2.green() * factor2 );
+    const int b = static_cast<int>( color1.blue()  * factor1 + color2.blue()  * factor2 );
 
-    text += "<br><br>";
+    QColor result;
+    result.setRgb( r, g, b );
 
-    qb.clear();
-    qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
-    qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabSong, QueryBuilder::valTrack );
-    qb.sortByFunction( QueryBuilder::funcCount, QueryBuilder::tabSong, QueryBuilder::valTrack, true );
-    qb.excludeMatch( QueryBuilder::tabGenre, i18n( "Unknown" ) );
-    qb.groupBy( QueryBuilder::tabGenre, QueryBuilder::valName);
-    qb.setLimit( 0, m_resultCount );
-    QStringList mostGenres = qb.run();
-
-    ///Genres with the Most Songs
-    text += "<b>" + i18n("Genre Count") + "</b><br>";
-    for( uint i=0; i < mostGenres.count(); i += qb.countReturnValues() )
-    {
-        text += i18n("<i>%1</i> (Count: %2)")
-                    .arg( mostGenres[i] )
-                    .arg( mostGenres[i+1] );
-        if( i + qb.countReturnValues() != mostGenres.count() )
-             text += "<br>";
-
-        m_textLower.append( mostGenres[i] );
-        m_dataLower.append( mostGenres[i+1].toDouble() );
-    }
-
-//     m_gui->m_topCoverLabel->setText( i18n("<b>Genre Count</b>") );
-//     drawPie( m_gui->m_bottomCoverLabel, m_dataLower );
-
-    m_gui->m_btrView->setText( text );
-}
-
-void
-Statistics::drawPie( QLabel *parent, QValueList<double> data, QStringList /*text*/ )
-{
-    double total = 0.0;
-
-    foreachType( QValueList<double>, data )
-        total += *it;
-
-    if( !total ) return;
-
-    //TODO: Make resizeable
-    const int w = 200;
-    const int h = 200;
-
-    const int xd = w - w/8;
-    const int yd = h - h/8;
-
-    QPixmap pm;
-    pm.resize( w, h);
-    pm.fill  ( backgroundColor() );
-
-    QPainter p( &pm );
-
-    int apos = 0;
-    int i = 0;
-
-    foreachType( QValueList<double>, data )
-    {
-        ///Draw graph
-        QColor c;
-
-        c.setHsv( ( i * 255) / data.count(), 255, 255 );// rainbow effect
-        p.setBrush( c );                                // solid fill with color c
-
-        int a = int( ( (*it) * 360.0 ) / total * 16.0 + 0.5);
-        p.drawPie( 0, h/10, xd, yd, -apos, -a );
-        apos += a;
-        i++;
-    }
-
-    parent->setPixmap( pm );
+    return result;
 }
 
 #include "statistics.moc"
