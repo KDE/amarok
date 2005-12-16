@@ -43,11 +43,10 @@ amaroK::TrayIcon::TrayIcon( QWidget *playerWidget )
 
     setAcceptDrops( true );
 
-    ac->action( "prev"  )->plug( contextMenu() );
-    ac->action( "play"  )->plug( contextMenu() );
-    ac->action( "pause" )->plug( contextMenu() );
-    ac->action( "stop"  )->plug( contextMenu() );
-    ac->action( "next"  )->plug( contextMenu() );
+    ac->action( "prev"        )->plug( contextMenu() );
+    ac->action( "play_pause"  )->plug( contextMenu() );
+    ac->action( "stop"        )->plug( contextMenu() );
+    ac->action( "next"        )->plug( contextMenu() );
 
     //seems to be necessary
     KAction *quit = actionCollection()->action( "file_quit" );
