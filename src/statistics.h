@@ -66,7 +66,6 @@ class StatisticsList : public KListView
         void    initDisplay();
         void    expandInformation( StatisticsDetailedItem *item );
 
-        StatisticsItem *m_titleItem;
         StatisticsItem *m_trackItem;
         StatisticsItem *m_artistItem;
         StatisticsItem *m_albumItem;
@@ -97,6 +96,8 @@ class StatisticsItem : public QObject, public KListViewItem
         void       setTitleItem( const bool b ) { m_isTitleItem = b; }
         const bool isTitleItem() { return m_isTitleItem; }
 
+        void        setSubtext( QString t ) { m_subText = t; }
+
     protected:
         static const int ANIM_INTERVAL = 18;
         static const int ANIM_MAX = 20;
@@ -115,6 +116,8 @@ class StatisticsItem : public QObject, public KListViewItem
         bool    m_isTitleItem;
 
         bool    m_on;
+
+        QString m_subText;
 };
 
 class StatisticsDetailedItem : public KListViewItem

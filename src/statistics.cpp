@@ -105,38 +105,38 @@ StatisticsList::initDisplay()
 //     a = qb.run();
 //     QString playcount = a[0];
 
-    m_titleItem  = new StatisticsItem( i18n("Your collection statistics"), this );
-    m_titleItem->setTitleItem( true );
-
     qb.clear();
     qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabSong, QueryBuilder::valURL );
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     a = qb.run();
 
-    m_trackItem  = new StatisticsItem( i18n("1 Track","%n Tracks", a[0].toInt()), this, m_titleItem );
+    m_trackItem = new StatisticsItem( i18n("Favorite Track","Favorite Tracks", a[0].toInt()), this, 0 );
+    m_trackItem->setSubtext( i18n("%n track", "%n tracks", a[0].toInt()) );
 
     qb.clear();
     qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabArtist, QueryBuilder::valID );
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     a = qb.run();
 
-    m_artistItem = new StatisticsItem( i18n("1 Artist","%n Artists", a[0].toInt()), this, m_trackItem );
+    m_artistItem = new StatisticsItem( i18n("Favorite Artist","Favorite Artist", a[0].toInt()), this, m_trackItem );
+    m_artistItem->setSubtext( i18n("%n artist", "%n artists", a[0].toInt()) );
 
     qb.clear();
     qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabAlbum, QueryBuilder::valID );
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     a = qb.run();
 
-    m_albumItem  = new StatisticsItem( i18n("1 Album","%n Albums", a[0].toInt()), this, m_artistItem );
+    m_albumItem = new StatisticsItem( i18n("Favorite Album","Favorite Albums", a[0].toInt()), this, m_artistItem );
+    m_albumItem->setSubtext( i18n("%n album", "%n albums", a[0].toInt()) );
 
     qb.clear();
     qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabGenre, QueryBuilder::valID );
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     a = qb.run();
 
-    m_genreItem  = new StatisticsItem( i18n("1 Genre","%n Genres", a[0].toInt()), this, m_albumItem );
+    m_genreItem = new StatisticsItem( i18n("Favorite Genre","Favorite Genres", a[0].toInt()), this, m_albumItem );
+    m_genreItem->setSubtext( i18n("%n genre", "%n genres", a[0].toInt()) );
 
-    m_titleItem ->setPixmap( QString("amarok") );
     m_trackItem ->setPixmap( QString("sound") );
     m_artistItem->setPixmap( QString("personal") );
     m_albumItem ->setPixmap( QString("cdrom_unmount") );
@@ -191,7 +191,7 @@ StatisticsList::itemClicked( QListViewItem *item ) //SLOT
         uint c = 1;
         for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
         {
-            QString name = i18n("%1. %2 - %3 (Score: %4)").arg( QString::number(c), fave[i], fave[i+1], fave[i+2] );
+            QString name = i18n("%1. %2 - %3").arg( QString::number(c), fave[i], fave[i+1] );
             m_last = new StatisticsDetailedItem( name, item, m_last );
             c++;
         }
@@ -212,7 +212,7 @@ StatisticsList::itemClicked( QListViewItem *item ) //SLOT
         uint c = 1;
         for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
         {
-            QString name = i18n("%1. %2 (Score: %3)").arg( QString::number(c), fave[i], fave[i+1] );
+            QString name = i18n("%1. %2").arg( QString::number(c), fave[i] );
             m_last = new StatisticsDetailedItem( name, item, m_last );
             c++;
         }
@@ -236,7 +236,7 @@ StatisticsList::itemClicked( QListViewItem *item ) //SLOT
         uint c = 1;
         for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
         {
-            QString name = i18n("%1. %2 - %3 (Score: %4)").arg( QString::number(c), fave[i], fave[i+1], fave[i+2] );
+            QString name = i18n("%1. %2 - %3").arg( QString::number(c), fave[i], fave[i+1] );
             m_last = new StatisticsDetailedItem( name, item, m_last );
             c++;
         }
@@ -257,7 +257,7 @@ StatisticsList::itemClicked( QListViewItem *item ) //SLOT
         uint c = 1;
         for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
         {
-            QString name = i18n("%1. %2 (Score: %3)").arg( QString::number(c), fave[i], fave[i+1] );
+            QString name = i18n("%1. %2").arg( QString::number(c), fave[i] );
             m_last = new StatisticsDetailedItem( name, item, m_last );
             c++;
         }
@@ -282,7 +282,6 @@ StatisticsList::expandInformation( StatisticsDetailedItem *item )
 
     if( parent == m_trackItem )
     {
-        delete m_titleItem;
         delete m_artistItem;
         delete m_albumItem;
         delete m_genreItem;
@@ -296,7 +295,7 @@ StatisticsList::expandInformation( StatisticsDetailedItem *item )
 
         for( uint i=a*qb.countReturnValues(); i < fave.count(); i += qb.countReturnValues() )
         {
-            QString name = i18n("%1. %2 - %3 (Score: %4)").arg( QString::number(c), fave[i], fave[i+1], fave[i+2] );
+            QString name = i18n("%1. %2 - %3").arg( QString::number(c), fave[i], fave[i+1] );
             m_last = new StatisticsDetailedItem( name, parent, m_last );
             c++;
         }
@@ -304,7 +303,6 @@ StatisticsList::expandInformation( StatisticsDetailedItem *item )
 
     else if( parent == m_albumItem )
     {
-        delete m_titleItem;
         delete m_artistItem;
         delete m_genreItem;
         delete m_trackItem;
@@ -322,7 +320,7 @@ StatisticsList::expandInformation( StatisticsDetailedItem *item )
 
         for( uint i=a*qb.countReturnValues(); i < fave.count(); i += qb.countReturnValues() )
         {
-            QString name = i18n("%1. %2 - %3 (Score: %4)").arg( QString::number(c), fave[i], fave[i+1], fave[i+2] );
+            QString name = i18n("%1. %2 - %3").arg( QString::number(c), fave[i], fave[i+1] );
             m_last = new StatisticsDetailedItem( name, parent, m_last );
             c++;
         }
@@ -330,7 +328,6 @@ StatisticsList::expandInformation( StatisticsDetailedItem *item )
 
     else if( parent == m_artistItem )
     {
-        delete m_titleItem;
         delete m_trackItem;
         delete m_albumItem;
         delete m_genreItem;
@@ -344,7 +341,7 @@ StatisticsList::expandInformation( StatisticsDetailedItem *item )
 
         for( uint i=a*qb.countReturnValues(); i < fave.count(); i += qb.countReturnValues() )
         {
-            QString name = i18n("%1. %2 (Score: %3)").arg( QString::number(c), fave[i], fave[i+1] );
+            QString name = i18n("%1. %2").arg( QString::number(c), fave[i] );
             m_last = new StatisticsDetailedItem( name, parent, m_last );
             c++;
         }
@@ -352,7 +349,6 @@ StatisticsList::expandInformation( StatisticsDetailedItem *item )
 
     else if( parent == m_genreItem )
     {
-        delete m_titleItem;
         delete m_trackItem;
         delete m_albumItem;
         delete m_artistItem;
@@ -366,7 +362,7 @@ StatisticsList::expandInformation( StatisticsDetailedItem *item )
 
         for( uint i=a*qb.countReturnValues(); i < fave.count(); i += qb.countReturnValues() )
         {
-            QString name = i18n("%1. %2 (Score: %3)").arg( QString::number(c), fave[i], fave[i+1] );
+            QString name = i18n("%1. %2").arg( QString::number(c), fave[i] );
             m_last = new StatisticsDetailedItem( name, parent, m_last );
             c++;
         }
@@ -520,7 +516,7 @@ StatisticsItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int w
     {
         QFont font( p->font() );
         font.setBold( true );
-        font.setPointSize( font.pointSize() + 1 );
+        font.setPointSize( font.pointSize() + 2 );
         p->setFont( font );
 
         KListViewItem::paintCell( p, cg, column, width, align );
@@ -566,6 +562,7 @@ StatisticsItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int w
     KListView *lv = (KListView *)listView();
 
     QFont font( p->font() );
+    font.setBold( true );
     QFontMetrics fm( p->fontMetrics() );
 
     int textHeight;
@@ -600,6 +597,14 @@ StatisticsItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int w
     }
 
     pBuf.drawText( text_x, 0, width, textHeight, AlignVCenter, name );
+
+    if( !m_subText.isEmpty() )
+    {
+        font.setBold( false );
+        pBuf.setFont( font );
+
+        pBuf.drawText( text_x, fmName.height() + 1, width, textHeight, AlignVCenter, m_subText );
+    }
 
     pBuf.end();
     p->drawPixmap( 0, 0, buffer );
