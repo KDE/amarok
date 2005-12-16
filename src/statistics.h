@@ -93,6 +93,9 @@ class StatisticsItem : public QObject, public KListViewItem
         void       setOn( const bool b ) { m_on = b; }
         const bool isOn() { return m_on; }
 
+        void       setExpanded( const bool b ) { m_isExpanded = b; }
+        const bool isExpanded() { return m_isExpanded; }
+
         void       setTitleItem( const bool b ) { m_isTitleItem = b; }
         const bool isTitleItem() { return m_isTitleItem; }
 
@@ -113,6 +116,7 @@ class StatisticsItem : public QObject, public KListViewItem
         int     m_animCount;
 
         bool    m_isActive;
+        bool    m_isExpanded;
         bool    m_isTitleItem;
 
         bool    m_on;

@@ -164,6 +164,9 @@ StatisticsList::itemClicked( QListViewItem *item ) //SLOT
 
     #define item static_cast<StatisticsItem*>(item)
 
+    if( item->isExpanded() )
+        return;
+
     if( item->isOn() )
     {
         while( item->firstChild() )
@@ -370,6 +373,7 @@ StatisticsList::expandInformation( StatisticsDetailedItem *item )
 
     item->setText( 0, i18n("Back") );
     item->setItemType( StatisticsDetailedItem::SHOW_LESS );
+    parent->setExpanded( true );
 }
 
 void
@@ -438,6 +442,7 @@ StatisticsItem::StatisticsItem( QString text, StatisticsList *parent, KListViewI
     , m_animTimer( new QTimer( this ) )
     , m_animCount( 0 )
     , m_isActive( false )
+    , m_isExpanded( false )
     , m_isTitleItem( false )
     , m_on( false )
 {
@@ -462,7 +467,7 @@ StatisticsItem::setPixmap( const QString &pix )
 void
 StatisticsItem::enterHover()
 {
-    if( m_isTitleItem )
+    if( m_isTitleItem || m_isExpanded )
         return;
 
     m_animEnter = true;
@@ -474,7 +479,7 @@ StatisticsItem::enterHover()
 void
 StatisticsItem::leaveHover()
 {
-    if( m_isTitleItem )
+    if( m_isTitleItem || m_isExpanded )
         return;
 
     // This can happen if you enter and leave the tab quickly
