@@ -13,6 +13,7 @@
 
 #include "amarok.h"         //foreach macro
 #include "collectiondb.h"
+#include "debug.h"
 #include "statistics.h"
 
 #include <kapplication.h>
@@ -78,13 +79,12 @@ StatisticsList::StatisticsList( QWidget *parent, const char *name )
     setSelectionMode( QListView::Extended );
     setSorting( -1 );
 
-    setAcceptDrops( true );
+    setAcceptDrops( false );
     setDragEnabled( true );
-    setDropVisualizer( true );    //the visualizer (a line marker) is drawn when dragging over tracks
-    setDropVisualizerWidth( 3 );
 
-    connect( this, SIGNAL( onItem( QListViewItem*) ), SLOT( startHover( QListViewItem* ) ) );
-    connect( this, SIGNAL( onViewport() ),            SLOT( clearHover() ) );
+    connect( this, SIGNAL( onItem( QListViewItem*) ),  SLOT( startHover( QListViewItem* ) ) );
+    connect( this, SIGNAL( onViewport() ),             SLOT( clearHover() ) );
+    connect( this, SIGNAL( clicked( QListViewItem*) ), SLOT( expandItem( QListViewItem* ) ) );
 
     if( CollectionDB::instance()->isEmpty() )
         return;
@@ -134,10 +134,118 @@ StatisticsList::StatisticsList( QWidget *parent, const char *name )
 }
 
 void
+StatisticsList::expandItem( QListViewItem *item ) //SLOT
+{
+    if( !item || item->depth() != 0 )
+        return;
+
+    #define item static_cast<StatisticsItem*>(item)
+
+    if( item->isOn() )
+    {
+        while( item->firstChild() )
+            delete item->firstChild();
+
+        item->setOn( false );
+        item->setOpen( true );
+        return;
+    }
+
+    item->setOn( true );
+
+    QueryBuilder qb;
+
+    if( item == m_trackItem )
+    {
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+        qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+        qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
+        qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
+        qb.setLimit( 0, 10 );
+        QStringList fave = qb.run();
+
+        StatisticsDetailedItem *m_last = 0;
+        uint c = 1;
+        for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
+        {
+            QString name = i18n("%1. %2 - %3 (Score: %4)").arg( QString::number(c), fave[i], fave[i+1], fave[i+2] );
+            m_last = new StatisticsDetailedItem( name, item, m_last );
+            c++;
+        }
+    }
+    else if( item == m_artistItem )
+    {
+        qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+        qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage );
+        qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
+        qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valName);
+        qb.setLimit( 0, 10 );
+        QStringList fave = qb.run();
+
+        StatisticsDetailedItem *m_last = 0;
+        uint c = 1;
+        for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
+        {
+            QString name = i18n("%1. %2 (Score: %4)").arg( QString::number(c), fave[i], fave[i+1] );
+            m_last = new StatisticsDetailedItem( name, item, m_last );
+            c++;
+        }
+    }
+    else if( item == m_albumItem )
+    {
+        qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
+        qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+        qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage );
+        qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
+        qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
+        qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID);
+        qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName);
+        qb.setLimit( 0, 10 );
+        QStringList fave = qb.run();
+
+        StatisticsDetailedItem *m_last = 0;
+        uint c = 1;
+        for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
+        {
+            QString name = i18n("%1. %2 - %3 (Score: %4)").arg( QString::number(c), fave[i], fave[i+1], fave[i+2] );
+            m_last = new StatisticsDetailedItem( name, item, m_last );
+            c++;
+        }
+    }
+    else if( item == m_genreItem )
+    {
+        qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
+        qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valScore );
+        qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valScore, true );
+        qb.groupBy( QueryBuilder::tabGenre, QueryBuilder::valName);
+        qb.setLimit( 0, 10 );
+        QStringList fave = qb.run();
+
+        StatisticsDetailedItem *m_last = 0;
+        uint c = 1;
+        for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
+        {
+            QString name = i18n("%1. %2 (Score: %4)").arg( QString::number(c), fave[i], fave[i+1] );
+            m_last = new StatisticsDetailedItem( name, item, m_last );
+            c++;
+        }
+    }
+    item->setOpen( true );
+
+    #undef item
+}
+
+void
 StatisticsList::startHover( QListViewItem *item ) //SLOT
 {
     if( m_currentItem && item != m_currentItem )
         static_cast<StatisticsItem*>(m_currentItem)->leaveHover();
+
+    if( item->depth() != 0 )
+    {
+        m_currentItem = 0;
+        return;
+    }
 
     static_cast<StatisticsItem*>(item)->enterHover();
     m_currentItem = item;
@@ -146,7 +254,8 @@ StatisticsList::startHover( QListViewItem *item ) //SLOT
 void
 StatisticsList::clearHover() //SLOT
 {
-    static_cast<StatisticsItem*>(m_currentItem)->leaveHover();
+    if( m_currentItem )
+        static_cast<StatisticsItem*>(m_currentItem)->leaveHover();
 
     m_currentItem = 0;
 }
@@ -195,15 +304,18 @@ StatisticsItem::StatisticsItem( QString text, StatisticsList *parent, KListViewI
     , m_isTitleItem( false )
     , m_on( false )
 {
-    setText( 0, text );
+    setDragEnabled( false );
+    setDropEnabled( false );
     setSelectable( false );
+
+    setText( 0, text );
     setOn( false );
 
     connect( m_animTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
 }
 
 void
-StatisticsItem::setPixmap( const QString pix )
+StatisticsItem::setPixmap( const QString &pix )
 {
     KIconLoader iconloader;
     QPixmap icon = iconloader.loadIcon( pix, KIcon::Toolbar, KIcon::SizeHuge );
@@ -276,17 +388,17 @@ StatisticsItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int w
 
     QColor fillColor, textColor;
 
-    if( m_isActive ) //glowing animation
+    if ( isOn() )
     {
-        if ( isOn() ) {
-            fillColor = blendColors( cg.highlight(), cg.background(), static_cast<int>( m_animCount * 3.5 ) );
-            textColor = blendColors( cg.highlightedText(), cg.text(), static_cast<int>( m_animCount * 4.5 ) );
-        } else {
-            fillColor = blendColors( cg.background(), cg.highlight(), static_cast<int>( m_animCount * 3.5 ) );
-            textColor = blendColors( cg.text(), cg.highlightedText(), static_cast<int>( m_animCount * 4.5 ) );
-        }
+        fillColor = blendColors( cg.highlight(), cg.background(), static_cast<int>( m_animCount * 3.5 ) );
+        textColor = blendColors( cg.highlightedText(), cg.text(), static_cast<int>( m_animCount * 4.5 ) );
     }
-    else
+    else if( m_isActive ) //glowing animation
+    {
+        fillColor = blendColors( cg.background(), cg.highlight(), static_cast<int>( m_animCount * 3.5 ) );
+        textColor = blendColors( cg.text(), cg.highlightedText(), static_cast<int>( m_animCount * 4.5 ) );
+    }
+    else //alternate colours
     {
     #if KDE_VERSION < KDE_MAKE_VERSION(3,3,91)
         fillColor = isSelected() ? cg.highlight() : backgroundColor();
@@ -366,6 +478,27 @@ StatisticsItem::blendColors( const QColor& color1, const QColor& color2, int per
     result.setRgb( r, g, b );
 
     return result;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+/// CLASS StatisticsDetailedItem
+//////////////////////////////////////////////////////////////////////////////////////////
+
+StatisticsDetailedItem::StatisticsDetailedItem( QString &text, StatisticsItem *parent,
+                                                StatisticsDetailedItem *after, const char *name )
+    : KListViewItem( parent, after, name )
+{
+    setDragEnabled( true );
+    setDropEnabled( false );
+    setSelectable( false );
+
+    setText( 0, text );
+}
+
+void
+StatisticsDetailedItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
+{
+    KListViewItem::paintCell( p, cg, column, width, align );
 }
 
 #include "statistics.moc"
