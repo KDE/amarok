@@ -14,6 +14,7 @@ DeviceManager::DeviceManager()
 {
     DEBUG_BLOCK
     m_dc = KApplication::dcopClient();
+    m_dc->setNotifications(true);
     m_valid = true;
 
     if (!m_dc->isRegistered())
@@ -22,9 +23,15 @@ DeviceManager::DeviceManager()
         debug() << "DeviceManager:  DCOP Client not registered!" << endl;
     }
 
-    if (!m_dc->connectDCOPSignal("kded", "mediamanager", "mediumAdded(QString &)", "devices", "displayDevices(QString &)", false))
+    if (!m_dc->connectDCOPSignal("kded", "mediamanager", "mediumAdded(QString)", "devices", "displayDevices(QString)", false) ||
+        !m_dc->connectDCOPSignal("kded", "mediamanager", "mediumRemoved(QString)", "devices", "displayDevices(QString)", false) ||
+        !m_dc->connectDCOPSignal("kded", "mediamanager", "mediumChanged(QString)", "devices", "displayDevices(QString)", false))
     {
         debug() << "DeviceManager:  Could not connect to signal mediumAdded!" << endl;
+    }
+    else
+    {
+        debug() << "DeviceManager:  connectDCOPSignal returned sucessfully!" << endl;
     }
 
 
