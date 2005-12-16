@@ -5,6 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.3.8:
   BUGFIXES:
+    * The equalizer in the helix engine now works properly at low sample
+      frequencies.
     * Fixed some threading issues in loading XML playlists.
     * Some lyrics that are available on lyrc would be shown as "not found".
     * The helix engine now includes protection so that misbehaving streams
