@@ -46,7 +46,7 @@ Statistics::Statistics( QWidget *parent, const char *name )
     KWin::setState( winId(), NET::SkipTaskbar );
 
     kapp->setTopWidget( this );
-    setCaption( kapp->makeStdCaption( i18n("Statistics") ) );
+    setCaption( kapp->makeStdCaption( i18n("Collection Statistics") ) );
     setInitialSize( QSize( 400, 550 ) );
 
     QVBox *mainBox = new QVBox( this );
