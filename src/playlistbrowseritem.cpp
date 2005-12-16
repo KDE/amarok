@@ -392,7 +392,7 @@ void PlaylistEntry::insertTracks( QListViewItem *after, QValueList<MetaBundle> b
     }
 
     if( PlaylistBrowser::instance()->viewMode() == PlaylistBrowser::DETAILEDVIEW && !isOpen() )
-        repaint(); //update the info count, don't repaing if open, since new PlaylistTrackItem will do this.
+        listView()->repaintItem( this ); //update the info count, don't repaing if open, since new PlaylistTrackItem will do this.
 
     if ( !m_loading ) {
         PlaylistBrowser::instance()->savePlaylist( this );
@@ -450,7 +450,7 @@ void PlaylistEntry::customEvent( QCustomEvent *e )
         ((PlaylistBrowserView *)listView())->stopAnimation( this );  //stops the loading animation
 
         if( m_trackCount && !m_dynamic && !isDynamic() ) setOpen( true );
-        else repaint();
+        else listView()->repaintItem( this );
 
         m_trackCount = m_trackList.count();
 
@@ -548,7 +548,7 @@ void PlaylistEntry::setDynamic( bool enable )
         m_dynamic = enable;
     }
 
-    repaint();
+    listView()->repaintItem( this );
 }
 
 void PlaylistEntry::setup()
