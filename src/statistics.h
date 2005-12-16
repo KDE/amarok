@@ -123,8 +123,8 @@ class StatisticsItem : public QObject, public KListViewItem
 class StatisticsDetailedItem : public KListViewItem
 {
     public:
-        StatisticsDetailedItem::StatisticsDetailedItem( QString &text, StatisticsItem *parent,
-                                                        StatisticsDetailedItem *after=0, const char *name=0 );
+        StatisticsDetailedItem( QString &text, StatisticsItem *parent,
+                                StatisticsDetailedItem *after=0, const char *name=0 );
         ~StatisticsDetailedItem() {};
 
         enum ItemType { NONE, SHOW_MORE, SHOW_LESS };
