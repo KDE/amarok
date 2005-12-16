@@ -128,7 +128,7 @@ void HelixEngine::interruptUser(const char */*msg*/)
 
 void HelixEngine::onContacting(const char *host)
 {
-   emit statusText( i18n("Contacting: ").arg( QString(host) ) );
+   emit statusText( i18n("Contacting: %1").arg( QString(host) ) );
 }
 
 void HelixEngine::onBuffering(int pcnt)

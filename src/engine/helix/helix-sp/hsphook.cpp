@@ -249,7 +249,6 @@ STDMETHODIMP HSPPostMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioDat
       pAudioOutData->pData = ibuf;
       pAudioOutData->ulAudioTime = pAudioInData->ulAudioTime;
       pAudioOutData->uAudioStreamType = pAudioInData->uAudioStreamType;
-      //pAudioInData->pData->Release();
    }
 #else
    // equalize
@@ -289,32 +288,36 @@ STDMETHODIMP HSPPostMixAudioHook::OnInit(HXAudioFormat *pFormat)
    switch(pFormat->ulSamplesPerSec)
    {
       case 8000:
-         iir_cf = iir_cf10_8000;
+         //iir_cf = iir_cf10_8000;  <-- doesnt work
+         iir_cf = iir_cf10_11k_11025; // works
          break;
 
       case 11025:
-         iir_cf = iir_cf10_11025;
+         //iir_cf = iir_cf10_11025; <-- not tested (cant get an encoder to give me this sfreq)
+         iir_cf = iir_cf10_11k_11025; // not tested, but works for 8k
          break;
 
       case 16000:
-         iir_cf = iir_cf10_16000;
+         //iir_cf = iir_cf10_16000; <-- doesnt work
+         iir_cf = iir_cf10_22k_22050; // works
          break;
 
       case 22050:
-         iir_cf = iir_cf10_22050;
+         //iir_cf = iir_cf10_22050;
+         iir_cf = iir_cf10_22k_22050; // this set actually works...
          break;
 
       case 32000:
-         iir_cf = iir_cf10_32000;
+         iir_cf = iir_cf10_32000; // works
          break;
 
       case 48000:
-         iir_cf = iir_cf10_48000;
+         iir_cf = iir_cf10_48000;  // not tested
          break;
 
       case 44100:
       default:
-         iir_cf = iir_cf10_44100;
+         iir_cf = iir_cf10_44100; // works
          break;
    }
 
@@ -322,6 +325,7 @@ STDMETHODIMP HSPPostMixAudioHook::OnInit(HXAudioFormat *pFormat)
    m_j = 2;
    m_k = 1;
 
+   memset(&data_history, 0, sizeof(data_history));
 
 #ifndef HELIX_SW_VOLUME_INTERFACE
    // setup the gain tool for volume
