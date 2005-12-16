@@ -40,6 +40,8 @@ interface that really makes playlist handling easy.
  DEPENDENCIES
 ==============
 
+FIXME: Does media auto-detection require KDE 3.5/dbus/hal/media-kioslave?  What happens if these don't exist? Update accordingly.
+
 Required
     * KDE-Libs 3.3
       http://www.kde.org
