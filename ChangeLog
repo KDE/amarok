@@ -6,12 +6,9 @@ amaroK ChangeLog
 VERSION 1.4:
   FEATURES:
     * Switchable Wikipedia locale. (BR 104383)
-    * Tagdialog can now attempt to guess tags from the filename.
     * Drag albums and compilations from context browser to media device and
       playlist browser.
-    * Add playlist files (.m3u, ...) to media device transfer queue.
     * Browse your collection and other related artists with context browser.
-    * WMA tag write support.
     * Copy artwork to iPods capable of displaying it.
     * Show extended podcast info on iPod.
     * Optionally update playcount for items played on iPod and submit them
@@ -23,11 +20,11 @@ VERSION 1.4:
     * Mediabrowser support for the iRiver ifp series!
     * New dcop call playlistbrowser loadPlaylist. (BR 110082)
     * New Edit Track Information dialog. Lyrics can be edited there, comments
-      can have more than one line, and some statistics are available.
-      (BR 93982)
+      can have more than one line, some statistics and tag guessing from
+      filename. (BR 93982)
     * Show/hide browsers via context menu. (BR 110823)
     * Display disk space on media device.
-    * Copy amaroK playlists to media device.
+    * Copy standard and amaroK playlists to media device.
     * Create playlist from items transferred to iPod.
     * Edit dumb iPod playlists with media browser.
     * Ability to read audible.com .aa file metadata and to transfer audiobooks
@@ -71,6 +68,7 @@ VERSION 1.4:
       compatibility with various iPod models.
 
   BUGFIXES:
+    * Don't show an empty playlist length holder in the statusbar.
     * Allow for % and _ in tags, and filter them correctly.
     * Do not copy files of types an iPod is not capable of playing to the
       iPod. (BR 117486)
