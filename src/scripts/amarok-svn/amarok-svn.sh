@@ -495,7 +495,7 @@ else
   unsermake -n uninstall > $TMP_NEW_UNINFO
   if [ "$?" != "0" ]; then # If the command didn't finish successfully.
     rm -f $TMP_OLD_UNINFO $TMP_NEW_UNINFO
-    Error "Couldn't compare the uninstall commands."
+    Error "Couldn't get uninstall commands for the new revision."
   fi
   UN_DIFF="`diff -q $TMP_OLD_UNINFO $TMP_NEW_UNINFO 2>&1`"
   if [ "$?" != "0" -a "$?" != "1" ]; then # If the command didn't finish successfully. diff strangely (?) returns 1 when there are differences.
