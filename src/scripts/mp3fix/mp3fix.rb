@@ -262,17 +262,19 @@ unless data[id3length + 4 + XingOffset, 4] == "Xing"
 end
 
 
-puts()
-print( "Writing file..  " )
-destfile = File::open( destination, File::CREAT|File::TRUNC|File::WRONLY )
+unless repairLog.empty?()
+    puts()
+    print( "Writing file..  " )
+    destfile = File::open( destination, File::CREAT|File::TRUNC|File::WRONLY )
 
-if destfile == nil
-    puts( "Error: Destination file is not writable." )
-    exit( 1 )
+    if destfile == nil
+        puts( "Error: Destination file is not writable." )
+        exit( 1 )
+    end
+
+    destfile << data
+    puts( "done." )
 end
-
-destfile << data
-puts( "done." )
 
 
 puts()
@@ -282,7 +284,7 @@ puts( "======================" )
 unless repairLog.empty?()
     puts( repairLog )
 else
-    puts( "Mp3Fix did not find any defects. File not modified.")
+    puts( "Mp3Fix did not find any defects.")
 end
 puts()
 
