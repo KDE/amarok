@@ -192,9 +192,6 @@ StatisticsList::initDisplay()
 
     QueryBuilder qb;
     QStringList a;
-//     qb.addReturnFunctionValue( QueryBuilder::funcSum, QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
-//     a = qb.run();
-//     QString playcount = a[0];
 
     qb.clear();
     qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabSong, QueryBuilder::valURL );
@@ -205,11 +202,18 @@ StatisticsList::initDisplay()
     m_trackItem->setSubtext( i18n("%n track", "%n tracks", a[0].toInt()) );
 
     qb.clear();
+    qb.addReturnFunctionValue( QueryBuilder::funcSum, QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
+    a = qb.run();
+
+    m_mostplayedItem = new StatisticsItem( i18n("Most Played Track","Most Played Tracks", a[0].toInt()), this, m_trackItem );
+    m_mostplayedItem->setSubtext( i18n("%n play", "%n plays", a[0].toInt()) );
+
+    qb.clear();
     qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabArtist, QueryBuilder::valID );
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     a = qb.run();
 
-    m_artistItem = new StatisticsItem( i18n("Favorite Artist","Favorite Artist", a[0].toInt()), this, m_trackItem );
+    m_artistItem = new StatisticsItem( i18n("Favorite Artist","Favorite Artist", a[0].toInt()), this, m_mostplayedItem );
     m_artistItem->setSubtext( i18n("%n artist", "%n artists", a[0].toInt()) );
 
     qb.clear();
@@ -229,6 +233,7 @@ StatisticsList::initDisplay()
     m_genreItem->setSubtext( i18n("%n genre", "%n genres", a[0].toInt()) );
 
     m_trackItem ->setPixmap( QString("sound") );
+    m_mostplayedItem->setPixmap( QString("favorites") );
     m_artistItem->setPixmap( QString("personal") );
     m_albumItem ->setPixmap( QString("cdrom_unmount") );
     m_genreItem ->setPixmap( QString("kfm") );
@@ -279,6 +284,30 @@ StatisticsList::itemClicked( QListViewItem *item ) //SLOT
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
         qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
         qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
+        qb.setLimit( 0, 10 );
+        QStringList fave = qb.run();
+
+        StatisticsDetailedItem *m_last = 0;
+        uint c = 1;
+        for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
+        {
+            QString name = i18n("%1. %2 - %3").arg( QString::number(c), fave[i], fave[i+1] );
+            m_last = new StatisticsDetailedItem( name, item, m_last );
+            m_last->setItemType( StatisticsDetailedItem::TRACK );
+            m_last->setUrl( fave[i+2] );
+            c++;
+        }
+        QString name = i18n("More tracks...");
+        m_last = new StatisticsDetailedItem( name, item, m_last );
+        m_last->setItemType( StatisticsDetailedItem::SHOW_MORE );
+    }
+    else if( item == m_mostplayedItem )
+    {
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+        qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+        qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
+        qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, true );
         qb.setLimit( 0, 10 );
         QStringList fave = qb.run();
 
@@ -390,9 +419,10 @@ StatisticsList::expandInformation( StatisticsDetailedItem *item )
 
     if( parent == m_trackItem )
     {
-        delete m_artistItem;
-        delete m_albumItem;
         delete m_genreItem;
+        delete m_albumItem;
+        delete m_artistItem;
+        delete m_mostplayedItem;
 
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
@@ -412,11 +442,37 @@ StatisticsList::expandInformation( StatisticsDetailedItem *item )
         }
     }
 
+    else if( parent == m_mostplayedItem )
+    {
+        delete m_genreItem;
+        delete m_albumItem;
+        delete m_artistItem;
+        delete m_trackItem;
+
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+        qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+        qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
+        qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, true );
+        qb.setLimit( 0, 50 );
+        QStringList fave = qb.run();
+
+        for( uint i=a*qb.countReturnValues(); i < fave.count(); i += qb.countReturnValues() )
+        {
+            QString name = i18n("%1. %2 - %3").arg( QString::number(c), fave[i], fave[i+1] );
+            m_last = new StatisticsDetailedItem( name, parent, m_last );
+            m_last->setItemType( StatisticsDetailedItem::TRACK );
+            m_last->setUrl( fave[i+2] );
+            c++;
+        }
+    }
+
     else if( parent == m_artistItem )
     {
-        delete m_trackItem;
-        delete m_albumItem;
         delete m_genreItem;
+        delete m_albumItem;
+        delete m_trackItem;
+        delete m_mostplayedItem;
 
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
         qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage );
@@ -438,9 +494,10 @@ StatisticsList::expandInformation( StatisticsDetailedItem *item )
 
     else if( parent == m_albumItem )
     {
-        delete m_artistItem;
         delete m_genreItem;
+        delete m_artistItem;
         delete m_trackItem;
+        delete m_mostplayedItem;
 
         qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
@@ -468,9 +525,10 @@ StatisticsList::expandInformation( StatisticsDetailedItem *item )
 
     else if( parent == m_genreItem )
     {
-        delete m_trackItem;
         delete m_albumItem;
         delete m_artistItem;
+        delete m_trackItem;
+        delete m_mostplayedItem;
 
         qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
         qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valScore );

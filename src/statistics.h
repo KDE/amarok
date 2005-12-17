@@ -64,6 +64,7 @@ class StatisticsList : public KListView
         void    expandInformation( StatisticsDetailedItem *item );
 
         StatisticsItem *m_trackItem;
+        StatisticsItem *m_mostplayedItem;
         StatisticsItem *m_artistItem;
         StatisticsItem *m_albumItem;
         StatisticsItem *m_genreItem;
