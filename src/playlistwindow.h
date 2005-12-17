@@ -72,6 +72,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
         void actionsMenuAboutToShow();
         void toolsMenuAboutToShow();
         void slotToggleMenu();
+        void slotToggleFocus();
 
     protected:
         virtual void closeEvent( QCloseEvent* );

@@ -139,6 +139,14 @@ PlaylistWindow::PlaylistWindow()
     new KAction( i18n( "Pause" ), "player_pause", 0, ec, SLOT( pause() ), ac, "pause" );
     new KAction( i18n( "Next Track" ), "player_end", 0, ec, SLOT( next() ), ac, "next" );
 
+    {
+        KAction *gah = new KAction( i18n( "Toggle Focus" ), "reload", CTRL+Key_Tab,
+            this, SLOT( slotToggleFocus() ), ac, "toggle_focus" );
+        KPopupMenu asdf;
+        gah->plug( &asdf );
+        gah->unplug( &asdf );
+    }
+
     new amaroK::MenuAction( ac );
     new amaroK::StopAction( ac );
     new amaroK::PlayPauseAction( ac );
@@ -531,14 +539,6 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
                 m_browsers->showHideVisibleBrowser( n - 1 );
                 return true;
             }
-            else if( e->key() == Key_Tab || e->key() == Key_Backtab )
-            {
-                if( m_browsers->currentBrowser() && ( Playlist::instance()->hasFocus() || m_lineEdit->hasFocus() ) )
-                    m_browsers->currentBrowser()->setFocus();
-                else
-                    Playlist::instance()->setFocus();
-                return true;
-            }
         }
 
         if( o == m_lineEdit ) //the search lineedit
@@ -753,6 +753,14 @@ void PlaylistWindow::showStatistics() //SLOT
     }
     Statistics dialog;
     dialog.exec();
+}
+
+void PlaylistWindow::slotToggleFocus() //SLOT
+{
+    if( m_browsers->currentBrowser() && ( Playlist::instance()->hasFocus() || m_lineEdit->hasFocus() ) )
+        m_browsers->currentBrowser()->setFocus();
+    else
+        Playlist::instance()->setFocus();
 }
 
 void PlaylistWindow::slotToggleMenu() //SLOT
