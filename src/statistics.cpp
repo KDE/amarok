@@ -178,6 +178,8 @@ StatisticsList::startDrag()
             drag->addDragObject( textdrag );
         }
     }
+    
+    clearSelection();
 
     drag->addDragObject( new KURLDrag( list, viewport() ) );
     drag->dragCopy();
