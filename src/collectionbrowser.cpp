@@ -187,36 +187,13 @@ bool CollectionBrowser::eventFilter( QObject *o, QEvent *e )
 
         if( o == m_searchEdit ) //the search lineedit
         {
-            QListViewItem *item;
             switch( e->key() )
             {
             case Key_Up:
-                item = *It( m_view, It::Visible );
-                if( item )
-                    while( item->itemBelow() )
-                        item = item->itemBelow();
-                if( item )
-                {
-                    m_view->setFocus();
-                    m_view->setCurrentItem( item );
-                    item->setSelected( true );
-                    m_view->ensureItemVisible( item );
-                    return true;
-                }
-                return false;
             case Key_Down:
-                if( ( item = *It( m_view, It::Visible ) ) )
-                {
-                    m_view->setFocus();
-                    m_view->setCurrentItem( item );
-                    item->setSelected( true );
-                    m_view->ensureItemVisible( item );
-                    return true;
-                }
-                return false;
-
             case Key_PageDown:
             case Key_PageUp:
+                m_view->setFocus();
                 QApplication::sendEvent( m_view, e );
                 return true;
 
@@ -229,16 +206,28 @@ bool CollectionBrowser::eventFilter( QObject *o, QEvent *e )
             }
         }
 
-        if( m_view->currentItem() && ( ( e->key() == Key_Up   && m_view->currentItem()->itemAbove() == 0 )
-                                || ( e->key() == Key_Down && m_view->currentItem()->itemBelow() == 0 ) ) )
+        if( m_view->currentItem() && ( e->key() == Key_Up && m_view->currentItem()->itemAbove() == 0 ) )
+        {
+            QListViewItem *lastitem = *It( m_view, It::Visible );
+            while( lastitem && lastitem->itemBelow() )
+                lastitem = lastitem->itemBelow();
+            m_view->currentItem()->setSelected( false );
+            m_view->setCurrentItem( lastitem );
+            lastitem->setSelected( true );
+            m_view->ensureItemVisible( lastitem );
+            return true;
+        }
+
+        if( m_view->currentItem() && ( e->key() == Key_Down && m_view->currentItem()->itemBelow() == 0 ) )
         {
             m_view->currentItem()->setSelected( false );
-            m_searchEdit->setFocus();
+            m_view->setCurrentItem( *It( m_view, It::Visible ) );
+            (*It( m_view, It::Visible ))->setSelected( true );
             m_view->ensureItemVisible( *It( m_view, It::Visible ) );
             return true;
         }
 
-        if( ( e->key() >= Key_0 && e->key() <= Key_Z ) || e->key() == Key_Backspace )
+        if( ( e->key() >= Key_0 && e->key() <= Key_Z ) || e->key() == Key_Backspace || e->key() == Key_Escape )
         {
             m_searchEdit->setFocus();
             QApplication::sendEvent( m_searchEdit, e );

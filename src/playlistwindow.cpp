@@ -548,12 +548,9 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
             {
             case Key_Up:
             case Key_Down:
-                pl->setFocus();
-                QApplication::sendEvent( pl, e );
-                return false;
-
             case Key_PageDown:
             case Key_PageUp:
+                pl->setFocus();
                 QApplication::sendEvent( pl, e );
                 return true;
 
