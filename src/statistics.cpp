@@ -215,7 +215,7 @@ StatisticsList::initDisplay()
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     a = qb.run();
 
-    m_artistItem = new StatisticsItem( i18n("Favorite Artist","Favorite Artist", a[0].toInt()), this, m_mostplayedItem );
+    m_artistItem = new StatisticsItem( i18n("Favorite Artist","Favorite Artists", a[0].toInt()), this, m_mostplayedItem );
     m_artistItem->setSubtext( i18n("%n artist", "%n artists", a[0].toInt()) );
 
     qb.clear();
