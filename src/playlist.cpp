@@ -3508,6 +3508,17 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
                     //skip the one we are copying
                     continue;
 
+                else if( col == PlaylistItem::Score )
+                {
+                    CollectionDB::instance()->setSongPercentage( (*it)->url().path(), newTag.toInt() );
+                    continue;
+                }
+                else if( col == PlaylistItem::Rating )
+                {
+                    CollectionDB::instance()->setSongRating( (*it)->url().path(), newTag.toInt() );
+                    continue;
+                }
+
                 if ( !(*it)->isEditing( col ) )
                     jobs.prepend( new TagWriter( *it, (*it)->exactText( col ), newTag, col, updateView ) );
 
