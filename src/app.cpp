@@ -79,7 +79,7 @@ email                : markey@web.de
 
 int App::mainThreadId = 0;
 
-KAboutData aboutData( "amarok",
+LIBAMAROK_EXPORT KAboutData aboutData( "amarok",
     I18N_NOOP( "amaroK" ), APP_VERSION,
     I18N_NOOP( "The audio player for KDE" ), KAboutData::License_GPL,
     I18N_NOOP( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2005, The amaroK Development Squad" ),

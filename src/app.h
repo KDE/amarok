@@ -18,6 +18,7 @@
 #ifndef AMAROK_APP_H
 #define AMAROK_APP_H
 
+#include "amarok_export.h"
 #include "engineobserver.h" //baseclass
 #include <kapplication.h>   //baseclass
 
@@ -34,7 +35,7 @@ class Playlist;
 class PlaylistWindow;
 
 
-class App : public KApplication, public EngineObserver
+class LIBAMAROK_EXPORT App : public KApplication, public EngineObserver
 {
     Q_OBJECT
     public:

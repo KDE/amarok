@@ -34,3 +34,4 @@ libhelix_sp_la_SOURCES = \
 METASOURCES = \
     AUTO
 
+KDE_OPTIONS=nofinal

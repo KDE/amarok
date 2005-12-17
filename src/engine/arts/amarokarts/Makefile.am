@@ -1,4 +1,4 @@
-INCLUDES = $(all_includes) -I$(kde_includes)/arts
+INCLUDES = -I$(top_builddir)/amarok/src/engine/arts/amarokarts -I$(kde_includes)/arts $(all_includes) 
 KDE_OPTIONS = nofinal
 METASOURCES = AUTO
 
