@@ -559,16 +559,44 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
                 item = *It( pl, It::Visible );
                 m_lineEdit->clear();
                 pl->m_filtertimer->stop(); //HACK HACK HACK
-                pl->setFilter( "" );       //SLASH
-                if( ( e->state() & ShiftButton ) && item )
+                if( e->state() & ControlButton )
                 {
-                    pl->queue( item );
-                    pl->ensureItemCentered( item );
+                    PLItemList in, out;
+                    if( e->state() & ShiftButton )
+                        for( It it( pl, It::Visible ); PlaylistItem *x = static_cast<PlaylistItem*>( *it ); ++it )
+                        {
+                            pl->queue( x, true );
+                            ( pl->m_nextTracks.contains( x ) ? in : out ).append( x );
+                        }
+                    else
+                    {
+                        It it( pl, It::Visible );
+                        pl->activate( *it );
+                        ++it;
+                        for( int i = 0; PlaylistItem *x = static_cast<PlaylistItem*>( *it ); ++i, ++it )
+                        {
+                            in.append( x );
+                            pl->m_nextTracks.insert( i, x );
+                        }
+                    }
+                    if( !in.isEmpty() || !out.isEmpty() )
+                        emit pl->queueChanged( in, out );
+                    pl->setFilter( "" );
+                    pl->ensureItemCentered( ( e->state() & ShiftButton ) ? item : pl->currentTrack() );
                 }
                 else
                 {
-                    pl->activate( item );
-                    pl->showCurrentTrack();
+                    pl->setFilter( "" );
+                    if( ( e->state() & ShiftButton ) && item )
+                    {
+                        pl->queue( item );
+                        pl->ensureItemCentered( item );
+                    }
+                    else
+                    {
+                        pl->activate( item );
+                        pl->showCurrentTrack();
+                    }
                 }
                 return true;
 
