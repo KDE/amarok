@@ -1,8 +1,10 @@
 [Desktop Entry]
 Type=Service
 Name=Apple iPod Media Device
+Name[bg]=Устройство Apple iPod
 Name[pt]=Dispositivo Multimédia Apple iPod
 Name[pt_BR]=Dispositivo Multimédia Apple iPod
+Name[ru]=Мультимедиа-устройство Apple iPod
 Name[sv]=Apple iPod-mediaenhet
 X-KDE-Library=libamarok_ipod-mediadevice
 Comment=Plugin for amaroK
