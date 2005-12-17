@@ -13,9 +13,14 @@
     <absoluteprojectpath>false</absoluteprojectpath>
     <version/>
     <description/>
-    <ignoreparts/>
+    <ignoreparts>
+      <part>CvsService</part>
+      <part>KDevClearCase</part>
+      <part>KDevPerforce</part>
+      <part>KDevsubversion</part>
+    </ignoreparts>
     <secondaryLanguages/>
-    <versioncontrol/>
+    <versioncontrol>kdevsubversion</versioncontrol>
   </general>
   <kdevautoproject>
     <general>
@@ -43,13 +48,13 @@
       <cxxflags>\s-O0 -g3 -Wall</cxxflags>
     </compiler>
     <run>
-      <mainprogram/>
+      <mainprogram>/usr/kde/cvs/bin/amarokapp</mainprogram>
       <programargs/>
       <terminal>false</terminal>
       <autocompile>false</autocompile>
       <envvars/>
       <directoryradio>custom</directoryradio>
-      <customdirectory>/opt/kde3.5/bin/</customdirectory>
+      <customdirectory>/usr/kde/cvs/bin/</customdirectory>
       <runarguments>
         <amarok/>
       </runarguments>
@@ -163,11 +168,6 @@
       <inlineGet>true</inlineGet>
       <inlineSet>true</inlineSet>
     </creategettersetter>
-    <qt>
-      <used>false</used>
-      <version>3</version>
-      <root>/home/kde-dev/kde-svn/branches/qt/3.3/qt-copy</root>
-    </qt>
   </kdevcppsupport>
   <kdevclassview>
     <folderhierarchy>true</folderhierarchy>

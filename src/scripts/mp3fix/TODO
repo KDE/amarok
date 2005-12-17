@@ -3,5 +3,4 @@
 
 08:58 < sebr> markey: won't fix a file with a $ sign in the filename
 
-* If the file was not modified, report this correctly.
 

@@ -49,6 +49,8 @@ end
 
 path = ""
 destination = ""
+repairLog = []
+
 
 if $*.empty?() or $*[0] == "--help"
     puts( "Usage: mp3fix.rb source [destination]" )
@@ -81,7 +83,7 @@ unless File.extname( path ) == ".mp3" or File.extname( path ) == ".MP3"
     exit( 1 )
 end
 
-unless FileTest.writable_real?( destination )
+if destination == path and not FileTest.writable_real?( destination )
     puts( "Error: Destination file not writable." )
     exit( 1 )
 end
@@ -118,12 +120,15 @@ frameCount       = 0
 bitrateCount     = 0
 samplerateCount  = 0
 firstFrameBroken = false
+firstFrameOffset = nil
 
 puts()
 puts( "Analyzing mpeg frames.." )
 puts()
 
-# Iterate over all frames
+
+# Iterate over all frames:
+#
 while offset < data.length() - 4
     validHeader = true
     header = data[offset+0]*2**24 + data[offset+1]*2**16 + data[offset+2]*2**8 + data[offset+3]
@@ -158,6 +163,8 @@ while offset < data.length() - 4
 #         puts( "framesize   : #{frameSize}" )
 #         puts()
 
+        firstFrameOffset = offset if firstFrameOffset == nil
+
         frameCount      += 1
         bitrateCount    += bitrate
         samplerateCount += samplerate
@@ -184,11 +191,24 @@ puts( "Length (seconds) : #{Length}" )
 puts()
 
 
-# Repair first frame header, if it is broken:
+# Some really broken files have junk data at the beginning of the file, before the
+# first MPEG frame starts, for instance one KB of zeros. This junk can confuse some codecs
+# so that you're not able to seek properly. Strip this junk:
+#
+if firstFrameOffset - id3length > 0
+    puts( "Stripping #{firstFrameOffset - id3length} bytes of junk data from beginning of file." )
+    repairLog << "* Stripped junk data from beginning of file\n"
 
+    data[id3length..( firstFrameOffset - 1 )] = ""
+end
+
+
+# Repair first frame header, if it is broken:
+#
 if firstFrameBroken
     puts()
     puts( "Repairing broken header in first frame." )
+    repairLog << "* Fixed broken MPEG header\n"
 
     firstHeader = data[id3length+0]*2**24 + data[id3length+1]*2**16 + data[id3length+2]*2**8 + data[id3length+3]
     firstHeader |= 0xfff00000  # Frame sync
@@ -218,6 +238,7 @@ end
 unless data[id3length + 4 + XingOffset, 4] == "Xing"
     puts()
     puts( "Adding XING header." )
+    repairLog << "* Added XING header\n"
 
     xing = String.new()
     xing << "Xing"
@@ -255,5 +276,13 @@ puts( "done." )
 
 
 puts()
-puts( "done." )
+puts()
+puts( "MP3FIX REPAIR SUMMARY:" )
+puts( "======================" )
+unless repairLog.empty?()
+    puts( repairLog )
+else
+    puts( "Mp3Fix did not find any defects. File not modified.")
+end
+
 

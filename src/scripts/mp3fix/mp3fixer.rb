@@ -58,7 +58,11 @@ loop do
                     output = `ruby #{mp3fix} "#{path}"`
 
                     if $?.success?()
-                        `dcop amarok playlist popupMessage "Mp3Fixer has successfully repaired your file."`
+                        reg = Regexp.new( "MP3FIX REPAIR SUMMARY:.*", Regexp::MULTILINE )
+                        report = reg.match( output ).to_s()
+                        report.gsub!( "\n", "<BR/>" )
+                        `dcop amarok playlist popupMessage "#{report}."`
+
                         folders << File.dirname( path ) unless folders.include?( File.dirname( path ) )
                     else
                         reg = Regexp.new( "Error:.*", Regexp::MULTILINE )
