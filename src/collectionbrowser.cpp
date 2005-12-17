@@ -201,6 +201,14 @@ bool CollectionBrowser::eventFilter( QObject *o, QEvent *e )
                 m_searchEdit->clear();
                 return true;
 
+            case Key_Return:
+            case Key_Enter:
+                m_view->selectAll();
+                Playlist::instance()->insertMedia( m_view->listSelected(), Playlist::Unique | Playlist::Append );
+                m_view->clearSelection();
+                m_searchEdit->clear();
+                return true;
+
             default:
                 return false;
             }
