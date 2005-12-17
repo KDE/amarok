@@ -201,7 +201,7 @@ StatusBar::slotItemCountChanged( int newCount, int newLength,  //total
     QString text = ( hasSel && hasVis ) ? i18n( "%1 selected of %2 visible tracks" )
                                           .arg( selCount ).arg( visCount )
                  : ( hasVis && newCount == 1 ) ? i18n( "0 visible of 1 track" )
-                 : ( hasVis ) ? i18n( "%1 visible of %2 track", "%1 visible of %2 tracks", newCount ).arg( visCount).arg( newCount )
+                 : ( hasVis ) ? i18n( "%1 visible of %2 tracks" ).arg( visCount).arg( newCount )
                  : ( hasSel ) ? i18n( "%1 selected of %2 tracks" ).arg( selCount ).arg( newCount )
                  : i18n( "1 track", "%n tracks", newCount );
 

@@ -5,8 +5,6 @@ TODO-list for amaroK
 
 
 SHORT-TERM (URGENT):
- <sebr>    Statusbar shows "13 Tracks - [ ]" if there is no length for tracks.
-
  <markey>  The analyzer now uses crazy amounts of CPU when amaroK is idle, even if the window
            is not visible.
 
