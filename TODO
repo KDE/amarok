@@ -5,6 +5,10 @@ TODO-list for amaroK
 
 
 SHORT-TERM (URGENT):
+ <sebr>    There is something wrong with general cover art retrieval handling.  For one thing, i
+           think searching for embedded covers should be searched for last, it's probably slowest,
+           can somebody approve/reject this?
+
  <markey>  The analyzer now uses crazy amounts of CPU when amaroK is idle, even if the window
            is not visible.
 
