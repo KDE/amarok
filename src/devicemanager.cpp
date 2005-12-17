@@ -63,16 +63,17 @@ void DeviceManager::displayDevices(QString name)
             m_currMediaList = Medium::createList( result );
 
             Medium::List::iterator it;
+            QString mountyesno;
             for ( it = m_currMediaList.begin(); it != m_currMediaList.end(); it++ )
             {
                 debug() << "Medium ID: " << (*it).id() << endl;
                 if ( (*it).mimeType().contains( "removable", false ) )
                 {
-                    debug() << "Removable device detected at: " << (*it).mountPoint() << ", it is ";
                     if ( (*it).isMounted() )
-                        debug() << "mounted" << endl;
+                        mountyesno = "mounted";
                     else
-                        debug() << "not mounted" << endl;
+                        mountyesno = "not mounted";
+                    debug() << "Removable device detected at: " << (*it).mountPoint() << ", it is " << mountyesno << endl;
                 }
             }
             //debug() << "The result is " <<  result << endl;
