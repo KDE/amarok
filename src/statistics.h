@@ -57,10 +57,7 @@ class StatisticsList : public KListView
         void    startHover( QListViewItem *item );
 
     private:
-//         void    contentsDragEnterEvent( QDragEnterEvent *e );
-//         void    contentsDragMoveEvent( QDragMoveEvent* e );
-//         void    contentsDropEvent( QDropEvent *e );
-//         void    keyPressEvent( QKeyEvent *e );
+        void    startDrag();
         void    viewportPaintEvent( QPaintEvent* );
 
         void    initDisplay();
@@ -131,16 +128,20 @@ class StatisticsDetailedItem : public KListViewItem
                                 StatisticsDetailedItem *after=0, const char *name=0 );
         ~StatisticsDetailedItem() {};
 
-        enum ItemType { NONE, SHOW_MORE, SHOW_LESS };
+        enum    ItemType { NONE, TRACK, ARTIST, ALBUM, GENRE, SHOW_MORE, SHOW_LESS };
 
         void    setItemType( const ItemType t );
         const   ItemType itemType() { return m_type; }
+
+        void    setUrl( QString &url ) { m_url = url; }
+        const   QString url() { return m_url; }
 
         void    paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align );
         void    paintFocus( QPainter*, const QColorGroup& , const QRect& ) {};  //reimp
 
     private:
         ItemType m_type;
+        QString  m_url;
 };
 
 
