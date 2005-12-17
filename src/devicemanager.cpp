@@ -66,6 +66,14 @@ void DeviceManager::displayDevices(QString name)
             for ( it = m_currMediaList.begin(); it != m_currMediaList.end(); it++ )
             {
                 debug() << "Medium ID: " << (*it).id() << endl;
+                if ( (*it).mimeType().contains( "removable", false ) )
+                {
+                    debug() << "Removable device detected at: " << (*it).mountPoint() << ", it is ";
+                    if ( (*it).isMounted() )
+                        debug() << "mounted" << endl;
+                    else
+                        debug() << "not mounted" << endl;
+                }
             }
             //debug() << "The result is " <<  result << endl;
         }
