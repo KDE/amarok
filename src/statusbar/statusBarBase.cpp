@@ -279,7 +279,7 @@ StatusBar::longMessage( const QString &text, int type )
     if( text.isEmpty() )
         return;
 
-    PopupMessage * message;
+    PopupMessage *message;
     message = new PopupMessage( this, m_mainTextLabel );
     message->setText( text );
 
@@ -301,6 +301,7 @@ StatusBar::longMessage( const QString &text, int type )
             image = KGlobal::iconLoader()->iconPath( "messagebox_critical", -KIcon::SizeHuge );
             break;
     }
+    
     if( !image.isEmpty() )
         message->setImage( image );
 

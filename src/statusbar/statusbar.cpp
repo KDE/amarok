@@ -198,23 +198,27 @@ StatusBar::slotItemCountChanged( int newCount, int newLength,  //total
 {
     const bool hasSel = ( selCount > 1 ), hasVis = ( visCount != newCount );
 
-    QString text = ( hasSel && hasVis ) ? i18n( "%1 selected of %2 visible of %3 tracks" )
-                                          .arg( selCount ).arg( visCount ).arg( newCount )
+    QString text = ( hasSel && hasVis ) ? i18n( "%1 selected of %2 visible tracks" )
+                                          .arg( selCount ).arg( visCount )
                  : ( hasVis && newCount == 1 ) ? i18n( "0 visible of 1 track" )
-                 : ( hasVis ) ? i18n( "%1 visible of %2 tracks" ).arg( visCount).arg( newCount )
+                 : ( hasVis ) ? i18n( "%1 visible of %2 track", "%1 visible of %2 tracks", newCount ).arg( visCount).arg( newCount )
                  : ( hasSel ) ? i18n( "%1 selected of %2 tracks" ).arg( selCount ).arg( newCount )
                  : i18n( "1 track", "%n tracks", newCount );
 
-    QString time = ( hasSel && hasVis ) ? i18n( " - [ %1 / %2 / %3 ]" )
-                                          .arg( MetaBundle::prettyLength( selLength, true ) )
-                                          .arg( MetaBundle::prettyLength( visLength, true ) )
-                                          .arg( MetaBundle::prettyLength( newLength, true ) )
-                 : ( ( hasSel || hasVis ) && visCount > 0 ) ? i18n( " - [ %1 / %2 ]" )
-                                                  .arg( hasVis ? MetaBundle::prettyLength( visLength, true )
-                                                               : MetaBundle::prettyLength( selLength, true ) )
-                                                  .arg( MetaBundle::prettyLength( newLength, true ) )
-                 : ( newCount ) ? i18n( " - [ %1 ]" ).arg( MetaBundle::prettyLength( newLength, true ) )
-                 : "";
+    QString time = QString::null;
+    int getValue = 0;
+
+    if( hasSel )
+        getValue = selLength;
+
+    else if( hasVis )
+        getValue = visLength;
+
+    else
+        getValue = newLength;
+
+    if( getValue )
+        time = i18n( " - [ %2 ]" ).arg( MetaBundle::prettyLength( getValue, true ) );
 
     m_itemCountLabel->setText( ' ' + text + time + ' ' );
 }
