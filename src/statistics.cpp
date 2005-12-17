@@ -261,7 +261,10 @@ StatisticsList::itemClicked( QListViewItem *item ) //SLOT
     #define item static_cast<StatisticsItem*>(item)
 
     if( item->isExpanded() )
+    {
+        initDisplay();
         return;
+    }
 
     if( item->isOn() )
     {
