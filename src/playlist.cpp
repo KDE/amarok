@@ -2275,7 +2275,7 @@ Playlist::eventFilter( QObject *o, QEvent *e )
     // not in slotMouseButtonPressed because we need to disable normal usage.
     if( o == viewport() && e->type() == QEvent::MouseButtonPress && me->state() == Qt::ControlButton && me->button() == RightButton )
     {
-        PlaylistItem *item = (PlaylistItem*)itemAt( me->pos() );
+        PlaylistItem *item = static_cast<PlaylistItem*>( itemAt( me->pos() ) );
 
         if( !item )
             return true;
@@ -2286,10 +2286,37 @@ Playlist::eventFilter( QObject *o, QEvent *e )
 
         return true; //yum!
     }
+
+    else if( o == viewport() && e->type() == QEvent::MouseButtonPress && me->button() == LeftButton )
+    {
+        static PlaylistItem *lastItem = 0;
+        static QTimer timer;
+
+        int col = header()->sectionAt( viewportToContents( me->pos() ).x() );
+        if( col != PlaylistItem::Rating )
+        {
+            PlaylistItem *item = static_cast<PlaylistItem*>( itemAt( me->pos() ) );
+            bool edit = timer.isActive() && item == lastItem && col != PlaylistItem::Rating;
+
+            if( edit )
+            {
+                timer.stop();
+                rename( item, col );
+            }
+            else
+                timer.start( int( QApplication::doubleClickInterval() * 3.5 ), true );
+
+            lastItem = item;
+
+            if( edit )
+                return true;
+        }
+    }
+
     // Toggle play/pause if user middle-clicks on current track
     else if( o == viewport() && e->type() == QEvent::MouseButtonPress && me->button() == MidButton )
     {
-        PlaylistItem *item = (PlaylistItem*)itemAt( me->pos() );
+        PlaylistItem *item = static_cast<PlaylistItem*>( itemAt( me->pos() ) );
 
         if( item && item == m_currentTrack )
         {
