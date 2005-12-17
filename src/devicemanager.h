@@ -2,6 +2,9 @@
 #define AMAROK_DEVICE_MANAGER_H
 
 #include <dcopobject.h>
+#include "medium.h"
+
+typedef Medium::List MediaList;
 
 class DeviceManager : public QObject
 {
@@ -17,6 +20,7 @@ class DeviceManager : public QObject
     private:
         DCOPClient *m_dc;
         bool m_valid;
+        MediaList m_currMediaList;
 
 };
 

@@ -117,7 +117,7 @@ App::App()
     }
 
     fixHyperThreading();
-    DeviceManager *dm = DeviceManager::instance();
+    m_pDeviceManager = DeviceManager::instance();
 
     m_pGlobalAccel    = new KGlobalAccel( this );
     m_pPlaylistWindow = new PlaylistWindow();

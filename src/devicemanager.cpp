@@ -1,6 +1,8 @@
 #include <dcopobject.h>
 #include <kapplication.h>
 #include <dcopclient.h>
+#include "medium.h"
+#include <qptrlist.h>
 #include "devicemanager.h"
 #include "debug.h"
 
@@ -53,13 +55,19 @@ void DeviceManager::displayDevices(QString name)
     else
     {
         QDataStream reply(replyData, IO_ReadOnly);
-        debug() << "replyType == " << replyType << endl;
         if (replyType == "QStringList")
         {
             QStringList result;
             while(!reply.atEnd())
                 reply >> result;
-            debug() << "The result is " <<  result << endl;
+            m_currMediaList = Medium::createList( result );
+
+            Medium::List::iterator it;
+            for ( it = m_currMediaList.begin(); it != m_currMediaList.end(); it++ )
+            {
+                debug() << "Medium ID: " << (*it).id() << endl;
+            }
+            //debug() << "The result is " <<  result << endl;
         }
         else
             debug() << "unexpected type of reply from dcop call" << endl;

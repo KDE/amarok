@@ -86,6 +86,7 @@ libamarok_la_SOURCES = \
     kbookmarkhandler.cpp \
     ktrm.cpp \
     mediabrowser.cpp \
+    medium.cpp \
     metabundle.cpp \
     multitabbar.cpp \
     moodbar.cpp \

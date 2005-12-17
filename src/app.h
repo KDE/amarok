@@ -33,6 +33,7 @@ class MetaBundle;
 class PlayerWidget;
 class Playlist;
 class PlaylistWindow;
+class DeviceManager;
 
 
 class LIBAMAROK_EXPORT App : public KApplication, public EngineObserver
@@ -91,6 +92,7 @@ class LIBAMAROK_EXPORT App : public KApplication, public EngineObserver
         PlayerWidget        *m_pPlayerWindow;
         PlaylistWindow      *m_pPlaylistWindow;
         amaroK::TrayIcon    *m_pTray;
+        DeviceManager       *m_pDeviceManager;
 };
 
 #define pApp static_cast<App*>(kapp)
