@@ -180,7 +180,7 @@ void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
         menu->insertTitle( i18n( "1 Queued Track", "%n Queued Tracks", count ) );
     amaroK::actionCollection()->action( "queue_manager" )->plug( menu );
     menu->insertItem( SmallIconSet( "2leftarrow" ),
-                      i18n( "&Dequeue Track", "&Dequeue All Tracks", count ), 0 );
+                      count > 1 ? i18n( "&Dequeue All Tracks" ) : i18n( "&Dequeue Track" ), 0 );
     menu->insertSeparator();
 
     uint i = 1;
