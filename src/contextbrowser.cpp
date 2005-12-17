@@ -1294,25 +1294,22 @@ bool CurrentTrackJob::doJob()
                     "</div>"
                     "<table class='box-body' id='T_RA' width='100%' border='0' cellspacing='0' cellpadding='1'>" )
                 .arg( i18n( "Artists Related to %1" ).arg( escapeHTML( artist ) ) ) );
+            m_HTMLSource.append( "<tr><td>" );
             for ( uint i = 0; i < relArtists.count(); i += 1 )
             {
                 qb.clear();
                 qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
                 bool isInCollection = !CollectionDB::instance()->albumListOfArtist( relArtists[i] ).isEmpty();
                 m_HTMLSource.append(
-                        "<tr class='" + QString( (i % 2) ? "box-row-alt" : "box-row" ) + "'>"
-                        "<td class='artist'>"
-                        + ( isInCollection ? "" : "<i>" )
-                        + "<a href='artist:" + escapeHTMLAttr( relArtists[i] ) + "'>" + escapeHTML( relArtists[i] ) + "</a>"
+                        ( isInCollection ? "" : "<i>" )
+                        + QString( "<a href='artist:" ) + escapeHTMLAttr( relArtists[i] ) + "'>" + escapeHTML( relArtists[i] ).replace( " ", "&nbsp;" ) + "</a>"
                         + ( isInCollection ? "" : "</i>" )
-                        + "</td>"
-                        "<td class='sbtext' width='1'>"
-                        "<a href='wikipedia:" + escapeHTMLAttr( relArtists[i] ) + "'>Wikipedia</a>"
-                        "</td>"
-                        "<td width='1'></td>"
-                        "</tr>" );
+                        );
+                if( i != relArtists.count()-1 )
+                    m_HTMLSource.append( ", " );
             }
 
+            m_HTMLSource.append( "</td></tr>" );
             m_HTMLSource.append(
                     "</table>"
                     "</div>" );
