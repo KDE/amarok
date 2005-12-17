@@ -1112,8 +1112,9 @@ bool CurrentTrackJob::doJob()
             albumImageTitleAttr = i18n( "Click to fetch cover from amazon.%1, right-click for menu." ).arg( CoverManager::amazonTld() );
         else {
             albumImageTitleAttr = i18n( "Click for information from amazon.%1, right-click for menu." ).arg( CoverManager::amazonTld() );
-            albumImage = ContextBrowser::makeShadowedImage( albumImage );
         }
+
+        albumImage = ContextBrowser::makeShadowedImage( albumImage );
 
         m_HTMLSource.append(
                 "<div id='current_box' class='box'>"
@@ -1514,8 +1515,7 @@ bool CurrentTrackJob::doJob()
                 }
 
                 QString albumImage = CollectionDB::instance()->albumImage( artist, values[ i ], 50 );
-                if ( albumImage != CollectionDB::instance()->notAvailCover( 50 ) )
-                    albumImage = ContextBrowser::makeShadowedImage( albumImage );
+                albumImage = ContextBrowser::makeShadowedImage( albumImage );
 
                 m_HTMLSource.append( QStringx (
                 "<tr class='" + QString( (i % 4) ? "box-row-alt" : "box-row" ) + "'>"
@@ -1642,8 +1642,7 @@ bool CurrentTrackJob::doJob()
                 }
 
                 QString albumImage = CollectionDB::instance()->albumImage( artist, values[ i ], 50 );
-                if ( albumImage != CollectionDB::instance()->notAvailCover( 50 ) )
-                    albumImage = ContextBrowser::makeShadowedImage( albumImage );
+                albumImage = ContextBrowser::makeShadowedImage( albumImage );
 
                 m_HTMLSource.append( QStringx (
                 "<tr class='" + QString( (i % 4) ? "box-row-alt" : "box-row" ) + "'>"
