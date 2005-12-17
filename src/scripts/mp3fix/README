@@ -6,7 +6,7 @@ Mp3Fixer is a script for repairing MP3 files which display a bogus track length 
 audio player.
 </p>
 <p>
-For example, if you have a track that you know is really <i>two minutes</i> long, but
+For example, if you have a track that you know is really <i>five minutes</i> long, but
 amaroK shows it's <i>one hour</i> long, then this script is for you. Mp3Fixer calculates the
 real track length and adds the missing XING header to the file. Additionally, Mp3Fixer is capable
 of repairing broken MPEG header frames.

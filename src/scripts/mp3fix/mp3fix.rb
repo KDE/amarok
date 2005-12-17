@@ -284,5 +284,6 @@ unless repairLog.empty?()
 else
     puts( "Mp3Fix did not find any defects. File not modified.")
 end
+puts()
 
 
