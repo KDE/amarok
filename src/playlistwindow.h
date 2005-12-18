@@ -31,7 +31,12 @@ class KToolBar;
 class QLabel;
 class QTimer;
 
-
+/**
+  * @class PlaylistWindow
+  * @short The PlaylistWindow widget class.
+  *
+  * This is the main window widget (the Playlist not Player).
+  */
 class PlaylistWindow : public QWidget, public KXMLGUIClient
 {
         Q_OBJECT

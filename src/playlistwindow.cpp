@@ -2,7 +2,7 @@
   begin                : Fre Nov 15 2002
   copyright            : (C) Mark Kretschmann <markey@web.de>
                        : (C) Max Howell <max.howell@methylblue.com>
-                       : (C) Gábor Lehel <illissius@gmail.com>
+                       : (C) G??bor Lehel <illissius@gmail.com>
 ***************************************************************************/
 
 /***************************************************************************
@@ -93,10 +93,6 @@ namespace amaroK
     };
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////
-/// CLASS PlaylistWindow
-//////////////////////////////////////////////////////////////////////////////////////////
-
 PlaylistWindow *PlaylistWindow::s_instance = 0;
 
 PlaylistWindow::PlaylistWindow()
@@ -179,8 +175,10 @@ PlaylistWindow::~PlaylistWindow()
 
 ///////// public interface
 
-void
-PlaylistWindow::init()
+/**
+ * This function will intialize the playlist window.
+ */
+void PlaylistWindow::init()
 {
     DEBUG_BLOCK
 
@@ -391,15 +389,21 @@ PlaylistWindow::init()
 }
 
 
+/**
+ * Reload the amarokui.rc xml file.
+ * mainly just used by amarok::Menu
+ */
 void PlaylistWindow::recreateGUI()
 {
-    //mainly just used by amaroK::Menu
     setXMLFile( amaroK::config()->readEntry( "XMLFile", "amarokui.rc" ) );
     reloadXML();
     createGUI();
 }
 
 
+/**
+ * Create the amarok gui from the xml file.
+ */
 void PlaylistWindow::createGUI()
 {
     setUpdatesEnabled( false );
@@ -467,6 +471,10 @@ void PlaylistWindow::createGUI()
 }
 
 
+/**
+ * Apply the loaded settings on the playlist window.
+ * this function loads the custom fonts (if chosen) and than calls PlayList::instance()->applySettings();
+ */
 void PlaylistWindow::applySettings()
 {
     switch( AmarokConfig::useCustomFonts() )
@@ -484,10 +492,16 @@ void PlaylistWindow::applySettings()
 }
 
 
+/**
+ * @param o The object
+ * @param e The event
+ * 
+ * Here we filter some events for the Playlist Search LineEdit and the Playlist. @n
+ * this makes life easier since we have more useful functions available from this class
+ */
 bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 {
-    //here we filter some events for the Playlist Search LineEdit and the Playlist
-    //this makes life easier since we have more useful functions available from this class
+
 
     Playlist* const pl = Playlist::instance();
     typedef QListViewItemIterator It;
@@ -843,20 +857,21 @@ void PlaylistWindow::toolsMenuAboutToShow() //SLOT
 
 
 #include <kwin.h>
+/**
+ * Show/hide playlist global shortcut and PlayerWindow PlaylistButton connect to this slot
+ * RULES:
+ * 1. hidden & iconified -> deiconify & show @n
+ * 2. hidden & deiconified -> show @n
+ * 3. shown & iconified -> deiconify @n
+ * 4. shown & deiconified -> hide @n
+ * 5. don't hide if there is no tray icon or playerWindow. todo (I can't be arsed) @n
+ *
+ * @note isMinimized() can only be true if the window isShown()
+ * this has taken me hours to get right, change at your peril!
+ * there are more contingencies than you can believe
+ */
 void PlaylistWindow::showHide() //SLOT
 {
-    //show/hide playlist global shortcut and PlayerWindow PlaylistButton connect to this slot
-
-    //RULES:
-    //1. hidden & iconified -> deiconify & show
-    //2. hidden & deiconified -> show
-    //3. shown & iconified -> deiconify
-    //4. shown & deiconified -> hide
-    //5. don't hide if there is no tray icon or playerWindow //TODO (I can't be arsed)
-
-    //NOTE isMinimized() can only be true if the window isShown()
-    //NOTE this has taken me hours to get right, change at your peril!
-    //     there are more contingencies than you can believe
 
     const KWin::WindowInfo info = KWin::windowInfo( winId() );
     const uint desktop = KWin::currentDesktop();
