@@ -180,9 +180,9 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
         if( item )
         {
             m_dynamicEntries.append( item );
-            if ( item->rtti() == PlaylistEntry::RTTI )
+            if( item->rtti() == PlaylistEntry::RTTI )
                 static_cast<PlaylistEntry*>( item )->setDynamic( true );
-            if ( item->rtti() == SmartPlaylist::RTTI )
+            if( item->rtti() == SmartPlaylist::RTTI )
                 static_cast<SmartPlaylist*>( item )->setDynamic( true );
         }
     }
@@ -1614,7 +1614,8 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
     QListViewItemIterator it( m_listview, QListViewItemIterator::Selected);
     for( ; it.current(); ++it )
     {
-        if( (*it) == m_coolStreams || (*it) == m_smartDefaults )
+        if( (*it) == m_coolStreams || (*it) == m_smartDefaults ||
+            (*it) == m_randomParty || (*it) == m_suggestedParty )
             continue;
         // if the playlist containing this item is already selected the current item will be skipped
         // it will be deleted from the parent
@@ -1760,6 +1761,9 @@ void PlaylistBrowser::renameSelectedItem() //SLOT
 {
     QListViewItem *item = m_listview->currentItem();
     if( !item ) return;
+
+    if( item == m_randomParty || item == m_suggestedParty )
+        return;
 
     if( isCategory( item ) && static_cast<PlaylistCategory*>(item)->isFolder() )
     {
@@ -1929,8 +1933,8 @@ void PlaylistBrowser::currentItemChanged( QListViewItem *item )    //SLOT
     }
     else if( isDynamic( item ) )
     {
-        enable_remove = true;
-        enable_rename = true;
+        enable_remove = ( item != m_randomParty && item != m_suggestedParty );
+        enable_rename = ( item != m_randomParty && item != m_suggestedParty );
     }
     else if( isCategory( item ) )
     {
