@@ -843,27 +843,34 @@ void ContextBrowser::showHome() //SLOT
 
     m_HTMLSource="";
     m_HTMLSource.append(
-            "<html>"
-            "<div id='introduction_box' class='box'>"
-                "<div id='introduction_box-header' class='box-header'>"
-                    "<span id='introduction_box-header-title' class='box-header-title'>"
+        QStringx(
+        "<div id='introduction_box' class='box'>"
+            "<div id='introduction_box-header-title' class='box-header'>"
+                "<span id='introduction_box-header-title' class='box-header-title'>"
                     + i18n( "No Track Playing" ) +
-                    "</span>"
-                "</div>"
-                "<div id='introduction_box-body' class='box-body'>"
-                    "<div class='info'><p>" +
-                        " " + i18n( "1 Song", "%n Songs", songCount.toInt() ) + "<br>" +
-                        " " + i18n( "1 Artist", "%n Artists", artistCount.toInt() ) + "<br>" +
-                        " " + i18n( "1 Album", "%n Albums", albumCount.toInt() ) + "<br>" +
-                        " " + i18n( "1 Genre", "%n Genres", genreCount.toInt() ) + "<br>" +
-                    "</p></div>"
-                    "<div align='center'>"
-                    "<input type='button' onClick='window.location.href=\"show:statistics\";' value='" +
-                    i18n( "Detailed Statistics..." ) +
-                    "'></div><br />"
-                "</div>"
+                "</span>"
             "</div>"
-                       );
+            "<table id='current_box-table' class='box-body' width='100%' cellpadding='0' cellspacing='0'>"
+                "<tr>"
+                    "<td id='current_box-largecover-td'>"
+                        "<img id='current_box-largecover-image' src='%1' title='amaroK'>"
+                    "</td>"
+                    "<td id='current_box-information-td' align='right'>"
+                        "<span>%2</span><br />"
+                        "<span>%3</span><br />"
+                        "<span>%4</span><br />"
+                        "<span>%5</span><br />"
+                    "</td"
+                "</tr>"
+            "</table>"
+        "</div>" )
+                .args( QStringList()
+                        << escapeHTMLAttr( KGlobal::iconLoader()->iconPath( "amarok", -KIcon::SizeEnormous ) )
+                        << i18n( "1 Song",   "%n Songs",   songCount.toInt() )
+                        << i18n( "1 Artist", "%n Artists", artistCount.toInt() )
+                        << i18n( "1 Album",  "%n Albums",  albumCount.toInt() )
+                        << i18n( "1 Genre",  "%n Genres",  genreCount.toInt() ) ) );
+
 
     // <Recent Tracks Information>
     m_HTMLSource.append(
