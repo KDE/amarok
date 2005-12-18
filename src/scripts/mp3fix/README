@@ -7,7 +7,7 @@ audio player.
 </p>
 <p>
 For example, if you have a track that you know is really <i>five minutes</i> long, but
-amaroK shows it's <i>one hour</i> long, then this script is for you. Mp3Fixer calculates the
+amaroK shows the length as <i>one hour</i>, then this script is for you. Mp3Fixer calculates the
 real track length and adds the missing XING header to the file. Additionally, Mp3Fixer is capable
 of repairing broken MPEG header frames.
 </p>
@@ -40,7 +40,7 @@ The Mp3Fixer amaroK Script is a frontend for this tool.
 Version 0.9.3:<br>
 <ul>
 <li>Show detailed repair summary.</li>
-<li>Some mp3 encoders (e.g. lame) add a block of zeroes as padding to the beginning
+<li>Some mp3 encoders (e.g. lame) add a block of zeros as padding to the beginning
 of the file. This is now correctly handled.</li>
 <li>mp3fix.rb did not work with source != destination.</li>
 </ul>
