@@ -2,10 +2,10 @@
 #define AUDIOHOSTLISTITEM_H
 
 #include <qcolor.h>
+#include <qlabel.h>
 #include <qstring.h>
 #include <qwidget.h>
 
-class QLabel;
 
 class AudioHostListItem : public QWidget {
     Q_OBJECT
@@ -15,6 +15,7 @@ class AudioHostListItem : public QWidget {
         ~AudioHostListItem();
 
         void setHighlighted( bool = true );
+        QString hostname() const;
 
     protected:
         void mousePressEvent ( QMouseEvent * );

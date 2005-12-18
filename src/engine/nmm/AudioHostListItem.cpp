@@ -2,7 +2,6 @@
 
 #include <qapplication.h>
 #include <qhbox.h>
-#include <qlabel.h>
 #include <qlayout.h>
 #include <qslider.h>
 
@@ -50,6 +49,11 @@ void AudioHostListItem::setHighlighted( bool highlight )
         setPaletteBackgroundColor( calcBackgroundColor( "activeBackground", QApplication::palette().active().highlight() ) );
     else
         setPaletteBackgroundColor( calcBackgroundColor( "windowBackground", Qt::white ) );
+}
+
+QString AudioHostListItem::hostname() const
+{ 
+    return hostLabel->text();
 }
 
 void AudioHostListItem::mousePressEvent( QMouseEvent * )

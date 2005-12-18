@@ -33,7 +33,6 @@
 
 #include "qobject.h"
 
-class QListBox;
 class AudioHostListItem;
 
 class NmmConfigDialog : public amaroK::PluginConfig
@@ -46,7 +45,6 @@ Q_OBJECT
         QWidget* view() { return m_view; }
 
         bool hasChanged() const;
-
         bool isDefault() const;
         
     public slots:
@@ -72,17 +70,18 @@ Q_OBJECT
         void setCheckedVideoList( bool );
 
     private:
-        /**
-         * Returns hosts in the audio/video host list.
-         */
-        QStringList hostlist( QListBox* listBox ) const;
-
-        void addHost( QListBox *listBox );
+        void readConfig();
+        void addAudioHostListItem( QString );
         
         /**
-         * Removes current item from QListBox.
+         * Returns hosts in the audio host list.
          */
-        void removeCurrentHost( QListBox* listBox );
+        QStringList audioHostList() const;
+
+        /**
+         * Returns hosts in the video host list.
+         */
+        QStringList videoHostList() const;
 
         NmmConfigDialogBase* m_view;
 
