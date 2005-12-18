@@ -184,9 +184,6 @@ HTMLView::loadStyleSheet()
         styleSheet += QString( ".sbouter { border: 0px; background: transparent url(%1) no-repeat top left; width: 54px; height: 10px; text-align: right; }" )
                             .arg( locate( "data", "amarok/images/back_stars_grey.png" ) );
 
-    //     styleSheet += QString( ".sbinner { height: 8px; background-color: %1; border: solid %2 1px; }" ).arg( bg ).arg( fg );
-    //     styleSheet += QString( ".sbouter { width: 52px; height: 10px; background-color: %1; border: solid %2 1px; }" ).arg( colorGroup().base().dark( 120 ).name() ).arg( bg );
-
         styleSheet += QString( "#current_box-header-album { font-weight: normal; }" );
         styleSheet += QString( "#current_box-information-td { text-align: right; vertical-align: bottom; padding: 3px; }" );
         styleSheet += QString( "#current_box-largecover-td { text-align: left; width: 100px; padding: 0; vertical-align: bottom; }" );

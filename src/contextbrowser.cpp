@@ -1395,17 +1395,19 @@ bool CurrentTrackJob::doJob()
             const uint rating = values[4].toInt();
 
             const QString scoreBox =
+            "<div align='right'>"
                 "<table class='scoreBox' border='0' cellspacing='0' cellpadding='0' title='"
                     + QString( true ? i18n( "Score:" ) + " %2, " + i18n( "Rating:" ) + " %4'>" : i18n( "Score" ) + " %2'>" ) +
-                "<tr>"
-                "<td nowrap>%1&nbsp;</td>"
-                "<td>"
-                "<div class='sbouter'>"
-                "<div class='sbinner' style='width: %3px;'></div>"
-                "</div>"
-                "</td>"
-                "</tr>"
-                "</table>";
+                    "<tr>"
+                        "<td nowrap>%1&nbsp;</td>"
+                        "<td>"
+                            "<div class='sbouter'>"
+                                "<div class='sbinner' style='width: %3px;'></div>"
+                            "</div>"
+                        "</td>"
+                    "</tr>"
+                "</table>"
+            "</div>";
 
             //SAFE   = .arg( x, y )
             //UNSAFE = .arg( x ).arg( y )
