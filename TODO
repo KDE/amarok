@@ -5,6 +5,9 @@ TODO-list for amaroK
 
 
 SHORT-TERM (URGENT):
+ <markey>  In the ScriptManager, we currently use a red "STOP" kinda icon for inactive scripts.
+           This looks like a warning or error. Try to find a better one, perhaps a custom icon.
+
  <sebr>    There is something wrong with general cover art retrieval handling.  For one thing, i
            think searching for embedded covers should be searched for last, it's probably slowest,
            can somebody approve/reject this?
