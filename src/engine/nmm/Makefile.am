@@ -15,7 +15,8 @@ libamarok_nmmengine_plugin_la_LIBADD = \
 libamarok_nmmengine_plugin_la_SOURCES = \
     nmm_engine.cpp \
     nmm_configdialog.cpp \
-    nmm_configdialogbase.cpp \
+    nmm_configdialogbase.ui \
+    AudioHostListItem.cpp \
     nmm_kdeconfig.kcfgc
 
 libamarok_nmmengine_plugin_la_LDFLAGS = \

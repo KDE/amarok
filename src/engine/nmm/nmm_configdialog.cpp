@@ -1,9 +1,37 @@
+/* NMM - Network-Integrated Multimedia Middleware
+ *
+ * Copyright (C) 2005
+ *                    NMM work group,
+ *                    Computer Graphics Lab,
+ *                    Saarland University, Germany
+ *                    http://www.networkmultimedia.org
+ *
+ * Maintainer:        Robert Gogolok <gogo@graphics.cs.uni-sb.de>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Steet, Fifth Floor, Boston, MA  02111-1307
+ * USA
+ */
+
 #include "nmm_configdialog.h"
 #include "nmm_kdeconfig.h"
+#include "AudioHostListItem.h"
 #include "debug.h"
 
 #include <qbuttongroup.h>
 #include <qinputdialog.h>
+#include <qlayout.h>
 #include <qlistbox.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
@@ -19,9 +47,20 @@ NmmConfigDialog::NmmConfigDialog()
     if ( NmmKDEConfig::audioOutputPlugin() == "ALSAPlaybackNode" )
         m_view->audioPlaybackNode->setCurrentItem( 1 );
 
+    audio_vbox = new QWidget(m_view->audioScrollView->viewport());
+    audio_vbox->setPaletteBackgroundColor(Qt::white);
+
+    QVBoxLayout *audio_vbox_layout = new QVBoxLayout(audio_vbox);
+    audio_vbox_layout->setAlignment( Qt::AlignAuto | Qt::AlignTop );
+    audio_vbox_layout->setAutoAdd( true );
+    
+    m_view->audioScrollView->addChild(audio_vbox);
+    m_view->audioScrollView->setResizePolicy(QScrollView::AutoOneFit);
+    m_view->audioScrollView->setHScrollBarMode( QScrollView::AlwaysOff );
+    
     m_view->audioGroup->setButton( NmmKDEConfig::audioLocation() );
     setCheckedAudioList( m_view->videoHostListButton->isChecked() );
-    m_view->audioListBox->insertStringList( NmmKDEConfig::audioHost() );
+    //m_view->audioListBox->insertStringList( NmmKDEConfig::audioHost() );
     
     m_view->videoGroup->setButton( NmmKDEConfig::videoLocation() );
     setCheckedVideoList( m_view->videoHostListButton->isChecked() );
@@ -38,7 +77,6 @@ NmmConfigDialog::NmmConfigDialog()
     PluginConfig::connect( m_view->audioPlaybackNode, SIGNAL( activated( int ) ), SIGNAL( viewChanged() ) );
     PluginConfig::connect( m_view->audioGroup, SIGNAL( released( int ) ), SIGNAL( viewChanged() ) );
     PluginConfig::connect( m_view->videoGroup, SIGNAL( released( int ) ), SIGNAL( viewChanged() ) );
-
 }
 
 NmmConfigDialog::~NmmConfigDialog()
@@ -52,7 +90,7 @@ bool NmmConfigDialog::hasChanged() const
 {
     return NmmKDEConfig::audioOutputPlugin() != m_view->audioPlaybackNode->currentText() ||
            NmmKDEConfig::audioLocation() != m_view->audioGroup->selectedId() ||
-           NmmKDEConfig::audioHost() != hostlist(m_view->audioListBox) ||
+           //NmmKDEConfig::audioHost() != hostlist(m_view->audioListBox) ||
            NmmKDEConfig::videoLocation() != m_view->videoGroup->selectedId() ||
            NmmKDEConfig::videoHost() != hostlist(m_view->videoListBox);
 }
@@ -70,7 +108,7 @@ void NmmConfigDialog::save()
     {
         debug() << "saving changes" << endl;
         NmmKDEConfig::setAudioLocation( m_view->audioGroup->selectedId() );
-        NmmKDEConfig::setAudioHost( hostlist(m_view->audioListBox) );
+        //NmmKDEConfig::setAudioHost( hostlist(m_view->audioListBox) );
         NmmKDEConfig::setVideoLocation( m_view->videoGroup->selectedId() );
         NmmKDEConfig::setVideoHost( hostlist(m_view->videoListBox) );
         NmmKDEConfig::setAudioOutputPlugin( m_view->audioPlaybackNode->currentText() );
@@ -80,12 +118,33 @@ void NmmConfigDialog::save()
 
 void NmmConfigDialog::addAudioHost()
 {
-    addHost(m_view->audioListBox);
+    bool ok;
+    QString hostname = QInputDialog::getText(
+        "New NMM sink host", "Enter hostname to add:", QLineEdit::Normal,
+        QString::null, &ok, NULL);
+    if( ok && !hostname.isEmpty() )
+    {
+        AudioHostListItem *item = new AudioHostListItem(false, hostname, audio_vbox);
+        connect( item, SIGNAL( pressed( AudioHostListItem* ) ), this, SLOT( selectHostListItem( AudioHostListItem* ) ) );
+        item->show();
+        m_audio_hosts.append( item );
+        //audio_vbox->layout()->invalidate();
+        //m_view->audioScrollView->update();
+        emit viewChanged();
+    }
 }
 
 void NmmConfigDialog::removeAudioHost()
 {
-    removeCurrentHost(m_view->audioListBox);
+    if( current_audio_host ) {
+        m_audio_hosts.remove( current_audio_host );
+
+        delete current_audio_host;
+        current_audio_host = NULL;
+
+        // no item selected, disable remove button
+        m_view->removeAudioLocationButton->setEnabled( false );
+    }
 }
 
 void NmmConfigDialog::addVideoHost()
@@ -114,9 +173,12 @@ void NmmConfigDialog::addHost( QListBox* listBox )
 
 void NmmConfigDialog::setCheckedAudioList( bool checked )
 {
-    m_view->audioListBox->setEnabled( checked );
+    m_view->audioScrollView->setEnabled( checked );
     m_view->addAudioLocationButton->setEnabled( checked );
-    m_view->removeAudioLocationButton->setEnabled( checked );
+    if( checked && current_audio_host )
+        m_view->removeAudioLocationButton->setEnabled( true );
+    else 
+        m_view->removeAudioLocationButton->setEnabled( false );
 }
 
 void NmmConfigDialog::setCheckedVideoList( bool checked )
@@ -139,5 +201,17 @@ QStringList NmmConfigDialog::hostlist( QListBox* listBox) const
         list.append( listBox->text( i ) );
     return list;
 }
+
+void NmmConfigDialog::selectHostListItem( AudioHostListItem *item )
+{
+    if(current_audio_host)
+        current_audio_host->setHighlighted( false );
+
+    current_audio_host = item;
+    current_audio_host->setHighlighted( true );
+
+    m_view->removeAudioLocationButton->setEnabled( true );
+}
+
 
 #include "nmm_configdialog.moc"
