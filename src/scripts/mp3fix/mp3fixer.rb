@@ -61,7 +61,7 @@ loop do
                         reg = Regexp.new( "MP3FIX REPAIR SUMMARY:.*", Regexp::MULTILINE )
                         report = reg.match( output ).to_s()
                         report.gsub!( "\n", "<BR/>" )
-                        `dcop amarok playlist popupMessage "#{report}."`
+                        `dcop amarok playlist popupMessage "#{report}"`
 
                         folders << File.dirname( path ) unless folders.include?( File.dirname( path ) )
                     else
