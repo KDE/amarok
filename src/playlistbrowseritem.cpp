@@ -239,7 +239,8 @@ QDomElement PlaylistCategory::xml()
                     e.setAttribute( "isOpen", "true" );
                 i.appendChild( d.importNode( e, true ) );
             }
-            else
+            else if( it != PlaylistBrowser::instance()->m_randomParty &&
+                     it != PlaylistBrowser::instance()->m_suggestedParty )
                 i.appendChild( d.importNode( it->xml(), true ) );
         }
         return i;
@@ -936,6 +937,7 @@ PartyEntry::PartyEntry( QListViewItem *parent, QListViewItem *after, const QStri
 
     setTitle( name );
 }
+
 PartyEntry::PartyEntry( QListViewItem *parent, QListViewItem *after, const QDomElement &xmlDefinition )
         : PlaylistBrowserEntry( parent, after )
 {
@@ -960,8 +962,8 @@ PartyEntry::PartyEntry( QListViewItem *parent, QListViewItem *after, const QDomE
     }
 }
 
-
-QDomElement PartyEntry::xml() {
+QDomElement PartyEntry::xml()
+{
     QDomDocument doc;
     QDomElement i;
 

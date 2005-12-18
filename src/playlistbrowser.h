@@ -167,6 +167,9 @@ class PlaylistBrowser : public QVBox
         PlaylistCategory    *m_smartDefaults;
         PlaylistEntry       *m_lastPlaylist;
 
+        PartyEntry          *m_randomParty;
+        PartyEntry          *m_suggestedParty;
+
         bool                 m_coolStreamsOpen;
         bool                 m_smartDefaultsOpen;
 

@@ -162,6 +162,10 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
         loadDefaultSmartPlaylists();
     }
     m_dynamicCategory = loadDynamics();
+    m_randomParty    = new PartyEntry( m_dynamicCategory, 0, i18n("Random Mix") );
+    m_suggestedParty = new PartyEntry( m_dynamicCategory, m_randomParty, i18n("Suggested Songs" ) );
+    m_suggestedParty->setAppendType( Party::SUGGESTION );
+
     m_streamsCategory = loadStreams();
     loadCoolStreams();
 
@@ -677,10 +681,6 @@ PlaylistCategory* PlaylistBrowser::loadDynamics()
     if( !file.open( IO_ReadOnly ) || !d.setContent( stream.read() ) )
     { /*Couldn't open the file or it had invalid content, so let's create some defaults*/
         PlaylistCategory *p = new PlaylistCategory( m_listview, after, i18n("Dynamic Playlists") );
-        QListViewItem *random = new PartyEntry( p, 0, i18n("Random Mix") );
-        //new PartyEntry has all the features we want for random mix
-        PartyEntry *suggested = new PartyEntry( p, random, i18n("Suggested Songs" ) );
-        suggested->setAppendType( Party::SUGGESTION );
         return p;
     }
     else {
