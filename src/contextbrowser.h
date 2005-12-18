@@ -68,6 +68,7 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         void tabChanged( QWidget *page );
         void slotContextMenu( const QString& urlString, const QPoint& point );
         void showHome();
+        void showContext( const KURL& url, bool fromHistory = false );
         void showCurrentTrack();
         void showLyrics( const QString& hash = QString::null );
         void showLyricSuggestions();
@@ -79,6 +80,13 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         void coverRemoved( const QString &artist, const QString &album );
         void similarArtistsFetched( const QString &artist );
         void tagsChanged( const MetaBundle &bundle );
+
+        void contextHistoryBack();
+        void contextHistoryForward();
+        void contextBackPopupActivated( int id );
+        void contextForwardPopupActivated( int id );
+        void contextHome();
+        void contextCurrent();
 
         void lyricsAdd();
         void lyricsSearch();
@@ -99,10 +107,12 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         void wikiConfigApply();
 
     private:
+        enum { CONTEXT_BACK, CONTEXT_FORWARD, CONTEXT_CURRENT, CONTEXT_HOME, CONTEXT_SEARCH };
         enum { LYRICS_ADD, LYRICS_SEARCH, LYRICS_REFRESH, LYRICS_BROWSER };
         enum { WIKI_BACK, WIKI_FORWARD, WIKI_ARTIST, WIKI_ALBUM, WIKI_TITLE, WIKI_BROWSER, WIKI_CONFIG };
         typedef enum {SHOW_ALBUM_NORMAL, SHOW_ALBUM_SCORE, SHOW_ALBUM_LEAST_PLAY} T_SHOW_ALBUM_TYPE;
         static const uint WIKI_MAX_HISTORY = 20;
+        static const uint CONTEXT_MAX_HISTORY = 20;
 
         void showIntroduction();
         void saveHtmlData();
@@ -116,6 +126,7 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         HTMLView    *m_lyricsPage;
         HTMLView    *m_wikiPage;
 
+        QVBox        *m_contextTab;
         QVBox        *m_lyricsTab;
         QVBox        *m_wikiTab;
         // These controls are used to dictate whether the page should be rebuilt
@@ -123,6 +134,13 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         bool          m_dirtyCurrentTrackPage;
         bool          m_dirtyLyricsPage;
         bool          m_dirtyWikiPage;
+
+        Browser::ToolBar* m_contextToolBar;
+        QStringList   m_contextBackHistory;
+        QStringList   m_contextForwardHistory;
+        KPopupMenu*   m_contextBackPopup;
+        KPopupMenu*   m_contextForwardPopup;
+        KURL          m_contextURL;
 
         QString       m_styleSheet;
         bool          m_emptyDB;

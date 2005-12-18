@@ -147,6 +147,8 @@ ContextBrowser::ContextBrowser( const char *name )
         , m_dirtyCurrentTrackPage( true )
         , m_dirtyLyricsPage( true )
         , m_dirtyWikiPage( true )
+        , m_contextBackPopup( new KPopupMenu( this ) )
+        , m_contextForwardPopup( new KPopupMenu( this ) )
         , m_emptyDB( CollectionDB::instance()->isEmpty() )
         , m_lyricJob( NULL )
         , m_wikiBackPopup( new KPopupMenu( this ) )
@@ -162,7 +164,16 @@ ContextBrowser::ContextBrowser( const char *name )
     s_instance = this;
     s_wikiLocale = AmarokConfig::wikipediaLocale();
 
-    m_currentTrackPage = new HTMLView( this, "current_track_page", true /* DNDEnabled */ );
+    m_contextTab = new QVBox(this, "context_tab");
+    m_contextToolBar = new Browser::ToolBar( m_contextTab );
+    m_contextToolBar->insertButton( "back", CONTEXT_BACK, false, i18n("Back") );
+    m_contextToolBar->insertButton( "forward", CONTEXT_FORWARD, false, i18n("Forward") );
+    m_contextToolBar->setDelayedPopup( CONTEXT_BACK, m_contextBackPopup );
+    m_contextToolBar->setDelayedPopup( CONTEXT_FORWARD, m_contextForwardPopup );
+    m_contextToolBar->insertButton( "player_playlist_2", CONTEXT_CURRENT, true, i18n("Current Track") );
+    //m_contextToolBar->insertButton( "gohome", CONTEXT_HOME, true, i18n("Home") );
+
+    m_currentTrackPage = new HTMLView( m_contextTab, "current_track_page", true /* DNDEnabled */ );
 
     m_lyricsTab = new QVBox(this, "lyrics_tab");
 
@@ -197,9 +208,9 @@ ContextBrowser::ContextBrowser( const char *name )
     connect( m_cuefile, SIGNAL(metaData( const MetaBundle& )),
              EngineController::instance(), SLOT(slotStreamMetaData( const MetaBundle& )) );
 
-    addTab( m_currentTrackPage->view(), SmallIconSet( "today" ),    i18n( "Music" ) );
-    addTab( m_lyricsTab,                SmallIconSet( "document" ), i18n( "Lyrics" ) );
-    addTab( m_wikiTab,                  SmallIconSet( "personal" ),     i18n( "Artist" ) );
+    addTab( m_contextTab, SmallIconSet( "today" ),    i18n( "Music" ) );
+    addTab( m_lyricsTab,  SmallIconSet( "document" ), i18n( "Lyrics" ) );
+    addTab( m_wikiTab,    SmallIconSet( "personal" ), i18n( "Artist" ) );
 
     setTabEnabled( m_lyricsTab, false );
     setTabEnabled( m_wikiTab, false );
@@ -227,6 +238,13 @@ ContextBrowser::ContextBrowser( const char *name )
     connect( m_wikiPage,         SIGNAL( popupMenu( const QString&, const QPoint& ) ),
              this,               SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
 
+    connect( m_contextToolBar->getButton( CONTEXT_BACK ),    SIGNAL(clicked( int )), SLOT(contextHistoryBack()) );
+    connect( m_contextToolBar->getButton( CONTEXT_FORWARD ), SIGNAL(clicked( int )), SLOT(contextHistoryForward()) );
+    connect( m_contextBackPopup,    SIGNAL(activated( int )), SLOT(contextBackPopupActivated( int )) );
+    connect( m_contextForwardPopup, SIGNAL(activated( int )), SLOT(contextForwardPopupActivated( int )) );
+    connect( m_contextToolBar->getButton( CONTEXT_HOME ),    SIGNAL(clicked( int )), SLOT(contextHome()) );
+    connect( m_contextToolBar->getButton( CONTEXT_CURRENT ), SIGNAL(clicked( int )), SLOT(contextCurrent()) );
+
     connect( m_lyricsToolBar->getButton( LYRICS_ADD ),     SIGNAL(clicked( int )), SLOT(lyricsAdd()) );
     connect( m_lyricsToolBar->getButton( LYRICS_SEARCH ),  SIGNAL(clicked( int )), SLOT(lyricsSearch()) );
     connect( m_lyricsToolBar->getButton( LYRICS_REFRESH ), SIGNAL(clicked( int )), SLOT(lyricsRefresh()) );
@@ -253,6 +271,8 @@ ContextBrowser::ContextBrowser( const char *name )
              this, SLOT( similarArtistsFetched( const QString& ) ) );
     connect( CollectionDB::instance(), SIGNAL( tagsChanged( const MetaBundle& ) ),
              this, SLOT( tagsChanged( const MetaBundle& ) ) );
+
+    showContext( "current://track" );
 }
 
 
@@ -326,7 +346,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
             CollectionView::instance()->setupDirs();
         }
         // Konqueror sidebar needs these
-        if (url.path() == "context") { m_dirtyCurrentTrackPage=true; showCurrentTrack(); saveHtmlData(); }
+        if (url.path() == "context") { m_dirtyCurrentTrackPage=true; showContext( "current://track" ); saveHtmlData(); }
         if (url.path() == "wiki") { m_dirtyLyricsPage=true; showWikipedia(); saveHtmlData(); }
         if (url.path() == "lyrics") { m_dirtyWikiPage=true; m_wikiJob=false; showLyrics(); saveHtmlData(); }
     }
@@ -375,21 +395,11 @@ void ContextBrowser::openURLRequest( const KURL &url )
     }
 
     // browse albums of a related artist
-    else if ( url.protocol() == "artist" )
+    else if ( url.protocol() == "artist"
+            || url.protocol() == "current"
+            || url.protocol() == "home" )
     {
-        m_browseArtists = true;
-        m_artist = unEscapeHTMLAttr( url.path() );
-        m_dirtyCurrentTrackPage = true;
-        showCurrentTrack();
-    }
-
-    // back to context for current track
-    else if ( url.protocol() == "current" )
-    {
-        m_browseArtists = false;
-        m_artist = QString::null;
-        m_dirtyCurrentTrackPage = true;
-        showCurrentTrack();
+        showContext( url );
     }
 
     else if ( url.protocol() == "wikipedia" )
@@ -397,6 +407,13 @@ void ContextBrowser::openURLRequest( const KURL &url )
         m_dirtyWikiPage = true;
         QString entry = unEscapeHTMLAttr( url.path() );
         showWikipediaEntry( entry );
+    }
+
+    else if( url.protocol() == "ggartist" )
+    {
+        const QString url2 = QString( "http://www.google.com/musicsearch?q=%1&res=artist" )
+            .arg( KURL::encode_string_no_slash( unEscapeHTMLAttr( url.path() ).replace( " ", "+" ), 106 /*utf-8*/ ) );
+        kapp->invokeBrowser( url2 );
     }
 
     else
@@ -473,7 +490,7 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
         m_metadataHistory.prepend( QString( "<td valign='top'>" + timeString + "&nbsp;</td><td align='left'>" + escapeHTML( bundle.prettyTitle() ) + "</td>" ) );
     }
 
-    if ( currentPage() == m_currentTrackPage->view() && ( bundle.url() != m_currentURL || newMetaData || !trackChanged ) )
+    if ( currentPage() == m_contextTab && ( bundle.url() != m_currentURL || newMetaData || !trackChanged ) )
         showCurrentTrack();
     else if ( currentPage() == m_lyricsTab )
         showLyrics();
@@ -512,8 +529,11 @@ void ContextBrowser::engineStateChanged( Engine::State state, Engine::State oldS
     {
         case Engine::Empty:
             m_metadataHistory.clear();
-            if ( currentPage() == m_currentTrackPage->view() || currentPage() == m_lyricsTab )
-                showHome();
+            if ( currentPage() == m_contextTab || currentPage() == m_lyricsTab )
+            {
+                if( m_contextURL.protocol() == "current" )
+                    showHome();
+            }
             blockSignals( true );
             setTabEnabled( m_lyricsTab, false );
             if ( currentPage() != m_wikiTab ) {
@@ -606,7 +626,7 @@ void ContextBrowser::wheelDelta( int delta )
 void ContextBrowser::tabChanged( QWidget *page )
 {
     setFocusProxy( page ); //so focus is given to a sensible widget when the tab is opened
-    if ( m_dirtyCurrentTrackPage && ( page == m_currentTrackPage->view() ) )
+    if ( m_dirtyCurrentTrackPage && ( page == m_contextTab ) )
         showCurrentTrack();
     else if ( m_dirtyLyricsPage && ( page == m_lyricsTab ) )
         showLyrics();
@@ -627,7 +647,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         urlString.startsWith( "seek" ) ||
         urlString.startsWith( "artist" ) ||
         urlString.startsWith( "current" ) ||
-        currentPage() != m_currentTrackPage->view()
+        currentPage() != m_contextTab
         )
         return;
 
@@ -780,9 +800,9 @@ void ContextBrowser::showHome() //SLOT
 {
     DEBUG_BLOCK
 
-    if ( currentPage() != m_currentTrackPage->view() ) {
+    if ( currentPage() != m_contextTab ) {
         blockSignals( true );
-        showPage( m_currentTrackPage->view() );
+        showPage( m_contextTab );
         blockSignals( false );
     }
 
@@ -918,7 +938,7 @@ private:
     virtual void completeJob()
     {
         // are we still showing the currentTrack page?
-        if( b->currentPage() != b->m_currentTrackPage->view() )
+        if( b->currentPage() != b->m_contextTab )
             return;
 
         b->m_HTMLSource = m_HTMLSource;
@@ -932,19 +952,198 @@ private:
 
 };
 
+void
+ContextBrowser::showContext( const KURL &url, bool fromHistory )
+{
+    if ( currentPage() != m_contextTab )
+    {
+        blockSignals( true );
+        showPage( m_contextTab );
+        blockSignals( false );
+    }
+
+    m_dirtyCurrentTrackPage = true;
+    m_contextURL = url.url();
+
+    m_contextToolBar->getButton( CONTEXT_CURRENT )->setEnabled(true);
+    if( url.protocol() == "home" )
+    {
+    }
+    else if( url.protocol() == "current" )
+    {
+        m_browseArtists = false;
+        m_artist = QString::null;
+        m_contextToolBar->getButton( CONTEXT_CURRENT )->setEnabled(false);
+    }
+    else if( url.protocol() == "artist" )
+    {
+        m_browseArtists = true;
+        m_artist = unEscapeHTMLAttr( url.path() );
+    }
+
+    // Append new URL to history
+    if ( !fromHistory ) {
+        m_contextBackHistory += m_contextURL.url();
+        m_contextForwardHistory.clear();
+    }
+    // Limit number of items in history
+    if ( m_contextBackHistory.count() > CONTEXT_MAX_HISTORY )
+        m_contextBackHistory.pop_front();
+
+    // Remove all items from the button-menus
+    m_contextBackPopup->clear();
+    m_contextForwardPopup->clear();
+
+    // Populate button menus with URLs from the history
+    QStringList::ConstIterator it;
+    uint count;
+    // Reverse iterate over both lists
+    count = m_contextBackHistory.count()-1;
+    it = m_contextBackHistory.fromLast();
+    if( count > 0 )
+        it--;
+    for ( uint i=0; i<count; i++, --it )
+    {
+        KURL url( *it );
+        if( url.protocol() == "current" )
+        {
+            m_contextBackPopup->insertItem( SmallIconSet( "player_playlist_2" ), i18n( "Current Track" ), i );
+        }
+        else if( url.protocol() == "home" )
+        {
+            m_contextBackPopup->insertItem( SmallIconSet( "gohome" ), i18n( "Home" ), i );
+        }
+        else if( url.protocol() == "artist" )
+        {
+            m_contextBackPopup->insertItem( SmallIconSet( "personal" ), url.path(), i );
+        }
+
+    }
+    count = m_contextForwardHistory.count();
+    it = m_contextForwardHistory.fromLast();
+    for ( uint i=0; i<count; i++, --it )
+    {
+        KURL url( *it );
+        if( url.protocol() == "current" )
+        {
+            m_contextForwardPopup->insertItem( SmallIconSet( "player_playlist_2" ), i18n( "Current Track" ), i );
+        }
+        else if( url.protocol() == "home" )
+        {
+            m_contextForwardPopup->insertItem( SmallIconSet( "gohome" ), i18n( "Home" ), i );
+        }
+        else if( url.protocol() == "artist" )
+        {
+            m_contextForwardPopup->insertItem( SmallIconSet( "personal" ), url.path(), i );
+        }
+    }
+
+    debug() << "CONTEXT BACK-HISTORY SIZE   : " << m_contextBackHistory.size() << endl;
+    debug() << "CONTEXT FORWARD-HISTORY SIZE: " << m_contextForwardHistory.size() << endl;
+    m_contextToolBar->setItemEnabled( CONTEXT_BACK, m_contextBackHistory.size() > 1 );
+    m_contextToolBar->setItemEnabled( CONTEXT_FORWARD, m_contextForwardHistory.size() > 0 );
+
+    showCurrentTrack();
+}
+
+void
+ContextBrowser::contextHistoryBack() //SLOT
+{
+    m_contextForwardHistory += m_contextBackHistory.last();
+    m_contextBackHistory.pop_back();
+
+    m_dirtyCurrentTrackPage = true;
+
+    showContext( KURL( m_contextBackHistory.last() ), true );
+}
+
+
+void
+ContextBrowser::contextHistoryForward() //SLOT
+{
+    m_contextBackHistory += m_contextForwardHistory.last();
+    m_contextForwardHistory.pop_back();
+
+    m_dirtyCurrentTrackPage = true;
+
+    showContext( KURL( m_contextBackHistory.last() ), true );
+}
+
+void
+ContextBrowser::contextHome() //SLOT
+{
+    showContext( "home://home" );
+}
+
+void
+ContextBrowser::contextCurrent() //SLOT
+{
+    showContext( "current://track" );
+}
+
+
+void
+ContextBrowser::contextBackPopupActivated( int id ) //SLOT
+{
+    do
+    {
+        m_contextForwardHistory += m_contextBackHistory.last();
+        m_contextBackHistory.pop_back();
+        if ( m_contextForwardHistory.count() > CONTEXT_MAX_HISTORY )
+            m_contextForwardHistory.pop_front();
+        id--;
+    } while( id >= 0 );
+
+    m_dirtyCurrentTrackPage = true;
+    showContext( m_contextBackHistory.last(), true );
+}
+
+
+void
+ContextBrowser::contextForwardPopupActivated( int id ) //SLOT
+{
+    do
+    {
+        m_contextBackHistory += m_contextForwardHistory.last();
+        m_contextForwardHistory.pop_back();
+        if ( m_contextBackHistory.count() > CONTEXT_MAX_HISTORY )
+            m_contextBackHistory.pop_front();
+
+        id--;
+    } while( id >= 0 );
+
+    m_dirtyCurrentTrackPage = true;
+    showContext( m_contextBackHistory.last(), true );
+}
+
 
 void ContextBrowser::showCurrentTrack() //SLOT
 {
-    if( !EngineController::engine()->loaded() )
+    if( m_showRelated )
+    {
+        m_contextToolBar->show();
+    }
+    else
+    {
+        m_contextToolBar->hide();
+    }
+
+    if( m_contextURL.protocol() == "current" && !EngineController::engine()->loaded() )
     {
         showHome();
         return;
     }
 
-    if ( currentPage() != m_currentTrackPage->view() ) {
+    if ( currentPage() != m_contextTab ) {
         blockSignals( true );
-        showPage( m_currentTrackPage->view() );
+        showPage( m_contextTab );
         blockSignals( false );
+    }
+
+    if( m_contextURL.protocol() == "home" )
+    {
+        showHome();
+        return;
     }
 
     if( !m_dirtyCurrentTrackPage )
@@ -1081,8 +1280,10 @@ bool CurrentTrackJob::doJob()
                         "</tr>"
 
                         "<tr>"
-                        "<td id='current-track'>"
-                        + QString( "<a id='current-track-a' href='current://track'>%2</a>" ).arg( escapeHTML( i18n( "Context for Current Track" ) ) )
+                        "<td id='artist-google'>"
+                        + QString( "<a id='artist-google-a' href='ggartist:%1'>" ).arg( escapeHTMLAttr( artist ) )
+                        + i18n( "Google Musicsearch for %1" ).arg( escapeHTML( artist ) ) +
+                        "</a>"
                 );
 
         m_HTMLSource.append(
@@ -1729,10 +1930,10 @@ void ContextBrowser::showIntroduction()
 {
     DEBUG_BLOCK
 
-    if ( currentPage() != m_currentTrackPage->view() )
+    if ( currentPage() != m_contextTab )
     {
         blockSignals( true );
-        showPage( m_currentTrackPage->view() );
+        showPage( m_contextTab );
         blockSignals( false );
     }
 
@@ -1769,10 +1970,10 @@ void ContextBrowser::showIntroduction()
 
 void ContextBrowser::showScanning()
 {
-    if ( currentPage() != m_currentTrackPage->view() )
+    if ( currentPage() != m_contextTab )
     {
         blockSignals( true );
-        showPage( m_currentTrackPage->view() );
+        showPage( m_contextTab );
         blockSignals( false );
     }
 
@@ -2273,21 +2474,6 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
         m_wikiCurrentUrl = url;
     }
 
-    // Remove all items from the button-menus
-    m_wikiBackPopup->clear();
-    m_wikiForwardPopup->clear();
-
-    // Populate button menus with URLs from the history
-    QStringList::ConstIterator it;
-    uint count;
-    // Reverse iterate over both lists
-    count = m_wikiBackHistory.count();
-    for ( it = m_wikiBackHistory.fromLast(); count > 0; --count, --it )
-        m_wikiBackPopup->insertItem( SmallIconSet( "wiki" ), *it, count - 1 );
-    count = m_wikiForwardHistory.count();
-    for ( it = m_wikiForwardHistory.fromLast(); count > 0; --count, --it )
-        m_wikiForwardPopup->insertItem( SmallIconSet( "wiki" ), *it, count - 1 );
-
     // Append new URL to history
     if ( !fromHistory ) {
         m_wikiBackHistory += m_wikiCurrentUrl;
@@ -2296,6 +2482,25 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
     // Limit number of items in history
     if ( m_wikiBackHistory.count() > WIKI_MAX_HISTORY )
         m_wikiBackHistory.pop_front();
+
+    // Remove all items from the button-menus
+    m_wikiBackPopup->clear();
+    m_wikiForwardPopup->clear();
+
+    // Populate button menus with URLs from the history
+    QStringList::ConstIterator it;
+    uint count;
+    // Reverse iterate over both lists
+    count = m_wikiBackHistory.count()-1;
+    it = m_wikiBackHistory.fromLast();
+    if( count > 0 )
+        it--;
+    for ( uint i=0; i<count; i++, --it )
+        m_wikiBackPopup->insertItem( SmallIconSet( "wiki" ), *it, i );
+    count = m_wikiForwardHistory.count();
+    it = m_wikiForwardHistory.fromLast();
+    for ( uint i=0; i<count; i++, --it )
+        m_wikiForwardPopup->insertItem( SmallIconSet( "wiki" ), *it, i );
 
     debug() << "WIKI BACK-HISTORY SIZE   : " << m_wikiBackHistory.size() << endl;
     debug() << "WIKI FORWARD-HISTORY SIZE: " << m_wikiForwardHistory.size() << endl;
@@ -2327,31 +2532,48 @@ ContextBrowser::wikiHistoryBack() //SLOT
 void
 ContextBrowser::wikiHistoryForward() //SLOT
 {
-    const QString url = m_wikiForwardHistory.last();
-    m_wikiBackHistory += url;
+    m_wikiBackHistory += m_wikiForwardHistory.last();
     m_wikiForwardHistory.pop_back();
 
     m_dirtyWikiPage = true;
     m_wikiCurrentEntry = QString::null;
-    showWikipedia( url, true );
+    showWikipedia( m_wikiBackHistory.last(), true );
 }
 
 
 void
 ContextBrowser::wikiBackPopupActivated( int id ) //SLOT
 {
+    do
+    {
+        m_wikiForwardHistory += m_wikiBackHistory.last();
+        m_wikiBackHistory.pop_back();
+        if ( m_wikiForwardHistory.count() > WIKI_MAX_HISTORY )
+            m_wikiForwardHistory.pop_front();
+        id--;
+    } while( id >= 0 );
+
     m_dirtyWikiPage = true;
     m_wikiCurrentEntry = QString::null;
-    showWikipedia( m_wikiBackHistory[id] );
+    showWikipedia( m_wikiBackHistory.last(), true );
 }
-
 
 void
 ContextBrowser::wikiForwardPopupActivated( int id ) //SLOT
 {
+    do
+    {
+        m_wikiBackHistory += m_wikiForwardHistory.last();
+        m_wikiForwardHistory.pop_back();
+        if ( m_wikiBackHistory.count() > WIKI_MAX_HISTORY )
+            m_wikiBackHistory.pop_front();
+
+        id--;
+    } while( id >= 0 );
+
     m_dirtyWikiPage = true;
     m_wikiCurrentEntry = QString::null;
-    showWikipedia( m_wikiForwardHistory[id] );
+    showWikipedia( m_wikiBackHistory.last(), true );
 }
 
 
@@ -2529,14 +2751,11 @@ ContextBrowser::coverFetched( const QString &artist, const QString &album ) //SL
     if ( currentTrack.artist().isEmpty() && currentTrack.album().isEmpty() )
         return;
 
-    if ( currentPage() == m_currentTrackPage->view() &&
+    if ( currentPage() == m_contextTab &&
        ( currentTrack.artist() == artist || m_artist == artist || currentTrack.album() == album ) ) // this is for compilations or artist == ""
     {
-        if( currentPage() == m_currentTrackPage->view() )
-        {
-            m_dirtyCurrentTrackPage = true;
-            showCurrentTrack();
-        }
+        m_dirtyCurrentTrackPage = true;
+        showCurrentTrack();
     }
 }
 
@@ -2548,14 +2767,11 @@ ContextBrowser::coverRemoved( const QString &artist, const QString &album ) //SL
     if ( currentTrack.artist().isEmpty() && currentTrack.album().isEmpty() && m_artist.isNull() )
         return;
 
-    if ( currentPage() == m_currentTrackPage->view() &&
+    if ( currentPage() == m_contextTab &&
        ( currentTrack.artist() == artist || m_artist == artist || currentTrack.album() == album ) ) // this is for compilations or artist == ""
     {
-        if( currentPage() == m_currentTrackPage->view() )
-        {
-            m_dirtyCurrentTrackPage = true;
-            showCurrentTrack();
-        }
+        m_dirtyCurrentTrackPage = true;
+        showCurrentTrack();
     }
 }
 
@@ -2565,7 +2781,7 @@ ContextBrowser::similarArtistsFetched( const QString &artist ) //SLOT
 {
     if( artist == m_artist || EngineController::instance()->bundle().artist() == artist ) {
         m_dirtyCurrentTrackPage = true;
-        if ( currentPage() == m_currentTrackPage->view() )
+        if ( currentPage() == m_contextTab )
             showCurrentTrack();
     }
 }
@@ -2584,7 +2800,7 @@ void ContextBrowser::tagsChanged( const MetaBundle &bundle ) //SLOT
             return;
     }
 
-    if ( currentPage() == m_currentTrackPage->view() ) // this is for compilations or artist == ""
+    if ( currentPage() == m_contextTab ) // this is for compilations or artist == ""
     {
         m_dirtyCurrentTrackPage = true;
         showCurrentTrack();
