@@ -667,7 +667,7 @@ IpodMediaDevice::openDevice(bool silent)
         case MODEL_TYPE_VIDEO_BLACK:
             m_supportsArtwork = true;
             m_isShuffle = false;
-            debug() << "detected iPod photo" << endl;
+            debug() << "detected iPod photo/nano/video" << endl;
             break;
         case MODEL_TYPE_REGULAR:
         case MODEL_TYPE_REGULAR_U2:
@@ -678,7 +678,7 @@ IpodMediaDevice::openDevice(bool silent)
         case MODEL_TYPE_MINI_GOLD:
             m_supportsArtwork = false;
             m_isShuffle = false;
-            debug() << "detected regular iPod" << endl;
+            debug() << "detected regular iPod (b/w display)" << endl;
             break;
         case MODEL_TYPE_SHUFFLE:
             m_supportsArtwork = false;
