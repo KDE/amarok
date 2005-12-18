@@ -1,4 +1,4 @@
-<div align="center"><b>Score2Rating (v1.1)</b></div>
+<div align="center"><b>Score2Rating (v1.2)</b></div>
 
 <p>
 <b>About:</b><br>
@@ -7,14 +7,22 @@ pretty accurate intervals. (In the future, the intervals might become changeable
 This is mostly usable to give you a starting point for using the new rating system in amaroK 1.4.
 </p>
 <p>
+Note that tracks with the same score can get different ratings, this is because amaroK rounds the
+score that is saved in the database.<br>
+An example: <i>If the shown score is 95 (the limit between rating 4 and 5), the database can
+contain anything from 94.500 to 95.499. If the "real" score is below 95 (94.500-94.999), the track
+will get a rating of 4, if it's above 95 (95.000-95.499), the rating will be 5.</i><br>
+This will happen around all the rating limits (20, 60, 85 and 95).
+</p>
+<p>
 It is recommended that you <i>back up</i> your database (the statistics table at least) before
 running this script. It should do no harm, but you can never be too safe...
 </p>
 
 <p>
 <b>Usage:</b><br>
-Just click run, and it will do everything automagically!
-It will tell you tell you when it's done.
+Just start it and then click configure, and it will do everything automagically!
+It will tell you tell you (using a popup in the playlist window) when it's done.
 </p>
 
 <p>

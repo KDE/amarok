@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 #
-# Score2Rating for amaroK 1.4
-# -----------------------------
+# Score2Rating 1.2 (for amaroK 1.4)
+# -----------------------------------
 #
 # First of all:
 # PLEASE MAKE A BACKUP OF YOUR DATABASE BEFORE RUNNING THIS SCRIPT!
@@ -13,46 +13,50 @@
 #
 
 
-if !system( "dcop amarok > /dev/null 2>&1" ) then #Simple running check
-  print "ERROR: amaroK isn't running!\n"
-  exit(1)
+if !system( "dcop amarok playlist popupMessage \"Score2Rating started. Click the 'Configure' button in the script manager (with Score2Rating selected) to start the conversion. IT IS RECOMMENDED THAT YOU MAKE A BACKUP OF YOUR DATABASE BEFORE DOING THIS!\" > /dev/null 2>&1" ) then #Info message, and running check combined
+  print "ERROR: A suitable amaroK wasn't found running!\n"
+  exit(1) #Exit with error
 end
 
-result = `dcop amarok collection query "SELECT url FROM statistics WHERE rating=0"` #List tracks with no rating
-list = result.split( "\n" )
+loop do
+  message = gets().chomp()
+  command = /[A-Za-z]*/.match( message ).to_s()
 
-print "Converting track scores to ratings...\n"
+  case command
+  when "configure"
+    result = `dcop amarok collection query "SELECT url FROM statistics WHERE rating=0"` #List tracks with no rating
+    list = result.split( "\n" )
 
-list.each do |url|
-  sqlurl = url.gsub( /[']/, '\\\\\'' ) #Escape single quotes
-  percentage = Float( `dcop amarok collection query "SELECT percentage FROM statistics WHERE url='#{sqlurl}'"`.gsub( /\n/, '' ) )
+    success = true #Assume the procedure is successful
 
-  case percentage
-  when 0...20
-    rating = 1 #Crap
-  when 20...60
-    rating = 2 #Tolerable
-  when 60...85
-    rating = 3 #Good
-  when 85...95
-    rating = 4 #Excellent
-  when 95...100
-    rating = 5 #Inconceivable!
-  end
+    list.each do |url|
+      sqlurl = url.gsub( /[']/, '\\\\\'' ) #\Escape single 'quotes'
+      percentage = Float( `dcop amarok collection query "SELECT percentage FROM statistics WHERE url='#{sqlurl}'"`.gsub( /\n/, '' ) )
 
-  print url, " - Score: ", percentage, ", Rating: ", rating, "... "
+      case percentage #The intervals are wrapped so that no scores will be left out.
+      when 0...20
+        rating = 1 #Crap
+      when 20...60
+        rating = 2 #Tolerable
+      when 60...85
+        rating = 3 #Good. Most tracks will end up here.
+      when 85...95
+        rating = 4 #Excellent
+      when 95...100
+        rating = 5 #Inconceivable!
+      end
 
-  if !system( "dcop amarok collection query \"UPDATE statistics SET rating='#{rating}' WHERE url='#{sqlurl}'\" > /dev/null 2>&1" ) then
-    #if the dcop command fails, amaroK probably has quitted, so we won't show any popup.
-    print "Fail!\nProbably lost contact with amaroK.\n"
-    exit(1)
-  else
-    print "OK\n"
+      if !system( "dcop amarok collection query \"UPDATE statistics SET rating='#{rating}' WHERE url='#{sqlurl}'\" > /dev/null 2>&1" ) then #If the command fails:
+        success = false #The procedure wasn't successful
+      end
+    end
+
+    if success == true then #If the procedure was sucessful
+      system( "dcop amarok playlist popupMessage \"Done! All your tracks (that have been played at least once) should now have ratings. You will have to restart amaroK to see them.\" > /dev/null" )
+      exit(0) #Exit without error
+    else
+      system( "dcop amarok playlist popupMessage \"Score2Rating has finished its conversion, but the process failed for at least one track. You might want to try running it again.\" > /dev/null" )
+      exit(1) #Exit with error
+    end
   end
 end
-
-print "Done.\n"
-
-system( "dcop amarok playlist popupMessage \"Done! All your tracks (that have been played at least once) should now have ratings. You will have to restart amaroK to see them.\" > /dev/null" )
-
-exit(0)
