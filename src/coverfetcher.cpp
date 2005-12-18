@@ -194,6 +194,8 @@ CoverFetcher::startFetch()
     const QString LICENSE( "D1URM11J3F2CEH" );
 
     // reset all values
+    m_coverAmazonUrls.clear();
+    m_coverAsins.clear();
     m_coverUrls.clear();
     m_coverNames.clear();
     m_xml = QString::null;
@@ -295,10 +297,14 @@ CoverFetcher::finishedXmlFetch( KIO::Job *job ) //SLOT
 
     debug() << "Fetching size: " << size << endl;
 
+    m_coverAsins.clear();
+    m_coverAmazonUrls.clear();
     m_coverUrls.clear();
     m_coverNames.clear();
     for( QDomNode node = details; !node.isNull(); node = node.nextSibling() ) {
-        QString url = node.namedItem( size ).firstChild().toText().nodeValue();
+        QString amazonUrl = node.attributes().namedItem( "url" ).toAttr().value();
+        QString coverUrl = node.namedItem( size ).firstChild().toText().nodeValue();
+        QString asin = node.namedItem( "Asin" ).firstChild().toText().nodeValue();
         QString name = node.namedItem( "ProductName" ).firstChild().toText().nodeValue();
 
     const QDomNode  artists = node.namedItem("Artists");
@@ -306,11 +312,13 @@ CoverFetcher::finishedXmlFetch( KIO::Job *job ) //SLOT
     QString artist="";
     if (!artists.isNull()) artist = artists.namedItem( "Artist" ).firstChild().toText().nodeValue();
 
-        debug() << "name:" << name << " artist:" << artist << " url:" << url << endl;
+        debug() << "name:" << name << " artist:" << artist << " url:" << coverUrl << endl;
 
-        if( !url.isEmpty() )
+        if( !coverUrl.isEmpty() )
         {
-            m_coverUrls += url;
+            m_coverAmazonUrls += amazonUrl;
+            m_coverAsins += asin;
+            m_coverUrls += coverUrl;
             m_coverNames += artist + " - " + name;
         }
     }
@@ -369,6 +377,12 @@ CoverFetcher::attemptAnotherFetch()
 
         m_currentCoverName = m_coverNames.front();
         m_coverNames.pop_front();
+
+        m_amazonURL = m_coverAmazonUrls.front();
+        m_coverAmazonUrls.pop_front();
+
+        m_asin = m_coverAsins.front();
+        m_coverAsins.pop_front();
     }
 
     else if( !m_xml.isEmpty() && m_size > 0 ) {
@@ -399,24 +413,45 @@ CoverFetcher::attemptAnotherFetch()
     class EditSearchDialog : public KDialog
     {
     public:
-        EditSearchDialog( QWidget* parent, const QString &text, const QString &keyword )
+        EditSearchDialog( QWidget* parent, const QString &text, const QString &keyword, CoverFetcher *fetcher )
                 : KDialog( parent )
         {
             setCaption( i18n( "Amazon Query Editor" ) );
 
-            QVBoxLayout *vbox = new QVBoxLayout( this, 8, 8 );
-            QHBoxLayout *hbox = new QHBoxLayout( 8 );
+            // amazon combo box
+            KComboBox* amazonLocale = new KComboBox( this );
+            amazonLocale->insertItem( i18n("International"), CoverFetcher::International );
+            amazonLocale->insertItem( i18n("Canada"), CoverFetcher::Canada );
+            amazonLocale->insertItem( i18n("France"), CoverFetcher::France );
+            amazonLocale->insertItem( i18n("Germany"), CoverFetcher::Germany );
+            amazonLocale->insertItem( i18n("Japan"), CoverFetcher::Japan);
+            amazonLocale->insertItem( i18n("United Kingdom"), CoverFetcher::UK );
+            if( CoverManager::instance() )
+                connect( amazonLocale, SIGNAL( activated(int) ),
+                        CoverManager::instance(), SLOT( changeLocale(int) ) );
+            else
+                connect( amazonLocale, SIGNAL( activated(int) ),
+                        fetcher, SLOT( changeLocale(int) ) );
+            QHBoxLayout *hbox1 = new QHBoxLayout( 8 );
+            hbox1->addWidget( new QLabel( i18n( "Amazon Locale: " ), this ) );
+            hbox1->addWidget( amazonLocale );
+
+            int currentLocale = CoverFetcher::localeStringToID( AmarokConfig::amazonLocale() );
+            amazonLocale->setCurrentItem( currentLocale );
 
             KPushButton* cancelButton = new KPushButton( KStdGuiItem::cancel(), this );
             KPushButton* searchButton = new KPushButton( i18n("&Search"), this );
 
-            hbox->addItem( new QSpacerItem( 80, 8, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
-            hbox->addWidget( searchButton );
-            hbox->addWidget( cancelButton );
+            QHBoxLayout *hbox2 = new QHBoxLayout( 8 );
+            hbox2->addItem( new QSpacerItem( 160, 8, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
+            hbox2->addWidget( searchButton );
+            hbox2->addWidget( cancelButton );
 
+            QVBoxLayout *vbox = new QVBoxLayout( this, 8, 8 );
+            vbox->addLayout( hbox1 );
             vbox->addWidget( new QLabel( "<qt>" + text, this ) );
             vbox->addWidget( new KLineEdit( keyword, this, "Query" ) );
-            vbox->addLayout( hbox );
+            vbox->addLayout( hbox2 );
 
             searchButton->setDefault( true );
 
@@ -430,6 +465,48 @@ CoverFetcher::attemptAnotherFetch()
         QString query() { return static_cast<KLineEdit*>(child( "Query" ))->text(); }
     };
 
+QString
+CoverFetcher::localeIDToString( int id )//static
+{
+    switch ( id )
+    {
+    case International:
+        return "us";
+    case Canada:
+        return "ca";
+    case France:
+        return "fr";
+    case Germany:
+        return "de";
+    case Japan:
+        return "jp";
+    case UK:
+        return "uk";
+    }
+
+    return "us";
+}
+
+int
+CoverFetcher::localeStringToID( const QString &s )
+{
+    int id = International;
+    if( s == "fr" ) id = France;
+    else if( s == "de" ) id = Germany;
+    else if( s == "jp" ) id = Japan;
+    else if( s == "uk" ) id = UK;
+    else if( s == "ca" ) id = Canada;
+
+    return id;
+}
+
+void
+CoverFetcher::changeLocale( int id )//SLOT
+{
+    QString locale = localeIDToString( id );
+    AmarokConfig::setAmazonLocale( locale );
+}
+
 
 void
 CoverFetcher::getUserQuery( QString explanation )
@@ -440,7 +517,8 @@ CoverFetcher::getUserQuery( QString explanation )
     EditSearchDialog dialog(
             (QWidget*)parent(),
             explanation,
-            m_userQuery );
+            m_userQuery,
+            this );
 
     switch( dialog.exec() )
     {

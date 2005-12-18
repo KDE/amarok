@@ -137,12 +137,12 @@ CoverManager::CoverManager()
     #ifdef AMAZON_SUPPORT
     // amazon locale menu
     m_amazonLocaleMenu = new KPopupMenu( this );
-    m_amazonLocaleMenu->insertItem( i18n("International"), International );
-    m_amazonLocaleMenu->insertItem( i18n("Canada"), Canada );
-    m_amazonLocaleMenu->insertItem( i18n("France"), France );
-    m_amazonLocaleMenu->insertItem( i18n("Germany"), Germany );
-    m_amazonLocaleMenu->insertItem( i18n("Japan"), Japan);
-    m_amazonLocaleMenu->insertItem( i18n("United Kingdom"), UK );
+    m_amazonLocaleMenu->insertItem( i18n("International"), CoverFetcher::International );
+    m_amazonLocaleMenu->insertItem( i18n("Canada"), CoverFetcher::Canada );
+    m_amazonLocaleMenu->insertItem( i18n("France"), CoverFetcher::France );
+    m_amazonLocaleMenu->insertItem( i18n("Germany"), CoverFetcher::Germany );
+    m_amazonLocaleMenu->insertItem( i18n("Japan"), CoverFetcher::Japan);
+    m_amazonLocaleMenu->insertItem( i18n("United Kingdom"), CoverFetcher::UK );
     connect( m_amazonLocaleMenu, SIGNAL( activated(int) ), SLOT( changeLocale(int) ) );
     #endif
 
@@ -155,18 +155,7 @@ CoverManager::CoverManager()
     toolBar->insertButton( babelfish, 2, m_amazonLocaleMenu, true, i18n( "Amazon Locale" ) );
 
     QString locale = AmarokConfig::amazonLocale();
-
-         if( locale == "fr" ) m_currentLocale = France;
-    else if( locale == "de" ) m_currentLocale = Germany;
-    else if( locale == "jp" ) m_currentLocale = Japan;
-    else if( locale == "uk" ) m_currentLocale = UK;
-    else if( locale == "ca" ) m_currentLocale = Canada;
-    else {
-        // make sure we handle old config files correctly
-        locale = "us";
-        m_currentLocale = International;
-    }
-
+    m_currentLocale = CoverFetcher::localeStringToID( locale );
     m_amazonLocaleMenu->setItemChecked( m_currentLocale, true );
 
     //fetch missing covers button
@@ -609,27 +598,8 @@ void CoverManager::changeView( int id  ) //SLOT
 
 void CoverManager::changeLocale( int id ) //SLOT
 {
-    switch ( id )
-    {
-        case International:
-            AmarokConfig::setAmazonLocale( "us" );
-            break;
-        case Canada:
-            AmarokConfig::setAmazonLocale( "ca" );
-            break;
-        case France:
-            AmarokConfig::setAmazonLocale( "fr" );
-            break;
-        case Germany:
-            AmarokConfig::setAmazonLocale( "de" );
-            break;
-        case Japan:
-            AmarokConfig::setAmazonLocale( "jp" );
-            break;
-        case UK:
-            AmarokConfig::setAmazonLocale( "uk" );
-            break;
-    }
+    QString locale = CoverFetcher::localeIDToString( id );
+    AmarokConfig::setAmazonLocale( locale );
     m_amazonLocaleMenu->setItemChecked( m_currentLocale, false );
     m_amazonLocaleMenu->setItemChecked( id, true );
     m_currentLocale = id;

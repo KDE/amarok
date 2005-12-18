@@ -38,9 +38,10 @@ namespace KIO { class Job; }
 
 class CoverFetcher : public QObject
 {
-   Q_OBJECT
+    friend class EditSearchDialog;
+    Q_OBJECT
 
-   static const uint MAX_COVERS_CHOICE = 10;
+    static const uint MAX_COVERS_CHOICE = 10;
 
 public:
     CoverFetcher( QWidget *parent, const QString &artist, QString album );
@@ -61,6 +62,10 @@ public:
     bool wasError() const { return !m_success; }
     QStringList errors() const { return m_errors; }
 
+    enum Locale { International=0, France, Germany, Japan, UK, Canada };
+    static QString localeIDToString( int id );
+    static int localeStringToID( const QString &locale );
+
 signals:
     /// The CollectionDB can get the cover information using the pointer
     void result( CoverFetcher* );
@@ -68,6 +73,7 @@ signals:
 private slots:
     void finishedXmlFetch( KIO::Job* job );
     void finishedImageFetch( KIO::Job* job );
+    void changeLocale( int id );
 
 private:
     const QString m_artist;
@@ -82,6 +88,8 @@ private:
     int     m_size;
 
     QStringList m_queries;
+    QStringList m_coverAsins;
+    QStringList m_coverAmazonUrls;
     QStringList m_coverUrls;
     QStringList m_coverNames;
     QString     m_currentCoverName;
