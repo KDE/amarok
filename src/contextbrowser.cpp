@@ -1320,7 +1320,7 @@ bool CurrentTrackJob::doJob()
         if ( albumImage == CollectionDB::instance()->notAvailCover( 0 ) )
             albumImageTitleAttr = i18n( "Click to fetch cover from amazon.%1, right-click for menu." ).arg( CoverManager::amazonTld() );
         else {
-            albumImageTitleAttr = i18n( "Click for information from amazon.%1, right-click for menu." ).arg( CoverManager::amazonTld() );
+            albumImageTitleAttr = i18n( "Click for information from Amazon, right-click for menu." );
         }
 
         albumImage = ContextBrowser::makeShadowedImage( albumImage );
@@ -1748,7 +1748,7 @@ bool CurrentTrackJob::doJob()
                         << values[ i + 1 ]
                         << escapeHTMLAttr( artist ) // artist name
                         << escapeHTMLAttr( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] ) // album.name
-                        << i18n( "Click for information from amazon.com, right-click for menu." )
+                        << i18n( "Click for information from Amazon, right-click for menu." )
                         << escapeHTMLAttr( albumImage )
                         << i18n( "Single", "%n Tracks",  albumValues.count() / qb.countReturnValues() )
                         << QString::number( artist_id )
@@ -1874,7 +1874,7 @@ bool CurrentTrackJob::doJob()
                     .args( QStringList()
                         << values[ i + 1 ]
                         << escapeHTMLAttr( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] ) // album.name
-                        << i18n( "Click for information from amazon.com, right-click for menu." )
+                        << i18n( "Click for information from Amazon, right-click for menu." )
                         << escapeHTMLAttr( albumImage )
                         << i18n( "Single", "%n Tracks",  albumValues.count() / qb.countReturnValues() )
                         << values[ i + 1 ] //album.id
