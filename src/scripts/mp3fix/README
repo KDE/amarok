@@ -40,8 +40,8 @@ The Mp3Fixer amaroK Script is a frontend for this tool.
 Version 0.9.3:<br>
 <ul>
 <li>Show detailed repair summary.</li>
-<li>Ability to strip junk data from the beginning of the file. This cures problems with
-seeking for files which are broken in such a way.</li>
+<li>Some mp3 encoders (e.g. lame) add a block of zeroes as padding to the beginning
+of the file. This is now correctly handled.</li>
 <li>mp3fix.rb did not work with source != destination.</li>
 </ul>
 Version 0.9.2:<br>

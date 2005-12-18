@@ -116,28 +116,35 @@ ChannelMode = data[offset + 3] & 0xc0 >> 6
 XingOffset = ChannelMode == 0x03 ? 17 : 32
 
 
+puts()
+puts( "Analyzing mpeg frames.." )
+puts()
+
 frameCount       = 0
 bitrateCount     = 0
 samplerateCount  = 0
 firstFrameBroken = false
 firstFrameOffset = nil
-
-puts()
-puts( "Analyzing mpeg frames.." )
-puts()
-
+offset           = 0
+header           = 0
 
 # Iterate over all frames:
 #
 while offset < data.length() - 4
-    validHeader = true
-    header = data[offset+0]*2**24 + data[offset+1]*2**16 + data[offset+2]*2**8 + data[offset+3]
-
-    # Check for frame sync
-    unless header & 0xfff00000 == 0xfff00000
-        validHeader = false
-        puts( "Sync check failed. Header: #{sprintf("%.8x", header)}" )
+    loop do
+        # Find frame sync
+        offset = data.index( 0xff, offset )
+        break if offset == nil
+        header = data[offset+0]*2**24 + data[offset+1]*2**16 + data[offset+2]*2**8 + data[offset+3]
+        if header & 0xfff00000 == 0xfff00000
+            firstFrameOffset = offset if firstFrameOffset == nil
+            break
+        end
+        offset += 1
     end
+
+    break if offset == nil
+    validHeader = true
 
     bitrate = BitrateTable[( header & 0x0000f000 ) >> 12]
     if bitrate == nil
@@ -151,7 +158,6 @@ while offset < data.length() - 4
         puts( "Samplerate invalid." )
     end
 
-
     padding = ( header & 0x00000200 ) >> 9
 
     if validHeader
@@ -163,8 +169,6 @@ while offset < data.length() - 4
 #         puts( "framesize   : #{frameSize}" )
 #         puts()
 
-        firstFrameOffset = offset if firstFrameOffset == nil
-
         frameCount      += 1
         bitrateCount    += bitrate
         samplerateCount += samplerate
@@ -172,12 +176,7 @@ while offset < data.length() - 4
 
     else
         firstFrameBroken = true if frameCount == 0
-
-        # Find next frame sync
-        offset = data.index( 0xff, offset + 1 )
-        break if offset == nil
-        puts( "Trying to locate frame sync. New offset: #{offset}" )
-        puts()
+        offset += 1
     end
 end
 
@@ -191,18 +190,6 @@ puts( "Length (seconds) : #{Length}" )
 puts()
 
 
-# Some really broken files have junk data at the beginning of the file, before the
-# first MPEG frame starts, for instance one KB of zeros. This junk can confuse some codecs
-# so that you're not able to seek properly. Strip this junk:
-#
-if firstFrameOffset - id3length > 0
-    puts( "Stripping #{firstFrameOffset - id3length} bytes of junk data from beginning of file." )
-    repairLog << "* Stripped junk data from beginning of file\n"
-
-    data[id3length..( firstFrameOffset - 1 )] = ""
-end
-
-
 # Repair first frame header, if it is broken:
 #
 if firstFrameBroken
@@ -210,7 +197,7 @@ if firstFrameBroken
     puts( "Repairing broken header in first frame." )
     repairLog << "* Fixed broken MPEG header\n"
 
-    firstHeader = data[id3length+0]*2**24 + data[id3length+1]*2**16 + data[id3length+2]*2**8 + data[id3length+3]
+    firstHeader = data[firstFrameOffset+0]*2**24 + data[firstFrameOffset+1]*2**16 + data[firstFrameOffset+2]*2**8 + data[firstFrameOffset+3]
     firstHeader |= 0xfff00000  # Frame sync
 
     # MPEG ID, Layer, Protection
@@ -228,14 +215,14 @@ if firstFrameBroken
     firstHeader |= SamplerateTable.index( sr ) << 10
 
     # Write header back
-    data[id3length+0] = ( firstHeader >> 24 ) & 0xff
-    data[id3length+1] = ( firstHeader >> 16 ) & 0xff
-    data[id3length+2] = ( firstHeader >> 8  ) & 0xff
-    data[id3length+3] = ( firstHeader >> 0  ) & 0xff
+    data[firstFrameOffset+0] = ( firstHeader >> 24 ) & 0xff
+    data[firstFrameOffset+1] = ( firstHeader >> 16 ) & 0xff
+    data[firstFrameOffset+2] = ( firstHeader >> 8  ) & 0xff
+    data[firstFrameOffset+3] = ( firstHeader >> 0  ) & 0xff
 end
 
 
-unless data[id3length + 4 + XingOffset, 4] == "Xing"
+unless data[firstFrameOffset + 4 + XingOffset, 4] == "Xing"
     puts()
     puts( "Adding XING header." )
     repairLog << "* Added XING header\n"
@@ -258,7 +245,7 @@ unless data[id3length + 4 + XingOffset, 4] == "Xing"
 
 
     # Insert XING header into string, after the first MPEG header
-    data[id3length + 4 + XingOffset, 0] = xing
+    data[firstFrameOffset + 4 + XingOffset, 0] = xing
 end
 
 
