@@ -43,7 +43,7 @@ DeviceManager::~DeviceManager()
 {
 }
 
-void DeviceManager::displayDevices(QString name)
+void DeviceManager::displayDevices(QString /*name*/)
 {
     DEBUG_BLOCK
     QByteArray data, replyData;
