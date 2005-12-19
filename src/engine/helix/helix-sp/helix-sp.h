@@ -334,8 +334,8 @@ protected:
    vector<int>          m_equalizerGains;
    virtual int print2stdout(const char */*fmt*/, ...) { return 0; }
    virtual int print2stderr(const char */*fmt*/, ...) { return 0; }
-   virtual void notifyUser(const char *msg) { print2stdout(msg); }
-   virtual void interruptUser(const char *msg) { print2stderr(msg); }
+   virtual void notifyUser(unsigned long/*code*/, const char */*moreinfo*/, const char */*moreinfourl*/) {}
+   virtual void interruptUser(unsigned long/*code*/, const char */*moreinfo*/, const char */*moreinfourl*/) {}
 
    friend class HSPClientAdviceSink;
    friend class HSPErrorSink;

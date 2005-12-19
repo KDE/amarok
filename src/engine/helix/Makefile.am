@@ -17,6 +17,7 @@ AM_CPPFLAGS = \
 
 libamarok_helixengine_plugin_la_SOURCES = \
     helix-engine.cpp \
+    helix-errors.cpp \
     helix-configdialog.cpp
 
 # remove first 3 ar libs before committing!!:

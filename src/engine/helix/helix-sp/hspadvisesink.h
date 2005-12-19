@@ -18,8 +18,8 @@ struct IHXClientAdviseSink;
 struct IUnknown;
 struct IHXRegistry;
 struct IHXScheduler;
-
 class HelixSimplePlayer;
+
 class HSPClientAdviceSink : public IHXClientAdviseSink
 {
   private:
@@ -41,7 +41,6 @@ class HSPClientAdviceSink : public IHXClientAdviseSink
     UINT32    m_lAverageBandwidth;
     BOOL      m_bOnStop;
     
-    virtual ~HSPClientAdviceSink();
     HX_RESULT DumpRegTree(const char* pszTreeName, UINT16 index );
 
     //PRIVATE_DESTRUCTORS_ARE_NOT_A_CRIME
@@ -52,6 +51,7 @@ class HSPClientAdviceSink : public IHXClientAdviseSink
   public:
 
     HSPClientAdviceSink(IUnknown* pUnknown, LONG32 lClientIndex, HelixSimplePlayer *pSplay);
+    virtual ~HSPClientAdviceSink();
 
     UINT32 position() { return m_position; }
     UINT32 duration() { return m_duration; }

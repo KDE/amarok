@@ -18,11 +18,11 @@
 #include "hxcore.h"
 #include "hxengin.h"
 #include "hxclsnk.h"
-#include "hspadvisesink.h"
 #include "ihxpckts.h"
 
 #include "hxausvc.h"
 #include "helix-sp.h"
+#include "hspadvisesink.h"
 #include "utils.h"
 
 #if	defined(__cplusplus)

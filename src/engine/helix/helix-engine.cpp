@@ -32,6 +32,7 @@
 #include "helix-engine.h"
 #include "helix-configdialog.h"
 #include "config/helixconfig.h"
+#include "helix-errors.h"
 
 AMAROK_EXPORT_PLUGIN( HelixEngine )
 
@@ -116,13 +117,22 @@ int HelixEngine::print2stderr(const char *fmt, ...)
 }
 
 
-void HelixEngine::notifyUser(const char *msg)
+void HelixEngine::notifyUser(unsigned long code, const char *moreinfo, const char *moreinfourl)
 {
-   emit statusText(msg);
+   QString *err = HelixErrors::errorText(code);
+   if (err)
+      emit statusText(i18n("Helix Core returned error: %1 %1 %1").arg(QString(*err)).arg(QString(moreinfo)).arg(QString(moreinfourl)));
+   else
+      emit statusText(i18n("Helix Core returned error: <unknown>"));
 }
 
-void HelixEngine::interruptUser(const char */*msg*/)
+void HelixEngine::interruptUser(unsigned long code, const char *moreinfo, const char *moreinfourl)
 {
+   QString *err = HelixErrors::errorText(code);
+   if (err)
+      emit infoMessage(i18n("Helix Core returned error: %1 %1 %1").arg(QString(*err)).arg(QString(moreinfo)).arg(QString(moreinfourl)));
+   else
+      emit infoMessage(i18n("Helix Core returned error: <unknown>"));
 }
 
 

@@ -121,6 +121,24 @@ HSPErrorSink::ErrorOccurred(const UINT8 unSeverity,
     // Store the code, so we can return it from main()
     m_splayer->m_Error = ulHXCode;
 
+    switch (unSeverity)
+    {
+       case HXLOG_NOTICE:
+       case HXLOG_INFO:
+          m_splayer->notifyUser(ulHXCode,
+                                (pUserString && *pUserString) ? pUserString : "",
+                                (pMoreInfoURL && *pMoreInfoURL) ? pMoreInfoURL : "" );
+          break;
+       case HXLOG_WARNING:
+       case HXLOG_ERR:
+       case HXLOG_CRIT:
+       case HXLOG_ALERT:
+       case HXLOG_EMERG:
+          m_splayer->interruptUser(ulHXCode,
+                                   (pUserString && *pUserString) ? pUserString : "",
+                                   (pMoreInfoURL && *pMoreInfoURL) ? pMoreInfoURL : "" );
+          break;
+    }
     ConvertErrorToString(ulHXCode, HXDefine, 256);
 
     m_splayer->print2stdout("Report(%d, %ld, \"%s\", %ld, \"%s\", \"%s\")\n",
@@ -157,7 +175,12 @@ HSPErrorSink::ConvertErrorToString(const ULONG32 ulHXCode, char* pszBuffer, UINT
                 SafeStrCpy( pszBuffer, (const char*)pMessage->GetBuffer(), (int)ulBufLen);
                 pMessage->Release();
             }
+            else
+               m_splayer->print2stderr("NO expansion of error message available\n");
+
         }
+        else
+           m_splayer->print2stderr("Unable to get Error Messages\n");
     }
  
     HX_RELEASE(pErrMsg);

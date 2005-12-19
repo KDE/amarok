@@ -97,8 +97,8 @@ private:
 
    int print2stdout(const char *fmt, ...);
    int print2stderr(const char *fmt, ...);
-   void notifyUser(const char *msg);
-   void interruptUser(const char *msg);
+   void notifyUser(unsigned long code, const char *moreinfo, const char *moreinfourl);
+   void interruptUser(unsigned long code, const char *moreinfo, const char *moreinfourl);
 
    friend class HelixConfigDialogBase;
 };
