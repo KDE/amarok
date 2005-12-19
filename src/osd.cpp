@@ -14,7 +14,6 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "debug.h"
 #include "collectiondb.h"    //for albumCover location
 #include "osd.h"
 #include "playlist.h"        //if osdUsePlaylistColumns()

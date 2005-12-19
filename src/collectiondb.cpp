@@ -142,7 +142,7 @@ CollectionDB::~CollectionDB()
     destroy();
 }
 
-const QString 
+const QString
 CollectionDB::likeCondition( const QString &right, bool anyBegin, bool anyEnd )
 {
     QString escaped = right;
@@ -580,7 +580,7 @@ CollectionDB::createPersistentTables()
 //         "url " + textColumnType() + ","
 //         "copyright " + textColumnType() + ","
 //         "description " + textColumnType() + ");" ) );
-        
+
     // create podcast item table
 //     query( QString( "CREATE TABLE podcast_items ("
 //         "parent_url " + textColumnType() + ","
@@ -855,8 +855,6 @@ CollectionDB::setAlbumImage( const QString& artist, const QString& album, const 
 bool
 CollectionDB::setAlbumImage( const QString& artist, const QString& album, QImage img, const QString& amazonUrl, const QString& asin )
 {
-    debug() << "Saving cover for: " << artist << " - " << album << endl;
-
     //show a wait cursor for the duration
     amaroK::OverrideCursor keep;
 
@@ -874,128 +872,24 @@ CollectionDB::setAlbumImage( const QString& artist, const QString& album, QImage
     return b;
 }
 
-
-QString
-CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
-{
-    if( width == 1 ) width = AmarokConfig::coverPreviewSize();
-
-    QCString widthKey = makeWidthKey( width );
-    QCString tagKey = md5sum( trackInformation.artist(), trackInformation.album() );
-
-    //FIXME the cached versions will never be refreshed
-    //FIXME This code is NONSENSE. There are no cached images in tagCoverDir
-    if ( tagCoverDir().exists( widthKey + tagKey ) )
-    {
-        // cached version
-        return tagCoverDir().filePath( widthKey + tagKey );
-    }
-    else
-    {
-        TagLib::File *f = 0;
-        TagLib::ID3v2::Tag *tag = 0;
-        if ( trackInformation.url().path().endsWith( ".mp3", false ) ) {
-            f = new TagLib::MPEG::File( QFile::encodeName( trackInformation.url().path() ) );
-            tag = ( (TagLib::MPEG::File*)f )->ID3v2Tag();
-        }
-        else if ( trackInformation.url().path().endsWith( ".flac", false ) ) {
-            f = new TagLib::FLAC::File( QFile::encodeName( trackInformation.url().path() ) );
-            tag = ( (TagLib::FLAC::File*)f )->ID3v2Tag();
-        }
-        if ( tag )
-        {
-            TagLib::ID3v2::FrameList l = tag->frameListMap()[ "APIC" ];
-            if ( !l.isEmpty() )
-            {
-                debug() << "Found APIC frame(s)" << endl;
-                TagLib::ID3v2::Frame *f = l.front();
-                TagLib::ID3v2::AttachedPictureFrame *ap = (TagLib::ID3v2::AttachedPictureFrame*)f;
-
-                const TagLib::ByteVector &imgVector = ap->picture();
-                debug() << "Size of image: " <<  imgVector.size() << " byte" << endl;
-
-                // ignore APIC frames without picture and those with obviously bogus size
-                if( imgVector.size() == 0 || imgVector.size() > 10000000 /*10MB*/ ) {
-                    delete f;
-                    return QString::null;
-                }
-
-                QImage image;
-                if( image.loadFromData((const uchar*)imgVector.data(), imgVector.size()) )
-                {
-                    if ( width > 1 )
-                    {
-                        image.smoothScale( width, width, QImage::ScaleMin ).save( cacheCoverDir().filePath( widthKey + tagKey ), "PNG" );
-                        delete f;
-                        return cacheCoverDir().filePath( widthKey + tagKey );
-                    } else
-                    {
-                        image.save( tagCoverDir().filePath( tagKey ), "PNG" );
-                        delete f;
-                        return tagCoverDir().filePath( tagKey );
-                    }
-                } // image.isNull
-            } // apic list is empty
-        } // tag is empty
-        if ( f )
-            delete f; // destroying f will destroy the tag it generated, according to taglib docs
-    } // caching
-
-    return QString::null;
-}
-
-
-QString
-CollectionDB::findImageByArtistAlbum( const QString &artist, const QString &album, uint width )
-{
-    QCString widthKey = makeWidthKey( width );
-
-    if ( artist.isEmpty() && album.isEmpty() )
-        return notAvailCover( width );
-    else
-    {
-        QCString key = md5sum( artist, album );
-
-        // check cache for existing cover
-        if ( cacheCoverDir().exists( widthKey + key ) )
-            return cacheCoverDir().filePath( widthKey + key );
-        else
-        {
-            // we need to create a scaled version of this cover
-            QDir imageDir = largeCoverDir().exists( key ) ? largeCoverDir() : tagCoverDir();
-
-            if ( imageDir.exists( key ) )
-                if ( width > 1 )
-                {
-                    QImage img( imageDir.filePath( key ) );
-                    img.smoothScale( width, width, QImage::ScaleMin ).save( cacheCoverDir().filePath( widthKey + key ), "PNG" );
-
-                    return cacheCoverDir().filePath( widthKey + key );
-                }
-                else
-                    return imageDir.filePath( key );
-        }
-
-        // no amazon cover found, let's try to find a cover in the song's directory
-        return getImageForAlbum( artist, album, width );
-    }
-}
-
-
 QString
 CollectionDB::albumImage( const QString &artist, const QString &album, uint width )
 {
     QString s;
     // we aren't going to need a 1x1 size image. this is just a quick hack to be able to show full size images.
-    if ( width == 1 ) width = AmarokConfig::coverPreviewSize();
+    // width of 0 == full size
+    if( width == 1 ) width = AmarokConfig::coverPreviewSize();
 
-    s = findImageByArtistAlbum( artist, album, width );
-    if ( s == notAvailCover( width ) )
-        return findImageByArtistAlbum( "", album, width );
+    s = findAmazonImage( artist, album, width );
+
+    if( s.isEmpty() )
+        s = findDirectoryImage( artist, album, width );
+
+    if( s.isEmpty() )
+        s = notAvailCover( width );
 
     return s;
 }
-
 
 QString
 CollectionDB::albumImage( const uint artist_id, const uint album_id, const uint width )
@@ -1003,33 +897,69 @@ CollectionDB::albumImage( const uint artist_id, const uint album_id, const uint 
     return albumImage( artistValue( artist_id ), albumValue( album_id ), width );
 }
 
-
 QString
 CollectionDB::albumImage( MetaBundle trackInformation, uint width )
 {
-    QString path = findImageByMetabundle( trackInformation, width );
-    if( path.isEmpty() )
-        path =albumImage( trackInformation.artist(), trackInformation.album(), width );
+    QString s;
+    if( width == 1 ) width = AmarokConfig::coverPreviewSize();
 
-    return path;
+    s = findAmazonImage( trackInformation.artist(), trackInformation.album(), width );
+
+    if( s.isEmpty() )
+        s = findDirectoryImage( trackInformation.artist(), trackInformation.album(), width );
+
+    if( s.isEmpty() )
+        s = findMetaBundleImage( trackInformation, width );
+
+    if( s.isEmpty() )
+        s = notAvailCover( width );
+
+    return s;
 }
 
-
-QCString
-CollectionDB::makeWidthKey( uint width )
-{
-    return QString::number( width ).local8Bit() + "@";
-}
-
-// get image from path
+// Amazon Image
 QString
-CollectionDB::getImageForAlbum( const QString& artist, const QString& album, uint width )
+CollectionDB::findAmazonImage( const QString &artist, const QString &album, uint width )
+{
+    QCString widthKey = makeWidthKey( width );
+
+    if ( artist.isEmpty() && album.isEmpty() )
+        return QString::null;
+
+
+    QCString key = md5sum( artist, album );
+
+    // check cache for existing cover
+    if ( cacheCoverDir().exists( widthKey + key ) )
+        return cacheCoverDir().filePath( widthKey + key );
+
+    // we need to create a scaled version of this cover
+    QDir imageDir = largeCoverDir();
+
+    if ( imageDir.exists( key ) )
+    {
+        if ( width > 1 )
+        {
+            QImage img( imageDir.filePath( key ) );
+            img.smoothScale( width, width, QImage::ScaleMin ).save( cacheCoverDir().filePath( widthKey + key ), "PNG" );
+
+            return cacheCoverDir().filePath( widthKey + key );
+        }
+        else
+            return imageDir.filePath( key );
+    }
+
+    return QString::null;
+}
+
+QString
+CollectionDB::findDirectoryImage( const QString& artist, const QString& album, uint width )
 {
     if ( width == 1 ) width = AmarokConfig::coverPreviewSize();
-    QCString widthKey = QString::number( width ).local8Bit() + "@";
+    QCString widthKey = makeWidthKey( width );
 
     if ( album.isEmpty() )
-        return notAvailCover( width );
+        return QString::null;
 
     QStringList values =
         query( QString(
@@ -1056,23 +986,90 @@ CollectionDB::getImageForAlbum( const QString& artist, const QString& album, uin
 
         if ( width > 1 )
         {
-            if ( !cacheCoverDir().exists( widthKey + key ) )
-            {
-                QImage img = QImage( image );
-                img.smoothScale( width, width, QImage::ScaleMin ).save( cacheCoverDir().filePath( widthKey + key ), "PNG" );
-            }
+            QImage img = QImage( image );
+            QString path = cacheCoverDir().filePath( widthKey + key );
+            img.smoothScale( width, width, QImage::ScaleMin ).save( path, "PNG" );
 
-            return cacheCoverDir().filePath( widthKey + key );
+            return path;
         }
         else //large image
-        {
             return image;
+    }
+    return QString::null;
+}
+
+QString
+CollectionDB::findMetaBundleImage( MetaBundle trackInformation, uint width )
+{
+    if( width == 1 ) width = AmarokConfig::coverPreviewSize();
+
+    QCString widthKey = makeWidthKey( width );
+    QCString tagKey = md5sum( trackInformation.artist(), trackInformation.album() );
+
+    TagLib::File *f = 0;
+    TagLib::ID3v2::Tag *tag = 0;
+
+    if ( trackInformation.url().path().endsWith( ".mp3", false ) )
+    {
+        f = new TagLib::MPEG::File( QFile::encodeName( trackInformation.url().path() ) );
+        tag = ( (TagLib::MPEG::File*)f )->ID3v2Tag();
+    }
+
+    else if ( trackInformation.url().path().endsWith( ".flac", false ) )
+    {
+        f = new TagLib::FLAC::File( QFile::encodeName( trackInformation.url().path() ) );
+        tag = ( (TagLib::FLAC::File*)f )->ID3v2Tag();
+    }
+
+    if ( tag )
+    {
+        TagLib::ID3v2::FrameList l = tag->frameListMap()[ "APIC" ];
+        if ( !l.isEmpty() )
+        {
+            debug() << "Found APIC frame(s)" << endl;
+            TagLib::ID3v2::Frame *f = l.front();
+            TagLib::ID3v2::AttachedPictureFrame *ap = (TagLib::ID3v2::AttachedPictureFrame*)f;
+
+            const TagLib::ByteVector &imgVector = ap->picture();
+            debug() << "Size of image: " <<  imgVector.size() << " byte" << endl;
+
+            // ignore APIC frames without picture and those with obviously bogus size
+            if( imgVector.size() == 0 || imgVector.size() > 10000000 /*10MB*/ )
+            {
+                delete f;
+                return QString::null;
+            }
+
+            QImage image;
+            if( image.loadFromData((const uchar*)imgVector.data(), imgVector.size()) )
+            {
+                if ( width > 1 )
+                {
+                    image.smoothScale( width, width, QImage::ScaleMin ).save( cacheCoverDir().filePath( widthKey + tagKey ), "PNG" );
+                    delete f;
+                    return cacheCoverDir().filePath( widthKey + tagKey );
+                }
+                else
+                {
+                    image.save( tagCoverDir().filePath( tagKey ), "PNG" );
+                    delete f;
+                    return tagCoverDir().filePath( tagKey );
+                }
+            }
         }
     }
 
-    return notAvailCover( width );
+    if ( f )
+        delete f; // destroying f will destroy the tag it generated, according to taglib docs
+
+    return QString::null;
 }
 
+QCString
+CollectionDB::makeWidthKey( uint width )
+{
+    return QString::number( width ).local8Bit() + "@";
+}
 
 bool
 CollectionDB::removeAlbumImage( const QString &artist, const QString &album )
@@ -3364,16 +3361,16 @@ QueryBuilder::addFilter( int tables, const QString& filter )
     {
         m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
 
-        if ( tables & tabAlbum ) 
-            m_where += "OR album.name " + CollectionDB::likeCondition( filter, true, true ); 
-        if ( tables & tabArtist ) 
-            m_where += "OR artist.name " + CollectionDB::likeCondition( filter, true, true ); 
-        if ( tables & tabGenre ) 
-            m_where += "OR genre.name " + CollectionDB::likeCondition( filter, true, true );  
-        if ( tables & tabYear ) 
-            m_where += "OR year.name " + CollectionDB::likeCondition( filter, true, true );   
-        if ( tables & tabSong ) 
-            m_where += "OR tags.title " + CollectionDB::likeCondition( filter, true, true );    
+        if ( tables & tabAlbum )
+            m_where += "OR album.name " + CollectionDB::likeCondition( filter, true, true );
+        if ( tables & tabArtist )
+            m_where += "OR artist.name " + CollectionDB::likeCondition( filter, true, true );
+        if ( tables & tabGenre )
+            m_where += "OR genre.name " + CollectionDB::likeCondition( filter, true, true );
+        if ( tables & tabYear )
+            m_where += "OR year.name " + CollectionDB::likeCondition( filter, true, true );
+        if ( tables & tabSong )
+            m_where += "OR tags.title " + CollectionDB::likeCondition( filter, true, true );
 
         m_where += " ) ";
     }
@@ -3427,16 +3424,16 @@ QueryBuilder::addFilters( int tables, const QStringList& filter )
         {
             m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
 
-            if ( tables & tabAlbum ) 
-                m_where += "OR album.name " + CollectionDB::likeCondition( filter[i], true, true ); 
-            if ( tables & tabArtist ) 
-                m_where += "OR artist.name " + CollectionDB::likeCondition( filter[i], true, true ); 
-            if ( tables & tabGenre ) 
-                m_where += "OR genre.name " + CollectionDB::likeCondition( filter[i], true, true );  
-            if ( tables & tabYear ) 
-                m_where += "OR year.name " + CollectionDB::likeCondition( filter[i], true, true );   
-            if ( tables & tabSong ) 
-                m_where += "OR tags.title " + CollectionDB::likeCondition( filter[i], true, true );    
+            if ( tables & tabAlbum )
+                m_where += "OR album.name " + CollectionDB::likeCondition( filter[i], true, true );
+            if ( tables & tabArtist )
+                m_where += "OR artist.name " + CollectionDB::likeCondition( filter[i], true, true );
+            if ( tables & tabGenre )
+                m_where += "OR genre.name " + CollectionDB::likeCondition( filter[i], true, true );
+            if ( tables & tabYear )
+                m_where += "OR year.name " + CollectionDB::likeCondition( filter[i], true, true );
+            if ( tables & tabSong )
+                m_where += "OR tags.title " + CollectionDB::likeCondition( filter[i], true, true );
 
 
             m_where += " ) ";
@@ -3456,16 +3453,16 @@ QueryBuilder::excludeFilter( int tables, const QString& filter )
         m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolT() + " ";
 
 
-        if ( tables & tabAlbum ) 
-            m_where += "AND album.name NOT " + CollectionDB::likeCondition( filter, true, true ); 
-        if ( tables & tabArtist ) 
-            m_where += "AND artist.name NOT " + CollectionDB::likeCondition( filter, true, true ); 
-        if ( tables & tabGenre ) 
-            m_where += "AND genre.name NOT " + CollectionDB::likeCondition( filter, true, true );  
-        if ( tables & tabYear ) 
-            m_where += "AND year.name NOT " + CollectionDB::likeCondition( filter, true, true );   
-        if ( tables & tabSong ) 
-            m_where += "AND tags.title NOT " + CollectionDB::likeCondition( filter, true, true );    
+        if ( tables & tabAlbum )
+            m_where += "AND album.name NOT " + CollectionDB::likeCondition( filter, true, true );
+        if ( tables & tabArtist )
+            m_where += "AND artist.name NOT " + CollectionDB::likeCondition( filter, true, true );
+        if ( tables & tabGenre )
+            m_where += "AND genre.name NOT " + CollectionDB::likeCondition( filter, true, true );
+        if ( tables & tabYear )
+            m_where += "AND year.name NOT " + CollectionDB::likeCondition( filter, true, true );
+        if ( tables & tabSong )
+            m_where += "AND tags.title NOT " + CollectionDB::likeCondition( filter, true, true );
 
 
         m_where += " ) ";
@@ -3515,15 +3512,15 @@ QueryBuilder::addMatch( int tables, const QString& match )
     if ( !match.isEmpty() )
     {
         m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
-        if ( tables & tabAlbum ) 
-            m_where += "OR album.name " + CollectionDB::likeCondition( match ); 
-        if ( tables & tabArtist ) 
+        if ( tables & tabAlbum )
+            m_where += "OR album.name " + CollectionDB::likeCondition( match );
+        if ( tables & tabArtist )
             m_where += "OR artist.name " + CollectionDB::likeCondition( match );
-        if ( tables & tabGenre ) 
+        if ( tables & tabGenre )
             m_where += "OR genre.name " + CollectionDB::likeCondition( match );
-        if ( tables & tabYear ) 
+        if ( tables & tabYear )
             m_where += "OR year.name " + CollectionDB::likeCondition( match );
-        if ( tables & tabSong ) 
+        if ( tables & tabSong )
             m_where += "OR tags.title " + CollectionDB::likeCondition( match );
 
 
@@ -3568,18 +3565,18 @@ QueryBuilder::addMatches( int tables, const QStringList& match )
 
         for ( uint i = 0; i < match.count(); i++ )
         {
-            if ( tables & tabAlbum ) 
+            if ( tables & tabAlbum )
                 m_where += "OR album.name " + CollectionDB::likeCondition( match[i] );
-            if ( tables & tabArtist ) 
-                m_where += "OR artist.name " + CollectionDB::likeCondition( match[i] ); 
-            if ( tables & tabGenre ) 
-                m_where += "OR genre.name " + CollectionDB::likeCondition( match[i] );  
-            if ( tables & tabYear ) 
-                m_where += "OR year.name " + CollectionDB::likeCondition( match[i] );   
-            if ( tables & tabSong ) 
-                m_where += "OR tags.title " + CollectionDB::likeCondition( match[i] );    
-            if ( tables & tabStats ) 
-                m_where += "OR statistics.url " + CollectionDB::likeCondition( match[i] );    
+            if ( tables & tabArtist )
+                m_where += "OR artist.name " + CollectionDB::likeCondition( match[i] );
+            if ( tables & tabGenre )
+                m_where += "OR genre.name " + CollectionDB::likeCondition( match[i] );
+            if ( tables & tabYear )
+                m_where += "OR year.name " + CollectionDB::likeCondition( match[i] );
+            if ( tables & tabSong )
+                m_where += "OR tags.title " + CollectionDB::likeCondition( match[i] );
+            if ( tables & tabStats )
+                m_where += "OR statistics.url " + CollectionDB::likeCondition( match[i] );
 
 
             if ( match[i] == i18n( "Unknown" ) )

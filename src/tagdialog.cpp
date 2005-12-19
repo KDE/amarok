@@ -230,14 +230,16 @@ TagDialog::checkModified() //SLOT
 }
 
 void
-TagDialog::loadCover( const QString &artist, const QString &album ) {
+TagDialog::loadCover( const QString &artist, const QString &album )
+{
     if ( m_bundle.artist() != artist ||  m_bundle.album()!=album )
         return;
 
     // draw the album cover on the dialog
-    QString cover = CollectionDB::instance()->albumImage( m_bundle, 1 );
+    QString cover = CollectionDB::instance()->albumImage( m_bundle );
 
-    if( m_currentCover != cover ) {
+    if( m_currentCover != cover )
+    {
         pixmap_cover->setPixmap( QPixmap( cover, "PNG" ) );
         m_currentCover = cover;
     }

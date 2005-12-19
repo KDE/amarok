@@ -302,8 +302,14 @@ class CollectionDB : public QObject, public EngineObserver
         /** Saves images obtained from CoverFetcher */
         bool setAlbumImage( const QString& artist, const QString& album, QImage img, const QString& amazonUrl = QString::null, const QString& asin = QString::null );
 
-        QString findImageByMetabundle( MetaBundle trackInformation, const uint = 1 );
-        QString findImageByArtistAlbum( const QString &artist, const QString &album, const uint width = 1 );
+        QString findAmazonImage( const QString &artist, const QString &album, const uint width = 1 );
+        QString findDirectoryImage( const QString& artist, const QString& album, uint width = 0 );
+        QString findMetaBundleImage( MetaBundle trackInformation, const uint = 1 );
+
+        /**
+         * Retrieves the path to the image for the album of the requested item
+         * @param width the size of the image. 0 == full size, 1 == preview size
+         */
         QString albumImage( MetaBundle trackInformation, const uint width = 1 );
         QString albumImage( const uint artist_id, const uint album_id, const uint width = 1 );
         QString albumImage( const QString &artist, const QString &album, const uint width = 1 );
@@ -313,7 +319,6 @@ class CollectionDB : public QObject, public EngineObserver
 
         //local cover methods
         void addImageToAlbum( const QString& image, QValueList< QPair<QString, QString> > info, const bool temporary );
-        QString getImageForAlbum( const QString& artist, const QString& album, uint width = 0 );
         QString notAvailCover( int width = 0 );
 
         void applySettings();

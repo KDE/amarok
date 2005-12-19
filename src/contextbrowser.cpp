@@ -355,13 +355,14 @@ void ContextBrowser::openURLRequest( const KURL &url )
     // When left-clicking on cover image, open browser with amazon site
     else if ( url.protocol() == "fetchcover" )
     {
-        if ( CollectionDB::instance()->findImageByArtistAlbum (artist, album, 0 )
-           == CollectionDB::instance()->notAvailCover( 0 ) ) {
+        QString albumPath = CollectionDB::instance()->albumImage(artist, album, 0 );
+        if ( albumPath == CollectionDB::instance()->notAvailCover( 0 ) )
+        {
             CollectionDB::instance()->fetchCover( this, artist, album, false );
             return;
         }
 
-        QImage img( CollectionDB::instance()->albumImage( artist, album, 0 ) );
+        QImage img( albumPath );
         const QString amazonUrl = img.text( "amazon-url" );
         debug() << "Embedded amazon url in cover image: " << amazonUrl << endl;
 
