@@ -46,6 +46,7 @@ DeviceManager::~DeviceManager()
 void DeviceManager::displayDevices(QString /*name*/)
 {
     DEBUG_BLOCK
+    debug() << "DeviceManager: displayDevices called with name argument = " << name << endl;
     QByteArray data, replyData;
     QCString replyType;
     QDataStream arg(data, IO_WriteOnly);
@@ -55,39 +56,29 @@ void DeviceManager::displayDevices(QString /*name*/)
     else
     {
         QDataStream reply(replyData, IO_ReadOnly);
-        if (replyType == "QStringList")
+        QStringList result;
+        while(!reply.atEnd())
+            reply >> result;
+        m_currMediaList = Medium::createList( result );
+        Medium::List::iterator it;
+        QString mountwhere, halid;
+        for ( it = m_currMediaList.begin(); it != m_currMediaList.end(); it++ )
         {
-            QStringList result;
-            while(!reply.atEnd())
-                reply >> result;
-            m_currMediaList = Medium::createList( result );
-
-            Medium::List::iterator it;
-            QString mountyesno;
-            for ( it = m_currMediaList.begin(); it != m_currMediaList.end(); it++ )
+            if ( (*it).name() == name )
+                //this would be where to emit the ID as a signal...?
+                debug() << "ID of name argument = " << (*it).id() << endl;
+            if ( (*it).mimeType().contains( "removable", false ) )
             {
-                debug() << "Medium ID: " << (*it).id() << endl;
-                if ( (*it).mimeType().contains( "removable", false ) )
+                if ( (*it).isMounted() )
                 {
-                    if ( (*it).isMounted() )
-                        mountyesno = "mounted";
-                    else
-                        mountyesno = "not mounted";
-                    debug() << "Removable device detected at: " << (*it).mountPoint() << ", it is " << mountyesno << endl;
+                    mountwhere = (*it).mountPoint();
+                    debug() << "Removable device " << (*it).id() << " detected, and is mounted at: " << mountwhere << endl;
                 }
+                else
+                    debug() << "Removable device " << (*it).id() << " detected but not mounted" << endl;
             }
-            //debug() << "The result is " <<  result << endl;
         }
-        else
-            debug() << "unexpected type of reply from dcop call" << endl;
     }
-
-    //DCOPRef mediamanager("kded", "mediamanager");
-    //DCOPReply reply = mediamanager.call("fullList", 5);
-    //if (!reply.isValid())
-    //    debug() << "Error during DCOP call" << endl;
-    //else
-    //    debug() << "The result is: " << reply << endl;
 }
 
 #include "devicemanager.moc"

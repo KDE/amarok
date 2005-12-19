@@ -11,16 +11,11 @@
     </keywords>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <version/>
-    <description/>
-    <ignoreparts>
-      <part>CvsService</part>
-      <part>KDevClearCase</part>
-      <part>KDevPerforce</part>
-      <part>KDevsubversion</part>
-    </ignoreparts>
+    <version></version>
+    <description></description>
+    <ignoreparts/>
     <secondaryLanguages/>
-    <versioncontrol>kdevsubversion</versioncontrol>
+    <versioncontrol></versioncontrol>
   </general>
   <kdevautoproject>
     <general>
@@ -116,15 +111,15 @@
   <kdevdebugger>
     <general>
       <dbgshell>/usr/bin/libtool</dbgshell>
-      <programargs/>
-      <gdbpath/>
+      <programargs></programargs>
+      <gdbpath></gdbpath>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
       <runappinappdirectory>true</runappinappdirectory>
-      <configGdbScript/>
-      <runShellScript/>
-      <runGdbScript/>
+      <configGdbScript></configGdbScript>
+      <runShellScript></runShellScript>
+      <runGdbScript></runGdbScript>
     </general>
     <display>
       <staticmembers>false</staticmembers>
@@ -161,13 +156,18 @@
     </codecompletion>
     <references/>
     <creategettersetter>
-      <prefixGet/>
+      <prefixGet></prefixGet>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>
       <inlineGet>true</inlineGet>
       <inlineSet>true</inlineSet>
     </creategettersetter>
+    <qt>
+      <used>false</used>
+      <version>3</version>
+      <root>/home/kde-dev/kde-svn/branches/qt/3.3/qt-copy</root>
+    </qt>
   </kdevcppsupport>
   <kdevclassview>
     <folderhierarchy>true</folderhierarchy>
