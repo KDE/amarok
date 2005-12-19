@@ -8,17 +8,10 @@ SHORT-TERM (URGENT):
  <markey>  In the ScriptManager, we currently use a red "STOP" kinda icon for inactive scripts.
            This looks like a warning or error. Try to find a better one, perhaps a custom icon.
 
- <sebr>    There is something wrong with general cover art retrieval handling.  For one thing, i
-           think searching for embedded covers should be searched for last, it's probably slowest,
-           can somebody approve/reject this?
-           <markey> It's quite slow, yes, and we can't even cache it, because then you'd never
-           see an updated image from the file, if you were to change it. So.. yeah, I think
-           it's a good idea to change the priority.
-
  <markey>  The analyzer now uses crazy amounts of CPU when amaroK is idle, even if the window
            is not visible.
 
- <sebr>    The unknown album should ALWAYS be shown last.  Year has a heigher weighting than album
+ <sebr>    The unknown album should ALWAYS be shown last.  Year has a hiegher weighting than album
            name.  We should special case the Unknown album.
 
  <sebr>    Popup message flickers when showing.
