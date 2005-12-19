@@ -18,7 +18,15 @@ void Options1::init()
 #ifndef HAVE_EXSCALIBAR
     moodFrame->hide();
 #endif
+
+    kComboBox_browser->insertItem( "Konqueror" );
+    kComboBox_browser->insertItem( "Firefox" );
+    kComboBox_browser->insertItem( "Opera" );
+    kComboBox_browser->insertItem( "Galeon" );
+    kComboBox_browser->insertItem( "Epiphany" );
+    kComboBox_browser->insertItem( "Safari" );
 }
+
 
 void Options1::slotUpdateMoodFrame()
 {
