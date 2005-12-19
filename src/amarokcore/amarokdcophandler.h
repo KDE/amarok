@@ -208,7 +208,9 @@ class DcopDevicesHandler : public QObject, virtual public AmarokDevicesInterface
        DcopDevicesHandler();
 
    public /* DCOP */ slots:
-      virtual void displayDevices(QString name);
+      virtual void mediumAdded(QString name);
+      virtual void mediumRemoved(QString name);
+      virtual void mediumChanged(QString name);
 };
 
 

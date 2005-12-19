@@ -15,9 +15,18 @@ class DeviceManager : public QObject
         ~DeviceManager();
         static DeviceManager *instance();
 
-        void displayDevices(QString name);
+        void mediumAdded( QString name );
+        void mediumChanged( QString name);
+        void mediumRemoved( QString name);
+
+    signals:
+        void mediumAdded( Medium* );
+        void mediumChanged( Medium* );
+        void mediumRemoved( Medium* );
 
     private:
+        Medium* getDevice(QString name);
+
         DCOPClient *m_dc;
         bool m_valid;
         MediaList m_currMediaList;

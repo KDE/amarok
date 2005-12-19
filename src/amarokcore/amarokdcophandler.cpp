@@ -789,9 +789,19 @@ namespace amaroK
         , QObject( kapp )
     {}
 
-    void DcopDevicesHandler::displayDevices(QString name)
+    void DcopDevicesHandler::mediumAdded(QString name)
     {
-        DeviceManager::instance()->displayDevices(name);
+        DeviceManager::instance()->mediumAdded(name);
+    }
+
+    void DcopDevicesHandler::mediumRemoved(QString name)
+    {
+        DeviceManager::instance()->mediumRemoved(name);
+    }
+
+    void DcopDevicesHandler::mediumChanged(QString name)
+    {
+        DeviceManager::instance()->mediumChanged(name);
     }
 
 

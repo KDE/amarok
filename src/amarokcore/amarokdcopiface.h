@@ -196,8 +196,9 @@ class AmarokDevicesInterface : virtual public DCOPObject
    K_DCOP
 
 k_dcop:
-   virtual void displayDevices(QString name) = 0;         ///< At the moment, displays all devices, from kded mediamanager.
-
+   virtual void mediumAdded(QString name) = 0;         ///< Called when there is a mediumAdded event
+   virtual void mediumRemoved(QString name) = 0;         ///< Called when there is a mediumRemoved event
+   virtual void mediumChanged(QString name) = 0;         ///< Called when there is a mediumChanged event
 };
 
 #endif

@@ -25,9 +25,9 @@ DeviceManager::DeviceManager()
         debug() << "DeviceManager:  DCOP Client not registered!" << endl;
     }
 
-    if (!m_dc->connectDCOPSignal("kded", "mediamanager", "mediumAdded(QString)", "devices", "displayDevices(QString)", false) ||
-        !m_dc->connectDCOPSignal("kded", "mediamanager", "mediumRemoved(QString)", "devices", "displayDevices(QString)", false) ||
-        !m_dc->connectDCOPSignal("kded", "mediamanager", "mediumChanged(QString)", "devices", "displayDevices(QString)", false))
+    if (!m_dc->connectDCOPSignal("kded", "mediamanager", "mediumAdded(QString)", "devices", "mediumAdded(QString)", false) ||
+        !m_dc->connectDCOPSignal("kded", "mediamanager", "mediumRemoved(QString)", "devices", "mediumRemoved(QString)", false) ||
+        !m_dc->connectDCOPSignal("kded", "mediamanager", "mediumChanged(QString)", "devices", "mediumChanged(QString)", false))
     {
         debug() << "DeviceManager:  Could not connect to signal mediumAdded!" << endl;
     }
@@ -43,10 +43,37 @@ DeviceManager::~DeviceManager()
 {
 }
 
-void DeviceManager::displayDevices(QString /*name*/)
+void DeviceManager::mediumAdded( QString name )
 {
     DEBUG_BLOCK
-    debug() << "DeviceManager: displayDevices called with name argument = " << name << endl;
+    Medium* addedMedium = getDevice(name);
+    debug() << "[DeviceManager::mediumAdded] Obtained medium id is: " << addedMedium->id() << endl;
+    emit mediumAdded( addedMedium );
+}
+
+
+void DeviceManager::mediumRemoved( QString name )
+{
+    DEBUG_BLOCK
+    Medium* removedMedium = getDevice(name);
+    debug() << "[DeviceManager::mediumRemoved] Obtained medium id is: " << removedMedium->id() << endl;
+    emit mediumRemoved( removedMedium );
+}
+
+
+void DeviceManager::mediumChanged( QString name )
+{
+    DEBUG_BLOCK
+    Medium* changedMedium = getDevice(name);
+    debug() << "[DeviceManager::mediumChanged] Obtained medium id is: " << changedMedium->id() << endl;
+    emit mediumChanged( changedMedium );
+}
+
+Medium* DeviceManager::getDevice( QString name )
+{
+    DEBUG_BLOCK
+    debug() << "DeviceManager: getDevice called with name argument = " << name << endl;
+    Medium* returnedMedium;
     QByteArray data, replyData;
     QCString replyType;
     QDataStream arg(data, IO_WriteOnly);
@@ -65,8 +92,11 @@ void DeviceManager::displayDevices(QString /*name*/)
         for ( it = m_currMediaList.begin(); it != m_currMediaList.end(); it++ )
         {
             if ( (*it).name() == name )
-                //this would be where to emit the ID as a signal...?
+            {
                 debug() << "ID of name argument = " << (*it).id() << endl;
+                returnedMedium = new Medium(*it);
+            }
+            //the following code is currently simply as proof of concept, will likely not be relevant in the end
             if ( (*it).mimeType().contains( "removable", false ) )
             {
                 if ( (*it).isMounted() )
@@ -79,6 +109,7 @@ void DeviceManager::displayDevices(QString /*name*/)
             }
         }
     }
+    return returnedMedium;
 }
 
 #include "devicemanager.moc"
