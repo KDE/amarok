@@ -12,6 +12,8 @@
 *****************************************************************************/
 
 #include <config.h>
+#include <kstandarddirs.h>
+
 
 void Options1::init()
 {
@@ -19,12 +21,19 @@ void Options1::init()
     moodFrame->hide();
 #endif
 
-    kComboBox_browser->insertItem( "Konqueror" );
-    kComboBox_browser->insertItem( "Firefox" );
-    kComboBox_browser->insertItem( "Opera" );
-    kComboBox_browser->insertItem( "Galeon" );
-    kComboBox_browser->insertItem( "Epiphany" );
-    kComboBox_browser->insertItem( "Safari" );
+    QStringList browsers;
+    browsers << "Konqueror" << "Firefox" << "Opera" << "Galeon" << "Epiphany"
+             << "Safari" << "Mozilla";
+
+    // Remove browsers which are not actually installed
+    for( QStringList::Iterator it = browsers.begin(), end = browsers.end(); it != end; ) {
+        if( KStandardDirs::findExe( (*it).lower() ) == QString::null )
+            it = browsers.erase( it );
+        else
+            ++it;
+    }
+
+    kComboBox_browser->insertStringList( browsers );
 }
 
 
