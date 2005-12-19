@@ -370,6 +370,53 @@
                         </spacer>
                     </hbox>
                 </widget>
+                <widget class="QButtonGroup">
+                    <property name="name">
+                        <cstring>buttonGroup1</cstring>
+                    </property>
+                    <property name="title">
+                        <string>External Web &amp;Browser</string>
+                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="KComboBox">
+                            <property name="name">
+                                <cstring>kComboBox_browser</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>layout7</cstring>
+                            </property>
+                            <hbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QCheckBox">
+                                    <property name="name">
+                                        <cstring>checkBox_customBrowser</cstring>
+                                    </property>
+                                    <property name="enabled">
+                                        <bool>true</bool>
+                                    </property>
+                                    <property name="text">
+                                        <string>&amp;Custom Browser:</string>
+                                    </property>
+                                </widget>
+                                <widget class="KLineEdit">
+                                    <property name="name">
+                                        <cstring>kLineEdit_customBrowser</cstring>
+                                    </property>
+                                    <property name="enabled">
+                                        <bool>false</bool>
+                                    </property>
+                                </widget>
+                            </hbox>
+                        </widget>
+                    </vbox>
+                </widget>
             </vbox>
         </widget>
         <widget class="QGroupBox">
@@ -474,6 +521,8 @@
         </spacer>
     </vbox>
 </widget>
+<customwidgets>
+</customwidgets>
 <connections>
     <connection>
         <sender>kcfg_ShowTrayIcon</sender>
@@ -493,6 +542,18 @@
         <receiver>General</receiver>
         <slot>slotUpdateMoodFrame()</slot>
     </connection>
+    <connection>
+        <sender>checkBox_customBrowser</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>kComboBox_browser</receiver>
+        <slot>setDisabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>checkBox_customBrowser</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>kLineEdit_customBrowser</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
 </connections>
 <slots>
     <slot>slotUpdateMoodFrame()</slot>
@@ -501,4 +562,7 @@
     <function access="private" specifier="non virtual">init()</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>klineedit.h</includehint>
+</includehints>
 </UI>

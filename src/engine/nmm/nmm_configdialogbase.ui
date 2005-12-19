@@ -177,9 +177,6 @@
                                     <property name="text">
                                         <string>R&amp;emove</string>
                                     </property>
-                                    <property name="accel">
-                                        <string>Alt+E</string>
-                                    </property>
                                 </widget>
                                 <spacer>
                                     <property name="name">
