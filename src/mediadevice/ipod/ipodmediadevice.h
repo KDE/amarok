@@ -27,6 +27,7 @@ class IpodMediaDevice : public KioMediaDevice
         void              init( MediaDeviceView* parent, MediaDeviceList* listview );
         virtual           ~IpodMediaDevice();
         virtual bool      autoConnect() { return false; /* for now b/c of last.fm submissions */ }
+        virtual bool      asynchronousTransfer() { return true; /* kernel buffer flushes freeze amaroK */ }
         QStringList       supportedFiletypes();
 
         bool              isConnected();
