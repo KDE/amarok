@@ -180,7 +180,8 @@ class MediaDeviceList : public KListView
         void rmbPressed( QListViewItem*, const QPoint&, int );
         void renameItem( QListViewItem *item );
         void slotExpand( QListViewItem* );
-        void selectAll() {QListView::selectAll(true); }
+        void selectAll() { QListView::selectAll(true); }
+        void invokeItem( QListViewItem* );
 
     private:
         void startDrag();

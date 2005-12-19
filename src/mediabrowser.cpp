@@ -18,6 +18,7 @@
 #include "debug.h"
 #include "mediabrowser.h"
 #include "metabundle.h"
+#include "playlist.h"
 #include "playlistloader.h"
 #include "pluginmanager.h"
 #include "scrobbler.h"
@@ -629,7 +630,24 @@ MediaDeviceList::MediaDeviceList( MediaDeviceView* parent )
     connect( this, SIGNAL( expanded( QListViewItem* ) ),
              this,   SLOT( slotExpand( QListViewItem* ) ) );
 
+    connect( this, SIGNAL( returnPressed( QListViewItem* ) ),
+             this,   SLOT( invokeItem( QListViewItem* ) ) );
+
+    connect( this, SIGNAL( doubleClicked( QListViewItem*, const QPoint&, int ) ),
+             this,   SLOT( invokeItem( QListViewItem* ) ) );
+
     m_toolTip = new MediaItemTip( this );
+}
+
+void
+MediaDeviceList::invokeItem( QListViewItem *i )
+{
+    MediaItem *item = dynamic_cast<MediaItem *>( i );
+    if( !item )
+        return;
+
+    KURL::List urls = nodeBuildDragList( item );
+    Playlist::instance()->insertMedia( urls, Playlist::Append );
 }
 
 void
