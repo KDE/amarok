@@ -2954,13 +2954,11 @@ Playlist::applySettings()
 
     if( !AmarokConfig::showMoodbar() && columnWidth( PlaylistItem::Moodbar ) )
     {
-        debug() << "========================== Noshow and column width = " << columnWidth( PlaylistItem::Moodbar ) << endl;
         AmarokConfig::setMoodbarColumnSize( columnWidth( PlaylistItem::Moodbar ) );
         setColumnWidth( PlaylistItem::Moodbar, 0 );
     }
     if( AmarokConfig::showMoodbar() && !columnWidth( PlaylistItem::Moodbar ) )
     {
-        debug() << "========================== Show and no column width. mCS = " << AmarokConfig::moodbarColumnSize() << endl;
         setColumnWidth( PlaylistItem::Moodbar, AmarokConfig::moodbarColumnSize() );
     }
 }
@@ -3960,8 +3958,6 @@ Playlist::slotMouseButtonPressed( int button, QListViewItem *after, const QPoint
     {
         const QString path = QApplication::clipboard()->text( QClipboard::Selection );
         const KURL url = KURL::fromPathOrURL( path );
-
-        debug() << "X11 Paste: " << url << endl;
 
         if( url.isValid() )
             insertMediaInternal( url, (PlaylistItem*)(after ? after : lastItem()) );

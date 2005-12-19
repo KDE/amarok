@@ -907,8 +907,6 @@ PlaylistBrowser::findPodcastChannel( const KURL &feed, QListViewItem *parent ) c
 
 void PlaylistBrowser::addPodcast( const QString &url, QListViewItem *parent )
 {
-    debug() << "sub to " << url << endl;
-
     if( !parent ) parent = static_cast<QListViewItem*>(m_podcastCategory);
 
     PodcastChannel *channel = findPodcastChannel( KURL( url ) );
@@ -1074,7 +1072,6 @@ void PlaylistBrowser::setGlobalPodcastSettings( PodcastChannel *item )
         if( !isPodcastChannel( channel ) || channel == item )
             continue;
         #define channel static_cast<PodcastChannel*>(channel)
-        debug() << "Settings are being saved for: " << channel->title() << endl;
         channel->setSettings( save, autoFetch, mediaType, addToMediaDevice, purge, purgeCount );
         #undef  channel
     }
@@ -1173,30 +1170,25 @@ PlaylistBrowser::findItemInTree( const QString &searchstring, int c ) const
     QStringList::Iterator it = list.begin();
     QListViewItem *pli = findItem (*it, c);
     if ( !pli ) return pli;
-    //debug() << "pli: text: " << pli->text(0) << endl;
 
-    for ( ++it ; it != list.end(); ++it ) {
-        //debug() << "searching for: " << *it << "..." << endl;
+    for ( ++it ; it != list.end(); ++it )
+    {
 
         QListViewItemIterator it2( pli );
         for( ++it2 ; it2.current(); ++it2 )
         {
-            //debug()<<", rtti: "<<(*it2)->rtti()<< ", text: "<<(*it2)->text(0)<<endl;
-            if ( *it == (*it2)->text(0) ) {
-                //debug() << "detected next level: " << (*it2)->text(0) << endl;
+            if ( *it == (*it2)->text(0) )
+            {
                 pli = *it2;
                 break;
             }
             // test, to not go over into the next category
-            if ( isCategory( *it2 ) && (pli->nextSibling() == *it2) ) {
-                //debug() << "run over a sibling category, giving up " << *it << endl;
+            if ( isCategory( *it2 ) && (pli->nextSibling() == *it2) )
                 return 0;
-            }
         }
-        if ( ! it2.current() ) {
-            //debug() << "cannot find element " << *it << endl;
+        if ( ! it2.current() )
             return 0;
-        }
+
     }
     return pli;
 }
@@ -1208,9 +1200,6 @@ int PlaylistBrowser::loadPlaylist( const QString &playlist, bool /*force*/ )
 
     QListViewItem *pli = findItemInTree( playlist, 0 );
     if ( ! pli ) return -1;
-
-    debug() << "pli: text: " << pli->text(0) << endl;
-    debug() << "pli: rtti: " << pli->rtti() << endl;
 
     slotDoubleClicked( pli );
     return 0;
@@ -1420,8 +1409,6 @@ bool PlaylistBrowser::createPlaylist( QListViewItem *parent, bool current, QStri
     if( !parent )
         parent = static_cast<QListViewItem *>( m_playlistCategory );
 
-    debug() << "Saving Playlist to: " << path << endl;
-
     if( current )
     {
         if ( !Playlist::instance()->saveM3U( path ) ) {
@@ -1536,7 +1523,7 @@ void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
         Playlist::instance()->repopulate();
     }
     else
-        debug() << "No functionality for item double click implemented" << endl;
+        warning() << "No functionality for item double click implemented" << endl;
 }
 
 void PlaylistBrowser::collectionScanDone()

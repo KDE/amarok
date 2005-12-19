@@ -331,7 +331,6 @@ PlaylistEntry::~PlaylistEntry()
 
 void PlaylistEntry::load()
 {
-    debug() << "Loading playlist" << endl;
     if ( m_loading )
 	    return;
     m_trackList.clear();
@@ -2126,8 +2125,6 @@ void SmartPlaylist::setXml( const QDomElement &xml ) {
     static QStringList albums;
     static QStringList years;
 
-
-    debug() << "Removing old children from smartplaylist..." << endl;
     //Delete all children before
     QListViewItem *child, *next;
     if ( (child = firstChild()) ) {

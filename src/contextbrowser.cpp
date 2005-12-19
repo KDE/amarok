@@ -307,7 +307,6 @@ void ContextBrowser::openURLRequest( const KURL &url )
     // Streams should use stream:// protocol.
     if ( url.protocol() == "http" )
     {
-        debug() << "Received openURLRequest for: " << url.url() << endl;
         if ( url.hasHTMLRef() )
         {
             KURL base = url;
@@ -364,7 +363,6 @@ void ContextBrowser::openURLRequest( const KURL &url )
 
         QImage img( albumPath );
         const QString amazonUrl = img.text( "amazon-url" );
-        debug() << "Embedded amazon url in cover image: " << amazonUrl << endl;
 
         if ( amazonUrl.isEmpty() )
             KMessageBox::information( this, i18n( "<p>There is no product information available for this image.<p>Right-click on image for menu." ) );
@@ -1047,8 +1045,6 @@ ContextBrowser::showContext( const KURL &url, bool fromHistory )
         }
     }
 
-    debug() << "CONTEXT BACK-HISTORY SIZE   : " << m_contextBackHistory.size() << endl;
-    debug() << "CONTEXT FORWARD-HISTORY SIZE: " << m_contextForwardHistory.size() << endl;
     m_contextToolBar->setItemEnabled( CONTEXT_BACK, m_contextBackHistory.size() > 1 );
     m_contextToolBar->setItemEnabled( CONTEXT_FORWARD, m_contextForwardHistory.size() > 0 );
 
@@ -2077,8 +2073,6 @@ void ContextBrowser::showLyrics( const QString &hash )
                 KURL::encode_string_no_slash( artist ),
                 KURL::encode_string_no_slash( title ) );
 
-    debug() << "Using this url: " << m_lyricCurrentUrl << endl;
-
     m_lyricAddUrl = QString( "http://lyrc.com.ar/en/add/add.php?grupo=%1&tema=%2&disco=%3&ano=%4" ).arg(
             KURL::encode_string_no_slash( artist ),
             KURL::encode_string_no_slash( title ),
@@ -2189,7 +2183,6 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
             m_lyrics = m_lyrics.mid( 0, m_lyrics.find( "<br /><br />" ) );
         if ( CollectionDB::instance()->isFileInCollection( EngineController::instance()->bundle().url().path() ) )
         {
-            debug() << "Writing Lyrics..." << endl;
             CollectionDB::instance()->setHTMLLyrics( EngineController::instance()->bundle().url().path(), m_lyrics );
         }
     }
@@ -2346,7 +2339,7 @@ ContextBrowser::wikiConfig() // SLOT
         << i18n( "Other..." );
 
     int index;
-    debug() << "locale = " << wikiLocale() << endl;
+
     if( wikiLocale() == "en" )
         index = 0;
     else if( wikiLocale() == "de" )
@@ -2513,8 +2506,6 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
     for ( uint i=0; i<count; i++, --it )
         m_wikiForwardPopup->insertItem( SmallIconSet( "wiki" ), *it, i );
 
-    debug() << "WIKI BACK-HISTORY SIZE   : " << m_wikiBackHistory.size() << endl;
-    debug() << "WIKI FORWARD-HISTORY SIZE: " << m_wikiForwardHistory.size() << endl;
     m_wikiToolBar->setItemEnabled( WIKI_BACK, m_wikiBackHistory.size() > 1 );
     m_wikiToolBar->setItemEnabled( WIKI_FORWARD, m_wikiForwardHistory.size() > 0 );
 
