@@ -55,6 +55,7 @@ email                : markey@web.de
 #include <kkeydialog.h>          //slotConfigShortcuts()
 #include <klocale.h>
 #include <kmessagebox.h>         //applySettings(), genericEventHandler()
+#include <krun.h>                //amaroK::invokeBrowser()
 #include <kstandarddirs.h>
 #include <kurldrag.h>            //genericEventHandler()
 #include <kaboutdata.h>
@@ -1039,6 +1040,14 @@ namespace amaroK
 
         kapp->config()->setGroup( group );
         return kapp->config();
+    }
+
+    bool invokeBrowser( const QString& url )
+    {
+        const QString cmd = "%1 \"%2\"";
+        int pid = KRun::runCommand( cmd.arg( AmarokConfig::externalBrowser(), url ) );
+
+        return pid > 0;
     }
 
     namespace ColorScheme

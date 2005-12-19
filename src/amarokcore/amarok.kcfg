@@ -21,7 +21,7 @@
     <entry key="Player Window Minimal View" type="Bool">
         <label>Wether Player Window is in minimal or normal mode</label>
         <whatsthis>If set the player window will start in minimal view</whatsthis>
-	<default>false</default>
+    <default>false</default>
     </entry>
     <entry key="Playlist Window Pos" type="Point">
         <label>Position of playlist window</label>
@@ -270,6 +270,9 @@
         <label>Index of collection folder destination for Organize files.</label>
         <whatsthis>The ID of the collection folder destination fo Organize files.</whatsthis>
         <default>0</default>
+    </entry>
+    <entry key="External Browser" type="String">
+        <label>Filename of the external web browser to be invoked by amaroK.</label>
     </entry>
 
 </group>

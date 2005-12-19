@@ -64,6 +64,13 @@ namespace amaroK
     bool genericEventHandler( QWidget *recipient, QEvent *e ); //defined in app.cpp
 
     /**
+     * Invoke the external web browser set in amaroK's configuration.
+     * @param url The URL to be opened in the browser.
+     * @return True if the browser could be started.
+     */
+    bool invokeBrowser( const QString& url ); //defined in app.cpp
+
+    /**
      * Obtain an amaroK PNG image as a QPixmap
      */
     QPixmap getPNG( const QString& /*fileName*/ ); //defined in app.cpp
@@ -116,7 +123,7 @@ namespace amaroK
         return fileName.section( '/', 0, -2 );
     }
   /** Due to xine-lib, we have to make KProcess close all fds, otherwise we get "device is busy" messages
-  * Used by AmaroKProcIO and AmaroKProcess, exploiting commSetupDoneC(), a virtual method that 
+  * Used by AmaroKProcIO and AmaroKProcess, exploiting commSetupDoneC(), a virtual method that
   * happens to be called in the forked process
   * See bug #103750 for more information.
   */
