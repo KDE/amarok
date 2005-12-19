@@ -195,7 +195,8 @@ IpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bu
 
         TagLib::Audible::File *f = new TagLib::Audible::File( QFile::encodeName( bundle.url().path() ) );
         TagLib::Audible::Tag *t = f->getAudibleTag();
-        track->drm_userid = t->userID();
+        if( t )
+            track->drm_userid = t->userID();
     }
     else
     {
@@ -252,8 +253,9 @@ IpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bu
         if(!podcasts)
         {
             podcasts = itdb_playlist_new("Podcasts", false);
-            itdb_playlist_set_podcasts(podcasts);
             itdb_playlist_add(m_itdb, podcasts, -1);
+            itdb_playlist_set_podcasts(podcasts);
+            addPlaylistToList( podcasts );
         }
         itdb_playlist_add_track(podcasts, track, -1);
     }
