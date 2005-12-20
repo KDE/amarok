@@ -47,8 +47,11 @@ void DeviceManager::mediumAdded( QString name )
 {
     DEBUG_BLOCK
     Medium* addedMedium = getDevice(name);
-    debug() << "[DeviceManager::mediumAdded] Obtained medium id is: " << addedMedium->id() << endl;
-    emit mediumAdded( addedMedium );
+    if (addedMedium != NULL)
+        debug() << "[DeviceManager::mediumAdded] Obtained medium name is " << name << ", id is: " << addedMedium->id() << endl;
+    else
+        debug() << "[DeviceManager::mediumAdded] Obtained medium is null; name was " << name << endl;
+    emit mediumAdded( addedMedium, deviceKind(addedMedium) );
 }
 
 
@@ -56,8 +59,11 @@ void DeviceManager::mediumRemoved( QString name )
 {
     DEBUG_BLOCK
     Medium* removedMedium = getDevice(name);
-    debug() << "[DeviceManager::mediumRemoved] Obtained medium id is: " << removedMedium->id() << endl;
-    emit mediumRemoved( removedMedium );
+    if (removedMedium != NULL)
+        debug() << "[DeviceManager::mediumRemoved] Obtained medium name is " << name << ", id is: " << removedMedium->id() << endl;
+    else
+        debug() << "[DeviceManager::mediumRemoved] Obtained medium is null; name was " << name << endl;
+    emit mediumRemoved( removedMedium, deviceKind(removedMedium) );
 }
 
 
@@ -65,15 +71,18 @@ void DeviceManager::mediumChanged( QString name )
 {
     DEBUG_BLOCK
     Medium* changedMedium = getDevice(name);
-    debug() << "[DeviceManager::mediumChanged] Obtained medium id is: " << changedMedium->id() << endl;
-    emit mediumChanged( changedMedium );
+    if (changedMedium != NULL)
+        debug() << "[DeviceManager::mediumChanged] Obtained medium name is " << name << ", id is: " << changedMedium->id() << endl;
+    else
+        debug() << "[DeviceManager::mediumChanged] Obtained medium is null; name was " << name << endl;
+    emit mediumChanged( changedMedium, deviceKind(changedMedium) );
 }
 
 Medium* DeviceManager::getDevice( QString name )
 {
     DEBUG_BLOCK
     debug() << "DeviceManager: getDevice called with name argument = " << name << endl;
-    Medium* returnedMedium;
+    Medium* returnedMedium = NULL;
     QByteArray data, replyData;
     QCString replyType;
     QDataStream arg(data, IO_WriteOnly);
@@ -111,6 +120,12 @@ Medium* DeviceManager::getDevice( QString name )
     }
     return returnedMedium;
 }
+
+uint DeviceManager::deviceKind(Medium* device)
+{
+    return 0;
+}
+
 
 #include "devicemanager.moc"
 

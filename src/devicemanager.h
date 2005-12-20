@@ -9,6 +9,10 @@ typedef Medium::List MediaList;
 class DeviceManager : public QObject
 {
 
+    static const uint GENERIC = 0;
+    static const uint APPLE = 1;
+    static const uint IFP = 2;
+
     Q_OBJECT
     public:
         DeviceManager();
@@ -20,12 +24,13 @@ class DeviceManager : public QObject
         void mediumRemoved( QString name);
 
     signals:
-        void mediumAdded( Medium* );
-        void mediumChanged( Medium* );
-        void mediumRemoved( Medium* );
+        void mediumAdded( Medium*, uint );
+        void mediumChanged( Medium*, uint );
+        void mediumRemoved( Medium*, uint );
 
     private:
         Medium* getDevice(QString name);
+        uint deviceKind(Medium *);
 
         DCOPClient *m_dc;
         bool m_valid;
