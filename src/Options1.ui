@@ -208,6 +208,9 @@
                                     <property name="text">
                                         <string>&amp;Make Moodier:</string>
                                     </property>
+                                    <property name="accel">
+                                        <string>Alt+M</string>
+                                    </property>
                                     <property name="toolTip" stdset="0">
                                         <string>When enabled, the hue distribution is quantised and respread evenly, giving a prettier but less meaningful output.</string>
                                     </property>
@@ -370,52 +373,94 @@
                         </spacer>
                     </hbox>
                 </widget>
-                <widget class="QButtonGroup">
+                <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>buttonGroup1</cstring>
+                        <cstring>layout6</cstring>
                     </property>
-                    <property name="title">
-                        <string>External Web &amp;Browser</string>
-                    </property>
-                    <vbox>
+                    <hbox>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel1_2</cstring>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>140</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string>External web &amp;browser:</string>
+                            </property>
+                            <property name="buddy" stdset="0">
+                                <cstring>kComboBox_browser</cstring>
+                            </property>
+                        </widget>
                         <widget class="KComboBox">
                             <property name="name">
                                 <cstring>kComboBox_browser</cstring>
                             </property>
-                        </widget>
-                        <widget class="QLayoutWidget">
-                            <property name="name">
-                                <cstring>layout7</cstring>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>7</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
                             </property>
-                            <hbox>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <widget class="QCheckBox">
-                                    <property name="name">
-                                        <cstring>checkBox_customBrowser</cstring>
-                                    </property>
-                                    <property name="enabled">
-                                        <bool>true</bool>
-                                    </property>
-                                    <property name="text">
-                                        <string>&amp;Custom Browser:</string>
-                                    </property>
-                                </widget>
-                                <widget class="KLineEdit">
-                                    <property name="name">
-                                        <cstring>kLineEdit_customBrowser</cstring>
-                                    </property>
-                                    <property name="enabled">
-                                        <bool>false</bool>
-                                    </property>
-                                </widget>
-                            </hbox>
                         </widget>
-                    </vbox>
+                    </hbox>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout7</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QCheckBox">
+                            <property name="name">
+                                <cstring>checkBox_customBrowser</cstring>
+                            </property>
+                            <property name="enabled">
+                                <bool>true</bool>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>140</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Custom browser:</string>
+                            </property>
+                            <property name="accel">
+                                <string>Alt+C</string>
+                            </property>
+                        </widget>
+                        <widget class="KLineEdit">
+                            <property name="name">
+                                <cstring>kLineEdit_customBrowser</cstring>
+                            </property>
+                            <property name="enabled">
+                                <bool>false</bool>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>7</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Enter filename of external web browser.</string>
+                            </property>
+                        </widget>
+                    </hbox>
                 </widget>
             </vbox>
         </widget>
@@ -437,6 +482,9 @@
                     <property name="text">
                         <string>&amp;Remember current playlist on exit</string>
                     </property>
+                    <property name="accel">
+                        <string>Alt+R</string>
+                    </property>
                     <property name="toolTip" stdset="0">
                         <string>If checked, amaroK saves the current playlist on quit and restores it when restarted.&lt;br&gt;</string>
                     </property>
@@ -450,6 +498,9 @@
                     </property>
                     <property name="text">
                         <string>Manually sa&amp;ved playlists use relative path</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+V</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>If checked, amaroK uses a relative path for the tracks of manually saved playlists</string>
@@ -478,6 +529,9 @@
                     </property>
                     <property name="text">
                         <string>Switch to Context &amp;Browser on track change</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+B</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Switch to the context browser, when playing a track.&lt;br&gt;</string>

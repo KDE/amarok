@@ -367,20 +367,20 @@ void ContextBrowser::openURLRequest( const KURL &url )
         if ( amazonUrl.isEmpty() )
             KMessageBox::information( this, i18n( "<p>There is no product information available for this image.<p>Right-click on image for menu." ) );
         else
-            kapp->invokeBrowser( amazonUrl );
+            amaroK::invokeBrowser( amazonUrl );
     }
 
     /* open konqueror with musicbrainz search result for artist-album */
     else if ( url.protocol() == "musicbrainz" )
     {
         const QString url = "http://www.musicbrainz.org/taglookup.html?artist=%1&album=%2&track=%3";
-        kapp->invokeBrowser( url.arg( KURL::encode_string_no_slash( artist, 106 /*utf-8*/ ),
+        amaroK::invokeBrowser( url.arg( KURL::encode_string_no_slash( artist, 106 /*utf-8*/ ),
         KURL::encode_string_no_slash( album, 106 /*utf-8*/ ),
         KURL::encode_string_no_slash( track, 106 /*utf-8*/ ) ) );
     }
 
     else if ( url.protocol() == "externalurl" )
-        kapp->invokeBrowser( url.url().replace("externalurl:", "http:") );
+        amaroK::invokeBrowser( url.url().replace("externalurl:", "http:") );
 
     else if ( url.protocol() == "togglebox" )
     {
@@ -413,7 +413,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
     {
         const QString url2 = QString( "http://www.google.com/musicsearch?q=%1&res=artist" )
             .arg( KURL::encode_string_no_slash( unEscapeHTMLAttr( url.path() ).replace( " ", "+" ), 106 /*utf-8*/ ) );
-        kapp->invokeBrowser( url2 );
+        amaroK::invokeBrowser( url2 );
     }
 
     else
@@ -2251,21 +2251,21 @@ ContextBrowser::showLyricSuggestions()
 void
 ContextBrowser::lyricsExternalPage() //SLOT
 {
-    kapp->invokeBrowser( m_lyricCurrentUrl );
+    amaroK::invokeBrowser( m_lyricCurrentUrl );
 }
 
 
 void
 ContextBrowser::lyricsAdd() //SLOT
 {
-    kapp->invokeBrowser( m_lyricAddUrl );
+    amaroK::invokeBrowser( m_lyricAddUrl );
 }
 
 
 void
 ContextBrowser::lyricsSearch() //SLOT
 {
-    kapp->invokeBrowser( m_lyricSearchUrl );
+    amaroK::invokeBrowser( m_lyricSearchUrl );
 }
 
 
@@ -2606,7 +2606,7 @@ ContextBrowser::wikiTitlePage() //SLOT
 void
 ContextBrowser::wikiExternalPage() //SLOT
 {
-    kapp->invokeBrowser( m_wikiCurrentUrl );
+    amaroK::invokeBrowser( m_wikiCurrentUrl );
 }
 
 

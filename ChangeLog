@@ -5,6 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.4:
   FEATURES:
+    * Option for selecting external web browser in amaroK. No longer requires
+      KDE-Base. (BR 106015)
     * Switchable Wikipedia locale. (BR 104383)
     * Drag albums and compilations from context browser to media device and
       playlist browser.

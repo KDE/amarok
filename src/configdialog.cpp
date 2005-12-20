@@ -136,6 +136,8 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     connect( opt5, SIGNAL(settingsChanged()), SLOT(updateButtons()) ); //see options5.ui.h
     connect( m_opt2->styleComboBox, SIGNAL( activated( int ) ), SLOT( updateButtons() ) );
     connect( m_opt7->dbSetupFrame->databaseEngine, SIGNAL( activated( int ) ), SLOT( updateButtons() ) );
+    connect( m_opt1->kComboBox_browser, SIGNAL( activated( int ) ), SLOT( updateButtons() ) );
+    connect( m_opt1->kLineEdit_customBrowser, SIGNAL( textChanged( const QString& ) ), SLOT( updateButtons() ) );
 }
 
 AmarokConfigDialog::~AmarokConfigDialog()
@@ -185,6 +187,10 @@ void AmarokConfigDialog::updateSettings()
     static_cast<CollectionSetup*>(child("CollectionSetup"))->writeConfig();
 
     if ( m_engineConfig ) m_engineConfig->save();
+
+    AmarokConfig::setExternalBrowser( m_opt1->kComboBox_browser->isEnabled() ?
+                                      m_opt1->kComboBox_browser->currentText().lower() :
+                                      m_opt1->kLineEdit_customBrowser->text().lower() );
 
     // When sound system has changed, update engine config page
     if ( m_soundSystem->currentText() != m_pluginAmarokName[AmarokConfig::soundSystem()] ) {
@@ -244,12 +250,17 @@ bool AmarokConfigDialog::hasChanged()
 {
     OSDPreviewWidget *osd = (OSDPreviewWidget*) child( "osdpreview" );
 
+    const QString externalBrowser = m_opt1->kComboBox_browser->isEnabled() ?
+                                    m_opt1->kComboBox_browser->currentText().lower() :
+                                    m_opt1->kLineEdit_customBrowser->text().lower();
+
     return  m_soundSystem->currentText() != m_pluginAmarokName[AmarokConfig::soundSystem()] ||
             osd->alignment() != AmarokConfig::osdAlignment() ||
             osd->alignment() != OSDWidget::Center && osd->y() != AmarokConfig::osdYOffset() ||
             m_opt2->styleComboBox->currentText() != AmarokConfig::contextBrowserStyleSheet() ||
             databaseType() != AmarokConfig::databaseEngine() ||
-            m_engineConfig && m_engineConfig->hasChanged();
+            m_engineConfig && m_engineConfig->hasChanged() ||
+            externalBrowser != AmarokConfig::externalBrowser();
 }
 
 

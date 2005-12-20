@@ -273,6 +273,7 @@
     </entry>
     <entry key="External Browser" type="String">
         <label>Filename of the external web browser to be invoked by amaroK.</label>
+        <default>konqueror</default>
     </entry>
 
 </group>

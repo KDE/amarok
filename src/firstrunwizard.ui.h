@@ -9,8 +9,11 @@
 ** These will automatically be called by the form's constructor and
 ** destructor.
 *****************************************************************************/
+
+#include "amarok.h"
 #include "config.h"
 #include "directorylist.h"
+
 #include <kapplication.h>
 #include <kconfig.h>
 #include <klocale.h>
@@ -102,5 +105,5 @@ FirstRunWizard::writeCollectionConfig()
 void
 FirstRunWizard::openLink(const QString& s)
 {
-    kapp->invokeBrowser(s);
+    amaroK::invokeBrowser(s);
 }

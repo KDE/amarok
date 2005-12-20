@@ -122,9 +122,7 @@ TagDialog::accept() //SLOT
 inline void
 TagDialog::openPressed() //SLOT
 {
-    // run konqueror with the track's directory
-    const QString cmd = "kfmclient openURL \"%1\"";
-    KRun::runCommand( cmd.arg( m_path ), "kfmclient", "konqueror" );
+    amaroK::invokeBrowser( m_path );
 }
 
 

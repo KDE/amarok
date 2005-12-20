@@ -12,6 +12,8 @@
 *****************************************************************************/
 
 #include <config.h>
+
+#include "amarokconfig.h"
 #include <kstandarddirs.h>
 
 
@@ -22,18 +24,19 @@ void Options1::init()
 #endif
 
     QStringList browsers;
-    browsers << "Konqueror" << "Firefox" << "Opera" << "Galeon" << "Epiphany"
-             << "Safari" << "Mozilla";
+    browsers << "konqueror" << "firefox" << "opera" << "galeon" << "epiphany"
+             << "safari" << "mozilla";
 
     // Remove browsers which are not actually installed
     for( QStringList::Iterator it = browsers.begin(), end = browsers.end(); it != end; ) {
-        if( KStandardDirs::findExe( (*it).lower() ) == QString::null )
+        if( KStandardDirs::findExe( *it ) == QString::null )
             it = browsers.erase( it );
         else
             ++it;
     }
 
     kComboBox_browser->insertStringList( browsers );
+    kComboBox_browser->setCurrentItem( browsers.findIndex( AmarokConfig::externalBrowser() ) );
 }
 
 
