@@ -278,7 +278,10 @@ UrlLoader::completeJob()
         debug() << "The following urls were not suitable for the playlist:" << endl;
         for ( uint it = 0; it < m_badURLs.count(); it++  )
         {
-            text += QString("\n%1").arg( m_badURLs[it].prettyURL() );
+            if( it < 5 )
+                text += QString("<br>%1").arg( m_badURLs[it].prettyURL() );
+            else if( it == 5 )
+                text += QString("<br>Plus %1 more").arg( m_badURLs.count() - it );
             debug() << "\t" << m_badURLs[it] << endl;
         }
 
