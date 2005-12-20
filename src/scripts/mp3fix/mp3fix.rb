@@ -130,11 +130,11 @@ header           = 0
 
 # Iterate over all frames:
 #
-while offset < data.length() - 4
+loop do
     loop do
         # Find frame sync
         offset = data.index( 0xff, offset )
-        break if offset == nil
+        break if offset == nil or offset > data.length() - 4
         header = data[offset+0]*2**24 + data[offset+1]*2**16 + data[offset+2]*2**8 + data[offset+3]
         if header & 0xfff00000 == 0xfff00000
             firstFrameOffset = offset if firstFrameOffset == nil

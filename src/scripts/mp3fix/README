@@ -1,4 +1,4 @@
-<div align="center"><b>Mp3Fixer (v0.9.3)</b></div>
+<div align="center"><b>Mp3Fixer (v0.9.4)</b></div>
 
 <p>
 <b>About:</b><br>
@@ -37,6 +37,10 @@ The Mp3Fixer amaroK Script is a frontend for this tool.
 
 <p>
 <b>ChangeLog:</b><br>
+Version 0.9.4:<br>
+<ul>
+<li>Fixed potential runtime error with some files.</li>
+</ul>
 Version 0.9.3:<br>
 <ul>
 <li>Show detailed repair summary.</li>
