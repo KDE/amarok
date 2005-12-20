@@ -34,9 +34,6 @@ SHORT-TERM (URGENT):
            latter is used so that we can do Next & Prev functions in the playlist, using methods
            item->above() and item->below().
 
- <foreboy> emit statusText when helix libs return an error to the errorresponsesink
- -->foreboy
-
  <markey>  When all 5 browser tabs are activated, the current tab button is drawn a few
            pixels below the normal position. This has the side effect that the separator line
            at the bottom of the bottom becomes invisible.
