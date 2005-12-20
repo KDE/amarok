@@ -274,13 +274,16 @@ UrlLoader::completeJob()
         emit queueChanged( added, PLItemList() );
 
     if ( !m_badURLs.isEmpty() ) {
-        amaroK::StatusBar::instance()->shortLongMessage(
-                i18n("Some media could not be loaded (not playable)."),
-                i18n("These media could not be loaded into the playlist: " ) );
-
+        QString text = i18n("These media could not be loaded into the playlist: " );
         debug() << "The following urls were not suitable for the playlist:" << endl;
         for ( uint it = 0; it < m_badURLs.count(); it++  )
+        {
+            text += QString("\n%1").arg( m_badURLs[it].prettyURL() );
             debug() << "\t" << m_badURLs[it] << endl;
+        }
+
+        amaroK::StatusBar::instance()->shortLongMessage(
+                i18n("Some media could not be loaded (not playable)."), text );
     }
 
     //syncronous, ie not using eventLoop
