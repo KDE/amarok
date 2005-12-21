@@ -193,6 +193,7 @@ StatisticsList::initDisplay()
     //ensure cleanliness - this function is not just called from the ctor, but also when returning to the initial display
     while( firstChild() )
         delete firstChild();
+    m_currentItem = 0;
 
     QueryBuilder qb;
     QStringList a;
