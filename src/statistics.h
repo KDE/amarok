@@ -61,13 +61,14 @@ class StatisticsList : public KListView
         void    viewportPaintEvent( QPaintEvent* );
 
         void    initDisplay();
-        void    expandInformation( StatisticsDetailedItem *item );
+        void    expandInformation( StatisticsItem *item );
 
         StatisticsItem *m_trackItem;
         StatisticsItem *m_mostplayedItem;
         StatisticsItem *m_artistItem;
         StatisticsItem *m_albumItem;
         StatisticsItem *m_genreItem;
+        StatisticsItem *m_newestItem;
 
         QListViewItem  *m_currentItem;
 
@@ -88,14 +89,8 @@ class StatisticsItem : public QObject, public KListViewItem
         void    enterHover();
         void    leaveHover();
 
-        void       setOn( const bool b ) { m_on = b; }
-        const bool isOn() { return m_on; }
-
         void       setExpanded( const bool b ) { m_isExpanded = b; }
         const bool isExpanded() { return m_isExpanded; }
-
-        void       setTitleItem( const bool b ) { m_isTitleItem = b; }
-        const bool isTitleItem() { return m_isTitleItem; }
 
         void        setSubtext( QString t ) { m_subText = t; }
 
@@ -115,9 +110,6 @@ class StatisticsItem : public QObject, public KListViewItem
 
         bool    m_isActive;
         bool    m_isExpanded;
-        bool    m_isTitleItem;
-
-        bool    m_on;
 
         QString m_subText;
 };
@@ -129,15 +121,14 @@ class StatisticsDetailedItem : public KListViewItem
                                 StatisticsDetailedItem *after=0, const char *name=0 );
         ~StatisticsDetailedItem() {};
 
-        enum    ItemType { NONE, TRACK, ARTIST, ALBUM, GENRE, SHOW_MORE, SHOW_LESS };
+        enum    ItemType { NONE, TRACK, ARTIST, ALBUM, GENRE, HISTORY };
 
-        void    setItemType( const ItemType t );
+        void    setItemType( const ItemType t ) { m_type = t; }
         const   ItemType itemType() { return m_type; }
 
         void    setUrl( QString &url ) { m_url = url; }
         const   QString url() { return m_url; }
 
-        void    paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align );
         void    paintFocus( QPainter*, const QColorGroup& , const QRect& ) {};  //reimp
 
     private:
