@@ -6,6 +6,8 @@
 #include "devicemanager.h"
 #include "debug.h"
 
+typedef Medium::List MediumList;
+
 DeviceManager* DeviceManager::instance()
 {
     static DeviceManager dw;
@@ -36,7 +38,6 @@ DeviceManager::DeviceManager()
         debug() << "DeviceManager:  connectDCOPSignal returned sucessfully!" << endl;
     }
 
-
 }
 
 DeviceManager::~DeviceManager()
@@ -46,43 +47,74 @@ DeviceManager::~DeviceManager()
 void DeviceManager::mediumAdded( QString name )
 {
     DEBUG_BLOCK
-    Medium* addedMedium = getDevice(name);
-    if (addedMedium != NULL)
+    Medium* addedMedium;
+    if ( m_mediumMap.contains(name) )
+        addedMedium = m_mediumMap[name];
+    else
+        addedMedium = getDevice(name);
+    if ( addedMedium != NULL )
         debug() << "[DeviceManager::mediumAdded] Obtained medium name is " << name << ", id is: " << addedMedium->id() << endl;
     else
         debug() << "[DeviceManager::mediumAdded] Obtained medium is null; name was " << name << endl;
-    emit mediumAdded( addedMedium, deviceKind(addedMedium) );
+    emit mediumAdded( addedMedium, name, deviceKind(addedMedium) );
 }
 
 
 void DeviceManager::mediumRemoved( QString name )
 {
     DEBUG_BLOCK
-    Medium* removedMedium = getDevice(name);
-    if (removedMedium != NULL)
+    Medium* removedMedium = NULL;
+    if ( m_mediumMap.contains(name) )
+        removedMedium = m_mediumMap[name];
+    if ( removedMedium != NULL )
         debug() << "[DeviceManager::mediumRemoved] Obtained medium name is " << name << ", id is: " << removedMedium->id() << endl;
     else
-        debug() << "[DeviceManager::mediumRemoved] Obtained medium is null; name was " << name << endl;
-    emit mediumRemoved( removedMedium, deviceKind(removedMedium) );
+        debug() << "[DeviceManager::mediumRemoved] Medium was unknown and is null; name was " << name << endl;
+    //if you get a null pointer from this signal, it means we did not know about the device
+    //before it was removed, i.e. the removal was the first event for the device received while amarok
+    //has been running
+    //There is no point in calling getDevice, since it will not be in the list anyways
+    emit mediumRemoved( removedMedium, name, deviceKind(removedMedium) );
+    if ( m_mediumMap.contains(name) )
+        m_mediumMap.remove(name);
 }
 
 
 void DeviceManager::mediumChanged( QString name )
 {
     DEBUG_BLOCK
-    Medium* changedMedium = getDevice(name);
-    if (changedMedium != NULL)
+    Medium *changedMedium;
+    if ( m_mediumMap.contains(name) )
+        changedMedium = m_mediumMap[name];
+    else
+        changedMedium = getDevice(name);
+    if ( changedMedium != NULL )
         debug() << "[DeviceManager::mediumChanged] Obtained medium name is " << name << ", id is: " << changedMedium->id() << endl;
     else
         debug() << "[DeviceManager::mediumChanged] Obtained medium is null; name was " << name << endl;
-    emit mediumChanged( changedMedium, deviceKind(changedMedium) );
+    emit mediumChanged( changedMedium, name, deviceKind(changedMedium) );
 }
 
+
+/*
+BIG FAT WARNING:
+Values returned from the below function should not be counted on being unique!
+For instance, there may be a Medium object in the QMap that can be accessed through
+other functions that has the same data as the Medium object returned, but is a different object.
+As you should not be writing to this object, this is okay, however:
+
+Use the Medium's name or id, not the pointer value, for equality comparison!!!
+
+This function does rebuild the map every time it is called, however this should be rare enough
+that it is not a problem.
+*/
 Medium* DeviceManager::getDevice( QString name )
 {
     DEBUG_BLOCK
     debug() << "DeviceManager: getDevice called with name argument = " << name << endl;
     Medium* returnedMedium = NULL;
+    Medium* tempMedium = NULL;
+    MediumList currMediumList;
     QByteArray data, replyData;
     QCString replyType;
     QDataStream arg(data, IO_WriteOnly);
@@ -95,10 +127,10 @@ Medium* DeviceManager::getDevice( QString name )
         QStringList result;
         while(!reply.atEnd())
             reply >> result;
-        m_currMediaList = Medium::createList( result );
+        currMediumList = Medium::createList( result );
         Medium::List::iterator it;
         QString mountwhere, halid;
-        for ( it = m_currMediaList.begin(); it != m_currMediaList.end(); it++ )
+        for ( it = currMediumList.begin(); it != currMediumList.end(); it++ )
         {
             if ( (*it).name() == name )
             {
@@ -116,6 +148,13 @@ Medium* DeviceManager::getDevice( QString name )
                 else
                     debug() << "Removable device " << (*it).id() << " detected but not mounted" << endl;
             }
+            if(m_mediumMap.contains(name))
+            {
+                tempMedium = m_mediumMap[(*it).name()];
+                m_mediumMap.remove((*it).name());
+                delete tempMedium;
+            }
+            m_mediumMap[(*it).name()] = new Medium(*it);
         }
     }
     return returnedMedium;
@@ -123,7 +162,11 @@ Medium* DeviceManager::getDevice( QString name )
 
 uint DeviceManager::deviceKind(Medium* device)
 {
-    return 0;
+    //detect ipod, ifp, or generic (or other types that get defined in devicemanager.h
+    if ( device != NULL)
+        return 1;
+    else
+        return 1;
 }
 
 

@@ -2,9 +2,11 @@
 #define AMAROK_DEVICE_MANAGER_H
 
 #include <dcopobject.h>
-#include "medium.h"
+#include <qmap.h>
 
-typedef Medium::List MediaList;
+class Medium;
+
+typedef QMap<QString, Medium*> MediumMap;
 
 class DeviceManager : public QObject
 {
@@ -24,9 +26,9 @@ class DeviceManager : public QObject
         void mediumRemoved( QString name);
 
     signals:
-        void mediumAdded( Medium*, uint );
-        void mediumChanged( Medium*, uint );
-        void mediumRemoved( Medium*, uint );
+        void mediumAdded( Medium*, QString, uint );
+        void mediumChanged( Medium*, QString, uint );
+        void mediumRemoved( Medium*, QString, uint );
 
     private:
         Medium* getDevice(QString name);
@@ -34,8 +36,7 @@ class DeviceManager : public QObject
 
         DCOPClient *m_dc;
         bool m_valid;
-        MediaList m_currMediaList;
-
+        MediumMap m_mediumMap;
 };
 
 #endif
