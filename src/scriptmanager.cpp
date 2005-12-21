@@ -59,6 +59,10 @@
 #include <knewstuff/knewstuff.h>      // "
 #include <knewstuff/provider.h>       // "
 
+#define ICON_STOPPED "button_ok"
+#define ICON_RUNNING "player_play"
+
+
 namespace amaroK {
     void closeOpenFiles(int out, int in, int err) {
         for(int i = sysconf(_SC_OPEN_MAX) - 1; i > 2; i--)
@@ -150,7 +154,7 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     m_gui->installButton  ->setIconSet( SmallIconSet( "fileopen" ) );
     m_gui->retrieveButton ->setIconSet( SmallIconSet( "khtml_kget" ) );
     m_gui->uninstallButton->setIconSet( SmallIconSet( "remove" ) );
-    m_gui->runButton      ->setIconSet( SmallIconSet( "player_play" ) );
+    m_gui->runButton      ->setIconSet( SmallIconSet( ICON_RUNNING ) );
     m_gui->stopButton     ->setIconSet( SmallIconSet( "player_stop" ) );
     m_gui->configureButton->setIconSet( SmallIconSet( "configure" ) );
     m_gui->aboutButton    ->setIconSet( SmallIconSet( "help" ) );
@@ -478,7 +482,7 @@ ScriptManager::slotRunScript()
         return false;
     }
 
-    li->setPixmap( 0, SmallIcon( "player_play" ) );
+    li->setPixmap( 0, SmallIcon( ICON_RUNNING ) );
     debug() << "Running script: " << url.path() << endl;
 
     m_scripts[name].process = script;
@@ -508,7 +512,7 @@ ScriptManager::slotStopScript()
     m_scripts[name].log = QString::null;
     slotCurrentChanged( m_gui->listView->currentItem() );
 
-    li->setPixmap( 0, SmallIcon( "stop" ) );
+    li->setPixmap( 0, SmallIcon( ICON_STOPPED ) );
 }
 
 
@@ -651,7 +655,7 @@ ScriptManager::scriptFinished( KProcess* process ) //SLOT
     delete it.data().process;
     it.data().process = 0;
     it.data().log = QString::null;
-    it.data().li->setPixmap( 0, SmallIcon( "stop" ) );
+    it.data().li->setPixmap( 0, SmallIcon( ICON_STOPPED ) );
     slotCurrentChanged( m_gui->listView->currentItem() );
 }
 
@@ -685,7 +689,7 @@ ScriptManager::loadScript( const QString& path )
         const KURL url = KURL::fromPathOrURL( path );
 
         KListViewItem* li = new KListViewItem( m_gui->listView, url.fileName() );
-        li->setPixmap( 0, SmallIcon( "stop" ) );
+        li->setPixmap( 0, SmallIcon( ICON_STOPPED ) );
 
         ScriptItem item;
         item.url = url;

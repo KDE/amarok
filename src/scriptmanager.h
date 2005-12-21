@@ -117,6 +117,9 @@ class ScriptManager : public KDialogBase, public EngineObserver
         void engineNewMetaData( const MetaBundle& /*bundle*/, bool /*trackChanged*/ );
         void engineVolumeChanged( int newVolume );
 
+        /////////////////////////////////////////////////////////////////////////////////////
+        // DATA MEMBERS
+        /////////////////////////////////////////////////////////////////////////////////////
         static ScriptManager* s_instance;
         ScriptManagerBase*    m_gui;
         bool                  m_installSuccess;
