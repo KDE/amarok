@@ -365,15 +365,17 @@ IfpMediaDevice::filetransferCallback( void *pData, struct ifp_transfer_status *p
 
     kapp->processEvents( 100 );
 
-    if( instance()->isCancelled() )
+    IfpMediaDevice *that = static_cast<IfpMediaDevice *>(pData);
+
+    if( that->isCancelled() )
     {
         debug() << "Cancelling transfer operation" << endl;
-        instance()->setCancelled( false );
-        instance()->setProgress( progress->file_bytes, progress->file_bytes );
+        that->setCancelled( false );
+        that->setProgress( progress->file_bytes, progress->file_bytes );
         return 1; //see ifp docs, return 1 for user cancel request
     }
 
-    return static_cast<IfpMediaDevice *>(pData)->setProgressInfo( progress );
+    return that->setProgressInfo( progress );
 }
 int
 IfpMediaDevice::setProgressInfo( struct ifp_transfer_status *progress )
