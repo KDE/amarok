@@ -282,9 +282,8 @@ StatisticsList::expandInformation( StatisticsItem *item )
 {
     QueryBuilder qb;
 
-    StatisticsDetailedItem *m_last = 0;//static_cast<StatisticsDetailedItem*>(item->itemAbove());
-    uint a = 0; // the number of existing items
-    uint c = a+1; // we be sneaky and just add to the other items
+    StatisticsDetailedItem *m_last = 0;
+    uint c = 1;
 
     if( item == m_trackItem )
     {
@@ -302,7 +301,7 @@ StatisticsList::expandInformation( StatisticsItem *item )
         qb.setLimit( 0, 50 );
         QStringList fave = qb.run();
 
-        for( uint i=a*qb.countReturnValues(); i < fave.count(); i += qb.countReturnValues() )
+        for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
         {
             QString name = i18n("%1. %2 - %3").arg( QString::number(c), fave[i], fave[i+1] );
             m_last = new StatisticsDetailedItem( name, item, m_last );
@@ -328,7 +327,7 @@ StatisticsList::expandInformation( StatisticsItem *item )
         qb.setLimit( 0, 50 );
         QStringList fave = qb.run();
 
-        for( uint i=a*qb.countReturnValues(); i < fave.count(); i += qb.countReturnValues() )
+        for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
         {
             QString name = i18n("%1. %2 - %3").arg( QString::number(c), fave[i], fave[i+1] );
             m_last = new StatisticsDetailedItem( name, item, m_last );
@@ -353,7 +352,7 @@ StatisticsList::expandInformation( StatisticsItem *item )
         qb.setLimit( 0, 50 );
         QStringList fave = qb.run();
 
-        for( uint i=a*qb.countReturnValues(); i < fave.count(); i += qb.countReturnValues() )
+        for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
         {
             QString name = i18n("%1. %2").arg( QString::number(c), fave[i] );
             m_last = new StatisticsDetailedItem( name, item, m_last );
@@ -385,7 +384,7 @@ StatisticsList::expandInformation( StatisticsItem *item )
         qb.setLimit( 0, 50 );
         QStringList fave = qb.run();
 
-        for( uint i=a*qb.countReturnValues(); i < fave.count(); i += qb.countReturnValues() )
+        for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
         {
             QString name = i18n("%1. %2 - %3").arg( QString::number(c), fave[i], fave[i+1] );
             m_last = new StatisticsDetailedItem( name, item, m_last );
@@ -411,7 +410,7 @@ StatisticsList::expandInformation( StatisticsItem *item )
         qb.setLimit( 0, 50 );
         QStringList fave = qb.run();
 
-        for( uint i=a*qb.countReturnValues(); i < fave.count(); i += qb.countReturnValues() )
+        for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
         {
             QString name = i18n("%1. %2").arg( QString::number(c), fave[i] );
             m_last = new StatisticsDetailedItem( name, item, m_last );
@@ -421,6 +420,7 @@ StatisticsList::expandInformation( StatisticsItem *item )
             c++;
         }
     }
+
     else if( item == m_newestItem )
     {
         delete m_genreItem;
@@ -428,6 +428,26 @@ StatisticsList::expandInformation( StatisticsItem *item )
         delete m_artistItem;
         delete m_mostplayedItem;
         delete m_trackItem;
+
+        qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
+        qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+        qb.addReturnFunctionValue( QueryBuilder::funcMax, QueryBuilder::tabSong, QueryBuilder::valCreateDate );
+        qb.sortByFunction( QueryBuilder::funcMax, QueryBuilder::tabSong, QueryBuilder::valCreateDate, true );
+        qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
+        qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID);
+        qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName);
+        qb.setLimit( 0, 50 );
+        QStringList newest = qb.run();
+
+        for( uint i=0; i < newest.count(); i += qb.countReturnValues() )
+        {
+            QString name = i18n("%1. %2 - %3").arg( QString::number(c), newest[i], newest[i+1] );
+            m_last = new StatisticsDetailedItem( name, item, m_last );
+            m_last->setItemType( StatisticsDetailedItem::HISTORY );
+            QString url = QString("%1 @@@ %2").arg( newest[i+2], newest[i+3] );
+            m_last->setUrl( url );
+            c++;
+        }
     }
 
     item->setExpanded( true );
