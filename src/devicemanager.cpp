@@ -108,12 +108,9 @@ Use the Medium's name or id, not the pointer value, for equality comparison!!!
 This function does rebuild the map every time it is called, however this should be rare enough
 that it is not a problem.
 */
-Medium* DeviceManager::getDevice( QString name )
+Medium::List DeviceManager::getDeviceList()
 {
     DEBUG_BLOCK
-    debug() << "DeviceManager: getDevice called with name argument = " << name << endl;
-    Medium* returnedMedium = NULL;
-    Medium* tempMedium = NULL;
     MediumList currMediumList;
     QByteArray data, replyData;
     QCString replyType;
@@ -128,34 +125,46 @@ Medium* DeviceManager::getDevice( QString name )
         while(!reply.atEnd())
             reply >> result;
         currMediumList = Medium::createList( result );
-        Medium::List::iterator it;
-        QString mountwhere, halid;
-        for ( it = currMediumList.begin(); it != currMediumList.end(); it++ )
+    }
+
+    return currMediumList;
+}
+
+Medium* DeviceManager::getDevice( QString name )
+{
+    DEBUG_BLOCK
+        debug() << "DeviceManager: getDevice called with name argument = " << name << endl;
+    Medium* returnedMedium = NULL;
+    Medium* tempMedium = NULL;
+    MediumList currMediumList = getDeviceList();
+
+    Medium::List::iterator it;
+    QString mountwhere, halid;
+    for ( it = currMediumList.begin(); it != currMediumList.end(); it++ )
+    {
+        if ( (*it).name() == name )
         {
-            if ( (*it).name() == name )
-            {
-                debug() << "ID of name argument = " << (*it).id() << endl;
-                returnedMedium = new Medium(*it);
-            }
-            //the following code is currently simply as proof of concept, will likely not be relevant in the end
-            if ( (*it).mimeType().contains( "removable", false ) )
-            {
-                if ( (*it).isMounted() )
-                {
-                    mountwhere = (*it).mountPoint();
-                    debug() << "Removable device " << (*it).id() << " detected, and is mounted at: " << mountwhere << endl;
-                }
-                else
-                    debug() << "Removable device " << (*it).id() << " detected but not mounted" << endl;
-            }
-            if(m_mediumMap.contains(name))
-            {
-                tempMedium = m_mediumMap[(*it).name()];
-                m_mediumMap.remove((*it).name());
-                delete tempMedium;
-            }
-            m_mediumMap[(*it).name()] = new Medium(*it);
+            debug() << "ID of name argument = " << (*it).id() << endl;
+            returnedMedium = new Medium(*it);
         }
+        //the following code is currently simply as proof of concept, will likely not be relevant in the end
+        if ( (*it).mimeType().contains( "removable", false ) )
+        {
+            if ( (*it).isMounted() )
+            {
+                mountwhere = (*it).mountPoint();
+                debug() << "Removable device " << (*it).id() << " detected, and is mounted at: " << mountwhere << endl;
+            }
+            else
+                debug() << "Removable device " << (*it).id() << " detected but not mounted" << endl;
+        }
+        if(m_mediumMap.contains(name))
+        {
+            tempMedium = m_mediumMap[(*it).name()];
+            m_mediumMap.remove((*it).name());
+            delete tempMedium;
+        }
+        m_mediumMap[(*it).name()] = new Medium(*it);
     }
     return returnedMedium;
 }

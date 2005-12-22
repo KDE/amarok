@@ -4,7 +4,7 @@
 #include <dcopobject.h>
 #include <qmap.h>
 
-class Medium;
+#include "medium.h"
 
 typedef QMap<QString, Medium*> MediumMap;
 
@@ -25,10 +25,11 @@ class DeviceManager : public QObject
         void mediumChanged( QString name);
         void mediumRemoved( QString name);
 
+        Medium::List getDeviceList();
     signals:
-        void mediumAdded( Medium*, QString, uint );
-        void mediumChanged( Medium*, QString, uint );
-        void mediumRemoved( Medium*, QString, uint );
+        void mediumAdded( const Medium*, QString, uint );
+        void mediumChanged( const Medium*, QString, uint );
+        void mediumRemoved( const Medium*, QString, uint );
 
     private:
         Medium* getDevice(QString name);
