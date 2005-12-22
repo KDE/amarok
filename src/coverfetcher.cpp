@@ -402,6 +402,10 @@ CoverFetcher::attemptAnotherFetch()
         // we have exhausted all the predetermined queries
         // so lets let the user give it a try
         getUserQuery( i18n("You have seen all the covers Amazon returned using the query below. Perhaps you can refine it:") );
+        m_coverAmazonUrls.clear();
+        m_coverAsins.clear();
+        m_coverUrls.clear();
+        m_coverNames.clear();
     }
     else
         finishWithError( i18n("No cover found") );
@@ -592,6 +596,10 @@ CoverFetcher::showCover()
         break;
     case 1000: //showQueryEditor()
         getUserQuery();
+        m_coverAmazonUrls.clear();
+        m_coverAsins.clear();
+        m_coverUrls.clear();
+        m_coverNames.clear();
         break;
     case 1001: //nextCover()
         attemptAnotherFetch();
