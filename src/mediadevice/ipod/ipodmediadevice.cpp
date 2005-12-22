@@ -1213,7 +1213,7 @@ IpodMediaDevice::determineURLOnDevice(const MetaBundle &bundle)
     {
         int num = std::rand() % 1000000;
         int dir = num % itdb_musicdirs_number(m_itdb);
-        trackpath.sprintf( ":iPod_Control:Music:F%02d:kpod%d.%s", dir, num, type.latin1() );
+        trackpath.sprintf( ":iPod_Control:Music:f%02d:kpod%d.%s", dir, num, type.latin1() );
         QFileInfo finfo(realPath(trackpath.latin1()));
         exists = finfo.exists();
     }
