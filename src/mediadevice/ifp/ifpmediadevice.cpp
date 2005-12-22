@@ -109,10 +109,11 @@ IfpMediaDevice::IfpMediaDevice()
     , m_connected( false )
     , m_tmpParent( 0 )
 {
+    m_name = "iRiver";
 }
 
 void
-IfpMediaDevice::init( MediaDeviceView* parent, MediaDeviceList *listview )
+IfpMediaDevice::init( MediaBrowser* parent, MediaView *listview )
 {
     MediaDevice::init( parent, listview );
 }
@@ -522,7 +523,7 @@ IfpMediaDevice::getFullPath( const QListViewItem *item, const bool getFilename )
 
 
 void
-IfpMediaDevice::rmbPressed( MediaDeviceList *deviceList, QListViewItem* qitem, const QPoint& point, int )
+IfpMediaDevice::rmbPressed( MediaView *deviceList, QListViewItem* qitem, const QPoint& point, int )
 {
     enum Actions { DOWNLOAD, DIRECTORY, RENAME, DELETE };
 

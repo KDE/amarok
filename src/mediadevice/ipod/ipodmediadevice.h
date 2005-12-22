@@ -24,9 +24,9 @@ class IpodMediaDevice : public KioMediaDevice
 
     public:
                           IpodMediaDevice();
-        void              init( MediaDeviceView* parent, MediaDeviceList* listview );
+        void              init( MediaBrowser* parent, MediaView* listview );
         virtual           ~IpodMediaDevice();
-        virtual bool      autoConnect() { return false; /* for now b/c of last.fm submissions */ }
+        virtual bool      autoConnect() { return true; }
         virtual bool      asynchronousTransfer() { return false; /* kernel buffer flushes freeze amaroK */ }
         QStringList       supportedFiletypes();
 
@@ -61,7 +61,7 @@ class IpodMediaDevice : public KioMediaDevice
         MediaItem        *newPlaylist(const QString &name, MediaItem *list, QPtrList<MediaItem> items);
         virtual MediaItem*newDirectory(const QString&, MediaItem*) { return 0; }
         bool              getCapacity(unsigned long *total, unsigned long *available);
-        void              rmbPressed( MediaDeviceList *deviceList, QListViewItem* qitem, const QPoint& point, int );
+        void              rmbPressed( MediaView *deviceList, QListViewItem* qitem, const QPoint& point, int );
 
     protected slots:
         void              renameItem( QListViewItem *item );

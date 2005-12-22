@@ -73,3 +73,8 @@ Type=int
 # If true, amaroK will show a warning dialog about the experimental nature of this plugin.
 [PropertyDef::X-KDE-amaroK-experimental]
 Type=bool
+
+# Compatibility list, e.g. all supported media device types.
+[PropertyDef::X-KDE-amaroK-compatible]
+Type=QStringList
+

@@ -16,10 +16,12 @@
 #include <kurl.h>            //stack allocated
 #include "scrobbler.h"       //SubmitItem
 
+class MediaBrowser;
 class MediaDevice;
-class MediaDeviceView;
+class MediaView;
 class MetaBundle;
 class SpaceLabel;
+class Medium;
 
 class KProgress;
 class KPushButton;
@@ -106,13 +108,17 @@ class MediaItem : public KListViewItem
         static QPixmap *s_pixDirectory;
 };
 
-class MediaDeviceTransferList : public KListView
+class MediaTransferList : public KListView
 {
     Q_OBJECT
 
     public:
-        MediaDeviceTransferList(MediaDeviceView *parent);
+        MediaTransferList(MediaBrowser *parent);
         MediaItem *findPath( QString path );
+
+        unsigned totalSize() const; // total size of items to transfer in KB
+        void removeSelected();
+        void clearItems();
 
         // Reimplemented from KListView
         void dragEnterEvent( QDragEnterEvent* );
@@ -120,18 +126,18 @@ class MediaDeviceTransferList : public KListView
         void contentsDragEnterEvent( QDragEnterEvent* );
         void contentsDropEvent( QDropEvent *e );
         void contentsDragMoveEvent( QDragMoveEvent* e );
-        unsigned totalSize() const; // total size of items to transfer in KB
 
     public slots:
         void itemCountChanged();
 
     private slots:
         void selectAll() {QListView::selectAll(true); }
+        void slotShowContextMenu( QListViewItem* item, const QPoint& point, int );
 
     private:
         void keyPressEvent( QKeyEvent *e );
 
-        MediaDeviceView *m_parent;
+        MediaBrowser *m_parent;
 };
 
 
@@ -139,8 +145,8 @@ class MediaBrowser : public QVBox
 {
     Q_OBJECT
     friend class MediaDevice;
-    friend class MediaDeviceList;
-    friend class MediaDeviceView;
+    friend class MediaView;
+    friend class MediaTransferList;
 
     public:
         static bool isAvailable();
@@ -148,29 +154,74 @@ class MediaBrowser : public QVBox
 
         MediaBrowser( const char *name );
         virtual ~MediaBrowser();
+        MediaDevice *currentDevice();
+        void        addURL( const KURL& url, MetaBundle *bundle=NULL, PodcastInfo *info=NULL, const QString &playlistName=QString::null );
+        void        addURLs( const KURL::List urls, const QString &playlistName=QString::null );
+        void        URLsAdded();
+        MediaTransferList *transferList() { return m_transferList; }
 
     private slots:
         void slotSetFilterTimeout();
         void slotSetFilter();
+        void mediumAdded( const Medium *, QString, uint );
+        void mediumChanged( const Medium *, QString, uint );
+        void mediumRemoved( const Medium *, QString, uint );
 
     private:
-        MediaDeviceView* m_view;
+        MediaDevice *loadDevicePlugin( const QString &deviceName );
+        void         unloadDevicePlugin( MediaDevice *device );
 
         KLineEdit* m_searchEdit;
         QTimer *m_timer;
         static MediaBrowser *s_instance;
+
+        QValueList<MediaDevice *> m_devices;
+        QValueList<MediaDevice *>::iterator m_currentDevice;
+
+        QMap<QString, QString> m_pluginName;
+        QMap<QString, QString> m_pluginAmarokName;
+        QMap<QString, QString> m_pluginSupports;
+        void addDevice( MediaDevice *device );
+        void removeDevice( MediaDevice *device );
+        void activateDevice( uint index );
+
+        MediaTransferList* m_transferList;
+        void loadTransferList( const QString &path );
+        void saveTransferList( const QString &path );
+
+
+    public:
+    bool setFilter( const QString &filter, MediaItem *parent=NULL );
+    void updateStats();
+    void updateButtons();
+
+    private slots:
+    void config();
+
+    private:
+    QString          prettySize( unsigned long size ); // KB to QString
+    bool             match( const MediaItem *item, const QString &filter );
+    SpaceLabel*      m_stats;
+    QHBox*           m_progressBox;
+    KProgress*       m_progress;
+    MediaView       *m_view;
+    KPushButton*     m_cancelButton;
+    KPushButton*     m_transferButton;
+    KPushButton*     m_connectButton;
+    KPushButton*     m_disconnectButton;
+    KPushButton*     m_playlistButton;
+    KPushButton*     m_configButton;
 };
 
-
-class MediaDeviceList : public KListView
+class MediaView : public KListView
 {
     Q_OBJECT
     friend class MediaBrowser;
     friend class MediaDevice;
 
     public:
-        MediaDeviceList( MediaDeviceView* parent );
-        virtual ~MediaDeviceList();
+        MediaView( MediaBrowser* parent );
+        virtual ~MediaView();
         KURL::List nodeBuildDragList( MediaItem* item, bool onlySelected=true );
         int getSelectedLeaves(MediaItem *parent, QPtrList<MediaItem> *list, bool onlySelected=true, bool onlyPlayed=false );
         MediaItem *newDirectory( MediaItem* parent );
@@ -193,53 +244,10 @@ class MediaDeviceList : public KListView
         void contentsDragMoveEvent( QDragMoveEvent* e );
         void viewportPaintEvent( QPaintEvent* );
 
-        MediaDeviceView* m_parent;
+        MediaBrowser* m_parent;
         MediaItemTip *m_toolTip;
 };
 
-
-class MediaDeviceView : public QVBox
-{
-    Q_OBJECT
-        friend class MediaBrowser;
-    friend class MediaDevice;
-    friend class MediaDeviceList;
-    friend class MediaDeviceTransferList;
-
-    public:
-    MediaDeviceView( MediaBrowser* parent );
-    virtual ~MediaDeviceView();
-    bool setFilter( const QString &filter, MediaItem *parent=NULL );
-    void updateStats();
-    void updateButtons();
-
-    private slots:
-        void config();
-    void slotShowContextMenu( QListViewItem* item, const QPoint& point, int );
-
-    private:
-    MediaDevice*     loadDevicePlugin( const QString &deviceName );
-    void             unloadDevicePlugin( MediaDevice *device );
-    bool             switchMediaDevice( const QString &newType );
-
-    QString          prettySize( unsigned long size ); // KB to QString
-    bool             match( const MediaItem *item, const QString &filter );
-    SpaceLabel*      m_stats;
-    QHBox*           m_progressBox;
-    KProgress*       m_progress;
-    MediaDevice*     m_device;
-    MediaDeviceList* m_deviceList;
-    KPushButton*     m_cancelButton;
-    KPushButton*     m_transferButton;
-    KPushButton*     m_connectButton;
-    KPushButton*     m_playlistButton;
-    KPushButton*     m_configButton;
-
-    MediaBrowser* m_parent;
-
-    QMap<QString, QString> m_pluginName;
-    QMap<QString, QString> m_pluginAmarokName;
-};
 
 /* at least the pure virtual functions have to be implemented by a media device,
    all items are stored in a hierarchy of MediaItems,
@@ -249,20 +257,15 @@ class MediaDevice : public QObject, public amaroK::Plugin
 {
     Q_OBJECT
     friend class MediaBrowser;
-    friend class MediaDeviceView;
-    friend class MediaDeviceList;
-    friend class MediaDeviceTransferList;
+    friend class MediaView;
+    friend class MediaTransferList;
 
     public:
         MediaDevice();
-        virtual void init( MediaDeviceView* parent, MediaDeviceList* listview );
+        virtual void init( MediaBrowser* parent, MediaView* listview );
         virtual ~MediaDevice();
 
-        void        addURL( const KURL& url, MetaBundle *bundle=NULL, PodcastInfo *info=NULL, const QString &playlistName=QString::null );
-        void        addURLs( const KURL::List urls, const QString &playlistName=QString::null );
-        void        URLsAdded();
-
-        virtual void rmbPressed( MediaDeviceList *deviceList, QListViewItem *item, const QPoint &point, int ) { (void)deviceList; (void)item; (void) point; }
+        virtual void rmbPressed( MediaView *deviceList, QListViewItem *item, const QPoint &point, int ) { (void)deviceList; (void)item; (void) point; }
 
         /**
          * @return list of filetypes playable on this device
@@ -326,16 +329,24 @@ class MediaDevice : public QObject, public amaroK::Plugin
 
         int          progress() const;
         void         setProgress( const int progress, const int total = -1 /* leave total unchanged by default */ );
-        void         hideProgress() { m_parent->m_progressBox->hide(); }
+        void         hideProgress();
 
-        static MediaDevice *instance() { return s_instance; }
+
+        /**
+         * @return a unique identifier that is constant across sessions
+         */
+        QString uniqueId() const { return m_uniqueId; }
+
+        /**
+         * @return the name for the device that should be presented to the user
+         */
+        QString name() const { return m_name; }
 
     public slots:
         void abortTransfer();
-        void clearItems();
         void connectClicked( bool silent=false );
+        void disconnectClicked( bool silent=false );
         int  mount();
-        void removeSelected();
         void setMountPoint(const QString & mntpnt);
         void setMountCommand(const QString & mnt);
         void setUmountCommand(const QString & umnt);
@@ -426,7 +437,8 @@ class MediaDevice : public QObject, public amaroK::Plugin
         bool connectDevice( bool silent=false );
         bool disconnectDevice();
 
-        QString     m_type;
+        QString     m_name;
+        QString     m_uniqueId;
 
         QString     m_mntpnt;
         QString     m_mntcmd;
@@ -435,8 +447,8 @@ class MediaDevice : public QObject, public amaroK::Plugin
         bool        m_syncStats;
 
         KShellProcess   *sysProc;
-        MediaDeviceView* m_parent;
-        MediaDeviceList* m_listview;
+        MediaBrowser    *m_parent;
+        MediaView       *m_listview;
         bool             m_wait;
         bool             m_waitForDeletion;
         bool             m_copyFailed;
@@ -447,12 +459,7 @@ class MediaDevice : public QObject, public amaroK::Plugin
         bool             m_cancelled;
         bool             m_transferring;
         MediaItem       *m_transferredItem;
-
-        MediaDeviceTransferList* m_transferList;
-        void loadTransferList( const QString &path );
-        void saveTransferList( const QString &path );
-
-        static MediaDevice *s_instance;
+        QString          m_type;
 
         // root listview items
         MediaItem *m_playlistItem;

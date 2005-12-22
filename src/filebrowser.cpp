@@ -392,7 +392,7 @@ FileBrowser::contextMenuActivated( int id )
         break;
 
     case MediaDevice:
-        MediaDevice::instance()->addURLs( selectedItems() );
+        MediaBrowser::instance()->addURLs( selectedItems() );
         break;
 
     case SelectAllFiles:

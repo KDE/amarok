@@ -37,11 +37,11 @@ class IfpMediaDevice : public MediaDevice
 
     public:
                           IfpMediaDevice();
-        void              init( MediaDeviceView* parent, MediaDeviceList* listview );
+        void              init( MediaBrowser* parent, MediaView* listview );
         virtual           ~IfpMediaDevice();
 
         bool              isConnected() { return m_connected; }
-        void              rmbPressed( MediaDeviceList *deviceList, QListViewItem* qitem, const QPoint& point, int );
+        void              rmbPressed( MediaView *deviceList, QListViewItem* qitem, const QPoint& point, int );
 
     protected:
         bool              openDevice( bool silent=false );

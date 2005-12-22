@@ -52,7 +52,7 @@ KioMediaDevice::KioMediaDevice()
 }
 
 void
-KioMediaDevice::init( MediaDeviceView* parent, MediaDeviceList *listview )
+KioMediaDevice::init( MediaBrowser* parent, MediaView *listview )
 {
     MediaDevice::init( parent, listview );
 }
@@ -487,7 +487,8 @@ KioMediaDevice::fileTransferred( KIO::Job *job )  //SLOT, used in GpodMediaDevic
         setProgress( progress() + 1 );
 
         // the track just transferred has not yet been removed from the queue
-        m_transferList->takeItem( m_transferList->firstChild() );
+        // FIXME
+        MediaBrowser::instance()->transferList()->takeItem( MediaBrowser::instance()->transferList()->firstChild() );
     }
     m_parent->updateStats();
 
@@ -495,7 +496,7 @@ KioMediaDevice::fileTransferred( KIO::Job *job )  //SLOT, used in GpodMediaDevic
 }
 
 void
-KioMediaDevice::rmbPressed( MediaDeviceList *deviceList, QListViewItem* qitem, const QPoint& point, int )
+KioMediaDevice::rmbPressed( MediaView *deviceList, QListViewItem* qitem, const QPoint& point, int )
 {
     MediaItem *item = dynamic_cast<MediaItem *>(qitem);
     if ( item )

@@ -133,10 +133,11 @@ IpodMediaDevice::IpodMediaDevice()
     m_hasStats = true;
     m_hasPlaylists = true;
     m_requireMount = true;
+    m_name = "iPod";
 }
 
 void
-IpodMediaDevice::init( MediaDeviceView* parent, MediaDeviceList *listview )
+IpodMediaDevice::init( MediaBrowser* parent, MediaView *listview )
 {
     KioMediaDevice::init( parent, listview );
 }
@@ -1304,7 +1305,7 @@ IpodMediaDevice::getCapacity( unsigned long *total, unsigned long *available )
 }
 
 void
-IpodMediaDevice::rmbPressed( MediaDeviceList *deviceList, QListViewItem* qitem, const QPoint& point, int )
+IpodMediaDevice::rmbPressed( MediaView *deviceList, QListViewItem* qitem, const QPoint& point, int )
 {
     MediaItem *item = dynamic_cast<MediaItem *>(qitem);
     if ( item )

@@ -299,12 +299,12 @@ namespace amaroK
 
     void DcopPlayerHandler::mediaDeviceMount()
     {
-        MediaDevice::instance()->mount();
+        MediaBrowser::instance()->currentDevice()->mount();
     }
 
     void DcopPlayerHandler::mediaDeviceUmount()
     {
-        MediaDevice::instance()->umount();
+        MediaBrowser::instance()->currentDevice()->umount();
     }
 
     void DcopPlayerHandler::mute()
@@ -339,7 +339,8 @@ namespace amaroK
 
     void DcopPlayerHandler::queueForTransfer( KURL url )
     {
-        MediaDevice::instance()->addURL( url );
+        MediaBrowser::instance()->addURL( url );
+        MediaBrowser::instance()->URLsAdded();
     }
 
     void DcopPlayerHandler::seek(int s)
@@ -446,7 +447,7 @@ namespace amaroK
 
     void DcopPlayerHandler::transferDeviceFiles()
     {
-        MediaDevice::instance()->transferFiles();
+        MediaBrowser::instance()->currentDevice()->transferFiles();
     }
 
     void DcopPlayerHandler::volumeDown()

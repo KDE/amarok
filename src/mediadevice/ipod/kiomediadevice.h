@@ -17,7 +17,7 @@ class KioMediaDevice : public MediaDevice
 
     public:
                           KioMediaDevice();
-        void              init( MediaDeviceView* parent, MediaDeviceList* listview );
+        void              init( MediaBrowser* parent, MediaView* listview );
         virtual           ~KioMediaDevice();
         virtual bool      asynchronousTransfer() { return true; }
 
@@ -54,7 +54,7 @@ class KioMediaDevice : public MediaDevice
         virtual void      addToDirectory(MediaItem *dir, QPtrList<MediaItem> items);
         virtual MediaItem*newDirectory(const QString&, MediaItem*) { return 0; }
         virtual bool      getCapacity(unsigned long *total, unsigned long *available);
-        virtual void      rmbPressed( MediaDeviceList *deviceList, QListViewItem* qitem, const QPoint& point, int );
+        virtual void      rmbPressed( MediaView *deviceList, QListViewItem* qitem, const QPoint& point, int );
         virtual void      deleteFile( const KURL &url );
         virtual void      abortTransfer() {}
 
