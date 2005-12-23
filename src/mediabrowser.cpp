@@ -32,6 +32,7 @@
 #include <qdom.h>
 #include <qfileinfo.h>
 #include <qgroupbox.h>
+#include <qheader.h>
 #include <qimage.h>
 #include <qlabel.h>
 #include <qpainter.h>
@@ -41,6 +42,7 @@
 #include <qtooltip.h>       //QToolTip::add()
 
 #include <kapplication.h> //kapp
+#include <kcombobox.h>
 #include <kdirlister.h>
 #include <kfiledialog.h>
 #include <kglobal.h>
@@ -80,10 +82,6 @@ QPixmap *MediaItem::s_pixRootItem = 0;
 bool MediaBrowser::isAvailable() //static
 {
     if( !MediaBrowser::instance() )
-        return false;
-    if( !MediaBrowser::instance()->currentDevice() )
-        return false;
-    if( MediaBrowser::instance()->currentDevice()->deviceType() == "dummy-mediadevice" )
         return false;
 
     return true;
@@ -158,8 +156,8 @@ class SpaceLabel : public QLabel {
 class DummyMediaDevice : public MediaDevice
 {
     public:
-    DummyMediaDevice() : MediaDevice() {}
-    void init( MediaBrowser *view, MediaView *list ) { MediaDevice::init( view, list ); }
+    DummyMediaDevice() : MediaDevice() { m_name = "Do-Nothing Device"; }
+    void init( MediaBrowser *browser ) { MediaDevice::init( browser ); }
     virtual ~DummyMediaDevice() {}
     virtual bool isConnected() { return false; }
     virtual void cancelTransfer() {}
@@ -235,6 +233,8 @@ MediaBrowser::MediaBrowser( const char *name )
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
     connect( m_searchEdit, SIGNAL( returnPressed() ), SLOT( slotSetFilter() ) );
 
+    m_deviceCombo = new KComboBox( this );
+
     // connect to device manager
     connect( DeviceManager::instance(), SIGNAL( mediumAdded(const Medium *, QString) ),
             SLOT( mediumAdded(const Medium *, QString) ) );
@@ -262,7 +262,8 @@ MediaBrowser::MediaBrowser( const char *name )
         }
     }
 
-    m_view = new MediaView( this );
+    m_views = new QVBox( this );
+    //m_view = new MediaView( this );
     m_transferList = new MediaTransferList( this );
     m_progressBox  = new QHBox( this );
     m_progress     = new KProgress( m_progressBox );
@@ -296,17 +297,13 @@ MediaBrowser::MediaBrowser( const char *name )
     m_progressBox->hide();
 
     MediaDevice *dev = new DummyMediaDevice();
-    dev->init( this, m_view );
+    dev->init( this );
     addDevice( dev );
     activateDevice( 0 );
     loadTransferList( amaroK::saveLocation() + "transferlist.xml" );
 
-
-    //setFocusProxy( m_view ); //default object to get focus
     setFocusProxy( m_transferList );
 
-    if( !currentDevice()->m_hasPlaylists )
-        m_playlistButton->hide();
     updateStats();
 
     Medium::List devices = DeviceManager::instance()->getDeviceList();
@@ -324,6 +321,7 @@ MediaBrowser::MediaBrowser( const char *name )
         mediumAdded( &*it, (*it).name() );
     }
 
+    connect( m_deviceCombo, SIGNAL( activated( int ) ), SLOT( activateDevice( int ) ) );
 }
 
 MediaDevice *
@@ -339,9 +337,9 @@ MediaBrowser::currentDevice()
 
 
 void
-MediaBrowser::activateDevice( uint index )
+MediaBrowser::activateDevice( int index )
 {
-    if( index >= m_devices.count() )
+    if( index < 0 || index >= m_devices.count() )
         return;
 
     if( m_currentDevice == m_devices.at( index ) )
@@ -350,10 +348,12 @@ MediaBrowser::activateDevice( uint index )
     if( m_currentDevice != m_devices.end() )
     {
         disconnect( *m_currentDevice );
+        (*m_currentDevice)->view()->hide();
     }
 
     m_currentDevice = m_devices.at( index );
-    m_view->setColumnText( 0, currentDevice()->name() );
+    m_deviceCombo->setCurrentItem( index );
+    (*m_currentDevice)->view()->show();
 
     connect( m_cancelButton,     SIGNAL( clicked() ), currentDevice(), SLOT( abortTransfer() ) );
     connect( m_connectButton,    SIGNAL( clicked() ), currentDevice(), SLOT( connectClicked() ) );
@@ -362,6 +362,10 @@ MediaBrowser::activateDevice( uint index )
 
     updateButtons();
     updateStats();
+    if( currentDevice()->m_hasPlaylists )
+        m_playlistButton->show();
+    else
+        m_playlistButton->hide();
 }
 
 void
@@ -376,6 +380,7 @@ MediaBrowser::addDevice( MediaDevice *device )
         updateButtons();
     }
 
+    updateDevices();
 }
 
 void
@@ -386,7 +391,7 @@ MediaBrowser::removeDevice( MediaDevice *device )
     debug() << "remove device: type=" << device->deviceType() << endl;
 
     if( device->isConnected() )
-        device->disconnectDevice();
+        device->synchronizeDevice();
     for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
             it != m_devices.end();
             it++ )
@@ -400,6 +405,26 @@ MediaBrowser::removeDevice( MediaDevice *device )
         }
     }
     unloadDevicePlugin( device );
+
+    updateDevices();
+}
+
+void
+MediaBrowser::updateDevices()
+{
+    m_deviceCombo->clear();
+    uint i = 0;
+    for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
+            it != m_devices.end();
+            it++ )
+    {
+        m_deviceCombo->insertItem( (*it)->name(), i );
+        if( it == m_currentDevice )
+        {
+            m_deviceCombo->setCurrentItem( i );
+        }
+        i++;
+    }
 }
 
 void
@@ -430,12 +455,12 @@ MediaBrowser::~MediaBrowser()
         next = it;
         next++;
         if( (*it)->isConnected() )
-            (*it)->disconnectDevice();
+            (*it)->synchronizeDevice();
         removeDevice( *it );
     }
 
+    delete m_deviceCombo;
     delete m_transferList;
-    delete m_view;
 }
 
 
@@ -786,9 +811,10 @@ class MediaItemTip : public QToolTip
 };
 
 
-MediaView::MediaView( MediaBrowser* parent )
+MediaView::MediaView( QWidget* parent, MediaDevice *device )
     : KListView( parent )
     , m_parent( parent )
+    , m_device( device )
 {
     setSelectionMode( QListView::Extended );
     setItemsMovable( false );
@@ -801,7 +827,8 @@ MediaView::MediaView( MediaBrowser* parent )
     setDropVisualizerWidth( 3 );
     setAcceptDrops( true );
 
-    addColumn( i18n( "No device" ) );
+    header()->hide();
+    addColumn( i18n( "Remote Media" ) );
 
     KActionCollection* ac = new KActionCollection( this );
     KStdAction::selectAll( this, SLOT( selectAll() ), ac, "mediabrowser_select_all" );
@@ -838,15 +865,13 @@ MediaView::invokeItem( QListViewItem *i )
 void
 MediaView::renameItem( QListViewItem *item )
 {
-    if( MediaBrowser::instance()->currentDevice() )
-        MediaBrowser::instance()->currentDevice()->renameItem( item );
+    m_device->renameItem( item );
 }
 
 void
 MediaView::slotExpand( QListViewItem *item )
 {
-    if( MediaBrowser::instance()->currentDevice() )
-        MediaBrowser::instance()->currentDevice()->expandItem( item );
+    m_device->expandItem( item );
 }
 
 
@@ -981,7 +1006,7 @@ MediaView::contentsDropEvent( QDropEvent *e )
                 after = it;
 
             getSelectedLeaves( 0, &items );
-            MediaBrowser::instance()->currentDevice()->addToPlaylist( list, after, items );
+            m_device->addToPlaylist( list, after, items );
         }
         else if( item->type() == MediaItem::PLAYLISTITEM )
         {
@@ -997,7 +1022,7 @@ MediaView::contentsDropEvent( QDropEvent *e )
             }
 
             getSelectedLeaves( 0, &items );
-            MediaBrowser::instance()->currentDevice()->addToPlaylist( list, after, items );
+            m_device->addToPlaylist( list, after, items );
         }
         else if( item->type() == MediaItem::PLAYLISTSROOT )
         {
@@ -1013,7 +1038,7 @@ MediaView::contentsDropEvent( QDropEvent *e )
                 name = base + " " + num;
                 i++;
             }
-            MediaItem *pl = MediaBrowser::instance()->currentDevice()->newPlaylist(name, item, items);
+            MediaItem *pl = m_device->newPlaylist(name, item, items);
             ensureItemVisible(pl);
             rename(pl, 0);
         }
@@ -1022,7 +1047,7 @@ MediaView::contentsDropEvent( QDropEvent *e )
             debug() << "Dropping items into directory: " << item->text(0) << endl;
             QPtrList<MediaItem> items;
             getSelectedLeaves( 0, &items );
-            MediaBrowser::instance()->currentDevice()->addToDirectory( item, items );
+            m_device->addToDirectory( item, items );
         }
     }
     else
@@ -1033,12 +1058,12 @@ MediaView::contentsDropEvent( QDropEvent *e )
             KURL::List::ConstIterator it = list.begin();
             for ( ; it != list.end(); ++it )
             {
-                m_parent->addURL( *it );
+                MediaBrowser::instance()->addURL( *it );
             }
         }
     }
 
-    m_parent->URLsAdded();
+    MediaBrowser::instance()->URLsAdded();
 }
 
 
@@ -1050,8 +1075,8 @@ MediaView::contentsDragMoveEvent( QDragMoveEvent *e )
     e->accept( e->source() == viewport()
             || e->source() == this
             || (e->source() != m_parent
-                && e->source() != m_parent->m_transferList
-                && e->source() != m_parent->m_transferList->viewport()
+                && e->source() != MediaBrowser::instance()->m_transferList
+                && e->source() != MediaBrowser::instance()->m_transferList->viewport()
                 && KURLDrag::canDecode( e )) );
 
 }
@@ -1064,7 +1089,7 @@ MediaView::viewportPaintEvent( QPaintEvent *e )
 
     // Superimpose bubble help:
 
-    if ( !m_parent->m_connectButton->isOn() && !childCount() )
+    if ( !MediaBrowser::instance()->m_connectButton->isOn() && !childCount() )
     {
         QPainter p( viewport() );
 
@@ -1089,7 +1114,7 @@ MediaView::viewportPaintEvent( QPaintEvent *e )
 void
 MediaView::rmbPressed( QListViewItem *item, const QPoint &p, int i )
 {
-    MediaBrowser::instance()->currentDevice()->rmbPressed( this, item, p, i );
+    m_device->rmbPressed( this, item, p, i );
 }
 
 MediaItem *
@@ -1100,7 +1125,7 @@ MediaView::newDirectory( MediaItem *parent )
 
     if( ok && !name.isEmpty() )
     {
-        return MediaBrowser::instance()->currentDevice()->newDirectory( name, parent );
+        m_device->newDirectory( name, parent );
     }
 
     return 0;
@@ -1194,7 +1219,7 @@ MediaBrowser::loadDevicePlugin( const QString &deviceType )
     {
         debug() << "Returning plugin!" << endl;
         MediaDevice *device = static_cast<MediaDevice *>( plugin );
-        device->init( this, m_view );
+        device->init( this );
         device->m_type = deviceType;
         return device;
     }
@@ -1335,8 +1360,8 @@ MediaBrowser::prettySize( unsigned long size )
 void
 MediaBrowser::updateButtons()
 {
-    if( m_connectButton )
-        m_connectButton->setOn( currentDevice()
+    if( m_disconnectButton )
+        m_disconnectButton->setEnabled( currentDevice()
                 && currentDevice()->isConnected() );
     if( m_transferButton )
         m_transferButton->setEnabled( currentDevice()
@@ -1382,7 +1407,7 @@ MediaBrowser::setFilter( const QString &filter, MediaItem *parent )
     MediaItem *it;
     if( !parent )
     {
-        it = dynamic_cast<MediaItem *>(m_view->firstChild());
+        it = dynamic_cast<MediaItem *>(currentDevice()->view()->firstChild());
     }
     else
     {
@@ -1466,15 +1491,47 @@ MediaDevice::MediaDevice()
     m_syncStats = AmarokConfig::syncStats();
 }
 
-void MediaDevice::init( MediaBrowser* parent, MediaView *listview )
+void MediaDevice::init( MediaBrowser* parent )
 {
     m_parent = parent;
-    m_listview = listview;
+    m_listview = new MediaView( m_parent->m_views, this );
+    m_listview->hide();
 }
 
 MediaDevice::~MediaDevice()
 {
     delete sysProc;
+}
+
+MediaView *
+MediaDevice::view()
+{
+    return m_listview;
+}
+
+void
+MediaDevice::giveItemsToView()
+{
+    for( QListViewItem *it = m_rootItems.take();
+            it;
+            it = m_rootItems.take() )
+    {
+        m_listview->insertItem( it );
+    }
+}
+
+void
+MediaDevice::takeItemsFromView()
+{
+    QListViewItem *next = 0;
+    for( QListViewItem *it = m_listview->firstChild();
+            it;
+            it = next )
+    {
+        next = it->nextSibling();
+        m_rootItems.append( it );
+        m_listview->takeItem( it );
+    }
 }
 
 void
@@ -1686,7 +1743,7 @@ MediaDevice::connectClicked( bool silent )
         {
             QPtrList<MediaItem> list;
             //NOTE we assume that currentItem is the main target
-            int numFiles  = m_parent->m_view->getSelectedLeaves( m_podcastItem, &list, false /* not only selected */, true /* only played */ );
+            int numFiles  = m_listview->getSelectedLeaves( m_podcastItem, &list, false /* not only selected */, true /* only played */ );
 
             if(numFiles > 0)
             {
@@ -2051,7 +2108,7 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
     {
         QPtrList<MediaItem> list;
         //NOTE we assume that currentItem is the main target
-        int numFiles  = m_parent->m_view->getSelectedLeaves(item, &list, true /* only selected */, onlyPlayed);
+        int numFiles  = m_listview->getSelectedLeaves(item, &list, true /* only selected */, onlyPlayed);
 
         m_parent->m_stats->setText( i18n( "1 track to be deleted", "%n tracks to be deleted", numFiles ) );
         if(numFiles > 0)
@@ -2080,7 +2137,7 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
 
         lockDevice( true );
         if( !fi )
-            fi = static_cast<MediaItem*>(m_parent->m_view->firstChild());
+            fi = static_cast<MediaItem*>(m_listview->firstChild());
     }
 
     while( fi )
@@ -2392,8 +2449,6 @@ MediaTransferList::dragEnterEvent( QDragEnterEvent *e )
 
     e->accept( e->source() != viewport()
             && e->source() != m_parent
-            && e->source() != m_parent->m_view
-            && e->source() != m_parent->m_view->viewport()
             && KURLDrag::canDecode( e ) );
 }
 
@@ -2423,8 +2478,6 @@ MediaTransferList::contentsDragEnterEvent( QDragEnterEvent *e )
 
     e->accept( e->source() != viewport()
             && e->source() != m_parent
-            && e->source() != m_parent->m_view
-            && e->source() != m_parent->m_view->viewport()
             && KURLDrag::canDecode( e ) );
 }
 
@@ -2456,8 +2509,6 @@ MediaTransferList::contentsDragMoveEvent( QDragMoveEvent *e )
     //    QListViewItem *item = itemAt( p );
     e->accept( e->source() != viewport()
             && e->source() != m_parent
-            && e->source() != m_parent->m_view
-            && e->source() != m_parent->m_view->viewport()
             && KURLDrag::canDecode( e ) );
 
 #if 0

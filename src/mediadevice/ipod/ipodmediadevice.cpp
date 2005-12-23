@@ -137,9 +137,9 @@ IpodMediaDevice::IpodMediaDevice()
 }
 
 void
-IpodMediaDevice::init( MediaBrowser* parent, MediaView *listview )
+IpodMediaDevice::init( MediaBrowser* parent )
 {
-    KioMediaDevice::init( parent, listview );
+    KioMediaDevice::init( parent );
 }
 
 IpodMediaDevice::~IpodMediaDevice()

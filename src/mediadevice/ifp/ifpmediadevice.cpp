@@ -113,9 +113,9 @@ IfpMediaDevice::IfpMediaDevice()
 }
 
 void
-IfpMediaDevice::init( MediaBrowser* parent, MediaView *listview )
+IfpMediaDevice::init( MediaBrowser* parent )
 {
-    MediaDevice::init( parent, listview );
+    MediaDevice::init( parent );
 }
 
 IfpMediaDevice::~IfpMediaDevice()

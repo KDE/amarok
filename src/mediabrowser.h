@@ -23,6 +23,7 @@ class MetaBundle;
 class SpaceLabel;
 class Medium;
 
+class KComboBox;
 class KProgress;
 class KPushButton;
 class KShellProcess;
@@ -166,6 +167,7 @@ class MediaBrowser : public QVBox
         void mediumAdded( const Medium *, QString );
         void mediumChanged( const Medium *, QString );
         void mediumRemoved( const Medium *, QString );
+        void activateDevice( int index );
 
     private:
         MediaDevice *loadDevicePlugin( const QString &deviceName );
@@ -183,7 +185,6 @@ class MediaBrowser : public QVBox
         QMap<QString, QString> m_pluginSupports;
         void addDevice( MediaDevice *device );
         void removeDevice( MediaDevice *device );
-        void activateDevice( uint index );
 
         MediaTransferList* m_transferList;
         void loadTransferList( const QString &path );
@@ -194,6 +195,7 @@ class MediaBrowser : public QVBox
     bool setFilter( const QString &filter, MediaItem *parent=NULL );
     void updateStats();
     void updateButtons();
+    void updateDevices();
 
     private slots:
     void config();
@@ -204,13 +206,15 @@ class MediaBrowser : public QVBox
     SpaceLabel*      m_stats;
     QHBox*           m_progressBox;
     KProgress*       m_progress;
-    MediaView       *m_view;
+    //MediaView       *m_view;
+    QVBox*           m_views;
     KPushButton*     m_cancelButton;
     KPushButton*     m_transferButton;
     KPushButton*     m_connectButton;
     KPushButton*     m_disconnectButton;
     KPushButton*     m_playlistButton;
     KPushButton*     m_configButton;
+    KComboBox*       m_deviceCombo;
 };
 
 class MediaView : public KListView
@@ -220,7 +224,7 @@ class MediaView : public KListView
     friend class MediaDevice;
 
     public:
-        MediaView( MediaBrowser* parent );
+        MediaView( QWidget *parent, MediaDevice *device );
         virtual ~MediaView();
         KURL::List nodeBuildDragList( MediaItem* item, bool onlySelected=true );
         int getSelectedLeaves(MediaItem *parent, QPtrList<MediaItem> *list, bool onlySelected=true, bool onlyPlayed=false );
@@ -244,7 +248,8 @@ class MediaView : public KListView
         void contentsDragMoveEvent( QDragMoveEvent* e );
         void viewportPaintEvent( QPaintEvent* );
 
-        MediaBrowser* m_parent;
+        QWidget *m_parent;
+        MediaDevice *m_device;
         MediaItemTip *m_toolTip;
 };
 
@@ -262,8 +267,12 @@ class MediaDevice : public QObject, public amaroK::Plugin
 
     public:
         MediaDevice();
-        virtual void init( MediaBrowser* parent, MediaView* listview );
+        virtual void init( MediaBrowser* parent );
         virtual ~MediaDevice();
+
+        void giveItemsToView();
+        void takeItemsFromView();
+        MediaView *view();
 
         virtual void rmbPressed( MediaView *deviceList, QListViewItem *item, const QPoint &point, int ) { (void)deviceList; (void)item; (void) point; }
 
@@ -471,6 +480,8 @@ class MediaDevice : public QObject, public amaroK::Plugin
         // files without database entry
         MediaItem *m_orphanedItem;
 
+        // stow away all items below m_rootItems when device is not current
+        QPtrList<QListViewItem> m_rootItems;
 };
 
 

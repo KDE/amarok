@@ -52,9 +52,9 @@ KioMediaDevice::KioMediaDevice()
 }
 
 void
-KioMediaDevice::init( MediaBrowser* parent, MediaView *listview )
+KioMediaDevice::init( MediaBrowser* parent )
 {
-    MediaDevice::init( parent, listview );
+    MediaDevice::init( parent );
 }
 
 KioMediaDevice::~KioMediaDevice()

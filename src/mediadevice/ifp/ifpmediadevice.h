@@ -37,7 +37,7 @@ class IfpMediaDevice : public MediaDevice
 
     public:
                           IfpMediaDevice();
-        void              init( MediaBrowser* parent, MediaView* listview );
+        void              init( MediaBrowser* parent );
         virtual           ~IfpMediaDevice();
 
         bool              isConnected() { return m_connected; }

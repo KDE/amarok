@@ -17,7 +17,7 @@ class KioMediaDevice : public MediaDevice
 
     public:
                           KioMediaDevice();
-        void              init( MediaBrowser* parent, MediaView* listview );
+        void              init( MediaBrowser* parent );
         virtual           ~KioMediaDevice();
         virtual bool      asynchronousTransfer() { return true; }
 

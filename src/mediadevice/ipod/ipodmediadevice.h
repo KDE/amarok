@@ -24,7 +24,7 @@ class IpodMediaDevice : public KioMediaDevice
 
     public:
                           IpodMediaDevice();
-        void              init( MediaBrowser* parent, MediaView* listview );
+        void              init( MediaBrowser* parent );
         virtual           ~IpodMediaDevice();
         virtual bool      autoConnect() { return true; }
         virtual bool      asynchronousTransfer() { return false; /* kernel buffer flushes freeze amaroK */ }
