@@ -5,6 +5,9 @@ TODO-list for amaroK
 
 
 SHORT-TERM (URGENT):
+ <sebr>    The new cover icon isn't square.  This sucks, it throws the context browser a couple of
+           pixels out of line.  We should keep these nitty details consistent :-).
+
  <sebr>    When starting a drag in the collection browser, we can block the gui if the user makes a
            selection which is sql intensive (eg, select all).  Instead of calculating the items
            in each of those nodes, we should add the sql to the drag and allow the playlist loader
