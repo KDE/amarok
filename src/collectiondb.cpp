@@ -881,6 +881,9 @@ CollectionDB::albumImage( const QString &artist, const QString &album, uint widt
     if( width == 1 ) width = AmarokConfig::coverPreviewSize();
 
     s = findAmazonImage( artist, album, width );
+    
+    if( s.isEmpty() )
+        s = findAmazonImage( "", album, width );
 
     if( s.isEmpty() )
         s = findDirectoryImage( artist, album, width );
@@ -902,11 +905,17 @@ CollectionDB::albumImage( MetaBundle trackInformation, uint width )
 {
     QString s;
     if( width == 1 ) width = AmarokConfig::coverPreviewSize();
-
-    s = findAmazonImage( trackInformation.artist(), trackInformation.album(), width );
+    
+    QString album = trackInformation.album();
+    QString artist = trackInformation.artist();
+    
+    s = findAmazonImage( artist, album, width );
+    
+    if( s.isEmpty() )
+        s = findAmazonImage( "", album, width );
 
     if( s.isEmpty() )
-        s = findDirectoryImage( trackInformation.artist(), trackInformation.album(), width );
+        s = findDirectoryImage( artist, album, width );
 
     if( s.isEmpty() )
         s = findMetaBundleImage( trackInformation, width );
