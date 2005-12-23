@@ -1,5 +1,7 @@
 /***************************************************************************
- *   Copyright (C) 2004,5 Max Howell <max.howell@methylblue.com>           *
+ *   Copyright (C) 2005 Christophe Thommeret <hftom@free.fr>               *
+ *             (C) 2005   Ian Monroe <ian@monroe.nu>                       *
+ *             (C) 2004,5 Max Howell <max.howell@methylblue.com>           *
  *             (C) 2003,4 J. Kofler <kaffeine@gmx.net>                     *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -193,7 +195,13 @@ XineEngine::makeNewStream()
    xine_set_param( m_stream, XINE_PARAM_METRONOM_PREBUFFER, 6000 );
    xine_set_param( m_stream, XINE_PARAM_IGNORE_VIDEO, 1 );
    #endif
-
+#ifdef XINE_PARAM_EARLY_FINISHED_EVENT
+    if ( xine_check_version(1,1,1) ) {
+        // enable gapless playback
+        debug() << "gapless playback enabled." << endl;
+        xine_set_param(m_stream, XINE_PARAM_EARLY_FINISHED_EVENT, 1 );
+    }
+#endif
    return true;
 }
 
@@ -225,7 +233,13 @@ XineEngine::load( const KURL &url, bool isStream )
 
       return true;
    }
-
+   else
+   {
+      #ifdef XINE_PARAM_GAPLESS_SWITCH
+        if ( xine_check_version(1,1,1) )
+            xine_set_param( m_stream, XINE_PARAM_GAPLESS_SWITCH, 0);
+      #endif
+   }
    //s_fader will delete itself
 
    return false;
@@ -552,7 +566,7 @@ XineEngine::customEvent( QCustomEvent *e )
 
     switch( e->type() )
     {
-    case 3000:
+    case 3000: //XINE_EVENT_UI_PLAYBACK_FINISHED
         emit trackEnded();
         break;
 
@@ -644,7 +658,10 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
         break;
 
     case XINE_EVENT_UI_PLAYBACK_FINISHED:
-
+        #ifdef XINE_PARAM_GAPLESS_SWITCH
+            if ( xine_check_version(1,1,1) )
+                xine_set_param( xe->m_stream, XINE_PARAM_GAPLESS_SWITCH, 1);
+        #endif
         //emit signal from GUI thread
         QApplication::postEvent( xe, new QCustomEvent(3000) );
         break;
