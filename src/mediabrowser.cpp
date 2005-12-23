@@ -1420,7 +1420,7 @@ MediaBrowser::setFilter( const QString &filter, MediaItem *parent )
         bool visible = true;
         if(it->isLeafItem())
         {
-            visible = match(it, filter);
+            visible = it->match(filter);
         }
         else
         {
@@ -1441,15 +1441,15 @@ MediaBrowser::setFilter( const QString &filter, MediaItem *parent )
 }
 
 bool
-MediaBrowser::match( const MediaItem *it, const QString &filter )
+MediaItem::match( const QString &filter ) const
 {
     if(filter.isNull() || filter.isEmpty())
         return true;
 
-    if(it->text(0).lower().contains(filter.lower()))
+    if(text(0).lower().contains(filter.lower()))
         return true;
 
-    QListViewItem *p = it->parent();
+    QListViewItem *p = parent();
     if(p && p->text(0).lower().contains(filter.lower()))
         return true;
 

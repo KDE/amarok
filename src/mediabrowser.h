@@ -82,6 +82,7 @@ class MediaItem : public KListViewItem
         virtual long size() const;
 
         int compare(QListViewItem *i, int col, bool ascending) const;
+        bool match( const QString &filter ) const;
 
         void paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align );
 
@@ -202,11 +203,9 @@ class MediaBrowser : public QVBox
 
     private:
     QString          prettySize( unsigned long size ); // KB to QString
-    bool             match( const MediaItem *item, const QString &filter );
     SpaceLabel*      m_stats;
     QHBox*           m_progressBox;
     KProgress*       m_progress;
-    //MediaView       *m_view;
     QVBox*           m_views;
     KPushButton*     m_cancelButton;
     KPushButton*     m_transferButton;
