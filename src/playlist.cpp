@@ -1820,7 +1820,7 @@ void
 Playlist::writeTag( QListViewItem *qitem, const QString &newTag, int column ) //SLOT
 {
     if( m_itemsToChangeTagsFor.isEmpty() )
-        m_itemsToChangeTagsFor.append( (PlaylistItem*)qitem );
+        m_itemsToChangeTagsFor.append( static_cast<PlaylistItem*>( qitem ) );
 
     for( PlaylistItem *item = m_itemsToChangeTagsFor.first(); item; item = m_itemsToChangeTagsFor.next() )
     {

@@ -408,7 +408,7 @@ QString PlaylistItem::text( int column ) const
         case Length:     return length() == -1 ? editing : MetaBundle::prettyLength( length(), true );
         case Bitrate:    return bitrate() == -1 ? editing : MetaBundle::prettyBitrate( bitrate() );
         case Score:      return score() == -1 ? editing : QString::number( score() );
-        case Rating:     return rating() == -1 ? editing : QString::number( rating() );
+        case Rating:     return rating() == -1 ? editing : rating() ? QString::number( rating() ) : QString::null;
         case Type:       return m_url.isEmpty() ? QString() : ( m_url.protocol() == "http" ) ? i18n( "Stream" )
                                 : filename().mid( filename().findRev( '.' ) + 1 );
         case Playcount:  return playCount() == -1 ? editing : QString::number( playCount() );
@@ -524,10 +524,12 @@ bool PlaylistItem::isEditing( int column ) const
     }
 }
 
-QPixmap *PlaylistItem::star( int type ) const
+QPixmap *PlaylistItem::star( int type ) //static
 {
-    static const int h = listView()->fontMetrics().height() + listView()->itemMargin() * 2 - 4
-                         + ( ( listView()->fontMetrics().height() % 2 ) ? 1 : 0 );
+    Playlist* const pl = Playlist::instance();
+
+    static const int h = pl->fontMetrics().height() + pl->itemMargin() * 2 - 4
+                         + ( ( pl->fontMetrics().height() % 2 ) ? 1 : 0 );
     static QImage img = QImage( locate( "data", "amarok/images/star.png" ) ).smoothScale( h, h, QImage::ScaleMin );
     static QPixmap normal( img );
     static QPixmap grayed;
@@ -544,10 +546,11 @@ QPixmap *PlaylistItem::star( int type ) const
     return &normal;
 }
 
-int PlaylistItem::ratingAtPoint( int x ) const
+int PlaylistItem::ratingAtPoint( int x ) //static
 {
-    x -= listView()->header()->sectionPos( Rating );
-    return kClamp( ( x - 1 ) / ( star()->width() + listView()->itemMargin() ) + 1, 1, 5 );
+    Playlist* const pl = Playlist::instance();
+    x -= pl->header()->sectionPos( Rating );
+    return kClamp( ( x - 1 ) / ( star()->width() + pl->itemMargin() ) + 1, 1, 5 );
 }
 
 void PlaylistItem::update() const

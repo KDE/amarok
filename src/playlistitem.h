@@ -140,8 +140,8 @@ class PlaylistItem : public KListViewItem
         bool readMood();
 
         enum { DrawNormal, DrawGrayed };
-        QPixmap *star( int type = DrawNormal ) const;
-        int ratingAtPoint( int x ) const;
+        static QPixmap *star( int type = DrawNormal );
+        static int ratingAtPoint( int x );
 
         /// like QWidget::update()
         void update() const;
@@ -273,7 +273,7 @@ inline void PlaylistItem::setYear(      int year )      { m_year      = year;   
 inline void PlaylistItem::setTrack(     int track )     { m_track     = track;     update(); }
 inline void PlaylistItem::setLength(    int length )    { m_length    = length;    update(); }
 inline void PlaylistItem::setBitrate(   int bitrate )   { m_bitrate   = bitrate;   update(); }
-inline void PlaylistItem::setRating(    int rating )    { m_rating    = rating;    update(); }
+inline void PlaylistItem::setRating(    int rating )    { m_rating    = rating;    updateColumn( Rating ); }
 inline void PlaylistItem::setScore(     int score )     { m_score     = score;     update(); }
 inline void PlaylistItem::setPlaycount( int playcount ) { m_playCount = playcount; update(); }
 inline void PlaylistItem::setLastPlay( uint lastplay )  { m_lastPlay  = lastplay;  update(); }
