@@ -656,8 +656,12 @@ IpodMediaDevice::openDevice(bool silent)
     if( m_itdb->device )
     {
         guint model;
+        gchar *modelString;
+        gchar *name;
         g_object_get(m_itdb->device,
                 "device-model", &model,
+                "device-model-string", &modelString,
+                "device-name", &name,
                 NULL); // 0 -> warning about missing sentinel
 
         switch(model)
@@ -696,6 +700,10 @@ IpodMediaDevice::openDevice(bool silent)
             debug() << "unknown type" << endl;
             break;
         }
+
+        m_name = QString( "iPod %1: %2" )
+            .arg( QString::fromUtf8( modelString ) )
+            .arg( QString::fromUtf8( name ) );
     }
     else
     {
