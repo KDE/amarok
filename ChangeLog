@@ -5,10 +5,11 @@ amaroK ChangeLog
 
 VERSION 1.3.8:
   BUGFIXES:
+    * Old error messages could be shown instead of current track lyrics.
     * The equalizer in the helix engine now works properly at low sample
       frequencies.
     * Fixed some threading issues in loading XML playlists.
-    * Some lyrics that are available on lyrc would be shown as "not found".
+    * Lyrics that are available on lyrc would be shown as "not found".
     * The helix engine now includes protection so that misbehaving streams
       do not cause the visualizations to leak memory.
 

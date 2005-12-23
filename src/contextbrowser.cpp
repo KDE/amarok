@@ -2495,6 +2495,10 @@ void ContextBrowser::showLyrics( const QString &hash )
 void
 ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
 {
+    if ( job != m_lyricJob )
+        return; //not the right job, so let's ignore it
+
+
     if ( !job->error() == 0 )
     {
         m_lyricsPage->begin();
@@ -2524,8 +2528,6 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
         warning() << "[LyricsFetcher] KIO error! errno: " << job->error() << endl;
         return;
     }
-    if ( job != m_lyricJob )
-        return; //not the right job, so let's ignore it
 
     m_lyrics = QString( static_cast<KIO::StoredTransferJob*>( job )->data() );
 
