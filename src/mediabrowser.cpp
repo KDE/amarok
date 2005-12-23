@@ -236,12 +236,12 @@ MediaBrowser::MediaBrowser( const char *name )
     connect( m_searchEdit, SIGNAL( returnPressed() ), SLOT( slotSetFilter() ) );
 
     // connect to device manager
-    connect( DeviceManager::instance(), SIGNAL( mediumAdded(const Medium *, QString, uint) ),
-            SLOT( mediumAdded(const Medium *, QString, uint) ) );
-    connect( DeviceManager::instance(), SIGNAL( mediumChanged(const Medium *, QString, uint) ),
-            SLOT( mediumChanged(const Medium *, QString, uint) ) );
-    connect( DeviceManager::instance(), SIGNAL( mediumRemoved(const Medium *, QString, uint) ),
-            SLOT( mediumRemoved(const Medium *, QString, uint) ) );
+    connect( DeviceManager::instance(), SIGNAL( mediumAdded(const Medium *, QString) ),
+            SLOT( mediumAdded(const Medium *, QString) ) );
+    connect( DeviceManager::instance(), SIGNAL( mediumChanged(const Medium *, QString) ),
+            SLOT( mediumChanged(const Medium *, QString) ) );
+    connect( DeviceManager::instance(), SIGNAL( mediumRemoved(const Medium *, QString) ),
+            SLOT( mediumRemoved(const Medium *, QString) ) );
 
 
     // query available device plugins
@@ -314,6 +314,13 @@ MediaBrowser::MediaBrowser( const char *name )
             it != devices.end();
             it++ )
     {
+        if ( (*it).fsType() == "smbfs" || (*it).fsType() == "ext2" ||
+                (*it).fsType() == "ext3" || (*it).fsType() == "reiserfs" ||
+                (*it).fsType() == "xfs" || (*it).fsType() == "jfs" ||
+                (*it).fsType() == "ntfs" || (*it).fsType() == "udf" ||
+                (*it).fsType() == "iso9660" || (*it).fsType() == "nfs" )
+            continue;
+
         mediumAdded( &*it, (*it).name() );
     }
 

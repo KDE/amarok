@@ -156,6 +156,13 @@ Medium* DeviceManager::getDevice( QString name )
     QString mountwhere, halid;
     for ( it = currMediumList.begin(); it != currMediumList.end(); it++ )
     {
+        // MAKE SURE THIS MATCHES WITH MEDIABROWSER
+        if ( (*it).fsType() == "smbfs" || (*it).fsType() == "ext2" ||
+                (*it).fsType() == "ext3" || (*it).fsType() == "reiserfs" ||
+                (*it).fsType() == "xfs" || (*it).fsType() == "jfs" ||
+                (*it).fsType() == "ntfs" || (*it).fsType() == "udf" ||
+                (*it).fsType() == "iso9660" || (*it).fsType() == "nfs" )
+            continue;
         if ( (*it).name() == name )
         {
             debug() << "ID of name argument = " << (*it).id() << endl;
@@ -172,6 +179,8 @@ Medium* DeviceManager::getDevice( QString name )
             else
                 debug() << "Removable device " << (*it).id() << " detected but not mounted" << endl;
         }
+        else
+            debug() << "Apparently non-removable device " << (*it).id() << " with fstype " << (*it).fsType() << endl;
         if(m_mediumMap.contains(name))
         {
             tempMedium = m_mediumMap[(*it).name()];
