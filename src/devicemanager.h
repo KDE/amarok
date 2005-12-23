@@ -11,9 +11,9 @@ typedef QMap<QString, Medium*> MediumMap;
 class DeviceManager : public QObject
 {
 
-    static const uint GENERIC = 0;
-    static const uint APPLE = 1;
-    static const uint IFP = 2;
+    //static const uint GENERIC = 0;
+    //static const uint APPLE = 1;
+    //static const uint IFP = 2;
 
     Q_OBJECT
     public:
@@ -26,14 +26,16 @@ class DeviceManager : public QObject
         void mediumRemoved( QString name);
 
         Medium::List getDeviceList();
+
+        bool isValid( ) { return m_valid; }
+
     signals:
-        void mediumAdded( const Medium*, QString, uint );
-        void mediumChanged( const Medium*, QString, uint );
-        void mediumRemoved( const Medium*, QString, uint );
+        void mediumAdded( const Medium*, QString );
+        void mediumChanged( const Medium*, QString );
+        void mediumRemoved( const Medium*, QString );
 
     private:
         Medium* getDevice(QString name);
-        uint deviceKind(Medium *);
 
         DCOPClient *m_dc;
         bool m_valid;

@@ -163,9 +163,9 @@ class MediaBrowser : public QVBox
     private slots:
         void slotSetFilterTimeout();
         void slotSetFilter();
-        void mediumAdded( const Medium *, QString, uint );
-        void mediumChanged( const Medium *, QString, uint );
-        void mediumRemoved( const Medium *, QString, uint );
+        void mediumAdded( const Medium *, QString );
+        void mediumChanged( const Medium *, QString );
+        void mediumRemoved( const Medium *, QString );
 
     private:
         MediaDevice *loadDevicePlugin( const QString &deviceName );

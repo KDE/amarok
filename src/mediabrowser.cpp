@@ -314,7 +314,7 @@ MediaBrowser::MediaBrowser( const char *name )
             it != devices.end();
             it++ )
     {
-        mediumAdded( &*it, (*it).name(), 0 );
+        mediumAdded( &*it, (*it).name() );
     }
 
 }
@@ -1100,7 +1100,7 @@ MediaView::newDirectory( MediaItem *parent )
 }
 
 void
-MediaBrowser::mediumAdded( const Medium *medium, QString name, uint x )
+MediaBrowser::mediumAdded( const Medium *medium, QString name )
 {
     debug() << "mediumAdded: " << (medium? medium->properties():"null") << endl;
     if( medium )
@@ -1120,7 +1120,7 @@ MediaBrowser::mediumAdded( const Medium *medium, QString name, uint x )
 }
 
 void
-MediaBrowser::mediumChanged( const Medium *medium, QString name, uint x )
+MediaBrowser::mediumChanged( const Medium *medium, QString name )
 {
     debug() << "mediumChanged: " << (medium? medium->properties():"null") << endl;
     if( medium )
@@ -1148,7 +1148,7 @@ MediaBrowser::mediumChanged( const Medium *medium, QString name, uint x )
 }
 
 void
-MediaBrowser::mediumRemoved( const Medium *medium, QString name, uint x )
+MediaBrowser::mediumRemoved( const Medium *medium, QString name )
 {
     debug() << "mediumRemoved: " << (medium? medium->properties():"null") << endl;
     if( medium )

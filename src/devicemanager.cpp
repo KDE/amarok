@@ -19,25 +19,27 @@ DeviceManager::DeviceManager()
     DEBUG_BLOCK
     m_dc = KApplication::dcopClient();
     m_dc->setNotifications(true);
-    m_valid = true;
+    m_valid = false;
 
     if (!m_dc->isRegistered())
     {
-        m_valid = false;
         debug() << "DeviceManager:  DCOP Client not registered!" << endl;
-    }
-
-    if (!m_dc->connectDCOPSignal("kded", "mediamanager", "mediumAdded(QString)", "devices", "mediumAdded(QString)", false) ||
-        !m_dc->connectDCOPSignal("kded", "mediamanager", "mediumRemoved(QString)", "devices", "mediumRemoved(QString)", false) ||
-        !m_dc->connectDCOPSignal("kded", "mediamanager", "mediumChanged(QString)", "devices", "mediumChanged(QString)", false))
-    {
-        debug() << "DeviceManager:  Could not connect to signal mediumAdded!" << endl;
     }
     else
     {
-        debug() << "DeviceManager:  connectDCOPSignal returned sucessfully!" << endl;
+        if (!m_dc->connectDCOPSignal("kded", "mediamanager", "mediumAdded(QString)", "devices", "mediumAdded(QString)", false) ||
+            !m_dc->connectDCOPSignal("kded", "mediamanager", "mediumRemoved(QString)", "devices", "mediumRemoved(QString)", false) ||
+            !m_dc->connectDCOPSignal("kded", "mediamanager", "mediumChanged(QString)", "devices", "mediumChanged(QString)", false))
+        {
+            debug() << "DeviceManager:  Could not connect to signal mediumAdded!" << endl;
+        }
+        else
+        {
+            m_valid = true;
+            getDevice( "init" );
+            debug() << "DeviceManager:  connectDCOPSignal returned sucessfully!" << endl;
+        }
     }
-
 }
 
 DeviceManager::~DeviceManager()
@@ -47,6 +49,8 @@ DeviceManager::~DeviceManager()
 void DeviceManager::mediumAdded( QString name )
 {
     DEBUG_BLOCK
+    if ( !m_valid )
+        return;
     Medium* addedMedium;
     if ( m_mediumMap.contains(name) )
         addedMedium = m_mediumMap[name];
@@ -56,13 +60,15 @@ void DeviceManager::mediumAdded( QString name )
         debug() << "[DeviceManager::mediumAdded] Obtained medium name is " << name << ", id is: " << addedMedium->id() << endl;
     else
         debug() << "[DeviceManager::mediumAdded] Obtained medium is null; name was " << name << endl;
-    emit mediumAdded( addedMedium, name, deviceKind(addedMedium) );
+    emit mediumAdded( addedMedium, name );
 }
 
 
 void DeviceManager::mediumRemoved( QString name )
 {
     DEBUG_BLOCK
+    if ( !m_valid )
+        return;
     Medium* removedMedium = NULL;
     if ( m_mediumMap.contains(name) )
         removedMedium = m_mediumMap[name];
@@ -74,7 +80,7 @@ void DeviceManager::mediumRemoved( QString name )
     //before it was removed, i.e. the removal was the first event for the device received while amarok
     //has been running
     //There is no point in calling getDevice, since it will not be in the list anyways
-    emit mediumRemoved( removedMedium, name, deviceKind(removedMedium) );
+    emit mediumRemoved( removedMedium, name );
     if ( m_mediumMap.contains(name) )
         m_mediumMap.remove(name);
 }
@@ -83,6 +89,8 @@ void DeviceManager::mediumRemoved( QString name )
 void DeviceManager::mediumChanged( QString name )
 {
     DEBUG_BLOCK
+    if ( !m_valid )
+        return;
     Medium *changedMedium;
     if ( m_mediumMap.contains(name) )
         changedMedium = m_mediumMap[name];
@@ -92,7 +100,7 @@ void DeviceManager::mediumChanged( QString name )
         debug() << "[DeviceManager::mediumChanged] Obtained medium name is " << name << ", id is: " << changedMedium->id() << endl;
     else
         debug() << "[DeviceManager::mediumChanged] Obtained medium is null; name was " << name << endl;
-    emit mediumChanged( changedMedium, name, deviceKind(changedMedium) );
+    emit mediumChanged( changedMedium, name );
 }
 
 
@@ -112,6 +120,10 @@ Medium::List DeviceManager::getDeviceList()
 {
     DEBUG_BLOCK
     MediumList currMediumList;
+
+    if ( !m_valid )
+        return currMediumList;
+
     QByteArray data, replyData;
     QCString replyType;
     QDataStream arg(data, IO_WriteOnly);
@@ -133,7 +145,9 @@ Medium::List DeviceManager::getDeviceList()
 Medium* DeviceManager::getDevice( QString name )
 {
     DEBUG_BLOCK
-        debug() << "DeviceManager: getDevice called with name argument = " << name << endl;
+    if ( !m_valid )
+        return NULL;
+    debug() << "DeviceManager: getDevice called with name argument = " << name << endl;
     Medium* returnedMedium = NULL;
     Medium* tempMedium = NULL;
     MediumList currMediumList = getDeviceList();
@@ -166,18 +180,9 @@ Medium* DeviceManager::getDevice( QString name )
         }
         m_mediumMap[(*it).name()] = new Medium(*it);
     }
+
     return returnedMedium;
 }
-
-uint DeviceManager::deviceKind(Medium* device)
-{
-    //detect ipod, ifp, or generic (or other types that get defined in devicemanager.h
-    if ( device != NULL)
-        return 1;
-    else
-        return 1;
-}
-
 
 #include "devicemanager.moc"
 
