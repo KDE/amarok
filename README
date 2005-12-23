@@ -56,6 +56,8 @@ Recommended
     * xine 1.0.0
       (multimedia framework)
       http://xinehq.de/
+      Note: The Xine engine requires 1.0, but 1.1.1 is recomended for gapless
+      playback.
 
       OR
 
