@@ -247,6 +247,7 @@ Playlist::Playlist( QWidget *parent )
         , m_currentTrack( 0 )
         , m_marker( 0 )
         , m_hoveredRating( 0 )
+        , m_stateWhenPressed( 0 )
         , m_firstColumn( 0 )
         , m_totalCount( 0 )
         , m_totalLength( 0 )
@@ -3618,34 +3619,46 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 void
 Playlist::contentsMouseMoveEvent( QMouseEvent *e )
 {
-    if( e )
+    if( e ) //we send fake events ourselves when the user scrolls, to update things
         KListView::contentsMouseMoveEvent( e );
     PlaylistItem *prev = m_hoveredRating;
-    QPoint pos;
-    if( e )
-        pos = e->pos();
-    else
-        pos = viewportToContents( viewport()->mapFromGlobal( QCursor::pos() ) );
+    const QPoint pos = e ? e->pos() : viewportToContents( viewport()->mapFromGlobal( QCursor::pos() ) );
+    const int state = e ? e->state() : KApplication::keyboardMouseState();
 
     PlaylistItem *item = static_cast<PlaylistItem*>( itemAt( contentsToViewport( pos ) ) );
     if( item && pos.x() > header()->sectionPos( PlaylistItem::Rating ) &&
         pos.x() < header()->sectionPos( PlaylistItem::Rating ) + header()->sectionSize( PlaylistItem::Rating ) )
     {
+        const int rating = item->ratingAtPoint( pos.x() );
+        if( rating > item->rating() )
+            PlaylistToolTip::hide();
+        if( state & Qt::LeftButton )
+        {
+            if( m_selCount > 1 && item->isSelected() )
+                for( MyIt it( this, MyIt::Visible | MyIt::Selected ); *it; ++it )
+                    (*it)->setRating( rating );
+            else
+                item->setRating( rating );
+        }
         m_hoveredRating = item;
         m_hoveredRating->updateColumn( PlaylistItem::Rating );
-        if( item->ratingAtPoint( pos.x() ) > item->rating() )
-            PlaylistToolTip::hide();
     }
     else
         m_hoveredRating = 0;
 
     if( prev )
     {
-        if( m_selCount > 1 && prev->isSelected() )
-            QScrollView::updateContents( header()->sectionPos( PlaylistItem::Rating ) + 1, contentsY(),
-                                         header()->sectionSize( PlaylistItem::Rating ) - 2, visibleHeight() );
+        if( ( state & Qt::LeftButton ) &&
+           !( ( m_stateWhenPressed & Qt::ControlButton ) || ( m_stateWhenPressed & Qt::ShiftButton ) ) )
+            resetPendingRatings( prev );
         else
-            prev->updateColumn( PlaylistItem::Rating );
+        {
+            if( m_selCount > 1 && prev->isSelected() )
+                QScrollView::updateContents( header()->sectionPos( PlaylistItem::Rating ) + 1, contentsY(),
+                                             header()->sectionSize( PlaylistItem::Rating ) - 2, visibleHeight() );
+            else
+                prev->updateColumn( PlaylistItem::Rating );
+        }
     }
 }
 
@@ -3656,11 +3669,18 @@ void Playlist::leaveEvent( QEvent *e )
     PlaylistItem *prev = m_hoveredRating;
     m_hoveredRating = 0;
     if( prev )
-        prev->updateColumn( PlaylistItem::Rating );
+    {
+        if( ( KApplication::keyboardMouseState() & Qt::LeftButton ) &&
+           !( ( m_stateWhenPressed & Qt::ControlButton ) || ( m_stateWhenPressed & Qt::ShiftButton ) ) )
+            resetPendingRatings( prev );
+        else
+            prev->updateColumn( PlaylistItem::Rating );
+    }
 }
 
 void Playlist::contentsMousePressEvent( QMouseEvent *e )
 {
+    m_stateWhenPressed = e->state();
     PlaylistItem *item = static_cast<PlaylistItem*>( itemAt( contentsToViewport( e->pos() ) ) );
     if( !( e->state() & Qt::ControlButton || e->state() & Qt::ShiftButton ) && ( e->button() & Qt::LeftButton ) &&
         item && e->pos().x() > header()->sectionPos( PlaylistItem::Rating ) &&
@@ -3668,12 +3688,40 @@ void Playlist::contentsMousePressEvent( QMouseEvent *e )
     {
         const int rating = item->ratingAtPoint( e->pos().x() );
         if( m_selCount > 1 && item->isSelected() )
-            setSelectedRatings( rating );
+            for( MyIt it( this, MyIt::Visible | MyIt::Selected ); *it; ++it )
+                (*it)->setRating( rating );
         else
-            CollectionDB::instance()->setSongRating( item->url().path(), rating );
+            item->setRating( rating );
     }
     else
         KListView::contentsMousePressEvent( e );
+}
+
+void Playlist::contentsMouseReleaseEvent( QMouseEvent *e )
+{
+    KListView::contentsMouseReleaseEvent( e );
+    if( ( e->state() & Qt::LeftButton ) && m_hoveredRating &&
+       !( ( m_stateWhenPressed & Qt::ControlButton ) || ( m_stateWhenPressed & Qt::ShiftButton ) ) )
+    {
+        const int rating = PlaylistItem::ratingAtPoint( e->pos().x() );
+        if( m_selCount > 1 && m_hoveredRating->isSelected() )
+            for( MyIt it( this, MyIt::Visible | MyIt::Selected ); *it; ++it )
+                CollectionDB::instance()->setSongRating( (*it)->url().path(), rating );
+        else
+            CollectionDB::instance()->setSongRating( m_hoveredRating->url().path(), rating );
+    }
+}
+
+void Playlist::resetPendingRatings( PlaylistItem *prev )
+{
+    if( prev != m_hoveredRating )
+    {
+        if( m_selCount > 1 && prev->isSelected() && ( !m_hoveredRating || !m_hoveredRating->isSelected() ) )
+            for( MyIt it( this, MyIt::Visible | MyIt::Selected ); *it; ++it )
+                (*it)->setRating( CollectionDB::instance()->getSongRating( (*it)->url().path() ) );
+        else if( m_selCount <= 1 || !prev->isSelected() )
+            prev->setRating( CollectionDB::instance()->getSongRating( prev->url().path() ) );
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
