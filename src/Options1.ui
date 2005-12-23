@@ -208,9 +208,6 @@
                                     <property name="text">
                                         <string>&amp;Make Moodier:</string>
                                     </property>
-                                    <property name="accel">
-                                        <string>Alt+M</string>
-                                    </property>
                                     <property name="toolTip" stdset="0">
                                         <string>When enabled, the hue distribution is quantised and respread evenly, giving a prettier but less meaningful output.</string>
                                     </property>
@@ -375,7 +372,7 @@
                 </widget>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>layout6</cstring>
+                        <cstring>layout7</cstring>
                     </property>
                     <hbox>
                         <property name="name">
@@ -387,7 +384,7 @@
                             </property>
                             <property name="minimumSize">
                                 <size>
-                                    <width>140</width>
+                                    <width>150</width>
                                     <height>0</height>
                                 </size>
                             </property>
@@ -410,12 +407,38 @@
                                     <verstretch>0</verstretch>
                                 </sizepolicy>
                             </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>150</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Choose the external web browser to be used by amaroK.</string>
+                            </property>
                         </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer7_2</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>50</width>
+                                    <height>21</height>
+                                </size>
+                            </property>
+                        </spacer>
                     </hbox>
                 </widget>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>layout7</cstring>
+                        <cstring>layout8</cstring>
                     </property>
                     <hbox>
                         <property name="name">
@@ -430,15 +453,12 @@
                             </property>
                             <property name="minimumSize">
                                 <size>
-                                    <width>140</width>
+                                    <width>150</width>
                                     <height>0</height>
                                 </size>
                             </property>
                             <property name="text">
-                                <string>&amp;Custom browser:</string>
-                            </property>
-                            <property name="accel">
-                                <string>Alt+C</string>
+                                <string>Use &amp;another browser:</string>
                             </property>
                         </widget>
                         <widget class="KLineEdit">
@@ -456,10 +476,33 @@
                                     <verstretch>0</verstretch>
                                 </sizepolicy>
                             </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>150</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
                             <property name="toolTip" stdset="0">
                                 <string>Enter filename of external web browser.</string>
                             </property>
                         </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer7_2_3</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>50</width>
+                                    <height>21</height>
+                                </size>
+                            </property>
+                        </spacer>
                     </hbox>
                 </widget>
             </vbox>
@@ -482,9 +525,6 @@
                     <property name="text">
                         <string>&amp;Remember current playlist on exit</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+R</string>
-                    </property>
                     <property name="toolTip" stdset="0">
                         <string>If checked, amaroK saves the current playlist on quit and restores it when restarted.&lt;br&gt;</string>
                     </property>
@@ -498,9 +538,6 @@
                     </property>
                     <property name="text">
                         <string>Manually sa&amp;ved playlists use relative path</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+V</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>If checked, amaroK uses a relative path for the tracks of manually saved playlists</string>
@@ -529,9 +566,6 @@
                     </property>
                     <property name="text">
                         <string>Switch to Context &amp;Browser on track change</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+B</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Switch to the context browser, when playing a track.&lt;br&gt;</string>
