@@ -1594,17 +1594,6 @@ MediaBrowser::addURL( const KURL& url, MetaBundle *bundle, PodcastInfo *podcastI
     if(!bundle)
         bundle = new MetaBundle( url );
 
-    if( currentDevice() && !currentDevice()->isPlayable( *bundle ) && (playlistName.isNull() || !currentDevice()->trackExists( *bundle )) )
-    {
-        amaroK::StatusBar::instance()->longMessage( i18n( "Track is not playable on media device: %1" ).arg( url.path() ),
-                KDE::StatusBar::Sorry );
-    }
-    else if( currentDevice() && playlistName.isNull()
-            && (currentDevice()->trackExists( *bundle ) || m_queue->findPath( url.path() ) ) )
-    {
-        amaroK::StatusBar::instance()->longMessage( i18n( "Track already exists on media device: %1" ).arg( url.path() ),
-                KDE::StatusBar::Sorry );
-    }
     else
     {
         MediaItem* item = new MediaItem( m_queue, m_queue->lastItem() );
@@ -2020,7 +2009,14 @@ MediaDevice::transferFiles()
 
         MediaItem *item = trackExists( *bundle );
 
-        if( !item )
+        if( item && m_transferredItem->m_playlistName == QString::null )
+        {
+            amaroK::StatusBar::instance()->longMessage( i18n( "Track already exists on media device: %1" ).
+                    arg( m_transferredItem->url().url() ),
+                    KDE::StatusBar::Sorry );
+            continue;
+        }
+        else
         {
             if( !isPlayable( *bundle ) )
             {
