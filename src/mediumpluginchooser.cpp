@@ -42,7 +42,7 @@ MediumPluginChooser::MediumPluginChooser( const Medium *medium, const KGuiItem i
     QString labelTextSecondLineB = i18n( ", and its label (if any) is: " );
     QString labelTextThirdLine = i18n( "\nIts mount point (if any) is: " );
     QString labelTextFourthLine = i18n( "\nPlease choose a plugin to handle it, or press \"Ignore\" to be prompted again next time." );
-    QString labelTextFifthLine = i18n( "\nIf you do not want amaroK to handle this media, choose \"Do not handle\"." )
+    QString labelTextFifthLine = i18n( "\nIf you do not want amaroK to handle this media, choose \"Do not handle\"." );
     QString labelTextNone = i18n( "(none)" );
 
     QString fullLabel( labelTextFirstLine + labelTextSecondLineA + medium->name() + labelTextSecondLineB + (medium->label().isEmpty() ? labelTextNone : medium->label()) + labelTextThirdLine + (medium->mountPoint().isEmpty() ? labelTextNone : medium->mountPoint()) + labelTextFourthLine + labelTextFifthLine );
