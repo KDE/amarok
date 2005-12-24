@@ -339,8 +339,8 @@ namespace amaroK
 
     void DcopPlayerHandler::queueForTransfer( KURL url )
     {
-        MediaBrowser::instance()->addURL( url );
-        MediaBrowser::instance()->URLsAdded();
+        MediaBrowser::queue()->addURL( url );
+        MediaBrowser::queue()->URLsAdded();
     }
 
     void DcopPlayerHandler::seek(int s)

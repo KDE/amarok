@@ -300,7 +300,7 @@ MediaBrowser::MediaBrowser( const char *name )
     dev->init( this );
     addDevice( dev );
     activateDevice( 0 );
-    loadTransferQueue( amaroK::saveLocation() + "transferlist.xml" );
+    queue()->load( amaroK::saveLocation() + "transferlist.xml" );
 
     setFocusProxy( m_queue );
 
@@ -443,7 +443,7 @@ MediaBrowser::slotSetFilter() //SLOT
 
 MediaBrowser::~MediaBrowser()
 {
-    saveTransferQueue( amaroK::saveLocation() + "transferlist.xml" );
+    queue()->save( amaroK::saveLocation() + "transferlist.xml" );
 
     debug() << "have to remove " << m_devices.count() << " devices" << endl;
 
@@ -1058,12 +1058,12 @@ MediaView::contentsDropEvent( QDropEvent *e )
             KURL::List::ConstIterator it = list.begin();
             for ( ; it != list.end(); ++it )
             {
-                MediaBrowser::instance()->addURL( *it );
+                MediaBrowser::queue()->addURL( *it );
             }
         }
     }
 
-    MediaBrowser::instance()->URLsAdded();
+    MediaBrowser::queue()->URLsAdded();
 }
 
 
@@ -1554,7 +1554,7 @@ MediaDevice::updateRootItems()
 }
 
 void
-MediaBrowser::addURL( const KURL& url, MetaBundle *bundle, PodcastInfo *podcastInfo, const QString &playlistName )
+MediaQueue::addURL( const KURL& url, MetaBundle *bundle, PodcastInfo *podcastInfo, const QString &playlistName )
 {
     if( PlaylistFile::isPlaylistFile( url ) )
     {
@@ -1596,7 +1596,7 @@ MediaBrowser::addURL( const KURL& url, MetaBundle *bundle, PodcastInfo *podcastI
 
     else
     {
-        MediaItem* item = new MediaItem( m_queue, m_queue->lastItem() );
+        MediaItem* item = new MediaItem( this, lastItem() );
         item->setExpandable( false );
         item->setDropEnabled( true );
         item->setUrl( url.path() );
@@ -1617,15 +1617,15 @@ MediaBrowser::addURL( const KURL& url, MetaBundle *bundle, PodcastInfo *podcastI
         }
         item->setText( 0, text);
 
-        updateStats();
-        updateButtons();
-        m_progress->setTotalSteps( m_progress->totalSteps() + 1 );
-        m_queue->itemCountChanged();
+        m_parent->updateStats();
+        m_parent->updateButtons();
+        m_parent->m_progress->setTotalSteps( m_parent->m_progress->totalSteps() + 1 );
+        itemCountChanged();
     }
 }
 
 void
-MediaBrowser::addURLs( const KURL::List urls, const QString &playlistName )
+MediaQueue::addURLs( const KURL::List urls, const QString &playlistName )
 {
     KURL::List::ConstIterator it = urls.begin();
     for ( ; it != urls.end(); ++it )
@@ -1635,13 +1635,13 @@ MediaBrowser::addURLs( const KURL::List urls, const QString &playlistName )
 }
 
 void
-MediaBrowser::URLsAdded()
+MediaQueue::URLsAdded()
 {
-    if( currentDevice()
-            && currentDevice()->isConnected()
-            && currentDevice()->asynchronousTransfer()
-            && !currentDevice()->isTransferring() )
-        currentDevice()->transferFiles();
+    if( m_parent->currentDevice()
+            && m_parent->currentDevice()->isConnected()
+            && m_parent->currentDevice()->asynchronousTransfer()
+            && !m_parent->currentDevice()->isTransferring() )
+        m_parent->currentDevice()->transferFiles();
 }
 
 
@@ -1807,39 +1807,10 @@ MediaDevice::connectDevice( bool silent )
     }
     openDevice( silent );
     m_parent->updateStats();
+    m_parent->updateButtons();
 
     if( !isConnected() )
         return false;
-
-    if ( m_parent->m_queue->childCount() != 0 )
-    {
-        m_parent->m_stats->setText( i18n( "Checking device for duplicate files." ) );
-        KURL::List urls;
-        int numDuplicates = 0;
-        MediaItem *next = 0;
-        for( MediaItem *cur = static_cast<MediaItem *>(m_parent->m_queue->firstChild());
-                cur; cur = next )
-        {
-            next = dynamic_cast<MediaItem *>( cur->nextSibling() );
-            if ( cur->m_playlistName == QString::null &&
-                    trackExists( *cur->bundle() ) || !isPlayable( *cur->bundle() ) )
-            {
-                delete cur;
-                m_parent->m_queue->itemCountChanged();
-                numDuplicates++;
-            }
-        }
-        m_parent->updateStats();
-        if( numDuplicates > 0 )
-        {
-            amaroK::StatusBar::instance()->shortMessage(
-                    i18n( "Removed 1 duplicate item from transfer queue",
-                        "Removed %n duplicate items from transfer queue",
-                        numDuplicates ) );
-        }
-    }
-
-    m_parent->updateButtons();
 
     if( m_syncStats )
     {
@@ -2207,7 +2178,7 @@ MediaDevice::purgeEmptyItems( MediaItem *root )
 }
 
 void
-MediaBrowser::saveTransferQueue( const QString &path )
+MediaQueue::save( const QString &path )
 {
     QFile file( path );
 
@@ -2219,7 +2190,7 @@ MediaBrowser::saveTransferQueue( const QString &path )
     transferlist.setAttribute( "version", APP_VERSION );
     newdoc.appendChild( transferlist );
 
-    for( const MediaItem *item = static_cast<MediaItem *>( m_queue->firstChild() );
+    for( const MediaItem *item = static_cast<MediaItem *>( firstChild() );
             item;
             item = static_cast<MediaItem *>( item->nextSibling() ) )
     {
@@ -2314,7 +2285,7 @@ MediaBrowser::saveTransferQueue( const QString &path )
 
 
 void
-MediaBrowser::loadTransferQueue( const QString& filename )
+MediaQueue::load( const QString& filename )
 {
     QFile file( filename );
     if( !file.open( IO_ReadOnly ) ) {
@@ -2322,7 +2293,7 @@ MediaBrowser::loadTransferQueue( const QString& filename )
         return;
     }
 
-    m_queue->clearItems();
+    clearItems();
 
     QTextStream stream( &file );
     stream.setEncoding( QTextStream::UnicodeUTF8 );
@@ -2456,15 +2427,7 @@ MediaQueue::dropEvent( QDropEvent *e )
 
     KURL::List list;
     if ( KURLDrag::decode( e, list ) )
-    {
-        KURL::List::ConstIterator it = list.begin();
-        for ( ; it != list.end(); ++it )
-        {
-            MediaBrowser::instance()->addURL( *it );
-        }
-    }
-
-    MediaBrowser::instance()->URLsAdded();
+        addURLs( list );
 }
 
 void
@@ -2485,15 +2448,7 @@ MediaQueue::contentsDropEvent( QDropEvent *e )
 
     KURL::List list;
     if ( KURLDrag::decode( e, list ) )
-    {
-        KURL::List::ConstIterator it = list.begin();
-        for ( ; it != list.end(); ++it )
-        {
-            MediaBrowser::instance()->addURL( *it );
-        }
-    }
-
-    MediaBrowser::instance()->URLsAdded();
+        addURLs( list );
 }
 
 void

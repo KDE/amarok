@@ -122,6 +122,12 @@ class MediaQueue : public KListView
         void removeSelected();
         void clearItems();
 
+        void load( const QString &path );
+        void save( const QString &path );
+        void addURL( const KURL& url, MetaBundle *bundle=NULL, PodcastInfo *info=NULL, const QString &playlistName=QString::null );
+        void addURLs( const KURL::List urls, const QString &playlistName=QString::null );
+        void URLsAdded(); // call after finishing adding single urls
+
         // Reimplemented from KListView
         void dragEnterEvent( QDragEnterEvent* );
         void dropEvent( QDropEvent *e );
@@ -153,14 +159,11 @@ class MediaBrowser : public QVBox
     public:
         static bool isAvailable();
         static MediaBrowser *instance() { return s_instance; }
+        static MediaQueue *queue() { return s_instance ? s_instance->m_queue : 0; }
 
         MediaBrowser( const char *name );
         virtual ~MediaBrowser();
         MediaDevice *currentDevice();
-        void        addURL( const KURL& url, MetaBundle *bundle=NULL, PodcastInfo *info=NULL, const QString &playlistName=QString::null );
-        void        addURLs( const KURL::List urls, const QString &playlistName=QString::null );
-        void        URLsAdded();
-        MediaQueue *queue() { return m_queue; }
 
     private slots:
         void slotSetFilterTimeout();
@@ -188,8 +191,6 @@ class MediaBrowser : public QVBox
         void removeDevice( MediaDevice *device );
 
         MediaQueue* m_queue;
-        void loadTransferQueue( const QString &path );
-        void saveTransferQueue( const QString &path );
 
 
     public:

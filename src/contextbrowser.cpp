@@ -785,7 +785,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         break;
 
     case MEDIA_DEVICE:
-        MediaBrowser::instance()->addURLs( urls );
+        MediaBrowser::queue()->addURLs( urls );
         break;
 
     }

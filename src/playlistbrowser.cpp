@@ -2055,7 +2055,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 removeSelectedItems();
                 break;
             case MEDIA_DEVICE:
-                MediaBrowser::instance()->addURLs( item->tracksURL(), item->text(0) );
+                MediaBrowser::queue()->addURLs( item->tracksURL(), item->text(0) );
                 break;
         }
         #undef item
@@ -2124,7 +2124,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                         }
                         i++;
                     }
-                    MediaBrowser::instance()->addURLs( urls, item->text(0) );
+                    MediaBrowser::queue()->addURLs( urls, item->text(0) );
                 }
                 break;
         }
@@ -2312,7 +2312,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 {
                     static_cast<PodcastItem *>(item)->addToMediaDevice();
                 }
-                MediaBrowser::instance()->URLsAdded();
+                MediaBrowser::queue()->URLsAdded();
                 break;
         }
         #undef item

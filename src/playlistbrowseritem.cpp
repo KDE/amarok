@@ -1799,7 +1799,7 @@ PodcastItem::downloadResult( KIO::Job* job ) //SLOT
     if( channel && channel->addToMediaDevice() && MediaBrowser::isAvailable() )
     {
         addToMediaDevice();
-        MediaBrowser::instance()->URLsAdded();
+        MediaBrowser::queue()->URLsAdded();
     }
 
     updatePixmap();
@@ -1870,7 +1870,7 @@ PodcastItem::addToMediaDevice()
     QString t = dt.section( " ", 3, 3 );
     QTime time = QTime::fromString( t );
     info->date = QDateTime( date, time );
-    MediaBrowser::instance()->addURL( localUrl(), bundle, info );
+    MediaBrowser::queue()->addURL( localUrl(), bundle, info );
 }
 
 
