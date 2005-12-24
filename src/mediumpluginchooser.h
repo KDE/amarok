@@ -23,7 +23,8 @@ class Medium;
 */
 class MediumPluginChooser : public KDialogBase
 {
-    //Q_OBJECT
+    Q_OBJECT
+
     public:
         MediumPluginChooser( const Medium *medium, const KGuiItem ignoreButton );
 

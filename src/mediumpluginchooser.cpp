@@ -14,16 +14,7 @@
 #include "mediumpluginchooser.h"
 #include "medium.h"
 
-#include <qcheckbox.h>
-#include <qdom.h>
-#include <qfile.h>
-#include <qgroupbox.h>
 #include <qlabel.h>
-#include <qlayout.h>
-#include <qpushbutton.h>
-#include <qstringlist.h>
-#include <qtextstream.h>   //presets
-#include <qtooltip.h>
 #include <qvbox.h>
 
 #include <kapplication.h>
@@ -59,3 +50,4 @@ MediumPluginChooser::~MediumPluginChooser()
 }
 
 
+#include "mediumpluginchooser.moc"
