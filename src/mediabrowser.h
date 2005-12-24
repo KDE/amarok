@@ -110,12 +110,12 @@ class MediaItem : public KListViewItem
         static QPixmap *s_pixDirectory;
 };
 
-class MediaTransferList : public KListView
+class MediaQueue : public KListView
 {
     Q_OBJECT
 
     public:
-        MediaTransferList(MediaBrowser *parent);
+        MediaQueue(MediaBrowser *parent);
         MediaItem *findPath( QString path );
 
         unsigned totalSize() const; // total size of items to transfer in KB
@@ -148,7 +148,7 @@ class MediaBrowser : public QVBox
     Q_OBJECT
     friend class MediaDevice;
     friend class MediaView;
-    friend class MediaTransferList;
+    friend class MediaQueue;
 
     public:
         static bool isAvailable();
@@ -160,7 +160,7 @@ class MediaBrowser : public QVBox
         void        addURL( const KURL& url, MetaBundle *bundle=NULL, PodcastInfo *info=NULL, const QString &playlistName=QString::null );
         void        addURLs( const KURL::List urls, const QString &playlistName=QString::null );
         void        URLsAdded();
-        MediaTransferList *transferList() { return m_transferList; }
+        MediaQueue *queue() { return m_queue; }
 
     private slots:
         void slotSetFilterTimeout();
@@ -187,13 +187,12 @@ class MediaBrowser : public QVBox
         void addDevice( MediaDevice *device );
         void removeDevice( MediaDevice *device );
 
-        MediaTransferList* m_transferList;
-        void loadTransferList( const QString &path );
-        void saveTransferList( const QString &path );
+        MediaQueue* m_queue;
+        void loadTransferQueue( const QString &path );
+        void saveTransferQueue( const QString &path );
 
 
     public:
-    bool setFilter( const QString &filter, MediaItem *parent=NULL );
     void updateStats();
     void updateButtons();
     void updateDevices();
@@ -228,7 +227,7 @@ class MediaView : public KListView
         KURL::List nodeBuildDragList( MediaItem* item, bool onlySelected=true );
         int getSelectedLeaves(MediaItem *parent, QPtrList<MediaItem> *list, bool onlySelected=true, bool onlyPlayed=false );
         MediaItem *newDirectory( MediaItem* parent );
-
+        bool setFilter( const QString &filter, MediaItem *parent=NULL );
 
     private slots:
         void rmbPressed( QListViewItem*, const QPoint&, int );
@@ -262,7 +261,7 @@ class MediaDevice : public QObject, public amaroK::Plugin
     Q_OBJECT
     friend class MediaBrowser;
     friend class MediaView;
-    friend class MediaTransferList;
+    friend class MediaQueue;
 
     public:
         MediaDevice();
