@@ -2310,23 +2310,6 @@ ContextBrowser::wikiConfigChanged( int /*activeItem*/ ) // SLOT
 }
 
 void
-ContextBrowser::wikiConfigApply() // SLOT
-{
-    bool changed = m_wikiLocaleEdit->text() != wikiLocale();
-
-    setWikiLocale( m_wikiLocaleEdit->text() );
-
-    if ( changed && currentPage() == m_wikiTab )
-    {
-        if( !m_wikiCurrentEntry.isNull() )
-        {
-            m_dirtyWikiPage = true;
-            showWikipediaEntry( m_wikiCurrentEntry );
-        }
-    }
-}
-
-void
 ContextBrowser::wikiConfig() // SLOT
 {
     QStringList localeList;
@@ -2356,33 +2339,43 @@ ContextBrowser::wikiConfig() // SLOT
     else // other
         index = 6;
 
-    if( !m_wikiConfigDialog )
-    {
-        m_wikiConfigDialog = new KDialogBase( this, 0, false );
-        m_wikiConfigDialog->setCaption( kapp->makeStdCaption( i18n( "Set Wikipedia Locale" ) ) );
-        QVBox *box = m_wikiConfigDialog->makeVBoxMainWidget();
-
-        m_wikiLocaleCombo = new QComboBox( box );
-        m_wikiLocaleCombo->insertStringList( localeList );
-
-        QHBox  *hbox       = new QHBox( box );
-        QLabel *otherLabel = new QLabel( i18n( "Locale: " ), hbox );
-        m_wikiLocaleEdit   = new QLineEdit( "en", hbox );
-
-        otherLabel->setBuddy( m_wikiLocaleEdit );
-        QToolTip::add( m_wikiLocaleEdit, i18n( "2-letter language code for your Wikipedia locale" ) );
-
-        connect( m_wikiLocaleCombo,  SIGNAL( activated(int) ), SLOT( wikiConfigChanged(int) ) );
-        connect( m_wikiConfigDialog, SIGNAL( applyClicked() ), SLOT( wikiConfigApply() ) );
-        connect( m_wikiConfigDialog, SIGNAL( okClicked() ),    SLOT( wikiConfigApply() ) );
-    }
-
+    m_wikiConfigDialog = new KDialogBase( this, 0, true, 0, KDialogBase::Ok|KDialogBase::Cancel );
     kapp->setTopWidget( m_wikiConfigDialog );
+    m_wikiConfigDialog->setCaption( kapp->makeStdCaption( i18n( "Set Wikipedia Locale" ) ) );
+    QVBox *box = m_wikiConfigDialog->makeVBoxMainWidget();
+
+    m_wikiLocaleCombo = new QComboBox( box );
+    m_wikiLocaleCombo->insertStringList( localeList );
+
+    QHBox  *hbox       = new QHBox( box );
+    QLabel *otherLabel = new QLabel( i18n( "Locale: " ), hbox );
+    m_wikiLocaleEdit   = new QLineEdit( "en", hbox );
+
+    otherLabel->setBuddy( m_wikiLocaleEdit );
+    QToolTip::add( m_wikiLocaleEdit, i18n( "2-letter language code for your Wikipedia locale" ) );
+
+    connect( m_wikiLocaleCombo,  SIGNAL( activated(int) ), SLOT( wikiConfigChanged(int) ) );
+
     m_wikiLocaleEdit->setText( wikiLocale() );
     m_wikiLocaleCombo->setCurrentItem( index );
     wikiConfigChanged( index ); // a little redundant, but saves ugly code, and ensures the lineedit enabled status is correct
 
-    m_wikiConfigDialog->show();
+    const int result = m_wikiConfigDialog->exec();
+
+
+    if( result == QDialog::Accepted ) {
+        const bool changed = m_wikiLocaleEdit->text() != wikiLocale();
+        setWikiLocale( m_wikiLocaleEdit->text() );
+
+        if ( changed && currentPage() == m_wikiTab ) {
+            if( !m_wikiCurrentEntry.isNull() ) {
+                m_dirtyWikiPage = true;
+                showWikipediaEntry( m_wikiCurrentEntry );
+            }
+        }
+    }
+
+    delete m_wikiConfigDialog;
 }
 
 QString

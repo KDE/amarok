@@ -104,7 +104,6 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         void wikiResult( KIO::Job* job );
         void wikiConfig();
         void wikiConfigChanged( int activeItem );
-        void wikiConfigApply();
 
     private:
         enum { CONTEXT_BACK, CONTEXT_FORWARD, CONTEXT_CURRENT, CONTEXT_HOME, CONTEXT_SEARCH };
