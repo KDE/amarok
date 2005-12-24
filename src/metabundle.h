@@ -1,6 +1,6 @@
-//Maintainer: Max Howell <max.howell@methylblue.com>, (C) 2004
-//Copyright:  See COPYING file that comes with this distribution
-//
+// Max Howell <max.howell@methylblue.com>, (C) 2004
+// Alexandre Pereira de Oliveira <aleprj@gmail.com>, (C) 2005
+// License: GNU General Public License V2
 
 #ifndef METABUNDLE_H
 #define METABUNDLE_H
@@ -16,7 +16,9 @@
 class KFileMetaInfo;
 class PlaylistItem;
 template<class T> class QValueList;
-
+namespace TagLib {
+    class File;
+}
 
 /**
  * @class MetaBundle
@@ -36,6 +38,8 @@ public:
     static const int Irrelevant   = -1; /// not applicable to this stream/media type, eg length for http streams
     static const int Unavailable  =  0; /// cannot be obtained
 
+    enum FileType { mp3, ogg, wma, mp4, other };
+
     /**
      * Creates an empty MetaBundle
      */
@@ -48,7 +52,7 @@ public:
     /**
      * Creates a MetaBundle for url, tags will be obtained and set
      */
-    explicit MetaBundle( const KURL&, TagLib::AudioProperties::ReadStyle = TagLib::AudioProperties::Fast );
+    explicit MetaBundle( const KURL&, bool noCache = false, TagLib::AudioProperties::ReadStyle = TagLib::AudioProperties::Fast );
 
     /** For the StreamProvider */
     MetaBundle( const QString &title,
@@ -80,6 +84,9 @@ public:
     /** If you want Accurate reading say so */
     void readTags( TagLib::AudioProperties::ReadStyle );
 
+    /** Saves the changes to the file. Returns false on error. */
+    bool save();
+
     /** used by PlaylistItem, should be true for everything but local files that aren't there */
     bool exists() const { return true; }
 
@@ -100,6 +107,11 @@ public:
     const QString &genre()      const { return m_genre; }
     const QString &streamName() const { return m_streamName; }
     const QString &streamUrl()  const { return m_streamUrl; }
+
+    int discNumber() const { return m_discNumber; }
+
+    const QString &composer() const { return m_composer; }
+
     QString type( bool detectstream = true ) const
     {
         return ( detectstream && m_url.protocol() == "http" )
@@ -145,7 +157,18 @@ public:
     void setBitrate( int bitrate ) { m_bitrate = bitrate; }
     void setSampleRate( int sampleRate ) { m_sampleRate = sampleRate; }
 
+    void setDiscNumber( int discnumber ) { m_discNumber = discnumber; }
+
+    void setComposer( const QString &composer ) { m_composer = composer; }
+
+    int fileType() { return m_type; }
+
+    bool hasExtendedMetaInformation() const { return (m_type == mp3 || m_type == ogg); }
+
 protected:
+
+    enum ExtendedTags { composerTag,  discNumberTag };
+
     KURL m_url;
     QString m_title;
     QString m_artist;
@@ -161,9 +184,14 @@ protected:
     int m_length;
     int m_sampleRate;
 
+    int m_discNumber;
+    QString m_composer;
+
 private:
     bool m_exists;
     bool m_isValidMedia;
+
+    int m_type;
 
     static inline QString prettyGeneric( const QString &s, const int i )
     {
@@ -174,6 +202,8 @@ private:
     void init( const KFileMetaInfo& info );
 
     void checkExists();
+
+    void setExtendedTag( TagLib::File *file, int tag, const QString value );
 };
 
 

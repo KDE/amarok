@@ -1,5 +1,5 @@
 /* Copyright 2002-2004 Mark Kretschmann, Max Howell
- * Copyright 2005 Seb Ruiz, Mike Diehl, Ian Monroe, Gábor Lehel
+ * Copyright 2005 Seb Ruiz, Mike Diehl, Ian Monroe, Gábor Lehel, Alexandre Pereira de Oliveira
  * Licensed as described in the COPYING file found in the root of this distribution
  * Maintainer: Max Howell <max.howell@methylblue.com>
 
@@ -313,12 +313,16 @@ Playlist::Playlist( QWidget *parent )
     addColumn( i18n( "Playcount"   ),   0 );
     addColumn( i18n( "Last Played" ),   0 );
     addColumn( i18n( "Moodbar"     ),  AmarokConfig::showMoodbar() ? 40 : 0 );
+    addColumn( i18n( "Composer"    ),   0 );
+    addColumn( i18n( "Disc Number" ),   0 ); //0 means hidden
 
     setRenameable( PlaylistItem::Filename,   false ); //TODO allow renaming of the filename
     setRenameable( PlaylistItem::Title );
     setRenameable( PlaylistItem::Artist );
+    setRenameable( PlaylistItem::Composer );
     setRenameable( PlaylistItem::Album );
     setRenameable( PlaylistItem::Year );
+    setRenameable( PlaylistItem::DiscNumber );
     setRenameable( PlaylistItem::Comment );
     setRenameable( PlaylistItem::Genre );
     setRenameable( PlaylistItem::Track );
@@ -2099,6 +2103,7 @@ Playlist::viewportResizeEvent( QResizeEvent *e )
         case PlaylistItem::Playcount:
         case PlaylistItem::Length:
         case PlaylistItem::Year:
+        case PlaylistItem::DiscNumber:
         case PlaylistItem::Moodbar:
             break; //these columns retain their width - their items tend to have uniform size
         default:
@@ -2141,6 +2146,7 @@ Playlist::columnResizeEvent( int col, int oldw, int neww )
             case PlaylistItem::Playcount:
             case PlaylistItem::Length:
             case PlaylistItem::Year:
+            case PlaylistItem::DiscNumber:
             case PlaylistItem::Moodbar:
                 break;
             default:
@@ -2183,6 +2189,7 @@ Playlist::columnResizeEvent( int col, int oldw, int neww )
         case PlaylistItem::Playcount:
         case PlaylistItem::Length:
         case PlaylistItem::Year:
+        case PlaylistItem::DiscNumber:
         case PlaylistItem::Moodbar:
             break;
         default:
@@ -3090,6 +3097,7 @@ Playlist::googleMatch( QString query, const QStringMap &defaults, const QStringM
                     Score     = PlaylistItem::columnName( PlaylistItem::Score     ).lower(),
                     Rating    = PlaylistItem::columnName( PlaylistItem::Rating    ).lower(),
                     Year      = PlaylistItem::columnName( PlaylistItem::Year      ).lower(),
+                    DiscNumber= PlaylistItem::columnName( PlaylistItem::DiscNumber).lower(),
                     Track     = PlaylistItem::columnName( PlaylistItem::Track     ).lower(),
                     Playcount = PlaylistItem::columnName( PlaylistItem::Playcount ).lower(),
                     Length    = PlaylistItem::columnName( PlaylistItem::Length    ).lower(),
@@ -3098,7 +3106,7 @@ Playlist::googleMatch( QString query, const QStringMap &defaults, const QStringM
                 if (q.startsWith(">"))
                 {
                     w = w.mid( 1 );
-                    if( f == Score || f == Rating || f == Year || f == Track || f == Playcount || f == Bitrate )
+                    if( f == Score || f == Rating || f == Year || f == DiscNumber || f == Track || f == Playcount || f == Bitrate )
                         condition = v.toInt() > w.toInt();
                     else if( f == Length )
                     {
@@ -3113,7 +3121,7 @@ Playlist::googleMatch( QString query, const QStringMap &defaults, const QStringM
                 else if( q.startsWith( "<" ) )
                 {
                     w = w.mid(1);
-                    if( f == Score || f == Rating || f == Year || f == Track || f == Playcount || f == Bitrate )
+                    if( f == Score || f == Rating || f == Year || f == DiscNumber || f == Track || f == Playcount || f == Bitrate )
                         condition = v.toInt() < w.toInt();
                     else if( f == Length )
                     {
@@ -4272,49 +4280,48 @@ TagWriter::~TagWriter()
 bool
 TagWriter::doJob()
 {
-    const QString path = m_item->url().path();
-    //TODO I think this causes problems with writing and reading tags for non latin1 people
-    //check with wheels abolut what it does and why to do it
-    //TagLib::ID3v2::FrameFactory::instance()->setDefaultTextEncoding( TagLib::String::UTF8 );
-    TagLib::FileRef f( QFile::encodeName( path ), false );
+    MetaBundle mb( m_item->url(), true );
 
-    if ( !f.isNull() )
+    switch ( m_tagType )
     {
-        TagLib::Tag *t = f.tag();
-
-        switch ( m_tagType )
-        {
-            case PlaylistItem::Title:
-                t->setTitle( QStringToTString( m_newTagString ));
-                break;
-            case PlaylistItem::Artist:
-                t->setArtist( QStringToTString( m_newTagString ) );
-                break;
-            case PlaylistItem::Album:
-                t->setAlbum( QStringToTString( m_newTagString ) );
-                break;
-            case PlaylistItem::Year:
-                t->setYear( m_newTagString.toInt() );
-                break;
-            case PlaylistItem::Comment:
-                //FIXME how does this work for vorbis files?
-                //Are we likely to overwrite some other comments?
-                //Vorbis can have multiple comment fields..
-                t->setComment( QStringToTString( m_newTagString ) );
-                break;
-            case PlaylistItem::Genre:
-                t->setGenre( QStringToTString( m_newTagString ) );
-                break;
-            case PlaylistItem::Track:
-                t->setTrack( m_newTagString.toInt() );
-                break;
-
-            default:
+        case PlaylistItem::Title:
+            mb.setTitle( m_newTagString );
+            break;
+        case PlaylistItem::Artist:
+            mb.setArtist( m_newTagString );
+            break;
+        case PlaylistItem::Composer:
+            if ( !mb.hasExtendedMetaInformation() )
                 return true;
-        }
+            mb.setComposer( m_newTagString );
+        case PlaylistItem::DiscNumber:
+            if ( !mb.hasExtendedMetaInformation() )
+                return true;
+            mb.setDiscNumber( m_newTagString.toInt() );
+        case PlaylistItem::Album:
+            mb.setAlbum( m_newTagString );
+            break;
+        case PlaylistItem::Year:
+            mb.setYear( m_newTagString.toInt() );
+            break;
+        case PlaylistItem::Comment:
+            //FIXME how does this work for vorbis files?
+            //Are we likely to overwrite some other comments?
+            //Vorbis can have multiple comment fields..
+            mb.setComment( m_newTagString );
+            break;
+        case PlaylistItem::Genre:
+            mb.setGenre( m_newTagString );
+            break;
+        case PlaylistItem::Track:
+            mb.setTrack( m_newTagString.toInt() );
+            break;
 
-        m_failed = !f.save();
+        default:
+            return true;
     }
+
+    m_failed = !mb.save();
     return true;
 }
 

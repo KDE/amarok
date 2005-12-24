@@ -5,6 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.4:
   FEATURES:
+    * For mp3 and ogg vorbis, it's possible to use Disc Number and Composer
+      tags. (BR 110675) (BR 90503)
     * For xine-lib 1.1.1 and greater, xine engine has gapless playback. amaroK
       is now "The Wall" compatible. (BR 77766)
     * Option for selecting external web browser in amaroK. No longer requires

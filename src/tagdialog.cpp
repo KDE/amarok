@@ -18,11 +18,7 @@
 #include "tagguesserconfigdialog.h"
 #include "trackpickerdialog.h"
 
-#include <taglib/fileref.h>
-#include <taglib/tag.h>
-#include <taglib/tfile.h>
-#include <taglib/tstring.h>
-#include <taglib/id3v2framefactory.h>
+#include <taglib/tfile.h> //TagLib::File::isWritable
 
 #include <qfile.h>
 #include <qlabel.h>
@@ -381,6 +377,7 @@ void TagDialog::init()
     kIntSpinBox_track->setSpecialValueText( " " );
     kIntSpinBox_year->setSpecialValueText( " " );
     kIntSpinBox_score->setSpecialValueText( " " );
+    kIntSpinBox_discNumber->setSpecialValueText( " " );
 
     //HACK due to deficiency in Qt that will be addressed in version 4
     // QSpinBox doesn't emit valueChanged if you edit the value with
@@ -388,10 +385,11 @@ void TagDialog::init()
     connect( kIntSpinBox_year->child( "qt_spinbox_edit" ),  SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
     connect( kIntSpinBox_track->child( "qt_spinbox_edit" ), SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
     connect( kIntSpinBox_score->child( "qt_spinbox_edit" ), SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
-
+    connect( kIntSpinBox_discNumber->child( "qt_spinbox_edit" ), SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
 
     // Connects for modification check
     connect( kLineEdit_title,  SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
+    connect( kLineEdit_composer,  SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
     connect( kComboBox_artist, SIGNAL(activated( int )),              SLOT(checkModified()) );
     connect( kComboBox_artist, SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
     connect( kComboBox_album,  SIGNAL(activated( int )),              SLOT(checkModified()) );
@@ -415,7 +413,7 @@ void TagDialog::init()
     connect( checkBox_perTrack,   SIGNAL(clicked()), SLOT(perTrack()) );
 
     // draw an icon onto the open-in-konqui button
-     pushButton_open->setIconSet( kapp->iconLoader()->loadIconSet( "fileopen", KIcon::Small ) );
+    pushButton_open->setIconSet( kapp->iconLoader()->loadIconSet( "fileopen", KIcon::Small ) );
 
     //Update lyrics on Context Browser
     connect( this, SIGNAL(lyricsChanged( const QString& )), ContextBrowser::instance(), SLOT( lyricsChanged( const QString& ) ) );
@@ -569,14 +567,21 @@ void TagDialog::readTags()
     trackArtistAlbumLabel->setText( niceTitle );
     trackArtistAlbumLabel2->setText( niceTitle );
 
-    kLineEdit_title    ->setText( m_bundle.title() );
-    kComboBox_artist   ->setCurrentText( m_bundle.artist() );
-    kComboBox_album    ->setCurrentText( m_bundle.album() );
-    kComboBox_genre    ->setCurrentText( m_bundle.genre() );
-    kIntSpinBox_track  ->setValue( m_bundle.track() );
-    kIntSpinBox_year   ->setValue( m_bundle.year() );
-    kIntSpinBox_score  ->setValue( m_score );
-    kTextEdit_comment  ->setText( m_bundle.comment() );
+    kLineEdit_title        ->setText( m_bundle.title() );
+    kComboBox_artist       ->setCurrentText( m_bundle.artist() );
+    kComboBox_album        ->setCurrentText( m_bundle.album() );
+    kComboBox_genre        ->setCurrentText( m_bundle.genre() );
+    kIntSpinBox_track      ->setValue( m_bundle.track() );
+    kLineEdit_composer     ->setText( m_bundle.composer() );
+    kIntSpinBox_year       ->setValue( m_bundle.year() );
+    kIntSpinBox_score      ->setValue( m_score );
+    kIntSpinBox_discNumber ->setValue( m_bundle.discNumber() );
+    kTextEdit_comment      ->setText( m_bundle.comment() );
+
+    bool extended = m_bundle.hasExtendedMetaInformation();
+    kIntSpinBox_discNumber->setEnabled( extended );
+    kLineEdit_composer->setEnabled( extended );
+
 
     QString summaryText, statisticsText;
     const QString body2cols = i18n( "<tr><td>Label:</td><td><b>Value</b></td></tr>", "<tr><td><nobr>%1:</nobr></td><td><b>%2</b></td></tr>" );
@@ -789,6 +794,8 @@ TagDialog::changes()
     modified |= !equalString( kComboBox_album->lineEdit()->text(), m_bundle.album() );
     modified |= !equalString( kComboBox_genre->lineEdit()->text(), m_bundle.genre() );
     modified |= kIntSpinBox_year->value()  != m_bundle.year();
+    modified |= kIntSpinBox_discNumber->value()  != m_bundle.discNumber();
+    modified |= !equalString( kLineEdit_composer->text(), m_bundle.composer() );
 
     modified |= !equalString( kTextEdit_comment->text(), m_bundle.comment() );
 
@@ -819,16 +826,17 @@ TagDialog::storeTags( const KURL &kurl )
     int result = changes();
     QString url = kurl.path();
     if( result & TagDialog::TAGSCHANGED ) {
-        MetaBundle mb;
+        MetaBundle mb( m_bundle );
 
-        mb.setPath( url );
         mb.setTitle( kLineEdit_title->text() );
+        mb.setComposer( kLineEdit_composer->text() );
         mb.setArtist( kComboBox_artist->currentText() );
         mb.setAlbum( kComboBox_album->currentText() );
         mb.setComment( kTextEdit_comment->text() );
         mb.setGenre( kComboBox_genre->currentText() );
         mb.setTrack( kIntSpinBox_track->value() );
         mb.setYear( kIntSpinBox_year->value() );
+        mb.setDiscNumber( kIntSpinBox_discNumber->value() );
         mb.setLength( m_bundle.length() );
         mb.setBitrate( m_bundle.bitrate() );
         mb.setSampleRate( m_bundle.sampleRate() );
@@ -867,7 +875,7 @@ TagDialog::bundleForURL( const KURL &url )
     if( storedTags.find( url.path() ) != storedTags.end() )
         return storedTags[ url.path() ];
 
-    return MetaBundle( url );
+    return MetaBundle( url, true );
 }
 
 int
@@ -1057,42 +1065,24 @@ TagDialog::saveMultipleTracks()
 bool
 TagDialog::writeTag( MetaBundle mb, bool updateCB )
 {
-    //Set default codec to UTF-8 (see bugs 111246 and 111232)
-    TagLib::ID3v2::FrameFactory::instance()->setDefaultTextEncoding(TagLib::String::UTF8);
-
     QCString path = QFile::encodeName( mb.url().path() );
     if ( !TagLib::File::isWritable( path ) ) {
         amaroK::StatusBar::instance()->longMessage( i18n(
            "TagLib claims %1 file is not writable." ).arg( path ), KDE::StatusBar::Error );
-
         return false;
     }
 
-    TagLib::FileRef f( path, false );
+    //visual feedback
+    QApplication::setOverrideCursor( KCursor::waitCursor() );
 
-    if ( !f.isNull() )
-    {
-        //visual feedback
-        QApplication::setOverrideCursor( KCursor::waitCursor() );
+    bool result = mb.save();
 
-        TagLib::Tag * t = f.tag();
-        t->setTitle( QStringToTString( mb.title() ) );
-        t->setArtist( QStringToTString( mb.artist() ) );
-        t->setAlbum( QStringToTString( mb.album() ) );
-        t->setTrack( mb.track() );
-        t->setYear( mb.year() );
-        t->setComment( QStringToTString( mb.comment() ) );
-        t->setGenre( QStringToTString( mb.genre() ) );
+    if( result )
+        //update the collection db
+        CollectionDB::instance()->updateTags( mb.url().path(), mb, updateCB );
 
-        bool result = f.save();
-        if( result )
-            //update the collection db
-            CollectionDB::instance()->updateTags( mb.url().path(), mb, updateCB );
+    QApplication::restoreOverrideCursor();
 
-        QApplication::restoreOverrideCursor();
-
-        return result;
-    }
-    else return false;
+    return result;
 }
 #include "tagdialog.moc"

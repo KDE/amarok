@@ -46,6 +46,8 @@ class PlaylistItem : public KListViewItem
             Playcount,
             LastPlayed,
             Moodbar,
+            Composer,
+            DiscNumber,
             NUM_COLUMNS
         };
 
@@ -103,8 +105,10 @@ class PlaylistItem : public KListViewItem
         QString filename()  const;
         QString title()     const;
         QString artist()    const;
+        QString composer()  const;
         QString album()     const;
         int     year()      const;
+        int     discNumber()const;
         QString comment()   const;
         QString genre()     const;
         int     track()     const;
@@ -120,10 +124,12 @@ class PlaylistItem : public KListViewItem
         /// some setters
         void setTitle(   const QString &title );
         void setArtist(  const QString &artist );
+        void setComposer(  const QString &composer );
         void setAlbum(   const QString &album );
         void setComment( const QString &comment );
         void setGenre(   const QString &genre );
         void setYear(      int year );
+        void setDiscNumber(int discNumber );
         void setTrack(     int track );
         void setLength(    int length );
         void setBitrate(   int bitrate );
@@ -183,6 +189,7 @@ class PlaylistItem : public KListViewItem
 
         const KURL m_url;
         int m_year;
+        int m_discNumber;
         int m_track;
         int m_length;
         int m_bitrate;
@@ -229,8 +236,10 @@ inline const KURL &PlaylistItem::url()   const { return m_url; }
 inline QString PlaylistItem::filename()  const { return m_url.isEmpty() ? QString() : m_url.fileName(); }
 inline QString PlaylistItem::title()     const { return KListViewItem::text( Title ); }
 inline QString PlaylistItem::artist()    const { return KListViewItem::text( Artist ); }
+inline QString PlaylistItem::composer()  const { return KListViewItem::text( Composer ); }
 inline QString PlaylistItem::album()     const { return KListViewItem::text( Album ); }
 inline int     PlaylistItem::year()      const { return m_year; }
+inline int     PlaylistItem::discNumber()const { return m_discNumber; }
 inline QString PlaylistItem::comment()   const { return KListViewItem::text( Comment ); }
 inline QString PlaylistItem::genre()     const { return KListViewItem::text( Genre ); }
 inline int     PlaylistItem::track()     const { return m_track; }
@@ -248,6 +257,12 @@ inline void PlaylistItem::setTitle( const QString &title )
 inline void PlaylistItem::setArtist( const QString &artist )
 {
     KListViewItem::setText( Artist, attemptStore( artist ) );
+    update();
+}
+
+inline void PlaylistItem::setComposer( const QString &composer )
+{
+    KListViewItem::setText( Composer, attemptStore( composer ) );
     update();
 }
 
@@ -270,6 +285,7 @@ inline void PlaylistItem::setGenre( const QString &genre )
 }
 
 inline void PlaylistItem::setYear(      int year )      { m_year      = year;      update(); }
+inline void PlaylistItem::setDiscNumber(int discNumber ){ m_discNumber= discNumber;      update(); }
 inline void PlaylistItem::setTrack(     int track )     { m_track     = track;     update(); }
 inline void PlaylistItem::setLength(    int length )    { m_length    = length;    update(); }
 inline void PlaylistItem::setBitrate(   int bitrate )   { m_bitrate   = bitrate;   update(); }

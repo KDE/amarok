@@ -1,5 +1,5 @@
 /*
- * (c) 2005 Aleexandre Oliveira <aleprj#gmail.com>
+ * (c) 2005 Alexandre Oliveira <aleprj@gmail.com>
  * (c) 2003 Frerich Raabe <raabe@kde.org>
  *
  * This program is free software; you can redistribute it and/or modify

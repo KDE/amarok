@@ -6,6 +6,8 @@
   email                : markey@web.de
   copyright            : (C) 2005 by Gav Wood
   email                : gav@kde.org
+  copyright            : (C) 2005 by Alexandre Oliveira
+  email                : aleprj@gmail.com
 ***************************************************************************/
 
 /***************************************************************************
@@ -58,8 +60,10 @@ const QString PlaylistItem::columnName( int c ) //static
         case Filename:   return "Filename";
         case Title:      return "Title";
         case Artist:     return "Artist";
+        case Composer:   return "Composer";
         case Album:      return "Album";
         case Year:       return "Year";
+        case DiscNumber: return "DiscNumber";
         case Comment:    return "Comment";
         case Genre:      return "Genre";
         case Track:      return "Track";
@@ -91,6 +95,7 @@ PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi )
         : KListViewItem( lvi->listView(), lvi->itemAbove(), filename( bundle.url() ) )
         , m_url( bundle.url() )
         , m_year( 0 )
+        , m_discNumber( 0 )
         , m_track( 0 )
         , m_length( 0 )
         , m_bitrate( 0 )
@@ -131,6 +136,7 @@ PlaylistItem::PlaylistItem( QDomNode node, QListViewItem *item )
         : KListViewItem( item->listView(), item->itemAbove() )
         , m_url( node.toElement().attribute( "url" ) )
         , m_year( 0 )
+        , m_discNumber( 0 )
         , m_track( 0 )
         , m_length( 0 )
         , m_bitrate( 0 )
@@ -151,6 +157,7 @@ PlaylistItem::PlaylistItem( QDomNode node, QListViewItem *item )
         switch( x ) {
         case Title:
         case Comment:
+        case Composer:
             KListViewItem::setText( x, text );
             continue;
         case Artist:
@@ -160,6 +167,9 @@ PlaylistItem::PlaylistItem( QDomNode node, QListViewItem *item )
             continue;
         case Year:
             m_year = text.toInt();
+            continue;
+        case DiscNumber:
+            m_discNumber = text.toInt();
             continue;
         case Track:
             m_track = text.toInt();
@@ -264,8 +274,10 @@ void PlaylistItem::setText( const MetaBundle &bundle )
 {
     setTitle( bundle.title() );
     setArtist( bundle.artist() );
+    setComposer( bundle.composer() );
     setAlbum( bundle.album() );
     setYear( bundle.year() );
+    setDiscNumber( bundle.discNumber() );
     setComment( bundle.comment() );
     setGenre( bundle.genre() );
     setTrack( bundle.track() );
@@ -282,8 +294,10 @@ void PlaylistItem::setText( int column, const QString &newText )
     {
         case Title:      setTitle(     newText );         break;
         case Artist:     setArtist(    newText );         break;
+        case Composer:   setComposer(  newText );         break;
         case Album:      setAlbum(     newText );         break;
         case Year:       setYear(      newText.toInt() ); break;
+        case DiscNumber: setDiscNumber(newText.toInt() ); break;
         case Genre:      setGenre(     newText );         break;
         case Comment:    setComment(   newText );         break;
         case Track:      setTrack(     newText.toInt() ); break;
@@ -304,8 +318,10 @@ QString PlaylistItem::exactText( int column ) const
         case Filename:   return filename();
         case Title:      return title();
         case Artist:     return artist();
+        case Composer:   return composer();
         case Album:      return album();
         case Year:       return QString::number( year() );
+        case DiscNumber: return QString::number( discNumber() );
         case Comment:    return comment();
         case Genre:      return genre();
         case Track:      return QString::number( track() );
@@ -398,8 +414,10 @@ QString PlaylistItem::text( int column ) const
                                 ? MetaBundle::prettyTitle( filename() )
                                 : title();
         case Artist:     return artist();
+        case Composer:   return composer();
         case Album:      return album();
         case Year:       return year() == -4623894 ? editing : year() ? QString::number( year() ) : QString::null;
+        case DiscNumber: return discNumber()  == -1 ? editing : discNumber() ? QString::number( discNumber() ) : QString::null;
         case Comment:    return comment();
         case Genre:      return genre();
         case Track:      return track() == -1 ? editing : track() ? QString::number( track() ) : QString::null;
@@ -482,12 +500,14 @@ void PlaylistItem::setEditing( int column )
     {
         case Title:
         case Artist:
+        case Composer:
         case Album:
         case Genre:
         case Comment:
             KListViewItem::setText( column, editing );
             break;
         case Year:       m_year      = -4623894; break;
+        case DiscNumber: m_discNumber= -1; break;
         case Track:      m_track     = -1; break;
         case Length:     m_length    = -1; break;
         case Bitrate:    m_bitrate   = -1; break;
@@ -508,11 +528,13 @@ bool PlaylistItem::isEditing( int column ) const
     {
         case Title:
         case Artist:
+        case Composer:
         case Album:
         case Genre:
         case Comment: //FIXME fix this hack!
             return KListViewItem::text( column ) == editing;
         case Year:       return m_year == -4623894;
+        case DiscNumber: return m_discNumber == -1;
         case Track:      return m_track     == -1;
         case Length:     return m_length    == -1;
         case Bitrate:    return m_bitrate   == -1;
@@ -605,6 +627,10 @@ PlaylistItem::compare( QListViewItem *i, int col, bool ascending ) const
             if( year() == i->year() )
                 return compare( i, Artist, ascending );
             return cmp( year(), i->year() );
+        case DiscNumber:
+            if( discNumber() == i->discNumber() )
+                return compare( i, Track, true ) * (ascending ? 1 : -1);
+            return cmp( discNumber(), i->discNumber() );
     }
     #undef cmp
     #undef i
@@ -627,7 +653,7 @@ PlaylistItem::compare( QListViewItem *i, int col, bool ascending ) const
         case Album:
             if( a == b ) //if same album, try to sort by track
                 //TODO only sort in ascending order?
-                return compare( i, Track, true ) * (ascending ? 1 : -1);
+                return compare( i, DiscNumber, true ) * (ascending ? 1 : -1);
             break;
     }
 

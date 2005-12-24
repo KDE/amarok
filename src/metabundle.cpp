@@ -1,6 +1,7 @@
-//Maintainer: Max Howell <max.howell@methylblue.com>, (C) 2004
-//Copyright:  See COPYING file that comes with this distribution
-//
+// Max Howell <max.howell@methylblue.com>, (C) 2004
+// Alexandre Pereira de Oliveira <aleprj@gmail.com>, (C) 2005
+// License: GNU General Public License V2
+
 
 #define DEBUG_PREFIX "MetaBundle"
 
@@ -15,17 +16,28 @@
 #include <taglib/mpegfile.h>
 #include <taglib/tag.h>
 #include <taglib/tstring.h>
+#include <taglib/id3v2tag.h>
+#include <taglib/id3v1tag.h>
+#include <taglib/xiphcomment.h>
+#include <taglib/mpegfile.h>
+#include <taglib/oggfile.h>
+#include <taglib/vorbisfile.h>
+#include <taglib/textidentificationframe.h>
+#include <taglib/xiphcomment.h>
+#include <taglib/tbytevector.h>
 
 
-MetaBundle::MetaBundle( const KURL &url, TagLib::AudioProperties::ReadStyle readStyle )
+MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::ReadStyle readStyle )
     : m_url( url )
     , m_year( 0 )
     , m_track( 0 )
+    , m_discNumber( 0 )
     , m_exists( url.protocol() == "file" && QFile::exists( url.path() ) )
     , m_isValidMedia( false ) //will be updated
 {
     if ( m_exists ) {
-        m_isValidMedia = CollectionDB::instance()->bundleForUrl( this );
+        if ( !noCache )
+            m_isValidMedia = CollectionDB::instance()->bundleForUrl( this );
 
         if ( !m_isValidMedia || length() <= 0 )
             readTags( readStyle );
@@ -50,6 +62,7 @@ MetaBundle::MetaBundle( const QString& title,
         , m_bitrate   ( bitrate )
         , m_length    ( Irrelevant )
         , m_sampleRate( Unavailable )
+        , m_discNumber( 0 )
         , m_exists( true )
         , m_isValidMedia( true )
 {
@@ -74,6 +87,7 @@ MetaBundle::MetaBundle( const PlaylistItem *item )
         , m_genre  ( item->genre() )
         , m_year   ( item->year() )
         , m_track  ( item->track() )
+        , m_discNumber( 0 )
         , m_exists ( true ) //FIXME
         , m_isValidMedia( true )
 {
@@ -94,11 +108,13 @@ MetaBundle::operator==( const MetaBundle& bundle )
 {
     return m_artist     == bundle.artist() &&
            m_title      == bundle.title() &&
+           m_composer   == bundle.composer() &&
            m_album      == bundle.album() &&
            m_year       == bundle.year() &&
            m_comment    == bundle.comment() &&
            m_genre      == bundle.genre() &&
            m_track      == bundle.track() &&
+           m_discNumber == bundle.discNumber() &&
            m_bitrate    == bundle.bitrate() &&
            m_sampleRate == bundle.sampleRate();
 }
@@ -183,6 +199,48 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
             m_isValidMedia = true;
         }
 
+    /* As mpeg implementation on TagLib uses a Tag class that's not defined on the headers,
+       we have to cast the files, not the tags! */
+
+//        if ( dynamic_cast<TagLib::WMA::Tag *>( tag ) )
+//            m_type = wma;
+        QString disc;
+        if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) ) {
+            m_type = mp3;
+            if ( file->ID3v2Tag() ) {
+                if ( !file->ID3v2Tag()->frameListMap()["TPOS"].isEmpty() ) {
+                    disc = TStringToQString( file->ID3v2Tag()->frameListMap()["TPOS"].front()->toString() ).stripWhiteSpace();
+                }
+                if ( !file->ID3v2Tag()->frameListMap()["TCOM"].isEmpty() ) {
+                    m_composer = TStringToQString( file->ID3v2Tag()->frameListMap()["TCOM"].front()->toString() ).stripWhiteSpace();
+                }
+            }
+        }
+        else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) ) {
+            m_type = ogg;
+            if ( file->tag() ) {
+                if ( !file->tag()->fieldListMap()[ "COMPOSER" ].isEmpty() ) {
+                    m_composer = TStringToQString( file->tag()->fieldListMap()["COMPOSER"].front() ).stripWhiteSpace();
+                }
+                if ( !file->tag()->fieldListMap()[ "DISCNUMBER" ].isEmpty() ) {
+                    disc = TStringToQString( file->tag()->fieldListMap()["DISCNUMBER"].front() ).stripWhiteSpace();
+                }
+            }
+        }
+        else
+            m_type = other;
+
+        if ( !disc.isEmpty() ) {
+            int i = disc.find ('/');
+            if ( i != -1 ) {
+                m_discNumber = disc.left( i ).toInt();
+                // disc.right( i ).toInt() is total number of discs, we don't use this at the moment
+            }
+            else {
+                m_discNumber = disc.toInt();
+            }
+        }
+
         init( fileref.audioProperties() );
     }
 
@@ -235,6 +293,8 @@ MetaBundle::infoByColumn( int column, bool pretty ) const
         case PlaylistItem::Filename:  return filename();
         case PlaylistItem::Title:     return title();
         case PlaylistItem::Artist:    return artist();
+        case PlaylistItem::Composer:  return composer();
+        case PlaylistItem::DiscNumber:return ( pretty && !discNumber() ) ? QString() : QString::number( discNumber() );
         case PlaylistItem::Album:     return album();
         case PlaylistItem::Year:      return ( pretty && !year() ) ? QString() : QString::number( year() );
         case PlaylistItem::Comment:   return comment();
@@ -314,4 +374,77 @@ MetaBundle::genreList() //static
     list.sort();
 
     return list;
+}
+
+void
+MetaBundle::setExtendedTag( TagLib::File *file, int tag, const QString value ) {
+    char *id;
+    TagLib::MPEG::File *mpegFile;
+    TagLib::Ogg::Vorbis::File *oggFile;
+
+    switch ( m_type ) {
+        case mp3:
+            switch( tag ) {
+                case ( composerTag ): id = "TCOM"; break;
+                case ( discNumberTag ): id = "TPOS"; break;
+            }
+            if ( mpegFile = dynamic_cast<TagLib::MPEG::File *>( file ) ) {
+                if ( mpegFile->ID3v2Tag() ) {
+                    if ( value.isEmpty() )
+                        mpegFile->ID3v2Tag()->removeFrames( id );
+                    else {
+                        if( !mpegFile->ID3v2Tag()->frameListMap()[id].isEmpty() )
+                            mpegFile->ID3v2Tag()->frameListMap()[id].front()->setText( QStringToTString( value ) );
+                        else {
+                            TagLib::ID3v2::TextIdentificationFrame *frame = new TagLib::ID3v2::TextIdentificationFrame( id, TagLib::ID3v2::FrameFactory::instance()->defaultTextEncoding() );
+                            frame->setText( QStringToTString( value ) );
+                            mpegFile->ID3v2Tag()->addFrame( frame );
+                        }
+                    }
+                }
+            }
+            break;
+        case ogg:
+            switch( tag ) {
+                case ( composerTag ): id = "COMPOSER"; break;
+                case ( discNumberTag ): id = "DISCNUMBER"; break;
+            }
+           if ( oggFile = dynamic_cast<TagLib::Ogg::Vorbis::File *>( file ) ) {
+                if ( oggFile->tag() ) {
+                    if ( value.isEmpty() )
+                        oggFile->tag()->removeField( id );
+                    else
+                        oggFile->tag()->addField( id, QStringToTString( value ), true );
+                }
+            }
+            break;
+    }
+}
+
+bool
+MetaBundle::save() {
+    //Set default codec to UTF-8 (see bugs 111246 and 111232)
+    TagLib::ID3v2::FrameFactory::instance()->setDefaultTextEncoding(TagLib::String::UTF8);
+
+    QCString path = QFile::encodeName( m_url.path() );
+    TagLib::FileRef f( path, false );
+
+    if ( !f.isNull() )
+    {
+        TagLib::Tag * t = f.tag();
+        t->setTitle( QStringToTString( m_title ) );
+        t->setArtist( QStringToTString( m_artist ) );
+        t->setAlbum( QStringToTString( m_album ) );
+        t->setTrack( m_track );
+        t->setYear( m_year );
+        t->setComment( QStringToTString( m_comment ) );
+        t->setGenre( QStringToTString( m_genre ) );
+
+        if ( hasExtendedMetaInformation() ) {
+            setExtendedTag( f.file(), composerTag, m_composer );
+            setExtendedTag( f.file(), discNumberTag, m_discNumber ? QString::number( m_discNumber ) : QString() );
+        }
+        return f.save();
+    }
+    return false;
 }

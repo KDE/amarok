@@ -20,6 +20,7 @@
 #define DEBUG_PREFIX "CollectionScanner"
 
 #include "collectionscanner.h"
+#include "metabundle.h"
 #include "debug.h"
 
 #include <iostream>
@@ -241,40 +242,32 @@ CollectionScanner::readTags( const QString& path )
 
     AttributeMap attributes;
 
-    TagLib::FileRef fileref;
-    TagLib::Tag *tag = 0;
+    MetaBundle mb ( path, true, TagLib::AudioProperties::Fast );
 
-    fileref = TagLib::FileRef( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );
-
-    if( !fileref.isNull() )
-        tag = fileref.tag();
-
-    if( fileref.isNull() || !tag ) {
+    if ( !mb.isValidMedia() ) {
         std::cout << "<dud/>";
         return attributes;
     }
 
-    #define strip( x ) TStringToQString( x ).stripWhiteSpace()
     attributes["path"]    = path;
-    attributes["title"]   = strip( tag->title() );
-    attributes["artist"]  = strip( tag->artist() );
-    attributes["album"]   = strip( tag->album() );
-    attributes["comment"] = strip( tag->comment() );
-    attributes["genre"]   = strip( tag->genre() );
-    attributes["year"]    = tag->year() ? QString::number( tag->year() ) : QString();
-    attributes["track"]   = tag->track() ? QString::number( tag->track() ) : QString();
-    #undef strip
+    attributes["title"]   = mb.title();
+    attributes["artist"]  = mb.artist();
+    attributes["composer"]= mb.composer();
+    attributes["album"]   = mb.album();
+    attributes["comment"] = mb.comment();
+    attributes["genre"]   = mb.genre();
+    attributes["year"]    = mb.year() ? QString::number( mb.year() ) : QString();
+    attributes["track"]   = mb.track() ? QString::number( mb.track() ) : QString();
+    attributes["discnumber"]   = mb.discNumber() ? QString::number( mb.discNumber() ) : QString();
 
-    TagLib::AudioProperties* ap = fileref.audioProperties();
-    if( ap ) {
-        attributes["audioproperties"] = "true";
-        attributes["bitrate"]         = QString::number( ap->bitrate() );
-        attributes["length"]          = QString::number( ap->length() );
-        attributes["samplerate"]      = QString::number( ap->sampleRate() );
-    }
-    else
+    if ( mb.audioPropertiesUndetermined() )
         attributes["audioproperties"] = "false";
-
+    else {
+        attributes["audioproperties"] = "true";
+        attributes["bitrate"]         = QString::number( mb.bitrate() );
+        attributes["length"]          = QString::number( mb.length() );
+        attributes["samplerate"]      = QString::number( mb.sampleRate() );
+    }
 
     return attributes;
 }

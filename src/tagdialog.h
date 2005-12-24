@@ -1,5 +1,6 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
 // (c) 2004 Pierpaolo Di Panfilo <pippo_dp@libero.it>
+// (c) 2005 Alexandre Pereira de Oliveira <aleprj@gmail.com>
 // See COPYING file for licensing information.
 
 #ifndef AMAROK_TAGDIALOG_H
@@ -18,6 +19,11 @@
 
 
 class PlaylistItem;
+namespace TagLib {
+    namespace ID3v2 {
+        class Tag;
+    }
+}
 
 class TagDialog : public TagDialogBase
 {

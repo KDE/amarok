@@ -13,6 +13,7 @@ amarokcollectionscanner_SOURCES = \
 
 amarokcollectionscanner_LDADD = \
     $(top_builddir)/amarok/src/metadata/libmetadata.la \
+    $(top_builddir)/amarok/src/libamarok.la \
     $(LIB_QT) \
     $(LIB_KDECORE) \
     $(taglib_libs)

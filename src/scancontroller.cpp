@@ -218,11 +218,13 @@ ScanController::startElement( const QString&, const QString& localName, const QS
         bundle.setPath   ( attrs.value( "path" ) );
         bundle.setTitle  ( attrs.value( "title" ) );
         bundle.setArtist ( attrs.value( "artist" ) );
+        bundle.setComposer( attrs.value( "composer" ) );
         bundle.setAlbum  ( attrs.value( "album" ) );
         bundle.setComment( attrs.value( "comment" ) );
         bundle.setGenre  ( attrs.value( "genre" ) );
         bundle.setYear   ( attrs.value( "year" ).toInt() );
         bundle.setTrack  ( attrs.value( "track" ).toInt() );
+        bundle.setDiscNumber( attrs.value( "discnumber" ).toInt() );
 
         if( attrs.value( "audioproperties" ) == "true" ) {
             bundle.setBitrate   ( attrs.value( "bitrate" ).toInt() );
@@ -230,7 +232,7 @@ ScanController::startElement( const QString&, const QString& localName, const QS
             bundle.setSampleRate( attrs.value( "samplerate" ).toInt() );
         }
 
-          CollectionDB::instance()->addSong( &bundle, m_incremental );
+        CollectionDB::instance()->addSong( &bundle, m_incremental );
     }
 
     if( localName == "folder" ) {

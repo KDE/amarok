@@ -4,6 +4,7 @@
 // (c) 2005 Ian Monroe <ian@monroe.nu>
 // (c) 2005 Jeff Mitchell <kde-dev@emailgoeshere.com>
 // (c) 2005 Isaiah Damron <xepo@trifault.net>
+// (c) 2005 Alexandre Pereira de Oliveira <aleprj@gmail.com>
 // See COPYING file for licensing information.
 
 #define DEBUG_PREFIX "CollectionDB"
@@ -314,6 +315,8 @@ CollectionDB::createTables( const bool temporary, const bool rename )
                     "year INTEGER,"
                     "comment " + textColumnType() + ","
                     "track NUMERIC(4),"
+                    "composer " + textColumnType() + ","
+                    "discnumber INTEGER,"
                     "bitrate INTEGER,"
                     "length INTEGER,"
                     "samplerate INTEGER,"
@@ -881,7 +884,7 @@ CollectionDB::albumImage( const QString &artist, const QString &album, uint widt
     if( width == 1 ) width = AmarokConfig::coverPreviewSize();
 
     s = findAmazonImage( artist, album, width );
-    
+
     if( s.isEmpty() )
         s = findAmazonImage( "", album, width );
 
@@ -905,12 +908,12 @@ CollectionDB::albumImage( MetaBundle trackInformation, uint width )
 {
     QString s;
     if( width == 1 ) width = AmarokConfig::coverPreviewSize();
-    
+
     QString album = trackInformation.album();
     QString artist = trackInformation.artist();
-    
+
     s = findAmazonImage( artist, album, width );
-    
+
     if( s.isEmpty() )
         s = findAmazonImage( "", album, width );
 
@@ -1248,7 +1251,7 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
     if ( !QFileInfo( bundle->url().path() ).isReadable() ) return false;
 
     QString command = "INSERT INTO tags_temp "
-                      "( url, dir, createdate, album, artist, genre, year, title, comment, track, sampler, length, bitrate, samplerate ) "
+                      "( url, dir, createdate, album, artist, genre, year, title, composer, comment, track, discnumber, sampler, length, bitrate, samplerate ) "
                       "VALUES ('";
 
     QString artist = bundle->artist();
@@ -1276,9 +1279,11 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
     command += escapeString( QString::number( genreID( bundle->genre(),   true, !incremental, false ) ) ) + ",'";
     command += escapeString( QString::number( yearID( QString::number( bundle->year() ), true, !incremental, false ) ) ) + "','";
 
-    command += escapeString( bundle->title() ) + "','";
+    command += escapeString( bundle->title() ) + "',";
+    command += ( bundle->composer().isEmpty() ? "NULL" : "'"+escapeString( bundle->composer() ) + "'" ) + ",'";
     command += escapeString( bundle->comment() ) + "', ";
     command += ( !bundle->track() ? "NULL" : escapeString( QString::number( bundle->track() ) ) ) + " , ";
+    command += ( !bundle->discNumber() ? "NULL" : escapeString( QString::number( bundle->discNumber() ) ) ) + " , ";
     command += artist == i18n( "Various Artists" ) ? boolT() + "," : boolF() + ",";
 
     // NOTE any of these may be -1 or -2, this is what we want
@@ -1353,6 +1358,8 @@ fillInBundle( QStringList values, MetaBundle &bundle )
     bundle.setTitle     ( *it ); ++it;
     bundle.setYear      ( (*it).toInt() ); ++it;
     bundle.setComment   ( *it ); ++it;
+    bundle.setDiscNumber( (*it).toInt() ); ++it;
+    bundle.setComposer  ( *it ); ++it;
     bundle.setTrack     ( (*it).toInt() ); ++it;
     bundle.setBitrate   ( (*it).toInt() ); ++it;
     bundle.setLength    ( (*it).toInt() ); ++it;
@@ -1364,8 +1371,8 @@ CollectionDB::bundleForUrl( MetaBundle* bundle )
 {
     QStringList values = query( QString(
             "SELECT album.name, artist.name, genre.name, tags.title, "
-            "year.name, tags.comment, tags.track, tags.bitrate, tags.length, "
-            "tags.samplerate "
+            "year.name, tags.comment, tags.discnumber, tags.composer, "
+            "tags.track, tags.bitrate, tags.length, tags.samplerate "
             "FROM tags, album, artist, genre, year "
             "WHERE album.id = tags.album AND artist.id = tags.artist AND "
             "genre.id = tags.genre AND year.id = tags.year AND tags.url = '%1';" )
@@ -1400,9 +1407,11 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
             qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
             qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valComposer );
             qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valComment );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTrack );
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valBitrate );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLength );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valSamplerate );
@@ -1421,9 +1430,11 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
                 b.setArtist    (  *++it );
                 b.setGenre     (  *++it );
                 b.setTitle     (  *++it );
+                b.setComposer  (  *++it );
                 b.setYear      ( (*++it).toInt() );
                 b.setComment   (  *++it );
                 b.setTrack     ( (*++it).toInt() );
+                b.setDiscNumber( (*++it).toInt() );
                 b.setBitrate   ( (*++it).toInt() );
                 b.setLength    ( (*++it).toInt() );
                 b.setSampleRate( (*++it).toInt() );
@@ -3898,6 +3909,8 @@ QueryBuilder::valueName( int value )
     if ( value & valDirectory )   values += "dir";
     if ( value & valTitle )       values += "title";
     if ( value & valTrack )       values += "track";
+    if ( value & valComposer )    values += "composer";
+    if ( value & valDiscNumber )    values += "discnumber";
     if ( value & valScore )       values += "percentage";
     if ( value & valRating )      values += "rating";
     if ( value & valComment )     values += "comment";
