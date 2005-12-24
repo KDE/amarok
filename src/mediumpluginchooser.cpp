@@ -14,6 +14,18 @@
 #include "mediumpluginchooser.h"
 #include "medium.h"
 
+#include <qcheckbox.h>
+#include <qdom.h>
+#include <qfile.h>
+#include <qgroupbox.h>
+#include <qlabel.h>
+#include <qlayout.h>
+#include <qpushbutton.h>
+#include <qstringlist.h>
+#include <qtextstream.h>   //presets
+#include <qtooltip.h>
+#include <qvbox.h>
+
 #include <kapplication.h>
 #include <klocale.h>
 #include <kwin.h>
@@ -26,6 +38,19 @@ MediumPluginChooser::MediumPluginChooser( const Medium *medium, const KGuiItem i
     setCaption( kapp->makeStdCaption( i18n( "Plugin Chooser" ) ) );
 
     KWin::setState( winId(), NET::SkipTaskbar );
+
+    QVBox* vbox = makeVBoxMainWidget();
+    vbox->setSpacing( KDialog::spacingHint() );
+
+    // BEGIN Chooser
+    QHBox* chooserBox = new QHBox( vbox );
+    chooserBox->setSpacing( KDialog::spacingHint() );
+
+    new QLabel( i18n("Choose appropriate plugin:"), chooserBox );
+
+    m_chooserCombo = new KComboBox( chooserBox );
+    m_chooserCombo->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred ) );
+
 }
 
 MediumPluginChooser::~MediumPluginChooser()

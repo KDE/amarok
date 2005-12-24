@@ -14,6 +14,7 @@
 
 #include <kdialogbase.h>
 #include <kguiitem.h>
+#include <kcombobox.h>
 
 class Medium;
 
@@ -22,10 +23,15 @@ class Medium;
 */
 class MediumPluginChooser : public KDialogBase
 {
-public:
-    MediumPluginChooser( const Medium *medium, const KGuiItem ignoreButton );
+    //Q_OBJECT
+    public:
+        MediumPluginChooser( const Medium *medium, const KGuiItem ignoreButton );
 
-    ~MediumPluginChooser();
+        ~MediumPluginChooser();
+
+
+    private:
+        KComboBox*      m_chooserCombo;
 
 };
 
