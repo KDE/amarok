@@ -2360,6 +2360,7 @@ ContextBrowser::wikiConfig() // SLOT
     m_wikiLocaleCombo->setCurrentItem( index );
     wikiConfigChanged( index ); // a little redundant, but saves ugly code, and ensures the lineedit enabled status is correct
 
+    m_wikiConfigDialog->setInitialSize( QSize( 240, 100 ) );
     const int result = m_wikiConfigDialog->exec();
 
 
