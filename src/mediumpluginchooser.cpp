@@ -26,7 +26,7 @@ MediumPluginChooser::MediumPluginChooser( const Medium *medium, const KGuiItem i
 {
     DEBUG_BLOCK
     kapp->setTopWidget( this );
-    setCaption( kapp->makeStdCaption( i18n( "Plugin Chooser" ) ) );
+    setCaption( kapp->makeStdCaption( i18n( "Removable Medium Plugin Chooser" ) ) );
 
     KWin::setState( winId(), NET::SkipTaskbar );
 
@@ -37,9 +37,22 @@ MediumPluginChooser::MediumPluginChooser( const Medium *medium, const KGuiItem i
     QHBox* chooserBox = new QHBox( vbox );
     chooserBox->setSpacing( KDialog::spacingHint() );
 
-    new QLabel( i18n("Choose appropriate plugin:"), chooserBox );
+    QString labelTextFirstLine = i18n( "amaroK has detected what appears to be a removable music player." );
+    QString labelTextSecondLineA = i18n( "\nThis player is known to the system as: " );
+    QString labelTextSecondLineB = i18n( ", and its label (if any) is: " );
+    QString labelTextThirdLine = i18n( "\nIts mount point (if any) is: " );
+    QString labelTextFourthLine = i18n( "\nPlease choose a plugin to handle it, or press \"Ignore\" to be prompted again next time." );
+    QString labelTextFifthLine = i18n( "\nIf you do not want amaroK to handle this media, choose \"Do not handle\"." )
+    QString labelTextNone = i18n( "(none)" );
 
-    m_chooserCombo = new KComboBox( chooserBox );
+    QString fullLabel( labelTextFirstLine + labelTextSecondLineA + medium->name() + labelTextSecondLineB + (medium->label().isEmpty() ? labelTextNone : medium->label()) + labelTextThirdLine + (medium->mountPoint().isEmpty() ? labelTextNone : medium->mountPoint()) + labelTextFourthLine + labelTextFifthLine );
+
+    new QLabel( fullLabel, chooserBox );
+
+    QHBox* chooser2Box = new QHBox( vbox );
+    chooser2Box->setSpacing( KDialog::spacingHint() );
+
+    m_chooserCombo = new KComboBox( chooser2Box );
     m_chooserCombo->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred ) );
 
 }
