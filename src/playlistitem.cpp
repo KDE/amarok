@@ -157,12 +157,12 @@ PlaylistItem::PlaylistItem( QDomNode node, QListViewItem *item )
         switch( x ) {
         case Title:
         case Comment:
-        case Composer:
             KListViewItem::setText( x, text );
             continue;
         case Artist:
         case Album:
         case Genre:
+        case Composer:
             KListViewItem::setText( x, attemptStore( text ) );
             continue;
         case Year:
