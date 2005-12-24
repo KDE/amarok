@@ -1526,6 +1526,17 @@ CollectionView::organizeFiles( const KURL::List &urls, bool addToCollection )  /
 
             //Building destination here.
             MetaBundle mb( src );
+            
+            bool isCompilation = false;
+            
+            if( mb.album().isEmpty() )
+                album = i18n("Unknown");
+            else
+            {
+                album = cleanPath( mb.album() );
+                const int albumId = CollectionDB::instance()->albumID( album );
+                isCompilation = CollectionDB::instance()->albumIsCompilation( QString::number(albumId) );
+            }
 
             if( !mb.artist().isEmpty() )
             {
@@ -1536,19 +1547,15 @@ CollectionView::organizeFiles( const KURL::List &urls, bool addToCollection )  /
             else
                 artist = i18n("Unknown");
 
-            mb.album().isEmpty() ?
-                album = i18n("Unknown") :
-                album = cleanPath( mb.album() );
-
             type = mb.type();
 
             if( !mb.title().isEmpty() )
             {
                 if( mb.track() )
                 {
-                       if( (QString::number( mb.track() )).length() == 1 )
-                               title = "0" + QString::number( mb.track() ) + " - " + cleanPath( mb.title() );
-                       else
+                    if( (QString::number( mb.track() )).length() == 1 )
+                        title = "0" + QString::number( mb.track() ) + " - " + cleanPath( mb.title() );
+                    else
                        title = QString::number( mb.track() ) + " - " + cleanPath( mb.title() );
                 }
                 else
@@ -1557,17 +1564,21 @@ CollectionView::organizeFiles( const KURL::List &urls, bool addToCollection )  /
                 }
                 title.replace( type, "" );
             }
-            else
+            else    
                 title = i18n("Unknown");
 
             dest = base;
             if( byFiletype->isChecked() )
                 dest += src.path().section( ".", -1 ).lower() + "/";
 
-            if( group->isChecked() )
+            if( group->isChecked() && !isCompilation )
                 dest += artist.upper()[ 0 ] + "/";      // Group artists i.e. A/Artist/Album
 
-            dest += artist + "/" + album + "/" + title + "." + type;
+            if( isCompilation )
+                dest += i18n("Compilations") + "/" + album + "/" + title + "." + type;
+            else
+                dest += artist + "/" + album + "/" + title + "." + type;
+                
             dest.remove( "?" ).remove( ":" ).remove( "\"" ).remove( "," );
 
             if( replaceSpace->isChecked() )
