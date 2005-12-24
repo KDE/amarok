@@ -1937,7 +1937,7 @@ Playlist::contentsDragMoveEvent( QDragMoveEvent* e )
     #if KDE_IS_VERSION( 3, 3, 91 )
     const bool ctrlPressed = KApplication::keyboardMouseState() & Qt::ControlButton;
     #else
-    const bool ctrlPressed= KApplication::keyboardModifiers() & ControlMask;
+    const bool ctrlPressed = KApplication::keyboardModifiers() & ControlMask;
     #endif
 
     //Get the closest item _before_ the cursor
@@ -3631,7 +3631,14 @@ Playlist::contentsMouseMoveEvent( QMouseEvent *e )
         KListView::contentsMouseMoveEvent( e );
     PlaylistItem *prev = m_hoveredRating;
     const QPoint pos = e ? e->pos() : viewportToContents( viewport()->mapFromGlobal( QCursor::pos() ) );
-    const int state = e ? e->state() : KApplication::keyboardMouseState();
+
+    #if KDE_IS_VERSION( 3, 3, 91 )
+    bool leftButtonPressed = KApplication::keyboardMouseState() & Qt::LeftButton;
+    #else
+    bool leftButtonPressed = KApplication::mouseState() & Button1Mask;
+    #endif
+
+    if( e ) leftButtonPressed = e->state() & Qt::LeftButton;
 
     PlaylistItem *item = static_cast<PlaylistItem*>( itemAt( contentsToViewport( pos ) ) );
     if( item && pos.x() > header()->sectionPos( PlaylistItem::Rating ) &&
@@ -3640,7 +3647,7 @@ Playlist::contentsMouseMoveEvent( QMouseEvent *e )
         const int rating = item->ratingAtPoint( pos.x() );
         if( rating > item->rating() )
             PlaylistToolTip::hide();
-        if( state & Qt::LeftButton )
+        if( leftButtonPressed )
         {
             if( m_selCount > 1 && item->isSelected() )
                 for( MyIt it( this, MyIt::Visible | MyIt::Selected ); *it; ++it )
@@ -3656,7 +3663,7 @@ Playlist::contentsMouseMoveEvent( QMouseEvent *e )
 
     if( prev )
     {
-        if( ( state & Qt::LeftButton ) &&
+        if( ( leftButtonPressed ) &&
            !( ( m_stateWhenPressed & Qt::ControlButton ) || ( m_stateWhenPressed & Qt::ShiftButton ) ) )
             resetPendingRatings( prev );
         else
@@ -3678,7 +3685,13 @@ void Playlist::leaveEvent( QEvent *e )
     m_hoveredRating = 0;
     if( prev )
     {
-        if( ( KApplication::keyboardMouseState() & Qt::LeftButton ) &&
+        #if KDE_IS_VERSION( 3, 3, 91 )
+        const bool leftButtonPressed = KApplication::keyboardMouseState() & Qt::LeftButton;
+        #else
+        const bool leftButtonPressed = KApplication::mouseState() & Button1Mask;
+        #endif
+
+        if( ( leftButtonPressed ) &&
            !( ( m_stateWhenPressed & Qt::ControlButton ) || ( m_stateWhenPressed & Qt::ShiftButton ) ) )
             resetPendingRatings( prev );
         else
