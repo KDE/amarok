@@ -723,7 +723,6 @@
 <includehints>
     <includehint>klineedit.h</includehint>
     <includehint>ktabwidget.h</includehint>
-    <includehint>coverlabel.h</includehint>
     <includehint>kcombobox.h</includehint>
     <includehint>klineedit.h</includehint>
     <includehint>kcombobox.h</includehint>
