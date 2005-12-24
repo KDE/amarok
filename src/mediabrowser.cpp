@@ -19,6 +19,7 @@
 #include "devicemanager.h"
 #include "mediabrowser.h"
 #include "medium.h"
+#include "mediumpluginchooser.h"
 #include "metabundle.h"
 #include "playlist.h"
 #include "playlistloader.h"
@@ -1135,8 +1136,22 @@ void
 MediaBrowser::mediumAdded( const Medium *medium, QString name )
 {
     debug() << "mediumAdded: " << (medium? medium->properties():"null") << endl;
+    KConfig *config = amaroK::config( "MediaBrowser" );
+    KGuiItem ignoreButton( "Ignore" );
+    MediumPluginChooser *mpc;
+    QString handler;
     if( medium )
     {
+        handler = config->readEntry( medium->id() );
+        if ( !handler.isEmpty() )
+            debug() << "handler = " << handler << endl;
+        else
+        {
+            debug() << "handler null for " << medium->id() << endl;
+            mpc = new MediumPluginChooser( medium, ignoreButton );
+            //mpc->show();
+            //mpc->raise();
+        }
         debug() << "label=" << medium->label() << endl;
         debug() << "supported by " << m_pluginSupports[medium->label()] << endl;
         MediaDevice *device = loadDevicePlugin( m_pluginSupports[medium->label()] );
