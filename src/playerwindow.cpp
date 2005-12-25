@@ -45,9 +45,6 @@ email                : markey@web.de
 #include <kurldrag.h>
 #include <kwin.h>            //eventFilter()
 
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-
 #ifdef HAVE_EXSCALIBAR
 #define WANT_MOODBAR AmarokConfig::showMoodbar()
 #else
