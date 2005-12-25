@@ -269,11 +269,9 @@ class MediaDevice : public QObject, public amaroK::Plugin
         virtual void init( MediaBrowser* parent );
         virtual ~MediaDevice();
 
-        void giveItemsToView();
-        void takeItemsFromView();
         MediaView *view();
 
-        virtual void rmbPressed( MediaView *deviceList, QListViewItem *item, const QPoint &point, int ) { (void)deviceList; (void)item; (void) point; }
+        virtual void rmbPressed( QListViewItem *item, const QPoint &point, int ) { (void)item; (void) point; }
 
         /**
          * @return list of filetypes playable on this device
@@ -397,7 +395,7 @@ class MediaDevice : public QObject, public amaroK::Plugin
         virtual void unlockDevice() = 0;
 
         /**
-         * Connect to device, and populate m_listview with MediaItems
+         * Connect to device, and populate m_view with MediaItems
          * @param silent if true, suppress error dialogs
          * @return true if successful
          */
@@ -456,7 +454,7 @@ class MediaDevice : public QObject, public amaroK::Plugin
 
         KShellProcess   *sysProc;
         MediaBrowser    *m_parent;
-        MediaView       *m_listview;
+        MediaView       *m_view;
         bool             m_wait;
         bool             m_waitForDeletion;
         bool             m_copyFailed;

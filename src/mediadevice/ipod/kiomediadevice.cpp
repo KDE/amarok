@@ -269,27 +269,27 @@ KioMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
 bool
 KioMediaDevice::openDevice( bool /*silent*/ )
 {
-    m_playlistItem = new MediaItem( m_listview );
+    m_playlistItem = new MediaItem( m_view );
     m_playlistItem->setText( 0, i18n("Playlists") );
     m_playlistItem->m_order = -5;
     m_playlistItem->setType( MediaItem::PLAYLISTSROOT );
 
-    m_podcastItem = new MediaItem( m_listview );
+    m_podcastItem = new MediaItem( m_view );
     m_podcastItem->setText( 0, i18n("Podcasts") );
     m_podcastItem->m_order = -4;
     m_podcastItem->setType( MediaItem::PODCASTSROOT );
 
-    m_invisibleItem = new MediaItem( m_listview );
+    m_invisibleItem = new MediaItem( m_view );
     m_invisibleItem->setText( 0, i18n("Invisible") );
     m_invisibleItem->m_order = -3;
     m_invisibleItem->setType( MediaItem::INVISIBLEROOT );
 
-    m_staleItem = new MediaItem( m_listview );
+    m_staleItem = new MediaItem( m_view );
     m_staleItem->setText( 0, i18n("Stale") );
     m_staleItem->m_order = -2;
     m_staleItem->setType( MediaItem::STALEROOT );
 
-    m_orphanedItem = new MediaItem( m_listview );
+    m_orphanedItem = new MediaItem( m_view );
     m_orphanedItem->setText( 0, i18n("Orphaned") );
     m_orphanedItem->m_order = -2;
     m_orphanedItem->setType( MediaItem::ORPHANEDROOT );
@@ -302,7 +302,7 @@ KioMediaDevice::openDevice( bool /*silent*/ )
 bool
 KioMediaDevice::closeDevice()  //SLOT
 {
-    m_listview->clear();
+    m_view->clear();
     m_podcastItem = NULL;
     m_playlistItem = NULL;
     m_orphanedItem = NULL;
@@ -318,7 +318,7 @@ KioMediaDevice::addTrackToList( const QString &path, const MetaBundle &bundle)
     MediaItem *artist = getArtist(bundle.artist());
     if(!artist)
     {
-        artist = new MediaItem(m_listview);
+        artist = new MediaItem(m_view);
         artist->setText( 0, bundle.artist() );
         artist->setType( MediaItem::ARTIST );
     }
@@ -347,7 +347,7 @@ KioMediaDevice::addTrackToList( const QString &path, const MetaBundle &bundle)
 MediaItem *
 KioMediaDevice::getArtist(const QString &artist)
 {
-    for(MediaItem *it = dynamic_cast<MediaItem *>(m_listview->firstChild());
+    for(MediaItem *it = dynamic_cast<MediaItem *>(m_view->firstChild());
             it;
             it = dynamic_cast<MediaItem *>(it->nextSibling()))
     {

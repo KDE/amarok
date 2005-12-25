@@ -740,13 +740,13 @@ class MediaItemTip : public QToolTip
     public:
     MediaItemTip( QListView *listview )
     : QToolTip( listview->viewport() )
-    , m_listView( listview )
+    , m_view( listview )
     {}
     virtual ~MediaItemTip() {}
     protected:
     virtual void maybeTip( const QPoint &p )
     {
-        MediaItem *i = dynamic_cast<MediaItem *>(m_listView->itemAt( m_listView->viewportToContents( p ) ) );
+        MediaItem *i = dynamic_cast<MediaItem *>(m_view->itemAt( m_view->viewportToContents( p ) ) );
         if( !i )
             return;
 
@@ -805,10 +805,10 @@ class MediaItemTip : public QToolTip
         }
 
         if( !text.isEmpty() && !text.isNull() )
-            tip( m_listView->itemRect( i ), text );
+            tip( m_view->itemRect( i ), text );
     }
 
-    QListView *m_listView;
+    QListView *m_view;
 };
 
 
@@ -1115,7 +1115,7 @@ MediaView::viewportPaintEvent( QPaintEvent *e )
 void
 MediaView::rmbPressed( QListViewItem *item, const QPoint &p, int i )
 {
-    m_device->rmbPressed( this, item, p, i );
+    m_device->rmbPressed( item, p, i );
 }
 
 MediaItem *
@@ -1481,7 +1481,7 @@ MediaItem::match( const QString &filter ) const
 MediaDevice::MediaDevice()
     : amaroK::Plugin()
     , m_parent( NULL )
-    , m_listview( NULL )
+    , m_view( NULL )
     , m_wait( false )
     , m_requireMount( false )
     , m_hasPodcast( false )
@@ -1508,8 +1508,8 @@ MediaDevice::MediaDevice()
 void MediaDevice::init( MediaBrowser* parent )
 {
     m_parent = parent;
-    m_listview = new MediaView( m_parent->m_views, this );
-    m_listview->hide();
+    m_view = new MediaView( m_parent->m_views, this );
+    m_view->hide();
 }
 
 MediaDevice::~MediaDevice()
@@ -1520,32 +1520,7 @@ MediaDevice::~MediaDevice()
 MediaView *
 MediaDevice::view()
 {
-    return m_listview;
-}
-
-void
-MediaDevice::giveItemsToView()
-{
-    for( QListViewItem *it = m_rootItems.take();
-            it;
-            it = m_rootItems.take() )
-    {
-        m_listview->insertItem( it );
-    }
-}
-
-void
-MediaDevice::takeItemsFromView()
-{
-    QListViewItem *next = 0;
-    for( QListViewItem *it = m_listview->firstChild();
-            it;
-            it = next )
-    {
-        next = it->nextSibling();
-        m_rootItems.append( it );
-        m_listview->takeItem( it );
-    }
+    return m_view;
 }
 
 void
@@ -1746,7 +1721,7 @@ MediaDevice::connectClicked( bool silent )
         {
             QPtrList<MediaItem> list;
             //NOTE we assume that currentItem is the main target
-            int numFiles  = m_listview->getSelectedLeaves( m_podcastItem, &list, false /* not only selected */, true /* only played */ );
+            int numFiles  = m_view->getSelectedLeaves( m_podcastItem, &list, false /* not only selected */, true /* only played */ );
 
             if(numFiles > 0)
             {
@@ -1864,7 +1839,7 @@ MediaDevice::disconnectDevice()
 void
 MediaDevice::syncStatsFromDevice( MediaItem *root )
 {
-    MediaItem *it = static_cast<MediaItem *>( m_listview->firstChild() );
+    MediaItem *it = static_cast<MediaItem *>( m_view->firstChild() );
     if( root )
     {
         it = static_cast<MediaItem *>( root->firstChild() );
@@ -1924,7 +1899,7 @@ MediaDevice::syncStatsFromDevice( MediaItem *root )
 void
 MediaDevice::syncStatsToDevice( MediaItem *root )
 {
-    MediaItem *it = static_cast<MediaItem *>( m_listview->firstChild() );
+    MediaItem *it = static_cast<MediaItem *>( m_view->firstChild() );
     if( root )
     {
         it = static_cast<MediaItem *>( root->firstChild() );
@@ -2089,7 +2064,7 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
     {
         QPtrList<MediaItem> list;
         //NOTE we assume that currentItem is the main target
-        int numFiles  = m_listview->getSelectedLeaves(item, &list, true /* only selected */, onlyPlayed);
+        int numFiles  = m_view->getSelectedLeaves(item, &list, true /* only selected */, onlyPlayed);
 
         m_parent->m_stats->setText( i18n( "1 track to be deleted", "%n tracks to be deleted", numFiles ) );
         if(numFiles > 0)
@@ -2118,7 +2093,7 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
 
         lockDevice( true );
         if( !fi )
-            fi = static_cast<MediaItem*>(m_listview->firstChild());
+            fi = static_cast<MediaItem*>(m_view->firstChild());
     }
 
     while( fi )
@@ -2175,7 +2150,7 @@ MediaDevice::purgeEmptyItems( MediaItem *root )
     }
     else
     {
-        it = static_cast<MediaItem *>(m_listview->firstChild());
+        it = static_cast<MediaItem *>(m_view->firstChild());
     }
 
     MediaItem *next = 0;

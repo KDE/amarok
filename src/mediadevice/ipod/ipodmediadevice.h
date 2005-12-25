@@ -61,7 +61,7 @@ class IpodMediaDevice : public KioMediaDevice
         MediaItem        *newPlaylist(const QString &name, MediaItem *list, QPtrList<MediaItem> items);
         virtual MediaItem*newDirectory(const QString&, MediaItem*) { return 0; }
         bool              getCapacity(unsigned long *total, unsigned long *available);
-        void              rmbPressed( MediaView *deviceList, QListViewItem* qitem, const QPoint& point, int );
+        void              rmbPressed( QListViewItem* qitem, const QPoint& point, int );
 
     protected slots:
         void              renameItem( QListViewItem *item );

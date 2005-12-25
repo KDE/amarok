@@ -716,27 +716,27 @@ IpodMediaDevice::openDevice(bool silent)
         m_itdb->musicdirs = 20;
     }
 
-    m_playlistItem = new IpodMediaItem( m_listview );
+    m_playlistItem = new IpodMediaItem( m_view );
     m_playlistItem->setText( 0, i18n("Playlists") );
     m_playlistItem->m_order = -5;
     m_playlistItem->setType( MediaItem::PLAYLISTSROOT );
 
-    m_podcastItem = new IpodMediaItem( m_listview );
+    m_podcastItem = new IpodMediaItem( m_view );
     m_podcastItem->setText( 0, i18n("Podcasts") );
     m_podcastItem->m_order = -4;
     m_podcastItem->setType( MediaItem::PODCASTSROOT );
 
-    m_invisibleItem = new IpodMediaItem( m_listview );
+    m_invisibleItem = new IpodMediaItem( m_view );
     m_invisibleItem->setText( 0, i18n("Invisible") );
     m_invisibleItem->m_order = -3;
     m_invisibleItem->setType( MediaItem::INVISIBLEROOT );
 
-    m_staleItem = new IpodMediaItem( m_listview );
+    m_staleItem = new IpodMediaItem( m_view );
     m_staleItem->setText( 0, i18n("Stale") );
     m_staleItem->m_order = -2;
     m_staleItem->setType( MediaItem::STALEROOT );
 
-    m_orphanedItem = new IpodMediaItem( m_listview );
+    m_orphanedItem = new IpodMediaItem( m_view );
     m_orphanedItem->setText( 0, i18n("Orphaned") );
     m_orphanedItem->m_order = -2;
     m_orphanedItem->setType( MediaItem::ORPHANEDROOT );
@@ -811,7 +811,7 @@ IpodMediaDevice::closeDevice()  //SLOT
 {
     debug() << "Syncing iPod!" << endl;
 
-    m_listview->clear();
+    m_view->clear();
     m_podcastItem = 0;
     m_playlistItem = 0;
     m_orphanedItem = 0;
@@ -898,7 +898,7 @@ IpodMediaDevice::addTrackToList(Itdb_Track *track)
         IpodMediaItem *artist = getArtist(artistName);
         if(!artist)
         {
-            artist = new IpodMediaItem(m_listview);
+            artist = new IpodMediaItem(m_view);
             artist->setText( 0, artistName );
             artist->setType( MediaItem::ARTIST );
         }
@@ -1118,7 +1118,7 @@ IpodMediaDevice::writeITunesDB()
 IpodMediaItem *
 IpodMediaDevice::getArtist(const QString &artist)
 {
-    for(IpodMediaItem *it = dynamic_cast<IpodMediaItem *>(m_listview->firstChild());
+    for(IpodMediaItem *it = dynamic_cast<IpodMediaItem *>(m_view->firstChild());
             it;
             it = dynamic_cast<IpodMediaItem *>(it->nextSibling()))
     {
@@ -1313,13 +1313,13 @@ IpodMediaDevice::getCapacity( unsigned long *total, unsigned long *available )
 }
 
 void
-IpodMediaDevice::rmbPressed( MediaView *deviceList, QListViewItem* qitem, const QPoint& point, int )
+IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
 {
     MediaItem *item = dynamic_cast<MediaItem *>(qitem);
     if ( item )
     {
-        KURL::List urls = deviceList->nodeBuildDragList( 0 );
-        KPopupMenu menu( deviceList );
+        KURL::List urls = m_view->nodeBuildDragList( 0 );
+        KPopupMenu menu( m_view );
 
         enum Actions { APPEND, LOAD, QUEUE,
             COPY_TO_COLLECTION,
@@ -1427,7 +1427,7 @@ IpodMediaDevice::rmbPressed( MediaView *deviceList, QListViewItem* qitem, const 
             case COPY_TO_COLLECTION:
                 {
                     QPtrList<MediaItem> items;
-                    deviceList->getSelectedLeaves( 0, &items );
+                    m_view->getSelectedLeaves( 0, &items );
 
                     KURL::List urls;
                     for( MediaItem *it = items.first();
@@ -1454,12 +1454,12 @@ IpodMediaDevice::rmbPressed( MediaView *deviceList, QListViewItem* qitem, const 
                 K3bExporter::instance()->exportTracks( urls, K3bExporter::AudioCD );
                 break;
             case RENAME:
-                deviceList->rename(item, 0);
+                m_view->rename(item, 0);
                 break;
             case MAKE_PLAYLIST:
                 {
                     QPtrList<MediaItem> items;
-                    deviceList->getSelectedLeaves( 0, &items );
+                    m_view->getSelectedLeaves( 0, &items );
                     QString base(i18n("New Playlist"));
                     QString name = base;
                     int i=1;
@@ -1471,8 +1471,8 @@ IpodMediaDevice::rmbPressed( MediaView *deviceList, QListViewItem* qitem, const 
                         i++;
                     }
                     MediaItem *pl = newPlaylist(name, m_playlistItem, items);
-                    deviceList->ensureItemVisible(pl);
-                    deviceList->rename(pl, 0);
+                    m_view->ensureItemVisible(pl);
+                    m_view->rename(pl, 0);
                 }
                 break;
             case ADD:
@@ -1491,11 +1491,11 @@ IpodMediaDevice::rmbPressed( MediaView *deviceList, QListViewItem* qitem, const 
                 }
                 else
                 {
-                    for(deviceList->selectedItems().first();
-                            deviceList->selectedItems().current();
-                            deviceList->selectedItems().next())
+                    for(m_view->selectedItems().first();
+                            m_view->selectedItems().current();
+                            m_view->selectedItems().next())
                     {
-                        MediaItem *it = dynamic_cast<MediaItem *>(deviceList->selectedItems().current());
+                        MediaItem *it = dynamic_cast<MediaItem *>(m_view->selectedItems().current());
                         if(it->type() == MediaItem::ORPHANED)
                         {
                             it->parent()->takeItem(it);
@@ -1536,7 +1536,7 @@ IpodMediaDevice::rmbPressed( MediaView *deviceList, QListViewItem* qitem, const 
                                     it = dynamic_cast<MediaItem *>(it->nextSibling()))
                                 after = it;
                             QPtrList<MediaItem> items;
-                            deviceList->getSelectedLeaves( 0, &items );
+                            m_view->getSelectedLeaves( 0, &items );
                             addToPlaylist( list, after, items );
                         }
                     }

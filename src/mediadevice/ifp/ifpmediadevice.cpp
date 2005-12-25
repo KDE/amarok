@@ -212,7 +212,7 @@ IfpMediaDevice::closeDevice()  //SLOT
             m_dh = 0;
         }
 
-        m_listview->clear();
+        m_view->clear();
 
         m_connected = false;
     }
@@ -280,7 +280,7 @@ IfpMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> items 
         if( err ) //failed
             continue;
 
-        m_listview->takeItem( *it );
+        m_view->takeItem( *it );
         directory->insertItem( *it );
     }
 }
@@ -347,7 +347,7 @@ IfpMediaDevice::downloadSelectedItems()
 //     if( save != destDir.path() )
 //         config->writeEntry( "DownloadLocation", destDir.path() );
     
-    QListViewItemIterator it( m_listview, QListViewItemIterator::Selected );
+    QListViewItemIterator it( m_view, QListViewItemIterator::Selected );
     for( ; it.current(); ++it )
     {
         QCString dest = QFile::encodeName( destDir.path() + (*it)->text(0) );
@@ -461,7 +461,7 @@ IfpMediaDevice::addTrackToList( int type, QString name, int /*size*/ )
 {
     m_tmpParent ?
             m_last = new IfpMediaItem( m_tmpParent ):
-            m_last = new IfpMediaItem( m_listview );
+            m_last = new IfpMediaItem( m_view );
 
     if( type == IFP_DIR ) //directory
         m_last->setType( MediaItem::DIRECTORY );
@@ -523,14 +523,14 @@ IfpMediaDevice::getFullPath( const QListViewItem *item, const bool getFilename )
 
 
 void
-IfpMediaDevice::rmbPressed( MediaView *deviceList, QListViewItem* qitem, const QPoint& point, int )
+IfpMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
 {
     enum Actions { DOWNLOAD, DIRECTORY, RENAME, DELETE };
 
     MediaItem *item = static_cast<MediaItem *>(qitem);
     if ( item )
     {
-        KPopupMenu menu( deviceList );
+        KPopupMenu menu( m_view );
         menu.insertItem( SmallIconSet( "down" ), i18n( "Download" ), DOWNLOAD );
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( "folder" ), i18n("Add Directory" ), DIRECTORY );
@@ -546,13 +546,13 @@ IfpMediaDevice::rmbPressed( MediaView *deviceList, QListViewItem* qitem, const Q
                 
             case DIRECTORY:
                 if( item->type() == MediaItem::DIRECTORY )
-                    deviceList->newDirectory( static_cast<MediaItem*>(item) );
+                    m_view->newDirectory( static_cast<MediaItem*>(item) );
                 else
-                    deviceList->newDirectory( static_cast<MediaItem*>(item->parent()) );
+                    m_view->newDirectory( static_cast<MediaItem*>(item->parent()) );
                 break;
 
             case RENAME:
-                deviceList->rename( item, 0 );
+                m_view->rename( item, 0 );
                 break;
 
             case DELETE:
@@ -564,13 +564,13 @@ IfpMediaDevice::rmbPressed( MediaView *deviceList, QListViewItem* qitem, const Q
 
     if( isConnected() )
     {
-        KPopupMenu menu( deviceList );
+        KPopupMenu menu( m_view );
         menu.insertItem( SmallIconSet( "folder" ), i18n("Add Directory" ), DIRECTORY );
         int id =  menu.exec( point );
         switch( id )
         {
             case DIRECTORY:
-                deviceList->newDirectory( 0 );
+                m_view->newDirectory( 0 );
                 break;
         }
     }
