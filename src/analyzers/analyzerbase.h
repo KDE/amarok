@@ -19,8 +19,13 @@
 
 #ifdef HAVE_QGLWIDGET
 #include <qgl.h>     //baseclass
+#ifdef Q_WS_MACX
+#include <OpenGL/gl.h>   //included for convenience
+#include <OpenGL/glu.h>  //included for convenience
+#else
 #include <GL/gl.h>   //included for convenience
 #include <GL/glu.h>  //included for convenience
+#endif
 #else
 //this is a workaround for compile problems due to moc
 #define QGLWidget QWidget
