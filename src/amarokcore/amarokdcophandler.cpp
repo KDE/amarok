@@ -187,7 +187,7 @@ namespace amaroK
 
     QString DcopPlayerHandler::currentTime()
     {
-        return MetaBundle::prettyLength( EngineController::engine() ->position() / 1000 );
+        return MetaBundle::prettyLength( EngineController::engine() ->position() / 1000 ,true );
     }
 
     QString DcopPlayerHandler::encodedURL()
