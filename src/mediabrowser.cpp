@@ -157,7 +157,7 @@ class SpaceLabel : public QLabel {
 class DummyMediaDevice : public MediaDevice
 {
     public:
-    DummyMediaDevice() : MediaDevice() { m_name = "Do-Nothing Device"; }
+    DummyMediaDevice() : MediaDevice() { m_name = "No Device Selected"; }
     void init( MediaBrowser *browser ) { MediaDevice::init( browser ); }
     virtual ~DummyMediaDevice() {}
     virtual bool isConnected() { return false; }
@@ -256,6 +256,8 @@ MediaBrowser::MediaBrowser( const char *name )
         m_pluginName[(*it)->name()] = (*it)->property( "X-KDE-amaroK-name" ).toString();
         m_pluginAmarokName[(*it)->property( "X-KDE-amaroK-name" ).toString()] = (*it)->name();
         QStringList supports = (*it)->property( "X-KDE-amaroK-compatible" ).toStringList();
+        debug() << "(*it)->name() = " << (*it)->name() << ", (*it)->property( \"X-KDE-amaroK-name\" ) = "\
+            << (*it)->property( "X-KDE-amaroK-name" ).toString() << endl;
         for( uint i = 0; i < supports.count(); i++ )
         {
             m_pluginSupports[supports[i]] = (*it)->property( "X-KDE-amaroK-name" ).toString();
@@ -1151,11 +1153,12 @@ MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/ )
             mpc->exec();
         }
         debug() << "label=" << medium->label() << endl;
-        debug() << "supported by " << m_pluginSupports[medium->label()] << endl;
-        MediaDevice *device = loadDevicePlugin( m_pluginSupports[medium->label()] );
+        debug() << "supported by " << handler << endl;
+        MediaDevice *device = loadDevicePlugin( handler );
         if( device )
         {
             device->m_uniqueId = medium->name();
+            device->m_name = device->m_name + " at " + device->m_uniqueId;
             addDevice( device );
             if( m_currentDevice == m_devices.begin()
                     || m_currentDevice == m_devices.end() )
@@ -1173,6 +1176,16 @@ MediaBrowser::pluginSelected( const Medium *medium, const QString plugin )
     {
         debug() << "Medium id is " << medium->id() << " and plugin selected is: " << plugin << endl;
         config->writeEntry( medium->id(), plugin );
+        MediaDevice *device = loadDevicePlugin( plugin );
+        if( device )
+        {
+            device->m_uniqueId = medium->name();
+            device->m_name = device->m_name + " at " + device->m_uniqueId;
+            addDevice( device );
+            if( m_currentDevice == m_devices.begin()
+                    || m_currentDevice == m_devices.end() )
+            activateDevice( m_devices.count()-1 );
+        }
     }
     else
         debug() << "Medium id is " << medium->id() << " and they opted not to use a plugin" << endl;
@@ -1240,7 +1253,7 @@ MediaBrowser::loadDevicePlugin( const QString &deviceType )
     DEBUG_BLOCK
 
     QString query = "[X-KDE-amaroK-plugintype] == 'mediadevice' and [X-KDE-amaroK-name] == '%1'";
-    amaroK::Plugin *plugin = PluginManager::createFromQuery( query.arg( deviceType ) );
+    amaroK::Plugin *plugin = PluginManager::createFromQuery( query.arg( m_pluginName[deviceType] ) );
 
     if( plugin )
     {
