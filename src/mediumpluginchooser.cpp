@@ -58,8 +58,6 @@ MediumPluginChooser::MediumPluginChooser( const Medium *medium )
     m_chooserCombo->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred ) );
 
     m_chooserCombo->insertItem( "Do not handle" );
-
-    connect( m_chooserCombo, SIGNAL( activated(const QString&) ), SLOT( pluginChosen(const QString&) ) );
 }
 
 MediumPluginChooser::~MediumPluginChooser()
@@ -68,13 +66,20 @@ MediumPluginChooser::~MediumPluginChooser()
 }
 
 void
-MediumPluginChooser::pluginChosen( const QString &plugin )
+MediumPluginChooser::slotCancel( )
 {
     DEBUG_BLOCK
-    //placeholder for now...do we really want to do something here, or
-    //do we want to simply connect the one signal to the next and skip this step?
-    //Note that speed is probably not an issue as this is a relatively rare occurrence
-    emit selectedPlugin( m_medium, plugin );
+    QString empty;
+    emit selectedPlugin( m_medium, empty );
+    KDialogBase::slotCancel( );
+}
+
+void
+MediumPluginChooser::slotOk( )
+{
+    DEBUG_BLOCK
+    emit selectedPlugin( m_medium, QString(m_chooserCombo->currentText()) );
+    KDialogBase::slotOk( );
 }
 
 #include "mediumpluginchooser.moc"

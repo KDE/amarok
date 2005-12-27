@@ -28,13 +28,14 @@ class MediumPluginChooser : public KDialogBase
     public:
         MediumPluginChooser( const Medium *medium );
 
-        ~MediumPluginChooser();
+        ~MediumPluginChooser( );
 
     signals:
         void selectedPlugin( const Medium*, const QString );
 
     private slots:
-        void pluginChosen( const QString& );
+        void slotOk( );
+        void slotCancel( );
 
     private:
         KComboBox*     m_chooserCombo;

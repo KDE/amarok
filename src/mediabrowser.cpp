@@ -1169,7 +1169,10 @@ void
 MediaBrowser::pluginSelected( const Medium *medium, const QString plugin )
 {
     DEBUG_BLOCK
-    debug() << "Medium id is " << medium->id() << " and plugin selected is: " << plugin << endl;
+    if (!plugin.isEmpty())
+        debug() << "Medium id is " << medium->id() << " and plugin selected is: " << plugin << endl;
+    else
+        debug() << "Medium id is " << medium->id() << " and they opted not to use a plugin" << endl;
 }
 
 void
