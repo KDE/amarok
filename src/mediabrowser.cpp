@@ -340,7 +340,7 @@ MediaBrowser::currentDevice()
 void
 MediaBrowser::activateDevice( int index )
 {
-    if( index < 0 || index >= m_devices.count() )
+    if( index < 0 || (uint)index >= m_devices.count() )
         return;
 
     if( m_currentDevice == m_devices.at( index ) )
@@ -1133,11 +1133,10 @@ MediaView::newDirectory( MediaItem *parent )
 }
 
 void
-MediaBrowser::mediumAdded( const Medium *medium, QString name )
+MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/ )
 {
     debug() << "mediumAdded: " << (medium? medium->properties():"null") << endl;
     KConfig *config = amaroK::config( "MediaBrowser" );
-    KGuiItem ignoreButton( "Ignore" );
     MediumPluginChooser *mpc;
     QString handler;
     if( medium )
@@ -1148,8 +1147,9 @@ MediaBrowser::mediumAdded( const Medium *medium, QString name )
         else
         {
             debug() << "handler null for " << medium->id() << endl;
-            mpc = new MediumPluginChooser( medium, ignoreButton );
+            mpc = new MediumPluginChooser( medium );
             //mpc->exec();
+            connect( mpc, SIGNAL( selectedPlugin( const Medium*, const QString ) ), SLOT( pluginSelected( const Medium*, const QString ) ) );
         }
         debug() << "label=" << medium->label() << endl;
         debug() << "supported by " << m_pluginSupports[medium->label()] << endl;
@@ -1163,6 +1163,13 @@ MediaBrowser::mediumAdded( const Medium *medium, QString name )
                 activateDevice( m_devices.count()-1 );
         }
     }
+}
+
+void
+MediaBrowser::pluginSelected( const Medium *medium, const QString plugin )
+{
+    DEBUG_BLOCK
+    debug() << "Medium id is " << medium->id() << " and plugin selected is: " << plugin << endl;
 }
 
 void
@@ -1762,7 +1769,7 @@ MediaDevice::connectClicked( bool silent )
 
 
 void
-MediaDevice::disconnectClicked( bool silent )
+MediaDevice::disconnectClicked( bool /*silent*/ )
 {
     if ( m_parent->m_queue->childCount() != 0 && isConnected() )
     {

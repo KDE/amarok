@@ -21,10 +21,11 @@
 #include <klocale.h>
 #include <kwin.h>
 
-MediumPluginChooser::MediumPluginChooser( const Medium *medium, const KGuiItem ignoreButton )
-        : KDialogBase( amaroK::mainWindow(), "mediumpluginchooserdialog", true, QString("Select Plugin for " + medium->name()), Ok|Cancel, Ok, false, ignoreButton )
+MediumPluginChooser::MediumPluginChooser( const Medium *medium )
+        : KDialogBase( amaroK::mainWindow(), "mediumpluginchooserdialog", true, QString("Select Plugin for " + medium->name()), Ok|Cancel, Ok, false )
 {
     DEBUG_BLOCK
+    m_medium = medium;
     kapp->setTopWidget( this );
     setCaption( kapp->makeStdCaption( i18n( "Removable Medium Plugin Chooser" ) ) );
 
@@ -37,24 +38,28 @@ MediumPluginChooser::MediumPluginChooser( const Medium *medium, const KGuiItem i
     QHBox* chooserBox = new QHBox( vbox );
     chooserBox->setSpacing( KDialog::spacingHint() );
 
-    QString labelTextFirstLine = i18n( "amaroK has detected what appears to be a removable music player." );
-    QString labelTextSecondLineA = i18n( "\nThis player is known to the system as: " );
-    QString labelTextSecondLineB = i18n( ", and its label (if any) is: " );
-    QString labelTextThirdLine = i18n( "\nIts mount point (if any) is: " );
-    QString labelTextFourthLine = i18n( "\nPlease choose a plugin to handle it, or press \"Ignore\" to be prompted again next time." );
-    QString labelTextFifthLine = i18n( "\nIf you do not want amaroK to handle this media, choose \"Do not handle\"." );
     QString labelTextNone = i18n( "(none)" );
 
-    QString fullLabel( labelTextFirstLine + labelTextSecondLineA + medium->name() + labelTextSecondLineB + (medium->label().isEmpty() ? labelTextNone : medium->label()) + labelTextThirdLine + (medium->mountPoint().isEmpty() ? labelTextNone : medium->mountPoint()) + labelTextFourthLine + labelTextFifthLine );
+    QString fullLabel( i18n( "amaroK has detected what appears to be a removable music player.\n"
+            "This player is known to the system as: %1, and its label (if any) is: %2\n"
+            "Its mount point (if any) is: %3\n"
+            "Please choose a plugin to handle it and press \"Ok\" or press \"Cancel\" to be prompted again next time.\n"
+            "If you do not want amaroK to handle this device, choose \"Do not handle\"." )
+                .arg(medium->name())
+                .arg(medium->label().isEmpty() ? labelTextNone : medium->label())
+                .arg(medium->mountPoint().isEmpty() ? labelTextNone : medium->mountPoint()));
 
     new QLabel( fullLabel, chooserBox );
 
     QHBox* chooser2Box = new QHBox( vbox );
     chooser2Box->setSpacing( KDialog::spacingHint() );
 
-    m_chooserCombo = new KComboBox( chooser2Box );
+    m_chooserCombo = new KComboBox( false, chooser2Box, "chooserCombo" );
     m_chooserCombo->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred ) );
 
+    m_chooserCombo->insertItem( "Do not handle" );
+
+    connect( m_chooserCombo, SIGNAL( activated(const QString&) ), SLOT( pluginChosen(const QString&) ) );
 }
 
 MediumPluginChooser::~MediumPluginChooser()
@@ -62,5 +67,14 @@ MediumPluginChooser::~MediumPluginChooser()
     DEBUG_BLOCK
 }
 
+void
+MediumPluginChooser::pluginChosen( const QString &plugin )
+{
+    DEBUG_BLOCK
+    //placeholder for now...do we really want to do something here, or
+    //do we want to simply connect the one signal to the next and skip this step?
+    //Note that speed is probably not an issue as this is a relatively rare occurrence
+    emit selectedPlugin( m_medium, plugin );
+}
 
 #include "mediumpluginchooser.moc"

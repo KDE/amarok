@@ -172,6 +172,7 @@ class MediaBrowser : public QVBox
         void mediumChanged( const Medium *, QString );
         void mediumRemoved( const Medium *, QString );
         void activateDevice( int index );
+        void pluginSelected( const Medium *, const QString );
 
     private:
         MediaDevice *loadDevicePlugin( const QString &deviceName );

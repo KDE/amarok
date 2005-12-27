@@ -26,13 +26,19 @@ class MediumPluginChooser : public KDialogBase
     Q_OBJECT
 
     public:
-        MediumPluginChooser( const Medium *medium, const KGuiItem ignoreButton );
+        MediumPluginChooser( const Medium *medium );
 
         ~MediumPluginChooser();
 
+    signals:
+        void selectedPlugin( const Medium*, const QString );
+
+    private slots:
+        void pluginChosen( const QString& );
 
     private:
-        KComboBox*      m_chooserCombo;
+        KComboBox*     m_chooserCombo;
+        const Medium*  m_medium;
 
 };
 
