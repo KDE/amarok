@@ -14,11 +14,14 @@
 #include "mediabrowser.h"
 #include "mediumpluginchooser.h"
 #include "medium.h"
+#include "plugin/pluginconfig.h"
+#include "pluginmanager.h"
 
 #include <qlabel.h>
 #include <qvbox.h>
 
 #include <kapplication.h>
+#include <kcombobox.h>
 #include <klocale.h>
 #include <kwin.h>
 
@@ -59,6 +62,11 @@ MediumPluginChooser::MediumPluginChooser( const Medium *medium )
     m_chooserCombo->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred ) );
 
     m_chooserCombo->insertItem( "Do not handle" );
+
+    KTrader::OfferList offers = PluginManager::query( "[X-KDE-amaroK-plugintype] == 'mediadevice'" );
+    KTrader::OfferList::ConstIterator end( offers.end() );
+    for( KTrader::OfferList::ConstIterator it = offers.begin(); it != end; ++it )
+        m_chooserCombo->insertItem( (*it)->name() );
 
     connect( this, SIGNAL( selectedPlugin( const Medium*, const QString ) ), MediaBrowser::instance(), SLOT( pluginSelected( const Medium*, const QString ) ) );
 }

@@ -1168,8 +1168,12 @@ void
 MediaBrowser::pluginSelected( const Medium *medium, const QString plugin )
 {
     DEBUG_BLOCK
+    KConfig *config = amaroK::config( "MediaBrowser" );
     if (!plugin.isEmpty())
+    {
         debug() << "Medium id is " << medium->id() << " and plugin selected is: " << plugin << endl;
+        config->writeEntry( medium->id(), plugin );
+    }
     else
         debug() << "Medium id is " << medium->id() << " and they opted not to use a plugin" << endl;
 }

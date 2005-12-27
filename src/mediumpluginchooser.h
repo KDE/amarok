@@ -13,10 +13,9 @@
 #define MEDIUMPLUGINCHOOSER_H
 
 #include <kdialogbase.h>
-#include <kguiitem.h>
-#include <kcombobox.h>
 
 class Medium;
+class KComboBox;
 
 /**
 	@author Jeff Mitchell <kde-dev@emailgoeshere.com>
