@@ -1149,7 +1149,6 @@ MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/ )
             debug() << "handler null for " << medium->id() << endl;
             mpc = new MediumPluginChooser( medium );
             //mpc->exec();
-            connect( mpc, SIGNAL( selectedPlugin( const Medium*, const QString ) ), SLOT( pluginSelected( const Medium*, const QString ) ) );
         }
         debug() << "label=" << medium->label() << endl;
         debug() << "supported by " << m_pluginSupports[medium->label()] << endl;

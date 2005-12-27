@@ -11,6 +11,7 @@
 //
 #include "amarok.h"
 #include "debug.h"
+#include "mediabrowser.h"
 #include "mediumpluginchooser.h"
 #include "medium.h"
 
@@ -58,6 +59,8 @@ MediumPluginChooser::MediumPluginChooser( const Medium *medium )
     m_chooserCombo->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred ) );
 
     m_chooserCombo->insertItem( "Do not handle" );
+
+    connect( this, SIGNAL( selectedPlugin( const Medium*, const QString ) ), MediaBrowser::instance(), SLOT( pluginSelected( const Medium*, const QString ) ) );
 }
 
 MediumPluginChooser::~MediumPluginChooser()
@@ -69,7 +72,7 @@ void
 MediumPluginChooser::slotCancel( )
 {
     DEBUG_BLOCK
-    QString empty;
+    const QString empty;
     emit selectedPlugin( m_medium, empty );
     KDialogBase::slotCancel( );
 }
