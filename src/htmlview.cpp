@@ -183,6 +183,14 @@ HTMLView::loadStyleSheet()
                             .arg( locate( "data", "amarok/images/sbinner_stars.png" ) );
         styleSheet += QString( ".sbouter { border: 0px; background: transparent url(%1) no-repeat top left; width: 54px; height: 10px; text-align: right; }" )
                             .arg( locate( "data", "amarok/images/back_stars_grey.png" ) );
+        
+        //boxes used to display score (rb: rating box)
+        styleSheet += QString( ".rbtext { text-align: center; padding: 0px 4px; border-left: dashed %1 1px; }" ).arg( ContextBrowser::instance()->colorGroup().base().dark( 120 ).name() );
+        // New score-bar style from Tightcode
+        styleSheet += QString( ".rbinner { width: 40px; height: 10px; background: transparent url(%1) no-repeat top left; border: 0px; border-right: 1px solid transparent; }" )
+                            .arg( locate( "data", "amarok/images/sbinner_stars.png" ) );
+        styleSheet += QString( ".rbouter { border: 0px; background: transparent url(%1) no-repeat top left; width: 54px; height: 10px; text-align: right; }" )
+                            .arg( locate( "data", "amarok/images/back_stars_grey.png" ) );
 
         styleSheet += QString( "#current_box-header-album { font-weight: normal; }" );
         styleSheet += QString( "#current_box-information-td { text-align: right; vertical-align: bottom; padding: 3px; }" );
