@@ -187,6 +187,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
         }
     }
 
+    setSpacing( 4 );
     setFocusProxy( m_listview );
 }
 
