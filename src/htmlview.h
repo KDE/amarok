@@ -8,6 +8,8 @@
 #include <khtml_part.h>
 #include <khtmlview.h>
 
+class KTempFile;
+
 class HTMLView : public KHTMLPart
 {
     Q_OBJECT
@@ -19,6 +21,13 @@ class HTMLView : public KHTMLPart
         static QString loadStyleSheet();
         static void    openURLRequest(const KURL &url );
         void   set( const QString& data );
+        static void paletteChange();
+
+    private:
+        static KTempFile *m_bgGradientImage;
+        static KTempFile *m_headerGradientImage;
+        static KTempFile *m_shadowGradientImage;
+        static int m_instances;
 };
 
 #endif /* AMAROK_HTMLVIEW_H */
