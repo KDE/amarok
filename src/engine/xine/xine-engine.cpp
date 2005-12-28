@@ -659,7 +659,7 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
 
     case XINE_EVENT_UI_PLAYBACK_FINISHED:
         #ifdef XINE_PARAM_GAPLESS_SWITCH
-            if ( xine_check_version(1,1,1) )
+            if ( xine_check_version(1,1,1) && xe->m_url.isLocalFile() ) //Remote media break with gapless
                 xine_set_param( xe->m_stream, XINE_PARAM_GAPLESS_SWITCH, 1);
         #endif
         //emit signal from GUI thread
