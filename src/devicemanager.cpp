@@ -162,7 +162,7 @@ Medium* DeviceManager::getDevice( QString name )
 //                (*it).fsType() == "ntfs" || (*it).fsType() == "udf" ||
 //                (*it).fsType() == "iso9660" || (*it).fsType() == "nfs" ||
 //                (*it).fsType() == "cramfs" )
-        if ( (*it).fsType != "vfat") //&& other supported fsTypes here later
+        if ( (*it).fsType() != "vfat") //&& other supported fsTypes here later
             continue;
         if ( (*it).name() == name )
         {
