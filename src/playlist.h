@@ -145,6 +145,7 @@ class Playlist : private KListView, public EngineObserver
         friend class QueueLabel;
         friend class PlaylistWindow;
         friend void amaroK::DcopPlaylistHandler::removeCurrentTrack(); //calls removeItem() and currentTrack()
+        friend void amaroK::DcopPlaylistHandler::removeByIndex( int ); //calls removeItem()
         friend void PlaylistWindow::init(); //setting up connections etc.
         friend TrackToolTip::TrackToolTip();
         friend bool PlaylistWindow::eventFilter( QObject*, QEvent* ); //for convenience we handle some playlist events here

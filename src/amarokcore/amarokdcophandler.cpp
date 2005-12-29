@@ -117,7 +117,7 @@ namespace amaroK
         int score = CollectionDB::instance()->getSongPercentage( bundle.url().path() );
         return score;
     }
-    
+
     int DcopPlayerHandler::rating()
     {
         const MetaBundle &bundle = EngineController::instance()->bundle();
@@ -404,13 +404,13 @@ namespace amaroK
     {
         CollectionDB::instance()->setSongPercentage(url, score);
     }
-    
+
     void DcopPlayerHandler::setRating( int rating )
     {
         const QString &url = EngineController::instance()->bundle().url().path();
         CollectionDB::instance()->setSongRating(url, rating);
     }
-    
+
     void DcopPlayerHandler::setRatingByPath( const QString &url, int rating )
     {
         CollectionDB::instance()->setSongRating(url, rating);
@@ -546,7 +546,7 @@ namespace amaroK
         ContextBrowser::instance()->openURLRequest( url );
     }
 
-    void DcopPlaylistHandler::popupMessage(const QString& msg)
+    void DcopPlaylistHandler::popupMessage( const QString& msg )
     {
         StatusBar::instance()->longMessageThreadSafe( msg );
     }
@@ -554,6 +554,17 @@ namespace amaroK
     void DcopPlaylistHandler::removeCurrentTrack()
     {
         PlaylistItem* const item = Playlist::instance()->currentTrack();
+        if ( item ) {
+            Playlist::instance()->removeItem( item );
+            delete item;
+        }
+    }
+
+    void DcopPlaylistHandler::removeByIndex( int index )
+    {
+        PlaylistItem* const item =
+            static_cast<PlaylistItem*>( Playlist::instance()->itemAtIndex( index ) );
+
         if ( item ) {
             Playlist::instance()->removeItem( item );
             delete item;

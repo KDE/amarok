@@ -59,7 +59,7 @@ k_dcop:
    virtual QString coverImage() = 0;                        ///< Return the encoded URL of the current track's cover image
    virtual QString currentTime() = 0;                       ///< Return the position of the currently playing track ([h:]mm:ss format).
    virtual QString encodedURL() = 0;                        ///< Return the encoded URL of the currently playing track.
-   virtual QString engine() = 0;                        ///<Return the current sound engine.
+   virtual QString engine() = 0;                            ///<Return the current sound engine.
    virtual QString genre() = 0;                             ///< Return the genre of the currently playing track.
    virtual QString lyrics() = 0;                            ///< Return the lyrics of the currently playing track.
    virtual QString lyricsByPath( QString path ) = 0;        ///< Return the lyrics of a track by path.
@@ -67,11 +67,11 @@ k_dcop:
    /* Compatibility method (used by mediacontrol as well). DO NOT TOUCH! */
    virtual QString nowPlaying() = 0;                        ///< The title of now playing media.
    virtual QString path() = 0;                              ///< Return the unencoded path of the currently playing track.
-   virtual QString setContextStyle(const QString& ) = 0;     ///< Set the CSS style for the context browser
+   virtual QString setContextStyle(const QString& ) = 0;    ///< Set the CSS style for the context browser
    virtual QString title() = 0;                             ///< Return the title of the currently playing track.
    virtual QString totalTime() = 0;                         ///< Return the total length of the currently playing track ([h:]mm:ss format).
    virtual QString track() = 0;                             ///< Return the track number.
-   virtual QString type() = 0;                             ///< Return the file type.
+   virtual QString type() = 0;                              ///< Return the file type.
    virtual QString year() = 0;                              ///< Return the year of the currently playing track.
    virtual void configEqualizer() = 0;                      ///< Toggle equalizer config dialog.
    virtual void enableDynamicMode(bool enable) = 0;         ///< Switch Dynamic Mode on or off.
@@ -79,8 +79,8 @@ k_dcop:
    virtual void enableRandomMode(bool enable) = 0;          ///< Switch Random Mode on or off.
    virtual void enableRepeatPlaylist(bool enable) = 0;      ///< Switch Repeat Playlist on or off.
    virtual void enableRepeatTrack(bool enable) = 0;         ///< Switch Repeat Track on or off.
-   virtual void mediaDeviceMount() = 0;               ///< Mounts the media device.
-   virtual void mediaDeviceUmount() = 0;             ///< Unmounts the media device.
+   virtual void mediaDeviceMount() = 0;                     ///< Mounts the media device.
+   virtual void mediaDeviceUmount() = 0;                    ///< Unmounts the media device.
    virtual void mute() = 0;                                 ///< Toggle mute.
    virtual void next() = 0;                                 ///< Equivalent to pressing "Next" button.
    virtual void pause() = 0;                                ///< Equivalent to pressing "Pause" button.
@@ -127,7 +127,8 @@ k_dcop:
    virtual void playMedia(const KURL &) = 0;                ///< Add audio media specified by the url.
    virtual void popupMessage(const QString&) = 0;           ///< Shows a temporary popup message.
    virtual void removeCurrentTrack() = 0;                   ///< Removes the current-track item from the playlist.
-   virtual void repopulate() = 0;               ///< Repopulate the playlist with random tracks.
+   virtual void removeByIndex(int) = 0;                     ///< Removes the item at the specified index from the playlist.
+   virtual void repopulate() = 0;                           ///< Repopulate the playlist with random tracks.
    virtual void saveM3u(const QString& path, bool relativePaths) = 0;  ///< Saves the current playlist as m3u.
                                                             ///< path = path for saving,  relativePaths = whether to write relative paths.
    virtual void setStopAfterCurrent( bool ) = 0;            ///< Enables/disables the "Stop After Current Track" feature.
@@ -144,7 +145,7 @@ k_dcop:
    virtual void addPodcast(const QString &) = 0;            ///< Add a podcast entry to the playlist browser.
    virtual void scanPodcasts() = 0;                         ///< Scan all podcasts for updates.
    virtual void addPlaylist(const QString &) = 0;           ///< Add a playlist to the playlist browser.
-   virtual int  loadPlaylist(const QString &) = 0;           ///< load a playlist to the playlist.
+   virtual int  loadPlaylist(const QString &) = 0;          ///< load a playlist to the playlist.
 };
 
 class AmarokContextBrowserInterface : virtual public DCOPObject
@@ -196,7 +197,7 @@ class AmarokDevicesInterface : virtual public DCOPObject
    K_DCOP
 
 k_dcop:
-   virtual void mediumAdded(QString name) = 0;         ///< Called when there is a mediumAdded event
+   virtual void mediumAdded(QString name) = 0;           ///< Called when there is a mediumAdded event
    virtual void mediumRemoved(QString name) = 0;         ///< Called when there is a mediumRemoved event
    virtual void mediumChanged(QString name) = 0;         ///< Called when there is a mediumChanged event
 };
