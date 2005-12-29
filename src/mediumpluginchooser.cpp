@@ -33,7 +33,7 @@ MediumPluginChooser::MediumPluginChooser( const Medium *medium )
     kapp->setTopWidget( this );
     setCaption( kapp->makeStdCaption( i18n( "Removable Medium Plugin Chooser" ) ) );
 
-    KWin::setState( winId(), NET::SkipTaskbar );
+    //KWin::setState( winId(), NET::SkipTaskbar );
 
     QVBox* vbox = makeVBoxMainWidget();
     vbox->setSpacing( KDialog::spacingHint() );
