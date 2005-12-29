@@ -59,7 +59,7 @@
 #include <knewstuff/knewstuff.h>      // "
 #include <knewstuff/provider.h>       // "
 
-#define ICON_STOPPED "button_ok"
+
 #define ICON_RUNNING "player_play"
 
 
@@ -514,7 +514,7 @@ ScriptManager::slotStopScript()
     m_scripts[name].log = QString::null;
     slotCurrentChanged( m_gui->listView->currentItem() );
 
-    li->setPixmap( 0, SmallIcon( ICON_STOPPED ) );
+    li->setPixmap( 0, QPixmap() );
 }
 
 
@@ -657,7 +657,7 @@ ScriptManager::scriptFinished( KProcess* process ) //SLOT
     delete it.data().process;
     it.data().process = 0;
     it.data().log = QString::null;
-    it.data().li->setPixmap( 0, SmallIcon( ICON_STOPPED ) );
+    it.data().li->setPixmap( 0, QPixmap() );
     slotCurrentChanged( m_gui->listView->currentItem() );
 }
 
@@ -691,7 +691,7 @@ ScriptManager::loadScript( const QString& path )
         const KURL url = KURL::fromPathOrURL( path );
 
         KListViewItem* li = new KListViewItem( m_gui->listView, url.fileName() );
-        li->setPixmap( 0, SmallIcon( ICON_STOPPED ) );
+        li->setPixmap( 0, QPixmap() );
 
         ScriptItem item;
         item.url = url;
