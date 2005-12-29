@@ -179,7 +179,8 @@ ScriptManager::~ScriptManager()
     ScriptMap::Iterator end( m_scripts.end() );
     for( it = m_scripts.begin(); it != end; ++it ) {
         if( it.data().process ) {
-            delete it.data().process;
+            it.data().process->kill(); // Sends SIGTERM
+            it.data().process->detach();
             runningScripts << it.key();
         }
     }
