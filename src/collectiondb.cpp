@@ -2327,6 +2327,7 @@ CollectionDB::startScan()  //SLOT
     else if( PlaylistBrowser::instance() && !ScanController::instance() )
     {
         emit scanStarted();
+        query( QString( "BEGIN TRANSACTION;" ) );
         new ScanController( this, false, folders );
     }
 }
@@ -2335,6 +2336,7 @@ CollectionDB::startScan()  //SLOT
 void
 CollectionDB::stopScan() //SLOT
 {
+    query( QString( "COMMIT TRANSACTION;" ) );
     delete ScanController::instance();
 }
 
