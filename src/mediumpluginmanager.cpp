@@ -70,4 +70,4 @@ MediumPluginManager::slotOk( )
     KDialogBase::slotOk( );
 }
 
-#include "mediumpluginchooser.moc"
+#include "mediumpluginmanager.moc"
