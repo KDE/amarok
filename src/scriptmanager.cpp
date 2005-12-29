@@ -181,6 +181,7 @@ ScriptManager::~ScriptManager()
         if( it.data().process ) {
             it.data().process->kill(); // Sends SIGTERM
             it.data().process->detach();
+            delete it.data().process;
             runningScripts << it.key();
         }
     }
