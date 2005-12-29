@@ -544,7 +544,6 @@ namespace amaroK
     {
         /* ContextBrowser::openURLRequest is necessary for konquisidebar */
         ContextBrowser::instance()->openURLRequest( url );
-        HTMLView::openURLRequest( url );
     }
 
     void DcopPlaylistHandler::popupMessage(const QString& msg)
