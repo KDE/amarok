@@ -598,7 +598,7 @@ void TagDialog::readTags()
 
     summaryText += body2cols.arg( i18n("Playcount"), QString::number( m_playcount ) );
     summaryText += body2cols.arg( i18n("First Played"), m_playcount ? KGlobal::locale()->formatDate( m_firstPlay.date() , true ) : i18n("Never") );
-    summaryText += body2cols.arg( i18n("Last Played"), m_playcount ? KGlobal::locale()->formatDate( m_firstPlay.date() , true ) : i18n("Never") );
+    summaryText += body2cols.arg( i18n("Last Played"), m_playcount ? KGlobal::locale()->formatDate( m_lastPlay.date() , true ) : i18n("Never") );
 
     summaryText += "</table></td></tr></table>";
     summaryLabel->setText( summaryText );
