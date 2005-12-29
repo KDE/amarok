@@ -2327,7 +2327,8 @@ CollectionDB::startScan()  //SLOT
     else if( PlaylistBrowser::instance() && !ScanController::instance() )
     {
         emit scanStarted();
-        query( QString( "BEGIN TRANSACTION;" ) );
+        if ( AmarokConfig::databaseEngine().toInt() == DbConnection::sqlite )
+            query( QString( "BEGIN TRANSACTION;" ) );
         new ScanController( this, false, folders );
     }
 }
@@ -2336,7 +2337,8 @@ CollectionDB::startScan()  //SLOT
 void
 CollectionDB::stopScan() //SLOT
 {
-    query( QString( "COMMIT TRANSACTION;" ) );
+    if ( AmarokConfig::databaseEngine().toInt() == DbConnection::sqlite )
+        query( QString( "COMMIT TRANSACTION;" ) );
     delete ScanController::instance();
 }
 
