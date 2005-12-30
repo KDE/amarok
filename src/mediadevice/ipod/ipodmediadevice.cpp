@@ -256,7 +256,7 @@ IpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bu
             podcasts = itdb_playlist_new("Podcasts", false);
             itdb_playlist_add(m_itdb, podcasts, -1);
             itdb_playlist_set_podcasts(podcasts);
-            addPlaylistToList( podcasts );
+            addPlaylistToView( podcasts );
         }
         itdb_playlist_add_track(podcasts, track, -1);
     }
@@ -265,6 +265,13 @@ IpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bu
         // gtkpod 0.94 does not like if not all songs in the db are on the master playlist
         // but we try anyway
         Itdb_Playlist *mpl = itdb_playlist_mpl(m_itdb);
+        if( !mpl )
+        {
+            mpl = itdb_playlist_new( "MPL", false );
+            itdb_playlist_add( m_itdb, mpl, -1 );
+            itdb_playlist_set_mpl( mpl );
+            addPlaylistToView( mpl );
+        }
         itdb_playlist_add_track(mpl, track, -1);
     }
 
@@ -748,7 +755,7 @@ IpodMediaDevice::openDevice(bool silent)
     {
         Itdb_Playlist *playlist = (Itdb_Playlist *)cur->data;
 
-        addPlaylistToList(playlist);
+        addPlaylistToView(playlist);
 
         cur = cur->next;
     }
@@ -978,7 +985,7 @@ IpodMediaDevice::addTrackToList(Itdb_Track *track)
 }
 
 void
-IpodMediaDevice::addPlaylistToList(Itdb_Playlist *pl)
+IpodMediaDevice::addPlaylistToView(Itdb_Playlist *pl)
 {
     if(itdb_playlist_is_mpl(pl))
     {

@@ -69,7 +69,7 @@ class IpodMediaDevice : public KioMediaDevice
     private:
         void              writeITunesDB();
         IpodMediaItem    *addTrackToList(Itdb_Track *track);
-        void              addPlaylistToList(Itdb_Playlist *playlist);
+        void              addPlaylistToView(Itdb_Playlist *playlist);
         void              playlistFromItem(IpodMediaItem *item);
 
         QString           realPath(const char *ipodPath);
