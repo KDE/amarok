@@ -5,6 +5,9 @@ TODO-list for amaroK
 
 
 SHORT-TERM (URGENT):
+ <sebr>    Mediabrowser is larger than the smallest limit.  Its b/c of the disconnect button.  This
+           show be changed back or just change the text of the connect button.
+
  <sebr>    The new cover icon isn't square.  This sucks, it throws the context browser a couple of
            pixels out of line.  We should keep these nitty details consistent :-).
 
