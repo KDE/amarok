@@ -680,7 +680,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
     QPainter p( &buf, true );
 
     QMutexLocker lock(&theArrayLock);
-    if( column == Moodbar && theArray.size() )
+    if( column == Moodbar && theArray.size() && length() > 0 )
     {
         if(theMoodbar.width() != width || theMoodbar.height() != height())
         {
