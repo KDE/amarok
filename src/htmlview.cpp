@@ -183,6 +183,12 @@ HTMLView::loadStyleSheet()
                 .arg( m_shadowGradientImage->name() )
                 .arg( pxSize );
 
+        //"Related Artists" related styles
+        styleSheet += QString( ".box-header-nav { color: %1; background-color: %2; font-size: %3px; font-weight: bold; padding: 1px 0.5em; border-bottom: 1px solid #000; text-align: right; }" )
+                .arg( fg )
+                .arg( bg )
+                .arg( pxSize );
+
         //"Albums by ..." related styles
         styleSheet += QString( ".album-header:hover { color: %1; background-color: %2; cursor: pointer; }" ).arg( fg ).arg( bg );
         styleSheet += QString( ".album-header:hover a { color: %1; }" ).arg( fg );

@@ -161,6 +161,17 @@ a {
   }
 
 
+.box-header-nav {
+    color: AMAROK_FGCOLOR;
+    background-color: AMAROK_BGCOLOR;
+    font-size: AMAROK_FONTSIZE;
+    font-weight: bold;
+    text-align: right;
+    padding: 1px 0.5em;
+    border-bottom: 1px solid AMAROK_TEXTCOLOR;
+  }
+
+
 .box-row {
   }
 

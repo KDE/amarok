@@ -83,10 +83,6 @@ class ContextBrowser : public KTabWidget, public EngineObserver
 
         void contextHistoryBack();
         void contextHistoryForward();
-        void contextBackPopupActivated( int id );
-        void contextForwardPopupActivated( int id );
-        void contextHome();
-        void contextCurrent();
 
         void lyricsAdd();
         void lyricsSearch();
@@ -134,11 +130,8 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         bool          m_dirtyLyricsPage;
         bool          m_dirtyWikiPage;
 
-        Browser::ToolBar* m_contextToolBar;
         QStringList   m_contextBackHistory;
         QStringList   m_contextForwardHistory;
-        KPopupMenu*   m_contextBackPopup;
-        KPopupMenu*   m_contextForwardPopup;
         KURL          m_contextURL;
 
         QString       m_styleSheet;

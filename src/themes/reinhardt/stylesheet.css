@@ -22,6 +22,7 @@ h6 { font-size: AMAROK_FONTSIZEpx; background-color: ButtonFace; color: ButtonTe
 .box:hover { border: solid ButtonShadow 1px; }
 .box-header { color: ButtonText; background-color: ButtonFace; font-size: AMAROK_FONTSIZEpx; font-weight: bold; padding: 1px 0.5em; border-bottom: 1px solid ButtonShadow; }
 .box-header:hover {}
+.box-header-nav { color: ButtonText; background-color: ButtonFace; font-size: AMAROK_FONTSIZEpx; font-weight: bold; padding: 1px 0.5em; border-bottom: 1px solid ButtonShadow; text-align: right }
 .box-body { background-image: url( ./images/transparency.png ); background-color: transparent; margin: 1px; }
 .box-body:hover {}
 .box-row {}
