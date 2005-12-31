@@ -11,8 +11,8 @@
 # # # # # # # # # # # # # # # # # # # # # #   # # # # #   # # #   # #   # #   # #   #   #
 
 echo
-echo "amaroK-svn (Version 3.0rc4) by Jocke \"Firetech\" Andersson"
-echo "==========================================================="
+echo "amaroK-svn (Version 3.0) by Jocke \"Firetech\" Andersson"
+echo "========================================================"
 echo
 
 ## Define global variables
@@ -56,6 +56,7 @@ function FlagUsage {
   echo
   echo "Options:"
   echo -e "  -r, --reset\t\tAsk for settings again."
+  echo -e "  -s, --select-server\tSpecify which SVN server to use. (Only needed if you want to use your SVN account.)"
   echo -e "  -c, --clean\t\tClean the source tree before compiling amaroK."
   echo -e "  -h, --help\t\tShow this message."
   echo
@@ -73,6 +74,7 @@ function FlagUsage {
 # set default values
 RESET_CONF="0"
 CLEAN_BUILD="0"
+SELECT_SERVER="0"
 BUILD_DIR="`pwd`/amarok-svn"
 # read flags values
 BUILD_DIR_SET="0"
@@ -84,6 +86,9 @@ for flag; do
     -c|--clean)
       CLEAN_BUILD="1"
       let S_STEPS=S_STEPS+1
+      ;;
+    -s|--select-server)
+      SELECT_SERVER="1"
       ;;
     -h|--help)
       FlagUsage
@@ -214,6 +219,10 @@ else
   WriteConfig use_id "$USE_ID"
 fi
 
+if [ "$SELECT_SERVER" = "1" ]; then #SVN server selection
+  WriteConfig svn_server "`kdialog --title \"$KD_TITLE\" --inputbox \"Specify which SVN server you want to use. Default is 'svn://anonsvn.kde.org'.\"`"
+fi
+
 SVN_SERVER="`ReadConfig svn_server`"
 if  [ -z "$SVN_SERVER" ]; then #Save default value if empty
   SVN_SERVER="svn://anonsvn.kde.org"
@@ -226,9 +235,10 @@ echo "--------------------"
 echo  "(Use --help to get information on how to change it.)"
 echo 
 
+echo -e "SVN server:\t\t\t\t\t$SVN_SERVER"
 echo -e "Language for localization and documentation:\t$GET_LANG"
 if [ "$CONF_HELP" != "true" -a "`echo $CONF_FLAGS`" ]; then
-  echo -e "Extra configuration options:\t\t\t`echo $CONF_FLAGS`"
+  echo -e "Extra configuration options:\t\t\t`echo $CONF_FLAGS`" #`echo ...` strips the preceeding space.
 fi
 echo -e "Command for getting root privileges:\t\t$HOW_ROOT"
 echo -en "Build ID:\t\t\t\t\t"
