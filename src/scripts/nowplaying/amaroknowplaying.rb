@@ -6,12 +6,14 @@
 # License: GNU General Public License V2
 
 
-title  = `dcop amarok player title`.chomp()
+title  = `dcop amarok player title 2> /dev/null`.chomp()
+exit( 1 ) unless $?.success?() # Abort if amaroK isn't running
 artist = `dcop amarok player artist`.chomp()
 album  = `dcop amarok player album`.chomp()
 year   = `dcop amarok player year`.chomp()
 
-output = "np: "
+output = ""
+
 
 if title.empty?()
     output += `dcop amarok player nowPlaying`.chomp()
@@ -33,5 +35,5 @@ else
 end
 
 
-puts( output )
+puts( "np: #{output}" ) unless output.empty?()
 
