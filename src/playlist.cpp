@@ -4307,6 +4307,7 @@ TagWriter::doJob()
             if ( !mb.hasExtendedMetaInformation() )
                 return true;
             mb.setComposer( m_newTagString );
+            break;
         case PlaylistItem::DiscNumber:
             if ( !mb.hasExtendedMetaInformation() )
                 return true;
