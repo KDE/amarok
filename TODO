@@ -5,6 +5,10 @@ TODO-list for amaroK
 
 
 SHORT-TERM (URGENT):
+ <sebr>    Context browser needs to separate tracks when using TPOS.  Currently shows 1. 1. 2. 2. etc
+
+ <sebr>    Setting the TPOS value inline infact changes the Album text.
+
  <sebr>    Mediabrowser is larger than the smallest limit.  Its b/c of the disconnect button.  This
            show be changed back or just change the text of the connect button.
 
