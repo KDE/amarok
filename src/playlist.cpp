@@ -4311,6 +4311,7 @@ TagWriter::doJob()
             if ( !mb.hasExtendedMetaInformation() )
                 return true;
             mb.setDiscNumber( m_newTagString.toInt() );
+            break;
         case PlaylistItem::Album:
             mb.setAlbum( m_newTagString );
             break;
