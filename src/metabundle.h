@@ -13,6 +13,8 @@
 #include <klocale.h> //inline functions
 #include <taglib/audioproperties.h>
 
+#include "amarok_export.h"
+
 class KFileMetaInfo;
 class PlaylistItem;
 template<class T> class QValueList;
@@ -43,7 +45,7 @@ public:
     /**
      * Creates an empty MetaBundle
      */
-    MetaBundle()
+    LIBAMAROK_EXPORT MetaBundle()
             : m_isValidMedia( false )
     {
         init();
@@ -52,10 +54,10 @@ public:
     /**
      * Creates a MetaBundle for url, tags will be obtained and set
      */
-    explicit MetaBundle( const KURL&, bool noCache = false, TagLib::AudioProperties::ReadStyle = TagLib::AudioProperties::Fast );
+    LIBAMAROK_EXPORT explicit MetaBundle( const KURL&, bool noCache = false, TagLib::AudioProperties::ReadStyle = TagLib::AudioProperties::Fast );
 
     /** For the StreamProvider */
-    MetaBundle( const QString &title,
+    LIBAMAROK_EXPORT MetaBundle( const QString &title,
             const QString &streamUrl,
             const int bitrate,
             const QString &genre,
@@ -63,7 +65,7 @@ public:
             const KURL &url );
 
     /** For PlaylistItems */
-    MetaBundle( const PlaylistItem *item );
+    LIBAMAROK_EXPORT MetaBundle( const PlaylistItem *item );
 
     bool operator==( const MetaBundle& bundle );
     inline bool operator!=( const MetaBundle& bundle ) { return !operator==( bundle ); }
