@@ -200,6 +200,8 @@ HTMLView::loadStyleSheet()
         styleSheet += QString( ".album-song a:hover { color: %1; background-color: %2; }" ).arg( fg ).arg( bg );
         styleSheet += QString( ".album-song-trackno { font-weight: bold; }" );
 
+        styleSheet += QString( ".disc-separator { color: %1; border-bottom: 1px solid %2; }" ).arg( bg ).arg( bg );
+
         styleSheet += QString( ".button { width: 100%; }" );
 
         //boxes used to display score (sb: score box)
@@ -209,7 +211,7 @@ HTMLView::loadStyleSheet()
                             .arg( locate( "data", "amarok/images/sbinner_stars.png" ) );
         styleSheet += QString( ".sbouter { border: 0px; background: transparent url(%1) no-repeat top left; width: 54px; height: 10px; text-align: right; }" )
                             .arg( locate( "data", "amarok/images/back_stars_grey.png" ) );
-        
+
         //boxes used to display score (rb: rating box)
         styleSheet += QString( ".rbtext { text-align: center; padding: 0px 4px; border-left: dashed %1 1px; }" ).arg( ContextBrowser::instance()->colorGroup().base().dark( 120 ).name() );
         // New score-bar style from Tightcode

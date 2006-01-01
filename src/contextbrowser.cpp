@@ -1608,8 +1608,10 @@ bool CurrentTrackJob::doJob()
                 qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTrack );
                 qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
                 qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLength );
+                qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
                 qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, values[ i + 1 ] );
                 qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
+                qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
                 qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
                 qb.setOptions( QueryBuilder::optNoCompilations );
                 QStringList albumValues = qb.run();
@@ -1618,7 +1620,7 @@ bool CurrentTrackJob::doJob()
                 if ( !albumValues.isEmpty() )
                 {
                     albumYear = albumValues[ 3 ];
-                    for ( uint j = 0; j < albumValues.count(); j += 5 )
+                    for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() )
                         if ( albumValues[j + 3] != albumYear || albumYear == "0" )
                         {
                             albumYear = QString::null;
@@ -1664,9 +1666,18 @@ bool CurrentTrackJob::doJob()
                         << ( i!=vectorPlace ? "none" : "block" ) /* shows it if it's the current track album */
                         << values[ i + 1 ] ) );
 
+                QString discNumber;
                 if ( !albumValues.isEmpty() )
-                    for ( uint j = 0; j < albumValues.count(); j += 5 )
+                    for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() )
                     {
+                        QString newDiscNumber = albumValues[ j + 5 ].stripWhiteSpace();
+                        if( discNumber != newDiscNumber )
+                        {
+                            discNumber = newDiscNumber;
+                            m_HTMLSource.append( "<div class='disc-separator'>"
+                                               +    i18n( "Disc %1" ).arg( discNumber )
+                                               + "</div>" );
+                        }
                         QString track = albumValues[j + 2].stripWhiteSpace();
                         if( track.length() > 0 ) {
                             if( track.length() == 1 )
@@ -1736,7 +1747,9 @@ bool CurrentTrackJob::doJob()
                 qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
                 qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLength );
                 qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+                qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
                 qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, values[ i + 1 ] );
+                qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
                 qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
                 qb.setOptions( QueryBuilder::optOnlyCompilations );
                 QStringList albumValues = qb.run();
@@ -1789,9 +1802,19 @@ bool CurrentTrackJob::doJob()
                         << ( i!=vectorPlace ? "none" : "block" ) /* shows it if it's the current track album */
                         << values[ i + 1 ] ) );
 
+                QString discNumber;
                 if ( !albumValues.isEmpty() )
                     for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() )
                     {
+                        QString newDiscNumber = albumValues[ j + 6 ].stripWhiteSpace();
+                        if( discNumber != newDiscNumber )
+                        {
+                            discNumber = newDiscNumber;
+                            m_HTMLSource.append( "<div class='disc-separator'>"
+                                               +    i18n( "Disc %1" ).arg( discNumber )
+                                               + "</div>" );
+                        }
+
                         QString track = albumValues[j + 2].stripWhiteSpace();
                         if( track.length() > 0 ) {
                             if( track.length() == 1 )

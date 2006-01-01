@@ -5,7 +5,6 @@ TODO-list for amaroK
 
 
 SHORT-TERM (URGENT):
- <sebr>    Context browser needs to separate tracks when using TPOS.  Currently shows 1. 1. 2. 2. etc
 
  <sebr>    Setting it from the tag dialog only seems to take effect when editing one file at a time.
 

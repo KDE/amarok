@@ -124,7 +124,7 @@ class PlaylistItem : public KListViewItem
         /// some setters
         void setTitle(   const QString &title );
         void setArtist(  const QString &artist );
-        void setComposer(  const QString &composer );
+        void setComposer(const QString &composer );
         void setAlbum(   const QString &album );
         void setComment( const QString &comment );
         void setGenre(   const QString &genre );
