@@ -62,8 +62,6 @@ namespace SingleShotPool
     {
         QTimer *timer = (QTimer*)receiver->child( slot );
         if( !timer ) {
-            debug() << "Creating timer for: " << slot << endl;
-
             timer = new QTimer( receiver, slot );
             receiver->connect( timer, SIGNAL(timeout()), slot );
         }
@@ -155,7 +153,7 @@ StatusBar::polish()
         if ( _h > h )
             h = _h;
 
-        debug() << o->className() << ", " << o->name() << ": " << _h << ": " << static_cast<QWidget*>(o)->minimumHeight() << endl;
+//         debug() << o->className() << ", " << o->name() << ": " << _h << ": " << static_cast<QWidget*>(o)->minimumHeight() << endl;
 
         if ( o->inherits( "QLabel" ) )
             static_cast<QLabel*>(o)->setIndent( 4 );
@@ -228,8 +226,8 @@ StatusBar::shortMessage( const QString &text )
 void
 StatusBar::resetMainText()
 {
-    if( sender() )
-        debug() << sender()->name() << endl;
+//     if( sender() )
+//         debug() << sender()->name() << endl;
 
     // don't reset if we are showing a shortMessage
     if( SingleShotPool::isActive( this, SLOT(resetMainText()) ) )
@@ -301,7 +299,7 @@ StatusBar::longMessage( const QString &text, int type )
             image = KGlobal::iconLoader()->iconPath( "messagebox_critical", -KIcon::SizeHuge );
             break;
     }
-    
+
     if( !image.isEmpty() )
         message->setImage( image );
 
