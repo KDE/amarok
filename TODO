@@ -6,8 +6,6 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
- <sebr>    Setting it from the tag dialog only seems to take effect when editing one file at a time.
-
  <sebr>    Mediabrowser is larger than the smallest limit.  Its b/c of the disconnect button.  This
            show be changed back or just change the text of the connect button.
 

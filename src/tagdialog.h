@@ -77,7 +77,6 @@ class TagDialog : public TagDialogBase
         int scoreForURL( const KURL &url );
         QString lyricsForURL( const KURL &url );
         void saveTags();
-        void saveMultipleTracks();
         bool writeTag( MetaBundle mb, bool updateCB=true );
         const QString unknownSafe( QString );
         const QStringList statisticsData();

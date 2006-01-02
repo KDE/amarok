@@ -717,13 +717,14 @@ TagDialog::readMultipleTracks()
     MetaBundle first = bundleForURL( *it );
     uint scoreFirst = CollectionDB::instance()->getSongPercentage( first.url().path() );
 
-    bool artist=true, album=true, genre=true, comment=true, year=true, score=true;
+    bool artist=true, album=true, genre=true, comment=true,
+         year=true, score=true, composer=true, discNumber=true;
     for ( ; it != end; ++it ) {
         MetaBundle mb = bundleForURL( *it );
 
         if( !mb.url().isLocalFile() ) {
             // If we have a non local file, don't even lose more time comparing, just leave
-            artist=false; album=false; genre=false; comment=false, year=false, score=false;
+            artist = album = genre = comment = year = score = composer = discNumber = false;
             break;
         }
         if ( artist && mb.artist()!=first.artist() ) { artist=false; };
@@ -731,12 +732,14 @@ TagDialog::readMultipleTracks()
         if ( genre && mb.genre()!=first.genre() ) { genre=false; };
         if ( comment && mb.comment()!=first.comment() ) { comment=false; };
         if ( year && mb.year()!=first.year() ) { year=false; };
+        if ( composer && mb.composer()!=first.composer() ) { composer=false; };
+        if ( discNumber && mb.discNumber()!=first.discNumber() ) { discNumber=false; };
 
         uint scoreCurrent = CollectionDB::instance()->getSongPercentage( mb.url().path() );
         if ( score && scoreFirst != scoreCurrent )
             score = false;
 
-        if (!artist && !album && !genre && !comment && !year && !score)
+        if (!artist && !album && !genre && !comment && !year && !score && !composer && !discNumber)
             break;
     }
     // Set them in the dialog and in m_bundle ( so we don't break hasChanged() )
@@ -756,9 +759,17 @@ TagDialog::readMultipleTracks()
         m_bundle.setComment( first.comment() );
         kTextEdit_comment->setText( first.comment() );
     }
+    if (composer) {
+        m_bundle.setComposer( first.composer() );
+        kLineEdit_composer->setText( first.composer() );
+    }
     if (year) {
         m_bundle.setYear( first.year() );
         kIntSpinBox_year->setValue( first.year() );
+    }
+    if (discNumber) {
+        m_bundle.setDiscNumber( first.discNumber() );
+        kIntSpinBox_discNumber->setValue( first.discNumber() );
     }
     else
     {
@@ -900,41 +911,34 @@ TagDialog::lyricsForURL( const KURL &url )
 void
 TagDialog::saveTags()
 {
-    if( m_urlList.count() > 0 && storedTags.count() == 0 && !m_perTrack )
+    if( !m_perTrack )
     {
-        saveMultipleTracks();
+        applyToAllTracks();
     }
     else
     {
-        if( !m_perTrack )
-        {
-            applyToAllTracks();
-        }
-        else
-        {
-            storeTags();
-        }
-
-        QMap<QString, MetaBundle>::ConstIterator endStore( storedTags.end() );
-        for(QMap<QString, MetaBundle>::ConstIterator it = storedTags.begin(); it != endStore; ++it ) {
-            if( writeTag( it.data(), it == --storedTags.end() ) )    //update the collection browser if it's the last track
-                Playlist::instance()->updateMetaData( it.data() );
-            else
-                amaroK::StatusBar::instance()->longMessage( i18n(
-                            "Sorry, the tag for %1 could not be changed." ).arg( it.data().prettyURL() ), KDE::StatusBar::Error );
-        }
-        QMap<QString, int>::ConstIterator endScore( storedScores.end() );
-        for(QMap<QString, int>::ConstIterator it = storedScores.begin(); it != endScore; ++it ) {
-            CollectionDB::instance()->setSongPercentage( it.key(), it.data() );
-        }
-        QMap<QString, QString>::ConstIterator endLyrics( storedLyrics.end() );
-        for(QMap<QString, QString>::ConstIterator it = storedLyrics.begin(); it != endLyrics; ++it ) {
-            CollectionDB::instance()->setLyrics( it.key(), it.data() );
-            emit lyricsChanged( it.key() );
-
-        }
+        storeTags();
     }
-    CollectionView::instance()->renderView();
+
+    QMap<QString, MetaBundle>::ConstIterator endStore( storedTags.end() );
+    for(QMap<QString, MetaBundle>::ConstIterator it = storedTags.begin(); it != endStore; ++it ) {
+        if( writeTag( it.data(), it == --storedTags.end() ) )    //update the collection browser if it's the last track
+            Playlist::instance()->updateMetaData( it.data() );
+        else
+            amaroK::StatusBar::instance()->longMessage( i18n(
+                        "Sorry, the tag for %1 could not be changed." ).arg( it.data().prettyURL() ), KDE::StatusBar::Error );
+    }
+    QMap<QString, int>::ConstIterator endScore( storedScores.end() );
+    for(QMap<QString, int>::ConstIterator it = storedScores.begin(); it != endScore; ++it ) {
+        CollectionDB::instance()->setSongPercentage( it.key(), it.data() );
+    }
+    QMap<QString, QString>::ConstIterator endLyrics( storedLyrics.end() );
+    for(QMap<QString, QString>::ConstIterator it = storedLyrics.begin(); it != endLyrics; ++it ) {
+        CollectionDB::instance()->setLyrics( it.key(), it.data() );
+        emit lyricsChanged( it.key() );
+    }
+    if ( storedTags.count() ) //lyrics and score changes doesn't matter to Collection Browser
+        CollectionView::instance()->renderView();
 }
 
 
@@ -979,9 +983,20 @@ TagDialog::applyToAllTracks()
             mb.setComment( kTextEdit_comment->text() );
             changed = true;
         }
+        if( !kLineEdit_composer->text().isEmpty() && kLineEdit_composer->text() != mb.composer() ||
+                kLineEdit_composer->text().isEmpty() && !m_bundle.composer().isEmpty() ) {
+            mb.setComposer( kLineEdit_composer->text() );
+            changed = true;
+        }
+
         if( kIntSpinBox_year->value() && kIntSpinBox_year->value() != mb.year() ||
                 !kIntSpinBox_year->value() && m_bundle.year() ) {
             mb.setYear( kIntSpinBox_year->value() );
+            changed = true;
+        }
+        if( kIntSpinBox_discNumber->value() && kIntSpinBox_discNumber->value() != mb.discNumber() ||
+                !kIntSpinBox_discNumber->value() && m_bundle.discNumber() ) {
+            mb.setDiscNumber( kIntSpinBox_discNumber->value() );
             changed = true;
         }
 
@@ -998,69 +1013,6 @@ TagDialog::applyToAllTracks()
     }
 }
 
-void
-TagDialog::saveMultipleTracks()
-{
-    bool tagsChanged = false, anyTrack = false;
-    const KURL::List::ConstIterator end = m_urlList.end();
-    for ( KURL::List::ConstIterator it = m_urlList.begin(); it != end; ++it ) {
-        if( !(*it).isLocalFile() ) continue;
-
-        MetaBundle mb( *it );
-
-   /* we have to update the values if they changed, so:
-   1) !kLineEdit_field->text().isEmpty() && kLineEdit_field->text() != mb.field
-          i.e.: The user wrote something on the field, and it's different from
-          what we have in the tag.
-   2) !m_bundle.field().isEmpty() && kLineEdit_field->text().isEmpty()
-          i.e.: The user was shown some value for the field (it was the same
-          for all selected tracks), and he deliberately emptied it.
-  TODO: All this mess is because the dialog uses "" to represent what the user
-        doesn't want to change, maybe we can think of something better?
-   */
-        if( !kComboBox_artist->currentText().isEmpty() && kComboBox_artist->currentText() != mb.artist() ||
-             kComboBox_artist->currentText().isEmpty() && !m_bundle.artist().isEmpty() ) {
-            mb.setArtist( kComboBox_artist->currentText() );
-            tagsChanged = true;
-        }
-
-        if( !kComboBox_album->currentText().isEmpty() && kComboBox_album->currentText() != mb.album() ||
-             kComboBox_album->currentText().isEmpty() && !m_bundle.album().isEmpty() ) {
-            mb.setAlbum( kComboBox_album->currentText() );
-            tagsChanged = true;
-        }
-        if( !kComboBox_genre->currentText().isEmpty() && kComboBox_genre->currentText() != mb.genre() ||
-             kComboBox_genre->currentText().isEmpty() && !m_bundle.genre().isEmpty() ) {
-            mb.setGenre( kComboBox_genre->currentText() );
-            tagsChanged = true;
-        }
-        if( !kTextEdit_comment->text().isEmpty() && kTextEdit_comment->text() != mb.comment() ||
-             kTextEdit_comment->text().isEmpty() && !m_bundle.comment().isEmpty() ) {
-            mb.setComment( kTextEdit_comment->text() );
-            tagsChanged = true;
-        }
-        if( kIntSpinBox_year->value() && kIntSpinBox_year->value() != mb.year() ||
-            !kIntSpinBox_year->value() && m_bundle.year() ) {
-            mb.setYear( kIntSpinBox_year->value() );
-            tagsChanged = true;
-        }
-        if( kIntSpinBox_score->value() && kIntSpinBox_score->value() != m_score ||
-            !kIntSpinBox_score->value() && m_score )
-            CollectionDB::instance()->setSongPercentage( mb.url().path(), kIntSpinBox_score->value() );
-
-        if ( tagsChanged ) { // We only try to update the file if one of the tags changed
-            if( writeTag( mb, false ) ) //leave the Collection Browser update to be made after all changes
-                Playlist::instance()->updateMetaData( mb );
-            else
-                amaroK::StatusBar::instance()->longMessage( i18n(
-                    "Sorry, the tag for %1 could not be changed." ).arg( mb.prettyURL() ), KDE::StatusBar::Error );
-        }
-        anyTrack |= tagsChanged;
-    }
-    // if any change was really made for any of the tracks, update Collection Browser.
-    if (anyTrack)
-        CollectionView::instance()->renderView();
-}
 
 bool
 TagDialog::writeTag( MetaBundle mb, bool updateCB )
