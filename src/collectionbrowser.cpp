@@ -347,8 +347,6 @@ CollectionView::~CollectionView() {
 void
 CollectionView::renderView()  //SLOT
 {
-    DEBUG_FUNC_INFO
-
     if ( childCount() )
         cacheView();
 
@@ -669,8 +667,6 @@ CollectionView::scanStarted() // SLOT
 void
 CollectionView::scanDone( bool changed ) //SLOT
 {
-    DEBUG_BLOCK
-
     if( changed )
         renderView();
 
@@ -681,7 +677,6 @@ CollectionView::scanDone( bool changed ) //SLOT
 void
 CollectionView::slotExpand( QListViewItem* item )  //SLOT
 {
-    DEBUG_FUNC_INFO
     if ( !item || !item->isExpandable() ) return;
 
     int category = 0;
@@ -689,7 +684,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
 
     QueryBuilder qb;
     bool c = false;
-    bool SortbyTrackFirst = false; 
+    bool SortbyTrackFirst = false;
 
     //Sort by track number first if album is in one of the categories, otherwise by track name first
     if ( m_cat1 == CollectionBrowser::IdAlbum ||
@@ -997,8 +992,6 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
 void
 CollectionView::slotCollapse( QListViewItem* item )  //SLOT
 {
-    DEBUG_FUNC_INFO
-
     QListViewItem* child = item->firstChild();
     QListViewItem* childTmp;
 
@@ -1526,9 +1519,9 @@ CollectionView::organizeFiles( const KURL::List &urls, bool addToCollection )  /
 
             //Building destination here.
             MetaBundle mb( src );
-            
+
             bool isCompilation = false;
-            
+
             if( mb.album().isEmpty() )
                 album = i18n("Unknown");
             else
@@ -1564,7 +1557,7 @@ CollectionView::organizeFiles( const KURL::List &urls, bool addToCollection )  /
                 }
                 title.replace( type, "" );
             }
-            else    
+            else
                 title = i18n("Unknown");
 
             dest = base;
@@ -1578,7 +1571,7 @@ CollectionView::organizeFiles( const KURL::List &urls, bool addToCollection )  /
                 dest += i18n("Compilations") + "/" + album + "/" + title + "." + type;
             else
                 dest += artist + "/" + album + "/" + title + "." + type;
-                
+
             dest.remove( "?" ).remove( ":" ).remove( "\"" ).remove( "," );
 
             if( replaceSpace->isChecked() )

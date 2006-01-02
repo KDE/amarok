@@ -87,7 +87,6 @@ MP4::Properties *MP4::File::audioProperties() const
 
 bool MP4::File::save()
 {
-    fprintf(stderr, "MP4::File::save()\n");
     MP4Close(mp4file);
 
     MP4FileHandle handle = MP4Modify(name());
