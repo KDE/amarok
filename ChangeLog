@@ -76,6 +76,8 @@ VERSION 1.4:
       compatibility with various iPod models.
 
   BUGFIXES:
+    * Dragging text to a filter line edit would still show the "Filter
+      Here..." text in the background. (BR 108876)
     * Don't show an empty playlist length holder in the statusbar.
     * Allow for % and _ in tags, and filter them correctly.
     * Do not copy files of types an iPod is not capable of playing to the
