@@ -867,8 +867,10 @@ void ScrobblerSubmitter::enqueueItem( SubmitItem* item )
     {
         SubmitItem* itemFromQueue = m_fakeQueue.getFirst();
         m_fakeQueue.removeFirst();
-        debug() << "Dropping " << itemFromQueue->artist()
-                  << " - " << itemFromQueue->title() << " from fake queue" << endl;
+
+        if ( !itemFromQueue )
+            debug() << "Dropping " << itemFromQueue->artist()
+                    << " - " << itemFromQueue->title() << " from fake queue" << endl;
 
         delete itemFromQueue;
     }
