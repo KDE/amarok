@@ -121,11 +121,12 @@ END:VCARD
 BEGIN:VCARD
 CATEGORIES:packers_amarok
 CLASS:PUBLIC
-EMAIL:neoclust@mandriva.com
-FN:neoclust@mandriva.com
-N:neoclust@mandriva.com;;;;
-NAME:neoclust@mandriva.com
+EMAIL:neoclust@mandriva.org
+FN:neoclust@mandriva.org
+N:neoclust@mandriva.org;;;;
+NAME:neoclust@mandriva.org
 ORG:Mandriva Linux (Cooker)
+REV:2006-01-02T23:56:43Z
 UID:hemW9ybn6c
 VERSION:3.0
 END:VCARD
