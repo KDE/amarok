@@ -11,6 +11,7 @@
 #endif
 
 #include "wma/taglib_wmafiletyperesolver.h"
+#include "rmff/taglib_realmediafiletyperesolver.h"
 #include "audible/taglib_audiblefiletyperesolver.h"
 
 void registerTaglibPlugins()
@@ -19,5 +20,6 @@ void registerTaglibPlugins()
     TagLib::FileRef::addFileTypeResolver(new MP4FileTypeResolver);
 #endif
     TagLib::FileRef::addFileTypeResolver(new WMAFileTypeResolver);
+    TagLib::FileRef::addFileTypeResolver(new RealMediaFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new AudibleFileTypeResolver);
 }

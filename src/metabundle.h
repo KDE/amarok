@@ -40,7 +40,7 @@ public:
     static const int Irrelevant   = -1; /// not applicable to this stream/media type, eg length for http streams
     static const int Unavailable  =  0; /// cannot be obtained
 
-    enum FileType { mp3, ogg, wma, mp4, other };
+    enum FileType { mp3, ogg, wma, mp4, ra, rv, rm, other };
 
     /**
      * Creates an empty MetaBundle
