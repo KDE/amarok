@@ -50,7 +50,7 @@ VERSION 1.4:
       amaroK crash while scanning the Collection :)
     * Statistics tool!
     * Dragging external playlists into the playlist browser will add them.
-    * Collection scanner now supports WMA and MP4/AAC.
+    * Collection scanner now supports WMA, MP4/AAC, and RealMedia (RA,RV,RM).
     * Option to crossfade only on manual track changes. Useful for listening
       to consecutive tracks on a single album.
 
