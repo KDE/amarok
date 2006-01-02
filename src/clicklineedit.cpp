@@ -78,8 +78,6 @@ void ClickLineEdit::drawContents( QPainter *p )
 void ClickLineEdit::dropEvent( QDropEvent *ev )
 {
     mDrawClickMsg = false;
-    repaint();
-
     KLineEdit::dropEvent( ev );
 }
 
