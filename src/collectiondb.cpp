@@ -1975,7 +1975,9 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
     command += "year = "   + QString::number( yearID( QString::number( bundle.year() ), true, false, true ) ) + ", ";
     if ( bundle.track() )
         command += "track = " + QString::number( bundle.track() ) + ", ";
-    command += "comment = '" + escapeString( bundle.comment() ) + "' ";
+    command += "comment = '" + escapeString( bundle.comment() ) + "', ";
+    command += "composer = '" + escapeString( bundle.composer() ) + "', ";
+    command += "discnumber = '" + QString::number( bundle.discNumber() ) + "' ";
     command += "WHERE url = '" + escapeString( url ) + "';";
 
     query( command );
