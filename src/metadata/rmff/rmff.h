@@ -34,8 +34,8 @@ namespace TagLib
       typedef unsigned long  UINT32;
       typedef unsigned short UINT16;
       typedef unsigned char  UINT8;
-      
-#define RMFF_HDR_SIZE 8
+
+      static const int RMFF_HDR_SIZE = 8;  // packed hdr size
 
       // some assumptions on these 2 enum defs, based solely on the order they are listed on the website
       enum PROPERTY_TYPES

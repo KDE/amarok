@@ -284,7 +284,7 @@ int RealMediaFF::getHdr(unsigned char *buf, size_t sz, UINT32 &fourcc, UINT32 &c
 {
    int nbytes = 0, i = 0;
 
-   if (sz < RMFF_HDR_SIZE)
+   if (sz < (size_t)RMFF_HDR_SIZE)
       return 0;
 
    if ( (nbytes = read(m_fd, (void *) buf, RMFF_HDR_SIZE)) != RMFF_HDR_SIZE )
