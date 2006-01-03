@@ -259,7 +259,7 @@ void Scrobbler::engineNewMetaData( const MetaBundle& bundle, bool trackChanged )
  */
 void Scrobbler::engineTrackPositionChanged( long position, bool userSeek )
 {
-    if ( !m_validForSending )
+    if ( !m_validForSending || !m_item )
         return;
 
     if ( userSeek )
