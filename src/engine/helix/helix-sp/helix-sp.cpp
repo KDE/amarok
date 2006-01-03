@@ -759,6 +759,9 @@ int HelixSimplePlayer::addPlayer()
 HelixSimplePlayer::~HelixSimplePlayer()
 {
    tearDown();
+
+   // only now invalidate the device, not whenever we teardown
+   delete [] m_device;
 }
 
 void HelixSimplePlayer::tearDown()
@@ -908,8 +911,6 @@ void HelixSimplePlayer::tearDown()
    scopebufhead = 0;
    scopebuftail = 0;
    m_preamp = 0;
-
-   delete [] m_device;
 }
 
 

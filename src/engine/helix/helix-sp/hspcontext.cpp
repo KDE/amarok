@@ -168,7 +168,7 @@ HSPEngineContext::ReadPref(const char* pref_key, IHXBuffer*& buffer)
        m_CommonClassFactory->CreateInstance(CLSID_IHXBuffer, (void **) &ibuf);
        if (ibuf)
        {
-          ibuf->SetSize(2);
+          ibuf->SetSize(8);
           outbuf = ibuf->GetBuffer();
           strcpy((char *)outbuf, "default");
           buffer = ibuf;
@@ -181,7 +181,9 @@ HSPEngineContext::ReadPref(const char* pref_key, IHXBuffer*& buffer)
        m_CommonClassFactory->CreateInstance(CLSID_IHXBuffer, (void **) &ibuf);
        if (ibuf)
        {
-          ibuf->SetSize(2);
+          int len = strlen(m_splayer->getDevice());
+          m_splayer->print2stderr("Setting Sound Device to \"%s\", %d\n", m_splayer->getDevice(), len);
+          ibuf->SetSize(len + 1);
           outbuf = ibuf->GetBuffer();
           strcpy((char *)outbuf, m_splayer->getDevice());
           buffer = ibuf;
