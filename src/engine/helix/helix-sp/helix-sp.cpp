@@ -753,6 +753,9 @@ int HelixSimplePlayer::addPlayer()
 HelixSimplePlayer::~HelixSimplePlayer()
 {
    tearDown();
+
+   // only delete now, not evertime you re-init the engine, since you need this to re-init the engine
+   delete [] m_device;
 }
 
 void HelixSimplePlayer::tearDown()
@@ -900,8 +903,6 @@ void HelixSimplePlayer::tearDown()
    scopebufhead = 0;
    scopebuftail = 0;
    m_preamp = 0;
-
-   delete [] m_device;
 }
 
 
