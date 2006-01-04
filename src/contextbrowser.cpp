@@ -1671,7 +1671,7 @@ bool CurrentTrackJob::doJob()
                     for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() )
                     {
                         QString newDiscNumber = albumValues[ j + 5 ].stripWhiteSpace();
-                        if( discNumber != newDiscNumber )
+                        if( discNumber != newDiscNumber && newDiscNumber.toInt() > 0)
                         {
                             discNumber = newDiscNumber;
                             m_HTMLSource.append( "<div class='disc-separator'>"
@@ -1807,7 +1807,7 @@ bool CurrentTrackJob::doJob()
                     for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() )
                     {
                         QString newDiscNumber = albumValues[ j + 6 ].stripWhiteSpace();
-                        if( discNumber != newDiscNumber )
+                        if( discNumber != newDiscNumber && newDiscNumber.toInt() > 0)
                         {
                             discNumber = newDiscNumber;
                             m_HTMLSource.append( "<div class='disc-separator'>"
