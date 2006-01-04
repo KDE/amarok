@@ -299,45 +299,61 @@ Playlist::Playlist( QWidget *parent )
     addColumn( i18n( "Filename"    ),   0 );
     addColumn( i18n( "Title"       ), 200 ); //displays filename if no title tag
     addColumn( i18n( "Artist"      ), 100 );
-    addColumn( i18n( "Album"       ), 100 );
+    addColumn( i18n( "Composer"    ),   0 );
     addColumn( i18n( "Year"        ),   0 ); //0 means hidden
-    addColumn( i18n( "Comment"     ),   0 );
-    addColumn( i18n( "Genre"       ),   0 );
+    addColumn( i18n( "Album"       ), 100 );
+    addColumn( i18n( "Disc Number" ),   0 ); //0 means hidden
     addColumn( i18n( "Track"       ),   0 );
+    addColumn( i18n( "Genre"       ),   0 );
+    addColumn( i18n( "Comment"     ),   0 );
     addColumn( i18n( "Directory"   ),   0 );
+    addColumn( i18n( "Type"        ),   0 );
     addColumn( i18n( "Length"      ),  80 );
     addColumn( i18n( "Bitrate"     ),   0 );
+    addColumn( i18n( "Sample Rate" ),   0 );
     addColumn( i18n( "Score"       ),   0 );
     addColumn( i18n( "Rating"      ),   0 );
-    addColumn( i18n( "Type"        ),   0 );
-    addColumn( i18n( "Playcount"   ),   0 );
+    addColumn( i18n( "Play Count"  ),   0 );
     addColumn( i18n( "Last Played" ),   0 );
-    addColumn( i18n( "Moodbar"     ),  AmarokConfig::showMoodbar() ? 40 : 0 );
-    addColumn( i18n( "Composer"    ),   0 );
-    addColumn( i18n( "Disc Number" ),   0 ); //0 means hidden
+    addColumn( i18n( "Mood"        ),  AmarokConfig::showMoodbar() ? 40 : 0 );
 
-    setRenameable( PlaylistItem::Filename,   false ); //TODO allow renaming of the filename
-    setRenameable( PlaylistItem::Title );
-    setRenameable( PlaylistItem::Artist );
-    setRenameable( PlaylistItem::Composer );
-    setRenameable( PlaylistItem::Album );
-    setRenameable( PlaylistItem::Year );
-    setRenameable( PlaylistItem::DiscNumber );
-    setRenameable( PlaylistItem::Comment );
-    setRenameable( PlaylistItem::Genre );
-    setRenameable( PlaylistItem::Track );
-    setRenameable( PlaylistItem::Score );
-    setRenameable( PlaylistItem::Rating );
-    setRenameable( PlaylistItem::Type,       false );
-    setRenameable( PlaylistItem::Playcount,  false );
-    setRenameable( PlaylistItem::LastPlayed, false );
-    setRenameable( PlaylistItem::Moodbar,    false );
-    setColumnAlignment( PlaylistItem::Track,     Qt::AlignCenter );
-    setColumnAlignment( PlaylistItem::Length,    Qt::AlignRight  );
-    setColumnAlignment( PlaylistItem::Bitrate,   Qt::AlignCenter );
-    setColumnAlignment( PlaylistItem::Score,     Qt::AlignCenter );
-    setColumnAlignment( PlaylistItem::Type,      Qt::AlignCenter );
-    setColumnAlignment( PlaylistItem::Playcount, Qt::AlignCenter );
+    for( int i = 0, n = PlaylistItem::NUM_COLUMNS; i < n; ++i )
+    switch( i )
+    {
+        case PlaylistItem::Filename:
+        case PlaylistItem::Directory:
+        case PlaylistItem::Type:
+        case PlaylistItem::Length:
+        case PlaylistItem::Bitrate:
+        case PlaylistItem::SampleRate:
+        case PlaylistItem::PlayCount:
+        case PlaylistItem::LastPlayed:
+        case PlaylistItem::Mood:
+            setRenameable( i, false );
+
+        case PlaylistItem::Title:
+        case PlaylistItem::Artist:
+        case PlaylistItem::Composer:
+        case PlaylistItem::Year:
+        case PlaylistItem::Album:
+        case PlaylistItem::DiscNumber:
+        case PlaylistItem::Track:
+        case PlaylistItem::Genre:
+        case PlaylistItem::Comment:
+        case PlaylistItem::Score:
+        case PlaylistItem::Rating:
+            setRenameable( i, true );
+    }
+
+    setColumnAlignment( PlaylistItem::Track,      Qt::AlignCenter );
+    setColumnAlignment( PlaylistItem::DiscNumber, Qt::AlignCenter );
+    setColumnAlignment( PlaylistItem::Year,       Qt::AlignCenter );
+    setColumnAlignment( PlaylistItem::Length,     Qt::AlignRight  );
+    setColumnAlignment( PlaylistItem::Bitrate,    Qt::AlignCenter );
+    setColumnAlignment( PlaylistItem::SampleRate, Qt::AlignCenter );
+    setColumnAlignment( PlaylistItem::Score,      Qt::AlignCenter );
+    setColumnAlignment( PlaylistItem::Type,       Qt::AlignCenter );
+    setColumnAlignment( PlaylistItem::PlayCount,  Qt::AlignCenter );
 
 
     connect( this,     SIGNAL( doubleClicked( QListViewItem* ) ),
@@ -905,6 +921,110 @@ Playlist::restoreSession()
     }
 }
 
+/*
+    The following two functions (saveLayout(), restoreLayout()), taken from klistview.cpp, are largely
+    Copyright (C) 2000 Reginald Stadlbauer <reggie@kde.org>
+    Copyright (C) 2000,2003 Charles Samuels <charles@kde.org>
+    Copyright (C) 2000 Peter Putzer
+*/
+void Playlist::saveLayout(KConfig *config, const QString &group) const
+{
+  KConfigGroupSaver saver(config, group);
+  QStringList names, widths, order;
+
+  const int colCount = columns();
+  QHeader* const thisHeader = header();
+  for (int i = 0; i < colCount; ++i)
+  {
+    names << PlaylistItem::columnName(i);
+    widths << QString::number(columnWidth(i));
+    order << QString::number(thisHeader->mapToIndex(i));
+  }
+  config->writeEntry("ColumnsVersion", 1);
+  config->writeEntry("ColumnNames", names);
+  config->writeEntry("ColumnWidths", widths);
+  config->writeEntry("ColumnOrder", order);
+  config->writeEntry("SortColumn", columnSorted());
+  config->writeEntry("SortAscending", ascendingSort());
+}
+
+void Playlist::restoreLayout(KConfig *config, const QString &group)
+{
+  KConfigGroupSaver saver(config, group);
+  int version = config->readNumEntry("ColumnsVersion", 0);
+
+  QValueList<int> iorder; //internal ordering
+  if( version )
+  {
+    QStringList names = config->readListEntry("ColumnNames");
+    for( int i = 0, n = names.count(); i < n; ++i )
+    {
+        bool found = false;
+        for( int ii = i; i < PlaylistItem::NUM_COLUMNS; ++ii ) //most likely, it's where we left it
+            if( names[i] == PlaylistItem::columnName(ii) )
+            {
+                iorder.append(ii);
+                found = true;
+                break;
+            }
+        if( !found )
+            for( int ii = 0; ii < i; ++ii ) //but maybe it's not
+                if( names[i] == PlaylistItem::columnName(ii) )
+                {
+                    iorder.append(ii);
+                    found = true;
+                    break;
+                }
+        if( !found )
+            return; //oops? -- revert to the default.
+    }
+  }
+  else
+  {
+    int oldorder[] = { 0, 1, 2, 5, 4, 9, 8, 7, 10, 12, 13, 15, 16, 11, 17, 18, 19, 3, 6, PlaylistItem::NUM_COLUMNS };
+    for( int i = 0; i != PlaylistItem::NUM_COLUMNS; ++i )
+        iorder.append(oldorder[i]);
+  }
+
+
+  QStringList cols = config->readListEntry("ColumnWidths");
+  int i = 0;
+  { // scope the iterators
+    QStringList::ConstIterator it = cols.constBegin();
+    const QStringList::ConstIterator itEnd = cols.constEnd();
+    for (; it != itEnd; ++it)
+      setColumnWidth(iorder[i++], (*it).toInt());
+  }
+
+
+  // move sections in the correct sequence: from lowest to highest index position
+  // otherwise we move a section from an index, which modifies
+  // all index numbers to the right of the moved one
+  cols = config->readListEntry("ColumnOrder");
+  const int colCount = columns();
+  for (i = 0; i < colCount; ++i)   // final index positions from lowest to highest
+  {
+    QStringList::ConstIterator it = cols.constBegin();
+    const QStringList::ConstIterator itEnd = cols.constEnd();
+
+    int section = 0;
+    for (; (it != itEnd) && (iorder[(*it).toInt()] != i); ++it, ++section) ;
+
+    if ( it != itEnd ) {
+      // found the section to move to position i
+      header()->moveSection(iorder[section], i);
+    }
+  }
+
+  if ( config->hasKey("SortColumn") )
+  {
+    const int sort = config->readNumEntry("SortColumn");
+    if( sort >= 0 && uint(sort) < iorder.count() )
+        setSorting(iorder[config->readNumEntry("SortColumn")], config->readBoolEntry("SortAscending", true));
+  }
+}
+
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1402,7 +1522,7 @@ Playlist::activate( QListViewItem *item )
     m_partyDirt = false;
 
     //use PlaylistItem::MetaBundle as it also updates the audioProps
-    EngineController::instance()->play( item );
+    EngineController::instance()->play( *item );
     #undef item
 }
 
@@ -1510,7 +1630,7 @@ Playlist::nextTracks() const
 {
     BundleList list;
     for( QPtrListIterator<PlaylistItem> it( m_nextTracks ); *it; ++it )
-        list << MetaBundle( *it );
+        list << (**it);
     return list;
 }
 
@@ -1623,11 +1743,11 @@ Playlist::engineNewMetaData( const MetaBundle &bundle, bool trackChanged )
         //we don't want to lose it when we get the meta data
         if ( m_currentTrack->artist().isEmpty() ) {
             QString comment = m_currentTrack->title();
-            m_currentTrack->setText( bundle );
+            m_currentTrack->copy( bundle );
             m_currentTrack->setComment( comment );
         }
         else
-            m_currentTrack->setText( bundle );
+            m_currentTrack->copy( bundle );
     }
     else
         //ensure the currentTrack is set correctly and highlight it
@@ -2097,14 +2217,15 @@ Playlist::viewportResizeEvent( QResizeEvent *e )
         switch( c ) {
         case PlaylistItem::Track:
         case PlaylistItem::Bitrate:
+        case PlaylistItem::SampleRate:
         case PlaylistItem::Score:
         case PlaylistItem::Rating:
         case PlaylistItem::Type:
-        case PlaylistItem::Playcount:
+        case PlaylistItem::PlayCount:
         case PlaylistItem::Length:
         case PlaylistItem::Year:
         case PlaylistItem::DiscNumber:
-        case PlaylistItem::Moodbar:
+        case PlaylistItem::Mood:
             break; //these columns retain their width - their items tend to have uniform size
         default:
             if( m_columnFraction[c] > 0 )
@@ -2140,14 +2261,15 @@ Playlist::columnResizeEvent( int col, int oldw, int neww )
             switch( c ) {
             case PlaylistItem::Track:
             case PlaylistItem::Bitrate:
+            case PlaylistItem::SampleRate:
             case PlaylistItem::Score:
             case PlaylistItem::Rating:
             case PlaylistItem::Type:
-            case PlaylistItem::Playcount:
+            case PlaylistItem::PlayCount:
             case PlaylistItem::Length:
             case PlaylistItem::Year:
             case PlaylistItem::DiscNumber:
-            case PlaylistItem::Moodbar:
+            case PlaylistItem::Mood:
                 break;
             default:
                 if( m_columnFraction[c] > 0 )
@@ -2183,14 +2305,15 @@ Playlist::columnResizeEvent( int col, int oldw, int neww )
         switch( x ) {
         case PlaylistItem::Track:
         case PlaylistItem::Bitrate:
+        case PlaylistItem::SampleRate:
         case PlaylistItem::Score:
         case PlaylistItem::Rating:
         case PlaylistItem::Type:
-        case PlaylistItem::Playcount:
+        case PlaylistItem::PlayCount:
         case PlaylistItem::Length:
         case PlaylistItem::Year:
         case PlaylistItem::DiscNumber:
-        case PlaylistItem::Moodbar:
+        case PlaylistItem::Mood:
             break;
         default:
             w += columnWidth( x );
@@ -2233,7 +2356,7 @@ Playlist::eventFilter( QObject *o, QEvent *e )
         popup.setItemEnabled( HIDE, mouseOverColumn != -1 );
 
         for( int i = 0; i < columns(); ++i ) //columns() references a property
-            if(i != PlaylistItem::Moodbar || AmarokConfig::showMoodbar())
+            if(i != PlaylistItem::Mood || AmarokConfig::showMoodbar())
             {
                 popup.insertItem( columnText( i ), i, i + 1 );
                 popup.setItemChecked( i, columnWidth( i ) != 0 );
@@ -2555,7 +2678,7 @@ Playlist::saveXML( const QString &path )
     playlist.setAttribute( "product", "amaroK" );
 
     //increase this whenever the format changes, in PlaylistLoader::loadXml() also
-    playlist.setAttribute( "version", "2.2" );
+    playlist.setAttribute( "version", "2.3" );
     newdoc.appendChild( playlist );
 
     for( const PlaylistItem *item = firstChild(); item; item = item->nextSibling() )
@@ -2895,7 +3018,7 @@ Playlist::copyToClipboard( const QListViewItem *item ) const //SLOT
     {
         const PlaylistItem* playlistItem = static_cast<const PlaylistItem*>( item );
 
-        QString text = MetaBundle( (PlaylistItem*)playlistItem ).prettyTitle();
+        QString text = playlistItem->prettyTitle();
         // For streams add the streamtitle too
         //TODO make prettyTitle do this
         if ( playlistItem->url().protocol() == "http" )
@@ -2906,7 +3029,7 @@ Playlist::copyToClipboard( const QListViewItem *item ) const //SLOT
         QApplication::clipboard()->setText( text, QClipboard::Selection );
 
         amaroK::OSD::instance()->OSDWidget::show( i18n( "Copied: %1" ).arg( text ),
-                                 QImage(CollectionDB::instance()->albumImage(MetaBundle( (PlaylistItem*)playlistItem )) ) );
+                                 QImage(CollectionDB::instance()->albumImage(*playlistItem )) );
     }
 }
 
@@ -2934,7 +3057,7 @@ Playlist::updateMetaData( const MetaBundle &mb ) //SLOT
     for( MyIt it( this, MyIt::All ); *it; ++it )
         if( mb.url() == (*it)->url() )
         {
-            (*it)->setText( mb );
+            (*it)->copy( mb );
             setFilterForItem( m_filter, *it );
         }
 }
@@ -2960,14 +3083,14 @@ Playlist::applySettings()
 {
     if( AmarokConfig::showMoodbar() ) refreshMoods();
 
-    if( !AmarokConfig::showMoodbar() && columnWidth( PlaylistItem::Moodbar ) )
+    if( !AmarokConfig::showMoodbar() && columnWidth( PlaylistItem::Mood ) )
     {
-        AmarokConfig::setMoodbarColumnSize( columnWidth( PlaylistItem::Moodbar ) );
-        setColumnWidth( PlaylistItem::Moodbar, 0 );
+        AmarokConfig::setMoodbarColumnSize( columnWidth( PlaylistItem::Mood ) );
+        setColumnWidth( PlaylistItem::Mood, 0 );
     }
-    if( AmarokConfig::showMoodbar() && !columnWidth( PlaylistItem::Moodbar ) )
+    if( AmarokConfig::showMoodbar() && !columnWidth( PlaylistItem::Mood ) )
     {
-        setColumnWidth( PlaylistItem::Moodbar, AmarokConfig::moodbarColumnSize() );
+        setColumnWidth( PlaylistItem::Mood, AmarokConfig::moodbarColumnSize() );
     }
 }
 
@@ -3094,19 +3217,21 @@ Playlist::googleMatch( QString query, const QStringMap &defaults, const QStringM
                 bool condition; //whether it matches, not taking negation into account
 
                 static const QString
-                    Score     = PlaylistItem::columnName( PlaylistItem::Score     ).lower(),
-                    Rating    = PlaylistItem::columnName( PlaylistItem::Rating    ).lower(),
-                    Year      = PlaylistItem::columnName( PlaylistItem::Year      ).lower(),
-                    DiscNumber= PlaylistItem::columnName( PlaylistItem::DiscNumber).lower(),
-                    Track     = PlaylistItem::columnName( PlaylistItem::Track     ).lower(),
-                    Playcount = PlaylistItem::columnName( PlaylistItem::Playcount ).lower(),
-                    Length    = PlaylistItem::columnName( PlaylistItem::Length    ).lower(),
-                    Bitrate   = PlaylistItem::columnName( PlaylistItem::Bitrate   ).lower();
+                    Score      = PlaylistItem::columnName( PlaylistItem::Score      ).lower(),
+                    Rating     = PlaylistItem::columnName( PlaylistItem::Rating     ).lower(),
+                    Year       = PlaylistItem::columnName( PlaylistItem::Year       ).lower(),
+                    DiscNumber = PlaylistItem::columnName( PlaylistItem::DiscNumber ).lower(),
+                    Track      = PlaylistItem::columnName( PlaylistItem::Track      ).lower(),
+                    Playcount  = PlaylistItem::columnName( PlaylistItem::PlayCount  ).lower(),
+                    Length     = PlaylistItem::columnName( PlaylistItem::Length     ).lower(),
+                    Bitrate    = PlaylistItem::columnName( PlaylistItem::Bitrate    ).lower(),
+                    SampleRate = PlaylistItem::columnName( PlaylistItem::SampleRate ).lower();
 
                 if (q.startsWith(">"))
                 {
                     w = w.mid( 1 );
-                    if( f == Score || f == Rating || f == Year || f == DiscNumber || f == Track || f == Playcount || f == Bitrate )
+                    if( f == Score || f == Rating    || f == Year    || f == DiscNumber ||
+                        f == Track || f == Playcount || f == Bitrate || f == SampleRate )
                         condition = v.toInt() > w.toInt();
                     else if( f == Length )
                     {
@@ -3121,7 +3246,8 @@ Playlist::googleMatch( QString query, const QStringMap &defaults, const QStringM
                 else if( q.startsWith( "<" ) )
                 {
                     w = w.mid(1);
-                    if( f == Score || f == Rating || f == Year || f == DiscNumber || f == Track || f == Playcount || f == Bitrate )
+                    if( f == Score || f == Rating    || f == Year    || f == DiscNumber ||
+                        f == Track || f == Playcount || f == Bitrate || f == SampleRate )
                         condition = v.toInt() < w.toInt();
                     else if( f == Length )
                     {
@@ -3278,7 +3404,7 @@ Playlist::playCountChanged( const QString &path )
     {
         PlaylistItem *item = (PlaylistItem*)*it;
         if ( item->url().path() == path )
-            item->setPlaycount( CollectionDB::instance()->getPlayCount( path ) );
+            item->setPlayCount( CollectionDB::instance()->getPlayCount( path ) );
     }
 }
 
@@ -3624,6 +3750,8 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 /// Misc Protected Methods
 ////////////////////////////////////////////////////////////////////////////////
 
+#define CTRLorSHIFT ( ( m_stateWhenPressed & Qt::ControlButton ) || ( m_stateWhenPressed & Qt::ShiftButton ) )
+
 void
 Playlist::contentsMouseMoveEvent( QMouseEvent *e )
 {
@@ -3647,7 +3775,7 @@ Playlist::contentsMouseMoveEvent( QMouseEvent *e )
         const int rating = item->ratingAtPoint( pos.x() );
         if( rating > item->rating() )
             PlaylistToolTip::hide();
-        if( leftButtonPressed )
+        if( leftButtonPressed && !CTRLorSHIFT )
         {
             if( m_selCount > 1 && item->isSelected() )
                 for( MyIt it( this, MyIt::Visible | MyIt::Selected ); *it; ++it )
@@ -3663,8 +3791,7 @@ Playlist::contentsMouseMoveEvent( QMouseEvent *e )
 
     if( prev )
     {
-        if( ( leftButtonPressed ) &&
-           !( ( m_stateWhenPressed & Qt::ControlButton ) || ( m_stateWhenPressed & Qt::ShiftButton ) ) )
+        if( leftButtonPressed && !CTRLorSHIFT )
             resetPendingRatings( prev );
         else
         {
@@ -3691,8 +3818,7 @@ void Playlist::leaveEvent( QEvent *e )
         const bool leftButtonPressed = KApplication::mouseState() & Button1Mask;
         #endif
 
-        if( ( leftButtonPressed ) &&
-           !( ( m_stateWhenPressed & Qt::ControlButton ) || ( m_stateWhenPressed & Qt::ShiftButton ) ) )
+        if( leftButtonPressed && !CTRLorSHIFT )
             resetPendingRatings( prev );
         else
             prev->updateColumn( PlaylistItem::Rating );
@@ -3703,7 +3829,7 @@ void Playlist::contentsMousePressEvent( QMouseEvent *e )
 {
     m_stateWhenPressed = e->state();
     PlaylistItem *item = static_cast<PlaylistItem*>( itemAt( contentsToViewport( e->pos() ) ) );
-    if( !( e->state() & Qt::ControlButton || e->state() & Qt::ShiftButton ) && ( e->button() & Qt::LeftButton ) &&
+    if( !CTRLorSHIFT && ( e->button() & Qt::LeftButton ) &&
         item && e->pos().x() > header()->sectionPos( PlaylistItem::Rating ) &&
         e->pos().x() < header()->sectionPos( PlaylistItem::Rating ) + header()->sectionSize( PlaylistItem::Rating ) )
     {
@@ -3721,8 +3847,7 @@ void Playlist::contentsMousePressEvent( QMouseEvent *e )
 void Playlist::contentsMouseReleaseEvent( QMouseEvent *e )
 {
     KListView::contentsMouseReleaseEvent( e );
-    if( ( e->state() & Qt::LeftButton ) && m_hoveredRating &&
-       !( ( m_stateWhenPressed & Qt::ControlButton ) || ( m_stateWhenPressed & Qt::ShiftButton ) ) )
+    if( ( e->state() & Qt::LeftButton ) && !CTRLorSHIFT && m_hoveredRating )
     {
         const int rating = PlaylistItem::ratingAtPoint( e->pos().x() );
         if( m_selCount > 1 && m_hoveredRating->isSelected() )
@@ -3744,6 +3869,8 @@ void Playlist::resetPendingRatings( PlaylistItem *prev )
             prev->setRating( CollectionDB::instance()->getSongRating( prev->url().path() ) );
     }
 }
+
+#undef CTRLorSHIFT
 
 ////////////////////////////////////////////////////////////////////////////////
 /// Misc Private Methods
@@ -4128,8 +4255,7 @@ Playlist::showTagDialog( QPtrList<QListViewItem> items )
             //NOTE we are modal because, eg, user clears playlist while
             //this dialog is shown, then the dialog operates on the playlistitem
             //TODO not perfect as dcop clear works for instance
-            MetaBundle bundle( item );
-            TagDialog( bundle, item, instance() ).exec();
+            TagDialog( *item, item, instance() ).exec();
         }
         else
             KMessageBox::sorry( this, i18n( "This file does not exist:" ) + " " + item->url().path() );

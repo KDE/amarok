@@ -105,7 +105,7 @@ void TrackToolTip::setTrack( const MetaBundle &tags, bool force )
                     left << playlist->columnText( column );
                 }
             }
-            else if( column == PlaylistItem::Playcount )
+            else if( column == PlaylistItem::PlayCount )
             {
                 const int count = CollectionDB::instance()->getPlayCount( tags.url().path() );
                 if( count > 0 )
@@ -121,12 +121,12 @@ void TrackToolTip::setTrack( const MetaBundle &tags, bool force )
                 left << playlist->columnText( column );
             }
             else if( column == PlaylistItem::Filename && title.isEmpty() )
-                filename = tags.infoByColumn( column, true );
+                filename = tags.prettyText( column );
             else if( column == PlaylistItem::Title && filename.isEmpty() )
-                title = tags.infoByColumn( column, true );
+                title = tags.prettyText( column );
             else if( column != PlaylistItem::Length )
             {
-                const QString tag = tags.infoByColumn( column, true );
+                const QString tag = tags.prettyText( column );
                 if( !tag.isEmpty() )
                 {
                     right << tag;

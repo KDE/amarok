@@ -467,7 +467,7 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
         MyVector<QString> tags;
         tags << bundle.prettyTitle();
         for( int i = 0; i < PlaylistItem::NUM_COLUMNS; ++i )
-            tags << bundle.infoByColumn( i, true ).stripWhiteSpace();
+            tags << bundle.prettyText( i );
 
         const int score = CollectionDB::instance()->getSongPercentage( bundle.url().path() );
         if( score > 0 )
@@ -475,7 +475,7 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
         const int rating = CollectionDB::instance()->getSongRating( bundle.url().path() );
         if( rating > 0 )
             tags[PlaylistItem::Rating+1] = QString().fill( '*', rating );
-        tags[PlaylistItem::Playcount+1] = QString::number( CollectionDB::instance()
+        tags[PlaylistItem::PlayCount+1] = QString::number( CollectionDB::instance()
                                                            ->getPlayCount( bundle.url().path() ) );
         tags[PlaylistItem::LastPlayed+1] = amaroK::verboseTimeSince(
             CollectionDB::instance()->getLastPlay( bundle.url().path() ).toTime_t() );
@@ -487,7 +487,7 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
             QString tag;
             MyVector<int> availableTags; //eg, ones that aren't empty
             static const QValueList<int> parens = //display these in parentheses
-                QValueList<int>() << PlaylistItem::Playcount  << PlaylistItem::Year   << PlaylistItem::Comment
+                QValueList<int>() << PlaylistItem::PlayCount  << PlaylistItem::Year   << PlaylistItem::Comment
                                   << PlaylistItem::Genre      << PlaylistItem::Length << PlaylistItem::Bitrate
                                   << PlaylistItem::LastPlayed << PlaylistItem::Rating << PlaylistItem::Score;
 
@@ -516,10 +516,10 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
             // keep these 1:1 with the playlist's columns otherwise
             static const MyVector<QString> tokens =
                 MyVector<QString>() << "%artist - %title" << "%file"      << "%title"      << "%artist"
-                                    << "%album"           << "%year"      << "%comment"    << "%genre"
-                                    << "%track"           << "%directory" << "%length"     << "%bitrate"
-                                    << "%score"           << "%rating"    << "%type"       << "%playcount"
-                                    << "%lastplayed";
+                                    << "%composer"        << "%year"      << "%album"      << "%disc"
+                                    << "%track"           << "%genre"     << "%comment"    << "%directory"
+                                    << "%type"            << "%length"    << "%bitrate"    << "%samplerate"
+                                    << "%score"           << "%rating"    << "%playcount"  << "%lastplayed";
 
             text = AmarokConfig::osdText();
 

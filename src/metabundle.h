@@ -16,7 +16,7 @@
 #include "amarok_export.h"
 
 class KFileMetaInfo;
-class PlaylistItem;
+class QDomNode;
 template<class T> class QValueList;
 namespace TagLib {
     class File;
@@ -28,33 +28,55 @@ namespace TagLib {
  *
  * If this class doesn't work for you in some way, extend it sensibly :)
  *
- * @see class MutableBundle
  */
 
 class MetaBundle
 {
 public:
+    enum Column
+    {
+        Filename = 0,
+        Title,
+        Artist,
+        Composer,
+        Year,
+        Album,
+        DiscNumber,
+        Track,
+        Genre,
+        Comment,
+        Directory,
+        Type,
+        Length,
+        Bitrate,
+        SampleRate,
+        Score,
+        Rating,
+        PlayCount,
+        LastPlayed,
+        Mood,
+        NUM_COLUMNS
+    };
+
+    static const QString columnName( int n );
+
+    enum FileType { mp3, ogg, wma, mp4, ra, rv, rm, rmj, rmvb, other };
 
     //for the audioproperties
     static const int Undetermined = -2; /// we haven't yet read the tags
     static const int Irrelevant   = -1; /// not applicable to this stream/media type, eg length for http streams
     static const int Unavailable  =  0; /// cannot be obtained
 
-    enum FileType { mp3, ogg, wma, mp4, ra, rv, rm, rmj, rmvb, other };
+    /// Creates an empty MetaBundle
+    LIBAMAROK_EXPORT MetaBundle();
 
-    /**
-     * Creates an empty MetaBundle
-     */
-    LIBAMAROK_EXPORT MetaBundle()
-            : m_isValidMedia( false )
-    {
-        init();
-    }
+    /// Creates a MetaBundle for url, tags will be obtained and set
+    LIBAMAROK_EXPORT explicit MetaBundle( const KURL &url,
+                                          bool noCache = false,
+                                          TagLib::AudioProperties::ReadStyle = TagLib::AudioProperties::Fast );
 
-    /**
-     * Creates a MetaBundle for url, tags will be obtained and set
-     */
-    LIBAMAROK_EXPORT explicit MetaBundle( const KURL&, bool noCache = false, TagLib::AudioProperties::ReadStyle = TagLib::AudioProperties::Fast );
+    /// for loading XML playlists
+    LIBAMAROK_EXPORT MetaBundle( QDomNode node );
 
     /** For the StreamProvider */
     LIBAMAROK_EXPORT MetaBundle( const QString &title,
@@ -64,24 +86,17 @@ public:
             const QString &streamName,
             const KURL &url );
 
-    /** For PlaylistItems */
-    LIBAMAROK_EXPORT MetaBundle( const PlaylistItem *item );
-
-    bool operator==( const MetaBundle& bundle );
-    inline bool operator!=( const MetaBundle& bundle ) { return !operator==( bundle ); }
-
+    bool operator==( const MetaBundle& bundle ) const;
+    bool operator!=( const MetaBundle& bundle ) const;
 
     /** Test for an empty metabundle */
-    bool isEmpty() const { return m_url.isEmpty(); }
+    bool isEmpty() const;
 
     /** Is it media that has metadata? Note currently we don't check for an audio mimetype */
-    bool isValidMedia() const { return m_isValidMedia; }
+    bool isValidMedia() const;
 
     /** The bundle doesn't yet know its audioProperties */
-    bool audioPropertiesUndetermined() const
-    {
-        return m_bitrate == Undetermined || m_sampleRate == Undetermined || m_length == Undetermined;
-    }
+    bool audioPropertiesUndetermined() const;
 
     /** If you want Accurate reading say so */
     void readTags( TagLib::AudioProperties::ReadStyle );
@@ -90,82 +105,80 @@ public:
     bool save();
 
     /** used by PlaylistItem, should be true for everything but local files that aren't there */
-    bool exists() const { return true; }
+    bool exists() const;
 
-    int track()      const { return m_track; }
-    int year()       const { return m_year; }
-    int length()     const { return m_length > 0 ? m_length : 0; }
-    int bitrate()    const { return m_bitrate; }
-    int sampleRate() const { return m_sampleRate; }
+    bool isStream() const;
 
-    const KURL    &url()        const { return m_url; }
-          QString  filename()   const { return m_url.fileName(); }
-          QString  directory()  const { return m_url.isLocalFile() ? m_url.directory()
-                                                                   : m_url.upURL().prettyURL(); }
-    const QString &title()      const { return m_title; }
-    const QString &artist()     const { return m_artist; }
-    const QString &album()      const { return m_album; }
-    const QString &comment()    const { return m_comment; }
-    const QString &genre()      const { return m_genre; }
-    const QString &streamName() const { return m_streamName; }
-    const QString &streamUrl()  const { return m_streamUrl; }
+    int fileType() const;
+    bool hasExtendedMetaInformation() const;
 
-    int discNumber() const { return m_discNumber; }
+    void copy( const MetaBundle& bundle );
+    void setExactText(int column, const QString &text);
+    QString exactText(int column) const;
+    QString prettyText(int column) const;
 
-    const QString &composer() const { return m_composer; }
+public: //accessors
+    const KURL &url()    const;
 
-    QString type( bool detectstream = true ) const
-    {
-        return ( detectstream && m_url.protocol() == "http" )
-               ? i18n( "Stream" )
-               : filename().mid( filename().findRev( '.' ) + 1 );
-    }
+    QString title()      const;
+    QString artist()     const;
+    QString composer()   const;
+    QString album()      const;
+    QString genre()      const;
+    QString comment()    const;
+    QString filename()   const;
+    QString directory()  const;
+    QString type()       const;
+
+    int     year()       const;
+    int     discNumber() const;
+    int     track()      const;
+    int     length()     const;
+    int     bitrate()    const;
+    int     sampleRate() const;
+    int     score()      const;
+    int     rating()     const;
+    int     playCount()  const;
+    uint    lastPlay()   const;
+
+    QString streamName() const;
+    QString streamUrl()  const;
 
     QString prettyTitle() const;
     QString veryNiceTitle() const;
-    QString prettyURL() const { return m_url.prettyURL(); }
-    QString prettyBitrate() const { return prettyBitrate( m_bitrate ); }
-    QString prettyLength() const { return prettyLength( m_length, true ); }
-    QString prettySampleRate( bool shortened = false ) const
-    {
-        if ( shortened )
-            return prettyGeneric( i18n( "SampleRate", "%1 kHz" ), m_sampleRate / 1000 );
-        else
-            return prettyGeneric( i18n( "SampleRate", "%1 Hz" ), m_sampleRate );
-    }
+    QString prettyURL() const;
+    QString prettyBitrate() const;
+    QString prettyLength() const;
+    QString prettySampleRate( bool shortened = false ) const;
 
-    QString infoByColumn( int column, bool pretty = false ) const;
+public: //modifiers
+    virtual void setUrl( const KURL &url );
+    virtual void setPath( const QString &path );
+    virtual void setTitle( const QString &title );
+    virtual void setArtist( const QString &artist );
+    virtual void setComposer( const QString &composer );
+    virtual void setAlbum( const QString &album );
+    virtual void setGenre( const QString &genre );
+    virtual void setComment( const QString &comment );
 
-    // these are helpful statics, don't use these in preference
-    // to the ones above!
+    virtual void setYear( int year );
+    virtual void setDiscNumber( int discNumber );
+    virtual void setTrack( int track );
+    virtual void setLength( int length );
+    virtual void setBitrate( int bitrate );
+    virtual void setSampleRate( int sampleRate );
+    virtual void setScore( int score );
+    virtual void setRating( int rating );
+    virtual void setPlayCount( int playcount );
+    virtual void setLastPlay( uint lastplay );
+
+public: //static helper functions
     static QString prettyBitrate( int );
     static QString prettyLength( int, bool showHours = false ); //must be int, see Unavailable, etc. above
     static QString prettyTime( uint, bool showHours = true );
-    static QString zeroPad( uint i ) { return ( i < 10 ) ? QString( "0%1" ).arg( i ) : QString::number( i ); }
+    static QString zeroPad( uint i );
     static QString prettyTitle( const QString &filename );
     static QStringList genreList();
-
-public:
-    void setUrl( const KURL &url ) { m_url = url; }
-    void setPath( const QString &path ) { m_url.setPath( path ); }
-    void setTitle( const QString &title ) { m_title = title; }
-    void setArtist( const QString &artist ) { m_artist = artist; }
-    void setAlbum( const QString &album ) { m_album = album; }
-    void setComment( const QString &comment ) { m_comment = comment; }
-    void setGenre( const QString &genre ) { m_genre = genre; }
-    void setYear( int year) { m_year = year; }
-    void setTrack( int track ) { m_track = track; }
-    void setLength( int length ) { m_length = length; }
-    void setBitrate( int bitrate ) { m_bitrate = bitrate; }
-    void setSampleRate( int sampleRate ) { m_sampleRate = sampleRate; }
-
-    void setDiscNumber( int discnumber ) { m_discNumber = discnumber; }
-
-    void setComposer( const QString &composer ) { m_composer = composer; }
-
-    int fileType() { return m_type; }
-
-    bool hasExtendedMetaInformation() const { return (m_type == mp3 || m_type == ogg); }
 
 protected:
 
@@ -174,6 +187,7 @@ protected:
     KURL m_url;
     QString m_title;
     QString m_artist;
+    QString m_composer;
     QString m_album;
     QString m_comment;
     QString m_genre;
@@ -181,19 +195,27 @@ protected:
     QString m_streamUrl;
 
     int m_year;
+    int m_discNumber;
     int m_track;
     int m_bitrate;
     int m_length;
     int m_sampleRate;
 
-    int m_discNumber;
-    QString m_composer;
+    int  m_score;
+    int  m_rating;
+    int  m_playCount;
+    uint m_lastPlay;
 
-private:
     bool m_exists;
     bool m_isValidMedia;
 
     int m_type;
+
+    static const uint STRING_STORE_SIZE = 80;
+    static QString stringStore[STRING_STORE_SIZE];
+    static const QString& attemptStore( const QString &candidate);
+
+private:
 
     static inline QString prettyGeneric( const QString &s, const int i )
     {
@@ -208,8 +230,91 @@ private:
     void setExtendedTag( TagLib::File *file, int tag, const QString value );
 };
 
-
 /// for your convenience
 typedef QValueList<MetaBundle> BundleList;
 
+
+
+inline bool MetaBundle::operator!=(const MetaBundle &bundle) const { return !operator==( bundle ); }
+
+inline bool MetaBundle::isEmpty() const { return m_url.isEmpty(); }
+
+inline bool MetaBundle::isValidMedia() const { return m_isValidMedia; }
+
+inline bool MetaBundle::audioPropertiesUndetermined() const
+{
+    return m_bitrate == Undetermined || m_sampleRate == Undetermined || m_length == Undetermined;
+}
+
+inline bool MetaBundle::exists() const { return m_exists; }
+
+inline bool MetaBundle::isStream() const { return url().protocol() == "http"; }
+
+inline int MetaBundle::track()      const { return m_track == Undetermined ? 0 : m_track; }
+inline int MetaBundle::year()       const { return m_year  == Undetermined ? 0 : m_year; }
+inline int MetaBundle::length()     const { return m_length > 0 ? m_length : 0; }
+inline int MetaBundle::bitrate()    const { return m_bitrate == Undetermined ? 0 : m_bitrate; }
+inline int MetaBundle::sampleRate() const { return m_sampleRate == Undetermined ? 0 : m_sampleRate; }
+
+inline const KURL    &MetaBundle::url()        const { return m_url; }
+inline QString  MetaBundle::filename()   const { return m_url.fileName(); }
+inline QString  MetaBundle::directory()  const
+{
+    return m_url.isLocalFile() ? m_url.directory() : m_url.upURL().prettyURL();
+}
+inline QString MetaBundle::title()      const { return m_title; }
+inline QString MetaBundle::artist()     const { return m_artist; }
+inline QString MetaBundle::album()      const { return m_album; }
+inline QString MetaBundle::comment()    const { return m_comment; }
+inline QString MetaBundle::genre()      const { return m_genre; }
+inline QString MetaBundle::streamName() const { return m_streamName; }
+inline QString MetaBundle::streamUrl()  const { return m_streamUrl; }
+
+inline int MetaBundle::discNumber() const { return m_discNumber == Undetermined ? 0 : m_discNumber; }
+
+inline QString MetaBundle::composer() const { return m_composer; }
+
+inline QString MetaBundle::type() const
+{
+    return isStream()
+           ? i18n( "Stream" )
+           : filename().mid( filename().findRev( '.' ) + 1 );
+}
+
+inline QString MetaBundle::prettyURL() const { return m_url.prettyURL(); }
+inline QString MetaBundle::prettyBitrate() const { return prettyBitrate( m_bitrate ); }
+inline QString MetaBundle::prettyLength() const { return prettyLength( m_length, true ); }
+inline QString MetaBundle::prettySampleRate( bool shortened ) const
+    {
+        if ( shortened )
+            return prettyGeneric( i18n( "SampleRate", "%1 kHz" ), m_sampleRate / 1000 );
+        else
+            return prettyGeneric( i18n( "SampleRate", "%1 Hz" ), m_sampleRate );
+    }
+
+inline QString MetaBundle::zeroPad( uint i ) { return ( i < 10 ) ? QString( "0%1" ).arg( i ) : QString::number( i ); }
+
+inline void MetaBundle::setUrl( const KURL &url ) { m_url = url; }
+inline void MetaBundle::setPath( const QString &path ) { m_url.setPath( path ); }
+inline void MetaBundle::setTitle( const QString &title ) { m_title = title; }
+inline void MetaBundle::setArtist( const QString &artist ) { m_artist = attemptStore( artist ); }
+inline void MetaBundle::setAlbum( const QString &album ) { m_album = attemptStore( album ); }
+inline void MetaBundle::setComment( const QString &comment ) { m_comment = comment; }
+inline void MetaBundle::setGenre( const QString &genre ) { m_genre = attemptStore( genre ); }
+inline void MetaBundle::setYear( int year) { m_year = year; }
+inline void MetaBundle::setTrack( int track ) { m_track = track; }
+inline void MetaBundle::setLength( int length ) { m_length = length; }
+inline void MetaBundle::setBitrate( int bitrate ) { m_bitrate = bitrate; }
+inline void MetaBundle::setSampleRate( int sampleRate ) { m_sampleRate = sampleRate; }
+
+inline void MetaBundle::setDiscNumber( int discnumber ) { m_discNumber = discnumber; }
+inline void MetaBundle::setComposer( const QString &composer ) { m_composer = attemptStore( composer ); }
+
+inline void MetaBundle::setPlayCount( int playcount ) { m_playCount = playcount; }
+inline void MetaBundle::setLastPlay( uint lastplay ) { m_lastPlay = lastplay; }
+inline void MetaBundle::setRating( int rating ) { m_rating = rating; }
+inline void MetaBundle::setScore( int score ) { m_score = score; }
+
+inline int  MetaBundle::fileType() const { return m_type; }
+inline bool MetaBundle::hasExtendedMetaInformation() const { return (m_type == mp3 || m_type == ogg); }
 #endif

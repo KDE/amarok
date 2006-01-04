@@ -133,6 +133,10 @@ class Playlist : private KListView, public EngineObserver
         void lock();
         void unlock();
 
+        //reimplemented to save columns by name instead of index, to be more resilient to reorderings and such
+        void saveLayout(KConfig *config, const QString &group) const;
+        void restoreLayout(KConfig *config, const QString &group);
+
         enum RequestType { Prev = -1, Current = 0, Next = 1 };
         enum StopAfterMode { DoNotStop, StopAfterCurrent, StopAfterQueue, StopAfterOther };
 

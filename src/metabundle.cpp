@@ -5,11 +5,12 @@
 
 #define DEBUG_PREFIX "MetaBundle"
 
+#include "amarok.h"
+#include "debug.h"
 #include "collectiondb.h"
 #include <kfilemetainfo.h>
 #include <kmimetype.h>
-#include "metabundle.h"
-#include "playlistitem.h"
+#include <qdom.h>
 #include <qfile.h> //decodePath()
 #include <taglib/fileref.h>
 #include <taglib/id3v1genres.h> //used to load genre list
@@ -26,20 +27,97 @@
 #include <taglib/xiphcomment.h>
 #include <taglib/tbytevector.h>
 
+#include "metabundle.h"
+
+QString MetaBundle::stringStore[STRING_STORE_SIZE];
+
+//if this works, it's because QString is implicitly shared
+const QString &MetaBundle::attemptStore( const QString &candidate ) //static
+{
+    //principal is to cause collisions at reasonable rate to reduce memory
+    //consumption while not using such a big store that it is mostly filled with empty QStrings
+    //because collisions are so rare
+
+    if( candidate.isEmpty() ) return candidate; //nothing to try to share
+
+    const uchar hash = candidate[0].unicode() % STRING_STORE_SIZE;
+
+
+    if( stringStore[hash] != candidate ) //then replace
+    {
+        stringStore[hash] = candidate;
+    }
+
+    return stringStore[hash];
+}
+
+/// These are untranslated and used for storing/retrieving XML playlist
+const QString MetaBundle::columnName( int c ) //static
+{
+    switch( c ) {
+        case Filename:   return "Filename";
+        case Title:      return "Title";
+        case Artist:     return "Artist";
+        case Composer:   return "Composer";
+        case Year:       return "Year";
+        case Album:      return "Album";
+        case DiscNumber: return "DiscNumber";
+        case Track:      return "Track";
+        case Genre:      return "Genre";
+        case Comment:    return "Comment";
+        case Directory:  return "Directory";
+        case Type:       return "Type";
+        case Length:     return "Length";
+        case Bitrate:    return "Bitrate";
+        case SampleRate: return "SampleRate";
+        case Score:      return "Score";
+        case Rating:     return "Rating";
+        case PlayCount:  return "PlayCount";
+        case LastPlayed: return "LastPlayed";
+        case Mood:       return "Mood";
+    }
+    return "<ERROR>";
+}
+
+MetaBundle::MetaBundle()
+        : m_year( Undetermined )
+        , m_discNumber( Undetermined )
+        , m_track( Undetermined )
+        , m_bitrate( Undetermined )
+        , m_length( Undetermined )
+        , m_sampleRate( Undetermined )
+        , m_score( Undetermined )
+        , m_rating( Undetermined )
+        , m_playCount( Undetermined )
+        , m_lastPlay( abs( Undetermined ) )
+        , m_exists( true )
+        , m_isValidMedia( true )
+        , m_type( Undetermined )
+{
+    init();
+}
 
 MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::ReadStyle readStyle )
     : m_url( url )
-    , m_year( 0 )
-    , m_track( 0 )
-    , m_discNumber( 0 )
+    , m_year( Undetermined )
+    , m_discNumber( Undetermined )
+    , m_track( Undetermined )
+    , m_bitrate( Undetermined )
+    , m_length( Undetermined )
+    , m_sampleRate( Undetermined )
+    , m_score( Undetermined )
+    , m_rating( Undetermined )
+    , m_playCount( Undetermined )
+    , m_lastPlay( abs( Undetermined ) )
     , m_exists( url.protocol() == "file" && QFile::exists( url.path() ) )
     , m_isValidMedia( false ) //will be updated
+    , m_type( Undetermined )
 {
     if ( m_exists ) {
         if ( !noCache )
             m_isValidMedia = CollectionDB::instance()->bundleForUrl( this );
 
-        if ( !m_isValidMedia || length() <= 0 )
+        if ( !m_isValidMedia || m_length <= 0 )
             readTags( readStyle );
     }
     else
@@ -58,13 +136,18 @@ MetaBundle::MetaBundle( const QString& title,
         , m_streamName( streamName )
         , m_streamUrl ( streamUrl )
         , m_year( 0 )
-        , m_track( 0 )
-        , m_bitrate   ( bitrate )
-        , m_length    ( Irrelevant )
-        , m_sampleRate( Unavailable )
         , m_discNumber( 0 )
+        , m_track( 0 )
+        , m_bitrate( bitrate )
+        , m_length( Irrelevant )
+        , m_sampleRate( Unavailable )
+        , m_score( Undetermined )
+        , m_rating( Undetermined )
+        , m_playCount( Undetermined )
+        , m_lastPlay( abs( Undetermined ) )
         , m_exists( true )
         , m_isValidMedia( true )
+        , m_type( Undetermined )
 {
    if( title.contains( '-' ) ) {
        m_title  = title.section( '-', 1, 1 ).stripWhiteSpace();
@@ -76,47 +159,61 @@ MetaBundle::MetaBundle( const QString& title,
    }
 }
 
-///PlaylistItem ctor
-/// NOT THREAD-SAFE!!
-MetaBundle::MetaBundle( const PlaylistItem *item )
-        : m_url    ( item->url() )
-        , m_title  ( item->title() )
-        , m_artist ( item->artist() )
-        , m_album  ( item->album() )
-        , m_comment( item->comment() )
-        , m_genre  ( item->genre() )
-        , m_year   ( item->year() )
-        , m_track  ( item->track() )
-        , m_discNumber( 0 )
-        , m_exists ( true ) //FIXME
-        , m_isValidMedia( true )
+MetaBundle::MetaBundle( QDomNode node )
+    : m_year( Undetermined )
+    , m_discNumber( Undetermined )
+    , m_track( Undetermined )
+    , m_bitrate( Undetermined )
+    , m_length( Undetermined )
+    , m_sampleRate( Undetermined )
+    , m_score( Undetermined )
+    , m_rating( Undetermined )
+    , m_playCount( Undetermined )
+    , m_lastPlay( abs( Undetermined ) )
+    , m_exists( false )
+    , m_isValidMedia( true )
+    , m_type( Undetermined )
 {
-    if( m_url.protocol() == "file" )
-        readTags( TagLib::AudioProperties::Accurate );
+    setUrl( node.toElement().attribute( "url" ) );
+    m_exists = isStream() || ( url().protocol() == "file" && QFile::exists( url().path() ) );
 
-    else {
-        // is a stream
-        //FIXME not correct handling, say is ftp://file
-        m_bitrate    = item->bitrate();
-        m_sampleRate = Undetermined;
-        m_length     = Irrelevant;
-    }
+    for( uint i = 1, n = NUM_COLUMNS; i < n; ++i )
+        switch( i )
+        {
+            case Artist:
+            case Composer:
+            case Year:
+            case Album:
+            case DiscNumber:
+            case Track:
+            case Title:
+            case Genre:
+            case Comment:
+            case Length:
+            case Bitrate:
+                setExactText( i, node.namedItem( columnName( i ) ).toElement().text() );
+                continue;
+
+            default:
+                continue;
+        }
 }
 
 bool
-MetaBundle::operator==( const MetaBundle& bundle )
+MetaBundle::operator==( const MetaBundle& bundle ) const
 {
-    return m_artist     == bundle.artist() &&
-           m_title      == bundle.title() &&
-           m_composer   == bundle.composer() &&
-           m_album      == bundle.album() &&
-           m_year       == bundle.year() &&
-           m_comment    == bundle.comment() &&
-           m_genre      == bundle.genre() &&
-           m_track      == bundle.track() &&
-           m_discNumber == bundle.discNumber() &&
-           m_bitrate    == bundle.bitrate() &&
-           m_sampleRate == bundle.sampleRate();
+    return artist()     == bundle.artist() &&
+           title()      == bundle.title() &&
+           composer()   == bundle.composer() &&
+           album()      == bundle.album() &&
+           year()       == bundle.year() &&
+           comment()    == bundle.comment() &&
+           genre()      == bundle.genre() &&
+           track()      == bundle.track() &&
+           discNumber() == bundle.discNumber() &&
+           length()     == bundle.length() &&
+           bitrate()    == bundle.bitrate() &&
+           sampleRate() == bundle.sampleRate();
 }
 
 void
@@ -172,10 +269,10 @@ MetaBundle::init( const KFileMetaInfo& info )
 void
 MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
 {
-    if( m_url.protocol() != "file" )
+    if( url().protocol() != "file" )
         return;
 
-    const QString path = m_url.path();
+    const QString path = url().path();
     TagLib::FileRef fileref;
     TagLib::Tag *tag = 0;
 
@@ -187,13 +284,13 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
 
         if ( tag ) {
             #define strip( x ) TStringToQString( x ).stripWhiteSpace()
-            m_title   = strip( tag->title() );
-            m_artist  = strip( tag->artist() );
-            m_album   = strip( tag->album() );
-            m_comment = strip( tag->comment() );
-            m_genre   = strip( tag->genre() );
-            m_year    = tag->year();
-            m_track   = tag->track();
+            setTitle( strip( tag->title() ) );
+            setArtist( strip( tag->artist() ) );
+            setAlbum( strip( tag->album() ) );
+            setComment( strip( tag->comment() ) );
+            setGenre( strip( tag->genre() ) );
+            setYear( tag->year() );
+            setTrack( tag->track() );
             #undef strip
 
             m_isValidMedia = true;
@@ -212,7 +309,7 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
                     disc = TStringToQString( file->ID3v2Tag()->frameListMap()["TPOS"].front()->toString() ).stripWhiteSpace();
                 }
                 if ( !file->ID3v2Tag()->frameListMap()["TCOM"].isEmpty() ) {
-                    m_composer = TStringToQString( file->ID3v2Tag()->frameListMap()["TCOM"].front()->toString() ).stripWhiteSpace();
+                    setComposer( TStringToQString( file->ID3v2Tag()->frameListMap()["TCOM"].front()->toString() ).stripWhiteSpace() );
                 }
             }
         }
@@ -220,7 +317,7 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
             m_type = ogg;
             if ( file->tag() ) {
                 if ( !file->tag()->fieldListMap()[ "COMPOSER" ].isEmpty() ) {
-                    m_composer = TStringToQString( file->tag()->fieldListMap()["COMPOSER"].front() ).stripWhiteSpace();
+                    setComposer( TStringToQString( file->tag()->fieldListMap()["COMPOSER"].front() ).stripWhiteSpace() );
                 }
                 if ( !file->tag()->fieldListMap()[ "DISCNUMBER" ].isEmpty() ) {
                     disc = TStringToQString( file->tag()->fieldListMap()["DISCNUMBER"].front() ).stripWhiteSpace();
@@ -233,11 +330,11 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
         if ( !disc.isEmpty() ) {
             int i = disc.find ('/');
             if ( i != -1 ) {
-                m_discNumber = disc.left( i ).toInt();
+                setDiscNumber( disc.left( i ).toInt() );
                 // disc.right( i ).toInt() is total number of discs, we don't use this at the moment
             }
             else {
-                m_discNumber = disc.toInt();
+                setDiscNumber( disc.toInt() );
             }
         }
 
@@ -249,10 +346,145 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
     //    init( KFileMetaInfo( m_url, QString::null, KFileMetaInfo::Everything ) );
 }
 
+int MetaBundle::score() const
+{
+    if( m_score == Undetermined )
+        //const_cast is ugly, but other option was mutable, and then we lose const correctness checking
+        //everywhere else
+        *const_cast<int*>(&m_score) = CollectionDB::instance()->getSongPercentage( m_url.path() );
+    return m_score;
+}
+
+int MetaBundle::rating() const
+{
+    if( m_rating == Undetermined )
+        *const_cast<int*>(&m_rating) = CollectionDB::instance()->getSongRating( m_url.path() );
+    return m_rating;
+}
+
+int MetaBundle::playCount() const
+{
+    if( m_playCount == Undetermined )
+        *const_cast<int*>(&m_playCount) = CollectionDB::instance()->getPlayCount( m_url.path() );
+    return m_playCount;
+}
+
+uint MetaBundle::lastPlay() const
+{
+    if( m_lastPlay == abs(Undetermined) )
+        *const_cast<uint*>(&m_lastPlay) = CollectionDB::instance()->getLastPlay( m_url.path() ).toTime_t();
+    return m_lastPlay;
+}
+
+void MetaBundle::copy( const MetaBundle &bundle )
+{
+    setTitle( bundle.title() );
+    setArtist( bundle.artist() );
+    setComposer( bundle.composer() );
+    setAlbum( bundle.album() );
+    setYear( bundle.year() );
+    setDiscNumber( bundle.discNumber() );
+    setComment( bundle.comment() );
+    setGenre( bundle.genre() );
+    setTrack( bundle.track() );
+    setLength( bundle.length() );
+    setBitrate( bundle.bitrate() );
+    setSampleRate( bundle.sampleRate() );
+    setScore( bundle.score() );
+    setRating( bundle.rating() );
+    setPlayCount( bundle.playCount() );
+    setLastPlay( bundle.lastPlay() );
+}
+
+void MetaBundle::setExactText( int column, const QString &newText )
+{
+    switch( column )
+    {
+        case Title:      setTitle(      newText );         break;
+        case Artist:     setArtist(     newText );         break;
+        case Composer:   setComposer(   newText );         break;
+        case Year:       setYear(       newText.toInt() ); break;
+        case Album:      setAlbum(      newText );         break;
+        case DiscNumber: setDiscNumber( newText.toInt() ); break;
+        case Track:      setTrack(      newText.toInt() ); break;
+        case Genre:      setGenre(      newText );         break;
+        case Comment:    setComment(    newText );         break;
+        case Length:     setLength(     newText.toInt() ); break;
+        case Bitrate:    setBitrate(    newText.toInt() ); break;
+        case SampleRate: setSampleRate( newText.toInt() ); break;
+        case Score:      setScore(      newText.toInt() ); break;
+        case Rating:     setRating(     newText.toInt() ); break;
+        case PlayCount:  setPlayCount(  newText.toInt() ); break;
+        case LastPlayed: setLastPlay(   newText.toInt() ); break;
+        default: warning() << "Tried to set the text of an immutable or nonexistent column! [" << column << endl;
+   }
+}
+
+QString MetaBundle::exactText( int column ) const
+{
+    switch( column )
+    {
+        case Filename:   return filename();
+        case Title:      return title();
+        case Artist:     return artist();
+        case Composer:   return composer();
+        case Year:       return QString::number( year() );
+        case Album:      return album();
+        case DiscNumber: return QString::number( discNumber() );
+        case Track:      return QString::number( track() );
+        case Genre:      return genre();
+        case Comment:    return comment();
+        case Directory:  return directory();
+        case Type:       return type();
+        case Length:     return QString::number( length() );
+        case Bitrate:    return QString::number( bitrate() );
+        case SampleRate: return QString::number( sampleRate() );
+        case Score:      return QString::number( score() );
+        case Rating:     return QString::number( rating() );
+        case PlayCount:  return QString::number( playCount() );
+        case LastPlayed: return QString::number( lastPlay() );
+        case Mood:       return QString::null;
+        default: warning() << "Tried to get the text of a nonexistent column! [" << column << endl;
+    }
+
+    return QString::null; //shouldn't happen
+}
+
+QString MetaBundle::prettyText( int column ) const
+{
+    QString text;
+    switch( column )
+    {
+        case Filename:   text = isStream() ? url().prettyURL() : filename();                         break;
+        case Title:      text = title().isEmpty() ? MetaBundle::prettyTitle( filename() ) : title(); break;
+        case Artist:     text = artist();                                                            break;
+        case Composer:   text = composer();                                                          break;
+        case Year:       text = year() ? QString::number( year() ) : QString::null;                  break;
+        case Album:      text = album();                                                             break;
+        case DiscNumber: text = discNumber() ? QString::number( discNumber() ) : QString::null;      break;
+        case Track:      text = track() ? QString::number( track() ) : QString::null;                break;
+        case Genre:      text = genre();                                                             break;
+        case Comment:    text = comment();                                                           break;
+        case Directory:  text = url().isEmpty() ? QString() : directory();                           break;
+        case Type:       text = url().isEmpty() ? QString() : type();                                break;
+        case Length:     text = prettyLength( length(), true );                                      break;
+        case Bitrate:    text = prettyBitrate( bitrate() );                                          break;
+        case SampleRate: text = prettySampleRate();                                                  break;
+        case Score:      text = QString::number( score() );                                          break;
+        case Rating:     text = rating() ? QString::number( rating() ) : QString::null;              break;
+        case PlayCount:  text = QString::number( playCount() );                                      break;
+        case LastPlayed: text = amaroK::verboseTimeSince( lastPlay() );                              break;
+        case Mood:       text = QString::null;                                                       break;
+        default: warning() << "Tried to get the text of a nonexistent column!" << endl;              break;
+    }
+
+    return text.stripWhiteSpace();
+}
+
 QString
 MetaBundle::prettyTitle() const
 {
-    QString s = m_artist;
+    QString s = artist();
 
     //NOTE this gets regressed often, please be careful!
     //     whatever you do, handle the stream case, streams have no artist but have an excellent title
@@ -260,8 +492,8 @@ MetaBundle::prettyTitle() const
     //FIXME doesn't work for resume playback
 
     if( !s.isEmpty() ) s += i18n(" - ");
-    s += m_title;
-    if( s.isEmpty() ) s = prettyTitle( m_url.fileName() );
+    s += title();
+    if( s.isEmpty() ) s = prettyTitle( filename() );
     return s;
 }
 
@@ -271,41 +503,18 @@ MetaBundle::veryNiceTitle() const
     QString s;
     //NOTE I'm not sure, but the notes and FIXME's in the prettyTitle function should be fixed now.
     //     If not then they do apply to this function also!
-    if( !m_title.isEmpty() )
+    if( title().isEmpty() )
     {
-        if( !m_artist.isEmpty() )
-            s = i18n( "%1 by %2" ).arg( m_title ).arg( m_artist );
+        if( !artist().isEmpty() )
+            s = i18n( "%1 by %2" ).arg( title() ).arg( artist() );
         else
-            s = m_title;
+            s = title();
     }
     else
     {
-        s = prettyTitle( m_url.fileName() );
+        s = prettyTitle( filename() );
     }
     return s;
-}
-
-QString
-MetaBundle::infoByColumn( int column, bool pretty ) const
-{
-    switch( column )
-    {
-        case PlaylistItem::Filename:  return filename();
-        case PlaylistItem::Title:     return title();
-        case PlaylistItem::Artist:    return artist();
-        case PlaylistItem::Composer:  return composer();
-        case PlaylistItem::DiscNumber:return ( pretty && !discNumber() ) ? QString() : QString::number( discNumber() );
-        case PlaylistItem::Album:     return album();
-        case PlaylistItem::Year:      return ( pretty && !year() ) ? QString() : QString::number( year() );
-        case PlaylistItem::Comment:   return comment();
-        case PlaylistItem::Genre:     return genre();
-        case PlaylistItem::Track:     return ( pretty && !track() ) ? QString() : QString::number( track() );
-        case PlaylistItem::Directory: return directory();
-        case PlaylistItem::Length:    return pretty ? prettyLength() : QString::number( length() );
-        case PlaylistItem::Bitrate:   return pretty ? prettyBitrate() : QString::number( bitrate() );
-        case PlaylistItem::Type:      return type( pretty );
-    }
-    return QString::null;
 }
 
 QString
@@ -426,23 +635,23 @@ MetaBundle::save() {
     //Set default codec to UTF-8 (see bugs 111246 and 111232)
     TagLib::ID3v2::FrameFactory::instance()->setDefaultTextEncoding(TagLib::String::UTF8);
 
-    QCString path = QFile::encodeName( m_url.path() );
+    QCString path = QFile::encodeName( url().path() );
     TagLib::FileRef f( path, false );
 
     if ( !f.isNull() )
     {
         TagLib::Tag * t = f.tag();
-        t->setTitle( QStringToTString( m_title ) );
-        t->setArtist( QStringToTString( m_artist ) );
-        t->setAlbum( QStringToTString( m_album ) );
-        t->setTrack( m_track );
-        t->setYear( m_year );
-        t->setComment( QStringToTString( m_comment ) );
-        t->setGenre( QStringToTString( m_genre ) );
+        t->setTitle( QStringToTString( title() ) );
+        t->setArtist( QStringToTString( artist() ) );
+        t->setAlbum( QStringToTString( album() ) );
+        t->setTrack( track() );
+        t->setYear( year() );
+        t->setComment( QStringToTString( comment() ) );
+        t->setGenre( QStringToTString( genre() ) );
 
         if ( hasExtendedMetaInformation() ) {
-            setExtendedTag( f.file(), composerTag, m_composer );
-            setExtendedTag( f.file(), discNumberTag, m_discNumber ? QString::number( m_discNumber ) : QString() );
+            setExtendedTag( f.file(), composerTag, composer() );
+            setExtendedTag( f.file(), discNumberTag, discNumber() ? QString::number( discNumber() ) : QString() );
         }
         return f.save();
     }
