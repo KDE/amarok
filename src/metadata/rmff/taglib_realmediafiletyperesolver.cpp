@@ -32,7 +32,8 @@ TagLib::File *RealMediaFileTypeResolver::createFile(const char *fileName,
                                                     TagLib::AudioProperties::ReadStyle propertiesStyle) const
 {
    const char *ext = strrchr(fileName, '.');
-   if(ext && (!strcasecmp(ext, ".ra") || !strcasecmp(ext, ".rv") || !strcasecmp(ext, ".rm")))
+   if(ext && (!strcasecmp(ext, ".ra") || !strcasecmp(ext, ".rv") || !strcasecmp(ext, ".rm") || 
+         !strcasecmp(ext, ".rmj") || !strcasecmp(ext, ".rmvb") ))
    {
       TagLib::RealMedia::File *f = new TagLib::RealMedia::File(fileName, readProperties, propertiesStyle);
       if(f->isValid())
