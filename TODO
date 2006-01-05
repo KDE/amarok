@@ -17,9 +17,6 @@ SHORT-TERM (URGENT):
            in each of those nodes, we should add the sql to the drag and allow the playlist loader
            to do the work for us (which is threaded).
 
- <markey>  In the ScriptManager, we currently use a red "STOP" kinda icon for inactive scripts.
-           This looks like a warning or error. Try to find a better one, perhaps a custom icon.
-
  <markey>  The analyzer now uses crazy amounts of CPU when amaroK is idle, even if the window
            is not visible.
 
