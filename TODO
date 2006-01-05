@@ -6,6 +6,11 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+ <sebr>    We need to compile a list of new CSS tags for the context browser themes, and email the
+           theme authors well in advance of 1.4 release to let them know so they can update.
+           ::CSS-Elements::
+            .disc-separator
+
  <sebr>    Mediabrowser is larger than the smallest limit.  Its b/c of the disconnect button.  This
            show be changed back or just change the text of the connect button.
 
