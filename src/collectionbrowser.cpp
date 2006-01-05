@@ -1568,7 +1568,7 @@ CollectionView::organizeFiles( const KURL::List &urls, bool addToCollection )  /
                 dest += artist.upper()[ 0 ] + "/";      // Group artists i.e. A/Artist/Album
 
             if( isCompilation )
-                dest += i18n("Compilations") + "/" + album + "/" + title + "." + type;
+                dest += i18n("Various Artists") + "/" + album + "/" + title + "." + type;
             else
                 dest += artist + "/" + album + "/" + title + "." + type;
 
