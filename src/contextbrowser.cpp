@@ -2240,6 +2240,19 @@ ContextBrowser::wikiConfigChanged( int /*activeItem*/ ) // SLOT
 }
 
 void
+ContextBrowser::wikiConfigApply() // SLOT
+{
+    const bool changed = m_wikiLocaleEdit->text() != wikiLocale();
+    setWikiLocale( m_wikiLocaleEdit->text() );
+
+    if ( changed && currentPage() == m_wikiTab && !m_wikiCurrentEntry.isNull() )
+    {
+        m_dirtyWikiPage = true;
+        showWikipediaEntry( m_wikiCurrentEntry );
+    }
+}
+
+void
 ContextBrowser::wikiConfig() // SLOT
 {
     QStringList localeList;
@@ -2269,9 +2282,9 @@ ContextBrowser::wikiConfig() // SLOT
     else // other
         index = 6;
 
-    m_wikiConfigDialog = new KDialogBase( this, 0, true, 0, KDialogBase::Ok|KDialogBase::Cancel );
+    m_wikiConfigDialog = new KDialogBase( this, 0, true, 0, KDialogBase::Ok|KDialogBase::Apply|KDialogBase::Cancel );
     kapp->setTopWidget( m_wikiConfigDialog );
-    m_wikiConfigDialog->setCaption( kapp->makeStdCaption( i18n( "Set Wikipedia Locale" ) ) );
+    m_wikiConfigDialog->setCaption( kapp->makeStdCaption( i18n( "Wikipedia Locale" ) ) );
     QVBox *box = m_wikiConfigDialog->makeVBoxMainWidget();
 
     m_wikiLocaleCombo = new QComboBox( box );
@@ -2285,6 +2298,7 @@ ContextBrowser::wikiConfig() // SLOT
     QToolTip::add( m_wikiLocaleEdit, i18n( "2-letter language code for your Wikipedia locale" ) );
 
     connect( m_wikiLocaleCombo,  SIGNAL( activated(int) ), SLOT( wikiConfigChanged(int) ) );
+    connect( m_wikiConfigDialog, SIGNAL( applyClicked() ), SLOT( wikiConfigApply() ) );
 
     m_wikiLocaleEdit->setText( wikiLocale() );
     m_wikiLocaleCombo->setCurrentItem( index );
@@ -2294,17 +2308,8 @@ ContextBrowser::wikiConfig() // SLOT
     const int result = m_wikiConfigDialog->exec();
 
 
-    if( result == QDialog::Accepted ) {
-        const bool changed = m_wikiLocaleEdit->text() != wikiLocale();
-        setWikiLocale( m_wikiLocaleEdit->text() );
-
-        if ( changed && currentPage() == m_wikiTab ) {
-            if( !m_wikiCurrentEntry.isNull() ) {
-                m_dirtyWikiPage = true;
-                showWikipediaEntry( m_wikiCurrentEntry );
-            }
-        }
-    }
+    if( result == QDialog::Accepted )
+        wikiConfigApply();
 
     delete m_wikiConfigDialog;
 }
