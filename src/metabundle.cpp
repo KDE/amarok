@@ -371,7 +371,7 @@ int MetaBundle::playCount() const
 
 uint MetaBundle::lastPlay() const
 {
-    if( m_lastPlay == abs(Undetermined) )
+    if( (int)m_lastPlay == abs(Undetermined) )
         *const_cast<uint*>(&m_lastPlay) = CollectionDB::instance()->getLastPlay( m_url.path() ).toTime_t();
     return m_lastPlay;
 }
@@ -503,7 +503,7 @@ MetaBundle::veryNiceTitle() const
     QString s;
     //NOTE I'm not sure, but the notes and FIXME's in the prettyTitle function should be fixed now.
     //     If not then they do apply to this function also!
-    if( title().isEmpty() )
+    if( !title().isEmpty() )
     {
         if( !artist().isEmpty() )
             s = i18n( "%1 by %2" ).arg( title() ).arg( artist() );
@@ -591,40 +591,42 @@ MetaBundle::setExtendedTag( TagLib::File *file, int tag, const QString value ) {
     TagLib::MPEG::File *mpegFile;
     TagLib::Ogg::Vorbis::File *oggFile;
 
-    switch ( m_type ) {
+    switch ( m_type )
+    {
         case mp3:
             switch( tag ) {
                 case ( composerTag ): id = "TCOM"; break;
                 case ( discNumberTag ): id = "TPOS"; break;
             }
-            if ( mpegFile = dynamic_cast<TagLib::MPEG::File *>( file ) ) {
-                if ( mpegFile->ID3v2Tag() ) {
-                    if ( value.isEmpty() )
-                        mpegFile->ID3v2Tag()->removeFrames( id );
+            mpegFile = dynamic_cast<TagLib::MPEG::File *>( file );
+            if ( mpegFile && mpegFile->ID3v2Tag() )
+            {
+                if ( value.isEmpty() )
+                    mpegFile->ID3v2Tag()->removeFrames( id );
+                else
+                {
+                    if( !mpegFile->ID3v2Tag()->frameListMap()[id].isEmpty() )
+                        mpegFile->ID3v2Tag()->frameListMap()[id].front()->setText( QStringToTString( value ) );
                     else {
-                        if( !mpegFile->ID3v2Tag()->frameListMap()[id].isEmpty() )
-                            mpegFile->ID3v2Tag()->frameListMap()[id].front()->setText( QStringToTString( value ) );
-                        else {
-                            TagLib::ID3v2::TextIdentificationFrame *frame = new TagLib::ID3v2::TextIdentificationFrame( id, TagLib::ID3v2::FrameFactory::instance()->defaultTextEncoding() );
-                            frame->setText( QStringToTString( value ) );
-                            mpegFile->ID3v2Tag()->addFrame( frame );
-                        }
+                        TagLib::ID3v2::TextIdentificationFrame *frame = new TagLib::ID3v2::TextIdentificationFrame( id, TagLib::ID3v2::FrameFactory::instance()->defaultTextEncoding() );
+                        frame->setText( QStringToTString( value ) );
+                        mpegFile->ID3v2Tag()->addFrame( frame );
                     }
                 }
             }
             break;
+
         case ogg:
             switch( tag ) {
                 case ( composerTag ): id = "COMPOSER"; break;
                 case ( discNumberTag ): id = "DISCNUMBER"; break;
             }
-           if ( oggFile = dynamic_cast<TagLib::Ogg::Vorbis::File *>( file ) ) {
-                if ( oggFile->tag() ) {
-                    if ( value.isEmpty() )
-                        oggFile->tag()->removeField( id );
-                    else
-                        oggFile->tag()->addField( id, QStringToTString( value ), true );
-                }
+            oggFile = dynamic_cast<TagLib::Ogg::Vorbis::File *>( file );
+            if ( oggFile && oggFile->tag() )
+            {
+                value.isEmpty() ?
+                    oggFile->tag()->removeField( id ):
+                    oggFile->tag()->addField( id, QStringToTString( value ), true );
             }
             break;
     }

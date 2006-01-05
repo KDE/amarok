@@ -1571,10 +1571,10 @@ CollectionView::organizeFiles( const KURL::List &urls, bool addToCollection )  /
                 dest += i18n("Various Artists") + "/" + album + "/";
             else
                 dest += artist + "/" + album + "/";
-                
+
             if( mb.discNumber() > 0 )
                 dest += i18n( "Disc %1" ).arg( mb.discNumber() ) + "/";
-                
+
             dest += title + "." + type;
 
             dest.remove( "?" ).remove( ":" ).remove( "\"" ).remove( "," );
@@ -1619,10 +1619,9 @@ CollectionView::organizeFiles( const KURL::List &urls, bool addToCollection )  /
                     //}         //Not amazon nice.
                 }
             }
-            QDir d = QDir( src.directory() );
-            if( d.rmdir( src.directory() ) )
+
+            if( QDir::QDir().rmdir( src.directory() ) )
                 debug() << "removed: " << src.directory() << endl;
-                
         }
 
         if( addToCollection )
