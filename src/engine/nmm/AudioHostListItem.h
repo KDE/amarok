@@ -6,6 +6,7 @@
 #include <qstring.h>
 #include <qwidget.h>
 
+class ServerregistryPing;
 
 class AudioHostListItem : public QWidget {
     Q_OBJECT
@@ -23,6 +24,9 @@ class AudioHostListItem : public QWidget {
     signals:
         void pressed( AudioHostListItem* );
 
+    private slots:
+        void registryAvailable( bool );
+
     private:
         /**
          * Calculates background color.
@@ -31,6 +35,8 @@ class AudioHostListItem : public QWidget {
         
         QLabel *statusButton;
         QLabel *hostLabel;
+
+        ServerregistryPing *registry;
 };
 
 #endif

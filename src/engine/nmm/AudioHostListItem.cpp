@@ -1,4 +1,5 @@
 #include "AudioHostListItem.h"
+#include "ServerregistryPing.h"
 
 #include <qapplication.h>
 #include <qhbox.h>
@@ -19,7 +20,7 @@ AudioHostListItem::AudioHostListItem( bool valid, QString _hostname, QWidget *pa
 
     /* status button */
     statusButton = new QLabel(this);
-    statusButton->setPixmap( valid ? SmallIcon( "greenled" ) : SmallIcon( "redled" )  );
+    registryAvailable( valid );
     l->addWidget(statusButton);
     
     /* host label */
@@ -37,10 +38,15 @@ AudioHostListItem::AudioHostListItem( bool valid, QString _hostname, QWidget *pa
     l->addStretch(1);
 
     setHighlighted( false );
+
+    /* connect to host to find out whether a serverregistry might run */
+    registry = new ServerregistryPing(_hostname);
+    connect(registry, SIGNAL( registryAvailable( bool) ), SLOT( registryAvailable( bool ) ) );
 }
 
 AudioHostListItem::~AudioHostListItem()
 {
+    delete registry;
 }
 
 void AudioHostListItem::setHighlighted( bool highlight )
@@ -59,6 +65,11 @@ QString AudioHostListItem::hostname() const
 void AudioHostListItem::mousePressEvent( QMouseEvent * )
 {
     emit pressed( this );
+}
+
+void AudioHostListItem::registryAvailable( bool available)
+{
+    statusButton->setPixmap( available ? SmallIcon( "greenled" ) : SmallIcon( "redled" )  );
 }
 
 QColor AudioHostListItem::calcBackgroundColor( QString type, QColor color )
