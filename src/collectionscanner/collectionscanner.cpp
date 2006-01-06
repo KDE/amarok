@@ -241,8 +241,11 @@ CollectionScanner::readTags( const QString& path )
     //  Accurate                    Untested
 
     AttributeMap attributes;
+    
+    KURL escapedPath;
+    escapedPath.setPath( path );
 
-    MetaBundle mb ( path, true, TagLib::AudioProperties::Fast );
+    MetaBundle mb ( escapedPath, true, TagLib::AudioProperties::Fast );
 
     if ( !mb.isValidMedia() ) {
         std::cout << "<dud/>";
