@@ -1621,7 +1621,10 @@ CollectionView::organizeFiles( const KURL::List &urls, bool addToCollection )  /
             }
 
             if( QDir::QDir().rmdir( src.directory() ) )
+            {
                 debug() << "removed: " << src.directory() << endl;
+                src = src.upURL();
+            }
         }
 
         if( addToCollection )
