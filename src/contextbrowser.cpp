@@ -2622,6 +2622,11 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
     // Remove anything inside of a class called urlexpansion, as it's pointless for us
     m_wiki.replace( QRegExp( "<span class= *'urlexpansion'>[^(]*[(][^)]*[)]</span>" ), QString::null );
 
+    // Remove hidden table rows as well
+    QRegExp hidden( "<tr *class= *[\"\']hiddenStructure[\"\']>.*</tr>", false );
+    hidden.setMinimal( true ); //greedy behaviour wouldn't be any good!
+    m_wiki.replace( hidden, QString::null );
+
     // we want to keep our own style (we need to modify the stylesheet a bit to handle things nicely)
     m_wiki.replace( QRegExp( "style= *\"[^\"]*\"" ), QString::null );
     m_wiki.replace( QRegExp( "class= *\"[^\"]*\"" ), QString::null );
