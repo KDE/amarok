@@ -302,6 +302,7 @@ XineEngine::stop()
     std::fill( m_scope.begin(), m_scope.end(), 0 );
 
     xine_stop( m_stream );
+    xine_close( m_stream );
     xine_set_param( m_stream, XINE_PARAM_AUDIO_CLOSE_DEVICE, 1);
 
     emit stateChanged( Engine::Empty );
