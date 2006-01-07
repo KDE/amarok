@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>639</width>
+            <width>741</width>
             <height>527</height>
         </rect>
     </property>
@@ -490,9 +490,14 @@
                             <cstring>kComboBox_album</cstring>
                         </property>
                     </widget>
+                    <widget class="KLineEdit" row="2" column="1">
+                        <property name="name">
+                            <cstring>kLineEdit_composer</cstring>
+                        </property>
+                    </widget>
                     <widget class="QLayoutWidget" row="3" column="1">
                         <property name="name">
-                            <cstring>layout6</cstring>
+                            <cstring>layout11</cstring>
                         </property>
                         <hbox>
                             <property name="name">
@@ -540,6 +545,12 @@
                                         <verstretch>0</verstretch>
                                     </sizepolicy>
                                 </property>
+                                <property name="minimumSize">
+                                    <size>
+                                        <width>50</width>
+                                        <height>0</height>
+                                    </size>
+                                </property>
                                 <property name="maximumSize">
                                     <size>
                                         <width>100</width>
@@ -557,11 +568,6 @@
                                 </property>
                             </widget>
                         </hbox>
-                    </widget>
-                    <widget class="KLineEdit" row="2" column="1">
-                        <property name="name">
-                            <cstring>kLineEdit_composer</cstring>
-                        </property>
                     </widget>
                 </grid>
             </widget>

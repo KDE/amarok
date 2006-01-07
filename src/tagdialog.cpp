@@ -469,7 +469,7 @@ void TagDialog::init()
 
 
     // make it as small as possible
-    resize( minimumSize() );
+    resize( sizeHint().width(), minimumSize().height() );
 
 }
 
