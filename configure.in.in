@@ -823,6 +823,7 @@ if test "$build_libgpod" != "no"; then
             CPPFLAGS="$CPPFLAGS $LIBGPOD_INCLUDES"
             LDFLAGS="$LDFLAGS $LIBGPOD_LIBS"
             AC_CHECK_FUNCS(itdb_track_set_thumbnails, have_libgpod_artwork=yes)
+            AC_CHECK_FUNCS(g_object_get)
             CPPFLAGS=$ac_cppflags_save
             LDFLAGS=$ac_ldflags_save
         fi

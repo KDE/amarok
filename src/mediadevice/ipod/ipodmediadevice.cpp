@@ -669,6 +669,7 @@ IpodMediaDevice::openDevice( bool silent )
         }
     }
 
+#ifdef HAVE_G_OBJECT_GET
     if( m_itdb->device )
     {
         guint model;
@@ -727,6 +728,7 @@ IpodMediaDevice::openDevice( bool silent )
             .arg( QString::fromUtf8( name ) );
     }
     else
+#endif
     {
         debug() << "device type detection failed, assuming iPod shuffle" << endl;
         m_isShuffle = true;
@@ -1313,6 +1315,7 @@ IpodMediaDevice::getCapacity( unsigned long *total, unsigned long *available )
 
     return *total > 0;
 #else
+#ifdef HAVE_G_OBJECT_GET
     if(!m_itdb->device)
         return false;
 
@@ -1330,6 +1333,9 @@ IpodMediaDevice::getCapacity( unsigned long *total, unsigned long *available )
         *available = vol_avail/1024;
 
     return vol_size > 0;
+#else
+    return false;
+#endif
 #endif
 }
 
