@@ -250,6 +250,10 @@ else
         echo " =   + aRts-engine"
     fi
 
+    if test x$build_akode = xyes; then
+        echo " =   + aKode-engine"
+    fi
+
     if test x$have_gst = xyes; then
         echo " =   + GStreamer-engine"
     fi
