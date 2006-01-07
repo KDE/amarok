@@ -345,9 +345,8 @@ namespace amaroK
 
     void DcopPlayerHandler::seek(int s)
     {
-        EngineBase* const engine = EngineController::engine();
-        if ( s > 0 && engine->state() != Engine::Empty )
-            engine ->seek( s * 1000 );
+        if ( s > 0 && EngineController::engine()->state() != Engine::Empty )
+            EngineController::instance()->seek( s * 1000 );
     }
 
     void DcopPlayerHandler::seekRelative(int s)
