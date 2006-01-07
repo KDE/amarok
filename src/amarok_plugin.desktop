@@ -74,7 +74,3 @@ Type=int
 [PropertyDef::X-KDE-amaroK-experimental]
 Type=bool
 
-# Compatibility list, e.g. all supported media device types.
-[PropertyDef::X-KDE-amaroK-compatible]
-Type=QStringList
-

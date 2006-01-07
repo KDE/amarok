@@ -16,6 +16,10 @@ extern "C" {
 
 #include <kio/job.h>
 
+class QCheckBox;
+class QLabel;
+class QLineEdit;
+
 class IpodMediaItem;
 
 class IpodMediaDevice : public KioMediaDevice
@@ -23,7 +27,7 @@ class IpodMediaDevice : public KioMediaDevice
     Q_OBJECT
 
     public:
-                          IpodMediaDevice();
+        IpodMediaDevice();
         void              init( MediaBrowser* parent );
         virtual           ~IpodMediaDevice();
         virtual bool      autoConnect() { return true; }
@@ -32,10 +36,15 @@ class IpodMediaDevice : public KioMediaDevice
 
         bool              isConnected();
 
+        virtual void      addConfigElements( QWidget *parent );
+        virtual void      removeConfigElements( QWidget *parent );
+        virtual void      applyConfig();
+        virtual void      loadConfig();
+
     protected:
         MediaItem        *trackExists( const MetaBundle& bundle );
 
-        bool              openDevice(bool silent=false);
+        bool              openDevice( bool silent=false );
         bool              closeDevice();
 
         /**
@@ -63,8 +72,8 @@ class IpodMediaDevice : public KioMediaDevice
         bool              getCapacity(unsigned long *total, unsigned long *available);
         void              rmbPressed( QListViewItem* qitem, const QPoint& point, int );
 
-    protected slots:
-        void              renameItem( QListViewItem *item );
+        protected slots:
+            void              renameItem( QListViewItem *item );
 
     private:
         void              writeITunesDB();
@@ -85,6 +94,7 @@ class IpodMediaDevice : public KioMediaDevice
 
         bool              m_isShuffle;
         bool              m_supportsArtwork;
+        bool              m_supportsVideo;
 
         IpodMediaItem    *getArtist(const QString &artist);
         IpodMediaItem    *getAlbum(const QString &artist, const QString &album);
@@ -94,6 +104,16 @@ class IpodMediaDevice : public KioMediaDevice
         bool              removeDBTrack(Itdb_Track *track);
 
         bool              m_dbChanged;
+
+        QCheckBox        *m_syncStatsCheck;
+        QCheckBox        *m_autoDeletePodcastsCheck;
+        QLineEdit        *m_umntcmdEdit;
+        QLabel           *m_umntcmdLabel;
+        QLineEdit        *m_mntcmdEdit;
+        QLabel           *m_mntcmdLabel;
+        QLineEdit        *m_mntpntEdit;
+        QLabel           *m_mntpntLabel;
+
 };
 
 #endif

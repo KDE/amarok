@@ -61,7 +61,7 @@ MediumPluginChooser::MediumPluginChooser( const Medium *medium )
     m_chooserCombo = new KComboBox( false, chooser2Box, "chooserCombo" );
     m_chooserCombo->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred ) );
 
-    m_chooserCombo->insertItem( "Do not handle" );
+    m_chooserCombo->insertItem( i18n( "Do not handle" ) );
 
     KTrader::OfferList offers = PluginManager::query( "[X-KDE-amaroK-plugintype] == 'mediadevice'" );
     KTrader::OfferList::ConstIterator end( offers.end() );
@@ -89,7 +89,14 @@ void
 MediumPluginChooser::slotOk( )
 {
     DEBUG_BLOCK
-    emit selectedPlugin( m_medium, QString(m_chooserCombo->currentText()) );
+    if( m_chooserCombo->currentText() == i18n( "Do not handle" ) )
+    {
+        emit selectedPlugin( m_medium, QString( "ignore" ) );
+    }
+    else
+    {
+        emit selectedPlugin( m_medium, MediaBrowser::instance()->m_pluginName[m_chooserCombo->currentText() ] );
+    }
     KDialogBase::slotOk( );
 }
 

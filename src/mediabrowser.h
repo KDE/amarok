@@ -24,6 +24,7 @@ class SpaceLabel;
 class Medium;
 
 class KComboBox;
+class KDialogBase;
 class KProgress;
 class KPushButton;
 class KShellProcess;
@@ -155,6 +156,7 @@ class MediaBrowser : public QVBox
     friend class MediaDevice;
     friend class MediaView;
     friend class MediaQueue;
+    friend class MediumPluginChooser;
 
     public:
         static bool isAvailable();
@@ -173,6 +175,11 @@ class MediaBrowser : public QVBox
         void mediumRemoved( const Medium *, QString );
         void activateDevice( int index );
         void pluginSelected( const Medium *, const QString );
+        void transferClicked();
+        void cancelClicked();
+        void connectClicked();
+        void disconnectClicked();
+        void configSelectPlugin( int index );
 
     private:
         MediaDevice *loadDevicePlugin( const QString &deviceName );
@@ -187,7 +194,6 @@ class MediaBrowser : public QVBox
 
         QMap<QString, QString> m_pluginName;
         QMap<QString, QString> m_pluginAmarokName;
-        QMap<QString, QString> m_pluginSupports;
         void addDevice( MediaDevice *device );
         void removeDevice( MediaDevice *device );
 
@@ -214,6 +220,8 @@ class MediaBrowser : public QVBox
     KPushButton*     m_disconnectButton;
     KPushButton*     m_playlistButton;
     KPushButton*     m_configButton;
+    QVBox*           m_configBox;
+    KComboBox*       m_configPluginCombo;
     KComboBox*       m_deviceCombo;
 };
 
@@ -324,6 +332,16 @@ class MediaDevice : public QObject, public amaroK::Plugin
          */
         virtual MediaItem *newDirectory( const QString &name, MediaItem *parent ) = 0;
 
+        virtual void addConfigElements( QWidget * /*parent*/ ) {}
+        virtual void removeConfigElements( QWidget * /*parent*/ ) {}
+        virtual void applyConfig() {}
+        virtual void loadConfig() {}
+
+        QString configString( const QString &name, const QString &defValue = QString::null );
+        void setConfigString( const QString &name, const QString &value );
+        bool configBool( const QString &name, bool defValue=false );
+        void setConfigBool( const QString &name, bool value );
+
         void         setRequireMount( const bool b ) { m_requireMount = b; }
         void         setDeviceType( const QString &type ) { m_type = type; }
         QString      deviceType() { return m_type; }
@@ -349,16 +367,15 @@ class MediaDevice : public QObject, public amaroK::Plugin
          */
         QString name() const { return m_name; }
 
+        /**
+         * @return the device node
+         */
+        QString deviceNode() const { return m_deviceNode; }
+
+
     public slots:
         void abortTransfer();
-        void connectClicked( bool silent=false );
-        void disconnectClicked( bool silent=false );
         int  mount();
-        void setMountPoint(const QString & mntpnt);
-        void setMountCommand(const QString & mnt);
-        void setUmountCommand(const QString & umnt);
-        void setAutoDeletePodcasts(bool value);
-        void setSyncStats(bool value);
         int  umount();
         void transferFiles();
         virtual void renameItem( QListViewItem *item ) {(void)item; }
@@ -397,7 +414,6 @@ class MediaDevice : public QObject, public amaroK::Plugin
 
         /**
          * Connect to device, and populate m_view with MediaItems
-         * @param silent if true, suppress error dialogs
          * @return true if successful
          */
         virtual bool openDevice( bool silent=false ) = 0;
@@ -446,6 +462,7 @@ class MediaDevice : public QObject, public amaroK::Plugin
 
         QString     m_name;
         QString     m_uniqueId;
+        QString     m_deviceNode;
 
         QString     m_mntpnt;
         QString     m_mntcmd;

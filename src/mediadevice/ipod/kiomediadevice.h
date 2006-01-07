@@ -26,7 +26,7 @@ class KioMediaDevice : public MediaDevice
     protected:
         virtual MediaItem*trackExists( const MetaBundle& bundle );
 
-        bool              openDevice(bool silent=false);
+        bool              openDevice( bool silent=false );
         bool              closeDevice();
         void              lockDevice(bool) {}
         void              unlockDevice() {}

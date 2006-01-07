@@ -267,8 +267,10 @@ KioMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
 }
 
 bool
-KioMediaDevice::openDevice( bool /*silent*/ )
+KioMediaDevice::openDevice( bool silent )
 {
+    Q_UNUSED( silent );
+
     m_playlistItem = new MediaItem( m_view );
     m_playlistItem->setText( 0, i18n("Playlists") );
     m_playlistItem->m_order = -5;

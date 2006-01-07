@@ -25,11 +25,15 @@ AMAROK_EXPORT_PLUGIN( IpodMediaDevice )
 #include <kmessagebox.h>
 #include <kiconloader.h>
 #include <kpopupmenu.h>
-#include <qfileinfo.h>
+
+#include <qcheckbox.h>
 #include <qdir.h>
-#include <qtimer.h>
+#include <qfileinfo.h>
 #include <qlabel.h>
+#include <qlineedit.h>
 #include <qregexp.h>
+#include <qtimer.h>
+#include <qtooltip.h>
 
 #ifdef HAVE_STATVFS
 #include <stdint.h>
@@ -127,13 +131,24 @@ IpodMediaDevice::IpodMediaDevice()
     m_invisibleItem = 0;
     m_playlistItem = 0;
     m_supportsArtwork = false;
-    m_isShuffle = false;
+    m_supportsVideo = false;
+    m_isShuffle = true;
 
     m_hasPodcast = true;
     m_hasStats = true;
     m_hasPlaylists = true;
     m_requireMount = true;
     m_name = "iPod";
+
+    // config stuff
+    m_syncStatsCheck = 0;
+    m_autoDeletePodcastsCheck = 0;
+    m_umntcmdEdit = 0;
+    m_umntcmdLabel = 0;
+    m_mntcmdEdit = 0;
+    m_mntcmdLabel = 0;
+    m_mntpntEdit = 0;
+    m_mntpntLabel = 0;
 }
 
 void
@@ -524,10 +539,11 @@ IpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
 }
 
 bool
-IpodMediaDevice::openDevice(bool silent)
+IpodMediaDevice::openDevice( bool silent )
 {
     m_isShuffle = true;
     m_supportsArtwork = false;
+    m_supportsVideo = false;
     m_dbChanged = false;
     m_files.clear();
 
@@ -548,11 +564,9 @@ IpodMediaDevice::openDevice(bool silent)
             if( !dir.exists() )
             {
                 if( !silent )
-                {
                     amaroK::StatusBar::instance()->longMessage(
                             i18n("Media device: Mount point %1 does not exist").arg(m_mntpnt),
                             KDE::StatusBar::Error );
-                }
                 return false;
             }
 
@@ -560,12 +574,9 @@ IpodMediaDevice::openDevice(bool silent)
             m_itdb = itdb_new();
             if( m_itdb == 0 )
             {
-                if( !silent )
-                {
-                    amaroK::StatusBar::instance()->longMessage(
-                            i18n("Media Device: Failed to initialize iPod mounted at %1").arg(m_mntpnt),
-                            KDE::StatusBar::Sorry );
-                }
+                amaroK::StatusBar::instance()->longMessage(
+                        i18n("Media Device: Failed to initialize iPod mounted at %1").arg(m_mntpnt),
+                        KDE::StatusBar::Sorry );
 
                 return false;
             }
@@ -594,12 +605,10 @@ IpodMediaDevice::openDevice(bool silent)
             if(!dir.exists())
                 dir.mkdir(dir.absPath());
 
-            if(!silent)
-            {
+            if( !silent )
                 amaroK::StatusBar::instance()->longMessage(
                         i18n("Media Device: Initialized iPod mounted at %1").arg(m_mntpnt),
                         KDE::StatusBar::Information );
-            }
         }
     }
     else
@@ -677,11 +686,16 @@ IpodMediaDevice::openDevice(bool silent)
         case MODEL_TYPE_COLOR_U2:
         case MODEL_TYPE_NANO_WHITE:
         case MODEL_TYPE_NANO_BLACK:
+            m_supportsArtwork = true;
+            m_isShuffle = false;
+            debug() << "detected iPod photo/nano" << endl;
+            break;
         case MODEL_TYPE_VIDEO_WHITE:
         case MODEL_TYPE_VIDEO_BLACK:
             m_supportsArtwork = true;
             m_isShuffle = false;
-            debug() << "detected iPod photo/nano/video" << endl;
+            m_supportsVideo = true;
+            debug() << "detected iPod video" << endl;
             break;
         case MODEL_TYPE_REGULAR:
         case MODEL_TYPE_REGULAR_U2:
@@ -708,7 +722,7 @@ IpodMediaDevice::openDevice(bool silent)
             break;
         }
 
-        m_name = QString( "iPod %1: %2" )
+        m_name = QString( "iPod %1 \"%2\"" )
             .arg( QString::fromUtf8( modelString ) )
             .arg( QString::fromUtf8( name ) );
     }
@@ -1559,10 +1573,101 @@ IpodMediaDevice::supportedFiletypes()
     QStringList list;
     list << "m4a";
     list << "m4b";
+    list << "m4p";
     list << "mp3";
     list << "wav";
     list << "aa";
+
+    if( m_supportsVideo )
+        list << "m4v";
+
     return list;
+}
+
+void
+IpodMediaDevice::addConfigElements( QWidget *parent )
+{
+    m_mntpntLabel = new QLabel( parent );
+    m_mntpntLabel->setText( i18n( "&Mount point:" ) );
+    m_mntpntEdit = new QLineEdit( m_mntpnt, parent );
+    m_mntpntLabel->setBuddy( m_mntpntEdit );
+    QToolTip::add( m_mntpntEdit, i18n( "Set the mount point of your device here, when empty autodetection is tried." ) );
+
+    m_mntcmdLabel = new QLabel( parent );
+    m_mntcmdLabel->setText( i18n( "&Mount command:" ) );
+    m_mntcmdEdit = new QLineEdit( m_mntcmd, parent );
+    m_mntcmdLabel->setBuddy( m_mntcmdEdit );
+    QToolTip::add( m_mntcmdEdit, i18n( "Set the command to mount your device here, empty commands are not executed." ) );
+
+    m_umntcmdLabel = new QLabel( parent );
+    m_umntcmdLabel->setText( i18n( "&Unmount command:" ) );
+    m_umntcmdEdit = new QLineEdit( m_umntcmd, parent );
+    m_umntcmdLabel->setBuddy( m_umntcmdEdit );
+    QToolTip::add( m_umntcmdEdit, i18n( "Set the command to unmount your device here, empty commands are not executed." ) );
+
+    m_autoDeletePodcastsCheck = new QCheckBox( parent );
+    m_autoDeletePodcastsCheck->setText( i18n( "&Automatically delete podcasts" ) );
+    QToolTip::add( m_autoDeletePodcastsCheck, i18n( "Automatically delete podcast shows already played on connect" ) );
+    m_autoDeletePodcastsCheck->setChecked( m_autoDeletePodcasts );
+
+    m_syncStatsCheck = new QCheckBox( parent );
+    m_syncStatsCheck->setText( i18n( "&Synchronize with amaroK statistics" ) );
+    QToolTip::add( m_syncStatsCheck, i18n( "Synchronize with amaroK statistics and submit tracks played to last.fm" ) );
+    m_syncStatsCheck->setChecked( m_syncStats );
+}
+
+void
+IpodMediaDevice::removeConfigElements( QWidget *parent )
+{
+    delete m_syncStatsCheck;
+    m_syncStatsCheck = 0;
+
+    delete m_autoDeletePodcastsCheck;
+    m_autoDeletePodcastsCheck = 0;
+
+    delete m_umntcmdEdit;
+    m_umntcmdEdit = 0;
+
+    delete m_umntcmdLabel;
+    m_umntcmdLabel = 0;
+
+    delete m_mntcmdEdit;
+    m_mntcmdEdit = 0;
+
+    delete m_mntcmdLabel;
+    m_mntcmdLabel = 0;
+
+    delete m_mntpntEdit;
+    m_mntpntEdit = 0;
+
+    delete m_mntpntLabel;
+    m_mntpntLabel = 0;
+}
+
+void
+IpodMediaDevice::applyConfig()
+{
+    m_mntpnt = m_mntpntEdit->text();
+    m_mntcmd = m_mntcmdEdit->text();
+    m_umntcmd = m_umntcmdEdit->text();
+    m_autoDeletePodcasts = m_autoDeletePodcastsCheck->isChecked();
+    m_syncStats = m_syncStatsCheck->isChecked();
+
+    setConfigString( "MountCommand", m_mntcmd );
+    setConfigString( "UmountCommand", m_umntcmd );
+    setConfigString( "MountPoint", m_mntpnt );
+    setConfigBool( "SyncStats", m_syncStats );
+    setConfigBool( "AutoDeletePodcasts", m_autoDeletePodcasts );
+}
+
+void
+IpodMediaDevice::loadConfig()
+{
+    m_mntcmd = configString( "MountCommand" );
+    m_umntcmd = configString( "UmountCommand" );
+    m_mntpnt = configString( "MountPoint" );
+    m_syncStats = configBool( "SyncStats", false );
+    m_autoDeletePodcasts = configBool( "AutoDeletePodcasts", false );
 }
 
 #include "ipodmediadevice.moc"
