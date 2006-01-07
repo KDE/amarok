@@ -120,10 +120,9 @@ Optional
       (Moodbar support)
       http://www.sf.net/projects/exscalibar
 
-    * libgpod 0.2.0
+    * libgpod 0.3.0
       (iPod support)
       http://www.gtkpod.org/libgpod.html
-      (artwork support requires newer libgpod from cvs)
 
     * libifp 1.0.0.2
       (iRiver iFP support)
