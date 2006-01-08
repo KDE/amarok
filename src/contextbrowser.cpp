@@ -1831,7 +1831,7 @@ bool CurrentTrackJob::doJob()
                         QString tracktitle;
                         tracktitle = escapeHTML( albumValues[j + 5] ) + i18n(" - ") + escapeHTML( albumValues[j] );
                         tracktitle_formated = "<span class='album-song-title'>";
-                        if ( currentTrack.artist() == albumValues[j + 5] )
+                        if ( artist == albumValues[j + 5] )
                              tracktitle_formated += "<b>" + tracktitle + "</b>";
                         else
                              tracktitle_formated += tracktitle;
