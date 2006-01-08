@@ -589,11 +589,12 @@ CollectionDB::IDFromValue( QString name, QString value, bool autocreate, const b
 
     if ( updateSpelling && !values.isEmpty() && ( values[1] != value ) )
     {
-        query( QString( "UPDATE %1 SET id = %2, name = '%3' WHERE id = %4;" )
+        query( QString( "UPDATE %1 SET id = %2, name = '%4' WHERE id = %3;" )
                   .arg( name )
                   .arg( values.first() )
-                  .arg( CollectionDB::instance()->escapeString( value ) )
-                  .arg( values.first() ), conn );
+		  .arg( values.first() )
+                  .arg( CollectionDB::instance()->escapeString( value ) ),
+                  conn );
     }
 
     //check if item exists. if not, should we autocreate it?
