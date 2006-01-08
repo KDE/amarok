@@ -203,7 +203,7 @@ StatisticsList::initDisplay()
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     a = qb.run();
 
-    m_trackItem = new StatisticsItem( i18n("Favorite Track","Favorite Tracks", a[0].toInt()), this, 0 );
+    m_trackItem = new StatisticsItem( i18n("Favorite Track","%n Favorite Tracks", a[0].toInt()), this, 0 );
     m_trackItem->setSubtext( i18n("%n track", "%n tracks", a[0].toInt()) );
 
     qb.clear();
