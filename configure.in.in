@@ -866,21 +866,24 @@ if test "$build_libgpod" != "no"; then
         fi
 
         if test "x$have_libgpod" = "xyes"; then
+            AC_CHECK_FUNCS(g_object_get, have_gobject_get=yes, have_gobject_get=no)
+	    if test "x$have_gobject_get" = "xno"; then
+               PKG_CHECK_MODULES([GOBJECT], gobject-2.0, have_gobject=yes,have_gobject=no)
+	    fi
             ac_cppflags_save=$CPPFLAGS
             ac_ldflags_save=$LDFLAGS
             CPPFLAGS="$CPPFLAGS $LIBGPOD_INCLUDES"
             LDFLAGS="$LDFLAGS $LIBGPOD_LIBS"
-            AC_CHECK_FUNCS(g_object_get, have_gobject=yes)
-            if test "x$have_gobject" != "xyes"; then
-                unset ac_cv_func_g_object_get # clear cached result
-                CPPFLAGS="$CPPFLAGS `$PKG_CONFIG --cflags gobject-2.0`"
-                LDFLAGS="$LDFLAGS `$PKG_CONFIG --libs gobject-2.0`"
-                AC_CHECK_FUNCS(g_object_get, have_gobject=yes)
-                if test "x$have_gobject" = "xyes"; then
-                    LIBGPOD_INCLUDES="$LIBGPOD_INCLUDES `$PKG_CONFIG --cflags gobject-2.0`"
-                    LIBGPOD_LIBS="$LIBGPOD_LIBS `$PKG_CONFIG --libs gobject-2.0`"
-                fi
-            fi
+#            if test "x$have_gobject" != "xyes"; then
+#                unset ac_cv_func_g_object_get # clear cached result
+#                CPPFLAGS="$CPPFLAGS `$PKG_CONFIG --cflags gobject-2.0`"
+#                LDFLAGS="$LDFLAGS `$PKG_CONFIG --libs gobject-2.0`"
+#                AC_CHECK_FUNCS(g_object_get, have_gobject=yes)
+#                if test "x$have_gobject" = "xyes"; then
+#                    LIBGPOD_INCLUDES="$LIBGPOD_INCLUDES `$PKG_CONFIG --cflags gobject-2.0`"
+#                    LIBGPOD_LIBS="$LIBGPOD_LIBS `$PKG_CONFIG --libs gobject-2.0`"
+#                fi
+#            fi
             if test "x$have_gobject" = "xyes"; then
                 AC_CHECK_FUNCS(itdb_track_set_thumbnails, have_libgpod_artwork=yes)
             fi
