@@ -328,8 +328,8 @@ namespace TagLib
 #endif
       };
       
-   }; // namespace RealMedia
-}; // namespace TagLib
+   } // namespace RealMedia
+} // namespace TagLib
 
 #ifdef TESTING
 std::ostream &operator<<(std::ostream &os, TagLib::RealMedia::RealMediaFF &rmff);
