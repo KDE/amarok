@@ -15,6 +15,8 @@
 #include <kapplication.h>
 #include <kglobal.h>
 #include <klocale.h>
+#include <qdeepcopy.h>
+
 #include <iostream>
 #include "metabundle.h"
 #include "playlistbrowser.h"
@@ -27,7 +29,7 @@ CollectionReader::CollectionReader( CollectionDB* parent, const QStringList& fol
         : DependentJob( parent, "CollectionReader" )
         , m_importPlaylists( AmarokConfig::importPlaylists() )
         , m_incremental( false )
-        , m_folders( folders )
+        , m_folders( QDeepCopy<QStringList>(folders) )
         , m_db( CollectionDB::instance()->getStaticDbConnection() )
         , m_recursively( AmarokConfig::scanRecursively() )
         , log( QFile::encodeName( amaroK::saveLocation( QString::null ) + "collection_scan.log" ) )
