@@ -6,11 +6,6 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
- <markey>  When the collection scanner receives a SIGSEGV, amaroK fails to detect the crash.
-           It doesn't show the intended dialog ("Sorry, Collection Scanner has crashed blah"),
-           but the KDE crashhandler comes up, and that's it. However, SIGKILL works as intended.
-           Gotta check what's going on!
-
  <sebr>    We need to compile a list of new CSS tags for the context browser themes, and email the
            theme authors well in advance of 1.4 release to let them know so they can update.
            ::CSS-Elements::

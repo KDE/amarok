@@ -35,6 +35,7 @@
 #include <qfile.h>
 #include <qtimer.h>
 
+#include <kcrash.h>
 #include <kglobal.h>
 #include <klocale.h>
 
@@ -61,6 +62,9 @@ CollectionScanner::CollectionScanner( const QStringList& folders,
         , m_logfile( logfile )
 {
     QFile::remove( m_logfile );
+
+     // Disable the KDE crash handler, so that amaroK can catch SIGSEGV
+    KCrash::setCrashHandler( NULL );
 
     QTimer::singleShot( 0, this, SLOT( doJob() ) );
 }

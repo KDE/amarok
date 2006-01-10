@@ -293,7 +293,7 @@ ScanController::slotProcessExited()
 {
     DEBUG_BLOCK
 
-    if( m_scanner->normalExit() ) {
+    if( m_scanner->normalExit() && !m_scanner->signalled() ) {
         if ( m_incremental ) {
             m_foldersToRemove += m_folders;
             foreach( m_foldersToRemove ) {
@@ -314,11 +314,11 @@ ScanController::slotProcessExited()
         log.open( IO_ReadOnly );
         const QString& path = log.readAll();
         if( path.isEmpty() )
-            KMessageBox::error( 0, i18n( "The Collection Scanner has crashed." ),
+            KMessageBox::error( 0, i18n( "Sorry, the Collection Scanner has crashed." ),
                                    i18n( "Collection Scan Error" ) );
         else
-            KMessageBox::error( 0, i18n( "<p>The Collection Scanner has crashed while "
-                                         "scanning the file:</p><p><i>%1</i></p><p>Please remove this "
+            KMessageBox::error( 0, i18n( "<p>Sorry, the Collection Scanner has crashed while "
+                                         "reading the file:</p><p><i>%1</i></p><p>Please remove this "
                                          "file from your collection, then rescan the collection.</p>" )
                                          .arg( path ), i18n( "Collection Scan Error" ) );
 
