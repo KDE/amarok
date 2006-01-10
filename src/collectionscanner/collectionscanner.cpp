@@ -211,8 +211,9 @@ CollectionScanner::scanFiles( const QStringList& entries )
             foreachType( QStringList, images ) {
                 // Serialize CoverBundle list with \n as separator
                 QString string;
-                foreachType( QValueList<CoverBundle>, covers )
-                    string += (*it).first + "AMAROK_MAGIC" + (*it).second + "AMAROK_MAGIC";
+
+                for(QValueList<CoverBundle>::ConstIterator it2 = covers.begin(); it2 != covers.end(); ++it2 )
+                    string += (*it2).first + "AMAROK_MAGIC" + (*it2).second + "AMAROK_MAGIC";
 
                 AttributeMap attributes;
                 attributes["path"] = *it;
