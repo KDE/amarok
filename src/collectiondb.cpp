@@ -1481,18 +1481,18 @@ CollectionDB::updateDirStats( QString path, const long datetime, DbConnection *c
 	}
 	else
 	{
-	    query( QString( "INSERT INTO directories%1 (dir,changedate) VALUES ('%2','%3');")
+	    query( QString( "INSERT INTO directories%1 (dir,changedate) VALUES ('%3','%2');")
 		.arg( conn ? "_temp" : "")
-		.arg( escapeString( path ) )
-		.arg( datetime ), conn );
+                .arg( datetime )
+		.arg( escapeString( path ) ), conn );
 	}
     }
     else
     {
-        query( QString( "REPLACE INTO directories%1 ( dir, changedate ) VALUES ( '%2', %3 );" )
+        query( QString( "REPLACE INTO directories%1 ( dir, changedate ) VALUES ( '%3', %2 );" )
                   .arg( conn ? "_temp" : "" )
-                  .arg( escapeString( path ) )
-                  .arg( datetime ), conn );
+                  .arg( datetime )
+                  .arg( escapeString( path ) ), conn );
     }
 }
 
