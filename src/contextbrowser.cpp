@@ -912,7 +912,7 @@ void ContextBrowser::showHome() //SLOT
         m_HTMLSource.append("</table> </div>");
     }
     m_HTMLSource.append(
-            "</div></html>");
+            "</div></body></html>");
 
     // </Recent Tracks Information>
     m_currentTrackPage->set( m_HTMLSource );
@@ -1061,7 +1061,7 @@ bool CurrentTrackJob::doJob()
     else
         artist = currentTrack.artist();
 
-    m_HTMLSource.append( "<html>"
+    m_HTMLSource.append( "<html><body>"
                     "<script type='text/javascript'>"
                       //Toggle visibility of a block. NOTE: if the block ID starts with the T
                       //letter, 'Table' display will be used instead of the 'Block' one.
@@ -1133,7 +1133,7 @@ bool CurrentTrackJob::doJob()
                 "</div>" );
         }
 
-        m_HTMLSource.append("</html>" );
+        m_HTMLSource.append("</body></html>" );
         return true;
     }
 
@@ -1857,7 +1857,7 @@ bool CurrentTrackJob::doJob()
         }
     // </Compilations with this artist>
     }
-    m_HTMLSource.append( "</html>" );
+    m_HTMLSource.append( "</body></html>" );
 
     return true;
 }
@@ -1877,7 +1877,7 @@ void ContextBrowser::showIntroduction()
     // Do we have to rebuild the page? I don't care
     m_HTMLSource = QString::null;
     m_HTMLSource.append(
-            "<html>"
+            "<html><body>"
             "<div id='introduction_box' class='box'>"
                 "<div id='introduction_box-header' class='box-header'>"
                     "<span id='introduction_box-header-title' class='box-header-title'>"
@@ -1897,7 +1897,7 @@ void ContextBrowser::showIntroduction()
                     "'></div><br />"
                 "</div>"
             "</div>"
-            "</html>"
+            "</body></html>"
                        );
 
     m_currentTrackPage->set( m_HTMLSource );
@@ -1917,7 +1917,7 @@ void ContextBrowser::showScanning()
     // Do we have to rebuild the page? I don't care
     m_HTMLSource="";
     m_HTMLSource.append(
-            "<html>"
+            "<html><body>"
             "<div id='building_box' class='box'>"
                 "<div id='building_box-header' class='box-header'>"
                     "<span id='building_box-header-title' class='box-header-title'>"
@@ -1928,7 +1928,7 @@ void ContextBrowser::showScanning()
                     "<div class='info'><p>" + i18n( "Please be patient while amaroK scans your music collection. You can watch the progress of this activity in the statusbar." ) + "</p></div>"
                 "</div>"
             "</div>"
-            "</html>"
+            "</body></html>"
                        );
 
     m_currentTrackPage->set( m_HTMLSource );
@@ -2017,7 +2017,7 @@ void ContextBrowser::showLyrics( const QString &hash )
     if ( !m_lyrics.isEmpty() && hash.isEmpty() )
     {
         m_HTMLSource = QString (
-            "<html>"
+            "<html><body>"
             "<div id='lyrics_box' class='box'>"
                 "<div id='lyrics_box-header' class='box-header'>"
                     "<span id='lyrics_box-header-title' class='box-header-title'>"
@@ -2028,7 +2028,7 @@ void ContextBrowser::showLyrics( const QString &hash )
                     + m_lyrics +
                 "</div>"
             "</div>"
-            "</html>"
+            "</body></html>"
             );
         m_lyricsPage->set( m_HTMLSource );
 
@@ -2039,7 +2039,7 @@ void ContextBrowser::showLyrics( const QString &hash )
     else
     {
         m_HTMLSource = QString (
-            "<html>"
+            "<html><body>"
             "<div id='lyrics_box' class='box'>"
                 "<div id='lyrics_box-header' class='box-header'>"
                     "<span id='lyrics_box-header-title' class='box-header-title'>"
@@ -2050,7 +2050,7 @@ void ContextBrowser::showLyrics( const QString &hash )
                     "<div class='info'><p>" + i18n( "Fetching Lyrics" ) + "</p></div>"
                 "</div>"
             "</div>"
-            "</html>"
+            "</body></html>"
             );
         m_lyricsPage->set( m_HTMLSource );
         m_lyricJob = KIO::storedGet( m_lyricCurrentUrl, false, false );
@@ -2073,7 +2073,7 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
     {
         m_HTMLSource="";
         m_HTMLSource.append(
-                "<html>"
+                "<html><body>"
                 "<div id='lyrics_box' class='box'>"
                     "<div id='lyrics_box-header' class='box-header'>"
                         "<span id='lyrics_box-header-title' class='box-header-title'>"
@@ -2084,7 +2084,7 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
                         + i18n( "Lyrics could not be retrieved because the server was not reachable." ) +
                     "</p></div>"
                 "</div>"
-                "</html>"
+                "</body></html>"
                         );
         m_lyricsPage->set( m_HTMLSource );
 
@@ -2130,7 +2130,7 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
 
     m_HTMLSource="";
     m_HTMLSource.append(
-            "<html>"
+            "<html><body>"
             "<div id='lyrics_box' class='box'>"
                 "<div id='lyrics_box-header' class='box-header'>"
                     "<span id='lyrics_box-header-title' class='box-header-title'>"
@@ -2141,7 +2141,7 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
                     + m_lyrics +
                 "</div>"
             "</div>"
-            "</html>"
+            "</body></html>"
                        );
     m_lyricsPage->set( m_HTMLSource );
 
@@ -2359,7 +2359,7 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
 
     m_HTMLSource="";
     m_HTMLSource.append(
-            "<html>"
+            "<html><body>"
             "<div id='wiki_box' class='box'>"
                 "<div id='wiki_box-header' class='box-header'>"
                     "<span id='wiki_box-header-title' class='box-header-title'>"
@@ -2370,7 +2370,7 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
                     "<div class='info'><p>" + i18n( "Fetching Wikipedia Information" ) + " ...</p></div>"
                 "</div>"
             "</div>"
-            "</html>"
+            "</body></html>"
                     );
 
     m_wikiPage->set( m_HTMLSource );
