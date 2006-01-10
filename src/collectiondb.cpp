@@ -1819,18 +1819,20 @@ CollectionDB::updateDirStats( QString path, const long datetime, const bool temp
     }
     else
     {
-        query( QString( "INSERT INTO directories%1 (dir,changedate) VALUES ('%2','%3');")
+        query( QString( "INSERT INTO directories%1 (dir,changedate) VALUES ('%3','%2');")
         .arg( temporary ? "_temp" : "")
+        .arg( datetime )
         .arg( escapeString( path ) )
-        .arg( datetime ) );
+        );
     }
     }
     else
     {
-        query( QString( "REPLACE INTO directories%1 ( dir, changedate ) VALUES ( '%2', %3 );" )
+        query( QString( "REPLACE INTO directories%1 ( dir, changedate ) VALUES ( '%3', %2 );" )
                   .arg( temporary ? "_temp" : "" )
+                  .arg( datetime )
                   .arg( escapeString( path ) )
-                  .arg( datetime ) );
+                  );
     }
 }
 
