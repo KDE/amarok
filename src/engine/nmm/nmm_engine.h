@@ -64,6 +64,8 @@ protected:
     void  setVolumeSW( uint );
 
 private:
+    void cleanup();
+
     /**
      * Returns the location of the audio sink or empty, if none is specified.
      */
@@ -151,11 +153,6 @@ private:
      * This flag is set during seeking.
      */
     bool __seeking;
-
-    /**
-     * This flag is set when a track has ended.
-     */
-    bool __track_ended;
 
     /**
      * This flag is set while the secondary thread is running.

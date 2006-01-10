@@ -76,6 +76,8 @@ VERSION 1.4:
       compatibility with various iPod models.
 
   BUGFIXES:
+    * NMM engine would crash when seeking after the playlist finished,
+      state Empty wasn't emitted
     * Dragging text to a filter line edit would still show the "Filter
       Here..." text in the background. (BR 108876)
     * Don't show an empty playlist length holder in the statusbar.
