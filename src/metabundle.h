@@ -30,7 +30,7 @@ namespace TagLib {
  *
  */
 
-class MetaBundle
+class LIBAMAROK_EXPORT MetaBundle
 {
 public:
     enum Column
