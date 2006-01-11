@@ -5,6 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.3.8:
   BUGFIXES:
+    * NMM engine would crash when seeking after the playlist finished,
+      state Empty wasn't emitted
     * Fixed URL of the Nectarine radio stream.
     * Fix crash after changing the alsa device in the helix configuration
       dialog.
@@ -16,7 +18,6 @@ VERSION 1.3.8:
     * Lyrics that are available on lyrc would be shown as "not found".
     * The helix engine now includes protection so that misbehaving streams
       do not cause the visualizations to leak memory.
-
 
 VERSION 1.3.7:
   CHANGES:

@@ -66,7 +66,6 @@ NmmEngine::NmmEngine()
     __composite(0),
     __playback(0),
     __seeking(false),
-    __track_ended(false),
     __running(true),
     __cond(__mutex)
 {
@@ -110,12 +109,14 @@ Engine::State NmmEngine::state() const
 
 bool NmmEngine::load(const KURL& url, bool stream)
 {
+  DEBUG_BLOCK
+
   // play only local files
   if (!url.isLocalFile()) return false;
 
   Engine::Base::load(url, stream);
 
-  stop();
+  cleanup();
 
   // make the GraphBuilder construct an appropriate graph for the given URL
   try {
@@ -189,7 +190,6 @@ bool NmmEngine::load(const KURL& url, bool stream)
     __composite->reachStarted();
       
     __seeking = false;
-    __track_ended = false;
     __state = Engine::Playing;
   }
   catch (const Exception& e) {
@@ -204,6 +204,8 @@ bool NmmEngine::load(const KURL& url, bool stream)
 
 bool NmmEngine::play(uint)
 {
+  DEBUG_BLOCK
+
   if (!__composite) {
     return false;
   }
@@ -220,8 +222,10 @@ bool NmmEngine::play(uint)
   return true;
 }
 
-void NmmEngine::stop()
+void NmmEngine::cleanup()
 {
+  DEBUG_BLOCK
+
   if (!__composite) {
     return;
   }
@@ -257,14 +261,18 @@ void NmmEngine::stop()
   __playback = 0;
 
   __position = 0;
+
+  __state = Engine::Idle;
+}
+
+void NmmEngine::stop()
+{
+  DEBUG_BLOCK
+
+  cleanup();
+
   __state = Engine::Empty;
-
-  // don't emit a stateChanged signal, if the track has ended
-  if (!__track_ended) {
-    emit stateChanged(Engine::Empty);
-  }
-
-  __track_ended = false;
+  emit stateChanged(Engine::Empty);
 }
 
 void NmmEngine::pause()
@@ -370,7 +378,6 @@ Result NmmEngine::endTrack()
 {
   __state = Engine::Idle;
   __position = 0;
-  __track_ended = true;
 
   // make the secondary thread emit the trackEnded signal
   __mutex.lock();

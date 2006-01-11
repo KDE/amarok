@@ -61,6 +61,8 @@ public slots:
     void  setVolumeSW(uint = 0);
 
 private:
+    void cleanup();
+
     /**
      * This method is called when a setProgress event is received. The two parameters represent a rational number
      * (numerator and denominator) containing the amount of progress as a value between 0 and 1.
@@ -138,11 +140,6 @@ private:
      * This flag is set during seeking.
      */
     bool __seeking;
-
-    /**
-     * This flag is set when a track has ended.
-     */
-    bool __track_ended;
 
     /**
      * This flag is set while the secondary thread is running.
