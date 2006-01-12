@@ -163,17 +163,18 @@ class AmarokCollectionInterface : virtual public DCOPObject
    K_DCOP
 
 k_dcop:
-   virtual int totalAlbums() = 0;                       ///< Returns the total of albums in the collection.
-   virtual int totalArtists() = 0;                       ///< Returns the total of artists in the collection.
-   virtual int totalCompilations() = 0;                       ///< Returns the total of compilations in the collection.
-   virtual int totalGenres() = 0;                       ///< Returns the total of genres in the collection.
-   virtual int totalTracks() = 0;                       ///< Returns the total of tracks in the collection.
+   virtual int totalAlbums() = 0;                          ///< Returns the total of albums in the collection.
+   virtual int totalArtists() = 0;                         ///< Returns the total of artists in the collection.
+   virtual int totalCompilations() = 0;                    ///< Returns the total of compilations in the collection.
+   virtual int totalGenres() = 0;                          ///< Returns the total of genres in the collection.
+   virtual int totalTracks() = 0;                          ///< Returns the total of tracks in the collection.
+   virtual bool isDirInCollection( const QString& ) = 0;   ///< Returns whether is given directory is in the collection.
    virtual bool moveFile( const QString &oldURL, const QString &newURL, bool overwrite ) = 0; ///<Physically move then migrateFile.
-   virtual QStringList query(const QString& sql) = 0;       ///< Queries the database via SQL.
-   virtual QStringList similarArtists( int artists ) = 0;       ///< Return similar artists of the current tracks, limit to int artists.
+   virtual QStringList query(const QString& sql) = 0;      ///< Queries the database via SQL.
+   virtual QStringList similarArtists( int artists ) = 0;  ///< Return similar artists of the current tracks, limit to int artists.
    virtual void migrateFile( const QString &oldURL, const QString &newURL ) = 0; ///<Move a file in the collection, keeping stats intact.
-   virtual void scanCollection() = 0;                       ///< Scan the collection.
-   virtual void scanCollectionChanges() = 0;                ///< Scan the collection for changes only.
+   virtual void scanCollection() = 0;                      ///< Scan the collection.
+   virtual void scanCollectionChanges() = 0;               ///< Scan the collection for changes only.
 };
 
 

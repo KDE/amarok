@@ -40,6 +40,7 @@ class CollectionScanner : public KApplication
 public:
     CollectionScanner( const QStringList& folders,
                        bool recursive,
+                       bool incremental,
                        bool importPlaylists,
                        const QString& logfile );
 
@@ -88,6 +89,7 @@ private:
     const bool    m_importPlaylists;
     QStringList   m_folders;
     const bool    m_recursively;
+    const bool    m_incremental;
     const QString m_logfile;
 
     QStringList   m_processedFolders;

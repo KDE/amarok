@@ -30,9 +30,9 @@
 int main( int argc, char *argv[] )
 {
     const KAboutData about( "amarokcollectionscanner",
-    I18N_NOOP( "amaroK Collection Scanner" ), "0.1",
+    I18N_NOOP( "amaroK Collection Scanner\n\nNote: For debugging purposes this application can be invoked from the command line, but it will not actually build a collection this way." ), "0.1",
     I18N_NOOP( "Collection Scanner for amaroK" ), KAboutData::License_GPL,
-    I18N_NOOP( "(C) 2003-2005, The amaroK Developers" ),
+    I18N_NOOP( "(C) 2003-2006, The amaroK Developers" ),
     I18N_NOOP( "IRC:\nserver: irc.freenode.net / channels: #amarok #amarok.de\n\nFeedback:\namarok-devel@lists.sourceforge.net" ),
     I18N_NOOP( "http://amarok.kde.org" ) );
 
@@ -43,6 +43,8 @@ int main( int argc, char *argv[] )
         { "r", 0, 0 },
         { "recursive", I18N_NOOP( "Scan folders recursively" ), 0 },
         { "i", 0, 0 },
+        { "incremental", I18N_NOOP( "Incremental Scan (modified folders only)" ), 0 },
+        { "p", 0, 0 },
         { "importplaylists", I18N_NOOP( "Import playlist" ), 0 },
         { "l", 0, 0 },
         { "logfile <path>", I18N_NOOP( "Log the last processed track" ), "" },
@@ -62,10 +64,11 @@ int main( int argc, char *argv[] )
         folders << QFile::decodeName( args->arg( i ) );
 
     const bool recursive        = args->isSet( "recursive" );
+    const bool incremental      = args->isSet( "incremental" );
     const bool importplaylists  = args->isSet( "importplaylists" );
     const QString logfile       = args->getOption( "logfile" );
 
-    CollectionScanner scanner( folders, recursive, importplaylists, logfile );
+    CollectionScanner scanner( folders, recursive, incremental, importplaylists, logfile );
 
     registerTaglibPlugins();
 

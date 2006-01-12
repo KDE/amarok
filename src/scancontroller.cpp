@@ -111,8 +111,9 @@ ScanController::ScanController( QObject* parent, bool incremental, const QString
     m_reader.parse( &m_source, true );
 
     *m_scanner << "amarokcollectionscanner";
-    if( AmarokConfig::importPlaylists() && !m_incremental ) *m_scanner << "-i";
+    if( AmarokConfig::importPlaylists() && !m_incremental ) *m_scanner << "-p";
     if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
+    if( m_incremental ) *m_scanner << "-i";
     *m_scanner << "-l" << ( amaroK::saveLocation( QString::null ) + "collection_scan.log" );
     *m_scanner << m_folders;
 

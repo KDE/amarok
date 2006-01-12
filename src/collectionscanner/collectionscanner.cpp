@@ -35,6 +35,7 @@
 #include <qfile.h>
 #include <qtimer.h>
 
+#include <dcopref.h>
 #include <kcrash.h>
 #include <kglobal.h>
 #include <klocale.h>
@@ -53,12 +54,14 @@
 
 CollectionScanner::CollectionScanner( const QStringList& folders,
                                       bool recursive,
+                                      bool incremental,
                                       bool importPlaylists,
                                       const QString& logfile )
         : KApplication()
         , m_importPlaylists( importPlaylists )
         , m_folders( folders )
         , m_recursively( recursive )
+        , m_incremental( incremental )
         , m_logfile( logfile )
 {
     QFile::remove( m_logfile );
@@ -116,10 +119,13 @@ CollectionScanner::doJob() //SLOT
 void
 CollectionScanner::readDir( const QString& path, QStringList& entries )
 {
+    static DCOPRef dcopRef( "amarok", "collection" );
+
     // linux specific, but this fits the 90% rule
     if( path.startsWith( "/dev" ) || path.startsWith( "/sys" ) || path.startsWith( "/proc" ) )
         return;
-    // Protect against dupes and symlink loops
+    // Protect against loops
+    // FIXME This doesn't help with symlink loops. The symlinks need to be resolved
     if( m_processedFolders.contains( path ) )
         return;
 
@@ -148,8 +154,13 @@ CollectionScanner::readDir( const QString& path, QStringList& entries )
     // Recurse folders
     foreachType( QStringList, folders ) {
         if( (*it).startsWith( "." ) ) continue;
-        // we must add a '/' after the dirname, to avoid dupes
-        readDir( dir.absFilePath( *it ) + "/", entries );
+
+        bool isInCollection;
+        dcopRef.call( "isDirInCollection", *it ).get( isInCollection );
+
+        if( !m_incremental || !isInCollection )
+            // we must add a '/' after the dirname, to avoid dupes
+            readDir( dir.absFilePath( *it ) + "/", entries );
     }
 }
 
@@ -209,10 +220,10 @@ CollectionScanner::scanFiles( const QStringList& entries )
         {
             // we entered the next directory
             foreachType( QStringList, images ) {
-                // Serialize CoverBundle list with \n as separator
+                // Serialize CoverBundle list with AMAROK_MAGIC as separator
                 QString string;
 
-                for(QValueList<CoverBundle>::ConstIterator it2 = covers.begin(); it2 != covers.end(); ++it2 )
+                for( QValueList<CoverBundle>::ConstIterator it2 = covers.begin(); it2 != covers.end(); ++it2 )
                     string += (*it2).first + "AMAROK_MAGIC" + (*it2).second + "AMAROK_MAGIC";
 
                 AttributeMap attributes;
@@ -246,7 +257,7 @@ CollectionScanner::readTags( const QString& path )
     //  Accurate                    Untested
 
     AttributeMap attributes;
-    
+
     KURL escapedPath;
     escapedPath.setPath( path );
 

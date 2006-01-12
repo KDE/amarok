@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.4:
   FEATURES:
+    * New DCOP call "collection: isDirInCollection()".
     * New DCOP call "playlist: removeByIndex(int)". (BR 119143)
     * Handle compilations properly when using the 'Organise Music' feature.
     * For mp3 and ogg vorbis, it's possible to use Disc Number and Composer

@@ -698,6 +698,11 @@ namespace amaroK
         return final;
     }
 
+    bool DcopCollectionHandler::isDirInCollection( const QString& path )
+    {
+        return CollectionDB::instance()->isDirInCollection( path );
+    }
+
     bool DcopCollectionHandler::moveFile( const QString &oldURL, const QString &newURL, bool overwrite )
     {
         return CollectionDB::instance()->moveFile( oldURL, newURL, overwrite );
