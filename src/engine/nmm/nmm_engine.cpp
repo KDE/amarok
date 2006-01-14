@@ -1,12 +1,12 @@
 /* NMM - Network-Integrated Multimedia Middleware
  *
- * Copyright (C) 2002-2004
+ * Copyright (C) 2002-2006
  *                    NMM work group,
  *                    Computer Graphics Lab,
  *                    Saarland University, Germany
  *                    http://www.networkmultimedia.org
  *
- * Maintainer:        Wolfram von Funck <wolfram@graphics.cs.uni-sb.de>
+ * Maintainer:        Robert Gogolok <gogo@graphics.cs.uni-sb.de>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -67,6 +67,8 @@ NmmEngine::NmmEngine()
     __trackDuration_listener(this, &NmmEngine::trackDuration),
     __composite(0),
     __playback(0),
+    __display(0),
+    __with_video(false),
     __seeking(false),
     __running(true),
     __cond(__mutex)
@@ -157,39 +159,53 @@ bool NmmEngine::load(const KURL& url, bool stream)
     ClientRegistry& registry = __app->getRegistry();
     {
       RegistryLock lock(registry);
-      list<Response> playback_response = registry.initRequest(playback_nd);
 
-      if (playback_response.empty()) {
+      list<Response> playback_response = registry.initRequest(playback_nd);
+      if (playback_response.empty())
         throw Exception("PlaybackNode is not available");
-      }
-      
       __playback = registry.requestNode(playback_response.front());
+
+      list<Response> display_response = registry.initRequest(display_nd);
+      if (display_response.empty())
+        throw Exception("Display node is not available");
+      __display = registry.requestNode(display_response.front());
+
     }
 
     // initialize the GraphBuilder
     gb.setAudioSink(__playback);
-    gb.setVideoSink(display_nd);
+    gb.setVideoSink(__display);
     gb.setDemuxAudioJackTag("audio");
     gb.setDemuxVideoJackTag("video");
 
     // create the graph represented by a composite node
     __composite = gb.createGraph(*__app);
 
+    // if the display node is connected we know we will play a video
+    __with_video = __display->isInputConnected();
+    debug() << " __with_video " << __with_video << endl;
+
     // set volume for playback node
     setVolume( m_volume );
 
     // register the needed event listeners at the playback node
    
-    __playback->getParentObject()->registerEventListener(IProgressListener::setProgress_event, 
-							 &__setProgress_listener);
 
-    __playback->getParentObject()->registerEventListener(ITrack::endTrack_event, 
-							 &__endTrack_listener);
 
-    __playback->getParentObject()->registerEventListener(ISyncReset::syncReset_event, 
-							 &__syncReset_listener);
+    if(__with_video) {
+        __display->getParentObject()->registerEventListener(ISyncReset::syncReset_event, &__syncReset_listener);
+        __display->getParentObject()->registerEventListener(IProgressListener::setProgress_event, &__setProgress_listener);
+        __display->getParentObject()->registerEventListener(ITrack::endTrack_event, &__endTrack_listener);
+
+    }
+    else {
+        __playback->getParentObject()->registerEventListener(ISyncReset::syncReset_event, &__syncReset_listener);
+        __playback->getParentObject()->registerEventListener(IProgressListener::setProgress_event, &__setProgress_listener);
+        __playback->getParentObject()->registerEventListener(ITrack::endTrack_event, &__endTrack_listener);
+    }
 
     __playback->getParentObject()->registerEventListener(ITrackDuration::trackDuration_event, &__trackDuration_listener);
+    __display->getParentObject()->registerEventListener(ITrackDuration::trackDuration_event, &__trackDuration_listener);
 
     // Tell the node that implements the IProgress interface to send progress events frequently.
     IProgress_var progress(__composite->getInterface<IProgress>());
@@ -208,10 +224,11 @@ bool NmmEngine::load(const KURL& url, bool stream)
     __track_length = 0;
 
     // finally start the graph
-    if(__playback->isActivated()) {
+    if(__playback->isActivated())
       __playback->reachStarted();
-    }
-      
+    if(__display->isActivated())
+      __display->reachStarted();
+
     __composite->reachStarted();
  
     __seeking = false;
@@ -231,9 +248,8 @@ bool NmmEngine::play(uint)
 {
   DEBUG_BLOCK
 
-  if (!__composite) {
+  if (!__composite)
     return false;
-  }
 
   // wake up if paused
   ISynchronizedSink_var sync_sink(__playback->getParentObject()->getCheckedInterface<ISynchronizedSink>());
@@ -256,10 +272,18 @@ void NmmEngine::cleanup()
   }
 
   // remove all event listeners
-  __playback->getParentObject()->removeEventListener(&__setProgress_listener);
-  __playback->getParentObject()->removeEventListener(&__endTrack_listener);
-  __playback->getParentObject()->removeEventListener(&__syncReset_listener);
+  if(__with_video) {
+    __display->getParentObject()->removeEventListener(&__setProgress_listener);
+    __display->getParentObject()->removeEventListener(&__endTrack_listener);
+    __display->getParentObject()->removeEventListener(&__syncReset_listener);
+  } 
+  else {
+    __playback->getParentObject()->removeEventListener(&__setProgress_listener);
+    __playback->getParentObject()->removeEventListener(&__endTrack_listener);
+    __playback->getParentObject()->removeEventListener(&__syncReset_listener);
+  }
   __playback->getParentObject()->removeEventListener(&__trackDuration_listener);
+  __display->getParentObject()->removeEventListener(&__trackDuration_listener);
 
   // stop the graph
   __composite->reachActivated();
@@ -268,22 +292,32 @@ void NmmEngine::cleanup()
     __playback->reachActivated();
   }
 
+  if(__display->isStarted()) {
+    __display->reachActivated();
+  }
+
   __composite->flush();
   __composite->reachConstructed();
 
   __playback->flush();
   __playback->reachConstructed();
-
+  
+  //__display->flush();
+  //__display->reachConstructed();
+ 
   // release the playback node
   ClientRegistry& registry = __app->getRegistry();
   {
     RegistryLock lock(registry);
     registry.releaseNode(*__playback);
+    registry.releaseNode(*__display);
   }
 
   delete __composite;
   __composite = 0;
   __playback = 0;
+  __display = 0;
+  __with_video = false;
 
   __position = 0;
 
@@ -330,14 +364,18 @@ void NmmEngine::seek(uint ms)
   __position = ms;
 
   ISeekable_var seek(__composite->getCheckedInterface<ISeekable>());
-  if (seek.get()) {
+  if (seek.get())
     seek->seekPercentTo(Rational(ms, __track_length));
-  }
 }
 
 uint NmmEngine::position() const
 {
   return __position;
+}
+
+uint NmmEngine::length() const
+{
+  return __track_length;
 }
 
 bool NmmEngine::canDecode(const KURL& url) const
@@ -475,6 +513,7 @@ Result NmmEngine::trackDuration(Interval& duration)
 {
   // we got the duration of the track, so let's convert it to milliseconds
   __track_length = duration.sec * 1000 + duration.nsec / 1000;
+  kdDebug() << "NmmEngine::trackDuration " << __track_length << endl;
   return SUCCESS;
 }
 

@@ -1,12 +1,12 @@
 /* NMM - Network-Integrated Multimedia Middleware
  *
- * Copyright (C) 2002-2004
+ * Copyright (C) 2002-2006
  *                    NMM work group,
  *                    Computer Graphics Lab,
  *                    Saarland University, Germany
  *                    http://www.networkmultimedia.org
  *
- * Maintainer:        Wolfram von Funck <wolfram@graphics.cs.uni-sb.de>
+ * Maintainer:        Robert Gogolok <gogo@graphics.cs.uni-sb.de>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -47,7 +47,10 @@ public:
 
     bool init();
     bool canDecode(const KURL&) const;
+
     uint position() const;
+
+    uint length() const;
 
     Engine::State state() const;
 
@@ -145,9 +148,23 @@ private:
     CompositeNode* __composite;
 
     /**
-     * The playback node where the various events like endTrack, setProgress etc. are caught.
+     * The node for audio playback 
+     * where the various events like endTrack, setProgress etc. are caught 
+     * if video is disabled.
      */
     INode* __playback;
+
+    /**
+     * The display node for video playback
+     * where the various events like endTrack, setProgress etc. are caught 
+     * if video is enabled.
+     */
+    INode* __display;
+
+    /**
+     * Indicates whether we are playing a video.
+     */
+    bool __with_video;
 
     /**
      * This flag is set during seeking.
