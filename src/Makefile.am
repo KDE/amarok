@@ -88,6 +88,7 @@ libamarok_la_SOURCES = \
     mediabrowser.cpp \
     medium.cpp \
     mediumpluginchooser.cpp \
+    mediumpluginmanager.cpp \
     metabundle.cpp \
     multitabbar.cpp \
     moodbar.cpp \

@@ -34,9 +34,10 @@ class MediumPluginManager : public KDialogBase
         void slotOk( );
         void slotCancel( );
 
-    private:
-        KTable*     m_tombo;
+//    private:
+
 
 };
 
 #endif
+

@@ -12,6 +12,7 @@
 #include "covermanager.h"
 #include "enginecontroller.h"
 #include "k3bexporter.h"
+#include "mediumpluginmanager.h"
 #include "playlistwindow.h"
 #include "playlist.h"
 #include "socketserver.h"       //Vis::Selector::showInstance()
@@ -99,6 +100,7 @@ Menu::Menu()
 
     insertItem( SmallIconSet( "covermanager" ), i18n( "C&over Manager" ), ID_SHOW_COVER_MANAGER );
     safePlug( ac, "queue_manager", this );
+    insertItem( SmallIconSet( "visualizations"), i18n( "Medium &Plugin Manager" ), ID_SHOW_MEDIUM_PLUGIN_MANAGER );
     insertItem( SmallIconSet( "visualizations"), i18n( "&Visualizations" ), ID_SHOW_VIS_SELECTOR );
     insertItem( SmallIconSet( "equalizer"), i18n( "E&qualizer" ), kapp, SLOT( slotConfigEqualizer() ), 0, ID_CONFIGURE_EQUALIZER );
     safePlug( ac, "script_manager", this );
@@ -185,6 +187,9 @@ Menu::slotActivated( int index )
         break;
     case ID_RESCAN_COLLECTION:
         CollectionDB::instance()->startScan();
+        break;
+    case ID_SHOW_MEDIUM_PLUGIN_MANAGER:
+        new MediumPluginManager();
         break;
     }
 }

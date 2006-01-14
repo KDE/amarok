@@ -16,6 +16,7 @@
 #include "debug.h"
 #include "mediabrowser.h"
 #include "mediumpluginchooser.h"
+#include "mediumpluginmanager.h"
 #include "medium.h"
 #include "plugin/pluginconfig.h"
 #include "pluginmanager.h"
@@ -39,13 +40,7 @@ MediumPluginManager::MediumPluginManager( )
     QVBox* vbox = makeVBoxMainWidget();
     vbox->setSpacing( KDialog::spacingHint() );
 
-    // BEGIN Manager
-    QHBox* chooserBox = new QHBox( vbox );
-    chooserBox->setSpacing( KDialog::spacingHint() );
-
-    m_table = new KTable( , "chooserCombo" );
-    m_table->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred ) );
-
+    this->exec();
 }
 
 MediumPluginManager::~MediumPluginManager()
@@ -57,8 +52,6 @@ void
 MediumPluginManager::slotCancel( )
 {
     DEBUG_BLOCK
-    const QString empty;
-    emit selectedPlugin( m_medium, empty );
     KDialogBase::slotCancel( );
 }
 
@@ -66,7 +59,6 @@ void
 MediumPluginManager::slotOk( )
 {
     DEBUG_BLOCK
-    emit selectedPlugin( m_medium, QString(m_chooserCombo->currentText()) );
     KDialogBase::slotOk( );
 }
 
