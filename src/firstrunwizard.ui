@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>830</width>
-            <height>414</height>
+            <width>822</width>
+            <height>410</height>
         </rect>
     </property>
     <property name="caption">
@@ -26,16 +26,14 @@
             <property name="name">
                 <cstring>unnamed</cstring>
             </property>
-            <widget class="KActiveLabel" row="0" column="0">
+            <widget class="KActiveLabel" row="0" column="0" rowspan="2" colspan="1">
                 <property name="name">
                     <cstring>text1</cstring>
                 </property>
                 <property name="text">
                     <string>&lt;h1&gt;Welcome to amaroK!&lt;/h1&gt;
-&lt;p&gt;There are many media-players around these days, this is true. amaroK however provides an aural experience so pleasurable it always has you coming back for more. What is missing from most players is an interface that does not get in your way. amaroK tries to be a little different, and at the same time intuitive. It provides a simple drag-and-drop interface that makes playlist handling simple and fun. By using amaroK we truly hope you will:&lt;/p&gt;
-&lt;p align="center"&gt;&lt;i&gt;"Rediscover your music!"&lt;/i&gt; &lt;/p&gt;
-&lt;h2&gt;First-run Wizard&lt;/h2&gt;
-&lt;p&gt;This wizard will help you setup amaroK in three easy steps. Click &lt;i&gt;Next&lt;/i&gt; to begin, or if you do not like wizards, click &lt;i&gt;Skip&lt;/i&gt;.&lt;/p&gt;</string>
+&lt;p&gt;&lt;b&gt;There are many media-players around these days, this is true. amaroK however provides an aural experience so pleasurable it always has you coming back for more. What is missing from most players is an interface that does not get in your way. amaroK tries to be a little different, and at the same time intuitive. It provides a simple drag-and-drop interface that makes playlist handling simple and fun. By using amaroK we truly hope you will:&lt;/b&gt;&lt;/p&gt;
+&lt;p align="center"&gt;&lt;i&gt;&lt;b&gt;"Rediscover your music!"&lt;/b&gt;&lt;/i&gt; &lt;/p&gt;</string>
                 </property>
             </widget>
             <widget class="QLabel" row="0" column="2">
@@ -57,20 +55,29 @@
                     <bool>false</bool>
                 </property>
             </widget>
-            <spacer row="0" column="1">
+            <widget class="KActiveLabel" row="2" column="0" rowspan="1" colspan="3">
                 <property name="name">
-                    <cstring>spacer3_2</cstring>
+                    <cstring>text1_2</cstring>
+                </property>
+                <property name="text">
+                    <string>&lt;h2&gt;First-run Wizard&lt;/h2&gt;
+&lt;p&gt;&lt;b&gt;This wizard will help you setup amaroK in three easy steps. Click &lt;i&gt;Next&lt;/i&gt; to begin, or if you do not like wizards, click &lt;i&gt;Skip&lt;/i&gt;.&lt;/b&gt;&lt;/p&gt;</string>
+                </property>
+            </widget>
+            <spacer row="1" column="1">
+                <property name="name">
+                    <cstring>spacer1</cstring>
                 </property>
                 <property name="orientation">
-                    <enum>Vertical</enum>
+                    <enum>Horizontal</enum>
                 </property>
                 <property name="sizeType">
                     <enum>Expanding</enum>
                 </property>
                 <property name="sizeHint">
                     <size>
-                        <width>21</width>
-                        <height>320</height>
+                        <width>40</width>
+                        <height>20</height>
                     </size>
                 </property>
             </spacer>
