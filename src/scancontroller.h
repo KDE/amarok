@@ -20,8 +20,10 @@
 #ifndef AMAROK_SCANCONTROLLER_H
 #define AMAROK_SCANCONTROLLER_H
 
-#include <qobject.h>     //baseclass
-#include <qxml.h>        //baseclass
+#include <qobject.h>      //baseclass
+#include <qxml.h>         //baseclass
+
+#include "threadweaver.h" //baseclass
 
 class DbConnection;
 class KProcIO;
@@ -40,23 +42,18 @@ class KProcIO;
  * driven SAX2 parser is used, which can process the entities as they arrive, without
  * the need for a DOM document structure.
  */
-class ScanController : public QObject, public QXmlDefaultHandler
+class ScanController : public QXmlDefaultHandler, public ThreadWeaver::DependentJob
 {
-    Q_OBJECT
-
     public:
         ScanController( QObject* parent, bool incremental, const QStringList& folders = QStringList() );
-        ~ScanController();
 
         static ScanController* instance() { return s_instance; }
 
-    private slots:
-        void slotReadReady();
-        void slotProcessExited();
-
     private:
         bool initIncrementalScanner();
+        bool doJob();
         bool startElement( const QString&, const QString &localName, const QString&, const QXmlAttributes &attrs );
+        void completeJob();
 
         static ScanController* s_instance;
 
@@ -68,8 +65,7 @@ class ScanController : public QObject, public QXmlDefaultHandler
         QXmlSimpleReader m_reader;
 
         bool m_incremental;
-        int  m_steps;
-        int  m_totalSteps;
+        bool m_scannerCrashed;
 };
 
 

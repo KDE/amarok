@@ -172,7 +172,6 @@ class CollectionDB : public QObject, public EngineObserver
     Q_OBJECT
 
     friend class SimilarArtistsInsertionJob;
-    friend class ScanController;
 
     signals:
         void scanStarted();
@@ -373,6 +372,8 @@ class CollectionDB : public QObject, public EngineObserver
         void initialize();
         void destroy();
         DbConnection* getMyConnection();
+
+        void customEvent( QCustomEvent * );
 
         //general management methods
         void createStatsTable();

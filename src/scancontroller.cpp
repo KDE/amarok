@@ -36,8 +36,6 @@
 #include <kmessagebox.h>
 #include <kprocio.h>
 
-using amaroK::StatusBar;
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // class ScannerProcIO
@@ -79,33 +77,18 @@ ScanController* ScanController::s_instance = 0;
 
 
 ScanController::ScanController( QObject* parent, bool incremental, const QStringList& folders )
-    : QObject( parent )
-    , QXmlDefaultHandler()
+    : QXmlDefaultHandler()
+    , DependentJob( parent, "CollectionScanner" )
     , m_scanner( new ScannerProcIO() )
     , m_folders( folders )
     , m_incremental( incremental )
-    , m_steps( 0 )
+    , m_scannerCrashed( true )
 {
     DEBUG_BLOCK
 
     s_instance = this;
 
-    if( !CollectionDB::instance()->isConnected() ) {
-        deleteLater();
-        return;
-    }
-
-    if( ( m_incremental && !initIncrementalScanner() ) || m_folders.isEmpty() ) {
-        deleteLater();
-        return;
-    }
-
-    CollectionDB::instance()->createTables( true, !m_incremental );
-
-    StatusBar::instance()->newProgressOperation( this )
-            .setDescription( m_incremental ? i18n( "Updating Collection" ) : i18n( "Building Collection" ) )
-            .setAbortSlot( this, SLOT( deleteLater() ) )
-            .setTotalSteps( 100 );
+    setDescription( m_incremental ? i18n( "Updating Collection" ) : i18n( "Building Collection" ) );
 
     m_reader.setContentHandler( this );
     m_reader.parse( &m_source, true );
@@ -117,28 +100,7 @@ ScanController::ScanController( QObject* parent, bool incremental, const QString
     *m_scanner << "-l" << ( amaroK::saveLocation( QString::null ) + "collection_scan.log" );
     *m_scanner << m_folders;
 
-    connect( m_scanner, SIGNAL( readReady( KProcIO* ) ),      SLOT( slotReadReady() ) );
-    connect( m_scanner, SIGNAL( processExited( KProcess* ) ), SLOT( slotProcessExited() ) );
-
     m_scanner->start();
-}
-
-
-ScanController::~ScanController()
-{
-    DEBUG_BLOCK
-
-    m_scanner->kill();
-    delete m_scanner;
-
-    if( m_incremental && CollectionDB::instance()->isConnected() ) {
-        // FIXME: really needed? should be done right after copyTables() right now
-        //CollectionDB::instance()->dropTables( true );
-    }
-
-    emit CollectionDB::instance()->scanDone( m_incremental ? !m_folders.isEmpty() : true );
-
-    s_instance = 0;
 }
 
 
@@ -183,7 +145,76 @@ ScanController::initIncrementalScanner()
     if( m_folders.isEmpty() )
         return false;
 
-    StatusBar::instance()->shortMessage( i18n( "Updating Collection..." ) );
+    amaroK::StatusBar::instance()->shortMessage( i18n( "Updating Collection..." ) );
+    return true;
+}
+
+
+bool
+ScanController::doJob()
+{
+    DEBUG_THREAD_FUNC_INFO
+
+    if( !CollectionDB::instance()->isConnected() )
+        return true;
+    if( ( m_incremental && !initIncrementalScanner() ) || m_folders.isEmpty() )
+        return true;
+
+    if ( AmarokConfig::databaseEngine().toInt() == DbConnection::sqlite )
+        CollectionDB::instance()->query( QString( "BEGIN TRANSACTION;" ) );
+
+    CollectionDB::instance()->createTables( true, !m_incremental );
+    setProgressTotalSteps( 100 );
+
+
+    /// Main Loop
+    while( m_scanner->isRunning() ) {
+        QString line, data;
+        bool partial;
+
+        if( m_scanner->readln( line, true, &partial ) != -1 )
+            data += line;
+        else {
+            msleep( 15 );
+            continue;
+        }
+
+        while( m_scanner->readln( line, true, &partial ) != -1 )
+            data += line;
+
+        m_source.setData( data );
+
+        if( !m_reader.parseContinue() )
+            ::warning() << "parseContinue() failed: " << errorString() << endl << data << endl;
+    }
+
+
+    if( m_scanner->normalExit() && !m_scanner->signalled() ) {
+        if ( m_incremental ) {
+            m_foldersToRemove += m_folders;
+            foreach( m_foldersToRemove ) {
+                CollectionDB::instance()->removeSongsInDir( *it );
+                CollectionDB::instance()->removeDirFromCollection( *it );
+            }
+            CollectionDB::instance()->copyTempTables( ); // copy temp into permanent tables
+            CollectionDB::instance()->dropTables( true );
+        }
+        else {
+            CollectionDB::instance()->renameTempTables(); // rename temp tables to permanent
+        }
+
+        m_scannerCrashed = false;
+    }
+
+    if( m_incremental && CollectionDB::instance()->isConnected() ) {
+        // FIXME: really needed? should be done right after copyTables() right now
+        //CollectionDB::instance()->dropTables( true );
+    }
+
+    if ( AmarokConfig::databaseEngine().toInt() == DbConnection::sqlite )
+        CollectionDB::instance()->query( QString( "COMMIT TRANSACTION;" ) );
+
+
     return true;
 }
 
@@ -191,6 +222,8 @@ ScanController::initIncrementalScanner()
 bool
 ScanController::startElement( const QString&, const QString& localName, const QString&, const QXmlAttributes& attrs )
 {
+//     DEBUG_THREAD_FUNC_INFO
+
     // List of entity names:
     //
     // itemcount     Number of files overall
@@ -203,28 +236,27 @@ ScanController::startElement( const QString&, const QString& localName, const QS
 
 
     if( localName == "itemcount") {
-        m_totalSteps = attrs.value( "count" ).toInt();
-        debug() << "itemcount event: " << m_totalSteps << endl;
+        const int totalSteps = attrs.value( "count" ).toInt();
+        debug() << "itemcount event: " << totalSteps << endl;
+        setProgressTotalSteps( totalSteps );
     }
 
     if( localName == "dud" || localName == "tags" || localName == "playlist" ) {
-        m_steps++;
-        const int newPercent = int( (100 * m_steps) / m_totalSteps);
-        StatusBar::instance()->setProgress( this, newPercent );
+        incrementProgress();
     }
 
     if( localName == "tags") {
         MetaBundle bundle;
 
-        bundle.setPath   ( attrs.value( "path" ) );
-        bundle.setTitle  ( attrs.value( "title" ) );
-        bundle.setArtist ( attrs.value( "artist" ) );
-        bundle.setComposer( attrs.value( "composer" ) );
-        bundle.setAlbum  ( attrs.value( "album" ) );
-        bundle.setComment( attrs.value( "comment" ) );
-        bundle.setGenre  ( attrs.value( "genre" ) );
-        bundle.setYear   ( attrs.value( "year" ).toInt() );
-        bundle.setTrack  ( attrs.value( "track" ).toInt() );
+        bundle.setPath      ( attrs.value( "path" ) );
+        bundle.setTitle     ( attrs.value( "title" ) );
+        bundle.setArtist    ( attrs.value( "artist" ) );
+        bundle.setComposer  ( attrs.value( "composer" ) );
+        bundle.setAlbum     ( attrs.value( "album" ) );
+        bundle.setComment   ( attrs.value( "comment" ) );
+        bundle.setGenre     ( attrs.value( "genre" ) );
+        bundle.setYear      ( attrs.value( "year" ).toInt() );
+        bundle.setTrack     ( attrs.value( "track" ).toInt() );
         bundle.setDiscNumber( attrs.value( "discnumber" ).toInt() );
 
         if( attrs.value( "audioproperties" ) == "true" ) {
@@ -249,8 +281,8 @@ ScanController::startElement( const QString&, const QString& localName, const QS
         }
     }
 
-    if( localName == "playlist" )
-        PlaylistBrowser::instance()->addPlaylist( attrs.value( "path" ) );
+//     if( localName == "playlist" )
+//         PlaylistBrowser::instance()->addPlaylist( attrs.value( "path" ) );
 
     if( localName == "compilation" )
         CollectionDB::instance()->checkCompilations( attrs.value( "path" ), !m_incremental);
@@ -274,41 +306,11 @@ ScanController::startElement( const QString&, const QString& localName, const QS
 
 
 void
-ScanController::slotReadReady()
-{
-    QString line, data;
-    bool partial;
-
-    while( m_scanner->readln( line, true, &partial ) != -1 )
-        data += line;
-
-    m_source.setData( data );
-
-    if( !m_reader.parseContinue() )
-        ::warning() << "parseContinue() failed: " << errorString() << endl << data << endl;
-}
-
-
-void
-ScanController::slotProcessExited()
+ScanController::completeJob()
 {
     DEBUG_BLOCK
 
-    if( m_scanner->normalExit() && !m_scanner->signalled() ) {
-        if ( m_incremental ) {
-            m_foldersToRemove += m_folders;
-            foreach( m_foldersToRemove ) {
-                CollectionDB::instance()->removeSongsInDir( *it );
-                CollectionDB::instance()->removeDirFromCollection( *it );
-            }
-            CollectionDB::instance()->copyTempTables( ); // copy temp into permanent tables
-            CollectionDB::instance()->dropTables( true );
-        }
-        else {
-            CollectionDB::instance()->renameTempTables(); // rename temp tables to permanent
-        }
-    }
-    else {
+    if( m_scannerCrashed ) {
         ::error() << "CollectionScanner has crashed! Scan aborted." << endl;
 
         QFile log( amaroK::saveLocation( QString::null ) + "collection_scan.log" );
@@ -326,7 +328,12 @@ ScanController::slotProcessExited()
         m_folders.clear();
     }
 
-    deleteLater();
+    m_scanner->kill();
+    delete m_scanner;
+
+    s_instance = 0;
+
+    ThreadWeaver::DependentJob::completeJob();
 }
 
 

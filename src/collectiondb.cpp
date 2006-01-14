@@ -2328,12 +2328,10 @@ CollectionDB::startScan()  //SLOT
         dropTables(false);
         createTables(false);
     }
-    else if( PlaylistBrowser::instance() && !ScanController::instance() )
+    else if( PlaylistBrowser::instance() )
     {
         emit scanStarted();
-        if ( AmarokConfig::databaseEngine().toInt() == DbConnection::sqlite )
-            query( QString( "BEGIN TRANSACTION;" ) );
-        new ScanController( this, false, folders );
+        ThreadWeaver::instance()->queueJob( new ScanController( this, false, folders ) );
     }
 }
 
@@ -2341,9 +2339,7 @@ CollectionDB::startScan()  //SLOT
 void
 CollectionDB::stopScan() //SLOT
 {
-    if ( AmarokConfig::databaseEngine().toInt() == DbConnection::sqlite )
-        query( QString( "COMMIT TRANSACTION;" ) );
-    delete ScanController::instance();
+    ThreadWeaver::instance()->abortAllJobsNamed( "CollectionScanner" );
 }
 
 
@@ -2356,7 +2352,7 @@ CollectionDB::dirDirty( const QString& path )
 {
     debug() << k_funcinfo << "Dirty: " << path << endl;
 
-    new ScanController( this, false, path );
+//     new ScanController( this, false, path );
 }
 
 
@@ -2539,9 +2535,21 @@ void
 CollectionDB::scanModifiedDirs()
 {
     //we check if a job is pending because we don't want to abort incremental collection readings
-    if ( !ScanController::instance() && PlaylistBrowser::instance() ) {
+    if ( !ThreadWeaver::instance()->isJobPending( "CollectionScanner" ) && PlaylistBrowser::instance() ) {
         emit scanStarted();
-        new ScanController( this, true ); // Incremental scanning mode
+        ThreadWeaver::instance()->onlyOneJob( new ScanController( this, true ) ); // Incremental scanning mode
+    }
+}
+
+
+void
+CollectionDB::customEvent( QCustomEvent *e )
+{
+    DEBUG_BLOCK
+
+    if ( e->type() == (int)ScanController::JobFinishedEvent ) {
+        debug() << "FinishedEvent from ScanController received.\n";
+        emit scanDone( true );  //FIXME
     }
 }
 
