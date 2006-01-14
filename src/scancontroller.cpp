@@ -195,10 +195,7 @@ ScanController::doJob()
     if( !CollectionDB::instance()->isConnected() )
         return false;
 
-    if ( AmarokConfig::databaseEngine().toInt() == DbConnection::sqlite )
-        CollectionDB::instance()->query( QString( "BEGIN TRANSACTION;" ) );
-
-    CollectionDB::instance()->createTables( true, !m_incremental );
+    CollectionDB::instance()->createTables( true );
     setProgressTotalSteps( 100 );
 
 
@@ -231,25 +228,20 @@ ScanController::doJob()
                 CollectionDB::instance()->removeSongsInDir( *it );
                 CollectionDB::instance()->removeDirFromCollection( *it );
             }
-            CollectionDB::instance()->copyTempTables( ); // copy temp into permanent tables
-            CollectionDB::instance()->dropTables( true );
         }
-        else {
-            CollectionDB::instance()->renameTempTables(); // rename temp tables to permanent
+        else
+        {
+            CollectionDB::instance()->clearTables( false ); // empty permanent tables
         }
+        CollectionDB::instance()->copyTempTables( ); // copy temp into permanent tables
     }
     else
         m_scannerCrashed = true;
 
 
-    if( m_incremental && CollectionDB::instance()->isConnected() ) {
-        // FIXME: really needed? should be done right after copyTables() right now
-        //CollectionDB::instance()->dropTables( true );
+    if( CollectionDB::instance()->isConnected() ) {
+        CollectionDB::instance()->dropTables( true ); // drop temp tables
     }
-
-    if ( AmarokConfig::databaseEngine().toInt() == DbConnection::sqlite )
-        CollectionDB::instance()->query( QString( "COMMIT TRANSACTION;" ) );
-
 
     return !isAborted();
 }
