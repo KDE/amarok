@@ -336,5 +336,3 @@ ScanController::completeJob()
     ThreadWeaver::DependentJob::completeJob();
 }
 
-
-#include "scancontroller.moc"
