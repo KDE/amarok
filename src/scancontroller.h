@@ -25,7 +25,7 @@
 
 #include "threadweaver.h" //baseclass
 
-class DbConnection;
+class CollectionDB;
 class KProcIO;
 
 /**
@@ -45,27 +45,58 @@ class KProcIO;
 class ScanController : public QXmlDefaultHandler, public ThreadWeaver::DependentJob
 {
     public:
-        ScanController( QObject* parent, bool incremental, const QStringList& folders = QStringList() );
+        static const int PlaylistFoundEventType = 8890;
 
-        static ScanController* instance() { return s_instance; }
+        class PlaylistFoundEvent : public QCustomEvent {
+        public:
+            PlaylistFoundEvent( QString path )
+                : QCustomEvent( PlaylistFoundEventType )
+                , m_path( path ) {}
+            QString path() { return m_path; }
+        private:
+            QString m_path;
+        };
 
-    private:
-        bool initIncrementalScanner();
-        bool doJob();
-        bool startElement( const QString&, const QString &localName, const QString&, const QXmlAttributes &attrs );
-        void completeJob();
+    public:
+        ScanController( CollectionDB* parent, const QStringList& folders = QStringList() );
+        ~ScanController();
 
-        static ScanController* s_instance;
+    protected:
+        virtual bool doJob();
 
-        KProcIO*      const m_scanner;
-        QStringList         m_folders;
-        QStringList         m_foldersToRemove;
-
-        QXmlInputSource  m_source;
-        QXmlSimpleReader m_reader;
+        // Member variables:
+        KProcIO* const m_scanner;
+        QStringList m_folders;
+        QStringList m_foldersToRemove;
 
         bool m_incremental;
         bool m_scannerCrashed;
+
+    private:
+        bool startElement( const QString&, const QString &localName, const QString&, const QXmlAttributes &attrs );
+
+        // Member variables:
+        QXmlInputSource m_source;
+        QXmlSimpleReader m_reader;
+};
+
+
+/**
+ * @class IncrementalScanController
+ * @short Only scans directories that have been modified since the last scan
+ */
+
+class IncrementalScanController : public ScanController
+{
+    public:
+        IncrementalScanController( CollectionDB* );
+
+        bool hasChanged() const { return m_hasChanged; }
+
+    protected:
+        bool doJob();
+
+        bool m_hasChanged;
 };
 
 

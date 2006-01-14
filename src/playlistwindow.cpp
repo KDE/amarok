@@ -32,10 +32,10 @@
 #include "playlist.h"
 #include "playlistbrowser.h"
 #include "playlistwindow.h"
-#include "scancontroller.h"
 #include "scriptmanager.h"
 #include "statistics.h"
 #include "statusbar.h"
+#include "threadweaver.h"
 
 #include <qevent.h>           //eventFilter()
 #include <qheader.h>
@@ -187,7 +187,7 @@ void PlaylistWindow::init()
     //the above ctor returns it causes a crash unless we do the initialisation in 2 stages.
 
     m_browsers = new BrowserBar( this );
-    
+
     { //<Dynamic Mode Status Bar>
         DynamicBar *bar = new DynamicBar( m_browsers->container());
         connect(actionCollection()->action("dynamic_mode"), SIGNAL(toggled(bool)), bar, SLOT(toggledDynamic(bool)));
@@ -495,7 +495,7 @@ void PlaylistWindow::applySettings()
 /**
  * @param o The object
  * @param e The event
- * 
+ *
  * Here we filter some events for the Playlist Search LineEdit and the Playlist. @n
  * this makes life easier since we have more useful functions available from this class
  */
@@ -852,7 +852,7 @@ void PlaylistWindow::actionsMenuAboutToShow() //SLOT
 void PlaylistWindow::toolsMenuAboutToShow() //SLOT
 {
     m_toolsMenu->setItemEnabled( amaroK::Menu::ID_CONFIGURE_EQUALIZER, EngineController::hasEngineProperty( "HasEqualizer" ) );
-    m_toolsMenu->setItemEnabled( amaroK::Menu::ID_RESCAN_COLLECTION, !ScanController::instance() );
+    m_toolsMenu->setItemEnabled( amaroK::Menu::ID_RESCAN_COLLECTION, !ThreadWeaver::instance()->isJobPending( "CollectionScanner" ) );
 }
 
 
@@ -916,7 +916,7 @@ DynamicBar::DynamicBar(QWidget* parent)
     KPushButton* editDynamicButton = new KPushButton( i18n("Edit this Dynamic Mode"), this, "DynamicModeEdit" );
     connect( editDynamicButton, SIGNAL(clicked()), Party::instance(), SLOT(editActiveParty()) );
 
-    KPushButton* repopButton = new KPushButton( i18n("Repopulate"), this, "DynamicModeRepopulate" ); 
+    KPushButton* repopButton = new KPushButton( i18n("Repopulate"), this, "DynamicModeRepopulate" );
     connect( repopButton, SIGNAL(clicked()), Party::instance(), SLOT(repopulate()) );
 
     connect(Party::instance(), SIGNAL(titleChanged(const QString&)), this, SLOT( changeTitle(const QString&)));

@@ -73,22 +73,17 @@ ScannerProcIO::ScannerProcIO()
 // class ScanController
 ////////////////////////////////////////////////////////////////////////////////
 
-ScanController* ScanController::s_instance = 0;
-
-
-ScanController::ScanController( QObject* parent, bool incremental, const QStringList& folders )
+ScanController::ScanController( CollectionDB* parent, const QStringList& folders )
     : QXmlDefaultHandler()
     , DependentJob( parent, "CollectionScanner" )
     , m_scanner( new ScannerProcIO() )
     , m_folders( folders )
-    , m_incremental( incremental )
-    , m_scannerCrashed( true )
+    , m_incremental( false )
+    , m_scannerCrashed( false )
 {
     DEBUG_BLOCK
 
-    s_instance = this;
-
-    setDescription( m_incremental ? i18n( "Updating Collection" ) : i18n( "Building Collection" ) );
+    setDescription( i18n( "Building Collection" ) );
 
     m_reader.setContentHandler( this );
     m_reader.parse( &m_source, true );
@@ -104,11 +99,52 @@ ScanController::ScanController( QObject* parent, bool incremental, const QString
 }
 
 
+ScanController::~ScanController()
+{
+    DEBUG_BLOCK
+
+    if( m_scannerCrashed ) {
+        ::error() << "CollectionScanner has crashed! Scan aborted." << endl;
+
+        QFile log( amaroK::saveLocation( QString::null ) + "collection_scan.log" );
+        log.open( IO_ReadOnly );
+        const QString& path = log.readAll();
+        if( path.isEmpty() )
+            KMessageBox::error( 0, i18n( "Sorry, the Collection Scanner has crashed." ),
+                                   i18n( "Collection Scan Error" ) );
+        else
+            KMessageBox::error( 0, i18n( "<p>Sorry, the Collection Scanner has crashed while "
+                                         "reading the file:</p><p><i>%1</i></p><p>Please remove this "
+                                         "file from your collection, then rescan the collection.</p>" )
+                                         .arg( path ), i18n( "Collection Scan Error" ) );
+
+        m_folders.clear();
+    }
+
+    m_scanner->kill();
+    delete m_scanner;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// class IncrementalScanController
+////////////////////////////////////////////////////////////////////////////////
+
+IncrementalScanController::IncrementalScanController( CollectionDB *parent )
+        : ScanController( parent, QStringList() )
+        , m_hasChanged( false )
+{
+    m_incremental = true;
+
+    setDescription( i18n( "Updating Collection" ) );
+}
+
+
 bool
-ScanController::initIncrementalScanner()
+IncrementalScanController::doJob()
 {
     /**
-     * The Incremental Reader works as follows: Here we check the mtime of every directory in the "directories"
+     * The Incremental Scanner works as follows: Here we check the mtime of every directory in the "directories"
      * table and store all changed directories in m_folders.
      *
      * These directories are then scanned in CollectionReader::doJob(), with m_recursively set according to the
@@ -137,18 +173,19 @@ ScanController::initIncrementalScanner()
             m_folders << folder;
             debug() << "Collection dir removed: " << folder << endl;
         }
-
-        // Don't block the GUI
-        kapp->processEvents();
     }
 
-    if( m_folders.isEmpty() )
-        return false;
+    if ( !m_folders.isEmpty() ) {
+        m_hasChanged = true;
+        amaroK::StatusBar::instance()->shortMessage( i18n( "Updating Collection..." ) );
+    }
 
-    amaroK::StatusBar::instance()->shortMessage( i18n( "Updating Collection..." ) );
-    return true;
+    return ScanController::doJob();
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// class ScanController
+////////////////////////////////////////////////////////////////////////////////
 
 bool
 ScanController::doJob()
@@ -156,9 +193,7 @@ ScanController::doJob()
     DEBUG_THREAD_FUNC_INFO
 
     if( !CollectionDB::instance()->isConnected() )
-        return true;
-    if( ( m_incremental && !initIncrementalScanner() ) || m_folders.isEmpty() )
-        return true;
+        return false;
 
     if ( AmarokConfig::databaseEngine().toInt() == DbConnection::sqlite )
         CollectionDB::instance()->query( QString( "BEGIN TRANSACTION;" ) );
@@ -168,7 +203,7 @@ ScanController::doJob()
 
 
     /// Main Loop
-    while( m_scanner->isRunning() ) {
+    while( m_scanner->isRunning() ) { //FIXME XML data potentially not yet completely parsed
         QString line, data;
         bool partial;
 
@@ -202,9 +237,10 @@ ScanController::doJob()
         else {
             CollectionDB::instance()->renameTempTables(); // rename temp tables to permanent
         }
-
-        m_scannerCrashed = false;
     }
+    else
+        m_scannerCrashed = true;
+
 
     if( m_incremental && CollectionDB::instance()->isConnected() ) {
         // FIXME: really needed? should be done right after copyTables() right now
@@ -215,7 +251,7 @@ ScanController::doJob()
         CollectionDB::instance()->query( QString( "COMMIT TRANSACTION;" ) );
 
 
-    return true;
+    return !isAborted();
 }
 
 
@@ -281,8 +317,8 @@ ScanController::startElement( const QString&, const QString& localName, const QS
         }
     }
 
-//     if( localName == "playlist" )
-//         PlaylistBrowser::instance()->addPlaylist( attrs.value( "path" ) );
+    if( localName == "playlist" )
+        QApplication::postEvent( PlaylistBrowser::instance(), new PlaylistFoundEvent( attrs.value( "path" ) ) );
 
     if( localName == "compilation" )
         CollectionDB::instance()->checkCompilations( attrs.value( "path" ), !m_incremental);
@@ -302,37 +338,5 @@ ScanController::startElement( const QString&, const QString& localName, const QS
 
 
     return true;
-}
-
-
-void
-ScanController::completeJob()
-{
-    DEBUG_BLOCK
-
-    if( m_scannerCrashed ) {
-        ::error() << "CollectionScanner has crashed! Scan aborted." << endl;
-
-        QFile log( amaroK::saveLocation( QString::null ) + "collection_scan.log" );
-        log.open( IO_ReadOnly );
-        const QString& path = log.readAll();
-        if( path.isEmpty() )
-            KMessageBox::error( 0, i18n( "Sorry, the Collection Scanner has crashed." ),
-                                   i18n( "Collection Scan Error" ) );
-        else
-            KMessageBox::error( 0, i18n( "<p>Sorry, the Collection Scanner has crashed while "
-                                         "reading the file:</p><p><i>%1</i></p><p>Please remove this "
-                                         "file from your collection, then rescan the collection.</p>" )
-                                         .arg( path ), i18n( "Collection Scan Error" ) );
-
-        m_folders.clear();
-    }
-
-    m_scanner->kill();
-    delete m_scanner;
-
-    s_instance = 0;
-
-    ThreadWeaver::DependentJob::completeJob();
 }
 

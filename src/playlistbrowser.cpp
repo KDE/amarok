@@ -19,6 +19,7 @@
 #include "playlistbrowser.h"
 #include "playlistbrowseritem.h"
 #include "playlistselection.h"
+#include "scancontroller.h"
 #include "smartplaylisteditor.h"
 #include "tagdialog.h"         //showContextMenu()
 #include "threadweaver.h"
@@ -1943,6 +1944,16 @@ void PlaylistBrowser::currentItemChanged( QListViewItem *item )    //SLOT
     renameButton->setEnabled( enable_rename );
 
     static_cast<PlaylistBrowserEntry*>(item)->updateInfo();
+}
+
+
+void PlaylistBrowser::customEvent( QCustomEvent *e )
+{
+    // If a playlist is found in collection folders it will be automatically added to the playlist browser
+    // The ScanController sends a PlaylistFoundEvent when a playlist is found.
+
+    ScanController::PlaylistFoundEvent* p = (ScanController::PlaylistFoundEvent*)e;
+    addPlaylist( p->path() );
 }
 
 

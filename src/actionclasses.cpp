@@ -14,8 +14,8 @@
 #include "k3bexporter.h"
 #include "playlistwindow.h"
 #include "playlist.h"
-#include "scancontroller.h"
 #include "socketserver.h"       //Vis::Selector::showInstance()
+#include "threadweaver.h"
 
 #include <qpixmap.h>
 #include <qtooltip.h>
@@ -108,7 +108,7 @@ Menu::Menu()
 
     insertItem( SmallIconSet( "wizard" ), i18n( "First-Run &Wizard" ), ID_SHOW_WIZARD );
     insertItem( i18n("&Rescan Collection"), ID_RESCAN_COLLECTION );
-    setItemEnabled( ID_RESCAN_COLLECTION, !ScanController::instance() );
+    setItemEnabled( ID_RESCAN_COLLECTION, !ThreadWeaver::instance()->isJobPending( "CollectionScanner" ) );
 
     insertSeparator();
 
