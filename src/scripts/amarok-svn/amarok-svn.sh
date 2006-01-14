@@ -11,8 +11,8 @@
 # # # # # # # # # # # # # # # # # # # # # #   # # # # #   # # #   # #   # #   # #   #   #
 
 echo
-echo "amaroK-svn (Version 3.0) by Jocke \"Firetech\" Andersson"
-echo "========================================================"
+echo "amaroK-svn (Version 3.1-SVN) by Jocke \"Firetech\" Andersson"
+echo "============================================================"
 echo
 
 ## Define global variables
@@ -486,13 +486,19 @@ fi
 echo
 let CURR_STEP=S_STEPS-2
 echo "# $CURR_STEP/$S_STEPS - Compiling. (The time of this step depends on the number of new source files that were downloaded.)"
+COMP_START=`date +%s`
 unsermake
+#stopwatch.
+let COMP_TIME=`date +%s`-$COMP_START
+let COMP_H=$COMP_TIME/3600
+let COMP_M=$COMP_TIME%3600/60
+let COMP_S=$COMP_TIME%3600%60
 if [ "$?" != "0" ]; then # If the command didn't finish successfully
   rm -f $TMP_OLD_UNINFO
   Error "Compilation wasn't successful. amaroK was NOT installed/upgraded."
 fi
 echo
-echo "Compilation successful."
+echo "Compilation successful. Took $COMP_H hour(s), $COMP_M minute(s) and $COMP_S second(s)."
 
 ## Compare uninstall commands and , if they differ, uninstall the old revision.
 echo
