@@ -1453,7 +1453,7 @@ CollectionView::deleteSelectedFiles() //SLOT
 }
 
 void
-CollectionView::organizeFiles( const KURL::List &urls, bool addToCollection )  //SLOT
+CollectionView::organizeFiles( const KURL::List &urls, bool copy )  //SLOT
 {
     QStringList folders = AmarokConfig::collectionFolders();
 
@@ -1512,6 +1512,7 @@ CollectionView::organizeFiles( const KURL::List &urls, bool addToCollection )  /
         QString dest;
         QString type;
 
+        CollectionDB::instance()->createTables( true ); // create temp tables
         KURL::List::ConstIterator it = urls.begin();
         for( ; it != urls.end(); ++it )
         {
@@ -1586,7 +1587,7 @@ CollectionView::organizeFiles( const KURL::List &urls, bool addToCollection )  /
 
             if( src.path() != dest ) //supress error warning that file couldn't be moved
             {
-                if( !CollectionDB::instance()->moveFile( src.path(), dest, write, addToCollection ) )
+                if( !CollectionDB::instance()->moveFile( src.path(), dest, write, copy ) )
                     skipped++;
             }
 
@@ -1627,10 +1628,8 @@ CollectionView::organizeFiles( const KURL::List &urls, bool addToCollection )  /
             }
         }
 
-        if( addToCollection )
-        {
-            CollectionDB::instance()->copyTempTables( ); // copy temp table contents to permanent tables
-        }
+        CollectionDB::instance()->copyTempTables(); // copy temp table contents to permanent tables
+        CollectionDB::instance()->dropTables( true ); // and drop them
 
         if( skipped > 0 )
             amaroK::StatusBar::instance()->longMessage( i18n(

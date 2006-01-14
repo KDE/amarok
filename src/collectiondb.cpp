@@ -497,7 +497,8 @@ CollectionDB::clearTables( const bool temporary )
 void
 CollectionDB::copyTempTables( )
 {
-    debug() << "copyTempTables" << endl;
+    DEBUG_BLOCK
+
     insert( "INSERT INTO tags SELECT * FROM tags_temp;", NULL );
     insert( "INSERT INTO album SELECT * FROM album_temp;", NULL );
     insert( "INSERT INTO artist SELECT * FROM artist_temp;", NULL );
@@ -1712,65 +1713,67 @@ CollectionDB::migrateFile( const QString &oldURL, const QString &newURL )
 bool
 CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite, bool copy )
 {
-    if ( copy || isFileInCollection( src ) ){
-        if(src == dest){
-            debug() << "Source and destination URLs are the same, aborting."  << endl;
-            return false;
+    if(src == dest){
+        debug() << "Source and destination URLs are the same, aborting."  << endl;
+        return false;
+    }
+
+    // Escape URL.
+    KURL srcURL = KURL::fromPathOrURL( src );
+    KURL dstURL = KURL::fromPathOrURL( dest );
+
+    // Clean it.
+    srcURL.cleanPath();
+    dstURL.cleanPath();
+
+    // Make sure it is valid.
+    if(!srcURL.isValid() || !dstURL.isValid())
+        debug() << "Invalid URL "  << endl;
+
+    // Get just the directory.
+    KURL dir = dstURL;
+    dir.setFileName(QString::null);
+
+    // Create the directory.
+    if(!KStandardDirs::exists(dir.path()))
+        if(!KStandardDirs::makeDir(dir.path())) {
+            debug() << "Unable to create directory " << dir.path() << endl;
         }
-        else
-        {
-            // Escape URL.
-            KURL srcURL = KURL::fromPathOrURL( src );
-            KURL dstURL = KURL::fromPathOrURL( dest );
 
-            // Clean it.
-            srcURL.cleanPath();
-            dstURL.cleanPath();
-
-            // Make sure it is valid.
-            if(!srcURL.isValid() || !dstURL.isValid())
-                debug() << "Invalid URL "  << endl;
-
-                // Get just the directory.
-                KURL dir = dstURL;
-                dir.setFileName(QString::null);
-
-            // Create the directory.
-            if(!KStandardDirs::exists(dir.path()))
-                if(!KStandardDirs::makeDir(dir.path())) {
-                    debug() << "Unable to create directory " << dir.path() << endl;
-                }
-
-            if( copy )
+    if( copy )
+    {
+        // Copy the file and dirty destination directory
+        if ( KIO::NetAccess::file_copy( srcURL, dstURL, -1, overwrite ) ){
+            MetaBundle bundle( dstURL );
+            if( bundle.isValidMedia() )
             {
-                // Copy the file and dirty destination directory
-                if ( KIO::NetAccess::file_copy( srcURL, dstURL, -1, overwrite ) ){
-                    MetaBundle bundle( dstURL );
-                    if( bundle.isValidMedia() )
-                    {
-                        addSong( &bundle, true /* XXX: incremental? */ );
-                        return true;
-                    }
-                    return false;
-                }
-                else
-                    return false;
+                addSong( &bundle, true );
+                return true;
             }
-            else
-            {
-                // Move the file and update DB
-                if ( KIO::NetAccess::file_move( srcURL, dstURL, -1, overwrite ) ){
-                    migrateFile( src, dest );
-                    return true;
-                }
-                else
-                    return false;
-            }
-
         }
     }
     else
-        return false;
+    {
+        // Move the file and update DB
+        if ( KIO::NetAccess::file_move( srcURL, dstURL, -1, overwrite ) ){
+            if( isFileInCollection( srcURL.url() ) )
+            {
+                migrateFile( src, dest );
+                return true;
+            }
+            else
+            {
+                MetaBundle bundle( dstURL );
+                if( bundle.isValidMedia() )
+                {
+                    addSong( &bundle, true );
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;
 }
 
 void
@@ -3908,7 +3911,7 @@ QueryBuilder::valueName( int value )
     if ( value & valTitle )       values += "title";
     if ( value & valTrack )       values += "track";
     if ( value & valComposer )    values += "composer";
-    if ( value & valDiscNumber )    values += "discnumber";
+    if ( value & valDiscNumber )  values += "discnumber";
     if ( value & valScore )       values += "percentage";
     if ( value & valRating )      values += "rating";
     if ( value & valComment )     values += "comment";

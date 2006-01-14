@@ -188,7 +188,8 @@ FileBrowser::FileBrowser( const char * name )
         menu->insertSeparator();
 
         menu->insertItem( SmallIconSet( "usbpendrive_unmount" ), i18n( "Add to Media Device &Transfer Queue" ), MediaDevice );
-        menu->insertItem( SmallIconSet( "collection" ), i18n( "Copy to &Collection" ), CopyToCollection );
+        menu->insertItem( SmallIconSet( "collection" ), i18n( "&Copy to Collection" ), CopyToCollection );
+        menu->insertItem( SmallIconSet( "collection" ), i18n( "&Move to Collection" ), MoveToCollection );
         menu->insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn to CD"), BurnCd );
         menu->insertSeparator();
         menu->insertItem( i18n( "&Select All Files" ), SelectAllFiles );
@@ -390,6 +391,11 @@ FileBrowser::contextMenuActivated( int id )
     case CopyToCollection:
         CollectionView::instance()->organizeFiles( selectedItems(), true );
         break;
+
+    case MoveToCollection:
+        CollectionView::instance()->organizeFiles( selectedItems(), false );
+        break;
+
 
     case MediaDevice:
         MediaBrowser::queue()->addURLs( selectedItems() );
