@@ -20,7 +20,6 @@
 #ifndef AMAROK_SCANCONTROLLER_H
 #define AMAROK_SCANCONTROLLER_H
 
-#include <qobject.h>      //baseclass
 #include <qxml.h>         //baseclass
 
 #include "threadweaver.h" //baseclass
