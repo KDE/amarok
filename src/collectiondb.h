@@ -224,13 +224,11 @@ class CollectionDB : public QObject, public EngineObserver
         bool isValid();
         QString adminValue( QString noption );
         void setAdminValue( QString noption, QString value );
-        void createTables( const bool temporary = false,
-                bool renameLater = false /* if true, don't use "TEMPORARY" */ );
+        void createTables( const bool temporary = false );
         void createIndices(  );
         void dropTables( const bool temporary = false);
         void clearTables( const bool temporary = false);
         void copyTempTables(  );
-        void renameTempTables(  );
 
         uint artistID( QString value, bool autocreate = true, const bool temporary = false, const bool updateSpelling = false );
         uint albumID( QString value, bool autocreate = true, const bool temporary = false, const bool updateSpelling = false );

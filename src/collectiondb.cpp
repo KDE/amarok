@@ -301,7 +301,7 @@ CollectionDB::setAdminValue( QString noption, QString value ) {
 
 
 void
-CollectionDB::createTables( const bool temporary, const bool rename )
+CollectionDB::createTables( const bool temporary )
 {
     //create tag table
     query( QString( "CREATE %1 TABLE tags%2 ("
@@ -321,7 +321,7 @@ CollectionDB::createTables( const bool temporary, const bool rename )
                     "length INTEGER,"
                     "samplerate INTEGER,"
                     "sampler BOOL );" )
-                    .arg( !rename ? "TEMPORARY" : "" )
+                    .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
     QString albumAutoIncrement = "";
@@ -354,7 +354,7 @@ CollectionDB::createTables( const bool temporary, const bool rename )
     query( QString( "CREATE %1 TABLE album%2 ("
                     "id INTEGER PRIMARY KEY %3,"
                     "name " + textColumnType() + ");" )
-                    .arg( !rename ? "TEMPORARY" : "" )
+                    .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" )
                     .arg( albumAutoIncrement ) );
 
@@ -362,7 +362,7 @@ CollectionDB::createTables( const bool temporary, const bool rename )
     query( QString( "CREATE %1 TABLE artist%2 ("
                     "id INTEGER PRIMARY KEY %3,"
                     "name " + textColumnType() + ");" )
-                    .arg( !rename ? "TEMPORARY" : "" )
+                    .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" )
                     .arg( artistAutoIncrement ) );
 
@@ -370,7 +370,7 @@ CollectionDB::createTables( const bool temporary, const bool rename )
     query( QString( "CREATE %1 TABLE genre%2 ("
                     "id INTEGER PRIMARY KEY %3,"
                     "name " + textColumnType() +");" )
-                    .arg( !rename ? "TEMPORARY" : "" )
+                    .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" )
                     .arg( genreAutoIncrement ) );
 
@@ -378,7 +378,7 @@ CollectionDB::createTables( const bool temporary, const bool rename )
     query( QString( "CREATE %1 TABLE year%2 ("
                     "id INTEGER PRIMARY KEY %3,"
                     "name " + textColumnType() + ");" )
-                    .arg( !rename? "TEMPORARY" : "" )
+                    .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" )
                     .arg( yearAutoIncrement ) );
 
@@ -387,14 +387,14 @@ CollectionDB::createTables( const bool temporary, const bool rename )
                     "path " + textColumnType() + ","
                     "artist " + textColumnType() + ","
                     "album " + textColumnType() + ");" )
-                    .arg( !rename ? "TEMPORARY" : "" )
+                    .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
     // create directory statistics table
     query( QString( "CREATE %1 TABLE directories%2 ("
                     "dir " + textColumnType() + " UNIQUE,"
                     "changedate INTEGER );" )
-                    .arg( !rename ? "TEMPORARY" : "" )
+                    .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
     //create indexes
@@ -491,30 +491,6 @@ CollectionDB::clearTables( const bool temporary )
     {
         query( QString( "%1 related_artists;" ).arg( clearCommand ) );
     }
-}
-
-
-void
-CollectionDB::renameTempTables( )
-{
-    dropTables(false );
-
-    query( "ALTER TABLE tags_temp RENAME TO tags;");
-    query( "ALTER TABLE album_temp RENAME TO album;");
-    query( "ALTER TABLE artist_temp RENAME TO artist;");
-    query( "ALTER TABLE genre_temp RENAME TO genre;");
-    query( "ALTER TABLE year_temp RENAME TO year;");
-    query( "ALTER TABLE images_temp RENAME TO images;");
-    query( "ALTER TABLE directories_temp RENAME TO directories;");
-
-    createIndices();
-
-    // create related artists cache
-    query( QString( "CREATE TABLE related_artists ("
-                "artist " + textColumnType() + ","
-                "suggestion " + textColumnType() + ","
-                "changedate INTEGER );" ) );
-    query( "CREATE INDEX related_artists_artist ON related_artists( artist );" );
 }
 
 
