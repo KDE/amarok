@@ -1217,6 +1217,7 @@ MediaBrowser::mediumChanged( const Medium *medium, QString name )
             if( (*it)->uniqueId() == medium->id() )
             {
                 debug() << "changing state for " << medium->name() << endl;
+#if 0
                 if( (*it)->isConnected() && !medium->isMounted() )
                 {
                     amaroK::StatusBar::instance()->longMessage(
@@ -1224,8 +1225,9 @@ MediaBrowser::mediumChanged( const Medium *medium, QString name )
                                 "In order to avoid data loss, press the \"Disconnect\" button "
                                 "before unmounting the device." ).arg( name ),
                             KDE::StatusBar::Warning );
-                    removeDevice( *it );
+                    //(*it)->disconnectDevice();
                 }
+#endif
                 break;
             }
         }
