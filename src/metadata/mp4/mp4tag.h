@@ -24,7 +24,7 @@ email                : andrew.leadbetter@gmail.com
 #include <config.h>
 
 #include <tag.h>
-#include "taglib_mp4file.h"
+#include "mp4file.h"
 #include <mp4.h>
 
 namespace TagLib {
@@ -79,6 +79,12 @@ namespace TagLib {
                 virtual String genre() const { return m_genre; }
 
                 /*!
+                 * Returns the composer name; if no composer is present in the tag String::null
+                 * will be returned.
+                 */
+                virtual String composer() const { return m_composer; }
+
+                /*!
                  * Returns the year; if there is no year set, this will return 0.
                  */
                 virtual uint year() const { return m_year; }
@@ -88,6 +94,12 @@ namespace TagLib {
                  * return 0.
                  */
                 virtual uint track() const { return m_track; }
+
+                /*!
+                 * Returns the disc number; if there is no disc number set, this will
+                 * return 0.
+                 */
+                virtual uint disk() const { return m_disk; }
 
                 /*!
                  * Sets the title to \a s.  If \a s is String::null then this value will be
@@ -128,9 +140,20 @@ namespace TagLib {
                 virtual void setYear(uint i) { m_year = i; }
 
                 /*!
-                 * Sets the track to \a i.  If \a s is 0 then this value will be cleared.
+                 * Sets the track to \a i.  If \a i is 0 then this value will be cleared.
                  */
                 virtual void setTrack(uint i) { m_track = i; }
+
+                /*!
+                 * Sets the disc to \a i.  If \a i is 0 then this value will be cleared.
+                 */
+                virtual void setDisk(uint i) { m_disk = i; }
+
+                /*!
+                 * Sets the composer to \a s.  If \a s is String::null then this value will
+                 * be cleared.
+                 */
+                virtual void setComposer(const String &s) { m_composer = s; }
 
                 /*!
                  * Returns true if the tag does not contain any data.  This should be
@@ -158,10 +181,10 @@ namespace TagLib {
                 String m_album;
                 String m_comment;
                 String m_genre;
+                String m_composer;
                 uint m_year;
                 uint m_track;
-
-
+                uint m_disk;
         };
     }
 }

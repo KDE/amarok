@@ -34,8 +34,10 @@ MP4::Tag::Tag() : TagLib::Tag::Tag() {
     m_album = String::null;
     m_comment = String::null;
     m_genre = String::null;
+    m_composer = String::null;
     m_year = 0;
     m_track = 0;
+    m_disk = 0;
 }
 
 MP4::Tag::~Tag() {
@@ -47,8 +49,10 @@ bool MP4::Tag::isEmpty() const {
         m_album == String::null && 
         m_comment == String::null &&
         m_genre == String::null &&
+        m_composer == String::null &&
         m_year == 0 &&
-        m_track == 0;
+        m_track == 0 &&
+        m_disk == 0;
 }
 
 void MP4::Tag::duplicate(const Tag *source, Tag *target, bool overwrite) {
@@ -86,8 +90,15 @@ void MP4::Tag::readTags( MP4FileHandle mp4file )
     if (MP4GetMetadataTrack(mp4file, &numvalue, &numvalue2)) {
         m_track = numvalue;
     }
+    if (MP4GetMetadataDisk(mp4file, &numvalue, &numvalue2)) {
+        m_disk = numvalue;
+    }
     if (MP4GetMetadataGenre(mp4file, &value) && value != NULL) {
         m_genre = String(value, String::UTF8);
+        free(value);
+    }
+    if (MP4GetMetadataWriter(mp4file, &value) && value != NULL) {
+        m_composer = String(value, String::UTF8);
         free(value);
     }
 }

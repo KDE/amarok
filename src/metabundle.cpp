@@ -27,6 +27,15 @@
 #include <taglib/xiphcomment.h>
 #include <taglib/tbytevector.h>
 
+#include <config.h>
+#ifdef HAVE_MP4V2
+#include "metadata/mp4/mp4file.h"
+#include "metadata/mp4/mp4tag.h"
+#else
+#include "metadata/m4a/mp4file.h"
+#include "metadata/m4a/mp4itunestag.h"
+#endif
+
 #include "metabundle.h"
 
 QString MetaBundle::stringStore[STRING_STORE_SIZE];
@@ -322,6 +331,15 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
                 if ( !file->tag()->fieldListMap()[ "DISCNUMBER" ].isEmpty() ) {
                     disc = TStringToQString( file->tag()->fieldListMap()["DISCNUMBER"].front() ).stripWhiteSpace();
                 }
+            }
+        }
+        else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) ) {
+            m_type = mp4;
+            TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
+            if( mp4tag )
+            {
+                setComposer( TStringToQString( mp4tag->composer() ) );
+                disc = QString::number( mp4tag->disk() );
             }
         }
         else
@@ -629,6 +647,17 @@ MetaBundle::setExtendedTag( TagLib::File *file, int tag, const QString value ) {
                     oggFile->tag()->addField( id, QStringToTString( value ), true );
             }
             break;
+        case mp4:
+            {
+                TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
+                if( mp4tag )
+                {
+                    switch( tag ) {
+                        case ( composerTag ): mp4tag->setComposer( QStringToTString( value ) ); break;
+                        case ( discNumberTag ): mp4tag->setDisk( value.toInt() );
+                    }
+                }
+            }
     }
 }
 

@@ -316,5 +316,5 @@ inline void MetaBundle::setRating( int rating ) { m_rating = rating; }
 inline void MetaBundle::setScore( int score ) { m_score = score; }
 
 inline int  MetaBundle::fileType() const { return m_type; }
-inline bool MetaBundle::hasExtendedMetaInformation() const { return (m_type == mp3 || m_type == ogg); }
+inline bool MetaBundle::hasExtendedMetaInformation() const { return (m_type == mp3 || m_type == ogg || m_type== mp4); }
 #endif

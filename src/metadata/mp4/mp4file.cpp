@@ -19,7 +19,7 @@ email                : andrew.leadbetter@gmail.com
  *   USA                                                                   *
  ***************************************************************************/
 
-#include "taglib_mp4file.h"
+#include "mp4file.h"
 
 #include "mp4tag.h"
 #include <tfile.h>

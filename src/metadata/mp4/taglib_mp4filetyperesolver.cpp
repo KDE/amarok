@@ -2,7 +2,7 @@
 // See COPYING file for licensing information
 
 #include "taglib_mp4filetyperesolver.h"
-#include "taglib_mp4file.h"
+#include "mp4file.h"
 
 #include <mp4.h>
 
