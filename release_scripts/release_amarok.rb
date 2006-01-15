@@ -7,13 +7,9 @@
 # License: GNU General Public License V2
 
 
-branch = ""
 tag = ""
-useStableBranch=false
 unless $*.empty?()
     case $*[0]
-        when "--branch"
-            useStableBranch=true
         when "--tag"
             tag = `kdialog --inputbox "Enter tag name: "`.chomp()
         else
@@ -21,6 +17,12 @@ unless $*.empty?()
     end
 end
 
+# Ask whether using branch or trunk
+if `kdialog --combobox "Select checkout's place:" "Trunk" "Branch"`.chomp() == "Branch"
+    useStableBranch=true
+else
+    useStableBranch=false
+end
 # Ask user for targeted application version
 version  = `kdialog --inputbox "Enter amaroK version: "`.chomp()
 user = `kdialog --inputbox "Your SVN user:"`.chomp()
