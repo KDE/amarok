@@ -242,7 +242,7 @@ void HelixSimplePlayer::updateEQgains()
 {
    for (int i = 0; i<nNumPlayers; i++)
       if (pFinalAudioHook && isEQenabled())
-         ((HSPPostMixAudioHook *)pFinalAudioHook)->updateEQgains(m_preamp, m_equalizerGains);
+         ((HSPFinalAudioHook *)pFinalAudioHook)->updateEQgains(m_preamp, m_equalizerGains);
 }
 
 /*
@@ -332,13 +332,15 @@ HelixSimplePlayer::HelixSimplePlayer() :
 #endif
    m_AlsaCapableCore(false),
    m_nDevID(-1),
-   //m_pAlsaPCMHandle(NULL),
    m_pAlsaMixerHandle(NULL),
-   m_pAlsaMixerElem(NULL),
+   m_pAlsaMasterMixerElem(NULL),
+   m_pAlsaPCMMixerElem(NULL),
    m_alsaDevice("default"),
    m_urlchanged(0),
    m_volBefore(-1),
    m_volAtStart(-1),
+   m_MvolBefore(-1),
+   m_MvolAtStart(-1),
    m_preamp(0)
 {
    m_xf.crossfading = 0;
@@ -515,8 +517,9 @@ void HelixSimplePlayer::init(const char *corelibhome, const char *pluginslibhome
       addPlayer();
    }
 
-   // install hook for visualizations, equalizer, and volume control
-   HSPPostMixAudioHook *pPMAH = new HSPPostMixAudioHook(this, 1);
+   // install hook for visualizations, equalizer, and volume control - for use with streams
+   // the time in the packets is the presentation time - which maps better to streams
+   HSPFinalAudioHook *pPMAH = new HSPFinalAudioHook(this);
    pAudioHookManager->AddHook(pPMAH);
    pFinalAudioHook = pPMAH;
 
@@ -621,9 +624,15 @@ int HelixSimplePlayer::initDirectSS()
       openAudioDevice();
    }
 
-   m_volBefore = m_volAtStart = getDirectHWVolume();
+#ifdef USE_HELIX_ALSA
+   m_MvolBefore = m_MvolAtStart = getDirectMasterVolume();
+   print2stderr("***Master VolAtStart is %d\n", m_MvolAtStart);
+   setDirectMasterVolume(m_MvolAtStart);
+#endif
+
+   m_volBefore = m_volAtStart = getDirectPCMVolume();
    print2stderr("***VolAtStart is %d\n", m_volAtStart);
-   setDirectHWVolume(m_volAtStart);
+   setDirectPCMVolume(m_volAtStart);
    return 0;
 }
 
@@ -746,6 +755,12 @@ int HelixSimplePlayer::addPlayer()
       ppctrl[nNumPlayers]->pAudioPlayer->QueryInterface(IID_IHXAudioCrossFade, (void **) &(ppctrl[nNumPlayers]->pCrossFader));
       if (!ppctrl[nNumPlayers]->pCrossFader)
          print2stderr("CrossFader not available\n");
+
+      // install hook for visualizations, equalizer, and volume control - for use with local files
+      // a FinalAudioHook is used for streams
+      HSPPostMixAudioHook *pPMAH = new HSPPostMixAudioHook(this, nNumPlayers);
+      ppctrl[nNumPlayers]->pAudioPlayer->AddPostMixHook(pPMAH, false, true);
+      ppctrl[nNumPlayers]->pPostMixHook = pPMAH;
    }
    else
       print2stderr("No AudioPlayer Found - how can we play music!!\n");
@@ -784,6 +799,9 @@ void HelixSimplePlayer::tearDown()
 
       if (ppctrl[i]->pAudioPlayer)
       {
+         ppctrl[i]->pAudioPlayer->RemovePostMixHook( ppctrl[i]->pPostMixHook );
+         ppctrl[i]->pPostMixHook->Release();
+
          ppctrl[i]->pAudioPlayer->RemoveStreamInfoResponse((IHXAudioStreamInfoResponse *) ppctrl[i]->pStreamInfoResponse);
 
          if (ppctrl[i]->pVolume)
@@ -1034,11 +1052,16 @@ void HelixSimplePlayer::openAudioDevice()
                   if(snd_mixer_selem_has_playback_volume(elem) && !snd_mixer_selem_has_common_volume(elem) )
                   {
                      elem_name = snd_mixer_selem_id_get_name(sid);
-                     if (strcmp(elem_name, "PCM") == 0) // take the first PCM element we find
+                     if (!m_pAlsaPCMMixerElem && strcmp(elem_name, "Master") == 0)
+                        m_pAlsaMasterMixerElem = elem;
+
+                     if (!m_pAlsaPCMMixerElem && strcmp(elem_name, "PCM") == 0)
+                        m_pAlsaPCMMixerElem = elem;
+
+                     if (m_pAlsaMasterMixerElem && m_pAlsaPCMMixerElem)
                         break;
                   }
                }
-            
                elem = snd_mixer_elem_next(elem);
             }
 
@@ -1047,9 +1070,32 @@ void HelixSimplePlayer::openAudioDevice()
                print2stderr("Could not find a usable mixer element\n", snd_strerror(err));
                err = -1;
             }
-            
-            m_pAlsaMixerElem = elem;
+
+//////////////// **** temporary               
+
+            elem = snd_mixer_first_elem(m_pAlsaMixerHandle);
+            elem_name = NULL;
+            while (elem)
+            {
+               type = snd_mixer_elem_get_type(elem);
+               if (type == SND_MIXER_ELEM_SIMPLE)
+               {
+                  snd_mixer_selem_get_id(elem, sid);
+                  
+                  /* We're only interested in playback volume controls */
+                  if(snd_mixer_selem_has_playback_volume(elem) && !snd_mixer_selem_has_common_volume(elem) )
+                  {
+                     elem_name = snd_mixer_selem_id_get_name(sid);
+                     print2stderr("MIXER ELEMENTS: <%s>\n", elem_name);
+                  }
+               }
+               
+               elem = snd_mixer_elem_next(elem);
+            }
+
+/////////////// *******
          }
+
          
          if (err != 0)
          {
@@ -1087,12 +1133,23 @@ void HelixSimplePlayer::closeAudioDevice()
 #ifdef USE_HELIX_ALSA
          int err;
 
-         if (m_pAlsaMixerHandle && m_pAlsaMixerElem)
+         if (m_pAlsaMixerHandle && m_pAlsaMasterMixerElem)
+         {
+            err = snd_mixer_detach(m_pAlsaMixerHandle, "Master");
+            if (err < 0)
+               print2stderr("snd_mixer_detach: %s\n", snd_strerror(err));
+         }
+
+         if (m_pAlsaMixerHandle && m_pAlsaPCMMixerElem)
          {
             err = snd_mixer_detach(m_pAlsaMixerHandle, "PCM");
             if (err < 0)
                print2stderr("snd_mixer_detach: %s\n", snd_strerror(err));
-  
+         }
+
+
+         if (m_pAlsaMixerHandle)
+         {
             if(err == 0)
             {
                err = snd_mixer_close(m_pAlsaMixerHandle);
@@ -1103,7 +1160,7 @@ void HelixSimplePlayer::closeAudioDevice()
             if(err == 0)
             {
                m_pAlsaMixerHandle = NULL;
-               m_pAlsaMixerElem = NULL;
+               m_pAlsaPCMMixerElem = NULL;
             }
          }
 #endif
@@ -1111,11 +1168,133 @@ void HelixSimplePlayer::closeAudioDevice()
       break;
 
       default:
-         print2stderr("Unknown audio interface in openAudioDevice()\n");
+         print2stderr("Unknown audio interface in closeAudioDevice()\n");
    }
 }
 
-int HelixSimplePlayer::getDirectHWVolume()
+// it seems the master volume only gets reset on track change when using ALSA
+// sheez, I thought amaroK wasnt supposed to be a mixer??
+// all this code is so that you can actually *use* a mixer and have it work
+// the way you expect...
+#ifdef USE_HELIX_ALSA
+int HelixSimplePlayer::getDirectMasterVolume()
+{
+   int nRetVolume   = 0;
+
+   switch (m_direct)
+   {
+      case ALSA:
+      {
+         if (!m_pAlsaMasterMixerElem)
+            return nRetVolume;
+
+         snd_mixer_elem_type_t type;    
+         int err = 0;
+         type = snd_mixer_elem_get_type(m_pAlsaMasterMixerElem);
+            
+         if (type == SND_MIXER_ELEM_SIMPLE)
+         {
+            long volumeL, volumeR, min_volume, max_volume; 
+
+            if(snd_mixer_selem_has_playback_volume(m_pAlsaMasterMixerElem) || 
+               snd_mixer_selem_has_playback_volume_joined(m_pAlsaMasterMixerElem))
+            {
+               err = snd_mixer_selem_get_playback_volume(m_pAlsaMasterMixerElem,
+                                                         SND_MIXER_SCHN_FRONT_LEFT, 
+                                                         &volumeL);
+               if (err < 0)
+                  print2stderr("snd_mixer_selem_get_playback_volume (L): %s\n", snd_strerror (err));
+               else
+               {
+                  if ( snd_mixer_selem_is_playback_mono ( m_pAlsaMasterMixerElem )) 
+                     volumeR = volumeL;
+                  else
+                  {
+                     err = snd_mixer_selem_get_playback_volume(m_pAlsaMasterMixerElem,
+                                                               SND_MIXER_SCHN_FRONT_RIGHT, 
+                                                               &volumeR);
+                     if (err < 0)
+                        print2stderr("snd_mixer_selem_get_playback_volume (R): %s\n", snd_strerror (err));
+                  }
+               }
+                  
+               if (err == 0)
+               {
+                  snd_mixer_selem_get_playback_volume_range(m_pAlsaMasterMixerElem,
+                                                            &min_volume,
+                                                            &max_volume);
+
+                  if(max_volume > min_volume)
+                     nRetVolume = (UINT16) (0.5 + (100.0 * (double)(volumeL + volumeR) / (2.0 * (max_volume - min_volume))));
+               }
+            }        
+         }
+      }
+      break;
+
+      default:
+         print2stderr("Unknown audio interface in getDirectMasterVolume()\n");
+   }
+
+   return nRetVolume; 
+}
+
+void HelixSimplePlayer::setDirectMasterVolume(int vol)
+{
+   switch (m_direct)
+   {
+      case ALSA:
+      {
+         if (!m_pAlsaMasterMixerElem)
+            return;
+
+         snd_mixer_elem_type_t type;    
+         int err = 0;
+         type = snd_mixer_elem_get_type(m_pAlsaMasterMixerElem);
+
+         
+         if (type == SND_MIXER_ELEM_SIMPLE)
+         {
+            long volume, min_volume, max_volume, range; 
+            
+            if(snd_mixer_selem_has_playback_volume(m_pAlsaMasterMixerElem) || 
+               snd_mixer_selem_has_playback_volume_joined(m_pAlsaMasterMixerElem))
+            {
+               snd_mixer_selem_get_playback_volume_range(m_pAlsaMasterMixerElem,
+                                                         &min_volume,
+                                                         &max_volume);
+               
+               range = max_volume - min_volume;
+               volume = (long) (((double)vol / 100) * range + min_volume);
+
+
+               err = snd_mixer_selem_set_playback_volume( m_pAlsaMasterMixerElem,
+                                                          SND_MIXER_SCHN_FRONT_LEFT, 
+                                                          volume);            
+               if (err < 0)
+                  print2stderr("snd_mixer_selem_set_playback_volume: %s\n", snd_strerror (err));
+
+               if (!snd_mixer_selem_is_playback_mono (m_pAlsaMasterMixerElem))
+               {
+                  /* Set the right channel too */
+                  err = snd_mixer_selem_set_playback_volume( m_pAlsaMasterMixerElem,
+                                                             SND_MIXER_SCHN_FRONT_RIGHT, 
+                                                             volume);            
+                  if (err < 0)
+                     print2stderr("snd_mixer_selem_set_playback_volume: %s\n", snd_strerror (err));
+               }
+            }        
+         }    
+      }
+      break;
+
+      default:
+         print2stderr("Unknown audio interface in setDirectMasterVolume()\n");
+   }
+}
+#endif
+
+int HelixSimplePlayer::getDirectPCMVolume()
 {
    int nRetVolume   = 0;
 
@@ -1146,32 +1325,32 @@ int HelixSimplePlayer::getDirectHWVolume()
       case ALSA:
       {
 #ifdef USE_HELIX_ALSA
-         if (!m_pAlsaMixerElem)
+         if (!m_pAlsaPCMMixerElem)
             return nRetVolume;
 
          snd_mixer_elem_type_t type;    
          int err = 0;
-         type = snd_mixer_elem_get_type(m_pAlsaMixerElem);
+         type = snd_mixer_elem_get_type(m_pAlsaPCMMixerElem);
             
          if (type == SND_MIXER_ELEM_SIMPLE)
          {
             long volumeL, volumeR, min_volume, max_volume; 
 
-            if(snd_mixer_selem_has_playback_volume(m_pAlsaMixerElem) || 
-               snd_mixer_selem_has_playback_volume_joined(m_pAlsaMixerElem))
+            if(snd_mixer_selem_has_playback_volume(m_pAlsaPCMMixerElem) || 
+               snd_mixer_selem_has_playback_volume_joined(m_pAlsaPCMMixerElem))
             {
-               err = snd_mixer_selem_get_playback_volume(m_pAlsaMixerElem,
+               err = snd_mixer_selem_get_playback_volume(m_pAlsaPCMMixerElem,
                                                          SND_MIXER_SCHN_FRONT_LEFT, 
                                                          &volumeL);
                if (err < 0)
                   print2stderr("snd_mixer_selem_get_playback_volume (L): %s\n", snd_strerror (err));
                else
                {
-                  if ( snd_mixer_selem_is_playback_mono ( m_pAlsaMixerElem )) 
+                  if ( snd_mixer_selem_is_playback_mono ( m_pAlsaPCMMixerElem )) 
                      volumeR = volumeL;
                   else
                   {
-                     err = snd_mixer_selem_get_playback_volume(m_pAlsaMixerElem,
+                     err = snd_mixer_selem_get_playback_volume(m_pAlsaPCMMixerElem,
                                                                SND_MIXER_SCHN_FRONT_RIGHT, 
                                                                &volumeR);
                      if (err < 0)
@@ -1181,7 +1360,7 @@ int HelixSimplePlayer::getDirectHWVolume()
                   
                if (err == 0)
                {
-                  snd_mixer_selem_get_playback_volume_range(m_pAlsaMixerElem,
+                  snd_mixer_selem_get_playback_volume_range(m_pAlsaPCMMixerElem,
                                                             &min_volume,
                                                             &max_volume);
 
@@ -1195,13 +1374,13 @@ int HelixSimplePlayer::getDirectHWVolume()
       break;
 
       default:
-         print2stderr("Unknown audio interface in getDirectHWVolume()\n");
+         print2stderr("Unknown audio interface in getDirectPCMVolume()\n");
    }
 
    return nRetVolume; 
 }
 
-void HelixSimplePlayer::setDirectHWVolume(int vol)
+void HelixSimplePlayer::setDirectPCMVolume(int vol)
 {
    switch (m_direct)
    {
@@ -1220,22 +1399,22 @@ void HelixSimplePlayer::setDirectHWVolume(int vol)
       case ALSA:
       {
 #ifdef USE_HELIX_ALSA
-         if (!m_pAlsaMixerElem)
+         if (!m_pAlsaPCMMixerElem)
             return;
 
          snd_mixer_elem_type_t type;    
          int err = 0;
-         type = snd_mixer_elem_get_type(m_pAlsaMixerElem);
+         type = snd_mixer_elem_get_type(m_pAlsaPCMMixerElem);
 
          
          if (type == SND_MIXER_ELEM_SIMPLE)
          {
             long volume, min_volume, max_volume, range; 
             
-            if(snd_mixer_selem_has_playback_volume(m_pAlsaMixerElem) || 
-               snd_mixer_selem_has_playback_volume_joined(m_pAlsaMixerElem))
+            if(snd_mixer_selem_has_playback_volume(m_pAlsaPCMMixerElem) || 
+               snd_mixer_selem_has_playback_volume_joined(m_pAlsaPCMMixerElem))
             {
-               snd_mixer_selem_get_playback_volume_range(m_pAlsaMixerElem,
+               snd_mixer_selem_get_playback_volume_range(m_pAlsaPCMMixerElem,
                                                          &min_volume,
                                                          &max_volume);
                
@@ -1243,16 +1422,16 @@ void HelixSimplePlayer::setDirectHWVolume(int vol)
                volume = (long) (((double)vol / 100) * range + min_volume);
 
 
-               err = snd_mixer_selem_set_playback_volume( m_pAlsaMixerElem,
+               err = snd_mixer_selem_set_playback_volume( m_pAlsaPCMMixerElem,
                                                           SND_MIXER_SCHN_FRONT_LEFT, 
                                                           volume);            
                if (err < 0)
                   print2stderr("snd_mixer_selem_set_playback_volume: %s\n", snd_strerror (err));
 
-               if (!snd_mixer_selem_is_playback_mono (m_pAlsaMixerElem))
+               if (!snd_mixer_selem_is_playback_mono (m_pAlsaPCMMixerElem))
                {
                   /* Set the right channel too */
-                  err = snd_mixer_selem_set_playback_volume( m_pAlsaMixerElem,
+                  err = snd_mixer_selem_set_playback_volume( m_pAlsaPCMMixerElem,
                                                              SND_MIXER_SCHN_FRONT_RIGHT, 
                                                              volume);            
                   if (err < 0)
@@ -1265,12 +1444,12 @@ void HelixSimplePlayer::setDirectHWVolume(int vol)
       break;
 
       default:
-         print2stderr("Unknown audio interface in setDirectHWVolume()\n");
+         print2stderr("Unknown audio interface in setDirectPCMVolume()\n");
    }
 }
 
 
-int HelixSimplePlayer::setURL(const char *file, int playerIndex)
+int HelixSimplePlayer::setURL(const char *file, int playerIndex, bool islocal)
 {
    if (playerIndex == ALL_PLAYERS)
    {
@@ -1284,6 +1463,8 @@ int HelixSimplePlayer::setURL(const char *file, int playerIndex)
       int len = strlen(file);
       if (len >= MAXPATHLEN)
          return -1;;
+
+      print2stderr("SETURL MASTER VOL: %d\n",getDirectMasterVolume());
 
       if (ppctrl[playerIndex]->pszURL)
          delete [] ppctrl[playerIndex]->pszURL;
@@ -1301,7 +1482,10 @@ int HelixSimplePlayer::setURL(const char *file, int playerIndex)
          
          ppctrl[playerIndex]->pszURL = new char[strlen(pszURLOrig)+strlen(pszAddOn)+1];
          if ( (len + strlen(pszAddOn)) < MAXPATHLEN )
+         {
             sprintf( ppctrl[playerIndex]->pszURL, "%s%s", pszAddOn, pszURLOrig );
+            islocal = true; // diesnt matter what we were told...
+         }
          else
             return -1;
       }
@@ -1313,6 +1497,8 @@ int HelixSimplePlayer::setURL(const char *file, int playerIndex)
          else
             return -1;
       }
+
+      ppctrl[playerIndex]->isLocal = islocal;
 
 #ifdef __NOCROSSFADER__
       print2stderr("opening %s on player %d, src cnt %d\n", 
@@ -1535,6 +1721,8 @@ void HelixSimplePlayer::start(int playerIndex, bool fadein, bool fadeout, unsign
    {
       if (!ppctrl[playerIndex]->pszURL)
          return;
+
+      print2stderr("START MASTER VOL: %d\n",getDirectMasterVolume());
       
       if (bEnableVerboseMode)
       {
@@ -1606,6 +1794,7 @@ void HelixSimplePlayer::stop(int playerIndex)
 
          ppctrl[i]->bPlaying = false;
          ppctrl[i]->bStarting = false;
+         ppctrl[i]->isLocal = false;
       }
    else
    {
@@ -1616,6 +1805,7 @@ void HelixSimplePlayer::stop(int playerIndex)
          pthread_mutex_unlock(&m_engine_m);
          ppctrl[playerIndex]->bPlaying = false;
          ppctrl[playerIndex]->bStarting = false;
+         ppctrl[playerIndex]->isLocal = false;
          memset(&ppctrl[playerIndex]->md, 0, sizeof(ppctrl[playerIndex]->md));
       }
    }
@@ -1638,25 +1828,46 @@ void HelixSimplePlayer::dispatch()
 
    if (m_urlchanged)
    {
-      m_volBefore = getDirectHWVolume();
+#ifdef USE_HELIX_ALSA
+      m_MvolBefore = getDirectMasterVolume();
+      print2stderr("Master Volume is: %d\n", m_MvolBefore);
+#endif
+      m_volBefore = getDirectPCMVolume();
       m_urlchanged = false;
       print2stderr("Volume is: %d\n", m_volBefore);
    }
    pEngine->EventOccurred(pNothing);
-   if (m_volBefore > 0 && m_volAtStart != m_volBefore && (volAfter = getDirectHWVolume()) != m_volBefore)
+#ifdef USE_HELIX_ALSA
+   if (m_MvolBefore > 0 && m_MvolAtStart != m_MvolBefore && (volAfter = getDirectMasterVolume()) != m_MvolBefore)
+   {
+      print2stderr("RESETTING MASTER VOLUME TO: %d\n", m_MvolBefore);
+      setDirectMasterVolume(m_volBefore);
+      print2stderr("Now Master Volume is %d\n", getDirectMasterVolume());
+      m_MvolBefore = -1;
+   }
+#endif
+   if (m_volBefore > 0 && m_volAtStart != m_volBefore && (volAfter = getDirectPCMVolume()) != m_volBefore)
    {
       print2stderr("RESETTING VOLUME TO: %d\n", m_volBefore);
-      setDirectHWVolume(m_volBefore);
-      print2stderr("Now Volume is %d\n", getDirectHWVolume());
+      setDirectPCMVolume(m_volBefore);
+      print2stderr("Now Volume is %d\n", getDirectPCMVolume());
       m_volBefore = -1;
    }
 }
 
 
-bool HelixSimplePlayer::isPlaying(int playerIndex)
+bool HelixSimplePlayer::isPlaying(int playerIndex) const
 {
    if (playerIndex < nNumPlayers)
       return ppctrl[playerIndex]->bPlaying;
+   else
+      return false;
+}
+
+bool HelixSimplePlayer::isLocal(int playerIndex) const
+{
+   if (playerIndex < nNumPlayers)
+      return ppctrl[playerIndex]->isLocal;
    else
       return false;
 }
@@ -1762,7 +1973,7 @@ void HelixSimplePlayer::setVolume(unsigned long vol, int playerIndex)
          pthread_mutex_lock(&m_engine_m);
 #ifndef HELIX_SW_VOLUME_INTERFACE
          ppctrl[playerIndex]->volume = vol;
-         ((HSPPostMixAudioHook *)pFinalAudioHook)->setGain(vol);
+         ((HSPFinalAudioHook *)pFinalAudioHook)->setGain(vol);
 #else
          ppctrl[playerIndex]->pVolume->SetVolume(vol);
 #endif

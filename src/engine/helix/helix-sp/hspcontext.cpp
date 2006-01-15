@@ -133,8 +133,7 @@ HSPEngineContext::ReadPref(const char* pref_key, IHXBuffer*& buffer)
           ibuf->SetSize(2);
           outbuf = ibuf->GetBuffer();
           strcpy((char *)outbuf, "0");
-          buffer = ibuf;
-
+          buffer = ibuf;          
           //m_splayer->print2stderr("value = %d\n",atol((const char*) buffer->GetBuffer()));
        }
     }
@@ -168,11 +167,24 @@ HSPEngineContext::ReadPref(const char* pref_key, IHXBuffer*& buffer)
        m_CommonClassFactory->CreateInstance(CLSID_IHXBuffer, (void **) &ibuf);
        if (ibuf)
        {
+          ibuf->SetSize(11);
+          outbuf = ibuf->GetBuffer();
+          strcpy((char *)outbuf, "PC Speaker");
+          buffer = ibuf;
+          m_splayer->print2stderr("Setting Mixer Element to use default mixer\n");
+       }
+    }
+    else if (0 == (stricmp(pref_key, "AlsaMixerDeviceName")))
+    {
+       m_splayer->setAlsaCapableCore(); // this just lets everyone know that this helix core is Alsa-capable
+       m_CommonClassFactory->CreateInstance(CLSID_IHXBuffer, (void **) &ibuf);
+       if (ibuf)
+       {
           ibuf->SetSize(8);
           outbuf = ibuf->GetBuffer();
           strcpy((char *)outbuf, "default");
           buffer = ibuf;
-          m_splayer->print2stderr("Setting Mixer Element to use the default mixer\n");
+          m_splayer->print2stderr("Setting Mixer Device to use the \"default\" mixer\n");
        }
     }
     else if (0 == (stricmp(pref_key, "AlsaPCMDeviceName")))

@@ -70,16 +70,8 @@ private:
    HelixSimplePlayer::metaData m_md;
 
    DelayQueue *m_item;
-#ifdef DEBUG_PURPOSES_ONLY
-   double m_fps;
-   int    m_fcount;
-   double m_ftime;
-   int m_scopebufwaste;
-   int m_scopebufnone;
-   int m_scopebuftotal;
-#endif
-   unsigned long  m_lasttime;
-   unsigned long  m_lastpos;
+   unsigned long  m_lasttime[2];
+   unsigned long  m_lastpos[2];
    unsigned short m_currentScope[512];
    int            m_scopeindex;
 

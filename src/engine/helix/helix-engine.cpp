@@ -66,10 +66,7 @@ HelixEngine::HelixEngine()
      m_codecsdir(HELIX_LIBS "/codecs"),
      m_inited(false),
      m_item(0),
-#ifdef DEBUG_PURPOSES_ONLY
-     m_fps(0.0),m_fcount(0),m_ftime(0.0),m_scopebufwaste(0), m_scopebufnone(0), m_scopebuftotal(0),
-#endif
-     m_lasttime(0), m_lastpos(0), m_scopeindex(0)
+     m_scopeindex(0)
 {
    addPluginProperty( "StreamingMode", "NoStreaming" ); // this means we'll handle streaming (not using KIO)
    addPluginProperty( "HasConfigure", "true" );
@@ -78,6 +75,7 @@ HelixEngine::HelixEngine()
 
    memset(&m_md, 0, sizeof(m_md));
 
+   m_lasttime[0] = m_lasttime[1] = m_lastpos[0] = m_lastpos[1] = 0; 
 }
 
 HelixEngine::~HelixEngine()
@@ -288,7 +286,7 @@ HelixEngine::load( const KURL &url, bool isStream )
       int nextPlayer = m_current ? 0 : 1;
 
       Engine::Base::load( url, false ); // we dont crossfade streams ?? do we load the base here ??
-      HelixSimplePlayer::setURL( QFile::encodeName( url.url() ), nextPlayer );
+      HelixSimplePlayer::setURL( QFile::encodeName( url.url() ), nextPlayer, !isStream );
       m_isStream = false;
    }
    else
@@ -305,11 +303,11 @@ HelixEngine::load( const KURL &url, bool isStream )
    m_url = url;
 
    if (url.isLocalFile())
-      HelixSimplePlayer::setURL( QFile::encodeName( url.url() ), nextPlayer );
+      HelixSimplePlayer::setURL( QFile::encodeName( url.url() ), nextPlayer, !m_isStream );
    else
    {
       m_isStream = true;
-      HelixSimplePlayer::setURL( QFile::encodeName( url.url() ), nextPlayer );
+      HelixSimplePlayer::setURL( QFile::encodeName( url.url() ), nextPlayer, !m_isStream );
    }
 
    return true;
@@ -362,8 +360,10 @@ HelixEngine::cleanup()
    HelixSimplePlayer::stop(); // stop all players
    resetScope();
    killTimers();
-   m_lasttime = 0;
-   m_lastpos = 0;
+   m_lasttime[0] = 0;
+   m_lasttime[1] = 0;
+   m_lastpos[0] = 0;
+   m_lastpos[1] = 0;
    m_scopeindex = 0;
    m_isStream = false;
    memset(&m_md, 0, sizeof(m_md));
@@ -461,6 +461,7 @@ HelixEngine::setVolumeSW( uint vol )
       return;
 
    debug() << "In setVolumeSW\n";
+   debug() << "canDecode MASTER VOL: " << HelixSimplePlayer::getDirectMasterVolume() << endl;
    HelixSimplePlayer::setVolume(vol); // set the volume in all players!
 }
 
@@ -503,7 +504,7 @@ HelixEngine::timerEvent( QTimerEvent * )
           HelixSimplePlayer::done(m_current?0:1) ) )
       play_finished(m_current);
 
-   m_lasttime += HELIX_ENGINE_TIMER;
+   m_lasttime[m_current] += HELIX_ENGINE_TIMER;
 
 #ifdef DEBUG_PURPOSES_ONLY
    // calculate the frame rate of the scope
@@ -558,10 +559,6 @@ const Engine::Scope &HelixEngine::scope()
    int i, sb = 0;
    unsigned long t;
 
-#ifdef DEBUG_PURPOSES_ONLY
-   m_fcount++;
-#endif
-
    if (!m_inited)
       return m_scope;
 
@@ -574,29 +571,38 @@ const Engine::Scope &HelixEngine::scope()
    //
    // this bit is to help us keep more accurate time than helix provides
    /////////////////////////////////////////////////////////////////////
-   unsigned long w;
-   unsigned long hpos = position();
-
-   //debug() << "hpos=" << hpos << " lastpos=" << m_lastpos << " lasttime=" << m_lasttime << endl;
-   //if (m_item)
-   //   debug() << "      time=" << m_item->time << " etime=" << m_item->etime << endl;
-
-   if (hpos == m_lastpos)
+#define helix_engine_abs_diff(a,b) ((a) > (b) ? (a) - (b) : (b) - (a))
+   int playerIndex = m_current;
+   unsigned long p0 = HelixSimplePlayer::where(0);
+   unsigned long p1 = HelixSimplePlayer::where(1);
+   if (m_item && p0 && p1)
    {
-      if (m_item && hpos >= m_item->time && hpos <= m_item->etime && (m_lasttime < m_item->time || m_lasttime > m_item->etime) )
+      if (helix_engine_abs_diff(p0,m_item->time) < helix_engine_abs_diff(p1,m_item->time) )
+         playerIndex = 0;
+      else
+         playerIndex = 1;
+   }
+
+   unsigned long w;
+   unsigned long hpos = HelixSimplePlayer::where(playerIndex);
+
+   if (hpos == m_lastpos[playerIndex])
+   {
+      if (m_item && hpos >= m_item->time && hpos <= m_item->etime && 
+          (m_lasttime[playerIndex] < m_item->time || m_lasttime[playerIndex] > m_item->etime) )
       {
          w = hpos;
-         m_lasttime = hpos;
+         m_lasttime[playerIndex] = hpos;
       }
       else
-         w = m_lasttime;
+         w = m_lasttime[playerIndex];
    }
    else
    {
       w = hpos;
-      m_lasttime = hpos;
+      m_lasttime[playerIndex] = hpos;
    }
-   m_lastpos = hpos;
+   m_lastpos[playerIndex] = hpos;
 
    if ( getScopeCount() > SCOPE_MAX_BEHIND ) // protect against naughty streams
    {
@@ -605,12 +611,7 @@ const Engine::Scope &HelixEngine::scope()
    }
 
    if (!w || !m_item)
-   {
-#ifdef DEBUG_PURPOSES_ONLY
-      m_scopebufnone++; // for tuning the scope... (scope is tuned for 44.1kHz sample rate)
-#endif
       return m_scope;
-   }
 
    while (m_item && w > m_item->etime)
    {
@@ -621,19 +622,8 @@ const Engine::Scope &HelixEngine::scope()
       sb++;
    }
 
-#ifdef DEBUG_PURPOSES_ONLY
-   m_scopebuftotal += sb;
-   if (sb > 1)
-      m_scopebufwaste += (sb-1);
-#endif
-
    if (!m_item)
-   {
-#ifdef DEBUG_PURPOSES_ONLY
-      m_scopebufnone++;
-#endif
       return m_scope;
-   }
 
    if (w < m_item->time) // wait for the player to catchup
       return m_scope;
@@ -674,7 +664,6 @@ const Engine::Scope &HelixEngine::scope()
          }
          a /= m_item->nchan;
 
-         //m_scope[i] = a;
          m_currentScope[m_scopeindex] = a;
          m_scopeindex++;
          if (m_scopeindex >= 512)
@@ -689,17 +678,8 @@ const Engine::Scope &HelixEngine::scope()
          m_item = getScopeBuf();
          k = 0;
 
-#ifdef DEBUG_PURPOSES_ONLY
-         if (m_item)
-            m_scopebuftotal++;
-#endif
          if (!m_item)
-         {
-#ifdef DEBUG_PURPOSES_ONLY
-            m_scopebufnone++;
-#endif
             return m_scope; // wait until there are some more buffers available
-         }
       }
       else
       {

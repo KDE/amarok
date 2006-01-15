@@ -64,7 +64,8 @@ struct _snd_mixer_elem;
 class DelayQueue
 {
 public:
-   DelayQueue(int bufsize) : fwd(0), len(bufsize), time(0), etime(0), nchan(0), bps(0),buf(0) { buf = new unsigned char [ bufsize ]; }
+   DelayQueue(int bufsize) : fwd(0), len(bufsize), time(0), etime(0), nchan(0), bps(0), index(0), buf(0) 
+      { buf = new unsigned char [ bufsize ]; }
    ~DelayQueue() { delete [] buf; }
    struct DelayQueue *fwd;
    int           len;      // len of the buffer
@@ -74,6 +75,7 @@ public:
    int           bps;      // bytes per sample
    double        tps;      // time per sample
    int           spb;      // samples per buffer
+   int           index;    // the player from which this sample comes
    unsigned char *buf;
 };
 
@@ -107,7 +109,9 @@ public:
    void play(const char *url, int playerIndex = ALL_PLAYERS,
              bool fadein = false, bool fadeout = false,
              unsigned long fadetime = 0);                            // play the file, setting it as the current url; wait for it to finish
-   int  setURL(const char *url, int playerIndex = ALL_PLAYERS);      // set the current url
+   int  setURL(const char *url, 
+               int playerIndex = ALL_PLAYERS,
+               bool islocal = true);                                 // set the current url
    bool done(int playerIndex = ALL_PLAYERS);                         // test to see if the player(s) is(are) done
    void start(int playerIndex = ALL_PLAYERS, 
               bool fadein = false, bool fadeout = false,
@@ -128,7 +132,10 @@ public:
    void dispatch();                                                  // dispatch the player(s)
 
    void cleanUpStream(int playerIndex);                              // cleanup after stream complete
-   bool isPlaying(int playerIndex);                                  // is the player currently playing?
+   bool isPlaying(int playerIndex) const;                            // is the player currently playing?
+   bool isLocal(int playerIndex) const;                              // playing a local file
+   int numPlayers() const { return nNumPlayers; }                    // return the number of players
+
 
    virtual void onVolumeChange(int) {}                   // called when the volume is changed
    virtual void onMuteChange(int) {}                     // called when mute is changed
@@ -185,8 +192,10 @@ private:
       IHXVolumeAdviseSink*        pVolumeAdvise;
       IHXAudioStreamInfoResponse* pStreamInfoResponse;
       IHXAudioHook*               pPreMixHook;
+      IHXAudioHook*               pPostMixHook;
       metaData                    md;
       char*                       pszURL;
+      bool                        isLocal;
       unsigned short              volume;
       bool                        ismute;
    } **ppctrl;
@@ -304,21 +313,30 @@ private:
 protected:
    void openAudioDevice();
    void closeAudioDevice();
-   int getDirectHWVolume();
-   void setDirectHWVolume(int vol);
+#ifdef USE_HELIX_ALSA
+   int getDirectMasterVolume();
+   void setDirectMasterVolume(int vol);
+#endif
+   int getDirectPCMVolume();
+   void setDirectPCMVolume(int vol);
 
 private:
    AUDIOAPI m_direct;
    bool m_AlsaCapableCore;
    int m_nDevID;
 #ifdef USE_HELIX_ALSA
-   struct _snd_mixer* m_pAlsaMixerHandle;
-   struct _snd_mixer_elem* m_pAlsaMixerElem;
+   struct _snd_mixer*      m_pAlsaMixerHandle;
+   struct _snd_mixer_elem* m_pAlsaMasterMixerElem;
+   struct _snd_mixer_elem* m_pAlsaPCMMixerElem;
 #endif
    char *m_alsaDevice;
    bool m_urlchanged;
    int m_volBefore;
    int m_volAtStart;
+#ifdef USE_HELIX_ALSA
+   int m_MvolBefore;
+   int m_MvolAtStart;
+#endif
 
    int m_numPlugins;
    struct pluginInfo
@@ -342,7 +360,9 @@ protected:
    friend class HSPAuthenticationManager;
    friend class HelixSimplePlayerAudioStreamInfoResponse;
    friend class HSPPreMixAudioHook;
+   friend class HSPPostProcessor;
    friend class HSPPostMixAudioHook;
+   friend class HSPFinalAudioHook;
    friend class HelixSimplePlayerVolumeAdvice;
    friend class HSPEngineContext;
 };
