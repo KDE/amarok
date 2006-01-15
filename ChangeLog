@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.4:
   FEATURES:
+    * Amarok now supports ASX files.
     * New DCOP call "collection: isDirInCollection(const QString& path )".
     * New DCOP call "playlist: removeByIndex(int)". (BR 119143)
     * Handle compilations properly when using the 'Organise Music' feature.
