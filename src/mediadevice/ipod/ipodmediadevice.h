@@ -77,7 +77,7 @@ class IpodMediaDevice : public KioMediaDevice
 
     private:
         void              writeITunesDB();
-        IpodMediaItem    *addTrackToList(Itdb_Track *track);
+        IpodMediaItem    *addTrackToView(Itdb_Track *track);
         void              addPlaylistToView(Itdb_Playlist *playlist);
         void              playlistFromItem(IpodMediaItem *item);
 

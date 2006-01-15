@@ -209,8 +209,8 @@ IpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bu
         track->filetype = g_strdup( "audible" );
         track->flag3 |= 0x01; // remember current position in track
 
-        TagLib::Audible::File *f = new TagLib::Audible::File( QFile::encodeName( bundle.url().path() ) );
-        TagLib::Audible::Tag *t = f->getAudibleTag();
+        TagLib::Audible::File f( QFile::encodeName( bundle.url().path() ) );
+        TagLib::Audible::Tag *t = f.getAudibleTag();
         if( t )
             track->drm_userid = t->userID();
     }
@@ -290,7 +290,7 @@ IpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bu
         itdb_playlist_add_track(mpl, track, -1);
     }
 
-    return addTrackToList(track);
+    return addTrackToView(track);
 }
 
 
@@ -613,31 +613,6 @@ IpodMediaDevice::openDevice( bool silent )
     }
     else
     {
-        // try some common directories
-        if(!m_itdb)
-        {
-            m_itdb = itdb_parse("/mnt/ipod", &err);
-            if(err)
-                g_error_free(err);
-            err = 0;
-        }
-
-        if(!m_itdb)
-        {
-            m_itdb = itdb_parse("/media/ipod", &err);
-            if(err)
-                g_error_free(err);
-            err = 0;
-        }
-
-        if(!m_itdb)
-        {
-            m_itdb = itdb_parse("/media/iPod", &err);
-            if(err)
-                g_error_free(err);
-            err = 0;
-        }
-
         if ( !m_itdb ) {
             // try to find a mounted ipod
             KMountPoint::List currentmountpoints = KMountPoint::currentMountPoints();
@@ -810,7 +785,7 @@ IpodMediaDevice::openDevice( bool silent )
     {
         Itdb_Track *track = (Itdb_Track *)cur->data;
 
-        addTrackToList(track);
+        addTrackToView(track);
 
         cur = cur->next;
     }
@@ -913,7 +888,7 @@ IpodMediaDevice::playlistFromItem(IpodMediaItem *item)
 
 
 IpodMediaItem *
-IpodMediaDevice::addTrackToList(Itdb_Track *track)
+IpodMediaDevice::addTrackToView(Itdb_Track *track)
 {
     bool visible = false;
     bool stale = false;
