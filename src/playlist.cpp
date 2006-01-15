@@ -2422,13 +2422,14 @@ Playlist::eventFilter( QObject *o, QEvent *e )
 
     else if( o == viewport() && e->type() == QEvent::MouseButtonPress && me->button() == LeftButton )
     {
-        static PlaylistItem *lastItem = 0;
-        static QTimer timer;
-
         int col = header()->sectionAt( viewportToContents( me->pos() ).x() );
         if( col != PlaylistItem::Rating )
         {
             PlaylistItem *item = static_cast<PlaylistItem*>( itemAt( me->pos() ) );
+#if 0
+            static PlaylistItem *lastItem = 0;
+            static QTimer timer;
+
             bool edit = timer.isActive() && item == lastItem && col != PlaylistItem::Rating;
 
             if( edit )
@@ -2440,7 +2441,15 @@ Playlist::eventFilter( QObject *o, QEvent *e )
                 timer.start( int( QApplication::doubleClickInterval() * 3.5 ), true );
 
             lastItem = item;
-
+#else
+            bool edit = item->isSelected()
+                && selectedItems().count()==1
+                && (me->state() & ~LeftButton) == 0;
+            if( edit )
+            {
+                rename( item, col );
+            }
+#endif
             if( edit )
                 return true;
         }
