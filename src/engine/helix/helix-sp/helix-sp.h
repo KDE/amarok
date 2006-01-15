@@ -106,7 +106,9 @@ public:
    void play(const char *url, int playerIndex = ALL_PLAYERS,
              bool fadein = false, bool fadeout = false,
              unsigned long fadetime = 0);                            // play the file, setting it as the current url; wait for it to finish
-   int  setURL(const char *url, int playerIndex = ALL_PLAYERS);      // set the current url
+   int  setURL(const char *url, 
+               int playerIndex = ALL_PLAYERS,
+               bool islocal = true);                                 // set the current url
    bool done(int playerIndex = ALL_PLAYERS);                         // test to see if the player(s) is(are) done
    void start(int playerIndex = ALL_PLAYERS, 
               bool fadein = false, bool fadeout = false,
@@ -125,6 +127,9 @@ public:
    void setMute(bool mute, int playerIndex = ALL_PLAYERS);           // set mute: mute = true to mute the volume, false to unmute
    bool getMute(int playerIndex);                                    // get the mute state of the player
    void dispatch();                                                  // dispatch the player(s)
+
+   bool isLocal(int playerIndex) const;
+   int numPlayers() const { return nNumPlayers; }
 
    void cleanUpStream(int playerIndex);                              // cleanup after stream complete
 
@@ -183,10 +188,12 @@ private:
       IHXVolumeAdviseSink*        pVolumeAdvise;
       IHXAudioStreamInfoResponse* pStreamInfoResponse;
       IHXAudioHook*               pPreMixHook;
+      IHXAudioHook*               pPostMixHook;
       metaData                    md;
       char*                       pszURL;
       unsigned short              volume;
       bool                        ismute;
+      bool                        isLocal;
    } **ppctrl;
 
    bool                    bURLFound;
@@ -338,7 +345,9 @@ protected:
    friend class HSPAuthenticationManager;
    friend class HelixSimplePlayerAudioStreamInfoResponse;
    friend class HSPPreMixAudioHook;
+   friend class HSPPostProcessor;
    friend class HSPPostMixAudioHook;
+   friend class HSPFinalAudioHook;
    friend class HelixSimplePlayerVolumeAdvice;
    friend class HSPEngineContext;
 };

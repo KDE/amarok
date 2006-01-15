@@ -23,13 +23,13 @@
 #include "hxvsrc.h"
 #include "hxresult.h"
 #include "hxausvc.h"
-#include "print.h"
 #include "helix-sp.h"
 #ifndef HELIX_SW_VOLUME_INTERFACE
 #include "gain.h"
 #endif
 #include "hsphook.h"
 #include "iir_cf.h"         // IIR filter coefficients
+#include "print.h"
 
 #define SCOPE_BUF_PER_BLOCK 8
 #define SCOPESIZE 512
@@ -108,23 +108,6 @@ STDMETHODIMP HSPPreMixAudioHook::OnBuffer(HXAudioData */*pAudioInData*/, HXAudio
    }
 #endif
 
-/*
-   unsigned char *outbuf, *data;
-   unsigned long len;
-   IHXBuffer *ibuf;
-
-   m_Player->pCommonClassFactory->CreateInstance(CLSID_IHXBuffer, (void **) &ibuf);
-   if (ibuf)
-   {
-      pAudioInData->pData->Get(data, len);
-      ibuf->SetSize(len);
-      outbuf = ibuf->GetBuffer();
-      memcpy(outbuf, data, len);
-      pAudioOutData->pData = ibuf;
-      pAudioOutData->ulAudioTime = pAudioInData->ulAudioTime;
-      pAudioOutData->uAudioStreamType = pAudioInData->uAudioStreamType;
-   }
-*/
 
    return 0;
 }
@@ -144,7 +127,7 @@ STDMETHODIMP HSPPreMixAudioHook::OnInit(HXAudioFormat *pFormat)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-HSPPostMixAudioHook::HSPPostMixAudioHook(HelixSimplePlayer *player, int playerIndex) :
+HSPPostProcessor::HSPPostProcessor(HelixSimplePlayer *player, int playerIndex) :
    m_Player(player), m_lRefCount(0), m_index(playerIndex), m_count(0), m_item(0),
    m_current(0), m_prevtime(0), m_i(0), m_j(2), m_k(1)
 #ifndef HELIX_SW_VOLUME_INTERFACE
@@ -158,7 +141,7 @@ HSPPostMixAudioHook::HSPPostMixAudioHook(HelixSimplePlayer *player, int playerIn
    memset(&data_history, 0, sizeof(data_history));
 }
 
-HSPPostMixAudioHook::~HSPPostMixAudioHook()
+HSPPostProcessor::~HSPPostProcessor()
 {
 #ifndef HELIX_SW_VOLUME_INTERFACE
    if (m_gaintool)
@@ -167,7 +150,7 @@ HSPPostMixAudioHook::~HSPPostMixAudioHook()
 }
 
 STDMETHODIMP
-HSPPostMixAudioHook::QueryInterface(REFIID riid, void**ppvObj)
+HSPPostProcessor::QueryInterface(REFIID riid, void**ppvObj)
 {
     if(IsEqualIID(riid, IID_IUnknown))
     {
@@ -186,13 +169,13 @@ HSPPostMixAudioHook::QueryInterface(REFIID riid, void**ppvObj)
 }
 
 STDMETHODIMP_(UINT32)
-HSPPostMixAudioHook::AddRef()
+HSPPostProcessor::AddRef()
 {
     return InterlockedIncrement(&m_lRefCount);
 }
 
 STDMETHODIMP_(UINT32)
-HSPPostMixAudioHook::Release()
+HSPPostProcessor::Release()
 {
     if (InterlockedDecrement(&m_lRefCount) > 0)
     {
@@ -203,7 +186,7 @@ HSPPostMixAudioHook::Release()
     return 0;
 }
 
-STDMETHODIMP HSPPostMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioData *pAudioOutData)
+STDMETHODIMP HSPPostProcessor::OnBuffer(HXAudioData *pAudioInData, HXAudioData *pAudioOutData)
 {
    unsigned long len;
    unsigned char *data;
@@ -239,8 +222,6 @@ STDMETHODIMP HSPPostMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioDat
 
 #endif
 
-   // feed the visualizations
-   scopeify(pAudioInData->ulAudioTime, data, len);
 
 #ifndef HELIX_SW_VOLUME_INTERFACE
    unsigned char *outbuf;
@@ -267,7 +248,6 @@ STDMETHODIMP HSPPostMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioDat
       pAudioOutData->pData = ibuf;
       pAudioOutData->ulAudioTime = pAudioInData->ulAudioTime;
       pAudioOutData->uAudioStreamType = pAudioInData->uAudioStreamType;
-      //pAudioInData->pData->Release();
    }
 #else
    // equalize
@@ -293,13 +273,8 @@ STDMETHODIMP HSPPostMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioDat
    return 0;
 }
 
-STDMETHODIMP HSPPostMixAudioHook::OnInit(HXAudioFormat *pFormat)
+STDMETHODIMP HSPPostProcessor::OnInit(HXAudioFormat *pFormat)
 {
-   m_Player->STDERR("POST MIX HOOK OnInit AudioFormat: idx %d ch %d, bps %d, sps %d, mbs %d\n", m_index, pFormat->uChannels,
-          pFormat->uBitsPerSample,
-          pFormat->ulSamplesPerSec,
-          pFormat->uMaxBlockSize);
-
    m_format = *pFormat;
    m_count = 0;
 
@@ -361,7 +336,7 @@ STDMETHODIMP HSPPostMixAudioHook::OnInit(HXAudioFormat *pFormat)
 
 
 #ifndef HELIX_SW_VOLUME_INTERFACE
-void HSPPostMixAudioHook::setGain(int volume)
+void HSPPostProcessor::setGain(int volume)
 {
    if (m_gaintool)
    {
@@ -380,7 +355,7 @@ void HSPPostMixAudioHook::setGain(int volume)
 #endif
 
 
-void HSPPostMixAudioHook::scopeify(unsigned long time, unsigned char *data, size_t len)
+void HSPPostProcessor::scopeify(unsigned long time, unsigned char *data, size_t len)
 {
    int bytes_per_sample = m_format.uBitsPerSample / 8;
 
@@ -403,7 +378,7 @@ void HSPPostMixAudioHook::scopeify(unsigned long time, unsigned char *data, size
 }
 
 
-void HSPPostMixAudioHook::updateEQgains(int pamp, vector<int> &equalizerGains)
+void HSPPostProcessor::updateEQgains(int pamp, vector<int> &equalizerGains)
 {
    for (int i=0; i<EQ_CHANNELS; i++)
    {
@@ -416,7 +391,7 @@ void HSPPostMixAudioHook::updateEQgains(int pamp, vector<int> &equalizerGains)
 }
 
 
-void HSPPostMixAudioHook::equalize(unsigned char *inbuf, unsigned char *outbuf, size_t length)
+void HSPPostProcessor::equalize(unsigned char *inbuf, unsigned char *outbuf, size_t length)
 {
    int index, band, channel;
    int tempint, halflength;
@@ -503,7 +478,7 @@ void HSPPostMixAudioHook::equalize(unsigned char *inbuf, unsigned char *outbuf, 
 
 
 #ifndef HELIX_SW_VOLUME_INTERFACE
-int HSPPostMixAudioHook::volumeize(unsigned char *data, size_t len)
+int HSPPostProcessor::volumeize(unsigned char *data, size_t len)
 {
    gainFeed(data, data, len, m_gaintool);
 
@@ -511,10 +486,209 @@ int HSPPostMixAudioHook::volumeize(unsigned char *data, size_t len)
 }
 
 
-int HSPPostMixAudioHook::volumeize(unsigned char *data, unsigned char *outbuf, size_t len)
+int HSPPostProcessor::volumeize(unsigned char *data, unsigned char *outbuf, size_t len)
 {
    gainFeed(data, outbuf, len, m_gaintool);
 
    return len;
 }
 #endif
+
+HSPPostMixAudioHook::HSPPostMixAudioHook(HelixSimplePlayer *player, int playerIndex) :  
+   m_Player(player), m_index(playerIndex), m_lRefCount(0), m_processor(0)
+{
+   AddRef();
+
+   m_Player->STDERR("POST MIX HOOK CTOR\n");
+
+   m_processor = new HSPPostProcessor(player, playerIndex);
+}
+
+
+HSPPostMixAudioHook::~HSPPostMixAudioHook()
+{
+   m_processor->Release();
+}
+
+/*
+ *  IUnknown methods
+ */
+STDMETHODIMP
+HSPPostMixAudioHook::QueryInterface(REFIID riid, void** ppvObj)
+{
+   if(IsEqualIID(riid, IID_IUnknown))
+   {
+      AddRef();
+      *ppvObj = (IUnknown*)(IHXAudioHook *)this;
+      return HXR_OK;
+   }
+   else if(IsEqualIID(riid, IID_IHXAudioHook))
+   {
+      AddRef();
+      *ppvObj = (IHXAudioHook *)this;
+      return HXR_OK;
+   }
+   *ppvObj = NULL;
+   return HXR_NOINTERFACE;
+}
+
+
+STDMETHODIMP_(UINT32)
+HSPPostMixAudioHook::AddRef()
+{
+    return InterlockedIncrement(&m_lRefCount);
+}
+
+STDMETHODIMP_(UINT32)
+HSPPostMixAudioHook::Release()
+{
+    if (InterlockedDecrement(&m_lRefCount) > 0)
+    {
+        return m_lRefCount;
+    }
+
+    delete this;
+    return 0;
+}
+
+STDMETHODIMP HSPPostMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioData */*pAudioOutData*/)
+{
+   unsigned long len;
+   unsigned char *data;
+
+   pAudioInData->pData->Get(data, len);
+
+   // feed the visualizations, if this is a local file (otherwise do it in the FinalHook)
+   if (m_Player->isLocal(m_index))
+      m_processor->scopeify(pAudioInData->ulAudioTime, data, len);
+
+   return 0;
+}
+
+STDMETHODIMP HSPPostMixAudioHook::OnInit(HXAudioFormat *pFormat)
+{
+   m_Player->STDERR("POST MIX HOOK OnInit AudioFormat: idx %d ch %d, bps %d, sps %d, mbs %d\n", m_index, pFormat->uChannels,
+          pFormat->uBitsPerSample,
+          pFormat->ulSamplesPerSec,
+          pFormat->uMaxBlockSize);
+
+   return (m_processor->OnInit(pFormat));
+}
+
+void HSPPostMixAudioHook::updateEQgains(int preamp, vector<int> &equalizerGains)
+{
+   m_processor->updateEQgains(preamp, equalizerGains);
+}
+
+
+#ifndef HELIX_SW_VOLUME_INTERFACE
+
+void HSPPostMixAudioHook::setGain(int volume)
+{
+   m_processor->setGain(volume);
+}
+
+#endif
+
+
+HSPFinalAudioHook::HSPFinalAudioHook(HelixSimplePlayer *player) : m_Player(player), m_lRefCount(0), m_processor(0)
+{
+   AddRef();
+   m_processor = new HSPPostProcessor(player, 0);
+}
+
+
+HSPFinalAudioHook::~HSPFinalAudioHook()
+{
+   m_processor->Release();
+}
+
+/*
+ *  IUnknown methods
+ */
+STDMETHODIMP
+HSPFinalAudioHook::QueryInterface(REFIID riid, void** ppvObj)
+{
+   if(IsEqualIID(riid, IID_IUnknown))
+   {
+      AddRef();
+      *ppvObj = (IUnknown*)(IHXAudioHook *)this;
+      return HXR_OK;
+   }
+   else if(IsEqualIID(riid, IID_IHXAudioHook))
+   {
+      AddRef();
+      *ppvObj = (IHXAudioHook *)this;
+      return HXR_OK;
+   }
+   *ppvObj = NULL;
+   return HXR_NOINTERFACE;
+}
+
+
+STDMETHODIMP_(UINT32)
+HSPFinalAudioHook::AddRef()
+{
+    return InterlockedIncrement(&m_lRefCount);
+}
+
+STDMETHODIMP_(UINT32)
+HSPFinalAudioHook::Release()
+{
+    if (InterlockedDecrement(&m_lRefCount) > 0)
+    {
+        return m_lRefCount;
+    }
+
+    delete this;
+    return 0;
+}
+
+STDMETHODIMP HSPFinalAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioData *pAudioOutData)
+{
+   unsigned long len;
+   unsigned char *data;
+
+   pAudioInData->pData->Get(data, len);
+
+   // feed the visualizations, if this is a live stream
+   bool anyLocal = false;
+   int i = 0;
+   while (i< m_Player->numPlayers())
+   {
+      if (anyLocal = m_Player->isLocal(i))
+         break;
+      i++;
+   }
+   if (!anyLocal)
+      m_processor->scopeify(pAudioInData->ulAudioTime, data, len);
+
+   return (m_processor->OnBuffer(pAudioInData, pAudioOutData));
+}
+
+STDMETHODIMP HSPFinalAudioHook::OnInit(HXAudioFormat *pFormat)
+{
+   m_Player->STDERR("FINAL HOOK OnInit AudioFormat: ch %d, bps %d, sps %d, mbs %d\n",  pFormat->uChannels,
+          pFormat->uBitsPerSample,
+          pFormat->ulSamplesPerSec,
+          pFormat->uMaxBlockSize);
+
+   return (m_processor->OnInit(pFormat));
+}
+
+void HSPFinalAudioHook::updateEQgains(int preamp, vector<int> &equalizerGains)
+{
+   m_processor->updateEQgains(preamp, equalizerGains);
+}
+
+
+#ifndef HELIX_SW_VOLUME_INTERFACE
+
+void HSPFinalAudioHook::setGain(int volume)
+{
+   m_processor->setGain(volume);
+}
+
+#endif
+
+

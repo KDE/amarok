@@ -281,11 +281,11 @@ HelixEngine::load( const KURL &url, bool isStream )
    m_url = url;
 
    if (url.isLocalFile())
-      HelixSimplePlayer::setURL( QFile::encodeName( url.url() ), nextPlayer );
+      HelixSimplePlayer::setURL( QFile::encodeName( url.url() ), nextPlayer, !m_isStream );
    else
    {
       m_isStream = true;
-      HelixSimplePlayer::setURL( QFile::encodeName( url.url() ), nextPlayer );
+      HelixSimplePlayer::setURL( QFile::encodeName( url.url() ), nextPlayer, !m_isStream );
    }
 
    return true;

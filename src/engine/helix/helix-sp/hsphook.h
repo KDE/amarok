@@ -78,11 +78,11 @@ typedef struct
 
 struct DelayQueue;
 
-class HSPPostMixAudioHook : public IHXAudioHook
+class HSPPostProcessor : public IHXAudioHook
 {
 public:
-   HSPPostMixAudioHook(HelixSimplePlayer *player, int playerIndex);
-   virtual ~HSPPostMixAudioHook();
+   HSPPostProcessor(HelixSimplePlayer *player, int playerIndex);
+   virtual ~HSPPostProcessor();
    /*
     *  IUnknown methods
     */
@@ -102,14 +102,15 @@ public:
 
    void updateEQgains(int preamp, vector<int> &equalizerGains);
 
+   void scopeify(unsigned long time, unsigned char *data, size_t len);
+
 #ifndef HELIX_SW_VOLUME_INTERFACE
    void setGain(int volume);
 #endif
 
 private:
-   HSPPostMixAudioHook();
+   HSPPostProcessor();
 
-   void scopeify(unsigned long time, unsigned char *data, size_t len);
    void equalize(unsigned char *datain, unsigned char *dataout, size_t len);
 #ifndef HELIX_SW_VOLUME_INTERFACE
    int volumeize(unsigned char *data, size_t len);
@@ -152,6 +153,84 @@ private:
    GAIN_STATE        *m_gaintool;
    float              m_gaindB;
 #endif
+};
+
+
+class HSPPostMixAudioHook : public IHXAudioHook
+{
+public:
+   HSPPostMixAudioHook(HelixSimplePlayer *player, int playerIndex);
+   virtual ~HSPPostMixAudioHook();
+   /*
+    *  IUnknown methods
+    */
+   STDMETHOD(QueryInterface)   (THIS_
+                               REFIID riid,
+                               void** ppvObj);
+   STDMETHOD_(ULONG32,AddRef)  (THIS);
+   STDMETHOD_(ULONG32,Release) (THIS);
+   /*
+    * IHXAudioHook methods
+    */
+   STDMETHOD(OnBuffer) (THIS_
+                        HXAudioData *pAudioInData,
+                        HXAudioData *pAudioOutData);
+   STDMETHOD(OnInit) (THIS_
+                      HXAudioFormat *pFormat);
+
+   void updateEQgains(int preamp, vector<int> &equalizerGains);
+
+#ifndef HELIX_SW_VOLUME_INTERFACE
+   void setGain(int volume);
+#endif
+
+private:
+   HSPPostMixAudioHook();
+
+   HelixSimplePlayer *m_Player;
+   int                m_index;
+   LONG32             m_lRefCount;
+
+   HSPPostProcessor  *m_processor;
+};
+
+
+class HSPFinalAudioHook : public IHXAudioHook
+{
+public:
+   HSPFinalAudioHook(HelixSimplePlayer *player);
+   virtual ~HSPFinalAudioHook();
+   /*
+    *  IUnknown methods
+    */
+   STDMETHOD(QueryInterface)   (THIS_
+                               REFIID riid,
+                               void** ppvObj);
+   STDMETHOD_(ULONG32,AddRef)  (THIS);
+   STDMETHOD_(ULONG32,Release) (THIS);
+   /*
+    * IHXAudioHook methods
+    */
+   STDMETHOD(OnBuffer) (THIS_
+                        HXAudioData *pAudioInData,
+                        HXAudioData *pAudioOutData);
+   STDMETHOD(OnInit) (THIS_
+                      HXAudioFormat *pFormat);
+
+
+   void updateEQgains(int preamp, vector<int> &equalizerGains);
+
+#ifndef HELIX_SW_VOLUME_INTERFACE
+   void setGain(int volume);
+#endif
+
+private:
+   HSPFinalAudioHook();
+
+   HelixSimplePlayer *m_Player;
+   LONG32             m_lRefCount;
+
+   HSPPostProcessor  *m_processor;
 };
 
 

@@ -241,7 +241,7 @@ void HelixSimplePlayer::updateEQgains()
 {
    for (int i = 0; i<nNumPlayers; i++)
       if (pFinalAudioHook && isEQenabled())
-         ((HSPPostMixAudioHook *)pFinalAudioHook)->updateEQgains(m_preamp, m_equalizerGains);
+         ((HSPFinalAudioHook *)pFinalAudioHook)->updateEQgains(m_preamp, m_equalizerGains);
 }
 
 /*
@@ -510,7 +510,7 @@ void HelixSimplePlayer::init(const char *corelibhome, const char *pluginslibhome
    }
 
    // install hook for visualizations, equalizer, and volume control
-   HSPPostMixAudioHook *pPMAH = new HSPPostMixAudioHook(this, 1);
+   HSPFinalAudioHook *pPMAH = new HSPFinalAudioHook(this);
    pAudioHookManager->AddHook(pPMAH);
    pFinalAudioHook = pPMAH;
 
@@ -740,6 +740,11 @@ int HelixSimplePlayer::addPlayer()
       ppctrl[nNumPlayers]->pAudioPlayer->QueryInterface(IID_IHXAudioCrossFade, (void **) &(ppctrl[nNumPlayers]->pCrossFader));
       if (!ppctrl[nNumPlayers]->pCrossFader)
          STDERR("CrossFader not available\n");
+
+      // install hook for visualizations, equalizer, and volume control
+      HSPPostMixAudioHook *pPMAH = new HSPPostMixAudioHook(this, nNumPlayers);
+      ppctrl[nNumPlayers]->pAudioPlayer->AddPostMixHook(pPMAH, false, true);
+      ppctrl[nNumPlayers]->pPostMixHook= pPMAH;
    }
    else
       STDERR("No AudioPlayer Found - how can we play music!!\n");
@@ -778,6 +783,9 @@ void HelixSimplePlayer::tearDown()
 
       if (ppctrl[i]->pAudioPlayer)
       {
+         ppctrl[i]->pAudioPlayer->RemovePostMixHook(ppctrl[i]->pPostMixHook);
+         ppctrl[i]->pPostMixHook->Release();
+
          ppctrl[i]->pAudioPlayer->RemoveStreamInfoResponse((IHXAudioStreamInfoResponse *) ppctrl[i]->pStreamInfoResponse);
 
          if (ppctrl[i]->pVolume)
@@ -1261,8 +1269,12 @@ void HelixSimplePlayer::setDirectHWVolume(int vol)
    }
 }
 
+bool HelixSimplePlayer::isLocal(int playerIndex) const
+{
+   return (ppctrl[playerIndex]->isLocal && duration(playerIndex)); // must have a length to be local
+}
 
-int HelixSimplePlayer::setURL(const char *file, int playerIndex)
+int HelixSimplePlayer::setURL(const char *file, int playerIndex, bool islocal)
 {
    if (playerIndex == ALL_PLAYERS)
    {
@@ -1293,7 +1305,10 @@ int HelixSimplePlayer::setURL(const char *file, int playerIndex)
          
          ppctrl[playerIndex]->pszURL = new char[strlen(pszURLOrig)+strlen(pszAddOn)+1];
          if ( (len + strlen(pszAddOn)) < MAXPATHLEN )
+         {
+            islocal = true;
             sprintf( ppctrl[playerIndex]->pszURL, "%s%s", pszAddOn, pszURLOrig );
+         }
          else
             return -1;
       }
@@ -1305,6 +1320,8 @@ int HelixSimplePlayer::setURL(const char *file, int playerIndex)
          else
             return -1;
       }
+
+      ppctrl[playerIndex]->isLocal = islocal;
 
 #ifdef __NOCROSSFADER__
       STDERR("opening %s on player %d, src cnt %d\n", 
@@ -1746,7 +1763,7 @@ void HelixSimplePlayer::setVolume(unsigned long vol, int playerIndex)
          pthread_mutex_lock(&m_engine_m);
 #ifndef HELIX_SW_VOLUME_INTERFACE
          ppctrl[playerIndex]->volume = vol;
-         ((HSPPostMixAudioHook *)pFinalAudioHook)->setGain(vol);
+         ((HSPFinalAudioHook *)pFinalAudioHook)->setGain(vol);
 #else
          ppctrl[playerIndex]->pVolume->SetVolume(vol);
 #endif
