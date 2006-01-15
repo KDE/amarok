@@ -1,6 +1,7 @@
 // Author: Max Howell (C) Copyright 2003-4
 // Author: Mark Kretschmann (C) Copyright 2004
 // .ram file support from Kaffeine 0.5, Copyright (C) 2004 by Jürgen Kofler (GPL 2 or later)
+// .asx file support from Kaffeine, Copyright (C) 2006 by Jürgen Kofler (GPL 2 or later)
 // .pls parser (C) Copyright 2005 by Michael Buesch <mbuesch@freenet.de>
 // Copyright: See COPYING file that comes with this distribution
 //
@@ -408,7 +409,7 @@ PlaylistFile::PlaylistFile( const QString &path )
         m_error = i18n( "This component of amaroK cannot translate XML playlists." );
         return;
     case RAM: loadRealAudioRam( stream ); break;
-    case ASX:
+    case ASX: loadASX( stream ); break;
     default:
         m_error = i18n( "amaroK does not support this playlist format." );
         return;
@@ -613,6 +614,99 @@ PlaylistFile::loadRealAudioRam( QTextStream &stream )
 
     return true;
 }
+
+bool
+PlaylistFile::loadASX( QTextStream &stream )
+{
+    //adapted from Kaffeine 0.7
+    MetaBundle b;
+    QDomDocument doc;
+    QString errorMsg;
+    int errorLine, errorColumn;
+    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    if (!doc.setContent(stream.read(), &errorMsg, &errorLine, &errorColumn))
+    {
+	kdError() << "[PLAYLISTLOADER]: Error loading xml file: " "(" << errorMsg << ")"
+                << " at line " << errorLine << ", column " << errorColumn << endl;
+        return false;
+    }
+
+    QDomElement root = doc.documentElement();	
+
+    QString url;
+    QString title;
+    QString author;
+    QTime length;
+    QString duration;
+
+    if (root.nodeName().lower() != "asx") return false;
+        
+    QDomNode node = root.firstChild();
+    QDomNode subNode;
+    QDomElement element;
+
+    while (!node.isNull())
+    {
+       url = QString::null;
+       title = QString::null;
+       author = QString::null;
+       length = QTime();
+       if (node.nodeName().lower() == "entry")
+       {
+          subNode = node.firstChild();
+          while (!subNode.isNull())
+          {
+             if ((subNode.nodeName().lower() == "ref") && (subNode.isElement()) && (url.isNull()))
+             {
+                element = subNode.toElement();
+                if (element.hasAttribute("href"))
+                   url = element.attribute("href");
+                if (element.hasAttribute("HREF"))
+                   url = element.attribute("HREF");
+                if (element.hasAttribute("Href"))
+                   url = element.attribute("Href");
+                if (element.hasAttribute("HRef"))
+                   url = element.attribute("HRef");
+              }
+		if ((subNode.nodeName().lower() == "duration") && (subNode.isElement()))
+                {
+                   duration = QString::null;
+                   element = subNode.toElement();
+                   if (element.hasAttribute("value"))
+                      duration = element.attribute("value");
+                   if (element.hasAttribute("Value"))
+                      duration = element.attribute("Value");
+                   if (element.hasAttribute("VALUE"))
+                      duration = element.attribute("VALUE");
+
+                   if (!duration.isNull())
+                      length = PlaylistFile::stringToTime(duration);
+                  }
+
+                  if ((subNode.nodeName().lower() == "title") && (subNode.isElement()))
+                  {
+                     title = subNode.toElement().text();
+                  }
+                  if ((subNode.nodeName().lower() == "author") && (subNode.isElement()))
+                  {
+                     author = subNode.toElement().text();
+                  }
+		  subNode = subNode.nextSibling();
+	  }
+	  if (!url.isNull())
+          {
+	     if (title.isNull())
+                title = url;
+                b.setUrl(KURL(url));
+                m_bundles += b;
+                b = MetaBundle();
+	   }
+        }
+	node = node.nextSibling();
+     }
+     return true;
+}
+	
 /// @class RemotePlaylistFetcher
 
 #include <ktempfile.h>
@@ -729,4 +823,19 @@ SqlLoader::doJob()
     return true;
 }
 
+QTime PlaylistFile::stringToTime(const QString& timeString)
+{
+   int sec = 0;
+   bool ok = false;
+   QStringList tokens = QStringList::split(':',timeString);
+
+   sec += tokens[0].toInt(&ok)*3600; //hours
+   sec += tokens[1].toInt(&ok)*60; //minutes
+   sec += tokens[2].toInt(&ok); //secs
+
+   if (ok)
+      return QTime().addSecs(sec);
+         else
+            return QTime();
+}
 #include "playlistloader.moc"

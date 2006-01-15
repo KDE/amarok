@@ -48,9 +48,11 @@ public:
     /// if start returns false this has a translated error description
     QString error() const { return m_error; }
 
+
     static inline bool isPlaylistFile( const KURL &url ) { return isPlaylistFile( url.fileName() ); }
     static inline bool isPlaylistFile( const QString &fileName ) { return format( fileName ) != Unknown; }
     static inline Format format( const QString &fileName );
+    static QTime stringToTime(const QString&);   
 
 protected:
     /// make these virtual if you need to
@@ -58,6 +60,7 @@ protected:
     bool loadPls( QTextStream& );
     unsigned int loadPls_extractIndex( const QString &str ) const;
     bool loadRealAudioRam( QTextStream& ); 
+    bool loadASX( QTextStream& );
     QString m_path;
     QString m_error;
     BundleList m_bundles;
