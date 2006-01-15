@@ -3407,21 +3407,10 @@ QueryBuilder::addFilter( int tables, int value, const QString& filter, int mode 
         m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
 
         QString m, s;
-        if (CollectionDB::instance()->getType() == DbConnection::postgresql)
-        {
-            m = mode == modeLess ? "<" : mode == modeGreater ? ">" : "~*";
-            if( mode == modeEndMatch )
-                s = m + " '" + CollectionDB::instance()->escapeString( filter ) + "$' ";
-            else
-                s = m + " '" + CollectionDB::instance()->escapeString( filter ) + "' ";
-        }
+        if (mode == modeLess || mode == modeGreater)
+            s = ( mode == modeLess ? "< '" : "> '" ) + CollectionDB::instance()->escapeString( filter ) + "' ";
         else
-        {
-            if (mode == modeLess || mode == modeGreater)
-                s = ( mode == modeLess ? "< '" : "> '" ) + CollectionDB::instance()->escapeString( filter ) + "' ";
-            else
-                s = CollectionDB::likeCondition( filter, true, mode != modeEndMatch );
-        }
+            s = CollectionDB::likeCondition( filter, true, mode != modeEndMatch );
 
         m_where += QString( "OR %1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
 
@@ -3500,21 +3489,10 @@ QueryBuilder::excludeFilter( int tables, int value, const QString& filter, int m
         m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolT() + " ";
 
         QString m, s;
-        if (CollectionDB::instance()->getType() == DbConnection::postgresql)
-        {
-            m = mode == modeLess ? ">=" : mode == modeGreater ? "<=" : "!~*";
-            if( mode == modeEndMatch )
-                s = m + " '" + CollectionDB::instance()->escapeString( filter ) + "$' ";
-            else
-                s = m + " '" + CollectionDB::instance()->escapeString( filter ) + "' ";
-        }
+        if (mode == modeLess || mode == modeGreater)
+            s = ( mode == modeLess ? ">= '" : "<= '" ) + CollectionDB::instance()->escapeString( filter ) + "' ";
         else
-        {
-            if (mode == modeLess || mode == modeGreater)
-                s = ( mode == modeLess ? ">= '" : "<= '" ) + CollectionDB::instance()->escapeString( filter ) + "' ";
-            else
-                s = "NOT " + CollectionDB::instance()->likeCondition( filter, true, mode != modeEndMatch ) + " ";
-        }
+            s = "NOT " + CollectionDB::instance()->likeCondition( filter, true, mode != modeEndMatch ) + " ";
 
         m_where += QString( "AND %1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
 
