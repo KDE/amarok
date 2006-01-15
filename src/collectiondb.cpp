@@ -3339,6 +3339,12 @@ QueryBuilder::setGoogleFilter( int defaultTables, QString query )
                 value = valTrack;
                 exact = true;
             }
+            else if( field == "disc" || field == "discnumber" )
+            {
+                table = tabSong;
+                value = valDiscNumber;
+                exact = true;
+            }
             else if( field == "filename" || field == "url" )
             {
                 table = tabSong;
@@ -3361,6 +3367,11 @@ QueryBuilder::setGoogleFilter( int defaultTables, QString query )
             {
                 table = tabSong;
                 value = valComment;
+            }
+            else if( field == "composer" )
+            {
+                table = tabSong;
+                value = valComposer;
             }
             else if( field == "lyrics" )
             {
