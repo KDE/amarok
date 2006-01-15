@@ -199,6 +199,11 @@ IpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bu
     {
         track->filetype = g_strdup( "mp4" );
     }
+    else if(type=="m4v" || type=="mp4v" || type=="mov" || type=="mpg")
+    {
+        track->filetype = g_strdup( "m4v video" );
+        track->unk208 = 0x02; // for videos
+    }
     else if(type=="m4b")
     {
         track->filetype = g_strdup( "mp4" );
@@ -213,6 +218,9 @@ IpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bu
         TagLib::Audible::Tag *t = f.getAudibleTag();
         if( t )
             track->drm_userid = t->userID();
+        // libgpod also tries to set those, but this won't work
+        track->unk126 = 0x01;
+        track->unk144 = 0x01000029;
     }
     else
     {
@@ -1603,7 +1611,12 @@ IpodMediaDevice::supportedFiletypes()
     list << "aa";
 
     if( m_supportsVideo )
+    {
         list << "m4v";
+        list << "mp4v";
+        list << "mov";
+        list << "mpg";
+    }
 
     return list;
 }
