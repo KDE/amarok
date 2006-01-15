@@ -47,11 +47,14 @@
 #include <nmm/base/ProxyObject.hpp>
 
 #include <qapplication.h>
+#include <qtimer.h>
 
 #include <kfileitem.h>
 #include <kmimetype.h>
 #include <iostream>
 #include <kurl.h>
+
+NmmEngine* NmmEngine::s_instance;
 
 AMAROK_EXPORT_PLUGIN( NmmEngine )
 
@@ -69,18 +72,17 @@ NmmEngine::NmmEngine()
     __playback(0),
     __display(0),
     __with_video(false),
-    __seeking(false),
-    __running(true),
-    __cond(__mutex)
+    __seeking(false)
 {
-  // start the secondary thread
-  activateThread();
-
   addPluginProperty( "HasConfigure", "true" );
 }
 
 bool NmmEngine::init()
 {
+  DEBUG_BLOCK
+  
+  s_instance = this;
+    
   // disable debug and warning streams
   NamedObject::getGlobalInstance().setDebugStream(NULL, NamedObject::ALL_LEVELS);
   NamedObject::getGlobalInstance().setWarningStream(NULL, NamedObject::ALL_LEVELS);
@@ -94,10 +96,10 @@ bool NmmEngine::init()
 NmmEngine::~NmmEngine()
 {
   // stop the secondary thread
-  __mutex.lock();
-  __running = false;
-  __cond.notify();
-  __mutex.unlock();
+  //__mutex.lock();
+  //__running = false;
+  //__cond.notify();
+  //__mutex.unlock();
 
   // stop all nodes
   stop();
@@ -125,6 +127,8 @@ amaroK::PluginConfig* NmmEngine::configure() const
 bool NmmEngine::load(const KURL& url, bool stream)
 {
   DEBUG_BLOCK
+
+  bool ret = true;
 
   // play only local files
   if (!url.isLocalFile()) return false;
@@ -155,19 +159,20 @@ bool NmmEngine::load(const KURL& url, bool stream)
       throw Exception("Invalid URL given");
     }
 
-    // get a playback node interface from the registry
     ClientRegistry& registry = __app->getRegistry();
     {
       RegistryLock lock(registry);
 
+      // get a playback node interface from the registry
       list<Response> playback_response = registry.initRequest(playback_nd);
       if (playback_response.empty())
-        throw Exception("PlaybackNode is not available");
+        throw Exception("PlaybackNode is not available on host " + playback_nd.getLocation() );
       __playback = registry.requestNode(playback_response.front());
 
+      // get a display node interface from the registry
       list<Response> display_response = registry.initRequest(display_nd);
       if (display_response.empty())
-        throw Exception("Display node is not available");
+        throw Exception("Display node is not available on host" + display_nd.getLocation() );
       __display = registry.requestNode(display_response.front());
 
     }
@@ -188,17 +193,14 @@ bool NmmEngine::load(const KURL& url, bool stream)
     // set volume for playback node
     setVolume( m_volume );
 
-    // register the needed event listeners at the playback node
-   
-
-
+    // register the needed event listeners at the display node if video enabled
     if(__with_video) {
         __display->getParentObject()->registerEventListener(ISyncReset::syncReset_event, &__syncReset_listener);
         __display->getParentObject()->registerEventListener(IProgressListener::setProgress_event, &__setProgress_listener);
         __display->getParentObject()->registerEventListener(ITrack::endTrack_event, &__endTrack_listener);
 
     }
-    else {
+    else { // in other case at the playback node
         __playback->getParentObject()->registerEventListener(ISyncReset::syncReset_event, &__syncReset_listener);
         __playback->getParentObject()->registerEventListener(IProgressListener::setProgress_event, &__setProgress_listener);
         __playback->getParentObject()->registerEventListener(ITrack::endTrack_event, &__endTrack_listener);
@@ -236,12 +238,16 @@ bool NmmEngine::load(const KURL& url, bool stream)
   }
   catch (const Exception& e) {
     cerr << e << endl;
+    QString status = e.getComment().c_str() ;
+    emit statusText( QString("NMM engine: ") + status );
+    ret = false;
   }
   catch(...) {
-    cerr << "something went wrong..." << endl;
+    emit statusText( "NMM engine: Something went wrong..." );
+    ret = false;
   }
 
-  return true;
+  return ret;
 }
 
 bool NmmEngine::play(uint)
@@ -305,7 +311,7 @@ void NmmEngine::cleanup()
   //__display->flush();
   //__display->reachConstructed();
  
-  // release the playback node
+  // release the playback and video node
   ClientRegistry& registry = __app->getRegistry();
   {
     RegistryLock lock(registry);
@@ -337,9 +343,8 @@ void NmmEngine::stop()
 
 void NmmEngine::pause()
 {
-  if (!__composite) {
+  if (!__composite)
     return;
-  }
 
   // pause or play...
   if (__state == Engine::Playing) {
@@ -366,6 +371,12 @@ void NmmEngine::seek(uint ms)
   ISeekable_var seek(__composite->getCheckedInterface<ISeekable>());
   if (seek.get())
     seek->seekPercentTo(Rational(ms, __track_length));
+}
+
+void NmmEngine::endOfStreamReached()
+{
+    DEBUG_BLOCK
+    emit trackEnded();
 }
 
 uint NmmEngine::position() const
@@ -455,25 +466,12 @@ Result NmmEngine::setProgress(u_int64_t& numerator, u_int64_t& denominator)
   // compute the track position in milliseconds
   u_int64_t position = numerator * __track_length / denominator;
 
-  if (__seeking) {
+  if (__seeking)
     return SUCCESS;
-  }
   
   __position = position;
 
   return SUCCESS;
-}
-
-void NmmEngine::run()
-{
-  // this is the secondary thread that is used to emit the trackEnded signal
-  MutexGuard mg(__mutex);
-  while (__running) {
-    __cond.wait();
-    if (__running) {
-      QApplication::postEvent(this, new QCustomEvent(3000) );
-    }
-  }
 }
 
 Result NmmEngine::endTrack()
@@ -481,26 +479,10 @@ Result NmmEngine::endTrack()
   __state = Engine::Idle;
   __position = 0;
 
-  // make the secondary thread emit the trackEnded signal
-  __mutex.lock();
-  __cond.notify();
-  __mutex.unlock();
+  // cleanup after this method returned
+  QTimer::singleShot( 0, instance(), SLOT( endOfStreamReached() ) );
 
   return SUCCESS;
-}
-
-void NmmEngine::customEvent( QCustomEvent *e )
-{
-    switch( e->type() )
-    {
-        case 3000:
-            // emit signal from GUI thread
-            emit trackEnded();
-            break;
-
-        default:
-            ;
-    }
 }
 
 Result NmmEngine::syncReset()

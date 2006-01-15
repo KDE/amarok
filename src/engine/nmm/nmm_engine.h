@@ -30,7 +30,6 @@
 
 #include <config.h>
 
-#ifdef HAVE_NMM
 #include "engine/enginebase.h"
 #include <nmm/base/graph/CompositeNode.hpp>
 #include <nmm/base/NMMApplication.hpp>
@@ -38,7 +37,7 @@
 
 using namespace NMM;
 
-class NmmEngine : public Engine::Base, public ThreadedObject
+class NmmEngine : public Engine::Base
 {
 Q_OBJECT
 public:
@@ -63,10 +62,15 @@ public slots:
     void  pause();
     void  seek(uint);
 
+private slots:
+    void endOfStreamReached();
+
 protected:
     void  setVolumeSW( uint );
 
 private:
+    static NmmEngine* instance() { return s_instance; }
+
     void cleanup();
 
     /**
@@ -103,16 +107,6 @@ private:
      * an Interval that contains the time in seconds and nanoseconds.
      */
     Result trackDuration(Interval& duration);
-
-    /**
-     * Overwritten run method from ThreadedObject. A secondary thread is needed to avoid a deadlock that would be caused
-     * by emitting a trackEnded signal when an endTrack event is received: The emission of a trackEnded signal makes
-     * all NMM nodes stop, which is not possible before the endTrack event has been processed. Thus, the trackEnded signal
-     * is emitted from a secondary thread, allowing the endTrack method to return.
-     */
-    void run();
-
-    void customEvent( QCustomEvent* );
 
     /**
      * The current track position in milliseconds.
@@ -171,21 +165,7 @@ private:
      */
     bool __seeking;
 
-    /**
-     * This flag is set while the secondary thread is running.
-     */
-    bool __running;
-
-    /**
-     * Mutex used for thread synchronization.
-     */    
-    ThreadMutex __mutex;
-
-    /**
-     * Condition variable used for thread synchronization.
-     */
-    ThreadCondition __cond;
+    static NmmEngine* s_instance;
 };
 
-#endif
 #endif
