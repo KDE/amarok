@@ -183,9 +183,9 @@ IpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bu
     track->ipod_path = g_strdup( ipodPath(pathname).latin1() );
     debug() << "on iPod: " << track->ipod_path << ", podcast=" << podcastInfo << endl;
 
-    track->title = g_strdup( bundle.title().isEmpty() ? i18n("Unknown").utf8() : bundle.title().utf8() );
-    track->album = g_strdup( bundle.album().isEmpty() ? i18n("Unknown").utf8() : bundle.album().utf8() );
-    track->artist = g_strdup( bundle.artist().isEmpty() ? i18n("Unknown").utf8() : bundle.artist().utf8() );
+    track->title = g_strdup( bundle.title().utf8() );
+    track->album = g_strdup( bundle.album().utf8() );
+    track->artist = g_strdup( bundle.artist().utf8() );
     track->genre = g_strdup( bundle.genre().utf8() );
     if(type=="wav")
     {
