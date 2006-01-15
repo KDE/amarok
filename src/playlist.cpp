@@ -171,7 +171,7 @@ class Playlist::PlaylistToolTip: public QToolTip
         if( ( col == PlaylistItem::Rating && item->ratingAtPoint( contentsPos.x() ) <= item->rating() ) ||
             ( col != PlaylistItem::Rating && view->fontMetrics().width( text ) > width ) )
         {
-            tip( r, text.replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" ) );
+            tip( r, text );
         }
     }
 };
