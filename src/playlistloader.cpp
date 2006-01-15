@@ -1,7 +1,8 @@
 // Author: Max Howell (C) Copyright 2003-4
 // Author: Mark Kretschmann (C) Copyright 2004
 // .ram file support from Kaffeine 0.5, Copyright (C) 2004 by Jürgen Kofler (GPL 2 or later)
-// .asx file support from Kaffeine, Copyright (C) 2006 by Michael Seiwert (GPL 2 or later)
+// .ram file support added by Michael Seiwert Copyright (C) 2006
+// .asx file support from Kaffeine, Copyright (C) 2004-2005 by Jürgen Kofler (GPL 2 or later)
 // .pls parser (C) Copyright 2005 by Michael Buesch <mbuesch@freenet.de>
 // Copyright: See COPYING file that comes with this distribution
 //
