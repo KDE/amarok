@@ -3271,6 +3271,7 @@ QueryBuilder::setGoogleFilter( int defaultTables, QString query )
             }
 
             int mode = modeNormal;
+            bool exact = false; // enable for numeric values
             if( !field.isEmpty() && s.startsWith( ">" ) )
             {
                 s = s.mid( 1 );
@@ -3292,16 +3293,22 @@ QueryBuilder::setGoogleFilter( int defaultTables, QString query )
             else if( field == "genre" )
                 table = tabGenre;
             else if( field == "year" )
+            {
                 table = tabYear;
+                value = valName;
+                exact = true;
+            }
             else if( field == "score" )
             {
                 table = tabStats;
                 value = valScore;
+                exact = true;
             }
             else if( field == "rating" )
             {
                 table = tabStats;
                 value = valRating;
+                exact = true;
             }
             else if( field == "directory" )
             {
@@ -3312,21 +3319,25 @@ QueryBuilder::setGoogleFilter( int defaultTables, QString query )
             {
                 table = tabSong;
                 value = valLength;
+                exact = true;
             }
             else if( field == "playcount" )
             {
                 table = tabStats;
                 value = valPlayCounter;
+                exact = true;
             }
             else if( field == "samplerate" )
             {
                 table = tabSong;
                 value = valSamplerate;
+                exact = true;
             }
             else if( field == "track" )
             {
                 table = tabSong;
                 value = valTrack;
+                exact = true;
             }
             else if( field == "filename" || field == "url" )
             {
@@ -3344,6 +3355,7 @@ QueryBuilder::setGoogleFilter( int defaultTables, QString query )
             {
                 table = tabSong;
                 value = valBitrate;
+                exact = true;
             }
             else if( field == "comment" )
             {
@@ -3359,14 +3371,14 @@ QueryBuilder::setGoogleFilter( int defaultTables, QString query )
             if( neg )
             {
                 if( value >= 0 )
-                    excludeFilter( table, value, s, mode );
+                    excludeFilter( table, value, s, mode, exact );
                 else
                     excludeFilter( table >= 0 ? table : defaultTables, s );
             }
             else
             {
                 if( value >= 0 )
-                    addFilter( table, value, s, mode );
+                    addFilter( table, value, s, mode, exact );
                 else
                     addFilter( table >= 0 ? table : defaultTables, s );
             }
@@ -3389,7 +3401,7 @@ QueryBuilder::addFilter( int tables, const QString& filter )
         if ( tables & tabGenre )
             m_where += "OR genre.name " + CollectionDB::likeCondition( filter, true, true );
         if ( tables & tabYear )
-            m_where += "OR year.name " + CollectionDB::likeCondition( filter, true, true );
+            m_where += "OR year.name " + CollectionDB::likeCondition( filter, false, false );
         if ( tables & tabSong )
             m_where += "OR tags.title " + CollectionDB::likeCondition( filter, true, true );
 
@@ -3400,7 +3412,7 @@ QueryBuilder::addFilter( int tables, const QString& filter )
 }
 
 void
-QueryBuilder::addFilter( int tables, int value, const QString& filter, int mode )
+QueryBuilder::addFilter( int tables, int value, const QString& filter, int mode, bool exact )
 {
     if ( !filter.isEmpty() )
     {
@@ -3410,7 +3422,7 @@ QueryBuilder::addFilter( int tables, int value, const QString& filter, int mode 
         if (mode == modeLess || mode == modeGreater)
             s = ( mode == modeLess ? "< '" : "> '" ) + CollectionDB::instance()->escapeString( filter ) + "' ";
         else
-            s = CollectionDB::likeCondition( filter, true, mode != modeEndMatch );
+            s = CollectionDB::likeCondition( filter, !exact, !exact && !mode != modeEndMatch );
 
         m_where += QString( "OR %1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
 
@@ -3441,7 +3453,7 @@ QueryBuilder::addFilters( int tables, const QStringList& filter )
             if ( tables & tabGenre )
                 m_where += "OR genre.name " + CollectionDB::likeCondition( filter[i], true, true );
             if ( tables & tabYear )
-                m_where += "OR year.name " + CollectionDB::likeCondition( filter[i], true, true );
+                m_where += "OR year.name " + CollectionDB::likeCondition( filter[i], false, false );
             if ( tables & tabSong )
                 m_where += "OR tags.title " + CollectionDB::likeCondition( filter[i], true, true );
 
@@ -3470,7 +3482,7 @@ QueryBuilder::excludeFilter( int tables, const QString& filter )
         if ( tables & tabGenre )
             m_where += "AND genre.name NOT " + CollectionDB::likeCondition( filter, true, true );
         if ( tables & tabYear )
-            m_where += "AND year.name NOT " + CollectionDB::likeCondition( filter, true, true );
+            m_where += "AND year.name NOT " + CollectionDB::likeCondition( filter, false, false );
         if ( tables & tabSong )
             m_where += "AND tags.title NOT " + CollectionDB::likeCondition( filter, true, true );
 
@@ -3482,7 +3494,7 @@ QueryBuilder::excludeFilter( int tables, const QString& filter )
 }
 
 void
-QueryBuilder::excludeFilter( int tables, int value, const QString& filter, int mode )
+QueryBuilder::excludeFilter( int tables, int value, const QString& filter, int mode, bool exact )
 {
     if ( !filter.isEmpty() )
     {
@@ -3492,7 +3504,7 @@ QueryBuilder::excludeFilter( int tables, int value, const QString& filter, int m
         if (mode == modeLess || mode == modeGreater)
             s = ( mode == modeLess ? ">= '" : "<= '" ) + CollectionDB::instance()->escapeString( filter ) + "' ";
         else
-            s = "NOT " + CollectionDB::instance()->likeCondition( filter, true, mode != modeEndMatch ) + " ";
+            s = "NOT " + CollectionDB::instance()->likeCondition( filter, !exact, !exact && mode != modeEndMatch ) + " ";
 
         m_where += QString( "AND %1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
 
@@ -3518,7 +3530,7 @@ QueryBuilder::addMatch( int tables, const QString& match )
         if ( tables & tabGenre )
             m_where += "OR genre.name " + CollectionDB::likeCondition( match );
         if ( tables & tabYear )
-            m_where += "OR year.name " + CollectionDB::likeCondition( match );
+            m_where += "OR year.name " + CollectionDB::likeCondition( match, false, false );
         if ( tables & tabSong )
             m_where += "OR tags.title " + CollectionDB::likeCondition( match );
 
@@ -3571,7 +3583,7 @@ QueryBuilder::addMatches( int tables, const QStringList& match )
             if ( tables & tabGenre )
                 m_where += "OR genre.name " + CollectionDB::likeCondition( match[i] );
             if ( tables & tabYear )
-                m_where += "OR year.name " + CollectionDB::likeCondition( match[i] );
+                m_where += "OR year.name " + CollectionDB::likeCondition( match[i], false, false );
             if ( tables & tabSong )
                 m_where += "OR tags.title " + CollectionDB::likeCondition( match[i] );
             if ( tables & tabStats )

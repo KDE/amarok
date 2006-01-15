@@ -443,10 +443,10 @@ class QueryBuilder
         void addURLFilters( const QStringList& filter );
 
         void addFilter( int tables, const QString& filter);
-        void addFilter( int tables, int value, const QString& filter, int mode = modeNormal );
+        void addFilter( int tables, int value, const QString& filter, int mode = modeNormal, bool exact = false );
         void addFilters( int tables, const QStringList& filter );
         void excludeFilter( int tables, const QString& filter );
-        void excludeFilter( int tables, int value, const QString& filter, int mode = modeNormal );
+        void excludeFilter( int tables, int value, const QString& filter, int mode = modeNormal, bool exact = false );
 
         void addMatch( int tables, const QString& match );
         void addMatch( int tables, int value, const QString& match );
