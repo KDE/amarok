@@ -1,0 +1,280 @@
+#include <tbytevector.h>
+#include <tstring.h>
+//#include <tdebug.h>
+#include "tlist.h"
+
+#include "mp4itunestag.h"
+#include "mp4file.h"
+#include "boxfactory.h"
+#include "mp4tagsproxy.h"
+#include "itunesdatabox.h"
+
+using namespace TagLib;
+
+class MP4::File::FilePrivate
+{
+public:
+  TagLib::List<MP4::Mp4IsoBox*> boxes;
+  MP4::BoxFactory             boxfactory;
+  MP4::Mp4TagsProxy           proxy;
+  MP4::Tag                    mp4tag;
+};
+
+//! function to fill the tags with converted proxy data, which has been parsed out of the file previously
+static void fillTagFromProxy( MP4::Mp4TagsProxy& proxy, MP4::Tag& mp4tag );
+
+MP4::File::File(const char *file, bool readProperties, AudioProperties::ReadStyle propertiesStyle )
+	:TagLib::File( file )
+{
+    fprintf(stderr, "new mp4 file: %s\n", file );
+  // create member container
+  d = new MP4::File::FilePrivate();
+
+
+  TagLib::uint size;
+  MP4::Fourcc  fourcc;
+
+  while( readSizeAndType( size, fourcc ) == true )
+  {
+    // create the appropriate subclass and parse it
+    MP4::Mp4IsoBox* curbox = d->boxfactory.createInstance( this, fourcc, size, tell() );
+    curbox->parsebox();
+    d->boxes.append( curbox );
+  }
+  // fill tags from proxy data
+  fillTagFromProxy( d->proxy, d->mp4tag );
+}
+
+MP4::File::~File()
+{
+  TagLib::List<Mp4IsoBox*>::Iterator delIter;
+  for( delIter  = d->boxes.begin();
+       delIter != d->boxes.end();
+       delIter++ )
+  {
+    delete *delIter;
+  }
+  delete d;
+}
+
+Tag *MP4::File::tag() const
+{
+  return &d->mp4tag;
+}
+
+AudioProperties * MP4::File::audioProperties() const
+{
+  return 0;
+}
+
+bool MP4::File::save()
+{
+  return false;
+}
+
+void MP4::File::remove()
+{
+}
+
+bool MP4::File::readSizeAndType( TagLib::uint& size, MP4::Fourcc& fourcc )
+{
+  // read the two blocks from file
+  ByteVector readsize = readBlock(4);
+  ByteVector readtype = readBlock(4);
+
+  if( (readsize.size() != 4) || (readtype.size() != 4) )
+    return false;
+
+  // set size
+  size = static_cast<unsigned char>(readsize[0]) << 24 | 
+         static_cast<unsigned char>(readsize[1]) << 16 |
+         static_cast<unsigned char>(readsize[2]) <<  8 |
+         static_cast<unsigned char>(readsize[3]);
+
+  // set fourcc
+  fourcc = readtype.data();
+
+  return true;
+}
+
+bool MP4::File::readInt( TagLib::uint& toRead )
+{
+  ByteVector readbuffer = readBlock(4);
+  if( readbuffer.size() != 4 )
+    return false;
+
+  toRead = static_cast<unsigned char>(readbuffer[0]) << 24 | 
+           static_cast<unsigned char>(readbuffer[1]) << 16 |
+           static_cast<unsigned char>(readbuffer[2]) <<  8 |
+           static_cast<unsigned char>(readbuffer[3]);
+  return true;
+}
+
+bool MP4::File::readShort( TagLib::uint& toRead )
+{
+  ByteVector readbuffer = readBlock(2);
+  if( readbuffer.size() != 2 )
+    return false;
+
+  toRead = static_cast<unsigned char>(readbuffer[0]) <<  8 |
+           static_cast<unsigned char>(readbuffer[1]);
+  return true;
+}
+
+bool MP4::File::readLongLong( TagLib::ulonglong& toRead )
+{
+  ByteVector readbuffer = readBlock(8);
+  if( readbuffer.size() != 8 )
+    return false;
+
+  toRead = static_cast<ulonglong>(static_cast<unsigned char>(readbuffer[0])) << 56 | 
+           static_cast<ulonglong>(static_cast<unsigned char>(readbuffer[1])) << 48 |
+           static_cast<ulonglong>(static_cast<unsigned char>(readbuffer[2])) << 40 |
+           static_cast<ulonglong>(static_cast<unsigned char>(readbuffer[3])) << 32 |
+           static_cast<ulonglong>(static_cast<unsigned char>(readbuffer[4])) << 24 | 
+           static_cast<ulonglong>(static_cast<unsigned char>(readbuffer[5])) << 16 |
+           static_cast<ulonglong>(static_cast<unsigned char>(readbuffer[6])) <<  8 |
+           static_cast<ulonglong>(static_cast<unsigned char>(readbuffer[7]));
+  return true;
+}
+
+MP4::Mp4TagsProxy* MP4::File::proxy() const
+{
+  return &d->proxy;
+}
+
+void fillTagFromProxy( MP4::Mp4TagsProxy& proxy, MP4::Tag& mp4tag )
+{
+  // tmp buffer for each tag
+  MP4::ITunesDataBox* databox;
+  
+  databox = proxy.titleData();
+  if( databox != 0 )
+  {
+    // convert data to string
+    TagLib::String datastring( databox->data(), String::UTF8 );
+    // check if string was set
+    if( !(datastring == "") )
+      mp4tag.setTitle( datastring );
+  }
+
+  databox = proxy.artistData();
+  if( databox != 0 )
+  {
+    // convert data to string
+    TagLib::String datastring( databox->data(), String::UTF8 );
+    // check if string was set
+    if( !(datastring == "") )
+      mp4tag.setArtist( datastring );
+  }
+
+  databox = proxy.albumData();
+  if( databox != 0 )
+  {
+    // convert data to string
+    TagLib::String datastring( databox->data(), String::UTF8 );
+    // check if string was set
+    if( !(datastring == "") )
+      mp4tag.setAlbum( datastring );
+  }
+
+  databox = proxy.genreData();
+  if( databox != 0 )
+  {
+    // convert data to string
+    TagLib::String datastring( databox->data(), String::UTF8 );
+    // check if string was set
+    if( !(datastring == "") )
+      mp4tag.setGenre( datastring );
+  }
+
+  databox = proxy.yearData();
+  if( databox != 0 )
+  {
+    // convert data to string
+    TagLib::String datastring( databox->data(), String::UTF8 );
+    // check if string was set
+    if( !(datastring == "") )
+      mp4tag.setYear( datastring.toInt() );
+  }
+
+  databox = proxy.trknData();
+  if( databox != 0 )
+  {
+    // convert data to uint
+    TagLib::ByteVector datavec = databox->data();
+    if( datavec.size() >= 4 )
+    {
+      TagLib::uint trackno = static_cast<TagLib::uint>( static_cast<unsigned char>(datavec[0]) << 24 |
+	                                                static_cast<unsigned char>(datavec[1]) << 16 |
+	                                                static_cast<unsigned char>(datavec[2]) <<  8 |
+	                                                static_cast<unsigned char>(datavec[3]) );
+      mp4tag.setTrack( trackno );
+    }
+    else
+      mp4tag.setTrack( 0 );
+  }
+
+  databox = proxy.commentData();
+  if( databox != 0 )
+  {
+    // convert data to string
+    TagLib::String datastring( databox->data(), String::UTF8 );
+    // check if string was set
+    if( !(datastring == "") )
+      mp4tag.setComment( datastring );
+  }
+
+  databox = proxy.groupingData();
+  if( databox != 0 )
+  {
+    // convert data to string
+    TagLib::String datastring( databox->data(), String::UTF8 );
+    // check if string was set
+    if( !(datastring == "") )
+      mp4tag.setGrouping( datastring );
+  }
+
+  databox = proxy.composerData();
+  if( databox != 0 )
+  {
+    // convert data to string
+    TagLib::String datastring( databox->data(), String::UTF8 );
+    // check if string was set
+    if( !(datastring == "") )
+      mp4tag.setComposer( datastring );
+  }
+
+  databox = proxy.diskData();
+  if( databox != 0 )
+  {
+    // convert data to uint
+    TagLib::ByteVector datavec = databox->data();
+    if( datavec.size() >= 4 )
+    {
+      TagLib::uint discno = static_cast<TagLib::uint>( static_cast<unsigned char>(datavec[0]) << 24 |
+	                                               static_cast<unsigned char>(datavec[1]) << 16 |
+	                                               static_cast<unsigned char>(datavec[2]) <<  8 |
+	                                               static_cast<unsigned char>(datavec[3]) );
+      mp4tag.setDisk( discno );
+    }
+    else
+      mp4tag.setDisk( 0 );
+  }
+
+  databox = proxy.bpmData();
+  if( databox != 0 )
+  {
+    // convert data to uint
+    TagLib::ByteVector datavec = databox->data();
+
+    if( datavec.size() >= 2 )
+    {
+      TagLib::uint bpm = static_cast<TagLib::uint>( static_cast<unsigned char>(datavec[0]) <<  8 |
+	                                            static_cast<unsigned char>(datavec[1]) );
+      mp4tag.setBpm( bpm );
+    }
+    else
+      mp4tag.setBpm( 0 );
+  }
+}

@@ -8,6 +8,8 @@
 
 #ifdef HAVE_MP4V2
 #include "mp4/taglib_mp4filetyperesolver.h"
+#else
+#include "m4a/taglib_mp4filetyperesolver.h"
 #endif
 
 #include "wma/taglib_wmafiletyperesolver.h"
@@ -16,9 +18,7 @@
 
 void registerTaglibPlugins()
 {
-#ifdef HAVE_MP4V2
     TagLib::FileRef::addFileTypeResolver(new MP4FileTypeResolver);
-#endif
     TagLib::FileRef::addFileTypeResolver(new WMAFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new RealMediaFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new AudibleFileTypeResolver);
