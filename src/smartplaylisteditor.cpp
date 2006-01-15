@@ -633,9 +633,9 @@ QString CriteriaEditor::getSearchCriteria()
         if( m_currentValueType == String || m_currentValueType == AutoCompletionString )
             value.prepend("'").append("'");
         searchCriteria += value;
-        if (field=="statistics.playcounter" && value=="0") {
-            searchCriteria += " OR statistics.playcounter IS NULL";
-        }
+        if ( ( field=="statistics.playcounter" || field=="statistics.rating" || field=="statistics.percentage" )
+             && value=="0")
+            searchCriteria += " OR " + field + " IS NULL";
     }
     else if( criteria == i18n("is not") ) {
         if( m_currentValueType == Date )
