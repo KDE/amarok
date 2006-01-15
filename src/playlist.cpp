@@ -1038,8 +1038,10 @@ Playlist::playNextTrack( bool forceNext )
 
     if( isEmpty() || ( m_currentTrack && m_stopAfterTrack == m_currentTrack ) )
     {
-        if( isDynamic() && !isEmpty() )
+        if( isDynamic() && !isEmpty() ) {
             advancePartyTrack( item );
+            m_partyDirt = false;
+        }
 
         m_stopAfterTrack = 0;
         activate( 0 );
