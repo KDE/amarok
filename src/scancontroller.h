@@ -61,6 +61,7 @@ class ScanController : public QXmlDefaultHandler, public ThreadWeaver::Dependent
         ~ScanController();
 
     protected:
+        virtual void initScanner();
         virtual bool doJob();
 
         // Member variables:
@@ -93,7 +94,7 @@ class IncrementalScanController : public ScanController
         bool hasChanged() const { return m_hasChanged; }
 
     protected:
-        bool doJob();
+        void initScanner();
 
         bool m_hasChanged;
 };

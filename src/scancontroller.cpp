@@ -88,14 +88,8 @@ ScanController::ScanController( CollectionDB* parent, const QStringList& folders
     m_reader.setContentHandler( this );
     m_reader.parse( &m_source, true );
 
-    *m_scanner << "amarokcollectionscanner";
-    if( AmarokConfig::importPlaylists() && !m_incremental ) *m_scanner << "-p";
-    if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
-    if( m_incremental ) *m_scanner << "-i";
-    *m_scanner << "-l" << ( amaroK::saveLocation( QString::null ) + "collection_scan.log" );
-    *m_scanner << m_folders;
-
-    m_scanner->start();
+    // KProcess must be started from the GUI thread
+    initScanner();
 }
 
 
@@ -117,8 +111,6 @@ ScanController::~ScanController()
                                          "reading the file:</p><p><i>%1</i></p><p>Please remove this "
                                          "file from your collection, then rescan the collection.</p>" )
                                          .arg( path ), i18n( "Collection Scan Error" ) );
-
-        m_folders.clear();
     }
 
     m_scanner->kill();
@@ -126,34 +118,42 @@ ScanController::~ScanController()
 }
 
 
+void
+ScanController::initScanner()
+{
+    DEBUG_BLOCK
+
+    *m_scanner << "amarokcollectionscanner";
+    if( AmarokConfig::importPlaylists() ) *m_scanner << "-p";
+    if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
+    *m_scanner << "-l" << ( amaroK::saveLocation( QString::null ) + "collection_scan.log" );
+    *m_scanner << m_folders;
+
+    m_scanner->start();
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // class IncrementalScanController
 ////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * The Incremental Scanner works as follows: Here we check the mtime of every directory in the "directories"
+ * table and store all changed directories in m_folders.
+ *
+ * These directories are then scanned in CollectionReader::doJob(), with m_recursively set according to the
+ * user's preference, so the user can add directories or whole directory trees, too. Since we don't want to
+ * rescan unchanged subdirectories, CollectionReader::readDir() checks if we are scanning recursively and
+ * prevents that.
+ */
 IncrementalScanController::IncrementalScanController( CollectionDB *parent )
         : ScanController( parent, QStringList() )
         , m_hasChanged( false )
 {
-    m_incremental = true;
-
-    setDescription( i18n( "Updating Collection" ) );
-}
-
-
-bool
-IncrementalScanController::doJob()
-{
-    /**
-     * The Incremental Scanner works as follows: Here we check the mtime of every directory in the "directories"
-     * table and store all changed directories in m_folders.
-     *
-     * These directories are then scanned in CollectionReader::doJob(), with m_recursively set according to the
-     * user's preference, so the user can add directories or whole directory trees, too. Since we don't want to
-     * rescan unchanged subdirectories, CollectionReader::readDir() checks if we are scanning recursively and
-     * prevents that.
-     */
-
     DEBUG_BLOCK
+
+    m_incremental = true;
+    setDescription( i18n( "Updating Collection" ) );
 
     const QStringList values = CollectionDB::instance()->query( "SELECT dir, changedate FROM directories;" );
 
@@ -173,6 +173,8 @@ IncrementalScanController::doJob()
             m_folders << folder;
             debug() << "Collection dir removed: " << folder << endl;
         }
+
+        kapp->processEvents(); // Don't block the GUI
     }
 
     if ( !m_folders.isEmpty() ) {
@@ -180,8 +182,24 @@ IncrementalScanController::doJob()
         amaroK::StatusBar::instance()->shortMessage( i18n( "Updating Collection..." ) );
     }
 
-    return ScanController::doJob();
+    *m_scanner << m_folders;
+    m_scanner->start();
 }
+
+
+void
+IncrementalScanController::initScanner()
+{
+    DEBUG_BLOCK
+
+    *m_scanner << "amarokcollectionscanner";
+    if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
+    *m_scanner << "-l" << ( amaroK::saveLocation( QString::null ) + "collection_scan.log" );
+    *m_scanner << "-i";
+
+    // Process will be started in IncrementalScanController ctor
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // class ScanController
@@ -190,7 +208,7 @@ IncrementalScanController::doJob()
 bool
 ScanController::doJob()
 {
-    DEBUG_THREAD_FUNC_INFO
+    DEBUG_BLOCK
 
     if( !CollectionDB::instance()->isConnected() )
         return false;
@@ -200,7 +218,7 @@ ScanController::doJob()
 
 
     /// Main Loop
-    while( m_scanner->isRunning() ) { //FIXME XML data potentially not yet completely parsed
+    while( m_scanner->isRunning() && !isAborted() ) { //FIXME XML data potentially not yet completely parsed
         QString line, data;
         bool partial;
 
@@ -221,27 +239,29 @@ ScanController::doJob()
     }
 
 
-    if( m_scanner->normalExit() && !m_scanner->signalled() ) {
-        if ( m_incremental ) {
-            m_foldersToRemove += m_folders;
-            foreach( m_foldersToRemove ) {
-                CollectionDB::instance()->removeSongsInDir( *it );
-                CollectionDB::instance()->removeDirFromCollection( *it );
+    if( !isAborted() ) {
+        if( m_scanner->normalExit() && !m_scanner->signalled() ) {
+            if ( m_incremental ) {
+                m_foldersToRemove += m_folders;
+                foreach( m_foldersToRemove ) {
+                    CollectionDB::instance()->removeSongsInDir( *it );
+                    CollectionDB::instance()->removeDirFromCollection( *it );
+                }
             }
+            else
+                CollectionDB::instance()->clearTables( false ); // empty permanent tables
+
+            CollectionDB::instance()->copyTempTables(); // copy temp into permanent tables
         }
         else
-        {
-            CollectionDB::instance()->clearTables( false ); // empty permanent tables
-        }
-        CollectionDB::instance()->copyTempTables( ); // copy temp into permanent tables
+            m_scannerCrashed = true;
     }
-    else
-        m_scannerCrashed = true;
 
 
     if( CollectionDB::instance()->isConnected() ) {
         CollectionDB::instance()->dropTables( true ); // drop temp tables
     }
+
 
     return !isAborted();
 }
@@ -250,8 +270,6 @@ ScanController::doJob()
 bool
 ScanController::startElement( const QString&, const QString& localName, const QString&, const QXmlAttributes& attrs )
 {
-//     DEBUG_THREAD_FUNC_INFO
-
     // List of entity names:
     //
     // itemcount     Number of files overall

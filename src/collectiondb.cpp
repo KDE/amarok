@@ -303,6 +303,8 @@ CollectionDB::setAdminValue( QString noption, QString value ) {
 void
 CollectionDB::createTables( const bool temporary )
 {
+    DEBUG_BLOCK
+
     //create tag table
     query( QString( "CREATE %1 TABLE tags%2 ("
                     "url " + textColumnType() + ","
@@ -2399,6 +2401,7 @@ CollectionDB::similarArtistsFetched( const QString& artist, const QStringList& s
 void
 CollectionDB::initialize()
 {
+    DEBUG_BLOCK
 
     DbConnection *dbConn = getMyConnection( );
 
