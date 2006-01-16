@@ -439,6 +439,9 @@ Playlist::Playlist( QWidget *parent )
             SLOT(mediumChange( const Medium*, QString )) );
     connect( DeviceManager::instance(), SIGNAL(mediumRemoved( const Medium*, QString )),
             SLOT(mediumChange( const Medium*, QString )) );
+
+    m_clicktimer = new QTimer( this );
+    connect( m_clicktimer, SIGNAL(timeout()), this, SLOT(slotSingleClick()) );
 }
 
 Playlist::~Playlist()
@@ -2448,40 +2451,32 @@ Playlist::eventFilter( QObject *o, QEvent *e )
         return true; //yum!
     }
 
+    // trigger in-place tag editing
     else if( o == viewport() && e->type() == QEvent::MouseButtonPress && me->button() == LeftButton )
     {
+        m_clicktimer->start( int( QApplication::doubleClickInterval() ), true );
+        m_itemToRename = 0;
         int col = header()->sectionAt( viewportToContents( me->pos() ).x() );
         if( col != PlaylistItem::Rating )
         {
             PlaylistItem *item = static_cast<PlaylistItem*>( itemAt( me->pos() ) );
-#if 0
-            static PlaylistItem *lastItem = 0;
-            static QTimer timer;
-
-            bool edit = timer.isActive() && item == lastItem && col != PlaylistItem::Rating;
-
-            if( edit )
-            {
-                timer.stop();
-                rename( item, col );
-            }
-            else
-                timer.start( int( QApplication::doubleClickInterval() * 3.5 ), true );
-
-            lastItem = item;
-#else
             bool edit = item
                 && item->isSelected()
                 && selectedItems().count()==1
                 && (me->state() & ~LeftButton) == 0;
             if( edit )
             {
-                rename( item, col );
-            }
-#endif
-            if( edit )
+                m_itemToRename = item;
+                m_columnToRename = col;
                 return true;
+            }
         }
+    }
+
+    // avoid in-place tag editing upon double-clicks
+    if( e->type() == QEvent::MouseButtonDblClick && me->button() == Qt::LeftButton )
+    {
+        m_clicktimer->stop();
     }
 
     // Toggle play/pause if user middle-clicks on current track
@@ -2596,6 +2591,17 @@ Playlist::eventFilter( QObject *o, QEvent *e )
 
     #undef me
     #undef ke
+}
+
+void
+Playlist::slotSingleClick()
+{
+    if( m_itemToRename )
+    {
+        rename( m_itemToRename, m_columnToRename );
+    }
+
+    m_itemToRename = 0;
 }
 
 void

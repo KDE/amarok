@@ -226,6 +226,7 @@ class Playlist : private KListView, public EngineObserver
         void slotGlowTimer();
         void reallyEnsureItemCentered();
         void slotMouseButtonPressed( int, QListViewItem*, const QPoint&, int );
+        void slotSingleClick();
         void slotContentsMoving();
         void slotRepeatTrackToggled( bool enabled );
         void slotQueueChanged( const PLItemList &in, const PLItemList &out);
@@ -334,6 +335,9 @@ class Playlist : private KListView, public EngineObserver
         QListViewItem *m_itemToReallyCenter;
         QListViewItem *m_renameItem;
         int            m_renameColumn;
+        QTimer        *m_clicktimer;
+        QListViewItem *m_itemToRename;
+        int            m_columnToRename;
 
         QMap<QString, QStringList> m_customSubmenuItem;
         QMap<int, QString>         m_customIdItem;
