@@ -26,8 +26,6 @@
 
 #include "nmm_engine.h"
 
-#ifdef HAVE_NMM
-
 #include "nmm_kdeconfig.h"
 #include "nmm_configdialog.h"
 #include "debug.h"
@@ -63,14 +61,16 @@ NmmEngine::NmmEngine()
     __position(0),
     __track_length(0),
     __state(Engine::Empty),
-    __app(0),
+    __app(NULL),
     __endTrack_listener(this, &NmmEngine::endTrack),
     __syncReset_listener(this, &NmmEngine::syncReset),
     __setProgress_listener(this, &NmmEngine::setProgress),
     __trackDuration_listener(this, &NmmEngine::trackDuration),
-    __composite(0),
-    __playback(0),
-    __display(0),
+    __composite(NULL),
+    __playback(NULL),
+    __display(NULL),
+    __av_sync(NULL),
+    __synchronizer(NULL),
     __with_video(false),
     __seeking(false)
 {
@@ -95,19 +95,12 @@ bool NmmEngine::init()
 
 NmmEngine::~NmmEngine()
 {
-  // stop the secondary thread
-  //__mutex.lock();
-  //__running = false;
-  //__cond.notify();
-  //__mutex.unlock();
-
   // stop all nodes
   stop();
 
   // delete application object
-  if (__app) {
+  if (__app)
     delete __app;
-  }
 }
 
 Engine::State NmmEngine::state() const
@@ -137,6 +130,7 @@ bool NmmEngine::load(const KURL& url, bool stream)
 
   cleanup();
 
+  // TODO: in general look what to cleanup if expection is thrown...
   // make the GraphBuilder construct an appropriate graph for the given URL
   try {
     QString host;
@@ -162,6 +156,7 @@ bool NmmEngine::load(const KURL& url, bool stream)
     ClientRegistry& registry = __app->getRegistry();
     {
       RegistryLock lock(registry);
+      // TODO: release __playback and __display when exception thrown?
 
       // get a playback node interface from the registry
       list<Response> playback_response = registry.initRequest(playback_nd);
@@ -177,7 +172,11 @@ bool NmmEngine::load(const KURL& url, bool stream)
 
     }
 
+    __av_sync = new MultiAudioVideoSynchronizer();
+    __synchronizer = __av_sync->getCheckedInterface<IMultiAudioVideoSynchronizer>();
+
     // initialize the GraphBuilder
+    gb.setMultiAudioVideoSynchronizer(__synchronizer);
     gb.setAudioSink(__playback);
     gb.setVideoSink(__display);
     gb.setDemuxAudioJackTag("audio");
@@ -204,6 +203,9 @@ bool NmmEngine::load(const KURL& url, bool stream)
         __playback->getParentObject()->registerEventListener(ISyncReset::syncReset_event, &__syncReset_listener);
         __playback->getParentObject()->registerEventListener(IProgressListener::setProgress_event, &__setProgress_listener);
         __playback->getParentObject()->registerEventListener(ITrack::endTrack_event, &__endTrack_listener);
+
+
+        (__playback->getParentObject()->getCheckedInterface<ISynchronizedSink>())->setSynchronized(false);
     }
 
     __playback->getParentObject()->registerEventListener(ITrackDuration::trackDuration_event, &__trackDuration_listener);
@@ -325,8 +327,12 @@ void NmmEngine::cleanup()
   __display = 0;
   __with_video = false;
 
-  __position = 0;
+  delete __synchronizer; 
+  __synchronizer = 0;
+  delete __av_sync; 
+  __av_sync = 0;
 
+  __position = 0;
   __state = Engine::Idle;
 }
 
@@ -348,14 +354,12 @@ void NmmEngine::pause()
 
   // pause or play...
   if (__state == Engine::Playing) {
-    ISynchronizedSink_var sync_sink(__playback->getParentObject()->getCheckedInterface<ISynchronizedSink>());
-    if (sync_sink.get()) {
-      sync_sink->getController()->pause();
-    }
+    __synchronizer->pause();
     __state = Engine::Paused;
     emit stateChanged(Engine::Paused);
   }
   else {
+    __synchronizer->wakeup();
     play();
   }
 }
@@ -500,5 +504,3 @@ Result NmmEngine::trackDuration(Interval& duration)
 }
 
 #include "nmm_engine.moc"
-
-#endif

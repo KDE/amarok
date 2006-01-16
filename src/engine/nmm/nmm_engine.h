@@ -34,6 +34,7 @@
 #include <nmm/base/graph/CompositeNode.hpp>
 #include <nmm/base/NMMApplication.hpp>
 #include <nmm/base/EDObject.hpp>
+#include <nmm/base/sync/MultiAudioVideoSynchronizer.hpp>
 
 using namespace NMM;
 
@@ -154,6 +155,16 @@ private:
      * if video is enabled.
      */
     INode* __display;
+
+    /**
+     * synchronizer for graph builder
+     */
+    MultiAudioVideoSynchronizer* __av_sync;
+
+    /**
+     * synchronizer interface
+     */
+    IMultiAudioVideoSynchronizer* __synchronizer;
 
     /**
      * Indicates whether we are playing a video.
