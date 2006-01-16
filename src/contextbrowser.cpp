@@ -1229,6 +1229,14 @@ bool CurrentTrackJob::doJob()
 
         albumImage = ContextBrowser::makeShadowedImage( albumImage );
 
+        bool isCompilation = false;
+        if( !currentTrack.album().isEmpty() )
+        {
+            isCompilation = CollectionDB::instance()->albumIsCompilation(
+                    QString::number( CollectionDB::instance()->albumID( currentTrack.album() ) )
+                    );
+        }
+
         m_HTMLSource.append(
                 "<div id='current_box' class='box'>"
                 "<div id='current_box-header' class='box-header'>"
@@ -1259,7 +1267,7 @@ bool CurrentTrackJob::doJob()
                             << escapeHTML( currentTrack.title() )
                             << escapeHTML( currentTrack.artist() )
                             << escapeHTML( currentTrack.album() )
-                            << escapeHTMLAttr( currentTrack.artist() )
+                            << ( isCompilation ? "" : escapeHTMLAttr( currentTrack.artist() ) )
                             << escapeHTMLAttr( currentTrack.album() )
                             << escapeHTMLAttr( albumImage )
                             << albumImageTitleAttr
@@ -2804,9 +2812,7 @@ ContextBrowser::expandURL( const KURL &url )
         qb.setOptions( QueryBuilder::optOnlyCompilations );
         QStringList values = qb.run();
 
-        KURL::List urls;
         KURL url;
-
         for( QStringList::ConstIterator it = values.begin(), end = values.end(); it != end; ++it ) {
             url.setPath( *it );
             urls += url;
@@ -2823,11 +2829,31 @@ ContextBrowser::expandURL( const KURL &url )
         QString artist_name = list.front();
         QString album_name  = list.back();
 
-        QStringList trackUrls = CollectionDB::instance()->albumTracks( artist_name, album_name, true );
-        KURL url;
-        foreach( trackUrls ) {
-            url.setPath( *it );
-            urls += url;
+        if( artist_name.isEmpty() )
+        {
+            // probably a compilation
+            QString albumID = QString::number( CollectionDB::instance()->albumID( album_name ) );
+            QueryBuilder qb;
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+            qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, albumID );
+            qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+            qb.setOptions( QueryBuilder::optOnlyCompilations );
+            QStringList values = qb.run();
+
+            KURL url;
+            for( QStringList::ConstIterator it = values.begin(), end = values.end(); it != end; ++it ) {
+                url.setPath( *it );
+                urls += url;
+            }
+        }
+        else
+        {
+            QStringList trackUrls = CollectionDB::instance()->albumTracks( artist_name, album_name, true );
+            KURL url;
+            foreach( trackUrls ) {
+                url.setPath( *it );
+                urls += url;
+            }
         }
     }
     return urls;
