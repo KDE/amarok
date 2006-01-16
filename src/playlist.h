@@ -44,6 +44,7 @@ class QBoxLayout;
 class QLabel;
 class QTimer;
 
+class Medium;
 class ReadMood;
 namespace amaroK { class TrackSlider; }
 
@@ -207,6 +208,7 @@ class Playlist : private KListView, public EngineObserver
         void resetPendingRatings( PlaylistItem *prevhovered );
 
     private slots:
+        void mediumChange( const Medium *medium, QString name );
         void slotCountChanged();
         void activate( QListViewItem* );
         void columnOrderChanged();

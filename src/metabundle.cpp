@@ -209,6 +209,14 @@ MetaBundle::MetaBundle( QDomNode node )
 }
 
 bool
+MetaBundle::checkExists()
+{
+    m_exists = isStream() || ( url().protocol() == "file" && QFile::exists( url().path() ) );
+
+    return m_exists;
+}
+
+bool
 MetaBundle::operator==( const MetaBundle& bundle ) const
 {
     return artist()     == bundle.artist() &&

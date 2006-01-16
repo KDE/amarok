@@ -106,6 +106,7 @@ public:
 
     /** used by PlaylistItem, should be true for everything but local files that aren't there */
     bool exists() const;
+    bool checkExists();
 
     bool isStream() const;
 
@@ -224,8 +225,6 @@ private:
 
     void init( TagLib::AudioProperties *ap = 0 );
     void init( const KFileMetaInfo& info );
-
-    void checkExists();
 
     void setExtendedTag( TagLib::File *file, int tag, const QString value );
 };
