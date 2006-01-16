@@ -2470,7 +2470,8 @@ Playlist::eventFilter( QObject *o, QEvent *e )
 
             lastItem = item;
 #else
-            bool edit = item->isSelected()
+            bool edit = item
+                && item->isSelected()
                 && selectedItems().count()==1
                 && (me->state() & ~LeftButton) == 0;
             if( edit )
