@@ -57,11 +57,14 @@ class ScanController : public QXmlDefaultHandler, public ThreadWeaver::Dependent
         };
 
     public:
-        ScanController( CollectionDB* parent, const QStringList& folders = QStringList() );
+        ScanController( CollectionDB* parent, bool incremental, const QStringList& folders = QStringList() );
         ~ScanController();
 
+        bool isIncremental() const { return m_incremental; }
+        bool hasChanged() const { return m_hasChanged; }
+
     protected:
-        virtual void initScanner();
+        void initIncremental();
         virtual bool doJob();
 
         // Member variables:
@@ -71,6 +74,7 @@ class ScanController : public QXmlDefaultHandler, public ThreadWeaver::Dependent
 
         bool m_incremental;
         bool m_scannerCrashed;
+        bool m_hasChanged;
 
     private:
         bool startElement( const QString&, const QString &localName, const QString&, const QXmlAttributes &attrs );
@@ -78,25 +82,6 @@ class ScanController : public QXmlDefaultHandler, public ThreadWeaver::Dependent
         // Member variables:
         QXmlInputSource m_source;
         QXmlSimpleReader m_reader;
-};
-
-
-/**
- * @class IncrementalScanController
- * @short Only scans directories that have been modified since the last scan
- */
-
-class IncrementalScanController : public ScanController
-{
-    public:
-        IncrementalScanController( CollectionDB* );
-
-        bool hasChanged() const { return m_hasChanged; }
-
-    protected:
-        void initScanner();
-
-        bool m_hasChanged;
 };
 
 

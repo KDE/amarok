@@ -2312,7 +2312,7 @@ CollectionDB::startScan()  //SLOT
     else if( PlaylistBrowser::instance() )
     {
         emit scanStarted();
-        ThreadWeaver::instance()->queueJob( new ScanController( this, folders ) );
+        ThreadWeaver::instance()->queueJob( new ScanController( this, false, folders ) );
     }
 }
 
@@ -2333,7 +2333,7 @@ CollectionDB::dirDirty( const QString& path )
 {
     debug() << k_funcinfo << "Dirty: " << path << endl;
 
-    ThreadWeaver::instance()->queueJob( new ScanController( this, path ) );
+    ThreadWeaver::instance()->queueJob( new ScanController( this, false, path ) );
 }
 
 
@@ -2519,7 +2519,7 @@ CollectionDB::scanModifiedDirs()
     //we check if a job is pending because we don't want to abort incremental collection readings
     if ( !ThreadWeaver::instance()->isJobPending( "CollectionScanner" ) && PlaylistBrowser::instance() ) {
         emit scanStarted();
-        ThreadWeaver::instance()->onlyOneJob( new IncrementalScanController( this ) );
+        ThreadWeaver::instance()->onlyOneJob( new ScanController( this, true ) );
     }
 }
 
@@ -2530,13 +2530,15 @@ CollectionDB::customEvent( QCustomEvent *e )
     DEBUG_BLOCK
 
     if ( e->type() == (int)ScanController::JobFinishedEvent ) {
-        if ( dynamic_cast<IncrementalScanController*>( e ) ) {
-            debug() << "JobFinishedEvent from IncrementalScanController received.\n";
-            emit scanDone( static_cast<IncrementalScanController*>(e)->hasChanged() );
+        ScanController* s = static_cast<ScanController*>( e );
+
+        if ( s->isIncremental() ) {
+            debug() << "JobFinishedEvent from Incremental ScanController received.\n";
+            emit scanDone( s->hasChanged() );
         }
         else {
             debug() << "JobFinishedEvent from ScanController received.\n";
-            emit scanDone( static_cast<ScanController*>(e)->wasSuccessful() );
+            emit scanDone( s->wasSuccessful() );
         }
     }
 }

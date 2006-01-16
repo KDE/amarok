@@ -73,23 +73,35 @@ ScannerProcIO::ScannerProcIO()
 // class ScanController
 ////////////////////////////////////////////////////////////////////////////////
 
-ScanController::ScanController( CollectionDB* parent, const QStringList& folders )
+ScanController::ScanController( CollectionDB* parent, bool incremental, const QStringList& folders )
     : QXmlDefaultHandler()
     , DependentJob( parent, "CollectionScanner" )
     , m_scanner( new ScannerProcIO() )
     , m_folders( folders )
-    , m_incremental( false )
+    , m_incremental( incremental )
     , m_scannerCrashed( false )
+    , m_hasChanged( false )
 {
     DEBUG_BLOCK
-
-    setDescription( i18n( "Building Collection" ) );
 
     m_reader.setContentHandler( this );
     m_reader.parse( &m_source, true );
 
-    // KProcess must be started from the GUI thread
-    initScanner();
+    // KProcess must be started from the GUI thread, so we're invoking the scanner
+    // here in the ctor:
+    if( incremental ) {
+        setDescription( i18n( "Updating Collection" ) );
+        initIncremental();
+    }
+    else {
+        setDescription( i18n( "Building Collection" ) );
+        *m_scanner << "amarokcollectionscanner";
+        if( AmarokConfig::importPlaylists() ) *m_scanner << "-p";
+        if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
+        *m_scanner << "-l" << ( amaroK::saveLocation( QString::null ) + "collection_scan.log" );
+        *m_scanner << m_folders;
+        m_scanner->start();
+    }
 }
 
 
@@ -118,25 +130,6 @@ ScanController::~ScanController()
 }
 
 
-void
-ScanController::initScanner()
-{
-    DEBUG_BLOCK
-
-    *m_scanner << "amarokcollectionscanner";
-    if( AmarokConfig::importPlaylists() ) *m_scanner << "-p";
-    if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
-    *m_scanner << "-l" << ( amaroK::saveLocation( QString::null ) + "collection_scan.log" );
-    *m_scanner << m_folders;
-
-    m_scanner->start();
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-// class IncrementalScanController
-////////////////////////////////////////////////////////////////////////////////
-
 /**
  * The Incremental Scanner works as follows: Here we check the mtime of every directory in the "directories"
  * table and store all changed directories in m_folders.
@@ -146,14 +139,10 @@ ScanController::initScanner()
  * rescan unchanged subdirectories, CollectionReader::readDir() checks if we are scanning recursively and
  * prevents that.
  */
-IncrementalScanController::IncrementalScanController( CollectionDB *parent )
-        : ScanController( parent, QStringList() )
-        , m_hasChanged( false )
+void
+ScanController::initIncremental()
 {
     DEBUG_BLOCK
-
-    m_incremental = true;
-    setDescription( i18n( "Updating Collection" ) );
 
     const QStringList values = CollectionDB::instance()->query( "SELECT dir, changedate FROM directories;" );
 
@@ -178,32 +167,20 @@ IncrementalScanController::IncrementalScanController( CollectionDB *parent )
     }
 
     if ( !m_folders.isEmpty() ) {
+        debug() << "Collection was modified." << endl;
         m_hasChanged = true;
         amaroK::StatusBar::instance()->shortMessage( i18n( "Updating Collection..." ) );
+
+        // Start scanner process
+        *m_scanner << "amarokcollectionscanner";
+        if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
+        *m_scanner << "-l" << ( amaroK::saveLocation( QString::null ) + "collection_scan.log" );
+        *m_scanner << "-i";
+        *m_scanner << m_folders;
+        m_scanner->start();
     }
-
-    *m_scanner << m_folders;
-    m_scanner->start();
 }
 
-
-void
-IncrementalScanController::initScanner()
-{
-    DEBUG_BLOCK
-
-    *m_scanner << "amarokcollectionscanner";
-    if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
-    *m_scanner << "-l" << ( amaroK::saveLocation( QString::null ) + "collection_scan.log" );
-    *m_scanner << "-i";
-
-    // Process will be started in IncrementalScanController ctor
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-// class ScanController
-////////////////////////////////////////////////////////////////////////////////
 
 bool
 ScanController::doJob()
@@ -212,6 +189,8 @@ ScanController::doJob()
 
     if( !CollectionDB::instance()->isConnected() )
         return false;
+    if( m_incremental && !m_hasChanged )
+        return true;
 
     CollectionDB::instance()->createTables( true );
     setProgressTotalSteps( 100 );
