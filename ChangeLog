@@ -78,8 +78,6 @@ VERSION 1.4:
       compatibility with various iPod models.
 
   BUGFIXES:
-    * NMM engine would crash when seeking after the playlist finished,
-      state Empty wasn't emitted
     * Dragging text to a filter line edit would still show the "Filter
       Here..." text in the background. (BR 108876)
     * Don't show an empty playlist length holder in the statusbar.
@@ -102,6 +100,8 @@ VERSION 1.4:
 
 VERSION 1.3.8:
   BUGFIXES:
+    * NMM engine would crash when seeking after the playlist finished,
+      state Empty wasn't emitted
     * Fixed URL of the Nectarine radio stream.
     * Fix crash after changing the alsa device in the helix configuration
       dialog.
