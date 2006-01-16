@@ -196,14 +196,22 @@ ScanController::doJob()
     setProgressTotalSteps( 100 );
 
 
+    QString line;
+    bool partial;
+    uint delayCount = 100;
+
     /// Main Loop
-    while( m_scanner->isRunning() && !isAborted() ) { //FIXME XML data potentially not yet completely parsed
-        QString line, data;
-        bool partial;
+    while( !isAborted() ) {
+        QString data;
 
         if( m_scanner->readln( line, true, &partial ) != -1 )
             data += line;
         else {
+            // Wait a bit after process has exited, so that we have time to parse all data
+            if( !m_scanner->isRunning() )
+                delayCount--;
+            if( delayCount == 0 )
+                break;
             msleep( 15 );
             continue;
         }
