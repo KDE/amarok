@@ -15,6 +15,12 @@
 #define MEDIUMPLUGINMANAGER_H
 
 #include <kdialogbase.h>
+#include "medium.h"
+#include <qmap.h>
+#include <kcombobox.h>
+
+typedef QMap<Medium*, KComboBox*> ComboMap;
+typedef QMap<QString, Medium*> MediumMap;
 
 class Medium;
 class KComboBox;
@@ -30,12 +36,15 @@ class MediumPluginManager : public KDialogBase
         MediumPluginManager( );
         ~MediumPluginManager( );
 
+    signals:
+        void selectedPlugin( const Medium*, const QString );
+
     private slots:
         void slotOk( );
         void slotCancel( );
 
-//    private:
-
+    private:
+        ComboMap m_cmap;
 
 };
 

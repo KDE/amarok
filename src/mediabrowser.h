@@ -167,6 +167,8 @@ class MediaBrowser : public QVBox
         virtual ~MediaBrowser();
         MediaDevice *currentDevice();
 
+        QString getPluginName ( const QString string ) { return m_pluginName[string]; }
+
     private slots:
         void slotSetFilterTimeout();
         void slotSetFilter();

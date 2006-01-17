@@ -314,11 +314,7 @@ MediaBrowser::MediaBrowser( const char *name )
             it != devices.end();
             it++ )
     {
-        if ( (*it).fsType() == "smbfs" || (*it).fsType() == "ext2" ||
-                (*it).fsType() == "ext3" || (*it).fsType() == "reiserfs" ||
-                (*it).fsType() == "xfs" || (*it).fsType() == "jfs" ||
-                (*it).fsType() == "ntfs" || (*it).fsType() == "udf" ||
-                (*it).fsType() == "iso9660" || (*it).fsType() == "nfs" )
+        if ( (*it).fsType() != "vfat") //&& other supported fsTypes here later
             continue;
 
         mediumAdded( &*it, (*it).name() );

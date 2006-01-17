@@ -26,6 +26,7 @@ class DeviceManager : public QObject
         void mediumRemoved( QString name);
 
         Medium::List getDeviceList();
+        MediumMap getMediumMap( ) { return m_mediumMap; }
 
         bool isValid( ) { return m_valid; }
 
