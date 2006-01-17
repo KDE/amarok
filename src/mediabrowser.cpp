@@ -310,15 +310,23 @@ MediaBrowser::MediaBrowser( const char *name )
     updateStats();
 
     Medium::List devices = DeviceManager::instance()->getDeviceList();
+    int newflag = 0;
+    KConfig *config = amaroK::config( "MediaBrowser" );
     for( Medium::List::iterator it = devices.begin();
             it != devices.end();
             it++ )
     {
-        if ( (*it).fsType() != "vfat") //&& other supported fsTypes here later
+        if ( (*it).fsType() != "vfat" ) //&& other supported fsTypes here later
             continue;
 
-        mediumAdded( &*it, (*it).name() );
+        if ( !config->readEntry( (*it).id() ) )
+            newflag = 1;
     }
+
+    if ( newflag )
+        amaroK::StatusBar::instance()->longMessageThreadSafe( i18n("amaroK has detected new portable media devices. "
+                                                                   "Press the \"Configure Devices...\" button in the "
+                                                                   "Media Browser tab to select plugins for these devices.") );
 
     connect( m_deviceCombo,      SIGNAL( activated( int ) ), SLOT( activateDevice( int ) ) );
     connect( m_connectButton,    SIGNAL( clicked() ),        SLOT( connectClicked() ) );
@@ -1201,7 +1209,7 @@ MediaBrowser::pluginSelected( const Medium *medium, const QString plugin )
 }
 
 void
-MediaBrowser::mediumChanged( const Medium *medium, QString name )
+MediaBrowser::mediumChanged( const Medium *medium, QString /*name*/ )
 {
     debug() << "mediumChanged: " << (medium? medium->properties():"null") << endl;
     if( medium )

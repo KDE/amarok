@@ -61,10 +61,13 @@ MediumPluginManager::MediumPluginManager( )
     for ( it = mmap.begin(); it != mmap.end(); it++ )
     {
         hbox = new QHBox( vbox );
-        new QLabel( i18n("  Device Name:  "), hbox );
+        if ( config->readEntry( (*it)->id() ).isEmpty() )
+            new QLabel( i18n("  (NEW!)  Device Name: "), hbox );
+        else
+            new QLabel( i18n("          Device Name: "), hbox );
         currtext = new QString( (*it)->name() );
         currlabel = new QLabel( *currtext, hbox );
-        new QLabel( i18n("  Plugin Selected:  "), hbox );
+        new QLabel( i18n(", Plugin Selected:  "), hbox );
 
         currcombo = new KComboBox( false, hbox, currtext->latin1() );
         currcombo->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred ) );
