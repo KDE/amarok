@@ -28,6 +28,7 @@
 #include "scancontroller.h"
 #include "statusbar.h"
 
+#include <qdeepcopy.h>
 #include <qfileinfo.h>
 #include <qtextcodec.h>
 
@@ -74,8 +75,8 @@ ScannerProcIO::ScannerProcIO()
 ////////////////////////////////////////////////////////////////////////////////
 
 ScanController::ScanController( CollectionDB* parent, bool incremental, const QStringList& folders )
-    : QXmlDefaultHandler()
-    , DependentJob( parent, "CollectionScanner" )
+    : DependentJob( parent, "CollectionScanner" )
+    , QXmlDefaultHandler()
     , m_scanner( new ScannerProcIO() )
     , m_folders( folders )
     , m_incremental( incremental )
@@ -86,6 +87,8 @@ ScanController::ScanController( CollectionDB* parent, bool incremental, const QS
 
     m_reader.setContentHandler( this );
     m_reader.parse( &m_source, true );
+
+    connect( m_scanner, SIGNAL( readReady( KProcIO* ) ), SLOT( slotReadReady() ) );
 
     // KProcess must be started from the GUI thread, so we're invoking the scanner
     // here in the ctor:
@@ -196,33 +199,31 @@ ScanController::doJob()
     setProgressTotalSteps( 100 );
 
 
-    QString line;
-    bool partial;
     uint delayCount = 100;
 
     /// Main Loop
     while( !isAborted() ) {
-        QString data;
-
-        if( m_scanner->readln( line, true, &partial ) != -1 )
-            data += line;
-        else {
-            // Wait a bit after process has exited, so that we have time to parse all data
+        if( m_xmlData.isNull() ) {
             if( !m_scanner->isRunning() )
                 delayCount--;
+            // Wait a bit after process has exited, so that we have time to parse all data
             if( delayCount == 0 )
                 break;
             msleep( 15 );
             continue;
         }
+        else {
+            m_dataMutex.lock();
 
-        while( m_scanner->readln( line, true, &partial ) != -1 )
-            data += line;
+            QDeepCopy<QString> data = m_xmlData;
+            m_source.setData( data );
+            m_xmlData = QString::null;
 
-        m_source.setData( data );
+            m_dataMutex.unlock();
 
-        if( !m_reader.parseContinue() )
-            ::warning() << "parseContinue() failed: " << errorString() << endl << data << endl;
+            if( !m_reader.parseContinue() )
+                ::warning() << "parseContinue() failed: " << errorString() << endl << data << endl;
+        }
     }
 
 
@@ -251,6 +252,21 @@ ScanController::doJob()
 
 
     return !isAborted();
+}
+
+
+void
+ScanController::slotReadReady()
+{
+    QString line;
+    bool partial;
+
+    m_dataMutex.lock();
+
+    while( m_scanner->readln( line, true, &partial ) != -1 )
+        m_xmlData += line;
+
+    m_dataMutex.unlock();
 }
 
 
@@ -343,3 +359,5 @@ ScanController::startElement( const QString&, const QString& localName, const QS
     return true;
 }
 
+
+#include "scancontroller.moc"

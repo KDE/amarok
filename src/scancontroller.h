@@ -20,6 +20,7 @@
 #ifndef AMAROK_SCANCONTROLLER_H
 #define AMAROK_SCANCONTROLLER_H
 
+#include <qmutex.h>
 #include <qxml.h>         //baseclass
 
 #include "threadweaver.h" //baseclass
@@ -41,8 +42,10 @@ class KProcIO;
  * driven SAX2 parser is used, which can process the entities as they arrive, without
  * the need for a DOM document structure.
  */
-class ScanController : public QXmlDefaultHandler, public ThreadWeaver::DependentJob
+class ScanController : public ThreadWeaver::DependentJob, public QXmlDefaultHandler
 {
+    Q_OBJECT
+
     public:
         static const int PlaylistFoundEventType = 8890;
 
@@ -75,6 +78,12 @@ class ScanController : public QXmlDefaultHandler, public ThreadWeaver::Dependent
         bool m_incremental;
         bool m_scannerCrashed;
         bool m_hasChanged;
+
+        QString m_xmlData;
+        QMutex m_dataMutex;
+
+    private slots:
+        void slotReadReady();
 
     private:
         bool startElement( const QString&, const QString &localName, const QString&, const QXmlAttributes &attrs );
