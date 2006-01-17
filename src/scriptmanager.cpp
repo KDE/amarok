@@ -123,6 +123,7 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
         : KDialogBase( parent, name, false, 0, 0, Ok, false )
         , EngineObserver( EngineController::instance() )
         , m_gui( new ScriptManagerBase( this ) )
+        , m_externalLyrics( false )
 {
     DEBUG_BLOCK
 
