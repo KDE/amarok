@@ -1,5 +1,5 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
-// (c) 2005 Martin Aumueller <aumuell@reserv.at>
+// (c) 2005-2006 Martin Aumueller <aumuell@reserv.at>
 // (c) 2005 Seb Ruiz <me@sebruiz.net>
 // See COPYING file for licensing information
 
@@ -1994,10 +1994,10 @@ MediaDevice::syncStatsFromDevice( MediaItem *root )
                 {
                     // copy rating from media device to amaroK
                     QString url = CollectionDB::instance()->getURL( *bundle );
+                    debug() << "rating changed " << url << ": " << it->rating()/20 << endl;
                     if( url != QString::null )
                     {
                         CollectionDB::instance()->setSongRating( url, it->rating()/20 );
-                        debug() << "rating changed " << url << ": " << it->rating()/20 << endl;
                     }
                 }
             }
