@@ -20,6 +20,7 @@
 #include "mediabrowser.h"
 #include "medium.h"
 #include "mediumpluginchooser.h"
+#include "mediumpluginmanager.h"
 #include "metabundle.h"
 #include "playlist.h"
 #include "playlistloader.h"
@@ -239,6 +240,9 @@ MediaBrowser::MediaBrowser( const char *name )
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
     connect( m_searchEdit, SIGNAL( returnPressed() ), SLOT( slotSetFilter() ) );
 
+    m_devicePluginMapperButton = new KPushButton( "Manage Device Plugins...", this );
+    connect( m_devicePluginMapperButton, SIGNAL( clicked() ), this, SLOT( showPluginManager() ) );
+
     m_deviceCombo = new KComboBox( this );
 
     // connect to device manager
@@ -325,7 +329,7 @@ MediaBrowser::MediaBrowser( const char *name )
 
     if ( newflag )
         amaroK::StatusBar::instance()->longMessageThreadSafe( i18n("amaroK has detected new portable media devices. "
-                                                                   "Press the \"Configure Devices...\" button in the "
+                                                                   "Press the \"Manage Device Plugins...\" button in the "
                                                                    "Media Browser tab to select plugins for these devices.") );
 
     connect( m_deviceCombo,      SIGNAL( activated( int ) ), SLOT( activateDevice( int ) ) );
@@ -1206,6 +1210,12 @@ MediaBrowser::pluginSelected( const Medium *medium, const QString plugin )
     }
     else
         debug() << "Medium id is " << medium->id() << " and you opted not to use a plugin" << endl;
+}
+
+void
+MediaBrowser::showPluginManager()
+{
+    new MediumPluginManager();
 }
 
 void

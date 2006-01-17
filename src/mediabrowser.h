@@ -177,6 +177,7 @@ class MediaBrowser : public QVBox
         void mediumRemoved( const Medium *, QString );
         void activateDevice( int index );
         void pluginSelected( const Medium *, const QString );
+        void showPluginManager();
         void transferClicked();
         void cancelClicked();
         void connectClicked();
@@ -222,6 +223,7 @@ class MediaBrowser : public QVBox
     KPushButton*     m_disconnectButton;
     KPushButton*     m_playlistButton;
     KPushButton*     m_configButton;
+    KPushButton*     m_devicePluginMapperButton;
     QVBox*           m_configBox;
     KComboBox*       m_configPluginCombo;
     KComboBox*       m_deviceCombo;

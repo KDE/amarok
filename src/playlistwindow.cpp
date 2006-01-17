@@ -273,7 +273,6 @@ void PlaylistWindow::init()
     m_toolsMenu = new KPopupMenu( m_menubar );
     m_toolsMenu->insertItem( SmallIconSet( "covermanager" ), i18n("&Cover Manager"), amaroK::Menu::ID_SHOW_COVER_MANAGER );
     actionCollection()->action("queue_manager")->plug( m_toolsMenu );
-    m_toolsMenu->insertItem( SmallIconSet( "visualizations"), i18n("Medium &Plugin Manager"), amaroK::Menu::ID_SHOW_MEDIUM_PLUGIN_MANAGER );
     m_toolsMenu->insertItem( SmallIconSet( "visualizations"), i18n("&Visualizations"), amaroK::Menu::ID_SHOW_VIS_SELECTOR );
     m_toolsMenu->insertItem( SmallIconSet( "equalizer"), i18n("&Equalizer"), kapp, SLOT( slotConfigEqualizer() ), 0, amaroK::Menu::ID_CONFIGURE_EQUALIZER );
     actionCollection()->action("script_manager")->plug( m_toolsMenu );
