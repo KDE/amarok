@@ -17,13 +17,15 @@
 #include <kdialogbase.h>
 #include "medium.h"
 #include <qmap.h>
+#include <qsignalmapper.h>
 #include <kcombobox.h>
 
 typedef QMap<Medium*, KComboBox*> ComboMap;
-typedef QMap<QString, Medium*> MediumMap;
+typedef QMap<int, Medium*> ButtonMap;
 
 class Medium;
-class KComboBox;
+class MediumPluginManager;
+class MediumPluginDetailView;
 
 /**
 	@author Jeff Mitchell <kde-dev@emailgoeshere.com>
@@ -34,7 +36,6 @@ class MediumPluginManager : public KDialogBase
 
     public:
         MediumPluginManager( );
-        ~MediumPluginManager( );
 
     signals:
         void selectedPlugin( const Medium*, const QString );
@@ -42,9 +43,24 @@ class MediumPluginManager : public KDialogBase
     private slots:
         void slotOk( );
         void slotCancel( );
+        void infoRequested( int buttonId );
 
     private:
         ComboMap m_cmap;
+        ButtonMap m_bmap;
+        QSignalMapper* m_sigmap;
+
+};
+
+class MediumPluginDetailView : public KDialogBase
+{
+    Q_OBJECT
+
+    public:
+        MediumPluginDetailView( const Medium* medium );
+
+    private slots:
+        void slotOk( );
 
 };
 

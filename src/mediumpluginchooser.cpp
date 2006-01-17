@@ -28,7 +28,6 @@
 MediumPluginChooser::MediumPluginChooser( const Medium *medium )
         : KDialogBase( amaroK::mainWindow(), "mediumpluginchooserdialog", true, QString("Select Plugin for " + medium->name()), Ok|Cancel, Ok, false )
 {
-    DEBUG_BLOCK
     m_medium = medium;
     kapp->setTopWidget( this );
     setCaption( kapp->makeStdCaption( i18n( "Removable Medium Plugin Chooser" ) ) );
@@ -73,13 +72,11 @@ MediumPluginChooser::MediumPluginChooser( const Medium *medium )
 
 MediumPluginChooser::~MediumPluginChooser()
 {
-    DEBUG_BLOCK
 }
 
 void
 MediumPluginChooser::slotCancel( )
 {
-    DEBUG_BLOCK
     const QString empty;
     emit selectedPlugin( m_medium, empty );
     KDialogBase::slotCancel( );
@@ -88,7 +85,6 @@ MediumPluginChooser::slotCancel( )
 void
 MediumPluginChooser::slotOk( )
 {
-    DEBUG_BLOCK
     if( m_chooserCombo->currentText() == i18n( "Do not handle" ) )
     {
         emit selectedPlugin( m_medium, QString( "ignore" ) );

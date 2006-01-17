@@ -23,21 +23,21 @@
 #include "pluginmanager.h"
 
 #include <qlabel.h>
+#include <qlayout.h>
 #include <qvbox.h>
 
 #include <kapplication.h>
 #include <kcombobox.h>
 #include <kconfig.h>
 #include <klocale.h>
+#include <kpushbutton.h>
 #include <kwin.h>
 
-typedef QMap<Medium*, KComboBox*> ComboMap;
+typedef QMap<QString, Medium*> MediumMap;
 
 MediumPluginManager::MediumPluginManager( )
         : KDialogBase( amaroK::mainWindow(), "mediumpluginmanagerdialog", true, QString("Manage Device Plugins"), Ok|Cancel, Ok, false )
 {
-    DEBUG_BLOCK
-
     kapp->setTopWidget( this );
     setCaption( kapp->makeStdCaption( i18n( "Manage Device Plugins" ) ) );
 
@@ -47,10 +47,14 @@ MediumPluginManager::MediumPluginManager( )
     MediumMap mmap = DeviceManager::instance()->getMediumMap();
     MediumMap::Iterator it;
 
+    m_sigmap = new QSignalMapper( this );
+
     QHBox* hbox;
     QString* currtext;
     QLabel* currlabel;
     KComboBox* currcombo;
+    KPushButton* currbutton;
+    int buttonnum = 0;
 
     KTrader::OfferList offers = PluginManager::query( "[X-KDE-amaroK-plugintype] == 'mediadevice'" );
     KTrader::OfferList::ConstIterator end( offers.end() );
@@ -61,14 +65,22 @@ MediumPluginManager::MediumPluginManager( )
     for ( it = mmap.begin(); it != mmap.end(); it++ )
     {
         hbox = new QHBox( vbox );
+
         if ( config->readEntry( (*it)->id() ).isEmpty() )
             new QLabel( i18n("  (NEW!)  Device Name: "), hbox );
         else
             new QLabel( i18n("          Device Name: "), hbox );
+
         currtext = new QString( (*it)->name() );
         currlabel = new QLabel( *currtext, hbox );
-        new QLabel( i18n(", Plugin Selected:  "), hbox );
 
+        currbutton = new KPushButton( i18n("(Detail)"), hbox );
+        m_bmap[buttonnum] = (*it);
+        m_sigmap->setMapping( currbutton, buttonnum );
+        buttonnum++;
+        connect(currbutton, SIGNAL( clicked() ), m_sigmap, SLOT( map() ) );
+
+        new QLabel( i18n(", Plugin Selected:  "), hbox );
         currcombo = new KComboBox( false, hbox, currtext->latin1() );
         currcombo->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred ) );
         currcombo->insertItem( i18n( "Do not handle" ) );
@@ -82,27 +94,21 @@ MediumPluginManager::MediumPluginManager( )
 
     }
 
+    connect(m_sigmap, SIGNAL( mapped( int ) ), this, SLOT( infoRequested ( int ) ) );
     connect( this, SIGNAL( selectedPlugin( const Medium*, const QString ) ), MediaBrowser::instance(), SLOT( pluginSelected( const Medium*, const QString ) ) );
 
     this->exec();
 }
 
-MediumPluginManager::~MediumPluginManager()
-{
-    DEBUG_BLOCK
-}
-
 void
 MediumPluginManager::slotCancel( )
 {
-    DEBUG_BLOCK
     KDialogBase::slotCancel( );
 }
 
 void
 MediumPluginManager::slotOk( )
 {
-    DEBUG_BLOCK
     ComboMap::Iterator it;
     for ( it = m_cmap.begin(); it != m_cmap.end(); ++it )
     {
@@ -115,6 +121,52 @@ MediumPluginManager::slotOk( )
             emit selectedPlugin( it.key(), MediaBrowser::instance()->getPluginName( it.data()->currentText() ) );
         }
     }
+    KDialogBase::slotOk( );
+}
+
+void
+MediumPluginManager::infoRequested( int buttonId )
+{
+    Medium* medium = m_bmap[buttonId];
+    MediumPluginDetailView* mpdv = new MediumPluginDetailView( medium );
+    mpdv->exec();
+}
+
+/////////////////////////////////////////////////////////////////////
+
+MediumPluginDetailView::MediumPluginDetailView( const Medium* medium )
+: KDialogBase( amaroK::mainWindow(), "mediumplugindetailview", true, QString("Device information for " + medium->name()), Ok, Ok, false )
+{
+    kapp->setTopWidget( this );
+    setCaption( kapp->makeStdCaption( i18n( "Device information for %1").arg(medium->name() ) ) );
+
+    QHBox* hbox = makeHBoxMainWidget();
+    hbox->setSpacing( KDialog::spacingHint() );
+
+    QVBox* vbox1 = new QVBox( hbox );
+    QVBox* vbox2 = new QVBox( hbox );
+
+    QString labelTextNone = i18n( "(none)" );
+
+    new QLabel( i18n( "ID:"), vbox1 );
+    new QLabel( medium->id(), vbox2 );
+    new QLabel( i18n( "Name:"), vbox1 );
+    new QLabel( medium->name(), vbox2 );
+    new QLabel( i18n( "Label:"), vbox1 );
+    new QLabel( medium->label().isEmpty() ? labelTextNone : medium->label(), vbox2 );
+    new QLabel( i18n( "User Label:"), vbox1 );
+    new QLabel( medium->userLabel().isEmpty() ? labelTextNone : medium->userLabel(), vbox2 );
+    new QLabel( i18n( "Device Node:"), vbox1 );
+    new QLabel( medium->deviceNode().isEmpty() ? labelTextNone : medium->deviceNode(), vbox2 );
+    new QLabel( i18n( "Mount Point:"), vbox1 );
+    new QLabel( medium->label().isEmpty() ? labelTextNone : medium->label(), vbox2 );
+    new QLabel( i18n( "Mime Type:"), vbox1 );
+    new QLabel( medium->mimeType().isEmpty() ? labelTextNone : medium->mimeType(), vbox2 );
+}
+
+void
+MediumPluginDetailView::slotOk( )
+{
     KDialogBase::slotOk( );
 }
 
