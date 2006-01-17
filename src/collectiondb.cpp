@@ -1965,7 +1965,7 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
         command += "track = " + QString::number( bundle.track() ) + ", ";
     command += "comment = '" + escapeString( bundle.comment() ) + "', ";
     command += "composer = '" + escapeString( bundle.composer() ) + "', ";
-    command += "discnumber = '" + QString::number( bundle.discNumber() ) + "' ";
+    command += "discnumber = '" + QString::number( bundle.discNumber() ) + "', ";
     command += "filesize = '" + QString::number( bundle.filesize() ) + "' ";
     command += "WHERE url = '" + escapeString( url ) + "';";
 
