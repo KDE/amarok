@@ -803,6 +803,7 @@ SqlLoader::doJob()
         b.setBitrate   ( (*++it).toInt() );
         b.setLength    ( (*++it).toInt() );
         b.setSampleRate( (*++it).toInt() );
+        b.setFilesize  ( (*++it).toInt() );
         b.setPath      (  *++it );
 
         bundles += b;

@@ -288,6 +288,9 @@ CollectionScanner::readTags( const QString& path )
         attributes["samplerate"]      = QString::number( mb.sampleRate() );
     }
 
+    if ( mb.filesize() >= 0 )
+        attributes["filesize"] = QString::number( mb.filesize() );
+
     return attributes;
 }
 

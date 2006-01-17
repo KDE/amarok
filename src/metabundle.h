@@ -55,6 +55,7 @@ public:
         PlayCount,
         LastPlayed,
         Mood,
+        Filesize,
         NUM_COLUMNS
     };
 
@@ -141,6 +142,7 @@ public: //accessors
     int     rating()     const;
     int     playCount()  const;
     uint    lastPlay()   const;
+    int     filesize()   const;
 
     QString streamName() const;
     QString streamUrl()  const;
@@ -172,6 +174,7 @@ public: //modifiers
     virtual void setRating( int rating );
     virtual void setPlayCount( int playcount );
     virtual void setLastPlay( uint lastplay );
+    virtual void setFilesize( int bytes );
 
 public: //static helper functions
     static QString prettyBitrate( int );
@@ -206,6 +209,7 @@ protected:
     int  m_rating;
     int  m_playCount;
     uint m_lastPlay;
+    int  m_filesize;
 
     bool m_exists;
     bool m_isValidMedia;
@@ -254,6 +258,7 @@ inline int MetaBundle::year()       const { return m_year  == Undetermined ? 0 :
 inline int MetaBundle::length()     const { return m_length > 0 ? m_length : 0; }
 inline int MetaBundle::bitrate()    const { return m_bitrate == Undetermined ? 0 : m_bitrate; }
 inline int MetaBundle::sampleRate() const { return m_sampleRate == Undetermined ? 0 : m_sampleRate; }
+inline int MetaBundle::filesize()   const { return m_filesize == Undetermined ? 0 : m_filesize; }
 
 inline const KURL    &MetaBundle::url()        const { return m_url; }
 inline QString  MetaBundle::filename()   const { return m_url.fileName(); }
@@ -313,6 +318,7 @@ inline void MetaBundle::setPlayCount( int playcount ) { m_playCount = playcount;
 inline void MetaBundle::setLastPlay( uint lastplay ) { m_lastPlay = lastplay; }
 inline void MetaBundle::setRating( int rating ) { m_rating = rating; }
 inline void MetaBundle::setScore( int score ) { m_score = score; }
+inline void MetaBundle::setFilesize( int bytes ) { m_filesize = bytes; }
 
 inline int  MetaBundle::fileType() const { return m_type; }
 inline bool MetaBundle::hasExtendedMetaInformation() const { return (m_type == mp3 || m_type == ogg || m_type== mp4); }

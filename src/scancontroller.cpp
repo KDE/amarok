@@ -298,6 +298,12 @@ ScanController::startElement( const QString&, const QString& localName, const QS
             bundle.setSampleRate( attrs.value( "samplerate" ).toInt() );
         }
 
+        if( !attrs.value( "filesize" ).isNull()
+                && !attrs.value( "filesize" ).isEmpty() )
+        {
+            bundle.setFilesize( attrs.value( "filesize" ).toInt() );
+        }
+
         CollectionDB::instance()->addSong( &bundle, m_incremental );
     }
 

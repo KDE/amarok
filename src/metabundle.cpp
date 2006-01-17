@@ -83,6 +83,7 @@ const QString MetaBundle::columnName( int c ) //static
         case Rating:     return "Rating";
         case PlayCount:  return "PlayCount";
         case LastPlayed: return "LastPlayed";
+        case Filesize:   return "Filesize";
         case Mood:       return "Mood";
     }
     return "<ERROR>";
@@ -99,6 +100,7 @@ MetaBundle::MetaBundle()
         , m_rating( Undetermined )
         , m_playCount( Undetermined )
         , m_lastPlay( abs( Undetermined ) )
+        , m_filesize( Undetermined )
         , m_exists( true )
         , m_isValidMedia( true )
         , m_type( Undetermined )
@@ -118,6 +120,7 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
     , m_rating( Undetermined )
     , m_playCount( Undetermined )
     , m_lastPlay( abs( Undetermined ) )
+    , m_filesize( Undetermined )
     , m_exists( url.protocol() == "file" && QFile::exists( url.path() ) )
     , m_isValidMedia( false ) //will be updated
     , m_type( Undetermined )
@@ -154,6 +157,7 @@ MetaBundle::MetaBundle( const QString& title,
         , m_rating( Undetermined )
         , m_playCount( Undetermined )
         , m_lastPlay( abs( Undetermined ) )
+        , m_filesize( Undetermined )
         , m_exists( true )
         , m_isValidMedia( true )
         , m_type( Undetermined )
@@ -179,6 +183,7 @@ MetaBundle::MetaBundle( QDomNode node )
     , m_rating( Undetermined )
     , m_playCount( Undetermined )
     , m_lastPlay( abs( Undetermined ) )
+    , m_filesize( Undetermined )
     , m_exists( false )
     , m_isValidMedia( true )
     , m_type( Undetermined )
@@ -231,6 +236,7 @@ MetaBundle::operator==( const MetaBundle& bundle ) const
            length()     == bundle.length() &&
            bitrate()    == bundle.bitrate() &&
            sampleRate() == bundle.sampleRate();
+    // FIXME: check for size equality?
 }
 
 void
@@ -311,7 +317,10 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
             #undef strip
 
             m_isValidMedia = true;
+
+            m_filesize = QFile( path ).size();
         }
+
 
     /* As mpeg implementation on TagLib uses a Tag class that's not defined on the headers,
        we have to cast the files, not the tags! */
@@ -420,6 +429,7 @@ void MetaBundle::copy( const MetaBundle &bundle )
     setRating( bundle.rating() );
     setPlayCount( bundle.playCount() );
     setLastPlay( bundle.lastPlay() );
+    setFilesize( bundle.filesize() );
 }
 
 void MetaBundle::setExactText( int column, const QString &newText )
@@ -442,6 +452,7 @@ void MetaBundle::setExactText( int column, const QString &newText )
         case Rating:     setRating(     newText.toInt() ); break;
         case PlayCount:  setPlayCount(  newText.toInt() ); break;
         case LastPlayed: setLastPlay(   newText.toInt() ); break;
+        case Filesize:   setFilesize(   newText.toInt() ); break;
         default: warning() << "Tried to set the text of an immutable or nonexistent column! [" << column << endl;
    }
 }
@@ -469,6 +480,7 @@ QString MetaBundle::exactText( int column ) const
         case Rating:     return QString::number( rating() );
         case PlayCount:  return QString::number( playCount() );
         case LastPlayed: return QString::number( lastPlay() );
+        case Filesize:   return QString::number( filesize() );
         case Mood:       return QString::null;
         default: warning() << "Tried to get the text of a nonexistent column! [" << column << endl;
     }
@@ -500,6 +512,7 @@ QString MetaBundle::prettyText( int column ) const
         case Rating:     text = rating() ? QString::number( rating() ) : QString::null;              break;
         case PlayCount:  text = QString::number( playCount() );                                      break;
         case LastPlayed: text = amaroK::verboseTimeSince( lastPlay() );                              break;
+        case Filesize:   text = QString::number( filesize() );                                       break;
         case Mood:       text = QString::null;                                                       break;
         default: warning() << "Tried to get the text of a nonexistent column!" << endl;              break;
     }
