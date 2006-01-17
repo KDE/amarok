@@ -694,7 +694,9 @@ if test "$with_musicbrainz" = "yes"; then
 fi
 
 if test "$build_musicbrainz" = "yes"; then
-    AC_DEFINE(HAVE_TUNEPIMP, 1, [have TunePimp])
+    AC_CHECK_LIB(tunepimp, tp_SetFileNameEncoding,
+      AC_DEFINE(HAVE_TUNEPIMP, 4, [have MusicBrainz 0.4.x]),
+      AC_DEFINE(HAVE_TUNEPIMP, 1, [have MusicBrainz]))
     LIB_TUNEPIMP="-ltunepimp"
     have_tunepimp=yes
 else
