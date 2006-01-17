@@ -970,6 +970,7 @@ ContextBrowser::showContext( const KURL &url, bool fromHistory )
     {
         m_browseArtists = false;
         m_artist = QString::null;
+        m_contextBackHistory.clear();
     }
     else if( url.protocol() == "artist" )
     {
