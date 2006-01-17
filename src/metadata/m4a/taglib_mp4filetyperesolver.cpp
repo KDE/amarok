@@ -8,7 +8,7 @@ TagLib::File *MP4FileTypeResolver::createFile(const char *fileName,
         bool readProperties,
         TagLib::AudioProperties::ReadStyle propertiesStyle) const
 {
-    fprintf(stderr, "mp4?: %s\n", fileName);
+//     fprintf(stderr, "mp4?: %s\n", fileName);
     const char *ext = strrchr(fileName, '.');
     if(ext && (!strcasecmp(ext, ".m4a")
                 || !strcasecmp(ext, ".m4b") || !strcasecmp(ext, ".m4p")
