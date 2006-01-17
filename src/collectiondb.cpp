@@ -1261,8 +1261,8 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
     command += escapeString( bundle->title() ) + "',";
     command += ( bundle->composer().isEmpty() ? "NULL" : "'"+escapeString( bundle->composer() ) + "'" ) + ",'";
     command += escapeString( bundle->comment() ) + "', ";
-    command += ( !bundle->track() ? "NULL" : escapeString( QString::number( bundle->track() ) ) ) + " , ";
-    command += ( !bundle->discNumber() ? "NULL" : escapeString( QString::number( bundle->discNumber() ) ) ) + " , ";
+    command += escapeString( QString::number( bundle->track() ) ) + " , ";
+    command += escapeString( QString::number( bundle->discNumber() ) ) + " , ";
     command += artist == i18n( "Various Artists" ) ? boolT() + "," : boolF() + ",";
 
     // NOTE any of these may be -1 or -2, this is what we want
