@@ -81,7 +81,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     } //</Search LineEdit>
 
     KActionCollection* ac = new KActionCollection( this );
-    m_scanAction = new KAction( i18n( "Update" ), "reload", 0, CollectionDB::instance(), SLOT( scanMonitor() ), ac, "Start Scan" );
+    m_scanAction = new KAction( i18n( "Scan Changes" ), "reload", 0, CollectionDB::instance(), SLOT( scanMonitor() ), ac, "Start Scan" );
 
     // we need m_scanAction to be initialized before CollectionView's CTOR
     m_view = new CollectionView( this );
@@ -267,8 +267,11 @@ CollectionBrowser::layoutToolbar()
     m_flatViewAction->plug( m_toolbar );
     m_toolbar->insertLineSeparator();
 
-    if ( !AmarokConfig::monitorChanges() )
+    if ( !AmarokConfig::monitorChanges() ) {
+        m_toolbar->setIconText( KToolBar::IconTextRight, false );
         m_scanAction->plug( m_toolbar );
+        m_toolbar->setIconText( KToolBar::IconOnly, false );
+    }
 
     m_configureAction->plug( m_toolbar );
 
