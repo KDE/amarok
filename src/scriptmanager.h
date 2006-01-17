@@ -83,6 +83,11 @@ class ScriptManager : public KDialogBase, public EngineObserver
        /** Custom Menu Click */
        void customMenuClicked( const QString& message );
 
+       /** Set whether amaroK uses a script for lyrics fetching */
+       void enableExternalLyrics( bool enable ) { m_externalLyrics = enable; }
+
+       bool externalLyrics() const { return m_externalLyrics; }
+
     private slots:
         /** Finds all installed scripts and adds them to the listview */
         void findScripts();
@@ -123,6 +128,8 @@ class ScriptManager : public KDialogBase, public EngineObserver
         static ScriptManager* s_instance;
         ScriptManagerBase*    m_gui;
         bool                  m_installSuccess;
+
+        bool                  m_externalLyrics;
 
         struct ScriptItem {
             KURL           url;

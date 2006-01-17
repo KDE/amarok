@@ -795,6 +795,11 @@ namespace amaroK
         return stringList;
     }
 
+    void DcopScriptHandler::enableExternalLyrics( bool enable )
+    {
+        ScriptManager::instance()->enableExternalLyrics( enable );
+    }
+
 /////////////////////////////////////////////////////////////////////////////////////
 // class DcopDevicesHandler
 /////////////////////////////////////////////////////////////////////////////////////
