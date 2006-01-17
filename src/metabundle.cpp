@@ -193,8 +193,6 @@ MetaBundle::MetaBundle( QDomNode node )
 
     for( uint i = 1, n = NUM_COLUMNS; i < n; ++i )
     {
-        if(i==Filesize)
-            debug() << "i=" << i << ", name=" << columnName(i) <<", size=" << node.namedItem( columnName( i ) ).toElement().text() << endl;
         switch( i )
         {
             case Artist:
