@@ -42,7 +42,7 @@
 
 TagDialog::TagDialog( const KURL& url, QWidget* parent )
     : TagDialogBase( parent )
-    , m_bundle( MetaBundle( url ) )
+    , m_bundle( url )
     , m_score ( CollectionDB::instance()->getSongPercentage( url.path() ) )
     , m_lyrics ( CollectionDB::instance()->getLyrics( url.path() ) )
     , m_playcount( CollectionDB::instance()->getPlayCount( url.path() ) )
@@ -57,7 +57,7 @@ TagDialog::TagDialog( const KURL& url, QWidget* parent )
 
 TagDialog::TagDialog( const KURL::List list, QWidget* parent )
     : TagDialogBase( parent )
-    , m_bundle( MetaBundle() )
+    , m_bundle()
     , m_score ( 0 )
     , m_lyrics ( QString::null )
     , m_firstPlay ( QDateTime() )
@@ -592,6 +592,7 @@ void TagDialog::readTags()
     summaryText += body2cols.arg( i18n("Length"), unknownSafe( m_bundle.prettyLength() ) );
     summaryText += body2cols.arg( i18n("Bitrate"), unknownSafe( m_bundle.prettyBitrate() ) );
     summaryText += body2cols.arg( i18n("Samplerate"), unknownSafe( m_bundle.prettySampleRate() ) );
+    summaryText += body2cols.arg( i18n("Filesize"), unknownSafe( QString::number( m_bundle.filesize() ) ) );
 
     summaryText += "</table></td><td width=50%><table>";
     summaryText += body2cols.arg( i18n("Score"), QString::number( m_score ) );
@@ -1028,6 +1029,7 @@ TagDialog::writeTag( MetaBundle mb, bool updateCB )
     QApplication::setOverrideCursor( KCursor::waitCursor() );
 
     bool result = mb.save();
+    mb.updateFilesize();
 
     if( result )
         //update the collection db

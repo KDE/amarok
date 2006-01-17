@@ -359,7 +359,7 @@ UrlLoader::loadXml( const KURL &url )
 
     QDomElement plElement = d.namedItem( "playlist" ).toElement();
     //increase this whenever the format changes, in Playlist::saveXML() also
-    if( !plElement.hasAttribute("version") || plElement.attribute("version") != "2.3" )
+    if( !plElement.hasAttribute("version") || plElement.attribute("version") != "2.4" )
     {
         if( !plElement.firstChild().isNull() ) //no point in notifying if the playlist was empty anyways
             amaroK::StatusBar::instance()->longMessageThreadSafe( i18n(

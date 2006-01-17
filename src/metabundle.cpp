@@ -192,6 +192,9 @@ MetaBundle::MetaBundle( QDomNode node )
     m_exists = isStream() || ( url().protocol() == "file" && QFile::exists( url().path() ) );
 
     for( uint i = 1, n = NUM_COLUMNS; i < n; ++i )
+    {
+        if(i==Filesize)
+            debug() << "i=" << i << ", name=" << columnName(i) <<", size=" << node.namedItem( columnName( i ) ).toElement().text() << endl;
         switch( i )
         {
             case Artist:
@@ -205,12 +208,15 @@ MetaBundle::MetaBundle( QDomNode node )
             case Comment:
             case Length:
             case Bitrate:
+            case Filesize:
+            case SampleRate:
                 setExactText( i, node.namedItem( columnName( i ) ).toElement().text() );
                 continue;
 
             default:
                 continue;
         }
+    }
 }
 
 bool
@@ -379,6 +385,20 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
     //FIXME disabled for beta4 as it's simpler to not got 100 bug reports
     //else if( KMimeType::findByUrl( m_url )->is( "audio" ) )
     //    init( KFileMetaInfo( m_url, QString::null, KFileMetaInfo::Everything ) );
+}
+
+void MetaBundle::updateFilesize()
+{
+    if( url().protocol() != "file" )
+    {
+        m_filesize = Undetermined;
+        return;
+    }
+
+    const QString path = url().path();
+    m_filesize = QFile( path ).size();
+
+    debug() << "filesize = " << m_filesize << endl;
 }
 
 int MetaBundle::score() const

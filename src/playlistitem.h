@@ -54,6 +54,7 @@ class PlaylistItem : public MetaBundle, public KListViewItem
     virtual void setTrack( int track );
     virtual void setLength( int length );
     virtual void setBitrate( int bitrate );
+    virtual void setFilesize( int bitrate );
     virtual void setRating( int rating );
     virtual void setScore( int score );
     virtual void setPlayCount( int playcount );
@@ -224,6 +225,12 @@ inline void PlaylistItem::setLength( int length )
 inline void PlaylistItem::setBitrate( int bitrate )
 {
     super::setBitrate( bitrate );
+    update();
+}
+
+inline void PlaylistItem::setFilesize( int bytes )
+{
+    super::setFilesize( bytes );
     update();
 }
 

@@ -175,6 +175,7 @@ public: //modifiers
     virtual void setPlayCount( int playcount );
     virtual void setLastPlay( uint lastplay );
     virtual void setFilesize( int bytes );
+    virtual void updateFilesize();
 
 public: //static helper functions
     static QString prettyBitrate( int );

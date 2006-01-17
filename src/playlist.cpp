@@ -317,6 +317,7 @@ Playlist::Playlist( QWidget *parent )
     addColumn( i18n( "Play Count"  ),   0 );
     addColumn( i18n( "Last Played" ),   0 );
     addColumn( i18n( "Mood"        ),  AmarokConfig::showMoodbar() ? 40 : 0 );
+    addColumn( i18n( "Filesize"    ),   0 );
 
     for( int i = 0, n = PlaylistItem::NUM_COLUMNS; i < n; ++i )
     switch( i )
@@ -327,6 +328,7 @@ Playlist::Playlist( QWidget *parent )
         case PlaylistItem::Length:
         case PlaylistItem::Bitrate:
         case PlaylistItem::SampleRate:
+        case PlaylistItem::Filesize:
         case PlaylistItem::PlayCount:
         case PlaylistItem::LastPlayed:
         case PlaylistItem::Mood:
@@ -352,6 +354,7 @@ Playlist::Playlist( QWidget *parent )
     setColumnAlignment( PlaylistItem::Length,     Qt::AlignRight  );
     setColumnAlignment( PlaylistItem::Bitrate,    Qt::AlignCenter );
     setColumnAlignment( PlaylistItem::SampleRate, Qt::AlignCenter );
+    setColumnAlignment( PlaylistItem::Filesize,   Qt::AlignCenter );
     setColumnAlignment( PlaylistItem::Score,      Qt::AlignCenter );
     setColumnAlignment( PlaylistItem::Type,       Qt::AlignCenter );
     setColumnAlignment( PlaylistItem::PlayCount,  Qt::AlignCenter );
@@ -2251,6 +2254,7 @@ Playlist::viewportResizeEvent( QResizeEvent *e )
         case PlaylistItem::Track:
         case PlaylistItem::Bitrate:
         case PlaylistItem::SampleRate:
+        case PlaylistItem::Filesize:
         case PlaylistItem::Score:
         case PlaylistItem::Rating:
         case PlaylistItem::Type:
@@ -2295,6 +2299,7 @@ Playlist::columnResizeEvent( int col, int oldw, int neww )
             case PlaylistItem::Track:
             case PlaylistItem::Bitrate:
             case PlaylistItem::SampleRate:
+            case PlaylistItem::Filesize:
             case PlaylistItem::Score:
             case PlaylistItem::Rating:
             case PlaylistItem::Type:
@@ -2339,6 +2344,7 @@ Playlist::columnResizeEvent( int col, int oldw, int neww )
         case PlaylistItem::Track:
         case PlaylistItem::Bitrate:
         case PlaylistItem::SampleRate:
+        case PlaylistItem::Filesize:
         case PlaylistItem::Score:
         case PlaylistItem::Rating:
         case PlaylistItem::Type:
@@ -2724,7 +2730,7 @@ Playlist::saveXML( const QString &path )
     playlist.setAttribute( "product", "amaroK" );
 
     //increase this whenever the format changes, in PlaylistLoader::loadXml() also
-    playlist.setAttribute( "version", "2.3" );
+    playlist.setAttribute( "version", "2.4" );
     newdoc.appendChild( playlist );
 
     for( const PlaylistItem *item = firstChild(); item; item = item->nextSibling() )
@@ -3271,13 +3277,15 @@ Playlist::googleMatch( QString query, const QStringMap &defaults, const QStringM
                     Playcount  = PlaylistItem::columnName( PlaylistItem::PlayCount  ).lower(),
                     Length     = PlaylistItem::columnName( PlaylistItem::Length     ).lower(),
                     Bitrate    = PlaylistItem::columnName( PlaylistItem::Bitrate    ).lower(),
-                    SampleRate = PlaylistItem::columnName( PlaylistItem::SampleRate ).lower();
+                    SampleRate = PlaylistItem::columnName( PlaylistItem::SampleRate ).lower(),
+                    Filesize   = PlaylistItem::columnName( PlaylistItem::Filesize   ).lower();
 
                 if (q.startsWith(">"))
                 {
                     w = w.mid( 1 );
                     if( f == Score || f == Rating    || f == Year    || f == DiscNumber ||
-                        f == Track || f == Playcount || f == Bitrate || f == SampleRate )
+                        f == Track || f == Playcount || f == Bitrate || f == SampleRate ||
+                        f == Filesize )
                         condition = v.toInt() > w.toInt();
                     else if( f == Length )
                     {
@@ -3293,7 +3301,8 @@ Playlist::googleMatch( QString query, const QStringMap &defaults, const QStringM
                 {
                     w = w.mid(1);
                     if( f == Score || f == Rating    || f == Year    || f == DiscNumber ||
-                        f == Track || f == Playcount || f == Bitrate || f == SampleRate )
+                        f == Track || f == Playcount || f == Bitrate || f == SampleRate ||
+                        f == Filesize )
                         condition = v.toInt() < w.toInt();
                     else if( f == Length )
                     {
