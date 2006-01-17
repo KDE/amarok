@@ -210,7 +210,6 @@ ScanController::doJob()
             if( delayCount == 0 )
                 break;
             msleep( 15 );
-            continue;
         }
         else {
             m_dataMutex.lock();
