@@ -373,8 +373,7 @@ void HSPPostProcessor::scopeify(unsigned long time, unsigned char *data, size_t 
    item->spb = len / item->nchan;
    item->spb /= bytes_per_sample;
    item->tps = (double) scopebuf_timeinc / (double) item->spb;
-   item->index = m_index;
-   m_Player->addScopeBuf(item);
+   m_Player->addScopeBuf(item, m_index);
 }
 
 

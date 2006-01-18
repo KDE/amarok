@@ -64,7 +64,7 @@ struct _snd_mixer_elem;
 class DelayQueue
 {
 public:
-   DelayQueue(int bufsize) : fwd(0), len(bufsize), time(0), etime(0), nchan(0), bps(0), index(0), buf(0) 
+   DelayQueue(int bufsize) : fwd(0), len(bufsize), time(0), etime(0), nchan(0), bps(0), buf(0) 
       { buf = new unsigned char [ bufsize ]; }
    ~DelayQueue() { delete [] buf; }
    struct DelayQueue *fwd;
@@ -75,7 +75,6 @@ public:
    int           bps;      // bytes per sample
    double        tps;      // time per sample
    int           spb;      // samples per buffer
-   int           index;    // the player from which this sample comes
    unsigned char *buf;
 };
 
@@ -198,6 +197,11 @@ private:
       bool                        isLocal;
       unsigned short              volume;
       bool                        ismute;
+      // scope
+      int                         scopecount;
+      struct DelayQueue          *scopebufhead;
+      struct DelayQueue          *scopebuftail;
+      pthread_mutex_t             m_scope_m;
    } **ppctrl;
 
    bool                    bURLFound;
@@ -232,11 +236,11 @@ public:
    void startCrossFade();
 
    // scope
-   void addScopeBuf(struct DelayQueue *item);
-   DelayQueue *getScopeBuf();
-   int getScopeCount() { return scopecount; }
-   int peekScopeTime(unsigned long &t);
-   void clearScopeQ();
+   void addScopeBuf(struct DelayQueue *item, int playerIndex);
+   DelayQueue *getScopeBuf(int playerIndex);
+   int getScopeCount(int playerIndex) { return playerIndex >= 0 && playerIndex < nNumPlayers ? ppctrl[playerIndex]->scopecount : 0; }
+   int peekScopeTime(unsigned long &t, int playerIndex);
+   void clearScopeQ(int playerIndex = ALL_PLAYERS);
 
    // equalizer
    void enableEQ(bool enabled) { m_eq_enabled = enabled; }
@@ -273,12 +277,6 @@ private:
    // supported mime type list
    MimeList            *mimehead;
    int                  mimelistlen;
-
-   // scope
-   int                  scopecount;
-   struct DelayQueue   *scopebufhead;
-   struct DelayQueue   *scopebuftail;
-   pthread_mutex_t      m_scope_m;
 
    // equalizer
    bool                 m_eq_enabled;

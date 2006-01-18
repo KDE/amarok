@@ -69,11 +69,16 @@ private:
    bool          m_isStream;
    HelixSimplePlayer::metaData m_md;
 
-   DelayQueue *m_item;
-   unsigned long  m_lasttime[2];
-   unsigned long  m_lastpos[2];
-   unsigned short m_currentScope[512];
-   int            m_scopeindex;
+   int scope(int playerIndex);
+   bool m_scopeplayerlast;
+   struct HelixScope
+   {
+      DelayQueue *m_item;
+      unsigned long  m_lasttime;
+      unsigned long  m_lastpos;
+      unsigned short m_currentScope[512];
+      int            m_scopeindex;
+   } hscope[2];
 
    typedef struct MimeEntry
    {
@@ -85,7 +90,7 @@ private:
 
    void cleanup();
    void timerEvent( QTimerEvent * );
-   void resetScope();
+   void resetScope(int playerIndex);
 
    int print2stdout(const char *fmt, ...);
    int print2stderr(const char *fmt, ...);

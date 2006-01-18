@@ -65,8 +65,7 @@ HelixEngine::HelixEngine()
      m_pluginsdir(HELIX_LIBS "/plugins"),
      m_codecsdir(HELIX_LIBS "/codecs"),
      m_inited(false),
-     m_item(0),
-     m_scopeindex(0)
+     m_scopeplayerlast(0)
 {
    addPluginProperty( "StreamingMode", "NoStreaming" ); // this means we'll handle streaming (not using KIO)
    addPluginProperty( "HasConfigure", "true" );
@@ -74,8 +73,7 @@ HelixEngine::HelixEngine()
    addPluginProperty( "HasCrossfade", "true" );
 
    memset(&m_md, 0, sizeof(m_md));
-
-   m_lasttime[0] = m_lasttime[1] = m_lastpos[0] = m_lastpos[1] = 0; 
+   memset(&hscope, 0, sizeof(hscope));
 }
 
 HelixEngine::~HelixEngine()
@@ -358,15 +356,12 @@ HelixEngine::cleanup()
 
    m_url = KURL();
    HelixSimplePlayer::stop(); // stop all players
-   resetScope();
+   resetScope(0);
+   resetScope(1);
    killTimers();
-   m_lasttime[0] = 0;
-   m_lasttime[1] = 0;
-   m_lastpos[0] = 0;
-   m_lastpos[1] = 0;
-   m_scopeindex = 0;
    m_isStream = false;
    memset(&m_md, 0, sizeof(m_md));
+   memset(&hscope, 0, sizeof(hscope));
 }
 
 void 
@@ -383,12 +378,15 @@ HelixEngine::stop()
 }
 
 
-void HelixEngine::play_finished(int /*playerIndex*/)
+void HelixEngine::play_finished(int playerIndex)
 {
-   debug() << "Ok, finished playing the track, so now I'm idle\n";
-   m_state = Engine::Idle;
-   cleanUpStream(m_current);
-   emit trackEnded();
+   debug() << "Ok, finished playing the track\n";
+   cleanUpStream(playerIndex);
+   if (playerIndex == m_current)
+   {
+      m_state = Engine::Idle;
+      emit trackEnded();
+   }
 }
 
 void
@@ -450,7 +448,8 @@ HelixEngine::seek( uint ms )
       return;
 
    debug() << "In seek\n";
-   resetScope();
+   resetScope(0);
+   resetScope(1);
    HelixSimplePlayer::seek(ms, m_current);
 }
 
@@ -499,24 +498,12 @@ void
 HelixEngine::timerEvent( QTimerEvent * )
 {
    HelixSimplePlayer::dispatch(); // dispatch the players
-   if ( ( m_xfadeLength <= 0 && m_state == Engine::Playing && HelixSimplePlayer::done(m_current) ) ||
-        ( m_xfadeLength > 0 && m_state == Engine::Playing && isPlaying(m_current?0:1) && 
-          HelixSimplePlayer::done(m_current?0:1) ) )
+   if ( m_xfadeLength <= 0 && m_state == Engine::Playing && HelixSimplePlayer::done(m_current) )
       play_finished(m_current);
+   else if ( m_xfadeLength > 0 && m_state == Engine::Playing && isPlaying(m_current?0:1) && HelixSimplePlayer::done(m_current?0:1) )
+      play_finished(m_current?0:1);
 
-   m_lasttime[m_current] += HELIX_ENGINE_TIMER;
-
-#ifdef DEBUG_PURPOSES_ONLY
-   // calculate the frame rate of the scope
-   m_ftime += HELIX_ENGINE_TIMER;
-   if (m_ftime > 10000)
-   {
-      m_ftime /= 1000;
-      m_fps = (double) m_fcount / m_ftime;
-      m_ftime = 0;
-      m_fcount = 0;
-   }
-#endif
+   hscope[m_current].m_lasttime += HELIX_ENGINE_TIMER;
 
    HelixSimplePlayer::metaData *md = getMetaData(m_current);
    if (m_isStream &&
@@ -556,77 +543,83 @@ HelixEngine::timerEvent( QTimerEvent * )
 
 const Engine::Scope &HelixEngine::scope()
 {
+   if (isPlaying(0) && isPlaying(1)) // crossfading
+   {
+      if (m_scopeplayerlast)
+         scope(m_current);
+      else
+         scope(m_current?0:1);
+      m_scopeplayerlast = !m_scopeplayerlast;
+   }
+   else
+      if (!scope(m_current))
+         scope(m_current?0:1);
+
+   return m_scope;
+}
+
+int HelixEngine::scope(int playerIndex)
+{
    int i, sb = 0;
    unsigned long t;
 
    if (!m_inited)
-      return m_scope;
+      return 0;
 
-   if (!m_item && !peekScopeTime(t))
+   if (!hscope[playerIndex].m_item && !peekScopeTime(t, playerIndex))
    {
-      m_item = getScopeBuf();
-      if (m_item)
+      hscope[playerIndex].m_item = getScopeBuf(playerIndex);
+      if (hscope[playerIndex].m_item)
          sb++;
    }
    //
    // this bit is to help us keep more accurate time than helix provides
    /////////////////////////////////////////////////////////////////////
-#define helix_engine_abs_diff(a,b) ((a) > (b) ? (a) - (b) : (b) - (a))
-   int playerIndex = m_current;
-   unsigned long p0 = HelixSimplePlayer::where(0);
-   unsigned long p1 = HelixSimplePlayer::where(1);
-   if (m_item && p0 && p1)
-   {
-      if (helix_engine_abs_diff(p0,m_item->time) < helix_engine_abs_diff(p1,m_item->time) )
-         playerIndex = 0;
-      else
-         playerIndex = 1;
-   }
-
    unsigned long w;
    unsigned long hpos = HelixSimplePlayer::where(playerIndex);
 
-   if (hpos == m_lastpos[playerIndex])
+   if (hpos == hscope[playerIndex].m_lastpos)
    {
-      if (m_item && hpos >= m_item->time && hpos <= m_item->etime && 
-          (m_lasttime[playerIndex] < m_item->time || m_lasttime[playerIndex] > m_item->etime) )
+      if (hscope[playerIndex].m_item && hpos >= hscope[playerIndex].m_item->time && hpos <= hscope[playerIndex].m_item->etime && 
+          (hscope[playerIndex].m_lasttime < hscope[playerIndex].m_item->time || 
+           hscope[playerIndex].m_lasttime > hscope[playerIndex].m_item->etime) )
       {
          w = hpos;
-         m_lasttime[playerIndex] = hpos;
+         hscope[playerIndex].m_lasttime = hpos;
       }
       else
-         w = m_lasttime[playerIndex];
+         w = hscope[playerIndex].m_lasttime;
    }
    else
    {
       w = hpos;
-      m_lasttime[playerIndex] = hpos;
+      hscope[playerIndex].m_lasttime = hpos;
    }
-   m_lastpos[playerIndex] = hpos;
+   hscope[playerIndex].m_lastpos = hpos;
 
-   if ( getScopeCount() > SCOPE_MAX_BEHIND ) // protect against naughty streams
+   if ( getScopeCount(playerIndex) > SCOPE_MAX_BEHIND ) // protect against naughty streams
    {
-      resetScope();
-      return m_scope;
+      resetScope(playerIndex);
+      return 0;
    }
 
-   if (!w || !m_item)
-      return m_scope;
+   if (!w || !hscope[playerIndex].m_item)
+      return 0;
 
-   while (m_item && w > m_item->etime)
+   while (hscope[playerIndex].m_item && w > hscope[playerIndex].m_item->etime)
    {
       // need to prune some buffers
-      delete m_item;
-      m_item = getScopeBuf();
+      delete hscope[playerIndex].m_item;
+      hscope[playerIndex].m_item = getScopeBuf(playerIndex);
 
       sb++;
    }
 
-   if (!m_item)
-      return m_scope;
+   if (!hscope[playerIndex].m_item)
+      return 0;
 
-   if (w < m_item->time) // wait for the player to catchup
-      return m_scope;
+   if (w < hscope[playerIndex].m_item->time) // wait for the player to catchup
+      return 0;
 
    int j,k=0;
    short int *pint;
@@ -636,57 +629,60 @@ const Engine::Scope &HelixEngine::scope()
    int a;
    //i=0;
    // calculate the starting offset into the buffer
-   int off =  (m_item->spb * (w - m_item->time) / (m_item->etime - m_item->time)) * m_item->nchan * m_item->bps;
+   int off =  (hscope[playerIndex].m_item->spb * (w - hscope[playerIndex].m_item->time) / 
+               (hscope[playerIndex].m_item->etime - hscope[playerIndex].m_item->time)) * 
+              hscope[playerIndex].m_item->nchan * hscope[playerIndex].m_item->bps;
    k = off;
-   while (m_item && m_scopeindex < 512)
+   while (hscope[playerIndex].m_item && hscope[playerIndex].m_scopeindex < 512)
    {
-      while (k < (int) m_item->len)
+      while (k < (int) hscope[playerIndex].m_item->len)
       {
          a = 0;
-         for (j=0; j<m_item->nchan; j++)
+         for (j=0; j<hscope[playerIndex].m_item->nchan; j++)
          {
-            switch (m_item->bps)
+            switch (hscope[playerIndex].m_item->bps)
             {
                case 1:
                   b[1] = 0;
-                  b[0] = m_item->buf[k];
+                  b[0] = hscope[playerIndex].m_item->buf[k];
                   break;
                case 2:
-                  b[1] = m_item->buf[k+1];
-                  b[0] = m_item->buf[k];
+                  b[1] = hscope[playerIndex].m_item->buf[k+1];
+                  b[0] = hscope[playerIndex].m_item->buf[k];
                   break;
             }
 
             pint = (short *) &b[0];
 
             a += (int) *pint;
-            k += m_item->bps;
+            k += hscope[playerIndex].m_item->bps;
          }
-         a /= m_item->nchan;
+         a /= hscope[playerIndex].m_item->nchan;
 
-         m_currentScope[m_scopeindex] = a;
-         m_scopeindex++;
-         if (m_scopeindex >= 512)
+         hscope[playerIndex].m_currentScope[hscope[playerIndex].m_scopeindex] = a;
+         hscope[playerIndex].m_scopeindex++;
+         if (hscope[playerIndex].m_scopeindex >= 512)
          {
-            m_scopeindex = 512;
+            hscope[playerIndex].m_scopeindex = 512;
             break;
          }
       }
-      if (m_scopeindex < 512 && !peekScopeTime(t)) // as long as we know there's another buffer...otherwise we need to wait for another
+      // as long as we know there's another buffer...otherwise we need to wait for another
+      if (hscope[playerIndex].m_scopeindex < 512 && !peekScopeTime(t, playerIndex))
       {
-         delete m_item;
-         m_item = getScopeBuf();
+         delete hscope[playerIndex].m_item;
+         hscope[playerIndex].m_item = getScopeBuf(playerIndex);
          k = 0;
 
-         if (!m_item)
-            return m_scope; // wait until there are some more buffers available
+         if (!hscope[playerIndex].m_item)
+            return 0; // wait until there are some more buffers available
       }
       else
       {
-         if (k >= (int) m_item->len)
+         if (k >= (int) hscope[playerIndex].m_item->len)
          {
-            delete m_item;
-            m_item = 0;
+            delete hscope[playerIndex].m_item;
+            hscope[playerIndex].m_item = 0;
          }
          break;
       }
@@ -694,20 +690,23 @@ const Engine::Scope &HelixEngine::scope()
 
    // ok, we must have a full buffer here, give it to the scope
    for (i=0; i<512; i++)
-      m_scope[i] = m_currentScope[i];
-   m_scopeindex = 0;
+      m_scope[i] = hscope[playerIndex].m_currentScope[i];
+   hscope[playerIndex].m_scopeindex = 0;
 
-   return m_scope;
+   return 1;
 }
 
 void
-HelixEngine::resetScope()
+HelixEngine::resetScope(int playerIndex)
 {
-   // make sure the scope is clear of old buffers
-   clearScopeQ();
-   m_scopeindex = 0;
-   delete m_item;
-   m_item = 0;
+   if (playerIndex >=0 && playerIndex < numPlayers())
+   {
+      // make sure the scope is clear of old buffers
+      clearScopeQ(playerIndex);
+      hscope[playerIndex].m_scopeindex = 0;
+      delete hscope[playerIndex].m_item;
+      hscope[playerIndex].m_item = 0;
+   }
 }
 
 

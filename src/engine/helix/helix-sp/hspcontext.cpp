@@ -202,32 +202,45 @@ HSPEngineContext::ReadPref(const char* pref_key, IHXBuffer*& buffer)
           m_splayer->print2stderr("Setting Sound Device to \"%s\"\n", m_splayer->getDevice());
        }
     }
-//    else if (0 == (stricmp(pref_key, "UseDirectSound")))
-//    {
-//       m_CommonClassFactory->CreateInstance(CLSID_IHXBuffer, (void **) &ibuf);
-//       if (ibuf)
-//       {
-//          ibuf->SetSize(2);
-//          outbuf = ibuf->GetBuffer();
-//          strcpy((char *)outbuf, "1");
-//          buffer = ibuf;
-//
-//          m_splayer->print2stderr("setting UseDirectSound to value = %d\n",atol((const char*) buffer->GetBuffer()));
-//       }
-//    }
-//    else if (0 == (stricmp(pref_key, "MinimumAudioStartupInitalPushdown")))
-//    {
-//       m_CommonClassFactory->CreateInstance(CLSID_IHXBuffer, (void **) &ibuf);
-//       if (ibuf)
-//       {
-//          ibuf->SetSize(5);
-//          outbuf = ibuf->GetBuffer();
-//          strcpy((char *)outbuf, "800");
-//          buffer = ibuf;
-//
-//          m_splayer->print2stderr("setting initial audio pushdown to value = %d\n",atol((const char*) buffer->GetBuffer()));
-//       }
-//    }
+    else if (0 == (stricmp(pref_key, "ThreadedAudio")))
+    {
+       m_CommonClassFactory->CreateInstance(CLSID_IHXBuffer, (void **) &ibuf);
+       if (ibuf)
+       {
+          ibuf->SetSize(2);
+          outbuf = ibuf->GetBuffer();
+          strcpy((char *)outbuf, "1");
+          buffer = ibuf;
+
+          m_splayer->print2stderr("setting ThreadedAudio to value = %d\n",atol((const char*) buffer->GetBuffer()));
+       }
+    }
+    else if (0 == (stricmp(pref_key, "UseCoreThread")))
+    {
+       m_CommonClassFactory->CreateInstance(CLSID_IHXBuffer, (void **) &ibuf);
+       if (ibuf)
+       {
+          ibuf->SetSize(2);
+          outbuf = ibuf->GetBuffer();
+          strcpy((char *)outbuf, "1");
+          buffer = ibuf;
+
+          m_splayer->print2stderr("setting initial UseCoreThread to value = %d\n",atol((const char*) buffer->GetBuffer()));
+       }
+    }
+    else if (0 == (stricmp(pref_key, "NetworkThreading")))
+    {
+       m_CommonClassFactory->CreateInstance(CLSID_IHXBuffer, (void **) &ibuf);
+       if (ibuf)
+       {
+          ibuf->SetSize(2);
+          outbuf = ibuf->GetBuffer();
+          strcpy((char *)outbuf, "1");
+          buffer = ibuf;
+
+          m_splayer->print2stderr("setting initial NetworkTheading to value = %d\n",atol((const char*) buffer->GetBuffer()));
+       }
+    }
     else
     {
 	hResult = HXR_NOTIMPL;

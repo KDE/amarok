@@ -231,10 +231,10 @@ STDMETHODIMP HelixSimplePlayerVolumeAdvice::OnMuteChange(const BOOL bMute)
 }
 
 
-void HelixSimplePlayer::cleanUpStream(int /*playerIndex*/)
+void HelixSimplePlayer::cleanUpStream(int playerIndex)
 {
-   // dont do anything for now
    //print2stderr("CLEANUPSTREAM\n");
+   stop(playerIndex);
 }
 
 
@@ -320,9 +320,6 @@ HelixSimplePlayer::HelixSimplePlayer() :
    m_ulNumSecondsPlayed(0),
    mimehead(0),
    mimelistlen(0),
-   scopecount(0),
-   scopebufhead(0),
-   scopebuftail(0),
    m_outputsink(OSS),
    m_device(0),
 #ifdef USE_HELIX_ALSA
@@ -350,7 +347,6 @@ HelixSimplePlayer::HelixSimplePlayer() :
    pthread_mutexattr_init(&ma);
    pthread_mutexattr_settype(&ma, PTHREAD_MUTEX_FAST_NP); // note this is not portable outside linux and a few others
    pthread_mutex_init(&m_engine_m, &ma);
-   pthread_mutex_init(&m_scope_m, &ma);
 }
 
 void HelixSimplePlayer::init(const char *corelibhome, const char *pluginslibhome, const char *codecshome, int numPlayers)
@@ -647,6 +643,12 @@ int HelixSimplePlayer::addPlayer()
    ppctrl[nNumPlayers] = new struct playerCtrl;
    memset(ppctrl[nNumPlayers], 0, sizeof(struct playerCtrl));
 
+   pthread_mutexattr_t ma;
+
+   pthread_mutexattr_init(&ma);
+   pthread_mutexattr_settype(&ma, PTHREAD_MUTEX_FAST_NP); // note this is not portable outside linux and a few others
+   pthread_mutex_init(&ppctrl[nNumPlayers]->m_scope_m, &ma);
+
    ppctrl[nNumPlayers]->bPlaying  = false;
    ppctrl[nNumPlayers]->bStarting = false;
    ppctrl[nNumPlayers]->bFadeIn   = false;
@@ -925,9 +927,6 @@ void HelixSimplePlayer::tearDown()
    m_Error = 0;
    m_ulNumSecondsPlayed = 0;
    mimehead = 0;
-   scopecount = 0;
-   scopebufhead = 0;
-   scopebuftail = 0;
    m_preamp = 0;
 }
 
@@ -1867,7 +1866,7 @@ bool HelixSimplePlayer::isPlaying(int playerIndex) const
 bool HelixSimplePlayer::isLocal(int playerIndex) const
 {
    if (playerIndex < nNumPlayers)
-      return ppctrl[playerIndex]->isLocal;
+      return (ppctrl[playerIndex]->isLocal && duration(playerIndex));
    else
       return false;
 }
@@ -2053,59 +2052,79 @@ bool HelixSimplePlayer::ReadGUIDFile()
 }
 
 
-void HelixSimplePlayer::addScopeBuf(struct DelayQueue *item) 
+void HelixSimplePlayer::addScopeBuf(struct DelayQueue *item, int playerIndex) 
 {
-   pthread_mutex_lock(&m_scope_m);
-   
-   if (scopebuftail)
+   if (playerIndex >=0 && playerIndex < nNumPlayers)
    {
-      item->fwd = 0;
-      scopebuftail->fwd = item;
-      scopebuftail = item;
-      scopecount++;
+      pthread_mutex_lock(&ppctrl[playerIndex]->m_scope_m);
+   
+      if (ppctrl[playerIndex]->scopebuftail)
+      {
+         item->fwd = 0;
+         ppctrl[playerIndex]->scopebuftail->fwd = item;
+         ppctrl[playerIndex]->scopebuftail = item;
+         ppctrl[playerIndex]->scopecount++;
+      }
+      else
+      {
+         item->fwd = 0;
+         ppctrl[playerIndex]->scopebufhead = item;
+         ppctrl[playerIndex]->scopebuftail = item;
+         ppctrl[playerIndex]->scopecount = 1;
+      }
+      pthread_mutex_unlock(&ppctrl[playerIndex]->m_scope_m);
+   }
+}
+
+struct DelayQueue *HelixSimplePlayer::getScopeBuf(int playerIndex)
+{
+   if (playerIndex >=0 && playerIndex < nNumPlayers)
+   {
+      pthread_mutex_lock(&ppctrl[playerIndex]->m_scope_m);
+   
+      struct DelayQueue *item = ppctrl[playerIndex]->scopebufhead;
+   
+      if (item)
+      {
+         ppctrl[playerIndex]->scopebufhead = item->fwd;
+         ppctrl[playerIndex]->scopecount--;
+         if (!ppctrl[playerIndex]->scopebufhead)
+            ppctrl[playerIndex]->scopebuftail = 0;
+      }
+      
+      pthread_mutex_unlock(&ppctrl[playerIndex]->m_scope_m);
+      
+      return item;
+   }
+   else
+      return 0;
+}
+
+int HelixSimplePlayer::peekScopeTime(unsigned long &t, int playerIndex) 
+{
+   if (playerIndex >=0 && playerIndex < nNumPlayers)
+   {
+      if (ppctrl[playerIndex]->scopebufhead)
+         t = ppctrl[playerIndex]->scopebufhead->time;
+      else
+         return -1;
+      return 0;
+   }
+   return -1;
+}
+
+void HelixSimplePlayer::clearScopeQ(int playerIndex)
+{
+   if (playerIndex < 0)
+   {
+      for (int i=0; i<nNumPlayers; i++)
+         clearScopeQ(i);
    }
    else
    {
-      item->fwd = 0;
-      scopebufhead = item;
-      scopebuftail = item;
-      scopecount = 1;
+      struct DelayQueue *item;
+      while ((item = getScopeBuf(playerIndex)))
+         delete item;
    }
-   pthread_mutex_unlock(&m_scope_m);
-}
-
-struct DelayQueue *HelixSimplePlayer::getScopeBuf()
-{
-   pthread_mutex_lock(&m_scope_m);
-   
-   struct DelayQueue *item = scopebufhead;
-   
-   if (item)
-   {
-      scopebufhead = item->fwd;
-      scopecount--;
-      if (!scopebufhead)
-         scopebuftail = 0;
-   }
-   
-   pthread_mutex_unlock(&m_scope_m);
-   
-   return item;
-}
-
-int HelixSimplePlayer::peekScopeTime(unsigned long &t) 
-{
-   if (scopebufhead)
-      t = scopebufhead->time;
-   else
-      return -1;
-   return 0;
-}
-
-void HelixSimplePlayer::clearScopeQ()
-{
-   struct DelayQueue *item;
-   while ((item = getScopeBuf()))
-      delete item;
 }
 
