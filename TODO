@@ -95,8 +95,6 @@ SHORT-TERM (URGENT):
            fails for URLs like http://dir.xiph.org/listen.php?pid=669641&file=listen.m3u, because the filename
            is "listen.php". So it must look at the whole url instead.
 
-  <markey> OSD doesn't show on top of other widgets with Fluxbox and other window managers.
-
   <mxcl>   On first-ever-run, if amaroK crashes building the sqlite collection, it is impossible to _ever_
            build a collection unless the user's amarokrc file is deleted! This MUST be fixed before 1.2!
            ::muesli:: We could just _always_ try to create the sql tables on startup. This would fail on
