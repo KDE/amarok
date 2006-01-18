@@ -58,6 +58,7 @@ libamarok_la_SOURCES = \
     Options8.ui \
     actionclasses.cpp \
     app.cpp \
+    atomicstring.cpp \
     browserbar.cpp \
     clicklineedit.cpp \
     collectionbrowser.cpp \

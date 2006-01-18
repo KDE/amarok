@@ -12,6 +12,7 @@
 #include <kurl.h>    //inline functions
 #include <klocale.h> //inline functions
 #include <taglib/audioproperties.h>
+#include "atomicstring.h"
 
 #include "amarok_export.h"
 
@@ -191,11 +192,11 @@ protected:
 
     KURL m_url;
     QString m_title;
-    QString m_artist;
-    QString m_composer;
-    QString m_album;
-    QString m_comment;
-    QString m_genre;
+    AtomicString m_artist;
+    AtomicString m_composer;
+    AtomicString m_album;
+    AtomicString m_comment;
+    AtomicString m_genre;
     QString m_streamName;
     QString m_streamUrl;
 
@@ -216,10 +217,6 @@ protected:
     bool m_isValidMedia;
 
     int m_type;
-
-    static const uint STRING_STORE_SIZE = 80;
-    static QString stringStore[STRING_STORE_SIZE];
-    static const QString& attemptStore( const QString &candidate);
 
 private:
 
@@ -302,10 +299,10 @@ inline QString MetaBundle::zeroPad( uint i ) { return ( i < 10 ) ? QString( "0%1
 inline void MetaBundle::setUrl( const KURL &url ) { m_url = url; }
 inline void MetaBundle::setPath( const QString &path ) { m_url.setPath( path ); }
 inline void MetaBundle::setTitle( const QString &title ) { m_title = title; }
-inline void MetaBundle::setArtist( const QString &artist ) { m_artist = attemptStore( artist ); }
-inline void MetaBundle::setAlbum( const QString &album ) { m_album = attemptStore( album ); }
+inline void MetaBundle::setArtist( const QString &artist ) { m_artist = artist; }
+inline void MetaBundle::setAlbum( const QString &album ) { m_album = album; }
 inline void MetaBundle::setComment( const QString &comment ) { m_comment = comment; }
-inline void MetaBundle::setGenre( const QString &genre ) { m_genre = attemptStore( genre ); }
+inline void MetaBundle::setGenre( const QString &genre ) { m_genre = genre; }
 inline void MetaBundle::setYear( int year) { m_year = year; }
 inline void MetaBundle::setTrack( int track ) { m_track = track; }
 inline void MetaBundle::setLength( int length ) { m_length = length; }
@@ -313,7 +310,7 @@ inline void MetaBundle::setBitrate( int bitrate ) { m_bitrate = bitrate; }
 inline void MetaBundle::setSampleRate( int sampleRate ) { m_sampleRate = sampleRate; }
 
 inline void MetaBundle::setDiscNumber( int discnumber ) { m_discNumber = discnumber; }
-inline void MetaBundle::setComposer( const QString &composer ) { m_composer = attemptStore( composer ); }
+inline void MetaBundle::setComposer( const QString &composer ) { m_composer = composer; }
 
 inline void MetaBundle::setPlayCount( int playcount ) { m_playCount = playcount; }
 inline void MetaBundle::setLastPlay( uint lastplay ) { m_lastPlay = lastplay; }

@@ -38,28 +38,6 @@
 
 #include "metabundle.h"
 
-QString MetaBundle::stringStore[STRING_STORE_SIZE];
-
-//if this works, it's because QString is implicitly shared
-const QString &MetaBundle::attemptStore( const QString &candidate ) //static
-{
-    //principal is to cause collisions at reasonable rate to reduce memory
-    //consumption while not using such a big store that it is mostly filled with empty QStrings
-    //because collisions are so rare
-
-    if( candidate.isEmpty() ) return candidate; //nothing to try to share
-
-    const uchar hash = candidate[0].unicode() % STRING_STORE_SIZE;
-
-
-    if( stringStore[hash] != candidate ) //then replace
-    {
-        stringStore[hash] = candidate;
-    }
-
-    return stringStore[hash];
-}
-
 /// These are untranslated and used for storing/retrieving XML playlist
 const QString MetaBundle::columnName( int c ) //static
 {
@@ -644,7 +622,7 @@ MetaBundle::genreList() //static
 
 void
 MetaBundle::setExtendedTag( TagLib::File *file, int tag, const QString value ) {
-    char *id;
+    char *id = 0;
     TagLib::MPEG::File *mpegFile;
     TagLib::Ogg::Vorbis::File *oggFile;
 
