@@ -166,23 +166,24 @@ App::App()
         EngineController::instance()->restoreSession();
     }
 
-    // Refetch covers every 80 days or delete every 90 days to comply with Amazon license
+    // Refetch covers every 80 days to comply with Amazon license
     #ifdef AMAZON_SUPPORT
     new RefreshImages();
     #endif
 
     // Trigger collection scan if folder setup was changed by wizard
     if ( oldCollectionFolders != AmarokConfig::collectionFolders() )
-        CollectionDB::instance()->startScan();
+        QTimer::singleShot( 0, CollectionDB::instance(), SLOT( startScan() ) );
     // If database version is updated, the collection needs to be rescanned.
     // Works also if the collection is empty for some other reason
     // (e.g. deleted collection.db)
     else if ( CollectionDB::instance()->isEmpty() )
     {
-        CollectionDB::instance()->startScan();
+        QTimer::singleShot( 0, CollectionDB::instance(), SLOT( startScan() ) );
     }
     else
-        CollectionDB::instance()->scanModifiedDirs();
+        QTimer::singleShot( 0, CollectionDB::instance(), SLOT( scanModifiedDirs() ) );
+
 
     handleCliArgs();
 }
