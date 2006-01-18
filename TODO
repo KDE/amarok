@@ -57,9 +57,6 @@ SHORT-TERM (URGENT):
 
  <markey>  Add DCOP functions for showing dialogs, similar to kdialog.
 
- <markey>  When scanning with no folders selected, hell breaks lose. DB errors, etc.
-           Only way to repair it is delete the DB.
-
  <sebr>    More consistent playlistbrowser drag and drop actions; No dropping of default streams, set
            e->accept( false ) if dropping one type onto another.
 
