@@ -13,6 +13,7 @@
 #include "debug.h"
 #include "mediabrowser.h"
 #include "mediumpluginchooser.h"
+#include "mediumpluginmanager.h"
 #include "medium.h"
 #include "plugin/pluginconfig.h"
 #include "pluginmanager.h"
@@ -23,6 +24,7 @@
 #include <kapplication.h>
 #include <kcombobox.h>
 #include <klocale.h>
+#include <kpushbutton.h>
 #include <kwin.h>
 
 MediumPluginChooser::MediumPluginChooser( const Medium *medium )
@@ -37,22 +39,22 @@ MediumPluginChooser::MediumPluginChooser( const Medium *medium )
     QVBox* vbox = makeVBoxMainWidget();
     vbox->setSpacing( KDialog::spacingHint() );
 
-    // BEGIN Chooser
-    QHBox* chooserBox = new QHBox( vbox );
-    chooserBox->setSpacing( KDialog::spacingHint() );
-
     QString labelTextNone = i18n( "(none)" );
 
-    QString fullLabel( i18n( "amaroK has detected what appears to be a removable music player.\n"
-            "This player is known to the system as: %1, and its label (if any) is: %2\n"
-            "Its mount point (if any) is: %3\n"
-            "Please choose a plugin to handle it and press \"Ok\" or press \"Cancel\" to be prompted again next time.\n"
-            "If you do not want amaroK to handle this device, choose \"Do not handle\"." )
-                .arg(medium->name())
-                .arg(medium->label().isEmpty() ? labelTextNone : medium->label())
-                .arg(medium->mountPoint().isEmpty() ? labelTextNone : medium->mountPoint()));
+    QString firstLabel( i18n( "amaroK has detected what appears to be a removable\n"
+                              "music player. The device appears to the system as %1.\n" )
+                    .arg(medium->name()) );
 
-    new QLabel( fullLabel, chooserBox );
+    QString secondLabel( i18n( "\nPlease choose a plugin to handle it and press \"Ok\" or\n"
+                               "press \"Cancel\" to be prompted again next time.\n\n"
+                               "If you do not want amaroK to handle this device, choose \"Do not handle\"." ) );
+
+    new QLabel( firstLabel, vbox );
+
+    KPushButton* detail = new KPushButton( i18n( "Press here for details about this device." ), vbox );
+    connect( detail, SIGNAL( clicked() ), this, SLOT( detailPushed() ) );
+
+    new QLabel( secondLabel, vbox);
 
     QHBox* chooser2Box = new QHBox( vbox );
     chooser2Box->setSpacing( KDialog::spacingHint() );
@@ -75,7 +77,7 @@ MediumPluginChooser::~MediumPluginChooser()
 }
 
 void
-MediumPluginChooser::slotCancel( )
+MediumPluginChooser::slotCancel()
 {
     const QString empty;
     emit selectedPlugin( m_medium, empty );
@@ -83,7 +85,7 @@ MediumPluginChooser::slotCancel( )
 }
 
 void
-MediumPluginChooser::slotOk( )
+MediumPluginChooser::slotOk()
 {
     if( m_chooserCombo->currentText() == i18n( "Do not handle" ) )
     {
@@ -93,7 +95,13 @@ MediumPluginChooser::slotOk( )
     {
         emit selectedPlugin( m_medium, MediaBrowser::instance()->m_pluginName[m_chooserCombo->currentText() ] );
     }
-    KDialogBase::slotOk( );
+    KDialogBase::slotOk();
 }
 
+void
+MediumPluginChooser::detailPushed()
+{
+    MediumPluginDetailView* mpdv = new MediumPluginDetailView( m_medium );
+    mpdv->exec();
+}
 #include "mediumpluginchooser.moc"
