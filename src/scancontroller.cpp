@@ -90,6 +90,10 @@ ScanController::ScanController( CollectionDB* parent, bool incremental, const QS
 
     connect( m_scanner, SIGNAL( readReady( KProcIO* ) ), SLOT( slotReadReady() ) );
 
+
+    *m_scanner << "amarokcollectionscanner";
+    *m_scanner << "--nocrashhandler"; // We want to be able to catch SIGSEGV
+
     // KProcess must be started from the GUI thread, so we're invoking the scanner
     // here in the ctor:
     if( incremental ) {
@@ -98,7 +102,6 @@ ScanController::ScanController( CollectionDB* parent, bool incremental, const QS
     }
     else {
         setDescription( i18n( "Building Collection" ) );
-        *m_scanner << "amarokcollectionscanner";
         if( AmarokConfig::importPlaylists() ) *m_scanner << "-p";
         if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
         *m_scanner << "-l" << ( amaroK::saveLocation( QString::null ) + "collection_scan.log" );
@@ -175,7 +178,6 @@ ScanController::initIncremental()
         amaroK::StatusBar::instance()->shortMessage( i18n( "Updating Collection..." ) );
 
         // Start scanner process
-        *m_scanner << "amarokcollectionscanner";
         if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
         *m_scanner << "-l" << ( amaroK::saveLocation( QString::null ) + "collection_scan.log" );
         *m_scanner << "-i";
