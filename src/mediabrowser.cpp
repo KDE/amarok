@@ -325,6 +325,9 @@ MediaBrowser::MediaBrowser( const char *name )
 
         if ( !config->readEntry( (*it).id() ) )
             newflag = 1;
+
+        mediumAdded( &(*it),  (*it).name(), true );
+
     }
 
     if ( newflag )
@@ -1158,7 +1161,7 @@ MediaView::newDirectory( MediaItem *parent )
 }
 
 void
-MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/ )
+MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/, bool constructing )
 {
     debug() << "mediumAdded: " << (medium? medium->properties():"null") << endl;
     KConfig *config = amaroK::config( "MediaBrowser" );
@@ -1166,13 +1169,14 @@ MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/ )
     if( medium )
     {
         QString handler = config->readEntry( medium->id() );
-        if ( !handler.isEmpty() )
-            debug() << "handler = " << handler << endl;
-        else
+        if ( handler.isEmpty() )
         {
             debug() << "handler null for " << medium->id() << endl;
-            mpc = new MediumPluginChooser( medium );
-            mpc->exec();
+            if (!constructing)
+            {
+                mpc = new MediumPluginChooser( medium );
+                mpc->exec();
+            }
         }
         debug() << "label=" << medium->label() << endl;
         MediaDevice *device = loadDevicePlugin( handler );
