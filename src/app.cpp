@@ -181,6 +181,8 @@ App::App()
     {
         CollectionDB::instance()->startScan();
     }
+    else
+        CollectionDB::instance()->scanModifiedDirs();
 
     handleCliArgs();
 }

@@ -344,6 +344,7 @@ class CollectionDB : public QObject, public EngineObserver
         void scanMonitor();
         void startScan();
         void stopScan();
+        void scanModifiedDirs();
 
     private slots:
         void dirDirty( const QString& path );
@@ -378,7 +379,6 @@ class CollectionDB : public QObject, public EngineObserver
         void dropStatsTable();
         void createPersistentTables();
         void dropPersistentTables();
-        void scanModifiedDirs();
 
         QCString makeWidthKey( uint width );
         QString artistValue( uint id );
