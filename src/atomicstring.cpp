@@ -140,12 +140,11 @@ const QString &AtomicString::string() const
     return QString::null;
 }
 
-QString &AtomicString::string()
+QString AtomicString::string()
 {
-    static QString null = QString::null;
     if( m_string )
         return *m_string;
-    return null;
+    return QString::null;
 }
 
 AtomicString &AtomicString::operator=( const AtomicString &other )

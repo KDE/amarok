@@ -17,6 +17,11 @@
   Boston, MA 02110-1301, USA.
 */
 
+/**
+    AtomicString makes sure only one copy of any equivalent string is stored in memory at any one time.
+    As a side benefit, comparing AtomicStrings is reduced to a pointer comparison.
+*/
+
 #ifndef AMAROK_ATOMICSTRING_H
 #define AMAROK_ATOMICSTRING_H
 
@@ -46,11 +51,10 @@ public:
     virtual ~AtomicString();
 
     const QString &string() const;
-    QString &string();
+    QString string();
     inline operator const QString&() const { return string(); }
-    inline operator QString&() { return string(); }
+    inline operator QString() { return string(); }
     inline const QString &operator->() const { return string(); }
-    inline QString &operator->() { return string(); }
 
     AtomicString &operator=( const AtomicString &other );
     bool operator==( const AtomicString &other ) const;
