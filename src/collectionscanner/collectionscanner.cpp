@@ -155,12 +155,15 @@ CollectionScanner::readDir( const QString& path, QStringList& entries )
     foreachType( QStringList, folders ) {
         if( (*it).startsWith( "." ) ) continue;
 
+        const QString dirPath = dir.absFilePath( *it );
+
         bool isInCollection;
-        dcopRef.call( "isDirInCollection", *it ).get( isInCollection );
+        if( m_incremental )
+            dcopRef.call( "isDirInCollection", dirPath ).get( isInCollection );
 
         if( !m_incremental || !isInCollection )
             // we must add a '/' after the dirname, to avoid dupes
-            readDir( dir.absFilePath( *it ) + "/", entries );
+            readDir( dirPath + "/", entries );
     }
 }
 
