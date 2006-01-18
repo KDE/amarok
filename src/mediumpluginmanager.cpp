@@ -94,7 +94,11 @@ MediumPluginManager::MediumPluginManager( )
 
     }
 
-    connect(m_sigmap, SIGNAL( mapped( int ) ), this, SLOT( infoRequested ( int ) ) );
+    if ( buttonnum == 0 )
+        new QLabel( i18n( "You do not have any devices that can be managed by amaroK."), vbox );
+    else
+        connect(m_sigmap, SIGNAL( mapped( int ) ), this, SLOT( infoRequested ( int ) ) );
+
     connect( this, SIGNAL( selectedPlugin( const Medium*, const QString ) ), MediaBrowser::instance(), SLOT( pluginSelected( const Medium*, const QString ) ) );
 
     this->exec();
