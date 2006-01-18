@@ -108,6 +108,8 @@ public:
    void setGain(int volume);
 #endif
 
+   void setIndex(int playerIndex) { m_index = playerIndex; }
+
 private:
    HSPPostProcessor();
 

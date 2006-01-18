@@ -552,8 +552,10 @@ const Engine::Scope &HelixEngine::scope()
       m_scopeplayerlast = !m_scopeplayerlast;
    }
    else
+   {
       if (!scope(m_current))
          scope(m_current?0:1);
+   }
 
    return m_scope;
 }

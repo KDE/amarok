@@ -655,6 +655,8 @@ STDMETHODIMP HSPFinalAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioData 
    int i = 0;
    while (i< m_Player->numPlayers())
    {
+      if (m_Player->isPlaying(i))
+         m_processor->setIndex(i); // put the buffers on the queue of the player that's playing
       if (anyLocal = m_Player->isLocal(i))
          break;
       i++;
