@@ -3280,12 +3280,16 @@ Playlist::googleMatch( QString query, const QStringMap &defaults, const QStringM
                     SampleRate = PlaylistItem::columnName( PlaylistItem::SampleRate ).lower(),
                     Filesize   = PlaylistItem::columnName( PlaylistItem::Filesize   ).lower();
 
+                bool numeric = false;
+                if( f == Score || f == Rating    || f == Year    || f == DiscNumber ||
+                    f == Track || f == Playcount || f == Bitrate || f == SampleRate ||
+                    f == Filesize )
+                    numeric = true;
+
                 if (q.startsWith(">"))
                 {
                     w = w.mid( 1 );
-                    if( f == Score || f == Rating    || f == Year    || f == DiscNumber ||
-                        f == Track || f == Playcount || f == Bitrate || f == SampleRate ||
-                        f == Filesize )
+                    if( numeric )
                         condition = v.toInt() > w.toInt();
                     else if( f == Length )
                     {
@@ -3300,9 +3304,7 @@ Playlist::googleMatch( QString query, const QStringMap &defaults, const QStringM
                 else if( q.startsWith( "<" ) )
                 {
                     w = w.mid(1);
-                    if( f == Score || f == Rating    || f == Year    || f == DiscNumber ||
-                        f == Track || f == Playcount || f == Bitrate || f == SampleRate ||
-                        f == Filesize )
+                    if( numeric )
                         condition = v.toInt() < w.toInt();
                     else if( f == Length )
                     {
@@ -3315,7 +3317,18 @@ Playlist::googleMatch( QString query, const QStringMap &defaults, const QStringM
                         condition = v < w;
                 }
                 else
-                    condition = v.contains( q, false );
+                {
+                    if( numeric )
+                        condition = v.toInt() == w.toInt();
+                    else if( f == Length )
+                    {
+                        int g = v.find( ":" ), h = w.find( ":" );
+                        condition = v.left( g ).toInt() == w.left( h ).toInt() &&
+                                    v.mid( g + 1 ).toInt() == w.mid( h + 1 ).toInt();
+                    }
+                    else
+                        condition = v.contains( q, false );
+                }
                 if( condition == ( neg ? false : true ) )
                 {
                     b = true;
