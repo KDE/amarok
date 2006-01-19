@@ -721,7 +721,7 @@ Playlist::addSpecialCustomTracks( uint songCount )
         // without further processing
         if ( sql.find( QString("ORDER BY"), false ) == -1 )
         {
-            QRegExp limit( ";$" );
+            QRegExp limit( "LIMIT.*;$" );
             sql.replace( limit, QString(" ORDER BY RAND() LIMIT 0, %1;").arg( songCount ) );
         }
         else {
