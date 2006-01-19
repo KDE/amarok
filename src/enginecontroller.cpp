@@ -306,7 +306,7 @@ void EngineController::play() //SLOT
 
 void EngineController::play( const MetaBundle &bundle )
 {
-    const KURL &url = bundle.url();
+    const KURL url = bundle.url();
     debug() << "Loading URL: " << url.url() << endl;
     // Destroy stale StreamProvider
     delete m_stream;
@@ -499,7 +499,7 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
     const QString mimetype = static_cast<KIO::MimetypeJob*>( job )->mimetype();
     debug() << "Detected mimetype: " << mimetype << endl;
 
-    const KURL &url = static_cast<KIO::MimetypeJob*>( job )->url();
+    const KURL url = static_cast<KIO::MimetypeJob*>( job )->url();
 
     debug() << "MimetypeJob returned with url: " << url.prettyURL() << endl;
 

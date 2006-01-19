@@ -132,6 +132,13 @@ const QString &AtomicString::string() const
     return QString::null;
 }
 
+const QString *AtomicString::operator->() const
+{
+    if( m_string )
+        return m_string;
+    return &QString::null;
+}
+
 QString AtomicString::deepCopy() const
 {
     if( m_string )

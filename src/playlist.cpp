@@ -1696,7 +1696,7 @@ Playlist::restoreCurrentTrack()
     ///It is always possible that the current track has been lost
     ///eg it was removed and then reinserted, here we check
 
-    const KURL &url = EngineController::instance()->playingURL();
+    const KURL url = EngineController::instance()->playingURL();
 
     if ( !(m_currentTrack && ( m_currentTrack->url() == url  || !m_currentTrack->url().isEmpty() && url.isEmpty() ) ) )
     {
@@ -2176,7 +2176,7 @@ Playlist::dragObject()
     for( MyIt it( this, MyIt::Selected ); *it; ++it )
     {
         const PlaylistItem *item = (PlaylistItem*)*it;
-        const KURL &url = item->url();
+        const KURL url = item->url();
         list += url;
     }
 

@@ -20,7 +20,7 @@
 /**
     AtomicString makes sure only one copy of any equivalent string is stored in memory at any one time.
     As a side benefit, comparing AtomicStrings is reduced to a pointer comparison.
-*/
+**/
 
 #ifndef AMAROK_ATOMICSTRING_H
 #define AMAROK_ATOMICSTRING_H
@@ -57,7 +57,7 @@ public:
     inline QString string() { return string(); }
     inline operator const QString&() const { return string(); }
     inline operator QString() { return string(); }
-    inline const QString &operator->() const { return string(); }
+    const QString *operator->() const;
 
     QString deepCopy() const;
 

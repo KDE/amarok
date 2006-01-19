@@ -172,7 +172,7 @@ void PlaylistItem::refreshMood()
 
 void PlaylistItem::checkMood()
 {
-    if( m_url.isLocalFile() )
+    if( url().isLocalFile() )
     {
         m_proxyForMoods = new MoodProxyObject( this );
         ReadMood *c = new ReadMood( m_proxyForMoods );

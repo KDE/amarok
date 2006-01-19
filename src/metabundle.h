@@ -13,6 +13,7 @@
 #include <klocale.h> //inline functions
 #include <taglib/audioproperties.h>
 #include "atomicstring.h"
+#include "atomicurl.h"
 
 #include "amarok_export.h"
 
@@ -121,7 +122,7 @@ public:
     QString prettyText(int column) const;
 
 public: //accessors
-    const KURL &url()    const;
+    KURL url()    const;
 
     QString title()      const;
     QString artist()     const;
@@ -190,7 +191,7 @@ protected:
 
     enum ExtendedTags { composerTag,  discNumberTag };
 
-    KURL m_url;
+    AtomicURL m_url;
     QString m_title;
     AtomicString m_artist;
     AtomicString m_composer;
@@ -258,11 +259,11 @@ inline int MetaBundle::bitrate()    const { return m_bitrate == Undetermined ? 0
 inline int MetaBundle::sampleRate() const { return m_sampleRate == Undetermined ? 0 : m_sampleRate; }
 inline int MetaBundle::filesize()   const { return m_filesize == Undetermined ? 0 : m_filesize; }
 
-inline const KURL    &MetaBundle::url()        const { return m_url; }
+inline KURL     MetaBundle::url()        const { return m_url; }
 inline QString  MetaBundle::filename()   const { return m_url.fileName(); }
 inline QString  MetaBundle::directory()  const
 {
-    return m_url.isLocalFile() ? m_url.directory() : m_url.upURL().prettyURL();
+    return m_url.url().isLocalFile() ? m_url.directory() : m_url.url().upURL().prettyURL();
 }
 inline QString MetaBundle::title()      const { return m_title; }
 inline QString MetaBundle::artist()     const { return m_artist; }
@@ -283,7 +284,7 @@ inline QString MetaBundle::type() const
            : filename().mid( filename().findRev( '.' ) + 1 );
 }
 
-inline QString MetaBundle::prettyURL() const { return m_url.prettyURL(); }
+inline QString MetaBundle::prettyURL() const { return m_url.url().prettyURL(); }
 inline QString MetaBundle::prettyBitrate() const { return prettyBitrate( m_bitrate ); }
 inline QString MetaBundle::prettyLength() const { return prettyLength( m_length, true ); }
 inline QString MetaBundle::prettySampleRate( bool shortened ) const

@@ -1648,7 +1648,7 @@ void CollectionDB::engineTrackEnded( int finalPosition, int trackLength )
     // Don't update statistics if song has been played for less than 15 seconds
     // if ( finalPosition < 15000 ) return;
 
-    const KURL &url = EngineController::instance()->bundle().url();
+    const KURL url = EngineController::instance()->bundle().url();
     if ( url.path().isEmpty() ) return;
 
     // sanity check

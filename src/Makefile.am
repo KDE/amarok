@@ -59,6 +59,7 @@ libamarok_la_SOURCES = \
     actionclasses.cpp \
     app.cpp \
     atomicstring.cpp \
+    atomicurl.cpp \
     browserbar.cpp \
     clicklineedit.cpp \
     collectionbrowser.cpp \
