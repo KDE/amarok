@@ -1,9 +1,7 @@
-/*THIS IS NOT BUILT YET BECAUSE IT's PRETTY MUCH ONLY AN IDEA AT THIS POINT*/
-
 //
 // C++ Interface: mediumpluginchooser
 //
-// Description: 
+// Description:
 //
 //
 // Author: Jeff Mitchell <kde-dev@emailgoeshere.com>, (C) 2005
@@ -14,18 +12,18 @@
 #ifndef MEDIUMPLUGINMANAGER_H
 #define MEDIUMPLUGINMANAGER_H
 
-#include <kdialogbase.h>
-#include "medium.h"
 #include <qmap.h>
 #include <qsignalmapper.h>
-#include <kcombobox.h>
+#include <kdialogbase.h>
+
+class Medium;
+class KComboBox;
+class MediumPluginManager;
+class MediumPluginDetailView;
 
 typedef QMap<Medium*, KComboBox*> ComboMap;
 typedef QMap<int, Medium*> ButtonMap;
 
-class Medium;
-class MediumPluginManager;
-class MediumPluginDetailView;
 
 /**
 	@author Jeff Mitchell <kde-dev@emailgoeshere.com>
@@ -42,7 +40,6 @@ class MediumPluginManager : public KDialogBase
 
     private slots:
         void slotOk( );
-        void slotCancel( );
         void infoRequested( int buttonId );
 
     private:
@@ -58,9 +55,6 @@ class MediumPluginDetailView : public KDialogBase
 
     public:
         MediumPluginDetailView( const Medium* medium );
-
-    private slots:
-        void slotOk( );
 
 };
 

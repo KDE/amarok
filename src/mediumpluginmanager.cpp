@@ -1,10 +1,7 @@
-/*THIS IS NOT BUILT YET BECAUSE IT's PRETTY MUCH ONLY AN IDEA AT THIS POINT*/
-
-
 //
 // C++ Implementation: mediumpluginchooser
 //
-// Description: 
+// Description:
 //
 //
 // Author: Jeff Mitchell <kde-dev@emailgoeshere.com>, (C) 2005
@@ -31,12 +28,11 @@
 #include <kconfig.h>
 #include <klocale.h>
 #include <kpushbutton.h>
-#include <kwin.h>
 
 typedef QMap<QString, Medium*> MediumMap;
 
 MediumPluginManager::MediumPluginManager( )
-        : KDialogBase( amaroK::mainWindow(), "mediumpluginmanagerdialog", true, QString("Manage Device Plugins"), Ok|Cancel, Ok, false )
+        : KDialogBase( amaroK::mainWindow(), "mediumpluginmanagerdialog", true, QString::null, Ok|Cancel, Ok )
 {
     kapp->setTopWidget( this );
     setCaption( kapp->makeStdCaption( i18n( "Manage Device Plugins" ) ) );
@@ -91,23 +87,17 @@ MediumPluginManager::MediumPluginManager( )
         }
 
         m_cmap[(*it)] = currcombo;
-
     }
 
-    if ( buttonnum == 0 )
+    if ( buttonnum == 0 ) {
         new QLabel( i18n( "You do not have any devices that can be managed by amaroK."), vbox );
-    else
-        connect(m_sigmap, SIGNAL( mapped( int ) ), this, SLOT( infoRequested ( int ) ) );
+        showButtonCancel( false );
+    }
 
+    connect( m_sigmap, SIGNAL( mapped( int ) ), this, SLOT( infoRequested ( int ) ) );
     connect( this, SIGNAL( selectedPlugin( const Medium*, const QString ) ), MediaBrowser::instance(), SLOT( pluginSelected( const Medium*, const QString ) ) );
 
-    this->exec();
-}
-
-void
-MediumPluginManager::slotCancel( )
-{
-    KDialogBase::slotCancel( );
+    exec();
 }
 
 void
@@ -139,7 +129,7 @@ MediumPluginManager::infoRequested( int buttonId )
 /////////////////////////////////////////////////////////////////////
 
 MediumPluginDetailView::MediumPluginDetailView( const Medium* medium )
-: KDialogBase( amaroK::mainWindow(), "mediumplugindetailview", true, QString("Device information for " + medium->name()), Ok, Ok, false )
+: KDialogBase( amaroK::mainWindow(), "mediumplugindetailview", true, QString::null, Ok, Ok )
 {
     kapp->setTopWidget( this );
     setCaption( kapp->makeStdCaption( i18n( "Device information for %1").arg(medium->name() ) ) );
@@ -150,7 +140,7 @@ MediumPluginDetailView::MediumPluginDetailView( const Medium* medium )
     QVBox* vbox1 = new QVBox( hbox );
     QVBox* vbox2 = new QVBox( hbox );
 
-    QString labelTextNone = i18n( "(none)" );
+    const QString labelTextNone = i18n( "(none)" );
 
     new QLabel( i18n( "ID:"), vbox1 );
     new QLabel( medium->id(), vbox2 );
@@ -168,10 +158,5 @@ MediumPluginDetailView::MediumPluginDetailView( const Medium* medium )
     new QLabel( medium->mimeType().isEmpty() ? labelTextNone : medium->mimeType(), vbox2 );
 }
 
-void
-MediumPluginDetailView::slotOk( )
-{
-    KDialogBase::slotOk( );
-}
 
 #include "mediumpluginmanager.moc"
