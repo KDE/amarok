@@ -245,6 +245,13 @@ ScriptManager::customMenuClicked( const QString& message )
 }
 
 
+void ScriptManager::notifyFetchLyrics( const QString& artist, const QString& title )
+{
+    const QString args = KURL::encode_string( artist ) + " " + KURL::encode_string( title );
+    notifyScripts( "fetchLyrics " + args );
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // private slots
 ////////////////////////////////////////////////////////////////////////////////

@@ -201,6 +201,7 @@ class DcopScriptHandler : public QObject, virtual public AmarokScriptInterface
       virtual QString readConfig(const QString& key);
       virtual QStringList readListConfig(const QString& key);
       virtual void enableExternalLyrics( bool enable );
+      virtual void showLyrics( const QString& lyrics );
 };
 
 class DcopDevicesHandler : public QObject, virtual public AmarokDevicesInterface

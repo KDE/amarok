@@ -21,14 +21,14 @@ def fetchLyrics( artist, title )
     response = h.get( "/en/tema1en.php?artist=#{artist}&songname=#{title}" )
 
     unless response.code == "200"
-        puts( "HTTP Error: #{response.message}" )
+        return "HTTP Error: #{response.message}"
         exit( 1 )
     end
 
     lyrics = response.body()
 
     # Remove images, links, scripts, and styles
-    lyrics.gsub!( /<[iI][mM][gG][^>]*>/, "" );
+    lyrics.gsub!( /<[iI][mM][gG][^>]*>/, "" )
     lyrics.gsub!( /<[aA][^>]*>[^<]*<\/[aA]>/, "" )
     lyrics.gsub!( /<[sS][cC][rR][iI][pP][tT][^>]*>[^<]*(<!--[^>]*>)*[^<]*<\/[sS][cC][rR][iI][pP][tT]>/, "" )
     lyrics.gsub!( /<[sS][tT][yY][lL][eE][^>]*>[^<]*(<!--[^>]*>)*[^<]*<\/[sS][tT][yY][lL][eE]>/, "" )
@@ -36,8 +36,8 @@ def fetchLyrics( artist, title )
     lyricsPos = lyrics.index( /<[fF][oO][nN][tT][ ]*[sS][iI][zZ][eE][ ]*='2'[ ]*>/ )
 
     if lyricsPos == nil
-        puts( "Could not locate lyrics in the body." )
-        exit( 1 )
+        return "Could not locate lyrics in the body."
+#         exit( 1 )
     end
 
     lyrics = lyrics[lyricsPos..lyrics.length()]
@@ -64,7 +64,6 @@ trap( "SIGTERM" ) { cleanup() }
 
 loop do
     message = gets().chomp()
-    args = message.split()[1, args.length()]
     command = /[A-Za-z]*/.match( message ).to_s()
 
     case command
@@ -73,10 +72,14 @@ loop do
             `dcop amarok playlist popupMessage "#{msg}"`
 
         when "fetchLyrics"
+            args = message.split()
+            args.delete_at( 0 )
+
             artist = args[0]
             title  = args[1]
 
-            result = fetchLyrics( artist, title )
+            lyrics = fetchLyrics( artist, title )
+            `dcop amarok script showLyrics "#{lyrics}"`
     end
 end
 

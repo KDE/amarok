@@ -47,6 +47,7 @@ class KProcIO;
  *   engineStateChange: {empty|idle|paused|playing}
  *   trackChange
  *   volumeChange: newVolume (range: 0-100)
+ *   fetchLyrics: artist title
  *
  * @see http://amarok.kde.org/amarokwiki/index.php/Script-Writing_HowTo
  */
@@ -86,7 +87,11 @@ class ScriptManager : public KDialogBase, public EngineObserver
        /** Set whether amaroK uses a script for lyrics fetching */
        void enableExternalLyrics( bool enable ) { m_externalLyrics = enable; }
 
+       /** Return whether external lyrics is enabled */
        bool externalLyrics() const { return m_externalLyrics; }
+
+       /** Sends a fetchLyrics notification to all scripts */
+       void notifyFetchLyrics( const QString& artist, const QString& title );
 
     private slots:
         /** Finds all installed scripts and adds them to the listview */

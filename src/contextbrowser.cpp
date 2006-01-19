@@ -23,6 +23,7 @@
 #include "metabundle.h"
 #include "playlist.h"      //appendMedia()
 #include "qstringx.h"
+#include "scriptmanager.h"
 #include "statusbar.h"
 #include "statistics.h"
 #include "tagdialog.h"
@@ -1954,7 +1955,6 @@ void ContextBrowser::showScanning()
 // <chris at chris.de>, <me at sebruiz.net>
 // If I'm violating any copyright or such
 // please contact / sue me. Thanks.
-
 void ContextBrowser::showLyrics( const QString &hash )
 {
     if ( currentPage() != m_lyricsTab )
@@ -2062,12 +2062,21 @@ void ContextBrowser::showLyrics( const QString &hash )
             "</body></html>"
             );
         m_lyricsPage->set( m_HTMLSource );
-        m_lyricJob = KIO::storedGet( m_lyricCurrentUrl, false, false );
 
-        amaroK::StatusBar::instance()->newProgressOperation( m_lyricJob )
-            .setDescription( i18n( "Fetching Lyrics" ) );
 
-        connect( m_lyricJob, SIGNAL( result( KIO::Job* ) ), SLOT( lyricsResult( KIO::Job* ) ) );
+        if( ScriptManager::instance()->externalLyrics() )
+        {
+            ScriptManager::instance()->notifyFetchLyrics( artist, title );
+        }
+        else
+        {
+            m_lyricJob = KIO::storedGet( m_lyricCurrentUrl, false, false );
+
+            amaroK::StatusBar::instance()->newProgressOperation( m_lyricJob )
+                .setDescription( i18n( "Fetching Lyrics" ) );
+
+            connect( m_lyricJob, SIGNAL( result( KIO::Job* ) ), SLOT( lyricsResult( KIO::Job* ) ) );
+        }
     }
 }
 
@@ -2075,10 +2084,10 @@ void ContextBrowser::showLyrics( const QString &hash )
 void
 ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
 {
-    if ( job != m_lyricJob )
+    if ( job != m_lyricJob ) //FIXME Erm, that's nonsense. Only one job connected here.
         return; //not the right job, so let's ignore it
 
-    if ( !job->error() == 0 )
+    if ( job->error() != 0 )
     {
         m_HTMLSource="";
         m_HTMLSource.append(
@@ -2135,6 +2144,73 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
     {
         m_lyrics = "<div class='info'><p>" + i18n( "Lyrics not found." ) + "</p></div>";
     }
+
+
+    m_HTMLSource="";
+    m_HTMLSource.append(
+            "<html><body>"
+            "<div id='lyrics_box' class='box'>"
+                "<div id='lyrics_box-header' class='box-header'>"
+                    "<span id='lyrics_box-header-title' class='box-header-title'>"
+                    + i18n( "Lyrics" ) +
+                    "</span>"
+                "</div>"
+                "<div id='lyrics_box-body' class='box-body'>"
+                    + m_lyrics +
+                "</div>"
+            "</div>"
+            "</body></html>"
+                       );
+    m_lyricsPage->set( m_HTMLSource );
+
+    m_lyricsToolBar->getButton( LYRICS_BROWSER )->setEnabled(true);
+    m_dirtyLyricsPage = false;
+    m_lyricJob = NULL;
+    saveHtmlData(); // Send html code to file
+}
+
+
+void
+ContextBrowser::lyricsResult( const QString& lyrics ) //SLOT
+{
+//     if ( job->error() != 0 )
+//     {
+//         m_HTMLSource="";
+//         m_HTMLSource.append(
+//                 "<html><body>"
+//                 "<div id='lyrics_box' class='box'>"
+//                     "<div id='lyrics_box-header' class='box-header'>"
+//                         "<span id='lyrics_box-header-title' class='box-header-title'>"
+//                         + i18n( "Error" ) +
+//                         "</span>"
+//                     "</div>"
+//                     "<div id='lyrics_box-body' class='box-body'><p>"
+//                         + i18n( "Lyrics could not be retrieved because the server was not reachable." ) +
+//                     "</p></div>"
+//                 "</div>"
+//                 "</body></html>"
+//                         );
+//         m_lyricsPage->set( m_HTMLSource );
+//
+//         m_dirtyLyricsPage = false;
+//         m_lyricJob = NULL;
+//         saveHtmlData(); // Send html code to file
+//
+//         warning() << "[LyricsFetcher] KIO error! errno: " << job->error() << endl;
+//         return;
+//     }
+
+    m_lyrics = lyrics;
+
+//     else if ( m_lyrics.find( "Suggestions : " ) != -1 )
+//     {
+//         m_lyrics = m_lyrics.mid( m_lyrics.find( "Suggestions : " ), m_lyrics.find( "<br /><br />" ) );
+//         showLyricSuggestions();
+//     }
+//     else
+//     {
+//         m_lyrics = "<div class='info'><p>" + i18n( "Lyrics not found." ) + "</p></div>";
+//     }
 
 
     m_HTMLSource="";

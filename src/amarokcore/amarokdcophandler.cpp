@@ -800,6 +800,11 @@ namespace amaroK
         ScriptManager::instance()->enableExternalLyrics( enable );
     }
 
+    void DcopScriptHandler::showLyrics( const QString& lyrics )
+    {
+        ContextBrowser::instance()->lyricsResult( lyrics );
+    }
+
 /////////////////////////////////////////////////////////////////////////////////////
 // class DcopDevicesHandler
 /////////////////////////////////////////////////////////////////////////////////////

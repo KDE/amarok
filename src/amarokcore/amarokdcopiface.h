@@ -137,6 +137,7 @@ k_dcop:
    virtual void togglePlaylist() = 0;                       ///< Toggle the Playlist-window.
 };
 
+
 class AmarokPlaylistBrowserInterface : virtual public DCOPObject
 {
    K_DCOP
@@ -148,6 +149,7 @@ k_dcop:
    virtual int  loadPlaylist(const QString &) = 0;          ///< load a playlist to the playlist.
 };
 
+
 class AmarokContextBrowserInterface : virtual public DCOPObject
 {
    K_DCOP
@@ -157,6 +159,7 @@ k_dcop:
    virtual void showLyrics() = 0;                           ///< Show the lyrics tab in the context browser.
    virtual void showWiki() = 0;                             ///< Show the wikipedia tab in the context browser.
 };
+
 
 class AmarokCollectionInterface : virtual public DCOPObject
 {
@@ -191,7 +194,9 @@ k_dcop:
    virtual QString readConfig(const QString& key) = 0; ///< returns a AmarokConfig configuration entry value from the given key
    virtual QStringList readListConfig(const QString& key) = 0; ///< AmarokConfig lists must use this function
    virtual void enableExternalLyrics( bool enable ) = 0;    ///< Makes amaroK use a script for lyrics fetching.
+   virtual void showLyrics( const QString& lyrics ) = 0;    ///< Renders the lyrics (plan text) in the Lyrics tab.
 };
+
 
 class AmarokDevicesInterface : virtual public DCOPObject
 {
