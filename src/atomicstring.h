@@ -50,14 +50,16 @@ public:
 
     virtual ~AtomicString();
 
+    AtomicString &operator=( const AtomicString &other );
+    bool operator==( const AtomicString &other ) const;
+
     const QString &string() const;
-    QString string();
+    inline QString string() { return string(); }
     inline operator const QString&() const { return string(); }
     inline operator QString() { return string(); }
     inline const QString &operator->() const { return string(); }
 
-    AtomicString &operator=( const AtomicString &other );
-    bool operator==( const AtomicString &other ) const;
+    QString deepCopy() const;
 
 private:
     class Impl;

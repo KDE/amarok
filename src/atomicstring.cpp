@@ -18,24 +18,10 @@
 */
 
 #include <stdint.h>
+#include <qdeepcopy.h>
 #include <qstring.h>
 
 #include "atomicstring.h"
-
-class AtomicString::Impl: public QString, public KShared
-{
-    typedef QString super;
-public:
-    Impl() { }
-    Impl( QChar c ): super( c ) { }
-    Impl( const QString &s ): super( s ) { }
-    Impl( const QChar *s, uint length ): super( s, length ) { }
-    Impl( const char *s ): super( s ) { }
-#ifndef QT_NO_STL
-    Impl( const std::string &s ): super( s ) { }
-#endif
-    virtual ~Impl();
-};
 
 #ifdef __GNUC__
 
@@ -111,7 +97,13 @@ public:
 
 set_type AtomicString::s_store;
 
-AtomicString::Impl::~Impl() { AtomicString::s_store.erase( this ); }
+class AtomicString::Impl: public QString, public KShared
+{
+public:
+    Impl() { }
+    Impl( const QString &s ): QString( s ) { }
+    virtual ~Impl() { AtomicString::s_store.erase( this ); }
+};
 
 AtomicString::AtomicString()
 {
@@ -140,10 +132,10 @@ const QString &AtomicString::string() const
     return QString::null;
 }
 
-QString AtomicString::string()
+QString AtomicString::deepCopy() const
 {
     if( m_string )
-        return *m_string;
+        return QDeepCopy<QString>( *m_string );
     return QString::null;
 }
 
