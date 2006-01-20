@@ -22,7 +22,7 @@ def fetchLyrics( artist, title )
 
     unless response.code == "200"
         return "HTTP Error: #{response.message}"
-        exit( 1 )
+#         exit( 1 )
     end
 
     lyrics = response.body()
