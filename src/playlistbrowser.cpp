@@ -490,9 +490,17 @@ PlaylistCategory* PlaylistBrowser::loadSmartPlaylists()
     }
     else {
         e = d.namedItem( "category" ).toElement();
-        if ( e.attribute("formatversion") =="1.1" ) {
+        if ( e.attribute("formatversion") == "1.2" ) {
             PlaylistCategory* p = new PlaylistCategory(m_listview, after, e );
             p->setText( 0, i18n("Smart Playlists") );
+            return p;
+        }
+        else if ( e.attribute("formatversion") == "1.1" ) {
+            PlaylistCategory* p = new PlaylistCategory(m_listview, after, e );
+            p->setText( 0, i18n("Smart Playlists") );
+            debug() << "loading old format smart playlists, converted to new format" << endl;
+            updateSmartPlaylists( p );
+            saveSmartPlaylists( p );
             return p;
         }
         else { // Old unversioned format
@@ -504,6 +512,40 @@ PlaylistCategory* PlaylistBrowser::loadSmartPlaylists()
             }
             return p;
         }
+    }
+}
+
+void PlaylistBrowser::updateSmartPlaylists( QListViewItem *p )
+{
+    if( !p )
+        return;
+
+    for( QListViewItem *it =  p->firstChild();
+            it;
+            it = it->nextSibling() )
+    {
+        SmartPlaylist *spl = dynamic_cast<SmartPlaylist *>( it );
+        if( spl )
+        {
+            QDomElement xml = spl->xml();
+            QDomElement query = xml.namedItem( "sqlquery" ).toElement();
+            for(QDomNode child = query.firstChild();
+                    !child.isNull();
+                    child = child.nextSibling() )
+            {
+                if( child.isText() )
+                {
+                    QDomText text = child.toText();
+                    QString sql = text.data();
+                    sql.replace( "tags.samplerate, tags.url", "tags.samplerate, tags.filesize, tags.url" );
+                    text.setData( sql );
+                    break;
+                }
+            }
+            spl->setXml( xml );
+        }
+        else
+            updateSmartPlaylists( it );
     }
 }
 
@@ -629,18 +671,21 @@ void PlaylistBrowser::editSmartPlaylist( SmartPlaylist* item )
     }
 }
 
-void PlaylistBrowser::saveSmartPlaylists()
+void PlaylistBrowser::saveSmartPlaylists( PlaylistCategory *smartCategory )
 {
     QFile file( smartplaylistBrowserCache() );
 
+    if( !smartCategory )
+        smartCategory = m_smartCategory;
+
     // If the user hadn't set a collection, we didn't create the Smart Playlist Item
-    if( !m_smartCategory ) return;
+    if( !smartCategory ) return;
 
     QDomDocument doc;
-    QDomElement smartB = m_smartCategory->xml();
+    QDomElement smartB = smartCategory->xml();
     smartB.setAttribute( "product", "amaroK" );
     smartB.setAttribute( "version", APP_VERSION );
-    smartB.setAttribute( "formatversion", "1.1" );
+    smartB.setAttribute( "formatversion", "1.2" );
     QDomNode smartplaylistsNode = doc.importNode( smartB, true );
     doc.appendChild( smartplaylistsNode );
 
