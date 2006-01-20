@@ -33,21 +33,6 @@ def fetchLyrics( artist, title )
     lyrics.gsub!( /<[sS][cC][rR][iI][pP][tT][^>]*>[^<]*(<!--[^>]*>)*[^<]*<\/[sS][cC][rR][iI][pP][tT]>/, "" )
     lyrics.gsub!( /<[sS][tT][yY][lL][eE][^>]*>[^<]*(<!--[^>]*>)*[^<]*<\/[sS][tT][yY][lL][eE]>/, "" )
 
-    lyricsPos = lyrics.index( /<[fF][oO][nN][tT][ ]*[sS][iI][zZ][eE][ ]*='2'[ ]*>/ )
-
-    if lyricsPos == nil
-        return "Could not locate lyrics in the body."
-#         exit( 1 )
-    end
-
-    lyrics = lyrics[lyricsPos..lyrics.length()]
-
-    if lyrics.include?( "<p><hr" )
-        lyrics = lyrics[0, lyrics.index( "<p><hr" )]
-    else
-        lyrics = lyrics[0, lyrics.index( "<br><br>" )]
-    end
-
 
     return lyrics
 end
@@ -73,13 +58,38 @@ loop do
 
         when "fetchLyrics"
             args = message.split()
-            args.delete_at( 0 )
 
-            artist = args[0]
-            title  = args[1]
+            artist = args[1]
+            title  = args[2]
 
             lyrics = fetchLyrics( artist, title )
+
+            lyricsPos = lyrics.index( /<[fF][oO][nN][tT][ ]*[sS][iI][zZ][eE][ ]*='2'[ ]*>/ )
+
+            if not lyricsPos == nil
+                lyrics = lyrics[lyricsPos..lyrics.length()]
+                if lyrics.include?( "<p><hr" )
+                    lyrics = lyrics[0, lyrics.index( "<p><hr" )]
+                else
+                    lyrics = lyrics[0, lyrics.index( "<br><br>" )]
+                end
+
+            elsif lyrics.include?( "Suggestions : " )
+                lyrics = lyrics[lyrics.index( "Suggestions : " )..lyrics.index( "<br><br>" )]
+
+                lyrics.gsub!( "<font color='white'>", "" )
+                lyrics.gsub!( "</font>", "" )
+                lyrics.gsub!( "<br /><br />", "" )
+
+            else
+                lyrics = ""
+            end
+
+
+            lyrics.gsub!( '"', "'" ) # Important, otherwise we might execute arbitrary nonsense
             `dcop amarok script showLyrics "#{lyrics}"`
+
+            puts lyrics
     end
 end
 
