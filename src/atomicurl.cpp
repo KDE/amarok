@@ -19,6 +19,7 @@
 
 #include <qdeepcopy.h>
 #include <kurl.h>
+#include "debug.h"
 
 #include "atomicurl.h"
 
@@ -49,9 +50,16 @@ AtomicURL::AtomicURL( const KURL &url )
         host += QString(":") + QString::number( url.port() );
 
     m_beginning = s + host;
-    const QString d = url.directory();
-    m_directory = d.endsWith("/") ? d : ( d + "/" );
-    m_filename = url.fileName();
+    m_directory = url.directory();
+    QString f = url.fileName() + url.query();
+    if( url.hasRef() )
+        f += QString("#") + url.ref();
+    m_filename = f;
+    /*if (url != this->url())
+    {
+        debug() << "from: " << url << endl;
+        debug() << "to:   " << this->url() << endl;
+    }*/
 }
 
 AtomicURL::~AtomicURL() { }
@@ -107,7 +115,12 @@ void AtomicURL::setPath( const QString &path )
     *this = url;
 }
 
-QString AtomicURL::path() const { return m_directory + m_filename; }
+QString AtomicURL::path() const
+{
+    if( !m_filename.isEmpty() && !m_directory->endsWith("/") )
+        return m_directory + "/" + m_filename;
+    return m_directory + m_filename;
+}
 
 QString AtomicURL::fileName() const { return m_filename; }
 QString AtomicURL::directory() const { return m_directory; }
