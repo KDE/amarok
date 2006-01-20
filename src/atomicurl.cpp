@@ -46,10 +46,11 @@ AtomicURL::AtomicURL( const KURL &url )
     if( url.hasPass() )
         s += ":" + url.pass();
     if( url.port() )
-        host += ":" + url.port();
+        host += QString(":") + QString::number( url.port() );
 
     m_beginning = s + host;
-    m_directory = url.directory();
+    const QString d = url.directory();
+    m_directory = d.endsWith("/") ? d : ( d + "/" );
     m_filename = url.fileName();
 }
 
@@ -106,7 +107,7 @@ void AtomicURL::setPath( const QString &path )
     *this = url;
 }
 
-QString AtomicURL::path() const { return m_directory + "/" + m_filename; }
+QString AtomicURL::path() const { return m_directory + m_filename; }
 
 QString AtomicURL::fileName() const { return m_filename; }
 QString AtomicURL::directory() const { return m_directory; }
