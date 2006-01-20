@@ -191,7 +191,8 @@ protected:
 
     enum ExtendedTags { composerTag,  discNumberTag };
 
-    AtomicURL m_url;
+    KURL m_url;
+//     AtomicURL m_url;
     QString m_title;
     AtomicString m_artist;
     AtomicString m_composer;
@@ -263,7 +264,7 @@ inline KURL     MetaBundle::url()        const { return m_url; }
 inline QString  MetaBundle::filename()   const { return m_url.fileName(); }
 inline QString  MetaBundle::directory()  const
 {
-    return m_url.url().isLocalFile() ? m_url.directory() : m_url.url().upURL().prettyURL();
+    return m_url.isLocalFile() ? m_url.directory() : m_url.upURL().prettyURL();
 }
 inline QString MetaBundle::title()      const { return m_title; }
 inline QString MetaBundle::artist()     const { return m_artist; }
@@ -284,7 +285,7 @@ inline QString MetaBundle::type() const
            : filename().mid( filename().findRev( '.' ) + 1 );
 }
 
-inline QString MetaBundle::prettyURL() const { return m_url.url().prettyURL(); }
+inline QString MetaBundle::prettyURL() const { return m_url.prettyURL(); }
 inline QString MetaBundle::prettyBitrate() const { return prettyBitrate( m_bitrate ); }
 inline QString MetaBundle::prettyLength() const { return prettyLength( m_length, true ); }
 inline QString MetaBundle::prettySampleRate( bool shortened ) const
