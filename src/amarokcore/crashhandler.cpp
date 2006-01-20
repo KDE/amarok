@@ -83,6 +83,7 @@ namespace amaroK
 
 
             body += "======== DEBUG INFORMATION  =======\n"
+                    "Version:    " APP_VERSION "\n"
                     "Engine:     %1\n"
                     "Build date: " __DATE__ "\n"
                     "CC version: " __VERSION__ "\n" //assuming we're using GCC
