@@ -5,6 +5,8 @@ X-KDE-Submenu=amaroK
 
 [Desktop Action appendToPlaylist]
 Name=Append to Playlist
+Name[bg]=Добавяне към списъка с песни
+Name[br]=Ouzhpennañ d'ar roll tonioù
 Name[cs]=Přidat do seznamu skladeb
 Name[da]=Tilføj til spilleliste
 Name[el]=Προσθήκη στη λίστα αναπαραγωγής
@@ -18,6 +20,8 @@ Exec=amarok -e %U
 
 [Desktop Action appendAndPlay]
 Name=Append & Play
+Name[bg]=Добавяне и възпроизвеждане
+Name[br]=Ouzhpennañ ha seniñ
 Name[cs]=Připojit a hrát
 Name[el]=Προσθήκη & αναπαραγωγή
 Name[et]=Lisa ja esita
@@ -30,6 +34,7 @@ Exec=dcop amarok playlist playMedia %U
 
 [Desktop Action queueTrack]
 Name=Queue Track
+Name[bg]=Добавяне и възпроизвеждане
 Name[cs]=Zařadit skladbu
 Name[el]=Εισαγωγή του κομματιού στην ουρά
 Name[et]=Sea pala järjekorda
