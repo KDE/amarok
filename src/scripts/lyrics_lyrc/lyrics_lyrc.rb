@@ -65,7 +65,10 @@ def fetchLyrics( artist, title, url )
     end
 
 
-    lyrics.gsub!( '"', "'" ) # Important, otherwise we might execute arbitrary nonsense
+    # Important, otherwise we might execute arbitrary nonsense in the DCOP call
+    lyrics.gsub!( '"', "'" )
+    lyrics.gsub!( '`', "'" )
+
     `dcop amarok script showLyrics "#{lyrics}"`
 
     puts lyrics
