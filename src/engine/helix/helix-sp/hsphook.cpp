@@ -152,10 +152,6 @@ STDMETHODIMP HSPPreMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioData
          pAudioOutData->uAudioStreamType = pAudioInData->uAudioStreamType;
       }
    }
-   else
-      //**** TEST *****
-      if (!m_fadeout)
-         setFadeout(true);
 
    return 0;
 }
