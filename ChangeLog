@@ -5,6 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.4:
   FEATURES:
+    * Lyrics support is now scriptable. This allows to add support for any
+      lyrics site, and makes it possible to provide upgrades. (BR 94437)
     * New DCOP call "script: showLyrics(string)".
     * New DCOP call "script: enableExternalLyrics(bool)".
     * Amarok now supports ASX playlist files. (BR 114051)
