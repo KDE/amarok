@@ -27,6 +27,7 @@
 
 #include "config.h"
 #include <ksharedptr.h>
+#include "amarok_export.h"
 
 class QString;
 
@@ -41,7 +42,7 @@ class QString;
     typedef std::set<QString*, less> set_type;
 #endif
 
-class AtomicString
+class LIBAMAROK_EXPORT AtomicString
 {
 public:
     AtomicString();
