@@ -28,10 +28,11 @@
 
 #include <qstring.h>
 #include "atomicstring.h"
+#include "amarok_export.h"
 
 class KURL;
 
-class AtomicURL
+class LIBAMAROK_EXPORT AtomicURL
 {
     AtomicString m_beginning;
     AtomicString m_directory;
