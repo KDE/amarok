@@ -40,7 +40,8 @@ interface that really makes playlist handling easy.
  DEPENDENCIES
 ==============
 
-FIXME: Does media auto-detection require KDE 3.5/dbus/hal/media-kioslave?  What happens if these don't exist? Update accordingly.
+FIXME: Does media auto-detection require KDE 3.5/dbus/hal/media-kioslave?
+       What happens if these don't exist? Update accordingly.
 
 Required
     * KDE-Libs 3.3
@@ -50,14 +51,17 @@ Required
       (metadata tagging library)
       http://freshmeat.net/projects/taglib
 
+    * Ruby 1.8
+      (programming language)
+      http://www.ruby-lang.org
+
     * One of the multimedia frameworks listed below
 
 Recommended
     * xine 1.0.0
+      Note: xine 1.1.1 is required for gapless playback.
       (multimedia framework)
       http://xinehq.de/
-      Note: The Xine engine requires 1.0, but 1.1.1 is recomended for gapless
-      playback.
 
       OR
 
