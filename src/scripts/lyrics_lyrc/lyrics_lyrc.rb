@@ -1,8 +1,13 @@
 #!/usr/bin/env ruby
 #
 # amaroK Script for fetching song lyrics from lyrc.com.ar.
+# Ported from amaroK's contextbrowser.cpp.
 #
 # (c) 2005 Mark Kretschmann <markey@web.de>
+# (c) 2004 Christian Muehlhaeuser <chris@chris.de>
+# (c) 2005 Reigo Reinmets <xatax@hot.ee>
+# (c) 2005 Alexandre Pereira de Oliveira <aleprj@gmail.com>
+#
 # License: GNU General Public License V2
 
 

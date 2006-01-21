@@ -1993,7 +1993,7 @@ void ContextBrowser::showLyrics( const QString &url )
     m_lyricsToolBar->getButton( LYRICS_BROWSER )->setEnabled(false);
 
     if( !ScriptManager::instance()->externalLyrics() )
-        m_lyrics = "Sorry, no lyrics script running.";
+        m_lyrics = i18n( "Sorry, no lyrics script running." );
 
     if ( !m_lyrics.isEmpty() && url.isEmpty() )
     {
@@ -2036,7 +2036,7 @@ void ContextBrowser::showLyrics( const QString &url )
         m_lyricsPage->set( m_HTMLSource );
 
 
-        if( url.isNull() )
+        if( url.isNull() || url == "reload" )
             ScriptManager::instance()->notifyFetchLyrics( artist, title );
         else
             ScriptManager::instance()->notifyFetchLyricsByUrl( url );
@@ -2117,6 +2117,7 @@ ContextBrowser::showLyricSuggestions()
     m_lyricHashes.clear();
     m_lyricSuggestions.clear();
 
+    m_lyrics.replace( "Suggestions : <br>", i18n( "Lyrics for track not found, here are some suggestions:" ) + QString("<br /><br />") );
     m_lyrics.replace( "<a href='", "<a href='show:suggestLyric-" );
 }
 
