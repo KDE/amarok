@@ -964,9 +964,10 @@ CollectionDB::findDirectoryImage( const QString& artist, const QString& album, u
         QString image( values.first() );
         uint matches = 0;
         uint maxmatches = 0;
+        QRegExp iTunesArt( "^AlbumArt_.*Large" );
         for ( uint i = 0; i < values.count(); i++ )
         {
-            matches = values[i].contains( "front", false ) + values[i].contains( "cover", false ) + values[i].contains( "folder", false );
+            matches = values[i].contains( "front", false ) + values[i].contains( "cover", false ) + values[i].contains( "folder", false ) + values[i].contains( iTunesArt );
             if ( matches > maxmatches )
             {
                 image = values[i];

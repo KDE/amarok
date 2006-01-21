@@ -59,6 +59,7 @@ VERSION 1.4:
       to consecutive tracks on a single album.
 
   CHANGES:
+    * Import iTunes album art from directories.
     * Upgraded internal SQLite database library to version 3.2.7.
     * Lyrics are cached on the database as plain text.
     * Recoding mp3 tags has been removed due to many unjustified
