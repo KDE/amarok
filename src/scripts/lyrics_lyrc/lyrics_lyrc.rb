@@ -29,8 +29,9 @@ def fetchLyrics( artist, title, url )
     end
 
     unless response.code == "200"
-        return "HTTP Error: #{response.message}"
-#         exit( 1 )
+        lyrics = "HTTP Error: #{response.message}"
+        `dcop amarok script showLyrics "#{lyrics}"`
+        return
     end
 
     lyrics = response.body()
