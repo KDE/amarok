@@ -48,6 +48,7 @@ class KProcIO;
  *   trackChange
  *   volumeChange: newVolume (range: 0-100)
  *   fetchLyrics: artist title
+ *   fetchLyricsByUrl: url
  *
  * @see http://amarok.kde.org/amarokwiki/index.php/Script-Writing_HowTo
  */
@@ -92,6 +93,9 @@ class ScriptManager : public KDialogBase, public EngineObserver
 
        /** Sends a fetchLyrics notification to all scripts */
        void notifyFetchLyrics( const QString& artist, const QString& title );
+
+       /** Sends a fetchLyrics notification to retrieve lyrics from a specific page */
+       void notifyFetchLyricsByUrl( const QString& url );
 
     private slots:
         /** Finds all installed scripts and adds them to the listview */

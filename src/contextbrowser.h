@@ -71,12 +71,11 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         void showHome();
         void showContext( const KURL& url, bool fromHistory = false );
         void showCurrentTrack();
-        void showLyrics( const QString& hash = QString::null );
+        void showLyrics( const QString& url = QString::null );
         void showLyricSuggestions();
         void showWikipedia( const QString& url = QString::null, bool fromHistory = false );
         void showWikipediaEntry( const QString& entry );
 
-        void lyricsResult( KIO::Job* job );
         void coverFetched( const QString &artist, const QString &album );
         void coverRemoved( const QString &artist, const QString &album );
         void similarArtistsFetched( const QString &artist );

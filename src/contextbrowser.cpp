@@ -313,9 +313,10 @@ void ContextBrowser::openURLRequest( const KURL &url )
         if ( url.path().contains( "suggestLyric-" ) )
         {
             m_lyrics = QString::null;
-            QString hash = url.path().mid( url.path().find( QString( "-" ) ) +1 );
+            QString _url = url.url().mid( url.url().find( QString( "-" ) ) +1 );
+            debug() << "Clicked lyrics URL: " << _url << endl;
             m_dirtyLyricsPage = true;
-            showLyrics( hash );
+            showLyrics( _url );
         }
         else if ( url.path() == "statistics" )
         {
@@ -1950,12 +1951,7 @@ void ContextBrowser::showScanning()
 // Lyrics-Tab
 //////////////////////////////////////////////////////////////////////////////////////////
 
-// THE FOLLOWING CODE IS COPYRIGHT BY
-// Christian Muehlhaeuser, Seb Ruiz
-// <chris at chris.de>, <me at sebruiz.net>
-// If I'm violating any copyright or such
-// please contact / sue me. Thanks.
-void ContextBrowser::showLyrics( const QString &hash )
+void ContextBrowser::showLyrics( const QString &url )
 {
     if ( currentPage() != m_lyricsTab )
     {
@@ -1967,17 +1963,6 @@ void ContextBrowser::showLyrics( const QString &hash )
     m_lyrics = CollectionDB::instance()->getHTMLLyrics( EngineController::instance()->bundle().url().path() );
 
     if ( !m_dirtyLyricsPage || m_lyricJob ) return;
-
-    //remove all matches to the regExp and the song production type.
-    //NOTE: use i18n'd and english equivalents since they are very common int'lly.
-    QString replaceMe = " \\([^}]*%1[^}]*\\)";
-    QStringList production;
-    production << i18n( "live" ) << i18n( "acoustic" ) << i18n( "cover" ) << i18n( "mix" )
-               << i18n( "edit" ) << i18n( "medley" ) << i18n( "unplugged" ) << i18n( "bonus" )
-               << i18n( "version" ) << i18n( "feat" )
-               << QString( "live" ) << QString( "acoustic" ) << QString( "cover" ) << QString( "mix" )
-               << QString( "edit" ) << QString( "medley" ) << QString( "unplugged" ) << QString( "bonus" )
-               << QString( "version" ) << QString( "feat" ) ;
 
     QString title  = EngineController::instance()->bundle().title();
     QString artist = EngineController::instance()->bundle().artist();
@@ -1996,22 +1981,6 @@ void ContextBrowser::showLyrics( const QString &hash )
         }
     }
 
-    for ( uint x = 0; x < production.count(); ++x )
-    {
-        QRegExp re = replaceMe.arg( production[x] );
-        re.setCaseSensitive( false );
-        title.remove( re );
-    }
-
-    if ( !hash.isEmpty() && hash != QString( "reload" ) )
-        m_lyricCurrentUrl = QString( "http://lyrc.com.ar/en/tema1en.php?hash=%1" )
-                  .arg( hash );
-    else
-        m_lyricCurrentUrl = QString( "http://lyrc.com.ar/en/tema1en.php?artist=%1&songname=%2" )
-                .arg(
-                KURL::encode_string_no_slash( artist ),
-                KURL::encode_string_no_slash( title ) );
-
     m_lyricAddUrl = QString( "http://lyrc.com.ar/en/add/add.php?grupo=%1&tema=%2&disco=%3&ano=%4" ).arg(
             KURL::encode_string_no_slash( artist ),
             KURL::encode_string_no_slash( title ),
@@ -2023,7 +1992,10 @@ void ContextBrowser::showLyrics( const QString &hash )
 
     m_lyricsToolBar->getButton( LYRICS_BROWSER )->setEnabled(false);
 
-    if ( !m_lyrics.isEmpty() && hash.isEmpty() )
+    if( !ScriptManager::instance()->externalLyrics() )
+        m_lyrics = "Sorry, no lyrics script running.";
+
+    if ( !m_lyrics.isEmpty() && url.isEmpty() )
     {
         m_HTMLSource = QString (
             "<html><body>"
@@ -2064,30 +2036,18 @@ void ContextBrowser::showLyrics( const QString &hash )
         m_lyricsPage->set( m_HTMLSource );
 
 
-        if( ScriptManager::instance()->externalLyrics() )
-        {
+        if( url.isNull() )
             ScriptManager::instance()->notifyFetchLyrics( artist, title );
-        }
         else
-        {
-            m_lyricJob = KIO::storedGet( m_lyricCurrentUrl, false, false );
-
-            amaroK::StatusBar::instance()->newProgressOperation( m_lyricJob )
-                .setDescription( i18n( "Fetching Lyrics" ) );
-
-            connect( m_lyricJob, SIGNAL( result( KIO::Job* ) ), SLOT( lyricsResult( KIO::Job* ) ) );
-        }
+            ScriptManager::instance()->notifyFetchLyricsByUrl( url );
     }
 }
 
 
 void
-ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
+ContextBrowser::lyricsResult( const QString& lyrics ) //SLOT
 {
-    if ( job != m_lyricJob ) //FIXME Erm, that's nonsense. Only one job connected here.
-        return; //not the right job, so let's ignore it
-
-    if ( job->error() != 0 )
+    if ( lyrics == "" )
     {
         m_HTMLSource="";
         m_HTMLSource.append(
@@ -2110,103 +2070,15 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
         m_lyricJob = NULL;
         saveHtmlData(); // Send html code to file
 
-        warning() << "[LyricsFetcher] KIO error! errno: " << job->error() << endl;
         return;
     }
 
-    m_lyrics = QString( static_cast<KIO::StoredTransferJob*>( job )->data() );
-
-    // remove images, links, scripts, and styles
-    m_lyrics.replace( QRegExp("<[iI][mM][gG][^>]*>"), QString::null );
-    m_lyrics.replace( QRegExp("<[aA][^>]*>[^<]*</[aA]>"), QString::null );
-    m_lyrics.replace( QRegExp("<[sS][cC][rR][iI][pP][tT][^>]*>[^<]*(<!--[^>]*>)*[^<]*</[sS][cC][rR][iI][pP][tT]>"), QString::null );
-    m_lyrics.replace( QRegExp("<[sS][tT][yY][lL][eE][^>]*>[^<]*(<!--[^>]*>)*[^<]*</[sS][tT][yY][lL][eE]>"), QString::null );
-
-    int lyricsPos = m_lyrics.find( QRegExp( "<[fF][oO][nN][tT][ ]*[sS][iI][zZ][eE][ ]*='2'[ ]*>" ) );
-    if ( lyricsPos != -1 )
-    {
-        m_lyrics = m_lyrics.mid( lyricsPos );
-        if ( m_lyrics.find( "<p><hr" ) != -1 )
-            m_lyrics = m_lyrics.mid( 0, m_lyrics.find( "<p><hr" ) );
-        else
-            m_lyrics = m_lyrics.mid( 0, m_lyrics.find( "<br /><br />" ) );
-        if ( CollectionDB::instance()->isFileInCollection( EngineController::instance()->bundle().url().path() ) )
-        {
-            CollectionDB::instance()->setHTMLLyrics( EngineController::instance()->bundle().url().path(), m_lyrics );
-        }
-    }
-    else if ( m_lyrics.find( "Suggestions : " ) != -1 )
-    {
-        m_lyrics = m_lyrics.mid( m_lyrics.find( "Suggestions : " ), m_lyrics.find( "<br /><br />" ) );
-        showLyricSuggestions();
-    }
-    else
-    {
-        m_lyrics = "<div class='info'><p>" + i18n( "Lyrics not found." ) + "</p></div>";
-    }
-
-
-    m_HTMLSource="";
-    m_HTMLSource.append(
-            "<html><body>"
-            "<div id='lyrics_box' class='box'>"
-                "<div id='lyrics_box-header' class='box-header'>"
-                    "<span id='lyrics_box-header-title' class='box-header-title'>"
-                    + i18n( "Lyrics" ) +
-                    "</span>"
-                "</div>"
-                "<div id='lyrics_box-body' class='box-body'>"
-                    + m_lyrics +
-                "</div>"
-            "</div>"
-            "</body></html>"
-                       );
-    m_lyricsPage->set( m_HTMLSource );
-
-    m_lyricsToolBar->getButton( LYRICS_BROWSER )->setEnabled(true);
-    m_dirtyLyricsPage = false;
-    m_lyricJob = NULL;
-    saveHtmlData(); // Send html code to file
-}
-
-
-void
-ContextBrowser::lyricsResult( const QString& lyrics ) //SLOT
-{
-//     if ( job->error() != 0 )
-//     {
-//         m_HTMLSource="";
-//         m_HTMLSource.append(
-//                 "<html><body>"
-//                 "<div id='lyrics_box' class='box'>"
-//                     "<div id='lyrics_box-header' class='box-header'>"
-//                         "<span id='lyrics_box-header-title' class='box-header-title'>"
-//                         + i18n( "Error" ) +
-//                         "</span>"
-//                     "</div>"
-//                     "<div id='lyrics_box-body' class='box-body'><p>"
-//                         + i18n( "Lyrics could not be retrieved because the server was not reachable." ) +
-//                     "</p></div>"
-//                 "</div>"
-//                 "</body></html>"
-//                         );
-//         m_lyricsPage->set( m_HTMLSource );
-//
-//         m_dirtyLyricsPage = false;
-//         m_lyricJob = NULL;
-//         saveHtmlData(); // Send html code to file
-//
-//         warning() << "[LyricsFetcher] KIO error! errno: " << job->error() << endl;
-//         return;
-//     }
-
     m_lyrics = lyrics;
 
-//     else if ( m_lyrics.find( "Suggestions : " ) != -1 )
-//     {
-//         m_lyrics = m_lyrics.mid( m_lyrics.find( "Suggestions : " ), m_lyrics.find( "<br /><br />" ) );
-//         showLyricSuggestions();
-//     }
+    if ( m_lyrics.find( "Suggestions : " ) != -1 )
+    {
+        showLyricSuggestions();
+    }
 //     else
 //     {
 //         m_lyrics = "<div class='info'><p>" + i18n( "Lyrics not found." ) + "</p></div>";
@@ -2240,27 +2112,12 @@ ContextBrowser::lyricsResult( const QString& lyrics ) //SLOT
 void
 ContextBrowser::showLyricSuggestions()
 {
+    DEBUG_BLOCK
+
     m_lyricHashes.clear();
     m_lyricSuggestions.clear();
 
-    m_lyrics.replace( QString( "<font color='white'>" ), QString::null );
-    m_lyrics.replace( QString( "</font>" ), QString::null );
-    m_lyrics.replace( QString( "<br /><br />" ), QString::null );
-
-    while ( !m_lyrics.isEmpty() )
-    {
-        m_lyrics = m_lyrics.mid( m_lyrics.find( "hash=" ) );
-        m_lyricHashes << m_lyrics.mid( 5, m_lyrics.find( ">" ) - 6 );
-        m_lyrics = m_lyrics.mid( m_lyrics.find( ">" ) );
-        m_lyricSuggestions << m_lyrics.mid( 1, m_lyrics.find( "</a>" ) - 1 );
-    }
-    m_lyrics = i18n( "Lyrics for track not found, here are some suggestions:" ) + QString("<br /><br />");
-
-    for ( uint i=0; i < m_lyricHashes.count() - 1; ++i )
-    {
-        m_lyrics += QString( "<a href='show:suggestLyric-%1'>" ).arg( m_lyricHashes[i] );
-        m_lyrics += QString( "%1</a><br />" ).arg( m_lyricSuggestions[i] );
-    }
+    m_lyrics.replace( "<a href='", "<a href='show:suggestLyric-" );
 }
 
 

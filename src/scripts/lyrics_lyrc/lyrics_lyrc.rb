@@ -13,12 +13,15 @@ def cleanup()
     `dcop amarok script enableExternalLyrics false`
 end
 
-def fetchLyrics( artist, title )
-    # artist = "John Lennon"
-    # title  = "Imagine"
-
+def fetchLyrics( artist, title, url )
     h = Net::HTTP.new( "lyrc.com.ar", 80 )
-    response = h.get( "/en/tema1en.php?artist=#{artist}&songname=#{title}" )
+
+    if url.empty?()
+        response = h.get( "/en/tema1en.php?artist=#{artist}&songname=#{title}" )
+    else
+        puts( "Fetching by URL: #{url}" )
+        response = h.get( "/en/#{URI.unescape( url )}" )
+    end
 
     unless response.code == "200"
         return "HTTP Error: #{response.message}"
@@ -34,7 +37,33 @@ def fetchLyrics( artist, title )
     lyrics.gsub!( /<[sS][tT][yY][lL][eE][^>]*>[^<]*(<!--[^>]*>)*[^<]*<\/[sS][tT][yY][lL][eE]>/, "" )
 
 
-    return lyrics
+    lyricsPos = lyrics.index( /<[fF][oO][nN][tT][ ]*[sS][iI][zZ][eE][ ]*='2'[ ]*>/ )
+
+    if not lyricsPos == nil
+        lyrics = lyrics[lyricsPos..lyrics.length()]
+        if lyrics.include?( "<p><hr" )
+            lyrics = lyrics[0, lyrics.index( "<p><hr" )]
+        else
+            lyrics = lyrics[0, lyrics.index( "<br><br>" )]
+        end
+
+    elsif lyrics.include?( "Suggestions : " )
+        lyrics = lyrics[lyrics.index( "Suggestions : " )..lyrics.index( "<br><br>" )]
+
+        lyrics.gsub!( "<font color='white'>", "" )
+        lyrics.gsub!( "</font>", "" )
+        lyrics.gsub!( "<br /><br />", "" )
+#         lyrics.gsub!( "tema1en.php", "lyrc.com.ar/en/tema1en.php" ) # Replace relative URLs
+
+    else
+        lyrics = ""
+    end
+
+
+    lyrics.gsub!( '"', "'" ) # Important, otherwise we might execute arbitrary nonsense
+    `dcop amarok script showLyrics "#{lyrics}"`
+
+    puts lyrics
 end
 
 
@@ -62,34 +91,12 @@ loop do
             artist = args[1]
             title  = args[2]
 
-            lyrics = fetchLyrics( artist, title )
+            fetchLyrics( artist, title, "" )
 
-            lyricsPos = lyrics.index( /<[fF][oO][nN][tT][ ]*[sS][iI][zZ][eE][ ]*='2'[ ]*>/ )
+        when "fetchLyricsByUrl"
+            url = message.split()[1]
 
-            if not lyricsPos == nil
-                lyrics = lyrics[lyricsPos..lyrics.length()]
-                if lyrics.include?( "<p><hr" )
-                    lyrics = lyrics[0, lyrics.index( "<p><hr" )]
-                else
-                    lyrics = lyrics[0, lyrics.index( "<br><br>" )]
-                end
-
-            elsif lyrics.include?( "Suggestions : " )
-                lyrics = lyrics[lyrics.index( "Suggestions : " )..lyrics.index( "<br><br>" )]
-
-                lyrics.gsub!( "<font color='white'>", "" )
-                lyrics.gsub!( "</font>", "" )
-                lyrics.gsub!( "<br /><br />", "" )
-
-            else
-                lyrics = ""
-            end
-
-
-            lyrics.gsub!( '"', "'" ) # Important, otherwise we might execute arbitrary nonsense
-            `dcop amarok script showLyrics "#{lyrics}"`
-
-            puts lyrics
+            fetchLyrics( "", "", url )
     end
 end
 

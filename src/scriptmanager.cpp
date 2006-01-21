@@ -252,6 +252,12 @@ void ScriptManager::notifyFetchLyrics( const QString& artist, const QString& tit
 }
 
 
+void ScriptManager::notifyFetchLyricsByUrl( const QString& url )
+{
+    notifyScripts( "fetchLyricsByUrl " + KURL::encode_string( url ) );
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // private slots
 ////////////////////////////////////////////////////////////////////////////////
