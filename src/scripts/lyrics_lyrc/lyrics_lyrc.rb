@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# amaroK Script for fetching song lyrics from lyrc.com.ar.
+# amaroK Script for fetching song lyrics from http://lyrc.com.ar.
 # Ported from amaroK's contextbrowser.cpp.
 #
 # (c) 2005 Mark Kretschmann <markey@web.de>
