@@ -283,6 +283,9 @@ HelixEngine::load( const KURL &url, bool isStream )
    {
       int nextPlayer = m_current ? 0 : 1;
 
+      if (isPlaying(m_current))
+         setFadeout(true, m_xfadeLength, m_current);
+
       Engine::Base::load( url, false ); // we dont crossfade streams ?? do we load the base here ??
       HelixSimplePlayer::setURL( QFile::encodeName( url.url() ), nextPlayer, !isStream );
       m_isStream = false;
@@ -325,7 +328,11 @@ HelixEngine::play( uint offset )
 
    nextPlayer = m_current ? 0 : 1;
 
-   HelixSimplePlayer::start(nextPlayer);
+   if (m_xfadeLength && !offset && isPlaying(m_current))
+      HelixSimplePlayer::start(nextPlayer, true, m_xfadeLength);
+   else
+      HelixSimplePlayer::start(nextPlayer);
+
    if (offset)
       HelixSimplePlayer::seek( offset, nextPlayer );
 

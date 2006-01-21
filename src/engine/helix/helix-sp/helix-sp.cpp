@@ -136,10 +136,13 @@ HelixSimplePlayerAudioStreamInfoResponse::Release()
 
 STDMETHODIMP HelixSimplePlayerAudioStreamInfoResponse::OnStream(IHXAudioStream *pAudioStream)
 {
-   m_Player->print2stderr("Stream Added on player %d, stream duration %d, sources %d\n", m_index, m_Player->duration(m_index), m_Player->ppctrl[m_index]->pPlayer->GetSourceCount());
+   m_Player->print2stderr("Stream Added on player %d, stream duration %d, sources %d\n", m_index, 
+                          m_Player->duration(m_index), m_Player->ppctrl[m_index]->pPlayer->GetSourceCount());
 
    m_Player->ppctrl[m_index]->pStream = pAudioStream;
-   m_Player->ppctrl[m_index]->pPreMixHook = new HSPPreMixAudioHook(m_Player, m_index, pAudioStream);
+   m_Player->ppctrl[m_index]->pPreMixHook = new HSPPreMixAudioHook(m_Player, m_index, pAudioStream, 
+                                                                   m_Player->ppctrl[m_index]->bFadeIn, 
+                                                                   m_Player->ppctrl[m_index]->ulFadeLength);
 
    // addpremixhook adds another ref
    pAudioStream->AddPreMixHook(m_Player->ppctrl[m_index]->pPreMixHook, false);
@@ -228,6 +231,25 @@ STDMETHODIMP HelixSimplePlayerVolumeAdvice::OnMuteChange(const BOOL bMute)
    m_Player->onMuteChange(m_index);
    m_Player->ppctrl[m_index]->ismute = bMute;
    return HXR_OK;
+}
+
+
+void HelixSimplePlayer::setFadeout(bool fadeout, unsigned long fadelength, int playerIndex )
+{
+   if (playerIndex == ALL_PLAYERS)
+   {
+      for (int i = 0; i<nNumPlayers; i++)
+         setFadeout(fadeout, fadelength, i);
+   }
+   else
+   {
+      if (playerIndex >=0 && playerIndex < nNumPlayers && ppctrl[playerIndex]->pPreMixHook)
+      {
+         ppctrl[playerIndex]->ulFadeLength = fadelength;
+         ((HSPPreMixAudioHook *)ppctrl[playerIndex]->pPreMixHook)->setFadelength(ppctrl[playerIndex]->ulFadeLength);
+         ((HSPPreMixAudioHook *)ppctrl[playerIndex]->pPreMixHook)->setFadeout(fadeout);
+      }
+   }
 }
 
 
@@ -653,7 +675,7 @@ int HelixSimplePlayer::addPlayer()
    ppctrl[nNumPlayers]->bStarting = false;
    ppctrl[nNumPlayers]->bFadeIn   = false;
    ppctrl[nNumPlayers]->bFadeOut  = false;
-   ppctrl[nNumPlayers]->ulFadeTime = 0;
+   ppctrl[nNumPlayers]->ulFadeLength = 0;
    ppctrl[nNumPlayers]->pStream = 0;
    ppctrl[nNumPlayers]->pszURL = 0;
 
@@ -1648,12 +1670,12 @@ void HelixSimplePlayer::play(int playerIndex, bool fadein, bool fadeout, unsigne
          print2stdout("Starting play #%d...\n", nPlay);
       }
       //print2stderr("firstplayer = %d  lastplayer=%d\n",firstPlayer,lastPlayer);
-      
+
       UINT32 starttime=0, endtime=0, now=0;
       for (i = firstPlayer; i < lastPlayer; i++)
       {
          // start is already protected...
-         start(i, fadein, fadeout, fadetime);
+         start(i, fadein, fadetime);
 
          starttime = GetTime();
          endtime = starttime + nTimeDelta;
@@ -1665,6 +1687,12 @@ void HelixSimplePlayer::play(int playerIndex, bool fadein, bool fadeout, unsigne
             now = GetTime();
             if (now >= endtime)
                break;
+            if (fadeout && !ppctrl[i]->bFadeOut && now > endtime - fadetime)
+            {
+               ppctrl[i]->bFadeOut = true;
+               ((HSPPreMixAudioHook *)ppctrl[i]->pPreMixHook)->setFadelength(fadetime);
+               ((HSPPreMixAudioHook *)ppctrl[i]->pPreMixHook)->setFadeout(true);
+            }
          }
       }
 
@@ -1708,13 +1736,13 @@ void HelixSimplePlayer::play(int playerIndex, bool fadein, bool fadeout, unsigne
    }
 }
 
-void HelixSimplePlayer::start(int playerIndex, bool fadein, bool fadeout, unsigned long fadetime)
+void HelixSimplePlayer::start(int playerIndex, bool fadein, unsigned long fadetime)
 {
    if (playerIndex == ALL_PLAYERS)
    {
       int i;
       for (i=0; i<nNumPlayers; i++)
-         start(i, fadein, fadeout, fadetime);
+         start(i, fadein, fadetime);
    }
    else
    {
@@ -1729,8 +1757,8 @@ void HelixSimplePlayer::start(int playerIndex, bool fadein, bool fadeout, unsign
       }
 
       ppctrl[playerIndex]->bFadeIn = fadein;
-      ppctrl[playerIndex]->bFadeOut = fadeout;
-      ppctrl[playerIndex]->ulFadeTime = fadetime;
+      ppctrl[playerIndex]->bFadeOut = false; // assume we'll only fade out if we have another track
+      ppctrl[playerIndex]->ulFadeLength = fadetime;
       if (!ppctrl[playerIndex]->bPlaying)
       {
          pthread_mutex_lock(&m_engine_m);
@@ -1745,10 +1773,10 @@ void HelixSimplePlayer::start(int playerIndex, bool fadein, bool fadeout, unsign
 }
 
 
-void HelixSimplePlayer::start(const char *file, int playerIndex, bool fadein, bool fadeout, unsigned long fadetime)
+void HelixSimplePlayer::start(const char *file, int playerIndex, bool fadein, unsigned long fadetime)
 {
    setURL(file, playerIndex);
-   start(playerIndex, fadein, fadeout, fadetime);
+   start(playerIndex, fadein, fadetime);
 }
 
 

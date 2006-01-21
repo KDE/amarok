@@ -113,10 +113,10 @@ public:
                bool islocal = true);                                 // set the current url
    bool done(int playerIndex = ALL_PLAYERS);                         // test to see if the player(s) is(are) done
    void start(int playerIndex = ALL_PLAYERS, 
-              bool fadein = false, bool fadeout = false,
+              bool fadein = false, 
               unsigned long fadetime = 0);                           // start the player
    void start(const char *file, int playerIndex = ALL_PLAYERS,
-              bool fadein = false, bool fadeout = false,
+              bool fadein = false,
               unsigned long fadetime = 0);                           // start the player, setting the current url first
    void stop(int playerIndex = ALL_PLAYERS);                         // stop the player(s)
    void pause(int playerIndex = ALL_PLAYERS);                        // pause the player(s)
@@ -180,7 +180,7 @@ private:
       bool                        bStarting;
       bool                        bFadeIn;
       bool                        bFadeOut;
-      unsigned long               ulFadeTime;
+      unsigned long               ulFadeLength;
       IHXAudioStream*             pStream;
       HSPClientContext*           pHSPContext;
       IHXPlayer*                  pPlayer;
@@ -234,6 +234,8 @@ public:
    const IHXAudioPlayer *getAudioPlayer(int playerIndex) const { return ppctrl[playerIndex]->pAudioPlayer; }
    const IHXAudioCrossFade *getCrossFader(int playerIndex) const { return ppctrl[playerIndex]->pCrossFader; }
    void startCrossFade();
+
+   void setFadeout(bool fadeout, unsigned long fadelength, int playerIndex = ALL_PLAYERS);
 
    // scope
    void addScopeBuf(struct DelayQueue *item, int playerIndex);
