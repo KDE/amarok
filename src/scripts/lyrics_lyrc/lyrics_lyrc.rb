@@ -58,7 +58,6 @@ def fetchLyrics( artist, title, url )
         lyrics.gsub!( "<font color='white'>", "" )
         lyrics.gsub!( "</font>", "" )
         lyrics.gsub!( "<br /><br />", "" )
-#         lyrics.gsub!( "tema1en.php", "lyrc.com.ar/en/tema1en.php" ) # Replace relative URLs
 
     else
         lyrics = ""
@@ -70,8 +69,6 @@ def fetchLyrics( artist, title, url )
     lyrics.gsub!( '`', "'" )
 
     `dcop amarok script showLyrics "#{lyrics}"`
-
-    puts lyrics
 end
 
 
