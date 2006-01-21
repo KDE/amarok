@@ -192,8 +192,6 @@ static void gainFeedMono(unsigned char* signal, unsigned char *outsignal, int le
    { // while we are still ramping the gain
       while (signal < bufferEnd)
       {
-         int rc = (tgtGain > gain) - (tgtGain < gain) ; // -1,0,1 for x<y, x=y, x>y
-
          switch (g->bytesPerSample)
          {
             case 1:
@@ -228,7 +226,7 @@ static void gainFeedMono(unsigned char* signal, unsigned char *outsignal, int le
          }
          signal += g->bytesPerSample;
          outsignal += g->bytesPerSample;
-         gain += ((tgtGain-gain) / g->decay) * rc ;
+         gain += ((tgtGain-gain) / g->decay);
       }
       g->instGain = gain ;
    }
@@ -296,8 +294,6 @@ static void gainFeedStereo(unsigned char* signal, unsigned char *outsignal, int 
    { // while we are still ramping the gain
       while (signal < bufferEnd)
       {
-         int rc = (tgtGain > gain) - (tgtGain < gain) ; // -1,0,1 for x<y, x=y, x>y
-
          switch (g->bytesPerSample)
          {
             case 1:
@@ -344,7 +340,7 @@ static void gainFeedStereo(unsigned char* signal, unsigned char *outsignal, int 
          }
          signal += 2 * g->bytesPerSample;
          outsignal += 2 * g->bytesPerSample;
-         gain += ((tgtGain-gain) / g->decay) * rc ;
+         gain += ((tgtGain-gain) / g->decay);
       }
       g->instGain = gain ;
    }
@@ -418,7 +414,6 @@ static void gainFeedMulti(unsigned char* signal, unsigned char *outsignal, int l
     { // while we are still ramping the gain
        while (signal < bufferEnd)
        {
-          int rc = (tgtGain > gain) - (tgtGain < gain) ; // -1,0,1 for x<y, x=y, x>y
           int i ;
 
           switch (g->bytesPerSample)
@@ -467,7 +462,7 @@ static void gainFeedMulti(unsigned char* signal, unsigned char *outsignal, int l
           }
           signal += g->nChannels * g->bytesPerSample;
           outsignal += g->nChannels * g->bytesPerSample;
-          gain += ((tgtGain-gain) / g->decay) * rc ;
+          gain += ((tgtGain-gain) / g->decay);
        }
        g->instGain = gain ;
     }

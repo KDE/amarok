@@ -30,17 +30,20 @@
 #include "hsphook.h"
 #include "iir_cf.h"         // IIR filter coefficients
 
-#define SCOPE_BUF_PER_BLOCK 8
 #define SCOPESIZE 512
 
-HSPPreMixAudioHook::HSPPreMixAudioHook(HelixSimplePlayer *player, int playerIndex, IHXAudioStream *pAudioStream) :
-   m_Player(player), m_lRefCount(0), m_index(playerIndex), m_stream(pAudioStream), m_count(0)
+HSPPreMixAudioHook::HSPPreMixAudioHook(HelixSimplePlayer *player, int playerIndex, IHXAudioStream *pAudioStream,
+                                       bool fadein, unsigned long fadelength) :
+   m_Player(player), m_lRefCount(0), m_index(playerIndex), m_stream(pAudioStream), m_count(0),
+   m_gaintool(0), m_gaindb(0), m_fadein(fadein), m_fadeout(false), m_fadelength(fadelength)
 {
    AddRef();
 }
 
 HSPPreMixAudioHook::~HSPPreMixAudioHook()
 {
+   if (m_gaintool)
+      gainFree(m_gaintool);
 }
 
 STDMETHODIMP
@@ -80,7 +83,25 @@ HSPPreMixAudioHook::Release()
     return 0;
 }
 
-STDMETHODIMP HSPPreMixAudioHook::OnBuffer(HXAudioData */*pAudioInData*/, HXAudioData */*pAudioOutData*/)
+int HSPPreMixAudioHook::volumeize(unsigned char *data, unsigned char *outbuf, size_t len)
+{
+   gainFeed(data, outbuf, len, m_gaintool);
+
+   return len;
+}
+
+void HSPPreMixAudioHook::setFadeout(bool fadeout)
+{ 
+   m_fadeout = fadeout; 
+   if (m_fadeout)
+   {
+      // the "time constant" (ms) is the time it takes to reach +6db of the target
+      gainSetTimeConstant((float) m_fadelength / 2.0, m_gaintool);
+      gainSetSmoothdB(FADE_MIN_dB, m_gaintool);
+   }
+}
+
+STDMETHODIMP HSPPreMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioData *pAudioOutData)
 {
    m_count++;
 
@@ -107,6 +128,34 @@ STDMETHODIMP HSPPreMixAudioHook::OnBuffer(HXAudioData */*pAudioInData*/, HXAudio
    }
 #endif
 
+   unsigned char *outbuf;
+   IHXBuffer *ibuf;
+   unsigned long len;
+   unsigned char *data;
+
+   pAudioInData->pData->Get(data, len);
+
+   // provide a little margin to prevent a slight but noticeable jump in vol when the fadein ends
+   if ((m_fadein && pAudioInData->ulAudioTime < 2*m_fadelength) ||  
+       (m_fadeout && pAudioInData->ulAudioTime > (m_Player->duration(m_index) - m_fadelength)))
+   {
+      m_Player->pCommonClassFactory->CreateInstance(CLSID_IHXBuffer, (void **) &ibuf);
+      if (ibuf)
+      {
+         ibuf->SetSize(len);
+         outbuf = ibuf->GetBuffer();
+         
+         len = volumeize(data, outbuf, len);
+
+         pAudioOutData->pData = ibuf;
+         pAudioOutData->ulAudioTime = pAudioInData->ulAudioTime;
+         pAudioOutData->uAudioStreamType = pAudioInData->uAudioStreamType;
+      }
+   }
+   else
+      //**** TEST *****
+      if (!m_fadeout)
+         setFadeout(true);
 
    return 0;
 }
@@ -119,6 +168,18 @@ STDMETHODIMP HSPPreMixAudioHook::OnInit(HXAudioFormat *pFormat)
           pFormat->uMaxBlockSize);
 
    m_format = *pFormat;
+
+   int bps = pFormat->uBitsPerSample / 8;
+   m_gaintool = gainInit(pFormat->ulSamplesPerSec, pFormat->uChannels, bps);
+   gainSetImmediatedB(0, m_gaintool);
+
+   if (m_fadein)
+   {
+      gainSetImmediatedB(FADE_MIN_dB, m_gaintool);
+      // the "time constant" (ms) is the time it takes to reach -6db of the target
+      gainSetTimeConstant((float) m_fadelength / 2.0, m_gaintool);
+      gainSetSmoothdB(0, m_gaintool);
+   }
 
    return 0;
 }

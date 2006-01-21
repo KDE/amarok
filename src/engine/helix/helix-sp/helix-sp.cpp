@@ -1130,7 +1130,7 @@ void HelixSimplePlayer::closeAudioDevice()
       case ALSA:
       {
 #ifdef USE_HELIX_ALSA
-         int err;
+         int err = 0;
 
          if (m_pAlsaMixerHandle && m_pAlsaMasterMixerElem)
          {

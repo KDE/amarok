@@ -16,14 +16,15 @@
 #ifndef _HSPHOOK_H_INCLUDED_
 #define _HSPHOOK_H_INCLUDED_
 
-#ifndef HELIX_SW_VOLUME_INTERFACE
 struct GAIN_STATE;
-#endif
+
+#define FADE_MIN_dB -126
 
 class HSPPreMixAudioHook : public IHXAudioHook
 {
 public:
-   HSPPreMixAudioHook(HelixSimplePlayer *player, int playerIndex, IHXAudioStream *pAudioStream);
+   HSPPreMixAudioHook(HelixSimplePlayer *player, int playerIndex, IHXAudioStream *pAudioStream,
+                      bool fadein = false, unsigned long fadelength = 0);
    virtual ~HSPPreMixAudioHook();
    /*
     *  IUnknown methods
@@ -42,6 +43,8 @@ public:
    STDMETHOD(OnInit) (THIS_
                       HXAudioFormat *pFormat);
 
+   void setFadeout(bool fadeout);
+   void setFadelength(unsigned long fadelength) { m_fadelength = fadelength; }
 
 private:
    HSPPreMixAudioHook();
@@ -52,6 +55,14 @@ private:
    IHXAudioStream    *m_stream;
    HXAudioFormat      m_format;
    int                m_count;
+
+   GAIN_STATE        *m_gaintool;
+   float              m_gaindb;
+   bool               m_fadein;
+   bool               m_fadeout;
+   unsigned long      m_fadelength;
+
+   int volumeize(unsigned char *data, unsigned char *outbuf, size_t len);
 };
 
 
