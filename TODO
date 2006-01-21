@@ -7,6 +7,10 @@ TODO-list for amaroK
 SHORT-TERM (URGENT):
 
  <markey>  Should we put "Repeat Track" in the playlist context menu? Seems to make sense.
+        :aumuell Or change the possible repeat mode states from "on" and "off" to
+                "off", "repeat playlist", "repeat title" and "repeat album"? The last would
+                look if on track change the album is still the same, and if not it would scan
+                the playlist backwards until the album changes and continue from there.
 
  <markey>  Make the <no engine> entry unselectable somehow, cause it makes no sense to choose
            it manually. (Too bad that QComboBox does not support disabled items)
