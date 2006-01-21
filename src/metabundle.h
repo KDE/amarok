@@ -78,9 +78,6 @@ public:
                                           bool noCache = false,
                                           TagLib::AudioProperties::ReadStyle = TagLib::AudioProperties::Fast );
 
-    /// for loading XML playlists
-    LIBAMAROK_EXPORT MetaBundle( QDomNode node );
-
     /** For the StreamProvider */
     LIBAMAROK_EXPORT MetaBundle( const QString &title,
             const QString &streamUrl,
@@ -160,11 +157,11 @@ public: //modifiers
     virtual void setUrl( const KURL &url );
     virtual void setPath( const QString &path );
     virtual void setTitle( const QString &title );
-    virtual void setArtist( const QString &artist );
-    virtual void setComposer( const QString &composer );
-    virtual void setAlbum( const QString &album );
-    virtual void setGenre( const QString &genre );
-    virtual void setComment( const QString &comment );
+    virtual void setArtist( const AtomicString &artist );
+    virtual void setComposer( const AtomicString &composer );
+    virtual void setAlbum( const AtomicString &album );
+    virtual void setGenre( const AtomicString &genre );
+    virtual void setComment( const AtomicString &comment );
 
     virtual void setYear( int year );
     virtual void setDiscNumber( int discNumber );
@@ -301,10 +298,10 @@ inline QString MetaBundle::zeroPad( uint i ) { return ( i < 10 ) ? QString( "0%1
 inline void MetaBundle::setUrl( const KURL &url ) { m_url = url; }
 inline void MetaBundle::setPath( const QString &path ) { m_url.setPath( path ); }
 inline void MetaBundle::setTitle( const QString &title ) { m_title = title; }
-inline void MetaBundle::setArtist( const QString &artist ) { m_artist = artist; }
-inline void MetaBundle::setAlbum( const QString &album ) { m_album = album; }
-inline void MetaBundle::setComment( const QString &comment ) { m_comment = comment; }
-inline void MetaBundle::setGenre( const QString &genre ) { m_genre = genre; }
+inline void MetaBundle::setArtist( const AtomicString &artist ) { m_artist = artist; }
+inline void MetaBundle::setAlbum( const AtomicString &album ) { m_album = album; }
+inline void MetaBundle::setComment( const AtomicString &comment ) { m_comment = comment; }
+inline void MetaBundle::setGenre( const AtomicString &genre ) { m_genre = genre; }
 inline void MetaBundle::setYear( int year) { m_year = year; }
 inline void MetaBundle::setTrack( int track ) { m_track = track; }
 inline void MetaBundle::setLength( int length ) { m_length = length; }
@@ -312,7 +309,7 @@ inline void MetaBundle::setBitrate( int bitrate ) { m_bitrate = bitrate; }
 inline void MetaBundle::setSampleRate( int sampleRate ) { m_sampleRate = sampleRate; }
 
 inline void MetaBundle::setDiscNumber( int discnumber ) { m_discNumber = discnumber; }
-inline void MetaBundle::setComposer( const QString &composer ) { m_composer = composer; }
+inline void MetaBundle::setComposer( const AtomicString &composer ) { m_composer = composer; }
 
 inline void MetaBundle::setPlayCount( int playcount ) { m_playCount = playcount; }
 inline void MetaBundle::setLastPlay( uint lastplay ) { m_lastPlay = lastplay; }

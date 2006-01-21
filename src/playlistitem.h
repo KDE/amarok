@@ -44,11 +44,11 @@ class PlaylistItem : public MetaBundle, public KListViewItem
 
     public: //reimplemented to update()
     virtual void setTitle( const QString &title );
-    virtual void setArtist( const QString &artist );
-    virtual void setComposer( const QString &composer );
-    virtual void setAlbum( const QString &album );
-    virtual void setComment( const QString &comment );
-    virtual void setGenre( const QString &genre );
+    virtual void setArtist( const AtomicString &artist );
+    virtual void setComposer( const AtomicString &composer );
+    virtual void setAlbum( const AtomicString &album );
+    virtual void setComment( const AtomicString &comment );
+    virtual void setGenre( const AtomicString &genre );
     virtual void setYear( int year );
     virtual void setDiscNumber( int discNumber );
     virtual void setTrack( int track );
@@ -168,31 +168,31 @@ inline void PlaylistItem::setTitle( const QString &title )
     update();
 }
 
-inline void PlaylistItem::setArtist( const QString &artist )
+inline void PlaylistItem::setArtist( const AtomicString &artist )
 {
     super::setArtist( artist );
     update();
 }
 
-inline void PlaylistItem::setComposer( const QString &composer )
+inline void PlaylistItem::setComposer( const AtomicString &composer )
 {
     super::setComposer( composer );
     update();
 }
 
-inline void PlaylistItem::setAlbum( const QString &album )
+inline void PlaylistItem::setAlbum( const AtomicString &album )
 {
     super::setAlbum( album );
     update();
 }
 
-inline void PlaylistItem::setComment( const QString &comment )
+inline void PlaylistItem::setComment( const AtomicString &comment )
 {
     super::setComment( comment );
     update();
 }
 
-inline void PlaylistItem::setGenre( const QString &genre )
+inline void PlaylistItem::setGenre( const AtomicString &genre )
 {
     super::setGenre( genre );
     update();

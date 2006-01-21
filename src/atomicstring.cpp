@@ -20,6 +20,7 @@
 #include <stdint.h>
 #include <qdeepcopy.h>
 #include <qstring.h>
+#include "debug.h"
 
 #include "atomicstring.h"
 
@@ -100,9 +101,14 @@ set_type AtomicString::s_store;
 class AtomicString::Impl: public QString, public KShared
 {
 public:
-    Impl() { }
-    Impl( const QString &s ): QString( s ) { }
-    virtual ~Impl() { AtomicString::s_store.erase( this ); }
+    bool stored;
+    Impl(): stored( false ) { }
+    Impl( const QString &s ): QString( s ), stored( false ) { }
+    virtual ~Impl()
+    {
+        if( stored )
+            AtomicString::s_store.erase( this );
+    }
 };
 
 AtomicString::AtomicString()
@@ -119,6 +125,7 @@ AtomicString::AtomicString( const QString &string )
     KSharedPtr<Impl> s = new Impl( string );
     const std::pair<set_type::iterator, bool> r = s_store.insert( s.data() );
     m_string = static_cast<Impl*>( *r.first );
+    m_string->stored = true;
 }
 
 AtomicString::~AtomicString()
@@ -155,4 +162,10 @@ AtomicString &AtomicString::operator=( const AtomicString &other )
 bool AtomicString::operator==( const AtomicString &other ) const
 {
     return m_string == other.m_string;
+}
+
+void AtomicString::listContents() //static
+{
+    for( set_type::iterator it = s_store.begin(), end = s_store.end(); it != end; ++it )
+        debug() << static_cast<Impl*>((*it))->_KShared_count() << " " << (**it) << endl;
 }

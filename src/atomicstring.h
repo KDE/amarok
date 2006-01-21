@@ -62,6 +62,9 @@ public:
 
     QString deepCopy() const;
 
+    // for debugging purposes -- lists all strings to stdout
+    static void listContents();
+
 private:
     class Impl;
     friend class Impl;

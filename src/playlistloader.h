@@ -8,15 +8,16 @@
 
 #include "debug.h"        //stack allocated
 #include <qptrlist.h>
+#include <qxml.h>         //baseclass
 #include <kurl.h>         //KURL::List
 #include "metabundle.h"   //stack allocated
 #include "threadweaver.h" //baseclass
 
-class QDomNode;
 class QListViewItem;
 class QTextStream;
 class PlaylistItem;
 class PLItemList;
+class XMLData;
 
 namespace KIO { class Job; }
 
@@ -91,7 +92,7 @@ PlaylistFile::format( const QString &fileName )
  * + List directories, remote and local
  * + Read tags, from file:/// and from DB
  */
-class UrlLoader : public ThreadWeaver::DependentJob
+class UrlLoader : public ThreadWeaver::DependentJob, public QXmlDefaultHandler
 {
 Q_OBJECT
 
@@ -112,6 +113,12 @@ protected:
 
     void loadXml( const KURL& );
 
+    virtual bool startElement( const QString &namespaceURI, const QString &localName, const QString &qName, const QXmlAttributes &atts );
+    virtual bool endElement( const QString &namespaceURI, const QString &localName, const QString &qName );
+    virtual bool characters( const QString &ch );
+    virtual bool endDocument();
+    virtual bool fatalError( const QXmlParseException &exception );
+
 private:
     KURL::List recurse( const KURL& );
 
@@ -122,6 +129,12 @@ private:
     bool          m_playFirstUrl;
     Debug::Block  m_block;
     QPtrList<PlaylistItem> m_oldQueue;
+    QXmlSimpleReader m_xmlReader;
+    QXmlInputSource  *m_xmlSource;
+    XMLData *m_tempData;
+    QValueList<XMLData> m_xml;
+    QString m_currentElement;
+    KURL m_currentURL;
 
 protected:
     UrlLoader( const UrlLoader& ); //undefined

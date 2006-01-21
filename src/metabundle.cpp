@@ -150,51 +150,6 @@ MetaBundle::MetaBundle( const QString& title,
    }
 }
 
-MetaBundle::MetaBundle( QDomNode node )
-    : m_year( Undetermined )
-    , m_discNumber( Undetermined )
-    , m_track( Undetermined )
-    , m_bitrate( Undetermined )
-    , m_length( Undetermined )
-    , m_sampleRate( Undetermined )
-    , m_score( Undetermined )
-    , m_rating( Undetermined )
-    , m_playCount( Undetermined )
-    , m_lastPlay( abs( Undetermined ) )
-    , m_filesize( Undetermined )
-    , m_exists( false )
-    , m_isValidMedia( true )
-    , m_type( Undetermined )
-{
-    setUrl( node.toElement().attribute( "url" ) );
-    m_exists = isStream() || ( url().protocol() == "file" && QFile::exists( url().path() ) );
-
-    for( uint i = 1, n = NUM_COLUMNS; i < n; ++i )
-    {
-        switch( i )
-        {
-            case Artist:
-            case Composer:
-            case Year:
-            case Album:
-            case DiscNumber:
-            case Track:
-            case Title:
-            case Genre:
-            case Comment:
-            case Length:
-            case Bitrate:
-            case Filesize:
-            case SampleRate:
-                setExactText( i, node.namedItem( columnName( i ) ).toElement().text() );
-                continue;
-
-            default:
-                continue;
-        }
-    }
-}
-
 bool
 MetaBundle::checkExists()
 {

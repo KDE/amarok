@@ -37,6 +37,7 @@ class LIBAMAROK_EXPORT AtomicURL
     AtomicString m_beginning;
     AtomicString m_directory;
     QString m_filename;
+    QString m_end;
 
 public:
     AtomicURL();
@@ -51,11 +52,11 @@ public:
 
     bool operator==( const AtomicURL &other ) const;
 
+    QString string() const;
+
     KURL url() const;
 
     operator KURL() const { return url(); }
-
-    KURL deepCopy() const;
 
     bool isEmpty() const;
 
@@ -64,6 +65,7 @@ public:
     QString path() const;
 
     QString fileName() const;
+
     QString directory() const;
 };
 

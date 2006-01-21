@@ -30,6 +30,7 @@ AtomicURL::AtomicURL( const AtomicURL &other )
     m_beginning = other.m_beginning;
     m_directory = other.m_directory;
     m_filename = other.m_filename;
+    m_end = other.m_end;
 }
 
 AtomicURL::AtomicURL( const KURL &url )
@@ -51,15 +52,15 @@ AtomicURL::AtomicURL( const KURL &url )
 
     m_beginning = s + host;
     m_directory = url.directory();
-    QString f = url.fileName() + url.query();
+    m_filename = url.fileName();
+    m_end = url.query();
     if( url.hasRef() )
-        f += QString("#") + url.ref();
-    m_filename = f;
-    /*if (url != this->url())
+        m_end += QString("#") + url.ref();
+    if (url != this->url())
     {
         debug() << "from: " << url << endl;
         debug() << "to:   " << this->url() << endl;
-    }*/
+    }
 }
 
 AtomicURL::~AtomicURL() { }
@@ -76,13 +77,20 @@ bool AtomicURL::operator==( const AtomicURL &other ) const
 {
     return m_filename  == other.m_filename
         && m_directory == other.m_directory
-        && m_beginning == other.m_beginning;
+        && m_beginning == other.m_beginning
+        && m_end       == other.m_end;
+}
+
+QString AtomicURL::string() const
+{
+    return m_beginning + path() + m_end;
 }
 
 KURL AtomicURL::url() const
 {
     if( isEmpty() )
         return KURL();
+    return KURL( string(), 106 );
     QString s = m_beginning;
     if( !m_directory->isEmpty() || !m_filename.isEmpty() )
     {
@@ -93,26 +101,25 @@ KURL AtomicURL::url() const
     return u;
 }
 
-KURL AtomicURL::deepCopy() const
-{
-    KURL u( m_beginning.deepCopy() );
-    u.setDirectory( m_directory.deepCopy() );
-    u.setFileName( QDeepCopy<QString>( m_filename ) );
-    return u;
-}
-
 bool AtomicURL::isEmpty() const
 {
     return m_beginning->isEmpty()
     && m_directory->isEmpty()
-    && m_filename.isEmpty();
+    && m_filename.isEmpty()
+    && m_end.isEmpty();
 }
 
 void AtomicURL::setPath( const QString &path )
 {
     KURL url;
     url.setPath( path );
-    *this = url;
+    if( m_beginning->isEmpty() )
+        *this = url;
+    else
+    {
+        m_directory = url.directory();
+        m_filename = url.fileName();
+    }
 }
 
 QString AtomicURL::path() const
@@ -123,4 +130,5 @@ QString AtomicURL::path() const
 }
 
 QString AtomicURL::fileName() const { return m_filename; }
+
 QString AtomicURL::directory() const { return m_directory; }

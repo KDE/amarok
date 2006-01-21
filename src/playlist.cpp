@@ -2729,7 +2729,7 @@ Playlist::saveXML( const QString &path )
     QDomElement playlist = newdoc.createElement( "playlist" );
     playlist.setAttribute( "product", "amaroK" );
 
-    //increase this whenever the format changes, in PlaylistLoader::loadXml() also
+    //increase this whenever the format changes, in PlaylistLoader::startElement() also
     playlist.setAttribute( "version", "2.4" );
     newdoc.appendChild( playlist );
 
