@@ -283,6 +283,16 @@ HelixEngine::load( const KURL &url, bool isStream )
    {
       int nextPlayer = m_current ? 0 : 1;
 
+      debug() << "######## XFADETEST0: where " << where(0) << " duration " << duration(0) << "\n";
+      debug() << "######## XFADETEST1: where " << where(1) << " duration " << duration(1) << "\n";
+      // seems like there should be a better way...
+      if ( (isPlaying(0) && isPlaying(1)) || // already crossfading, so must have pushed advance to next track
+           // player 0 playing and pushed advance to next track:
+           (isPlaying(0) && (duration(0) - where(0) - m_xfadeLength) > 1000) ||
+           // player 1 playing and pushed advance to next track:
+           (isPlaying(1) && (duration(1) - where(1) - m_xfadeLength) > 1000) )  
+         cleanup();
+
       if (isPlaying(m_current))
          setFadeout(true, m_xfadeLength, m_current);
 
