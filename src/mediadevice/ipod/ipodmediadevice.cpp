@@ -256,6 +256,16 @@ IpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bu
         track->unk176 = 0x00010000; // for non-podcasts
     }
 
+    uint albumID = CollectionDB::instance()->albumID( bundle.album(), false );
+    if( CollectionDB::instance()->albumIsCompilation( QString::number( albumID ) ) )
+    {
+        track->compilation = 0x01;
+    }
+    else
+    {
+        track->compilation = 0x00;
+    }
+
     m_dbChanged = true;
 
 #ifdef HAVE_ITDB_TRACK_SET_THUMBNAILS
