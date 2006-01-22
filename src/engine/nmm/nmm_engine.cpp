@@ -128,7 +128,6 @@ bool NmmEngine::load(const KURL& url, bool stream)
 
   cleanup();
 
-  // TODO: in general look what to cleanup if expection is thrown...
   // make the GraphBuilder construct an appropriate graph for the given URL
   try {
     QString host;
@@ -147,14 +146,12 @@ bool NmmEngine::load(const KURL& url, bool stream)
     GraphBuilder2 gb;
 
     // convert the URL to a valid NMM url
-    if(!gb.setURL("file://" + string(url.path().ascii()))) {
+    if(!gb.setURL("file://" + string(url.path().ascii())))
       throw Exception("Invalid URL given");
-    }
 
     ClientRegistry& registry = __app->getRegistry();
     {
       RegistryLock lock(registry);
-      // TODO: release __playback and __display when exception thrown?
 
       // get a playback node interface from the registry
       list<Response> playback_response = registry.initRequest(playback_nd);
@@ -185,7 +182,7 @@ bool NmmEngine::load(const KURL& url, bool stream)
 
     // if the display node is connected we know we will play a video TODO: what about video without audio?
     __with_video = __display->isInputConnected();
-    debug() << " __with_video " << __with_video << endl;
+    debug() << "NMM video playback? " << __with_video << endl;
 
     // set volume for playback node
     setVolume( m_volume );
@@ -246,8 +243,8 @@ bool NmmEngine::load(const KURL& url, bool stream)
     emit statusText( "NMM engine: Something went wrong..." );
   }
 
-  // TODO loading failed, clean up 
-  //cleanup();
+  // loading failed, clean up 
+  cleanup();
 
   return false;
 }
@@ -275,53 +272,73 @@ void NmmEngine::cleanup()
 {
   DEBUG_BLOCK
 
-  if (!__composite) {
-    return;
-  }
-
   // remove all event listeners
-  if(__with_video) {
+  if(__display && __with_video ) {
     __display->getParentObject()->removeEventListener(&__setProgress_listener);
     __display->getParentObject()->removeEventListener(&__endTrack_listener);
     __display->getParentObject()->removeEventListener(&__syncReset_listener);
+
+    __playback->getParentObject()->removeEventListener(&__trackDuration_listener);
+    __display->getParentObject()->removeEventListener(&__trackDuration_listener);
+
+    debug() << "removed event listener for __display" << endl;
   } 
-  else {
+  else if (__playback ) {
     __playback->getParentObject()->removeEventListener(&__setProgress_listener);
     __playback->getParentObject()->removeEventListener(&__endTrack_listener);
     __playback->getParentObject()->removeEventListener(&__syncReset_listener);
+
+    __playback->getParentObject()->removeEventListener(&__trackDuration_listener);
+    __display->getParentObject()->removeEventListener(&__trackDuration_listener);
+
+    debug() << "removed event listener for __playback" << endl;
   }
-  __playback->getParentObject()->removeEventListener(&__trackDuration_listener);
-  __display->getParentObject()->removeEventListener(&__trackDuration_listener);
 
-  // stop the graph
-  __composite->reachActivated();
+  if( __composite && __composite->isStarted() ) {
+    __composite->reachActivated();
+    debug() << "__composite STARTED -> ACTIVATED" << endl;
+  }
 
-  // playback node was created
-  if(__playback->isStarted()) {
+  if( __playback && __playback->isStarted() ) {
     __playback->reachActivated();
+    debug() << "__playback STARTED -> ACTIVATED " << endl;
   }
 
-  if(__display->isStarted()) {
+  if( __display && __display->isStarted() ) {
     __display->reachActivated();
+    debug() << "__display STARTED -> ACTIVATED " << endl;
   }
 
-  __composite->flush();
-  __composite->reachConstructed();
+  if( __composite && __composite->isActivated() ) {
+    __composite->flush();
+    __composite->reachConstructed();
+    debug() << "__composite ACTIVATED -> CONSTRUCTED " << endl;
+  }
 
-  __playback->flush();
-  __playback->reachConstructed();
+  if( __playback && __playback->isActivated() ) {
+    __playback->flush();
+    __playback->reachConstructed();
+    debug() << "__playback ACTIVATED -> CONSTRUCTED " << endl;
+  }
 
-   if(__display->isActivated()) {
+  if( __display && __display->isActivated() ) {
     __display->flush();
     __display->reachConstructed();
+    debug() << "__display ACTIVATED -> CONSTRUCTED " << endl;
   }
- 
+
   // release the playback and video node
   ClientRegistry& registry = __app->getRegistry();
   {
     RegistryLock lock(registry);
-    registry.releaseNode(*__playback);
-    registry.releaseNode(*__display);
+    if(__playback) {
+      registry.releaseNode(*__playback);
+      debug() << "RELEASED __playback node" << endl;
+    }
+    if(__display) {
+      registry.releaseNode(*__display);
+      debug() << "RELEASED __display node" << endl;
+    }
   }
 
   delete __composite;
