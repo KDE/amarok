@@ -19,9 +19,11 @@
 #include <qptrlist.h>
 #include <metabundle.h>
 
+#include "tooltip.h"
+
 class QWidget;
 
-class TrackToolTip: public QObject
+class TrackToolTip: public QObject, public amaroK::ToolTipClient
 {
     Q_OBJECT
 
@@ -36,12 +38,15 @@ class TrackToolTip: public QObject
     void setPos( int pos );
     void clear();
 
+    public:
+    virtual QPair<QString, QRect> toolTipText( QWidget*, const QPoint& ) const;
+
     private slots:
     void slotCoverChanged( const QString &artist, const QString &album );
     void slotUpdate( const QString &url = QString::null );
 
     private:
-    QString tooltip();
+    QString tooltip() const;
     void updateWidgets();
 
     static TrackToolTip *s_instance;

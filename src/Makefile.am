@@ -127,6 +127,7 @@ libamarok_la_SOURCES = \
     tagguesser.cpp \
     tagguesserconfigdialog.ui \
     threadweaver.cpp \
+    tooltip.cpp \
     tracktooltip.cpp \
     trackpickerdialog.cpp \
     trackpickerdialogbase.ui

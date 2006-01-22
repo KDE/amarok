@@ -26,6 +26,7 @@
 #include "playlistwindow.h"  //friend
 #include "playlistitem.h"
 #include "metabundle.h"
+#include "tooltip.h"         //baseclass
 #include "tracktooltip.h"
 
 #include <klistview.h>       //baseclass
@@ -65,7 +66,7 @@ namespace amaroK { class TrackSlider; }
  */
 
 
-class Playlist : private KListView, public EngineObserver
+class Playlist : private KListView, public EngineObserver, public amaroK::ToolTipClient
 {
         Q_OBJECT
 
@@ -127,7 +128,7 @@ class Playlist : private KListView, public EngineObserver
 
         int  numVisibleColumns() const;
         QValueList<int> visibleColumns() const;
-        int  mapToLogicalColumn( int physical ); // Converts physical PlaylistItem column position to logical
+        int  mapToLogicalColumn( int physical ) const; // Converts physical PlaylistItem column position to logical
         QString columnText( int c ) const { return KListView::columnText( c ); };
 
         /** Call this to prevent items being removed from the playlist, it is mostly for internal use only
@@ -155,6 +156,9 @@ class Playlist : private KListView, public EngineObserver
         friend void PlaylistWindow::init(); //setting up connections etc.
         friend TrackToolTip::TrackToolTip();
         friend bool PlaylistWindow::eventFilter( QObject*, QEvent* ); //for convenience we handle some playlist events here
+
+    public:
+        QPair<QString, QRect> toolTipText( QWidget*, const QPoint &pos ) const;
 
     signals:
         void aboutToClear();
@@ -283,10 +287,6 @@ class Playlist : private KListView, public EngineObserver
 
 
         /// ATTRIBUTES
-
-        class PlaylistToolTip;
-        friend class PlaylistToolTip;
-        PlaylistToolTip *m_tooltip;
 
         PlaylistItem  *m_currentTrack;          //the track that is playing
         QListViewItem *m_marker;                //track that has the drag/drop marker under it

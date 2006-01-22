@@ -15,16 +15,17 @@
   email:     illissius@gmail.com
 */
 
-#include "tracktooltip.h"
-
 #include "amarok.h"
+#include "debug.h"
 #include "metabundle.h"
 #include "collectiondb.h"
 #include "playlist.h"
 #include "playlistitem.h"
-#include <qtooltip.h>
 #include <qapplication.h>
 #include <kstandarddirs.h>
+
+
+#include "tracktooltip.h"
 
 
 TrackToolTip *TrackToolTip::instance()
@@ -50,7 +51,7 @@ void TrackToolTip::addToWidget( QWidget *widget )
     if( widget && !m_widgets.containsRef( widget ) )
     {
         m_widgets.append( widget );
-        QToolTip::add( widget, tooltip() );
+        amaroK::ToolTip::add( this, widget );
     }
 }
 
@@ -58,7 +59,7 @@ void TrackToolTip::removeFromWidget( QWidget *widget )
 {
     if( widget && m_widgets.containsRef( widget ) )
     {
-        QToolTip::remove( widget );
+        amaroK::ToolTip::remove( widget );
         m_widgets.removeRef( widget );
     }
 }
@@ -199,6 +200,11 @@ void TrackToolTip::clear()
     updateWidgets();
 }
 
+QPair<QString, QRect> TrackToolTip::toolTipText( QWidget*, const QPoint& ) const
+{
+    return QPair<QString, QRect>( tooltip(), QRect() );
+}
+
 void TrackToolTip::slotCoverChanged( const QString &artist, const QString &album )
 {
     if( artist == m_tags.artist() && album == m_tags.album() )
@@ -217,7 +223,7 @@ void TrackToolTip::slotUpdate( const QString &url )
         setTrack( m_tags, true );
 }
 
-QString TrackToolTip::tooltip()
+QString TrackToolTip::tooltip() const
 {
     QString tip = m_tooltip;;
     if( !m_tags.isEmpty() )
@@ -236,8 +242,7 @@ QString TrackToolTip::tooltip()
 
 void TrackToolTip::updateWidgets()
 {
-    for( QWidget *widget = m_widgets.first(); widget; widget = m_widgets.next() )
-        QToolTip::add( widget, tooltip() );
+    amaroK::ToolTip::updateTip();
 }
 
 #include "tracktooltip.moc"

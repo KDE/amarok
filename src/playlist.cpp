@@ -44,6 +44,7 @@
 #include <qlabel.h>          //showUsageMessage()
 #include <qpainter.h>
 #include <qpen.h>            //slotGlowTimer()
+#include <qsimplerichtext.h> //toolTipText()
 #include <qsortedlist.h>
 #include <qtimer.h>
 #include <qtooltip.h>
@@ -115,69 +116,6 @@ public:
 
 typedef MyIterator MyIt;
 
-// why, why, why?!
-// (because we reimplement QListViewItem::paintCell(), which disables QListView's tooltipping)
-// inspiration and code taken from qlistview.cpp, Copyright (C) 1992-2005 Trolltech AS.
-class Playlist::PlaylistToolTip: public QToolTip
-{
-    Playlist *view;
-
-    public:
-    PlaylistToolTip( QWidget *parent, Playlist *pl ): QToolTip( parent ), view( pl ) { }
-
-    void maybeTip( const QPoint &pos )
-    {
-        if ( !parentWidget() || !view || !view->showToolTips() )
-            return;
-
-        PlaylistItem *item = static_cast<PlaylistItem*>( view->itemAt( pos ) );
-        if( !item )
-            return;
-
-        const QPoint contentsPos = view->viewportToContents( pos );
-        const int col = view->header()->sectionAt( contentsPos.x() );
-
-        QString text;
-        if( col == PlaylistItem::Rating )
-            switch( item->rating() )
-            {
-                case 0: text = i18n( "Not rated" ); break;
-                case 1: text = i18n( "Crap" ); break;
-                case 2: text = i18n( "Tolerable" ); break;
-                case 3: text = i18n( "Good" ); break;
-                case 4: text = i18n( "Excellent" ); break;
-                case 5: text = i18n( "Inconceivable!" ); break;
-                default: text = "This is a bug.";
-            }
-        else
-            text = item->text( col );
-
-        QRect r = view->itemRect( item );
-        int headerPos = view->header()->sectionPos( col );
-        r.setLeft( headerPos );
-        r.setRight( headerPos + view->header()->sectionSize( col ) );
-
-        int width = r.width() - view->itemMargin() * 2 + view->fontMetrics().minLeftBearing()
-                                                       + view->fontMetrics().minRightBearing() - 1;
-        if( item->pixmap( col ) )
-            width -= item->pixmap( col )->width();
-        if( item == view->m_currentTrack )
-        {
-            if( col == view->m_firstColumn )
-                width -= 12;
-            if( col == view->mapToLogicalColumn( view->numVisibleColumns() - 1 ) )
-                width -= 12;
-        }
-
-        if( ( col == PlaylistItem::Rating && item->ratingAtPoint( contentsPos.x() ) <= item->rating() ) ||
-            ( col != PlaylistItem::Rating && view->fontMetrics().width( text ) > width ) )
-        {
-            tip( r, text );
-        }
-    }
-};
-
-
 //////////////////////////////////////////////////////////////////////////////////////////
 /// CLASS TagWriter : Threaded tag-updating
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -244,7 +182,6 @@ Playlist *Playlist::s_instance = 0;
 Playlist::Playlist( QWidget *parent )
         : KListView( parent, "ThePlaylist" )
         , EngineObserver( EngineController::instance() )
-        , m_tooltip( new PlaylistToolTip( viewport(), this ) )
         , m_currentTrack( 0 )
         , m_marker( 0 )
         , m_hoveredRating( 0 )
@@ -429,6 +366,8 @@ Playlist::Playlist( QWidget *parent )
 
     connect( this, SIGNAL( contentsMoving( int, int ) ), SLOT( slotContentsMoving() ) );
 
+    amaroK::ToolTip::add( this, viewport() );
+
     header()->installEventFilter( this );
     renameLineEdit()->installEventFilter( this );
     setTabOrderedRenaming( false );
@@ -460,7 +399,7 @@ Playlist::~Playlist()
 
     //speed up quit a little
     safeClear();   //our implementation is slow
-    delete m_tooltip;
+    //amaroK::ToolTip::remove( viewport() ); why does this crash?
     blockSignals( true ); //might help
 }
 
@@ -1560,6 +1499,79 @@ Playlist::activate( QListViewItem *item )
     //use PlaylistItem::MetaBundle as it also updates the audioProps
     EngineController::instance()->play( *item );
     #undef item
+}
+
+QPair<QString, QRect> Playlist::toolTipText( QWidget*, const QPoint &pos ) const
+{
+    PlaylistItem *item = static_cast<PlaylistItem*>( itemAt( pos ) );
+    if( !item )
+        return QPair<QString, QRect>( QString::null, QRect() );
+
+    const QPoint contentsPos = viewportToContents( pos );
+    const int col = header()->sectionAt( contentsPos.x() );
+
+    QString text;
+    if( col == PlaylistItem::Rating )
+        switch( item->rating() )
+        {
+            case 0: text = i18n( "Not rated" ); break;
+            case 1: text = i18n( "Crap" ); break;
+            case 2: text = i18n( "Tolerable" ); break;
+            case 3: text = i18n( "Good" ); break;
+            case 4: text = i18n( "Excellent" ); break;
+            case 5: text = i18n( "Inconceivable!" ); break;
+            default: text = "This is a bug.";
+        }
+    else
+        text = item->text( col );
+
+    QRect irect = itemRect( item );
+    const int headerPos = header()->sectionPos( col );
+    irect.setLeft( headerPos );
+    irect.setRight( headerPos + header()->sectionSize( col ) );
+
+    static QFont f;
+    static int minbearing = 1337 + 666; //can be 0 or negative, 2003 is less likely
+    if( minbearing == 2003 || f != font() )
+    {
+        f = font(); //getting your bearings can be expensive, so we cache them
+        minbearing = fontMetrics().minLeftBearing() + fontMetrics().minRightBearing();
+    }
+
+    int itemWidth = irect.width() - itemMargin() * 2 + minbearing - 2;
+    if( item->pixmap( col ) )
+        itemWidth -= item->pixmap( col )->width();
+    if( item == m_currentTrack )
+    {
+        if( col == m_firstColumn )
+            itemWidth -= 12;
+        if( col == mapToLogicalColumn( numVisibleColumns() - 1 ) )
+            itemWidth -= 12;
+    }
+
+    if( col != PlaylistItem::Rating && fontMetrics().width( text ) <= itemWidth )
+        return QPair<QString, QRect>( QString::null, QRect() );
+
+    QRect globalRect( viewport()->mapToGlobal( irect.topLeft() ), irect.size() );
+    QSimpleRichText t( text, font() );
+    int dright = QApplication::desktop()->screenGeometry( qscrollview() ).topRight().x();
+    t.setWidth( dright - globalRect.left() );
+    if( col == PlaylistItem::Rating )
+        globalRect.setRight( kMin( dright, kMax( globalRect.left() + t.widthUsed(), globalRect.left() + ( PlaylistItem::star()->width() + 1 ) * item->rating() ) ) );
+    else
+        globalRect.setRight( kMin( globalRect.left() + t.widthUsed(), dright ) );
+    globalRect.setBottom( globalRect.top() + kMax( irect.height(), t.height() ) );
+
+    if( ( col == PlaylistItem::Rating && PlaylistItem::ratingAtPoint( contentsPos.x() ) <= item->rating() ) ||
+        ( col != PlaylistItem::Rating ) )
+    {
+        text = text.replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" );
+        if( item == m_currentTrack )
+            text = QString("<i>%2</i>").arg( text );
+        return QPair<QString, QRect>( text, globalRect );
+    }
+
+    return QPair<QString, QRect>( QString::null, QRect() );
 }
 
 void
@@ -3636,7 +3648,7 @@ Playlist::contentsMouseMoveEvent( QMouseEvent *e )
     {
         const int rating = item->ratingAtPoint( pos.x() );
         if( rating > item->rating() )
-            PlaylistToolTip::hide();
+            amaroK::ToolTip::hideTips();
         if( leftButtonPressed && !CTRLorSHIFT )
         {
             if( m_selCount > 1 && item->isSelected() )
@@ -3784,7 +3796,7 @@ QValueList<int> Playlist::visibleColumns() const
 }
 
 int
-Playlist::mapToLogicalColumn( int physical )
+Playlist::mapToLogicalColumn( int physical ) const
 {
     int logical = header()->mapToSection( physical );
 
@@ -4043,7 +4055,7 @@ Playlist::slotMouseButtonPressed( int button, QListViewItem *after, const QPoint
 
 void Playlist::slotContentsMoving()
 {
-    PlaylistToolTip::hide();
+    amaroK::ToolTip::hideTips();
     QTimer::singleShot( 0, this, SLOT( contentsMouseMoveEvent() ) );
 }
 
