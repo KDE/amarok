@@ -256,14 +256,12 @@ bool NmmEngine::play(uint)
   if (!__composite)
     return false;
 
-  // wake up if paused
-  ISynchronizedSink_var sync_sink(__playback->getParentObject()->getCheckedInterface<ISynchronizedSink>());
-  if (sync_sink.get()) {
-    sync_sink->getController()->wakeup();
+  // TODO: seek to the last position if 'resume playback on startup' is enabled
+  if( __state != Engine::Playing ) {
+    __synchronizer->wakeup();
+    __state = Engine::Playing;
+    emit stateChanged(Engine::Playing);
   }
-
-  __state = Engine::Playing;
-  emit stateChanged(Engine::Playing);
 
   return true;
 }
@@ -382,7 +380,6 @@ void NmmEngine::pause()
     emit stateChanged(Engine::Paused);
   }
   else {
-    __synchronizer->wakeup();
     play();
   }
 }
