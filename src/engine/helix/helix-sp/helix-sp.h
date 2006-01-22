@@ -214,27 +214,11 @@ private:
    bool 		   bStopping;
    int 		           nPlay;
 
-   // crossfading
-   struct xfade
-   {
-      bool                 crossfading;
-      unsigned long        duration;
-      int                  fromIndex;
-      int                  toIndex;
-      IHXAudioStream       *fromStream;
-      IHXAudioStream       *toStream;
-   } m_xf;
-   
 public:
-   // cross fade the next track (given by url). startPos is in the old stream
-   void enableCrossFader(int playerFrom, int playerTo);
-   void disableCrossFader();
-   void crossFade(const char *url, unsigned long startPos, unsigned long xfduration);
-   inline struct xfade &xf() { return m_xf; }
    const IHXAudioPlayer *getAudioPlayer(int playerIndex) const { return ppctrl[playerIndex]->pAudioPlayer; }
    const IHXAudioCrossFade *getCrossFader(int playerIndex) const { return ppctrl[playerIndex]->pCrossFader; }
-   void startCrossFade();
 
+   // crossfade
    void setFadeout(bool fadeout, unsigned long fadelength, int playerIndex = ALL_PLAYERS);
 
    // scope

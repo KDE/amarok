@@ -362,7 +362,6 @@ HelixSimplePlayer::HelixSimplePlayer() :
    m_MvolAtStart(-1),
    m_preamp(0)
 {
-   m_xf.crossfading = 0;
 
    pthread_mutexattr_t ma;
 
@@ -1576,75 +1575,6 @@ int HelixSimplePlayer::getPluginInfo(int index,
       return 0;
    }
    return -1;
-}
-
-void HelixSimplePlayer::enableCrossFader(int playerFrom, int playerTo)
-{
-   if (playerFrom < nNumPlayers && playerTo < nNumPlayers)
-   {
-      m_xf.crossfading = true;
-      m_xf.fromIndex = playerFrom;
-      m_xf.toIndex = playerTo;
-   }   
-}
-
-void HelixSimplePlayer::disableCrossFader()
-{
-   m_xf.crossfading = false;
-}
-
-// the purpose is to setup the next stream for crossfading.  the player needs to get the new stream in the AudioPlayerResponse before the cross fade can begin
-void HelixSimplePlayer::crossFade(const char *url, unsigned long /*startPos*/, unsigned long xfduration)
-{
-   if (m_xf.crossfading)
-   {
-      m_xf.duration = xfduration;
-      m_xf.fromStream = 0;
-      m_xf.fromStream = ppctrl[m_xf.fromIndex]->pAudioPlayer->GetAudioStream(0);
-      if (m_xf.fromStream)
-      {
-         print2stderr("Got Stream 1\n");
-         setURL(url, m_xf.toIndex);
-      }
-      else
-         disableCrossFader(); // what else can I do?
-   }
-}
-
-
-void HelixSimplePlayer::startCrossFade()
-{
-   if (xf().crossfading)
-   {
-      // figure out when to start the crossfade
-      int startFrom = duration(xf().fromIndex) - xf().duration;
-      //int whereFrom = where(xf().fromIndex) + 1000; // 1 sec is just majic...otherwise the crossfader just doesnt work
-
-      // only fade in the new stream if we are playing one already
-      if (xf().fromStream)
-      {
-         print2stderr("Player %d where %d  duration %d  startFrom %d\n", xf().fromIndex, where(xf().fromIndex), duration(xf().fromIndex), startFrom);
-         
-         // fade out the now-playing-stream
-         //(getCrossFader(xf().fromIndex))->CrossFade(xf().fromStream, 0, startFrom > whereFrom ? startFrom : whereFrom, 0, xf().duration);
-
-         // fade in the new stream
-         //(getCrossFader(xf().toIndex))->CrossFade(0, xf().toStream, 0, 0, xf().duration);
-         start(xf().toIndex);
-         
-         // switch from and to for the next stream
-         int index = xf().toIndex;
-         xf().toIndex = xf().fromIndex;
-         xf().fromIndex = index;
-         xf().fromStream = xf().toStream = 0;
-      }
-      else
-      {
-         // here we suppose that we should be starting the first track
-         if (xf().toStream) // this would mean that the stream could not be initialize, or wasnt finished initializing yet
-            start(xf().toIndex);
-      }
-   }
 }
 
 
