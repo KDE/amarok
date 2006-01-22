@@ -149,7 +149,6 @@ ContextBrowser::ContextBrowser( const char *name )
         , m_dirtyLyricsPage( true )
         , m_dirtyWikiPage( true )
         , m_emptyDB( CollectionDB::instance()->isEmpty() )
-        , m_lyricJob( NULL )
         , m_wikiBackPopup( new KPopupMenu( this ) )
         , m_wikiForwardPopup( new KPopupMenu( this ) )
         , m_wikiJob( NULL )
@@ -474,7 +473,6 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
     m_dirtyCurrentTrackPage = true;
     m_dirtyLyricsPage = true;
     m_dirtyWikiPage = true;
-    m_lyricJob = 0; //New metadata, so let's forget previous lyric-fetching jobs
     m_wikiJob = 0; //New metadata, so let's forget previous wiki-fetching jobs
 
     // Prepend stream metadata history item to list
@@ -516,7 +514,6 @@ void ContextBrowser::engineStateChanged( Engine::State state, Engine::State oldS
         // Pause shouldn't clear everything
         m_dirtyCurrentTrackPage = true;
         m_dirtyLyricsPage = true;
-        m_lyricJob = 0; //let's forget previous lyric-fetching jobs
         m_wikiJob = 0; //let's forget previous wiki-fetching jobs
     }
 
@@ -1962,7 +1959,7 @@ void ContextBrowser::showLyrics( const QString &url )
 
     m_lyrics = CollectionDB::instance()->getHTMLLyrics( EngineController::instance()->bundle().url().path() );
 
-    if ( !m_dirtyLyricsPage || m_lyricJob ) return;
+    if ( !m_dirtyLyricsPage ) return;
 
     QString title  = EngineController::instance()->bundle().title();
     QString artist = EngineController::instance()->bundle().artist();
@@ -1981,6 +1978,7 @@ void ContextBrowser::showLyrics( const QString &url )
         }
     }
 
+    // FIXME What to do about this? How to get the URLs for Add/Search from the script?
     m_lyricAddUrl = QString( "http://lyrc.com.ar/en/add/add.php?grupo=%1&tema=%2&disco=%3&ano=%4" ).arg(
             KURL::encode_string_no_slash( artist ),
             KURL::encode_string_no_slash( title ),
@@ -2014,7 +2012,6 @@ void ContextBrowser::showLyrics( const QString &url )
         m_lyricsPage->set( m_HTMLSource );
 
         m_dirtyLyricsPage = false;
-        m_lyricJob = NULL;
         saveHtmlData(); // Send html code to file
     }
     else
@@ -2067,7 +2064,6 @@ ContextBrowser::lyricsResult( const QString& lyrics ) //SLOT
         m_lyricsPage->set( m_HTMLSource );
 
         m_dirtyLyricsPage = false;
-        m_lyricJob = NULL;
         saveHtmlData(); // Send html code to file
 
         return;
@@ -2079,6 +2075,9 @@ ContextBrowser::lyricsResult( const QString& lyrics ) //SLOT
     {
         showLyricSuggestions();
     }
+    else
+        CollectionDB::instance()->setHTMLLyrics( EngineController::instance()->bundle().url().path(), m_lyrics );
+
 //     else
 //     {
 //         m_lyrics = "<div class='info'><p>" + i18n( "Lyrics not found." ) + "</p></div>";
@@ -2104,7 +2103,6 @@ ContextBrowser::lyricsResult( const QString& lyrics ) //SLOT
 
     m_lyricsToolBar->getButton( LYRICS_BROWSER )->setEnabled(true);
     m_dirtyLyricsPage = false;
-    m_lyricJob = NULL;
     saveHtmlData(); // Send html code to file
 }
 

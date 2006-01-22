@@ -143,7 +143,6 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         QString       m_lyricAddUrl;
         QString       m_lyricSearchUrl;
         QString       m_lyricCurrentUrl;
-        KIO::TransferJob* m_lyricJob;
         Browser::ToolBar* m_lyricsToolBar;
 
         QString       m_wiki;
