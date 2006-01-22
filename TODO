@@ -30,6 +30,8 @@ SHORT-TERM (URGENT):
            selection which is sql intensive (eg, select all).  Instead of calculating the items
            in each of those nodes, we should add the sql to the drag and allow the playlist loader
            to do the work for us (which is threaded).
+           <muesli> See SqlLoader class in playlistloader. We do the very same stuff for
+           Smart-Playlists already.
 
  <markey>  The analyzer now uses crazy amounts of CPU when amaroK is idle, even if the window
            is not visible.
