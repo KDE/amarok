@@ -937,13 +937,20 @@ IpodMediaDevice::addTrackToView(Itdb_Track *track)
     {
         visible = true;
 
-        QString artistName(QString::fromUtf8(track->artist));
+        QString artistName;
+        if( track->compilation )
+            artistName = i18n( "Various Artists" );
+        else
+            artistName = QString::fromUtf8(track->artist);
+
         IpodMediaItem *artist = getArtist(artistName);
         if(!artist)
         {
             artist = new IpodMediaItem(m_view);
             artist->setText( 0, artistName );
             artist->setType( MediaItem::ARTIST );
+            if( artistName == i18n( "Various Artists" ) )
+                artist->m_order = 1;
         }
 
         QString albumName(QString::fromUtf8(track->album));
@@ -957,7 +964,10 @@ IpodMediaDevice::addTrackToView(Itdb_Track *track)
 
         item = new IpodMediaItem( album );
         QString titleName = QString::fromUtf8(track->title);
-        item->setText( 0, titleName );
+        if( track->compilation )
+            item->setText( 0, QString::fromUtf8(track->artist) + i18n( " - " ) + titleName );
+        else
+            item->setText( 0, titleName );
         item->setType( MediaItem::TRACK );
         item->m_track = track;
         item->bundleFromTrack( track );
@@ -1191,6 +1201,19 @@ IpodMediaDevice::getTrack(const QString &artist, const QString &album, const QSt
         for( IpodMediaItem *track = dynamic_cast<IpodMediaItem *>(item->findItem(title));
                 track;
                 track = dynamic_cast<IpodMediaItem *>(item->findItem(title, track)) )
+        {
+            if( trackNumber==-1 || track->bundle()->track() == trackNumber )
+                return track;
+        }
+    }
+
+    item = getAlbum( i18n( "Various Artists" ), album );
+    if( item )
+    {
+        QString t = artist + i18n(" - ") + title;
+        for( IpodMediaItem *track = dynamic_cast<IpodMediaItem *>(item->findItem(t));
+                track;
+                track = dynamic_cast<IpodMediaItem *>(item->findItem(t, track)) )
         {
             if( trackNumber==-1 || track->bundle()->track() == trackNumber )
                 return track;

@@ -792,7 +792,7 @@ MediaItem::compare( QListViewItem *i, int col, bool ascending ) const
 {
     MediaItem *item = dynamic_cast<MediaItem *>(i);
     if(item && col==0 && item->m_order != m_order)
-        return ascending ? m_order-item->m_order : item->m_order-m_order;
+        return m_order-item->m_order;
 
     return KListViewItem::compare(i, col, ascending);
 }

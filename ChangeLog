@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.4:
   FEATURES:
+    * Handle compilations as such on iPods.
     * New DCOP calls "mediabrowser: ..." for interfacing with media devices.
     * Multiple simultaneously connected media devices.
     * Lyrics support is now scriptable. This allows to add support for any
