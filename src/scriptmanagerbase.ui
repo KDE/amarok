@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>366</width>
-            <height>292</height>
+            <width>367</width>
+            <height>237</height>
         </rect>
     </property>
     <property name="caption">
@@ -19,20 +19,6 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="Line" row="9" column="0" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>line2</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-        </widget>
         <widget class="KListView" row="0" column="0" rowspan="9" colspan="1">
             <column>
                 <property name="text">
@@ -139,27 +125,11 @@
                 <string>&amp;Uninstall</string>
             </property>
         </widget>
-        <widget class="QCheckBox" row="10" column="0" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>checkBox_autoRun</cstring>
-            </property>
-            <property name="text">
-                <string>R&amp;estart running scripts on application startup</string>
-            </property>
-            <property name="toolTip" stdset="0">
-                <string>If enabled, amaroK will automatically restart scripts that were running when you exited the application.</string>
-            </property>
-        </widget>
     </grid>
 </widget>
-<customwidgets>
-</customwidgets>
 <includes>
     <include location="global" impldecl="in implementation">kdialog.h</include>
 </includes>
 <layoutdefaults spacing="6" margin="0"/>
 <layoutfunctions spacing="KDialog::spacingHint"/>
-<includehints>
-    <includehint>klistview.h</includehint>
-</includehints>
 </UI>

@@ -117,6 +117,9 @@ class ScriptManager : public KDialogBase, public EngineObserver
         void scriptFinished( KProcess* process );
 
     private:
+        /** Terminates a process with SIGTERM and deletes the KProcIO object */
+        void terminateProcess( KProcIO** proc );
+
         /** Sends a string message to all running scripts */
         void notifyScripts( const QString& message );
 

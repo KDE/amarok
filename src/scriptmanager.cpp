@@ -180,9 +180,7 @@ ScriptManager::~ScriptManager()
     ScriptMap::Iterator end( m_scripts.end() );
     for( it = m_scripts.begin(); it != end; ++it ) {
         if( it.data().process ) {
-            it.data().process->kill(); // Sends SIGTERM
-            it.data().process->detach();
-            delete it.data().process;
+            terminateProcess( &it.data().process );
             runningScripts << it.key();
         }
     }
@@ -190,7 +188,6 @@ ScriptManager::~ScriptManager()
     // Save config
     KConfig* const config = amaroK::config( "ScriptManager" );
     config->writeEntry( "Running Scripts", runningScripts );
-    config->writeEntry( "Auto Run", m_gui->checkBox_autoRun->isChecked() );
 
     s_instance = 0;
 }
@@ -280,20 +277,14 @@ ScriptManager::findScripts() //SLOT
     // Handle auto-run:
 
     KConfig* const config = amaroK::config( "ScriptManager" );
-    const bool autoRun = config->readBoolEntry( "Auto Run", false );
-    m_gui->checkBox_autoRun->setChecked( autoRun );
+    const QStringList runningScripts = config->readListEntry( "Running Scripts" );
 
-    if( autoRun ) {
-        const QStringList runningScripts = config->readListEntry( "Running Scripts" );
-
-        QStringList::ConstIterator it;
-        QStringList::ConstIterator end( runningScripts.end() );
-        for( it = runningScripts.begin(); it != end; ++it ) {
-            if( m_scripts.contains( *it ) ) {
-                debug() << "Auto-running script: " << *it << endl;
-                m_gui->listView->setCurrentItem( m_scripts[*it].li );
-                slotRunScript();
-            }
+    end = runningScripts.end();
+    for( it = runningScripts.begin(); it != end; ++it ) {
+        if( m_scripts.contains( *it ) ) {
+            debug() << "Auto-running script: " << *it << endl;
+            m_gui->listView->setCurrentItem( m_scripts[*it].li );
+            slotRunScript();
         }
     }
 
@@ -456,16 +447,11 @@ ScriptManager::slotUninstallScript()
         if( it.data().url.directory() == directory )
             keys << it.key();
 
-    // Kill script processes, remove entries from script list
+    // Terminate script processes, remove entries from script list
     QStringList::Iterator itKeys;
     for( itKeys = keys.begin(); itKeys != keys.end(); ++itKeys ) {
         delete m_scripts[*itKeys].li;
-        if( m_scripts[*itKeys].process ) {
-            // Terminate script process (with SIGTERM)
-            m_scripts[*itKeys].process->kill();
-            m_scripts[*itKeys].process->detach();
-            delete m_scripts[*itKeys].process;
-        }
+        terminateProcess( &m_scripts[*itKeys].process );
         m_scripts.erase( *itKeys );
     }
 }
@@ -519,12 +505,7 @@ ScriptManager::slotStopScript()
     if( m_scripts.find( name ) == m_scripts.end() )
         return;
 
-    // Terminate script process (with SIGTERM)
-    m_scripts[name].process->kill();
-    m_scripts[name].process->detach();
-
-    delete m_scripts[name].process;
-    m_scripts[name].process = 0;
+    terminateProcess( &m_scripts[name].process );
     m_scripts[name].log = QString::null;
     slotCurrentChanged( m_gui->listView->currentItem() );
 
@@ -679,6 +660,19 @@ ScriptManager::scriptFinished( KProcess* process ) //SLOT
 ////////////////////////////////////////////////////////////////////////////////
 // private
 ////////////////////////////////////////////////////////////////////////////////
+
+void
+ScriptManager::terminateProcess( KProcIO** proc )
+{
+    if( *proc ) {
+        (*proc)->kill(); // Sends SIGTERM
+        (*proc)->detach();
+
+        delete *proc;
+        *proc = 0;
+    }
+}
+
 
 void
 ScriptManager::notifyScripts( const QString& message )
