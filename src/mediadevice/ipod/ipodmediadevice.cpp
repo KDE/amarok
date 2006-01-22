@@ -1645,6 +1645,7 @@ IpodMediaDevice::supportedFiletypes()
 
     if( m_supportsVideo )
     {
+        list << "mp4";
         list << "m4v";
         list << "mp4v";
         list << "mov";
