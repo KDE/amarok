@@ -67,6 +67,14 @@ const QString MetaBundle::columnName( int c ) //static
     return "<ERROR>";
 }
 
+int MetaBundle::columnIndex( const QString &name )
+{
+    for( int i = 0; i < NUM_COLUMNS; ++i )
+        if( columnName( i ).lower() == name.lower() )
+            return i;
+    return -1;
+}
+
 MetaBundle::MetaBundle()
         : m_year( Undetermined )
         , m_discNumber( Undetermined )
@@ -362,7 +370,7 @@ uint MetaBundle::lastPlay() const
     return m_lastPlay;
 }
 
-void MetaBundle::copy( const MetaBundle &bundle )
+void MetaBundle::copyFrom( const MetaBundle &bundle )
 {
     setTitle( bundle.title() );
     setArtist( bundle.artist() );
@@ -469,6 +477,213 @@ QString MetaBundle::prettyText( int column ) const
     }
 
     return text.stripWhiteSpace();
+}
+
+bool MetaBundle::isAdvancedExpression( const QString &expression ) //static
+{
+    return ( expression.contains( "\""  ) ||
+             expression.contains( ":"   ) ||
+             expression.contains( "-"   ) ||
+             expression.contains( "AND" ) ||
+             expression.contains( "OR"  ) );
+}
+
+bool MetaBundle::matchesSimpleExpression( const QString &expression, QValueList<int> columns ) const
+{
+    const QStringList terms = QStringList::split( ' ', expression.lower() );
+    bool matches = true;
+    for( uint x = 0; matches && x < terms.count(); ++x )
+    {
+        uint y = 0, n = columns.count();
+        for(; y < n; ++y )
+            if ( prettyText( y ).lower().contains( terms[x] ) )
+                break;
+        matches = ( y < n );
+    }
+
+    return matches;
+}
+
+bool MetaBundle::matchesExpression( const QString &expression, QValueList<int> defaultColumns ) const
+{
+    return matchesParsedExpression( parseExpression( expression ), defaultColumns );
+}
+
+QValueList<QStringList> MetaBundle::parseExpression( QString expression ) //static
+{
+    if( expression.contains( "\"" ) % 2 == 1 ) expression += "\""; //make an even number of "s
+
+    //something like thingy"bla"stuff -> thingy "bla" stuff
+    bool odd = false;
+    for( int pos = expression.find( "\"" );
+         pos >= 0 && pos <= (int)expression.length();
+         pos = expression.find( "\"", pos + 1 ) )
+    {
+        expression = expression.insert( odd ? ++pos : pos++, " " );
+        odd = !odd;
+    }
+    expression = expression.simplifyWhiteSpace();
+
+    int x; //position in string of the end of the next element
+    bool OR = false, minus = false; //whether the next element is to be OR, and/or negated
+    QString tmp, s = "", field = ""; //the current element, a tempstring, and the field: of the next element
+    QStringList tmpl; //list of elements of which at least one has to match (OR)
+    QValueList<QStringList> allof; //list of all the tmpls, of which all have to match
+    while( !expression.isEmpty() )  //seperate expression into parts which all have to match
+    {
+        if( expression.startsWith( " " ) )
+            expression = expression.mid( 1 ); //cuts off the first character
+        if( expression.startsWith( "\"" ) ) //take stuff in "s literally (basically just ends up ignoring spaces)
+        {
+            expression = expression.mid( 1 );
+            x = expression.find( "\"" );
+        }
+        else
+            x = expression.find( " " );
+        if( x < 0 )
+            x = expression.length();
+        s = expression.left( x ); //get the element
+        expression = expression.mid( x + 1 ); //move on
+
+        if( !field.isEmpty() || ( s != "-" && s != "AND" && s != "OR" &&
+                                  !s.endsWith( ":" ) && !s.endsWith( ":>" ) && !s.endsWith( ":<" ) ) )
+        {
+            if( !OR && !tmpl.isEmpty() ) //add the OR list to the AND list
+            {
+                allof += tmpl;
+                tmpl.clear();
+            }
+            else
+                OR = false;
+            tmp = field + s;
+            if( minus )
+            {
+                tmp = "-" + tmp;
+                minus = false;
+            }
+            tmpl += tmp;
+            tmp = field = "";
+        }
+        else if( s.endsWith( ":" ) || s.endsWith( ":>" ) || s.endsWith( ":<" ) )
+            field = s;
+        else if( s == "OR" )
+            OR = true;
+        else if( s == "-" )
+            minus = true;
+        else
+            OR = false;
+    }
+    if( !tmpl.isEmpty() )
+        allof += tmpl;
+
+    return allof;
+}
+
+bool MetaBundle::matchesParsedExpression( QValueList<QStringList> data, QValueList<int> defaults ) const
+{
+    for( uint i = 0, n = data.count(); i < n; ++i ) //check each part for matchiness
+    {
+        bool b = false; //whether at least one matches
+        for( uint ii = 0, count = data[i].count(); ii < count; ++ii )
+        {
+            QString s = data[i][ii];
+            bool neg = s.startsWith( "-" );
+            if ( neg )
+                s = s.mid( 1 ); //cut off the -
+            int x = s.find( ":" ); //where the field ends and the thing-to-match begins
+            int column = -1;
+            if( x > 0 )
+                column = columnIndex( s.left( x ).lower() );
+            if( column >= 0 ) //a field was specified and it exists
+            {
+                QString q = s.mid(x + 1), v = prettyText( column ).lower(), w = q.lower();
+                //q = query, v = contents of the field, w = match against it
+                bool condition; //whether it matches, not taking negation into account
+
+                bool numeric;
+                switch( column )
+                {
+                    case Year:
+                    case DiscNumber:
+                    case Track:
+                    case Bitrate:
+                    case SampleRate:
+                    case Score:
+                    case Rating:
+                    case PlayCount:
+                    case LastPlayed:
+                    case Filesize:
+                        numeric = true;
+                    default:
+                        numeric = false;
+                }
+
+                if( q.startsWith( ">" ) )
+                {
+                    w = w.mid( 1 );
+                    if( numeric )
+                        condition = v.toInt() > w.toInt();
+                    else if( column == Length )
+                    {
+                        int g = v.find( ":" ), h = w.find( ":" );
+                        condition = v.left( g ).toInt() > w.left( h ).toInt() ||
+                                    ( v.left( g ).toInt() == w.left( h ).toInt() &&
+                                      v.mid( g + 1 ).toInt() > w.mid( h + 1 ).toInt() );
+                    }
+                    else
+                        condition = v > w; //compare the strings
+                }
+                else if( q.startsWith( "<" ) )
+                {
+                    w = w.mid(1);
+                    if( numeric )
+                        condition = v.toInt() < w.toInt();
+                    else if( column == Length )
+                    {
+                        int g = v.find( ":" ), h = w.find( ":" );
+                        condition = v.left( g ).toInt() < w.left( h ).toInt() ||
+                                    ( v.left( g ).toInt() == w.left( h ).toInt() &&
+                                      v.mid( g + 1 ).toInt() < w.mid( h + 1 ).toInt() );
+                    }
+                    else
+                        condition = v < w;
+                }
+                else
+                {
+                    if( numeric )
+                        condition = v.toInt() == w.toInt();
+                    else if( column == Length )
+                    {
+                        int g = v.find( ":" ), h = w.find( ":" );
+                        condition = v.left( g ).toInt() == w.left( h ).toInt() &&
+                                    v.mid( g + 1 ).toInt() == w.mid( h + 1 ).toInt();
+                    }
+                    else
+                        condition = v.contains( q, false );
+                }
+                if( condition == ( neg ? false : true ) )
+                {
+                    b = true;
+                    break;
+                }
+            }
+            else //check just the default fields
+            {
+                for( int it = 0, end = defaults.size(); it != end; ++it )
+                {
+                    b = prettyText( defaults[it] ).contains( s, false ) == ( neg ? false : true );
+                    if( ( neg && !b ) || ( !neg && b ) )
+                        break;
+                }
+                if( b )
+                    break;
+            }
+        }
+        if( !b )
+            return false;
+    }
+
+    return true;
 }
 
 QString

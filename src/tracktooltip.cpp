@@ -76,7 +76,7 @@ void TrackToolTip::setTrack( const MetaBundle &tags, bool force )
         QString filename = "", title = ""; //special case these, put the first one encountered on top
 
         Playlist *playlist = Playlist::instance();
-        const int n = playlist->visibleColumns();
+        const int n = playlist->numVisibleColumns();
         for( int i = 0; i < n; ++i )
         {
             const int column = playlist->mapToLogicalColumn( i );

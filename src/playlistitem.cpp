@@ -82,7 +82,7 @@ PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi )
         listView()->m_visLength += length();
     }
 
-    listView()->setFilterForItem( listView()->m_filter, this );
+    filter( listView()->m_filter );
 
     listView()->countChanged();
 }
@@ -200,6 +200,11 @@ QString PlaylistItem::text( int column ) const
                 return prettyText( column );
         }
     }
+}
+
+void PlaylistItem::filter( const QString &expression )
+{
+    setVisible( matchesExpression( expression, listView()->visibleColumns() ) );
 }
 
 void PlaylistItem::setEnabled( bool enabled )
@@ -570,7 +575,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
 
                 // Right part
                 else
-                if( column == Playlist::instance()->mapToLogicalColumn( Playlist::instance()->visibleColumns() - 1 ) )
+                if( column == Playlist::instance()->mapToLogicalColumn( Playlist::instance()->numVisibleColumns() - 1 ) )
                 {
                     QImage tmpImage = currentTrackRight.smoothScale( currentTrackRight.width(), height() );
                     KIconEffect::colorize( tmpImage, cg.highlight(), colorize1 );

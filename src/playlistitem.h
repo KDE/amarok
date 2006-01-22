@@ -74,6 +74,8 @@ class PlaylistItem : public MetaBundle, public KListViewItem
         */
         virtual QString text( int column ) const;
 
+        void filter( const QString &expression ); //makes visible depending on whether it matches
+
         bool isEnabled() const { return m_enabled; }
         void setEnabled( bool enable );
 

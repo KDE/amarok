@@ -165,7 +165,7 @@ class Playlist::PlaylistToolTip: public QToolTip
         {
             if( col == view->m_firstColumn )
                 width -= 12;
-            if( col == view->mapToLogicalColumn( view->visibleColumns() - 1 ) )
+            if( col == view->mapToLogicalColumn( view->numVisibleColumns() - 1 ) )
                 width -= 12;
         }
 
@@ -1779,17 +1779,18 @@ Playlist::engineNewMetaData( const MetaBundle &bundle, bool trackChanged )
         //we don't want to lose it when we get the meta data
         if ( m_currentTrack->artist().isEmpty() ) {
             QString comment = m_currentTrack->title();
-            m_currentTrack->copy( bundle );
+            m_currentTrack->copyFrom( bundle );
             m_currentTrack->setComment( comment );
         }
         else
-            m_currentTrack->copy( bundle );
+            m_currentTrack->copyFrom( bundle );
     }
     else
         //ensure the currentTrack is set correctly and highlight it
         restoreCurrentTrack();
 
-    setFilterForItem( m_filter, m_currentTrack );
+    if( m_currentTrack )
+        m_currentTrack->filter( m_filter );
 }
 
 void
@@ -2499,7 +2500,7 @@ Playlist::eventFilter( QObject *o, QEvent *e )
 
     else if( o == renameLineEdit() && e->type() == 6 /*QEvent::KeyPress*/ && m_renameItem )
     {
-        const int visibleCols = visibleColumns();
+        const int visibleCols = numVisibleColumns();
         int physicalColumn = visibleCols - 1;
 
         while( mapToLogicalColumn( physicalColumn ) != m_renameColumn && physicalColumn >= 0 )
@@ -3109,8 +3110,8 @@ Playlist::updateMetaData( const MetaBundle &mb ) //SLOT
     for( MyIt it( this, MyIt::All ); *it; ++it )
         if( mb.url() == (*it)->url() )
         {
-            (*it)->copy( mb );
-            setFilterForItem( m_filter, *it );
+            (*it)->copyFrom( mb );
+            (*it)->filter( m_filter );
         }
 }
 
@@ -3182,178 +3183,6 @@ Playlist::showQueueManager()
     }
 }
 
-bool
-Playlist::googleMatch( QString query, const QStringMap &defaults, const QStringMap &all )
-{
-    if( query.contains( "\"" ) % 2 == 1 ) query += "\""; //make an even number of "s
-
-    //something like thingy"bla"stuff -> thingy "bla" stuff
-    bool odd = false;
-    for( int pos = query.find( "\"" );
-         pos >= 0 && pos <= (int)query.length();
-         pos = query.find( "\"", pos + 1 ) )
-    {
-        query = query.insert( odd ? ++pos : pos++, " " );
-        odd = !odd;
-    }
-    query = query.simplifyWhiteSpace();
-
-    int x; //position in string of the end of the next element
-    bool OR = false, minus = false; //whether the next element is to be OR, and/or negated
-    QString tmp, s = "", field = ""; //the current element, a tempstring, and the field: of the next element
-    QStringList tmpl; //list of elements of which at least one has to match (OR)
-    QValueList<QStringList> allof; //list of all the tmpls, of which all have to match
-    while( !query.isEmpty() )  //seperate query into parts which all have to match
-    {
-        if( query.startsWith( " " ) )
-            query = query.mid( 1 ); //cuts off the first character
-        if( query.startsWith( "\"" ) ) //take stuff in "s literally (basically just ends up ignoring spaces)
-        {
-            query = query.mid( 1 );
-            x = query.find( "\"" );
-        }
-        else
-            x = query.find( " " );
-        if( x < 0 )
-            x = query.length();
-        s = query.left( x ); //get the element
-        query = query.mid( x + 1 ); //move on
-
-        if( !field.isEmpty() || ( s != "-" && s != "AND" && s != "OR" &&
-                                  !s.endsWith( ":" ) && !s.endsWith( ":>" ) && !s.endsWith( ":<" ) ) )
-        {
-            if( !OR && !tmpl.isEmpty() ) //add the OR list to the AND list
-            {
-                allof += tmpl;
-                tmpl.clear();
-            }
-            else
-                OR = false;
-            tmp = field + s;
-            if( minus )
-            {
-                tmp = "-" + tmp;
-                minus = false;
-            }
-            tmpl += tmp;
-            tmp = field = "";
-        }
-        else if( s.endsWith( ":" ) || s.endsWith( ":>" ) || s.endsWith( ":<" ) )
-            field = s;
-        else if( s == "OR" )
-            OR = true;
-        else if( s == "-" )
-            minus = true;
-        else
-            OR = false;
-    }
-    if( !tmpl.isEmpty() )
-        allof += tmpl;
-
-    const uint allofcount = allof.count();
-    for( uint i = 0; i < allofcount; ++i ) //check each part for matchiness
-    {
-        uint count = allof[i].count();
-        bool b = false; //whether at least one matches
-        for( uint ii = 0; ii < count; ++ii )
-        {
-            s = allof[i][ii];
-            bool neg = s.startsWith( "-" );
-            if ( neg )
-                s = s.mid( 1 ); //cut off the -
-            x = s.find( ":" ); //where the field ends and the thing-to-match begins
-            if( x > 0 && all.contains( s.left( x ).lower() ) ) //a field was specified and it exists
-            {
-                QString f = s.left(x).lower(), q = s.mid(x + 1), v = all[f].lower(), w = q.lower();
-                //f = field, q = query, v = contents of the field, w = match against it
-                bool condition; //whether it matches, not taking negation into account
-
-                static const QString
-                    Score      = PlaylistItem::columnName( PlaylistItem::Score      ).lower(),
-                    Rating     = PlaylistItem::columnName( PlaylistItem::Rating     ).lower(),
-                    Year       = PlaylistItem::columnName( PlaylistItem::Year       ).lower(),
-                    DiscNumber = PlaylistItem::columnName( PlaylistItem::DiscNumber ).lower(),
-                    Track      = PlaylistItem::columnName( PlaylistItem::Track      ).lower(),
-                    Playcount  = PlaylistItem::columnName( PlaylistItem::PlayCount  ).lower(),
-                    Length     = PlaylistItem::columnName( PlaylistItem::Length     ).lower(),
-                    Bitrate    = PlaylistItem::columnName( PlaylistItem::Bitrate    ).lower(),
-                    SampleRate = PlaylistItem::columnName( PlaylistItem::SampleRate ).lower(),
-                    Filesize   = PlaylistItem::columnName( PlaylistItem::Filesize   ).lower();
-
-                bool numeric = false;
-                if( f == Score || f == Rating    || f == Year    || f == DiscNumber ||
-                    f == Track || f == Playcount || f == Bitrate || f == SampleRate ||
-                    f == Filesize )
-                    numeric = true;
-
-                if (q.startsWith(">"))
-                {
-                    w = w.mid( 1 );
-                    if( numeric )
-                        condition = v.toInt() > w.toInt();
-                    else if( f == Length )
-                    {
-                        int g = v.find( ":" ), h = w.find( ":" );
-                        condition = v.left( g ).toInt() > w.left( h ).toInt() ||
-                                    ( v.left( g ).toInt() == w.left( h ).toInt() &&
-                                      v.mid( g + 1 ).toInt() > w.mid( h + 1 ).toInt() );
-                    }
-                    else
-                        condition = v > w; //compare the strings
-                }
-                else if( q.startsWith( "<" ) )
-                {
-                    w = w.mid(1);
-                    if( numeric )
-                        condition = v.toInt() < w.toInt();
-                    else if( f == Length )
-                    {
-                        int g = v.find( ":" ), h = w.find( ":" );
-                        condition = v.left( g ).toInt() < w.left( h ).toInt() ||
-                                    ( v.left( g ).toInt() == w.left( h ).toInt() &&
-                                      v.mid( g + 1 ).toInt() < w.mid( h + 1 ).toInt() );
-                    }
-                    else
-                        condition = v < w;
-                }
-                else
-                {
-                    if( numeric )
-                        condition = v.toInt() == w.toInt();
-                    else if( f == Length )
-                    {
-                        int g = v.find( ":" ), h = w.find( ":" );
-                        condition = v.left( g ).toInt() == w.left( h ).toInt() &&
-                                    v.mid( g + 1 ).toInt() == w.mid( h + 1 ).toInt();
-                    }
-                    else
-                        condition = v.contains( q, false );
-                }
-                if( condition == ( neg ? false : true ) )
-                {
-                    b = true;
-                    break;
-                }
-            }
-            else //check just the default fields
-            {
-                QStringMap::ConstIterator end = defaults.constEnd();
-                for( QStringMap::ConstIterator it = defaults.constBegin(); it != end; ++it )
-                {
-                    b = it.data().contains( s, false ) == ( neg ? false : true );
-                    if( ( neg && !b ) || ( !neg && b ) )
-                        break;
-                }
-                if( b )
-                    break;
-            }
-        }
-        if( !b )
-            return false;
-    }
-    return true;
-}
-
 void
 Playlist::setFilterSlot( const QString &query ) //SLOT
 {
@@ -3378,63 +3207,28 @@ Playlist::setDelayedFilter() //SLOT
 void
 Playlist::setFilter( const QString &query ) //SLOT
 {
-    MyIt it( this, ( !isAdvancedQuery( query ) && query.lower().contains( m_prevfilter.lower() ) )
+    const bool advanced = MetaBundle::isAdvancedExpression( query );
+    MyIt it( this, ( !advanced && query.lower().contains( m_prevfilter.lower() ) )
                    ? MyIt::Visible
                    : MyIt::All );
 
-    for( ;*it; ++it )
-        setFilterForItem( query, *it );
+    QValueList<int> visible = visibleColumns();
+
+    if( advanced )
+    {
+        QValueList<QStringList> parsed = MetaBundle::parseExpression( query );
+        for(; *it; ++it )
+            (*it)->setVisible( (*it)->matchesParsedExpression( parsed, visible ) );
+    }
+    else
+        for(; *it; ++it )
+            (*it)->setVisible( (*it)->matchesSimpleExpression( query, visible ) );
 
     if( m_filter != query )
     {
         m_prevfilter = m_filter;
         m_filter = query;
     }
-}
-
-void
-Playlist::setFilterForItem( const QString &query, PlaylistItem *item )
-{
-    if( !item )
-        return;
-
-    bool visible = true;
-    uint x, n = columns();
-    if( isAdvancedQuery( query ) )
-    {
-        QStringMap defaults, all;
-        for( x = 0; x < n; ++x )
-        {
-            if ( columnWidth( x ) ) defaults[PlaylistItem::columnName( x ).lower()] = item->text( x );
-            all[PlaylistItem::columnName( x ).lower()] = item->text( x );
-        }
-
-        visible = googleMatch( query, defaults, all );
-    }
-    else
-    {
-        const QStringList terms = QStringList::split( ' ', query.lower() );
-        uint y;
-        for( x = 0; visible && x < terms.count(); ++x )
-        {
-            for( y = 0; y < n; ++y )
-                if ( columnWidth( y ) && item->text( y ).lower().contains( terms[x] ) )
-                    break;
-            visible = ( y < n );
-        }
-    }
-
-    item->setVisible( visible );
-}
-
-bool
-Playlist::isAdvancedQuery( const QString &query )
-{
-    return ( query.contains( "\""  ) ||
-             query.contains( ":"   ) ||
-             query.contains( "-"   ) ||
-             query.contains( "AND" ) ||
-             query.contains( "OR"  ) );
 }
 
 void
@@ -3446,7 +3240,7 @@ Playlist::scoreChanged( const QString &path, int score )
         if ( item->url().path() == path )
         {
             item->setScore( score );
-            setFilterForItem( m_filter, item );
+            item->filter( m_filter );
         }
     }
 }
@@ -3460,7 +3254,7 @@ Playlist::ratingChanged( const QString &path, int rating )
         if ( item->url().path() == path )
         {
             item->setRating( rating );
-            setFilterForItem( m_filter, item );
+            item->filter( m_filter );
         }
     }
 }
@@ -3971,12 +3765,21 @@ Playlist::unlock()
 }
 
 int
-Playlist::visibleColumns() const
+Playlist::numVisibleColumns() const
 {
     int r = 0, i = 1;
     for( const int n = columns(); i <= n; ++i)
         if( columnWidth( i - 1 ) )
             ++r;
+    return r;
+}
+
+QValueList<int> Playlist::visibleColumns() const
+{
+    QValueList<int> r;
+    for( int i = 0, n = columns(); i < n; ++i)
+        if( columnWidth( i ) )
+            r.append( i );
     return r;
 }
 

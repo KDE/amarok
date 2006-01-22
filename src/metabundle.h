@@ -61,7 +61,8 @@ public:
         NUM_COLUMNS
     };
 
-    static const QString columnName( int n );
+    static const QString columnName( int index );
+    static int columnIndex( const QString &name );
 
     enum FileType { mp3, ogg, wma, mp4, ra, rv, rm, rmj, rmvb, other };
 
@@ -113,13 +114,20 @@ public:
     int fileType() const;
     bool hasExtendedMetaInformation() const;
 
-    void copy( const MetaBundle& bundle );
-    void setExactText(int column, const QString &text);
-    QString exactText(int column) const;
-    QString prettyText(int column) const;
+    void copyFrom( const MetaBundle& bundle );
+
+    void setExactText( int column, const QString &text );
+    QString exactText( int column ) const;
+    QString prettyText( int column ) const;
+
+    static bool isAdvancedExpression( const QString &expression );
+    bool matchesSimpleExpression( const QString &expression, QValueList<int> columns ) const;
+    bool matchesExpression( const QString &expression, QValueList<int> defaultColumns ) const;
+    static QValueList<QStringList> parseExpression( QString expression );
+    bool matchesParsedExpression( QValueList<QStringList> parsedData, QValueList<int> defaultColumns ) const;
 
 public: //accessors
-    KURL url()    const;
+    KURL url()           const;
 
     QString title()      const;
     QString artist()     const;

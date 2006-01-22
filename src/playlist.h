@@ -125,7 +125,8 @@ class Playlist : private KListView, public EngineObserver
         PlaylistItem *lastItem()   const { return static_cast<PlaylistItem*>( KListView::lastItem() ); }
         PlaylistItem *currentItem() const { return static_cast<PlaylistItem*>( KListView::currentItem() ); }
 
-        int  visibleColumns() const;
+        int  numVisibleColumns() const;
+        QValueList<int> visibleColumns() const;
         int  mapToLogicalColumn( int physical ); // Converts physical PlaylistItem column position to logical
         QString columnText( int c ) const { return KListView::columnText( c ); };
 
@@ -184,8 +185,7 @@ class Playlist : private KListView, public EngineObserver
         void scoreChanged( const QString &path, int score );
         void ratingChanged( const QString &path, int rating );
         void selectAll() { QListView::selectAll( true ); }
-        void setFilter( const QString &filter );                           //for the entire playlist
-        void setFilterForItem( const QString &query, PlaylistItem *item ); //for a single item
+        void setFilter( const QString &filter );
         void setFilterSlot( const QString &filter );                       //uses a delay where applicable
         void setStopAfterCurrent( bool on );
         void toggleStopAfterCurrentItem();
@@ -240,8 +240,6 @@ class Playlist : private KListView, public EngineObserver
 
         static Playlist *s_instance;
 
-        typedef QMap<QString, QString> QStringMap;
-
         void countChanged();
 
         PlaylistItem *currentTrack() const { return m_currentTrack; }
@@ -249,7 +247,6 @@ class Playlist : private KListView, public EngineObserver
 
         void insertMediaInternal( const KURL::List&, PlaylistItem*, bool directPlay = false );
         bool isAdvancedQuery( const QString &query );
-        bool googleMatch( QString query, const QStringMap &all, const QStringMap &defaults );
         void refreshNextTracks( int = -1 );
         void removeItem( PlaylistItem*, bool = false );
         bool saveState( QStringList& );
