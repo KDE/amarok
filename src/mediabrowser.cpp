@@ -1119,15 +1119,9 @@ MediaView::contentsDropEvent( QDropEvent *e )
         KURL::List list;
         if ( KURLDrag::decode( e, list ) )
         {
-            KURL::List::ConstIterator it = list.begin();
-            for ( ; it != list.end(); ++it )
-            {
-                MediaBrowser::queue()->addURL( *it );
-            }
+            MediaBrowser::queue()->addURLs( list );
         }
     }
-
-    MediaBrowser::queue()->URLsAdded();
 }
 
 
