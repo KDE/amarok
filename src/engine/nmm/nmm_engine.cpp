@@ -121,8 +121,6 @@ bool NmmEngine::load(const KURL& url, bool stream)
 {
   DEBUG_BLOCK
 
-  bool ret = true;
-
   // play only local files
   if (!url.isLocalFile()) return false;
 
@@ -185,7 +183,7 @@ bool NmmEngine::load(const KURL& url, bool stream)
     // create the graph represented by a composite node
     __composite = gb.createGraph(*__app);
 
-    // if the display node is connected we know we will play a video
+    // if the display node is connected we know we will play a video TODO: what about video without audio?
     __with_video = __display->isInputConnected();
     debug() << " __with_video " << __with_video << endl;
 
@@ -227,6 +225,8 @@ bool NmmEngine::load(const KURL& url, bool stream)
     // we don't know the track length yet - we have to wait for the trackDuration event
     __track_length = 0;
 
+    __seeking = false;
+
     // finally start the graph
     if(__playback->isActivated())
       __playback->reachStarted();
@@ -235,21 +235,21 @@ bool NmmEngine::load(const KURL& url, bool stream)
 
     __composite->reachStarted();
  
-    __seeking = false;
-    __state = Engine::Playing;
+    return true;
   }
   catch (const Exception& e) {
     cerr << e << endl;
     QString status = e.getComment().c_str() ;
     emit statusText( QString("NMM engine: ") + status );
-    ret = false;
   }
   catch(...) {
     emit statusText( "NMM engine: Something went wrong..." );
-    ret = false;
   }
 
-  return ret;
+  // TODO loading failed, clean up 
+  //cleanup();
+
+  return false;
 }
 
 bool NmmEngine::play(uint)
@@ -296,6 +296,7 @@ void NmmEngine::cleanup()
   // stop the graph
   __composite->reachActivated();
 
+  // playback node was created
   if(__playback->isStarted()) {
     __playback->reachActivated();
   }
@@ -309,9 +310,11 @@ void NmmEngine::cleanup()
 
   __playback->flush();
   __playback->reachConstructed();
-  
-  //__display->flush();
-  //__display->reachConstructed();
+
+   if(__display->isActivated()) {
+    __display->flush();
+    __display->reachConstructed();
+  }
  
   // release the playback and video node
   ClientRegistry& registry = __app->getRegistry();
@@ -322,15 +325,18 @@ void NmmEngine::cleanup()
   }
 
   delete __composite;
-  __composite = 0;
-  __playback = 0;
-  __display = 0;
+  __composite = NULL;
+  delete __playback;
+  __playback = NULL;
+  delete __display;
+  __display = NULL;
+
   __with_video = false;
 
   delete __synchronizer; 
-  __synchronizer = 0;
+  __synchronizer = NULL;
   delete __av_sync; 
-  __av_sync = 0;
+  __av_sync = NULL;
 
   __position = 0;
   __state = Engine::Idle;
