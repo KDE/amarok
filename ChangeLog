@@ -5,6 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.4:
   FEATURES:
+    * New DCOP calls "mediabrowser: ..." for interfacing with media devices.
+    * Multiple simultaneously connected media devices.
     * Lyrics support is now scriptable. This allows to add support for any
       lyrics site, and makes it possible to provide upgrades. (BR 94437)
     * New DCOP call "script: showLyrics(string)".

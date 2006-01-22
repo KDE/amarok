@@ -104,6 +104,7 @@ App::App()
     new amaroK::DcopPlaylistBrowserHandler();
     new amaroK::DcopContextBrowserHandler();
     new amaroK::DcopCollectionHandler();
+    new amaroK::DcopMediaBrowserHandler();
     new amaroK::DcopScriptHandler();
     new amaroK::DcopDevicesHandler();
 

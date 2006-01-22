@@ -217,6 +217,24 @@ class DcopDevicesHandler : public QObject, virtual public AmarokDevicesInterface
       virtual void mediumChanged(QString name);
 };
 
+class DcopMediaBrowserHandler : public QObject, virtual public AmarokMediaBrowserInterface
+{
+    Q_OBJECT
+
+    public:
+        DcopMediaBrowserHandler();
+
+    public /* DCOP */ slots:
+      virtual void deviceConnect();
+      virtual void deviceDisconnect();
+      virtual QStringList deviceList();
+      virtual void deviceSwitch( QString name );
+      virtual void queue( KURL url );
+      virtual void queueList( KURL::List urls );
+      virtual void transfer();
+      virtual void enableTranscoding( bool enable );
+      virtual void transcodingFinished( KURL src, KURL dest );
+};
 
 } // namespace amaroK
 

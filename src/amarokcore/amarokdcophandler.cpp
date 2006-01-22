@@ -299,12 +299,12 @@ namespace amaroK
 
     void DcopPlayerHandler::mediaDeviceMount()
     {
-        MediaBrowser::instance()->currentDevice()->mount();
+        MediaBrowser::instance()->currentDevice()->connectDevice();
     }
 
     void DcopPlayerHandler::mediaDeviceUmount()
     {
-        MediaBrowser::instance()->currentDevice()->umount();
+        MediaBrowser::instance()->currentDevice()->disconnectDevice();
     }
 
     void DcopPlayerHandler::mute()
@@ -829,6 +829,58 @@ namespace amaroK
         DeviceManager::instance()->mediumChanged(name);
     }
 
+/////////////////////////////////////////////////////////////////////////////////////
+// class DcopDevicesHandler
+/////////////////////////////////////////////////////////////////////////////////////
+
+    DcopMediaBrowserHandler::DcopMediaBrowserHandler()
+        : DCOPObject( "mediabrowser" )
+        , QObject( kapp )
+    {}
+
+    void DcopMediaBrowserHandler::deviceConnect()
+    {
+        MediaBrowser::instance()->currentDevice()->connectDevice();
+    }
+
+    void DcopMediaBrowserHandler::deviceDisconnect()
+    {
+        MediaBrowser::instance()->currentDevice()->disconnectDevice();
+    }
+
+    QStringList DcopMediaBrowserHandler::deviceList()
+    {
+        return MediaBrowser::instance()->deviceNames();
+    }
+
+    void DcopMediaBrowserHandler::deviceSwitch( QString name )
+    {
+        MediaBrowser::instance()->deviceSwitch( name );
+    }
+
+    void DcopMediaBrowserHandler::queue( KURL url )
+    {
+        MediaBrowser::queue()->addURL( url );
+        MediaBrowser::queue()->URLsAdded();
+    }
+
+    void DcopMediaBrowserHandler::queueList( KURL::List urls )
+    {
+        MediaBrowser::queue()->addURLs( urls );
+    }
+
+    void DcopMediaBrowserHandler::transfer()
+    {
+        MediaBrowser::instance()->currentDevice()->transferFiles();
+    }
+
+    void DcopMediaBrowserHandler::enableTranscoding( bool enable )
+    {
+    }
+
+    void DcopMediaBrowserHandler::transcodingFinished( KURL src, KURL dest )
+    {
+    }
 
 } //namespace amaroK
 

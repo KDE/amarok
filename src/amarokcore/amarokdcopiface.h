@@ -208,4 +208,20 @@ k_dcop:
    virtual void mediumChanged(QString name) = 0;         ///< Called when there is a mediumChanged event
 };
 
+class AmarokMediaBrowserInterface : virtual public DCOPObject
+{
+    K_DCOP
+
+k_dcop:
+   virtual void deviceConnect() = 0;                     ///< Connect the current media device
+   virtual void deviceDisconnect() = 0;                  ///< Disconnect the current media device
+   virtual void deviceSwitch( QString name ) = 0;        ///< Switch the current media device
+   virtual QStringList deviceList() = 0;                 ///< List available media devices
+   virtual void queue( KURL url ) = 0;                   ///< Add url to transfer queue
+   virtual void queueList( KURL::List url ) = 0;         ///< Add list of urls to transfer queue
+   virtual void transfer() = 0;                          ///< Transfer items in queue to current device
+   virtual void enableTranscoding( bool enable ) = 0;    ///< Announce that a script for transcoding is available
+   virtual void transcodingFinished( KURL src, KURL dest ) = 0;  ///< Announce that transcoding of job is finished
+};
+
 #endif

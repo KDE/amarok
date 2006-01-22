@@ -166,6 +166,8 @@ class MediaBrowser : public QVBox
         MediaBrowser( const char *name );
         virtual ~MediaBrowser();
         MediaDevice *currentDevice();
+        QStringList deviceNames();
+        bool deviceSwitch( const QString &name );
 
         QString getPluginName ( const QString string ) { return m_pluginName[string]; }
 
@@ -379,17 +381,19 @@ class MediaDevice : public QObject, public amaroK::Plugin
 
     public slots:
         void abortTransfer();
-        int  mount();
-        int  umount();
         void transferFiles();
         virtual void renameItem( QListViewItem *item ) {(void)item; }
         virtual void expandItem( QListViewItem *item ) {(void)item; }
+        bool connectDevice( bool silent=false );
+        bool disconnectDevice();
 
     protected slots:
         void fileTransferFinished();
 
     private:
         int              sysCall(const QString & command);
+        int  mount();
+        int  umount();
 
         /**
          * Find a particular track
@@ -461,8 +465,6 @@ class MediaDevice : public QObject, public amaroK::Plugin
         void purgeEmptyItems( MediaItem *root=0 );
         void syncStatsFromDevice( MediaItem *root=0 );
         void syncStatsToDevice( MediaItem *root=0 );
-        bool connectDevice( bool silent=false );
-        bool disconnectDevice();
 
         QString     m_name;
         QString     m_uniqueId;

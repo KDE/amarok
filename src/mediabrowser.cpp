@@ -454,6 +454,41 @@ MediaBrowser::updateDevices()
     }
 }
 
+QStringList
+MediaBrowser::deviceNames()
+{
+    QStringList list;
+
+    for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
+            it != m_devices.end();
+            it++ )
+    {
+        QString name = (*it)->name();
+        list << name;
+    }
+
+    return list;
+}
+
+bool
+MediaBrowser::deviceSwitch( const QString &name )
+{
+    int index = 0;
+    for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
+            it != m_devices.end();
+            it++ )
+    {
+        if( (*it)->name() == name )
+        {
+            activateDevice( index );
+            return true;
+        }
+        index++;
+    }
+
+    return false;
+}
+
 void
 MediaBrowser::slotSetFilterTimeout() //SLOT
 {
