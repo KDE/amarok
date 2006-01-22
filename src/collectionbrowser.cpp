@@ -298,7 +298,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     setItemsMovable( false );
     setSorting( 0 );
     setShowSortIndicator( true );
-    setAcceptDrops( false );
+    setAcceptDrops( true );
     setAllColumnsShowFocus( true );
 
     //<READ CONFIG>
@@ -1645,6 +1645,28 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
 //////////////////////////////////////////////////////////////////////////////////////////
 // private
 //////////////////////////////////////////////////////////////////////////////////////////
+
+void
+CollectionView::contentsDragEnterEvent( QDragEnterEvent *e )
+{
+    e->accept( e->source() != viewport() && KURLDrag::canDecode( e ) );
+}
+
+void
+CollectionView::contentsDragMoveEvent( QDragMoveEvent *e )
+{
+    e->accept( e->source() != viewport() && KURLDrag::canDecode( e ) );
+}
+
+void
+CollectionView::contentsDropEvent( QDropEvent *e )
+{
+    KURL::List list;
+    if( KURLDrag::decode( e, list ) )
+    {
+        organizeFiles( list, i18n( "Copy Files To Collection" ), true /* copy */ );
+    }
+}
 
 void
 CollectionView::updateColumnHeader()

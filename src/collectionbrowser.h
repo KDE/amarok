@@ -185,6 +185,9 @@ class CollectionView : public KListView
         void viewportPaintEvent( QPaintEvent* );
         void viewportResizeEvent( QResizeEvent* );
         bool eventFilter( QObject*, QEvent* );
+        void contentsDragEnterEvent( QDragEnterEvent* );
+        void contentsDragMoveEvent( QDragMoveEvent* );
+        void contentsDropEvent( QDropEvent *e );
 
     //attributes:
         static CollectionView* m_instance;
