@@ -74,6 +74,8 @@ protected:
             PlaylistFile::isPlaylistFile( item->name() ) ||
             item->name().endsWith( ".mp3", false ) || //for now this is less confusing for the user
             item->name().endsWith( ".aa", false ) || //for adding to iPod
+            item->name().endsWith( ".mp4", false ) || //for adding to iPod
+            item->name().endsWith( ".m4v", false ) || //for adding to iPod
             item->name().endsWith( ".ogg", false );
     }
 };
