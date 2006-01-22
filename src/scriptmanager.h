@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2004-2005 by Mark Kretschmann <markey@web.de>           *
+ *   Copyright (C) 2004-2006 by Mark Kretschmann <markey@web.de>           *
  *                      2005 by Seb Ruiz <me@sebruiz.net>                  *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -85,11 +85,8 @@ class ScriptManager : public KDialogBase, public EngineObserver
        /** Custom Menu Click */
        void customMenuClicked( const QString& message );
 
-       /** Set whether amaroK uses a script for lyrics fetching */
-       void enableExternalLyrics( bool enable ) { m_externalLyrics = enable; }
-
-       /** Return whether external lyrics is enabled */
-       bool externalLyrics() const { return m_externalLyrics; }
+       /** Return whether a lyrics script is currently running */
+       bool lyricsScriptRunning() const;
 
        /** Sends a fetchLyrics notification to all scripts */
        void notifyFetchLyrics( const QString& artist, const QString& title );
@@ -140,8 +137,6 @@ class ScriptManager : public KDialogBase, public EngineObserver
         static ScriptManager* s_instance;
         ScriptManagerBase*    m_gui;
         bool                  m_installSuccess;
-
-        bool                  m_externalLyrics;
 
         struct ScriptItem {
             KURL           url;

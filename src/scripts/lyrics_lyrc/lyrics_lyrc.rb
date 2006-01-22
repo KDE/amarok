@@ -3,7 +3,7 @@
 # amaroK Script for fetching song lyrics from http://lyrc.com.ar.
 # Ported from amaroK's contextbrowser.cpp.
 #
-# (c) 2005 Mark Kretschmann <markey@web.de>
+# (c) 2006 Mark Kretschmann <markey@web.de>
 # (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 # (c) 2005 Reigo Reinmets <xatax@hot.ee>
 # (c) 2005 Alexandre Pereira de Oliveira <aleprj@gmail.com>
@@ -14,9 +14,6 @@
 require "net/http"
 require "uri"
 
-def cleanup()
-    `dcop amarok script enableExternalLyrics false`
-end
 
 def fetchLyrics( artist, title, url )
     h = Net::HTTP.new( "lyrc.com.ar", 80 )
@@ -76,11 +73,6 @@ end
 ##################################################################
 # MAIN
 ##################################################################
-
-trap( "SIGTERM" ) { cleanup() }
-
-`dcop amarok script enableExternalLyrics true`
-
 
 loop do
     message = gets().chomp()

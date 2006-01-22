@@ -193,7 +193,6 @@ k_dcop:
    virtual void removeCustomMenuItem(QString submenu, QString itemTitle ) = 0;  ///< Removes the custom menu item.
    virtual QString readConfig(const QString& key) = 0; ///< returns a AmarokConfig configuration entry value from the given key
    virtual QStringList readListConfig(const QString& key) = 0; ///< AmarokConfig lists must use this function
-   virtual void enableExternalLyrics( bool enable ) = 0;    ///< Makes amaroK use a script for lyrics fetching.
    virtual void showLyrics( const QString& lyrics ) = 0;    ///< Renders the lyrics (plan text) in the Lyrics tab.
 };
 

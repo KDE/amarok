@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2004-2005 by Mark Kretschmann <markey@web.de>           *
+ *   Copyright (C) 2004-2006 by Mark Kretschmann <markey@web.de>           *
  *                      2005 by Seb Ruiz <me@sebruiz.net>                  *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -123,7 +123,6 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
         : KDialogBase( parent, name, false, 0, 0, Ok, false )
         , EngineObserver( EngineController::instance() )
         , m_gui( new ScriptManagerBase( this ) )
-        , m_externalLyrics( false )
 {
     DEBUG_BLOCK
 
@@ -242,16 +241,32 @@ ScriptManager::customMenuClicked( const QString& message )
 }
 
 
-void ScriptManager::notifyFetchLyrics( const QString& artist, const QString& title )
+void
+ScriptManager::notifyFetchLyrics( const QString& artist, const QString& title )
 {
     const QString args = KURL::encode_string( artist ) + " " + KURL::encode_string( title );
     notifyScripts( "fetchLyrics " + args );
 }
 
 
-void ScriptManager::notifyFetchLyricsByUrl( const QString& url )
+void
+ScriptManager::notifyFetchLyricsByUrl( const QString& url )
 {
     notifyScripts( "fetchLyricsByUrl " + KURL::encode_string( url ) );
+}
+
+
+bool
+ScriptManager::lyricsScriptRunning() const
+{
+    ScriptMap::ConstIterator it;
+    ScriptMap::ConstIterator end(m_scripts.end() );
+    for( it = m_scripts.begin(); it != end; ++it )
+        if( it.data().process )
+            if( it.data().li->text( 0 ).lower().startsWith( "lyrics_" ) )
+                return true;
+
+    return false;
 }
 
 
@@ -464,6 +479,12 @@ ScriptManager::slotRunScript()
 
     QListViewItem* const li = m_gui->listView->currentItem();
     const QString name = li->text( 0 );
+
+    if( name.lower().startsWith( "lyrics_" ) && lyricsScriptRunning() ) {
+        KMessageBox::sorry( 0, i18n( "<p>Another lyrics script is already running.</p>"
+                                     "<p>You may only run one lyrics script at a time.</p>" ) );
+        return false;
+    }
 
     // Don't start a script twice
     if( m_scripts[name].process ) return false;

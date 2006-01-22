@@ -1990,7 +1990,7 @@ void ContextBrowser::showLyrics( const QString &url )
 
     m_lyricsToolBar->getButton( LYRICS_BROWSER )->setEnabled(false);
 
-    if( !ScriptManager::instance()->externalLyrics() )
+    if( !ScriptManager::instance()->lyricsScriptRunning() )
         m_lyrics = i18n( "Sorry, no lyrics script running." );
 
     if ( !m_lyrics.isEmpty() && url.isEmpty() )

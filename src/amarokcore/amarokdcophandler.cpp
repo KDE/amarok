@@ -795,11 +795,6 @@ namespace amaroK
         return stringList;
     }
 
-    void DcopScriptHandler::enableExternalLyrics( bool enable )
-    {
-        ScriptManager::instance()->enableExternalLyrics( enable );
-    }
-
     void DcopScriptHandler::showLyrics( const QString& lyrics )
     {
         ContextBrowser::instance()->lyricsResult( lyrics );
