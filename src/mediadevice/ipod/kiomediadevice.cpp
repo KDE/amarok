@@ -556,7 +556,7 @@ KioMediaDevice::rmbPressed( MediaView *deviceList, QListViewItem* qitem, const Q
                             urls << it->url();
                     }
 
-                    CollectionView::instance()->organizeFiles( urls, true );
+                    CollectionView::instance()->organizeFiles( urls, "Copy Files To Collection", true );
                 }
                 break;
             case BURN_ARTIST:

@@ -389,11 +389,11 @@ FileBrowser::contextMenuActivated( int id )
         break;
 
     case CopyToCollection:
-        CollectionView::instance()->organizeFiles( selectedItems(), true );
+        CollectionView::instance()->organizeFiles( selectedItems(), i18n( "Copy Files To Collection" ), true );
         break;
 
     case MoveToCollection:
-        CollectionView::instance()->organizeFiles( selectedItems(), false );
+        CollectionView::instance()->organizeFiles( selectedItems(), i18n( "Move Files To Collection" ), false );
         break;
 
 

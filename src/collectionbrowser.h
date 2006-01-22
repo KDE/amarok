@@ -137,7 +137,7 @@ class CollectionView : public KListView
         void cat1Menu( int id, bool rerender = true );
         void cat2Menu( int id, bool rerender = true );
         void cat3Menu( int id, bool rerender = true );
-        void organizeFiles( const KURL::List &list, bool addToCollection=false );
+        void organizeFiles( const KURL::List &list, const QString &caption, bool addToCollection=false );
 
     private slots:
         void setupDirs();

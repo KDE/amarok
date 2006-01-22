@@ -1288,7 +1288,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                     CollectionDB::instance()->setCompilation( item->text(0), false );
                 break;
             case ORGANIZE:
-                organizeFiles( listSelected(), false /* don't add to collection, just move */ );
+                organizeFiles( listSelected(), i18n( "Organize Collection Files" ), false /* don't add to collection, just move */ );
                 break;
             case DELETE:
                 deleteSelectedFiles();
@@ -1456,13 +1456,13 @@ CollectionView::deleteSelectedFiles() //SLOT
 }
 
 void
-CollectionView::organizeFiles( const KURL::List &urls, bool copy )  //SLOT
+CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, bool copy )  //SLOT
 {
     QStringList folders = AmarokConfig::collectionFolders();
 
     KDialogBase dialog( m_parent, 0, false );
     kapp->setTopWidget( &dialog );
-    dialog.setCaption( kapp->makeStdCaption( i18n("Organize Collection Files") ) );
+    dialog.setCaption( kapp->makeStdCaption( caption ) );
     dialog.showButtonApply( false );
     QVBox *box = dialog.makeVBoxMainWidget();
 

@@ -1524,7 +1524,7 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                             urls << it->url();
                     }
 
-                    CollectionView::instance()->organizeFiles( urls, true );
+                    CollectionView::instance()->organizeFiles( urls, "Copy Files To Collection", true );
                 }
                 break;
             case BURN_ARTIST:
