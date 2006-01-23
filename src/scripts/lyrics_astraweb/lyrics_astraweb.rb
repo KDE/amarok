@@ -8,6 +8,7 @@
 
 
 require "net/http"
+require "net/telnet"
 require "uri"
 
 def showLyrics( lyrics )
@@ -50,9 +51,20 @@ end
 
 
 def fetchLyricsByUrl( url )
-    h = Net::HTTP.new( "display.lyrics.astraweb.com", 2000 )
-    response = h.get( url )
+    # Note: Using telnet here cause the fucking site has a broken cgi script, delivering
+    #       a broken header, which makes Net::HTTP::get() crap out
 
+    h = Net::Telnet.new( "Host" => "display.lyrics.astraweb.com", "Port" => 2000 )
+
+    puts "GETTING URL: " + url
+
+    body = h.cmd( "GET #{url}\n" )
+    body.gsub!( "\n", "" ) # No need for \n, just complicates our RegExps
+
+    lyrics = /(<font face=arial size=2>)(.*)(<br><br><br><center>)/.match( body )[2].to_s()
+
+    puts( lyrics )
+    showLyrics( lyrics )
 end
 
 
@@ -61,9 +73,8 @@ end
 ##################################################################
 
 # fetchLyrics( "radio", "gaga" )
-fetchLyricsByUrl( '/display.cgi?dead_prez..turn_off_the_radio..turn_off_the_radio' )
-
-exit()
+# fetchLyricsByUrl( '/display.cgi?whiskeytown..faithless_street..faithless_street' )
+# exit()
 
 
 loop do
@@ -86,7 +97,7 @@ loop do
         when "fetchLyricsByUrl"
             url = message.split()[1]
 
-            fetchLyricsByUrl( url )
+            fetchLyricsByUrl( URI.unescape( url ) )
     end
 end
 
