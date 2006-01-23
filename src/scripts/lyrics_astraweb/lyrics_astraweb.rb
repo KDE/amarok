@@ -31,7 +31,17 @@ def fetchLyrics( artist, title )
     body = response.body()
     body = body[body.index( '<tr><td bgcolor="#BBBBBB"' )..body.index( "More Songs &gt;" ) - 1]
 
-    puts( body )
+    entries = body.split( '<tr><td bgcolor="#BBBBBB"' )
+    entries.delete_at( 0 )
+
+    lyrics = "Suggestions : <br>"
+    entries.each do |entry|
+        url = /http:\/\/display.[^"]*/.match( entry ).to_s()
+        title = /(http:\/\/display.*">)([^<]*)/.match( entry )[2].to_s()
+        lyrics += title + "\n"
+    end
+
+    puts( lyrics )
 #     showLyrics( lyrics )
 end
 
@@ -39,6 +49,10 @@ end
 ##################################################################
 # MAIN
 ##################################################################
+
+fetchLyrics( "radio", "gaga" )
+exit()
+
 
 loop do
     message = gets().chomp()
