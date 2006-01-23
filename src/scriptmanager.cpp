@@ -486,8 +486,8 @@ ScriptManager::slotRunScript()
     const QString name = li->text( 0 );
 
     if( name.lower().startsWith( "lyrics_" ) && lyricsScriptRunning() ) {
-        KMessageBox::sorry( 0, i18n( "<p>Another lyrics script is already running.</p>"
-                                     "<p>You may only run one lyrics script at a time.</p>" ) );
+        KMessageBox::sorry( 0, i18n( "Another lyrics script is already running. "
+                                     "You may only run one lyrics script at a time." ) );
         return false;
     }
 
