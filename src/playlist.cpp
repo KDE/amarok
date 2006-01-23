@@ -399,7 +399,7 @@ Playlist::~Playlist()
 
     //speed up quit a little
     safeClear();   //our implementation is slow
-    //amaroK::ToolTip::remove( viewport() ); why does this crash?
+    amaroK::ToolTip::remove( viewport() );
     blockSignals( true ); //might help
 }
 
