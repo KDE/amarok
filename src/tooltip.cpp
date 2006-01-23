@@ -77,7 +77,7 @@ void amaroK::ToolTip::add( ToolTipClient *client, QWidget *parent ) //static
 
 void amaroK::ToolTip::remove( QWidget *widget ) //static
 {
-    for( int i = s_tooltips.count(); i; --i )
+    for( int i = s_tooltips.count() - 1; i; --i )
         if( s_tooltips[i]->QToolTip::parentWidget() == widget )
             delete s_tooltips[i];
 }
