@@ -14,10 +14,15 @@
 require "net/http"
 require "uri"
 
-
 def fetchLyrics( artist, title, url )
-    h = Net::HTTP.new( "lyrc.com.ar", 80 )
+    proxy_host = nil
+    proxy_port = nil
+    if ( ENV['http_proxy'] && proxy_uri = URI.parse( ENV['http_proxy'] ) )
+        proxy_host = proxy_uri.host
+        proxy_port = proxy_uri.port
+    end
 
+    h = Net::HTTP.new( "lyrc.com.ar", 80, proxy_host, proxy_port )
     if url.empty?()
         response = h.get( "/en/tema1en.php?artist=#{artist}&songname=#{title}" )
     else
