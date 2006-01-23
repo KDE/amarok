@@ -1,3 +1,8 @@
-SUBDIRS = amarok_live graphequalizer templates playlist2html webcontrol common lyrics_lyrc
-
-
+SUBDIRS = \
+    amarok_live \
+    common \
+    graphequalizer \
+    lyrics_lyrc \
+    playlist2html \
+    templates \
+    webcontrol
