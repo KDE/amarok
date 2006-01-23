@@ -28,9 +28,11 @@ def fetchLyrics( artist, title )
         return
     end
 
-    lyrics = response.body()
+    body = response.body()
+    body = body[body.index( '<tr><td bgcolor="#BBBBBB"' )..body.index( "More Songs &gt;" ) - 1]
 
-    showLyrics( lyrics )
+    puts( body )
+#     showLyrics( lyrics )
 end
 
 
@@ -58,7 +60,7 @@ loop do
         when "fetchLyricsByUrl"
             url = message.split()[1]
 
-            fetchLyrics( url )
+#             fetchLyrics( url )
     end
 end
 
