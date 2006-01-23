@@ -1,0 +1,30 @@
+<div align="center"><b>lyrics_astraweb</b></div>
+
+<p>
+<b>About:</b><br>
+A lyrics script that interfaces with http://lyrics.astraweb.com.
+</p>
+
+<p>
+<b>Usage:</b><br>
+Just run the script, and then use the Lyrics tab in the Context sidebar.
+</p>
+
+<p>
+<b>Dependencies:</b><br>
+<ul>
+<li>amaroK 1.4</li>
+<li>Ruby 1.8</li>
+</ul>
+</p>
+
+<p>
+<b>Thanks to:</b><br>
+Many thanks to lyrics.astraweb.com for providing their service.
+</p>
+
+<p>
+<b>Author:</b><br>
+Mark Kretschmann (markey@web.de)
+</p>
+
