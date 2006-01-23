@@ -272,10 +272,10 @@ IpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bu
 #ifdef HAVE_ITDB_TRACK_SET_THUMBNAILS
     if( m_supportsArtwork )
     {
-        QString image = CollectionDB::instance()->albumImage(QString(track->artist), QString(track->album), 1);
+        QString image = CollectionDB::instance()->albumImage(bundle.artist(), bundle.album(), 0);
         if( !image.endsWith( "@nocover.png" ) )
         {
-            debug() << "adding image " << image << " to " << track->artist << ":" << track->album << endl;
+            debug() << "adding image " << image << " to " << bundle.artist() << ":" << bundle.album() << endl;
             itdb_track_set_thumbnails( track, g_strdup( QFile::encodeName(image) ) );
         }
     }
