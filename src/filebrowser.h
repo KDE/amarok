@@ -36,7 +36,7 @@ class KDirOperator;
 class KFileItem;
 class KFileView;
 class KURLComboBox;
-
+class Medium;
 
 //Hi! I think we ripped this from Kate, since then it's been modified somewhat
 
@@ -56,13 +56,13 @@ class FileBrowser : public QVBox
     enum MenuId { MakePlaylist, SavePlaylist, MediaDevice, AppendToPlaylist, SelectAllFiles, BurnCd, MoveToCollection, CopyToCollection, EditTags };
 
 public:
-    FileBrowser( const char *name = 0 );
+    FileBrowser( const char *name = 0, const Medium *medium = 0 );
    ~FileBrowser();
 
     KURL url() const { return m_dir->url(); }
 public slots:
-    void setUrl( const KURL &url ) { m_dir->setFocus(); m_dir->setURL( url, true ); }
-    void setUrl( const QString &url ) { setUrl( KURL(url) ); }
+    void setUrl( const KURL &url );
+    void setUrl( const QString &url );
     void setFilter( const QString& );
 
 private slots:
@@ -82,6 +82,7 @@ private:
     KURLComboBox  *m_combo;
     KDirOperator  *m_dir;
     ClickLineEdit *m_filter;
+    Medium        *m_medium;
 };
 
 

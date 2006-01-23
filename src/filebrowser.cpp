@@ -42,6 +42,7 @@
 #include <kurlcompletion.h>
 
 #include "mediabrowser.h"
+#include "medium.h"
 #include "playlist.h"
 #include "playlistbrowser.h"
 #include "playlistloader.h"
@@ -106,25 +107,38 @@ public slots:
 
 //BEGIN Constructor/destructor
 
-FileBrowser::FileBrowser( const char * name )
+FileBrowser::FileBrowser( const char * name, const Medium * medium )
         : QVBox( 0, name )
 {
     KActionCollection *actionCollection;
     KConfig* const config = amaroK::config( "Filebrowser" );
     SearchPane *searchPane;
 
-    KURL location( config->readPathEntry( "Location", QDir::homeDirPath() ) );
-    KFileItem currentFolder( KFileItem::Unknown, KFileItem::Unknown, location );
-    //KIO sucks, NetAccess::exists puts up a dialog and has annoying error message boxes
-    //if there is a problem so there is no point in using it anyways.
-    //so... setting the diroperator to ~ is the least sucky option
-    if ( !location.isLocalFile() || !currentFolder.isReadable() ) {
-        location = QDir::homeDirPath() ;
+    KURL *location;
+    KFileItem *currentFolder;
+
+    // Try to keep filebrowser working even if not in a medium context
+    // so if a medium object not passed in, keep earlier behavior
+    if (!medium) {
+        m_medium = 0;
+        location = new KURL( config->readPathEntry( "Location", QDir::homeDirPath() ) );
+        currentFolder = new KFileItem( KFileItem::Unknown, KFileItem::Unknown, *location );
+        //KIO sucks, NetAccess::exists puts up a dialog and has annoying error message boxes
+        //if there is a problem so there is no point in using it anyways.
+        //so... setting the diroperator to ~ is the least sucky option
+        if ( !location->isLocalFile() || !currentFolder->isReadable() ) {
+            delete location;
+            location = new KURL( QDir::homeDirPath() ) ;
+        }
+    }
+    else{
+        *m_medium = *medium;
+        location = new KURL( m_medium->mountPoint() );
+        currentFolder = new KFileItem( KFileItem::Unknown, KFileItem::Unknown, *location );
     }
 
     KActionCollection* ac = new KActionCollection( this );
     KStdAction::selectAll( this, SLOT( selectAll() ), ac, "filebrowser_select_all" );
-
 
     KToolBar *toolbar = new Browser::ToolBar( this );
 
@@ -160,10 +174,10 @@ FileBrowser::FileBrowser( const char * name )
         m_combo->setAutoDeleteCompletionObject( true );
         m_combo->setMaxItems( 9 );
         m_combo->setURLs( config->readPathListEntry( "Dir History" ) );
-        m_combo->lineEdit()->setText( location.path() );
+        m_combo->lineEdit()->setText( location->path() );
 
         //The main widget with file listings and that
-        m_dir = new MyDirOperator( location, container );
+        m_dir = new MyDirOperator( *location, container );
         m_dir->setEnableDirHighlighting( true );
         m_dir->setMode( KFile::Mode((int)KFile::Files | (int)KFile::Directory) ); //allow selection of multiple files + dirs
         m_dir->setOnlyDoubleClickSelectsFiles( true ); //amaroK type settings
@@ -257,6 +271,26 @@ FileBrowser::~FileBrowser()
 }
 
 //END Constructor/Destructor
+
+void FileBrowser::setUrl( const KURL &url )
+{
+    m_dir->setFocus();
+    if (!m_medium)
+        m_dir->setURL( url, true );
+    else {
+        QString urlpath = url.pathOrURL();
+        KURL newURL( urlpath.prepend( m_medium->mountPoint() + '/' ) );
+        m_dir->setURL( newURL, true );
+    }
+}
+
+void FileBrowser::setUrl( const QString &url )
+{
+    if (!m_medium)
+        m_dir->setURL( KURL(url), true );
+    else
+        m_dir->setURL( KURL( QString(url).prepend( m_medium->mountPoint() + '/' ) ), true );
+}
 
 //BEGIN Private Methods
 
