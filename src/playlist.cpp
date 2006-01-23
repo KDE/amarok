@@ -1566,8 +1566,8 @@ QPair<QString, QRect> Playlist::toolTipText( QWidget*, const QPoint &pos ) const
         ( col != PlaylistItem::Rating ) )
     {
         text = text.replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" );
-        if( item == m_currentTrack )
-            text = QString("<i>%2</i>").arg( text );
+        if( item == m_currentTrack && !item->isSelected() )
+            text = QString("<i>%1</i>").arg( text );
         return QPair<QString, QRect>( text, globalRect );
     }
 

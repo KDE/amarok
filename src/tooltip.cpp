@@ -180,11 +180,9 @@ void amaroK::ToolTip::drawContents( QPainter *painter )
     p.drawRect( buf.rect() );
 
     QSimpleRichText text( s_text, QToolTip::font() );
-    text.setWidth( QCOORD_MAX );
-    if( !s_rect.isNull() )
-        text.setWidth( s_rect.width() );
-    text.setWidth( text.widthUsed() );
-    text.draw( &p, 2, -1, rect(), colorGroup() );
+    text.setWidth( width() );
+    p.translate( 0, height() / 2 - text.height() / 2);
+    text.draw( &p, 2, s_rect.isNull() ? 0 : -2, rect(), colorGroup() );
 
     painter->drawPixmap( 0, 0, buf );
 }
@@ -192,11 +190,11 @@ void amaroK::ToolTip::drawContents( QPainter *painter )
 QSize amaroK::ToolTip::sizeHint() const
 {
     if( !s_rect.isNull() )
-        return QSize( s_rect.width(), s_rect.height() );
+        return s_rect.size();
     else
     {
         QSimpleRichText text( s_text, QToolTip::font() );
-        text.setWidth( QCOORD_MAX );
+        text.setWidth( 500 ); //is this reasonable?
         return QSize( text.widthUsed() - 2, text.height() );
     }
 }
