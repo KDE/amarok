@@ -47,7 +47,7 @@ class IfpMediaDevice : public MediaDevice
         bool              openDevice( bool silent=false );
         bool              closeDevice();
 
-        void              lockDevice( bool ) {}
+        bool              lockDevice( bool ) { return true; }
         void              unlockDevice() {}
         void              synchronizeDevice() {}
 

@@ -94,6 +94,9 @@ class ScriptManager : public KDialogBase, public EngineObserver
        /** Sends a fetchLyrics notification to retrieve lyrics from a specific page */
        void notifyFetchLyricsByUrl( const QString& url );
 
+       /** Sends a transcode notification to all scripts */
+       void notifyTranscode( const QString& srcUrl, const QString& filetype );
+
     private slots:
         /** Finds all installed scripts and adds them to the listview */
         void findScripts();

@@ -256,6 +256,11 @@ ScriptManager::notifyFetchLyricsByUrl( const QString& url )
 }
 
 
+void ScriptManager::notifyTranscode( const QString& srcUrl, const QString& filetype )
+{
+    notifyScripts( "transcode " + srcUrl + " " + filetype );
+}
+
 bool
 ScriptManager::lyricsScriptRunning() const
 {

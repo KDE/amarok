@@ -7,6 +7,7 @@
 
 #include "mediabrowser.h"
 
+#include <qmutex.h>
 #include <qptrlist.h>
 
 #include <kio/job.h>
@@ -28,8 +29,8 @@ class KioMediaDevice : public MediaDevice
 
         bool              openDevice( bool silent=false );
         bool              closeDevice();
-        void              lockDevice(bool) {}
-        void              unlockDevice() {}
+        bool              lockDevice(bool tryLock=false ) { if( tryLock ) { return m_mutex.tryLock(); } else { m_mutex.lock(); return true; } }
+        void              unlockDevice() { m_mutex.unlock(); }
         void              cancelTransfer() {} // we don't have to do anything, we check m_cancelled
 
         /**
@@ -57,6 +58,7 @@ class KioMediaDevice : public MediaDevice
         virtual void      rmbPressed( MediaView *deviceList, QListViewItem* qitem, const QPoint& point, int );
         virtual void      deleteFile( const KURL &url );
         virtual void      abortTransfer() {}
+        QMutex m_mutex;
 
     protected slots:
         virtual void      fileTransferred( KIO::Job *job );

@@ -9,14 +9,15 @@
 
 AMAROK_EXPORT_PLUGIN( IpodMediaDevice )
 
-#include "debug.h"
-#include "metabundle.h"
-#include "collectiondb.h"
-#include "statusbar/statusbar.h"
-#include "k3bexporter.h"
-#include "playlist.h"
-#include "collectionbrowser.h"
-#include "playlistbrowser.h"
+#include <debug.h>
+#include <metabundle.h>
+#include <collectiondb.h>
+#include <statusbar/statusbar.h>
+#include <k3bexporter.h>
+#include <playlist.h>
+#include <collectionbrowser.h>
+#include <playlistbrowser.h>
+#include <threadweaver.h>
 
 #include <kapplication.h>
 #include <kmountpoint.h>
@@ -1114,6 +1115,67 @@ IpodMediaDevice::ipodPath(const QString &realPath)
     return QString::null;
 }
 
+class IpodWriteDBJob : public ThreadWeaver::DependentJob
+{
+    public:
+        IpodWriteDBJob( QObject *parent, Itdb_iTunesDB *itdb, bool isShuffle, bool *resultPtr )
+        : ThreadWeaver::DependentJob( parent, "IpodWriteDBJob" )
+        , m_itdb( itdb )
+        , m_isShuffle( isShuffle )
+        , m_resultPtr( resultPtr )
+        , m_return( true )
+        {}
+
+    private:
+        virtual bool doJob()
+        {
+            GError *error = 0;
+            if (!itdb_write (m_itdb, &error))
+            {   /* an error occured */
+                m_return = false;
+                if(error)
+                {
+                    if (error->message)
+                        debug() << "itdb_write error: " << error->message << endl;
+                    else
+                        debug() << "itdb_write error: " << "error->message == 0!" << endl;
+                    g_error_free (error);
+                }
+                error = 0;
+            }
+
+            if( m_return && m_isShuffle )
+            {
+                /* write shuffle data */
+                if (!itdb_shuffle_write (m_itdb, &error))
+                {   /* an error occured */
+                    m_return = false;
+                    if(error)
+                    {
+                        if (error->message)
+                            debug() << "itdb_shuffle_write error: " << error->message << endl;
+                        else
+                            debug() << "itdb_shuffle_write error: " << "error->message == 0!" << endl;
+                        g_error_free (error);
+                    }
+                    error = 0;
+                }
+            }
+
+            return true;
+        }
+
+        virtual void completeJob()
+        {
+            *m_resultPtr = m_return;
+        }
+
+        Itdb_iTunesDB *m_itdb;
+        bool m_isShuffle;
+        bool *m_resultPtr;
+        bool m_return;
+};
+
 void
 IpodMediaDevice::writeITunesDB()
 {
@@ -1122,48 +1184,26 @@ IpodMediaDevice::writeITunesDB()
 
     if(m_dbChanged)
     {
-        bool ok = true;
-        GError *error = 0;
-        if (!itdb_write (m_itdb, &error))
-        {   /* an error occured */
-            ok = false;
-            if(error)
-            {
-                if (error->message)
-                    debug() << "itdb_write error: " << error->message << endl;
-                else
-                    debug() << "itdb_write error: " << "error->message == 0!" << endl;
-                g_error_free (error);
-            }
-            error = 0;
-        }
+        bool ok = false;
 
-        if( ok && m_isShuffle )
+        ThreadWeaver::instance()->onlyOneJob( new IpodWriteDBJob( this, m_itdb, m_isShuffle, &ok ) );
+        while( ThreadWeaver::instance()->isJobPending( "IpodWriteDBJob" ) )
         {
-            /* write shuffle data */
-            if (!itdb_shuffle_write (m_itdb, &error))
-            {   /* an error occured */
-                ok = false;
-                if(error)
-                {
-                    if (error->message)
-                        debug() << "itdb_shuffle_write error: " << error->message << endl;
-                    else
-                        debug() << "itdb_shuffle_write error: " << "error->message == 0!" << endl;
-                    g_error_free (error);
-                }
-                error = 0;
-            }
+            kapp->processEvents();
+            usleep( 10000 );
         }
 
-        if( !ok )
+
+        if( ok )
+        {
+            m_dbChanged = false;
+        }
+        else
         {
             amaroK::StatusBar::instance()->longMessage(
                     i18n("Media device: failed to write iPod database"),
                     KDE::StatusBar::Error );
         }
-
-        m_dbChanged = false;
     }
 }
 
@@ -1404,6 +1444,8 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
     MediaItem *item = dynamic_cast<MediaItem *>(qitem);
     if ( item )
     {
+        bool locked = m_mutex.locked();
+
         KURL::List urls = m_view->nodeBuildDragList( 0 );
         KPopupMenu menu( m_view );
 
@@ -1463,6 +1505,7 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
             if(m_playlistItem)
             {
                 menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "Make Media Device Playlist" ), MAKE_PLAYLIST );
+                menu.setItemEnabled( MAKE_PLAYLIST, !locked );
 
                 playlistsMenu = new KPopupMenu(&menu);
                 int i=0;
@@ -1474,7 +1517,7 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                     i++;
                 }
                 menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n("Add to Playlist"), playlistsMenu, ADD_TO_PLAYLIST );
-                menu.setItemEnabled( ADD_TO_PLAYLIST, m_playlistItem->childCount()>0 );
+                menu.setItemEnabled( ADD_TO_PLAYLIST, !locked && m_playlistItem->childCount()>0 );
                 menu.insertSeparator();
             }
             break;
@@ -1482,10 +1525,12 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
         case MediaItem::ORPHANED:
         case MediaItem::ORPHANEDROOT:
             menu.insertItem( SmallIconSet( "editrename" ), i18n( "Add to Database" ), ADD );
+            menu.setItemEnabled( ADD, !locked );
             break;
 
         case MediaItem::PLAYLIST:
             menu.insertItem( SmallIconSet( "editclear" ), i18n( "Rename" ), RENAME );
+            menu.setItemEnabled( RENAME, !locked );
             break;
 
         default:
@@ -1495,8 +1540,10 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
         if( item->type() == MediaItem::PODCASTSROOT || item->type() == MediaItem::PODCASTCHANNEL )
         {
             menu.insertItem( SmallIconSet( "editdelete" ), i18n( "Delete Podcasts Already Played" ), DELETE_PLAYED );
+            menu.setItemEnabled( DELETE_PLAYED, !locked );
         }
         menu.insertItem( SmallIconSet( "editdelete" ), i18n( "Delete" ), DELETE );
+        menu.setItemEnabled( DELETE, !locked );
 
         int id =  menu.exec( point );
         switch( id )
@@ -1539,6 +1586,17 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
             case BURN_AUDIOCD:
                 K3bExporter::instance()->exportTracks( urls, K3bExporter::AudioCD );
                 break;
+            case SUBSCRIBE:
+                PlaylistBrowser::instance()->addPodcast( item->podcastInfo()->rss );
+                break;
+            default:
+                break;
+        }
+
+        if( !m_mutex.locked() )
+        {
+            switch( id )
+            {
             case RENAME:
                 m_view->rename(item, 0);
                 break;
@@ -1604,9 +1662,6 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
             case DELETE:
                 deleteFromDevice();
                 break;
-            case SUBSCRIBE:
-                PlaylistBrowser::instance()->addPodcast( item->podcastInfo()->rss );
-                break;
             default:
                 if( id >= FIRST_PLAYLIST )
                 {
@@ -1628,6 +1683,7 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                     }
                 }
                 break;
+            }
         }
     }
 }

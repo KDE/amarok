@@ -871,10 +871,12 @@ namespace amaroK
 
     void DcopMediaBrowserHandler::enableTranscoding( bool enable )
     {
+        MediaBrowser::instance()->enableTranscoding( enable );
     }
 
-    void DcopMediaBrowserHandler::transcodingFinished( KURL src, KURL dest )
+    void DcopMediaBrowserHandler::transcodingFinished( QString src, QString dest )
     {
+        MediaBrowser::instance()->transcodingFinished( src, dest );
     }
 
 } //namespace amaroK

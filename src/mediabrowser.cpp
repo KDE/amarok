@@ -25,9 +25,11 @@
 #include "playlist.h"
 #include "playlistloader.h"
 #include "pluginmanager.h"
+#include "scriptmanager.h"
 #include "scrobbler.h"
 #include "statusbar.h"
 
+#include <qvbuttongroup.h>
 #include <qcheckbox.h>
 #include <qdatetime.h>
 #include <qdir.h>
@@ -38,6 +40,7 @@
 #include <qimage.h>
 #include <qlabel.h>
 #include <qpainter.h>
+#include <qradiobutton.h>
 #include <qregexp.h>
 #include <qsimplerichtext.h>
 #include <qtimer.h>
@@ -170,7 +173,7 @@ class DummyMediaDevice : public MediaDevice
     virtual MediaItem* newDirectory(const QString&, MediaItem*) { return 0; }
     virtual MediaItem* newPlaylist(const QString&, MediaItem*, QPtrList<MediaItem>) { return 0; }
     virtual MediaItem* trackExists(const MetaBundle&) { return 0; }
-    virtual void lockDevice(bool) {}
+    virtual bool lockDevice(bool) { return true; }
     virtual void unlockDevice() {}
     virtual bool openDevice( bool silent )
     {
@@ -193,6 +196,7 @@ MediaBrowser::MediaBrowser( const char *name )
         : QVBox( 0, name )
         , m_timer( new QTimer( this ) )
         , m_currentDevice( m_devices.end() )
+        , m_transcoderRegistered( false )
 {
     s_instance = this;
 
@@ -488,6 +492,51 @@ MediaBrowser::deviceSwitch( const QString &name )
 
     return false;
 }
+
+void
+MediaBrowser::enableTranscoding( bool enable )
+{
+    m_transcoderRegistered = enable;
+}
+
+void
+MediaBrowser::transcodingFinished( const QString &src, const QString &dst )
+{
+    if( m_transcodeSrc == src )
+    {
+        m_transcodedUrl = dst;
+        m_waitForTranscode = false;
+    }
+    else
+    {
+        debug() << "transcoding for " << src << " finished, "
+            << "but we are waiting for " << m_transcodeSrc << endl;
+    }
+}
+
+KURL
+MediaBrowser::transcode( const KURL &src, const QString &filetype )
+{
+    if( !m_transcoderRegistered )
+    {
+        debug() << "cannot transcode with no transcoder registered" << endl;
+        return KURL();
+    }
+
+    m_waitForTranscode = true;
+    m_transcodeSrc = src.url();
+    m_transcodedUrl = KURL();
+    ScriptManager::instance()->notifyTranscode( src.url(), filetype );
+
+    while( m_waitForTranscode && m_transcoderRegistered )
+    {
+        usleep( 10000 );
+        kapp->processEvents( 100 );
+    }
+
+    return m_transcodedUrl;
+}
+
 
 void
 MediaBrowser::slotSetFilterTimeout() //SLOT
@@ -1377,8 +1426,39 @@ MediaBrowser::config()
     }
     connect( m_configPluginCombo, SIGNAL(activated( int )), SLOT(configSelectPlugin( int )) );
 
+
+    QCheckBox *transcodeCheck = 0;
+    QButtonGroup *transcodeGroup = 0;
+    QRadioButton *transcodeAlways = 0;
+    QRadioButton *transcodeWhenNecessary = 0;
+    QCheckBox *transcodeRemove = 0;
     if( currentDevice() )
     {
+        currentDevice()->m_transcode = currentDevice()->configBool( "Transcode" );
+        currentDevice()->m_transcodeAlways = currentDevice()->configBool( "TranscodeAlways" );
+        currentDevice()->m_transcodeRemove = currentDevice()->configBool( "TranscodeRemove" );
+
+        transcodeCheck = new QCheckBox( m_configBox );
+        transcodeCheck->setText( i18n( "&Transcode before transferring to device" ) );
+        transcodeCheck->setChecked( currentDevice()->m_transcode );
+
+        transcodeGroup = new QVButtonGroup( m_configBox );
+        transcodeGroup->setTitle( i18n( "Transcode to preferred format for device" ) );
+        transcodeAlways = new QRadioButton( transcodeGroup );
+        transcodeAlways->setText( i18n( "Whenever possible" ) );
+        transcodeAlways->setChecked( currentDevice()->m_transcodeAlways );
+        transcodeWhenNecessary = new QRadioButton( transcodeGroup );
+        transcodeWhenNecessary->setText( i18n( "When necessary" ) );
+        transcodeWhenNecessary->setChecked( !currentDevice()->m_transcodeAlways );
+        transcodeGroup->setEnabled( currentDevice()->m_transcode );
+        connect( transcodeCheck, SIGNAL(toggled( bool )),
+                transcodeGroup, SLOT(setEnabled( bool )) );
+        transcodeGroup->insert( transcodeAlways );
+        transcodeGroup->insert( transcodeWhenNecessary );
+        transcodeRemove = new QCheckBox( transcodeGroup );
+        transcodeRemove->setText( i18n( "Remove transcoded files after transfer" ) );
+        transcodeRemove->setChecked( currentDevice()->m_transcodeRemove );
+
         currentDevice()->loadConfig();
         currentDevice()->addConfigElements( m_configBox );
     }
@@ -1386,11 +1466,26 @@ MediaBrowser::config()
     if ( dialog.exec() != QDialog::Rejected )
     {
         if( currentDevice() )
+        {
             currentDevice()->applyConfig();
+            currentDevice()->m_transcode = transcodeCheck->isChecked();
+            currentDevice()->setConfigBool( "Transcode", currentDevice()->m_transcode );
+            currentDevice()->m_transcodeAlways = transcodeAlways->isChecked();
+            currentDevice()->setConfigBool( "TranscodeAlways", currentDevice()->m_transcodeAlways );
+            currentDevice()->m_transcodeRemove = transcodeRemove->isChecked();
+            currentDevice()->setConfigBool( "TranscodeRemove", currentDevice()->m_transcodeRemove );
+        }
     }
 
     if( currentDevice() )
+    {
         currentDevice()->removeConfigElements( m_configBox );
+        delete transcodeCheck;
+        delete transcodeAlways;
+        delete transcodeRemove;
+        delete transcodeWhenNecessary;
+        delete transcodeGroup;
+    }
 
     delete m_configPluginCombo;
     m_configPluginCombo = 0;
@@ -1829,6 +1924,7 @@ MediaDevice::abortTransfer()
 void
 MediaBrowser::cancelClicked()
 {
+    m_waitForTranscode = false;
     if( currentDevice() )
         currentDevice()->abortTransfer();
 }
@@ -1910,6 +2006,12 @@ MediaDevice::connectDevice( bool silent )
     if( !isConnected() )
         return false;
 
+    while( !lockDevice( true ) )
+    {
+        kapp->processEvents();
+        usleep( 10000 );
+    }
+
     if( m_syncStats )
     {
         syncStatsFromDevice( 0 );
@@ -1928,8 +2030,6 @@ MediaDevice::connectDevice( bool silent )
 
             setProgress( 0, numFiles );
 
-            lockDevice(true);
-
             int numDeleted = deleteItemFromDevice( m_podcastItem, true );
             purgeEmptyItems();
             if( numDeleted < 0 )
@@ -1947,12 +2047,12 @@ MediaDevice::connectDevice( bool silent )
             }
 
             synchronizeDevice();
-            unlockDevice();
 
             QTimer::singleShot( 1500, m_parent->m_progressBox, SLOT(hide()) );
             m_parent->updateStats();
         }
     }
+    unlockDevice();
 
     updateRootItems();
 
@@ -1962,12 +2062,20 @@ MediaDevice::connectDevice( bool silent )
 bool
 MediaDevice::disconnectDevice()
 {
+    while( !lockDevice( true ) )
+    {
+        kapp->processEvents();
+        usleep( 10000 );
+    }
+
     if( m_syncStats )
     {
         syncStatsToDevice();
     }
 
     closeDevice();
+    unlockDevice();
+
     m_parent->updateStats();
 
     if( !m_requireMount || (!m_umntcmd.isEmpty() && umount() == 0) ) // umount was successful or no umount needed
@@ -2031,6 +2139,7 @@ MediaDevice::syncStatsFromDevice( MediaItem *root )
                     if( url != QString::null )
                     {
                         CollectionDB::instance()->setSongRating( url, it->rating()/20 );
+                        it->setRating( it->rating() ); // prevent setting it again next time
                     }
                 }
             }
@@ -2072,7 +2181,7 @@ MediaDevice::syncStatsToDevice( MediaItem *root )
             break;
 
         default:
-            syncStatsFromDevice( it );
+            syncStatsToDevice( it );
             break;
         }
     }
@@ -2081,13 +2190,15 @@ MediaDevice::syncStatsToDevice( MediaItem *root )
 void
 MediaDevice::transferFiles()
 {
+    if( !lockDevice( true ) )
+        return;
+
     m_transferring = true;
     m_parent->m_transferButton->setEnabled( false );
 
-    setProgress( 0, m_parent->m_queue->childCount() );
+    setProgress( 0, m_parent->m_queue->childCount() + 1 /* for synchronizing */ );
 
     // ok, let's copy the stuff to the device
-    lockDevice( true );
 
     MediaItem *playlist = 0;
     if(m_playlistItem && m_parent->m_playlistButton->isOn())
@@ -2127,6 +2238,24 @@ MediaDevice::transferFiles()
             continue;
         }
 
+        bool transcoding = false;
+        if( m_transcode &&
+                (!isPlayable( *bundle ) || (m_transcodeAlways && !isPreferredFormat( *bundle )) ) )
+        {
+            QString preferred = supportedFiletypes().isEmpty() ? "mp3" : supportedFiletypes().first();
+            debug() << "transcoding " << bundle->url() << " to " << preferred << endl;
+            KURL transcoded = MediaBrowser::instance()->transcode( bundle->url(), preferred );
+            if( transcoded.isEmpty() )
+            {
+                debug() << "transcoding failed" << endl;
+            }
+            else
+            {
+                transcoding = true;
+                bundle = new MetaBundle( transcoded );
+            }
+        }
+
         if( !isPlayable( *bundle ) )
         {
             amaroK::StatusBar::instance()->longMessage( i18n( "Track is not playable on media device: %1" ).arg( bundle->url().path() ),
@@ -2142,10 +2271,16 @@ MediaDevice::transferFiles()
         if( !item )
             break;
 
-        debug() << "copyied successfully" << endl;
+        debug() << "copied successfully" << endl;
 
+        if( transcoding && m_transcodeRemove )
+        {
+            QFile( bundle->url().url() ).remove();
+            delete bundle;
+            bundle = 0;
+        }
 
-        int rating = CollectionDB::instance()->getSongRating( bundle->url().path() ) * 20;
+        int rating = CollectionDB::instance()->getSongRating( m_transferredItem->bundle()->url().path() ) * 20;
         item->setRating( rating );
 
         if( playlist )
@@ -2217,6 +2352,9 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
 
     if ( !recursing )
     {
+        if( !lockDevice( true ) )
+            return 0;
+
         QPtrList<MediaItem> list;
         //NOTE we assume that currentItem is the main target
         int numFiles  = m_view->getSelectedLeaves(item, &list, true /* only selected */, onlyPlayed);
@@ -2240,13 +2378,12 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
 
             if(!isTransferring())
             {
-                setProgress( 0, numFiles );
+                setProgress( 0, numFiles + 1 /* sync is one step */ );
             }
 
         }
         // don't return if numFiles==0: playlist items might be to delete
 
-        lockDevice( true );
         if( !fi )
             fi = static_cast<MediaItem*>(m_view->firstChild());
     }
@@ -2524,6 +2661,16 @@ MediaDevice::isPlayable( const MetaBundle &bundle )
 
     QString type = bundle.url().path().section( ".", -1 ).lower();
     return supportedFiletypes().contains( type );
+}
+
+bool
+MediaDevice::isPreferredFormat( const MetaBundle &bundle )
+{
+    if( supportedFiletypes().isEmpty() )
+        return true;
+
+    QString type = bundle.url().path().section( ".", -1 ).lower();
+    return ( type == supportedFiletypes().first() );
 }
 
 

@@ -232,7 +232,7 @@ class DcopMediaBrowserHandler : public QObject, virtual public AmarokMediaBrowse
       virtual void queueList( KURL::List urls );
       virtual void transfer();
       virtual void enableTranscoding( bool enable );
-      virtual void transcodingFinished( KURL src, KURL dest );
+      virtual void transcodingFinished( QString src, QString dest );
 };
 
 } // namespace amaroK

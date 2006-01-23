@@ -170,6 +170,12 @@ class MediaBrowser : public QVBox
         bool deviceSwitch( const QString &name );
 
         QString getPluginName ( const QString string ) { return m_pluginName[string]; }
+        void enableTranscoding( bool enable );
+        void transcodingFinished( const QString &src, const QString &dst );
+        void updateStats();
+        void updateButtons();
+        void updateDevices();
+
 
     private slots:
         void slotSetFilterTimeout();
@@ -185,6 +191,8 @@ class MediaBrowser : public QVBox
         void connectClicked();
         void disconnectClicked();
         void configSelectPlugin( int index );
+        void config();
+        KURL transcode( const KURL &src, const QString &filetype );
 
     private:
         MediaDevice *loadDevicePlugin( const QString &deviceName );
@@ -203,32 +211,26 @@ class MediaBrowser : public QVBox
         void removeDevice( MediaDevice *device );
 
         MediaQueue* m_queue;
+        bool m_transcoderRegistered;
+        bool m_waitForTranscode;
+        KURL m_transcodedUrl;
+        QString m_transcodeSrc;
 
-
-    public:
-    void updateStats();
-    void updateButtons();
-    void updateDevices();
-
-    private slots:
-    void config();
-
-    private:
-    QString          prettySize( unsigned long size ); // KB to QString
-    SpaceLabel*      m_stats;
-    QHBox*           m_progressBox;
-    KProgress*       m_progress;
-    QVBox*           m_views;
-    KPushButton*     m_cancelButton;
-    KPushButton*     m_transferButton;
-    KPushButton*     m_connectButton;
-    KPushButton*     m_disconnectButton;
-    KPushButton*     m_playlistButton;
-    KPushButton*     m_configButton;
-    KPushButton*     m_devicePluginMapperButton;
-    QVBox*           m_configBox;
-    KComboBox*       m_configPluginCombo;
-    KComboBox*       m_deviceCombo;
+        QString          prettySize( unsigned long size ); // KB to QString
+        SpaceLabel*      m_stats;
+        QHBox*           m_progressBox;
+        KProgress*       m_progress;
+        QVBox*           m_views;
+        KPushButton*     m_cancelButton;
+        KPushButton*     m_transferButton;
+        KPushButton*     m_connectButton;
+        KPushButton*     m_disconnectButton;
+        KPushButton*     m_playlistButton;
+        KPushButton*     m_configButton;
+        KPushButton*     m_devicePluginMapperButton;
+        QVBox*           m_configBox;
+        KComboBox*       m_configPluginCombo;
+        KComboBox*       m_deviceCombo;
 };
 
 class MediaView : public KListView
@@ -299,6 +301,12 @@ class MediaDevice : public QObject, public amaroK::Plugin
          * @return true if the device is capable of playing the track referred to by bundle
          */
         virtual bool isPlayable( const MetaBundle &bundle );
+
+        /**
+         * @param bundle describes track that should be checked
+         * @return true if the track is in the preferred (first in list) format of the device
+         */
+        virtual bool isPreferredFormat( const MetaBundle &bundle );
 
         /**
          * @return true if the device is connected
@@ -413,7 +421,7 @@ class MediaDevice : public QObject, public amaroK::Plugin
         /**
          * Lock device for exclusive access if possible
          */
-        virtual void lockDevice( bool ) = 0;
+        virtual bool lockDevice( bool tryOnly = false ) = 0;
 
         /**
          * Unlock device
@@ -475,6 +483,10 @@ class MediaDevice : public QObject, public amaroK::Plugin
         QString     m_umntcmd;
         bool        m_autoDeletePodcasts;
         bool        m_syncStats;
+
+        bool        m_transcode;
+        bool        m_transcodeAlways;
+        bool        m_transcodeRemove;
 
         KShellProcess   *sysProc;
         MediaBrowser    *m_parent;
