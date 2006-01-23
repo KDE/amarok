@@ -37,7 +37,7 @@ def fetchLyrics( artist, title )
 
     lyrics = "Suggestions : <br>"
     entries.each do |entry|
-        url = /display.[^"]*/.match( entry ).to_s()
+        url = /(display\.lyrics\.astraweb.com:2000)([^"]*)/.match( entry )[2].to_s()
         title = /(http:\/\/display\.lyrics.*">)([^<]*)/.match( entry )[2].to_s()
         artist = /(Artist:.*html">)([^<]*)/.match( entry )[2].to_s()
 
@@ -45,7 +45,14 @@ def fetchLyrics( artist, title )
     end
 
     puts( lyrics )
-#     showLyrics( lyrics )
+    showLyrics( lyrics )
+end
+
+
+def fetchLyricsByUrl( url )
+    h = Net::HTTP.new( "display.lyrics.astraweb.com", 2000 )
+    response = h.get( url )
+
 end
 
 
@@ -53,7 +60,9 @@ end
 # MAIN
 ##################################################################
 
-fetchLyrics( "radio", "gaga" )
+# fetchLyrics( "radio", "gaga" )
+fetchLyricsByUrl( '/display.cgi?dead_prez..turn_off_the_radio..turn_off_the_radio' )
+
 exit()
 
 
@@ -77,7 +86,7 @@ loop do
         when "fetchLyricsByUrl"
             url = message.split()[1]
 
-#             fetchLyrics( url )
+            fetchLyricsByUrl( url )
     end
 end
 
