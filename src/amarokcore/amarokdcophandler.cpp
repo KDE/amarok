@@ -653,6 +653,11 @@ namespace amaroK
         ContextBrowser::instance()->showWikipedia();
     }
 
+    void DcopContextBrowserHandler::showLyrics( const QString& lyrics )
+    {
+        ContextBrowser::instance()->lyricsResult( lyrics );
+    }
+
 /////////////////////////////////////////////////////////////////////////////////////
 // class DcopCollectionHandler
 /////////////////////////////////////////////////////////////////////////////////////
@@ -793,11 +798,6 @@ namespace amaroK
             }
         }
         return stringList;
-    }
-
-    void DcopScriptHandler::showLyrics( const QString& lyrics )
-    {
-        ContextBrowser::instance()->lyricsResult( lyrics );
     }
 
 /////////////////////////////////////////////////////////////////////////////////////

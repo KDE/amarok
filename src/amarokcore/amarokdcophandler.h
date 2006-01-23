@@ -159,6 +159,7 @@ class DcopContextBrowserHandler : public QObject, virtual public AmarokContextBr
       virtual void showCurrentTrack();
       virtual void showLyrics();
       virtual void showWiki();
+      virtual void showLyrics( const QString& lyrics );
 };
 
 
@@ -200,7 +201,6 @@ class DcopScriptHandler : public QObject, virtual public AmarokScriptInterface
       virtual void removeCustomMenuItem(QString submenu, QString itemTitle );
       virtual QString readConfig(const QString& key);
       virtual QStringList readListConfig(const QString& key);
-      virtual void showLyrics( const QString& lyrics );
 };
 
 class DcopDevicesHandler : public QObject, virtual public AmarokDevicesInterface

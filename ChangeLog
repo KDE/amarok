@@ -10,7 +10,7 @@ VERSION 1.4:
     * Multiple simultaneously connected media devices.
     * Lyrics support is now scriptable. This allows to add support for any
       lyrics site, and makes it possible to provide upgrades. (BR 94437)
-    * New DCOP call "script: showLyrics(string)".
+    * New DCOP call "contextbrowser: showLyrics(string)".
     * Amarok now supports ASX playlist files. (BR 114051)
     * New DCOP call "collection: isDirInCollection(const QString& path )".
     * New DCOP call "playlist: removeByIndex(int)". (BR 119143)

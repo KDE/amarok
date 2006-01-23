@@ -27,7 +27,7 @@ def fetchLyrics( artist, title, url )
 
     unless response.code == "200"
         lyrics = "HTTP Error: #{response.message}"
-        `dcop amarok script showLyrics "#{lyrics}"`
+        `dcop amarok contextbrowser showLyrics "#{lyrics}"`
         return
     end
 
@@ -66,7 +66,7 @@ def fetchLyrics( artist, title, url )
     lyrics.gsub!( '"', "'" )
     lyrics.gsub!( '`', "'" )
 
-    `dcop amarok script showLyrics "#{lyrics}"`
+    `dcop amarok contextbrowser showLyrics "#{lyrics}"`
 end
 
 
