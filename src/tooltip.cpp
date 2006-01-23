@@ -67,6 +67,7 @@ QPoint amaroK::ToolTip::s_pos;
 QRect amaroK::ToolTip::s_rect;
 QString amaroK::ToolTip::s_text;
 QValueList<amaroK::ToolTip*> amaroK::ToolTip::s_tooltips;
+int amaroK::ToolTip::s_hack = 0;
 
 void amaroK::ToolTip::add( ToolTipClient *client, QWidget *parent ) //static
 {
@@ -168,6 +169,7 @@ void amaroK::ToolTip::hideTip()
     QFrame::hide();
     QToolTip::parentWidget()->update();
     m_timer.stop();
+    s_hack = 0;
 }
 
 void amaroK::ToolTip::drawContents( QPainter *painter )
@@ -182,7 +184,11 @@ void amaroK::ToolTip::drawContents( QPainter *painter )
     QSimpleRichText text( s_text, QToolTip::font() );
     text.setWidth( width() );
     p.translate( 0, height() / 2 - text.height() / 2);
-    text.draw( &p, 2, s_rect.isNull() ? 0 : -2, rect(), colorGroup() );
+    QPoint pos = s_rect.isNull() ? QPoint(2, -1)
+               : s_hack == 1     ? QPoint(4, -2)
+               : s_hack == 2     ? QPoint(2, 0)
+               : QPoint(2, -2); //HACK positioning
+    text.draw( &p, pos.x(), pos.y(), rect(), colorGroup() );
 
     painter->drawPixmap( 0, 0, buf );
 }

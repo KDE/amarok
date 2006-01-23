@@ -69,6 +69,9 @@ public:
 protected:
     virtual void maybeTip( const QPoint &pos );
     virtual void drawContents( QPainter *painter );
+
+public:
+    static int s_hack;
 };
 
 }

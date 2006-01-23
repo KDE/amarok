@@ -1527,7 +1527,7 @@ QPair<QString, QRect> Playlist::toolTipText( QWidget*, const QPoint &pos ) const
 
     QRect irect = itemRect( item );
     const int headerPos = header()->sectionPos( col );
-    irect.setLeft( headerPos );
+    irect.setLeft( headerPos - 1 );
     irect.setRight( headerPos + header()->sectionSize( col ) );
 
     static QFont f;
@@ -1560,14 +1560,17 @@ QPair<QString, QRect> Playlist::toolTipText( QWidget*, const QPoint &pos ) const
         globalRect.setRight( kMin( dright, kMax( globalRect.left() + t.widthUsed(), globalRect.left() + ( PlaylistItem::star()->width() + 1 ) * item->rating() ) ) );
     else
         globalRect.setRight( kMin( globalRect.left() + t.widthUsed(), dright ) );
-    globalRect.setBottom( globalRect.top() + kMax( irect.height(), t.height() ) );
+    globalRect.setBottom( globalRect.top() + kMax( irect.height(), t.height() ) - 1 );
 
     if( ( col == PlaylistItem::Rating && PlaylistItem::ratingAtPoint( contentsPos.x() ) <= item->rating() ) ||
         ( col != PlaylistItem::Rating ) )
     {
         text = text.replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" );
         if( item == m_currentTrack && !item->isSelected() )
+        {
             text = QString("<i>%1</i>").arg( text );
+            amaroK::ToolTip::s_hack = item->isSelected() ? 2 : 1; //HACK for precise positioning
+        }
         return QPair<QString, QRect>( text, globalRect );
     }
 
