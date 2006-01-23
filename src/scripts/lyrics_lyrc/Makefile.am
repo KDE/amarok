@@ -1,3 +1,9 @@
-lyricslyrcdir = $(kde_datadir)/amarok/scripts/lyrics_lyrc
+lyricslyrcdir = \
+    $(kde_datadir)/amarok/scripts/lyrics_lyrc
 
-lyricslyrc_SCRIPTS = lyrics_lyrc.rb
+lyricslyrc_SCRIPTS = \
+    lyrics_lyrc.rb
+
+lyricslyrc_DATA = \
+    README \
+    COPYING
