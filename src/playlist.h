@@ -130,6 +130,7 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         QValueList<int> visibleColumns() const;
         int  mapToLogicalColumn( int physical ) const; // Converts physical PlaylistItem column position to logical
         QString columnText( int c ) const { return KListView::columnText( c ); };
+        void setColumns( QValueList<int> order, QValueList<int> visible );
 
         /** Call this to prevent items being removed from the playlist, it is mostly for internal use only
          *  Dont forget to unlock() !! */
@@ -151,6 +152,7 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         friend class QueueManager;
         friend class QueueLabel;
         friend class PlaylistWindow;
+        friend class ColumnList;
         friend void amaroK::DcopPlaylistHandler::removeCurrentTrack(); //calls removeItem() and currentTrack()
         friend void amaroK::DcopPlaylistHandler::removeByIndex( int ); //calls removeItem()
         friend void PlaylistWindow::init(); //setting up connections etc.

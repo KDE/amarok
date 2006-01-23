@@ -19,6 +19,7 @@
 #include "debug.h"
 #include "collectiondb.h"
 #include "collectionbrowser.h"
+#include "columnlist.h"
 #include "devicemanager.h"
 #include "enginecontroller.h"
 #include "k3bexporter.h"
@@ -233,62 +234,39 @@ Playlist::Playlist( QWidget *parent )
     setShadeSortColumn( true );
     #endif
 
-    //NOTE order is critical because we can't set indexes or ids
-    addColumn( i18n( "Filename"    ),   0 );
-    addColumn( i18n( "Title"       ), 200 ); //displays filename if no title tag
-    addColumn( i18n( "Artist"      ), 100 );
-    addColumn( i18n( "Composer"    ),   0 );
-    addColumn( i18n( "Year"        ),   0 ); //0 means hidden
-    addColumn( i18n( "Album"       ), 100 );
-    addColumn( i18n( "Disc Number" ),   0 ); //0 means hidden
-    addColumn( i18n( "Track"       ),   0 );
-    addColumn( i18n( "Genre"       ),   0 );
-    addColumn( i18n( "Comment"     ),   0 );
-    addColumn( i18n( "Directory"   ),   0 );
-    addColumn( i18n( "Type"        ),   0 );
-    addColumn( i18n( "Length"      ),  80 );
-    addColumn( i18n( "Bitrate"     ),   0 );
-    addColumn( i18n( "Sample Rate" ),   0 );
-    addColumn( i18n( "Score"       ),   0 );
-    addColumn( i18n( "Rating"      ),   0 );
-    addColumn( i18n( "Play Count"  ),   0 );
-    addColumn( i18n( "Last Played" ),   0 );
-    addColumn( i18n( "Mood"        ),  AmarokConfig::showMoodbar() ? 40 : 0 );
-    addColumn( i18n( "Filesize"    ),   0 );
-
-    for( int i = 0, n = PlaylistItem::NUM_COLUMNS; i < n; ++i )
-    switch( i )
+    for( int i = 0; i < MetaBundle::NUM_COLUMNS; ++i )
     {
-        case PlaylistItem::Filename:
-        case PlaylistItem::Directory:
-        case PlaylistItem::Type:
-        case PlaylistItem::Length:
-        case PlaylistItem::Bitrate:
-        case PlaylistItem::SampleRate:
-        case PlaylistItem::Filesize:
-        case PlaylistItem::PlayCount:
-        case PlaylistItem::LastPlayed:
-        case PlaylistItem::Mood:
-            setRenameable( i, false );
-
-        case PlaylistItem::Title:
-        case PlaylistItem::Artist:
-        case PlaylistItem::Composer:
-        case PlaylistItem::Year:
-        case PlaylistItem::Album:
-        case PlaylistItem::DiscNumber:
-        case PlaylistItem::Track:
-        case PlaylistItem::Genre:
-        case PlaylistItem::Comment:
-        case PlaylistItem::Score:
-        case PlaylistItem::Rating:
-            setRenameable( i, true );
+        addColumn( PlaylistItem::prettyColumnName( i ), 0 );
+        switch( i )
+        {
+            case PlaylistItem::Title:
+            case PlaylistItem::Artist:
+            case PlaylistItem::Composer:
+            case PlaylistItem::Year:
+            case PlaylistItem::Album:
+            case PlaylistItem::DiscNumber:
+            case PlaylistItem::Track:
+            case PlaylistItem::Genre:
+            case PlaylistItem::Comment:
+            case PlaylistItem::Score:
+            case PlaylistItem::Rating:
+                setRenameable( i, true );
+                continue;
+            default:
+                setRenameable( i, false );
+        }
     }
 
+    setColumnWidth( PlaylistItem::Title,  200 );
+    setColumnWidth( PlaylistItem::Artist, 100 );
+    setColumnWidth( PlaylistItem::Album,  100 );
+    setColumnWidth( PlaylistItem::Length, 80 );
+    setColumnWidth( PlaylistItem::Mood,   AmarokConfig::showMoodbar() ? 40 : 0 );
+
+    setColumnAlignment( PlaylistItem::Length,     Qt::AlignRight  );
     setColumnAlignment( PlaylistItem::Track,      Qt::AlignCenter );
     setColumnAlignment( PlaylistItem::DiscNumber, Qt::AlignCenter );
     setColumnAlignment( PlaylistItem::Year,       Qt::AlignCenter );
-    setColumnAlignment( PlaylistItem::Length,     Qt::AlignRight  );
     setColumnAlignment( PlaylistItem::Bitrate,    Qt::AlignCenter );
     setColumnAlignment( PlaylistItem::SampleRate, Qt::AlignCenter );
     setColumnAlignment( PlaylistItem::Filesize,   Qt::AlignCenter );
@@ -909,7 +887,7 @@ void Playlist::saveLayout(KConfig *config, const QString &group) const
   QHeader* const thisHeader = header();
   for (int i = 0; i < colCount; ++i)
   {
-    names << PlaylistItem::columnName(i);
+    names << PlaylistItem::exactColumnName(i);
     widths << QString::number(columnWidth(i));
     order << QString::number(thisHeader->mapToIndex(i));
   }
@@ -934,7 +912,7 @@ void Playlist::restoreLayout(KConfig *config, const QString &group)
     {
         bool found = false;
         for( int ii = i; i < PlaylistItem::NUM_COLUMNS; ++ii ) //most likely, it's where we left it
-            if( names[i] == PlaylistItem::columnName(ii) )
+            if( names[i] == PlaylistItem::exactColumnName(ii) )
             {
                 iorder.append(ii);
                 found = true;
@@ -942,7 +920,7 @@ void Playlist::restoreLayout(KConfig *config, const QString &group)
             }
         if( !found )
             for( int ii = 0; ii < i; ++ii ) //but maybe it's not
-                if( names[i] == PlaylistItem::columnName(ii) )
+                if( names[i] == PlaylistItem::exactColumnName(ii) )
                 {
                     iorder.append(ii);
                     found = true;
@@ -2393,6 +2371,19 @@ Playlist::columnResizeEvent( int col, int oldw, int neww )
     }
 }
 
+class ColumnsDialog: public KDialogBase
+{
+    ColumnList *m_list;
+public:
+    ColumnsDialog():
+        KDialogBase( PlaylistWindow::self(), 0, false, i18n( "Playlist Columns" ) ),
+        m_list( new ColumnList( this ) )
+        { setMainWidget( m_list ); show(); }
+    virtual void slotApply() { apply(); KDialogBase::slotApply(); }
+    virtual void slotOk() { apply(); KDialogBase::slotOk(); }
+    void apply() { Playlist::instance()->setColumns( m_list->columnOrder(), m_list->visibleColumns() ); }
+};
+
 bool
 Playlist::eventFilter( QObject *o, QEvent *e )
 {
@@ -2401,28 +2392,30 @@ Playlist::eventFilter( QObject *o, QEvent *e )
 
     if( o == header() && e->type() == QEvent::MouseButtonPress && me->button() == Qt::RightButton )
     {
-        enum { HIDE = 1000, CUSTOM };
+        enum { HIDE = 1000, SELECT, CUSTOM };
 
         const int mouseOverColumn = header()->sectionAt( me->pos().x() );
 
         KPopupMenu popup;
-        popup.setCheckable( true );
-        popup.insertItem( i18n("&Hide This Column"), HIDE ); //TODO
-        popup.setItemEnabled( HIDE, mouseOverColumn != -1 );
+        popup.insertItem( i18n("&Hide Column"), HIDE ); //TODO
+        popup.insertItem( i18n("&Select Columns..."), SELECT );
+
+        KPopupMenu sub;
+        sub.setCheckable( true );
+        sub.setItemEnabled( HIDE, mouseOverColumn != -1 );
 
         for( int i = 0; i < columns(); ++i ) //columns() references a property
             if(i != PlaylistItem::Mood || AmarokConfig::showMoodbar())
             {
-                popup.insertItem( columnText( i ), i, i + 1 );
-                popup.setItemChecked( i, columnWidth( i ) != 0 );
+                sub.insertItem( columnText( i ), i, i + 1 );
+                sub.setItemChecked( i, columnWidth( i ) != 0 );
             }
 
         //TODO for 1.2.1
-        //popup.insertSeparator();
-        //popup.insertItem( i18n("&Add Custom Column..."), CUSTOM ); //TODO
+        //sub.insertSeparator();
+        //sub.insertItem( i18n("&Add Custom Column..."), CUSTOM ); //TODO
 
-        //do last so it doesn't get the first id
-        popup.insertTitle( i18n( "Playlist Columns" ), /*id*/ -1, /*index*/ 1 );
+        popup.insertItem( i18n("&Add A Column" ), &sub );
 
         int col = popup.exec( static_cast<QMouseEvent *>(e)->globalPos() );
 
@@ -2433,6 +2426,10 @@ Playlist::eventFilter( QObject *o, QEvent *e )
                 QResizeEvent e( size(), QSize() );
                 viewportResizeEvent( &e );
             }
+            break;
+
+        case SELECT:
+            new ColumnsDialog();
             break;
 
         case CUSTOM:
@@ -2774,7 +2771,7 @@ Playlist::saveXML( const QString &path )
         {
             if( !item->exactText(x).isEmpty() )
             {
-                QDomElement attr = newdoc.createElement( item->columnName(x) );
+                QDomElement attr = newdoc.createElement( item->exactColumnName(x) );
                 QDomText t = newdoc.createTextNode( item->exactText(x) );
                 attr.appendChild( t );
                 i.appendChild( attr );
@@ -3821,6 +3818,21 @@ Playlist::mapToLogicalColumn( int physical ) const
     }
 
     return logical;
+}
+
+void
+Playlist::setColumns( QValueList<int> order, QValueList<int> visible )
+{
+    for( int i = order.count() - 1; i >= 0; --i )
+        header()->moveSection( order[i], i );
+    for( int i = 0; i < PlaylistItem::NUM_COLUMNS; ++i )
+    {
+        if( visible.contains( i ) )
+            adjustColumn( i );
+        else
+            hideColumn( i );
+    }
+    columnOrderChanged();
 }
 
 void

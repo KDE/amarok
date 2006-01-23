@@ -39,7 +39,7 @@
 #include "metabundle.h"
 
 /// These are untranslated and used for storing/retrieving XML playlist
-const QString MetaBundle::columnName( int c ) //static
+const QString MetaBundle::exactColumnName( int c ) //static
 {
     switch( c ) {
         case Filename:   return "Filename";
@@ -67,10 +67,39 @@ const QString MetaBundle::columnName( int c ) //static
     return "<ERROR>";
 }
 
+const QString MetaBundle::prettyColumnName( int index ) //static
+{
+    switch( index )
+    {
+        case Filename:   return i18n( "Filename"    );
+        case Title:      return i18n( "Title"       );
+        case Artist:     return i18n( "Artist"      );
+        case Composer:   return i18n( "Composer"    );
+        case Year:       return i18n( "Year"        );
+        case Album:      return i18n( "Album"       );
+        case DiscNumber: return i18n( "Disc Number" );
+        case Track:      return i18n( "Track"       );
+        case Genre:      return i18n( "Genre"       );
+        case Comment:    return i18n( "Comment"     );
+        case Directory:  return i18n( "Directory"   );
+        case Type:       return i18n( "Type"        );
+        case Length:     return i18n( "Length"      );
+        case Bitrate:    return i18n( "Bitrate"     );
+        case SampleRate: return i18n( "Sample Rate" );
+        case Score:      return i18n( "Score"       );
+        case Rating:     return i18n( "Rating"      );
+        case PlayCount:  return i18n( "Play Count"  );
+        case LastPlayed: return i18n( "Last Played" );
+        case Mood:       return i18n( "Mood"        );
+        case Filesize:   return i18n( "File Size"   );
+    }
+    return "This is a bug.";
+}
+
 int MetaBundle::columnIndex( const QString &name )
 {
     for( int i = 0; i < NUM_COLUMNS; ++i )
-        if( columnName( i ).lower() == name.lower() )
+        if( exactColumnName( i ).lower() == name.lower() )
             return i;
     return -1;
 }

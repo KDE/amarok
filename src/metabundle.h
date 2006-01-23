@@ -61,7 +61,8 @@ public:
         NUM_COLUMNS
     };
 
-    static const QString columnName( int index );
+    static const QString exactColumnName( int index ); // not i18ned, for internal purposes
+    static const QString prettyColumnName( int index ); // i18ned, for display purposes
     static int columnIndex( const QString &name );
 
     enum FileType { mp3, ogg, wma, mp4, ra, rv, rm, rmj, rmvb, other };

@@ -64,6 +64,7 @@ libamarok_la_SOURCES = \
     clicklineedit.cpp \
     collectionbrowser.cpp \
     collectiondb.cpp \
+    columnlist.cpp \
     configdialog.cpp \
     contextbrowser.cpp \
     coverfetcher.cpp \

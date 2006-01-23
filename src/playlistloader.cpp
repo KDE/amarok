@@ -426,7 +426,7 @@ bool UrlLoader::characters( const QString &ch )
 
     static int start = 0; //most of the time, the columns should be in order
     for( int i = start; i < MetaBundle::NUM_COLUMNS; ++i )
-        if( m_currentElement == MetaBundle::columnName( i ) )
+        if( m_currentElement == MetaBundle::exactColumnName( i ) )
         {
             switch( i )
             {
@@ -453,7 +453,7 @@ bool UrlLoader::characters( const QString &ch )
             return true;
         }
     for( int i = 0; i < start; ++i )
-        if( m_currentElement == MetaBundle::columnName( i ) )
+        if( m_currentElement == MetaBundle::exactColumnName( i ) )
         {
             switch( i )
             {
