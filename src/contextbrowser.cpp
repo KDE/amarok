@@ -1991,7 +1991,7 @@ void ContextBrowser::showLyrics( const QString &url )
     m_lyricsToolBar->getButton( LYRICS_BROWSER )->setEnabled(false);
 
     if( !ScriptManager::instance()->lyricsScriptRunning() )
-        m_lyrics = i18n( "Sorry, no lyrics script running." );
+        m_lyrics = i18n( "Sorry, no lyrics script running. Start 'lyrics_lyrc.rb' from the Script Manager." );
 
     if ( !m_lyrics.isEmpty() && url.isEmpty() )
     {
