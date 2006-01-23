@@ -33,7 +33,7 @@ public:
     Manager( QObject *parent ): QObject( parent ) { qApp->installEventFilter( this ); }
     virtual ~Manager()
     {
-        for( int n = amaroK::ToolTip::s_tooltips.count() - 1; n; --n )
+        for( int n = amaroK::ToolTip::s_tooltips.count() - 1; n >= 0; --n )
             delete amaroK::ToolTip::s_tooltips[n];
     }
 
@@ -77,7 +77,7 @@ void amaroK::ToolTip::add( ToolTipClient *client, QWidget *parent ) //static
 
 void amaroK::ToolTip::remove( QWidget *widget ) //static
 {
-    for( int i = s_tooltips.count() - 1; i; --i )
+    for( int i = s_tooltips.count() - 1; i >= 0; --i )
         if( s_tooltips[i]->QToolTip::parentWidget() == widget )
             delete s_tooltips[i];
 }
