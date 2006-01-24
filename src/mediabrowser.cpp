@@ -325,13 +325,12 @@ MediaBrowser::MediaBrowser( const char *name )
             it != mmap.end();
             it++ )
     {
-        if ( (*it)->fsType() != "vfat" ) //&& other supported fsTypes here later
-            continue;
-
+        debug() << "(*it)->id() = " << (*it)->id() << " and config->readEntry = " << config->readEntry((*it)->id()) << endl;
         if ( !config->readEntry( (*it)->id() ) )
             newflag = 1;
 
         mediumAdded( (*it),  (*it)->name(), true );
+        config = amaroK::config( "MediaBrowser" ); //TODO: bug in KConfig, if don't reassign, subsequent values aren't read, file bug report
     }
 
     if ( newflag )

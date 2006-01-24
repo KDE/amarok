@@ -107,7 +107,7 @@ public slots:
 
 //BEGIN Constructor/destructor
 
-FileBrowser::FileBrowser( const char * name, const Medium * medium )
+FileBrowser::FileBrowser( const char * name, Medium * medium )
         : QVBox( 0, name )
 {
     KActionCollection *actionCollection;
@@ -132,7 +132,7 @@ FileBrowser::FileBrowser( const char * name, const Medium * medium )
         }
     }
     else{
-        *m_medium = *medium;
+        m_medium = medium;
         location = new KURL( m_medium->mountPoint() );
         currentFolder = new KFileItem( KFileItem::Unknown, KFileItem::Unknown, *location );
     }
@@ -170,11 +170,18 @@ FileBrowser::FileBrowser( const char * name, const Medium * medium )
 
         //folder selection combo box
         m_combo = new KURLComboBox( KURLComboBox::Directories, true, box, "path combo" );
-        m_combo->setCompletionObject( new KURLCompletion( KURLCompletion::DirCompletion ) );
-        m_combo->setAutoDeleteCompletionObject( true );
+
+        if (!m_medium){
+            m_combo->setCompletionObject( new KURLCompletion( KURLCompletion::DirCompletion ) );
+            m_combo->setAutoDeleteCompletionObject( true );
+        }
         m_combo->setMaxItems( 9 );
         m_combo->setURLs( config->readPathListEntry( "Dir History" ) );
-        m_combo->lineEdit()->setText( location->path() );
+
+        if (!m_medium)
+            m_combo->lineEdit()->setText( location->path() );
+        else
+            m_combo->lineEdit()->setText( "/" );
 
         //The main widget with file listings and that
         m_dir = new MyDirOperator( *location, container );
@@ -203,7 +210,9 @@ FileBrowser::FileBrowser( const char * name, const Medium * medium )
         menu->insertItem( SmallIconSet( "filesave" ), i18n( "&Save as Playlist..." ), SavePlaylist );
         menu->insertSeparator();
 
-        menu->insertItem( SmallIconSet( "usbpendrive_unmount" ), i18n( "Add to Media Device &Transfer Queue" ), MediaDevice );
+        if (!m_medium)
+            menu->insertItem( SmallIconSet( "usbpendrive_unmount" ), i18n( "Add to Media Device &Transfer Queue" ), MediaDevice );
+
         menu->insertItem( SmallIconSet( "collection" ), i18n( "&Copy to Collection" ), CopyToCollection );
         menu->insertItem( SmallIconSet( "collection" ), i18n( "&Move to Collection" ), MoveToCollection );
         menu->insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn to CD"), BurnCd );
@@ -279,7 +288,7 @@ void FileBrowser::setUrl( const KURL &url )
         m_dir->setURL( url, true );
     else {
         QString urlpath = url.pathOrURL();
-        KURL newURL( urlpath.prepend( m_medium->mountPoint() + '/' ) );
+        KURL newURL( urlpath.prepend( m_medium->mountPoint() ) );
         m_dir->setURL( newURL, true );
     }
 }
@@ -289,7 +298,7 @@ void FileBrowser::setUrl( const QString &url )
     if (!m_medium)
         m_dir->setURL( KURL(url), true );
     else
-        m_dir->setURL( KURL( QString(url).prepend( m_medium->mountPoint() + '/' ) ), true );
+        m_dir->setURL( KURL( QString(url).prepend( m_medium->mountPoint() ) ), true );
 }
 
 //BEGIN Private Methods
@@ -356,11 +365,16 @@ FileBrowser::urlChanged( const KURL &u )
 {
     //the DirOperator's URL has changed
 
-    const QString url = u.url();
+    QString url = u.pathOrURL();
+
+    if (m_medium){
+        url.remove( m_medium->mountPoint() );
+    }
 
     QStringList urls = m_combo->urls();
     urls.remove( url );
     urls.prepend( url );
+
     m_combo->setURLs( urls, KURLComboBox::RemoveBottom );
 }
 

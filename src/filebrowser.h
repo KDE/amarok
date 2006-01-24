@@ -56,7 +56,7 @@ class FileBrowser : public QVBox
     enum MenuId { MakePlaylist, SavePlaylist, MediaDevice, AppendToPlaylist, SelectAllFiles, BurnCd, MoveToCollection, CopyToCollection, EditTags };
 
 public:
-    FileBrowser( const char *name = 0, const Medium *medium = 0 );
+    FileBrowser( const char *name = 0, Medium *medium = 0 );
    ~FileBrowser();
 
     KURL url() const { return m_dir->url(); }

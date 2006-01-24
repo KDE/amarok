@@ -24,6 +24,7 @@
 #include "collectionbrowser.h"
 #include "contextbrowser.h"
 #include "debug.h"
+#include "devicemanager.h"
 #include "enginecontroller.h" //for actions in ctor
 #include "filebrowser.h"
 #include "k3bexporter.h"
@@ -370,8 +371,10 @@ void PlaylistWindow::init()
         //if( MediaBrowser::isAvailable() )
             addBrowserMacro( MediaBrowser, "MediaBrowser", i18n( "Media Device" ), "usbpendrive_unmount" )
 
-        addBrowserMacro( FileBrowser, "FileBrowser", i18n( "Files" ), "folder" )
+        //DEBUG: Comment out the addBrowserMacro line and uncomment the m_browsers line (passing in a vfat device name) to see the "virtual root" functionality
 
+        addBrowserMacro( FileBrowser, "FileBrowser", i18n( "Files" ), "folder" )
+        //m_browsers->addBrowser( new FileBrowser( "FileBrowser", DeviceManager::instance()->getDevice( "hda5" ) ), i18n( "Files" ), "folder" );
         #undef addBrowserMacro
         #undef addInstBrowserMacro
     }
