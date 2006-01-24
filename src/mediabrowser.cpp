@@ -1263,7 +1263,7 @@ MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/, bool construc
         if( device )
         {
             device->m_uniqueId = medium->id();
-            device->m_deviceNode = medium->name();
+            device->m_deviceNode = medium->deviceNode();
             addDevice( device );
             if( m_currentDevice == m_devices.begin()
                     || m_currentDevice == m_devices.end() )
@@ -1285,7 +1285,7 @@ MediaBrowser::pluginSelected( const Medium *medium, const QString plugin )
         if( device )
         {
             device->m_uniqueId = medium->id();
-            device->m_deviceNode = medium->name();
+            device->m_deviceNode = medium->deviceNode();
             addDevice( device );
             if( m_currentDevice == m_devices.begin()
                     || m_currentDevice == m_devices.end() )
@@ -1314,7 +1314,7 @@ MediaBrowser::mediumChanged( const Medium *medium, QString /*name*/ )
         {
             if( (*it)->uniqueId() == medium->id() )
             {
-                debug() << "changing state for " << medium->name() << endl;
+                debug() << "changing state for " << medium->deviceNode() << endl;
 #if 0
                 if( (*it)->isConnected() && !medium->isMounted() )
                 {
@@ -1344,7 +1344,7 @@ MediaBrowser::mediumRemoved( const Medium *medium, QString name )
         {
             if( (*it)->uniqueId() == medium->id() )
             {
-                debug() << "removing " << medium->name() << endl;
+                debug() << "removing " << medium->deviceNode() << endl;
                 if( (*it)->isConnected() )
                 {
                     amaroK::StatusBar::instance()->longMessage(
@@ -1522,7 +1522,7 @@ MediaBrowser::configSelectPlugin( int index )
         if( dev->isConnected() )
             dev->disconnectDevice();
         QString uniqueId = dev->uniqueId();
-        QString deviceNode = dev->name();
+        QString deviceNode = dev->deviceNode();
         unloadDevicePlugin( dev );
         *m_currentDevice = loadDevicePlugin( AmarokConfig::deviceType() );
         if( !*m_currentDevice )
