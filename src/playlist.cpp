@@ -2374,15 +2374,26 @@ Playlist::columnResizeEvent( int col, int oldw, int neww )
 class ColumnsDialog: public KDialogBase
 {
     ColumnList *m_list;
-public:
+    static ColumnsDialog *s_instance;
     ColumnsDialog():
         KDialogBase( PlaylistWindow::self(), 0, false, i18n( "Playlist Columns" ) ),
         m_list( new ColumnList( this ) )
-        { setMainWidget( m_list ); show(); }
+        { setMainWidget( m_list ); }
+    ~ColumnsDialog() { s_instance = 0; }
+public:
     virtual void slotApply() { apply(); KDialogBase::slotApply(); }
     virtual void slotOk() { apply(); KDialogBase::slotOk(); }
+    virtual void hide() { delete this; }
     void apply() { Playlist::instance()->setColumns( m_list->columnOrder(), m_list->visibleColumns() ); }
+    static void display()
+    {
+        if( !s_instance )
+            s_instance = new ColumnsDialog;
+        s_instance->show();
+    }
 };
+
+ColumnsDialog *ColumnsDialog::s_instance = 0;
 
 bool
 Playlist::eventFilter( QObject *o, QEvent *e )
@@ -2429,7 +2440,7 @@ Playlist::eventFilter( QObject *o, QEvent *e )
             break;
 
         case SELECT:
-            new ColumnsDialog();
+            ColumnsDialog::display();
             break;
 
         case CUSTOM:
