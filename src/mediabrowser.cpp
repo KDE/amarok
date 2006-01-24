@@ -317,21 +317,22 @@ MediaBrowser::MediaBrowser( const char *name )
 
     updateStats();
 
-    Medium::List devices = DeviceManager::instance()->getDeviceList();
+    QMap<QString, Medium*> mmap = DeviceManager::instance()->getMediumMap();
+    QMap<QString, Medium*>::Iterator it;
+
     int newflag = 0;
     KConfig *config = amaroK::config( "MediaBrowser" );
-    for( Medium::List::iterator it = devices.begin();
-            it != devices.end();
+    for( it = mmap.begin();
+            it != mmap.end();
             it++ )
     {
-        if ( (*it).fsType() != "vfat" ) //&& other supported fsTypes here later
+        if ( (*it)->fsType() != "vfat" ) //&& other supported fsTypes here later
             continue;
 
-        if ( !config->readEntry( (*it).id() ) )
+        if ( !config->readEntry( (*it)->id() ) )
             newflag = 1;
 
-        mediumAdded( &(*it),  (*it).name(), true );
-
+        mediumAdded( (*it),  (*it)->name(), true );
     }
 
     if ( newflag )

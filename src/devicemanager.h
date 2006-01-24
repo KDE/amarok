@@ -25,7 +25,6 @@ class DeviceManager : public QObject
         void mediumChanged( QString name);
         void mediumRemoved( QString name);
 
-        Medium::List getDeviceList();
         MediumMap getMediumMap( ) { return m_mediumMap; }
 
         bool isValid( ) { return m_valid; }
@@ -37,6 +36,9 @@ class DeviceManager : public QObject
 
     private:
         Medium* getDevice(QString name);
+
+        //don't make getDeviceList public.  Use getMediumMap()...it pre-filters and keeps things in sync
+        Medium::List getDeviceList();
 
         DCOPClient *m_dc;
         bool m_valid;
