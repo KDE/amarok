@@ -153,7 +153,7 @@ MediumPluginDetailView::MediumPluginDetailView( const Medium* medium )
     new QLabel( i18n( "Device Node:"), vbox1 );
     new QLabel( medium->deviceNode().isEmpty() ? labelTextNone : medium->deviceNode(), vbox2 );
     new QLabel( i18n( "Mount Point:"), vbox1 );
-    new QLabel( medium->label().isEmpty() ? labelTextNone : medium->label(), vbox2 );
+    new QLabel( medium->mountPoint().isEmpty() ? labelTextNone : medium->mountPoint(), vbox2 );
     new QLabel( i18n( "Mime Type:"), vbox1 );
     new QLabel( medium->mimeType().isEmpty() ? labelTextNone : medium->mimeType(), vbox2 );
 }
