@@ -320,17 +320,16 @@ MediaBrowser::MediaBrowser( const char *name )
     QMap<QString, Medium*>::Iterator it;
 
     int newflag = 0;
-    KConfig *config = amaroK::config( "MediaBrowser" );
+    KConfig *config;
     for( it = mmap.begin();
             it != mmap.end();
             it++ )
     {
-        debug() << "(*it)->id() = " << (*it)->id() << " and config->readEntry = " << config->readEntry((*it)->id()) << endl;
+        config = amaroK::config( "MediaBrowser" );
         if ( !config->readEntry( (*it)->id() ) )
             newflag = 1;
 
         mediumAdded( (*it),  (*it)->name(), true );
-        config = amaroK::config( "MediaBrowser" ); //TODO: bug in KConfig, if don't reassign, subsequent values aren't read, file bug report
     }
 
     if ( newflag )
