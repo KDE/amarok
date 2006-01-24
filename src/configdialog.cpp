@@ -188,9 +188,7 @@ void AmarokConfigDialog::updateSettings()
 
     if ( m_engineConfig ) m_engineConfig->save();
 
-    AmarokConfig::setExternalBrowser( m_opt1->kComboBox_browser->isEnabled() ?
-                                      m_opt1->kComboBox_browser->currentText().lower() :
-                                      m_opt1->kLineEdit_customBrowser->text().lower() );
+    AmarokConfig::setExternalBrowser( externalBrowser() );
 
     // When sound system has changed, update engine config page
     if ( m_soundSystem->currentText() != m_pluginAmarokName[AmarokConfig::soundSystem()] ) {
@@ -250,17 +248,13 @@ bool AmarokConfigDialog::hasChanged()
 {
     OSDPreviewWidget *osd = (OSDPreviewWidget*) child( "osdpreview" );
 
-    const QString externalBrowser = m_opt1->kComboBox_browser->isEnabled() ?
-                                    m_opt1->kComboBox_browser->currentText().lower() :
-                                    m_opt1->kLineEdit_customBrowser->text().lower();
-
     return  m_soundSystem->currentText() != m_pluginAmarokName[AmarokConfig::soundSystem()] ||
             osd->alignment() != AmarokConfig::osdAlignment() ||
             osd->alignment() != OSDWidget::Center && osd->y() != AmarokConfig::osdYOffset() ||
             m_opt2->styleComboBox->currentText() != AmarokConfig::contextBrowserStyleSheet() ||
             databaseType() != AmarokConfig::databaseEngine() ||
             m_engineConfig && m_engineConfig->hasChanged() ||
-            externalBrowser != AmarokConfig::externalBrowser();
+            externalBrowser() != AmarokConfig::externalBrowser();
 }
 
 
@@ -342,5 +336,15 @@ const QString AmarokConfigDialog::databaseType()
     }
     return dbType;
 }
+
+const QString AmarokConfigDialog::externalBrowser()
+{
+    return   m_opt1->kComboBox_browser->isEnabled() ?
+                 m_opt1->kComboBox_browser->currentText() == i18n( "Default KDE Browser" ) ?
+                 "kfmclient openURL" :
+                 m_opt1->kComboBox_browser->currentText().lower() :
+             m_opt1->kLineEdit_customBrowser->text().lower();
+}
+
 
 #include "configdialog.moc"

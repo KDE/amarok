@@ -56,6 +56,7 @@ class AmarokConfigDialog : public KConfigDialog
     private:
         void soundSystemChanged();
         const QString databaseType();
+        const QString externalBrowser();
 
         QComboBox* m_soundSystem;
         amaroK::PluginConfig *m_engineConfig;

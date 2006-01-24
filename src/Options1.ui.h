@@ -34,9 +34,13 @@ void Options1::init()
         else
             ++it;
     }
+    if ( KStandardDirs::findExe( "kfmclient" ) != QString::null )
+        browsers.prepend( i18n( "Default KDE Browser" ) );
 
     kComboBox_browser->insertStringList( browsers );
-    kComboBox_browser->setCurrentItem( browsers.findIndex( AmarokConfig::externalBrowser() ) );
+    kComboBox_browser->setCurrentItem( AmarokConfig::externalBrowser() == "kfmclient openURL" ?
+                                       0 :
+                                       browsers.findIndex( AmarokConfig::externalBrowser() ) );
 }
 
 
