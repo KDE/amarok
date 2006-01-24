@@ -145,8 +145,7 @@ App::App()
     applySettings( true );
 
     // Start ScriptManager. Must be created _after_ PlaylistWindow.
-    if ( amaroK::config( "ScriptManager" )->readBoolEntry( "Auto Run" ) )
-        ScriptManager::instance();
+    ScriptManager::instance();
 
     //notify loader application that we have started
     std::cout << "STARTUP\n" << std::flush;
