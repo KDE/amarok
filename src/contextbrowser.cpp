@@ -54,9 +54,9 @@
 #include <kurl.h>
 
 #define escapeHTML(s)     QString(s).replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" )
-// .replace( "%", "%25" ) has to be the last one, otherwise we would do things like converting spaces into %20 and then convert them into %25%20
-#define escapeHTMLAttr(s) QString(s).replace( "'", "%27" ).replace( "#", "%23" ).replace( "?", "%3F" ).replace( "%", "%25" )
-#define unEscapeHTMLAttr(s) QString(s).replace( "%25", "%" ).replace( "%3F", "?" ).replace( "%23", "#" ).replace( "%27", "'" )
+// .replace( "%", "%25" ) has to be the first(!) one, otherwise we would do things like converting spaces into %20 and then convert them into %25%20
+#define escapeHTMLAttr(s) QString(s).replace( "%", "%25" ).replace( "'", "%27" ).replace( "\"", "%22" ).replace( "#", "%23" ).replace( "?", "%3F" )
+#define unEscapeHTMLAttr(s) QString(s).replace( "%3F", "?" ).replace( "%23", "#" ).replace( "%22", "\"" ).replace( "%27", "'" ).replace( "%25", "%" )
 
 using amaroK::QStringx;
 
@@ -1008,7 +1008,7 @@ ContextBrowser::ContructHTMLAlbums(const QStringList & reqResult, QString & html
 
                     htmlCode.append(
                                 "<div class='album-song'>"
-                                    "<a href=\"file:" + albumValues[j + 1].replace( "\"", QCString( "%22" ) ) + "\">"
+                                    "<a href=\"file:" + escapeHTMLAttr( albumValues[j + 1] ) + "\">"
                                         + track +
                                         "<span class='album-song-title'>" + escapeHTML( albumValues[j] ) + "</span>&nbsp;"
                                         + length +
@@ -1135,7 +1135,7 @@ void ContextBrowser::showHomeBySongs()
             m_HTMLSource.append(
                     "<div class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
                         "<div class='song'>"
-                            "<a href=\"file:" + lastplayed[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
+                            "<a href=\"file:" + escapeHTMLAttr( lastplayed[i + 1] ) + "\">"
                             "<span class='song-title'>" + escapeHTML( lastplayed[i] ) + "</span><br />"
                             "<span class='song-artist'>" + escapeHTML( lastplayed[i + 2] ) + "</span>"
                         );
@@ -1189,7 +1189,7 @@ void ContextBrowser::showHomeBySongs()
                         "<tr class='" + QString( (i % 10) ? "box-row-alt" : "box-row" ) + "'>"
                                     "<td width='30' align='center' class='song-place'>" + QString::number( ( i / 5 ) + 1 ) + "</td>"
                                     "<td>"
-                                        "<a href=\"file:" + fave[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
+                                        "<a href=\"file:" + escapeHTMLAttr( fave[i + 1] ) + "\">"
                                             "<span class='song-title'>" + escapeHTML( fave[i] ) + "</span><br /> "
                                             "<span class='song-artist'>" + escapeHTML( fave[i + 3] ) + "</span>" );
 
@@ -1235,7 +1235,7 @@ void ContextBrowser::showHomeBySongs()
         m_HTMLSource.append(
                  "<div class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
                     "<div class='song'>"
-                        "<a href=\"file:" + newest[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
+                        "<a href=\"file:" + escapeHTMLAttr( newest[i + 1] ) + "\">"
                         "<span class='song-title'>" + escapeHTML( newest[i] ) + "</span><br />"
                         "<span class='song-artist'>" + escapeHTML( newest[i + 2] ) + "</span>"
                     );
@@ -1771,7 +1771,7 @@ bool CurrentTrackJob::doJob()
                 m_HTMLSource.append(
                     "<tr class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
                         "<td class='song'>"
-                            "<a href=\"file:" + values[i].replace( '"', QCString( "%22" ) ) + "\">"
+                            "<a href=\"file:" + escapeHTMLAttr( values[i] ) + "\">"
                             "<span class='album-song-title'>"+ escapeHTML( values[i + 2] ) + "</span>"
                 "<span class='song-separator'>"
                 + i18n("&#xa0;&#8211; ") +
@@ -1824,7 +1824,7 @@ bool CurrentTrackJob::doJob()
                 m_HTMLSource.append(
                     "<tr class='" + QString( (i % 6) ? "box-row-alt" : "box-row" ) + "'>"
                         "<td class='song'>"
-                            "<a href=\"file:" + values[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
+                            "<a href=\"file:" + escapeHTMLAttr( values[i + 1] ) + "\">"
                             "<span class='album-song-title'>" + escapeHTML( values[i] ) + "</span>"
                             "</a>"
                         "</td>"
@@ -1957,7 +1957,7 @@ bool CurrentTrackJob::doJob()
 
                         m_HTMLSource.append(
                             "<div class='album-song'>"
-                                "<a href=\"file:" + albumValues[j + 1].replace( "\"", QCString( "%22" ) ) + "\">"
+                                "<a href=\"file:" + escapeHTMLAttr( albumValues[j + 1] ) + "\">"
                                 + track +
                                 "<span class='album-song-title'>" + escapeHTML( albumValues[j] ) + "</span>&nbsp;"
                                 + length +
@@ -2082,7 +2082,7 @@ bool CurrentTrackJob::doJob()
                             length = "<span class='album-song-time'>(" + MetaBundle::prettyTime( QString(albumValues[j + 4]).toInt(), false ) + ")</span>";
                         m_HTMLSource.append(
                             "<div class='album-song'>"
-                                "<a href=\"file:" + albumValues[j + 1].replace( "\"", QCString( "%22" ) ) + "\">"
+                                "<a href=\"file:" + escapeHTMLAttr( albumValues[j + 1] ) + "\">"
                                 + track +
                         "<span class='album-song-title'>" + escapeHTML( albumValues[j + 5] ) + i18n(" - ") + escapeHTML( albumValues[j] ) + "</span>&nbsp;"
                                 + length +
