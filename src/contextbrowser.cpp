@@ -891,7 +891,7 @@ void ContextBrowser::showHome() //SLOT
             m_HTMLSource.append(
                     "<div class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
                         "<div class='song'>"
-                            "<a href=\"file:" + lastplayed[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
+                            "<a href=\"file:" + escapeHTMLAttr ( lastplayed[i + 1] ) + "\">"
                             "<span class='song-title'>" + escapeHTML( lastplayed[i] ) + "</span><br />"
                             "<span class='song-artist'>" + escapeHTML( lastplayed[i + 2] ) + "</span>"
                         );
@@ -1497,7 +1497,7 @@ bool CurrentTrackJob::doJob()
                     m_HTMLSource.append(
                             "<tr class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
                             "<td class='song'>"
-                            "<a href=\"file:" + values[i].replace( '"', QCString( "%22" ) ) + "\">"
+                            "<a href=\"file:" + escapeHTMLAttr ( values[i] ) + "\">"
                             "<span class='album-song-title'>"+ escapeHTML( values[i + 2] ) + "</span>"
                             "<span class='song-separator'>"
                             + i18n("&#xa0;&#8211; ") +
@@ -1555,7 +1555,7 @@ bool CurrentTrackJob::doJob()
                 m_HTMLSource.append(
                     "<tr class='" + QString( (i % 6) ? "box-row-alt" : "box-row" ) + "'>"
                         "<td class='song'>"
-                            "<a href=\"file:" + values[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
+                            "<a href=\"file:" + escapeHTMLAttr ( values[i + 1] ) + "\">"
                             "<span class='album-song-title'>" + escapeHTML( values[i] ) + "</span>"
                             "</a>"
                         "</td>"
@@ -1700,7 +1700,7 @@ bool CurrentTrackJob::doJob()
 
                         m_HTMLSource.append(
                             "<div class='album-song'>"
-                                "<a href=\"file:" + albumValues[j + 1].replace( "\"", QCString( "%22" ) ) + "\">"
+                                "<a href=\"file:" + escapeHTMLAttr ( albumValues[j + 1] ) + "\">"
                                 + track +
                                 "<span class='album-song-title'>" + escapeHTML( albumValues[j] ) + "</span>&nbsp;"
                                 + length +
@@ -1846,7 +1846,7 @@ bool CurrentTrackJob::doJob()
                         tracktitle_formated += "</span>&nbsp;";
                         m_HTMLSource.append(
                             "<div class='album-song'>"
-                                "<a href=\"file:" + albumValues[j + 1].replace( "\"", QCString( "%22" ) ) + "\">"
+                                "<a href=\"file:" + escapeHTMLAttr ( albumValues[j + 1] ) + "\">"
                                 + track
                                 + tracktitle_formated
                                 + length +
