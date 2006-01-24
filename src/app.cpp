@@ -214,10 +214,11 @@ App::~App()
 
     CollectionDB::instance()->stopScan();
     ThreadWeaver::instance()->abortAllJobsNamed( "CreateMood" ); //these take forever
-    ThreadWeaver::deleteInstance(); //waits for jobs to finish
 
     delete m_pPlayerWindow;   //sets some XT keys
     delete m_pPlaylistWindow; //sets some XT keys
+
+    ThreadWeaver::deleteInstance(); //waits for jobs to finish
 
     // this must be deleted before the connection to the Xserver is
     // severed, or we risk a crash when the QApplication is exited,
