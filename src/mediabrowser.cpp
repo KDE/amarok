@@ -320,13 +320,11 @@ MediaBrowser::MediaBrowser( const char *name )
     QMap<QString, Medium*>::Iterator it;
 
     int newflag = 0;
-    KConfig *config;
     for( it = mmap.begin();
             it != mmap.end();
             it++ )
     {
-        config = amaroK::config( "MediaBrowser" );
-        if ( !config->readEntry( (*it)->id() ) )
+        if ( !amaroK::config( "MediaBrowser" )->readEntry( (*it)->id() ) )
             newflag = 1;
 
         mediumAdded( (*it),  (*it)->name(), true );
