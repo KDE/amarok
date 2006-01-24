@@ -22,7 +22,7 @@
 #ifndef COLORGENERATOR_H
 #define COLORGENERATOR_H
 
-#include <debug.h>
+#include "debug.h"
 
 namespace amaroK {
 
