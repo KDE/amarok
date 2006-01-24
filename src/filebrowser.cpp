@@ -261,7 +261,8 @@ void FileBrowser::setUrl( const KURL &url )
         m_dir->setURL( url, true );
     else {
         QString urlpath = url.isLocalFile() ? url.path() : url.prettyURL();
-        KURL newURL( urlpath.prepend( m_medium->mountPoint() ) );
+        KURL newURL( urlpath.prepend( m_medium->mountPoint() ).remove("..") );
+        //debug() << "set-url-kurl: changing to: " << newURL.path() << endl;
         m_dir->setURL( newURL, true );
     }
 }
@@ -270,8 +271,11 @@ void FileBrowser::setUrl( const QString &url )
 {
     if (!m_medium)
         m_dir->setURL( KURL(url), true );
-    else
-        m_dir->setURL( KURL( QString(url).prepend( m_medium->mountPoint() ) ), true );
+    else{
+        KURL newURL( QString(url).prepend( m_medium->mountPoint() ).remove("..") );
+        //debug() << "set-url-qstring: changing to: " << newURL.path() << endl;
+        m_dir->setURL( newURL, true );
+    }
 }
 
 //BEGIN Private Methods
