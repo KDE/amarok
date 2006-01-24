@@ -319,10 +319,9 @@ void AmarokConfigDialog::soundSystemChanged()
     {
         m_opt4->radioButtonNormalPlayback->setChecked( true );
     }
-
 }
 
-const QString AmarokConfigDialog::databaseType()
+QString AmarokConfigDialog::databaseType() const
 {
     // can't use kconfigxt for the database comboxbox since we need the DBConnection id and not the index
     QString dbType = QString::number(DbConnection::sqlite);
@@ -337,7 +336,7 @@ const QString AmarokConfigDialog::databaseType()
     return dbType;
 }
 
-const QString AmarokConfigDialog::externalBrowser()
+QString AmarokConfigDialog::externalBrowser() const
 {
     return   m_opt1->kComboBox_browser->isEnabled() ?
                  m_opt1->kComboBox_browser->currentText() == i18n( "Default KDE Browser" ) ?

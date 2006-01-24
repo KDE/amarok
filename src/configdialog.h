@@ -49,14 +49,15 @@ class AmarokConfigDialog : public KConfigDialog
 
     private slots:
         void aboutEngine();
+
     protected:
         bool hasChanged();
         bool isDefault();
 
     private:
         void soundSystemChanged();
-        const QString databaseType();
-        const QString externalBrowser();
+        QString databaseType() const;
+        QString externalBrowser() const;
 
         QComboBox* m_soundSystem;
         amaroK::PluginConfig *m_engineConfig;
