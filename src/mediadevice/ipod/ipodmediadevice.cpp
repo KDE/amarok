@@ -719,9 +719,13 @@ IpodMediaDevice::openDevice( bool silent )
             break;
         }
 
-        m_name = QString( "iPod %1 \"%2\"" )
+        m_name = name != NULL ?
+            QString( "iPod %1 \"%2\"" )
             .arg( QString::fromUtf8( modelString ) )
-            .arg( QString::fromUtf8( name ) );
+            .arg( QString::fromUtf8( name ) )
+          :
+            QString( "iPod %1" )
+            .arg( QString::fromUtf8( modelString ) );
     }
     else
 #endif
@@ -1746,7 +1750,7 @@ IpodMediaDevice::addConfigElements( QWidget *parent )
 }
 
 void
-IpodMediaDevice::removeConfigElements( QWidget *parent )
+IpodMediaDevice::removeConfigElements( QWidget * /*parent*/ )
 {
     delete m_syncStatsCheck;
     m_syncStatsCheck = 0;
