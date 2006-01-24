@@ -83,7 +83,8 @@ protected:
 
 class MyDirOperator : public KDirOperator {
 public:
-    MyDirOperator( const KURL &url, QWidget *parent ) : KDirOperator( url, parent ) {
+    MyDirOperator( const KURL &url, QWidget *parent, Medium *medium = 0 ) : KDirOperator( url, parent ) {
+        m_medium = medium;
         setDirLister( new MyDirLister( true ) );
 //the delete key event was being eaten with the file browser open
 //so folks couldn't use the del key to remove items from the playlist
@@ -102,6 +103,26 @@ public slots:
         updateSelectionDependentActions();
         ((KActionMenu*)actionCollection()->action("popupMenu"))->popupMenu()->popup( pos );
     }
+
+    void myHome() {
+        debug() << "myHome() entered, m_medium->name() is " << m_medium->name() << endl;
+        KURL u;
+        u.setPath( m_medium ? m_medium->mountPoint() : QDir::homeDirPath() );
+        setURL(u, true);
+    }
+
+    void myCdUp() {
+        debug() << "myCdUp() entered, m_medium->name() is " << m_medium->name() << endl;
+        KURL tmp( url() );
+        tmp.cd( QString::fromLatin1(".."));
+        if( m_medium && !tmp.path().startsWith( m_medium->mountPoint() ) )
+            tmp.setPath( m_medium->mountPoint() );
+        setURL(tmp, true);
+    }
+
+private:
+    Medium *m_medium;
+
 };
 
 
@@ -184,7 +205,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
             m_combo->lineEdit()->setText( "/" );
 
         //The main widget with file listings and that
-        m_dir = new MyDirOperator( *location, container );
+        m_dir = new MyDirOperator( *location, container, m_medium );
         m_dir->setEnableDirHighlighting( true );
         m_dir->setMode( KFile::Mode((int)KFile::Files | (int)KFile::Directory) ); //allow selection of multiple files + dirs
         m_dir->setOnlyDoubleClickSelectsFiles( true ); //amaroK type settings
@@ -253,6 +274,23 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         foreach( actions )
             if ( KAction *a = actionCollection->action( (*it).latin1() ) )
                 a->plug( toolbar );
+
+        if (disconnect( actionCollection->action( "up" ), SIGNAL( activated() ), m_dir, SLOT( cdUp() ) ))
+            debug() << "First disconnect succeeded" << endl;
+        else
+            debug() << "First disconnect did NOT succeed" << endl;
+        if (connect( actionCollection->action( "up" ), SIGNAL( activated() ), m_dir, SLOT( myCdUp() ) ))
+            debug() << "First connect succeeded" << endl;
+        else
+            debug() << "First connect did NOT succeed" << endl;
+        if (disconnect( actionCollection->action( "home" ), SIGNAL( activated() ), m_dir, SLOT( home() ) ))
+            debug() << "Second disconnect succeeded" << endl;
+        else
+            debug() << "Second disconnect did NOT succeed" << endl;
+        if (connect( actionCollection->action( "home" ), SIGNAL( activated() ), m_dir, SLOT( myHome() ) ))
+            debug() << "Second connect succeeded" << endl;
+        else
+            debug() << "Second connect did NOT succeed" << endl;
     }
 
     connect( m_filter, SIGNAL(textChanged( const QString& )), SLOT(setFilter( const QString& )) );
@@ -367,8 +405,9 @@ FileBrowser::urlChanged( const KURL &u )
 
     QString url = u.isLocalFile() ? u.path() : u.prettyURL();
 
-    if (m_medium){
-        url.remove( m_medium->mountPoint() );
+    if( m_medium ){
+        //remove the leading mountPoint value
+        url.remove( 0, m_medium->mountPoint().length() );
     }
 
     QStringList urls = m_combo->urls();
