@@ -317,7 +317,6 @@ void
 IpodMediaDevice::synchronizeDevice()
 {
     writeITunesDB();
-    //sync();
 }
 
 MediaItem *
@@ -1796,6 +1795,8 @@ IpodMediaDevice::applyConfig()
 void
 IpodMediaDevice::loadConfig()
 {
+    MediaDevice::loadConfig();
+
     m_mntcmd = configString( "MountCommand" );
     m_umntcmd = configString( "UmountCommand" );
     m_mntpnt = configString( "MountPoint" );

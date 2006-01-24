@@ -5,6 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.4:
   FEATURES:
+    * On-the-fly transcoding when transferring to media devices, provided
+      that an appropriate transcoding script is running.
     * Handle compilations as such on iPods.
     * New DCOP calls "mediabrowser: ..." for interfacing with media devices.
     * Multiple simultaneously connected media devices.

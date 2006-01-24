@@ -256,11 +256,6 @@ ScriptManager::notifyFetchLyricsByUrl( const QString& url )
 }
 
 
-void ScriptManager::notifyTranscode( const QString& srcUrl, const QString& filetype )
-{
-    notifyScripts( "transcode " + srcUrl + " " + filetype );
-}
-
 bool
 ScriptManager::lyricsScriptRunning() const
 {
@@ -272,6 +267,26 @@ ScriptManager::lyricsScriptRunning() const
                 return true;
 
     return false;
+}
+
+
+bool
+ScriptManager::transcodeScriptRunning() const
+{
+    ScriptMap::ConstIterator it;
+    ScriptMap::ConstIterator end(m_scripts.end() );
+    for( it = m_scripts.begin(); it != end; ++it )
+        if( it.data().process )
+            if( it.data().li->text( 0 ).lower().startsWith( "transcode" ) )
+                return true;
+
+    return false;
+}
+
+
+void ScriptManager::notifyTranscode( const QString& srcUrl, const QString& filetype )
+{
+    notifyScripts( "transcode " + srcUrl + " " + filetype );
 }
 
 
@@ -488,6 +503,12 @@ ScriptManager::slotRunScript()
     if( name.lower().startsWith( "lyrics_" ) && lyricsScriptRunning() ) {
         KMessageBox::sorry( 0, i18n( "Another lyrics script is already running. "
                                      "You may only run one lyrics script at a time." ) );
+        return false;
+    }
+
+    if( name.lower().startsWith( "transcode" ) && transcodeScriptRunning() ) {
+        KMessageBox::sorry( 0, i18n( "Another transcode script is already running. "
+                                     "You may only run one transcode script at a time." ) );
         return false;
     }
 

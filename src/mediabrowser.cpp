@@ -196,7 +196,6 @@ MediaBrowser::MediaBrowser( const char *name )
         : QVBox( 0, name )
         , m_timer( new QTimer( this ) )
         , m_currentDevice( m_devices.end() )
-        , m_transcoderRegistered( false )
 {
     s_instance = this;
 
@@ -495,15 +494,13 @@ MediaBrowser::deviceSwitch( const QString &name )
 }
 
 void
-MediaBrowser::enableTranscoding( bool enable )
-{
-    m_transcoderRegistered = enable;
-}
-
-void
 MediaBrowser::transcodingFinished( const QString &src, const QString &dst )
 {
-    if( m_transcodeSrc == src )
+    KURL srcJob, srcResult;
+    srcJob.fromPathOrURL( m_transcodeSrc );
+    srcResult.fromPathOrURL( src );
+
+    if( srcJob.path() == srcResult.path() )
     {
         m_transcodedUrl = dst;
         m_waitForTranscode = false;
@@ -518,7 +515,7 @@ MediaBrowser::transcodingFinished( const QString &src, const QString &dst )
 KURL
 MediaBrowser::transcode( const KURL &src, const QString &filetype )
 {
-    if( !m_transcoderRegistered )
+    if( !ScriptManager::instance()->transcodeScriptRunning() )
     {
         debug() << "cannot transcode with no transcoder registered" << endl;
         return KURL();
@@ -529,7 +526,7 @@ MediaBrowser::transcode( const KURL &src, const QString &filetype )
     m_transcodedUrl = KURL();
     ScriptManager::instance()->notifyTranscode( src.url(), filetype );
 
-    while( m_waitForTranscode && m_transcoderRegistered )
+    while( m_waitForTranscode && ScriptManager::instance()->transcodeScriptRunning() )
     {
         usleep( 10000 );
         kapp->processEvents( 100 );
@@ -560,6 +557,7 @@ MediaBrowser::~MediaBrowser()
 
     debug() << "have to remove " << m_devices.count() << " devices" << endl;
 
+    m_waitForTranscode = false;
     QValueList<MediaDevice *>::iterator next = m_devices.end();
     for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
             it != m_devices.end();
@@ -568,7 +566,10 @@ MediaBrowser::~MediaBrowser()
         next = it;
         next++;
         if( (*it)->isConnected() )
+        {
+            (*it)->abortTransfer();
             (*it)->synchronizeDevice();
+        }
         removeDevice( *it );
     }
 
@@ -1435,9 +1436,7 @@ MediaBrowser::config()
     QCheckBox *transcodeRemove = 0;
     if( currentDevice() )
     {
-        currentDevice()->m_transcode = currentDevice()->configBool( "Transcode" );
-        currentDevice()->m_transcodeAlways = currentDevice()->configBool( "TranscodeAlways" );
-        currentDevice()->m_transcodeRemove = currentDevice()->configBool( "TranscodeRemove" );
+        currentDevice()->loadConfig();
 
         transcodeCheck = new QCheckBox( m_configBox );
         transcodeCheck->setText( i18n( "&Transcode before transferring to device" ) );
@@ -1460,7 +1459,6 @@ MediaBrowser::config()
         transcodeRemove->setText( i18n( "Remove transcoded files after transfer" ) );
         transcodeRemove->setChecked( currentDevice()->m_transcodeRemove );
 
-        currentDevice()->loadConfig();
         currentDevice()->addConfigElements( m_configBox );
     }
 
@@ -1524,7 +1522,7 @@ MediaBrowser::configSelectPlugin( int index )
         if( dev->isConnected() )
             dev->disconnectDevice();
         QString uniqueId = dev->uniqueId();
-        QString deviceNode = dev->deviceNode();
+        QString deviceNode = dev->name();
         unloadDevicePlugin( dev );
         *m_currentDevice = loadDevicePlugin( AmarokConfig::deviceType() );
         if( !*m_currentDevice )
@@ -1725,6 +1723,14 @@ MediaDevice::~MediaDevice()
 {
     delete m_view;
     delete sysProc;
+}
+
+void
+MediaDevice::loadConfig()
+{
+    m_transcode = configBool( "Transcode" );
+    m_transcodeAlways = configBool( "TranscodeAlways" );
+    m_transcodeRemove = configBool( "TranscodeRemove" );
 }
 
 QString
@@ -2274,9 +2280,11 @@ MediaDevice::transferFiles()
 
         debug() << "copied successfully" << endl;
 
-        if( transcoding && m_transcodeRemove )
+        if( transcoding )
         {
-            QFile( bundle->url().url() ).remove();
+            if( m_transcodeRemove )
+                QFile( bundle->url().url() ).remove();
+
             delete bundle;
             bundle = 0;
         }

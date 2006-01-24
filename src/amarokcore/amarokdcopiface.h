@@ -219,7 +219,6 @@ k_dcop:
    virtual void queue( KURL url ) = 0;                   ///< Add url to transfer queue
    virtual void queueList( KURL::List url ) = 0;         ///< Add list of urls to transfer queue
    virtual void transfer() = 0;                          ///< Transfer items in queue to current device
-   virtual void enableTranscoding( bool enable ) = 0;    ///< Announce that a script for transcoding is available
    virtual void transcodingFinished( QString src, QString dest ) = 0;  ///< Announce that transcoding of job is finished
 };
 

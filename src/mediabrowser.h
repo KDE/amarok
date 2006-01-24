@@ -170,7 +170,6 @@ class MediaBrowser : public QVBox
         bool deviceSwitch( const QString &name );
 
         QString getPluginName ( const QString string ) { return m_pluginName[string]; }
-        void enableTranscoding( bool enable );
         void transcodingFinished( const QString &src, const QString &dst );
         void updateStats();
         void updateButtons();
@@ -211,7 +210,6 @@ class MediaBrowser : public QVBox
         void removeDevice( MediaDevice *device );
 
         MediaQueue* m_queue;
-        bool m_transcoderRegistered;
         bool m_waitForTranscode;
         KURL m_transcodedUrl;
         QString m_transcodeSrc;
@@ -349,7 +347,7 @@ class MediaDevice : public QObject, public amaroK::Plugin
         virtual void addConfigElements( QWidget * /*parent*/ ) {}
         virtual void removeConfigElements( QWidget * /*parent*/ ) {}
         virtual void applyConfig() {}
-        virtual void loadConfig() {}
+        virtual void loadConfig();
 
         QString configString( const QString &name, const QString &defValue = QString::null );
         void setConfigString( const QString &name, const QString &value );
