@@ -526,7 +526,7 @@ StopMenu::slotAboutToShow()
     setItemEnabled( AFTER_TRACK, pl->currentTrackIndex() >= 0 );
     setItemChecked( AFTER_TRACK, pl->stopAfterMode() == Playlist::StopAfterCurrent );
 
-    setItemEnabled( AFTER_QUEUE, pl->nextTracks().count() );
+    setItemEnabled( AFTER_QUEUE, pl->nextTracksCount() );
     setItemChecked( AFTER_QUEUE, pl->stopAfterMode() == Playlist::StopAfterQueue );
 }
 

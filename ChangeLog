@@ -8,6 +8,8 @@ VERSION 1.3.9:
     * Support for libtunepimp 0.4. (BR 94988)
 
   BUGFIXES:
+    * With enormous queues, stop menu would take a lot of time to show up.
+      (BR 120677)
 
 
 VERSION 1.3.8:

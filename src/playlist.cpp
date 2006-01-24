@@ -1575,7 +1575,7 @@ Playlist::clear() //SLOT
 
 /*!
  * Fix qt bug in QListView::clear()
- * @see http://lists.kde.org/?l=kde-devel&m=113113845120155&w=2 
+ * @see http://lists.kde.org/?l=kde-devel&m=113113845120155&w=2
  */
 
 void

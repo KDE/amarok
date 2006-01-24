@@ -103,6 +103,7 @@ class Playlist : private KListView, public EngineObserver
         void saveXML( const QString& );
         int  totalTrackCount() const;
         BundleList nextTracks() const;
+        int nextTracksCount() const { return m_nextTracks.count(); };
 
         int  stopAfterMode() const;
 
