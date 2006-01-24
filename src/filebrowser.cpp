@@ -287,7 +287,7 @@ void FileBrowser::setUrl( const KURL &url )
     if (!m_medium)
         m_dir->setURL( url, true );
     else {
-        QString urlpath = url.pathOrURL();
+        QString urlpath = url.isLocalFile() ? url.path() : url.prettyURL();
         KURL newURL( urlpath.prepend( m_medium->mountPoint() ) );
         m_dir->setURL( newURL, true );
     }
@@ -365,7 +365,7 @@ FileBrowser::urlChanged( const KURL &u )
 {
     //the DirOperator's URL has changed
 
-    QString url = u.pathOrURL();
+    QString url = u.isLocalFile() ? u.path() : u.prettyURL();
 
     if (m_medium){
         url.remove( m_medium->mountPoint() );
