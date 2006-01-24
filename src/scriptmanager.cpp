@@ -224,9 +224,7 @@ QStringList
 ScriptManager::listRunningScripts()
 {
     QStringList runningScripts;
-    ScriptMap::ConstIterator it;
-    ScriptMap::ConstIterator end(m_scripts.end() );
-    for( it = m_scripts.begin(); it != end; ++it )
+    foreachType( ScriptMap, m_scripts )
         if( it.data().process )
             runningScripts << it.key();
 
@@ -259,9 +257,7 @@ ScriptManager::notifyFetchLyricsByUrl( const QString& url )
 bool
 ScriptManager::lyricsScriptRunning() const
 {
-    ScriptMap::ConstIterator it;
-    ScriptMap::ConstIterator end(m_scripts.end() );
-    for( it = m_scripts.begin(); it != end; ++it )
+    foreachType( ScriptMap, m_scripts )
         if( it.data().process )
             if( it.data().li->text( 0 ).lower().startsWith( "lyrics_" ) )
                 return true;
@@ -273,9 +269,7 @@ ScriptManager::lyricsScriptRunning() const
 bool
 ScriptManager::transcodeScriptRunning() const
 {
-    ScriptMap::ConstIterator it;
-    ScriptMap::ConstIterator end(m_scripts.end() );
-    for( it = m_scripts.begin(); it != end; ++it )
+    foreachType( ScriptMap, m_scripts )
         if( it.data().process )
             if( it.data().li->text( 0 ).lower().startsWith( "transcode" ) )
                 return true;
@@ -302,25 +296,24 @@ ScriptManager::findScripts() //SLOT
     const QStringList allFiles = kapp->dirs()->findAllResources( "data", "amarok/scripts/*", true );
 
     // Add found scripts to listview:
-
-    QStringList::ConstIterator it;
-    QStringList::ConstIterator end( allFiles.end() );
-    for( it = allFiles.begin(); it != end; ++it )
-        if( QFileInfo( *it ).isExecutable() )
-            loadScript( *it );
+    {
+        foreach( allFiles )
+            if( QFileInfo( *it ).isExecutable() )
+                loadScript( *it );
+    }
 
     // Handle auto-run:
 
     KConfig* const config = amaroK::config( "ScriptManager" );
     const QStringList runningScripts = config->readListEntry( "Running Scripts" );
 
-    end = runningScripts.end();
-    for( it = runningScripts.begin(); it != end; ++it ) {
-        if( m_scripts.contains( *it ) ) {
-            debug() << "Auto-running script: " << *it << endl;
-            m_gui->listView->setCurrentItem( m_scripts[*it].li );
-            slotRunScript();
-        }
+    {
+        foreach( runningScripts )
+            if( m_scripts.contains( *it ) ) {
+                debug() << "Auto-running script: " << *it << endl;
+                m_gui->listView->setCurrentItem( m_scripts[*it].li );
+                slotRunScript();
+            }
     }
 
     m_gui->listView->setCurrentItem( m_gui->listView->firstChild() );
@@ -408,9 +401,7 @@ ScriptManager::recurseInstall( const KArchiveDirectory* archiveDir, const QStrin
 {
     const QStringList entries = archiveDir->entries();
 
-    QStringList::ConstIterator it;
-    QStringList::ConstIterator end( entries.end() );
-    for( it = entries.begin(); it != end; ++it ) {
+    foreach( entries ) {
         const QString entry = *it;
         const KArchiveEntry* const archEntry = archiveDir->entry( entry );
 
@@ -474,20 +465,22 @@ ScriptManager::slotUninstallScript()
         return;
     }
 
-    // Find all scripts that were in the uninstalled folder
     QStringList keys;
-    ScriptMap::Iterator it;
-    ScriptMap::Iterator end( m_scripts.end() );
-    for( it = m_scripts.begin(); it != end; ++it )
-        if( it.data().url.directory() == directory )
-            keys << it.key();
+
+    // Find all scripts that were in the uninstalled folder
+    {
+        foreachType( ScriptMap, m_scripts )
+            if( it.data().url.directory() == directory )
+                keys << it.key();
+    }
 
     // Terminate script processes, remove entries from script list
-    QStringList::Iterator itKeys;
-    for( itKeys = keys.begin(); itKeys != keys.end(); ++itKeys ) {
-        delete m_scripts[*itKeys].li;
-        terminateProcess( &m_scripts[*itKeys].process );
-        m_scripts.erase( *itKeys );
+    {
+        foreach( keys ) {
+            delete m_scripts[*it].li;
+            terminateProcess( &m_scripts[*it].process );
+            m_scripts.erase( *it );
+        }
     }
 }
 
@@ -728,9 +721,7 @@ ScriptManager::notifyScripts( const QString& message )
 
     debug() << "Sending notification: " << message << endl;
 
-    ScriptMap::Iterator it;
-    ScriptMap::Iterator end( m_scripts.end() );
-    for( it = m_scripts.begin(); it != end; ++it ) {
+    foreachType( ScriptMap, m_scripts ) {
         KProcIO* const proc = it.data().process;
         if( proc ) proc->writeStdin( message );
     }
