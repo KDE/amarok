@@ -43,6 +43,8 @@
 
 #include "mediabrowser.h"
 #include "medium.h"
+#include "mydirlister.h"
+#include "mydiroperator.h"
 #include "playlist.h"
 #include "playlistbrowser.h"
 #include "playlistloader.h"
@@ -57,73 +59,6 @@
 #include <qtimer.h>
 #include <qtooltip.h>
 
-
-//TODO wait for lister to finish, if there are no files shown, but there are
-//     media files in that directory show a longMessage (preferably one that disappears when given a signal)
-
-
-class MyDirLister : public KDirLister {
-public:
-    MyDirLister( bool delayedMimeTypes ) : KDirLister( delayedMimeTypes ) {}
-
-protected:
-    virtual bool matchesMimeFilter( const KFileItem *item ) const {
-        return
-            item->isDir() ||
-            EngineController::canDecode( item->url() ) ||
-            item->url().protocol() == "audiocd" ||
-            PlaylistFile::isPlaylistFile( item->name() ) ||
-            item->name().endsWith( ".mp3", false ) || //for now this is less confusing for the user
-            item->name().endsWith( ".aa", false ) || //for adding to iPod
-            item->name().endsWith( ".mp4", false ) || //for adding to iPod
-            item->name().endsWith( ".m4v", false ) || //for adding to iPod
-            item->name().endsWith( ".ogg", false );
-    }
-};
-
-class MyDirOperator : public KDirOperator {
-public:
-    MyDirOperator( const KURL &url, QWidget *parent, Medium *medium = 0 ) : KDirOperator( url, parent ) {
-        m_medium = medium;
-        setDirLister( new MyDirLister( true ) );
-//the delete key event was being eaten with the file browser open
-//so folks couldn't use the del key to remove items from the playlist
-//refer to KDirOperator::setupActions() to understand this code
-        KActionCollection* dirActionCollection = static_cast<KActionCollection*>(KDirOperator::child("KDirOperator::myActionCollection"));
-        if(dirActionCollection)
-        {
-            KAction* trash = dirActionCollection->action("trash");
-            if(trash)
-                trash->setEnabled(false);
-        }
-    }
-public slots:
-    //reimplemented due to a bug in KDirOperator::activatedMenu ( KDE 3.4.2 ) - See Bug #103305
-    virtual void activatedMenu (const KFileItem *, const QPoint &pos) {
-        updateSelectionDependentActions();
-        ((KActionMenu*)actionCollection()->action("popupMenu"))->popupMenu()->popup( pos );
-    }
-
-    void myHome() {
-        debug() << "myHome() entered, m_medium->name() is " << m_medium->name() << endl;
-        KURL u;
-        u.setPath( m_medium ? m_medium->mountPoint() : QDir::homeDirPath() );
-        setURL(u, true);
-    }
-
-    void myCdUp() {
-        debug() << "myCdUp() entered, m_medium->name() is " << m_medium->name() << endl;
-        KURL tmp( url() );
-        tmp.cd( QString::fromLatin1(".."));
-        if( m_medium && !tmp.path().startsWith( m_medium->mountPoint() ) )
-            tmp.setPath( m_medium->mountPoint() );
-        setURL(tmp, true);
-    }
-
-private:
-    Medium *m_medium;
-
-};
 
 
 //BEGIN Constructor/destructor

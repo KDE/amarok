@@ -93,8 +93,9 @@ libamarok_la_SOURCES = \
     mediumpluginchooser.cpp \
     mediumpluginmanager.cpp \
     metabundle.cpp \
-    multitabbar.cpp \
     moodbar.cpp \
+    mydiroperator.cpp \
+    multitabbar.cpp \
     newdynamic.ui \
     osd.cpp \
     party.cpp \
