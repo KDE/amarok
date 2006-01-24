@@ -20,6 +20,10 @@ def showLyrics( lyrics )
 end
 
 def fetchLyrics( artist, title )
+    # Astraweb search term is just a number of words separated by "+"
+    artist.gsub!( " ", "+" )
+    title.gsub!( " ", "+" )
+
     h = Net::HTTP.new( "search.lyrics.astraweb.com", 80 )
     response = h.get( "/?word=#{artist}+#{title}" )
 
@@ -30,22 +34,26 @@ def fetchLyrics( artist, title )
     end
 
     body = response.body()
-    body = body[body.index( '<tr><td bgcolor="#BBBBBB"' )..body.index( "More Songs &gt;" ) - 1]
+
     body.gsub!( "\n", "" ) # No need for \n, just complicates our RegExps
+    body = /(<tr><td bgcolor="#BBBBBB".*)(More Songs &gt)/.match( body )[1].to_s()
 
     entries = body.split( '<tr><td bgcolor="#BBBBBB"' )
     entries.delete_at( 0 )
 
+    puts entries
+
     lyrics = "Suggestions : <br>"
     entries.each do |entry|
         url = /(display\.lyrics\.astraweb.com:2000)([^"]*)/.match( entry )[2].to_s()
-        title = /(http:\/\/display\.lyrics.*">)([^<]*)/.match( entry )[2].to_s()
         artist = /(Artist:.*html">)([^<]*)/.match( entry )[2].to_s()
+        title = /(display\.lyrics.*?>)([^<]*)/.match( entry )[2].to_s()
+#         album = /(Album:.*?">)([^<]*)/.match( entry )[2].to_s()
 
         lyrics += "<a href='#{url}'>#{artist} - #{title}</a><br>"
     end
 
-    puts( lyrics )
+#     puts( lyrics )
     showLyrics( lyrics )
 end
 
@@ -72,7 +80,7 @@ end
 # MAIN
 ##################################################################
 
-# fetchLyrics( "radio", "gaga" )
+# fetchLyrics( "The Cardigans", "Lovefool" )
 # fetchLyricsByUrl( '/display.cgi?whiskeytown..faithless_street..faithless_street' )
 # exit()
 
@@ -92,7 +100,7 @@ loop do
             artist = args[1]
             title  = args[2]
 
-            fetchLyrics( artist, title )
+            fetchLyrics( URI.unescape( artist ), URI.unescape( title ) )
 
         when "fetchLyricsByUrl"
             url = message.split()[1]
