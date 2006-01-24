@@ -641,7 +641,9 @@ IpodMediaDevice::openDevice( bool silent )
                 QString device = (*mountiter)->mountedFrom();
 
                 // only care about scsi devices (/dev/sd at the beginning or scsi somewhere in its name)
-                if (device.find("/dev/sd") != 0 && device.find("scsi") < 0)
+                if (device.find("/dev/sd") != 0 &&
+                        device.find("/dev/hd") != 0 &&
+                        device.find("scsi") < 0)
                     continue;
 
                 m_itdb = itdb_parse(QFile::encodeName(mountpoint), &err);
@@ -1186,7 +1188,7 @@ IpodMediaDevice::writeITunesDB()
     {
         bool ok = false;
 
-        ThreadWeaver::instance()->onlyOneJob( new IpodWriteDBJob( this, m_itdb, m_isShuffle, &ok ) );
+        ThreadWeaver::instance()->queueJob( new IpodWriteDBJob( this, m_itdb, m_isShuffle, &ok ) );
         while( ThreadWeaver::instance()->isJobPending( "IpodWriteDBJob" ) )
         {
             kapp->processEvents();
