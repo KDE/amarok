@@ -2025,7 +2025,7 @@ void ContextBrowser::showLyrics( const QString &url )
                     "</span>"
                 "</div>"
                 "<div id='lyrics_box-body' class='box-body'>"
-                    "<div class='info'><p>" + i18n( "Fetching Lyrics" ) + "</p></div>"
+                    "<div class='info'><p>" + i18n( "Fetching Lyrics..." ) + "</p></div>"
                 "</div>"
             "</div>"
             "</body></html>"
