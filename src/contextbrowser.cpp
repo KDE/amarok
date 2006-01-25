@@ -2069,22 +2069,31 @@ ContextBrowser::lyricsResult( const QString& xmldoc ) //SLOT
 //         return;
 //     }
 
+    QDomDocument doc;
+    if( !doc.setContent( xmldoc ) ) {
+        error() << "Invalid XML." << endl;
+        return;
+    }
+
+    QDomElement el = doc.documentElement();
     QString lyrics;
 
-    if ( xmldoc.find( "Suggestions : " ) != -1 )
+    if ( el.tagName() == "suggestions" )
     {
-        lyrics = xmldoc;
-        lyrics.replace( "Suggestions : <br>", i18n( "Lyrics for track not found, here are some suggestions:" ) + QString("<br /><br />") );
-        lyrics.replace( "<a href='", "<a href='show:suggestLyric-" );
+        lyrics = i18n( "Lyrics for track not found, here are some suggestions:" ) + "<br/><br/>";
+
+        const QDomNodeList l = doc.elementsByTagName( "suggestion" );
+
+        for( uint i = 0; i < l.length(); ++i ) {
+            const QString url    = l.item( i ).toElement().attribute( "url" );
+            const QString artist = l.item( i ).toElement().attribute( "artist" );
+            const QString title  = l.item( i ).toElement().attribute( "title" );
+
+            lyrics += "<a href='show:suggestLyric-" + url + "'>" + artist + " - " + title;
+            lyrics += "</a><br/>";
+        }
     }
     else {
-        QDomDocument doc;
-        if( !doc.setContent( xmldoc ) ) {
-            error() << "Invalid XML." << endl;
-            return;
-        }
-
-        QDomElement el = doc.documentElement();
         lyrics = el.text();
         lyrics.replace( "\n", "<br/>" ); // Plaintext -> HTML
 

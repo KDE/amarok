@@ -15,6 +15,7 @@ require "net/http"
 require "rexml/document"
 require "uri"
 
+
 def showLyrics( lyrics )
     # Important, otherwise we might execute arbitrary nonsense in the DCOP call
     lyrics.gsub!( '"', "'" )
@@ -22,6 +23,7 @@ def showLyrics( lyrics )
 
     `dcop amarok contextbrowser showLyrics "#{lyrics}"`
 end
+
 
 def parseLyrics( lyrics )
     if lyrics.include?( "<p><hr" )
@@ -44,6 +46,39 @@ def parseLyrics( lyrics )
     lyrics.gsub!( /<[Bb][Rr][^>]*>/, "\n" ) # HTML -> Plaintext
 
     root.text = lyrics
+
+    xml = ""
+    doc.write( xml )
+
+#     puts( xml )
+    showLyrics( xml )
+end
+
+
+def parseSuggestions( lyrics )
+    lyrics = lyrics[lyrics.index( "Suggestions : " )..lyrics.index( "<br><br>" )]
+
+    lyrics.gsub!( "<font color='white'>", "" )
+    lyrics.gsub!( "</font>", "" )
+    lyrics.gsub!( "<br /><br />", "" )
+
+    doc = REXML::Document.new()
+    root = doc.add_element( "suggestions" )
+
+    entries = lyrics.split( "<br>" )
+    entries.delete_at( 0 )
+
+    entries.each() do |entry|
+        url = /(<a href=")([^"]*)/.match( entry )[2].to_s()
+        artist_title = /(<a href=.*?>)([^<]*)/.match( entry )[2].to_s()
+        artist = artist_title.split( " - " )[0]
+        title  = artist_title.split( " - " )[1]
+
+        suggestion = root.add_element( "suggestion" )
+        suggestion.add_attribute( "url", url )
+        suggestion.add_attribute( "artist", artist )
+        suggestion.add_attribute( "title", title )
+    end
 
     xml = ""
     doc.write( xml )
@@ -92,19 +127,8 @@ def fetchLyrics( artist, title, url )
         return
 
     elsif lyrics.include?( "Suggestions : " )
-        lyrics = lyrics[lyrics.index( "Suggestions : " )..lyrics.index( "<br><br>" )]
-
-        lyrics.gsub!( "<font color='white'>", "" )
-        lyrics.gsub!( "</font>", "" )
-        lyrics.gsub!( "<br /><br />", "" )
-
-    else
-        lyrics = ""
+        parseSuggestions( lyrics )
     end
-
-
-#     puts( lyrics )
-    showLyrics( lyrics )
 end
 
 
@@ -113,6 +137,7 @@ end
 ##################################################################
 
 # fetchLyrics( "Cardigans", "Lovefool", "" )
+# fetchLyrics( "queen", "mama", "" )
 # exit()
 
 
