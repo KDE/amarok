@@ -335,6 +335,8 @@ Playlist::Playlist( QWidget *parent )
     // Sorting must be disabled when current.xml is being loaded. See BUG 113042
     KListView::setSorting( NO_SORT ); //use base so we don't saveUndoState() too
 
+    m_smartResizing = amaroK::config( "PlaylistWindow" )->readBoolEntry( "Smart Resizing", true );
+
     columnOrderChanged();
     //cause the column fractions to be updated, but in a safe way, ie no specific column
     columnResizeEvent( header()->count(), 0, 0 );
@@ -2235,6 +2237,10 @@ static uint negativeWidth = 0;
 void
 Playlist::viewportResizeEvent( QResizeEvent *e )
 {
+    if ( !m_smartResizing ) {
+        KListView::viewportResizeEvent( e );
+        return;
+    }
     //only be clever with the sizing if there is not many items
     //TODO don't allow an item to be made too small (ie less than 50% of ideal width)
 
@@ -2273,6 +2279,9 @@ Playlist::viewportResizeEvent( QResizeEvent *e )
 void
 Playlist::columnResizeEvent( int col, int oldw, int neww )
 {
+
+    if ( !m_smartResizing )
+        return;
     //prevent recursion
     header()->blockSignals( true );
 
@@ -2403,7 +2412,7 @@ Playlist::eventFilter( QObject *o, QEvent *e )
 
     if( o == header() && e->type() == QEvent::MouseButtonPress && me->button() == Qt::RightButton )
     {
-        enum { HIDE = 1000, SELECT, CUSTOM };
+        enum { HIDE = 1000, SELECT, CUSTOM, SMARTRESIZING };
 
         const int mouseOverColumn = header()->sectionAt( me->pos().x() );
 
@@ -2428,6 +2437,9 @@ Playlist::eventFilter( QObject *o, QEvent *e )
 
         popup.insertItem( i18n("&Add A Column" ), &sub );
 
+        popup.insertItem( i18n("Smart Column &Resizing"), SMARTRESIZING );
+        popup.setItemChecked( SMARTRESIZING, m_smartResizing );
+
         int col = popup.exec( static_cast<QMouseEvent *>(e)->globalPos() );
 
         switch( col ) {
@@ -2445,6 +2457,13 @@ Playlist::eventFilter( QObject *o, QEvent *e )
 
         case CUSTOM:
             addCustomColumn();
+            break;
+
+        case SMARTRESIZING:
+            m_smartResizing = !m_smartResizing;
+            amaroK::config( "PlaylistWindow" )->writeEntry( "Smart Resizing", m_smartResizing );
+            if ( m_smartResizing )
+                columnResizeEvent( 0, 0, 0 ); //force refit. FIXME: It doesn't work perfectly
             break;
 
         default:

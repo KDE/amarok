@@ -305,6 +305,8 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
 
         PLItemList m_itemsToChangeTagsFor;
 
+        bool          m_smartResizing;
+
         int           m_firstColumn;
         int           m_totalCount;
         int           m_totalLength;
