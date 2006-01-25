@@ -55,7 +55,7 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         void collectionScanDone();
         void renderView();
         void lyricsChanged( const QString& );
-        void lyricsResult( const QString& lyrics );
+        void lyricsResult( const QString& xmldoc );
 
     protected:
         void engineNewMetaData( const MetaBundle&, bool );
@@ -72,7 +72,6 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         void showContext( const KURL& url, bool fromHistory = false );
         void showCurrentTrack();
         void showLyrics( const QString& url = QString::null );
-        void showLyricSuggestions();
         void showWikipedia( const QString& url = QString::null, bool fromHistory = false );
         void showWikipediaEntry( const QString& entry );
 
@@ -137,9 +136,6 @@ class ContextBrowser : public KTabWidget, public EngineObserver
 
         QString       m_styleSheet;
         bool          m_emptyDB;
-        QString       m_lyrics;
-        QStringList   m_lyricSuggestions;
-        QStringList   m_lyricHashes;
         QString       m_lyricAddUrl;
         QString       m_lyricSearchUrl;
         QString       m_lyricCurrentUrl;
