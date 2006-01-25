@@ -322,7 +322,7 @@ void SmartPlaylistEditor::buildQuery()
             QString table = str.left( str.find('.') );
              if( !joins.contains( table ) ) {
                 // that makes it possible to search for tracks never played. it looks ugly but is works
-                if( str.contains(" OR statistics.playcounter IS NULL"))
+                if( str.contains(" OR statistics.playcounter IS NULL") || str.contains(" OR statistics.percentage IS NULL") )
                     joins += " LEFT JOIN statistics ON statistics.url=tags.url";
                 else
                     joins += " INNER JOIN statistics ON statistics.url=tags.url";
@@ -629,9 +629,8 @@ QString CriteriaEditor::getSearchCriteria()
         if( m_currentValueType == String || m_currentValueType == AutoCompletionString )
             value.prepend("'").append("'");
         searchCriteria += value;
-        if (field=="statistics.playcounter" && value=="0") {
-            searchCriteria += " OR statistics.playcounter IS NULL";
-        }
+        if ( ( field=="statistics.playcounter" || field=="statistics.percentage" ) && value=="0")
+            searchCriteria += " OR " + field + " IS NULL";
     }
     else if( criteria == i18n("is not") ) {
         if( m_currentValueType == Date )
