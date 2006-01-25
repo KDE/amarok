@@ -2104,7 +2104,7 @@ ContextBrowser::lyricsResult( const QString& lyrics ) //SLOT
                     "<div id='lyrics_box-body' class='box-body'>"
                         + "<font size='2'><b>" + title + "</b><br/><u>" + artist+ "</font></u></font><br/>"
                         + m_lyrics +
-                        + "<br/<br/><i>" + i18n( "Powered by " ) + site + " (" + site_url + ")</i>"
+                        + "<br/><br/><i>" + i18n( "Powered by " ) + site + " (" + site_url + ")</i>"
                     "</div>"
                 "</div>"
                 "</body></html>"

@@ -30,13 +30,15 @@ def parseLyrics( lyrics )
         lyrics = lyrics[0, lyrics.index( "<br><br>" )]
     end
 
+    lyrics.gsub!( /<[fF][oO][nN][tT][^>]*>/, "" )
+
     doc = REXML::Document.new()
     root = doc.add_element( "lyrics" )
 
     root.add_attribute( "site", "Lyrc" )
     root.add_attribute( "site_url", "http://lyrc.com.ar" )
     root.add_attribute( "title", /(<b>)([^<]*)/.match( lyrics )[2].to_s() )
-    root.add_attribute( "artist", /(<u><font size='2'    >)([^<]*)/.match( lyrics )[2].to_s() )
+    root.add_attribute( "artist", /(<u>)([^<]*)/.match( lyrics )[2].to_s() )
 
     lyrics = /(<\/u><\/font>)(.*)/.match( lyrics )[2].to_s()
     lyrics.gsub!( /<[Bb][Rr][^>]*>/, "\n" ) # HTML -> Plaintext
@@ -46,7 +48,7 @@ def parseLyrics( lyrics )
     xml = ""
     doc.write( xml )
 
-    puts( xml )
+#     puts( xml )
     showLyrics( xml )
 end
 
@@ -74,19 +76,20 @@ def fetchLyrics( artist, title, url )
     end
 
     lyrics = response.body()
-    lyrics.gsub!( "\n", "" ) # No need for \n, just complicates our RegExps
+    lyrics.gsub!( "\n", "" ) # No need for LF, just complicates our RegExps
+    lyrics.gsub!( "\r", "" ) # No need for CR, just complicates our RegExps
 
-    # Remove images, links, scripts, and styles
+    # Remove images, links, scripts, styles and fonts
     lyrics.gsub!( /<[iI][mM][gG][^>]*>/, "" )
     lyrics.gsub!( /<[aA][^>]*>[^<]*<\/[aA]>/, "" )
     lyrics.gsub!( /<[sS][cC][rR][iI][pP][tT][^>]*>[^<]*(<!--[^>]*>)*[^<]*<\/[sS][cC][rR][iI][pP][tT]>/, "" )
     lyrics.gsub!( /<[sS][tT][yY][lL][eE][^>]*>[^<]*(<!--[^>]*>)*[^<]*<\/[sS][tT][yY][lL][eE]>/, "" )
 
-
     lyricsPos = lyrics.index( /<[fF][oO][nN][tT][ ]*[sS][iI][zZ][eE][ ]*='2'[ ]*>/ )
 
     if not lyricsPos == nil
         parseLyrics( lyrics[lyricsPos..lyrics.length()] )
+        return
 
     elsif lyrics.include?( "Suggestions : " )
         lyrics = lyrics[lyrics.index( "Suggestions : " )..lyrics.index( "<br><br>" )]
