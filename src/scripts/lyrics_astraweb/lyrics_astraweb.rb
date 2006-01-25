@@ -71,7 +71,8 @@ def fetchLyricsByUrl( url )
 
     lyrics = /(<font face=arial size=2>)(.*)(<br><br><br><center>)/.match( body )[2].to_s()
 
-    puts( lyrics )
+    lyrics.gsub!( /<[Bb][Rr][^>]*>/, "\n" ) # HTML -> Plaintext
+#     puts( lyrics )
     showLyrics( lyrics )
 end
 
@@ -105,7 +106,7 @@ loop do
         when "fetchLyricsByUrl"
             url = message.split()[1]
 
-            fetchLyricsByUrl( URI.unescape( url ) )
+            fetchLyricsByUrl( url )
     end
 end
 

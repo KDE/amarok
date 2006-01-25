@@ -250,7 +250,7 @@ ScriptManager::notifyFetchLyrics( const QString& artist, const QString& title )
 void
 ScriptManager::notifyFetchLyricsByUrl( const QString& url )
 {
-    notifyScripts( "fetchLyricsByUrl " + KURL::encode_string( url ) );
+    notifyScripts( "fetchLyricsByUrl " + url );
 }
 
 

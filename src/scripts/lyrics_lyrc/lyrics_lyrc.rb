@@ -14,6 +14,14 @@
 require "net/http"
 require "uri"
 
+def showLyrics( lyrics )
+    # Important, otherwise we might execute arbitrary nonsense in the DCOP call
+    lyrics.gsub!( '"', "'" )
+    lyrics.gsub!( '`', "'" )
+
+    `dcop amarok contextbrowser showLyrics "#{lyrics}"`
+end
+
 def fetchLyrics( artist, title, url )
     proxy_host = nil
     proxy_port = nil
@@ -27,7 +35,7 @@ def fetchLyrics( artist, title, url )
         response = h.get( "/en/tema1en.php?artist=#{artist}&songname=#{title}" )
     else
         puts( "Fetching by URL: #{url}" )
-        response = h.get( "/en/#{URI.unescape( url )}" )
+        response = h.get( "/en/#{url}" )
     end
 
     unless response.code == "200"
@@ -37,6 +45,7 @@ def fetchLyrics( artist, title, url )
     end
 
     lyrics = response.body()
+    lyrics.gsub!( "\n", "" ) # No need for \n, just complicates our RegExps
 
     # Remove images, links, scripts, and styles
     lyrics.gsub!( /<[iI][mM][gG][^>]*>/, "" )
@@ -55,6 +64,8 @@ def fetchLyrics( artist, title, url )
             lyrics = lyrics[0, lyrics.index( "<br><br>" )]
         end
 
+        lyrics.gsub!( /<[Bb][Rr][^>]*>/, "\n" ) # HTML -> Plaintext
+
     elsif lyrics.include?( "Suggestions : " )
         lyrics = lyrics[lyrics.index( "Suggestions : " )..lyrics.index( "<br><br>" )]
 
@@ -67,11 +78,8 @@ def fetchLyrics( artist, title, url )
     end
 
 
-    # Important, otherwise we might execute arbitrary nonsense in the DCOP call
-    lyrics.gsub!( '"', "'" )
-    lyrics.gsub!( '`', "'" )
-
-    `dcop amarok contextbrowser showLyrics "#{lyrics}"`
+#     puts( lyrics )
+    showLyrics( lyrics )
 end
 
 

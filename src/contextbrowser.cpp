@@ -2075,8 +2075,10 @@ ContextBrowser::lyricsResult( const QString& lyrics ) //SLOT
     {
         showLyricSuggestions();
     }
-    else
+    else {
+        m_lyrics.replace( "\n", "<br/>" ); // Plaintext -> HTML
         CollectionDB::instance()->setHTMLLyrics( EngineController::instance()->bundle().url().path(), m_lyrics );
+    }
 
 //     else
 //     {
