@@ -326,7 +326,8 @@ void SmartPlaylistEditor::buildQuery()
              if( !joins.contains( table ) ) {
                 // that makes it possible to search for tracks never played. it looks ugly but is works
                 if( str.contains(" OR statistics.playcounter IS NULL")
-                 || str.contains(" OR statistics.rating IS NULL") )
+                 || str.contains(" OR statistics.rating IS NULL")
+                 || str.contains(" OR statistics.percentage IS NULL") )
                     joins += " LEFT JOIN statistics ON statistics.url=tags.url";
                 else
                     joins += " INNER JOIN statistics ON statistics.url=tags.url";
