@@ -9,7 +9,9 @@
 
 require "net/http"
 require "net/telnet"
+require "rexml/document"
 require "uri"
+
 
 def showLyrics( lyrics )
     # Important, otherwise we might execute arbitrary nonsense in the DCOP call
@@ -18,6 +20,7 @@ def showLyrics( lyrics )
 
     `dcop amarok contextbrowser showLyrics "#{lyrics}"`
 end
+
 
 def fetchLyrics( artist, title )
     # Astraweb search term is just a number of words separated by "+"
@@ -38,23 +41,31 @@ def fetchLyrics( artist, title )
     body.gsub!( "\n", "" ) # No need for \n, just complicates our RegExps
     body = /(<tr><td bgcolor="#BBBBBB".*)(More Songs &gt)/.match( body )[1].to_s()
 
+    lyrics = "Suggestions : <br>"
+
+    doc = REXML::Document.new()
+    root = doc.add_element( "suggestions" )
+
     entries = body.split( '<tr><td bgcolor="#BBBBBB"' )
     entries.delete_at( 0 )
 
-    puts entries
-
-    lyrics = "Suggestions : <br>"
     entries.each do |entry|
         url = /(display\.lyrics\.astraweb.com:2000)([^"]*)/.match( entry )[2].to_s()
         artist = /(Artist:.*html">)([^<]*)/.match( entry )[2].to_s()
         title = /(display\.lyrics.*?>)([^<]*)/.match( entry )[2].to_s()
 #         album = /(Album:.*?">)([^<]*)/.match( entry )[2].to_s()
 
-        lyrics += "<a href='#{url}'>#{artist} - #{title}</a><br>"
+        suggestion = root.add_element( "suggestion" )
+        suggestion.add_attribute( "url", url )
+        suggestion.add_attribute( "artist", artist )
+        suggestion.add_attribute( "title", title )
     end
 
-#     puts( lyrics )
-    showLyrics( lyrics )
+    xml = ""
+    doc.write( xml )
+
+#     puts( xml )
+    showLyrics( xml )
 end
 
 
@@ -64,16 +75,29 @@ def fetchLyricsByUrl( url )
 
     h = Net::Telnet.new( "Host" => "display.lyrics.astraweb.com", "Port" => 2000 )
 
-    puts "GETTING URL: " + url
-
     body = h.cmd( "GET #{url}\n" )
     body.gsub!( "\n", "" ) # No need for \n, just complicates our RegExps
 
-    lyrics = /(<font face=arial size=2>)(.*)(<br><br><br><center>)/.match( body )[2].to_s()
+    artist_title = /(<title>Lyrics: )([^<]*)/.match( body )[2].to_s()
+    artist = artist_title.split( " - " )[0]
+    title  = artist_title.split( " - " )[1]
 
+    lyrics = /(<font face=arial size=2>)(.*)(<br><br><br><center>)/.match( body )[2].to_s()
     lyrics.gsub!( /<[Bb][Rr][^>]*>/, "\n" ) # HTML -> Plaintext
-#     puts( lyrics )
-    showLyrics( lyrics )
+
+    doc = REXML::Document.new()
+    root = doc.add_element( "lyrics" )
+    root.add_attribute( "site", "Astraweb" )
+    root.add_attribute( "site_url", "http://lyrics.astraweb.com" )
+    root.add_attribute( "artist", artist )
+    root.add_attribute( "title", title )
+    root.text = lyrics
+
+    xml = ""
+    doc.write( xml )
+
+#     puts( xml )
+    showLyrics( xml )
 end
 
 
