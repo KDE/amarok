@@ -30,6 +30,7 @@
 #include "threadweaver.h"
 
 #include <qdatetime.h>
+#include <qdom.h>
 #include <qimage.h>
 #include <qregexp.h>
 #include <qtextstream.h>  // External CSS reading
@@ -2076,31 +2077,41 @@ ContextBrowser::lyricsResult( const QString& lyrics ) //SLOT
         showLyricSuggestions();
     }
     else {
+        QDomDocument doc;
+        if( !doc.setContent( m_lyrics ) ) {
+            error() << "Invalid XML." << endl;
+            return;
+        }
+
+        QDomElement el = doc.documentElement();
+        m_lyrics = el.text();
         m_lyrics.replace( "\n", "<br/>" ); // Plaintext -> HTML
+
+        const QString title      = el.attribute( "title" );
+        const QString artist     = el.attribute( "artist" );
+        const QString site       = el.attribute( "site" );
+        const QString site_url   = el.attribute( "site_url" );
+
+        m_HTMLSource="";
+        m_HTMLSource.append(
+                "<html><body>"
+                "<div id='lyrics_box' class='box'>"
+                    "<div id='lyrics_box-header' class='box-header'>"
+                        "<span id='lyrics_box-header-title' class='box-header-title'>"
+                        + i18n( "Lyrics" ) +
+                        "</span>"
+                    "</div>"
+                    "<div id='lyrics_box-body' class='box-body'>"
+                        + "<font size='2'><b>" + title + "</b><br/><u>" + artist+ "</font></u></font><br/>"
+                        + m_lyrics +
+                        + "<br/<br/><i>" + i18n( "Powered by " ) + site + " (" + site_url + ")</i>"
+                    "</div>"
+                "</div>"
+                "</body></html>"
+        );
+
         CollectionDB::instance()->setHTMLLyrics( EngineController::instance()->bundle().url().path(), m_lyrics );
     }
-
-//     else
-//     {
-//         m_lyrics = "<div class='info'><p>" + i18n( "Lyrics not found." ) + "</p></div>";
-//     }
-
-
-    m_HTMLSource="";
-    m_HTMLSource.append(
-            "<html><body>"
-            "<div id='lyrics_box' class='box'>"
-                "<div id='lyrics_box-header' class='box-header'>"
-                    "<span id='lyrics_box-header-title' class='box-header-title'>"
-                    + i18n( "Lyrics" ) +
-                    "</span>"
-                "</div>"
-                "<div id='lyrics_box-body' class='box-body'>"
-                    + m_lyrics +
-                "</div>"
-            "</div>"
-            "</body></html>"
-                       );
     m_lyricsPage->set( m_HTMLSource );
 
     m_lyricsToolBar->getButton( LYRICS_BROWSER )->setEnabled(true);
@@ -2119,6 +2130,22 @@ ContextBrowser::showLyricSuggestions()
 
     m_lyrics.replace( "Suggestions : <br>", i18n( "Lyrics for track not found, here are some suggestions:" ) + QString("<br /><br />") );
     m_lyrics.replace( "<a href='", "<a href='show:suggestLyric-" );
+
+    m_HTMLSource="";
+    m_HTMLSource.append(
+            "<html><body>"
+            "<div id='lyrics_box' class='box'>"
+                "<div id='lyrics_box-header' class='box-header'>"
+                    "<span id='lyrics_box-header-title' class='box-header-title'>"
+                    + i18n( "Lyrics" ) +
+                    "</span>"
+                "</div>"
+                "<div id='lyrics_box-body' class='box-body'>"
+                    + m_lyrics +
+                "</div>"
+            "</div>"
+            "</body></html>"
+    );
 }
 
 

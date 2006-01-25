@@ -12,6 +12,7 @@
 
 
 require "net/http"
+require "rexml/document"
 require "uri"
 
 def showLyrics( lyrics )
@@ -21,6 +22,34 @@ def showLyrics( lyrics )
 
     `dcop amarok contextbrowser showLyrics "#{lyrics}"`
 end
+
+def parseLyrics( lyrics )
+    if lyrics.include?( "<p><hr" )
+        lyrics = lyrics[0, lyrics.index( "<p><hr" )]
+    else
+        lyrics = lyrics[0, lyrics.index( "<br><br>" )]
+    end
+
+    doc = REXML::Document.new()
+    root = doc.add_element( "lyrics" )
+
+    root.add_attribute( "site", "Lyrc" )
+    root.add_attribute( "site_url", "http://lyrc.com.ar" )
+    root.add_attribute( "title", /(<b>)([^<]*)/.match( lyrics )[2].to_s() )
+    root.add_attribute( "artist", /(<u><font size='2'    >)([^<]*)/.match( lyrics )[2].to_s() )
+
+    lyrics = /(<\/u><\/font>)(.*)/.match( lyrics )[2].to_s()
+    lyrics.gsub!( /<[Bb][Rr][^>]*>/, "\n" ) # HTML -> Plaintext
+
+    root.text = lyrics
+
+    xml = ""
+    doc.write( xml )
+
+    puts( xml )
+    showLyrics( xml )
+end
+
 
 def fetchLyrics( artist, title, url )
     proxy_host = nil
@@ -57,14 +86,7 @@ def fetchLyrics( artist, title, url )
     lyricsPos = lyrics.index( /<[fF][oO][nN][tT][ ]*[sS][iI][zZ][eE][ ]*='2'[ ]*>/ )
 
     if not lyricsPos == nil
-        lyrics = lyrics[lyricsPos..lyrics.length()]
-        if lyrics.include?( "<p><hr" )
-            lyrics = lyrics[0, lyrics.index( "<p><hr" )]
-        else
-            lyrics = lyrics[0, lyrics.index( "<br><br>" )]
-        end
-
-        lyrics.gsub!( /<[Bb][Rr][^>]*>/, "\n" ) # HTML -> Plaintext
+        parseLyrics( lyrics[lyricsPos..lyrics.length()] )
 
     elsif lyrics.include?( "Suggestions : " )
         lyrics = lyrics[lyrics.index( "Suggestions : " )..lyrics.index( "<br><br>" )]
@@ -86,6 +108,10 @@ end
 ##################################################################
 # MAIN
 ##################################################################
+
+# fetchLyrics( "Cardigans", "Lovefool", "" )
+# exit()
+
 
 loop do
     message = gets().chomp()
