@@ -2004,33 +2004,6 @@ CollectionDB::updateURL( const QString &url, const bool updateView )
 
 
 void
-CollectionDB::setHTMLLyrics( const QString &url, QString lyrics )
-{
-
-    // remove breaklines
-    lyrics.replace( "\n", QString::null );
-    lyrics.replace( "\r", QString::null );
-    lyrics.replace( "\t", QString::null );
-
-    // Remove Entilities - Lyrc doesn't use any, but anyway...
-    lyrics = KCharsets::resolveEntities( lyrics );
-
-    //<br> and <p> become a breakline
-    lyrics.replace( QRegExp("<[bB][rR][^>]*>[ ]*"), "\n" );
-    lyrics.replace( QRegExp("<[pP][^>]*>[ ]*"), "\n" );
-
-    //add a breakline right after the artist name (Lyrc uses <b>Ttile</b><br><u>Artist</u>)
-    lyrics.replace( QRegExp("<[/][uU][^>]*>"), "\n" );
-
-    // remove all tags
-    lyrics.replace( QRegExp("<[^>]*>"), QString::null );
-
-    setLyrics( url, lyrics );
-}
-
-
-
-void
 CollectionDB::setLyrics( const QString &url, const QString &lyrics )
 {
     QStringList values = query(QString("SELECT lyrics FROM lyrics WHERE url = '%1';").arg( escapeString( url ) ) );
@@ -2043,16 +2016,6 @@ CollectionDB::setLyrics( const QString &url, const QString &lyrics )
         insert( QString( "INSERT INTO lyrics (url, lyrics) values ( '%1', '%2' );" ).arg( escapeString( url ), escapeString( lyrics ) ),
          NULL);
     }
-}
-
-
-QString
-CollectionDB::getHTMLLyrics( const QString &url )
-{
-    QString lyrics = getLyrics( url );
-    lyrics.replace( "\n", "<br />" );
-    //FIXME: It should also handle html entities
-    return lyrics;
 }
 
 
@@ -2485,7 +2448,7 @@ CollectionDB::initialize()
             debug() << "Trying to get lyrics from old db schema." << endl;
             QStringList Lyrics = query( "SELECT url, lyrics FROM tags where tags.lyrics IS NOT NULL;" );
             for (uint i=0; i<Lyrics.count(); i+=2  )
-                setHTMLLyrics( Lyrics[i], Lyrics[i+1]  );
+                setLyrics( Lyrics[i], Lyrics[i+1]  );
         }
         else if ( PersistentVersion == "1" || PersistentVersion == "2" ) {
             createPersistentTables(); /* From 1 to 2 nothing changed. There was just a bug on the code, and
@@ -2494,7 +2457,7 @@ CollectionDB::initialize()
             debug() << "Converting Lyrics to Plain Text." << endl;
             QStringList Lyrics = query( "SELECT url, lyrics FROM lyrics;" );
             for (uint i=0; i<Lyrics.count(); i+=2  )
-                setHTMLLyrics( Lyrics[i], Lyrics[i+1]  );
+                setLyrics( Lyrics[i], Lyrics[i+1]  );
 
         }
         else {

@@ -37,6 +37,16 @@ def parseLyrics( lyrics )
     doc = REXML::Document.new()
     root = doc.add_element( "lyrics" )
 
+#     m_lyricAddUrl = QString( "http://lyrc.com.ar/en/add/add.php?grupo=%1&tema=%2&disco=%3&ano=%4" ).arg(
+#             KURL::encode_string_no_slash( artist ),
+#             KURL::encode_string_no_slash( title ),
+#             KURL::encode_string_no_slash( EngineController::instance()->bundle().album() ),
+#             KURL::encode_string_no_slash( QString::number( EngineController::instance()->bundle().year() ) ) );
+#     m_lyricSearchUrl = QString( "http://www.google.com/search?ie=UTF-8&q=lyrics %1 %2" )
+#         .arg( KURL::encode_string_no_slash( '"'+EngineController::instance()->bundle().artist()+'"', 106 /*utf-8*/ ),
+#               KURL::encode_string_no_slash( '"'+title+'"', 106 /*utf-8*/ ) );
+
+
     root.add_attribute( "site", "Lyrc" )
     root.add_attribute( "site_url", "http://lyrc.com.ar" )
     root.add_attribute( "title", /(<b>)([^<]*)/.match( lyrics )[2].to_s() )
@@ -105,8 +115,8 @@ def fetchLyrics( artist, title, url )
     end
 
     unless response.code == "200"
-        lyrics = "HTTP Error: #{response.message}"
-        `dcop amarok contextbrowser showLyrics "#{lyrics}"`
+#         lyrics = "HTTP Error: #{response.message}"
+        `dcop amarok contextbrowser showLyrics"`
         return
     end
 

@@ -322,9 +322,7 @@ class CollectionDB : public QObject, public EngineObserver
         void applySettings();
 
         void setLyrics( const QString& url, const QString& lyrics );
-        void setHTMLLyrics( const QString &url, QString lyrics );
         QString getLyrics( const QString& url );
-        QString getHTMLLyrics( const QString &url );
 
         void newAmazonReloadDate( const QString& asin, const QString& locale, const QString& md5sum );
         QStringList staleImages();

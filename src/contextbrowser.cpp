@@ -1975,9 +1975,9 @@ void ContextBrowser::showLyrics( const QString &url )
 
     if ( !m_dirtyLyricsPage ) return;
 
-    QString lyrics = CollectionDB::instance()->getHTMLLyrics( EngineController::instance()->bundle().url().path() );
+    QString lyrics = CollectionDB::instance()->getLyrics( EngineController::instance()->bundle().url().path() );
 
-    bool cached = !lyrics.isEmpty();
+    const bool cached = !lyrics.isEmpty();
 
     QString title  = EngineController::instance()->bundle().title();
     QString artist = EngineController::instance()->bundle().artist();
@@ -1995,16 +1995,6 @@ void ContextBrowser::showLyrics( const QString &url )
                 artist = prettyTitle.mid( 0, h ).stripWhiteSpace();
         }
     }
-
-    // FIXME What to do about this? How to get the URLs for Add/Search from the script?
-    m_lyricAddUrl = QString( "http://lyrc.com.ar/en/add/add.php?grupo=%1&tema=%2&disco=%3&ano=%4" ).arg(
-            KURL::encode_string_no_slash( artist ),
-            KURL::encode_string_no_slash( title ),
-            KURL::encode_string_no_slash( EngineController::instance()->bundle().album() ),
-            KURL::encode_string_no_slash( QString::number( EngineController::instance()->bundle().year() ) ) );
-    m_lyricSearchUrl = QString( "http://www.google.com/search?ie=UTF-8&q=lyrics %1 %2" )
-        .arg( KURL::encode_string_no_slash( '"'+EngineController::instance()->bundle().artist()+'"', 106 /*utf-8*/ ),
-              KURL::encode_string_no_slash( '"'+title+'"', 106 /*utf-8*/ ) );
 
     m_lyricsToolBar->getButton( LYRICS_BROWSER )->setEnabled(false);
 
@@ -2025,26 +2015,9 @@ void ContextBrowser::showLyrics( const QString &url )
                   "'></div><br /></div>";
     }
 
-    if ( !lyrics.isEmpty() && url.isEmpty() )
+    if( cached && url.isEmpty() )
     {
-        m_HTMLSource = QString (
-            "<html><body>"
-            "<div id='lyrics_box' class='box'>"
-                "<div id='lyrics_box-header' class='box-header'>"
-                    "<span id='lyrics_box-header-title' class='box-header-title'>"
-                    + ( cached ? i18n( "Cached Lyrics" ) : i18n( "Lyrics" ) ) +
-                    "</span>"
-                "</div>"
-                "<div id='lyrics_box-body' class='box-body'>"
-                    + lyrics +
-                "</div>"
-            "</div>"
-            "</body></html>"
-            );
-        m_lyricsPage->set( m_HTMLSource );
-
-        m_dirtyLyricsPage = false;
-        saveHtmlData(); // Send html code to file
+        lyricsResult( lyrics, true );
     }
     else
     {
@@ -2074,32 +2047,32 @@ void ContextBrowser::showLyrics( const QString &url )
 
 
 void
-ContextBrowser::lyricsResult( const QString& xmldoc ) //SLOT
+ContextBrowser::lyricsResult( const QString& xmldoc, bool cached ) //SLOT
 {
-//     if ( lyrics == "" )
-//     {
-//         m_HTMLSource="";
-//         m_HTMLSource.append(
-//                 "<html><body>"
-//                 "<div id='lyrics_box' class='box'>"
-//                     "<div id='lyrics_box-header' class='box-header'>"
-//                         "<span id='lyrics_box-header-title' class='box-header-title'>"
-//                         + i18n( "Error" ) +
-//                         "</span>"
-//                     "</div>"
-//                     "<div id='lyrics_box-body' class='box-body'><p>"
-//                         + i18n( "Lyrics could not be retrieved because the server was not reachable." ) +
-//                     "</p></div>"
-//                 "</div>"
-//                 "</body></html>"
-//                         );
-//         m_lyricsPage->set( m_HTMLSource );
-//
-//         m_dirtyLyricsPage = false;
-//         saveHtmlData(); // Send html code to file
-//
-//         return;
-//     }
+    if ( xmldoc == "" )
+    {
+        m_HTMLSource="";
+        m_HTMLSource.append(
+                "<html><body>"
+                "<div id='lyrics_box' class='box'>"
+                    "<div id='lyrics_box-header' class='box-header'>"
+                        "<span id='lyrics_box-header-title' class='box-header-title'>"
+                        + i18n( "Error" ) +
+                        "</span>"
+                    "</div>"
+                    "<div id='lyrics_box-body' class='box-body'><p>"
+                        + i18n( "Lyrics could not be retrieved because the server was not reachable." ) +
+                    "</p></div>"
+                "</div>"
+                "</body></html>"
+                        );
+        m_lyricsPage->set( m_HTMLSource );
+
+        m_dirtyLyricsPage = false;
+        saveHtmlData(); // Send html code to file
+
+        return;
+    }
 
     QDomDocument doc;
     if( !doc.setContent( xmldoc ) ) {
@@ -2107,8 +2080,11 @@ ContextBrowser::lyricsResult( const QString& xmldoc ) //SLOT
         return;
     }
 
-    QDomElement el = doc.documentElement();
     QString lyrics;
+
+    QDomElement el = doc.documentElement();
+//     m_lyricAddUrl    = el.attribute( "add_url" );
+//     m_lyricSearchUrl = el.attribute( "search_url" )
 
     if ( el.tagName() == "suggestions" )
     {
@@ -2137,7 +2113,8 @@ ContextBrowser::lyricsResult( const QString& xmldoc ) //SLOT
         lyrics.prepend( "<font size='2'><b>" + title + "</b><br/><u>" + artist+ "</font></u></font><br/>" );
         lyrics.append( "<br/><br/><i>" + i18n( "Powered by %1 (%2)" ).arg( site, site_url ) + "</i>" );
 
-        CollectionDB::instance()->setHTMLLyrics( EngineController::instance()->bundle().url().path(), lyrics );
+        if( !cached )
+            CollectionDB::instance()->setLyrics( EngineController::instance()->bundle().url().path(), xmldoc );
     }
 
     m_HTMLSource="";
@@ -2146,7 +2123,7 @@ ContextBrowser::lyricsResult( const QString& xmldoc ) //SLOT
             "<div id='lyrics_box' class='box'>"
                 "<div id='lyrics_box-header' class='box-header'>"
                     "<span id='lyrics_box-header-title' class='box-header-title'>"
-                    + i18n( "Lyrics" ) +
+                    + ( cached ? i18n( "Cached Lyrics" ) : i18n( "Lyrics" ) ) +
                     "</span>"
                 "</div>"
                 "<div id='lyrics_box-body' class='box-body'>"
