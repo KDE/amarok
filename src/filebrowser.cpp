@@ -242,6 +242,8 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
     connect( m_dir, SIGNAL(fileSelected( const KFileItem* )), SLOT(activate( const KFileItem* )) );
     connect( m_dir, SIGNAL(urlEntered( const KURL& )), SLOT(urlChanged( const KURL& )) );
     connect( m_dir, SIGNAL(urlEntered( const KURL& )), searchPane, SLOT(urlChanged( const KURL& )) );
+    connect( m_dir, SIGNAL(dropped( const KFileItem*, QDropEvent*, const KURL::List& )),
+                        SLOT(dropped( const KFileItem*, QDropEvent*, const KURL::List& )) );
 
     setSpacing( 4 );
     setFocusProxy( m_dir ); //so the dirOperator is focussed when we get focus events
@@ -337,6 +339,20 @@ FileBrowser::setFilter( const QString &text )
     }
 
     m_dir->updateDir();
+}
+
+void
+FileBrowser::dropped( const KFileItem* /*item*/, QDropEvent* event, const KURL::List &urls){
+    //Do nothing right now
+    QStringList list = urls.toStringList();
+
+    //why does this work, but the below doesn't?
+    for (QStringList::Iterator it = list.begin(); it != list.end(); ++it)
+        debug() << "Dropped: " << (*it) << endl;
+
+    //foreach( urls.toStringList() ) {
+    //    debug() << "Dropped: " << (*it) << endl;
+    //}
 }
 
 //END Public Slots

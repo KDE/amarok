@@ -60,10 +60,12 @@ public:
    ~FileBrowser();
 
     KURL url() const { return m_dir->url(); }
+
 public slots:
     void setUrl( const KURL &url );
     void setUrl( const QString &url );
     void setFilter( const QString& );
+    void dropped( const KFileItem*, QDropEvent*, const KURL::List& );
 
 private slots:
     void urlChanged( const KURL& );
