@@ -12,7 +12,7 @@
 
 class MyDirLister : public KDirLister {
 public:
-    MyDirLister( bool delayedMimeTypes ) : KDirLister( delayedMimeTypes ) {}
+    MyDirLister( bool delayedMimeTypes ) : KDirLister( delayedMimeTypes ) { setShowingDotFiles( true ); }
 
 protected:
     virtual bool matchesMimeFilter( const KFileItem *item ) const {
@@ -25,7 +25,9 @@ protected:
             item->name().endsWith( ".aa", false ) || //for adding to iPod
             item->name().endsWith( ".mp4", false ) || //for adding to iPod
             item->name().endsWith( ".m4v", false ) || //for adding to iPod
-            item->name().endsWith( ".ogg", false );
+            item->name().endsWith( ".ogg", false ) ||
+            item->name().endsWith( ".flac", false ) ||
+            item->name().endsWith( ".wma", false );
     }
 };
 
