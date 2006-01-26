@@ -88,6 +88,9 @@ class ScriptManager : public KDialogBase, public EngineObserver
        /** Return whether a lyrics script is currently running */
        bool lyricsScriptRunning() const;
 
+       /** Returns a list of all lyrics scripts */
+       QStringList lyricsScripts() const;
+
        /** Sends a fetchLyrics notification to all scripts */
        void notifyFetchLyrics( const QString& artist, const QString& title );
 
@@ -99,6 +102,10 @@ class ScriptManager : public KDialogBase, public EngineObserver
 
        /** Sends a transcode notification to all scripts */
        void notifyTranscode( const QString& srcUrl, const QString& filetype );
+
+    signals:
+        /** Emitted when the lyrics script changes, so that a lyrics retry can be made */
+        void lyricsScriptChanged();
 
     private slots:
         /** Finds all installed scripts and adds them to the listview */

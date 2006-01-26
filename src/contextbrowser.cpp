@@ -176,7 +176,7 @@ ContextBrowser::ContextBrowser( const char *name )
     m_lyricsToolBar->insertLineSeparator();
     m_lyricsToolBar->insertButton( "exec", LYRICS_BROWSER, true, i18n("Open in external browser") );
 
-    m_lyricsPage = new HTMLView( m_lyricsTab, "lyrics_page", true /* DNDEnabled */, false /* JScriptEnabled */ );
+    m_lyricsPage = new HTMLView( m_lyricsTab, "lyrics_page", true /* DNDEnabled */, true /* JScriptEnabled */ );
 
     m_wikiTab = new QVBox(this, "wiki_tab");
 
@@ -330,10 +330,20 @@ void ContextBrowser::openURLRequest( const KURL &url )
         {
             CollectionView::instance()->setupDirs();
         }
+        else if ( url.path() == "scriptmanager" )
+        {
+            ScriptManager::instance()->show();
+            ScriptManager::instance()->raise();
+        }
         // Konqueror sidebar needs these
         if (url.path() == "context") { m_dirtyCurrentTrackPage=true; showContext( KURL( "current://track" ) ); saveHtmlData(); }
         if (url.path() == "wiki") { m_dirtyLyricsPage=true; showWikipedia(); saveHtmlData(); }
         if (url.path() == "lyrics") { m_dirtyWikiPage=true; m_wikiJob=false; showLyrics(); saveHtmlData(); }
+    }
+
+    else if ( url.protocol() == "runscript" )
+    {
+        ScriptManager::instance()->runScript( url.path() );
     }
 
     // When left-clicking on cover image, open browser with amazon site
@@ -461,6 +471,12 @@ void ContextBrowser::lyricsChanged( const QString &url ) {
         if ( currentPage() == m_lyricsTab )
             showLyrics();
     }
+}
+
+void ContextBrowser::lyricsScriptChanged() {
+    m_dirtyLyricsPage = true;
+    if ( currentPage() == m_lyricsTab )
+        showLyrics();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -1957,9 +1973,11 @@ void ContextBrowser::showLyrics( const QString &url )
         blockSignals( false );
     }
 
+    if ( !m_dirtyLyricsPage ) return;
+
     QString lyrics = CollectionDB::instance()->getHTMLLyrics( EngineController::instance()->bundle().url().path() );
 
-    if ( !m_dirtyLyricsPage ) return;
+    bool cached = !lyrics.isEmpty();
 
     QString title  = EngineController::instance()->bundle().title();
     QString artist = EngineController::instance()->bundle().artist();
@@ -1990,8 +2008,22 @@ void ContextBrowser::showLyrics( const QString &url )
 
     m_lyricsToolBar->getButton( LYRICS_BROWSER )->setEnabled(false);
 
-    if( !ScriptManager::instance()->lyricsScriptRunning() )
-        lyrics = i18n( "Sorry, no lyrics script running. Start 'lyrics_lyrc.rb' from the Script Manager." );
+    if( !cached && !ScriptManager::instance()->lyricsScriptRunning() ) {
+        const QStringList scripts = ScriptManager::instance()->lyricsScripts();
+        lyrics =
+              i18n( "Sorry, no lyrics script running.") + "<br />" +
+              "<br /><div class='info'>"+
+              i18n( "Available Lyrics Scripts:" ) + "<br />";
+        foreach ( scripts ) {
+            lyrics += QString( "<a href=\"runscript:%1\">%2</a><br />" ).arg( *it, *it );
+        }
+        lyrics += "<br />" + i18n( "Click on one of the scripts to run it, or use the Script Manager, to be able"
+                        " to see all the scripts, and download new ones from the Web." );
+        lyrics += "<br /><div align='center'>"
+                  "<input type='button' onClick='window.location.href=\"show:scriptmanager\";' value='" +
+                    i18n( "Run Script Manager..." ) +
+                  "'></div><br /></div>";
+    }
 
     if ( !lyrics.isEmpty() && url.isEmpty() )
     {
@@ -2000,7 +2032,7 @@ void ContextBrowser::showLyrics( const QString &url )
             "<div id='lyrics_box' class='box'>"
                 "<div id='lyrics_box-header' class='box-header'>"
                     "<span id='lyrics_box-header-title' class='box-header-title'>"
-                    + i18n( "Cached Lyrics" ) +
+                    + ( cached ? i18n( "Cached Lyrics" ) : i18n( "Lyrics" ) ) +
                     "</span>"
                 "</div>"
                 "<div id='lyrics_box-body' class='box-body'>"

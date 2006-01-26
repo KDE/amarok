@@ -21,6 +21,7 @@
 #define DEBUG_PREFIX "ScriptManager"
 
 #include "amarok.h"
+#include "contextbrowser.h"
 #include "debug.h"
 #include "enginecontroller.h"
 #include "metabundle.h"
@@ -163,6 +164,8 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     setMinimumSize( kMax( 350, sz.width() ), kMax( 250, sz.height() ) );
     resize( sizeHint() );
 
+    connect( this, SIGNAL(lyricsScriptChanged()), ContextBrowser::instance(), SLOT( lyricsScriptChanged() ) );
+
     // Delay this call via eventloop, because it's a bit slow and would block
     QTimer::singleShot( 0, this, SLOT( findScripts() ) );
 }
@@ -253,6 +256,17 @@ ScriptManager::notifyFetchLyricsByUrl( const QString& url )
     notifyScripts( "fetchLyricsByUrl " + url );
 }
 
+
+QStringList
+ScriptManager::lyricsScripts() const
+{
+    QStringList scripts;
+    foreachType( ScriptMap, m_scripts )
+        if( it.key().lower().startsWith( "lyrics_" ) )
+            scripts += it.key();
+
+    return scripts;
+}
 
 bool
 ScriptManager::lyricsScriptRunning() const
@@ -492,8 +506,9 @@ ScriptManager::slotRunScript()
 
     QListViewItem* const li = m_gui->listView->currentItem();
     const QString name = li->text( 0 );
+    bool isLyricsScript = name.lower().startsWith( "lyrics_" );
 
-    if( name.lower().startsWith( "lyrics_" ) && lyricsScriptRunning() ) {
+    if( isLyricsScript && lyricsScriptRunning() ) {
         KMessageBox::sorry( 0, i18n( "Another lyrics script is already running. "
                                      "You may only run one lyrics script at a time." ) );
         return false;
@@ -529,6 +544,8 @@ ScriptManager::slotRunScript()
 
     m_scripts[name].process = script;
     slotCurrentChanged( m_gui->listView->currentItem() );
+    if ( isLyricsScript )
+     emit lyricsScriptChanged();
     return true;
 }
 
