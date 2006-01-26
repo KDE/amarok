@@ -1976,7 +1976,6 @@ void ContextBrowser::showLyrics( const QString &url )
     if ( !m_dirtyLyricsPage ) return;
 
     QString lyrics = CollectionDB::instance()->getLyrics( EngineController::instance()->bundle().url().path() );
-
     const bool cached = !lyrics.isEmpty();
 
     QString title  = EngineController::instance()->bundle().title();
@@ -1998,7 +1997,7 @@ void ContextBrowser::showLyrics( const QString &url )
 
     m_lyricsToolBar->getButton( LYRICS_BROWSER )->setEnabled(false);
 
-    if( !cached && !ScriptManager::instance()->lyricsScriptRunning() ) {
+    if( ( !cached || url == "reload" ) && !ScriptManager::instance()->lyricsScriptRunning() ) {
         const QStringList scripts = ScriptManager::instance()->lyricsScripts();
         lyrics =
               i18n( "Sorry, no lyrics script running.") + "<br />" +
@@ -2013,6 +2012,27 @@ void ContextBrowser::showLyrics( const QString &url )
                   "<input type='button' onClick='window.location.href=\"show:scriptmanager\";' value='" +
                     i18n( "Run Script Manager..." ) +
                   "'></div><br /></div>";
+
+        m_HTMLSource = QString (
+            "<html><body>"
+            "<div id='lyrics_box' class='box'>"
+                "<div id='lyrics_box-header' class='box-header'>"
+                    "<span id='lyrics_box-header-title' class='box-header-title'>"
+                    + ( cached ? i18n( "Cached Lyrics" ) : i18n( "Lyrics" ) ) +
+                    "</span>"
+                "</div>"
+                "<div id='lyrics_box-body' class='box-body'>"
+                    + lyrics +
+                "</div>"
+            "</div>"
+            "</body></html>"
+            );
+        m_lyricsPage->set( m_HTMLSource );
+
+        m_dirtyLyricsPage = false;
+        saveHtmlData(); // Send html code to file
+
+        return;
     }
 
     if( cached && url.isEmpty() )
@@ -2036,6 +2056,7 @@ void ContextBrowser::showLyrics( const QString &url )
             "</body></html>"
             );
         m_lyricsPage->set( m_HTMLSource );
+        saveHtmlData(); // Send html code to file
 
 
         if( url.isNull() || url == "reload" )
@@ -2069,9 +2090,9 @@ ContextBrowser::lyricsResult( const QString& xmldoc, bool cached ) //SLOT
                 "</body></html>"
                         );
         m_lyricsPage->set( m_HTMLSource );
+        saveHtmlData(); // Send html code to file
 
         m_dirtyLyricsPage = false;
-        saveHtmlData(); // Send html code to file
 
         return;
     }
@@ -2131,10 +2152,10 @@ ContextBrowser::lyricsResult( const QString& xmldoc, bool cached ) //SLOT
 
 
     m_lyricsPage->set( m_HTMLSource );
+    saveHtmlData(); // Send html code to file
 
     m_lyricsToolBar->getButton( LYRICS_BROWSER )->setEnabled(true);
     m_dirtyLyricsPage = false;
-    saveHtmlData(); // Send html code to file
 }
 
 
