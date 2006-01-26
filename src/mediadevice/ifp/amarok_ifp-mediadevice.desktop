@@ -13,7 +13,6 @@ Name[pt]=Dispositivo Multimédia iRiver iFP
 Name[pt_BR]=Dispositivo Multimédia iRiver iFP
 Name[ru]=Мультимедиа-устройство iRiver iFP
 Name[sv]=iRiver iFP-mediaenhet
-Name[tr]=iRiver iFP Ortam Aygıtı
 Name[xx]=xxiRiver iFP Media Devicexx
 X-KDE-Library=libamarok_ifp-mediadevice
 Comment=Plugin for amaroK
