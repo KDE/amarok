@@ -147,6 +147,13 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         m_dir->readConfig( config );
         m_dir->setView( KFile::Default ); //will set userconfigured view, will load URL
         m_dir->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Expanding );
+        m_dir->setAcceptDrops( true );
+        //Automatically open folder after hovering above it...probably a good thing
+        //but easily disabled by commenting this line out
+        //Disabled for now because can't show . and .. folders.
+        //TODO: Find out a way to fix this?
+        //m_dir->setDropOptions( KFileView::AutoOpenDirs );
+
         static_cast<QFrame*>(m_dir->viewWidget())->setFrameStyle( QFrame::NoFrame );
         static_cast<QIconView*>(m_dir->viewWidget())->setSpacing( 1 );
 
