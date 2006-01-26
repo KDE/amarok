@@ -18,6 +18,7 @@
 #include "enginebase.h"
 #include "enginecontroller.h"
 #include "playlist.h"
+#include "playlistloader.h"
 #include "pluginmanager.h"
 #include "statusbar.h"
 #include "streamprovider.h"
@@ -210,8 +211,7 @@ bool EngineController::canDecode( const KURL &url ) //static
     const QString fileName = url.fileName();
     const QString ext = amaroK::extension( fileName );
 
-    //FIXME why do we do this? Please add comments to odd looking code!
-    if ( ext == "m3u" || ext == "pls" ) return false;
+    if ( PlaylistFile::isPlaylistFile( fileName ) ) return false;
 
     // Ignore protocols "fetchcover" and "musicbrainz", they're not local but we dont really want them in the playlist :)
     if ( url.protocol() == "fetchcover" || url.protocol() == "musicbrainz" ) return false;

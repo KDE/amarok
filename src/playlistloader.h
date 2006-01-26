@@ -6,6 +6,7 @@
 #ifndef UrlLoader_H
 #define UrlLoader_H
 
+#include "amarok.h"
 #include "debug.h"        //stack allocated
 #include <qptrlist.h>
 #include <qxml.h>         //baseclass
@@ -70,13 +71,13 @@ protected:
 inline PlaylistFile::Format
 PlaylistFile::format( const QString &fileName )
 {
-    const QString ext = fileName.right( 4 ).lower();
+    const QString ext = amaroK::extension( fileName );
 
-    if( ext == ".m3u" ) return M3U;
-    if( ext == ".pls" ) return PLS;
-    if( ext == ".ram" ) return RAM;
-    if( ext == ".asx" ) return ASX;
-    if( ext == ".xml" ) return XML;
+    if( ext == "m3u" ) return M3U;
+    if( ext == "pls" ) return PLS;
+    if( ext == "ram" ) return RAM;
+    if( ext == "asx" ) return ASX;
+    if( ext == "xml" ) return XML;
 
     return Unknown;
 }
