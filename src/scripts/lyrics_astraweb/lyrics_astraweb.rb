@@ -31,8 +31,8 @@ def fetchLyrics( artist, title )
     response = h.get( "/?word=#{artist}+#{title}" )
 
     unless response.code == "200"
-        lyrics = "HTTP Error: #{response.message}"
-        `dcop amarok contextbrowser showLyrics "#{lyrics}"`
+#         lyrics = "HTTP Error: #{response.message}"
+        `dcop amarok contextbrowser showLyrics`
         return
     end
 

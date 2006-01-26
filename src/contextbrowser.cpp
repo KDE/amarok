@@ -2049,7 +2049,9 @@ void ContextBrowser::showLyrics( const QString &url )
 void
 ContextBrowser::lyricsResult( const QString& xmldoc, bool cached ) //SLOT
 {
-    if ( xmldoc == "" )
+    QDomDocument doc;
+
+    if( !doc.setContent( xmldoc ) )
     {
         m_HTMLSource="";
         m_HTMLSource.append(
@@ -2071,12 +2073,6 @@ ContextBrowser::lyricsResult( const QString& xmldoc, bool cached ) //SLOT
         m_dirtyLyricsPage = false;
         saveHtmlData(); // Send html code to file
 
-        return;
-    }
-
-    QDomDocument doc;
-    if( !doc.setContent( xmldoc ) ) {
-        error() << "Invalid XML." << endl;
         return;
     }
 
