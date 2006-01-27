@@ -12,7 +12,7 @@
 
 require "net/http"
 require "rexml/document"
-require "ruby_debug/debug.rb"
+require File.dirname( File.expand_path( __FILE__ ) ) + "/../ruby_debug/debug.rb"
 require "uri"
 
 @app_name = "Lyrics_Lyrc"
