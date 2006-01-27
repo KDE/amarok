@@ -148,7 +148,8 @@ end
 
 # fetchLyrics( "Cardigans", "Lovefool", "" )
 # fetchLyrics( "queen", "mama", "" )
-# exit()
+fetchLyrics( "station_rose_", "_dave_(original_1992)", "" )
+exit()
 
 
 loop do
