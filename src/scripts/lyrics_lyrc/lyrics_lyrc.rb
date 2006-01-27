@@ -44,8 +44,6 @@ def parseLyrics( lyrics )
     root = doc.add_element( "lyrics" )
 
     root.add_attribute( "add_url", "http://lyrc.com.ar/en/add/add.php?grupo=MAGIC_ARTIST&tema=MAGIC_TITLE&disco=MAGIC_ALBUM&ano=MAGIC_YEAR" )
-    root.add_attribute( "search_url", "http://www.google.com/search?ie=UTF-8&q=lyrics MAGIC_ARTIST MAGIC_TITLE" )
-
     root.add_attribute( "site", "Lyrc" )
     root.add_attribute( "site_url", "http://lyrc.com.ar" )
     root.add_attribute( "title", /(<b>)([^<]*)/.match( lyrics )[2].to_s() )
@@ -77,7 +75,6 @@ def parseSuggestions( lyrics )
     root = doc.add_element( "suggestions" )
 
     root.add_attribute( "add_url", "http://lyrc.com.ar/en/add/add.php?grupo=MAGIC_ARTIST&tema=MAGIC_TITLE&disco=MAGIC_ALBUM&ano=MAGIC_YEAR" )
-    root.add_attribute( "search_url", "http://www.google.com/search?ie=UTF-8&q=lyrics MAGIC_ARTIST MAGIC_TITLE" )
 
     entries = lyrics.split( "<br>" )
     entries.delete_at( 0 )
@@ -153,8 +150,7 @@ end
 ##################################################################
 
 # fetchLyrics( "Cardigans", "Lovefool", "" )
-fetchLyrics( "queen", "mama", "" )
-ObjectSpace.garbage_collect
+# fetchLyrics( "queen", "mama", "" )
 # fetchLyrics( "station_rose_", "_dave_(original_1992)", "" )
 # exit()
 
