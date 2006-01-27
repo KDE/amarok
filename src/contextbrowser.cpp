@@ -170,10 +170,12 @@ ContextBrowser::ContextBrowser( const char *name )
     m_lyricsTab = new QVBox(this, "lyrics_tab");
 
     m_lyricsToolBar = new Browser::ToolBar( m_lyricsTab );
-    m_lyricsToolBar->insertButton( "edit_add", LYRICS_ADD, true, i18n("Add Lyrics") );
-    m_lyricsToolBar->insertButton( "find", LYRICS_SEARCH, true, i18n("Search For Lyrics") );
+    m_lyricsToolBar->setIconText( KToolBar::IconTextRight, false );
+    m_lyricsToolBar->insertButton( "edit_add", LYRICS_ADD, true, i18n("Add") );
+    m_lyricsToolBar->insertButton( "find", LYRICS_SEARCH, true, i18n("Search") );
     m_lyricsToolBar->insertButton( "reload", LYRICS_REFRESH, true, i18n("Refresh") );
     m_lyricsToolBar->insertLineSeparator();
+    m_lyricsToolBar->setIconText( KToolBar::IconOnly, false );
     m_lyricsToolBar->insertButton( "exec", LYRICS_BROWSER, true, i18n("Open in external browser") );
 
     m_lyricsPage = new HTMLView( m_lyricsTab, "lyrics_page", true /* DNDEnabled */, true /* JScriptEnabled */ );
