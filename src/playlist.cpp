@@ -1868,6 +1868,8 @@ Playlist::clear() //SLOT
 
     emit aboutToClear(); //will saveUndoState()
 
+    static_cast<KToggleAction*>(amaroK::actionCollection()->action( "dynamic_mode" ))->setChecked( false );
+
     setCurrentTrack( 0 );
     m_prevTracks.clear();
 

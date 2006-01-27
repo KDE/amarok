@@ -78,7 +78,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     layout->addWidget( m_queueLabel = new QueueLabel( hbox ) );
     layout->addWidget( new ToggleLabel( (KToggleAction*)amaroK::action( "random_mode" ), hbox ) );
     layout->addWidget( new ToggleLabel( (KToggleAction*)amaroK::action( "repeat_playlist" ), hbox ) );
-    layout->addWidget( new ToggleLabel( (KToggleAction*)amaroK::action( "dynamic_mode" ), hbox ) );
+    //layout->addWidget( new ToggleLabel( (KToggleAction*)amaroK::action( "dynamic_mode" ), hbox ) );
     layout->addSpacing( 3 );
 
     //TODO reimplement insertChild() instead
