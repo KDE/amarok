@@ -10,13 +10,17 @@
 #
 # License: GNU General Public License V2
 
-
 require "net/http"
 require "rexml/document"
+require "ruby_debug/debug.rb"
 require "uri"
+
+@app_name = "Lyrics_Lyrc"
 
 
 def showLyrics( lyrics )
+    debug_block
+
     # Important, otherwise we might execute arbitrary nonsense in the DCOP call
     lyrics.gsub!( '"', "'" )
     lyrics.gsub!( '`', "'" )
@@ -26,6 +30,8 @@ end
 
 
 def parseLyrics( lyrics )
+    debug_block
+
     if lyrics.include?( "<p><hr" )
         lyrics = lyrics[0, lyrics.index( "<p><hr" )]
     else
@@ -46,7 +52,6 @@ def parseLyrics( lyrics )
 #         .arg( KURL::encode_string_no_slash( '"'+EngineController::instance()->bundle().artist()+'"', 106 /*utf-8*/ ),
 #               KURL::encode_string_no_slash( '"'+title+'"', 106 /*utf-8*/ ) );
 
-
     root.add_attribute( "site", "Lyrc" )
     root.add_attribute( "site_url", "http://lyrc.com.ar" )
     root.add_attribute( "title", /(<b>)([^<]*)/.match( lyrics )[2].to_s() )
@@ -60,12 +65,14 @@ def parseLyrics( lyrics )
     xml = ""
     doc.write( xml )
 
-#     puts( xml )
+#     debug xml
     showLyrics( xml )
 end
 
 
 def parseSuggestions( lyrics )
+    debug_block
+
     lyrics = lyrics[lyrics.index( "Suggestions : " )..lyrics.index( "<br><br>" )]
 
     lyrics.gsub!( "<font color='white'>", "" )
@@ -93,12 +100,14 @@ def parseSuggestions( lyrics )
     xml = ""
     doc.write( xml )
 
-#     puts( xml )
+#     debug xml
     showLyrics( xml )
 end
 
 
 def fetchLyrics( artist, title, url )
+    debug_block
+
     proxy_host = nil
     proxy_port = nil
     if ( ENV['http_proxy'] && proxy_uri = URI.parse( ENV['http_proxy'] ) )
@@ -115,7 +124,7 @@ def fetchLyrics( artist, title, url )
     end
 
     unless response.code == "200"
-#         lyrics = "HTTP Error: #{response.message}"
+#         error "HTTP Error: #{response.message}"
         `dcop amarok contextbrowser showLyrics"`
         return
     end

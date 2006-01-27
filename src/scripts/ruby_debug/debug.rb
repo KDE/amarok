@@ -6,7 +6,8 @@
 # (c) 2003-5 Max Howell <max.howell@methylblue.com>
 
 
-DEBUG_PREFIX = "TestClass"
+@app_name = ""
+@debug_prefix = ""
 
  #
  # @short Use this to label sections of your code
@@ -34,10 +35,10 @@ def debug_block()
     indent = " " * ( caller( 3 ).size ) * 2
 
     ObjectSpace.define_finalizer( d, Proc.new {
-        puts( "#{indent}END__: #{funcname}() - Took #{Time.new - t1}s" )
+        puts( "#{@app_name}: #{indent}END__: #{funcname}() - Took #{Time.new - t1}s" )
     } )
 
-    puts( "#{indent}BEGIN: #{funcname}() " )
+    puts( "#{@app_name}: #{indent}BEGIN: #{funcname}() " )
     return d
 end
 
@@ -46,17 +47,28 @@ end
 
 def debug( str )
     indent = " " * ( caller( 2 ).size ) * 2
-    puts( "#{indent}[#{DEBUG_PREFIX}] #{str}" )
+    prefix = @debug_prefix.empty?() ? "" : "[#{@debug_prefix}]"
+    puts( "#{@app_name}: #{indent}#{prefix} #{str}" )
 end
 
 def warning( str )
     indent = " " * ( caller( 2 ).size ) * 2
-    puts( "#{indent}WARNING: [#{DEBUG_PREFIX}] #{str}" )
+    prefix = @debug_prefix.empty?() ? "" : "[#{@debug_prefix}]"
+    puts( "#{@app_name}: #{indent}WARNING: #{prefix} #{str}" )
 end
 
 def error( str )
     indent = " " * ( caller( 2 ).size ) * 2
-    puts( "#{indent}ERROR: [#{DEBUG_PREFIX}] #{str}" )
+    prefix = @debug_prefix.empty?() ? "" : "[#{@debug_prefix}]"
+    puts( "#{@app_name}: #{indent}ERROR: #{prefix} #{str}" )
+end
+
+def fatal( str )
+    indent = " " * ( caller( 2 ).size ) * 2
+    prefix = @debug_prefix.empty?() ? "" : "[#{@debug_prefix}]"
+    puts( "#{@app_name}: #{indent}FATAL: #{prefix} #{str}" )
+
+    exit( 1 )
 end
 
 
@@ -64,25 +76,25 @@ end
 # MAIN
 ####################################################################
 
-def funA()
-    debug_block
-
-    funB()
-end
-
-def funB()
-    debug_block
-
-    debug( "This is a test" )
-
-    funC()
-end
-
-def funC()
-    debug_block
-
-    warning( "What the hell is going on here" )
-end
-
-
-funA()
+# def funA()
+#     debug_block
+#
+#     funB()
+# end
+#
+# def funB()
+#     debug_block
+#
+#     debug( "This is a test" )
+#
+#     funC()
+# end
+#
+# def funC()
+#     debug_block
+#
+#     warning( "What the hell is going on here" )
+# end
+#
+#
+# funA()
