@@ -2768,53 +2768,33 @@ Playlist::saveXML( const QString &path )
 
     if( !file.open( IO_WriteOnly ) ) return;
 
-    QDomDocument newdoc;
-    QDomElement playlist = newdoc.createElement( "playlist" );
-    playlist.setAttribute( "product", "amaroK" );
-
-    //increase this whenever the format changes, in PlaylistLoader::startElement() also
-    playlist.setAttribute( "version", "2.4" );
-    newdoc.appendChild( playlist );
-
-    for( const PlaylistItem *item = firstChild(); item; item = item->nextSibling() )
-    {
-        int queueIndex = m_nextTracks.findRef( item );
-        bool isQueued = queueIndex != -1;
-        QDomElement i = newdoc.createElement("item");
-        i.setAttribute("url", item->url().url());
-        if ( isQueued )
-        {
-            i.setAttribute( "queue_index", queueIndex + 1 );
-        }
-        else if ( item == currentTrack() )
-        {
-            i.setAttribute( "queue_index", 0 );
-        }
-
-        if( !item->isEnabled() )
-            i.setAttribute( "disabled", "true" );
-
-        if( m_stopAfterTrack == item )
-            i.setAttribute( "stop_after", 1 );
-
-        for( int x = 1; x < columns(); ++x )
-        {
-            if( !item->exactText(x).isEmpty() )
-            {
-                QDomElement attr = newdoc.createElement( item->exactColumnName(x) );
-                QDomText t = newdoc.createTextNode( item->exactText(x) );
-                attr.appendChild( t );
-                i.appendChild( attr );
-            }
-        }
-
-        playlist.appendChild( i );
-    }
-
     QTextStream stream( &file );
     stream.setEncoding( QTextStream::UnicodeUTF8 );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-    stream << newdoc.toString();
+
+    // increase the version whenever the format changes backwards-incompatibly
+    // in PlaylistLoader::startElement() also
+    stream << QString( "<playlist product=\"%1\" version=\"%2\">\n" ).arg( "amaroK" ).arg( "2.4" );
+
+    for( const PlaylistItem *item = firstChild(); item; item = item->nextSibling() )
+    {
+        QStringList attributes;
+        const int queueIndex = m_nextTracks.findRef( item );
+        if ( queueIndex != -1 )
+            attributes << "queue_index" << QString::number( queueIndex + 1 );
+        else if ( item == currentTrack() )
+            attributes << "queue_index" << QString::number( 0 );
+
+        if( !item->isEnabled() )
+            attributes << "disabled" << "true";
+
+        if( m_stopAfterTrack == item )
+            attributes << "stop_after" << "true";
+
+        item->save( stream, attributes, 1 );
+    }
+
+    stream << "</playlist>\n";
 }
 
 void

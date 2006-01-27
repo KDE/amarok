@@ -904,3 +904,23 @@ MetaBundle::save() {
     }
     return false;
 }
+
+bool MetaBundle::save( QTextStream &stream, const QStringList &attributes, int indent ) const
+{
+    QDomDocument QDomSucksItNeedsADocument;
+    QDomElement item = QDomSucksItNeedsADocument.createElement( "item" );
+    item.setAttribute( "url", url().url() );
+    for( int i = 0, n = attributes.count(); i < n; i += 2 )
+        item.setAttribute( attributes[i], attributes[i+1] );
+    for( int i = 0; i < NUM_COLUMNS; ++i )
+    {
+        QDomElement tag = QDomSucksItNeedsADocument.createElement( exactColumnName( i ) );
+        QDomText text = QDomSucksItNeedsADocument.createTextNode( exactText( i ) );
+        tag.appendChild( text );
+
+        item.appendChild( tag );
+    }
+
+    item.save( stream, indent );
+    return true;
+}

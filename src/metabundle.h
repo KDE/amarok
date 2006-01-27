@@ -9,6 +9,7 @@
 #define PRETTY_TITLE_CACHE
 #endif
 
+#include <qstringlist.h>
 #include <kurl.h>    //inline functions
 #include <klocale.h> //inline functions
 #include <taglib/audioproperties.h>
@@ -18,7 +19,7 @@
 #include "amarok_export.h"
 
 class KFileMetaInfo;
-class QDomNode;
+class QTextStream;
 template<class T> class QValueList;
 namespace TagLib {
     class File;
@@ -105,6 +106,9 @@ public:
 
     /** Saves the changes to the file. Returns false on error. */
     bool save();
+
+    /** Saves the MetaBundle's data as XML to a text stream. */
+    bool save( QTextStream &stream, const QStringList &attributes = QStringList(), int indent = 0 ) const;
 
     /** used by PlaylistItem, should be true for everything but local files that aren't there */
     bool exists() const;

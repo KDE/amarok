@@ -122,6 +122,9 @@ AtomicString::AtomicString( const AtomicString &other )
 
 AtomicString::AtomicString( const QString &string )
 {
+    if( string.isEmpty() )
+        return;
+
     KSharedPtr<Impl> s = new Impl( string );
     const std::pair<set_type::iterator, bool> r = s_store.insert( s.data() );
     m_string = static_cast<Impl*>( *r.first );
