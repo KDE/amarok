@@ -43,14 +43,8 @@ def parseLyrics( lyrics )
     doc = REXML::Document.new()
     root = doc.add_element( "lyrics" )
 
-#     m_lyricAddUrl = QString( "http://lyrc.com.ar/en/add/add.php?grupo=%1&tema=%2&disco=%3&ano=%4" ).arg(
-#             KURL::encode_string_no_slash( artist ),
-#             KURL::encode_string_no_slash( title ),
-#             KURL::encode_string_no_slash( EngineController::instance()->bundle().album() ),
-#             KURL::encode_string_no_slash( QString::number( EngineController::instance()->bundle().year() ) ) );
-#     m_lyricSearchUrl = QString( "http://www.google.com/search?ie=UTF-8&q=lyrics %1 %2" )
-#         .arg( KURL::encode_string_no_slash( '"'+EngineController::instance()->bundle().artist()+'"', 106 /*utf-8*/ ),
-#               KURL::encode_string_no_slash( '"'+title+'"', 106 /*utf-8*/ ) );
+    root.add_attribute( "add_url", "http://lyrc.com.ar/en/add/add.php?grupo=MAGIC_ARTIST&tema=MAGIC_TITLE&disco=MAGIC_ALBUM&ano=MAGIC_YEAR" )
+    root.add_attribute( "search_url", "http://www.google.com/search?ie=UTF-8&q=lyrics MAGIC_ARTIST MAGIC_TITLE" )
 
     root.add_attribute( "site", "Lyrc" )
     root.add_attribute( "site_url", "http://lyrc.com.ar" )
@@ -81,6 +75,9 @@ def parseSuggestions( lyrics )
 
     doc = REXML::Document.new()
     root = doc.add_element( "suggestions" )
+
+    root.add_attribute( "add_url", "http://lyrc.com.ar/en/add/add.php?grupo=MAGIC_ARTIST&tema=MAGIC_TITLE&disco=MAGIC_ALBUM&ano=MAGIC_YEAR" )
+    root.add_attribute( "search_url", "http://www.google.com/search?ie=UTF-8&q=lyrics MAGIC_ARTIST MAGIC_TITLE" )
 
     entries = lyrics.split( "<br>" )
     entries.delete_at( 0 )
@@ -119,7 +116,7 @@ def fetchLyrics( artist, title, url )
     if url.empty?()
         response = h.get( "/en/tema1en.php?artist=#{artist}&songname=#{title}" )
     else
-        puts( "Fetching by URL: #{url}" )
+        debug "Fetching by URL: #{url}"
         response = h.get( "/en/#{url}" )
     end
 
@@ -156,7 +153,8 @@ end
 ##################################################################
 
 # fetchLyrics( "Cardigans", "Lovefool", "" )
-# fetchLyrics( "queen", "mama", "" )
+fetchLyrics( "queen", "mama", "" )
+ObjectSpace.garbage_collect
 # fetchLyrics( "station_rose_", "_dave_(original_1992)", "" )
 # exit()
 

@@ -2102,8 +2102,17 @@ ContextBrowser::lyricsResult( const QString& xmldoc, bool cached ) //SLOT
     QString lyrics;
 
     QDomElement el = doc.documentElement();
-//     m_lyricAddUrl    = el.attribute( "add_url" );
-//     m_lyricSearchUrl = el.attribute( "search_url" )
+    m_lyricAddUrl    = el.attribute( "add_url" );
+    m_lyricSearchUrl = el.attribute( "search_url" );
+
+    m_lyricAddUrl.replace( "MAGIC_ARTIST", KURL::encode_string_no_slash( EngineController::instance()->bundle().artist() ) );
+    m_lyricAddUrl.replace( "MAGIC_TITLE", KURL::encode_string_no_slash( EngineController::instance()->bundle().title() ) );
+    m_lyricAddUrl.replace( "MAGIC_ALBUM", KURL::encode_string_no_slash( EngineController::instance()->bundle().album() ) );
+    m_lyricAddUrl.replace( "MAGIC_YEAR", KURL::encode_string_no_slash( QString::number( EngineController::instance()->bundle().year() ) ) );
+
+    m_lyricSearchUrl.replace( "MAGIC_ARTIST", KURL::encode_string_no_slash( '"' + EngineController::instance()->bundle().artist() + '"', 106 /*utf-8*/ ) );
+    m_lyricSearchUrl.replace( "MAGIC_TITLE", KURL::encode_string_no_slash( '"' + EngineController::instance()->bundle().title() + '"', 106 /*utf-8*/ ) );
+
 
     if ( el.tagName() == "suggestions" )
     {
