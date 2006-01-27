@@ -1,5 +1,5 @@
-kde_module_LTLIBRARIES = libamarok_ipod-mediadevice.la
-kde_services_DATA = amarok_ipod-mediadevice.desktop
+kde_module_LTLIBRARIES = libamarok_vfat-mediadevice.la
+kde_services_DATA = amarok_vfat-mediadevice.desktop
 
 INCLUDES = \
     -I$(top_srcdir)/amarok/src \
@@ -14,20 +14,20 @@ INCLUDES = \
 
 METASOURCES = AUTO
 
-libamarok_ipod_mediadevice_la_LIBADD  = \
+libamarok_vfat_mediadevice_la_LIBADD  = \
     $(top_builddir)/amarok/src/libamarok.la
 
-libamarok_ipod_mediadevice_la_LDFLAGS = \
+libamarok_vfat_mediadevice_la_LDFLAGS = \
     $(KDE_PLUGIN) \
     $(LIBGPOD_LIBS) \
     $(GOBJECT_LIBS) \
     $(all_libraries)
 
-libamarok_ipod_mediadevice_la_SOURCES = \
-    kiomediadevice.cpp \
-    ipodmediadevice.cpp
+libamarok_vfat_mediadevice_la_SOURCES = \
+    $(top_srcdir)/amarok/src/mediadevice/ipod/kiomediadevice.cpp \
+    vfatmediadevice.cpp
 
 noinst_HEADERS = \
     kiomediadevice.h \
-    ipodmediadevice.h
+    vfatmediadevice.h
 
