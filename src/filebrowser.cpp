@@ -344,13 +344,13 @@ FileBrowser::setFilter( const QString &text )
 void
 FileBrowser::dropped( const KFileItem* /*item*/, QDropEvent* event, const KURL::List &urls){
     //Do nothing right now
-
+    event->ignore();
     //Run into const problems iterating over the list, so copy it to a malleable one
     //(besides, need to filter for local giles)
     KURL::List list(urls);
 
-    for ( KURL::List::iterator it = list.begin(); it != list.end(); it ){
-        if ( !(*it).isLocalFile() )
+    for ( KURL::List::iterator it = list.begin(); it != list.end(); ){
+        if ( m_medium && !(*it).isLocalFile() )
             it = list.erase( it );
         else{
             debug() << "Dropped: " << (*it) << endl;
