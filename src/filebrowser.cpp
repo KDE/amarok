@@ -344,15 +344,19 @@ FileBrowser::setFilter( const QString &text )
 void
 FileBrowser::dropped( const KFileItem* /*item*/, QDropEvent* event, const KURL::List &urls){
     //Do nothing right now
-    QStringList list = urls.toStringList();
 
-    //why does this work, but the below doesn't?
-    for (QStringList::Iterator it = list.begin(); it != list.end(); ++it)
-        debug() << "Dropped: " << (*it) << endl;
+    //Run into const problems iterating over the list, so copy it to a malleable one
+    //(besides, need to filter for local giles)
+    KURL::List list(urls);
 
-    //foreach( urls.toStringList() ) {
-    //    debug() << "Dropped: " << (*it) << endl;
-    //}
+    for ( KURL::List::iterator it = list.begin(); it != list.end(); it ){
+        if ( !(*it).isLocalFile() )
+            it = list.erase( it );
+        else{
+            debug() << "Dropped: " << (*it) << endl;
+            it++;
+        }
+    }
 }
 
 //END Public Slots
