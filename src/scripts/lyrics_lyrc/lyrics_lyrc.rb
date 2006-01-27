@@ -157,8 +157,8 @@ end
 
 # fetchLyrics( "Cardigans", "Lovefool", "" )
 # fetchLyrics( "queen", "mama", "" )
-fetchLyrics( "station_rose_", "_dave_(original_1992)", "" )
-exit()
+# fetchLyrics( "station_rose_", "_dave_(original_1992)", "" )
+# exit()
 
 
 loop do
