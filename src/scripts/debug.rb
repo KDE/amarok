@@ -31,7 +31,7 @@ def debug_block()
     d = Debug_Block.new()
     funcname = /(`)(.*)(')/.match( caller( 1 )[0] )[2].to_s()
     t1 = Time.new
-    indent = " " * ( caller( 1 ).size - 1 ) * 2
+    indent = " " * ( caller( 3 ).size ) * 2
 
     ObjectSpace.define_finalizer( d, Proc.new {
         puts( "#{indent}END__: #{funcname}() - Took #{Time.new - t1}s" )
@@ -45,17 +45,17 @@ class Debug_Block
 end
 
 def debug( str )
-    indent = " " * ( caller( 1 ).size ) * 2
+    indent = " " * ( caller( 2 ).size ) * 2
     puts( "#{indent}[#{DEBUG_PREFIX}] #{str}" )
 end
 
 def warning( str )
-    indent = " " * ( caller( 1 ).size ) * 2
+    indent = " " * ( caller( 2 ).size ) * 2
     puts( "#{indent}WARNING: [#{DEBUG_PREFIX}] #{str}" )
 end
 
 def error( str )
-    indent = " " * ( caller( 1 ).size ) * 2
+    indent = " " * ( caller( 2 ).size ) * 2
     puts( "#{indent}ERROR: [#{DEBUG_PREFIX}] #{str}" )
 end
 
