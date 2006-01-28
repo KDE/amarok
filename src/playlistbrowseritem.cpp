@@ -178,6 +178,8 @@ void PlaylistCategory::setXml( const QDomElement &xml )
                 last = new PlaylistEntry( this, last, e );
             }
             else if ( e.tagName() == "party" ) {
+                if ( e.attribute( "name" ) == i18n("Random Mix") || e.attribute( "name" ) == i18n("Suggested Songs" ) )
+                    continue;
                 last = new PartyEntry( this, last, e );
             }
             else if ( e.tagName() == "podcast" )
