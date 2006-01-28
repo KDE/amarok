@@ -30,6 +30,7 @@ AMAROK_EXPORT_PLUGIN( VfatMediaDevice )
 #include <kapplication.h>
 #include <kconfig.h>           //download saveLocation
 #include <kiconloader.h>       //smallIcon
+#include <kio/netaccess.h>
 #include <kmessagebox.h>
 #include <kpopupmenu.h>
 #include <kurlrequester.h>     //downloadSelectedItems()
@@ -158,22 +159,50 @@ VfatMediaDevice::closeDevice()  //SLOT
 /// Renaming
 
 void
-VfatMediaDevice::renameItem( QListViewItem */*item*/ ) // SLOT
+VfatMediaDevice::renameItem( QListViewItem *item ) // SLOT
 {
 
-    return; //NOT IMPLEMENTED YET
+    if( !item )
+        return;
+
+    #define item static_cast<VfatMediaItem*>(item)
+
+    QCString src  = QFile::encodeName( getFullPath( item, false ) );
+    src.append( item->encodedName() );
+
+     //the rename line edit has already changed the QListViewItem text
+    QCString dest = QFile::encodeName( getFullPath( item ) );
+
+    debug() << "Renaming " << src << " to: " << dest << endl;
+
+    //TODO: do we want a progress dialog?  If so, set last false to true
+    if( KIO::NetAccess::file_move( KURL(src), KURL(dest), -1, false, false, false ) )
+        //rename failed
+        item->setText( 0, item->encodedName() );
+
+    #undef item
 
 }
 
 /// Creating a directory
 
 MediaItem *
-VfatMediaDevice::newDirectory( const QString &name, MediaItem */*parent*/ )
+VfatMediaDevice::newDirectory( const QString &name, MediaItem *parent )
 {
 
     if( !m_connected || name.isEmpty() ) return 0;
 
-    else return m_last; //NOT IMPLEMENTED YET
+    const QCString dirPath = QFile::encodeName( getFullPath( parent ) + "/" + name );
+    debug() << "Creating directory: " << dirPath << endl;
+
+    const KURL url( dirPath );
+
+    if( ! KIO::NetAccess::mkdir( url, m_parent ) ) //failed
+        return NULL;
+
+    m_tmpParent = parent;
+    addTrackToList( MediaItem::DIRECTORY, name );
+    return m_last;
 
 }
 
