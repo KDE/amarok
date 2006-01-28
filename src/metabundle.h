@@ -66,7 +66,8 @@ public:
     static const QString prettyColumnName( int index ); // i18ned, for display purposes
     static int columnIndex( const QString &name );
 
-    enum FileType { other, mp3, ogg, wma, mp4, ra, rv, rm, rmj, rmvb, flac };
+    // These values are stored on the Database, so, don't change the order. Only append new ones to the end.
+    enum FileType { other, mp3, ogg, wma, mp4, flac, ra, rv, rm, rmj, rmvb };
 
     //for the audioproperties
     static const int Undetermined = -2; /// we haven't yet read the tags
@@ -334,5 +335,5 @@ inline void MetaBundle::setScore( int score ) { m_score = score; }
 inline void MetaBundle::setFilesize( int bytes ) { m_filesize = bytes; }
 inline void MetaBundle::setFileType( int type ) { m_type = type; }
 
-inline bool MetaBundle::hasExtendedMetaInformation() const { return (m_type == mp3 || m_type == ogg || m_type== mp4); }
+inline bool MetaBundle::hasExtendedMetaInformation() const { return (m_type == mp3 || m_type == ogg || m_type== mp4 || m_type == flac ); }
 #endif

@@ -23,6 +23,7 @@
 #include <taglib/mpegfile.h>
 #include <taglib/oggfile.h>
 #include <taglib/vorbisfile.h>
+#include <taglib/flacfile.h>
 #include <taglib/textidentificationframe.h>
 #include <taglib/xiphcomment.h>
 #include <taglib/tbytevector.h>
@@ -319,6 +320,17 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
                 }
                 if ( !file->tag()->fieldListMap()[ "DISCNUMBER" ].isEmpty() ) {
                     disc = TStringToQString( file->tag()->fieldListMap()["DISCNUMBER"].front() ).stripWhiteSpace();
+                }
+            }
+        }
+        else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) ) {
+            m_type = flac;
+            if ( file->xiphComment() ) {
+                if ( !file->xiphComment()->fieldListMap()[ "COMPOSER" ].isEmpty() ) {
+                    setComposer( TStringToQString( file->xiphComment()->fieldListMap()["COMPOSER"].front() ).stripWhiteSpace() );
+                }
+                if ( !file->xiphComment()->fieldListMap()[ "DISCNUMBER" ].isEmpty() ) {
+                    disc = TStringToQString( file->xiphComment()->fieldListMap()["DISCNUMBER"].front() ).stripWhiteSpace();
                 }
             }
         }
@@ -852,6 +864,19 @@ MetaBundle::setExtendedTag( TagLib::File *file, int tag, const QString value ) {
             value.isEmpty() ?
                 oggFile->tag()->removeField( id ):
                 oggFile->tag()->addField( id, QStringToTString( value ), true );
+        }
+    }
+    else if ( m_type == flac ) {
+        switch( tag ) {
+            case ( composerTag ): id = "COMPOSER"; break;
+            case ( discNumberTag ): id = "DISCNUMBER"; break;
+        }
+        TagLib::FLAC::File *flacFile = dynamic_cast<TagLib::FLAC::File *>( file );
+        if ( flacFile && flacFile->xiphComment() )
+        {
+            value.isEmpty() ?
+            flacFile->xiphComment()->removeField( id ):
+            flacFile->xiphComment()->addField( id, QStringToTString( value ), true );
         }
     }
     else if ( m_type == mp4 ) {
