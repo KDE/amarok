@@ -2230,8 +2230,8 @@ MediaDevice::transferFiles()
             bundle = m_transferredItem->m_bundle;
         }
 
+        bool transcoding = false;
         MediaItem *item = trackExists( *bundle );
-
         if( item && m_transferredItem->m_playlistName == QString::null )
         {
             amaroK::StatusBar::instance()->longMessage( i18n( "Track already exists on media device: %1" ).
@@ -2242,41 +2242,53 @@ MediaDevice::transferFiles()
             m_parent->m_queue->itemCountChanged();
             continue;
         }
-
-        bool transcoding = false;
-        if( m_transcode &&
-                (!isPlayable( *bundle ) || (m_transcodeAlways && !isPreferredFormat( *bundle )) ) )
+        else if( !item )
         {
-            QString preferred = supportedFiletypes().isEmpty() ? "mp3" : supportedFiletypes().first();
-            debug() << "transcoding " << bundle->url() << " to " << preferred << endl;
-            KURL transcoded = MediaBrowser::instance()->transcode( bundle->url(), preferred );
-            if( transcoded.isEmpty() )
+            if( m_transcode &&
+                    (!isPlayable( *bundle ) || (m_transcodeAlways && !isPreferredFormat( *bundle )) ) )
             {
-                debug() << "transcoding failed" << endl;
+                QString preferred = supportedFiletypes().isEmpty() ? "mp3" : supportedFiletypes().first();
+                debug() << "transcoding " << bundle->url() << " to " << preferred << endl;
+                KURL transcoded = MediaBrowser::instance()->transcode( bundle->url(), preferred );
+                if( transcoded.isEmpty() )
+                {
+                    debug() << "transcoding failed" << endl;
+                }
+                else
+                {
+                    transcoding = true;
+                    bundle = new MetaBundle( transcoded );
+                }
             }
-            else
-            {
-                transcoding = true;
-                bundle = new MetaBundle( transcoded );
-            }
-        }
 
-        if( !isPlayable( *bundle ) )
-        {
-            amaroK::StatusBar::instance()->longMessage( i18n( "Track is not playable on media device: %1" ).arg( bundle->url().path() ),
-                    KDE::StatusBar::Sorry );
-            delete m_transferredItem;
-            m_transferredItem = 0;
-            m_parent->m_queue->itemCountChanged();
-            continue;
+            if( !isPlayable( *bundle ) )
+            {
+                amaroK::StatusBar::instance()->longMessage( i18n( "Track is not playable on media device: %1" ).arg( bundle->url().path() ),
+                        KDE::StatusBar::Sorry );
+                delete m_transferredItem;
+                m_transferredItem = 0;
+                m_parent->m_queue->itemCountChanged();
+                if( transcoding )
+                {
+                    delete bundle;
+                    bundle = 0;
+                }
+                continue;
+            }
+            debug() << "playable => copying" << endl;
+            item = copyTrackToDevice( *bundle, m_transferredItem->podcastInfo() );
         }
-        debug() << "playable => copying" << endl;
-        item = copyTrackToDevice( *bundle, m_transferredItem->podcastInfo() );
 
         if( !item )
+        {
+            debug() << "copying failed" << endl;
+            if( transcoding )
+            {
+                delete bundle;
+                bundle = 0;
+            }
             break;
-
-        debug() << "copied successfully" << endl;
+        }
 
         if( transcoding )
         {
