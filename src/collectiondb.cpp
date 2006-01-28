@@ -323,6 +323,7 @@ CollectionDB::createTables( const bool temporary )
                     "length INTEGER,"
                     "samplerate INTEGER,"
                     "filesize INTEGER,"
+                    "filetype INTEGER,"
                     "sampler BOOL );" )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
@@ -1232,7 +1233,9 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
     if ( !QFileInfo( bundle->url().path() ).isReadable() ) return false;
 
     QString command = "INSERT INTO tags_temp "
-                      "( url, dir, createdate, album, artist, genre, year, title, composer, comment, track, discnumber, sampler, length, bitrate, samplerate, filesize ) "
+                      "( url, dir, createdate, album, artist, genre, year, title, "
+                      "composer, comment, track, discnumber, sampler, length, bitrate, "
+                      "samplerate, filesize, filetype ) "
                       "VALUES ('";
 
     QString artist = bundle->artist();
@@ -1272,7 +1275,8 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
     command += QString::number( bundle->length() ) + ",";
     command += QString::number( bundle->bitrate() ) + ",";
     command += QString::number( bundle->sampleRate() ) + ",";
-    command += QString::number( bundle->filesize() ) + ")";
+    command += QString::number( bundle->filesize() ) + ",";
+    command += QString::number( bundle->fileType() ) + ")";
 
     //FIXME: currently there's no way to check if an INSERT query failed or not - always return true atm.
     // Now it might be possible as insert returns the rowid.
@@ -1333,7 +1337,7 @@ fillInBundle( QStringList values, MetaBundle &bundle )
     //TODO use this whenever possible
 
     // crash prevention
-    while( values.count() < 11 )
+    while( values.count() < 12 )
         values += "IF YOU CAN SEE THIS THERE IS A BUG!";
 
     QStringList::ConstIterator it = values.begin();
@@ -1349,8 +1353,9 @@ fillInBundle( QStringList values, MetaBundle &bundle )
     bundle.setTrack     ( (*it).toInt() ); ++it;
     bundle.setBitrate   ( (*it).toInt() ); ++it;
     bundle.setLength    ( (*it).toInt() ); ++it;
-    bundle.setSampleRate( (*it).toInt() );
-    bundle.setFilesize  ( (*it).toInt() );
+    bundle.setSampleRate( (*it).toInt() ); ++it;
+    bundle.setFilesize  ( (*it).toInt() ); ++it;
+    bundle.setFileType  ( (*it).toInt() );
 }
 
 bool
@@ -1359,7 +1364,8 @@ CollectionDB::bundleForUrl( MetaBundle* bundle )
     QStringList values = query( QString(
             "SELECT album.name, artist.name, genre.name, tags.title, "
             "year.name, tags.comment, tags.discnumber, tags.composer, "
-            "tags.track, tags.bitrate, tags.length, tags.samplerate, tags.filesize "
+            "tags.track, tags.bitrate, tags.length, tags.samplerate, "
+            "tags.filesize, tags.filetype "
             "FROM tags, album, artist, genre, year "
             "WHERE album.id = tags.album AND artist.id = tags.artist AND "
             "genre.id = tags.genre AND year.id = tags.year AND tags.url = '%1';" )
@@ -1403,6 +1409,7 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLength );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valSamplerate );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFilesize );
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFileType );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
 
             qb.addURLFilters( paths );
@@ -1427,6 +1434,7 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
                 b.setLength    ( (*++it).toInt() );
                 b.setSampleRate( (*++it).toInt() );
                 b.setFilesize  ( (*++it).toInt() );
+                b.setFileType  ( (*++it).toInt() );
                 b.setPath      (  *++it );
 
                 buns50.append( b );
@@ -1972,6 +1980,7 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
     command += "composer = '" + escapeString( bundle.composer() ) + "', ";
     command += "discnumber = '" + QString::number( bundle.discNumber() ) + "', ";
     command += "filesize = '" + QString::number( bundle.filesize() ) + "' ";
+    command += "fileType = '" + QString::number( bundle.fileType() ) + "' ";
     command += "WHERE url = '" + escapeString( url ) + "';";
 
     query( command );
@@ -3850,6 +3859,7 @@ QueryBuilder::valueName( int value )
     if ( value & valGenreID )     values += "genre";
     if ( value & valYearID )      values += "year";
     if ( value & valFilesize )    values += "filesize";
+    if ( value & valFileType )    values += "filetype";
 
     return values;
 }

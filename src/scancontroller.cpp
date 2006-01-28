@@ -308,6 +308,7 @@ ScanController::startElement( const QString&, const QString& localName, const QS
         bundle.setYear      ( attrs.value( "year" ).toInt() );
         bundle.setTrack     ( attrs.value( "track" ).toInt() );
         bundle.setDiscNumber( attrs.value( "discnumber" ).toInt() );
+        bundle.setFileType( attrs.value( "filetype" ).toInt() );
 
         if( attrs.value( "audioproperties" ) == "true" ) {
             bundle.setBitrate   ( attrs.value( "bitrate" ).toInt() );

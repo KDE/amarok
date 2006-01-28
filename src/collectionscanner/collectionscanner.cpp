@@ -277,6 +277,7 @@ CollectionScanner::readTags( const QString& path )
     attributes["year"]    = mb.year() ? QString::number( mb.year() ) : QString();
     attributes["track"]   = mb.track() ? QString::number( mb.track() ) : QString();
     attributes["discnumber"]   = mb.discNumber() ? QString::number( mb.discNumber() ) : QString();
+    attributes["filetype"]  = QString::number( mb.fileType() );
 
     if ( mb.audioPropertiesUndetermined() )
         attributes["audioproperties"] = "false";

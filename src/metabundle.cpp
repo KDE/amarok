@@ -118,6 +118,7 @@ MetaBundle::MetaBundle()
         , m_filesize( Undetermined )
         , m_exists( true )
         , m_isValidMedia( true )
+        , m_type( other )
 {
     init();
 }
@@ -137,6 +138,7 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
     , m_filesize( Undetermined )
     , m_exists( url.protocol() == "file" && QFile::exists( url.path() ) )
     , m_isValidMedia( false ) //will be updated
+    , m_type( other )
 {
     if ( m_exists ) {
         if ( !noCache )
@@ -173,6 +175,7 @@ MetaBundle::MetaBundle( const QString& title,
         , m_filesize( Undetermined )
         , m_exists( true )
         , m_isValidMedia( true )
+        , m_type( other )
 {
    if( title.contains( '-' ) ) {
        m_title  = title.section( '-', 1, 1 ).stripWhiteSpace();
@@ -298,6 +301,7 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
 
         QString disc;
         if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) ) {
+            m_type = mp3;
             if ( file->ID3v2Tag() ) {
                 if ( !file->ID3v2Tag()->frameListMap()["TPOS"].isEmpty() ) {
                     disc = TStringToQString( file->ID3v2Tag()->frameListMap()["TPOS"].front()->toString() ).stripWhiteSpace();
@@ -308,6 +312,7 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
             }
         }
         else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) ) {
+            m_type = ogg;
             if ( file->tag() ) {
                 if ( !file->tag()->fieldListMap()[ "COMPOSER" ].isEmpty() ) {
                     setComposer( TStringToQString( file->tag()->fieldListMap()["COMPOSER"].front() ).stripWhiteSpace() );
@@ -318,6 +323,7 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
             }
         }
         else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) ) {
+            m_type = mp4;
             TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
             if( mp4tag )
             {
@@ -813,9 +819,7 @@ void
 MetaBundle::setExtendedTag( TagLib::File *file, int tag, const QString value ) {
     char *id = 0;
 
-    QString ext = type();
-
-    if ( ext == "mp3" ) {
+    if ( m_type == mp3 ) {
         switch( tag ) {
             case ( composerTag ): id = "TCOM"; break;
             case ( discNumberTag ): id = "TPOS"; break;
@@ -837,7 +841,7 @@ MetaBundle::setExtendedTag( TagLib::File *file, int tag, const QString value ) {
             }
         }
     }
-    else if ( ext == "ogg" ) {
+    else if ( m_type == ogg ) {
         switch( tag ) {
             case ( composerTag ): id = "COMPOSER"; break;
             case ( discNumberTag ): id = "DISCNUMBER"; break;
@@ -850,7 +854,7 @@ MetaBundle::setExtendedTag( TagLib::File *file, int tag, const QString value ) {
                 oggFile->tag()->addField( id, QStringToTString( value ), true );
         }
     }
-    else if ( ext == "mp4" ) {
+    else if ( m_type == mp4 ) {
         TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
         if( mp4tag )
         {

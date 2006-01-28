@@ -66,6 +66,8 @@ public:
     static const QString prettyColumnName( int index ); // i18ned, for display purposes
     static int columnIndex( const QString &name );
 
+    enum FileType { other, mp3, ogg, wma, mp4, ra, rv, rm, rmj, rmvb, flac };
+
     //for the audioproperties
     static const int Undetermined = -2; /// we haven't yet read the tags
     static const int Irrelevant   = -1; /// not applicable to this stream/media type, eg length for http streams
@@ -113,6 +115,8 @@ public:
     bool checkExists();
 
     bool isStream() const;
+
+    int fileType() const;
 
     bool hasExtendedMetaInformation() const;
 
@@ -184,6 +188,7 @@ public: //modifiers
     virtual void setPlayCount( int playcount );
     virtual void setLastPlay( uint lastplay );
     virtual void setFilesize( int bytes );
+    virtual void setFileType( int type );
     virtual void updateFilesize();
 
 public: //static helper functions
@@ -221,6 +226,8 @@ protected:
     int  m_playCount;
     uint m_lastPlay;
     int  m_filesize;
+
+    int m_type;
 
     bool m_exists;
     bool m_isValidMedia;
@@ -264,6 +271,7 @@ inline int MetaBundle::length()     const { return m_length > 0 ? m_length : 0; 
 inline int MetaBundle::bitrate()    const { return m_bitrate == Undetermined ? 0 : m_bitrate; }
 inline int MetaBundle::sampleRate() const { return m_sampleRate == Undetermined ? 0 : m_sampleRate; }
 inline int MetaBundle::filesize()   const { return m_filesize == Undetermined ? 0 : m_filesize; }
+inline int MetaBundle::fileType()   const { return m_type; }
 
 inline KURL     MetaBundle::url()        const { return m_url; }
 inline QString  MetaBundle::filename()   const { return m_url.fileName(); }
@@ -324,9 +332,7 @@ inline void MetaBundle::setLastPlay( uint lastplay ) { m_lastPlay = lastplay; }
 inline void MetaBundle::setRating( int rating ) { m_rating = rating; }
 inline void MetaBundle::setScore( int score ) { m_score = score; }
 inline void MetaBundle::setFilesize( int bytes ) { m_filesize = bytes; }
+inline void MetaBundle::setFileType( int type ) { m_type = type; }
 
-inline bool MetaBundle::hasExtendedMetaInformation() const {
-    QString ext = type();
-    return ( ext == "mp3" || ext == "ogg" || ext == "mp4" );
-}
+inline bool MetaBundle::hasExtendedMetaInformation() const { return (m_type == mp3 || m_type == ogg || m_type== mp4); }
 #endif

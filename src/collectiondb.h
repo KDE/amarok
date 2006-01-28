@@ -352,7 +352,7 @@ class CollectionDB : public QObject, public EngineObserver
     private:
         //bump DATABASE_VERSION whenever changes to the table structure are made.
         // This erases tags, album, artist, genre, year, images, directory and related_artists tables.
-        static const int DATABASE_VERSION = 23;
+        static const int DATABASE_VERSION = 24;
         // Persistent Tables hold data that is somehow valuable to the user, and can't be erased when rescaning.
         // When bumping this, write code to convert the data!
         static const int DATABASE_PERSISTENT_TABLES_VERSION = 3;
@@ -422,7 +422,8 @@ class QueryBuilder
                                valPercentage = 8192, valArtistID = 16384, valAlbumID = 32768,
                                valYearID = 65536, valGenreID = 131072, valDirectory = 262144,
                                valLyrics = 524288, valRating = 1048576, valComposer = 2097152,
-                               valDiscNumber = 4194304, valFilesize = 8388608, valDummy = 0 };
+                               valDiscNumber = 4194304, valFilesize = 8388608, valFileType=16777216,
+                               valDummy = 0 };
         enum qBuilderFunctions  { funcCount = 1, funcMax = 2, funcMin = 4, funcAvg = 8, funcSum = 16 };
 
         enum qBuilderFilter  { modeNormal = 0, modeLess = 1, modeGreater = 2, modeEndMatch = 3 };
