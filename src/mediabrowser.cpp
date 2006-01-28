@@ -1260,6 +1260,7 @@ MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/, bool construc
         {
             device->m_uniqueId = medium->id();
             device->m_deviceNode = medium->deviceNode();
+            device->m_medium = const_cast<Medium *>(medium);
             addDevice( device );
             if( m_currentDevice == m_devices.begin()
                     || m_currentDevice == m_devices.end() )
@@ -1691,6 +1692,7 @@ MediaDevice::MediaDevice()
     : amaroK::Plugin()
     , m_parent( NULL )
     , m_view( NULL )
+    , m_medium( NULL )
     , m_wait( false )
     , m_requireMount( false )
     , m_hasPodcast( false )

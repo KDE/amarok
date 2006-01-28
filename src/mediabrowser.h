@@ -458,7 +458,7 @@ class MediaDevice : public QObject, public amaroK::Plugin
          * @return -1 on failure, number of files deleted otherwise
          */
         virtual int deleteItemFromDevice( MediaItem *item, bool onlyPlayed=false ) = 0;
-        
+
         /**
          * Abort the currently active track transfer
          */
@@ -489,6 +489,7 @@ class MediaDevice : public QObject, public amaroK::Plugin
         KShellProcess   *sysProc;
         MediaBrowser    *m_parent;
         MediaView       *m_view;
+        Medium          *m_medium;
         bool             m_wait;
         bool             m_waitForDeletion;
         bool             m_copyFailed;

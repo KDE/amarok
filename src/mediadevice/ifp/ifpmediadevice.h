@@ -59,7 +59,7 @@ class IfpMediaDevice : public MediaDevice
 
         void              addToPlaylist( MediaItem *, MediaItem *, QPtrList<MediaItem> ) {}
         MediaItem        *newPlaylist( const QString &, MediaItem *, QPtrList<MediaItem> ) { return 0; }
-        
+
         void              cancelTransfer() {} // we don't have to do anything, we check m_cancelled
 
     protected slots:

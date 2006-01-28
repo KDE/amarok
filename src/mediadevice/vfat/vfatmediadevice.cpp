@@ -22,6 +22,7 @@
 AMAROK_EXPORT_PLUGIN( VfatMediaDevice )
 
 #include "debug.h"
+#include "medium.h"
 #include "metabundle.h"
 #include "collectiondb.h"
 #include "statusbar/statusbar.h"
@@ -157,7 +158,7 @@ VfatMediaDevice::closeDevice()  //SLOT
 /// Renaming
 
 void
-VfatMediaDevice::renameItem( QListViewItem *item ) // SLOT
+VfatMediaDevice::renameItem( QListViewItem */*item*/ ) // SLOT
 {
 
     return; //NOT IMPLEMENTED YET
@@ -167,7 +168,7 @@ VfatMediaDevice::renameItem( QListViewItem *item ) // SLOT
 /// Creating a directory
 
 MediaItem *
-VfatMediaDevice::newDirectory( const QString &name, MediaItem *parent )
+VfatMediaDevice::newDirectory( const QString &name, MediaItem */*parent*/ )
 {
 
     if( !m_connected || name.isEmpty() ) return 0;
@@ -187,7 +188,7 @@ VfatMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> items
 /// Uploading
 
 MediaItem *
-VfatMediaDevice::copyTrackToDevice( const MetaBundle& bundle, const PodcastInfo* /*info*/ )
+VfatMediaDevice::copyTrackToDevice( const MetaBundle& /*bundle*/, const PodcastInfo* /*info*/ )
 {
     if( !m_connected ) return 0;
 
@@ -218,18 +219,6 @@ VfatMediaDevice::downloadSelectedItems()
     return;  //NOT IMPLEMENTED YET
 }
 
-int
-VfatMediaDevice::filetransferCallback( void *pData, struct vfat_transfer_status *progress )
-{
-    return 0;  //NOT IMPLEMENTED YET
-}
-int
-VfatMediaDevice::setProgressInfo( struct vfat_transfer_status *progress )
-{
-    return 0;  //NOT IMPLEMENTED YET
-}
-
-
 /// Deleting
 
 int
@@ -243,25 +232,25 @@ VfatMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/ )
 /// Directory Reading
 
 void
-VfatMediaDevice::expandItem( QListViewItem *item ) // SLOT
+VfatMediaDevice::expandItem( QListViewItem */*item*/ ) // SLOT
 {
     return;  //NOT IMPLEMENTED YET
 }
 
 void
-VfatMediaDevice::listDir( const QString &dir )
+VfatMediaDevice::listDir( const QString &/*dir*/ )
 {
     return;  //NOT IMPLEMENTED YET
 }
 
 int
-VfatMediaDevice::listDirCallback( void *pData, int type, const char *name, int size )
+VfatMediaDevice::listDirCallback( void */*pData*/, int /*type*/, const char */*name*/, int /*size*/ )
 {
     return 0;  //NOT IMPLEMENTED YET
 }
 
 int
-VfatMediaDevice::addTrackToList( int type, QString name, int /*size*/ )
+VfatMediaDevice::addTrackToList( int /*type*/, QString /*name*/, int /*size*/ )
 {
     return 0; //NOT IMPLEMENTED YET
 }
@@ -269,7 +258,7 @@ VfatMediaDevice::addTrackToList( int type, QString name, int /*size*/ )
 /// Capacity, in kB
 
 bool
-VfatMediaDevice::getCapacity( unsigned long *total, unsigned long *available )
+VfatMediaDevice::getCapacity( unsigned long */*total*/, unsigned long */*available*/ )
 {
     if( !m_connected ) return false;
 
@@ -283,13 +272,26 @@ VfatMediaDevice::getFullPath( const QListViewItem *item, const bool getFilename 
 {
     if( !item ) return QString::null;
 
-    return QString("Not implemented yet");
+    QString path;
+
+    if (getFilename) path = item->text(0);
+
+    QListViewItem *parent = item->parent();
+    while( parent )
+    {
+        path.prepend( "/" );
+        path.prepend( parent->text(0) );
+        parent = parent->parent();
+    }
+    path.prepend( m_medium->mountPoint() );
+
+    return path;
 
 }
 
 
 void
-VfatMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
+VfatMediaDevice::rmbPressed( QListViewItem* /*qitem*/, const QPoint& /*point*/, int )
 {
     return; //NOT IMPLEMENTED YET
 }

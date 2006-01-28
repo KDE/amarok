@@ -1,6 +1,7 @@
 /***************************************************************************
- * copyright            : (C) 2005 Seb Ruiz <me@sebruiz.net>               *
- *                                                                         *
+ * copyright            : (C) 2006 Jeff Mitchell <kde-dev@emailgoeshere.com *
+ *                        (C) 2005 Seb Ruiz <me@sebruiz.net>                *
+ *                                                                          *
  * With some code helpers from KIO_VFAT                                     *
  *                        (c) 2004 Thomas Loeber <vfat@loeber1.de>          *
  ***************************************************************************/
@@ -54,7 +55,7 @@ class VfatMediaDevice : public MediaDevice
 
         void              addToPlaylist( MediaItem *, MediaItem *, QPtrList<MediaItem> ) {}
         MediaItem        *newPlaylist( const QString &, MediaItem *, QPtrList<MediaItem> ) { return 0; }
-        
+
         void              cancelTransfer() {} // we don't have to do anything, we check m_cancelled
 
     protected slots:
@@ -80,8 +81,8 @@ class VfatMediaDevice : public MediaDevice
         int               addTrackToList( int type, QString name, int size=0 );
 
         // miscellaneous methods
-        static int        filetransferCallback( void *pData, struct vfat_transfer_status *progress );
-        int               setProgressInfo( struct vfat_transfer_status *progress );
+        //static int        filetransferCallback( void *pData, struct vfat_transfer_status *progress );
+        //int               setProgressInfo( struct vfat_transfer_status *progress );
         // Will iterate over parents and add directory name to the item.
         // getFilename = false will return only parent structure, as opposed to returning the filename as well
         QString           getFullPath( const QListViewItem *item, const bool getFilename = true );
