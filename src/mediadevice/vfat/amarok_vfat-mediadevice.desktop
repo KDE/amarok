@@ -1,6 +1,10 @@
 [Desktop Entry]
 Type=Service
 Name=Generic VFAT Media Device
+Name[da]=Generisk VFAT-medieenhed
+Name[ga]=Gléas Meán Ginearálta VFAT
+Name[pt]=Dispositivo Multimédia VFAT Genérico
+Name[pt_BR]=Dispositivo Multimédia VFAT Genérico
 X-KDE-Library=libamarok_vfat-mediadevice
 Comment=Plugin for amaroK
 Comment[bg]=Приставка за amaroK
