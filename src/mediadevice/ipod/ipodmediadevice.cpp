@@ -228,8 +228,10 @@ IpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bu
         track->filetype = g_strdup( type.utf8() );
     }
 
+    track->composer = g_strdup( bundle.composer().utf8() );
     track->comment = g_strdup( bundle.comment().utf8() );
     track->track_nr = bundle.track();
+    track->cd_nr = bundle.discNumber();
     track->year = bundle.year();
     track->size = QFile( pathname ).size();
     track->bitrate = bundle.bitrate();
@@ -316,6 +318,7 @@ IpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bu
 void
 IpodMediaDevice::synchronizeDevice()
 {
+    debug() << "Syncing iPod!" << endl;
     writeITunesDB();
 }
 
@@ -323,7 +326,7 @@ MediaItem *
 IpodMediaDevice::trackExists( const MetaBundle& bundle )
 {
     IpodMediaItem *item = getTrack( bundle.artist(),
-            bundle.album().isEmpty() ? i18n( "Unknown" ) : bundle.album(),
+            bundle.album(),
             bundle.title(),
             bundle.track() );
 
@@ -757,7 +760,7 @@ IpodMediaDevice::openDevice( bool silent )
                 {
                     debug() << "failed to create hash dir " << real << endl;
                     amaroK::StatusBar::instance()->longMessage(
-                            i18n("Media device: Failed to create directory").arg(real),
+                            i18n("Media device: Failed to create directory %1").arg(real),
                             KDE::StatusBar::Error );
                     return false;
                 }
@@ -858,8 +861,6 @@ IpodMediaDevice::openDevice( bool silent )
 bool
 IpodMediaDevice::closeDevice()  //SLOT
 {
-    debug() << "Syncing iPod!" << endl;
-
     m_view->clear();
     m_podcastItem = 0;
     m_playlistItem = 0;
@@ -1348,7 +1349,7 @@ IpodMediaDevice::determineURLOnDevice(const MetaBundle &bundle)
             }
         }
         QString filename;
-        filename.sprintf( ":kpod%d.%s", num, type.latin1() );
+        filename.sprintf( ":kpod%07d.%s", num, type.latin1() );
         trackpath = dirname + filename;
         QFileInfo finfo(realPath(trackpath.latin1()));
         exists = finfo.exists();
