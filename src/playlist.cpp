@@ -2420,7 +2420,6 @@ Playlist::eventFilter( QObject *o, QEvent *e )
 
         KPopupMenu popup;
         popup.insertItem( i18n("&Hide Column"), HIDE ); //TODO
-        popup.insertItem( i18n("&Select Columns..."), SELECT );
 
         KPopupMenu sub;
         sub.setCheckable( true );
@@ -2437,9 +2436,11 @@ Playlist::eventFilter( QObject *o, QEvent *e )
         //sub.insertSeparator();
         //sub.insertItem( i18n("&Add Custom Column..."), CUSTOM ); //TODO
 
-        popup.insertItem( i18n("&Add A Column" ), &sub );
+        popup.insertItem( i18n("&Add Column" ), &sub );
 
-        popup.insertItem( i18n("Smart Column &Resizing"), SMARTRESIZING );
+        popup.insertItem( i18n("&Select Columns..."), SELECT );
+
+        popup.insertItem( i18n("&Fit to Width"), SMARTRESIZING );
         popup.setItemChecked( SMARTRESIZING, m_smartResizing );
 
         int col = popup.exec( static_cast<QMouseEvent *>(e)->globalPos() );
