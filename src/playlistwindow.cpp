@@ -916,7 +916,7 @@ DynamicBar::DynamicBar(QWidget* parent)
     QWidget *spacer = new QWidget( this );
     setStretchFactor( spacer, 10 );
 
-    KPushButton* editDynamicButton = new KPushButton( i18n("Edit this Dynamic Mode"), this, "DynamicModeEdit" );
+    KPushButton* editDynamicButton = new KPushButton( i18n("Edit this Dynamic Playlist"), this, "DynamicModeEdit" );
     connect( editDynamicButton, SIGNAL(clicked()), Party::instance(), SLOT(editActiveParty()) );
 
     KPushButton* repopButton = new KPushButton( i18n("Repopulate"), this, "DynamicModeRepopulate" );
