@@ -30,6 +30,8 @@ AMAROK_EXPORT_PLUGIN( VfatMediaDevice )
 #include <kapplication.h>
 #include <kconfig.h>           //download saveLocation
 #include <kiconloader.h>       //smallIcon
+#include <kio/job.h>
+#include <kio/jobclasses.h>
 #include <kio/netaccess.h>
 #include <kmessagebox.h>
 #include <kpopupmenu.h>
@@ -221,8 +223,8 @@ VfatMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> items
         const KURL srcurl(src);
         const KURL desturl(dest);
 
-        if( !KIO::NetAccess::move( srcurl, desturl, 0 ) ) //failed
-            continue;
+        if ( KIO::NetAccess::file_move( srcurl, desturl, -1, false, false, m_parent ) )
+            debug() << "Failed moving " << src << " to " << dest << endl;
 
         m_view->takeItem( *it );
         directory->insertItem( *it );
@@ -232,7 +234,7 @@ VfatMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> items
 /// Uploading
 
 MediaItem *
-VfatMediaDevice::copyTrackToDevice( const MetaBundle& bundle, const PodcastInfo* info )
+VfatMediaDevice::copyTrackToDevice( const MetaBundle& bundle, const PodcastInfo* /*info*/ )
 {
     if( !m_connected ) return 0;
 
@@ -245,7 +247,7 @@ VfatMediaDevice::copyTrackToDevice( const MetaBundle& bundle, const PodcastInfo*
 
     kapp->processEvents( 100 );
 
-    if( KIO::NetAccess::copy( srcurl, desturl, m_parent ) ) //success
+    if( KIO::NetAccess::file_copy( srcurl, desturl, -1, false, false, m_parent) ) //success
     {
         addTrackToList( MediaItem::TRACK, newFilename );
         return m_last;
@@ -260,7 +262,40 @@ VfatMediaDevice::copyTrackToDevice( const MetaBundle& bundle, const PodcastInfo*
 void
 VfatMediaDevice::downloadSelectedItems()
 {
-    return;  //NOT IMPLEMENTED YET
+//     KConfig *config = amaroK::config( "MediaDevice" );
+//     QString save = config->readEntry( "DownloadLocation", QString::null );  //restore the save directory
+    QString save = QString::null;
+
+    KURLRequesterDlg dialog( save, 0, 0 );
+    dialog.setCaption( kapp->makeStdCaption( i18n( "Choose a Download Directory" ) ) );
+    dialog.urlRequester()->setMode( KFile::Directory | KFile::ExistingOnly );
+    dialog.exec();
+
+    KURL destDir = dialog.selectedURL();
+    if( destDir.isEmpty() )
+        return;
+
+    destDir.adjustPath( 1 ); //add trailing slash
+
+//     if( save != destDir.path() )
+//         config->writeEntry( "DownloadLocation", destDir.path() );
+
+    KIO::CopyJob *result;
+
+    QListViewItemIterator it( m_view, QListViewItemIterator::Selected );
+    for( ; it.current(); ++it )
+    {
+        QCString dest = QFile::encodeName( destDir.path() + (*it)->text(0) );
+        QCString src = QFile::encodeName( getFullPath( *it ) );
+
+        const KURL srcurl(src);
+        const KURL desturl(dest);
+        //TODO: Error handling here?
+        //TODO: Make async?  But where the hell is KIO::file_copy?
+        result = KIO::copy( srcurl, desturl, true );
+    }
+
+    hideProgress();
 }
 
 /// Deleting
