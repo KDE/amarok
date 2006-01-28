@@ -78,6 +78,7 @@ Party::~Party()
 void
 Party::loadConfig( PartyEntry *config )
 {
+    AmarokConfig::setDynamicPlaylist( config->title() );
     m_currentParty = config;
 
     AmarokConfig::setDynamicCustomList( config->items() );

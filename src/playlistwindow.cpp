@@ -910,13 +910,13 @@ DynamicBar::DynamicBar(QWidget* parent)
     : QHBox( parent, "DynamicModeStatusBar" )
 {
     setSpacing( KDialog::spacingHint() );
-    new QLabel( i18n( "Dynamic Mode: " ), this );
+    new QLabel( i18n( "Dynamic Playlist: " ), this );
     m_titleLabel = new QLabel( this, "DynamicModeTitle" );
 
     QWidget *spacer = new QWidget( this );
     setStretchFactor( spacer, 10 );
 
-    KPushButton* editDynamicButton = new KPushButton( i18n("Edit this Dynamic Playlist"), this, "DynamicModeEdit" );
+    KPushButton* editDynamicButton = new KPushButton( i18n("Edit Playlist"), this, "DynamicModeEdit" );
     connect( editDynamicButton, SIGNAL(clicked()), Party::instance(), SLOT(editActiveParty()) );
 
     KPushButton* repopButton = new KPushButton( i18n("Repopulate"), this, "DynamicModeRepopulate" );

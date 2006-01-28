@@ -106,6 +106,10 @@
         <whatsthis>Whether to mark items in the playlist as history once played.</whatsthis>
         <default>false</default>
     </entry>
+    <entry key="Dynamic Playlist" type="String">
+        <label>Dynamic Playlist</label>
+        <whatsthis>Name of current Dynamic Playlist.</whatsthis>
+    </entry>
     <entry key="Show Tray Icon" type="Bool">
         <label>Whether to show icon in system tray</label>
         <whatsthis>Enable/Disable tray icon for amaroK.</whatsthis>

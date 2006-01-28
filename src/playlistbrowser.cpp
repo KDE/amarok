@@ -173,18 +173,32 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     // must be loaded after streams
     m_podcastCategory = loadPodcasts();
 
-    QStringList playlists = AmarokConfig::dynamicCustomList();
+    if ( AmarokConfig::dynamicMode() ) {
 
-    for( uint i=0; i < playlists.count(); i++ )
-    {
-        QListViewItem *item = m_listview->findItem( playlists[i], 0, Qt::ExactMatch );
-        if( item )
-        {
-            m_dynamicEntries.append( item );
-            if( item->rtti() == PlaylistEntry::RTTI )
-                static_cast<PlaylistEntry*>( item )->setDynamic( true );
-            if( item->rtti() == SmartPlaylist::RTTI )
-                static_cast<SmartPlaylist*>( item )->setDynamic( true );
+        bool playlistFound = false;
+        for ( QListViewItem *item = m_dynamicCategory->firstChild(); item; item = item->nextSibling() ) {
+            PartyEntry *party = dynamic_cast<PartyEntry *>( item );
+            if ( party && party->title() == AmarokConfig::dynamicPlaylist() ) {
+                Party::instance()->loadConfig( party );
+                playlistFound = true;
+                break;
+            }
+        }
+        if ( playlistFound ) {
+            QStringList playlists = AmarokConfig::dynamicCustomList();
+
+            for( uint i=0; i < playlists.count(); i++ )
+            {
+                QListViewItem *item = m_listview->findItem( playlists[i], 0, Qt::ExactMatch );
+                if( item )
+                {
+                    m_dynamicEntries.append( item );
+                    if( item->rtti() == PlaylistEntry::RTTI )
+                        static_cast<PlaylistEntry*>( item )->setDynamic( true );
+                    if( item->rtti() == SmartPlaylist::RTTI )
+                        static_cast<SmartPlaylist*>( item )->setDynamic( true );
+                }
+            }
         }
     }
 
