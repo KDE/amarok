@@ -12,14 +12,14 @@
 
 require "net/http"
 require "rexml/document"
-require File.dirname( File.expand_path( __FILE__ ) ) + "/../ruby_debug/debug.rb"
+# require File.dirname( File.expand_path( __FILE__ ) ) + "/../ruby_debug/debug.rb"
 require "uri"
 
 @app_name = "Lyrics_Lyrc"
 
 
 def showLyrics( lyrics )
-    debug_block
+#     debug_block
 
     # Important, otherwise we might execute arbitrary nonsense in the DCOP call
     lyrics.gsub!( '"', "'" )
@@ -30,7 +30,7 @@ end
 
 
 def parseLyrics( lyrics )
-    debug_block
+#     debug_block
 
     if lyrics.include?( "<p><hr" )
         lyrics = lyrics[0, lyrics.index( "<p><hr" )]
@@ -63,7 +63,7 @@ end
 
 
 def parseSuggestions( lyrics )
-    debug_block
+#     debug_block
 
     lyrics = lyrics[lyrics.index( "Suggestions : " )..lyrics.index( "<br><br>" )]
 
@@ -100,7 +100,7 @@ end
 
 
 def fetchLyrics( artist, title, url )
-    debug_block
+#     debug_block
 
     proxy_host = nil
     proxy_port = nil
@@ -113,7 +113,7 @@ def fetchLyrics( artist, title, url )
     if url.empty?()
         response = h.get( "/en/tema1en.php?artist=#{artist}&songname=#{title}" )
     else
-        debug "Fetching by URL: #{url}"
+#         debug "Fetching by URL: #{url}"
         response = h.get( "/en/#{url}" )
     end
 
