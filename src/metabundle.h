@@ -114,7 +114,6 @@ public:
 
     bool isStream() const;
 
-    int fileType();
     bool hasExtendedMetaInformation() const;
 
     void copyFrom( const MetaBundle& bundle );
