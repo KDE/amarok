@@ -19,6 +19,7 @@ extern "C" {
 class QCheckBox;
 class QLabel;
 class QLineEdit;
+class QFile;
 
 class IpodMediaItem;
 
@@ -77,6 +78,7 @@ class IpodMediaDevice : public KioMediaDevice
 
     private:
         void              writeITunesDB();
+        bool              createLockFile( const QString &mountpoint );
         IpodMediaItem    *addTrackToView(Itdb_Track *track);
         void              addPlaylistToView(Itdb_Playlist *playlist);
         void              playlistFromItem(IpodMediaItem *item);
@@ -113,7 +115,7 @@ class IpodMediaDevice : public KioMediaDevice
         QLabel           *m_mntcmdLabel;
         QLineEdit        *m_mntpntEdit;
         QLabel           *m_mntpntLabel;
-
+        QFile            *m_lockFile;
 };
 
 #endif

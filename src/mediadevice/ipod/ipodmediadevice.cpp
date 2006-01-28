@@ -123,6 +123,7 @@ IpodMediaDevice::IpodMediaDevice()
     : KioMediaDevice()
     , m_masterPlaylist( 0 )
     , m_podcastPlaylist( 0 )
+    , m_lockFile( 0 )
 {
     m_dbChanged = false;
     m_itdb = 0;
@@ -560,6 +561,35 @@ IpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
 }
 
 bool
+IpodMediaDevice::createLockFile( const QString &mountpoint )
+{
+    m_lockFile = new QFile( QFile::encodeName(m_mntpnt + "/amaroK.lock") );
+    QString msg;
+    bool ok = true;
+    if( m_lockFile->exists() )
+    {
+        ok = false;
+        msg = i18n( "Media Device: iPod mounted at %1 already locked! " ).arg( mountpoint );
+        msg += i18n( "If you are sure that this is an error, then remove the file %1 and try again." ).arg( mountpoint + "/amaroK.lock" );
+
+    }
+    else if( !m_lockFile->open( IO_WriteOnly ) )
+    {
+        ok = false;
+        msg = i18n( "Media Device: failed to create lockfile on iPod mounted at %1" ).arg(mountpoint);
+    }
+
+    if( ok )
+        return true;
+
+    delete m_lockFile;
+    m_lockFile = 0;
+
+    amaroK::StatusBar::instance()->longMessage( msg, KDE::StatusBar::Sorry );
+    return false;
+}
+
+bool
 IpodMediaDevice::openDevice( bool silent )
 {
     m_isShuffle = true;
@@ -574,6 +604,9 @@ IpodMediaDevice::openDevice( bool silent )
     // if existing but empty create initial directories and empty database
     if( !m_itdb && !m_mntpnt.isEmpty() )
     {
+        if( !createLockFile( m_mntpnt ) )
+            return false;
+
         m_itdb = itdb_parse( QFile::encodeName(m_mntpnt), &err );
         if( err )
             g_error_free(err);
@@ -634,12 +667,13 @@ IpodMediaDevice::openDevice( bool silent )
     }
     else
     {
+        QString mountpoint;
         if ( !m_itdb ) {
             // try to find a mounted ipod
             KMountPoint::List currentmountpoints = KMountPoint::currentMountPoints();
             KMountPoint::List::Iterator mountiter = currentmountpoints.begin();
             for(; mountiter != currentmountpoints.end(); ++mountiter) {
-                QString mountpoint = (*mountiter)->mountPoint();
+                mountpoint = (*mountiter)->mountPoint();
                 QString device = (*mountiter)->mountedFrom();
 
                 // only care about scsi devices (/dev/sd at the beginning or scsi somewhere in its name)
@@ -663,6 +697,13 @@ IpodMediaDevice::openDevice( bool silent )
         if(!m_itdb)
         {
             debug() << "failed to find mounted iPod" << endl;
+            return false;
+        }
+
+        if( !createLockFile( mountpoint ) )
+        {
+            itdb_free( m_itdb );
+            m_itdb = 0;
             return false;
         }
     }
@@ -861,6 +902,13 @@ IpodMediaDevice::openDevice( bool silent )
 bool
 IpodMediaDevice::closeDevice()  //SLOT
 {
+    if( m_lockFile )
+    {
+        m_lockFile->close();
+        m_lockFile->remove();
+        delete m_lockFile;
+        m_lockFile = 0;
+    }
     m_view->clear();
     m_podcastItem = 0;
     m_playlistItem = 0;
