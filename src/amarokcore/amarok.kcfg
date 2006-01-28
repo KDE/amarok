@@ -506,7 +506,7 @@
         <label>Whether playlists should be added while scanning</label>
         <default>true</default>
     </entry>
-    <entry key="Collection Folders" type="StringList">
+    <entry key="Collection Folders" type="PathList">
         <label>List of folders in the Collection</label>
     </entry>
 </group>
