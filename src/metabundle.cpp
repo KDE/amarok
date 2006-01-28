@@ -118,7 +118,6 @@ MetaBundle::MetaBundle()
         , m_filesize( Undetermined )
         , m_exists( true )
         , m_isValidMedia( true )
-        , m_type( Undetermined )
 {
     init();
 }
@@ -138,7 +137,6 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
     , m_filesize( Undetermined )
     , m_exists( url.protocol() == "file" && QFile::exists( url.path() ) )
     , m_isValidMedia( false ) //will be updated
-    , m_type( Undetermined )
 {
     if ( m_exists ) {
         if ( !noCache )
@@ -175,7 +173,6 @@ MetaBundle::MetaBundle( const QString& title,
         , m_filesize( Undetermined )
         , m_exists( true )
         , m_isValidMedia( true )
-        , m_type( Undetermined )
 {
    if( title.contains( '-' ) ) {
        m_title  = title.section( '-', 1, 1 ).stripWhiteSpace();
@@ -299,11 +296,8 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
     /* As mpeg implementation on TagLib uses a Tag class that's not defined on the headers,
        we have to cast the files, not the tags! */
 
-//        if ( dynamic_cast<TagLib::WMA::Tag *>( tag ) )
-//            m_type = wma;
         QString disc;
         if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) ) {
-            m_type = mp3;
             if ( file->ID3v2Tag() ) {
                 if ( !file->ID3v2Tag()->frameListMap()["TPOS"].isEmpty() ) {
                     disc = TStringToQString( file->ID3v2Tag()->frameListMap()["TPOS"].front()->toString() ).stripWhiteSpace();
@@ -314,7 +308,6 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
             }
         }
         else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) ) {
-            m_type = ogg;
             if ( file->tag() ) {
                 if ( !file->tag()->fieldListMap()[ "COMPOSER" ].isEmpty() ) {
                     setComposer( TStringToQString( file->tag()->fieldListMap()["COMPOSER"].front() ).stripWhiteSpace() );
@@ -325,7 +318,6 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
             }
         }
         else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) ) {
-            m_type = mp4;
             TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
             if( mp4tag )
             {
@@ -333,8 +325,6 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
                 disc = QString::number( mp4tag->disk() );
             }
         }
-        else
-            m_type = other;
 
         if ( !disc.isEmpty() ) {
             int i = disc.find ('/');
@@ -822,58 +812,53 @@ MetaBundle::genreList() //static
 void
 MetaBundle::setExtendedTag( TagLib::File *file, int tag, const QString value ) {
     char *id = 0;
-    TagLib::MPEG::File *mpegFile;
-    TagLib::Ogg::Vorbis::File *oggFile;
 
-    switch ( m_type )
-    {
-        case mp3:
-            switch( tag ) {
-                case ( composerTag ): id = "TCOM"; break;
-                case ( discNumberTag ): id = "TPOS"; break;
-            }
-            mpegFile = dynamic_cast<TagLib::MPEG::File *>( file );
-            if ( mpegFile && mpegFile->ID3v2Tag() )
+    QString ext = type();
+
+    if ( ext == "mp3" ) {
+        switch( tag ) {
+            case ( composerTag ): id = "TCOM"; break;
+            case ( discNumberTag ): id = "TPOS"; break;
+        }
+        TagLib::MPEG::File *mpegFile = dynamic_cast<TagLib::MPEG::File *>( file );
+        if ( mpegFile && mpegFile->ID3v2Tag() )
+        {
+            if ( value.isEmpty() )
+                mpegFile->ID3v2Tag()->removeFrames( id );
+            else
             {
-                if ( value.isEmpty() )
-                    mpegFile->ID3v2Tag()->removeFrames( id );
-                else
-                {
-                    if( !mpegFile->ID3v2Tag()->frameListMap()[id].isEmpty() )
-                        mpegFile->ID3v2Tag()->frameListMap()[id].front()->setText( QStringToTString( value ) );
-                    else {
-                        TagLib::ID3v2::TextIdentificationFrame *frame = new TagLib::ID3v2::TextIdentificationFrame( id, TagLib::ID3v2::FrameFactory::instance()->defaultTextEncoding() );
-                        frame->setText( QStringToTString( value ) );
-                        mpegFile->ID3v2Tag()->addFrame( frame );
-                    }
+                if( !mpegFile->ID3v2Tag()->frameListMap()[id].isEmpty() )
+                    mpegFile->ID3v2Tag()->frameListMap()[id].front()->setText( QStringToTString( value ) );
+                else {
+                    TagLib::ID3v2::TextIdentificationFrame *frame = new TagLib::ID3v2::TextIdentificationFrame( id, TagLib::ID3v2::FrameFactory::instance()->defaultTextEncoding() );
+                    frame->setText( QStringToTString( value ) );
+                    mpegFile->ID3v2Tag()->addFrame( frame );
                 }
             }
-            break;
-
-        case ogg:
+        }
+    }
+    else if ( ext == "ogg" ) {
+        switch( tag ) {
+            case ( composerTag ): id = "COMPOSER"; break;
+            case ( discNumberTag ): id = "DISCNUMBER"; break;
+        }
+        TagLib::Ogg::Vorbis::File *oggFile = dynamic_cast<TagLib::Ogg::Vorbis::File *>( file );
+        if ( oggFile && oggFile->tag() )
+        {
+            value.isEmpty() ?
+                oggFile->tag()->removeField( id ):
+                oggFile->tag()->addField( id, QStringToTString( value ), true );
+        }
+    }
+    else if ( ext == "mp4" ) {
+        TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
+        if( mp4tag )
+        {
             switch( tag ) {
-                case ( composerTag ): id = "COMPOSER"; break;
-                case ( discNumberTag ): id = "DISCNUMBER"; break;
+                case ( composerTag ): mp4tag->setComposer( QStringToTString( value ) ); break;
+                case ( discNumberTag ): mp4tag->setDisk( value.toInt() );
             }
-            oggFile = dynamic_cast<TagLib::Ogg::Vorbis::File *>( file );
-            if ( oggFile && oggFile->tag() )
-            {
-                value.isEmpty() ?
-                    oggFile->tag()->removeField( id ):
-                    oggFile->tag()->addField( id, QStringToTString( value ), true );
-            }
-            break;
-        case mp4:
-            {
-                TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
-                if( mp4tag )
-                {
-                    switch( tag ) {
-                        case ( composerTag ): mp4tag->setComposer( QStringToTString( value ) ); break;
-                        case ( discNumberTag ): mp4tag->setDisk( value.toInt() );
-                    }
-                }
-            }
+        }
     }
 }
 

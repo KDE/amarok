@@ -66,8 +66,6 @@ public:
     static const QString prettyColumnName( int index ); // i18ned, for display purposes
     static int columnIndex( const QString &name );
 
-    enum FileType { mp3, ogg, wma, mp4, ra, rv, rm, rmj, rmvb, other };
-
     //for the audioproperties
     static const int Undetermined = -2; /// we haven't yet read the tags
     static const int Irrelevant   = -1; /// not applicable to this stream/media type, eg length for http streams
@@ -116,7 +114,7 @@ public:
 
     bool isStream() const;
 
-    int fileType() const;
+    int fileType();
     bool hasExtendedMetaInformation() const;
 
     void copyFrom( const MetaBundle& bundle );
@@ -228,8 +226,6 @@ protected:
     bool m_exists;
     bool m_isValidMedia;
 
-    int m_type;
-
 private:
 
     static inline QString prettyGeneric( const QString &s, const int i )
@@ -330,6 +326,8 @@ inline void MetaBundle::setRating( int rating ) { m_rating = rating; }
 inline void MetaBundle::setScore( int score ) { m_score = score; }
 inline void MetaBundle::setFilesize( int bytes ) { m_filesize = bytes; }
 
-inline int  MetaBundle::fileType() const { return m_type; }
-inline bool MetaBundle::hasExtendedMetaInformation() const { return (m_type == mp3 || m_type == ogg || m_type== mp4); }
+inline bool MetaBundle::hasExtendedMetaInformation() const {
+    QString ext = type();
+    return ( ext == "mp3" || ext == "ogg" || ext == "mp4" );
+}
 #endif
