@@ -71,9 +71,7 @@ class VfatMediaDevice : public MediaDevice
         bool              checkResult( int result, QString message );
 
         // file transfer
-        int               uploadTrack( const QCString& src, const QCString& dest );
         void              downloadSelectedItems();
-        int               downloadTrack( const QCString& src, const QCString& dest );
 
         // listDir
         void              listDir( const QString &dir );

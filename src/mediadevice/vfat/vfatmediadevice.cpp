@@ -211,36 +211,51 @@ VfatMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> items
 {
     if( !directory || items.isEmpty() ) return;
 
-    return; //NOT IMPLEMENTED YET
+    m_tmpParent = directory;
+    for( QPtrListIterator<MediaItem> it(items); *it; ++it )
+    {
+        QCString src  = QFile::encodeName( getFullPath( *it ) );
+        QCString dest = QFile::encodeName( getFullPath( directory ) + "/" + (*it)->text(0) );
+        debug() << "Moving: " << src << " to: " << dest << endl;
+
+        const KURL srcurl(src);
+        const KURL desturl(dest);
+
+        if( !KIO::NetAccess::move( srcurl, desturl, 0 ) ) //failed
+            continue;
+
+        m_view->takeItem( *it );
+        directory->insertItem( *it );
+    }
 }
 
 /// Uploading
 
 MediaItem *
-VfatMediaDevice::copyTrackToDevice( const MetaBundle& /*bundle*/, const PodcastInfo* /*info*/ )
+VfatMediaDevice::copyTrackToDevice( const MetaBundle& bundle, const PodcastInfo* info )
 {
     if( !m_connected ) return 0;
 
-    return 0; //NOT IMPLEMENTED YET
+    const QString  newFilename = m_medium->mountPoint() + bundle.prettyTitle().remove( "'" ) + "." + bundle.type();
+    const QCString src  = QFile::encodeName( bundle.url().path() );
+    const QCString dest = QFile::encodeName( newFilename ); // TODO: add to directory
+
+    const KURL srcurl(src);
+    const KURL desturl(dest);
+
+    kapp->processEvents( 100 );
+
+    if( KIO::NetAccess::copy( srcurl, desturl, m_parent ) ) //success
+    {
+        addTrackToList( MediaItem::TRACK, newFilename );
+        return m_last;
+    }
+
+    return 0;
 }
 
 /// File transfer methods
 
-int
-VfatMediaDevice::uploadTrack( const QCString& src, const QCString& dest )
-{
-    debug() << "Transferring " << src << " to: " << dest << endl;
-
-    return 0;  //NOT IMPLEMENTED YET
-}
-
-int
-VfatMediaDevice::downloadTrack( const QCString& src, const QCString& dest )
-{
-    debug() << "Downloading " << src << " to: " << dest << endl;
-
-    return 0;  //NOT IMPLEMENTED YET
-}
 
 void
 VfatMediaDevice::downloadSelectedItems()
