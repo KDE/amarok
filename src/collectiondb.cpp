@@ -770,7 +770,7 @@ CollectionDB::albumTracks( const QString &artist_id, const QString &album_id, co
     if ( isValue)
     {
         return query( QString( "SELECT tags.url FROM tags INNER JOIN artist ON artist.id=tags.artist INNER JOIN album ON "
-                        "album.id=tags.album WHERE (album.name = \"%1\" ) AND (artist.name = \"%2\" ) ORDER BY tags.track;" )
+                        "album.id=tags.album WHERE (album.name = \"%1\" ) AND (artist.name = \"%2\" ) ORDER BY tags.discnumber, tags.track;" )
                         .arg( album_id )
                         .arg( artist_id ) );
     }
@@ -778,7 +778,7 @@ CollectionDB::albumTracks( const QString &artist_id, const QString &album_id, co
     if (getDbConnectionType() == DbConnection::postgresql) {
         return query( QString( "SELECT tags.url, tags.track AS __discard FROM tags, year WHERE tags.album = %1 AND "
                                "( tags.sampler = %2 OR tags.artist = %3 ) AND year.id = tags.year "
-                               "ORDER BY tags.track;" )
+                               "ORDER BY tags.discnumber, tags.track;" )
                       .arg( album_id )
                       .arg( boolT() )
                       .arg( artist_id ) );
@@ -787,7 +787,7 @@ CollectionDB::albumTracks( const QString &artist_id, const QString &album_id, co
     {
         return query( QString( "SELECT tags.url FROM tags, year WHERE tags.album = %1 AND "
                               "( tags.sampler = 1 OR tags.artist = %2 ) AND year.id = tags.year "
-                              "ORDER BY tags.track;" )
+                              "ORDER BY tags.discnumber, tags.track;" )
                         .arg( album_id )
                         .arg( artist_id ) );
     }

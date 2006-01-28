@@ -758,11 +758,15 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                 qb.addReturnValue( q_cat2, QueryBuilder::valTitle );
                 qb.addReturnValue( q_cat2, QueryBuilder::valURL );
                 if ( c ) qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-                if ( SortbyTrackFirst )
+                if ( SortbyTrackFirst ) {
+                    qb.sortBy( q_cat2, QueryBuilder::valDiscNumber );
                     qb.sortBy( q_cat2, QueryBuilder::valTrack );
+                }
                 qb.sortBy( q_cat2, QueryBuilder::valTitle );
-                if ( !SortbyTrackFirst )
+                if ( !SortbyTrackFirst ) {
+                    qb.sortBy( q_cat2, QueryBuilder::valDiscNumber );
                     qb.sortBy( q_cat2, QueryBuilder::valTrack );
+                }
                 qb.sortBy( q_cat2, QueryBuilder::valURL );
             }
             else
@@ -831,11 +835,15 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                 qb.addReturnValue( q_cat3, QueryBuilder::valTitle );
                 qb.addReturnValue( q_cat3, QueryBuilder::valURL );
                 if ( c ) qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-                if ( SortbyTrackFirst )
+                if ( SortbyTrackFirst ) {
+                    qb.sortBy( q_cat3, QueryBuilder::valDiscNumber );
                     qb.sortBy( q_cat3, QueryBuilder::valTrack );
+                }
                 qb.sortBy( q_cat3, QueryBuilder::valTitle );
-                if ( !SortbyTrackFirst )
+                if ( !SortbyTrackFirst ) {
+                    qb.sortBy( q_cat3, QueryBuilder::valDiscNumber );
                     qb.sortBy( q_cat3, QueryBuilder::valTrack );
+                }
                 qb.sortBy( q_cat3, QueryBuilder::valURL );
             }
             else
@@ -930,11 +938,15 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
 
             if( c )
                 qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-            if ( SortbyTrackFirst )
-                    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
-            qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTitle );
-            if ( !SortbyTrackFirst )
+            if ( SortbyTrackFirst ) {
+                qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
                 qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+            }
+            qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTitle );
+            if ( !SortbyTrackFirst ) {
+                qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
+                qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+            }
 
             qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valURL );
 
@@ -1808,6 +1820,7 @@ CollectionView::listSelected()
             if( q_cat3 != QueryBuilder::tabSong )
                 qb.sortBy( q_cat3, QueryBuilder::valName );
 
+            qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
             qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
             qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valURL );
 
@@ -1901,6 +1914,7 @@ CollectionView::listSelected()
                     if( q_cat3 != QueryBuilder::tabSong )
                         qb.sortBy( q_cat3, QueryBuilder::valName );
 
+                    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
                     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
                     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valURL );
 
@@ -2024,6 +2038,8 @@ CollectionView::listSelected()
                             qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName);
 
                         qb.sortBy( q_cat3, QueryBuilder::valName );
+
+                        qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
                         qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
                         qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valURL );
 
