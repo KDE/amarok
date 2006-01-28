@@ -1,119 +1,97 @@
-// (c) 2004 Christian Muehlhaeuser <chris@chris.de>
-// (c) 2005 Martin Aumueller <aumuell@reserv.at>
-// See COPYING file for licensing information
+/***************************************************************************
+ * copyright            : (C) 2005 Seb Ruiz <me@sebruiz.net>               *
+ *                                                                         *
+ * With some code helpers from KIO_VFAT                                     *
+ *                        (c) 2004 Thomas Loeber <vfat@loeber1.de>          *
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
 #ifndef AMAROK_VFATMEDIADEVICE_H
 #define AMAROK_VFATMEDIADEVICE_H
 
-extern "C" {
-#include <gpod/itdb.h>
-}
+#include "../mediabrowser.h"
 
-#include "../ipod/kiomediadevice.h"
+#include <kurl.h>
 
+// #include <qbitarray.h>
 #include <qptrlist.h>
-#include <qdict.h>
 
-#include <kio/job.h>
+class VfatMediaItem;
 
-class QCheckBox;
-class QLabel;
-class QLineEdit;
-
-class IpodMediaItem;
-
-class IpodMediaDevice : public KioMediaDevice
+class VfatMediaDevice : public MediaDevice
 {
     Q_OBJECT
 
     public:
-        IpodMediaDevice();
+                          VfatMediaDevice();
         void              init( MediaBrowser* parent );
-        virtual           ~IpodMediaDevice();
-        virtual bool      autoConnect() { return true; }
-        virtual bool      asynchronousTransfer() { return false; /* kernel buffer flushes freeze amaroK */ }
-        QStringList       supportedFiletypes();
+        virtual           ~VfatMediaDevice();
 
-        bool              isConnected();
-
-        virtual void      addConfigElements( QWidget *parent );
-        virtual void      removeConfigElements( QWidget *parent );
-        virtual void      applyConfig();
-        virtual void      loadConfig();
+        bool              isConnected() { return m_connected; }
+        void              rmbPressed( QListViewItem* qitem, const QPoint& point, int );
 
     protected:
-        MediaItem        *trackExists( const MetaBundle& bundle );
-
         bool              openDevice( bool silent=false );
         bool              closeDevice();
 
-        /**
-         * Insert track already located on media device into the device's database
-         * @param pathname Location of file on the device to add to the database
-         * @param bundle MetaBundle of track
-         * @param podcastInfo PodcastInfo of track if it is a podcast, 0 otherwise
-         * @return If successful, the created MediaItem in the media device view, else 0
-         */
-        virtual MediaItem *insertTrackIntoDB( const QString& pathname, const MetaBundle& bundle, const PodcastInfo *podcastInfo);
+        bool              lockDevice( bool ) { return true; }
+        void              unlockDevice() {}
+        void              synchronizeDevice() {}
 
-        /**
-         * Determine the url for which a track should be uploaded to on the device
-         * @param bundle MetaBundle of track to base pathname creation on
-         * @return the url to upload the track to
-         */
-        virtual KURL determineURLOnDevice(const MetaBundle& bundle);
+        MediaItem        *copyTrackToDevice( const MetaBundle& bundle, const PodcastInfo *info );
+        int               deleteItemFromDevice( MediaItem *item, bool onlyPlayed = false );
+        bool              getCapacity( unsigned long *total, unsigned long *available );
+        MediaItem        *newDirectory( const QString &name, MediaItem *parent );
+        void              addToDirectory( MediaItem *directory, QPtrList<MediaItem> items );
 
-        void              synchronizeDevice();
-        int               deleteItemFromDevice(MediaItem *item, bool onlyPlayed=false );
-        void              addToPlaylist(MediaItem *list, MediaItem *after, QPtrList<MediaItem> items);
-        void              addToDirectory(MediaItem *dir, QPtrList<MediaItem> items);
-        MediaItem        *newPlaylist(const QString &name, MediaItem *list, QPtrList<MediaItem> items);
-        virtual MediaItem*newDirectory(const QString&, MediaItem*) { return 0; }
-        bool              getCapacity(unsigned long *total, unsigned long *available);
-        void              rmbPressed( QListViewItem* qitem, const QPoint& point, int );
+        void              addToPlaylist( MediaItem *, MediaItem *, QPtrList<MediaItem> ) {}
+        MediaItem        *newPlaylist( const QString &, MediaItem *, QPtrList<MediaItem> ) { return 0; }
+        
+        void              cancelTransfer() {} // we don't have to do anything, we check m_cancelled
 
-        protected slots:
-            void              renameItem( QListViewItem *item );
+    protected slots:
+        void              renameItem( QListViewItem *item );
+        void              expandItem( QListViewItem *item );
 
     private:
-        void              writeITunesDB();
-        IpodMediaItem    *addTrackToView(Itdb_Track *track);
-        void              addPlaylistToView(Itdb_Playlist *playlist);
-        void              playlistFromItem(IpodMediaItem *item);
+        enum              Error { ERR_ACCESS_DENIED, ERR_CANNOT_RENAME, ERR_DISK_FULL, ERR_COULD_NOT_WRITE };
 
-        QString           realPath(const char *ipodPath);
-        QString           ipodPath(const QString &realPath);
+        // To expensive to implement on a non-database device
+        MediaItem        *trackExists( const MetaBundle& ) { return 0; }
 
-        // ipod database
-        Itdb_iTunesDB    *m_itdb;
-        Itdb_Playlist    *m_masterPlaylist;
-        QDict<Itdb_Track> m_files;
+        bool              checkResult( int result, QString message );
 
-        // podcasts
-        Itdb_Playlist*    m_podcastPlaylist;
+        // file transfer
+        int               uploadTrack( const QCString& src, const QCString& dest );
+        void              downloadSelectedItems();
+        int               downloadTrack( const QCString& src, const QCString& dest );
 
-        bool              m_isShuffle;
-        bool              m_supportsArtwork;
-        bool              m_supportsVideo;
+        // listDir
+        void              listDir( const QString &dir );
+        static int        listDirCallback( void *pData, int type, const char *name, int size );
+        int               addTrackToList( int type, QString name, int size=0 );
 
-        IpodMediaItem    *getArtist(const QString &artist);
-        IpodMediaItem    *getAlbum(const QString &artist, const QString &album);
-        IpodMediaItem    *getTrack(const QString &artist, const QString &album, const QString &title, int trackNumber=-1);
-        IpodMediaItem    *getTrack(const Itdb_Track *itrack);
+        // miscellaneous methods
+        static int        filetransferCallback( void *pData, struct vfat_transfer_status *progress );
+        int               setProgressInfo( struct vfat_transfer_status *progress );
+        // Will iterate over parents and add directory name to the item.
+        // getFilename = false will return only parent structure, as opposed to returning the filename as well
+        QString           getFullPath( const QListViewItem *item, const bool getFilename = true );
 
-        bool              removeDBTrack(Itdb_Track *track);
+        bool              m_connected;
 
-        bool              m_dbChanged;
-
-        QCheckBox        *m_syncStatsCheck;
-        QCheckBox        *m_autoDeletePodcastsCheck;
-        QLineEdit        *m_umntcmdEdit;
-        QLabel           *m_umntcmdLabel;
-        QLineEdit        *m_mntcmdEdit;
-        QLabel           *m_mntcmdLabel;
-        QLineEdit        *m_mntpntEdit;
-        QLabel           *m_mntpntLabel;
-
+        VfatMediaItem     *m_last;
+        //used to specify new VfatMediaItem parent. Make sure it is restored to 0 (m_listview)
+        QListViewItem     *m_tmpParent;
 };
 
-#endif
+#endif /*AMAROK_VFATMEDIADEVICE_H*/
+

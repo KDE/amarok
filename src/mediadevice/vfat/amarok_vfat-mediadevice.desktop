@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Service
 Name=Generic VFAT Media Device
-X-KDE-Library=libamarok_ipod-mediadevice
+X-KDE-Library=libamarok_vfat-mediadevice
 Comment=Plugin for amaroK
 Comment[bg]=Приставка за amaroK
 Comment[br]=Lugent evit amaroK
