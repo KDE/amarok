@@ -70,6 +70,8 @@ private:
    HelixSimplePlayer::metaData m_md;
 
    int scope(int playerIndex);
+   int prune();
+   int prune(int playerIndex);
    bool m_scopeplayerlast;
    struct HelixScope
    {
@@ -78,6 +80,7 @@ private:
       unsigned long  m_lastpos;
       unsigned short m_currentScope[512];
       int            m_scopeindex;
+      unsigned long  m_w; // more accurate position estimate for the player 
    } hscope[2];
 
    typedef struct MimeEntry
