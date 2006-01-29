@@ -364,7 +364,10 @@ MediaBrowser::activateDevice( int index )
     }
 
     if( index < 0 || (uint)index >= m_devices.count() )
+    {
+        m_currentDevice = m_devices.end();
         return;
+    }
 
     if( m_currentDevice == m_devices.at( index ) )
     {
@@ -407,25 +410,23 @@ MediaBrowser::removeDevice( MediaDevice *device )
 
     debug() << "remove device: type=" << device->deviceType() << endl;
 
-    if( device->isConnected() )
-    {
-        device->abortTransfer();
-        device->disconnectDevice( false /* don't run post-disconnect command */ );
-    }
     for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
             it != m_devices.end();
             it++ )
     {
         if( *it == device )
         {
-            if( it == m_currentDevice )
-            {
-                m_currentDevice = (it == m_devices.begin()) ? m_devices.end() : m_devices.begin();
-                activateDevice( 0 );
-            }
+            bool current = (it == m_currentDevice);
             m_devices.remove( device );
+            if( current )
+                activateDevice( 0 );
             break;
         }
+    }
+
+    if( device->isConnected() )
+    {
+        device->disconnectDevice( false /* don't run post-disconnect command */ );
     }
     unloadDevicePlugin( device );
 
@@ -1541,14 +1542,13 @@ MediaBrowser::configSelectPlugin( int index )
     {
         MediaDevice *dev = currentDevice();
         dev->removeConfigElements( m_configBox );
-        if( dev->isConnected() )
-        {
-            dev->abortTransfer();
-            dev->disconnectDevice( false );
-        }
         QString uniqueId = dev->uniqueId();
         QString deviceNode = dev->deviceNode();
         QString mountPoint = dev->mountPoint();
+        if( dev->isConnected() )
+        {
+            dev->disconnectDevice( false );
+        }
         unloadDevicePlugin( dev );
         *m_currentDevice = loadDevicePlugin( AmarokConfig::deviceType() );
         if( !*m_currentDevice )
@@ -2010,6 +2010,7 @@ MediaBrowser::connectClicked()
             currentDevice()->connectDevice();
     }
 
+    updateDevices();
     updateButtons();
     updateStats();
 }
@@ -2037,7 +2038,6 @@ MediaBrowser::disconnectClicked()
     m_transferButton->setEnabled( false );
     if( currentDevice() )
     {
-        currentDevice()->abortTransfer();
         currentDevice()->disconnectDevice();
     }
 
@@ -2112,6 +2112,10 @@ MediaDevice::connectDevice( bool silent )
 bool
 MediaDevice::disconnectDevice( bool postDisconnectHook )
 {
+    DEBUG_BLOCK
+
+    abortTransfer();
+
     while( !lockDevice( true ) )
     {
         kapp->processEvents();
