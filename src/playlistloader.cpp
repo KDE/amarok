@@ -442,6 +442,7 @@ bool UrlLoader::characters( const QString &ch )
                 case MetaBundle::Length:
                 case MetaBundle::Bitrate:
                 case MetaBundle::Filesize:
+                case MetaBundle::Type:
                 case MetaBundle::SampleRate:
                     m_tempData->bundle.setExactText( i, ch );
                     continue;
@@ -469,6 +470,7 @@ bool UrlLoader::characters( const QString &ch )
                 case MetaBundle::Length:
                 case MetaBundle::Bitrate:
                 case MetaBundle::Filesize:
+                case MetaBundle::Type:
                 case MetaBundle::SampleRate:
                     m_tempData->bundle.setExactText( i, ch );
                     continue;
@@ -758,7 +760,7 @@ PlaylistFile::loadASX( QTextStream &stream )
         return false;
     }
 
-    QDomElement root = doc.documentElement();	
+    QDomElement root = doc.documentElement();
 
     QString url;
     QString title;
@@ -767,7 +769,7 @@ PlaylistFile::loadASX( QTextStream &stream )
     QString duration;
 
     if (root.nodeName().lower() != "asx") return false;
-        
+
     QDomNode node = root.firstChild();
     QDomNode subNode;
     QDomElement element;
@@ -833,7 +835,7 @@ PlaylistFile::loadASX( QTextStream &stream )
      }
      return true;
 }
-	
+
 /// @class RemotePlaylistFetcher
 
 #include <ktempfile.h>

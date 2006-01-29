@@ -117,9 +117,9 @@ MetaBundle::MetaBundle()
         , m_playCount( Undetermined )
         , m_lastPlay( abs( Undetermined ) )
         , m_filesize( Undetermined )
+        , m_type( other )
         , m_exists( true )
         , m_isValidMedia( true )
-        , m_type( other )
 {
     init();
 }
@@ -137,9 +137,9 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
     , m_playCount( Undetermined )
     , m_lastPlay( abs( Undetermined ) )
     , m_filesize( Undetermined )
+    , m_type( other )
     , m_exists( url.protocol() == "file" && QFile::exists( url.path() ) )
     , m_isValidMedia( false ) //will be updated
-    , m_type( other )
 {
     if ( m_exists ) {
         if ( !noCache )
@@ -174,9 +174,9 @@ MetaBundle::MetaBundle( const QString& title,
         , m_playCount( Undetermined )
         , m_lastPlay( abs( Undetermined ) )
         , m_filesize( Undetermined )
+        , m_type( other )
         , m_exists( true )
         , m_isValidMedia( true )
-        , m_type( other )
 {
    if( title.contains( '-' ) ) {
        m_title  = title.section( '-', 1, 1 ).stripWhiteSpace();
@@ -425,6 +425,7 @@ void MetaBundle::copyFrom( const MetaBundle &bundle )
     setRating( bundle.rating() );
     setPlayCount( bundle.playCount() );
     setLastPlay( bundle.lastPlay() );
+    setFileType( bundle.fileType() );
     setFilesize( bundle.filesize() );
 }
 
@@ -449,6 +450,7 @@ void MetaBundle::setExactText( int column, const QString &newText )
         case PlayCount:  setPlayCount(  newText.toInt() ); break;
         case LastPlayed: setLastPlay(   newText.toInt() ); break;
         case Filesize:   setFilesize(   newText.toInt() ); break;
+        case Type:       setFileType(   newText.toInt() ); break;
         default: warning() << "Tried to set the text of an immutable or nonexistent column! [" << column << endl;
    }
 }
@@ -929,7 +931,8 @@ bool MetaBundle::save( QTextStream &stream, const QStringList &attributes, int i
     for( int i = 0; i < NUM_COLUMNS; ++i )
     {
         QDomElement tag = QDomSucksItNeedsADocument.createElement( exactColumnName( i ) );
-        QDomText text = QDomSucksItNeedsADocument.createTextNode( exactText( i ) );
+                                                         // for type, we want to save the code, not the text
+        QDomText text = QDomSucksItNeedsADocument.createTextNode( i!=Type ? exactText( i ) : QString::number( m_type ) );
         tag.appendChild( text );
 
         item.appendChild( tag );

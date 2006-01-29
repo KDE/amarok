@@ -1980,7 +1980,7 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
     command += "composer = '" + escapeString( bundle.composer() ) + "', ";
     command += "discnumber = '" + QString::number( bundle.discNumber() ) + "', ";
     command += "filesize = '" + QString::number( bundle.filesize() ) + "', ";
-    command += "fileType = '" + QString::number( bundle.fileType() ) + "' ";
+    command += "filetype = '" + QString::number( bundle.fileType() ) + "' ";
     command += "WHERE url = '" + escapeString( url ) + "';";
 
     query( command );
