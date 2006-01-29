@@ -18,6 +18,7 @@ AMAROK_EXPORT_PLUGIN( IpodMediaDevice )
 #include <collectionbrowser.h>
 #include <playlistbrowser.h>
 #include <threadweaver.h>
+#include <metadata/tplugins.h>
 
 #include <kapplication.h>
 #include <kmountpoint.h>
@@ -125,6 +126,9 @@ IpodMediaDevice::IpodMediaDevice()
     , m_podcastPlaylist( 0 )
     , m_lockFile( 0 )
 {
+
+    registerTaglibPlugins();
+
     m_dbChanged = false;
     m_itdb = 0;
     m_podcastItem = 0;
@@ -904,8 +908,7 @@ IpodMediaDevice::openDevice( bool silent )
                 debug() << "file: " << filename << " is orphaned" << endl;
                 IpodMediaItem *item = new IpodMediaItem(m_orphanedItem);
                 item->setType(MediaItem::ORPHANED);
-                KURL url;
-                url.setPath(filename);
+                KURL url = KURL::fromPathOrURL(filename);
                 MetaBundle *bundle = new MetaBundle(url);
                 QString title = bundle->artist() + " - " + bundle->title();
                 item->setText(0, title);
@@ -925,13 +928,8 @@ IpodMediaDevice::openDevice( bool silent )
 bool
 IpodMediaDevice::closeDevice()  //SLOT
 {
-    if( m_lockFile )
-    {
-        m_lockFile->close();
-        m_lockFile->remove();
-        delete m_lockFile;
-        m_lockFile = 0;
-    }
+    writeITunesDB();
+
     m_view->clear();
     m_podcastItem = 0;
     m_playlistItem = 0;
@@ -939,7 +937,13 @@ IpodMediaDevice::closeDevice()  //SLOT
     m_staleItem = 0;
     m_invisibleItem = 0;
 
-    writeITunesDB();
+    if( m_lockFile )
+    {
+        m_lockFile->close();
+        m_lockFile->remove();
+        delete m_lockFile;
+        m_lockFile = 0;
+    }
 
     m_files.clear();
     itdb_free(m_itdb);
@@ -1206,8 +1210,13 @@ class IpodWriteDBJob : public ThreadWeaver::DependentJob
     private:
         virtual bool doJob()
         {
+            if( !m_itdb )
+            {
+                m_return = false;
+            }
+
             GError *error = 0;
-            if (!itdb_write (m_itdb, &error))
+            if (m_return && !itdb_write (m_itdb, &error))
             {   /* an error occured */
                 m_return = false;
                 if(error)

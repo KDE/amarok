@@ -433,7 +433,7 @@ KioMediaDevice::determineURLOnDevice(const MetaBundle &bundle)
     }
     while(exists);
 
-    return trackpath;
+    return KURL::fromPathOrURL( trackpath );
 }
 
 bool
