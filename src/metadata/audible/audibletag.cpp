@@ -77,9 +77,14 @@ void Audible::Tag::readTags( FILE *fp )
         {
             m_artist = String(value, String::Latin1);
         }
-        else if(!strcmp(name, "description"))
+        else if(!strcmp(name, "long_description"))
         {
             m_comment = String(value, String::Latin1);
+        }
+        else if(!strcmp(name, "description"))
+        {
+            if( m_comment.isNull() )
+                m_comment = String(value, String::Latin1);
         }
         else if(!strcmp(name, "pubdate"))
         {
