@@ -67,14 +67,12 @@ class IpodMediaDevice : public KioMediaDevice
         void              synchronizeDevice();
         int               deleteItemFromDevice(MediaItem *item, bool onlyPlayed=false );
         void              addToPlaylist(MediaItem *list, MediaItem *after, QPtrList<MediaItem> items);
-        void              addToDirectory(MediaItem *dir, QPtrList<MediaItem> items);
         MediaItem        *newPlaylist(const QString &name, MediaItem *list, QPtrList<MediaItem> items);
-        virtual MediaItem*newDirectory(const QString&, MediaItem*) { return 0; }
         bool              getCapacity(unsigned long *total, unsigned long *available);
         void              rmbPressed( QListViewItem* qitem, const QPoint& point, int );
 
-        protected slots:
-            void              renameItem( QListViewItem *item );
+    protected slots:
+        void              renameItem( QListViewItem *item );
 
     private:
         bool              initializeIpod( const QString &mountpoint );

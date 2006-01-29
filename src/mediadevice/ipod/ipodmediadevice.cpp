@@ -436,12 +436,6 @@ IpodMediaDevice::addToPlaylist(MediaItem *mlist, MediaItem *after, QPtrList<Medi
     playlistFromItem(list);
 }
 
-void
-IpodMediaDevice::addToDirectory(MediaItem *, QPtrList<MediaItem>)
-{
-   debug() << "addToDirectory: not implemented" << endl;
-}
-
 int
 IpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
 {

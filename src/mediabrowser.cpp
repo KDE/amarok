@@ -165,11 +165,6 @@ class DummyMediaDevice : public MediaDevice
     void init( MediaBrowser *browser ) { MediaDevice::init( browser ); }
     virtual ~DummyMediaDevice() {}
     virtual bool isConnected() { return false; }
-    virtual void cancelTransfer() {}
-    virtual void addToPlaylist(MediaItem*, MediaItem*, QPtrList<MediaItem>) {}
-    virtual void addToDirectory(MediaItem*, QPtrList<MediaItem>) {}
-    virtual MediaItem* newDirectory(const QString&, MediaItem*) { return 0; }
-    virtual MediaItem* newPlaylist(const QString&, MediaItem*, QPtrList<MediaItem>) { return 0; }
     virtual MediaItem* trackExists(const MetaBundle&) { return 0; }
     virtual bool lockDevice(bool) { return true; }
     virtual void unlockDevice() {}
@@ -186,7 +181,6 @@ class DummyMediaDevice : public MediaDevice
     virtual void synchronizeDevice() {}
     virtual MediaItem* copyTrackToDevice(const MetaBundle&, const PodcastInfo*) { return 0; }
     virtual int deleteItemFromDevice(MediaItem*, bool) { return -1; }
-    virtual bool getCapacity( unsigned long *, unsigned long * ) { return false; }
 };
 
 

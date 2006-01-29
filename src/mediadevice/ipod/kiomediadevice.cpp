@@ -173,12 +173,6 @@ KioMediaDevice::trackExists( const MetaBundle& /*bundle*/ )
     return NULL;
 }
 
-void
-KioMediaDevice::addToDirectory(MediaItem *, QPtrList<MediaItem>)
-{
-    debug() << "addToDirectory: not implemented" << endl;
-}
-
 int
 KioMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
 {

@@ -31,7 +31,6 @@ class KioMediaDevice : public MediaDevice
         bool              closeDevice();
         bool              lockDevice(bool tryLock=false ) { if( tryLock ) { return m_mutex.tryLock(); } else { m_mutex.lock(); return true; } }
         void              unlockDevice() { m_mutex.unlock(); }
-        void              cancelTransfer() {} // we don't have to do anything, we check m_cancelled
 
         /**
          * Determine the url for which a track should be uploaded to on the device
@@ -52,8 +51,6 @@ class KioMediaDevice : public MediaDevice
         virtual void      synchronizeDevice();
         virtual MediaItem*copyTrackToDevice(const MetaBundle& bundle, const PodcastInfo *podcastInfo);
         virtual int       deleteItemFromDevice(MediaItem *item, bool onlyPlayed=false );
-        virtual void      addToDirectory(MediaItem *dir, QPtrList<MediaItem> items);
-        virtual MediaItem*newDirectory(const QString&, MediaItem*) { return 0; }
         virtual bool      getCapacity(unsigned long *total, unsigned long *available);
         virtual void      rmbPressed( MediaView *deviceList, QListViewItem* qitem, const QPoint& point, int );
         virtual void      deleteFile( const KURL &url );

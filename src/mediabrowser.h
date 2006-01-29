@@ -317,7 +317,7 @@ class MediaDevice : public QObject, public amaroK::Plugin
          * @param after insert following this item
          * @param items tracks to add to playlist
          */
-        virtual void       addToPlaylist(MediaItem *playlist, MediaItem *after, QPtrList<MediaItem> items) = 0;
+        virtual void       addToPlaylist(MediaItem *playlist, MediaItem *after, QPtrList<MediaItem> items) { Q_UNUSED(playlist); Q_UNUSED(after); Q_UNUSED(items); }
 
         /**
          * Create a new playlist
@@ -326,14 +326,14 @@ class MediaDevice : public QObject, public amaroK::Plugin
          * @param items tracks to add to the new playlist
          * @return the newly created playlist
          */
-        virtual MediaItem *newPlaylist(const QString &name, MediaItem *parent, QPtrList<MediaItem> items) = 0;
+        virtual MediaItem *newPlaylist(const QString &name, MediaItem *parent, QPtrList<MediaItem> items) { Q_UNUSED(name); Q_UNUSED(parent); Q_UNUSED(items); return 0; }
 
         /**
          * Move items to a directory
          * @param directory new parent of dropped items
          * @param items tracks to add to the directory
          */
-        virtual void      addToDirectory( MediaItem *directory, QPtrList<MediaItem> items ) = 0;
+        virtual void      addToDirectory( MediaItem *directory, QPtrList<MediaItem> items ) { Q_UNUSED(directory); Q_UNUSED(items); }
 
         /**
          * Create a new directory
@@ -342,7 +342,7 @@ class MediaDevice : public QObject, public amaroK::Plugin
          * @param items tracks to add to the new directory
          * @return the newly created directory
          */
-        virtual MediaItem *newDirectory( const QString &name, MediaItem *parent ) = 0;
+        virtual MediaItem *newDirectory( const QString &name, MediaItem *parent ) { Q_UNUSED(name); Q_UNUSED(parent); return 0; }
 
         virtual void addConfigElements( QWidget * /*parent*/ ) {}
         virtual void removeConfigElements( QWidget * /*parent*/ ) {}
@@ -420,7 +420,7 @@ class MediaDevice : public QObject, public amaroK::Plugin
          * Get the capacity and freespace available on the device, in KB
          * @return true if successful
          */
-        virtual bool getCapacity( unsigned long *total, unsigned long *available ) = 0;
+        virtual bool getCapacity( unsigned long *total, unsigned long *available ) { Q_UNUSED(total); Q_UNUSED(available); return false; }
 
         /**
          * Lock device for exclusive access if possible
@@ -468,7 +468,7 @@ class MediaDevice : public QObject, public amaroK::Plugin
         /**
          * Abort the currently active track transfer
          */
-        virtual void cancelTransfer() = 0;
+        virtual void cancelTransfer() { /* often checking m_cancel is enough */ }
 
         virtual void updateRootItems();
 

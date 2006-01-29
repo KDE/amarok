@@ -57,11 +57,6 @@ class IfpMediaDevice : public MediaDevice
         MediaItem        *newDirectory( const QString &name, MediaItem *parent );
         void              addToDirectory( MediaItem *directory, QPtrList<MediaItem> items );
 
-        void              addToPlaylist( MediaItem *, MediaItem *, QPtrList<MediaItem> ) {}
-        MediaItem        *newPlaylist( const QString &, MediaItem *, QPtrList<MediaItem> ) { return 0; }
-
-        void              cancelTransfer() {} // we don't have to do anything, we check m_cancelled
-
     protected slots:
         void              renameItem( QListViewItem *item );
         void              expandItem( QListViewItem *item );
