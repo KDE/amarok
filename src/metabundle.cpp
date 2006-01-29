@@ -470,7 +470,7 @@ QString MetaBundle::exactText( int column ) const
         case Genre:      return genre();
         case Comment:    return comment();
         case Directory:  return directory();
-        case Type:       return type();
+        case Type:       return QString::number( fileType() );
         case Length:     return QString::number( length() );
         case Bitrate:    return QString::number( bitrate() );
         case SampleRate: return QString::number( sampleRate() );
@@ -931,8 +931,7 @@ bool MetaBundle::save( QTextStream &stream, const QStringList &attributes, int i
     for( int i = 0; i < NUM_COLUMNS; ++i )
     {
         QDomElement tag = QDomSucksItNeedsADocument.createElement( exactColumnName( i ) );
-                                                         // for type, we want to save the code, not the text
-        QDomText text = QDomSucksItNeedsADocument.createTextNode( i!=Type ? exactText( i ) : QString::number( m_type ) );
+        QDomText text = QDomSucksItNeedsADocument.createTextNode( exactText( i ) );
         tag.appendChild( text );
 
         item.appendChild( tag );
