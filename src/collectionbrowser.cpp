@@ -962,15 +962,18 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
 
     if( category == CollectionBrowser::IdVisYearAlbum )
     {
-        QStringList tmpvalues;
-        for( unsigned int i=0; i<=values.count() - countReturnValues; i += countReturnValues )
+        if( values.count() >= countReturnValues )
         {
-            tmpvalues += ( values[i+1].isEmpty() ? "?" : values[i+1]) +
-                           i18n( " - " ) +
-                         ( values[i].isEmpty() ? i18n( "Unknown" ) : values[i] );
+            QStringList tmpvalues;
+            for( unsigned int i=0; i<=values.count() - countReturnValues; i += countReturnValues )
+            {
+                tmpvalues += ( values[i+1].isEmpty() ? "?" : values[i+1]) +
+                    i18n( " - " ) +
+                    ( values[i].isEmpty() ? i18n( "Unknown" ) : values[i] );
+            }
+            values = tmpvalues;
+            countReturnValues--;
         }
-        values = tmpvalues;
-        countReturnValues--;
     }
 
     QPixmap pixmap;
