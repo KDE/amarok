@@ -80,6 +80,7 @@ OSDWidget::show() //virtual
     const QRect oldGeometry = QRect( pos(), size() );
     const QRect newGeometry = determineMetrics( M );
 
+#ifdef Q_WS_X11
     if( m_translucency && !isShown() || !newGeometry.intersects( oldGeometry ) )
         m_screenshot = QPixmap::grabWindow( qt_xrootwin(),
                 newGeometry.x(), newGeometry.y(),
@@ -98,6 +99,7 @@ OSDWidget::show() //virtual
         p = newGeometry.topLeft() - unite.topLeft();
         bitBlt( &m_screenshot, 0, 0, &pix, p.x(), p.y() );
     }
+#endif
 
     if( newGeometry.width() > 0 && newGeometry.height() > 0 )
     {
