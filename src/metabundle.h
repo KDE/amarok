@@ -62,8 +62,11 @@ public:
         NUM_COLUMNS
     };
 
-    static const QString exactColumnName( int index ); // not i18ned, for internal purposes
-    static const QString prettyColumnName( int index ); // i18ned, for display purposes
+    /** Returns the name of the column at \p index as a string -- not i18ned, for internal purposes. */
+    static const QString exactColumnName( int index );
+    /** Returns the name of the column at \p index as a string -- i18ned, for display purposes. */
+    static const QString prettyColumnName( int index );
+    /** Returns the index of the column with the not i18ned name \p name. */
     static int columnIndex( const QString &name );
 
     // These values are stored on the Database, so, don't change the order. Only append new ones to the end.
@@ -117,20 +120,45 @@ public:
 
     bool isStream() const;
 
+    /** Returns a value from enum FileType. */
     int fileType() const;
 
+    /** Returns whether composer and disc number fields are available. */
     bool hasExtendedMetaInformation() const;
 
     void copyFrom( const MetaBundle& bundle );
 
-    void setExactText( int column, const QString &text );
+    /** Returns a string representation of the tag at \p column, in a format suitable for internal purposes.
+        For example, for a track 3:24 long, it'll return "204" (seconds).
+        This should not be used for displaying the tag to the user. */
     QString exactText( int column ) const;
+
+    /** Sets the tag at \p column from a string in the same format as returned by exactText(). */
+    void setExactText( int column, const QString &text );
+
+    /** Returns the tag at \p column in a format suitable for displaying to the user. */
     QString prettyText( int column ) const;
 
+    /** Returns whether \p expression might contain advanced syntactical elements (OR, -, et al). */
     static bool isAdvancedExpression( const QString &expression );
+
+    /** Returns whether the bundle matches \p expression.
+        This is fast and doesn't take advanced syntax into account,
+        and should only be used when it is certain none is present.
+        The tags in \p columns are checked for matches. */
     bool matchesSimpleExpression( const QString &expression, QValueList<int> columns ) const;
+
+    /** Returns whether the bundle matches \p expression.
+        This takes advanced syntax into account, and is slightly slower than matchesSimpleExpression().
+        The tags in \p defaultColumns are checked for matches where the expression doesn't specify any manually. */
     bool matchesExpression( const QString &expression, QValueList<int> defaultColumns ) const;
+
+    /** Parses \p expression into a format suitable for matchesParsedExpression().
+        These functions are useful if you want to check many items, and only parse the expression once. */
     static QValueList<QStringList> parseExpression( QString expression );
+
+    /** Returns whether the bundle matches the pre-parsed expression \p parsedData.
+        The tags in \p defaultColumns are checked for matches where the expression doesn't specify any manually. */
     bool matchesParsedExpression( QValueList<QStringList> parsedData, QValueList<int> defaultColumns ) const;
 
 public: //accessors
