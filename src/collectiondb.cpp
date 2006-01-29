@@ -1979,7 +1979,7 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
     command += "comment = '" + escapeString( bundle.comment() ) + "', ";
     command += "composer = '" + escapeString( bundle.composer() ) + "', ";
     command += "discnumber = '" + QString::number( bundle.discNumber() ) + "', ";
-    command += "filesize = '" + QString::number( bundle.filesize() ) + "' ";
+    command += "filesize = '" + QString::number( bundle.filesize() ) + "', ";
     command += "fileType = '" + QString::number( bundle.fileType() ) + "' ";
     command += "WHERE url = '" + escapeString( url ) + "';";
 
