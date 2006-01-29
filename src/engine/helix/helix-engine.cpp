@@ -129,6 +129,9 @@ void HelixEngine::interruptUser(unsigned long code, const char *moreinfo, const 
       emit infoMessage(i18n("Helix Core returned error: %1 %1 %1").arg(QString(*err)).arg(QString(moreinfo)).arg(QString(moreinfourl)));
    else
       emit infoMessage(i18n("Helix Core returned error: <unknown>"));
+
+   // since this is a serious error, emit trackEnded so amarok knows to move on
+   play_finished( m_current );
 }
 
 
