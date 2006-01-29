@@ -156,7 +156,8 @@ Medium* DeviceManager::getDevice( QString name )
     QString mountwhere, halid;
     for ( it = currMediumList.begin(); it != currMediumList.end(); it++ )
     {
-        if ( (*it).fsType() != "vfat") //&& other supported fsTypes here later
+        if ( (*it).fsType() != "vfat" &&
+                (*it).fsType() != "hfsplus" ) //&& other supported fsTypes here later
             continue;
         if ( (*it).name() == name )
         {
