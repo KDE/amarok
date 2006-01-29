@@ -494,9 +494,8 @@ MediaBrowser::deviceSwitch( const QString &name )
 void
 MediaBrowser::transcodingFinished( const QString &src, const QString &dst )
 {
-    KURL srcJob, srcResult;
-    srcJob.fromPathOrURL( m_transcodeSrc );
-    srcResult.fromPathOrURL( src );
+    KURL srcJob = KURL::fromPathOrURL( m_transcodeSrc );
+    KURL srcResult = KURL::fromPathOrURL( src );
 
     if( srcJob.path() == srcResult.path() )
     {
