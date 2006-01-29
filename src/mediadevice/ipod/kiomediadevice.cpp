@@ -86,7 +86,7 @@ KioMediaDevice::copyTrackToDevice(const MetaBundle &bundle, const PodcastInfo *p
             path = path.section("/", 0, path.contains('/')-1);
             parentdir.setPath(path);
         }
-        while( !path.isEmpty() && !(path==m_mntpnt) && !parentdir.exists() );
+        while( !path.isEmpty() && !(path==mountPoint()) && !parentdir.exists() );
         debug() << "trying to create \"" << path << "\"" << endl;
         if(!create.mkdir( create.absPath() ))
         {
@@ -422,7 +422,7 @@ KioMediaDevice::determineURLOnDevice(const MetaBundle &bundle)
         {
             suff.sprintf("_%d", i );
         }
-        trackpath = m_mntpnt
+        trackpath = mountPoint()
             + "/" + bundle.artist()
             + "/" + bundle.album()
             + "/" + track + " - " + bundle.title() + suff +  "." + type;
@@ -443,7 +443,7 @@ KioMediaDevice::getCapacity( unsigned long *total, unsigned long *available )
         return false;
 
 #ifdef HAVE_STATVFS
-    QString path = m_mntpnt;
+    QString path = mountPoint();
     struct statvfs buf;
     if(statvfs(QFile::encodeName(path), &buf) != 0)
     {

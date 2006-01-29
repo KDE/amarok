@@ -77,6 +77,7 @@ class IpodMediaDevice : public KioMediaDevice
             void              renameItem( QListViewItem *item );
 
     private:
+        bool              initializeIpod( const QString &mountpoint );
         void              writeITunesDB();
         bool              createLockFile( const QString &mountpoint );
         IpodMediaItem    *addTrackToView(Itdb_Track *track);
@@ -109,12 +110,9 @@ class IpodMediaDevice : public KioMediaDevice
 
         QCheckBox        *m_syncStatsCheck;
         QCheckBox        *m_autoDeletePodcastsCheck;
-        QLineEdit        *m_umntcmdEdit;
-        QLabel           *m_umntcmdLabel;
-        QLineEdit        *m_mntcmdEdit;
-        QLabel           *m_mntcmdLabel;
         QLineEdit        *m_mntpntEdit;
         QLabel           *m_mntpntLabel;
+        QString           m_mntpnt;
         QFile            *m_lockFile;
 };
 

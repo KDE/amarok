@@ -384,6 +384,11 @@ class MediaDevice : public QObject, public amaroK::Plugin
          */
         QString deviceNode() const { return m_deviceNode; }
 
+        /*
+         * @return the device mount point (or empty if non-applicable or unknown)
+         */
+        QString mountPoint() const { return m_mountPoint; }
+
 
     public slots:
         void abortTransfer();
@@ -391,15 +396,16 @@ class MediaDevice : public QObject, public amaroK::Plugin
         virtual void renameItem( QListViewItem *item ) {(void)item; }
         virtual void expandItem( QListViewItem *item ) {(void)item; }
         bool connectDevice( bool silent=false );
-        bool disconnectDevice();
+        bool disconnectDevice( bool postdisconnecthook=true );
 
     protected slots:
         void fileTransferFinished();
 
     private:
         int              sysCall(const QString & command);
-        int  mount();
-        int  umount();
+        int  runPreConnectCommand();
+        int  runPostDisconnectCommand();
+        QString replaceVariables( const QString &cmd ); // replace %m with mount point and %d with device node
 
         /**
          * Find a particular track
@@ -475,10 +481,10 @@ class MediaDevice : public QObject, public amaroK::Plugin
         QString     m_name;
         QString     m_uniqueId;
         QString     m_deviceNode;
+        QString     m_mountPoint;
 
-        QString     m_mntpnt;
-        QString     m_mntcmd;
-        QString     m_umntcmd;
+        QString     m_preconnectcmd;
+        QString     m_postdisconnectcmd;
         bool        m_autoDeletePodcasts;
         bool        m_syncStats;
 

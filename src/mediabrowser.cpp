@@ -41,7 +41,6 @@
 #include <qlabel.h>
 #include <qpainter.h>
 #include <qradiobutton.h>
-#include <qregexp.h>
 #include <qsimplerichtext.h>
 #include <qtimer.h>
 #include <qtooltip.h>       //QToolTip::add()
@@ -55,7 +54,6 @@
 #include <kinputdialog.h>
 #include <klocale.h>
 #include <kmessagebox.h>
-#include <kmountpoint.h>
 #include <kpopupmenu.h>
 #include <kprocess.h>
 #include <kprogress.h>
@@ -410,7 +408,10 @@ MediaBrowser::removeDevice( MediaDevice *device )
     debug() << "remove device: type=" << device->deviceType() << endl;
 
     if( device->isConnected() )
-        device->synchronizeDevice();
+    {
+        device->abortTransfer();
+        device->disconnectDevice( false /* don't run post-disconnect command */ );
+    }
     for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
             it != m_devices.end();
             it++ )
@@ -561,11 +562,6 @@ MediaBrowser::~MediaBrowser()
     {
         next = it;
         next++;
-        if( (*it)->isConnected() )
-        {
-            (*it)->abortTransfer();
-            (*it)->synchronizeDevice();
-        }
         removeDevice( *it );
     }
 
@@ -1201,7 +1197,8 @@ MediaView::viewportPaintEvent( QPaintEvent *e )
         QSimpleRichText t( i18n(
                 "<div align=center>"
                   "<h3>Media Device Browser</h3>"
-                  "Click the Connect button to access your mounted media device. "
+                  "Configure your media device and then "
+                  "click the Connect button to access your media device. "
                   "Drag and drop files to enqueue them for transfer."
                 "</div>" ), QApplication::font() );
 
@@ -1260,6 +1257,7 @@ MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/, bool construc
         {
             device->m_uniqueId = medium->id();
             device->m_deviceNode = medium->deviceNode();
+            device->m_mountPoint = medium->mountPoint();
             device->m_medium = const_cast<Medium *>(medium);
             addDevice( device );
             if( m_currentDevice == m_devices.begin()
@@ -1283,6 +1281,7 @@ MediaBrowser::pluginSelected( const Medium *medium, const QString plugin )
         {
             device->m_uniqueId = medium->id();
             device->m_deviceNode = medium->deviceNode();
+            device->m_mountPoint = medium->mountPoint();
             addDevice( device );
             if( m_currentDevice == m_devices.begin()
                     || m_currentDevice == m_devices.end() )
@@ -1425,7 +1424,10 @@ MediaBrowser::config()
     }
     connect( m_configPluginCombo, SIGNAL(activated( int )), SLOT(configSelectPlugin( int )) );
 
-
+    QLabel *connectLabel = 0;
+    QLineEdit *connectEdit = 0;
+    QLabel *disconnectLabel = 0;
+    QLineEdit *disconnectEdit = 0;
     QCheckBox *transcodeCheck = 0;
     QButtonGroup *transcodeGroup = 0;
     QRadioButton *transcodeAlways = 0;
@@ -1435,6 +1437,20 @@ MediaBrowser::config()
     {
         currentDevice()->loadConfig();
 
+        // pre-connect/post-disconnect (mount/umount)
+        connectLabel = new QLabel( m_configBox );
+        connectLabel->setText( i18n( "Pre-&connect command:" ) );
+        connectEdit = new QLineEdit( currentDevice()->m_preconnectcmd, m_configBox );
+        connectLabel->setBuddy( connectEdit );
+        QToolTip::add( connectEdit, i18n( "Set a command to be run before connecting to your device (e.g. a mount command) here.\n%d is replaced by the device node, %m by the mount point.\nEmpty commands are not executed." ) );
+
+        disconnectLabel = new QLabel( m_configBox );
+        disconnectLabel->setText( i18n( "Post-&disconnect command:" ) );
+        disconnectEdit = new QLineEdit( currentDevice()->m_postdisconnectcmd, m_configBox );
+        disconnectLabel->setBuddy( disconnectEdit );
+        QToolTip::add( disconnectEdit, i18n( "Set a command to be run after disconnecting from your device (e.g. an eject command) here.\n%d is replaced by the device node, %m by the mount point.\nEmpty commands are not executed." ) );
+
+        // transcode
         transcodeCheck = new QCheckBox( m_configBox );
         transcodeCheck->setText( i18n( "&Transcode before transferring to device" ) );
         transcodeCheck->setChecked( currentDevice()->m_transcode );
@@ -1464,6 +1480,11 @@ MediaBrowser::config()
         if( currentDevice() )
         {
             currentDevice()->applyConfig();
+            currentDevice()->m_preconnectcmd = connectEdit->text();
+            currentDevice()->setConfigString( "PreConnectCommand", currentDevice()->m_preconnectcmd );
+            currentDevice()->m_postdisconnectcmd = disconnectEdit->text();
+            currentDevice()->setConfigString( "PostDisconnectCommand", currentDevice()->m_postdisconnectcmd );
+            currentDevice()->setConfigBool( "Transcode", currentDevice()->m_transcode );
             currentDevice()->m_transcode = transcodeCheck->isChecked();
             currentDevice()->setConfigBool( "Transcode", currentDevice()->m_transcode );
             currentDevice()->m_transcodeAlways = transcodeAlways->isChecked();
@@ -1481,6 +1502,10 @@ MediaBrowser::config()
         delete transcodeRemove;
         delete transcodeWhenNecessary;
         delete transcodeGroup;
+        delete connectEdit;
+        delete connectLabel;
+        delete disconnectEdit;
+        delete disconnectLabel;
     }
 
     delete m_configPluginCombo;
@@ -1517,9 +1542,13 @@ MediaBrowser::configSelectPlugin( int index )
         MediaDevice *dev = currentDevice();
         dev->removeConfigElements( m_configBox );
         if( dev->isConnected() )
-            dev->disconnectDevice();
+        {
+            dev->abortTransfer();
+            dev->disconnectDevice( false );
+        }
         QString uniqueId = dev->uniqueId();
         QString deviceNode = dev->deviceNode();
+        QString mountPoint = dev->mountPoint();
         unloadDevicePlugin( dev );
         *m_currentDevice = loadDevicePlugin( AmarokConfig::deviceType() );
         if( !*m_currentDevice )
@@ -1535,6 +1564,7 @@ MediaBrowser::configSelectPlugin( int index )
         dev->init( this );
         dev->m_uniqueId = uniqueId;
         dev->m_deviceNode = deviceNode;
+        dev->m_mountPoint = mountPoint;
         dev->loadConfig();
 
         m_configBox->hide();
@@ -1550,9 +1580,6 @@ MediaBrowser::configSelectPlugin( int index )
         }
 
         updateDevices();
-
-        if( dev->isConnected() )
-            dev->synchronizeDevice();
     }
 }
 
@@ -1729,6 +1756,12 @@ MediaDevice::loadConfig()
     m_transcode = configBool( "Transcode" );
     m_transcodeAlways = configBool( "TranscodeAlways" );
     m_transcodeRemove = configBool( "TranscodeRemove" );
+    m_preconnectcmd = configString( "PreConnectCommand" );
+    if( m_preconnectcmd.isEmpty() )
+        m_preconnectcmd = configString( "MountCommand" );
+    m_postdisconnectcmd = configString( "PostDisconnectCommand" );
+    if( m_postdisconnectcmd.isEmpty() )
+        m_postdisconnectcmd = configString( "UmountCommand" );
 }
 
 QString
@@ -1884,30 +1917,42 @@ MediaQueue::URLsAdded()
         m_parent->currentDevice()->transferFiles();
 }
 
-int MediaDevice::mount()
+QString
+MediaDevice::replaceVariables( const QString &cmd )
 {
-    debug() << "mounting" << endl;
-    QString cmdS=m_mntcmd;
+    QString result = cmd;
+    result.replace( "%d", deviceNode() );
+    result.replace( "%m", mountPoint() );
+    return result;
+}
 
-    debug() << "attempting mount with command: [" << cmdS << "]" << endl;
-    int e=sysCall(cmdS);
-    debug() << "mount-cmd: e=" << e << endl;
+int MediaDevice::runPreConnectCommand()
+{
+    if( m_preconnectcmd.isEmpty() )
+        return 0;
+
+    QString cmd = replaceVariables( m_preconnectcmd );
+
+    debug() << "running pre-connect command: [" << cmd << "]" << endl;
+    int e=sysCall(cmd);
+    debug() << "pre-connect: e=" << e << endl;
     return e;
 }
 
-int MediaDevice::umount()
+int MediaDevice::runPostDisconnectCommand()
 {
-    debug() << "umounting" << endl;
-    QString cmdS=m_umntcmd;
+    if( m_postdisconnectcmd.isEmpty() )
+        return 0;
 
-    debug() << "attempting umount with command: [" << cmdS << "]" << endl;
-    int e=sysCall(cmdS);
-    debug() << "umount-cmd: e=" << e << endl;
+    QString cmd = replaceVariables( m_postdisconnectcmd );
+    debug() << "running post-disconnect command: [" << cmd << "]" << endl;
+    int e=sysCall(cmd);
+    debug() << "post-disconnect: e=" << e << endl;
 
     return e;
 }
 
-int MediaDevice::sysCall(const QString & command)
+int MediaDevice::sysCall( const QString &command )
 {
     if ( sysProc->isRunning() )  return -1;
 
@@ -1991,7 +2036,10 @@ MediaBrowser::disconnectClicked()
 
     m_transferButton->setEnabled( false );
     if( currentDevice() )
+    {
+        currentDevice()->abortTransfer();
         currentDevice()->disconnectDevice();
+    }
 
     updateButtons();
     updateStats();
@@ -2000,10 +2048,7 @@ MediaBrowser::disconnectClicked()
 bool
 MediaDevice::connectDevice( bool silent )
 {
-    if ( !m_mntcmd.isEmpty() && m_requireMount )
-    {
-        mount();
-    }
+    runPreConnectCommand();
     openDevice( silent );
     m_parent->updateStats();
     m_parent->updateButtons();
@@ -2065,7 +2110,7 @@ MediaDevice::connectDevice( bool silent )
 }
 
 bool
-MediaDevice::disconnectDevice()
+MediaDevice::disconnectDevice( bool postDisconnectHook )
 {
     while( !lockDevice( true ) )
     {
@@ -2083,17 +2128,22 @@ MediaDevice::disconnectDevice()
 
     m_parent->updateStats();
 
-    if( !m_requireMount || (!m_umntcmd.isEmpty() && umount() == 0) ) // umount was successful or no umount needed
+    if( postDisconnectHook )
     {
-        amaroK::StatusBar::instance()->shortMessage( i18n( "Device successfully disconnected" ) );
-        return true;
+        if( runPostDisconnectCommand() == 0 ) // post-disconnect (probably umount) was successful or not needed
+        {
+            amaroK::StatusBar::instance()->shortMessage( i18n( "Device successfully disconnected" ) );
+        }
+        else
+        {
+            amaroK::StatusBar::instance()->longMessage(
+                    i18n( "Post-disconnect command failed, before removing device, please make sure that it is safe to do so." ),
+                    KDE::StatusBar::Information );
+            return false;
+        }
     }
-    else
-    {
-        amaroK::StatusBar::instance()->longMessage( i18n( "Please unmount device before removal." ),
-                KDE::StatusBar::Information );
-        return false;
-    }
+
+    return true;
 }
 
 void
