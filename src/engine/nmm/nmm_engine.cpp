@@ -257,11 +257,10 @@ bool NmmEngine::play(uint)
     return false;
 
   // TODO: seek to the last position if 'resume playback on startup' is enabled
-  if( __state != Engine::Playing ) {
-    __synchronizer->wakeup();
-    __state = Engine::Playing;
-    emit stateChanged(Engine::Playing);
-  }
+
+  __synchronizer->wakeup();
+  __state = Engine::Playing;
+  emit stateChanged(Engine::Playing);
 
   return true;
 }
@@ -373,14 +372,16 @@ void NmmEngine::pause()
   if (!__composite)
     return;
 
-  // pause or play...
-  if (__state == Engine::Playing) {
+  debug() << "pause()" << endl;
+  if( __state == Engine::Playing ) {
     __synchronizer->pause();
     __state = Engine::Paused;
     emit stateChanged(Engine::Paused);
   }
-  else {
-    play();
+  else if ( __state == Engine::Paused ) {
+    __synchronizer->wakeup();
+    __state = Engine::Playing;
+    emit stateChanged(Engine::Playing);
   }
 }
 
