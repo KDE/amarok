@@ -468,7 +468,10 @@ namespace amaroK
         //the amarok binary anyway --mxcl
         debug() << "Startup ID: " << args.first() << endl;
         kapp->setStartupId( args.first().local8Bit() );
+#ifdef Q_WS_X11
+        // currently X11 only
         KStartupInfo::appStarted();
+#endif
         args.pop_front();
 
         const int argc = args.count() + 1;
