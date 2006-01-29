@@ -1400,7 +1400,7 @@ MediaBrowser::unloadDevicePlugin( MediaDevice *device )
     }
 }
 
-void
+bool
 MediaBrowser::config()
 {
     KDialogBase dialog( this, 0, false );
@@ -1475,8 +1475,10 @@ MediaBrowser::config()
         currentDevice()->addConfigElements( m_configBox );
     }
 
+    bool accepted = false;
     if ( dialog.exec() != QDialog::Rejected )
     {
+        accepted = true;
         if( currentDevice() )
         {
             currentDevice()->applyConfig();
@@ -1514,6 +1516,8 @@ MediaBrowser::config()
     updateButtons();
     updateStats();
     updateDevices();
+
+    return accepted;
 }
 
 void
@@ -1739,7 +1743,8 @@ MediaDevice::MediaDevice()
 void MediaDevice::init( MediaBrowser* parent )
 {
     m_parent = parent;
-    m_view = new MediaView( m_parent->m_views, this );
+    if( !m_view )
+        m_view = new MediaView( m_parent->m_views, this );
     m_view->hide();
 }
 
@@ -2003,9 +2008,7 @@ MediaBrowser::connectClicked()
 
     if( haveToConfig && *m_devices.at( 0 ) == currentDevice() )
     {
-        config();
-
-        if( currentDevice() && !currentDevice()->isConnected() )
+        if( config() && currentDevice() && !currentDevice()->isConnected() )
             currentDevice()->connectDevice();
     }
 
@@ -2040,6 +2043,7 @@ MediaBrowser::disconnectClicked()
         currentDevice()->disconnectDevice();
     }
 
+    updateDevices();
     updateButtons();
     updateStats();
 }
@@ -2131,6 +2135,7 @@ MediaDevice::disconnectDevice( bool postDisconnectHook )
 
     m_parent->updateStats();
 
+    bool result = true;
     if( postDisconnectHook )
     {
         if( runPostDisconnectCommand() == 0 ) // post-disconnect (probably umount) was successful or not needed
@@ -2142,9 +2147,11 @@ MediaDevice::disconnectDevice( bool postDisconnectHook )
             amaroK::StatusBar::instance()->longMessage(
                     i18n( "Post-disconnect command failed, before removing device, please make sure that it is safe to do so." ),
                     KDE::StatusBar::Information );
-            return false;
+            result = false;
         }
     }
+
+    m_deviceNode = "";
 
     return true;
 }

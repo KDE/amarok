@@ -190,7 +190,7 @@ class MediaBrowser : public QVBox
         void connectClicked();
         void disconnectClicked();
         void configSelectPlugin( int index );
-        void config();
+        bool config(); // false if cancelled by user
         KURL transcode( const KURL &src, const QString &filetype );
 
     private:

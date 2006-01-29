@@ -570,6 +570,9 @@ IpodMediaDevice::createLockFile( const QString &mountpoint )
     {
         ok = false;
         msg = i18n( "Media Device: iPod mounted at %1 already locked! " ).arg( mountpoint );
+        msg += i18n( "A common problem is that your iPod is connected twice, "
+                     "once because of being manually connected "
+                     "and a second time because of being auto-detected thereafter. " );
         msg += i18n( "If you are sure that this is an error, then remove the file %1 and try again." ).arg( mountpoint + "/amaroK.lock" );
 
     }
@@ -604,13 +607,7 @@ IpodMediaDevice::initializeIpod( const QString &mountpoint )
     // initialize iPod
     m_itdb = itdb_new();
     if( m_itdb == 0 )
-    {
-        amaroK::StatusBar::instance()->longMessage(
-                i18n("Media Device: Failed to initialize iPod mounted at %1").arg(mountpoint),
-                KDE::StatusBar::Sorry );
-
         return false;
-    }
 
     Itdb_Playlist *mpl = itdb_playlist_new("iPod", false);
     itdb_playlist_set_mpl(mpl);
@@ -625,16 +622,23 @@ IpodMediaDevice::initializeIpod( const QString &mountpoint )
     dir.setPath(path);
     if(!dir.exists())
         dir.mkdir(dir.absPath());
+    if(!dir.exists())
+        return false;
+
 
     path += mountpoint + "/iPod_Control/Music";
     dir.setPath(path);
     if(!dir.exists())
         dir.mkdir(dir.absPath());
+    if(!dir.exists())
+        return false;
 
     path = mountpoint + "/iPod_Control/iTunes";
     dir.setPath(path);
     if(!dir.exists())
         dir.mkdir(dir.absPath());
+    if(!dir.exists())
+        return false;
 
     amaroK::StatusBar::instance()->longMessage(
             i18n("Media Device: Initialized iPod mounted at %1").arg(mountpoint),
@@ -661,9 +665,11 @@ IpodMediaDevice::openDevice( bool silent )
     }
 
     // try to find a mounted ipod
+    bool ipodFound = false;
     KMountPoint::List currentmountpoints = KMountPoint::currentMountPoints();
     KMountPoint::List::Iterator mountiter = currentmountpoints.begin();
-    for(; mountiter != currentmountpoints.end(); ++mountiter) {
+    for(; mountiter != currentmountpoints.end(); ++mountiter)
+    {
         QString devicenode = (*mountiter)->mountedFrom();
         QString mountpoint = (*mountiter)->mountPoint();
 
@@ -684,9 +690,6 @@ IpodMediaDevice::openDevice( bool silent )
                     devicenode.find("scsi") < 0 )
                 continue;
 
-            if( !createLockFile( mountpoint ) )
-                continue;
-
             GError *err = 0;
             m_itdb = itdb_parse(QFile::encodeName(mountpoint), &err);
             if(err)
@@ -699,39 +702,57 @@ IpodMediaDevice::openDevice( bool silent )
                 }
                 continue;
             }
+            itdb_free( m_itdb );
+            m_itdb = 0;
         }
 
         m_mountPoint = mountpoint;
         m_deviceNode = devicenode;
+        ipodFound = true;
         break;
     }
 
-    if(!m_itdb)
+    if( !ipodFound )
     {
-        if( !createLockFile( mountPoint() ) )
-            return false;
-
-        GError *err = 0;
-        m_itdb = itdb_parse(QFile::encodeName(mountPoint()), &err);
-        if(err)
+        if( !silent )
         {
-            g_error_free(err);
+            amaroK::StatusBar::instance()->longMessage(
+                    i18n("Media Device: No mounted iPod found" ),
+                    KDE::StatusBar::Sorry );
+        }
+        return false;
+    }
+
+    if( !createLockFile( mountPoint() ) )
+        return false;
+
+    GError *err = 0;
+    m_itdb = itdb_parse(QFile::encodeName(mountPoint()), &err);
+    if(err)
+    {
+        g_error_free(err);
+        if( m_itdb )
+        {
+            itdb_free( m_itdb );
+            m_itdb = 0;
+        }
+    }
+
+    if( !m_itdb )
+    {
+        if( !initializeIpod( mountPoint() ) )
+        {
             if( m_itdb )
             {
                 itdb_free( m_itdb );
                 m_itdb = 0;
             }
-        }
 
-        if( !m_itdb )
-        {
-            if( !initializeIpod( mountPoint() ) )
-            {
-                amaroK::StatusBar::instance()->longMessage(
-                        i18n("Media Device: Failed to find iPod at %1").arg(mountPoint()),
-                        KDE::StatusBar::Sorry );
-                return false;
-            }
+            amaroK::StatusBar::instance()->longMessage(
+                    i18n("Media Device: Failed to initialize iPod mounted at %1").arg(mountPoint()),
+                    KDE::StatusBar::Sorry );
+
+            return false;
         }
     }
 
@@ -801,6 +822,7 @@ IpodMediaDevice::openDevice( bool silent )
 #endif
     {
         debug() << "device type detection failed, assuming iPod shuffle" << endl;
+        amaroK::StatusBar::instance()->shortMessage( i18n("Media device: device type detection failed, assuming iPod shuffle") );
         m_isShuffle = true;
     }
 
@@ -950,6 +972,8 @@ IpodMediaDevice::closeDevice()  //SLOT
     m_itdb = 0;
     m_masterPlaylist = 0;
     m_podcastPlaylist = 0;
+
+    m_name = "iPod";
 
     return true;
 }
