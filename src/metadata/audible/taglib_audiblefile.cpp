@@ -20,11 +20,13 @@ Audible::File::File(const char *file,
         Properties::ReadStyle propertiesStyle,
         FILE *fp)
         : TagLib::File(file)
+        , audibletag( NULL )
+        , properties( NULL )
 {
 
     //   debug ("Audible::File: create new file object.");
     //debug ( file );
-    audibletag = NULL;
+
     /**
      * Create the Audible file.
      */
