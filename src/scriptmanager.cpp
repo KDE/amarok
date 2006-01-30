@@ -752,8 +752,18 @@ ScriptManager::loadScript( const QString& path )
 
     if( !path.isEmpty() ) {
         const KURL url = KURL::fromPathOrURL( path );
+        QString name = url.fileName();
 
-        KListViewItem* li = new KListViewItem( m_gui->listView, url.fileName() );
+        QFileInfo info( path );
+        const QString specPath = info.dirPath() + "/" + info.baseName() + ".spec";
+        if( QFile::exists( specPath ) ) {
+            debug() << "Found spec file: " + specPath << endl;
+            KConfig spec( specPath, true, false );
+            if( spec.hasKey( "name" ) )
+                name = spec.readEntry( "name" );
+        }
+
+        KListViewItem* li = new KListViewItem( m_gui->listView, name );
         li->setPixmap( 0, QPixmap() );
 
         ScriptItem item;
@@ -761,8 +771,8 @@ ScriptManager::loadScript( const QString& path )
         item.process = 0;
         item.li = li;
 
-        m_scripts[url.fileName()] = item;
-        debug() << "Loaded: " << url.fileName() << endl;
+        m_scripts[name] = item;
+        debug() << "Loaded: " << name << endl;
 
         slotCurrentChanged( m_gui->listView->currentItem() );
     }

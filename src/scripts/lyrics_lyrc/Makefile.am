@@ -5,5 +5,6 @@ lyricslyrc_SCRIPTS = \
     lyrics_lyrc.rb
 
 lyricslyrc_DATA = \
+    COPYING \
     README \
-    COPYING
+    lyrics_lyrc.spec
