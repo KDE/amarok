@@ -83,7 +83,13 @@ bool amaroK::CreateMood::doJob()
 #ifdef HAVE_EXSCALIBAR
 	debug() << "MakeMood: Creating mood with Exscalibar. Hold onto your hats..." << endl;
 	ProcessorGroup g;
-	ProcessorFactory::create("Player")->init("P", g, Properties("Filename", theFilename));
+        Processor *proc = ProcessorFactory::create("Player");
+        if( !proc )
+        {
+            g.deleteAll();
+            return false;
+        }
+        proc->init("P", g, Properties("Filename", theFilename));
 	if(g["P"].isInitFailed()) { /*amaroK::StatusBar::instance()->longMessageThreadSafe("<strong>Cannot generate Mood data:</strong> Format <em>"+ext+"</em> not supported by your Exscalibar installation.", KDE::StatusBar::Warning);*/ g.deleteAll(); return false; }
 	SubProcessorFactory::createDom("Mean")->init("M", g);
 	SubProcessorFactory::createDom("FFT")->init("F", g, Properties("Size", 1024)("Step", 512));
