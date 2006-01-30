@@ -26,6 +26,7 @@ class QPoint;
 class QStringList;
 
 class KAction;
+class KComboBox;
 class KRadioAction;
 class KPopupMenu;
 class KProgress;
@@ -68,6 +69,7 @@ class CollectionBrowser: public QVBox
         KPopupMenu* m_cat2Menu;
         KPopupMenu* m_cat3Menu;
         KLineEdit*  m_searchEdit;
+        KComboBox* m_timeFilter;
         CollectionView* m_view;
         QTimer*     m_timer;
 
@@ -117,8 +119,11 @@ class CollectionView : public KListView
         ~CollectionView();
 
         static CollectionView* instance() { return m_instance; }
+
         void setFilter( const QString &filter ) { m_filter = filter; }
+        void setTimeFilter( const uint timeFilter ) { m_timeFilter = timeFilter; }
         QString filter() { return m_filter; }
+        uint timeFilter() { return m_timeFilter; }
         QString cleanPath( QString string ) {
             return string.replace( "/", "-" ).replace( ".", "" ).replace( "*", "" ).simplifyWhiteSpace();
         }
@@ -179,6 +184,8 @@ class CollectionView : public KListView
         inline void yearAlbumCalc( QString &year, QString &text );
         inline void updateTrackDepth();
 
+        uint translateTimeFilter( uint filterMode );
+
         /**Call when a category has changed **/
         void updateColumnHeader();
         // Reimplemented from KListView
@@ -194,6 +201,7 @@ class CollectionView : public KListView
 
         CollectionBrowser* m_parent;
         QString m_filter;
+        uint m_timeFilter;
         int m_cat1;
         int m_cat2;
         int m_cat3;

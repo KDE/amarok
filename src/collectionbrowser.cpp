@@ -41,6 +41,7 @@
 #include <kactioncollection.h>
 #include <kapplication.h>   //kapp
 #include <kconfig.h>
+#include <kcombobox.h>
 #include <kdialogbase.h>
 #include <kglobal.h>
 #include <kiconloader.h>    //renderView()
@@ -79,6 +80,13 @@ CollectionBrowser::CollectionBrowser( const char* name )
         QToolTip::add( button, i18n( "Clear filter" ) );
         QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to filter collection" ) );
     } //</Search LineEdit>
+
+    m_timeFilter = new KComboBox( this );
+    m_timeFilter->insertItem( i18n( "Entire Collection" ) );
+    m_timeFilter->insertItem( i18n( "Added This Year" ) );
+    m_timeFilter->insertItem( i18n( "Added This Month" ) );
+    m_timeFilter->insertItem( i18n( "Added This Week" ) );
+    m_timeFilter->insertItem( i18n( "Added Today" ) );
 
     KActionCollection* ac = new KActionCollection( this );
     m_scanAction = new KAction( i18n( "Scan Changes" ), "reload", 0, CollectionDB::instance(), SLOT( scanMonitor() ), ac, "Start Scan" );
@@ -148,6 +156,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
     connect( m_searchEdit, SIGNAL( returnPressed() ), SLOT( slotSetFilter() ) );
+    connect( m_timeFilter, SIGNAL( activated( int ) ), SLOT( slotSetFilter() ) );
 
     setFocusProxy( m_view ); //default object to get focus
 }
@@ -164,6 +173,7 @@ CollectionBrowser::slotSetFilter() //SLOT
     m_timer->stop();
 
     m_view->setFilter( m_searchEdit->text() );
+    m_view->setTimeFilter( m_timeFilter->currentItem() );
     m_view->renderView();
 }
 
@@ -359,6 +369,9 @@ CollectionView::renderView()  //SLOT
     QStringList values;
     QueryBuilder qb;
 
+    if ( translateTimeFilter( timeFilter() ) > 0 )
+        qb.addFilter( QueryBuilder::tabSong, QueryBuilder::valCreateDate, QString().setNum( QDateTime::currentDateTime().toTime_t() - translateTimeFilter( timeFilter() ) ), QueryBuilder::modeGreater );
+
     // MODE FLATVIEW
     if ( m_viewMode == modeFlatView )
     {
@@ -456,6 +469,7 @@ CollectionView::renderView()  //SLOT
         qb.setOptions( QueryBuilder::optRemoveDuplicates );
 
         //we leftjoin the query so it can return mysql NULL cells, i.e. for score and playcount
+        //this is an ugly hack - should be integrated in querybuilder itself instead.
         QString leftQuery = qb.query();
         leftQuery.replace( "INNER JOIN", "LEFT JOIN" );
         values = CollectionDB::instance()->query( leftQuery );
@@ -598,6 +612,9 @@ CollectionView::renderView()  //SLOT
         if ( q_cat1 == QueryBuilder::tabArtist )
         {
             qb.clear();
+            if ( translateTimeFilter( timeFilter() ) > 0 )
+                qb.addFilter( QueryBuilder::tabSong, QueryBuilder::valCreateDate, QString().setNum( QDateTime::currentDateTime().toTime_t() - translateTimeFilter( timeFilter() ) ), QueryBuilder::modeGreater );
+
             qb.addReturnValue( q_cat1, QueryBuilder::valName );
             qb.setGoogleFilter( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, m_filter );
             qb.setOptions( QueryBuilder::optOnlyCompilations | QueryBuilder::optRemoveDuplicates );
@@ -722,6 +739,9 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             q_cat3 = CollectionBrowser::IdAlbum;
         }
     }
+
+    if ( translateTimeFilter( timeFilter() ) > 0 )
+        qb.addFilter( QueryBuilder::tabSong, QueryBuilder::valCreateDate, QString().setNum( QDateTime::currentDateTime().toTime_t() - translateTimeFilter( timeFilter() ) ), QueryBuilder::modeGreater );
 
     switch ( item->depth() )
     {
@@ -1779,6 +1799,9 @@ CollectionView::listSelected()
         {
             bool sampler = item->text( 0 ) == i18n( "Various Artists" );
             qb.clear();
+            if ( translateTimeFilter( timeFilter() ) > 0 )
+                qb.addFilter( QueryBuilder::tabSong, QueryBuilder::valCreateDate, QString().setNum( QDateTime::currentDateTime().toTime_t() - translateTimeFilter( timeFilter() ) ), QueryBuilder::modeGreater );
+
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
 
             tmptext = item->text( 0 );
@@ -1853,6 +1876,9 @@ CollectionView::listSelected()
                 {
                     bool sampler = item->text( 0 ) == i18n( "Various Artists" );
                     qb.clear();
+                    if ( translateTimeFilter( timeFilter() ) > 0 )
+                        qb.addFilter( QueryBuilder::tabSong, QueryBuilder::valCreateDate, QString().setNum( QDateTime::currentDateTime().toTime_t() - translateTimeFilter( timeFilter() ) ), QueryBuilder::modeGreater );
+
                     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
 
                     if ( !sampler )
@@ -1958,11 +1984,13 @@ CollectionView::listSelected()
                     {
                         bool sampler = item->text( 0 ) == i18n( "Various Artists" );
                         qb.clear();
+                        if ( translateTimeFilter( timeFilter() ) > 0 )
+                            qb.addFilter( QueryBuilder::tabSong, QueryBuilder::valCreateDate, QString().setNum( QDateTime::currentDateTime().toTime_t() - translateTimeFilter( timeFilter() ) ), QueryBuilder::modeGreater );
+
                         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
 
                         if ( !sampler )
                         {
-
                             tmptext = item->text( 0 );
                             QStringList matches( item->text( 0 ) );
 
@@ -2413,6 +2441,35 @@ CollectionView::eventFilter( QObject* o, QEvent* e )
     }
 
     return KListView::eventFilter( o, e );
+}
+
+uint CollectionView::translateTimeFilter( uint filterMode )
+{
+    uint filterSecs = 0;
+    switch ( filterMode )
+    {
+        case 1:
+            // added this year
+            filterSecs = 60 * 60 * 24 * 365;
+            break;
+
+        case 2:
+            // added this month
+            filterSecs = 60 * 60 * 24 * 30;
+            break;
+
+        case 3:
+            // added this week
+            filterSecs = 60 * 60 * 24 * 7;
+            break;
+
+        case 4:
+            // added today
+            filterSecs = 60 * 60 * 24;
+            break;
+    }
+
+    return filterSecs;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

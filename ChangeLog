@@ -5,6 +5,9 @@ amaroK ChangeLog
 
 VERSION 1.4:
   FEATURES:
+    * Added a time-filter to the CollectionBrowser. Now you can make it
+      show only those tracks, which have been added to your collection
+      within the last day, week, month or year.
     * On-the-fly transcoding when transferring to media devices, provided
       that an appropriate transcoding script is running.
     * Handle compilations as such on iPods.
