@@ -262,7 +262,7 @@ ScriptManager::lyricsScripts() const
 {
     QStringList scripts;
     foreachType( ScriptMap, m_scripts )
-        if( it.key().lower().startsWith( "lyrics_" ) )
+        if( it.data().type == "lyrics" )
             scripts += it.key();
 
     return scripts;
@@ -273,7 +273,7 @@ ScriptManager::lyricsScriptRunning() const
 {
     foreachType( ScriptMap, m_scripts )
         if( it.data().process )
-            if( it.data().li->text( 0 ).lower().startsWith( "lyrics_" ) )
+            if( it.data().type == "lyrics" )
                 return true;
 
     return false;
@@ -285,7 +285,7 @@ ScriptManager::transcodeScriptRunning() const
 {
     foreachType( ScriptMap, m_scripts )
         if( it.data().process )
-            if( it.data().li->text( 0 ).lower().startsWith( "transcode" ) )
+            if( it.data().type == "transcode" )
                 return true;
 
     return false;
@@ -506,15 +506,14 @@ ScriptManager::slotRunScript()
 
     QListViewItem* const li = m_gui->listView->currentItem();
     const QString name = li->text( 0 );
-    bool isLyricsScript = name.lower().startsWith( "lyrics_" );
 
-    if( isLyricsScript && lyricsScriptRunning() ) {
+    if( m_scripts[name].type == "lyrics" && lyricsScriptRunning() ) {
         KMessageBox::sorry( 0, i18n( "Another lyrics script is already running. "
                                      "You may only run one lyrics script at a time." ) );
         return false;
     }
 
-    if( name.lower().startsWith( "transcode" ) && transcodeScriptRunning() ) {
+    if( m_scripts[name].type == "transcode" && transcodeScriptRunning() ) {
         KMessageBox::sorry( 0, i18n( "Another transcode script is already running. "
                                      "You may only run one transcode script at a time." ) );
         return false;
@@ -544,8 +543,9 @@ ScriptManager::slotRunScript()
 
     m_scripts[name].process = script;
     slotCurrentChanged( m_gui->listView->currentItem() );
-    if ( isLyricsScript )
-     emit lyricsScriptChanged();
+    if( m_scripts[name].type == "lyrics" )
+        emit lyricsScriptChanged();
+
     return true;
 }
 
@@ -753,7 +753,9 @@ ScriptManager::loadScript( const QString& path )
     if( !path.isEmpty() ) {
         const KURL url = KURL::fromPathOrURL( path );
         QString name = url.fileName();
+        QString type = "generic";
 
+        // Read and parse .spec file, if exists
         QFileInfo info( path );
         const QString specPath = info.dirPath() + "/" + info.baseName() + ".spec";
         if( QFile::exists( specPath ) ) {
@@ -761,6 +763,13 @@ ScriptManager::loadScript( const QString& path )
             KConfig spec( specPath, true, false );
             if( spec.hasKey( "name" ) )
                 name = spec.readEntry( "name" );
+            if( spec.hasKey( "type" ) ) {
+                type = spec.readEntry( "type" );
+                if( type == "lyrics" )
+                    name.prepend( i18n( "Lyrics" ) + ": " );
+                if( type == "transcode" )
+                    name.prepend( i18n( "Transcoding" ) + ": " );
+            }
         }
 
         KListViewItem* li = new KListViewItem( m_gui->listView, name );
@@ -768,6 +777,7 @@ ScriptManager::loadScript( const QString& path )
 
         ScriptItem item;
         item.url = url;
+        item.type = type;
         item.process = 0;
         item.li = li;
 

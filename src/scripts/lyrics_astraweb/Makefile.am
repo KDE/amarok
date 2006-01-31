@@ -5,5 +5,6 @@ lyricsastraweb_SCRIPTS = \
     lyrics_astraweb.rb
 
 lyricsastraweb_DATA = \
+    COPYING \
     README \
-    COPYING
+    lyrics_astraweb.spec

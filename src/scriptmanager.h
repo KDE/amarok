@@ -153,6 +153,7 @@ class ScriptManager : public KDialogBase, public EngineObserver
 
         struct ScriptItem {
             KURL           url;
+            QString        type;
             KProcIO*       process;
             QListViewItem* li;
             QString        log;

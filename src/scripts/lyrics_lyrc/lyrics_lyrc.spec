@@ -1,2 +1,2 @@
-name = Lyrics Script: Lyrc
+name = Lyrc
 type = lyrics

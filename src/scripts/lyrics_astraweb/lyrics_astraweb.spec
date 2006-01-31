@@ -1,0 +1,2 @@
+name = Astraweb
+type = lyrics
