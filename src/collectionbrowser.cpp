@@ -83,9 +83,9 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
     m_timeFilter = new KComboBox( this );
     m_timeFilter->insertItem( i18n( "Entire Collection" ) );
-    m_timeFilter->insertItem( i18n( "Added This Year" ) );
-    m_timeFilter->insertItem( i18n( "Added This Month" ) );
-    m_timeFilter->insertItem( i18n( "Added This Week" ) );
+    m_timeFilter->insertItem( i18n( "Added Within One Year" ) );
+    m_timeFilter->insertItem( i18n( "Added Within One Month" ) );
+    m_timeFilter->insertItem( i18n( "Added Within One Week" ) );
     m_timeFilter->insertItem( i18n( "Added Today" ) );
 
     KActionCollection* ac = new KActionCollection( this );
@@ -2449,17 +2449,17 @@ uint CollectionView::translateTimeFilter( uint filterMode )
     switch ( filterMode )
     {
         case 1:
-            // added this year
+            // added within one year
             filterSecs = 60 * 60 * 24 * 365;
             break;
 
         case 2:
-            // added this month
+            // added within one month
             filterSecs = 60 * 60 * 24 * 30;
             break;
 
         case 3:
-            // added this week
+            // added within one week
             filterSecs = 60 * 60 * 24 * 7;
             break;
 
