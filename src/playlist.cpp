@@ -3696,6 +3696,39 @@ void Playlist::contentsMousePressEvent( QMouseEvent *e )
         KListView::contentsMousePressEvent( e );
 }
 
+void Playlist::contentsWheelEvent( QWheelEvent *e )
+{
+    PlaylistItem* const item = static_cast<PlaylistItem*>( itemAt( contentsToViewport( e->pos() ) ) );
+    const int column = header()->sectionAt( e->pos().x() );
+    const int distance = header()->sectionPos( column ) + header()->sectionSize( column ) - e->pos().x();
+    const int maxdistance = fontMetrics().width( QString::number( m_nextTracks.count() ) ) + 7;
+    if( item && column == m_firstColumn && distance <= maxdistance && item->isQueued() )
+    {
+        const int n = e->delta() / 120,
+                  s = n / abs(n),
+                pos = item->queuePosition();
+        PLItemList changed;
+        for( int i = 1; i <= abs(n); ++i )
+        {
+            const int dest = pos + s*i;
+            if( kClamp( dest, 0, int( m_nextTracks.count() ) - 1 ) != dest )
+                break;
+            PlaylistItem* const p = m_nextTracks.at( dest );
+            if( changed.findRef( p ) == -1 )
+                changed << p;
+            if( changed.findRef( m_nextTracks.at( dest - s ) ) == -1 )
+                changed << m_nextTracks.at( dest - s );
+            m_nextTracks.replace( dest, m_nextTracks.at( dest - s ) );
+            m_nextTracks.replace( dest - s, p );
+        }
+
+        for( int i = 0, n = changed.count(); i < n; ++i )
+            changed.at(i)->update();
+    }
+    else
+        KListView::contentsWheelEvent( e );
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 /// Misc Private Methods
 ////////////////////////////////////////////////////////////////////////////////

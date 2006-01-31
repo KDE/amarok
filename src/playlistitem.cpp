@@ -207,6 +207,16 @@ void PlaylistItem::filter( const QString &expression )
     setVisible( matchesExpression( expression, listView()->visibleColumns() ) );
 }
 
+bool PlaylistItem::isQueued() const
+{
+    return queuePosition() != -1;
+}
+
+int PlaylistItem::queuePosition() const
+{
+    return listView()->m_nextTracks.findRef( this );
+}
+
 void PlaylistItem::setEnabled( bool enabled )
 {
     m_enabled = enabled;

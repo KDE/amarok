@@ -210,6 +210,7 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void contentsMouseMoveEvent( QMouseEvent *e = 0 );
         void leaveEvent( QEvent *e );
         void contentsMousePressEvent( QMouseEvent *e );
+        void contentsWheelEvent( QWheelEvent *e );
 
     private slots:
         void mediumChange( const Medium *medium, QString name );

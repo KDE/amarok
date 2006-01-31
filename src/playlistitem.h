@@ -77,6 +77,9 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
 
         void filter( const QString &expression ); //makes visible depending on whether it matches
 
+        bool isQueued() const;
+        int queuePosition() const;
+
         bool isEnabled() const { return m_enabled; }
         void setEnabled( bool enable );
 
