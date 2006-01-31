@@ -104,7 +104,6 @@ ScanController::ScanController( CollectionDB* parent, bool incremental, const QS
         setDescription( i18n( "Building Collection" ) );
         if( AmarokConfig::importPlaylists() ) *m_scanner << "-p";
         if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
-        *m_scanner << "-l" << ( amaroK::saveLocation( QString::null ) + "collection_scan.log" );
         *m_scanner << m_folders;
         m_scanner->start();
     }
@@ -179,7 +178,6 @@ ScanController::initIncremental()
 
         // Start scanner process
         if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
-        *m_scanner << "-l" << ( amaroK::saveLocation( QString::null ) + "collection_scan.log" );
         *m_scanner << "-i";
         *m_scanner << m_folders;
         m_scanner->start();

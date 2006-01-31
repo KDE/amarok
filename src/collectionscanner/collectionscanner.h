@@ -42,7 +42,7 @@ public:
                        bool recursive,
                        bool incremental,
                        bool importPlaylists,
-                       const QString& logfile );
+                       bool restart );
 
     ~CollectionScanner();
 
@@ -90,6 +90,7 @@ private:
     QStringList   m_folders;
     const bool    m_recursively;
     const bool    m_incremental;
+    const bool    m_restart;
     const QString m_logfile;
 
     QStringList   m_processedFolders;

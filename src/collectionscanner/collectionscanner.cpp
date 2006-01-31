@@ -19,6 +19,7 @@
 
 #define DEBUG_PREFIX "CollectionScanner"
 
+#include "amarok.h"
 #include "collectionscanner.h"
 #include "metabundle.h"
 #include "debug.h"
@@ -55,13 +56,14 @@ CollectionScanner::CollectionScanner( const QStringList& folders,
                                       bool recursive,
                                       bool incremental,
                                       bool importPlaylists,
-                                      const QString& logfile )
+                                      bool restart )
         : KApplication()
         , m_importPlaylists( importPlaylists )
         , m_folders( folders )
         , m_recursively( recursive )
         , m_incremental( incremental )
-        , m_logfile( logfile )
+        , m_restart( restart )
+        , m_logfile( amaroK::saveLocation( QString::null ) + "collection_scan.log"  )
 {
     QFile::remove( m_logfile );
 
@@ -99,6 +101,12 @@ CollectionScanner::doJob() //SLOT
     }
 
     if( !entries.isEmpty() ) {
+        QFile folderFile( amaroK::saveLocation( QString::null ) + "collection_scan.folders"   );
+        folderFile.open( IO_WriteOnly );
+        QTextStream stream( &folderFile );
+        stream << entries.join( "\n" );
+        folderFile.close();
+
         AttributeMap attributes;
         attributes["count"] = QString::number( entries.count() );
         writeElement( "itemcount", attributes );

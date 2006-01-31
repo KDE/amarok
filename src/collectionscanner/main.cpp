@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2003-2005 by The amaroK Developers                      *
+ *   Copyright (C) 2003-2006 by The amaroK Developers                      *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -46,8 +46,8 @@ int main( int argc, char *argv[] )
         { "incremental", I18N_NOOP( "Incremental Scan (modified folders only)" ), 0 },
         { "p", 0, 0 },
         { "importplaylists", I18N_NOOP( "Import playlist" ), 0 },
-        { "l", 0, 0 },
-        { "logfile <path>", I18N_NOOP( "Log the last processed track" ), "" },
+        { "s", 0, 0 },
+        { "restart", I18N_NOOP( "Restart the scanner at last position, after a crash" ), "" },
         { 0, 0, 0 }
     };
 
@@ -66,9 +66,9 @@ int main( int argc, char *argv[] )
     const bool recursive        = args->isSet( "recursive" );
     const bool incremental      = args->isSet( "incremental" );
     const bool importplaylists  = args->isSet( "importplaylists" );
-    const QString logfile       = args->getOption( "logfile" );
+    const bool restart          = args->isSet( "restart" );
 
-    CollectionScanner scanner( folders, recursive, incremental, importplaylists, logfile );
+    CollectionScanner scanner( folders, recursive, incremental, importplaylists, restart );
 
     registerTaglibPlugins();
 
