@@ -210,8 +210,6 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void contentsMouseMoveEvent( QMouseEvent *e = 0 );
         void leaveEvent( QEvent *e );
         void contentsMousePressEvent( QMouseEvent *e );
-        void contentsMouseReleaseEvent( QMouseEvent *e );
-        void resetPendingRatings( PlaylistItem *prevhovered );
 
     private slots:
         void mediumChange( const Medium *medium, QString name );
@@ -293,7 +291,6 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         PlaylistItem  *m_currentTrack;          //the track that is playing
         QListViewItem *m_marker;                //track that has the drag/drop marker under it
         PlaylistItem  *m_hoveredRating;         //if the mouse is hovering over the rating of an item
-        int m_stateWhenPressed;
 
         //NOTE these container types were carefully chosen
         PLItemList m_prevTracks;    //the previous history
