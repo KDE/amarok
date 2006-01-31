@@ -7,6 +7,7 @@
 #define AMAROK_MEDIABROWSER_H
 
 #include "amarok.h"
+#include "amarok_export.h"
 #include "plugin/plugin.h"   //baseclass
 
 #include <qvbox.h>           //baseclass
@@ -272,7 +273,7 @@ class MediaView : public KListView
    all items are stored in a hierarchy of MediaItems,
    when items are manipulated the MediaItems have to be updated accordingly */
 
-class MediaDevice : public QObject, public amaroK::Plugin
+class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
 {
     Q_OBJECT
     friend class MediaBrowser;

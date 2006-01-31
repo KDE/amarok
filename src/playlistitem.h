@@ -10,6 +10,7 @@
 #define PLAYLISTITEM_H
 
 #include "metabundle.h" //baseclass
+#include "amarok_export.h"
 
 #include <klistview.h> //baseclass
 #include <kurl.h>      //stack allocated
@@ -28,7 +29,7 @@ class QPainter;
 class MetaBundle;
 class Playlist;
 
-class PlaylistItem : public MetaBundle, public KListViewItem
+class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
 {
     typedef MetaBundle super;
     public:
