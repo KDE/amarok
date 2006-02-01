@@ -65,7 +65,8 @@ CollectionScanner::CollectionScanner( const QStringList& folders,
         , m_restart( restart )
         , m_logfile( amaroK::saveLocation( QString::null ) + "collection_scan.log"  )
 {
-    QFile::remove( m_logfile );
+    if( !restart )
+        QFile::remove( m_logfile );
 
     QTimer::singleShot( 0, this, SLOT( doJob() ) );
 }
@@ -80,33 +81,47 @@ CollectionScanner::~CollectionScanner()
 void
 CollectionScanner::doJob() //SLOT
 {
-    // we need to create the temp tables before readDir gets called ( for the dir stats )
-
     std::cout << "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>";
     std::cout << "<scanner>";
 
     QStringList entries;
 
-    foreachType( QStringList, m_folders ) {
-        if( (*it).isEmpty() )
-            //apparently somewhere empty strings get into the mix
-            //which results in a full-system scan! Which we can't allow
-            continue;
+    if( m_restart ) {
+        QFile logFile( m_logfile );
+        logFile.open( IO_ReadOnly );
+        QString lastFile = logFile.readAll();
 
-        QString dir = *it;
-        if( !dir.endsWith( "/" ) )
-            dir += '/';
+        QFile folderFile( amaroK::saveLocation( QString::null ) + "collection_scan.folders"   );
+        folderFile.open( IO_ReadOnly );
+        entries = QStringList::split( "\n", folderFile.readAll() );
 
-        readDir( dir, entries );
+        for( int count = entries.findIndex( lastFile ) + 1; count; --count )
+            entries.pop_front();
+
+        debug() << "Restarting at: " << entries.front() << endl;
     }
+    else {
+        foreachType( QStringList, m_folders ) {
+            if( (*it).isEmpty() )
+                //apparently somewhere empty strings get into the mix
+                //which results in a full-system scan! Which we can't allow
+                continue;
 
-    if( !entries.isEmpty() ) {
+            QString dir = *it;
+            if( !dir.endsWith( "/" ) )
+                dir += '/';
+
+            readDir( dir, entries );
+        }
+
         QFile folderFile( amaroK::saveLocation( QString::null ) + "collection_scan.folders"   );
         folderFile.open( IO_WriteOnly );
         QTextStream stream( &folderFile );
         stream << entries.join( "\n" );
         folderFile.close();
+    }
 
+    if( !entries.isEmpty() ) {
         AttributeMap attributes;
         attributes["count"] = QString::number( entries.count() );
         writeElement( "itemcount", attributes );
