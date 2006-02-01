@@ -11,6 +11,7 @@
 class PodcastChannel;
 class PodcastItem;
 class PodcastSettingsDialogBase;
+class QDomNode;
 
 class PodcastSettings : public KDialogBase
 {
@@ -20,6 +21,8 @@ class PodcastSettings : public KDialogBase
         PodcastSettings( const QString &url, const QString &save, bool autoScan, int interval,
                          int fetch, bool addToMediaDevice, bool purge, int purgeCount, QWidget* parent = 0 );
 
+        PodcastSettings( const QDomNode &channelSettings );
+        PodcastSettings(); // standard settings
 
 
         QString url()         { return m_url; }
@@ -44,6 +47,9 @@ class PodcastSettings : public KDialogBase
         void    slotUser1();
 
     private:
+
+        void initDialog();
+
         enum MediaFetch{ STREAM=0, AUTOMATIC=1 };
 
         PodcastSettingsDialogBase *m_ps;

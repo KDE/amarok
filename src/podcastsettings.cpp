@@ -23,7 +23,6 @@ PodcastSettings::PodcastSettings( const QString& url, const QString& save, bool 
                                     KDialogBase::User1|KDialogBase::Ok|KDialogBase::Cancel,
                                     KDialogBase::Ok, true,
                                     KGuiItem(i18n("Apply to all Podcasts"), "apply" ) )
-                    , m_ps( new PodcastSettingsDialogBase(this) )
                     , m_url( url )
                     , m_save( save )
                     , m_autoScan( autoScan )
@@ -32,35 +31,67 @@ PodcastSettings::PodcastSettings( const QString& url, const QString& save, bool 
                     , m_addToMediaDevice( addToMediaDevice )
                     , m_purge( purge )
                     , m_purgeCount( purgeCount )
-                    , m_applyToAll( false )
 {
+    initDialog();
+}
+
+PodcastSettings::PodcastSettings( const QDomNode &channelSettings )
+{
+    m_url = channelSettings.namedItem( "url").toElement().text();
+    m_save = channelSettings.namedItem( "savelocation").toElement().text();
+    m_autoScan = channelSettings.namedItem( "autoscan").toElement().text() == "true";
+    m_interval = channelSettings.namedItem( "scaninterval").toElement().text().toInt();
+    m_fetch = channelSettings.namedItem("fetch").toElement().text() == "automatic"?AUTOMATIC:STREAM;
+    m_addToMediaDevice = channelSettings.namedItem( "autotransfer").toElement().text() == "true";
+    m_purge = channelSettings.namedItem( "purge").toElement().text() == "true";
+    m_purgeCount = channelSettings.namedItem( "purgecount").toElement().text().toInt();
+
+}
+
+PodcastSettings::PodcastSettings()
+{
+    m_save = amaroK::saveLocation( "podcasts/data/" );
+    m_autoScan = false;
+    m_interval = 4;
+    m_fetch = AUTOMATIC;
+    m_addToMediaDevice = false;
+    m_purge = false;
+    m_purgeCount = 2;
+}
+
+void
+PodcastSettings::initDialog()
+{
+    m_ps = new PodcastSettingsDialogBase(this);
+    m_applyToAll = false;
+
     KWin::setState( winId(), NET::SkipTaskbar );
 
     setMainWidget(m_ps);
-    m_ps->m_urlLine->setText( url );
+    m_ps->m_urlLine->setText( m_url );
     m_ps->m_saveLocation->setMode( KFile::Directory | KFile::ExistingOnly );
-    m_ps->m_saveLocation->setURL( save );
+    m_ps->m_saveLocation->setURL( m_save );
 
-    m_ps->m_autoFetchCheck->setChecked( autoScan );
+    m_ps->m_autoFetchCheck->setChecked( m_autoScan );
 
-    if( fetch == STREAM )
+    if( m_fetch == STREAM )
     {
         m_ps->m_streamRadio->setChecked( true );
         m_ps->m_downloadRadio->setChecked( false );
     }
-    else if( fetch == AUTOMATIC )
+    else if( m_fetch == AUTOMATIC )
     {
         m_ps->m_streamRadio->setChecked( false );
         m_ps->m_downloadRadio->setChecked( true );
     }
 
-    m_ps->m_addToMediaDeviceCheck->setChecked( addToMediaDevice );
+    m_ps->m_addToMediaDeviceCheck->setChecked( m_addToMediaDevice );
     m_ps->m_addToMediaDeviceCheck->setEnabled( MediaBrowser::isAvailable() );
 
-    m_ps->m_purgeCheck->setChecked( purge );
-    m_ps->m_purgeCountSpinBox->setValue( purgeCount );
+    m_ps->m_purgeCheck->setChecked( m_purge );
+    m_ps->m_purgeCountSpinBox->setValue( m_purgeCount );
 
-    if( !purge )
+    if( !m_purge )
     {
         m_ps->m_purgeCountSpinBox->setEnabled( false );
         m_ps->m_purgeCountLabel->setEnabled( false );
