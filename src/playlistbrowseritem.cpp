@@ -1707,14 +1707,11 @@ PodcastItem::PodcastItem( QListViewItem *parent, QListViewItem *after, const QDo
     if( m_title.isEmpty() )
         m_title = m_url.fileName();
 
-    m_localUrlString = dynamic_cast<PodcastChannel*>(m_parent)->saveLocation().path();
+    m_localUrl = dynamic_cast<PodcastChannel*>(m_parent)->saveLocation();
 
-    QString filename = m_title;
+    m_localUrl.addPath( m_url.fileName() );
 
-    m_localUrlString += filename.replace( " ", "_" ).replace( "/", "_" );;
-    m_localUrlString += "_" + m_url.fileName();
-
-    m_localUrl = KURL::fromPathOrURL( m_localUrlString );
+    m_localUrlString = m_localUrl.path();
 
     m_downloaded = QFile::exists( m_localUrlString );
 
