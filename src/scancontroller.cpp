@@ -80,13 +80,14 @@ ScanController::ScanController( CollectionDB* parent, bool incremental, const QS
     , m_scanner( new ScannerProcIO() )
     , m_folders( folders )
     , m_incremental( incremental )
-    , m_scannerCrashed( false )
     , m_hasChanged( false )
+    , m_source( new QXmlInputSource() )
+    , m_reader( new QXmlSimpleReader() )
 {
     DEBUG_BLOCK
 
-    m_reader.setContentHandler( this );
-    m_reader.parse( &m_source, true );
+    m_reader->setContentHandler( this );
+    m_reader->parse( m_source, true );
 
     connect( m_scanner, SIGNAL( readReady( KProcIO* ) ), SLOT( slotReadReady() ) );
 
@@ -114,24 +115,16 @@ ScanController::~ScanController()
 {
     DEBUG_BLOCK
 
-    if( m_scannerCrashed ) {
-        ::error() << "CollectionScanner has crashed! Scan aborted." << endl;
-
-        QFile log( amaroK::saveLocation( QString::null ) + "collection_scan.log" );
-        log.open( IO_ReadOnly );
-        const QString& path = log.readAll();
-        if( path.isEmpty() )
-            KMessageBox::error( 0, i18n( "Sorry, the Collection Scanner has crashed." ),
-                                   i18n( "Collection Scan Error" ) );
-        else
-            KMessageBox::error( 0, i18n( "<p>Sorry, the Collection Scanner has crashed while "
-                                         "reading the file:</p><p><i>%1</i></p><p>Please remove this "
-                                         "file from your collection, then rescan the collection.</p>" )
-                                         .arg( path ), i18n( "Collection Scan Error" ) );
+    if( !isAborted() && !m_crashedFiles.empty() ) {
+        KMessageBox::information( 0, i18n( "<p>The Collection Scanner was unable to process the following files:</p>" ) +
+                                     "<i>" + m_crashedFiles.join( "<br>" ) + "</i>",
+                                     i18n( "Collection Scan Report" ) );
     }
 
     m_scanner->kill();
     delete m_scanner;
+    delete m_reader;
+    delete m_source;
 }
 
 
@@ -198,7 +191,7 @@ ScanController::doJob()
     CollectionDB::instance()->createTables( true );
     setProgressTotalSteps( 100 );
 
-
+main_loop:
     uint delayCount = 100;
 
     /// Main Loop
@@ -214,13 +207,15 @@ ScanController::doJob()
         else {
             m_dataMutex.lock();
 
+//             debug() << "PARSE: " << m_xmlData << endl;
+
             QDeepCopy<QString> data = m_xmlData;
-            m_source.setData( data );
+            m_source->setData( data );
             m_xmlData = QString::null;
 
             m_dataMutex.unlock();
 
-            if( !m_reader.parseContinue() )
+            if( !m_reader->parseContinue() )
                 ::warning() << "parseContinue() failed: " << errorString() << endl << data << endl;
         }
     }
@@ -240,8 +235,12 @@ ScanController::doJob()
 
             CollectionDB::instance()->copyTempTables(); // copy temp into permanent tables
         }
-        else
-            m_scannerCrashed = true;
+        else {
+            debug() << "Restarting scanner." << endl;
+            kapp->postEvent( this, new RestartEvent() );
+            sleep( 3 );
+            goto main_loop;
+        }
     }
 
 
@@ -357,6 +356,41 @@ ScanController::startElement( const QString&, const QString& localName, const QS
 
 
     return true;
+}
+
+
+void
+ScanController::customEvent( QCustomEvent* e )
+{
+    ThreadWeaver::Job::customEvent( e );
+
+    if( e->type() == RestartEventType )
+    {
+        debug() << "RestartEvent received." << endl;
+
+        QFile log( amaroK::saveLocation( QString::null ) + "collection_scan.log" );
+        log.open( IO_ReadOnly );
+        m_crashedFiles << log.readAll();
+
+        m_xmlData = QString::null;
+//         m_source.reset();
+        delete m_source;
+        m_source = new QXmlInputSource();
+        delete m_reader;
+        m_reader = new QXmlSimpleReader();
+        m_reader->setContentHandler( this );
+        m_reader->parse( m_source, true );
+
+        delete m_scanner;
+        m_scanner = new ScannerProcIO();
+        connect( m_scanner, SIGNAL( readReady( KProcIO* ) ), SLOT( slotReadReady() ) );
+
+        *m_scanner << "amarokcollectionscanner";
+        *m_scanner << "--nocrashhandler"; // We want to be able to catch SIGSEGV
+        if( m_incremental ) *m_scanner << "-i";
+        *m_scanner << "-s";
+        m_scanner->start();
+    }
 }
 
 

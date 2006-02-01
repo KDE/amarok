@@ -81,8 +81,10 @@ CollectionScanner::~CollectionScanner()
 void
 CollectionScanner::doJob() //SLOT
 {
-    std::cout << "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>";
-    std::cout << "<scanner>";
+//     if( !m_restart ) {
+        std::cout << "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>";
+        std::cout << "<scanner>";
+//     }
 
     QStringList entries;
 
@@ -98,7 +100,7 @@ CollectionScanner::doJob() //SLOT
         for( int count = entries.findIndex( lastFile ) + 1; count; --count )
             entries.pop_front();
 
-        debug() << "Restarting at: " << entries.front() << endl;
+//         debug() << "Restarting at: " << entries.front() << endl;
     }
     else {
         foreachType( QStringList, m_folders ) {
@@ -122,9 +124,11 @@ CollectionScanner::doJob() //SLOT
     }
 
     if( !entries.isEmpty() ) {
-        AttributeMap attributes;
-        attributes["count"] = QString::number( entries.count() );
-        writeElement( "itemcount", attributes );
+        if( !m_restart ) {
+            AttributeMap attributes;
+            attributes["count"] = QString::number( entries.count() );
+            writeElement( "itemcount", attributes );
+        }
 
         scanFiles( entries );
     }

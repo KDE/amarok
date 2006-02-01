@@ -47,16 +47,23 @@ class ScanController : public ThreadWeaver::DependentJob, public QXmlDefaultHand
     Q_OBJECT
 
     public:
+        static const int RestartEventType = 8891;
+
+        class RestartEvent : public QCustomEvent {
+            public:
+                RestartEvent() : QCustomEvent( RestartEventType ) {}
+        };
+
         static const int PlaylistFoundEventType = 8890;
 
         class PlaylistFoundEvent : public QCustomEvent {
-        public:
-            PlaylistFoundEvent( QString path )
-                : QCustomEvent( PlaylistFoundEventType )
-                , m_path( path ) {}
-            QString path() { return m_path; }
-        private:
-            QString m_path;
+            public:
+                PlaylistFoundEvent( QString path )
+                    : QCustomEvent( PlaylistFoundEventType )
+                    , m_path( path ) {}
+                QString path() { return m_path; }
+            private:
+                QString m_path;
         };
 
     public:
@@ -66,33 +73,30 @@ class ScanController : public ThreadWeaver::DependentJob, public QXmlDefaultHand
         bool isIncremental() const { return m_incremental; }
         bool hasChanged() const { return m_hasChanged; }
 
-    protected:
-        void initIncremental();
-        virtual bool doJob();
-
-        // Member variables:
-        KProcIO* const m_scanner;
-        QStringList m_folders;
-        QStringList m_foldersToRemove;
-
-        bool m_incremental;
-        bool m_scannerCrashed;
-        bool m_hasChanged;
-
-        QString m_xmlData;
-        QMutex m_dataMutex;
-
     private slots:
         void slotReadReady();
 
     private:
+        void initIncremental();
+        virtual bool doJob();
+
         bool startElement( const QString&, const QString &localName, const QString&, const QXmlAttributes &attrs );
+        void customEvent( QCustomEvent* );
 
         // Member variables:
-        QXmlInputSource m_source;
-        QXmlSimpleReader m_reader;
+        KProcIO* m_scanner;
+        QStringList m_folders;
+        QStringList m_foldersToRemove;
+        bool m_incremental;
+        bool m_hasChanged;
+
+        QString m_xmlData;
+        QMutex m_dataMutex;
+        QXmlInputSource* m_source;
+        QXmlSimpleReader* m_reader;
+
+        QStringList m_crashedFiles;
 };
 
 
 #endif // AMAROK_SCANCONTROLLER_H
-
