@@ -207,8 +207,6 @@ main_loop:
         else {
             m_dataMutex.lock();
 
-//             debug() << "PARSE: " << m_xmlData << endl;
-
             QDeepCopy<QString> data = m_xmlData;
             m_source->setData( data );
             m_xmlData = QString::null;
@@ -236,7 +234,6 @@ main_loop:
             CollectionDB::instance()->copyTempTables(); // copy temp into permanent tables
         }
         else {
-            debug() << "Restarting scanner." << endl;
             kapp->postEvent( this, new RestartEvent() );
             sleep( 3 );
             goto main_loop;
@@ -280,6 +277,7 @@ ScanController::startElement( const QString&, const QString& localName, const QS
     // playlist      Playlist file
     // image         Cover image
     // compilation   Folder to check for compilation
+    // filesize      Size of the track in bytes
 
 
     if( localName == "itemcount") {
@@ -362,8 +360,6 @@ ScanController::startElement( const QString&, const QString& localName, const QS
 void
 ScanController::customEvent( QCustomEvent* e )
 {
-    ThreadWeaver::Job::customEvent( e );
-
     if( e->type() == RestartEventType )
     {
         debug() << "RestartEvent received." << endl;
@@ -373,15 +369,16 @@ ScanController::customEvent( QCustomEvent* e )
         m_crashedFiles << log.readAll();
 
         m_xmlData = QString::null;
-//         m_source.reset();
+
         delete m_source;
         m_source = new QXmlInputSource();
         delete m_reader;
         m_reader = new QXmlSimpleReader();
+
         m_reader->setContentHandler( this );
         m_reader->parse( m_source, true );
 
-        delete m_scanner;
+        delete m_scanner; // Reusing doesn't work, so we have to destroy and reinstantiate
         m_scanner = new ScannerProcIO();
         connect( m_scanner, SIGNAL( readReady( KProcIO* ) ), SLOT( slotReadReady() ) );
 
@@ -391,6 +388,8 @@ ScanController::customEvent( QCustomEvent* e )
         *m_scanner << "-s";
         m_scanner->start();
     }
+    else
+        ThreadWeaver::Job::customEvent( e );
 }
 
 

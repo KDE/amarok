@@ -81,10 +81,9 @@ CollectionScanner::~CollectionScanner()
 void
 CollectionScanner::doJob() //SLOT
 {
-//     if( !m_restart ) {
-        std::cout << "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>";
-        std::cout << "<scanner>";
-//     }
+    std::cout << "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>";
+    std::cout << "<scanner>";
+
 
     QStringList entries;
 
@@ -93,7 +92,7 @@ CollectionScanner::doJob() //SLOT
         logFile.open( IO_ReadOnly );
         QString lastFile = logFile.readAll();
 
-        QFile folderFile( amaroK::saveLocation( QString::null ) + "collection_scan.folders"   );
+        QFile folderFile( amaroK::saveLocation( QString::null ) + "collection_scan.files"   );
         folderFile.open( IO_ReadOnly );
         entries = QStringList::split( "\n", folderFile.readAll() );
 
@@ -116,7 +115,7 @@ CollectionScanner::doJob() //SLOT
             readDir( dir, entries );
         }
 
-        QFile folderFile( amaroK::saveLocation( QString::null ) + "collection_scan.folders"   );
+        QFile folderFile( amaroK::saveLocation( QString::null ) + "collection_scan.files"   );
         folderFile.open( IO_WriteOnly );
         QTextStream stream( &folderFile );
         stream << entries.join( "\n" );
