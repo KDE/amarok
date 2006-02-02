@@ -352,7 +352,7 @@ class CollectionDB : public QObject, public EngineObserver
     private:
         //bump DATABASE_VERSION whenever changes to the table structure are made.
         // This erases tags, album, artist, genre, year, images, directory and related_artists tables.
-        static const int DATABASE_VERSION = 24;
+        static const int DATABASE_VERSION = 25;
         // Persistent Tables hold data that is somehow valuable to the user, and can't be erased when rescaning.
         // When bumping this, write code to convert the data!
         static const int DATABASE_PERSISTENT_TABLES_VERSION = 3;

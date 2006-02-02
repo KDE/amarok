@@ -310,6 +310,7 @@ CollectionDB::createTables( const bool temporary )
                     "url " + textColumnType() + ","
                     "dir " + textColumnType() + ","
                     "createdate INTEGER,"
+                    "modifydate INTEGER,"
                     "album INTEGER,"
                     "artist INTEGER,"
                     "genre INTEGER,"
@@ -1233,7 +1234,7 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
     if ( !QFileInfo( bundle->url().path() ).isReadable() ) return false;
 
     QString command = "INSERT INTO tags_temp "
-                      "( url, dir, createdate, album, artist, genre, year, title, "
+                      "( url, dir, createdate, modifydate, album, artist, genre, year, title, "
                       "composer, comment, track, discnumber, sampler, length, bitrate, "
                       "samplerate, filesize, filetype ) "
                       "VALUES ('";
@@ -1256,6 +1257,7 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
 
     command += escapeString( bundle->url().path() ) + "','";
     command += escapeString( bundle->url().directory() ) + "',";
+    command += QString::number( QFileInfo( bundle->url().path() ).created().toTime_t() ) + ",";
     command += QString::number( QFileInfo( bundle->url().path() ).lastModified().toTime_t() ) + ",";
 
     command += escapeString( QString::number( albumID( bundle->album(),   true, !incremental, false ) ) ) + ",";
@@ -1280,7 +1282,7 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
 
     //FIXME: currently there's no way to check if an INSERT query failed or not - always return true atm.
     // Now it might be possible as insert returns the rowid.
-    insert( command, NULL);
+    insert( command, NULL );
     return true;
 }
 
