@@ -116,9 +116,15 @@ ScanController::~ScanController()
     DEBUG_BLOCK
 
     if( !isAborted() && !m_crashedFiles.empty() ) {
-        KMessageBox::information( 0, i18n( "<p>The Collection Scanner was unable to process the following files:</p>" ) +
-                                     "<i>" + m_crashedFiles.join( "<br>" ) + "</i>",
-                                     i18n( "Collection Scan Report" ) );
+        KMessageBox::information( 0, i18n( "<p>The Collection Scanner was unable to process these files:</p>" ) +
+                                  "<i>" + m_crashedFiles.join( "<br>" ) + "</i>",
+                                  i18n( "Collection Scan Report" ) );
+    }
+    else if( m_crashedFiles.size() >= MAX_RESTARTS ) {
+        KMessageBox::error( 0, i18n( "<p>Sorry, the Collection Scan was aborted, since too many problems were encountered. " ) +
+                            "The following files caused problems:</p>" +
+                            "<i>" + m_crashedFiles.join( "<br>" ) + "</i>",
+                            i18n( "Collection Scan Error" ) );
     }
 
     m_scanner->kill();
@@ -218,7 +224,6 @@ main_loop:
         }
     }
 
-
     if( !isAborted() ) {
         if( m_scanner->normalExit() && !m_scanner->signalled() ) {
             if ( m_incremental ) {
@@ -234,8 +239,13 @@ main_loop:
             CollectionDB::instance()->copyTempTables(); // copy temp into permanent tables
         }
         else {
-            kapp->postEvent( this, new RestartEvent() );
-            sleep( 3 );
+            if( m_crashedFiles.size() < MAX_RESTARTS ) {
+                kapp->postEvent( this, new RestartEvent() );
+                sleep( 3 );
+            }
+            else
+                m_aborted = true;
+
             goto main_loop;
         }
     }
