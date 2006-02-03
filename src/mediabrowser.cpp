@@ -2465,6 +2465,12 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
     {
         MediaItem *next = static_cast<MediaItem*>(fi->nextSibling());
 
+        if( !fi->isVisible() )
+        {
+            fi = next;
+            continue;
+        }
+
         if( fi->isSelected() )
         {
             int ret = deleteItemFromDevice(fi, onlyPlayed);

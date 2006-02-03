@@ -443,6 +443,9 @@ IpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
     if(!item)
         return -1;
 
+    if( !item->isVisible() )
+        return 0;
+
     int count = 0;
 
     switch(item->type())
@@ -955,8 +958,8 @@ IpodMediaDevice::closeDevice()  //SLOT
 
     if( m_lockFile )
     {
-        m_lockFile->close();
         m_lockFile->remove();
+        m_lockFile->close();
         delete m_lockFile;
         m_lockFile = 0;
     }
