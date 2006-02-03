@@ -3,6 +3,7 @@ Type=Service
 Name=Generic VFAT Media Device
 Name[da]=Generisk VFAT-medieenhed
 Name[et]=Üldine VFAT meediaseade
+Name[fi]=Yleinen VFAT-medialaite
 Name[ga]=Gléas Meán Ginearálta VFAT
 Name[pt]=Dispositivo Multimédia VFAT Genérico
 Name[pt_BR]=Dispositivo Multimédia VFAT Genérico
