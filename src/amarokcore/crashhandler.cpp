@@ -11,20 +11,23 @@
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "crashhandler.h"
-#include <cstdio>         //popen, fread
 #include "debug.h"
+
 #include <kapplication.h> //invokeMailer()
 #include <kdeversion.h>
 #include <klocale.h>
 #include <ktempfile.h>
+
 #include <qfile.h>
 #include <qregexp.h>
 #include <qtextstream.h>
+
+#include <cstdio>         //popen, fread
+#include <iostream>
 #include <sys/types.h>    //pid_t
 #include <sys/wait.h>     //waitpid
 #include <taglib/taglib.h>
 #include <unistd.h>       //write, getpid
-
 
 
 
@@ -143,6 +146,7 @@ namespace amaroK
             bt.stripWhiteSpace();
 
             /// analyze usefulness
+            bool useful = true;
             const QString fileCommandOutput = runCommand( "file `which amarokapp`" );
 
             if( fileCommandOutput.find( "not stripped", false ) == -1 )
@@ -155,15 +159,18 @@ namespace amaroK
                 const int validFrames = bt.contains( QRegExp("\n#[0-9]+\\s+0x[0-9A-Fa-f]+ in [^?]") );
                 const int totalFrames = invalidFrames + validFrames;
 
-                if( totalFrames > 0 )
-                    subject += QString("[validity: %1]").arg( double(validFrames) / totalFrames, 0, 'f', 2 );
+                if( totalFrames > 0 ) {
+                    const double validity = double(validFrames) / totalFrames;
+                    subject += QString("[validity: %1]").arg( validity, 0, 'f', 2 );
+                    if( validity <= 0.5 ) useful = false;
+                }
                 subject += QString("[frames: %1]").arg( totalFrames, 3 /*padding*/ );
 
                 if( bt.find( QRegExp(" at \\w*\\.cpp:\\d+\n") ) >= 0 )
                     subject += "[line numbers]";
             }
             else
-                subject += "[empty]";
+                useful = false;
 
             subject += QString("[%1]").arg( AmarokConfig::soundSystem().remove( QRegExp("-?engine") ) );
 
@@ -174,23 +181,30 @@ namespace amaroK
             //TODO -O optimization can rearrange execution and stuff so show a warning for the developer
             //TODO pass the CXXFLAGS used with the email
 
-            body += "==== file `which amarokapp` =======\n";
-            body += fileCommandOutput + "\n\n";
-            body += "==== (gdb) bt =====================\n";
-            body += bt + "\n\n";
-            body += "==== kdBacktrace() ================\n";
-            body += kdBacktrace();
+            if( useful ) {
+                body += "==== file `which amarokapp` =======\n";
+                body += fileCommandOutput + "\n\n";
+                body += "==== (gdb) bt =====================\n";
+                body += bt + "\n\n";
+                body += "==== kdBacktrace() ================\n";
+                body += kdBacktrace();
 
-            //TODO startup notification
-            kapp->invokeMailer(
-                    /*to*/          "amarok-backtraces@lists.sf.net",
-                    /*cc*/          QString(),
-                    /*bcc*/         QString(),
-                    /*subject*/     subject,
-                    /*body*/        body,
-                    /*messageFile*/ QString(),
-                    /*attachURLs*/  QStringList(),
-                    /*startup_id*/  "" );
+                //TODO startup notification
+                kapp->invokeMailer(
+                        /*to*/          "amarok-backtraces@lists.sf.net",
+                        /*cc*/          QString(),
+                        /*bcc*/         QString(),
+                        /*subject*/     subject,
+                        /*body*/        body,
+                        /*messageFile*/ QString(),
+                        /*attachURLs*/  QStringList(),
+                        /*startup_id*/  "" );
+            }
+            else {
+                std::cout << i18n( "\namaroK has crashed! We're terribly sorry about this :(\n\n"
+                                   "But, all is not lost! Perhaps an upgrade is already available "
+                                   "which fixes the problem. Please check your distribution's software repository.\n" ).local8Bit();
+            }
 
             //_exit() exits immediately, otherwise this
             //function is called repeatedly ad finitum
