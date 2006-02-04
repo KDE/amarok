@@ -230,7 +230,7 @@ else
     fi
 
     if test x$have_mp4v2 != xyes; then
-        echo " =   - MP4/AAC Tag Read/Write Support"
+        echo " =   - MP4/AAC Tag Write Support"
     fi
 
     if test x$have_exscalibar != xyes; then
@@ -303,7 +303,7 @@ else
     fi
 
     if test x$have_mp4v2 = xyes; then
-        echo " =   + MP4/AAC Tag Read/Write Support"
+        echo " =   + MP4/AAC Tag Write Support"
     fi
 
     if test x$have_exscalibar = xyes; then
