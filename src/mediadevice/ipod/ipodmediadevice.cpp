@@ -601,6 +601,8 @@ IpodMediaDevice::initializeIpod( const QString &mountpoint )
         return false;
     }
 
+    debug() << "initializing iPod mounted at " << mountpoint << endl;
+
     // initialize iPod
     m_itdb = itdb_new();
     if( m_itdb == 0 )
@@ -623,7 +625,7 @@ IpodMediaDevice::initializeIpod( const QString &mountpoint )
         return false;
 
 
-    path += mountpoint + "/iPod_Control/Music";
+    path = mountpoint + "/iPod_Control/Music";
     dir.setPath(path);
     if(!dir.exists())
         dir.mkdir(dir.absPath());
