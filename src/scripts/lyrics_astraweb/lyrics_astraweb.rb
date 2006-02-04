@@ -41,8 +41,6 @@ def fetchLyrics( artist, title )
     body.gsub!( "\n", "" ) # No need for \n, just complicates our RegExps
     body = /(<tr><td bgcolor="#BBBBBB".*)(More Songs &gt)/.match( body )[1].to_s()
 
-    lyrics = "Suggestions : <br>"
-
     doc = REXML::Document.new()
     root = doc.add_element( "suggestions" )
 
