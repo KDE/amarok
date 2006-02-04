@@ -575,11 +575,11 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
 
                 // Left part
                 if( column == listView()->m_firstColumn ) {
-                    QImage tmpImage = currentTrackLeft.smoothScale( currentTrackLeft.width(), height() );
+                    QImage tmpImage = currentTrackLeft.smoothScale( 1000, height(), QImage::ScaleMin );
                     KIconEffect::colorize( tmpImage, cg.highlight(), colorize1 );
                     KIconEffect::colorize( tmpImage, glowBase, colorize2 );
                     p.drawImage( 0, 0, tmpImage );
-                    leftOffset = currentTrackLeft.width();
+                    leftOffset = tmpImage.width();
                     margin += 6;
                 }
 
@@ -587,11 +587,11 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                 else
                 if( column == Playlist::instance()->mapToLogicalColumn( Playlist::instance()->numVisibleColumns() - 1 ) )
                 {
-                    QImage tmpImage = currentTrackRight.smoothScale( currentTrackRight.width(), height() );
+                    QImage tmpImage = currentTrackRight.smoothScale( 1000, height(), QImage::ScaleMin );
                     KIconEffect::colorize( tmpImage, cg.highlight(), colorize1 );
                     KIconEffect::colorize( tmpImage, glowBase, colorize2 );
-                    p.drawImage( width - currentTrackRight.width(), 0, tmpImage );
-                    rightOffset = currentTrackRight.width();
+                    p.drawImage( width - tmpImage.width(), 0, tmpImage );
+                    rightOffset = tmpImage.width();
                     margin += 6;
                 }
 
