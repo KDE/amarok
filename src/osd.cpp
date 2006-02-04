@@ -19,6 +19,7 @@
 #include "osd.h"
 #include "playlist.h"        //if osdUsePlaylistColumns()
 #include "playlistitem.h"    //ditto
+#include "qstringx.h"
 
 #include <kapplication.h>
 #include <kpixmap.h>
@@ -491,7 +492,8 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
             static const QValueList<int> parens = //display these in parentheses
                 QValueList<int>() << PlaylistItem::PlayCount  << PlaylistItem::Year   << PlaylistItem::Comment
                                   << PlaylistItem::Genre      << PlaylistItem::Length << PlaylistItem::Bitrate
-                                  << PlaylistItem::LastPlayed << PlaylistItem::Rating << PlaylistItem::Score;
+                                  << PlaylistItem::LastPlayed << PlaylistItem::Rating << PlaylistItem::Score
+                                  << PlaylistItem::Filesize;
 
             for( int n = Playlist::instance()->numVisibleColumns(), i = 0, column; i < n; ++i )
             {
@@ -513,37 +515,21 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
         }
         else
         {
-            // we special case prettyTitle and put it first
-            // so that we handle things like streams better
-            // keep these 1:1 with the playlist's columns otherwise
-            static const MyVector<QString> tokens =
-                MyVector<QString>() << "%artist - %title" << "%file"      << "%title"      << "%artist"
-                                    << "%composer"        << "%year"      << "%album"      << "%disc"
-                                    << "%track"           << "%genre"     << "%comment"    << "%directory"
-                                    << "%type"            << "%length"    << "%bitrate"    << "%samplerate"
-                                    << "%score"           << "%rating"    << "%playcount"  << "%lastplayed";
+            QMap<QString, QString> args;
+            args["prettytitle"] = bundle.prettyTitle();
+            for( int i = 0; i < PlaylistItem::NUM_COLUMNS; ++i )
+                args[bundle.exactColumnName( i ).lower()] = bundle.prettyText( i );
+            args["score"] = QString::number( score );
+            args["rating"] = QString().fill( '*', rating );
+            args["playcount"] =  QString::number( CollectionDB::instance() ->getPlayCount( bundle.url().path() ) );
+            args["lastplayed"] = amaroK::verboseTimeSince(
+                    CollectionDB::instance()->getLastPlay( bundle.url().path() ).toTime_t() ); 
+            if( bundle.length() <= 0 )
+                args["length"] = QString::null;
+            args["filesize"] = QString::number( bundle.filesize() );
 
-            text = AmarokConfig::osdText();
-
-            for( MyVector<QString>::ConstIterator tok = tokens.begin(), end = tokens.end(), tag = tags.begin(); tok != end; ++tok, ++tag )
-            {
-                if( (*tok).isNull() )
-                    continue;
-                if( (*tag).isEmpty() ) {
-                    text.remove( QRegExp(QString("\\{[^}]*%1[^{]*\\}").arg( *tok )) );
-                    text.remove( *tok ); //above only works if {} surround the token
-                }
-                else
-                    //NOTE leaves the {} braces
-                    text.replace( *tok, *tag );
-            }
-
-            text.remove( '{' );
-            text.remove( '}' );
-            text.replace( QRegExp("\n{2,}"), "\n" ); //multiple \n characters may remain
-            text.replace( "&lt;",  "<" );
-            text.replace( "&gt;",  ">" );
-            text.replace( "&amp;", "&" ); //replace some common HTML type stuff
+            QStringx osd = AmarokConfig::osdText();
+            text = osd.namedOptArgs( args );
 
             // KDE 3.3 rejects \n in the .kcfg file, and KConfig turns \n into \\n, so...
             text.replace( "\\n", "\n" );
