@@ -946,7 +946,8 @@ AC_SUBST(EXSCALIBAR_LIBS)
 
 AC_ARG_WITH(mp4v2,
     AC_HELP_STRING([--with-mp4v2],[build amaroK with M4A/AAC tag support from mp4v2/faad2]),
-    [have_mp4v2=$withval]
+    [have_mp4v2=$withval],
+    [have_mp4v2=no]
 )
 
 AC_ARG_WITH(mp4v2-dir,
