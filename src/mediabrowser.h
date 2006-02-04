@@ -175,6 +175,7 @@ class MediaBrowser : public QVBox
         void updateStats();
         void updateButtons();
         void updateDevices();
+        void prepareToQuit();
 
 
     private slots:
@@ -361,6 +362,7 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         virtual bool autoConnect() { return false; }
         virtual bool asynchronousTransfer() { return false; }
         bool         isTransferring() { return m_transferring; }
+        bool         isDeleting() { return m_deleting; }
         MediaItem   *transferredItem() { return m_transferredItem; }
         bool         isCancelled() { return m_cancelled; }
         void         setCancelled( const bool b ) { m_cancelled = b; }
@@ -506,6 +508,9 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         bool             m_hasPlaylists;
         bool             m_cancelled;
         bool             m_transferring;
+        bool             m_deleting;
+        bool             m_deferredDisconnect;
+        bool             m_runDisconnectHook;
         MediaItem       *m_transferredItem;
         QString          m_type;
 

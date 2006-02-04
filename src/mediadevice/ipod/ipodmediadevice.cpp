@@ -443,6 +443,9 @@ IpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
     if(!item)
         return -1;
 
+    if( isCancelled() )
+        return 0;
+
     if( !item->isVisible() )
         return 0;
 
@@ -512,6 +515,9 @@ IpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
                     it;
                     it = next)
             {
+                if( isCancelled() )
+                    break;
+
                 next = dynamic_cast<IpodMediaItem *>(it->nextSibling());
                 int ret = deleteItemFromDevice(it, onlyPlayed);
                 if( ret >= 0 && count >= 0 )
@@ -520,7 +526,7 @@ IpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
                     count = -1;
             }
         }
-        if(item->type() == MediaItem::PLAYLIST)
+        if(item->type() == MediaItem::PLAYLIST && !isCancelled())
         {
             m_dbChanged = true;
             itdb_playlist_remove(item->m_playlist);
@@ -535,7 +541,8 @@ IpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
             {
                 if(item->childCount() > 0)
                     debug() << "recursive deletion should have removed all children from " << item << "(" << item->text(0) << ")" << endl;
-                delete item;
+                else
+                    delete item;
             }
         }
         break;

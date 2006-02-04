@@ -68,7 +68,7 @@ KioMediaDevice::isConnected()
 }
 
 MediaItem *
-KioMediaDevice::copyTrackToDevice(const MetaBundle &bundle, const PodcastInfo *podcastInfo) // used in GpodMediaDevice
+KioMediaDevice::copyTrackToDevice(const MetaBundle &bundle, const PodcastInfo *podcastInfo) // used in IpodMediaDevice
 {
     KURL url = determineURLOnDevice(bundle);
 
@@ -105,12 +105,10 @@ KioMediaDevice::copyTrackToDevice(const MetaBundle &bundle, const PodcastInfo *p
     {
         usleep(10000);
         kapp->processEvents( 100 );
-
         if( isCancelled() )
         {
            job->kill( false /* still emit result */ );
            tryToRemove = true;
-           setCancelled( false );
         }
     }
 
@@ -586,6 +584,8 @@ KioMediaDevice::deleteFile( const KURL &url ) // used in GpodMediaDevice
     do
     {
         kapp->processEvents( 100 );
+        if( isCancelled() )
+            break;
         usleep( 10000 );
     } while( m_waitForDeletion );
 

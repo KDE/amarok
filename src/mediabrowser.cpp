@@ -332,6 +332,7 @@ MediaBrowser::MediaBrowser( const char *name )
     connect( m_disconnectButton, SIGNAL( clicked() ),        SLOT( disconnectClicked() ) );
     connect( m_transferButton,   SIGNAL( clicked() ),        SLOT( transferClicked() ) );
     connect( m_cancelButton,     SIGNAL( clicked() ),        SLOT( cancelClicked() ) );
+    connect( kapp,               SIGNAL( aboutToQuit() ),    SLOT( prepareToQuit() ) );
 
 }
 
@@ -542,10 +543,9 @@ MediaBrowser::slotSetFilter() //SLOT
         currentDevice()->view()->setFilter( m_searchEdit->text() );
 }
 
-MediaBrowser::~MediaBrowser()
+void
+MediaBrowser::prepareToQuit()
 {
-    queue()->save( amaroK::saveLocation() + "transferlist.xml" );
-
     debug() << "have to remove " << m_devices.count() << " devices" << endl;
 
     m_waitForTranscode = false;
@@ -558,6 +558,13 @@ MediaBrowser::~MediaBrowser()
         next++;
         removeDevice( *it );
     }
+}
+
+MediaBrowser::~MediaBrowser()
+{
+    prepareToQuit();
+
+    queue()->save( amaroK::saveLocation() + "transferlist.xml" );
 
     delete m_deviceCombo;
     delete m_queue;
@@ -1724,6 +1731,8 @@ MediaDevice::MediaDevice()
     , m_hasPlaylists( false )
     , m_cancelled( false )
     , m_transferring( false )
+    , m_deleting( false )
+    , m_deferredDisconnect( false )
     , m_transferredItem( 0 )
     , m_playlistItem( 0 )
     , m_podcastItem( 0 )
@@ -1965,7 +1974,7 @@ int MediaDevice::sysCall( const QString &command )
 void
 MediaDevice::abortTransfer()
 {
-    m_cancelled = true;
+    setCancelled( true );
     cancelTransfer();
 }
 
@@ -1980,6 +1989,7 @@ MediaBrowser::cancelClicked()
 void
 MediaBrowser::transferClicked()
 {
+    m_transferButton->setEnabled( false );
     if( currentDevice()
             && currentDevice()->isConnected()
             && !currentDevice()->isTransferring() )
@@ -2015,7 +2025,13 @@ MediaBrowser::connectClicked()
 void
 MediaBrowser::disconnectClicked()
 {
-    if ( m_queue->childCount() != 0 && currentDevice() && currentDevice()->isConnected() )
+    m_transferButton->setEnabled( false );
+    m_disconnectButton->setEnabled( false );
+
+    if ( m_queue->childCount() != 0 &&
+            currentDevice() &&
+            currentDevice()->isConnected() &&
+            !currentDevice()->isTransferring() )
     {
         KGuiItem transfer = KGuiItem(i18n("&Transfer"),"rebuild");
         KGuiItem disconnect = KGuiItem(i18n("Disconnect immediately"),"connect_no");
@@ -2031,7 +2047,6 @@ MediaBrowser::disconnectClicked()
         }
     }
 
-    m_transferButton->setEnabled( false );
     if( currentDevice() )
     {
         currentDevice()->disconnectDevice();
@@ -2055,6 +2070,8 @@ MediaDevice::connectDevice( bool silent )
 
     while( !lockDevice( true ) )
     {
+        if( isCancelled() )
+            return false;
         kapp->processEvents();
         usleep( 10000 );
     }
@@ -2103,6 +2120,12 @@ MediaDevice::connectDevice( bool silent )
 
     updateRootItems();
 
+    if( m_deferredDisconnect )
+    {
+        m_deferredDisconnect = false;
+        disconnectDevice( m_runDisconnectHook );
+    }
+
     return true;
 }
 
@@ -2113,10 +2136,11 @@ MediaDevice::disconnectDevice( bool postDisconnectHook )
 
     abortTransfer();
 
-    while( !lockDevice( true ) )
+    if( !lockDevice( true ) )
     {
-        kapp->processEvents();
-        usleep( 10000 );
+        m_runDisconnectHook = postDisconnectHook;
+        m_deferredDisconnect = true;
+        return false;
     }
 
     if( m_syncStats )
@@ -2252,6 +2276,8 @@ MediaDevice::transferFiles()
     if( !lockDevice( true ) )
         return;
 
+    setCancelled( false );
+
     m_transferring = true;
     m_parent->m_transferButton->setEnabled( false );
 
@@ -2380,6 +2406,8 @@ MediaDevice::transferFiles()
             }
         }
 
+        //synchronizeDevice();
+
         delete m_transferredItem;
         m_transferredItem = 0;
         m_parent->m_queue->itemCountChanged();
@@ -2390,6 +2418,12 @@ MediaDevice::transferFiles()
 
     m_parent->updateButtons();
     m_transferring = false;
+
+    if( m_deferredDisconnect )
+    {
+        m_deferredDisconnect = false;
+        disconnectDevice( m_runDisconnectHook );
+    }
 }
 
 int
@@ -2428,6 +2462,10 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
         if( !lockDevice( true ) )
             return 0;
 
+        setCancelled( false );
+
+        m_deleting = true;
+
         QPtrList<MediaItem> list;
         //NOTE we assume that currentItem is the main target
         int numFiles  = m_view->getSelectedLeaves(item, &list, true /* only selected */, onlyPlayed);
@@ -2465,6 +2503,11 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
     {
         MediaItem *next = static_cast<MediaItem*>(fi->nextSibling());
 
+        if( isCancelled() )
+        {
+            break;
+        }
+
         if( !fi->isVisible() )
         {
             fi = next;
@@ -2499,11 +2542,18 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
     {
         purgeEmptyItems();
         synchronizeDevice();
+        m_deleting = false;
         unlockDevice();
 
         if(!isTransferring())
         {
             QTimer::singleShot( 1500, m_parent->m_progressBox, SLOT(hide()) );
+        }
+
+        if( m_deferredDisconnect )
+        {
+            m_deferredDisconnect = false;
+            disconnectDevice( m_runDisconnectHook );
         }
     }
     m_parent->updateStats();
