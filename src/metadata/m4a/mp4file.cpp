@@ -7,6 +7,8 @@
 #include "mp4file.h"
 #include "boxfactory.h"
 #include "mp4tagsproxy.h"
+#include "mp4propsproxy.h"
+#include "mp4audioproperties.h"
 #include "itunesdatabox.h"
 
 using namespace TagLib;
@@ -16,8 +18,10 @@ class MP4::File::FilePrivate
 public:
   TagLib::List<MP4::Mp4IsoBox*> boxes;
   MP4::BoxFactory             boxfactory;
-  MP4::Mp4TagsProxy           proxy;
+  MP4::Mp4TagsProxy           tagsProxy;
+  MP4::Mp4PropsProxy          propsProxy;
   MP4::Tag                    mp4tag;
+  MP4::AudioProperties        mp4audioproperties;
 };
 
 //! function to fill the tags with converted proxy data, which has been parsed out of the file previously
@@ -26,7 +30,6 @@ static void fillTagFromProxy( MP4::Mp4TagsProxy& proxy, MP4::Tag& mp4tag );
 MP4::File::File(const char *file, bool readProperties, AudioProperties::ReadStyle propertiesStyle )
 	:TagLib::File( file )
 {
-    fprintf(stderr, "new mp4 file: %s\n", file );
   // create member container
   d = new MP4::File::FilePrivate();
 
@@ -42,7 +45,7 @@ MP4::File::File(const char *file, bool readProperties, AudioProperties::ReadStyl
     d->boxes.append( curbox );
   }
   // fill tags from proxy data
-  fillTagFromProxy( d->proxy, d->mp4tag );
+  fillTagFromProxy( d->tagsProxy, d->mp4tag );
 }
 
 MP4::File::~File()
@@ -64,7 +67,8 @@ Tag *MP4::File::tag() const
 
 AudioProperties * MP4::File::audioProperties() const
 {
-  return 0;
+  d->mp4audioproperties.setProxy( &d->propsProxy );
+  return &d->mp4audioproperties;
 }
 
 bool MP4::File::save()
@@ -138,9 +142,27 @@ bool MP4::File::readLongLong( TagLib::ulonglong& toRead )
   return true;
 }
 
-MP4::Mp4TagsProxy* MP4::File::proxy() const
+bool MP4::File::readFourcc( TagLib::MP4::Fourcc& fourcc )
 {
-  return &d->proxy;
+  ByteVector readtype = readBlock(4);
+
+  if( readtype.size() != 4)
+    return false;
+
+  // set fourcc
+  fourcc = readtype.data();
+
+  return true;
+}
+
+MP4::Mp4TagsProxy* MP4::File::tagProxy() const
+{
+  return &d->tagsProxy;
+}
+
+MP4::Mp4PropsProxy* MP4::File::propProxy() const
+{
+  return &d->propsProxy;
 }
 
 void fillTagFromProxy( MP4::Mp4TagsProxy& proxy, MP4::Tag& mp4tag )

@@ -23,12 +23,11 @@ MP4::Fourcc::~Fourcc()
 
 TagLib::String MP4::Fourcc::toString() const
 {
-  std::string fourcc;
-  fourcc.resize(4);
-  fourcc[0] = m_fourcc >> 24 & 0xFF;
-  fourcc[1] = m_fourcc >> 16 & 0xFF;
-  fourcc[2] = m_fourcc >>  8 & 0xFF;
-  fourcc[3] = m_fourcc       & 0xFF;
+  TagLib::String fourcc;
+  fourcc.append(static_cast<char>(m_fourcc >> 24 & 0xFF));
+  fourcc.append(static_cast<char>(m_fourcc >> 16 & 0xFF));
+  fourcc.append(static_cast<char>(m_fourcc >>  8 & 0xFF));
+  fourcc.append(static_cast<char>(m_fourcc       & 0xFF));
 
   return fourcc;
 }

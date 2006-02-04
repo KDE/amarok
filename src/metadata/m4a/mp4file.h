@@ -36,6 +36,7 @@ namespace TagLib {
   namespace MP4
   {
     class Mp4TagsProxy;
+    class Mp4PropsProxy;
 
     //! An implementation of TagLib::File with mp4 itunes specific methods
 
@@ -110,11 +111,22 @@ namespace TagLib {
       bool readLongLong( TagLib::ulonglong& toRead );
 
       /*!
+       *  Helper function to read a fourcc code
+       */
+      bool readFourcc( TagLib::MP4::Fourcc& fourcc );
+
+      /*!
        * Function to get the tags proxy for registration of the tags boxes.
        * The proxy provides direct access to the data boxes of the certain tags - normally
        * covered by several levels of subboxes
        */
-      Mp4TagsProxy* proxy() const;
+      Mp4TagsProxy* tagProxy() const;
+
+      /*!
+       * Function to get the properties proxy for registration of the properties boxes.
+       * The proxy provides direct access to the needed boxes describing audio properties.
+       */
+      Mp4PropsProxy* propProxy() const;
 
     private:
       File(const File &);

@@ -57,7 +57,7 @@ void MP4::ITunesCmtBox::parse()
     return;
   }
   // register data box
-  mp4file->proxy()->registerBox( Mp4TagsProxy::comment, d->dataBox );
+  mp4file->tagProxy()->registerBox( Mp4TagsProxy::comment, d->dataBox );
 
 #if 0
   // get data pointer - just for debuging...

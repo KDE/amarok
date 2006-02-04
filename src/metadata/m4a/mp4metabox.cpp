@@ -1,4 +1,4 @@
-#include <deque>
+#include <tlist.h>
 #include <iostream>
 #include "mp4metabox.h"
 #include "boxfactory.h"
@@ -10,7 +10,7 @@ class MP4::Mp4MetaBox::Mp4MetaBoxPrivate
 {
 public:
   //! container for all boxes in meta box
-  std::deque<Mp4IsoBox*> metaBoxes;
+  TagLib::List<Mp4IsoBox*> metaBoxes;
   //! a box factory for creating the appropriate boxes
   MP4::BoxFactory        boxfactory;
 }; // class Mp4MetaBoxPrivate
@@ -23,7 +23,7 @@ MP4::Mp4MetaBox::Mp4MetaBox( TagLib::File* file, MP4::Fourcc fourcc, TagLib::uin
 
 MP4::Mp4MetaBox::~Mp4MetaBox()
 {
-  std::deque<Mp4IsoBox*>::iterator delIter;
+  TagLib::List<Mp4IsoBox*>::Iterator delIter;
   for( delIter  = d->metaBoxes.begin();
        delIter != d->metaBoxes.end();
        delIter++ )
@@ -35,9 +35,6 @@ MP4::Mp4MetaBox::~Mp4MetaBox()
 
 void MP4::Mp4MetaBox::parse()
 {
-#if 0
-  std::cout << "    parsing meta box" << std::endl;
-#endif
   TagLib::MP4::File* mp4file = static_cast<MP4::File*>( file() );
 
   TagLib::uint totalsize = 12; // initial size of box
@@ -45,9 +42,6 @@ void MP4::Mp4MetaBox::parse()
   TagLib::uint size;
   MP4::Fourcc  fourcc;
 
-#if 0
-  std::cout << "    ";
-#endif
   while( (mp4file->readSizeAndType( size, fourcc ) == true)  )
   {
     totalsize += size;
@@ -62,13 +56,10 @@ void MP4::Mp4MetaBox::parse()
     // create the appropriate subclass and parse it
     MP4::Mp4IsoBox* curbox = d->boxfactory.createInstance( mp4file, fourcc, size, mp4file->tell() );
     curbox->parsebox();
-    d->metaBoxes.push_back( curbox );
+    d->metaBoxes.append( curbox );
 
     // check for end of meta box
     if( totalsize == MP4::Mp4IsoBox::size() )
       break;
-#if 0
-    std::cout << "    ";
-#endif
   }
 }

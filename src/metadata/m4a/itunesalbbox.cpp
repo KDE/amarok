@@ -57,7 +57,7 @@ void MP4::ITunesAlbBox::parse()
     return;
   }
   // register data box
-  mp4file->proxy()->registerBox( Mp4TagsProxy::album, d->dataBox );
+  mp4file->tagProxy()->registerBox( Mp4TagsProxy::album, d->dataBox );
 
 #if 0
   // get data pointer - just for debuging...

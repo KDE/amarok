@@ -1,8 +1,15 @@
 #include <iostream>
+#include "tstring.h"
 #include "boxfactory.h"
 #include "mp4skipbox.h"
 #include "mp4moovbox.h"
 #include "mp4mvhdbox.h"
+#include "mp4trakbox.h"
+#include "mp4mdiabox.h"
+#include "mp4minfbox.h"
+#include "mp4stblbox.h"
+#include "mp4stsdbox.h"
+#include "mp4hdlrbox.h"
 #include "mp4udtabox.h"
 #include "mp4metabox.h"
 #include "mp4ilstbox.h"
@@ -34,7 +41,9 @@ MP4::Mp4IsoBox* MP4::BoxFactory::createInstance( TagLib::File* anyfile, MP4::Fou
 {
   MP4::File * file = dynamic_cast<MP4::File *>(anyfile);
   if(!file)
-      return 0;
+    return 0;
+
+  //std::cout << "creating box for: " << fourcc.toString() << std::endl;
 
   switch( fourcc )
   {
@@ -43,6 +52,24 @@ MP4::Mp4IsoBox* MP4::BoxFactory::createInstance( TagLib::File* anyfile, MP4::Fou
     break;
   case 0x6d766864: // 'mvhd'
     return new MP4::Mp4MvhdBox( file, fourcc, size, offset );
+    break;
+  case 0x7472616b: // 'trak'
+    return new MP4::Mp4TrakBox( file, fourcc, size, offset );
+    break;
+  case 0x6d646961: // 'mdia'
+    return new MP4::Mp4MdiaBox( file, fourcc, size, offset );
+    break;
+  case 0x6d696e66: // 'minf'
+    return new MP4::Mp4MinfBox( file, fourcc, size, offset );
+    break;
+  case 0x7374626c: // 'stbl'
+    return new MP4::Mp4StblBox( file, fourcc, size, offset );
+    break;
+  case 0x73747364: // 'stsd'
+    return new MP4::Mp4StsdBox( file, fourcc, size, offset );
+    break;
+  case 0x68646c72: // 'hdlr'
+    return new MP4::Mp4HdlrBox( file, fourcc, size, offset );
     break;
   case 0x75647461: // 'udta'
     return new MP4::Mp4UdtaBox( file, fourcc, size, offset );

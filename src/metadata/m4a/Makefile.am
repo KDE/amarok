@@ -20,6 +20,16 @@ libtagm4a_la_SOURCES = \
                        mp4udtabox.cpp \
                        mp4metabox.cpp \
                        mp4tagsproxy.cpp \
+                       mp4mdiabox.cpp \
+                       mp4minfbox.cpp \
+                       mp4audioproperties.cpp \
+                       mp4hdlrbox.cpp \
+                       mp4stblbox.cpp \
+                       mp4audiosampleentry.cpp \
+                       mp4stsdbox.cpp \
+                       mp4sampleentry.cpp \
+                       mp4trakbox.cpp \
+                       mp4propsproxy.cpp \
                        itunesnambox.cpp \
                        itunesartbox.cpp \
                        itunesalbbox.cpp \
@@ -48,6 +58,16 @@ noinst_HEADERS = \
                          mp4udtabox.h \
                          mp4metabox.h \
                          mp4tagsproxy.h \
+                         mp4audioproperties.h \
+                         mp4hdlrbox.h \
+                         mp4propsproxy.h \
+                         mp4mdiabox.h \
+                         mp4stsdbox.h \
+                         mp4trakbox.h \
+                         mp4stblbox.h \
+                         mp4audiosampleentry.h \
+                         mp4minfbox.h \
+                         mp4sampleentry.h \
                          itunesnambox.h \
                          itunesartbox.h \
                          itunesalbbox.h \

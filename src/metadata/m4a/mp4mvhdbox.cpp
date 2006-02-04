@@ -3,6 +3,7 @@
 #include "mp4mvhdbox.h"
 #include "boxfactory.h"
 #include "mp4file.h"
+#include "mp4propsproxy.h"
 
 using namespace TagLib;
 
@@ -113,4 +114,6 @@ void MP4::Mp4MvhdBox::parse()
 
   if( !mp4file->readInt( d->nextTrackID ) )
     return;
+  // register at proxy
+  mp4file->propProxy()->registerMvhd( this );
 }
