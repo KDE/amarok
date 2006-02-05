@@ -6,6 +6,10 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+ <markey>  Tooltips don't work for 3rd level items in the Playlist Browser. They do how
+           however work (for me) for 2nd level items. Very bad, cause you can't read the
+           text!
+
  <markey>  Should we put "Repeat Track" in the playlist context menu? Seems to make sense.
         :aumuell Or change the possible repeat mode states from "on" and "off" to
                 "off", "repeat playlist", "repeat title" and "repeat album"? The last would
