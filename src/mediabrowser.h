@@ -61,6 +61,7 @@ class MediaItem : public KListViewItem
 
         KURL url() const;
         const MetaBundle *bundle() const;
+        void setBundle( MetaBundle *bundle );
         PodcastInfo *podcastInfo() const { return m_podcastInfo; }
 
         enum Type { UNKNOWN, ARTIST, ALBUM, TRACK, PODCASTSROOT, PODCASTCHANNEL,
@@ -87,10 +88,7 @@ class MediaItem : public KListViewItem
         void paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align );
 
         //attributes:
-        mutable MetaBundle *m_bundle;
-
         int          m_order;
-        mutable long m_size;
         Type         m_type;
         QString      m_playlistName;
         PodcastInfo *m_podcastInfo;
@@ -107,6 +105,9 @@ class MediaItem : public KListViewItem
         static QPixmap *s_pixStale;
         static QPixmap *s_pixOrphaned;
         static QPixmap *s_pixDirectory;
+
+    private:
+        mutable MetaBundle *m_bundle;
 };
 
 class MediaQueue : public KListView

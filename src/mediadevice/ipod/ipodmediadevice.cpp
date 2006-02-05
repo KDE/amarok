@@ -78,21 +78,19 @@ class IpodMediaItem : public MediaItem
         void init() {m_track=0; m_playlist=0;}
         void bundleFromTrack( Itdb_Track *track, const QString& path )
         {
-            if( m_bundle )
-                delete m_bundle;
-
-            m_bundle = new MetaBundle();
-            m_bundle->setArtist( QString::fromUtf8( track->artist ) );
-            m_bundle->setAlbum( QString::fromUtf8( track->album ) );
-            m_bundle->setTitle( QString::fromUtf8( track->title ) );
-            m_bundle->setComment( QString::fromUtf8( track->comment ) );
-            m_bundle->setGenre( QString::fromUtf8( track->genre ) );
-            m_bundle->setYear( track->year );
-            m_bundle->setTrack( track->track_nr );
-            m_bundle->setLength( track->tracklen/1000 );
-            m_bundle->setBitrate( track->bitrate );
-            m_bundle->setSampleRate( track->samplerate );
-            m_bundle->setPath( path );
+            MetaBundle *bundle = new MetaBundle();
+            bundle->setArtist( QString::fromUtf8( track->artist ) );
+            bundle->setAlbum( QString::fromUtf8( track->album ) );
+            bundle->setTitle( QString::fromUtf8( track->title ) );
+            bundle->setComment( QString::fromUtf8( track->comment ) );
+            bundle->setGenre( QString::fromUtf8( track->genre ) );
+            bundle->setYear( track->year );
+            bundle->setTrack( track->track_nr );
+            bundle->setLength( track->tracklen/1000 );
+            bundle->setBitrate( track->bitrate );
+            bundle->setSampleRate( track->samplerate );
+            bundle->setPath( path );
+            setBundle( bundle );
         }
         Itdb_Track *m_track;
         Itdb_Playlist *m_playlist;
@@ -503,10 +501,12 @@ IpodMediaDevice::addToPlaylist(MediaItem *mlist, MediaItem *after, QPtrList<Medi
 
         add->setType(MediaItem::PLAYLISTITEM);
         add->m_track = it->m_track;
+        MetaBundle *bundle;
         if( it->bundle() )
-            add->m_bundle = new MetaBundle( *it->bundle() );
+            bundle = new MetaBundle( *it->bundle() );
         else
-            add->m_bundle = new MetaBundle();
+            bundle = new MetaBundle();
+        add->setBundle( bundle );
         add->setText(0, QString::fromUtf8(it->m_track->artist) + " - " + QString::fromUtf8(it->m_track->title) );
         add->m_order = order;
         order++;
@@ -1027,9 +1027,9 @@ IpodMediaDevice::openDevice( bool silent )
                 item->setType(MediaItem::ORPHANED);
                 KURL url = KURL::fromPathOrURL(filename);
                 MetaBundle *bundle = new MetaBundle(url);
+                item->setBundle( bundle );
                 QString title = bundle->artist() + " - " + bundle->title();
                 item->setText(0, title);
-                item->m_bundle = bundle;
             }
         }
     }

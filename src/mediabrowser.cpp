@@ -612,7 +612,12 @@ MediaItem::init()
     setExpandable( false );
     setDragEnabled( true );
     setDropEnabled( true );
-    m_size=-1;
+}
+
+void
+MediaItem::setBundle( MetaBundle *bundle )
+{
+    m_bundle = bundle;
 }
 
 void MediaItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
@@ -1867,7 +1872,7 @@ MediaQueue::addURL( const KURL& url, MetaBundle *bundle, PodcastInfo *podcastInf
     MediaItem* item = new MediaItem( this, lastItem() );
     item->setExpandable( false );
     item->setDropEnabled( true );
-    item->m_bundle = bundle;
+    item->setBundle( bundle );
     item->m_podcastInfo = podcastInfo;
     if( podcastInfo )
         item->m_type = MediaItem::PODCASTITEM;
@@ -2292,8 +2297,11 @@ MediaDevice::transferFiles()
         const MetaBundle *bundle = m_transferredItem->bundle();
         if(!bundle)
         {
-            m_transferredItem->m_bundle = new MetaBundle( m_transferredItem->url() );
-            bundle = m_transferredItem->m_bundle;
+            debug() << "no bundle" << endl;
+            delete m_transferredItem;
+            m_transferredItem = 0;
+            m_parent->m_queue->itemCountChanged();
+            continue;
         }
 
         bool transcoding = false;
