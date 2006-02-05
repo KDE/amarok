@@ -76,7 +76,7 @@ class IpodMediaItem : public MediaItem
         IpodMediaItem(QListView *parent, QListViewItem *after) : MediaItem(parent, after) { init(); }
         IpodMediaItem(QListViewItem *parent, QListViewItem *after) : MediaItem(parent, after) { init(); }
         void init() {m_track=0; m_playlist=0;}
-        void bundleFromTrack( Itdb_Track *track )
+        void bundleFromTrack( Itdb_Track *track, const QString& path )
         {
             if( m_bundle )
                 delete m_bundle;
@@ -92,6 +92,7 @@ class IpodMediaItem : public MediaItem
             m_bundle->setLength( track->tracklen/1000 );
             m_bundle->setBitrate( track->bitrate );
             m_bundle->setSampleRate( track->samplerate );
+            m_bundle->setPath( path );
         }
         Itdb_Track *m_track;
         Itdb_Playlist *m_playlist;
@@ -315,6 +316,91 @@ IpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bu
     return addTrackToView(track);
 }
 
+MediaItem *
+IpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle, const PodcastInfo *podcastInfo)
+{
+    KURL url = determineURLOnDevice(bundle);
+
+    // check if path exists and make it if needed
+    QFileInfo finfo( url.path() );
+    QDir dir = finfo.dir();
+    while ( !dir.exists() )
+    {
+        QString path = dir.absPath();
+        QDir parentdir;
+        QDir create;
+        do
+        {
+            create.setPath(path);
+            path = path.section("/", 0, path.contains('/')-1);
+            parentdir.setPath(path);
+        }
+        while( !path.isEmpty() && !(path==mountPoint()) && !parentdir.exists() );
+        debug() << "trying to create \"" << path << "\"" << endl;
+        if(!create.mkdir( create.absPath() ))
+        {
+            break;
+        }
+    }
+
+    m_wait = true;
+
+    KIO::CopyJob *job = KIO::copy( bundle.url(), url, false );
+    connect( job, SIGNAL( result( KIO::Job * ) ),
+            this,  SLOT( fileTransferred( KIO::Job * ) ) );
+
+    bool tryToRemove = false;
+    while ( m_wait )
+    {
+        usleep(10000);
+        kapp->processEvents( 100 );
+        if( isCancelled() )
+        {
+           job->kill( false /* still emit result */ );
+           tryToRemove = true;
+        }
+    }
+
+    if( !tryToRemove )
+    {
+       if(m_copyFailed)
+       {
+          tryToRemove = true;
+          if ( !dir.exists() )
+          {
+             amaroK::StatusBar::instance()->longMessage(
+                   i18n( "Media Device: Creating directory for file %1 failed" ).arg( url.path() ),
+                   KDE::StatusBar::Error );
+          }
+          else
+          {
+             amaroK::StatusBar::instance()->longMessage(
+                   i18n( "Media Device: Copying %1 to %2 failed" ).arg(bundle.url().prettyURL()).arg(url.prettyURL()),
+                   KDE::StatusBar::Error );
+          }
+       }
+       else
+       {
+          MetaBundle bundle2(url);
+          if(!bundle2.isValidMedia())
+          {
+             tryToRemove = true;
+             // probably s.th. went wrong
+             amaroK::StatusBar::instance()->longMessage(
+                   i18n( "Media Device: Reading tags from %1 failed" ).arg( url.prettyURL() ),
+                   KDE::StatusBar::Error );
+          }
+       }
+    }
+
+    if( tryToRemove )
+    {
+        QFile::remove( url.path() );
+        return NULL;
+    }
+
+    return insertTrackIntoDB( url.path(), bundle, podcastInfo );
+}
 
 void
 IpodMediaDevice::synchronizeDevice()
@@ -417,7 +503,10 @@ IpodMediaDevice::addToPlaylist(MediaItem *mlist, MediaItem *after, QPtrList<Medi
 
         add->setType(MediaItem::PLAYLISTITEM);
         add->m_track = it->m_track;
-        add->m_url.setPath( realPath( it->m_track->ipod_path ) );
+        if( it->bundle() )
+            add->m_bundle = new MetaBundle( *it->bundle() );
+        else
+            add->m_bundle = new MetaBundle();
         add->setText(0, QString::fromUtf8(it->m_track->artist) + " - " + QString::fromUtf8(it->m_track->title) );
         add->m_order = order;
         order++;
@@ -941,7 +1030,6 @@ IpodMediaDevice::openDevice( bool silent )
                 QString title = bundle->artist() + " - " + bundle->title();
                 item->setText(0, title);
                 item->m_bundle = bundle;
-                item->m_url.setPath(filename);
             }
         }
     }
@@ -1037,7 +1125,7 @@ IpodMediaDevice::addTrackToView(Itdb_Track *track)
             + QString::fromUtf8(track->title);
         item->setText( 0, title );
         item->m_track = track;
-        item->m_url.setPath(realPath(track->ipod_path));
+        //item->m_url.setPath(realPath(track->ipod_path));
     }
     else
     {
@@ -1082,10 +1170,8 @@ IpodMediaDevice::addTrackToView(Itdb_Track *track)
             item->setText( 0, titleName );
         item->setType( MediaItem::TRACK );
         item->m_track = track;
-        item->bundleFromTrack( track );
-        item->bundle()->setPath( realPath(track->ipod_path) );
+        item->bundleFromTrack( track, realPath(track->ipod_path) );
         item->m_order = track->track_nr;
-        item->m_url.setPath(realPath(track->ipod_path));
     }
 
     if(!stale && m_podcastPlaylist && itdb_playlist_contains_track(m_podcastPlaylist, track))
@@ -1106,9 +1192,7 @@ IpodMediaDevice::addTrackToView(Itdb_Track *track)
         item->setText( 0, QString::fromUtf8(track->title) );
         item->setType( MediaItem::PODCASTITEM );
         item->m_track = track;
-        item->bundleFromTrack( track );
-        item->bundle()->setPath( realPath(track->ipod_path) );
-        item->m_url.setPath(realPath(track->ipod_path));
+        item->bundleFromTrack( track, realPath(track->ipod_path) );
 
         PodcastInfo *info = new PodcastInfo;
         item->m_podcastInfo = info;
@@ -1132,9 +1216,7 @@ IpodMediaDevice::addTrackToView(Itdb_Track *track)
         item->setText( 0, title );
         item->setType( MediaItem::INVISIBLE );
         item->m_track = track;
-        item->bundleFromTrack( track );
-        item->bundle()->setPath( realPath(track->ipod_path) );
-        item->m_url.setPath(realPath(track->ipod_path));
+        item->bundleFromTrack( track, realPath(track->ipod_path) );
     }
 
     updateRootItems();
@@ -1185,10 +1267,8 @@ IpodMediaDevice::addPlaylistToView(Itdb_Playlist *pl)
         item->setType( MediaItem::PLAYLISTITEM );
         item->m_playlist = pl;
         item->m_track = track;
-        item->bundleFromTrack( track );
-        item->bundle()->setPath( realPath(track->ipod_path) );
+        item->bundleFromTrack( track, realPath(track->ipod_path) );
         item->m_order = i;
-        item->m_url.setPath(realPath(track->ipod_path));
 
         cur = cur->next;
         i++;

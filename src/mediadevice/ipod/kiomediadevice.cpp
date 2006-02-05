@@ -67,98 +67,6 @@ KioMediaDevice::isConnected()
     return true;
 }
 
-MediaItem *
-KioMediaDevice::copyTrackToDevice(const MetaBundle &bundle, const PodcastInfo *podcastInfo) // used in IpodMediaDevice
-{
-    KURL url = determineURLOnDevice(bundle);
-
-    // check if path exists and make it if needed
-    QFileInfo finfo( url.path() );
-    QDir dir = finfo.dir();
-    while ( !dir.exists() )
-    {
-        QString path = dir.absPath();
-        QDir parentdir;
-        QDir create;
-        do
-        {
-            create.setPath(path);
-            path = path.section("/", 0, path.contains('/')-1);
-            parentdir.setPath(path);
-        }
-        while( !path.isEmpty() && !(path==mountPoint()) && !parentdir.exists() );
-        debug() << "trying to create \"" << path << "\"" << endl;
-        if(!create.mkdir( create.absPath() ))
-        {
-            break;
-        }
-    }
-
-    m_wait = true;
-
-    KIO::CopyJob *job = KIO::copy( bundle.url(), url, false );
-    connect( job, SIGNAL( result( KIO::Job * ) ),
-            this,  SLOT( fileTransferred( KIO::Job * ) ) );
-
-    bool tryToRemove = false;
-    while ( m_wait )
-    {
-        usleep(10000);
-        kapp->processEvents( 100 );
-        if( isCancelled() )
-        {
-           job->kill( false /* still emit result */ );
-           tryToRemove = true;
-        }
-    }
-
-    if( !tryToRemove )
-    {
-       if(m_copyFailed)
-       {
-          tryToRemove = true;
-          if ( !dir.exists() )
-          {
-             amaroK::StatusBar::instance()->longMessage(
-                   i18n( "Media Device: Creating directory for file %1 failed" ).arg( url.path() ),
-                   KDE::StatusBar::Error );
-          }
-          else
-          {
-             amaroK::StatusBar::instance()->longMessage(
-                   i18n( "Media Device: Copying %1 to %2 failed" ).arg(bundle.url().prettyURL()).arg(url.prettyURL()),
-                   KDE::StatusBar::Error );
-          }
-       }
-       else
-       {
-          MetaBundle bundle2(url);
-          if(!bundle2.isValidMedia())
-          {
-             tryToRemove = true;
-             // probably s.th. went wrong
-             amaroK::StatusBar::instance()->longMessage(
-                   i18n( "Media Device: Reading tags from %1 failed" ).arg( url.prettyURL() ),
-                   KDE::StatusBar::Error );
-          }
-       }
-    }
-
-    if( tryToRemove )
-    {
-        QFile::remove( url.path() );
-        return NULL;
-    }
-
-    return insertTrackIntoDB( url.path(), bundle, podcastInfo );
-}
-
-MediaItem *
-KioMediaDevice::insertTrackIntoDB(const QString &path, const MetaBundle &bundle, const PodcastInfo*)
-{
-    return addTrackToList( path, bundle );
-}
-
 void
 KioMediaDevice::synchronizeDevice()
 {
@@ -305,38 +213,6 @@ KioMediaDevice::closeDevice()  //SLOT
 
     return true;
 }
-
-MediaItem *
-KioMediaDevice::addTrackToList( const QString &path, const MetaBundle &bundle)
-{
-    MediaItem *artist = getArtist(bundle.artist());
-    if(!artist)
-    {
-        artist = new MediaItem(m_view);
-        artist->setText( 0, bundle.artist() );
-        artist->setType( MediaItem::ARTIST );
-    }
-
-    MediaItem *album = artist->findItem(bundle.album());
-    if(!album)
-    {
-        album = new MediaItem( artist );
-        album->setText( 0, bundle.album() );
-        album->setType( MediaItem::ALBUM );
-    }
-
-    MediaItem *item = new MediaItem( album );
-    item->setText( 0, bundle.title() );
-    item->setType( MediaItem::TRACK );
-    item->m_bundle = new MetaBundle( bundle );
-    item->m_order = bundle.track();
-    item->m_url.setPath(path);
-
-    updateRootItems();
-
-    return item;
-}
-
 
 MediaItem *
 KioMediaDevice::getArtist(const QString &artist)

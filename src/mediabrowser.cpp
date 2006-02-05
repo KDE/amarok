@@ -637,25 +637,19 @@ void MediaItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int w
     KListViewItem::paintCell( p, cg, column, width, align );
 }
 
-void MediaItem::setUrl( const QString& url )
-{
-    m_url.setPath( url );
-}
-
 const MetaBundle *
 MediaItem::bundle() const
 {
-    if( !m_bundle )
-        m_bundle = new MetaBundle( url() );
     return m_bundle;
 }
 
-MetaBundle *
-MediaItem::bundle()
+KURL
+MediaItem::url() const
 {
-    if( !m_bundle )
-        m_bundle = new MetaBundle( url() );
-    return m_bundle;
+    if( bundle() )
+        return bundle()->url();
+    else
+        return KURL();
 }
 
 bool
@@ -691,20 +685,13 @@ MediaItem::isFileBacked() const
 long
 MediaItem::size() const
 {
-    if(m_size < 0)
-    {
-        if(!isFileBacked())
-        {
-            m_size = 0;
-        }
-        else
-        {
-            QFile file( url().path() );
-            m_size = file.size();
-        }
-    }
+    if( !isFileBacked() )
+        return 0;
 
-    return m_size;
+    if( bundle() )
+        bundle()->filesize();
+
+    return 0;
 }
 
 void
@@ -1880,7 +1867,6 @@ MediaQueue::addURL( const KURL& url, MetaBundle *bundle, PodcastInfo *podcastInf
     MediaItem* item = new MediaItem( this, lastItem() );
     item->setExpandable( false );
     item->setDropEnabled( true );
-    item->setUrl( url.path() );
     item->m_bundle = bundle;
     item->m_podcastInfo = podcastInfo;
     if( podcastInfo )
@@ -2190,7 +2176,7 @@ MediaDevice::syncStatsFromDevice( MediaItem *root )
         case MediaItem::TRACK:
             if( !it->parent() || static_cast<MediaItem *>( it->parent() )->type() != MediaItem::PLAYLIST )
             {
-                MetaBundle *bundle = it->bundle();
+                const MetaBundle *bundle = it->bundle();
                 for( int i=0; i<it->recentlyPlayed(); i++ )
                 {
                     // submit to last.fm
@@ -2251,7 +2237,7 @@ MediaDevice::syncStatsToDevice( MediaItem *root )
         case MediaItem::TRACK:
             if( !it->parent() || static_cast<MediaItem *>( it->parent() )->type() != MediaItem::PLAYLIST )
             {
-                MetaBundle *bundle = it->bundle();
+                const MetaBundle *bundle = it->bundle();
                 QString url = CollectionDB::instance()->getURL( *bundle );
 
                 if( url != QString::null )
@@ -2303,7 +2289,7 @@ MediaDevice::transferFiles()
     {
         debug() << "Transferring: " << m_transferredItem->url().path() << endl;
 
-        MetaBundle *bundle = m_transferredItem->bundle();
+        const MetaBundle *bundle = m_transferredItem->bundle();
         if(!bundle)
         {
             m_transferredItem->m_bundle = new MetaBundle( m_transferredItem->url() );

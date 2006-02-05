@@ -48,6 +48,7 @@ class IpodMediaDevice : public KioMediaDevice
         bool              openDevice( bool silent=false );
         bool              closeDevice();
 
+        virtual MediaItem*copyTrackToDevice(const MetaBundle& bundle, const PodcastInfo *podcastInfo);
         /**
          * Insert track already located on media device into the device's database
          * @param pathname Location of file on the device to add to the database

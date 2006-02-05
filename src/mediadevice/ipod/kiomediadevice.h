@@ -39,17 +39,7 @@ class KioMediaDevice : public MediaDevice
          */
         virtual KURL      determineURLOnDevice(const MetaBundle& bundle);
 
-        /**
-         * Insert track already located on media device into the device's database
-         * @param pathname Location of file on the device to add to the database
-         * @param bundle MetaBundle of track
-         * @param podcastInfo PodcastInfo of track if it is a podcast, 0 otherwise
-         * @return If successful, the created MediaItem in the media device view, else 0
-         */
-        virtual MediaItem*insertTrackIntoDB( const QString& pathname, const MetaBundle& bundle, const PodcastInfo *podcastInfo);
-
         virtual void      synchronizeDevice();
-        virtual MediaItem*copyTrackToDevice(const MetaBundle& bundle, const PodcastInfo *podcastInfo);
         virtual int       deleteItemFromDevice(MediaItem *item, bool onlyPlayed=false );
         virtual bool      getCapacity(unsigned long *total, unsigned long *available);
         virtual void      rmbPressed( MediaView *deviceList, QListViewItem* qitem, const QPoint& point, int );
@@ -65,7 +55,6 @@ class KioMediaDevice : public MediaDevice
         MediaItem        *getArtist(const QString &artist);
         MediaItem        *getAlbum(const QString &artist, const QString &album);
         MediaItem        *getTrack(const QString &artist, const QString &album, const QString &title, int trackNumber=-1);
-        MediaItem        *addTrackToList( const QString &pathname, const MetaBundle &bundle);
 };
 
 #endif

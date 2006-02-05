@@ -59,10 +59,8 @@ class MediaItem : public KListViewItem
 
         MediaItem *lastChild() const;
 
-        void  setUrl( const QString& url );
-        const KURL& url() const { return m_url; }
+        KURL url() const;
         const MetaBundle *bundle() const;
-              MetaBundle *bundle();
         PodcastInfo *podcastInfo() const { return m_podcastInfo; }
 
         enum Type { UNKNOWN, ARTIST, ALBUM, TRACK, PODCASTSROOT, PODCASTCHANNEL,
@@ -91,7 +89,6 @@ class MediaItem : public KListViewItem
         //attributes:
         mutable MetaBundle *m_bundle;
 
-        KURL         m_url;
         int          m_order;
         mutable long m_size;
         Type         m_type;
