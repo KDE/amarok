@@ -4071,7 +4071,7 @@ Playlist::slotQueueChanged( const PLItemList &in, const PLItemList &out)
 void
 Playlist::slotGlowTimer() //SLOT
 {
-    if( !currentTrack() || currentTrack()->isSelected() ) return;
+    if( !currentTrack() ) return;
 
     using namespace Glow;
 
