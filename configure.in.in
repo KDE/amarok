@@ -69,6 +69,25 @@ AC_SUBST(taglib_libs)
 
 
 ###############################################################################
+# BEGIN RUBY CHECK
+###############################################################################
+## TODO: Check version number >= 1.8
+
+AC_PATH_PROG(RUBY, ruby, no)
+
+if test "x$RUBY" = "xno" ; then
+    amarok_error_noruby=yes
+    DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
+    no_amarok=yes
+fi
+
+###############################################################################
+# END RUBY CHECK
+###############################################################################
+
+
+
+###############################################################################
 # BEGIN GSTREAMER CHECK
 ###############################################################################
 
@@ -372,27 +391,27 @@ if test "$build_helix" != "no"; then
 
     if test "$build_helix" = "yes"; then
         HXPLAY=`type -p hxplay`
-	RPLAY=`type -p realplay`
-	if test "$RPLAY" != "" -a -x "$RPLAY"; then
-	    HELIX_LINK=`readlink -f $RPLAY`
-	    HELIX_LINK=`dirname $HELIX_LINK`
-	    HELIX_LIBS=`unset CDPATH; cd $HELIX_LINK && pwd`
-	    if test -e "$HELIX_LIBS/common/clntcore.so"; then
-		AC_MSG_RESULT([found RealPlayer in $HELIX_LIBS])
-		build_helix=$HELIX_LIBS
-	    fi
-	elif test "$HXPLAY" != "" -a -x "$HXPLAY"; then
-	    HELIX_LINK=`readlink -f $HXPLAY`
-	    HELIX_LINK=`dirname $HELIX_LINK`
-	    HELIX_LIBS=`unset CDPATH; cd $HELIX_LINK && pwd`
-	    if test -e "$HELIX_LIBS/common/clntcore.so"; then
-		AC_MSG_RESULT([found HelixPlayer in $HELIX_LIBS])
-		build_helix=$HELIX_LIBS
-	    fi
-	fi
+    RPLAY=`type -p realplay`
+    if test "$RPLAY" != "" -a -x "$RPLAY"; then
+        HELIX_LINK=`readlink -f $RPLAY`
+        HELIX_LINK=`dirname $HELIX_LINK`
+        HELIX_LIBS=`unset CDPATH; cd $HELIX_LINK && pwd`
+        if test -e "$HELIX_LIBS/common/clntcore.so"; then
+        AC_MSG_RESULT([found RealPlayer in $HELIX_LIBS])
+        build_helix=$HELIX_LIBS
+        fi
+    elif test "$HXPLAY" != "" -a -x "$HXPLAY"; then
+        HELIX_LINK=`readlink -f $HXPLAY`
+        HELIX_LINK=`dirname $HELIX_LINK`
+        HELIX_LIBS=`unset CDPATH; cd $HELIX_LINK && pwd`
+        if test -e "$HELIX_LIBS/common/clntcore.so"; then
+        AC_MSG_RESULT([found HelixPlayer in $HELIX_LIBS])
+        build_helix=$HELIX_LIBS
+        fi
+    fi
     else
         HELIX_LIBS=`unset CDPATH; cd $build_helix && pwd`
-	build_helix=$HELIX_LIBS
+    build_helix=$HELIX_LIBS
     fi
 
     AC_DEFINE(HAVE_HELIX, 1, [have HELIX])
@@ -402,10 +421,10 @@ if test "$build_helix" != "no"; then
     fi
     AC_DEFINE_UNQUOTED(HELIX_LIBS, "${HELIX_LIBS}", [location of helix libs])
     if test "$PKGCONFIGFOUND" = "yes" ; then
-       PKG_CHECK_MODULES([ALSALIB], alsa, have_alsa=yes,have_alsa=no)
-       if test "$have_alsa" = "yes" ; then
-          AC_DEFINE(USE_HELIX_ALSA, 1, [support ALSA in the helix-engine])
-       fi
+    PKG_CHECK_MODULES([ALSALIB], alsa, have_alsa=yes,have_alsa=no)
+    if test "$have_alsa" = "yes" ; then
+        AC_DEFINE(USE_HELIX_ALSA, 1, [support ALSA in the helix-engine])
+    fi
     fi
 fi
 
@@ -874,13 +893,13 @@ if test "$build_libgpod" != "no"; then
             CPPFLAGS="$CPPFLAGS $LIBGPOD_INCLUDES"
             LDFLAGS="$LDFLAGS $LIBGPOD_LIBS"
             AC_CHECK_FUNCS(g_object_get, have_gobject_get=yes, have_gobject_get=no)
-	    if test "x$have_gobject_get" = "xno"; then
+            if test "x$have_gobject_get" = "xno"; then
                PKG_CHECK_MODULES([GOBJECT], gobject-2.0, have_gobject=yes,have_gobject=no)
                CPPFLAGS="$CPPFLAGS $GOBJECT_INCLUDES"
                LDFLAGS="$LDFLAGS $GOBJECT_LIBS"
                unset ac_cv_func_g_object_get # clear cached result
                AC_CHECK_FUNCS(g_object_get, have_gobject_get=yes, have_gobject_get=no)
-	    fi
+            fi
             if test "x$have_gobject_get" = "xyes"; then
                 AC_CHECK_FUNCS(itdb_track_set_thumbnails, have_libgpod_artwork=yes)
             fi

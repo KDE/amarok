@@ -24,6 +24,17 @@ if test x$amarok_error_taglibold = xyes; then
     echo " ="
 fi
 
+if test x$amarok_error_noruby = xyes; then
+    echo " =========================="
+    echo " ===  amaroK - ERROR  =========================================================="
+    echo " =========================="
+    echo " ="
+    echo " = amaroK cannot be built because Ruby is not installed. Please obtain Ruby"
+    echo " = (version 1.8 or later) from http://ruby-lang.org, or install a distribution"
+    echo " = package."
+    echo " ="
+fi
+
 if test x$amarok_warning_xineold = xyes; then
     echo " =========================="
     echo " ===  amaroK - WARNING  ========================================================"
@@ -125,17 +136,6 @@ if test x$amarok_warning_postgresql_notfound = xyes; then
     echo " =========================="
     echo " ="
     echo " = pg_config could not be found, this means that support for Postgresql"
-    echo " = will be disabled."
-    echo " ="
-
-fi
-
-if test x$have_exscalibar = xno; then
-    echo " =========================="
-    echo " ===  amaroK - INFORMATION  ===================================================="
-    echo " =========================="
-    echo " ="
-    echo " = exscalibar could not be found, this means that support for Moodbar"
     echo " = will be disabled."
     echo " ="
 
