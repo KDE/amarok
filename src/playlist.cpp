@@ -2421,15 +2421,11 @@ Playlist::eventFilter( QObject *o, QEvent *e )
         popup.insertItem( i18n("&Hide Column"), HIDE ); //TODO
 
         KPopupMenu sub;
-        sub.setCheckable( true );
         sub.setItemEnabled( HIDE, mouseOverColumn != -1 );
 
         for( int i = 0; i < columns(); ++i ) //columns() references a property
-            if(i != PlaylistItem::Mood || AmarokConfig::showMoodbar())
-            {
+            if( !columnWidth( i ) && ( i != PlaylistItem::Mood || AmarokConfig::showMoodbar() ) )
                 sub.insertItem( columnText( i ), i, i + 1 );
-                sub.setItemChecked( i, columnWidth( i ) != 0 );
-            }
 
         //TODO for 1.2.1
         //sub.insertSeparator();
@@ -2471,13 +2467,8 @@ Playlist::eventFilter( QObject *o, QEvent *e )
         default:
             if( col != -1 )
             {
-                //TODO can result in massively wide column appearing!
-                if( columnWidth( col ) == 0 )
-                {
-                    adjustColumn( col );
-                    header()->setResizeEnabled( true, col );
-                }
-                else hideColumn( col );
+                adjustColumn( col );
+                header()->setResizeEnabled( true, col );
             }
         }
 
