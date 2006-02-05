@@ -17,6 +17,7 @@ AMAROK_EXPORT_PLUGIN( IpodMediaDevice )
 #include <playlist.h>
 #include <collectionbrowser.h>
 #include <playlistbrowser.h>
+#include <tagdialog.h>
 #include <threadweaver.h>
 #include <metadata/tplugins.h>
 
@@ -1768,6 +1769,15 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                 menu.setItemEnabled( ADD_TO_PLAYLIST, !locked && m_playlistItem->childCount()>0 );
                 menu.insertSeparator();
             }
+
+            if( item->type() == MediaItem::ARTIST ||
+                    item->type() == MediaItem::ALBUM ||
+                    item->type() == MediaItem::TRACK )
+            {
+                menu.insertItem( SmallIconSet( "editclear" ),
+                        i18n( "Edit &Information...", "Edit &Information for %n Tracks...", urls.count()),
+                        RENAME );
+            }
             break;
 
         case MediaItem::ORPHANED:
@@ -1846,7 +1856,19 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
             switch( id )
             {
             case RENAME:
-                m_view->rename(item, 0);
+                if( item->type() == MediaItem::PLAYLIST )
+                {
+                    m_view->rename(item, 0);
+                }
+                else
+                {
+                    TagDialog *dialog = NULL;
+                    if( urls.count() == 1 )
+                        dialog = new TagDialog( urls.first(), m_view );
+                    else
+                        dialog = new TagDialog( urls, m_view );
+                    dialog->show();
+                }
                 break;
             case MAKE_PLAYLIST:
                 {
