@@ -850,7 +850,7 @@ void PlaylistItem::setup()
     KListViewItem::setup();
 
     if( this == listView()->currentTrack() )
-        setHeight( int( float( listView()->fontMetrics().height() ) * 1.8 ) );
+        setHeight( int( float( listView()->fontMetrics().height() ) * 1.7 ) );
 }
 
 
