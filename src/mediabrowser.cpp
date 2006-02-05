@@ -333,7 +333,30 @@ MediaBrowser::MediaBrowser( const char *name )
     connect( m_transferButton,   SIGNAL( clicked() ),        SLOT( transferClicked() ) );
     connect( m_cancelButton,     SIGNAL( clicked() ),        SLOT( cancelClicked() ) );
     connect( kapp,               SIGNAL( aboutToQuit() ),    SLOT( prepareToQuit() ) );
+    connect( CollectionDB::instance(), SIGNAL( tagsChanged( const MetaBundle& ) ),
+            SLOT( tagsChanged( const MetaBundle& ) ) );
 
+}
+
+void
+MediaBrowser::tagsChanged( const MetaBundle &bundle )
+{
+    ItemMap::iterator it = m_itemMap.find( bundle.url().path() );
+    if( it != m_itemMap.end() )
+    {
+        debug() << "watching " << bundle.url().prettyURL() << endl;
+        MediaItem *item = *it;
+        if( item->device() )
+        {
+            item->device()->tagsChanged( item, bundle );
+        }
+        else
+        {
+            // transfer queue
+        }
+    }
+    else
+        debug() << "not watching " << bundle.url().prettyURL() << endl;
 }
 
 MediaDevice *
@@ -597,7 +620,7 @@ MediaItem::MediaItem( QListViewItem* parent, QListViewItem* after )
 
 MediaItem::~MediaItem()
 {
-    delete m_bundle;
+    setBundle( 0 );
     delete m_podcastInfo;
 }
 
@@ -609,6 +632,7 @@ MediaItem::init()
     m_order=0;
     m_type=UNKNOWN;
     m_playlistName=QString::null;
+    m_device=0;
     setExpandable( false );
     setDragEnabled( true );
     setDropEnabled( true );
@@ -617,7 +641,14 @@ MediaItem::init()
 void
 MediaItem::setBundle( MetaBundle *bundle )
 {
+    if( m_bundle )
+    {
+        MediaBrowser::instance()->m_itemMap.remove(url().path());
+        delete m_bundle;
+    }
     m_bundle = bundle;
+    if( m_bundle )
+        MediaBrowser::instance()->m_itemMap[url().path()] = this;
 }
 
 void MediaItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
@@ -1747,6 +1778,16 @@ MediaDevice::~MediaDevice()
 {
     delete m_view;
     delete sysProc;
+}
+
+bool
+MediaDevice::isSpecialItem( MediaItem *item )
+{
+    return (item == m_playlistItem) ||
+        (item == m_podcastItem) ||
+        (item == m_invisibleItem) ||
+        (item == m_staleItem) ||
+        (item == m_orphanedItem);
 }
 
 void

@@ -25,6 +25,7 @@ class IpodMediaItem;
 
 class IpodMediaDevice : public KioMediaDevice
 {
+    friend class IpodMediaItem;
     Q_OBJECT
 
     public:
@@ -41,6 +42,7 @@ class IpodMediaDevice : public KioMediaDevice
         virtual void      removeConfigElements( QWidget *parent );
         virtual void      applyConfig();
         virtual void      loadConfig();
+        virtual MediaItem*tagsChanged( MediaItem *item, const MetaBundle &bundle );
 
     protected:
         MediaItem        *trackExists( const MetaBundle& bundle );
@@ -57,6 +59,10 @@ class IpodMediaDevice : public KioMediaDevice
          * @return If successful, the created MediaItem in the media device view, else 0
          */
         virtual MediaItem *insertTrackIntoDB( const QString& pathname, const MetaBundle& bundle, const PodcastInfo *podcastInfo);
+
+        virtual MediaItem * updateTrackInDB(IpodMediaItem *item,
+                            const QString &pathname, const MetaBundle &bundle, const PodcastInfo *podcastInfo);
+
 
         /**
          * Determine the url for which a track should be uploaded to on the device
@@ -79,7 +85,7 @@ class IpodMediaDevice : public KioMediaDevice
         bool              initializeIpod( const QString &mountpoint );
         void              writeITunesDB();
         bool              createLockFile( const QString &mountpoint );
-        IpodMediaItem    *addTrackToView(Itdb_Track *track);
+        IpodMediaItem    *addTrackToView(Itdb_Track *track, IpodMediaItem *item=0);
         void              addPlaylistToView(Itdb_Playlist *playlist);
         void              playlistFromItem(IpodMediaItem *item);
 

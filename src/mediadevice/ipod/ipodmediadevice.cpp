@@ -71,11 +71,11 @@ class TrackList : public QPtrList<Itdb_Track>
 class IpodMediaItem : public MediaItem
 {
     public:
-        IpodMediaItem(QListView *parent ) : MediaItem(parent) { init(); }
-        IpodMediaItem(QListViewItem *parent ) : MediaItem(parent) { init(); }
-        IpodMediaItem(QListView *parent, QListViewItem *after) : MediaItem(parent, after) { init(); }
-        IpodMediaItem(QListViewItem *parent, QListViewItem *after) : MediaItem(parent, after) { init(); }
-        void init() {m_track=0; m_playlist=0;}
+        IpodMediaItem(QListView *parent, MediaDevice *dev ) : MediaItem(parent) { init( dev ); }
+        IpodMediaItem(QListViewItem *parent, MediaDevice *dev ) : MediaItem(parent) { init( dev ); }
+        IpodMediaItem(QListView *parent, QListViewItem *after, MediaDevice *dev ) : MediaItem(parent, after) { init( dev ); }
+        IpodMediaItem(QListViewItem *parent, QListViewItem *after, MediaDevice *dev ) : MediaItem(parent, after) { init( dev ); }
+        void init(MediaDevice *dev) {m_track=0; m_playlist=0; m_device=dev;}
         void bundleFromTrack( Itdb_Track *track, const QString& path )
         {
             MetaBundle *bundle = new MetaBundle();
@@ -97,7 +97,11 @@ class IpodMediaItem : public MediaItem
         int played() const { if(m_track) return m_track->playcount; else return 0; }
         int recentlyPlayed() const { if(m_track) return m_track->recent_playcount; else return 0; }
         int rating() const { if(m_track) return m_track->rating; else return 0; }
-        void setRating(int rating) { if(m_track) m_track->rating = m_track->app_rating = rating; /* m_dbChanged=true; */ }
+        void setRating(int rating) {
+            if(m_track) m_track->rating = m_track->app_rating = rating;
+            if( dynamic_cast<IpodMediaDevice *>(device()) )
+                static_cast<IpodMediaDevice *>(device())->m_dbChanged=true;
+        }
         bool ratingChanged() const { if(m_track) return m_track->rating != m_track->app_rating; else return false; }
         QDateTime playTime() const { QDateTime t; if(m_track) t.setTime_t( itdb_time_mac_to_host( m_track->time_played ) ); return t; }
         IpodMediaItem *findTrack(Itdb_Track *track)
@@ -175,9 +179,23 @@ IpodMediaDevice::isConnected()
 MediaItem *
 IpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bundle, const PodcastInfo *podcastInfo)
 {
-    Itdb_Track *track = itdb_track_new();
+    return updateTrackInDB( 0, pathname, bundle, podcastInfo );
+}
+
+MediaItem *
+IpodMediaDevice::updateTrackInDB(IpodMediaItem *item,
+        const QString &pathname, const MetaBundle &bundle, const PodcastInfo *podcastInfo)
+{
+    Itdb_Track *track = 0;
+    if( item )
+        track = item->m_track;
+    if( !track )
+        track = itdb_track_new();
     if(!track)
+    {
+        delete item;
         return 0;
+    }
 
     QString type = pathname.section('.', -1).lower();
 
@@ -283,35 +301,53 @@ IpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bu
     }
 #endif
 
-    itdb_track_add(m_itdb, track, -1);
-    if(podcastInfo)
+    if( item )
     {
-        Itdb_Playlist *podcasts = itdb_playlist_podcasts(m_itdb);
-        if(!podcasts)
+        MediaItem *parent = dynamic_cast<MediaItem *>(item->parent());
+        if( parent )
         {
-            podcasts = itdb_playlist_new("Podcasts", false);
-            itdb_playlist_add(m_itdb, podcasts, -1);
-            itdb_playlist_set_podcasts(podcasts);
-            addPlaylistToView( podcasts );
+            parent->takeItem( item );
+            if( parent->childCount() == 0 && !isSpecialItem( parent ) )
+            {
+                MediaItem *pp = dynamic_cast<MediaItem *>(parent->parent());
+                delete parent;
+                if( pp && pp->childCount() == 0 && !isSpecialItem( pp ) )
+                    delete pp;
+            }
         }
-        itdb_playlist_add_track(podcasts, track, -1);
     }
     else
     {
-        // gtkpod 0.94 does not like if not all songs in the db are on the master playlist
-        // but we try anyway
-        Itdb_Playlist *mpl = itdb_playlist_mpl(m_itdb);
-        if( !mpl )
+        itdb_track_add(m_itdb, track, -1);
+        if(podcastInfo)
         {
-            mpl = itdb_playlist_new( "MPL", false );
-            itdb_playlist_add( m_itdb, mpl, -1 );
-            itdb_playlist_set_mpl( mpl );
-            addPlaylistToView( mpl );
+            Itdb_Playlist *podcasts = itdb_playlist_podcasts(m_itdb);
+            if(!podcasts)
+            {
+                podcasts = itdb_playlist_new("Podcasts", false);
+                itdb_playlist_add(m_itdb, podcasts, -1);
+                itdb_playlist_set_podcasts(podcasts);
+                addPlaylistToView( podcasts );
+            }
+            itdb_playlist_add_track(podcasts, track, -1);
         }
-        itdb_playlist_add_track(mpl, track, -1);
+        else
+        {
+            // gtkpod 0.94 does not like if not all songs in the db are on the master playlist
+            // but we try anyway
+            Itdb_Playlist *mpl = itdb_playlist_mpl(m_itdb);
+            if( !mpl )
+            {
+                mpl = itdb_playlist_new( "MPL", false );
+                itdb_playlist_add( m_itdb, mpl, -1 );
+                itdb_playlist_set_mpl( mpl );
+                addPlaylistToView( mpl );
+            }
+            itdb_playlist_add_track(mpl, track, -1);
+        }
     }
 
-    return addTrackToView(track);
+    return addTrackToView( track, item );
 }
 
 MediaItem *
@@ -400,6 +436,12 @@ IpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle, const PodcastInfo *
     return insertTrackIntoDB( url.path(), bundle, podcastInfo );
 }
 
+MediaItem *
+IpodMediaDevice::tagsChanged( MediaItem *item, const MetaBundle &bundle )
+{
+    return updateTrackInDB( dynamic_cast<IpodMediaItem *>(item), item->url().path(), bundle, NULL );
+}
+
 void
 IpodMediaDevice::synchronizeDevice()
 {
@@ -422,7 +464,7 @@ MediaItem *
 IpodMediaDevice::newPlaylist(const QString &name, MediaItem *parent, QPtrList<MediaItem> items)
 {
     m_dbChanged = true;
-    IpodMediaItem *item = new IpodMediaItem(parent);
+    IpodMediaItem *item = new IpodMediaItem(parent, this);
     item->setType(MediaItem::PLAYLIST);
     item->setText(0, name);
 
@@ -490,11 +532,11 @@ IpodMediaDevice::addToPlaylist(MediaItem *mlist, MediaItem *after, QPtrList<Medi
         {
             if(after)
             {
-                add = new IpodMediaItem(list, after);
+                add = new IpodMediaItem(list, after, this);
             }
             else
             {
-                add = new IpodMediaItem(list);
+                add = new IpodMediaItem(list, this);
             }
         }
         after = add;
@@ -953,27 +995,27 @@ IpodMediaDevice::openDevice( bool silent )
         }
     }
 
-    m_playlistItem = new IpodMediaItem( m_view );
+    m_playlistItem = new IpodMediaItem( m_view, this );
     m_playlistItem->setText( 0, i18n("Playlists") );
     m_playlistItem->m_order = -5;
     m_playlistItem->setType( MediaItem::PLAYLISTSROOT );
 
-    m_podcastItem = new IpodMediaItem( m_view );
+    m_podcastItem = new IpodMediaItem( m_view, this );
     m_podcastItem->setText( 0, i18n("Podcasts") );
     m_podcastItem->m_order = -4;
     m_podcastItem->setType( MediaItem::PODCASTSROOT );
 
-    m_invisibleItem = new IpodMediaItem( m_view );
+    m_invisibleItem = new IpodMediaItem( m_view, this );
     m_invisibleItem->setText( 0, i18n("Invisible") );
     m_invisibleItem->m_order = -3;
     m_invisibleItem->setType( MediaItem::INVISIBLEROOT );
 
-    m_staleItem = new IpodMediaItem( m_view );
+    m_staleItem = new IpodMediaItem( m_view, this );
     m_staleItem->setText( 0, i18n("Stale") );
     m_staleItem->m_order = -2;
     m_staleItem->setType( MediaItem::STALEROOT );
 
-    m_orphanedItem = new IpodMediaItem( m_view );
+    m_orphanedItem = new IpodMediaItem( m_view, this );
     m_orphanedItem->setText( 0, i18n("Orphaned") );
     m_orphanedItem->m_order = -2;
     m_orphanedItem->setType( MediaItem::ORPHANEDROOT );
@@ -1023,7 +1065,7 @@ IpodMediaDevice::openDevice( bool silent )
             if(!track)
             {
                 debug() << "file: " << filename << " is orphaned" << endl;
-                IpodMediaItem *item = new IpodMediaItem(m_orphanedItem);
+                IpodMediaItem *item = new IpodMediaItem(m_orphanedItem, this);
                 item->setType(MediaItem::ORPHANED);
                 KURL url = KURL::fromPathOrURL(filename);
                 MetaBundle *bundle = new MetaBundle(url);
@@ -1106,11 +1148,10 @@ IpodMediaDevice::playlistFromItem(IpodMediaItem *item)
 
 
 IpodMediaItem *
-IpodMediaDevice::addTrackToView(Itdb_Track *track)
+IpodMediaDevice::addTrackToView(Itdb_Track *track, IpodMediaItem *item)
 {
     bool visible = false;
     bool stale = false;
-    IpodMediaItem *item = 0;
 
 #ifdef CHECK_FOR_INTEGRITY
     QString path = realPath(track->ipod_path);
@@ -1119,13 +1160,15 @@ IpodMediaDevice::addTrackToView(Itdb_Track *track)
     {
         stale = true;
         debug() << "track: " << track->artist << " - " << track->album << " - " << track->title << " is stale: " << track->ipod_path << " does not exist" << endl;
-        item = new IpodMediaItem(m_staleItem);
+        if( item )
+            m_staleItem->insertItem( item );
+        else
+            item = new IpodMediaItem(m_staleItem, this);
         item->setType(MediaItem::STALE);
         QString title = QString::fromUtf8(track->artist) + " - "
             + QString::fromUtf8(track->title);
         item->setText( 0, title );
         item->m_track = track;
-        //item->m_url.setPath(realPath(track->ipod_path));
     }
     else
     {
@@ -1146,7 +1189,7 @@ IpodMediaDevice::addTrackToView(Itdb_Track *track)
         IpodMediaItem *artist = getArtist(artistName);
         if(!artist)
         {
-            artist = new IpodMediaItem(m_view);
+            artist = new IpodMediaItem(m_view, this);
             artist->setText( 0, artistName );
             artist->setType( MediaItem::ARTIST );
             if( artistName == i18n( "Various Artists" ) )
@@ -1157,12 +1200,15 @@ IpodMediaDevice::addTrackToView(Itdb_Track *track)
         MediaItem *album = artist->findItem(albumName);
         if(!album)
         {
-            album = new IpodMediaItem( artist );
+            album = new IpodMediaItem( artist, this );
             album->setText( 0, albumName );
             album->setType( MediaItem::ALBUM );
         }
 
-        item = new IpodMediaItem( album );
+        if( item )
+            album->insertItem( item );
+        else
+            item = new IpodMediaItem( album, this );
         QString titleName = QString::fromUtf8(track->title);
         if( track->compilation )
             item->setText( 0, QString::fromUtf8(track->artist) + i18n( " - " ) + titleName );
@@ -1182,13 +1228,16 @@ IpodMediaDevice::addTrackToView(Itdb_Track *track)
         MediaItem *channel = m_podcastItem->findItem(channelName);
         if(!channel)
         {
-            channel = new IpodMediaItem(m_podcastItem);
+            channel = new IpodMediaItem(m_podcastItem, this);
             channel->setText( 0, channelName );
             channel->setType( MediaItem::PODCASTCHANNEL );
             channel->m_podcastInfo = new PodcastInfo;
         }
 
-        item = new IpodMediaItem(channel);
+        if( item )
+            channel->insertItem( item );
+        else
+            item = new IpodMediaItem(channel, this);
         item->setText( 0, QString::fromUtf8(track->title) );
         item->setType( MediaItem::PODCASTITEM );
         item->m_track = track;
@@ -1210,7 +1259,10 @@ IpodMediaDevice::addTrackToView(Itdb_Track *track)
     if(!stale && !visible)
     {
         debug() << "invisible, title=" << track->title << endl;
-        item = new IpodMediaItem(m_invisibleItem);
+        if( item )
+            m_invisibleItem->insertItem( item );
+        else
+            item = new IpodMediaItem(m_invisibleItem, this);
         QString title = QString::fromUtf8(track->artist) + " - "
             + QString::fromUtf8(track->title);
         item->setText( 0, title );
@@ -1249,7 +1301,7 @@ IpodMediaDevice::addPlaylistToView(Itdb_Playlist *pl)
     IpodMediaItem *playlist = dynamic_cast<IpodMediaItem *>(m_playlistItem->findItem(name));
     if(!playlist)
     {
-        playlist = new IpodMediaItem( m_playlistItem );
+        playlist = new IpodMediaItem( m_playlistItem, this );
         playlist->setText( 0, name );
         playlist->setType( MediaItem::PLAYLIST );
         playlist->m_playlist = pl;
@@ -1260,7 +1312,7 @@ IpodMediaDevice::addPlaylistToView(Itdb_Playlist *pl)
     while(cur)
     {
         Itdb_Track *track = (Itdb_Track *)cur->data;
-        IpodMediaItem *item = new IpodMediaItem(playlist);
+        IpodMediaItem *item = new IpodMediaItem(playlist, this);
         QString title = QString::fromUtf8(track->artist) + " - "
             + QString::fromUtf8(track->title);
         item->setText( 0, title );

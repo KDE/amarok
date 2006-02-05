@@ -81,6 +81,7 @@ class MediaItem : public KListViewItem
         virtual void setRating( int rating ) { (void)rating; }
         virtual bool ratingChanged() const { return false; }
         virtual long size() const;
+        virtual MediaDevice *device() const { return m_device; }
 
         int compare(QListViewItem *i, int col, bool ascending) const;
         bool match( const QString &filter ) const;
@@ -92,6 +93,7 @@ class MediaItem : public KListViewItem
         Type         m_type;
         QString      m_playlistName;
         PodcastInfo *m_podcastInfo;
+        MediaDevice *m_device;
 
         static QPixmap *s_pixUnknown;
         static QPixmap *s_pixRootItem;
@@ -156,6 +158,7 @@ class MediaBrowser : public QVBox
     friend class MediaView;
     friend class MediaQueue;
     friend class MediumPluginChooser;
+    friend class MediaItem;
 
     public:
         static bool isAvailable();
@@ -173,7 +176,6 @@ class MediaBrowser : public QVBox
         void updateStats();
         void updateButtons();
         void updateDevices();
-        void prepareToQuit();
 
 
     private slots:
@@ -192,6 +194,8 @@ class MediaBrowser : public QVBox
         void configSelectPlugin( int index );
         bool config(); // false if cancelled by user
         KURL transcode( const KURL &src, const QString &filetype );
+        void tagsChanged( const MetaBundle &bundle );
+        void prepareToQuit();
 
     private:
         MediaDevice *loadDevicePlugin( const QString &deviceName );
@@ -229,6 +233,8 @@ class MediaBrowser : public QVBox
         QVBox*           m_configBox;
         KComboBox*       m_configPluginCombo;
         KComboBox*       m_deviceCombo;
+        typedef QMap<QString, MediaItem*> ItemMap;
+        ItemMap          m_itemMap;
 };
 
 class MediaView : public KListView
@@ -343,6 +349,14 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
          * @return the newly created directory
          */
         virtual MediaItem *newDirectory( const QString &name, MediaItem *parent ) { Q_UNUSED(name); Q_UNUSED(parent); return 0; }
+
+        /**
+         * Notify device of changed tags
+         * @param item item to be updated
+         * @param changed bundle containing new tags
+         * @return the changed MediaItem
+         */
+        virtual MediaItem *tagsChanged( MediaItem *item, const MetaBundle &changed ) { Q_UNUSED(item); Q_UNUSED(changed); return 0; }
 
         virtual void addConfigElements( QWidget * /*parent*/ ) {}
         virtual void removeConfigElements( QWidget * /*parent*/ ) {}
@@ -472,6 +486,8 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         virtual void cancelTransfer() { /* often checking m_cancel is enough */ }
 
         virtual void updateRootItems();
+
+        virtual bool isSpecialItem( MediaItem *item );
 
         int deleteFromDevice( MediaItem *item=0, bool onlyPlayed=false, bool recursing=false );
 
