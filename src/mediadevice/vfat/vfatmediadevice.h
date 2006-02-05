@@ -61,6 +61,7 @@ class VfatMediaDevice : public MediaDevice
     protected slots:
         void              renameItem( QListViewItem *item );
         void              expandItem( QListViewItem *item );
+        void              foundMountPoint( const QString & mountPoint, unsigned long kBSize, unsigned long kBUsed, unsigned long kBAvail );
 
     private:
         enum              Error { ERR_ACCESS_DENIED, ERR_CANNOT_RENAME, ERR_DISK_FULL, ERR_COULD_NOT_WRITE };
@@ -90,6 +91,9 @@ class VfatMediaDevice : public MediaDevice
         VfatMediaItem     *m_last;
         //used to specify new VfatMediaItem parent. Make sure it is restored to 0 (m_listview)
         QListViewItem     *m_tmpParent;
+
+        unsigned long     m_kBSize;
+        unsigned long     m_kBAvail;
 };
 
 #endif /*AMAROK_VFATMEDIADEVICE_H*/

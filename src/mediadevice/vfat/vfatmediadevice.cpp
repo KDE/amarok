@@ -29,6 +29,7 @@ AMAROK_EXPORT_PLUGIN( VfatMediaDevice )
 
 #include <kapplication.h>
 #include <kconfig.h>           //download saveLocation
+#include <kdiskfreesp.h>
 #include <kiconloader.h>       //smallIcon
 #include <kio/job.h>
 #include <kio/jobclasses.h>
@@ -105,6 +106,8 @@ VfatMediaDevice::VfatMediaDevice()
     : MediaDevice()
     , m_connected( false )
     , m_tmpParent( 0 )
+    , m_kBSize( 0 )
+    , m_kBAvail( 0 )
 {
     m_name = "VFAT Device";
 }
@@ -305,15 +308,48 @@ VfatMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/ )
 {
     if( !item || !m_connected ) return -1;
 
-    return 0;  //NOT IMPLEMENTED YET
+    QString path = getFullPath( item );
+
+    QCString encodedPath = QFile::encodeName( path );
+    debug() << "Deleting file: " << encodedPath << endl;
+    bool err;
+    int count = 0;
+
+    switch( item->type() )
+    {
+        case MediaItem::DIRECTORY:
+            err = KIO::NetAccess::del( KURL(encodedPath), m_parent );
+            checkResult( err, i18n("Directory cannot be deleted: '%1'").arg(encodedPath) );
+            break;
+
+        default:
+            err = KIO::NetAccess::del( KURL(encodedPath), m_parent );
+            count += 1;
+            checkResult( err, i18n("File does not exist: '%1'").arg(encodedPath) );
+            break;
+    }
+    if( err == 0 ) //success
+        delete item;
+
+    return (err == 0) ? count : -1;
 }
 
 /// Directory Reading
 
 void
-VfatMediaDevice::expandItem( QListViewItem */*item*/ ) // SLOT
+VfatMediaDevice::expandItem( QListViewItem *item ) // SLOT
 {
-    return;  //NOT IMPLEMENTED YET
+    if( !item || !item->isExpandable() ) return;
+
+    while( item->firstChild() )
+        delete item->firstChild();
+
+    m_tmpParent = item;
+
+    QString path = getFullPath( item );
+    listDir( path );
+
+    m_tmpParent = 0;
 }
 
 void
@@ -323,25 +359,75 @@ VfatMediaDevice::listDir( const QString &/*dir*/ )
 }
 
 int
-VfatMediaDevice::listDirCallback( void */*pData*/, int /*type*/, const char */*name*/, int /*size*/ )
+VfatMediaDevice::addTrackToList( int type, QString name, int /*size*/ )
 {
-    return 0;  //NOT IMPLEMENTED YET
-}
+    m_tmpParent ?
+        m_last = new VfatMediaItem( m_tmpParent ):
+        m_last = new VfatMediaItem( m_view );
 
-int
-VfatMediaDevice::addTrackToList( int /*type*/, QString /*name*/, int /*size*/ )
-{
-    return 0; //NOT IMPLEMENTED YET
+    if( type == MediaItem::DIRECTORY ) //directory
+        m_last->setType( MediaItem::DIRECTORY );
+
+    else if( type == MediaItem::TRACK ) //file
+    {
+        if( name.endsWith( "mp3", false ) || name.endsWith( "wma", false ) ||
+            name.endsWith( "wav", false ) || name.endsWith( "ogg", false ) ||
+            name.endsWith( "asf", false ) || name.endsWith( "flac", false ) )
+
+            m_last->setType( MediaItem::TRACK );
+
+        else
+            m_last->setType( MediaItem::UNKNOWN );
+    }
+    m_last->setEncodedName( name );
+    m_last->setText( 0, name );
+    return 0;
 }
 
 /// Capacity, in kB
 
 bool
-VfatMediaDevice::getCapacity( unsigned long */*total*/, unsigned long */*available*/ )
+VfatMediaDevice::getCapacity( unsigned long *total, unsigned long *available )
 {
     if( !m_connected ) return false;
 
-    return true; //NOT IMPLEMENTED YET
+    KDiskFreeSp* kdf = new KDiskFreeSp( m_parent, "vfat_kdf" );
+    kdf->readDF( m_medium->mountPoint() );
+    connect(kdf, SIGNAL(foundMountPoint( const QString &, unsigned long, unsigned long, unsigned long )),
+                 SLOT(foundMountPoint( const QString &, unsigned long, unsigned long, unsigned long )));
+
+    int count = 0;
+
+    while( m_kBSize == 0 && m_kBAvail == 0){
+        usleep( 10000 );
+        kapp->processEvents( 100 );
+        count++;
+        if (count > 30){
+            debug() << "KDiskFreeSp taking a long time, perhaps something went wrong?" << endl;
+            count = 0;
+        }
+        if (count > 120){
+            debug() << "Taking too long.  Returning false from getCapacity()" << endl;
+            return false;
+        }
+    }
+
+    *total = m_kBSize;
+    *available = m_kBAvail;
+    unsigned long localsize = m_kBSize;
+    m_kBSize = 0;
+    m_kBAvail = 0;
+
+    return localsize > 0;
+}
+
+void
+VfatMediaDevice::foundMountPoint( const QString & mountPoint, unsigned long kBSize, unsigned long /*kBUsed*/, unsigned long kBAvail )
+{
+    if ( mountPoint == m_medium->mountPoint() ){
+        m_kBSize = kBSize;
+        m_kBAvail = kBAvail;
+    }
 }
 
 /// Helper functions
