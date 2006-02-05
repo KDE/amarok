@@ -19,7 +19,7 @@
         <whatsthis>The position of the amaroK main window when amaroK is started.</whatsthis>
     </entry>
     <entry key="Player Window Minimal View" type="Bool">
-        <label>Wether Player Window is in minimal or normal mode</label>
+        <label>Whether Player Window is in minimal or normal mode</label>
         <whatsthis>If set the player window will start in minimal view</whatsthis>
     <default>false</default>
     </entry>
@@ -146,7 +146,7 @@
         <default>false</default>
     </entry>
     <entry key="Make Moodier" type="Bool">
-        <label>Maximise colour spread of Moodbar</label>
+        <label>Maximize color spread of Moodbar</label>
         <whatsthis>When enabled, the hue distribution is quantised and respread evenly, giving a prettier but less meaningful output.</whatsthis>
         <default>true</default>
     </entry>

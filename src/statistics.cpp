@@ -203,14 +203,14 @@ StatisticsList::initDisplay()
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     a = qb.run();
 
-    m_trackItem = new StatisticsItem( i18n("Favorite Track","%n Favorite Tracks", a[0].toInt()), this, 0 );
+    m_trackItem = new StatisticsItem( i18n("Favorite Tracks"), this, 0 );
     m_trackItem->setSubtext( i18n("%n track", "%n tracks", a[0].toInt()) );
 
     qb.clear();
     qb.addReturnFunctionValue( QueryBuilder::funcSum, QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
     a = qb.run();
 
-    m_mostplayedItem = new StatisticsItem( i18n("Most Played Track","Most Played Tracks", a[0].toInt()), this, m_trackItem );
+    m_mostplayedItem = new StatisticsItem( i18n("Most Played Tracks"), this, m_trackItem );
     m_mostplayedItem->setSubtext( i18n("%n play", "%n plays", a[0].toInt()) );
 
     qb.clear();
@@ -218,7 +218,7 @@ StatisticsList::initDisplay()
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     a = qb.run();
 
-    m_artistItem = new StatisticsItem( i18n("Favorite Artist","Favorite Artists", a[0].toInt()), this, m_mostplayedItem );
+    m_artistItem = new StatisticsItem( i18n("Favorite Artists"), this, m_mostplayedItem );
     m_artistItem->setSubtext( i18n("%n artist", "%n artists", a[0].toInt()) );
 
     qb.clear();
@@ -226,7 +226,7 @@ StatisticsList::initDisplay()
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     a = qb.run();
 
-    m_albumItem = new StatisticsItem( i18n("Favorite Album","Favorite Albums", a[0].toInt()), this, m_artistItem );
+    m_albumItem = new StatisticsItem( i18n("Favorite Albums"), this, m_artistItem );
     m_albumItem->setSubtext( i18n("%n album", "%n albums", a[0].toInt()) );
 
     qb.clear();
@@ -234,7 +234,7 @@ StatisticsList::initDisplay()
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     a = qb.run();
 
-    m_genreItem = new StatisticsItem( i18n("Favorite Genre","Favorite Genres", a[0].toInt()), this, m_albumItem );
+    m_genreItem = new StatisticsItem( i18n("Favorite Genres"), this, m_albumItem );
     m_genreItem->setSubtext( i18n("%n genre", "%n genres", a[0].toInt()) );
 
     qb.clear();
