@@ -631,7 +631,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                         minbearing = painter->fontMetrics().minLeftBearing()
                                      + painter->fontMetrics().minRightBearing();
                     }
-//                     font.setItalic( true );
+                    font.setItalic( true );
                     p.setFont( font );
                     p.setPen( cg.highlightedText() );
 //                  paint.setPen( glowText );
