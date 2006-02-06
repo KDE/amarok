@@ -110,6 +110,9 @@ VfatMediaDevice::VfatMediaDevice()
     , m_kBAvail( 0 )
 {
     m_name = "VFAT Device";
+    m_dirLister = new KDirLister();
+    m_dirLister->setNameFilter( "*.mp3 *.wav *.asf *.flac *.wma *.ogg" );
+    connect( m_dirLister, SIGNAL( newItems(const KFileItemList &) ), this, SLOT( newItems(const KFileItemList &) ) );
 }
 
 void
@@ -141,7 +144,7 @@ VfatMediaDevice::openDevice( bool /*silent*/ )
 
     m_connected = true;
 
-    listDir( "" );
+    listDir( m_medium->mountPoint() );
 
     return true;
 }
@@ -339,6 +342,8 @@ VfatMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/ )
 void
 VfatMediaDevice::expandItem( QListViewItem *item ) // SLOT
 {
+    DEBUG_BLOCK
+    debug() << "expandItem: item->text is " << (item->text(0)) << endl;
     if( !item || !item->isExpandable() ) return;
 
     while( item->firstChild() )
@@ -348,19 +353,50 @@ VfatMediaDevice::expandItem( QListViewItem *item ) // SLOT
 
     QString path = getFullPath( item );
     listDir( path );
-
-    m_tmpParent = 0;
+    //m_tmpParent = 0;
 }
 
 void
-VfatMediaDevice::listDir( const QString &/*dir*/ )
+VfatMediaDevice::listDir( const QString &dir )
 {
-    return;  //NOT IMPLEMENTED YET
+    DEBUG_BLOCK
+
+    debug() << "listing contents in: '" << dir << "'" << endl;
+
+    if ( m_dirLister->openURL( KURL(dir), true, false ) )
+    {
+        debug() << "Waiting for KDirLister, do anything here?" << endl;
+    }
+    else
+    {
+        debug() << "KDirLister::openURL FAILED" << endl;
+    }
+
+    /*
+        for each entry in directory
+        addTrackToList( type (MediaItem::DIRECTORY/TRACK), name, size (not used, can be 0))
+
+        ...handled by newItems slot
+    */
+}
+
+void
+VfatMediaDevice::newItems( const KFileItemList &items )
+{
+    //iterate over items, calling addTrackToList
+    QPtrListIterator<KFileItem> it( items );
+    KFileItem *kfi;
+    while ( (kfi = it.current()) != 0 ) {
+        ++it;
+        addTrackToList( kfi->isFile() ? MediaItem::TRACK : MediaItem::DIRECTORY, kfi->name(), 0 );
+    }
+
 }
 
 int
 VfatMediaDevice::addTrackToList( int type, QString name, int /*size*/ )
 {
+    debug() << "Inserting " << name << ", parent = " << (m_tmpParent ? m_tmpParent->text(0) : "m_view") << endl;
     m_tmpParent ?
         m_last = new VfatMediaItem( m_tmpParent ):
         m_last = new VfatMediaItem( m_view );
@@ -368,6 +404,9 @@ VfatMediaDevice::addTrackToList( int type, QString name, int /*size*/ )
     if( type == MediaItem::DIRECTORY ) //directory
         m_last->setType( MediaItem::DIRECTORY );
 
+    //TODO: this logic could maybe be taken out later...or the dirlister shouldn't
+    //filter, one or the other...depends if we want to allow viewing any files
+    //or just update the list in the plugin as appropriate
     else if( type == MediaItem::TRACK ) //file
     {
         if( name.endsWith( "mp3", false ) || name.endsWith( "wma", false ) ||
@@ -402,12 +441,11 @@ VfatMediaDevice::getCapacity( unsigned long *total, unsigned long *available )
         usleep( 10000 );
         kapp->processEvents( 100 );
         count++;
-        if (count > 30){
+        if (count % 30 == 0){
             debug() << "KDiskFreeSp taking a long time, perhaps something went wrong?" << endl;
-            count = 0;
         }
         if (count > 120){
-            debug() << "Taking too long.  Returning false from getCapacity()" << endl;
+            debug() << "KDiskFreeSp taking too long.  Returning false from getCapacity()" << endl;
             return false;
         }
     }
@@ -435,20 +473,27 @@ VfatMediaDevice::foundMountPoint( const QString & mountPoint, unsigned long kBSi
 QString
 VfatMediaDevice::getFullPath( const QListViewItem *item, const bool getFilename )
 {
+    DEBUG_BLOCK
+
     if( !item ) return QString::null;
 
     QString path;
 
-    if (getFilename) path = item->text(0);
+    if ( getFilename ) path = item->text(0);
 
     QListViewItem *parent = item->parent();
+
+    debug() << "item->text(0) = " << item->text(0) << ", item->parent->text(0), if any, = " << (item->parent() ? item->parent()->text(0) : "none") << endl;
+
     while( parent )
     {
-        path.prepend( "/" );
+        path.prepend( "../" );
         path.prepend( parent->text(0) );
         parent = parent->parent();
     }
-    path.prepend( m_medium->mountPoint() );
+    path.prepend( m_medium->mountPoint() + "/" );
+
+    debug() << "Path now = " << path << endl;
 
     return path;
 

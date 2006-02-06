@@ -20,6 +20,7 @@
 
 #include "../mediabrowser.h"
 
+#include <kdirlister.h>
 #include <kurl.h>
 
 // #include <qbitarray.h>
@@ -62,6 +63,7 @@ class VfatMediaDevice : public MediaDevice
         void              renameItem( QListViewItem *item );
         void              expandItem( QListViewItem *item );
         void              foundMountPoint( const QString & mountPoint, unsigned long kBSize, unsigned long kBUsed, unsigned long kBAvail );
+        void              newItems( const KFileItemList &items );
 
     private:
         enum              Error { ERR_ACCESS_DENIED, ERR_CANNOT_RENAME, ERR_DISK_FULL, ERR_COULD_NOT_WRITE };
@@ -94,6 +96,8 @@ class VfatMediaDevice : public MediaDevice
 
         unsigned long     m_kBSize;
         unsigned long     m_kBAvail;
+
+        KDirLister        *m_dirLister;
 };
 
 #endif /*AMAROK_VFATMEDIADEVICE_H*/
