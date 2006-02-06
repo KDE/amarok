@@ -978,7 +978,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     qb.setGoogleFilter( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, m_filter );
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     values = qb.run();
-    int countReturnValues = qb.countReturnValues();
+    uint countReturnValues = qb.countReturnValues();
 
 
     if( category == CollectionBrowser::IdVisYearAlbum )
