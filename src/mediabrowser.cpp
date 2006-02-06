@@ -2152,7 +2152,6 @@ MediaDevice::connectDevice( bool silent )
 
     updateRootItems();
 
-    amaroK::StatusBar::instance()->shortMessage( i18n( "Device successfully connected" ) );
     if( m_deferredDisconnect )
     {
         m_deferredDisconnect = false;
@@ -2187,17 +2186,22 @@ MediaDevice::disconnectDevice( bool postDisconnectHook )
     m_parent->updateStats();
 
     bool result = true;
-    if( postDisconnectHook && runPostDisconnectCommand() != 0 )
+    if( postDisconnectHook )
     {
-        amaroK::StatusBar::instance()->longMessage(
-                i18n( "Post-disconnect command failed, before removing device, please make sure that it is safe to do so." ),
-                KDE::StatusBar::Information );
-        result = false;
+        if( runPostDisconnectCommand() == 0 ) // post-disconnect (probably umount) was successful or not needed
+        {
+            amaroK::StatusBar::instance()->shortMessage( i18n( "Device successfully disconnected" ) );
+        }
+        else
+        {
+            amaroK::StatusBar::instance()->longMessage(
+                    i18n( "Post-disconnect command failed, before removing device, please make sure that it is safe to do so." ),
+                    KDE::StatusBar::Information );
+            result = false;
+        }
     }
 
     m_deviceNode = "";
-
-    amaroK::StatusBar::instance()->shortMessage( i18n( "Device successfully disconnected" ) );
 
     return true;
 }
