@@ -725,7 +725,7 @@ MediaItem::size() const
         return 0;
 
     if( bundle() )
-        bundle()->filesize();
+        return bundle()->filesize();
 
     return 0;
 }
