@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Service
 Name=Generic VFAT Media Device
+Name[bg]=Устройство VFAT
 Name[da]=Generisk VFAT-medieenhed
 Name[el]=Γενική συσκευή πολυμέσων VFAT
 Name[et]=Üldine VFAT meediaseade
