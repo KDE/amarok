@@ -1275,7 +1275,6 @@ MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/, bool construc
                 mpc->exec();
             }
         }
-        debug() << "label=" << medium->label() << endl;
         MediaDevice *device = loadDevicePlugin( handler );
         if( device )
         {
@@ -1300,17 +1299,24 @@ MediaBrowser::pluginSelected( const Medium *medium, const QString plugin )
     {
         debug() << "Medium id is " << medium->id() << " and plugin selected is: " << plugin << endl;
         config->writeEntry( medium->id(), plugin );
-        MediaDevice *device = loadDevicePlugin( plugin );
-        if( device )
+
+        for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
+                it != m_devices.end();
+                it++ )
         {
-            device->m_uniqueId = medium->id();
-            device->m_deviceNode = medium->deviceNode();
-            device->m_mountPoint = medium->mountPoint();
-            addDevice( device );
-            if( m_currentDevice == m_devices.begin()
-                    || m_currentDevice == m_devices.end() )
-            activateDevice( m_devices.count()-1 );
+            if( (*it)->uniqueId() == medium->id() )
+            {
+                debug() << "removing " << medium->deviceNode() << endl;
+                if( (*it)->isConnected() )
+                {
+                    (*it)->disconnectDevice();
+                }
+                removeDevice( *it );
+                break;
+            }
         }
+
+        mediumAdded( medium, "doesntmatter" );
     }
     else
         debug() << "Medium id is " << medium->id() << " and you opted not to use a plugin" << endl;
