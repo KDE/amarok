@@ -554,8 +554,12 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                 paintCache[column].text = colText;
                 paintCache[column].font = painter->font();
 
-                const QColor bg = isAlternate() ? listView()->alternateBackground() :
-                                                  listView()->viewport()->backgroundColor();
+                QColor bg;
+                if( isSelected() )
+                    bg = listView()->colorGroup().highlight();
+                else
+                    bg = isAlternate() ? listView()->alternateBackground() :
+                                         listView()->viewport()->backgroundColor();
 
                 buf.fill( bg );
 
