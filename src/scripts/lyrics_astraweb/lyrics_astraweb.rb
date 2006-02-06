@@ -114,7 +114,7 @@ loop do
 
     case command
         when "configure"
-            msg  = '"This script does not have configuration options."'
+            msg  = 'This script does not require any configuration.'
             `dcop amarok playlist popupMessage "#{msg}"`
 
         when "fetchLyrics"
