@@ -39,6 +39,8 @@ AMAROK_EXPORT_PLUGIN( VfatMediaDevice )
 #include <kurlrequester.h>     //downloadSelectedItems()
 #include <kurlrequesterdlg.h>  //downloadSelectedItems()
 
+#include <taglib/audioproperties.h>
+
 #include <qfile.h>
 #include <qcstring.h>
 
@@ -140,8 +142,6 @@ VfatMediaDevice::checkResult( int result, QString message )
 bool
 VfatMediaDevice::openDevice( bool /*silent*/ )
 {
-    DEBUG_BLOCK
-
     m_connected = true;
 
     listDir( m_medium->mountPoint() );
@@ -152,8 +152,6 @@ VfatMediaDevice::openDevice( bool /*silent*/ )
 bool
 VfatMediaDevice::closeDevice()  //SLOT
 {
-    DEBUG_BLOCK
-
     if( m_connected )
     {
         m_view->clear();
@@ -342,8 +340,6 @@ VfatMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/ )
 void
 VfatMediaDevice::expandItem( QListViewItem *item ) // SLOT
 {
-    DEBUG_BLOCK
-    debug() << "expandItem: item->text is " << (item->text(0)) << endl;
     if( !item || !item->isExpandable() ) return;
 
     while( item->firstChild() )
@@ -359,10 +355,6 @@ VfatMediaDevice::expandItem( QListViewItem *item ) // SLOT
 void
 VfatMediaDevice::listDir( const QString &dir )
 {
-    DEBUG_BLOCK
-
-    debug() << "listing contents in: '" << dir << "'" << endl;
-
     if ( m_dirLister->openURL( KURL(dir), true, false ) )
     {
         debug() << "Waiting for KDirLister, do anything here?" << endl;
@@ -396,7 +388,6 @@ VfatMediaDevice::newItems( const KFileItemList &items )
 int
 VfatMediaDevice::addTrackToList( int type, QString name, int /*size*/ )
 {
-    debug() << "Inserting " << name << ", parent = " << (m_tmpParent ? m_tmpParent->text(0) : "m_view") << endl;
     m_tmpParent ?
         m_last = new VfatMediaItem( m_tmpParent ):
         m_last = new VfatMediaItem( m_view );
@@ -420,6 +411,9 @@ VfatMediaDevice::addTrackToList( int type, QString name, int /*size*/ )
     }
     m_last->setEncodedName( name );
     m_last->setText( 0, name );
+
+    m_last->setBundle( new MetaBundle( KURL( getFullPath(m_last, true) ), true, TagLib::AudioProperties::Fast ) );
+
     return 0;
 }
 
@@ -473,8 +467,6 @@ VfatMediaDevice::foundMountPoint( const QString & mountPoint, unsigned long kBSi
 QString
 VfatMediaDevice::getFullPath( const QListViewItem *item, const bool getFilename )
 {
-    DEBUG_BLOCK
-
     if( !item ) return QString::null;
 
     QString path;
@@ -483,17 +475,13 @@ VfatMediaDevice::getFullPath( const QListViewItem *item, const bool getFilename 
 
     QListViewItem *parent = item->parent();
 
-    debug() << "item->text(0) = " << item->text(0) << ", item->parent->text(0), if any, = " << (item->parent() ? item->parent()->text(0) : "none") << endl;
-
     while( parent )
     {
-        path.prepend( "../" );
+        path.prepend( "/" );
         path.prepend( parent->text(0) );
         parent = parent->parent();
     }
     path.prepend( m_medium->mountPoint() + "/" );
-
-    debug() << "Path now = " << path << endl;
 
     return path;
 
