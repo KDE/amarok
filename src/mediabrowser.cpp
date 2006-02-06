@@ -889,11 +889,10 @@ class MediaItemTip : public QToolTip
                 if( b )
                 {
                     if( b->track() )
-                        text = QString( "%1 - %2 (%3:%4)<br>" )
+                        text = QString( "%1 - %2 (%3)<br>" )
                             .arg( b->track() )
                             .arg( b->title() )
-                            .arg( b->length()/60 )
-                            .arg( b->length()%60 );
+                            .arg( b->prettyLength() );
                     if( !b->genre().isEmpty() )
                         text += QString( "<i>Genre: %1</i>" )
                             .arg( b->genre() );
