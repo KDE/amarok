@@ -10,6 +10,7 @@
 #include <qobject.h>
 #include <qptrdict.h>
 #include <qptrlist.h>
+#include <qtimer.h>
 
 //some setups require this
 #undef PROTOCOL_VERSION
@@ -49,6 +50,7 @@ class Scrobbler : public QObject, public EngineObserver
             KIO::Job* /*job*/, const QByteArray& /*data*/ );
 
     private:
+        QTimer m_timer;
         QString m_similarArtistsBuffer;
         KIO::Job* m_similarArtistsJob;
         QString m_artist;

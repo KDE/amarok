@@ -227,6 +227,9 @@ void Scrobbler::engineNewMetaData( const MetaBundle& bundle, bool trackChanged )
         return;
     }
 
+    m_timer.stop();
+    m_timer.start( 10000, true );
+
     // Plugins must not submit tracks played from online radio stations, even
     // if they appear to be providing correct metadata.
     if ( bundle.streamUrl() != NULL ) {
@@ -259,7 +262,7 @@ void Scrobbler::engineNewMetaData( const MetaBundle& bundle, bool trackChanged )
  */
 void Scrobbler::engineTrackPositionChanged( long position, bool userSeek )
 {
-    if ( !m_validForSending || !m_item )
+    if ( !m_validForSending || !m_item || m_timer.isActive() )
         return;
 
     if ( userSeek )
