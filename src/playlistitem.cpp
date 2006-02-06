@@ -522,7 +522,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
             static paintCacheItem paintCache[NUM_COLUMNS];
 
             // Use a darker color if the item is selected
-            const QColor glowColor = isSelected() ? glowBase.dark( 200 ) : glowBase;
+            const QColor glowColor = isSelected() ? glowBase.dark( 101 ) : glowBase;
 
             // Convert QColor to string for use as key in QMap
             const QString colorKey =
