@@ -1976,8 +1976,7 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
     command += "album = "  + QString::number( albumID( bundle.album(), true, false, true ) ) + ", ";
     command += "genre = "  + QString::number( genreID( bundle.genre(), true, false, true ) ) + ", ";
     command += "year = "   + QString::number( yearID( QString::number( bundle.year() ), true, false, true ) ) + ", ";
-    if ( bundle.track() )
-        command += "track = " + QString::number( bundle.track() ) + ", ";
+    command += "track = " + QString::number( bundle.track() ) + ", ";
     command += "comment = '" + escapeString( bundle.comment() ) + "', ";
     command += "composer = '" + escapeString( bundle.composer() ) + "', ";
     command += "discnumber = '" + QString::number( bundle.discNumber() ) + "', ";
