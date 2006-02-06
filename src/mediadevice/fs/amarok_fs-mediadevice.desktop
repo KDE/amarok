@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Service
+Name=File System Media Device
+ServiceTypes=amaroK/Plugin
+
+X-KDE-Library=libamarok_fs-mediadevice
+X-KDE-amaroK-plugintype=mediadevice
+X-KDE-amaroK-name=fs-mediadevice
+X-KDE-amaroK-authors=amaroK Team & Others
+X-KDE-amaroK-email=amarok-devel@lists.sourceforge.net
+X-KDE-amaroK-rank=100
+X-KDE-amaroK-version=1
+X-KDE-amaroK-framework-version=16
