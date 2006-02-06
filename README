@@ -52,25 +52,23 @@ Required
       http://freshmeat.net/projects/taglib
 
     * Ruby 1.8
-      (programming language)
+      (programming language. required for lyrics support)
       http://www.ruby-lang.org
 
-    * One of the multimedia frameworks listed below
+    * One of the multimedia frameworks listed below:
 
 Recommended
-    * xine 1.0.0
-      Note: xine 1.1.1 is required for gapless playback.
+    * xine-lib 1.0.2
+      Note: xine-lib 1.1.1 is required for gapless playback.
       (multimedia framework)
       http://xinehq.de/
 
-      OR
-
+Optional
     * GStreamer-0.8.6 + GStreamer-Plugins-0.8.6
       (multimedia framework)
       http://gstreamer.net
       (Note: GStreamer 0.9.x is incompatible with amaroK)
 
-Optional
     * aRts 1.3 + KDE-Multimedia 3.3
       (multimedia framework)
       http://www.kde.org
