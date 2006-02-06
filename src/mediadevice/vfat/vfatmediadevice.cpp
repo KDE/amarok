@@ -501,9 +501,57 @@ VfatMediaDevice::getFullPath( const QListViewItem *item, const bool getFilename 
 
 
 void
-VfatMediaDevice::rmbPressed( QListViewItem* /*qitem*/, const QPoint& /*point*/, int )
+VfatMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
 {
-    return; //NOT IMPLEMENTED YET
+    enum Actions { DOWNLOAD, DIRECTORY, RENAME, DELETE };
+
+    MediaItem *item = static_cast<MediaItem *>(qitem);
+    if ( item )
+    {
+        KPopupMenu menu( m_view );
+        menu.insertItem( SmallIconSet( "down" ), i18n( "Download" ), DOWNLOAD );
+        menu.insertSeparator();
+        menu.insertItem( SmallIconSet( "folder" ), i18n("Add Directory" ), DIRECTORY );
+        menu.insertItem( SmallIconSet( "editclear" ), i18n( "Rename" ), RENAME );
+        menu.insertItem( SmallIconSet( "editdelete" ), i18n( "Delete" ), DELETE );
+
+        int id =  menu.exec( point );
+        switch( id )
+        {
+            case DOWNLOAD:
+                downloadSelectedItems();
+                break;
+
+            case DIRECTORY:
+                if( item->type() == MediaItem::DIRECTORY )
+                    m_view->newDirectory( static_cast<MediaItem*>(item) );
+                else
+                    m_view->newDirectory( static_cast<MediaItem*>(item->parent()) );
+                break;
+
+            case RENAME:
+                m_view->rename( item, 0 );
+                break;
+
+            case DELETE:
+                deleteFromDevice();
+                break;
+        }
+        return;
+    }
+
+    if( isConnected() )
+    {
+        KPopupMenu menu( m_view );
+        menu.insertItem( SmallIconSet( "folder" ), i18n("Add Directory" ), DIRECTORY );
+        int id =  menu.exec( point );
+        switch( id )
+        {
+            case DIRECTORY:
+                m_view->newDirectory( 0 );
+                break;
+        }
+    }
 }
 
 #include "vfatmediadevice.moc"
