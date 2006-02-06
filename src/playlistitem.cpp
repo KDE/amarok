@@ -614,7 +614,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                 int leftMargin = margin;
                 if ( pixmap( column ) ) {
                     p.drawPixmap( leftMargin, height() / 2 - pixmap( column )->height() / 2, *pixmap( column ) );
-                    leftMargin += pixmap( column )->width();
+                    leftMargin += pixmap( column )->width() + 2;
                 }
 
                 if( align != Qt::AlignCenter )
