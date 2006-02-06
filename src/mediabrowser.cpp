@@ -886,15 +886,18 @@ class MediaItemTip : public QToolTip
             {
                 const MetaBundle *b = i->bundle();
                 text = "";
-                if( b->track() )
-                    text = QString( "%1 - %2 (%3:%4)<br>" )
-                        .arg( b->track() )
-                        .arg( b->title() )
-                        .arg( b->length()/60 )
-                        .arg( b->length()%60 );
-                if( !b->genre().isEmpty() )
-                    text += QString( "<i>Genre: %1</i>" )
-                        .arg( b->genre() );
+                if( b )
+                {
+                    if( b->track() )
+                        text = QString( "%1 - %2 (%3:%4)<br>" )
+                            .arg( b->track() )
+                            .arg( b->title() )
+                            .arg( b->length()/60 )
+                            .arg( b->length()%60 );
+                    if( !b->genre().isEmpty() )
+                        text += QString( "<i>Genre: %1</i>" )
+                            .arg( b->genre() );
+                }
             }
             break;
         case MediaItem::PODCASTITEM:
