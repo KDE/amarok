@@ -49,9 +49,11 @@
 
 #include "playlistitem.h"
 
+double  PlaylistItem::glowIntensity;
 QColor  PlaylistItem::glowText = Qt::white;
 QColor  PlaylistItem::glowBase = Qt::white;
 bool    PlaylistItem::s_pixmapChanged = false;
+
 
 PlaylistItem::PlaylistItem( QListView *listview, QListViewItem *item )
         : KListViewItem( listview, item )
@@ -572,19 +574,17 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
             static paintCacheItem paintCache[NUM_COLUMNS];
 
             // Use a darker color if the item is selected
-            const QColor glowColor = isSelected() ? glowBase.dark( 140 ) : glowBase;
+            const QColor glowColor = isSelected() ? glowBase.dark( 120 ) : glowBase;
 
-            // Convert QColor to string for use as key in QMap
-            const QString colorKey =
-                QString::number( glowColor.red() ) +
-                QString::number( glowColor.green() ) +
-                QString::number( glowColor.blue() );
+            // Convert intensity to string for use as key in QMap
+            const QString colorKey = QString::number( glowIntensity );
 
             const bool cacheValid =
                 paintCache[column].width == width &&
                 paintCache[column].height == height() &&
                 paintCache[column].text == colText &&
                 paintCache[column].font == painter->font() &&
+                paintCache[column].selected == isSelected() &&
                 !s_pixmapChanged;
 
             // If any parameter changed, we must regenerate all pixmaps
@@ -603,6 +603,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                 paintCache[column].height = height();
                 paintCache[column].text = colText;
                 paintCache[column].font = painter->font();
+                paintCache[column].selected = isSelected();
 
                 QColor bg;
                 if( isSelected() )
@@ -626,14 +627,14 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                 int rightOffset = 0;
                 int margin      = listView()->itemMargin();
 
-                const float colorize1 = 0.6;
-                const float colorize2 = 0.44;
+                const float  colorize  = 0.7;
+                const double intensity = 1.0 - glowIntensity * 0.025;
 
                 // Left part
                 if( column == listView()->m_firstColumn ) {
                     QImage tmpImage = currentTrackLeft.smoothScale( 1000, height(), QImage::ScaleMin );
-                    KIconEffect::colorize( tmpImage, cg.highlight(), colorize1 );
-                    KIconEffect::colorize( tmpImage, glowColor, colorize2 );
+                    KIconEffect::colorize( tmpImage, glowColor, colorize );
+                    imageTransparency( tmpImage, intensity );
                     p.drawImage( 0, 0, tmpImage );
                     leftOffset = tmpImage.width();
                     margin += 6;
@@ -644,8 +645,8 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                 if( column == Playlist::instance()->mapToLogicalColumn( Playlist::instance()->numVisibleColumns() - 1 ) )
                 {
                     QImage tmpImage = currentTrackRight.smoothScale( 1000, height(), QImage::ScaleMin );
-                    KIconEffect::colorize( tmpImage, cg.highlight(), colorize1 );
-                    KIconEffect::colorize( tmpImage, glowColor, colorize2 );
+                    KIconEffect::colorize( tmpImage, glowColor, colorize );
+                    imageTransparency( tmpImage, intensity );
                     p.drawImage( width - tmpImage.width(), 0, tmpImage );
                     rightOffset = tmpImage.width();
                     margin += 6;
@@ -654,8 +655,8 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                 // Middle part
                 // Here we scale the one pixel wide middel image to stretch to the full column width.
                 QImage tmpImage = currentTrackMid.copy();
-                KIconEffect::colorize( tmpImage, cg.highlight(), colorize1 );
-                KIconEffect::colorize( tmpImage, glowColor, colorize2 );
+                KIconEffect::colorize( tmpImage, glowColor, colorize );
+                imageTransparency( tmpImage, intensity );
                 tmpImage = tmpImage.smoothScale( width - leftOffset - rightOffset, height() );
                 p.drawImage( leftOffset, 0, tmpImage );
 
@@ -920,6 +921,22 @@ const QString &PlaylistItem::editingText()
     return text;
 }
 
+
+void PlaylistItem::imageTransparency( QImage& image, float factor ) //static
+{
+    unsigned int *data = (unsigned int *)image.bits();
+    const int pixels = image.width() * image.height();
+
+    for( int i = 0; i < pixels; ++i ) {
+        int c = qAlpha( data[i] );
+        c = int( double( c ) * factor );
+        if( c > 255 ) c = 255;
+
+        data[i] = qRgba( qRed( data[i] ), qGreen( data[i] ), qBlue( data[i] ), c );
+    }
+}
+
+
 void PlaylistItem::refAlbum()
 {
     if( AmarokConfig::entireAlbums() )
@@ -1000,4 +1017,5 @@ int PlaylistItem::totalIncrementAmount() const
         default: return 0;
     }
 }
+
 

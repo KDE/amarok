@@ -4240,7 +4240,8 @@ Playlist::slotGlowTimer() //SLOT
 
         {
             using namespace Base;
-            PlaylistItem::glowBase = QColor( r + int(d*dr), g + int(d*dg), b + int(d*db) );
+            PlaylistItem::glowIntensity = d;
+            PlaylistItem::glowBase = QColor( r, g, b );
         }
 
         {

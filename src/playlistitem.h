@@ -15,15 +15,16 @@
 #include <klistview.h> //baseclass
 #include <kurl.h>      //stack allocated
 
-#include <qpixmap.h>
-#include <qvaluevector.h>
-#include <qmutex.h>
 #include <qcolor.h>    //stack allocated
 #include <qfont.h>     //stack allocated
 #include <qmap.h>
+#include <qmutex.h>
+#include <qpixmap.h>
+#include <qvaluevector.h>
 
 class QColorGroup;
 class QDomNode;
+class QImage;
 class QListViewItem;
 class QPainter;
 class MetaBundle;
@@ -41,6 +42,7 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
         static void setPixmapChanged() { s_pixmapChanged = true; }
 
         /// For the glow colouration stuff
+        static double glowIntensity;
         static QColor glowText;
         static QColor glowBase;
 
@@ -125,6 +127,7 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
             int height;
             QString text;
             QFont font;
+            bool selected;
             QMap<QString, QPixmap> map;
         };
 
@@ -142,6 +145,8 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
         */
         void paintFocus( QPainter*, const QColorGroup&, const QRect& );
 
+        static void imageTransparency( QImage& image, float factor );
+
         void refAlbum();
         void derefAlbum();
 
@@ -151,7 +156,6 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
         int totalIncrementAmount() const;
 
         PlaylistAlbum *m_album;
-
         bool m_enabled;
 
         class MoodProxyObject: public QObject
