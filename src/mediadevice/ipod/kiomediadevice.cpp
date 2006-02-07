@@ -354,8 +354,6 @@ KioMediaDevice::fileTransferred( KIO::Job *job )  //SLOT, used in GpodMediaDevic
     {
         m_copyFailed = false;
 
-        setProgress( progress() + 1 );
-
         // the track just transferred has not yet been removed from the queue
         // FIXME
         MediaBrowser::instance()->queue()->takeItem( MediaBrowser::instance()->queue()->firstChild() );

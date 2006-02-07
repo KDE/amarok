@@ -2373,6 +2373,7 @@ MediaDevice::transferFiles()
             delete m_transferredItem;
             m_transferredItem = 0;
             m_parent->m_queue->itemCountChanged();
+            setProgress( progress() + 1 );
             continue;
         }
         else if( !item )
@@ -2406,9 +2407,9 @@ MediaDevice::transferFiles()
                     delete bundle;
                     bundle = 0;
                 }
+                setProgress( progress() + 1 );
                 continue;
             }
-            debug() << "playable => copying" << endl;
             item = copyTrackToDevice( *bundle, m_transferredItem->podcastInfo() );
         }
 
@@ -2420,9 +2421,7 @@ MediaDevice::transferFiles()
                 delete bundle;
                 bundle = 0;
             }
-            delete m_transferredItem;
             m_transferredItem = 0;
-            m_parent->m_queue->itemCountChanged();
             break;
         }
 
@@ -2466,6 +2465,7 @@ MediaDevice::transferFiles()
 
         delete m_transferredItem;
         m_transferredItem = 0;
+        setProgress( progress() + 1 );
         m_parent->m_queue->itemCountChanged();
     }
     synchronizeDevice();
