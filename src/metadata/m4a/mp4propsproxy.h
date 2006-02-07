@@ -25,6 +25,8 @@ namespace TagLib
       TagLib::uint channels() const;
       //! function to get the sample rate
       TagLib::uint sampleRate() const;
+      //! function to get the bitrate rate
+      TagLib::uint bitRate() const;
 
       //! function to register the movie header box - mvhd
       void registerMvhd( MP4::Mp4MvhdBox* mvhdbox );

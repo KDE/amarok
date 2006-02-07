@@ -18,7 +18,9 @@ namespace TagLib
       TagLib::uint channels() const;
       //! function to get the sample rate
       TagLib::uint samplerate() const;
-      
+      //! function to get the average bitrate of the audio stream
+      TagLib::uint bitrate() const;
+
     private:
       //! parse the content of the box
       void parseEntry();

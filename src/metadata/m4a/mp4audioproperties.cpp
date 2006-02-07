@@ -35,7 +35,7 @@ int MP4::AudioProperties::bitrate() const
 {
   if( d->propsproxy == 0 )
     return 0;
-  return 0;
+  return d->propsproxy->bitRate()/1000;
 }
 
 int MP4::AudioProperties::sampleRate() const

@@ -27,7 +27,7 @@ public:
 //! function to fill the tags with converted proxy data, which has been parsed out of the file previously
 static void fillTagFromProxy( MP4::Mp4TagsProxy& proxy, MP4::Tag& mp4tag );
 
-MP4::File::File(const char *file, bool readProperties, AudioProperties::ReadStyle propertiesStyle )
+MP4::File::File(const char *file, bool , AudioProperties::ReadStyle  )
 	:TagLib::File( file )
 {
   // create member container
@@ -78,6 +78,24 @@ bool MP4::File::save()
 
 void MP4::File::remove()
 {
+}
+
+TagLib::uint MP4::File::readSystemsLen()
+{
+  TagLib::uint length = 0;
+  TagLib::uint nbytes = 0;
+  ByteVector   input;
+  TagLib::uchar tmp_input;
+
+  do
+  {
+    input = readBlock(1);
+    tmp_input = static_cast<TagLib::uchar>(input[0]);
+    nbytes++;
+    length = (length<<7) | (tmp_input&0x7F);
+  } while( (tmp_input&0x80) && (nbytes<4) );
+
+  return length;
 }
 
 bool MP4::File::readSizeAndType( TagLib::uint& size, MP4::Fourcc& fourcc )

@@ -96,6 +96,11 @@ namespace TagLib {
       bool readSizeAndType( TagLib::uint& size, MP4::Fourcc& fourcc );
 
       /*!
+       * Helper function to read the length of an descriptor in systems manner
+       */
+      TagLib::uint readSystemsLen();
+
+      /*!
        * Helper function for reading an unsigned int out of the file (big endian method)
        */
       bool readInt( TagLib::uint& toRead );

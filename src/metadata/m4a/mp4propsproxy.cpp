@@ -39,6 +39,11 @@ TagLib::uint MP4::Mp4PropsProxy::sampleRate() const
   return (d->audiosampleentry->samplerate()>>16);
 }
 
+TagLib::uint MP4::Mp4PropsProxy::bitRate() const
+{
+  return (d->audiosampleentry->bitrate());
+}
+
 void MP4::Mp4PropsProxy::registerMvhd( MP4::Mp4MvhdBox* mvhdbox )
 {
   d->mvhdbox = mvhdbox;
