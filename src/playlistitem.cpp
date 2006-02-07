@@ -627,7 +627,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                 int rightOffset = 0;
                 int margin      = listView()->itemMargin();
 
-                const float  colorize  = 0.7;
+                const float  colorize  = 0.8;
                 const double intensity = 1.0 - glowIntensity * 0.025;
 
                 // Left part
