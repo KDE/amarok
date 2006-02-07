@@ -270,7 +270,7 @@ class PodcastItem : public QObject, public PlaylistBrowserEntry
         void startAnimation();
         void stopAnimation();
         void updatePixmap();
-        
+
         QListViewItem *m_parent;                   //podcast channel it belongs to
         QString     m_author;
         QString     m_description;
@@ -379,6 +379,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
 
         PodcastItem          *m_last;
         KIO::TransferJob     *m_podcastJob;
+        PlaylistCategory   *m_parent; // category it belongs to
         QString               m_podcastCurrentUrl;
         QPtrList<PodcastItem> m_podcastDownloadQueue;
 };

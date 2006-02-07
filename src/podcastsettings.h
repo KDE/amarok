@@ -12,14 +12,15 @@ class PodcastChannel;
 class PodcastItem;
 class PodcastSettingsDialogBase;
 class QDomNode;
+class QDomElement;
 
-class PodcastSettings : public KDialogBase
+enum MediaFetch{ STREAM=0, AUTOMATIC=1 };
+
+class PodcastSettings
 {
-    Q_OBJECT
-
     public:
         PodcastSettings( const QString &url, const QString &save, bool autoScan, int interval,
-                         int fetch, bool addToMediaDevice, bool purge, int purgeCount, QWidget* parent = 0 );
+                         int fetch, bool addToMediaDevice, bool purge, int purgeCount );
 
         PodcastSettings( const QDomNode &channelSettings );
         PodcastSettings(); // standard settings
@@ -34,9 +35,25 @@ class PodcastSettings : public KDialogBase
         bool    hasPurge()    { return m_purge; }
         int     purgeCount()  { return m_purgeCount; }
 
-        bool    applyToAll()  { return m_applyToAll; }
+        const QDomElement xml();
 
-        QString requesterSaveLocation();
+        QString m_url;
+        QString m_save;
+        bool    m_autoScan;
+        int     m_interval;
+        int     m_fetch;
+        bool    m_addToMediaDevice;
+        bool    m_purge;
+        int     m_purgeCount;
+};
+
+
+class PodcastSettingsDialog : public KDialogBase
+{
+    Q_OBJECT
+
+    public:
+        PodcastSettingsDialog( PodcastSettings *settings, PodcastSettings *parentSettings, QWidget* parent = 0 );
 
     protected:
         bool    hasChanged();
@@ -47,23 +64,11 @@ class PodcastSettings : public KDialogBase
         void    slotUser1();
 
     private:
-
-        void initDialog();
-
-        enum MediaFetch{ STREAM=0, AUTOMATIC=1 };
+        QString requesterSaveLocation();
 
         PodcastSettingsDialogBase *m_ps;
-
-        QString m_url;
-        QString m_save;
-        bool    m_autoScan;
-        int     m_interval;
-        int     m_fetch;
-        bool    m_addToMediaDevice;
-        bool    m_purge;
-        int     m_purgeCount;
-
-        bool    m_applyToAll;
+        PodcastSettings *m_settings;
+        PodcastSettings *m_parentSettings;
 };
 
 #endif /*AMAROK_PODCASTSETTINGS_H*/

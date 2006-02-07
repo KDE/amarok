@@ -9,6 +9,7 @@
 
 #include "amarokconfig.h"
 #include "playlistbrowseritem.h"
+#include "podcastsettings.h"
 
 #include <kaction.h>
 #include <klistview.h>
@@ -31,10 +32,11 @@ class QPoint;
 class QSplitter;
 class QTimer;
 
-class PlaylistBrowserView;
-class PlaylistTrackItem;
 class HTMLView;
 class InfoPane;
+class PlaylistBrowserView;
+class PlaylistTrackItem;
+
 
 class PlaylistBrowser : public QVBox
 {
@@ -61,6 +63,8 @@ class PlaylistBrowser : public QVBox
         int loadPlaylist( const QString &playlist, bool force=false );
         void addPodcast( QListViewItem *parent = 0 );
         void addPodcast( const QString &url, QListViewItem *parent = 0 );
+        void registerPodcastSettings( const QString &title, const PodcastSettings *settings );
+        PodcastSettings *getPodcastSettings( const QString &title );
 
         static bool savePlaylist( const QString &path, const QValueList<KURL> &urls,
                                   const QValueList<QString> &titles = QValueList<QString>(),
@@ -142,6 +146,7 @@ class PlaylistBrowser : public QVBox
         void downloadSelectedPodcasts();
         void setGlobalPodcastSettings( PodcastChannel *item );
         void refreshPodcasts( QListViewItem *category );
+        void configurePodcastCategory( PlaylistCategory  *category );
         PodcastChannel *findPodcastChannel( const KURL &feed, QListViewItem *parent=0 ) const;
 
         PlaylistCategory* loadPlaylists();
@@ -182,6 +187,7 @@ class PlaylistBrowser : public QVBox
         KActionMenu         *addMenuButton;
         KToolBar            *m_toolbar;
         ViewMode             m_viewMode;
+        QDict<PodcastSettings> m_podcastSettings;
         QValueList<int>      m_partySizeSave;
         QPtrList<QListViewItem> m_dynamicEntries;
 

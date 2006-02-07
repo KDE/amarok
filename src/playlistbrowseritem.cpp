@@ -154,6 +154,8 @@ void PlaylistCategory::setXml( const QDomElement &xml )
     if ( tname == "category" )
     {
         setOpen( xml.attribute( "isOpen" ) == "true" );
+        m_title = xml.attribute( "name" );
+        setText( 0, m_title );
         QListViewItem *last = 0;
         for( QDomNode n = xml.firstChild() ; !n.isNull(); n = n.nextSibling() )
         {
@@ -207,7 +209,11 @@ void PlaylistCategory::setXml( const QDomElement &xml )
                     pb->m_podcastItemsToScan.append( item );
                 #undef  item
             }
-            last->setOpen( e.attribute( "isOpen" ) == "true" );
+            else if ( e.tagName() == "settings" )
+            {
+                PlaylistBrowser::instance()->registerPodcastSettings(  m_title, new PodcastSettings( e ) );
+            }
+            if( !e.attribute( "isOpen" ).isNull() ) last->setOpen( e.attribute( "isOpen" ) == "true" ); //settings doesn't have an attribute "isOpen"
         }
         setText( 0, xml.attribute("name") );
     }
@@ -1044,6 +1050,7 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
     , m_purgeItems( false )
     , m_purgeCount( 2 ) // we do a small hack here to make sure we only download the first 2 items of a new pc.
     , m_last( 0 )
+    , m_parent( static_cast<PlaylistCategory*>(parent) )
 {
     setDragEnabled( true );
     setRenameEnabled( 0, false );
@@ -1074,6 +1081,7 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
     , m_purgeItems( channelSettings.namedItem( "purge").toElement().text() == "true" )
     , m_purgeCount( channelSettings.namedItem( "purgecount").toElement().text().toInt() )
     , m_last( 0 )
+    , m_parent( static_cast<PlaylistCategory*>(parent) )
 {
     if( channelSettings.namedItem( "fetch").toElement().text() == "automatic" )
         m_mediaFetch = AUTOMATIC;
@@ -1108,7 +1116,11 @@ PodcastChannel::configure()
     PodcastSettings *settings = new PodcastSettings( url, save, m_autoScan, m_interval,
                                                      m_mediaFetch, m_addToMediaDevice,
                                                      m_purgeItems, m_purgeCount );
-    if( settings->exec() == QDialog::Accepted )
+
+    PodcastSettingsDialog *dialog = new PodcastSettingsDialog( settings,
+            PlaylistBrowser::instance()->getPodcastSettings( m_parent->title() ) );
+
+    if( dialog->exec() == QDialog::Accepted )
     {
         m_url        = KURL::fromPathOrURL( settings->url() );
         save         = settings->saveLocation();
@@ -1173,9 +1185,6 @@ PodcastChannel::configure()
         {
             downloadChildren();
         }
-
-        if( settings->applyToAll() )
-            PlaylistBrowser::instance()->setGlobalPodcastSettings( this );
     }
 }
 

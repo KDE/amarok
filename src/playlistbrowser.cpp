@@ -19,6 +19,7 @@
 #include "playlistbrowser.h"
 #include "playlistbrowseritem.h"
 #include "playlistselection.h"
+#include "podcastsettings.h"
 #include "scancontroller.h"
 #include "smartplaylisteditor.h"
 #include "tagdialog.h"         //showContextMenu()
@@ -868,7 +869,6 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
 
         e = d.namedItem( "category" ).toElement();
         PlaylistCategory *p = new PlaylistCategory( m_listview, after, e );
-        p->setText( 0, i18n("Podcasts") );
 
         if( !m_podcastItemsToScan.isEmpty() )
             m_podcastTimer->start( m_podcastTimerInterval );
@@ -1136,6 +1136,52 @@ void PlaylistBrowser::setGlobalPodcastSettings( PodcastChannel *item )
         channel->setSettings( save, autoFetch, mediaType, addToMediaDevice, purge, purgeCount );
         #undef  channel
     }
+}
+
+void PlaylistBrowser::registerPodcastSettings( const QString &title, const PodcastSettings *settings )
+{
+    debug() << "REGISTER SETTINGS: " << title << endl;
+    m_podcastSettings.insert( title, settings );
+}
+
+void PlaylistBrowser::configurePodcastCategory( PlaylistCategory *category )
+{
+    debug() << "CONFIG podcastCategory: " << category->title() << endl;
+    PodcastSettings *settings = getPodcastSettings( category->title() );
+
+    PodcastSettings *parentSettings;
+    PlaylistCategory *p = static_cast<PlaylistCategory*>(category->parent());
+    if( p == 0 )
+        parentSettings = new PodcastSettings(); //default settings
+    else
+        parentSettings = getPodcastSettings( p->title() );
+
+    // Save the values
+    QString url    = settings->url();
+    QString save   = settings->saveLocation();
+    bool autoScan  = settings->hasAutoScan();
+    int mediaFetch = settings->fetch();
+    int purgeCount = settings->purgeCount();
+
+    PodcastSettingsDialog *dialog = new PodcastSettingsDialog( settings,
+            parentSettings );
+
+    if( dialog->exec() == QDialog::Accepted )
+    {
+        //TODO: check changed, reload children
+    }
+}
+
+PodcastSettings *PlaylistBrowser::getPodcastSettings( const QString &title )
+{
+    PodcastSettings *settings = m_podcastSettings.find( title );
+    if( settings == 0 )
+    {
+        debug() << "NO settings found, creating" << endl;
+        settings = new PodcastSettings();
+        registerPodcastSettings( title, settings );
+    }
+    return settings;
 }
 
 /**
@@ -2390,7 +2436,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     }
     else if( isCategory( item ) ) {
         #define item static_cast<PlaylistCategory*>(item)
-        enum Actions { RENAME, REMOVE, CREATE, PLAYLIST, SMART, STREAM, DYNAMIC, PODCAST, REFRESH, INTERVAL };
+        enum Actions { RENAME, REMOVE, CREATE, PLAYLIST, SMART, STREAM, DYNAMIC, PODCAST, REFRESH, CONFIG, INTERVAL };
 
         QListViewItem *parentCat = item;
 
@@ -2422,6 +2468,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             menu.insertItem( SmallIconSet("edit_add"), i18n("Add Podcast..."), PODCAST );
             menu.insertSeparator();
             menu.insertItem( SmallIconSet("reload"), i18n("Refresh All Podcasts"), REFRESH );
+            menu.insertItem( SmallIconSet( "configure" ), i18n( "&Configure..." ), CONFIG );
             if( parentCat == item )
                 menu.insertItem( SmallIconSet("tool_timer"), i18n("Scan Interval..."), INTERVAL );
         }
@@ -2464,6 +2511,10 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
             case REFRESH:
                 refreshPodcasts(item);
+                break;
+
+            case CONFIG:
+                configurePodcastCategory( item );
                 break;
 
             case CREATE:

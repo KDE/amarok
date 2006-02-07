@@ -18,12 +18,8 @@
 #include <qlabel.h>
 
 PodcastSettings::PodcastSettings( const QString& url, const QString& save, bool autoScan, int interval,
-                                  int fetch, bool addToMediaDevice, bool purge, int purgeCount, QWidget* parent )
-                    : KDialogBase(  parent, 0, true, i18n("Configure Podcast Stream"),
-                                    KDialogBase::User1|KDialogBase::Ok|KDialogBase::Cancel,
-                                    KDialogBase::Ok, true,
-                                    KGuiItem(i18n("Apply to all Podcasts"), "apply" ) )
-                    , m_url( url )
+                                  int fetch, bool addToMediaDevice, bool purge, int purgeCount )
+                    : m_url( url )
                     , m_save( save )
                     , m_autoScan( autoScan )
                     , m_interval( interval )
@@ -32,7 +28,6 @@ PodcastSettings::PodcastSettings( const QString& url, const QString& save, bool 
                     , m_purge( purge )
                     , m_purgeCount( purgeCount )
 {
-    initDialog();
 }
 
 PodcastSettings::PodcastSettings( const QDomNode &channelSettings )
@@ -50,138 +45,175 @@ PodcastSettings::PodcastSettings( const QDomNode &channelSettings )
 
 PodcastSettings::PodcastSettings()
 {
+    m_url = "file:///";
     m_save = amaroK::saveLocation( "podcasts/data/" );
     m_autoScan = false;
     m_interval = 4;
-    m_fetch = AUTOMATIC;
+    m_fetch = STREAM;
     m_addToMediaDevice = false;
     m_purge = false;
     m_purgeCount = 2;
 }
 
-void
-PodcastSettings::initDialog()
+const QDomElement
+PodcastSettings::xml()
 {
-    m_ps = new PodcastSettingsDialogBase(this);
-    m_applyToAll = false;
+    QDomDocument doc;
+    QDomElement i = doc.createElement("settings");
 
-    KWin::setState( winId(), NET::SkipTaskbar );
+    QDomElement attr = doc.createElement( "savelocation" );
+    QDomText t = doc.createTextNode( m_save );
+    attr.appendChild( t );
+    i.appendChild( attr );
 
-    setMainWidget(m_ps);
-    m_ps->m_urlLine->setText( m_url );
-    m_ps->m_saveLocation->setMode( KFile::Directory | KFile::ExistingOnly );
-    m_ps->m_saveLocation->setURL( m_save );
+    attr = doc.createElement( "autoscan" );
+    t = doc.createTextNode( m_autoScan ? "true" : "false" );
+    attr.appendChild( t );
+    i.appendChild( attr );
 
-    m_ps->m_autoFetchCheck->setChecked( m_autoScan );
+    attr = doc.createElement( "scaninterval" );
+    t = doc.createTextNode( QString::number( m_interval ) );
+    attr.appendChild( t );
+    i.appendChild( attr );
 
-    if( m_fetch == STREAM )
-    {
-        m_ps->m_streamRadio->setChecked( true );
-        m_ps->m_downloadRadio->setChecked( false );
-    }
-    else if( m_fetch == AUTOMATIC )
-    {
-        m_ps->m_streamRadio->setChecked( false );
-        m_ps->m_downloadRadio->setChecked( true );
-    }
+    attr = doc.createElement( "fetch" );
+    t = doc.createTextNode( ( m_fetch == AUTOMATIC ) ? "automatic" : "stream" );
+    attr.appendChild( t );
+    i.appendChild( attr );
 
-    m_ps->m_addToMediaDeviceCheck->setChecked( m_addToMediaDevice );
-    m_ps->m_addToMediaDeviceCheck->setEnabled( MediaBrowser::isAvailable() );
+    attr = doc.createElement( "autotransfer" );
+    t = doc.createTextNode( ( m_addToMediaDevice ) ? "true" : "false" );
+    attr.appendChild( t );
+    i.appendChild( attr );
 
-    m_ps->m_purgeCheck->setChecked( m_purge );
-    m_ps->m_purgeCountSpinBox->setValue( m_purgeCount );
+    attr = doc.createElement( "purge" );
+    t = doc.createTextNode( m_purge ? "true" : "false" );
+    attr.appendChild( t );
+    i.appendChild( attr );
 
-    if( !m_purge )
-    {
-        m_ps->m_purgeCountSpinBox->setEnabled( false );
-        m_ps->m_purgeCountLabel->setEnabled( false );
-    }
+    attr = doc.createElement( "purgecount" );
+    t = doc.createTextNode( QString::number( m_purgeCount ) );
+    attr.appendChild( t );
+    i.appendChild( attr );
 
-    enableButtonOK( false );
+    return i;
+}
 
-    connect( m_ps->m_purgeCountSpinBox->child( "qt_spinbox_edit" ),  SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
+
+PodcastSettingsDialog::PodcastSettingsDialog( PodcastSettings *settings, PodcastSettings *parentSettings, QWidget* parent )
+            :KDialogBase(  parent, 0, true, i18n("Configure Podcast Stream"),
+                            KDialogBase::User1|KDialogBase::Ok|KDialogBase::Cancel,
+                            KDialogBase::Ok, true,
+                            KGuiItem(i18n("reset"), "reset" ) )
+        , m_settings( settings )
+        , m_parentSettings( parentSettings )
+{
+        m_ps = new PodcastSettingsDialogBase(this);
+
+        KWin::setState( winId(), NET::SkipTaskbar );
+
+        setMainWidget(m_ps);
+        m_ps->m_urlLine->setText( settings->m_url );
+        m_ps->m_saveLocation->setMode( KFile::Directory | KFile::ExistingOnly );
+        m_ps->m_saveLocation->setURL( settings->m_save );
+
+        m_ps->m_autoFetchCheck->setChecked( settings->m_autoScan );
+
+        if( m_settings->m_fetch == STREAM )
+        {
+            m_ps->m_streamRadio->setChecked( true );
+            m_ps->m_downloadRadio->setChecked( false );
+        }
+        else if( m_settings->m_fetch == AUTOMATIC )
+        {
+            m_ps->m_streamRadio->setChecked( false );
+            m_ps->m_downloadRadio->setChecked( true );
+        }
+
+        m_ps->m_addToMediaDeviceCheck->setChecked( m_settings->m_addToMediaDevice );
+        m_ps->m_addToMediaDeviceCheck->setEnabled( MediaBrowser::isAvailable() );
+
+        m_ps->m_purgeCheck->setChecked( m_settings->m_purge );
+        m_ps->m_purgeCountSpinBox->setValue( m_settings->m_purgeCount );
+
+        if( !m_settings->m_purge )
+        {
+            m_ps->m_purgeCountSpinBox->setEnabled( false );
+            m_ps->m_purgeCountLabel->setEnabled( false );
+        }
+
+        enableButtonOK( false );
+
+        connect( m_ps->m_purgeCountSpinBox->child( "qt_spinbox_edit" ),  SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
 
     // Connects for modification check
-    connect( m_ps->m_urlLine,        SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
-    connect( m_ps->m_saveLocation,   SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
-    connect( m_ps->m_autoFetchCheck, SIGNAL(clicked()),                     SLOT(checkModified()) );
-    connect( m_ps->m_streamRadio,    SIGNAL(clicked()),                     SLOT(checkModified()) );
-    connect( m_ps->m_addToMediaDeviceCheck, SIGNAL(clicked()),              SLOT(checkModified()) );
-    connect( m_ps->m_downloadRadio,  SIGNAL(clicked()),                     SLOT(checkModified()) );
-    connect( m_ps->m_purgeCheck,     SIGNAL(clicked()),                     SLOT(checkModified()) );
+        connect( m_ps->m_urlLine,        SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
+        connect( m_ps->m_saveLocation,   SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
+        connect( m_ps->m_autoFetchCheck, SIGNAL(clicked()),                     SLOT(checkModified()) );
+        connect( m_ps->m_streamRadio,    SIGNAL(clicked()),                     SLOT(checkModified()) );
+        connect( m_ps->m_addToMediaDeviceCheck, SIGNAL(clicked()),              SLOT(checkModified()) );
+        connect( m_ps->m_downloadRadio,  SIGNAL(clicked()),                     SLOT(checkModified()) );
+        connect( m_ps->m_purgeCheck,     SIGNAL(clicked()),                     SLOT(checkModified()) );
 }
 
 bool
-PodcastSettings::hasChanged()
+PodcastSettingsDialog::hasChanged()
 {
     bool fetchTypeChanged = true;
 
-    if( m_ps->m_streamRadio->isChecked()          && m_fetch == STREAM   ||
-        m_ps->m_downloadRadio->isChecked()        && m_fetch == AUTOMATIC  )
+    if( m_ps->m_streamRadio->isChecked()          && m_settings->m_fetch == STREAM   ||
+        m_ps->m_downloadRadio->isChecked()        && m_settings->m_fetch == AUTOMATIC  )
 
         fetchTypeChanged = false;
 
     return  !m_ps->m_urlLine->text().isEmpty() &&
-           ( m_url             != m_ps->m_urlLine->text()             ||
-             m_save            != requesterSaveLocation()             ||
-             m_autoScan        != m_ps->m_autoFetchCheck->isChecked() ||
-             m_addToMediaDevice!= m_ps->m_addToMediaDeviceCheck->isChecked() ||
-             m_purge           != m_ps->m_purgeCheck->isChecked()     ||
-             m_purgeCount      != m_ps->m_purgeCountSpinBox->value()  ||
-             fetchTypeChanged );
-
+            ( m_settings->m_url             != m_ps->m_urlLine->text()             ||
+            m_settings->m_save            != requesterSaveLocation()             ||
+            m_settings->m_autoScan        != m_ps->m_autoFetchCheck->isChecked() ||
+            m_settings->m_addToMediaDevice!= m_ps->m_addToMediaDeviceCheck->isChecked() ||
+            m_settings->m_purge           != m_ps->m_purgeCheck->isChecked()     ||
+            m_settings->m_purgeCount      != m_ps->m_purgeCountSpinBox->value()  ||
+            fetchTypeChanged );
 }
 
 void
-PodcastSettings::checkModified() //slot
+PodcastSettingsDialog::checkModified() //slot
 {
     enableButtonOK( hasChanged() );
 }
 
-void
-PodcastSettings::slotOk()       //slot
+void PodcastSettingsDialog::slotOk()       //slot
 {
     enableButtonOK( false ); //visual feedback
 
-    m_url             = m_ps->m_urlLine->text();
-    m_save            = requesterSaveLocation();
-    m_autoScan        = m_ps->m_autoFetchCheck->isChecked();
-    m_addToMediaDevice= m_ps->m_addToMediaDeviceCheck->isChecked();
-    m_purge           = m_ps->m_purgeCheck->isChecked();
-    m_purgeCount      = m_ps->m_purgeCountSpinBox->value();
+    m_settings->m_url             = m_ps->m_urlLine->text();
+    m_settings->m_save            = requesterSaveLocation();
+    m_settings->m_autoScan        = m_ps->m_autoFetchCheck->isChecked();
+    m_settings->m_addToMediaDevice= m_ps->m_addToMediaDeviceCheck->isChecked();
+    m_settings->m_purge           = m_ps->m_purgeCheck->isChecked();
+    m_settings->m_purgeCount      = m_ps->m_purgeCountSpinBox->value();
 
     if( m_ps->m_streamRadio->isChecked() )
-        m_fetch = STREAM;
+        m_settings->m_fetch = STREAM;
     else
-        m_fetch = AUTOMATIC;
+        m_settings->m_fetch = AUTOMATIC;
 
     KDialogBase::slotOk();
 }
 
-//Apply to all button
-void
-PodcastSettings::slotUser1()    //slot
-{
-    int button = KMessageBox::warningContinueCancel( this, i18n( "<p>This will set podcast settings globally. Are you sure?" ) );
-
-    if ( button == KMessageBox::Continue )
-    {
-        // TODO We need to check which files have been deleted successfully
-        m_applyToAll = true;
-        slotOk();
-        return;
-    }
-}
-
 // KUrlRequester doesn't provide us with convenient functions for adding trailing slashes
-QString
-PodcastSettings::requesterSaveLocation()
+QString PodcastSettingsDialog::requesterSaveLocation()
 {
     QString url = m_ps->m_saveLocation->url();
     if( url.endsWith( "/" ) )
         return url;
     else
         return url + "/";
+}
+
+//Apply to all button
+void PodcastSettingsDialog::slotUser1()    //slot
+{
 }
 
 #include "podcastsettings.moc"
