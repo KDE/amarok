@@ -114,6 +114,7 @@ VfatMediaDevice::VfatMediaDevice()
     m_name = "VFAT Device";
     m_dirLister = new KDirLister();
     m_dirLister->setNameFilter( "*.mp3 *.wav *.asf *.flac *.wma *.ogg" );
+    m_dirLister->setAutoUpdate( false );
     connect( m_dirLister, SIGNAL( newItems(const KFileItemList &) ), this, SLOT( newItems(const KFileItemList &) ) );
 }
 
@@ -182,9 +183,7 @@ VfatMediaDevice::renameItem( QListViewItem *item ) // SLOT
     debug() << "Renaming " << src << " to: " << dest << endl;
 
     //TODO: do we want a progress dialog?  If so, set last false to true
-    if( KIO::NetAccess::file_move( KURL(src), KURL(dest), -1, false, false, false ) )
-        //rename failed
-        item->setText( 0, item->encodedName() );
+    KIO::NetAccess::file_move( KURL(src), KURL(dest), -1, false, false, false );
 
     #undef item
 
@@ -195,19 +194,22 @@ VfatMediaDevice::renameItem( QListViewItem *item ) // SLOT
 MediaItem *
 VfatMediaDevice::newDirectory( const QString &name, MediaItem *parent )
 {
-
+    DEBUG_BLOCK
     if( !m_connected || name.isEmpty() ) return 0;
 
-    const QCString dirPath = QFile::encodeName( getFullPath( parent ) + "/" + name );
+    QString fullPath = getFullPath( parent );
+    const QCString dirPath = QFile::encodeName( fullPath == QString::null ? m_medium->mountPoint() + "/" + name : fullPath + "/" + name );
     debug() << "Creating directory: " << dirPath << endl;
 
     const KURL url( dirPath );
 
     if( ! KIO::NetAccess::mkdir( url, m_parent ) ) //failed
+    {
+        debug() << "Failed to create directory " << dirPath << endl;
         return NULL;
+    }
 
     m_tmpParent = parent;
-    addTrackToList( MediaItem::DIRECTORY, name );
     return m_last;
 
 }
@@ -215,6 +217,7 @@ VfatMediaDevice::newDirectory( const QString &name, MediaItem *parent )
 void
 VfatMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> items )
 {
+    DEBUG_BLOCK
     if( !directory || items.isEmpty() ) return;
 
     m_tmpParent = directory;
@@ -240,9 +243,11 @@ VfatMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> items
 MediaItem *
 VfatMediaDevice::copyTrackToDevice( const MetaBundle& bundle, const PodcastInfo* /*info*/ )
 {
+    DEBUG_BLOCK
     if( !m_connected ) return 0;
 
-    const QString  newFilename = m_medium->mountPoint() + bundle.prettyTitle().remove( "'" ) + "." + bundle.type();
+    const QString  newFilenameSansMountpoint = bundle.prettyTitle().remove( "'" ) + "." + bundle.type();
+    const QString  newFilename = m_medium->mountPoint() + "/" + newFilenameSansMountpoint;
     const QCString src  = QFile::encodeName( bundle.url().path() );
     const QCString dest = QFile::encodeName( newFilename ); // TODO: add to directory
 
@@ -253,9 +258,23 @@ VfatMediaDevice::copyTrackToDevice( const MetaBundle& bundle, const PodcastInfo*
 
     if( KIO::NetAccess::file_copy( srcurl, desturl, -1, false, false, m_parent) ) //success
     {
-        addTrackToList( MediaItem::TRACK, newFilename );
+        addTrackToList( MediaItem::TRACK, newFilenameSansMountpoint );
         return m_last;
     }
+
+    return 0;
+}
+
+//Somewhat related...
+
+MediaItem *
+VfatMediaDevice::trackExists( const MetaBundle& bundle )
+{
+    void *dummy;
+    const QString  newFilenameSansMountpoint = bundle.prettyTitle().remove( "'" ) + "." + bundle.type();
+    const QString  newFilename = m_medium->mountPoint() + "/" + newFilenameSansMountpoint;
+    if ( KIO::NetAccess::stat( KURL(newFilename), m_udsentry, m_parent ) )
+        return reinterpret_cast<MediaItem *>(dummy);
 
     return 0;
 }
@@ -313,26 +332,33 @@ VfatMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/ )
 
     QCString encodedPath = QFile::encodeName( path );
     debug() << "Deleting file: " << encodedPath << endl;
-    bool err;
+    bool flag = true;
     int count = 0;
 
     switch( item->type() )
     {
         case MediaItem::DIRECTORY:
-            err = KIO::NetAccess::del( KURL(encodedPath), m_parent );
-            checkResult( err, i18n("Directory cannot be deleted: '%1'").arg(encodedPath) );
+            if ( !KIO::NetAccess::del( KURL(encodedPath), m_parent ))
+            {
+                debug() << "Error deleting directory: " << encodedPath << endl;
+                flag = false;
+            }
+            count++;
             break;
 
         default:
-            err = KIO::NetAccess::del( KURL(encodedPath), m_parent );
-            count += 1;
-            checkResult( err, i18n("File does not exist: '%1'").arg(encodedPath) );
+            if ( !KIO::NetAccess::del( KURL(encodedPath), m_parent ))
+            {
+                debug() << "Error deleting file: " << encodedPath << endl;
+                flag = false;
+            }
+            count++;
             break;
     }
-    if( err == 0 ) //success
+    if( flag ) //success
         delete item;
 
-    return (err == 0) ? count : -1;
+    return flag ? count : -1;
 }
 
 /// Directory Reading
@@ -340,6 +366,7 @@ VfatMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/ )
 void
 VfatMediaDevice::expandItem( QListViewItem *item ) // SLOT
 {
+    DEBUG_BLOCK
     if( !item || !item->isExpandable() ) return;
 
     while( item->firstChild() )
@@ -355,7 +382,8 @@ VfatMediaDevice::expandItem( QListViewItem *item ) // SLOT
 void
 VfatMediaDevice::listDir( const QString &dir )
 {
-    if ( m_dirLister->openURL( KURL(dir), true, false ) )
+    DEBUG_BLOCK
+    if ( m_dirLister->openURL( KURL(dir), true, true ) )
     {
         debug() << "Waiting for KDirLister, do anything here?" << endl;
     }
@@ -375,6 +403,7 @@ VfatMediaDevice::listDir( const QString &dir )
 void
 VfatMediaDevice::newItems( const KFileItemList &items )
 {
+    DEBUG_BLOCK
     //iterate over items, calling addTrackToList
     QPtrListIterator<KFileItem> it( items );
     KFileItem *kfi;
@@ -388,6 +417,7 @@ VfatMediaDevice::newItems( const KFileItemList &items )
 int
 VfatMediaDevice::addTrackToList( int type, QString name, int /*size*/ )
 {
+    DEBUG_BLOCK
     m_tmpParent ?
         m_last = new VfatMediaItem( m_tmpParent ):
         m_last = new VfatMediaItem( m_view );
@@ -467,7 +497,10 @@ VfatMediaDevice::foundMountPoint( const QString & mountPoint, unsigned long kBSi
 QString
 VfatMediaDevice::getFullPath( const QListViewItem *item, const bool getFilename )
 {
+    DEBUG_BLOCK
     if( !item ) return QString::null;
+
+    debug() << "Not returning QString::null" << endl;
 
     QString path;
 

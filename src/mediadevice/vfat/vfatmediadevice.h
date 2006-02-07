@@ -68,8 +68,7 @@ class VfatMediaDevice : public MediaDevice
     private:
         enum              Error { ERR_ACCESS_DENIED, ERR_CANNOT_RENAME, ERR_DISK_FULL, ERR_COULD_NOT_WRITE };
 
-        // To expensive to implement on a non-database device
-        MediaItem        *trackExists( const MetaBundle& ) { return 0; }
+        MediaItem        *trackExists( const MetaBundle& );
 
         bool              checkResult( int result, QString message );
 
@@ -98,6 +97,9 @@ class VfatMediaDevice : public MediaDevice
         unsigned long     m_kBAvail;
 
         KDirLister        *m_dirLister;
+        KIO::UDSEntry     m_udsentry;
+
+        bool              m_dirty;
 };
 
 #endif /*AMAROK_VFATMEDIADEVICE_H*/

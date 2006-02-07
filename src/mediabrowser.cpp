@@ -2420,6 +2420,9 @@ MediaDevice::transferFiles()
                 delete bundle;
                 bundle = 0;
             }
+            delete m_transferredItem;
+            m_transferredItem = 0;
+            m_parent->m_queue->itemCountChanged();
             break;
         }
 

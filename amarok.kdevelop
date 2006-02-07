@@ -11,17 +11,9 @@
     </keywords>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <version></version>
-    <description></description>
-    <ignoreparts>
-      <part>CvsService</part>
-      <part>KDevClearCase</part>
-      <part>KDevDebugger</part>
-      <part>KDevDoxygen</part>
-      <part>KDevdistpart</part>
-      <part>KDevPerforce</part>
-      <part>KDevsubversion</part>
-    </ignoreparts>
+    <version/>
+    <description/>
+    <ignoreparts/>
     <secondaryLanguages/>
     <versioncontrol/>
   </general>
@@ -119,15 +111,15 @@
   <kdevdebugger>
     <general>
       <dbgshell>/usr/bin/libtool</dbgshell>
-      <programargs></programargs>
-      <gdbpath></gdbpath>
+      <programargs/>
+      <gdbpath/>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
       <runappinappdirectory>true</runappinappdirectory>
-      <configGdbScript></configGdbScript>
-      <runShellScript></runShellScript>
-      <runGdbScript></runGdbScript>
+      <configGdbScript/>
+      <runShellScript/>
+      <runGdbScript/>
     </general>
     <display>
       <staticmembers>false</staticmembers>
