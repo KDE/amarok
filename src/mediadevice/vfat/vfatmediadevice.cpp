@@ -41,8 +41,10 @@ AMAROK_EXPORT_PLUGIN( VfatMediaDevice )
 
 #include <taglib/audioproperties.h>
 
-#include <qfile.h>
+#include <unistd.h>            //usleep()
+
 #include <qcstring.h>
+#include <qfile.h>
 
 namespace amaroK { extern KConfig *config( const QString& ); }
 
