@@ -18,6 +18,7 @@
 #include "collectiondb.h"
 #include "coverfetcher.h"
 #include "enginecontroller.h"
+#include "mediabrowser.h"
 #include "metabundle.h"           //updateTags()
 #include "playlist.h"
 #include "playlistbrowser.h"
@@ -1454,9 +1455,21 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
                     }
 
                 // if we get here, we didn't find an entry
-                debug() << "No bundle recovered for: " << *it << endl;
-                b = MetaBundle();
-                b.setUrl( KURL::fromPathOrURL(*it) );
+                {
+                    KURL url = KURL::fromPathOrURL( *it );
+                    const MetaBundle *mb = MediaBrowser::instance()->getBundle( url );
+                    if( mb )
+                    {
+                        debug() << "Bundle recovered from media browser for: " << *it << endl;
+                        b = MetaBundle( *mb );
+                    }
+                    else
+                    {
+                        debug() << "No bundle recovered for: " << *it << endl;
+                        b = MetaBundle();
+                        b.setUrl( KURL::fromPathOrURL(*it) );
+                    }
+                }
                 bundles += b;
 
             success: ;

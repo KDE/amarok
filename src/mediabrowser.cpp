@@ -352,11 +352,24 @@ MediaBrowser::tagsChanged( const MetaBundle &bundle )
         }
         else
         {
-            // transfer queue
+            // check if it is on the transfer queue
         }
     }
     else
         debug() << "not watching " << bundle.url().prettyURL() << endl;
+}
+
+const MetaBundle *
+MediaBrowser::getBundle( const KURL &url ) const
+{
+    if( url.protocol() != "file" )
+        return 0;
+
+    ItemMap::const_iterator it = m_itemMap.find( url.path() );
+    if( it == m_itemMap.end() )
+        return 0;
+
+    return (*it)->bundle();
 }
 
 MediaDevice *

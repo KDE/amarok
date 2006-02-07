@@ -176,7 +176,8 @@ class MediaBrowser : public QVBox
         void updateStats();
         void updateButtons();
         void updateDevices();
-
+        // return bundle for url if it is known to MediaBrowser
+        const MetaBundle *getBundle( const KURL &url ) const;
 
     private slots:
         void slotSetFilterTimeout();
