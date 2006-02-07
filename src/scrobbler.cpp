@@ -226,7 +226,8 @@ void Scrobbler::engineNewMetaData( const MetaBundle& bundle, bool trackChanged )
         }
         return;
     }
-
+    //to work around xine bug, we have to explictly prevent submission the first few seconds of a track
+    //http://sourceforge.net/tracker/index.php?func=detail&aid=1401026&group_id=9655&atid=109655
     m_timer.stop();
     m_timer.start( 10000, true );
 
