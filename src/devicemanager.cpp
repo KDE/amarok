@@ -51,11 +51,7 @@ void DeviceManager::mediumAdded( QString name )
     DEBUG_BLOCK
     if ( !m_valid )
         return;
-    Medium* addedMedium;
-    if ( m_mediumMap.contains(name) )
-        addedMedium = m_mediumMap[name];
-    else
-        addedMedium = getDevice(name);
+    Medium* addedMedium = getDevice(name);
     if ( addedMedium != NULL )
         debug() << "[DeviceManager::mediumAdded] Obtained medium name is " << name << ", id is: " << addedMedium->id() << endl;
     else
@@ -91,11 +87,7 @@ void DeviceManager::mediumChanged( QString name )
     DEBUG_BLOCK
     if ( !m_valid )
         return;
-    Medium *changedMedium;
-    if ( m_mediumMap.contains(name) )
-        changedMedium = m_mediumMap[name];
-    else
-        changedMedium = getDevice(name);
+    Medium *changedMedium = getDevice(name);
     if ( changedMedium != NULL )
         debug() << "[DeviceManager::mediumChanged] Obtained medium name is " << name << ", id is: " << changedMedium->id() << endl;
     else

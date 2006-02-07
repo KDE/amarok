@@ -99,7 +99,7 @@ class VfatMediaDevice : public MediaDevice
         KDirLister        *m_dirLister;
         KIO::UDSEntry     m_udsentry;
 
-        bool              m_dirty;
+        QString           m_transferDir;
 };
 
 #endif /*AMAROK_VFATMEDIADEVICE_H*/

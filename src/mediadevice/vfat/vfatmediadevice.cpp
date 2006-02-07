@@ -114,6 +114,7 @@ VfatMediaDevice::VfatMediaDevice()
     , m_kBAvail( 0 )
 {
     m_name = "VFAT Device";
+    m_transferDir = "";
     m_dirLister = new KDirLister();
     m_dirLister->setNameFilter( "*.mp3 *.wav *.asf *.flac *.wma *.ogg" );
     m_dirLister->setAutoUpdate( false );
@@ -535,7 +536,7 @@ VfatMediaDevice::getFullPath( const QListViewItem *item, const bool getFilename 
 void
 VfatMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
 {
-    enum Actions { DOWNLOAD, DIRECTORY, RENAME, DELETE };
+    enum Actions { DOWNLOAD, DIRECTORY, RENAME, DELETE, TRANSFER_HERE };
 
     MediaItem *item = static_cast<MediaItem *>(qitem);
     if ( item )
@@ -546,6 +547,8 @@ VfatMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
         menu.insertItem( SmallIconSet( "folder" ), i18n("Add Directory" ), DIRECTORY );
         menu.insertItem( SmallIconSet( "editclear" ), i18n( "Rename" ), RENAME );
         menu.insertItem( SmallIconSet( "editdelete" ), i18n( "Delete" ), DELETE );
+        menu.insertSeparator();
+        menu.insertItem( SmallIconSet( "up" ), i18n(" Transfer queue to here..." ), TRANSFER_HERE );
 
         int id =  menu.exec( point );
         switch( id )
@@ -568,6 +571,15 @@ VfatMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
             case DELETE:
                 deleteFromDevice();
                 break;
+
+            case TRANSFER_HERE:
+                if( item->type() == MediaItem::DIRECTORY )
+                    m_transferDir = getFullPath( item, true ) + "/";
+                else
+                    m_transferDir = getFullPath( item, false );
+                debug() << "New transfer dir is: " << m_transferDir << endl;
+                //start transfer
+                break;
         }
         return;
     }
@@ -576,12 +588,21 @@ VfatMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
     {
         KPopupMenu menu( m_view );
         menu.insertItem( SmallIconSet( "folder" ), i18n("Add Directory" ), DIRECTORY );
+        menu.insertSeparator();
+        menu.insertItem( SmallIconSet( "up" ), i18n(" Transfer queue to here..." ), TRANSFER_HERE );
         int id =  menu.exec( point );
         switch( id )
         {
             case DIRECTORY:
                 m_view->newDirectory( 0 );
                 break;
+
+            case TRANSFER_HERE:
+                m_transferDir = m_medium->mountPoint() + "/";
+                debug() << "New transfer dir is: " << m_transferDir << endl;
+                //start transfer
+                break;
+
         }
     }
 }

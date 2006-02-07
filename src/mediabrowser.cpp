@@ -1356,6 +1356,7 @@ MediaBrowser::mediumChanged( const Medium *medium, QString /*name*/ )
             if( (*it)->uniqueId() == medium->id() )
             {
                 debug() << "changing state for " << medium->deviceNode() << endl;
+                (*it)->m_medium = const_cast<Medium *>(medium);
 #if 0
                 if( (*it)->isConnected() && !medium->isMounted() )
                 {
