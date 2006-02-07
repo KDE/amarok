@@ -145,6 +145,15 @@ VfatMediaDevice::checkResult( int result, QString message )
 bool
 VfatMediaDevice::openDevice( bool /*silent*/ )
 {
+    DEBUG_BLOCK
+
+    if ( !m_medium->mountPoint() )
+    {
+        amaroK::StatusBar::instance()->longMessage( i18n( "Devices handled by this plugin must be mounted first.\nPlease mount the device and click Connect again." ),
+            KDE::StatusBar::Sorry );
+        return false;
+    }
+
     m_connected = true;
 
     listDir( m_medium->mountPoint() );
