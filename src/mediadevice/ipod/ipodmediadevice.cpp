@@ -207,9 +207,9 @@ IpodMediaDevice::updateTrackInDB(IpodMediaItem *item,
     debug() << "on iPod: " << track->ipod_path << ", podcast=" << podcastInfo << endl;
 
     track->title = g_strdup( bundle.title().utf8() );
-    track->album = g_strdup( bundle.album().utf8() );
-    track->artist = g_strdup( bundle.artist().utf8() );
-    track->genre = g_strdup( bundle.genre().utf8() );
+    track->album = g_strdup( bundle.album()->utf8() );
+    track->artist = g_strdup( bundle.artist()->utf8() );
+    track->genre = g_strdup( bundle.genre()->utf8() );
     if(type=="wav")
     {
         track->filetype = g_strdup( "wav" );
@@ -250,8 +250,8 @@ IpodMediaDevice::updateTrackInDB(IpodMediaItem *item,
         track->filetype = g_strdup( type.utf8() );
     }
 
-    track->composer = g_strdup( bundle.composer().utf8() );
-    track->comment = g_strdup( bundle.comment().utf8() );
+    track->composer = g_strdup( bundle.composer()->utf8() );
+    track->comment = g_strdup( bundle.comment()->utf8() );
     track->track_nr = bundle.track();
     track->cd_nr = bundle.discNumber();
     track->year = bundle.year();
