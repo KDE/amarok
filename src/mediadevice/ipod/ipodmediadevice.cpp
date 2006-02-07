@@ -81,16 +81,19 @@ class IpodMediaItem : public MediaItem
         {
             MetaBundle *bundle = new MetaBundle();
             bundle->setArtist( QString::fromUtf8( track->artist ) );
+            bundle->setComposer( QString::fromUtf8( track->composer ) );
             bundle->setAlbum( QString::fromUtf8( track->album ) );
             bundle->setTitle( QString::fromUtf8( track->title ) );
             bundle->setComment( QString::fromUtf8( track->comment ) );
             bundle->setGenre( QString::fromUtf8( track->genre ) );
             bundle->setYear( track->year );
             bundle->setTrack( track->track_nr );
+            bundle->setDiscNumber( track->cd_nr );
             bundle->setLength( track->tracklen/1000 );
             bundle->setBitrate( track->bitrate );
             bundle->setSampleRate( track->samplerate );
             bundle->setPath( path );
+            bundle->setFilesize( track->size );
             setBundle( bundle );
         }
         Itdb_Track *m_track;
@@ -252,7 +255,11 @@ IpodMediaDevice::updateTrackInDB(IpodMediaItem *item,
     track->track_nr = bundle.track();
     track->cd_nr = bundle.discNumber();
     track->year = bundle.year();
-    track->size = QFile( pathname ).size();
+    track->size = bundle.filesize();
+    if( track->size == 0 )
+    {
+        debug() << "filesize is zero for " << track->ipod_path << ", expect strange problems with your ipod" << endl;
+    }
     track->bitrate = bundle.bitrate();
     track->samplerate = bundle.sampleRate();
     track->tracklen = bundle.length()*1000;
