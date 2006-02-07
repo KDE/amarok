@@ -16,7 +16,6 @@ TagLib::File *MP4FileTypeResolver::createFile(const char *fileName,
                 || !strcasecmp(ext, ".m4v") || !strcasecmp(ext, ".mp4v")
                 || !strcasecmp(ext, ".mov")))
     {
-        fprintf(stderr, "GOOD!\n");
         return new TagLib::MP4::File(fileName, readProperties, propertiesStyle);
     }
 
