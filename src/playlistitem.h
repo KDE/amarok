@@ -28,6 +28,7 @@ class QListViewItem;
 class QPainter;
 class MetaBundle;
 class Playlist;
+class PlaylistAlbum;
 
 class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
 {
@@ -112,7 +113,13 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
         virtual bool operator== ( const PlaylistItem & item ) const;
         virtual bool operator< ( const PlaylistItem & item ) const;
 
+        PlaylistItem *nextInAlbum() const;
+        PlaylistItem *prevInAlbum() const;
+
     private:
+        friend class Playlist;
+
+
         struct paintCacheItem {
             int width;
             int height;
@@ -134,6 +141,16 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
         * over the currentTrack, cause it would look like crap and flicker.
         */
         void paintFocus( QPainter*, const QColorGroup&, const QRect& );
+
+        void refAlbum();
+        void derefAlbum();
+
+        void decrementTotals();
+        void incrementTotals();
+
+        int totalIncrementAmount() const;
+
+        PlaylistAlbum *m_album;
 
         bool m_enabled;
 
@@ -176,7 +193,11 @@ inline void PlaylistItem::setTitle( const QString &title )
 
 inline void PlaylistItem::setArtist( const AtomicString &artist )
 {
+    decrementTotals();
+    derefAlbum();
     super::setArtist( artist );
+    refAlbum();
+    incrementTotals();
     update();
 }
 
@@ -188,7 +209,11 @@ inline void PlaylistItem::setComposer( const AtomicString &composer )
 
 inline void PlaylistItem::setAlbum( const AtomicString &album )
 {
+    decrementTotals();
+    derefAlbum();
     super::setAlbum( album );
+    refAlbum();
+    incrementTotals();
     update();
 }
 
@@ -218,7 +243,9 @@ inline void PlaylistItem::setDiscNumber( int discNumber )
 
 inline void PlaylistItem::setTrack( int track )
 {
+    decrementTotals();
     super::setTrack( track );
+    incrementTotals();
     update();
 }
 
@@ -242,13 +269,17 @@ inline void PlaylistItem::setFilesize( int bytes )
 
 inline void PlaylistItem::setRating( int rating )
 {
+    decrementTotals();
     super::setRating( rating );
+    incrementTotals();
     updateColumn( Rating );
 }
 
 inline void PlaylistItem::setScore( int score )
 {
+    decrementTotals();
     super::setScore( score );
+    incrementTotals();
     update();
 }
 
@@ -260,7 +291,9 @@ inline void PlaylistItem::setPlayCount( int playcount )
 
 inline void PlaylistItem::setLastPlay( uint lastplay )
 {
+    decrementTotals();
     super::setLastPlay( lastplay );
+    incrementTotals();
     update();
 }
 

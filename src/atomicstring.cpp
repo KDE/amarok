@@ -31,7 +31,7 @@
     const unsigned PHI = 0x9e3779b9U;
     // Copyright (c) Paul Hsieh
     // http://www.azillionmonkeys.com/qed/hash.html
-    struct SuperFastHash
+    struct AtomicString::SuperFastHash
     {
         bool operator()( const QString *string ) const
         {
@@ -76,7 +76,7 @@
         }
     };
 
-    struct equal
+    struct AtomicString::equal
     {
         bool operator()( const QString *a, const QString *b ) const
         {
@@ -86,7 +86,7 @@
 
 #else
 
-    struct less
+    struct AtomicString::less
     {
         bool operator()( const QString *a, const QString *b ) const
         {
@@ -96,15 +96,15 @@
 
 #endif
 
-set_type AtomicString::s_store;
+AtomicString::set_type AtomicString::s_store;
 
-class AtomicString::Impl: public QString, public KShared
+class AtomicString::Data: public QString, public KShared
 {
 public:
     bool stored;
-    Impl(): stored( false ) { }
-    Impl( const QString &s ): QString( s ), stored( false ) { }
-    virtual ~Impl()
+    Data(): stored( false ) { }
+    Data( const QString &s ): QString( s ), stored( false ) { }
+    virtual ~Data()
     {
         if( stored )
             AtomicString::s_store.erase( this );
@@ -125,9 +125,9 @@ AtomicString::AtomicString( const QString &string )
     if( string.isEmpty() )
         return;
 
-    KSharedPtr<Impl> s = new Impl( string );
+    KSharedPtr<Data> s = new Data( string );
     const std::pair<set_type::iterator, bool> r = s_store.insert( s.data() );
-    m_string = static_cast<Impl*>( *r.first );
+    m_string = static_cast<Data*>( *r.first );
     m_string->stored = true;
 }
 
@@ -135,7 +135,14 @@ AtomicString::~AtomicString()
 {
 }
 
-const QString &AtomicString::string() const
+const QString AtomicString::string() const
+{
+    if( m_string )
+        return *m_string;
+    return QString::null;
+}
+
+QString AtomicString::string()
 {
     if( m_string )
         return *m_string;
@@ -144,9 +151,7 @@ const QString &AtomicString::string() const
 
 const QString *AtomicString::operator->() const
 {
-    if( m_string )
-        return m_string;
-    return &QString::null;
+    return ptr();
 }
 
 QString AtomicString::deepCopy() const
@@ -154,6 +159,18 @@ QString AtomicString::deepCopy() const
     if( m_string )
         return QDeepCopy<QString>( *m_string );
     return QString::null;
+}
+
+bool AtomicString::isNull() const
+{
+    return !m_string;
+}
+
+const QString *AtomicString::ptr() const
+{
+    if( m_string )
+        return m_string;
+    return &QString::null;
 }
 
 AtomicString &AtomicString::operator=( const AtomicString &other )
@@ -170,5 +187,5 @@ bool AtomicString::operator==( const AtomicString &other ) const
 void AtomicString::listContents() //static
 {
     for( set_type::iterator it = s_store.begin(), end = s_store.end(); it != end; ++it )
-        debug() << static_cast<Impl*>((*it))->_KShared_count() << " " << (**it) << endl;
+        debug() << static_cast<Data*>((*it))->_KShared_count() << " " << (**it) << endl;
 }

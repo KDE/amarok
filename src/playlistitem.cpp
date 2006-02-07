@@ -69,6 +69,8 @@ PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi )
     if( AmarokConfig::showMoodbar() )
         checkMood();
 
+    refAlbum();
+
     listView()->m_totalCount++;
     listView()->m_totalLength += length();
     if( isSelected() )
@@ -80,6 +82,7 @@ PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi )
     {
         listView()->m_visCount++;
         listView()->m_visLength += length();
+        incrementTotals();
     }
 
     filter( listView()->m_filter );
@@ -103,7 +106,10 @@ PlaylistItem::~PlaylistItem()
     {
         listView()->m_visCount--;
         listView()->m_visLength -= length();
+        decrementTotals();
     }
+
+    derefAlbum();
 
     listView()->countChanged();
 
@@ -263,12 +269,14 @@ void PlaylistItem::setVisible( bool visible )
         listView()->m_visCount--;
         listView()->m_visLength -= length();
         listView()->countChanged();
+        decrementTotals();
     }
     else if( !prevVisible && isVisible() )
     {
         listView()->m_visCount++;
         listView()->m_visLength += length();
         listView()->countChanged();
+        incrementTotals();
     }
 }
 
@@ -380,6 +388,48 @@ bool
 PlaylistItem::operator< ( const PlaylistItem & item ) const
 {
     return item.url() < this->url();
+}
+
+PlaylistItem*
+PlaylistItem::nextInAlbum() const
+{
+    const int index = m_album->tracks.findRef( this );
+    if( index == int(m_album->tracks.count() - 1) )
+        return 0;
+    if( index != -1 )
+        return m_album->tracks.at( index + 1 );
+    if( track() )
+        for( int i = 0, n = m_album->tracks.count(); i < n; ++i )
+            if( m_album->tracks.at( i )->track() > track() )
+                return m_album->tracks.at( i );
+    else
+        for( QListViewItemIterator it( const_cast<PlaylistItem*>(this), QListViewItemIterator::Visible ); *it; ++it )
+            #define pit static_cast<PlaylistItem*>( *it )
+            if( pit != this && pit->m_album == m_album && !pit->track() )
+                return pit;
+            #undef pit
+    return 0;
+}
+
+PlaylistItem*
+PlaylistItem::prevInAlbum() const
+{
+    const int index = m_album->tracks.findRef( this );
+    if( index == 0 )
+        return 0;
+    if( index != -1 )
+        return m_album->tracks.at( index - 1 );
+    if( track() )
+        for( int i = m_album->tracks.count() - 1; i >= 0; --i )
+            if( m_album->tracks.at( i )->track() && m_album->tracks.at( i )->track() < track() )
+                return m_album->tracks.at( i );
+    else
+        for( QListViewItemIterator it( const_cast<PlaylistItem*>(this), QListViewItemIterator::Visible ); *it; --it )
+            #define pit static_cast<PlaylistItem*>( *it )
+            if( pit != this && pit->m_album == m_album && !pit->track() )
+                return pit;
+            #undef pit
+    return 0;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -723,7 +773,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
     /// Track action symbols
     const int  queue       = listView()->m_nextTracks.findRef( this ) + 1;
     const bool stop        = ( this == listView()->m_stopAfterTrack );
-    const bool repeat      = AmarokConfig::repeatTrack() && isCurrent;
+    const bool repeat      = amaroK::repeatTrack() && isCurrent;
 
     const uint num = ( queue ? 1 : 0 ) + ( stop ? 1 : 0 ) + ( repeat ? 1 : 0 );
 
@@ -864,9 +914,90 @@ void PlaylistItem::paintFocus( QPainter* p, const QColorGroup& cg, const QRect& 
         KListViewItem::paintFocus( p, cg, r );
 }
 
-
 const QString &PlaylistItem::editingText()
 {
     static const QString text = i18n( "Writing tag..." );
     return text;
 }
+
+void PlaylistItem::refAlbum()
+{
+    if( AmarokConfig::entireAlbums() )
+    {
+        m_album = &listView()->m_albums[artist()][album()];
+        m_album->refcount++;
+    }
+}
+
+void PlaylistItem::derefAlbum()
+{
+    if( AmarokConfig::entireAlbums() )
+    {
+        m_album->refcount--;
+        if( !m_album->refcount )
+        {
+            listView()->m_prevAlbums.removeRef( m_album );
+            listView()->m_albums[artist()].remove( album() );
+            if( listView()->m_albums[artist()].isEmpty() )
+                listView()->m_albums.remove( artist() );
+        }
+    }
+}
+
+void PlaylistItem::incrementTotals()
+{
+    if( AmarokConfig::entireAlbums() )
+    {
+        listView()->m_total -= m_album->total;
+        Q_INT64 total = m_album->total * m_album->tracks.count();
+        if( !track() || !m_album->tracks.count() || ( m_album->tracks.getLast()->track() && m_album->tracks.getLast()->track() < track() ) )
+            m_album->tracks.append( this );
+        else
+            for( int i = 0, n = m_album->tracks.count(); i < n; ++i )
+                if( m_album->tracks.at(i)->track() > track() || !m_album->tracks.at(i)->track() )
+                {
+                    m_album->tracks.insert( i, this );
+                    break;
+                }
+        total += totalIncrementAmount();
+        m_album->total = Q_INT64( double( total + 0.5 ) / m_album->tracks.count() );
+        listView()->m_total += m_album->total;
+    }
+    else
+        listView()->m_total += totalIncrementAmount();
+}
+
+void PlaylistItem::decrementTotals()
+{
+    if( AmarokConfig::entireAlbums() )
+    {
+        listView()->m_total -= m_album->total;
+        Q_INT64 total = m_album->total * m_album->tracks.count();
+        m_album->tracks.removeRef( this );
+        total -= totalIncrementAmount();
+        m_album->total = Q_INT64( double( total + 0.5 ) / m_album->tracks.count() );
+        listView()->m_total += m_album->total;
+    }
+    listView()->m_total -= totalIncrementAmount();
+}
+
+int PlaylistItem::totalIncrementAmount() const
+{
+    switch( AmarokConfig::favorTracks() )
+    {
+        case AmarokConfig::EnumFavorTracks::None: return 0;
+        case AmarokConfig::EnumFavorTracks::HigherScores: return score() ? score() : 50;
+        case AmarokConfig::EnumFavorTracks::HigherRatings: return rating() ? rating() : 2;
+        case AmarokConfig::EnumFavorTracks::LessRecentlyPlayed:
+        {
+            if( lastPlay() )
+                return listView()->m_startupTime_t - lastPlay();
+            else if( listView()->m_oldestTime_t )
+                return ( listView()->m_startupTime_t - listView()->m_oldestTime_t ) * 2;
+            else
+                return listView()->m_startupTime_t - 1058652000; //july 20, 2003, when amaroK was first released.
+        }
+        default: return 0;
+    }
+}
+

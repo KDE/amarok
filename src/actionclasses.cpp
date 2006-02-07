@@ -30,10 +30,21 @@
 #include <ktoolbarbutton.h>
 #include <kurl.h>
 
+namespace amaroK
+{
+    bool repeatNone() { return AmarokConfig::repeat() == AmarokConfig::EnumRepeat::None; }
+    bool repeatTrack() { return AmarokConfig::repeat() == AmarokConfig::EnumRepeat::Track; }
+    bool repeatAlbum() { return AmarokConfig::repeat() == AmarokConfig::EnumRepeat::Album; }
+    bool repeatPlaylist() { return AmarokConfig::repeat() == AmarokConfig::EnumRepeat::Playlist; }
+    bool favorNone() { return AmarokConfig::favorTracks() == AmarokConfig::EnumFavorTracks::None; }
+    bool favorScores() { return AmarokConfig::favorTracks() == AmarokConfig::EnumFavorTracks::HigherScores; }
+    bool favorRatings() { return AmarokConfig::favorTracks() == AmarokConfig::EnumFavorTracks::HigherRatings; }
+    bool favorLastPlay() { return AmarokConfig::favorTracks() == AmarokConfig::EnumFavorTracks::LessRecentlyPlayed; }
+}
+
 using namespace amaroK;
 
 KHelpMenu *Menu::s_helpMenu = 0;
-
 
 static void
 safePlug( KActionCollection *ac, const char *name, QWidget *w )
@@ -91,10 +102,10 @@ Menu::Menu()
 
     setCheckable( true );
 
-    safePlug( ac, "repeat_track", this );
-    safePlug( ac, "repeat_playlist", this );
+    safePlug( ac, "repeat", this );
+    safePlug( ac, "entire_albums", this );
     safePlug( ac, "random_mode", this );
-    safePlug( ac, "dynamic_mode", this );
+    safePlug( ac, "favor_tracks", this );
 
     insertSeparator();
 
@@ -316,6 +327,86 @@ AnalyzerContainer::mousePressEvent( QMouseEvent *e)
     }
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////
+// ToggleAction
+//////////////////////////////////////////////////////////////////////////////////////////
+
+ToggleAction::ToggleAction( const QString &text, void ( *f ) ( bool ), KActionCollection* const ac, const char *name )
+        : KToggleAction( text, 0, ac, name )
+        , m_function( f )
+{}
+
+void ToggleAction::setChecked( bool b )
+{
+    const bool announce = b != isChecked();
+
+    m_function( b );
+    KToggleAction::setChecked( b );
+    AmarokConfig::writeConfig(); //So we don't lose the setting when crashing
+    if( announce ) emit toggled( b ); //KToggleAction doesn't do this for us. How gay!
+}
+
+void ToggleAction::setEnabled( bool b )
+{
+    const bool announce = b != isEnabled();
+
+    //m_function( b );
+    KToggleAction::setEnabled( b );
+    AmarokConfig::writeConfig(); //So we don't lose the setting when crashing
+    if( announce ) emit enabled( b );
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// SelectAction
+//////////////////////////////////////////////////////////////////////////////////////////
+
+SelectAction::SelectAction( const QString &text, void ( *f ) ( int ), KActionCollection* const ac, const char *name )
+        : KSelectAction( text, 0, ac, name )
+        , m_function( f )
+{ }
+
+void SelectAction::setCurrentItem( int n )
+{
+    const bool announce = n != currentItem();
+
+    m_function( n );
+    KSelectAction::setCurrentItem( n );
+    if( !currentIcon().isEmpty() )
+        setIconSet( kapp->iconLoader()->loadIconSet( currentIcon(), KIcon::Small ) );
+    else
+        setIconSet( QIconSet() );
+    setText( popupMenu()->text( n ) );
+    AmarokConfig::writeConfig(); //So we don't lose the setting when crashing
+    if( announce ) emit activated( n );
+}
+
+void SelectAction::setEnabled( bool b )
+{
+    const bool announce = b != isEnabled();
+
+    if( !b )
+        m_function( 0 );
+    KSelectAction::setEnabled( b );
+    AmarokConfig::writeConfig(); //So we don't lose the setting when crashing
+    if( announce ) emit enabled( b );
+}
+
+void SelectAction::setIcons( QStringList icons )
+{
+    m_icons = icons;
+    for( int i = 0, n = items().count(); i < n; ++i )
+        popupMenu()->changeItem( i, kapp->iconLoader()->loadIconSet( *icons.at( i ), KIcon::Small ), popupMenu()->text( i ) );
+}
+
+QStringList SelectAction::icons() const { return m_icons; }
+
+QString SelectAction::currentIcon() const
+{
+    if( m_icons.count() )
+        return *m_icons.at( currentItem() );
+    return QString::null;
+}
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // VolumeAction
@@ -377,23 +468,67 @@ RandomAction::setChecked( bool b )
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-// RepeatTrackAction
+// EntireAlbumsAction
 //////////////////////////////////////////////////////////////////////////////////////////
-RepeatTrackAction::RepeatTrackAction( KActionCollection *ac ) :
-    ToggleAction( i18n( "Repeat &Track" ), &AmarokConfig::setRepeatTrack, ac, "repeat_track" )
+EntireAlbumsAction::EntireAlbumsAction( KActionCollection *ac ) :
+    ToggleAction( i18n( "Play &Entire Albums" ), &AmarokConfig::setEntireAlbums, ac, "entire_albums" )
 {
-    KToggleAction::setChecked( AmarokConfig::repeatTrack() );
-    setIcon( "repeat_track" );
+    KToggleAction::setChecked( AmarokConfig::entireAlbums() );
+    setIcon( "cd" );
+}
+
+void
+EntireAlbumsAction::setChecked( bool b )
+{
+    if( b == isChecked() )
+        return;
+    ToggleAction::setChecked( b );
+    SelectAction* a = static_cast<SelectAction*>( actionCollection()->action( "repeat" ) );
+    if( a->currentItem() == AmarokConfig::EnumRepeat::Album && !b )
+        a->setCurrentItem( AmarokConfig::EnumRepeat::None );
+    a->popupMenu()->setItemEnabled( AmarokConfig::EnumRepeat::Album, b );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-// RepeatPlaylistAction
+// FavorAction
 //////////////////////////////////////////////////////////////////////////////////////////
-RepeatPlaylistAction::RepeatPlaylistAction( KActionCollection *ac ) :
-    ToggleAction( i18n( "R&epeat Playlist" ), &AmarokConfig::setRepeatPlaylist, ac, "repeat_playlist" )
+FavorAction::FavorAction( KActionCollection *ac ) :
+    SelectAction( i18n( "&Favor Tracks" ), &AmarokConfig::setFavorTracks, ac, "favor_tracks" )
 {
-    KToggleAction::setChecked( AmarokConfig::repeatPlaylist() );
-    setIcon( "repeat_playlist" );
+    setItems( QStringList() << i18n( "Favor Tracks &Equally" )
+                            << i18n( "Favor Tracks With Higher &Scores" )
+                            << i18n( "Favor Tracks With Higher &Ratings" )
+                            << i18n( "Favor Tracks Less Recently &Played" ) );
+
+    setCurrentItem( AmarokConfig::favorTracks() );
+    popupMenu()->insertSeparator( 1 );
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// RepeatAction
+//////////////////////////////////////////////////////////////////////////////////////////
+RepeatAction::RepeatAction( KActionCollection *ac ) :
+    SelectAction( i18n( "&Repeat" ), &AmarokConfig::setRepeat, ac, "repeat" )
+{
+    setItems( QStringList() << i18n( "&Stop After Playlist" ) << i18n( "Repeat &Track" )
+                            << i18n( "Repeat &Album" )        << i18n( "Repeat &Playlist" ) );
+    QStringList icons;
+    for( int i = 0; i < AmarokConfig::EnumRepeat::COUNT; ++i )
+        switch( i )
+        {
+            case AmarokConfig::EnumRepeat::None:     icons.append( "bottom" );          break;
+            case AmarokConfig::EnumRepeat::Track:    icons.append( "repeat_track" );    break;
+            case AmarokConfig::EnumRepeat::Album:    icons.append( "cdrom_mount" );     break;
+            case AmarokConfig::EnumRepeat::Playlist: icons.append( "repeat_playlist" ); break;
+            default: break;
+        }
+    setIcons( icons );
+    if( amaroK::repeatAlbum() && !AmarokConfig::entireAlbums() )
+        setCurrentItem( AmarokConfig::EnumRepeat::None );
+    else
+        setCurrentItem( AmarokConfig::repeat() );
+    popupMenu()->setItemEnabled( AmarokConfig::EnumRepeat::Album, AmarokConfig::entireAlbums() );
+    popupMenu()->insertSeparator( 1 );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

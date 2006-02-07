@@ -38,9 +38,11 @@
 
 class KAction;
 class KActionCollection;
+class MyAtomicString;
 class PlaylistItem;
 class PlaylistEntry;
 class PlaylistLoader;
+class PlaylistAlbum;
 class QBoxLayout;
 class QLabel;
 class QTimer;
@@ -220,6 +222,9 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void columnResizeEvent( int, int, int );
         void doubleClicked( QListViewItem* );
 
+        void generateAlbumInfo( bool on ); //generates info for Play Entire Albums
+        void generateTotals( int favor ); //generates info for Favor Tracks
+
         void queue( QListViewItem*, bool multi = false );
            /* the only difference multi makes is whether it emits queueChanged(). (if multi, then no)
               if you're queue()ing many items, consider passing true and emitting queueChanged() yourself. */
@@ -233,7 +238,7 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void slotMouseButtonPressed( int, QListViewItem*, const QPoint&, int );
         void slotSingleClick();
         void slotContentsMoving();
-        void slotRepeatTrackToggled( bool enabled );
+        void slotRepeatTrackToggled( int mode );
         void slotQueueChanged( const PLItemList &in, const PLItemList &out);
         void updateNextPrev();
         void writeTag( QListViewItem*, const QString&, int );
@@ -286,6 +291,12 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void viewportPaintEvent( QPaintEvent* );
         void viewportResizeEvent( QResizeEvent* );
 
+        typedef QMap<MyAtomicString, PlaylistAlbum> AlbumMap;
+        typedef QMap<MyAtomicString, AlbumMap> ArtistAlbumMap;
+        ArtistAlbumMap m_albums;
+        uint m_startupTime_t; //QDateTime::currentDateTime().toTime_t as of startup
+        uint m_oldestTime_t; //the createdate of the oldest song in the collection
+
 
         /// ATTRIBUTES
 
@@ -294,6 +305,7 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         PlaylistItem  *m_hoveredRating;         //if the mouse is hovering over the rating of an item
 
         //NOTE these container types were carefully chosen
+        QPtrList<PlaylistAlbum> m_prevAlbums; //the previously played albums in Entire Albums mode
         PLItemList m_prevTracks;    //the previous history
         PLItemList m_nextTracks;    //the tracks to be played after the current track
 
@@ -312,6 +324,7 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         int           m_selLength;
         int           m_visCount;
         int           m_visLength;
+        Q_INT64       m_total; //for Favor Tracks
         bool          m_itemCountDirty;
 
         KAction      *m_undoButton;
@@ -349,6 +362,24 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         QString m_editOldTag; //text before inline editing ( the new tag is written only if it's changed )
 
         std::vector<double> m_columnFraction;
+};
+
+class MyAtomicString: public AtomicString
+{
+public:
+    MyAtomicString() { }
+    MyAtomicString(const QString &string): AtomicString( string ) { }
+    MyAtomicString(const AtomicString &other): AtomicString( other ) { }
+    bool operator<(const AtomicString &other) const { return ptr() < other.ptr(); }
+};
+
+class PlaylistAlbum
+{
+public:
+    PLItemList tracks;
+    int refcount;
+    Q_INT64 total; //for Favor Tracks
+    PlaylistAlbum(): refcount( 0 ), total( 0 ) { }
 };
 
 #endif //AMAROK_PLAYLIST_H

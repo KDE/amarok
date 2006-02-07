@@ -100,33 +100,34 @@ namespace amaroK
     class ToggleAction : public KToggleAction
     {
         public:
-            ToggleAction( const QString &text, void ( *f ) ( bool ), KActionCollection* const ac, const char *name )
-                    : KToggleAction( text, 0, ac, name )
-                    , m_function( f )
-            {}
+            ToggleAction( const QString &text, void ( *f ) ( bool ), KActionCollection* const ac, const char *name );
 
-            virtual void setChecked( bool b )
-            {
-                const bool announce = b != isChecked();
+            virtual void setChecked( bool b );
 
-                m_function( b );
-                KToggleAction::setChecked( b );
-                AmarokConfig::writeConfig(); //So we don't lose the setting when crashing
-                if( announce ) emit toggled( b ); //KToggleAction doesn't do this for us. How gay!
-            }
-
-            virtual void setEnabled( bool b )
-            {
-                const bool announce = b != isEnabled();
-
-                //m_function( b );
-                KToggleAction::setEnabled( b );
-                AmarokConfig::writeConfig(); //So we don't lose the setting when crashing
-                if( announce ) emit enabled( b );
-            }
+            virtual void setEnabled( bool b );
 
         private:
             void ( *m_function ) ( bool );
+    };
+
+    class SelectAction : public KSelectAction
+    {
+        public:
+            SelectAction( const QString &text, void ( *f ) ( int ), KActionCollection* const ac, const char *name );
+
+            virtual void setCurrentItem( int n );
+
+            virtual void setEnabled( bool b );
+
+            virtual void setIcons( QStringList icons );
+
+            QStringList icons() const;
+
+            QString currentIcon() const;
+
+        private:
+            void ( *m_function ) ( int );
+            QStringList m_icons;
     };
 
 
@@ -137,18 +138,23 @@ namespace amaroK
             virtual void setChecked( bool b );
     };
 
-
-    class RepeatTrackAction : public ToggleAction
+    class EntireAlbumsAction : public ToggleAction
     {
         public:
-            RepeatTrackAction( KActionCollection *ac );
+            EntireAlbumsAction( KActionCollection *ac );
+            virtual void setChecked( bool b );
     };
 
-
-    class RepeatPlaylistAction : public ToggleAction
+    class FavorAction : public SelectAction
     {
         public:
-            RepeatPlaylistAction( KActionCollection *ac );
+            FavorAction( KActionCollection *ac );
+    };
+
+    class RepeatAction : public SelectAction
+    {
+        public:
+            RepeatAction( KActionCollection *ac );
     };
 
 

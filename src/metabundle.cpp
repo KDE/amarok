@@ -905,12 +905,12 @@ MetaBundle::save() {
     {
         TagLib::Tag * t = f.tag();
         t->setTitle( QStringToTString( title() ) );
-        t->setArtist( QStringToTString( artist() ) );
-        t->setAlbum( QStringToTString( album() ) );
+        t->setArtist( QStringToTString( artist().string() ) );
+        t->setAlbum( QStringToTString( album().string() ) );
         t->setTrack( track() );
         t->setYear( year() );
-        t->setComment( QStringToTString( comment() ) );
-        t->setGenre( QStringToTString( genre() ) );
+        t->setComment( QStringToTString( comment().string() ) );
+        t->setGenre( QStringToTString( genre().string() ) );
 
         if ( hasExtendedMetaInformation() ) {
             setExtendedTag( f.file(), composerTag, composer() );

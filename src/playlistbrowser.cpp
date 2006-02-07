@@ -2756,9 +2756,9 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
                 {
                     MetaBundle mb(*it);
                     bundles.append( mb );
-                    if( suggestion == 1 && mb.album().lower().stripWhiteSpace() != album.lower().stripWhiteSpace() )
+                    if( suggestion == 1 && mb.album()->lower().stripWhiteSpace() != album.lower().stripWhiteSpace() )
                         suggestion = 2;
-                    if( suggestion == 2 && mb.artist().lower().stripWhiteSpace() != artist.lower().stripWhiteSpace() )
+                    if( suggestion == 2 && mb.artist()->lower().stripWhiteSpace() != artist.lower().stripWhiteSpace() )
                         suggestion = 3;
                 }
             }

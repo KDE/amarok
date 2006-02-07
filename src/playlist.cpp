@@ -37,6 +37,8 @@
 #include "tagdialog.h"
 #include "threadweaver.h"
 
+#include <cmath> //for pow() in playNextTrack()
+
 #include <qclipboard.h>      //copyToClipboard(), slotMouseButtonPressed()
 #include <qcolor.h>
 #include <qevent.h>
@@ -117,6 +119,7 @@ public:
 
 typedef MyIterator MyIt;
 
+
 //////////////////////////////////////////////////////////////////////////////////////////
 /// CLASS TagWriter : Threaded tag-updating
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -183,6 +186,8 @@ Playlist *Playlist::s_instance = 0;
 Playlist::Playlist( QWidget *parent )
         : KListView( parent, "ThePlaylist" )
         , EngineObserver( EngineController::instance() )
+        , m_startupTime_t( QDateTime::currentDateTime().toTime_t() )
+        , m_oldestTime_t( CollectionDB::instance()->query( "SELECT MIN( createdate ) FROM statistics;" ).first().toInt() )
         , m_currentTrack( 0 )
         , m_marker( 0 )
         , m_hoveredRating( 0 )
@@ -321,7 +326,9 @@ Playlist::Playlist( QWidget *parent )
     }
 
     //ensure we update action enabled states when repeat Playlist is toggled
-    connect( ac->action( "repeat_playlist" ), SIGNAL(toggled( bool )), SLOT(updateNextPrev()) );
+    connect( ac->action( "repeat" ), SIGNAL(activated( int )), SLOT(updateNextPrev()) );
+    connect( ac->action( "favor_tracks" ), SIGNAL( activated( int ) ), SLOT( generateTotals( int ) ) );
+    connect( ac->action( "entire_albums" ), SIGNAL( toggled( bool ) ), SLOT( generateAlbumInfo( bool ) ) );
 
     m_clearButton->setIcon( "view_remove" );
     m_undoButton->setEnabled( false );
@@ -1001,7 +1008,7 @@ Playlist::playNextTrack( bool forceNext )
         return;
     }
 
-    if( !AmarokConfig::repeatTrack() || forceNext )
+    if( !amaroK::repeatTrack() || forceNext )
     {
         if( !m_nextTracks.isEmpty() )
         {
@@ -1010,14 +1017,29 @@ Playlist::playNextTrack( bool forceNext )
             emit queueChanged( PLItemList(), PLItemList( item ) );
         }
 
-        else if( AmarokConfig::randomMode() )
+        else if( AmarokConfig::entireAlbums() && m_currentTrack && m_currentTrack->nextInAlbum() )
+            item = m_currentTrack->nextInAlbum();
+
+        else if( AmarokConfig::entireAlbums() && amaroK::repeatAlbum() &&
+                 m_currentTrack && m_currentTrack->m_album->tracks.count() )
+            item = m_currentTrack->m_album->tracks.getFirst();
+
+        else if( AmarokConfig::randomMode() || AmarokConfig::entireAlbums() )
         {
             QValueVector<PlaylistItem*> tracks;
 
             //make a list of everything we can play
-            for( MyIt it( this ); *it; ++it )
-                if ( !m_prevTracks.containsRef( *it ) )
-                    tracks.push_back( *it );
+            if( AmarokConfig::entireAlbums() ) // add the first visible track from every unplayed album
+            {
+                for( ArtistAlbumMap::const_iterator it = m_albums.constBegin(), end = m_albums.constEnd(); it != end;   ++it )
+                    for( AlbumMap::const_iterator it2 = (*it).constBegin(), end2 = (*it).constEnd(); it2 != end2; ++it2 )
+                        if( m_prevAlbums.findRef( &(*it2) ) == -1 )
+                            tracks.append( (*it2).tracks.getFirst() );
+            }
+            else
+                for( MyIt it( this ); *it; ++it )
+                    if ( !m_prevTracks.containsRef( *it ) )
+                        tracks.push_back( *it );
 
             if( tracks.isEmpty() )
             {
@@ -1025,35 +1047,129 @@ Playlist::playNextTrack( bool forceNext )
 
                 item = 0;
 
-                if ( m_prevTracks.count() <= 80 ) {
-                    m_prevTracks.clear();
+                if( AmarokConfig::entireAlbums() )
+                {
+                    if ( m_prevAlbums.count() <= 8 ) {
+                        m_prevAlbums.clear();
 
-                    // don't add it to previous tracks if we only have one file in the playlist
-                    // would loop infinitely otherwise
-                    int count = 0;
-                    for( MyIterator it( this, MyIterator::Visible ); *it; ++it )
-                        ++count;
+                        // don't add it to previous albums if we only have one album in the playlist
+                        // would loop infinitely otherwise
+                        QPtrList<PlaylistAlbum> albums;
+                        for( MyIterator it( this, MyIterator::Visible ); *it && albums.count() <= 1; ++it )
+                            if( albums.findRef( (*it)->m_album ) == -1 )
+                                albums.append( (*it)->m_album );
 
-                    if ( count > 1 )
-                        m_prevTracks.append( m_currentTrack );
+                        if ( albums.count() > 1 )
+                            m_prevAlbums.append( m_currentTrack->m_album );
+                    }
+                    else {
+                        m_prevAlbums.first(); //set's current item to first item
+
+                        //keep 80 tracks in the previous list so item time user pushes play
+                        //we don't risk playing anything too recent
+                        while( m_prevAlbums.count() > 8 )
+                            m_prevAlbums.remove(); //removes current item
+                    }
                 }
-                else {
-                    m_prevTracks.first(); //set's current item to first item
 
-                    //keep 80 tracks in the previous list so item time user pushes play
-                    //we don't risk playing anything too recent
-                    while( m_prevTracks.count() > 80 )
-                        m_prevTracks.remove(); //removes current item
+                else
+                {
+                    if ( m_prevTracks.count() <= 80 ) {
+                        m_prevTracks.clear();
+
+                        // don't add it to previous tracks if we only have one file in the playlist
+                        // would loop infinitely otherwise
+                        int count = 0;
+                        for( MyIterator it( this, MyIterator::Visible ); *it && count <= 1; ++it )
+                            ++count;
+
+                        if ( count > 1 )
+                            m_prevTracks.append( m_currentTrack );
+                    }
+                    else {
+                        m_prevTracks.first(); //set's current item to first item
+
+                        //keep 80 tracks in the previous list so item time user pushes play
+                        //we don't risk playing anything too recent
+                        while( m_prevTracks.count() > 80 )
+                            m_prevTracks.remove(); //removes current item
+                    }
                 }
 
-                if( AmarokConfig::repeatPlaylist() )
+                if( amaroK::repeatPlaylist() )
                 {
                     playNextTrack();
                     return;
                 }
                 //else we stop via activate( 0 ) below
             }
-            else item = tracks.at( KApplication::random() % tracks.count() ); //is O(1)
+            else if( AmarokConfig::randomMode() )
+            {
+                if( amaroK::favorNone() )
+                    item = tracks.at( KApplication::random() % tracks.count() ); //is O(1)
+                else
+                {
+                    const uint currenttime_t = QDateTime::currentDateTime().toTime_t();
+                    QValueVector<int> weights( tracks.size() );
+                    Q_INT64 total = m_total;
+                    if( AmarokConfig::entireAlbums() )
+                    {
+                        for( int i = 0, n = tracks.count(); i < n; ++i )
+                        {
+                            weights[i] = tracks.at( i )->m_album->total;
+                            if( amaroK::favorLastPlay() )
+                            {
+                                const int inc = int( float( ( currenttime_t - m_startupTime_t )
+                                                            * tracks.at( i )->m_album->tracks.count() + 0.5 )
+                                                     / tracks.at( i )->m_album->tracks.count() );
+                                weights[i] += inc;
+                                total += inc;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for( int i = 0, n = tracks.count(); i < n; ++i )
+                        {
+                            weights[i] = tracks.at( i )->totalIncrementAmount();
+                            if( amaroK::favorLastPlay() )
+                                weights[i] += currenttime_t - m_startupTime_t;
+                        }
+                        if( amaroK::favorLastPlay() )
+                            total += ( currenttime_t - m_startupTime_t ) * weights.count();
+                    }
+
+                    Q_INT64 random;
+                    if( amaroK::favorLastPlay() ) //really big huge numbers
+                    {
+                        Q_INT64 r = Q_INT64( ( KApplication::random() / pow( 2, sizeof( int ) * 8 ) )
+                                                                      * pow( 2, 64 ) );
+                        random = r % total;
+                    }
+                    else
+                        random = KApplication::random() % total;
+                    int i = 0;
+                    for( int n = tracks.count(); i < n && random >= 0; ++i )
+                        random -= weights.at( i );
+                    item = tracks.at( i-1 );
+                }
+            }
+            else //entireAlbums()
+            {
+                bool b = false;
+                for( MyIt it( this, MyIt::Visible ); *it; ++it )
+                {
+                    for( int i = 0, n = tracks.count(); i < n; ++i )
+                        if( tracks.at( i ) == *it )
+                        {
+                            item = *it;
+                            b = true;
+                            break;
+                        }
+                    if( b )
+                        break;
+                }
+            }
         }
         else if( item )
         {
@@ -1072,7 +1188,7 @@ Playlist::playNextTrack( bool forceNext )
         if ( isDynamic() && item != firstChild() )
             advancePartyTrack();
 
-        if ( !item && AmarokConfig::repeatPlaylist() )
+        if ( !item && amaroK::repeatPlaylist() )
             item = *MyIt( this ); //ie. first visible item
     }
 
@@ -1127,20 +1243,49 @@ Playlist::playPrevTrack()
 {
     PlaylistItem *item = m_currentTrack;
 
-    if ( !AmarokConfig::randomMode() || m_prevTracks.count() <= 1 )
-        item = *static_cast<MyIt&>(--MyIt( item )); //the previous track to item that is visible
+    if( AmarokConfig::entireAlbums() )
+    {
+        item = 0;
+        if( m_currentTrack )
+        {
+            item = m_currentTrack->prevInAlbum();
+            if( !item && amaroK::repeatAlbum() && m_currentTrack->m_album->tracks.count() )
+                item = m_currentTrack->m_album->tracks.getLast();
+        }
+        if( !item )
+        {
+            PlaylistAlbum* a = m_prevAlbums.last();
+            while( a && !a->tracks.count() )
+            {
+                m_prevAlbums.remove();
+                a = m_prevAlbums.last();
+            }
+            if( a )
+            {
+                item = a->tracks.getLast();
+                m_prevAlbums.remove();
+            }
+        }
+        if( !item )
+            item = *static_cast<MyIt&>(--MyIt( item ));
+    }
+    else
+    {
+        if ( !AmarokConfig::randomMode() || m_prevTracks.count() <= 1 )
+            item = *static_cast<MyIt&>(--MyIt( item )); //the previous track to item that is visible
 
-    else {
-        // if enough songs in buffer, jump to the previous one
-        m_prevTracks.last();
-        m_prevTracks.remove(); //remove the track playing now
-        item = m_prevTracks.last();
+        else {
+            // if enough songs in buffer, jump to the previous one
+            m_prevTracks.last();
+            m_prevTracks.remove(); //remove the track playing now
+            item = m_prevTracks.last();
 
-        // we need to remove this item now, since it will be added in activate() again
-        m_prevTracks.remove();
+            // we need to remove this item now, since it will be added in activate() again
+            m_prevTracks.remove();
+        }
     }
 
-    if ( !item && AmarokConfig::repeatPlaylist() )
+    if ( !item && amaroK::repeatPlaylist() )
         item = *MyIt( lastItem() ); //TODO check this works!
 
     if ( EngineController::engine()->loaded() )
@@ -1153,7 +1298,7 @@ void
 Playlist::playCurrentTrack()
 {
     if ( !currentTrack() )
-        playNextTrack( AmarokConfig::repeatTrack() ? true : false );
+        playNextTrack( amaroK::repeatTrack() );
 
     //we must do this even if the above is correct
     //since the engine is not loaded the first time the user presses play
@@ -1383,6 +1528,22 @@ int Playlist::stopAfterMode() const
         return DoNotStop;
 }
 
+void Playlist::generateAlbumInfo( bool on )
+{
+    m_albums.clear();
+    if( on )
+        for( MyIt it( this, MyIt::All ); *it; ++it )
+            (*it)->refAlbum();
+    m_total = 0;
+    for( MyIt it( this, MyIt::Visible ); *it; ++it )
+        (*it)->incrementTotals();
+}
+
+void Playlist::generateTotals( int /*favor*/ )
+{
+    generateAlbumInfo( AmarokConfig::entireAlbums() );
+}
+
 void Playlist::doubleClicked( QListViewItem *item )
 {
     /* We have to check if the item exists before calling activate, otherwise clicking on an empty
@@ -1423,7 +1584,7 @@ Playlist::activate( QListViewItem *item )
 
     #define item static_cast<PlaylistItem*>(item)
 
-    if( isDynamic() && !m_partyDirt && item != firstChild() && !AmarokConfig::repeatTrack() )
+    if( isDynamic() && !m_partyDirt && item != firstChild() && !amaroK::repeatTrack() )
     {
         if( m_currentTrack && item->isEnabled() )
             this->moveItem( item, 0, m_currentTrack );
@@ -1460,7 +1621,11 @@ Playlist::activate( QListViewItem *item )
     if( !item->isEnabled() )
         return;
 
-    m_prevTracks.append( item );
+    if( AmarokConfig::entireAlbums() )
+        if( !item->nextInAlbum() )
+            m_prevAlbums.append( item->m_album );
+    else
+        m_prevTracks.append( item );
 
     //if we are playing something from the next tracks
     //list, remove it from the list
@@ -1587,7 +1752,7 @@ Playlist::setCurrentTrack( PlaylistItem *item )
             if( prevY <= contentsY() + visibleHeight() && prevY + prevH >= contentsY() )
             {
                 // in random mode always jump, if previous track is visible
-                if( AmarokConfig::randomMode() )
+                if( AmarokConfig::randomMode() || AmarokConfig::entireAlbums() )
                     ensureItemCentered( item );
 
                 //FIXME would be better to just never be annoying
@@ -1727,7 +1892,7 @@ Playlist::isTrackAfter() const
    return !currentTrack() && !isEmpty() ||
           !m_nextTracks.isEmpty() ||
           currentTrack() && currentTrack()->itemBelow() ||
-          totalTrackCount() > 1 && ( AmarokConfig::randomMode() || AmarokConfig::repeatPlaylist() );
+          totalTrackCount() > 1 && ( AmarokConfig::randomMode() || amaroK::repeatPlaylist() );
 }
 
 bool
@@ -1737,7 +1902,7 @@ Playlist::isTrackBefore() const
 
     return !isEmpty() &&
            (
-               currentTrack() && (currentTrack()->itemAbove() || AmarokConfig::repeatPlaylist() && totalTrackCount() > 1)
+               currentTrack() && (currentTrack()->itemAbove() || amaroK::repeatPlaylist() && totalTrackCount() > 1)
                ||
                AmarokConfig::randomMode() && totalTrackCount() > 1
            );
@@ -1871,6 +2036,7 @@ Playlist::clear() //SLOT
 
     setCurrentTrack( 0 );
     m_prevTracks.clear();
+    m_prevAlbums.clear();
 
     const PLItemList prev = m_nextTracks;
     m_nextTracks.clear();
@@ -3962,6 +4128,7 @@ Playlist::switchState( QStringList &loadFromMe, QStringList &saveToMe )
     m_currentTrack = 0;
     Glow::reset();
     m_prevTracks.clear();
+    m_prevAlbums.clear();
     const PLItemList prev = m_nextTracks;
     m_nextTracks.clear();
     emit queueChanged( PLItemList(), prev );
@@ -3988,9 +4155,9 @@ Playlist::saveSelectedAsPlaylist()
     int suggestion = !album.stripWhiteSpace().isEmpty() ? 1 : !artist.stripWhiteSpace().isEmpty() ? 2 : 3;
     while( *it )
     {
-        if( suggestion == 1 && (*it)->album().lower().stripWhiteSpace() != album.lower().stripWhiteSpace() )
+        if( suggestion == 1 && (*it)->album()->lower().stripWhiteSpace() != album.lower().stripWhiteSpace() )
             suggestion = 2;
-        if( suggestion == 2 && (*it)->artist().lower().stripWhiteSpace() != artist.lower().stripWhiteSpace() )
+        if( suggestion == 2 && (*it)->artist()->lower().stripWhiteSpace() != artist.lower().stripWhiteSpace() )
             suggestion = 3;
         if( suggestion == 3 )
             break;
@@ -4089,7 +4256,7 @@ Playlist::slotGlowTimer() //SLOT
 }
 
 void
-Playlist::slotRepeatTrackToggled( bool /* enabled */ )
+Playlist::slotRepeatTrackToggled( int /* mode */ )
 {
     if( m_currentTrack )
         m_currentTrack->update();

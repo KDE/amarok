@@ -93,12 +93,12 @@ namespace amaroK
 
     bool DcopPlayerHandler::repeatPlaylistStatus()
     {
-        return AmarokConfig::repeatPlaylist();
+        return amaroK::repeatPlaylist();
     }
 
     bool DcopPlayerHandler::repeatTrackStatus()
     {
-        return AmarokConfig::repeatTrack();
+        return amaroK::repeatTrack();
     }
 
     int DcopPlayerHandler::getVolume()

@@ -148,9 +148,10 @@ PlaylistWindow::PlaylistWindow()
     new amaroK::StopAction( ac );
     new amaroK::PlayPauseAction( ac );
     new amaroK::AnalyzerAction( ac );
-    new amaroK::RepeatTrackAction( ac );
-    new amaroK::RepeatPlaylistAction( ac );
+    new amaroK::RepeatAction( ac );
     new amaroK::RandomAction( ac );
+    new amaroK::EntireAlbumsAction( ac );
+    new amaroK::FavorAction( ac );
     new amaroK::DynamicAction( ac );
     new amaroK::VolumeAction( ac );
 
@@ -228,8 +229,8 @@ void PlaylistWindow::init()
     m_toolbar->setShown( AmarokConfig::showToolbar() );
     QWidget *statusbar = new amaroK::StatusBar( this );
 
-    KAction* repeatTrackAction = amaroK::actionCollection()->action( "repeat_track" );
-    connect( repeatTrackAction, SIGNAL( toggled( bool ) ), playlist, SLOT( slotRepeatTrackToggled( bool ) ) );
+    KAction* repeatAction = amaroK::actionCollection()->action( "repeat" );
+    connect( repeatAction, SIGNAL( activated( int ) ), playlist, SLOT( slotRepeatTrackToggled( int ) ) );
 
     connect( m_lineEdit, SIGNAL(textChanged( const QString& )), playlist, SLOT(setFilterSlot( const QString& )) );
 
@@ -270,6 +271,14 @@ void PlaylistWindow::init()
     actionCollection()->action("playlist_select_all")->plug( playlistMenu );
     //END Playlist menu
 
+    //BEGIN Mode menu
+    KPopupMenu *modeMenu = new KPopupMenu( m_menubar );
+    actionCollection()->action("repeat")->plug( modeMenu );
+    actionCollection()->action("entire_albums")->plug( modeMenu );
+    actionCollection()->action("random_mode")->plug( modeMenu );
+    actionCollection()->action("favor_tracks")->plug( modeMenu );
+    //END Mode menu
+
     //BEGIN Tools menu
     m_toolsMenu = new KPopupMenu( m_menubar );
     m_toolsMenu->insertItem( SmallIconSet( "covermanager" ), i18n("&Cover Manager"), amaroK::Menu::ID_SHOW_COVER_MANAGER );
@@ -300,12 +309,6 @@ void PlaylistWindow::init()
     m_settingsMenu->insertItem( AmarokConfig::showToolbar() ? i18n( "Hide Toolbar" ) : i18n("Show Toolbar"), ID_SHOW_TOOLBAR );
     m_settingsMenu->insertItem( AmarokConfig::showPlayerWindow() ? i18n("Hide Player &Window") : i18n("Show Player &Window"), ID_SHOW_PLAYERWINDOW );
     m_settingsMenu->insertSeparator();
-    //this should be only a context menu option and use next-queue graphics with an infinity symbol or something
-    actionCollection()->action("repeat_track")->plug( m_settingsMenu );
-    actionCollection()->action("repeat_playlist")->plug( m_settingsMenu );
-    actionCollection()->action("random_mode")->plug( m_settingsMenu );
-    //actionCollection()->action("dynamic_mode")->plug( m_settingsMenu );
-    m_settingsMenu->insertSeparator();
     actionCollection()->action("options_configure_globals")->plug( m_settingsMenu );
     actionCollection()->action(KStdAction::name(KStdAction::KeyBindings))->plug( m_settingsMenu );
     actionCollection()->action(KStdAction::name(KStdAction::ConfigureToolbars))->plug( m_settingsMenu );
@@ -317,6 +320,7 @@ void PlaylistWindow::init()
     m_menubar->insertItem( i18n( "&Actions" ), actionsMenu );
     m_menubar->insertItem( i18n( "&Playlist" ), playlistMenu );
     m_menubar->insertItem( i18n( "&Tools" ), m_toolsMenu );
+    m_menubar->insertItem( i18n( "&Mode" ), modeMenu );
     m_menubar->insertItem( i18n( "&Settings" ), m_settingsMenu );
     m_menubar->insertItem( i18n( "&Help" ), amaroK::Menu::helpMenu() );
 

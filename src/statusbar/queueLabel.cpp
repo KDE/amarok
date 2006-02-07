@@ -67,7 +67,7 @@ void QueueLabel::update() //SLOT
 void QueueLabel::slotCoverChanged( const QString &artist, const QString &album ) //SLOT
 {
     PLItemList &queue = Playlist::instance()->m_nextTracks;
-    if( isVisible() && queue.getFirst()->artist() == artist && queue.getFirst()->album() == album )
+    if( isVisible() && queue.getFirst()->artist().string() == artist && queue.getFirst()->album().string() == album )
         getCover( artist, album );
 }
 
@@ -288,7 +288,7 @@ void QueueLabel::hideToolTip()
 
 QString QueueLabel::veryNiceTitle( PlaylistItem* item, bool bold ) const
 {
-    const QString artist = item->artist().stripWhiteSpace(),
+    const QString artist = item->artist()->stripWhiteSpace(),
                   title =  item->title().stripWhiteSpace();
     if( !artist.isEmpty() && !title.isEmpty() )
        return ( bold ? i18n( "<b>%1</b> by <b>%2</b>" ) : i18n( "%1 by %2" ) ).arg( title ).arg( artist );

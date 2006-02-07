@@ -129,6 +129,15 @@ namespace amaroK
   */
   //TODO ugly hack, fix KProcess for KDE 4.0
     void closeOpenFiles(int out, int in, int err); //defined in scriptmanager.cpp
+
+    bool repeatNone(); //defined in actionclasses.cpp
+    bool repeatTrack();
+    bool repeatAlbum();
+    bool repeatPlaylist();
+    bool favorNone();
+    bool favorScores();
+    bool favorRatings();
+    bool favorLastPlay();
 }
 
 /**

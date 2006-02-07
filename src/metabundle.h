@@ -164,15 +164,15 @@ public:
 public: //accessors
     KURL url()           const;
 
-    QString title()      const;
-    QString artist()     const;
-    QString composer()   const;
-    QString album()      const;
-    QString genre()      const;
-    QString comment()    const;
-    QString filename()   const;
-    QString directory()  const;
-    QString type()       const;
+    QString      title()     const;
+    AtomicString artist()    const;
+    AtomicString composer()  const;
+    AtomicString album()     const;
+    AtomicString genre()     const;
+    AtomicString comment()   const;
+    QString      filename()  const;
+    QString      directory() const;
+    QString      type()      const;
 
     int     year()       const;
     int     discNumber() const;
@@ -309,16 +309,16 @@ inline QString  MetaBundle::directory()  const
     return m_url.isLocalFile() ? m_url.directory() : m_url.upURL().prettyURL();
 }
 inline QString MetaBundle::title()      const { return m_title; }
-inline QString MetaBundle::artist()     const { return m_artist; }
-inline QString MetaBundle::album()      const { return m_album; }
-inline QString MetaBundle::comment()    const { return m_comment; }
-inline QString MetaBundle::genre()      const { return m_genre; }
+inline AtomicString MetaBundle::artist()     const { return m_artist; }
+inline AtomicString MetaBundle::album()      const { return m_album; }
+inline AtomicString MetaBundle::comment()    const { return m_comment; }
+inline AtomicString MetaBundle::genre()      const { return m_genre; }
 inline QString MetaBundle::streamName() const { return m_streamName; }
 inline QString MetaBundle::streamUrl()  const { return m_streamUrl; }
 
 inline int MetaBundle::discNumber() const { return m_discNumber == Undetermined ? 0 : m_discNumber; }
 
-inline QString MetaBundle::composer() const { return m_composer; }
+inline AtomicString MetaBundle::composer() const { return m_composer; }
 
 inline QString MetaBundle::type() const
 {

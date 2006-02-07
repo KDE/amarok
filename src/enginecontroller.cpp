@@ -365,7 +365,7 @@ void EngineController::play( const MetaBundle &bundle )
         // the background or not call next() more than 5 times in a row
         //don't do for repeatPlaylist() as it can produce a freeze
         //FIXME -> mxcl
-        //if ( !AmarokConfig::repeatPlaylist() )
+        //if ( !amaroK::repeatPlaylist() )
         //    next()
                 ;
 }
@@ -515,7 +515,7 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
 
         if ( !m_stream->initSuccess() || !m_engine->play( m_stream->proxyUrl(), isStream ) ) {
             delete m_stream;
-            if ( !AmarokConfig::repeatPlaylist() )
+            if ( !amaroK::repeatPlaylist() )
                 next();
             return; //don't notify
         }
@@ -533,7 +533,7 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
         const uint trackLength = m_engine->length();
         if ( trackLength ) m_bundle.setLength( trackLength / 1000 );
     }
-    else if( !AmarokConfig::repeatPlaylist() )
+    else if( !amaroK::repeatPlaylist() )
     {
         next();
         return; //don't notify

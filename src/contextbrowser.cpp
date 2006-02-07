@@ -2680,7 +2680,7 @@ ContextBrowser::coverFetched( const QString &artist, const QString &album ) //SL
         return;
 
     if ( currentPage() == m_contextTab &&
-       ( currentTrack.artist() == artist || m_artist == artist || currentTrack.album() == album ) ) // this is for compilations or artist == ""
+       ( currentTrack.artist().string() == artist || m_artist == artist || currentTrack.album().string() == album ) ) // this is for compilations or artist == ""
     {
         m_dirtyCurrentTrackPage = true;
         showCurrentTrack();
@@ -2696,7 +2696,7 @@ ContextBrowser::coverRemoved( const QString &artist, const QString &album ) //SL
         return;
 
     if ( currentPage() == m_contextTab &&
-       ( currentTrack.artist() == artist || m_artist == artist || currentTrack.album() == album ) ) // this is for compilations or artist == ""
+       ( currentTrack.artist().string() == artist || m_artist == artist || currentTrack.album().string() == album ) ) // this is for compilations or artist == ""
     {
         m_dirtyCurrentTrackPage = true;
         showCurrentTrack();
@@ -2707,7 +2707,7 @@ ContextBrowser::coverRemoved( const QString &artist, const QString &album ) //SL
 void
 ContextBrowser::similarArtistsFetched( const QString &artist ) //SLOT
 {
-    if( artist == m_artist || EngineController::instance()->bundle().artist() == artist ) {
+    if( artist == m_artist || EngineController::instance()->bundle().artist().string() == artist ) {
         m_dirtyCurrentTrackPage = true;
         if ( currentPage() == m_contextTab )
             showCurrentTrack();
