@@ -308,6 +308,26 @@
         <whatsthis>The ID of the collection folder destination fo Organize files.</whatsthis>
         <default>0</default>
     </entry>
+    <entry key="Vfat Compatible" type="Bool">
+        <label>Whether organize files will rename files in a manner compatible with vfat filesystems.</label>
+        <whatsthis>If set, Organize files will replace characters that are not compatible with vfat filesystems (such as ':', '*' and '?').</whatsthis>
+        <default>true</default>
+    </entry>
+    <entry key="Ascii Only" type="Bool">
+        <label>Whether organize files will rename files such that they only contain 7-bit ASCII characters.</label>
+        <whatsthis>If set, Organize files will replace characters that are not compatible with the 7-bit ASCII character set.</whatsthis>
+        <default>true</default>
+    </entry>
+    <entry key="Use Custom Scheme" type="Bool">
+        <label>Whether organize files will use a custom file naming scheme.</label>
+        <whatsthis>If set, Organize files will rename files according to a custom format string.</whatsthis>
+        <default>false</default>
+    </entry>
+    <entry key="Custom Scheme" type="String">
+        <label>Format string for Organize files, if a custom naming scheme is used.</label>
+        <whatsthis>If the custom filename scheme is enabled, then Organize files will rename files according to this format string.</whatsthis>
+        <default>%folder/%filetype/%theartist/%album/%track_-_%title.%filetype</default>
+    </entry>
     <entry key="External Browser" type="String">
         <label>Filename of the external web browser to be invoked by amaroK.</label>
         <default>kfmclient openURL</default>

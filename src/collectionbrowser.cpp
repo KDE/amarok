@@ -1507,6 +1507,10 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &/*caption*
     dialog.initialCheck->setChecked( AmarokConfig::groupArtists() );
     dialog.spaceCheck->setChecked( AmarokConfig::replaceSpace() );
     dialog.ignoreTheCheck->setChecked( AmarokConfig::ignoreThe() );
+    dialog.vfatCheck->setChecked( AmarokConfig::vfatCompatible() );
+    dialog.asciiCheck->setChecked( AmarokConfig::asciiOnly() );
+    dialog.customschemeCheck->setChecked( AmarokConfig::useCustomScheme() );
+    dialog.formatEdit->setText( AmarokConfig::customScheme() );
 
     if( urls.count() )
     {
@@ -1523,6 +1527,10 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &/*caption*
         AmarokConfig::setIgnoreThe( dialog.ignoreTheCheck->isChecked() );
         AmarokConfig::setReplaceSpace( dialog.spaceCheck->isChecked() );
         AmarokConfig::setCoverIcons( dialog.coverCheck->isChecked() );
+        AmarokConfig::setVfatCompatible( dialog.vfatCheck->isChecked() );
+        AmarokConfig::setAsciiOnly( dialog.asciiCheck->isChecked() );
+        AmarokConfig::setUseCustomScheme( dialog.customschemeCheck->isChecked() );
+        AmarokConfig::setCustomScheme( dialog.formatEdit->text() );
         bool write = dialog.overwriteCheck->isChecked();
         int skipped = 0;
         QString base = dialog.folderCombo->currentText() + "/";
