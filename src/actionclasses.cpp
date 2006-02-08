@@ -510,8 +510,8 @@ FavorAction::FavorAction( KActionCollection *ac ) :
 RepeatAction::RepeatAction( KActionCollection *ac ) :
     SelectAction( i18n( "&Repeat" ), &AmarokConfig::setRepeat, ac, "repeat" )
 {
-    setItems( QStringList() << i18n( "&Stop After Playlist" ) << i18n( "Repeat &Track" )
-                            << i18n( "Repeat &Album" )        << i18n( "Repeat &Playlist" ) );
+    setItems( QStringList() << i18n( "&Don't Repeat" ) << i18n( "Repeat &Track" )
+                            << i18n( "Repeat &Album" ) << i18n( "Repeat &Playlist" ) );
     QStringList icons;
     for( int i = 0; i < AmarokConfig::EnumRepeat::COUNT; ++i )
         switch( i )

@@ -56,7 +56,7 @@
         <whatsthis>Whether to repeat the current track, the current album, or the current playlist indefinitely, or neither.</whatsthis>
         <choices>
             <choice name="None">
-                <label>Stop After Playlist</label>
+                <label>Don't Repeat</label>
             </choice>
             <choice name="Track">
                 <label>Repeat Track</label>
