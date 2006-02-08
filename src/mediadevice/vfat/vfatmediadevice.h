@@ -59,6 +59,9 @@ class VfatMediaDevice : public MediaDevice
 
         void              cancelTransfer() {} // we don't have to do anything, we check m_cancelled
 
+    signals:
+        void              startTransfer();
+
     protected slots:
         void              renameItem( QListViewItem *item );
         void              expandItem( QListViewItem *item );
@@ -98,8 +101,6 @@ class VfatMediaDevice : public MediaDevice
 
         KDirLister        *m_dirLister;
         KIO::UDSEntry     m_udsentry;
-
-        QString           m_transferDir;
 };
 
 #endif /*AMAROK_VFATMEDIADEVICE_H*/

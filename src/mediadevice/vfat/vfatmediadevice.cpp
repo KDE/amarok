@@ -282,12 +282,18 @@ VfatMediaDevice::copyTrackToDevice( const MetaBundle& bundle, const PodcastInfo*
 MediaItem *
 VfatMediaDevice::trackExists( const MetaBundle& bundle )
 {
-    void *dummy = 0;
-    const QString  newFilenameSansMountpoint = bundle.prettyTitle().remove( "'" ) + "." + bundle.type();
-    const QString  newFilename = m_medium->mountPoint() + "/" + newFilenameSansMountpoint;
+    const QString newFilenameSansMountpoint = bundle.prettyTitle().remove( "'" ) + "." + bundle.type();
+    const QString newFilename = m_medium->mountPoint() + "/" + newFilenameSansMountpoint;
     if ( KIO::NetAccess::stat( KURL(newFilename), m_udsentry, m_parent ) )
-        return reinterpret_cast<MediaItem *>(dummy);
-
+    {
+        QListViewItemIterator it( m_view );
+        while ( it.current() )
+        {
+            if ( (*it)->text( 0 ) == newFilenameSansMountpoint )
+                return static_cast<MediaItem *>(it.current());
+            ++it;
+        }
+    }
     return 0;
 }
 
@@ -429,7 +435,6 @@ VfatMediaDevice::newItems( const KFileItemList &items )
 int
 VfatMediaDevice::addTrackToList( int type, QString name, int /*size*/ )
 {
-    DEBUG_BLOCK
     m_tmpParent ?
         m_last = new VfatMediaItem( m_tmpParent ):
         m_last = new VfatMediaItem( m_view );
@@ -509,10 +514,7 @@ VfatMediaDevice::foundMountPoint( const QString & mountPoint, unsigned long kBSi
 QString
 VfatMediaDevice::getFullPath( const QListViewItem *item, const bool getFilename )
 {
-    DEBUG_BLOCK
     if( !item ) return QString::null;
-
-    debug() << "Not returning QString::null" << endl;
 
     QString path;
 
@@ -547,8 +549,11 @@ VfatMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
         menu.insertItem( SmallIconSet( "folder" ), i18n("Add Directory" ), DIRECTORY );
         menu.insertItem( SmallIconSet( "editclear" ), i18n( "Rename" ), RENAME );
         menu.insertItem( SmallIconSet( "editdelete" ), i18n( "Delete" ), DELETE );
-        menu.insertSeparator();
-        menu.insertItem( SmallIconSet( "up" ), i18n(" Transfer queue to here..." ), TRANSFER_HERE );
+        if ( MediaBrowser::queue()->childCount())
+        {
+            menu.insertSeparator();
+            menu.insertItem( SmallIconSet( "up" ), i18n(" Transfer queue to here..." ), TRANSFER_HERE );
+        }
 
         int id =  menu.exec( point );
         switch( id )
@@ -574,11 +579,17 @@ VfatMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
 
             case TRANSFER_HERE:
                 if( item->type() == MediaItem::DIRECTORY )
-                    m_transferDir = getFullPath( item, true ) + "/";
+                {
+                    m_transferDir = getFullPath( item, true );
+                }
                 else
+                {
                     m_transferDir = getFullPath( item, false );
+                    if (m_transferDir != QString::null)
+                        m_transferDir = m_transferDir.remove( m_transferDir.length() - 1, 1 );
+                }
                 debug() << "New transfer dir is: " << m_transferDir << endl;
-                //start transfer
+                emit startTransfer();
                 break;
         }
         return;
@@ -588,8 +599,11 @@ VfatMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
     {
         KPopupMenu menu( m_view );
         menu.insertItem( SmallIconSet( "folder" ), i18n("Add Directory" ), DIRECTORY );
-        menu.insertSeparator();
-        menu.insertItem( SmallIconSet( "up" ), i18n(" Transfer queue to here..." ), TRANSFER_HERE );
+        if ( MediaBrowser::queue()->childCount())
+        {
+            menu.insertSeparator();
+            menu.insertItem( SmallIconSet( "up" ), i18n(" Transfer queue to here..." ), TRANSFER_HERE );
+        }
         int id =  menu.exec( point );
         switch( id )
         {
@@ -598,9 +612,9 @@ VfatMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                 break;
 
             case TRANSFER_HERE:
-                m_transferDir = m_medium->mountPoint() + "/";
+                m_transferDir = m_medium->mountPoint();
                 debug() << "New transfer dir is: " << m_transferDir << endl;
-                //start transfer
+                emit startTransfer();
                 break;
 
         }

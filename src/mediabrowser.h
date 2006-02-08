@@ -405,6 +405,9 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
          */
         QString mountPoint() const { return m_mountPoint; }
 
+        QString           getTransferDir() { return m_transferDir; }
+        Medium *          getMedium() { return m_medium; }
+
 
     public slots:
         void abortTransfer();
@@ -514,6 +517,7 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         MediaBrowser    *m_parent;
         MediaView       *m_view;
         Medium          *m_medium;
+        QString          m_transferDir;
         bool             m_wait;
         bool             m_waitForDeletion;
         bool             m_copyFailed;

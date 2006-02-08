@@ -133,7 +133,8 @@ libamarok_la_SOURCES = \
     tooltip.cpp \
     tracktooltip.cpp \
     trackpickerdialog.cpp \
-    trackpickerdialogbase.ui
+    trackpickerdialogbase.ui \
+    transferdialog.cpp
 
 libamarok_la_LIBADD = \
     $(top_builddir)/amarok/src/amarokcore/libamarokcore.la \

@@ -28,6 +28,7 @@
 #include "scriptmanager.h"
 #include "scrobbler.h"
 #include "statusbar.h"
+#include "transferdialog.h"
 
 #include <qvbuttongroup.h>
 #include <qcheckbox.h>
@@ -432,6 +433,9 @@ MediaBrowser::addDevice( MediaDevice *device )
     }
 
     updateDevices();
+
+    if ( device->deviceType() == "vfat-mediadevice" )
+        connect( device, SIGNAL( startTransfer() ), SLOT( transferClicked() ) );
 }
 
 void
@@ -1773,6 +1777,7 @@ MediaDevice::MediaDevice()
     , m_parent( NULL )
     , m_view( NULL )
     , m_medium( NULL )
+    , m_transferDir( QString::null )
     , m_wait( false )
     , m_requireMount( false )
     , m_hasPodcast( false )
@@ -2047,11 +2052,24 @@ MediaBrowser::cancelClicked()
 void
 MediaBrowser::transferClicked()
 {
+    TransferDialog *td = NULL;
     m_transferButton->setEnabled( false );
     if( currentDevice()
             && currentDevice()->isConnected()
             && !currentDevice()->isTransferring() )
-        currentDevice()->transferFiles();
+    {
+        if( currentDevice()->deviceType() == "vfat-mediadevice" )
+        {
+            debug() << "VFAT DEVICE TRANSFER" << endl;
+            td = new TransferDialog( currentDevice() );
+            td->exec();
+        }
+        if( currentDevice()->deviceType() != "vfat-mediadevice" ||
+            ( currentDevice()->deviceType() == "vfat-mediadevice" &&
+              td->isAccepted() ) )
+           currentDevice()->transferFiles();
+    }
+    currentDevice()->m_transferDir = QString::null;
 }
 
 void
@@ -2375,7 +2393,7 @@ MediaDevice::transferFiles()
         if( item && m_transferredItem->m_playlistName == QString::null )
         {
             amaroK::StatusBar::instance()->longMessage( i18n( "Track already exists on media device: %1" ).
-                    arg( m_transferredItem->url().url() ),
+                    arg( m_transferredItem->url().prettyURL() ),
                     KDE::StatusBar::Sorry );
             delete m_transferredItem;
             m_transferredItem = 0;
