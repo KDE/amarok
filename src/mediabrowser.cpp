@@ -478,6 +478,10 @@ MediaBrowser::updateDevices()
         {
             name = i18n( "%1 at %2" ).arg( name ).arg( (*it)->deviceNode() );
         }
+        if( !(*it)->mountPoint().isEmpty() )
+        {
+            name += i18n( " (mounted at %1)" ).arg( (*it)->mountPoint() );
+        }
         m_deviceCombo->insertItem( name, i );
         if( it == m_currentDevice )
         {
@@ -2220,7 +2224,9 @@ MediaDevice::disconnectDevice( bool postDisconnectHook )
     else
         amaroK::StatusBar::instance()->shortMessage( i18n( "Device successfully disconnected" ) );
 
-    m_deviceNode = "";
+    //FIXME aumuell, if you need this here for some reason, please exclude VFAT devices
+    //unless there is a good reason not to
+    //m_deviceNode = "";
 
     return result;
 }
