@@ -63,17 +63,10 @@ public:
     bool operator==( const AtomicString &other ) const;
 
     /** Returns the string. */
-    const QString string() const;
+    QString string() const;
 
-    /** Returns the string. */
-    QString string();
-
-    /** Implicitly casts to a const QString&. */
-    inline operator const QString() const { return string(); }
-
-    /** Implicitly casts to a QString.
-        Note that this isn't a reference, so you don't end up modifying shared data by accident. */
-    inline operator QString() { return string(); }
+    /** Implicitly casts to a QString. */
+    inline operator QString() const { return string(); }
 
     /** Provided for convenience, so you can do atomicstring->QStringfunction(),
         instead of atomicstring.string().QStringfunction(). */
@@ -95,9 +88,6 @@ public:
     static void listContents();
 
 private:
-    class Data;
-    friend class Data;
-
     #ifdef __GNUC__
         struct SuperFastHash;
         struct equal;
@@ -106,7 +96,11 @@ private:
         struct less;
         typedef std::set<QString*, less> set_type;
     #endif
+
     static set_type s_store;
+
+    class Data;
+    friend class Data;
 
     KSharedPtr<Data> m_string;
 };

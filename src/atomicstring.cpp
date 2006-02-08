@@ -135,14 +135,7 @@ AtomicString::~AtomicString()
 {
 }
 
-const QString AtomicString::string() const
-{
-    if( m_string )
-        return *m_string;
-    return QString::null;
-}
-
-QString AtomicString::string()
+QString AtomicString::string() const
 {
     if( m_string )
         return *m_string;
