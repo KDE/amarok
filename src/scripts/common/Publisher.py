@@ -30,8 +30,11 @@ class Publisher:
     def run(self):	
 	
         self.localhostname = split(socket.gethostname(),'.')[0]+'.local.'
-        self.localip = socket.gethostbyname(self.localhostname)
-        self.zeroconf = Zeroconf.Zeroconf(self.localip)
+	try:
+	        self.localip = socket.gethostbyname(self.localhostname)
+	        self.zeroconf = Zeroconf.Zeroconf(self.localip)
+	except:
+		return
 	self.active = True
 
         toRegister = self.services()
