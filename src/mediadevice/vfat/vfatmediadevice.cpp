@@ -282,7 +282,7 @@ VfatMediaDevice::copyTrackToDevice( const MetaBundle& bundle, const PodcastInfo*
 MediaItem *
 VfatMediaDevice::trackExists( const MetaBundle& bundle )
 {
-    void *dummy;
+    void *dummy = 0;
     const QString  newFilenameSansMountpoint = bundle.prettyTitle().remove( "'" ) + "." + bundle.type();
     const QString  newFilename = m_medium->mountPoint() + "/" + newFilenameSansMountpoint;
     if ( KIO::NetAccess::stat( KURL(newFilename), m_udsentry, m_parent ) )

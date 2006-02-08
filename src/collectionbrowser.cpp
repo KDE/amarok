@@ -1495,7 +1495,7 @@ CollectionView::deleteSelectedFiles() //SLOT
 }
 
 void
-CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, bool copy )  //SLOT
+CollectionView::organizeFiles( const KURL::List &urls, const QString &/*caption*/, bool copy )  //SLOT
 {
     QStringList folders = AmarokConfig::collectionFolders();
 
