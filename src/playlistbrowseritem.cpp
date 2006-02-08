@@ -1095,7 +1095,6 @@ PodcastChannel::configure()
 
     if( dialog->configure() )
     {
-        debug() << "podcast configure TRUE" << endl;
         bool downloadMedia = ( (mediaFetch != m_settings->m_fetch) && (m_settings->m_fetch == AUTOMATIC) );
 
         if( m_settings->m_purge && ( m_settings->m_purgeCount < purgeCount ) )

@@ -164,7 +164,7 @@ void PodcastSettingsDialog::slotOk()       //slot
 
     m_settings->m_saveLocation            = requesterSaveLocation();
     m_settings->m_autoScan        = m_ps->m_autoFetchCheck->isChecked();
-    m_settings->m_addToMediaDevice= m_ps->m_addToMediaDeviceCheck->isChecked();
+    m_settings->m_addToMediaDevice = m_ps->m_addToMediaDeviceCheck->isChecked();
     m_settings->m_purge           = m_ps->m_purgeCheck->isChecked();
     m_settings->m_purgeCount      = m_ps->m_purgeCountSpinBox->value();
 
@@ -193,22 +193,22 @@ void PodcastSettingsDialog::setSettings( PodcastSettings *settings, bool changeS
         saveLocation.addPath( (m_settings->m_title).replace("/", "-") );
     m_ps->m_saveLocation->setURL( saveLocation.prettyURL() );
     m_ps->m_autoFetchCheck->setChecked( settings->m_autoScan );
-    if( m_settings->m_fetch == STREAM )
+    if( settings->m_fetch == STREAM )
     {
         m_ps->m_streamRadio->setChecked( true );
         m_ps->m_downloadRadio->setChecked( false );
     }
-    else if( m_settings->m_fetch == AUTOMATIC )
+    else if( settings->m_fetch == AUTOMATIC )
     {
         m_ps->m_streamRadio->setChecked( false );
         m_ps->m_downloadRadio->setChecked( true );
     }
 
-    m_ps->m_addToMediaDeviceCheck->setChecked( m_settings->m_addToMediaDevice );
-    m_ps->m_purgeCheck->setChecked( m_settings->m_purge );
-    m_ps->m_purgeCountSpinBox->setValue( m_settings->m_purgeCount );
+    m_ps->m_addToMediaDeviceCheck->setChecked( settings->m_addToMediaDevice );
+    m_ps->m_purgeCheck->setChecked( settings->m_purge );
+    m_ps->m_purgeCountSpinBox->setValue( settings->m_purgeCount );
 
-    if( !m_settings->m_purge )
+    if( !settings->m_purge )
     {
         m_ps->m_purgeCountSpinBox->setEnabled( false );
         m_ps->m_purgeCountLabel->setEnabled( false );
@@ -220,6 +220,7 @@ void PodcastSettingsDialog::slotUser1()    //slot
 {
     bool changeSaveLocation = m_parentSettings->m_title != i18n("default");
     setSettings( m_parentSettings, changeSaveLocation );
+    checkModified();
 }
 
 bool PodcastSettingsDialog::configure()

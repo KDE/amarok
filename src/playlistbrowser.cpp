@@ -890,6 +890,9 @@ void PlaylistBrowser::savePodcasts()
     podcastB.setAttribute( "version", APP_VERSION );
     podcastB.setAttribute( "formatversion", "1.1" );
     QDomNode podcastNode = doc.importNode( podcastB, true );
+
+    //save PodcastSettings for the category's
+    savePodcastSettings( podcastNode );
     doc.appendChild ( podcastNode );
 
     QString temp( doc.toString() );
@@ -900,6 +903,21 @@ void PlaylistBrowser::savePodcasts()
     stream.setEncoding( QTextStream::UnicodeUTF8 );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     stream << temp;
+}
+
+void PlaylistBrowser::savePodcastSettings( QDomNode categoryNode )
+{
+    PodcastSettings *ps = m_podcastSettings.find( categoryNode.toElement().attribute("name") );
+    if( ps != 0 )
+        categoryNode.insertBefore( ps->xml(), QDomNode::QDomNode() );
+
+    QDomNode childNode = categoryNode.namedItem( "category" );
+    while( !childNode.isNull() && ( childNode.toElement().tagName() == "category" ) )
+    {
+        savePodcastSettings( childNode );
+        childNode = childNode.nextSibling();
+    }
+
 }
 
 void PlaylistBrowser::scanPodcasts()
@@ -1128,15 +1146,9 @@ void PlaylistBrowser::configurePodcastCategory( const PlaylistCategory *category
     PodcastSettings *parentSettings;
     PlaylistCategory *p = static_cast<PlaylistCategory*>( category->parent() );
     if( (category == m_podcastCategory) && (p == 0) )
-    {
-        debug() << "creating default settings" << endl;
         parentSettings = new PodcastSettings( i18n("default") ); //default settings
-    }
     else
-    {
-        debug() << "getting parent settings for " << category->title() << endl;
         parentSettings = getPodcastSettings( p );
-    }
 
     PodcastSettingsDialog *dialog = new PodcastSettingsDialog( settings,
             parentSettings );
@@ -1150,13 +1162,9 @@ PodcastSettings *PlaylistBrowser::getPodcastSettings( const PlaylistCategory *ca
     if( settings == 0 )
     {
         if( category == m_podcastCategory )
-        {
-            debug() << "creating default PodcastSettings " << category->title() << endl;
             settings = new PodcastSettings( category->title() ); //return default settings
-        }
         else
         {
-            debug() << "creating PodcastSettings for " << category->title() << endl;
             PlaylistCategory *p = static_cast<PlaylistCategory*>( category->parent() );
             settings = new PodcastSettings( getPodcastSettings( p ), category->title() );
         }
