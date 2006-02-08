@@ -1116,70 +1116,51 @@ void PlaylistBrowser::abortPodcastQueue() //SLOT
     m_podcastDownloadQueue.clear();
 }
 
-void PlaylistBrowser::setGlobalPodcastSettings( PodcastChannel *item )
-{
-    debug() << "Playlistbrowser is modifying global podcastsettings" << endl;
-    const QString save   = item->saveLocation().path();
-    const bool autoFetch = item->autoScan();
-    const int mediaType  = item->mediaFetch();
-    const int addToMediaDevice = item->addToMediaDevice();
-    const bool purge     = item->hasPurge();
-    const int purgeCount = item->purgeCount();
-
-    QListViewItem *channel = m_podcastCategory->firstChild();
-
-    for( ; channel; channel = channel->itemBelow() )
-    {
-        if( !isPodcastChannel( channel ) || channel == item )
-            continue;
-        #define channel static_cast<PodcastChannel*>(channel)
-        channel->setSettings( save, autoFetch, mediaType, addToMediaDevice, purge, purgeCount );
-        #undef  channel
-    }
-}
-
 void PlaylistBrowser::registerPodcastSettings( const QString &title, const PodcastSettings *settings )
 {
-    debug() << "REGISTER SETTINGS: " << title << endl;
     m_podcastSettings.insert( title, settings );
 }
 
-void PlaylistBrowser::configurePodcastCategory( PlaylistCategory *category )
+void PlaylistBrowser::configurePodcastCategory( const PlaylistCategory *category )
 {
-    debug() << "CONFIG podcastCategory: " << category->title() << endl;
-    PodcastSettings *settings = getPodcastSettings( category->title() );
+    PodcastSettings *settings = getPodcastSettings( category );
 
     PodcastSettings *parentSettings;
-    PlaylistCategory *p = static_cast<PlaylistCategory*>(category->parent());
-    if( p == 0 )
-        parentSettings = new PodcastSettings(); //default settings
+    PlaylistCategory *p = static_cast<PlaylistCategory*>( category->parent() );
+    if( (category == m_podcastCategory) && (p == 0) )
+    {
+        debug() << "creating default settings" << endl;
+        parentSettings = new PodcastSettings( i18n("default") ); //default settings
+    }
     else
-        parentSettings = getPodcastSettings( p->title() );
-
-    // Save the values
-    QString url    = settings->url();
-    QString save   = settings->saveLocation();
-    bool autoScan  = settings->hasAutoScan();
-    int mediaFetch = settings->fetch();
-    int purgeCount = settings->purgeCount();
+    {
+        debug() << "getting parent settings for " << category->title() << endl;
+        parentSettings = getPodcastSettings( p );
+    }
 
     PodcastSettingsDialog *dialog = new PodcastSettingsDialog( settings,
             parentSettings );
 
-    if( dialog->exec() == QDialog::Accepted )
-    {
-        //TODO: check changed, reload children
-    }
+    dialog->configure();
 }
 
-PodcastSettings *PlaylistBrowser::getPodcastSettings( const QString &title )
+PodcastSettings *PlaylistBrowser::getPodcastSettings( const PlaylistCategory *category )
 {
-    PodcastSettings *settings = m_podcastSettings.find( title );
+    PodcastSettings *settings = m_podcastSettings.find( category->title() );
     if( settings == 0 )
     {
-        debug() << "NO settings found, creating" << endl;
-        settings = new PodcastSettings();
-        registerPodcastSettings( title, settings );
+        if( category == m_podcastCategory )
+        {
+            debug() << "creating default PodcastSettings " << category->title() << endl;
+            settings = new PodcastSettings( category->title() ); //return default settings
+        }
+        else
+        {
+            debug() << "creating PodcastSettings for " << category->title() << endl;
+            PlaylistCategory *p = static_cast<PlaylistCategory*>( category->parent() );
+            settings = new PodcastSettings( getPodcastSettings( p ), category->title() );
+        }
+        registerPodcastSettings( category->title(), settings );
     }
     return settings;
 }

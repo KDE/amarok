@@ -19,15 +19,13 @@ enum MediaFetch{ STREAM=0, AUTOMATIC=1 };
 class PodcastSettings
 {
     public:
-        PodcastSettings( const QString &url, const QString &save, bool autoScan, int interval,
-                         int fetch, bool addToMediaDevice, bool purge, int purgeCount );
-
-        PodcastSettings( const QDomNode &channelSettings );
-        PodcastSettings(); // standard settings
+        PodcastSettings( const QDomNode &channelSettings, const QString &title );
+        PodcastSettings( const PodcastSettings *parentSettings, const QString &title );
+        PodcastSettings( const QString &title ); // standard settings
 
 
-        QString url()         { return m_url; }
-        QString saveLocation(){ return m_save; }
+        const KURL &url()         { return m_url; }
+        const KURL &saveLocation(){ return m_saveLocation; }
         bool    hasAutoScan() { return m_autoScan; }
         int     interval()    { return m_interval; }
         int     fetch()       { return m_fetch; }
@@ -37,8 +35,9 @@ class PodcastSettings
 
         const QDomElement xml();
 
-        QString m_url;
-        QString m_save;
+        QString m_title;    //the title of the podcast or category these settings belong to
+        KURL m_url;
+        KURL m_saveLocation;
         bool    m_autoScan;
         int     m_interval;
         int     m_fetch;
@@ -55,6 +54,8 @@ class PodcastSettingsDialog : public KDialogBase
     public:
         PodcastSettingsDialog( PodcastSettings *settings, PodcastSettings *parentSettings, QWidget* parent = 0 );
 
+        bool configure();
+
     protected:
         bool    hasChanged();
 
@@ -64,6 +65,7 @@ class PodcastSettingsDialog : public KDialogBase
         void    slotUser1();
 
     private:
+        void setSettings( PodcastSettings *settings, bool changeSaveLocation );
         QString requesterSaveLocation();
 
         PodcastSettingsDialogBase *m_ps;

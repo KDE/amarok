@@ -211,7 +211,7 @@ void PlaylistCategory::setXml( const QDomElement &xml )
             }
             else if ( e.tagName() == "settings" )
             {
-                PlaylistBrowser::instance()->registerPodcastSettings(  m_title, new PodcastSettings( e ) );
+                PlaylistBrowser::instance()->registerPodcastSettings(  m_title, new PodcastSettings( e, m_title ) );
             }
             if( !e.attribute( "isOpen" ).isNull() ) last->setOpen( e.attribute( "isOpen" ) == "true" ); //settings doesn't have an attribute "isOpen"
         }
@@ -1036,19 +1036,12 @@ QDomElement PartyEntry::xml()
 PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url )
     : PlaylistBrowserEntry( parent, after )
     , m_url( url )
-    , m_saveLocation( amaroK::saveLocation( "podcasts/data/" ) )
     , m_loading1( QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
     , m_loading2( QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
     , m_fetching( false )
     , m_updating( false )
     , m_new( false )
     , m_hasProblem( false )
-    , m_autoScan( true )
-    , m_interval( 4 )
-    , m_mediaFetch( STREAM )
-    , m_addToMediaDevice( false )
-    , m_purgeItems( false )
-    , m_purgeCount( 2 ) // we do a small hack here to make sure we only download the first 2 items of a new pc.
     , m_last( 0 )
     , m_parent( static_cast<PlaylistCategory*>(parent) )
 {
@@ -1059,8 +1052,6 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
     setPixmap( 0, SmallIcon("player_playlist_2") );
 
     fetch();
-
-    m_purgeCount = 20; // restore default value
 }
 
 
@@ -1068,29 +1059,16 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
                                 const KURL &url, const QDomNode &channelSettings, const QDomDocument &xmlDefinition )
     : PlaylistBrowserEntry( parent, after )
     , m_url( url )
-    , m_saveLocation( channelSettings.namedItem( "savelocation").toElement().text() )
     , m_loading1( QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
     , m_loading2( QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
     , m_fetching( false )
     , m_updating( false )
     , m_new( false )
     , m_hasProblem( false )
-    , m_autoScan( channelSettings.namedItem( "autoscan").toElement().text() == "true" )
-    , m_interval( channelSettings.namedItem( "scaninterval").toElement().text().toInt() )
-    , m_addToMediaDevice( channelSettings.namedItem( "autotransfer").toElement().text() == "true" )
-    , m_purgeItems( channelSettings.namedItem( "purge").toElement().text() == "true" )
-    , m_purgeCount( channelSettings.namedItem( "purgecount").toElement().text().toInt() )
+    , m_channelSettings( channelSettings )
     , m_last( 0 )
     , m_parent( static_cast<PlaylistCategory*>(parent) )
 {
-    if( channelSettings.namedItem( "fetch").toElement().text() == "automatic" )
-        m_mediaFetch = AUTOMATIC;
-    else
-        m_mediaFetch = STREAM;
-
-    if( m_saveLocation.isEmpty() )
-        m_saveLocation = KURL::fromPathOrURL( amaroK::saveLocation( "podcasts/data/" ) );
-
     QDomNode type = xmlDefinition.namedItem("rss");
     if( !type.isNull() )
         setXml( type.namedItem("channel"), RSS );
@@ -1107,40 +1085,21 @@ void
 PodcastChannel::configure()
 {
     // Save the values
-    QString url    = m_url.prettyURL();
-    QString save   = m_saveLocation.path();
-    bool autoScan  = m_autoScan;
-    int mediaFetch = m_mediaFetch;
-    int purgeCount = m_purgeCount;
+    KURL url    = m_url;
+    KURL save   = m_settings->m_saveLocation;
+    bool autoScan  = m_settings->m_autoScan;
+    int mediaFetch = m_settings->m_fetch;
+    int purgeCount = m_settings->m_purgeCount;
 
-    PodcastSettings *settings = new PodcastSettings( url, save, m_autoScan, m_interval,
-                                                     m_mediaFetch, m_addToMediaDevice,
-                                                     m_purgeItems, m_purgeCount );
+    PodcastSettingsDialog *dialog = new PodcastSettingsDialog( m_settings,
+            PlaylistBrowser::instance()->getPodcastSettings( m_parent ) );
 
-    PodcastSettingsDialog *dialog = new PodcastSettingsDialog( settings,
-            PlaylistBrowser::instance()->getPodcastSettings( m_parent->title() ) );
-
-    if( dialog->exec() == QDialog::Accepted )
+    if( dialog->configure() )
     {
-        m_url        = KURL::fromPathOrURL( settings->url() );
-        save         = settings->saveLocation();
-        m_autoScan   = settings->hasAutoScan();
-        m_interval   = settings->interval();
-        m_mediaFetch = settings->fetch();
-        m_addToMediaDevice = settings->addToMediaDevice();
-        m_purgeItems = settings->hasPurge();
-        m_purgeCount = settings->purgeCount();
+        debug() << "podcast configure TRUE" << endl;
+        bool downloadMedia = ( (mediaFetch != m_settings->m_fetch) && (m_settings->m_fetch == AUTOMATIC) );
 
-
-        bool downloadMedia = ( (mediaFetch != m_mediaFetch) && (m_mediaFetch == AUTOMATIC) );
-
-        if( url != m_url.prettyURL() )
-        {
-            removeChildren();
-            fetch();
-        }
-
-        if( m_purgeItems && ( m_purgeCount < purgeCount ) )
+        if( m_settings->m_purge && ( m_settings->m_purgeCount < purgeCount ) )
         {
             purge();
         }
@@ -1149,10 +1108,9 @@ PodcastChannel::configure()
          * Rewrite local url
          * Move any downloaded media to the new location
          */
-        if( save != m_saveLocation.path() )
+        if( save != m_settings->m_saveLocation )
         {
             KURL::List copyList;
-            m_saveLocation = KURL::fromPathOrURL( save );
 
             PodcastItem *item = static_cast<PodcastItem*>( firstChild() );
             // get a list of the urls of already downloaded items
@@ -1161,21 +1119,21 @@ PodcastChannel::configure()
                 if( item->hasDownloaded() )
                     copyList << item->localUrl();
 
-                item->setLocalUrlBase( save );
+                item->setLocalUrlBase( m_settings->m_saveLocation.prettyURL() );
                 item = static_cast<PodcastItem*>( item->nextSibling() );
             }
             // move the items
             if( !copyList.isEmpty() )
             {
-                KIO::CopyJob* m_podcastMoveJob = KIO::move( copyList, m_saveLocation, false );
+                KIO::CopyJob* m_podcastMoveJob = KIO::move( copyList, m_settings->m_saveLocation, false );
                 amaroK::StatusBar::instance()->newProgressOperation( m_podcastMoveJob )
                         .setDescription( i18n( "Moving Podcasts" ) );
             }
         }
 
-        if( autoScan != m_autoScan )
+        if( autoScan != m_settings->m_autoScan )
         {
-            if( m_autoScan )
+            if( m_settings->m_autoScan )
                 PlaylistBrowser::instance()->m_podcastItemsToScan.append( this );
             else
                 PlaylistBrowser::instance()->m_podcastItemsToScan.remove( this );
@@ -1343,73 +1301,6 @@ PodcastChannel::rescan()
 }
 
 void
-PodcastChannel::setSettings( const QString &save, const bool autoFetch, const int fetchType,
-                             bool addToMediaDevice, const bool purgeItems, const int purgeCount )
-{
-    m_purgeItems = purgeItems;
-    if( m_purgeItems )
-    {
-        m_purgeItems = purgeItems;
-        if( purgeCount < m_purgeCount )
-        {
-            m_purgeCount = purgeCount;
-            purge();
-        }
-    }
-    m_purgeCount = purgeCount;
-
-    /**
-     * Rewrite local url
-     * Move any downloaded media to the new location
-     */
-    if( save != m_saveLocation.path() )
-    {
-        KURL::List copyList;
-        m_saveLocation = KURL::fromPathOrURL( save );
-
-        PodcastItem *item = static_cast<PodcastItem*>( firstChild() );
-        // get a list of the urls of already downloaded items
-        while( item )
-        {
-            if( item->hasDownloaded() )
-            {
-                copyList << item->localUrl();
-                item->setLocalUrlBase( save );
-            }
-
-            item = static_cast<PodcastItem*>( item->nextSibling() );
-        }
-        // move the items
-        if( !copyList.isEmpty() )
-        {
-            KIO::CopyJob* m_podcastMoveJob = KIO::move( copyList, m_saveLocation, false );
-            amaroK::StatusBar::instance()->newProgressOperation( m_podcastMoveJob )
-                    .setDescription( i18n( "Moving Podcasts" ) );
-        }
-    }
-
-    if( m_autoScan != autoFetch )
-    {
-        m_autoScan = autoFetch;
-        if( m_autoScan )
-            PlaylistBrowser::instance()->m_podcastItemsToScan.append( this );
-        else
-            PlaylistBrowser::instance()->m_podcastItemsToScan.remove( this );
-    }
-
-    m_addToMediaDevice = addToMediaDevice;
-
-    if( m_mediaFetch != fetchType )
-    {
-        m_mediaFetch = fetchType;
-        if( fetchType == AUTOMATIC )
-        {
-            downloadChildren();
-        }
-    }
-}
-
-void
 PodcastChannel::setNew( bool n )
 {
     if( n )
@@ -1430,6 +1321,16 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
 
     m_title = xml.namedItem( "title" ).toElement().text();
     setText( 0, m_title );
+
+    if( !m_updating ) // podcastchannel is created, therefore m_settings doesn't exist yet
+        if( m_channelSettings.isNull() ) //no channelsettings found, create new PodcastSettings based on settings from parent
+        {
+            m_settings = new PodcastSettings(
+                    PlaylistBrowser::instance()->getPodcastSettings( m_parent )
+                    , m_title );
+        }
+        else
+            m_settings = new PodcastSettings( m_channelSettings, m_title );
 
     m_cache = KURL::encode_string( m_title + "_" + m_url.fileName() );
 
@@ -1459,7 +1360,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
         n = xml.namedItem( "item" );
 
     int  children = 0;
-    bool downloadMedia = ( m_mediaFetch == AUTOMATIC );
+    bool downloadMedia = ( m_settings->m_fetch == AUTOMATIC );
     for( ; !n.isNull(); n = n.nextSibling() )
     {
         if( m_updating )
@@ -1493,7 +1394,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
         }
         else
         {
-            if( m_purgeItems && children > m_purgeCount )
+            if( m_settings->m_purge && children > m_settings->m_purgeCount )
                 break;
 
             if( isAtom )
@@ -1519,7 +1420,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
 
     }
 
-    if( m_purgeItems && childCount() > m_purgeCount )
+    if( m_settings->m_purge && childCount() > m_settings->m_purgeCount )
         purge();
 
     if( downloadMedia )
@@ -1559,7 +1460,7 @@ PodcastChannel::updateInfo()
 void
 PodcastChannel::purge()
 {
-    int removeCount = childCount() - m_purgeCount;
+    int removeCount = childCount() - m_settings->m_purgeCount;
     if( removeCount <= 0 )
         return;
 
@@ -1596,7 +1497,7 @@ PodcastChannel::xml()
         i.appendChild( attr );
 
         attr = doc.createElement( "savelocation" );
-        t = doc.createTextNode( m_saveLocation.prettyURL() );
+        t = doc.createTextNode( m_settings->m_saveLocation.prettyURL() );
         attr.appendChild( t );
         i.appendChild( attr );
 
@@ -1606,32 +1507,32 @@ PodcastChannel::xml()
         i.appendChild( attr );
 
         attr = doc.createElement( "autoscan" );
-        t = doc.createTextNode( m_autoScan ? "true" : "false" );
+        t = doc.createTextNode( m_settings->m_autoScan ? "true" : "false" );
         attr.appendChild( t );
         i.appendChild( attr );
 
         attr = doc.createElement( "scaninterval" );
-        t = doc.createTextNode( QString::number( m_interval ) );
+        t = doc.createTextNode( QString::number( m_settings->m_interval ) );
         attr.appendChild( t );
         i.appendChild( attr );
 
         attr = doc.createElement( "fetch" );
-        t = doc.createTextNode( ( m_mediaFetch == AUTOMATIC ) ? "automatic" : "stream" );
+        t = doc.createTextNode( ( m_settings->m_fetch == AUTOMATIC ) ? "automatic" : "stream" );
         attr.appendChild( t );
         i.appendChild( attr );
 
         attr = doc.createElement( "autotransfer" );
-        t = doc.createTextNode( ( m_addToMediaDevice ) ? "true" : "false" );
+        t = doc.createTextNode( ( m_settings->m_addToMediaDevice ) ? "true" : "false" );
         attr.appendChild( t );
         i.appendChild( attr );
 
         attr = doc.createElement( "purge" );
-        t = doc.createTextNode( m_purgeItems ? "true" : "false" );
+        t = doc.createTextNode( m_settings->m_purge ? "true" : "false" );
         attr.appendChild( t );
         i.appendChild( attr );
 
         attr = doc.createElement( "purgecount" );
-        t = doc.createTextNode( QString::number( m_purgeCount ) );
+        t = doc.createTextNode( QString::number( m_settings->m_purgeCount ) );
         attr.appendChild( t );
         i.appendChild( attr );
 

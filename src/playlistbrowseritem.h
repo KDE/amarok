@@ -5,6 +5,8 @@
 #ifndef PLAYLISTBROWSERITEM_H
 #define PLAYLISTBROWSERITEM_H
 
+#include "podcastsettings.h"
+
 #include <kdialogbase.h> // StreamEditor baseclass
 #include <klineedit.h>
 #include <klistview.h>
@@ -313,21 +315,19 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         void  configure();
         void  fetch();
         void  rescan();
-        void  setSettings( const QString &save, const bool autoFetch, const int fetchType,
-                           bool addToMediaDevice, const bool purgeItems, const int purgeCount );
 
         const KURL &url() { return m_url; }
         const KURL &link() { return m_link; }
         const KURL xmlUrl();
         const QString &title() { return m_title; }
 
-        const bool autoScan() { return m_autoScan; }
-        const int  mediaFetch() { return m_mediaFetch; }
-        const bool addToMediaDevice() { return m_addToMediaDevice; }
-        const bool hasPurge() { return m_purgeItems; }
-        const int  purgeCount() { return m_purgeCount; }
-        const KURL &saveLocation() { return m_saveLocation; }
-        const int  timeout() { return m_interval; }
+        const bool autoScan() { return m_settings->m_autoScan; }
+        const int  mediaFetch() { return m_settings->m_fetch; }
+        const bool addToMediaDevice() { return m_settings->m_addToMediaDevice; }
+        const bool hasPurge() { return m_settings->m_purge; }
+        const int  purgeCount() { return m_settings->m_purgeCount; }
+        const KURL &saveLocation() { return m_settings->m_saveLocation; }
+        const int  timeout() { return m_settings->m_interval; }
 
         void setXml( const QDomNode &xml, const int feedType );
         QDomElement xml();
@@ -370,12 +370,8 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         bool        m_hasProblem;
 
         // Configuration
-        bool        m_autoScan;
-        int         m_interval;                     //how many hours to wait b/w scans
-        int         m_mediaFetch;                   //Download or stream?
-        bool        m_addToMediaDevice;             //automatically add newly downloaded shows to media device?
-        bool        m_purgeItems;
-        int         m_purgeCount;
+        QDomNode m_channelSettings;
+        PodcastSettings *m_settings;
 
         PodcastItem          *m_last;
         KIO::TransferJob     *m_podcastJob;
