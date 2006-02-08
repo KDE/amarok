@@ -127,6 +127,7 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
             int height;
             QString text;
             QFont font;
+            QColor color;
             bool selected;
             QMap<QString, QPixmap> map;
         };
