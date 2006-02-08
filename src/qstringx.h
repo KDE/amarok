@@ -49,7 +49,7 @@ public:
     // %something gets replaced by the value corresponding to key "something" in args
     QString namedArgs( const QMap<QString, QString> args, bool opt=false ) const
     {
-        QRegExp rxArg( "%[a-zA-Z0-9_]+" );
+        QRegExp rxArg( "%[a-zA-Z0-9]+" );
 
         QString result;
         int start = 0;

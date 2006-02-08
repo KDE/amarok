@@ -1,0 +1,563 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>OrganizeCollectionDialog</class>
+<author>&lt;aumuell@reserv.at&gt;</author>
+<widget class="KDialog">
+    <property name="name">
+        <cstring>organizeCollectionDialog</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>821</width>
+            <height>459</height>
+        </rect>
+    </property>
+    <property name="sizePolicy">
+        <sizepolicy>
+            <hsizetype>3</hsizetype>
+            <vsizetype>3</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+    </property>
+    <property name="caption">
+        <string>Organize Files - KDevelop - KDevDesigner</string>
+    </property>
+    <widget class="QLayoutWidget">
+        <property name="name">
+            <cstring>folderLayout</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>12</x>
+                <y>12</y>
+                <width>797</width>
+                <height>40</height>
+            </rect>
+        </property>
+        <hbox>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <property name="margin">
+                <number>5</number>
+            </property>
+            <widget class="QLabel">
+                <property name="name">
+                    <cstring>folderLabel</cstring>
+                </property>
+                <property name="sizePolicy">
+                    <sizepolicy>
+                        <hsizetype>1</hsizetype>
+                        <vsizetype>5</vsizetype>
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                    </sizepolicy>
+                </property>
+                <property name="text">
+                    <string>C&amp;ollection Folder:</string>
+                </property>
+                <property name="buddy" stdset="0">
+                    <cstring>folderCombo</cstring>
+                </property>
+            </widget>
+            <widget class="KComboBox">
+                <property name="name">
+                    <cstring>folderCombo</cstring>
+                </property>
+                <property name="sizePolicy">
+                    <sizepolicy>
+                        <hsizetype>7</hsizetype>
+                        <vsizetype>0</vsizetype>
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                    </sizepolicy>
+                </property>
+            </widget>
+        </hbox>
+    </widget>
+    <widget class="QLayoutWidget">
+        <property name="name">
+            <cstring>optionsLayout</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>12</x>
+                <y>58</y>
+                <width>797</width>
+                <height>38</height>
+            </rect>
+        </property>
+        <hbox>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <property name="margin">
+                <number>5</number>
+            </property>
+            <property name="spacing">
+                <number>0</number>
+            </property>
+            <widget class="QCheckBox">
+                <property name="name">
+                    <cstring>coverCheck</cstring>
+                </property>
+                <property name="text">
+                    <string>&amp;Use Cover Art for Folder Icons</string>
+                </property>
+                <property name="accel">
+                    <string>Alt+U</string>
+                </property>
+            </widget>
+            <widget class="QCheckBox">
+                <property name="name">
+                    <cstring>ignoreTheCheck</cstring>
+                </property>
+                <property name="text">
+                    <string>I&amp;gnore 'The' in Artist Names</string>
+                </property>
+                <property name="accel">
+                    <string>Alt+G</string>
+                </property>
+            </widget>
+        </hbox>
+    </widget>
+    <widget class="QGroupBox">
+        <property name="name">
+            <cstring>groupingGroup</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>12</x>
+                <y>102</y>
+                <width>797</width>
+                <height>134</height>
+            </rect>
+        </property>
+        <property name="margin">
+            <number>0</number>
+        </property>
+        <property name="title">
+            <string>File Naming Scheme</string>
+        </property>
+        <grid>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <property name="margin">
+                <number>5</number>
+            </property>
+            <widget class="QLayoutWidget" row="2" column="0" rowspan="1" colspan="2">
+                <property name="name">
+                    <cstring>customFormatLayout</cstring>
+                </property>
+                <hbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QLabel">
+                        <property name="name">
+                            <cstring>formatLabel</cstring>
+                        </property>
+                        <property name="enabled">
+                            <bool>false</bool>
+                        </property>
+                        <property name="text">
+                            <string>Filename Format:</string>
+                        </property>
+                        <property name="buddy" stdset="0">
+                            <cstring>formatEdit</cstring>
+                        </property>
+                    </widget>
+                    <widget class="KLineEdit">
+                        <property name="name">
+                            <cstring>formatEdit</cstring>
+                        </property>
+                        <property name="enabled">
+                            <bool>false</bool>
+                        </property>
+                        <property name="text">
+                            <string></string>
+                        </property>
+                    </widget>
+                </hbox>
+            </widget>
+            <widget class="QCheckBox" row="0" column="0" rowspan="1" colspan="2">
+                <property name="name">
+                    <cstring>customschemeCheck</cstring>
+                </property>
+                <property name="text">
+                    <string>Custo&amp;m Format</string>
+                </property>
+                <property name="accel">
+                    <string>Alt+M</string>
+                </property>
+            </widget>
+            <widget class="QCheckBox" row="1" column="1">
+                <property name="name">
+                    <cstring>initialCheck</cstring>
+                </property>
+                <property name="text">
+                    <string>Group &amp;by Artist's Initial</string>
+                </property>
+                <property name="accel">
+                    <string>Alt+B</string>
+                </property>
+            </widget>
+            <widget class="QCheckBox" row="1" column="0">
+                <property name="name">
+                    <cstring>filetypeCheck</cstring>
+                </property>
+                <property name="text">
+                    <string>Group b&amp;y File Type</string>
+                </property>
+                <property name="accel">
+                    <string>Alt+Y</string>
+                </property>
+            </widget>
+        </grid>
+    </widget>
+    <widget class="QGroupBox">
+        <property name="name">
+            <cstring>replacementGroup</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>12</x>
+                <y>242</y>
+                <width>797</width>
+                <height>56</height>
+            </rect>
+        </property>
+        <property name="margin">
+            <number>0</number>
+        </property>
+        <property name="title">
+            <string>Character Replacement</string>
+        </property>
+        <grid>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <property name="margin">
+                <number>5</number>
+            </property>
+            <property name="spacing">
+                <number>0</number>
+            </property>
+            <widget class="QCheckBox" row="0" column="0">
+                <property name="name">
+                    <cstring>spaceCheck</cstring>
+                </property>
+                <property name="text">
+                    <string>Replace Spaces with Underscores</string>
+                </property>
+            </widget>
+            <widget class="QCheckBox" row="0" column="1">
+                <property name="name">
+                    <cstring>asciiCheck</cstring>
+                </property>
+                <property name="text">
+                    <string>Restrict to &amp;ASCII</string>
+                </property>
+            </widget>
+            <widget class="QCheckBox" row="0" column="2">
+                <property name="name">
+                    <cstring>vfatCheck</cstring>
+                </property>
+                <property name="text">
+                    <string>VFAT Safe &amp;Names</string>
+                </property>
+                <property name="accel">
+                    <string>Alt+N</string>
+                </property>
+            </widget>
+        </grid>
+    </widget>
+    <widget class="QLayoutWidget">
+        <property name="name">
+            <cstring>overwriteLayout</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>12</x>
+                <y>361</y>
+                <width>797</width>
+                <height>38</height>
+            </rect>
+        </property>
+        <hbox>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <property name="margin">
+                <number>5</number>
+            </property>
+            <spacer>
+                <property name="name">
+                    <cstring>spacer2_2</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>40</width>
+                        <height>20</height>
+                    </size>
+                </property>
+            </spacer>
+            <widget class="QCheckBox">
+                <property name="name">
+                    <cstring>overwriteCheck</cstring>
+                </property>
+                <property name="text">
+                    <string>Overwrite &amp;Destination</string>
+                </property>
+                <property name="accel">
+                    <string>Alt+D</string>
+                </property>
+            </widget>
+        </hbox>
+    </widget>
+    <widget class="QLayoutWidget">
+        <property name="name">
+            <cstring>buttonLayout</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>12</x>
+                <y>405</y>
+                <width>797</width>
+                <height>42</height>
+            </rect>
+        </property>
+        <hbox>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <property name="margin">
+                <number>5</number>
+            </property>
+            <spacer>
+                <property name="name">
+                    <cstring>spacer2</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>653</width>
+                        <height>20</height>
+                    </size>
+                </property>
+            </spacer>
+            <widget class="KPushButton">
+                <property name="name">
+                    <cstring>okButton</cstring>
+                </property>
+                <property name="text">
+                    <string>O&amp;k</string>
+                </property>
+                <property name="accel">
+                    <string>Alt+K</string>
+                </property>
+                <property name="toolTip" stdset="0">
+                    <string>Add a new scheme</string>
+                </property>
+                <property name="whatsThis" stdset="0">
+                    <string>Press this button to add a new file name scheme to the end of the list.</string>
+                </property>
+            </widget>
+            <widget class="KPushButton">
+                <property name="name">
+                    <cstring>cancelButton</cstring>
+                </property>
+                <property name="text">
+                    <string>&amp;Cancel</string>
+                </property>
+                <property name="accel">
+                    <string>Alt+C</string>
+                </property>
+                <property name="toolTip" stdset="0">
+                    <string>Add a new scheme</string>
+                </property>
+                <property name="whatsThis" stdset="0">
+                    <string>Press this button to add a new file name scheme to the end of the list.</string>
+                </property>
+            </widget>
+        </hbox>
+    </widget>
+    <widget class="QGroupBox">
+        <property name="name">
+            <cstring>previewBox</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>12</x>
+                <y>304</y>
+                <width>797</width>
+                <height>51</height>
+            </rect>
+        </property>
+        <property name="title">
+            <string>Destination Preview</string>
+        </property>
+        <grid>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <property name="margin">
+                <number>5</number>
+            </property>
+            <property name="spacing">
+                <number>0</number>
+            </property>
+            <widget class="QLabel" row="0" column="1">
+                <property name="name">
+                    <cstring>previewText</cstring>
+                </property>
+                <property name="sizePolicy">
+                    <sizepolicy>
+                        <hsizetype>7</hsizetype>
+                        <vsizetype>5</vsizetype>
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                    </sizepolicy>
+                </property>
+                <property name="text">
+                    <string></string>
+                </property>
+            </widget>
+        </grid>
+    </widget>
+</widget>
+<customwidgets>
+</customwidgets>
+<connections>
+    <connection>
+        <sender>customschemeCheck</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>formatEdit</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>customschemeCheck</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>formatLabel</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>customschemeCheck</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>filetypeCheck</receiver>
+        <slot>setDisabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>customschemeCheck</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>initialCheck</receiver>
+        <slot>setDisabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>formatEdit</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>organizeCollectionDialog</receiver>
+        <slot>preview(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>organizeCollectionDialog</sender>
+        <signal>updatePreview( const QString &amp; )</signal>
+        <receiver>previewText</receiver>
+        <slot>setText(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>customschemeCheck</sender>
+        <signal>stateChanged(int)</signal>
+        <receiver>organizeCollectionDialog</receiver>
+        <slot>update(int)</slot>
+    </connection>
+    <connection>
+        <sender>filetypeCheck</sender>
+        <signal>stateChanged(int)</signal>
+        <receiver>organizeCollectionDialog</receiver>
+        <slot>update(int)</slot>
+    </connection>
+    <connection>
+        <sender>initialCheck</sender>
+        <signal>stateChanged(int)</signal>
+        <receiver>organizeCollectionDialog</receiver>
+        <slot>update(int)</slot>
+    </connection>
+    <connection>
+        <sender>spaceCheck</sender>
+        <signal>stateChanged(int)</signal>
+        <receiver>organizeCollectionDialog</receiver>
+        <slot>update(int)</slot>
+    </connection>
+    <connection>
+        <sender>asciiCheck</sender>
+        <signal>stateChanged(int)</signal>
+        <receiver>organizeCollectionDialog</receiver>
+        <slot>update(int)</slot>
+    </connection>
+    <connection>
+        <sender>vfatCheck</sender>
+        <signal>stateChanged(int)</signal>
+        <receiver>organizeCollectionDialog</receiver>
+        <slot>update(int)</slot>
+    </connection>
+    <connection>
+        <sender>ignoreTheCheck</sender>
+        <signal>stateChanged(int)</signal>
+        <receiver>organizeCollectionDialog</receiver>
+        <slot>update(int)</slot>
+    </connection>
+    <connection>
+        <sender>folderCombo</sender>
+        <signal>activated(int)</signal>
+        <receiver>organizeCollectionDialog</receiver>
+        <slot>update(int)</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="global" impldecl="in declaration">metabundle.h</include>
+    <include location="global" impldecl="in implementation">qdialog.h</include>
+    <include location="global" impldecl="in implementation">qstring.h</include>
+</includes>
+<variables>
+    <variable>MetaBundle previewBundle;</variable>
+</variables>
+<signals>
+    <signal>updatePreview( const QString &amp; )</signal>
+</signals>
+<slots>
+    <slot>accept()</slot>
+    <slot>reject()</slot>
+    <slot>preview( const QString &amp;format )</slot>
+    <slot>update(int dummy=0)</slot>
+</slots>
+<functions>
+    <function>init()</function>
+    <function returnType="QString">buildDestination( const QString &amp;format, const MetaBundle &amp;bundle )</function>
+    <function returnType="QString">buildFormatString()</function>
+    <function>setPreviewBundle( const MetaBundle &amp;bundle )</function>
+    <function returnType="QString">cleanPath( const QString &amp;component )</function>
+</functions>
+<layoutdefaults spacing="6" margin="0"/>
+<includehints>
+    <includehint>kdialog.h</includehint>
+    <includehint>kcombobox.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+</includehints>
+</UI>

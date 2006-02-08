@@ -33,6 +33,7 @@ class KProgress;
 
 class CollectionView;
 class CollectionItem;
+class OrganizeCollectionDialog;
 
 class CollectionBrowser: public QVBox
 {
@@ -124,12 +125,12 @@ class CollectionView : public KListView
         void setTimeFilter( const uint timeFilter ) { m_timeFilter = timeFilter; }
         QString filter() { return m_filter; }
         uint timeFilter() { return m_timeFilter; }
-        QString cleanPath( QString string ) {
-            return string.replace( "/", "-" ).replace( ".", "" ).replace( "*", "" ).simplifyWhiteSpace();
-        }
         CollectionItem* currentItem() { return static_cast<CollectionItem*>( KListView::currentItem() ); }
 
         int trackDepth() { return m_trackDepth; }
+
+        // avoid duplicated code
+        static void manipulateThe( QString &original, bool reverse = false );
 
     public slots:
         /** Rebuilds and displays the treeview by querying the database. */
@@ -179,9 +180,8 @@ class CollectionView : public KListView
         void restoreView();
 
         // avoid duplicated code
-        inline void manipulateThe( QString &original, bool reverse = false );
-        inline bool endsInThe( const QString & text );
-        inline void yearAlbumCalc( QString &year, QString &text );
+        static inline bool endsInThe( const QString & text );
+        static inline void yearAlbumCalc( QString &year, QString &text );
         inline void updateTrackDepth();
 
         uint translateTimeFilter( uint filterMode );

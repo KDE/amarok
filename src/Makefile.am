@@ -98,6 +98,7 @@ libamarok_la_SOURCES = \
     multitabbar.cpp \
     newdynamic.ui \
     osd.cpp \
+    organizecollectiondialog.ui \
     party.cpp \
     partydialogbase.ui \
     playerwindow.cpp \

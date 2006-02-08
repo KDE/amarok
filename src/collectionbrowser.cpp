@@ -18,10 +18,12 @@
 #include "k3bexporter.h"
 #include "mediabrowser.h"
 #include "metabundle.h"
+#include "organizecollectiondialog.h"
 #include "playlist.h"       //insertMedia()
 #include "playlistbrowser.h"
 #include "statusbar.h"
 #include "tagdialog.h"
+#include "qstringx.h"
 
 #include <unistd.h>         //CollectionView ctor
 
@@ -37,6 +39,7 @@
 #include <qtimer.h>
 #include <qtooltip.h>       //QToolTip::add()
 #include <qheader.h>
+#include <qregexp.h>
 
 #include <kactioncollection.h>
 #include <kapplication.h>   //kapp
@@ -1496,55 +1499,33 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
 {
     QStringList folders = AmarokConfig::collectionFolders();
 
-    KDialogBase dialog( m_parent, 0, false );
-    kapp->setTopWidget( &dialog );
-    dialog.setCaption( kapp->makeStdCaption( caption ) );
-    dialog.showButtonApply( false );
-    QVBox *box = dialog.makeVBoxMainWidget();
+    OrganizeCollectionDialog dialog( m_parent, 0 );
+    dialog.folderCombo->insertStringList( folders, 0 );
+    dialog.folderCombo->setCurrentItem( AmarokConfig::organizeDirectory() );
+    dialog.overwriteCheck->setChecked( AmarokConfig::overwriteFiles() );
+    dialog.filetypeCheck->setChecked( AmarokConfig::groupByFiletype() );
+    dialog.initialCheck->setChecked( AmarokConfig::groupArtists() );
+    dialog.spaceCheck->setChecked( AmarokConfig::replaceSpace() );
+    dialog.ignoreTheCheck->setChecked( AmarokConfig::ignoreThe() );
 
-    QLabel *choice = new QLabel( box );
-    choice->setText( i18n( "Choose collection folder:" ) );
-    QComboBox *dirs = new QComboBox( false, box );
-    dirs->setEditable( false );
-    dirs->insertStringList( folders, 0 );
-    dirs->setCurrentItem( AmarokConfig::organizeDirectory() );
-
-    QCheckBox *overwrite = new QCheckBox( box );
-    overwrite->setText( i18n( "Overwrite existing files" ) );
-    overwrite->setChecked( AmarokConfig::overwriteFiles() );
-
-    QCheckBox *byFiletype = new QCheckBox( box );
-    byFiletype->setText( i18n( "Group files by type" ) );
-    byFiletype->setChecked( AmarokConfig::groupByFiletype() );
-
-    QCheckBox *group = new QCheckBox( box );
-    group->setText( i18n( "Group artists alphabetically" ) );
-    group->setChecked( AmarokConfig::groupArtists() );
-
-    QCheckBox *replaceSpace = new QCheckBox( box );
-    replaceSpace->setText( i18n( "Replace space with _" ) );
-    replaceSpace->setChecked( AmarokConfig::replaceSpace() );
-
-    QCheckBox *ignore = new QCheckBox( box );
-    ignore->setText( i18n( "Ignore 'The' in artist names." ) );
-    ignore->setChecked( AmarokConfig::ignoreThe() );
-
-    QCheckBox *covers = new QCheckBox( box );
-    covers->setText( i18n( "Use cover art for folder icons" ) );
-    covers->setChecked( AmarokConfig::coverIcons() );
-
-    if( dialog.exec() != QDialog::Rejected )
+    if( urls.count() )
     {
-        AmarokConfig::setOrganizeDirectory( dirs->currentItem() );
-        AmarokConfig::setOverwriteFiles( overwrite->isChecked() );
-        AmarokConfig::setGroupByFiletype( byFiletype->isChecked() );
-        AmarokConfig::setGroupArtists( group->isChecked() );
-        AmarokConfig::setIgnoreThe( ignore->isChecked() );
-        AmarokConfig::setReplaceSpace( replaceSpace->isChecked() );
-        AmarokConfig::setCoverIcons( covers->isChecked() );
-        bool write = overwrite->isChecked();
+        dialog.setPreviewBundle( MetaBundle( urls.first() ) );
+        dialog.update( 0 );
+    }
+
+    if( dialog.exec() == QDialog::Accepted )
+    {
+        AmarokConfig::setOrganizeDirectory( dialog.folderCombo->currentItem() );
+        AmarokConfig::setOverwriteFiles( dialog.overwriteCheck->isChecked() );
+        AmarokConfig::setGroupByFiletype( dialog.filetypeCheck->isChecked() );
+        AmarokConfig::setGroupArtists( dialog.initialCheck->isChecked() );
+        AmarokConfig::setIgnoreThe( dialog.ignoreTheCheck->isChecked() );
+        AmarokConfig::setReplaceSpace( dialog.spaceCheck->isChecked() );
+        AmarokConfig::setCoverIcons( dialog.coverCheck->isChecked() );
+        bool write = dialog.overwriteCheck->isChecked();
         int skipped = 0;
-        QString base = dirs->currentText() + "/";
+        QString base = dialog.folderCombo->currentText() + "/";
         QString artist;
         QString album;
         QString title;
@@ -1560,67 +1541,7 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
             //Building destination here.
             MetaBundle mb( src );
 
-            bool isCompilation = false;
-
-            if( mb.album().isEmpty() )
-                album = i18n("Unknown");
-            else
-            {
-                album = cleanPath( mb.album() );
-                const int albumId = CollectionDB::instance()->albumID( album );
-                isCompilation = CollectionDB::instance()->albumIsCompilation( QString::number(albumId) );
-            }
-
-            if( !mb.artist().isEmpty() )
-            {
-                artist = cleanPath( mb.artist() );
-                if( ignore->isChecked() && artist.startsWith( "the ", false ) )
-                    manipulateThe( artist, true );
-            }
-            else
-                artist = i18n("Unknown");
-
-            type = mb.type();
-
-            if( !mb.title().isEmpty() )
-            {
-                if( mb.track() )
-                {
-                    if( (QString::number( mb.track() )).length() == 1 )
-                        title = "0" + QString::number( mb.track() ) + " - " + cleanPath( mb.title() );
-                    else
-                       title = QString::number( mb.track() ) + " - " + cleanPath( mb.title() );
-                }
-                else
-                {
-                    title = cleanPath( mb.title() );
-                }
-                title.replace( type, "" );
-            }
-            else
-                title = i18n("Unknown");
-
-            dest = base;
-            if( byFiletype->isChecked() )
-                dest += src.path().section( ".", -1 ).lower() + "/";
-
-            if( group->isChecked() && !isCompilation )
-                dest += artist.upper()[ 0 ] + "/";      // Group artists i.e. A/Artist/Album
-
-            if( isCompilation )
-                dest += i18n("Various Artists") + "/" + album + "/";
-            else
-                dest += artist + "/" + album + "/";
-
-            if( mb.discNumber() > 0 )
-                dest += i18n( "Disc %1" ).arg( mb.discNumber() ) + "/";
-
-            dest += title + "." + type;
-
-            dest.remove( "?" ).remove( ":" ).remove( "\"" ).remove( "," );
-
-            if( replaceSpace->isChecked() )
-                dest.replace( " ", "_" );
+            QString dest = dialog.buildDestination( dialog.buildFormatString(), mb );
 
             debug() << "Destination: " << dest << endl;
 
@@ -1631,7 +1552,7 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
             }
 
             //Use cover image for folder icon
-            if( covers->isChecked() && !mb.artist().isEmpty() && !mb.album().isEmpty() )
+            if( dialog.coverCheck->isChecked() && !mb.artist().isEmpty() && !mb.album().isEmpty() )
             {
                 KURL dstURL = KURL::fromPathOrURL( dest );
                 dstURL.cleanPath();
