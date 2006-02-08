@@ -682,13 +682,16 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                         minbearing = painter->fontMetrics().minLeftBearing()
                                      + painter->fontMetrics().minRightBearing();
                     }
-                    font.setItalic( true );
+                    const bool italic = font.italic();
+                    font.setItalic( !italic );
                     p.setFont( font );
                     p.setPen( cg.highlightedText() );
 //                  paint.setPen( glowText );
                     const int _width = width - leftMargin - margin + minbearing - 1; // -1 seems to be necessary
                     const QString _text = KStringHandler::rPixelSqueeze( colText, painter->fontMetrics(), _width );
                     p.drawText( leftMargin, 0, _width, height(), align, _text );
+                    font.setItalic( italic );
+                    p.setFont( font );
                 }
 
                 paintCache[column].map[colorKey] = buf;
