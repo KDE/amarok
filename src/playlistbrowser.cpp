@@ -1014,7 +1014,7 @@ void PlaylistBrowser::addPodcast( const QString &url, QListViewItem *parent )
     parent->sortChildItems( 0, true );
     parent->setOpen( true );
 
-    savePodcasts();
+    pc->fetch();
 }
 
 void PlaylistBrowser::changePodcastInterval()
