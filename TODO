@@ -94,8 +94,6 @@ SHORT-TERM (URGENT):
            Or perhaps such media shouldn't be in the collection at all? This is the sort of
            thing we're going to have to worry about now that we have m4a and wma tag support.
 
- <markey>  Regression: Using Undo/Redo deactivates the current track animation.
-
  <markey>  We really need to fix the crashes with the OpenGL analyzers that many users get.
 
   <markey> Consider moving the GHNS provider list to a different server than amarok.kde.org,
