@@ -884,9 +884,10 @@ void PlaylistItem::drawRating( QPainter *p )
 {
     QPixmap *pix = star();
     int i = 1, x = 1;
+    const int y = height() / 2 - pix->height() / 2;
     for(; i <= rating(); ++i )
     {
-        bitBlt( p->device(), x, ( this == listView()->m_currentTrack ) ? pix->height() / 2 : 2, pix );
+        bitBlt( p->device(), x, y, pix );
         x += pix->width() + listView()->itemMargin();
     }
     if( this == listView()->m_hoveredRating || ( isSelected() && listView()->m_selCount > 1 &&
@@ -896,7 +897,7 @@ void PlaylistItem::drawRating( QPainter *p )
         const int pos = listView()->viewportToContents( listView()->viewport()->mapFromGlobal( QCursor::pos() ) ).x();
         for( int n = ratingAtPoint( pos ); i <= n; ++i )
         {
-            bitBlt( p->device(), x, ( this == listView()->m_currentTrack ) ? pix->height() / 2 : 2, pix );
+            bitBlt( p->device(), x, y, pix );
             x += pix->width() + listView()->itemMargin();
         }
     }
