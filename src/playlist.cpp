@@ -1870,6 +1870,9 @@ Playlist::restoreCurrentTrack()
         setCurrentTrack( item ); //set even if NULL
     }
 
+    if( m_currentTrack && EngineController::instance()->engine()->state() == Engine::Playing && !Glow::timer.isActive() )
+        Glow::startTimer();
+
     return m_currentTrack;
 }
 
