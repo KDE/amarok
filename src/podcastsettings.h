@@ -23,8 +23,6 @@ class PodcastSettings
         PodcastSettings( const PodcastSettings *parentSettings, const QString &title );
         PodcastSettings( const QString &title ); // standard settings
 
-
-        const KURL &url()         { return m_url; }
         const KURL &saveLocation(){ return m_saveLocation; }
         bool    hasAutoScan() { return m_autoScan; }
         int     interval()    { return m_interval; }
@@ -36,7 +34,6 @@ class PodcastSettings
         const QDomElement xml();
 
         QString m_title;    //the title of the podcast or category these settings belong to
-        KURL m_url;
         KURL m_saveLocation;
         bool    m_autoScan;
         int     m_interval;

@@ -1085,7 +1085,6 @@ void
 PodcastChannel::configure()
 {
     // Save the values
-    KURL url    = m_url;
     KURL save   = m_settings->m_saveLocation;
     bool autoScan  = m_settings->m_autoScan;
     int mediaFetch = m_settings->m_fetch;
@@ -1120,6 +1119,7 @@ PodcastChannel::configure()
                     copyList << item->localUrl();
 
                 item->setLocalUrlBase( m_settings->m_saveLocation.prettyURL() );
+                KIO::mkdir(m_saveLocation.path(), -1);
                 item = static_cast<PodcastItem*>( item->nextSibling() );
             }
             // move the items
@@ -1653,6 +1653,7 @@ PodcastItem::hasDownloaded()
 void
 PodcastItem::downloadMedia()
 {
+    KURL m_localDir = KURL::fromPathOrURL(m_localUrl.directory(true, true) );
     if( hasDownloaded() )
         return;
 
@@ -1662,6 +1663,8 @@ PodcastItem::downloadMedia()
     startAnimation();
     connect( &m_animationTimer, SIGNAL(timeout()), this, SLOT(slotAnimation()) );
     KURL::List list( m_url );
+
+    KIO::mkdir(m_localDir, -1);
 
     m_podcastItemJob = KIO::copy( list, m_localUrl, false );
 

@@ -9,8 +9,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>482</width>
-            <height>202</height>
+            <width>499</width>
+            <height>213</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -31,41 +31,6 @@
         <property name="margin">
             <number>0</number>
         </property>
-        <widget class="QLabel" row="0" column="0">
-            <property name="name">
-                <cstring>textLabel9</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>0</hsizetype>
-                    <vsizetype>0</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="text">
-                <string>URL:</string>
-            </property>
-        </widget>
-        <widget class="QLineEdit" row="0" column="1" rowspan="1" colspan="5">
-            <property name="name">
-                <cstring>m_urlLine</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>5</hsizetype>
-                    <vsizetype>5</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="toolTip" stdset="0">
-                <string>Location of the podcast</string>
-            </property>
-            <property name="whatsThis" stdset="0">
-                <string>Location of the podcast</string>
-            </property>
-        </widget>
         <widget class="QButtonGroup" row="3" column="0" rowspan="1" colspan="6">
             <property name="name">
                 <cstring>buttonGroup1</cstring>
@@ -111,7 +76,7 @@
                         <string>Download media as soon as it becomes available</string>
                     </property>
                 </widget>
-                <widget class="QCheckBox" row="3" column="0" rowspan="1" colspan="6">
+                <widget class="QCheckBox">
                     <property name="name">
                         <cstring>m_addToMediaDeviceCheck</cstring>
                     </property>

@@ -22,7 +22,6 @@
 PodcastSettings::PodcastSettings( const QDomNode &channelSettings, const QString &title )
     : m_title( title )
 {
-    m_url = channelSettings.namedItem( "url").toElement().text();
     m_saveLocation = channelSettings.namedItem( "savelocation").toElement().text();
     m_autoScan = channelSettings.namedItem( "autoscan").toElement().text() == "true";
     m_interval = channelSettings.namedItem( "scaninterval").toElement().text().toInt();
@@ -50,7 +49,6 @@ PodcastSettings::PodcastSettings( const PodcastSettings *parentSettings, const Q
 PodcastSettings::PodcastSettings( const QString &title )
     : m_title( title )
 {
-    m_url = "file:///";
     m_saveLocation = amaroK::saveLocation( "podcasts/data/" );
     m_autoScan = false;
     m_interval = 4;
@@ -118,7 +116,6 @@ PodcastSettingsDialog::PodcastSettingsDialog( PodcastSettings *settings, Podcast
         KWin::setState( winId(), NET::SkipTaskbar );
 
         setMainWidget(m_ps);
-        m_ps->m_urlLine->setText( settings->m_url.prettyURL() );
         m_ps->m_saveLocation->setMode( KFile::Directory | KFile::ExistingOnly );
 
         m_ps->m_addToMediaDeviceCheck->setEnabled( MediaBrowser::isAvailable() );
@@ -127,10 +124,8 @@ PodcastSettingsDialog::PodcastSettingsDialog( PodcastSettings *settings, Podcast
 
         enableButtonOK( false );
 
+         // Connects for modification check
         connect( m_ps->m_purgeCountSpinBox->child( "qt_spinbox_edit" ),  SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
-
-    // Connects for modification check
-        connect( m_ps->m_urlLine,        SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
         connect( m_ps->m_saveLocation,   SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
         connect( m_ps->m_autoFetchCheck, SIGNAL(clicked()),                     SLOT(checkModified()) );
         connect( m_ps->m_streamRadio,    SIGNAL(clicked()),                     SLOT(checkModified()) );
@@ -149,8 +144,7 @@ PodcastSettingsDialog::hasChanged()
 
         fetchTypeChanged = false;
 
-    return ( m_settings->m_url             != m_ps->m_urlLine->text()             ||
-            m_settings->m_saveLocation            != requesterSaveLocation()             ||
+    return ( m_settings->m_saveLocation            != requesterSaveLocation()             ||
             m_settings->m_autoScan        != m_ps->m_autoFetchCheck->isChecked() ||
             m_settings->m_addToMediaDevice!= m_ps->m_addToMediaDeviceCheck->isChecked() ||
             m_settings->m_purge           != m_ps->m_purgeCheck->isChecked()     ||
@@ -168,7 +162,6 @@ void PodcastSettingsDialog::slotOk()       //slot
 {
     enableButtonOK( false ); //visual feedback
 
-    m_settings->m_url             = m_ps->m_urlLine->text();
     m_settings->m_saveLocation            = requesterSaveLocation();
     m_settings->m_autoScan        = m_ps->m_autoFetchCheck->isChecked();
     m_settings->m_addToMediaDevice= m_ps->m_addToMediaDeviceCheck->isChecked();
@@ -198,7 +191,6 @@ void PodcastSettingsDialog::setSettings( PodcastSettings *settings, bool changeS
     KURL saveLocation = settings->m_saveLocation;
     if( changeSaveLocation )
         saveLocation.addPath( (m_settings->m_title).replace("/", "-") );
-    m_ps->m_urlLine->setText( m_settings->m_url.prettyURL() );
     m_ps->m_saveLocation->setURL( saveLocation.prettyURL() );
     m_ps->m_autoFetchCheck->setChecked( settings->m_autoScan );
     if( m_settings->m_fetch == STREAM )
