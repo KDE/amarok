@@ -1118,7 +1118,7 @@ PodcastChannel::configure()
                     copyList << item->localUrl();
 
                 item->setLocalUrlBase( m_settings->m_saveLocation.prettyURL() );
-                KIO::mkdir(m_saveLocation.path(), -1);
+                PodcastItem::createLocalDir( m_saveLocation.path() );
                 item = static_cast<PodcastItem*>( item->nextSibling() );
             }
             // move the items
@@ -1663,7 +1663,7 @@ PodcastItem::downloadMedia()
     connect( &m_animationTimer, SIGNAL(timeout()), this, SLOT(slotAnimation()) );
     KURL::List list( m_url );
 
-    KIO::mkdir(m_localDir, -1);
+    createLocalDir( m_localDir );
 
     m_podcastItemJob = KIO::copy( list, m_localUrl, false );
 
@@ -1672,6 +1672,16 @@ PodcastItem::downloadMedia()
             .setAbortSlot( this, SLOT(abortDownload()) );
 
     connect( m_podcastItemJob, SIGNAL( result( KIO::Job* ) ), SLOT( downloadResult( KIO::Job* ) ) );
+}
+
+void PodcastItem::createLocalDir( const KURL &localDir )
+{
+    if( !QFile::exists( localDir.path() ) )
+    {
+        createLocalDir( localDir.directory( true, true ) );
+        debug() << "creating local directory " << localDir.path() << endl;
+        KIO::mkdir( localDir, -1 );
+    }
 }
 
 void

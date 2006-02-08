@@ -256,6 +256,7 @@ class PodcastItem : public QObject, public PlaylistBrowserEntry
 
         int rtti() const { return RTTI; }
         static const int RTTI = 1007;              //podcastitem
+        static void createLocalDir( const KURL &localDir );
 
     signals:
         void downloadFinished();
