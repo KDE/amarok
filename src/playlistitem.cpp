@@ -922,17 +922,29 @@ const QString &PlaylistItem::editingText()
 }
 
 
+/**
+ * Changes the transparency (alpha component) of an image.
+ * @param image Image to be manipulated. Must be true color (8 bit per channel).
+ * @param factor > 1.0 == more transparency, < 1.0 == less transparency.
+ */
 void PlaylistItem::imageTransparency( QImage& image, float factor ) //static
 {
-    unsigned int *data = (unsigned int *)image.bits();
+    uint *data = (unsigned int *)image.bits();
     const int pixels = image.width() * image.height();
+    uint table[256];
+    register int c;
 
-    for( int i = 0; i < pixels; ++i ) {
-        int c = qAlpha( data[i] );
-        c = int( double( c ) * factor );
+    // Precalculate lookup table
+    for( int i = 0; i < 256; ++i ) {
+        c = int( double( i ) * factor );
         if( c > 255 ) c = 255;
+        table[i] = c;
+    }
 
-        data[i] = qRgba( qRed( data[i] ), qGreen( data[i] ), qBlue( data[i] ), c );
+    // Process all pixels. Highly optimized.
+    for( int i = 0; i < pixels; ++i ) {
+        c = data[i]; // Memory access is slow, so do it only once
+        data[i] = qRgba( qRed( c ), qGreen( c ), qBlue( c ), table[qAlpha( c )] );
     }
 }
 

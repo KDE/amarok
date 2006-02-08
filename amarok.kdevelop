@@ -13,7 +13,15 @@
     <absoluteprojectpath>false</absoluteprojectpath>
     <version/>
     <description/>
-    <ignoreparts/>
+    <ignoreparts>
+      <part>CvsService</part>
+      <part>KDevClearCase</part>
+      <part>KDevDebugger</part>
+      <part>KDevDoxygen</part>
+      <part>KDevdistpart</part>
+      <part>KDevPerforce</part>
+      <part>KDevsubversion</part>
+    </ignoreparts>
     <secondaryLanguages/>
     <versioncontrol/>
   </general>
