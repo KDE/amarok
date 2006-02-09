@@ -22,7 +22,7 @@
         </sizepolicy>
     </property>
     <property name="caption">
-        <string>Organize Files - KDevelop - KDevDesigner</string>
+        <string>Organize Files</string>
     </property>
     <widget class="QLayoutWidget">
         <property name="name">
@@ -61,6 +61,9 @@
                 <property name="buddy" stdset="0">
                     <cstring>folderCombo</cstring>
                 </property>
+                <property name="toolTip" stdset="0">
+                    <string>Base directory under which to put files</string>
+                </property>
             </widget>
             <widget class="KComboBox">
                 <property name="name">
@@ -73,6 +76,9 @@
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                     </sizepolicy>
+                </property>
+                <property name="toolTip" stdset="0">
+                    <string></string>
                 </property>
             </widget>
         </hbox>
@@ -120,6 +126,9 @@
                 <property name="accel">
                     <string>Alt+G</string>
                 </property>
+                <property name="toolTip" stdset="0">
+                    <string>If checked, postfix artists' names starting with 'The' with ', The'.</string>
+                </property>
             </widget>
         </hbox>
     </widget>
@@ -164,7 +173,7 @@
                             <bool>false</bool>
                         </property>
                         <property name="text">
-                            <string>Filename Format:</string>
+                            <string>F&amp;ilename Format:</string>
                         </property>
                         <property name="buddy" stdset="0">
                             <cstring>formatEdit</cstring>
@@ -193,6 +202,9 @@
                 <property name="accel">
                     <string>Alt+M</string>
                 </property>
+                <property name="toolTip" stdset="0">
+                    <string>If checked, use a custom format string for naming the files in the collection</string>
+                </property>
             </widget>
             <widget class="QCheckBox" row="1" column="1">
                 <property name="name">
@@ -204,6 +216,9 @@
                 <property name="accel">
                     <string>Alt+B</string>
                 </property>
+                <property name="toolTip" stdset="0">
+                    <string>If checked, introduce another directory hierarchy for the artists' initials.</string>
+                </property>
             </widget>
             <widget class="QCheckBox" row="1" column="0">
                 <property name="name">
@@ -214,6 +229,9 @@
                 </property>
                 <property name="accel">
                     <string>Alt+Y</string>
+                </property>
+                <property name="toolTip" stdset="0">
+                    <string>If checked, create a directory hierarchy using the filename extension.</string>
                 </property>
             </widget>
         </grid>
@@ -251,7 +269,13 @@
                     <cstring>spaceCheck</cstring>
                 </property>
                 <property name="text">
-                    <string>Replace Spaces with Underscores</string>
+                    <string>&amp;Replace Spaces with Underscores</string>
+                </property>
+                <property name="accel">
+                    <string>Alt+R</string>
+                </property>
+                <property name="toolTip" stdset="0">
+                    <string>If checked, convert spaces to underscores.</string>
                 </property>
             </widget>
             <widget class="QCheckBox" row="0" column="1">
@@ -260,6 +284,12 @@
                 </property>
                 <property name="text">
                     <string>Restrict to &amp;ASCII</string>
+                </property>
+                <property name="accel">
+                    <string>Alt+A</string>
+                </property>
+                <property name="toolTip" stdset="0">
+                    <string>If checked, replace characters that are unavailable in the 7-bit ASCII code.</string>
                 </property>
             </widget>
             <widget class="QCheckBox" row="0" column="2">
@@ -271,6 +301,9 @@
                 </property>
                 <property name="accel">
                     <string>Alt+N</string>
+                </property>
+                <property name="toolTip" stdset="0">
+                    <string>If checked, replace characters that are incompatible with MS-DOS/VFAT file systems.</string>
                 </property>
             </widget>
         </grid>
@@ -320,6 +353,9 @@
                 </property>
                 <property name="accel">
                     <string>Alt+D</string>
+                </property>
+                <property name="toolTip" stdset="0">
+                    <string>If checked, overwrite files of the same name without asking.</string>
                 </property>
             </widget>
         </hbox>
@@ -436,6 +472,9 @@
                 <property name="text">
                     <string></string>
                 </property>
+                <property name="toolTip" stdset="0">
+                    <string>This is what the file names will look like after renaming.</string>
+                </property>
             </widget>
         </grid>
     </widget>
@@ -540,8 +579,6 @@
     <signal>updatePreview( const QString &amp; )</signal>
 </signals>
 <slots>
-    <slot>accept()</slot>
-    <slot>reject()</slot>
     <slot>preview( const QString &amp;format )</slot>
     <slot>update(int dummy=0)</slot>
 </slots>

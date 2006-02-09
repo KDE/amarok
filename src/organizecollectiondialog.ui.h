@@ -3,16 +3,6 @@
 #include <collectiondb.h>
 #include <collectionbrowser.h>
 
-void OrganizeCollectionDialog::accept()
-{
-    KDialog::accept();
-}
-
-
-void OrganizeCollectionDialog::reject()
-{
-    KDialog::reject();
-}
 
 
 void OrganizeCollectionDialog::init()
@@ -35,16 +25,16 @@ QString OrganizeCollectionDialog::buildDestination( const QString &format, const
     QString artist = mb.artist();
     if( isCompilation )
         artist = i18n( "Various Artists" );
+    args["theartist"] = cleanPath( artist );
     if( ignoreTheCheck->isChecked() && artist.startsWith( "the ", false ) )
         CollectionView::instance()->manipulateThe( artist, true );
     artist = cleanPath( artist );
+    args["artist"] = artist;
     for( int i = 0; i < MetaBundle::NUM_COLUMNS; i++ )
     {
         args[mb.exactColumnName( i ).lower()] = cleanPath( mb.prettyText( i ) );
     }
-    args["artist"] = artist;
     args["folder"] = folderCombo->currentText();
-    args["theartist"] = cleanPath( mb.artist() );
     args["initial"] = artist.mid( 0, 1 ).upper();
     args["filetype"] = mb.url().path().section( ".", -1 ).lower();
     QString track;
