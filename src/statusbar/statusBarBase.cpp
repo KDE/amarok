@@ -213,12 +213,12 @@ StatusBar::setMainText( const QString &text )
 }
 
 void
-StatusBar::shortMessage( const QString &text )
+StatusBar::shortMessage( const QString &text, bool longShort )
 {
     m_mainTextLabel->setText( text );
     m_mainTextLabel->setPalette( QToolTip::palette() );
 
-    SingleShotPool::startTimer( 5000, this, SLOT(resetMainText()) );
+    SingleShotPool::startTimer( longShort ? 8000 : 5000, this, SLOT(resetMainText()) );
 
     writeLogFile( text );
 }
@@ -263,11 +263,12 @@ StatusBar::shortLongMessage( const QString &_short, const QString &_long, int ty
     m_shortLongType = type;
 
     if( !_short.isEmpty() )
-        shortMessage( _short );
+        shortMessage( _short, true );
 
     if ( !_long.isEmpty() ) {
         m_shortLongText = _long;
         shortLongButton()->show();
+        writeLogFile( _long );
     }
 }
 

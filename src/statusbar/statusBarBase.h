@@ -132,10 +132,10 @@ namespace KDE
         void shortLongMessage( const QString &_short, const QString &_long, int type = Information );
 
         /**
-         * Set a temporary message over the mainText label, for 2 seconds.
+         * Set a temporary message over the mainText label, for 5 seconds.
          * ONLY USE FOR STATUS MESSAGES! ie "Buffering...", "Connecting to source..."
          */
-        void shortMessage( const QString &text );
+        void shortMessage( const QString &text, bool longShort = false );
 
         /** Stop anticipating progress from sender() */
         void endProgressOperation();
