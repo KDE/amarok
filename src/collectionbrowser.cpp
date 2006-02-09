@@ -1533,13 +1533,7 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
         AmarokConfig::setUseCustomScheme( dialog.customschemeCheck->isChecked() );
         AmarokConfig::setCustomScheme( dialog.formatEdit->text() );
         bool write = dialog.overwriteCheck->isChecked();
-        int skipped = 0;
-        QString base = dialog.folderCombo->currentText() + "/";
-        QString artist;
-        QString album;
-        QString title;
-        QString dest;
-        QString type;
+        KURL::List skipped;
 
         CollectionDB::instance()->createTables( true ); // create temp tables
         KURL::List::ConstIterator it = urls.begin();
@@ -1557,7 +1551,9 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
             if( src.path() != dest ) //supress error warning that file couldn't be moved
             {
                 if( !CollectionDB::instance()->moveFile( src.path(), dest, write, copy ) )
-                    skipped++;
+                {
+                    skipped += src;
+                }
             }
 
             //Use cover image for folder icon
@@ -1600,10 +1596,27 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
         CollectionDB::instance()->copyTempTables(); // copy temp table contents to permanent tables
         CollectionDB::instance()->dropTables( true ); // and drop them
 
-        if( skipped > 0 )
-            amaroK::StatusBar::instance()->longMessage( i18n(
-                    "Sorry, one file could not be organized.",
-                    "Sorry %n files could not be organized.", skipped ), KDE::StatusBar::Sorry );
+        if( skipped.count() > 0 )
+        {
+            QString longMsg = i18n( "The following file could not be organized: ",
+                    "The following %n files could not be organized: ", skipped.count() );
+            bool first = true;
+            for( KURL::List::iterator it = skipped.begin();
+                    it != skipped.end();
+                    it++ )
+            {
+                if( !first )
+                    longMsg += i18n( ", " );
+                else
+                    first = false;
+                longMsg += (*it).path();
+            }
+            longMsg += i18n( "." );
+
+            QString shortMsg = i18n( "Sorry, one file could not be organized.",
+                    "Sorry, %n files could not be organized.", skipped.count() );
+            amaroK::StatusBar::instance()->shortLongMessage( shortMsg, longMsg, KDE::StatusBar::Sorry );
+        }
         QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
     }
 }

@@ -407,10 +407,7 @@
                     <string>Alt+K</string>
                 </property>
                 <property name="toolTip" stdset="0">
-                    <string>Add a new scheme</string>
-                </property>
-                <property name="whatsThis" stdset="0">
-                    <string>Press this button to add a new file name scheme to the end of the list.</string>
+                    <string>Organize files</string>
                 </property>
             </widget>
             <widget class="KPushButton">
@@ -424,10 +421,7 @@
                     <string>Alt+C</string>
                 </property>
                 <property name="toolTip" stdset="0">
-                    <string>Add a new scheme</string>
-                </property>
-                <property name="whatsThis" stdset="0">
-                    <string>Press this button to add a new file name scheme to the end of the list.</string>
+                    <string>Don't organize files</string>
                 </property>
             </widget>
         </hbox>
