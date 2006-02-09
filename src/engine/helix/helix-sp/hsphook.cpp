@@ -29,6 +29,7 @@
 #endif
 #include "hsphook.h"
 #include "iir_cf.h"         // IIR filter coefficients
+#include "hspalsadevice.h"
 
 #define SCOPESIZE 512
 
@@ -603,6 +604,7 @@ HSPPostMixAudioHook::Release()
         return m_lRefCount;
     }
 
+    m_Player->print2stderr("DELETING POST MIX HOOK index %d\n", m_index);
     delete this;
     return 0;
 }
@@ -617,7 +619,7 @@ STDMETHODIMP HSPPostMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioDat
    // feed the visualizations, if this is a local file (otherwise do it in the FinalHook)
    if (m_Player->isLocal(m_index))
       m_processor->scopeify(pAudioInData->ulAudioTime, data, len);
-
+   
    return 0;
 }
 
@@ -627,6 +629,7 @@ STDMETHODIMP HSPPostMixAudioHook::OnInit(HXAudioFormat *pFormat)
           pFormat->uBitsPerSample,
           pFormat->ulSamplesPerSec,
           pFormat->uMaxBlockSize);
+
 
    return (m_processor->OnInit(pFormat));
 }

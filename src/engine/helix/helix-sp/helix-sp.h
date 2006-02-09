@@ -55,6 +55,8 @@ class IHXPlugin2Handler;
 class IHXAudioDeviceManager;
 class IHXAudioHookManager;
 class IHXPreferences;
+class HSPAudioDevice;
+class IHXAudioDeviceResponse;
 #ifdef USE_HELIX_ALSA
 struct _snd_mixer;
 struct _snd_mixer_elem;
@@ -173,6 +175,7 @@ private:
    IHXAudioDeviceManager*   pAudioDeviceManager;
    IHXAudioHookManager*     pAudioHookManager;
    IHXAudioHook*            pFinalAudioHook;
+   HSPAudioDevice*          pAudioDevice;
 
    struct playerCtrl
    {
@@ -204,6 +207,7 @@ private:
       pthread_mutex_t             m_scope_m;
    } **ppctrl;
 
+   IHXAudioDeviceResponse *pAudioDeviceResponse;
    bool                    bURLFound;
    int                     nNumPlayers;
    int                     nNumPlayRepeats;
@@ -349,6 +353,7 @@ protected:
    friend class HSPFinalAudioHook;
    friend class HelixSimplePlayerVolumeAdvice;
    friend class HSPEngineContext;
+   friend class HSPAudioDevice;
 };
 
 #endif

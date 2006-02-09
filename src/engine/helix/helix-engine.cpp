@@ -45,7 +45,7 @@ extern "C"
     #include <unistd.h>
 }
 
-#define HELIX_ENGINE_TIMER 10  // 10 ms timer
+#define HELIX_ENGINE_TIMER 20  // 10 ms timer
 #define SCOPE_MAX_BEHIND   200    // 200 postmix buffers
 
 

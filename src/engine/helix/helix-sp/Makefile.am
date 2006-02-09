@@ -29,6 +29,7 @@ libhelix_sp_la_SOURCES = \
     iids.cpp \
     utils.cpp \
     gain.cpp \
+    hspalsadevice.cpp \
     helix-sp.cpp
 
 METASOURCES = \

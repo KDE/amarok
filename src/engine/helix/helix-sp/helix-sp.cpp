@@ -47,6 +47,7 @@
 
 #ifdef USE_HELIX_ALSA
 #include <alsa/asoundlib.h>
+#include "hspalsadevice.h"
 #endif
 
 #ifdef HX_LOG_SUBSYSTEM
@@ -466,9 +467,6 @@ void HelixSimplePlayer::init(const char *corelibhome, const char *pluginslibhome
       HX_VECTOR_DELETE(pNextPath);
    }
 
-   // do I need to do this???
-   //XInitThreads();
-
    // create client engine
    if (HXR_OK != fpCreateEngine((IHXClientEngine**)&pEngine))
    {
@@ -522,17 +520,32 @@ void HelixSimplePlayer::init(const char *corelibhome, const char *pluginslibhome
    if (!pAudioDeviceManager)
       print2stderr("no audio device manager\n");
 
+   // create players
+   for (i = 0; i < numPlayers; i++)
+   {
+      addPlayer();
+   }
+
+#ifdef USE_HELIX_ALSA
+   pAudioDevice = 0;
+   if ( m_outputsink == ALSA && pAudioDeviceManager && !m_AlsaCapableCore)
+   {
+      pAudioDevice = new HSPAudioDevice(this, m_device);
+
+      // change the AudioDevice if we are using alsa (player 0's audion device is special...)
+      pAudioDeviceManager->Replace(pAudioDevice);
+   }
+#endif
+
+   pAudioDeviceResponse = 0;
+   pEngine->QueryInterface(IID_IHXAudioDeviceResponse, (void**) &pAudioDeviceResponse);
+
    pAudioHookManager = 0;
    pFinalAudioHook = 0;
    pEngine->QueryInterface(IID_IHXAudioHookManager, (void **) &pAudioHookManager);
    if (!pAudioHookManager)
       print2stderr("no audio device hook manager\n");
 
-   // create players
-   for (i = 0; i < numPlayers; i++)
-   {
-      addPlayer();
-   }
 
    // install hook for visualizations, equalizer, and volume control - for use with streams
    // the time in the packets is the presentation time - which maps better to streams
@@ -620,19 +633,11 @@ void HelixSimplePlayer::init(const char *corelibhome, const char *pluginslibhome
 
 int HelixSimplePlayer::initDirectSS()
 {
-   if (m_outputsink == ALSA && m_AlsaCapableCore)
+   if (m_outputsink == ALSA)
    {
       closeAudioDevice();
       m_direct = ALSA;
       openAudioDevice();
-   }
-   else if (m_outputsink == ALSA)
-   {
-      closeAudioDevice();
-      m_direct = OSS;
-      m_outputsink = OSS;
-      openAudioDevice();
-      return -1;
    }
    else
    {
@@ -787,7 +792,7 @@ int HelixSimplePlayer::addPlayer()
    }
    else
       print2stderr("No AudioPlayer Found - how can we play music!!\n");
-   
+
    ++nNumPlayers;
 
    //print2stderr("Added player, total is %d\n",nNumPlayers);
@@ -857,6 +862,12 @@ void HelixSimplePlayer::tearDown()
  
       delete ppctrl[i];
   }
+
+   if (pAudioDevice)
+      pAudioDevice->Release();
+
+   if (pAudioDeviceResponse)
+      pAudioDeviceResponse->Release();
 
    delete [] ppctrl;
 
