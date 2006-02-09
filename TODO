@@ -6,6 +6,9 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+ <markey>  When playing tracks for which no metadata can be retrieved, including remote files
+           and Podcasts, the OSD always shows "No Track Playing".
+
  <markey>  Tooltips don't work for 3rd level items in the Playlist Browser. They do how
            however work (for me) for 2nd level items. Very bad, cause you can't read the
            text!
