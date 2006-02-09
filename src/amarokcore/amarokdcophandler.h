@@ -95,6 +95,7 @@ class DcopPlayerHandler : public QObject, virtual public AmarokPlayerInterface
       virtual void setRating( int rating );
       virtual void setRatingByPath( const QString &url, int rating );
       virtual void setVolume( int );
+      virtual void setVolumeRelative( int );
       virtual void showBrowser( QString browser );
       virtual void showOSD();
       virtual void stop();

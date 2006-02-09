@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.4:
   FEATURES:
+    * New DCOP call "player: setVolumeRelative(int ticks)".
     * Added a time-filter to the CollectionBrowser. Now you can make it
       show only those tracks, which have been added to your collection
       within the last day, week, month or year.

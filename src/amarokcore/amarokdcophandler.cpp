@@ -420,6 +420,11 @@ namespace amaroK
         EngineController::instance()->setVolume(volume);
     }
 
+    void DcopPlayerHandler::setVolumeRelative(int ticks)
+    {
+        EngineController::instance()->increaseVolume(ticks);
+    }
+
     void DcopPlayerHandler::showBrowser( QString browser )
     {
         if ( browser == "context" )

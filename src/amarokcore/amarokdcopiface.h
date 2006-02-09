@@ -99,6 +99,7 @@ k_dcop:
    virtual void setRating( int rating ) = 0;                ///< Set the rating of the currently playing track.
    virtual void setRatingByPath( const QString &url, int rating ) = 0;  ///< Set the rating of a track by it's path.
    virtual void setVolume(int volume) = 0;                  ///< Set volume in range 0-100%.
+   virtual void setVolumeRelative(int ticks) = 0;           ///< Set volume relatively by ticks. Can be positive or negative.
    virtual void showBrowser( QString browser ) = 0;   ///<Shows browsers in the playlist window.
    virtual void showOSD() = 0;                              ///< Show the OSD display on the screen.
    virtual void stop() = 0;                                 ///< Equivalent to pressing "Stop" button.
