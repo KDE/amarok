@@ -1499,8 +1499,10 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
 {
     QStringList folders = AmarokConfig::collectionFolders();
 
-    OrganizeCollectionDialog dialog( m_parent, 0 );
-    dialog.setCaption( caption );
+    KDialogBase base( m_parent, "OrganizeFiles", true, caption, KDialogBase::Ok|KDialogBase::Cancel );
+    QVBox* page = base.makeVBoxMainWidget();
+
+    OrganizeCollectionDialog dialog( page );
     dialog.folderCombo->insertStringList( folders, 0 );
     dialog.folderCombo->setCurrentItem( AmarokConfig::organizeDirectory() );
     dialog.overwriteCheck->setChecked( AmarokConfig::overwriteFiles() );
@@ -1519,7 +1521,9 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
         dialog.update( 0 );
     }
 
-    if( dialog.exec() == QDialog::Accepted )
+    base.setInitialSize( QSize( 450, 350 ) );
+
+    if( base.exec() == KDialogBase::Accepted )
     {
         AmarokConfig::setOrganizeDirectory( dialog.folderCombo->currentItem() );
         AmarokConfig::setOverwriteFiles( dialog.overwriteCheck->isChecked() );
@@ -2401,7 +2405,7 @@ uint CollectionView::translateTimeFilter( uint filterMode )
             // added within three months
             filterSecs = 60 * 60 * 24 * 91;
             break;
-	    
+
         case 3:
             // added within one month
             filterSecs = 60 * 60 * 24 * 30;

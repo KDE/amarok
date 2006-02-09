@@ -5,13 +5,6 @@
 
 
 
-void OrganizeCollectionDialog::init()
-{
-    connect( okButton, SIGNAL(clicked()), SLOT(accept()) );
-    connect( cancelButton, SIGNAL(clicked()), SLOT(reject()) );
-}
-
-
 QString OrganizeCollectionDialog::buildDestination( const QString &format, const MetaBundle &mb )
 {
     bool isCompilation = false;
