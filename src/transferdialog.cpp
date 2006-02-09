@@ -34,6 +34,7 @@ TransferDialog::TransferDialog( MediaDevice * mdev )
         : KDialogBase( amaroK::mainWindow(), "transferdialog", true, QString::null, Ok|Cancel, Ok )
 {
     m_accepted = false;
+    m_sort1LastIndex = m_sort2LastIndex = -1;
 
     kapp->setTopWidget( this );
     setCaption( kapp->makeStdCaption( i18n( "Transfer Queue to Device" ) ) );
@@ -43,84 +44,52 @@ TransferDialog::TransferDialog( MediaDevice * mdev )
 
     QString transferDir = mdev->getTransferDir();
 
-    new QLabel( i18n( "Enter the directory to use as the transfer operation's root directory.\n"
+    /*new QLabel( i18n( "Enter the directory to use as the transfer operation's root directory.\n"
                                        "%1 will be prepended automatically.\n"
                                        "If the directory does not exist, it will be created.\n" )
                     .arg( transferDir ), vbox );
 
     KLineEdit *directoryBox = NULL;
     directoryBox = new KLineEdit( QString::null, vbox, "transferdir_lineedit" );
-
-    KComboBox *sort1, *sort2, *sort3 = NULL;
-
-    new QLabel( i18n( "You can have your music automatically grouped in a variety of ways.\n"
-                      "Each grouping will create directories based upon the specified criteria.\n" ), vbox );
-
-    new QLabel( i18n( "Select first grouping:\n" ), vbox );
-    sort1 = new KComboBox( vbox );
-    new QLabel( i18n( "Select second grouping:\n" ), vbox );
-    sort2 = new KComboBox( vbox );
-    new QLabel( i18n( "Select third grouping:\n" ), vbox ); 
-    sort3 = new KComboBox( vbox );
-
-    /*
-    MediumMap mmap = DeviceManager::instance()->getMediumMap();
-    MediumMap::Iterator it;
-
-    m_sigmap = new QSignalMapper( this );
-
-    QHBox* hbox;
-    QString* currtext;
-    QLabel* currlabel;
-    KComboBox* currcombo;
-    KPushButton* currbutton;
-    int buttonnum = 0;
-
-    KTrader::OfferList offers = PluginManager::query( "[X-KDE-amaroK-plugintype] == 'mediadevice'" );
-    KTrader::OfferList::ConstIterator end( offers.end() );
-    KTrader::OfferList::ConstIterator plugit;
-
-    KConfig *config = amaroK::config( "MediaBrowser" );
-
-    for ( it = mmap.begin(); it != mmap.end(); it++ )
-    {
-        hbox = new QHBox( vbox );
-
-        if ( config->readEntry( (*it)->id() ).isEmpty() )
-            new QLabel( i18n("  (NEW!)  Device Name: "), hbox );
-        else
-            new QLabel( i18n("          Device Name: "), hbox );
-
-        currtext = new QString( (*it)->name() );
-        currlabel = new QLabel( *currtext, hbox );
-
-        currbutton = new KPushButton( i18n("(Detail)"), hbox );
-        m_bmap[buttonnum] = (*it);
-        m_sigmap->setMapping( currbutton, buttonnum );
-        buttonnum++;
-        connect(currbutton, SIGNAL( clicked() ), m_sigmap, SLOT( map() ) );
-
-        new QLabel( i18n(", Plugin Selected:  "), hbox );
-        currcombo = new KComboBox( false, hbox, currtext->latin1() );
-        currcombo->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred ) );
-        currcombo->insertItem( i18n( "Do not handle" ) );
-        for( plugit = offers.begin(); plugit != end; ++plugit ){
-            currcombo->insertItem( (*plugit)->name() );
-            if ( (*plugit)->property( "X-KDE-amaroK-name" ).toString() == config->readEntry( (*it)->id() ) )
-                currcombo->setCurrentItem( (*plugit)->name() );
-        }
-
-        m_cmap[(*it)] = currcombo;
-    }
-
-    if ( buttonnum == 0 ) {
-        new QLabel( i18n( "You do not have any devices that can be managed by amaroK."), vbox );
-        showButtonCancel( false );
-    }
-
-    connect( m_sigmap, SIGNAL( mapped( int ) ), this, SLOT( infoRequested ( int ) ) );
-    connect( this, SIGNAL( selectedPlugin( const Medium*, const QString ) ), MediaBrowser::instance(), SLOT( pluginSelected( const Medium*, const QString ) ) );
     */
+
+    new QLabel( i18n( "Your music will be transferred to\n%1" )
+                    .arg( transferDir ), vbox );
+
+
+    new QLabel( i18n( "You can have your music automatically grouped in\n"
+                      "a variety of ways. Each grouping will create\n"
+                      "directories based upon the specified criteria.\n"), vbox );
+
+    m_label1 = new QLabel( i18n( "Select first grouping:\n" ), vbox );
+    m_sort1 = new KComboBox( vbox );
+    m_label2 = new QLabel( i18n( "Select second grouping:\n" ), vbox );
+    m_sort2 = new KComboBox( vbox );
+    m_label3 = new QLabel( i18n( "Select third grouping:\n" ), vbox ); 
+    m_sort3 = new KComboBox( vbox );
+
+    m_label2->setDisabled(true);
+    m_sort2->setDisabled(true);
+    m_label3->setDisabled(true);
+    m_sort3->setDisabled(true);
+
+    m_combolist = new QPtrList<KComboBox>();
+    m_combolist->append( m_sort1 );
+    m_combolist->append( m_sort2 );
+    m_combolist->append( m_sort3 );
+
+    KComboBox * comboTemp;
+    for( comboTemp = m_combolist->first(); comboTemp; comboTemp = m_combolist->next() )
+    {
+        comboTemp->insertItem( "None" );
+        comboTemp->insertItem( "Artist" );
+        comboTemp->insertItem( "Album" );
+        comboTemp->insertItem( "Genre" );
+        comboTemp->setCurrentItem( 0 );
+    }
+
+    connect( m_sort1, SIGNAL(activated(int)), SLOT(sort1_activated(int)));
+    connect( m_sort2, SIGNAL(activated(int)), SLOT(sort2_activated(int)));
 
 }
 
@@ -138,5 +107,48 @@ TransferDialog::slotCancel()
     KDialogBase::slotCancel();
 }
 
+void
+TransferDialog::sort1_activated( int index )
+{
+    //sort3
+    if( m_sort2LastIndex > 0 )
+        m_sort3->insertItem( m_sort2->text( m_sort2LastIndex ), m_sort2LastIndex );
+    if( m_sort1LastIndex > 0 )
+        m_sort3->insertItem( m_sort1->text( m_sort1LastIndex ), m_sort1LastIndex );
+    if( index > 0 )
+        m_sort3->removeItem( index );
+    m_sort3->setCurrentItem( 0 );
+    m_sort3->setDisabled( true );
+    //sort2
+    if( m_sort1LastIndex > 0 )
+        m_sort2->insertItem( m_sort1->text( m_sort1LastIndex ), m_sort1LastIndex );
+    if( index > 0 )
+        m_sort2->removeItem( index );
+    m_sort2->setCurrentItem( 0 );
+    if( index == 0 )
+        m_sort2->setDisabled( true );
+    else
+        m_sort2->setDisabled( false );
+
+    m_sort2LastIndex = 0;
+    m_sort1LastIndex = index;
+}
+
+void
+TransferDialog::sort2_activated( int index )
+{
+    //sort3
+    if( m_sort2LastIndex > 0 )
+        m_sort3->insertItem( m_sort2->text( m_sort2LastIndex ), m_sort2LastIndex );
+    if( index > 0 )
+        m_sort3->removeItem( index );
+    m_sort3->setCurrentItem( 0 );
+    if( index == 0 )
+        m_sort3->setDisabled( true );
+    else
+        m_sort3->setDisabled( false );
+
+    m_sort2LastIndex = index;
+}
 
 #include "transferdialog.moc"

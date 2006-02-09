@@ -2065,9 +2065,13 @@ MediaBrowser::transferClicked()
             td->exec();
         }
         if( currentDevice()->deviceType() != "vfat-mediadevice" ||
-            ( currentDevice()->deviceType() == "vfat-mediadevice" &&
-              td->isAccepted() ) )
-           currentDevice()->transferFiles();
+          ( currentDevice()->deviceType() == "vfat-mediadevice" &&
+            td->isAccepted() ) )
+                currentDevice()->transferFiles();
+        else if( currentDevice()->deviceType() != "vfat-mediadevice" ||
+               ( currentDevice()->deviceType() == "vfat-mediadevice" &&
+                 !td->isAccepted() ) )
+                    m_transferButton->setEnabled( true );
     }
     currentDevice()->m_transferDir = QString::null;
 }

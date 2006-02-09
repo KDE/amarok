@@ -40,10 +40,20 @@ class TransferDialog : public KDialogBase
     private slots:
         void slotOk();
         void slotCancel();
+        void sort1_activated( int index );
+        void sort2_activated( int index );
 
     private:
-        bool    m_accepted;
-
+        bool                             m_accepted;
+        KComboBox                       *m_sort1;
+        KComboBox                       *m_sort2;
+        KComboBox                       *m_sort3;
+        QLabel                          *m_label1;
+        QLabel                          *m_label2;
+        QLabel                          *m_label3;
+        QPtrList<KComboBox>             *m_combolist;
+        int                              m_sort1LastIndex;
+        int                              m_sort2LastIndex;
 };
 
 #endif

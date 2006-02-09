@@ -114,7 +114,6 @@ VfatMediaDevice::VfatMediaDevice()
     , m_kBAvail( 0 )
 {
     m_name = "VFAT Device";
-    m_transferDir = "";
     m_dirLister = new KDirLister();
     m_dirLister->setNameFilter( "*.mp3 *.wav *.asf *.flac *.wma *.ogg" );
     m_dirLister->setAutoUpdate( false );
@@ -146,19 +145,15 @@ VfatMediaDevice::checkResult( int result, QString message )
 bool
 VfatMediaDevice::openDevice( bool /*silent*/ )
 {
-    DEBUG_BLOCK
-
     if ( !m_medium->mountPoint() )
     {
         amaroK::StatusBar::instance()->longMessage( i18n( "Devices handled by this plugin must be mounted first.\nPlease mount the device and click Connect again." ),
             KDE::StatusBar::Sorry );
         return false;
     }
-
     m_connected = true;
-
+    m_transferDir = m_medium->mountPoint();
     listDir( m_medium->mountPoint() );
-
     return true;
 }
 
