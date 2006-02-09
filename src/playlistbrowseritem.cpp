@@ -1321,7 +1321,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
     m_title = xml.namedItem( "title" ).toElement().text();
     setText( 0, m_title );
 
-    if( m_settings == 0 ) // podcastchannel is created, therefore m_settings doesn't exist yet
+    if( !m_updating ) // podcastchannel is created, therefore m_settings doesn't exist yet
         if( m_channelSettings.isNull() ) //no channelsettings found, create new PodcastSettings based on settings from parent
         {
             m_settings = new PodcastSettings(
