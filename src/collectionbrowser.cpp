@@ -1495,11 +1495,12 @@ CollectionView::deleteSelectedFiles() //SLOT
 }
 
 void
-CollectionView::organizeFiles( const KURL::List &urls, const QString &/*caption*/, bool copy )  //SLOT
+CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, bool copy )  //SLOT
 {
     QStringList folders = AmarokConfig::collectionFolders();
 
     OrganizeCollectionDialog dialog( m_parent, 0 );
+    dialog.setCaption( caption );
     dialog.folderCombo->insertStringList( folders, 0 );
     dialog.folderCombo->setCurrentItem( AmarokConfig::organizeDirectory() );
     dialog.overwriteCheck->setChecked( AmarokConfig::overwriteFiles() );
