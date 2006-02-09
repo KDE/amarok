@@ -1143,11 +1143,16 @@ MediaView::contentsDragEnterEvent( QDragEnterEvent *e )
 void
 MediaView::contentsDropEvent( QDropEvent *e )
 {
-    const QPoint p = contentsToViewport( e->pos() );
-    MediaItem *item = dynamic_cast<MediaItem *>(itemAt( p ));
-
     if(e->source() == viewport() || e->source() == this)
     {
+        const QPoint p = contentsToViewport( e->pos() );
+        MediaItem *item = dynamic_cast<MediaItem *>(itemAt( p ));
+        if( !item )
+        {
+            debug() << "something in MediaView which is not a MediaItem - this should not happen" << endl;
+            return;
+        }
+
         QPtrList<MediaItem> items;
 
         if( item->type() == MediaItem::PLAYLIST )
