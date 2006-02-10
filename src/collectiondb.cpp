@@ -1812,11 +1812,11 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
     KIO::Job *job = 0;
     if( copy )
     {
-        job = KIO::file_copy( srcURL, dstURL, -1, overwrite );
+        job = KIO::file_copy( srcURL, dstURL, -1, overwrite, false, false );
     }
     else
     {
-        job = KIO::file_move( srcURL, dstURL, -1, overwrite );
+        job = KIO::file_move( srcURL, dstURL, -1, overwrite, false, false );
     }
     connect( job, SIGNAL(result( KIO::Job * )), SLOT(fileOperationResult( KIO::Job * )) );
     m_waitForFileOperation = true;
