@@ -215,6 +215,11 @@ void PlaylistItem::filter( const QString &expression )
     setVisible( matchesExpression( expression, listView()->visibleColumns() ) );
 }
 
+bool PlaylistItem::isCurrent() const
+{
+    return this == listView()->currentTrack();
+}
+
 bool PlaylistItem::isQueued() const
 {
     return queuePosition() != -1;

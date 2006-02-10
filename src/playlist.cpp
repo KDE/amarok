@@ -3566,7 +3566,19 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     if( isCurrent ) {
        amaroK::actionCollection()->action( "pause" )->plug( &popup );
     }
-    if(itemCount == 1)
+
+    bool afterCurrent = false;
+    if( m_currentTrack )
+        for( MyIt it( m_currentTrack, MyIt::Visible ); *it; ++it )
+            if( *it == item )
+            {
+                afterCurrent = true;
+                break;
+            }
+
+    if( itemCount == 1 && ( item->isCurrent() || item->isQueued() || ( !AmarokConfig::randomMode() && afterCurrent )
+        || ( AmarokConfig::entireAlbums() && m_currentTrack && item->m_album == m_currentTrack->m_album &&
+            ( ( !item->track() && afterCurrent ) || item->track() > m_currentTrack->track() ) ) ) )
     {
         amaroK::actionCollection()->action( "stop_after" )->plug( &popup );
         popup.setItemChecked( STOP_DONE, m_stopAfterTrack == item );

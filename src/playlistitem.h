@@ -80,6 +80,8 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
 
         void filter( const QString &expression ); //makes visible depending on whether it matches
 
+        bool isCurrent() const;
+
         bool isQueued() const;
         int queuePosition() const;
 
