@@ -15,7 +15,6 @@
 #define DEBUG_PREFIX "Playlist"
 
 #include "amarok.h"
-#include "amarokconfig.h"
 #include "debug.h"
 #include "collectiondb.h"
 #include "collectionbrowser.h"
@@ -25,6 +24,7 @@
 #include "k3bexporter.h"
 #include "metabundle.h"
 #include "osd.h"
+#include "playlist.h"
 #include "playlistitem.h"
 #include "playlistbrowser.h"
 #include "playlistbrowseritem.h" //for stream editor dialog
@@ -78,7 +78,6 @@ extern "C"
     #endif
 }
 
-#include "playlist.h"
 
 /**
  * Iterator class that only edits visible items! Preferentially always use
@@ -3825,10 +3824,11 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         break;
 
     case REPEAT:
+        // FIXME HACK Accessing AmarokConfig::Enum* yields compile errors with GCC 3.3.
         static_cast<KSelectAction*>( amaroK::actionCollection()->action( "repeat" ) )
             ->setCurrentItem( amaroK::repeatTrack()
-                              ? AmarokConfig::EnumRepeat::None
-                              : AmarokConfig::EnumRepeat::Track );
+                              ? 0 /*AmarokConfig::EnumRepeat::None*/
+                              : 1 /*AmarokConfig::EnumRepeat::Track*/ );
         break;
 
     default:
