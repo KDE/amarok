@@ -1033,8 +1033,8 @@ Playlist::playNextTrack( bool forceNext )
             {
                 for( ArtistAlbumMap::const_iterator it = m_albums.constBegin(), end = m_albums.constEnd(); it != end;   ++it )
                     for( AlbumMap::const_iterator it2 = (*it).constBegin(), end2 = (*it).constEnd(); it2 != end2; ++it2 )
-                        if( m_prevAlbums.findRef( &(*it2) ) == -1 )
-                            tracks.append( (*it2).tracks.getFirst() );
+                        if( m_prevAlbums.findRef( *it2 ) == -1 )
+                            tracks.append( (*it2)->tracks.getFirst() );
             }
             else
                 for( MyIt it( this ); *it; ++it )
@@ -1157,18 +1157,36 @@ Playlist::playNextTrack( bool forceNext )
             else //entireAlbums()
             {
                 bool b = false;
-                for( MyIt it( this, MyIt::Visible ); *it; ++it )
+                PlaylistItem* const begin = m_currentTrack ? m_currentTrack->m_album->tracks.getFirst()
+                                                           : (*MyIt( this, MyIt::Visible ) );
+                PlaylistItem *pi = 0;
+                for( MyIt it( begin, MyIt::Visible ); *it; ++it )
                 {
                     for( int i = 0, n = tracks.count(); i < n; ++i )
                         if( tracks.at( i ) == *it )
                         {
-                            item = *it;
+                            pi = *it;
                             b = true;
                             break;
                         }
                     if( b )
                         break;
                 }
+                if( !pi && m_currentTrack ) //hate copy-pasting code like this. meh.
+                    for( MyIt it( this, MyIt::Visible ); *it && ( *it != begin ); ++it )
+                    {
+                        for( int i = 0, n = tracks.count(); i < n; ++i )
+                            if( tracks.at( i ) == *it )
+                            {
+                                pi = *it;
+                                b = true;
+                                break;
+                            }
+                        if( b )
+                            break;
+                    }
+                if( pi )
+                    item = pi;
             }
         }
         else if( item )

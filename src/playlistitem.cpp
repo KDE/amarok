@@ -961,7 +961,9 @@ void PlaylistItem::refAlbum()
 {
     if( AmarokConfig::entireAlbums() )
     {
-        m_album = &listView()->m_albums[artist()][album()];
+        if( listView()->m_albums[artist()].find( album() ) == listView()->m_albums[artist()].end() )
+            listView()->m_albums[artist()][album()] = new PlaylistAlbum;
+        m_album = listView()->m_albums[artist()][album()];
         m_album->refcount++;
     }
 }
@@ -977,6 +979,7 @@ void PlaylistItem::derefAlbum()
             listView()->m_albums[artist()].remove( album() );
             if( listView()->m_albums[artist()].isEmpty() )
                 listView()->m_albums.remove( artist() );
+            delete m_album;
         }
     }
 }

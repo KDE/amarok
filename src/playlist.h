@@ -292,7 +292,7 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void viewportPaintEvent( QPaintEvent* );
         void viewportResizeEvent( QResizeEvent* );
 
-        typedef QMap<MyAtomicString, PlaylistAlbum> AlbumMap;
+        typedef QMap<MyAtomicString, PlaylistAlbum*> AlbumMap;
         typedef QMap<MyAtomicString, AlbumMap> ArtistAlbumMap;
         ArtistAlbumMap m_albums;
         uint m_startupTime_t; //QDateTime::currentDateTime().toTime_t as of startup
