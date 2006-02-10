@@ -9,9 +9,19 @@ VERSION 1.4:
       Alberto Griggio <alberto.griggio@gmail.com>. (BR 121647)
     * The Helix engine now supports direct alsa playback using Realplayer 10.
     * New DCOP call "player: setVolumeRelative(int ticks)".
+    * Options for Random Mode to favor tracks with a higher rating, score, or
+      ones less recently played.
+    * Support for playing entire albums. This works just like normal, except
+      when choosing the next track, it'll go to the next track from the album
+      it finds in the playlist, or the first track of another album otherwise.
+    * Support for plain VFAT devices in the Media Device browser.
+    * You can now mousewheel over a track's queue label to change its position
+      in the queue.
     * Added a time-filter to the CollectionBrowser. Now you can make it show
       only those tracks, which have been added to your collection within the
       last day, week, month or year.
+    * Fit to Width for the playlist columns is now optional (accessible in the
+      context menu for the column headers).
     * On-the-fly transcoding when transferring to media devices, provided
       that an appropriate transcoding script is running.
     * Handle compilations as such on iPods.
@@ -20,17 +30,25 @@ VERSION 1.4:
     * Lyrics support is now scriptable. This allows to add support for any
       lyrics site, and makes it possible to provide upgrades. (BR 94437)
     * New DCOP call "contextbrowser: showLyrics(string)".
+    * New 'File Size' column in the playlist.
     * Amarok now supports ASX playlist files. (BR 114051)
     * New DCOP call "collection: isDirInCollection(const QString& path )".
     * New DCOP call "playlist: removeByIndex(int)". (BR 119143)
-    * Handle compilations properly when using the 'Organise Music' feature.
-    * For mp3 and ogg vorbis, it's possible to use Disc Number and Composer
-      tags. (BR 110675) (BR 90503)
+    * For mp3, aac/mp4, and ogg vorbis, it's possible to use Disc Number and
+      Composer tags. (BR 110675) (BR 90503)
     * For xine-lib 1.1.1 and greater, xine engine has gapless playback. amaroK
       is now "The Wall" compatible. (BR 77766)
     * Option for selecting external web browser in amaroK. No longer requires
       KDE-Base. (BR 106015)
+    * Press Enter in the Collection Browser filter to send all the visible
+      tracks to the playlist.
+    * Hold Ctrl while pressing Enter in the playlist's filter to apply to all
+      visible items instead of just the first, and Shift to only queue and not
+      play them.
+    * Tags can be edited inline in the playlist by clicking twice, but slower
+      than a double click.
     * Switchable Wikipedia locale. (BR 104383)
+    * Initial port of GStreamer engine to GStreamer 0.10.
     * Drag albums and compilations from context browser to media device and
       playlist browser.
     * Browse your collection and other related artists with context browser.
@@ -38,11 +56,19 @@ VERSION 1.4:
     * Show extended podcast info on iPod.
     * Optionally update playcount for items played on iPod and submit them
       to last.fm and synchronize ratings between amaroK and iPod.
+    * Tracks can now be rated from 1-5 stars manually, in addition to the score
+      which amaroK calculates automatically based on your listening habits. You
+      can use the 'Rating' column and Win+1..5 to change the rating.
     * Ability to copy items from iPod and from filebrowser to collection.
+    * New 'Last Played' column in the playlist, showing when the track was last
+      played. (Like in the Context Browser.)
+    * Browsers can be now accessed with keyboard shortcuts, Ctrl+1..5.
+      Also Ctrl+0 to close the current one, and Ctrl+Tab to switch the focus
+      between the playlist and the active browser.
     * Downloaded podcast episodes can be deleted from the context menu.
     * New DCOP call "player: osdEnabled".
     * Add contents of smart amaroK playlists as playlist to media device.
-    * Mediabrowser support for the iRiver ifp series!
+    * Mediabrowser support for the iRiver iFP series!
     * New dcop call playlistbrowser loadPlaylist. (BR 110082)
     * New Edit Track Information dialog. Lyrics can be edited there, comments
       can have more than one line, some statistics and tag guessing from
@@ -63,26 +89,55 @@ VERSION 1.4:
     * Moodbar!
     * configure: report not included extra features (BR 115057)
     * Ability to uninstall context-browser themes. (BR 111449)
+    * More columns available in the Flat View of the Collection Browser.
     * New Collection Scanner, running in an external process. No longer can
       amaroK crash while scanning the Collection :)
     * Statistics tool!
     * Dragging external playlists into the playlist browser will add them.
+    * NMM engine now has a configure dialog.
     * Collection scanner now supports WMA, MP4/AAC, and RealMedia (RA,RV,RM).
+    * You can now Organize Music from the Collection Browser, to move and
+      rename files to a logical place in your collection folders based on their
+      tags.
     * Option to crossfade only on manual track changes. Useful for listening
       to consecutive tracks on a single album.
 
   CHANGES:
+    * Dynamic Mode is now stateless, meaning there's no Dynamic Mode any more,
+      only loading and unloading of Dynamic Playlists. There's also now a nice
+      info bar above the playlist when a Dynamic Playlist is loaded.
+    * The major huge context menu used for hiding/showing columns in the
+      playlist has been replaced with a shorter one and a nice dialog.
+    * Elapsed time / length in the systray tooltip now updates in real time as
+      the song progresses.
+    * Tooltips in the playlist for truncated text are now shown directly above
+      the text, giving the effect of it being expanded to its full length.
+    * The option for restarting scripts automatically at startup is removed, as
+      it is now the default behaviour.
+    * Reduced memory usage for large playlists to under 30% of pre-1.4 versions.
+      (Measured as the difference in memory usage between an empty playlist and
+      loading the 'All Collection' smart playlist.)
     * Import iTunes album art from directories.
+    * Media Devices (Apple iPod, iRiver iFP, ...) are now handled with plugins.
+    * New default image for albums with no cover art.
+    * When tabbing between cells while editing tags in the playlist, autosave
+      the contents of the previous tag you edited, so you don't have to
+      constantly go in and out of editing mode to edit lots of tags.
+    * When saving playlists, if there's already one with the same name, instead
+      of complaining about it, smartly append (2), (3), etc. to the end.
+    * 'Stop Playing After Track' now has a shortcut (Ctrl+Alt+V), and a global
+      shortcut for the currently playing track (Ctrl+Win+V).
+    * Various keyboard usability and focus tweaks so using amaroK with the
+      keyboard is nicer.
     * Upgraded internal SQLite database library to version 3.2.7.
-    * Lyrics are cached on the database as plain text.
     * Recoding mp3 tags has been removed due to many unjustified
       complications.
     * Viewing track information of remote media will show the url.
     * "Update"-button is now hidden in the collection browser if "Watch
       folders for changes" is enabled in the options.
-    * The tooltip and the menu from the queue icon in the statusbar now show
+    * Playlist Browser now remembers which entries were open across startups.
+    * The tooltip and the menu from the queue icon in the statusbar now shows
       the total length of the queued tracks.
-    * Reduced memory usage for large playlists.
     * The Home tab has been merged into the Current tab, now called Music.
     * New look for the current track marker in the playlist. Pimp my roK!
     * When turning either random or dynamic mode on, turn the other off,
