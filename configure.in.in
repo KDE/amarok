@@ -76,9 +76,7 @@ AC_SUBST(taglib_libs)
 AC_PATH_PROG(RUBY, ruby, no)
 
 if test "x$RUBY" = "xno" ; then
-    amarok_error_noruby=yes
-    DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
-    no_amarok=yes
+    amarok_warning_noruby=yes
 fi
 
 ###############################################################################

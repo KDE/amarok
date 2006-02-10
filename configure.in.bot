@@ -19,19 +19,21 @@ if test x$amarok_error_taglibold = xyes; then
     echo " ===  amaroK - ERROR  =========================================================="
     echo " ========================"
     echo " ="
-    echo " = amaroK cannot be built because your TagLib version is too old. Please"
-    echo " = obtain the version $TAGLIB_REQ_VERSION from: http://ktown.kde.org/~wheeler/taglib/"
+    echo " = amaroK cannot be built because your TagLib version is too old. Please obtain"
+    echo " = the version $TAGLIB_REQ_VERSION from:"
+    echo " = http://ktown.kde.org/~wheeler/taglib/"
     echo " ="
 fi
 
-if test x$amarok_error_noruby = xyes; then
+if test x$amarok_warning_noruby = xyes; then
     echo " =========================="
-    echo " ===  amaroK - ERROR  =========================================================="
+    echo " ===  amaroK - WARNING  ========================================================"
     echo " =========================="
     echo " ="
-    echo " = amaroK cannot be built because Ruby is not installed. Please obtain Ruby"
-    echo " = (version 1.8 or later) from http://ruby-lang.org, or install a distribution"
-    echo " = package."
+    echo " = The Ruby programming language is not installed. This means that the lyrics"
+    echo " = download feature will not work. Please obtain Ruby (version 1.8 or later)"
+    echo " = from http://ruby-lang.org, or install a distribution package. You may install"
+    echo " = Ruby at a later time, when amaroK is already installed."
     echo " ="
 fi
 
