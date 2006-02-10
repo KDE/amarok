@@ -2053,6 +2053,7 @@ Playlist::clear() //SLOT
 
     emit aboutToClear(); //will saveUndoState()
 
+    static_cast<KToggleAction*>(amaroK::actionCollection()->action( "playlist_shuffle" ))->setEnabled( true );
     static_cast<KToggleAction*>(amaroK::actionCollection()->action( "dynamic_mode" ))->setChecked( false );
 
     setCurrentTrack( 0 );
