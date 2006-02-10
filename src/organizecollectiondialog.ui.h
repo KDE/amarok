@@ -19,14 +19,14 @@ QString OrganizeCollectionDialog::buildDestination( const QString &format, const
     if( isCompilation )
         artist = i18n( "Various Artists" );
     args["theartist"] = cleanPath( artist );
-    if( ignoreTheCheck->isChecked() && artist.startsWith( "the ", false ) )
+    if( ignoreTheCheck->isChecked() && artist.startsWith( "The " ) )
         CollectionView::instance()->manipulateThe( artist, true );
     artist = cleanPath( artist );
-    args["artist"] = artist;
     for( int i = 0; i < MetaBundle::NUM_COLUMNS; i++ )
     {
         args[mb.exactColumnName( i ).lower()] = cleanPath( mb.prettyText( i ) );
     }
+    args["artist"] = artist;
     args["folder"] = folderCombo->currentText();
     args["initial"] = artist.mid( 0, 1 ).upper();
     args["filetype"] = mb.url().path().section( ".", -1 ).lower();
