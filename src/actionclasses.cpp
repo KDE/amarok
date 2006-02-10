@@ -457,13 +457,14 @@ RandomAction::RandomAction( KActionCollection *ac ) :
 {
     KToggleAction::setChecked( AmarokConfig::randomMode() );
     setIcon( "random" );
+    setEnabled( !AmarokConfig::dynamicMode() );
 }
 
 void
 RandomAction::setChecked( bool b )
 {
-    if( b )
-        static_cast<KToggleAction*>( actionCollection()->action( "dynamic_mode" ) )->setChecked( false );
+    if( KAction *a = actionCollection()->action( "favor_tracks" ) )
+        a->setEnabled( b );
     ToggleAction::setChecked( b );
 }
 
@@ -502,6 +503,7 @@ FavorAction::FavorAction( KActionCollection *ac ) :
 
     setCurrentItem( AmarokConfig::favorTracks() );
     popupMenu()->insertSeparator( 1 );
+    setEnabled( AmarokConfig::randomMode() );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -544,8 +546,8 @@ DynamicAction::DynamicAction( KActionCollection *ac ) :
 void
 DynamicAction::setChecked( bool b )
 {
-    if( b )
-        static_cast<KToggleAction*>( actionCollection()->action( "random_mode" ) )->setChecked( false );
+    if( KAction *a = actionCollection()->action( "random_mode" ) )
+        a->setEnabled( b );
     ToggleAction::setChecked( b );
 }
 
