@@ -200,7 +200,7 @@ QSize amaroK::ToolTip::sizeHint() const
         return s_rect.size();
     else
     {
-        QSimpleRichText text( s_text, QToolTip::font() );
+        QSimpleRichText text( s_text, QToolTip::parentWidget()->font() );
         text.setWidth( 500 ); //is this reasonable?
         return QSize( text.widthUsed() - 2, text.height() );
     }
