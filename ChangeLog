@@ -45,8 +45,8 @@ VERSION 1.4:
     * Hold Ctrl while pressing Enter in the playlist's filter to apply to all
       visible items instead of just the first, and Shift to only queue and not
       play them.
-    * Tags can be edited inline in the playlist by clicking twice, but slower
-      than a double click.
+    * Tags can be edited inline in the playlist by clicking on a single selected
+      item.
     * Switchable Wikipedia locale. (BR 104383)
     * Initial port of GStreamer engine to GStreamer 0.10.
     * Drag albums and compilations from context browser to media device and
