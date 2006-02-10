@@ -1101,30 +1101,6 @@ void HelixSimplePlayer::openAudioDevice()
                print2stderr("Could not find a usable mixer element\n", snd_strerror(err));
                err = -1;
             }
-
-//////////////// **** temporary               
-
-            elem = snd_mixer_first_elem(m_pAlsaMixerHandle);
-            elem_name = NULL;
-            while (elem)
-            {
-               type = snd_mixer_elem_get_type(elem);
-               if (type == SND_MIXER_ELEM_SIMPLE)
-               {
-                  snd_mixer_selem_get_id(elem, sid);
-                  
-                  /* We're only interested in playback volume controls */
-                  if(snd_mixer_selem_has_playback_volume(elem) && !snd_mixer_selem_has_common_volume(elem) )
-                  {
-                     elem_name = snd_mixer_selem_id_get_name(sid);
-                     print2stderr("MIXER ELEMENTS: <%s>\n", elem_name);
-                  }
-               }
-               
-               elem = snd_mixer_elem_next(elem);
-            }
-
-/////////////// *******
          }
 
          

@@ -64,6 +64,7 @@ public:
 private slots:
    void slotNewDevice( const QString& );
    void slotStringChanged( const QString& );
+   void slotDeviceChecked( bool );
 
 private:
    KComboBox* deviceComboBox;

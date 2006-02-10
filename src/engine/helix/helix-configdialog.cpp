@@ -137,6 +137,8 @@ HelixSoundDevice::HelixSoundDevice( QWidget *parent,
     connect( (QWidget *) lineEdit_outputDevice, SIGNAL( textChanged( const QString& )), pluginConfig, SIGNAL(viewChanged()) );
     connect( checkBox_outputDevice, SIGNAL( toggled(bool) ), lineEdit_outputDevice, SLOT( setEnabled(bool) ) );
     connect( checkBox_outputDevice, SIGNAL( toggled(bool) ), pluginConfig, SIGNAL(viewChanged()) );
+
+    connect( checkBox_outputDevice, SIGNAL( toggled(bool) ), this, SLOT( slotDeviceChecked(bool) ) );
     grid->addWidget( (QWidget *) lineEdit_outputDevice, row, 1 );
 
     if (HelixConfig::deviceenabled())
@@ -181,6 +183,18 @@ HelixSoundDevice::slotNewDevice( const QString &dev )
 void 
 HelixSoundDevice::slotStringChanged( const QString& )
 {
+   m_changed = true;
+}
+
+void 
+HelixSoundDevice::slotDeviceChecked( bool checked )
+{
+   debug() << "IN SLOTDEVICEENABLED\n";
+   checkBox_outputDevice->setChecked( checked );
+   if (checked)
+      lineEdit_outputDevice->setEnabled( true );      
+   else
+      lineEdit_outputDevice->setEnabled( false );
    m_changed = true;
 }
 
