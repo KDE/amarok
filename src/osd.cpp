@@ -462,7 +462,7 @@ void
 amaroK::OSD::show( const MetaBundle &bundle ) //slot
 {
     QString text = "";
-    if( MetaBundle() == bundle )
+    if( bundle.url().isEmpty() )
         text = i18n( "No track playing" );
 
     else
@@ -523,7 +523,7 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
             args["rating"] = QString().fill( '*', rating );
             args["playcount"] =  QString::number( CollectionDB::instance() ->getPlayCount( bundle.url().path() ) );
             args["lastplayed"] = amaroK::verboseTimeSince(
-                    CollectionDB::instance()->getLastPlay( bundle.url().path() ).toTime_t() ); 
+                    CollectionDB::instance()->getLastPlay( bundle.url().path() ).toTime_t() );
             if( bundle.length() <= 0 )
                 args["length"] = QString::null;
             args["filesize"] = QString::number( bundle.filesize() );
