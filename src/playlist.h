@@ -32,8 +32,9 @@
 #include <klistview.h>       //baseclass
 #include <kurl.h>            //KURL::List
 #include <qdir.h>            //stack allocated
-#include <qstringlist.h>     //stack allocated
+#include <qpoint.h>          //stack allocated
 #include <qptrlist.h>        //stack allocated
+#include <qstringlist.h>     //stack allocated
 #include <vector>            //stack allocated
 
 class KAction;
@@ -349,6 +350,7 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         int            m_renameColumn;
         QTimer        *m_clicktimer;
         QListViewItem *m_itemToRename;
+        QPoint         m_clickPos;
         int            m_columnToRename;
 
         QMap<QString, QStringList> m_customSubmenuItem;

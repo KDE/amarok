@@ -2666,6 +2666,7 @@ Playlist::eventFilter( QObject *o, QEvent *e )
     // trigger in-place tag editing
     else if( o == viewport() && e->type() == QEvent::MouseButtonPress && me->button() == LeftButton )
     {
+        m_clicktimer->stop();
         m_itemToRename = 0;
         int col = header()->sectionAt( viewportToContents( me->pos() ).x() );
         if( col != PlaylistItem::Rating )
@@ -2677,6 +2678,7 @@ Playlist::eventFilter( QObject *o, QEvent *e )
                 && (me->state() & ~LeftButton) == 0;
             if( edit )
             {
+                m_clickPos = me->pos();
                 m_itemToRename = item;
                 m_columnToRename = col;
                 //return true;
@@ -2690,7 +2692,7 @@ Playlist::eventFilter( QObject *o, QEvent *e )
         if( col != PlaylistItem::Rating )
         {
             PlaylistItem *item = static_cast<PlaylistItem*>( itemAt( me->pos() ) );
-            if( item == m_itemToRename )
+            if( item == m_itemToRename && me->pos() == m_clickPos )
             {
                 m_clicktimer->start( int( QApplication::doubleClickInterval() ), true );
                 return true;
@@ -2705,6 +2707,7 @@ Playlist::eventFilter( QObject *o, QEvent *e )
     // avoid in-place tag editing upon double-clicks
     else if( e->type() == QEvent::MouseButtonDblClick && me->button() == Qt::LeftButton )
     {
+        m_itemToRename = 0;
         m_clicktimer->stop();
     }
 
