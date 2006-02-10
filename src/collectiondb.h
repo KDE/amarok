@@ -22,6 +22,7 @@
 #include <qptrvector.h>
 #include <qthread.h>
 
+namespace KIO { class Job; }
 
 class DbConnection;
 class CoverFetcher;
@@ -348,6 +349,7 @@ class CollectionDB : public QObject, public EngineObserver
         void dirDirty( const QString& path );
         void coverFetcherResult( CoverFetcher* );
         void similarArtistsFetched( const QString& artist, const QStringList& suggestions );
+        void fileOperationResult( KIO::Job *job ); // moveFile depends on it
 
     private:
         //bump DATABASE_VERSION whenever changes to the table structure are made.
@@ -405,6 +407,10 @@ class CollectionDB : public QObject, public EngineObserver
         static QMap<QThread *, DbConnection *> *threadConnections;
         DbConnection::DbConnectionType m_dbConnType;
         DbConfig *m_dbConfig;
+
+        //organize files stuff
+        bool m_waitForFileOperation;
+        bool m_fileOperationFailed;
 };
 
 

@@ -45,6 +45,7 @@
 #include <kmdcodec.h>
 #include <kstandarddirs.h>
 #include <kurl.h>
+#include <kio/job.h>
 #include <kio/netaccess.h>
 
 #include <cmath>                 //DbConnection::sqlite_power()
@@ -1745,6 +1746,22 @@ CollectionDB::migrateFile( const QString &oldURL, const QString &newURL )
         .arg( escapeString( oldURL ) ) );
 }
 
+void
+CollectionDB::fileOperationResult( KIO::Job *job ) // slot
+{
+    if(job->error())
+    {
+        m_fileOperationFailed = true;
+        debug() << "file operation failed: " << job->errorText() << endl;
+    }
+    else
+    {
+        m_fileOperationFailed = false;
+    }
+
+    m_waitForFileOperation = false;
+}
+
 bool
 CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite, bool copy )
 {
@@ -1775,10 +1792,29 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
             debug() << "Unable to create directory " << dir.path() << endl;
         }
 
+    m_waitForFileOperation = false;
+
+    KIO::Job *job = 0;
     if( copy )
     {
-        // Copy the file and dirty destination directory
-        if ( KIO::NetAccess::file_copy( srcURL, dstURL, -1, overwrite ) ){
+        job = KIO::file_copy( srcURL, dstURL, -1, overwrite );
+    }
+    else
+    {
+        job = KIO::file_move( srcURL, dstURL, -1, overwrite );
+    }
+    connect( job, SIGNAL(result( KIO::Job * )), SLOT(fileOperationResult( KIO::Job * )) );
+    m_waitForFileOperation = true;
+    while( m_waitForFileOperation )
+    {
+        usleep( 10000 );
+        kapp->processEvents( 100 );
+    }
+
+    if( !m_fileOperationFailed )
+    {
+        if( copy )
+        {
             MetaBundle bundle( dstURL );
             if( bundle.isValidMedia() )
             {
@@ -1786,11 +1822,8 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
                 return true;
             }
         }
-    }
-    else
-    {
-        // Move the file and update DB
-        if ( KIO::NetAccess::file_move( srcURL, dstURL, -1, overwrite ) ){
+        else
+        {
             if( isFileInCollection( srcURL.url() ) )
             {
                 migrateFile( src, dest );

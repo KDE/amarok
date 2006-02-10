@@ -1544,6 +1544,9 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
         KURL::List skipped;
 
         CollectionDB::instance()->createTables( true ); // create temp tables
+        amaroK::StatusBar::instance()->newProgressOperation( this )
+            .setDescription( caption )
+            .setTotalSteps( urls.count() );
         KURL::List::ConstIterator it = urls.begin();
         for( ; it != urls.end(); ++it )
         {
@@ -1551,7 +1554,6 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
 
             //Building destination here.
             MetaBundle mb( src );
-
             QString dest = dialog.buildDestination( dialog.buildFormatString(), mb );
 
             debug() << "Destination: " << dest << endl;
@@ -1599,6 +1601,8 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
                 debug() << "removed: " << src.directory() << endl;
                 src = src.upURL();
             }
+
+            amaroK::StatusBar::instance()->incrementProgress( this );
         }
 
         CollectionDB::instance()->copyTempTables(); // copy temp table contents to permanent tables
@@ -1626,6 +1630,7 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
             amaroK::StatusBar::instance()->shortLongMessage( shortMsg, longMsg, KDE::StatusBar::Sorry );
         }
         QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
+        amaroK::StatusBar::instance()->endProgressOperation( this );
     }
 }
 
