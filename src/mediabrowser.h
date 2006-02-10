@@ -179,6 +179,9 @@ class MediaBrowser : public QVBox
         // return bundle for url if it is known to MediaBrowser
         const MetaBundle *getBundle( const KURL &url ) const;
 
+    protected slots:
+        void transferClicked();
+
     private slots:
         void slotSetFilterTimeout();
         void slotSetFilter();
@@ -188,7 +191,6 @@ class MediaBrowser : public QVBox
         void activateDevice( int index );
         void pluginSelected( const Medium *, const QString );
         void showPluginManager();
-        void transferClicked();
         void cancelClicked();
         void connectClicked();
         void disconnectClicked();
@@ -358,6 +360,29 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
          * @return the changed MediaItem
          */
         virtual MediaItem *tagsChanged( MediaItem *item, const MetaBundle &changed ) { Q_UNUSED(item); Q_UNUSED(changed); return 0; }
+
+        /**
+         * Indicate whether the device has a custom transfer dialog
+         * @return whether there is a custom dialog
+         */
+        virtual bool hasTransferDialog() { return false; }
+
+        /**
+         * Run the transfer dialog to be used when Transfer is clicked
+         */
+        virtual void runTransferDialog() {}
+
+        /**
+         * Get the transfer dialog, if any
+         * @return the transfer dialog, if any, else NULL;
+         */
+        virtual void *getTransferDialog() { return NULL; }
+
+        /**
+         * Can be used to explicitly indicate whether a device needs manual configuration
+         * @return whether manual configuration is needed
+         */
+        virtual bool needsManualConfig() { return true; }
 
         virtual void addConfigElements( QWidget * /*parent*/ ) {}
         virtual void removeConfigElements( QWidget * /*parent*/ ) {}

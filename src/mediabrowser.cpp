@@ -434,8 +434,6 @@ MediaBrowser::addDevice( MediaDevice *device )
 
     updateDevices();
 
-    if ( device->deviceType() == "vfat-mediadevice" )
-        connect( device, SIGNAL( startTransfer() ), SLOT( transferClicked() ) );
 }
 
 void
@@ -2057,26 +2055,22 @@ MediaBrowser::cancelClicked()
 void
 MediaBrowser::transferClicked()
 {
-    TransferDialog *td = NULL;
     m_transferButton->setEnabled( false );
     if( currentDevice()
             && currentDevice()->isConnected()
             && !currentDevice()->isTransferring() )
     {
-        if( currentDevice()->deviceType() == "vfat-mediadevice" )
+        if( !currentDevice()->hasTransferDialog() )
+            currentDevice()->transferFiles();
+        else
         {
-            debug() << "VFAT DEVICE TRANSFER" << endl;
-            td = new TransferDialog( currentDevice() );
-            td->exec();
-        }
-        if( currentDevice()->deviceType() != "vfat-mediadevice" ||
-          ( currentDevice()->deviceType() == "vfat-mediadevice" &&
-            td->isAccepted() ) )
+            currentDevice()->runTransferDialog();
+            //may not work with non-TransferDialog-class object, but maybe some run time introspection could solve it?
+            if( currentDevice()->getTransferDialog() && ( reinterpret_cast<TransferDialog *>(currentDevice()->getTransferDialog()))->isAccepted() )
                 currentDevice()->transferFiles();
-        else if( currentDevice()->deviceType() != "vfat-mediadevice" ||
-               ( currentDevice()->deviceType() == "vfat-mediadevice" &&
-                 !td->isAccepted() ) )
-                    m_transferButton->setEnabled( true );
+            else
+                updateButtons();
+        }
     }
     currentDevice()->m_transferDir = QString::null;
 }
@@ -2094,7 +2088,7 @@ MediaBrowser::connectClicked()
     haveToConfig |= !currentDevice();
     haveToConfig |= ( currentDevice() && !currentDevice()->isConnected() );
 
-    if ( currentDevice()->deviceType() == "vfat-mediadevice" )
+    if ( !currentDevice()->needsManualConfig() )
         haveToConfig = false;
 
     if( haveToConfig && *m_devices.at( 0 ) == currentDevice() )

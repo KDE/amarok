@@ -26,6 +26,7 @@ AMAROK_EXPORT_PLUGIN( VfatMediaDevice )
 #include "metabundle.h"
 #include "collectiondb.h"
 #include "statusbar/statusbar.h"
+#include "transferdialog.h"
 
 #include <kapplication.h>
 #include <kconfig.h>           //download saveLocation
@@ -114,6 +115,7 @@ VfatMediaDevice::VfatMediaDevice()
     , m_kBAvail( 0 )
 {
     m_name = "VFAT Device";
+    m_td = NULL;
     m_dirLister = new KDirLister();
     m_dirLister->setNameFilter( "*.mp3 *.wav *.asf *.flac *.wma *.ogg" );
     m_dirLister->setAutoUpdate( false );
@@ -164,6 +166,7 @@ VfatMediaDevice::openDevice( bool /*silent*/ )
     m_connected = true;
     m_transferDir = m_medium->mountPoint();
     listDir( m_medium->mountPoint() );
+    connect( this, SIGNAL( startTransfer() ), MediaBrowser::instance(), SLOT( transferClicked() ) );
     return true;
 }
 
@@ -178,6 +181,13 @@ VfatMediaDevice::closeDevice()  //SLOT
     }
 
     return true;
+}
+
+void
+VfatMediaDevice::runTransferDialog()
+{
+    m_td = new TransferDialog( this );
+    m_td->exec();
 }
 
 /// Renaming

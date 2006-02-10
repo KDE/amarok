@@ -19,6 +19,7 @@
 #define AMAROK_VFATMEDIADEVICE_H
 
 #include "../mediabrowser.h"
+#include "transferdialog.h"
 
 #include <kdirlister.h>
 #include <kurl.h>
@@ -39,6 +40,10 @@ class VfatMediaDevice : public MediaDevice
 
         bool              isConnected() { return m_connected; }
         void              rmbPressed( QListViewItem* qitem, const QPoint& point, int );
+        bool              hasTransferDialog() { return true; }
+        void              runTransferDialog();
+        TransferDialog   *getTransferDialog() { return m_td; }
+        bool              needsManualConfig() { return false; }
 
     protected:
         bool              openDevice( bool silent=false );
@@ -101,6 +106,8 @@ class VfatMediaDevice : public MediaDevice
 
         KDirLister        *m_dirLister;
         KIO::UDSEntry     m_udsentry;
+
+        TransferDialog    *m_td;
 };
 
 #endif /*AMAROK_VFATMEDIADEVICE_H*/
