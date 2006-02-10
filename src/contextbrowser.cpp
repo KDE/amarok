@@ -2139,7 +2139,8 @@ ContextBrowser::lyricsResult( const QString& xmldoc, bool cached ) //SLOT
         const QString site_url   = el.attribute( "site_url" );
 
         lyrics.prepend( "<font size='2'><b>" + title + "</b><br/><u>" + artist+ "</font></u></font><br/>" );
-        lyrics.append( "<br/><br/><i>" + i18n( "Powered by %1 (%2)" ).arg( site, site_url ) + "</i>" );
+        if ( !site.isEmpty() )
+            lyrics.append( "<br/><br/><i>" + i18n( "Powered by %1 (%2)" ).arg( site, site_url ) + "</i>" );
 
         if( !cached )
             CollectionDB::instance()->setLyrics( EngineController::instance()->bundle().url().path(), xmldoc );

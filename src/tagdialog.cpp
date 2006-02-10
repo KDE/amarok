@@ -20,6 +20,7 @@
 
 #include <taglib/tfile.h> //TagLib::File::isWritable
 
+#include <qdom.h>
 #include <qfile.h>
 #include <qlabel.h>
 #include <qpushbutton.h>
@@ -44,7 +45,6 @@ TagDialog::TagDialog( const KURL& url, QWidget* parent )
     : TagDialogBase( parent )
     , m_bundle( url )
     , m_score ( CollectionDB::instance()->getSongPercentage( url.path() ) )
-    , m_lyrics ( CollectionDB::instance()->getLyrics( url.path() ) )
     , m_playcount( CollectionDB::instance()->getPlayCount( url.path() ) )
     , m_firstPlay ( CollectionDB::instance()->getFirstPlay( url.path() ) )
     , m_lastPlay ( CollectionDB::instance()->getLastPlay( url.path() ) )
@@ -59,7 +59,6 @@ TagDialog::TagDialog( const KURL::List list, QWidget* parent )
     : TagDialogBase( parent )
     , m_bundle()
     , m_score ( 0 )
-    , m_lyrics ( QString::null )
     , m_firstPlay ( QDateTime() )
     , m_lastPlay ( QDateTime()  )
     , m_playlistItem( 0 )
@@ -75,7 +74,6 @@ TagDialog::TagDialog( const MetaBundle& mb, PlaylistItem* item, QWidget* parent 
     : TagDialogBase( parent )
     , m_bundle( mb )
     , m_score ( CollectionDB::instance()->getSongPercentage( mb.url().path() ) )
-    , m_lyrics ( CollectionDB::instance()->getLyrics( mb.url().path() ) )
     , m_playcount( CollectionDB::instance()->getPlayCount( mb.url().path() ) )
     , m_firstPlay ( CollectionDB::instance()->getFirstPlay( mb.url().path() ) )
     , m_lastPlay ( CollectionDB::instance()->getLastPlay( mb.url().path() ) )
@@ -463,7 +461,7 @@ void TagDialog::init()
             pushButton_previous->hide();
             pushButton_next->hide();
         }
-
+        loadLyrics( m_bundle.url() );
         readTags();
     }
 
@@ -857,8 +855,20 @@ TagDialog::storeTags( const KURL &kurl )
     }
     if( result & TagDialog::SCORECHANGED )
         storedScores.replace( url, kIntSpinBox_score->value() );
-    if( result & TagDialog::LYRICSCHANGED )
-        storedLyrics.replace( url, kTextEdit_lyrics->text() );
+    if( result & TagDialog::LYRICSCHANGED ) {
+        if ( kTextEdit_lyrics->text().isEmpty() )
+            storedLyrics.replace( url, QString::null );
+        else {
+            QDomDocument doc;
+            QDomElement e = doc.createElement( "lyrics" );
+            e.setAttribute( "artist", kComboBox_artist->currentText() );
+            e.setAttribute( "title", kLineEdit_title->text() );
+            QDomText t = doc.createTextNode( kTextEdit_lyrics->text() );
+            e.appendChild( t );
+            doc.appendChild( e );
+            storedLyrics.replace( url, doc.toString() );
+        }
+    }
 }
 
 void
@@ -874,11 +884,24 @@ TagDialog::loadTags( const KURL &url )
 {
     m_bundle = bundleForURL( url.path() );
     m_score = scoreForURL( url.path() );
-    m_lyrics = lyricsForURL(url.path() );
+
+    loadLyrics( url );
 
     m_playcount = CollectionDB::instance()->getPlayCount( url.path() );
     m_firstPlay = CollectionDB::instance()->getFirstPlay( url.path() );
     m_lastPlay = CollectionDB::instance()->getLastPlay( url.path() );
+}
+
+void
+TagDialog::loadLyrics( const KURL &url )
+{
+    QString xml = lyricsForURL(url.path() );
+
+    QDomDocument doc;
+    if( doc.setContent( xml ) )
+        m_lyrics = doc.documentElement().text();
+    else
+        m_lyrics = QString::null;
 }
 
 MetaBundle

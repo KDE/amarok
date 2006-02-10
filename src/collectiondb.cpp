@@ -2080,7 +2080,10 @@ CollectionDB::setLyrics( const QString &url, const QString &lyrics )
     QStringList values = query(QString("SELECT lyrics FROM lyrics WHERE url = '%1';").arg( escapeString( url ) ) );
     if(values.count() > 0)
     {
-        query( QString( "UPDATE lyrics SET lyrics = '%1' WHERE url = '%2';" ).arg( escapeString( lyrics ), escapeString( url ) ));
+        if ( !lyrics.isEmpty() )
+            query( QString( "UPDATE lyrics SET lyrics = '%1' WHERE url = '%2';" ).arg( escapeString( lyrics ), escapeString( url ) ));
+        else
+            query( QString( "DELETE FROM lyrics WHERE url = '%1';" ).arg( escapeString( url ) ));
     }
     else
     {

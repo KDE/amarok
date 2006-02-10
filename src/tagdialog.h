@@ -73,6 +73,7 @@ class TagDialog : public TagDialogBase
         void storeTags( const KURL& url );
         void storeTags( const KURL& url, MetaBundle &mb, int score );
         void loadTags( const KURL& url );
+        void loadLyrics( const KURL& url );
         MetaBundle bundleForURL( const KURL &url );
         int scoreForURL( const KURL &url );
         QString lyricsForURL( const KURL &url );
