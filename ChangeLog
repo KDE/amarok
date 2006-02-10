@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.4:
   FEATURES:
+    * The Helix engine now supports direct alsa playback using Realplayer 10.
     * New DCOP call "player: setVolumeRelative(int ticks)".
     * Added a time-filter to the CollectionBrowser. Now you can make it
       show only those tracks, which have been added to your collection
