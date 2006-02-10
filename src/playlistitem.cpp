@@ -631,7 +631,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
 
                 // Left part
                 if( column == listView()->m_firstColumn ) {
-                    QImage tmpImage = currentTrackLeft.smoothScale( 1000, height(), QImage::ScaleMin );
+                    QImage tmpImage = currentTrackLeft.smoothScale( 1, height(), QImage::ScaleMax );
                     KIconEffect::colorize( tmpImage, glowBase, colorize );
                     imageTransparency( tmpImage, intensity );
                     p.drawImage( 0, 0, tmpImage );
@@ -643,7 +643,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                 else
                 if( column == Playlist::instance()->mapToLogicalColumn( Playlist::instance()->numVisibleColumns() - 1 ) )
                 {
-                    QImage tmpImage = currentTrackRight.smoothScale( 1000, height(), QImage::ScaleMin );
+                    QImage tmpImage = currentTrackRight.smoothScale( 1, height(), QImage::ScaleMax );
                     KIconEffect::colorize( tmpImage, glowBase, colorize );
                     imageTransparency( tmpImage, intensity );
                     p.drawImage( width - tmpImage.width(), 0, tmpImage );
