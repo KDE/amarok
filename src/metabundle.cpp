@@ -9,6 +9,7 @@
 #include "debug.h"
 #include "collectiondb.h"
 #include <kfilemetainfo.h>
+#include <kio/global.h>
 #include <kmimetype.h>
 #include <qdom.h>
 #include <qfile.h> //decodePath()
@@ -510,7 +511,7 @@ QString MetaBundle::prettyText( int column ) const
         case Rating:     text = rating() ? QString::number( rating() ) : QString::null;              break;
         case PlayCount:  text = QString::number( playCount() );                                      break;
         case LastPlayed: text = amaroK::verboseTimeSince( lastPlay() );                              break;
-        case Filesize:   text = QString::number( filesize() );                                       break;
+        case Filesize:   text = KIO::convertSize( filesize() );                                      break;
         case Mood:       text = QString::null;                                                       break;
         default: warning() << "Tried to get the text of a nonexistent column!" << endl;              break;
     }
@@ -653,9 +654,13 @@ bool MetaBundle::matchesParsedExpression( QValueList<QStringList> data, QValueLi
                     case LastPlayed:
                     case Filesize:
                         numeric = true;
+                        break;
                     default:
                         numeric = false;
                 }
+
+                if( column == Filesize )
+                    v = QString::number( filesize() / ( 1024 * 1024 ) );
 
                 if( q.startsWith( ">" ) )
                 {
