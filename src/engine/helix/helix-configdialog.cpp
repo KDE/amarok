@@ -162,7 +162,6 @@ HelixSoundDevice::HelixSoundDevice( QWidget *parent,
 void 
 HelixSoundDevice::slotNewDevice( const QString &dev )
 {
-   debug() << "SELECT STRING WAS: " << dev.utf8() << endl;
    if (dev == "oss")
    {
       checkBox_outputDevice->setEnabled( false );
@@ -189,7 +188,6 @@ HelixSoundDevice::slotStringChanged( const QString& )
 void 
 HelixSoundDevice::slotDeviceChecked( bool checked )
 {
-   debug() << "IN SLOTDEVICEENABLED\n";
    checkBox_outputDevice->setChecked( checked );
    if (checked)
       lineEdit_outputDevice->setEnabled( true );      
@@ -222,7 +220,6 @@ HelixSoundDevice::save()
 
 void HelixSoundDevice::setSoundSystem( int api )
 {
-   debug() << "SETTING SOUND SYSTEM to " << api << endl;
    switch (api)
    {
       case HelixSimplePlayer::OSS:
@@ -359,7 +356,6 @@ HelixConfigDialogBase::HelixConfigDialogBase( HelixEngine *engine, amaroK::Plugi
     le->setWordWrap(QTextEdit::NoWrap);
 
     int n = engine->numPlugins();
-    debug() << "NPLUGINS: " << n << "\n";
     const char *description, *copyright, *moreinfourl;
     row = 0;
     for (int i=0; i<n; i++)
@@ -406,8 +402,6 @@ HelixConfigDialogBase::save()
 {
    bool writeIt = false;
 
-   debug() << "SAVING in HelixConfigDialog\n";
-
    if (m_core->isChanged())
    {
       m_engine->m_coredir = m_core->stringValue();
@@ -436,8 +430,6 @@ HelixConfigDialogBase::save()
    {
       if( entry->isChanged() )
       {
-         debug() << "Apply: " << entry->key() << "\n";
-
          entry->setUnchanged();
       }
    }
@@ -466,7 +458,6 @@ HelixConfigDialog::HelixConfigDialog( HelixEngine *engine, QWidget *p ) : amaroK
 
 HelixConfigDialog::~HelixConfigDialog()
 {
-   debug() << "DELETING HelixConfigDialog\n";
    delete instance;
    instance = 0;
 }
