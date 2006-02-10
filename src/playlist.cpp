@@ -3507,7 +3507,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     enum {
         PLAY, PLAY_NEXT, STOP_DONE, VIEW, EDIT, FILL_DOWN, COPY, CROP_PLAYLIST, SAVE_PLAYLIST, REMOVE, DELETE,
-        BURN_MENU, BURN_SELECTION, BURN_ALBUM, BURN_ARTIST, LAST }; //keep LAST last
+        BURN_MENU, BURN_SELECTION, BURN_ALBUM, BURN_ARTIST, REPEAT, LAST }; //keep LAST last
 
     const bool canRename   = isRenameable( col );
     const bool isCurrent   = (item == m_currentTrack);
@@ -3563,9 +3563,8 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     }
     // End queue entry logic
 
-    if( isCurrent ) {
+    if( isCurrent )
        amaroK::actionCollection()->action( "pause" )->plug( &popup );
-    }
 
     bool afterCurrent = false;
     if( m_currentTrack )
@@ -3576,12 +3575,22 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
                 break;
             }
 
-    if( itemCount == 1 && ( item->isCurrent() || item->isQueued() || ( !AmarokConfig::randomMode() && afterCurrent )
-        || ( AmarokConfig::entireAlbums() && m_currentTrack && item->m_album == m_currentTrack->m_album &&
-            ( ( !item->track() && afterCurrent ) || item->track() > m_currentTrack->track() ) ) ) )
+    if( itemCount == 1 && ( item->isCurrent() || item->isQueued() ||
+                            ( !AmarokConfig::randomMode() && ( amaroK::repeatPlaylist() || afterCurrent ) ) ||
+                            ( AmarokConfig::entireAlbums() && m_currentTrack &&
+                              item->m_album == m_currentTrack->m_album &&
+                              ( amaroK::repeatAlbum() || ( ( !item->track() && afterCurrent ) ||
+                                                             item->track() > m_currentTrack->track() ) ) ) ) )
+                                                                                     //looks like fucking LISP
     {
         amaroK::actionCollection()->action( "stop_after" )->plug( &popup );
         popup.setItemChecked( STOP_DONE, m_stopAfterTrack == item );
+    }
+
+    if( isCurrent )
+    {
+        popup.insertItem( SmallIconSet( "repeat_track" ), i18n( "&Repeat Track" ), REPEAT );
+        popup.setItemChecked( REPEAT, amaroK::repeatTrack() );
     }
 
     popup.insertSeparator();
@@ -3813,6 +3822,13 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     case BURN_ARTIST:
         K3bExporter::instance()->exportArtist( item->artist() );
+        break;
+
+    case REPEAT:
+        static_cast<KSelectAction*>( amaroK::actionCollection()->action( "repeat" ) )
+            ->setCurrentItem( amaroK::repeatTrack()
+                              ? AmarokConfig::EnumRepeat::None
+                              : AmarokConfig::EnumRepeat::Track );
         break;
 
     default:
