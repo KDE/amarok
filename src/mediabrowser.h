@@ -15,6 +15,7 @@
 
 #include <klistview.h>       //baseclass
 #include <kurl.h>            //stack allocated
+#include <kio/global.h>      //filesize_t
 #include "scrobbler.h"       //SubmitItem
 
 class MediaBrowser;
@@ -221,7 +222,6 @@ class MediaBrowser : public QVBox
         KURL m_transcodedUrl;
         QString m_transcodeSrc;
 
-        QString          prettySize( unsigned long size ); // KB to QString
         SpaceLabel*      m_stats;
         QHBox*           m_progressBox;
         KProgress*       m_progress;
@@ -461,10 +461,10 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
 
     protected:
         /**
-         * Get the capacity and freespace available on the device, in KB
+         * Get the capacity and freespace available on the device, in bytes
          * @return true if successful
          */
-        virtual bool getCapacity( unsigned long *total, unsigned long *available ) { Q_UNUSED(total); Q_UNUSED(available); return false; }
+        virtual bool getCapacity( KIO::filesize_t *total, KIO::filesize_t *available ) { Q_UNUSED(total); Q_UNUSED(available); return false; }
 
         /**
          * Lock device for exclusive access if possible

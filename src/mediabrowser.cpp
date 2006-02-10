@@ -126,7 +126,7 @@ class SpaceLabel : public QLabel {
             if(m_scheduled > 0)
             {
                 QColor sched(70, 230, 120);
-                if(m_used + m_scheduled > m_total - m_total/1000)
+                if(m_used + m_scheduled > m_total - m_total/200)
                 {
                     sched.setRgb( 255, 120, 120 );
                 }
@@ -1643,21 +1643,6 @@ MediaBrowser::configSelectPlugin( int index )
     }
 }
 
-QString
-MediaBrowser::prettySize( unsigned long size )
-{
-    if(size < 1000)
-        return QString("%1 KB").arg(size);
-    else if(size < 10*1024)
-        return QString("%1.%2 MB").arg(size/1024).arg((size%1024)*10/1024);
-    else if(size < 1000*1024)
-        return QString("%1 MB").arg(size/(1024));
-    else if(size < 10*1024*1024)
-        return QString("%1.%2 GB").arg(size/(1024*1024)).arg((size%(1024*1024))*10/(1024*1024));
-    else
-        return QString("%1 GB").arg(size/(1024*1024));
-}
-
 void
 MediaBrowser::updateButtons()
 {
@@ -1689,13 +1674,13 @@ MediaBrowser::updateStats()
     QString text = i18n( "1 track in queue", "%n tracks in queue", m_queue->childCount() );
     if(m_queue->childCount() > 0)
     {
-        text += " (" + prettySize( m_queue->totalSize() ) + ")";
+        text += " (" + KIO::convertSize( m_queue->totalSize() ) + ")";
     }
 
-    unsigned long total, avail;
+    KIO::filesize_t total, avail;
     if( currentDevice() && currentDevice()->getCapacity(&total, &avail) )
     {
-        text += " - " + i18n( "%1 of %2 available" ).arg( prettySize( avail ) ).arg( prettySize( total ) );
+        text += " - " + i18n( "%1 of %2 available" ).arg( KIO::convertSize( avail ) ).arg( KIO::convertSize( total ) );
 
         m_stats->m_used = total-avail;
         m_stats->m_total = total;
@@ -3004,7 +2989,7 @@ MediaQueue::totalSize() const
         if( !m_parent->currentDevice()
                 || !m_parent->currentDevice()->isConnected()
                 || !m_parent->currentDevice()->trackExists(*item->bundle()) )
-            total += (item->size()+1023)/1024;
+            total += ((item->size()+1023)/1024)*1024;
     }
 
     return total;

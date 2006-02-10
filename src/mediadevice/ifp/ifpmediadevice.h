@@ -53,7 +53,7 @@ class IfpMediaDevice : public MediaDevice
 
         MediaItem        *copyTrackToDevice( const MetaBundle& bundle, const PodcastInfo *info );
         int               deleteItemFromDevice( MediaItem *item, bool onlyPlayed = false );
-        bool              getCapacity( unsigned long *total, unsigned long *available );
+        bool              getCapacity( KIO::filesize_t *total, KIO::filesize_t *available );
         MediaItem        *newDirectory( const QString &name, MediaItem *parent );
         void              addToDirectory( MediaItem *directory, QPtrList<MediaItem> items );
 

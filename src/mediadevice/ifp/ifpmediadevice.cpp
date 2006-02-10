@@ -485,15 +485,15 @@ IfpMediaDevice::addTrackToList( int type, QString name, int /*size*/ )
 /// Capacity, in kB
 
 bool
-IfpMediaDevice::getCapacity( unsigned long *total, unsigned long *available )
+IfpMediaDevice::getCapacity( KIO::filesize_t *total, KIO::filesize_t *available )
 {
     if( !m_connected ) return false;
 
     int totalBytes = ifp_capacity( &m_ifpdev );
     int freeBytes = ifp_freespace( &m_ifpdev );
 
-    *total = (unsigned long)totalBytes / 1024;
-    *available = (unsigned long)freeBytes / 1024;
+    *total = totalBytes;
+    *available = freeBytes;
 
     return totalBytes > 0;
 }

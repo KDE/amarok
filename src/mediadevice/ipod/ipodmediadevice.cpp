@@ -1649,7 +1649,7 @@ IpodMediaDevice::removeDBTrack(Itdb_Track *track)
 }
 
 bool
-IpodMediaDevice::getCapacity( unsigned long *total, unsigned long *available )
+IpodMediaDevice::getCapacity( KIO::filesize_t *total, KIO::filesize_t *available )
 {
     if(!m_itdb)
         return false;
@@ -1665,8 +1665,8 @@ IpodMediaDevice::getCapacity( unsigned long *total, unsigned long *available )
         return false;
     }
 
-    *total = buf.f_blocks * (uint64_t)buf.f_frsize / 1024;
-    *available = buf.f_bavail * (uint64_t)buf.f_frsize / 1024;
+    *total = buf.f_blocks * (KIO::filesize_t)buf.f_frsize;
+    *available = buf.f_bavail * (KIO::filesize_t)buf.f_frsize;
 
     return *total > 0;
 #else

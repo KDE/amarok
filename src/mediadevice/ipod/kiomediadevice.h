@@ -41,7 +41,7 @@ class KioMediaDevice : public MediaDevice
 
         virtual void      synchronizeDevice();
         virtual int       deleteItemFromDevice(MediaItem *item, bool onlyPlayed=false );
-        virtual bool      getCapacity(unsigned long *total, unsigned long *available);
+        virtual bool      getCapacity(KIO::filesize_t *total, KIO::filesize_t *available);
         virtual void      rmbPressed( MediaView *deviceList, QListViewItem* qitem, const QPoint& point, int );
         virtual void      deleteFile( const KURL &url );
         virtual void      abortTransfer() {}

@@ -75,7 +75,7 @@ class IpodMediaDevice : public KioMediaDevice
         int               deleteItemFromDevice(MediaItem *item, bool onlyPlayed=false );
         void              addToPlaylist(MediaItem *list, MediaItem *after, QPtrList<MediaItem> items);
         MediaItem        *newPlaylist(const QString &name, MediaItem *list, QPtrList<MediaItem> items);
-        bool              getCapacity(unsigned long *total, unsigned long *available);
+        bool              getCapacity(KIO::filesize_t *total, KIO::filesize_t *available);
         void              rmbPressed( QListViewItem* qitem, const QPoint& point, int );
 
     protected slots:

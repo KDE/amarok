@@ -482,7 +482,7 @@ VfatMediaDevice::addTrackToList( int type, QString name, int /*size*/ )
 /// Capacity, in kB
 
 bool
-VfatMediaDevice::getCapacity( unsigned long *total, unsigned long *available )
+VfatMediaDevice::getCapacity( KIO::filesize_t *total, KIO::filesize_t *available )
 {
     if( !m_connected ) return false;
 
@@ -506,8 +506,8 @@ VfatMediaDevice::getCapacity( unsigned long *total, unsigned long *available )
         }
     }
 
-    *total = m_kBSize;
-    *available = m_kBAvail;
+    *total = m_kBSize*1024;
+    *available = m_kBAvail*1024;
     unsigned long localsize = m_kBSize;
     m_kBSize = 0;
     m_kBAvail = 0;
