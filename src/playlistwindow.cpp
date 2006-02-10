@@ -319,8 +319,8 @@ void PlaylistWindow::init()
 
     m_menubar->insertItem( i18n( "&Actions" ), actionsMenu );
     m_menubar->insertItem( i18n( "&Playlist" ), playlistMenu );
-    m_menubar->insertItem( i18n( "&Tools" ), m_toolsMenu );
     m_menubar->insertItem( i18n( "&Mode" ), modeMenu );
+    m_menubar->insertItem( i18n( "&Tools" ), m_toolsMenu );
     m_menubar->insertItem( i18n( "&Settings" ), m_settingsMenu );
     m_menubar->insertItem( i18n( "&Help" ), amaroK::Menu::helpMenu() );
 
