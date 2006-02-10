@@ -186,7 +186,6 @@ void amaroK::ToolTip::drawContents( QPainter *painter )
     p.translate( 0, height() / 2 - text.height() / 2);
     QPoint pos = s_rect.isNull() ? QPoint(2, -1)
                : s_hack == 1     ? QPoint(4, -2)
-               : s_hack == 2     ? QPoint(2, 0)
                : QPoint(2, -2); //HACK positioning
     p.setFont( QToolTip::parentWidget()->font() );
     text.draw( &p, pos.x(), pos.y(), rect(), colorGroup() );

@@ -1711,10 +1711,10 @@ QPair<QString, QRect> Playlist::toolTipText( QWidget*, const QPoint &pos ) const
         ( col != PlaylistItem::Rating ) )
     {
         text = text.replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" );
-        if( item == m_currentTrack && !item->isSelected() )
+        if( item->isCurrent() )
         {
             text = QString("<i>%1</i>").arg( text );
-            amaroK::ToolTip::s_hack = item->isSelected() ? 2 : 1; //HACK for precise positioning
+            amaroK::ToolTip::s_hack = 1; //HACK for precise positioning
         }
         return QPair<QString, QRect>( text, globalRect );
     }
