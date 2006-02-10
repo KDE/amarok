@@ -552,6 +552,9 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
     if( text.isEmpty() )
         text = MetaBundle::prettyTitle( bundle.url().fileName() ).stripWhiteSpace();
 
+    if( text.startsWith( "- " ) ) //When we only have a title tag, _something_ prepends a fucking hyphen. Remove that.
+        text = text.mid( 2 );
+
     if( text.isEmpty() ) //still
         text = i18n("No information available for this track");
 

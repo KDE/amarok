@@ -738,6 +738,7 @@ MetaBundle::prettyTitle() const
     if( !s.isEmpty() ) s += i18n(" - ");
     s += title();
     if( s.isEmpty() ) s = prettyTitle( filename() );
+
     return s;
 }
 
