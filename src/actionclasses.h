@@ -7,7 +7,6 @@
 #ifndef AMAROK_ACTIONCLASSES_H
 #define AMAROK_ACTIONCLASSES_H
 
-#include "amarokconfig.h"
 #include "engineobserver.h"
 #include "prettypopupmenu.h"
 #include "sliderwidget.h"
