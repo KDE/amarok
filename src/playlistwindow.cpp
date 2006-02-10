@@ -775,9 +775,16 @@ void PlaylistWindow::slotAddLocation( bool directPlay ) //SLOT
 
 void PlaylistWindow::playAudioCD() //SLOT
 {
-    m_browsers->showBrowser( "FileBrowser" );
-    FileBrowser *fb = static_cast<FileBrowser *>( m_browsers->browser("FileBrowser") );
-    fb->setUrl( KURL("audiocd:/Wav/") );
+    KURL::List urls;
+    if (EngineController::engine()->getAudioCDContents(QString::null, urls)) {
+        if (!urls.isEmpty()) {
+            Playlist::instance()->insertMedia(urls, Playlist::Replace);
+        }
+    } else { // Default behaviour
+        m_browsers->showBrowser( "FileBrowser" );
+        FileBrowser *fb = static_cast<FileBrowser *>( m_browsers->browser("FileBrowser") );
+        fb->setUrl( KURL("audiocd:/Wav/") );
+    }
 }
 
 void PlaylistWindow::showScriptSelector() //SLOT
@@ -853,7 +860,7 @@ void PlaylistWindow::slotMenuActivated( int index ) //SLOT
 
 void PlaylistWindow::actionsMenuAboutToShow() //SLOT
 {
-    actionCollection()->action("play_audiocd")->setEnabled( EngineController::hasEngineProperty( "HasKIO" ) );
+    actionCollection()->action("play_audiocd")->setEnabled( EngineController::hasEngineProperty( "HasKIO" ) || EngineController::hasEngineProperty("HasCDDA"));
 }
 
 void PlaylistWindow::toolsMenuAboutToShow() //SLOT

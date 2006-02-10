@@ -192,6 +192,29 @@ namespace Engine
           */
         virtual void setEqualizerParameters( int /*preamp*/, const QValueList<int> &/*bandGains*/ ) {};
 
+
+        /** Tries to retrieve metadata for the given url (called only if url
+         * is not in the collection).  The intended usage is to retrieve
+         * information for AudiCD tracks when they are added to the playlist
+         * (i.e. before they are actually played)
+         * @param url the url of the item
+         * @param bundle the SimpleMetaBundle to fill
+         * @return true if metadata found, false otherwise
+         */
+        virtual bool metaDataForUrl(const KURL &, Engine::SimpleMetaBundle &)
+        { return false; }
+
+        /** returns true if this engine performs some special action to play
+         * audio cds: in this case, the KURL::List is filled with the urls of
+         * the songs in the cd...
+         *
+         * @param device the cdrom device , with QString::null meaning use engine-specific default value
+         * @param urls the list of urls for AudioCD tracks to fill
+         * @return true if the engine has the feature of reading from audio cds, false otherwise (note that this should return true also in case of error if the engine is capable of reading audio cds in general...)
+         * */
+        virtual bool getAudioCDContents(const QString &, KURL::List &)
+        { return false; }
+
     protected:
         Base( Effects* = 0 );
 
@@ -229,6 +252,7 @@ namespace Engine
         QString comment;
         QString genre;
         QString bitrate;
+        QString length;
     };
 
 

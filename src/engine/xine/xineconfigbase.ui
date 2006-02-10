@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>358</width>
-            <height>520</height>
+            <height>667</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -336,6 +336,117 @@
                 </widget>
             </vbox>
         </widget>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>audiocdGroupBox</cstring>
+            </property>
+            <property name="title">
+                <string>Audio CD Configuration</string>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout11</cstring>
+                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel2_3_2</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Default device:</string>
+                            </property>
+                            <property name="buddy" stdset="0">
+                                <cstring>monoLineEdit</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel2_2_2</cstring>
+                            </property>
+                            <property name="text">
+                                <string>CDDB Server:</string>
+                            </property>
+                            <property name="buddy" stdset="0">
+                                <cstring>hostLineEdit</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel2_3_2_2</cstring>
+                            </property>
+                            <property name="text">
+                                <string>CDDB Cache dir:</string>
+                            </property>
+                            <property name="buddy" stdset="0">
+                                <cstring>monoLineEdit</cstring>
+                            </property>
+                        </widget>
+                    </vbox>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout12</cstring>
+                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLineEdit">
+                            <property name="name">
+                                <cstring>audiocd_device</cstring>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
+                        </widget>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>layout10</cstring>
+                            </property>
+                            <hbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLineEdit">
+                                    <property name="name">
+                                        <cstring>cddb_server</cstring>
+                                    </property>
+                                </widget>
+                                <widget class="KIntSpinBox">
+                                    <property name="name">
+                                        <cstring>cddb_port</cstring>
+                                    </property>
+                                    <property name="maxValue">
+                                        <number>65534</number>
+                                    </property>
+                                    <property name="minValue">
+                                        <number>1</number>
+                                    </property>
+                                    <property name="value">
+                                        <number>60000</number>
+                                    </property>
+                                </widget>
+                            </hbox>
+                        </widget>
+                        <widget class="QLineEdit">
+                            <property name="name">
+                                <cstring>cddb_cache_dir</cstring>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
+                        </widget>
+                    </vbox>
+                </widget>
+            </hbox>
+        </widget>
         <spacer>
             <property name="name">
                 <cstring>spacer3</cstring>
@@ -359,4 +470,9 @@
     <include location="local" impldecl="in declaration">plugin/pluginconfig.h</include>
 </includes>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kcombobox.h</includehint>
+    <includehint>knuminput.h</includehint>
+    <includehint>knuminput.h</includehint>
+</includehints>
 </UI>

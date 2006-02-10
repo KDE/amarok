@@ -236,6 +236,40 @@ App::~App()
 }
 
 
+#include <dcopref.h>
+#include <qstringlist.h>
+
+namespace { 
+
+// grabbed from KsCD source, kompatctdisk.cpp
+QString urlToDevice(const QString& device)
+{
+    KURL deviceUrl(device);
+    if (deviceUrl.protocol() == "media" || deviceUrl.protocol() == "system")
+    {
+        debug() << "Asking mediamanager for " << deviceUrl.fileName() << endl;
+        DCOPRef mediamanager("kded", "mediamanager");
+        DCOPReply reply = mediamanager.call("properties(QString)",
+                                            deviceUrl.fileName());
+        QStringList properties = reply;
+        if (!reply.isValid() || properties.count() < 6)
+        {
+            debug() << "Invalid reply from mediamanager" << endl;
+	    return QString::null;
+        }
+        else
+        {
+            debug() << "Reply from mediamanager " << properties[5] << endl;
+	    return properties[5];
+        }
+    }
+
+    return device;
+}
+
+}
+
+
 void App::handleCliArgs() //static
 {
     static char cwd[PATH_MAX];
@@ -285,6 +319,18 @@ void App::handleCliArgs() //static
         EngineController::instance()->next();
     else if ( args->isSet( "previous" ) )
         EngineController::instance()->previous();
+    else if (args->isSet("cdplay")) { 
+        QString device = args->getOption("cdplay");
+        KURL::List urls;
+        if (EngineController::engine()->getAudioCDContents(device, urls)) {
+            Playlist::instance()->insertMedia(
+                urls, Playlist::Replace|Playlist::DirectPlay);
+        } else { // Default behaviour
+            debug() <<
+                "Sorry, the engine doesn't support direct play from AudioCD..."
+                    << endl;
+        }
+    }
 
     if ( args->isSet( "toggle-playlist-window" ) )
         pApp->m_pPlaylistWindow->showHide();
@@ -324,6 +370,7 @@ void App::initCliArgs( int argc, char *argv[] ) //static
             { "wizard", I18N_NOOP( "Run first-run wizard" ), 0 },
             { "engine <name>", I18N_NOOP( "Use the <name> engine" ), 0 },
             { "cwd <directory>", I18N_NOOP( "Base for relative filenames/URLs" ), 0 },
+            { "cdplay <device>", I18N_NOOP("Play an AudioCD from <device>"), 0 }, 
             { 0, 0, 0 }
         };
 

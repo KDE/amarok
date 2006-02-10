@@ -75,6 +75,7 @@ XineEngine::XineEngine()
     #ifndef __NetBSD__  // NetBSD does not offer audio mixing
     addPluginProperty( "HasCrossfade", "true" );
     #endif
+    addPluginProperty("HasCDDA", "true"); // new property 
 }
 
 XineEngine::~XineEngine()
@@ -453,7 +454,7 @@ XineEngine::canDecode( const KURL &url ) const
     const QString path = url.path();
     const QString ext  = path.mid( path.findRev( '.' ) + 1 ).lower();
 
-    return list.contains( ext );
+    return list.contains( ext ) || url.protocol() == "cdda"; 
 }
 
 const Engine::Scope&
@@ -930,6 +931,69 @@ Fader::run()
     QThread::sleep( 5 );
 
     deleteLater();
+}
+
+
+bool XineEngine::metaDataForUrl(const KURL &url, Engine::SimpleMetaBundle &b)
+{
+    if (url.protocol() == "cdda") {
+ 	xine_stream_t* tmpstream = xine_stream_new(m_xine, NULL, NULL);
+        if (xine_open(tmpstream, QFile::encodeName(url.url()))) {
+            QString title = QString::fromUtf8(
+                xine_get_meta_info(tmpstream, XINE_META_INFO_TITLE));
+            if ((!title.isNull()) && (!title.isEmpty())) { //no meta info
+                b.title = title;
+                b.artist =
+                    QString::fromUtf8(
+                        xine_get_meta_info(tmpstream, XINE_META_INFO_ARTIST));
+                b.album = 
+                    QString::fromUtf8(
+                        xine_get_meta_info(tmpstream, XINE_META_INFO_ALBUM));
+                b.genre = 
+                    QString::fromUtf8(
+                        xine_get_meta_info(tmpstream, XINE_META_INFO_GENRE));
+            } else {
+                b.title = QString(i18n("Track %1")).arg(url.filename());
+                b.album = i18n("AudioCD");
+            }
+            int pos, time, length = 0;
+            xine_get_pos_length(tmpstream, &pos, &time, &length);
+            b.length = QString::number(length / 1000);
+            xine_close(tmpstream);
+        }
+        xine_dispose(tmpstream);
+        return true;
+    }
+    return false;
+}
+
+bool XineEngine::getAudioCDContents(const QString &device, KURL::List &urls)
+{
+    char **xine_urls = NULL;
+    int num;
+    int i = 0;
+
+    if (!device.isNull()) {
+        debug() << "xine-engine setting CD Device to: " << device << endl;
+	xine_cfg_entry_t config;
+	xine_config_lookup_entry(m_xine, "input.cdda_device", &config);
+	config.str_value = (char *)device.latin1();
+	xine_config_update_entry(m_xine, &config);        
+    }
+
+    emit statusText(i18n("Getting AudioCD contents..."));
+    
+    xine_urls = xine_get_autoplay_mrls(m_xine, "CD", &num);
+
+    if (xine_urls) {
+        while (xine_urls[i]) {
+            urls << KURL(xine_urls[i]);
+            ++i;
+        }
+    }
+    else emit statusText(i18n("Could not read AudioCD"));
+    
+    return true;
 }
 
 #include "xine-engine.moc"

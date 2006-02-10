@@ -1469,6 +1469,21 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
                         debug() << "No bundle recovered for: " << *it << endl;
                         b = MetaBundle();
                         b.setUrl( KURL::fromPathOrURL(*it) );
+                        Engine::SimpleMetaBundle smb;
+                        // try to see if the engine has some info about the
+                        // item (the intended behaviour should be that if the
+                        // item is an AudioCD track, the engine can return
+                        // CDDB data for it)
+                        if (EngineController::engine()->metaDataForUrl(
+                                b.url(), smb)) {
+                            b.setTitle(smb.title);
+                            b.setArtist(smb.artist);
+                            b.setAlbum(smb.album);
+                            b.setComment(smb.comment);
+                            b.setGenre(smb.genre);
+                            b.setBitrate(smb.bitrate.toInt());
+                            b.setLength(smb.length.toInt());
+                        }
                     }
                 }
                 bundles += b;

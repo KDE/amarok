@@ -192,6 +192,11 @@ void XineConfigDialog::init()
     //ossGroupBox
     add(new XineEnumEntry(m_view->ossDeviceComboBox, "audio.device.oss_device_name", m_xine,this));
     add(new XineEnumEntry(m_view->speakerComboBox, "audio.output.speaker_arrangement", m_xine, this));
+    // audiocdGroupBox
+    add(new XineStrEntry(m_view->audiocd_device, "media.audio_cd.device", m_xine, this));
+    add(new XineStrEntry(m_view->cddb_server, "media.audio_cd.cddb_server", m_xine, this));
+    add(new XineIntEntry(m_view->cddb_port, "media.audio_cd.cddb_port", m_xine, this));
+    add(new XineStrEntry(m_view->cddb_cache_dir, "media.audio_cd.cddb_cachedir", m_xine, this));
     #undef add
 }
 
