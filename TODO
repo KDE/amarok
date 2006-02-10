@@ -3,18 +3,36 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 
+BEFORE BETA 1:
+
+ <illiss.> Do VFAT media devices work properly yet? If not, either it should be fixed, or support
+           disabled for the beta. (So we don't get tons of bug reports we already know about.)
+
+ <illiss.> Is using the score for the number, but the rating for the vis. in the context browser
+           confusing? (I think it is, but that might be becuase my theme doesn't use stars but a
+           partially-filled bar). If so it should be reverted for beta 1, I have a better solution
+           already planned but that won't be in time.
+
+ <illiss.> The various UI and behaviour refactorings for Dynamic Mode should be finished up and
+           polished. Among them, add a button to turn it off in the bar-above-the-playlist, fix
+           drag-and-dropping of dynamic playlists, and when loading a dynamic playlist, clear the
+           existing playlist first, instead of making it dynamic (which has all sorts of nasty side
+           effects).
+
+ <illiss.> It would be nice to get Moodbar fixed and polished before the release, but that is
+           probably not realistic.
 
 SHORT-TERM (URGENT):
+
+ <illiss.> Loading normal (M3U) playlists from the playlist browser doesn't block the UI per se,
+           but it does nothing for really long time, until suddenly the whole playlist shows up,
+           which is strange and confusing.
 
  <markey>  Tooltips don't work for 3rd level items in the Playlist Browser. They do how
            however work (for me) for 2nd level items. Very bad, cause you can't read the
            text!
 
  <markey>  Should we put "Repeat Track" in the playlist context menu? Seems to make sense.
-        :aumuell Or change the possible repeat mode states from "on" and "off" to
-                "off", "repeat playlist", "repeat title" and "repeat album"? The last would
-                look if on track change the album is still the same, and if not it would scan
-                the playlist backwards until the album changes and continue from there.
 
  <markey>  Make the <no engine> entry unselectable somehow, cause it makes no sense to choose
            it manually. (Too bad that QComboBox does not support disabled items)
