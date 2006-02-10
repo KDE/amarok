@@ -198,7 +198,7 @@ void PlaylistCategory::setXml( const QDomElement &xml )
                 if( !xmlFile.open( IO_ReadOnly ) || !xml.setContent( stream.read() ) )
                 {
                     // Invalid podcasts should still be added to the browser, which means there is no cached xml.
-                    last = new PodcastChannel( this, last, url );
+                    last = new PodcastChannel( this, last, url, n );
                     continue;
                 }
 
@@ -1035,6 +1035,27 @@ QDomElement PartyEntry::xml()
 
 PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url )
     : PlaylistBrowserEntry( parent, after )
+        , m_url( url )
+        , m_loading1( QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
+        , m_loading2( QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
+        , m_fetching( false )
+        , m_updating( false )
+        , m_new( false )
+        , m_hasProblem( false )
+        , m_last( 0 )
+        , m_parent( static_cast<PlaylistCategory*>(parent) )
+{
+    setDragEnabled( true );
+    setRenameEnabled( 0, false );
+
+    setText(0, i18n("Retrieving Podcast...") ); //HACK to fill loading time space
+    setPixmap( 0, SmallIcon("player_playlist_2") );
+
+    fetch();
+}
+
+PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url, const QDomNode &channelSettings )
+    : PlaylistBrowserEntry( parent, after )
     , m_url( url )
     , m_loading1( QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
     , m_loading2( QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
@@ -1042,6 +1063,7 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
     , m_updating( false )
     , m_new( false )
     , m_hasProblem( false )
+    , m_channelSettings( channelSettings )
     , m_last( 0 )
     , m_parent( static_cast<PlaylistCategory*>(parent) )
 {
@@ -1118,12 +1140,13 @@ PodcastChannel::configure()
                     copyList << item->localUrl();
 
                 item->setLocalUrlBase( m_settings->m_saveLocation.prettyURL() );
-                PodcastItem::createLocalDir( m_saveLocation.path() );
                 item = static_cast<PodcastItem*>( item->nextSibling() );
             }
             // move the items
             if( !copyList.isEmpty() )
             {
+                //create the local directory first
+                PodcastItem::createLocalDir( m_settings->m_saveLocation.path() );
                 KIO::CopyJob* m_podcastMoveJob = KIO::move( copyList, m_settings->m_saveLocation, false );
                 amaroK::StatusBar::instance()->newProgressOperation( m_podcastMoveJob )
                         .setDescription( i18n( "Moving Podcasts" ) );
@@ -1219,7 +1242,17 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
 
         m_title.isEmpty() ?
             setText( 0, m_url.prettyURL() ) :
-            setText( 0, m_title );
+                setText( 0, m_title );
+
+        if( !m_updating ) // podcastchannel is created, therefore m_settings doesn't exist yet
+            if( m_channelSettings.isNull() ) //no channelsettings found, create new PodcastSettings based on settings from parent
+            {
+                m_settings = new PodcastSettings(
+                        PlaylistBrowser::instance()->getPodcastSettings( m_parent )
+                        , m_title );
+            }
+        else
+            m_settings = new PodcastSettings( m_channelSettings, m_title );
 
         setPixmap( 0, SmallIcon("cancel") );
 
@@ -1678,7 +1711,9 @@ void PodcastItem::createLocalDir( const KURL &localDir )
 {
     if( !QFile::exists( localDir.path() ) )
     {
+        debug() << "checking " << localDir.path() << endl;
         createLocalDir( localDir.directory( true, true ) );
+        debug() << "creating " << localDir.path() << endl;
         KIO::mkdir( localDir, -1 );
     }
 }

@@ -302,6 +302,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         Q_OBJECT
 
     public:
+        PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url, const QDomNode &channelSettings );
         PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url );
         PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url,
                         const QDomNode &channelSettings, const QDomDocument &xml );
@@ -356,7 +357,6 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
 
         KURL        m_url;                         //remote xml url
         KURL        m_link;                        //webpage
-        KURL        m_saveLocation;
         QString     m_title;
         QString     m_cache;                       //filename for caching
         QString     m_description;
