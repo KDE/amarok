@@ -66,7 +66,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Christie Harris", I18N_NOOP( "roKymoter (dangle)" ), "dangle.baby@gmail.com" );
     aboutData.addCredit( "Dan Leinir Turthra Jensen", I18N_NOOP( "First-run wizard, usability" ), "admin@REMOVEleinir.dk" );
     aboutData.addCredit( "Dan Meltzer", I18N_NOOP( "roKymoter (hydrogen)" ), "hydrogen@notyetimplemented.com" );
-    aboutData.addCredit( "Derek Nelson", I18N_NOOP( "graphics, splash-screen" ), "NEED_EMAIL_ADRESS" );
+    aboutData.addCredit( "Derek Nelson", I18N_NOOP( "graphics, splash-screen" ), "admrla@gmail.com" );
     aboutData.addCredit( "Enrico Ros", I18N_NOOP( "Analyzers, Context Browser and systray eye-candy" ), "eros.kde@email.it" );
     aboutData.addCredit( "Florian 'da-flow' Egerer", I18N_NOOP( "amaroK application icon 'Blue Wolf'" ), "flo_for_never@gmx.at" );
     aboutData.addCredit( "Gérard Dürrmeyer", I18N_NOOP( "icons and image work" ), "gerard@randomtree.com" );
