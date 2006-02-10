@@ -15,6 +15,7 @@
 #define DEBUG_PREFIX "Playlist"
 
 #include "amarok.h"
+#include "amarokconfig.h"
 #include "debug.h"
 #include "collectiondb.h"
 #include "collectionbrowser.h"
@@ -24,7 +25,6 @@
 #include "k3bexporter.h"
 #include "metabundle.h"
 #include "osd.h"
-#include "playlist.h"
 #include "playlistitem.h"
 #include "playlistbrowser.h"
 #include "playlistbrowseritem.h" //for stream editor dialog
@@ -78,6 +78,7 @@ extern "C"
     #endif
 }
 
+#include "playlist.h"
 
 /**
  * Iterator class that only edits visible items! Preferentially always use
@@ -1157,8 +1158,9 @@ Playlist::playNextTrack( bool forceNext )
             else //entireAlbums()
             {
                 bool b = false;
-                PlaylistItem* const begin = m_currentTrack ? m_currentTrack->m_album->tracks.getFirst()
-                                                           : (*MyIt( this, MyIt::Visible ) );
+                PlaylistItem* const begin = m_currentTrack
+                                          ? MyIt::nextVisible( m_currentTrack->m_album->tracks.getFirst() )
+                                          : (*MyIt( this, MyIt::Visible ));
                 PlaylistItem *pi = 0;
                 for( MyIt it( begin, MyIt::Visible ); *it; ++it )
                 {
