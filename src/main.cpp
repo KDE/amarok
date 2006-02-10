@@ -42,7 +42,7 @@ int main( int argc, char *argv[] )
             I18N_NOOP( "Developer (jefferai)" ), "kde-dev@emailgoeshere.com" );
     aboutData.addAuthor( "Mark '"I18N_NOOP("It's good, but it's not irssi") "' Kretschmann",
             I18N_NOOP( "Project founder (markey)" ), "markey@web.de" );
-    aboutData.addAuthor( "Martin '"I18N_NOOP("iPod == iLike") "' Aumueller",
+    aboutData.addAuthor( "Martin '"I18N_NOOP("Easily the most compile-breaks ever!") "' Aumueller",
             I18N_NOOP( "Developer (aumuell)" ), "aumuell@reserv.at" );
     aboutData.addAuthor( "Max '" I18N_NOOP("Turtle-Power") "' Howell",
             I18N_NOOP( "Cowboy mxcl" ), "max.howell@methylblue.com", "http://www.methylblue.com" );
