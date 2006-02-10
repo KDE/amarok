@@ -25,7 +25,6 @@
 #include "k3bexporter.h"
 #include "metabundle.h"
 #include "osd.h"
-#include "playlist.h"
 #include "playlistitem.h"
 #include "playlistbrowser.h"
 #include "playlistbrowseritem.h" //for stream editor dialog
@@ -79,6 +78,7 @@ extern "C"
     #endif
 }
 
+#include "playlist.h"
 
 /**
  * Iterator class that only edits visible items! Preferentially always use
