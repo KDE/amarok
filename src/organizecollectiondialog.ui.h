@@ -125,6 +125,9 @@ QString OrganizeCollectionDialog::cleanPath( const QString &component )
         }
     }
 
+    if( !regexpEdit->text().isEmpty() )
+        result.replace( QRegExp( regexpEdit->text() ), replaceEdit->text() );
+
     result.simplifyWhiteSpace();
     if( spaceCheck->isChecked() )
         result.replace( QRegExp( "\\s" ), "_" );
@@ -147,4 +150,12 @@ void OrganizeCollectionDialog::update( int dummy )
 
     if( customschemeCheck->isChecked() || oldFormat==formatEdit->text() )
         emit updatePreview( buildDestination( formatEdit->text(), previewBundle ) );
+}
+
+
+void OrganizeCollectionDialog::update( const QString & dummy )
+{
+    Q_UNUSED( dummy );
+
+    update( 0 );
 }

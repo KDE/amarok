@@ -10,7 +10,7 @@
             <x>0</x>
             <y>0</y>
             <width>476</width>
-            <height>365</height>
+            <height>561</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -267,6 +267,48 @@
                         <string>If checked, replace characters that are incompatible with MS-DOS/VFAT file systems.</string>
                     </property>
                 </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout4</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel1</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Replace</string>
+                            </property>
+                        </widget>
+                        <widget class="KLineEdit">
+                            <property name="name">
+                                <cstring>regexpEdit</cstring>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Regular expression</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel2</cstring>
+                            </property>
+                            <property name="text">
+                                <string>with</string>
+                            </property>
+                        </widget>
+                        <widget class="KLineEdit">
+                            <property name="name">
+                                <cstring>replaceEdit</cstring>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Character string</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
             </vbox>
         </widget>
         <widget class="QGroupBox">
@@ -440,6 +482,18 @@
         <receiver>organizeCollectionDialog</receiver>
         <slot>update(int)</slot>
     </connection>
+    <connection>
+        <sender>regexpEdit</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>organizeCollectionDialog</receiver>
+        <slot>update(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>replaceEdit</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>organizeCollectionDialog</receiver>
+        <slot>update(const QString&amp;)</slot>
+    </connection>
 </connections>
 <includes>
     <include location="global" impldecl="in declaration">metabundle.h</include>
@@ -455,6 +509,7 @@
 <slots>
     <slot>preview( const QString &amp; format )</slot>
     <slot>update( int dummy )</slot>
+    <slot>update( const QString &amp; dummy )</slot>
 </slots>
 <functions>
     <function returnType="QString">buildDestination( const QString &amp; format, const MetaBundle &amp; mb )</function>
@@ -464,6 +519,9 @@
 </functions>
 <layoutdefaults spacing="6" margin="0"/>
 <includehints>
+    <includehint>kcombobox.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>klineedit.h</includehint>
     <includehint>klineedit.h</includehint>
 </includehints>
 </UI>

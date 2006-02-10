@@ -328,6 +328,16 @@
         <whatsthis>If the custom filename scheme is enabled, then Organize files will rename files according to this format string.</whatsthis>
         <default>%folder/%filetype/%theartist/%album/%track_-_%title.%filetype</default>
     </entry>
+    <entry key="Replacement Regexp" type="String">
+        <label>Regular expression that is to be replaced.</label>
+        <whatsthis>Organize files will replace substrings matching this regular expression.</whatsthis>
+        <default></default>
+    </entry>
+    <entry key="Replacement String" type="String">
+        <label>Replacing string.</label>
+        <whatsthis>Organize files will replace matching substrings with this string.</whatsthis>
+        <default></default>
+    </entry>
     <entry key="External Browser" type="String">
         <label>Filename of the external web browser to be invoked by amaroK.</label>
         <default>kfmclient openURL</default>

@@ -1514,6 +1514,8 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
     dialog.asciiCheck->setChecked( AmarokConfig::asciiOnly() );
     dialog.customschemeCheck->setChecked( AmarokConfig::useCustomScheme() );
     dialog.formatEdit->setText( AmarokConfig::customScheme() );
+    dialog.regexpEdit->setText( AmarokConfig::replacementRegexp() );
+    dialog.replaceEdit->setText( AmarokConfig::replacementString() );
 
     if( urls.count() )
     {
@@ -1536,6 +1538,8 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
         AmarokConfig::setAsciiOnly( dialog.asciiCheck->isChecked() );
         AmarokConfig::setUseCustomScheme( dialog.customschemeCheck->isChecked() );
         AmarokConfig::setCustomScheme( dialog.formatEdit->text() );
+        AmarokConfig::setReplacementRegexp( dialog.regexpEdit->text() );
+        AmarokConfig::setReplacementString( dialog.replaceEdit->text() );
         bool write = dialog.overwriteCheck->isChecked();
         KURL::List skipped;
 
