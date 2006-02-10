@@ -8,6 +8,7 @@ VERSION 1.3.9:
     * Support for libtunepimp 0.4. (BR 94988)
 
   BUGFIXES:
+    * OSD was showing "No track playing" for tracks without metadata.
     * Smart Playlists with playcount or score related conditions wouldn't
       match all songs properly. (BR 97046)
     * With enormous queues, stop menu would take a lot of time to show up.
