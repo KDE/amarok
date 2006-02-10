@@ -145,10 +145,20 @@ VfatMediaDevice::checkResult( int result, QString message )
 bool
 VfatMediaDevice::openDevice( bool /*silent*/ )
 {
-    if ( !m_medium->mountPoint() )
+    if( !m_medium )
     {
-        amaroK::StatusBar::instance()->longMessage( i18n( "Devices handled by this plugin must be mounted first.\nPlease mount the device and click Connect again." ),
-            KDE::StatusBar::Sorry );
+        amaroK::StatusBar::instance()->longMessage( i18n( "VFAT Devices cannot be manually configured.  Ensure DBUS and HAL are running\n"
+                                                         "and your kioslaves were built with DBUS and HAL support.  The device should be\n"
+                                                         "autodetected; click the \"Manage Device Plugins...\" button and choose the\n"
+                                                         "VFAT plugin.  Then ensure the device is mounted and click \"Connect\" again." ),
+                                                    KDE::StatusBar::Sorry );
+        return false;
+    }
+    if( !m_medium->mountPoint() )
+    {
+        amaroK::StatusBar::instance()->longMessage( i18n( "Devices handled by this plugin must be mounted first.\n"
+                                                          "Please mount the device and click \"Connect\" again." ),
+                                                    KDE::StatusBar::Sorry );
         return false;
     }
     m_connected = true;

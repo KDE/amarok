@@ -2094,6 +2094,8 @@ MediaBrowser::connectClicked()
     haveToConfig |= !currentDevice();
     haveToConfig |= ( currentDevice() && !currentDevice()->isConnected() );
 
+    if ( currentDevice()->deviceType() == "vfat-mediadevice" )
+        haveToConfig = false;
 
     if( haveToConfig && *m_devices.at( 0 ) == currentDevice() )
     {
