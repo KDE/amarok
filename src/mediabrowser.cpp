@@ -1719,6 +1719,12 @@ MediaBrowser::updateStats()
 bool
 MediaView::setFilter( const QString &filter, MediaItem *parent )
 {
+    bool advanced = MetaBundle::isAdvancedExpression( filter );
+    QValueList<int> defaultColumns;
+    defaultColumns << MetaBundle::Album;
+    defaultColumns << MetaBundle::Title;
+    defaultColumns << MetaBundle::Artist;
+
     MediaItem *it;
     if( !parent )
     {
@@ -1735,17 +1741,23 @@ MediaView::setFilter( const QString &filter, MediaItem *parent )
         bool visible = true;
         if(it->isLeafItem())
         {
-            visible = it->match(filter);
+            if( advanced )
+            {
+                QValueList<QStringList> parsed = MetaBundle::parseExpression( filter );
+                visible = it->bundle() && it->bundle()->matchesParsedExpression( parsed, defaultColumns );
+            }
+            else
+            {
+                visible = it->bundle() && it->bundle()->matchesSimpleExpression( filter, defaultColumns );
+            }
         }
         else
         {
+            visible = setFilter(filter, it);
             if(it->type()==MediaItem::PLAYLISTSROOT || it->type()==MediaItem::PLAYLIST)
             {
                 visible = true;
-                setFilter(filter, it);
             }
-            else
-                visible = setFilter(filter, it);
         }
         it->setVisible( visible );
         if(visible)
@@ -1754,30 +1766,6 @@ MediaView::setFilter( const QString &filter, MediaItem *parent )
 
     return childrenVisible;
 }
-
-bool
-MediaItem::match( const QString &filter ) const
-{
-    if(filter.isNull() || filter.isEmpty())
-        return true;
-
-    if(text(0).lower().contains(filter.lower()))
-        return true;
-
-    QListViewItem *p = parent();
-    if(p && p->text(0).lower().contains(filter.lower()))
-        return true;
-
-    if(p)
-    {
-        p = p->parent();
-        if(p && p->text(0).lower().contains(filter.lower()))
-            return true;
-    }
-
-    return false;
-}
-
 
 MediaDevice::MediaDevice()
     : amaroK::Plugin()

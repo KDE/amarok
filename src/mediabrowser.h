@@ -90,7 +90,6 @@ class MediaItem : public KListViewItem
         virtual MediaDevice *device() const { return m_device; }
 
         int compare(QListViewItem *i, int col, bool ascending) const;
-        bool match( const QString &filter ) const;
 
         void paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align );
 
