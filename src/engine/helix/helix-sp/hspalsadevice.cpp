@@ -198,6 +198,8 @@ HSPAudioDevice::GetCurrentAudioTime( REF(ULONG32) ulCurrentTime )
          HXLOGL1 ( HXLOG_ADEV, "snd_pcm_status: %s", snd_strerror(err));        
 #endif
          m_Player->print2stderr("########## HSPAudioDevice::GetCurrentAudioTime error getting frame_delay: %s\n", snd_strerror(err));
+         pthread_mutex_unlock(&m_m);
+         return -1;
       }
       
       ulCurrentTime = m_ulCurrentTime - (frame_delay * 1000) / m_unSampleRate;
@@ -301,8 +303,14 @@ void HSPAudioDevice::sync()
    if (m_pStreamResponse)
    {
       ULONG32 curtime;
-      GetCurrentAudioTime(curtime);
-      m_pStreamResponse->OnTimeSync(curtime);
+      if (!GetCurrentAudioTime(curtime))
+         m_pStreamResponse->OnTimeSync(curtime);
+      else
+      {
+         // probably a seek occurred
+         Reset();
+         clearQueue();
+      }
    }
 }
 
