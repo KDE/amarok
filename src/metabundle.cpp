@@ -536,7 +536,7 @@ bool MetaBundle::matchesSimpleExpression( const QString &expression, QValueList<
     {
         uint y = 0, n = columns.count();
         for(; y < n; ++y )
-            if ( prettyText( y ).lower().contains( terms[x] ) )
+            if ( prettyText( columns[y] ).lower().contains( terms[x] ) )
                 break;
         matches = ( y < n );
     }
