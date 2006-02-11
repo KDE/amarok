@@ -243,7 +243,7 @@ int RealMediaFF::init()
          return m_err;
       }
 
-      while (memcmp((void *)&object_id, "DATA", 4))
+      while (!m_err && memcmp((void *)&object_id, "DATA", 4))
       {
          char oid[5];
          memcpy((void *)oid, (void *)&object_id, 4);
@@ -273,7 +273,7 @@ int RealMediaFF::init()
          do
          {
             nbytes = getChunk(buf, 65536, object_id, sz, consumed);
-         } while ( memcmp((void *)&object_id, "DATA", 4) && (consumed < sz) );
+         } while ( !m_err && memcmp((void *)&object_id, "DATA", 4) && (consumed < sz) );
       }
    }
 
