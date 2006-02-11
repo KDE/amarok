@@ -547,7 +547,7 @@ void
 DynamicAction::setChecked( bool b )
 {
     if( KAction *a = actionCollection()->action( "random_mode" ) )
-        a->setEnabled( b );
+        a->setEnabled( !b );
     ToggleAction::setChecked( b );
 }
 
