@@ -3056,12 +3056,16 @@ MediaQueue::slotShowContextMenu( QListViewItem* item, const QPoint& point, int )
 
     KPopupMenu menu( this );
 
-    enum Actions { REMOVE_SELECTED, CLEAR_ALL };
+    enum Actions { REMOVE_SELECTED, CLEAR_ALL, START_TRANSFER };
 
     if( item )
         menu.insertItem( SmallIconSet( "edittrash" ), i18n( "&Remove From Queue" ), REMOVE_SELECTED );
 
     menu.insertItem( SmallIconSet( "view_remove" ), i18n( "&Clear Queue" ), CLEAR_ALL );
+    menu.insertItem( SmallIconSet( "rebuild" ), i18n( "&Start Transfer" ), START_TRANSFER );
+    menu.setItemEnabled( START_TRANSFER,
+            MediaBrowser::instance()->currentDevice() &&
+            MediaBrowser::instance()->currentDevice()->isConnected() );
 
     switch( menu.exec( point ) )
     {
@@ -3070,6 +3074,9 @@ MediaQueue::slotShowContextMenu( QListViewItem* item, const QPoint& point, int )
             break;
         case CLEAR_ALL:
             clearItems();
+            break;
+        case START_TRANSFER:
+            MediaBrowser::instance()->transferClicked();
             break;
     }
 }
