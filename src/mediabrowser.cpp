@@ -29,6 +29,7 @@
 #include "scrobbler.h"
 #include "statusbar.h"
 #include "transferdialog.h"
+#include "browserToolBar.h"
 
 #include <qvbuttongroup.h>
 #include <qcheckbox.h>
@@ -217,6 +218,37 @@ MediaBrowser::MediaBrowser( const char *name )
 
     setSpacing( 4 );
 
+    m_toolbar = new Browser::ToolBar( this );
+    m_toolbar->setIconText( KToolBar::IconTextRight, false );
+
+    m_toolbar->insertButton( "connect_creating", CONNECT, true, i18n("Connect") );
+    QToolTip::add( m_toolbar->getButton(CONNECT), i18n( "Connect media device" ) );
+
+    m_toolbar->insertButton( "player_eject", DISCONNECT, true, i18n("Disconnect") );
+    QToolTip::add( m_toolbar->getButton(DISCONNECT), i18n( "Disconnect media device" ) );
+
+    m_toolbar->insertButton( "rebuild", TRANSFER, true, i18n("Transfer") );
+    QToolTip::add( m_toolbar->getButton(TRANSFER), i18n( "Transfer tracks to media device" ) );
+
+    m_toolbar->insertLineSeparator();
+    m_toolbar->setIconText( KToolBar::IconOnly, false );
+
+    m_toolbar->insertButton( "configure", CONFIGURE, true, i18n("Configure") );
+    QToolTip::add( m_toolbar->getButton(CONFIGURE), i18n( "Configure this media device" ) );
+    connect( m_toolbar->getButton(CONFIGURE),  SIGNAL( clicked() ),        SLOT( config() ) );
+    KPopupMenu *configPopup = new KPopupMenu( this );
+    configPopup->insertItem( "Configure...", this, SLOT(config()) );
+    configPopup->insertItem( "Manage Plugins...", this, SLOT(showPluginManager()) );
+    m_toolbar->setDelayedPopup( CONFIGURE, configPopup );
+#if 0
+    m_playlistButton = new KPushButton( KGuiItem( QString::null, "player_playlist_2" ), hb );
+    m_playlistButton->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
+    m_playlistButton->setToggleButton( true );
+    QToolTip::add( m_playlistButton, i18n( "Append transferred items to playlist \"New amaroK additions\"" ) );
+#endif
+
+    m_deviceCombo = new KComboBox( this );
+
     // searching/filtering
     { //<Search LineEdit>
         KToolBar* searchToolBar = new Browser::ToolBar( this );
@@ -235,11 +267,6 @@ MediaBrowser::MediaBrowser( const char *name )
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
     connect( m_searchEdit, SIGNAL( returnPressed() ), SLOT( slotSetFilter() ) );
-
-    m_devicePluginMapperButton = new KPushButton( "Manage Device Plugins...", this );
-    connect( m_devicePluginMapperButton, SIGNAL( clicked() ), this, SLOT( showPluginManager() ) );
-
-    m_deviceCombo = new KComboBox( this );
 
     // connect to device manager
     connect( DeviceManager::instance(), SIGNAL( mediumAdded(const Medium *, QString) ),
@@ -270,31 +297,9 @@ MediaBrowser::MediaBrowser( const char *name )
     m_progress     = new KProgress( m_progressBox );
     m_cancelButton = new KPushButton( SmallIconSet("cancel"), i18n("Cancel"), m_progressBox );
 
-    QHBox* hb = new QHBox( this );
-    hb->setSpacing( 1 );
-    m_connectButton  = new KPushButton( SmallIconSet( "connect_creating" ), i18n( "Connect"), hb );
-    m_disconnectButton  = new KPushButton( SmallIconSet( "connect_no" ), i18n( "Disconnect"), hb );
-    m_transferButton = new KPushButton( SmallIconSet( "rebuild" ), i18n( "Transfer" ), hb );
-
-    m_playlistButton = new KPushButton( KGuiItem( QString::null, "player_playlist_2" ), hb );
-    m_playlistButton->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
-    m_playlistButton->setToggleButton( true );
-
-    m_configButton   = new KPushButton( KGuiItem( QString::null, "configure" ), hb );
-    m_configButton->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred ); // too big!
-    connect( m_configButton,   SIGNAL( clicked() ), this,                    SLOT( config() ) );
 
     m_stats = new SpaceLabel(this);
 
-    QToolTip::add( m_connectButton,  i18n( "Connect media device" ) );
-    QToolTip::add( m_disconnectButton,  i18n( "Disconnect media device" ) );
-    QToolTip::add( m_transferButton, i18n( "Transfer tracks to media device" ) );
-    QToolTip::add( m_playlistButton, i18n( "Append transferred items to playlist \"New amaroK additions\"" ) );
-    QToolTip::add( m_configButton,   i18n( "Configure media device" ) );
-
-    m_transferButton->setDisabled( true );
-
-    m_progressBox->setFixedHeight( m_transferButton->sizeHint().height() );
     m_progressBox->hide();
 
     MediaDevice *dev = loadDevicePlugin( AmarokConfig::deviceType() );
@@ -328,14 +333,17 @@ MediaBrowser::MediaBrowser( const char *name )
                                                                    "Press the \"Manage Device Plugins...\" button in the "
                                                                    "Media Browser tab to select plugins for these devices.") );
 
+    connect( m_toolbar->getButton(CONNECT),    SIGNAL( clicked() ),        SLOT( connectClicked() ) );
+    connect( m_toolbar->getButton(DISCONNECT), SIGNAL( clicked() ),        SLOT( disconnectClicked() ) );
+    connect( m_toolbar->getButton(TRANSFER),   SIGNAL( clicked() ),        SLOT( transferClicked() ) );
+
     connect( m_deviceCombo,      SIGNAL( activated( int ) ), SLOT( activateDevice( int ) ) );
-    connect( m_connectButton,    SIGNAL( clicked() ),        SLOT( connectClicked() ) );
-    connect( m_disconnectButton, SIGNAL( clicked() ),        SLOT( disconnectClicked() ) );
-    connect( m_transferButton,   SIGNAL( clicked() ),        SLOT( transferClicked() ) );
+
     connect( m_cancelButton,     SIGNAL( clicked() ),        SLOT( cancelClicked() ) );
     connect( kapp,               SIGNAL( aboutToQuit() ),    SLOT( prepareToQuit() ) );
     connect( CollectionDB::instance(), SIGNAL( tagsChanged( const MetaBundle& ) ),
             SLOT( tagsChanged( const MetaBundle& ) ) );
+
 
 }
 
@@ -413,10 +421,12 @@ MediaBrowser::activateDevice( int index )
 
     updateButtons();
     updateStats();
+#if 0
     if( currentDevice() && currentDevice()->m_hasPlaylists )
         m_playlistButton->show();
     else
         m_playlistButton->hide();
+#endif
 }
 
 void
@@ -1240,7 +1250,7 @@ MediaView::viewportPaintEvent( QPaintEvent *e )
 
     // Superimpose bubble help:
 
-    if ( !MediaBrowser::instance()->m_connectButton->isOn() && !childCount() )
+    if ( !MediaBrowser::instance()->currentDevice() || !MediaBrowser::instance()->currentDevice()->isConnected() )
     {
         QPainter p( viewport() );
 
@@ -1646,16 +1656,24 @@ MediaBrowser::configSelectPlugin( int index )
 void
 MediaBrowser::updateButtons()
 {
-    if( m_connectButton )
-        m_connectButton->setEnabled( !currentDevice()
-                || (currentDevice() && !currentDevice()->isConnected() ) );
-    if( m_disconnectButton )
-        m_disconnectButton->setEnabled( currentDevice()
-                && currentDevice()->isConnected() );
-    if( m_transferButton )
-        m_transferButton->setEnabled( currentDevice()
-                && currentDevice()->isConnected()
-                && m_queue->childCount() > 0 );
+    if( !m_toolbar->getButton(CONNECT) ||
+            !m_toolbar->getButton(DISCONNECT) ||
+            !m_toolbar->getButton(TRANSFER) )
+        return;
+
+    if( currentDevice() )
+    {
+        m_toolbar->getButton(CONNECT)->setEnabled( !currentDevice()->isConnected() );
+        m_toolbar->getButton(DISCONNECT)->setEnabled( currentDevice()->isConnected() );
+        m_toolbar->getButton(TRANSFER)->setEnabled( currentDevice()->isConnected() && m_queue->childCount() > 0 );
+    }
+    else
+    {
+        m_toolbar->getButton(CONNECT)->setEnabled( false );
+        m_toolbar->getButton(DISCONNECT)->setEnabled( false );
+        m_toolbar->getButton(TRANSFER)->setEnabled( false );
+    }
+#if 0
     if( m_playlistButton )
     {
         if( currentDevice() && currentDevice()->m_hasPlaylists )
@@ -1663,6 +1681,7 @@ MediaBrowser::updateButtons()
         else
             m_playlistButton->hide();
     }
+#endif
 }
 
 void
@@ -2040,7 +2059,7 @@ MediaBrowser::cancelClicked()
 void
 MediaBrowser::transferClicked()
 {
-    m_transferButton->setEnabled( false );
+    m_toolbar->getButton(TRANSFER)->setEnabled( false );
     if( currentDevice()
             && currentDevice()->isConnected()
             && !currentDevice()->isTransferring() )
@@ -2091,8 +2110,8 @@ MediaBrowser::connectClicked()
 void
 MediaBrowser::disconnectClicked()
 {
-    m_transferButton->setEnabled( false );
-    m_disconnectButton->setEnabled( false );
+    m_toolbar->getButton(TRANSFER)->setEnabled( false );
+    m_toolbar->getButton(DISCONNECT)->setEnabled( false );
 
     if ( m_queue->childCount() != 0 &&
             currentDevice() &&
@@ -2344,13 +2363,14 @@ MediaDevice::transferFiles()
     setCancelled( false );
 
     m_transferring = true;
-    m_parent->m_transferButton->setEnabled( false );
+    m_parent->m_toolbar->getButton(MediaBrowser::TRANSFER)->setEnabled( false );
 
     setProgress( 0, m_parent->m_queue->childCount() + 1 /* for synchronizing */ );
 
     // ok, let's copy the stuff to the device
 
     MediaItem *playlist = 0;
+#if 0
     if(m_playlistItem && m_parent->m_playlistButton->isOn())
     {
         QString name = i18n("New amaroK additions");
@@ -2361,6 +2381,7 @@ MediaDevice::transferFiles()
             playlist = newPlaylist(name, m_playlistItem, items);
         }
     }
+#endif
 
     MediaItem *after = 0; // item after which to insert into playlist
     // iterate through items
@@ -2517,7 +2538,7 @@ MediaDevice::fileTransferFinished()  //SLOT
 {
     m_parent->updateStats();
     m_parent->m_progressBox->hide();
-    m_parent->m_transferButton->setDisabled( true );
+    m_parent->m_toolbar->getButton(MediaBrowser::TRANSFER)->setEnabled( false );
     m_wait = false;
 }
 
@@ -2947,19 +2968,9 @@ MediaQueue::contentsDragMoveEvent( QDragMoveEvent *e )
 {
     KListView::contentsDragMoveEvent( e );
 
-    //    const QPoint p = contentsToViewport( e->pos() );
-    //    QListViewItem *item = itemAt( p );
     e->accept( e->source() != viewport()
             && e->source() != m_parent
             && KURLDrag::canDecode( e ) );
-
-#if 0
-    const QPoint p = contentsToViewport( e->pos() );
-    MediaItem *item = dynamic_cast<MediaItem *>( itemAt( p ) );
-    if( item )
-        if(p.y() - itemRect( item ).top() < (item->height()/2))
-            item = dynamic_cast<MediaItem *>(item->itemAbove());
-#endif
 }
 
 MediaItem*

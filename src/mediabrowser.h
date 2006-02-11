@@ -35,6 +35,11 @@ class QLabel;
 class QPalette;
 class MediaItemTip;
 
+namespace Browser
+{
+    class ToolBar;
+};
+
 struct PodcastInfo
 {
     // per show
@@ -227,15 +232,12 @@ class MediaBrowser : public QVBox
         KProgress*       m_progress;
         QVBox*           m_views;
         KPushButton*     m_cancelButton;
-        KPushButton*     m_transferButton;
-        KPushButton*     m_connectButton;
-        KPushButton*     m_disconnectButton;
-        KPushButton*     m_playlistButton;
-        KPushButton*     m_configButton;
-        KPushButton*     m_devicePluginMapperButton;
+        //KPushButton*     m_playlistButton;
         QVBox*           m_configBox;
         KComboBox*       m_configPluginCombo;
         KComboBox*       m_deviceCombo;
+        enum { CONNECT, DISCONNECT, TRANSFER, CONFIGURE };
+        Browser::ToolBar*m_toolbar;
         typedef QMap<QString, MediaItem*> ItemMap;
         ItemMap          m_itemMap;
 };
