@@ -564,8 +564,13 @@ int RealMediaFF::seekChunk(UINT32 object_id)
       while( (nbytes = getHdr(buf, 255, oid, sz)) == RMFF_HDR_SIZE && memcmp((void *)&oid, (void *)&object_id, 4) )
       {
          tot += sz;
-         if ( (s = lseek(m_fd, sz - RMFF_HDR_SIZE, SEEK_CUR)) != tot )
-            return -1;
+         if (sz > (unsigned) RMFF_HDR_SIZE)
+         {
+            if ( (s = lseek(m_fd, sz - RMFF_HDR_SIZE, SEEK_CUR)) != tot )
+               return -1;
+         }
+         else
+            return -1; // bail in this case, since the chuck sz includes the header size
       }
       if ( (s = lseek(m_fd, -RMFF_HDR_SIZE, SEEK_CUR)) != tot )
          return -1;
