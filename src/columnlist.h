@@ -21,6 +21,7 @@
 #define AMAROK_COLUMNLIST_H
 
 #include <qhbox.h>
+#include <kdialogbase.h>
 
 class KListView;
 class KPushButton;
@@ -33,15 +34,43 @@ public:
     ColumnList( QWidget *parent = 0, const char *name = 0 );
     QValueList<int> visibleColumns() const;
     QValueList<int> columnOrder() const;
+    bool isChanged() const;
+    void resetChanged();
+
+signals:
+    void changed();
 
 private slots:
     void moveUp();
     void moveDown();
     void updateUI();
+    void setChanged();
 
 private:
+    friend class MyCheckListItem;
     KListView *m_list;
     KPushButton *m_up, *m_down;
+    bool m_changed;
+};
+
+class ColumnsDialog: public KDialogBase
+{
+    Q_OBJECT
+public:
+    static void display();
+
+private:
+    ColumnList *m_list;
+    static ColumnsDialog *s_instance;
+    ColumnsDialog();
+    ~ColumnsDialog();
+public:
+    virtual void slotApply();
+    virtual void slotOk();
+    virtual void hide();
+    void apply();
+public slots:
+    void slotChanged();
 };
 
 #endif
