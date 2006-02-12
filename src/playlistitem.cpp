@@ -240,6 +240,9 @@ void PlaylistItem::setEnabled( bool enabled )
 
 void PlaylistItem::setSelected( bool selected )
 {
+    if( isEmpty() )
+        return;
+
     if( isVisible() )
     {
         const bool prevSelected = isSelected();
@@ -261,6 +264,9 @@ void PlaylistItem::setSelected( bool selected )
 
 void PlaylistItem::setVisible( bool visible )
 {
+    if( isEmpty() )
+        return;
+
     if( !visible && isSelected() )
     {
         listView()->m_selCount--;
