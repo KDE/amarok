@@ -12,7 +12,7 @@
 
 class MyDirLister : public KDirLister {
 public:
-    MyDirLister( bool delayedMimeTypes ) : KDirLister( delayedMimeTypes ) { setShowingDotFiles( true ); }
+    MyDirLister( bool delayedMimeTypes ) : KDirLister( delayedMimeTypes ) { }
 
 protected:
     virtual bool matchesMimeFilter( const KFileItem *item ) const {
