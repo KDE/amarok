@@ -168,7 +168,7 @@ amarokapp_SOURCES = \
 
 amarokapp_LDADD = \
     $(top_builddir)/amarok/src/amarokcore/libamarokcore.la \
-    $(top_builddir)/amarok/src/libamarok.la \
+    libamarok.la \
     $(top_builddir)/amarok/src/analyzers/libanalyzers.la \
     $(top_builddir)/amarok/src/engine/libengine.la \
     $(top_builddir)/amarok/src/plugin/libplugin.la \
