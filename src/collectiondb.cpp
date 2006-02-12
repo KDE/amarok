@@ -3239,7 +3239,7 @@ QueryBuilder::addURLFilters( const QStringList& filter )
 void
 QueryBuilder::setGoogleFilter( int defaultTables, QString query )
 {
-    QValueList<QStringList> parsed = MetaBundle::parseExpression( query );
+    MetaBundle::ParsedExpression parsed = MetaBundle::parseExpression( query );
 
     for( uint i = 0, n = parsed.count(); i < n; ++i ) //check each part for matchiness
     {

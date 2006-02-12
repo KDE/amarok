@@ -3441,7 +3441,7 @@ Playlist::setFilter( const QString &query ) //SLOT
 
     if( advanced )
     {
-        QValueList<QStringList> parsed = MetaBundle::parseExpression( query );
+        MetaBundle::ParsedExpression parsed = MetaBundle::parseExpression( query );
         for(; *it; ++it )
             (*it)->setVisible( (*it)->matchesParsedExpression( parsed, visible ) );
     }

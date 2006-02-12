@@ -1743,7 +1743,7 @@ MediaView::setFilter( const QString &filter, MediaItem *parent )
         {
             if( advanced )
             {
-                QValueList<QStringList> parsed = MetaBundle::parseExpression( filter );
+                MetaBundle::ParsedExpression parsed = MetaBundle::parseExpression( filter );
                 visible = it->bundle() && it->bundle()->matchesParsedExpression( parsed, defaultColumns );
             }
             else

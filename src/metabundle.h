@@ -153,13 +153,16 @@ public:
         The tags in \p defaultColumns are checked for matches where the expression doesn't specify any manually. */
     bool matchesExpression( const QString &expression, QValueList<int> defaultColumns ) const;
 
+    /** The internal type used for an expression after it has been parsed. */
+    typedef QValueList<QStringList> ParsedExpression;
+
     /** Parses \p expression into a format suitable for matchesParsedExpression().
         These functions are useful if you want to check many items, and only parse the expression once. */
-    static QValueList<QStringList> parseExpression( QString expression );
+    static ParsedExpression parseExpression( QString expression );
 
     /** Returns whether the bundle matches the pre-parsed expression \p parsedData.
         The tags in \p defaultColumns are checked for matches where the expression doesn't specify any manually. */
-    bool matchesParsedExpression( QValueList<QStringList> parsedData, QValueList<int> defaultColumns ) const;
+    bool matchesParsedExpression( ParsedExpression parsedData, QValueList<int> defaultColumns ) const;
 
 public: //accessors
     KURL url()           const;

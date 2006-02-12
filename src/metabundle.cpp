@@ -549,7 +549,7 @@ bool MetaBundle::matchesExpression( const QString &expression, QValueList<int> d
     return matchesParsedExpression( parseExpression( expression ), defaultColumns );
 }
 
-QValueList<QStringList> MetaBundle::parseExpression( QString expression ) //static
+MetaBundle::ParsedExpression MetaBundle::parseExpression( QString expression ) //static
 {
     if( expression.contains( "\"" ) % 2 == 1 ) expression += "\""; //make an even number of "s
 
@@ -619,7 +619,7 @@ QValueList<QStringList> MetaBundle::parseExpression( QString expression ) //stat
     return allof;
 }
 
-bool MetaBundle::matchesParsedExpression( QValueList<QStringList> data, QValueList<int> defaults ) const
+bool MetaBundle::matchesParsedExpression( ParsedExpression data, QValueList<int> defaults ) const
 {
     for( uint i = 0, n = data.count(); i < n; ++i ) //check each part for matchiness
     {
