@@ -3,6 +3,14 @@ amaroK ChangeLog
 (C) 2002-2006 the amaroK authors.
 
 
+VERSION 1.4-beta2:
+  FEATURES:
+
+  CHANGES:
+
+  BUGFIXES:
+
+
 VERSION 1.4-beta1:
   FEATURES:
     * AudioCD (CDDA) support for xine-engine, including CDDB lookup. Patch by
