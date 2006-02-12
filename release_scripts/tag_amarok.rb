@@ -46,8 +46,8 @@ end
 
 
 # Copy the files in the repository
-`svn cp -m "Tag amaroK." #{source} #{target}/multimedia`
-`svn cp -m "Tag amaroK docs." #{docs} #{target}/multimedia/doc`
+`svn cp -m "Tag amaroK #{tagname}." #{source} #{target}/multimedia`
+`svn cp -m "Tag amaroK #{tagname} - docs." #{docs} #{target}/multimedia/doc`
 
 
 print "Tag created.\n"
