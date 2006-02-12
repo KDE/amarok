@@ -639,8 +639,8 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                     QImage tmpImage = currentTrackLeft.smoothScale( 1, height(), QImage::ScaleMax );
                     KIconEffect::colorize( tmpImage, glowBase, colorize );
                     imageTransparency( tmpImage, intensity );
-                    p.drawImage( 0, 0, tmpImage );
-                    leftOffset = tmpImage.width();
+                    p.drawImage( 0, 0, tmpImage, 0, 0, tmpImage.width() - 1 ); //HACK
+                    leftOffset = tmpImage.width() - 1; //HACK Subtracting 1, to work around the black line bug
                     margin += 6;
                 }
 
