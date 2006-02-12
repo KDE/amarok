@@ -33,7 +33,6 @@ FirstRunWizard::init()
     using namespace amaroK;
 
     //aesthetics
-    cancelButton()->setFixedSize( cancelButton()->sizeHint() );
     helpButton()->hide();
 
     //would be better as a KConfigXT key now
