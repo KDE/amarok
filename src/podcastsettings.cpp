@@ -22,7 +22,7 @@
 PodcastSettings::PodcastSettings( const QDomNode &channelSettings, const QString &title )
     : m_title( title )
 {
-    m_saveLocation = channelSettings.namedItem( "savelocation").toElement().text();
+    m_saveLocation = KURL::fromPathOrURL( channelSettings.namedItem( "savelocation").toElement().text() );
     m_autoScan = channelSettings.namedItem( "autoscan").toElement().text() == "true";
     m_interval = channelSettings.namedItem( "scaninterval").toElement().text().toInt();
     m_fetch = channelSettings.namedItem("fetch").toElement().text() == "automatic"?AUTOMATIC:STREAM;
@@ -49,7 +49,7 @@ PodcastSettings::PodcastSettings( const PodcastSettings *parentSettings, const Q
 PodcastSettings::PodcastSettings( const QString &title )
     : m_title( title )
 {
-    m_saveLocation = amaroK::saveLocation( "podcasts/data/" );
+    m_saveLocation = KURL::fromPathOrURL( amaroK::saveLocation( "podcasts/data/" ) );
     m_autoScan = false;
     m_interval = 4;
     m_fetch = STREAM;
