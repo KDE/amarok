@@ -46,6 +46,7 @@ AMAROK_EXPORT_PLUGIN( VfatMediaDevice )
 
 #include <qcstring.h>
 #include <qfile.h>
+#include <qstringx.h>
 
 namespace amaroK { extern KConfig *config( const QString& ); }
 
@@ -119,6 +120,7 @@ VfatMediaDevice::VfatMediaDevice()
     m_dirLister = new KDirLister();
     m_dirLister->setNameFilter( "*.mp3 *.wav *.asf *.flac *.wma *.ogg" );
     m_dirLister->setAutoUpdate( false );
+    m_spacesToUnderscores = false;
     connect( m_dirLister, SIGNAL( newItems(const KFileItemList &) ), this, SLOT( newItems(const KFileItemList &) ) );
 }
 
@@ -150,9 +152,10 @@ VfatMediaDevice::openDevice( bool /*silent*/ )
     if( !m_medium )
     {
         amaroK::StatusBar::instance()->longMessage( i18n( "VFAT Devices cannot be manually configured.  Ensure DBUS and HAL are running\n"
-                                                         "and your kioslaves were built with DBUS and HAL support.  The device should be\n"
-                                                         "autodetected; click the \"Manage Device Plugins...\" button and choose the\n"
-                                                         "VFAT plugin.  Then ensure the device is mounted and click \"Connect\" again." ),
+                                                          "and your kioslaves were built with DBUS and HAL support.  The device should be\n"
+                                                          "autodetected; click the \"Manage Plugins...\" suboption of the Configure button\n"
+                                                          "in the Media Device tab and choose the VFAT plugin for the detected device.  Then\n"
+                                                          "ensure the device is mounted and click \"Connect\" again." ),
                                                     KDE::StatusBar::Sorry );
         return false;
     }
@@ -163,6 +166,7 @@ VfatMediaDevice::openDevice( bool /*silent*/ )
                                                     KDE::StatusBar::Sorry );
         return false;
     }
+    m_actuallyVfat = m_medium->fsType() == "vfat" ? true : false;
     m_connected = true;
     m_transferDir = m_medium->mountPoint();
     listDir( m_medium->mountPoint() );
@@ -273,7 +277,7 @@ VfatMediaDevice::copyTrackToDevice( const MetaBundle& bundle, const PodcastInfo*
     DEBUG_BLOCK
     if( !m_connected ) return 0;
 
-    const QString  newFilenameSansMountpoint = bundle.prettyTitle().remove( "'" ) + "." + bundle.type();
+    const QString  newFilenameSansMountpoint = cleanPath( bundle.prettyTitle().remove( "'" ) + "." + bundle.type() );
     const QString  newFilename = m_medium->mountPoint() + "/" + newFilenameSansMountpoint;
     const QCString src  = QFile::encodeName( bundle.url().path() );
     const QCString dest = QFile::encodeName( newFilename ); // TODO: add to directory
@@ -634,6 +638,71 @@ VfatMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
 
         }
     }
+}
+
+//So what's better, keep instantiating a new OrganizeCollectionDialog, or duplicate code?
+//or maybe make this a static function somewhere?
+QString VfatMediaDevice::cleanPath( const QString &component )
+{
+    QString result = component;
+
+    if( m_actuallyVfat )
+    {
+        // german umlauts
+        result.replace( QChar(0x00e4), "ae" ).replace( QChar(0x00c4), "Ae" );
+        result.replace( QChar(0x00f6), "oe" ).replace( QChar(0x00d6), "Oe" );
+        result.replace( QChar(0x00dc), "ue" ).replace( QChar(0x00fc), "Ue" );
+        result.replace( QChar(0x00df), "ss" );
+
+        // some strange accents
+        result.replace( QChar(0x00e7), "c" ).replace( QChar(0x00c7), "C" );
+        result.replace( QChar(0x00fd), "y" ).replace( QChar(0x00dd), "Y" );
+        result.replace( QChar(0x00f1), "n" ).replace( QChar(0x00d1), "N" );
+
+        // accented vowels
+        QChar a[] = { 'a', 0xe0,0xe1,0xe2,0xe3,0xe5, 0 };
+        QChar A[] = { 'A', 0xc0,0xc1,0xc2,0xc3,0xc5, 0 };
+        QChar E[] = { 'e', 0xe8,0xe9,0xea,0xeb, 0 };
+        QChar e[] = { 'E', 0xc8,0xc9,0xca,0xcb, 0 };
+        QChar i[] = { 'i', 0xec,0xed,0xee,0xef, 0 };
+        QChar I[] = { 'I', 0xcc,0xcd,0xce,0xcf, 0 };
+        QChar o[] = { 'o', 0xf2,0xf3,0xf4,0xf5,0xf8, 0 };
+        QChar O[] = { 'O', 0xd2,0xd3,0xd4,0xd5,0xd8, 0 };
+        QChar u[] = { 'u', 0xf9,0xfa,0xfb, 0 };
+        QChar U[] = { 'U', 0xd9,0xda,0xdb, 0 };
+        QChar nul[] = { 0 };
+        QChar *replacements[] = { a, A, e, E, i, I, o, O, u, U, nul };
+
+        for( uint i = 0; i < result.length(); i++ )
+        {
+            QChar c = result.ref( i );
+            for( uint n = 0; replacements[n][0] != QChar(0); n++ )
+            {
+                for( uint k=0; replacements[n][k] != QChar(0); k++ )
+                {
+                    if( replacements[n][k] == c )
+                    {
+                        c = replacements[n][0];
+                    }
+                }
+            }
+            if( c > QChar(0x7f) || c == QChar(0) )
+            {
+                c = '_';
+            }
+            result.ref( i ) = c;
+        }
+    }
+
+    result.simplifyWhiteSpace();
+    if( m_spacesToUnderscores )
+        result.replace( QRegExp( "\\s" ), "_" );
+    if( m_actuallyVfat )
+        result.replace( "?", "_" ).replace( "\\", "_" ).replace( "*", "_" ).replace( ":", "_" );
+
+    result.replace( "/", "-" );
+
+    return result;
 }
 
 #include "vfatmediadevice.moc"

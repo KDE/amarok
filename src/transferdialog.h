@@ -14,6 +14,7 @@
 
 #include "mediabrowser.h"
 
+#include <qcheckbox.h>
 #include <qmap.h>
 #include <qsignalmapper.h>
 #include <kdialogbase.h>
@@ -42,8 +43,10 @@ class TransferDialog : public KDialogBase
         void slotCancel();
         void sort1_activated( int index );
         void sort2_activated( int index );
+        void convertSpaces_toggled( bool on );
 
     private:
+        MediaDevice                     *m_dev;
         bool                             m_accepted;
         KComboBox                       *m_sort1;
         KComboBox                       *m_sort2;

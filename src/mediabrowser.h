@@ -434,6 +434,9 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         QString           getTransferDir() { return m_transferDir; }
         Medium *          getMedium() { return m_medium; }
 
+        void              setSpacesToUnderscores( bool yesno ) { m_spacesToUnderscores = yesno; }
+        bool              getSpacesToUnderscores() { return m_spacesToUnderscores; }
+
 
     public slots:
         void abortTransfer();
@@ -556,6 +559,7 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         bool             m_deleting;
         bool             m_deferredDisconnect;
         bool             m_runDisconnectHook;
+        bool             m_spacesToUnderscores;
         MediaItem       *m_transferredItem;
         QString          m_type;
 

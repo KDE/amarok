@@ -95,6 +95,8 @@ class VfatMediaDevice : public MediaDevice
         // getFilename = false will return only parent structure, as opposed to returning the filename as well
         QString           getFullPath( const QListViewItem *item, const bool getFilename = true );
 
+        QString           cleanPath( const QString &component );
+
         bool              m_connected;
 
         VfatMediaItem     *m_last;
@@ -108,6 +110,8 @@ class VfatMediaDevice : public MediaDevice
         KIO::UDSEntry     m_udsentry;
 
         TransferDialog    *m_td;
+        bool              m_actuallyVfat;
+
 };
 
 #endif /*AMAROK_VFATMEDIADEVICE_H*/

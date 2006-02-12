@@ -19,6 +19,8 @@
 #include "pluginmanager.h"
 #include "transferdialog.h"
 
+#include <qcheckbox.h>
+#include <qgroupbox.h>
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qvbox.h>
@@ -30,9 +32,10 @@
 #include <klocale.h>
 #include <kpushbutton.h>
 
-TransferDialog::TransferDialog( MediaDevice * mdev )
+TransferDialog::TransferDialog( MediaDevice *mdev )
         : KDialogBase( amaroK::mainWindow(), "transferdialog", true, QString::null, Ok|Cancel, Ok )
 {
+    m_dev = mdev;
     m_accepted = false;
     m_sort1LastIndex = m_sort2LastIndex = -1;
 
@@ -53,20 +56,28 @@ TransferDialog::TransferDialog( MediaDevice * mdev )
     directoryBox = new KLineEdit( QString::null, vbox, "transferdir_lineedit" );
     */
 
-    new QLabel( i18n( "Your music will be transferred to\n%1" )
-                    .arg( transferDir ), vbox );
+    QGroupBox *location = new QGroupBox( 1, Qt::Vertical, i18n( "Music Location" ), vbox );
 
+    new QLabel( i18n( "Your music will be transferred to:\n%1" )
+                    .arg( transferDir ), location );
+
+    QVBox *vbox2 = new QVBox( vbox );
+    QSpacerItem *spacer = new QSpacerItem( 0, 25 );
+    QLayout *vlayout = vbox2->layout();
+    if( vlayout )
+        vlayout->addItem( spacer );
 
     new QLabel( i18n( "You can have your music automatically grouped in\n"
                       "a variety of ways. Each grouping will create\n"
                       "directories based upon the specified criteria.\n"), vbox );
 
-    m_label1 = new QLabel( i18n( "Select first grouping:\n" ), vbox );
-    m_sort1 = new KComboBox( vbox );
-    m_label2 = new QLabel( i18n( "Select second grouping:\n" ), vbox );
-    m_sort2 = new KComboBox( vbox );
-    m_label3 = new QLabel( i18n( "Select third grouping:\n" ), vbox ); 
-    m_sort3 = new KComboBox( vbox );
+    QGroupBox *sorting = new QGroupBox( 6, Qt::Vertical, i18n( "Groupings" ), vbox );
+    m_label1 = new QLabel( i18n( "Select first grouping:\n" ), sorting );
+    m_sort1 = new KComboBox( sorting );
+    m_label2 = new QLabel( i18n( "Select second grouping:\n" ), sorting );
+    m_sort2 = new KComboBox( sorting );
+    m_label3 = new QLabel( i18n( "Select third grouping:\n" ), sorting ); 
+    m_sort3 = new KComboBox( sorting );
 
     m_label2->setDisabled(true);
     m_sort2->setDisabled(true);
@@ -88,8 +99,21 @@ TransferDialog::TransferDialog( MediaDevice * mdev )
         comboTemp->setCurrentItem( 0 );
     }
 
-    connect( m_sort1, SIGNAL(activated(int)), SLOT(sort1_activated(int)));
-    connect( m_sort2, SIGNAL(activated(int)), SLOT(sort2_activated(int)));
+    connect( m_sort1, SIGNAL( activated(int) ), SLOT( sort1_activated(int)) );
+    connect( m_sort2, SIGNAL( activated(int) ), SLOT( sort2_activated(int)) );
+
+    QVBox *vbox3 = new QVBox( vbox );
+    QSpacerItem *spacer2 = new QSpacerItem( 0, 25 );
+    QLayout *vlayout2 = vbox3->layout();
+    if( vlayout2 )
+        vlayout2->addItem( spacer2 );
+
+    QGroupBox *options = new QGroupBox( 6, Qt::Vertical, i18n( "Options" ), vbox );
+
+    QCheckBox *convertSpaces = new QCheckBox( i18n( "Convert spaces to underscores: " ), options );
+    convertSpaces->setChecked( mdev->getSpacesToUnderscores() );
+
+    connect( convertSpaces, SIGNAL( toggled(bool) ), this, SLOT( convertSpaces_toggled(bool) ) );
 
 }
 
@@ -149,6 +173,12 @@ TransferDialog::sort2_activated( int index )
         m_sort3->setDisabled( false );
 
     m_sort2LastIndex = index;
+}
+
+void
+TransferDialog::convertSpaces_toggled( bool on )
+{
+    m_dev->setSpacesToUnderscores( on );
 }
 
 #include "transferdialog.moc"
