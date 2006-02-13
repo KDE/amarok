@@ -1652,13 +1652,13 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
 void
 CollectionView::contentsDragEnterEvent( QDragEnterEvent *e )
 {
-    e->accept( e->source() != viewport() && KURLDrag::canDecode( e ) );
+    e->accept( e->source() != viewport() && e->source() != this && KURLDrag::canDecode( e ) );
 }
 
 void
 CollectionView::contentsDragMoveEvent( QDragMoveEvent *e )
 {
-    e->accept( e->source() != viewport() && KURLDrag::canDecode( e ) );
+    e->accept( e->source() != viewport() && e->source() != this && KURLDrag::canDecode( e ) );
 }
 
 void
