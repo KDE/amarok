@@ -437,6 +437,11 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         void              setSpacesToUnderscores( bool yesno ) { m_spacesToUnderscores = yesno; }
         bool              getSpacesToUnderscores() { return m_spacesToUnderscores; }
 
+        void              setFirstSort( QString text ) { m_firstSort = text; }
+        void              setSecondSort( QString text ) { m_secondSort = text; }
+        void              setThirdSort( QString text ) { m_thirdSort = text; }
+
+
 
     public slots:
         void abortTransfer();
@@ -547,6 +552,9 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         MediaView       *m_view;
         Medium          *m_medium;
         QString          m_transferDir;
+        QString          m_firstSort;
+        QString          m_secondSort;
+        QString          m_thirdSort;
         bool             m_wait;
         bool             m_waitForDeletion;
         bool             m_copyFailed;
@@ -560,6 +568,7 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         bool             m_deferredDisconnect;
         bool             m_runDisconnectHook;
         bool             m_spacesToUnderscores;
+
         MediaItem       *m_transferredItem;
         QString          m_type;
 

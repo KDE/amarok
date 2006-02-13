@@ -114,7 +114,6 @@ TransferDialog::TransferDialog( MediaDevice *mdev )
     convertSpaces->setChecked( mdev->getSpacesToUnderscores() );
 
     connect( convertSpaces, SIGNAL( toggled(bool) ), this, SLOT( convertSpaces_toggled(bool) ) );
-
 }
 
 void
@@ -122,6 +121,10 @@ TransferDialog::slotOk()
 {
     m_accepted = true;
     KDialogBase::slotOk();
+
+    m_dev->setFirstSort( m_sort1->currentText() );
+    m_dev->setSecondSort( m_sort2->currentText() );
+    m_dev->setThirdSort( m_sort3->currentText() );
 }
 
 void

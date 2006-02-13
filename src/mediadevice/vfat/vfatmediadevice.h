@@ -83,6 +83,7 @@ class VfatMediaDevice : public MediaDevice
 
         // file transfer
         void              downloadSelectedItems();
+        void              copyTrackSortHelper( const MetaBundle& bundle, QString& sort, QString& temp, QString& base );
 
         // listDir
         void              listDir( const QString &dir );
@@ -94,7 +95,7 @@ class VfatMediaDevice : public MediaDevice
         //int               setProgressInfo( struct vfat_transfer_status *progress );
         // Will iterate over parents and add directory name to the item.
         // getFilename = false will return only parent structure, as opposed to returning the filename as well
-        QString           getFullPath( const QListViewItem *item, const bool getFilename = true );
+        QString           getFullPath( const QListViewItem *item, const bool getFilename = true, const bool prependMount = true, const bool clean = true );
 
         QString           cleanPath( const QString &component );
 
@@ -112,6 +113,7 @@ class VfatMediaDevice : public MediaDevice
 
         TransferDialog    *m_td;
         bool              m_actuallyVfat;
+        bool              m_isInCopyTrack;
 
 };
 

@@ -121,6 +121,10 @@ VfatMediaDevice::VfatMediaDevice()
     m_dirLister->setNameFilter( "*.mp3 *.wav *.asf *.flac *.wma *.ogg" );
     m_dirLister->setAutoUpdate( false );
     m_spacesToUnderscores = false;
+    m_isInCopyTrack = false;
+    m_firstSort = "None";
+    m_secondSort = "None";
+    m_thirdSort = "None";
     connect( m_dirLister, SIGNAL( newItems(const KFileItemList &) ), this, SLOT( newItems(const KFileItemList &) ) );
     connect( m_dirLister, SIGNAL( completed() ), this, SLOT( dirListerCompleted() ) );
 }
@@ -229,8 +233,26 @@ VfatMediaDevice::newDirectory( const QString &name, MediaItem *parent )
     DEBUG_BLOCK
     if( !m_connected || name.isEmpty() ) return 0;
 
-    QString fullPath = cleanPath( getFullPath( parent ) );
-    const QCString dirPath = QFile::encodeName( fullPath == QString::null ? m_medium->mountPoint() + "/" + name : fullPath + "/" + name );
+    debug() << "newDirectory called with name = " << name << ", and parent = " << parent << endl;
+
+    bool equal = name.startsWith( m_medium->mountPoint(), true );
+
+    debug() << "name.startsWith(m_medium->mountPoint() = " << (equal ? "true" : "false") << endl;
+
+    QString fullPath = getFullPath( parent, true, ( equal ? false : true ), false );
+
+    if( fullPath == QString::null )
+        fullPath += m_medium->mountPoint();
+
+    debug() << "fullPath = " << fullPath << endl;
+
+    QCString dirPath;
+
+    if( equal )
+        dirPath = QFile::encodeName( cleanPath(name) );
+    else
+        dirPath = QFile::encodeName( fullPath + "/" + cleanPath(name) );
+
     debug() << "Creating directory: " << dirPath << endl;
 
     const KURL url( dirPath );
@@ -240,6 +262,9 @@ VfatMediaDevice::newDirectory( const QString &name, MediaItem *parent )
         debug() << "Failed to create directory " << dirPath << endl;
         return NULL;
     }
+
+    if( m_isInCopyTrack )
+        addTrackToList( MediaItem::DIRECTORY, cleanPath(name) );
 
     return m_last;
 
@@ -271,14 +296,63 @@ VfatMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> items
 
 /// Uploading
 
+void
+VfatMediaDevice::copyTrackSortHelper( const MetaBundle& bundle, QString& sort, QString& temp, QString& base )
+{
+    QListViewItem *it;
+    if( sort != "None" )
+    {
+        debug() << "sort = " << sort << endl;
+        temp = bundle.prettyText( bundle.columnIndex(sort) );
+        temp = ( temp == QString::null ? "Unknown" : temp );
+        temp = cleanPath( temp );
+        base += temp + "/";
+
+        if( !KIO::NetAccess::stat( KURL(base), m_udsentry, m_parent ) )
+            m_tmpParent = static_cast<MediaItem *>(newDirectory( temp, static_cast<MediaItem*>(m_tmpParent) ));
+        else
+        {
+            debug() << "m_tmpParent (firstSort) " << m_tmpParent << endl;
+            if( m_tmpParent)
+                it = m_tmpParent->firstChild();
+            else
+                it = m_view->firstChild();
+            while( it && it->text(0) != temp )
+            {
+                it = it->nextSibling();
+                debug() << "Looking for next in firstSort, temp = " << temp << ", text(0) = " << it->text(0) << endl;
+            }
+            m_tmpParent = static_cast<MediaItem *>( it );
+        }
+    }
+}
+
+
 MediaItem *
 VfatMediaDevice::copyTrackToDevice( const MetaBundle& bundle, const PodcastInfo* /*info*/ )
 {
     DEBUG_BLOCK
+    debug() << "dirlister autoupdate = " << (m_dirLister->autoUpdate() ? "true" : "false") << endl;
     if( !m_connected ) return 0;
 
-    const QString  newFilenameSansMountpoint = cleanPath( bundle.prettyTitle().remove( "'" ) + "." + bundle.type() );
-    const QString  newFilename = m_transferDir + "/" + newFilenameSansMountpoint;
+    m_isInCopyTrack = true;
+
+    //TODO: dirlister's autoupdate should be off, but it's running, setting m_tmpParent to null and generally fucking everything up
+    //what to do?  not have it return null?  figure out how to actually turn the dirlister's autoupdate off?
+
+    debug() << "m_tmpParent = " << m_tmpParent << endl;
+    MediaItem *previousTmpParent = static_cast<MediaItem *>(m_tmpParent);
+
+    QString  newFilenameSansMountpoint = cleanPath( bundle.prettyTitle().remove( "'" ) + "." + bundle.type() );
+    QString  base = m_transferDir + "/";
+    QString  temp;
+
+    copyTrackSortHelper( bundle, m_firstSort, temp, base);
+    copyTrackSortHelper( bundle, m_secondSort, temp, base);
+    copyTrackSortHelper( bundle, m_thirdSort, temp, base);
+
+    QString  newFilename = base + newFilenameSansMountpoint;
+
     const QCString src  = QFile::encodeName( bundle.url().path() );
     const QCString dest = QFile::encodeName( newFilename ); // TODO: add to directory
 
@@ -290,9 +364,13 @@ VfatMediaDevice::copyTrackToDevice( const MetaBundle& bundle, const PodcastInfo*
     if( KIO::NetAccess::file_copy( srcurl, desturl, -1, false, false, m_parent) ) //success
     {
         addTrackToList( MediaItem::TRACK, newFilenameSansMountpoint );
+        m_tmpParent = previousTmpParent;
+        m_isInCopyTrack = false;
         return m_last;
     }
 
+    m_tmpParent = previousTmpParent;
+    m_isInCopyTrack = false;
     return 0;
 }
 
@@ -301,21 +379,43 @@ VfatMediaDevice::copyTrackToDevice( const MetaBundle& bundle, const PodcastInfo*
 MediaItem *
 VfatMediaDevice::trackExists( const MetaBundle& bundle )
 {
-    const QString newFilenameSansMountpoint = cleanPath( bundle.prettyTitle().remove( "'" ) + "." + bundle.type() );
-    const QString newFilename = m_transferDir + "/" + newFilenameSansMountpoint;
-    debug() << "sans mountpoint: " << newFilenameSansMountpoint << endl << "with: " << newFilename << endl;
+    QString  newFilenameSansMountpoint = cleanPath( bundle.prettyTitle().remove( "'" ) + "." + bundle.type() );
+    QString  base = m_transferDir + "/";
+    QString  temp;
+
+    debug() << "m_firstSort = " << m_firstSort << endl;
+    if( m_firstSort != "None")
+    {
+        temp = bundle.prettyText( bundle.columnIndex(m_firstSort) );
+        base += cleanPath( ( temp == QString::null ? "Unknown" : temp ) ) + "/";
+    }
+
+    debug() << "m_secondSort = " << m_secondSort << endl;
+    if( m_secondSort != "None")
+    {
+        temp = bundle.prettyText( bundle.columnIndex(m_secondSort) );
+        base += cleanPath( ( temp == QString::null ? "Unknown" : temp ) ) + "/";
+    }
+
+    debug() << "m_thirdSort = " << m_thirdSort << endl;
+    if( m_thirdSort != "None")
+    {
+        temp = bundle.prettyText( bundle.columnIndex(m_thirdSort) );
+        base += cleanPath( ( temp == QString::null ? "Unknown" : temp ) ) + "/";
+    }
+
+    QString  newFilename = base + newFilenameSansMountpoint;
+
     if ( KIO::NetAccess::stat( KURL(newFilename), m_udsentry, m_parent ) )
     {
         QListViewItemIterator it( m_view );
         while ( it.current() )
         {
-            debug() << "current text: " << (*it)->text( 0 ) << endl;
             if ( (*it)->text( 0 ) == newFilenameSansMountpoint )
                 return static_cast<MediaItem *>(it.current());
             ++it;
         }
     }
-    debug() << "NEVER FOUND IT" << endl;
     return 0;
 }
 
@@ -444,6 +544,9 @@ VfatMediaDevice::newItems( const KFileItemList &items )
 {
     DEBUG_BLOCK
     //iterate over items, calling addTrackToList
+    if( m_isInCopyTrack )
+        return;
+
     QPtrListIterator<KFileItem> it( items );
     KFileItem *kfi;
     while ( (kfi = it.current()) != 0 ) {
@@ -455,12 +558,15 @@ VfatMediaDevice::newItems( const KFileItemList &items )
 void
 VfatMediaDevice::dirListerCompleted()
 {
-    m_tmpParent = NULL;
+    DEBUG_BLOCK
+    if( !m_isInCopyTrack )
+        m_tmpParent = NULL;
 }
 
 int
 VfatMediaDevice::addTrackToList( int type, QString name, int /*size*/ )
 {
+    DEBUG_BLOCK
     m_tmpParent ?
         m_last = new VfatMediaItem( m_tmpParent ):
         m_last = new VfatMediaItem( m_view );
@@ -535,23 +641,32 @@ VfatMediaDevice::foundMountPoint( const QString & mountPoint, unsigned long kBSi
 /// Helper functions
 
 QString
-VfatMediaDevice::getFullPath( const QListViewItem *item, const bool getFilename )
+VfatMediaDevice::getFullPath( const QListViewItem *item, const bool getFilename, const bool prependMount, const bool clean )
 {
+    DEBUG_BLOCK
     if( !item ) return QString::null;
 
     QString path;
 
-    if ( getFilename ) path = item->text(0);
+    if ( getFilename && clean )
+        path = cleanPath(item->text(0));
+    else if( getFilename )
+        path = item->text(0);
 
     QListViewItem *parent = item->parent();
 
     while( parent )
     {
         path.prepend( "/" );
-        path.prepend( parent->text(0) );
+        path.prepend( ( clean ? cleanPath(parent->text(0)) : parent->text(0) ) );
         parent = parent->parent();
     }
-    path.prepend( m_medium->mountPoint() + "/" );
+
+    debug() << "path before prependMount = " << path << endl;
+    if( prependMount )
+        path.prepend( m_medium->mountPoint() + "/" );
+
+    debug() << "path after prependMount = " << path << endl;
 
     return path;
 
@@ -612,7 +727,6 @@ VfatMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                     if (m_transferDir != QString::null)
                         m_transferDir = m_transferDir.remove( m_transferDir.length() - 1, 1 );
                 }
-                debug() << "New transfer dir is: " << m_transferDir << endl;
                 emit startTransfer();
                 break;
         }
@@ -638,7 +752,6 @@ VfatMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
             case TRANSFER_HERE:
                 m_transferDir = m_medium->mountPoint();
                 m_tmpParent = NULL;
-                debug() << "New transfer dir is: " << m_transferDir << endl;
                 emit startTransfer();
                 break;
 

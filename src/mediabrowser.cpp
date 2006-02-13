@@ -1774,6 +1774,9 @@ MediaDevice::MediaDevice()
     , m_view( NULL )
     , m_medium( NULL )
     , m_transferDir( QString::null )
+    , m_firstSort( QString::null )
+    , m_secondSort( QString::null )
+    , m_thirdSort( QString::null )
     , m_wait( false )
     , m_requireMount( false )
     , m_hasPodcast( false )
@@ -2348,7 +2351,10 @@ void
 MediaDevice::transferFiles()
 {
     if( !lockDevice( true ) )
+    {
+        setSpacesToUnderscores( false );
         return;
+    }
 
     setCancelled( false );
 
@@ -2498,6 +2504,7 @@ MediaDevice::transferFiles()
     unlockDevice();
     fileTransferFinished();
 
+    setSpacesToUnderscores( false );
     m_parent->updateButtons();
     m_transferring = false;
 
@@ -2987,9 +2994,9 @@ MediaQueue::totalSize() const
     {
         MediaItem *item = static_cast<MediaItem *>(it);
 
-        if( !m_parent->currentDevice()
+        if( item && ( !m_parent->currentDevice()
                 || !m_parent->currentDevice()->isConnected()
-                || !m_parent->currentDevice()->trackExists(*item->bundle()) )
+                || !m_parent->currentDevice()->trackExists(*item->bundle()) ) )
             total += ((item->size()+1023)/1024)*1024;
     }
 
