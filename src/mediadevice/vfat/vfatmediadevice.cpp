@@ -282,8 +282,6 @@ VfatMediaDevice::copyTrackToDevice( const MetaBundle& bundle, const PodcastInfo*
     const QCString src  = QFile::encodeName( bundle.url().path() );
     const QCString dest = QFile::encodeName( newFilename ); // TODO: add to directory
 
-    debug() << "m_transferDir = " << m_transferDir << ", newFilename = " << newFilename << endl;
-
     const KURL srcurl(src);
     const KURL desturl(dest);
 
@@ -291,11 +289,7 @@ VfatMediaDevice::copyTrackToDevice( const MetaBundle& bundle, const PodcastInfo*
 
     if( KIO::NetAccess::file_copy( srcurl, desturl, -1, false, false, m_parent) ) //success
     {
-        debug() << "m_transferDir == medium->mountPoint: " << (m_transferDir == m_medium->mountPoint() ? "true" : "false" ) << endl;
         addTrackToList( MediaItem::TRACK, newFilenameSansMountpoint );
-            /*(m_transferDir == m_medium->mountPoint() ?
-                newFilenameSansMountpoint :
-                (m_transferDir.remove(0, m_medium->mountPoint().length()) + "/" + newFilenameSansMountpoint )));*/
         return m_last;
     }
 
@@ -461,7 +455,6 @@ VfatMediaDevice::newItems( const KFileItemList &items )
 void
 VfatMediaDevice::dirListerCompleted()
 {
-    DEBUG_BLOCK
     m_tmpParent = NULL;
 }
 
@@ -515,9 +508,6 @@ VfatMediaDevice::getCapacity( KIO::filesize_t *total, KIO::filesize_t *available
         usleep( 10000 );
         kapp->processEvents( 100 );
         count++;
-        if (count % 30 == 0){
-            debug() << "KDiskFreeSp taking a long time, perhaps something went wrong?" << endl;
-        }
         if (count > 120){
             debug() << "KDiskFreeSp taking too long.  Returning false from getCapacity()" << endl;
             return false;

@@ -2391,7 +2391,6 @@ MediaDevice::transferFiles()
 
         bool transcoding = false;
         MediaItem *item = trackExists( *bundle );
-        debug() << "DOES ITEM EXIST? " << (item == 0 ? "no" : "yes") << endl;
         if( item && m_transferredItem->m_playlistName == QString::null )
         {
             amaroK::StatusBar::instance()->longMessage( i18n( "Track already exists on media device: %1" ).
