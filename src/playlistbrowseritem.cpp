@@ -1073,6 +1073,18 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
     setText(0, i18n("Retrieving Podcast...") ); //HACK to fill loading time space
     setPixmap( 0, SmallIcon("player_playlist_2") );
 
+    if( m_channelSettings.isNull() ) //no channelsettings found, create new PodcastSettings based on settings from parent
+    {
+        m_settings = new PodcastSettings(
+                PlaylistBrowser::instance()->getPodcastSettings( m_parent )
+                ,  m_url.prettyURL() );
+    }
+    else
+    {
+        m_title = m_channelSettings.toElement().attribute( "name" );
+        m_settings = new PodcastSettings( m_channelSettings, m_title );
+    }
+
     fetch();
 }
 
@@ -1091,6 +1103,18 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
     , m_last( 0 )
     , m_parent( static_cast<PlaylistCategory*>(parent) )
 {
+     if( m_channelSettings.isNull() ) //no channelsettings found, create new PodcastSettings based on settings from parent
+    {
+        m_settings = new PodcastSettings(
+                PlaylistBrowser::instance()->getPodcastSettings( m_parent )
+                ,  m_url.prettyURL() );
+    }
+    else
+    {
+        m_title = m_channelSettings.toElement().attribute( "name" );
+        m_settings = new PodcastSettings( m_channelSettings, m_title );
+    }
+
     QDomNode type = xmlDefinition.namedItem("rss");
     if( !type.isNull() )
         setXml( type.namedItem("channel"), RSS );
@@ -1244,16 +1268,6 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
             setText( 0, m_url.prettyURL() ) :
                 setText( 0, m_title );
 
-        if( !m_updating ) // podcastchannel is created, therefore m_settings doesn't exist yet
-            if( m_channelSettings.isNull() ) //no channelsettings found, create new PodcastSettings based on settings from parent
-            {
-                m_settings = new PodcastSettings(
-                        PlaylistBrowser::instance()->getPodcastSettings( m_parent )
-                        , m_title );
-            }
-        else
-            m_settings = new PodcastSettings( m_channelSettings, m_title );
-
         setPixmap( 0, SmallIcon("cancel") );
 
         return;
@@ -1353,16 +1367,6 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
 
     m_title = xml.namedItem( "title" ).toElement().text();
     setText( 0, m_title );
-
-    if( !m_updating ) // podcastchannel is created, therefore m_settings doesn't exist yet
-        if( m_channelSettings.isNull() ) //no channelsettings found, create new PodcastSettings based on settings from parent
-        {
-            m_settings = new PodcastSettings(
-                    PlaylistBrowser::instance()->getPodcastSettings( m_parent )
-                    , m_title );
-        }
-        else
-            m_settings = new PodcastSettings( m_channelSettings, m_title );
 
     m_cache = KURL::encode_string( m_title + "_" + m_url.fileName() );
 
