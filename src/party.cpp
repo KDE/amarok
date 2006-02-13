@@ -94,6 +94,7 @@ Party::editActiveParty()
     if( m_currentParty == 0 )
         return;
     ConfigDynamic::editDynamicPlaylist(PlaylistWindow::self(), m_currentParty);
+    loadConfig( m_currentParty );
 }
 
 #define partyInfo(function, default) { \
@@ -153,13 +154,13 @@ Party::applySettings() //SLOT
 
     if ( AmarokConfig::dynamicPreviousCount() != previousCount() )
     {
-        Playlist::instance()->adjustPartyPrevious( previousCount() );
+        Playlist::instance()->adjustPartyPrevious( previousCount(), true );
         AmarokConfig::setDynamicPreviousCount( previousCount() );
     }
 
     if ( AmarokConfig::dynamicUpcomingCount() != upcomingCount() )
     {
-        Playlist::instance()->adjustPartyUpcoming( upcomingCount(), type );
+        Playlist::instance()->adjustPartyUpcoming( upcomingCount(), true, type );
         AmarokConfig::setDynamicUpcomingCount( upcomingCount() );
     }
 

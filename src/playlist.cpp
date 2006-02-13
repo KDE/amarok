@@ -740,7 +740,7 @@ Playlist::addSpecialCustomTracks( uint songCount )
  */
 
 void
-Playlist::adjustPartyUpcoming( uint songCount, const int type )
+Playlist::adjustPartyUpcoming( uint songCount, bool saveUndo, const int type )
 {
     bool requireTracks = false;
     int  currentPos = 0;
@@ -796,7 +796,8 @@ Playlist::adjustPartyUpcoming( uint songCount, const int type )
         }
 
         if( list.isEmpty() ) return;
-        saveUndoState();
+        if ( saveUndo )
+            saveUndoState();
 
         //remove the items
         for( QListViewItem *item = list.first(); item; item = list.next() )
@@ -813,7 +814,7 @@ Playlist::adjustPartyUpcoming( uint songCount, const int type )
   */
 
 void
-Playlist::adjustPartyPrevious( uint songCount )
+Playlist::adjustPartyPrevious( uint songCount, bool saveUndo )
 {
     int current = currentTrackIndex();
     int x = current - songCount;
@@ -823,7 +824,8 @@ Playlist::adjustPartyPrevious( uint songCount )
     for( QListViewItemIterator it( firstChild() ); y < x ; list.prepend( *it ), ++it, y++ );
 
     if( list.isEmpty() ) return;
-    saveUndoState();
+    if ( saveUndo )
+        saveUndoState();
 
     //remove the items
     for( QListViewItem *item = list.first(); item; item = list.next() )
@@ -1224,26 +1226,18 @@ void
 Playlist::advancePartyTrack( PlaylistItem *item )
 {
     MyIterator it( this, MyIterator::Visible );
-
     if( !item ) item = currentTrack();
 
-    int x;
-    for( x=0 ; *it; ++it, x++ )
+    for( int x=0 ; *it; ++it, x++ )
     {
         if( *it == item )
         {
             if( AmarokConfig::dynamicMarkHistory() ) (*it)->setEnabled( false );
-            if( x < AmarokConfig::dynamicPreviousCount() )
-                break;
-
-            if( AmarokConfig::dynamicCycleTracks() )
-            {
-                PlaylistItem *first = firstChild();
-                if( first )
-                {
-                    removeItem( first ); //first visible item
-                    delete first;
-                }
+            for ( PlaylistItem *first = firstChild();
+                  AmarokConfig::dynamicCycleTracks() && x >= AmarokConfig::dynamicPreviousCount() && first;
+                  first = firstChild(), x-- ) {
+                removeItem( first ); //first visible item
+                delete first;
             }
             break;
         }
@@ -2880,6 +2874,8 @@ Playlist::customEvent( QCustomEvent *e )
                 prev->setEnabled( false );
 
             activate( after );
+            if ( AmarokConfig::dynamicCycleTracks() )
+                adjustPartyPrevious( AmarokConfig::dynamicPreviousCount() );
         }
 
         if( m_queueDirt )
