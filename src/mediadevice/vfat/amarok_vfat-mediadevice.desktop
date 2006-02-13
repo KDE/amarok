@@ -2,6 +2,7 @@
 Type=Service
 Name=Generic VFAT Media Device
 Name[bg]=Устройство VFAT
+Name[cs]=Obecné VFAT mediální zařízení
 Name[da]=Generisk VFAT-medieenhed
 Name[el]=Γενική συσκευή πολυμέσων VFAT
 Name[et]=Üldine VFAT meediaseade

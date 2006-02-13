@@ -3,6 +3,7 @@ Type=Service
 Name=File System Media Device
 Name[bg]=Устройство за файлова система
 Name[da]=Filsystem-medieenhed
+Name[el]=Συσκευή πολυμέσων συστήματος αρχείων
 Name[fr]=Système de fichiers du périphérique de média
 Name[ga]=Gléas Meán Chóras Comhad
 Name[pt]=Dispositivo Multimédia de Sistema de Ficheiros
