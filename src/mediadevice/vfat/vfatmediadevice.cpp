@@ -122,6 +122,7 @@ VfatMediaDevice::VfatMediaDevice()
     m_dirLister->setAutoUpdate( false );
     m_spacesToUnderscores = false;
     connect( m_dirLister, SIGNAL( newItems(const KFileItemList &) ), this, SLOT( newItems(const KFileItemList &) ) );
+    connect( m_dirLister, SIGNAL( completed() ), this, SLOT( dirListerCompleted() ) );
 }
 
 void
@@ -228,7 +229,7 @@ VfatMediaDevice::newDirectory( const QString &name, MediaItem *parent )
     DEBUG_BLOCK
     if( !m_connected || name.isEmpty() ) return 0;
 
-    QString fullPath = getFullPath( parent );
+    QString fullPath = cleanPath( getFullPath( parent ) );
     const QCString dirPath = QFile::encodeName( fullPath == QString::null ? m_medium->mountPoint() + "/" + name : fullPath + "/" + name );
     debug() << "Creating directory: " << dirPath << endl;
 
@@ -240,7 +241,6 @@ VfatMediaDevice::newDirectory( const QString &name, MediaItem *parent )
         return NULL;
     }
 
-    m_tmpParent = parent;
     return m_last;
 
 }
@@ -278,9 +278,11 @@ VfatMediaDevice::copyTrackToDevice( const MetaBundle& bundle, const PodcastInfo*
     if( !m_connected ) return 0;
 
     const QString  newFilenameSansMountpoint = cleanPath( bundle.prettyTitle().remove( "'" ) + "." + bundle.type() );
-    const QString  newFilename = m_medium->mountPoint() + "/" + newFilenameSansMountpoint;
+    const QString  newFilename = m_transferDir + "/" + newFilenameSansMountpoint;
     const QCString src  = QFile::encodeName( bundle.url().path() );
     const QCString dest = QFile::encodeName( newFilename ); // TODO: add to directory
+
+    debug() << "m_transferDir = " << m_transferDir << ", newFilename = " << newFilename << endl;
 
     const KURL srcurl(src);
     const KURL desturl(dest);
@@ -289,7 +291,11 @@ VfatMediaDevice::copyTrackToDevice( const MetaBundle& bundle, const PodcastInfo*
 
     if( KIO::NetAccess::file_copy( srcurl, desturl, -1, false, false, m_parent) ) //success
     {
+        debug() << "m_transferDir == medium->mountPoint: " << (m_transferDir == m_medium->mountPoint() ? "true" : "false" ) << endl;
         addTrackToList( MediaItem::TRACK, newFilenameSansMountpoint );
+            /*(m_transferDir == m_medium->mountPoint() ?
+                newFilenameSansMountpoint :
+                (m_transferDir.remove(0, m_medium->mountPoint().length()) + "/" + newFilenameSansMountpoint )));*/
         return m_last;
     }
 
@@ -301,18 +307,21 @@ VfatMediaDevice::copyTrackToDevice( const MetaBundle& bundle, const PodcastInfo*
 MediaItem *
 VfatMediaDevice::trackExists( const MetaBundle& bundle )
 {
-    const QString newFilenameSansMountpoint = bundle.prettyTitle().remove( "'" ) + "." + bundle.type();
-    const QString newFilename = m_medium->mountPoint() + "/" + newFilenameSansMountpoint;
+    const QString newFilenameSansMountpoint = cleanPath( bundle.prettyTitle().remove( "'" ) + "." + bundle.type() );
+    const QString newFilename = m_transferDir + "/" + newFilenameSansMountpoint;
+    debug() << "sans mountpoint: " << newFilenameSansMountpoint << endl << "with: " << newFilename << endl;
     if ( KIO::NetAccess::stat( KURL(newFilename), m_udsentry, m_parent ) )
     {
         QListViewItemIterator it( m_view );
         while ( it.current() )
         {
+            debug() << "current text: " << (*it)->text( 0 ) << endl;
             if ( (*it)->text( 0 ) == newFilenameSansMountpoint )
                 return static_cast<MediaItem *>(it.current());
             ++it;
         }
     }
+    debug() << "NEVER FOUND IT" << endl;
     return 0;
 }
 
@@ -413,7 +422,6 @@ VfatMediaDevice::expandItem( QListViewItem *item ) // SLOT
 
     QString path = getFullPath( item );
     listDir( path );
-    //m_tmpParent = 0;
 }
 
 void
@@ -448,7 +456,13 @@ VfatMediaDevice::newItems( const KFileItemList &items )
         ++it;
         addTrackToList( kfi->isFile() ? MediaItem::TRACK : MediaItem::DIRECTORY, kfi->name(), 0 );
     }
+}
 
+void
+VfatMediaDevice::dirListerCompleted()
+{
+    DEBUG_BLOCK
+    m_tmpParent = NULL;
 }
 
 int
@@ -597,6 +611,7 @@ VfatMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                 break;
 
             case TRANSFER_HERE:
+                m_tmpParent = item;
                 if( item->type() == MediaItem::DIRECTORY )
                 {
                     m_transferDir = getFullPath( item, true );
@@ -632,6 +647,7 @@ VfatMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
 
             case TRANSFER_HERE:
                 m_transferDir = m_medium->mountPoint();
+                m_tmpParent = NULL;
                 debug() << "New transfer dir is: " << m_transferDir << endl;
                 emit startTransfer();
                 break;

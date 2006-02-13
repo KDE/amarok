@@ -72,6 +72,7 @@ class VfatMediaDevice : public MediaDevice
         void              expandItem( QListViewItem *item );
         void              foundMountPoint( const QString & mountPoint, unsigned long kBSize, unsigned long kBUsed, unsigned long kBAvail );
         void              newItems( const KFileItemList &items );
+        void              dirListerCompleted();
 
     private:
         enum              Error { ERR_ACCESS_DENIED, ERR_CANNOT_RENAME, ERR_DISK_FULL, ERR_COULD_NOT_WRITE };

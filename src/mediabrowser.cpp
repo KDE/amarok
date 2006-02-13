@@ -2065,7 +2065,8 @@ MediaBrowser::transferClicked()
                 updateButtons();
         }
     }
-    currentDevice()->m_transferDir = QString::null;
+    if( currentDevice()->m_medium )
+        currentDevice()->m_transferDir = currentDevice()->m_medium->mountPoint();
 }
 
 void
@@ -2390,6 +2391,7 @@ MediaDevice::transferFiles()
 
         bool transcoding = false;
         MediaItem *item = trackExists( *bundle );
+        debug() << "DOES ITEM EXIST? " << (item == 0 ? "no" : "yes") << endl;
         if( item && m_transferredItem->m_playlistName == QString::null )
         {
             amaroK::StatusBar::instance()->longMessage( i18n( "Track already exists on media device: %1" ).

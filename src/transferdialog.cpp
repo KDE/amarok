@@ -110,7 +110,7 @@ TransferDialog::TransferDialog( MediaDevice *mdev )
 
     QGroupBox *options = new QGroupBox( 6, Qt::Vertical, i18n( "Options" ), vbox );
 
-    QCheckBox *convertSpaces = new QCheckBox( i18n( "Convert spaces to underscores: " ), options );
+    QCheckBox *convertSpaces = new QCheckBox( i18n( "Convert spaces to underscores" ), options );
     convertSpaces->setChecked( mdev->getSpacesToUnderscores() );
 
     connect( convertSpaces, SIGNAL( toggled(bool) ), this, SLOT( convertSpaces_toggled(bool) ) );
