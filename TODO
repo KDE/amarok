@@ -53,9 +53,6 @@ SHORT-TERM (URGENT):
            <muesli> See SqlLoader class in playlistloader. We do the very same stuff for
            Smart-Playlists already.
 
- <markey>  The analyzer now uses crazy amounts of CPU when amaroK is idle, even if the window
-           is not visible.
-
  <sebr>    The unknown album should ALWAYS be shown last.  Year has a hiegher weighting than album
            name.  We should special case the Unknown album.
 
