@@ -2065,7 +2065,7 @@ PodcastItem::updateInfo()
     str += body.arg( i18n( "Date" ),        m_date );
     str += body.arg( i18n( "Type" ),        m_type );
     str += body.arg( i18n( "Description" ), m_description );
-    str += body.arg( i18n( "URL" ), m_url );
+    str += body.arg( i18n( "URL" ), m_url.prettyURL() );
     str += "</table></body></html>";
 
     PlaylistBrowser::instance()->setInfo( str );
