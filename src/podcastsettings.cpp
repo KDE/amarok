@@ -104,7 +104,7 @@ PodcastSettings::xml()
 
 
 PodcastSettingsDialog::PodcastSettingsDialog( PodcastSettings *settings, PodcastSettings *parentSettings, QWidget* parent )
-                            : KDialogBase(  parent, 0, true, i18n("Configure %1").arg( settings->m_title)
+                            : KDialogBase(  parent, 0, true, i18n("Configure %1").arg( settings->m_title )
                             , KDialogBase::User1|KDialogBase::Ok|KDialogBase::Cancel
                             , KDialogBase::Ok, true
                             , KGuiItem(i18n("reset"), "reset" ) )

@@ -1120,8 +1120,14 @@ void PodcastChannel::createSettings()
     }
     else
     {
-        m_title = m_channelSettings.toElement().attribute( "name" );
-        m_settings = new PodcastSettings( m_channelSettings, m_title );
+        m_title = m_channelSettings.toElement().attribute( "title" );
+        QString title = m_title;
+        if( title.length() > 40 );
+        {
+            title.truncate(37); // make the title fit in the titlebar off the dialog
+            title += "...";
+        }
+        m_settings = new PodcastSettings( m_channelSettings, title );
     }
 }
 
