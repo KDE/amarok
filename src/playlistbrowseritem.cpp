@@ -1051,6 +1051,8 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
     setText(0, i18n("Retrieving Podcast...") ); //HACK to fill loading time space
     setPixmap( 0, SmallIcon("player_playlist_2") );
 
+    createSettings();
+
     fetch();
 }
 
@@ -1073,6 +1075,43 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
     setText(0, i18n("Retrieving Podcast...") ); //HACK to fill loading time space
     setPixmap( 0, SmallIcon("player_playlist_2") );
 
+    createSettings();
+
+    fetch();
+}
+
+
+PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
+                                const KURL &url, const QDomNode &channelSettings, const QDomDocument &xmlDefinition )
+    : PlaylistBrowserEntry( parent, after )
+    , m_url( url )
+    , m_doc( xmlDefinition )
+    , m_loading1( QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
+    , m_loading2( QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
+    , m_fetching( false )
+    , m_updating( false )
+    , m_new( false )
+    , m_hasProblem( false )
+    , m_channelSettings( channelSettings )
+    , m_last( 0 )
+    , m_parent( static_cast<PlaylistCategory*>(parent) )
+{
+    createSettings();
+
+    QDomNode type = m_doc.namedItem("rss");
+    if( !type.isNull() )
+        setXml( type.namedItem("channel"), RSS );
+    else
+        setXml( xmlDefinition.namedItem("feed"), ATOM );
+
+    setDragEnabled( true );
+    setRenameEnabled( 0, false );
+
+    setPixmap( 0, SmallIcon("player_playlist_2") );
+}
+
+void PodcastChannel::createSettings()
+{
     if( m_channelSettings.isNull() ) //no channelsettings found, create new PodcastSettings based on settings from parent
     {
         m_settings = new PodcastSettings(
@@ -1084,47 +1123,6 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
         m_title = m_channelSettings.toElement().attribute( "name" );
         m_settings = new PodcastSettings( m_channelSettings, m_title );
     }
-
-    fetch();
-}
-
-
-PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
-                                const KURL &url, const QDomNode &channelSettings, const QDomDocument &xmlDefinition )
-    : PlaylistBrowserEntry( parent, after )
-    , m_url( url )
-    , m_loading1( QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
-    , m_loading2( QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
-    , m_fetching( false )
-    , m_updating( false )
-    , m_new( false )
-    , m_hasProblem( false )
-    , m_channelSettings( channelSettings )
-    , m_last( 0 )
-    , m_parent( static_cast<PlaylistCategory*>(parent) )
-{
-     if( m_channelSettings.isNull() ) //no channelsettings found, create new PodcastSettings based on settings from parent
-    {
-        m_settings = new PodcastSettings(
-                PlaylistBrowser::instance()->getPodcastSettings( m_parent )
-                ,  m_url.prettyURL() );
-    }
-    else
-    {
-        m_title = m_channelSettings.toElement().attribute( "name" );
-        m_settings = new PodcastSettings( m_channelSettings, m_title );
-    }
-
-    QDomNode type = xmlDefinition.namedItem("rss");
-    if( !type.isNull() )
-        setXml( type.namedItem("channel"), RSS );
-    else
-        setXml( xmlDefinition.namedItem("feed"), ATOM );
-
-    setDragEnabled( true );
-    setRenameEnabled( 0, false );
-
-    setPixmap( 0, SmallIcon("player_playlist_2") );
 }
 
 void
@@ -1160,7 +1158,7 @@ PodcastChannel::configure()
             // get a list of the urls of already downloaded items
             while( item )
             {
-                if( item->hasDownloaded() )
+                if( item->isOnDisk() )
                     copyList << item->localUrl();
 
                 item->setLocalUrlBase( m_settings->m_saveLocation.prettyURL() );
@@ -1190,6 +1188,8 @@ PodcastChannel::configure()
             downloadChildren();
         }
     }
+
+    delete dialog;
 }
 
 void
@@ -1199,7 +1199,7 @@ PodcastChannel::downloadChildren()
     while( item )
     {
         #define item static_cast<PodcastItem*>(item)
-        if( !item->hasDownloaded() )
+        if( item->isNew() )
             m_podcastDownloadQueue.append( item );
         #undef  item
 
@@ -1311,8 +1311,10 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
     // feed is rss 2.0
     else
         setXml( type.namedItem("channel"), RSS );
+}
 
-    ///BEGIN Cache the xml
+void PodcastChannel::saveCache( const QDomDocument &doc )
+{
     QFile file( amaroK::saveLocation( "podcasts/" ) +  m_cache );
 
     QTextStream stream( &file );
@@ -1320,8 +1322,7 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
     if( !file.open( IO_WriteOnly ) ) return;
 
     stream.setEncoding( QTextStream::UnicodeUTF8 );
-    stream << d.toString();
-    ///END Cache the xml
+    stream << doc.toString();
 }
 
 void
@@ -1401,6 +1402,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
     {
         if( m_updating )
         {
+            QDomNode node;
             // podcasts get inserted in a chronological order,
             // no need to continue traversing, we must have them already
             if( first && first->hasXml( n, feedType ) )
@@ -1416,7 +1418,9 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
                 {
                     if( nodes.toElement().attribute("rel") == "enclosure" )
                     {
-                        updatingLast = new PodcastItem( this, updatingLast, n.toElement(), feedType );
+                        QDomNode feed = m_doc.namedItem("feed");
+                        node = feed.insertBefore( n.cloneNode(), QDomNode::QDomNode() );
+                        updatingLast = new PodcastItem( this, updatingLast, node.toElement(), feedType );
                         updatingLast->setNew();
                         break;
                     }
@@ -1424,8 +1428,10 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
             }
             else if( !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
             {
-                updatingLast = new PodcastItem( this, updatingLast, n.toElement(), feedType );
-                updatingLast->setNew();
+                QDomNode channel = m_doc.namedItem("rss").namedItem("channel");
+                node = channel.insertBefore(n.cloneNode(), QDomNode::QDomNode() );
+                updatingLast = new PodcastItem( this, updatingLast, node.toElement(), feedType );
+//                 updatingLast->setNew();
             }
         }
         else
@@ -1442,7 +1448,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
                     if( nodes.toElement().attribute("rel") == "enclosure" )
                     {
                         updatingLast = new PodcastItem( this, updatingLast, n.toElement(), feedType );
-                        updatingLast->setNew();
+//                         updatingLast->setNew();
                         break;
                     }
                 }
@@ -1467,6 +1473,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
         setNew();
         amaroK::StatusBar::instance()->shortMessage( i18n("New podcasts have been retrieved!") );
     }
+
 }
 
 void
@@ -1508,7 +1515,7 @@ PodcastChannel::purge()
         if( m_last && m_last != firstChild() )
             newLast = (PodcastItem *)m_last->itemAbove();
 
-        if( m_last->hasDownloaded() )
+        if( m_last->isOnDisk() )
             urls.append( m_last->localUrl() );
 
         delete m_last;
@@ -1611,7 +1618,9 @@ PodcastItem::PodcastItem( QListViewItem *parent, QListViewItem *after, const QDo
       , m_loading1( QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
       , m_loading2( QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
       , m_fetching( false )
+      , m_xml( xml )
       , m_downloaded( false )
+      , m_onDisk( false )
       , m_new( false )
 {
     const bool isAtom = ( feedType == ATOM );
@@ -1659,12 +1668,27 @@ PodcastItem::PodcastItem( QListViewItem *parent, QListViewItem *after, const QDo
 
     m_localUrlString = m_localUrl.path();
 
-    m_downloaded = QFile::exists( m_localUrlString );
+    if( QFile::exists( m_localUrl.path() ) )
+    {
+        m_onDisk = true;
+        m_downloaded = true;
+        m_xml.setAttribute("downloaded", "true"); //mark as downloaded in the xml
+    }
+
+    if( xml.hasAttribute("downloaded") )
+        if(xml.attribute("downloaded") == "true")
+            m_downloaded = true;
+    else
+    {
+        m_xml.setAttribute("downloaded", "false");
+        setNew(false);
+    }
 
     setText( 0, m_title );
     updatePixmap();
     setDragEnabled( true );
     setRenameEnabled( 0, false );
+
 }
 
 void
@@ -1672,6 +1696,8 @@ PodcastItem::updatePixmap()
 {
     if( m_new )
         setPixmap( 0, SmallIcon("favorites") );
+    else if( m_onDisk )
+        setPixmap( 0, SmallIcon( "down" ) );
     else if( m_downloaded )
         setPixmap( 0, SmallIcon( "sound" ) );
     else
@@ -1679,18 +1705,18 @@ PodcastItem::updatePixmap()
 }
 
 const bool
-PodcastItem::hasDownloaded()
+PodcastItem::isOnDisk()
 {
-    m_downloaded = QFile::exists( m_localUrlString );
+    m_onDisk = QFile::exists( m_localUrlString );
     updatePixmap();
-    return m_downloaded;
+    return m_onDisk;
 }
 
 void
 PodcastItem::downloadMedia()
 {
     KURL m_localDir = KURL::fromPathOrURL(m_localUrl.directory(true, true) );
-    if( hasDownloaded() )
+    if( isOnDisk() )
         return;
 
     setText(0, i18n( "Downloading Media..." ) );
@@ -1732,7 +1758,7 @@ PodcastItem::abortDownload() //SLOT
 
     stopAnimation();
     setText( 0, m_title );
-    m_downloaded = false;
+    m_onDisk = false;
     updatePixmap();
 }
 
@@ -1752,6 +1778,8 @@ PodcastItem::downloadResult( KIO::Job* job ) //SLOT
         return;
     }
 
+    m_onDisk = true;
+    m_xml.setAttribute("downloaded", "true"); //mark as downloaded in the xml
     m_downloaded = true;
 
     PodcastChannel *channel = dynamic_cast<PodcastChannel *>( m_parent );
@@ -1762,6 +1790,8 @@ PodcastItem::downloadResult( KIO::Job* job ) //SLOT
     }
 
     updatePixmap();
+    dynamic_cast<PodcastChannel*>(m_parent)->saveCache();
+
 }
 
 void

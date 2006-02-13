@@ -230,12 +230,13 @@ class PodcastItem : public QObject, public PlaylistBrowserEntry
         PodcastItem( QListViewItem *parent, QListViewItem *after, const QDomElement &xml, const int feedType );
 
         void  downloadMedia();
-        const bool hasDownloaded();
+        const bool isOnDisk();
         const bool hasXml( const QDomNode &xml, const int feedType );
         QListViewItem *itemChannel() { return m_parent; }
 
         void setNew( bool n = true );
         bool isNew() { return m_new; }
+        bool hasDownloaded() { return m_downloaded; }
 
         const KURL    &url() { return m_url; }
         const QString &title() { return m_title; }
@@ -290,10 +291,12 @@ class PodcastItem : public QObject, public PlaylistBrowserEntry
         bool        m_fetching;
         QTimer      m_animationTimer;
         uint        m_iconCounter;
-        bool        m_downloaded;
 
         KIO::CopyJob* m_podcastItemJob;
 
+        QDomElement m_xml;
+        bool        m_downloaded;       //marked as downloaded in cached xml
+        bool        m_onDisk;
         bool        m_new;
 };
 
@@ -317,6 +320,8 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         void  configure();
         void  fetch();
         void  rescan();
+        void saveCache( const QDomDocument &doc );
+        void saveCache() { saveCache( m_doc ); }
 
         const KURL &url() { return m_url; }
         const KURL &link() { return m_link; }
@@ -354,10 +359,12 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         void removeChildren();
         void startAnimation();
         void stopAnimation();
+        void createSettings();
 
         KURL        m_url;                         //remote xml url
         KURL        m_link;                        //webpage
         QString     m_title;
+        QDomDocument m_doc;     //xml to be stored in the cache-file
         QString     m_cache;                       //filename for caching
         QString     m_description;
         QString     m_copyright;
