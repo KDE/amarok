@@ -156,6 +156,7 @@ VERSION 1.4-beta1:
       for the category's, newly added podcasts take the settings from there parent category.
 
   BUGFIXES:
+    * No more crash on exit or deleting podcast.
     * Dragging text to a filter line edit would still show the "Filter
       Here..." text in the background. (BR 108876)
     * Don't show an empty playlist length holder in the statusbar.
