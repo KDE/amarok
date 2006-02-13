@@ -114,6 +114,7 @@ class VfatMediaDevice : public MediaDevice
         TransferDialog    *m_td;
         bool              m_actuallyVfat;
         bool              m_isInCopyTrack;
+        bool              m_stopDirLister;
 
 };
 

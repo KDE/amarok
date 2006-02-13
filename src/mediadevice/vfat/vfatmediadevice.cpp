@@ -122,6 +122,7 @@ VfatMediaDevice::VfatMediaDevice()
     m_dirLister->setAutoUpdate( false );
     m_spacesToUnderscores = false;
     m_isInCopyTrack = false;
+    m_stopDirLister = false;
     m_firstSort = "None";
     m_secondSort = "None";
     m_thirdSort = "None";
@@ -216,7 +217,7 @@ VfatMediaDevice::renameItem( QListViewItem *item ) // SLOT
      //the rename line edit has already changed the QListViewItem text
     QCString dest = QFile::encodeName( getFullPath( item ) );
 
-    debug() << "Renaming " << src << " to: " << dest << endl;
+    debug() << "Renaming: " << src << " to: " << dest << endl;
 
     //TODO: do we want a progress dialog?  If so, set last false to true
     KIO::NetAccess::file_move( KURL(src), KURL(dest), -1, false, false, false );
@@ -276,22 +277,29 @@ VfatMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> items
     DEBUG_BLOCK
     if( !directory || items.isEmpty() ) return;
 
+    MediaItem *previousTmpParent = static_cast<MediaItem *>(m_tmpParent);
+
+    m_stopDirLister = true;
     m_tmpParent = directory;
     for( QPtrListIterator<MediaItem> it(items); *it; ++it )
     {
-        QCString src  = QFile::encodeName( getFullPath( *it ) );
-        QCString dest = QFile::encodeName( getFullPath( directory ) + "/" + (*it)->text(0) );
+        QCString src  = QFile::encodeName( getFullPath( *it, true, true, false ) );
+        QCString dest = QFile::encodeName( getFullPath( directory, true, true, false ) + "/" + (*it)->text(0) );
         debug() << "Moving: " << src << " to: " << dest << endl;
 
         const KURL srcurl(src);
         const KURL desturl(dest);
 
-        if ( KIO::NetAccess::file_move( srcurl, desturl, -1, false, false, m_parent ) )
+        if ( !KIO::NetAccess::file_move( srcurl, desturl, -1, false, false, m_parent ) )
             debug() << "Failed moving " << src << " to " << dest << endl;
-
-        m_view->takeItem( *it );
-        directory->insertItem( *it );
+        else
+        {
+            addTrackToList( (*it)->type(), (*it)->text(0) );
+            delete *it;
+        }
     }
+    m_stopDirLister = false;
+    m_tmpParent = previousTmpParent;
 }
 
 /// Uploading
@@ -544,7 +552,7 @@ VfatMediaDevice::newItems( const KFileItemList &items )
 {
     DEBUG_BLOCK
     //iterate over items, calling addTrackToList
-    if( m_isInCopyTrack )
+    if( m_stopDirLister || m_isInCopyTrack )
         return;
 
     QPtrListIterator<KFileItem> it( items );
@@ -559,7 +567,7 @@ void
 VfatMediaDevice::dirListerCompleted()
 {
     DEBUG_BLOCK
-    if( !m_isInCopyTrack )
+    if( !m_stopDirLister && !m_isInCopyTrack)
         m_tmpParent = NULL;
 }
 
