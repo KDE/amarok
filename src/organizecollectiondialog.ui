@@ -502,6 +502,7 @@
 </includes>
 <variables>
     <variable>MetaBundle previewBundle;</variable>
+    <variable>bool detailed;</variable>
 </variables>
 <signals>
     <signal>updatePreview( const QString &amp; )</signal>
@@ -510,12 +511,14 @@
     <slot>preview( const QString &amp; format )</slot>
     <slot>update( int dummy )</slot>
     <slot>update( const QString &amp; dummy )</slot>
+    <slot>slotDetails()</slot>
 </slots>
 <functions>
     <function returnType="QString">buildDestination( const QString &amp; format, const MetaBundle &amp; mb )</function>
     <function returnType="QString">buildFormatString()</function>
     <function>setPreviewBundle( const MetaBundle &amp; bundle )</function>
     <function returnType="QString">cleanPath( const QString &amp; component )</function>
+    <function>init()</function>
 </functions>
 <layoutdefaults spacing="6" margin="0"/>
 <includehints>

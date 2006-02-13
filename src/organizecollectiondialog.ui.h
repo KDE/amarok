@@ -2,6 +2,7 @@
 #include <qstringx.h>
 #include <collectiondb.h>
 #include <collectionbrowser.h>
+#include "debug.h"
 
 
 
@@ -158,4 +159,37 @@ void OrganizeCollectionDialog::update( const QString & dummy )
     Q_UNUSED( dummy );
 
     update( 0 );
+}
+
+
+
+void OrganizeCollectionDialog::slotDetails()
+{
+    detailed = !detailed;
+
+    if( detailed )
+    {
+        ignoreTheCheck->show();
+        customschemeCheck->show();
+        replacementGroup->show();
+        formatLabel->show();
+        formatEdit->show();
+    }
+    else
+    {
+        ignoreTheCheck->hide();
+        customschemeCheck->hide();
+        replacementGroup->hide();
+        formatLabel->hide();
+        formatEdit->hide();
+    }
+
+    if( dynamic_cast<QWidget *>(parent()) )
+        static_cast<QWidget *>(parent())->adjustSize();
+}
+
+
+void OrganizeCollectionDialog::init()
+{
+    detailed = true;
 }

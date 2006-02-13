@@ -13,6 +13,7 @@
 #include <klistview.h>       //baseclass
 #include <qstringlist.h>     //stack allocated
 #include <kurl.h>            //stack allocated
+#include <kdialogbase.h>     //baseclass
 
 #include "collectiondb.h"
 
@@ -212,6 +213,26 @@ class CollectionView : public KListView
         QString                 m_cacheViewportTopItem;
         QString                 m_cacheCurrentItem;
 };
+
+// why is signal detailsClicked() missing from KDialogBase?
+class OrganizeCollectionDialogBase : public KDialogBase
+{
+    Q_OBJECT
+    public:
+    OrganizeCollectionDialogBase( QWidget *parent=0, const char *name=0, bool modal=true,
+            const QString &caption=QString::null,
+            int buttonMask=Ok|Apply|Cancel )
+        : KDialogBase( parent, name, modal, caption, buttonMask )
+    {
+    }
+
+    signals:
+        void detailsClicked();
+    public slots:
+        void slotDetails() { KDialogBase::slotDetails(); emit detailsClicked(); adjustSize(); }
+};
+
+
 
 
 #endif /* AMAROK_COLLECTIONBROWSER_H */

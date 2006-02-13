@@ -1499,7 +1499,8 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
 {
     QStringList folders = AmarokConfig::collectionFolders();
 
-    KDialogBase base( m_parent, "OrganizeFiles", true, caption, KDialogBase::Ok|KDialogBase::Cancel );
+    OrganizeCollectionDialogBase base( m_parent, "OrganizeFiles", true, caption,
+            KDialogBase::Ok|KDialogBase::Cancel|KDialogBase::Details );
     QVBox* page = base.makeVBoxMainWidget();
 
     OrganizeCollectionDialog dialog( page );
@@ -1516,6 +1517,16 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
     dialog.formatEdit->setText( AmarokConfig::customScheme() );
     dialog.regexpEdit->setText( AmarokConfig::replacementRegexp() );
     dialog.replaceEdit->setText( AmarokConfig::replacementString() );
+    connect( &base, SIGNAL(detailsClicked()), &dialog, SLOT(slotDetails()) );
+
+    if( dialog.customschemeCheck->isChecked() )
+    {
+        base.setDetails( true );
+    }
+    else
+    {
+        dialog.slotDetails();
+    }
 
     if( urls.count() )
     {
