@@ -7,6 +7,7 @@ VERSION 1.4-beta2:
   FEATURES:
 
   CHANGES:
+    * Upgraded internal SQLite database library to version 3.3.4.
 
   BUGFIXES:
     * No more crash on exit or deleting podcast.
