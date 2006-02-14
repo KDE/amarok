@@ -933,6 +933,9 @@ DynamicBar::DynamicBar(QWidget* parent)
     KPushButton* repopButton = new KPushButton( i18n("Repopulate"), this, "DynamicModeRepopulate" );
     connect( repopButton, SIGNAL(clicked()), Party::instance(), SLOT(repopulate()) );
 
+    KPushButton* disableButton = new KPushButton( i18n("Turn Off"), this, "DynamicModeDisable" );
+    connect( disableButton, SIGNAL(clicked()), Party::instance(), SLOT(disable()) );
+
     connect(Party::instance(), SIGNAL(titleChanged(const QString&)), this, SLOT( changeTitle(const QString&)));
     toggledDynamic( AmarokConfig::dynamicMode() );
 }

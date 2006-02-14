@@ -89,6 +89,12 @@ Party::loadConfig( PartyEntry *config )
 }
 
 void
+Party::disable()
+{
+    setDynamicMode( false, false );
+}
+
+void
 Party::editActiveParty()
 {
     if( m_currentParty == 0 )

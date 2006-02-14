@@ -66,6 +66,7 @@ class Party : public QObject
 
     public slots:
         void    repopulate();
+        void    disable();
         void    editActiveParty();
 
     signals:
