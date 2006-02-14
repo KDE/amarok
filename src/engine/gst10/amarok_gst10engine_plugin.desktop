@@ -2,6 +2,7 @@
 Type=Service
 Name=GStreamer 0.10 Engine
 Name[bg]=Система GStreamer 0.10
+Name[bn]=জিস্ট্রীমার ০.১০ ইঞ্জিন
 Name[br]=Keflusker GStreamer 0.10
 Name[cs]=GStreamer 0.10
 Name[da]=GStreamer-0.10-motor
@@ -21,6 +22,7 @@ Name[xx]=xxGStreamer 0.10 Enginexx
 X-KDE-Library=libamarok_gst10engine_plugin
 Comment=Plugin for amaroK
 Comment[bg]=Приставка за amaroK
+Comment[bn]=আমারক-এর জন্য প্লাগিন
 Comment[br]=Lugent evit amaroK
 Comment[cs]=Modul pro amaroK
 Comment[de]=Modul für amaroK

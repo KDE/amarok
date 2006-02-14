@@ -2,6 +2,7 @@
 Type=Service
 Name=aKode Engine
 Name[bg]=Система aKode
+Name[bn]=aKode ইঞ্জিন
 Name[br]=Keflusker aKode
 Name[cs]=aKode
 Name[da]=aKode-motor
@@ -36,6 +37,7 @@ ServiceTypes=amaroK/Plugin
 X-KDE-Library=libamarok_aKode-engine
 Comment=aKode audio-engine for amaroK
 Comment[bg]=Аудио система aKode за amaroK
+Comment[bn]=আমারক-এর জন্য aKode অডিও ইঞ্জিন
 Comment[br]=Keflusker klevet aKode evit amaroK
 Comment[cs]=Zvukový modul aKode pro amaroK
 Comment[da]=aKode lyd-motor for amaroK

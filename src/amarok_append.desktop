@@ -2,10 +2,12 @@
 ServiceTypes=application/asx,application/x-ogg,audio/*
 Actions=appendToPlaylist;appendAndPlay;queueTrack;
 X-KDE-Submenu=amaroK
+X-KDE-Submenu[bn]=আমারক
 
 [Desktop Action appendToPlaylist]
 Name=Append to Playlist
 Name[bg]=Добавяне към списъка с песни
+Name[bn]=সঙ্গীত-তালিকাতে সংযোজন করো
 Name[br]=Ouzhpennañ d'ar roll tonioù
 Name[cs]=Přidat do seznamu skladeb
 Name[da]=Tilføj til spilleliste
@@ -15,6 +17,7 @@ Name[fi]=Lisää soittolistaan
 Name[fr]=Ajouter à la liste de lecture
 Name[ga]=Iarcheangail le Seinmliosta
 Name[ja]=プレイリストに追加
+Name[nl]=Toevoegen aanafspeellijst
 Name[pt]=Adicionar à Lista do amaroK
 Name[pt_BR]=Adicionar à Lista do amaroK
 Name[sv]=Lägg till i spellistan
@@ -24,6 +27,7 @@ Exec=amarok -e %U
 [Desktop Action appendAndPlay]
 Name=Append & Play
 Name[bg]=Добавяне и възпроизвеждане
+Name[bn]=সংযোজন করো এবং বাজাও
 Name[br]=Ouzhpennañ ha seniñ
 Name[cs]=Připojit a hrát
 Name[da]=Tilføj og spil
@@ -33,6 +37,7 @@ Name[fi]=Lisää soittolistaan ja toista
 Name[fr]=Ajouter & Écouter
 Name[ga]=Iarcheangail & Seinn
 Name[ja]=追加して再生
+Name[nl]=Toevoegen en afspelen
 Name[pt]=Adicionar & Reproduzir
 Name[pt_BR]=Adicionar & Reproduzir
 Name[sv]=Lägg till och spela
@@ -42,6 +47,7 @@ Exec=dcop amarok playlist playMedia %U
 [Desktop Action queueTrack]
 Name=Queue Track
 Name[bg]=Добавяне и възпроизвеждане
+Name[bn]=গান সারিবদ্ধ করো
 Name[cs]=Zařadit skladbu
 Name[da]=Sæt spor i kø
 Name[el]=Εισαγωγή του κομματιού στην ουρά
@@ -50,6 +56,7 @@ Name[fi]=Lisää jonoon
 Name[fr]=Ajouter à la file d'attente
 Name[ga]=Ciúáil Amhrán
 Name[ja]=トラックをキュー
+Name[nl]=Track in wachtrij plaatsen
 Name[pt]=Pôr a Faixa na Fila
 Name[pt_BR]=Pôr a Faixa na Fila
 Name[sv]=Köa spår
