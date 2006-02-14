@@ -70,18 +70,15 @@ if test x$amarok_warning_mas_notfound = xyes; then
 
 fi
 
-if test x$have_gst = xno; then
+if test x$build_xine = xno; then
     echo " =========================="
     echo " ===  amaroK - WARNING  ========================================================"
     echo " =========================="
     echo " ="
-    echo " = The optional GStreamer-engine will not be built. If you want to use the"
-    echo " = powerful GStreamer multimedia framework with amaroK, please download"
-    echo " = version $GST_REQ or higher from http://gstreamer.freedesktop.org/"
-    echo " = If you are sure GStreamer is already installed then there is most likely a"
-    echo " = problem with your pkg-config setup, see amarok/README"
+    echo " = The recommended xine-engine will not be built. If you want to use the"
+    echo " = powerful xine multimedia framework with amaroK, please download xine-lib"
+    echo " = version $xine_version_min or higher from http://xinehq.de/"
     echo " ="
-
 fi
 
 if test x$have_gst_plugins = xno -a x$have_gst = xyes; then
@@ -129,7 +126,6 @@ if test x$amarok_warning_mysql_notfound = xyes; then
     echo " = mysql_config could not be found, this means that support for MySql"
     echo " = will be disabled."
     echo " ="
-
 fi
 
 if test x$amarok_warning_postgresql_notfound = xyes; then
@@ -140,7 +136,6 @@ if test x$amarok_warning_postgresql_notfound = xyes; then
     echo " = pg_config could not be found, this means that support for Postgresql"
     echo " = will be disabled."
     echo " ="
-
 fi
 
 if test x$no_engine = xyes; then
