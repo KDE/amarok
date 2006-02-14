@@ -1682,8 +1682,10 @@ PodcastItem::PodcastItem( QListViewItem *parent, QListViewItem *after, const QDo
     }
 
     if( xml.hasAttribute("downloaded") )
+    {
         if(xml.attribute("downloaded") == "true")
             m_downloaded = true;
+    }
     else
     {
         m_xml.setAttribute("downloaded", "false");
