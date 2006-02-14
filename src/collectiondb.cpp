@@ -2467,18 +2467,21 @@ CollectionDB::initialize()
         if ( adminValue( "Database Stats Version" ).toInt() != DATABASE_STATS_VERSION )
         {
             debug() << "Different database stats version detected! Stats table will be updated or rebuilt." << endl;
-            debug() << "Creating a backup of the database in "
-                    << amaroK::saveLocation()+"collection-backup.db" << "." << endl;
-            debug() << "Unfortunately, this only works for SQLite databases." << endl;
 
-            bool copied = KIO::NetAccess::file_copy( amaroK::saveLocation()+"collection.db",
-                                                     amaroK::saveLocation()+"collection-backup.db",
-                                                     -1 /*perms*/, true /*overwrite*/, false /*resume*/ );
-
-            if( !copied )
+            if( getType() == DbConnection::sqlite )
             {
-                debug() << "Backup failed! Perhaps you are not using SQLite, or the volume is not writable." << endl;
-                debug() << "Error was: " << KIO::NetAccess::lastErrorString() << endl;
+                debug() << "Creating a backup of the database in "
+                        << amaroK::saveLocation()+"collection-backup.db" << "." << endl;
+
+                bool copied = KIO::NetAccess::file_copy( amaroK::saveLocation()+"collection.db",
+                                                         amaroK::saveLocation()+"collection-backup.db",
+                                                         -1 /*perms*/, true /*overwrite*/, false /*resume*/ );
+
+                if( !copied )
+                {
+                    debug() << "Backup failed! Perhaps the volume is not writable." << endl;
+                    debug() << "Error was: " << KIO::NetAccess::lastErrorString() << endl;
+                }
             }
 
             int prev = adminValue( "Database Stats Version" ).toInt();
