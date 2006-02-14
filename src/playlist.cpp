@@ -1636,8 +1636,10 @@ Playlist::activate( QListViewItem *item )
         return;
 
     if( AmarokConfig::entireAlbums() )
+    {
         if( !item->nextInAlbum() )
             m_prevAlbums.append( item->m_album );
+    }
     else
         m_prevTracks.append( item );
 
