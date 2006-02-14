@@ -2092,7 +2092,8 @@ Playlist::safeClear()
     QListViewItem *n;
     while( c ) {
         n = c->nextSibling();
-        delete c;
+        if ( !( (PlaylistItem *)( c ) )->isEmpty() ) //avoid deleting markers
+            delete c;
         c = n;
     }
     blockSignals( block );
@@ -3053,8 +3054,10 @@ Playlist::repopulate() //SLOT
         PlaylistItem *item = (PlaylistItem *)(*it);
         int     queueIndex = m_nextTracks.findRef( item );
         bool    isQueued   = queueIndex != -1;
+        bool    isMarker   = item->isEmpty();
+        // markers are used by playlistloader, and removing them is not good
 
-        if( !item->isEnabled() || item == m_currentTrack || isQueued )
+        if( !item->isEnabled() || item == m_currentTrack || isQueued || isMarker )
             continue;
 
         list.prepend( *it );
