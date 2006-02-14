@@ -11,6 +11,23 @@
 # License: GNU General Public License V2
 
 
+def bump_desktop_files( folder )
+    Dir.foreach( folder ) do |x|
+        next if x[0, 1] == "."
+        if FileTest.directory?( "#{folder}/#{x}" )
+            print x + "\n"
+            file = File.new( Dir["#{folder}/#{x}/*.desktop"].join(), File::RDWR )
+            str = file.read()
+            file.rewind()
+            file.truncate( 0 )
+            str.sub!( /X-KDE-amaroK-framework-version=[0-9]*/, "X-KDE-amaroK-framework-version=#{@version}" )
+            file << str
+            file.close()
+        end
+    end
+end
+
+
 # Make sure the current working directory is amarok
 if not Dir::getwd().split( "/" ).last() == "amarok"
     print "ERROR: This script must be started from the amarok/ folder. Aborting.\n\n"
@@ -34,22 +51,11 @@ file << str
 file.close()
 
 
-# Bump engine desktop files
+# Bump plugin desktop files
 print "\n\n"
 Dir.chdir( "src" )
-Dir.foreach( "engine" ) do |x|
-    next if x[0, 1] == "."
-    if FileTest.directory?( "engine/#{x}" )
-        print x + "\n"
-        file = File.new( Dir["engine/#{x}/*.desktop"].join(), File::RDWR )
-        str = file.read()
-        file.rewind()
-        file.truncate( 0 )
-        str.sub!( /X-KDE-amaroK-framework-version=[0-9]*/, "X-KDE-amaroK-framework-version=#{@version}" )
-        file << str
-        file.close()
-    end
-end
+bump_desktop_files( "engine" )
+bump_desktop_files( "mediadevice" )
 
 
 print "\n"
