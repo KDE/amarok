@@ -1046,7 +1046,7 @@ bool PlaylistBrowser::deletePodcastItems()
         if( isPodcastItem( *it ) )
         {
             #define item static_cast<PodcastItem*>(*it)
-            if( item->hasDownloaded() )
+            if( item->isOnDisk() )
                 urls.append( item->localUrl() );
             #undef  item
         }
@@ -1083,7 +1083,7 @@ bool PlaylistBrowser::deletePodcasts( QPtrList<PodcastChannel> items, const bool
             for( QListViewItem *ch = (*it)->firstChild(); ch; ch = ch->nextSibling() )
             {
                 #define ch static_cast<PodcastItem*>(ch)
-                if( ch->hasDownloaded() )
+                if( ch->isOnDisk() )
                 {
                     //delete downloaded media
                     urls.append( ch->localUrl() );
@@ -1109,7 +1109,7 @@ void PlaylistBrowser::downloadSelectedPodcasts()
         if( isPodcastItem( *it ) )
         {
             #define item static_cast<PodcastItem*>(*it)
-            if( !item->hasDownloaded() )
+            if( !item->isOnDisk() )
                 m_podcastDownloadQueue.append( item );
             #undef  item
         }
@@ -1562,7 +1562,7 @@ void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
         {
             #define child static_cast<PodcastItem *>(child)
 
-            child->hasDownloaded() ?
+            child->isOnDisk() ?
                 list.append( child->localUrl() ):
                 list.append( child->url()      );
 
@@ -1582,12 +1582,13 @@ void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
         #define item static_cast<PodcastItem *>(item)
         KURL::List list;
 
-        item->hasDownloaded() ?
+        item->isOnDisk() ?
             list.append( item->localUrl() ):
             list.append( item->url()      );
 
         Playlist::instance()->insertMedia( list, Playlist::DirectPlay );
         item->setNew( false );
+        item->setListened();
 
         #undef item
     }
@@ -2365,15 +2366,15 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             menu.insertSeparator();
             menu.insertItem( SmallIconSet( "usbpendrive_unmount" ),
                              i18n( "Add to Media Device &Transfer Queue" ), MEDIA_DEVICE );
-            menu.setItemEnabled( MEDIA_DEVICE, item->hasDownloaded() );
+            menu.setItemEnabled( MEDIA_DEVICE, item->isOnDisk() );
         }
 
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( "down" ), i18n( "&Download Media" ), GET );
         menu.insertItem( SmallIconSet( "editdelete" ), i18n( "De&lete Podcast" ), DELETE );
 
-        menu.setItemEnabled( GET, !item->hasDownloaded() );
-        menu.setItemEnabled( DELETE, item->hasDownloaded() );
+        menu.setItemEnabled( GET, !item->isOnDisk() );
+        menu.setItemEnabled( DELETE, item->isOnDisk() );
 
         switch( menu.exec( p ) )
         {
@@ -2382,7 +2383,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 break;
 
             case QUEUE:
-                if( item->hasDownloaded() )
+                if( item->isOnDisk() )
                     Playlist::instance()->insertMedia( item->localUrl(), Playlist::Queue );
                 else
                     Playlist::instance()->insertMedia( item->url(), Playlist::Queue );
@@ -2407,7 +2408,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                         if(isPodcastItem( *it ) )
                         {
                             PodcastItem *podcast = static_cast<PodcastItem*>(*it);
-                            if(podcast->hasDownloaded())
+                            if(podcast->isOnDisk())
                             {
                                 podcast->addToMediaDevice();
                             }
@@ -2961,7 +2962,7 @@ void PlaylistBrowserView::startDrag()
         else if( isPodcastItem( *it ) )
         {
             #define item static_cast<PodcastItem *>(*it)
-            if( item->hasDownloaded() )
+            if( item->isOnDisk() )
                 urls += item->localUrl();
             else
                 urls += item->url();

@@ -236,6 +236,7 @@ class PodcastItem : public QObject, public PlaylistBrowserEntry
 
         void setNew( bool n = true );
         bool isNew() { return m_new; }
+        void setListened( bool n = true );
         bool hasDownloaded() { return m_downloaded; }
 
         const KURL    &url() { return m_url; }

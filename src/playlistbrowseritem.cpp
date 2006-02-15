@@ -1933,6 +1933,14 @@ PodcastItem::setNew( bool n )
     updatePixmap();
 }
 
+void PodcastItem::setListened( bool n )
+{
+    m_downloaded = n;
+    if( n )
+        m_xml.setAttribute("downloaded", "true"); //mark as downloaded in the xml
+    updatePixmap();
+}
+
 void
 PodcastItem::startAnimation()
 {
