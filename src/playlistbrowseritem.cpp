@@ -1042,6 +1042,7 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
         , m_updating( false )
         , m_new( false )
         , m_hasProblem( false )
+        , m_settings( 0 )
         , m_last( 0 )
         , m_parent( static_cast<PlaylistCategory*>(parent) )
 {
@@ -1050,8 +1051,6 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
 
     setText(0, i18n("Retrieving Podcast...") ); //HACK to fill loading time space
     setPixmap( 0, SmallIcon("player_playlist_2") );
-
-    createSettings();
 
     fetch();
 }
@@ -1066,6 +1065,7 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
     , m_new( false )
     , m_hasProblem( false )
     , m_channelSettings( channelSettings )
+    , m_settings( 0 )
     , m_last( 0 )
     , m_parent( static_cast<PlaylistCategory*>(parent) )
 {
@@ -1074,8 +1074,6 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
 
     setText(0, i18n("Retrieving Podcast...") ); //HACK to fill loading time space
     setPixmap( 0, SmallIcon("player_playlist_2") );
-
-    createSettings();
 
     fetch();
 }
@@ -1093,11 +1091,10 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
     , m_new( false )
     , m_hasProblem( false )
     , m_channelSettings( channelSettings )
+    , m_settings( 0 )
     , m_last( 0 )
     , m_parent( static_cast<PlaylistCategory*>(parent) )
 {
-    createSettings();
-
     QDomNode type = m_doc.namedItem("rss");
     if( !type.isNull() )
         setXml( type.namedItem("channel"), RSS );
@@ -1116,15 +1113,14 @@ void PodcastChannel::createSettings()
     {
         m_settings = new PodcastSettings(
                 PlaylistBrowser::instance()->getPodcastSettings( m_parent )
-                ,  m_url.prettyURL() );
+                ,  m_title );
     }
     else
     {
-        m_title = m_channelSettings.toElement().attribute( "title" );
         QString title = m_title;
         if( title.length() > 40 );
         {
-            title.truncate(37); // make the title fit in the titlebar off the dialog
+            title.truncate(37); // make the title fit in the titlebar of the dialog
             title += "...";
         }
         m_settings = new PodcastSettings( m_channelSettings, title );
@@ -1270,9 +1266,15 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
         amaroK::StatusBar::instance()->shortMessage( i18n( "Unable to connect to Podcast server." ) );
         debug() << "Unable to retrieve podcast information. KIO Error: " << job->error() << endl;
 
-        m_title.isEmpty() ?
-            setText( 0, m_url.prettyURL() ) :
-                setText( 0, m_title );
+        if( m_title.isEmpty() )
+            m_title = m_url.prettyURL();
+        setText( 0, m_title );
+
+        if( m_settings == 0)
+        {
+            debug() << "creating settings for " << m_title << endl;
+            createSettings();
+        }
 
         setPixmap( 0, SmallIcon("cancel") );
 
@@ -1293,14 +1295,17 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
         setPixmap( 0, SmallIcon("cancel") );
         return;
     }
+
+    if(m_doc.toString().isEmpty())
+        m_doc = d.cloneNode().toDocument();
+
     QDomNode type = d.namedItem("rss");
     if( type.isNull() || type.toElement().attribute( "version" ) != "2.0" )
     {
         type = d.namedItem("feed");
         if( type.isNull() )
         {
-            //FIXME: Update error message after string freeze
-            amaroK::StatusBar::instance()->shortMessage( i18n("Sorry, only RSS 2.0 feeds for podcasts!") );
+            amaroK::StatusBar::instance()->shortMessage( i18n("Sorry, only RSS 2.0 or Atom feeds for podcasts!") );
 
             if( m_title.isEmpty() )
                 setText( 0, m_url.prettyURL() );
@@ -1317,6 +1322,7 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
     // feed is rss 2.0
     else
         setXml( type.namedItem("channel"), RSS );
+
 }
 
 void PodcastChannel::saveCache( const QDomDocument &doc )
@@ -1373,6 +1379,8 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
     const bool isAtom = ( feedType == ATOM );
 
     m_title = xml.namedItem( "title" ).toElement().text();
+    createSettings();
+
     setText( 0, m_title );
 
     m_cache = KURL::encode_string( m_title + "_" + m_url.fileName() );
@@ -1425,7 +1433,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
                     if( nodes.toElement().attribute("rel") == "enclosure" )
                     {
                         QDomNode feed = m_doc.namedItem("feed");
-                        node = feed.insertBefore( n.cloneNode(), QDomNode::QDomNode() );
+                        node = feed.insertBefore( n.cloneNode(), feed.namedItem("entry") );
                         updatingLast = new PodcastItem( this, updatingLast, node.toElement(), feedType );
                         updatingLast->setNew();
                         break;
@@ -1435,9 +1443,9 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
             else if( !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
             {
                 QDomNode channel = m_doc.namedItem("rss").namedItem("channel");
-                node = channel.insertBefore(n.cloneNode(), QDomNode::QDomNode() );
+                node = channel.insertBefore(n.cloneNode(), channel.namedItem("item") );
                 updatingLast = new PodcastItem( this, updatingLast, node.toElement(), feedType );
-//                 updatingLast->setNew();
+                updatingLast->setNew();
             }
         }
         else
@@ -1480,6 +1488,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
         amaroK::StatusBar::instance()->shortMessage( i18n("New podcasts have been retrieved!") );
     }
 
+    saveCache();
 }
 
 void
@@ -1747,9 +1756,9 @@ PodcastItem::downloadMedia()
 
 void PodcastItem::createLocalDir( const KURL &localDir )
 {
+    debug() << "checking " << localDir.path() << endl;
     if( !QFile::exists( localDir.path() ) )
     {
-        debug() << "checking " << localDir.path() << endl;
         createLocalDir( localDir.directory( true, true ) );
         debug() << "creating " << localDir.path() << endl;
         KIO::mkdir( localDir, -1 );
