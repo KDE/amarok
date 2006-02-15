@@ -1756,12 +1756,15 @@ PodcastItem::downloadMedia()
 
 void PodcastItem::createLocalDir( const KURL &localDir )
 {
-    debug() << "checking " << localDir.path() << endl;
-    if( !QFile::exists( localDir.path() ) )
+    QString localDirString = localDir.path();
+    debug() << "checking " << localDirString << endl;
+    if( !QFile::exists( localDirString ) )
     {
-        createLocalDir( localDir.directory( true, true ) );
-        debug() << "creating " << localDir.path() << endl;
-        KIO::mkdir( localDir, -1 );
+        QString parentDirString = localDir.directory( true, true );
+        createLocalDir( parentDirString );
+        debug() << "creating " << localDirString << endl;
+        QDir dir( localDirString );
+        dir.mkdir( localDirString );
     }
 }
 
