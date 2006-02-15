@@ -114,6 +114,7 @@ GstEngine::bus_cb(GstBus*, GstMessage* msg, gpointer) // static
 	 }
 	 default: ;
       }
+      gst_message_unref( msg );
       return GST_BUS_DROP;
 }
 
@@ -131,6 +132,8 @@ GstEngine::newPad_cb( GstElement*, GstPad* pad, gboolean, gpointer ) //static
     }
 
     gst_pad_link( pad, audiopad );
+
+    gst_object_unref( audiopad );
 }
 
 /*
