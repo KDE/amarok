@@ -3572,7 +3572,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
                 break;
             }
 
-    if( itemCount == 1 && ( item->isCurrent() || item->isQueued() ||
+    if( itemCount == 1 && ( item->isCurrent() || item->isQueued() || m_stopAfterTrack == item ||
                             ( !AmarokConfig::randomMode() && ( amaroK::repeatPlaylist() || afterCurrent ) ) ||
                             ( AmarokConfig::entireAlbums() && m_currentTrack &&
                               item->m_album == m_currentTrack->m_album &&
