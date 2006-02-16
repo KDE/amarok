@@ -5,6 +5,7 @@
 // (c) 2005 Jeff Mitchell <kde-dev@emailgoeshere.com>
 // (c) 2005 Isaiah Damron <xepo@trifault.net>
 // (c) 2005 Alexandre Pereira de Oliveira <aleprj@gmail.com>
+// (c) 2006 Jonas Hurrelmann <j@outpo.st>
 // See COPYING file for licensing information.
 
 #ifndef AMAROK_COLLECTIONDB_H
@@ -304,6 +305,10 @@ class CollectionDB : public QObject, public EngineObserver
         QString findAmazonImage( const QString &artist, const QString &album, const uint width = 1 );
         QString findDirectoryImage( const QString& artist, const QString& album, uint width = 0 );
         QString findMetaBundleImage( MetaBundle trackInformation, const uint = 1 );
+
+        static QPixmap createDragPixmap(const KURL::List &urls);
+        static const int DRAGPIXMAP_OFFSET_X = -12;
+        static const int DRAGPIXMAP_OFFSET_Y = -28;
 
         /**
          * Retrieves the path to the image for the album of the requested item

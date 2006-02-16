@@ -5,6 +5,7 @@
 // (c) 2005 Jeff Mitchell <kde-dev@emailgoeshere.com>
 // (c) 2005 Isaiah Damron <xepo@trifault.net>
 // (c) 2005 Alexandre Pereira de Oliveira <aleprj@gmail.com>
+// (c) 2006 Jonas Hurrelmann <j@outpo.st>
 // See COPYING file for licensing information.
 
 #define DEBUG_PREFIX "CollectionDB"
@@ -32,6 +33,7 @@
 #include <qmutex.h>
 #include <qregexp.h>              //setHTMLLyrics()
 #include <qtimer.h>
+#include <qpainter.h>             //createDragPixmap()
 
 #include <pthread.h>              //debugging, can be removed later
 
@@ -812,6 +814,157 @@ CollectionDB::addImageToAlbum( const QString& image, QValueList< QPair<QString, 
          .arg( escapeString( (*it).first ) )
          .arg( escapeString( (*it).second ) ), NULL );
     }
+}
+
+QPixmap 
+CollectionDB::createDragPixmap(const KURL::List &urls)
+{
+
+    // settings
+    const int maxCovers = 4; // maximum number of cover images to show
+    const int coverSpacing = 20; // spacing between stacked covers
+    const int fontSpacing = 5; // spacing between covers and info text
+    const int fontSize = 12; // font size for info text
+    const int minWidth = 300; // minimum width (such that info text fits)
+    const int coverW = AmarokConfig::coverPreviewSize(); // size for "..." cover
+    const int coverH = coverW;
+
+
+    int covers = 0;
+    int pixmapW = 0;
+    int pixmapH = 0;
+
+//    QMap<QString, int> artistMap;
+    QMap<QString, int> albumMap;
+    QPixmap coverPm[maxCovers];
+
+    // iterate urls, get covers and count artist/albums
+    KURL::List::ConstIterator it = urls.begin();
+    for( ; it != urls.end(); ++it )
+    {
+            KURL src = ( *it );
+            MetaBundle mb( src );
+            if ( ! albumMap.contains(mb.artist()+mb.album()) ) {
+                debug() << "fetching cover for " <<  mb.artist() << " / " << mb.album() << endl;
+                QString coverName = CollectionDB::instance()->albumImage( mb.artist(), mb.album(), 1 );
+                if (( coverName.find( "nocover.png" ) == -1 ) && ( covers < maxCovers )) {
+                    debug() << "adding cover " << coverName << endl;
+                    coverPm[covers++].load( coverName );
+                }
+                else {
+                    debug() << "no cover found - skipping " << coverName << endl;
+                }
+            }
+//            artistMap[mb.artist()]=1;
+            albumMap[mb.artist()+mb.album()]=1;
+    }
+    
+    int albums = albumMap.count();
+//    int artists = artistMap.count();
+    int songs = urls.count();
+
+    QString m_text= i18n("One song from ", "%n songs from ", songs)+i18n("one album", "%n albums",albums);
+
+    // font... TODO: from config?
+    QFont font("Arial", fontSize);
+    QFontMetrics fm(font);
+    int fontH = fm.height()+2;
+
+    if ( covers > 0 ) {
+        // insert "..." cover as first image if appropiate
+        if ( covers < albums ) {
+            if ( covers < maxCovers ) covers++;
+            for ( int i = maxCovers-1; i > 0; i-- )
+                coverPm[i] = coverPm[i-1];
+            QImage im( locate( "data","amarok/images/more_albums.png" ) );
+	    coverPm[0].convertFromImage(im.smoothScale(coverW, coverH, QImage::ScaleMin));
+        }
+
+        pixmapH = coverPm[0].height();
+        pixmapW = coverPm[0].width();
+
+        // caluclate pixmap height
+        int dW, dH;
+        for (int i = 1; i < covers; i++ ) {
+            dW = coverPm[i].width() - coverPm[i-1].width() + coverSpacing;
+            dH = coverPm[i].height() - coverPm[i-1].height() + coverSpacing;
+            if ( dW > 0 ) pixmapW += dW;
+            if ( dH > 0 ) pixmapH += dH;
+        }
+        pixmapH += fontSpacing + fontH;
+
+        if (pixmapW < minWidth)
+            pixmapW = minWidth;
+    }
+    else {
+        pixmapW = minWidth;
+        pixmapH = fontH;
+    }
+
+
+    QPixmap pmdrag(pixmapW, pixmapH);
+    QPixmap pmtext(pixmapW, fontH);
+
+    QPainter p;
+    p.begin(&pmtext);
+    p.fillRect(0, 0, pixmapW, fontH, QBrush(Qt::black));
+    p.setPen(Qt::white);
+    p.setFont(font);
+    p.drawText(2, fm.ascent() + 1, m_text);
+    p.end();
+
+    int w = pmtext.width();
+    int h = pmtext.height();
+
+    // simple morphological dilation of image for masking with outline (to get font with contour)
+    QImage input = pmtext.convertToImage().convertDepth(32);
+    QImage output(w, h, 1, 2, QImage::LittleEndian); // check endianess?
+    output.fill(0);
+    int x, y;
+    for (x = 1; x < w - 1; x++) {
+	for (y = 1; y < h - 1; y++) {
+	    if ((*((uint *) input.scanLine(y) + x - 1) ^ 0xff000000)
+		|| (*((uint *) input.scanLine(y - 1) + x) ^ 0xff000000)
+		|| (*((uint *) input.scanLine(y) + x) ^ 0xff000000)
+		|| (*((uint *) input.scanLine(y + 1) + x) ^ 0xff000000)
+		|| (*((uint *) input.scanLine(y) + x + 1) ^ 0xff000000)) {
+//		if (output.bitOrder() == QImage::LittleEndian)
+		    *(output.scanLine(y) + (x >> 3)) |= 1 << (x & 7);
+//		else
+//		    *(output.scanLine(y) + (x >> 3)) |= 1 << (7 - (x & 7));
+	    }
+	}
+    }
+    QBitmap pmtextMask(pixmapW, fontH);
+    pmtextMask = output;
+
+    // when we have found no covers, just display the text message
+    if (covers == 0) {
+	pmtext.setMask(pmtextMask);
+	return pmtext;
+    }
+
+    // compose image
+    p.begin(&pmdrag);
+    p.setBackgroundMode(Qt::TransparentMode);
+    for (int i = 0; i < covers; i++) {
+	bitBlt(&pmdrag, i * coverSpacing, i * coverSpacing, &coverPm[i], 0, Qt::CopyROP);
+    }
+    bitBlt(&pmdrag, 0, pixmapH - fontH, &pmtext, 0, Qt::CopyROP);
+    p.end();
+
+
+
+    QBitmap pmdragMask(pmdrag.size(), true);
+    for (int i = 0; i < covers; i++) {
+        QBitmap coverMask(coverPm[i].width(), coverPm[i].height());
+        coverMask.fill(Qt::color1);
+	bitBlt(&pmdragMask, i * coverSpacing, i * coverSpacing, &coverMask, 0, Qt::CopyROP);
+    }
+    bitBlt(&pmdragMask, 0, pixmapH - fontH, &pmtextMask, 0, Qt::CopyROP);
+    pmdrag.setMask(pmdragMask);
+
+    return pmdrag;
 }
 
 QImage

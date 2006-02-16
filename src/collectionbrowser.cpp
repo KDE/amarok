@@ -1711,7 +1711,9 @@ CollectionView::updateColumnHeader()
 void
 CollectionView::startDrag()
 {
-    KURLDrag* d = new KURLDrag( listSelected(), this );
+    KURL::List urls = listSelected();
+    KURLDrag* d = new KURLDrag( urls, this );
+    d->setPixmap(CollectionDB::createDragPixmap(urls), QPoint(CollectionDB::DRAGPIXMAP_OFFSET_X,CollectionDB::DRAGPIXMAP_OFFSET_Y));
     d->dragCopy();
 }
 

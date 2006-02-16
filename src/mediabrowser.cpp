@@ -1050,6 +1050,7 @@ MediaView::startDrag()
     KURL::List urls = nodeBuildDragList( 0 );
     debug() << urls.first().path() << endl;
     KURLDrag* d = new KURLDrag( urls, this );
+    d->setPixmap(CollectionDB::createDragPixmap(urls), QPoint(CollectionDB::DRAGPIXMAP_OFFSET_X,CollectionDB::DRAGPIXMAP_OFFSET_Y));
     d->dragCopy();
 }
 

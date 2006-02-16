@@ -3005,6 +3005,7 @@ void PlaylistBrowserView::startDrag()
     }
 
     drag->addDragObject( new KURLDrag( urls, viewport() ) );
+    drag->setPixmap(CollectionDB::createDragPixmap(urls), QPoint(CollectionDB::DRAGPIXMAP_OFFSET_X,CollectionDB::DRAGPIXMAP_OFFSET_Y));
     drag->dragCopy();
 
 }

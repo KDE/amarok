@@ -5,7 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.4-beta2:
   FEATURES:
-
+    * Show album covers when dragging playlist items. 
+      Patch from Jonas Hurrelmann <j@outpo.st>.
   CHANGES:
     * Upgraded internal SQLite database library to version 3.3.4.
 
