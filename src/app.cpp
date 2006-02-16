@@ -84,8 +84,8 @@ LIBAMAROK_EXPORT KAboutData aboutData( "amarok",
     I18N_NOOP( "amaroK" ), APP_VERSION,
     I18N_NOOP( "The audio player for KDE" ), KAboutData::License_GPL,
     I18N_NOOP( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2006, The amaroK Development Squad" ),
-    I18N_NOOP( "IRC:\nirc.freenode.net - #amarok, #amarok.de\n\nFeedback:\namarok-devel@lists.sourceforge.net" ),
-    I18N_NOOP( "http://amarok.kde.org" ) );
+    I18N_NOOP( "IRC:\nirc.freenode.net - #amarok, #amarok.de\n\nFeedback:\namarok-devel@lists.sourceforge.net\n\n(Build Date: " __DATE__ ")" ),
+             ( "http://amarok.kde.org" ) );
 
 App::App()
         : KApplication()
@@ -239,7 +239,7 @@ App::~App()
 #include <dcopref.h>
 #include <qstringlist.h>
 
-namespace { 
+namespace {
 
 // grabbed from KsCD source, kompatctdisk.cpp
 QString urlToDevice(const QString& device)
@@ -319,7 +319,7 @@ void App::handleCliArgs() //static
         EngineController::instance()->next();
     else if ( args->isSet( "previous" ) )
         EngineController::instance()->previous();
-    else if (args->isSet("cdplay")) { 
+    else if (args->isSet("cdplay")) {
         QString device = args->getOption("cdplay");
         KURL::List urls;
         if (EngineController::engine()->getAudioCDContents(device, urls)) {
@@ -370,7 +370,7 @@ void App::initCliArgs( int argc, char *argv[] ) //static
             { "wizard", I18N_NOOP( "Run first-run wizard" ), 0 },
             { "engine <name>", I18N_NOOP( "Use the <name> engine" ), 0 },
             { "cwd <directory>", I18N_NOOP( "Base for relative filenames/URLs" ), 0 },
-            { "cdplay <device>", I18N_NOOP("Play an AudioCD from <device>"), 0 }, 
+            { "cdplay <device>", I18N_NOOP("Play an AudioCD from <device>"), 0 },
             { 0, 0, 0 }
         };
 
