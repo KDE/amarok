@@ -13,7 +13,7 @@ VERSION 1.4-beta2:
     * Upgraded internal SQLite database library to version 3.3.4.
 
   BUGFIXES:
-    * Fixed crash on startup when upgrading from 1.3, using MySQL. (BR 122042)
+    * Crash on startup when upgrading from 1.3, using MySQL. (BR 122042)
     * No more crash on exit or deleting podcast.
 
 
