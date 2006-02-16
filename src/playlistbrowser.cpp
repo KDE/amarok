@@ -2225,7 +2225,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                     const QStringList values = CollectionDB::instance()->query( static_cast<SmartPlaylist *>(item)->query() );
                     int i=0;
                     for( for_iterators( QStringList, values ); it != end; ++it ) {
-                        if(i%11 == 10)
+                        if(i%12 == 11)
                         {
                             urls << KURL( *it );
                         }
