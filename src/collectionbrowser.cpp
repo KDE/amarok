@@ -1667,7 +1667,24 @@ CollectionView::contentsDropEvent( QDropEvent *e )
     KURL::List list;
     if( KURLDrag::decode( e, list ) )
     {
-        organizeFiles( list, i18n( "Copy Files To Collection" ), true /* copy */ );
+        KURL::List cleanList;
+        int dropped = 0;
+        for( KURL::List::iterator it = list.begin();
+                it != list.end();
+                ++it )
+        {
+            if( (*it).protocol() == "file" && !CollectionDB::instance()->isFileInCollection( (*it).path() ) )
+                cleanList += *it;
+            else
+                dropped++;
+
+        }
+        if( dropped > 0 )
+            amaroK::StatusBar::instance()->shortMessage(
+                    i18n( "One file already in collection",
+                        "%n files already in collection", dropped ) );
+        if( cleanList.count() > 0 )
+            organizeFiles( list, i18n( "Copy Files To Collection" ), true /* copy */ );
     }
 }
 
