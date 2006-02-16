@@ -160,11 +160,8 @@ if test "$build_gstreamer10" != "no"; then
         GST10_MAJORMINOR=0.10
         GST10_REQ=0.10.0
 
-        PKG_CHECK_MODULES(GST10, gstreamer-$GST10_MAJORMINOR >= $GST10_REQ,
+        PKG_CHECK_MODULES(GST10, gstreamer-$GST10_MAJORMINOR >= $GST10_REQ gstreamer-base-$GST10_MAJORMINOR,
             have_gst10=yes,have_gst10=no)
-
-        PKG_CHECK_MODULES(GST10_PLUGINS, gstreamer-plugins-$GST10_MAJORMINOR >= $GST10_REQ, \
-            have_gst10_plugins=yes,have_gst10_plugins=no)
 
         dnl Give error if we don't have gstreamer
         if test "x$have_gst10" = "xno"; then
@@ -180,13 +177,6 @@ if test "$build_gstreamer10" != "no"; then
         fi
     fi
 fi
-
-### The gstreamer engine subdirectory equalizer/ uses
-### gst/audio/audio.h, which is in gstreamer-plugins (at least for me)
-amarok_save_cppflags="$CPPFLAGS"
-CPPFLAGS="$CPPFLAGS $CFLAGS_GST10"
-AC_CHECK_HEADER(gst/audio/audio.h,[],[have_gst10="no"])
-CPPFLAGS="$amarok_save_cppflags"
 
 AM_CONDITIONAL(with_gst10, [test x$have_gst10 = xyes])
 

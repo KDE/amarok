@@ -259,6 +259,10 @@ else
         echo " =   + GStreamer-engine"
     fi
 
+    if test x$have_gst10 = xyes; then
+        echo " =   + GStreamer0.10-engine"
+    fi
+
     if test x$build_xine = xyes; then
         echo " =   + xine-engine"
     fi
