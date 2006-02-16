@@ -2653,7 +2653,7 @@ CollectionDB::initialize()
         {
             debug() << "Different database stats version detected! Stats table will be updated or rebuilt." << endl;
 
-            if( getType() == DbConnection::sqlite )
+            if( getType() == DbConnection::sqlite && QFile::exists( amaroK::saveLocation()+"collection.db" ) )
             {
                 debug() << "Creating a backup of the database in "
                         << amaroK::saveLocation()+"collection-backup.db" << "." << endl;
