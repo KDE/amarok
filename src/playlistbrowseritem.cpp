@@ -1292,6 +1292,12 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
         if( m_title.isEmpty() )
             setText( 0, m_url.prettyURL() );
 
+        if( m_settings == 0)
+        {
+            debug() << "creating settings for " << m_title << endl;
+            createSettings();
+        }
+
         setPixmap( 0, SmallIcon("cancel") );
         return;
     }
@@ -1309,6 +1315,12 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
 
             if( m_title.isEmpty() )
                 setText( 0, m_url.prettyURL() );
+
+            if( m_settings == 0)
+            {
+                debug() << "creating settings for " << m_title << endl;
+                createSettings();
+            }
 
             setPixmap( 0, SmallIcon("cancel") );
             return;
@@ -1554,45 +1566,52 @@ PodcastChannel::xml()
         attr.appendChild( t );
         i.appendChild( attr );
 
-        attr = doc.createElement( "savelocation" );
-        t = doc.createTextNode( m_settings->m_saveLocation.prettyURL() );
-        attr.appendChild( t );
-        i.appendChild( attr );
-
         attr = doc.createElement( "cache" );
         t = doc.createTextNode( m_cache );
         attr.appendChild( t );
         i.appendChild( attr );
 
-        attr = doc.createElement( "autoscan" );
-        t = doc.createTextNode( m_settings->m_autoScan ? "true" : "false" );
-        attr.appendChild( t );
-        i.appendChild( attr );
+        if( m_settings )
+        {
+            attr = doc.createElement( "savelocation" );
+            t = doc.createTextNode( m_settings->m_saveLocation.prettyURL() );
+            attr.appendChild( t );
+            i.appendChild( attr );
 
-        attr = doc.createElement( "scaninterval" );
-        t = doc.createTextNode( QString::number( m_settings->m_interval ) );
-        attr.appendChild( t );
-        i.appendChild( attr );
+            attr = doc.createElement( "autoscan" );
+            t = doc.createTextNode( m_settings->m_autoScan ? "true" : "false" );
+            attr.appendChild( t );
+            i.appendChild( attr );
 
-        attr = doc.createElement( "fetch" );
-        t = doc.createTextNode( ( m_settings->m_fetch == AUTOMATIC ) ? "automatic" : "stream" );
-        attr.appendChild( t );
-        i.appendChild( attr );
+            attr = doc.createElement( "scaninterval" );
+            t = doc.createTextNode( QString::number( m_settings->m_interval ) );
+            attr.appendChild( t );
+            i.appendChild( attr );
 
-        attr = doc.createElement( "autotransfer" );
-        t = doc.createTextNode( ( m_settings->m_addToMediaDevice ) ? "true" : "false" );
-        attr.appendChild( t );
-        i.appendChild( attr );
+            attr = doc.createElement( "fetch" );
+            t = doc.createTextNode( ( m_settings->m_fetch == AUTOMATIC ) ? "automatic" : "stream" );
+            attr.appendChild( t );
+            i.appendChild( attr );
 
-        attr = doc.createElement( "purge" );
-        t = doc.createTextNode( m_settings->m_purge ? "true" : "false" );
-        attr.appendChild( t );
-        i.appendChild( attr );
+            attr = doc.createElement( "autotransfer" );
+            t = doc.createTextNode( ( m_settings->m_addToMediaDevice ) ? "true" : "false" );
+            attr.appendChild( t );
+            i.appendChild( attr );
 
-        attr = doc.createElement( "purgecount" );
-        t = doc.createTextNode( QString::number( m_settings->m_purgeCount ) );
-        attr.appendChild( t );
-        i.appendChild( attr );
+            attr = doc.createElement( "purge" );
+            t = doc.createTextNode( m_settings->m_purge ? "true" : "false" );
+            attr.appendChild( t );
+            i.appendChild( attr );
+
+            attr = doc.createElement( "purgecount" );
+            t = doc.createTextNode( QString::number( m_settings->m_purgeCount ) );
+            attr.appendChild( t );
+            i.appendChild( attr );
+        }
+        else
+        {
+            debug() << "BUG: m_settings is 0 for podcast " << m_url.prettyURL() << endl;
+        }
 
         return i;
 }
