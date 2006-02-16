@@ -11,6 +11,7 @@ Name[nl]=Bestandssysteem media-apparaat
 Name[pt]=Dispositivo Multimédia de Sistema de Ficheiros
 Name[pt_BR]=Dispositivo Multimédia de Sistema de Ficheiros
 Name[sv]=Mediaenhet med filsystem
+Name[zh_CN]=文件系统媒体设备
 ServiceTypes=amaroK/Plugin
 
 X-KDE-Library=libamarok_fs-mediadevice

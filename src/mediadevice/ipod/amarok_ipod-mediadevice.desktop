@@ -19,6 +19,7 @@ Name[pt_BR]=Dispositivo Multimédia Apple iPod
 Name[ru]=Мультимедиа-устройство Apple iPod
 Name[sv]=Apple iPod-mediaenhet
 Name[xx]=xxApple iPod Media Devicexx
+Name[zh_CN]=Apple iPod 媒体设备
 X-KDE-Library=libamarok_ipod-mediadevice
 Comment=Plugin for amaroK
 Comment[bg]=Приставка за amaroK
