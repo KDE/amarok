@@ -180,7 +180,9 @@ amarokapp_LDADD = \
     $(mysql_libs) \
     $(postgresql_libs)
 
-
+amarokapp_LDFLAGS = \
+    $(all_libraries) \
+    $(KDE_RPATH)
 
 rcdir = \
     $(kde_datadir)/amarok
