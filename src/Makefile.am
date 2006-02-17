@@ -84,6 +84,7 @@ libamarok_la_SOURCES = \
     fht.cpp \
     filebrowser.cpp \
     firstrunwizard.ui \
+    hintlineedit.cpp \
     htmlview.cpp \
     k3bexporter.cpp \
     kbookmarkhandler.cpp \
