@@ -6,7 +6,7 @@ MP4_SUBDIR = m4a
 MP4_LDADD = m4a/libtagm4a.la
 endif
 
-SUBDIRS = wma audible rmff $(MP4_SUBDIR)
+SUBDIRS = wma audible rmff $(MP4_SUBDIR) aac
 
 
 INCLUDES           = $(all_includes) $(taglib_includes)
@@ -24,4 +24,5 @@ libmetadata_la_LIBADD = \
                      wma/libtagwma.la \
                      rmff/libtagrealmedia.la \
                      $(MP4_LDADD) \
+                     aac/libtagaac.la \
                      audible/libtagaudible.la

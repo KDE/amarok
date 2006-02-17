@@ -13,7 +13,7 @@ TagLib::File *MP4FileTypeResolver::createFile(const char *fileName,
     const char *ext = strrchr(fileName, '.');
     if(ext && (!strcasecmp(ext, ".m4a")
                 || !strcasecmp(ext, ".m4b") || !strcasecmp(ext, ".m4p")
-                || !strcasecmp(ext, ".aac") || !strcasecmp(ext, ".mp4")
+                || !strcasecmp(ext, ".mp4")
                 || !strcasecmp(ext, ".m4v") || !strcasecmp(ext, ".mp4v")))
     {
         MP4FileHandle h = MP4Read(fileName, 0);
