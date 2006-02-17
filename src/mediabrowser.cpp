@@ -560,7 +560,9 @@ MediaBrowser::transcodingFinished( const QString &src, const QString &dst )
 KURL
 MediaBrowser::transcode( const KURL &src, const QString &filetype )
 {
-    if( !ScriptManager::instance()->transcodeScriptRunning() )
+    const ScriptManager* const sm = ScriptManager::instance();
+
+    if( sm->transcodeScriptRunning() == QString::null )
     {
         debug() << "cannot transcode with no transcoder registered" << endl;
         return KURL();
@@ -571,7 +573,7 @@ MediaBrowser::transcode( const KURL &src, const QString &filetype )
     m_transcodedUrl = KURL();
     ScriptManager::instance()->notifyTranscode( src.url(), filetype );
 
-    while( m_waitForTranscode && ScriptManager::instance()->transcodeScriptRunning() )
+    while( m_waitForTranscode && sm->transcodeScriptRunning() != QString::null )
     {
         usleep( 10000 );
         kapp->processEvents( 100 );

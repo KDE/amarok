@@ -43,9 +43,6 @@ def parseLyrics( lyrics )
     doc = REXML::Document.new()
     root = doc.add_element( "lyrics" )
 
-    root.add_attribute( "add_url", "http://lyrc.com.ar/en/add/add.php?grupo=MAGIC_ARTIST&tema=MAGIC_TITLE&disco=MAGIC_ALBUM&ano=MAGIC_YEAR" )
-    root.add_attribute( "site", "Lyrc" )
-    root.add_attribute( "site_url", "http://lyrc.com.ar" )
     root.add_attribute( "title", /(<b>)([^<]*)/.match( lyrics )[2].to_s() )
     root.add_attribute( "artist", /(<u>)([^<]*)/.match( lyrics )[2].to_s() )
 
@@ -73,8 +70,6 @@ def parseSuggestions( lyrics )
 
     doc = REXML::Document.new()
     root = doc.add_element( "suggestions" )
-
-    root.add_attribute( "add_url", "http://lyrc.com.ar/en/add/add.php?grupo=MAGIC_ARTIST&tema=MAGIC_TITLE&disco=MAGIC_ALBUM&ano=MAGIC_YEAR" )
 
     entries = lyrics.split( "<br>" )
     entries.delete_at( 0 )

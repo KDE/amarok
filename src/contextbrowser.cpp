@@ -2107,7 +2107,11 @@ ContextBrowser::lyricsResult( const QString& xmldoc, bool cached ) //SLOT
 
     QDomElement el = doc.documentElement();
 
-    m_lyricAddUrl    = el.attribute( "add_url" );
+    ScriptManager* const sm = ScriptManager::instance();
+    KConfig spec( sm->specForScript( sm->lyricsScriptRunning() ), true, false );
+    spec.setGroup( "Lyrics" );
+
+    m_lyricAddUrl = spec.readPathEntry( "add_url" );
     m_lyricAddUrl.replace( "MAGIC_ARTIST", KURL::encode_string_no_slash( EngineController::instance()->bundle().artist() ) );
     m_lyricAddUrl.replace( "MAGIC_TITLE", KURL::encode_string_no_slash( EngineController::instance()->bundle().title() ) );
     m_lyricAddUrl.replace( "MAGIC_ALBUM", KURL::encode_string_no_slash( EngineController::instance()->bundle().album() ) );
@@ -2135,15 +2139,15 @@ ContextBrowser::lyricsResult( const QString& xmldoc, bool cached ) //SLOT
 
         const QString title      = el.attribute( "title" );
         const QString artist     = el.attribute( "artist" );
-        const QString site       = el.attribute( "site" );
-        const QString site_url   = el.attribute( "site_url" );
+        const QString site       = spec.readEntry( "site" );
+        const QString site_url   = spec.readEntry( "site_url" );
 
         lyrics.prepend( "<font size='2'><b>" + title + "</b><br/><u>" + artist+ "</font></u></font><br/>" );
-        if ( !site.isEmpty() )
-            lyrics.append( "<br/><br/><i>" + i18n( "Powered by %1 (%2)" ).arg( site, site_url ) + "</i>" );
 
-        if( !cached )
+        if( !cached ) {
+            lyrics.append( "<br/><br/><i>" + i18n( "Powered by %1 (%2)" ).arg( site, site_url ) + "</i>" );
             CollectionDB::instance()->setLyrics( EngineController::instance()->bundle().url().path(), xmldoc );
+        }
     }
 
     m_HTMLSource="";

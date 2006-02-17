@@ -242,6 +242,16 @@ ScriptManager::customMenuClicked( const QString& message )
 }
 
 
+QString
+ScriptManager::specForScript( const QString& name )
+{
+    QFileInfo info( m_scripts[name].url.path() );
+    const QString specPath = info.dirPath() + "/" + info.baseName() + ".spec";
+
+    return specPath;
+}
+
+
 void
 ScriptManager::notifyFetchLyrics( const QString& artist, const QString& title )
 {
@@ -268,27 +278,28 @@ ScriptManager::lyricsScripts() const
     return scripts;
 }
 
-bool
+
+QString
 ScriptManager::lyricsScriptRunning() const
 {
     foreachType( ScriptMap, m_scripts )
         if( it.data().process )
             if( it.data().type == "lyrics" )
-                return true;
+                return it.key();
 
-    return false;
+    return QString::null;
 }
 
 
-bool
+QString
 ScriptManager::transcodeScriptRunning() const
 {
     foreachType( ScriptMap, m_scripts )
         if( it.data().process )
             if( it.data().type == "transcode" )
-                return true;
+                return it.key();
 
-    return false;
+    return QString::null;
 }
 
 
@@ -507,13 +518,13 @@ ScriptManager::slotRunScript()
     QListViewItem* const li = m_gui->listView->currentItem();
     const QString name = li->text( 0 );
 
-    if( m_scripts[name].type == "lyrics" && lyricsScriptRunning() ) {
+    if( m_scripts[name].type == "lyrics" && lyricsScriptRunning() != QString::null ) {
         KMessageBox::sorry( 0, i18n( "Another lyrics script is already running. "
                                      "You may only run one lyrics script at a time." ) );
         return false;
     }
 
-    if( m_scripts[name].type == "transcode" && transcodeScriptRunning() ) {
+    if( m_scripts[name].type == "transcode" && transcodeScriptRunning() != QString::null ) {
         KMessageBox::sorry( 0, i18n( "Another transcode script is already running. "
                                      "You may only run one transcode script at a time." ) );
         return false;

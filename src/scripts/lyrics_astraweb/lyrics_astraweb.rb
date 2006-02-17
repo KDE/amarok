@@ -85,8 +85,6 @@ def fetchLyricsByUrl( url )
 
     doc = REXML::Document.new()
     root = doc.add_element( "lyrics" )
-    root.add_attribute( "site", "Astraweb" )
-    root.add_attribute( "site_url", "http://lyrics.astraweb.com" )
     root.add_attribute( "artist", artist )
     root.add_attribute( "title", title )
     root.text = lyrics

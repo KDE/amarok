@@ -85,8 +85,11 @@ class ScriptManager : public KDialogBase, public EngineObserver
        /** Custom Menu Click */
        void customMenuClicked( const QString& message );
 
-       /** Return whether a lyrics script is currently running */
-       bool lyricsScriptRunning() const;
+       /** Returns the path of the spec file of the given script */
+       QString specForScript( const QString& name );
+
+       /** Return name of the lyrics script currently running, or QString::null if none */
+       QString lyricsScriptRunning() const;
 
        /** Returns a list of all lyrics scripts */
        QStringList lyricsScripts() const;
@@ -97,8 +100,8 @@ class ScriptManager : public KDialogBase, public EngineObserver
        /** Sends a fetchLyrics notification to retrieve lyrics from a specific page */
        void notifyFetchLyricsByUrl( const QString& url );
 
-       /** Return whether a transcode script is currently running */
-       bool transcodeScriptRunning() const;
+       /** Return name of the transcode script currently running, or QString::null if none */
+       QString transcodeScriptRunning() const;
 
        /** Sends a transcode notification to all scripts */
        void notifyTranscode( const QString& srcUrl, const QString& filetype );
