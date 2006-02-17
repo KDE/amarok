@@ -17,6 +17,7 @@
 #include "contextbrowser.h"
 #include "debug.h"
 #include "devicemanager.h"
+#include "hintlineedit.h"
 #include "mediabrowser.h"
 #include "medium.h"
 #include "mediumpluginchooser.h"
@@ -1496,9 +1497,9 @@ MediaBrowser::config()
     connect( m_configPluginCombo, SIGNAL(activated( int )), SLOT(configSelectPlugin( int )) );
 
     QLabel *connectLabel = 0;
-    QLineEdit *connectEdit = 0;
+    HintLineEdit *connectEdit = 0;
     QLabel *disconnectLabel = 0;
-    QLineEdit *disconnectEdit = 0;
+    HintLineEdit *disconnectEdit = 0;
     QCheckBox *transcodeCheck = 0;
     QButtonGroup *transcodeGroup = 0;
     QRadioButton *transcodeAlways = 0;
@@ -1511,14 +1512,16 @@ MediaBrowser::config()
         // pre-connect/post-disconnect (mount/umount)
         connectLabel = new QLabel( m_configBox );
         connectLabel->setText( i18n( "Pre-&connect command:" ) );
-        connectEdit = new QLineEdit( currentDevice()->m_preconnectcmd, m_configBox );
+        connectEdit = new HintLineEdit( currentDevice()->m_preconnectcmd, m_configBox );
+        connectEdit->setHint( i18n( "Example: mount %d" ) );
         connectLabel->setBuddy( connectEdit );
         QToolTip::add( connectEdit, i18n( "Set a command to be run before connecting to your device (e.g. a mount command) here.\n%d is replaced by the device node, %m by the mount point.\nEmpty commands are not executed." ) );
 
         disconnectLabel = new QLabel( m_configBox );
         disconnectLabel->setText( i18n( "Post-&disconnect command:" ) );
-        disconnectEdit = new QLineEdit( currentDevice()->m_postdisconnectcmd, m_configBox );
+        disconnectEdit = new HintLineEdit( currentDevice()->m_postdisconnectcmd, m_configBox );
         disconnectLabel->setBuddy( disconnectEdit );
+        disconnectEdit->setHint( i18n( "Example: eject %d" ) );
         QToolTip::add( disconnectEdit, i18n( "Set a command to be run after disconnecting from your device (e.g. an eject command) here.\n%d is replaced by the device node, %m by the mount point.\nEmpty commands are not executed." ) );
 
         // transcode

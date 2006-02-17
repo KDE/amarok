@@ -20,6 +20,7 @@ AMAROK_EXPORT_PLUGIN( IpodMediaDevice )
 #include <tagdialog.h>
 #include <threadweaver.h>
 #include <metadata/tplugins.h>
+#include <hintlineedit.h>
 
 #include <kapplication.h>
 #include <kmountpoint.h>
@@ -279,20 +280,21 @@ IpodMediaDevice::updateTrackInDB(IpodMediaItem *item,
         track->podcastrss = g_strdup( podcastInfo->rss.utf8() );
         //track->category = g_strdup( "Unknown" );
         track->time_released = itdb_time_host_to_mac( podcastInfo->date.toTime_t() );
+        //track->compilation = 0x01; // this should have made the ipod play a sequence of podcasts
     }
     else
     {
         track->unk176 = 0x00010000; // for non-podcasts
-    }
 
-    uint albumID = CollectionDB::instance()->albumID( bundle.album(), false );
-    if( CollectionDB::instance()->albumIsCompilation( QString::number( albumID ) ) )
-    {
-        track->compilation = 0x01;
-    }
-    else
-    {
-        track->compilation = 0x00;
+        uint albumID = CollectionDB::instance()->albumID( bundle.album(), false );
+        if( CollectionDB::instance()->albumIsCompilation( QString::number( albumID ) ) )
+        {
+            track->compilation = 0x01;
+        }
+        else
+        {
+            track->compilation = 0x00;
+        }
     }
 
     m_dbChanged = true;
@@ -713,9 +715,10 @@ IpodMediaDevice::createLockFile( const QString &mountpoint )
     {
         ok = false;
         msg = i18n( "Media Device: iPod mounted at %1 already locked! " ).arg( mountpoint );
-        msg += i18n( "A common problem is that your iPod is connected twice, "
+        msg += i18n( "This problem is common with subfs/submount.<br>"
+                     "But it could also be that your iPod is connected twice, "
                      "once because of being manually connected "
-                     "and a second time because of being auto-detected thereafter. " );
+                     "and a second time because of being auto-detected thereafter.<br>" );
         msg += i18n( "If you are sure that this is an error, then remove the file %1 and try again." ).arg( mountpoint + "/amaroK.lock" );
 
     }
@@ -1993,13 +1996,14 @@ IpodMediaDevice::addConfigElements( QWidget *parent )
 {
     m_mntpntLabel = new QLabel( parent );
     m_mntpntLabel->setText( i18n( "&Mount point:" ) );
-    m_mntpntEdit = new QLineEdit( m_mntpnt, parent );
+    m_mntpntEdit = new HintLineEdit( m_mntpnt, parent );
+    static_cast<HintLineEdit *>(m_mntpntEdit)->setHint( i18n( "(Not used when device is auto-detected)" ) );
     m_mntpntLabel->setBuddy( m_mntpntEdit );
-    QToolTip::add( m_mntpntEdit, i18n( "Set the mount point of your device here, when empty autodetection is tried." ) );
+    QToolTip::add( m_mntpntEdit, i18n( "Set the mount point of your device here, if empty auto-detection is tried." ) );
 
     m_autoDeletePodcastsCheck = new QCheckBox( parent );
     m_autoDeletePodcastsCheck->setText( i18n( "&Automatically delete podcasts" ) );
-    QToolTip::add( m_autoDeletePodcastsCheck, i18n( "Automatically delete podcast shows already played on connect" ) );
+    QToolTip::add( m_autoDeletePodcastsCheck, i18n( "Automatically delete podcast shows already played when connecting device" ) );
     m_autoDeletePodcastsCheck->setChecked( m_autoDeletePodcasts );
 
     m_syncStatsCheck = new QCheckBox( parent );
