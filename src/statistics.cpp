@@ -126,6 +126,7 @@ StatisticsList::startDrag()
 
     for( ; it.current(); ++it )
     {
+        debug() << "Looping\n";
         StatisticsDetailedItem *item = static_cast<StatisticsDetailedItem*>(*it);
 
         debug() << "url: " << item->url() << endl;
@@ -139,7 +140,7 @@ StatisticsList::startDrag()
         else if( item->itemType() == StatisticsDetailedItem::ALBUM )
         {
             qb.clear();
-            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+            qb.initSQLDrag();
             qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, artist );
             qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, album );
             qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
@@ -155,7 +156,7 @@ StatisticsList::startDrag()
             const uint artist_id = CollectionDB::instance()->artistID( item->url() );
 
             qb.clear();
-            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+            qb.initSQLDrag();
             qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
             qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
             QStringList values = qb.run();
@@ -170,7 +171,7 @@ StatisticsList::startDrag()
             const uint genre_id = CollectionDB::instance()->genreID( item->url() );
 
             qb.clear();
-            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+            qb.initSQLDrag();
             qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valGenreID, QString::number( genre_id ) );
             qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
             QStringList values = qb.run();

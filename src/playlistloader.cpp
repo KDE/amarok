@@ -917,7 +917,7 @@ SqlLoader::doJob()
 
     BundleList bundles;
     uint x = 0;
-    for( for_iterators( QStringList, values ); it != end || isAborted(); ++it ) {
+    for( for_iterators( QStringList, values ); it != end && !isAborted(); ++it ) {
         setProgress( x += 11 );
 
         MetaBundle b;
