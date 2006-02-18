@@ -20,7 +20,6 @@
 #include <stdint.h>
 #include <qdeepcopy.h>
 #include <qstring.h>
-#include "debug.h"
 
 #include "atomicstring.h"
 
@@ -33,7 +32,7 @@
     // http://www.azillionmonkeys.com/qed/hash.html
     struct AtomicString::SuperFastHash
     {
-        bool operator()( const QString *string ) const
+        uint32_t operator()( const QString *string ) const
         {
             unsigned l = string->length();
             const QChar *s = string->unicode();
@@ -96,43 +95,36 @@
 
 #endif
 
-AtomicString::set_type AtomicString::s_store;
-
-class AtomicString::Data: public QString, public KShared
+class AtomicString::Data: public QString
 {
 public:
-    bool stored;
-    Data(): stored( false ) { }
-    Data( const QString &s ): QString( s ), stored( false ) { }
-    virtual ~Data()
-    {
-        if( stored )
-            AtomicString::s_store.erase( this );
-    }
+    uint refcount;
+    Data(): refcount( 0 ) { }
+    Data( const QString &s ): QString( s ), refcount( 0 ) { }
 };
 
-AtomicString::AtomicString()
+AtomicString::AtomicString(): m_string( 0 ) { }
+
+AtomicString::AtomicString( const AtomicString &other ): m_string( other.m_string )
 {
+    ref( m_string );
 }
 
-AtomicString::AtomicString( const AtomicString &other )
-{
-    m_string = other.m_string;
-}
-
-AtomicString::AtomicString( const QString &string )
+AtomicString::AtomicString( const QString &string ): m_string( 0 )
 {
     if( string.isEmpty() )
         return;
 
-    KSharedPtr<Data> s = new Data( string );
-    const std::pair<set_type::iterator, bool> r = s_store.insert( s.data() );
-    m_string = static_cast<Data*>( *r.first );
-    m_string->stored = true;
+    Data *s = new Data( string );
+    m_string = static_cast<Data*>( *( s_store.insert( s ).first ) );
+    ref( m_string );
+    if( !s->refcount )
+        delete s;
 }
 
 AtomicString::~AtomicString()
 {
+    deref( m_string );
 }
 
 QString AtomicString::string() const
@@ -154,7 +146,7 @@ QString AtomicString::deepCopy() const
     return QString::null;
 }
 
-bool AtomicString::isNull() const
+bool AtomicString::isEmpty() const
 {
     return !m_string;
 }
@@ -166,9 +158,20 @@ const QString *AtomicString::ptr() const
     return &QString::null;
 }
 
+uint AtomicString::refcount() const
+{
+    if( m_string )
+        return m_string->refcount;
+    return 0;
+}
+
 AtomicString &AtomicString::operator=( const AtomicString &other )
 {
+    if( m_string == other.m_string )
+        return *this;
+    deref( m_string );
     m_string = other.m_string;
+    ref( m_string );
     return *this;
 }
 
@@ -177,8 +180,21 @@ bool AtomicString::operator==( const AtomicString &other ) const
     return m_string == other.m_string;
 }
 
-void AtomicString::listContents() //static
+void AtomicString::deref( Data *s )
 {
-    for( set_type::iterator it = s_store.begin(), end = s_store.end(); it != end; ++it )
-        debug() << static_cast<Data*>((*it))->_KShared_count() << " " << (**it) << endl;
+    if( !s )
+        return;
+    if( !( --s->refcount ) )
+    {
+        s_store.erase( s );
+        delete s;
+    }
 }
+
+void AtomicString::ref( Data *s )
+{
+    if( s )
+        s->refcount++;
+}
+
+AtomicString::set_type AtomicString::s_store;
