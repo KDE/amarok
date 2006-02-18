@@ -126,7 +126,6 @@ StatisticsList::startDrag()
 
     for( ; it.current(); ++it )
     {
-        debug() << "Looping\n";
         StatisticsDetailedItem *item = static_cast<StatisticsDetailedItem*>(*it);
 
         debug() << "url: " << item->url() << endl;
