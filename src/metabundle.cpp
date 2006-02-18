@@ -740,8 +740,11 @@ MetaBundle::prettyTitle() const
 
     //FIXME doesn't work for resume playback
 
-    if( !s.isEmpty() ) s += i18n(" - ");
-    s += title();
+    if( s.isEmpty() )
+        s = title();
+    else
+        s = i18n("%1 - %2").arg( artist(), title() );
+
     if( s.isEmpty() ) s = prettyTitle( filename() );
 
     return s;

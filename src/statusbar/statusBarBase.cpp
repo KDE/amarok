@@ -251,7 +251,7 @@ StatusBar::resetMainText()
             }
 
         if( count == 1 )
-            m_mainTextLabel->setText( bar->description() + "..." );
+            m_mainTextLabel->setText( bar->description() + i18n("...") );
         else
             m_mainTextLabel->setText( i18n("Multiple background-tasks running") );
     }

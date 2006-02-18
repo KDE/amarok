@@ -248,7 +248,7 @@ CoverViewDialog::CoverViewDialog(const QString& artist, const QString& album, QW
 {
     KWin::setType( winId(), NET::Utility );
     kapp->setTopWidget( this );
-    setCaption( kapp->makeStdCaption( artist + i18n(" - ") + album ) );
+    setCaption( kapp->makeStdCaption( i18n("%1 - %2").arg( artist, album ) ) );
 
     m_layout = new QHBoxLayout( this );
     m_layout->setAutoAdd(true);
@@ -769,9 +769,10 @@ void CoverManager::updateStatusBar()
             QStringList values = QStringList::split( " @@@ ", m_fetchCovers[0], true );    //get artist and album name
             if ( values.count() >= 2 )
             {
-                text = i18n( "Fetching cover for " );
-        if ( !values[0].isEmpty() ) text += values[0] + i18n(" - ");
-        text += values[1] + i18n("...");
+                if( values[0].isEmpty() )
+                    text = i18n( "Fetching cover for %1..." ).arg( values[1] );
+                else
+                    text = i18n( "Fetching cover for %1 - %2..." ).arg( values[0], values[1] );
             }
         }
         else if( m_fetchingCovers ) {
@@ -967,10 +968,10 @@ void CoverViewItem::paintItem(QPainter* p, const QColorGroup& cg)
         int i = 0;
         while ( fm.width( nameJustify + str[ i ] ) < textRect().width() )
             nameJustify += str[ i++ ];
-        nameJustify.remove( 0, 3 );
+        nameJustify.remove( 0, i18n("...").length() );
         if ( nameJustify.isEmpty() )
             nameJustify = str.left( 1 );
-    nameJustify += i18n("...");
+        nameJustify += i18n("...");
         str = nameJustify;
     }
     p->setPen( cg.text() );

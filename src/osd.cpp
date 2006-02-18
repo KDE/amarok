@@ -508,7 +508,7 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
                 QString append = ( i == 0 ) ? ""
                                : ( n > 1 && i == n / 2 ) ? "\n"
                                : ( parens.contains( column ) || parens.contains( availableTags.at( i - 1 ) ) ) ? " "
-                               : " - ";
+                               : i18n(" - ");
                 append += ( parens.contains( column ) ? "(%1)" : "%1" );
                 text += append.arg( tags.at( column + 1 ) );
             }

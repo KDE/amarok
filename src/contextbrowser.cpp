@@ -1855,7 +1855,7 @@ bool CurrentTrackJob::doJob()
 
                         QString tracktitle_formated;
                         QString tracktitle;
-                        tracktitle = escapeHTML( albumValues[j + 5] ) + i18n(" - ") + escapeHTML( albumValues[j] );
+                        tracktitle = escapeHTML( i18n("%1 - %2").arg( albumValues[j + 5], albumValues[j] ) );
                         tracktitle_formated = "<span class='album-song-title'>";
                         if ( artist == albumValues[j + 5] )
                              tracktitle_formated += "<b>" + tracktitle + "</b>";
@@ -2129,7 +2129,7 @@ ContextBrowser::lyricsResult( const QString& xmldoc, bool cached ) //SLOT
             const QString artist = l.item( i ).toElement().attribute( "artist" );
             const QString title  = l.item( i ).toElement().attribute( "title" );
 
-            lyrics += "<a href='show:suggestLyric-" + url + "'>" + artist + " - " + title;
+            lyrics += "<a href='show:suggestLyric-" + url + "'>" + i18n("%1 - %2").arg( artist, title );
             lyrics += "</a><br/>";
         }
     }

@@ -1700,13 +1700,13 @@ MediaBrowser::updateStats()
     QString text = i18n( "1 track in queue", "%n tracks in queue", m_queue->childCount() );
     if(m_queue->childCount() > 0)
     {
-        text += " (" + KIO::convertSize( m_queue->totalSize() ) + ")";
+        text += i18n(" (%1)").arg( KIO::convertSize( m_queue->totalSize() ) );
     }
 
     KIO::filesize_t total, avail;
     if( currentDevice() && currentDevice()->getCapacity(&total, &avail) )
     {
-        text += " - " + i18n( "%1 of %2 available" ).arg( KIO::convertSize( avail ) ).arg( KIO::convertSize( total ) );
+        text += i18n( " - %1 of %2 available" ).arg( KIO::convertSize( avail ) ).arg( KIO::convertSize( total ) );
 
         m_stats->m_used = total-avail;
         m_stats->m_total = total;

@@ -367,11 +367,14 @@ void PlayerWidget::engineNewMetaData( const MetaBundle &bundle, bool )
     m_pSlider->setEnabled( bundle.length() > 0 );
 
     m_rateString     = bundle.prettyBitrate();
-    const QString Hz = bundle.prettySampleRate( true );
+    QString Hz = bundle.prettySampleRate( true );
     if( !Hz.isEmpty() )
     {
-        if( !m_rateString.isEmpty() ) m_rateString += " - ";
-        m_rateString += Hz;
+        Hz = i18n("%1 Hz").arg( Hz );
+        if( m_rateString.isEmpty() )
+            m_rateString = Hz;
+        else
+            m_rateString = i18n("%1 - %2").arg( m_rateString, Hz );
     }
 
     QStringList list( bundle.prettyTitle() );

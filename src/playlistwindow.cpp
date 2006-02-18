@@ -729,7 +729,7 @@ void PlaylistWindow::savePlaylist() const //SLOT
         }
 
         if( useArtist && useAlbum )
-            title = artist + " - " + album;
+            title = i18n("%1 - %2").arg( artist, album );
         else if( useArtist )
             title = artist;
         else if( useAlbum )

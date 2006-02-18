@@ -1117,13 +1117,7 @@ void PodcastChannel::createSettings()
     }
     else
     {
-        QString title = m_title;
-        if( title.length() > 40 );
-        {
-            title.truncate(37); // make the title fit in the titlebar of the dialog
-            title += "...";
-        }
-        m_settings = new PodcastSettings( m_channelSettings, title );
+        m_settings = new PodcastSettings( m_channelSettings, m_title );
     }
 }
 

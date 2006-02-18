@@ -329,9 +329,7 @@ QueueManager::addItems( QListViewItem *after )
 
         if( current.find( item ) == current.end() ) //avoid duplication
         {
-            QString title = item->artist();
-            title.append( i18n(" - " ) );
-            title.append( item->title() );
+            QString title = i18n("%1 - %2").arg( item->artist(), item->title() );
 
             after = new QueueItem( m_listview, after, title );
             m_map[ after ] = item;
@@ -371,9 +369,7 @@ QueueManager::addQueuedItem( PlaylistItem *item )
     QValueList<PlaylistItem*>         current = m_map.values();
     QValueListIterator<PlaylistItem*> newItem = current.find( item );
 
-    QString title = item->artist();
-    title.append( i18n(" - " ) );
-    title.append( item->title() );
+    QString title = i18n("%1 - %2").arg( item->artist(), item->title() );
 
     if( newItem == current.end() ) //avoid duplication
     {
@@ -426,9 +422,7 @@ QueueManager::insertItems()
 
     for( PlaylistItem *item = list.first(); item; item = list.next() )
     {
-        QString title = item->artist();
-        title.append( i18n(" - " ) );
-        title.append( item->title() );
+        QString title = i18n("%1 - %2").arg( item->artist(), item->title() );
 
         last = new QueueItem( m_listview, last, title );
         m_map[ last ] = item;

@@ -622,7 +622,7 @@ void App::applySettings( bool firstTime )
 
         //Set the caption correctly.
         if ( !EngineController::instance()->bundle().prettyTitle().isEmpty() )
-            m_pPlaylistWindow->setCaption( "amaroK - " + EngineController::instance()->bundle().veryNiceTitle() );
+            m_pPlaylistWindow->setCaption( i18n("amaroK - %1").arg( EngineController::instance()->bundle().veryNiceTitle() ) );
         else
             m_pPlaylistWindow->setCaption( "amaroK" );
 
@@ -920,7 +920,7 @@ void App::engineStateChanged( Engine::State state, Engine::State oldState )
         if ( oldState == Engine::Paused )
             amaroK::OSD::instance()->OSDWidget::show( i18n("Play" ) );
         if ( !bundle.prettyTitle().isEmpty() )
-            m_pPlaylistWindow->setCaption( "amaroK - " + bundle.veryNiceTitle() );
+            m_pPlaylistWindow->setCaption( i18n("amaroK - %1").arg( bundle.veryNiceTitle() ) );
         break;
 
     case Engine::Paused:
@@ -942,7 +942,7 @@ void App::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
     amaroK::OSD::instance()->show( bundle );
     if ( !bundle.prettyTitle().isEmpty() )
-        m_pPlaylistWindow->setCaption( "amaroK - " + bundle.veryNiceTitle() );
+        m_pPlaylistWindow->setCaption( i18n("amaroK - %1").arg( bundle.veryNiceTitle() ) );
 
     TrackToolTip::instance()->setTrack( bundle );
 }
