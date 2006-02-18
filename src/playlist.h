@@ -178,7 +178,6 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void appendMedia( const QString &path );
         void clear();
         void copyToClipboard( const QListViewItem* = 0 ) const;
-        void playCountChanged( const QString &path );
         void deleteSelectedFiles();
         void ensureItemCentered( QListViewItem* item );
         void playCurrentTrack();

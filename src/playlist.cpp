@@ -294,8 +294,6 @@ Playlist::Playlist( QWidget *parent )
              this,       SLOT( saveUndoState() ) );
     connect( CollectionDB::instance(), SIGNAL( scoreChanged( const QString&, int ) ),
              this,       SLOT( scoreChanged( const QString&, int ) ) );
-    connect( CollectionDB::instance(), SIGNAL( scoreChanged( const QString&, int ) ),
-             this,       SLOT( playCountChanged( const QString& ) ) );
     connect( CollectionDB::instance(), SIGNAL( ratingChanged( const QString&, int ) ),
              this,       SLOT( ratingChanged( const QString&, int ) ) );
     connect( header(), SIGNAL( indexChange( int, int, int ) ),
@@ -3444,6 +3442,8 @@ Playlist::scoreChanged( const QString &path, int score )
         if ( item->url().path() == path )
         {
             item->setScore( score );
+            item->setPlayCount( CollectionDB::instance()->getPlayCount( path ) );
+            item->setLastPlay( CollectionDB::instance()->getLastPlay( path ).toTime_t() );
             item->filter( m_filter );
         }
     }
@@ -3460,17 +3460,6 @@ Playlist::ratingChanged( const QString &path, int rating )
             item->setRating( rating );
             item->filter( m_filter );
         }
-    }
-}
-
-void
-Playlist::playCountChanged( const QString &path )
-{
-    for( MyIt it( this, MyIt::All ); *it; ++it )
-    {
-        PlaylistItem *item = (PlaylistItem*)*it;
-        if ( item->url().path() == path )
-            item->setPlayCount( CollectionDB::instance()->getPlayCount( path ) );
     }
 }
 
