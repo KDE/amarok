@@ -11,7 +11,7 @@ namespace TagLib
     class Mp4SkipBox: public Mp4IsoBox
     {
     public:
-      Mp4SkipBox( File* file, MP4::Fourcc fourcc, uint size, long offset );
+      Mp4SkipBox( TagLib::File* file, MP4::Fourcc fourcc, uint size, long offset );
       ~Mp4SkipBox();
 
     private:
