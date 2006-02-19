@@ -291,6 +291,11 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void viewportPaintEvent( QPaintEvent* );
         void viewportResizeEvent( QResizeEvent* );
 
+        void appendToPreviousTracks( PlaylistItem *item );
+        void appendToPreviousAlbums( PlaylistAlbum *album );
+        void removeFromPreviousTracks( PlaylistItem *item = 0 );
+        void removeFromPreviousAlbums( PlaylistAlbum *album = 0 );
+
         typedef QMap<MyAtomicString, PlaylistAlbum*> AlbumMap;
         typedef QMap<MyAtomicString, AlbumMap> ArtistAlbumMap;
         ArtistAlbumMap m_albums;

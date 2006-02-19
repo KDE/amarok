@@ -1051,7 +1051,8 @@ Playlist::playNextTrack( bool forceNext )
                 if( AmarokConfig::entireAlbums() )
                 {
                     if ( m_prevAlbums.count() <= 8 ) {
-                        m_prevAlbums.clear();
+                        while( m_prevAlbums.count() )
+                            removeFromPreviousAlbums();
 
                         // don't add it to previous albums if we only have one album in the playlist
                         // would loop infinitely otherwise
@@ -1061,7 +1062,7 @@ Playlist::playNextTrack( bool forceNext )
                                 albums.append( (*it)->m_album );
 
                         if ( albums.count() > 1 )
-                            m_prevAlbums.append( m_currentTrack->m_album );
+                            appendToPreviousAlbums( m_currentTrack->m_album );
                     }
                     else {
                         m_prevAlbums.first(); //set's current item to first item
@@ -1069,14 +1070,15 @@ Playlist::playNextTrack( bool forceNext )
                         //keep 80 tracks in the previous list so item time user pushes play
                         //we don't risk playing anything too recent
                         while( m_prevAlbums.count() > 8 )
-                            m_prevAlbums.remove(); //removes current item
+                            removeFromPreviousAlbums();; //removes current item
                     }
                 }
 
                 else
                 {
                     if ( m_prevTracks.count() <= 80 ) {
-                        m_prevTracks.clear();
+                        while( m_prevTracks.count() )
+                            removeFromPreviousTracks();
 
                         // don't add it to previous tracks if we only have one file in the playlist
                         // would loop infinitely otherwise
@@ -1085,7 +1087,7 @@ Playlist::playNextTrack( bool forceNext )
                             ++count;
 
                         if ( count > 1 )
-                            m_prevTracks.append( m_currentTrack );
+                            appendToPreviousTracks( m_currentTrack );
                     }
                     else {
                         m_prevTracks.first(); //set's current item to first item
@@ -1093,7 +1095,7 @@ Playlist::playNextTrack( bool forceNext )
                         //keep 80 tracks in the previous list so item time user pushes play
                         //we don't risk playing anything too recent
                         while( m_prevTracks.count() > 80 )
-                            m_prevTracks.remove(); //removes current item
+                            removeFromPreviousTracks(); //removes current item
                     }
                 }
 
@@ -1269,13 +1271,13 @@ Playlist::playPrevTrack()
             PlaylistAlbum* a = m_prevAlbums.last();
             while( a && !a->tracks.count() )
             {
-                m_prevAlbums.remove();
+                removeFromPreviousAlbums();
                 a = m_prevAlbums.last();
             }
             if( a )
             {
                 item = a->tracks.getLast();
-                m_prevAlbums.remove();
+                removeFromPreviousAlbums();
             }
         }
         if( !item )
@@ -1289,11 +1291,11 @@ Playlist::playPrevTrack()
         else {
             // if enough songs in buffer, jump to the previous one
             m_prevTracks.last();
-            m_prevTracks.remove(); //remove the track playing now
+            removeFromPreviousTracks(); //remove the track playing now
             item = m_prevTracks.last();
 
             // we need to remove this item now, since it will be added in activate() again
-            m_prevTracks.remove();
+            removeFromPreviousTracks();
         }
     }
 
@@ -1636,10 +1638,10 @@ Playlist::activate( QListViewItem *item )
     if( AmarokConfig::entireAlbums() )
     {
         if( !item->nextInAlbum() )
-            m_prevAlbums.append( item->m_album );
+            appendToPreviousAlbums( item->m_album );
     }
     else
-        m_prevTracks.append( item );
+        appendToPreviousTracks( item );
 
     //if we are playing something from the next tracks
     //list, remove it from the list
@@ -2072,6 +2074,8 @@ Playlist::clear() //SLOT
     // that depends on a PlaylistItem, we are about to crash amaroK
     // never unlock() the Playlist until it is safe!
     safeClear();
+    m_total = 0;
+    m_albums.clear();
 }
 
 /**
@@ -3464,6 +3468,47 @@ Playlist::ratingChanged( const QString &path, int rating )
 }
 
 void
+Playlist::appendToPreviousTracks( PlaylistItem *item )
+{
+    if( !m_prevTracks.containsRef( item ) )
+    {
+        m_total -= item->totalIncrementAmount();
+        m_prevTracks.append( item );
+    }
+}
+
+void
+Playlist::appendToPreviousAlbums( PlaylistAlbum *album )
+{
+    if( !m_prevAlbums.containsRef( album ) )
+    {
+        m_total -= album->total;
+        m_prevAlbums.append( album );
+    }
+}
+
+void
+Playlist::removeFromPreviousTracks( PlaylistItem *item )
+{
+    if( ( item && m_prevTracks.removeRef( item ) ) ||
+        ( ( item = m_prevTracks.current() ) && m_prevTracks.remove() ) )
+    {
+        m_total += item->totalIncrementAmount();
+    }
+}
+
+void
+Playlist::removeFromPreviousAlbums( PlaylistAlbum *album )
+{
+    if( ( album && m_prevAlbums.removeRef( album ) ) ||
+        ( ( album = m_prevAlbums.current() ) && m_prevAlbums.remove() ) )
+    {
+        m_total += album->total;
+    }
+}
+
+
+void
 Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLOT
 {
     //if clicked on an empty area
@@ -4061,7 +4106,7 @@ Playlist::removeItem( PlaylistItem *item, bool multi )
        emit queueChanged( PLItemList(), PLItemList( item ) );
 
     //keep recent buffer synchronised
-    m_prevTracks.removeRef( item ); //removes all pointers to item
+    removeFromPreviousTracks( item ); //removes all pointers to item
 
     updateNextPrev();
 }
@@ -4175,6 +4220,8 @@ Playlist::switchState( QStringList &loadFromMe, QStringList &saveToMe )
     emit queueChanged( PLItemList(), prev );
     ThreadWeaver::instance()->abortAllJobsNamed( "TagWriter" );
     safeClear();
+    m_total = 0;
+    m_albums.clear();
 
     insertMediaInternal( url, 0 ); //because the listview is empty, undoState won't be forced
 

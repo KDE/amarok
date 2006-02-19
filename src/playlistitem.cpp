@@ -994,8 +994,7 @@ void PlaylistItem::incrementTotals()
 {
     if( AmarokConfig::entireAlbums() )
     {
-        listView()->m_total -= m_album->total;
-        Q_INT64 total = m_album->total * m_album->tracks.count();
+        const uint prevCount = m_album->tracks.count();
         if( !track() || !m_album->tracks.count() || ( m_album->tracks.getLast()->track() && m_album->tracks.getLast()->track() < track() ) )
             m_album->tracks.append( this );
         else
@@ -1005,11 +1004,14 @@ void PlaylistItem::incrementTotals()
                     m_album->tracks.insert( i, this );
                     break;
                 }
+        const Q_INT64 prevTotal = m_album->total;
+        Q_INT64 total = m_album->total * prevCount;
         total += totalIncrementAmount();
         m_album->total = Q_INT64( double( total + 0.5 ) / m_album->tracks.count() );
-        listView()->m_total += m_album->total;
+        if( listView()->m_prevAlbums.findRef( m_album ) == -1 )
+            listView()->m_total = listView()->m_total - prevTotal + m_album->total;
     }
-    else
+    else if( listView()->m_prevTracks.findRef( this ) == -1 )
         listView()->m_total += totalIncrementAmount();
 }
 
@@ -1017,14 +1019,16 @@ void PlaylistItem::decrementTotals()
 {
     if( AmarokConfig::entireAlbums() )
     {
-        listView()->m_total -= m_album->total;
+        const Q_INT64 prevTotal = m_album->total;
         Q_INT64 total = m_album->total * m_album->tracks.count();
         m_album->tracks.removeRef( this );
         total -= totalIncrementAmount();
         m_album->total = Q_INT64( double( total + 0.5 ) / m_album->tracks.count() );
-        listView()->m_total += m_album->total;
+        if( listView()->m_prevAlbums.findRef( m_album ) == -1 )
+            listView()->m_total = listView()->m_total - prevTotal + m_album->total;
     }
-    listView()->m_total -= totalIncrementAmount();
+    else if( listView()->m_prevTracks.findRef( this ) == -1 )
+        listView()->m_total -= totalIncrementAmount();
 }
 
 int PlaylistItem::totalIncrementAmount() const
