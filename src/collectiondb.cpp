@@ -817,7 +817,7 @@ CollectionDB::addImageToAlbum( const QString& image, QValueList< QPair<QString, 
     }
 }
 
-QPixmap 
+QPixmap
 CollectionDB::createDragPixmap(const KURL::List &urls)
 {
 
@@ -884,7 +884,7 @@ CollectionDB::createDragPixmap(const KURL::List &urls)
             }
         }
     }
-    
+
     int albums = albumMap.count();
 //    int artists = artistMap.count();
 
@@ -2649,7 +2649,8 @@ CollectionDB::initialize()
     }
     else
     {
-        if ( adminValue( "Database Stats Version" ).toInt() != DATABASE_STATS_VERSION )
+        if ( adminValue( "Database Stats Version" ).toInt() != DATABASE_STATS_VERSION
+          || config->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION )
         {
             debug() << "Different database stats version detected! Stats table will be updated or rebuilt." << endl;
 
@@ -2670,8 +2671,11 @@ CollectionDB::initialize()
             }
 
             int prev = adminValue( "Database Stats Version" ).toInt();
-            if( !prev && config->readNumEntry( "Database Stats Version", 0 )
-                      && config->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION )
+
+            /* If config returns 3 or lower, it came from an amaroK version that was not aware of
+               admin table, so we can't trust this table at all */
+            if( config->readNumEntry( "Database Stats Version", 0 )
+                      && config->readNumEntry( "Database Stats Version", 0 ) <= 3 )
                 prev = config->readNumEntry( "Database Stats Version", 0 );
 
             //pre somewhere in the 1.3-1.4 timeframe, the version wasn't stored in the DB, so try to guess it
