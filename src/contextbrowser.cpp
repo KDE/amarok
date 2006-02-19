@@ -1066,6 +1066,8 @@ bool CurrentTrackJob::doJob()
 
     const MetaBundle &currentTrack = EngineController::instance()->bundle();
 
+    const bool showRating = Playlist::instance()->visibleColumns().contains( MetaBundle::Rating );
+
     QString artist;
     if( b->m_browseArtists )
     {
@@ -1327,7 +1329,7 @@ bool CurrentTrackJob::doJob()
             const QString scoreBox =
             "<div align='right'>"
                 "<table class='scoreBox' border='0' cellspacing='0' cellpadding='0' title='"
-                    + QString( true ? i18n( "Score:" ) + " %2, " + i18n( "Rating:" ) + " %4'>" : i18n( "Score" ) + " %2'>" ) +
+                    + ( showRating ? i18n( "Score: %2, Rating: %4" ) : i18n( "Score: %2" ) ) + "'>" +
                     "<tr>"
                         "<td nowrap>%1&nbsp;</td>"
                         "<td>"
@@ -1348,7 +1350,7 @@ bool CurrentTrackJob::doJob()
                         "<span>%4</span>"
                         )
                     .arg( i18n( "Track played once", "Track played %n times", playtimes ),
-                        scoreBox.arg( score ).arg( score ).arg( true ? ( rating * 10 ) : ( score / 2 ) ).arg( rating ),
+                        scoreBox.arg( score ).arg( score ).arg( showRating ? ( rating * 10 ) : ( score / 2 ) ).arg( rating ),
                         i18n( "Last played: %1" ).arg( amaroK::verboseTimeSince( lastPlay ) ),
                         i18n( "First played: %1" ).arg( amaroK::verboseTimeSince( firstPlay ) ) ) );
         }
@@ -1521,12 +1523,12 @@ bool CurrentTrackJob::doJob()
                             + i18n("&#xa0;&#8211; ") +
                             "</span><span class='album-song-title'>" + escapeHTML( values[i + 1] ) + "</span>"
                             "</a>"
-                            "</td>"
-                            "<td class='sbtext' width='1' title='Score'>" + values[i + 3] + "</td>"
-                            "<td class='rbtext' width='1' title='" + i18n( true ? "Rating" : "Score" ) + "'>"
+                            "</td>" +
+                            QString("<td class='sbtext' width='1' title='%1'>").arg( i18n( "Score" ) ) + values[i + 3] + "</td>"
+                            "<td class='rbtext' width='1' title='" + ( showRating ? i18n( "Rating" ) : i18n( "Score" ) ) + "'>"
                             "<div class='sbouter'>"
                             "<div class='sbinner' style='width: "
-                                + QString::number( true ? values[i + 4].toInt() * 10 : values[i + 3].toInt() / 2 ) + "px;'></div>"
+                                + QString::number( showRating ? values[i + 4].toInt() * 10 : values[i + 3].toInt() / 2 ) + "px;'></div>"
                             "</div>"
                             "</td>"
                             "<td width='1'></td>"
@@ -1578,10 +1580,10 @@ bool CurrentTrackJob::doJob()
                             "</a>"
                         "</td>"
                         "<td class='sbtext' width='1' title='" + i18n( "Score" ) + "'>" + values[i + 2] + "</td>"
-                        "<td class='rbtext' width='1' title='" + i18n( true ? "Rating" : "Score" ) + "'>"
+                        "<td class='rbtext' width='1' title='" + ( showRating ? i18n( "Rating" ) : i18n( "Score" ) ) + "'>"
                             "<div class='sbouter'>"
                                 "<div class='sbinner' style='width: "
-                                    + QString::number( true ? values[i + 3].toInt() * 10 : values[i + 2].toInt() / 2 ) + "px;'></div>"
+                                    + QString::number( showRating ? values[i + 3].toInt() * 10 : values[i + 2].toInt() / 2 ) + "px;'></div>"
                             "</div>"
                         "</td>"
                         "<td width='1'></td>"
