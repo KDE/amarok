@@ -26,22 +26,34 @@ MP4::Mp4PropsProxy::~Mp4PropsProxy()
 
 TagLib::uint MP4::Mp4PropsProxy::seconds() const
 {
-  return static_cast<TagLib::uint>( d->mvhdbox->duration() / d->mvhdbox->timescale() );
+  if( d->mvhdbox )
+    return static_cast<TagLib::uint>( d->mvhdbox->duration() / d->mvhdbox->timescale() );
+  else
+    return 0;
 }
 
 TagLib::uint MP4::Mp4PropsProxy::channels() const
 {
-  return d->audiosampleentry->channels();
+  if( d->audiosampleentry )
+    return d->audiosampleentry->channels();
+  else
+    return 0;
 }
 
 TagLib::uint MP4::Mp4PropsProxy::sampleRate() const
 {
-  return (d->audiosampleentry->samplerate()>>16);
+  if( d->audiosampleentry )
+    return (d->audiosampleentry->samplerate()>>16);
+  else
+    return 0;
 }
 
 TagLib::uint MP4::Mp4PropsProxy::bitRate() const
 {
-  return (d->audiosampleentry->bitrate());
+  if( d->audiosampleentry )
+    return (d->audiosampleentry->bitrate());
+  else
+    return 0;
 }
 
 void MP4::Mp4PropsProxy::registerMvhd( MP4::Mp4MvhdBox* mvhdbox )
