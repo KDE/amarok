@@ -1671,19 +1671,7 @@ QPair<QString, QRect> Playlist::toolTipText( QWidget*, const QPoint &pos ) const
     const int col = header()->sectionAt( contentsPos.x() );
 
     QString text;
-    if( col == PlaylistItem::Rating )
-        switch( item->rating() )
-        {
-            case 0: text = i18n( "Not rated" ); break;
-            case 1: text = i18n( "Crap" ); break;
-            case 2: text = i18n( "Tolerable" ); break;
-            case 3: text = i18n( "Good" ); break;
-            case 4: text = i18n( "Excellent" ); break;
-            case 5: text = i18n( "Inconceivable!" ); break;
-            default: text = "This is a bug.";
-        }
-    else
-        text = item->text( col );
+    text = item->text( col );
 
     QRect irect = itemRect( item );
     const int headerPos = header()->sectionPos( col );

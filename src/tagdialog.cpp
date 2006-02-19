@@ -364,6 +364,8 @@ void TagDialog::init()
     kComboBox_album->completionObject()->setIgnoreCase( true );
     kComboBox_album->setCompletionMode( KGlobalSettings::CompletionPopup );
 
+    kComboBox_rating->insertStringList( MetaBundle::ratingList() );
+
 //    const QStringList genres = MetaBundle::genreList();
     const QStringList genres = CollectionDB::instance()->genreList();
     kComboBox_genre->insertStringList( genres );
@@ -394,6 +396,8 @@ void TagDialog::init()
     connect( kComboBox_album,  SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
     connect( kComboBox_genre,  SIGNAL(activated( int )),              SLOT(checkModified()) );
     connect( kComboBox_genre,  SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
+    connect( kComboBox_rating, SIGNAL(activated( int )),              SLOT(checkModified()) );
+    connect( kComboBox_rating, SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
     connect( kIntSpinBox_track,SIGNAL(valueChanged( int )),           SLOT(checkModified()) );
     connect( kIntSpinBox_year, SIGNAL(valueChanged( int )),           SLOT(checkModified()) );
     connect( kIntSpinBox_score,SIGNAL(valueChanged( int )),           SLOT(checkModified()) );
@@ -569,6 +573,7 @@ void TagDialog::readTags()
     kComboBox_artist       ->setCurrentText( m_bundle.artist() );
     kComboBox_album        ->setCurrentText( m_bundle.album() );
     kComboBox_genre        ->setCurrentText( m_bundle.genre() );
+    kComboBox_rating       ->setCurrentItem( m_bundle.rating() );
     kIntSpinBox_track      ->setValue( m_bundle.track() );
     kLineEdit_composer     ->setText( m_bundle.composer() );
     kIntSpinBox_year       ->setValue( m_bundle.year() );
@@ -590,10 +595,12 @@ void TagDialog::readTags()
     summaryText += body2cols.arg( i18n("Length"), unknownSafe( m_bundle.prettyLength() ) );
     summaryText += body2cols.arg( i18n("Bitrate"), unknownSafe( m_bundle.prettyBitrate() ) );
     summaryText += body2cols.arg( i18n("Samplerate"), unknownSafe( m_bundle.prettySampleRate() ) );
-    summaryText += body2cols.arg( i18n("Filesize"), unknownSafe( QString::number( m_bundle.filesize() ) ) );
+    summaryText += body2cols.arg( i18n("Size"), unknownSafe( m_bundle.prettyFilesize()  ) );
+    summaryText += body2cols.arg( i18n("Format"), unknownSafe( m_bundle.type() ) );
 
     summaryText += "</table></td><td width=50%><table>";
     summaryText += body2cols.arg( i18n("Score"), QString::number( m_score ) );
+    summaryText += body2cols.arg( i18n("Rating"), m_bundle.prettyRating() );
 
     summaryText += body2cols.arg( i18n("Playcount"), QString::number( m_playcount ) );
     summaryText += body2cols.arg( i18n("First Played"), m_playcount ? KGlobal::locale()->formatDate( m_firstPlay.date() , true ) : i18n("Never") );
@@ -626,6 +633,7 @@ void TagDialog::readTags()
     kComboBox_artist->setEnabled( local );
     kComboBox_album->setEnabled( local );
     kComboBox_genre->setEnabled( local );
+    kComboBox_rating->setEnabled( local );
     kIntSpinBox_track->setEnabled( local );
     kIntSpinBox_year->setEnabled( local );
     kIntSpinBox_score->setEnabled( local );
@@ -818,6 +826,8 @@ TagDialog::changes()
 
     if (kIntSpinBox_score->value() != m_score)
         result |= TagDialog::SCORECHANGED;
+    if (kComboBox_rating->currentItem() != m_bundle.rating() )
+        result |= TagDialog::RATINGCHANGED;
     if ( !equalString( kTextEdit_lyrics->text(), m_lyrics ) )
         result |= TagDialog::LYRICSCHANGED;
 
@@ -850,11 +860,12 @@ TagDialog::storeTags( const KURL &kurl )
         mb.setLength( m_bundle.length() );
         mb.setBitrate( m_bundle.bitrate() );
         mb.setSampleRate( m_bundle.sampleRate() );
-
         storedTags.replace( url, mb );
     }
     if( result & TagDialog::SCORECHANGED )
         storedScores.replace( url, kIntSpinBox_score->value() );
+    if( result & TagDialog::RATINGCHANGED )
+        storedRatings.replace( url, kComboBox_rating->currentItem() );
     if( result & TagDialog::LYRICSCHANGED ) {
         if ( kTextEdit_lyrics->text().isEmpty() )
             storedLyrics.replace( url, QString::null );
@@ -884,6 +895,7 @@ TagDialog::loadTags( const KURL &url )
 {
     m_bundle = bundleForURL( url.path() );
     m_score = scoreForURL( url.path() );
+    m_bundle.setRating( ratingForURL( url.path() ) );
 
     loadLyrics( url );
 
@@ -922,6 +934,14 @@ TagDialog::scoreForURL( const KURL &url )
     return CollectionDB::instance()->getSongPercentage( url.path() );
 }
 
+int
+TagDialog::ratingForURL( const KURL &url )
+{
+    if( storedRatings.find( url.path() ) != storedRatings.end() )
+        return storedRatings[ url.path() ];
+
+    return CollectionDB::instance()->getSongRating( url.path() );
+}
 
 QString
 TagDialog::lyricsForURL( const KURL &url )
@@ -955,6 +975,10 @@ TagDialog::saveTags()
     QMap<QString, int>::ConstIterator endScore( storedScores.end() );
     for(QMap<QString, int>::ConstIterator it = storedScores.begin(); it != endScore; ++it ) {
         CollectionDB::instance()->setSongPercentage( it.key(), it.data() );
+    }
+    QMap<QString, int>::ConstIterator endRating( storedRatings.end() );
+    for(QMap<QString, int>::ConstIterator it = storedRatings.begin(); it != endRating; ++it ) {
+        CollectionDB::instance()->setSongRating( it.key(), it.data() );
     }
     QMap<QString, QString>::ConstIterator endLyrics( storedLyrics.end() );
     for(QMap<QString, QString>::ConstIterator it = storedLyrics.begin(); it != endLyrics; ++it ) {

@@ -198,6 +198,8 @@ public: //accessors
     QString prettyBitrate() const;
     QString prettyLength() const;
     QString prettySampleRate( bool shortened = false ) const;
+    QString prettyFilesize() const;
+    QString prettyRating() const;
 
 public: //modifiers
     virtual void setUrl( const KURL &url );
@@ -226,6 +228,9 @@ public: //modifiers
 public: //static helper functions
     static QString prettyBitrate( int );
     static QString prettyLength( int, bool showHours = false ); //must be int, see Unavailable, etc. above
+    static QString prettyFilesize( int );
+    static QString prettyRating( int );
+    static QStringList ratingList();
     static QString prettyTime( uint, bool showHours = true );
     static QString zeroPad( uint i );
     static QString prettyTitle( const QString &filename );
@@ -333,6 +338,8 @@ inline QString MetaBundle::type() const
 inline QString MetaBundle::prettyURL() const { return m_url.prettyURL(); }
 inline QString MetaBundle::prettyBitrate() const { return prettyBitrate( m_bitrate ); }
 inline QString MetaBundle::prettyLength() const { return prettyLength( m_length, true ); }
+inline QString MetaBundle::prettyFilesize() const { return prettyFilesize( m_filesize ); }
+inline QString MetaBundle::prettyRating() const { return prettyRating( m_rating ); }
 inline QString MetaBundle::prettySampleRate( bool shortened ) const
     {
         if ( shortened )

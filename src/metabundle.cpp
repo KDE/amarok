@@ -508,10 +508,10 @@ QString MetaBundle::prettyText( int column ) const
         case Bitrate:    text = prettyBitrate( bitrate() );                                          break;
         case SampleRate: text = prettySampleRate();                                                  break;
         case Score:      text = QString::number( score() );                                          break;
-        case Rating:     text = rating() ? QString::number( rating() ) : QString::null;              break;
+        case Rating:     text = prettyRating();                                                      break;
         case PlayCount:  text = QString::number( playCount() );                                      break;
         case LastPlayed: text = amaroK::verboseTimeSince( lastPlay() );                              break;
-        case Filesize:   text = KIO::convertSize( filesize() );                                      break;
+        case Filesize:   text = prettyFilesize();                                                      break;
         case Mood:       text = QString::null;                                                       break;
         default: warning() << "Tried to get the text of a nonexistent column!" << endl;              break;
     }
@@ -822,6 +822,32 @@ MetaBundle::prettyBitrate( int i )
     return (i >=0 && i <= 256 && i % 32 == 0)
                 ? bitrateStore[ i / 32 ]
                 : prettyGeneric( "%1", i );
+}
+
+QString
+MetaBundle::prettyFilesize( int s ) {
+    return KIO::convertSize( s );
+}
+
+QString
+MetaBundle::prettyRating( int r ) {
+    switch( r )
+    {
+        case 1: return i18n( "1 - Crap" );
+        case 2: return i18n( "2 - Tolerable" );
+        case 3: return i18n( "3 - Good" );
+        case 4: return i18n( "4 - Excellent" );
+        case 5: return i18n( "5 - Inconceivable!" );
+        case 0: default: return i18n( "Not rated" ); // assume weird values as not rated
+    }
+}
+
+QStringList
+MetaBundle::ratingList() {
+    QStringList list;
+    for ( int i = 0; i<=5; i++ )
+        list += prettyRating( i );
+    return list;
 }
 
 QStringList

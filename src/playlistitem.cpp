@@ -200,6 +200,8 @@ QString PlaylistItem::text( int column ) const
         case Genre:
         case Comment:
             return exactText( column ); //HACK
+        case Rating:
+            return isEditing( column ) ? exactText( column ) : prettyText( column );
         default:
         {
             if( column != Title && isEditing( column ) )

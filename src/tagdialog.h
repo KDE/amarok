@@ -31,7 +31,7 @@ class TagDialog : public TagDialogBase
 
     public:
 
-        enum Changes { NOCHANGE=0, SCORECHANGED=1, TAGSCHANGED=2, LYRICSCHANGED=4 };
+        enum Changes { NOCHANGE=0, SCORECHANGED=1, TAGSCHANGED=2, LYRICSCHANGED=4, RATINGCHANGED=8 };
 
         TagDialog( const KURL& url, QWidget* parent = 0 );
         TagDialog( const KURL::List list, QWidget* parent = 0 );
@@ -76,6 +76,7 @@ class TagDialog : public TagDialogBase
         void loadLyrics( const KURL& url );
         MetaBundle bundleForURL( const KURL &url );
         int scoreForURL( const KURL &url );
+        int ratingForURL( const KURL &url );
         QString lyricsForURL( const KURL &url );
         void saveTags();
         bool writeTag( MetaBundle mb, bool updateCB=true );
@@ -97,6 +98,7 @@ class TagDialog : public TagDialogBase
         PlaylistItem* m_playlistItem;
         QMap<QString, MetaBundle> storedTags;
         QMap<QString, int> storedScores;
+        QMap<QString, int> storedRatings;
         QMap<QString, QString> storedLyrics;
         KURL::List m_urlList;
         QString m_buttonMbText;
