@@ -2674,8 +2674,8 @@ CollectionDB::initialize()
 
             /* If config returns 3 or lower, it came from an amaroK version that was not aware of
                admin table, so we can't trust this table at all */
-            if( config->readNumEntry( "Database Stats Version", 0 )
-                      && config->readNumEntry( "Database Stats Version", 0 ) <= 3 )
+            if( !prev || ( config->readNumEntry( "Database Stats Version", 0 )
+                      && config->readNumEntry( "Database Stats Version", 0 ) <= 3  ) )
                 prev = config->readNumEntry( "Database Stats Version", 0 );
 
             //pre somewhere in the 1.3-1.4 timeframe, the version wasn't stored in the DB, so try to guess it
