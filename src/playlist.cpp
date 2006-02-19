@@ -3575,7 +3575,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         popup.setItemChecked( STOP_DONE, m_stopAfterTrack == item );
     }
 
-    if( isCurrent )
+    if( isCurrent && itemCount == 1 )
     {
         popup.insertItem( SmallIconSet( "repeat_track" ), i18n( "&Repeat Track" ), REPEAT );
         popup.setItemChecked( REPEAT, amaroK::repeatTrack() );
