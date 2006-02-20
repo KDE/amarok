@@ -175,6 +175,7 @@ private:
       ENABLEEQ,
       UPDATEEQGAINS,
       SCOPEBUF,
+      SCOPECLEAR,
       METADATAREQ,
       METADATA,
       PLUGINS,
@@ -207,6 +208,7 @@ private:
    static bool sendvolume(int fd, unsigned long volume);
    static bool sendsetfade(int fd, bool fadeout, unsigned long fadelength);
    static bool sendteardown(int fd) { return (sendrequest(fd, TEARDOWN)); }
+   static bool sendscopeclear(int fd) { return (sendrequest(fd, SCOPECLEAR)); }
 
    static bool sendplugins(int fd, HelixSimplePlayer *player);
    static bool sendmimetypes(int fd, HelixSimplePlayer *player);

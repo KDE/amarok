@@ -583,7 +583,8 @@ int HelixEngine::prune(int playerIndex)
    /////////////////////////////////////////////////////////////////////
    unsigned long hpos = PlayerControl::where(playerIndex);
 
-   if (hpos == hscope[playerIndex].m_lastpos && hpos > hscope[playerIndex].m_w)
+   if (hpos == hscope[playerIndex].m_lastpos)
+       //&& hpos > hscope[playerIndex].m_w
    {
       if (hscope[playerIndex].m_item && hpos >= hscope[playerIndex].m_item->time && hpos <= hscope[playerIndex].m_item->etime 
           && (hscope[playerIndex].m_lasttime < hscope[playerIndex].m_item->time || 
@@ -596,7 +597,8 @@ int HelixEngine::prune(int playerIndex)
       else
          hscope[playerIndex].m_w = hscope[playerIndex].m_lasttime;
    }
-   else if (hpos > hscope[playerIndex].m_w)
+   else
+      //if (hpos > hscope[playerIndex].m_w)
    {
       hscope[playerIndex].m_w = hpos;
       hscope[playerIndex].m_lasttime = hpos;
@@ -641,6 +643,11 @@ int HelixEngine::prune(int playerIndex)
 
 const Engine::Scope &HelixEngine::scope()
 {
+   //if (hscope[0].m_item)
+      //debug() << "player=0" << " m_w=" << hscope[0].m_w << " time=" << hscope[0].m_item->time << " etime=" << hscope[0].m_item->etime << " lasttime=" << hscope[0].m_lasttime << endl;
+   //if (hscope[1].m_item)
+      //debug() << "player=1" << " m_w=" << hscope[1].m_w << " time=" << hscope[1].m_item->time << " etime=" << hscope[1].m_item->etime << " lasttime=" << hscope[1].m_lasttime << endl;
+
    if (isPlaying(0) && isPlaying(1)) // crossfading
    {
       if (m_scopeplayerlast)
@@ -743,8 +750,6 @@ int HelixEngine::scope(int playerIndex)
 
          //debug() << "Got new item in scope, " << 
          //   hscope[playerIndex].m_item->time << ":" << hscope[playerIndex].m_item->etime << endl;
-         hscope[playerIndex].m_w = hscope[playerIndex].m_item->time; // player is at least up to here
-
       }
       else
       {
@@ -776,6 +781,7 @@ HelixEngine::resetScope(int playerIndex)
       hscope[playerIndex].m_scopeindex = 0;
       if (hscope[playerIndex].m_item && hscope[playerIndex].m_item->allocd)
          delete hscope[playerIndex].m_item;
+      hscope[playerIndex].m_w = 0;
       hscope[playerIndex].m_item = 0;
    }
 }

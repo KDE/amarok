@@ -230,6 +230,9 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
                      bool fadein = (bool) buf[0];
                      unsigned long fadetime;
 
+                     if (pmapped)
+                        *m_children[m_index].current_time = 0;
+
                      if (sz == sizeof(unsigned long) + 1)
                      {
                         cerr << "CHILD " << m_index << " gets START\n";
@@ -364,6 +367,11 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
                         cerr << "CHILD " << m_index << " sz not right in UPDATEEQGAINS, sz=" << sz << endl;
                   }
                   break;
+                  case SCOPECLEAR:
+                     player->clearScopeQ(0);
+                     if (pmapped)
+                        *m_children[m_index].m_consumed = *m_children[m_index].m_current = 0;
+                     break;
                   case TEARDOWN:
                      if (!sz)
                      {
@@ -391,6 +399,13 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
          if (m_inited && playing)
          {
             player->dispatch();
+            if (player->done(0))
+            {
+               senddone(wfd);
+               playing = false;
+               if (pmapped)
+                  *m_children[m_index].current_time = 0;
+            }
             
             if (pmapped)
             {
@@ -406,7 +421,7 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
                {
                   j = (*m_children[m_index].m_current + 1) % NUM_SCOPEBUFS;
                   
-                  //cerr << "j=" << j << " time=" << item->time << " etime=" << item->etime << " len=" << item->len << endl;
+                  //cerr << "player:" << m_index << " j=" << j << " time=" << item->time << " etime=" << item->etime << " len=" << item->len << endl;
                   m_children[m_index].q[j].len = item->len;
                   m_children[m_index].q[j].time = item->time;
                   m_children[m_index].q[j].etime = item->etime;
@@ -419,13 +434,6 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
                   //sendscopebuf(wfd, item);
                   delete item;
                }
-            }
-            if (player->done(0))
-            {
-               senddone(wfd);
-               playing = false;
-               *m_children[m_index].current_time = 0;
-               *m_children[m_index].duration = 0;
             }
          }
          
@@ -508,6 +516,8 @@ void PlayerControl::tearDown()
 void PlayerControl::start(int playerIndex, bool fadein, unsigned long fadetime)
 {
    m_children[playerIndex].isplaying = true;
+   if (pmapped)
+      *m_children[playerIndex].m_consumed = *m_children[playerIndex].m_current = 0;
    sendstart(m_children[playerIndex].m_pipeB[1], fadein, fadetime);
 }
 
@@ -633,6 +643,7 @@ void PlayerControl::dispatch()
                case DONE:
                   print2stderr("CHILD %d is DONE\n", i);
                   m_children[i].isplaying = false;
+                  clearScopeQ(i);
                   break;
                   
                case MIMETYPES:
@@ -900,6 +911,7 @@ void PlayerControl::clearScopeQ(int playerIndex)
    }
    else
    {
+      sendscopeclear(m_children[playerIndex].m_pipeB[1]);
       struct DelayQueue *item;
       while ((item = getScopeBuf(playerIndex)))
          if (item->allocd)

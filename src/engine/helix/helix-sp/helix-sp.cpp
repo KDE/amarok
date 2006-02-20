@@ -244,7 +244,7 @@ int HelixSimplePlayer::print2stdout(const char *fmt, ...)
     va_start(args, fmt);
 
     int ret = vsprintf(buf, fmt, args);
-    //std::cout << buf; quiet...
+    std::cout << buf; 
 
     va_end(args);
 
@@ -259,7 +259,7 @@ int HelixSimplePlayer::print2stderr(const char *fmt, ...)
     va_start(args, fmt);
 
     int ret = vsprintf(buf, fmt, args);
-    //std::cerr << buf; quiet...
+    std::cerr << buf;
 
     va_end(args);
 
