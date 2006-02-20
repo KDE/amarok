@@ -304,6 +304,7 @@ CollectionView* CollectionView::m_instance = 0;
 CollectionView::CollectionView( CollectionBrowser* parent )
         : KListView( parent )
         , m_parent( parent )
+        , m_timeFilter( 0 )
 {
     DEBUG_FUNC_INFO
     m_instance = this;
