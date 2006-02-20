@@ -11,6 +11,7 @@
  *
  * ********** */
 #include <stdlib.h>
+#include <stdarg.h>
 
 #include "hxcomm.h"
 #include "hxcore.h"
@@ -235,6 +236,37 @@ STDMETHODIMP HelixSimplePlayerVolumeAdvice::OnMuteChange(const BOOL bMute)
 }
 
 
+int HelixSimplePlayer::print2stdout(const char *fmt, ...)
+{
+    va_list args;
+    char buf[1024];
+
+    va_start(args, fmt);
+
+    int ret = vsprintf(buf, fmt, args);
+    //std::cout << buf; quiet...
+
+    va_end(args);
+
+    return ret;
+}
+
+int HelixSimplePlayer::print2stderr(const char *fmt, ...)
+{
+    va_list args;
+    char buf[1024];
+
+    va_start(args, fmt);
+
+    int ret = vsprintf(buf, fmt, args);
+    //std::cerr << buf; quiet...
+
+    va_end(args);
+
+    return ret;
+}
+
+
 void HelixSimplePlayer::setFadeout(bool fadeout, unsigned long fadelength, int playerIndex )
 {
    if (playerIndex == ALL_PLAYERS)
@@ -343,6 +375,7 @@ HelixSimplePlayer::HelixSimplePlayer() :
    m_ulNumSecondsPlayed(0),
    mimehead(0),
    mimelistlen(0),
+   m_preamp(0),
    m_outputsink(OSS),
    m_device(0),
 #ifdef USE_HELIX_ALSA
@@ -360,8 +393,7 @@ HelixSimplePlayer::HelixSimplePlayer() :
    m_volBefore(-1),
    m_volAtStart(-1),
    m_MvolBefore(-1),
-   m_MvolAtStart(-1),
-   m_preamp(0)
+   m_MvolAtStart(-1)
 {
 
    pthread_mutexattr_t ma;

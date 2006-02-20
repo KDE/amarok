@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2005 Paul Cifarelli <paul@cifarelli.net>              *
+ *   Copyright (C) 2005-2006 Paul Cifarelli <paul@cifarelli.net>           *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -14,11 +14,11 @@
 #include "engine/enginebase.h"
 #include <qobject.h>
 #include <sys/types.h>
-#include <helix-sp.h>
+#include <hxplayercontrol.h>
 
 class QStringList;
 
-class HelixEngine : public Engine::Base, public HelixSimplePlayer
+class HelixEngine : public Engine::Base, public PlayerControl
 {
    Q_OBJECT
 
@@ -73,6 +73,9 @@ private:
    int prune();
    int prune(int playerIndex);
    bool m_scopeplayerlast;
+   float m_sfps;
+   int   m_sframes;
+   int   m_lframes;
    struct HelixScope
    {
       DelayQueue *m_item;

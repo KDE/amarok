@@ -25,6 +25,7 @@ class HelixSimplePlayerAudioStreamInfoResponse;
 #include <pthread.h>
 #include <vector>
 #include <config.h>
+#include <iostream>
 using std::vector;
 
 #define MAX_PATH PATH_MAX
@@ -66,9 +67,12 @@ struct _snd_mixer_elem;
 class DelayQueue
 {
 public:
-   DelayQueue(int bufsize) : fwd(0), len(bufsize), time(0), etime(0), nchan(0), bps(0), buf(0) 
+   DelayQueue() : fwd(0), len(0), time(0), etime(0), nchan(0), bps(0),  allocd(false), buf(0) {}
+   DelayQueue(int bufsize) : fwd(0), len(bufsize), time(0), etime(0), nchan(0), bps(0), allocd(true), buf(0) 
       { buf = new unsigned char [ bufsize ]; }
-   ~DelayQueue() { delete [] buf; }
+   DelayQueue(DelayQueue &src) : fwd(0), len(src.len), time(src.time), etime(src.etime), nchan(src.nchan), bps(src.bps),  allocd(true), buf(0)
+      { buf = new unsigned char [ len ]; memcpy( (void *) buf, (void *) src.buf, src.len ); }
+   ~DelayQueue() { if (allocd) delete [] buf; }
    struct DelayQueue *fwd;
    int           len;      // len of the buffer
    unsigned long time;     // start time of the buffer
@@ -77,6 +81,7 @@ public:
    int           bps;      // bytes per sample
    double        tps;      // time per sample
    int           spb;      // samples per buffer
+   bool          allocd;   // did we allocate the memory?
    unsigned char *buf;
 };
 
@@ -293,6 +298,9 @@ public:
    void setAlsaCapableCore() { m_AlsaCapableCore = true; }
    virtual int fallbackToOSS() { return 0; }
 
+   int                  m_preamp;
+   vector<int>          m_equalizerGains;
+
 private:
    AUDIOAPI m_outputsink;
    char *m_device;
@@ -336,10 +344,8 @@ private:
 
 
 protected:
-   int                  m_preamp;
-   vector<int>          m_equalizerGains;
-   virtual int print2stdout(const char */*fmt*/, ...) { return 0; }
-   virtual int print2stderr(const char */*fmt*/, ...) { return 0; }
+   virtual int print2stdout(const char *fmt, ...);
+   virtual int print2stderr(const char *fmt, ...);
    virtual void notifyUser(unsigned long/*code*/, const char */*moreinfo*/, const char */*moreinfourl*/) {}
    virtual void interruptUser(unsigned long/*code*/, const char */*moreinfo*/, const char */*moreinfourl*/) {}
 

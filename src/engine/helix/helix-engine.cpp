@@ -33,6 +33,8 @@
 #include "helix-configdialog.h"
 #include "config/helixconfig.h"
 #include "helix-errors.h"
+#include "helix-sp.h"
+#include "hxplayercontrol.h"
 
 AMAROK_EXPORT_PLUGIN( HelixEngine )
 
@@ -45,7 +47,7 @@ extern "C"
     #include <unistd.h>
 }
 
-#define HELIX_ENGINE_TIMER 20  // 20 ms timer
+#define HELIX_ENGINE_TIMER 10  // 10 ms timer
 #define SCOPE_MAX_BEHIND   200    // 200 postmix buffers
 
 
@@ -59,13 +61,16 @@ static inline QCString configPath() { return QFile::encodeName( QDir::homeDirPat
 
 
 HelixEngine::HelixEngine()
-   : EngineBase(), HelixSimplePlayer(),
+   : EngineBase(), PlayerControl(),
      m_state(Engine::Empty),
      m_coredir(HELIX_LIBS "/common"),
      m_pluginsdir(HELIX_LIBS "/plugins"),
      m_codecsdir(HELIX_LIBS "/codecs"),
      m_inited(false),
-     m_scopeplayerlast(0)
+     m_scopeplayerlast(0),
+     m_sfps(0.0),
+     m_sframes(0),
+     m_lframes(0)
 {
    addPluginProperty( "StreamingMode", "NoStreaming" ); // this means we'll handle streaming (not using KIO)
    addPluginProperty( "HasConfigure", "true" );
@@ -158,7 +163,7 @@ int HelixEngine::fallbackToOSS()
 {
    KMessageBox::information( 0, i18n("The helix library you have configured does not support ALSA, the helix-engine has fallen back to OSS") );
    debug() << "Falling back to OSS\n";
-   return (HelixConfigDialog::setSoundSystem( (int) OSS ));
+   return (HelixConfigDialog::setSoundSystem( (int) HelixSimplePlayer::OSS ));
 }
 
 bool
@@ -186,10 +191,10 @@ HelixEngine::init()
       m_codecsdir = HELIX_LIBS "/codecs";
 
    if (HelixConfig::outputplugin() == "oss")
-      setOutputSink( OSS );
+      setOutputSink( HelixSimplePlayer::OSS );
    else
    {
-      setOutputSink( ALSA );
+      setOutputSink( HelixSimplePlayer::ALSA );
       if (HelixConfig::deviceenabled())
          setDevice( HelixConfig::device().utf8() );
       else
@@ -206,34 +211,34 @@ HelixEngine::init()
 
       if (m_inited)
       {
-         vol = HelixSimplePlayer::getVolume(m_current);
-         eqenabled = HelixSimplePlayer::isEQenabled();
+         vol = PlayerControl::getVolume();
+         eqenabled = PlayerControl::isEQenabled();
          for (unsigned int i=0; i < m_equalizerGains.size(); i++)
             savedequalizerGains.append(m_equalizerGains[i]);
          savedpreamp = m_preamp;
-         HelixSimplePlayer::tearDown();
+         PlayerControl::tearDown();
       }
 
-      HelixSimplePlayer::init(m_coredir.utf8(), m_pluginsdir.utf8(), m_codecsdir.utf8(), 2);
-      if (HelixSimplePlayer::initDirectSS())
+      PlayerControl::init(m_coredir.utf8(), m_pluginsdir.utf8(), m_codecsdir.utf8(), 2);
+      if (PlayerControl::initDirectSS())
       {
          fallbackToOSS();
 
-         HelixSimplePlayer::initDirectSS();
+         PlayerControl::initDirectSS();
       }
 
       if (m_inited)
       {
-         HelixSimplePlayer::setVolume(vol);
-         setEqualizerParameters(savedpreamp, savedequalizerGains);
+         PlayerControl::setVolume(vol);
          setEqualizerEnabled(eqenabled);
+         setEqualizerParameters(savedpreamp, savedequalizerGains);
       }
 
       m_inited = exists = true;
    }
 
 
-   if (!exists || HelixSimplePlayer::getError())
+   if (!exists || PlayerControl::getError())
    {
       KMessageBox::error( 0, i18n("amaroK could not initialize the helix-engine. Please check the paths in \"amaroK Settings\" -> \"Engine\"") );
       // we need to return true here so that the user has an oppportunity to change the directory
@@ -289,16 +294,16 @@ HelixEngine::load( const KURL &url, bool isStream )
       // seems like there should be a better way...
       if ( (isPlaying(0) && isPlaying(1)) || // already crossfading, so must have pushed advance to next track
            // player 0 playing and pushed advance to next track:
-           (isPlaying(0) && (duration(0) - where(0) - m_xfadeLength) > 1000) ||
+           (isPlaying(0) && (duration(0) - m_xfadeLength) > where(0) + 2000 ) || // give a 2 sec window
            // player 1 playing and pushed advance to next track:
-           (isPlaying(1) && (duration(1) - where(1) - m_xfadeLength) > 1000) )  
+           (isPlaying(1) && (duration(1) - m_xfadeLength) > where(1) + 2000 ) )  // give a 2 sec window
          cleanup();
 
       if (isPlaying(m_current))
          setFadeout(true, m_xfadeLength, m_current);
 
       Engine::Base::load( url, false ); // we dont crossfade streams ?? do we load the base here ??
-      HelixSimplePlayer::setURL( QFile::encodeName( url.url() ), nextPlayer, !isStream );
+      PlayerControl::setURL( QFile::encodeName( url.url() ), nextPlayer, !isStream );
       m_isStream = false;
    }
    else
@@ -315,11 +320,11 @@ HelixEngine::load( const KURL &url, bool isStream )
    m_url = url;
 
    if (url.isLocalFile())
-      HelixSimplePlayer::setURL( QFile::encodeName( url.url() ), nextPlayer, !m_isStream );
+      PlayerControl::setURL( QFile::encodeName( url.url() ), nextPlayer, !m_isStream );
    else
    {
       m_isStream = true;
-      HelixSimplePlayer::setURL( QFile::encodeName( url.url() ), nextPlayer, !m_isStream );
+      PlayerControl::setURL( QFile::encodeName( url.url() ), nextPlayer, !m_isStream );
    }
 
    return true;
@@ -340,14 +345,14 @@ HelixEngine::play( uint offset )
    nextPlayer = m_current ? 0 : 1;
 
    if (m_xfadeLength && !offset && isPlaying(m_current))
-      HelixSimplePlayer::start(nextPlayer, true, m_xfadeLength);
+      PlayerControl::start(nextPlayer, true, m_xfadeLength);
    else
-      HelixSimplePlayer::start(nextPlayer);
+      PlayerControl::start(nextPlayer);
 
    if (offset)
-      HelixSimplePlayer::seek( offset, nextPlayer );
+      PlayerControl::seek( offset, nextPlayer );
 
-   if (!HelixSimplePlayer::getError())
+   if (!PlayerControl::getError())
    {
       if (m_state != Engine::Playing)
       {
@@ -359,7 +364,7 @@ HelixEngine::play( uint offset )
       return true;
    }
 
-   HelixSimplePlayer::stop(); // stop all players
+   PlayerControl::stop(); // stop all players
    m_state = Engine::Empty;
    emit stateChanged( Engine::Empty );
 
@@ -373,7 +378,7 @@ HelixEngine::cleanup()
       return;
 
    m_url = KURL();
-   HelixSimplePlayer::stop(); // stop all players
+   PlayerControl::stop(); // stop all players
    resetScope(0);
    resetScope(1);
    killTimers();
@@ -417,13 +422,13 @@ HelixEngine::pause()
    debug() << "In pause\n";
    if( m_state == Engine::Playing )
    {
-      HelixSimplePlayer::pause(m_current);
+      PlayerControl::pause(m_current);
       m_state = Engine::Paused;
       emit stateChanged( Engine::Paused );
    }
    else if ( m_state == Engine::Paused )
    {
-      HelixSimplePlayer::resume(m_current);
+      PlayerControl::resume(m_current);
       m_state = Engine::Playing;
       emit stateChanged( Engine::Playing );
    }
@@ -446,7 +451,7 @@ HelixEngine::position() const
    if (!m_inited)
       return 0;
 
-   return HelixSimplePlayer::where(m_current);
+   return PlayerControl::where(m_current);
 }
 
 uint
@@ -456,7 +461,7 @@ HelixEngine::length() const
       return 0;
 
    //debug() << "In length\n";
-   return HelixSimplePlayer::duration(m_current);
+   return PlayerControl::duration(m_current);
 }
 
 void
@@ -468,7 +473,7 @@ HelixEngine::seek( uint ms )
    debug() << "In seek\n";
    resetScope(0);
    resetScope(1);
-   HelixSimplePlayer::seek(ms, m_current);
+   PlayerControl::seek(ms, m_current);
 }
 
 void
@@ -478,8 +483,7 @@ HelixEngine::setVolumeSW( uint vol )
       return;
 
    debug() << "In setVolumeSW\n";
-   debug() << "canDecode MASTER VOL: " << HelixSimplePlayer::getDirectMasterVolume() << endl;
-   HelixSimplePlayer::setVolume(vol); // set the volume in all players!
+   PlayerControl::setVolume(vol); // set the volume in all players!
 }
 
 
@@ -515,10 +519,10 @@ HelixEngine::canDecode( const KURL &url ) const
 void
 HelixEngine::timerEvent( QTimerEvent * )
 {
-   HelixSimplePlayer::dispatch(); // dispatch the players
-   if ( m_xfadeLength <= 0 && m_state == Engine::Playing && HelixSimplePlayer::done(m_current) )
+   PlayerControl::dispatch(); // dispatch the players
+   if ( m_xfadeLength <= 0 && m_state == Engine::Playing && PlayerControl::done(m_current) )
       play_finished(m_current);
-   else if ( m_xfadeLength > 0 && m_state == Engine::Playing && isPlaying(m_current?0:1) && HelixSimplePlayer::done(m_current?0:1) )
+   else if ( m_xfadeLength > 0 && m_state == Engine::Playing && isPlaying(m_current?0:1) && PlayerControl::done(m_current?0:1) )
       play_finished(m_current?0:1);
 
    hscope[m_current].m_lasttime += HELIX_ENGINE_TIMER;
@@ -577,13 +581,14 @@ int HelixEngine::prune(int playerIndex)
    //
    // this bit is to help us keep more accurate time than helix provides
    /////////////////////////////////////////////////////////////////////
-   unsigned long hpos = HelixSimplePlayer::where(playerIndex);
+   unsigned long hpos = PlayerControl::where(playerIndex);
 
-   if (hpos == hscope[playerIndex].m_lastpos)
+   if (hpos == hscope[playerIndex].m_lastpos && hpos > hscope[playerIndex].m_w)
    {
-      if (hscope[playerIndex].m_item && hpos >= hscope[playerIndex].m_item->time && hpos <= hscope[playerIndex].m_item->etime && 
-          (hscope[playerIndex].m_lasttime < hscope[playerIndex].m_item->time || 
-           hscope[playerIndex].m_lasttime > hscope[playerIndex].m_item->etime) )
+      if (hscope[playerIndex].m_item && hpos >= hscope[playerIndex].m_item->time && hpos <= hscope[playerIndex].m_item->etime 
+          && (hscope[playerIndex].m_lasttime < hscope[playerIndex].m_item->time || 
+              hscope[playerIndex].m_lasttime > hscope[playerIndex].m_item->etime) 
+         )
       {
          hscope[playerIndex].m_w = hpos;
          hscope[playerIndex].m_lasttime = hpos;
@@ -591,7 +596,7 @@ int HelixEngine::prune(int playerIndex)
       else
          hscope[playerIndex].m_w = hscope[playerIndex].m_lasttime;
    }
-   else
+   else if (hpos > hscope[playerIndex].m_w)
    {
       hscope[playerIndex].m_w = hpos;
       hscope[playerIndex].m_lasttime = hpos;
@@ -601,6 +606,7 @@ int HelixEngine::prune(int playerIndex)
    if ( getScopeCount(playerIndex) > SCOPE_MAX_BEHIND ) // protect against naughty streams
    {
       resetScope(playerIndex);
+      //debug() << "naughty stream reset scope!\n";
       return 0;
    }
 
@@ -610,15 +616,25 @@ int HelixEngine::prune(int playerIndex)
    while (hscope[playerIndex].m_item && hscope[playerIndex].m_w > hscope[playerIndex].m_item->etime)
    {
       // need to prune some buffers
-      delete hscope[playerIndex].m_item;
+      if (hscope[playerIndex].m_item && hscope[playerIndex].m_item->allocd)
+         delete hscope[playerIndex].m_item;
       hscope[playerIndex].m_item = getScopeBuf(playerIndex);
+      //debug() << "Got new item in prune, " << 
+      //   hscope[playerIndex].m_item->time << ":" << hscope[playerIndex].m_item->etime << endl;
    }
 
    if (!hscope[playerIndex].m_item)
+   {
+      //debug() << "no items left in prune()\n";
       return 0;
+   }
 
    if (hscope[playerIndex].m_w < hscope[playerIndex].m_item->time) // wait for the player to catchup
+   {
+      //debug() << playerIndex << ":waiting for the player to catch-up, " << hscope[playerIndex].m_w << " vs " <<
+      //   hscope[playerIndex].m_item->time << ":" << hscope[playerIndex].m_item->etime << endl;
       return 0;
+   }
 
    return 1;
 }
@@ -654,7 +670,16 @@ int HelixEngine::scope(int playerIndex)
       hscope[playerIndex].m_item = getScopeBuf(playerIndex);
 
    if (!prune(playerIndex))
+   {
+      //debug() << "returning without updating scope (after prune)\n";
       return 0;
+   }
+
+   //debug() << "current time is " << hscope[playerIndex].m_w << endl;
+   //debug() << "queue depth=" << getScopeCount(playerIndex) << endl;
+   //debug() << "player=" << playerIndex << " m_w=" << hscope[playerIndex].m_w << " time=" << 
+   //   hscope[playerIndex].m_item->time << " etime=" << hscope[playerIndex].m_item->etime << " lasttime=" << hscope[playerIndex].m_lasttime << endl;
+   
 
    int j,k=0;
    short int *pint;
@@ -705,18 +730,28 @@ int HelixEngine::scope(int playerIndex)
       // as long as we know there's another buffer...otherwise we need to wait for another
       if (hscope[playerIndex].m_scopeindex < 512 && !peekScopeTime(t, playerIndex))
       {
-         delete hscope[playerIndex].m_item;
+         if (hscope[playerIndex].m_item && hscope[playerIndex].m_item->allocd)
+            delete hscope[playerIndex].m_item;
          hscope[playerIndex].m_item = getScopeBuf(playerIndex);
          k = 0;
 
          if (!hscope[playerIndex].m_item)
+         {
+            //debug() << "returning without updating scope\n";
             return 0; // wait until there are some more buffers available
+         }
+
+         //debug() << "Got new item in scope, " << 
+         //   hscope[playerIndex].m_item->time << ":" << hscope[playerIndex].m_item->etime << endl;
+         hscope[playerIndex].m_w = hscope[playerIndex].m_item->time; // player is at least up to here
+
       }
       else
       {
          if (k >= (int) hscope[playerIndex].m_item->len)
          {
-            delete hscope[playerIndex].m_item;
+            if (hscope[playerIndex].m_item && hscope[playerIndex].m_item->allocd)
+               delete hscope[playerIndex].m_item;
             hscope[playerIndex].m_item = 0;
          }
          break;
@@ -739,7 +774,8 @@ HelixEngine::resetScope(int playerIndex)
       // make sure the scope is clear of old buffers
       clearScopeQ(playerIndex);
       hscope[playerIndex].m_scopeindex = 0;
-      delete hscope[playerIndex].m_item;
+      if (hscope[playerIndex].m_item && hscope[playerIndex].m_item->allocd)
+         delete hscope[playerIndex].m_item;
       hscope[playerIndex].m_item = 0;
    }
 }

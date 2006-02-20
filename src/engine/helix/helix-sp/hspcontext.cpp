@@ -157,7 +157,10 @@ HSPEngineContext::ReadPref(const char* pref_key, IHXBuffer*& buffer)
              strcpy((char *)outbuf, "0"); // set SoundDriver = kOSS (ie 0) for OSS
           buffer = ibuf;
 
-          m_splayer->print2stderr("Setting Sound System to %s\n", m_splayer->getOutputSink() == HelixSimplePlayer::ALSA ? "ALSA" : "OSS");
+          if (m_splayer->getOutputSink() == HelixSimplePlayer::ALSA || m_splayer->getOutputSink() == HelixSimplePlayer::OSS)
+             m_splayer->print2stderr("Setting Sound System to %s\n", m_splayer->getOutputSink() == HelixSimplePlayer::ALSA ? "ALSA" : "OSS");
+          else
+             m_splayer->print2stderr("Setting Sound System to UNKNOWN: %d\n", m_splayer->getOutputSink());
        }
     }
     // maybe also need to allow setting of "AlsaMixerDeviceName"?

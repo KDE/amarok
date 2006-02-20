@@ -18,12 +18,8 @@ AM_CPPFLAGS = \
 libamarok_helixengine_plugin_la_SOURCES = \
     helix-engine.cpp \
     helix-errors.cpp \
-    helix-configdialog.cpp
-
-# remove first 3 ar libs before committing!!:
-#    $(top_builddir)/amarok/src/engine/helix/logutillib.a
-#    $(top_builddir)/amarok/src/engine/helix/debuglib.a
-#    $(top_builddir)/amarok/src/engine/helix/runtlib.a
+    helix-configdialog.cpp \
+    hxplayercontrol.cpp
 
 libamarok_helixengine_plugin_la_LIBADD = \
     $(top_builddir)/amarok/src/engine/helix/helix-sp/libhelix-sp.la \
