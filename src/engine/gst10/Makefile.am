@@ -6,7 +6,7 @@ SUBDIRS = \
 
 INCLUDES = \
     -I$(top_srcdir)/amarok/src/engine \
-    -I$(top_srcdir)/amarok/src/engine/gst/config \
+    -I$(top_srcdir)/amarok/src/engine/gst10/config \
     -I$(top_srcdir)/amarok/src/plugin \
     -I$(top_srcdir)/amarok/src \
     $(CFLAGS_GST10) \
@@ -14,7 +14,7 @@ INCLUDES = \
 
 libamarok_gst10engine_plugin_la_LIBADD = \
     $(top_builddir)/amarok/src/engine/libengine.la \
-    $(top_builddir)/amarok/src/engine/gst/config/libgstconfig.la \
+    $(top_builddir)/amarok/src/engine/gst10/config/libgstconfig.la \
     $(top_builddir)/amarok/src/plugin/libplugin.la \
     $(LIB_KFILE) \
     $(LIB_KDECORE)
