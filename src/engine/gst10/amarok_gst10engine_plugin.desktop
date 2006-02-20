@@ -19,6 +19,7 @@ Name[pt_BR]=Motor GStreamer 0.10
 Name[ru]=GStreamer 0.10
 Name[sv]=Gstreamer 0.10-gränssnitt
 Name[tr]=GStreamer 0.10 Motoru
+Name[uz]=GStreamer 0.10 тизими
 Name[xx]=xxGStreamer 0.10 Enginexx
 Name[zh_CN]=GStreamer 0.10 引擎
 X-KDE-Library=libamarok_gst10engine_plugin
