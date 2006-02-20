@@ -216,6 +216,12 @@ MetaBundle::operator==( const MetaBundle& bundle ) const
 }
 
 void
+MetaBundle::clear()
+{
+    *this = MetaBundle();
+}
+
+void
 MetaBundle::init( TagLib::AudioProperties *ap )
 {
     if ( ap ) {

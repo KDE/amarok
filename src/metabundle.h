@@ -99,6 +99,9 @@ public:
     /** Test for an empty metabundle */
     bool isEmpty() const;
 
+    /** Empty the metabundle */
+    void clear();
+
     /** Is it media that has metadata? Note currently we don't check for an audio mimetype */
     bool isValidMedia() const;
 
