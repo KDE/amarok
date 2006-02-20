@@ -185,7 +185,7 @@ App::App()
     {
         QTimer::singleShot( 0, CollectionDB::instance(), SLOT( startScan() ) );
     }
-    else
+    else if ( AmarokConfig::monitorChanges() )
         QTimer::singleShot( 0, CollectionDB::instance(), SLOT( scanModifiedDirs() ) );
 
 
