@@ -2231,7 +2231,7 @@ ContextBrowser::wikiConfigChanged( int /*activeItem*/ ) // SLOT
         m_wikiLocaleEdit->setText( "pl" );
 
     else if( text == i18n("Japanese") )
-        m_wikiLocaleEdit->setText( "jp" );
+        m_wikiLocaleEdit->setText( "ja" );
 
     else if( text == i18n("Spanish") )
         m_wikiLocaleEdit->setText( "es" );
@@ -2273,7 +2273,7 @@ ContextBrowser::wikiConfig() // SLOT
         index = 2;
     else if( wikiLocale() == "pl" )
         index = 3;
-    else if( wikiLocale() == "jp" )
+    else if( wikiLocale() == "ja" )
         index = 4;
     else if( wikiLocale() == "es" )
         index = 5;
