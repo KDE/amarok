@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.4-beta2:
   FEATURES:
+    * Crossfade in the helix engine!
     * The build date is shown in the "About amaroK" dialog.
     * Show album covers when dragging playlist items. Patch from Jonas
       Hurrelmann <j@outpo.st>.
