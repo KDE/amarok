@@ -416,6 +416,7 @@ Playlist::mediumChange( const Medium *med, QString name ) // SLOT
 void
 Playlist::insertMedia( KURL::List list, int options )
 {
+    DEBUG_BLOCK
     bool directPlay = options & DirectPlay;
 
     if( options & Unique ) {
@@ -521,6 +522,7 @@ Playlist::insertMediaSql( const QString& sql, int options )
 void
 Playlist::addSpecialTracks( uint songCount, const int type )
 {
+    DEBUG_BLOCK
     if( songCount < 1 ) return;
 
     QueryBuilder qb;
@@ -740,6 +742,7 @@ Playlist::addSpecialCustomTracks( uint songCount )
 void
 Playlist::adjustPartyUpcoming( uint songCount, bool saveUndo, const int type )
 {
+    DEBUG_BLOCK
     bool requireTracks = false;
     int  currentPos = 0;
     int  x = 0;
@@ -814,6 +817,7 @@ Playlist::adjustPartyUpcoming( uint songCount, bool saveUndo, const int type )
 void
 Playlist::adjustPartyPrevious( uint songCount, bool saveUndo )
 {
+    DEBUG_BLOCK
     int current = currentTrackIndex();
     int x = current - songCount;
 
@@ -1225,6 +1229,7 @@ Playlist::playNextTrack( bool forceNext )
 void
 Playlist::advancePartyTrack( PlaylistItem *item )
 {
+    DEBUG_BLOCK
     MyIterator it( this, MyIterator::Visible );
     if( !item ) item = currentTrack();
 
@@ -3037,6 +3042,7 @@ Playlist::customMenuClicked(int id)  //adapted from burnSelectedTracks
 void
 Playlist::repopulate() //SLOT
 {
+    DEBUG_BLOCK
     // Repopulate the upcoming tracks
     MyIt it( this, MyIt::All );
     QPtrList<QListViewItem> list;

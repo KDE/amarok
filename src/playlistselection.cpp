@@ -7,6 +7,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+#define DEBUG_PREFIX "PlaylistSelection"
+
 #include "amarok.h" //foreach
 #include "debug.h"
 #include "newdynamic.h"
@@ -96,6 +99,7 @@ namespace ConfigDynamic
 
     void editDynamicPlaylist( QWidget* parent, PartyEntry* entry )
     {
+        DEBUG_BLOCK
         KDialogBase* dialog = basicDialog( parent );
         NewDynamic*  nd     = static_cast<NewDynamic*>(dialog->mainWidget());
 

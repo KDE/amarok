@@ -11,6 +11,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#define DEBUG_PREFIX "Party"
+
 #include "actionclasses.h"    //see toolbar construction
 #include "amarok.h"
 #include "amarokconfig.h"
@@ -77,6 +79,7 @@ Party::~Party()
 void
 Party::loadConfig( PartyEntry *config )
 {
+    DEBUG_BLOCK
     AmarokConfig::setDynamicPlaylist( config->title() );
     m_currentParty = config;
 
@@ -96,6 +99,7 @@ Party::disable()
 void
 Party::editActiveParty()
 {
+    DEBUG_BLOCK
     if( m_currentParty == 0 )
         return;
     ConfigDynamic::editDynamicPlaylist(PlaylistWindow::self(), m_currentParty);
@@ -139,6 +143,7 @@ void Party::setDynamicItems(const QPtrList<QListViewItem>& newList)
 void
 Party::repopulate() //SLOT
 {
+    DEBUG_BLOCK
     Playlist::instance()->repopulate();
 }
 
