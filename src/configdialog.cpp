@@ -53,6 +53,20 @@ email                : markey@web.de
 #include <klocale.h>
 #include <kstandarddirs.h>
 
+namespace amaroK {
+    int databaseTypeCode( const QString type )
+    {
+        // can't use kconfigxt for the database comboxbox since we need the DBConnection id and not the index
+        int dbType = DbConnection::sqlite;
+        if ( type == "MySQL")
+            dbType = DbConnection::mysql;
+        else if ( type == "Postgresql" )
+            dbType = DbConnection::postgresql;
+        return dbType;
+    }
+}
+
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -203,9 +217,9 @@ void AmarokConfigDialog::updateSettings()
         ContextBrowser::instance()->reloadStyleSheet();
     }
 
-    const QString dbType = databaseType();
-    if ( dbType != AmarokConfig::databaseEngine() ) {
-        AmarokConfig::setDatabaseEngine( dbType );
+    int dbType = amaroK::databaseTypeCode( m_opt7->dbSetupFrame->databaseEngine->currentText() );
+    if ( dbType != AmarokConfig::databaseEngine().toInt() ) {
+        AmarokConfig::setDatabaseEngine( QString::number( dbType ) );
         emit settingsChanged();
     }
 }
@@ -252,7 +266,7 @@ bool AmarokConfigDialog::hasChanged()
             osd->alignment() != AmarokConfig::osdAlignment() ||
             osd->alignment() != OSDWidget::Center && osd->y() != AmarokConfig::osdYOffset() ||
             m_opt2->styleComboBox->currentText() != AmarokConfig::contextBrowserStyleSheet() ||
-            databaseType() != AmarokConfig::databaseEngine() ||
+            amaroK::databaseTypeCode(  m_opt7->dbSetupFrame->databaseEngine->currentText()  ) != AmarokConfig::databaseEngine().toInt() ||
             m_engineConfig && m_engineConfig->hasChanged() ||
             externalBrowser() != AmarokConfig::externalBrowser();
 }
@@ -319,21 +333,6 @@ void AmarokConfigDialog::soundSystemChanged()
     {
         m_opt4->radioButtonNormalPlayback->setChecked( true );
     }
-}
-
-QString AmarokConfigDialog::databaseType() const
-{
-    // can't use kconfigxt for the database comboxbox since we need the DBConnection id and not the index
-    QString dbType = QString::number(DbConnection::sqlite);
-    if (m_opt7->dbSetupFrame->databaseEngine->currentText() == "MySQL")
-    {
-        dbType = QString::number(DbConnection::mysql);
-    }
-    else if (m_opt7->dbSetupFrame->databaseEngine->currentText() == "Postgresql")
-    {
-        dbType = QString::number(DbConnection::postgresql);
-    }
-    return dbType;
 }
 
 QString AmarokConfigDialog::externalBrowser() const

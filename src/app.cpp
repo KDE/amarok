@@ -22,6 +22,7 @@ email                : markey@web.de
 #include "config.h"
 #include "configdialog.h"
 #include "collectionbrowser.h"
+#include "dbsetup.h"             //firstRunWizard()
 #include "debug.h"
 #include "devicemanager.h"
 #include "effectwidget.h"
@@ -46,6 +47,7 @@ email                : markey@web.de
 #include <iostream>
 
 #include <kconfigdialogmanager.h>
+#include <kcombobox.h>           //firstRunWizard()
 #include <kcmdlineargs.h>        //initCliArgs()
 #include <kcursor.h>             //amaroK::OverrideCursor
 #include <kedittoolbar.h>        //slotConfigToolbars()
@@ -1052,6 +1054,9 @@ void App::firstRunWizard()
         if ( !amaroK::config()->readBoolEntry( "First Run", true ) &&
              oldCollectionFolders != AmarokConfig::collectionFolders() )
             CollectionDB::instance()->startScan();
+
+        AmarokConfig::setDatabaseEngine(
+            QString::number( amaroK::databaseTypeCode( wizard.dbSetup7->databaseEngine->currentText() ) ) );
 
         config->updateSettings();
     }

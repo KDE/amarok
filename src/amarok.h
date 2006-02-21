@@ -130,6 +130,12 @@ namespace amaroK
   //TODO ugly hack, fix KProcess for KDE 4.0
     void closeOpenFiles(int out, int in, int err); //defined in scriptmanager.cpp
 
+    /**
+    * Returns internal code for database type, DbConnection::sqlite, DbConnection::mysql, or DbConnection::postgresql
+    * @param type either "SQLite", "MySQL", or "Postgresql".
+    */
+    int databaseTypeCode( const QString type ); //defined in configdialog.cpp
+
     bool repeatNone(); //defined in actionclasses.cpp
     bool repeatTrack();
     bool repeatAlbum();
