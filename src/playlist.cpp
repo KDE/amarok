@@ -416,7 +416,6 @@ Playlist::mediumChange( const Medium *med, QString name ) // SLOT
 void
 Playlist::insertMedia( KURL::List list, int options )
 {
-    DEBUG_BLOCK
     bool directPlay = options & DirectPlay;
 
     if( options & Unique ) {
@@ -522,7 +521,6 @@ Playlist::insertMediaSql( const QString& sql, int options )
 void
 Playlist::addSpecialTracks( uint songCount, const int type )
 {
-    DEBUG_BLOCK
     if( songCount < 1 ) return;
 
     QueryBuilder qb;
@@ -800,7 +798,6 @@ Playlist::adjustPartyUpcoming( bool saveUndo, const int type )
 void
 Playlist::adjustPartyPrevious( uint songCount, bool saveUndo )
 {
-    DEBUG_BLOCK
     int current = currentTrackIndex();
     int x = current - songCount;
 
@@ -1212,7 +1209,6 @@ Playlist::playNextTrack( bool forceNext )
 void
 Playlist::advancePartyTrack( PlaylistItem *item )
 {
-    DEBUG_BLOCK
     MyIterator it( this, MyIterator::Visible );
     if( !item ) item = currentTrack();
 

@@ -96,7 +96,7 @@ PlaylistItem::~PlaylistItem()
 {
     if( isEmpty() ) //constructed with the generic constructor, for PlaylistLoader's marker item
         return;
-    DEBUG_BLOCK
+
     listView()->m_totalCount--;
     listView()->m_totalLength -= length();
     if( isSelected() )
