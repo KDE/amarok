@@ -123,12 +123,12 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
 
          m_children[i].m_current = &(pmapped[i].m_current);
          m_children[i].m_consumed = &(pmapped[i].m_consumed);
-         m_children[i].q = pmapped[i].q;
-         for (int j=0; j<NUM_SCOPEBUFS; j++)
-         {
-            m_children[i].q[j].allocd = false;
-            m_children[i].q[j].buf = pmapped[i].b[j];
-         }
+         //m_children[i].q = pmapped[i].q;
+         //for (int j=0; j<NUM_SCOPEBUFS; j++)
+         //{
+         //   m_children[i].q[j].allocd = false;
+         //   m_children[i].q[j].buf = pmapped[i].b[j];
+         //}
       }
       err = pipe(m_children[i].m_pipeA);
       err |= pipe(m_children[i].m_pipeB);
@@ -149,9 +149,9 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
          cerr << "%%%%%% child initializes as player " << i << endl;;
 
          // in case we runaway, not that we have...
-         err = nice(1);
-         if (err == -1)
-            cerr << "unable to nice " << endl;
+         //err = nice(1);
+         //if (err == -1)
+         //   cerr << "unable to nice " << endl;
 
          m_index = i; // child's index is saved
          close(m_children[i].m_pipeA[0]); // child uses A for writing
@@ -416,22 +416,22 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
                   memcpy((void *) m_children[m_index].md, (void *) md, sizeof(HelixSimplePlayer::metaData));
                
                struct DelayQueue *item;
-               int j;
+               //int j;
                while ((item = player->getScopeBuf(0)))
                {
-                  j = (*m_children[m_index].m_current + 1) % NUM_SCOPEBUFS;
+                  //j = (*m_children[m_index].m_current + 1) % NUM_SCOPEBUFS;
                   
                   //cerr << "player:" << m_index << " j=" << j << " time=" << item->time << " etime=" << item->etime << " len=" << item->len << endl;
-                  m_children[m_index].q[j].len = item->len;
-                  m_children[m_index].q[j].time = item->time;
-                  m_children[m_index].q[j].etime = item->etime;
-                  m_children[m_index].q[j].nchan = item->nchan;
-                  m_children[m_index].q[j].bps = item->bps;
-                  m_children[m_index].q[j].tps = item->tps;
-                  m_children[m_index].q[j].spb = item->spb;
-                  memcpy((void *)m_children[m_index].q[j].buf, (void *) item->buf, item->len );
-                  *m_children[m_index].m_current = j;
-                  //sendscopebuf(wfd, item);
+                  //m_children[m_index].q[j].len = item->len;
+                  //m_children[m_index].q[j].time = item->time;
+                  //m_children[m_index].q[j].etime = item->etime;
+                  //m_children[m_index].q[j].nchan = item->nchan;
+                  //m_children[m_index].q[j].bps = item->bps;
+                  //m_children[m_index].q[j].tps = item->tps;
+                  //m_children[m_index].q[j].spb = item->spb;
+                  //memcpy((void *)m_children[m_index].q[j].buf, (void *) item->buf, item->len );
+                  //*m_children[m_index].m_current = j;
+                  sendscopebuf(wfd, item);
                   delete item;
                }
             }
@@ -644,6 +644,7 @@ void PlayerControl::dispatch()
                   print2stderr("CHILD %d is DONE\n", i);
                   m_children[i].isplaying = false;
                   clearScopeQ(i);
+                  play_finished(i);
                   break;
                   
                case MIMETYPES:

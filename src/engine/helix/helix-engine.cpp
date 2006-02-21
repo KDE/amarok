@@ -298,6 +298,12 @@ HelixEngine::load( const KURL &url, bool isStream )
            // player 1 playing and pushed advance to next track:
            (isPlaying(1) && (duration(1) - m_xfadeLength) > where(1) + 2000 ) )  // give a 2 sec window
          cleanup();
+      else
+      {
+         PlayerControl::stop(nextPlayer);
+         resetScope(nextPlayer);
+         memset(&hscope[nextPlayer], 0, sizeof(struct HelixScope));
+      }
 
       if (isPlaying(m_current))
          setFadeout(true, m_xfadeLength, m_current);
@@ -522,8 +528,8 @@ HelixEngine::timerEvent( QTimerEvent * )
    PlayerControl::dispatch(); // dispatch the players
    if ( m_xfadeLength <= 0 && m_state == Engine::Playing && PlayerControl::done(m_current) )
       play_finished(m_current);
-   else if ( m_xfadeLength > 0 && m_state == Engine::Playing && isPlaying(m_current?0:1) && PlayerControl::done(m_current?0:1) )
-      play_finished(m_current?0:1);
+   //else if ( m_xfadeLength > 0 && m_state == Engine::Playing && isPlaying(m_current?0:1) && PlayerControl::done(m_current?0:1) )
+   //   play_finished(m_current?0:1);
 
    hscope[m_current].m_lasttime += HELIX_ENGINE_TIMER;
 
@@ -584,7 +590,6 @@ int HelixEngine::prune(int playerIndex)
    unsigned long hpos = PlayerControl::where(playerIndex);
 
    if (hpos == hscope[playerIndex].m_lastpos)
-       //&& hpos > hscope[playerIndex].m_w
    {
       if (hscope[playerIndex].m_item && hpos >= hscope[playerIndex].m_item->time && hpos <= hscope[playerIndex].m_item->etime 
           && (hscope[playerIndex].m_lasttime < hscope[playerIndex].m_item->time || 
@@ -598,7 +603,6 @@ int HelixEngine::prune(int playerIndex)
          hscope[playerIndex].m_w = hscope[playerIndex].m_lasttime;
    }
    else
-      //if (hpos > hscope[playerIndex].m_w)
    {
       hscope[playerIndex].m_w = hpos;
       hscope[playerIndex].m_lasttime = hpos;
@@ -643,11 +647,6 @@ int HelixEngine::prune(int playerIndex)
 
 const Engine::Scope &HelixEngine::scope()
 {
-   //if (hscope[0].m_item)
-      //debug() << "player=0" << " m_w=" << hscope[0].m_w << " time=" << hscope[0].m_item->time << " etime=" << hscope[0].m_item->etime << " lasttime=" << hscope[0].m_lasttime << endl;
-   //if (hscope[1].m_item)
-      //debug() << "player=1" << " m_w=" << hscope[1].m_w << " time=" << hscope[1].m_item->time << " etime=" << hscope[1].m_item->etime << " lasttime=" << hscope[1].m_lasttime << endl;
-
    if (isPlaying(0) && isPlaying(1)) // crossfading
    {
       if (m_scopeplayerlast)

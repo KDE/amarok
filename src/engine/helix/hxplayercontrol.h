@@ -74,6 +74,8 @@ public:
    const MimeList *getMimeList() const;
    int getMimeListLen() const;
 
+   virtual void play_finished(int /*playerIndex*/) {}
+
    // stream meta data
    HelixSimplePlayer::metaData *getMetaData(int playerIndex);
 
@@ -149,8 +151,8 @@ private:
       unsigned long current_time;
       unsigned long duration;
       HelixSimplePlayer::metaData md;
-      DelayQueue q[NUM_SCOPEBUFS];
-      unsigned char b[NUM_SCOPEBUFS][65535];
+      //DelayQueue q[NUM_SCOPEBUFS];
+      //unsigned char b[NUM_SCOPEBUFS][65535];
       int m_current;
       int m_consumed;
    } statestuff[2], *pmapped;
