@@ -29,7 +29,7 @@ def fetchLyrics( artist, title )
 
     host = "search.lyrics.astraweb.com"
     path = "/?word=#{artist}+#{title}"
-    page_url= host + path
+    page_url = "http://" + host + path
 
     h = Net::HTTP.new( host, 80 )
     response = h.get( path )
@@ -78,7 +78,7 @@ def fetchLyricsByUrl( url )
 
     host = "display.lyrics.astraweb.com"
     port = 2000
-    page_url = "#{host}:#{port}#{url}"
+    page_url = "http://#{host}:#{port}#{url}"
 
     h = Net::Telnet.new( "Host" => host, "Port" => port )
 

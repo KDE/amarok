@@ -108,7 +108,7 @@ def fetchLyrics( artist, title, url )
 
     host = "lyrc.com.ar"
     path = url.empty? ? "/en/tema1en.php?artist=#{artist}&songname=#{title}" : "/en/#{url}"
-    @page_url = host + path
+    @page_url = "http://" + host + path
 
     h = Net::HTTP.new( host, 80, proxy_host, proxy_port )
     response = h.get( path )
