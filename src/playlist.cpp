@@ -740,41 +740,33 @@ Playlist::addSpecialCustomTracks( uint songCount )
  */
 
 void
-Playlist::adjustPartyUpcoming( uint songCount, bool saveUndo, const int type )
+Playlist::adjustPartyUpcoming( bool saveUndo, const int type )
 {
-    DEBUG_BLOCK
-    bool requireTracks = false;
-    int  currentPos = 0;
     int  x = 0;
 
     /**
      *  If m_currentTrack exists, we iterate until we find it
      *  Else, we iterate until we find an item which is enabled
      **/
-    for( MyIt it( this, MyIt::Visible ); *it; ++it )
+    MyIt it( this, MyIt::Visible ); //Notice we'll use this up to the end of the function!
+    //Skip previously played
+    for( ; *it; ++it )
     {
         if( m_currentTrack && *it == m_currentTrack )
             break;
         else if( !m_currentTrack && (*it)->isEnabled() )
             break;
-
-        ++currentPos;
     }
-    currentPos++;
+    //Skip current
+    if( m_currentTrack )
+        ++it;
 
-    if( (int)songCount > AmarokConfig::dynamicUpcomingCount() )
-    {
-        x = songCount - AmarokConfig::dynamicUpcomingCount();
-        requireTracks = true;
-    }
-    else
-    {
-        x = totalTrackCount() - songCount - currentPos;
-    }
 
-    if ( requireTracks )
+    for ( ; *it && x < AmarokConfig::dynamicUpcomingCount() ; ++it, ++x );
+
+    if ( x < AmarokConfig::dynamicUpcomingCount() )
     {
-        addSpecialTracks( x, type );
+        addSpecialTracks( AmarokConfig::dynamicUpcomingCount() - x, type );
     }
     else
     {
@@ -783,17 +775,8 @@ Playlist::adjustPartyUpcoming( uint songCount, bool saveUndo, const int type )
         //assemble a list of what needs removing
         //calling removeItem() iteratively is more efficient if they are in _reverse_ order, hence the prepend()
         QPtrList<QListViewItem> list;
-        QListViewItem *item = lastItem();
-
-        if (item) {
-            for( int y = x; y != 0; y-- )
-            {
-                list.append( item );
-
-                if( !item->itemAbove() )
-                    break;
-                item = item->itemAbove();
-            }
+        for ( ; *it ; ++it ) {
+            list.append( it.current() );
         }
 
         if( list.isEmpty() ) return;
@@ -801,7 +784,7 @@ Playlist::adjustPartyUpcoming( uint songCount, bool saveUndo, const int type )
             saveUndoState();
 
         //remove the items
-        for( QListViewItem *item = list.first(); item; item = list.next() )
+        for( QListViewItem *item = list.last(); item; item = list.prev() )
         {
             removeItem( (PlaylistItem*)item );
             delete item;

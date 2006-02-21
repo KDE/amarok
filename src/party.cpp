@@ -170,8 +170,8 @@ Party::applySettings() //SLOT
 
     if ( AmarokConfig::dynamicUpcomingCount() != upcomingCount() )
     {
-        Playlist::instance()->adjustPartyUpcoming( upcomingCount(), true, type );
         AmarokConfig::setDynamicUpcomingCount( upcomingCount() );
+        Playlist::instance()->adjustPartyUpcoming( true, type );
     }
 
     if ( AmarokConfig::dynamicMarkHistory() != markHistory() )

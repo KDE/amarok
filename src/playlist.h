@@ -99,7 +99,7 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         /// Dynamic mode functions
         void addSpecialTracks( uint songCount, const int type = Party::RANDOM );
         void addSpecialCustomTracks( uint songCount );
-        void adjustPartyUpcoming( uint songCount, bool saveUndo = false, const int type = Party::RANDOM );
+        void adjustPartyUpcoming( bool saveUndo = false, const int type = Party::RANDOM );
         void adjustPartyPrevious( uint songCount, bool saveUndo = false );
         void advancePartyTrack( PlaylistItem *item = 0 );
         void alterHistoryItems( bool enable = false, bool entire = false );
