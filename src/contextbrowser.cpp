@@ -2108,6 +2108,7 @@ ContextBrowser::lyricsResult( const QString& xmldoc, bool cached ) //SLOT
     QString lyrics;
 
     QDomElement el = doc.documentElement();
+    m_lyricCurrentUrl = el.attribute( "page_url" );
 
     ScriptManager* const sm = ScriptManager::instance();
     KConfig spec( sm->specForScript( sm->lyricsScriptRunning() ), true, false );

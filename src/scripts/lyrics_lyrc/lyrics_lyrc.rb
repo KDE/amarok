@@ -43,6 +43,7 @@ def parseLyrics( lyrics )
     doc = REXML::Document.new()
     root = doc.add_element( "lyrics" )
 
+    root.add_attribute( "page_url", @page_url )
     root.add_attribute( "title", /(<b>)([^<]*)/.match( lyrics )[2].to_s() )
     root.add_attribute( "artist", /(<u>)([^<]*)/.match( lyrics )[2].to_s() )
 
@@ -70,6 +71,7 @@ def parseSuggestions( lyrics )
 
     doc = REXML::Document.new()
     root = doc.add_element( "suggestions" )
+    root.add_attribute( "page_url", @page_url )
 
     entries = lyrics.split( "<br>" )
     entries.delete_at( 0 )
@@ -104,13 +106,12 @@ def fetchLyrics( artist, title, url )
         proxy_port = proxy_uri.port
     end
 
-    h = Net::HTTP.new( "lyrc.com.ar", 80, proxy_host, proxy_port )
-    if url.empty?()
-        response = h.get( "/en/tema1en.php?artist=#{artist}&songname=#{title}" )
-    else
-#         debug "Fetching by URL: #{url}"
-        response = h.get( "/en/#{url}" )
-    end
+    host = "lyrc.com.ar"
+    path = url.empty? ? "/en/tema1en.php?artist=#{artist}&songname=#{title}" : "/en/#{url}"
+    @page_url = host + path
+
+    h = Net::HTTP.new( host, 80, proxy_host, proxy_port )
+    response = h.get( path )
 
     unless response.code == "200"
 #         error "HTTP Error: #{response.message}"

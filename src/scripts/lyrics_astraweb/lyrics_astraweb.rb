@@ -27,8 +27,12 @@ def fetchLyrics( artist, title )
     artist.gsub!( " ", "+" )
     title.gsub!( " ", "+" )
 
-    h = Net::HTTP.new( "search.lyrics.astraweb.com", 80 )
-    response = h.get( "/?word=#{artist}+#{title}" )
+    host = "search.lyrics.astraweb.com"
+    path = "/?word=#{artist}+#{title}"
+    page_url= host + path
+
+    h = Net::HTTP.new( host, 80 )
+    response = h.get( path )
 
     unless response.code == "200"
 #         lyrics = "HTTP Error: #{response.message}"
@@ -43,6 +47,7 @@ def fetchLyrics( artist, title )
 
     doc = REXML::Document.new()
     root = doc.add_element( "suggestions" )
+    root.add_attribute( "page_url", page_url )
 
     entries = body.split( '<tr><td bgcolor="#BBBBBB"' )
     entries.delete_at( 0 )
@@ -71,7 +76,11 @@ def fetchLyricsByUrl( url )
     # Note: Using telnet here cause the fucking site has a broken cgi script, delivering
     #       a broken header, which makes Net::HTTP::get() crap out
 
-    h = Net::Telnet.new( "Host" => "display.lyrics.astraweb.com", "Port" => 2000 )
+    host = "display.lyrics.astraweb.com"
+    port = 2000
+    page_url = "#{host}:#{port}#{url}"
+
+    h = Net::Telnet.new( "Host" => host, "Port" => port )
 
     body = h.cmd( "GET #{url}\n" )
     body.gsub!( "\n", "" ) # No need for \n, just complicates our RegExps
@@ -85,6 +94,7 @@ def fetchLyricsByUrl( url )
 
     doc = REXML::Document.new()
     root = doc.add_element( "lyrics" )
+    root.add_attribute( "page_url", page_url )
     root.add_attribute( "artist", artist )
     root.add_attribute( "title", title )
     root.text = lyrics
