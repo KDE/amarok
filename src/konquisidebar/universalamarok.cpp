@@ -97,7 +97,7 @@ UniversalAmarok::UniversalAmarok(KInstance *inst,QObject *parent,QWidget *widget
     browser->view()->installEventFilter( widget );
     amarokDCOP = new DCOPClient();
     amarokDCOP->attach();
-    
+
     playerStub   = new AmarokPlayerInterface_stub( amarokDCOP, "amarok", "player");
     playlistStub = new AmarokPlaylistInterface_stub( amarokDCOP, "amarok", "playlist");
 
@@ -112,21 +112,21 @@ UniversalAmarok::UniversalAmarok(KInstance *inst,QObject *parent,QWidget *widget
 
     toolBar->insertSeparator();
     toolBar->insertButton( "arts",        0, SIGNAL( clicked() ), this, SLOT( sendMute() ) );
-    
+
     vol_slider = new QSlider(0,100,1,0,Qt::Horizontal, toolBar,"volume");
     vol_slider->setLineStep(2);
-    
+
     connect(vol_slider, SIGNAL( valueChanged(int) ), this, SLOT(volChanged(int ) ) );
     toolBar->insertWidget(1,2, vol_slider);
 
     fileInfo  = new QFileInfo(HTML_FILE);
     QTimer *t = new QTimer( this );
-    
+
     connect( t, SIGNAL(timeout()), SLOT(updateStatus() ) );
     t->start( 2000, false );
     kdDebug() << "Connecting widget signal" << endl;
-    
-    connect( widget,                      SIGNAL( emitURL( const KURL &)), 
+
+    connect( widget,                      SIGNAL( emitURL( const KURL &)),
              this,                        SLOT( openURLRequest( const KURL &) ) );
     connect( browser->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
              this,                        SLOT( openURLRequest( const KURL & ) ) );
@@ -190,6 +190,7 @@ void UniversalAmarok::updateBrowser(const QString& file)
     if( f_file.open(IO_ReadOnly) )
     {
         QTextStream stream( &f_file );
+        stream.setEncoding( QTextStream::UnicodeUTF8 );
         QString line;
         while ( !stream.atEnd() ) {
             line = stream.readLine(); // line of text excluding '\n'
