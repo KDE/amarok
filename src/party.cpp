@@ -18,7 +18,6 @@
 #include "collectiondb.h"
 #include "debug.h"
 #include "party.h"
-#include "partydialogbase.h"
 #include "playlist.h"
 #include "playlistbrowser.h"
 #include "playlistselection.h"

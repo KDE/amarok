@@ -257,7 +257,7 @@
                 <string>Remove pla&amp;yed tracks</string>
             </property>
             <property name="toolTip" stdset="0">
-                <string>Automatically remove played tracks to the playlist</string>
+                <string>Automatically remove played tracks from the playlist</string>
             </property>
             <property name="whatsThis" stdset="0">
                 <string>Automatically remove played tracks to the playlist</string>

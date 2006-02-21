@@ -101,7 +101,6 @@ libamarok_la_SOURCES = \
     osd.cpp \
     organizecollectiondialog.ui \
     party.cpp \
-    partydialogbase.ui \
     playerwindow.cpp \
     playlist.cpp \
     playlistbrowser.cpp \
