@@ -20,10 +20,15 @@
 #ifndef COLLECTIONSCANNER_H
 #define COLLECTIONSCANNER_H
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 #include <qmap.h>
 #include <qstringlist.h>
 
 #include <kapplication.h>
+
 
 typedef QMap<QString, QString> AttributeMap;
 
@@ -50,7 +55,7 @@ private slots:
     void doJob();
 
 private:
-    void readDir( const QString& path, QStringList& entries );
+    void readDir( const QString& dir, QStringList& entries );
     void scanFiles( const QStringList& entries );
 
     /**
@@ -93,7 +98,12 @@ private:
     const bool    m_restart;
     const QString m_logfile;
 
-    QStringList   m_processedFolders;
+    struct direntry {
+      dev_t dev;
+      ino_t ino;
+    } KDE_PACKED;
+
+    QMemArray<direntry> m_processedDirs;
 };
 
 

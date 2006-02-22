@@ -78,7 +78,7 @@ ScanController::ScanController( CollectionDB* parent, bool incremental, const QS
     : DependentJob( parent, "CollectionScanner" )
     , QXmlDefaultHandler()
     , m_scanner( new ScannerProcIO() )
-    , m_folders( folders )
+    , m_folders( QDeepCopy<QStringList>( folders ) )
     , m_incremental( incremental )
     , m_hasChanged( false )
     , m_source( new QXmlInputSource() )

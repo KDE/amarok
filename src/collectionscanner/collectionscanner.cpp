@@ -26,12 +26,13 @@
 
 #include <iostream>
 
+#include <dirent.h>    //stat
+
 #include <taglib/audioproperties.h>
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
 #include <taglib/tstring.h>
 
-#include <qdir.h>
 #include <qdom.h>
 #include <qfile.h>
 #include <qtimer.h>
@@ -67,6 +68,19 @@ CollectionScanner::CollectionScanner( const QStringList& folders,
 {
     if( !restart )
         QFile::remove( m_logfile );
+
+    // Don't traverse /
+    struct stat statBuf;
+    if( stat( "/", &statBuf ) == 0 ) {
+        struct direntry de;
+        memset( &de, 0, sizeof( struct direntry ) );
+        de.dev = statBuf.st_dev;
+        de.ino = statBuf.st_ino;
+
+        m_processedDirs.resize( m_processedDirs.size() + 1 );
+        m_processedDirs[m_processedDirs.size() - 1] = de;
+    }
+
 
     QTimer::singleShot( 0, this, SLOT( doJob() ) );
 }
@@ -139,54 +153,85 @@ CollectionScanner::doJob() //SLOT
 
 
 void
-CollectionScanner::readDir( const QString& path, QStringList& entries )
+CollectionScanner::readDir( const QString& dir, QStringList& entries )
 {
     static DCOPRef dcopRef( "amarok", "collection" );
 
     // linux specific, but this fits the 90% rule
-    if( path.startsWith( "/dev" ) || path.startsWith( "/sys" ) || path.startsWith( "/proc" ) )
+    if( dir.startsWith( "/dev" ) || dir.startsWith( "/sys" ) || dir.startsWith( "/proc" ) )
         return;
-    // Protect against loops
-    // FIXME This doesn't help with symlink loops. The symlinks need to be resolved
-    if( m_processedFolders.contains( path ) )
+
+    const QCString dir8Bit = QFile::encodeName( dir );
+    struct stat statBuf;
+    stat( dir8Bit, &statBuf );
+
+    struct direntry de;
+    memset(&de, 0, sizeof(struct direntry));
+    de.dev = statBuf.st_dev;
+    de.ino = statBuf.st_ino;
+
+    int f = -1;
+#if __GNUC__ < 4
+    for( unsigned int i = 0; i < m_processedDirs.size(); ++i )
+        if( memcmp( &m_processedDirs[i], &de, sizeof( direntry ) ) == 0 ) {
+            f = i; break;
+        }
+#else
+    f = m_processedDirs.find( de );
+#endif
+
+    if ( ! S_ISDIR( statBuf.st_mode ) || f != -1 ) {
+        debug() << "Skipping, already scanned: " << dir << endl;
         return;
+    }
 
     AttributeMap attributes;
-    attributes["path"] = path;
+    attributes["path"] = dir;
     writeElement( "folder", attributes );
 
-    m_processedFolders += path;
-    QDir dir( path );
+    m_processedDirs.resize( m_processedDirs.size() + 1 );
+    m_processedDirs[m_processedDirs.size() - 1] = de;
 
-
-    // FILES:
-    const QStringList files = dir.entryList( QDir::Files | QDir::Readable | QDir::Hidden );
-
-    // Append file paths to list
-    foreachType( QStringList, files )
-        entries += dir.absFilePath( *it );
-
-
-    if( !m_recursively ) return;
-
-
-    // FOLDERS:
-    const QStringList folders = dir.entryList( QDir::Dirs | QDir::Readable );
-
-    // Recurse folders
-    foreachType( QStringList, folders ) {
-        if( (*it).startsWith( "." ) ) continue;
-
-        const QString dirPath = dir.absFilePath( *it );
-
-        bool isInCollection;
-        if( m_incremental )
-            dcopRef.call( "isDirInCollection", dirPath ).get( isInCollection );
-
-        if( !m_incremental || !isInCollection )
-            // we must add a '/' after the dirname, to avoid dupes
-            readDir( dirPath + "/", entries );
+    DIR *d = opendir( dir8Bit );
+    if( d == NULL ) {
+        if( errno == EACCES )
+            warning() << "Skipping, no access permissions: " << dir << endl;
+        return;
     }
+
+    for( dirent *ent; ( ent = readdir( d ) ); ) {
+        QCString entry (ent->d_name);
+
+        if ( entry == "." || entry == ".." )
+            continue;
+
+        entry.prepend( dir8Bit );
+
+        if ( stat( entry, &statBuf ) != 0 )
+            continue;
+
+        // loop protection
+        if ( ! ( S_ISDIR( statBuf.st_mode ) || S_ISREG( statBuf.st_mode ) ) )
+            continue;
+
+        if ( S_ISDIR( statBuf.st_mode ) && m_recursively && entry.length() && entry[0] != '.' )
+        {
+            const QString file = QFile::decodeName( entry );
+
+            bool isInCollection;
+            if( m_incremental )
+                dcopRef.call( "isDirInCollection", file ).get( isInCollection );
+
+            if( !m_incremental || !isInCollection )
+                // we MUST add a '/' after the dirname
+                readDir( file + '/', entries );
+        }
+
+        else if( S_ISREG( statBuf.st_mode ) )
+            entries.append( entry );
+    }
+
+    closedir( d );
 }
 
 
