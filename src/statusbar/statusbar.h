@@ -36,7 +36,7 @@ namespace amaroK
     {
         Q_OBJECT
 
-        static StatusBar* s_instance;
+        LIBAMAROK_EXPORT static StatusBar* s_instance;
 
     public:
         StatusBar( QWidget *parent, const char *name = 0 );

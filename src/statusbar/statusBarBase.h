@@ -21,6 +21,7 @@
 #define KDE_STATUSBAR_H
 
 #include "progressBar.h" //convenience
+#include "amarok_export.h"
 #include <qwidget.h>     //baseclass
 #include <qmap.h>        //stack allocated
 #include <qvaluelist.h>  //stack allocated
@@ -120,7 +121,7 @@ namespace KDE
          * Generally you should use these, as it is very easy for a user to not notice
          * statusBar messages.
          */
-        void longMessage( const QString &text, int type = Information );
+        void longMessage( const QString &text, int type = Information ) LIBAMAROK_EXPORT ;
 
         void longMessageThreadSafe( const QString &text, int type = Information );
 

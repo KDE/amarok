@@ -6,6 +6,8 @@
 #include <qnamespace.h>
 #include <qstring.h>
 
+#include "amarok_export.h"
+
 class KActionCollection;
 class KConfig;
 class QColor;
@@ -101,7 +103,7 @@ namespace amaroK
      * @param directory will be created if not existing, you MUST end the string
      *                  with '/'
      */
-    QString saveLocation( const QString &directory = QString::null ); //defined in collectionreader.cpp
+    LIBAMAROK_EXPORT QString saveLocation( const QString &directory = QString::null ); //defined in collectionreader.cpp
 
     QString verboseTimeSince( const QDateTime &datetime ); //defined in contextbrowser.cpp
 

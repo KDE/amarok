@@ -53,7 +53,7 @@ struct PodcastInfo
     QString webpage;
 };
 
-class MediaItem : public KListViewItem
+class LIBAMAROK_EXPORT MediaItem : public KListViewItem
 {
     public:
         MediaItem( QListView* parent );
@@ -167,8 +167,8 @@ class MediaBrowser : public QVBox
 
     public:
         static bool isAvailable();
-        static MediaBrowser *instance() { return s_instance; }
-        static MediaQueue *queue() { return s_instance ? s_instance->m_queue : 0; }
+        LIBAMAROK_EXPORT static MediaBrowser *instance() { return s_instance; }
+        LIBAMAROK_EXPORT static MediaQueue *queue() { return s_instance ? s_instance->m_queue : 0; }
 
         MediaBrowser( const char *name );
         virtual ~MediaBrowser();
@@ -211,7 +211,7 @@ class MediaBrowser : public QVBox
 
         KLineEdit* m_searchEdit;
         QTimer *m_timer;
-        static MediaBrowser *s_instance;
+        LIBAMAROK_EXPORT static MediaBrowser *s_instance;
 
         QValueList<MediaDevice *> m_devices;
         QValueList<MediaDevice *>::iterator m_currentDevice;
@@ -252,7 +252,7 @@ class MediaView : public KListView
         virtual ~MediaView();
         KURL::List nodeBuildDragList( MediaItem* item, bool onlySelected=true );
         int getSelectedLeaves(MediaItem *parent, QPtrList<MediaItem> *list, bool onlySelected=true, bool onlyPlayed=false );
-        MediaItem *newDirectory( MediaItem* parent );
+        LIBAMAROK_EXPORT MediaItem *newDirectory( MediaItem* parent );
         bool setFilter( const QString &filter, MediaItem *parent=NULL );
 
     private slots:

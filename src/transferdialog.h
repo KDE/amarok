@@ -13,6 +13,7 @@
 #define TRANSFERDIALOG_H
 
 #include "mediabrowser.h"
+#include "amarok_export.h"
 
 #include <qcheckbox.h>
 #include <qmap.h>
@@ -25,7 +26,7 @@ class TransferDialog;
 /**
 	@author Jeff Mitchell <kde-dev@emailgoeshere.com>
 */
-class TransferDialog : public KDialogBase
+class LIBAMAROK_EXPORT TransferDialog : public KDialogBase
 {
     Q_OBJECT
 
