@@ -24,6 +24,7 @@
 #include "metabundle.h"
 #include "debug.h"
 
+#include <cerrno>
 #include <iostream>
 
 #include <dirent.h>    //stat
