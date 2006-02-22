@@ -3463,21 +3463,27 @@ Playlist::appendToPreviousAlbums( PlaylistAlbum *album )
 void
 Playlist::removeFromPreviousTracks( PlaylistItem *item )
 {
-    if( ( item && m_prevTracks.removeRef( item ) ) ||
-        ( ( item = m_prevTracks.current() ) && m_prevTracks.remove() ) )
+    if( item )
     {
-        m_total += item->totalIncrementAmount();
+        if( m_prevTracks.removeRef( item ) )
+            m_total += item->totalIncrementAmount();
     }
+    else if( item = m_prevTracks.current() )
+        if( m_prevTracks.remove() )
+            m_total += item->totalIncrementAmount();
 }
 
 void
 Playlist::removeFromPreviousAlbums( PlaylistAlbum *album )
 {
-    if( ( album && m_prevAlbums.removeRef( album ) ) ||
-        ( ( album = m_prevAlbums.current() ) && m_prevAlbums.remove() ) )
+    if( album )
     {
-        m_total += album->total;
+        if( m_prevAlbums.removeRef( album ) )
+            m_total += album->total;
     }
+    else if( album = m_prevAlbums.current() )
+        if( m_prevAlbums.remove() )
+            m_total += album->total;
 }
 
 
