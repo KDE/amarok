@@ -100,6 +100,8 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
 
    memset(&m_children, 0, numPlayers * sizeof(struct playerChildren));
 
+   m_inited = false;
+
    // create a shared memory region for state like stuff
    if ( MAP_FAILED == (pmapped = (stateStuff *) mmap( (void *) statestuff, 
                                                       sizeof(stateStuff) * 2, 
@@ -195,6 +197,7 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
                switch (m)
                {
                   case INIT:
+                     cerr << "INIT\n";
                      if (!sz)
                      {
                         player->setOutputSink(m_api);
@@ -217,12 +220,15 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
                   {
                      bool islocal = (bool) buf[0];
                      int len = strlen((const char *)&buf[1]); // not that this would prevent a crash...
-                     cerr << "CHILD " << m_index << " setURL for " << (const char *)&buf[1] << 
-                        ",islocal=" << islocal << ",len=" << len << endl;
-                     if (sz == len + 2) 
-                        player->setURL((const char *)&buf[1], 0, islocal); // remember, we sent the null...
-                     else
-                        cerr << "CHILD " << m_index << " sz not right in SETURL, sz=" << sz << endl;
+                     if (m_inited)
+                     {
+                        cerr << "CHILD " << m_index << " setURL for " << (const char *)&buf[1] << 
+                           ",islocal=" << islocal << ",len=" << len << endl;
+                        if (sz == len + 2) 
+                           player->setURL((const char *)&buf[1], 0, islocal); // remember, we sent the null...
+                        else
+                           cerr << "CHILD " << m_index << " sz not right in SETURL, sz=" << sz << endl;
+                     }
                   }
                   break;
                   case START:
@@ -230,147 +236,169 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
                      bool fadein = (bool) buf[0];
                      unsigned long fadetime;
 
-                     if (pmapped)
-                        *m_children[m_index].current_time = 0;
-
-                     if (sz == sizeof(unsigned long) + 1)
+                     if (m_inited)
                      {
-                        cerr << "CHILD " << m_index << " gets START\n";
-                        memcpy((void *)&fadetime, (void *)&buf[1], sizeof(unsigned long));
-                        playing = true;
-                        player->start(0, fadein, fadetime);
+                        if (pmapped)
+                           *m_children[m_index].current_time = 0;
+
+                        if (sz == sizeof(unsigned long) + 1)
+                        {
+                           cerr << "CHILD " << m_index << " gets START\n";
+                           memcpy((void *)&fadetime, (void *)&buf[1], sizeof(unsigned long));
+                           playing = true;
+                           player->start(0, fadein, fadetime);
+                        }
+                        else
+                           cerr << "CHILD " << m_index << " sz not right in START, sz=" << sz << endl;
                      }
-                     else
-                        cerr << "CHILD " << m_index << " sz not right in START, sz=" << sz << endl;
                   }
                   break;
                   case STOP:
-                     if (!sz)
-                     {
-                        player->stop();
-                        playing = false;
-                        cerr << "CHILD " << m_index << " gets STOP\n";
-                     }
-                     else
-                        cerr << "CHILD " << m_index << " sz not right in STOP, sz=" << sz << endl;
+                     if (m_inited)
+                        if (!sz)
+                        {
+                           player->stop();
+                           playing = false;
+                           cerr << "CHILD " << m_index << " gets STOP\n";
+                        }
+                        else
+                           cerr << "CHILD " << m_index << " sz not right in STOP, sz=" << sz << endl;
                      break;
                   case PAUSE:
-                     if (!sz)
-                        player->pause();
-                     else
-                        cerr << "CHILD " << m_index << " sz not right in PAUSE, sz=" << sz << endl;
+                     if (m_inited)
+                        if (!sz)
+                           player->pause();
+                        else
+                           cerr << "CHILD " << m_index << " sz not right in PAUSE, sz=" << sz << endl;
                      break;
                   case RESUME:
-                     if (!sz)
-                        player->resume();
-                     else
-                        cerr << "CHILD " << m_index << " sz not right in RESUME, sz=" << sz << endl;
+                     if (m_inited)
+                        if (!sz)
+                           player->resume();
+                        else
+                           cerr << "CHILD " << m_index << " sz not right in RESUME, sz=" << sz << endl;
                      break;
                   case SEEK:
-                     if (sz == sizeof(unsigned long))
-                     {
-                        unsigned long pos;
-                        memcpy( (void *) &pos, (void *) buf, sizeof(unsigned long) );
-                        player->seek(pos, 0);
-                     }
-                     else
-                        cerr << "CHILD " << m_index << " sz not right in SEEK, sz=" << sz << endl;
+                     if (m_inited)
+                        if (sz == sizeof(unsigned long))
+                        {
+                           unsigned long pos;
+                           memcpy( (void *) &pos, (void *) buf, sizeof(unsigned long) );
+                           player->seek(pos, 0);
+                        }
+                        else
+                           cerr << "CHILD " << m_index << " sz not right in SEEK, sz=" << sz << endl;
                      break;
                   case SETVOLUME:
                   {
-                     if (sz == sizeof(unsigned long))
-                     {
-                        unsigned long vol;
-                        memcpy( (void *) &vol, (void *) buf, sizeof(unsigned long));
-                        cerr << "CHILD: received setvolume request " << vol <<endl;;
-                        player->setVolume(vol);
-                     }
-                     else
-                        cerr << "CHILD " << m_index << " sz not right in SETVOLUME, sz=" << sz << endl;
+                     if (m_inited)
+                        if (sz == sizeof(unsigned long))
+                        {
+                           unsigned long vol;
+                           memcpy( (void *) &vol, (void *) buf, sizeof(unsigned long));
+                           cerr << "CHILD: received setvolume request " << vol <<endl;;
+                           player->setVolume(vol);
+                        }
+                        else
+                           cerr << "CHILD " << m_index << " sz not right in SETVOLUME, sz=" << sz << endl;
                   }
                   break;
                   case OUTPUTSINK:
-                     if (sz == 1)
-                     {
-                        m_api = (HelixSimplePlayer::AUDIOAPI) buf[0];
-                        cerr << "CHILD: received OUTPUTSINK: " << m_api <<endl;;
-                     }
-                     else
-                        cerr << "CHILD " << m_index << " sz not right in OUTPUTSINK, sz=" << sz << endl;
+                     if (m_inited)
+                        if (sz == 1)
+                        {
+                           m_api = (HelixSimplePlayer::AUDIOAPI) buf[0];
+                           cerr << "CHILD: received OUTPUTSINK: " << m_api <<endl;;
+                        }
+                        else
+                           cerr << "CHILD " << m_index << " sz not right in OUTPUTSINK, sz=" << sz << endl;
                      break;
                   case DEVICE:
                   {
                      char dev[ sz ];
                      strcpy(dev, (const char *) buf);
-                     if ((unsigned)sz == strlen(dev) + 1)
-                     {
-                        cerr << "CHILD " << m_index << " gets device " << dev << endl;
-                        setDevice( dev );
-                     }
-                     else
-                        cerr << "CHILD " << m_index << " sz not right in DEVICE, sz=" << sz << endl;
+                     if (m_inited)
+                        if ((unsigned)sz == strlen(dev) + 1)
+                        {
+                           cerr << "CHILD " << m_index << " gets device " << dev << endl;
+                           setDevice( dev );
+                        }
+                        else
+                           cerr << "CHILD " << m_index << " sz not right in DEVICE, sz=" << sz << endl;
                   }
                   break;
                   case SETFADE:
                   {
-                     if (sz == sizeof(unsigned long) + 1)
-                     {
-                        bool fadeout;
-                        unsigned long fadelength;
-                        fadeout = (bool) buf[0];
-                        memcpy((void *) &fadelength, (void *) &buf[1], sizeof(unsigned long));
-                        player->setFadeout(fadeout, fadelength, 0);
-                     }
-                     else
-                        cerr << "CHILD " << m_index << " sz not right in SETFADE, sz=" << sz << endl;
+                     if (m_inited)
+                        if (sz == sizeof(unsigned long) + 1)
+                        {
+                           bool fadeout;
+                           unsigned long fadelength;
+                           fadeout = (bool) buf[0];
+                           memcpy((void *) &fadelength, (void *) &buf[1], sizeof(unsigned long));
+                           player->setFadeout(fadeout, fadelength, 0);
+                        }
+                        else
+                           cerr << "CHILD " << m_index << " sz not right in SETFADE, sz=" << sz << endl;
                   }
                   break;
                   case ENABLEEQ:
                   {
-                     if (sz == 1)
-                     {
-                        m_eq_enabled = (bool) buf[0];
-                        player->enableEQ(m_eq_enabled);
-                        cerr << "CHILD " << m_index << " enables EQ\n";
-                     }
-                     else
-                        cerr << "CHILD " << m_index << " sz not right in ENABLEEQ, sz=" << sz << endl;
+                     if (m_inited)
+                        if (sz == 1)
+                        {
+                           m_eq_enabled = (bool) buf[0];
+                           player->enableEQ(m_eq_enabled);
+                           cerr << "CHILD " << m_index << " enables EQ\n";
+                        }
+                        else
+                           cerr << "CHILD " << m_index << " sz not right in ENABLEEQ, sz=" << sz << endl;
                   }
                   break;
                   case UPDATEEQGAINS:
                   {
                      int i, n, k;
 
-                     if (sz >= 2)
+                     cerr << "UPDATEGAINS\n";
+                     if (m_inited)
                      {
-                        memcpy( (void *) &player->m_preamp, (void *) buf, sizeof(m_preamp) );
-                        memcpy( (void *) &n, (void *) &buf[ sizeof(m_preamp) ], sizeof(int) );
-                     }
-                     else
-                        cerr << "CHILD " << m_index << " sz not right in UPDATEEQGAINS, sz=" << sz << endl;
-
-                     if ((unsigned)sz == sizeof(m_preamp) + sizeof(int) + n * sizeof(int))
-                     {
-                        player->m_equalizerGains.resize(n);
-                        cerr << "CHILD " << m_index << " receives " << n << " equalizer gains\n";
-                        for (i=0; i<n; i++)
+                        if (sz >= 2)
                         {
-                           memcpy( (void *) &k, (void *) &buf[ sizeof(m_preamp) + (i+1)*sizeof(int) ], sizeof(int) );
-                           player->m_equalizerGains[i] = k;
+                           memcpy( (void *) &player->m_preamp, (void *) buf, sizeof(m_preamp) );
+                           memcpy( (void *) &n, (void *) &buf[ sizeof(m_preamp) ], sizeof(int) );
                         }
-                        if (!m_eq_enabled)
-                           player->enableEQ(true);
-                        player->updateEQgains();
-                        player->enableEQ(m_eq_enabled);
+                        else
+                           cerr << "CHILD " << m_index << " sz not right in UPDATEEQGAINS, sz=" << sz << endl;
+
+                        if ((unsigned)sz == sizeof(m_preamp) + sizeof(int) + n * sizeof(int))
+                        {
+                           if (n > 0)
+                           {
+                              player->m_equalizerGains.resize(n);
+                              cerr << "CHILD " << m_index << " receives " << n << " equalizer gains\n";
+                              for (i=0; i<n; i++)
+                              {
+                                 memcpy( (void *) &k, (void *) &buf[ sizeof(m_preamp) + (i+1)*sizeof(int) ], sizeof(int) );
+                                 player->m_equalizerGains[i] = k;
+                              }
+                              if (!m_eq_enabled)
+                                 player->enableEQ(true);
+                              player->updateEQgains();
+                              player->enableEQ(m_eq_enabled);
+                           }
+                        }
+                        else
+                           cerr << "CHILD " << m_index << " sz not right in UPDATEEQGAINS, sz=" << sz << endl;
                      }
-                     else
-                        cerr << "CHILD " << m_index << " sz not right in UPDATEEQGAINS, sz=" << sz << endl;
                   }
                   break;
                   case SCOPECLEAR:
-                     player->clearScopeQ(0);
-                     if (pmapped)
-                        *m_children[m_index].m_consumed = *m_children[m_index].m_current = 0;
+                     if (m_inited)
+                     {
+                        player->clearScopeQ(0);
+                        if (pmapped)
+                           *m_children[m_index].m_consumed = *m_children[m_index].m_current = 0;
+                     }
                      break;
                   case TEARDOWN:
                      if (!sz)
