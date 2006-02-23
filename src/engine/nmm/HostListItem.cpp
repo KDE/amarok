@@ -1,6 +1,6 @@
 /* NMM - Network-Integrated Multimedia Middleware
  *
- * Copyright (C) 2002-2006
+ * Copyright (C) 2005-2006
  *                    NMM work group,
  *                    Computer Graphics Lab,
  *                    Saarland University, Germany
@@ -22,7 +22,7 @@
  * USA
  */
 
-#include "AudioHostListItem.h"
+#include "HostListItem.h"
 #include "ServerregistryPing.h"
 
 #include <qapplication.h>
@@ -35,7 +35,7 @@
 #include <kglobal.h>
 #include <kiconloader.h>
 
-AudioHostListItem::AudioHostListItem( bool valid, QString _hostname, QWidget *parent )
+HostListItem::HostListItem( bool valid, QString _hostname, QWidget *parent )
     : QWidget( parent )
 {
     /* layout */
@@ -68,12 +68,12 @@ AudioHostListItem::AudioHostListItem( bool valid, QString _hostname, QWidget *pa
     connect(registry, SIGNAL( registryAvailable( bool) ), SLOT( registryAvailable( bool ) ) );
 }
 
-AudioHostListItem::~AudioHostListItem()
+HostListItem::~HostListItem()
 {
     delete registry;
 }
 
-void AudioHostListItem::setHighlighted( bool highlight )
+void HostListItem::setHighlighted( bool highlight )
 {
     if( highlight )
         setPaletteBackgroundColor( calcBackgroundColor( "activeBackground", QApplication::palette().active().highlight() ) );
@@ -81,26 +81,26 @@ void AudioHostListItem::setHighlighted( bool highlight )
         setPaletteBackgroundColor( calcBackgroundColor( "windowBackground", Qt::white ) );
 }
 
-QString AudioHostListItem::hostname() const
+QString HostListItem::hostname() const
 { 
     return hostLabel->text();
 }
 
-void AudioHostListItem::mousePressEvent( QMouseEvent * )
+void HostListItem::mousePressEvent( QMouseEvent * )
 {
     emit pressed( this );
 }
 
-void AudioHostListItem::registryAvailable( bool available)
+void HostListItem::registryAvailable( bool available)
 {
     statusButton->setPixmap( available ? SmallIcon( "greenled" ) : SmallIcon( "redled" )  );
 }
 
-QColor AudioHostListItem::calcBackgroundColor( QString type, QColor color )
+QColor HostListItem::calcBackgroundColor( QString type, QColor color )
 {
     KConfig *config = KGlobal::config();
     config->setGroup("WM");
     return config->readColorEntry( type, &color);
 }
 
-#include "AudioHostListItem.moc"
+#include "HostListItem.moc"

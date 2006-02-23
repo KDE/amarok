@@ -1,6 +1,6 @@
 /* NMM - Network-Integrated Multimedia Middleware
  *
- * Copyright (C) 2002-2006
+ * Copyright (C) 2005-2006
  *                    NMM work group,
  *                    Computer Graphics Lab,
  *                    Saarland University, Germany
@@ -22,8 +22,8 @@
  * USA
  */
 
-#ifndef AUDIOHOSTLISTITEM_H
-#define AUDIOHOSTLISTITEM_H
+#ifndef HOSTLISTITEM_H
+#define HOSTLISTITEM_H
 
 #include <qcolor.h>
 #include <qlabel.h>
@@ -32,12 +32,12 @@
 
 class ServerregistryPing;
 
-class AudioHostListItem : public QWidget {
+class HostListItem : public QWidget {
     Q_OBJECT
     
     public:
-        AudioHostListItem( bool, QString, QWidget * );
-        ~AudioHostListItem();
+        HostListItem( bool, QString, QWidget * );
+        ~HostListItem();
 
         void setHighlighted( bool = true );
         QString hostname() const;
@@ -46,7 +46,7 @@ class AudioHostListItem : public QWidget {
         void mousePressEvent ( QMouseEvent * );
 
     signals:
-        void pressed( AudioHostListItem* );
+        void pressed( HostListItem* );
 
     private slots:
         void registryAvailable( bool );
