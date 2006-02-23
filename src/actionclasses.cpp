@@ -472,7 +472,7 @@ RandomAction::setChecked( bool b )
 // EntireAlbumsAction
 //////////////////////////////////////////////////////////////////////////////////////////
 EntireAlbumsAction::EntireAlbumsAction( KActionCollection *ac ) :
-    ToggleAction( i18n( "Play &Entire Albums" ), &AmarokConfig::setEntireAlbums, ac, "entire_albums" )
+    ToggleAction( i18n( "Play &Albums In Order" ), &AmarokConfig::setEntireAlbums, ac, "entire_albums" )
 {
     KToggleAction::setChecked( AmarokConfig::entireAlbums() );
     setIcon( "cd" );
