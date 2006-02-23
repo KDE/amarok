@@ -211,6 +211,7 @@ IpodMediaDevice::updateTrackInDB(IpodMediaItem *item,
     track->album = g_strdup( bundle.album()->utf8() );
     track->artist = g_strdup( bundle.artist()->utf8() );
     track->genre = g_strdup( bundle.genre()->utf8() );
+    track->unk208 = 0x01; // for audio
     if(type=="wav")
     {
         track->filetype = g_strdup( "wav" );
