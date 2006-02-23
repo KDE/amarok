@@ -86,6 +86,9 @@
                     <property name="name">
                         <cstring>audioPlaybackNode</cstring>
                     </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Selects audio output plugin. PlaybackNode uses the Open Sound System (&lt;b&gt;OSS&lt;/b&gt;). ALSAPlaybackNode uses the  Advanced Linux Sound Architecture (&lt;b&gt;ALSA&lt;/b&gt;).</string>
+                    </property>
                 </widget>
             </hbox>
         </widget>
