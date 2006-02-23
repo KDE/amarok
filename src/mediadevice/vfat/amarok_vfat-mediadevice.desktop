@@ -16,6 +16,7 @@ Name[nl]=Generiek VFAT-media-apparaat
 Name[pt]=Dispositivo Multimédia VFAT Genérico
 Name[pt_BR]=Dispositivo Multimédia VFAT Genérico
 Name[sv]=Generell VFAT-mediaenhet
+Name[xx]=xxGeneric VFAT Media Devicexx
 Name[zh_CN]=通用 VFAT 媒体设备
 X-KDE-Library=libamarok_vfat-mediadevice
 Comment=Plugin for amaroK

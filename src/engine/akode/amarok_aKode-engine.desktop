@@ -31,6 +31,7 @@ Name[ta]=aKode என்ஜின்
 Name[tg]=Муҳаррики aKode
 Name[uk]=Рушій aKode
 Name[uz]=aKode тизими
+Name[xx]=xxaKode Enginexx
 Name[zh_CN]=aKode 引擎
 Name[zh_TW]=aKode 解碼引擎
 ServiceTypes=amaroK/Plugin
@@ -67,6 +68,7 @@ Comment[ta]=amaroK க்கான aKode கேட்பொலி என்ஜ�
 Comment[tg]=Муҳаррики аудио aKode барои амароK
 Comment[uk]=Аудіо-рушій aKode для amaroK
 Comment[uz]=amaroK учун товуш тизими
+Comment[xx]=xxaKode audio-engine for amaroKxx
 Comment[zh_CN]=amaroK 的 aKode 音频引擎
 Comment[zh_TW]=amaroK 的 aKode 音訊解碼引擎
 
