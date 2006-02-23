@@ -75,14 +75,13 @@ private:
     void cleanup();
 
     /**
-     * Returns the location of the audio sink or empty, if none is specified.
+     * Returns sink locations for audio/video playback.
+     *
+     * \param audio return audio locations, else video locations
+     *
+     * \return the audio/video locations
      */
-    QString getAudioSinkHost();
-
-    /**
-     * Returns the location of the video sink or empty, if none is specified.
-     */
-    QString getVideoSinkHost();
+    QStringList getSinkHosts( bool audio = true );
 
     /**
      * This method is called when a setProgress event is received. The two parameters represent a rational number

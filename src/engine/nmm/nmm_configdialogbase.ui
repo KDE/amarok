@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>382</width>
-            <height>616</height>
+            <width>399</width>
+            <height>404</height>
         </rect>
     </property>
     <property name="caption">
@@ -89,12 +89,29 @@
                 </widget>
             </hbox>
         </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer2</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Fixed</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>16</width>
+                    <height>16</height>
+                </size>
+            </property>
+        </spacer>
         <widget class="QButtonGroup">
             <property name="name">
                 <cstring>audioGroup</cstring>
             </property>
             <property name="title">
-                <string>Audio Location</string>
+                <string>Audio,Video Location</string>
             </property>
             <vbox>
                 <property name="name">
@@ -102,15 +119,36 @@
                 </property>
                 <widget class="QRadioButton">
                     <property name="name">
-                        <cstring>audioLocalhostButton</cstring>
+                        <cstring>localhostButton</cstring>
                     </property>
                     <property name="text">
                         <string>Localhost only</string>
                     </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Plays audio and video on the machine running amaroK.</string>
+                    </property>
                 </widget>
                 <widget class="QRadioButton">
                     <property name="name">
-                        <cstring>audioHostListButton</cstring>
+                        <cstring>environmentButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Enviroment variables</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>AUDIO_HOSTS and VIDEO_HOSTS</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Reads the environment variables &lt;b&gt;AUDIO_HOSTS&lt;/b&gt; and &lt;b&gt;VIDEO_HOSTS&lt;/b&gt; to determine the audio and video playback locations.
+
+&lt;h2&gt;Example&lt;/h2&gt;
+AUDIO_HOSTS=desktop:laptop:kitchen
+VIDEO_HOSTS=laptop</string>
+                    </property>
+                </widget>
+                <widget class="QRadioButton">
+                    <property name="name">
+                        <cstring>hostListButton</cstring>
                     </property>
                     <property name="text">
                         <string>Host list:</string>
@@ -143,7 +181,7 @@
                         </spacer>
                         <widget class="QScrollView">
                             <property name="name">
-                                <cstring>audioScrollView</cstring>
+                                <cstring>locationScrollView</cstring>
                             </property>
                             <property name="sizePolicy">
                                 <sizepolicy>
@@ -164,7 +202,7 @@
                                 </property>
                                 <widget class="QPushButton">
                                     <property name="name">
-                                        <cstring>addAudioLocationButton</cstring>
+                                        <cstring>addLocationButton</cstring>
                                     </property>
                                     <property name="text">
                                         <string>Add...</string>
@@ -172,10 +210,13 @@
                                 </widget>
                                 <widget class="QPushButton">
                                     <property name="name">
-                                        <cstring>removeAudioLocationButton</cstring>
+                                        <cstring>removeLocationButton</cstring>
                                     </property>
                                     <property name="text">
                                         <string>R&amp;emove</string>
+                                    </property>
+                                    <property name="accel">
+                                        <string>Alt+E</string>
                                     </property>
                                 </widget>
                                 <spacer>
@@ -199,126 +240,6 @@
                         </widget>
                     </hbox>
                 </widget>
-                <widget class="QRadioButton">
-                    <property name="name">
-                        <cstring>audioEnvironmentButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Enviroment variable $SOUND or $DISPLAY</string>
-                    </property>
-                </widget>
-            </vbox>
-        </widget>
-        <widget class="QButtonGroup">
-            <property name="name">
-                <cstring>videoGroup</cstring>
-            </property>
-            <property name="title">
-                <string>Video Location</string>
-            </property>
-            <vbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QRadioButton">
-                    <property name="name">
-                        <cstring>videoLocalhostButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Localhost only</string>
-                    </property>
-                </widget>
-                <widget class="QRadioButton">
-                    <property name="name">
-                        <cstring>videoHostListButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Host list:</string>
-                    </property>
-                </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout18</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <spacer>
-                            <property name="name">
-                                <cstring>spacer8_2</cstring>
-                            </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
-                            </property>
-                            <property name="sizeType">
-                                <enum>Fixed</enum>
-                            </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>20</width>
-                                    <height>20</height>
-                                </size>
-                            </property>
-                        </spacer>
-                        <widget class="QListBox">
-                            <property name="name">
-                                <cstring>videoListBox</cstring>
-                            </property>
-                        </widget>
-                        <widget class="QLayoutWidget">
-                            <property name="name">
-                                <cstring>layout17</cstring>
-                            </property>
-                            <vbox>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <widget class="QPushButton">
-                                    <property name="name">
-                                        <cstring>addVideoLocationButton</cstring>
-                                    </property>
-                                    <property name="text">
-                                        <string>Add...</string>
-                                    </property>
-                                </widget>
-                                <widget class="QPushButton">
-                                    <property name="name">
-                                        <cstring>removeVideoLocationButton</cstring>
-                                    </property>
-                                    <property name="text">
-                                        <string>R&amp;emove</string>
-                                    </property>
-                                </widget>
-                                <spacer>
-                                    <property name="name">
-                                        <cstring>spacer2</cstring>
-                                    </property>
-                                    <property name="orientation">
-                                        <enum>Vertical</enum>
-                                    </property>
-                                    <property name="sizeType">
-                                        <enum>Expanding</enum>
-                                    </property>
-                                    <property name="sizeHint">
-                                        <size>
-                                            <width>20</width>
-                                            <height>1</height>
-                                        </size>
-                                    </property>
-                                </spacer>
-                            </vbox>
-                        </widget>
-                    </hbox>
-                </widget>
-                <widget class="QRadioButton">
-                    <property name="name">
-                        <cstring>videoEnvironmentButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Enviroment variable $DISPLAY</string>
-                    </property>
-                </widget>
             </vbox>
         </widget>
         <spacer>
@@ -329,7 +250,7 @@
                 <enum>Vertical</enum>
             </property>
             <property name="sizeType">
-                <enum>Expanding</enum>
+                <enum>Minimum</enum>
             </property>
             <property name="sizeHint">
                 <size>

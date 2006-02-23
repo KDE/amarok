@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Author: Joerg Bakker, joerg@hakker.de -->
+<!-- Authors: Joerg Bakker, joerg@hakker.de              -->
+<!--          Robert Gogolok, gogo@graphics.cs.uni-sb.de -->
 <kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
@@ -12,37 +13,30 @@
             <whatsthis>Select the audio output plugin.</whatsthis>
             <default>PlaybackNode</default>
         </entry>
-        <entry key="Audio Location" type="Enum">
-            <label>Type of source for location of audio sink</label>
-            <whatsthis>Type of location of audio sink: environment variable, fixed host name or localhost only.</whatsthis>
+        <entry key="Location" type="Enum">
+            <label>Type of source for audio and video location</label>
+            <whatsthis>Type of location of audio and video sink: environment variable, fixed host name or localhost only.</whatsthis>
             <choices>
-                <choice name="AudioSinkLocalOnly"/>
-                <choice name="AudioSinkHostName"/>
-                <choice name="AudioSinkEnvVariable"/>
+                <choice name="LocalhostOnly"/>
+                <choice name="EnvironmentVariable"/>
+                <choice name="HostList"/>
             </choices>
-            <default>AudioSinkLocalOnly</default>
+            <default>LocalhostOnly</default>
         </entry>
-        <entry key="Audio Host" type="StringList">
-            <label>Hostnames of audio sink</label>
-            <whatsthis>Names of hosts where your audio sink is located if Audio Location equals AudioSinkHostName.</whatsthis>
+        <entry key="Host List" type="StringList">
+            <label>Hostnames of audio and video sinks</label>
+            <whatsthis>Names of hosts where your audio and video sink can be located if Location equals SinkHostName.</whatsthis>
             <default></default>
         </entry>
-        <entry key="Video Location" type="Enum">
-            <label>Type of source for location of video sink</label>
-            <whatsthis>Type of location of video sink: environment variable, fixed host name or localhost only.</whatsthis>
-            <choices>
-                <choice name="VideoSinkLocalOnly"/>
-                <choice name="VideoSinkHostName"/>
-                <choice name="VideoSinkEnvVariable"/>
-            </choices>
-            <default>VideoSinkLocalOnly</default>
+        <entry key="Audio Toggle" type="StringList">
+            <label>Toggle for audio playback</label>
+            <whatsthis>Indicates for every host in Host List whether audio is enabled/disabled.</whatsthis>
+            <default></default>
         </entry>
-        <entry key="Video Host" type="StringList">
-            <label>Location of video sinks</label>
-            <whatsthis>Names of hosts where your video sink is located if Video Location equals VideoSinkHostName.</whatsthis>
+        <entry key="Video Toggle" type="StringList">
+            <label>Toggle for video playback</label>
+            <whatsthis>Indicates for every host in Host List whether video is enabled/disabled.</whatsthis>
             <default></default>
         </entry>
     </group>
-
 </kcfg>
-

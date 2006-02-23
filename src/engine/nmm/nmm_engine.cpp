@@ -130,18 +130,24 @@ bool NmmEngine::load(const KURL& url, bool stream)
 
   // make the GraphBuilder construct an appropriate graph for the given URL
   try {
-    QString host;
+    QStringList hosts;
 
-    // these nodes will be used for audio and video playback
+    // node for audio playback
     NodeDescription playback_nd("PlaybackNode");
+    // ALSA or OSS
     if( NmmKDEConfig::audioOutputPlugin() == "ALSAPlaybackNode" )
         playback_nd = NodeDescription("ALSAPlaybackNode");
-    if (!(host=getAudioSinkHost()).isEmpty())
-        playback_nd.setLocation(host.ascii());
 
+    // TODO: currently we only support one host for audio playback
+    if( !(hosts = getSinkHosts()).empty() )
+        playback_nd.setLocation( hosts.first().ascii() );
+
+    // node for video playback
     NodeDescription display_nd("XDisplayNode");
-    if (!(host=getVideoSinkHost()).isEmpty())
-        display_nd.setLocation(host.ascii());
+
+    // TODO: currently we only support one host for video playback
+    if( !(hosts = getSinkHosts( false )).empty() )
+        display_nd.setLocation( hosts.first().ascii() );
 
     GraphBuilder2 gb;
 
@@ -445,46 +451,37 @@ void NmmEngine::setVolumeSW(uint percent)
     }
 }
 
-// minimum of two positive numbers a and b
-// negativ numbers are ignored (if both are negative return 0)
-int minpos(int a, int b)
+QStringList NmmEngine::getSinkHosts( bool audio )
 {
-    return std::max(std::min(a,b), 0);
+  // read locations from environment variable
+  if( NmmKDEConfig::location() == NmmKDEConfig::EnumLocation::EnvironmentVariable )
+  {
+    QString hosts;
+
+    if( audio )
+        hosts = getenv("AUDIO_HOSTS");
+    else
+        hosts = getenv("VIDEO_HOSTS");
+
+    if( hosts.isEmpty() ) { // environment variable not set
+      debug() << "environment variable empty." << endl;
+      return QStringList();
+  }
+
+    debug() << "locations from environment variable are => " << hosts << endl;
+
+    return QStringList::split(":", hosts );
+
+ } // read locations from host list
+ else if( NmmKDEConfig::location() == NmmKDEConfig::EnumLocation::HostList )
+ {
+   // TODO: only toggled locations
+    return NmmKDEConfig::hostList();
+ }
+
+  // localhost only
+  return QStringList();
 }
-
-QString NmmEngine::getAudioSinkHost()
-{
-    if (NmmKDEConfig::audioLocation() == NmmKDEConfig::EnumAudioLocation::AudioSinkEnvVariable)
-    {
-        QString host(getenv("SOUND"));
-        if (!host.isEmpty())
-            return host;
-
-        host = getenv("DISPLAY");
-        return host.left( minpos( host.find('.'), host.find(':') ) );
-    }
-    else if (NmmKDEConfig::audioLocation() == NmmKDEConfig::EnumAudioLocation::AudioSinkHostName)
-    {
-        return NmmKDEConfig::audioHost()[0]; // TODO: for now we return the first host in the list.
-    }
-    return QString();
-}
-
-QString NmmEngine::getVideoSinkHost()
-{
-    if( NmmKDEConfig::videoLocation() == NmmKDEConfig::EnumVideoLocation::VideoSinkEnvVariable )
-    {
-        QString host(getenv("DISPLAY"));
-        return host.left( minpos( host.find('.'), host.find(':') ) );
-    }
-    else if( NmmKDEConfig::videoLocation() == NmmKDEConfig::EnumVideoLocation::VideoSinkHostName )
-    {
-        return NmmKDEConfig::videoHost()[0]; // TODO: for now we return the first host in the list.
-    }
-    return QString();
-}
-
-
 
 Result NmmEngine::setProgress(u_int64_t& numerator, u_int64_t& denominator)
 {

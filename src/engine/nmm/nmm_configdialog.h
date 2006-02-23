@@ -1,6 +1,6 @@
 /* NMM - Network-Integrated Multimedia Middleware
  *
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006
  *                    NMM work group,
  *                    Computer Graphics Lab,
  *                    Saarland University, Germany
@@ -31,7 +31,7 @@
 
 #include "qobject.h"
 
-class AudioHostListItem;
+class HostListItem;
 
 class NmmConfigDialog : public amaroK::PluginConfig
 {
@@ -42,6 +42,7 @@ Q_OBJECT
         
         QWidget* view() { return m_view; }
 
+        // \todo doesn't work the intended way
         bool hasChanged() const;
         bool isDefault() const;
         
@@ -50,34 +51,38 @@ Q_OBJECT
         void save();
 
         /**
-         * Adds a host to the audio locations.
+         * Adds a host to the location list.
          */
-        void addAudioHost();
+        void addHost();
 
         /**
-         * Removes a host from the audio locations.
+         * Removes a host from the location list.
          */
-        void removeAudioHost();
+        void removeHost();
 
-        void selectHostListItem( AudioHostListItem* );
+        /**
+         * Selects a HostListItem as selected item.
+         */
+        void selectHostListItem( HostListItem* );
 
-        void addVideoHost();
-        void removeVideoHost();
-
-        void setCheckedAudioList( bool );
-        void setCheckedVideoList( bool );
+        void setCheckedList( bool );
 
     private:
         void readConfig();
-        void addAudioHostListItem( QString );
+        void addHostListItem( QString );
         
+        /** 
+         * Returns all locations in the host list.
+         */
+        QStringList hostList() const;
+
         /**
-         * Returns hosts in the audio host list.
+         * Returns audio toggle states for every host.
          */
         QStringList audioHostList() const;
 
         /**
-         * Returns hosts in the video host list.
+         * Returns video toggle sattes for every host.
          */
         QStringList videoHostList() const;
 
@@ -85,8 +90,8 @@ Q_OBJECT
 
         QWidget* audio_vbox;;
 
-        AudioHostListItem *current_audio_host;
-        QPtrList<AudioHostListItem> m_audio_hosts;
+        HostListItem *current_host;
+        QPtrList<HostListItem> m_hosts;
 };
 
 #endif

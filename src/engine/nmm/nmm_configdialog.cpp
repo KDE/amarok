@@ -1,6 +1,6 @@
 /* NMM - Network-Integrated Multimedia Middleware
  *
- * Copyright (C) 2005
+ * Copyright (C) 2005-2006
  *                    NMM work group,
  *                    Computer Graphics Lab,
  *                    Saarland University, Germany
@@ -24,7 +24,7 @@
 
 #include "nmm_configdialog.h"
 #include "nmm_kdeconfig.h"
-#include "AudioHostListItem.h"
+#include "HostListItem.h"
 #include "debug.h"
 
 #include <qbuttongroup.h>
@@ -42,33 +42,29 @@ NmmConfigDialog::NmmConfigDialog()
 
     m_view = new NmmConfigDialogBase();
 
+    /* restored saved output plugin */
     if ( NmmKDEConfig::audioOutputPlugin() == "ALSAPlaybackNode" )
         m_view->audioPlaybackNode->setCurrentItem( 1 );
 
-    audio_vbox = new QWidget(m_view->audioScrollView->viewport());
+    audio_vbox = new QWidget(m_view->locationScrollView->viewport());
     audio_vbox->setPaletteBackgroundColor(Qt::white);
 
     QVBoxLayout *audio_vbox_layout = new QVBoxLayout(audio_vbox);
     audio_vbox_layout->setAlignment( Qt::AlignAuto | Qt::AlignTop );
     audio_vbox_layout->setAutoAdd( true );
     
-    m_view->audioScrollView->addChild(audio_vbox);
-    m_view->audioScrollView->setResizePolicy(QScrollView::AutoOneFit);
-    m_view->audioScrollView->setHScrollBarMode( QScrollView::AlwaysOff );
+    m_view->locationScrollView->addChild(audio_vbox);
+    m_view->locationScrollView->setResizePolicy(QScrollView::AutoOneFit);
+    m_view->locationScrollView->setHScrollBarMode( QScrollView::AlwaysOff );
     
     readConfig();
 
-    connect( m_view->addAudioLocationButton, SIGNAL( released() ), SLOT( addAudioHost() ) );
-    connect( m_view->removeAudioLocationButton, SIGNAL( released() ), SLOT( removeAudioHost() ) );
-    connect( m_view->audioHostListButton, SIGNAL( toggled(bool) ), SLOT( setCheckedAudioList(bool) ) );
-
-    connect( m_view->addVideoLocationButton, SIGNAL( released() ), SLOT( addVideoHost() ) );
-    connect( m_view->removeVideoLocationButton, SIGNAL( released() ), SLOT( removeVideoHost() ) );
-    connect( m_view->videoHostListButton, SIGNAL( toggled(bool) ), SLOT( setCheckedVideoList(bool) ) );
+    connect( m_view->addLocationButton, SIGNAL( released() ), SLOT( addHost() ) );
+    connect( m_view->removeLocationButton, SIGNAL( released() ), SLOT( removeHost() ) );
+    connect( m_view->hostListButton, SIGNAL( toggled(bool) ), SLOT( setCheckedList(bool) ) );
 
     PluginConfig::connect( m_view->audioPlaybackNode, SIGNAL( activated( int ) ), SIGNAL( viewChanged() ) );
     PluginConfig::connect( m_view->audioGroup, SIGNAL( released( int ) ), SIGNAL( viewChanged() ) );
-    PluginConfig::connect( m_view->videoGroup, SIGNAL( released( int ) ), SIGNAL( viewChanged() ) );
 }
 
 NmmConfigDialog::~NmmConfigDialog()
@@ -80,11 +76,12 @@ NmmConfigDialog::~NmmConfigDialog()
 
 bool NmmConfigDialog::hasChanged() const
 {
-    return NmmKDEConfig::audioOutputPlugin() != m_view->audioPlaybackNode->currentText() ||
-           NmmKDEConfig::audioLocation() != m_view->audioGroup->selectedId() ||
-           NmmKDEConfig::audioHost() != audioHostList() ||
-           NmmKDEConfig::videoLocation() != m_view->videoGroup->selectedId() ||
-           NmmKDEConfig::videoHost() != videoHostList();
+  // TODO
+  return NmmKDEConfig::audioOutputPlugin() != m_view->audioPlaybackNode->currentText() ||
+         NmmKDEConfig::location() != m_view->audioGroup->selectedId() ||
+         NmmKDEConfig::hostList() != hostList();
+//         NmmKDEConfig::audioHost() != audioHostList() ||
+//         NmmKDEConfig::videoHost() != videoHostList();
 }
 
 bool NmmConfigDialog::isDefault() const
@@ -99,16 +96,17 @@ void NmmConfigDialog::save()
     if( hasChanged() )
     {
         debug() << "saving changes" << endl;
-        NmmKDEConfig::setAudioLocation( m_view->audioGroup->selectedId() );
-        NmmKDEConfig::setAudioHost( audioHostList() );
-        NmmKDEConfig::setVideoLocation( m_view->videoGroup->selectedId() );
-        NmmKDEConfig::setVideoHost( videoHostList() );
         NmmKDEConfig::setAudioOutputPlugin( m_view->audioPlaybackNode->currentText() );
+        NmmKDEConfig::setLocation( m_view->audioGroup->selectedId() );
+        NmmKDEConfig::setHostList( hostList() );
+        // TODO: save toggle states
+        //NmmKDEConfig::setAudioHost( audioHostList() );
+        //NmmKDEConfig::setVideoHost( videoHostList() );
         NmmKDEConfig::writeConfig();
    }
 }
 
-void NmmConfigDialog::addAudioHost()
+void NmmConfigDialog::addHost()
 {
     bool ok;
     QString hostname = QInputDialog::getText(
@@ -116,116 +114,91 @@ void NmmConfigDialog::addAudioHost()
         QString::null, &ok, NULL);
     if( ok && !hostname.isEmpty() )
     {
-        addAudioHostListItem( hostname );
+        addHostListItem( hostname );
         //audio_vbox->layout()->invalidate();
         //m_view->audioScrollView->update();
         emit viewChanged();
     }
 }
 
-void NmmConfigDialog::removeAudioHost()
+void NmmConfigDialog::removeHost()
 {
-    if( current_audio_host ) {
-        m_audio_hosts.remove( current_audio_host );
+    if( current_host ) {
+        m_hosts.remove( current_host );
 
-        delete current_audio_host;
-        current_audio_host = NULL;
+        delete current_host;
+        current_host = NULL;
 
         // no item selected, disable remove button
-        m_view->removeAudioLocationButton->setEnabled( false );
+        m_view->removeLocationButton->setEnabled( false );
     }
 }
 
-void NmmConfigDialog::addVideoHost()
+void NmmConfigDialog::setCheckedList( bool checked )
 {
-    bool ok;
-    QString hostname = QInputDialog::getText(
-        "New NMM sink host", "Enter hostname to add:", QLineEdit::Normal,
-        QString::null, &ok, NULL);
-    if( ok && !hostname.isEmpty() ) // TODO: check for duplicates!?
-    {
-        m_view->videoListBox->insertItem( hostname );
-        m_view->videoListBox->sort();
-        emit viewChanged();
-    }
-}
-
-void NmmConfigDialog::removeVideoHost()
-{
-    m_view->videoListBox->removeItem( m_view->videoListBox->currentItem() );
-    emit viewChanged();
-}
-
-void NmmConfigDialog::setCheckedAudioList( bool checked )
-{
-    m_view->audioScrollView->setEnabled( checked );
-    m_view->addAudioLocationButton->setEnabled( checked );
-    if( checked && current_audio_host )
-        m_view->removeAudioLocationButton->setEnabled( true );
+    m_view->locationScrollView->setEnabled( checked );
+    m_view->addLocationButton->setEnabled( checked );
+    if( checked && current_host )
+        m_view->removeLocationButton->setEnabled( true );
     else 
-        m_view->removeAudioLocationButton->setEnabled( false );
-}
-
-void NmmConfigDialog::setCheckedVideoList( bool checked )
-{
-    m_view->videoListBox->setEnabled( checked );
-    m_view->addVideoLocationButton->setEnabled( checked );
-    m_view->removeVideoLocationButton->setEnabled( checked );
+        m_view->removeLocationButton->setEnabled( false );
 }
 
 void NmmConfigDialog::readConfig()
 {
-    m_view->audioGroup->setButton( NmmKDEConfig::audioLocation() );
-    setCheckedAudioList( m_view->audioHostListButton->isChecked() );
+    m_view->audioGroup->setButton( NmmKDEConfig::location() );
+    setCheckedList( m_view->hostListButton->isChecked() );
 
-    QStringList audioHosts = NmmKDEConfig::audioHost();
+    QStringList hosts = NmmKDEConfig::hostList();
+    // TODO: read audio/video toggle states
     QStringList::iterator it;
-    for ( it = audioHosts.begin(); it != audioHosts.end(); ++it )
-        addAudioHostListItem( *it );
+    for ( it = hosts.begin(); it != hosts.end(); ++it )
+        addHostListItem( *it );
     
-    m_view->videoGroup->setButton( NmmKDEConfig::videoLocation() );
-    setCheckedVideoList( m_view->videoHostListButton->isChecked() );
-    m_view->videoListBox->insertStringList( NmmKDEConfig::videoHost() );
 }
 
-void NmmConfigDialog::addAudioHostListItem( QString hostname )
+void NmmConfigDialog::addHostListItem( QString hostname )
 {
-    AudioHostListItem *item = new AudioHostListItem(false, hostname, audio_vbox);
-    connect( item, SIGNAL( pressed( AudioHostListItem* ) ), this, SLOT( selectHostListItem( AudioHostListItem* ) ) );
+    HostListItem *item = new HostListItem(false, hostname, audio_vbox);
+    connect( item, SIGNAL( pressed( HostListItem* ) ), this, SLOT( selectHostListItem( HostListItem* ) ) );
+    // TODO: connect audio,video toggle to viewChanged()
     item->show();
-    m_audio_hosts.append( item );
+    m_hosts.append( item );
+}
 
+QStringList NmmConfigDialog::hostList() const
+{
+  QStringList list;
+  QPtrListIterator<HostListItem> it( m_hosts );
+  HostListItem *hosts;
+  while ( (hosts = it.current()) != 0 ) {
+    ++it;
+    list.append( hosts->hostname() );
+  }
+  return list;
 }
 
 QStringList NmmConfigDialog::audioHostList() const
 {
-    QStringList list;
-    QPtrListIterator<AudioHostListItem> it( m_audio_hosts );
-    AudioHostListItem *audioHost;
-    while ( (audioHost = it.current()) != 0 ) {
-        ++it;
-        list.append( audioHost->hostname() );
-    }
-    return list;
+  // TODO
+  return QStringList();
 }
 
 QStringList NmmConfigDialog::videoHostList() const
 {
-    QStringList list;
-    for (uint i = 0; i < m_view->videoListBox->count(); i++)
-        list.append( m_view->videoListBox->text( i ) );
-    return list;
+  // TODO
+  return QStringList();
 }
 
-void NmmConfigDialog::selectHostListItem( AudioHostListItem *item )
+void NmmConfigDialog::selectHostListItem( HostListItem *item )
 {
-    if(current_audio_host)
-        current_audio_host->setHighlighted( false );
+    if(current_host)
+        current_host->setHighlighted( false );
 
-    current_audio_host = item;
-    current_audio_host->setHighlighted( true );
+    current_host = item;
+    current_host->setHighlighted( true );
 
-    m_view->removeAudioLocationButton->setEnabled( true );
+    m_view->removeLocationButton->setEnabled( true );
 }
 
 #include "nmm_configdialog.moc"

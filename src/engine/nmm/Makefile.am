@@ -16,7 +16,7 @@ libamarok_nmmengine_plugin_la_SOURCES = \
     nmm_engine.cpp \
     nmm_configdialog.cpp \
     nmm_configdialogbase.ui \
-    AudioHostListItem.cpp \
+    HostListItem.cpp \
     ServerregistryPing.cpp \
     nmm_kdeconfig.kcfgc
 
