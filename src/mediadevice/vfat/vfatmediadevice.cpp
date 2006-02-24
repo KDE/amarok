@@ -454,29 +454,70 @@ VfatMediaDevice::downloadSelectedItems()
 
     KIO::CopyJob *result;
 */
-    KURL::List urllist;
+    while ( !m_downloadList.empty() )
+        m_downloadList.pop_front();
     QListViewItemIterator it( m_view, QListViewItemIterator::Selected );
     MediaItem *curritem;
     for( ; it.current(); ++it )
     {
         curritem = static_cast<MediaItem *>(*it);
         if( curritem->type() == MediaItem::DIRECTORY )
-            urllist += drillDown( curritem );
+            drillDown( curritem );
         else //file
-            urllist.append( KURL( getFullPath( curritem ) ) );
+            m_downloadList.append( KURL( getFullPath( curritem ) ) );
     }
+
+    //here is where to call the dialog...maybe test first by printing out the entries
 
     hideProgress();
 }
 
-KURL::List
+void
 VfatMediaDevice::drillDown( MediaItem *curritem )
 {
     //okay, can recursively call this for directories...
-    KURL::List currlist;
-    QString itempath = getFullPath( curritem );
-    debug() << "downloading directory: " << itempath << endl;
-    return currlist;
+    m_downloadListerFinished  = 0;
+    int count = 0;
+    m_currentJobUrl = KURL( getFullPath( curritem ) );
+    KIO::ListJob * listjob = KIO::listRecursive( m_currentJobUrl, false, false );
+    connect( listjob, SIGNAL( slotFinished() ), this, SLOT( downloadSlotFinished() ) );
+    connect( listjob, SIGNAL( entries( KIO::Job*, const KIO::UDSEntryList& ) ), this, SLOT( downloadSlotEntires( KIO::Job*, const KIO::UDSEntryList& ) ) );
+    connect( listjob, SIGNAL( redirection( KIO::Job*, const KURL& ) ), this, SLOT( downloadSlotRedirection( KIO::Job*, const KURL& ) ) );
+    while( !m_downloadListerFinished ){
+        usleep( 10000 );
+        kapp->processEvents( 100 );
+        count++;
+        if (count > 120){
+            debug() << "Taking too long to find files, returning from drillDown in " << m_currentJobUrl << endl;
+            return;
+        }
+    }
+}
+
+void
+VfatMediaDevice::downloadSlotFinished( KIO::Job */*job*/ )
+{
+    m_downloadListerFinished = true;
+}
+
+void
+VfatMediaDevice::downloadSlotRedirection( KIO::Job */*job*/, const KURL &url )
+{
+    m_currentJobUrl = url;
+}
+
+void
+VfatMediaDevice::downloadSlotEntries(KIO::Job */*job*/, const KIO::UDSEntryList &entries)
+{
+        KIO::UDSEntryListConstIterator it = entries.begin();
+        KIO::UDSEntryListConstIterator end = entries.end();
+
+        for (; it != end; ++it)
+        {
+                KFileItem file(*it, m_currentJobUrl, false /* no mimetype detection */, true);
+                if (!file.isDir())
+                        m_downloadList.append(KURL( file.url().path() ) );
+        }
 }
 
 /// Deleting
@@ -542,7 +583,7 @@ VfatMediaDevice::listDir( const QString &dir )
     DEBUG_BLOCK
     if ( m_dirLister->openURL( KURL(dir), true, true ) )
     {
-        debug() << "Waiting for KDirLister, do anything here?" << endl;
+        //debug() << "Waiting for KDirLister, do anything here?" << endl;
     }
     else
     {

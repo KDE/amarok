@@ -74,6 +74,10 @@ class VfatMediaDevice : public MediaDevice
         void              newItems( const KFileItemList &items );
         void              dirListerCompleted();
 
+        void              downloadSlotRedirection( KIO::Job *job, const KURL &url );
+        void              downloadSlotFinished( KIO::Job *job );
+        void              downloadSlotEntries( KIO::Job *, const KIO::UDSEntryList &entries );
+
     private:
         enum              Error { ERR_ACCESS_DENIED, ERR_CANNOT_RENAME, ERR_DISK_FULL, ERR_COULD_NOT_WRITE };
 
@@ -83,7 +87,7 @@ class VfatMediaDevice : public MediaDevice
 
         // file transfer
         void              downloadSelectedItems();
-        KURL::List        drillDown( MediaItem *curritem );
+        void              drillDown( MediaItem *curritem );
         void              copyTrackSortHelper( const MetaBundle& bundle, QString& sort, QString& temp, QString& base );
 
         // listDir
@@ -116,6 +120,10 @@ class VfatMediaDevice : public MediaDevice
         bool              m_actuallyVfat;
         bool              m_isInCopyTrack;
         bool              m_stopDirLister;
+
+        KURL::List        m_downloadList;
+        bool              m_downloadListerFinished;
+        KURL              m_currentJobUrl;
 
 };
 
