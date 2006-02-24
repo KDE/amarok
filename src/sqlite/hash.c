@@ -294,11 +294,6 @@ static void removeElementGivenHash(
   }
   sqliteFree( elem );
   pH->count--;
-  if( pH->count<=0 ){
-    assert( pH->first==0 );
-    assert( pH->count==0 );
-    sqlite3HashClear(pH);
-  }
 }
 
 /* Attempt to locate an element of the hash table pH with a key

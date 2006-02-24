@@ -13,7 +13,6 @@ VERSION 1.4-beta2:
   CHANGES:
     * Don't check for collection changes on startup if Watch Folders is
       disabled. (BR 116173)
-    * Upgraded internal SQLite database library to version 3.3.4.
 
   BUGFIXES:
     * Konqueror sidebar would show garbage for people not using UTF-8 locales.

@@ -30,7 +30,6 @@ libsqlite_la_SOURCES = \
     legacy.c \
     main.c \
     opcodes.c \
-    os.c \
     os_unix.c \
     os_win.c \
     pager.c \
