@@ -14,7 +14,7 @@ i = 0
 
 result.each do |id|
     print "Checking: #{id}, "
-    qresult2 = `dcop amarok collection query "SELECT COUNT() FROM tags where album = #{id};"`
+    qresult2 = `dcop amarok collection query "SELECT COUNT(*) FROM tags where album = #{id};"`
     count = qresult2.chomp()
     printf "count: %s", count
     if  count == "0"
