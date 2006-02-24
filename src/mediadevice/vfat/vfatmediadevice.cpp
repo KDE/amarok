@@ -1,6 +1,7 @@
-/***************************************************************************
- * copyright            : (C) 2005 Seb Ruiz <me@sebruiz.net>               *
- *                                                                         *
+/****************************************************************************
+ * copyright            :(C) 2005 Jeff Mitchell <kde-dev@emailgoeshere.com> *
+ *                       (C) 2005 Seb Ruiz <me@sebruiz.net>                 *
+ *                                                                          *
  * With some code helpers from KIO_VFAT                                     *
  *                        (c) 2004 Thomas Loeber <vfat@loeber1.de>          *
  ***************************************************************************/
@@ -434,26 +435,6 @@ VfatMediaDevice::trackExists( const MetaBundle& bundle )
 void
 VfatMediaDevice::downloadSelectedItems()
 {
-/*//     KConfig *config = amaroK::config( "MediaDevice" );
-//     QString save = config->readEntry( "DownloadLocation", QString::null );  //restore the save directory
-    QString save = QString::null;
-
-    KURLRequesterDlg dialog( save, 0, 0 );
-    dialog.setCaption( kapp->makeStdCaption( i18n( "Choose a Download Directory" ) ) );
-    dialog.urlRequester()->setMode( KFile::Directory | KFile::ExistingOnly );
-    dialog.exec();
-
-    KURL destDir = dialog.selectedURL();
-    if( destDir.isEmpty() )
-        return;
-
-    destDir.adjustPath( 1 ); //add trailing slash
-
-//     if( save != destDir.path() )
-//         config->writeEntry( "DownloadLocation", destDir.path() );
-
-    KIO::CopyJob *result;
-*/
     while ( !m_downloadList.empty() )
         m_downloadList.pop_front();
     QListViewItemIterator it( m_view, QListViewItemIterator::Selected );
@@ -468,6 +449,11 @@ VfatMediaDevice::downloadSelectedItems()
     }
 
     //here is where to call the dialog...maybe test first by printing out the entries
+    KURL::List::iterator kit;
+    //for( kit = m_downloadList.begin(); kit != m_downloadList.end(); ++kit)
+    //    debug() << "Going to download: " << (*kit).path() << endl;
+
+    CollectionView::instance()->organizeFiles( m_downloadList, "Download Files to Collection", true );
 
     hideProgress();
 }
@@ -480,8 +466,8 @@ VfatMediaDevice::drillDown( MediaItem *curritem )
     int count = 0;
     m_currentJobUrl = KURL( getFullPath( curritem ) );
     KIO::ListJob * listjob = KIO::listRecursive( m_currentJobUrl, false, false );
-    connect( listjob, SIGNAL( slotFinished() ), this, SLOT( downloadSlotFinished() ) );
-    connect( listjob, SIGNAL( entries( KIO::Job*, const KIO::UDSEntryList& ) ), this, SLOT( downloadSlotEntires( KIO::Job*, const KIO::UDSEntryList& ) ) );
+    connect( listjob, SIGNAL( result( KIO::Job* ) ), this, SLOT( downloadSlotResult( KIO::Job* ) ) );
+    connect( listjob, SIGNAL( entries( KIO::Job*, const KIO::UDSEntryList& ) ), this, SLOT( downloadSlotEntries( KIO::Job*, const KIO::UDSEntryList& ) ) );
     connect( listjob, SIGNAL( redirection( KIO::Job*, const KURL& ) ), this, SLOT( downloadSlotRedirection( KIO::Job*, const KURL& ) ) );
     while( !m_downloadListerFinished ){
         usleep( 10000 );
@@ -495,8 +481,10 @@ VfatMediaDevice::drillDown( MediaItem *curritem )
 }
 
 void
-VfatMediaDevice::downloadSlotFinished( KIO::Job */*job*/ )
+VfatMediaDevice::downloadSlotResult( KIO::Job *job )
 {
+    if( job->error() )
+        debug() << "downloadSlotResult: ListJob reported an error!  Error code = " << job->error() << endl;
     m_downloadListerFinished = true;
 }
 

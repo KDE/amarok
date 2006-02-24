@@ -1,6 +1,6 @@
-/***************************************************************************
- * copyright            : (C) 2006 Jeff Mitchell <kde-dev@emailgoeshere.com *
- *                        (C) 2005 Seb Ruiz <me@sebruiz.net>                *
+/****************************************************************************
+ * copyright            :(C) 2005 Jeff Mitchell <kde-dev@emailgoeshere.com> *
+ *                       (C) 2005 Seb Ruiz <me@sebruiz.net>                 *
  *                                                                          *
  * With some code helpers from KIO_VFAT                                     *
  *                        (c) 2004 Thomas Loeber <vfat@loeber1.de>          *
@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+
 #ifndef AMAROK_VFATMEDIADEVICE_H
 #define AMAROK_VFATMEDIADEVICE_H
 
@@ -24,7 +25,6 @@
 #include <kdirlister.h>
 #include <kurl.h>
 
-// #include <qbitarray.h>
 #include <qptrlist.h>
 
 class VfatMediaItem;
@@ -75,7 +75,7 @@ class VfatMediaDevice : public MediaDevice
         void              dirListerCompleted();
 
         void              downloadSlotRedirection( KIO::Job *job, const KURL &url );
-        void              downloadSlotFinished( KIO::Job *job );
+        void              downloadSlotResult( KIO::Job *job );
         void              downloadSlotEntries( KIO::Job *, const KIO::UDSEntryList &entries );
 
     private:
