@@ -15,6 +15,9 @@ VERSION 1.4-beta2:
       disabled. (BR 116173)
 
   BUGFIXES:
+    * When loading M3U playlists containing "." or "..", amaroK failed to
+      detect that the files are in the collection. Patch by Ted Percival
+      <ted@midg3t.net>. (BR 121046)
     * Konqueror sidebar would show garbage for people not using UTF-8 locales.
       (BR 122395)
     * "Open in External Browser" in the lyrics tab works now.

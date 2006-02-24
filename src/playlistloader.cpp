@@ -572,10 +572,14 @@ PlaylistFile::loadM3u( QTextStream &stream )
             if( url.startsWith( "/" ) )
                 url.prepend( "file://" );
 
-            if( KURL::isRelativeURL( url ) )
-                b.setPath( directory + line );
-            else
+            if( KURL::isRelativeURL( url ) ) {
+                KURL kurl( KURL::fromPathOrURL( directory + line ) );
+                kurl.cleanPath();
+                b.setPath( kurl.path() );
+            }
+            else {
                 b.setUrl( KURL::fromPathOrURL( line ) );
+            }
 
             m_bundles += b;
             b = MetaBundle();
