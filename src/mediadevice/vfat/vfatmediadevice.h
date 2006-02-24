@@ -83,6 +83,7 @@ class VfatMediaDevice : public MediaDevice
 
         // file transfer
         void              downloadSelectedItems();
+        KURL::List        drillDown( MediaItem *curritem );
         void              copyTrackSortHelper( const MetaBundle& bundle, QString& sort, QString& temp, QString& base );
 
         // listDir

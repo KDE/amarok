@@ -25,6 +25,7 @@ AMAROK_EXPORT_PLUGIN( VfatMediaDevice )
 #include "medium.h"
 #include "metabundle.h"
 #include "collectiondb.h"
+#include "collectionbrowser.h"
 #include "statusbar/statusbar.h"
 #include "transferdialog.h"
 
@@ -433,7 +434,7 @@ VfatMediaDevice::trackExists( const MetaBundle& bundle )
 void
 VfatMediaDevice::downloadSelectedItems()
 {
-//     KConfig *config = amaroK::config( "MediaDevice" );
+/*//     KConfig *config = amaroK::config( "MediaDevice" );
 //     QString save = config->readEntry( "DownloadLocation", QString::null );  //restore the save directory
     QString save = QString::null;
 
@@ -452,21 +453,30 @@ VfatMediaDevice::downloadSelectedItems()
 //         config->writeEntry( "DownloadLocation", destDir.path() );
 
     KIO::CopyJob *result;
-
+*/
+    KURL::List urllist;
     QListViewItemIterator it( m_view, QListViewItemIterator::Selected );
+    MediaItem *curritem;
     for( ; it.current(); ++it )
     {
-        QCString dest = QFile::encodeName( destDir.path() + (*it)->text(0) );
-        QCString src = QFile::encodeName( getFullPath( *it ) );
-
-        const KURL srcurl(src);
-        const KURL desturl(dest);
-        //TODO: Error handling here?
-        //TODO: Make async?  But where the hell is KIO::file_copy?
-        result = KIO::copy( srcurl, desturl, true );
+        curritem = static_cast<MediaItem *>(*it);
+        if( curritem->type() == MediaItem::DIRECTORY )
+            urllist += drillDown( curritem );
+        else //file
+            urllist.append( KURL( getFullPath( curritem ) ) );
     }
 
     hideProgress();
+}
+
+KURL::List
+VfatMediaDevice::drillDown( MediaItem *curritem )
+{
+    //okay, can recursively call this for directories...
+    KURL::List currlist;
+    QString itempath = getFullPath( curritem );
+    debug() << "downloading directory: " << itempath << endl;
+    return currlist;
 }
 
 /// Deleting
@@ -651,7 +661,7 @@ VfatMediaDevice::foundMountPoint( const QString & mountPoint, unsigned long kBSi
 QString
 VfatMediaDevice::getFullPath( const QListViewItem *item, const bool getFilename, const bool prependMount, const bool clean )
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     if( !item ) return QString::null;
 
     QString path;
@@ -670,11 +680,11 @@ VfatMediaDevice::getFullPath( const QListViewItem *item, const bool getFilename,
         parent = parent->parent();
     }
 
-    debug() << "path before prependMount = " << path << endl;
+    //debug() << "path before prependMount = " << path << endl;
     if( prependMount )
         path.prepend( m_medium->mountPoint() + "/" );
 
-    debug() << "path after prependMount = " << path << endl;
+    //debug() << "path after prependMount = " << path << endl;
 
     return path;
 
