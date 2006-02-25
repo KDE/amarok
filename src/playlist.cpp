@@ -982,7 +982,7 @@ Playlist::playNextTrack( bool forceNext )
 
     if( !m_visCount || ( m_currentTrack && m_stopAfterTrack == m_currentTrack ) )
     {
-        if( isDynamic() && !isEmpty() ) {
+        if( isDynamic() && m_visCount ) {
             advancePartyTrack( item );
             m_partyDirt = false;
         }
