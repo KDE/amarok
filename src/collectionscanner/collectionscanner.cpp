@@ -229,7 +229,7 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
         }
 
         else if( S_ISREG( statBuf.st_mode ) )
-            entries.append( entry );
+            entries.append( QFile::decodeName( entry ) );
     }
 
     closedir( d );
