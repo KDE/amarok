@@ -467,7 +467,7 @@ fi
 echo
 echo "# 8/$S_STEPS - Configuring. (This will also take a while.)"
 ./configure --prefix=`kde-config --prefix` --enable-debug=full$CONF_FLAGS
-if [ "$?" != "0" ]; then # If the command didn't finish successfully
+if [ "$?" != "0" -o "$DO_NOT_COMPILE" ]; then # If the command didn't finish successfully ($DO_NOT_COMPILE is needed for some cases when configure returns 0)
   rm -f $TMP_OLD_UNINFO
   Error "Configuration wasn't successful. amaroK was NOT installed/upgraded."
 fi
