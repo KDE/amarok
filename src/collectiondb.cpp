@@ -2654,6 +2654,7 @@ CollectionDB::initialize()
         {
             debug() << "Different database stats version detected! Stats table will be updated or rebuilt." << endl;
 
+            #if 0 // causes mysterious crashes
             if( getType() == DbConnection::sqlite && QFile::exists( amaroK::saveLocation()+"collection.db" ) )
             {
                 debug() << "Creating a backup of the database in "
@@ -2669,6 +2670,7 @@ CollectionDB::initialize()
                     debug() << "Error was: " << KIO::NetAccess::lastErrorString() << endl;
                 }
             }
+            #endif
 
             int prev = adminValue( "Database Stats Version" ).toInt();
 
