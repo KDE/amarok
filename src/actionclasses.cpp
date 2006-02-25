@@ -350,7 +350,8 @@ void ToggleAction::setEnabled( bool b )
 {
     const bool announce = b != isEnabled();
 
-    //m_function( b );
+    if( !b )
+        m_function( false );
     KToggleAction::setEnabled( b );
     AmarokConfig::writeConfig(); //So we don't lose the setting when crashing
     if( announce ) emit enabled( b );
