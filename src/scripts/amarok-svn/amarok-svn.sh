@@ -20,9 +20,15 @@ LANG="C" # Make outputs in English, like the script itself.
 RCFILE="amarok-svnrc" # Settings file, will end up in '`kde-config --localprefix`/share/config/'.
 KD_TITLE="amaroK-svn" # Title for kdialog windows.
 S_STEPS="11" # Number of steps in the script.
+TMP_FILES="" # Will be filled with URLs to temporary files
 
 ## Define functions
+function RemoveTemp {
+  rm -f $TMP_FILES
+}
+
 function Error {
+  RemoveTemp
   echo
   echo -e "ERROR: $1"
   if [ "$2" != "--no-dialog" ]; then
@@ -130,7 +136,7 @@ if [ -e "$BUILD_DIR" -a ! -f "$BUILD_DIR/.amarok-svn-dir" ]; then # if directory
       exit 1
     fi
   else
-    Error "The build directory you have chosen exists and it's not a directory!"
+    Error "The build directory you have chosen exists, but it's not a directory!"
   fi
 fi
 
@@ -293,9 +299,9 @@ if [ ! -f "Makefile" ]; then
   echo "No current revision was found."
 else
   TMP_OLD_UNINFO="`mktemp`"
+  TEMP_FILES="$TMP_OLD_UNINFO"
   unsermake -n uninstall > $TMP_OLD_UNINFO # Stored in a file so we can run it later, in a simple manner.
   if [ "$?" != "0" ]; then # If the command didn't finish successfully
-    rm -f $TMP_OLD_UNINFO
     Error "Couldn't get uninstall commands for your current revision."
   else
     echo "Done."
@@ -307,14 +313,14 @@ echo
 echo "# 4/$S_STEPS - Checking out common SVN files."
 svn co $SVN_SERVER/home/kde/branches/KDE/3.5/kde-common/admin # URL changed since KDE 3.5 branching
 if [ "$?" != "0" ]; then # If the command didn't finish successfully
-  rm -f $TMP_OLD_UNINFO
+  RemoveTemp
   Error "The SVN transfer didn't finish successfully."
 fi
 echo
 echo "# 5/$S_STEPS - Updating amaroK files."
 svn up amarok
 if [ "$?" != "0" ]; then # If the command didn't finish successfully
-  rm -f $TMP_OLD_UNINFO
+  RemoveTemp
   Error "The SVN transfer didn't finish successfully.\nIf the message from svn (in console) is something like 'amarok is not under version control', you need a never version of svn.\nAt least version 1.1 is needed."
 fi
 if [ "$USE_ID" = "1" ]; then
@@ -350,32 +356,29 @@ if [ "$GET_LANG" != "en_US" ]; then # If a language (not en_US) is selected
     echo "SUBDIRS  = \$(AUTODIRS)" >> Makefile.am
     echo "POFILES  = AUTO" >> Makefile.am
     echo "Downloading current localization file from server."
-    TMP_FILE="`mktemp`"
-    svn cat $SVN_SERVER/home/kde/trunk/l10n/$GET_LANG/messages/extragear-multimedia/amarok.po 2> /dev/null | tee $TMP_FILE > /dev/null
+    TMP_L10N="`mktemp`"
+    TMP_FILES="$TMP_FILES $TMP_L10N"
+    svn cat $SVN_SERVER/home/kde/trunk/l10n/$GET_LANG/messages/extragear-multimedia/amarok.po 2> /dev/null | tee $TMP_L10N > /dev/null
     if [ "$?" != "0" ]; then # If the command didn't finish successfully
-      rm -f $TMP_FILE $TMP_OLD_UNINFO
       Error "The SVN transfer didn't finish successfully."
     fi
-    if [ ! -s "$TMP_FILE" ]; then
+    if [ ! -s "$TMP_L10N" ]; then
       echo "WARNING: The downloaded file was empty!"
       echo "Some error must have occured."
       rm -f Makefile.am
       rm -f ../Makefile.am
-      rm -f $TMP_FILE
       echo "No localization downloaded, so no localization will be installed!"
     elif [ -f "amarok.po" ]; then
-      if [ -z "`diff -q $TMP_FILE amarok.po 2>&1`" ]; then
+      if [ -z "`diff -q $TMP_L10N amarok.po 2>&1`" ]; then
         echo "You already have the current version of the localization file."
-        rm -f $TMP_FILE
-        echo "Removed the downloaded version."
       else
         echo "New localization file downloaded."
         rm -f amarok.po
-        mv -f $TMP_FILE amarok.po
+        mv -f $TMP_L10N amarok.po
         echo "Replaced the old copy with the downloaded version."
       fi
     else
-      mv -f $TMP_FILE amarok.po
+      mv -f $TMP_L10N amarok.po
       echo "Localization file downloaded."
     fi
     cd ../..
@@ -396,7 +399,6 @@ if [ "$GET_LANG" != "en_US" ]; then # If a language (not en_US) is selected
       echo "SUBDIRS = $GET_LANG" > Makefile.am
       svn co $SVN_SERVER/home/kde/trunk/l10n/$GET_LANG/docs/extragear-multimedia/amarok $GET_LANG
       if [ "$?" != "0" ]; then # If the command didn't finish successfully
-        rm -f $TMP_OLD_UNINFO
         Error "The SVN transfer didn't finish successfully."
       fi
       cd $GET_LANG
@@ -419,7 +421,6 @@ if [ "$GET_LANG" = "en_US" ]; then # If no language (en_US) is selected. This is
   echo "SUBDIRS = en" > Makefile.am
   svn co $SVN_SERVER/home/kde/trunk/extragear/multimedia/doc/amarok en
   if [ "$?" != "0" ]; then # If the command didn't finish successfully
-    rm -f $TMP_OLD_UNINFO
     Error "The SVN transfer didn't finish successfully."
   fi
   cd en
@@ -434,18 +435,24 @@ echo
 echo "# 7/$S_STEPS - Preparing for configuration. (This will take a while.)"
 WANT_AUTOCONF="2.5" unsermake -f Makefile.cvs
 if [ "$?" != "0" ]; then # If the command didn't finish successfully
-  rm -f $TMP_OLD_UNINFO
   Error "Preparation didn't finish successfully.\nProblems at this step are quite certainly problems with either unsermake or your automake configuration."
+fi
+echo -n "*** Patching the configure script to show when it fails... "
+echo -e "\nif test \"\$all_tests\" = \"bad\"; then\n  exit 1\nfi" >> configure # Does its job, albeit a little bit ugly...
+if [ "$?" != "0" ]; then # If the command didn't finish successfully
+  echo "Failed. amaroK will compile even if some dependencies aren't met!"
+else
+  echo "Done."
 fi
 
 ## Configuration help
 if [ "$CONF_HELP" = "true" ]; then
-  TMP_FILE="`mktemp`"
-  echo -e "<big><b><u>Configuration options</u></b></big>\n" > $TMP_FILE
-  ./configure --help >> $TMP_FILE
-  kdialog --title "$KD_TITLE :: Configuration options" --textbox $TMP_FILE 600 800 & # 800x600 should be enough. Put it in the background (&) to make the user able to watch it while typing the selected options into the input box.
+  TMP_CONF="`mktemp`"
+  TMP_FILES="$TMP_FILES $TMP_CONF"
+  echo -e "<big><b><u>Configuration options</u></b></big>\n" > $TMP_CONF
+  ./configure --help >> $TMP_CONF
+  kdialog --title "$KD_TITLE :: Configuration options" --textbox $TMP_CONF 600 800 & # 800x600 should be enough. Put it in the background (&) to make the user able to watch it while typing the selected options into the input box.
   kdialog --title "$KD_TITLE" --yesno "Do you want to use any extra configuration options (in addition to '--prefix=`kde-config --prefix` --enable-debug=full')?\nNo extra options is the default, and that works fine.\n(Available options are displayed in another window right now.)"
-  rm -f $TMP_FILE
   if [ "$?" = "0" ]; then #If the user said yes
     CONF_FLAGS_RAW="`kdialog --title \"$KD_TITLE\" --inputbox \"Specify extra configuration options to use\"`"
     CONF_FLAGS=""
@@ -467,8 +474,7 @@ fi
 echo
 echo "# 8/$S_STEPS - Configuring. (This will also take a while.)"
 ./configure --prefix=`kde-config --prefix` --enable-debug=full$CONF_FLAGS
-if [ "$?" != "0" -o "$DO_NOT_COMPILE" ]; then # If the command didn't finish successfully ($DO_NOT_COMPILE is needed for some cases when configure returns 0)
-  rm -f $TMP_OLD_UNINFO
+if [ "$?" != "0" ]; then # If the command didn't finish successfully
   Error "Configuration wasn't successful. amaroK was NOT installed/upgraded."
 fi
 
@@ -477,7 +483,6 @@ if [ "$CLEAN_BUILD" = "1" ]; then
   echo "# 9/$S_STEPS - Cleaning the source tree."
   unsermake clean
   if [ "$?" != "0" ]; then # If the command didn't finish successfully
-    rm -f $TMP_OLD_UNINFO
     Error "Source tree wasn't cleaned successfully!"
   fi
 fi
@@ -494,7 +499,6 @@ let COMP_H=$COMP_TIME/3600
 let COMP_M=$COMP_TIME%3600/60
 let COMP_S=$COMP_TIME%3600%60
 if [ "$?" != "0" ]; then # If the command didn't finish successfully
-  rm -f $TMP_OLD_UNINFO
   Error "Compilation wasn't successful. amaroK was NOT installed/upgraded."
 fi
 echo
@@ -508,14 +512,13 @@ if [ ! -f "$TMP_OLD_UNINFO" ]; then
   echo "No older revision was found."
 else
   TMP_NEW_UNINFO="`mktemp`"
+  TMP_FILES="$TMP_FILES $TMP_NEW_UNINFO"
   unsermake -n uninstall > $TMP_NEW_UNINFO
   if [ "$?" != "0" ]; then # If the command didn't finish successfully.
-    rm -f $TMP_OLD_UNINFO $TMP_NEW_UNINFO
     Error "Couldn't get uninstall commands for the new revision."
   fi
   UN_DIFF="`diff -q $TMP_OLD_UNINFO $TMP_NEW_UNINFO 2>&1`"
   if [ "$?" != "0" -a "$?" != "1" ]; then # If the command didn't finish successfully. diff strangely (?) returns 1 when there are differences.
-    rm -f $TMP_OLD_UNINFO $TMP_NEW_UNINFO
     Error "Couldn't compare the uninstall commands."
   elif [ -z "$UN_DIFF" ]; then # If diff was quiet
     echo "No differences between your current revision and the new one were found."
@@ -533,9 +536,9 @@ else
     fi
     # No error check here because it seems to trigger even when there is no error, I can't figure out why...
     # It doesn't matter much if this step fails anyway...
-  fi
-  rm -f $TMP_OLD_UNINFO $TMP_NEW_UNINFO
+  fi 
 fi
+RemoveTemp # From here on, no temp files are needed.
 
 ## Installation
 echo
