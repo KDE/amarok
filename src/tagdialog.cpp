@@ -893,9 +893,9 @@ TagDialog::storeTags( const KURL &url, MetaBundle &mb, int score )
 void
 TagDialog::loadTags( const KURL &url )
 {
-    m_bundle = bundleForURL( url.path() );
-    m_score = scoreForURL( url.path() );
-    m_bundle.setRating( ratingForURL( url.path() ) );
+    m_bundle = bundleForURL( url );
+    m_score = scoreForURL( url );
+    m_bundle.setRating( ratingForURL( url ) );
 
     loadLyrics( url );
 
