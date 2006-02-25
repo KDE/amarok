@@ -1035,6 +1035,7 @@ Playlist::playNextTrack( bool forceNext )
                 if( AmarokConfig::entireAlbums() )
                 {
                     if ( m_prevAlbums.count() <= 8 ) {
+                        m_prevAlbums.first();
                         while( m_prevAlbums.count() )
                             removeFromPreviousAlbums();
 
@@ -1061,6 +1062,7 @@ Playlist::playNextTrack( bool forceNext )
                 else
                 {
                     if ( m_prevTracks.count() <= 80 ) {
+                        m_prevTracks.first();
                         while( m_prevTracks.count() )
                             removeFromPreviousTracks();
 
