@@ -16,7 +16,7 @@ result.each do |url|
     #puts "url: #{url}"
     unless FileTest.exist?( url )
         i = i + 1
-        #url.gsub!(/[']/, '\\\\\'')
+        url.gsub!(/[']/, '\\\\\'')
         puts "Deleting: #{url}"
         `dcop amarok collection query "DELETE FROM images WHERE path = '#{url}'"`
     end
