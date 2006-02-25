@@ -24,8 +24,8 @@
 
 #include <kdeversion.h>        //KDE_VERSION ifndefs.  Remove this once we reach a kde 4 dep
 #include <kiconloader.h>       //smallIcon
-#include <kio/job.h>           //podcast retrieval
 #include <kio/jobclasses.h>    //podcast retrieval
+#include <kio/job.h>           //podcast retrieval
 #include <klocale.h>
 #include <kmdcodec.h>          //podcast media saving
 #include <kmessagebox.h>       //podcast info box
@@ -1418,13 +1418,15 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
 
     int  children = 0;
     bool downloadMedia = ( m_settings->m_fetch == AUTOMATIC );
+    QDomNode node;
+    QDomNode feed = m_doc.namedItem("feed");
+    QDomNode channel = m_doc.namedItem("rss").namedItem("channel");
+    QDomNode firstItem =  isAtom?feed.namedItem("entry"):channel.namedItem("item");
     for( ; !n.isNull(); n = n.nextSibling() )
     {
         if( m_updating )
         {
-            QDomNode node;
-            // podcasts get inserted in a chronological order,
-            // no need to continue traversing, we must have them already
+            // TODO: if pubDate < nextSybling.pubdate() the items aren't in chronological order, try to work around this
             if( first && first->hasXml( n, feedType ) )
             {
                 break;
@@ -1438,8 +1440,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
                 {
                     if( nodes.toElement().attribute("rel") == "enclosure" )
                     {
-                        QDomNode feed = m_doc.namedItem("feed");
-                        node = feed.insertBefore( n.cloneNode(), feed.namedItem("entry") );
+                        node = feed.insertBefore( n.cloneNode(), firstItem );
                         updatingLast = new PodcastItem( this, updatingLast, node.toElement(), feedType );
                         updatingLast->setNew();
                         break;
@@ -1448,8 +1449,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
             }
             else if( !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
             {
-                QDomNode channel = m_doc.namedItem("rss").namedItem("channel");
-                node = channel.insertBefore(n.cloneNode(), channel.namedItem("item") );
+                node = channel.insertBefore(n.cloneNode(), firstItem );
                 updatingLast = new PodcastItem( this, updatingLast, node.toElement(), feedType );
                 updatingLast->setNew();
             }
@@ -1475,6 +1475,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
             }
             else if( !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
             {
+                debug() << "creating item" << endl;
                 m_last = new PodcastItem( this, m_last, n.toElement(), feedType );
                 children++;
             }
@@ -1724,12 +1725,12 @@ PodcastItem::PodcastItem( QListViewItem *parent, QListViewItem *after, const QDo
 void
 PodcastItem::updatePixmap()
 {
-    if( m_new )
-        setPixmap( 0, SmallIcon("favorites") );
-    else if( m_onDisk )
+    if( m_onDisk )
         setPixmap( 0, SmallIcon( "down" ) );
     else if( m_downloaded )
         setPixmap( 0, SmallIcon( "sound" ) );
+    else if( m_new )
+        setPixmap( 0, SmallIcon("favorites") );
     else
         setPixmap( 0, SmallIcon("player_playlist_2") );
 }
@@ -1814,6 +1815,7 @@ PodcastItem::downloadResult( KIO::Job* job ) //SLOT
     m_onDisk = true;
     m_xml.setAttribute("downloaded", "true"); //mark as downloaded in the xml
     m_downloaded = true;
+    m_new = false;
 
     PodcastChannel *channel = dynamic_cast<PodcastChannel *>( m_parent );
     if( channel && channel->addToMediaDevice() && MediaBrowser::isAvailable() )
@@ -1928,6 +1930,8 @@ PodcastItem::hasXml( const QDomNode& xml, const int feedType )
     bool e = m_type            == xml.namedItem( "enclosure" ).toElement().attribute( "type" );
     bool f = m_url.prettyURL() == xml.namedItem( "enclosure" ).toElement().attribute( "url" );
 
+    debug() << "hasXml(): title = " << a << " author = " << b << " pubDate = " << c << " duration = " << d << endl;
+    debug() << "type = " << e << " url = " << f << endl;
     return a && b && c && d && e && f;
 }
 
