@@ -805,9 +805,9 @@ Playlist::playNextTrack( bool forceNext )
 {
     PlaylistItem *item = currentTrack();
 
-    if( isEmpty() || ( m_currentTrack && m_stopAfterTrack == m_currentTrack ) )
+    if( !m_visCount || ( m_currentTrack && m_stopAfterTrack == m_currentTrack ) )
     {
-        if( isDynamic() && !isEmpty() )
+        if( isDynamic() && m_visCount )
             advancePartyTrack( item );
 
         m_stopAfterTrack = 0;
