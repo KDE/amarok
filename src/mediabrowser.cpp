@@ -238,8 +238,8 @@ MediaBrowser::MediaBrowser( const char *name )
     QToolTip::add( m_toolbar->getButton(CONFIGURE), i18n( "Configure this media device" ) );
     connect( m_toolbar->getButton(CONFIGURE),  SIGNAL( clicked() ),        SLOT( config() ) );
     KPopupMenu *configPopup = new KPopupMenu( this );
-    configPopup->insertItem( "Configure...", this, SLOT(config()) );
-    configPopup->insertItem( "Manage Plugins...", this, SLOT(showPluginManager()) );
+    configPopup->insertItem( i18n("Configure..."), this, SLOT(config()) );
+    configPopup->insertItem( i18n("Manage Plugins..."), this, SLOT(showPluginManager()) );
     m_toolbar->setDelayedPopup( CONFIGURE, configPopup );
 #if 0
     m_playlistButton = new KPushButton( KGuiItem( QString::null, "player_playlist_2" ), hb );
