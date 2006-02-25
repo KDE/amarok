@@ -43,11 +43,14 @@
 #include <nmm/interfaces/general/ITrackDuration.hpp>
 #include <nmm/interfaces/device/audio/IAudioDevice.hpp>
 #include <nmm/base/ProxyObject.hpp>
+#include <nmm/utils/NMMConfig.hpp>
 
 #include <qapplication.h>
 #include <qtimer.h>
 
 #include <kfileitem.h>
+#include <klocale.h>
+#include <kmessagebox.h>
 #include <kmimetype.h>
 #include <iostream>
 #include <kurl.h>
@@ -103,6 +106,41 @@ NmmEngine::~NmmEngine()
     delete __app;
 }
 
+void NmmEngine::checkSecurity()
+{
+  const char* home(getenv("HOME"));
+  NMMConfig nmmconfig( string(home) + string("/.nmmrc") );
+
+  bool readpaths_set = false;
+  bool writepaths_set = false;
+  string optionvalue("");
+  
+  nmmconfig.getValue("allowedreadpaths", optionvalue);
+  if( optionvalue != "" )
+    readpaths_set = true;
+
+  optionvalue = "";
+  nmmconfig.getValue("allowedwritepaths", optionvalue);
+  if( optionvalue != "" )
+    writepaths_set = true;
+
+  QString str;
+  str += "<html><body>Your current NMM setup is insecure.<br/><br/>";
+  str += "The file <b>.nmmrc</b> in your home directory restricts read and write access for NMM to certain paths.<br/><br/>";
+
+  if( !readpaths_set )
+    str += "<b>allowedreadpaths option is not set</b>. NMM plugins are therefore allowed to read every file the process running NMM is allowed.<br/>";
+
+  if( !writepaths_set )
+    str += "<b>allowedwritepaths option is not set</b>. NMM plugins are therefore allowed to write every file or directory the process running NMM is allowed.<br/>";
+
+  str += "<br/>See <a href=\"http://www.networkmultimedia.org/Download/\">http://www.networkmultimedia.org/Download/</a> for general security instructions in the correspoding <i>configure and test NMM</i> section depending on your chosen installation method.";
+  str += "</body></html>";
+    
+  if( !writepaths_set || !readpaths_set )
+    KMessageBox::information(0, str, i18n( "Insecure NMM setup" ), "insecureNmmSetup", KMessageBox::AllowLink );
+}
+
 Engine::State NmmEngine::state() const
 {
   return __state;
@@ -120,6 +158,12 @@ amaroK::PluginConfig* NmmEngine::configure() const
 bool NmmEngine::load(const KURL& url, bool stream)
 {
   DEBUG_BLOCK
+
+  // check security options
+  static bool already_checked = false;
+  if( !already_checked)
+    QTimer::singleShot(100, this, SLOT( checkSecurity() ) );
+  already_checked = true;
 
   // play only local files
   if (!url.isLocalFile()) return false;

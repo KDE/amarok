@@ -66,6 +66,14 @@ public slots:
 private slots:
     void endOfStreamReached();
 
+    /**
+     * Checks for local NMM security options.
+     * Warns user if ~/.nmmrc doesn't have 
+     * allowedwritepaths or allowedreadpaths set.
+     * TODO: Should be called on NMM engine load and not from ::load.
+     */
+    void checkSecurity();
+
 protected:
     void  setVolumeSW( uint );
 
