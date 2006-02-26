@@ -1461,6 +1461,13 @@ bool PlaylistBrowser::deletePlaylists( KURL::List items )
     if ( button == KMessageBox::Continue )
     {
         // TODO We need to check which files have been deleted successfully
+        // Avoid deleting dirs. See bug #122480
+        for ( KURL::List::iterator it = items.begin(), end = items.end(); it != end; ++it ) {
+            if ( QFileInfo( (*it).path() ).isDir() ) {
+                it = items.remove( it );
+                continue;
+            }
+        }
         KIO::del( items );
         return true;
     }
