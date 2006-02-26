@@ -1036,7 +1036,7 @@ void ScrobblerSubmitter::announceSubmit( SubmitItem *item, int tracks, bool succ
     if ( m_submitQueue.count() > 0 )
     {
         _long += "<p>";
-        _long += i18n( "One track still in queue", "%n tracks still in queue", m_submitQueue.count() );
+        _long += i18n( "One track still in queue", "%n tracks still in queue", m_submitQueue.count() + m_fakeQueue.count() );
     }
 
     amaroK::StatusBar::instance()->shortLongMessage( _short, _long );
