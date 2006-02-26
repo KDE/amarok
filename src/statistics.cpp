@@ -140,7 +140,8 @@ StatisticsList::startDrag()
         {
             qb.clear();
             qb.initSQLDrag();
-            qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, artist );
+            if ( artist != "0" )
+                qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, artist );
             qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, album );
             qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
             QStringList values = qb.run();
@@ -378,6 +379,7 @@ StatisticsList::expandInformation( StatisticsItem *item )
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valID );
         qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
         qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage );
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valIsCompilation );
         qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
         qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
         qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID);
@@ -386,12 +388,14 @@ StatisticsList::expandInformation( StatisticsItem *item )
         qb.setLimit( 0, 50 );
         QStringList fave = qb.run();
 
+        const QString trueValue = CollectionDB::instance()->boolT();
         for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
         {
-            QString name = i18n("%1. %2 - %3").arg( QString::number(c), fave[i], fave[i+1] );
+            const bool isSampler = fave[i+5] == trueValue;
+            QString name = i18n("%1. %2 - %3").arg( QString::number(c), fave[i], isSampler ? i18n( "Various Artists" ) : fave[i+1] );
             m_last = new StatisticsDetailedItem( name, item, m_last );
             m_last->setItemType( StatisticsDetailedItem::ALBUM );
-            QString url = QString("%1 @@@ %2").arg( fave[i+2], fave[i+3] );
+            QString url = QString("%1 @@@ %2").arg( isSampler ? "0" : fave[i+2], fave[i+3] );
             m_last->setUrl( url );
             c++;
         }

@@ -4119,6 +4119,7 @@ QueryBuilder::valueName( int value )
     if ( value & valYearID )      values += "year";
     if ( value & valFilesize )    values += "filesize";
     if ( value & valFileType )    values += "filetype";
+    if ( value & valIsCompilation )   values += "sampler";
 
     return values;
 }
