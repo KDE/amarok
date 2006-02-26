@@ -23,17 +23,23 @@
  */
 
 #include "HostListItem.h"
+
+#include "PixmapToggleButton.h"
 #include "ServerregistryPing.h"
 
 #include <qapplication.h>
 #include <qhbox.h>
 #include <qlayout.h>
+#include <qpushbutton.h>
 #include <qslider.h>
+#include <qwhatsthis.h>
 
 #include <kconfig.h>
 #include <kdebug.h>
 #include <kglobal.h>
 #include <kiconloader.h>
+
+#include "debug.h"
 
 HostListItem::HostListItem( bool valid, QString _hostname, QWidget *parent )
     : QWidget( parent )
@@ -42,25 +48,39 @@ HostListItem::HostListItem( bool valid, QString _hostname, QWidget *parent )
     QHBoxLayout *l = new QHBoxLayout( this );
     l->setAutoAdd( false );
 
-    /* status button */
-    statusButton = new QLabel(this);
-    registryAvailable( valid );
-    l->addWidget(statusButton);
-    
     /* host label */
     hostLabel = new QLabel( _hostname, this );
     l->addWidget(hostLabel);
 
     l->addSpacing(10);
-    
-    /* volume slider */
-    // TODO: dummy slider, create own volume slider
-    QSlider *slider = new QSlider( -100, 100, 10, 0, Qt::Horizontal, this );
-    slider->setValue(50);
-    l->addWidget(slider);
 
     l->addStretch(1);
 
+    /* video toggle */
+    video = new PixmapToggleButton( this, "nmm_video_on", "nmm_video_off" );
+    QWhatsThis::add( video, "This toggle enables or disables video on the host." );
+    l->addWidget(video);
+    
+    l->addSpacing(10);
+
+    /* audio toggle */
+    audio = new PixmapToggleButton( this, "nmm_audio_on", "nmm_audio_off" );
+    QWhatsThis::add( audio, "This toggle enables or disables audio on the host." );
+    l->addWidget(audio);
+
+    l->addSpacing(5);
+    
+    /* volume slider */
+    // TODO: dummy slider, create own volume slider
+    //QSlider *slider = new QSlider( -100, 100, 10, 0, Qt::Horizontal, this );
+    //slider->setValue(0);
+    //l->addWidget(slider);
+
+    /* status button */
+    statusButton = new QLabel(this);
+    registryAvailable( valid );
+    l->addWidget(statusButton);
+    
     setHighlighted( false );
 
     /* connect to host to find out whether a serverregistry might run */
@@ -75,6 +95,7 @@ HostListItem::~HostListItem()
 
 void HostListItem::setHighlighted( bool highlight )
 {
+  DEBUG_BLOCK
     if( highlight )
         setPaletteBackgroundColor( calcBackgroundColor( "activeBackground", QApplication::palette().active().highlight() ) );
     else

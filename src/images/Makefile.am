@@ -31,7 +31,6 @@ images_DATA = \
     menu_sidepixmap.png \
     more_albums.png \
     musicbrainz.png \
-    nmm_logo.png \
     nocover.png \
     pl_active2.png \
     pl_inactive2.png \

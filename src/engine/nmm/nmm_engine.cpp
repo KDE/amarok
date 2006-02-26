@@ -125,7 +125,8 @@ void NmmEngine::checkSecurity()
     writepaths_set = true;
 
   QString str;
-  str += "<html><body>Your current NMM setup is insecure.<br/><br/>";
+  str += "<html><body>";
+  str += "Your current NMM setup is insecure.<br/><br/>";
   str += "The file <b>.nmmrc</b> in your home directory restricts read and write access for NMM to certain paths.<br/><br/>";
 
   if( !readpaths_set )

@@ -1,10 +1,12 @@
 /* NMM - Network-Integrated Multimedia Middleware
  *
- * Copyright (C) 2005-2006
+ * Copyright (C) 2006
  *                    NMM work group,
  *                    Computer Graphics Lab,
  *                    Saarland University, Germany
  *                    http://www.networkmultimedia.org
+ *
+ * Maintainer:        Robert Gogolok <gogo@graphics.cs.uni-sb.de>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,50 +24,35 @@
  * USA
  */
 
-#ifndef HOSTLISTITEM_H
-#define HOSTLISTITEM_H
+#include "PixmapToggleButton.h"
 
-#include <qcolor.h>
-#include <qlabel.h>
-#include <qstring.h>
-#include <qwidget.h>
+#include <kglobal.h>
+#include <kiconloader.h>
 
-class ServerregistryPing;
-class PixmapToggleButton;
+PixmapToggleButton::PixmapToggleButton( QWidget *widget, QString on_pic, QString off_pic)
+  : QPushButton(widget),
+    on_picture(on_pic),
+    off_picture(off_pic)
+{
+  setToggleButton( true );
 
-class HostListItem : public QWidget {
-    Q_OBJECT
-    
-    public:
-        HostListItem( bool, QString, QWidget * );
-        ~HostListItem();
+  connect(this, SIGNAL( stateChanged (int) ), this, SLOT( stateChanged(int) ) );
 
-        void setHighlighted( bool = true );
-        QString hostname() const;
+  // default state
+  setOn(true);
+  stateChanged( QButton::On );
+}
 
-    protected:
-        void mousePressEvent ( QMouseEvent * );
+PixmapToggleButton::~PixmapToggleButton()
+{
+}
 
-    signals:
-        void pressed( HostListItem* );
+void PixmapToggleButton::stateChanged( int s)
+{
+    if ( s == QButton::On )
+      setPixmap( SmallIcon( on_picture ) );
+    else
+      setPixmap( SmallIcon( off_picture ));
+}
 
-    private slots:
-        
-        void registryAvailable( bool );
-
-    private:
-        /**
-         * Calculates background color.
-         */
-        QColor calcBackgroundColor( QString, QColor );
-        
-        QLabel *statusButton;
-        QLabel *hostLabel;
-
-        PixmapToggleButton *audio;
-        PixmapToggleButton *video;
-
-        ServerregistryPing *registry;
-};
-
-#endif
+#include "PixmapToggleButton.moc"

@@ -55,7 +55,7 @@ NmmConfigDialog::NmmConfigDialog()
     
     m_view->locationScrollView->addChild(audio_vbox);
     m_view->locationScrollView->setResizePolicy(QScrollView::AutoOneFit);
-    m_view->locationScrollView->setHScrollBarMode( QScrollView::AlwaysOff );
+    //m_view->locationScrollView->setHScrollBarMode( QScrollView::AlwaysOff );
     
     readConfig();
 

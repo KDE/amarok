@@ -1,10 +1,12 @@
 /* NMM - Network-Integrated Multimedia Middleware
  *
- * Copyright (C) 2005-2006
+ * Copyright (C) 2006
  *                    NMM work group,
  *                    Computer Graphics Lab,
  *                    Saarland University, Germany
  *                    http://www.networkmultimedia.org
+ *
+ * Maintainer:        Robert Gogolok <gogo@graphics.cs.uni-sb.de>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,50 +24,27 @@
  * USA
  */
 
-#ifndef HOSTLISTITEM_H
-#define HOSTLISTITEM_H
 
-#include <qcolor.h>
-#include <qlabel.h>
+#ifndef PIXMAPTOGGLEBUTTON_H
+#define PIXMAPTOGGLEBUTTON_H
+
+#include <qpushbutton.h>
 #include <qstring.h>
-#include <qwidget.h>
 
-class ServerregistryPing;
-class PixmapToggleButton;
+class PixmapToggleButton : public QPushButton
+{
+  Q_OBJECT
 
-class HostListItem : public QWidget {
-    Q_OBJECT
-    
-    public:
-        HostListItem( bool, QString, QWidget * );
-        ~HostListItem();
+  public: 
+    PixmapToggleButton( QWidget *widget, QString on_pic, QString off_pic );
+    ~PixmapToggleButton();
 
-        void setHighlighted( bool = true );
-        QString hostname() const;
+  private slots:
+    void stateChanged( int );
 
-    protected:
-        void mousePressEvent ( QMouseEvent * );
-
-    signals:
-        void pressed( HostListItem* );
-
-    private slots:
-        
-        void registryAvailable( bool );
-
-    private:
-        /**
-         * Calculates background color.
-         */
-        QColor calcBackgroundColor( QString, QColor );
-        
-        QLabel *statusButton;
-        QLabel *hostLabel;
-
-        PixmapToggleButton *audio;
-        PixmapToggleButton *video;
-
-        ServerregistryPing *registry;
+  private:
+    QString on_picture;
+    QString off_picture;
 };
 
 #endif

@@ -139,7 +139,7 @@
                         <string>Enviroment variables</string>
                     </property>
                     <property name="toolTip" stdset="0">
-                        <string>AUDIO_HOSTS and VIDEO_HOSTS</string>
+                        <string>Environment variables are AUDIO_HOSTS and VIDEO_HOSTS.</string>
                     </property>
                     <property name="whatsThis" stdset="0">
                         <string>Reads the environment variables &lt;b&gt;AUDIO_HOSTS&lt;/b&gt; and &lt;b&gt;VIDEO_HOSTS&lt;/b&gt; to determine the audio and video playback locations.
