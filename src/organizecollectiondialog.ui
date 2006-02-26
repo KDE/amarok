@@ -86,9 +86,6 @@
             <property name="text">
                 <string>&amp;Use Cover Art for Folder Icons</string>
             </property>
-            <property name="accel">
-                <string>Alt+U</string>
-            </property>
         </widget>
         <widget class="QCheckBox">
             <property name="name">
@@ -96,9 +93,6 @@
             </property>
             <property name="text">
                 <string>I&amp;gnore 'The' in Artist Names</string>
-            </property>
-            <property name="accel">
-                <string>Alt+G</string>
             </property>
             <property name="toolTip" stdset="0">
                 <string>If checked, postfix artists' names starting with 'The' with ', The'.</string>
@@ -128,9 +122,6 @@
                     <property name="text">
                         <string>Custo&amp;m Format</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+M</string>
-                    </property>
                     <property name="toolTip" stdset="0">
                         <string>If checked, use a custom format string for naming the files in the collection</string>
                     </property>
@@ -142,9 +133,6 @@
                     <property name="text">
                         <string>Group b&amp;y File Type</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+Y</string>
-                    </property>
                     <property name="toolTip" stdset="0">
                         <string>If checked, create a directory hierarchy using the filename extension.</string>
                     </property>
@@ -155,9 +143,6 @@
                     </property>
                     <property name="text">
                         <string>Group &amp;by Artist's Initial</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+B</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>If checked, introduce another directory hierarchy for the artists' initials.</string>
@@ -232,9 +217,6 @@
                     <property name="text">
                         <string>&amp;Replace Spaces with Underscores</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+R</string>
-                    </property>
                     <property name="toolTip" stdset="0">
                         <string>If checked, convert spaces to underscores.</string>
                     </property>
@@ -246,9 +228,6 @@
                     <property name="text">
                         <string>Restrict to &amp;ASCII</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+A</string>
-                    </property>
                     <property name="toolTip" stdset="0">
                         <string>If checked, replace characters that are unavailable in the 7-bit ASCII code.</string>
                     </property>
@@ -259,9 +238,6 @@
                     </property>
                     <property name="text">
                         <string>VFAT Safe &amp;Names</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+N</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>If checked, replace characters that are incompatible with MS-DOS/VFAT file systems.</string>
@@ -383,9 +359,6 @@
                     </property>
                     <property name="text">
                         <string>Overwrite &amp;Destination</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+D</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>If checked, overwrite files of the same name without asking.</string>
