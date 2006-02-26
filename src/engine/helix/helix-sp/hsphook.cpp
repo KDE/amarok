@@ -418,7 +418,7 @@ void HSPPostProcessor::scopeify(unsigned long time, unsigned char *data, size_t 
    int bytes_per_sample = m_format.uBitsPerSample / 8;
 
    // TODO: 32 bit samples
-   if ( (bytes_per_sample != 1 && bytes_per_sample != 2) || time < m_prevtime )
+   if ( (bytes_per_sample != 1 && bytes_per_sample != 2) )
       return; // no scope
 
    unsigned long scopebuf_timeinc = (unsigned long)(1000.0 * (double)len / ((double)m_format.ulSamplesPerSec * (double)bytes_per_sample));

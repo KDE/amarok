@@ -17,6 +17,7 @@
 #include <hxplayercontrol.h>
 
 class QStringList;
+struct timeval;
 
 class HelixEngine : public Engine::Base, public PlayerControl
 {
@@ -74,6 +75,8 @@ private:
    int prune(int playerIndex);
    bool m_scopeplayerlast;
    float m_sfps;
+   struct timeval m_scopetm;
+   unsigned long m_scopedelta;
    int   m_sframes;
    int   m_lframes;
    struct HelixScope

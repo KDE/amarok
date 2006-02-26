@@ -39,6 +39,7 @@ public:
 
    AudioQueue  *fwd;
    HXAudioData ad;
+   LONG32 bytes;
 };
 
 class HSPAudioDevice : public IHXAudioDevice
@@ -232,6 +233,7 @@ private:
    pthread_cond_t              m_cv;
 
    void addBuf(struct AudioQueue *item);
+   void pushBuf(struct AudioQueue *item);
    AudioQueue *getBuf();
    void clearQueue();
 

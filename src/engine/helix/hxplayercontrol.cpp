@@ -150,11 +150,6 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
 
          cerr << "%%%%%% child initializes as player " << i << endl;;
 
-         // in case we runaway, not that we have...
-         //err = nice(1);
-         //if (err == -1)
-         //   cerr << "unable to nice " << endl;
-
          m_index = i; // child's index is saved
          close(m_children[i].m_pipeA[0]); // child uses A for writing
          close(m_children[i].m_pipeB[1]); // and B for reading
@@ -175,7 +170,7 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
       player = new HSPPlayerControlled(this, m_index);
 
       timeout.tv_sec = 0;
-      timeout.tv_usec = 10000;
+      timeout.tv_usec = 0;
       fd_set rdset, wrset;
       FD_ZERO(&rdset);
       FD_ZERO(&wrset);
@@ -185,6 +180,7 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
       while ( 1 )
       {
          FD_SET(rfd, &rdset);
+
          n = select(rfd + 1, &rdset, 0, 0, &timeout);
          if ( FD_ISSET(rfd, &rdset) )
          {
@@ -294,10 +290,9 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
                      if (m_inited)
                         if (sz == sizeof(unsigned long))
                         {
-                           unsigned long vol;
-                           memcpy( (void *) &vol, (void *) buf, sizeof(unsigned long));
-                           cerr << "CHILD: received setvolume request " << vol <<endl;;
-                           player->setVolume(vol);
+                           memcpy( (void *) &m_volume, (void *) buf, sizeof(unsigned long));
+                           cerr << "CHILD: received setvolume request " << m_volume <<endl;;
+                           player->setVolume(m_volume);
                         }
                         else
                            cerr << "CHILD " << m_index << " sz not right in SETVOLUME, sz=" << sz << endl;
@@ -364,8 +359,9 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
                      {
                         if (sz >= 2)
                         {
-                           memcpy( (void *) &player->m_preamp, (void *) buf, sizeof(m_preamp) );
+                           memcpy( (void *) &m_preamp, (void *) buf, sizeof(m_preamp) );
                            memcpy( (void *) &n, (void *) &buf[ sizeof(m_preamp) ], sizeof(int) );
+                           player->m_preamp = m_preamp;
                         }
                         else
                            cerr << "CHILD " << m_index << " sz not right in UPDATEEQGAINS, sz=" << sz << endl;
@@ -374,13 +370,14 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
                         {
                            if (n > 0)
                            {
-                              player->m_equalizerGains.resize(n);
+                              m_equalizerGains.resize(n);
                               cerr << "CHILD " << m_index << " receives " << n << " equalizer gains\n";
                               for (i=0; i<n; i++)
                               {
                                  memcpy( (void *) &k, (void *) &buf[ sizeof(m_preamp) + (i+1)*sizeof(int) ], sizeof(int) );
-                                 player->m_equalizerGains[i] = k;
+                                 m_equalizerGains[i] = k;
                               }
+                              player->m_equalizerGains = m_equalizerGains;
                               if (!m_eq_enabled)
                                  player->enableEQ(true);
                               player->updateEQgains();
@@ -404,7 +401,7 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
                      if (!sz)
                      {
                         cerr << "CHILD: " << m_index << " received shutdown request\n";
-                        player->stop();
+                        player->stop(0);
                         delete player;
                         exit (0);
                      }
@@ -423,22 +420,39 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
                break;
             }
          }
+         else
+         {
+            if (m_inited && pmapped)
+            {
+               *m_children[m_index].current_time = player->where(0);
+               *m_children[m_index].duration = player->duration(0);
+            }
 
-         if (m_inited && playing)
+            usleep(10000);
+         }
+
+         if (m_inited)
          {
             player->dispatch();
-            if (player->done(0))
+
+            if (playing && player->done(0))
             {
+               player->stop(0);
+               player->clearScopeQ(0);
                senddone(wfd);
                playing = false;
                if (pmapped)
+               {
                   *m_children[m_index].current_time = 0;
+                  *m_children[m_index].duration = 0;
+               }
             }
             
             if (pmapped)
             {
                *m_children[m_index].current_time = player->where(0);
                *m_children[m_index].duration = player->duration(0);
+
                HelixSimplePlayer::metaData *md = player->getMetaData(0);
                if (md)
                   memcpy((void *) m_children[m_index].md, (void *) md, sizeof(HelixSimplePlayer::metaData));
@@ -459,6 +473,7 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
                   //m_children[m_index].q[j].spb = item->spb;
                   //memcpy((void *)m_children[m_index].q[j].buf, (void *) item->buf, item->len );
                   //*m_children[m_index].m_current = j;
+                  //cerr << "player:" << m_index << " time=" << item->time << " etime=" << item->etime << endl;
                   sendscopebuf(wfd, item);
                   delete item;
                }
@@ -466,7 +481,7 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
          }
          
          timeout.tv_sec = 0;
-         timeout.tv_usec = 10000;
+         timeout.tv_usec = 0;
       }
       cerr << "CHILD " << m_index << " will exit!\n";
    }
@@ -670,9 +685,14 @@ void PlayerControl::dispatch()
                   
                case DONE:
                   print2stderr("CHILD %d is DONE\n", i);
-                  m_children[i].isplaying = false;
-                  clearScopeQ(i);
-                  play_finished(i);
+                  if (!sz)
+                  {
+                     m_children[i].isplaying = false;
+                     clearScopeQ(i);
+                     play_finished(i);
+                  }
+                  else
+                     print2stderr("PARENT: sz does not agree in DONE\n");
                   break;
                   
                case MIMETYPES:
@@ -701,6 +721,9 @@ void PlayerControl::dispatch()
                      entry->fwd = mimehead;
                      mimehead = entry;
                   }
+
+                  if (sz != len) // sanity check
+                     cerr << "PARENT: sz not = len in MIMETYPES " << sz << " " << len << endl;                  
                }
                break;
                
@@ -738,6 +761,9 @@ void PlayerControl::dispatch()
                      strcpy(m_pluginInfo[i]->moreinfourl, tmp);
                      len += slen + 1;
                   }
+
+                  if (sz != len) // sanity check
+                     cerr << "PARENT: sz not = len in PLUGINS " << sz << " " << len << endl;
                }
                break;
                
@@ -817,6 +843,7 @@ void PlayerControl::dispatch()
                      memcpy( (void *) &item->tps, (void *) &buf[len], sizeof(double) ); len += sizeof(double);
                      memcpy( (void *) &item->spb, (void *) &buf[len], sizeof(int) ); len += sizeof(int);
                      memcpy( (void *) item->buf, (void *) &buf[len], item->len ); len += item->len;      
+
                      addScopeBuf(item, i);
                   }
                   else

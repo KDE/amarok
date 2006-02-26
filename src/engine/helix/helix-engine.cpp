@@ -69,6 +69,7 @@ HelixEngine::HelixEngine()
      m_inited(false),
      m_scopeplayerlast(0),
      m_sfps(0.0),
+     m_scopedelta(0),
      m_sframes(0),
      m_lframes(0)
 {
@@ -79,6 +80,7 @@ HelixEngine::HelixEngine()
 
    memset(&m_md, 0, sizeof(m_md));
    memset(&hscope, 0, sizeof(hscope));
+   memset(&m_scopetm, 0, sizeof(struct timeval));
 }
 
 HelixEngine::~HelixEngine()
@@ -240,7 +242,7 @@ HelixEngine::init()
 
    if (!exists || PlayerControl::getError())
    {
-      KMessageBox::error( 0, i18n("amaroK could not initialize the helix-engine. Please check the paths in \"amaroK Settings\" -> \"Engine\"") );
+      KMessageBox::error( 0, i18n("The Helix Engine requires the RealPlayer(tm) or HelixPlayer libraries to be installed. Please make sure one is installed, and adjust the paths in \"amaroK Settings\" -> \"Engine\"") );
       // we need to return true here so that the user has an oppportunity to change the directory
       //return false;
       return true;
@@ -346,7 +348,12 @@ HelixEngine::play( uint offset )
       return false;
 
    if (m_state != Engine::Playing)
+   {
+      struct timezone tz;
+      memset(&tz, 0, sizeof(struct timezone));
+      gettimeofday(&m_scopetm, &tz);
       startTimer(HELIX_ENGINE_TIMER);
+   }
 
    nextPlayer = m_current ? 0 : 1;
 
@@ -411,6 +418,8 @@ void HelixEngine::play_finished(int playerIndex)
 {
    debug() << "Ok, finished playing the track\n";
    cleanUpStream(playerIndex);
+   resetScope(playerIndex);
+   memset(&hscope[playerIndex], 0, sizeof(struct HelixScope));
    if (playerIndex == m_current)
    {
       m_state = Engine::Idle;
@@ -466,7 +475,6 @@ HelixEngine::length() const
    if (!m_inited)
       return 0;
 
-   //debug() << "In length\n";
    return PlayerControl::duration(m_current);
 }
 
@@ -528,13 +536,20 @@ HelixEngine::timerEvent( QTimerEvent * )
    PlayerControl::dispatch(); // dispatch the players
    if ( m_xfadeLength <= 0 && m_state == Engine::Playing && PlayerControl::done(m_current) )
       play_finished(m_current);
-   //else if ( m_xfadeLength > 0 && m_state == Engine::Playing && isPlaying(m_current?0:1) && PlayerControl::done(m_current?0:1) )
-   //   play_finished(m_current?0:1);
-
-   hscope[m_current].m_lasttime += HELIX_ENGINE_TIMER;
+   else if ( m_xfadeLength > 0 && m_state == Engine::Playing && isPlaying(m_current?0:1) && PlayerControl::done(m_current?0:1) )
+      hscope[m_current?0:1].m_lasttime = 0;
 
    // prune the scope(s)
    prune();
+
+   struct timeval tm;
+   struct timezone tz; // seriously, what were they thinking?
+   memset(&tz, 0, sizeof(struct timezone));
+   gettimeofday(&tm, &tz);
+   m_scopedelta = (tm.tv_sec - m_scopetm.tv_sec) * 1000 + (tm.tv_usec - m_scopetm.tv_usec) / 1000; // ms
+   m_scopetm.tv_sec = tm.tv_sec; 
+   m_scopetm.tv_usec = tm.tv_usec; 
+   hscope[m_current].m_lasttime += m_scopedelta;
 
    HelixSimplePlayer::metaData *md = getMetaData(m_current);
    if (m_isStream &&
@@ -589,56 +604,47 @@ int HelixEngine::prune(int playerIndex)
    /////////////////////////////////////////////////////////////////////
    unsigned long hpos = PlayerControl::where(playerIndex);
 
-   if (hpos == hscope[playerIndex].m_lastpos)
-   {
-      if (hscope[playerIndex].m_item && hpos >= hscope[playerIndex].m_item->time && hpos <= hscope[playerIndex].m_item->etime 
-          && (hscope[playerIndex].m_lasttime < hscope[playerIndex].m_item->time || 
-              hscope[playerIndex].m_lasttime > hscope[playerIndex].m_item->etime) 
-         )
-      {
-         hscope[playerIndex].m_w = hpos;
-         hscope[playerIndex].m_lasttime = hpos;
-      }
-      else
-         hscope[playerIndex].m_w = hscope[playerIndex].m_lasttime;
-   }
-   else
+   if (hpos != hscope[playerIndex].m_lastpos
+       && hpos - hscope[playerIndex].m_lastpos < hscope[playerIndex].m_lasttime - hscope[playerIndex].m_lastpos)
+      hscope[playerIndex].m_lasttime = hpos;
+
+   if (hpos > hscope[playerIndex].m_lasttime)
    {
       hscope[playerIndex].m_w = hpos;
       hscope[playerIndex].m_lasttime = hpos;
    }
+   else
+      hscope[playerIndex].m_w = hscope[playerIndex].m_lasttime;
+
    hscope[playerIndex].m_lastpos = hpos;
 
    if ( getScopeCount(playerIndex) > SCOPE_MAX_BEHIND ) // protect against naughty streams
    {
       resetScope(playerIndex);
-      //debug() << "naughty stream reset scope!\n";
       return 0;
    }
 
    if (!hscope[playerIndex].m_w || !hscope[playerIndex].m_item)
       return 0;
 
-   while (hscope[playerIndex].m_item && hscope[playerIndex].m_w > hscope[playerIndex].m_item->etime)
+   // prune, unless the player is still starting
+   while (hpos && hscope[playerIndex].m_item && hscope[playerIndex].m_w > hscope[playerIndex].m_item->etime)
    {
-      // need to prune some buffers
+      //debug() << "pruning " << hpos << "," << hscope[playerIndex].m_w << "," << hscope[playerIndex].m_lasttime 
+      //        << "," << hscope[playerIndex].m_item->time << ":" << hscope[playerIndex].m_item->etime << endl;      
+
       if (hscope[playerIndex].m_item && hscope[playerIndex].m_item->allocd)
          delete hscope[playerIndex].m_item;
       hscope[playerIndex].m_item = getScopeBuf(playerIndex);
-      //debug() << "Got new item in prune, " << 
-      //   hscope[playerIndex].m_item->time << ":" << hscope[playerIndex].m_item->etime << endl;
    }
 
    if (!hscope[playerIndex].m_item)
-   {
-      //debug() << "no items left in prune()\n";
       return 0;
-   }
 
    if (hscope[playerIndex].m_w < hscope[playerIndex].m_item->time) // wait for the player to catchup
    {
-      //debug() << playerIndex << ":waiting for the player to catch-up, " << hscope[playerIndex].m_w << " vs " <<
-      //   hscope[playerIndex].m_item->time << ":" << hscope[playerIndex].m_item->etime << endl;
+      //debug() << "waiting for player to catchup " << hpos << "," << hscope[playerIndex].m_w << "," << hscope[playerIndex].m_lasttime 
+      //        << "," << hscope[playerIndex].m_item->time << ":" << hscope[playerIndex].m_item->etime << endl;
       return 0;
    }
 
@@ -650,16 +656,19 @@ const Engine::Scope &HelixEngine::scope()
    if (isPlaying(0) && isPlaying(1)) // crossfading
    {
       if (m_scopeplayerlast)
-         scope(m_current);
-      else
+      {
          scope(m_current?0:1);
+         scope(m_current);
+      }
+      else
+      {
+         scope(m_current);
+         scope(m_current?0:1);
+      }
       m_scopeplayerlast = !m_scopeplayerlast;
    }
    else
-   {
-      if (!scope(m_current))
-         scope(m_current?0:1);
-   }
+      scope(m_current);
 
    return m_scope;
 }
@@ -676,16 +685,7 @@ int HelixEngine::scope(int playerIndex)
       hscope[playerIndex].m_item = getScopeBuf(playerIndex);
 
    if (!prune(playerIndex))
-   {
-      //debug() << "returning without updating scope (after prune)\n";
       return 0;
-   }
-
-   //debug() << "current time is " << hscope[playerIndex].m_w << endl;
-   //debug() << "queue depth=" << getScopeCount(playerIndex) << endl;
-   //debug() << "player=" << playerIndex << " m_w=" << hscope[playerIndex].m_w << " time=" << 
-   //   hscope[playerIndex].m_item->time << " etime=" << hscope[playerIndex].m_item->etime << " lasttime=" << hscope[playerIndex].m_lasttime << endl;
-   
 
    int j,k=0;
    short int *pint;
@@ -693,7 +693,6 @@ int HelixEngine::scope(int playerIndex)
 
    // convert to mono
    int a;
-   //i=0;
    // calculate the starting offset into the buffer
    int off =  (hscope[playerIndex].m_item->spb * (hscope[playerIndex].m_w - hscope[playerIndex].m_item->time) / 
                (hscope[playerIndex].m_item->etime - hscope[playerIndex].m_item->time)) * 
@@ -734,21 +733,16 @@ int HelixEngine::scope(int playerIndex)
          }
       }
       // as long as we know there's another buffer...otherwise we need to wait for another
-      if (hscope[playerIndex].m_scopeindex < 512 && !peekScopeTime(t, playerIndex))
+      if (hscope[playerIndex].m_scopeindex < 512)
       {
          if (hscope[playerIndex].m_item && hscope[playerIndex].m_item->allocd)
             delete hscope[playerIndex].m_item;
          hscope[playerIndex].m_item = getScopeBuf(playerIndex);
+
          k = 0;
 
          if (!hscope[playerIndex].m_item)
-         {
-            //debug() << "returning without updating scope\n";
             return 0; // wait until there are some more buffers available
-         }
-
-         //debug() << "Got new item in scope, " << 
-         //   hscope[playerIndex].m_item->time << ":" << hscope[playerIndex].m_item->etime << endl;
       }
       else
       {
@@ -756,9 +750,9 @@ int HelixEngine::scope(int playerIndex)
          {
             if (hscope[playerIndex].m_item && hscope[playerIndex].m_item->allocd)
                delete hscope[playerIndex].m_item;
-            hscope[playerIndex].m_item = 0;
+            hscope[playerIndex].m_item = getScopeBuf(playerIndex);
          }
-         break;
+         break; // done with the scope buffer, so hand it off
       }
    }
 
