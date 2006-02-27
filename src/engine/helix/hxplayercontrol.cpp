@@ -188,7 +188,7 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
             unsigned char buf[65536];
             int sz = 0;
 
-            if (getmessage(rfd, m, buf, sz))
+            if (getmessage(rfd, m, buf, sz) && player)
             {
                switch (m)
                {
@@ -402,8 +402,8 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
                      {
                         cerr << "CHILD: " << m_index << " received shutdown request\n";
                         player->stop(0);
-                        delete player;
-                        exit (0);
+                        raise(15);
+                        exit(0);
                      }
                      else
                         cerr << "CHILD " << m_index << " sz not right in TEARDOWN, sz=" << sz << endl;
@@ -416,7 +416,7 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
             }
             else
             {
-               cerr << "CHILD " << m_index << " gets EOD?\n";
+               cerr << "CHILD " << m_index << " gets EOD\n";
                break;
             }
          }
