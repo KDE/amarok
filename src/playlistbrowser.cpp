@@ -1040,14 +1040,17 @@ bool PlaylistBrowser::deletePodcastItems()
 {
     KURL::List urls;
     QListViewItemIterator it( m_listview, QListViewItemIterator::Selected );
+    QPtrList<PodcastItem> erasedItems;
 
     for( ; it.current(); ++it )
     {
         if( isPodcastItem( *it ) )
         {
             #define item static_cast<PodcastItem*>(*it)
-            if( item->isOnDisk() )
+            if( item->isOnDisk() ) {
                 urls.append( item->localUrl() );
+                erasedItems.append( item );
+            }
             #undef  item
         }
     }
@@ -1060,6 +1063,10 @@ bool PlaylistBrowser::deletePodcastItems()
         return false;
 
     KIO::del( urls );
+
+    PodcastItem *item;
+    for ( item = erasedItems.first(); item; item = erasedItems.next() )
+        item->setListened( false );
     return true;
 }
 

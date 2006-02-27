@@ -15,6 +15,8 @@ VERSION 1.4-beta2:
       disabled. (BR 116173)
 
   BUGFIXES:
+    * When deleting a downloaded podcast, the icon wouldn't be updated.
+      (BR 122440)
     * Manage Files would create duplicates on collection. (BR 122519)
     * On Statistics Dialog, Compilations would be shown with a random artist,
       and dragging to playlist would add only the tracks by that artist.
