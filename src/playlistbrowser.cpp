@@ -926,6 +926,20 @@ void PlaylistBrowser::scanPodcasts()
     }
 }
 
+
+void PlaylistBrowser::refreshPodcasts( QListViewItem *parent )
+{
+    for( QListViewItem *child = parent->firstChild();
+            child;
+            child = child->nextSibling() )
+    {
+        if( isPodcastChannel( child ) )
+            static_cast<PodcastChannel*>( child )->rescan();
+        else if( isCategory( child ) )
+            refreshPodcasts( child );
+    }
+}
+
 void PlaylistBrowser::addPodcast( QListViewItem *parent )
 {
     bool ok;
@@ -1009,13 +1023,6 @@ bool PlaylistBrowser::deletePodcasts( QPtrList<PodcastChannel> items )
             urls.append( (*it)->xmlUrl() );
         }
         // TODO We need to check which files have been deleted successfully
-        // Avoid deleting dirs. See bug #122480
-        for ( KURL::List::iterator it = items.begin(), end = items.end(); it != end; ++it ) {
-            if ( QFileInfo( (*it).path() ).isDir() ) {
-                it = items.remove( it );
-                continue;
-            }
-        }
         KIO::del( urls );
         return true;
     }
@@ -1316,6 +1323,13 @@ bool PlaylistBrowser::deletePlaylists( KURL::List items )
     {
         // TODO We need to check which files have been deleted successfully
         KIO::del( items );
+        // Avoid deleting dirs. See bug #122480
+        for ( KURL::List::iterator it = items.begin(), end = items.end(); it != end; ++it ) {
+            if ( QFileInfo( (*it).path() ).isDir() ) {
+                it = items.remove( it );
+                continue;
+            }
+        }
         return true;
     }
     return false;
@@ -2333,12 +2347,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 break;
 
             case REFRESH:
-                tracker = item->firstChild();
-                for( ; tracker; tracker = tracker->nextSibling() )
-                {
-                    if( isPodcastChannel( tracker ) )
-                        static_cast<PodcastChannel*>( tracker )->rescan();
-                }
+                refreshPodcasts(item);
                 break;
 
             case CREATE:
