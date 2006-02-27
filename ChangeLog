@@ -8,6 +8,8 @@ VERSION 1.3.9:
     * Support for libtunepimp 0.4. (BR 94988)
 
   BUGFIXES:
+    * When using a folder as playlist, deleting the playlist would delete
+      the folder and all files inside it. (BR 122480)
     * OSD was showing "No track playing" for tracks without metadata.
     * Smart Playlists with playcount or score related conditions wouldn't
       match all songs properly. (BR 97046)

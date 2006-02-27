@@ -1009,6 +1009,13 @@ bool PlaylistBrowser::deletePodcasts( QPtrList<PodcastChannel> items )
             urls.append( (*it)->xmlUrl() );
         }
         // TODO We need to check which files have been deleted successfully
+        // Avoid deleting dirs. See bug #122480
+        for ( KURL::List::iterator it = items.begin(), end = items.end(); it != end; ++it ) {
+            if ( QFileInfo( (*it).path() ).isDir() ) {
+                it = items.remove( it );
+                continue;
+            }
+        }
         KIO::del( urls );
         return true;
     }
@@ -1364,7 +1371,7 @@ bool PlaylistBrowser::createPlaylist( QListViewItem *parent, bool current )
     else
     {
         debug() << "not current!" << endl;
-	
+
 	//Remove any items in Listview that have the same path as this one
         //  Should only happen when overwriting a playlist
         QListViewItem *item = parent->firstChild();
