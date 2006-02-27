@@ -1350,7 +1350,8 @@ bool CurrentTrackJob::doJob()
                         "<span>%4</span>"
                         )
                     .arg( i18n( "Track played once", "Track played %n times", playtimes ),
-                        scoreBox.arg( score ).arg( score ).arg( showRating ? ( rating * 10 ) : ( score / 2 ) ).arg( rating ),
+                        showRating ? scoreBox.arg( score ).arg( score ).arg( rating * 10 ).arg( rating )
+                                   : scoreBox.arg( score ).arg( score ).arg(  score / 2  ),
                         i18n( "Last played: %1" ).arg( amaroK::verboseTimeSince( lastPlay ) ),
                         i18n( "First played: %1" ).arg( amaroK::verboseTimeSince( firstPlay ) ) ) );
         }
