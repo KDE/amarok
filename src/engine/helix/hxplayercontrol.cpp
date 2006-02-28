@@ -170,7 +170,7 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
       player = new HSPPlayerControlled(this, m_index);
 
       timeout.tv_sec = 0;
-      timeout.tv_usec = 0;
+      timeout.tv_usec = 10000;
       fd_set rdset, wrset;
       FD_ZERO(&rdset);
       FD_ZERO(&wrset);
@@ -421,16 +421,6 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
                break;
             }
          }
-         else
-         {
-            if (m_inited && pmapped)
-            {
-               *m_children[m_index].current_time = player->where(0);
-               *m_children[m_index].duration = player->duration(0);
-            }
-
-            usleep(10000);
-         }
 
          if (m_inited)
          {
@@ -482,7 +472,7 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
          }
          
          timeout.tv_sec = 0;
-         timeout.tv_usec = 0;
+         timeout.tv_usec = 10000;
       }
       cerr << "CHILD " << m_index << " will exit!\n";
    }
