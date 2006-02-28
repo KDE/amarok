@@ -38,6 +38,8 @@
 
 using namespace NMM;
 
+class NmmLocation;
+
 class NmmEngine : public Engine::Base
 {
 Q_OBJECT
@@ -55,6 +57,11 @@ public:
     Engine::State state() const;
 
     amaroK::PluginConfig* configure() const;
+
+    QValueList<NmmLocation> environmentHostList() const {return tmp_environment_list;}
+    void setEnvironmentHostList(QValueList<NmmLocation> list) { tmp_environment_list = list;}
+
+    static NmmEngine* instance() { return s_instance; }
 
 public slots:
     bool  load(const KURL&, bool stream = false);
@@ -78,9 +85,10 @@ protected:
     void  setVolumeSW( uint );
 
 private:
-    static NmmEngine* instance() { return s_instance; }
 
     void cleanup();
+
+    void createEnvironmentHostList();
 
     /**
      * Returns sink locations for audio/video playback.
@@ -182,6 +190,12 @@ private:
      * This flag is set during seeking.
      */
     bool __seeking;
+
+    /**
+     * Environment variables host list.
+     * Only read on startup, volume can be changed via settings dialog.
+     */
+     QValueList<NmmLocation> tmp_environment_list;
 
     static NmmEngine* s_instance;
 };

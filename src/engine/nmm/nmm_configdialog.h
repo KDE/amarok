@@ -33,65 +33,148 @@
 
 class HostListItem;
 
+class NmmLocation;
+
 class NmmConfigDialog : public amaroK::PluginConfig
 {
-Q_OBJECT
-    public:
-        NmmConfigDialog();
-        ~NmmConfigDialog();
-        
-        QWidget* view() { return m_view; }
+  Q_OBJECT
 
-        // \todo doesn't work the intended way
-        bool hasChanged() const;
-        bool isDefault() const;
-        
-    public slots:
-        
-        void save();
+  public:
+    NmmConfigDialog();
+    ~NmmConfigDialog();
 
-        /**
-         * Adds a host to the location list.
-         */
-        void addHost();
+    QWidget* view() { return m_view; }
 
-        /**
-         * Removes a host from the location list.
-         */
-        void removeHost();
+    // \todo doesn't work the intended way
+    bool hasChanged() const;
 
-        /**
-         * Selects a HostListItem as selected item.
-         */
-        void selectHostListItem( HostListItem* );
+    bool isDefault() const;
 
-        void setCheckedList( bool );
+  public slots:
 
-    private:
-        void readConfig();
-        void addHostListItem( QString );
-        
-        /** 
-         * Returns all locations in the host list.
-         */
-        QStringList hostList() const;
+    void save();
 
-        /**
-         * Returns audio toggle states for every host.
-         */
-        QStringList audioHostList() const;
+    /**
+     * Adds a host to the location list.
+     */
+    void addHost();
 
-        /**
-         * Returns video toggle sattes for every host.
-         */
-        QStringList videoHostList() const;
+    /**
+     * Removes a host from the location list.
+     */
+    void removeHost();
 
-        NmmConfigDialogBase* m_view;
+    /**
+     * Selects a HostListItem as selected item.
+     */
+    void selectHostListItem( HostListItem* );
 
-        QWidget* audio_vbox;;
+    /**
+     * Called when a radio button in audioGroup was clicked.
+     */
+    void clickedAudioGroup( int );
 
-        HostListItem *current_host;
-        QPtrList<HostListItem> m_hosts;
+  private:
+    /**
+     * Creates a host item in the host list.
+     * TODO: more docu
+     */
+    void addHostListItem( QString hostname, bool audio = true, bool video = true, int volume = 0, bool read_only = false );
+
+    /**
+     * Fills tmp_environment_list
+     * Takes environment host list from nmm engine.
+     */
+    void createEnvironmentHostList();
+
+    /**
+     * Fills tmp_user_list
+     */
+    void createUserHostList();
+
+    /**
+     * Fills host list with HostListItems by reading
+     * tmp_environment_list or tmp_user_list.
+     */
+    void createHostList( bool use_environment_list = false );
+
+    /** 
+     * Returns all locations in the host list.
+     */
+    QStringList hostList() const;
+
+    /**
+     * Returns audio toggle states for every host.
+     */
+    QStringList audioHostList() const;
+
+    /**
+     * Returns video toggle states for every host.
+     */
+    QStringList videoHostList() const;
+
+    /**
+     * Clears current host list.
+     * \param save_user_hostlist saves user host list if true
+     */
+    void removeHostList( bool save_user_hostlist = false );
+
+    /**
+     * Saves user host list to tmp_user_list.
+     *
+     * Used on audioGroup change and NmmConfigDialog::save().
+     */
+    void saveUserHostList();
+    
+    NmmConfigDialogBase* m_view;
+
+    QWidget* audio_vbox;;
+
+    /**
+     * Currently selected HostListItem.
+     * NULL if none selected.
+     */
+    HostListItem *current_host;
+
+    /**
+     * Currently showed items in host list scrollview.
+     */
+    QPtrList<HostListItem> m_hosts;
+
+    typedef QValueList<NmmLocation> NmmLocationList;
+
+    /**
+     * Environment host list.
+     * Populated only once in constructor.
+     */
+    NmmLocationList tmp_environment_list;
+
+    /**
+     *
+     */
+    NmmLocationList tmp_user_list;
+};
+
+class NmmLocation {
+  public:
+    NmmLocation();
+    NmmLocation(QString hostname, bool audio, bool video, int volume);
+    ~NmmLocation();
+
+    QString hostname() const;
+    void setHostname(QString);
+
+    bool audio() const { return m_audio; }
+    void setAudio( bool audio ) { m_audio = audio; }
+
+    bool video() const { return m_video; } 
+    void setVideo( bool video ) { m_video = video; }
+
+  private:
+    QString m_hostname;
+    bool m_audio;
+    bool m_video;
+    int m_volume;
 };
 
 #endif

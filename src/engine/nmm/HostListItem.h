@@ -37,11 +37,14 @@ class HostListItem : public QWidget {
     Q_OBJECT
     
     public:
-        HostListItem( bool, QString, QWidget * );
+        HostListItem( QWidget *, QString _hostname, bool _audio = true, bool video = true, int volume = 0 );
         ~HostListItem();
 
         void setHighlighted( bool = true );
         QString hostname() const;
+
+        bool isAudioEnabled() const;
+        bool isVideoEnabled() const;
 
     protected:
         void mousePressEvent ( QMouseEvent * );

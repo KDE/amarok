@@ -41,7 +41,7 @@
 
 #include "debug.h"
 
-HostListItem::HostListItem( bool valid, QString _hostname, QWidget *parent )
+HostListItem::HostListItem( QWidget *parent, QString _hostname, bool _audio, bool _video, int volume )
     : QWidget( parent )
 {
     /* layout */
@@ -78,19 +78,19 @@ HostListItem::HostListItem( bool valid, QString _hostname, QWidget *parent )
 
     /* status button */
     statusButton = new QLabel(this);
-    registryAvailable( valid );
+    //registryAvailable( valid );
     l->addWidget(statusButton);
     
     setHighlighted( false );
 
     /* connect to host to find out whether a serverregistry might run */
-    registry = new ServerregistryPing(_hostname);
-    connect(registry, SIGNAL( registryAvailable( bool) ), SLOT( registryAvailable( bool ) ) );
+    //registry = new ServerregistryPing(_hostname);
+    //connect(registry, SIGNAL( registryAvailable( bool) ), SLOT( registryAvailable( bool ) ) );
 }
 
 HostListItem::~HostListItem()
 {
-    delete registry;
+    //delete registry;
 }
 
 void HostListItem::setHighlighted( bool highlight )
@@ -105,6 +105,16 @@ void HostListItem::setHighlighted( bool highlight )
 QString HostListItem::hostname() const
 { 
     return hostLabel->text();
+}
+
+bool HostListItem::isAudioEnabled() const
+{
+  return audio->isOn();
+}
+
+bool HostListItem::isVideoEnabled() const
+{
+  return video->isOn();
 }
 
 void HostListItem::mousePressEvent( QMouseEvent * )

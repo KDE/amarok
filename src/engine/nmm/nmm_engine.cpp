@@ -93,6 +93,8 @@ bool NmmEngine::init()
   // create new NMM application object
   __app = ProxyApplication::getApplication(0, 0);
 
+  createEnvironmentHostList();
+
   return true;
 }
 
@@ -407,6 +409,43 @@ void NmmEngine::cleanup()
   __state = Engine::Idle;
 }
 
+void NmmEngine::createEnvironmentHostList()
+{
+  QString hosts = getenv("AUDIO_HOSTS");
+  QStringList list = QStringList::split(":", hosts );
+  
+  /* merge audio hosts */
+  for( QStringList::Iterator it = list.begin(); it != list.end(); ++it )
+    tmp_environment_list.append( NmmLocation( (*it), true, false, 0 ) );
+
+  /* merge video hosts */
+  hosts = getenv("VIDEO_HOSTS");
+  list = QStringList::split(":", hosts );
+  bool found = false;
+  for( QStringList::Iterator it = list.begin(); it != list.end(); ++it ) {
+    
+    found = false;
+    for( QValueList<NmmLocation>::Iterator it_t = tmp_environment_list.begin(); it_t != tmp_environment_list.end(); ++it_t ) {
+      if( (*it_t).hostname() == *it ) {
+        (*it_t).setVideo(true);
+        found = true;
+        break;
+      }
+    }
+      
+    if( !found )
+      tmp_environment_list.append( NmmLocation( (*it), false, true, 0 ) );
+  }
+
+  //debug() << "### ENVIRONMENT" << endl;
+  //for( QValueList<NmmLocation>::Iterator it = tmp_environment_list.begin(); it != tmp_environment_list.end(); ++it ) {
+  //debug() << "### hostname " << (*it).hostname() << endl;
+  //debug() << "### audio " << (*it).audio() << endl;
+  //debug() << "### video " << (*it).video() << endl;
+  //debug() << "#########################" << endl;
+  //}
+}
+
 void NmmEngine::stop()
 {
   DEBUG_BLOCK
@@ -504,9 +543,9 @@ QStringList NmmEngine::getSinkHosts( bool audio )
     QString hosts;
 
     if( audio )
-        hosts = getenv("AUDIO_HOSTS");
+        hosts = getenv("AUDIO_HOSTS"); // TODO createEnvironmentHostList does the logic, replace this
     else
-        hosts = getenv("VIDEO_HOSTS");
+        hosts = getenv("VIDEO_HOSTS"); // TODO createEnvironmentHostList does the logic, replace this
 
     if( hosts.isEmpty() ) { // environment variable not set
       debug() << "environment variable empty." << endl;

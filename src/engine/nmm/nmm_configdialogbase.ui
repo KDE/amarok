@@ -142,11 +142,13 @@
                         <string>Environment variables are AUDIO_HOSTS and VIDEO_HOSTS.</string>
                     </property>
                     <property name="whatsThis" stdset="0">
-                        <string>Reads the environment variables &lt;b&gt;AUDIO_HOSTS&lt;/b&gt; and &lt;b&gt;VIDEO_HOSTS&lt;/b&gt; to determine the audio and video playback locations.
+                        <string>Reads the environment variables &lt;b&gt;AUDIO_HOSTS&lt;/b&gt; and &lt;b&gt;VIDEO_HOSTS&lt;/b&gt; to determine the audio and video playback locations.The playback locations will be shown in the host list below. The list is &lt;b&gt;read-only&lt;/b&gt;.
 
-&lt;h2&gt;Example&lt;/h2&gt;
-AUDIO_HOSTS=desktop:laptop:kitchen
-VIDEO_HOSTS=laptop</string>
+&lt;h3&gt;Example&lt;/h3&gt;
+AUDIO_HOSTS=desktop:laptop:kitchen&lt;br&gt;
+VIDEO_HOSTS=laptop&lt;br&gt;
+&lt;br&gt;
+This setting will enable audio on the three hosts desktop,laptop and kitchen, and video only on host laptop.</string>
                     </property>
                 </widget>
                 <widget class="QRadioButton">
@@ -154,7 +156,10 @@ VIDEO_HOSTS=laptop</string>
                         <cstring>hostListButton</cstring>
                     </property>
                     <property name="text">
-                        <string>Host list:</string>
+                        <string>Host list</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>If selected you can add and remove hosts in the list below and enable audio and video for each host.</string>
                     </property>
                 </widget>
                 <widget class="QLayoutWidget">
@@ -165,23 +170,6 @@ VIDEO_HOSTS=laptop</string>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <spacer>
-                            <property name="name">
-                                <cstring>spacer8</cstring>
-                            </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
-                            </property>
-                            <property name="sizeType">
-                                <enum>Fixed</enum>
-                            </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>20</width>
-                                    <height>20</height>
-                                </size>
-                            </property>
-                        </spacer>
                         <widget class="QScrollView">
                             <property name="name">
                                 <cstring>locationScrollView</cstring>
