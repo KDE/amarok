@@ -402,6 +402,7 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
                      {
                         cerr << "CHILD: " << m_index << " received shutdown request\n";
                         player->stop(0);
+                        delete player;
                         raise(15);
                         exit(0);
                      }
