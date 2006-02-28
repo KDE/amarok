@@ -262,7 +262,7 @@ MediaBrowser::MediaBrowser( const char *name )
         connect( button, SIGNAL( clicked() ), m_searchEdit, SLOT( clear() ) );
 
         QToolTip::add( button, i18n( "Clear filter" ) );
-        QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to filter collection" ) ); //TODO text is wrong
+        QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to filter" ) );
     } //</Search LineEdit>
 
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
@@ -918,17 +918,20 @@ class MediaItemTip : public QToolTip
         case MediaItem::TRACK:
             {
                 const MetaBundle *b = i->bundle();
-                text = "";
                 if( b )
                 {
                     if( b->track() )
-                        text = QString( "%1 - %2 (%3)<br>" )
+                        text = QString( "%1 - %2 (%3)" )
                             .arg( b->track() )
                             .arg( b->title() )
                             .arg( b->prettyLength() );
                     if( !b->genre().isEmpty() )
+                    {
+                        if( !text.isEmpty() )
+                            text += "<br>";
                         text += QString( "<i>Genre: %1</i>" )
                             .arg( b->genre() );
+                    }
                 }
             }
             break;
@@ -939,7 +942,11 @@ class MediaItemTip : public QToolTip
                 {
                     text += p->description;
                     if( !p->webpage.isEmpty() )
-                        text += i18n( "<br>Webpage: %1<br>" ).arg( p->webpage );
+                    {
+                        if( !text.isEmpty() )
+                            text += "<br>";
+                        text += i18n( "Webpage: %1" ).arg( p->webpage );
+                    }
                 }
             }
             break;
