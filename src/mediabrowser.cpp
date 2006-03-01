@@ -2392,6 +2392,7 @@ MediaDevice::transferFiles()
     }
 #endif
 
+    KURL::List existing, unplayable;
     MediaItem *after = 0; // item after which to insert into playlist
     // iterate through items
     while( (m_transferredItem = static_cast<MediaItem *>(m_parent->m_queue->firstChild())) != 0 )
@@ -2412,9 +2413,10 @@ MediaDevice::transferFiles()
         MediaItem *item = trackExists( *bundle );
         if( item && m_transferredItem->m_playlistName == QString::null )
         {
-            amaroK::StatusBar::instance()->longMessage( i18n( "Track already exists on media device: %1" ).
+            amaroK::StatusBar::instance()->shortMessage( i18n( "Track already on media device: %1" ).
                     arg( m_transferredItem->url().prettyURL() ),
                     KDE::StatusBar::Sorry );
+            existing += m_transferredItem->url();
             delete m_transferredItem;
             m_transferredItem = 0;
             m_parent->m_queue->itemCountChanged();
@@ -2442,8 +2444,9 @@ MediaDevice::transferFiles()
 
             if( !isPlayable( *bundle ) )
             {
-                amaroK::StatusBar::instance()->longMessage( i18n( "Track is not playable on media device: %1" ).arg( bundle->url().path() ),
+                amaroK::StatusBar::instance()->shortMessage( i18n( "Track not playable on media device: %1" ).arg( bundle->url().path() ),
                         KDE::StatusBar::Sorry );
+                unplayable += m_transferredItem->url();
                 delete m_transferredItem;
                 m_transferredItem = 0;
                 m_parent->m_queue->itemCountChanged();
@@ -2461,6 +2464,9 @@ MediaDevice::transferFiles()
         if( !item )
         {
             debug() << "copying failed" << endl;
+            amaroK::StatusBar::instance()->longMessage(
+                    i18n( "Failed to copy track to media device: %1" ).arg( bundle->url().path() ),
+                    KDE::StatusBar::Sorry );
             if( transcoding )
             {
                 delete bundle;
@@ -2516,6 +2522,39 @@ MediaDevice::transferFiles()
     synchronizeDevice();
     unlockDevice();
     fileTransferFinished();
+
+    QString msg;
+    if( unplayable.count() > 0 )
+    {
+        msg = i18n( "One track not playable on media device",
+                "%n tracks not playable on media device", unplayable.count() );
+    }
+    if( existing.count() > 0 )
+    {
+        if( msg.isEmpty() )
+            msg = i18n( "One track already on media device",
+                    "%n tracks already on media device", existing.count() );
+        else
+            msg += i18n( ", one track already on media device",
+                    ", %n tracks already on media device", existing.count() );
+    }
+    if( !msg.isEmpty() )
+    {
+        QString longMsg = i18n( "The following tracks were not transferred: ");
+        for( KURL::List::Iterator it = existing.begin();
+                it != existing.end();
+                it++ )
+        {
+            longMsg += "<br>" + (*it).prettyURL();
+        }
+        for( KURL::List::Iterator it = unplayable.begin();
+                it != unplayable.end();
+                it++ )
+        {
+            longMsg += "<br>" + (*it).prettyURL();
+        }
+        amaroK::StatusBar::instance()->shortLongMessage( msg, longMsg, KDE::StatusBar::Sorry );
+    }
 
     setSpacesToUnderscores( false );
     m_parent->updateButtons();
