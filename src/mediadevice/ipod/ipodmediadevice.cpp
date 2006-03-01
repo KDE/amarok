@@ -224,15 +224,15 @@ IpodMediaDevice::updateTrackInDB(IpodMediaItem *item,
     {
         track->filetype = g_strdup( "mp4" );
     }
-    else if(type=="m4v" || type=="mp4v" || type=="mov" || type=="mpg")
-    {
-        track->filetype = g_strdup( "m4v video" );
-        track->unk208 = 0x02; // for videos
-    }
     else if(type=="m4b")
     {
         track->filetype = g_strdup( "mp4" );
         track->flag3 |= 0x01; // remember current position in track
+    }
+    else if(type=="m4v" || type=="mp4v" || type=="mov" || type=="mpg")
+    {
+        track->filetype = g_strdup( "m4v video" );
+        track->unk208 = 0x02; // for videos
     }
     else if(type=="aa")
     {
@@ -279,7 +279,7 @@ IpodMediaDevice::updateTrackInDB(IpodMediaItem *item,
         track->subtitle = g_strdup( plaindesc.utf8() );
         track->podcasturl = g_strdup( podcastInfo->url.utf8() );
         track->podcastrss = g_strdup( podcastInfo->rss.utf8() );
-        //track->category = g_strdup( "Unknown" );
+        //track->category = g_strdup( i18n( "Unknown" ) );
         track->time_released = itdb_time_host_to_mac( podcastInfo->date.toTime_t() );
         //track->compilation = 0x01; // this should have made the ipod play a sequence of podcasts
     }
@@ -1978,11 +1978,11 @@ IpodMediaDevice::supportedFiletypes()
     list << "m4p";
     list << "mp3";
     list << "wav";
+    list << "mp4";
     list << "aa";
 
     if( m_supportsVideo )
     {
-        list << "mp4";
         list << "m4v";
         list << "mp4v";
         list << "mov";
