@@ -798,7 +798,7 @@ QDomElement StreamEntry::xml() {
         if( isOpen() )
             i.setAttribute( "isOpen", "true" );
         QDomElement url = doc.createElement( "url" );
-        url.appendChild( doc.createTextNode( escapeHTML( m_url.prettyURL() ) ));
+        url.appendChild( doc.createTextNode( m_url.prettyURL() ));
         i.appendChild( url );
         return i;
 }
