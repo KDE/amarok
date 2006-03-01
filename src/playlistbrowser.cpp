@@ -1948,17 +1948,20 @@ void PlaylistBrowser::savePLS( PlaylistEntry *item, bool append )
     {
         QTextStream stream( &file );
         QPtrList<TrackItemInfo> trackList = append ? item->droppedTracks() : item->trackList();
-        for( TrackItemInfo *info = trackList.first(); info; info = trackList.next() )
+        stream << "NumberOfEntries=" << trackList.count() << endl;
+        int c=1;
+        for( TrackItemInfo *info = trackList.first(); info; info = trackList.next(), ++c )
         {
-            stream << "File=";
+            stream << "File" << c << "=";
             stream << (info->url().protocol() == "file" ? info->url().path() : info->url().url());
-            stream << "\nTitle=";
+            stream << "\nTitle" << c << "=";
             stream << info->title();
-            stream << "\nLength=";
+            stream << "\nLength" << c << "=";
             stream << info->length();
             stream << "\n";
         }
 
+        stream << "Version=2\n";
         file.close();
     }
 }
