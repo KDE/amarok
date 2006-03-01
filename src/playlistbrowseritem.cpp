@@ -772,7 +772,7 @@ QDomElement StreamEntry::xml() {
         QDomElement i = doc.createElement("stream");
         i.setAttribute( "name", m_title );
         QDomElement url = doc.createElement( "url" );
-        url.appendChild( doc.createTextNode( escapeHTML( m_url.prettyURL() ) ));
+        url.appendChild( doc.createTextNode( m_url.prettyURL() ));
         i.appendChild( url );
         return i;
 }
