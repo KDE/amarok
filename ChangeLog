@@ -8,6 +8,8 @@ VERSION 1.3.9:
     * Support for libtunepimp 0.4. (BR 94988)
 
   BUGFIXES:
+    * Playlist Browser would save invalid PLS Playlists. (BR 122875)
+    * Refresh All Podcasts wouldn't consider subfolders. (BR 122783)
     * When using a folder as playlist, deleting the playlist would delete
       the folder and all files inside it. (BR 122480)
     * OSD was showing "No track playing" for tracks without metadata.
