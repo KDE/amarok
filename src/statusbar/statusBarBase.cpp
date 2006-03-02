@@ -240,8 +240,6 @@ StatusBar::resetMainText()
         m_mainTextLabel->setText( m_mainText );
 
     else {
-        m_mainTextLabel->setPaletteBackgroundColor( m_mainTextLabel->paletteBackgroundColor().dark( 110 ) );
-
         ProgressBar *bar = 0;
         uint count = 0;
         foreachType( ProgressMap, m_progressMap )
