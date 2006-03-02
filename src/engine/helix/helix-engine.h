@@ -29,14 +29,8 @@ public:
 
    virtual bool init();
    virtual bool canDecode( const KURL& ) const;
-   virtual bool load( const KURL &url, bool stream );
-   virtual bool play( uint = 0 );
-   virtual void stop();
-   virtual void pause();
    virtual uint position() const;
    virtual uint length() const;
-   virtual void seek( uint );
-
    virtual Engine::State state() const;
 
    virtual void play_finished(int playerIndex);
@@ -44,13 +38,21 @@ public:
 
    virtual amaroK::PluginConfig *configure() const;
 
-   virtual void setEqualizerEnabled( bool );
-   virtual void setEqualizerParameters( int preamp, const QValueList<int>& );
-
    virtual void onContacting(const char *host);
    virtual void onBuffering(int pcnt);
 
    virtual int fallbackToOSS();
+
+public slots:
+   virtual bool load( const KURL &url, bool stream );
+   virtual bool play( uint = 0 );
+   virtual void stop();
+   virtual void pause();
+   virtual void seek( uint );
+
+   virtual void setEqualizerEnabled( bool );
+   virtual void setEqualizerParameters( int preamp, const QValueList<int>& );
+
 
 protected:
    virtual void setVolumeSW( uint );

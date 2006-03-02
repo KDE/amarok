@@ -1134,7 +1134,7 @@ HX_RESULT HSPAudioDevice::SetDeviceConfig( const HXAudioFormat* pFormat )
        can_resume = snd_pcm_hw_params_can_resume(hwparams);
        
        // could we really have one without the other?
-       m_bHasHardwarePauseAndResume = (can_pause || can_resume); 
+       m_bHasHardwarePauseAndResume = (can_pause && can_resume); 
        m_Player->print2stderr("########## can_pause %d can_resume %d\n", can_pause, can_resume);
     }
     
