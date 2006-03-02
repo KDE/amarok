@@ -306,6 +306,8 @@ void EngineController::play() //SLOT
 
 void EngineController::play( const MetaBundle &bundle )
 {
+    DEBUG_BLOCK
+
     const KURL url = bundle.url();
     debug() << "Loading URL: " << url.url() << endl;
     // Destroy stale StreamProvider
@@ -318,13 +320,16 @@ void EngineController::play( const MetaBundle &bundle )
         trackEnded( m_engine->position(), m_bundle.length() * 1000 );
 
     if ( url.protocol() == "http" ||
-        ( url.protocol() == "zeroconf" && url.path().section( '/',1,1 ) == "_shoutcast._tcp" ) ) {
-        m_bundle = bundle;
-        // Detect mimetype of remote file
-        KIO::MimetypeJob* job = KIO::mimetype( url, false );
-        connect( job, SIGNAL(result( KIO::Job* )), SLOT(playRemote( KIO::Job* )) );
+       ( url.protocol() == "zeroconf" && url.path().section( '/',1,1 ) == "_shoutcast._tcp" ) ) {
         amaroK::StatusBar::instance()->shortMessage( i18n("Connecting to stream source...") );
-        return; //don't do notify
+
+        if ( engineProperty( "StreamingMode" ) != "NoStreaming" ) {
+            m_bundle = bundle;
+            // Detect mimetype of remote file
+            KIO::MimetypeJob* job = KIO::mimetype( url, false );
+            connect( job, SIGNAL(result( KIO::Job* )), SLOT(playRemote( KIO::Job* )) );
+            return; //don't do notify
+        }
     }
 
     if ( url.isLocalFile() ) {
@@ -336,7 +341,7 @@ void EngineController::play( const MetaBundle &bundle )
         }
     }
 
-    if( m_engine->load( url ) )
+    if( m_engine->load( url, !url.isLocalFile() ) )
     {
         //assign bundle now so that it is available when the engine
         //emits stateChanged( Playing )
@@ -491,6 +496,9 @@ EngineController::bundle() const
 //////////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
+
+//TODO Get rid of playRemote() and the whole StreamProvider. Streams must be handled in the engines.
+//     Engines that fail to do this must be removed.
 
 void EngineController::playRemote( KIO::Job* job ) //SLOT
 {

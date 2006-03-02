@@ -75,7 +75,7 @@ XineEngine::XineEngine()
     #ifndef __NetBSD__  // NetBSD does not offer audio mixing
     addPluginProperty( "HasCrossfade", "true" );
     #endif
-    addPluginProperty("HasCDDA", "true"); // new property 
+    addPluginProperty("HasCDDA", "true"); // new property
 }
 
 XineEngine::~XineEngine()
@@ -209,6 +209,8 @@ XineEngine::makeNewStream()
 bool
 XineEngine::load( const KURL &url, bool isStream )
 {
+    DEBUG_BLOCK
+
     Engine::Base::load( url, isStream );
 
     if( m_xfadeLength > 0 && xine_get_status( m_stream ) == XINE_STATUS_PLAY )
@@ -454,7 +456,7 @@ XineEngine::canDecode( const KURL &url ) const
     const QString path = url.path();
     const QString ext  = path.mid( path.findRev( '.' ) + 1 ).lower();
 
-    return list.contains( ext ) || url.protocol() == "cdda"; 
+    return list.contains( ext ) || url.protocol() == "cdda";
 }
 
 const Engine::Scope&
@@ -946,10 +948,10 @@ bool XineEngine::metaDataForUrl(const KURL &url, Engine::SimpleMetaBundle &b)
                 b.artist =
                     QString::fromUtf8(
                         xine_get_meta_info(tmpstream, XINE_META_INFO_ARTIST));
-                b.album = 
+                b.album =
                     QString::fromUtf8(
                         xine_get_meta_info(tmpstream, XINE_META_INFO_ALBUM));
-                b.genre = 
+                b.genre =
                     QString::fromUtf8(
                         xine_get_meta_info(tmpstream, XINE_META_INFO_GENRE));
             } else {
@@ -978,11 +980,11 @@ bool XineEngine::getAudioCDContents(const QString &device, KURL::List &urls)
 	xine_cfg_entry_t config;
 	xine_config_lookup_entry(m_xine, "input.cdda_device", &config);
 	config.str_value = (char *)device.latin1();
-	xine_config_update_entry(m_xine, &config);        
+	xine_config_update_entry(m_xine, &config);
     }
 
     emit statusText(i18n("Getting AudioCD contents..."));
-    
+
     xine_urls = xine_get_autoplay_mrls(m_xine, "CD", &num);
 
     if (xine_urls) {
@@ -992,7 +994,7 @@ bool XineEngine::getAudioCDContents(const QString &device, KURL::List &urls)
         }
     }
     else emit statusText(i18n("Could not read AudioCD"));
-    
+
     return true;
 }
 
