@@ -1475,12 +1475,11 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
             }
             else if( !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
             {
-                debug() << "creating item" << endl;
+//                 debug() << "creating item" << endl;
                 m_last = new PodcastItem( this, m_last, n.toElement(), feedType );
                 children++;
             }
         }
-
     }
 
     if( m_settings->m_purge && childCount() > m_settings->m_purgeCount )
