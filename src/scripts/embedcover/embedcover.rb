@@ -34,8 +34,8 @@ loop do
 
     case command
         when "configure"
-            msg  = '"EmbedCover does not have configuration options. Simply select a track in the '
-            msg += 'playlist, then start EmbedCover from the context-menu (right mouse click)."'
+            msg  = 'EmbedCover does not have configuration options. Simply select a track in the '
+            msg += 'playlist, then start EmbedCover from the context-menu (right mouse click).'
 
             `dcop amarok playlist popupMessage "#{msg}"`
 

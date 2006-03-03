@@ -31,8 +31,8 @@ loop do
 
     case command
         when "configure"
-            msg  = '"Mp3Fixer does not have configuration options. Simply select a track in the '
-            msg += 'playlist, then start Mp3Fixer from the context-menu (right mouse click)."'
+            msg  = 'Mp3Fixer does not have configuration options. Simply select a track in the '
+            msg += 'playlist, then start Mp3Fixer from the context-menu (right mouse click).'
 
             `dcop amarok playlist popupMessage "#{msg}"`
 
