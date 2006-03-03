@@ -79,7 +79,7 @@ GstEngine::bus_cb(GstBus*, GstMessage* msg, gpointer) // static
 	     break;
 	case GST_MESSAGE_TAG:
 	{
-	     gchar* string;
+	     gchar* string=NULL;
     	     Engine::SimpleMetaBundle bundle;
 	     GstTagList* taglist;
 	     gst_message_parse_tag(msg,&taglist);
@@ -105,6 +105,7 @@ GstEngine::bus_cb(GstBus*, GstMessage* msg, gpointer) // static
                   bundle.album = QString( string );
                   success = true;
              }
+             g_free( string );
              gst_tag_list_free(taglist);
              if ( success ) {
                   instance()->m_metaBundle = bundle;
@@ -224,6 +225,7 @@ GstEngine::~GstEngine()
 
     // Save configuration
     GstConfig::writeConfig();
+    gst_deinit();
 }
 
 
@@ -259,6 +261,8 @@ GstEngine::init()
                   "<p>For further assistance consult the GStreamer manual, and join #gstreamer on irc.freenode.net.</p>" ) );
         return false;
     }
+    
+    gst_object_unref( dummy );
 
     return true;
 }
