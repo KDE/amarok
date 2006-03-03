@@ -125,6 +125,7 @@ private:
     bool            m_xFadeThisTrack;
     bool            m_isTiming;
     QTimer*         m_timer;
+    uint            m_playFailureCount;
 
     QGuardedPtr<amaroK::StreamProvider> m_stream;
 };

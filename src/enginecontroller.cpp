@@ -57,6 +57,7 @@ EngineController::EngineController()
         , m_muteVolume( 0 )
         , m_xFadeThisTrack( false )
         , m_timer( new QTimer( this ) )
+        , m_playFailureCount( 0 )
         , m_stream( 0 )
 {
     m_voidEngine = m_engine = (EngineBase*)loadEngine( "void-engine" );
@@ -349,6 +350,8 @@ void EngineController::play( const MetaBundle &bundle )
 
         if( m_engine->play() )
         {
+            m_playFailureCount = 0;
+
             // Ask engine for track length, if available. It's more reliable than TagLib.
             const uint trackLength = m_engine->length() / 1000;
             if ( trackLength ) m_bundle.setLength( trackLength );
@@ -359,20 +362,21 @@ void EngineController::play( const MetaBundle &bundle )
                                m_bundle.length()*1000 - AmarokConfig::crossfadeLength()*2 > 0;
 
             newMetaDataNotify( m_bundle, true /* track change */ );
+            return;
         }
-        else goto some_kind_of_failure;
     }
-    else
+
     some_kind_of_failure:
-        //NOTE now we don't do next() at all
-        // say the user has a 4000 item playlist with all URLs in that playlist
-        // being bad, amaroK will appear to freeze. We need to either stat files in
-        // the background or not call next() more than 5 times in a row
-        //don't do for repeatPlaylist() as it can produce a freeze
-        //FIXME -> mxcl
-        //if ( !amaroK::repeatPlaylist() )
-        //    next()
-                ;
+        debug() << "Failed to play this track." << endl;
+
+        m_playFailureCount++;
+
+        // Don't skip more than 5 times in a row, to prevent GUI freezes and endless loops
+        if ( m_playFailureCount <= 5 /*&& !amaroK::repeatPlaylist()*/ ) {
+           debug() << "Skipping to next track." << endl;
+           next();
+           play();
+        }
 }
 
 
