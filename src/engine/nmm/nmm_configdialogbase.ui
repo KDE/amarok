@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>399</width>
-            <height>404</height>
+            <width>403</width>
+            <height>299</height>
         </rect>
     </property>
     <property name="caption">
@@ -19,40 +19,6 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>nmmLogo</cstring>
-            </property>
-            <property name="paletteForegroundColor">
-                <color>
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="paletteBackgroundColor">
-                <color>
-                    <red>255</red>
-                    <green>255</green>
-                    <blue>255</blue>
-                </color>
-            </property>
-            <property name="frameShape">
-                <enum>StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Raised</enum>
-            </property>
-            <property name="margin">
-                <number>1</number>
-            </property>
-            <property name="pixmap">
-                <pixmap>image0</pixmap>
-            </property>
-            <property name="alignment">
-                <set>AlignCenter</set>
-            </property>
-        </widget>
         <widget class="QLayoutWidget">
             <property name="name">
                 <cstring>layout6</cstring>
@@ -170,9 +136,9 @@ This setting will enable audio on the three hosts desktop,laptop and kitchen, an
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="QScrollView">
+                        <widget class="HostList">
                             <property name="name">
-                                <cstring>locationScrollView</cstring>
+                                <cstring>hostList</cstring>
                             </property>
                             <property name="sizePolicy">
                                 <sizepolicy>
@@ -251,8 +217,8 @@ This setting will enable audio on the three hosts desktop,laptop and kitchen, an
 </widget>
 <customwidgets>
     <customwidget>
-        <class>QScrollView</class>
-        <header location="global">qscrollview.h</header>
+        <class>HostList</class>
+        <header location="local">HostList.h</header>
         <sizehint>
             <width>100</width>
             <height>30</height>
@@ -264,19 +230,16 @@ This setting will enable audio on the three hosts desktop,laptop and kitchen, an
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
         </sizepolicy>
-        <pixmap>image1</pixmap>
+        <pixmap>image0</pixmap>
     </customwidget>
 </customwidgets>
 <images>
     <image name="image0">
-        <data format="XPM.GZ" length="24419">789cdd9bd9721b39b286effb291c8dbb8e098cc49d71e25c68b3168bda2d4b3a3117092e5aacc5d666c913f3ee07f96551aca2b88aa4da1efed1ee48a10ac05fb902a8fae75f1f8e766a1ffefae71f77f7727f5eff503f93db0f7f351eaeae9effef5ffffbef3ffe9c9f9bfba0ffe50a950fb93ffff1c79ffeee43fd839be387bc883caf50593690730a95dd2d725e817c855c5070bfb51715c8a7c82505f213725941ff47c81505fd5590ab0ae4802c0aee3f430e0ae405e4ba02790db9a150393c203715f457436e2918bfa132748d7f0b991ff233724ec1f53f91f30ada4d2e28e8ff337251c1f5825c52d07e8d5c56d07e815c5120ef205715f49f431605f2397250c00f7dcdd715dc6ffd3714c807c84d05e35b7f2d05ede803f5c23fa03fe81aff26323f64facbe515f4b7825c50d0be8f5c54d08e7e732505e32d239715b4f3fc72150532cf3b5755309f556451d0cef3cc0505fdcd23d7158cbf84dc5070bd8dd754d0cef3ceb514f47fa932e66cfa2f22a360eeff810c61c6e379e4f971ff237241417b09b9a8403e462e2990795ef9b282f1b0bf7c45819c471605e3e39ff9a040c6def37505e37f436e28e81ffde59b0afafb8edc52d0beae32ee0a5fc7f3c27c8d2fd7a34ef3f7436408723ffe5ce087ccf32a14155c4fbc289414b4ef229715b463af858a82f62a7255c17c6d7ea2e07afcb71014b47f45ae2be08f3f171a0aaec7ff0b4d05fdef21b714c8c417c293e91bfbc25d8d3ffac47ce11fd00ff4e01b783e457edc8f7d144b0afa3f412e2bb89e7855ac28b8be8e5c5520631f4551703f7c8b41818cbf16eb0afac3ff8b0d05ed36dfa602b980dc52c0674b65c2aff1e579108ee01b980fee697cf117ccd5ec1b7da04e8b6ff83774cdbee790f921f3fc4b6505d713cf4a1505fd613fa5aa8276fcb1240aee471fa5a0e07aecbf545720131f4a0d0532fe586a29b8ff5e65d28bf13599804b3bf199f0637c79feb8a3c573e201e66afa862fea347d13cfa0677cf18f323fdaf1ff7245c1fd367e55814c3e2b8b0299785d0e0a9e07fccb7505fd130fca0d05ed65e496827664d2a7f1251e924e8cef3632019676fc937063feccf3c51dcd9fb167d465fcbe204388fb997f851ff3c7be2a5505f3231e5444413bf1ba5257207f446e2890d17fa5a9603c9e7fa5a5a07d5365ca01f809fe4f7ab4fc44fc235d587c261e54f30aeee779105e8c9f47c601992ffe84395a7d42bc425d66bff82ff42c3fe13f557e5c8fbf544541ffd40fd5a0e07aecab5a5720e36fd58682f939e4a68276fca3da52d08ebe287f2c5ec38772c0f863cfa4478bd7d81be9c3f4cbf326bcc03790bf7137ab47181f7334fd52cfa13ee38b3ea067fab5fef8d1ff0d7250d08e3ea4ae603c9e873414c83c3f692a906dbc9682fbb157ca3be34b7d42b963f10aff23fd9b3d7f422641723df3215d98ff922f09a7e6bfc467c20bfc03f68dfb59bcb6fe2a0a64eb0f85d23ff900ba66dfd61f3f64e25fa82b180ffb0f0d05cf8bf8159a0aaec7de424b41ffc45bca59abc788af9477a66fe229e58ed93bfe483960f64e3d45ba307de3cf844fd337f189f062fa26dfe09e968ff167ccd5e215fa409da66ff21ff42c1f937feafc68c7beeb0d05f753efd49b0aae27dfd75b0aae27be52ae9bbe69a77cb57c4cfca39c33bed80be58ed937f504e9dfea4fec93f468fca96f4817a66fec89706afc892f8423cbcf3c6fdcd3f44d3ec57cadfe361985d28efd40d7ec1d7f6cf0637e367e53816ce3b514f447fc677962fa263e51ae9bbe79fe94afe6dfe43bca3bb377fc9972c7ec9d7c443960f64e7e6896145c8f3f36cb0adab16fc2afe91ffb271c197fec137735fd132f305fab4f889fa8d7ec9dfa0abac69ff8d9e4c7fc88dfcd968276e205cb31d33fcf87e589f1673cca75e3cffc2867cddef107ca3bab4ff047ca1fab4ff07fca038befe88bf469f11d7d936e4cffd83fe1d7e23bf64b78b27a94f9e3aea67ff485391b7f9e3fea85bf271f4117febbc4e7163f93a70fefbcf8e0ebbee19bbee54f23cefcb9bff05ffda5bff2d7b31873fa5cfc8dffe6bffb5b7f37104d7fef1f7e652efed1ff881ae89ef7937ff63ffd825f7cd5b2e497fdcaafc7c57ff4aba9d9aef975bfe13ff9cd686db5e48a2dbfed77fcaedff3fb293e07feb33ffc75b8f82ffee8c5aa4efdb13ff15b43ee98f3f33ef7c227ef377f0d2ebee08bc99cce7cc997336d355f89f3ae467cf465e7336d2bce39b13b5d70f5bf9f8b6bc438a5f359f475d77cf96bcb9d465b5a8aec329e13e77eecce3a71cc79771ebdc9f85cb8af7f271777e9ae98c7b5bb499ef6a1fbe6bebbc1716cd1ddb9fbb6d7477d3d246c1e87d9e6ecb8c4593367f7a3ad11f7e49e33b35e733fdd825bf4eb6ec92dfb4c9b5b711f5ff8af267f5bcbdae17b7171eb31daeaf81bee13f266cc8ded79d6dc9673316ed5b2f7f81bb7ed7662846e33faea7693def692e7b2fffe5cdc81fbccd887fe0bf21777d4ce83eed89d0cbc77cecdb7e3b2cbb97cc273d962ba3b7b5f2efe30e676b25da29342ac50741e577edecd8dd4c38a2b9a5e7dcb95128e65faa8b8ea7b72119fcc029d888b354994e302398cd54bdd9163a4e1f11c5fb32820cdb778cddbb8c442b7c1982d66702856b7e45c61dc9e620cb378702058969ccb053dbf213abf91cb45e22978b65c329b05b91abf276523d7dcffc364b9417a966fefc1c55fab9dbb5b9bbb6bc6aa5199cdbf8509b34faa6a97cc5e90e4ee3db8c83d632515bb3c5a5e782b13faf8418f4f962905ab939f161f67c94516a859166551255f202b3cc9d2245cfc962c33ffc4e36505e9e3acb978ab59922a5dc8d7329156146e3bc935f87cccb2daebfaacb9b8c78e77c882ab515d1526e512ebe9a58ecfc45c1afb950df9343b2eb229b5c4d3f7fd95dbcdea68328855dbeb31c26fc9b6ecd0f356f49d917b1f9d8b7f905dd9c8d486abb2c7ffa7c044773b5c455772925e73aaa51df86fa3ada347e3e2becae72c0f4639c4c29e7c651a5cdad62b5f5eaf11621d50980e9768bdc9fa428ee4584e642ea9c5f8d7c508e6abf2204d3b65e886fb213957926f92f7f9de57c49a6e3156a3de5bad6a367c2d6b5290a25501113f6568fd3c9c4bf4caa49297922fd92986548c19ff6ebbcb1e7b2f19c4bcba33f88ad84fd56fa3fb53b3ac64a4b29cd8dad47d0e436ab4e15c02f131e693bd97de132ec93cef5d1836cfd110c4ad74bca4339abfb7359cac77af86c6e3220b49ad779a6292e6b2188c49d3dfcb612ff87b5bd7c851a8f7b9e228462f7d2a3f43a317172987a6d940684dc4e5233defb8726f2e51f3d8443893723f045bd948ff2be2b3573bba8dbc7a7289a89a6626e1e28fe97bb5abe70e97e71809749487fef3745b5cb93c90cb9aaee3c2453f2e6e5523b6bb0d03d60243b9ecd3f3613f2ee132cd259c6621f7afb8dc775fe3525ca4d6572f65abd8fcce045c9e19a3bbdf3e5cdc55167ea99b4b8cbf5dd7483ec5e5eb002e584818b0461acae59c1896efc7c5e7a66a63d7fdb978ec2fdcbc9d4bf846cf737db92cc6f83f352ed6576f2e0e9e83f2ff50bdccd3f34a5f2e7756df86ef03e6799c4489fe6ccbc4dc27db01e9c965cde2e9a04a7328974dcdc5316f6723592aefdbf312dd27deea0579b0fdfcb866fbdae78a42ac286ca68b307ac5c59583ad9b07d6cc23e47dcb0e9f5fea97172e8e6c1047f999d2d20470a691ee1a26c22cddd5da7b9c6fe5e2762df3c7ac7897e512ee695994960c61131ec2e310268b317e93fd2d2e77b8c495c571d28b1b3cd351eae4f0c32aae1841ef2c63247a59b55d8c10e4dc15e5d1debee946d46b702d76fff77b5f21b958ff6c05af3b07ae16523616e3da6a7b3f3d3c0f9be768eb97f0b353e7461d3445122efb1697a771e668f1d8ed788bcb4ffec0e7ec3c44b5166bb6a1ebcb51d795ae15e365d7d9a95b8d33b0d5ffe5a44cfc177b3ef1e95c67478968868551fa1867bd2f75590b099f58193d6a0e76b6b6187b5feed5b3628de4e29ce52cc6bba4969123b7e1e647d5fa1bf6c73ef98f21d9dd8f733849ecad340993b8deb3f892ec88392f9b72254be3d9ee14ce2b3967088d89fab09df6ebc9fc6e722efe467366ac3f2638d5b69c122e269bc934cec4c3f26831b3effdb6326ef921f9e33db8f84d324365bc5dc614173b373f9a741ed379ef22d9d97ad3fe6578b227e106aee5df8f8bd4c93d676fd18c58e539a1af4c8f4bd48c9d338e7f5fd5ce3c86ed7dbd2717d9679feed68f79669244b037c78d597069db8aec0ede8fcbc27db45a5ece7f2d2eae19b0b3d1df376aaf26c298ba9c3d979733ff8530d2795f5c0518f71f93bd9d341b2e7176b6d25c1dc5663ceb625719d7c3de878b9ed5db9b24b22243de69f1edfdf4e5e98d3eedf7605d29396178eeffbce35a2579c36afc18fe9e5c621e5f73c92e8de45f6bc7d7c242b29b7a17d6a7f3cee8ecb8e88adab5d7860be13c6cf8aa7c12e7be8485105ede945b74abe344efbf8b8baed7dcc07d17b90e6fac43df9f8bc2ad4bf1f5792dabf74d1969fdfeeb7051f8b29b9747df941db99083500b5b617bba3ef27e5c14eecbcb0ee19bdec91a9f8bdb0c7e92f769e9c3fb9bd7fe3c888baf45cfeaaa90c3cea0b3af5ef02bb6376bdfd48406eba1208f9db7a507de5d934b837bd9b3f09bec071e84ae3ddffe5c24e8a9acbb76a95348771c67b228d5ecdbe783661244cf3b7c43cee0928a39b1e711dedbf42f67a421a924dd89b4e3f06d76e7af1f97b0d77e2b40a4bd431576dbef68bbdc286f71c5aa69ff25369ef02d50e67c5e1add4f76142e3ef52e82bbf2a959f7e612aed25fc8b4470cfba95e86b2893a594ecddcbe4beb8e9aa7c376d45f730957e91edc553818c4c56d67dfd4689f424a262bb99c1bf0669f3fb4d3c50e7a72d17e0666e51e5c5a5df7df3ad78f4bb4aeaeb7fddbef20c843774eedc7267aec5cf79cd35ce429fd454138ebffbee3702e1d4bebe61235f8eaed997e5ca8103ef71adff578bf26c3652eecb9f44964def739b51d850bfbe707dd5cb27e329c4b2fddbcb6ae5e5c78e3ed22359b9cef19d5067191d4bb3eeeca7d4c73c9e8e4c9ce537b72b94d47812c1b5f73a919cab2ecf6e3a2ef21fad4b5e1a1d7d9c7202eeec94b9a8dfc78e172d761224761c13df5e712fde13035e383b6a5f9c390b250590e8752e8cf255ac5a750eb5c1f2de5d53edc602eb13dc526d697b00967296f7cf29ff45b99415cb211dad874eb24c4da6e3017aa91fbb425c638be350e17566419365926f60dd3302e719ca3ce1ce4c017daeb51c6390a54a9c3b8d0cf723adec87afa3c7a38976e36a9eaff2924d63f9c4bec25f54c25c5accd64342e7c77943eeb3ee87c37380a173d214a8f9ee034bcece78fc225f67cfcaa8f381777d06e1f8d0b5fe8a46db6116ec6e112ff7a9289f1fa6453df2b8dc625ab1bb0df61323a9738eb8afb9ed2ec953b1f878bb2b177b3c159c8648a51b9c42b537e1256d34cc6e1a2ab83d0ecf414fbda8f4c46e6125be6fc52accad7dc72f71a7f742e7a6df8e67f462fb9eefe2e661c2ef494a9a0dc63d8199d4bfff5cb385cfa635c2e71ae3721555fc8caefcc45bf030fbd2aa9df928bee7a75f4f1bb736125bc97e5d2bee7f7e3a25f5cf82c9bf6faea57e1726f70239d84c455f6a6bdfb261be1f9a5d6f845b88c7a578acf8a6c859b74cefa7db9f4e4573374ff7df05e5ff69eb63cce0940e79e77d8836dba3d43789abcb7419835175f0ef36dbdf80d799ef699cbfb71f137d2b1307b3b7726a715592e72e65ad38638dfe3bdf7b0348391ced25cc2ebef1a2686db1bfdaf93c17649df9f8b7cf5e1bf86cba52bfeb7707103be2c9b0e175708dbd3862c868b1e5cd6a73f927d1533e398bce9e7bb989cce2ec3cc3c5756e52ec5647e36a7e1efc3257ae2d77012b5b12c37616996593f72f9cffffcf1ff1f402b57</data>
-    </image>
-    <image name="image1">
         <data format="PNG" length="1002">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b000003b149444154388dad945f4c5b551cc73fe7dc4b7b4bcba0762d45c43114323599ee6192609c51d883892ce083f1718b3ebb185f8dc91e972cf39d2d2a2f1af664b6f1e0fe3863a0718969700eb0c52142da0242a1bd6d696f7bcff101585203ceb8fd9ece39f99dcff9fe7edf939f88c562ec465f5f9fe609442c161362173c3e3eae7b7a7ac8e7f36432196cdbfe4f907c3e4f2291201e8fe338cec3737357e9e8e828aded1e229d650e1f2d51754b082110124c13a4dc5ea341eb9dc284c0558a853f3ce8cb0677ef500fde7d39d2596679e326597b8e9abb85d7a770ab16ab6983ec5a05b487a70e36f0f4e10afe408d6a558310980108478dba4a1e8233990c5d474b64ed39aa3a8fe5f3317fbf81dbd70bccfeb205947632fd74f6589c1c6ea2f70d03a58ba0c1f2c9bdc1b66de3b8256a6e11cbe7e3ee1d181b590124fe2693aeee08d223c82c3a2c24b7b874bec8f26288774f7bd054504aef0dde6e99c0eb83f9fb266323cb80a27fb0958141836044605a2ee5523393371cc646fee2da37195aa35d0c0c5b4859ac03d7e91712dcaac5adab3650a3ff9d08ef7dd8404bb48869e5d958b5b87dadc4c9a1464e9f0d0326df7ebd86bd2e310cb1bf62d384d59441f2d70a070e1c60e09489929b988681bdd9cc97170bcc4c65595f71f8e0e3301337fc24a7732467831875a47f289652b0be5e4151e6d07316c1b0c0340d8ab92023e76d66a6b2840e36d2fb7a13fee632475e6edc367ea98a90fb98b7dd6310ca0328a44761582e1bab41befabcc0ec940d28bc5e93b68e064cab84e1d9beaeb48934eac1f53b01c1b000fca496aa54b61a99fcde61662a4b4b4b23d1680be9d426173e4df3602a48ea411989a4fd590f52a8fd156b05ed9d350e3defe3cfdf4b4c7ce770ea7d3fb9f520afbe1620daeee5c26735d20b9b9cfb6811a754a439e4e5c5639a4caa1e5caf586bfc0197b78702005cb9b4cae4cd3267ce8638fe964bd72b393e39d74928d242617303a756a37f284447770dcdbffc6384a05a85de1306e9a52057c7527c7131c3c42d3f475eb2303c82d4fc3276d6811db37efeb148723082d9b08f79f97c1e5729109a9a28307cc622d2d6cdf52b2b24efe548dedb00142009862cfa879ee1a71f6cec928353511472fbf4389148b0b0e0c108081412458dfe21c9f11351e67e7358595468246d1d1e5e38a6e9e851bc39d84ab502a669331dafec0d8ec7e3e8cb06e1a881d727d1ae40180a434a8c9db129a54126ad48a7358c2b4c5352c8c374bcccdab2bb37d8719cba79fab8211f9df218e0582c261e95f8bfc04f1a1e8bc5c4dfe0a190172af6a9690000000049454e44ae426082</data>
     </image>
 </images>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>qscrollview.h</includehint>
+    <includehint>hostlist.h</includehint>
 </includehints>
 </UI>

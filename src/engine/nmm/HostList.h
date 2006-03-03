@@ -6,8 +6,6 @@
  *                    Saarland University, Germany
  *                    http://www.networkmultimedia.org
  *
- * Maintainer:        Robert Gogolok <gogo@graphics.cs.uni-sb.de>
- *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -24,35 +22,21 @@
  * USA
  */
 
-#include "PixmapToggleButton.h"
+#ifndef HOSTLIST_H
+#define HOSTLIST_H
 
-#include <kglobal.h>
-#include <kiconloader.h>
+#include <klistview.h>
 
-PixmapToggleButton::PixmapToggleButton( QWidget *widget, QString on_pic, QString off_pic)
-  : QPushButton(widget),
-    on_picture(on_pic),
-    off_picture(off_pic)
+class HostList : public KListView
 {
-  setToggleButton( true );
+  Q_OBJECT
 
-  connect(this, SIGNAL( stateChanged (int) ), this, SLOT( stateChanged(int) ) );
+  public:
+    HostList( QWidget*, const char* );
+    ~HostList();
 
-  // default state
-  setOn(true);
-  stateChanged( QButton::On );
-}
+  protected:
+    void contentsMousePressEvent( QMouseEvent *e = 0 );
+};
 
-PixmapToggleButton::~PixmapToggleButton()
-{
-}
-
-void PixmapToggleButton::stateChanged( int s)
-{
-    if ( s == QButton::On )
-      setPixmap( SmallIcon( on_picture ) );
-    else
-      setPixmap( SmallIcon( off_picture ));
-}
-
-#include "PixmapToggleButton.moc"
+#endif 

@@ -94,6 +94,7 @@ bool NmmEngine::init()
   __app = ProxyApplication::getApplication(0, 0);
 
   createEnvironmentHostList();
+  createUserHostList();
 
   return true;
 }
@@ -328,7 +329,8 @@ void NmmEngine::cleanup()
     __display->getParentObject()->removeEventListener(&__endTrack_listener);
     __display->getParentObject()->removeEventListener(&__syncReset_listener);
 
-    __playback->getParentObject()->removeEventListener(&__trackDuration_listener);
+    if( __playback )
+      __playback->getParentObject()->removeEventListener(&__trackDuration_listener);
     __display->getParentObject()->removeEventListener(&__trackDuration_listener);
 
     debug() << "removed event listener for __display" << endl;
@@ -339,7 +341,8 @@ void NmmEngine::cleanup()
     __playback->getParentObject()->removeEventListener(&__syncReset_listener);
 
     __playback->getParentObject()->removeEventListener(&__trackDuration_listener);
-    __display->getParentObject()->removeEventListener(&__trackDuration_listener);
+    if( __display )
+      __display->getParentObject()->removeEventListener(&__trackDuration_listener);
 
     debug() << "removed event listener for __playback" << endl;
   }
@@ -446,6 +449,31 @@ void NmmEngine::createEnvironmentHostList()
   //}
 }
 
+void NmmEngine::createUserHostList()
+{
+  QStringList hosts = NmmKDEConfig::hostList();
+  QStringList audio_list = NmmKDEConfig::audioToggle();
+  QStringList video_list = NmmKDEConfig::videoToggle();
+
+  bool audio = false;
+  bool video = false;
+
+  unsigned int size = hosts.size();
+  for(unsigned int i = 0; i < size; i++ ) {
+    if( audio_list[i] == "1")
+      audio = true;
+    else 
+      audio = false;
+
+    if( video_list[i] == "1")
+      video = true;
+    else 
+      video = false;
+
+    tmp_user_list.append( NmmLocation( hosts[i], audio, video, /* TODO: volume */0) );
+  }
+}
+
 void NmmEngine::stop()
 {
   DEBUG_BLOCK
@@ -454,7 +482,6 @@ void NmmEngine::stop()
 
   __state = Engine::Empty;
   emit stateChanged(Engine::Empty);
-
 }
 
 void NmmEngine::pause()
@@ -537,34 +564,37 @@ void NmmEngine::setVolumeSW(uint percent)
 
 QStringList NmmEngine::getSinkHosts( bool audio )
 {
+  QStringList hosts;
+  // TODO: redundant code...
+
   // read locations from environment variable
   if( NmmKDEConfig::location() == NmmKDEConfig::EnumLocation::EnvironmentVariable )
   {
-    QString hosts;
+    for( QValueList<NmmLocation>::Iterator it = tmp_environment_list.begin(); it != tmp_environment_list.end(); ++it ) {
+      if( audio && (*it).audio() )
+        hosts.append( (*it).hostname() );
+      else if( !audio && (*it).video() )
+        hosts.append( (*it).hostname() );
+    }
+    //debug() << "locations from environment variable are => " << hosts << endl;
+    return hosts;
 
-    if( audio )
-        hosts = getenv("AUDIO_HOSTS"); // TODO createEnvironmentHostList does the logic, replace this
-    else
-        hosts = getenv("VIDEO_HOSTS"); // TODO createEnvironmentHostList does the logic, replace this
+  } 
+  // read locations from host list
+  else if( NmmKDEConfig::location() == NmmKDEConfig::EnumLocation::HostList )
+  {
+    for( QValueList<NmmLocation>::Iterator it = tmp_user_list.begin(); it != tmp_user_list.end(); ++it ) {
+      if( audio && (*it).audio() )
+        hosts.append( (*it).hostname() );
+      else if( !audio && (*it).video() )
+        hosts.append( (*it).hostname() );
+    }
 
-    if( hosts.isEmpty() ) { // environment variable not set
-      debug() << "environment variable empty." << endl;
-      return QStringList();
+    return hosts;
   }
 
-    debug() << "locations from environment variable are => " << hosts << endl;
-
-    return QStringList::split(":", hosts );
-
- } // read locations from host list
- else if( NmmKDEConfig::location() == NmmKDEConfig::EnumLocation::HostList )
- {
-   // TODO: only toggled locations
-    return NmmKDEConfig::hostList();
- }
-
   // localhost only
-  return QStringList();
+  return hosts;
 }
 
 Result NmmEngine::setProgress(u_int64_t& numerator, u_int64_t& denominator)

@@ -65,11 +65,6 @@ class NmmConfigDialog : public amaroK::PluginConfig
     void removeHost();
 
     /**
-     * Selects a HostListItem as selected item.
-     */
-    void selectHostListItem( HostListItem* );
-
-    /**
      * Called when a radio button in audioGroup was clicked.
      */
     void clickedAudioGroup( int );
@@ -82,17 +77,6 @@ class NmmConfigDialog : public amaroK::PluginConfig
     void addHostListItem( QString hostname, bool audio = true, bool video = true, int volume = 0, bool read_only = false );
 
     /**
-     * Fills tmp_environment_list
-     * Takes environment host list from nmm engine.
-     */
-    void createEnvironmentHostList();
-
-    /**
-     * Fills tmp_user_list
-     */
-    void createUserHostList();
-
-    /**
      * Fills host list with HostListItems by reading
      * tmp_environment_list or tmp_user_list.
      */
@@ -102,16 +86,6 @@ class NmmConfigDialog : public amaroK::PluginConfig
      * Returns all locations in the host list.
      */
     QStringList hostList() const;
-
-    /**
-     * Returns audio toggle states for every host.
-     */
-    QStringList audioHostList() const;
-
-    /**
-     * Returns video toggle states for every host.
-     */
-    QStringList videoHostList() const;
 
     /**
      * Clears current host list.
@@ -135,11 +109,6 @@ class NmmConfigDialog : public amaroK::PluginConfig
      * NULL if none selected.
      */
     HostListItem *current_host;
-
-    /**
-     * Currently showed items in host list scrollview.
-     */
-    QPtrList<HostListItem> m_hosts;
 
     typedef QValueList<NmmLocation> NmmLocationList;
 

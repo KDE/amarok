@@ -25,50 +25,37 @@
 #ifndef HOSTLISTITEM_H
 #define HOSTLISTITEM_H
 
-#include <qcolor.h>
-#include <qlabel.h>
-#include <qstring.h>
-#include <qwidget.h>
+#include <klistview.h>
 
-class ServerregistryPing;
-class PixmapToggleButton;
+class HostListItem : public KListViewItem {
+  public:
+    enum Column
+    {
+      Hostname = 0,
+      Video,
+      Audio,
+      Volume,
+      Status
+    };
 
-class HostListItem : public QWidget {
-    Q_OBJECT
-    
-    public:
-        HostListItem( QWidget *, QString _hostname, bool _audio = true, bool video = true, int volume = 0 );
-        ~HostListItem();
+    HostListItem( QListView*, QString hostname, bool audio = true, bool video = true, int volume = 0, bool read_only = false);
+    ~HostListItem();
 
-        void setHighlighted( bool = true );
-        QString hostname() const;
+    bool isVideoEnabled() const { return m_video; }
+    void toggleVideo() { m_video = !m_video; }
 
-        bool isAudioEnabled() const;
-        bool isVideoEnabled() const;
+    bool isAudioEnabled() const { return m_audio; }
+    void toggleAudio() { m_audio = !m_audio; }
 
-    protected:
-        void mousePressEvent ( QMouseEvent * );
+    void updateColumn( int column ) const;
 
-    signals:
-        void pressed( HostListItem* );
+  protected:
+    void paintCell( QPainter * p, const QColorGroup & cg, int column, int width, int align );
 
-    private slots:
-        
-        void registryAvailable( bool );
 
-    private:
-        /**
-         * Calculates background color.
-         */
-        QColor calcBackgroundColor( QString, QColor );
-        
-        QLabel *statusButton;
-        QLabel *hostLabel;
-
-        PixmapToggleButton *audio;
-        PixmapToggleButton *video;
-
-        ServerregistryPing *registry;
+  private:
+    bool m_audio;
+    bool m_video;
 };
 
 #endif

@@ -40,6 +40,9 @@ using namespace NMM;
 
 class NmmLocation;
 
+/**
+ * \todo currently every song/video change means a stop and restart of the NMM environment.
+ */
 class NmmEngine : public Engine::Base
 {
 Q_OBJECT
@@ -60,6 +63,10 @@ public:
 
     QValueList<NmmLocation> environmentHostList() const {return tmp_environment_list;}
     void setEnvironmentHostList(QValueList<NmmLocation> list) { tmp_environment_list = list;}
+
+    QValueList<NmmLocation> userHostList() const {return tmp_user_list;}
+    void setUserHostList(QValueList<NmmLocation> list) { tmp_user_list = list;}
+
 
     static NmmEngine* instance() { return s_instance; }
 
@@ -86,9 +93,20 @@ protected:
 
 private:
 
+    /**
+     * Resets current NMM environment and other configurations.
+     */
     void cleanup();
 
+    /**
+     * \todo document
+     */
     void createEnvironmentHostList();
+
+    /**
+     * \todo document
+     */
+    void createUserHostList();
 
     /**
      * Returns sink locations for audio/video playback.
@@ -195,7 +213,12 @@ private:
      * Environment variables host list.
      * Only read on startup, volume can be changed via settings dialog.
      */
-     QValueList<NmmLocation> tmp_environment_list;
+    QValueList<NmmLocation> tmp_environment_list;
+
+     /**
+      * User host list.
+      */
+    QValueList<NmmLocation> tmp_user_list;
 
     static NmmEngine* s_instance;
 };

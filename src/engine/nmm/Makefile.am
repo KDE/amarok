@@ -16,8 +16,8 @@ libamarok_nmmengine_plugin_la_SOURCES = \
     nmm_engine.cpp \
     nmm_configdialog.cpp \
     nmm_configdialogbase.ui \
+    HostList.cpp \
     HostListItem.cpp \
-    PixmapToggleButton.cpp \
     ServerregistryPing.cpp \
     nmm_kdeconfig.kcfgc
 
