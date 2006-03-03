@@ -126,8 +126,8 @@ class ScriptManager : public KDialogBase, public EngineObserver
         void slotAboutScript();
         void slotShowContextMenu( QListViewItem*, const QPoint& );
 
-        void slotReceivedStderr( KProcess*, char*, int );
         void slotReceivedStdout( KProcess*, char*, int );
+        void slotReceivedStderr( KProcess*, char*, int );
         void scriptFinished( KProcess* process );
 
     private:

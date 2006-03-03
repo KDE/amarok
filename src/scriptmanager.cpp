@@ -540,7 +540,7 @@ ScriptManager::slotRunScript()
     script->setWorkingDirectory( amaroK::saveLocation( "scripts-data/" ) );
 
     connect( script, SIGNAL( receivedStderr( KProcess*, char*, int ) ), SLOT( slotReceivedStderr( KProcess*, char*, int ) ) );
-    connect( script, SIGNAL( receivedStdout( KProcess*, char*, int ) ), SLOT( slotreceivedStdout( KProcess*, char*, int ) ) );
+    connect( script, SIGNAL( receivedStdout( KProcess*, char*, int ) ), SLOT( slotReceivedStdout( KProcess*, char*, int ) ) );
     connect( script, SIGNAL( processExited( KProcess* ) ), SLOT( scriptFinished( KProcess* ) ) );
 
     if( !script->start( KProcess::NotifyOnExit ) ) {
@@ -679,13 +679,14 @@ ScriptManager::slotShowContextMenu( QListViewItem* item, const QPoint& pos )
     }
 }
 
-/* This is just a workaround, some scripts crash for some people if stdout is not handled.
-   Anyway, printing out the output of scripts can be usefull. */
+
+/* This is just a workaround, some scripts crash for some people if stdout is not handled. */
 void
-ScriptManager::slotReceivedStdout( KProcess* process, char* buf, int len )
+ScriptManager::slotReceivedStdout( KProcess*, char* buf, int len )
 {
-    debug() << buf << endl;
+    debug() << QString::fromLatin1( buf, len ) << endl;
 }
+
 
 void
 ScriptManager::slotReceivedStderr( KProcess* process, char* buf, int len )
