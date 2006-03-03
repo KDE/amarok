@@ -69,7 +69,6 @@ XineEngine::XineEngine()
         , m_preamp( 1.0 )
         , m_stopFader( false )
 {
-    addPluginProperty( "StreamingMode", "NoStreaming" );
     addPluginProperty( "HasConfigure", "true" );
     addPluginProperty( "HasEqualizer", "true" );
     #ifndef __NetBSD__  // NetBSD does not offer audio mixing

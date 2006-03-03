@@ -5,14 +5,6 @@ INCLUDES = \
     -I$(top_srcdir)/amarok/src \
     $(all_includes)
 
-if with_arts
-    ARTS_ENGINE_SUBDIR = arts
-endif
-
-if with_gst
-    GST_ENGINE_SUBDIR = gst
-endif
-
 if with_gst10
     GST10_ENGINE_SUBDIR = gst10
 endif
@@ -47,10 +39,8 @@ METASOURCES = \
 
 SUBDIRS = . \
     void \
-    $(GST_ENGINE_SUBDIR) \
     $(GST10_ENGINE_SUBDIR) \
     $(XINE_ENGINE_SUBDIR) \
-    $(ARTS_ENGINE_SUBDIR) \
     $(AKODE_ENGINE_SUBDIR) \
     $(MAS_ENGINE_SUBDIR) \
     $(NMM_ENGINE_SUBDIR) \

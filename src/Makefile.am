@@ -123,7 +123,6 @@ libamarok_la_SOURCES = \
     smartplaylisteditor.cpp \
     socketserver.cpp \
     statistics.cpp \
-    streamprovider.cpp \
     systray.cpp \
     tagdialog.cpp \
     tagdialogbase.ui \

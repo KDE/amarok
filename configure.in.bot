@@ -146,8 +146,6 @@ if test x$no_engine = xyes; then
     echo " ="
     echo " = No suitable multimedia framework was detected. You need to install at least"
     echo " = one of the supported frameworks as detailed in the amaroK README."
-    echo " = If you are thinking, 'I have aRts you stupid configure!', then you probably"
-    echo " = need to install kdemultimedia-devel."
     echo " ="
 fi
 
@@ -174,16 +172,12 @@ else
     echo " = The following extra functionality will NOT be included:"
 
 
-    if test x$build_arts != xyes -o x$have_kdemm != xyes; then
-        echo " =   - aRts-engine"
-    fi
-
     if test x$build_akode != xyes; then
         echo " =   - aKode-engine"
     fi
 
-    if test x$have_gst != xyes; then
-        echo " =   - GStreamer-engine"
+    if test x$have_gst10 != xyes; then
+        echo " =   - GStreamer0.10-engine"
     fi
 
     if test x$build_xine != xyes; then
@@ -247,16 +241,8 @@ else
     echo " = The following extra functionality will be included:"
 
 
-    if test x$build_arts = xyes -a x$have_kdemm = xyes; then
-        echo " =   + aRts-engine"
-    fi
-
     if test x$build_akode = xyes; then
         echo " =   + aKode-engine"
-    fi
-
-    if test x$have_gst = xyes; then
-        echo " =   + GStreamer-engine"
     fi
 
     if test x$have_gst10 = xyes; then

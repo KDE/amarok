@@ -64,8 +64,6 @@ KDEMMEngine::KDEMMEngine( )
 {
     kdDebug() << k_funcinfo << endl;
     m_player = new SimplePlayer();
-
-    addPluginProperty( "StreamingMode",  "NoStreaming" );
 }
 
 

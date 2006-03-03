@@ -21,7 +21,6 @@
 #include "playlistloader.h"
 #include "pluginmanager.h"
 #include "statusbar.h"
-#include "streamprovider.h"
 
 #include <qfile.h>
 #include <qtimer.h>
@@ -58,7 +57,6 @@ EngineController::EngineController()
         , m_xFadeThisTrack( false )
         , m_timer( new QTimer( this ) )
         , m_playFailureCount( 0 )
-        , m_stream( 0 )
 {
     m_voidEngine = m_engine = (EngineBase*)loadEngine( "void-engine" );
 
@@ -96,8 +94,8 @@ EngineController::loadEngine() //static
         PluginManager::unload( oldEngine );
 
         // the engine is not required to do this when we unload it but
-        // we need to do it to ensure amaroK looks correct and to delete
-        // m_stream. We don't do this for the void-engine because that
+        // we need to do it to ensure amaroK looks correct.
+        // We don't do this for the void-engine because that
         // means amaroK sets all components to empty on startup, which is
         // their responsibility.
         slotStateChanged( Engine::Empty );
@@ -311,27 +309,12 @@ void EngineController::play( const MetaBundle &bundle )
 
     const KURL url = bundle.url();
     debug() << "Loading URL: " << url.url() << endl;
-    // Destroy stale StreamProvider
-    delete m_stream;
     m_lastMetadata.clear();
 
     //TODO bummer why'd I do it this way? it should _not_ be in play!
     //let amaroK know that the previous track is no longer playing
     if ( m_timer->isActive() && m_bundle.length() > 0 )
         trackEnded( m_engine->position(), m_bundle.length() * 1000 );
-
-    if ( url.protocol() == "http" ||
-       ( url.protocol() == "zeroconf" && url.path().section( '/',1,1 ) == "_shoutcast._tcp" ) ) {
-        amaroK::StatusBar::instance()->shortMessage( i18n("Connecting to stream source...") );
-
-        if ( engineProperty( "StreamingMode" ) != "NoStreaming" ) {
-            m_bundle = bundle;
-            // Detect mimetype of remote file
-            KIO::MimetypeJob* job = KIO::mimetype( url, false );
-            connect( job, SIGNAL(result( KIO::Job* )), SLOT(playRemote( KIO::Job* )) );
-            return; //don't do notify
-        }
-    }
 
     if ( url.isLocalFile() ) {
         // does the file really exist? the playlist entry might be old
@@ -341,6 +324,9 @@ void EngineController::play( const MetaBundle &bundle )
             goto some_kind_of_failure;
         }
     }
+    else
+        amaroK::StatusBar::instance()->shortMessage( i18n("Connecting to stream source...") );
+
 
     if( m_engine->load( url, !url.isLocalFile() ) )
     {
@@ -501,66 +487,24 @@ EngineController::bundle() const
 // PRIVATE SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
 
-//TODO Get rid of playRemote() and the whole StreamProvider. Streams must be handled in the engines.
-//     Engines that fail to do this must be removed.
-
-void EngineController::playRemote( KIO::Job* job ) //SLOT
+void EngineController::slotEngineMetaData( const Engine::SimpleMetaBundle &simpleBundle ) //SLOT
 {
     DEBUG_BLOCK
 
-    const QString mimetype = static_cast<KIO::MimetypeJob*>( job )->mimetype();
-    debug() << "Detected mimetype: " << mimetype << endl;
+    if ( m_bundle.url().isLocalFile() )
+        return;
 
-    const KURL url = static_cast<KIO::MimetypeJob*>( job )->url();
+    MetaBundle bundle = m_bundle;
+    bundle.setArtist( simpleBundle.artist );
+    bundle.setTitle( simpleBundle.title );
+    bundle.setComment( simpleBundle.comment );
+    bundle.setAlbum( simpleBundle.album );
 
-    debug() << "MimetypeJob returned with url: " << url.prettyURL() << endl;
+    if( !simpleBundle.genre.isEmpty() )
+        bundle.setGenre( simpleBundle.genre );
+    if( !simpleBundle.bitrate.isEmpty() )
+        bundle.setBitrate( simpleBundle.bitrate.toInt() );
 
-    const bool isStream = mimetype.isEmpty() || mimetype == "text/html" ||
-                          url.host().endsWith( "last.fm" ); // HACK last.fm uses the mimetype audio/x-mp3
-
-    if( isStream && m_engine->pluginProperty( "StreamingMode" ) != "NoStreaming" )
-    {
-        m_xFadeThisTrack = false;
-
-        delete m_stream;
-        m_stream = new amaroK::StreamProvider( url, m_engine->pluginProperty( "StreamingMode" ) );
-
-        if ( !m_stream->initSuccess() || !m_engine->play( m_stream->proxyUrl(), isStream ) ) {
-            delete m_stream;
-            if ( !amaroK::repeatPlaylist() )
-                next();
-            return; //don't notify
-        }
-
-        connect( m_stream, SIGNAL(metaData( const MetaBundle& )),
-                 this,       SLOT(slotStreamMetaData( const MetaBundle& )) );
-        connect( m_stream, SIGNAL(streamData( char*, int )),
-                 m_engine,   SLOT(newStreamData( char*, int )) );
-        connect( m_stream, SIGNAL(sigError()),
-                 this,       SLOT(slotSigError()));
-    }
-    else if( m_engine->play( url, isStream ) )
-    {
-        // Ask engine for track length, if available.
-        const uint trackLength = m_engine->length();
-        if ( trackLength ) m_bundle.setLength( trackLength / 1000 );
-    }
-    else if( !amaroK::repeatPlaylist() )
-    {
-        next();
-        return; //don't notify
-    }
-
-    newMetaDataNotify( m_bundle, true /* track change */ );
-}
-
-void EngineController::slotSigError()
-{
-    emit orderNext( true );
-}
-
-void EngineController::slotStreamMetaData( const MetaBundle &bundle ) //SLOT
-{
     // Prevent spamming by ignoring repeated identical data (some servers repeat it every 10 seconds)
     if ( m_lastMetadata.contains( bundle ) )
         return;
@@ -576,38 +520,9 @@ void EngineController::slotStreamMetaData( const MetaBundle &bundle ) //SLOT
     newMetaDataNotify( m_bundle, false /* not a new track */ );
 }
 
-void EngineController::slotEngineMetaData( const Engine::SimpleMetaBundle &simpleBundle ) //SLOT
-{
-    DEBUG_BLOCK
-
-    if ( !m_bundle.url().isLocalFile() )
-    {
-        MetaBundle bundle = m_bundle;
-        bundle.setArtist( simpleBundle.artist );
-        bundle.setTitle( simpleBundle.title );
-        bundle.setComment( simpleBundle.comment );
-        bundle.setAlbum( simpleBundle.album );
-
-        if( !simpleBundle.genre.isEmpty() )
-            bundle.setGenre( simpleBundle.genre );
-        if( !simpleBundle.bitrate.isEmpty() )
-            bundle.setBitrate( simpleBundle.bitrate.toInt() );
-
-        slotStreamMetaData( bundle );
-    }
-}
 
 void EngineController::slotMainTimer() //SLOT
 {
-    // Ask engine for track length and update if it has changed, so that we get
-    // more precise data. The estimated length can change dynamically with VBR
-    // encoded media, since the first frame's bitrate does not represent the whole track.
-    const uint trackLength = (uint) m_engine->length() / 1000;
-    if ( trackLength && trackLength != (uint) m_bundle.length() ) {
-        m_bundle.setLength( trackLength );
-        trackLengthChangedNotify( trackLength );
-    }
-
     const uint position = m_engine->position();
 
     trackPositionChangedNotify( position );
@@ -624,6 +539,7 @@ void EngineController::slotMainTimer() //SLOT
     }
 }
 
+
 void EngineController::slotTrackEnded() //SLOT
 {
     if ( AmarokConfig::trackDelayLength() > 0 )
@@ -639,13 +555,12 @@ void EngineController::slotTrackEnded() //SLOT
     else trackFinished();
 }
 
+
 void EngineController::slotStateChanged( Engine::State newState ) //SLOT
 {
     switch( newState )
     {
     case Engine::Empty:
-
-        delete m_stream;
 
         //FALL THROUGH...
 
@@ -665,14 +580,6 @@ void EngineController::slotStateChanged( Engine::State newState ) //SLOT
 
     stateChangedNotify( newState );
 }
-
-
-void EngineController::streamError() //SLOT
-{
-    delete m_stream;
-    next();
-}
-
 
 
 #include "enginecontroller.moc"

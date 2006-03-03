@@ -17,14 +17,12 @@
 #include "engineobserver.h"
 #include "metabundle.h"
 
-#include <qguardedptr.h>
 #include <qmap.h>
 #include <qobject.h>
 #include <qvaluelist.h>
 
 class QTimer;
 
-namespace amaroK { class StreamProvider; }
 namespace KIO { class Job; }
 
 
@@ -95,14 +93,11 @@ signals:
     void statusText( const QString& );
 
 private slots:
-    void playRemote( KIO::Job* );
-    void slotStreamMetaData( const MetaBundle& );
     void slotEngineMetaData( const Engine::SimpleMetaBundle& );
     void slotMainTimer();
     void slotTrackEnded();
     void slotStateChanged( Engine::State );
-    void streamError();
-    void slotSigError();
+
 protected:
     EngineController();
    ~EngineController();
@@ -126,8 +121,6 @@ private:
     bool            m_isTiming;
     QTimer*         m_timer;
     uint            m_playFailureCount;
-
-    QGuardedPtr<amaroK::StreamProvider> m_stream;
 };
 
 

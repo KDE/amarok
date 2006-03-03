@@ -66,7 +66,6 @@ MasEngine::MasEngine()
 {
     DEBUG_FUNC_INFO
 
-    addPluginProperty( "StreamingMode",  "NoStreaming" );
     // NOT SUPPORTED
     //addPluginProperty( "HasConfigure",   "true" );
     //addPluginProperty( "HasCrossfading", "true" );

@@ -62,7 +62,7 @@ GstBusSyncReply
 GstEngine::bus_cb(GstBus*, GstMessage* msg, gpointer) // static
 {
    DEBUG_FUNC_INFO
-   switch ( GST_MESSAGE_TYPE(msg)) 
+   switch ( GST_MESSAGE_TYPE(msg))
    {
    	case GST_MESSAGE_ERROR:
 	{
@@ -204,7 +204,6 @@ GstEngine::GstEngine()
 {
     DEBUG_FUNC_INFO
 
-    addPluginProperty( "StreamingMode", "NoStreaming" );
     addPluginProperty( "HasConfigure",  "true" );
     addPluginProperty( "HasEqualizer",  "false" );
     addPluginProperty( "HasKIO",        "false" );
@@ -276,7 +275,7 @@ GstEngine::canDecode( const KURL &url ) const
          url.fileName().lower().endsWith( ".wmv" ) )
         return false;
 
-    debug() << "Can decode for " << url.prettyURL() << endl;    
+    debug() << "Can decode for " << url.prettyURL() << endl;
     int count = 0;
     m_canDecodeSuccess = false;
     m_canDecodeLast = false;
@@ -295,8 +294,8 @@ GstEngine::canDecode( const KURL &url ) const
 
     gst_element_set_state( pipeline, GST_STATE_PLAYING );
 
-    // Wait until found audio stream 
-    
+    // Wait until found audio stream
+
     while ( !m_canDecodeSuccess && !m_canDecodeLast && count < 100 ) {
         count++;
 	usleep(1000);
@@ -306,7 +305,7 @@ GstEngine::canDecode( const KURL &url ) const
     gst_element_set_state( pipeline, GST_STATE_NULL );
     gst_object_unref( GST_OBJECT( pipeline ) );
 
-    return m_canDecodeSuccess; 
+    return m_canDecodeSuccess;
 }
 
 
@@ -784,7 +783,7 @@ GstEngine::getPluginList( const QCString& classname ) const
         features = g_list_next ( features );
         }
     gst_plugin_feature_list_free(features);
-    return results; 
+    return results;
 }
 
 

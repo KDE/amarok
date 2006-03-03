@@ -73,7 +73,6 @@ HelixEngine::HelixEngine()
      m_sframes(0),
      m_lframes(0)
 {
-   addPluginProperty( "StreamingMode", "NoStreaming" ); // this means we'll handle streaming (not using KIO)
    addPluginProperty( "HasConfigure", "true" );
    addPluginProperty( "HasEqualizer", "true" );
    addPluginProperty( "HasCrossfade", "true" );
@@ -400,7 +399,7 @@ HelixEngine::cleanup()
    memset(&hscope, 0, sizeof(hscope));
 }
 
-void 
+void
 HelixEngine::stop()
 {
    if (!m_inited)
@@ -410,7 +409,7 @@ HelixEngine::stop()
    cleanup();
    cleanUpStream(m_current);
    m_state = Engine::Empty;
-   emit stateChanged( m_state );   
+   emit stateChanged( m_state );
 }
 
 
@@ -547,8 +546,8 @@ HelixEngine::timerEvent( QTimerEvent * )
    memset(&tz, 0, sizeof(struct timezone));
    gettimeofday(&tm, &tz);
    m_scopedelta = (tm.tv_sec - m_scopetm.tv_sec) * 1000 + (tm.tv_usec - m_scopetm.tv_usec) / 1000; // ms
-   m_scopetm.tv_sec = tm.tv_sec; 
-   m_scopetm.tv_usec = tm.tv_usec; 
+   m_scopetm.tv_sec = tm.tv_sec;
+   m_scopetm.tv_usec = tm.tv_usec;
    hscope[m_current].m_lasttime += m_scopedelta;
 
    HelixSimplePlayer::metaData *md = getMetaData(m_current);
@@ -630,8 +629,8 @@ int HelixEngine::prune(int playerIndex)
    // prune, unless the player is still starting
    while (hpos && hscope[playerIndex].m_item && hscope[playerIndex].m_w > hscope[playerIndex].m_item->etime)
    {
-      //debug() << "pruning " << hpos << "," << hscope[playerIndex].m_w << "," << hscope[playerIndex].m_lasttime 
-      //        << "," << hscope[playerIndex].m_item->time << ":" << hscope[playerIndex].m_item->etime << endl;      
+      //debug() << "pruning " << hpos << "," << hscope[playerIndex].m_w << "," << hscope[playerIndex].m_lasttime
+      //        << "," << hscope[playerIndex].m_item->time << ":" << hscope[playerIndex].m_item->etime << endl;
 
       if (hscope[playerIndex].m_item && hscope[playerIndex].m_item->allocd)
          delete hscope[playerIndex].m_item;
@@ -643,7 +642,7 @@ int HelixEngine::prune(int playerIndex)
 
    if (hscope[playerIndex].m_w < hscope[playerIndex].m_item->time) // wait for the player to catchup
    {
-      //debug() << "waiting for player to catchup " << hpos << "," << hscope[playerIndex].m_w << "," << hscope[playerIndex].m_lasttime 
+      //debug() << "waiting for player to catchup " << hpos << "," << hscope[playerIndex].m_w << "," << hscope[playerIndex].m_lasttime
       //        << "," << hscope[playerIndex].m_item->time << ":" << hscope[playerIndex].m_item->etime << endl;
       return 0;
    }
@@ -694,8 +693,8 @@ int HelixEngine::scope(int playerIndex)
    // convert to mono
    int a;
    // calculate the starting offset into the buffer
-   int off =  (hscope[playerIndex].m_item->spb * (hscope[playerIndex].m_w - hscope[playerIndex].m_item->time) / 
-               (hscope[playerIndex].m_item->etime - hscope[playerIndex].m_item->time)) * 
+   int off =  (hscope[playerIndex].m_item->spb * (hscope[playerIndex].m_w - hscope[playerIndex].m_item->time) /
+               (hscope[playerIndex].m_item->etime - hscope[playerIndex].m_item->time)) *
               hscope[playerIndex].m_item->nchan * hscope[playerIndex].m_item->bps;
    k = off;
    while (hscope[playerIndex].m_item && hscope[playerIndex].m_scopeindex < 512)
