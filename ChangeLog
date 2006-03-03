@@ -11,6 +11,8 @@ VERSION 1.4-beta2:
       Hurrelmann <j@outpo.st>.
 
   CHANGES:
+    * Don't list the <no engine> entry in the engine selection widget, when
+      it's not the active engine. Makes no sense to select this dummy engine.
     * The aRts and GStreamer-0.8 engines have been removed for being obsolete.
     * Automatically skip to the next track in the playlist when a track is
       unplayable. (BR 116555)

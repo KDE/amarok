@@ -99,9 +99,15 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     QToolTip::add( m_soundSystem, i18n("Click to select the sound system to use for playback.") );
     QToolTip::add( aboutEngineButton, i18n("Click to get the plugin information.") );
 
+    /// Populate the engine selection combo box
     KTrader::OfferList offers = PluginManager::query( "[X-KDE-amaroK-plugintype] == 'engine'" );
     KTrader::OfferList::ConstIterator end( offers.end() );
     for( KTrader::OfferList::ConstIterator it = offers.begin(); it != end; ++it ) {
+        // Don't list the <no engine> (void engine) entry if it's not currenty active,
+        // cause there's no point in choosing this engine (it's a dummy, after all).
+        if( (*it)->property( "X-KDE-amaroK-name" ).toString() == "void-engine"
+            && AmarokConfig::soundSystem() != "void-engine" ) continue;
+
         m_soundSystem->insertItem( (*it)->name() );
         // Save name properties in QMap for lookup
         m_pluginName[(*it)->name()] = (*it)->property( "X-KDE-amaroK-name" ).toString();
