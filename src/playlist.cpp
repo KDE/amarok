@@ -651,7 +651,7 @@ Playlist::addSpecialCustomTracks( uint songCount )
         else {
             // if we do not limit the sql, it takes a long time to populate for large collections
             // we also dont want stupid limits such as LIMIT 0, 5 which would return the same results always
-            uint low=0, high=0;
+            uint first=0, limit=0;
             QRegExp limitSearch( "LIMIT.*(\\d+).*(\\d+)" );
             int findLocation = sql.find( limitSearch, false );
             if( findLocation == -1 ) //not found, let's find out the higher limit the hard way
@@ -659,33 +659,30 @@ Playlist::addSpecialCustomTracks( uint songCount )
                 QString counting ( sql );
                 counting.replace( QRegExp( "SELECT.*FROM" ), "SELECT COUNT(*) FROM" );
                 QStringList countingResult = CollectionDB::instance()->query( counting );
-                high = countingResult[0].toInt();
+                limit = countingResult[0].toInt();
             }
             else
             {   // There's a Limit, so we've got to respect it.
                 limitSearch.search( sql );
                 // capturedTexts() gives us the strings that were matched by each subexpression
-                low = limitSearch.capturedTexts()[1].toInt();
-                high = limitSearch.capturedTexts()[2].toInt();
+                first = limitSearch.capturedTexts()[1].toInt();
+                limit = limitSearch.capturedTexts()[2].toInt();
             }
-            if ( high - low < songCount )
+            if ( limit < songCount )
                 // The list is even smaller than the number of songs we want :-(
-                songCount = high - low;
+                songCount = limit;
             else
-            {
                 // Let's get a random limit, repecting the original one.
-                high -= songCount;
-                low += KApplication::random() % ( high-low );
-            }
+                first += KApplication::random() % (limit - songCount);
 
-            if( findLocation == -1 ) //
+            if( findLocation == -1 )
             {
                 QRegExp limit( ";$" );
-                sql.replace( limit, QString(" LIMIT %1, %2;" ).arg( low ).arg( songCount*35 ) );
+                sql.replace( limit, QString(" LIMIT %1, %2;" ).arg( first ).arg( songCount*35 ) );
                 useDirect = false;
             }
             else
-                sql.replace( limitSearch, QString("LIMIT %1, %2" ).arg( low ).arg( songCount ) );
+                sql.replace( limitSearch, QString("LIMIT %1, %2" ).arg( first ).arg( songCount ) );
         }
         QStringList queryResult = CollectionDB::instance()->query( sql );
         QStringList items;
@@ -719,7 +716,7 @@ Playlist::addSpecialCustomTracks( uint songCount )
         // we have to randomly select tracks from the returned query since we can't have
         // ORDER BY RAND() for some statements
         if(!useDirect)
-            for( uint i=0; i < songCount; i++ )
+            for( uint i=0; i < songCount && urls.count(); i++ )
             {
                 KURL::List::iterator newItem = urls.at(KApplication::random() % urls.count());
                 addMe << (*newItem);
