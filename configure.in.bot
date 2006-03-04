@@ -145,7 +145,7 @@ if test x$no_engine = xyes; then
     echo " =================================="
     echo " ="
     echo " = No suitable multimedia framework was detected. You need to install at least"
-    echo " = one of the supported frameworks as detailed in the amaroK README."
+    echo " = the Xine or Helix framework as detailed in the amaroK README."
     echo " ="
 fi
 
