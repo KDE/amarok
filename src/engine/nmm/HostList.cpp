@@ -33,7 +33,9 @@
 HostList::HostList( QWidget *parent, const char *name ) 
   : KListView( parent, name )
 {
+  // TODO: item should be activated on mouse click
   setMouseTracking( true );
+  setAllColumnsShowFocus( true );
 
   addColumn( i18n("Hostname") );
   addColumn( i18n("Video"   ) );
@@ -46,7 +48,6 @@ HostList::HostList( QWidget *parent, const char *name )
   setColumnAlignment( HostListItem::Audio,    Qt::AlignCenter );
   setColumnAlignment( HostListItem::Volume,   Qt::AlignCenter );
   setColumnAlignment( HostListItem::Status,   Qt::AlignCenter );
-
 }
 
 HostList::~HostList()

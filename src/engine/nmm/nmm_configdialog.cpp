@@ -38,7 +38,8 @@
 #include <kcombobox.h>
 
 NmmConfigDialog::NmmConfigDialog()
-    : PluginConfig()
+    : PluginConfig(),
+    current_audio_group_selection(-1)
 {
   kdDebug() << k_funcinfo << endl;
 
@@ -57,7 +58,8 @@ NmmConfigDialog::NmmConfigDialog()
 
   /* connect 'Add...' and 'Remove' buttons */
   connect( m_view->addLocationButton, SIGNAL( released() ), SLOT( addHost() ) );
-  connect( m_view->removeLocationButton, SIGNAL( released() ), SLOT( removeHost() ) );
+  connect( m_view->removeHostButton, SIGNAL( released() ), SLOT( removeHost() ) );
+  connect( m_view->hostList, SIGNAL( selectionChanged() ) , this, SLOT( enableRemoveButton() ) );
 
   /* connect audioGroup selection */
   connect( m_view->audioGroup, SIGNAL( released(int) ), SLOT( clickedAudioGroup(int) ) );
@@ -76,8 +78,8 @@ NmmConfigDialog::~NmmConfigDialog()
 bool NmmConfigDialog::hasChanged() const
 {
   // TODO: observe user list changes
-  return NmmKDEConfig::audioOutputPlugin() != m_view->audioPlaybackNode->currentText() ||
-    NmmKDEConfig::location() != m_view->audioGroup->selectedId();
+  return true; //NmmKDEConfig::audioOutputPlugin() != m_view->audioPlaybackNode->currentText() ||
+//    NmmKDEConfig::location() != m_view->audioGroup->selectedId();
 }
 
 bool NmmConfigDialog::isDefault() const
@@ -87,46 +89,45 @@ bool NmmConfigDialog::isDefault() const
 
 void NmmConfigDialog::save()
 {
-  kdDebug() << k_funcinfo << endl;
+  DEBUG_BLOCK
 
   if( hasChanged() )
   {
-    debug() << "saving changes" << endl;
-
     NmmKDEConfig::setAudioOutputPlugin( m_view->audioPlaybackNode->currentText() );
+    debug() << "saved audio output plugin" << endl;
     NmmKDEConfig::setLocation( m_view->audioGroup->selectedId() );
+    debug() << "saved current location selection" << endl;
 
     /* store volume for AUDIO_HOSTS */
     NmmEngine::instance()->setEnvironmentHostList( tmp_environment_list );
 
-    /* save user host list and toggle sattes for audio, video */
-    saveUserHostList();
+    /* save user host list and toggle states for audio, video */
+    if( m_view->hostListButton->isChecked() )
+      saveUserHostList();
     NmmEngine::instance()->setUserHostList( tmp_user_list );
 
     QStringList hosts;
     QStringList audio_hosts;
     QStringList video_hosts;
-    QListViewItemIterator it( m_view->hostList );
-    HostListItem *host;
-    while( it.current() )
+    NmmLocationList::iterator it; 
+    for( it = tmp_user_list.begin(); it != tmp_user_list.end(); ++it ) 
     {
-      host = static_cast<HostListItem*>( it.current() );
-      hosts.append( host->text( HostListItem::Hostname ) );
-      if( host->isAudioEnabled() )
+      debug() << "saved user host" << endl;
+      hosts.append( (*it).hostname() );
+      if( (*it).audio() )
         audio_hosts.append( "1" );
       else 
         audio_hosts.append( "0" );
-      if( host->isVideoEnabled() )
+      if( (*it).video() )
         video_hosts.append( "1" );
       else
         video_hosts.append( "0" );
       // TODO: save volume
-
-      ++it;
     }
     NmmKDEConfig::setHostList( hosts );
     NmmKDEConfig::setAudioToggle( audio_hosts );
     NmmKDEConfig::setVideoToggle( video_hosts );
+    debug() << "saved user host list with toggle states for audio and video" << endl;
 
     NmmKDEConfig::writeConfig();
   }
@@ -147,19 +148,15 @@ void NmmConfigDialog::addHost()
 
 void NmmConfigDialog::removeHost()
 {
-//  if( current_host ) {
-//    m_hosts.remove( current_host );
-//    //delete current_host; // auto delete
-//    current_host = NULL;
-//
-//    // no item selected, disable remove button
-//    m_view->removeLocationButton->setEnabled( false );
-//  }
+    m_view->hostList->takeItem( m_view->hostList->currentItem() );
+
+    // no item selected, disable remove button
+    m_view->removeHostButton->setEnabled( false );
 }
 
 void NmmConfigDialog::addHostListItem( QString hostname, bool audio, bool video, int volume, bool read_only )
 {
-  HostListItem *item = new HostListItem( m_view->hostList, hostname, audio, video, volume, read_only );
+  new HostListItem( m_view->hostList, hostname, audio, video, volume, read_only );
 }
 
 void NmmConfigDialog::createHostList( bool use_environment_list )
@@ -197,42 +194,49 @@ void NmmConfigDialog::saveUserHostList()
   }
 }
 
-void NmmConfigDialog::clickedAudioGroup( int s )
+void NmmConfigDialog::clickedAudioGroup( int new_selection )
 {
   DEBUG_BLOCK
 
-  static int _s = -1;
-  if( _s == s || s > 2 )
+  if( current_audio_group_selection == new_selection || new_selection > 2 )
     return;
     
   // localhost only, disable host list
-  if( s == 0 ) {
+  if( new_selection == 0 ) {
     m_view->hostList->setEnabled( false );
     m_view->addLocationButton->setEnabled( false );
-    m_view->removeLocationButton->setEnabled( false );
+    m_view->removeHostButton->setEnabled( false );
   }
   // environment host list
   // disable 'Add...' and 'Remove' buttons, load environment host list
-  else if( s == 1 ) {
+  else if( new_selection == 1 ) {
     m_view->hostList->setEnabled( true );
     m_view->addLocationButton->setEnabled( false );
-    m_view->removeLocationButton->setEnabled( false );
+    m_view->removeHostButton->setEnabled( false );
+    m_view->hostList->setSelectionMode( QListView::NoSelection );
 
-    removeHostList( _s == 2 ? true : false );
+    removeHostList( current_audio_group_selection == 2 ? true : false );
     createHostList( true );
   }
   // user host list
   // enable all widgets for host list, load user host list
-  else if( s == 2 ){
+  else if( new_selection == 2 ) {
     m_view->hostList->setEnabled( true );
     m_view->addLocationButton->setEnabled( true );
-    m_view->removeLocationButton->setEnabled( false );
+    m_view->removeHostButton->setEnabled( false );
+    m_view->hostList->setSelectionMode( QListView::Single );
 
     removeHostList();
     createHostList();
   }
 
-  _s = s;
+  current_audio_group_selection = new_selection;
+}
+
+void NmmConfigDialog::enableRemoveButton()
+{
+  // m_view->hostList->setCurrentItem( m_view->hostList->selectedItem() );
+  m_view->removeHostButton->setEnabled( true );
 }
 
 // ###> NmmLocation class ### {{{

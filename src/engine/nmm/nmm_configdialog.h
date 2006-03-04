@@ -69,6 +69,12 @@ class NmmConfigDialog : public amaroK::PluginConfig
      */
     void clickedAudioGroup( int );
 
+  private slots:
+    /**
+     * Enables 'Remove ' host button if a HostListItem is selected.
+     */
+    void enableRemoveButton();
+
   private:
     /**
      * Creates a host item in the host list.
@@ -102,8 +108,6 @@ class NmmConfigDialog : public amaroK::PluginConfig
     
     NmmConfigDialogBase* m_view;
 
-    QWidget* audio_vbox;;
-
     /**
      * Currently selected HostListItem.
      * NULL if none selected.
@@ -122,6 +126,11 @@ class NmmConfigDialog : public amaroK::PluginConfig
      *
      */
     NmmLocationList tmp_user_list;
+
+    /**
+     * Current audio group selection.
+     */
+    int current_audio_group_selection;
 };
 
 class NmmLocation {

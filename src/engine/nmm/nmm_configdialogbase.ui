@@ -167,10 +167,13 @@ This setting will enable audio on the three hosts desktop,laptop and kitchen, an
                                 </widget>
                                 <widget class="QPushButton">
                                     <property name="name">
-                                        <cstring>removeLocationButton</cstring>
+                                        <cstring>removeHostButton</cstring>
                                     </property>
                                     <property name="text">
                                         <string>R&amp;emove</string>
+                                    </property>
+                                    <property name="accel">
+                                        <string>Alt+E</string>
                                     </property>
                                 </widget>
                                 <spacer>

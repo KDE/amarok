@@ -45,7 +45,6 @@ HostListItem::HostListItem( QListView *parent, QString hostname, bool audio, boo
     m_video( video )
 {  
   setText( HostListItem::Hostname, hostname);
-  setText( HostListItem::Status, "OK");
 }
 
 HostListItem::~HostListItem()
