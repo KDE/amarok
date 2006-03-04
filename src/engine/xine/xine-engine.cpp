@@ -257,16 +257,6 @@ XineEngine::play( uint offset )
 
         emit stateChanged( Engine::Playing );
 
-        //HACK Emit two dummy bundles, because the context-browser expects them for
-        //     the stream metadata display.
-        if( isStream() ) {
-            Engine::SimpleMetaBundle bundle;
-            bundle.title = "dummy";
-            emit metaData( bundle );
-            bundle.title = i18n( "Radio Stream" );
-            emit metaData( bundle );
-        }
-
         return true;
     }
 

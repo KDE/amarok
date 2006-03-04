@@ -328,7 +328,7 @@ void EngineController::play( const MetaBundle &bundle )
         amaroK::StatusBar::instance()->shortMessage( i18n("Connecting to stream source...") );
 
 
-    if( m_engine->load( url, !url.isLocalFile() ) )
+    if( m_engine->load( url, url.protocol() == "http" || url.protocol() == "rtsp" ) )
     {
         //assign bundle now so that it is available when the engine
         //emits stateChanged( Playing )

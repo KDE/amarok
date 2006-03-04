@@ -1134,15 +1134,14 @@ bool CurrentTrackJob::doJob()
                 << escapeHTML( currentTrack.streamUrl() )
                 << escapeHTML( currentTrack.prettyURL() ) ) );
 
-        if ( b->m_metadataHistory.count() > 2 )
+        if ( b->m_metadataHistory.count() > 0 )
         {
             m_HTMLSource.append(
                 "<div id='stream-history_box' class='box'>"
                  "<div id='stream-history_box-header' class='box-header'>" + i18n( "Metadata History" ) + "</div>"
                  "<table id='stream-history_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
 
-            // Ignore last two items, as they don't belong in the history
-            for ( uint i = 0; i < b->m_metadataHistory.count() - 2; ++i )
+            for ( uint i = 0; i < b->m_metadataHistory.count(); ++i )
             {
                 const QString str = b->m_metadataHistory[i];
                 m_HTMLSource.append( QStringx( "<tr class='box-row'><td>%1</td></tr>" ).arg( str ) );
