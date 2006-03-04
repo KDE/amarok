@@ -31,7 +31,8 @@
 #include "HostListItem.h"
 
 HostList::HostList( QWidget *parent, const char *name ) 
-  : KListView( parent, name )
+  : KListView( parent, name ),
+    m_read_only( false )
 {
   // TODO: item should be activated on mouse click
   setMouseTracking( true );
@@ -58,6 +59,8 @@ void HostList::contentsMousePressEvent( QMouseEvent *e)
   HostListItem *item = static_cast<HostListItem*>( itemAt( contentsToViewport( e->pos() ) ) );
   if( !( e->state() & Qt::ControlButton || e->state() & Qt::ShiftButton ) && ( e->button() & Qt::LeftButton ) && item)
   {
+    if( !m_read_only ) {
+
     // video column
     if( e->pos().x() > header()->sectionPos( HostListItem::Video ) &&
         e->pos().x() < header()->sectionPos( HostListItem::Video ) + header()->sectionSize( HostListItem::Video ) )
@@ -71,6 +74,8 @@ void HostList::contentsMousePressEvent( QMouseEvent *e)
     {
       item->toggleAudio();
       item->updateColumn( HostListItem::Audio );
+    }
+
     }
   }
   else

@@ -141,7 +141,7 @@ void NmmConfigDialog::addHost()
       QString::null, &ok, NULL);
   if( ok && !hostname.isEmpty() )
   {
-    addHostListItem( hostname );
+    new HostListItem( m_view->hostList, hostname );
     emit viewChanged();
   }
 }
@@ -154,10 +154,6 @@ void NmmConfigDialog::removeHost()
     m_view->removeHostButton->setEnabled( false );
 }
 
-void NmmConfigDialog::addHostListItem( QString hostname, bool audio, bool video, int volume, bool read_only )
-{
-  new HostListItem( m_view->hostList, hostname, audio, video, volume, read_only );
-}
 
 void NmmConfigDialog::createHostList( bool use_environment_list )
 {
@@ -167,11 +163,11 @@ void NmmConfigDialog::createHostList( bool use_environment_list )
 
   if( use_environment_list )
     for( it =  tmp_environment_list.begin(); it != tmp_environment_list.end(); ++it ) 
-      addHostListItem( (*it).hostname(), (*it).audio(), (*it).video(), 0, true);
+      new HostListItem( m_view->hostList, (*it).hostname(), (*it).audio(), (*it).video(), 0, true );
 
   else
     for( it = tmp_user_list.begin(); it != tmp_user_list.end(); ++it ) 
-      addHostListItem( (*it).hostname(), (*it).audio(), (*it).video(), 0 );
+      new HostListItem( m_view->hostList, (*it).hostname(), (*it).audio(), (*it).video(), 0 );
 }
 
 void NmmConfigDialog::removeHostList( bool save_user_hostlist )
@@ -214,6 +210,7 @@ void NmmConfigDialog::clickedAudioGroup( int new_selection )
     m_view->addLocationButton->setEnabled( false );
     m_view->removeHostButton->setEnabled( false );
     m_view->hostList->setSelectionMode( QListView::NoSelection );
+    m_view->hostList->setReadOnly( true );
 
     removeHostList( current_audio_group_selection == 2 ? true : false );
     createHostList( true );
@@ -225,6 +222,7 @@ void NmmConfigDialog::clickedAudioGroup( int new_selection )
     m_view->addLocationButton->setEnabled( true );
     m_view->removeHostButton->setEnabled( false );
     m_view->hostList->setSelectionMode( QListView::Single );
+    m_view->hostList->setReadOnly( false );
 
     removeHostList();
     createHostList();

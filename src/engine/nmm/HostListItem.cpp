@@ -42,7 +42,8 @@
 HostListItem::HostListItem( QListView *parent, QString hostname, bool audio, bool video, int volume, bool read_only )
     : KListViewItem( parent ),
     m_audio( audio ),
-    m_video( video )
+    m_video( video ),
+    m_read_only( read_only )
 {  
   setText( HostListItem::Hostname, hostname);
 }

@@ -35,8 +35,14 @@ class HostList : public KListView
     HostList( QWidget*, const char* );
     ~HostList();
 
+    void setReadOnly( bool read_only ) { m_read_only = read_only; }
+    bool readOnly() const { return m_read_only; }
+
   protected:
     void contentsMousePressEvent( QMouseEvent *e = 0 );
+
+  private:
+    bool m_read_only;
 };
 
 #endif 

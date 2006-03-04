@@ -77,12 +77,6 @@ class NmmConfigDialog : public amaroK::PluginConfig
 
   private:
     /**
-     * Creates a host item in the host list.
-     * TODO: more docu
-     */
-    void addHostListItem( QString hostname, bool audio = true, bool video = true, int volume = 0, bool read_only = false );
-
-    /**
      * Fills host list with HostListItems by reading
      * tmp_environment_list or tmp_user_list.
      */
