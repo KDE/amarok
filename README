@@ -13,8 +13,8 @@ interface that really makes playlist handling easy.
 ==========
 
     * Quick and simple drag and drop playlist creation
-    * Music library (built-in sqlite, MySQL or PostgreSQL )
-    * Multiple backends supported (GStreamer, xine, NMM, Helix, MAS and aRts)
+    * Music library (built-in SQLite, MySQL, or PostgreSQL)
+    * Multiple backends supported (xine, GStreamer, Helix, and NMM)
     * Plays all audio formats known to man
     * 10 band equalizer
     * Automatic cover art download using Amazon services
@@ -25,11 +25,11 @@ interface that really makes playlist handling easy.
     * Full last.fm support
     * Visualisations with libvisual
     * Streaming from any KIO source
-    * Crossfading
+    * Crossfading and gapless playback
     * Fully configurable OSD for track changes
     * K3B (CD-burning) integration
     * Podcast support
-    * Access to iPod and iRiver IFP devices
+    * Access to iPod, iRiver IFP, and USB Mass Storage devices
     * Exscalibar interation for Moodbar visualisation
     * Powerful scripting interface
     * Complete DCOP Access
@@ -150,10 +150,6 @@ base directory of the amaroK distribution:
 
 Note: --enable-final is not guaranteed to work
 
-Note: amaroK-1.3 will not compile on Mandriva LE2005 with KDE 3.3.2.  This is not
-an amaroK related problem, and unfortunately we are powerless to help.  Mandriva
-has backported fvisibility to their GCC which breaks compilation.  Alternatives
-are either using the 1.2.x amaroK branch, or upgrading to KDE 3.4.
 
 Packages for popular distributions are available at http://amarok.kde.org
 --------------------------------------------------------------------------------
@@ -176,8 +172,7 @@ A: Here's an extract from the PKG-CONFIG man page:
    So, do export PKG_CONFIG_PATH="/path/to/gstreamer-0.x.y.pc" and reconfigure.
 
 Q: Can I improve amaroK's startup time?
-A: The aRts engine is the slowest to load, using an alternative will help.
-   Prelinking amaroK has spectacular results; however if you have binary openGL
+A: Prelinking amaroK has spectacular results; however if you have binary openGL
    drivers (eg Nvidia drivers), you will need to compile amaroK --without-opengl
    in order to get the amarokapp binary to prelink (the amarok binary is not
    important here).
@@ -223,7 +218,7 @@ splitting amaroK into the following packages:
    1. amaroK + one backend
    2. GStreamer-engine
    3. xine-engine
-   4. aRts-engine
+   4. Helix-engine
    5. amarok_xmmswrapper + amarok_libvisual
 
 amaroK is modular and will be fully functional as long as one of 2, 3, or 4 is
@@ -252,4 +247,4 @@ of commits, visit http://commitfilter.kde.org/.
 
 WWW : http://amarok.kde.org
 MAIL: amarok-devel@lists.sourceforge.net
-IRC : irc.freenode.net, #amarok, #amarok.de
+IRC : irc.freenode.net - #amarok, #amarok.de
