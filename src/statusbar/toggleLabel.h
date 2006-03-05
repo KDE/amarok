@@ -89,10 +89,7 @@ class ToggleLabel : public QLabel
     public slots:
         void setChecked( bool on )
         {
-            if( isEnabled() )
-            {
-                setPixmap( m_action->iconSet().pixmap( QIconSet::Small, on ? QIconSet::Normal : QIconSet::Disabled ) );
-            }
+            setPixmap( m_action->iconSet().pixmap( QIconSet::Small, on ? QIconSet::Normal : QIconSet::Disabled ) );
         }
 
         void setEnabled( bool /*on*/ ) { }

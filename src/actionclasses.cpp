@@ -351,7 +351,7 @@ void ToggleAction::setEnabled( bool b )
     const bool announce = b != isEnabled();
 
     if( !b )
-        m_function( false );
+        setChecked( false );
     KToggleAction::setEnabled( b );
     AmarokConfig::writeConfig(); //So we don't lose the setting when crashing
     if( announce ) emit enabled( b );
@@ -386,7 +386,7 @@ void SelectAction::setEnabled( bool b )
     const bool announce = b != isEnabled();
 
     if( !b )
-        m_function( 0 );
+        setCurrentItem( 0 );
     KSelectAction::setEnabled( b );
     AmarokConfig::writeConfig(); //So we don't lose the setting when crashing
     if( announce ) emit enabled( b );
@@ -456,7 +456,7 @@ VolumeAction::engineVolumeChanged( int value )
 RandomAction::RandomAction( KActionCollection *ac ) :
     ToggleAction( i18n( "Random &Mode" ), &AmarokConfig::setRandomMode, ac, "random_mode" )
 {
-    KToggleAction::setChecked( AmarokConfig::randomMode() );
+    setChecked( AmarokConfig::randomMode() );
     setIcon( "random" );
     setEnabled( !AmarokConfig::dynamicMode() );
 }
@@ -464,7 +464,7 @@ RandomAction::RandomAction( KActionCollection *ac ) :
 void
 RandomAction::setChecked( bool b )
 {
-    if( KAction *a = actionCollection()->action( "favor_tracks" ) )
+    if( KAction *a = parentCollection()->action( "favor_tracks" ) )
         a->setEnabled( b );
     ToggleAction::setChecked( b );
 }
@@ -475,7 +475,7 @@ RandomAction::setChecked( bool b )
 EntireAlbumsAction::EntireAlbumsAction( KActionCollection *ac ) :
     ToggleAction( i18n( "Play &Albums In Order" ), &AmarokConfig::setEntireAlbums, ac, "entire_albums" )
 {
-    KToggleAction::setChecked( AmarokConfig::entireAlbums() );
+    setChecked( AmarokConfig::entireAlbums() );
     setIcon( "cd" );
 }
 
@@ -485,7 +485,7 @@ EntireAlbumsAction::setChecked( bool b )
     if( b == isChecked() )
         return;
     ToggleAction::setChecked( b );
-    SelectAction* a = static_cast<SelectAction*>( actionCollection()->action( "repeat" ) );
+    SelectAction* a = static_cast<SelectAction*>( parentCollection()->action( "repeat" ) );
     if( a->currentItem() == AmarokConfig::EnumRepeat::Album && !b )
         a->setCurrentItem( AmarokConfig::EnumRepeat::None );
     a->popupMenu()->setItemEnabled( AmarokConfig::EnumRepeat::Album, b );
@@ -540,14 +540,14 @@ RepeatAction::RepeatAction( KActionCollection *ac ) :
 DynamicAction::DynamicAction( KActionCollection *ac ) :
     ToggleAction( i18n( "&Dynamic Mode" ), &AmarokConfig::setDynamicMode, ac, "dynamic_mode" )
 {
-    KToggleAction::setChecked( AmarokConfig::dynamicMode() );
+    setChecked( AmarokConfig::dynamicMode() );
     setIcon( "dynamic" );
 }
 
 void
 DynamicAction::setChecked( bool b )
 {
-    if( KAction *a = actionCollection()->action( "random_mode" ) )
+    if( KAction *a = parentCollection()->action( "random_mode" ) )
         a->setEnabled( !b );
     ToggleAction::setChecked( b );
 }
