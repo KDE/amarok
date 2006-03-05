@@ -476,6 +476,8 @@ HelixEngine::timerEvent( QTimerEvent * )
 
    m_lasttime += HELIX_ENGINE_TIMER;
 
+   prune();
+
 #ifdef DEBUG_PURPOSES_ONLY
    // calculate the frame rate of the scope
    m_ftime += HELIX_ENGINE_TIMER;
@@ -524,24 +526,8 @@ HelixEngine::timerEvent( QTimerEvent * )
 }
 
 
-const Engine::Scope &HelixEngine::scope()
+unsigned long HelixEngine::prune()
 {
-   int i, sb = 0;
-   unsigned long t;
-
-#ifdef DEBUG_PURPOSES_ONLY
-   m_fcount++;
-#endif
-
-   if (!m_inited)
-      return m_scope;
-
-   if (!m_item && !peekScopeTime(t))
-   {
-      m_item = getScopeBuf();
-      if (m_item)
-         sb++;
-   }
    //
    // this bit is to help us keep more accurate time than helix provides
    /////////////////////////////////////////////////////////////////////
@@ -572,7 +558,7 @@ const Engine::Scope &HelixEngine::scope()
    if ( getScopeCount() > SCOPE_MAX_BEHIND ) // protect against naughty streams
    {
       resetScope();
-      return m_scope;
+      return w;
    }
 
    if (!w || !m_item)
@@ -580,7 +566,7 @@ const Engine::Scope &HelixEngine::scope()
 #ifdef DEBUG_PURPOSES_ONLY
       m_scopebufnone++; // for tuning the scope... (scope is tuned for 44.1kHz sample rate)
 #endif
-      return m_scope;
+      return w;
    }
 
    while (m_item && w > m_item->etime)
@@ -589,13 +575,41 @@ const Engine::Scope &HelixEngine::scope()
       delete m_item;
       m_item = getScopeBuf();
 
-      sb++;
+      m_sb++;
    }
 
+   return w;
+}
+
+const Engine::Scope &HelixEngine::scope()
+{
+   int i;
+   unsigned long t;
+
+   m_sb = 0;
+
 #ifdef DEBUG_PURPOSES_ONLY
-   m_scopebuftotal += sb;
-   if (sb > 1)
-      m_scopebufwaste += (sb-1);
+   m_fcount++;
+#endif
+
+   if (!m_inited)
+      return m_scope;
+
+   if (!m_item && !peekScopeTime(t))
+   {
+      m_item = getScopeBuf();
+      if (m_item)
+         m_sb++;
+   }
+
+   unsigned long w = prune();
+   if (!w)
+      return m_scope;
+
+#ifdef DEBUG_PURPOSES_ONLY
+   m_scopebuftotal += m_sb;
+   if (m_sb > 1)
+      m_scopebufwaste += (m_sb-1);
 #endif
 
    if (!m_item)

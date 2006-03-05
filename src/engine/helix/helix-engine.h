@@ -78,6 +78,7 @@ private:
    int m_scopebufnone;
    int m_scopebuftotal;
 #endif
+   int m_sb;
    unsigned long  m_lasttime;
    unsigned long  m_lastpos;
    unsigned short m_currentScope[512];
@@ -94,6 +95,8 @@ private:
    void cleanup();
    void timerEvent( QTimerEvent * );
    void resetScope();
+
+   unsigned long prune();
 
    int print2stdout(const char *fmt, ...);
    int print2stderr(const char *fmt, ...);
