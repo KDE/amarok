@@ -43,8 +43,7 @@ HSPPreMixAudioHook::HSPPreMixAudioHook(HelixSimplePlayer *player, int playerInde
 
 HSPPreMixAudioHook::~HSPPreMixAudioHook()
 {
-   if (m_gaintool)
-      gainFree(m_gaintool);
+   delete m_gaintool;
 }
 
 STDMETHODIMP
@@ -86,7 +85,7 @@ HSPPreMixAudioHook::Release()
 
 int HSPPreMixAudioHook::volumeize(unsigned char *data, unsigned char *outbuf, size_t len)
 {
-   gainFeed(data, outbuf, len, m_gaintool);
+   m_gaintool->gainFeed(data, outbuf, len);
 
    return len;
 }
@@ -97,8 +96,8 @@ void HSPPreMixAudioHook::setFadeout(bool fadeout)
    if (m_fadeout)
    {
       // the "time constant" (ms) is the time it takes to reach +6db of the target
-      gainSetTimeConstant((float) m_fadelength / 2.0, m_gaintool);
-      gainSetSmoothdB(FADE_MIN_dB, m_gaintool);
+      m_gaintool->gainSetTimeConstant((float) m_fadelength / 2.0);
+      m_gaintool->gainSetSmoothdB(FADE_MIN_dB);
    }
 }
 
@@ -167,15 +166,15 @@ STDMETHODIMP HSPPreMixAudioHook::OnInit(HXAudioFormat *pFormat)
    m_format = *pFormat;
 
    int bps = pFormat->uBitsPerSample / 8;
-   m_gaintool = gainInit(pFormat->ulSamplesPerSec, pFormat->uChannels, bps);
-   gainSetImmediatedB(0, m_gaintool);
+   m_gaintool = new GainTool(pFormat->ulSamplesPerSec, pFormat->uChannels, bps);
+   m_gaintool->gainSetImmediatedB(0);
 
    if (m_fadein)
    {
-      gainSetImmediatedB(FADE_MIN_dB, m_gaintool);
+      m_gaintool->gainSetImmediatedB(FADE_MIN_dB);
       // the "time constant" (ms) is the time it takes to reach -6db of the target
-      gainSetTimeConstant((float) m_fadelength / 2.0, m_gaintool);
-      gainSetSmoothdB(0, m_gaintool);
+       m_gaintool->gainSetTimeConstant((float) m_fadelength / 2.0);
+       m_gaintool->gainSetSmoothdB(0);
    }
 
    return 0;
@@ -201,8 +200,7 @@ HSPPostProcessor::HSPPostProcessor(HelixSimplePlayer *player, int playerIndex) :
 HSPPostProcessor::~HSPPostProcessor()
 {
 #ifndef HELIX_SW_VOLUME_INTERFACE
-   if (m_gaintool)
-      gainFree(m_gaintool);
+   delete m_gaintool;
 #endif
 }
 
@@ -381,11 +379,13 @@ STDMETHODIMP HSPPostProcessor::OnInit(HXAudioFormat *pFormat)
 
 #ifndef HELIX_SW_VOLUME_INTERFACE
    // setup the gain tool for volume
-   if (m_gaintool)
-      gainFree(m_gaintool);
+   std::cerr << "About to delete gaintool\n";
+   delete m_gaintool;
 
    int bps = pFormat->uBitsPerSample / 8;
-   m_gaintool = gainInit(pFormat->ulSamplesPerSec, pFormat->uChannels, bps);
+   m_Player->print2stderr("About to new gaintool\n");
+   m_gaintool = new GainTool(pFormat->ulSamplesPerSec, pFormat->uChannels, bps);
+   m_Player->print2stderr("About to setGain\n");
    setGain(m_Player->ppctrl[m_index]->volume);
 #endif
 
@@ -399,14 +399,15 @@ void HSPPostProcessor::setGain(int volume)
    if (m_gaintool)
    {
       if (volume == 0)
-         gainSetMute(m_gaintool);
+         m_gaintool->gainSetMute();
       else
       {
          //m_gaindB = GAIN_MIN_dB + (GAIN_MAX_dB - GAIN_MIN_dB) * (float) volume / 100.0;
          //m_Player->print2stderr("GAIN set to %f\n", m_gaindB);
          //gainSetImmediatedB(m_gaindB, m_gaintool);
 
-         gainSetImmediate( (float) volume / 100.0, m_gaintool );
+         m_Player->print2stderr("About to setimmediate gaintool\n");
+         m_gaintool->gainSetImmediate( (float) volume / 100.0 );
       }
    }
 }
@@ -541,7 +542,7 @@ void HSPPostProcessor::equalize(unsigned char *inbuf, unsigned char *outbuf, siz
 #ifndef HELIX_SW_VOLUME_INTERFACE
 int HSPPostProcessor::volumeize(unsigned char *data, size_t len)
 {
-   gainFeed(data, data, len, m_gaintool);
+   m_gaintool->gainFeed(data, data, len);
 
    return len;
 }
@@ -549,7 +550,7 @@ int HSPPostProcessor::volumeize(unsigned char *data, size_t len)
 
 int HSPPostProcessor::volumeize(unsigned char *data, unsigned char *outbuf, size_t len)
 {
-   gainFeed(data, outbuf, len, m_gaintool);
+   m_gaintool->gainFeed(data, outbuf, len);
 
    return len;
 }

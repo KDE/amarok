@@ -51,11 +51,6 @@ extern "C"
 #define SCOPE_MAX_BEHIND   200    // 200 postmix buffers
 
 
-#ifndef LLONG_MAX
-#define LLONG_MAX 9223372036854775807LL
-#endif
-
-
 ///returns the configuration we will use
 static inline QCString configPath() { return QFile::encodeName( QDir::homeDirPath() + "/.helix/config" ); }
 
@@ -287,20 +282,17 @@ HelixEngine::load( const KURL &url, bool isStream )
       return false;
    }
 
-   debug() << "xfadeLength is " << m_xfadeLength << endl;
+   //debug() << "xfadeLength is " << m_xfadeLength << endl;
    if( m_xfadeLength > 0 && m_state == Engine::Playing )
    {
       int nextPlayer = m_current ? 0 : 1;
 
       // seems like there should be a better way...
-      if ( (isPlaying(0) && isPlaying(1)) || // already crossfading, so must have pushed advance to next track
-           // player 0 playing and pushed advance to next track:
-           (isPlaying(0) && (duration(0) - m_xfadeLength) > where(0) + 2000 ) || // give a 2 sec window
-           // player 1 playing and pushed advance to next track:
-           (isPlaying(1) && (duration(1) - m_xfadeLength) > where(1) + 2000 ) )  // give a 2 sec window
+      if ( isPlaying(0) && isPlaying(1) ) // already crossfading, so must have pushed advance to next track
          cleanup();
       else
       {
+         // prepare the next player
          PlayerControl::stop(nextPlayer);
          resetScope(nextPlayer);
          memset(&hscope[nextPlayer], 0, sizeof(struct HelixScope));

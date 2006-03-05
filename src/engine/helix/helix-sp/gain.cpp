@@ -51,7 +51,18 @@ struct GAIN_STATE
    float decay;
 };
 
-GAIN_STATE* gainInit(int sampleRate, int nChannels, int bytesPerSample)
+GainTool::GainTool(int sampleRate, int nChannels, int bytesPerSample) : m_g(0)
+{
+   m_g = gainInit(sampleRate, nChannels, bytesPerSample);
+   gainSetTimeConstant(0.1f);
+}
+
+GainTool::~GainTool()
+{
+   gainFree(m_g);
+}
+
+GAIN_STATE* GainTool::gainInit(int sampleRate, int nChannels, int bytesPerSample)
 {
     GAIN_STATE* g = (GAIN_STATE*) calloc(1,sizeof(GAIN_STATE)) ;
     if (g)
@@ -59,66 +70,65 @@ GAIN_STATE* gainInit(int sampleRate, int nChannels, int bytesPerSample)
         g->sampleRate = sampleRate;
         g->nChannels = nChannels;
         g->bytesPerSample = bytesPerSample;
-        gainSetTimeConstant(0.1f, g);
     }
 
     return g ;
 }
 
-void gainFree(GAIN_STATE* g)
+void GainTool::gainFree(GAIN_STATE* g)
 {
     if (g) free(g) ;
 }
 
-float gainSetSmoothdB(float dB, GAIN_STATE* g)
+float GainTool::gainSetSmoothdB(float dB)
 {
     float gain = pow(10.0, 0.05*dB) ;
 
-    g->isMute = false;
+    m_g->isMute = false;
 
-    g->tgtGain = gain ;
+    m_g->tgtGain = gain ;
 
     return dB ;
 }
 
-float gainSetImmediatedB(float dB, GAIN_STATE* g)
+float GainTool::gainSetImmediatedB(float dB)
 {
-    dB = gainSetSmoothdB(dB, g) ;
+    dB = gainSetSmoothdB(dB);
 
-    g->instGain = g->tgtGain ; // make it instantaneous
+    m_g->instGain = m_g->tgtGain ; // make it instantaneous
 
     return dB ;
 }
 
-float gainSetSmooth(float percent, GAIN_STATE* g)
+float GainTool::gainSetSmooth(float percent)
 {
     float gaintop = pow(10.0, 0.05*GAIN_MAX_dB) ;
     float gainbottom = pow(10.0, 0.05*GAIN_MIN_dB) ;
     float gain = percent * (gaintop - gainbottom) + gainbottom;
 
-    g->isMute = false;
+    m_g->isMute = false;
 
-    g->tgtGain = gain ;
-
-    return gain;
-}
-
-float gainSetImmediate(float percent, GAIN_STATE* g)
-{
-    float gain = gainSetSmooth(percent, g) ;
-
-    g->instGain = g->tgtGain ; // make it instantaneous
+    m_g->tgtGain = gain ;
 
     return gain;
 }
 
-void gainSetMute(GAIN_STATE* g)
+float GainTool::gainSetImmediate(float percent)
 {
-   g->isMute = true;
-   g->instGain = g->tgtGain = 0.0; // mute is immediate
+    float gain = gainSetSmooth(percent) ;
+
+    m_g->instGain = m_g->tgtGain ; // make it instantaneous
+
+    return gain;
 }
 
-int gainSetTimeConstant(float millis, GAIN_STATE* g)
+void GainTool::gainSetMute()
+{
+   m_g->isMute = true;
+   m_g->instGain = m_g->tgtGain = 0.0; // mute is immediate
+}
+
+int GainTool::gainSetTimeConstant(float millis)
 {
     // we define the time constant millis so that the signal has decayed to 1/2 (-6dB) after
     // millis milliseconds have elapsed.
@@ -131,28 +141,28 @@ int gainSetTimeConstant(float millis, GAIN_STATE* g)
 
     // first 0.5 is rounding constant
    int shift;
-   shift = (int)(0.5 - 1.0/log(2.0)*log(1.0 - pow(0.5, 1000.0/(millis * g->sampleRate)))) ;
+   shift = (int)(0.5 - 1.0/log(2.0)*log(1.0 - pow(0.5, 1000.0/(millis * m_g->sampleRate)))) ;
    if (shift < 1)
       shift = 1 ;
    if (shift > 31)
       shift = 31 ;
 
-   g->decay = ::pow(2.0, (float) shift);
+   m_g->decay = ::pow(2.0, (float) shift);
 
    return 1 ; // OK
 }
 
-static void gainFeedMono(unsigned char* signal, unsigned char *outsignal, int len, GAIN_STATE *g)
+void GainTool::gainFeedMono(unsigned char* signal, unsigned char *outsignal, int len)
 {
-   float tgtGain = g->tgtGain ;
-   float gain = g->instGain ;
+   float tgtGain = m_g->tgtGain ;
+   float gain = m_g->instGain ;
    unsigned char *bufferEnd = signal + len;
 
    if (gain == tgtGain)
    { // steady state
       while (signal < bufferEnd)
       {
-         switch (g->bytesPerSample)
+         switch (m_g->bytesPerSample)
          {
             case 1:
             {
@@ -184,15 +194,15 @@ static void gainFeedMono(unsigned char* signal, unsigned char *outsignal, int le
             default:
                return;
          }
-         signal += g->bytesPerSample;
-         outsignal += g->bytesPerSample;
+         signal += m_g->bytesPerSample;
+         outsignal += m_g->bytesPerSample;
       }
    }
    else
    { // while we are still ramping the gain
       while (signal < bufferEnd)
       {
-         switch (g->bytesPerSample)
+         switch (m_g->bytesPerSample)
          {
             case 1:
             {
@@ -224,25 +234,25 @@ static void gainFeedMono(unsigned char* signal, unsigned char *outsignal, int le
             default:
                return;
          }
-         signal += g->bytesPerSample;
-         outsignal += g->bytesPerSample;
-         gain += ((tgtGain-gain) / g->decay);
+         signal += m_g->bytesPerSample;
+         outsignal += m_g->bytesPerSample;
+         gain += ((tgtGain-gain) / m_g->decay);
       }
-      g->instGain = gain ;
+      m_g->instGain = gain ;
    }
 }
 
-static void gainFeedStereo(unsigned char* signal, unsigned char *outsignal, int len, GAIN_STATE *g)
+void GainTool::gainFeedStereo(unsigned char* signal, unsigned char *outsignal, int len)
 {
-   float tgtGain = g->tgtGain ;
-   float gain = g->instGain ;
+   float tgtGain = m_g->tgtGain ;
+   float gain = m_g->instGain ;
    unsigned char *bufferEnd = signal + len;
 
    if (gain == tgtGain)
    { // steady state
       while (signal < bufferEnd)
       {
-         switch (g->bytesPerSample)
+         switch (m_g->bytesPerSample)
          {
             case 1:
             {
@@ -286,15 +296,15 @@ static void gainFeedStereo(unsigned char* signal, unsigned char *outsignal, int 
             default:
                return;
          }
-         signal += 2 * g->bytesPerSample;
-         outsignal += 2 * g->bytesPerSample;
+         signal += 2 * m_g->bytesPerSample;
+         outsignal += 2 * m_g->bytesPerSample;
       }
    }
    else
    { // while we are still ramping the gain
       while (signal < bufferEnd)
       {
-         switch (g->bytesPerSample)
+         switch (m_g->bytesPerSample)
          {
             case 1:
             {
@@ -338,25 +348,25 @@ static void gainFeedStereo(unsigned char* signal, unsigned char *outsignal, int 
             default:
                return;
          }
-         signal += 2 * g->bytesPerSample;
-         outsignal += 2 * g->bytesPerSample;
-         gain += ((tgtGain-gain) / g->decay);
+         signal += 2 * m_g->bytesPerSample;
+         outsignal += 2 * m_g->bytesPerSample;
+         gain += ((tgtGain-gain) / m_g->decay);
       }
-      g->instGain = gain ;
+      m_g->instGain = gain ;
    }
 }
 
-static void gainFeedMulti(unsigned char* signal, unsigned char *outsignal, int len, GAIN_STATE *g)
+void GainTool::gainFeedMulti(unsigned char* signal, unsigned char *outsignal, int len)
 {
-    float tgtGain = g->tgtGain ;
-    float gain = g->instGain ;
+    float tgtGain = m_g->tgtGain ;
+    float gain = m_g->instGain ;
     unsigned char *bufferEnd = signal + len;
 
     if (gain == tgtGain)
     { // steady state
        while (signal < bufferEnd)
        {
-          switch (g->bytesPerSample)
+          switch (m_g->bytesPerSample)
           {
              case 1:
              {
@@ -364,7 +374,7 @@ static void gainFeedMulti(unsigned char* signal, unsigned char *outsignal, int l
                 int i ;
                 char *s = (char *) signal;
                 char *o = (char *) outsignal;
-                for (i = 0 ; i < g->nChannels ; i++)
+                for (i = 0 ; i < m_g->nChannels ; i++)
                 {
                    res = (short int) (*s * gain);
                    *o = (char) (res > INT8_CEILING ? INT8_CEILING : res);
@@ -379,7 +389,7 @@ static void gainFeedMulti(unsigned char* signal, unsigned char *outsignal, int l
                 int i ;
                 short int *s = (short int *) signal;
                 short int *o = (short int *) outsignal;
-                for (i = 0 ; i < g->nChannels ; i++)
+                for (i = 0 ; i < m_g->nChannels ; i++)
                 {
                    res = (long) (*s * gain);
                    *o = (short int) (res > INT16_CEILING ? INT16_CEILING : res);
@@ -394,7 +404,7 @@ static void gainFeedMulti(unsigned char* signal, unsigned char *outsignal, int l
                 int i ;
                 long *s = (long *) signal;
                 long *o = (long *) outsignal;
-                for (i = 0 ; i < g->nChannels ; i++)
+                for (i = 0 ; i < m_g->nChannels ; i++)
                 {
                    res = (long long) (*s * gain);
                    *o = (long) (res > INT32_CEILING ? INT32_CEILING : res);
@@ -406,8 +416,8 @@ static void gainFeedMulti(unsigned char* signal, unsigned char *outsignal, int l
              default:
                 return;
           }
-          signal += g->nChannels * g->bytesPerSample;
-          outsignal += g->nChannels * g->bytesPerSample;
+          signal += m_g->nChannels * m_g->bytesPerSample;
+          outsignal += m_g->nChannels * m_g->bytesPerSample;
        }
     }
     else
@@ -416,14 +426,14 @@ static void gainFeedMulti(unsigned char* signal, unsigned char *outsignal, int l
        {
           int i ;
 
-          switch (g->bytesPerSample)
+          switch (m_g->bytesPerSample)
           {
              case 1:
              {
                 short int res;
                 char *s = (char *) signal;
                 char *o = (char *) outsignal;
-                for (i = 0 ; i < g->nChannels ; i++)
+                for (i = 0 ; i < m_g->nChannels ; i++)
                 {
                    res = (short int) (*s * gain);
                    *o = (char) (res > INT8_CEILING ? INT8_CEILING : res);
@@ -437,7 +447,7 @@ static void gainFeedMulti(unsigned char* signal, unsigned char *outsignal, int l
                 long res;
                 short int *s = (short int *) signal;
                 short int *o = (short int *) outsignal;
-                for (i = 0 ; i < g->nChannels ; i++)
+                for (i = 0 ; i < m_g->nChannels ; i++)
                 {
                    res = (long) (*s * gain);
                    *o = (short int) (res > INT16_CEILING ? INT16_CEILING : res);
@@ -450,7 +460,7 @@ static void gainFeedMulti(unsigned char* signal, unsigned char *outsignal, int l
                 long long res;
                 long *s = (long *) signal;
                 long *o = (long *) outsignal;
-                for (i = 0 ; i < g->nChannels ; i++)
+                for (i = 0 ; i < m_g->nChannels ; i++)
                 {
                    res = (long long) (*s * gain);
                    *o = (long) (res > INT32_CEILING ? INT32_CEILING : res);
@@ -460,34 +470,34 @@ static void gainFeedMulti(unsigned char* signal, unsigned char *outsignal, int l
              }
              break;
           }
-          signal += g->nChannels * g->bytesPerSample;
-          outsignal += g->nChannels * g->bytesPerSample;
-          gain += ((tgtGain-gain) / g->decay);
+          signal += m_g->nChannels * m_g->bytesPerSample;
+          outsignal += m_g->nChannels * m_g->bytesPerSample;
+          gain += ((tgtGain-gain) / m_g->decay);
        }
-       g->instGain = gain ;
+       m_g->instGain = gain ;
     }
 }
 
-void gainFeed(unsigned char* signal, unsigned char *outsignal, int len, GAIN_STATE* g)
+void GainTool::gainFeed(unsigned char* signal, unsigned char *outsignal, int len)
 {
     /* if the gain is 0dB, and we are not currently ramping, shortcut. */
-    if (g->instGain == 1.0 && g->instGain == g->tgtGain)
+    if (m_g->instGain == 1.0 && m_g->instGain == m_g->tgtGain)
     {
        if (signal != outsignal)
           memcpy(outsignal, signal, len);
 
         return ;
     }
-    switch (g->nChannels)
+    switch (m_g->nChannels)
     {
     case 1:
-        gainFeedMono(signal, outsignal, len, g) ;
+        gainFeedMono(signal, outsignal, len);
         break ;
     case 2:
-        gainFeedStereo(signal, outsignal, len, g) ;
+        gainFeedStereo(signal, outsignal, len);
         break ;
     default:
-        gainFeedMulti(signal, outsignal, len, g) ;
+        gainFeedMulti(signal, outsignal, len);
         break ;
     }
 }
