@@ -16,9 +16,9 @@
 #ifndef _HSPHOOK_H_INCLUDED_
 #define _HSPHOOK_H_INCLUDED_
 
-#define FADE_MIN_dB -126
+struct GAIN_STATE;
 
-class GainTool;
+#define FADE_MIN_dB -126
 
 class HSPPreMixAudioHook : public IHXAudioHook
 {
@@ -56,7 +56,7 @@ private:
    HXAudioFormat      m_format;
    int                m_count;
 
-   GainTool          *m_gaintool;
+   GAIN_STATE        *m_gaintool;
    float              m_gaindb;
    bool               m_fadein;
    bool               m_fadeout;
@@ -163,7 +163,7 @@ private:
 
 #ifndef HELIX_SW_VOLUME_INTERFACE
    // volume stuff
-   GainTool          *m_gaintool;
+   GAIN_STATE        *m_gaintool;
    float              m_gaindB;
 #endif
 };

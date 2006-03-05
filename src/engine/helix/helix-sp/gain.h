@@ -31,34 +31,28 @@
 
 #include "hxtypes.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define GAIN_MAX_dB  0.0
 #define GAIN_MIN_dB -27.0 
 
 struct GAIN_STATE;
 typedef struct GAIN_STATE GAIN_STATE;
 
-class GainTool
-{
-public:
-   GainTool(int sampleRate, int nChannels, int bytePerSample);
-   ~GainTool();
+GAIN_STATE* gainInit(int sampleRate, int nChannels, int bytePerSample) ;
+void gainFree(GAIN_STATE*) ;
+float gainSetImmediatedB(float dB, GAIN_STATE*) ;
+float gainSetSmoothdB(float dB, GAIN_STATE*);
+float gainSetImmediate(float dB, GAIN_STATE*) ;
+float gainSetSmooth(float dB, GAIN_STATE*);
+void gainSetMute(GAIN_STATE* g);
+int gainSetTimeConstant(float millis, GAIN_STATE*) ;
+void gainFeed(unsigned char* signal, unsigned char *outsignal, int len, GAIN_STATE* g) ;
 
-   float gainSetImmediatedB(float dB);
-   float gainSetSmoothdB(float dB);
-   float gainSetImmediate(float dB);
-   float gainSetSmooth(float dB);
-   void gainSetMute();
-   int gainSetTimeConstant(float millis);
-   void gainFeed(unsigned char* signal, unsigned char *outsignal, int len) ;
-
-private:
-   GAIN_STATE* gainInit(int sampleRate, int nChannels, int bytePerSample);
-   void gainFree(GAIN_STATE*) ;
-   void gainFeedMono(unsigned char* signal, unsigned char *outsignal, int len);
-   void gainFeedStereo(unsigned char* signal, unsigned char *outsignal, int len);
-   void gainFeedMulti(unsigned char* signal, unsigned char *outsignal, int len);
-
-   GAIN_STATE *m_g;
-};
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _GAIN_H_ */
