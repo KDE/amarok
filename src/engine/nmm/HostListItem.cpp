@@ -24,28 +24,27 @@
 
 #include "HostListItem.h"
 
-#include <qapplication.h>
+#include <qfont.h>
 #include <qheader.h>
-#include <qlayout.h>
-#include <qpushbutton.h>
-#include <qslider.h>
-#include <qwhatsthis.h>
+#include <qpainter.h>
 
-#include <kconfig.h>
-#include <kdebug.h>
 #include <kglobal.h>
 #include <kiconloader.h>
 
 #include "debug.h"
 #include "HostList.h"
 
-HostListItem::HostListItem( QListView *parent, QString hostname, bool audio, bool video, int volume, bool read_only )
+HostListItem::HostListItem( QListView *parent, QString hostname, bool audio, bool video, int , bool read_only )
     : KListViewItem( parent ),
     m_audio( audio ),
     m_video( video ),
-    m_read_only( read_only )
+    m_read_only( read_only ),
+    m_status_error( false )
 {  
   setText( HostListItem::Hostname, hostname);
+
+  setPixmap( HostListItem::Status, SmallIcon("help") );
+  setText( HostListItem::Status, "OK" );
 }
 
 HostListItem::~HostListItem()
@@ -65,20 +64,36 @@ void HostListItem::updateColumn( int column ) const
 
 void HostListItem::paintCell(QPainter * p, const QColorGroup & cg, int column, int width, int align )
 {
-  if( column == 1 )
+  QColorGroup m_cg( cg );
+
+  if( column == HostListItem::Video )
   {
     if( m_video )
-      setPixmap( 1, SmallIcon("nmm_option_on")  );
+      setPixmap( HostListItem::Video, SmallIcon("nmm_option_on")  );
     else
-      setPixmap( 1, SmallIcon("nmm_option_off") );
+      setPixmap( HostListItem::Video, SmallIcon("nmm_option_off") );
   }
-  if( column == 2 )
+  else if( column == HostListItem::Audio )
   {
     if( m_audio )
-      setPixmap( 2, SmallIcon("nmm_option_on")  );
+      setPixmap( HostListItem::Audio, SmallIcon("nmm_option_on")  );
     else
-      setPixmap( 2, SmallIcon("nmm_option_off") );
+      setPixmap( HostListItem::Audio, SmallIcon("nmm_option_off") );
+  }
+  else if( column ==  HostListItem::Status )
+  {
+    QFont font( p->font() );
+    if( m_status_error )
+    {
+      font.setBold( true );
+      m_cg.setColor( QColorGroup::Text, Qt::red );
+    }
+    else {
+      font.setBold( false );
+      m_cg.setColor( QColorGroup::Text, Qt::darkGreen );
+    }
+    p->setFont( font );
   }
 
-  KListViewItem::paintCell(p, cg, column, width, align);
+  KListViewItem::paintCell(p, m_cg, column, width, align);
 }

@@ -57,6 +57,7 @@ class HostListItem : public KListViewItem {
     bool m_audio;
     bool m_video;
     bool m_read_only;
+    bool m_status_error;
 };
 
 #endif

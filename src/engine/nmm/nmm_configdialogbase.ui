@@ -80,7 +80,7 @@
                 <cstring>audioGroup</cstring>
             </property>
             <property name="title">
-                <string>Audio,Video Location</string>
+                <string>Video,Audio Location</string>
             </property>
             <vbox>
                 <property name="name">
