@@ -126,7 +126,8 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
 
     m_popupProgress = new OverlayWidget( this, mainProgressBarBox, "popupProgress" );
     m_popupProgress->setMargin( 1 );
-    m_popupProgress->setFrameStyle( QFrame::Box | QFrame::Raised );
+    m_popupProgress->setFrameStyle( QFrame::Panel | QFrame::Raised );
+    m_popupProgress->setFrameShape( QFrame::StyledPanel );
     m_popupProgress->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
    (new QGridLayout( m_popupProgress, 1 /*rows*/, 3 /*cols*/, 6, 3 ))->setAutoAdd( true );
 }
