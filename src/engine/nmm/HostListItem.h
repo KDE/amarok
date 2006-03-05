@@ -49,6 +49,14 @@ class HostListItem : public KListViewItem {
 
     void updateColumn( int column ) const;
 
+    /**
+     * Shows extended status text in a QWhatsThis widget.
+     * \todo handle different error scenarios
+     */
+    void statusToolTip();
+
+    QString prettyStatus( int );
+
   protected:
     void paintCell( QPainter * p, const QColorGroup & cg, int column, int width, int align );
 
@@ -57,7 +65,7 @@ class HostListItem : public KListViewItem {
     bool m_audio;
     bool m_video;
     bool m_read_only;
-    bool m_status_error;
+    int m_status;
 };
 
 #endif

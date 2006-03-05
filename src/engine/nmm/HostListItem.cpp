@@ -27,9 +27,11 @@
 #include <qfont.h>
 #include <qheader.h>
 #include <qpainter.h>
+#include <qwhatsthis.h>
 
 #include <kglobal.h>
 #include <kiconloader.h>
+#include <klocale.h>
 
 #include "debug.h"
 #include "HostList.h"
@@ -39,12 +41,12 @@ HostListItem::HostListItem( QListView *parent, QString hostname, bool audio, boo
     m_audio( audio ),
     m_video( video ),
     m_read_only( read_only ),
-    m_status_error( false )
+    m_status( 0 )
 {  
   setText( HostListItem::Hostname, hostname);
 
-  setPixmap( HostListItem::Status, SmallIcon("help") );
-  setText( HostListItem::Status, "OK" );
+  setPixmap( HostListItem::Status, SmallIcon("info") );
+  setText( HostListItem::Status, i18n("Unknown") );
 }
 
 HostListItem::~HostListItem()
@@ -60,6 +62,13 @@ void HostListItem::updateColumn( int column ) const
   listView()->viewport()->update( listView()->header()->sectionPos( column ) - listView()->contentsX() + 1,
       r.y() + 1,
       listView()->header()->sectionSize( column ) - 2, height() - 2 );
+}
+
+void HostListItem::statusToolTip()
+{
+  if( !m_status )
+    QWhatsThis::display( i18n("<html><body>So far no status available for this host entry.<br>Probably this means the host has not been used for playback.</body></html>") );
+  // TODO: display QWhatsThis messages for errors
 }
 
 void HostListItem::paintCell(QPainter * p, const QColorGroup & cg, int column, int width, int align )
@@ -83,14 +92,18 @@ void HostListItem::paintCell(QPainter * p, const QColorGroup & cg, int column, i
   else if( column ==  HostListItem::Status )
   {
     QFont font( p->font() );
-    if( m_status_error )
+    if( ! m_status  ) // Unknown
     {
-      font.setBold( true );
-      m_cg.setColor( QColorGroup::Text, Qt::red );
+      font.setBold( false );
     }
-    else {
+    else if( m_status == 1 ) // Ok
+    {
       font.setBold( false );
       m_cg.setColor( QColorGroup::Text, Qt::darkGreen );
+    }
+    else { // error
+      font.setBold( true );
+      m_cg.setColor( QColorGroup::Text, Qt::red );
     }
     p->setFont( font );
   }

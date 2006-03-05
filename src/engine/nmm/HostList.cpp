@@ -48,7 +48,7 @@ HostList::HostList( QWidget *parent, const char *name )
   setColumnAlignment( HostListItem::Video,    Qt::AlignCenter );
   setColumnAlignment( HostListItem::Audio,    Qt::AlignCenter );
   setColumnAlignment( HostListItem::Volume,   Qt::AlignCenter );
-  setColumnAlignment( HostListItem::Status,   Qt::AlignCenter );
+  setColumnAlignment( HostListItem::Status,   Qt::AlignLeft );
 }
 
 HostList::~HostList()
@@ -74,6 +74,12 @@ void HostList::contentsMousePressEvent( QMouseEvent *e)
     {
       item->toggleAudio();
       item->updateColumn( HostListItem::Audio );
+    }
+    // status column
+    else if( e->pos().x() > header()->sectionPos( HostListItem::Status ) &&
+             e->pos().x() < header()->sectionPos( HostListItem::Status ) + header()->sectionSize( HostListItem::Status ) )
+    {
+      item->statusToolTip();
     }
 
     }
