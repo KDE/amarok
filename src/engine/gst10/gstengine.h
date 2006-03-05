@@ -79,10 +79,10 @@ class GstEngine : public Engine::Base
 //        void newStreamData( char* data, int size );
 
         /** Set whether equalizer is enabled */
-//        void setEqualizerEnabled( bool );
+        void setEqualizerEnabled( bool );
 
         /** Set equalizer preamp and gains, range -100..100. Gains are 10 values. */
-//        void setEqualizerParameters( int preamp, const QValueList<int>& bandGains );
+        void setEqualizerParameters( int preamp, const QValueList<int>& bandGains );
 
     protected:
         void setVolumeSW( uint percent );
@@ -171,7 +171,7 @@ class GstEngine : public Engine::Base
         GstElement* m_gst_audiobin;
 
         GstElement* m_gst_audioconvert;
-//        GstElement* m_gst_equalizer;
+        GstElement* m_gst_equalizer;
         GstElement* m_gst_identity;
         GstElement* m_gst_volume;
         GstElement* m_gst_audioscale;
@@ -193,10 +193,10 @@ class GstEngine : public Engine::Base
         bool              m_pipelineFilled;
         float             m_fadeValue;
 
-/*        bool              m_equalizerEnabled;
+        bool              m_equalizerEnabled;
         int               m_equalizerPreamp;
         QValueList<int>   m_equalizerGains;
-*/
+
         Engine::SimpleMetaBundle m_metaBundle;
 
         bool m_shutdown;

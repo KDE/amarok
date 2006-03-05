@@ -1,6 +1,7 @@
 // PCM time-domain equalizer
 // (c) 2002 Felipe Rivera <liebremx at users sourceforge net>
 // (c) 2004 Mark Kretschmann <markey@web.de>
+// (c) 2006 Jakub Stachowski <qbast@go2.pl>
 // License: GPL V2
 
 
@@ -10,8 +11,6 @@
 #include <math.h>
 #include <string.h>
 #include <vector>
-
-#include <gst/audio/audio.h>
 
 #include <kdebug.h>
 
@@ -31,24 +30,40 @@ enum {
     ARG_GAIN
 };
 
-GstElementDetails gst_equalizer_details =
-    GST_ELEMENT_DETAILS ( (gchar*) "Equalizer",
-                          (gchar*) "Filter/Effect/Audio",
-                          (gchar*) "Parametric Equalizer",
-                          (gchar*) "Mark Kretschmann <markey@web.de>" );
+static GstElementDetails gst_equalizer_details = {
+    "Equalizer",
+    "Filter/Effect/Audio",
+    "Parametric Equalizer",
+    "Mark Kretschmann <markey@web.de>" };
 
 GstStaticPadTemplate sink_template =
     GST_STATIC_PAD_TEMPLATE ( (gchar*) "sink",
                     GST_PAD_SINK,
                     GST_PAD_ALWAYS,
-                    GST_STATIC_CAPS ( GST_AUDIO_INT_PAD_TEMPLATE_CAPS )
+                    GST_STATIC_CAPS ( 
+		      "audio/x-raw-int, " \
+                      "rate = (int) [ 1, MAX ], " \
+                      "channels = (int) [ 1, MAX ], " \
+                      "endianness = (int) { LITTLE_ENDIAN, BIG_ENDIAN }, " \
+                      "width = (int) 16, " \
+                      "depth = (int) 16, " \
+                      "signed = (bool) TRUE " 
+                      )
                   );
 
 GstStaticPadTemplate src_template =
     GST_STATIC_PAD_TEMPLATE (  (gchar*) "src",
                     GST_PAD_SRC,
                     GST_PAD_ALWAYS,
-                    GST_STATIC_CAPS ( GST_AUDIO_INT_PAD_TEMPLATE_CAPS )
+                    GST_STATIC_CAPS (   
+		      "audio/x-raw-int, " \
+                      "rate = (int) [ 1, MAX ], " \
+                      "channels = (int) [ 1, MAX ], " \
+                      "endianness = (int) { LITTLE_ENDIAN, BIG_ENDIAN }, " \
+                      "width = (int) 16, " \
+                      "depth = (int) 16, " \
+                      "signed = (bool) TRUE" 
+                      )
                    );
 
 // static guint gst_equalizer_signals[ LAST_SIGNAL ] = { 0 };
@@ -56,8 +71,10 @@ GstStaticPadTemplate src_template =
 #define _do_init(bla) \
     GST_DEBUG_CATEGORY_INIT (gst_equalizer_debug, "equalizer", 0, "equalizer element");
 
-GST_BOILERPLATE_FULL ( GstEqualizer, gst_equalizer, GstElement, GST_TYPE_ELEMENT, _do_init );
+GST_BOILERPLATE_FULL ( GstEqualizer, gst_equalizer, GstBaseTransform, GST_TYPE_BASE_TRANSFORM, _do_init );
 
+static gboolean gst_equalizer_set_caps (GstBaseTransform * base, GstCaps * incaps, GstCaps * outcaps);
+static GstFlowReturn gst_equalizer_transform_ip (GstBaseTransform * base, GstBuffer * outbuf);
 
 /////////////////////////////////////////////////////////////////////////////////////
 // INIT
@@ -69,6 +86,10 @@ gst_equalizer_base_init ( gpointer g_class )
     kdDebug() << k_funcinfo << endl;
 
     GstElementClass * gstelement_class = GST_ELEMENT_CLASS ( g_class );
+    gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&src_template));
+    gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&sink_template));
     gst_element_class_set_details ( gstelement_class, &gst_equalizer_details );
 }
 
@@ -82,32 +103,23 @@ gst_equalizer_class_init ( GstEqualizerClass * klass )
     GstElementClass* gstelement_class = GST_ELEMENT_CLASS( klass );
     gobject_class = G_OBJECT_CLASS( klass );
 
+    gobject_class->set_property = gst_equalizer_set_property;
+    gobject_class->get_property = gst_equalizer_get_property;
+
     g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_ACTIVE, g_param_spec_boolean ("active", "active", "active", false, (GParamFlags)G_PARAM_READWRITE));
     g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_PREAMP, g_param_spec_int ("preamp", "preamp", "preamp", 0, 100, 0, (GParamFlags)G_PARAM_READWRITE));
     g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_GAIN, g_param_spec_pointer ("gain", "gain", "gain", (GParamFlags)G_PARAM_WRITABLE));
-
-    gobject_class->set_property = gst_equalizer_set_property;
-    gobject_class->get_property = gst_equalizer_get_property;
+    GST_BASE_TRANSFORM_CLASS (klass)->transform_ip =
+      GST_DEBUG_FUNCPTR (gst_equalizer_transform_ip);
+    GST_BASE_TRANSFORM_CLASS (klass)->set_caps =
+      GST_DEBUG_FUNCPTR (gst_equalizer_set_caps);
 }
 
 
 void
-gst_equalizer_init ( GstEqualizer* obj )
+gst_equalizer_init ( GstEqualizer* obj, GstEqualizerClass * klass )
 {
     kdDebug() << k_funcinfo << endl;
-
-    obj->srcpad = gst_pad_new_from_template ( gst_static_pad_template_get( &src_template),  "src" );
-    obj->sinkpad = gst_pad_new_from_template ( gst_static_pad_template_get( &sink_template),  "sink" );
-
-    gst_element_add_pad ( GST_ELEMENT ( obj ), obj->srcpad );
-    gst_element_add_pad ( GST_ELEMENT ( obj ), obj->sinkpad );
-
-    gst_pad_set_getcaps_function (obj->srcpad, gst_pad_proxy_getcaps);
-    gst_pad_set_getcaps_function (obj->sinkpad, gst_pad_proxy_getcaps);
-    gst_pad_set_link_function ( obj->srcpad, gst_equalizer_link);
-    gst_pad_set_link_function ( obj->sinkpad, gst_equalizer_link);
-
-    gst_pad_set_chain_function ( obj->sinkpad, gst_equalizer_chain );
 
     // Properties
     obj->active = false;
@@ -118,49 +130,26 @@ gst_equalizer_init ( GstEqualizer* obj )
 // PUBLIC METHODS
 /////////////////////////////////////////////////////////////////////////////////////
 
-GstPadLinkReturn
-gst_equalizer_link (GstPad* pad, const GstCaps* caps)
+static gboolean
+gst_equalizer_set_caps (GstBaseTransform * base, GstCaps * incaps, GstCaps * outcaps)
 {
-    kdDebug() << k_funcinfo << endl;
-
-    GstStructure* structure = gst_caps_get_structure (caps, 0);
-    GstEqualizer* obj = GST_EQUALIZER (gst_pad_get_parent (pad));
-    GstPad *otherpad = (pad == obj->srcpad) ? obj->sinkpad : obj->srcpad;
-    GstPadLinkReturn ret;
-    const gchar *mime;
+     GstEqualizer* obj = GST_EQUALIZER (base);
+     GstStructure* structure = gst_caps_get_structure (incaps, 0);
 
     /* Since we're an audio filter, we want to handle raw audio
     * and from that audio type, we need to get the samplerate and
     * number of channels. */
-    mime = gst_structure_get_name (structure);
-    if (strcmp (mime, "audio/x-raw-int") != 0) {
-        GST_WARNING ("Wrong mimetype %s provided on pad %s, we only support %s",
-                    mime, (pad == obj->srcpad) ? "SRC" : "SINK",  "audio/x-raw-int");
-        return GST_PAD_LINK_REFUSED;
-    }
 
-    /* we're a filter and don't touch the properties of the data.
-    * That means we can set the given caps unmodified on the next
-    * element, and use that negotiation return value as ours. */
-    ret = gst_pad_try_set_caps (otherpad, gst_caps_copy (caps));
-    if (GST_PAD_LINK_FAILED (ret))
-        return ret;
-
-    /* Capsnego succeeded, get the stream properties for internal
-    * usage and return success. */
     gst_structure_get_int (structure, "rate", &obj->samplerate);
     gst_structure_get_int (structure, "channels", &obj->channels);
-
     // Load the correct filter table according to the sampling rate
     set_filters( obj );
     /* Zero the history arrays */
     memset(obj->data_history, 0, sizeof(sXYData) * EQ_MAX_BANDS * EQ_CHANNELS);
-
-    g_print ("Caps negotiation succeeded with %d Hz @ %d channels\n",
-            obj->samplerate, obj->channels);
-
-    return ret;
+    kdDebug() << "Samplerate " << obj->samplerate << ", channels: " << obj->channels << endl;    
+    return TRUE;
 }
+
 
 
 void
@@ -246,21 +235,16 @@ set_filters( GstEqualizer* obj )
     }
 }
 
-
-void
-gst_equalizer_chain ( GstPad* pad, GstData* data_in )
+static GstFlowReturn
+gst_equalizer_transform_ip (GstBaseTransform * base, GstBuffer * outbuf)
 {
-    g_return_if_fail( pad != NULL );
+    GstEqualizer* obj = GST_EQUALIZER ( base );
 
-    GstEqualizer* obj = GST_EQUALIZER ( GST_OBJECT_PARENT ( pad ) );
-    GstBuffer* inbuf = GST_BUFFER( data_in );
-    gint16 *data = (gint16*) GST_BUFFER_DATA( inbuf );
-    gint length = GST_BUFFER_SIZE( inbuf );
+    if ( !obj->active ) return GST_FLOW_OK;
 
-    if ( !obj->active ) {
-        gst_pad_push( obj->srcpad, data_in );
-        return;
-    }
+    gint16 *data = (gint16*)GST_BUFFER_DATA ( outbuf ); 
+    gint length = GST_BUFFER_SIZE( outbuf );
+    
     /* Indexes for the history arrays
      * These have to be kept between calls to this function
      * hence they are static */
@@ -344,9 +328,10 @@ gst_equalizer_chain ( GstPad* pad, GstData* data_in )
         else if (j == 3) j = 0;
         else k = 0;
     }/* For each pair of samples */
-
-    gst_pad_push( obj->srcpad, GST_DATA( inbuf ) );
+    
+    return GST_FLOW_OK;
 }
+
 
 
 GstEqualizer*

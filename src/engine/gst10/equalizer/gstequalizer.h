@@ -7,6 +7,7 @@
 #define AMAROK_GST_EQUALIZER_H
 
 #include <gst/gst.h>
+#include <gst/base/gstbasetransform.h>
 
 G_BEGIN_DECLS
 
@@ -47,7 +48,7 @@ typedef struct
 struct _GstEqualizer
 {
     // Do not remove
-    GstElement element;
+    GstBaseTransform element;
 
     GstPad *srcpad;
     GstPad *sinkpad;
@@ -72,16 +73,14 @@ struct _GstEqualizer
 
 struct _GstEqualizerClass
 {
-    GstElementClass parent_class;
+    GstBaseTransformClass parent_class;
 
     /* signals */
 };
 
-GstPadLinkReturn gst_equalizer_link(GstPad* pad, const GstCaps* caps);
 void gst_equalizer_set_property( GObject * object, guint prop_id, const GValue * value, GParamSpec * pspec );
 void gst_equalizer_get_property( GObject * object, guint prop_id, GValue * value, GParamSpec * pspec );
 void set_filters( GstEqualizer* obj );
-void gst_equalizer_chain( GstPad* pad, GstData* data );
 GType gst_equalizer_get_type( void );
 GstEqualizer* gst_equalizer_new();
 

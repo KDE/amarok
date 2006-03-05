@@ -5,7 +5,7 @@ libgstequalizer_la_SOURCES = \
     gstequalizer.cpp
 
 INCLUDES = \
-    $(CFLAGS_GST) \
+    $(CFLAGS_GST10) \
     $(all_includes)
 
 METASOURCES = \

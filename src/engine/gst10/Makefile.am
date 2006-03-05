@@ -2,7 +2,7 @@ kde_module_LTLIBRARIES = \
     libamarok_gst10engine_plugin.la
 
 SUBDIRS = \
-    config 
+    config equalizer
 
 INCLUDES = \
     -I$(top_srcdir)/amarok/src/engine \
@@ -15,6 +15,7 @@ INCLUDES = \
 libamarok_gst10engine_plugin_la_LIBADD = \
     $(top_builddir)/amarok/src/engine/libengine.la \
     $(top_builddir)/amarok/src/engine/gst10/config/libgstconfig.la \
+    $(top_builddir)/amarok/src/engine/gst10/equalizer/libgstequalizer.la \
     $(top_builddir)/amarok/src/plugin/libplugin.la \
     $(LIB_KFILE) \
     $(LIB_KDECORE)
