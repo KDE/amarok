@@ -1,3 +1,6 @@
+nmmicondir = $(kde_datadir)/amarok/icons
+nmmicon_ICON = AUTO
+
 kde_module_LTLIBRARIES = \
     libamarok_nmmengine_plugin.la
 

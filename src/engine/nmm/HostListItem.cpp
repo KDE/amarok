@@ -67,7 +67,7 @@ void HostListItem::updateColumn( int column ) const
 void HostListItem::statusToolTip()
 {
   if( !m_status )
-    QWhatsThis::display( i18n("<html><body>So far no status available for this host entry.<br>Probably this means the host has not been used for playback.</body></html>") );
+    QWhatsThis::display( i18n("<html><body>So far no status available for this host entry.<br>Probably this means the host has not been used yet for playback.</body></html>") );
   // TODO: display QWhatsThis messages for errors
 }
 

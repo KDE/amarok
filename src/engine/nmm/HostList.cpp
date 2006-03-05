@@ -81,7 +81,8 @@ void HostList::contentsMousePressEvent( QMouseEvent *e)
     {
       item->statusToolTip();
     }
-
+    else 
+      KListView::contentsMousePressEvent( e );
     }
   }
   else
