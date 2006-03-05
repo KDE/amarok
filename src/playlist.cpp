@@ -668,7 +668,7 @@ Playlist::addSpecialCustomTracks( uint songCount )
                 first = limitSearch.capturedTexts()[1].toInt();
                 limit = limitSearch.capturedTexts()[2].toInt();
             }
-            if ( limit < songCount )
+            if ( limit <= songCount )
                 // The list is even smaller than the number of songs we want :-(
                 songCount = limit;
             else
