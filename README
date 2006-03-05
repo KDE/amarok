@@ -37,6 +37,14 @@ interface that really makes playlist handling easy.
 --------------------------------------------------------------------------------
 
 
+ RELEASE NOTES 1.4-BETA2
+=========================
+
+The GStreamer-0.10 engine is still experimental and not yet completed. For
+everyday usage we recommend the xine or Helix engines.
+--------------------------------------------------------------------------------
+
+
  DEPENDENCIES
 ==============
 
