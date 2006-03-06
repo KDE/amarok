@@ -24,6 +24,8 @@ BEFORE BETA 1:
 
 SHORT-TERM (URGENT):
 
+ <sebr>    Make infopane in playlistbrowser a qsplitter
+
  <illiss.> Loading normal (M3U) playlists from the playlist browser doesn't block the UI per se,
            but it does nothing for really long time, until suddenly the whole playlist shows up,
            which is strange and confusing.
@@ -36,12 +38,6 @@ SHORT-TERM (URGENT):
            theme authors well in advance of 1.4 release to let them know so they can update.
            ::CSS-Elements::
             .disc-separator
-
- <sebr>    Mediabrowser is larger than the smallest limit.  Its b/c of the disconnect button.  This
-           show be changed back or just change the text of the connect button.
-
- <sebr>    The new cover icon isn't square.  This sucks, it throws the context browser a couple of
-           pixels out of line.  We should keep these nitty details consistent :-).
 
  <sebr>    When starting a drag in the collection browser, we can block the gui if the user makes a
            selection which is sql intensive (eg, select all).  Instead of calculating the items
@@ -73,9 +69,6 @@ SHORT-TERM (URGENT):
            at the bottom of the bottom becomes invisible.
            You can see the problem easily when you hide the current browser by clicking twice
            the button twice. This problem AFAIK also affects 1.3-branch.
-
- <markey>  When you delete a downloaded podcast from Playlist Browser, the icon stays in
-           "downloaded" state until you open the menu again.
 
  <markey>  Add DCOP functions for showing dialogs, similar to kdialog.
 

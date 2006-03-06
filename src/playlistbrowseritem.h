@@ -406,6 +406,8 @@ class StreamEntry : public PlaylistBrowserEntry
         const QString &title() { return m_title; }
 
         QDomElement xml();
+        
+        void  updateInfo();
 
         int   rtti() const { return RTTI; }
         static const int RTTI = 1003;    //stream item

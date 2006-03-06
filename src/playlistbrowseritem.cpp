@@ -533,7 +533,7 @@ void PlaylistEntry::updateInfo()
 
     str += body.arg( i18n( "Playlist" ),         text(0) );
     str += body.arg( i18n( "Number of tracks" ), QString::number(m_trackCount) );
-    str += body.arg( i18n( "Length" ),           QString::number(m_length) );
+    str += body.arg( i18n( "Length" ),           MetaBundle::prettyTime( m_length ) );
     str += body.arg( i18n( "Location" ),         m_url.prettyURL() );
     str += "</table></body></html>";
 
@@ -803,6 +803,18 @@ QDomElement StreamEntry::xml() {
         return i;
 }
 
+void StreamEntry::updateInfo()
+{
+    const QString body = "<tr><td><b>%1</b></td><td>%2</td></tr>";
+
+    QString str = "<html><body><table width=\"100%\" border=\"0\">";
+
+    str += body.arg( i18n( "Name" ), text(0) );
+    str += body.arg( i18n( "URL" ),  m_url.prettyURL() );
+    str += "</table></body></html>";
+
+    PlaylistBrowser::instance()->setInfo( str );
+}
 
 void StreamEntry::setup()
 {
@@ -1128,7 +1140,6 @@ PodcastChannel::configure()
     const KURL save       = m_settings->m_saveLocation;
     const bool autoScan   = m_settings->m_autoScan;
     const int  mediaFetch = m_settings->m_fetch;
-    const int  purgeCount = m_settings->m_purgeCount;
     const bool hadPurge   = m_settings->m_purge;
 
     PodcastSettingsDialog *dialog = new PodcastSettingsDialog( m_settings,
@@ -1505,7 +1516,8 @@ PodcastChannel::updateInfo()
     str += body.arg( i18n( "Website" ),     m_link.prettyURL() );
     str += body.arg( i18n( "Copyright" ),   m_copyright );
     str += body.arg( i18n( "Description" ), m_description );
-    str += "</table><ul>";
+    str += "</table>";
+    str += i18n( "<p>&nbsp;<b>Episodes</b></p><ul>" );
     for( QListViewItem *c = firstChild(); c; c = c->nextSibling() )
     {
         str += QString("<li>%1</li>").arg( static_cast<PodcastItem*>(c)->title() );
