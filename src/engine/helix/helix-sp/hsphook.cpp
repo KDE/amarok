@@ -137,8 +137,7 @@ STDMETHODIMP HSPPreMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioData
    pAudioInData->pData->Get(data, len);
 
    // provide a little margin to prevent a slight but noticeable jump in vol when the fadein ends
-   if ((m_fadein && pAudioInData->ulAudioTime < 2*m_fadelength) ||  
-       (m_fadeout && pAudioInData->ulAudioTime > (m_Player->duration(m_index) - m_fadelength)))
+   if ((m_fadein && pAudioInData->ulAudioTime < 2*m_fadelength) || m_fadeout)
    {
       m_Player->pCommonClassFactory->CreateInstance(CLSID_IHXBuffer, (void **) &ibuf);
       if (ibuf)

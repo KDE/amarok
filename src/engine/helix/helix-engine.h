@@ -99,6 +99,12 @@ private:
 
    std::vector<MimeEntry> m_mimes;
 
+   struct FadeTrack
+   {
+      unsigned long m_startfadetime;
+      bool m_fadeactive;
+   } m_pfade[2];
+
    void cleanup();
    void timerEvent( QTimerEvent * );
    void resetScope(int playerIndex);

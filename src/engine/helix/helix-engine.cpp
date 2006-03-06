@@ -78,8 +78,9 @@ HelixEngine::HelixEngine()
    addPluginProperty( "HasCrossfade", "true" );
 
    memset(&m_md, 0, sizeof(m_md));
-   memset(&hscope, 0, sizeof(hscope));
+   memset(hscope, 0, 2*sizeof(HelixScope));
    memset(&m_scopetm, 0, sizeof(struct timeval));
+   memset(m_pfade, 0, 2*sizeof(FadeTrack));
 }
 
 HelixEngine::~HelixEngine()
@@ -292,23 +293,18 @@ HelixEngine::load( const KURL &url, bool isStream )
    {
       int nextPlayer = m_current ? 0 : 1;
 
-      // seems like there should be a better way...
-      if ( (isPlaying(0) && isPlaying(1)) || // already crossfading, so must have pushed advance to next track
-           // player 0 playing and pushed advance to next track:
-           (isPlaying(0) && (duration(0) - m_xfadeLength) > where(0) + 2000 ) || // give a 2 sec window
-           // player 1 playing and pushed advance to next track:
-           (isPlaying(1) && (duration(1) - m_xfadeLength) > where(1) + 2000 ) )  // give a 2 sec window
-         cleanup();
-      else
-      {
-         PlayerControl::stop(nextPlayer);
-         resetScope(nextPlayer);
-         memset(&hscope[nextPlayer], 0, sizeof(struct HelixScope));
-      }
+      // prepare the next player
+      PlayerControl::stop(nextPlayer);
+      resetScope(nextPlayer);
+      memset(&hscope[nextPlayer], 0, sizeof(HelixScope));
+      memset(&m_pfade[nextPlayer], 0, sizeof(FadeTrack));
 
       if (isPlaying(m_current))
+      {
+         m_pfade[m_current].m_fadeactive = true;
+         m_pfade[m_current].m_startfadetime = PlayerControl::where(m_current);
          setFadeout(true, m_xfadeLength, m_current);
-
+      }
       Engine::Base::load( url, false ); // we dont crossfade streams ?? do we load the base here ??
       PlayerControl::setURL( QFile::encodeName( url.url() ), nextPlayer, !isStream );
       m_isStream = false;
@@ -372,6 +368,8 @@ HelixEngine::play( uint offset )
          emit stateChanged( Engine::Playing );
       }
 
+      m_pfade[nextPlayer].m_fadeactive = false;
+
       m_current = nextPlayer;
       return true;
    }
@@ -396,7 +394,8 @@ HelixEngine::cleanup()
    killTimers();
    m_isStream = false;
    memset(&m_md, 0, sizeof(m_md));
-   memset(&hscope, 0, sizeof(hscope));
+   memset(hscope, 0, 2*sizeof(HelixScope));
+   memset(m_pfade, 0, 2*sizeof(FadeTrack));
 }
 
 void
@@ -418,7 +417,8 @@ void HelixEngine::play_finished(int playerIndex)
    debug() << "Ok, finished playing the track\n";
    cleanUpStream(playerIndex);
    resetScope(playerIndex);
-   memset(&hscope[playerIndex], 0, sizeof(struct HelixScope));
+   memset(&hscope[playerIndex], 0, sizeof(HelixScope));
+   memset(&m_pfade[playerIndex], 0, sizeof(FadeTrack));
    if (playerIndex == m_current)
    {
       m_state = Engine::Idle;
@@ -535,14 +535,21 @@ HelixEngine::timerEvent( QTimerEvent * )
    PlayerControl::dispatch(); // dispatch the players
    if ( m_xfadeLength <= 0 && m_state == Engine::Playing && PlayerControl::done(m_current) )
       play_finished(m_current);
-   else if ( m_xfadeLength > 0 && m_state == Engine::Playing && isPlaying(m_current?0:1) && PlayerControl::done(m_current?0:1) )
-      hscope[m_current?0:1].m_lasttime = 0;
+   else if ( m_xfadeLength > 0 && m_state == Engine::Playing && isPlaying(m_current?0:1) )
+   {
+      if ( PlayerControl::done(m_current?0:1) )
+         hscope[m_current?0:1].m_lasttime = 0;
+
+      if (m_pfade[m_current?0:1].m_fadeactive && 
+          PlayerControl::where(m_current?0:1) > m_pfade[m_current?0:1].m_startfadetime + (unsigned)m_xfadeLength)
+         play_finished(m_current?0:1);
+   }
 
    // prune the scope(s)
    prune();
 
    struct timeval tm;
-   struct timezone tz; // seriously, what were they thinking?
+   struct timezone tz;
    memset(&tz, 0, sizeof(struct timezone));
    gettimeofday(&tm, &tz);
    m_scopedelta = (tm.tv_sec - m_scopetm.tv_sec) * 1000 + (tm.tv_usec - m_scopetm.tv_usec) / 1000; // ms
@@ -655,15 +662,10 @@ const Engine::Scope &HelixEngine::scope()
    if (isPlaying(0) && isPlaying(1)) // crossfading
    {
       if (m_scopeplayerlast)
-      {
-         scope(m_current?0:1);
          scope(m_current);
-      }
       else
-      {
-         scope(m_current);
          scope(m_current?0:1);
-      }
+
       m_scopeplayerlast = !m_scopeplayerlast;
    }
    else
