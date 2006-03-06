@@ -1125,10 +1125,11 @@ void
 PodcastChannel::configure()
 {
     // Save the values
-    KURL save   = m_settings->m_saveLocation;
-    bool autoScan  = m_settings->m_autoScan;
-    int mediaFetch = m_settings->m_fetch;
-    int purgeCount = m_settings->m_purgeCount;
+    const KURL save       = m_settings->m_saveLocation;
+    const bool autoScan   = m_settings->m_autoScan;
+    const int  mediaFetch = m_settings->m_fetch;
+    const int  purgeCount = m_settings->m_purgeCount;
+    const bool hadPurge   = m_settings->m_purge;
 
     PodcastSettingsDialog *dialog = new PodcastSettingsDialog( m_settings,
             PlaylistBrowser::instance()->getPodcastSettings( m_parent ) );
@@ -1137,7 +1138,7 @@ PodcastChannel::configure()
     {
         bool downloadMedia = ( (mediaFetch != m_settings->m_fetch) && (m_settings->m_fetch == AUTOMATIC) );
 
-        if( m_settings->m_purge && ( m_settings->m_purgeCount < purgeCount ) )
+        if( !hadPurge && m_settings->m_purge )
         {
             purge();
         }

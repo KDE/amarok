@@ -139,16 +139,16 @@ PodcastSettingsDialog::hasChanged()
 {
     bool fetchTypeChanged = true;
 
-    if( m_ps->m_streamRadio->isChecked()          && m_settings->m_fetch == STREAM   ||
-        m_ps->m_downloadRadio->isChecked()        && m_settings->m_fetch == AUTOMATIC  )
+    if( m_ps->m_streamRadio->isChecked()   && m_settings->m_fetch == STREAM   ||
+        m_ps->m_downloadRadio->isChecked() && m_settings->m_fetch == AUTOMATIC  )
 
         fetchTypeChanged = false;
 
-    return ( m_settings->m_saveLocation            != requesterSaveLocation()             ||
-            m_settings->m_autoScan        != m_ps->m_autoFetchCheck->isChecked() ||
-            m_settings->m_addToMediaDevice!= m_ps->m_addToMediaDeviceCheck->isChecked() ||
-            m_settings->m_purge           != m_ps->m_purgeCheck->isChecked()     ||
-            m_settings->m_purgeCount      != m_ps->m_purgeCountSpinBox->value()  ||
+    return ( m_settings->m_saveLocation    != requesterSaveLocation()             ||
+            m_settings->m_autoScan         != m_ps->m_autoFetchCheck->isChecked() ||
+            m_settings->m_addToMediaDevice != m_ps->m_addToMediaDeviceCheck->isChecked() ||
+            m_settings->m_purge            != m_ps->m_purgeCheck->isChecked()     ||
+            m_settings->m_purgeCount       != m_ps->m_purgeCountSpinBox->value()  ||
             fetchTypeChanged );
 }
 
@@ -162,11 +162,11 @@ void PodcastSettingsDialog::slotOk()       //slot
 {
     enableButtonOK( false ); //visual feedback
 
-    m_settings->m_saveLocation            = requesterSaveLocation();
-    m_settings->m_autoScan        = m_ps->m_autoFetchCheck->isChecked();
+    m_settings->m_saveLocation     = requesterSaveLocation();
+    m_settings->m_autoScan         = m_ps->m_autoFetchCheck->isChecked();
     m_settings->m_addToMediaDevice = m_ps->m_addToMediaDeviceCheck->isChecked();
-    m_settings->m_purge           = m_ps->m_purgeCheck->isChecked();
-    m_settings->m_purgeCount      = m_ps->m_purgeCountSpinBox->value();
+    m_settings->m_purge            = m_ps->m_purgeCheck->isChecked();
+    m_settings->m_purgeCount       = m_ps->m_purgeCountSpinBox->value();
 
     if( m_ps->m_streamRadio->isChecked() )
         m_settings->m_fetch = STREAM;
@@ -189,10 +189,13 @@ QString PodcastSettingsDialog::requesterSaveLocation()
 void PodcastSettingsDialog::setSettings( PodcastSettings *settings, bool changeSaveLocation )
 {
     KURL saveLocation = settings->m_saveLocation;
+    
     if( changeSaveLocation )
         saveLocation.addPath( (m_settings->m_title).replace("/", "-") );
+    
     m_ps->m_saveLocation->setURL( saveLocation.prettyURL() );
     m_ps->m_autoFetchCheck->setChecked( settings->m_autoScan );
+    
     if( settings->m_fetch == STREAM )
     {
         m_ps->m_streamRadio->setChecked( true );
@@ -215,7 +218,7 @@ void PodcastSettingsDialog::setSettings( PodcastSettings *settings, bool changeS
     }
 }
 
-//reser to parents settings button
+//reset to parents settings button
 void PodcastSettingsDialog::slotUser1()    //slot
 {
     bool changeSaveLocation = m_parentSettings->m_title != i18n("default");

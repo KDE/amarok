@@ -1150,13 +1150,13 @@ void PlaylistBrowser::configurePodcastCategory( const PlaylistCategory *category
 
     PodcastSettings *parentSettings;
     PlaylistCategory *p = static_cast<PlaylistCategory*>( category->parent() );
-    if( (category == m_podcastCategory) && (p == 0) )
+    
+    if( (category == m_podcastCategory) && !p )
         parentSettings = new PodcastSettings( i18n("default") ); //default settings
     else
         parentSettings = getPodcastSettings( p );
 
-    PodcastSettingsDialog *dialog = new PodcastSettingsDialog( settings,
-            parentSettings );
+    PodcastSettingsDialog *dialog = new PodcastSettingsDialog( settings, parentSettings );
 
     dialog->configure();
 }
@@ -2349,24 +2349,28 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 break;
 
             case CONFIG:
+            {
+                bool hadPurge = item->hasPurge();
                 item->configure();
 
                 if( item->autoScan() && m_podcastItemsToScan.find( item ) < 0 ) // check that it is not there
                 {
                     m_podcastItemsToScan.append( item );
                 }
-                else if( !item->autoScan() && m_podcastItemsToScan.find( item ) >= 0 )
-                {
+                else if( !item->autoScan() )
+                {   // don't need to check it's not there, it makes no difference to remove()
                     m_podcastItemsToScan.remove( item );
                 }
 
                 if( m_podcastItemsToScan.isEmpty() )
                     m_podcastTimer->stop();
+                    
                 else if( m_podcastItemsToScan.count() == 1 )
                     m_podcastTimer->start( m_podcastTimerInterval );
                 // else timer is already running
-
+                
                 break;
+            }
         }
         #undef item
     }
