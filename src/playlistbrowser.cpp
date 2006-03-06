@@ -2350,7 +2350,6 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
             case CONFIG:
             {
-                bool hadPurge = item->hasPurge();
                 item->configure();
 
                 if( item->autoScan() && m_podcastItemsToScan.find( item ) < 0 ) // check that it is not there
