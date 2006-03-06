@@ -59,31 +59,34 @@ void HostList::contentsMousePressEvent( QMouseEvent *e)
   HostListItem *item = static_cast<HostListItem*>( itemAt( contentsToViewport( e->pos() ) ) );
   if( !( e->state() & Qt::ControlButton || e->state() & Qt::ShiftButton ) && ( e->button() & Qt::LeftButton ) && item)
   {
-    if( !m_read_only ) {
-
     // video column
-    if( e->pos().x() > header()->sectionPos( HostListItem::Video ) &&
+    if( !m_read_only && 
+        e->pos().x() > header()->sectionPos( HostListItem::Video ) &&
         e->pos().x() < header()->sectionPos( HostListItem::Video ) + header()->sectionSize( HostListItem::Video ) )
     {
       item->toggleVideo();
       item->updateColumn( HostListItem::Video );
+      emit viewChanged();
     }
     // audio column
-    else if( e->pos().x() > header()->sectionPos( HostListItem::Audio ) &&
-             e->pos().x() < header()->sectionPos( HostListItem::Audio ) + header()->sectionSize( HostListItem::Audio ) )
+    else 
+    if( !m_read_only && 
+        e->pos().x() > header()->sectionPos( HostListItem::Audio ) &&
+        e->pos().x() < header()->sectionPos( HostListItem::Audio ) + header()->sectionSize( HostListItem::Audio ) )
     {
       item->toggleAudio();
       item->updateColumn( HostListItem::Audio );
+      emit viewChanged();
     }
     // status column
-    else if( e->pos().x() > header()->sectionPos( HostListItem::Status ) &&
-             e->pos().x() < header()->sectionPos( HostListItem::Status ) + header()->sectionSize( HostListItem::Status ) )
+    else 
+    if( e->pos().x() > header()->sectionPos( HostListItem::Status ) &&
+        e->pos().x() < header()->sectionPos( HostListItem::Status ) + header()->sectionSize( HostListItem::Status ) )
     {
       item->statusToolTip();
     }
     else 
       KListView::contentsMousePressEvent( e );
-    }
   }
   else
     KListView::contentsMousePressEvent( e );

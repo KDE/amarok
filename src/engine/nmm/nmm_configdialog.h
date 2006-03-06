@@ -31,8 +31,8 @@
 
 #include "qobject.h"
 
+class HostList;
 class HostListItem;
-
 class NmmLocation;
 
 class NmmConfigDialog : public amaroK::PluginConfig
@@ -55,12 +55,12 @@ class NmmConfigDialog : public amaroK::PluginConfig
     void save();
 
     /**
-     * Adds a host to the location list.
+     * Adds a host to the user list.
      */
     void addHost();
 
     /**
-     * Removes a host from the location list.
+     * Removes current selected host entry from user list.
      */
     void removeHost();
 
@@ -75,56 +75,43 @@ class NmmConfigDialog : public amaroK::PluginConfig
      */
     void enableRemoveButton();
 
+    /**
+     * Called when user host list gets modified.
+     * So either a host entry has been deleted/added 
+     * or the audio/video toggle has changed.
+     */
+    void hostListModified();
+
   private:
     /**
-     * Fills host list with HostListItems by reading
-     * tmp_environment_list or tmp_user_list.
+     * Fills user and environment host on config dialog init.
      */
-    void createHostList( bool use_environment_list = false );
-
-    /** 
-     * Returns all locations in the host list.
-     */
-    QStringList hostList() const;
+    void createHostLists();
 
     /**
-     * Clears current host list.
-     * \param save_user_hostlist saves user host list if true
+     * Designer ui configuration dialog.
      */
-    void removeHostList( bool save_user_hostlist = false );
-
-    /**
-     * Saves user host list to tmp_user_list.
-     *
-     * Used on audioGroup change and NmmConfigDialog::save().
-     */
-    void saveUserHostList();
-    
     NmmConfigDialogBase* m_view;
-
-    /**
-     * Currently selected HostListItem.
-     * NULL if none selected.
-     */
-    HostListItem *current_host;
-
-    typedef QValueList<NmmLocation> NmmLocationList;
-
-    /**
-     * Environment host list.
-     * Populated only once in constructor.
-     */
-    NmmLocationList tmp_environment_list;
-
-    /**
-     *
-     */
-    NmmLocationList tmp_user_list;
 
     /**
      * Current audio group selection.
      */
     int current_audio_group_selection;
+
+    /**
+     * Host list showing read-only environment list.
+     */
+    HostList *m_environment_list;
+
+    /**
+     * Host list create by the user.
+     */
+    HostList *m_user_list;
+
+    /**
+     * True if user host list was modified.
+     */
+    bool m_host_list_modified;
 };
 
 class NmmLocation {

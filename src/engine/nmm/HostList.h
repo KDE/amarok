@@ -38,6 +38,12 @@ class HostList : public KListView
     void setReadOnly( bool read_only ) { m_read_only = read_only; }
     bool readOnly() const { return m_read_only; }
 
+  signals:
+    /**
+     * Emitted when audio of video toggle changes.
+     */
+    void viewChanged();
+
   protected:
     void contentsMousePressEvent( QMouseEvent *e = 0 );
 

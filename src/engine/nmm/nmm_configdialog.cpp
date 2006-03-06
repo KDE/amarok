@@ -35,37 +35,56 @@
 #include <qlistbox.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
+#include <qwidgetstack.h>
 #include <kcombobox.h>
 
 NmmConfigDialog::NmmConfigDialog()
     : PluginConfig(),
-    current_audio_group_selection(-1)
+    current_audio_group_selection(-1),
+    m_environment_list(NULL),
+    m_user_list(NULL),
+    m_host_list_modified(false)
 {
   kdDebug() << k_funcinfo << endl;
 
-  /* populate envionment and user host list */
-  tmp_environment_list = NmmEngine::instance()->environmentHostList();
-  tmp_user_list = NmmEngine::instance()->userHostList();
 
   m_view = new NmmConfigDialogBase();
+
+  /* create host list widget stack */
+  m_environment_list = new HostList( m_view->audioGroup, "TheEnvironmentList" );
+  m_environment_list->setReadOnly( true );
+  m_environment_list->setSelectionMode( QListView::NoSelection );
+
+  m_user_list = new HostList( m_view->audioGroup, "TheUserList" );
+  m_user_list->setSelectionMode( QListView::Single );
+  connect( m_user_list, SIGNAL( viewChanged() ), this, SLOT( hostListModified() ) );
+  
+  m_view->hostListStack->addWidget( m_environment_list );
+  m_view->hostListStack->addWidget( m_user_list );
+  // show disabled user list by default if 'localhost only' selected
+  m_view->hostListStack->raiseWidget( m_user_list );
 
   /* restore saved output plugin */
   if ( NmmKDEConfig::audioOutputPlugin() == "ALSAPlaybackNode" )
     m_view->audioPlaybackNode->setCurrentItem( 1 );
 
+  /* restore selected audioGroup selection */
   m_view->audioGroup->setButton( NmmKDEConfig::location() );
   clickedAudioGroup( NmmKDEConfig::location() );
+  createHostLists();
 
   /* connect 'Add...' and 'Remove' buttons */
   connect( m_view->addLocationButton, SIGNAL( released() ), SLOT( addHost() ) );
   connect( m_view->removeHostButton, SIGNAL( released() ), SLOT( removeHost() ) );
-  connect( m_view->hostList, SIGNAL( selectionChanged() ) , this, SLOT( enableRemoveButton() ) );
+  connect( m_user_list, SIGNAL( selectionChanged() ) , this, SLOT( enableRemoveButton() ) );
 
   /* connect audioGroup selection */
   connect( m_view->audioGroup, SIGNAL( released(int) ), SLOT( clickedAudioGroup(int) ) );
 
   PluginConfig::connect( m_view->audioPlaybackNode, SIGNAL( activated( int ) ), SIGNAL( viewChanged() ) );
   PluginConfig::connect( m_view->audioGroup, SIGNAL( released( int ) ), SIGNAL( viewChanged() ) );
+
+//  connect( this, SIGNAL( viewChanged() ) )
 }
 
 NmmConfigDialog::~NmmConfigDialog()
@@ -77,9 +96,9 @@ NmmConfigDialog::~NmmConfigDialog()
 
 bool NmmConfigDialog::hasChanged() const
 {
-  // TODO: observe user list changes
-  return true; //NmmKDEConfig::audioOutputPlugin() != m_view->audioPlaybackNode->currentText() ||
-//    NmmKDEConfig::location() != m_view->audioGroup->selectedId();
+  return NmmKDEConfig::audioOutputPlugin() != m_view->audioPlaybackNode->currentText() ||
+         NmmKDEConfig::location() != m_view->audioGroup->selectedId() ||
+         m_host_list_modified;
 }
 
 bool NmmConfigDialog::isDefault() const
@@ -99,26 +118,34 @@ void NmmConfigDialog::save()
     debug() << "saved current location selection" << endl;
 
     /* store volume for AUDIO_HOSTS */
-    NmmEngine::instance()->setEnvironmentHostList( tmp_environment_list );
+    //NmmEngine::instance()->setEnvironmentHostList( tmp_environment_list );
 
     /* save user host list and toggle states for audio, video */
-    if( m_view->hostListButton->isChecked() )
-      saveUserHostList();
+    QValueList<NmmLocation> tmp_user_list;
+
+    QListViewItemIterator it( m_user_list );
+    HostListItem *host;
+    while( it.current() ) {
+      host = static_cast<HostListItem*>( it.current() );
+      tmp_user_list.append( NmmLocation(host->text(HostListItem::Hostname), host->isAudioEnabled(), host->isVideoEnabled(), /* TODO: host->volume()*/ 0 ) );
+      ++it;
+    }
+
     NmmEngine::instance()->setUserHostList( tmp_user_list );
 
     QStringList hosts;
     QStringList audio_hosts;
     QStringList video_hosts;
-    NmmLocationList::iterator it; 
-    for( it = tmp_user_list.begin(); it != tmp_user_list.end(); ++it ) 
+    QValueList<NmmLocation>::iterator it_n;
+    for( it_n = tmp_user_list.begin(); it_n != tmp_user_list.end(); ++it_n ) 
     {
       debug() << "saved user host" << endl;
-      hosts.append( (*it).hostname() );
-      if( (*it).audio() )
+      hosts.append( (*it_n).hostname() );
+      if( (*it_n).audio() )
         audio_hosts.append( "1" );
       else 
         audio_hosts.append( "0" );
-      if( (*it).video() )
+      if( (*it_n).video() )
         video_hosts.append( "1" );
       else
         video_hosts.append( "0" );
@@ -141,91 +168,52 @@ void NmmConfigDialog::addHost()
       QString::null, &ok, NULL);
   if( ok && !hostname.isEmpty() )
   {
-    new HostListItem( m_view->hostList, hostname );
-    emit viewChanged();
+    new HostListItem( m_user_list, hostname );
+    if( m_user_list->currentItem() )
+      m_view->removeHostButton->setEnabled( true );
+    hostListModified();
   }
 }
 
 void NmmConfigDialog::removeHost()
 {
-    m_view->hostList->takeItem( m_view->hostList->currentItem() );
-
-    // no item selected, disable remove button
-    m_view->removeHostButton->setEnabled( false );
-}
-
-
-void NmmConfigDialog::createHostList( bool use_environment_list )
-{
-  DEBUG_BLOCK
-  
-  NmmLocationList::iterator it; 
-
-  if( use_environment_list )
-    for( it =  tmp_environment_list.begin(); it != tmp_environment_list.end(); ++it ) 
-      new HostListItem( m_view->hostList, (*it).hostname(), (*it).audio(), (*it).video(), 0, true );
-
-  else
-    for( it = tmp_user_list.begin(); it != tmp_user_list.end(); ++it ) 
-      new HostListItem( m_view->hostList, (*it).hostname(), (*it).audio(), (*it).video(), 0 );
-}
-
-void NmmConfigDialog::removeHostList( bool save_user_hostlist )
-{
-  if( save_user_hostlist )
-    saveUserHostList();
-
-  m_view->hostList->clear();
-}
-
-void NmmConfigDialog::saveUserHostList()
-{
-  tmp_user_list.clear();
-  QListViewItemIterator it( m_view->hostList );
-  HostListItem *host;
-  while( it.current() ) {
-    host = static_cast<HostListItem*>( it.current() );
-    tmp_user_list.append( NmmLocation(host->text(HostListItem::Hostname), host->isAudioEnabled(), host->isVideoEnabled(), /* TODO: host->volume()*/ 0 ) );
-    ++it;
-  }
+    m_user_list->takeItem( m_user_list->currentItem() );
+    if( !m_user_list->currentItem() )
+      m_view->removeHostButton->setEnabled( false );
+    hostListModified();
 }
 
 void NmmConfigDialog::clickedAudioGroup( int new_selection )
 {
-  DEBUG_BLOCK
-
   if( current_audio_group_selection == new_selection || new_selection > 2 )
     return;
     
-  // localhost only, disable host list
+  /* localhost only, disable host list */
   if( new_selection == 0 ) {
-    m_view->hostList->setEnabled( false );
+    m_view->hostListStack->setDisabled(true);
     m_view->addLocationButton->setEnabled( false );
     m_view->removeHostButton->setEnabled( false );
   }
-  // environment host list
-  // disable 'Add...' and 'Remove' buttons, load environment host list
+  /* environment host list
+   * disable 'Add...' and 'Remove' buttons, load environment host list
+   */
   else if( new_selection == 1 ) {
-    m_view->hostList->setEnabled( true );
+    m_view->hostListStack->setEnabled( true );
     m_view->addLocationButton->setEnabled( false );
     m_view->removeHostButton->setEnabled( false );
-    m_view->hostList->setSelectionMode( QListView::NoSelection );
-    m_view->hostList->setReadOnly( true );
-
-    removeHostList( current_audio_group_selection == 2 ? true : false );
-    createHostList( true );
+    m_view->hostListStack->raiseWidget( m_environment_list );
   }
-  // user host list
-  // enable all widgets for host list, load user host list
+  /* user host list
+   * enable all widgets for host list, load user host list
+   */
   else if( new_selection == 2 ) {
-    m_view->hostList->setEnabled( true );
+    m_view->hostListStack->setEnabled( true );
     m_view->addLocationButton->setEnabled( true );
-    m_view->removeHostButton->setEnabled( false );
-    m_view->hostList->setSelectionMode( QListView::Single );
-    m_view->hostList->setReadOnly( false );
-
-    removeHostList();
-    createHostList();
+    if( !m_user_list->currentItem() )
+      m_view->removeHostButton->setEnabled( false );
+    else
+      m_view->removeHostButton->setEnabled( true );
+    m_view->hostListStack->raiseWidget( m_user_list );
   }
 
   current_audio_group_selection = new_selection;
@@ -233,8 +221,29 @@ void NmmConfigDialog::clickedAudioGroup( int new_selection )
 
 void NmmConfigDialog::enableRemoveButton()
 {
-  // m_view->hostList->setCurrentItem( m_view->hostList->selectedItem() );
   m_view->removeHostButton->setEnabled( true );
+}
+
+void NmmConfigDialog::hostListModified()
+{
+  m_host_list_modified = true;
+  emit viewChanged();
+}
+
+void NmmConfigDialog::createHostLists()
+{
+  DEBUG_BLOCK
+    
+  QValueList<NmmLocation>::iterator it; 
+  QValueList<NmmLocation> list;
+
+  list = NmmEngine::instance()->environmentHostList();
+  for( it =  list.begin(); it != list.end(); ++it ) 
+    new HostListItem( m_environment_list, (*it).hostname(), (*it).audio(), (*it).video(), 0, true );
+
+  list = NmmEngine::instance()->userHostList();
+  for( it = list.begin(); it != list.end(); ++it ) 
+    new HostListItem( m_user_list, (*it).hostname(), (*it).audio(), (*it).video(), 0 );
 }
 
 // ###> NmmLocation class ### {{{
