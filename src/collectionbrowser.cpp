@@ -289,7 +289,8 @@ CollectionBrowser::layoutToolbar()
 
     m_configureAction->plug( m_toolbar );
 
-    setMinimumWidth( m_toolbar->sizeHint().width() + 2 ); //set a reasonable minWidth
+    //This would break things if the toolbar is too big, see bug #121915
+    //setMinimumWidth( m_toolbar->sizeHint().width() + 2 ); //set a reasonable minWidth
 }
 
 
