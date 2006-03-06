@@ -2,6 +2,14 @@ amaroK ChangeLog
 ================
 (C) 2002-2006 the amaroK authors.
 
+VERSION 1.4-beta3:
+  FEATURES:
+
+  CHANGES:
+
+  BUGFIXES:
+    * Escape newline characters when showing detailed information for podcast
+      items in the playlistbrowser. (BR 123109)
 
 VERSION 1.4-beta2:
   FEATURES:

@@ -2075,8 +2075,8 @@ PodcastItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int widt
 
     pBuf.drawText( text_x, 0, width, textHeight, AlignVCenter, name );
 
-    if( detailedView ) {
-
+    if( detailedView )
+    {
         text_x = lv->treeStepSize() + 3;
         font.setBold( false );
         pBuf.setFont( font );
@@ -2093,6 +2093,7 @@ PodcastItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int widt
                 text += info[ i ];
                 i++;
             }
+            text.replace( "\n", " " );
             info = text + i18n("...");
         }
 
