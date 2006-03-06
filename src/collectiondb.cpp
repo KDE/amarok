@@ -1314,6 +1314,21 @@ CollectionDB::artistList( bool withUnknowns, bool withCompilations )
     return qb.run();
 }
 
+QStringList
+CollectionDB::composerList( bool withUnknowns, bool withCompilations )
+{
+    QueryBuilder qb;
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valComposer );
+
+    if ( !withUnknowns )
+        qb.excludeMatch( QueryBuilder::tabSong, i18n( "Unknown" ) );
+    if ( !withCompilations )
+        qb.setOptions( QueryBuilder::optNoCompilations );
+
+    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valComposer );
+    return qb.run();
+}
 
 QStringList
 CollectionDB::albumList( bool withUnknowns, bool withCompilations )

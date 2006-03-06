@@ -284,6 +284,7 @@ class CollectionDB : public QObject, public EngineObserver
         //list methods
         QStringList artistList( bool withUnknowns = true, bool withCompilations = true );
         QStringList albumList( bool withUnknowns = true, bool withCompilations = true );
+        QStringList composerList( bool withUnknowns = true, bool withCompilations = true );
         QStringList genreList( bool withUnknowns = true, bool withCompilations = true );
         QStringList yearList( bool withUnknowns = true, bool withCompilations = true );
 

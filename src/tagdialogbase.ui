@@ -259,25 +259,6 @@
                             <cstring>kComboBox_artist</cstring>
                         </property>
                     </widget>
-                    <widget class="KComboBox" row="1" column="1">
-                        <property name="name">
-                            <cstring>kComboBox_artist</cstring>
-                        </property>
-                        <property name="sizePolicy">
-                            <sizepolicy>
-                                <hsizetype>7</hsizetype>
-                                <vsizetype>0</vsizetype>
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                            </sizepolicy>
-                        </property>
-                        <property name="editable">
-                            <bool>true</bool>
-                        </property>
-                        <property name="autoCompletion">
-                            <bool>false</bool>
-                        </property>
-                    </widget>
                     <widget class="QLabel" row="0" column="0">
                         <property name="name">
                             <cstring>textLabel1</cstring>
@@ -490,11 +471,6 @@
                             <cstring>kComboBox_album</cstring>
                         </property>
                     </widget>
-                    <widget class="KLineEdit" row="2" column="1">
-                        <property name="name">
-                            <cstring>kLineEdit_composer</cstring>
-                        </property>
-                    </widget>
                     <widget class="QLayoutWidget" row="3" column="1">
                         <property name="name">
                             <cstring>layout11</cstring>
@@ -569,6 +545,41 @@
                             </widget>
                         </hbox>
                     </widget>
+                    <widget class="KComboBox" row="2" column="1">
+                        <property name="name">
+                            <cstring>kComboBox_composer</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>7</hsizetype>
+                                <vsizetype>0</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="editable">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                    <widget class="KComboBox" row="1" column="1">
+                        <property name="name">
+                            <cstring>kComboBox_artist</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>7</hsizetype>
+                                <vsizetype>0</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="editable">
+                            <bool>true</bool>
+                        </property>
+                        <property name="autoCompletion">
+                            <bool>false</bool>
+                        </property>
+                    </widget>
                 </grid>
             </widget>
             <widget class="QWidget">
@@ -576,7 +587,7 @@
                     <cstring>lyricsTab</cstring>
                 </property>
                 <attribute name="title">
-                    <string>L&amp;yrics</string>
+                    <string>L&amp;&amp;yrics</string>
                 </attribute>
                 <hbox>
                     <property name="name">
@@ -744,8 +755,6 @@
     <includehint>ktabwidget.h</includehint>
     <includehint>kcombobox.h</includehint>
     <includehint>klineedit.h</includehint>
-    <includehint>kcombobox.h</includehint>
-    <includehint>klineedit.h</includehint>
     <includehint>klineedit.h</includehint>
     <includehint>knuminput.h</includehint>
     <includehint>knuminput.h</includehint>
@@ -753,8 +762,10 @@
     <includehint>kcombobox.h</includehint>
     <includehint>klineedit.h</includehint>
     <includehint>knuminput.h</includehint>
+    <includehint>kcombobox.h</includehint>
     <includehint>klineedit.h</includehint>
     <includehint>ktextedit.h</includehint>
     <includehint>knuminput.h</includehint>
+    <includehint>kcombobox.h</includehint>
 </includehints>
 </UI>

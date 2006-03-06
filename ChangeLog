@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 VERSION 1.4-beta3:
   FEATURES:
+    * Add autocompletion to the composer field in the tag dialog. (BR 123026)
 
   CHANGES:
 

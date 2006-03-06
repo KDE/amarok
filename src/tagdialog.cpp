@@ -363,6 +363,12 @@ void TagDialog::init()
     kComboBox_album->completionObject()->insertItems( albums );
     kComboBox_album->completionObject()->setIgnoreCase( true );
     kComboBox_album->setCompletionMode( KGlobalSettings::CompletionPopup );
+    
+    const QStringList composers = CollectionDB::instance()->composerList();
+    kComboBox_composer->insertStringList( composers );
+    kComboBox_composer->completionObject()->insertItems( composers );
+    kComboBox_composer->completionObject()->setIgnoreCase( true );
+    kComboBox_composer->setCompletionMode( KGlobalSettings::CompletionPopup );
 
     kComboBox_rating->insertStringList( MetaBundle::ratingList() );
 
@@ -389,7 +395,7 @@ void TagDialog::init()
 
     // Connects for modification check
     connect( kLineEdit_title,  SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
-    connect( kLineEdit_composer,  SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
+    connect( kComboBox_composer, SIGNAL(activated( int )),              SLOT(checkModified()) );
     connect( kComboBox_artist, SIGNAL(activated( int )),              SLOT(checkModified()) );
     connect( kComboBox_artist, SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
     connect( kComboBox_album,  SIGNAL(activated( int )),              SLOT(checkModified()) );
@@ -575,7 +581,7 @@ void TagDialog::readTags()
     kComboBox_genre        ->setCurrentText( m_bundle.genre() );
     kComboBox_rating       ->setCurrentItem( m_bundle.rating() );
     kIntSpinBox_track      ->setValue( m_bundle.track() );
-    kLineEdit_composer     ->setText( m_bundle.composer() );
+    kComboBox_composer     ->setCurrentText( m_bundle.composer() );
     kIntSpinBox_year       ->setValue( m_bundle.year() );
     kIntSpinBox_score      ->setValue( m_score );
     kIntSpinBox_discNumber ->setValue( m_bundle.discNumber() );
@@ -583,7 +589,7 @@ void TagDialog::readTags()
 
     bool extended = m_bundle.hasExtendedMetaInformation();
     kIntSpinBox_discNumber->setEnabled( extended );
-    kLineEdit_composer->setEnabled( extended );
+    kComboBox_composer->setEnabled( extended );
 
 
     QString summaryText, statisticsText;
@@ -768,7 +774,7 @@ TagDialog::readMultipleTracks()
     }
     if (composer) {
         m_bundle.setComposer( first.composer() );
-        kLineEdit_composer->setText( first.composer() );
+        kComboBox_composer->setCurrentText( first.composer() );
     }
     if (year) {
         m_bundle.setYear( first.year() );
@@ -813,7 +819,7 @@ TagDialog::changes()
     modified |= !equalString( kComboBox_genre->lineEdit()->text(), m_bundle.genre() );
     modified |= kIntSpinBox_year->value()  != m_bundle.year();
     modified |= kIntSpinBox_discNumber->value()  != m_bundle.discNumber();
-    modified |= !equalString( kLineEdit_composer->text(), m_bundle.composer() );
+    modified |= !equalString( kComboBox_composer->lineEdit()->text(), m_bundle.composer() );
 
     modified |= !equalString( kTextEdit_comment->text(), m_bundle.comment() );
 
@@ -849,7 +855,7 @@ TagDialog::storeTags( const KURL &kurl )
         MetaBundle mb( m_bundle );
 
         mb.setTitle( kLineEdit_title->text() );
-        mb.setComposer( kLineEdit_composer->text() );
+        mb.setComposer( kComboBox_composer->currentText() );
         mb.setArtist( kComboBox_artist->currentText() );
         mb.setAlbum( kComboBox_album->currentText() );
         mb.setComment( kTextEdit_comment->text() );
@@ -1031,9 +1037,9 @@ TagDialog::applyToAllTracks()
             mb.setComment( kTextEdit_comment->text() );
             changed = true;
         }
-        if( !kLineEdit_composer->text().isEmpty() && kLineEdit_composer->text() != mb.composer() ||
-                kLineEdit_composer->text().isEmpty() && !m_bundle.composer().isEmpty() ) {
-            mb.setComposer( kLineEdit_composer->text() );
+        if( !kComboBox_composer->currentText().isEmpty() && kComboBox_composer->currentText() != mb.composer() ||
+             kComboBox_composer->currentText().isEmpty() && !m_bundle.composer().isEmpty() ) {
+            mb.setComposer( kComboBox_composer->currentText() );
             changed = true;
         }
 
