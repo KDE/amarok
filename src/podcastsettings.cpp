@@ -107,7 +107,7 @@ PodcastSettingsDialog::PodcastSettingsDialog( PodcastSettings *settings, Podcast
                             : KDialogBase(  parent, 0, true, i18n("Configure %1").arg( settings->m_title )
                             , KDialogBase::User1|KDialogBase::Ok|KDialogBase::Cancel
                             , KDialogBase::Ok, true
-                            , KGuiItem(i18n("reset"), "reset" ) )
+                            , KGuiItem(i18n("Reset"), "reset" ) )
         , m_settings( settings )
         , m_parentSettings( parentSettings )
 {
