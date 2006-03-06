@@ -1328,7 +1328,6 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
     // feed is rss 2.0
     else
         setXml( type.namedItem("channel"), RSS );
-
 }
 
 void PodcastChannel::saveCache( const QDomDocument &doc )
@@ -1383,7 +1382,7 @@ void
 PodcastChannel::setXml( const QDomNode &xml, const int feedType )
 {
     const bool isAtom = ( feedType == ATOM );
-
+    
     m_title = xml.namedItem( "title" ).toElement().text();
     createSettings();
 
@@ -1392,10 +1391,9 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
     m_cache = KURL::encode_string( m_title + "_" + m_url.fileName() );
 
     QString weblink = QString::null;
+
     if( isAtom )
-    {
         weblink = xml.namedItem( "link" ).toElement().attribute( "rel" );
-    }
     else
         weblink = xml.namedItem( "link" ).toElement().text();
 
@@ -1410,9 +1408,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
 
     QDomNode n;
     if( isAtom )
-    {
         n = xml.namedItem( "entry" );
-    }
     else
         n = xml.namedItem( "item" );
 
@@ -1421,16 +1417,15 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
     QDomNode node;
     QDomNode feed = m_doc.namedItem("feed");
     QDomNode channel = m_doc.namedItem("rss").namedItem("channel");
-    QDomNode firstItem =  isAtom?feed.namedItem("entry"):channel.namedItem("item");
+    QDomNode firstItem = isAtom ? feed.namedItem("entry") : channel.namedItem("item");
+
     for( ; !n.isNull(); n = n.nextSibling() )
     {
         if( m_updating )
         {
-            // TODO: if pubDate < nextSybling.pubdate() the items aren't in chronological order, try to work around this
+            // TODO: if pubDate < nextSibling.pubdate() the items aren't in chronological order, try to work around this
             if( first && first->hasXml( n, feedType ) )
-            {
                 break;
-            }
 
             if( isAtom )
             {
@@ -1454,9 +1449,9 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
                 updatingLast->setNew();
             }
         }
-        else
+        else // Freshly added podcast
         {
-            if( m_settings->m_purge && children > m_settings->m_purgeCount )
+            if( children > 4 )
                 break;
 
             if( isAtom )
@@ -1468,14 +1463,14 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
                     if( nodes.toElement().attribute("rel") == "enclosure" )
                     {
                         updatingLast = new PodcastItem( this, updatingLast, n.toElement(), feedType );
-//                         updatingLast->setNew();
+                        children++;
+                        // updatingLast->setNew();
                         break;
                     }
                 }
             }
             else if( !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
             {
-//                 debug() << "creating item" << endl;
                 m_last = new PodcastItem( this, m_last, n.toElement(), feedType );
                 children++;
             }
@@ -1488,7 +1483,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
     if( downloadMedia )
         downloadChildren();
 
-    if( firstChild() && static_cast<PodcastItem *>( firstChild() )->isNew() && m_updating )
+    if( m_updating && firstChild() && static_cast<PodcastItem *>( firstChild() )->isNew() )
     {
         setNew();
         amaroK::StatusBar::instance()->shortMessage( i18n("New podcasts have been retrieved!") );
