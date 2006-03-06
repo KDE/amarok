@@ -1186,6 +1186,8 @@ CollectionView::invokeItem( QListViewItem* item ) //SLOT
 {
     if ( !item )
         return;
+    item->setSelected( true );
+    setCurrentItem( item );
     //append and prevent doubles in playlist
     if( item->isExpandable() )
         Playlist::instance()->insertMedia( listSelected(), Playlist::Unique | Playlist::Append );
