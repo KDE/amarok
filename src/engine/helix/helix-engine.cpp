@@ -368,13 +368,11 @@ HelixEngine::play( uint offset )
          emit stateChanged( Engine::Playing );
       }
 
-      m_pfade[nextPlayer].m_fadeactive = false;
-
       m_current = nextPlayer;
       return true;
    }
 
-   PlayerControl::stop(); // stop all players
+   cleanup();
    m_state = Engine::Empty;
    emit stateChanged( Engine::Empty );
 
@@ -535,9 +533,9 @@ HelixEngine::timerEvent( QTimerEvent * )
    PlayerControl::dispatch(); // dispatch the players
    if ( m_xfadeLength <= 0 && m_state == Engine::Playing && PlayerControl::done(m_current) )
       play_finished(m_current);
-   else if ( m_xfadeLength > 0 && m_state == Engine::Playing && isPlaying(m_current?0:1) )
+   else if ( m_xfadeLength > 0 )
    {
-      if ( PlayerControl::done(m_current?0:1) )
+      if ( m_state == Engine::Playing && isPlaying(m_current?0:1) && PlayerControl::done(m_current?0:1) )
          hscope[m_current?0:1].m_lasttime = 0;
 
       if (m_pfade[m_current?0:1].m_fadeactive && 
