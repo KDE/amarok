@@ -403,11 +403,6 @@ void ContextBrowser::openURLRequest( const KURL &url )
         contextHistoryBack();
     }
 
-    else if( url.protocol() == "artistforward" )
-    {
-        contextHistoryForward();
-    }
-
     else if ( url.protocol() == "wikipedia" )
     {
         m_dirtyWikiPage = true;
@@ -988,6 +983,7 @@ ContextBrowser::showContext( const KURL &url, bool fromHistory )
         m_browseArtists = false;
         m_artist = QString::null;
         m_contextBackHistory.clear();
+        m_contextBackHistory.push_back( "current://track" );
     }
     else if( url.protocol() == "artist" )
     {
@@ -998,7 +994,6 @@ ContextBrowser::showContext( const KURL &url, bool fromHistory )
     // Append new URL to history
     if ( !fromHistory ) {
         m_contextBackHistory += m_contextURL.url();
-        m_contextForwardHistory.clear();
     }
     // Limit number of items in history
     if ( m_contextBackHistory.count() > CONTEXT_MAX_HISTORY )
@@ -1012,7 +1007,6 @@ ContextBrowser::contextHistoryBack() //SLOT
 {
     if( m_contextBackHistory.size() > 0 )
     {
-        m_contextForwardHistory += m_contextBackHistory.last();
         m_contextBackHistory.pop_back();
 
         m_dirtyCurrentTrackPage = true;
@@ -1021,20 +1015,6 @@ ContextBrowser::contextHistoryBack() //SLOT
     }
 }
 
-
-void
-ContextBrowser::contextHistoryForward() //SLOT
-{
-    if( m_contextForwardHistory.size() > 0 )
-    {
-        m_contextBackHistory += m_contextForwardHistory.last();
-        m_contextForwardHistory.pop_back();
-
-        m_dirtyCurrentTrackPage = true;
-
-        showContext( KURL( m_contextBackHistory.last() ), true );
-    }
-}
 
 void ContextBrowser::showCurrentTrack() //SLOT
 {
@@ -1076,6 +1056,8 @@ bool CurrentTrackJob::doJob()
         {
             b->m_browseArtists = false;
             b->m_artist = QString::null;
+            b->m_contextBackHistory.clear();
+            b->m_contextBackHistory.push_back( "current://track" );
         }
     }
     else

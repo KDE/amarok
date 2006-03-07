@@ -82,7 +82,6 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         void tagsChanged( const MetaBundle &bundle );
 
         void contextHistoryBack();
-        void contextHistoryForward();
 
         void lyricsAdd();
         void lyricsSearch();
@@ -132,7 +131,6 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         bool          m_dirtyWikiPage;
 
         QStringList   m_contextBackHistory;
-        QStringList   m_contextForwardHistory;
         KURL          m_contextURL;
 
         QString       m_styleSheet;
