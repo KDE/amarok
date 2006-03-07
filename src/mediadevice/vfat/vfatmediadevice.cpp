@@ -250,11 +250,13 @@ VfatMediaDevice::newDirectory( const QString &name, MediaItem *parent )
     debug() << "fullPath = " << fullPath << endl;
 
     QCString dirPath;
+    
+    QString cleanedName = cleanPath(name);
 
     if( equal )
-        dirPath = QFile::encodeName( cleanPath(name) );
+        dirPath = QFile::encodeName( cleanedName );
     else
-        dirPath = QFile::encodeName( fullPath + "/" + cleanPath(name) );
+        dirPath = QFile::encodeName( fullPath + "/" + cleanedName );
 
     debug() << "Creating directory: " << dirPath << endl;
 
@@ -267,7 +269,7 @@ VfatMediaDevice::newDirectory( const QString &name, MediaItem *parent )
     }
 
     if( m_isInCopyTrack )
-        addTrackToList( MediaItem::DIRECTORY, cleanPath(name) );
+        addTrackToList( MediaItem::DIRECTORY, cleanedName );
 
     return m_last;
 
@@ -314,8 +316,7 @@ VfatMediaDevice::copyTrackSortHelper( const MetaBundle& bundle, QString& sort, Q
     {
         debug() << "sort = " << sort << endl;
         temp = bundle.prettyText( bundle.columnIndex(sort) );
-        temp = ( temp == QString::null ? "Unknown" : temp );
-        temp = cleanPath( temp );
+        temp = ( temp == QString::null ? "Unknown" : cleanPath(temp) );
         base += temp + "/";
 
         if( !KIO::NetAccess::stat( KURL(base), m_udsentry, m_parent ) )

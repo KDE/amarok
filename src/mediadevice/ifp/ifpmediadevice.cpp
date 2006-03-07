@@ -1,5 +1,5 @@
 /***************************************************************************
- * copyright            : (C) 2005 Seb Ruiz <me@sebruiz.net>               *
+ * copyright            : (C) 2005-2006 Seb Ruiz <me@sebruiz.net>          *
  *                                                                         *
  * With some code helpers from KIO_IFP                                     *
  *                        (c) 2004 Thomas Loeber <ifp@loeber1.de>          *
@@ -41,6 +41,7 @@ AMAROK_EXPORT_PLUGIN( IfpMediaDevice )
 
 #include <qfile.h>
 #include <qcstring.h>
+#include <qregexp.h>
 
 namespace amaroK { extern KConfig *config( const QString& ); }
 
@@ -53,11 +54,11 @@ class IfpMediaItem : public MediaItem
     public:
         IfpMediaItem( QListView *parent, QListViewItem *after = 0 )
             : MediaItem( parent, after )
-        { }
+        {}
 
         IfpMediaItem( QListViewItem *parent, QListViewItem *after = 0 )
             : MediaItem( parent, after )
-        { }
+        {}
 
         void
         setEncodedName( QString &name )
@@ -251,8 +252,10 @@ MediaItem *
 IfpMediaDevice::newDirectory( const QString &name, MediaItem *parent )
 {
     if( !m_connected || name.isEmpty() ) return 0;
+    
+    QString cleanedName = cleanPath( name );
 
-    const QCString dirPath = QFile::encodeName( getFullPath( parent ) + "\\" + name );
+    const QCString dirPath = QFile::encodeName( getFullPath( parent ) + "\\" + cleanedName );
     debug() << "Creating directory: " << dirPath << endl;
     int err = ifp_mkdir( &m_ifpdev, dirPath );
 
@@ -260,7 +263,7 @@ IfpMediaDevice::newDirectory( const QString &name, MediaItem *parent )
         return 0;
 
     m_tmpParent = parent;
-    addTrackToList( IFP_DIR, name );
+    addTrackToList( IFP_DIR, cleanedName );
     return m_last;
 }
 
@@ -292,7 +295,7 @@ IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle, const PodcastInfo* 
 {
     if( !m_connected ) return 0;
 
-    const QString  newFilename = bundle.prettyTitle().remove( "'" ) + "." + bundle.type();
+    const QString  newFilename = cleanPath( bundle.prettyTitle() ) + "." + bundle.type();
     const QCString src  = QFile::encodeName( bundle.url().path() );
     const QCString dest = QFile::encodeName( "\\" + newFilename ); // TODO: add to directory
 
@@ -301,7 +304,7 @@ IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle, const PodcastInfo* 
 
     if( !result ) //success
     {
-        addTrackToList( IFP_FILE, newFilename );
+        addTrackToList( IFP_FILE, cleanPath( newFilename ) );
         return m_last;
     }
 
@@ -574,6 +577,69 @@ IfpMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                 break;
         }
     }
+}
+
+//So what's better, keep instantiating a new OrganizeCollectionDialog, or duplicate code?
+//or maybe make this a static function somewhere?
+QString IfpMediaDevice::cleanPath( const QString &component )
+{
+    QString result = component;
+
+    // german umlauts
+    result.replace( QChar(0x00e4), "ae" ).replace( QChar(0x00c4), "Ae" );
+    result.replace( QChar(0x00f6), "oe" ).replace( QChar(0x00d6), "Oe" );
+    result.replace( QChar(0x00dc), "ue" ).replace( QChar(0x00fc), "Ue" );
+    result.replace( QChar(0x00df), "ss" );
+
+    // some strange accents
+    result.replace( QChar(0x00e7), "c" ).replace( QChar(0x00c7), "C" );
+    result.replace( QChar(0x00fd), "y" ).replace( QChar(0x00dd), "Y" );
+    result.replace( QChar(0x00f1), "n" ).replace( QChar(0x00d1), "N" );
+
+    // accented vowels
+    QChar a[] = { 'a', 0xe0,0xe1,0xe2,0xe3,0xe5, 0 };
+    QChar A[] = { 'A', 0xc0,0xc1,0xc2,0xc3,0xc5, 0 };
+    QChar E[] = { 'e', 0xe8,0xe9,0xea,0xeb, 0 };
+    QChar e[] = { 'E', 0xc8,0xc9,0xca,0xcb, 0 };
+    QChar i[] = { 'i', 0xec,0xed,0xee,0xef, 0 };
+    QChar I[] = { 'I', 0xcc,0xcd,0xce,0xcf, 0 };
+    QChar o[] = { 'o', 0xf2,0xf3,0xf4,0xf5,0xf8, 0 };
+    QChar O[] = { 'O', 0xd2,0xd3,0xd4,0xd5,0xd8, 0 };
+    QChar u[] = { 'u', 0xf9,0xfa,0xfb, 0 };
+    QChar U[] = { 'U', 0xd9,0xda,0xdb, 0 };
+    QChar nul[] = { 0 };
+    QChar *replacements[] = { a, A, e, E, i, I, o, O, u, U, nul };
+
+    for( uint i = 0; i < result.length(); i++ )
+    {
+        QChar c = result.ref( i );
+        for( uint n = 0; replacements[n][0] != QChar(0); n++ )
+        {
+            for( uint k=0; replacements[n][k] != QChar(0); k++ )
+            {
+                if( replacements[n][k] == c )
+                {
+                    c = replacements[n][0];
+                }
+            }
+        }
+        if( c > QChar(0x7f) || c == QChar(0) )
+        {
+            c = '_';
+        }
+        result.ref( i ) = c;
+    }
+
+    result.simplifyWhiteSpace();
+
+    result.remove( "?" ).replace( "\\", " " ).replace( "*", " " ).replace( ":", " " );
+    
+//     if( m_spacesToUnderscores )
+//         result.replace( QRegExp( "\\s" ), "_" );
+
+    result.replace( "/", "-" );
+
+    return result;
 }
 
 #include "ifpmediadevice.moc"

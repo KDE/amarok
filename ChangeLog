@@ -9,6 +9,8 @@ VERSION 1.4-beta3:
   CHANGES:
 
   BUGFIXES:
+    * Escape invalid characters when transferring files to IFP devices.
+      (BR 123199)
     * Escape newline characters when showing detailed information for podcast
       items in the playlistbrowser. (BR 123109)
 

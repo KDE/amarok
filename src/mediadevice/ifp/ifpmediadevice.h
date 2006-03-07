@@ -1,5 +1,5 @@
 /***************************************************************************
- * copyright            : (C) 2005 Seb Ruiz <me@sebruiz.net>               *
+ * copyright            : (C) 2005-2006 Seb Ruiz <me@sebruiz.net>          *
  *                                                                         *
  * With some code helpers from KIO_IFP                                     *
  *                        (c) 2004 Thomas Loeber <ifp@loeber1.de>          *
@@ -64,7 +64,7 @@ class IfpMediaDevice : public MediaDevice
     private:
         enum              Error { ERR_ACCESS_DENIED, ERR_CANNOT_RENAME, ERR_DISK_FULL, ERR_COULD_NOT_WRITE };
 
-        // To expensive to implement on a non-database device
+        // Too expensive to implement on a non-database device
         MediaItem        *trackExists( const MetaBundle& ) { return 0; }
 
         bool              checkResult( int result, QString message );
@@ -85,6 +85,8 @@ class IfpMediaDevice : public MediaDevice
         // Will iterate over parents and add directory name to the item.
         // getFilename = false will return only parent structure, as opposed to returning the filename as well
         QString           getFullPath( const QListViewItem *item, const bool getFilename = true );
+        
+        QString           cleanPath( const QString &component );
 
         // IFP device
         struct usb_device *m_dev;
