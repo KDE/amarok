@@ -4,6 +4,8 @@ amaroK ChangeLog
 
 VERSION 1.4-beta3:
   FEATURES:
+    * Ignore 'The ' in artist names when sorting in the cover manager, as per
+      the collection browser. (BR 122858)
     * Add autocompletion to the composer field in the tag dialog. (BR 123026)
 
   CHANGES:

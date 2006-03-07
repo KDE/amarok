@@ -7,6 +7,7 @@
 #include "browserToolBar.h"
 #include "clicklineedit.h"
 #include "debug.h"
+#include "collectionbrowser.h" //manipulateThe()
 #include "collectiondb.h"
 #include "config.h"
 #include "coverfetcher.h"
@@ -84,23 +85,34 @@ CoverManager::CoverManager()
     m_artistView = new KListView( this );
     m_artistView->addColumn(i18n( "Albums By" ));
     m_artistView->setFullWidth( true );
-    m_artistView->setSorting( -1 );    //no sort
+    m_artistView->setSorting( 0 );
     m_artistView->setMinimumWidth( 180 );
-    KListViewItem *item = new KListViewItem( m_artistView, i18n( "All Albums" ) );
-    item->setPixmap( 0, SmallIcon("cdrom_unmount") );
+    KListViewItem *item = 0;
 
     //load artists from the collection db
     const QStringList artists = CollectionDB::instance()->artistList( false, false );
-    foreach( artists )  {
-        item = new KListViewItem( m_artistView, item, *it );
+    foreach( artists )
+    {
+        QString artist = *it;
+        if( artist.startsWith( "The " ) )
+            CollectionView::instance()->manipulateThe( artist, true );
+
+        item = new KListViewItem( m_artistView, item, artist );
         item->setPixmap( 0, SmallIcon("personal") );
     }
+    m_artistView->sort();
+
+    m_artistView->setSorting( -1 );
+    KListViewItem *last = item;
+    item = new KListViewItem( m_artistView, 0, i18n( "All Albums" ) );
+    item->setPixmap( 0, SmallIcon("cdrom_unmount") );
+
     QueryBuilder qb;
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.setOptions( QueryBuilder::optOnlyCompilations | QueryBuilder::optRemoveDuplicates );
     qb.setLimit( 0, 1 );
     if ( qb.run().count() ) {
-        item = new KListViewItem( m_artistView, item, i18n( "Various Artists" ) );
+        item = new KListViewItem( m_artistView, last, i18n( "Various Artists" ) );
         item->setPixmap( 0, SmallIcon("personal") );
     }
 
@@ -347,6 +359,11 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     if( item->depth() ) //album item
         return;
 
+    QString artist = item->text(0);
+
+    if( artist.endsWith( ", The" ) )
+        CollectionView::instance()->manipulateThe( artist, false );
+
     m_coverView->clear();
     m_coverItems.clear();
 
@@ -383,7 +400,7 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     qb.setOptions( QueryBuilder::optNoCompilations );
 
     if ( item != m_artistView->firstChild() )
-        qb.addMatches( QueryBuilder::tabArtist, item->text( 0 ) );
+        qb.addMatches( QueryBuilder::tabArtist, artist );
 
     albums = qb.run();
 
@@ -808,7 +825,12 @@ void CoverManager::updateStatusBar()
         else if( m_artistView->selectedItem() ) {
             text = i18n( "1 album", "%n albums", totalCounter );
             if( m_artistView->selectedItem() != m_artistView->firstChild() ) //showing albums by an artist
-                text += i18n( " by " ) + m_artistView->selectedItem()->text(0);
+            {
+                QString artist = m_artistView->selectedItem()->text(0);
+                if( artist.endsWith( ", The" ) )
+                    CollectionView::instance()->manipulateThe( artist, false );
+                text += i18n( " by " ) + artist;
+            }
         }
 
         if( missingCounter )
