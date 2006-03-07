@@ -390,7 +390,11 @@ IpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle, const PodcastInfo *
 
     m_wait = true;
 
-    KIO::CopyJob *job = KIO::copy( bundle.url(), url, false );
+    KIO::FileCopyJob *job = KIO::file_copy( bundle.url(), url,
+          -1 /* permissions */,
+          false /* overwrite */,
+          false /* resume */,
+          false /* show progress */ );
     connect( job, SIGNAL( result( KIO::Job * ) ),
             this,  SLOT( fileTransferred( KIO::Job * ) ) );
 
