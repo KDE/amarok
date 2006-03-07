@@ -203,7 +203,7 @@ void PlaylistWindow::init()
 
         QWidget *button = new KToolBarButton( "locationbar_erase", 1, bar );
         QLabel *filter_label = new QLabel( i18n("S&earch:") + " ", bar );
-        m_lineEdit = new ClickLineEdit( i18n( "Filter here..." ), bar );
+        m_lineEdit = new ClickLineEdit( i18n( "Enter search terms here" ), bar );
 
         filter_label->setBuddy( m_lineEdit );
 

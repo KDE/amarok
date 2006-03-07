@@ -126,7 +126,7 @@ CoverManager::CoverManager()
         QHBox *searchBox = new QHBox( hbox );
         KToolBar* searchToolBar = new Browser::ToolBar( searchBox );
         KToolBarButton *button = new KToolBarButton( "locationbar_erase", 0, searchToolBar );
-        m_searchEdit = new ClickLineEdit( i18n( "Filter here..." ), searchToolBar );
+        m_searchEdit = new ClickLineEdit( i18n( "Enter search terms here" ), searchToolBar );
         m_searchEdit->setFrame( QFrame::Sunken );
 
         searchToolBar->setStretchableWidget( m_searchEdit );

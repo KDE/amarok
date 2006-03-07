@@ -101,7 +101,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
     { //Filter LineEdit
         KToolBar* searchToolBar = new Browser::ToolBar( this );
         KToolBarButton *button = new KToolBarButton( "locationbar_erase", 0, searchToolBar );
-        m_filter = new ClickLineEdit( i18n( "Filter here..." ), searchToolBar );
+        m_filter = new ClickLineEdit( i18n( "Enter search terms here" ), searchToolBar );
 
         searchToolBar->setStretchableWidget( m_filter );
 

@@ -73,7 +73,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
         KToolBar* searchToolBar = new Browser::ToolBar( this );
 
         button       = new KToolBarButton( "locationbar_erase", 0, searchToolBar );
-        m_searchEdit = new ClickLineEdit( i18n( "Filter here..." ), searchToolBar );
+        m_searchEdit = new ClickLineEdit( i18n( "Enter search terms here" ), searchToolBar );
         m_searchEdit->installEventFilter( this );
         searchToolBar->setStretchableWidget( m_searchEdit );
 
