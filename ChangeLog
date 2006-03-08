@@ -2,6 +2,7 @@ amaroK ChangeLog
 ================
 (C) 2002-2006 the amaroK authors.
 
+
 VERSION 1.4-beta3:
   FEATURES:
     * Ignore 'The ' in artist names when sorting in the cover manager, as per
@@ -15,6 +16,7 @@ VERSION 1.4-beta3:
       (BR 123199)
     * Escape newline characters when showing detailed information for podcast
       items in the playlistbrowser. (BR 123109)
+
 
 VERSION 1.4-beta2:
   FEATURES:
