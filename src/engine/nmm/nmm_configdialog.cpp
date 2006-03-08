@@ -157,6 +157,8 @@ void NmmConfigDialog::save()
     debug() << "saved user host list with toggle states for audio and video" << endl;
 
     NmmKDEConfig::writeConfig();
+
+    m_host_list_modified = false;
   }
 }
 
@@ -246,11 +248,11 @@ void NmmConfigDialog::createHostLists()
 
   list = NmmEngine::instance()->environmentHostList();
   for( it =  list.begin(); it != list.end(); ++it ) 
-    new HostListItem( m_environment_list, (*it).hostname(), (*it).audio(), (*it).video(), 0, true );
+    new HostListItem( m_environment_list, (*it).hostname(), (*it).audio(), (*it).video(), 0, (*it).status(), true );
 
   list = NmmEngine::instance()->userHostList();
   for( it = list.begin(); it != list.end(); ++it ) 
-    new HostListItem( m_user_list, (*it).hostname(), (*it).audio(), (*it).video(), 0 );
+    new HostListItem( m_user_list, (*it).hostname(), (*it).audio(), (*it).video(), 0, (*it).status() );
 }
 
 #include "nmm_configdialog.moc"

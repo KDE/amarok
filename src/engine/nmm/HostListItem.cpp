@@ -37,12 +37,12 @@
 #include "HostList.h"
 #include "nmm_engine.h"
 
-HostListItem::HostListItem( QListView *parent, QString hostname, bool audio, bool video, int , bool read_only )
+HostListItem::HostListItem( QListView *parent, QString hostname, bool audio, bool video, int , int status, bool read_only )
     : KListViewItem( parent ),
     m_audio( audio ),
     m_video( video ),
     m_read_only( read_only ),
-    m_status( NmmEngine::STATUS_UNKNOWN )
+    m_status( status )
 {  
   setText( HostListItem::Hostname, hostname);
 

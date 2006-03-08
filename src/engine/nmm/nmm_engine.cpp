@@ -151,7 +151,20 @@ void NmmEngine::notifyHostError( QString hostname, int error )
 {  
   DEBUG_BLOCK
 
-  debug() << hostname << " error: " << error << endl;
+  for( QValueList<NmmLocation>::Iterator it = tmp_user_list.begin(); it != tmp_user_list.end(); ++it ) {
+    if( (*it).hostname() == hostname ) {
+      (*it).setStatus( error );
+      break;
+    }
+  }
+
+  for( QValueList<NmmLocation>::Iterator it = tmp_environment_list.begin(); it != tmp_environment_list.end(); ++it ) {
+    if( (*it).hostname() == hostname ) {
+      (*it).setStatus( error );
+      break;
+    }
+  }
+
 }
 
 Engine::State NmmEngine::state() const
