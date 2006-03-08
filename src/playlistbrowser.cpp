@@ -2242,7 +2242,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                     for( for_iterators( QStringList, values ); it != end; ++it ) {
                         if(i%12 == 11)
                         {
-                            urls << KURL( *it );
+                            urls << KURL::fromPathOrURL( *it );
                         }
                         i++;
                     }
