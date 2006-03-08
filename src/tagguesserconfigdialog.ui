@@ -3,7 +3,7 @@
 <author>Frerich Raabe &lt;raabe@kde.org&gt;</author>
 <widget class="KDialog">
     <property name="name">
-        <cstring>Form1</cstring>
+        <cstring>TagGuesserConfigDialog</cstring>
     </property>
     <property name="geometry">
         <rect>
