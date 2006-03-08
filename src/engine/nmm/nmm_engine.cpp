@@ -96,6 +96,8 @@ bool NmmEngine::init()
   createEnvironmentHostList();
   createUserHostList();
 
+  connect( this, SIGNAL( hostError( QString, int ) ), SLOT( notifyHostError( QString, int ) ) );
+
   return true;
 }
 
@@ -145,6 +147,13 @@ void NmmEngine::checkSecurity()
     KMessageBox::information(0, str, i18n( "Insecure NMM setup" ), "insecureNmmSetup", KMessageBox::AllowLink );
 }
 
+void NmmEngine::notifyHostError( QString hostname, int error )
+{  
+  DEBUG_BLOCK
+
+  debug() << hostname << " error: " << error << endl;
+}
+
 Engine::State NmmEngine::state() const
 {
   return __state;
@@ -153,9 +162,7 @@ Engine::State NmmEngine::state() const
 amaroK::PluginConfig* NmmEngine::configure() const
 {
     NmmConfigDialog* dialog = new NmmConfigDialog();
-
-    // connect...
-    
+    connect( this, SIGNAL( hostError( QString, int ) ), dialog, SLOT( notifyHostError(QString, int ) ) );
     return dialog;
 }
 
@@ -204,22 +211,41 @@ bool NmmEngine::load(const KURL& url, bool stream)
       throw Exception("Invalid URL given");
 
     ClientRegistry& registry = __app->getRegistry();
+    // requst playback and audio node {{{
     {
+      //debug() << "##############> ClientRegistry " << endl;
       RegistryLock lock(registry);
 
       // get a playback node interface from the registry
+      try {
       list<Response> playback_response = registry.initRequest(playback_nd);
-      if (playback_response.empty())
-        throw Exception("PlaybackNode is not available on host " + playback_nd.getLocation() );
-      __playback = registry.requestNode(playback_response.front());
+      // if (playback_response.empty()) // TODO: do we need this? would mean the host has not a plabacknode available
+        
+      __playback = registry.requestNode( playback_response.front() );
+      }
+      catch( RegistryException ) {
+        throw( NMMEngineException( playback_nd.getLocation(), NmmEngine::ERROR_PLAYBACKNODE ) );
+      }
+      catch(...) {
+        throw Exception("Playback node request failed.");
+      }
 
       // get a display node interface from the registry
+      try {
       list<Response> display_response = registry.initRequest(display_nd);
-      if (display_response.empty())
-        throw Exception("Display node is not available on host" + display_nd.getLocation() );
-      __display = registry.requestNode(display_response.front());
+      //if (display_response.empty()) // TODO do wee need this
 
-    }
+      __display = registry.requestNode(display_response.front());
+      }
+      catch( RegistryException ) {
+        throw NMMEngineException( display_nd.getLocation(), NmmEngine::ERROR_DISPLAYNODE );
+      }
+      catch(...) {
+        throw Exception("Display node request failed.");
+      }
+
+      //debug() << "##############< ClientRegistry " << endl;
+    }//}}}
 
     __av_sync = new MultiAudioVideoSynchronizer();
     __synchronizer = __av_sync->getCheckedInterface<IMultiAudioVideoSynchronizer>();
@@ -288,13 +314,18 @@ bool NmmEngine::load(const KURL& url, bool stream)
  
     return true;
   }
+  catch ( const NMMEngineException e) {
+    QString host = e.hostname.c_str();
+    emit hostError(host, e.error);
+    emit statusText( i18n("NMM engine: Stopping playback...") );
+  }
   catch (const Exception& e) {
     cerr << e << endl;
     QString status = e.getComment().c_str() ;
-    emit statusText( QString("NMM engine: ") + status );
+    emit statusText( QString( i18n("NMM engine: ") ) + status );
   }
   catch(...) {
-    emit statusText( "NMM engine: Something went wrong..." );
+    emit statusText( i18n("NMM engine: Something went wrong...") );
   }
 
   // loading failed, clean up 
@@ -418,8 +449,9 @@ void NmmEngine::createEnvironmentHostList()
   QStringList list = QStringList::split(":", hosts );
   
   /* merge audio hosts */
-  for( QStringList::Iterator it = list.begin(); it != list.end(); ++it )
-    tmp_environment_list.append( NmmLocation( (*it), true, false, 0 ) );
+  for( QStringList::Iterator it = list.begin(); it != list.end(); ++it ) {
+    tmp_environment_list.append( NmmLocation( (*it), true, false, 0, NmmEngine::STATUS_UNKNOWN ) );
+  }
 
   /* merge video hosts */
   hosts = getenv("VIDEO_HOSTS");
@@ -437,7 +469,7 @@ void NmmEngine::createEnvironmentHostList()
     }
       
     if( !found )
-      tmp_environment_list.append( NmmLocation( (*it), false, true, 0 ) );
+      tmp_environment_list.append( NmmLocation( (*it), false, true, 0, NmmEngine::STATUS_UNKNOWN ) );
   }
 
   //debug() << "### ENVIRONMENT" << endl;
@@ -470,7 +502,7 @@ void NmmEngine::createUserHostList()
     else 
       video = false;
 
-    tmp_user_list.append( NmmLocation( hosts[i], audio, video, /* TODO: volume */0) );
+    tmp_user_list.append( NmmLocation( hosts[i], audio, video, /* TODO: volume */0, NmmEngine::STATUS_UNKNOWN ) );
   }
 }
 

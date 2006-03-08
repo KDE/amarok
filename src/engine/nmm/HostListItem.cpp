@@ -35,13 +35,14 @@
 
 #include "debug.h"
 #include "HostList.h"
+#include "nmm_engine.h"
 
 HostListItem::HostListItem( QListView *parent, QString hostname, bool audio, bool video, int , bool read_only )
     : KListViewItem( parent ),
     m_audio( audio ),
     m_video( video ),
     m_read_only( read_only ),
-    m_status( 0 )
+    m_status( NmmEngine::STATUS_UNKNOWN )
 {  
   setText( HostListItem::Hostname, hostname);
 
@@ -66,7 +67,7 @@ void HostListItem::updateColumn( int column ) const
 
 void HostListItem::statusToolTip()
 {
-  if( !m_status )
+  if( !m_status ) // NmmEngine::STATUS_UNKNOWN
     QWhatsThis::display( i18n("<html><body>So far no status available for this host entry.<br>Probably this means the host has not been used yet for playback.</body></html>") );
   // TODO: display QWhatsThis messages for errors
 }
@@ -95,15 +96,18 @@ void HostListItem::paintCell(QPainter * p, const QColorGroup & cg, int column, i
     if( ! m_status  ) // Unknown
     {
       font.setBold( false );
+      setText( HostListItem::Status , i18n("Unknown") );
     }
-    else if( m_status == 1 ) // Ok
+    else if( m_status == NmmEngine::STATUS_OK )
     {
       font.setBold( false );
       m_cg.setColor( QColorGroup::Text, Qt::darkGreen );
+      setText( HostListItem::Status , i18n("OK") );
     }
     else { // error
       font.setBold( true );
       m_cg.setColor( QColorGroup::Text, Qt::red );
+      setText( HostListItem::Status , i18n("Failed") );
     }
     p->setFont( font );
   }

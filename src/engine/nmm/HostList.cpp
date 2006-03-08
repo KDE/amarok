@@ -54,6 +54,23 @@ HostList::HostList( QWidget *parent, const char *name )
 HostList::~HostList()
 {}
 
+void HostList::notifyHostError( QString hostname, int error)
+{
+  QListViewItemIterator it( this );
+  HostListItem *host;
+  while( it.current() ) {
+    host = static_cast<HostListItem*>( it.current() );
+    if( host->text(HostListItem::Hostname) == hostname )
+    {
+      host->setText( HostListItem::Hostname, hostname );
+      host->setStatus( error );
+      host->repaint();
+      return;
+    }
+    ++it;
+  }
+}
+
 void HostList::contentsMousePressEvent( QMouseEvent *e)
 {
   HostListItem *item = static_cast<HostListItem*>( itemAt( contentsToViewport( e->pos() ) ) );

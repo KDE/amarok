@@ -69,6 +69,14 @@ class NmmConfigDialog : public amaroK::PluginConfig
      */
     void clickedAudioGroup( int );
 
+    /**
+     * Updates status column for m_user_list and m_environment_list
+     * to reflect that an error occured for a host.
+     * \param hostname host the error is related to
+     * \param error error identification, see NMMEngineException::Error
+     */
+    void notifyHostError( QString hostname, int error );
+
   private slots:
     /**
      * Enables 'Remove ' host button if a HostListItem is selected.
@@ -112,28 +120,6 @@ class NmmConfigDialog : public amaroK::PluginConfig
      * True if user host list was modified.
      */
     bool m_host_list_modified;
-};
-
-class NmmLocation {
-  public:
-    NmmLocation();
-    NmmLocation(QString hostname, bool audio, bool video, int volume);
-    ~NmmLocation();
-
-    QString hostname() const;
-    void setHostname(QString);
-
-    bool audio() const { return m_audio; }
-    void setAudio( bool audio ) { m_audio = audio; }
-
-    bool video() const { return m_video; } 
-    void setVideo( bool video ) { m_video = video; }
-
-  private:
-    QString m_hostname;
-    bool m_audio;
-    bool m_video;
-    int m_volume;
 };
 
 #endif

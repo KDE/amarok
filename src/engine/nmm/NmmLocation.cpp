@@ -22,35 +22,38 @@
  * USA
  */
 
-#ifndef HOSTLIST_H
-#define HOSTLIST_H
+#include "NmmLocation.h"
 
-#include <klistview.h>
+NmmLocation::NmmLocation()
+{}
 
-class HostList : public KListView
+NmmLocation::NmmLocation( QString hostname, bool audio, bool video, int volume, int status )
+  : m_hostname(hostname), 
+    m_audio(audio), 
+    m_video(video), 
+    m_volume(volume),
+    m_status( status)
 {
-  Q_OBJECT
+}
 
-  public:
-    HostList( QWidget*, const char* );
-    ~HostList();
+NmmLocation::NmmLocation( const NmmLocation &old )
+{
+  m_hostname = old.hostname();
+  m_audio = old.audio();
+  m_video = old.video();
+  m_volume = old.volume();
+  m_status = old.status();
+}
 
-    void setReadOnly( bool read_only ) { m_read_only = read_only; }
-    bool readOnly() const { return m_read_only; }
+NmmLocation::~NmmLocation()
+{}
 
-    void notifyHostError( QString, int);
+QString NmmLocation::hostname() const
+{
+  return m_hostname;
+}
 
-  signals:
-    /**
-     * Emitted when audio of video toggle changes.
-     */
-    void viewChanged();
-
-  protected:
-    void contentsMousePressEvent( QMouseEvent *e = 0 );
-
-  private:
-    bool m_read_only;
-};
-
-#endif 
+void NmmLocation::setHostname(QString hostname)
+{
+  m_hostname = hostname;
+}

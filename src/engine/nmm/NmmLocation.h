@@ -1,6 +1,6 @@
 /* NMM - Network-Integrated Multimedia Middleware
  *
- * Copyright (C) 2005-2006
+ * Copyright (C) 2006
  *                    NMM work group,
  *                    Computer Graphics Lab,
  *                    Saarland University, Germany
@@ -22,53 +22,38 @@
  * USA
  */
 
-#ifndef HOSTLISTITEM_H
-#define HOSTLISTITEM_H
+#ifndef NMMLOCATION_H
+#define NMMLOCATION_H
 
-#include <klistview.h>
+#include <qstring.h>
 
-class HostListItem : public KListViewItem {
+class NmmLocation {
   public:
-    enum Column
-    {
-      Hostname = 0,
-      Video,
-      Audio,
-      Volume,
-      Status
-    };
+    NmmLocation();
+    NmmLocation(QString hostname, bool audio, bool video, int volume, int status );
+    NmmLocation(const NmmLocation&);
+    ~NmmLocation();
 
-    HostListItem( QListView*, QString hostname, bool audio = true, bool video = true, int volume = 0, bool read_only = false);
-    ~HostListItem();
+    QString hostname() const;
+    void setHostname(QString);
 
-    bool isVideoEnabled() const { return m_video; }
-    void toggleVideo() { m_video = !m_video; }
+    bool audio() const { return m_audio; }
+    void setAudio( bool audio ) { m_audio = audio; }
 
-    bool isAudioEnabled() const { return m_audio; }
-    void toggleAudio() { m_audio = !m_audio; }
+    bool video() const { return m_video; } 
+    void setVideo( bool video ) { m_video = video; }
+
+    int volume() const { return m_volume; }
+    void setVolume( int v ) { m_volume = v; }
 
     void setStatus( int s ) { m_status = s; }
     int status() const { return m_status; }
 
-    void updateColumn( int column ) const;
-
-    /**
-     * Shows extended status text in a QWhatsThis widget.
-     * \todo handle different error scenarios
-     */
-    void statusToolTip();
-
-    QString prettyStatus( int );
-
-  protected:
-    void paintCell( QPainter * p, const QColorGroup & cg, int column, int width, int align );
-
-
   private:
+    QString m_hostname;
     bool m_audio;
     bool m_video;
-    bool m_read_only;
-
+    int m_volume;
     int m_status;
 };
 

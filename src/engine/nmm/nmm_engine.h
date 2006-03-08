@@ -31,14 +31,13 @@
 #include <config.h>
 
 #include "engine/enginebase.h"
+#include "NmmLocation.h"
 #include <nmm/base/graph/CompositeNode.hpp>
 #include <nmm/base/NMMApplication.hpp>
 #include <nmm/base/EDObject.hpp>
 #include <nmm/base/sync/MultiAudioVideoSynchronizer.hpp>
 
 using namespace NMM;
-
-class NmmLocation;
 
 /**
  * \todo currently every song/video change means a stop and restart of the NMM environment.
@@ -87,6 +86,21 @@ private slots:
      * TODO: Should be called on NMM engine load and not from ::load.
      */
     void checkSecurity();
+
+    /**
+     * Updates error type in tmp_environment_list and tmp_user_list for a host.
+     * \param hostname host the error is related to
+     * \param error error identification, see NMMEngineException::Error
+     */
+    void notifyHostError( QString hostname, int error );
+
+signals:
+    /**
+     * Emitted when an error occured during NMM setup.
+     * \param hostname host the error is related to
+     * \param error error identification, see NMMEngineException::Error
+     */
+    void hostError( QString hostname, int error );
 
 protected:
     void  setVolumeSW( uint );
@@ -221,6 +235,23 @@ private:
     QValueList<NmmLocation> tmp_user_list;
 
     static NmmEngine* s_instance;
+
+public:
+    enum HostStatus {
+      STATUS_UNKNOWN = 0,
+      STATUS_OK,
+      ERROR_PLAYBACKNODE,
+      ERROR_DISPLAYNODE,
+    };
+};
+
+class NMMEngineException {
+  public:
+    NMMEngineException(std::string _hostname, int _error) 
+      : hostname( _hostname ), error( _error ) {}
+
+    std::string hostname;
+    int error;
 };
 
 #endif

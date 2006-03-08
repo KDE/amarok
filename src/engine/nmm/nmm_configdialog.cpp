@@ -127,7 +127,7 @@ void NmmConfigDialog::save()
     HostListItem *host;
     while( it.current() ) {
       host = static_cast<HostListItem*>( it.current() );
-      tmp_user_list.append( NmmLocation(host->text(HostListItem::Hostname), host->isAudioEnabled(), host->isVideoEnabled(), /* TODO: host->volume()*/ 0 ) );
+      tmp_user_list.append( NmmLocation(host->text(HostListItem::Hostname), host->isAudioEnabled(), host->isVideoEnabled(), /* TODO: host->volume()*/ 0, host->status() ) );
       ++it;
     }
 
@@ -219,8 +219,15 @@ void NmmConfigDialog::clickedAudioGroup( int new_selection )
   current_audio_group_selection = new_selection;
 }
 
+void NmmConfigDialog::notifyHostError( QString hostname, int error )
+{
+  m_user_list->notifyHostError( hostname, error );
+  m_environment_list->notifyHostError( hostname, error );
+}
+
 void NmmConfigDialog::enableRemoveButton()
 {
+
   m_view->removeHostButton->setEnabled( true );
 }
 
@@ -245,28 +252,5 @@ void NmmConfigDialog::createHostLists()
   for( it = list.begin(); it != list.end(); ++it ) 
     new HostListItem( m_user_list, (*it).hostname(), (*it).audio(), (*it).video(), 0 );
 }
-
-// ###> NmmLocation class ### {{{
-NmmLocation::NmmLocation()
-{}
-
-NmmLocation::NmmLocation(QString hostname, bool audio, bool video, int volume)
-  : m_hostname(hostname), m_audio(audio), m_video(video), m_volume(volume)
-{
-}
-
-NmmLocation::~NmmLocation()
-{}
-
-QString NmmLocation::hostname() const
-{
-  return m_hostname;
-}
-
-void NmmLocation::setHostname(QString hostname)
-{
-  m_hostname = hostname;
-}
-// ###< NmmLocation class ### }}}
 
 #include "nmm_configdialog.moc"
