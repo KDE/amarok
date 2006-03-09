@@ -86,6 +86,8 @@ public slots:
 
     void mute();
 
+    void slotStreamMetaData( const MetaBundle &bundle );
+
 signals:
     void orderPrevious();
     void orderCurrent();

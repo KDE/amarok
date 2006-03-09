@@ -483,28 +483,8 @@ EngineController::bundle() const
 }
 
 
-//////////////////////////////////////////////////////////////////////////////////////////
-// PRIVATE SLOTS
-//////////////////////////////////////////////////////////////////////////////////////////
-
-void EngineController::slotEngineMetaData( const Engine::SimpleMetaBundle &simpleBundle ) //SLOT
+void EngineController::slotStreamMetaData( const MetaBundle &bundle ) //SLOT
 {
-    DEBUG_BLOCK
-
-    if ( m_bundle.url().isLocalFile() )
-        return;
-
-    MetaBundle bundle = m_bundle;
-    bundle.setArtist( simpleBundle.artist );
-    bundle.setTitle( simpleBundle.title );
-    bundle.setComment( simpleBundle.comment );
-    bundle.setAlbum( simpleBundle.album );
-
-    if( !simpleBundle.genre.isEmpty() )
-        bundle.setGenre( simpleBundle.genre );
-    if( !simpleBundle.bitrate.isEmpty() )
-        bundle.setBitrate( simpleBundle.bitrate.toInt() );
-
     // Prevent spamming by ignoring repeated identical data (some servers repeat it every 10 seconds)
     if ( m_lastMetadata.contains( bundle ) )
         return;
@@ -518,6 +498,24 @@ void EngineController::slotEngineMetaData( const Engine::SimpleMetaBundle &simpl
 
     m_bundle = bundle;
     newMetaDataNotify( m_bundle, false /* not a new track */ );
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// PRIVATE SLOTS
+//////////////////////////////////////////////////////////////////////////////////////////
+
+void EngineController::slotEngineMetaData( const Engine::SimpleMetaBundle &simpleBundle ) //SLOT
+{
+    if( m_engine->isStream() )
+    {
+        MetaBundle bundle = m_bundle;
+        bundle.setArtist( simpleBundle.artist );
+        bundle.setTitle( simpleBundle.title );
+        bundle.setComment( simpleBundle.comment );
+        bundle.setAlbum( simpleBundle.album );
+
+        slotStreamMetaData( bundle );
+    }
 }
 
 
