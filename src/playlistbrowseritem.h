@@ -321,8 +321,8 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         void  configure();
         void  fetch();
         void  rescan();
-        void saveCache( const QDomDocument &doc );
-        void saveCache() { saveCache( m_doc ); }
+        void  saveCache( const QDomDocument &doc );
+        void  saveCache() { saveCache( m_doc ); }
 
         const KURL &url() { return m_url; }
         const KURL &link() { return m_link; }

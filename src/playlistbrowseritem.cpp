@@ -21,6 +21,7 @@
 #include <qlabel.h>
 #include <qpainter.h>          //paintCell()
 #include <qpixmap.h>           //paintCell()
+#include <qregexp.h>
 
 #include <kdeversion.h>        //KDE_VERSION ifndefs.  Remove this once we reach a kde 4 dep
 #include <kiconloader.h>       //smallIcon
@@ -2082,6 +2083,16 @@ PodcastItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int widt
         pBuf.setFont( font );
         QFontMetrics fmInfo( font );
         QString info = m_description;
+        // remove unwanted text
+        info.replace( "\n", " " );
+        info.replace( QRegExp("<[aA][^>]*>[^<]*</[aA]>"), QString::null );
+        info.replace( QRegExp("<[bB][rR][^>]*>"), QString::null );
+        info.replace( QRegExp("<[iI][mM][gG][^>]*>"), QString::null );
+        info.replace( QRegExp("<[dD][iI][vV][^>]*>"), QString::null );
+        info.replace( QRegExp("<[fF][oO][nN][tT][^>]*>"), QString::null );
+        info.replace( QRegExp("<[sS][pP][aA][nN][^>]*>"), QString::null );
+        info.replace( QRegExp("<[sS][cC][rR][iI][pP][tT][^>]*>[^<]*(<!--[^>]*>)*[^<]*</[sS][cC][rR][iI][pP][tT]>"),
+                        QString::null );
 
         if( fmInfo.width( info ) + text_x + lv->itemMargin()*2 > width )
         {
@@ -2093,7 +2104,6 @@ PodcastItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int widt
                 text += info[ i ];
                 i++;
             }
-            text.replace( "\n", " " );
             info = text + i18n("...");
         }
 
