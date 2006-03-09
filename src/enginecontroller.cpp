@@ -500,19 +500,25 @@ void EngineController::slotStreamMetaData( const MetaBundle &bundle ) //SLOT
     newMetaDataNotify( m_bundle, false /* not a new track */ );
 }
 
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
 
 void EngineController::slotEngineMetaData( const Engine::SimpleMetaBundle &simpleBundle ) //SLOT
 {
-    if( m_engine->isStream() )
+    if ( !m_bundle.url().isLocalFile() )
     {
         MetaBundle bundle = m_bundle;
         bundle.setArtist( simpleBundle.artist );
         bundle.setTitle( simpleBundle.title );
         bundle.setComment( simpleBundle.comment );
         bundle.setAlbum( simpleBundle.album );
+
+        if( !simpleBundle.genre.isEmpty() )
+            bundle.setGenre( simpleBundle.genre );
+        if( !simpleBundle.bitrate.isEmpty() )
+            bundle.setBitrate( simpleBundle.bitrate.toInt() );
 
         slotStreamMetaData( bundle );
     }
