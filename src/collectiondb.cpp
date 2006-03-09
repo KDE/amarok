@@ -2371,7 +2371,23 @@ CollectionDB::applySettings()
     {
       const PostgresqlConfig *config =
           static_cast<const PostgresqlConfig*> ( m_dbConfig );
-      if ( AmarokConfig::postgresqlConninfo() != config->conninfo() )
+	  if ( AmarokConfig::postgresqlHost() != config->host() )
+        {
+            recreateConnections = true;
+        }
+        else if ( AmarokConfig::postgresqlPort() != config->port() )
+        {
+            recreateConnections = true;
+        }
+        else if ( AmarokConfig::postgresqlDbName() != config->database() )
+        {
+            recreateConnections = true;
+        }
+        else if ( AmarokConfig::postgresqlUser() != config->username() )
+        {
+            recreateConnections = true;
+        }
+        else if ( AmarokConfig::postgresqlPassword() != config->password() )
       {
           recreateConnections = true;
       }
@@ -2426,7 +2442,11 @@ DbConnection * CollectionDB::getMyConnection()
     {
         config =
             new PostgresqlConfig(
-                AmarokConfig::postgresqlConninfo() );
+                AmarokConfig::postgresqlHost(),
+                AmarokConfig::postgresqlPort(),
+                AmarokConfig::postgresqlDbName(),
+                AmarokConfig::postgresqlUser(),
+                AmarokConfig::postgresqlPassword() );
         dbConn = new PostgresqlConnection( static_cast<PostgresqlConfig*> ( config ) );
     }
     else
@@ -3154,12 +3174,20 @@ PostgresqlConnection::PostgresqlConnection( PostgresqlConfig* config )
       : DbConnection( config )
       , m_connected( false )
 {
+  QString conninfo;
     debug() << k_funcinfo << endl;
 
-    if ( config->conninfo().isEmpty() )
+    if ( config->username().isEmpty() )
         pApp->slotConfigAmarok("Postgresql");
 
-    m_db = PQconnectdb( config->conninfo().latin1() );
+	conninfo = "host='" + config->host() +
+	  "' port=" + config->port() +
+	  " dbname='" + config->database() +
+	  "' user='" + config->username() +
+	  "' password='" + config->password() + "'";
+
+	m_db = PQconnectdb( conninfo.utf8() );
+
     if (!m_db)
     {
         debug() << "POSTGRESQL CONNECT FAILED: " << PQerrorMessage( m_db ) << "\n";
@@ -3337,8 +3365,16 @@ MySqlConfig::MySqlConfig(
 //////////////////////////////////////////////////////////////////////////////////////////
 
 PostgresqlConfig::PostgresqlConfig(
-    const QString& conninfo )
-    : m_conninfo( conninfo )
+    const QString& host,
+    const int port,
+    const QString& database,
+    const QString& username,
+    const QString& password )
+    : m_host( host ),
+      m_port( port ),
+      m_database( database ),
+      m_username( username ),
+      m_password( password )
 {}
 
 //////////////////////////////////////////////////////////////////////////////////////////

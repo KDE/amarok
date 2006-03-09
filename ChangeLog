@@ -10,6 +10,8 @@ VERSION 1.4-beta3:
     * Add autocompletion to the composer field in the tag dialog. (BR 123026)
 
   CHANGES:
+    * Improved password handling in the PostgreSQL config dialog. Patch by
+      Peter C. Ndikuwera <pndiku@gmail.com>. (BR 118304)
 
   BUGFIXES:
     * Escape invalid characters when transferring files to IFP devices.

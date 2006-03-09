@@ -255,7 +255,95 @@
                                     <cstring>postgresqlConfig</cstring>
                                 </property>
                                 <property name="title">
-                                    <string>Postgresql Configuration</string>
+                                    <string>PostgreSQL Configuration</string>
+                                </property>
+                                <grid>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <widget class="QLabel" row="0" column="0">
+                                        <property name="name">
+                                            <cstring>textLabel1</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>Hostname:</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="1" column="0">
+                                        <property name="name">
+                                            <cstring>textLabel5</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>Database:</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="KIntSpinBox" row="0" column="3">
+                                        <property name="name">
+                                            <cstring>kcfg_PostgresqlPort</cstring>
+                                        </property>
+                                        <property name="maximumSize">
+                                            <size>
+                                                <width>100</width>
+                                                <height>32767</height>
+                                            </size>
+                                        </property>
+                                        <property name="maxValue">
+                                            <number>65535</number>
+                                        </property>
+                                        <property name="toolTip" stdset="0">
+                                            <string>Which port postgresql should connect to.</string>
+                                        </property>
+                                        <property name="whatsThis" stdset="0">
+                                            <string>Which port postgresql should connect to.</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="0" column="2">
+                                        <property name="name">
+                                            <cstring>textLabel2</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>Port:</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="KLineEdit" row="0" column="1">
+                                        <property name="name">
+                                            <cstring>kcfg_PostgresqlHost</cstring>
+                                        </property>
+                                        <property name="toolTip" stdset="0">
+                                            <string>Hostname where database lives.</string>
+                                        </property>
+                                        <property name="whatsThis" stdset="0">
+                                            <string>Hostname where database lives.</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="KLineEdit" row="1" column="1">
+                                        <property name="name">
+                                            <cstring>kcfg_PostgresqlDbName</cstring>
+                                        </property>
+                                        <property name="toolTip" stdset="0">
+                                            <string>Name of the database.</string>
+                                        </property>
+                                        <property name="whatsThis" stdset="0">
+                                            <string>Name of the database.</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="Line" row="2" column="0" rowspan="1" colspan="4">
+                                        <property name="name">
+                                            <cstring>line1</cstring>
+                                        </property>
+                                        <property name="frameShape">
+                                            <enum>HLine</enum>
+                                        </property>
+                                        <property name="frameShadow">
+                                            <enum>Sunken</enum>
+                                        </property>
+                                        <property name="orientation">
+                                            <enum>Horizontal</enum>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLayoutWidget" row="3" column="0" rowspan="1" colspan="4">
+                                        <property name="name">
+                                            <cstring>layout4</cstring>
                                 </property>
                                 <hbox>
                                     <property name="name">
@@ -263,25 +351,49 @@
                                     </property>
                                     <widget class="QLabel">
                                         <property name="name">
-                                            <cstring>textLabel1_3</cstring>
+                                                    <cstring>textLabel3</cstring>
                                         </property>
                                         <property name="text">
-                                            <string>Conninfo:</string>
+                                                    <string>Username:</string>
                                         </property>
                                     </widget>
                                     <widget class="KLineEdit">
                                         <property name="name">
-                                            <cstring>kcfg_PostgresqlConninfo</cstring>
+                                                    <cstring>kcfg_PostgresqlUser</cstring>
                                         </property>
                                         <property name="toolTip" stdset="0">
-                                            <string>Parameters to connect to the database.</string>
+                                                    <string>Username with which to connect to.</string>
                                         </property>
                                         <property name="whatsThis" stdset="0">
-                                            <string>Parameters to connect to the database.</string>
+                                                    <string>Username with which to connect to.</string>
+                                                </property>
+                                            </widget>
+                                            <widget class="QLabel">
+                                                <property name="name">
+                                                    <cstring>textLabel4</cstring>
+                                                </property>
+                                                <property name="text">
+                                                    <string>Password:</string>
+                                                </property>
+                                            </widget>
+                                            <widget class="KLineEdit">
+                                                <property name="name">
+                                                    <cstring>kcfg_PostgresqlPassword</cstring>
+                                                </property>
+                                                <property name="echoMode">
+                                                    <enum>Password</enum>
+                                                </property>
+                                                <property name="toolTip" stdset="0">
+                                                    <string>Password with which to connect to.</string>
+                                                </property>
+                                                <property name="whatsThis" stdset="0">
+                                                    <string>Password with which to connect to.</string>
                                         </property>
                                     </widget>
                                 </hbox>
                             </widget>
+                        </grid>
+                    </widget>
                         </grid>
                     </widget>
                 </hbox>

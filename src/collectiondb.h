@@ -77,12 +77,24 @@ class PostgresqlConfig : public DbConfig
 {
     public:
         PostgresqlConfig(
-            const QString& /* conninfo*/);
+            const QString& /* host */,
+            const int /* port */,
+            const QString& /* database */,
+            const QString& /* username */,
+            const QString& /* password */);
 
-        const QString conninfo() const { return m_conninfo; }
+        const QString host() const { return m_host; }
+        const int port() const { return m_port; }
+        const QString database() const { return m_database; }
+        const QString username() const { return m_username; }
+        const QString password() const { return m_password; }
 
     private:
-      QString m_conninfo;
+        QString m_host;
+        int m_port;
+        QString m_database;
+        QString m_username;
+        QString m_password;
 };
 
 
