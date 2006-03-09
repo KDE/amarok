@@ -276,16 +276,17 @@ class PodcastItem : public QObject, public PlaylistBrowserEntry
         void stopAnimation();
         void updatePixmap();
 
-        QListViewItem *m_parent;                   //podcast channel it belongs to
+        QListViewItem *m_parent;        //podcast channel it belongs to
         QString     m_author;
         QString     m_description;
         QString     m_date;
+        QString     m_guid;                     //unique identifier that should be available in the feed (RSS 2.0: guid ATOM: id)
         int         m_duration;
         QString     m_title;
         QString     m_type;
         KURL        m_url;                         //mp3 url
         KURL        m_localUrl;
-        QString     m_localUrlString;              //convenience for QFile()
+        QString     m_localUrlString;      //convenience for QFile()
 
         QPixmap     m_loading1;
         QPixmap     m_loading2;

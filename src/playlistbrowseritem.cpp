@@ -1395,7 +1395,7 @@ void
 PodcastChannel::setXml( const QDomNode &xml, const int feedType )
 {
     const bool isAtom = ( feedType == ATOM );
-    
+
     m_title = xml.namedItem( "title" ).toElement().text();
     createSettings();
 
@@ -1459,6 +1459,9 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
             {
                 node = channel.insertBefore(n.cloneNode(), firstItem );
                 updatingLast = new PodcastItem( this, updatingLast, node.toElement(), feedType );
+                debug() << updatingLast->author() << first->date() << endl;
+                debug() << updatingLast->duration() << endl;
+                debug() << updatingLast->url() << endl;
                 updatingLast->setNew();
             }
         }
@@ -1670,6 +1673,7 @@ PodcastItem::PodcastItem( QListViewItem *parent, QListViewItem *after, const QDo
             if( n.nodeName() == "summary" )         m_description = n.toElement().text();
             else if ( n.nodeName() == "author" )    m_author      = n.toElement().text();
             else if ( n.nodeName() == "published" ) m_date        = n.toElement().text();
+            else if( n.nodeName() == "id" )             m_guid          = n.toElement().text();
             else if ( n.nodeName() == "link" )
             {
                 if( n.toElement().attribute( "rel" ) == "enclosure" )
@@ -1691,6 +1695,7 @@ PodcastItem::PodcastItem( QListViewItem *parent, QListViewItem *after, const QDo
         m_date        = xml.namedItem( "pubDate" ).toElement().text();
         m_duration    = xml.namedItem( "enclosure" ).toElement().attribute( "length" ).toInt();
         m_type        = xml.namedItem( "enclosure" ).toElement().attribute( "type" );
+        m_guid      = xml.namedItem( "guid" ).toElement().text();
         const QString url = xml.namedItem( "enclosure" ).toElement().attribute( "url" );
 
         m_url         = KURL::fromPathOrURL( url );
@@ -1779,12 +1784,10 @@ PodcastItem::downloadMedia()
 void PodcastItem::createLocalDir( const KURL &localDir )
 {
     QString localDirString = localDir.path();
-    debug() << "checking " << localDirString << endl;
     if( !QFile::exists( localDirString ) )
     {
         QString parentDirString = localDir.directory( true, true );
         createLocalDir( parentDirString );
-        debug() << "creating " << localDirString << endl;
         QDir dir( localDirString );
         dir.mkdir( localDirString );
     }
@@ -1931,6 +1934,12 @@ PodcastItem::hasXml( const QDomNode& xml, const int feedType )
         return same;
     }
     //rss
+    //first check for a guid
+    if( !m_guid.isNull() )
+    {
+        if ( m_guid == xml.namedItem( "guid" ).toElement().text() )
+            return true;
+    }
     bool a = m_title           == xml.namedItem( "title" ).toElement().text();
     bool b = m_author          == xml.namedItem( "author" ).toElement().text();
     bool c = m_date            == xml.namedItem( "pubDate" ).toElement().text();
@@ -1938,9 +1947,9 @@ PodcastItem::hasXml( const QDomNode& xml, const int feedType )
     bool e = m_type            == xml.namedItem( "enclosure" ).toElement().attribute( "type" );
     bool f = m_url.prettyURL() == xml.namedItem( "enclosure" ).toElement().attribute( "url" );
 
-    debug() << "hasXml(): title = " << a << " author = " << b << " pubDate = " << c << " duration = " << d << endl;
-    debug() << "type = " << e << " url = " << f << endl;
-    return a && b && c && d && e && f;
+    // leaving pubdate out of the check to fix a problem with dynamicly generated rss feeds
+//     return a && b && c && d && e && f;
+    return a && d && e && f;
 }
 
 void
