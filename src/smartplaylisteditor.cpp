@@ -377,8 +377,12 @@ void SmartPlaylistEditor::buildQuery()
         }
     }
 
-    if( m_limitCheck->isChecked() )
-        limitStr = " LIMIT 0," + QString::number( m_limitSpin->value() );
+    if( m_limitCheck->isChecked() ) {
+        if (CollectionDB::instance()->getType() == DbConnection::postgresql)
+            limitStr = " LIMIT 0," + QString::number( m_limitSpin->value() );
+        else
+            limitStr = " OFFSET 0 LIMIT " + QString::number( m_limitSpin->value() );
+    }
 
     // album / artist / genre / title / year / comment / track / bitrate / length / samplerate / path
     m_query = "SELECT album.name, artist.name, genre.name, tags.title, year.name, "
