@@ -24,6 +24,7 @@ class MediaView;
 class MetaBundle;
 class SpaceLabel;
 class Medium;
+class TransferDialog;
 
 class KComboBox;
 class KDialogBase;
@@ -38,7 +39,7 @@ class MediaItemTip;
 namespace Browser
 {
     class ToolBar;
-};
+}
 
 struct PodcastInfo
 {
@@ -377,7 +378,7 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
          * Get the transfer dialog, if any
          * @return the transfer dialog, if any, else NULL;
          */
-        virtual void *getTransferDialog() { return NULL; }
+        virtual TransferDialog *getTransferDialog() { return NULL; }
 
         /**
          * Can be used to explicitly indicate whether a device needs manual configuration
