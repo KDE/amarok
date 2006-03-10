@@ -14,6 +14,7 @@ VERSION 1.4-beta3:
       Peter C. Ndikuwera <pndiku@gmail.com>. (BR 118304)
 
   BUGFIXES:
+    * rename of smart playlist: save new name. (BR 122509)
     * Fixed some bugs with PostgreSQL and Smart Playlists. Patch by Peter C.
       Ndikuwera <pndiku@gmail.com>. (BR 123317)
     * Escape invalid characters when transferring files to IFP devices.

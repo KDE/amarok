@@ -1907,6 +1907,11 @@ void PlaylistBrowser::renamePlaylist( QListViewItem* item, const QString& newNam
 
         #undef item
     }
+    else if( isSmartPlaylist( item ) )
+    {
+        QDomElement xml = static_cast<SmartPlaylist*>(item)->xml();
+        xml.setAttribute( "name", newName );
+    }
 
     item->setRenameEnabled( 0, false );
 }
