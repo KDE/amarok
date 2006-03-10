@@ -3,6 +3,10 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 
+
+ <markey>  When podcast retrieval fails, the red "stop" icon appears, but the podcast entry
+           still says "Retrieving Podcast.." forever on.
+
 BEFORE BETA 1:
 
  <illiss.> Do VFAT media devices work properly yet? If not, either it should be fixed, or support
