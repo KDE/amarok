@@ -2568,11 +2568,10 @@ Playlist::eventFilter( QObject *o, QEvent *e )
         const int mouseOverColumn = header()->sectionAt( me->pos().x() );
 
         KPopupMenu popup;
-        popup.insertItem( i18n("&Hide Column"), HIDE ); //TODO
+        if( mouseOverColumn >= 0 )
+            popup.insertItem( i18n("&Hide %1").arg( columnText( mouseOverColumn ) ), HIDE ); //TODO
 
         KPopupMenu sub;
-        sub.setItemEnabled( HIDE, mouseOverColumn != -1 );
-
         for( int i = 0; i < columns(); ++i ) //columns() references a property
             if( !columnWidth( i ) && ( i != PlaylistItem::Mood || AmarokConfig::showMoodbar() ) )
                 sub.insertItem( columnText( i ), i, i + 1 );
