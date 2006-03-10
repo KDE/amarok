@@ -245,6 +245,8 @@ ScriptManager::customMenuClicked( const QString& message )
 QString
 ScriptManager::specForScript( const QString& name )
 {
+    if( !m_scripts.contains( name ) )
+        return QString::null;
     QFileInfo info( m_scripts[name].url.path() );
     const QString specPath = info.dirPath() + "/" + info.baseName() + ".spec";
 
