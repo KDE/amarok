@@ -440,22 +440,43 @@ class QueryBuilder
                                tabStats = 64, tabLyrics = 128, tabDummy = 0 };
         enum qBuilderOptions { optNoCompilations = 1, optOnlyCompilations = 2, optRemoveDuplicates = 4,
                                optRandomize = 8 };
-        enum qBuilderValues  { valID = 1, valName = 2, valURL = 4, valTitle = 8, valTrack = 16, valScore = 32,
-                               valComment = 64, valBitrate = 128, valLength = 256, valSamplerate = 512,
-                               valPlayCounter = 1024, valCreateDate = 2048, valAccessDate = 4096,
-                               valPercentage = 8192, valArtistID = 16384, valAlbumID = 32768,
-                               valYearID = 65536, valGenreID = 131072, valDirectory = 262144,
-                               valLyrics = 524288, valRating = 1048576, valComposer = 2097152,
-                               valDiscNumber = 4194304, valFilesize = 8388608, valFileType=16777216,
-                               valIsCompilation = 33554432, valDummy = 0 };
+        /* This has been an enum in the past, but 32 bits wasn't enough anymore :-( */
+        static const Q_INT64 valDummy = 0;
+        static const Q_INT64 valID = 1;
+        static const Q_INT64 valName = 2;
+        static const Q_INT64 valURL = 4;
+        static const Q_INT64 valTitle = 8;
+        static const Q_INT64 valTrack = 16;
+        static const Q_INT64 valScore = 32;
+        static const Q_INT64 valComment = 64;
+        static const Q_INT64 valBitrate = 128;
+        static const Q_INT64 valLength = 256;
+        static const Q_INT64 valSamplerate = 512;
+        static const Q_INT64 valPlayCounter = 1024;
+        static const Q_INT64 valCreateDate = 2048;
+        static const Q_INT64 valAccessDate = 4096;
+        static const Q_INT64 valPercentage = 8192;
+        static const Q_INT64 valArtistID = 16384;
+        static const Q_INT64 valAlbumID = 32768;
+        static const Q_INT64 valYearID = 65536;
+        static const Q_INT64 valGenreID = 131072;
+        static const Q_INT64 valDirectory = 262144;
+        static const Q_INT64 valLyrics = 524288;
+        static const Q_INT64 valRating = 1048576;
+        static const Q_INT64 valComposer = 2097152;
+        static const Q_INT64 valDiscNumber = 4194304;
+        static const Q_INT64 valFilesize = 8388608;
+        static const Q_INT64 valFileType = 16777216;
+        static const Q_INT64 valIsCompilation = 33554432;
+
         enum qBuilderFunctions  { funcCount = 1, funcMax = 2, funcMin = 4, funcAvg = 8, funcSum = 16 };
 
         enum qBuilderFilter  { modeNormal = 0, modeLess = 1, modeGreater = 2, modeEndMatch = 3 };
 
         QueryBuilder();
 
-        void addReturnValue( int table, int value );
-        void addReturnFunctionValue( int function, int table, int value);
+        void addReturnValue( int table, Q_INT64 value );
+        void addReturnFunctionValue( int function, int table, Q_INT64 value);
         uint countReturnValues();
 
         void beginOR(); //filters will be ORed instead of ANDed
@@ -466,22 +487,22 @@ class QueryBuilder
         void addURLFilters( const QStringList& filter );
 
         void addFilter( int tables, const QString& filter);
-        void addFilter( int tables, int value, const QString& filter, int mode = modeNormal, bool exact = false );
+        void addFilter( int tables, Q_INT64 value, const QString& filter, int mode = modeNormal, bool exact = false );
         void addFilters( int tables, const QStringList& filter );
         void excludeFilter( int tables, const QString& filter );
-        void excludeFilter( int tables, int value, const QString& filter, int mode = modeNormal, bool exact = false );
+        void excludeFilter( int tables, Q_INT64 value, const QString& filter, int mode = modeNormal, bool exact = false );
 
         void addMatch( int tables, const QString& match );
-        void addMatch( int tables, int value, const QString& match );
+        void addMatch( int tables, Q_INT64 value, const QString& match );
         void addMatches( int tables, const QStringList& match );
         void excludeMatch( int tables, const QString& match );
 
-        void exclusiveFilter( int tableMatching, int tableNotMatching, int value );
+        void exclusiveFilter( int tableMatching, int tableNotMatching, Q_INT64 value );
 
         void setOptions( int options );
-        void sortBy( int table, int value, bool descending = false );
-        void sortByFunction( int function, int table, int value, bool descending = false );
-        void groupBy( int table, int value );
+        void sortBy( int table, Q_INT64 value, bool descending = false );
+        void sortByFunction( int function, int table, Q_INT64 value, bool descending = false );
+        void groupBy( int table, Q_INT64 value );
         void setLimit( int startPos, int length );
 
         void initSQLDrag();
@@ -494,8 +515,8 @@ class QueryBuilder
 
     private:
         QString tableName( int table );
-        QString valueName( int value );
-        QString functionName( int value );
+        QString valueName( Q_INT64 value );
+        QString functionName( int functions );
 
         void linkTables( int tables );
 

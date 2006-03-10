@@ -3424,7 +3424,7 @@ QueryBuilder::linkTables( int tables )
 
 
 void
-QueryBuilder::addReturnValue( int table, int value )
+QueryBuilder::addReturnValue( int table, Q_INT64 value )
 {
     if ( !m_values.isEmpty() && m_values != "DISTINCT " ) m_values += ",";
     if ( table & tabStats && value & valScore ) m_values += "round(";
@@ -3444,7 +3444,7 @@ QueryBuilder::addReturnValue( int table, int value )
 }
 
 void
-QueryBuilder::addReturnFunctionValue( int function, int table, int value)
+QueryBuilder::addReturnFunctionValue( int function, int table, Q_INT64 value)
 {
     if ( !m_values.isEmpty() && m_values != "DISTINCT " ) m_values += ",";
     m_values += functionName( function ) + "(";
@@ -3662,7 +3662,7 @@ QueryBuilder::addFilter( int tables, const QString& filter )
 }
 
 void
-QueryBuilder::addFilter( int tables, int value, const QString& filter, int mode, bool exact )
+QueryBuilder::addFilter( int tables, Q_INT64 value, const QString& filter, int mode, bool exact )
 {
     if ( !filter.isEmpty() )
     {
@@ -3744,7 +3744,7 @@ QueryBuilder::excludeFilter( int tables, const QString& filter )
 }
 
 void
-QueryBuilder::excludeFilter( int tables, int value, const QString& filter, int mode, bool exact )
+QueryBuilder::excludeFilter( int tables, Q_INT64 value, const QString& filter, int mode, bool exact )
 {
     if ( !filter.isEmpty() )
     {
@@ -3800,7 +3800,7 @@ QueryBuilder::addMatch( int tables, const QString& match )
 
 
 void
-QueryBuilder::addMatch( int tables, int value, const QString& match )
+QueryBuilder::addMatch( int tables, Q_INT64 value, const QString& match )
 {
     if ( !match.isEmpty() )
     {
@@ -3882,7 +3882,7 @@ QueryBuilder::excludeMatch( int tables, const QString& match )
 
 
 void
-QueryBuilder::exclusiveFilter( int tableMatching, int tableNotMatching, int value )
+QueryBuilder::exclusiveFilter( int tableMatching, int tableNotMatching, Q_INT64 value )
 {
     m_join += " LEFT JOIN ";
     m_join += tableName( tableNotMatching );
@@ -3927,7 +3927,7 @@ QueryBuilder::setOptions( int options )
 
 
 void
-QueryBuilder::sortBy( int table, int value, bool descending )
+QueryBuilder::sortBy( int table, Q_INT64 value, bool descending )
 {
     //shall we sort case-sensitively? (not for integer columns!)
     bool b = true;
@@ -3969,7 +3969,7 @@ QueryBuilder::sortBy( int table, int value, bool descending )
 }
 
 void
-QueryBuilder::sortByFunction( int function, int table, int value, bool descending )
+QueryBuilder::sortByFunction( int function, int table, Q_INT64 value, bool descending )
 {
     // This function should be used with the equivalent addReturnFunctionValue (with the same function on same values)
     // since it uses the "func(table.value) AS functablevalue" definition.
@@ -4019,7 +4019,7 @@ QueryBuilder::sortByFunction( int function, int table, int value, bool descendin
 }
 
 void
-QueryBuilder::groupBy( int table, int value )
+QueryBuilder::groupBy( int table, Q_INT64 value )
 {
     if ( !m_group.isEmpty() ) m_group += ",";
     m_group += tableName( table ) + ".";
@@ -4141,7 +4141,7 @@ QueryBuilder::tableName( int table )
 
 
 QString
-QueryBuilder::valueName( int value )
+QueryBuilder::valueName( Q_INT64 value )
 {
     QString values;
 
@@ -4176,17 +4176,17 @@ QueryBuilder::valueName( int value )
 }
 
 QString
-QueryBuilder::functionName( int value )
+QueryBuilder::functionName( int function )
 {
-    QString function;
+    QString functions;
 
-    if ( value & funcCount )     function += "Count";
-    if ( value & funcMax )       function += "Max";
-    if ( value & funcMin )       function += "Min";
-    if ( value & funcAvg )       function += "Avg";
-    if ( value & funcSum )       function += "Sum";
+    if ( function & funcCount )     functions += "Count";
+    if ( function & funcMax )       functions += "Max";
+    if ( function & funcMin )       functions += "Min";
+    if ( function & funcAvg )       functions += "Avg";
+    if ( function & funcSum )       functions += "Sum";
 
-    return function;
+    return functions;
 }
 
 
