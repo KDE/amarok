@@ -440,34 +440,35 @@ class QueryBuilder
                                tabStats = 64, tabLyrics = 128, tabDummy = 0 };
         enum qBuilderOptions { optNoCompilations = 1, optOnlyCompilations = 2, optRemoveDuplicates = 4,
                                optRandomize = 8 };
+
         /* This has been an enum in the past, but 32 bits wasn't enough anymore :-( */
-        static const Q_INT64 valDummy = 0;
-        static const Q_INT64 valID = 1;
-        static const Q_INT64 valName = 2;
-        static const Q_INT64 valURL = 4;
-        static const Q_INT64 valTitle = 8;
-        static const Q_INT64 valTrack = 16;
-        static const Q_INT64 valScore = 32;
-        static const Q_INT64 valComment = 64;
-        static const Q_INT64 valBitrate = 128;
-        static const Q_INT64 valLength = 256;
-        static const Q_INT64 valSamplerate = 512;
-        static const Q_INT64 valPlayCounter = 1024;
-        static const Q_INT64 valCreateDate = 2048;
-        static const Q_INT64 valAccessDate = 4096;
-        static const Q_INT64 valPercentage = 8192;
-        static const Q_INT64 valArtistID = 16384;
-        static const Q_INT64 valAlbumID = 32768;
-        static const Q_INT64 valYearID = 65536;
-        static const Q_INT64 valGenreID = 131072;
-        static const Q_INT64 valDirectory = 262144;
-        static const Q_INT64 valLyrics = 524288;
-        static const Q_INT64 valRating = 1048576;
-        static const Q_INT64 valComposer = 2097152;
-        static const Q_INT64 valDiscNumber = 4194304;
-        static const Q_INT64 valFilesize = 8388608;
-        static const Q_INT64 valFileType = 16777216;
-        static const Q_INT64 valIsCompilation = 33554432;
+        static const Q_INT64 valDummy         = 0;
+        static const Q_INT64 valID            = 1 << 0;
+        static const Q_INT64 valName          = 1 << 1;
+        static const Q_INT64 valURL           = 1 << 2;
+        static const Q_INT64 valTitle         = 1 << 3;
+        static const Q_INT64 valTrack         = 1 << 4;
+        static const Q_INT64 valScore         = 1 << 5;
+        static const Q_INT64 valComment       = 1 << 6;
+        static const Q_INT64 valBitrate       = 1 << 7;
+        static const Q_INT64 valLength        = 1 << 8;
+        static const Q_INT64 valSamplerate    = 1 << 9;
+        static const Q_INT64 valPlayCounter   = 1 << 10;
+        static const Q_INT64 valCreateDate    = 1 << 11;
+        static const Q_INT64 valAccessDate    = 1 << 12;
+        static const Q_INT64 valPercentage    = 1 << 13;
+        static const Q_INT64 valArtistID      = 1 << 14;
+        static const Q_INT64 valAlbumID       = 1 << 15;
+        static const Q_INT64 valYearID        = 1 << 16;
+        static const Q_INT64 valGenreID       = 1 << 17;
+        static const Q_INT64 valDirectory     = 1 << 18;
+        static const Q_INT64 valLyrics        = 1 << 19;
+        static const Q_INT64 valRating        = 1 << 20;
+        static const Q_INT64 valComposer      = 1 << 21;
+        static const Q_INT64 valDiscNumber    = 1 << 22;
+        static const Q_INT64 valFilesize      = 1 << 23;
+        static const Q_INT64 valFileType      = 1 << 24;
+        static const Q_INT64 valIsCompilation = 1 << 25;
 
         enum qBuilderFunctions  { funcCount = 1, funcMax = 2, funcMin = 4, funcAvg = 8, funcSum = 16 };
 
