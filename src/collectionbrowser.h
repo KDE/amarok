@@ -16,6 +16,7 @@
 #include <kdialogbase.h>     //baseclass
 
 #include "collectiondb.h"
+#include "amarok_export.h"
 
 class ClickLineEdit;
 class CollectionDB;
@@ -120,7 +121,7 @@ class CollectionView : public KListView
         CollectionView( CollectionBrowser* parent );
         ~CollectionView();
 
-        static CollectionView* instance() { return m_instance; }
+        LIBAMAROK_EXPORT static CollectionView* instance() { return m_instance; }
 
         void setFilter( const QString &filter ) { m_filter = filter; }
         void setTimeFilter( const uint timeFilter ) { m_timeFilter = timeFilter; }
@@ -144,7 +145,7 @@ class CollectionView : public KListView
         void cat1Menu( int id, bool rerender = true );
         void cat2Menu( int id, bool rerender = true );
         void cat3Menu( int id, bool rerender = true );
-        void organizeFiles( const KURL::List &list, const QString &caption, bool addToCollection=false );
+        void organizeFiles( const KURL::List &list, const QString &caption, bool addToCollection=false ) LIBAMAROK_EXPORT;
 
     private slots:
         void setupDirs();
@@ -198,7 +199,7 @@ class CollectionView : public KListView
         void contentsDropEvent( QDropEvent *e );
 
     //attributes:
-        static CollectionView* m_instance;
+        LIBAMAROK_EXPORT static CollectionView* m_instance;
 
         CollectionBrowser* m_parent;
         QString m_filter;
