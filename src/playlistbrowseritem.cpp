@@ -1467,7 +1467,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
         }
         else // Freshly added podcast
         {
-            if( children > 4 )
+            if( children > EPISODE_LIMIT - 1 )
                 break;
 
             if( isAtom )

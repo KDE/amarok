@@ -354,6 +354,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
 
     private:
         enum FeedType{ RSS=0, ATOM=1 };
+        static const int EPISODE_LIMIT = 10; //Maximum number of episodes shown
 
         bool containsItem( QDomElement xml );
         void downloadChildren();
@@ -407,7 +408,7 @@ class StreamEntry : public PlaylistBrowserEntry
         const QString &title() { return m_title; }
 
         QDomElement xml();
-        
+
         void  updateInfo();
 
         int   rtti() const { return RTTI; }
