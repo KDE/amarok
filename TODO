@@ -4,6 +4,8 @@ TODO-list for amaroK
 -->nick == assigned to
 
 
+ <markey>  Goddamn. In the settings dialog, the Apply button is broken again. Always active.
+
  <markey>  When podcast retrieval fails, the red "stop" icon appears, but the podcast entry
            still says "Retrieving Podcast.." forever on.
 
