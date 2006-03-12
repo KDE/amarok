@@ -584,8 +584,8 @@ XineEngine::customEvent( QCustomEvent *e )
         bundle.comment = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_COMMENT ) );
         bundle.genre   = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_GENRE ) );
         bundle.bitrate = QString::number( xine_get_stream_info( m_stream, XINE_STREAM_INFO_BITRATE ) / 1000 );
-        bundle.year    = QString::number( xine_get_stream_info( m_stream, XINE_META_INFO_YEAR ) );
-        bundle.tracknr = QString::number( xine_get_stream_info( m_stream, XINE_META_INFO_TRACK_NUMBER ) );
+        bundle.year    = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_YEAR ) );
+        bundle.tracknr = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_TRACK_NUMBER ) );
 
         emit metaData( bundle );
     }   break;
