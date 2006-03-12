@@ -243,8 +243,9 @@ StatisticsList::initDisplay()
     qb.addReturnFunctionValue( QueryBuilder::funcMin, QueryBuilder::tabStats, QueryBuilder::valCreateDate );
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     a = qb.run();
-    QDateTime firstPlay = QDateTime();
-    firstPlay.setTime_t( a[0].toUInt() );
+    QDateTime firstPlay = QDateTime::currentDateTime();
+    if ( a[0].toUInt() )
+        firstPlay.setTime_t( a[0].toUInt() );
 
     m_newestItem = new StatisticsItem( i18n("Newest Items"), this, m_genreItem );
     m_newestItem->setSubtext( i18n("Listening since %1").arg( amaroK::verboseTimeSince( firstPlay ) ) );
