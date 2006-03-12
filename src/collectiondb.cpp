@@ -1489,7 +1489,7 @@ CollectionDB::addPodcastChannel( const PodcastChannelBundle &pcb )
     command += ( link.isEmpty() ? "NULL" : "'"        + escapeString( link.url() ) + "'" ) + ",";
     command += ( description.isEmpty() ? "NULL" : "'" + escapeString( description ) + "'" ) + ",";
     command += ( copyright.isEmpty() ? "NULL" : "'"   + escapeString( copyright ) + "'" ) + ",";
-    command += "0'"; //parent
+    command += "0,'"; //parent
     command += escapeString( pcb.saveLocation().url() ) + "',";
     command += pcb.autoscan() ? boolT() + "," : boolF() + ",";
     command += QString::number( pcb.fetch() ) + ",";
@@ -1532,7 +1532,7 @@ CollectionDB::addPodcastEpisode( const PodcastEpisodeBundle &episode )
     command += QString::number( duration ) + ",";
     command += episode.isNew() ? boolT() + " );" : boolF() + " );";
 
-    debug() << "Adding podcast episode: " << command << endl;
+    debug() << "Adding podcast episode: " << title << endl;
 
     //FIXME: currently there's no way to check if an INSERT query failed or not - always return true atm.
     // Now it might be possible as insert returns the rowid.
