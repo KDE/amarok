@@ -370,11 +370,10 @@ void PlayerWidget::engineNewMetaData( const MetaBundle &bundle, bool )
     QString Hz = bundle.prettySampleRate( true );
     if( !Hz.isEmpty() )
     {
-        Hz = i18n("%1 Hz").arg( Hz );
         if( m_rateString.isEmpty() )
             m_rateString = Hz;
         else
-            m_rateString = i18n("%1 - %2").arg( m_rateString, Hz );
+            m_rateString = i18n("%1 kBit - %2").arg( m_rateString, Hz );
     }
 
     QStringList list( bundle.prettyTitle() );
