@@ -19,6 +19,7 @@
 #include "playlistbrowser.h"
 #include "playlistbrowseritem.h"
 #include "playlistselection.h"
+#include "podcastbundle.h"
 #include "podcastsettings.h"
 #include "scancontroller.h"
 #include "smartplaylisteditor.h"
@@ -267,7 +268,7 @@ PlaylistBrowser::polish()
     QListViewItemIterator it( m_listview );
     uint count = 0;
     while ( it.current() ) {
-        if( !isPodcastItem( it.current() ) )
+        if( !isPodcastEpisode( it.current() ) )
             ++count;
         ++it;
     }
@@ -276,7 +277,7 @@ PlaylistBrowser::polish()
         uint index = 0;
         it = QListViewItemIterator( m_listview );
         while ( it.current() ) {
-            if( !isPodcastItem( it.current() ) ) {
+            if( !isPodcastEpisode( it.current() ) ) {
                 it.current()->setOpen( stateList[index] );
                 ++index;
             }
@@ -295,7 +296,6 @@ PlaylistBrowser::~PlaylistBrowser()
         // <markey> Not sure if these calls are still needed, now that we're saving
         //          the state after each change.
         savePlaylists();
-        savePodcasts();
         saveStreams();
         saveSmartPlaylists();
         saveDynamics();
@@ -861,64 +861,78 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
 
     if( !file.open( IO_ReadOnly ) || !d.setContent( stream.read() ) )
     { /*Couldn't open the file or it had invalid content, so let's create an empty element*/
-        return new PlaylistCategory( m_listview, after, i18n("Podcasts") );
-    }
-    else {
-        m_podcastItemsToScan.clear();
-        if( !m_podcastTimerInterval ) m_podcastTimerInterval = 14400000;  // 4 hours
-
-        e = d.namedItem( "category" ).toElement();
-        PlaylistCategory *p = new PlaylistCategory( m_listview, after, e );
-
-        if( !m_podcastItemsToScan.isEmpty() )
-            m_podcastTimer->start( m_podcastTimerInterval );
-
-        connect( m_podcastTimer, SIGNAL(timeout()), this, SLOT(scanPodcasts()) );
-
+        PlaylistCategory *p = new PlaylistCategory( m_listview, after, i18n("Podcasts") );
+        loadPodcastsFromDatabase( p );
         return p;
     }
-}
+    else {
+        e = d.namedItem( "category" ).toElement();
 
-void PlaylistBrowser::savePodcasts()
-{
-    QFile file( podcastBrowserCache() );
-    QTextStream stream( &file );
+        if ( e.attribute("formatversion") == "1.1" ) {
+            debug() << "Podcasts are being moved to the database..." << endl;
+            m_podcastItemsToScan.clear();
+            if( !m_podcastTimerInterval ) m_podcastTimerInterval = 14400000;  // 4 hours
 
-    QDomDocument doc;
-    QDomElement podcastB = m_podcastCategory->xml();
-    podcastB.setAttribute( "product", "amaroK" );
-    podcastB.setAttribute( "version", APP_VERSION );
-    podcastB.setAttribute( "formatversion", "1.1" );
-    QDomNode podcastNode = doc.importNode( podcastB, true );
+            PlaylistCategory *p = new PlaylistCategory( m_listview, after, e );
 
-    //save PodcastSettings for the category's
-    savePodcastSettings( podcastNode );
-    doc.appendChild ( podcastNode );
+            //delete the file, it is deprecated
+            KIO::del( KURL( podcastBrowserCache() ) );
 
-    QString temp( doc.toString() );
+            if( !m_podcastItemsToScan.isEmpty() )
+                m_podcastTimer->start( m_podcastTimerInterval );
 
-    // Only open the file after all data is ready. If it crashes, data is not lost!
-    if ( !file.open( IO_WriteOnly ) ) return;
+            connect( m_podcastTimer, SIGNAL(timeout()), this, SLOT(scanPodcasts()) );
 
-    stream.setEncoding( QTextStream::UnicodeUTF8 );
-    stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-    stream << temp;
-}
-
-void PlaylistBrowser::savePodcastSettings( QDomNode categoryNode )
-{
-    PodcastSettings *ps = m_podcastSettings.find( categoryNode.toElement().attribute("name") );
-    if( ps != 0 )
-        categoryNode.insertBefore( ps->xml(), QDomNode::QDomNode() );
-
-    QDomNode childNode = categoryNode.namedItem( "category" );
-    while( !childNode.isNull() && ( childNode.toElement().tagName() == "category" ) )
-    {
-        savePodcastSettings( childNode );
-        childNode = childNode.nextSibling();
+            return p;
+        }
     }
-
+    return new PlaylistCategory( m_listview, after, i18n("Podcasts") );
 }
+
+void PlaylistBrowser::loadPodcastsFromDatabase( PlaylistCategory *p )
+{
+    QValueList<PodcastChannelBundle> channels;
+    QValueList<PodcastEpisodeBundle> episodes;
+
+    channels = CollectionDB::instance()->getPodcastChannels();
+
+    PodcastChannel *channel = 0;
+
+    foreachType( QValueList<PodcastChannelBundle>, channels )
+    {
+        debug() << "Adding podcast channel: " << (*it).title() << endl;
+
+        channel  = new PodcastChannel( p, channel, *it );
+        episodes = CollectionDB::instance()->getPodcastEpisodes( (*it).url() );
+
+        PodcastEpisode *episode = 0;
+        PodcastEpisodeBundle bundle;
+        while( !episodes.isEmpty() )
+        {
+            bundle = episodes.first();
+            debug() << "\tAdding podcast episode: " << bundle.title() << endl;
+            episode = new PodcastEpisode( channel, episode, bundle );
+
+            episodes.pop_front();
+        }
+    }
+}
+
+/**
+ * build the parent structure as necessary, and return the first parent
+ * @param structure: /podcasts/computing/java
+ * @return qlistviewitem folder called java
+ **/
+// PlaylistBrowserEntry*
+// PlaylistBrowser::ensureParentStructure( const QString &structure )
+// {
+//     QListViewItem *parent = 0;
+//     QStringList list = QStringList::split( "/", structure, true );
+//     foreach( list )
+//     {
+//         findItemInTree( structure, 0 );
+//     }
+// }
 
 void PlaylistBrowser::scanPodcasts()
 {
@@ -1038,13 +1052,13 @@ bool PlaylistBrowser::deletePodcastItems()
 {
     KURL::List urls;
     QListViewItemIterator it( m_listview, QListViewItemIterator::Selected );
-    QPtrList<PodcastItem> erasedItems;
+    QPtrList<PodcastEpisode> erasedItems;
 
     for( ; it.current(); ++it )
     {
-        if( isPodcastItem( *it ) )
+        if( isPodcastEpisode( *it ) )
         {
-            #define item static_cast<PodcastItem*>(*it)
+            #define item static_cast<PodcastEpisode*>(*it)
             if( item->isOnDisk() ) {
                 urls.append( item->localUrl() );
                 erasedItems.append( item );
@@ -1062,7 +1076,7 @@ bool PlaylistBrowser::deletePodcastItems()
 
     KIO::del( urls );
 
-    PodcastItem *item;
+    PodcastEpisode *item;
     for ( item = erasedItems.first(); item; item = erasedItems.next() )
         item->setListened( false );
     return true;
@@ -1087,7 +1101,7 @@ bool PlaylistBrowser::deletePodcasts( QPtrList<PodcastChannel> items, const bool
         {
             for( QListViewItem *ch = (*it)->firstChild(); ch; ch = ch->nextSibling() )
             {
-                #define ch static_cast<PodcastItem*>(ch)
+                #define ch static_cast<PodcastEpisode*>(ch)
                 if( ch->isOnDisk() )
                 {
                     //delete downloaded media
@@ -1111,9 +1125,9 @@ void PlaylistBrowser::downloadSelectedPodcasts()
 
     for( ; it.current(); ++it )
     {
-        if( isPodcastItem( *it ) )
+        if( isPodcastEpisode( *it ) )
         {
-            #define item static_cast<PodcastItem*>(*it)
+            #define item static_cast<PodcastEpisode*>(*it)
             if( !item->isOnDisk() )
                 m_podcastDownloadQueue.append( item );
             #undef  item
@@ -1126,7 +1140,7 @@ void PlaylistBrowser::downloadPodcastQueue() //SLOT
 {
     if( m_podcastDownloadQueue.isEmpty() ) return;
 
-    PodcastItem *first = m_podcastDownloadQueue.first();
+    PodcastEpisode *first = m_podcastDownloadQueue.first();
     first->downloadMedia();
     m_podcastDownloadQueue.removeFirst();
 
@@ -1150,7 +1164,7 @@ void PlaylistBrowser::configurePodcastCategory( const PlaylistCategory *category
 
     PodcastSettings *parentSettings;
     PlaylistCategory *p = static_cast<PlaylistCategory*>( category->parent() );
-    
+
     if( (category == m_podcastCategory) && !p )
         parentSettings = new PodcastSettings( i18n("default") ); //default settings
     else
@@ -1572,7 +1586,7 @@ void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
         QListViewItem *child = item->firstChild();
         while( child )
         {
-            #define child static_cast<PodcastItem *>(child)
+            #define child static_cast<PodcastEpisode *>(child)
 
             child->isOnDisk() ?
                 list.append( child->localUrl() ):
@@ -1589,9 +1603,9 @@ void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
 
         #undef item
     }
-    else if( isPodcastItem( item ) )
+    else if( isPodcastEpisode( item ) )
     {
-        #define item static_cast<PodcastItem *>(item)
+        #define item static_cast<PodcastEpisode *>(item)
         KURL::List list;
 
         item->isOnDisk() ?
@@ -1802,6 +1816,7 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
                 continue;
 
             podcastsChanged = true;
+
             m_podcastItemsToScan.remove( static_cast<PodcastChannel*>(item) );
             podcastsToDelete.append( static_cast<PodcastChannel*>(item) );
         }
@@ -1815,7 +1830,6 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
     if( streamsChanged )        saveStreams();
     if( smartPlaylistsChanged ) saveSmartPlaylists();
     if( dynamicsChanged )       saveDynamics();
-    if( podcastsChanged )       savePodcasts();
 
     // used for deleting playlists first, then folders.
     if( playlistsChanged )
@@ -1842,13 +1856,13 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
         {
             foreachType( QPtrList<PodcastChannel>, podcastsToDelete )
             {
+                CollectionDB::instance()->removePodcastChannel( (*it)->url() );
                 delete (*it);
             }
             foreachType( QPtrList<PlaylistCategory>, podcastFoldersToDelete )
             {
                 delete (*it);
             }
-            savePodcasts();
         }
     }
 }
@@ -2338,7 +2352,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 QListViewItem *child = item->firstChild();
                 while( child )
                 {
-                    list.append( static_cast<PodcastItem*>( child )->url() );
+                    list.append( static_cast<PodcastEpisode*>( child )->url() );
                     child = child->nextSibling();
                 }
                 Playlist::instance()->insertMedia( list );
@@ -2368,18 +2382,18 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
                 if( m_podcastItemsToScan.isEmpty() )
                     m_podcastTimer->stop();
-                    
+
                 else if( m_podcastItemsToScan.count() == 1 )
                     m_podcastTimer->start( m_podcastTimerInterval );
                 // else timer is already running
-                
+
                 break;
             }
         }
         #undef item
     }
-    else if( isPodcastItem( item ) ) {
-        #define item static_cast<PodcastItem*>(item)
+    else if( isPodcastEpisode( item ) ) {
+        #define item static_cast<PodcastEpisode*>(item)
         enum Actions { LOAD, QUEUE, GET, DELETE, MEDIA_DEVICE };
         menu.insertItem( SmallIconSet( "player_play" ), i18n( "&Play" ), LOAD );
         menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue" ), QUEUE );
@@ -2428,9 +2442,9 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                             *it;
                             ++it)
                     {
-                        if(isPodcastItem( *it ) )
+                        if(isPodcastEpisode( *it ) )
                         {
-                            PodcastItem *podcast = static_cast<PodcastItem*>(*it);
+                            PodcastEpisode *podcast = static_cast<PodcastEpisode*>(*it);
                             if(podcast->isOnDisk())
                             {
                                 podcast->addToMediaDevice();
@@ -2440,7 +2454,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 }
                 else
                 {
-                    static_cast<PodcastItem *>(item)->addToMediaDevice();
+                    static_cast<PodcastEpisode*>(item)->addToMediaDevice();
                 }
                 MediaBrowser::queue()->URLsAdded();
                 break;
@@ -2879,7 +2893,7 @@ void PlaylistBrowserView::mousePressed( int button, QListViewItem *item, const Q
 void PlaylistBrowserView::moveSelectedItems( QListViewItem *newParent )
 {
     if( !newParent || isDynamic( newParent ) || isPodcastChannel( newParent ) ||
-         isSmartPlaylist( newParent ) || isPodcastItem( newParent ) )
+         isSmartPlaylist( newParent ) || isPodcastEpisode( newParent ) )
         return;
 
     if( newParent == PlaylistBrowser::instance()->m_coolStreams ||
@@ -2982,9 +2996,9 @@ void PlaylistBrowserView::startDrag()
         else if( isStream( *it ) )
             urls += ((StreamEntry*)*it)->url();
 
-        else if( isPodcastItem( *it ) )
+        else if( isPodcastEpisode( *it ) )
         {
-            #define item static_cast<PodcastItem *>(*it)
+            #define item static_cast<PodcastEpisode *>(*it)
             if( item->isOnDisk() )
                 urls += item->localUrl();
             else
@@ -3001,8 +3015,8 @@ void PlaylistBrowserView::startDrag()
             QListViewItem *child = item->firstChild();
             while( child )
             {
-                list.append( static_cast<PodcastItem*>( child )->url() );
-                static_cast<PodcastItem*>( child )->setNew( false );
+                list.append( static_cast<PodcastEpisode*>( child )->url() );
+                static_cast<PodcastEpisode*>( child )->setNew( false );
                 child = child->nextSibling();
             }
 

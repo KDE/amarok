@@ -9,7 +9,7 @@
 #include <kurl.h>
 
 class PodcastChannel;
-class PodcastItem;
+class PodcastEpisode;
 class PodcastSettingsDialogBase;
 class QDomNode;
 class QDomElement;
@@ -22,6 +22,8 @@ class PodcastSettings
         PodcastSettings( const QDomNode &channelSettings, const QString &title );
         PodcastSettings( const PodcastSettings *parentSettings, const QString &title );
         PodcastSettings( const QString &title ); // standard settings
+        PodcastSettings( const QString &title, const QString &save, const bool autoScan,
+                         const int fetchType, const bool autotransfer, const bool purge, const int purgecount );
 
         const KURL &saveLocation(){ return m_saveLocation; }
         bool    hasAutoScan() { return m_autoScan; }
@@ -31,10 +33,8 @@ class PodcastSettings
         bool    hasPurge()    { return m_purge; }
         int     purgeCount()  { return m_purgeCount; }
 
-        const QDomElement xml();
-
         QString m_title;    //the title of the podcast or category these settings belong to
-        KURL m_saveLocation;
+        KURL    m_saveLocation;
         bool    m_autoScan;
         int     m_interval;
         int     m_fetch;

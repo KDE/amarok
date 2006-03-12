@@ -168,7 +168,7 @@ public:
     bool matchesParsedExpression( ParsedExpression parsedData, QValueList<int> defaultColumns ) const;
 
 public: //accessors
-    KURL url()           const;
+    KURL url()               const;
 
     QString      title()     const;
     AtomicString artist()    const;
@@ -240,7 +240,6 @@ public: //static helper functions
     static QStringList genreList();
 
 protected:
-
     enum ExtendedTags { composerTag,  discNumberTag };
 
     KURL m_url;
@@ -376,5 +375,11 @@ inline void MetaBundle::setScore( int score ) { m_score = score; }
 inline void MetaBundle::setFilesize( int bytes ) { m_filesize = bytes; }
 inline void MetaBundle::setFileType( int type ) { m_type = type; }
 
-inline bool MetaBundle::hasExtendedMetaInformation() const { return (m_type == mp3 || m_type == ogg || m_type== mp4 || m_type == flac ); }
+inline bool MetaBundle::hasExtendedMetaInformation() const
+{ 
+    return ( m_type == mp3 || m_type == ogg || 
+             m_type== mp4  || m_type == flac );
+}
+
+
 #endif

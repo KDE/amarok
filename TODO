@@ -30,6 +30,11 @@ BEFORE BETA 1:
 
 SHORT-TERM (URGENT):
 
+ <sebr>    Podcast Fixme's:
+             * Star icon persistence
+             * Have i listened to podcast streamed?
+             * Context Browser & PlaylistItem integration. Tricky.
+
  <sebr>    Make infopane in playlistbrowser a qsplitter
 
  <illiss.> Loading normal (M3U) playlists from the playlist browser doesn't block the UI per se,

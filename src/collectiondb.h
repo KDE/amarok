@@ -28,6 +28,8 @@ namespace KIO { class Job; }
 class DbConnection;
 class CoverFetcher;
 class MetaBundle;
+class PodcastChannelBundle;
+class PodcastEpisodeBundle;
 class Scrobbler;
 
 class QMutex;
@@ -259,6 +261,14 @@ class CollectionDB : public QObject, public EngineObserver
 
         //song methods
         bool addSong( MetaBundle* bundle, const bool incremental = false );
+        
+        //podcast methods
+        bool addPodcastChannel( const PodcastChannelBundle &pcb );
+        bool addPodcastEpisode( const PodcastEpisodeBundle &episode );
+        QValueList<PodcastChannelBundle> getPodcastChannels();
+        QValueList<PodcastEpisodeBundle> getPodcastEpisodes( const KURL &parent );
+        void removePodcastChannel( const KURL &url ); // will remove all episodes too
+        void removePodcastEpisode( const KURL &url );
 
         /**
          * The @p bundle parameter's url() will be looked up in the Collection
@@ -375,7 +385,7 @@ class CollectionDB : public QObject, public EngineObserver
         static const int DATABASE_VERSION = 25;
         // Persistent Tables hold data that is somehow valuable to the user, and can't be erased when rescaning.
         // When bumping this, write code to convert the data!
-        static const int DATABASE_PERSISTENT_TABLES_VERSION = 3;
+        static const int DATABASE_PERSISTENT_TABLES_VERSION = 4;
         // Bumping this erases stats table. If you ever need to, write code to convert the data!
         static const int DATABASE_STATS_VERSION = 4;
 
@@ -397,6 +407,7 @@ class CollectionDB : public QObject, public EngineObserver
         void dropStatsTable();
         void createPersistentTables();
         void dropPersistentTables();
+        void createPodcastTables();
 
         QCString makeWidthKey( uint width );
         QString artistValue( uint id );
@@ -437,10 +448,10 @@ class QueryBuilder
     public:
         //attributes:
         enum qBuilderTables  { tabAlbum = 1, tabArtist = 2, tabGenre = 4, tabYear = 8, tabSong = 32,
-                               tabStats = 64, tabLyrics = 128, tabDummy = 0 };
+                               tabStats = 64, tabLyrics = 128, tabPodcastChannels = 256, 
+                               tabPodcastEpisodes = 512, tabDummy = 0 };
         enum qBuilderOptions { optNoCompilations = 1, optOnlyCompilations = 2, optRemoveDuplicates = 4,
                                optRandomize = 8 };
-
         /* This has been an enum in the past, but 32 bits wasn't enough anymore :-( */
         static const Q_INT64 valDummy         = 0;
         static const Q_INT64 valID            = 1 << 0;
@@ -469,6 +480,16 @@ class QueryBuilder
         static const Q_INT64 valFilesize      = 1 << 23;
         static const Q_INT64 valFileType      = 1 << 24;
         static const Q_INT64 valIsCompilation = 1 << 25;
+        // podcast relevant:
+        static const Q_INT64 valCopyright     = 1 << 26;
+        static const Q_INT64 valParent        = 1 << 27;
+        static const Q_INT64 valWeblink       = 1 << 28;
+        static const Q_INT64 valAutoscan      = 1 << 29;
+        static const Q_INT64 valFetchtype     = 1 << 30;
+        static const Q_INT64 valAutotransfer  = 1LL << 31;
+        static const Q_INT64 valPurge         = 1LL << 32;
+        static const Q_INT64 valPurgeCount    = 1LL << 33;
+        static const Q_INT64 valIsNew         = 1LL << 34;
 
         enum qBuilderFunctions  { funcCount = 1, funcMax = 2, funcMin = 4, funcAvg = 8, funcSum = 16 };
 

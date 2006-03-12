@@ -1,6 +1,6 @@
 // (c) 2004 Pierpaolo Di Panfilo
 // (c) 2004 Mark Kretschmann <markey@web.de>
-// (c) 2005 Seb Ruiz <me@sebruiz.net>
+// (c) 2005-2006 Seb Ruiz <me@sebruiz.net>
 // (c) 2005 Gábor Lehel <illissius@gmail.com>
 // License: GPL V2. See COPYING file for information.
 
@@ -139,8 +139,7 @@ class PlaylistBrowser : public QVBox
         void loadDynamicItems();
 
         PlaylistCategory* loadPodcasts();
-        void savePodcasts();
-        void savePodcastSettings( QDomNode categoryNode );
+        void loadPodcastsFromDatabase( PlaylistCategory *p );
         void changePodcastInterval();
         bool deletePodcastItems();
         bool deletePodcasts( QPtrList<PodcastChannel> items, const bool silent=false );
@@ -194,7 +193,7 @@ class PlaylistBrowser : public QVBox
         QTimer              *m_podcastTimer;
         int                  m_podcastTimerInterval;        //in ms
         QPtrList<PodcastChannel> m_podcastItemsToScan;
-        QPtrList<PodcastItem> m_podcastDownloadQueue;
+        QPtrList<PodcastEpisode> m_podcastDownloadQueue;
 
         InfoPane *m_infoPane;
 
@@ -319,11 +318,11 @@ isPodcastChannel( QListViewItem *item )
 }
 
 inline bool
-isPodcastItem( QListViewItem *item )
+isPodcastEpisode( QListViewItem *item )
 {
     if( !item )
         return false;
-    return item->rtti() == PodcastItem::RTTI ? true : false;
+    return item->rtti() == PodcastEpisode::RTTI ? true : false;
 }
 
 inline bool

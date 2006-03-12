@@ -1,10 +1,11 @@
 // (c) 2004 Pierpaolo Di Panfilo
-// (c) 2005 Seb Ruiz <me@sebruiz.net>
+// (c) 2005-2006 Seb Ruiz <me@sebruiz.net>
 // See COPYING file for licensing information
 
 #ifndef PLAYLISTBROWSERITEM_H
 #define PLAYLISTBROWSERITEM_H
 
+#include "podcastbundle.h"
 #include "podcastsettings.h"
 
 #include <kdialogbase.h> // StreamEditor baseclass
@@ -29,9 +30,9 @@ namespace KIO { class Job; class TransferJob; class CopyJob; } //podcast downloa
  *  1002 - PlaylistTrackItem
  *  1003 - StreamEntry
  *  1004 - SmartPlaylist
- *  1005 - PartyEntry
+ *  1005 - PartyEntry (Dynamic)
  *  1006 - PodcastChannel
- *  1007 - PodcastItem
+ *  1007 - PodcastEpisode
  */
 
 
@@ -47,8 +48,8 @@ class PlaylistBrowserEntry : public KListViewItem
             :KListViewItem(parent, after, name) { m_notify = false; }
 
         virtual QDomElement xml() { return QDomElement(); };
-        bool    notify() { return m_notify; }           // use as you like ;-).  eg:
-        void    setNotify( bool n ) { m_notify = n; }   // stop podcasts displaying multiple popups
+        bool    notify() const { return m_notify; }           // use as you like ;-).  eg:
+        void    setNotify( const bool n ) { m_notify = n; }   // stop podcasts displaying multiple popups
 
         virtual void updateInfo() { return; }
 
@@ -222,12 +223,14 @@ class PlaylistTrackItem : public PlaylistBrowserEntry
         TrackItemInfo *m_trackInfo;
 };
 
-class PodcastItem : public QObject, public PlaylistBrowserEntry
+/// Stored in the database
+class PodcastEpisode : public QObject, public PlaylistBrowserEntry
 {
         Q_OBJECT
 
     public:
-        PodcastItem( QListViewItem *parent, QListViewItem *after, const QDomElement &xml, const int feedType );
+        PodcastEpisode( QListViewItem *parent, QListViewItem *after, const QDomElement &xml, const int feedType );
+        PodcastEpisode( QListViewItem *parent, QListViewItem *after, PodcastEpisodeBundle &bundle );
 
         void  downloadMedia();
         const bool isOnDisk();
@@ -239,14 +242,15 @@ class PodcastItem : public QObject, public PlaylistBrowserEntry
         void setListened( bool n = true );
         bool hasDownloaded() { return m_downloaded; }
 
-        const KURL    &url() { return m_url; }
-        const QString &title() { return m_title; }
-        const QString &author() { return m_author; }
-        const QString &date() { return m_date; }
-        const QString &type() { return m_type; }
-        const QString &description() { return m_description; }
-        const int     &duration() { return m_duration; }
-        const KURL    &localUrl() { return m_localUrl; }
+        const KURL    url()         { return m_bundle.url(); }
+        const QString title()       { return m_bundle.title(); }
+        const QString author()      { return m_bundle.author(); }
+        const QString date()        { return m_bundle.date(); }
+        const QString type()        { return m_bundle.type(); }
+        const QString description() { return m_bundle.description(); }
+        const QString guid()        { return m_bundle.guid(); }
+        const int     duration()    { return m_bundle.duration(); }
+        const KURL    &localUrl()    { return m_localUrl; }
         void  setLocalUrlBase( const QString &s );
 
         void  setup();
@@ -257,7 +261,7 @@ class PodcastItem : public QObject, public PlaylistBrowserEntry
         void addToMediaDevice();
 
         int rtti() const { return RTTI; }
-        static const int RTTI = 1007;              //podcastitem
+        static const int RTTI = 1007;              //PodcastEpisode
         static void createLocalDir( const KURL &localDir );
 
     signals:
@@ -277,14 +281,15 @@ class PodcastItem : public QObject, public PlaylistBrowserEntry
         void updatePixmap();
 
         QListViewItem *m_parent;        //podcast channel it belongs to
-        QString     m_author;
-        QString     m_description;
-        QString     m_date;
-        QString     m_guid;                     //unique identifier that should be available in the feed (RSS 2.0: guid ATOM: id)
-        int         m_duration;
-        QString     m_title;
-        QString     m_type;
-        KURL        m_url;                         //mp3 url
+        PodcastEpisodeBundle m_bundle;
+//         QString     m_author;
+//         QString     m_description;
+//         QString     m_date;
+//         QString     m_guid;  //unique identifier that should be available in the feed (RSS 2.0: guid ATOM: id)
+//         int         m_duration;
+//         QString     m_title;
+//         QString     m_type;
+//         KURL        m_url;                         //mp3 url
         KURL        m_localUrl;
         QString     m_localUrlString;      //convenience for QFile()
 
@@ -294,14 +299,14 @@ class PodcastItem : public QObject, public PlaylistBrowserEntry
         QTimer      m_animationTimer;
         uint        m_iconCounter;
 
-        KIO::CopyJob* m_podcastItemJob;
+        KIO::CopyJob* m_podcastEpisodeJob;
 
-        QDomElement m_xml;
         bool        m_downloaded;       //marked as downloaded in cached xml
         bool        m_onDisk;
         bool        m_new;
 };
 
+/// Stored in the database
 class PodcastChannel : public QObject, public PlaylistBrowserEntry
 {
         Q_OBJECT
@@ -311,6 +316,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url );
         PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url,
                         const QDomNode &channelSettings, const QDomDocument &xml );
+        PodcastChannel( QListViewItem *parent, QListViewItem *after, const PodcastChannelBundle &pcb );
 
         enum MediaFetch{ STREAM=0, AUTOMATIC=1 };
 
@@ -339,7 +345,6 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         const int  timeout() { return m_settings->m_interval; }
 
         void setXml( const QDomNode &xml, const int feedType );
-        QDomElement xml();
 
         void  updateInfo();
 
@@ -354,7 +359,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
 
     private:
         enum FeedType{ RSS=0, ATOM=1 };
-        static const int EPISODE_LIMIT = 10; //Maximum number of episodes shown
+        static const int EPISODE_LIMIT = 10; //Maximum number of episodes initially shown
 
         bool containsItem( QDomElement xml );
         void downloadChildren();
@@ -384,11 +389,11 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         QDomNode m_channelSettings;
         PodcastSettings *m_settings;
 
-        PodcastItem          *m_last;
+        PodcastEpisode          *m_last;
         KIO::TransferJob     *m_podcastJob;
         PlaylistCategory   *m_parent; // category it belongs to
         QString               m_podcastCurrentUrl;
-        QPtrList<PodcastItem> m_podcastDownloadQueue;
+        QPtrList<PodcastEpisode> m_podcastDownloadQueue;
 };
 
 class StreamEntry : public PlaylistBrowserEntry

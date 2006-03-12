@@ -24,6 +24,7 @@
 #include "playlist.h"
 #include "playlistloader.h"
 #include "playlistbrowser.h"
+#include "podcastbundle.h"        //addPodcast
 #include "scancontroller.h"
 #include "scrobbler.h"
 #include "statusbar.h"
@@ -340,13 +341,13 @@ CollectionDB::createTables( const bool temporary )
     QString yearAutoIncrement = "";
     if ( getDbConnectionType() == DbConnection::postgresql )
     {
-    if(!temporary)
-    {
-        query( QString( "CREATE SEQUENCE album_seq;" ) );
-        query( QString( "CREATE SEQUENCE artist_seq;" ) );
-        query( QString( "CREATE SEQUENCE genre_seq;" ) );
-        query( QString( "CREATE SEQUENCE year_seq;" ) );
-    }
+        if(!temporary)
+        {
+            query( QString( "CREATE SEQUENCE album_seq;" ) );
+            query( QString( "CREATE SEQUENCE artist_seq;" ) );
+            query( QString( "CREATE SEQUENCE genre_seq;" ) );
+            query( QString( "CREATE SEQUENCE year_seq;" ) );
+        }
 
         albumAutoIncrement = QString("DEFAULT nextval('album_seq')");
         artistAutoIncrement = QString("DEFAULT nextval('artist_seq')");
@@ -419,7 +420,6 @@ CollectionDB::createTables( const bool temporary )
 
     if ( !temporary )
     {
-
         //create admin table -- holds the db version, put here other stuff if necessary
         query( QString( "CREATE TABLE admin ("
                     "noption " + textColumnType() + ", "
@@ -470,12 +470,12 @@ CollectionDB::dropTables( const bool temporary )
 
     if ( getDbConnectionType() == DbConnection::postgresql )
     {
-    if (temporary == false) {
-        query( QString( "DROP SEQUENCE album_seq;" ) );
-        query( QString( "DROP SEQUENCE artist_seq;" ) );
-        query( QString( "DROP SEQUENCE genre_seq;" ) );
-        query( QString( "DROP SEQUENCE year_seq;" ) );
-    }
+        if (temporary == false) {
+            query( QString( "DROP SEQUENCE album_seq;" ) );
+            query( QString( "DROP SEQUENCE artist_seq;" ) );
+            query( QString( "DROP SEQUENCE genre_seq;" ) );
+            query( QString( "DROP SEQUENCE year_seq;" ) );
+        }
     }
 }
 
@@ -565,27 +565,54 @@ CollectionDB::createPersistentTables()
         "url " + textColumnType() + ","
         "label " + textColumnType() + ");" ) );
 
-    // create podcasts table
-//     query( QString( "CREATE TABLE podcasts ("
-//         "url " + textColumnType() + ","
-//         "copyright " + textColumnType() + ","
-//         "description " + textColumnType() + ");" ) );
-
-    // create podcast item table
-//     query( QString( "CREATE TABLE podcast_items ("
-//         "parent_url " + textColumnType() + ","
-//         "url " + textColumnType() + ","
-//         "saveLocation " + textColumnType() + ","
-//         "autofetch " + boolColumnType() + ","
-//         "enabled " + boolColumnType() + ","
-//         "copyright " + textColumnType() + ","
-//         "description " + textColumnType() + ");" ) );
-
     query( "CREATE INDEX url_label ON label( url );" );
     query( "CREATE INDEX label_label ON label( label );" );
-
 }
 
+void
+CollectionDB::createPodcastTables()
+{
+    QString podcastAutoIncrement = "";
+    if ( getDbConnectionType() == DbConnection::postgresql )
+    {
+        query( QString( "CREATE SEQUENCE podcastepisode_seq;" ) );
+
+        podcastAutoIncrement = QString("DEFAULT nextval('podcastepisode_seq')");
+    }
+    else if ( getDbConnectionType() == DbConnection::mysql )
+    {
+        podcastAutoIncrement = "AUTO_INCREMENT";
+    }
+
+    // create podcast channels table
+    query( QString( "CREATE TABLE podcastchannels ("
+                    "url " + textColumnType() + " UNIQUE,"
+                    "title " + textColumnType() + ","
+                    "weblink " + textColumnType() + ","
+                    "comment " + textColumnType() + ","
+                    "copyright "  + textColumnType() + ","
+                    "parent " + textColumnType() + ","
+                    "directory "  + textColumnType() + ","
+                    "autoscan BOOL, fetchtype INTEGER, "
+                    "autotransfer BOOL, haspurge BOOL, purgecount INTEGER );" ) );
+
+    // create podcast episodes table
+    query( QString( "CREATE TABLE podcastepisodes ("
+                    "id INTEGER PRIMARY KEY %1, "
+                    "url " + textColumnType() + " UNIQUE,"
+                    "parent " + textColumnType() + ","
+                    "guid " + textColumnType() + ","
+                    "title " + textColumnType() + ","
+                    "composer " + textColumnType() + ","
+                    "comment " + textColumnType() + ","
+                    "filetype "  + textColumnType() + ","
+                    "createdate "  + textColumnType() + ","
+                    "length INTEGER, isNew BOOL );" )
+                    .arg( podcastAutoIncrement ) );
+
+    query( "CREATE INDEX url_podchannel ON podcastchannels( url );" );
+    query( "CREATE INDEX url_podepisode ON podcastepisodes( url );" );
+}
 
 void
 CollectionDB::dropPersistentTables()
@@ -593,8 +620,8 @@ CollectionDB::dropPersistentTables()
     query( "DROP TABLE amazon;" );
     query( "DROP TABLE lyrics;" );
     query( "DROP TABLE labels;" );
-//     query( "DROP TABLE podcasts;" );
-//     query( "DROP TABLE podcast_items;" );
+    query( "DROP TABLE podcastchannels;" );
+    query( "DROP TABLE podcastepisodes;" );
 }
 
 uint
@@ -1429,6 +1456,135 @@ CollectionDB::artistAlbumList( bool withUnknown, bool withCompilations )
     }
 }
 
+bool
+CollectionDB::addPodcastChannel( const PodcastChannelBundle &pcb )
+{
+    QString command = "INSERT INTO podcastchannels "
+                      "( url, title, weblink, comment, copyright, parent, directory"
+                      ", autoscan, fetchtype, autotransfer, haspurge, purgecount ) "
+                      "VALUES ('";
+
+    QString title       = pcb.title();
+    KURL    link        = pcb.link();
+    QString description = pcb.description();
+    QString copyright   = pcb.copyright();
+
+    if( title.isEmpty() )
+        title = pcb.url().prettyURL();
+
+    command += escapeString( pcb.url().url() )    + "',";
+    command += ( title.isEmpty() ? "NULL" : "'"       + escapeString( title ) + "'" ) + ",";
+    command += ( link.isEmpty() ? "NULL" : "'"        + escapeString( link.url() ) + "'" ) + ",";
+    command += ( description.isEmpty() ? "NULL" : "'" + escapeString( description ) + "'" ) + ",";
+    command += ( copyright.isEmpty() ? "NULL" : "'"   + escapeString( copyright ) + "'" ) + ",";
+    command += "NULL, '"; //parent
+    command += escapeString( pcb.saveLocation().url() ) + "',";
+    command += pcb.autoscan() ? boolT() + "," : boolF() + ",";
+    command += QString::number( pcb.fetch() ) + ",";
+    command += pcb.autotransfer() ? boolT() + "," : boolF() + ",";
+    command += pcb.hasPurge() ? boolT() + "," : boolF() + ",";
+    command += QString::number( pcb.purgeCount() ) + ");";
+
+    //FIXME: currently there's no way to check if an INSERT query failed or not - always return true atm.
+    // Now it might be possible as insert returns the rowid.
+    insert( command, NULL );
+    return true;
+}
+
+bool
+CollectionDB::addPodcastEpisode( const PodcastEpisodeBundle &episode )
+{
+    QString command = "INSERT INTO podcastepisodes "
+                      "( url, parent, title, composer, comment, filetype, createdate, guid, length, isNew ) "
+                      "VALUES ('";
+
+    QString title       = episode.title();
+    QString author      = episode.author();
+    QString description = episode.description();
+    QString type        = episode.type();
+    QString date        = episode.date();
+    QString guid        = episode.guid();
+    int     duration    = episode.duration();
+
+    if( title.isEmpty() )
+        title = episode.url().prettyURL();
+
+    command += escapeString( episode.url().url() )   + "','";
+    command += escapeString( episode.parent().url()) + "',";
+    command += ( title.isEmpty()       ? "NULL" : "'" + escapeString( title )       + "'" ) + ",";
+    command += ( author.isEmpty()      ? "NULL" : "'" + escapeString( author )      + "'" ) + ",";
+    command += ( description.isEmpty() ? "NULL" : "'" + escapeString( description ) + "'" ) + ",";
+    command += ( type.isEmpty()        ? "NULL" : "'" + escapeString( type )        + "'" ) + ",";
+    command += ( date.isEmpty()        ? "NULL" : "'" + escapeString( date )        + "'" ) + ",";
+    command += ( guid.isEmpty()        ? "NULL" : "'" + escapeString( guid )        + "'" ) + ",";
+    command += QString::number( duration ) + ",";
+    command += episode.isNew() ? boolT() + " );" : boolF() + " );";
+
+    debug() << "Adding podcast episode: " << command << endl;
+
+    //FIXME: currently there's no way to check if an INSERT query failed or not - always return true atm.
+    // Now it might be possible as insert returns the rowid.
+    insert( command, NULL );
+    return true;
+}
+
+QValueList<PodcastChannelBundle>
+CollectionDB::getPodcastChannels()
+{
+    QString command = "SELECT * FROM podcastchannels;";
+
+    QStringList values = query( command );
+    QValueList<PodcastChannelBundle> bundles;
+
+    foreach( values )
+    {
+        PodcastChannelBundle pcb;
+        pcb.setURL         ( KURL::fromPathOrURL(*it) );
+        pcb.setTitle       ( *++it );
+        pcb.setLink        ( KURL::fromPathOrURL(*++it) );
+        pcb.setDescription ( *++it );
+        pcb.setCopyright   ( *++it );
+        ++it; //parent
+        pcb.setSaveLocation( KURL::fromPathOrURL(*++it) );
+        pcb.setAutoScan    ( *++it == boolT() ? true : false );
+        pcb.setFetchType   ( (*++it).toInt() );
+        pcb.setAutoTransfer( *++it == boolT() ? true : false  );
+        pcb.setPurge       ( *++it == boolT() ? true : false  );
+        pcb.setPurgeCount  ( (*++it).toInt() );
+
+        bundles.append( pcb );
+    }
+
+    return bundles;
+}
+
+QValueList<PodcastEpisodeBundle>
+CollectionDB::getPodcastEpisodes( const KURL &parent )
+{
+    QString command = QString( "SELECT * FROM podcastepisodes WHERE parent='%1' ORDER BY id;").arg( parent.url() );
+
+    QStringList values = query( command );
+    QValueList<PodcastEpisodeBundle> bundles;
+
+    foreach( values )
+    {
+        PodcastEpisodeBundle peb;
+        peb.setURL         ( KURL::fromPathOrURL(*++it) ); //skip id
+        peb.setParent      ( KURL::fromPathOrURL(*++it) );
+        peb.setGuid        ( *++it );
+        peb.setTitle       ( *++it );
+        peb.setAuthor      ( *++it );
+        peb.setDescription ( *++it );
+        peb.setType        ( *++it );
+        peb.setDate        ( *++it );
+        peb.setDuration    ( (*++it).toInt() );
+        peb.setNew         ( *++it == boolT() ? true : false  );
+
+        bundles.append( peb );
+    }
+
+    return bundles;
+}
 
 bool
 CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
@@ -1448,14 +1604,17 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
         title = bundle->url().fileName();
         if ( bundle->url().fileName().find( '-' ) > 0 )
         {
-            if ( artist.isEmpty() ) artist = bundle->url().fileName().section( '-', 0, 0 ).stripWhiteSpace();
+            if ( artist.isEmpty() )
+            {
+                artist = bundle->url().fileName().section( '-', 0, 0 ).stripWhiteSpace();
+                bundle->setArtist( artist );
+            }
             title = bundle->url().fileName().section( '-', 1 ).stripWhiteSpace();
             title = title.left( title.findRev( '.' ) ).stripWhiteSpace();
             if ( title.isEmpty() ) title = bundle->url().fileName();
         }
+        bundle->setTitle( title );
     }
-    bundle->setArtist( artist );
-    bundle->setTitle( title );
 
     command += escapeString( bundle->url().path() ) + "','";
     command += escapeString( bundle->url().directory() ) + "',";
@@ -2100,6 +2259,24 @@ CollectionDB::updateDirStats( QString path, const long datetime, const bool temp
     }
 }
 
+void
+CollectionDB::removePodcastChannel( const KURL &url )
+{
+    debug() << "removing podcast: " << url.prettyURL() << endl;
+    //remove channel
+    query( QString( "DELETE FROM podcastchannels WHERE url = '%1';" )
+              .arg( escapeString( url.url() ) ) );
+    //remove all children
+    query( QString( "DELETE FROM podcastepisodes WHERE parent = '%1';" )
+              .arg( escapeString( url.url() ) ) );
+}
+
+void
+CollectionDB::removePodcastEpisode( const KURL &url )
+{
+    query( QString( "DELETE FROM podcastepisodes WHERE url = '%1';" )
+              .arg( escapeString( url.url() ) ) );
+}
 
 void
 CollectionDB::removeSongsInDir( QString path )
@@ -2682,6 +2859,7 @@ CollectionDB::initialize()
     {
         createTables(false);
         createPersistentTables();
+        createPodcastTables();
         createStatsTable();
     }
     else
@@ -2754,6 +2932,8 @@ CollectionDB::initialize()
             QStringList Lyrics = query( "SELECT url, lyrics FROM tags where tags.lyrics IS NOT NULL;" );
             for (uint i=0; i<Lyrics.count(); i+=2  )
                 setLyrics( Lyrics[i], Lyrics[i+1]  );
+            debug() << "Building podcast tables" << endl;
+            createPodcastTables();
         }
         else if ( PersistentVersion == "1" || PersistentVersion == "2" ) {
             createPersistentTables(); /* From 1 to 2 nothing changed. There was just a bug on the code, and
@@ -2763,13 +2943,20 @@ CollectionDB::initialize()
             QStringList Lyrics = query( "SELECT url, lyrics FROM lyrics;" );
             for (uint i=0; i<Lyrics.count(); i+=2  )
                 setLyrics( Lyrics[i], Lyrics[i+1]  );
-
+            debug() << "Building podcast tables" << endl;
+            createPodcastTables();
+        }
+        else if ( PersistentVersion.toInt() < 4 )
+        {
+            debug() << "Building podcast tables" << endl;
+            createPodcastTables();
         }
         else {
             if ( adminValue( "Database Persistent Tables Version" ).toInt() != DATABASE_PERSISTENT_TABLES_VERSION ) {
                 debug() << "Rebuilding persistent tables database!" << endl;
                 dropPersistentTables();
                 createPersistentTables();
+                createPodcastTables();
             }
         }
 
@@ -2806,8 +2993,6 @@ CollectionDB::scanModifiedDirs()
 void
 CollectionDB::customEvent( QCustomEvent *e )
 {
-    DEBUG_BLOCK
-
     if ( e->type() == (int)ScanController::JobFinishedEvent ) {
         ScanController* s = static_cast<ScanController*>( e );
 
@@ -4122,7 +4307,7 @@ QueryBuilder::tableName( int table )
 {
     QString tables;
 
-    if (CollectionDB::instance()->getType() != DbConnection::postgresql)
+    if ( CollectionDB::instance()->getType() != DbConnection::postgresql )
     {
         if ( table & tabSong )   tables += ",tags";
     }
@@ -4132,7 +4317,9 @@ QueryBuilder::tableName( int table )
     if ( table & tabYear )   tables += ",year";
     if ( table & tabStats )  tables += ",statistics";
     if ( table & tabLyrics )  tables += ",lyrics";
-    if (CollectionDB::instance()->getType() == DbConnection::postgresql)
+    if ( table & tabPodcastChannels ) tables += ",podcastchannels";
+    if ( table & tabPodcastEpisodes ) tables += ",podcastepisodes";
+    if ( CollectionDB::instance()->getType() == DbConnection::postgresql )
     {
         if ( table & tabSong )   tables += ",tags";
     }
@@ -4173,6 +4360,15 @@ QueryBuilder::valueName( Q_INT64 value )
     if ( value & valFilesize )    values += "filesize";
     if ( value & valFileType )    values += "filetype";
     if ( value & valIsCompilation )   values += "sampler";
+    if ( value & valCopyright )   values += "copyright";
+    if ( value & valParent )      values += "parent";
+    if ( value & valWeblink )     values += "weblink";
+    if ( value & valAutoscan )    values += "autoscan";
+    if ( value & valFetchtype )   values += "fetchtype";
+//     if ( value & valAutotransfer ) values += "autotransfer";
+//     if ( value & valPurge )       values += "haspurge";
+//     if ( value & valPurgecount )  values += "purgeCount";
+//     if ( value & valIsNew )  values += "isNew";
 
     return values;
 }
