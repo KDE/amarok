@@ -345,6 +345,7 @@ void EngineController::play( const MetaBundle &bundle )
             m_xFadeThisTrack = AmarokConfig::crossfade() &&
                                m_engine->hasPluginProperty( "HasCrossfade" ) &&
                               !m_engine->isStream() &&
+                              !(url.protocol() == "cdda") &&
                                m_bundle.length()*1000 - AmarokConfig::crossfadeLength()*2 > 0;
 
             newMetaDataNotify( m_bundle, true /* track change */ );
