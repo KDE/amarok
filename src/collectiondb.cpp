@@ -616,6 +616,7 @@ CollectionDB::createPodcastTables()
     // create podcast folders table
     query( QString( "CREATE TABLE podcastfolders ("
                     "id INTEGER PRIMARY KEY %1, "
+                    "name " + textColumnType() + ","
                     "parent INTEGER, isOpen BOOL );" )
                     .arg( podcastFolderAutoInc ) );
 
@@ -1488,7 +1489,7 @@ CollectionDB::addPodcastChannel( const PodcastChannelBundle &pcb )
     command += ( link.isEmpty() ? "NULL" : "'"        + escapeString( link.url() ) + "'" ) + ",";
     command += ( description.isEmpty() ? "NULL" : "'" + escapeString( description ) + "'" ) + ",";
     command += ( copyright.isEmpty() ? "NULL" : "'"   + escapeString( copyright ) + "'" ) + ",";
-    command += "NULL, '"; //parent
+    command += "0'"; //parent
     command += escapeString( pcb.saveLocation().url() ) + "',";
     command += pcb.autoscan() ? boolT() + "," : boolF() + ",";
     command += QString::number( pcb.fetch() ) + ",";
@@ -2957,11 +2958,11 @@ CollectionDB::initialize()
             debug() << "Building podcast tables" << endl;
             createPodcastTables();
         }
-//         else if ( PersistentVersion.toInt() < 4 )
-//         {
-//             debug() << "Building podcast tables" << endl;
-//             createPodcastTables();
-//         }
+        else if ( PersistentVersion.toInt() < 4 )
+        {
+            debug() << "Building podcast tables" << endl;
+            createPodcastTables();
+        }
         else {
             if ( adminValue( "Database Persistent Tables Version" ).toInt() != DATABASE_PERSISTENT_TABLES_VERSION ) {
                 debug() << "Rebuilding persistent tables database!" << endl;
@@ -4330,6 +4331,7 @@ QueryBuilder::tableName( int table )
     if ( table & tabLyrics )  tables += ",lyrics";
     if ( table & tabPodcastChannels ) tables += ",podcastchannels";
     if ( table & tabPodcastEpisodes ) tables += ",podcastepisodes";
+    if ( table & tabPodcastFolders ) tables += ",podcasttables";
     if ( CollectionDB::instance()->getType() == DbConnection::postgresql )
     {
         if ( table & tabSong )   tables += ",tags";
@@ -4376,10 +4378,10 @@ QueryBuilder::valueName( Q_INT64 value )
     if ( value & valWeblink )     values += "weblink";
     if ( value & valAutoscan )    values += "autoscan";
     if ( value & valFetchtype )   values += "fetchtype";
-//     if ( value & valAutotransfer ) values += "autotransfer";
-//     if ( value & valPurge )       values += "haspurge";
-//     if ( value & valPurgecount )  values += "purgeCount";
-//     if ( value & valIsNew )  values += "isNew";
+    if ( value & valAutotransfer ) values += "autotransfer";
+    if ( value & valPurge )       values += "haspurge";
+    if ( value & valPurgeCount )  values += "purgeCount";
+    if ( value & valIsNew )  values += "isNew";
 
     return values;
 }

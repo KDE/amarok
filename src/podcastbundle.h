@@ -19,7 +19,7 @@ class PodcastChannelBundle
             m_description = desc;
             m_copyright = copy;
             setSettings( settings );   }
-            
+
         void setSettings( PodcastSettings *settings )
         {
             m_saveLocation = settings->saveLocation();
@@ -29,13 +29,13 @@ class PodcastChannelBundle
             m_purge = settings->hasPurge();
             m_purgeCount = settings->purgeCount();
         }
-                              
+
         KURL    url()         const;
         QString title()       const;
         KURL    link()        const;
         QString description() const;
         QString copyright()   const;
-        
+
         void    setURL( const KURL &u );
         void    setTitle( const QString &t );
         void    setLink( const KURL &l );
@@ -47,7 +47,7 @@ class PodcastChannelBundle
         void    setAutoTransfer( const bool b );
         void    setPurge( const bool b );
         void    setPurgeCount( const int i );
-        
+
         //settings
         const KURL saveLocation() const;
         const bool autoscan()     const;
@@ -55,14 +55,14 @@ class PodcastChannelBundle
         const bool autotransfer() const;
         const bool hasPurge()     const;
         const int  purgeCount()   const;
-        
+
     private:
         KURL    m_url;
         QString m_title;
         KURL    m_link;
         QString m_description;
         QString m_copyright;
-        
+
         KURL    m_saveLocation;
         bool    m_autoScan;
         int     m_fetch;
@@ -107,7 +107,7 @@ class PodcastEpisodeBundle
                               const QString &author, const QString &desc, const QString &date,
                               const QString &type,   const int duration,  const QString &guid,
                               const bool isNew  )
-        {   
+        {
             m_url = url;
             m_parent = parent;
             m_title = title;
@@ -117,9 +117,9 @@ class PodcastEpisodeBundle
             m_date = date;
             m_duration = duration < 0 ? 0 : duration;
             m_guid = guid;
-            m_isNew = isNew; 
+            m_isNew = isNew;
         }
-        
+
         KURL    url()         const;
         KURL    parent()      const;
         QString author()      const;
@@ -130,7 +130,7 @@ class PodcastEpisodeBundle
         int     duration()    const;
         QString guid()        const;
         bool    isNew()       const;
-        
+
         void    setURL( const KURL &u );
         void    setParent( const KURL &u );
         void    setAuthor( const QString &a );
@@ -141,7 +141,7 @@ class PodcastEpisodeBundle
         void    setDuration( const int i );
         void    setGuid( const QString &g );
         void    setNew( const bool &b );
-        
+
     private:
         KURL    m_url;
         KURL    m_parent;
