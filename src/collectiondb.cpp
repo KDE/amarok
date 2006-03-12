@@ -617,7 +617,7 @@ CollectionDB::createPodcastTables()
     query( QString( "CREATE TABLE podcastfolders ("
                     "id INTEGER PRIMARY KEY %1, "
                     "parent INTEGER, isOpen BOOL );" )
-                    .arg( podcastFolderAutoInc );
+                    .arg( podcastFolderAutoInc ) );
 
     query( "CREATE INDEX url_podchannel ON podcastchannels( url );" );
     query( "CREATE INDEX url_podepisode ON podcastepisodes( url );" );
