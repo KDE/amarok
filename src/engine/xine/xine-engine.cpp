@@ -584,6 +584,8 @@ XineEngine::customEvent( QCustomEvent *e )
         bundle.comment = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_COMMENT ) );
         bundle.genre   = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_GENRE ) );
         bundle.bitrate = QString::number( xine_get_stream_info( m_stream, XINE_STREAM_INFO_BITRATE ) / 1000 );
+        bundle.year    = QString::number( xine_get_stream_info( m_stream, XINE_META_INFO_YEAR ) );
+        bundle.tracknr = QString::number( xine_get_stream_info( m_stream, XINE_META_INFO_TRACK_NUMBER ) );
 
         emit metaData( bundle );
     }   break;
@@ -943,6 +945,12 @@ bool XineEngine::metaDataForUrl(const KURL &url, Engine::SimpleMetaBundle &b)
                 b.genre =
                     QString::fromUtf8(
                         xine_get_meta_info(tmpstream, XINE_META_INFO_GENRE));
+                b.year =
+                    QString::fromUtf8(
+                        xine_get_meta_info(tmpstream, XINE_META_INFO_YEAR));
+                b.tracknr =
+                    QString::fromUtf8(
+                        xine_get_meta_info(tmpstream, XINE_META_INFO_TRACK_NUMBER));
             } else {
                 b.title = QString(i18n("Track %1")).arg(url.filename());
                 b.album = i18n("AudioCD");

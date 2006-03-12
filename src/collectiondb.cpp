@@ -1683,6 +1683,8 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
                             b.setGenre(smb.genre);
                             b.setBitrate(smb.bitrate.toInt());
                             b.setLength(smb.length.toInt());
+                            b.setYear(smb.year.toInt());
+                            b.setTrack(smb.tracknr.toInt());
                         }
                     }
                 }

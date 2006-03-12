@@ -253,6 +253,8 @@ namespace Engine
         QString genre;
         QString bitrate;
         QString length;
+        QString year;
+        QString tracknr;
     };
 
 
