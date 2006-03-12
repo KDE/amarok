@@ -3380,7 +3380,7 @@ PostgresqlConnection::PostgresqlConnection( PostgresqlConfig* config )
         pApp->slotConfigAmarok("Postgresql");
 
 	conninfo = "host='" + config->host() +
-	  "' port=" + config->port() +
+	  "' port=" + QString::number( config->port() ) +
 	  " dbname='" + config->database() +
 	  "' user='" + config->username() +
 	  "' password='" + config->password() + "'";
