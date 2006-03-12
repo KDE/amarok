@@ -573,15 +573,18 @@ void
 CollectionDB::createPodcastTables()
 {
     QString podcastAutoIncrement = "";
+    QString podcastFolderAutoInc = "";
     if ( getDbConnectionType() == DbConnection::postgresql )
     {
         query( QString( "CREATE SEQUENCE podcastepisode_seq;" ) );
 
         podcastAutoIncrement = QString("DEFAULT nextval('podcastepisode_seq')");
+        podcastFolderAutoInc = QString("DEFAULT nextval('podcastfolder_seq')");
     }
     else if ( getDbConnectionType() == DbConnection::mysql )
     {
         podcastAutoIncrement = "AUTO_INCREMENT";
+        podcastFolderAutoInc = "AUTO_INCREMENT";
     }
 
     // create podcast channels table
@@ -591,7 +594,7 @@ CollectionDB::createPodcastTables()
                     "weblink " + textColumnType() + ","
                     "comment " + textColumnType() + ","
                     "copyright "  + textColumnType() + ","
-                    "parent " + textColumnType() + ","
+                    "parent INTEGER,"
                     "directory "  + textColumnType() + ","
                     "autoscan BOOL, fetchtype INTEGER, "
                     "autotransfer BOOL, haspurge BOOL, purgecount INTEGER );" ) );
@@ -610,8 +613,15 @@ CollectionDB::createPodcastTables()
                     "length INTEGER, isNew BOOL );" )
                     .arg( podcastAutoIncrement ) );
 
+    // create podcast folders table
+    query( QString( "CREATE TABLE podcastfolders ("
+                    "id INTEGER PRIMARY KEY %1, "
+                    "parent INTEGER, isOpen BOOL );" )
+                    .arg( podcastFolderAutoInc );
+
     query( "CREATE INDEX url_podchannel ON podcastchannels( url );" );
     query( "CREATE INDEX url_podepisode ON podcastepisodes( url );" );
+    query( "CREATE INDEX url_podfolder ON podcastfolders( id );" );
 }
 
 void
@@ -622,6 +632,7 @@ CollectionDB::dropPersistentTables()
     query( "DROP TABLE labels;" );
     query( "DROP TABLE podcastchannels;" );
     query( "DROP TABLE podcastepisodes;" );
+    query( "DROP TABLE podcastfolders;" );
 }
 
 uint
@@ -2946,11 +2957,11 @@ CollectionDB::initialize()
             debug() << "Building podcast tables" << endl;
             createPodcastTables();
         }
-        else if ( PersistentVersion.toInt() < 4 )
-        {
-            debug() << "Building podcast tables" << endl;
-            createPodcastTables();
-        }
+//         else if ( PersistentVersion.toInt() < 4 )
+//         {
+//             debug() << "Building podcast tables" << endl;
+//             createPodcastTables();
+//         }
         else {
             if ( adminValue( "Database Persistent Tables Version" ).toInt() != DATABASE_PERSISTENT_TABLES_VERSION ) {
                 debug() << "Rebuilding persistent tables database!" << endl;
