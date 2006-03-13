@@ -3,6 +3,7 @@
 // .ram file support from Kaffeine 0.5, Copyright (C) 2004 by Jürgen Kofler (GPL 2 or later)
 // .asx file support added by Michael Seiwert Copyright (C) 2006
 // .asx file support from Kaffeine, Copyright (C) 2004-2005 by Jürgen Kofler (GPL 2 or later)
+// .smil file support from Kaffeine 0.7
 // .pls parser (C) Copyright 2005 by Michael Buesch <mbuesch@freenet.de>
 // Copyright: See COPYING file that comes with this distribution
 //
@@ -539,6 +540,7 @@ PlaylistFile::PlaylistFile( const QString &path )
         return;
     case RAM: loadRealAudioRam( stream ); break;
     case ASX: loadASX( stream ); break;
+    case SMIL: loadSMIL( stream ); break;
     default:
         m_error = i18n( "amaroK does not support this playlist format." );
         return;
@@ -759,7 +761,7 @@ PlaylistFile::loadASX( QTextStream &stream )
     stream.setEncoding( QTextStream::UnicodeUTF8 );
     if (!doc.setContent(stream.read(), &errorMsg, &errorLine, &errorColumn))
     {
-	kdError() << "[PLAYLISTLOADER]: Error loading xml file: " "(" << errorMsg << ")"
+        debug() << "[PLAYLISTLOADER]: Error loading xml file: " "(" << errorMsg << ")"
                 << " at line " << errorLine << ", column " << errorColumn << endl;
         return false;
     }
@@ -839,6 +841,58 @@ PlaylistFile::loadASX( QTextStream &stream )
      }
      return true;
 }
+
+bool
+PlaylistFile::loadSMIL( QTextStream &stream )
+{
+	// adapted from Kaffeine 0.7
+	QDomDocument doc;
+    if( !doc.setContent( stream.read() ) )
+    {
+        debug() << "Could now read smil playlist" << endl;
+        return false;
+    }   
+	QDomElement root = doc.documentElement();
+	stream.setEncoding ( QTextStream::UnicodeUTF8 );
+
+	if( root.nodeName().lower() != "smil" )
+       return false;
+
+	KURL kurl;
+	QString url;
+	QDomNodeList nodeList;
+	QDomNode node;
+	QDomElement element;
+
+	//audio sources...
+	nodeList = doc.elementsByTagName( "audio" );
+	for( uint i = 0; i < nodeList.count(); i++ )
+	{
+        MetaBundle b;   
+		node = nodeList.item(i);
+		url = QString::null;
+		if( (node.nodeName().lower() == "audio") && (node.isElement()) )
+		{
+			element = node.toElement();
+			if( element.hasAttribute("src") )
+				url = element.attribute("src");
+                
+			else if( element.hasAttribute("Src") )
+				url = element.attribute("Src");
+                
+			else if( element.hasAttribute("SRC") )
+				url = element.attribute("SRC");
+		}
+		if( !url.isNull() )
+		{
+			b.setUrl( url );
+			m_bundles += b;
+		}
+	}
+
+	return true;
+}
+
 
 /// @class RemotePlaylistFetcher
 
