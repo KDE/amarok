@@ -27,6 +27,8 @@
 
 #include <klistview.h>
 
+class HostListItem;
+
 class HostList : public KListView
 {
   Q_OBJECT
@@ -40,17 +42,22 @@ class HostList : public KListView
 
     void notifyHostError( QString, int);
 
+    friend class HostListItem;
+
   signals:
     /**
      * Emitted when audio of video toggle changes.
      */
     void viewChanged();
 
-  protected:
-    void contentsMousePressEvent( QMouseEvent *e = 0 );
+  protected slots:
+    void contentsMousePressEvent( QMouseEvent *e );
+    void contentsMouseMoveEvent( QMouseEvent *e = 0 );
+    void leaveEvent( QEvent *e );
 
   private:
     bool m_read_only;
+    HostListItem  *m_hoveredVolume; //if the mouse is hovering over the volume of an item
 };
 
 #endif 

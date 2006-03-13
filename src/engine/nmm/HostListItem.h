@@ -26,6 +26,7 @@
 #define HOSTLISTITEM_H
 
 #include <klistview.h>
+#include <qpixmap.h>
 
 class HostListItem : public KListViewItem {
   public:
@@ -50,6 +51,10 @@ class HostListItem : public KListViewItem {
     void setStatus( int s ) { m_status = s; }
     int status() const { return m_status; }
 
+    void setVolume( int v ) { m_volume = v; }
+    int volume() const { return m_volume; }
+    int volumeAtPosition( int );
+
     void updateColumn( int column ) const;
 
     /**
@@ -61,15 +66,19 @@ class HostListItem : public KListViewItem {
     QString prettyStatus( int );
 
   protected:
-    void paintCell( QPainter * p, const QColorGroup & cg, int column, int width, int align );
-
+    void paintCell( QPainter * painter, const QColorGroup & cg, int column, int width, int align );
 
   private:
+    enum { PixInset, PixLeft, PixRight };
+    QPixmap* pixmapVolume( int );
+    QPixmap generateGradient( int );
+    
     bool m_audio;
     bool m_video;
+    int m_volume; 
+    int m_status;
     bool m_read_only;
 
-    int m_status;
 };
 
 #endif

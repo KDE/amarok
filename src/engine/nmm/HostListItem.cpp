@@ -24,6 +24,7 @@
 
 #include "HostListItem.h"
 
+#include <qbitmap.h>
 #include <qfont.h>
 #include <qheader.h>
 #include <qpainter.h>
@@ -32,27 +33,45 @@
 #include <kglobal.h>
 #include <kiconloader.h>
 #include <klocale.h>
+#include <kpixmap.h>
+#include <kpixmapeffect.h>
+#include <kstandarddirs.h>
 
 #include "debug.h"
 #include "HostList.h"
 #include "nmm_engine.h"
 
-HostListItem::HostListItem( QListView *parent, QString hostname, bool audio, bool video, int , int status, bool read_only )
+HostListItem::HostListItem( QListView *parent, QString hostname, bool audio, bool video, int volume, int status, bool read_only )
     : KListViewItem( parent ),
     m_audio( audio ),
     m_video( video ),
-    m_read_only( read_only ),
-    m_status( status )
+    m_volume( volume ),
+    m_status( status ),
+    m_read_only( read_only )
 {  
   setText( HostListItem::Hostname, hostname);
 
   setPixmap( HostListItem::Status, SmallIcon("info") );
   setText( HostListItem::Status, i18n("Unknown") );
+
+  if( 24 /*m_pixmapInset.height()*/ > height() )
+    this->setHeight( 24 /*m_pixmapInset.height()*/ );
 }
 
 HostListItem::~HostListItem()
 {
 }
+
+int HostListItem::volumeAtPosition( int x )
+{
+  if( x > 106 )
+    return 100;
+  else if ( x < 6 )
+    return -100;
+  else
+    return (x - 56) * 2;
+}
+
 
 void HostListItem::updateColumn( int column ) const
 {
@@ -111,6 +130,100 @@ void HostListItem::paintCell(QPainter * p, const QColorGroup & cg, int column, i
     }
     p->setFont( font );
   }
+  else if( column == HostListItem::Volume )
+  {
+    QPixmap buf( width, height() );
+    QColor bg = listView()->viewport()->backgroundColor();
+    buf.fill( bg );
+
+    bitBlt( &buf, 0, 0, pixmapVolume( PixInset ) );
+
+    // Draw gradient
+    static int padding = 7;
+    static int vol; // pixelposition
+    if( this == ((HostList*)listView())->m_hoveredVolume )
+    {
+      vol = listView()->viewportToContents( listView()->viewport()->mapFromGlobal( QCursor::pos() ) ).x();
+      vol -= listView()->header()->sectionPos( HostListItem::Volume );
+    }
+    else
+      vol = (m_volume / 2) + 56;
+
+    //std::cerr << "rel vol = " << vol << std::endl;
+
+    static int center = 56;
+    if( vol > center ) {
+      bitBlt( &buf, 0, 0, pixmapVolume( PixRight ), 0, 0, vol + 1 /* TODO: why + 1??? */ );
+    }
+    else if ( vol < center ) {
+      bitBlt( &buf, vol, 0, pixmapVolume( PixLeft ), vol, 0, 56 );
+    }
+    else
+    {}
+
+    // Calculate actual volume string from pixelposition
+    vol = volumeAtPosition( vol );
+    QString vol_text; 
+    if( vol > 0 )
+      vol_text = "+";
+    vol_text += QString::number( vol );
+    vol_text += "%";
+
+    // Draw relative volume number
+    QPainter p_number(&buf);
+    p_number.setPen( cg.buttonText() );
+    QFont font;
+    font.setPixelSize( 9 );
+    p_number.setFont( font );
+    const QRect rect( 40, 0, 34, 15 );
+    p_number.drawText( rect, Qt::AlignRight | Qt::AlignVCenter, vol_text );
+    p_number.end();
+    //bitBlt( p_number.device(), 0, 0, &buf );
+
+    p->drawPixmap( 0, 0, buf );
+    return;
+  }
 
   KListViewItem::paintCell(p, m_cg, column, width, align);
+}
+
+QPixmap* HostListItem::pixmapVolume( int type )
+{
+  if( type == PixInset ) 
+  {
+    static QPixmap m_pixmapInset( locate( "data", "amarok/images/nmm-volume-inset.png" ) );
+    return &m_pixmapInset; 
+  }
+  else if( type == PixRight )
+  {
+    static QPixmap m_pixmapGradientRight = generateGradient( PixRight );
+    return &m_pixmapGradientRight;
+  }
+  else if ( type == PixLeft ) 
+  {
+    static QPixmap m_pixmapGradientLeft = generateGradient( PixLeft );
+    return &m_pixmapGradientLeft;
+  }
+
+  return 0;
+}
+
+QPixmap HostListItem::generateGradient( int type )
+{
+  QPixmap temp;
+  
+  if( type == PixRight )
+    temp = QPixmap( locate( "data", "amarok/images/nmm-gradient-right.png" ) );
+  else // PixLeft
+    temp = QPixmap( locate( "data", "amarok/images/nmm-gradient-left.png" ) );
+  const QBitmap mask( temp.createHeuristicMask() );
+
+  KPixmap result = QPixmap( 113, 24 );
+  if( type == PixRight)
+    KPixmapEffect::gradient( result, listView()->colorGroup().background(), listView()->colorGroup().highlight(), KPixmapEffect::HorizontalGradient );
+  else
+    KPixmapEffect::gradient( result, listView()->colorGroup().highlight(), listView()->colorGroup().background(), KPixmapEffect::HorizontalGradient );
+
+  result.setMask( mask);
+  return result;
 }

@@ -1,6 +1,12 @@
 nmmicondir = $(kde_datadir)/amarok/icons
 nmmicon_ICON = AUTO
 
+imagesdir = $(kde_datadir)/amarok/images
+images_DATA = \
+    nmm-gradient-left.png \
+    nmm-gradient-right.png \
+    nmm-volume-inset.png
+
 kde_module_LTLIBRARIES = \
     libamarok_nmmengine_plugin.la
 

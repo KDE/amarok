@@ -24,6 +24,7 @@
 
 #include "HostList.h"
 
+#include <qcursor.h>
 #include <qheader.h>
 #include <klocale.h>
 
@@ -32,7 +33,8 @@
 
 HostList::HostList( QWidget *parent, const char *name ) 
   : KListView( parent, name ),
-    m_read_only( false )
+    m_read_only( false ),
+    m_hoveredVolume(0)
 {
   // TODO: item should be activated on mouse click
   setMouseTracking( true );
@@ -41,7 +43,8 @@ HostList::HostList( QWidget *parent, const char *name )
   addColumn( i18n("Hostname") );
   addColumn( i18n("Video"   ) );
   addColumn( i18n("Audio"   ) );
-  addColumn( i18n("Volume"  ) );
+  addColumn( i18n("Volume"  ), 113 );
+  header()->setResizeEnabled(FALSE, 3);
   addColumn( i18n("Status"  ) );
 
   setColumnAlignment( HostListItem::Hostname, Qt::AlignCenter );
@@ -102,11 +105,51 @@ void HostList::contentsMousePressEvent( QMouseEvent *e)
     {
       item->statusToolTip();
     }
+    else // set new volume for item
+    if( e->pos().x() > header()->sectionPos( HostListItem::Volume ) &&
+        e->pos().x() < header()->sectionPos( HostListItem::Volume ) + header()->sectionSize( HostListItem::Volume ) )
+    {
+      int vol = e->pos().x();
+      vol -= header()->sectionPos( HostListItem::Volume );
+      item->setVolume( item->volumeAtPosition( vol ) );
+    }
     else 
       KListView::contentsMousePressEvent( e );
   }
   else
     KListView::contentsMousePressEvent( e );
+}
+
+void HostList::contentsMouseMoveEvent( QMouseEvent *e )
+{
+  if( e )
+    KListView::contentsMouseMoveEvent( e );
+
+    HostListItem *prev = m_hoveredVolume;
+    const QPoint pos = e ? e->pos() : viewportToContents( viewport()->mapFromGlobal( QCursor::pos() ) );
+
+    HostListItem *item = static_cast<HostListItem*>( itemAt( contentsToViewport( pos ) ) );
+    if( item && pos.x() > header()->sectionPos( HostListItem::Volume ) &&
+        pos.x() < header()->sectionPos( HostListItem::Volume ) + header()->sectionSize( HostListItem::Volume ) )
+    {
+        m_hoveredVolume = item;
+        m_hoveredVolume->updateColumn( HostListItem::Volume );
+    }
+    else
+        m_hoveredVolume = 0;
+
+    if( prev )
+      prev->updateColumn( HostListItem::Volume );
+}
+
+void HostList::leaveEvent( QEvent *e )
+{
+  KListView::leaveEvent( e );
+
+  HostListItem *prev = m_hoveredVolume;
+  m_hoveredVolume = 0;
+  if( prev )
+    prev->updateColumn( HostListItem::Volume );
 }
 
 #include "HostList.moc"
