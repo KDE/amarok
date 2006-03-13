@@ -3076,18 +3076,6 @@ Playlist::shuffle() //SLOT
 
     setSorting( NO_SORT );
 
-    //if there are nexttracks re-order them
-    if( !m_nextTracks.isEmpty() ) {
-        for( PlaylistItem *item = m_nextTracks.first(); item; item = m_nextTracks.next() ) {
-            takeItem( item );
-            insertItem( item );
-        }
-
-        updateNextPrev();
-
-        return;
-    }
-
     // shuffle only VISIBLE entries
     for( MyIt it( this ); *it; ++it )
         list.append( *it );

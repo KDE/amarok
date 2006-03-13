@@ -17,6 +17,7 @@ VERSION 1.4-beta3:
       Peter C. Ndikuwera <pndiku@gmail.com>. (BR 118304)
 
   BUGFIXES:
+    * Playlist couldn't be shuffled if queued items existed. (BR 120221)
     * Fixed renaming of Smart Playlists. (BR 122509)
     * Fixed some bugs with PostgreSQL and Smart Playlists. Patch by Peter C.
       Ndikuwera <pndiku@gmail.com>. (BR 123317)
