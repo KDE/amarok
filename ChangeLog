@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.4-beta3:
   FEATURES:
+    * Support for WAX playlists. (BR 120980)
     * Handle the Year tag when playing AudioCDs. Patch by Markus Kaufhold
       <M.Kaufhold@gmx.de>. (BR 123428)
     * Ignore 'The ' in artist names when sorting in the cover manager, as per

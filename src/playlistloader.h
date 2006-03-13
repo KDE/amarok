@@ -76,7 +76,7 @@ PlaylistFile::format( const QString &fileName )
     if( ext == "m3u" ) return M3U;
     if( ext == "pls" ) return PLS;
     if( ext == "ram" ) return RAM;
-    if( ext == "asx" ) return ASX;
+    if( ext == "asx" || ext == "wax" ) return ASX;
     if( ext == "xml" ) return XML;
 
     return Unknown;
