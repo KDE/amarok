@@ -100,6 +100,7 @@ PlaylistBrowserEntry::compare( QListViewItem* item, int col, bool ascending ) co
 PlaylistCategory::PlaylistCategory( QListView *parent, QListViewItem *after, const QString &t, bool isFolder )
     : PlaylistBrowserEntry( parent, after )
     , m_title( t )
+    , m_id( 0 )
     , m_folder( isFolder )
 {
     setDragEnabled( false );
@@ -114,6 +115,7 @@ PlaylistCategory::PlaylistCategory( QListView *parent, QListViewItem *after, con
 PlaylistCategory::PlaylistCategory( PlaylistCategory *parent, QListViewItem *after, const QString &t, bool isFolder )
     : PlaylistBrowserEntry( parent, after )
     , m_title( t )
+    , m_id( 0 )
     , m_folder( isFolder )
 {
     setDragEnabled( false );
@@ -127,6 +129,7 @@ PlaylistCategory::PlaylistCategory( PlaylistCategory *parent, QListViewItem *aft
 
 PlaylistCategory::PlaylistCategory( QListView *parent, QListViewItem *after, const QDomElement &xmlDefinition, bool isFolder )
     : PlaylistBrowserEntry( parent, after )
+    , m_id( 0 )
     , m_folder( isFolder )
 {
     setXml( xmlDefinition );
@@ -139,6 +142,7 @@ PlaylistCategory::PlaylistCategory( QListView *parent, QListViewItem *after, con
 
 PlaylistCategory::PlaylistCategory( PlaylistCategory *parent, QListViewItem *after, const QDomElement &xmlDefinition )
     : PlaylistBrowserEntry( parent, after )
+    , m_id( 0 )
     , m_folder( true )
 {
     setXml( xmlDefinition );
@@ -1630,6 +1634,9 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after, con
       , m_loading1( QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
       , m_loading2( QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
       , m_fetching( false )
+      , m_downloaded( false )
+      , m_onDisk( false )
+      , m_new( false )
 {
     const bool isAtom = ( feedType == ATOM );
     QString title = xml.namedItem( "title" ).toElement().text();
@@ -1718,6 +1725,9 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after, Pod
       , m_loading1( QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
       , m_loading2( QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
       , m_fetching( false )
+      , m_downloaded( false )
+      , m_onDisk( false )
+      , m_new( false )
 {
     m_localUrl = dynamic_cast<PodcastChannel*>(m_parent)->saveLocation();
 
@@ -1959,21 +1969,15 @@ PodcastEpisode::setLocalUrlBase( const QString &s )
 }
 
 void
-PodcastEpisode::setNew( bool n )
+PodcastEpisode::setNew( const bool &n )
 {
     m_new = n;
     updatePixmap();
 }
 
-void PodcastEpisode::setListened( bool n )
+void PodcastEpisode::setListened( const bool &n )
 {
     m_downloaded = n;
-//     if( n )
-//         m_xml.setAttribute("downloaded", "true"); //mark as downloaded in the xml
-//     else {
-//         m_xml.setAttribute("downloaded", "false");
-//         m_onDisk = false;
-//     }
     updatePixmap();
 }
 

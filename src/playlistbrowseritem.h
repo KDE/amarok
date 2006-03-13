@@ -123,6 +123,9 @@ class PlaylistCategory : public PlaylistBrowserEntry
 
         void  paintCell( QPainter*, const QColorGroup&, int, int, int );
 
+        void  setId( const int id ) { m_id = id; }
+        const int id() const { return m_id; }
+
         QDomElement xml();
 
         int   rtti() const { return RTTI; }
@@ -133,6 +136,7 @@ class PlaylistCategory : public PlaylistBrowserEntry
         void setXml( const QDomElement &xml );
 
         QString m_title;
+        int     m_id;
         bool    m_folder;
 };
 
@@ -237,11 +241,15 @@ class PodcastEpisode : public QObject, public PlaylistBrowserEntry
         const bool hasXml( const QDomNode &xml, const int feedType );
         QListViewItem *itemChannel() { return m_parent; }
 
-        void setNew( bool n = true );
-        bool isNew() { return m_new; }
-        void setListened( bool n = true );
-        bool hasDownloaded() { return m_downloaded; }
+        
+        const bool isNew()         const { return m_new; }
+        const bool hasDownloaded() const { return m_downloaded; }
+        
+        void setNew( const bool &n = true );
+        void setListened( const bool &n = true );
+        void setDownloaded( const bool &b ) { m_downloaded = b; updatePixmap(); }
 
+        // for convenience
         const KURL    url()         { return m_bundle.url(); }
         const QString title()       { return m_bundle.title(); }
         const QString author()      { return m_bundle.author(); }
@@ -250,7 +258,7 @@ class PodcastEpisode : public QObject, public PlaylistBrowserEntry
         const QString description() { return m_bundle.description(); }
         const QString guid()        { return m_bundle.guid(); }
         const int     duration()    { return m_bundle.duration(); }
-        const KURL    &localUrl()    { return m_localUrl; }
+        const KURL    &localUrl()   { return m_localUrl; }
         void  setLocalUrlBase( const QString &s );
 
         void  setup();
@@ -280,16 +288,8 @@ class PodcastEpisode : public QObject, public PlaylistBrowserEntry
         void stopAnimation();
         void updatePixmap();
 
-        QListViewItem *m_parent;        //podcast channel it belongs to
+        QListViewItem *m_parent;           //podcast channel it belongs to
         PodcastEpisodeBundle m_bundle;
-//         QString     m_author;
-//         QString     m_description;
-//         QString     m_date;
-//         QString     m_guid;  //unique identifier that should be available in the feed (RSS 2.0: guid ATOM: id)
-//         int         m_duration;
-//         QString     m_title;
-//         QString     m_type;
-//         KURL        m_url;                         //mp3 url
         KURL        m_localUrl;
         QString     m_localUrlString;      //convenience for QFile()
 

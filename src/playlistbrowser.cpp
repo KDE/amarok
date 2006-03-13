@@ -900,8 +900,6 @@ void PlaylistBrowser::loadPodcastsFromDatabase( PlaylistCategory *p )
 
     foreachType( QValueList<PodcastChannelBundle>, channels )
     {
-        debug() << "Adding podcast channel: " << (*it).title() << endl;
-
         channel  = new PodcastChannel( p, channel, *it );
         episodes = CollectionDB::instance()->getPodcastEpisodes( (*it).url() );
 
@@ -910,7 +908,6 @@ void PlaylistBrowser::loadPodcastsFromDatabase( PlaylistCategory *p )
         while( !episodes.isEmpty() )
         {
             bundle = episodes.first();
-            debug() << "\tAdding podcast episode: " << bundle.title() << endl;
             episode = new PodcastEpisode( channel, episode, bundle );
 
             episodes.pop_front();
@@ -1078,7 +1075,7 @@ bool PlaylistBrowser::deletePodcastItems()
 
     PodcastEpisode *item;
     for ( item = erasedItems.first(); item; item = erasedItems.next() )
-        item->setListened( false );
+        item->setDownloaded( false );
     return true;
 }
 
@@ -2408,7 +2405,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( "down" ), i18n( "&Download Media" ), GET );
-        menu.insertItem( SmallIconSet( "editdelete" ), i18n( "De&lete Podcast" ), DELETE );
+        menu.insertItem( SmallIconSet( "editdelete" ), i18n( "De&lete Downloaded Podcast" ), DELETE );
 
         menu.setItemEnabled( GET, !item->isOnDisk() );
         menu.setItemEnabled( DELETE, item->isOnDisk() );
@@ -2469,7 +2466,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
         while( parentCat->parent() )
             parentCat = parentCat->parent();
-
+        bool isPodcastFolder = false;
         if( item == m_coolStreams || item == m_smartDefaults ) return;
 
         if( item->isFolder() ) {
@@ -2492,6 +2489,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
         else if( parentCat == static_cast<QListViewItem*>(m_podcastCategory) )
         {
+            isPodcastFolder = true;
             menu.insertItem( SmallIconSet("edit_add"), i18n("Add Podcast..."), PODCAST );
             menu.insertSeparator();
             menu.insertItem( SmallIconSet("reload"), i18n("Refresh All Podcasts"), REFRESH );
@@ -2504,6 +2502,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         menu.insertItem( SmallIconSet("folder"), i18n("Create Sub-Folder"), CREATE );
 
         QListViewItem *tracker = 0;
+        PlaylistCategory *newFolder = 0;
         int c;
         QString name;
 
@@ -2558,7 +2557,13 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 if( c ) name = i18n("Folder %1").arg(c);
                 if( tracker == item->firstChild() && !isCategory( tracker ) ) tracker = 0;
 
-               (new PlaylistCategory( item, tracker, name, true ))->startRename( 0 );
+                newFolder = new PlaylistCategory( item, tracker, name, true );
+                newFolder->startRename( 0 );
+                if( isPodcastFolder )
+                {
+                    c = CollectionDB::instance()->addPodcastFolder( newFolder->text(0), item->id(), false );
+                    newFolder->setId( c );
+                }
 
                 break;
 

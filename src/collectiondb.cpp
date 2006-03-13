@@ -1532,8 +1532,6 @@ CollectionDB::addPodcastEpisode( const PodcastEpisodeBundle &episode )
     command += QString::number( duration ) + ",";
     command += episode.isNew() ? boolT() + " );" : boolF() + " );";
 
-    debug() << "Adding podcast episode: " << title << endl;
-
     //FIXME: currently there's no way to check if an INSERT query failed or not - always return true atm.
     // Now it might be possible as insert returns the rowid.
     insert( command, NULL );
@@ -1597,6 +1595,33 @@ CollectionDB::getPodcastEpisodes( const KURL &parent )
 
     return bundles;
 }
+
+// return newly created folder id
+int
+CollectionDB::addPodcastFolder( const QString &name, const int parent_id, const bool isOpen )
+{
+    QString command = QString( "INSERT INTO podcastfolders ( name, parent, isOpen ) VALUES ('" );
+    command += escapeString( name )   + "',";
+    command += QString::number( parent_id ) + ",";
+    command += isOpen ? boolT() + ");" : boolF() + ");";
+
+    debug() << "adding folder: " << command << endl;
+
+    insert( command, NULL );
+
+    command = QString( "SELECT id FROM podcastfolders WHERE name = '%1' AND parent = '%2';" )
+                       .arg( name ).arg( QString::number(parent_id) );
+    QStringList values = query( command );
+
+    debug() << "Returned id: " << values[0] << endl;
+    return values[0].toInt();
+}
+
+// bool
+// CollectionDB::deletePodcastEpisode( const PodcastEpisodeBundle &episode )
+// {
+//     QString command = "DELETE FROM podcastepisodes 
+// }
 
 bool
 CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
