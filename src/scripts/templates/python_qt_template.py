@@ -24,7 +24,7 @@ from time import sleep
 try:
     from qt import *
 except:
-    popen( "kdialog --sorry 'PyQt (Qt bindings for Python) is required for this script.'" )
+    os.popen( "kdialog --sorry 'PyQt (Qt bindings for Python) is required for this script.'" )
     raise
 
 
