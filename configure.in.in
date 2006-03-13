@@ -324,15 +324,20 @@ if test "$build_helix" != "no"; then
         build_helix=$HELIX_LIBS
         fi
     fi
-    else
-        HELIX_LIBS=`unset CDPATH; cd $build_helix && pwd`
+    else 
+        if test -n "$build_helix" -a -d "$build_helix"; then
+          HELIX_LIBS=`unset CDPATH; cd $build_helix && pwd`
+        else
+          HELIX_LIBS="$build_helix"
+        fi
     build_helix=$HELIX_LIBS
+        AC_MSG_RESULT([using $HELIX_LIBS])
     fi
 
     AC_DEFINE(HAVE_HELIX, 1, [have HELIX])
     if test "$build_helix" = "yes"; then
         HELIX_LIBS="/usr/local/RealPlayer"
-        echo "not found, using default dir"
+        AC_MSG_RESULT(["not found, using default dir"])
     fi
     AC_DEFINE_UNQUOTED(HELIX_LIBS, "${HELIX_LIBS}", [location of helix libs])
     if test "$PKGCONFIGFOUND" = "yes" ; then
