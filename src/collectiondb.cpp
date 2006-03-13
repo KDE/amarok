@@ -3148,7 +3148,7 @@ QStringList SqliteConnection::query( const QString& statement )
     sqlite3_stmt* stmt;
 
     //compile SQL program to virtual machine
-    error = sqlite3_prepare( m_db, statement.utf8(), statement.length(), &stmt, &tail );
+    error = sqlite3_prepare( m_db, statement.utf8(), -1, &stmt, &tail );
 
     if ( error != SQLITE_OK )
     {
@@ -3208,7 +3208,7 @@ int SqliteConnection::insert( const QString& statement, const QString& /* table 
     const char* tail;
     sqlite3_stmt* stmt;
     //compile SQL program to virtual machine
-    error = sqlite3_prepare( m_db, statement.utf8(), statement.length(), &stmt, &tail );
+    error = sqlite3_prepare( m_db, statement.utf8(), -1, &stmt, &tail );
 
     if ( error != SQLITE_OK )
     {
