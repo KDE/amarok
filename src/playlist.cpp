@@ -646,10 +646,7 @@ Playlist::addSpecialCustomTracks( uint songCount )
         if ( sql.find( QString("ORDER BY"), false ) == -1 )
         {
             QRegExp limit( "(LIMIT.*)?;$" );
-            if (CollectionDB::instance()->getType() == DbConnection::postgresql)
-                sql.replace( limit, QString(" ORDER BY RAND() OFFSET 0 LIMIT %1;").arg( songCount ) );
-            else
-                sql.replace( limit, QString(" ORDER BY RAND() LIMIT 0, %1;").arg( songCount ) );
+            sql.replace( limit, QString(" ORDER BY RAND() LIMIT %1 OFFSET 0;").arg( songCount ) );
         }
         else {
             // if we do not limit the sql, it takes a long time to populate for large collections
@@ -683,18 +680,12 @@ Playlist::addSpecialCustomTracks( uint songCount )
             if( findLocation == -1 )
             {
                 QRegExp limit( ";$" );
-                if (CollectionDB::instance()->getType() == DbConnection::postgresql)
-                  sql.replace( limit, QString(" OFFSET %1 LIMIT %2;" ).arg( first ).arg( songCount*35 ) );
-                else
-                  sql.replace( limit, QString(" LIMIT %1, %2;" ).arg( first ).arg( songCount*35 ) );
+                sql.replace( limit, QString(" LIMIT %1 OFFSET %2;" ).arg( songCount*35 ).arg( first ) );
                 useDirect = false;
             }
-            else {
-                if (CollectionDB::instance()->getType() == DbConnection::postgresql)
-                  sql.replace( limitSearch, QString(" OFFSET %1 LIMIT %2;" ).arg( first ).arg( songCount ) );
-                else
-                  sql.replace( limitSearch, QString("LIMIT %1, %2" ).arg( first ).arg( songCount ) );
-            }
+            else 
+                sql.replace( limitSearch, QString(" LIMIT %1 OFFSET %2;" ).arg( songCount ).arg( first ) );
+            
         }
         QStringList queryResult = CollectionDB::instance()->query( sql );
         QStringList items;
