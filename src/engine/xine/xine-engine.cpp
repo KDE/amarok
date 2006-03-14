@@ -1,6 +1,7 @@
 /***************************************************************************
- *   Copyright (C) 2005 Christophe Thommeret <hftom@free.fr>               *
+ *   Copyright (C) 2005   Christophe Thommeret <hftom@free.fr>             *
  *             (C) 2005   Ian Monroe <ian@monroe.nu>                       *
+ *             (C) 2005,6 Mark Kretschmann <markey@web.de>                 *
  *             (C) 2004,5 Max Howell <max.howell@methylblue.com>           *
  *             (C) 2003,4 J. Kofler <kaffeine@gmx.net>                     *
  *                                                                         *
@@ -943,7 +944,7 @@ Fader::run()
 bool XineEngine::metaDataForUrl(const KURL &url, Engine::SimpleMetaBundle &b)
 {
     if (url.protocol() == "cdda") {
- 	xine_stream_t* tmpstream = xine_stream_new(m_xine, NULL, NULL);
+        xine_stream_t* tmpstream = xine_stream_new(m_xine, NULL, NULL);
         if (xine_open(tmpstream, QFile::encodeName(url.url()))) {
             QString title = QString::fromUtf8(
                 xine_get_meta_info(tmpstream, XINE_META_INFO_TITLE));
@@ -987,10 +988,10 @@ bool XineEngine::getAudioCDContents(const QString &device, KURL::List &urls)
 
     if (!device.isNull()) {
         debug() << "xine-engine setting CD Device to: " << device << endl;
-	xine_cfg_entry_t config;
-	xine_config_lookup_entry(m_xine, "input.cdda_device", &config);
-	config.str_value = (char *)device.latin1();
-	xine_config_update_entry(m_xine, &config);
+        xine_cfg_entry_t config;
+        xine_config_lookup_entry(m_xine, "input.cdda_device", &config);
+        config.str_value = (char *)device.latin1();
+        xine_config_update_entry(m_xine, &config);
     }
 
     emit statusText(i18n("Getting AudioCD contents..."));
