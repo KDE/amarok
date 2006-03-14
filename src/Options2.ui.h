@@ -174,5 +174,10 @@ void Options2::uninstallPushButton_clicked()
 
 void Options2::styleComboBox_activated(const QString& s)
 {
-    uninstallPushButton->setEnabled ( s != "Default" );
+    bool disable = false;
+    QDir dir( amaroK::saveLocation( "themes/" ) + s );
+    if( !dir.exists() )
+        disable = true;
+    
+    uninstallPushButton->setEnabled ( !disable );
 }
