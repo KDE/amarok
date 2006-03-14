@@ -324,7 +324,7 @@ if test "$build_helix" != "no"; then
         build_helix=$HELIX_LIBS
         fi
     fi
-    else 
+    else
         if test -n "$build_helix" -a -d "$build_helix"; then
           HELIX_LIBS=`unset CDPATH; cd $build_helix && pwd`
         else
@@ -947,7 +947,7 @@ AM_CONDITIONAL(with_mp4v2, [test x$have_mp4v2 != xno ])
 # BEGIN DO_NOT_COMPILE CHECK
 ###############################################################################
 
-if test x$build_xine != xyes -a x$build_helix != xno; then
+if test x$build_xine = xno -a x$build_helix = xno; then
 
     DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
     no_engine=yes
