@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.4-beta3:
   FEATURES:
+    * Button to directly edit lyrics from the context browser. (BR 123515)
     * Support for SMIL playlists. (BR 121983)
     * Support for WAX playlists. (BR 120980)
     * Handle the Year tag when playing AudioCDs. Patch by Markus Kaufhold

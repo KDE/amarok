@@ -32,11 +32,15 @@ class TagDialog : public TagDialogBase
     public:
 
         enum Changes { NOCHANGE=0, SCORECHANGED=1, TAGSCHANGED=2, LYRICSCHANGED=4, RATINGCHANGED=8 };
+        enum Tabs { SUMMARYTAB, TAGSTAB, LYRICSTAB, STATSTAB };
 
         TagDialog( const KURL& url, QWidget* parent = 0 );
         TagDialog( const KURL::List list, QWidget* parent = 0 );
         TagDialog( const MetaBundle& mb, PlaylistItem* item, QWidget* parent = 0 );
         ~TagDialog();
+        
+        void setTab( int id );
+        
         friend class TagSelect;
 
     signals:

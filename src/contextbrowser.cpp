@@ -172,6 +172,7 @@ ContextBrowser::ContextBrowser( const char *name )
     m_lyricsToolBar = new Browser::ToolBar( m_lyricsTab );
     m_lyricsToolBar->setIconText( KToolBar::IconTextRight, false );
     m_lyricsToolBar->insertButton( "edit_add", LYRICS_ADD, true, i18n("Add") );
+    m_lyricsToolBar->insertButton( "edit", LYRICS_EDIT, true, i18n("Edit") );
     m_lyricsToolBar->insertButton( "find", LYRICS_SEARCH, true, i18n("Search") );
     m_lyricsToolBar->insertButton( "reload", LYRICS_REFRESH, true, i18n("Refresh") );
     m_lyricsToolBar->insertLineSeparator();
@@ -233,6 +234,7 @@ ContextBrowser::ContextBrowser( const char *name )
              this,               SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
 
     connect( m_lyricsToolBar->getButton( LYRICS_ADD ),     SIGNAL(clicked( int )), SLOT(lyricsAdd()) );
+    connect( m_lyricsToolBar->getButton( LYRICS_EDIT ),    SIGNAL(clicked( int )), SLOT(lyricsEdit()) );
     connect( m_lyricsToolBar->getButton( LYRICS_SEARCH ),  SIGNAL(clicked( int )), SLOT(lyricsSearch()) );
     connect( m_lyricsToolBar->getButton( LYRICS_REFRESH ), SIGNAL(clicked( int )), SLOT(lyricsRefresh()) );
     connect( m_lyricsToolBar->getButton( LYRICS_BROWSER ), SIGNAL(clicked( int )), SLOT(lyricsExternalPage()) );
@@ -2173,6 +2175,13 @@ ContextBrowser::lyricsAdd() //SLOT
     amaroK::invokeBrowser( m_lyricAddUrl );
 }
 
+void
+ContextBrowser::lyricsEdit() //SLOT
+{
+    TagDialog* dialog = new TagDialog( EngineController::instance()->bundle().url() );
+    dialog->setTab( TagDialog::LYRICSTAB );
+    dialog->show();
+}
 
 void
 ContextBrowser::lyricsSearch() //SLOT

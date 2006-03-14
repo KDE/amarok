@@ -84,6 +84,7 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         void contextHistoryBack();
 
         void lyricsAdd();
+        void lyricsEdit();
         void lyricsSearch();
         void lyricsRefresh();
         void lyricsExternalPage();
@@ -103,7 +104,7 @@ class ContextBrowser : public KTabWidget, public EngineObserver
 
     private:
         enum { CONTEXT_BACK, CONTEXT_FORWARD, CONTEXT_CURRENT, CONTEXT_HOME, CONTEXT_SEARCH };
-        enum { LYRICS_ADD, LYRICS_SEARCH, LYRICS_REFRESH, LYRICS_BROWSER };
+        enum { LYRICS_ADD, LYRICS_EDIT, LYRICS_SEARCH, LYRICS_REFRESH, LYRICS_BROWSER };
         enum { WIKI_BACK, WIKI_FORWARD, WIKI_ARTIST, WIKI_ALBUM, WIKI_TITLE, WIKI_BROWSER, WIKI_CONFIG };
         typedef enum {SHOW_ALBUM_NORMAL, SHOW_ALBUM_SCORE, SHOW_ALBUM_LEAST_PLAY} T_SHOW_ALBUM_TYPE;
         static const uint WIKI_MAX_HISTORY = 20;

@@ -90,6 +90,12 @@ TagDialog::~TagDialog()
     config->writeEntry( "CurrentTab", kTabWidget->currentPageIndex() );
 }
 
+void
+TagDialog::setTab( int id )
+{
+    kTabWidget->setCurrentPage( id );    
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE SLOTS
