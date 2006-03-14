@@ -20,6 +20,8 @@ VERSION 1.4-beta3:
       Peter C. Ndikuwera <pndiku@gmail.com>. (BR 118304)
 
   BUGFIXES:
+    * Fix preamp and frequency band scaling in the xine equalizer. Patch by
+      Tobias Knieper <webmaster@micekiller.de>. (BR 116633)
     * OSD text would not be stripped of empty lines.
     * Playlist couldn't be shuffled if queued items existed. (BR 120221)
     * Fixed renaming of Smart Playlists. (BR 122509)
