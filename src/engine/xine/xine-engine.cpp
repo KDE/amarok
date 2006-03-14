@@ -412,16 +412,16 @@ XineEngine::setEqualizerParameters( int preamp, const QValueList<int> &gains )
     m_intPreamp = preamp;
     QValueList<int>::ConstIterator it = gains.begin();
 
-    xine_set_param( m_stream, XINE_PARAM_EQ_30HZ, (*it)*0.49 + 50 );
-    xine_set_param( m_stream, XINE_PARAM_EQ_60HZ, (*++it)*0.49 + 50 );
-    xine_set_param( m_stream, XINE_PARAM_EQ_125HZ, (*++it)*0.49 + 50 );
-    xine_set_param( m_stream, XINE_PARAM_EQ_250HZ, (*++it)*0.49 + 50 );
-    xine_set_param( m_stream, XINE_PARAM_EQ_500HZ, (*++it)*0.49 + 50 );
-    xine_set_param( m_stream, XINE_PARAM_EQ_1000HZ, (*++it)*0.49 + 50 );
-    xine_set_param( m_stream, XINE_PARAM_EQ_2000HZ, (*++it)*0.49 + 50 );
-    xine_set_param( m_stream, XINE_PARAM_EQ_4000HZ, (*++it)*0.49 + 50 );
-    xine_set_param( m_stream, XINE_PARAM_EQ_8000HZ, (*++it)*0.49 + 50 );
-    xine_set_param( m_stream, XINE_PARAM_EQ_16000HZ, (*++it)*0.49 + 50 );
+    xine_set_param( m_stream, XINE_PARAM_EQ_30HZ,    int( (*it  )*0.49 + 50 ) );
+    xine_set_param( m_stream, XINE_PARAM_EQ_60HZ,    int( (*++it)*0.49 + 50 ) );
+    xine_set_param( m_stream, XINE_PARAM_EQ_125HZ,   int( (*++it)*0.49 + 50 ) );
+    xine_set_param( m_stream, XINE_PARAM_EQ_250HZ,   int( (*++it)*0.49 + 50 ) );
+    xine_set_param( m_stream, XINE_PARAM_EQ_500HZ,   int( (*++it)*0.49 + 50 ) );
+    xine_set_param( m_stream, XINE_PARAM_EQ_1000HZ,  int( (*++it)*0.49 + 50 ) );
+    xine_set_param( m_stream, XINE_PARAM_EQ_2000HZ,  int( (*++it)*0.49 + 50 ) );
+    xine_set_param( m_stream, XINE_PARAM_EQ_4000HZ,  int( (*++it)*0.49 + 50 ) );
+    xine_set_param( m_stream, XINE_PARAM_EQ_8000HZ,  int( (*++it)*0.49 + 50 ) );
+    xine_set_param( m_stream, XINE_PARAM_EQ_16000HZ, int( (*++it)*0.49 + 50 ) );
 
     m_preamp = ( preamp - 0.2 * preamp + 100 ) / 100.0;
     setVolume( m_volume );
