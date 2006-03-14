@@ -128,6 +128,8 @@ OSDWidget::determineMetrics( const uint M )
     const QSize max = QApplication::desktop()->screen( m_screen )->size() - margin;
 
     // If we don't do that, the boundingRect() might not be suitable for drawText() (Qt issue N67674)
+    m_text.replace( QRegExp(" +\n"), "\n" );
+    // remove consecutive line breaks
     m_text.replace( QRegExp("\n+"), "\n" );
 
     // The osd cannot be larger than the screen
