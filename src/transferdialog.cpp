@@ -1,5 +1,5 @@
 //
-// C++ Implementation: mediumpluginchooser
+// C++ Implementation: transferdialog 
 //
 // Description:
 //
