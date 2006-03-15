@@ -280,6 +280,967 @@ DO-NOT-IMPLEMENT (stuff that was rejected):
 
 BACKTRACES/DEBUG/VALGRIND:
 
+Valgrind log from Sander Zwier, 2006/3/15:
+
+==27957== Memcheck, a memory error detector.
+==27957== Copyright (C) 2002-2005, and GNU GPL'd, by Julian Seward et al.
+==27957== Using LibVEX rev 1367, a library for dynamic binary translation.
+==27957== Copyright (C) 2004-2005, and GNU GPL'd, by OpenWorks LLP.
+==27957== Using valgrind-3.0.1, a dynamic binary instrumentation framework.
+==27957== Copyright (C) 2000-2005, and GNU GPL'd, by Julian Seward et al.
+==27957==
+==27957== My PID = 27957, parent PID = 27240.  Prog and args are:
+==27957==    amarokapp
+==27957== For more details, rerun with: -v
+==27957==
+==27957== Syscall param write(buf) points to uninitialised byte(s)
+==27957==    at 0x1D588293: __write_nocancel (in /lib/tls/libpthread-2.3.6.so)
+==27957==    by 0x1D3AC32D: _X11TransSocketWrite (in /usr/lib/libX11.so.6.2.0)
+==27957==    by 0x1D3AC62E: _X11TransWrite (in /usr/lib/libX11.so.6.2.0)
+==27957==    by 0x1D3B1394: _XFlushInt (in /usr/lib/libX11.so.6.2.0)
+==27957==    by 0x1D3B14BC: _XReply (in /usr/lib/libX11.so.6.2.0)
+==27957==    by 0x1D397052: XInternAtom (in /usr/lib/libX11.so.6.2.0)
+==27957==    by 0x1D3AB8FA: XSetWMProperties (in /usr/lib/libX11.so.6.2.0)
+==27957==    by 0x1CE306CD: QWidget::create(unsigned long, bool, bool) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CEF721D: QWidget::QWidget(QWidget*, char const*, unsigned) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CADC547: KApplication::init(bool) (in /opt/kde/lib/libkdecore.so.4.2.0)
+==27957==    by 0x1CADE32E: KApplication::KApplication(bool, bool) (in /opt/kde/lib/libkdecore.so.4.2.0)
+==27957==    by 0x1BA75921: App::App() (app.cpp:94)
+==27957==  Address 0x1E4B580C is 252 bytes inside a block of size 16384 alloc'd
+==27957==    at 0x1B8FFD0E: calloc (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1D39C362: XOpenDisplay (in /usr/lib/libX11.so.6.2.0)
+==27957==    by 0x1CDFF757: qt_init_internal(int*, char**, _XDisplay*, unsigned long, unsigned long) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE00075: qt_init(int*, char**, QApplication::Type) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE671E0: QApplication::construct(int&, char**, QApplication::Type) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE6752A: QApplication::QApplication(int&, char**, bool) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CADE16D: KApplication::KApplication(bool, bool) (in /opt/kde/lib/libkdecore.so.4.2.0)
+==27957==    by 0x1BA75921: App::App() (app.cpp:94)
+==27957==    by 0x804D930: main (main.cpp:97)
+==27957==
+==27957== Syscall param write(buf) points to uninitialised byte(s)
+==27957==    at 0x1D5882BB: (within /lib/tls/libpthread-2.3.6.so)
+==27957==    by 0x1D3AC32D: _X11TransSocketWrite (in /usr/lib/libX11.so.6.2.0)
+==27957==    by 0x1D3AC62E: _X11TransWrite (in /usr/lib/libX11.so.6.2.0)
+==27957==    by 0x1D3B1394: _XFlushInt (in /usr/lib/libX11.so.6.2.0)
+==27957==    by 0x1D38D690: XFlush (in /usr/lib/libX11.so.6.2.0)
+==27957==    by 0x1CE2F20F: QWidget::setCursor(QCursor const&) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CF6CAC6: QDockWindowResizeHandle::setOrientation(Qt::Orientation) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CF6CB7A: QDockWindowResizeHandle::QDockWindowResizeHandle(Qt::Orientation, QWidget*, QDockWindow*, char const*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CF709DC: QDockWindow::init() (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CF715FB: QDockWindow::QDockWindow(QDockWindow::Place, QWidget*, char const*, unsigned, bool) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CFF1E8C: QToolBar::QToolBar(QString const&, QMainWindow*, QWidget*, bool, char const*, unsigned) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1C7FB333: KToolBar::KToolBar(QWidget*, char const*, bool, bool) (in /opt/kde/lib/libkdeui.so.4.2.0)
+==27957==  Address 0x1E4B6148 is 2616 bytes inside a block of size 16384 alloc'd
+==27957==    at 0x1B8FFD0E: calloc (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1D39C362: XOpenDisplay (in /usr/lib/libX11.so.6.2.0)
+==27957==    by 0x1CDFF757: qt_init_internal(int*, char**, _XDisplay*, unsigned long, unsigned long) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE00075: qt_init(int*, char**, QApplication::Type) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE671E0: QApplication::construct(int&, char**, QApplication::Type) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE6752A: QApplication::QApplication(int&, char**, bool) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CADE16D: KApplication::KApplication(bool, bool) (in /opt/kde/lib/libkdecore.so.4.2.0)
+==27957==    by 0x1BA75921: App::App() (app.cpp:94)
+==27957==    by 0x804D930: main (main.cpp:97)
+==27957==
+==27957== Syscall param writev(vector[...]) points to uninitialised byte(s)
+==27957==    at 0x1D832A34: do_writev (in /lib/tls/libc-2.3.6.so)
+==27957==    by 0x1D832AEA: writev (in /lib/tls/libc-2.3.6.so)
+==27957==    by 0x1D3AC3AD: _X11TransSocketWritev (in /usr/lib/libX11.so.6.2.0)
+==27957==    by 0x1D3AC68E: _X11TransWritev (in /usr/lib/libX11.so.6.2.0)
+==27957==    by 0x1D3B1AF1: _XSend (in /usr/lib/libX11.so.6.2.0)
+==27957==    by 0x1D3A1561: PutSubImage (in /usr/lib/libX11.so.6.2.0)
+==27957==    by 0x1D3A1772: XPutImage (in /usr/lib/libX11.so.6.2.0)
+==27957==    by 0x1CE195B8: QPixmap::convertFromImage(QImage const&, int) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CED4DAF: QPixmap::load(QString const&, char const*, int) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CED4E15: QPixmap::load(QString const&, char const*, QPixmap::ColorMode) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CED4E9A: QPixmap::QPixmap(QString const&, char const*, QPixmap::ColorMode) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1BC07C53: amaroK::VolumeSlider::VolumeSlider(QWidget*, unsigned) (sliderwidget.cpp:369)
+==27957==  Address 0x1E4B59B0 is 672 bytes inside a block of size 16384 alloc'd
+==27957==    at 0x1B8FFD0E: calloc (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1D39C362: XOpenDisplay (in /usr/lib/libX11.so.6.2.0)
+==27957==    by 0x1CDFF757: qt_init_internal(int*, char**, _XDisplay*, unsigned long, unsigned long) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE00075: qt_init(int*, char**, QApplication::Type) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE671E0: QApplication::construct(int&, char**, QApplication::Type) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE6752A: QApplication::QApplication(int&, char**, bool) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CADE16D: KApplication::KApplication(bool, bool) (in /opt/kde/lib/libkdecore.so.4.2.0)
+==27957==    by 0x1BA75921: App::App() (app.cpp:94)
+==27957==    by 0x804D930: main (main.cpp:97)
+==27957==
+==27957== Conditional jump or move depends on uninitialised value(s)
+==27957==    at 0x1BEC5983: KHTMLPart::clear() (in /opt/kde/lib/libkhtml.so.4.2.0)
+==27957==    by 0x1BEDEE64: KHTMLPart::begin(KURL const&, int, int) (in /opt/kde/lib/libkhtml.so.4.2.0)
+==27957==    by 0x1BB1FA64: HTMLView::set(QString const&) (htmlview.cpp:239)
+==27957==    by 0x1BACCEB7: ContextBrowser::showHome() (contextbrowser.cpp:932)
+==27957==    by 0x1BACCFCD: ContextBrowser::showCurrentTrack() (contextbrowser.cpp:1025)
+==27957==    by 0x1BACDD51: ContextBrowser::showContext(KURL const&, bool) (contextbrowser.cpp:1004)
+==27957==    by 0x1BAD0B2D: ContextBrowser::ContextBrowser(char const*) (contextbrowser.cpp:265)
+==27957==    by 0x1BBDFCEE: PlaylistWindow::init() (playlistwindow.cpp:370)
+==27957==    by 0x1BA75CB7: App::App() (app.cpp:134)
+==27957==    by 0x804D930: main (main.cpp:97)
+==27957==
+==27957== Conditional jump or move depends on uninitialised value(s)
+==27957==    at 0x1C51921B: KDirListerCache::listDir(KDirLister*, KURL const&, bool, bool) (in /opt/kde/lib/libkio.so.4.2.0)
+==27957==    by 0x1C51A64B: KDirLister::openURL(KURL const&, bool, bool) (in /opt/kde/lib/libkio.so.4.2.0)
+==27957==    by 0x1C5BF386: KDirOperator::connectView(KFileView*) (in /opt/kde/lib/libkio.so.4.2.0)
+==27957==    by 0x1C5BF524: KDirOperator::setView(KFileView*) (in /opt/kde/lib/libkio.so.4.2.0)
+==27957==    by 0x1C613166: KDirOperator::setView(KFile::FileView) (in /opt/kde/lib/libkio.so.4.2.0)
+==27957==    by 0x1C6132FA: KDirOperator::setMode(KFile::Mode) (in /opt/kde/lib/libkio.so.4.2.0)
+==27957==    by 0x1BB1299A: FileBrowser::FileBrowser(char const*, Medium*) (filebrowser.cpp:145)
+==27957==    by 0x1BBDFF93: PlaylistWindow::init() (playlistwindow.cpp:380)
+==27957==    by 0x1BA75CB7: App::App() (app.cpp:134)
+==27957==    by 0x804D930: main (main.cpp:97)
+==27957==
+==27957== Thread 13:
+==27957== Use of uninitialised value of size 4
+==27957==    at 0x1E1D1AF9: III_huffdecode (in /usr/lib/libmad.so.0.2.1)
+==27957==    by 0x1E1D3894: III_decode (in /usr/lib/libmad.so.0.2.1)
+==27957==    by 0x1E1D41AD: mad_layer_III (in /usr/lib/libmad.so.0.2.1)
+==27957==    by 0x1E1CD0BC: mad_frame_decode (in /usr/lib/libmad.so.0.2.1)
+==27957==    by 0x25887FD0: Player::processor() (player.cpp:276)
+==27957==    by 0x1D5C79D5: Geddei::Processor::run() (processor.cpp:909)
+==27957==    by 0x1CE5A304: QThreadInstance::start(void*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1D58323F: start_thread (in /lib/tls/libpthread-2.3.6.so)
+==27957==    by 0x1D83A03D: clone (in /lib/tls/libc-2.3.6.so)
+==27957==
+==27957== Use of uninitialised value of size 4
+==27957==    at 0x1E1D1B6C: III_huffdecode (in /usr/lib/libmad.so.0.2.1)
+==27957==    by 0x1E1D3894: III_decode (in /usr/lib/libmad.so.0.2.1)
+==27957==    by 0x1E1D41AD: mad_layer_III (in /usr/lib/libmad.so.0.2.1)
+==27957==    by 0x1E1CD0BC: mad_frame_decode (in /usr/lib/libmad.so.0.2.1)
+==27957==    by 0x25887FD0: Player::processor() (player.cpp:276)
+==27957==    by 0x1D5C79D5: Geddei::Processor::run() (processor.cpp:909)
+==27957==    by 0x1CE5A304: QThreadInstance::start(void*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1D58323F: start_thread (in /lib/tls/libpthread-2.3.6.so)
+==27957==    by 0x1D83A03D: clone (in /lib/tls/libc-2.3.6.so)
+==27957==
+==27957== Use of uninitialised value of size 4
+==27957==    at 0x1E1D1CB3: III_huffdecode (in /usr/lib/libmad.so.0.2.1)
+==27957==    by 0x1E1D3894: III_decode (in /usr/lib/libmad.so.0.2.1)
+==27957==    by 0x1E1D41AD: mad_layer_III (in /usr/lib/libmad.so.0.2.1)
+==27957==    by 0x1E1CD0BC: mad_frame_decode (in /usr/lib/libmad.so.0.2.1)
+==27957==    by 0x25887FD0: Player::processor() (player.cpp:276)
+==27957==    by 0x1D5C79D5: Geddei::Processor::run() (processor.cpp:909)
+==27957==    by 0x1CE5A304: QThreadInstance::start(void*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1D58323F: start_thread (in /lib/tls/libpthread-2.3.6.so)
+==27957==    by 0x1D83A03D: clone (in /lib/tls/libc-2.3.6.so)
+==27957==
+==27957== Thread 6:
+==27957== Syscall param ioctl(arg) contains uninitialised byte(s)
+==27957==    at 0x1D8325D9: ioctl (in /lib/tls/libc-2.3.6.so)
+==27957==    by 0x1E2B5491: snd_pcm_prepare (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x1E2B5542: snd_pcm_hw_params (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x22A72D29: ao_alsa_open (in /usr/lib/xine/plugins/1.1.1/xineplug_ao_out_alsa.so)
+==27957==    by 0x2260D57C: ao_change_settings (in /usr/lib/libxine.so.1.14.0)
+==27957== Warning: noted but unhandled ioctl 0x4140 with no size/direction hints
+==27957==    This could cause spurious value errors to appear.
+==27957==    See README_MISSING_SYSCALL_OR_IOCTL for guidance on writing a proper wrapper.
+==27957==
+==27957== Thread 5:
+==27957== Syscall param ioctl(arg) contains uninitialised byte(s)
+==27957==    at 0x1D8325D9: ioctl (in /lib/tls/libc-2.3.6.so)
+==27957==    by 0x1E2B5491: snd_pcm_prepare (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x22A732DB: ao_alsa_write (in /usr/lib/xine/plugins/1.1.1/xineplug_ao_out_alsa.so)
+==27957==    by 0x22611396: ao_loop (in /usr/lib/libxine.so.1.14.0)
+==27957== Warning: noted but unhandled ioctl 0x4140 with no size/direction hints
+==27957==    This could cause spurious value errors to appear.
+==27957==    See README_MISSING_SYSCALL_OR_IOCTL for guidance on writing a proper wrapper.
+==27957==
+==27957== Thread 35:
+==27957== Conditional jump or move depends on uninitialised value(s)
+==27957==    at 0x1D48F2DB: longest_match (in /usr/lib/libz.so.1.2.3)
+==27957==    by 0x1D48FDAF: deflate_slow (in /usr/lib/libz.so.1.2.3)
+==27957==    by 0x1D48E058: deflate (in /usr/lib/libz.so.1.2.3)
+==27957==    by 0x1D343943: png_write_finish_row (in /usr/lib/libpng.so.3.1.2.8)
+==27957==    by 0x1D343FA3: png_write_filtered_row (in /usr/lib/libpng.so.3.1.2.8)
+==27957==    by 0x1D3449A5: png_write_find_filter (in /usr/lib/libpng.so.3.1.2.8)
+==27957==    by 0x1D34C14D: png_write_row (in /usr/lib/libpng.so.3.1.2.8)
+==27957==    by 0x1D34C284: png_write_image (in /usr/lib/libpng.so.3.1.2.8)
+==27957==    by 0x1CBB6B24: QPNGImageWriter::writeImage(QImage const&, int, int, int) (in /opt/qt/plugins/imageformats/libqpng.so)
+==27957==    by 0x1CBB6FAD: (within /opt/qt/plugins/imageformats/libqpng.so)
+==27957==    by 0x1CE9302B: QImageIO::write() (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE9327F: QImage::doImageIO(QImageIO*, int) const (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==
+==27957== Conditional jump or move depends on uninitialised value(s)
+==27957==    at 0x1D48F2CC: longest_match (in /usr/lib/libz.so.1.2.3)
+==27957==    by 0x1D48FDAF: deflate_slow (in /usr/lib/libz.so.1.2.3)
+==27957==    by 0x1D48E058: deflate (in /usr/lib/libz.so.1.2.3)
+==27957==    by 0x1D343943: png_write_finish_row (in /usr/lib/libpng.so.3.1.2.8)
+==27957==    by 0x1D343FA3: png_write_filtered_row (in /usr/lib/libpng.so.3.1.2.8)
+==27957==    by 0x1D3449A5: png_write_find_filter (in /usr/lib/libpng.so.3.1.2.8)
+==27957==    by 0x1D34C14D: png_write_row (in /usr/lib/libpng.so.3.1.2.8)
+==27957==    by 0x1D34C284: png_write_image (in /usr/lib/libpng.so.3.1.2.8)
+==27957==    by 0x1CBB6B24: QPNGImageWriter::writeImage(QImage const&, int, int, int) (in /opt/qt/plugins/imageformats/libqpng.so)
+==27957==    by 0x1CBB6FAD: (within /opt/qt/plugins/imageformats/libqpng.so)
+==27957==    by 0x1CE9302B: QImageIO::write() (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE9327F: QImage::doImageIO(QImageIO*, int) const (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==
+==27957== Conditional jump or move depends on uninitialised value(s)
+==27957==    at 0x1D48F293: longest_match (in /usr/lib/libz.so.1.2.3)
+==27957==    by 0x1D48FDAF: deflate_slow (in /usr/lib/libz.so.1.2.3)
+==27957==    by 0x1D48E058: deflate (in /usr/lib/libz.so.1.2.3)
+==27957==    by 0x1D343943: png_write_finish_row (in /usr/lib/libpng.so.3.1.2.8)
+==27957==    by 0x1D343FA3: png_write_filtered_row (in /usr/lib/libpng.so.3.1.2.8)
+==27957==    by 0x1D3449A5: png_write_find_filter (in /usr/lib/libpng.so.3.1.2.8)
+==27957==    by 0x1D34C14D: png_write_row (in /usr/lib/libpng.so.3.1.2.8)
+==27957==    by 0x1D34C284: png_write_image (in /usr/lib/libpng.so.3.1.2.8)
+==27957==    by 0x1CBB6B24: QPNGImageWriter::writeImage(QImage const&, int, int, int) (in /opt/qt/plugins/imageformats/libqpng.so)
+==27957==    by 0x1CBB6FAD: (within /opt/qt/plugins/imageformats/libqpng.so)
+==27957==    by 0x1CE9302B: QImageIO::write() (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE9327F: QImage::doImageIO(QImageIO*, int) const (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==
+==27957== Thread 1:
+==27957== Invalid read of size 4
+==27957==    at 0x1CE6E03C: QColor::hsv(int*, int*, int*) const (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1BA76BA3: QColor::getHsv(int*, int*, int*) const (qcolor.h:103)
+==27957==    by 0x1BC072A0: amaroK::TrackSlider::paintEvent(QPaintEvent*) (sliderwidget.cpp:249)
+==27957==    by 0x1CEF9F73: QWidget::event(QEvent*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE61840: QApplication::internalNotify(QObject*, QEvent*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE62218: QApplication::notify(QObject*, QEvent*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CAC6DAD: KApplication::notify(QObject*, QEvent*) (in /opt/kde/lib/libkdecore.so.4.2.0)
+==27957==    by 0x1CE3342B: QWidget::repaint(QRegion const&, bool) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE630EA: QApplication::sendPostedEvents(QObject*, int) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE631B3: QApplication::sendPostedEvents() (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE0FB4F: QEventLoop::processEvents(unsigned) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE78499: QEventLoop::processEvents(unsigned, int) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==  Address 0x3358CBE0 is 0 bytes after a block of size 2408 alloc'd
+==27957==    at 0x1B8FF149: operator new[](unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1BB525E8: QValueVectorPrivate<QColor>::insert(QColor*, unsigned, QColor const&) (qvaluevector.h:196)
+==27957==    by 0x1BB52964: QValueVector<QColor>::insert(QColor*, unsigned, QColor const&) (qvaluevector.h:534)
+==27957==    by 0x1BB52A08: QValueVector<QColor>::resize(unsigned, QColor const&) (qvaluevector.h:426)
+==27957==    by 0x1BC06C23: amaroK::TrackSlider::engineNewMetaData(MetaBundle const&, bool) (sliderwidget.cpp:315)
+==27957==    by 0x1BB05AA5: EngineSubject::newMetaDataNotify(MetaBundle const&, bool) (engineobserver.cpp:81)
+==27957==    by 0x1BB023D5: EngineController::play(MetaBundle const&) (enginecontroller.cpp:351)
+==27957==    by 0x1BB836F3: Playlist::activate(QListViewItem*) (playlist.cpp:1646)
+==27957==    by 0x1BB86836: Playlist::playCurrentTrack() (playlist.cpp:1306)
+==27957==    by 0x1BB8D54F: Playlist::qt_invoke(int, QUObject*) (playlist.moc:402)
+==27957==    by 0x1CEC0678: QObject::activate_signal(QConnectionList*, QUObject*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CEC0B0F: QObject::activate_signal(int) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==
+==27957== Thread 5:
+==27957== Syscall param ioctl(arg) contains uninitialised byte(s)
+==27957==    at 0x1D8325D9: ioctl (in /lib/tls/libc-2.3.6.so)
+==27957==    by 0x1E2B5491: snd_pcm_prepare (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x22A73196: ao_alsa_write (in /usr/lib/xine/plugins/1.1.1/xineplug_ao_out_alsa.so)
+==27957==    by 0x22611396: ao_loop (in /usr/lib/libxine.so.1.14.0)
+==27957== Warning: noted but unhandled ioctl 0x4140 with no size/direction hints
+==27957==    This could cause spurious value errors to appear.
+==27957==    See README_MISSING_SYSCALL_OR_IOCTL for guidance on writing a proper wrapper.
+==27957==
+==27957== Syscall param ioctl(arg) contains uninitialised byte(s)
+==27957==    at 0x1D8325D9: ioctl (in /lib/tls/libc-2.3.6.so)
+==27957==    by 0x1E2B51D1: snd_pcm_drop (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x22A7379E: ao_alsa_ctrl (in /usr/lib/xine/plugins/1.1.1/xineplug_ao_out_alsa.so)
+==27957==
+==27957== Syscall param ioctl(arg) contains uninitialised byte(s)
+==27957==    at 0x1D8325D9: ioctl (in /lib/tls/libc-2.3.6.so)
+==27957==    by 0x1E2B5491: snd_pcm_prepare (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x22A737B3: ao_alsa_ctrl (in /usr/lib/xine/plugins/1.1.1/xineplug_ao_out_alsa.so)
+==27957==
+==27957== Thread 6:
+==27957== Syscall param ioctl(arg) contains uninitialised byte(s)
+==27957==    at 0x1D8325D9: ioctl (in /lib/tls/libc-2.3.6.so)
+==27957==    by 0x1E2B51D1: snd_pcm_drop (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x1E2BEEDA: snd_pcm_close (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x22A73320: ao_alsa_close (in /usr/lib/xine/plugins/1.1.1/xineplug_ao_out_alsa.so)
+==27957==
+==27957== Syscall param ioctl(arg) contains uninitialised byte(s)
+==27957==    at 0x1D8325D9: ioctl (in /lib/tls/libc-2.3.6.so)
+==27957==    by 0x1E2B5288: snd_pcm_hw_free (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x1E2D770C: snd_pcm_plug_hw_free (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x1E2B5288: snd_pcm_hw_free (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x1E2BEEE2: snd_pcm_close (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x22A73320: ao_alsa_close (in /usr/lib/xine/plugins/1.1.1/xineplug_ao_out_alsa.so)
+==27957==
+==27957== Thread 40:
+==27957== Conditional jump or move depends on uninitialised value(s)
+==27957==    at 0x1D48F29D: longest_match (in /usr/lib/libz.so.1.2.3)
+==27957==    by 0x1D48FDAF: deflate_slow (in /usr/lib/libz.so.1.2.3)
+==27957==    by 0x1D48E058: deflate (in /usr/lib/libz.so.1.2.3)
+==27957==    by 0x1D343943: png_write_finish_row (in /usr/lib/libpng.so.3.1.2.8)
+==27957==    by 0x1D343FA3: png_write_filtered_row (in /usr/lib/libpng.so.3.1.2.8)
+==27957==    by 0x1D3449A5: png_write_find_filter (in /usr/lib/libpng.so.3.1.2.8)
+==27957==    by 0x1D34C14D: png_write_row (in /usr/lib/libpng.so.3.1.2.8)
+==27957==    by 0x1D34C284: png_write_image (in /usr/lib/libpng.so.3.1.2.8)
+==27957==    by 0x1CBB6B24: QPNGImageWriter::writeImage(QImage const&, int, int, int) (in /opt/qt/plugins/imageformats/libqpng.so)
+==27957==    by 0x1CBB6FAD: (within /opt/qt/plugins/imageformats/libqpng.so)
+==27957==    by 0x1CE9302B: QImageIO::write() (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE9327F: QImage::doImageIO(QImageIO*, int) const (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==
+==27957== Thread 1:
+==27957== Conditional jump or move depends on uninitialised value(s)
+==27957==    at 0x1BB7F5DB: Playlist::saveXML(QString const&) (playlist.cpp:2943)
+==27957==    by 0x1BB7FB84: Playlist::saveState(QStringList&) (playlist.cpp:4161)
+==27957==    by 0x1BB7FBEE: Playlist::saveUndoState() (playlist.cpp:4131)
+==27957==    by 0x1BB7FC7C: Playlist::setSorting(int, bool) (playlist.cpp:2082)
+==27957==    by 0x1BB75839: Playlist::insertMediaInternal(KURL::List const&, PlaylistItem*, bool) (playlist.cpp:493)
+==27957==    by 0x1BB80F9B: Playlist::insertMedia(KURL::List, int) (playlist.cpp:486)
+==27957==    by 0x1BB82460: Playlist::addSpecialTracks(unsigned, int) (playlist.cpp:576)
+==27957==    by 0x1BB82DA3: Playlist::advancePartyTrack(PlaylistItem*) (playlist.cpp:1236)
+==27957==    by 0x1BB86702: Playlist::playNextTrack(bool) (playlist.cpp:1197)
+==27957==    by 0x1BB8D599: Playlist::qt_invoke(int, QUObject*) (playlist.moc:404)
+==27957==    by 0x1CEC0678: QObject::activate_signal(QConnectionList*, QUObject*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CEC110D: QObject::activate_signal_bool(int, bool) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==
+==27957== Thread 5:
+==27957== Conditional jump or move depends on uninitialised value(s)
+==27957==    at 0x1D48F317: longest_match (in /usr/lib/libz.so.1.2.3)
+==27957==    by 0x1D48FDAF: deflate_slow (in /usr/lib/libz.so.1.2.3)
+==27957==    by 0x1D48E058: deflate (in /usr/lib/libz.so.1.2.3)
+==27957==    by 0x1D343943: png_write_finish_row (in /usr/lib/libpng.so.3.1.2.8)
+==27957==    by 0x1D343FA3: png_write_filtered_row (in /usr/lib/libpng.so.3.1.2.8)
+==27957==    by 0x1D3449A5: png_write_find_filter (in /usr/lib/libpng.so.3.1.2.8)
+==27957==    by 0x1D34C14D: png_write_row (in /usr/lib/libpng.so.3.1.2.8)
+==27957==    by 0x1D34C284: png_write_image (in /usr/lib/libpng.so.3.1.2.8)
+==27957==    by 0x1CBB6B24: QPNGImageWriter::writeImage(QImage const&, int, int, int) (in /opt/qt/plugins/imageformats/libqpng.so)
+==27957==    by 0x1CBB6FAD: (within /opt/qt/plugins/imageformats/libqpng.so)
+==27957==    by 0x1CE9302B: QImageIO::write() (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE9327F: QImage::doImageIO(QImageIO*, int) const (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==
+==27957== Thread 1:
+==27957== Conditional jump or move depends on uninitialised value(s)
+==27957==    at 0x1BEC5983: KHTMLPart::clear() (in /opt/kde/lib/libkhtml.so.4.2.0)
+==27957==    by 0x1BEDEE64: KHTMLPart::begin(KURL const&, int, int) (in /opt/kde/lib/libkhtml.so.4.2.0)
+==27957==    by 0x1BB1FA64: HTMLView::set(QString const&) (htmlview.cpp:239)
+==27957==    by 0x1BAE274B: CurrentTrackJob::completeJob() (contextbrowser.cpp:960)
+==27957==    by 0x1BC3403D: ThreadWeaver::event(QEvent*) (threadweaver.cpp:158)
+==27957==    by 0x1CE61840: QApplication::internalNotify(QObject*, QEvent*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE6223E: QApplication::notify(QObject*, QEvent*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CAC6DAD: KApplication::notify(QObject*, QEvent*) (in /opt/kde/lib/libkdecore.so.4.2.0)
+==27957==    by 0x1CE63016: QApplication::sendPostedEvents(QObject*, int) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE631B3: QApplication::sendPostedEvents() (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE0FC7A: QEventLoop::processEvents(unsigned) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE78398: QEventLoop::enterLoop() (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==
+==27957== Conditional jump or move depends on uninitialised value(s)
+==27957==    at 0x1CF99FC6: QListBox::takeItem(QListBoxItem const*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CF9A2E7: QListBoxItem::~QListBoxItem() (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CF9AAFC: QListBoxText::~QListBoxText() (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1C860243: KCompletionBox::setItems(QStringList const&) (in /opt/kde/lib/libkdeui.so.4.2.0)
+==27957==    by 0x1C860641: KLineEdit::setCompletedItems(QStringList const&, bool) (in /opt/kde/lib/libkdeui.so.4.2.0)
+==27957==    by 0x1C86078C: KLineEdit::setCompletedItems(QStringList const&) (in /opt/kde/lib/libkdeui.so.4.2.0)
+==27957==    by 0x1C898AD8: KLineEdit::makeCompletion(QString const&) (in /opt/kde/lib/libkdeui.so.4.2.0)
+==27957==    by 0x1C899A70: KLineEdit::keyPressEvent(QKeyEvent*) (in /opt/kde/lib/libkdeui.so.4.2.0)
+==27957==    by 0x1CEF9D57: QWidget::event(QEvent*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CF8DC86: QLineEdit::event(QEvent*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE61840: QApplication::internalNotify(QObject*, QEvent*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE627B4: QApplication::notify(QObject*, QEvent*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==
+==27957== Conditional jump or move depends on uninitialised value(s)
+==27957==    at 0x1BEC5983: KHTMLPart::clear() (in /opt/kde/lib/libkhtml.so.4.2.0)
+==27957==    by 0x1BEE085A: KHTMLPart::~KHTMLPart() (in /opt/kde/lib/libkhtml.so.4.2.0)
+==27957==    by 0x1BB1CDDD: HTMLView::~HTMLView() (htmlview.cpp:46)
+==27957==    by 0x1C2CADEE: KParts::Part::slotWidgetDestroyed() (in /opt/kde/lib/libkparts.so.2.1.0)
+==27957==    by 0x1C2CAE51: KParts::Part::qt_invoke(int, QUObject*) (in /opt/kde/lib/libkparts.so.2.1.0)
+==27957==    by 0x1C2D3D03: KParts::ReadOnlyPart::qt_invoke(int, QUObject*) (in /opt/kde/lib/libkparts.so.2.1.0)
+==27957==    by 0x1BEEE662: KHTMLPart::qt_invoke(int, QUObject*) (in /opt/kde/lib/libkhtml.so.4.2.0)
+==27957==    by 0x1BB1FC3A: HTMLView::qt_invoke(int, QUObject*) (htmlview.moc:77)
+==27957==    by 0x1CEC05DB: QObject::activate_signal(QConnectionList*, QUObject*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CEC0B0F: QObject::activate_signal(int) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1D1F9488: QObject::destroyed() (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CEC2417: QObject::~QObject() (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==
+==27957== Conditional jump or move depends on uninitialised value(s)
+==27957==    at 0x1C51807B: KDirListerCache::forgetDirs(KDirLister*, KURL const&, bool) (in /opt/kde/lib/libkio.so.4.2.0)
+==27957==    by 0x1C51858E: KDirListerCache::forgetDirs(KDirLister*) (in /opt/kde/lib/libkio.so.4.2.0)
+==27957==    by 0x1C518EC4: KDirLister::~KDirLister() (in /opt/kde/lib/libkio.so.4.2.0)
+==27957==    by 0x1BB17F62: MyDirLister::~MyDirLister() (mydirlister.h:13)
+==27957==    by 0x1C5C2778: KDirOperator::~KDirOperator() (in /opt/kde/lib/libkio.so.4.2.0)
+==27957==    by 0x1BB54246: MyDirOperator::~MyDirOperator() (mydiroperator.h:12)
+==27957==    by 0x1CEF9BBE: QWidget::~QWidget() (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1D21C584: QVBox::~QVBox() (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CEF9BBE: QWidget::~QWidget() (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1BA935DE: QFrame::~QFrame() (qframe.h:48)
+==27957==    by 0x1BA93636: QHBox::~QHBox() (qhbox.h:49)
+==27957==    by 0x1BA9368E: QVBox::~QVBox() (qvbox.h:48)
+==27957== Warning: silly arg (-1) to malloc()
+==27957==
+==27957== ERROR SUMMARY: 817 errors from 26 contexts (suppressed: 303 from 5)
+==27957== malloc/free: in use at exit: 62324146 bytes in 90233 blocks.
+==27957== malloc/free: 13669853 allocs, 13579620 frees, 3261434163 bytes allocated.
+==27957== For counts of detected errors, rerun with: -v
+==27957== searching for pointers to 90233 not-freed blocks.
+==27957== checked 98845236 bytes.
+==27957==
+==27957==
+==27957== 1 bytes in 1 blocks are definitely lost in loss record 5 of 500
+==27957==    at 0x1B8FECA5: operator new(unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1BBDA0E6: PlaylistWindow::PlaylistWindow() (playlistwindow.cpp:115)
+==27957==    by 0x1BA75C71: App::App() (app.cpp:131)
+==27957==    by 0x804D930: main (main.cpp:97)
+==27957==
+==27957==
+==27957== 4 bytes in 1 blocks are definitely lost in loss record 19 of 500
+==27957==    at 0x1B8FE8A2: malloc (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1B8E9C20: _dl_map_object_from_fd (in /lib/ld-2.3.6.so)
+==27957==    by 0x1B8EAACA: _dl_map_object (in /lib/ld-2.3.6.so)
+==27957==    by 0x1B8EE195: openaux (in /lib/ld-2.3.6.so)
+==27957==    by 0x1B8EF50E: _dl_catch_error (in /lib/ld-2.3.6.so)
+==27957==    by 0x1B8EE787: _dl_map_object_deps (in /lib/ld-2.3.6.so)
+==27957==    by 0x1D86B4BA: dl_open_worker (in /lib/tls/libc-2.3.6.so)
+==27957==    by 0x1B8EF50E: _dl_catch_error (in /lib/ld-2.3.6.so)
+==27957==    by 0x1D86BD2A: _dl_open (in /lib/tls/libc-2.3.6.so)
+==27957==    by 0x1CBC5D27: dlopen_doit (in /lib/libdl-2.3.6.so)
+==27957==    by 0x1B8EF50E: _dl_catch_error (in /lib/ld-2.3.6.so)
+==27957==    by 0x1CBC633D: _dlerror_run (in /lib/libdl-2.3.6.so)
+==27957==
+==27957==
+==27957== 4 bytes in 1 blocks are definitely lost in loss record 23 of 500
+==27957==    at 0x1B8FECA5: operator new(unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1BC8AB36: registerTaglibPlugins() (tplugins.cpp:26)
+==27957==    by 0x804D941: main (main.cpp:103)
+==27957==
+==27957==
+==27957== 4 bytes in 1 blocks are definitely lost in loss record 24 of 500
+==27957==    at 0x1B8FECA5: operator new(unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1BC8AB16: registerTaglibPlugins() (tplugins.cpp:25)
+==27957==    by 0x804D941: main (main.cpp:103)
+==27957==
+==27957==
+==27957== 4 bytes in 1 blocks are definitely lost in loss record 25 of 500
+==27957==    at 0x1B8FECA5: operator new(unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1BC8AAF6: registerTaglibPlugins() (tplugins.cpp:24)
+==27957==    by 0x804D941: main (main.cpp:103)
+==27957==
+==27957==
+==27957== 4 bytes in 1 blocks are definitely lost in loss record 26 of 500
+==27957==    at 0x1B8FECA5: operator new(unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1BC8AAD6: registerTaglibPlugins() (tplugins.cpp:23)
+==27957==    by 0x804D941: main (main.cpp:103)
+==27957==
+==27957==
+==27957== 4 bytes in 1 blocks are definitely lost in loss record 27 of 500
+==27957==    at 0x1B8FECA5: operator new(unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1BC8AAB6: registerTaglibPlugins() (tplugins.cpp:22)
+==27957==    by 0x804D941: main (main.cpp:103)
+==27957==
+==27957==
+==27957== 8 bytes in 1 blocks are possibly lost in loss record 57 of 500
+==27957==    at 0x1B8FFD0E: calloc (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1E29EE72: snd_output_stdio_attach (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x22A7245E: ao_alsa_open (in /usr/lib/xine/plugins/1.1.1/xineplug_ao_out_alsa.so)
+==27957==    by 0x2260D57C: ao_change_settings (in /usr/lib/libxine.so.1.14.0)
+==27957==
+==27957==
+==27957== 20 bytes in 1 blocks are possibly lost in loss record 133 of 500
+==27957==    at 0x1B8FECA5: operator new(unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1D196041: QString::QString(char const*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1BA99C05: CollectionDB::getMyConnection() (collectiondb.cpp:2671)
+==27957==    by 0x1BA99CCA: CollectionDB::isConnected() (collectiondb.cpp:2716)
+==27957==    by 0x1BBF18A4: ScanController::doJob() (scancontroller.cpp:193)
+==27957==    by 0x1BC336B7: ThreadWeaver::Thread::run() (threadweaver.cpp:282)
+==27957==    by 0x1CE5A304: QThreadInstance::start(void*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1D58323F: start_thread (in /lib/tls/libpthread-2.3.6.so)
+==27957==    by 0x1D83A03D: clone (in /lib/tls/libc-2.3.6.so)
+==27957==
+==27957==
+==27957== 26 bytes in 1 blocks are possibly lost in loss record 182 of 500
+==27957==    at 0x1B8FF149: operator new[](unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1D1908AF: (within /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1D196033: QString::QString(char const*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1BA99C05: CollectionDB::getMyConnection() (collectiondb.cpp:2671)
+==27957==    by 0x1BA99CCA: CollectionDB::isConnected() (collectiondb.cpp:2716)
+==27957==    by 0x1BBF18A4: ScanController::doJob() (scancontroller.cpp:193)
+==27957==    by 0x1BC336B7: ThreadWeaver::Thread::run() (threadweaver.cpp:282)
+==27957==    by 0x1CE5A304: QThreadInstance::start(void*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1D58323F: start_thread (in /lib/tls/libpthread-2.3.6.so)
+==27957==    by 0x1D83A03D: clone (in /lib/tls/libc-2.3.6.so)
+==27957==
+==27957==
+==27957== 32 bytes in 1 blocks are possibly lost in loss record 193 of 500
+==27957==    at 0x1B8FECA5: operator new(unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1CEC3486: QObject::connectInternal(QObject const*, int, QObject const*, int, int) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CEC3D47: QObject::connect(QObject const*, char const*, QObject const*, char const*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1BA64017: QObject::connect(QObject const*, char const*, char const*) const (qobject.h:228)
+==27957==    by 0x1BC06B80: amaroK::TrackSlider::engineNewMetaData(MetaBundle const&, bool) (sliderwidget.cpp:307)
+==27957==    by 0x1BB05AA5: EngineSubject::newMetaDataNotify(MetaBundle const&, bool) (engineobserver.cpp:81)
+==27957==    by 0x1BB023D5: EngineController::play(MetaBundle const&) (enginecontroller.cpp:351)
+==27957==    by 0x1BB836F3: Playlist::activate(QListViewItem*) (playlist.cpp:1646)
+==27957==    by 0x1BB83D7C: Playlist::doubleClicked(QListViewItem*) (playlist.cpp:1552)
+==27957==    by 0x1BB8DAD6: Playlist::qt_invoke(int, QUObject*) (playlist.moc:440)
+==27957==    by 0x1CEC0678: QObject::activate_signal(QConnectionList*, QUObject*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1D20EF34: QListView::doubleClicked(QListViewItem*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==
+==27957==
+==27957== 41 bytes in 41 blocks are possibly lost in loss record 234 of 500
+==27957==    at 0x1B8FECA5: operator new(unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1D5AA6F0: Geddei::BufferData::BufferData(bool) (bufferdata.cpp:32)
+==27957==    by 0x1D5BAC59: Geddei::LLConnection::makeScratchElements(unsigned, bool) (llconnection.cpp:67)
+==27957==    by 0x1D5BE644: Geddei::LxConnection::makeScratchSamples(unsigned, bool) (lxconnection.cpp:43)
+==27957==    by 0x25888157: Player::processor() (player.cpp:298)
+==27957==    by 0x1D5C79D5: Geddei::Processor::run() (processor.cpp:909)
+==27957==    by 0x1CE5A304: QThreadInstance::start(void*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1D58323F: start_thread (in /lib/tls/libpthread-2.3.6.so)
+==27957==    by 0x1D83A03D: clone (in /lib/tls/libc-2.3.6.so)
+==27957==
+==27957==
+==27957== 214 (64 direct, 150 indirect) bytes in 4 blocks are definitely lost in loss record 266 of 500
+==27957==    at 0x1B8FECA5: operator new(unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1BA99C3C: CollectionDB::getMyConnection() (collectiondb.cpp:2672)
+==27957==    by 0x1BAA6878: CollectionDB::initialize() (collectiondb.cpp:2890)
+==27957==    by 0x1BAA8096: CollectionDB::CollectionDB() (collectiondb.cpp:114)
+==27957==    by 0x1BAA845B: CollectionDB::instance() (collectiondb.cpp:89)
+==27957==    by 0x1BB878E6: Playlist::Playlist(QWidget*) (playlist.cpp:214)
+==27957==    by 0x1BBDE4DF: PlaylistWindow::init() (playlistwindow.cpp:227)
+==27957==    by 0x1BA75CB7: App::App() (app.cpp:134)
+==27957==    by 0x804D930: main (main.cpp:97)
+==27957==
+==27957==
+==27957== 92 (44 direct, 48 indirect) bytes in 1 blocks are definitely lost in loss record 270 of 500
+==27957==    at 0x1B8FECA5: operator new(unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1BA75F0F: App::App() (app.cpp:177)
+==27957==    by 0x804D930: main (main.cpp:97)
+==27957==
+==27957==
+==27957== 216 bytes in 1 blocks are definitely lost in loss record 287 of 500
+==27957==    at 0x1B8FE8A2: malloc (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1D3DE565: _XimOpenIM (in /usr/lib/libX11.so.6.2.0)
+==27957==    by 0x1D3DE0AF: _XimRegisterIMInstantiateCallback (in /usr/lib/libX11.so.6.2.0)
+==27957==    by 0x1D3BE4C7: XRegisterIMInstantiateCallback (in /usr/lib/libX11.so.6.2.0)
+==27957==    by 0x1CDFF10A: qt_init_internal(int*, char**, _XDisplay*, unsigned long, unsigned long) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE00075: qt_init(int*, char**, QApplication::Type) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE671E0: QApplication::construct(int&, char**, QApplication::Type) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE6752A: QApplication::QApplication(int&, char**, bool) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CADE16D: KApplication::KApplication(bool, bool) (in /opt/kde/lib/libkdecore.so.4.2.0)
+==27957==    by 0x1BA75921: App::App() (app.cpp:94)
+==27957==    by 0x804D930: main (main.cpp:97)
+==27957==
+==27957==
+==27957== 288 bytes in 4 blocks are possibly lost in loss record 297 of 500
+==27957==    at 0x1B8FFD0E: calloc (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1B8F19C8: allocate_dtv (in /lib/ld-2.3.6.so)
+==27957==    by 0x1B8F1C3B: _dl_allocate_tls (in /lib/ld-2.3.6.so)
+==27957==    by 0x1D583894: pthread_create@@GLIBC_2.1 (in /lib/tls/libpthread-2.3.6.so)
+==27957==    by 0x1BCB960E: testThreadLockingBehavior (os_unix.c:477)
+==27957==    by 0x1BCB9802: findLockInfo (os_unix.c:538)
+==27957==    by 0x1BCB9C1D: sqlite3UnixOpenReadWrite (os_unix.c:722)
+==27957==    by 0x1BCBCDF3: sqlite3pager_open (pager.c:1616)
+==27957==    by 0x1BC9C350: sqlite3BtreeOpen (btree.c:1633)
+==27957==    by 0x1BCB88EA: sqlite3BtreeFactory (main.c:650)
+==27957==    by 0x1BCB8F30: openDatabase (main.c:844)
+==27957==    by 0x1BCB907D: sqlite3_open (main.c:895)
+==27957==
+==27957==
+==27957== 352 (64 direct, 288 indirect) bytes in 4 blocks are definitely lost in loss record 306 of 500
+==27957==    at 0x1B8FECA5: operator new(unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1BC33D13: ThreadWeaver::gimmeThread() (threadweaver.cpp:136)
+==27957==    by 0x1BC34478: ThreadWeaver::queueJob(ThreadWeaver::Job*) (threadweaver.cpp:68)
+==27957==    by 0x1BBBD260: PlaylistEntry::load() (playlistbrowseritem.cpp:362)
+==27957==    by 0x1BBBD962: PlaylistEntry::PlaylistEntry(QListViewItem*, QListViewItem*, QDomElement const&) (playlistbrowseritem.cpp:335)
+==27957==    by 0x1BBC1118: PlaylistCategory::setXml(QDomElement const&) (playlistbrowseritem.cpp:186)
+==27957==    by 0x1BBC1DD5: PlaylistCategory::PlaylistCategory(QListView*, QListViewItem*, QDomElement const&, bool) (playlistbrowseritem.cpp:135)
+==27957==    by 0x1BB96637: PlaylistBrowser::loadPlaylists() (playlistbrowser.cpp:1221)
+==27957==    by 0x1BBA6A10: PlaylistBrowser::PlaylistBrowser(char const*) (playlistbrowser.cpp:162)
+==27957==    by 0x1BAB84D4: PlaylistBrowser::instance() (playlistbrowser.h:88)
+==27957==    by 0x1BBDFE2F: PlaylistWindow::init() (playlistwindow.cpp:372)
+==27957==    by 0x1BA75CB7: App::App() (app.cpp:134)
+==27957==
+==27957==
+==27957== 1127 (1112 direct, 15 indirect) bytes in 139 blocks are definitely lost in loss record 344 of 500
+==27957==    at 0x1B8FECA5: operator new(unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1BF0B775: DOM::ElementMappingCache::add(QString const&, DOM::ElementImpl*) (in /opt/kde/lib/libkhtml.so.4.2.0)
+==27957==    by 0x1BF0B7D6: DOM::ElementImpl::addId(QString const&) (in /opt/kde/lib/libkhtml.so.4.2.0)
+==27957==    by 0x1BF31B76: DOM::HTMLImageElementImpl::addId(QString const&) (in /opt/kde/lib/libkhtml.so.4.2.0)
+==27957==    by 0x1BF15BBD: DOM::ElementImpl::updateId(DOM::DOMStringImpl*, DOM::DOMStringImpl*) (in /opt/kde/lib/libkhtml.so.4.2.0)
+==27957==    by 0x1BF15D95: DOM::ElementImpl::insertedIntoDocument() (in /opt/kde/lib/libkhtml.so.4.2.0)
+==27957==    by 0x1BF4A432: DOM::HTMLImageElementImpl::insertedIntoDocument() (in /opt/kde/lib/libkhtml.so.4.2.0)
+==27957==    by 0x1BF0AA3D: DOM::NodeBaseImpl::addChild(DOM::NodeImpl*) (in /opt/kde/lib/libkhtml.so.4.2.0)
+==27957==    by 0x1BF3D8BC: khtml::KHTMLParser::insertNode(DOM::NodeImpl*, bool) (in /opt/kde/lib/libkhtml.so.4.2.0)
+==27957==    by 0x1BF5991C: khtml::KHTMLParser::parseToken(khtml::Token*) (in /opt/kde/lib/libkhtml.so.4.2.0)
+==27957==    by 0x1BF59CB1: khtml::HTMLTokenizer::processToken() (in /opt/kde/lib/libkhtml.so.4.2.0)
+==27957==    by 0x1BF5B2B4: khtml::HTMLTokenizer::parseTag(khtml::TokenizerString&) (in /opt/kde/lib/libkhtml.so.4.2.0)
+==27957==
+==27957==
+==27957== 1478 (124 direct, 1354 indirect) bytes in 31 blocks are definitely lost in loss record 348 of 500
+==27957==    at 0x1B8FECA5: operator new(unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1BA99C14: CollectionDB::getMyConnection() (collectiondb.cpp:2671)
+==27957==    by 0x1BA99CCA: CollectionDB::isConnected() (collectiondb.cpp:2716)
+==27957==    by 0x1BBF18A4: ScanController::doJob() (scancontroller.cpp:193)
+==27957==    by 0x1BC336B7: ThreadWeaver::Thread::run() (threadweaver.cpp:282)
+==27957==    by 0x1CE5A304: QThreadInstance::start(void*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1D58323F: start_thread (in /lib/tls/libpthread-2.3.6.so)
+==27957==    by 0x1D83A03D: clone (in /lib/tls/libc-2.3.6.so)
+==27957==
+==27957==
+==27957== 216 (40 direct, 176 indirect) bytes in 1 blocks are definitely lost in loss record 353 of 500
+==27957==    at 0x1B8FECA5: operator new(unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1BB1223F: FileBrowser::FileBrowser(char const*, Medium*) (filebrowser.cpp:80)
+==27957==    by 0x1BBDFF93: PlaylistWindow::init() (playlistwindow.cpp:380)
+==27957==    by 0x1BA75CB7: App::App() (app.cpp:134)
+==27957==    by 0x804D930: main (main.cpp:97)
+==27957==
+==27957==
+==27957== 72 (48 direct, 24 indirect) bytes in 4 blocks are definitely lost in loss record 367 of 500
+==27957==    at 0x1B8FFD0E: calloc (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1E29EE92: snd_output_stdio_attach (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x22A7245E: ao_alsa_open (in /usr/lib/xine/plugins/1.1.1/xineplug_ao_out_alsa.so)
+==27957==    by 0x2260D57C: ao_change_settings (in /usr/lib/libxine.so.1.14.0)
+==27957==
+==27957==
+==27957== 52 bytes in 1 blocks are definitely lost in loss record 369 of 500
+==27957==    at 0x1B8FE8A2: malloc (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1D8C7E28: XftDrawCreateBitmap (in /usr/lib/libXft.so.2.1.2)
+==27957==    by 0x1CE1934C: QPixmap::convertFromImage(QImage const&, int) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CED434F: QPixmap::convertFromImage(QImage const&, QPixmap::ColorMode) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE6CF4E: QBitmap::operator=(QImage const&) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE19659: QPixmap::convertFromImage(QImage const&, int) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CED434F: QPixmap::convertFromImage(QImage const&, QPixmap::ColorMode) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CED4692: QPixmap::QPixmap(char const**) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1D087259: QIconView::QIconView(QWidget*, char const*, unsigned) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1C7DDC05: KIconView::KIconView(QWidget*, char const*, unsigned) (in /opt/kde/lib/libkdeui.so.4.2.0)
+==27957==    by 0x1C6161D2: KFileIconView::KFileIconView(QWidget*, char const*) (in /opt/kde/lib/libkio.so.4.2.0)
+==27957==    by 0x1C616FF6: KDirOperator::createView(QWidget*, KFile::FileView) (in /opt/kde/lib/libkio.so.4.2.0)
+==27957==
+==27957==
+==27957== 60 bytes in 3 blocks are possibly lost in loss record 371 of 500
+==27957==    at 0x1B8FE8A2: malloc (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1E29FCF7: snd_dlobj_cache_add (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x1E2A3F15: snd_ctl_open_noupdate (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x1E29CE33: open_ctl (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x1E29CFC0: snd_determine_driver (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x1E29A98C: snd_config_hook_load_for_all_cards (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x1E29ACFD: snd_config_hooks (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x1E29B928: snd_config_searcha_hooks (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x1E29BB70: snd_config_search_alias_hooks (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x1E29BC90: snd_config_search_definition (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x1E2B7B8E: snd_pcm_open_noupdate (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x22A7454A: open_plugin (in /usr/lib/xine/plugins/1.1.1/xineplug_ao_out_alsa.so)
+==27957==
+==27957==
+==27957== 60 bytes in 3 blocks are possibly lost in loss record 372 of 500
+==27957==    at 0x1B8FECA5: operator new(unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1D192D8C: QString::setLength(unsigned) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1D19A65E: QString::fromUtf8(char const*, int) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CA9454A: KLocale::translate_priv(char const*, char const*, char const**, int*) const (in /opt/kde/lib/libkdecore.so.4.2.0)
+==27957==    by 0x1CA9493F: KLocale::translate(char const*) const (in /opt/kde/lib/libkdecore.so.4.2.0)
+==27957==    by 0x1CA95D28: i18n(char const*) (in /opt/kde/lib/libkdecore.so.4.2.0)
+==27957==    by 0x1C58E183: KBookmarkMenu::addAddBookmark() (in /opt/kde/lib/libkio.so.4.2.0)
+==27957==    by 0x1C58E597: KBookmarkMenu::KBookmarkMenu(KBookmarkManager*, KBookmarkOwner*, KPopupMenu*, KActionCollection*, bool, bool, QString const&) (in /opt/kde/lib/libkio.so.4.2.0)
+==27957==    by 0x1BB21A45: KBookmarkHandler::KBookmarkHandler(KDirOperator*, KPopupMenu*) (kbookmarkhandler.cpp:39)
+==27957==    by 0x1BB134A5: FileBrowser::FileBrowser(char const*, Medium*) (filebrowser.cpp:208)
+==27957==    by 0x1BBDFF93: PlaylistWindow::init() (playlistwindow.cpp:380)
+==27957==    by 0x1BA75CB7: App::App() (app.cpp:134)
+==27957==
+==27957==
+==27957== 214 (60 direct, 154 indirect) bytes in 1 blocks are definitely lost in loss record 387 of 500
+==27957==    at 0x1B8FECA5: operator new(unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1BB50B83: amaroK::CreateMood::doJob() (moodbar.cpp:99)
+==27957==    by 0x1BC336B7: ThreadWeaver::Thread::run() (threadweaver.cpp:282)
+==27957==    by 0x1CE5A304: QThreadInstance::start(void*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1D58323F: start_thread (in /lib/tls/libpthread-2.3.6.so)
+==27957==    by 0x1D83A03D: clone (in /lib/tls/libc-2.3.6.so)
+==27957==
+==27957==
+==27957== 744 (288 direct, 456 indirect) bytes in 3 blocks are definitely lost in loss record 412 of 500
+==27957==    at 0x1B8FECA5: operator new(unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1BC06B33: amaroK::TrackSlider::engineNewMetaData(MetaBundle const&, bool) (sliderwidget.cpp:306)
+==27957==    by 0x1BB05AA5: EngineSubject::newMetaDataNotify(MetaBundle const&, bool) (engineobserver.cpp:81)
+==27957==    by 0x1BB023D5: EngineController::play(MetaBundle const&) (enginecontroller.cpp:351)
+==27957==    by 0x1BB836F3: Playlist::activate(QListViewItem*) (playlist.cpp:1646)
+==27957==    by 0x1BB83D7C: Playlist::doubleClicked(QListViewItem*) (playlist.cpp:1552)
+==27957==    by 0x1BB8DAD6: Playlist::qt_invoke(int, QUObject*) (playlist.moc:440)
+==27957==    by 0x1CEC0678: QObject::activate_signal(QConnectionList*, QUObject*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1D20EF34: QListView::doubleClicked(QListViewItem*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1C7CFC96: KListView::contentsMouseDoubleClickEvent(QMouseEvent*) (in /opt/kde/lib/libkdeui.so.4.2.0)
+==27957==    by 0x1CFD9E07: QScrollView::viewportMouseDoubleClickEvent(QMouseEvent*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CFD69E2: QScrollView::eventFilter(QObject*, QEvent*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==
+==27957==
+==27957== 562 (124 direct, 438 indirect) bytes in 1 blocks are definitely lost in loss record 414 of 500
+==27957==    at 0x1B8FECA5: operator new(unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1BB12280: FileBrowser::FileBrowser(char const*, Medium*) (filebrowser.cpp:81)
+==27957==    by 0x1BBDFF93: PlaylistWindow::init() (playlistwindow.cpp:380)
+==27957==    by 0x1BA75CB7: App::App() (app.cpp:134)
+==27957==    by 0x804D930: main (main.cpp:97)
+==27957==
+==27957==
+==27957== 1344 (128 direct, 1216 indirect) bytes in 1 blocks are definitely lost in loss record 417 of 500
+==27957==    at 0x1B8FECA5: operator new(unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1BB21A07: KBookmarkHandler::KBookmarkHandler(KDirOperator*, KPopupMenu*) (kbookmarkhandler.cpp:39)
+==27957==    by 0x1BB134A5: FileBrowser::FileBrowser(char const*, Medium*) (filebrowser.cpp:208)
+==27957==    by 0x1BBDFF93: PlaylistWindow::init() (playlistwindow.cpp:380)
+==27957==    by 0x1BA75CB7: App::App() (app.cpp:134)
+==27957==    by 0x804D930: main (main.cpp:97)
+==27957==
+==27957==
+==27957== 160 bytes in 6 blocks are possibly lost in loss record 419 of 500
+==27957==    at 0x1B8FFD0E: calloc (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x226261D3: xine_xmalloc (in /usr/lib/libxine.so.1.14.0)
+==27957==    by 0x696C2F71: ???
+==27957==
+==27957==
+==27957== 290 (100 direct, 190 indirect) bytes in 1 blocks are definitely lost in loss record 422 of 500
+==27957==    at 0x1B8FECA5: operator new(unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x2588BBC0: createFan (fan.cpp:63)
+==27957==    by 0x1D5DB875: QFactory<Geddei::SubProcessor>::createInstance(QString const&) (qfactory.h:44)
+==27957==    by 0x1D5DB8E4: QFactoryManager<Geddei::SubProcessor>::createInstance(QString const&) (qfactorymanager.h:84)
+==27957==    by 0x1D5DB909: QFactoryManager<Geddei::SubProcessor>::operator[](QString const&) (qfactorymanager.h:86)
+==27957==    by 0x1D5D96C0: Geddei::SubProcessorFactory::create(QString const&) (subprocessorfactory.cpp:62)
+==27957==    by 0x1D5D9719: Geddei::SubProcessorFactory::createDom(QString const&) (subprocessorfactory.cpp:70)
+==27957==    by 0x1BB5098B: amaroK::CreateMood::doJob() (moodbar.cpp:97)
+==27957==    by 0x1BC336B7: ThreadWeaver::Thread::run() (threadweaver.cpp:282)
+==27957==    by 0x1CE5A304: QThreadInstance::start(void*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1D58323F: start_thread (in /lib/tls/libpthread-2.3.6.so)
+==27957==    by 0x1D83A03D: clone (in /lib/tls/libc-2.3.6.so)
+==27957==
+==27957==
+==27957== 120 bytes in 1 blocks are possibly lost in loss record 423 of 500
+==27957==    at 0x1B8FECA5: operator new(unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x25869552: createFFT (fft.cpp:213)
+==27957==    by 0x1D5DB875: QFactory<Geddei::SubProcessor>::createInstance(QString const&) (qfactory.h:44)
+==27957==    by 0x1D5DB8E4: QFactoryManager<Geddei::SubProcessor>::createInstance(QString const&) (qfactorymanager.h:84)
+==27957==    by 0x1D5DB909: QFactoryManager<Geddei::SubProcessor>::operator[](QString const&) (qfactorymanager.h:86)
+==27957==    by 0x1D5D96C0: Geddei::SubProcessorFactory::create(QString const&) (subprocessorfactory.cpp:62)
+==27957==    by 0x1D5D9719: Geddei::SubProcessorFactory::createDom(QString const&) (subprocessorfactory.cpp:70)
+==27957==    by 0x1BB50789: amaroK::CreateMood::doJob() (moodbar.cpp:95)
+==27957==    by 0x1BC336B7: ThreadWeaver::Thread::run() (threadweaver.cpp:282)
+==27957==    by 0x1CE5A304: QThreadInstance::start(void*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1D58323F: start_thread (in /lib/tls/libpthread-2.3.6.so)
+==27957==    by 0x1D83A03D: clone (in /lib/tls/libc-2.3.6.so)
+==27957==
+==27957==
+==27957== 252 (104 direct, 148 indirect) bytes in 1 blocks are definitely lost in loss record 425 of 500
+==27957==    at 0x1B8FECA5: operator new(unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x258505A4: createMean (mean.cpp:55)
+==27957==    by 0x1D5DB875: QFactory<Geddei::SubProcessor>::createInstance(QString const&) (qfactory.h:44)
+==27957==    by 0x1D5DB8E4: QFactoryManager<Geddei::SubProcessor>::createInstance(QString const&) (qfactorymanager.h:84)
+==27957==    by 0x1D5DB909: QFactoryManager<Geddei::SubProcessor>::operator[](QString const&) (qfactorymanager.h:86)
+==27957==    by 0x1D5D96C0: Geddei::SubProcessorFactory::create(QString const&) (subprocessorfactory.cpp:62)
+==27957==    by 0x1D5D9719: Geddei::SubProcessorFactory::createDom(QString const&) (subprocessorfactory.cpp:70)
+==27957==    by 0x1BB50657: amaroK::CreateMood::doJob() (moodbar.cpp:94)
+==27957==    by 0x1BC336B7: ThreadWeaver::Thread::run() (threadweaver.cpp:282)
+==27957==    by 0x1CE5A304: QThreadInstance::start(void*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1D58323F: start_thread (in /lib/tls/libpthread-2.3.6.so)
+==27957==    by 0x1D83A03D: clone (in /lib/tls/libc-2.3.6.so)
+==27957==
+==27957==
+==27957== 260 bytes in 5 blocks are definitely lost in loss record 426 of 500
+==27957==    at 0x1B8FE8A2: malloc (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1D8C7D78: XftDrawCreate (in /usr/lib/libXft.so.2.1.2)
+==27957==    by 0x1CE16D19: QPixmap::init(int, int, int, bool, QPixmap::Optimization) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CED4297: QPixmap::operator=(QPixmap const&) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1BBC9D09: PlaylistItem::paintCell(QPainter*, QColorGroup const&, int, int, int) (playlistitem.cpp:709)
+==27957==    by 0x1CFA634A: QListView::drawContentsOffset(QPainter*, int, int, int, int, int, int) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CFD6046: QScrollView::viewportPaintEvent(QPaintEvent*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1C7BCDE3: KListView::viewportPaintEvent(QPaintEvent*) (in /opt/kde/lib/libkdeui.so.4.2.0)
+==27957==    by 0x1BB77E24: Playlist::viewportPaintEvent(QPaintEvent*) (playlist.cpp:2352)
+==27957==    by 0x1CFD69CE: QScrollView::eventFilter(QObject*, QEvent*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CFA2985: QListView::eventFilter(QObject*, QEvent*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1BB7F329: Playlist::eventFilter(QObject*, QEvent*) (playlist.cpp:2792)
+==27957==
+==27957==
+==27957== 774 (300 direct, 474 indirect) bytes in 3 blocks are definitely lost in loss record 428 of 500
+==27957==    at 0x1B8FECA5: operator new(unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x2585550C: createMagnitude (magnitude.cpp:63)
+==27957==    by 0x1D5DB875: QFactory<Geddei::SubProcessor>::createInstance(QString const&) (qfactory.h:44)
+==27957==    by 0x1D5DB8E4: QFactoryManager<Geddei::SubProcessor>::createInstance(QString const&) (qfactorymanager.h:84)
+==27957==    by 0x1D5DB909: QFactoryManager<Geddei::SubProcessor>::operator[](QString const&) (qfactorymanager.h:86)
+==27957==    by 0x1D5D96C0: Geddei::SubProcessorFactory::create(QString const&) (subprocessorfactory.cpp:62)
+==27957==    by 0x1D5D9719: Geddei::SubProcessorFactory::createDom(QString const&) (subprocessorfactory.cpp:70)
+==27957==    by 0x1D5C1A69: Geddei::SubFactoryCreator::newProcessor() const (multiprocessorcreator.cpp:28)
+==27957==    by 0x1D5C0E36: Geddei::MultiProcessor::doInit(QString const&, Geddei::ProcessorGroup*, Geddei::Properties const&) (multiprocessor.cpp:49)
+==27957==    by 0x1BB51BD0: Geddei::MultiProcessor::init(QString const&, Geddei::ProcessorGroup&, Geddei::Properties const&) (multiprocessor.h:125)
+==27957==    by 0x1BB50B05: amaroK::CreateMood::doJob() (moodbar.cpp:98)
+==27957==    by 0x1BC336B7: ThreadWeaver::Thread::run() (threadweaver.cpp:282)
+==27957==
+==27957==
+==27957== 352 (200 direct, 152 indirect) bytes in 1 blocks are definitely lost in loss record 429 of 500
+==27957==    at 0x1B8FECA5: operator new(unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x2586058A: createBark (bark.cpp:73)
+==27957==    by 0x1D5DB875: QFactory<Geddei::SubProcessor>::createInstance(QString const&) (qfactory.h:44)
+==27957==    by 0x1D5DB8E4: QFactoryManager<Geddei::SubProcessor>::createInstance(QString const&) (qfactorymanager.h:84)
+==27957==    by 0x1D5DB909: QFactoryManager<Geddei::SubProcessor>::operator[](QString const&) (qfactorymanager.h:86)
+==27957==    by 0x1D5D96C0: Geddei::SubProcessorFactory::create(QString const&) (subprocessorfactory.cpp:62)
+==27957==    by 0x1D5D9719: Geddei::SubProcessorFactory::createDom(QString const&) (subprocessorfactory.cpp:70)
+==27957==    by 0x1BB50859: amaroK::CreateMood::doJob() (moodbar.cpp:96)
+==27957==    by 0x1BC336B7: ThreadWeaver::Thread::run() (threadweaver.cpp:282)
+==27957==    by 0x1CE5A304: QThreadInstance::start(void*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1D58323F: start_thread (in /lib/tls/libpthread-2.3.6.so)
+==27957==    by 0x1D83A03D: clone (in /lib/tls/libc-2.3.6.so)
+==27957==
+==27957==
+==27957== 568 (28 direct, 540 indirect) bytes in 1 blocks are definitely lost in loss record 433 of 500
+==27957==    at 0x1B8FE8A2: malloc (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x225EB2D7: scope_port_put_buffer (xine-scope.c:78)
+==27957==    by 0x24404D16: vorbis_decode_data (in /usr/lib/xine/plugins/1.1.1/xineplug_decode_vorbis.so)
+==27957==
+==27957==
+==27957== 44 bytes in 1 blocks are possibly lost in loss record 434 of 500
+==27957==    at 0x1B8FE8A2: malloc (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1B8EF2A6: _dl_signal_error (in /lib/ld-2.3.6.so)
+==27957==    by 0x1B8EB094: _dl_map_object (in /lib/ld-2.3.6.so)
+==27957==    by 0x1B8EE195: openaux (in /lib/ld-2.3.6.so)
+==27957==    by 0x1B8EF50E: _dl_catch_error (in /lib/ld-2.3.6.so)
+==27957==    by 0x1B8EE787: _dl_map_object_deps (in /lib/ld-2.3.6.so)
+==27957==    by 0x1D86B4BA: dl_open_worker (in /lib/tls/libc-2.3.6.so)
+==27957==    by 0x1B8EF50E: _dl_catch_error (in /lib/ld-2.3.6.so)
+==27957==    by 0x1D86BD2A: _dl_open (in /lib/tls/libc-2.3.6.so)
+==27957==    by 0x1CBC5D27: dlopen_doit (in /lib/libdl-2.3.6.so)
+==27957==    by 0x1B8EF50E: _dl_catch_error (in /lib/ld-2.3.6.so)
+==27957==    by 0x1CBC633D: _dlerror_run (in /lib/libdl-2.3.6.so)
+==27957==
+==27957==
+==27957== 52 bytes in 1 blocks are possibly lost in loss record 437 of 500
+==27957==    at 0x1B8FE8A2: malloc (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1D8C7D78: XftDrawCreate (in /usr/lib/libXft.so.2.1.2)
+==27957==    by 0x1CE16D19: QPixmap::init(int, int, int, bool, QPixmap::Optimization) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CED4297: QPixmap::operator=(QPixmap const&) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1BBC9D09: PlaylistItem::paintCell(QPainter*, QColorGroup const&, int, int, int) (playlistitem.cpp:709)
+==27957==    by 0x1CFA660F: QListView::drawContentsOffset(QPainter*, int, int, int, int, int, int) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CFD6046: QScrollView::viewportPaintEvent(QPaintEvent*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1C7BCDE3: KListView::viewportPaintEvent(QPaintEvent*) (in /opt/kde/lib/libkdeui.so.4.2.0)
+==27957==    by 0x1BB77E24: Playlist::viewportPaintEvent(QPaintEvent*) (playlist.cpp:2352)
+==27957==    by 0x1CFD69CE: QScrollView::eventFilter(QObject*, QEvent*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CFA2985: QListView::eventFilter(QObject*, QEvent*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1BB7F329: Playlist::eventFilter(QObject*, QEvent*) (playlist.cpp:2792)
+==27957==
+==27957==
+==27957== 214 (60 direct, 154 indirect) bytes in 1 blocks are definitely lost in loss record 439 of 500
+==27957==    at 0x1B8FECA5: operator new(unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1BB50A55: amaroK::CreateMood::doJob() (moodbar.cpp:98)
+==27957==    by 0x1BC336B7: ThreadWeaver::Thread::run() (threadweaver.cpp:282)
+==27957==    by 0x1CE5A304: QThreadInstance::start(void*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1D58323F: start_thread (in /lib/tls/libpthread-2.3.6.so)
+==27957==    by 0x1D83A03D: clone (in /lib/tls/libc-2.3.6.so)
+==27957==
+==27957==
+==27957== 96 bytes in 1 blocks are possibly lost in loss record 440 of 500
+==27957==    at 0x1B8FECA5: operator new(unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1BBC8064: PlaylistItem::ReadMood::completeJob() (playlistitem.cpp:158)
+==27957==    by 0x1BC3403D: ThreadWeaver::event(QEvent*) (threadweaver.cpp:158)
+==27957==    by 0x1CE61840: QApplication::internalNotify(QObject*, QEvent*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE6223E: QApplication::notify(QObject*, QEvent*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CAC6DAD: KApplication::notify(QObject*, QEvent*) (in /opt/kde/lib/libkdecore.so.4.2.0)
+==27957==    by 0x1CE63016: QApplication::sendPostedEvents(QObject*, int) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE631B3: QApplication::sendPostedEvents() (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE0FC7A: QEventLoop::processEvents(unsigned) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE78499: QEventLoop::processEvents(unsigned, int) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE611FB: QApplication::processEvents(int) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE61235: QApplication::processEvents() (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==
+==27957==
+==27957== 112 bytes in 2 blocks are possibly lost in loss record 441 of 500
+==27957==    at 0x1B8FECA5: operator new(unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1D5A8899: Geddei::Buffer::Buffer(unsigned, Geddei::SignalType const*) (buffer.cpp:102)
+==27957==    by 0x1D5DC7FF: Geddei::xLConnectionReal::xLConnectionReal(Geddei::Sink*, unsigned, unsigned) (xlconnectionreal.cpp:28)
+==27957==    by 0x1D5BA9D2: Geddei::LLConnection::LLConnection(Geddei::Source*, unsigned, Geddei::Sink*, unsigned, unsigned) (llconnection.cpp:26)
+==27957==    by 0x1D5C485C: Geddei::Processor::connect(unsigned, Geddei::Sink*, unsigned, unsigned) (processor.cpp:733)
+==27957==    by 0x1D5DDC41: Geddei::ProcessorPort::connect(Geddei::ProcessorPort const&) const (processorport.cpp:22)
+==27957==    by 0x1D5C29F9: Geddei::ProcessorPort::operator>>=(Geddei::ProcessorPort const&) const (processorport.h:162)
+==27957==    by 0x1D5C2899: Geddei::MultiSource::connect(Geddei::MultiSink*, unsigned) (multisource.cpp:86)
+==27957==    by 0x1BB51993: Geddei::MultiSource::operator>>=(Geddei::MultiSink&) (multisource.h:100)
+==27957==    by 0x1BB5147B: amaroK::CreateMood::doJob() (moodbar.cpp:106)
+==27957==    by 0x1BC336B7: ThreadWeaver::Thread::run() (threadweaver.cpp:282)
+==27957==    by 0x1CE5A304: QThreadInstance::start(void*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==
+==27957==
+==27957== 609 bytes in 12 blocks are possibly lost in loss record 448 of 500
+==27957==    at 0x1B8FE8A2: malloc (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1D7E6DEF: strdup (in /lib/tls/libc-2.3.6.so)
+==27957==    by 0x2260359F: load_cached_catalog (in /usr/lib/libxine.so.1.14.0)
+==27957==    by 0x696C2F71: ???
+==27957==
+==27957==
+==27957== 1056 (672 direct, 384 indirect) bytes in 12 blocks are definitely lost in loss record 449 of 500
+==27957==    at 0x1B8FECA5: operator new(unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1D5A8899: Geddei::Buffer::Buffer(unsigned, Geddei::SignalType const*) (buffer.cpp:102)
+==27957==    by 0x1D5DC7FF: Geddei::xLConnectionReal::xLConnectionReal(Geddei::Sink*, unsigned, unsigned) (xlconnectionreal.cpp:28)
+==27957==    by 0x1D5BA9D2: Geddei::LLConnection::LLConnection(Geddei::Source*, unsigned, Geddei::Sink*, unsigned, unsigned) (llconnection.cpp:26)
+==27957==    by 0x1D5C485C: Geddei::Processor::connect(unsigned, Geddei::Sink*, unsigned, unsigned) (processor.cpp:733)
+==27957==    by 0x1D5DDC41: Geddei::ProcessorPort::connect(Geddei::ProcessorPort const&) const (processorport.cpp:22)
+==27957==    by 0x1D5C29F9: Geddei::ProcessorPort::operator>>=(Geddei::ProcessorPort const&) const (processorport.h:162)
+==27957==    by 0x1D5C2899: Geddei::MultiSource::connect(Geddei::MultiSink*, unsigned) (multisource.cpp:86)
+==27957==    by 0x1BB51993: Geddei::MultiSource::operator>>=(Geddei::MultiSink&) (multisource.h:100)
+==27957==    by 0x1BB510B5: amaroK::CreateMood::doJob() (moodbar.cpp:101)
+==27957==    by 0x1BC336B7: ThreadWeaver::Thread::run() (threadweaver.cpp:282)
+==27957==    by 0x1CE5A304: QThreadInstance::start(void*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==
+==27957==
+==27957== 3912 (1344 direct, 2568 indirect) bytes in 14 blocks are definitely lost in loss record 459 of 500
+==27957==    at 0x1B8FECA5: operator new(unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1BBC8064: PlaylistItem::ReadMood::completeJob() (playlistitem.cpp:158)
+==27957==    by 0x1BC3403D: ThreadWeaver::event(QEvent*) (threadweaver.cpp:158)
+==27957==    by 0x1CE61840: QApplication::internalNotify(QObject*, QEvent*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE6223E: QApplication::notify(QObject*, QEvent*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CAC6DAD: KApplication::notify(QObject*, QEvent*) (in /opt/kde/lib/libkdecore.so.4.2.0)
+==27957==    by 0x1CE63016: QApplication::sendPostedEvents(QObject*, int) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE631B3: QApplication::sendPostedEvents() (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE0FB4F: QEventLoop::processEvents(unsigned) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE78499: QEventLoop::processEvents(unsigned, int) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE611FB: QApplication::processEvents(int) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CE61235: QApplication::processEvents() (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==
+==27957==
+==27957== 2128 bytes in 10 blocks are possibly lost in loss record 463 of 500
+==27957==    at 0x1B8FF149: operator new[](unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1D192D3E: QString::setLength(unsigned) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1CA0F92A: KSycocaEntry::read(QDataStream&, QString&) (in /opt/kde/lib/libkdecore.so.4.2.0)
+==27957==    by 0x1C5668DC: KServiceType::KServiceType(QDataStream&, int) (in /opt/kde/lib/libkio.so.4.2.0)
+==27957==    by 0x1C566A62: KMimeType::KMimeType(QDataStream&, int) (in /opt/kde/lib/libkio.so.4.2.0)
+==27957==    by 0x1C566CE9: KServiceTypeFactory::createEntry(int) (in /opt/kde/lib/libkio.so.4.2.0)
+==27957==    by 0x1C506AE5: KServiceTypeFactory::findServiceTypeByName(QString const&) (in /opt/kde/lib/libkio.so.4.2.0)
+==27957==    by 0x1C54EEA0: KMimeType::mimeType(QString const&) (in /opt/kde/lib/libkio.so.4.2.0)
+==27957==    by 0x1C550F82: KMimeType::findByURL(KURL const&, unsigned, bool, bool) (in /opt/kde/lib/libkio.so.4.2.0)
+==27957==    by 0x1C55890B: KMimeType::findByURL(KURL const&, unsigned, bool, bool, bool*) (in /opt/kde/lib/libkio.so.4.2.0)
+==27957==    by 0x1C558B7D: KFileItem::init(bool) (in /opt/kde/lib/libkio.so.4.2.0)
+==27957==    by 0x1C559AFE: KFileItem::KFileItem(unsigned, unsigned, KURL const&, bool) (in /opt/kde/lib/libkio.so.4.2.0)
+==27957==
+==27957==
+==27957== 11138 (4156 direct, 6982 indirect) bytes in 169 blocks are definitely lost in loss record 467 of 500
+==27957==    at 0x1B8FFD0E: calloc (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x226261D3: xine_xmalloc (in /usr/lib/libxine.so.1.14.0)
+==27957==    by 0x225DD078: XineEngine::makeNewStream() (xine-engine.cpp:194)
+==27957==    by 0x225DDBA0: XineEngine::init() (xine-engine.cpp:147)
+==27957==    by 0x1BB02C91: EngineController::loadEngine(QString const&) (enginecontroller.cpp:176)
+==27957==    by 0x1BB02E58: EngineController::loadEngine() (enginecontroller.cpp:107)
+==27957==    by 0x1BA74267: App::applySettings(bool) (app.cpp:666)
+==27957==    by 0x1BA75E3D: App::App() (app.cpp:151)
+==27957==    by 0x804D930: main (main.cpp:97)
+==27957==
+==27957==
+==27957== 16760 bytes in 1 blocks are definitely lost in loss record 478 of 500
+==27957==    at 0x1B8FFE0D: realloc (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1E1A33D5: _vorbis_block_ripcord (in /usr/lib/libvorbis.so.0.3.1)
+==27957==    by 0x1E1A6F9C: vorbis_synthesis (in /usr/lib/libvorbis.so.0.3.1)
+==27957==    by 0x24404BC3: vorbis_decode_data (in /usr/lib/xine/plugins/1.1.1/xineplug_decode_vorbis.so)
+==27957==
+==27957==
+==27957== 18693 bytes in 18693 blocks are definitely lost in loss record 481 of 500
+==27957==    at 0x1B8FECA5: operator new(unsigned) (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1D5AA6F0: Geddei::BufferData::BufferData(bool) (bufferdata.cpp:32)
+==27957==    by 0x1D5BAC59: Geddei::LLConnection::makeScratchElements(unsigned, bool) (llconnection.cpp:67)
+==27957==    by 0x1D5BE644: Geddei::LxConnection::makeScratchSamples(unsigned, bool) (lxconnection.cpp:43)
+==27957==    by 0x25888157: Player::processor() (player.cpp:298)
+==27957==    by 0x1D5C79D5: Geddei::Processor::run() (processor.cpp:909)
+==27957==    by 0x1CE5A304: QThreadInstance::start(void*) (in /opt/qt/lib/libqt-mt.so.3.3.5)
+==27957==    by 0x1D58323F: start_thread (in /lib/tls/libpthread-2.3.6.so)
+==27957==    by 0x1D83A03D: clone (in /lib/tls/libc-2.3.6.so)
+==27957==
+==27957==
+==27957== 29344 bytes in 917 blocks are possibly lost in loss record 483 of 500
+==27957==    at 0x1B8FFD0E: calloc (in /usr/lib/valgrind/vgpreload_memcheck.so)
+==27957==    by 0x1E295C39: _snd_config_make (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x1E2989CF: _snd_config_make_add (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x1E298B4F: parse_value (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x1E29916F: parse_defs (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x1E299473: snd_config_load1 (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x1E29A78B: snd_config_hook_load (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x1E29ACFD: snd_config_hooks (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x1E29B928: snd_config_searcha_hooks (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x1E29BB70: snd_config_search_alias_hooks (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x1E29BC90: snd_config_search_definition (in /usr/lib/libasound.so.2.0.0)
+==27957==    by 0x1E2B7B8E: snd_pcm_open_noupdate (in /usr/lib/libasound.so.2.0.0)
+==27957==
+==27957== LEAK SUMMARY:
+==27957==    definitely lost: 45066 bytes in 19101 blocks.
+==27957==    indirectly lost: 15911 bytes in 451 blocks.
+==27957==      possibly lost: 33200 bytes in 1006 blocks.
+==27957==    still reachable: 62229969 bytes in 69675 blocks.
+==27957==         suppressed: 0 bytes in 0 blocks.
+==27957== Reachable blocks (those to which a pointer was found) are not shown.
+==27957== To see them, rerun with: --show-reachable=yes
+
+
+
+
 <markey> This is rather nasty. I think we should change the SubmitItem handling in scrobbler.cpp
          from heap-allocated to stack-allocated to fix it:
 ==16118== 5628 (540 direct, 5088 indirect) bytes in 27 blocks are definitely lost in loss record 291 of 383
