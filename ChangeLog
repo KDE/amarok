@@ -21,6 +21,7 @@ VERSION 1.4-beta3:
       Peter C. Ndikuwera <pndiku@gmail.com>. (BR 118304)
 
   BUGFIXES:
+    * Sometimes iRiver devices would crash upon disconnecting.
     * Adjust the Astraweb lyrics script for a layout change on the site. Patch
       by Andrew Turner <andrewturner512+kdebugs googlemail com>. (BR 123636)
     * Directory selection would incorrectly highlight a directory in a
