@@ -90,8 +90,9 @@ def fetchLyricsByUrl( url )
     title  = artist_title.split( " - " )[1]
 
     lyrics = /(<font face=arial size=2>)(.*)(<br><br><br><center>)/.match( body )[2].to_s()
+    lyricstwo = /(SPONSORS<\/font><br><\/center><br>)(.*?)(<\/font>)/.match( body )[2].to_s()
+    lyrics.concat(lyricstwo)
     lyrics.gsub!( /<[Bb][Rr][^>]*>/, "\n" ) # HTML -> Plaintext
-
     doc = REXML::Document.new()
     root = doc.add_element( "lyrics" )
     root.add_attribute( "page_url", page_url )
