@@ -21,6 +21,8 @@ VERSION 1.4-beta3:
       Peter C. Ndikuwera <pndiku@gmail.com>. (BR 118304)
 
   BUGFIXES:
+    * Directory selection would incorrectly highlight a directory in a
+      corner case. (BR 123635)
     * Don't pretend to be able to uninstall default ContextBrowser themes.
       (BR 123585)
     * Fix preamp and frequency band scaling in the xine equalizer. Patch by

@@ -197,7 +197,7 @@ Item::paintCell( QPainter * p, const QColorGroup & cg, int column, int width, in
 
     // Figure out if a child folder is activated
     for ( uint i = 0; i < CollectionSetup::instance()->m_dirs.count(); i++ )
-        if ( CollectionSetup::instance()->m_dirs[i].startsWith( m_url.path() ) )
+        if ( CollectionSetup::instance()->m_dirs[i].startsWith( m_url.path() + "/" ) )
             dirty = true;
 
     // Use a different color if this folder has an activated child folder
