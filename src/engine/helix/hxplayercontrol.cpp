@@ -65,7 +65,7 @@ void HSPPlayerControlled::onBuffering(int percentage)
 
 
 PlayerControl::PlayerControl() : m_eq_enabled(false), m_preamp(0), m_err(0), iamparent(0), m_index(0), nNumPlayers(0),
-                     m_inited(false), m_api( HelixSimplePlayer::OSS ), m_device(0), mimehead(0), mimelistlen(0) 
+                                 m_inited(false), m_api( HelixSimplePlayer::OSS ), m_device(0), mimehead(0), mimelistlen(0) 
 {
    memset(m_children, 0, sizeof(m_children));
 }
@@ -280,7 +280,8 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
                         {
                            unsigned long pos;
                            memcpy( (void *) &pos, (void *) buf, sizeof(unsigned long) );
-                           player->seek(pos, 0);
+                           if (pos < player->duration(0))
+                              player->seek(pos, 0);
                         }
                         else
                            cerr << "CHILD " << m_index << " sz not right in SEEK, sz=" << sz << endl;
