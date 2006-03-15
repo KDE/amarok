@@ -148,9 +148,6 @@ IpodMediaDevice::IpodMediaDevice()
     m_supportsVideo = false;
     m_isShuffle = true;
 
-    m_hasPodcast = true;
-    m_hasStats = true;
-    m_hasPlaylists = true;
     m_requireMount = true;
     m_name = "iPod";
 

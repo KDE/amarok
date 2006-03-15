@@ -423,12 +423,6 @@ MediaBrowser::activateDevice( int index )
 
     updateButtons();
     updateStats();
-#if 0
-    if( currentDevice() && currentDevice()->m_hasPlaylists )
-        m_playlistButton->show();
-    else
-        m_playlistButton->hide();
-#endif
 }
 
 void
@@ -1687,15 +1681,6 @@ MediaBrowser::updateButtons()
         m_toolbar->getButton(DISCONNECT)->setEnabled( false );
         m_toolbar->getButton(TRANSFER)->setEnabled( false );
     }
-#if 0
-    if( m_playlistButton )
-    {
-        if( currentDevice() && currentDevice()->m_hasPlaylists )
-            m_playlistButton->show();
-        else
-            m_playlistButton->hide();
-    }
-#endif
 }
 
 void
@@ -1783,6 +1768,11 @@ MediaView::setFilter( const QString &filter, MediaItem *parent )
 
 MediaDevice::MediaDevice()
     : amaroK::Plugin()
+    , m_autoDeletePodcasts( false )
+    , m_syncStats( false )
+    , m_transcode( false )
+    , m_transcodeAlways( false )
+    , m_transcodeRemove( false )
     , m_parent( NULL )
     , m_view( NULL )
     , m_medium( NULL )
@@ -1792,9 +1782,6 @@ MediaDevice::MediaDevice()
     , m_thirdSort( QString::null )
     , m_wait( false )
     , m_requireMount( false )
-    , m_hasPodcast( false )
-    , m_hasStats( false )
-    , m_hasPlaylists( false )
     , m_cancelled( false )
     , m_transferring( false )
     , m_deleting( false )

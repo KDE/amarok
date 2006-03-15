@@ -560,9 +560,6 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         bool             m_waitForDeletion;
         bool             m_copyFailed;
         bool             m_requireMount;
-        bool             m_hasPodcast;
-        bool             m_hasStats;
-        bool             m_hasPlaylists;
         bool             m_cancelled;
         bool             m_transferring;
         bool             m_deleting;
