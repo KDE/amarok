@@ -46,6 +46,7 @@ HostList::HostList( QWidget *parent, const char *name )
   addColumn( i18n("Volume"  ), 113 );
   header()->setResizeEnabled(FALSE, 3);
   addColumn( i18n("Status"  ) );
+  addColumn( i18n("Playback"  ) );
 
   setColumnAlignment( HostListItem::Hostname, Qt::AlignCenter );
   setColumnAlignment( HostListItem::Video,    Qt::AlignCenter );

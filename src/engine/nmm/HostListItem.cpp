@@ -53,6 +53,8 @@ HostListItem::HostListItem( QListView *parent, QString hostname, bool audio, boo
 
   setPixmap( HostListItem::Status, SmallIcon("info") );
   setText( HostListItem::Status, i18n("Unknown") );
+  setPixmap( HostListItem::Playback, SmallIcon("info") );
+  setText( HostListItem::Playback, i18n("Unknown") );
 
   if( 24 /*m_pixmapInset.height()*/ > height() )
     this->setHeight( 24 /*m_pixmapInset.height()*/ );
@@ -95,19 +97,30 @@ void HostListItem::paintCell(QPainter * p, const QColorGroup & cg, int column, i
 {
   QColorGroup m_cg( cg );
 
+  // TODO: reuse icons?
   if( column == HostListItem::Video )
   {
-    if( m_video )
-      setPixmap( HostListItem::Video, SmallIcon("nmm_option_on")  );
+    if( m_video ) { // video ?
+      if( m_read_only )
+        setPixmap( HostListItem::Video, SmallIcon("nmm_option_on_readonly")  );
+      else
+        setPixmap( HostListItem::Video, SmallIcon("nmm_option_on")  );
+    }
     else
-      setPixmap( HostListItem::Video, SmallIcon("nmm_option_off") );
+      if( ! m_read_only)
+        setPixmap( HostListItem::Video, SmallIcon("nmm_option_off") );
   }
   else if( column == HostListItem::Audio )
   {
-    if( m_audio )
-      setPixmap( HostListItem::Audio, SmallIcon("nmm_option_on")  );
+    if( m_audio ) {// audio ?
+      if( m_read_only )
+        setPixmap( HostListItem::Audio, SmallIcon("nmm_option_on_readonly")  );
+      else
+        setPixmap( HostListItem::Audio, SmallIcon("nmm_option_on")  );
+    }
     else
-      setPixmap( HostListItem::Audio, SmallIcon("nmm_option_off") );
+      if( ! m_read_only)
+        setPixmap( HostListItem::Audio, SmallIcon("nmm_option_off") );
   }
   else if( column ==  HostListItem::Status )
   {

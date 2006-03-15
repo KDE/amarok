@@ -36,7 +36,8 @@ class HostListItem : public KListViewItem {
       Video,
       Audio,
       Volume,
-      Status
+      Status,
+      Playback
     };
 
     HostListItem( QListView*, QString hostname, bool audio = true, bool video = true, int volume = 0, int status = 0, bool read_only = false);
