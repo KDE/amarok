@@ -21,6 +21,8 @@ VERSION 1.4-beta3:
       Peter C. Ndikuwera <pndiku@gmail.com>. (BR 118304)
 
   BUGFIXES:
+    * Fixed a huge memory leak when using xine-engine with crossfading.
+      (BR 119230)
     * Sometimes iRiver devices would crash upon disconnecting.
     * Adjust the Astraweb lyrics script for a layout change on the site. Patch
       by Andrew Turner <andrewturner512+kdebugs googlemail com>. (BR 123636)
