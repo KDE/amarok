@@ -683,9 +683,9 @@ Playlist::addSpecialCustomTracks( uint songCount )
                 sql.replace( limit, QString(" LIMIT %1 OFFSET %2;" ).arg( songCount*35 ).arg( first ) );
                 useDirect = false;
             }
-            else 
+            else
                 sql.replace( limitSearch, QString(" LIMIT %1 OFFSET %2;" ).arg( songCount ).arg( first ) );
-            
+
         }
         QStringList queryResult = CollectionDB::instance()->query( sql );
         QStringList items;
@@ -2933,6 +2933,8 @@ Playlist::saveXML( const QString &path )
 
     for( const PlaylistItem *item = firstChild(); item; item = item->nextSibling() )
     {
+        if( item->isEmpty() ) continue;  // Skip marker items and such
+
         QStringList attributes;
         const int queueIndex = m_nextTracks.findRef( item );
         if ( queueIndex != -1 )
