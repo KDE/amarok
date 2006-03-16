@@ -1588,7 +1588,7 @@ PodcastChannel::purge()
         if( m_last && m_last != firstChild() )
             newLast = (PodcastEpisode *)m_last->itemAbove();
 
-        if( m_last->isOnDisk() )
+        if( m_last && m_last->isOnDisk() )
             urls.append( m_last->localUrl() );
 
         delete m_last;
