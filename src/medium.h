@@ -1,5 +1,5 @@
 /* This file is part of the KDE Project
-   Copyright (c) 2004 Kévin Ottens <ervin ipsquad net>
+   Copyright (c) 2004 Kï¿½in Ottens <ervin ipsquad net>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -28,19 +28,20 @@ class Medium
 public:
 	typedef QValueList<const Medium> List;
 
-	static const uint ID = 0;
-	static const uint NAME = 1;
-	static const uint LABEL = 2;
-	static const uint USER_LABEL = 3;
-	static const uint MOUNTABLE = 4;
-	static const uint DEVICE_NODE = 5;
-	static const uint MOUNT_POINT = 6;
-	static const uint FS_TYPE = 7;
-	static const uint MOUNTED = 8;
-	static const uint BASE_URL = 9;
-	static const uint MIME_TYPE = 10;
-	static const uint ICON_NAME = 11;
-	static const uint PROPERTIES_COUNT = 12;
+        static const uint AUTODETECTED = 0;
+	static const uint ID = 1;
+	static const uint NAME = 2;
+	static const uint LABEL = 3;
+	static const uint USER_LABEL = 4;
+	static const uint MOUNTABLE = 5;
+	static const uint DEVICE_NODE = 6;
+	static const uint MOUNT_POINT = 7;
+	static const uint FS_TYPE = 8;
+	static const uint MOUNTED = 9;
+	static const uint BASE_URL = 10;
+	static const uint MIME_TYPE = 11;
+	static const uint ICON_NAME = 12;
+	static const uint PROPERTIES_COUNT = 13;
 	static const QString SEPARATOR;
 
 	Medium(const QString &id, const QString &name);
@@ -49,6 +50,7 @@ public:
 
 	const QStringList &properties() const { return m_properties; };
 
+        QString autodetected() const { return m_properties[AUTODETECTED]; };
 	QString id() const { return m_properties[ID]; };
 	QString name() const { return m_properties[NAME]; };
 	QString label() const { return m_properties[LABEL]; };
@@ -66,6 +68,7 @@ public:
 	KURL prettyBaseURL() const;
 	QString prettyLabel() const;
 
+        void setAutodetected(bool autodetected);
 	void setName(const QString &name);
 	void setLabel(const QString &label);
 	void setUserLabel(const QString &label);

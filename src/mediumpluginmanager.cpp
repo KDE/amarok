@@ -1,5 +1,5 @@
 //
-// C++ Implementation: mediumpluginchooser
+// C++ Implementation: mediumpluginmanager
 //
 // Description:
 //
@@ -19,6 +19,7 @@
 #include "plugin/pluginconfig.h"
 #include "pluginmanager.h"
 
+#include <qgroupbox.h>
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qvbox.h>
@@ -34,6 +35,7 @@ typedef QMap<QString, Medium*> MediumMap;
 MediumPluginManager::MediumPluginManager( )
         : KDialogBase( amaroK::mainWindow(), "mediumpluginmanagerdialog", true, QString::null, Ok|Cancel, Ok )
 {
+    //TODO: make this a member function, so that hboxes can be rebuilt if user selects to rescan
     kapp->setTopWidget( this );
     setCaption( kapp->makeStdCaption( i18n( "Manage Device Plugins" ) ) );
 
@@ -43,13 +45,15 @@ MediumPluginManager::MediumPluginManager( )
     MediumMap mmap = DeviceManager::instance()->getMediumMap();
     MediumMap::Iterator it;
 
-    m_sigmap = new QSignalMapper( this );
+    m_siginfomap = new QSignalMapper( this );
+    m_sigdelmap = new QSignalMapper( this );
 
     QHBox* hbox;
     QString* currtext;
     QLabel* currlabel;
     KComboBox* currcombo;
     KPushButton* currbutton;
+    KPushButton* deletebutton;
     int buttonnum = 0;
 
     KTrader::OfferList offers = PluginManager::query( "[X-KDE-amaroK-plugintype] == 'mediadevice'" );
@@ -58,9 +62,15 @@ MediumPluginManager::MediumPluginManager( )
 
     KConfig *config = amaroK::config( "MediaBrowser" );
 
+    QGroupBox *location = new QGroupBox( 1, Qt::Vertical, i18n( "Devices" ), vbox );
+    QVBox* devicesBox = new QVBox( location );
+    QSpacerItem *spacer;
+    QLayout *hlayout;
+
     for ( it = mmap.begin(); it != mmap.end(); it++ )
     {
-        hbox = new QHBox( vbox );
+        hbox = new QHBox( devicesBox );
+        m_hmap[buttonnum] = hbox;
 
         if ( config->readEntry( (*it)->id() ).isEmpty() )
             new QLabel( i18n("  (NEW!)  Device Name: "), hbox );
@@ -72,9 +82,8 @@ MediumPluginManager::MediumPluginManager( )
 
         currbutton = new KPushButton( i18n("(Detail)"), hbox );
         m_bmap[buttonnum] = (*it);
-        m_sigmap->setMapping( currbutton, buttonnum );
-        buttonnum++;
-        connect(currbutton, SIGNAL( clicked() ), m_sigmap, SLOT( map() ) );
+        m_siginfomap->setMapping( currbutton, buttonnum );
+        connect(currbutton, SIGNAL( clicked() ), m_siginfomap, SLOT( map() ) );
 
         new QLabel( i18n(", Plugin Selected:  "), hbox );
         currcombo = new KComboBox( false, hbox, currtext->latin1() );
@@ -86,15 +95,33 @@ MediumPluginManager::MediumPluginManager( )
                 currcombo->setCurrentItem( (*plugit)->name() );
         }
 
+        //spacer = new QSpacerItem( 100, 0, QSizePolicy::Fixed, QSizePolicy::Fixed );
+        //hlayout = hbox->layout();
+        //if( hlayout )
+        //    hlayout->addItem( spacer );
+
+        new QLabel( "          ", hbox);
+        deletebutton = new KPushButton( i18n( "Remove" ) , hbox );
+        m_sigdelmap->setMapping( deletebutton, buttonnum );
+        connect( deletebutton, SIGNAL( clicked() ), m_sigdelmap, SLOT( map() ) );
+
         m_cmap[(*it)] = currcombo;
+
+        buttonnum++;
     }
 
-    if ( buttonnum == 0 ) {
-        new QLabel( i18n( "You do not have any devices that can be managed by amaroK."), vbox );
-        showButtonCancel( false );
-    }
+    //Obsolete with manual addition of devices?
+    //if ( buttonnum == 0 ) {
+    //    new QLabel( i18n( "You do not have any devices that can be managed by amaroK."), vbox );
+    //    showButtonCancel( false );
+    //}
 
-    connect( m_sigmap, SIGNAL( mapped( int ) ), this, SLOT( infoRequested ( int ) ) );
+    hbox = new QHBox( vbox );
+
+    //KPushButton *addButton = new KPushButton( i18n( "Add Device..." ), hbox );
+
+    connect( m_siginfomap, SIGNAL( mapped( int ) ), this, SLOT( infoRequested ( int ) ) );
+    connect( m_sigdelmap, SIGNAL( mapped( int ) ), this, SLOT( deleteMedium( int ) ) );
     connect( this, SIGNAL( selectedPlugin( const Medium*, const QString ) ), MediaBrowser::instance(), SLOT( pluginSelected( const Medium*, const QString ) ) );
 
     exec();
@@ -126,6 +153,16 @@ MediumPluginManager::infoRequested( int buttonId )
     mpdv->exec();
 }
 
+void
+MediumPluginManager::deleteMedium( int buttonId )
+{
+    //TODO:save something in amarokrc such that it's not shown again until hit autoscan
+    delete m_hmap[buttonId];
+    Medium *tmp = m_bmap[buttonId];
+    //TODO: maybe don't remove, but mark somehow, so that they have to hit OK to remember deleting it?
+    m_cmap.remove(tmp);
+}
+
 /////////////////////////////////////////////////////////////////////
 
 MediumPluginDetailView::MediumPluginDetailView( const Medium* medium )
@@ -142,6 +179,8 @@ MediumPluginDetailView::MediumPluginDetailView( const Medium* medium )
 
     const QString labelTextNone = i18n( "(none)" );
 
+    new QLabel( i18n( "Autodetected:"), vbox1 );
+    new QLabel( medium->autodetected(), vbox2 );
     new QLabel( i18n( "ID:"), vbox1 );
     new QLabel( medium->id(), vbox2 );
     new QLabel( i18n( "Name:"), vbox1 );

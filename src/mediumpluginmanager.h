@@ -1,5 +1,5 @@
 //
-// C++ Interface: mediumpluginchooser
+// C++ Interface: mediumpluginmanager
 //
 // Description:
 //
@@ -23,7 +23,7 @@ class MediumPluginDetailView;
 
 typedef QMap<Medium*, KComboBox*> ComboMap;
 typedef QMap<int, Medium*> ButtonMap;
-
+typedef QMap<int, QHBox*> HBoxMap;
 
 /**
 	@author Jeff Mitchell <kde-dev@emailgoeshere.com>
@@ -33,20 +33,22 @@ class MediumPluginManager : public KDialogBase
     Q_OBJECT
 
     public:
-        MediumPluginManager( );
+        MediumPluginManager();
 
     signals:
         void selectedPlugin( const Medium*, const QString );
 
     private slots:
-        void slotOk( );
+        void slotOk();
         void infoRequested( int buttonId );
+        void deleteMedium( int buttonId );
 
     private:
         ComboMap m_cmap;
         ButtonMap m_bmap;
-        QSignalMapper* m_sigmap;
-
+        HBoxMap m_hmap;
+        QSignalMapper* m_siginfomap;
+        QSignalMapper* m_sigdelmap;
 };
 
 class MediumPluginDetailView : public KDialogBase

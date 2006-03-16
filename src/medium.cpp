@@ -16,6 +16,7 @@
    Boston, MA 02110-1301, USA.
 */
 
+#include "debug.h"
 #include "medium.h"
 
 #include <kconfig.h>
@@ -25,6 +26,7 @@ const QString Medium::SEPARATOR = "---";
 
 Medium::Medium(const QString &id, const QString &name)
 {
+        m_properties+= "false"; /* AUTODETECTED */
 	m_properties+= id; /* ID */
 	m_properties+= name; /* NAME */
 	m_properties+= name; /* LABEL */
@@ -44,6 +46,7 @@ Medium::Medium(const QString &id, const QString &name)
 
 Medium::Medium()
 {
+        m_properties+= QString::null; /* AUTODETECTED */
 	m_properties+= QString::null; /* ID */
 	m_properties+= QString::null; /* NAME */
 	m_properties+= QString::null; /* LABEL */
@@ -65,6 +68,7 @@ const Medium Medium::create(const QStringList &properties)
 
 	if ( properties.size() >= PROPERTIES_COUNT )
 	{
+                m.m_properties[AUTODETECTED] = properties[AUTODETECTED];
 		m.m_properties[ID] = properties[ID];
 		m.m_properties[NAME] = properties[NAME];
 		m.m_properties[LABEL] = properties[LABEL];
@@ -86,7 +90,6 @@ const Medium Medium::create(const QStringList &properties)
 Medium::List Medium::createList(const QStringList &properties)
 {
 	List l;
-
 	if ( properties.size() % (PROPERTIES_COUNT+1) == 0)
 	{
 		int media_count = properties.size()/(PROPERTIES_COUNT+1);
@@ -108,6 +111,10 @@ Medium::List Medium::createList(const QStringList &properties)
 	return l;
 }
 
+void Medium::setAutodetected(bool autodetected)
+{
+        m_properties[AUTODETECTED] = autodetected ? "true" : "false";
+}
 
 void Medium::setName(const QString &name)
 {

@@ -116,6 +116,9 @@ Medium::List DeviceManager::getDeviceList()
     if ( !m_valid )
         return currMediumList;
 
+    //normal kded Medium doesn't have autodetect, so decrease by 1
+    int autodetect_insert = Medium::PROPERTIES_COUNT - 1;
+
     QByteArray data, replyData;
     QCString replyType;
     QDataStream arg(data, IO_WriteOnly);
@@ -127,7 +130,18 @@ Medium::List DeviceManager::getDeviceList()
         QDataStream reply(replyData, IO_ReadOnly);
         QStringList result;
         while(!reply.atEnd())
+        {
             reply >> result;
+        }
+        QStringList::Iterator it;
+        for( it = result.begin(); it != result.end(); ++it )
+        {
+            if (autodetect_insert == Medium::PROPERTIES_COUNT - 1)
+                result.insert(it, QString("true"));
+            autodetect_insert--;
+            if (autodetect_insert == -1)
+                autodetect_insert = Medium::PROPERTIES_COUNT - 1;
+        }
         currMediumList = Medium::createList( result );
     }
 
