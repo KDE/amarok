@@ -107,7 +107,7 @@ scope_dispose( post_plugin_t *this )
 {
     MyNode *list = ((scope_plugin_t*)this)->list;
     MyNode *prev;
-    MyNode *node = list->next;
+    MyNode *node = list;
 
     /* Free all elements of the list (a ring buffer) */
     do {
