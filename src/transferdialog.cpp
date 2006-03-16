@@ -73,11 +73,11 @@ TransferDialog::TransferDialog( MediaDevice *mdev )
 
     QGroupBox *sorting = new QGroupBox( 6, Qt::Vertical, i18n( "Groupings" ), vbox );
     m_label1 = new QLabel( i18n( "Select first grouping:\n" ), sorting );
-    m_sort1 = new KComboBox( sorting );
+    m_sort1  = new KComboBox( sorting );
     m_label2 = new QLabel( i18n( "Select second grouping:\n" ), sorting );
-    m_sort2 = new KComboBox( sorting );
+    m_sort2  = new KComboBox( sorting );
     m_label3 = new QLabel( i18n( "Select third grouping:\n" ), sorting ); 
-    m_sort3 = new KComboBox( sorting );
+    m_sort3  = new KComboBox( sorting );
 
     m_label2->setDisabled(true);
     m_sort2->setDisabled(true);

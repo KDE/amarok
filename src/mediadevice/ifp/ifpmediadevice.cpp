@@ -16,6 +16,7 @@
 
  /**
   *  iRiver ifp media device code
+  *  @author Seb Ruiz <me@sebruiz.net>
   *  @see http://ifp-driver.sourceforge.net/libifp/docs/ifp_8h.html
   *  @note ifp uses a backslash '\' as a directory delimiter for _remote_ files
   */
@@ -30,6 +31,7 @@ AMAROK_EXPORT_PLUGIN( IfpMediaDevice )
 #include "metabundle.h"
 #include "collectiondb.h"
 #include "statusbar/statusbar.h"
+#include "transferdialog.h"
 
 #include <kapplication.h>
 #include <kconfig.h>           //download saveLocation
@@ -109,8 +111,13 @@ IfpMediaDevice::IfpMediaDevice()
     , m_dh( 0 )
     , m_connected( false )
     , m_tmpParent( 0 )
+    , m_td( 0 )
 {
     m_name = "iRiver";
+    
+    m_firstSort  = "None";
+    m_secondSort = "None";
+    m_thirdSort  = "None";
 }
 
 void
@@ -188,6 +195,11 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
     }
 
     m_connected = true;
+    
+    char info[20];
+    ifp_model( &m_ifpdev, info, 20 );
+    m_transferDir = QString(info);
+    debug() << "Successfully connected to: " << info << endl;
 
     listDir( "" );
 
@@ -201,7 +213,6 @@ IfpMediaDevice::closeDevice()  //SLOT
 
     if( m_connected )
     {
-
         if( m_dh )
         {
             usb_release_interface( m_dh, m_dev->config->interface->altsetting->bInterfaceNumber );
@@ -219,6 +230,13 @@ IfpMediaDevice::closeDevice()  //SLOT
     }
 
     return true;
+}
+
+void
+IfpMediaDevice::runTransferDialog()
+{
+    m_td = new TransferDialog( this );
+    m_td->exec();
 }
 
 /// Renaming
@@ -267,6 +285,67 @@ IfpMediaDevice::newDirectory( const QString &name, MediaItem *parent )
     return m_last;
 }
 
+MediaItem *
+IfpMediaDevice::newDirectoryRecursive( const QString &name, MediaItem *parent )
+{
+    debug() << "Creating directory recursively: " << name << endl;
+    QStringList folders = QStringList::split( '\\', name );
+    QString progress = "";
+    
+    if( parent )
+        progress += getFullPath( parent ) + "\\";
+    else
+        progress += "\\";
+    
+    foreach( folders )
+    {
+        progress += *it;
+        const QCString dirPath = QFile::encodeName( progress );
+        
+        if( ifp_exists( &m_ifpdev, dirPath ) == IFP_DIR )
+        {
+            debug() << "folder " << dirPath << " exists" << endl;
+            debug() << "parent: " << (parent ? parent->text(0) : "m_listview") << endl;
+            m_tmpParent = parent;
+            parent = findChildItem( *it, parent );
+            debug() << "parent is now: " << (parent ? parent->text(0) : "still 0!") << endl;
+            if( !parent )
+            {
+                debug() << "creating a new directory: " << *it << endl;
+                addTrackToList( IFP_DIR, *it );
+                parent = m_last;
+                debug() << "parent is now: " << (parent ? parent->text(0) : "still 0!") << endl;
+            }
+            progress += "\\";
+            continue;
+        }
+        debug() << "folder " << dirPath << " does NOT exist" << endl;
+        parent = newDirectory( *it, parent );
+        if( !parent ) //failed
+            return 0;
+        progress += "\\";
+    }
+    return parent;
+}
+
+MediaItem *
+IfpMediaDevice::findChildItem( const QString &name, MediaItem *parent )
+{
+    QListViewItem *child;
+    
+    parent ?
+        child = parent->firstChild():
+        child = m_view->firstChild();
+    
+    while( child )
+    {
+        if( child->text(0) == name )
+            return static_cast<MediaItem*>(child);
+        child = child->nextSibling();
+    }
+    return 0;
+}
+
 void
 IfpMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> items )
 {
@@ -295,9 +374,43 @@ IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle, const PodcastInfo* 
 {
     if( !m_connected ) return 0;
 
-    const QString  newFilename = cleanPath( bundle.prettyTitle() ) + "." + bundle.type();
     const QCString src  = QFile::encodeName( bundle.url().path() );
-    const QCString dest = QFile::encodeName( "\\" + newFilename ); // TODO: add to directory
+    
+    QString directory = "\\"; //root
+    bool cleverFilename = false;
+    bool addFileToView = true;
+    if( m_firstSort != "None" )
+    {
+        addFileToView = false;
+        directory += bundle.prettyText( bundle.columnIndex(m_firstSort) ) + "\\";
+        
+        if( m_secondSort != "None" )
+        {
+            directory += bundle.prettyText( bundle.columnIndex(m_secondSort) ) + "\\";
+            
+            if( m_thirdSort != "None" )
+                directory += bundle.prettyText( bundle.columnIndex(m_thirdSort) ) + "\\";
+        }
+        if( (m_firstSort == "Artist" && m_secondSort == "Album") ||
+            (m_secondSort == "Artist" && m_thirdSort == "Album") )
+                cleverFilename = true;
+    }
+    newDirectoryRecursive( directory, 0 ); // recursively create folders as required.
+    
+    QString newFilename;
+    // we don't put this in cleanPath because of remote directory delimiters
+    const QString title = bundle.title().replace( '\\', '-' );
+    if( cleverFilename && !title.isEmpty() )
+    {
+        if( bundle.track() > 0 )
+            newFilename = cleanPath( QString::number(bundle.track()) + " - " + title ) + "." + bundle.type();
+        else
+            newFilename = cleanPath( title ) + "." + bundle.type();
+    }
+    else
+        newFilename = cleanPath( bundle.prettyTitle() ) + "." + bundle.type();
+    
+    const QCString dest = QFile::encodeName( directory + newFilename );
 
     kapp->processEvents( 100 );
     int result = uploadTrack( src, dest );
@@ -307,7 +420,6 @@ IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle, const PodcastInfo* 
         addTrackToList( IFP_FILE, cleanPath( newFilename ) );
         return m_last;
     }
-
     return 0;
 }
 
@@ -443,10 +555,6 @@ IfpMediaDevice::expandItem( QListViewItem *item ) // SLOT
 void
 IfpMediaDevice::listDir( const QString &dir )
 {
-    DEBUG_BLOCK
-
-    debug() << "listing contents in: '" << dir << "'" << endl;
-
     int err = ifp_list_dirs( &m_ifpdev, QFile::encodeName( dir ), listDirCallback, this );
     checkResult( err, i18n("Cannot enter directory: '%1'").arg(dir) );
 }
@@ -623,16 +731,12 @@ QString IfpMediaDevice::cleanPath( const QString &component )
                 }
             }
         }
-        if( c > QChar(0x7f) || c == QChar(0) )
-        {
-            c = '_';
-        }
         result.ref( i ) = c;
     }
 
     result.simplifyWhiteSpace();
 
-    result.remove( "?" ).replace( "\\", " " ).replace( "*", " " ).replace( ":", " " );
+    result.remove( "?" ).replace( "*", " " ).replace( ":", " " );
     
 //     if( m_spacesToUnderscores )
 //         result.replace( QRegExp( "\\s" ), "_" );

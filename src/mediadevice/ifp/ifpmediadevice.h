@@ -26,10 +26,10 @@ extern "C" {
 
 #include <kurl.h>
 
-// #include <qbitarray.h>
 #include <qptrlist.h>
 
 class IfpMediaItem;
+class TransferDialog;
 
 class IfpMediaDevice : public MediaDevice
 {
@@ -42,6 +42,9 @@ class IfpMediaDevice : public MediaDevice
 
         bool              isConnected() { return m_connected; }
         void              rmbPressed( QListViewItem* qitem, const QPoint& point, int );
+        bool              hasTransferDialog() { return true; }
+        void              runTransferDialog();
+        TransferDialog   *getTransferDialog() { return m_td; }
 
     protected:
         bool              openDevice( bool silent=false );
@@ -70,6 +73,7 @@ class IfpMediaDevice : public MediaDevice
         bool              checkResult( int result, QString message );
 
         // file transfer
+        MediaItem        *newDirectoryRecursive( const QString &name, MediaItem *parent );
         int               uploadTrack( const QCString& src, const QCString& dest );
         void              downloadSelectedItems();
         int               downloadTrack( const QCString& src, const QCString& dest );
@@ -85,8 +89,9 @@ class IfpMediaDevice : public MediaDevice
         // Will iterate over parents and add directory name to the item.
         // getFilename = false will return only parent structure, as opposed to returning the filename as well
         QString           getFullPath( const QListViewItem *item, const bool getFilename = true );
-        
         QString           cleanPath( const QString &component );
+        
+        MediaItem        *findChildItem( const QString &name, MediaItem *parent );
 
         // IFP device
         struct usb_device *m_dev;
@@ -98,6 +103,7 @@ class IfpMediaDevice : public MediaDevice
         IfpMediaItem      *m_last;
         //used to specify new IfpMediaItem parent. Make sure it is restored to 0 (m_listview)
         QListViewItem     *m_tmpParent;
+        TransferDialog    *m_td;
 };
 
 #endif /*AMAROK_IFPMEDIADEVICE_H*/
