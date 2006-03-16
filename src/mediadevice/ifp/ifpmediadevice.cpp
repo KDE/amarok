@@ -404,7 +404,7 @@ IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle, const PodcastInfo* 
     else
         newFilename = cleanPath( bundle.prettyTitle() ) + "." + bundle.type();
     
-    const QCString dest = QFile::encodeName( directory + newFilename );
+    const QCString dest = QFile::encodeName( cleanPath(directory + newFilename) );
 
     kapp->processEvents( 100 );
     int result = uploadTrack( src, dest );
