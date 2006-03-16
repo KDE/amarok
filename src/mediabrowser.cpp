@@ -439,7 +439,6 @@ MediaBrowser::addDevice( MediaDevice *device )
     }
 
     updateDevices();
-
 }
 
 void
@@ -2062,7 +2061,8 @@ MediaBrowser::transferClicked()
         {
             currentDevice()->runTransferDialog();
             //may not work with non-TransferDialog-class object, but maybe some run time introspection could solve it?
-            if( currentDevice()->getTransferDialog() && ( reinterpret_cast<TransferDialog *>(currentDevice()->getTransferDialog()))->isAccepted() )
+            if( currentDevice()->getTransferDialog() && 
+              ( reinterpret_cast<TransferDialog *>(currentDevice()->getTransferDialog()))->isAccepted() )
                 currentDevice()->transferFiles();
             else
                 updateButtons();
@@ -2410,7 +2410,7 @@ MediaDevice::transferFiles()
             setProgress( progress() + 1 );
             continue;
         }
-        else if( !item )
+        else if( !item ) // the item does not exist already on the media device
         {
             if( m_transcode &&
                     (!isPlayable( *bundle ) || (m_transcodeAlways && !isPreferredFormat( *bundle )) ) )
@@ -2448,7 +2448,7 @@ MediaDevice::transferFiles()
             item = copyTrackToDevice( *bundle, m_transferredItem->podcastInfo() );
         }
 
-        if( !item )
+        if( !item ) // copyTrackToDevice() failed
         {
             debug() << "copying failed" << endl;
             amaroK::StatusBar::instance()->longMessage(

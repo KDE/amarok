@@ -288,7 +288,6 @@ IfpMediaDevice::newDirectory( const QString &name, MediaItem *parent )
 MediaItem *
 IfpMediaDevice::newDirectoryRecursive( const QString &name, MediaItem *parent )
 {
-    debug() << "Creating directory recursively: " << name << endl;
     QStringList folders = QStringList::split( '\\', name );
     QString progress = "";
     
@@ -304,22 +303,16 @@ IfpMediaDevice::newDirectoryRecursive( const QString &name, MediaItem *parent )
         
         if( ifp_exists( &m_ifpdev, dirPath ) == IFP_DIR )
         {
-            debug() << "folder " << dirPath << " exists" << endl;
-            debug() << "parent: " << (parent ? parent->text(0) : "m_listview") << endl;
             m_tmpParent = parent;
             parent = findChildItem( *it, parent );
-            debug() << "parent is now: " << (parent ? parent->text(0) : "still 0!") << endl;
             if( !parent )
             {
-                debug() << "creating a new directory: " << *it << endl;
                 addTrackToList( IFP_DIR, *it );
                 parent = m_last;
-                debug() << "parent is now: " << (parent ? parent->text(0) : "still 0!") << endl;
             }
             progress += "\\";
             continue;
         }
-        debug() << "folder " << dirPath << " does NOT exist" << endl;
         parent = newDirectory( *it, parent );
         if( !parent ) //failed
             return 0;
@@ -373,6 +366,7 @@ MediaItem *
 IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle, const PodcastInfo* /*info*/ )
 {
     if( !m_connected ) return 0;
+    m_transferring = true;
 
     const QCString src  = QFile::encodeName( bundle.url().path() );
     
@@ -539,7 +533,7 @@ IfpMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/ )
 void
 IfpMediaDevice::expandItem( QListViewItem *item ) // SLOT
 {
-    if( !item || !item->isExpandable() ) return;
+    if( !item || !item->isExpandable() || m_transferring ) return;
 
     while( item->firstChild() )
         delete item->firstChild();
