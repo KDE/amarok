@@ -43,7 +43,8 @@
 /// These are untranslated and used for storing/retrieving XML playlist
 const QString MetaBundle::exactColumnName( int c ) //static
 {
-    switch( c ) {
+    switch( c )
+    {
         case Filename:   return "Filename";
         case Title:      return "Title";
         case Artist:     return "Artist";
@@ -142,7 +143,8 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
     , m_exists( url.protocol() == "file" && QFile::exists( url.path() ) )
     , m_isValidMedia( false ) //will be updated
 {
-    if ( m_exists ) {
+    if ( m_exists )
+    {
         if ( !noCache )
             m_isValidMedia = CollectionDB::instance()->bundleForUrl( this );
 
@@ -179,14 +181,16 @@ MetaBundle::MetaBundle( const QString& title,
         , m_exists( true )
         , m_isValidMedia( true )
 {
-   if( title.contains( '-' ) ) {
-       m_title  = title.section( '-', 1, 1 ).stripWhiteSpace();
-       m_artist = title.section( '-', 0, 0 ).stripWhiteSpace();
-   }
-   else {
-       m_title  = title;
-       m_artist = streamName; //which is sort of correct..
-   }
+    if( title.contains( '-' ) )
+    {
+        m_title  = title.section( '-', 1, 1 ).stripWhiteSpace();
+        m_artist = title.section( '-', 0, 0 ).stripWhiteSpace();
+    }
+    else
+    {
+        m_title  = title;
+        m_artist = streamName; //which is sort of correct..
+    }
 }
 
 bool
@@ -224,7 +228,8 @@ MetaBundle::clear()
 void
 MetaBundle::init( TagLib::AudioProperties *ap )
 {
-    if ( ap ) {
+    if ( ap )
+    {
         m_bitrate    = ap->bitrate();
         m_length     = ap->length();
         m_sampleRate = ap->sampleRate();
@@ -265,7 +270,8 @@ MetaBundle::init( const KFileMetaInfo& info )
 
         m_isValidMedia = true;
     }
-    else {
+    else
+    {
         m_bitrate = m_length = m_sampleRate = Undetermined;
         m_isValidMedia = false;
     }
@@ -284,10 +290,12 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
 
     fileref = TagLib::FileRef( QFile::encodeName( path ), true, readStyle );
 
-    if( !fileref.isNull() ) {
+    if( !fileref.isNull() )
+    {
         tag = fileref.tag();
 
-        if ( tag ) {
+        if ( tag )
+        {
             #define strip( x ) TStringToQString( x ).stripWhiteSpace()
             setTitle( strip( tag->title() ) );
             setArtist( strip( tag->artist() ) );
@@ -308,40 +316,44 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
        we have to cast the files, not the tags! */
 
         QString disc;
-        if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) ) {
+        if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
+        {
             m_type = mp3;
-            if ( file->ID3v2Tag() ) {
-                if ( !file->ID3v2Tag()->frameListMap()["TPOS"].isEmpty() ) {
+            if ( file->ID3v2Tag() )
+            {
+                if ( !file->ID3v2Tag()->frameListMap()["TPOS"].isEmpty() )
                     disc = TStringToQString( file->ID3v2Tag()->frameListMap()["TPOS"].front()->toString() ).stripWhiteSpace();
-                }
-                if ( !file->ID3v2Tag()->frameListMap()["TCOM"].isEmpty() ) {
+
+                if ( !file->ID3v2Tag()->frameListMap()["TCOM"].isEmpty() )
                     setComposer( TStringToQString( file->ID3v2Tag()->frameListMap()["TCOM"].front()->toString() ).stripWhiteSpace() );
-                }
             }
         }
-        else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) ) {
+        else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
+        {
             m_type = ogg;
-            if ( file->tag() ) {
-                if ( !file->tag()->fieldListMap()[ "COMPOSER" ].isEmpty() ) {
+            if ( file->tag() )
+            {
+                if ( !file->tag()->fieldListMap()[ "COMPOSER" ].isEmpty() )
                     setComposer( TStringToQString( file->tag()->fieldListMap()["COMPOSER"].front() ).stripWhiteSpace() );
-                }
-                if ( !file->tag()->fieldListMap()[ "DISCNUMBER" ].isEmpty() ) {
+
+                if ( !file->tag()->fieldListMap()[ "DISCNUMBER" ].isEmpty() )
                     disc = TStringToQString( file->tag()->fieldListMap()["DISCNUMBER"].front() ).stripWhiteSpace();
-                }
             }
         }
-        else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) ) {
+        else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
+        {
             m_type = flac;
-            if ( file->xiphComment() ) {
-                if ( !file->xiphComment()->fieldListMap()[ "COMPOSER" ].isEmpty() ) {
+            if ( file->xiphComment() )
+            {
+                if ( !file->xiphComment()->fieldListMap()[ "COMPOSER" ].isEmpty() )
                     setComposer( TStringToQString( file->xiphComment()->fieldListMap()["COMPOSER"].front() ).stripWhiteSpace() );
-                }
-                if ( !file->xiphComment()->fieldListMap()[ "DISCNUMBER" ].isEmpty() ) {
+
+                if ( !file->xiphComment()->fieldListMap()[ "DISCNUMBER" ].isEmpty() )
                     disc = TStringToQString( file->xiphComment()->fieldListMap()["DISCNUMBER"].front() ).stripWhiteSpace();
-                }
             }
         }
-        else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) ) {
+        else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
+        {
             m_type = mp4;
             TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
             if( mp4tag )
@@ -351,15 +363,14 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
             }
         }
 
-        if ( !disc.isEmpty() ) {
+        if ( !disc.isEmpty() )
+        {
             int i = disc.find ('/');
-            if ( i != -1 ) {
-                setDiscNumber( disc.left( i ).toInt() );
+            if ( i != -1 )
                 // disc.right( i ).toInt() is total number of discs, we don't use this at the moment
-            }
-            else {
+                setDiscNumber( disc.left( i ).toInt() );
+            else
                 setDiscNumber( disc.toInt() );
-            }
         }
 
         init( fileref.audioProperties() );
@@ -517,7 +528,7 @@ QString MetaBundle::prettyText( int column ) const
         case Rating:     text = prettyRating();                                                      break;
         case PlayCount:  text = QString::number( playCount() );                                      break;
         case LastPlayed: text = amaroK::verboseTimeSince( lastPlay() );                              break;
-        case Filesize:   text = prettyFilesize();                                                      break;
+        case Filesize:   text = prettyFilesize();                                                    break;
         case Mood:       text = QString::null;                                                       break;
         default: warning() << "Tried to get the text of a nonexistent column!" << endl;              break;
     }
@@ -831,12 +842,14 @@ MetaBundle::prettyBitrate( int i )
 }
 
 QString
-MetaBundle::prettyFilesize( int s ) {
+MetaBundle::prettyFilesize( int s )
+{
     return KIO::convertSize( s );
 }
 
 QString
-MetaBundle::prettyRating( int r ) {
+MetaBundle::prettyRating( int r )
+{
     switch( r )
     {
         case 1: return i18n( "1 - Crap" );
@@ -849,7 +862,8 @@ MetaBundle::prettyRating( int r ) {
 }
 
 QStringList
-MetaBundle::ratingList() {
+MetaBundle::ratingList()
+{
     QStringList list;
     for ( int i = 0; i<=5; i++ )
         list += prettyRating( i );
@@ -871,11 +885,14 @@ MetaBundle::genreList() //static
 }
 
 void
-MetaBundle::setExtendedTag( TagLib::File *file, int tag, const QString value ) {
+MetaBundle::setExtendedTag( TagLib::File *file, int tag, const QString value )
+{
     char *id = 0;
 
-    if ( m_type == mp3 ) {
-        switch( tag ) {
+    if ( m_type == mp3 )
+    {
+        switch( tag )
+        {
             case ( composerTag ): id = "TCOM"; break;
             case ( discNumberTag ): id = "TPOS"; break;
         }
@@ -888,7 +905,8 @@ MetaBundle::setExtendedTag( TagLib::File *file, int tag, const QString value ) {
             {
                 if( !mpegFile->ID3v2Tag()->frameListMap()[id].isEmpty() )
                     mpegFile->ID3v2Tag()->frameListMap()[id].front()->setText( QStringToTString( value ) );
-                else {
+                else
+                {
                     TagLib::ID3v2::TextIdentificationFrame *frame = new TagLib::ID3v2::TextIdentificationFrame( id, TagLib::ID3v2::FrameFactory::instance()->defaultTextEncoding() );
                     frame->setText( QStringToTString( value ) );
                     mpegFile->ID3v2Tag()->addFrame( frame );
@@ -896,8 +914,10 @@ MetaBundle::setExtendedTag( TagLib::File *file, int tag, const QString value ) {
             }
         }
     }
-    else if ( m_type == ogg ) {
-        switch( tag ) {
+    else if ( m_type == ogg )
+    {
+        switch( tag )
+        {
             case ( composerTag ): id = "COMPOSER"; break;
             case ( discNumberTag ): id = "DISCNUMBER"; break;
         }
@@ -909,8 +929,10 @@ MetaBundle::setExtendedTag( TagLib::File *file, int tag, const QString value ) {
                 oggFile->tag()->addField( id, QStringToTString( value ), true );
         }
     }
-    else if ( m_type == flac ) {
-        switch( tag ) {
+    else if ( m_type == flac )
+    {
+        switch( tag )
+        {
             case ( composerTag ): id = "COMPOSER"; break;
             case ( discNumberTag ): id = "DISCNUMBER"; break;
         }
@@ -922,11 +944,13 @@ MetaBundle::setExtendedTag( TagLib::File *file, int tag, const QString value ) {
             flacFile->xiphComment()->addField( id, QStringToTString( value ), true );
         }
     }
-    else if ( m_type == mp4 ) {
+    else if ( m_type == mp4 )
+    {
         TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
         if( mp4tag )
         {
-            switch( tag ) {
+            switch( tag )
+            {
                 case ( composerTag ): mp4tag->setComposer( QStringToTString( value ) ); break;
                 case ( discNumberTag ): mp4tag->setDisk( value.toInt() );
             }
@@ -935,7 +959,8 @@ MetaBundle::setExtendedTag( TagLib::File *file, int tag, const QString value ) {
 }
 
 bool
-MetaBundle::save() {
+MetaBundle::save()
+{
     //Set default codec to UTF-8 (see bugs 111246 and 111232)
     TagLib::ID3v2::FrameFactory::instance()->setDefaultTextEncoding(TagLib::String::UTF8);
 
@@ -953,7 +978,8 @@ MetaBundle::save() {
         t->setComment( QStringToTString( comment().string() ) );
         t->setGenre( QStringToTString( genre().string() ) );
 
-        if ( hasExtendedMetaInformation() ) {
+        if ( hasExtendedMetaInformation() )
+        {
             setExtendedTag( f.file(), composerTag, composer() );
             setExtendedTag( f.file(), discNumberTag, discNumber() ? QString::number( discNumber() ) : QString() );
         }
@@ -967,8 +993,10 @@ bool MetaBundle::save( QTextStream &stream, const QStringList &attributes, int i
     QDomDocument QDomSucksItNeedsADocument;
     QDomElement item = QDomSucksItNeedsADocument.createElement( "item" );
     item.setAttribute( "url", url().url() );
+
     for( int i = 0, n = attributes.count(); i < n; i += 2 )
         item.setAttribute( attributes[i], attributes[i+1] );
+
     for( int i = 0; i < NUM_COLUMNS; ++i )
     {
         QDomElement tag = QDomSucksItNeedsADocument.createElement( exactColumnName( i ) );

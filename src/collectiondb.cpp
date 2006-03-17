@@ -857,9 +857,8 @@ CollectionDB::addImageToAlbum( const QString& image, QValueList< QPair<QString, 
 }
 
 QPixmap
-CollectionDB::createDragPixmap(const KURL::List &urls)
+CollectionDB::createDragPixmap( const KURL::List &urls )
 {
-
     // settings
     const int maxCovers = 4; // maximum number of cover images to show
     const int coverSpacing = 20; // spacing between stacked covers
@@ -868,7 +867,6 @@ CollectionDB::createDragPixmap(const KURL::List &urls)
     const int minWidth = 300; // minimum width (such that info text fits)
     const int coverW = AmarokConfig::coverPreviewSize(); // size for "..." cover
     const int coverH = coverW;
-
 
     int covers = 0;
     int songs = 0;
@@ -882,41 +880,46 @@ CollectionDB::createDragPixmap(const KURL::List &urls)
 
     // iterate urls, get covers and count artist/albums
     KURL::List::ConstIterator it = urls.begin();
-    for( ; it != urls.end(); ++it )
+    for ( ; it != urls.end(); ++it )
     {
         KURL src = ( *it );
         // if its a playlist we need an other iteration pass...
         BundleList bundles;
-        if ( PlaylistFile::isPlaylistFile( src ) ) {
-            if( src.isLocalFile() ) {
+        if ( PlaylistFile::isPlaylistFile( src ) )
+        {
+            if( src.isLocalFile() )
+            {
                 PlaylistFile plf( src.path() );
                 bundles = plf.bundles();
             }
-            else remoteUrls++;
+            else
+                remoteUrls++;
         }
-        else {
-            bundles += MetaBundle(src);
-        }
+        else
+            bundles += MetaBundle( src );
 
-        for( BundleList::Iterator bundit = bundles.begin(), end = bundles.end(); bundit != end; ++bundit ) {
-            KURL url = (*bundit).url();
-            if (url.isLocalFile()) {
-                MetaBundle mb = MetaBundle(url); // why does the metabundle from playlistfile not have an artist/album field?
+        for ( BundleList::Iterator bundit = bundles.begin(), end = bundles.end(); bundit != end; ++bundit )
+        {
+            KURL url = ( *bundit ).url();
+            if ( url.isLocalFile() )
+            {
+                MetaBundle mb = MetaBundle( url ); // why does the metabundle from playlistfile not have an artist/album field?
                 songs++;
 
-                if ( ! albumMap.contains(mb.artist()+mb.album()) ) {
+                if ( !albumMap.contains( mb.artist() + mb.album() ) )
+                {
                     debug() << "fetching cover for " <<  mb.artist() << " / " << mb.album() << endl;
                     QString coverName = CollectionDB::instance()->albumImage( mb.artist(), mb.album(), 1 );
-                    if (( coverName.find( "nocover.png" ) == -1 ) && ( covers < maxCovers )) {
+                    if ( ( coverName.find( "nocover.png" ) == -1 ) && ( covers < maxCovers ) )
+                    {
                         debug() << "adding cover " << coverName << endl;
                         coverPm[covers++].load( coverName );
                     }
-                    else {
+                    else
                         debug() << "no cover found - skipping " << coverName << endl;
-                    }
-                    albumMap[mb.artist()+mb.album()]=1;
+
+                    albumMap[ mb.artist() + mb.album() ] = 1;
                 }
-//                artistMap[mb.artist()]=1;
             }
             else {
                 remoteUrls++;
@@ -924,31 +927,32 @@ CollectionDB::createDragPixmap(const KURL::List &urls)
         }
     }
 
-    int albums = albumMap.count();
-//    int artists = artistMap.count();
-
     // make a better text...
+    int albums = albumMap.count();
     QString m_text;
     if ( songs > 0 )
-        m_text= i18n("One song from ", "%n songs from ", songs)+i18n("one album", "%n albums",albums);
+        m_text= i18n( "One song from ", "%n songs from ", songs ) + i18n( "one album", "%n albums",albums );
     else if ( remoteUrls > 0 )
-        m_text= i18n("One remote file", "%n remote files", remoteUrls);
+        m_text= i18n( "One remote file", "%n remote files", remoteUrls );
     else
-        m_text= i18n("Unknown item");
+        m_text= i18n( "Unknown item" );
 
     // font... TODO: from config?
-    QFont font("Arial", fontSize);
-    QFontMetrics fm(font);
-    int fontH = fm.height()+2;
+    QFont font( "Arial", fontSize );
+    QFontMetrics fm( font );
+    int fontH = fm.height() + 2;
 
-    if ( covers > 0 ) {
+    if ( covers > 0 )
+    {
         // insert "..." cover as first image if appropiate
-        if ( covers < albums ) {
+        if ( covers < albums )
+        {
             if ( covers < maxCovers ) covers++;
             for ( int i = maxCovers-1; i > 0; i-- )
                 coverPm[i] = coverPm[i-1];
+
             QImage im( locate( "data","amarok/images/more_albums.png" ) );
-	    coverPm[0].convertFromImage(im.smoothScale(coverW, coverH, QImage::ScaleMin));
+            coverPm[0].convertFromImage( im.smoothScale( coverW, coverH, QImage::ScaleMin ) );
         }
 
         pixmapH = coverPm[0].height();
@@ -956,7 +960,8 @@ CollectionDB::createDragPixmap(const KURL::List &urls)
 
         // caluclate pixmap height
         int dW, dH;
-        for (int i = 1; i < covers; i++ ) {
+        for ( int i = 1; i < covers; i++ )
+        {
             dW = coverPm[i].width() - coverPm[i-1].width() + coverSpacing;
             dH = coverPm[i].height() - coverPm[i-1].height() + coverSpacing;
             if ( dW > 0 ) pixmapW += dW;
@@ -964,76 +969,76 @@ CollectionDB::createDragPixmap(const KURL::List &urls)
         }
         pixmapH += fontSpacing + fontH;
 
-        if (pixmapW < minWidth)
+        if ( pixmapW < minWidth )
             pixmapW = minWidth;
     }
-    else {
+    else
+    {
         pixmapW = minWidth;
         pixmapH = fontH;
     }
 
-
-    QPixmap pmdrag(pixmapW, pixmapH);
-    QPixmap pmtext(pixmapW, fontH);
+    QPixmap pmdrag( pixmapW, pixmapH );
+    QPixmap pmtext( pixmapW, fontH );
 
     QPainter p;
-    p.begin(&pmtext);
-    p.fillRect(0, 0, pixmapW, fontH, QBrush(Qt::black));
-    p.setPen(Qt::white);
-    p.setFont(font);
-    p.drawText(2, fm.ascent() + 1, m_text);
+    p.begin( &pmtext );
+    p.fillRect( 0, 0, pixmapW, fontH, QBrush( Qt::black ) );
+    p.setPen( Qt::white );
+    p.setFont( font );
+    p.drawText( 2, fm.ascent() + 1, m_text );
     p.end();
 
     int w = pmtext.width();
     int h = pmtext.height();
 
     // simple morphological dilation of image for masking with outline (to get font with contour)
-    QImage input = pmtext.convertToImage().convertDepth(32);
-    QImage output(w, h, 1, 2, QImage::LittleEndian); // check endianess?
-    output.fill(0);
+    QImage input = pmtext.convertToImage().convertDepth( 32 );
+    QImage output( w, h, 1, 2, QImage::LittleEndian ); // check endianess?
+    output.fill( 0 );
     int x, y;
-    for (x = 1; x < w - 1; x++) {
-	for (y = 1; y < h - 1; y++) {
-	    if ((*((uint *) input.scanLine(y) + x - 1) ^ 0xff000000)
-		|| (*((uint *) input.scanLine(y - 1) + x) ^ 0xff000000)
-		|| (*((uint *) input.scanLine(y) + x) ^ 0xff000000)
-		|| (*((uint *) input.scanLine(y + 1) + x) ^ 0xff000000)
-		|| (*((uint *) input.scanLine(y) + x + 1) ^ 0xff000000)) {
-//		if (output.bitOrder() == QImage::LittleEndian)
-		    *(output.scanLine(y) + (x >> 3)) |= 1 << (x & 7);
-//		else
-//		    *(output.scanLine(y) + (x >> 3)) |= 1 << (7 - (x & 7));
-	    }
-	}
+    for ( x = 1; x < w - 1; x++ )
+    {
+        for ( y = 1; y < h - 1; y++ )
+        {
+            if ((*((uint *) input.scanLine(y) + x - 1) ^ 0xff000000)
+                || (*((uint *) input.scanLine(y - 1) + x) ^ 0xff000000)
+                || (*((uint *) input.scanLine(y) + x) ^ 0xff000000)
+                || (*((uint *) input.scanLine(y + 1) + x) ^ 0xff000000)
+                || (*((uint *) input.scanLine(y) + x + 1) ^ 0xff000000))
+            {
+                *(output.scanLine(y) + (x >> 3)) |= 1 << (x & 7);
+            }
+        }
     }
     QBitmap pmtextMask(pixmapW, fontH);
     pmtextMask = output;
 
     // when we have found no covers, just display the text message
-    if (covers == 0) {
-	pmtext.setMask(pmtextMask);
-	return pmtext;
+    if (covers == 0)
+    {
+        pmtext.setMask(pmtextMask);
+        return pmtext;
     }
 
     // compose image
-    p.begin(&pmdrag);
-    p.setBackgroundMode(Qt::TransparentMode);
-    for (int i = 0; i < covers; i++) {
-	bitBlt(&pmdrag, i * coverSpacing, i * coverSpacing, &coverPm[i], 0, Qt::CopyROP);
-    }
-    bitBlt(&pmdrag, 0, pixmapH - fontH, &pmtext, 0, Qt::CopyROP);
+    p.begin( &pmdrag );
+    p.setBackgroundMode( Qt::TransparentMode );
+    for ( int i = 0; i < covers; i++ )
+        bitBlt( &pmdrag, i * coverSpacing, i * coverSpacing, &coverPm[i], 0, Qt::CopyROP );
+
+    bitBlt( &pmdrag, 0, pixmapH - fontH, &pmtext, 0, Qt::CopyROP );
     p.end();
 
-
-
-    QBitmap pmdragMask(pmdrag.size(), true);
-    for (int i = 0; i < covers; i++) {
-        QBitmap coverMask(coverPm[i].width(), coverPm[i].height());
-        coverMask.fill(Qt::color1);
-	bitBlt(&pmdragMask, i * coverSpacing, i * coverSpacing, &coverMask, 0, Qt::CopyROP);
+    QBitmap pmdragMask( pmdrag.size(), true );
+    for ( int i = 0; i < covers; i++ )
+    {
+        QBitmap coverMask( coverPm[i].width(), coverPm[i].height() );
+        coverMask.fill( Qt::color1 );
+        bitBlt( &pmdragMask, i * coverSpacing, i * coverSpacing, &coverMask, 0, Qt::CopyROP );
     }
-    bitBlt(&pmdragMask, 0, pixmapH - fontH, &pmtextMask, 0, Qt::CopyROP);
-    pmdrag.setMask(pmdragMask);
+    bitBlt( &pmdragMask, 0, pixmapH - fontH, &pmtextMask, 0, Qt::CopyROP );
+    pmdrag.setMask( pmdragMask );
 
     return pmdrag;
 }
@@ -1041,7 +1046,7 @@ CollectionDB::createDragPixmap(const KURL::List &urls)
 QImage
 CollectionDB::fetchImage(const KURL& url, QString &/*tmpFile*/)
 {
-    if(url.protocol() != "file")
+    if (url.protocol() != "file")
     {
         QString tmpFile;
         KIO::NetAccess::download( url, tmpFile, 0); //TODO set 0 to the window, though it probably doesn't really matter
@@ -1843,9 +1848,11 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
             // we get no guarantee about the order that the database
             // will return our values, and sqlite indeed doesn't return
             // them in the desired order :( (MySQL does though)
-            foreach( paths ) {
+            foreach( paths )
+            {
                 for( BundleList::Iterator jt = buns50.begin(), end = buns50.end(); jt != end; ++jt )
-                    if ( (*jt).url().path() == (*it) ) {
+                    if ( ( *jt ).url().path() == ( *it ) )
+                    {
                         bundles += *jt;
                         buns50.remove( jt );
                         goto success;
@@ -1855,7 +1862,8 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
                 {
                     KURL url = KURL::fromPathOrURL( *it );
                     const MetaBundle *mb = MediaBrowser::instance()->getBundle( url );
-                    if( mb )
+
+                    if ( mb )
                     {
                         debug() << "Bundle recovered from media browser for: " << *it << endl;
                         b = MetaBundle( *mb );
@@ -1864,23 +1872,29 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
                     {
                         debug() << "No bundle recovered for: " << *it << endl;
                         b = MetaBundle();
-                        b.setUrl( KURL::fromPathOrURL(*it) );
-                        Engine::SimpleMetaBundle smb;
+                        b.setUrl( KURL::fromPathOrURL( *it ) );
+                        b.setTitle( QString( "%1 %2 %3%4" )
+                                       .arg( url.filename() )
+                                       .arg( url.isLocalFile() ? i18n( "in" ) : i18n( "from" ) )
+                                       .arg( url.hasHost() ? url.host() : QString() )
+                                       .arg( url.directory( false ) ) );
+
                         // try to see if the engine has some info about the
                         // item (the intended behaviour should be that if the
                         // item is an AudioCD track, the engine can return
                         // CDDB data for it)
-                        if (EngineController::engine()->metaDataForUrl(
-                                b.url(), smb)) {
-                            b.setTitle(smb.title);
-                            b.setArtist(smb.artist);
-                            b.setAlbum(smb.album);
-                            b.setComment(smb.comment);
-                            b.setGenre(smb.genre);
-                            b.setBitrate(smb.bitrate.toInt());
-                            b.setLength(smb.length.toInt());
-                            b.setYear(smb.year.toInt());
-                            b.setTrack(smb.tracknr.toInt());
+                        Engine::SimpleMetaBundle smb;
+                        if ( EngineController::engine()->metaDataForUrl( b.url(), smb ) )
+                        {
+                            b.setTitle( smb.title );
+                            b.setArtist( smb.artist );
+                            b.setAlbum( smb.album );
+                            b.setComment( smb.comment );
+                            b.setGenre( smb.genre );
+                            b.setBitrate( smb.bitrate.toInt() );
+                            b.setLength( smb.length.toInt() );
+                            b.setYear( smb.year.toInt() );
+                            b.setTrack( smb.tracknr.toInt() );
                         }
                     }
                 }
@@ -1932,6 +1946,7 @@ CollectionDB::addSongPercentage( const QString &url, int percentage, const QDate
         else
             // it's the first time track is played
             score = ( ( 50 + percentage ) / 2 );
+
         // increment playcounter and update accesstime
         if (getDbConnectionType() == DbConnection::postgresql) {
             query( QString( "UPDATE statistics SET percentage=%1, playcounter=%2, accessdate=%3 WHERE url='%4';" )
