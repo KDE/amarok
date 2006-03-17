@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.4-beta3:
   FEATURES:
+    * Drag and drop podcast urls directly onto podcast folders for addition.
     * Add media directly into directories for iRiver ifp devices.
     * Button to directly edit lyrics from the context browser. (BR 123515)
     * Support for SMIL playlists. (BR 121983)
