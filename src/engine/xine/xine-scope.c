@@ -106,14 +106,20 @@ static void
 scope_dispose( post_plugin_t *this )
 {
     MyNode *list = ((scope_plugin_t*)this)->list;
-    MyNode *prev, *node;
+    MyNode *prev;
+    MyNode *node = list;
 
-    for( node = list; node != list; node = prev ) {
+    /* Free all elements of the list (a ring buffer) */
+    do {
         prev = node->next;
 
         free( node->mem );
         free( node );
+
+        node = prev;
     }
+    while( node != list );
+
 
     free( this );
 }
