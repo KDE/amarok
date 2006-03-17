@@ -359,7 +359,7 @@ void EngineController::play( const MetaBundle &bundle )
         m_playFailureCount++;
 
         // Don't skip more than 5 times in a row, to prevent GUI freezes and endless loops
-        if ( m_playFailureCount <= 5 /*&& !amaroK::repeatPlaylist()*/ ) {
+        if ( m_playFailureCount <= 5  && AmarokConfig::soundSystem() != "nmm-engine" /*&& !amaroK::repeatPlaylist()*/ ) {
            debug() << "Skipping to next track." << endl;
            next();
            play();
