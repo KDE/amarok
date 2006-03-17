@@ -2767,6 +2767,12 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
 
             for ( ; it != decodedList.end(); ++it )
             {
+	        if (isCategory(item)) { // check if it is podcast category
+		    QListViewItem *cat = item;
+		    while (isCategory(cat) && cat!=PlaylistBrowser::instance()->podcastCategory()) cat=cat->parent();
+		    if (cat==PlaylistBrowser::instance()->podcastCategory()) PlaylistBrowser::instance()->addPodcast((*it).url(),item);
+		    continue;
+	        }
                 QString filename = (*it).fileName();
 
                 if( filename.endsWith("m3u") || filename.endsWith("pls") )
