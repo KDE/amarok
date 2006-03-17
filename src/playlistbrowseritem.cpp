@@ -1449,9 +1449,11 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
 
     PodcastChannelBundle pcb( m_url, m_title, m_link, m_description, m_copyright, m_settings );
 
-    // add to the database
-    debug() << "Adding podcast to database" << endl;
-    CollectionDB::instance()->addPodcastChannel( pcb );
+    if( !m_updating )
+    { // don't reinsert on a refresh
+        debug() << "Adding podcast to database" << endl;
+        CollectionDB::instance()->addPodcastChannel( pcb );
+    }
 
     /// Podcast Episodes information
 
