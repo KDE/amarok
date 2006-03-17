@@ -1875,8 +1875,9 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
                         b.setUrl( KURL::fromPathOrURL( *it ) );
 
                         if ( !url.isLocalFile() )
-                            b.setTitle( QString( "%1 from %2%3" )
+                            b.setTitle( QString( "%1 %2 %3%4" )
                                         .arg( url.filename() )
+                                        .arg( i18n( "from" ) )
                                         .arg( url.hasHost() ? url.host() : QString() )
                                         .arg( url.directory( false ) ) );
 
