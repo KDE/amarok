@@ -1455,8 +1455,6 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
 
     /// Podcast Episodes information
 
-    PodcastEpisode *updatingLast = 0;
-
     PodcastEpisode *first = (PodcastEpisode*)firstChild();
 
     QDomNode n;
@@ -1471,6 +1469,11 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
     QDomNode feed = m_doc.namedItem("feed");
     QDomNode channel = m_doc.namedItem("rss").namedItem("channel");
     QDomNode firstItem = isAtom ? feed.namedItem("entry") : channel.namedItem("item");
+    
+    
+    // We use an auto-increment id in the database, so we must insert podcasts in the reverse order
+    // to ensure we can pull them out reliably.
+    QValueList<QDomElement> eList;
 
     for( ; !n.isNull(); n = n.nextSibling() )
     {
@@ -1489,8 +1492,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
                     if( nodes.toElement().attribute("rel") == "enclosure" )
                     {
                         node = feed.insertBefore( n.cloneNode(), firstItem );
-                        updatingLast = new PodcastEpisode( this, updatingLast, node.toElement(), feedType );
-                        updatingLast->setNew();
+                        eList.prepend( nodes.toElement() );
                         break;
                     }
                 }
@@ -1498,11 +1500,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
             else if( !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
             {
                 node = channel.insertBefore(n.cloneNode(), firstItem );
-                updatingLast = new PodcastEpisode( this, updatingLast, node.toElement(), feedType );
-                debug() << updatingLast->author() << first->date() << endl;
-                debug() << updatingLast->duration() << endl;
-                debug() << updatingLast->url() << endl;
-                updatingLast->setNew();
+                eList.prepend( node.toElement() );
             }
         }
         else // Freshly added podcast
@@ -1513,24 +1511,28 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
             if( isAtom )
             {
                 // Atom feeds have multiple nodes called link, only one which has an enclosure.
-                QDomNode nodes = n.namedItem("link");
-                for( ; !nodes.isNull(); nodes = nodes.nextSibling() )
+                QDomNode node = n.namedItem("link");
+                for( ; !node.isNull(); node = node.nextSibling() )
                 {
-                    if( nodes.toElement().attribute("rel") == "enclosure" )
+                    if( node.toElement().attribute("rel") == "enclosure" )
                     {
-                        updatingLast = new PodcastEpisode( this, updatingLast, n.toElement(), feedType );
+                        eList.prepend( n.toElement() );
                         children++;
-                        // updatingLast->setNew();
                         break;
                     }
                 }
             }
             else if( !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
             {
-                m_last = new PodcastEpisode( this, m_last, n.toElement(), feedType );
+                eList.prepend( n.toElement() );
                 children++;
             }
         }
+    }
+    
+    foreachType( QValueList<QDomElement>, eList )
+    {
+        new PodcastEpisode( this, 0 /*adding in reverse!*/, *it, feedType );
     }
 
     if( m_settings->m_purge && childCount() > m_settings->m_purgeCount )
@@ -1627,7 +1629,8 @@ PodcastChannel::slotAnimation()
 ///    @note we fucking hate itunes for taking over podcasts and inserting
 ///          their own attributes.
 ////////////////////////////////////////////////////////////////////////////
-PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after, const QDomElement &xml, const int feedType )
+PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after, 
+                                const QDomElement &xml, const int feedType, const bool &isNew )
     : PlaylistBrowserEntry( parent, after )
       , m_parent( parent )
       , m_localUrl( 0 )
@@ -1636,13 +1639,12 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after, con
       , m_fetching( false )
       , m_downloaded( false )
       , m_onDisk( false )
-      , m_new( false )
+      , m_new( isNew )
 {
     const bool isAtom = ( feedType == ATOM );
     QString title = xml.namedItem( "title" ).toElement().text();
 
     QString description, author, date, guid, type;
-    bool isNew = true;
     int duration;
     KURL link;
 
@@ -1710,7 +1712,7 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after, con
     m_bundle.setNew( isNew );
 
     CollectionDB::instance()->addPodcastEpisode( m_bundle );
-
+    
     setText( 0, title );
     updatePixmap();
     setDragEnabled( true );

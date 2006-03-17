@@ -1,6 +1,6 @@
 // (c) 2004 Pierpaolo Di Panfilo
 // (c) 2004 Mark Kretschmann <markey@web.de>
-// (c) 2005 Seb Ruiz <me@sebruiz.net>
+// (c) 2005-2006 Seb Ruiz <me@sebruiz.net>
 // (c) 2005 Gábor Lehel <illissius@gmail.com>
 // (c) 2005 Christian Muehlhaeuser <chris@chris.de>
 // License: GPL V2. See COPYING file for information.
@@ -903,12 +903,12 @@ void PlaylistBrowser::loadPodcastsFromDatabase( PlaylistCategory *p )
         channel  = new PodcastChannel( p, channel, *it );
         episodes = CollectionDB::instance()->getPodcastEpisodes( (*it).url() );
 
-        PodcastEpisode *episode = 0;
         PodcastEpisodeBundle bundle;
+         // podcasts are retured chronologically, insert them in reverse
         while( !episodes.isEmpty() )
         {
             bundle = episodes.first();
-            episode = new PodcastEpisode( channel, episode, bundle );
+            new PodcastEpisode( channel, 0, bundle );
 
             episodes.pop_front();
         }

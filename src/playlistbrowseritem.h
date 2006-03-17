@@ -233,7 +233,8 @@ class PodcastEpisode : public QObject, public PlaylistBrowserEntry
         Q_OBJECT
 
     public:
-        PodcastEpisode( QListViewItem *parent, QListViewItem *after, const QDomElement &xml, const int feedType );
+        PodcastEpisode( QListViewItem *parent, QListViewItem *after, const QDomElement &xml, 
+                        const int feedType, const bool &isNew=false );
         PodcastEpisode( QListViewItem *parent, QListViewItem *after, PodcastEpisodeBundle &bundle );
 
         void  downloadMedia();
