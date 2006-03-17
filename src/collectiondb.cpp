@@ -1873,11 +1873,12 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
                         debug() << "No bundle recovered for: " << *it << endl;
                         b = MetaBundle();
                         b.setUrl( KURL::fromPathOrURL( *it ) );
-                        b.setTitle( QString( "%1 %2 %3%4" )
-                                       .arg( url.filename() )
-                                       .arg( url.isLocalFile() ? i18n( "in" ) : i18n( "from" ) )
-                                       .arg( url.hasHost() ? url.host() : QString() )
-                                       .arg( url.directory( false ) ) );
+
+                        if ( !url.isLocalFile() )
+                            b.setTitle( QString( "%1 from %2%3" )
+                                        .arg( url.filename() )
+                                        .arg( url.hasHost() ? url.host() : QString() )
+                                        .arg( url.directory( false ) ) );
 
                         // try to see if the engine has some info about the
                         // item (the intended behaviour should be that if the
