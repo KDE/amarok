@@ -458,6 +458,7 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
         // Set file path
         g_object_set( G_OBJECT(m_gst_src), "location", static_cast<const char*>( QFile::encodeName( url.path() ) ), NULL );
     }
+      else { destroyPipeline(); return false; }
 /*    else {
         // Create our custom streamsrc element, which transports data into the pipeline
         m_gst_src = GST_ELEMENT( gst_streamsrc_new( m_streamBuf, &m_streamBufIndex, &m_streamBufStop, &m_streamBuffering ) );
