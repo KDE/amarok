@@ -138,7 +138,7 @@ The use of 0 to express a null pointer is preferred over the use of NULL.
 NULL, on the other hand, is a preprocessor directive (#define) and not only is
 it more typing than '0' but preprocessor directives are less elegant.
 
-    SomeClass* instance = 0;
+    SomeClass *instance = 0;
 
 
 Const Correctness
@@ -189,6 +189,7 @@ DEBUG_THREAD_FUNC_INFO outputs the memory address of the current QThread or 'non
 SHOULD_BE_GUI outputs a warning message if it occurs in a thread that isn't in
     the original "GUI Thread", otherwise it is silent. Useful for documenting
     functions and to prevent problems in the future.
+
 
 Errors & Asserts
 ----------------
