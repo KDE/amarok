@@ -75,7 +75,7 @@ Comments
 Comment your code. Don't comment what the code does, comment on the purpose of the code. It's
 good for others reading your code, and ultimately it's good for you too.
 
-Comments are essential adding a strange hack, like the following example:
+Comments are essential when adding a strange hack, like the following example:
 
 /** Due to xine-lib, we have to make KProcess close all fds, otherwise we get "device is busy" messages
   * Used by AmaroKProcIO and AmaroKProcess, exploiting commSetupDoneC(), a virtual method that
@@ -183,16 +183,16 @@ DEBUG_UNINDENT
 AMAROK_NOTIMPLEMENTED
 AMAROK_DEPRECATED
 
-threadweaver.h has two additional macros: 
-DEBUG_THREAD_FUNC_INFO outputs the memory address of the current QThread or 'none' 
+threadweaver.h has two additional macros:
+DEBUG_THREAD_FUNC_INFO outputs the memory address of the current QThread or 'none'
     if its the original GUI thread.
-SHOULD_BE_GUI outputs a warning message if it occurs in a thread that isn't in 
+SHOULD_BE_GUI outputs a warning message if it occurs in a thread that isn't in
     the original "GUI Thread", otherwise it is silent. Useful for documenting
     functions and to prevent problems in the future.
 
 Errors & Asserts
 ----------------
-*Never use assert() or fatal(). There must be a better option then crashing a user's
+*Never use assert() or fatal(). There must be a better option than crashing a user's
 application (its not uncommon for end-users to have debugging enabled).
 
 *KMessageBox is fine to use to prompt the user, but do not use it to display errors
