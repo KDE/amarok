@@ -1595,6 +1595,7 @@ PodcastChannel::purge()
         if( m_last && m_last->isOnDisk() )
             urls.append( m_last->localUrl() );
 
+        CollectionDB::instance()->removePodcastEpisode( m_last->dBId() );
         delete m_last;
         m_last = newLast;
     }
@@ -1702,6 +1703,7 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
     }
 
     KURL parentUrl = static_cast<PodcastChannel*>(parent)->url();
+    m_bundle.setDBId( -1 );
     m_bundle.setURL( link );
     m_bundle.setParent( parentUrl );
     m_bundle.setTitle( title );

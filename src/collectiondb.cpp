@@ -1584,7 +1584,8 @@ CollectionDB::getPodcastEpisodes( const KURL &parent )
     foreach( values )
     {
         PodcastEpisodeBundle peb;
-        peb.setURL         ( KURL::fromPathOrURL(*++it) ); //skip id
+        peb.setDBId        ( (*it).toInt() );
+        peb.setURL         ( KURL::fromPathOrURL(*++it) );
         peb.setParent      ( KURL::fromPathOrURL(*++it) );
         peb.setGuid        ( *++it );
         peb.setTitle       ( *++it );
@@ -1622,11 +1623,26 @@ CollectionDB::addPodcastFolder( const QString &name, const int parent_id, const 
     return values[0].toInt();
 }
 
-// bool
-// CollectionDB::deletePodcastEpisode( const PodcastEpisodeBundle &episode )
-// {
-//     QString command = "DELETE FROM podcastepisodes 
-// }
+void
+CollectionDB::updatePodcastFolder( const int folder_id, const QString &name, const int parent_id, const bool isOpen )
+{
+    if (getDbConnectionType() == DbConnection::postgresql) {
+            query( QString( "UPDATE podcastfolders SET name='%1', parent=%2, isOpen=%3 WHERE id=%4;" )
+                            .arg( escapeString(name) )
+                            .arg( QString::number(parent_id) )
+                            .arg( isOpen ? boolT() : boolF() )
+                            .arg( QString::number(folder_id) ) );
+        }
+        else
+        {
+            query( QString( "REPLACE INTO podcastfolders ( id, name, parent, isOpen ) "
+                            "VALUES ( %1, '%2', %3, %4 );" )
+                            .arg( QString::number(folder_id) )
+                            .arg( escapeString(name) )
+                            .arg( QString::number(parent_id) )
+                            .arg( isOpen ? boolT() : boolF() ) );
+        }
+}
 
 bool
 CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
@@ -2325,11 +2341,19 @@ CollectionDB::removePodcastChannel( const KURL &url )
               .arg( escapeString( url.url() ) ) );
 }
 
+
+/// Try not to delete by url, since some podcast feeds have all the same url
 void
-CollectionDB::removePodcastEpisode( const KURL &url )
+CollectionDB::removePodcastEpisode( const int id )
 {
-    query( QString( "DELETE FROM podcastepisodes WHERE url = '%1';" )
-              .arg( escapeString( url.url() ) ) );
+    if( id < 0 )
+    {
+        error() << "Tried to delete a podcast without id." << endl;
+        return;
+    }
+    
+    query( QString( "DELETE FROM podcastepisodes WHERE id = '%1';" )
+              .arg( QString::number(id) ) );
 }
 
 void

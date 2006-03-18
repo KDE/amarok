@@ -1817,6 +1817,11 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
             m_podcastItemsToScan.remove( static_cast<PodcastChannel*>(item) );
             podcastsToDelete.append( static_cast<PodcastChannel*>(item) );
         }
+        else if( isPodcastEpisode( item ) )
+        {
+            CollectionDB::instance()->removePodcastEpisode( static_cast<PodcastEpisode*>(item)->dBId() );
+            delete item;
+        }
         else if( !keepItem )
         {
             m_dynamicEntries.remove(item); // if it's not there, no problem, it just returns false.

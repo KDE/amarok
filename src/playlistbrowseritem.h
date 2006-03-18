@@ -251,6 +251,7 @@ class PodcastEpisode : public QObject, public PlaylistBrowserEntry
         void setDownloaded( const bool &b ) { m_downloaded = b; updatePixmap(); }
 
         // for convenience
+        const int     dBId()        { return m_bundle.dBId(); }
         const KURL    url()         { return m_bundle.url(); }
         const QString title()       { return m_bundle.title(); }
         const QString author()      { return m_bundle.author(); }
@@ -391,9 +392,9 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         PodcastSettings *m_settings;
 
         PodcastEpisode          *m_last;
-        KIO::TransferJob     *m_podcastJob;
-        PlaylistCategory   *m_parent; // category it belongs to
-        QString               m_podcastCurrentUrl;
+        KIO::TransferJob        *m_podcastJob;
+        PlaylistCategory        *m_parent; // category it belongs to
+        QString                  m_podcastCurrentUrl;
         QPtrList<PodcastEpisode> m_podcastDownloadQueue;
 };
 

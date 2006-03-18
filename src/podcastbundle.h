@@ -120,6 +120,7 @@ class PodcastEpisodeBundle
             m_isNew = isNew;
         }
 
+        int     dBId()        const;
         KURL    url()         const;
         KURL    parent()      const;
         QString author()      const;
@@ -131,6 +132,7 @@ class PodcastEpisodeBundle
         QString guid()        const;
         bool    isNew()       const;
 
+        void    setDBId( const int i );
         void    setURL( const KURL &u );
         void    setParent( const KURL &u );
         void    setAuthor( const QString &a );
@@ -143,6 +145,7 @@ class PodcastEpisodeBundle
         void    setNew( const bool &b );
 
     private:
+        int     m_id;
         KURL    m_url;
         KURL    m_parent;
         QString m_author;
@@ -155,6 +158,7 @@ class PodcastEpisodeBundle
         bool    m_isNew;
 };
 
+inline int     PodcastEpisodeBundle::dBId()        const { return m_id; }
 inline KURL    PodcastEpisodeBundle::url()         const { return m_url; }
 inline KURL    PodcastEpisodeBundle::parent()      const { return m_parent; }
 inline QString PodcastEpisodeBundle::author()      const { return m_author; }
@@ -166,6 +170,7 @@ inline int     PodcastEpisodeBundle::duration()    const { return m_duration; }
 inline QString PodcastEpisodeBundle::guid()        const { return m_guid; }
 inline bool    PodcastEpisodeBundle::isNew()       const { return m_isNew; }
 
+inline void    PodcastEpisodeBundle::setDBId( const int i )             { m_id = i; }
 inline void    PodcastEpisodeBundle::setURL( const KURL &u )            { m_url = u; }
 inline void    PodcastEpisodeBundle::setParent( const KURL &u )         { m_parent = u; }
 inline void    PodcastEpisodeBundle::setAuthor( const QString &a )      { m_author = a; }

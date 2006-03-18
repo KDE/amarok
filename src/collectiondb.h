@@ -268,8 +268,9 @@ class CollectionDB : public QObject, public EngineObserver
         QValueList<PodcastChannelBundle> getPodcastChannels();
         QValueList<PodcastEpisodeBundle> getPodcastEpisodes( const KURL &parent );
         void removePodcastChannel( const KURL &url ); // will remove all episodes too
-        void removePodcastEpisode( const KURL &url );
+        void removePodcastEpisode( const int id );
         int  addPodcastFolder( const QString &name, const int parent_id=0, const bool isOpen=false );
+        void updatePodcastFolder( const int folder_id, const QString &name, const int parent_id=0, const bool isOpen=false );
 
         /**
          * The @p bundle parameter's url() will be looked up in the Collection
