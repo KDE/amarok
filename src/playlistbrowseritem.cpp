@@ -100,14 +100,12 @@ PlaylistBrowserEntry::compare( QListViewItem* item, int col, bool ascending ) co
 PlaylistCategory::PlaylistCategory( QListView *parent, QListViewItem *after, const QString &t, bool isFolder )
     : PlaylistBrowserEntry( parent, after )
     , m_title( t )
-    , m_id( 0 )
+    , m_id( -1 )
     , m_folder( isFolder )
 {
     setDragEnabled( false );
     setRenameEnabled( 0, isFolder );
-
     setPixmap( 0, SmallIcon("folder_red") );
-
     setText( 0, t );
 }
 
@@ -115,43 +113,61 @@ PlaylistCategory::PlaylistCategory( QListView *parent, QListViewItem *after, con
 PlaylistCategory::PlaylistCategory( PlaylistCategory *parent, QListViewItem *after, const QString &t, bool isFolder )
     : PlaylistBrowserEntry( parent, after )
     , m_title( t )
-    , m_id( 0 )
+    , m_id( -1 )
     , m_folder( isFolder )
 {
     setDragEnabled( false );
     setRenameEnabled( 0, isFolder );
-
     setPixmap( 0, SmallIcon("folder") );
-
     setText( 0, t );
 }
 
 
 PlaylistCategory::PlaylistCategory( QListView *parent, QListViewItem *after, const QDomElement &xmlDefinition, bool isFolder )
     : PlaylistBrowserEntry( parent, after )
-    , m_id( 0 )
+    , m_id( -1 )
     , m_folder( isFolder )
 {
     setXml( xmlDefinition );
     setDragEnabled( false );
     setRenameEnabled( 0, isFolder );
-
     setPixmap( 0, SmallIcon("folder_red") );
 }
 
 
 PlaylistCategory::PlaylistCategory( PlaylistCategory *parent, QListViewItem *after, const QDomElement &xmlDefinition )
     : PlaylistBrowserEntry( parent, after )
-    , m_id( 0 )
+    , m_id( -1 )
     , m_folder( true )
 {
     setXml( xmlDefinition );
     setDragEnabled( false );
     setRenameEnabled( 0, true );
-
     setPixmap( 0, SmallIcon("folder") );
 }
 
+PlaylistCategory::PlaylistCategory( PlaylistCategory *parent, QListViewItem *after, const QString &t, const int id )
+    : PlaylistBrowserEntry( parent, after )
+    , m_title( t )
+    , m_id( id )
+    , m_folder( true )
+{
+    setDragEnabled( false );
+    setRenameEnabled( 0, true );
+    setPixmap( 0, SmallIcon("folder") );
+    setText( 0, t );
+}
+
+void PlaylistCategory::okRename( int col )
+{
+    QListViewItem::okRename( col );
+    
+    if( m_id < 0 )  return;
+    
+    // update the database entry to have the correct name
+    const int parentId = parent() ? static_cast<PlaylistCategory*>(parent())->id() : 0;
+    CollectionDB::instance()->updatePodcastFolder( m_id, text(0), parentId, isOpen() );
+}
 
 void PlaylistCategory::setXml( const QDomElement &xml )
 {
@@ -1534,7 +1550,9 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
     
     foreachType( QValueList<QDomElement>, eList )
     {
-        new PodcastEpisode( this, 0 /*adding in reverse!*/, *it, feedType );
+        PodcastEpisode *ep = new PodcastEpisode( this, 0 /*adding in reverse!*/, *it, feedType );
+        if( m_updating )
+            ep->setNew( true );
     }
 
     if( m_settings->m_purge && childCount() > m_settings->m_purgeCount )

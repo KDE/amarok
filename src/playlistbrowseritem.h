@@ -115,6 +115,7 @@ class PlaylistCategory : public PlaylistBrowserEntry
         PlaylistCategory( PlaylistCategory *parent, QListViewItem *after, const QString &, bool isFolder=true );
         PlaylistCategory( QListView *parent, QListViewItem *after, const QDomElement &xmlDefinition, bool isFolder=false);
         PlaylistCategory( PlaylistCategory *parent, QListViewItem *after, const QDomElement &xmlDefinition );
+        PlaylistCategory( PlaylistCategory *parent, QListViewItem *after, const QString &t, const int id );
 
         ~PlaylistCategory() { };
 
@@ -130,6 +131,9 @@ class PlaylistCategory : public PlaylistBrowserEntry
 
         int   rtti() const { return RTTI; }
         static const int RTTI = 1000;    //category item
+        
+    protected:
+        void  okRename( int col );
 
     private:
 

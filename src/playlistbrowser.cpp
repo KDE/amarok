@@ -862,6 +862,7 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
     if( !file.open( IO_ReadOnly ) || !d.setContent( stream.read() ) )
     { /*Couldn't open the file or it had invalid content, so let's create an empty element*/
         PlaylistCategory *p = new PlaylistCategory( m_listview, after, i18n("Podcasts") );
+        p->setId( 0 );
         loadPodcastsFromDatabase( p );
         return p;
     }
@@ -874,7 +875,7 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
             if( !m_podcastTimerInterval ) m_podcastTimerInterval = 14400000;  // 4 hours
 
             PlaylistCategory *p = new PlaylistCategory( m_listview, after, e );
-
+            p->setId( 0 );
             //delete the file, it is deprecated
             KIO::del( KURL( podcastBrowserCache() ) );
 
@@ -886,11 +887,15 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
             return p;
         }
     }
-    return new PlaylistCategory( m_listview, after, i18n("Podcasts") );
+    PlaylistCategory *p = new PlaylistCategory( m_listview, after, i18n("Podcasts") );
+    p->setId( 0 );
+    return p;
 }
 
 void PlaylistBrowser::loadPodcastsFromDatabase( PlaylistCategory *p )
 {
+    loadPodcastFolders( p );
+
     QValueList<PodcastChannelBundle> channels;
     QValueList<PodcastEpisodeBundle> episodes;
 
@@ -915,21 +920,31 @@ void PlaylistBrowser::loadPodcastsFromDatabase( PlaylistCategory *p )
     }
 }
 
-/**
- * build the parent structure as necessary, and return the first parent
- * @param structure: /podcasts/computing/java
- * @return qlistviewitem folder called java
- **/
-// PlaylistBrowserEntry*
-// PlaylistBrowser::ensureParentStructure( const QString &structure )
-// {
-//     QListViewItem *parent = 0;
-//     QStringList list = QStringList::split( "/", structure, true );
-//     foreach( list )
-//     {
-//         findItemInTree( structure, 0 );
-//     }
-// }
+void PlaylistBrowser::loadPodcastFolders( PlaylistCategory *p )
+{
+    QString sql = "SELECT * FROM podcastfolders ORDER BY parent ASC;";
+    QStringList values = CollectionDB::instance()->query( sql );
+
+    // store the folder and IDs so finding a parent is fast
+    QMap<int,PlaylistCategory*> folderMap;
+    PlaylistCategory *folder = 0;
+    foreach( values )
+    {
+        const int     id       =     (*it).toInt();
+        const QString t        =    *++it;
+        const int     parentId =   (*++it).toInt();
+        const bool    isOpen   = ( (*++it) == "true" ? true : false );
+        
+        PlaylistCategory *parent = p;
+        if( parentId > 0 )
+            parent = folderMap[parentId];
+        
+        folder = new PlaylistCategory( parent, folder, t, id );
+        folder->setOpen( isOpen );
+        
+        folderMap[id] = folder;
+    }
+}
 
 void PlaylistBrowser::scanPodcasts()
 {
@@ -1707,7 +1722,7 @@ void PlaylistBrowser::subFromDynamic()
         }
     }
 
-    Party::instance()->setDynamicItems(m_dynamicEntries);
+    Party::instance()->setDynamicItems( m_dynamicEntries );
 }
 
 void PlaylistBrowser::removeSelectedItems() //SLOT
@@ -1790,6 +1805,17 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
                     podcastFoldersToDelete.append( static_cast<PlaylistCategory*>(item) );
                 }
             }
+            else
+            {
+                QListViewItem *parent = item;
+                while( parent ) {
+                    if( parent == m_podcastCategory ) {
+                        CollectionDB::instance()->removePodcastFolder( static_cast<PlaylistCategory*>(item)->id() );
+                        break;
+                    }
+                    parent = parent->parent();
+                }
+            }
         }
         else if( isStream( item ) )        streamsChanged = true;
         else if( isSmartPlaylist( item ) ) smartPlaylistsChanged = true;
@@ -1863,6 +1889,7 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
             }
             foreachType( QPtrList<PlaylistCategory>, podcastFoldersToDelete )
             {
+                CollectionDB::instance()->removePodcastFolder( (*it)->id() );
                 delete (*it);
             }
         }

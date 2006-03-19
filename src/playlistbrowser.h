@@ -81,7 +81,7 @@ class PlaylistBrowser : public QVBox
         QListViewItem *findItemInTree( const QString &searchstring, int c ) const;
 
         QPtrList<QListViewItem> dynamicEntries() const { return m_dynamicEntries; }
-	QListViewItem* podcastCategory() const { return m_podcastCategory; }
+	    QListViewItem* podcastCategory() const { return m_podcastCategory; }
 
         ViewMode viewMode() const { return m_viewMode; }
 
@@ -141,6 +141,7 @@ class PlaylistBrowser : public QVBox
 
         PlaylistCategory* loadPodcasts();
         void loadPodcastsFromDatabase( PlaylistCategory *p );
+        void loadPodcastFolders( PlaylistCategory *p );
         void changePodcastInterval();
         bool deletePodcastItems();
         bool deletePodcasts( QPtrList<PodcastChannel> items, const bool silent=false );

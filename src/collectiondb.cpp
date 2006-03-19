@@ -1611,15 +1611,12 @@ CollectionDB::addPodcastFolder( const QString &name, const int parent_id, const 
     command += QString::number( parent_id ) + ",";
     command += isOpen ? boolT() + ");" : boolF() + ");";
 
-    debug() << "adding folder: " << command << endl;
-
     insert( command, NULL );
 
     command = QString( "SELECT id FROM podcastfolders WHERE name = '%1' AND parent = '%2';" )
                        .arg( name ).arg( QString::number(parent_id) );
     QStringList values = query( command );
 
-    debug() << "Returned id: " << values[0] << endl;
     return values[0].toInt();
 }
 
@@ -1633,8 +1630,7 @@ CollectionDB::updatePodcastFolder( const int folder_id, const QString &name, con
                             .arg( isOpen ? boolT() : boolF() )
                             .arg( QString::number(folder_id) ) );
         }
-        else
-        {
+        else {
             query( QString( "REPLACE INTO podcastfolders ( id, name, parent, isOpen ) "
                             "VALUES ( %1, '%2', %3, %4 );" )
                             .arg( QString::number(folder_id) )
@@ -1642,6 +1638,35 @@ CollectionDB::updatePodcastFolder( const int folder_id, const QString &name, con
                             .arg( QString::number(parent_id) )
                             .arg( isOpen ? boolT() : boolF() ) );
         }
+}
+
+void
+CollectionDB::removePodcastChannel( const KURL &url )
+{
+    //remove channel
+    query( QString( "DELETE FROM podcastchannels WHERE url = '%1';" )
+              .arg( escapeString( url.url() ) ) );
+    //remove all children
+    query( QString( "DELETE FROM podcastepisodes WHERE parent = '%1';" )
+              .arg( escapeString( url.url() ) ) );
+}
+
+
+/// Try not to delete by url, since some podcast feeds have all the same url
+void
+CollectionDB::removePodcastEpisode( const int id )
+{
+    if( id < 0 ) return;
+    query( QString( "DELETE FROM podcastepisodes WHERE id = '%1';" )
+              .arg( QString::number(id) ) );
+}
+
+void
+CollectionDB::removePodcastFolder( const int id )
+{
+    if( id < 0 ) return;
+    query( QString("DELETE FROM podcastfolders WHERE id=%1;")
+              .arg( QString::number(id) ) );
 }
 
 bool
@@ -2327,33 +2352,6 @@ CollectionDB::updateDirStats( QString path, const long datetime, const bool temp
                   .arg( escapeString( path ) )
                   );
     }
-}
-
-void
-CollectionDB::removePodcastChannel( const KURL &url )
-{
-    debug() << "removing podcast: " << url.prettyURL() << endl;
-    //remove channel
-    query( QString( "DELETE FROM podcastchannels WHERE url = '%1';" )
-              .arg( escapeString( url.url() ) ) );
-    //remove all children
-    query( QString( "DELETE FROM podcastepisodes WHERE parent = '%1';" )
-              .arg( escapeString( url.url() ) ) );
-}
-
-
-/// Try not to delete by url, since some podcast feeds have all the same url
-void
-CollectionDB::removePodcastEpisode( const int id )
-{
-    if( id < 0 )
-    {
-        error() << "Tried to delete a podcast without id." << endl;
-        return;
-    }
-    
-    query( QString( "DELETE FROM podcastepisodes WHERE id = '%1';" )
-              .arg( QString::number(id) ) );
 }
 
 void
