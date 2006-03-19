@@ -56,10 +56,10 @@
                         <string>Stream or download on re&amp;quest</string>
                     </property>
                     <property name="toolTip" stdset="0">
-                        <string>Media must be downloaded, otherwise the podcast will be played from the remote server.</string>
+                        <string>Media must be explicitly downloaded, otherwise the podcast will be played from the remote server.</string>
                     </property>
                     <property name="whatsThis" stdset="0">
-                        <string>Media must be downloaded, otherwise the podcast will be played from the remote server.</string>
+                        <string>Media must be explicitly downloaded, otherwise the podcast will be played from the remote server.</string>
                     </property>
                 </widget>
                 <widget class="QRadioButton">
@@ -97,13 +97,13 @@
                 <cstring>m_purgeCheck</cstring>
             </property>
             <property name="text">
-                <string>Limit &amp;number of items</string>
+                <string>Limit &amp;number of episodes</string>
             </property>
             <property name="toolTip" stdset="0">
-                <string>If checked, amaroK will throw away old podcasts</string>
+                <string>If checked, amaroK will throw away old podcast episodes</string>
             </property>
             <property name="whatsThis" stdset="0">
-                <string>If checked, amaroK will throw away old podcasts</string>
+                <string>If checked, amaroK will throw away old podcast episodes</string>
             </property>
         </widget>
         <spacer row="4" column="3">
