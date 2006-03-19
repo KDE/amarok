@@ -18,8 +18,10 @@
 
 #include "amarokconfig.h"
 #include "directorylist.h"
+
 #include <kfileitem.h>
 #include <klocale.h>
+
 #include <qfile.h>
 #include <qlabel.h>
 #include <qpainter.h>
@@ -49,6 +51,9 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 
     // Read config values
     m_dirs = AmarokConfig::collectionFolders();
+    // just in case, m_dirs contains no longer existing directories
+    writeConfig();
+
     m_recursive->setChecked( AmarokConfig::scanRecursively() );
     m_monitor->setChecked( AmarokConfig::monitorChanges() );
     m_playlists->setChecked( AmarokConfig::importPlaylists() );
@@ -74,6 +79,7 @@ CollectionSetup::writeConfig()
         if( QFile::exists( m_dirs[i] ) )
             freshDirs << m_dirs[i];
     }
+    m_dirs = freshDirs;
 
     AmarokConfig::setCollectionFolders( m_dirs );
     AmarokConfig::setScanRecursively( recursive() );
