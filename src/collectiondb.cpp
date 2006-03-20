@@ -1508,12 +1508,20 @@ CollectionDB::addPodcastChannel( const PodcastChannelBundle &pcb )
     return true;
 }
 
-bool
-CollectionDB::addPodcastEpisode( const PodcastEpisodeBundle &episode )
+int
+CollectionDB::addPodcastEpisode( const PodcastEpisodeBundle &episode, const int idToUpdate )
 {
-    QString command = "INSERT INTO podcastepisodes "
-                      "( url, parent, title, composer, comment, filetype, createdate, guid, length, isNew ) "
-                      "VALUES ('";
+    QString command;
+     
+    if( idToUpdate ) {
+        command = "REPLACE INTO podcastepisodes "
+                  "( id, url, parent, title, composer, comment, filetype, createdate, guid, length, isNew ) "
+                  "VALUES (";
+    } else {
+        command = "INSERT INTO podcastepisodes "
+                "( url, parent, title, composer, comment, filetype, createdate, guid, length, isNew ) "
+                "VALUES (";
+    }
 
     QString title       = episode.title();
     QString author      = episode.author();
@@ -1526,7 +1534,10 @@ CollectionDB::addPodcastEpisode( const PodcastEpisodeBundle &episode )
     if( title.isEmpty() )
         title = episode.url().prettyURL();
 
-    command += escapeString( episode.url().url() )   + "','";
+    if( idToUpdate )
+        command += QString::number( idToUpdate ) + ",";
+        
+    command += "'" + escapeString( episode.url().url() )   + "','";
     command += escapeString( episode.parent().url()) + "',";
     command += ( title.isEmpty()       ? "NULL" : "'" + escapeString( title )       + "'" ) + ",";
     command += ( author.isEmpty()      ? "NULL" : "'" + escapeString( author )      + "'" ) + ",";
@@ -1537,10 +1548,17 @@ CollectionDB::addPodcastEpisode( const PodcastEpisodeBundle &episode )
     command += QString::number( duration ) + ",";
     command += episode.isNew() ? boolT() + " );" : boolF() + " );";
 
-    //FIXME: currently there's no way to check if an INSERT query failed or not - always return true atm.
-    // Now it might be possible as insert returns the rowid.
     insert( command, NULL );
-    return true;
+    
+    if( idToUpdate ) return idToUpdate;
+    //This is a bit of a hack. We have just inserted an item, so it is going to be the one with the
+    //highest id.  Change this if threaded insertions are used in the future.
+    QStringList values = query( QString("SELECT id FROM podcastepisodes WHERE url='%1' ORDER BY id DESC;")
+                            .arg( escapeString( episode.url().url() ) ) );
+    debug() << "values[0]: " << values[0] << endl;
+    if( values.isEmpty() ) return -1;
+    
+    return values[0].toInt();
 }
 
 QValueList<PodcastChannelBundle>
@@ -1594,7 +1612,7 @@ CollectionDB::getPodcastEpisodes( const KURL &parent )
         peb.setType        ( *++it );
         peb.setDate        ( *++it );
         peb.setDuration    ( (*++it).toInt() );
-        peb.setNew         ( *++it == boolT() ? true : false  );
+        peb.setNew         ( (*++it) == boolT() ? true : false  );
 
         bundles.append( peb );
     }
@@ -1621,23 +1639,53 @@ CollectionDB::addPodcastFolder( const QString &name, const int parent_id, const 
 }
 
 void
+CollectionDB::updatePodcastEpisode( const int id, const PodcastEpisodeBundle &b )
+{
+    if( getDbConnectionType() == DbConnection::postgresql ) {
+        QString       title       = b.title();
+        const QString author      = b.author();
+        const QString description = b.description();
+        const QString type        = b.type();
+        const QString date        = b.date();
+        const QString guid        = b.guid();
+        const int     duration    = b.duration();
+        const bool    isNew       = b.isNew();
+        
+        if( title.isEmpty() )
+        title = b.url().prettyURL();
+        
+        query( QString( "UPDATE podcastepisode SET url='%1', parent='%2', title='%3', composer='%4', comment='%5'"
+                        "filetype='%6', createdate='%7', guid='%8', length=%9, isNew=%10 WHERE id=%11;" )
+                        .arg( escapeString( b.url().url() ) )    .arg( escapeString( b.parent().url() ) )
+                        .arg( escapeString( title ) )            .arg( escapeString( author ) )
+                        .arg( escapeString( description ) )      .arg( escapeString( type ) )
+                        .arg( escapeString( date ) )             .arg( escapeString( guid ) )
+                        .arg( QString::number( duration ) )      .arg( isNew ? boolT() : boolF() )
+                        .arg( QString::number(id) ) );
+    }
+    else {
+        addPodcastEpisode( b, id );
+    }
+}
+
+void
 CollectionDB::updatePodcastFolder( const int folder_id, const QString &name, const int parent_id, const bool isOpen )
 {
-    if (getDbConnectionType() == DbConnection::postgresql) {
-            query( QString( "UPDATE podcastfolders SET name='%1', parent=%2, isOpen=%3 WHERE id=%4;" )
-                            .arg( escapeString(name) )
-                            .arg( QString::number(parent_id) )
-                            .arg( isOpen ? boolT() : boolF() )
-                            .arg( QString::number(folder_id) ) );
-        }
-        else {
-            query( QString( "REPLACE INTO podcastfolders ( id, name, parent, isOpen ) "
-                            "VALUES ( %1, '%2', %3, %4 );" )
-                            .arg( QString::number(folder_id) )
-                            .arg( escapeString(name) )
-                            .arg( QString::number(parent_id) )
-                            .arg( isOpen ? boolT() : boolF() ) );
-        }
+    if( getDbConnectionType() == DbConnection::postgresql ) {
+        query( QString( "UPDATE podcastfolders SET name='%1', parent=%2, isOpen=%3 WHERE id=%4;" )
+                        .arg( escapeString(name) )
+                        .arg( QString::number(parent_id) )
+                        .arg( isOpen ? boolT() : boolF() )
+                        .arg( QString::number(folder_id) ) );
+    }
+    else {
+        query( QString( "REPLACE INTO podcastfolders ( id, name, parent, isOpen ) "
+                        "VALUES ( %1, '%2', %3, %4 );" )
+                        .arg( QString::number(folder_id) )
+                        .arg( escapeString(name) )
+                        .arg( QString::number(parent_id) )
+                        .arg( isOpen ? boolT() : boolF() ) );
+    }
 }
 
 void

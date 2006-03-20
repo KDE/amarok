@@ -1527,7 +1527,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
     
     foreachType( QValueList<QDomElement>, eList )
     {
-        PodcastEpisode *ep = new PodcastEpisode( this, 0 /*adding in reverse!*/, *it, feedType );
+        PodcastEpisode *ep = new PodcastEpisode( this, 0 /*adding in reverse!*/, *it, feedType, m_updating/*new*/ );
         if( m_updating )
             ep->setNew( true );
     }
@@ -1635,7 +1635,6 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
       , m_fetching( false )
       , m_downloaded( false )
       , m_onDisk( false )
-      , m_new( isNew )
 {
     const bool isAtom = ( feedType == ATOM );
     QString title = xml.namedItem( "title" ).toElement().text();
@@ -1708,7 +1707,8 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
     m_bundle.setGuid( guid );
     m_bundle.setNew( isNew );
 
-    CollectionDB::instance()->addPodcastEpisode( m_bundle );
+    int id = CollectionDB::instance()->addPodcastEpisode( m_bundle );
+    m_bundle.setDBId( id );
     
     setText( 0, title );
     updatePixmap();
@@ -1726,7 +1726,6 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after, Pod
       , m_fetching( false )
       , m_downloaded( false )
       , m_onDisk( false )
-      , m_new( false )
 {
     m_localUrl = dynamic_cast<PodcastChannel*>(m_parent)->saveLocation();
 
@@ -1753,7 +1752,7 @@ PodcastEpisode::updatePixmap()
         setPixmap( 0, SmallIcon( "down" ) );
     else if( m_downloaded )
         setPixmap( 0, SmallIcon( "sound" ) );
-    else if( m_new )
+    else if( isNew() )
         setPixmap( 0, SmallIcon("favorites") );
     else
         setPixmap( 0, SmallIcon("player_playlist_2") );
@@ -1836,7 +1835,7 @@ PodcastEpisode::downloadResult( KIO::Job* job ) //SLOT
 
     m_onDisk = true;
     m_downloaded = true;
-    m_new = false;
+    setNew( false );
 
     PodcastChannel *channel = dynamic_cast<PodcastChannel *>( m_parent );
     if( channel && channel->addToMediaDevice() && MediaBrowser::isAvailable() )
@@ -1968,8 +1967,10 @@ PodcastEpisode::setLocalUrlBase( const QString &s )
 void
 PodcastEpisode::setNew( const bool &n )
 {
-    m_new = n;
+    if( n == isNew() ) return;
+    m_bundle.setNew( n );
     updatePixmap();
+    CollectionDB::instance()->updatePodcastEpisode( dBId(), m_bundle );
 }
 
 void PodcastEpisode::setListened( const bool &n )

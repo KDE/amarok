@@ -247,7 +247,7 @@ class PodcastEpisode : public QObject, public PlaylistBrowserEntry
         QListViewItem *itemChannel() { return m_parent; }
 
         
-        const bool isNew()         const { return m_new; }
+        const bool isNew()         const { return m_bundle.isNew(); }
         const bool hasDownloaded() const { return m_downloaded; }
         
         void setNew( const bool &n = true );
@@ -309,7 +309,6 @@ class PodcastEpisode : public QObject, public PlaylistBrowserEntry
 
         bool        m_downloaded;       //marked as downloaded in cached xml
         bool        m_onDisk;
-        bool        m_new;
 };
 
 /// Stored in the database
