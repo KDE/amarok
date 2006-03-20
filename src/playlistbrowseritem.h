@@ -334,8 +334,6 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         void  configure();
         void  fetch();
         void  rescan();
-        void  saveCache( const QDomDocument &doc );
-        void  saveCache() { saveCache( m_doc ); }
 
         const KURL &url() { return m_url; }
         const KURL &link() { return m_link; }
@@ -378,7 +376,6 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         KURL        m_url;                         //remote xml url
         KURL        m_link;                        //webpage
         QString     m_title;
-        QDomDocument m_doc;     //xml to be stored in the cache-file
         QString     m_cache;                       //filename for caching
         QString     m_description;
         QString     m_copyright;
