@@ -8,7 +8,7 @@
 #include "actionclasses.h"   //mousePressEvent
 #include "blockanalyzer.h"
 #include <cmath>
-#include "debug.h"
+// #include "debug.h"
 #include <kconfig.h>
 #include <kglobalsettings.h> //paletteChange()
 #include <kiconloader.h>     //mousePressEvent
@@ -103,8 +103,6 @@ BlockAnalyzer::determineStep()
 
     const double fallTime = 30 * m_rows;
     m_step = double(m_rows * timeout()) / fallTime;
-
-    debug() << "FallTime: " << fallTime << endl;
 }
 
 void
@@ -222,20 +220,19 @@ QColor
 ensureContrast( const QColor &bg, const QColor &fg, uint _amount = 150 )
 {
     class OutputOnExit {
-    public:
-        OutputOnExit( const QColor &color ) : c( color ) {}
-       ~OutputOnExit() { int h,s,v; c.getHsv( &h, &s, &v ); debug() << "Final: " << (QValueList<int>() << h << s << v) << endl; }
-    private:
-        const QColor &c;
+        public:
+            OutputOnExit( const QColor &color ) : c( color ) {}
+           ~OutputOnExit() { int h,s,v; c.getHsv( &h, &s, &v ); }
+        private:
+            const QColor &c;
     };
 
     // hack so I don't have to cast everywhere
     #define amount static_cast<int>(_amount)
-    #define STAMP debug() << (QValueList<int>() << fh << fs << fv) << endl;
-    #define STAMP1( string ) debug() << string << ": " << (QValueList<int>() << fh << fs << fv) << endl;
-    #define STAMP2( string, value ) debug() << string << "=" << value << ": " << (QValueList<int>() << fh << fs << fv) << endl;
+//     #define STAMP debug() << (QValueList<int>() << fh << fs << fv) << endl;
+//     #define STAMP1( string ) debug() << string << ": " << (QValueList<int>() << fh << fs << fv) << endl;
+//     #define STAMP2( string, value ) debug() << string << "=" << value << ": " << (QValueList<int>() << fh << fs << fv) << endl;
 
-    DEBUG_BLOCK
     OutputOnExit allocateOnTheStack( fg );
 
     int bh, bs, bv;
@@ -244,12 +241,9 @@ ensureContrast( const QColor &bg, const QColor &fg, uint _amount = 150 )
     bg.getHsv( bh, bs, bv );
     fg.getHsv( fh, fs, fv );
 
-    debug() << "   bg: " << (QValueList<int>() << bh << bs << bv) << endl;
-    debug() << "   fg: " << (QValueList<int>() << fh << fs << fv) << endl;
-
     int dv = abs( bv - fv );
 
-    STAMP2( "DV", dv );
+//     STAMP2( "DV", dv );
 
     // value is the best measure of contrast
     // if there is enough difference in value already, return fg unchanged
@@ -258,7 +252,7 @@ ensureContrast( const QColor &bg, const QColor &fg, uint _amount = 150 )
 
     int ds = abs( bs - fs );
 
-    STAMP2( "DS", ds );
+//     STAMP2( "DS", ds );
 
     // saturation is good enough too. But not as good. TODO adapt this a little
     if( ds > amount )
@@ -266,7 +260,7 @@ ensureContrast( const QColor &bg, const QColor &fg, uint _amount = 150 )
 
     int dh = abs( bh - fh );
 
-    STAMP2( "DH", dh );
+//     STAMP2( "DH", dh );
 
     if( dh > 120 ) {
         // a third of the colour wheel automatically guarentees contrast
@@ -275,14 +269,14 @@ ensureContrast( const QColor &bg, const QColor &fg, uint _amount = 150 )
 
         // check the saturation for the two colours is sufficient that hue alone can
         // provide sufficient contrast
-        if( ds > amount / 2 && (bs > 125 && fs > 125) ) {
-            STAMP1( "Sufficient saturation difference, and hues are compliemtary" );
-            return fg; }
-        else if( dv > amount / 2 && (bv > 125 && fv > 125) ) {
-            STAMP1( "Sufficient value difference, and hues are compliemtary" );
-            return fg; }
+        if( ds > amount / 2 && (bs > 125 && fs > 125) )
+//             STAMP1( "Sufficient saturation difference, and hues are compliemtary" );
+            return fg;
+        else if( dv > amount / 2 && (bv > 125 && fv > 125) )
+//             STAMP1( "Sufficient value difference, and hues are compliemtary" );
+            return fg;
 
-        STAMP1( "Hues are complimentary but we must modify the value or saturation of the contrasting colour" );
+//         STAMP1( "Hues are complimentary but we must modify the value or saturation of the contrasting colour" );
 
         //but either the colours are two desaturated, or too dark
         //so we need to adjust the system, although not as much
@@ -305,51 +299,50 @@ ensureContrast( const QColor &bg, const QColor &fg, uint _amount = 150 )
         // we have to modify the value and saturation of fg
         //adjustToLimits( bv, fv, amount );
 
-        STAMP
+//         STAMP
 
         // see if we need to adjust the saturation
         if( amount > 0 )
             adjustToLimits( bs, fs, _amount );
 
-        STAMP
+//         STAMP
 
         // see if we need to adjust the hue
         if( amount > 0 )
             fh += amount; // cycles around;
 
-        STAMP
+//         STAMP
 
         return QColor( fh, fs, fv, QColor::Hsv );
     }
 
-    STAMP
+//     STAMP
 
     if( fv > bv && bv > amount )
         return QColor( fh, fs, bv - amount, QColor::Hsv );
 
-    STAMP
+//     STAMP
 
     if( fv < bv && fv > amount )
         return QColor( fh, fs, fv - amount, QColor::Hsv );
 
-    STAMP
+//     STAMP
 
     if( fv > bv && (255 - fv > amount) )
         return QColor( fh, fs, fv + amount, QColor::Hsv );
 
-    STAMP
+//     STAMP
 
     if( fv < bv && (255 - bv > amount ) )
         return QColor( fh, fs, bv + amount, QColor::Hsv );
 
-    STAMP
-
-    debug() << "Something went wrong!\n";
+//     STAMP
+//     debug() << "Something went wrong!\n";
 
     return Qt::blue;
 
     #undef amount
-    #undef STAMP
+//     #undef STAMP
 }
 
 void

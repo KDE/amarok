@@ -241,33 +241,32 @@ App::~App()
 #include <dcopref.h>
 #include <qstringlist.h>
 
-namespace {
-
-// grabbed from KsCD source, kompatctdisk.cpp
-QString urlToDevice(const QString& device)
+namespace
 {
-    KURL deviceUrl(device);
-    if (deviceUrl.protocol() == "media" || deviceUrl.protocol() == "system")
+    // grabbed from KsCD source, kompatctdisk.cpp
+    QString urlToDevice(const QString& device)
     {
-        debug() << "Asking mediamanager for " << deviceUrl.fileName() << endl;
-        DCOPRef mediamanager("kded", "mediamanager");
-        DCOPReply reply = mediamanager.call("properties(QString)",
-                                            deviceUrl.fileName());
-        QStringList properties = reply;
-        if (!reply.isValid() || properties.count() < 6)
+        KURL deviceUrl(device);
+        if (deviceUrl.protocol() == "media" || deviceUrl.protocol() == "system")
         {
-            debug() << "Invalid reply from mediamanager" << endl;
-	    return QString::null;
+            DCOPRef mediamanager( "kded", "mediamanager" );
+            DCOPReply reply = mediamanager.call( "properties(QString)", deviceUrl.fileName() );
+            QStringList properties = reply;
+            
+            if (!reply.isValid() || properties.count() < 6)
+            {
+                debug() << "Invalid reply from mediamanager" << endl;
+                return QString::null;
+            }
+            else
+            {
+                debug() << "Reply from mediamanager " << properties[5] << endl;
+                return properties[5];
+            }
         }
-        else
-        {
-            debug() << "Reply from mediamanager " << properties[5] << endl;
-	    return properties[5];
-        }
+    
+        return device;
     }
-
-    return device;
-}
 
 }
 
@@ -456,13 +455,14 @@ void App::initGlobalShortcuts()
 
 void App::fixHyperThreading()
 {
-    // Workaround for stability issues with HyperThreading CPU's, @see BUG 99199.
-    // First we detect the presence of HyperThreading. If active, we bind amarokapp
-    // to the first CPU only (hard affinity).
-    //
-    // @see http://www-128.ibm.com/developerworks/linux/library/l-affinity.html
-    // @see http://www.linuxjournal.com/article/6799
-    // (articles on processor affinity with the linux kernel)
+    /** Workaround for stability issues with HyperThreading CPU's, @see BUG 99199.
+     * First we detect the presence of HyperThreading. If active, we bind amarokapp
+     * to the first CPU only (hard affinity).
+     *
+     * @see http://www-128.ibm.com/developerworks/linux/library/l-affinity.html
+     * @see http://www.linuxjournal.com/article/6799
+     * (articles on processor affinity with the linux kernel)
+     */
 
     DEBUG_BLOCK
 
@@ -696,8 +696,6 @@ void App::applySettings( bool firstTime )
 void
 App::applyColorScheme()
 {
-    DEBUG_BLOCK
-
     QColorGroup group;
     using amaroK::ColorScheme::AltBase;
     int h, s, v;

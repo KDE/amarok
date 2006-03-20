@@ -4,7 +4,6 @@
 #define DEBUG_PREFIX "RefreshImages"
 
 #include "amarok.h"
-#include "debug.h"
 #include "collectiondb.h"
 #include "refreshimages.h"
 #include "statusbar.h"
@@ -30,7 +29,7 @@ RefreshImages::RefreshImages()
     //"SELECT asin, locale, filename FROM amazon WHERE refetchdate > %1 ;"
     QStringList::ConstIterator it = staleImages.begin();
     QStringList::ConstIterator end = staleImages.end();
-    while(it != end)
+    while( it != end )
     {
         QString asin=*it;
         it++;
@@ -42,7 +41,6 @@ RefreshImages::RefreshImages()
              .arg(localeToTLD(locale))
              .arg(LICENSE)
              .arg(asin);
-        debug() << "going to get " << url << endl;  
         KIO::TransferJob* job = KIO::storedGet( url, false, false );
         KIO::Scheduler::scheduleJob(job);
         amaroK::StatusBar::instance()->newProgressOperation( job );
@@ -65,20 +63,18 @@ void RefreshImages::finishedXmlFetch( KIO::Job* xmlJob ) //SLOT
 
     QDomDocument doc;
     if( !doc.setContent( xml ) )
-      { debug() << "Amazon returned invalid XML" << endl;  return; }
+      return;
 
     QString imageUrl = doc.documentElement()
        .namedItem( "Items" )
-       .namedItem("Item")
-       .namedItem("LargeImage")
-       .namedItem("URL").firstChild().toText().data();
-    debug() << "setting up " << imageUrl << endl;
-    KURL testUrl(imageUrl);
-    if(!testUrl.isValid()) //KIO crashs on empty strings!!!
-    {
-        debug() << "Image url not returned, cover not being refreshed" << endl;
+       .namedItem( "Item" )
+       .namedItem( "LargeImage" )
+       .namedItem( "URL" ).firstChild().toText().data();
+
+    KURL testUrl( imageUrl );
+    if( !testUrl.isValid() ) //KIO crashs on empty strings!!!
         return;
-    }
+        
     KIO::TransferJob* imageJob = KIO::storedGet( imageUrl, false, false );
     KIO::Scheduler::scheduleJob(imageJob);
     amaroK::StatusBar::instance()->newProgressOperation( imageJob );
@@ -86,9 +82,9 @@ void RefreshImages::finishedXmlFetch( KIO::Job* xmlJob ) //SLOT
     //get the URL of the detail page
     m_jobInfo[xmlJob->name()].m_detailUrl = doc.documentElement()
        .namedItem( "Items" )
-       .namedItem("Item")
-       .namedItem("DetailPageURL").firstChild().toText().data();
-    connect( imageJob, SIGNAL(result( KIO::Job* )), SLOT(finishedImageFetch( KIO::Job* )) );
+       .namedItem( "Item" )
+       .namedItem( "DetailPageURL" ).firstChild().toText().data();
+    connect( imageJob, SIGNAL( result(KIO::Job*) ), SLOT( finishedImageFetch(KIO::Job*) ) );
 }
 
 void RefreshImages::finishedImageFetch(KIO::Job* imageJob)
@@ -106,11 +102,8 @@ void RefreshImages::finishedImageFetch(KIO::Job* imageJob)
         , m_jobInfo[imageJob->name()].m_locale
         , imageJob->name());
 
-    debug() << m_jobInfo[imageJob->name()].m_asin << " copied " << imageJob->name() << endl;
     if(m_jobInfo[imageJob->name()].m_last)
-    {
-      deleteLater();
-    }
+        deleteLater();
 }
 
 QString RefreshImages::localeToTLD(const QString& locale)

@@ -288,8 +288,6 @@ MediaBrowser::MediaBrowser( const char *name )
         // Save name properties in QMap for lookup
         m_pluginName[(*it)->name()] = (*it)->property( "X-KDE-amaroK-name" ).toString();
         m_pluginAmarokName[(*it)->property( "X-KDE-amaroK-name" ).toString()] = (*it)->name();
-        debug() << "(*it)->name() = " << (*it)->name() << ", (*it)->property( \"X-KDE-amaroK-name\" ) = "\
-            << (*it)->property( "X-KDE-amaroK-name" ).toString() << endl;
     }
 
     m_views = new QVBox( this );
@@ -355,7 +353,6 @@ MediaBrowser::tagsChanged( const MetaBundle &bundle )
     ItemMap::iterator it = m_itemMap.find( bundle.url().path() );
     if( it != m_itemMap.end() )
     {
-        debug() << "watching " << bundle.url().prettyURL() << endl;
         MediaItem *item = *it;
         if( item->device() )
         {
@@ -366,8 +363,6 @@ MediaBrowser::tagsChanged( const MetaBundle &bundle )
             // check if it is on the transfer queue
         }
     }
-    else
-        debug() << "not watching " << bundle.url().prettyURL() << endl;
 }
 
 const MetaBundle *
@@ -595,8 +590,6 @@ MediaBrowser::slotSetFilter() //SLOT
 void
 MediaBrowser::prepareToQuit()
 {
-    debug() << "have to remove " << m_devices.count() << " devices" << endl;
-
     m_waitForTranscode = false;
     QValueList<MediaDevice *>::iterator next = m_devices.end();
     for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
@@ -1051,9 +1044,9 @@ void
 MediaView::startDrag()
 {
     KURL::List urls = nodeBuildDragList( 0 );
-    debug() << urls.first().path() << endl;
     KURLDrag* d = new KURLDrag( urls, this );
-    d->setPixmap(CollectionDB::createDragPixmap(urls), QPoint(CollectionDB::DRAGPIXMAP_OFFSET_X,CollectionDB::DRAGPIXMAP_OFFSET_Y));
+    d->setPixmap( CollectionDB::createDragPixmap( urls ),
+                  QPoint( CollectionDB::DRAGPIXMAP_OFFSET_X, CollectionDB::DRAGPIXMAP_OFFSET_Y ) );
     d->dragCopy();
 }
 
@@ -1078,9 +1071,7 @@ MediaView::nodeBuildDragList( MediaItem* item, bool onlySelected )
             if ( fi->isSelected() || !onlySelected )
             {
                 if( fi->isLeafItem() )
-                {
                     items += fi->url().path();
-                }
                 else
                 {
                     if(fi->childCount() )
@@ -1093,10 +1084,8 @@ MediaView::nodeBuildDragList( MediaItem* item, bool onlySelected )
                     items += nodeBuildDragList( static_cast<MediaItem*>(fi->firstChild()), true );
             }
         }
-
         fi = static_cast<MediaItem*>(fi->nextSibling());
     }
-
     return items;
 }
 
@@ -1141,7 +1130,6 @@ MediaView::getSelectedLeaves( MediaItem *parent, QPtrList<MediaItem> *list, bool
             }
         }
     }
-
     return numFiles;
 }
 
@@ -1160,11 +1148,9 @@ MediaView::contentsDropEvent( QDropEvent *e )
     {
         const QPoint p = contentsToViewport( e->pos() );
         MediaItem *item = dynamic_cast<MediaItem *>(itemAt( p ));
+        
         if( !item )
-        {
-            debug() << "something in MediaView which is not a MediaItem - this should not happen" << endl;
             return;
-        }
 
         QPtrList<MediaItem> items;
 
@@ -1216,7 +1202,6 @@ MediaView::contentsDropEvent( QDropEvent *e )
         }
         else if( item->type() == MediaItem::DIRECTORY )
         {
-            debug() << "Dropping items into directory: " << item->text(0) << endl;
             QPtrList<MediaItem> items;
             getSelectedLeaves( 0, &items );
             m_device->addToDirectory( item, items );
@@ -1307,10 +1292,9 @@ MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/, bool construc
     if( medium )
     {
         QString handler = config->readEntry( medium->id() );
-        if ( handler.isEmpty() )
+        if( handler.isEmpty() )
         {
-            debug() << "handler null for " << medium->id() << endl;
-            if (!constructing)
+            if( !constructing )
             {
                 mpc = new MediumPluginChooser( medium );
                 mpc->exec();
@@ -1324,8 +1308,7 @@ MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/, bool construc
             device->m_mountPoint = medium->mountPoint();
             device->m_medium = const_cast<Medium *>(medium);
             addDevice( device );
-            if( m_currentDevice == m_devices.begin()
-                    || m_currentDevice == m_devices.end() )
+            if( m_currentDevice == m_devices.begin() || m_currentDevice == m_devices.end() )
                 activateDevice( m_devices.count()-1 );
         }
     }
@@ -1336,7 +1319,7 @@ MediaBrowser::pluginSelected( const Medium *medium, const QString plugin )
 {
     DEBUG_BLOCK
     KConfig *config = amaroK::config( "MediaBrowser" );
-    if (!plugin.isEmpty())
+    if( !plugin.isEmpty() )
     {
         debug() << "Medium id is " << medium->id() << " and plugin selected is: " << plugin << endl;
         config->writeEntry( medium->id(), plugin );
@@ -1349,9 +1332,7 @@ MediaBrowser::pluginSelected( const Medium *medium, const QString plugin )
             {
                 debug() << "removing " << medium->deviceNode() << endl;
                 if( (*it)->isConnected() )
-                {
                     (*it)->disconnectDevice();
-                }
                 removeDevice( *it );
                 break;
             }
@@ -1372,7 +1353,6 @@ MediaBrowser::showPluginManager()
 void
 MediaBrowser::mediumChanged( const Medium *medium, QString /*name*/ )
 {
-    debug() << "mediumChanged: " << (medium? medium->properties():"null") << endl;
     if( medium )
     {
         for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
@@ -1381,7 +1361,6 @@ MediaBrowser::mediumChanged( const Medium *medium, QString /*name*/ )
         {
             if( (*it)->uniqueId() == medium->id() )
             {
-                debug() << "changing state for " << medium->deviceNode() << endl;
                 (*it)->m_medium = const_cast<Medium *>(medium);
 #if 0
                 if( (*it)->isConnected() && !medium->isMounted() )
@@ -1403,7 +1382,6 @@ MediaBrowser::mediumChanged( const Medium *medium, QString /*name*/ )
 void
 MediaBrowser::mediumRemoved( const Medium *medium, QString name )
 {
-    debug() << "mediumRemoved: " << (medium? medium->properties():"null") << endl;
     if( medium )
     {
         for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
@@ -1412,7 +1390,6 @@ MediaBrowser::mediumRemoved( const Medium *medium, QString name )
         {
             if( (*it)->uniqueId() == medium->id() )
             {
-                debug() << "removing " << medium->deviceNode() << endl;
                 if( (*it)->isConnected() )
                 {
                     amaroK::StatusBar::instance()->longMessage(
@@ -2389,7 +2366,6 @@ MediaDevice::transferFiles()
         const MetaBundle *bundle = m_transferredItem->bundle();
         if(!bundle)
         {
-            debug() << "no bundle" << endl;
             delete m_transferredItem;
             m_transferredItem = 0;
             m_parent->m_queue->itemCountChanged();
@@ -2450,7 +2426,6 @@ MediaDevice::transferFiles()
 
         if( !item ) // copyTrackToDevice() failed
         {
-            debug() << "copying failed" << endl;
             amaroK::StatusBar::instance()->longMessage(
                     i18n( "Failed to copy track to media device: %1" ).arg( bundle->url().path() ),
                     KDE::StatusBar::Sorry );
@@ -2827,7 +2802,6 @@ MediaQueue::load( const QString& filename )
 {
     QFile file( filename );
     if( !file.open( IO_ReadOnly ) ) {
-        debug() << "failed to restore media device transfer list" << endl;
         return;
     }
 
