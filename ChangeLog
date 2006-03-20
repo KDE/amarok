@@ -23,7 +23,8 @@ VERSION 1.4-beta3:
       Peter C. Ndikuwera <pndiku@gmail.com>. (BR 118304)
 
   BUGFIXES:
-    * check if collection dirs still exist (BR 123834)
+    * Check if directories still exist when showing Collection directories. 
+      (BR 123834)
     * Playlist popup menu had a visual glitch with Lipstik and (probably)
       earlier versions of Plastik.
     * Fixed a huge memory leak when using xine-engine with crossfading.

@@ -4,12 +4,15 @@ TODO-list for amaroK
 -->nick == assigned to
 
 
+SHORT-TERM (URGENT):
+ 
+ <sebr>    Refactor code for PlaylistBrowser::removeSelectedItems(). I can see pathological cases
+           where it won't work.
+
  <markey>  Goddamn. In the settings dialog, the Apply button is broken again. Always active.
 
  <markey>  When podcast retrieval fails, the red "stop" icon appears, but the podcast entry
            still says "Retrieving Podcast.." forever on.
-
-BEFORE BETA 1:
 
  <illiss.> Do VFAT media devices work properly yet? If not, either it should be fixed, or support
            disabled for the beta. (So we don't get tons of bug reports we already know about.)
@@ -28,10 +31,7 @@ BEFORE BETA 1:
  <illiss.> It would be nice to get Moodbar fixed and polished before the release, but that is
            probably not realistic.
 
-SHORT-TERM (URGENT):
-
  <sebr>    Podcast Fixme's:
-             * Star icon persistence
              * Have i listened to podcast streamed?
              * Context Browser & PlaylistItem integration. Tricky.
 
@@ -246,12 +246,6 @@ LONG-TERM:
            Audio system info widget, showing all available codecs and similar info.
 
            Resizable playerwidget, like in Winamp3.
-
-<jefferai> Support for generic media devices.  Started implementation using dcop signals, note these
-           are *not* the same as regular signals.  Have to get that to work; once it does should
-           be able to detect changes from HAL, i.e. when devices are added, removed, mounted, etc.
-           Then can support a filebrowser, transfer, etc.
-
 
 IDEAS:
 
