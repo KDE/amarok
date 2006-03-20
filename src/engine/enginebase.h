@@ -252,6 +252,7 @@ namespace Engine
         QString comment;
         QString genre;
         QString bitrate;
+        QString samplerate;
         QString length;
         QString year;
         QString tracknr;

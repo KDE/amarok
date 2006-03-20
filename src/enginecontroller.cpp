@@ -520,6 +520,8 @@ void EngineController::slotEngineMetaData( const Engine::SimpleMetaBundle &simpl
             bundle.setGenre( simpleBundle.genre );
         if( !simpleBundle.bitrate.isEmpty() )
             bundle.setBitrate( simpleBundle.bitrate.toInt() );
+        if( !simpleBundle.samplerate.isEmpty() )
+            bundle.setSampleRate( simpleBundle.samplerate.toInt() );
         if( !simpleBundle.year.isEmpty() )
             bundle.setYear( simpleBundle.year.toInt() );
         if( !simpleBundle.tracknr.isEmpty() )

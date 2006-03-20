@@ -592,14 +592,15 @@ XineEngine::customEvent( QCustomEvent *e )
         debug() << "Metadata received." << endl;
 
         Engine::SimpleMetaBundle bundle;
-        bundle.title   = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_TITLE ) );
-        bundle.artist  = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_ARTIST ) );
-        bundle.album   = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_ALBUM ) );
-        bundle.comment = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_COMMENT ) );
-        bundle.genre   = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_GENRE ) );
-        bundle.bitrate = QString::number( xine_get_stream_info( m_stream, XINE_STREAM_INFO_BITRATE ) / 1000 );
-        bundle.year    = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_YEAR ) );
-        bundle.tracknr = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_TRACK_NUMBER ) );
+        bundle.title      = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_TITLE ) );
+        bundle.artist     = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_ARTIST ) );
+        bundle.album      = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_ALBUM ) );
+        bundle.comment    = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_COMMENT ) );
+        bundle.genre      = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_GENRE ) );
+        bundle.bitrate    = QString::number( xine_get_stream_info( m_stream, XINE_STREAM_INFO_AUDIO_BITRATE ) / 1000 );
+        bundle.samplerate = QString::number( xine_get_stream_info( m_stream, XINE_STREAM_INFO_AUDIO_SAMPLERATE ) );
+        bundle.year       = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_YEAR ) );
+        bundle.tracknr    = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_TRACK_NUMBER ) );
 
         emit metaData( bundle );
     }   break;
@@ -943,9 +944,12 @@ Fader::run()
 
 bool XineEngine::metaDataForUrl(const KURL &url, Engine::SimpleMetaBundle &b)
 {
-    if (url.protocol() == "cdda") {
-        xine_stream_t* tmpstream = xine_stream_new(m_xine, NULL, NULL);
-        if (xine_open(tmpstream, QFile::encodeName(url.url()))) {
+    bool result = false;
+    xine_stream_t* tmpstream = xine_stream_new(m_xine, NULL, NULL);
+    if (xine_open(tmpstream, QFile::encodeName(url.url()))) {
+        QString audioCodec = QString::fromUtf8(xine_get_meta_info(tmpstream, XINE_META_INFO_SYSTEMLAYER));
+
+        if (audioCodec == "CDDA") {
             QString title = QString::fromUtf8(
                 xine_get_meta_info(tmpstream, XINE_META_INFO_TITLE));
             if ((!title.isNull()) && (!title.isEmpty())) { //no meta info
@@ -969,15 +973,28 @@ bool XineEngine::metaDataForUrl(const KURL &url, Engine::SimpleMetaBundle &b)
                 b.title = QString(i18n("Track %1")).arg(url.filename());
                 b.album = i18n("AudioCD");
             }
+        }
+
+        if (audioCodec == "CDDA" || audioCodec == "WAV") {
+            result = TRUE;
+            int samplerate = xine_get_stream_info( tmpstream, XINE_STREAM_INFO_AUDIO_SAMPLERATE );
+
+            // xine would provide a XINE_STREAM_INFO_AUDIO_BITRATE, but unfortunately not for CDDA or WAV
+            // so we calculate the bitrate by our own
+            int bitsPerSample = xine_get_stream_info( tmpstream, XINE_STREAM_INFO_AUDIO_BITS );
+            int nbrChannels = xine_get_stream_info( tmpstream, XINE_STREAM_INFO_AUDIO_CHANNELS );
+            int bitrate = (samplerate * bitsPerSample * nbrChannels) / 1000;
+
+            b.bitrate = QString::number(bitrate);    
+            b.samplerate = QString::number(samplerate);
             int pos, time, length = 0;
             xine_get_pos_length(tmpstream, &pos, &time, &length);
             b.length = QString::number(length / 1000);
-            xine_close(tmpstream);
         }
-        xine_dispose(tmpstream);
-        return true;
+        xine_close(tmpstream);
     }
-    return false;
+    xine_dispose(tmpstream);
+    return result;
 }
 
 bool XineEngine::getAudioCDContents(const QString &device, KURL::List &urls)
