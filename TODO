@@ -7,7 +7,7 @@ TODO-list for amaroK
 SHORT-TERM (URGENT):
 
  <markey>  Valgrind detected memory leaks in the moodbar code and in libGeddei. I don't
-           know of these are valid, but some users were also reporting leaks. Would be cool
+           know if these are valid, but some users were also reporting leaks. Would be cool
            if Gav could look at this.
 
  <sebr>    Refactor code for PlaylistBrowser::removeSelectedItems(). I can see pathological cases
