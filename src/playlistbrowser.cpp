@@ -1739,12 +1739,13 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
         if( (*it) == m_coolStreams || (*it) == m_smartDefaults ||
             (*it) == m_randomParty || (*it) == m_suggestedParty )
             continue;
-        // if the playlist containing this item is already selected the current item will be skipped
-        // it will be deleted from the parent
-        QListViewItem *parent = it.current()->parent();
 
         if( isCategory( *it ) && !static_cast<PlaylistCategory*>(*it)->isFolder() ) //its a base category
             continue;
+            
+        // if the playlist containing this item is already selected the current item will be skipped
+        // it will be deleted from the parent
+        QListViewItem *parent = it.current()->parent();
 
         if( parent && parent->isSelected() ) //parent will remove children
             continue;
@@ -1760,15 +1761,12 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
 
     QPtrList<PlaylistEntry> playlistsToDelete;
     QPtrList<PlaylistCategory> playlistFoldersToDelete;
-    QPtrList<PodcastChannel> podcastsToDelete;
-    QPtrList<PlaylistCategory> podcastFoldersToDelete;
     QPtrList<PlaylistTrackItem> tracksToDelete;
 
     bool playlistsChanged = false;
     bool streamsChanged = false;
     bool smartPlaylistsChanged = false;
     bool dynamicsChanged = false;
-    bool podcastsChanged = false;
 
     /// @note the variable keepItem is used to tell us if there is a more sinister operation which is needed,
     /// being deleting from disk - this includes deleting playlists and deleting all downloaded podcast media.
@@ -1796,25 +1794,19 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
                     playlistFoldersToDelete.append( static_cast<PlaylistCategory*>(item) );
                 }
             }
-            if( isPodcastChannel( item->firstChild() ) )
-            {
-                for( QListViewItem *ch = item->firstChild(); ch; ch = ch->nextSibling() )
-                {
-                    keepItem = podcastsChanged = true;
-                    podcastsToDelete.append( static_cast<PodcastChannel*>(ch) );
-                    podcastFoldersToDelete.append( static_cast<PlaylistCategory*>(item) );
-                }
-            }
             else
             {
                 QListViewItem *parent = item;
+                bool isPodcastCat = false;
                 while( parent ) {
                     if( parent == m_podcastCategory ) {
-                        CollectionDB::instance()->removePodcastFolder( static_cast<PlaylistCategory*>(item)->id() );
+                        removePodcastFolder( static_cast<PlaylistCategory*>(item) );
+                        isPodcastCat = true;
                         break;
                     }
                     parent = parent->parent();
                 }
+                if( isPodcastCat )  continue;
             }
         }
         else if( isStream( item ) )        streamsChanged = true;
@@ -1834,14 +1826,11 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
         }
         else if( isPodcastChannel( item ) )
         {
-            //we are going to be deleting the parent podcast, dont bother removing it
-            if( podcastsToDelete.find( static_cast<PodcastChannel*>(item->parent()) ) != -1 )
-                continue;
-
-            podcastsChanged = true;
-
-            m_podcastItemsToScan.remove( static_cast<PodcastChannel*>(item) );
-            podcastsToDelete.append( static_cast<PodcastChannel*>(item) );
+        #define item static_cast<PodcastChannel*>(item)
+            CollectionDB::instance()->removePodcastChannel( item->url() );
+            m_podcastItemsToScan.remove( item );
+            delete item;
+        #undef  item
         }
         else if( isPodcastEpisode( item ) )
         {
@@ -1871,29 +1860,45 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
             }
 
             foreachType( QPtrList<PlaylistCategory>, playlistFoldersToDelete )
-            {
                 delete (*it);
-            }
+                
             savePlaylists();
         }
     }
+}
 
-    if( podcastsChanged )
+// remove podcast folders. we need to do this recursively to ensure all children are removed from the db
+void PlaylistBrowser::removePodcastFolder( PlaylistCategory *item )
+{
+    if( !item ) return;
+    if( !item->childCount() ) 
     {
-        if( deletePodcasts( podcastsToDelete ) )
-        {
-            foreachType( QPtrList<PodcastChannel>, podcastsToDelete )
-            {
-                CollectionDB::instance()->removePodcastChannel( (*it)->url() );
-                delete (*it);
-            }
-            foreachType( QPtrList<PlaylistCategory>, podcastFoldersToDelete )
-            {
-                CollectionDB::instance()->removePodcastFolder( (*it)->id() );
-                delete (*it);
-            }
-        }
+        CollectionDB::instance()->removePodcastFolder( item->id() );
+        delete item;
+        return;
     }
+    
+    QListViewItem *child = item->firstChild();
+    QListViewItem *nextChild;
+    while( child )
+    {
+        if( isPodcastChannel( child ) )
+        {
+        #define child static_cast<PodcastChannel*>(child)
+            CollectionDB::instance()->removePodcastChannel( child->url() );
+            m_podcastItemsToScan.remove( child );
+        #undef  child
+        }
+        else if( isCategory( child ) )
+        {
+            nextChild = child->nextSibling();
+            removePodcastFolder( static_cast<PlaylistCategory*>(child) );
+        }
+            
+        child = nextChild;
+    }
+    CollectionDB::instance()->removePodcastFolder( item->id() );
+    delete item;
 }
 
 void PlaylistBrowser::renameSelectedItem() //SLOT
@@ -2690,14 +2695,12 @@ PlaylistBrowserView::PlaylistBrowserView( QWidget *parent, const char *name )
     //        this, SLOT( itemMoved(QListViewItem *, QListViewItem *, QListViewItem * )));
 }
 
-
 PlaylistBrowserView::~PlaylistBrowserView()
 {
     delete m_animationTimer;
     delete m_loading1;
     delete m_loading2;
 }
-
 
 void PlaylistBrowserView::startAnimation( PlaylistEntry *item )
 {
@@ -2706,8 +2709,6 @@ void PlaylistBrowserView::startAnimation( PlaylistEntry *item )
     if( !m_animationTimer->isActive() )
         m_animationTimer->start( 100 );
 }
-
-
 void PlaylistBrowserView::stopAnimation( PlaylistEntry *item )
 {
     //stops the loading animation for item
@@ -2715,7 +2716,6 @@ void PlaylistBrowserView::stopAnimation( PlaylistEntry *item )
     if( !m_loadingItems.count() )
         m_animationTimer->stop();
 }
-
 
 void PlaylistBrowserView::slotAnimation() //SLOT
 {
@@ -2728,7 +2728,6 @@ void PlaylistBrowserView::slotAnimation() //SLOT
     if( iconCounter > 2 )
         iconCounter = 1;
 }
-
 
 void PlaylistBrowserView::contentsDragEnterEvent( QDragEnterEvent *e )
 {
@@ -2756,7 +2755,6 @@ void PlaylistBrowserView::contentsDragMoveEvent( QDragMoveEvent* e )
         viewportPaintEvent( 0 );
     }
 }
-
 
 void PlaylistBrowserView::contentsDragLeaveEvent( QDragLeaveEvent* )
 {
@@ -2877,7 +2875,6 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
 
 }
 
-
 void PlaylistBrowserView::eraseMarker() //SLOT
 {
     if( m_marker )
@@ -2893,7 +2890,6 @@ void PlaylistBrowserView::eraseMarker() //SLOT
     }
 }
 
-
 void PlaylistBrowserView::viewportPaintEvent( QPaintEvent *e )
 {
     if( e ) KListView::viewportPaintEvent( e ); //we call with 0 in contentsDropEvent()
@@ -2908,7 +2904,6 @@ void PlaylistBrowserView::viewportPaintEvent( QPaintEvent *e )
                                    QBrush( colorGroup().highlight(), QBrush::Dense4Pattern ) );
     }
 }
-
 
 void PlaylistBrowserView::mousePressed( int button, QListViewItem *item, const QPoint &pnt, int )    //SLOT
 {
@@ -2998,7 +2993,6 @@ void PlaylistBrowserView::rename( QListViewItem *item, int c )
     renameEdit->setGeometry( fieldX, rect.y(), fieldW, rect.height() );
     renameEdit->show();
 }
-
 
 void PlaylistBrowserView::keyPressEvent( QKeyEvent *e )
 {
