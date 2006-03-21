@@ -51,8 +51,6 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 
     // Read config values
     m_dirs = AmarokConfig::collectionFolders();
-    // just in case, m_dirs contains no longer existing directories
-    writeConfig();
 
     m_recursive->setChecked( AmarokConfig::scanRecursively() );
     m_monitor->setChecked( AmarokConfig::monitorChanges() );
@@ -73,14 +71,6 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 void
 CollectionSetup::writeConfig()
 {
-    QStringList freshDirs;
-    for( uint i=0; i < m_dirs.count(); i++ )
-    {
-        if( QFile::exists( m_dirs[i] ) )
-            freshDirs << m_dirs[i];
-    }
-    m_dirs = freshDirs;
-
     AmarokConfig::setCollectionFolders( m_dirs );
     AmarokConfig::setScanRecursively( recursive() );
     AmarokConfig::setMonitorChanges( monitor() );
@@ -152,18 +142,30 @@ Item::setOpen( bool b )
 void
 Item::stateChange( bool b )
 {
+    QStringList &cs_m_dirs = CollectionSetup::instance()->m_dirs;
+
     if( CollectionSetup::instance()->recursive() )
         for( QListViewItem *item = firstChild(); item; item = item->nextSibling() )
             static_cast<QCheckListItem*>(item)->QCheckListItem::setOn( b );
 
     // Update folder list
-    QStringList::Iterator it = CollectionSetup::instance()->m_dirs.find( m_url.path() );
+    QStringList::Iterator it = cs_m_dirs.find( m_url.path() );
     if ( isOn() ) {
-        if ( it == CollectionSetup::instance()->m_dirs.end() )
-            CollectionSetup::instance()->m_dirs << m_url.path();
+        if ( it == cs_m_dirs.end() )
+            cs_m_dirs << m_url.path();
     }
-    else
-        CollectionSetup::instance()->m_dirs.erase( it );
+    else {
+        //Deselect item and recurse through children
+        cs_m_dirs.erase( it );
+        QStringList::Iterator diriter = cs_m_dirs.begin();
+        while ( diriter != cs_m_dirs.end() )
+        {
+            if ( (*diriter).startsWith( m_url.path() + '/' ) )
+                diriter = cs_m_dirs.erase(diriter);
+            else
+                ++diriter;
+        }
+    }
 
     // Redraw parent items
     listView()->triggerUpdate();
