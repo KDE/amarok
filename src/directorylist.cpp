@@ -155,13 +155,25 @@ Item::stateChange( bool b )
             cs_m_dirs << m_url.path();
     }
     else {
-        //Deselect item and recurse through children
+        //Deselect item and recurse through children but only deselect children if they
+        //do not exist unless we are in recursive mode (where no children should be
+        //selected if the parent is being unselected)
+        //Note this does not do anything to the checkboxes, but they should be doing
+        //the same thing as we are (hopefully)
         cs_m_dirs.erase( it );
         QStringList::Iterator diriter = cs_m_dirs.begin();
         while ( diriter != cs_m_dirs.end() )
         {
             if ( (*diriter).startsWith( m_url.path() + '/' ) )
-                diriter = cs_m_dirs.erase(diriter);
+            {
+                if ( CollectionSetup::instance()->recursive() ||
+                     !QFile::exists( *diriter ) )
+                {
+                    diriter = cs_m_dirs.erase(diriter);
+                }
+                else
+                    ++diriter;
+            }
             else
                 ++diriter;
         }
