@@ -74,9 +74,11 @@ float gainSetSmoothdB(float dB, GAIN_STATE* g)
 {
     float gain = pow(10.0, 0.05*dB) ;
 
-    g->isMute = false;
-
-    g->tgtGain = gain ;
+    if (g)
+    {  
+       g->isMute = false;  
+       g->tgtGain = gain ;
+    }
 
     return dB ;
 }
@@ -85,7 +87,8 @@ float gainSetImmediatedB(float dB, GAIN_STATE* g)
 {
     dB = gainSetSmoothdB(dB, g) ;
 
-    g->instGain = g->tgtGain ; // make it instantaneous
+    if (g)
+       g->instGain = g->tgtGain ; // make it instantaneous
 
     return dB ;
 }
@@ -96,9 +99,11 @@ float gainSetSmooth(float percent, GAIN_STATE* g)
     float gainbottom = pow(10.0, 0.05*GAIN_MIN_dB) ;
     float gain = percent * (gaintop - gainbottom) + gainbottom;
 
-    g->isMute = false;
-
-    g->tgtGain = gain ;
+    if (g)
+    {
+       g->isMute = false;
+       g->tgtGain = gain ;
+    }
 
     return gain;
 }
@@ -107,19 +112,26 @@ float gainSetImmediate(float percent, GAIN_STATE* g)
 {
     float gain = gainSetSmooth(percent, g) ;
 
-    g->instGain = g->tgtGain ; // make it instantaneous
+    if (g)
+       g->instGain = g->tgtGain ; // make it instantaneous
 
     return gain;
 }
 
 void gainSetMute(GAIN_STATE* g)
 {
-   g->isMute = true;
-   g->instGain = g->tgtGain = 0.0; // mute is immediate
+   if (g)
+   {
+      g->isMute = true;
+      g->instGain = g->tgtGain = 0.0; // mute is immediate
+   }
 }
 
 int gainSetTimeConstant(float millis, GAIN_STATE* g)
 {
+   if (!g)
+      return 0;
+
     // we define the time constant millis so that the signal has decayed to 1/2 (-6dB) after
     // millis milliseconds have elapsed.
     // Let T[sec] = millis/1000 = time constant in units of seconds
@@ -144,6 +156,9 @@ int gainSetTimeConstant(float millis, GAIN_STATE* g)
 
 static void gainFeedMono(unsigned char* signal, unsigned char *outsignal, int len, GAIN_STATE *g)
 {
+   if (!g)
+      return;
+
    float tgtGain = g->tgtGain ;
    float gain = g->instGain ;
    unsigned char *bufferEnd = signal + len;
@@ -234,6 +249,9 @@ static void gainFeedMono(unsigned char* signal, unsigned char *outsignal, int le
 
 static void gainFeedStereo(unsigned char* signal, unsigned char *outsignal, int len, GAIN_STATE *g)
 {
+   if (!g)
+      return;
+
    float tgtGain = g->tgtGain ;
    float gain = g->instGain ;
    unsigned char *bufferEnd = signal + len;
@@ -348,6 +366,9 @@ static void gainFeedStereo(unsigned char* signal, unsigned char *outsignal, int 
 
 static void gainFeedMulti(unsigned char* signal, unsigned char *outsignal, int len, GAIN_STATE *g)
 {
+   if (!g)
+      return;
+
     float tgtGain = g->tgtGain ;
     float gain = g->instGain ;
     unsigned char *bufferEnd = signal + len;
@@ -470,6 +491,9 @@ static void gainFeedMulti(unsigned char* signal, unsigned char *outsignal, int l
 
 void gainFeed(unsigned char* signal, unsigned char *outsignal, int len, GAIN_STATE* g)
 {
+   if (!g)
+      return;
+
     /* if the gain is 0dB, and we are not currently ramping, shortcut. */
     if (g->instGain == 1.0 && g->instGain == g->tgtGain)
     {
