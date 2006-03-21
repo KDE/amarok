@@ -50,7 +50,7 @@ public:
 
 	const QStringList &properties() const { return m_properties; };
 
-        QString autodetected() const { return m_properties[AUTODETECTED]; };
+        bool isAutodetected() const { return m_properties[AUTODETECTED]=="true"; };
 	QString id() const { return m_properties[ID]; };
 	QString name() const { return m_properties[NAME]; };
 	QString label() const { return m_properties[LABEL]; };

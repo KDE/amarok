@@ -49,6 +49,7 @@ class MediumPluginManager : public KDialogBase
         HBoxMap m_hmap;
         QSignalMapper* m_siginfomap;
         QSignalMapper* m_sigdelmap;
+        QPtrList<Medium> m_deletedlist;
 };
 
 class MediumPluginDetailView : public KDialogBase

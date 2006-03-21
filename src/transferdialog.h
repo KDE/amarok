@@ -36,9 +36,6 @@ class LIBAMAROK_EXPORT TransferDialog : public KDialogBase
 
         bool isAccepted() { return m_accepted; }
 
-    signals:
-        void selectedPlugin( const Medium*, const QString );
-
     private slots:
         void slotOk();
         void slotCancel();

@@ -317,14 +317,19 @@ MediaBrowser::MediaBrowser( const char *name )
     QMap<QString, Medium*>::Iterator it;
 
     int newflag = 0;
+    KConfig *config = amaroK::config( "MediaBrowser" );
+    //This deals with auto-detectable devices
     for( it = mmap.begin();
             it != mmap.end();
             it++ )
     {
-        if ( !amaroK::config( "MediaBrowser" )->readEntry( (*it)->id() ) )
+        if( !config->readEntry( (*it)->id() ) )
+        {
             newflag = 1;
-
-        mediumAdded( (*it),  (*it)->name(), true );
+            mediumAdded( (*it),  (*it)->name(), true );
+        }
+        else if( config->readEntry( (*it)->id() ) != "deleted" )
+            mediumAdded( (*it),  (*it)->name(), true );
     }
 
     if ( newflag )

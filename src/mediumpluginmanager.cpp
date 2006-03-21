@@ -64,11 +64,12 @@ MediumPluginManager::MediumPluginManager( )
 
     QGroupBox *location = new QGroupBox( 1, Qt::Vertical, i18n( "Devices" ), vbox );
     QVBox* devicesBox = new QVBox( location );
-    QSpacerItem *spacer;
-    QLayout *hlayout;
 
     for ( it = mmap.begin(); it != mmap.end(); it++ )
     {
+        if( !config->readEntry( (*it)->id() ).isEmpty() && config->readEntry( (*it)->id() ) == "deleted" )
+            continue;
+
         hbox = new QHBox( devicesBox );
         m_hmap[buttonnum] = hbox;
 
@@ -131,7 +132,7 @@ void
 MediumPluginManager::slotOk( )
 {
     ComboMap::Iterator it;
-    for ( it = m_cmap.begin(); it != m_cmap.end(); ++it )
+    for( it = m_cmap.begin(); it != m_cmap.end(); ++it )
     {
         if( it.data()->currentText() == i18n( "Do not handle" ) )
         {
@@ -141,6 +142,13 @@ MediumPluginManager::slotOk( )
         {
             emit selectedPlugin( it.key(), MediaBrowser::instance()->getPluginName( it.data()->currentText() ) );
         }
+    }
+    KConfig *config = amaroK::config( "MediaBrowser" );
+    Medium *medium;
+    for( medium = m_deletedlist.first(); medium; medium = m_deletedlist.next() )
+    {
+        if( medium->isAutodetected() )
+            config->writeEntry( medium->id(), "deleted" );
     }
     KDialogBase::slotOk( );
 }
@@ -159,6 +167,7 @@ MediumPluginManager::deleteMedium( int buttonId )
     //TODO:save something in amarokrc such that it's not shown again until hit autoscan
     delete m_hmap[buttonId];
     Medium *tmp = m_bmap[buttonId];
+    m_deletedlist.append(tmp);
     //TODO: maybe don't remove, but mark somehow, so that they have to hit OK to remember deleting it?
     m_cmap.remove(tmp);
 }
@@ -180,7 +189,7 @@ MediumPluginDetailView::MediumPluginDetailView( const Medium* medium )
     const QString labelTextNone = i18n( "(none)" );
 
     new QLabel( i18n( "Autodetected:"), vbox1 );
-    new QLabel( medium->autodetected(), vbox2 );
+    new QLabel( medium->isAutodetected() ? i18n("Yes") : i18n("No"), vbox2 );
     new QLabel( i18n( "ID:"), vbox1 );
     new QLabel( medium->id(), vbox2 );
     new QLabel( i18n( "Name:"), vbox1 );
