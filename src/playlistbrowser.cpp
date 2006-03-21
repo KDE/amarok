@@ -936,7 +936,7 @@ void PlaylistBrowser::loadPodcastFolders( PlaylistCategory *p )
         const bool    isOpen   = ( (*++it) == "true" ? true : false );
         
         PlaylistCategory *parent = p;
-        if( parentId > 0 )
+        if( parentId > 0  && folderMap.find( parentId ) != folderMap.end() )
             parent = folderMap[parentId];
         
         folder = new PlaylistCategory( parent, folder, t, id );
