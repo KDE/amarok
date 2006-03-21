@@ -261,6 +261,8 @@ VERSION 1.3.9:
     * Support for libtunepimp 0.4. (BR 94988)
 
   BUGFIXES:
+    * Fix preamp and frequency band scaling in the xine equalizer. Patch by
+      Tobias Knieper <webmaster@micekiller.de>. (BR 116633)
     * Fixed a huge memory leak when using xine-engine with crossfading.
       (BR 119230)
     * Fix memory leak in the helix engine when the player and playlist are
