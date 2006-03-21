@@ -375,30 +375,43 @@ XineEngine::setEqualizerEnabled( bool enable )
     if( !enable ) {
         QValueList<int> gains;
         for( uint x = 0; x < 10; x++ )
-            gains << 0;
+            gains << -102; // sets eq gains to zero.
 
-        setEqualizerParameters( -100, gains );
+        setEqualizerParameters( 0, gains );
    }
 }
 
+/*
+ sets the eq params for xine engine - have to rescale eq params to fitting range (adapted from kaffeine)
+ sideeffect: volume decreases with enabled eq, don't know why, occurs also in kaffeine
+
+ preamp
+   pre: (-100..100)
+   post: (0.2..1.8) - this is not really a preamp but xine offers no preamp so we make a postamp
+
+ gains
+   pre: (-100..100)
+   post: (1..100) - range adapted from kaffeine (1 = down, 50 = middle, 100 = up, 0 = off[!!!])
+ */
 void
 XineEngine::setEqualizerParameters( int preamp, const QValueList<int> &gains )
 {
     m_equalizerGains = gains;
     m_intPreamp = preamp;
     QValueList<int>::ConstIterator it = gains.begin();
-    xine_set_param( m_stream, XINE_PARAM_EQ_30HZ, *it );
-    xine_set_param( m_stream, XINE_PARAM_EQ_60HZ, *++it );
-    xine_set_param( m_stream, XINE_PARAM_EQ_125HZ, *++it );
-    xine_set_param( m_stream, XINE_PARAM_EQ_250HZ, *++it );
-    xine_set_param( m_stream, XINE_PARAM_EQ_500HZ, *++it );
-    xine_set_param( m_stream, XINE_PARAM_EQ_1000HZ, *++it );
-    xine_set_param( m_stream, XINE_PARAM_EQ_2000HZ, *++it );
-    xine_set_param( m_stream, XINE_PARAM_EQ_4000HZ, *++it );
-    xine_set_param( m_stream, XINE_PARAM_EQ_8000HZ, *++it );
-    xine_set_param( m_stream, XINE_PARAM_EQ_16000HZ, *++it );
 
-    m_preamp = ( preamp / 2 + 150 ) / 100.0;
+    xine_set_param( m_stream, XINE_PARAM_EQ_30HZ,    int( (*it  )*0.49 + 50 ) );
+    xine_set_param( m_stream, XINE_PARAM_EQ_60HZ,    int( (*++it)*0.49 + 50 ) );
+    xine_set_param( m_stream, XINE_PARAM_EQ_125HZ,   int( (*++it)*0.49 + 50 ) );
+    xine_set_param( m_stream, XINE_PARAM_EQ_250HZ,   int( (*++it)*0.49 + 50 ) );
+    xine_set_param( m_stream, XINE_PARAM_EQ_500HZ,   int( (*++it)*0.49 + 50 ) );
+    xine_set_param( m_stream, XINE_PARAM_EQ_1000HZ,  int( (*++it)*0.49 + 50 ) );
+    xine_set_param( m_stream, XINE_PARAM_EQ_2000HZ,  int( (*++it)*0.49 + 50 ) );
+    xine_set_param( m_stream, XINE_PARAM_EQ_4000HZ,  int( (*++it)*0.49 + 50 ) );
+    xine_set_param( m_stream, XINE_PARAM_EQ_8000HZ,  int( (*++it)*0.49 + 50 ) );
+    xine_set_param( m_stream, XINE_PARAM_EQ_16000HZ, int( (*++it)*0.49 + 50 ) );
+
+    m_preamp = ( preamp - 0.2 * preamp + 100 ) / 100.0;
     setVolume( m_volume );
 }
 
