@@ -100,6 +100,7 @@ UniversalAmarok::UniversalAmarok(KInstance *inst,QObject *parent,QWidget *widget
 
     playerStub   = new AmarokPlayerInterface_stub( amarokDCOP, "amarok", "player");
     playlistStub = new AmarokPlaylistInterface_stub( amarokDCOP, "amarok", "playlist");
+    contextStub = new AmarokContextBrowserInterface_stub (amarokDCOP, "amarok", "contextbrowser");
 
     KToolBar* toolBar=new KToolBar(widget, "PlayerControls");
 

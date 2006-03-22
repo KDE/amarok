@@ -549,11 +549,7 @@ namespace amaroK
 
     void DcopPlaylistHandler::playMedia( const KURL &url )
     {
-        /* ContextBrowser::openURLRequest is necessary for konquisidebar */
-
-        //FIXME This is bullshit. openURLRequest() doesn't handle HTTP URLs correctly.
-        //      See http://bugs.kde.org/show_bug.cgi?id=119035
-        ContextBrowser::instance()->openURLRequest( url );
+        Playlist::instance()->insertMedia( url, Playlist::DirectPlay | Playlist::Unique);
     }
 
     void DcopPlaylistHandler::popupMessage( const QString& msg )
