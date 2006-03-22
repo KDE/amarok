@@ -17,14 +17,6 @@ if with_xine
     XINE_ENGINE_SUBDIR = xine
 endif
 
-if with_akode
-    AKODE_ENGINE_SUBDIR = akode
-endif
-
-if with_mas
-    MAS_ENGINE_SUBDIR = mas
-endif
-
 if with_helix
     HELIX_ENGINE_SUBDIR = helix
 endif
@@ -41,8 +33,6 @@ SUBDIRS = . \
     void \
     $(GST10_ENGINE_SUBDIR) \
     $(XINE_ENGINE_SUBDIR) \
-    $(AKODE_ENGINE_SUBDIR) \
-    $(MAS_ENGINE_SUBDIR) \
     $(NMM_ENGINE_SUBDIR) \
     $(HELIX_ENGINE_SUBDIR)
 
