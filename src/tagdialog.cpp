@@ -93,7 +93,7 @@ TagDialog::~TagDialog()
 void
 TagDialog::setTab( int id )
 {
-    kTabWidget->setCurrentPage( id );    
+    kTabWidget->setCurrentPage( id );
 }
 
 
@@ -280,7 +280,7 @@ TagDialog::musicbrainzQuery() //SLOT
 
     m_mbTrack = m_bundle.url().path();
     KTRMLookup* ktrm = new KTRMLookup( m_mbTrack, true );
-    connect( ktrm, SIGNAL( sigResult( KTRMResultList ) ), SLOT( queryDone( KTRMResultList ) ) );
+    connect( ktrm, SIGNAL( sigResult( KTRMResultList, QString ) ), SLOT( queryDone( KTRMResultList, QString ) ) );
 
     pushButton_musicbrainz->setEnabled( false );
     pushButton_musicbrainz->setText( i18n( "Generating audio fingerprint..." ) );
@@ -289,21 +289,25 @@ TagDialog::musicbrainzQuery() //SLOT
 }
 
 void
-TagDialog::queryDone( KTRMResultList results ) //SLOT
+TagDialog::queryDone( KTRMResultList results, QString error ) //SLOT
 {
 #if HAVE_TUNEPIMP
 
-    if ( !results.isEmpty() )
-    {
-        TrackPickerDialog* t = new TrackPickerDialog(m_bundle.url().filename(),results,this);
-        t->show();
+    if ( !error.isEmpty() ) {
+        KMessageBox::sorry( this, i18n( "Tunepimp (MusicBrainz tagging library) returned the following error: \"%1\"." ).arg(error) );
     }
-    else
-        KMessageBox::sorry( this, i18n( "The track was not found in the MusicBrainz database." ) );
-
-    QApplication::restoreOverrideCursor();
-    pushButton_musicbrainz->setEnabled( true );
-    pushButton_musicbrainz->setText( m_buttonMbText );
+    else {
+        if ( !results.isEmpty() )
+        {
+            TrackPickerDialog* t = new TrackPickerDialog(m_bundle.url().filename(),results,this);
+            t->show();
+        }
+        else
+            KMessageBox::sorry( this, i18n( "The track was not found in the MusicBrainz database." ) );
+        QApplication::restoreOverrideCursor();
+        pushButton_musicbrainz->setEnabled( true );
+        pushButton_musicbrainz->setText( m_buttonMbText );
+    }
 
 #endif
 }
@@ -369,7 +373,7 @@ void TagDialog::init()
     kComboBox_album->completionObject()->insertItems( albums );
     kComboBox_album->completionObject()->setIgnoreCase( true );
     kComboBox_album->setCompletionMode( KGlobalSettings::CompletionPopup );
-    
+
     const QStringList composers = CollectionDB::instance()->composerList();
     kComboBox_composer->insertStringList( composers );
     kComboBox_composer->completionObject()->insertItems( composers );

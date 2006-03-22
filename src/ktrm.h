@@ -122,7 +122,7 @@ class KTRMLookup : public QObject
 Q_OBJECT
 
 signals:
-    void sigResult( KTRMResultList );
+    void sigResult( KTRMResultList, QString );
 
 public:
     /**

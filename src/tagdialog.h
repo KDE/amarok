@@ -38,9 +38,9 @@ class TagDialog : public TagDialogBase
         TagDialog( const KURL::List list, QWidget* parent = 0 );
         TagDialog( const MetaBundle& mb, PlaylistItem* item, QWidget* parent = 0 );
         ~TagDialog();
-        
+
         void setTab( int id );
-        
+
         friend class TagSelect;
 
     signals:
@@ -61,7 +61,7 @@ class TagDialog : public TagDialogBase
         void musicbrainzQuery();
         void guessFromFilename();
         void setFileNameSchemes();
-        void queryDone( KTRMResultList results );
+        void queryDone( KTRMResultList results, QString error );
         void fillSelected( KTRMResult selected );
 
     private:
