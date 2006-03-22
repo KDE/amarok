@@ -50,6 +50,10 @@ AMAROK_EXPORT_PLUGIN( IpodMediaDevice )
 // disable if it takes too long for you
 #define CHECK_FOR_INTEGRITY 1
 
+#ifndef HAVE_ITDB_GET_MOUNTPOINT
+#define itdb_get_mountpoint(x) (x)->mountpoint
+#endif
+
 
 
 #include "metadata/audible/taglib_audiblefile.h"

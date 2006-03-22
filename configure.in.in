@@ -814,6 +814,7 @@ if test "$build_libgpod" != "no"; then
             LDFLAGS="$LDFLAGS $LIBGPOD_LIBS"
 
             AC_CHECK_FUNCS(itdb_track_set_thumbnails, have_libgpod_artwork=yes)
+            AC_CHECK_FUNCS(itdb_get_mountpoint)
 
             AC_CHECK_MEMBER(struct _Itdb_Track.movie_flag,
                   [AC_DEFINE(HAVE_ITDB_MOVIE_FLAG, 1, [have libgpod movie flag])],
