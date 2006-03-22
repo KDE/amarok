@@ -269,7 +269,7 @@ IpodMediaDevice::updateTrackInDB(IpodMediaItem *item,
         track->flag2 |= 0x01; // skip  when shuffling
         track->flag3 |= 0x01; // remember playback position
         track->flag4 |= 0x01; // also show description on iPod
-        track->unk176 = 0x00020000; // for podcasts
+        // FIXME: track->unk176 = 0x00020000; // for podcasts
         QString plaindesc = podcastInfo->description;
         plaindesc.replace( QRegExp("<[^>]*>"), "" );
         track->description = g_strdup( plaindesc.utf8() );
@@ -282,7 +282,7 @@ IpodMediaDevice::updateTrackInDB(IpodMediaItem *item,
     }
     else
     {
-        track->unk176 = 0x00010000; // for non-podcasts
+        // FIXME: track->unk176 = 0x00010000; // for non-podcasts
 
         uint albumID = CollectionDB::instance()->albumID( bundle.album(), false );
         if( CollectionDB::instance()->albumIsCompilation( QString::number( albumID ) ) )
@@ -906,7 +906,8 @@ IpodMediaDevice::openDevice( bool silent )
         }
     }
 
-#ifdef HAVE_G_OBJECT_GET
+#if 0
+    // does not work any longer in libgpod-cvs (0.3.3)
     if( m_itdb->device )
     {
         guint model;
@@ -974,11 +975,7 @@ IpodMediaDevice::openDevice( bool silent )
         debug() << "device type detection failed, assuming iPod shuffle" << endl;
         amaroK::StatusBar::instance()->shortMessage( i18n("Media device: device type detection failed, assuming iPod shuffle") );
         m_isShuffle = true;
-    }
-
-    if(itdb_musicdirs_number(m_itdb) <= 0)
-    {
-        m_itdb->musicdirs = 20;
+        m_supportsArtwork = true;
     }
 
     for( int i=0; i < itdb_musicdirs_number(m_itdb); i++)
@@ -1058,7 +1055,7 @@ IpodMediaDevice::openDevice( bool silent )
     }
 
 #ifdef CHECK_FOR_INTEGRITY
-    QString musicpath = QString(m_itdb->mountpoint) + "/iPod_Control/Music";
+    QString musicpath = QString(itdb_get_mountpoint(m_itdb)) + "/iPod_Control/Music";
     QDir dir( musicpath, QString::null, QDir::Name | QDir::IgnoreCase, QDir::Dirs );
     for(unsigned i=0; i<dir.count(); i++)
     {
@@ -1346,7 +1343,7 @@ IpodMediaDevice::realPath(const char *ipodPath)
     QString path;
     if(m_itdb)
     {
-        path = QFile::decodeName(m_itdb->mountpoint);
+        path = QFile::decodeName(itdb_get_mountpoint(m_itdb));
         path.append(QString(ipodPath).replace(':', "/"));
     }
 
@@ -1356,9 +1353,9 @@ IpodMediaDevice::realPath(const char *ipodPath)
 QString
 IpodMediaDevice::ipodPath(const QString &realPath)
 {
-    if(m_itdb && m_itdb->mountpoint)
+    if(m_itdb)
     {
-        QString mp = QFile::decodeName(m_itdb->mountpoint);
+        QString mp = QFile::decodeName(itdb_get_mountpoint(m_itdb));
         if(realPath.startsWith(mp))
         {
             QString path = realPath;
@@ -1660,7 +1657,7 @@ IpodMediaDevice::getCapacity( KIO::filesize_t *total, KIO::filesize_t *available
         return false;
 
 #ifdef HAVE_STATVFS
-    QString path = QFile::decodeName(m_itdb->mountpoint);
+    QString path = QFile::decodeName(itdb_get_mountpoint(m_itdb));
     path.append("/iPod_Control");
     struct statvfs buf;
     if(statvfs(QFile::encodeName(path), &buf) != 0)
@@ -1675,27 +1672,7 @@ IpodMediaDevice::getCapacity( KIO::filesize_t *total, KIO::filesize_t *available
 
     return *total > 0;
 #else
-#ifdef HAVE_G_OBJECT_GET
-    if(!m_itdb->device)
-        return false;
-
-    guint64 vol_size, vol_avail;
-
-    g_object_get(m_itdb->device,
-            "volume-size", &vol_size,
-            "volume-available", &vol_avail,
-            0);
-
-    if(total)
-        *total = vol_size/1024;
-
-    if(available)
-        *available = vol_avail/1024;
-
-    return vol_size > 0;
-#else
     return false;
-#endif
 #endif
 }
 

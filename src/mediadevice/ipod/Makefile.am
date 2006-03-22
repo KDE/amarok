@@ -21,7 +21,6 @@ libamarok_ipod_mediadevice_la_LIBADD  = \
 libamarok_ipod_mediadevice_la_LDFLAGS = \
     $(KDE_PLUGIN) \
     $(LIBGPOD_LIBS) \
-    $(GOBJECT_LIBS) \
     $(all_libraries)
 
 libamarok_ipod_mediadevice_la_SOURCES = \

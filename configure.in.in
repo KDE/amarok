@@ -787,7 +787,6 @@ AM_CONDITIONAL(with_ifp, [test x$have_ifp = xyes])
 ###############################################################################
 # BEGIN LIBGPOD CHECK
 ###############################################################################
-### mediabrowser.cpp can use libgpod if available
 
 AC_ARG_WITH(libgpod,
     AC_HELP_STRING([--with-libgpod],[build amaroK with iPod support from libgpod]),
@@ -797,33 +796,31 @@ AC_ARG_WITH(libgpod,
 
 if test "$build_libgpod" != "no"; then
     if test "$PKGCONFIGFOUND" = "yes" ; then
+
         # check for libgpod
         have_libgpod=no
 
         PKG_CHECK_MODULES(LIBGPOD, libgpod-1.0, have_libgpod=yes,have_libgpod=no)
         if test "x$have_libgpod" != "xno"; then
             AC_DEFINE(HAVE_LIBGPOD, 1, [have libgpod])
-        else
-            AC_MSG_RESULT($have_libgpod)
         fi
 
         if test "x$have_libgpod" = "xyes"; then
             ac_cppflags_save=$CPPFLAGS
+            ac_cflags_save=$CFLAGS
             ac_ldflags_save=$LDFLAGS
             CPPFLAGS="$CPPFLAGS $LIBGPOD_INCLUDES"
+            CFLAGS="$CFLAGS $LIBGPOD_CFLAGS"
             LDFLAGS="$LDFLAGS $LIBGPOD_LIBS"
-            AC_CHECK_FUNCS(g_object_get, have_gobject_get=yes, have_gobject_get=no)
-            if test "x$have_gobject_get" = "xno"; then
-               PKG_CHECK_MODULES([GOBJECT], gobject-2.0, have_gobject=yes,have_gobject=no)
-               CPPFLAGS="$CPPFLAGS $GOBJECT_INCLUDES"
-               LDFLAGS="$LDFLAGS $GOBJECT_LIBS"
-               unset ac_cv_func_g_object_get # clear cached result
-               AC_CHECK_FUNCS(g_object_get, have_gobject_get=yes, have_gobject_get=no)
-            fi
-            if test "x$have_gobject_get" = "xyes"; then
-                AC_CHECK_FUNCS(itdb_track_set_thumbnails, have_libgpod_artwork=yes)
-            fi
+
+            AC_CHECK_FUNCS(itdb_track_set_thumbnails, have_libgpod_artwork=yes)
+
+            AC_CHECK_MEMBER(struct _Itdb_Track.movie_flag,
+                  [AC_DEFINE(HAVE_ITDB_MOVIE_FLAG, 1, [have libgpod movie flag])],
+                  ,
+                  [#include <gpod/itdb.h>])
             CPPFLAGS=$ac_cppflags_save
+            CFLAGS=$ac_cflags_save
             LDFLAGS=$ac_ldflags_save
         fi
     fi
