@@ -157,6 +157,7 @@ PrettyPopupMenu::paintEvent( QPaintEvent* e )
     QPainter p( this );
 
     QRect r = sideImageRect();
+    r.setTop( r.bottom() - s_sidePixmap.height() );
     if ( r.intersects( e->rect() ) )
     {
         QRect drawRect = r.intersect( e->rect() ).intersect( sideImageRect() );
