@@ -168,6 +168,10 @@ PrettyPopupMenu::paintEvent( QPaintEvent* e )
 
     p.setClipRegion( e->region() );
 
+
+    //NOTE The order is important here. drawContents() must be called before drawPrimitive(),
+    //     otherwise we get rendering glitches.
+
     drawContents( &p );
 
     style().drawPrimitive( QStyle::PE_PanelPopup, &p,
