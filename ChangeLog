@@ -8,7 +8,7 @@ VERSION 1.3.9:
     * Support for libtunepimp 0.4. (BR 94988)
 
   BUGFIXES:
-    * On libtunepimp returned errors, show the proper error message,
+    * When libtunepimp returns errors, show the proper error message,
       instead of a misleading one. (BR 104264)
     * Fix preamp and frequency band scaling in the xine equalizer. Patch by
       Tobias Knieper <webmaster@micekiller.de>. (BR 116633)
