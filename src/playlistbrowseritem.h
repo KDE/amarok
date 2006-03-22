@@ -347,7 +347,8 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         const int  purgeCount()     { return m_bundle.purgeCount(); }
         const KURL saveLocation()   { return m_bundle.saveLocation(); }
 
-        void setXml( const QDomNode &xml, const int feedType );
+        void  setXml( const QDomNode &xml, const int feedType );
+        void  setParent( PlaylistCategory *newParent );
 
         void  updateInfo();
 

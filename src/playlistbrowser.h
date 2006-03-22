@@ -141,7 +141,7 @@ class PlaylistBrowser : public QVBox
 
         PlaylistCategory* loadPodcasts();
         void loadPodcastsFromDatabase( PlaylistCategory *p );
-        void loadPodcastFolders( PlaylistCategory *p );
+        QMap<int,PlaylistCategory*> loadPodcastFolders( PlaylistCategory *p );
         void changePodcastInterval();
         bool deletePodcastItems();
         bool deletePodcasts( QPtrList<PodcastChannel> items, const bool silent=false );

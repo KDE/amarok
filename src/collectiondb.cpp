@@ -1474,13 +1474,21 @@ CollectionDB::artistAlbumList( bool withUnknown, bool withCompilations )
 }
 
 bool
-CollectionDB::addPodcastChannel( const PodcastChannelBundle &pcb )
+CollectionDB::addPodcastChannel( const PodcastChannelBundle &pcb, const bool &replace )
 {
-    QString command = "INSERT INTO podcastchannels "
-                      "( url, title, weblink, comment, copyright, parent, directory"
-                      ", autoscan, fetchtype, autotransfer, haspurge, purgecount ) "
-                      "VALUES ('";
-
+    QString command;
+    if( replace ) {
+        command = "REPLACE INTO podcastchannels "
+                  "( url, title, weblink, comment, copyright, parent, directory"
+                  ", autoscan, fetchtype, autotransfer, haspurge, purgecount ) "
+                  "VALUES (";
+    } else {
+        command = "INSERT INTO podcastchannels "
+                  "( url, title, weblink, comment, copyright, parent, directory"
+                  ", autoscan, fetchtype, autotransfer, haspurge, purgecount ) "
+                  "VALUES (";
+    }
+    
     QString title       = pcb.title();
     KURL    link        = pcb.link();
     QString description = pcb.description();
@@ -1489,18 +1497,20 @@ CollectionDB::addPodcastChannel( const PodcastChannelBundle &pcb )
     if( title.isEmpty() )
         title = pcb.url().prettyURL();
 
-    command += escapeString( pcb.url().url() )    + "',";
-    command += ( title.isEmpty() ? "NULL" : "'"       + escapeString( title ) + "'" ) + ",";
-    command += ( link.isEmpty() ? "NULL" : "'"        + escapeString( link.url() ) + "'" ) + ",";
+    command += "'" + escapeString( pcb.url().url() )  + "',";
+    command += ( title.isEmpty() ?       "NULL" : "'" + escapeString( title ) + "'" ) + ",";
+    command += ( link.isEmpty() ?        "NULL" : "'" + escapeString( link.url() ) + "'" ) + ",";
     command += ( description.isEmpty() ? "NULL" : "'" + escapeString( description ) + "'" ) + ",";
-    command += ( copyright.isEmpty() ? "NULL" : "'"   + escapeString( copyright ) + "'" ) + ",";
-    command += "0,'"; //parent
+    command += ( copyright.isEmpty() ?   "NULL" : "'" + escapeString( copyright ) + "'" ) + ",";
+    command += QString::number( pcb.parentId() ) + ",'";
     command += escapeString( pcb.saveLocation().url() ) + "',";
     command += pcb.autoscan() ? boolT() + "," : boolF() + ",";
     command += QString::number( pcb.fetchType() ) + ",";
     command += pcb.autotransfer() ? boolT() + "," : boolF() + ",";
     command += pcb.hasPurge() ? boolT() + "," : boolF() + ",";
     command += QString::number( pcb.purgeCount() ) + ");";
+
+    debug() << "command: " << command << endl;
 
     //FIXME: currently there's no way to check if an INSERT query failed or not - always return true atm.
     // Now it might be possible as insert returns the rowid.
@@ -1519,8 +1529,8 @@ CollectionDB::addPodcastEpisode( const PodcastEpisodeBundle &episode, const int 
                   "VALUES (";
     } else {
         command = "INSERT INTO podcastepisodes "
-                "( url, parent, title, composer, comment, filetype, createdate, guid, length, isNew ) "
-                "VALUES (";
+                  "( url, parent, title, composer, comment, filetype, createdate, guid, length, isNew ) "
+                  "VALUES (";
     }
 
     QString title       = episode.title();
@@ -1554,7 +1564,7 @@ CollectionDB::addPodcastEpisode( const PodcastEpisodeBundle &episode, const int 
     //This is a bit of a hack. We have just inserted an item, so it is going to be the one with the
     //highest id.  Change this if threaded insertions are used in the future.
     QStringList values = query( QString("SELECT id FROM podcastepisodes WHERE url='%1' ORDER BY id DESC;")
-                            .arg( escapeString( episode.url().url() ) ) );
+                                        .arg( escapeString( episode.url().url() ) ) );
     debug() << "values[0]: " << values[0] << endl;
     if( values.isEmpty() ) return -1;
     
@@ -1577,7 +1587,7 @@ CollectionDB::getPodcastChannels()
         pcb.setLink        ( KURL::fromPathOrURL(*++it) );
         pcb.setDescription ( *++it );
         pcb.setCopyright   ( *++it );
-        ++it; //parent
+        pcb.setParentId    ( (*++it).toInt() );
         pcb.setSaveLocation( KURL::fromPathOrURL(*++it) );
         pcb.setAutoScan    ( *++it == boolT() ? true : false );
         pcb.setFetchType   ( (*++it).toInt() );
@@ -1638,30 +1648,39 @@ CollectionDB::addPodcastFolder( const QString &name, const int parent_id, const 
     return values[0].toInt();
 }
 
+void 
+CollectionDB::updatePodcastChannel( const PodcastChannelBundle &b )
+{
+    if( getDbConnectionType() == DbConnection::postgresql ) 
+    {
+        query( QString( "UPDATE podcastepisode SET title='%1', weblink='%2', comment='%3', "
+                        "copyright='%4', parent=%5, directory='%6', autoscan=%7, fetchtype=%8, "
+                        "autotransfer=%9, haspurge=%10, purgecount=%11 WHERE url='%12';" )
+                        .arg( escapeString( b.title() ) )       .arg( escapeString( b.link().url() ) )   
+                        .arg( escapeString( b.description() ) ) .arg( escapeString( b.copyright() ) )    
+                        .arg( QString::number( b.parentId() ) ) .arg( escapeString( b.saveLocation().url() ) )
+                        .arg( b.autoscan() ? boolT() : boolF() ).arg( QString::number( b.fetchType() ) ) 
+                        .arg( b.hasPurge() ? boolT() : boolF() ).arg( b.autotransfer() ? boolT() : boolF() )
+                        .arg( QString::number( b.purgeCount() )).arg( escapeString( b.url().url() ) ) );
+    }
+    else {
+        addPodcastChannel( b, true ); //replace the already existing row
+    }
+}
+
 void
 CollectionDB::updatePodcastEpisode( const int id, const PodcastEpisodeBundle &b )
 {
-    if( getDbConnectionType() == DbConnection::postgresql ) {
-        QString       title       = b.title();
-        const QString author      = b.author();
-        const QString description = b.description();
-        const QString type        = b.type();
-        const QString date        = b.date();
-        const QString guid        = b.guid();
-        const int     duration    = b.duration();
-        const bool    isNew       = b.isNew();
-        
-        if( title.isEmpty() )
-        title = b.url().prettyURL();
-        
-        query( QString( "UPDATE podcastepisode SET url='%1', parent='%2', title='%3', composer='%4', comment='%5'"
+    if( getDbConnectionType() == DbConnection::postgresql ) 
+    {
+        query( QString( "UPDATE podcastepisode SET url='%1', parent='%2', title='%3', composer='%4', comment='%5', "
                         "filetype='%6', createdate='%7', guid='%8', length=%9, isNew=%10 WHERE id=%11;" )
                         .arg( escapeString( b.url().url() ) )    .arg( escapeString( b.parent().url() ) )
-                        .arg( escapeString( title ) )            .arg( escapeString( author ) )
-                        .arg( escapeString( description ) )      .arg( escapeString( type ) )
-                        .arg( escapeString( date ) )             .arg( escapeString( guid ) )
-                        .arg( QString::number( duration ) )      .arg( isNew ? boolT() : boolF() )
-                        .arg( QString::number(id) ) );
+                        .arg( escapeString( b.title() ) )        .arg( escapeString( b.author() ) )
+                        .arg( escapeString( b.description() ) )  .arg( escapeString( b.type() ) )
+                        .arg( escapeString( b.date() ) )         .arg( escapeString( b.guid() ) )
+                        .arg( QString::number( b.duration() ) )  .arg( b.isNew() ? boolT() : boolF() )
+                        .arg( QString::number( id ) ) );
     }
     else {
         addPodcastEpisode( b, id );

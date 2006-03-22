@@ -263,8 +263,12 @@ class CollectionDB : public QObject, public EngineObserver
         bool addSong( MetaBundle* bundle, const bool incremental = false );
 
         //podcast methods
-        bool addPodcastChannel( const PodcastChannelBundle &pcb );
+        
+        /// Insert a podcast channe into the database.  If @param replace is true, replace the row
+        /// use updatePodcastChannel() always in preference
+        bool addPodcastChannel( const PodcastChannelBundle &pcb, const bool &replace=false );
         /// Insert a podcast episode into the database.  If @param idToUpdate is provided, replace the row
+        /// use updatePodcastEpisode() always in preference
         int  addPodcastEpisode( const PodcastEpisodeBundle &episode, const int idToUpdate=0 );
         int  addPodcastFolder( const QString &name, const int parent_id=0, const bool isOpen=false );
         QValueList<PodcastChannelBundle> getPodcastChannels();
@@ -272,6 +276,7 @@ class CollectionDB : public QObject, public EngineObserver
         void removePodcastChannel( const KURL &url ); // will remove all episodes too
         void removePodcastEpisode( const int id );
         void removePodcastFolder( const int id );
+        void updatePodcastChannel( const PodcastChannelBundle &b );
         void updatePodcastEpisode( const int id, const PodcastEpisodeBundle &b );
         void updatePodcastFolder( const int folder_id, const QString &name, const int parent_id=0, const bool isOpen=false );
 

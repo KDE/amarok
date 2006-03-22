@@ -1494,6 +1494,20 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
 }
 
 void
+PodcastChannel::setParent( PlaylistCategory *newParent )
+{
+    m_parent->takeItem( this );
+    newParent->insertItem( this );
+    newParent->sortChildItems( 0, true );
+    
+    m_parent = newParent;
+    m_bundle.setParentId( m_parent->id() );
+    debug() << "new parent id: " << m_parent->id() << "(" << m_bundle.parentId() << ")" << endl;
+            
+    CollectionDB::instance()->updatePodcastChannel( m_bundle );
+}
+
+void
 PodcastChannel::updateInfo()
 {
     const QString body = "<tr><td><b>%1</b></td><td>%2</td></tr>";

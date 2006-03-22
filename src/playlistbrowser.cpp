@@ -894,7 +894,7 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
 
 void PlaylistBrowser::loadPodcastsFromDatabase( PlaylistCategory *p )
 {
-    loadPodcastFolders( p );
+    QMap<int,PlaylistCategory*> folderMap = loadPodcastFolders( p );
 
     QValueList<PodcastChannelBundle> channels;
     QValueList<PodcastEpisodeBundle> episodes;
@@ -905,7 +905,12 @@ void PlaylistBrowser::loadPodcastsFromDatabase( PlaylistCategory *p )
 
     foreachType( QValueList<PodcastChannelBundle>, channels )
     {
-        channel  = new PodcastChannel( p, channel, *it );
+        PlaylistCategory *parent = p;
+        const int parentId = (*it).parentId();
+        if( parentId > 0 && folderMap.find( parentId ) != folderMap.end() )
+            parent = folderMap[parentId];
+            
+        channel  = new PodcastChannel( parent, channel, *it );
         episodes = CollectionDB::instance()->getPodcastEpisodes( (*it).url() );
 
         PodcastEpisodeBundle bundle;
@@ -920,7 +925,8 @@ void PlaylistBrowser::loadPodcastsFromDatabase( PlaylistCategory *p )
     }
 }
 
-void PlaylistBrowser::loadPodcastFolders( PlaylistCategory *p )
+QMap<int,PlaylistCategory*>
+PlaylistBrowser::loadPodcastFolders( PlaylistCategory *p )
 {
     QString sql = "SELECT * FROM podcastfolders ORDER BY parent ASC;";
     QStringList values = CollectionDB::instance()->query( sql );
@@ -936,7 +942,7 @@ void PlaylistBrowser::loadPodcastFolders( PlaylistCategory *p )
         const bool    isOpen   = ( (*++it) == "true" ? true : false );
         
         PlaylistCategory *parent = p;
-        if( parentId > 0  && folderMap.find( parentId ) != folderMap.end() )
+        if( parentId > 0 && folderMap.find( parentId ) != folderMap.end() )
             parent = folderMap[parentId];
         
         folder = new PlaylistCategory( parent, folder, t, id );
@@ -944,6 +950,7 @@ void PlaylistBrowser::loadPodcastFolders( PlaylistCategory *p )
         
         folderMap[id] = folder;
     }
+    return folderMap;
 }
 
 void PlaylistBrowser::scanPodcasts()
@@ -2915,8 +2922,8 @@ void PlaylistBrowserView::mousePressed( int button, QListViewItem *item, const Q
 
     if( !item || button != LeftButton ) return;
 
-    if( isPlaylist( item ) ) {
-
+    if( isPlaylist( item ) )
+    {
         QPoint p = mapFromGlobal( pnt );
         p.setY( p.y() - header()->height() );
 
@@ -2927,7 +2934,6 @@ void PlaylistBrowserView::mousePressed( int button, QListViewItem *item, const Q
             setOpen( item, !item->isOpen() );
             return;
         }
-
     }
 }
 
@@ -2983,8 +2989,7 @@ void PlaylistBrowserView::moveSelectedItems( QListViewItem *newParent )
         else if( base == PlaylistBrowser::instance()->m_podcastCategory && isPodcastChannel( item ) )
         {
         #define item static_cast<PodcastChannel*>(item)
-            int newParentId = static_cast<PlaylistCategory*>(newParent)->id();
-            debug() << "NOT FINISHED!!" << endl;
+            item->setParent( static_cast<PlaylistCategory*>(newParent) );
         #undef  item
         }
     }
