@@ -454,6 +454,7 @@ public:
     KTRMLookupPrivate() :
         fileId(-1) {}
     QString file;
+    QString errorString;
     KTRMResultList results;
     int fileId;
     bool autoDelete;
@@ -642,9 +643,11 @@ void KTRMLookup::error()
 {
 #if HAVE_TUNEPIMP
     debug() << k_funcinfo << d->file << endl;
+    track_t track = tp_GetTrack(KTRMRequestHandler::instance()->tunePimp(), d->fileId);
     char error[1000];
-    tp_GetError( KTRMRequestHandler::instance()->tunePimp(), error, 1000);
-    debug() << error << endl;
+    tr_GetError( track, error, 1000);
+    debug() << "Error: " << error << endl;
+    d->errorString = error;
     d->results.clear();
     finished();
 #endif
@@ -667,7 +670,7 @@ void KTRMLookup::finished()
 
 {
 #if HAVE_TUNEPIMP
-    emit sigResult( results() );
+    emit sigResult( results(), d->errorString );
 
     if(d->autoDelete)
         delete this;

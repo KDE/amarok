@@ -39,7 +39,7 @@ class TagDialog : public TagDialogBase
         void checkModified();
 
         void musicbrainzQuery();
-        void queryDone( KTRMResultList results );
+        void queryDone( KTRMResultList results, QString error );
         void fillSelected( KTRMResult selected );
 
     private:
