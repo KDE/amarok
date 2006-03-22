@@ -6,6 +6,8 @@
 #include <qnamespace.h>
 #include <qstring.h>
 
+#include <kurl.h> // recursiveUrlExpand
+
 #include "amarok_export.h"
 
 class KActionCollection;
@@ -104,6 +106,12 @@ namespace amaroK
      *                  with '/'
      */
     LIBAMAROK_EXPORT QString saveLocation( const QString &directory = QString::null ); //defined in collectionreader.cpp
+
+    /**
+     * For recursively expanding the contents of a directory into a KURL::List
+     * (playlists are ignored)
+     */
+    LIBAMAROK_EXPORT KURL::List recursiveUrlExpand( const KURL &url ); //defined in playlistloader.cpp
 
     QString verboseTimeSince( const QDateTime &datetime ); //defined in contextbrowser.cpp
 

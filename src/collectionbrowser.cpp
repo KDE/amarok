@@ -1678,7 +1678,12 @@ CollectionView::contentsDropEvent( QDropEvent *e )
                 ++it )
         {
             if( (*it).protocol() == "file" && !CollectionDB::instance()->isFileInCollection( (*it).path() ) )
-                cleanList += *it;
+            {
+                if( QFileInfo( (*it).path() ).isDir() )
+                    cleanList += amaroK::recursiveUrlExpand( *it );
+                else
+                    cleanList += *it;
+            }
             else
                 dropped++;
 

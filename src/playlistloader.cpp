@@ -336,6 +336,49 @@ UrlLoader::recurse( const KURL &url )
     return urls;
 }
 
+namespace amaroK
+{
+
+// almost the same as UrlLoader::recurse, but global
+KURL::List
+recursiveUrlExpand( const KURL &url )
+{
+    typedef QMap<QString, KURL> FileMap;
+
+    KDirLister lister( false );
+    lister.setAutoUpdate( false );
+    lister.setAutoErrorHandlingEnabled( false, 0 );
+    if ( !lister.openURL( url ) )
+        return KURL::List();
+
+    // Fucking KDirLister sometimes hangs on remote media, so we add a timeout
+    const int timeout = 3000; // ms
+    QTime watchdog;
+    watchdog.start();
+
+    while( !lister.isFinished() && watchdog.elapsed() < timeout )
+        kapp->eventLoop()->processEvents( QEventLoop::ExcludeUserInput );
+
+    KFileItemList items = lister.items(); //returns QPtrList, so we MUST only do it once!
+    KURL::List urls;
+    FileMap files;
+    for( KFileItem *item = items.first(); item; item = items.next() ) {
+        if( item->isFile() ) { files[item->name()] = item->url(); continue; }
+        if( item->isDir() ) urls += recursiveUrlExpand( item->url() );
+    }
+
+    foreachType( FileMap, files )
+        // users often have playlist files that reflect directories
+        // higher up, or stuff in this directory. Don't add them as
+        // it produces double entries
+        if( !PlaylistFile::isPlaylistFile( (*it).fileName() ) )
+            urls += *it;
+
+    return urls;
+}
+
+} // amaroK
+
 void
 UrlLoader::loadXml( const KURL &url )
 {

@@ -1911,6 +1911,13 @@ MediaQueue::addURL( const KURL& url, MetaBundle *bundle, PodcastInfo *podcastInf
         }
         return;
     }
+    else if( url.protocol() == "file" && QFileInfo( url.path() ).isDir() )
+    {
+        KURL::List urls = amaroK::recursiveUrlExpand( url );
+        foreachType( KURL::List, urls )
+            addURL( *it );
+        return;
+    }
 
     if(!bundle)
         bundle = new MetaBundle( url );
