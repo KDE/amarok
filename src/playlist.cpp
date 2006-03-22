@@ -3459,7 +3459,7 @@ Playlist::removeFromPreviousTracks( PlaylistItem *item )
         if( m_prevTracks.removeRef( item ) )
             m_total += item->totalIncrementAmount();
     }
-    else if( item = m_prevTracks.current() )
+    else if( (item = m_prevTracks.current()) != 0 )
         if( m_prevTracks.remove() )
             m_total += item->totalIncrementAmount();
 }
@@ -3472,7 +3472,7 @@ Playlist::removeFromPreviousAlbums( PlaylistAlbum *album )
         if( m_prevAlbums.removeRef( album ) )
             m_total += album->total;
     }
-    else if( album = m_prevAlbums.current() )
+    else if( (album = m_prevAlbums.current()) != 0 )
         if( m_prevAlbums.remove() )
             m_total += album->total;
 }

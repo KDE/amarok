@@ -36,17 +36,24 @@ class PodcastChannelBundle
                                         m_autotransfer, m_purge, m_purgeCount );
         }
 
-        KURL    url()         const;
-        QString title()       const;
-        KURL    link()        const;
-        QString description() const;
-        QString copyright()   const;
+        /// Return the url of the podcast feed
+        const KURL    url()         const;
+        /// The title of the Podcast channel
+        const QString title()       const;
+        /// A url to the webpage of the podcast
+        const KURL    link()        const;
+        const QString description() const;
+        const QString copyright()   const;
+        /// The id which the parent folder has in the database
+        const int     parentId()    const;
 
         void    setURL( const KURL &u );
         void    setTitle( const QString &t );
         void    setLink( const KURL &l );
         void    setDescription( const QString &d );
         void    setCopyright( const QString &c );
+        void    setParentId( const int p );
+        
         void    setSaveLocation( const KURL &s );
         void    setAutoScan( const bool b );
         void    setFetchType( const int i );
@@ -68,6 +75,7 @@ class PodcastChannelBundle
         KURL    m_link;
         QString m_description;
         QString m_copyright;
+        int     m_parentId;
 
         KURL    m_saveLocation;
         bool    m_autoscan;
@@ -77,17 +85,19 @@ class PodcastChannelBundle
         int     m_purgeCount;
 };
 
-inline KURL    PodcastChannelBundle::url()         const { return m_url; }
-inline QString PodcastChannelBundle::title()       const { return m_title; }
-inline KURL    PodcastChannelBundle::link()        const { return m_link; }
-inline QString PodcastChannelBundle::description() const { return m_description; }
-inline QString PodcastChannelBundle::copyright()   const { return m_copyright; }
+inline const KURL    PodcastChannelBundle::url()         const { return m_url; }
+inline const QString PodcastChannelBundle::title()       const { return m_title; }
+inline const KURL    PodcastChannelBundle::link()        const { return m_link; }
+inline const QString PodcastChannelBundle::description() const { return m_description; }
+inline const QString PodcastChannelBundle::copyright()   const { return m_copyright; }
+inline const int     PodcastChannelBundle::parentId()    const { return m_parentId; }
 
 inline void    PodcastChannelBundle::setURL         ( const KURL &u )    { m_url = u; }
 inline void    PodcastChannelBundle::setTitle       ( const QString &t ) { m_title = t; }
 inline void    PodcastChannelBundle::setLink        ( const KURL &l )    { m_link = l; }
 inline void    PodcastChannelBundle::setDescription ( const QString &d ) { m_description = d; }
 inline void    PodcastChannelBundle::setCopyright   ( const QString &c ) { m_copyright = c; }
+inline void    PodcastChannelBundle::setParentId    ( const int p )      { m_parentId = p; }
 
 inline void    PodcastChannelBundle::setSaveLocation( const KURL &s )    { m_saveLocation = s; }
 inline void    PodcastChannelBundle::setAutoScan( const bool b )         { m_autoscan = b; }
@@ -126,16 +136,22 @@ class PodcastEpisodeBundle
             m_isNew = isNew;
         }
 
+        /// The row id which this podcast episode has in the database
         int     dBId()        const;
+        /// The remote url to the podcast episode
         KURL    url()         const;
+        /// The url of the podcast channel
         KURL    parent()      const;
         QString author()      const;
         QString title()       const;
         QString description() const;
         QString date()        const;
+        /// File type of the podcast episode, eg ogg, mp3 etc
         QString type()        const;
         int     duration()    const;
+        /// unique identifier that should be available in the feed (RSS 2.0: guid ATOM: id)
         QString guid()        const;
+        /// Has this particular podcast episode been listened to?
         bool    isNew()       const;
 
         void    setDBId( const int i );
@@ -160,7 +176,7 @@ class PodcastEpisodeBundle
         QString m_date;
         QString m_type;
         int     m_duration;
-        QString m_guid; //unique identifier that should be available in the feed (RSS 2.0: guid ATOM: id)
+        QString m_guid;
         bool    m_isNew;
 };
 
