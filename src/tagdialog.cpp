@@ -304,10 +304,11 @@ TagDialog::queryDone( KTRMResultList results, QString error ) //SLOT
         }
         else
             KMessageBox::sorry( this, i18n( "The track was not found in the MusicBrainz database." ) );
-        QApplication::restoreOverrideCursor();
-        pushButton_musicbrainz->setEnabled( true );
-        pushButton_musicbrainz->setText( m_buttonMbText );
     }
+
+    QApplication::restoreOverrideCursor();
+    pushButton_musicbrainz->setEnabled( true );
+    pushButton_musicbrainz->setText( m_buttonMbText );
 
 #endif
 }
