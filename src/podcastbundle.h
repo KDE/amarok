@@ -37,15 +37,15 @@ class PodcastChannelBundle
         }
 
         /// Return the url of the podcast feed
-        const KURL    url()         const;
+        KURL    url()         const;
         /// The title of the Podcast channel
-        const QString title()       const;
+        QString title()       const;
         /// A url to the webpage of the podcast
-        const KURL    link()        const;
-        const QString description() const;
-        const QString copyright()   const;
+        KURL    link()        const;
+        QString description() const;
+        QString copyright()   const;
         /// The id which the parent folder has in the database
-        const int     parentId()    const;
+        int     parentId()    const;
 
         void    setURL( const KURL &u );
         void    setTitle( const QString &t );
@@ -62,12 +62,12 @@ class PodcastChannelBundle
         void    setPurgeCount( const int i );
 
         //settings
-        const KURL saveLocation() const;
-        const bool autoscan()     const;
-        const int  fetchType()    const;
-        const bool autotransfer() const;
-        const bool hasPurge()     const;
-        const int  purgeCount()   const;
+        KURL saveLocation() const;
+        bool autoscan()     const;
+        int  fetchType()    const;
+        bool autotransfer() const;
+        bool hasPurge()     const;
+        int  purgeCount()   const;
 
     private:
         KURL    m_url;
@@ -85,12 +85,12 @@ class PodcastChannelBundle
         int     m_purgeCount;
 };
 
-inline const KURL    PodcastChannelBundle::url()         const { return m_url; }
-inline const QString PodcastChannelBundle::title()       const { return m_title; }
-inline const KURL    PodcastChannelBundle::link()        const { return m_link; }
-inline const QString PodcastChannelBundle::description() const { return m_description; }
-inline const QString PodcastChannelBundle::copyright()   const { return m_copyright; }
-inline const int     PodcastChannelBundle::parentId()    const { return m_parentId; }
+inline KURL    PodcastChannelBundle::url()         const { return m_url; }
+inline QString PodcastChannelBundle::title()       const { return m_title; }
+inline KURL    PodcastChannelBundle::link()        const { return m_link; }
+inline QString PodcastChannelBundle::description() const { return m_description; }
+inline QString PodcastChannelBundle::copyright()   const { return m_copyright; }
+inline int     PodcastChannelBundle::parentId()    const { return m_parentId; }
 
 inline void    PodcastChannelBundle::setURL         ( const KURL &u )    { m_url = u; }
 inline void    PodcastChannelBundle::setTitle       ( const QString &t ) { m_title = t; }
@@ -106,12 +106,12 @@ inline void    PodcastChannelBundle::setAutoTransfer( const bool b )     { m_aut
 inline void    PodcastChannelBundle::setPurge( const bool b )            { m_purge = b; }
 inline void    PodcastChannelBundle::setPurgeCount( const int i )        { m_purgeCount = i; }
 
-inline const KURL PodcastChannelBundle::saveLocation() const { return m_saveLocation; }
-inline const bool PodcastChannelBundle::autoscan()     const { return m_autoscan; }
-inline const int  PodcastChannelBundle::fetchType()    const { return m_fetchType; }
-inline const bool PodcastChannelBundle::autotransfer() const { return m_autotransfer; }
-inline const bool PodcastChannelBundle::hasPurge()     const { return m_purge; }
-inline const int  PodcastChannelBundle::purgeCount()   const { return m_purgeCount; }
+inline KURL    PodcastChannelBundle::saveLocation() const { return m_saveLocation; }
+inline bool    PodcastChannelBundle::autoscan()     const { return m_autoscan; }
+inline int     PodcastChannelBundle::fetchType()    const { return m_fetchType; }
+inline bool    PodcastChannelBundle::autotransfer() const { return m_autotransfer; }
+inline bool    PodcastChannelBundle::hasPurge()     const { return m_purge; }
+inline int     PodcastChannelBundle::purgeCount()   const { return m_purgeCount; }
 
 
 
