@@ -23,11 +23,17 @@ class PodcastChannelBundle
         void setSettings( PodcastSettings *settings )
         {
             m_saveLocation = settings->saveLocation();
-            m_autoScan = settings->hasAutoScan();
-            m_fetch = settings->fetch();
+            m_autoscan     = settings->hasAutoScan();
+            m_fetchType    = settings->fetch();
             m_autotransfer = settings->addToMediaDevice();
-            m_purge = settings->hasPurge();
-            m_purgeCount = settings->purgeCount();
+            m_purge        = settings->hasPurge();
+            m_purgeCount   = settings->purgeCount();
+        }
+        
+        PodcastSettings * getSettings()
+        {
+            return new PodcastSettings( m_title, m_saveLocation.url(), m_autoscan, m_fetchType, 
+                                        m_autotransfer, m_purge, m_purgeCount );
         }
 
         KURL    url()         const;
@@ -51,7 +57,7 @@ class PodcastChannelBundle
         //settings
         const KURL saveLocation() const;
         const bool autoscan()     const;
-        const int  fetch()        const;
+        const int  fetchType()    const;
         const bool autotransfer() const;
         const bool hasPurge()     const;
         const int  purgeCount()   const;
@@ -64,8 +70,8 @@ class PodcastChannelBundle
         QString m_copyright;
 
         KURL    m_saveLocation;
-        bool    m_autoScan;
-        int     m_fetch;
+        bool    m_autoscan;
+        int     m_fetchType;
         bool    m_autotransfer;
         bool    m_purge;
         int     m_purgeCount;
@@ -84,15 +90,15 @@ inline void    PodcastChannelBundle::setDescription ( const QString &d ) { m_des
 inline void    PodcastChannelBundle::setCopyright   ( const QString &c ) { m_copyright = c; }
 
 inline void    PodcastChannelBundle::setSaveLocation( const KURL &s )    { m_saveLocation = s; }
-inline void    PodcastChannelBundle::setAutoScan( const bool b )         { m_autoScan = b; }
-inline void    PodcastChannelBundle::setFetchType( const int i )         { m_fetch = i; }
+inline void    PodcastChannelBundle::setAutoScan( const bool b )         { m_autoscan = b; }
+inline void    PodcastChannelBundle::setFetchType( const int i )         { m_fetchType = i; }
 inline void    PodcastChannelBundle::setAutoTransfer( const bool b )     { m_autotransfer = b; }
 inline void    PodcastChannelBundle::setPurge( const bool b )            { m_purge = b; }
 inline void    PodcastChannelBundle::setPurgeCount( const int i )        { m_purgeCount = i; }
 
 inline const KURL PodcastChannelBundle::saveLocation() const { return m_saveLocation; }
-inline const bool PodcastChannelBundle::autoscan()     const { return m_autoScan; }
-inline const int  PodcastChannelBundle::fetch()        const { return m_fetch; }
+inline const bool PodcastChannelBundle::autoscan()     const { return m_autoscan; }
+inline const int  PodcastChannelBundle::fetchType()    const { return m_fetchType; }
 inline const bool PodcastChannelBundle::autotransfer() const { return m_autotransfer; }
 inline const bool PodcastChannelBundle::hasPurge()     const { return m_purge; }
 inline const int  PodcastChannelBundle::purgeCount()   const { return m_purgeCount; }

@@ -227,13 +227,13 @@ void PlaylistCategory::setXml( const QDomElement &xml )
                 last = new PodcastChannel( this, last, url, n, xml );
 
                 #define item static_cast<PodcastChannel*>(last)
-                if( item->autoScan() )
+                if( item->autoscan() )
                     pb->m_podcastItemsToScan.append( item );
                 #undef  item
             }
             else if ( e.tagName() == "settings" )
             {
-                PlaylistBrowser::instance()->registerPodcastSettings(  m_title, new PodcastSettings( e, m_title ) );
+                PlaylistBrowser::instance()->registerPodcastSettings(  title(), new PodcastSettings( e, title() ) );
             }
             if( !e.attribute( "isOpen" ).isNull() ) last->setOpen( e.attribute( "isOpen" ) == "true" ); //settings doesn't have an attribute "isOpen"
         }
@@ -753,12 +753,12 @@ TrackItemInfo::TrackItemInfo( const KURL &u, const QString &t, const int l )
         , m_title( t )
         , m_length( l )
 {
-    if( m_title.isEmpty() )
+    if( title().isEmpty() )
     {
         MetaBundle *mb = new MetaBundle( u );
         if( mb->isValidMedia() )
         {
-            m_title = mb->prettyTitle();
+            m_title  = mb->prettyTitle();
             m_length = mb->length();
         }
         else
@@ -816,7 +816,7 @@ StreamEntry::StreamEntry( QListViewItem *parent, QListViewItem *after, const QDo
 QDomElement StreamEntry::xml() {
         QDomDocument doc;
         QDomElement i = doc.createElement("stream");
-        i.setAttribute( "name", m_title );
+        i.setAttribute( "name", title() );
         if( isOpen() )
             i.setAttribute( "isOpen", "true" );
         QDomElement url = doc.createElement( "url" );
@@ -1076,7 +1076,6 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
         , m_updating( false )
         , m_new( false )
         , m_hasProblem( false )
-        , m_settings( 0 )
         , m_last( 0 )
         , m_parent( static_cast<PlaylistCategory*>(parent) )
 {
@@ -1099,7 +1098,6 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
     , m_new( false )
     , m_hasProblem( false )
     , m_channelSettings( channelSettings )
-    , m_settings( 0 )
     , m_last( 0 )
     , m_parent( static_cast<PlaylistCategory*>(parent) )
 {
@@ -1124,7 +1122,6 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
     , m_new( false )
     , m_hasProblem( false )
     , m_channelSettings( channelSettings )
-    , m_settings( 0 )
     , m_last( 0 )
     , m_parent( static_cast<PlaylistCategory*>(parent) )
 {
@@ -1141,7 +1138,8 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
 }
 
 PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, const PodcastChannelBundle &pcb )
-   : PlaylistBrowserEntry( parent, after )
+    : PlaylistBrowserEntry( parent, after )
+    , m_bundle( pcb )
     , m_url( pcb.url() )
     , m_loading1( QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
     , m_loading2( QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
@@ -1149,100 +1147,80 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
     , m_updating( false )
     , m_new( false )
     , m_hasProblem( false )
-    , m_settings( 0 )
     , m_last( 0 )
     , m_parent( static_cast<PlaylistCategory*>(parent) )
 {
-    m_title = pcb.title();
-    m_link = pcb.link();
-    m_description = pcb.description();
-    m_copyright = pcb.copyright();
-
-    m_settings = new PodcastSettings( m_title, pcb.saveLocation().path(), pcb.autoscan(), pcb.fetch(),
-                                      pcb.autotransfer(), pcb.hasPurge(), pcb.purgeCount() );
-    setText( 0, m_title );
+    setText( 0, title() );
     setDragEnabled( true );
     setRenameEnabled( 0, false );
     setPixmap( 0, SmallIcon("player_playlist_2") );
 }
 
-void PodcastChannel::createSettings()
-{
-    if( m_channelSettings.isNull() ) //no channelsettings found, create new PodcastSettings based on settings from parent
-    {
-        m_settings = new PodcastSettings( PlaylistBrowser::instance()->getPodcastSettings( m_parent ),  m_title );
-    }
-    else
-    {
-        m_settings = new PodcastSettings( m_channelSettings, m_title );
-    }
-}
-
 void
 PodcastChannel::configure()
 {
-    // Save the values
-    const KURL save       = m_settings->m_saveLocation;
-    const bool autoScan   = m_settings->m_autoScan;
-    const int  mediaFetch = m_settings->m_fetch;
-    const bool hadPurge   = m_settings->m_purge;
-
-    PodcastSettingsDialog *dialog = new PodcastSettingsDialog( m_settings,
-            PlaylistBrowser::instance()->getPodcastSettings( m_parent ) );
-
-    if( dialog->configure() )
-    {
-        bool downloadMedia = ( (mediaFetch != m_settings->m_fetch) && (m_settings->m_fetch == AUTOMATIC) );
-
-        if( !hadPurge && m_settings->m_purge )
-        {
-            purge();
-        }
-
-        /**
-         * Rewrite local url
-         * Move any downloaded media to the new location
-         */
-        if( save != m_settings->m_saveLocation )
-        {
-            KURL::List copyList;
-
-            PodcastEpisode *item = static_cast<PodcastEpisode*>( firstChild() );
-            // get a list of the urls of already downloaded items
-            while( item )
-            {
-                if( item->isOnDisk() )
-                    copyList << item->localUrl();
-
-                item->setLocalUrlBase( m_settings->m_saveLocation.prettyURL() );
-                item = static_cast<PodcastEpisode*>( item->nextSibling() );
-            }
-            // move the items
-            if( !copyList.isEmpty() )
-            {
-                //create the local directory first
-                PodcastEpisode::createLocalDir( m_settings->m_saveLocation.path() );
-                KIO::CopyJob* m_podcastMoveJob = KIO::move( copyList, m_settings->m_saveLocation, false );
-                amaroK::StatusBar::instance()->newProgressOperation( m_podcastMoveJob )
-                        .setDescription( i18n( "Moving Podcasts" ) );
-            }
-        }
-
-        if( autoScan != m_settings->m_autoScan )
-        {
-            if( m_settings->m_autoScan )
-                PlaylistBrowser::instance()->m_podcastItemsToScan.append( this );
-            else
-                PlaylistBrowser::instance()->m_podcastItemsToScan.remove( this );
-        }
-
-        if( downloadMedia )
-        {
-            downloadChildren();
-        }
-    }
-
-    delete dialog;
+//     // Save the values
+//     const KURL save         = saveLocation();
+//     const bool hadAutoscan  = autoscan();
+//     const int  oldFetchType = fetchType()
+//     const bool hadPurge     = hasPurge();
+// 
+//     PodcastSettingsDialog *dialog = new PodcastSettingsDialog( pcb.getSettings(),
+//             PlaylistBrowser::instance()->getPodcastSettings( m_parent ) );
+// 
+//     if( dialog->configure() )
+//     {
+//         bool downloadMedia = ( (oldFetchType != fetchType()) && (fetchType() == AUTOMATIC) );
+// 
+//         if( !hadPurge && hasPurge() )
+//         {
+//             purge();
+//         }
+// 
+//         /**
+//          * Rewrite local url
+//          * Move any downloaded media to the new location
+//          */
+//         if( save != m_settings->m_saveLocation )
+//         {
+//             KURL::List copyList;
+// 
+//             PodcastEpisode *item = static_cast<PodcastEpisode*>( firstChild() );
+//             // get a list of the urls of already downloaded items
+//             while( item )
+//             {
+//                 if( item->isOnDisk() )
+//                     copyList << item->localUrl();
+// 
+//                 item->setLocalUrlBase( m_settings->m_saveLocation.prettyURL() );
+//                 item = static_cast<PodcastEpisode*>( item->nextSibling() );
+//             }
+//             // move the items
+//             if( !copyList.isEmpty() )
+//             {
+//                 //create the local directory first
+//                 PodcastEpisode::createLocalDir( m_settings->m_saveLocation.path() );
+//                 KIO::CopyJob* m_podcastMoveJob = KIO::move( copyList, m_settings->m_saveLocation, false );
+//                 amaroK::StatusBar::instance()->newProgressOperation( m_podcastMoveJob )
+//                         .setDescription( i18n( "Moving Podcasts" ) );
+//             }
+//         }
+// 
+//         if( autoScan != m_settings->m_autoScan )
+//         {
+//             if( m_settings->m_autoScan )
+//                 PlaylistBrowser::instance()->m_podcastItemsToScan.append( this );
+//             else
+//                 PlaylistBrowser::instance()->m_podcastItemsToScan.remove( this );
+//         }
+// 
+//         if( downloadMedia )
+//         {
+//             downloadChildren();
+//         }
+//     }
+// 
+//     delete dialog;
 }
 
 void
@@ -1273,12 +1251,6 @@ PodcastChannel::downloadChildQueue()
     connect( first, SIGNAL( downloadFinished() ), this, SLOT( downloadChildQueue() ) );
 }
 
-const KURL
-PodcastChannel::xmlUrl()
-{
-    return KURL::fromPathOrURL( amaroK::saveLocation( "podcasts/" ) +  m_cache );
-}
-
 void
 PodcastChannel::fetch()
 {
@@ -1303,11 +1275,10 @@ PodcastChannel::abortFetch()
     m_podcastJob->kill();
 
     stopAnimation();
-    m_title.isEmpty() ?
+    title().isEmpty() ?
         setText( 0, m_url.prettyURL() ) :
-        setText( 0, m_title );
+        setText( 0, title() );
 }
-
 
 void
 PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
@@ -1317,15 +1288,8 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
         amaroK::StatusBar::instance()->shortMessage( i18n( "Unable to connect to Podcast server." ) );
         debug() << "Unable to retrieve podcast information. KIO Error: " << job->error() << endl;
 
-        if( m_title.isEmpty() )
-            m_title = m_url.prettyURL();
-        setText( 0, m_title );
-
-        if( m_settings == 0)
-        {
-            debug() << "creating settings for " << m_title << endl;
-            createSettings();
-        }
+        if( title().isEmpty() )
+            setText( 0, m_url.prettyURL() );
 
         setPixmap( 0, SmallIcon("cancel") );
 
@@ -1340,14 +1304,8 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
     {
         amaroK::StatusBar::instance()->shortMessage( i18n("Podcast returned invalid data.") );
 
-        if( m_title.isEmpty() )
+        if( title().isEmpty() )
             setText( 0, m_url.prettyURL() );
-
-        if( m_settings == 0)
-        {
-            debug() << "creating settings for " << m_title << endl;
-            createSettings();
-        }
 
         setPixmap( 0, SmallIcon("cancel") );
         return;
@@ -1361,14 +1319,8 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
         {
             amaroK::StatusBar::instance()->shortMessage( i18n("Sorry, only RSS 2.0 or Atom feeds for podcasts!") );
 
-            if( m_title.isEmpty() )
+            if( title().isEmpty() )
                 setText( 0, m_url.prettyURL() );
-
-            if( m_settings == 0 )
-            {
-                debug() << "creating settings for " << m_title << endl;
-                createSettings();
-            }
 
             setPixmap( 0, SmallIcon("cancel") );
             return;
@@ -1426,26 +1378,22 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
     /// Podcast Channel information
     const bool isAtom = ( feedType == ATOM );
 
-    m_title = xml.namedItem( "title" ).toElement().text();
-    createSettings();
+    QString t = xml.namedItem( "title" ).toElement().text();
 
-    setText( 0, m_title );
+    setText( 0, t );
 
-    m_cache = KURL::encode_string( m_title + "_" + m_url.fileName() );
-
-    QString weblink = QString::null;
+    QString l = QString::null;
 
     if( isAtom )
-        weblink = xml.namedItem( "link" ).toElement().attribute( "rel" );
+        l = xml.namedItem( "link" ).toElement().attribute( "rel" );
     else
-        weblink = xml.namedItem( "link" ).toElement().text();
+        l = xml.namedItem( "link" ).toElement().text();
 
-    m_link = KURL::fromPathOrURL( weblink );
+    QString d = xml.namedItem( "description" ).toElement().text();
+    QString c = xml.namedItem( "copyright" ).toElement().text();
 
-    m_description = xml.namedItem( "description" ).toElement().text();
-    m_copyright   = xml.namedItem( "copyright" ).toElement().text();
-
-    PodcastChannelBundle pcb( m_url, m_title, m_link, m_description, m_copyright, m_settings );
+    PodcastSettings *parentSettings = PlaylistBrowser::instance()->getPodcastSettings( m_parent );
+    PodcastChannelBundle pcb( m_url, t, l, d, c, parentSettings );
 
     if( !m_updating )
     { // don't reinsert on a refresh
@@ -1464,7 +1412,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
         n = xml.namedItem( "item" );
 
     int  children = 0;
-    bool downloadMedia = ( m_settings->m_fetch == AUTOMATIC );
+    bool downloadMedia = ( fetchType() == AUTOMATIC );
     QDomNode node;
     
     // We use an auto-increment id in the database, so we must insert podcasts in the reverse order
@@ -1532,7 +1480,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
             ep->setNew( true );
     }
 
-    if( m_settings->m_purge && childCount() > m_settings->m_purgeCount )
+    if( hasPurge() && childCount() > purgeCount() )
         purge();
 
     if( downloadMedia )
@@ -1552,11 +1500,11 @@ PodcastChannel::updateInfo()
 
     QString str  = "<html><body><table width=\"100%\" border=\"0\">";
 
-    str += body.arg( i18n( "Title" ),       m_title );
+    str += body.arg( i18n( "Title" ),       title() );
     str += body.arg( i18n( "Url" ),         m_url.prettyURL() );
-    str += body.arg( i18n( "Website" ),     m_link.prettyURL() );
-    str += body.arg( i18n( "Copyright" ),   m_copyright );
-    str += body.arg( i18n( "Description" ), m_description );
+    str += body.arg( i18n( "Website" ),     link().prettyURL() );
+    str += body.arg( i18n( "Copyright" ),   copyright() );
+    str += body.arg( i18n( "Description" ), description() );
     str += "</table>";
     str += i18n( "<p>&nbsp;<b>Episodes</b></p><ul>" );
     for( QListViewItem *c = firstChild(); c; c = c->nextSibling() )
@@ -1573,7 +1521,7 @@ PodcastChannel::updateInfo()
 void
 PodcastChannel::purge()
 {
-    int removeCount = childCount() - m_settings->m_purgeCount;
+    int removeCount = childCount() - purgeCount();
     if( removeCount <= 0 )
         return;
 
@@ -1838,7 +1786,7 @@ PodcastEpisode::downloadResult( KIO::Job* job ) //SLOT
     setNew( false );
 
     PodcastChannel *channel = dynamic_cast<PodcastChannel *>( m_parent );
-    if( channel && channel->addToMediaDevice() && MediaBrowser::isAvailable() )
+    if( channel && channel->autotransfer() && MediaBrowser::isAvailable() )
     {
         addToMediaDevice();
         MediaBrowser::queue()->URLsAdded();
@@ -2166,7 +2114,7 @@ SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, const
 
 SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QDomElement &xmlDefinition )
         : PlaylistBrowserEntry( parent, after )
-        , m_after ( after )
+        , m_after( after )
         , m_dynamic( false )
 {
     setPixmap( 0, SmallIcon( "player_playlist_2" ) );
@@ -2174,7 +2122,8 @@ SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, const
     setDragEnabled( !m_sqlForTags.isEmpty() );
 }
 
-void SmartPlaylist::setXml( const QDomElement &xml ) {
+void SmartPlaylist::setXml( const QDomElement &xml )
+{
     m_xml = xml;
     m_title = xml.attribute( "name" );
     setText( 0, m_title );

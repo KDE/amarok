@@ -1121,8 +1121,6 @@ bool PlaylistBrowser::deletePodcasts( QPtrList<PodcastChannel> items, const bool
                 }
                 #undef  ch
             }
-            //delete downloaded xml
-            urls.append( (*it)->xmlUrl() );
         }
         // TODO We need to check which files have been deleted successfully
         KIO::del( urls );
@@ -2405,11 +2403,11 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             {
                 item->configure();
 
-                if( item->autoScan() && m_podcastItemsToScan.find( item ) < 0 ) // check that it is not there
+                if( item->autoscan() && m_podcastItemsToScan.find( item ) < 0 ) // check that it is not there
                 {
                     m_podcastItemsToScan.append( item );
                 }
-                else if( !item->autoScan() )
+                else if( !item->autoscan() )
                 {   // don't need to check it's not there, it makes no difference to remove()
                     m_podcastItemsToScan.remove( item );
                 }
@@ -2797,19 +2795,24 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
 
             for ( ; it != decodedList.end(); ++it )
             {
-	        if (isCategory(item)) { // check if it is podcast category
-		    QListViewItem *cat = item;
-		    while (isCategory(cat) && cat!=PlaylistBrowser::instance()->podcastCategory()) cat=cat->parent();
-		    if (cat==PlaylistBrowser::instance()->podcastCategory()) PlaylistBrowser::instance()->addPodcast((*it).url(),item);
-		    continue;
-	        }
+                if( isCategory(item) ) 
+                { // check if it is podcast category
+                    QListViewItem *cat = item;
+                    while( isCategory(cat) && cat!=PlaylistBrowser::instance()->podcastCategory() )
+                        cat = cat->parent();
+                        
+                    if( cat == PlaylistBrowser::instance()->podcastCategory() )
+                        PlaylistBrowser::instance()->addPodcast((*it).url(),item);
+                    continue;
+                }
+                
                 QString filename = (*it).fileName();
 
                 if( filename.endsWith("m3u") || filename.endsWith("pls") )
                     PlaylistBrowser::instance()->addPlaylist( (*it).path() );
-                else if( (*it).protocol() == "album"
-                        || (*it).protocol() == "compilation"
-                        || (*it).protocol() == "fetchcover" )
+                else if( (*it).protocol() == "album"       || 
+                         (*it).protocol() == "compilation" ||
+                         (*it).protocol() == "fetchcover" )
                 {
                     KURL::List urls = ContextBrowser::expandURL( *it );
                     for( KURL::List::iterator i = urls.begin();
@@ -2971,12 +2974,18 @@ void PlaylistBrowserView::moveSelectedItems( QListViewItem *newParent )
         if( base == PlaylistBrowser::instance()->m_playlistCategory && isPlaylist( item )   ||
             base == PlaylistBrowser::instance()->m_streamsCategory && isStream( item )      ||
             base == PlaylistBrowser::instance()->m_smartCategory && isSmartPlaylist( item ) ||
-            base == PlaylistBrowser::instance()->m_dynamicCategory && isDynamic( item )     ||
-            base == PlaylistBrowser::instance()->m_podcastCategory && isPodcastChannel( item ) )
+            base == PlaylistBrowser::instance()->m_dynamicCategory && isDynamic( item )      )
         {
             itemParent->takeItem( item );
             newParent->insertItem( item );
             newParent->sortChildItems( 0, true );
+        }
+        else if( base == PlaylistBrowser::instance()->m_podcastCategory && isPodcastChannel( item ) )
+        {
+        #define item static_cast<PodcastChannel*>(item)
+            int newParentId = static_cast<PlaylistCategory*>(newParent)->id();
+            debug() << "NOT FINISHED!!" << endl;
+        #undef  item
         }
     }
 }

@@ -334,18 +334,18 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         void  fetch();
         void  rescan();
 
-        const KURL &url() { return m_url; }
-        const KURL &link() { return m_link; }
-        const KURL xmlUrl();
-        const QString &title() { return m_title; }
+        const KURL     url()         { return m_url; }
+        const KURL     link()        { return m_bundle.link(); }
+        const QString  title()       { return m_bundle.title(); }
+        const QString  description() { return m_bundle.description(); }
+        const QString  copyright()   { return m_bundle.copyright(); }
 
-        const bool autoScan() { return m_settings->m_autoScan; }
-        const int  mediaFetch() { return m_settings->m_fetch; }
-        const bool addToMediaDevice() { return m_settings->m_addToMediaDevice; }
-        const bool hasPurge() { return m_settings->m_purge; }
-        const int  purgeCount() { return m_settings->m_purgeCount; }
-        const KURL &saveLocation() { return m_settings->m_saveLocation; }
-        const int  timeout() { return m_settings->m_interval; }
+        const int  fetchType()      { return m_bundle.fetchType(); }
+        const bool autoscan()       { return m_bundle.autoscan(); }
+        const bool autotransfer()   { return m_bundle.autotransfer(); }
+        const bool hasPurge()       { return m_bundle.hasPurge(); }
+        const int  purgeCount()     { return m_bundle.purgeCount(); }
+        const KURL saveLocation()   { return m_bundle.saveLocation(); }
 
         void setXml( const QDomNode &xml, const int feedType );
 
@@ -370,14 +370,10 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         void removeChildren();
         void startAnimation();
         void stopAnimation();
-        void createSettings();
+        
+        PodcastChannelBundle m_bundle;
 
         KURL        m_url;                         //remote xml url
-        KURL        m_link;                        //webpage
-        QString     m_title;
-        QString     m_cache;                       //filename for caching
-        QString     m_description;
-        QString     m_copyright;
         QPixmap     m_loading1;
         QPixmap     m_loading2;
         bool        m_fetching;
@@ -389,7 +385,6 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
 
         // Configuration
         QDomNode m_channelSettings;
-        PodcastSettings *m_settings;
 
         PodcastEpisode          *m_last;
         KIO::TransferJob        *m_podcastJob;

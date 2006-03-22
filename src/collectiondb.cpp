@@ -1497,7 +1497,7 @@ CollectionDB::addPodcastChannel( const PodcastChannelBundle &pcb )
     command += "0,'"; //parent
     command += escapeString( pcb.saveLocation().url() ) + "',";
     command += pcb.autoscan() ? boolT() + "," : boolF() + ",";
-    command += QString::number( pcb.fetch() ) + ",";
+    command += QString::number( pcb.fetchType() ) + ",";
     command += pcb.autotransfer() ? boolT() + "," : boolF() + ",";
     command += pcb.hasPurge() ? boolT() + "," : boolF() + ",";
     command += QString::number( pcb.purgeCount() ) + ");";
