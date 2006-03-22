@@ -78,7 +78,6 @@ private:
    QSlider* vol_slider;
    AmarokPlayerInterface_stub *playerStub;
    AmarokPlaylistInterface_stub *playlistStub;
-   AmarokContextBrowserInterface_stub *contextStub;
    
 public slots:
     void updateBrowser(const QString&);
@@ -92,10 +91,10 @@ public slots:
     void volChanged(int vol);
     void openURLRequest( const KURL & );
     void checkForAmarok();
-    void lyrics() { contextStub->showLyrics(); }
-    void currentTrack() { contextStub->showCurrentTrack(); }
-    void wiki() { contextStub->showWiki(); }
-    void cbHome() { contextStub->showHome(); }
+    void cbHome() { openURLRequest( KURL("show:home") ) ; }
+    void lyrics() { openURLRequest( KURL("show:lyrics") ) ; }
+    void currentTrack() { openURLRequest( KURL("show:context") ) ; }
+    void wiki() { openURLRequest( KURL("show:wiki") ) ; }
 };
 
 #endif

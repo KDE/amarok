@@ -512,7 +512,8 @@ namespace amaroK
 
     void DcopPlaylistHandler::playMedia( const KURL &url )
     {
-	Playlist::instance()->insertMedia( url, Playlist::DirectPlay | Playlist::Unique);
+        /* ContextBrowser::openURLRequest is necessary for konquisidebar */
+        ContextBrowser::instance()->openURLRequest( url );
     }
 
     void DcopPlaylistHandler::popupMessage(const QString& msg)
