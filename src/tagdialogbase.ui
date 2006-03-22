@@ -587,7 +587,7 @@
                     <cstring>lyricsTab</cstring>
                 </property>
                 <attribute name="title">
-                    <string>L&amp;&amp;yrics</string>
+                    <string>L&amp;yrics</string>
                 </attribute>
                 <hbox>
                     <property name="name">
