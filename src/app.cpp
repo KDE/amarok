@@ -252,7 +252,7 @@ namespace
             DCOPRef mediamanager( "kded", "mediamanager" );
             DCOPReply reply = mediamanager.call( "properties(QString)", deviceUrl.fileName() );
             QStringList properties = reply;
-            
+
             if (!reply.isValid() || properties.count() < 6)
             {
                 debug() << "Invalid reply from mediamanager" << endl;
@@ -264,7 +264,7 @@ namespace
                 return properties[5];
             }
         }
-    
+
         return device;
     }
 
@@ -918,7 +918,7 @@ void App::engineStateChanged( Engine::State state, Engine::State oldState )
 
     case Engine::Playing:
         if ( oldState == Engine::Paused )
-            amaroK::OSD::instance()->OSDWidget::show( i18n("Play" ) );
+            amaroK::OSD::instance()->OSDWidget::show( i18n( "state, as in playing", "Play" ) );
         if ( !bundle.prettyTitle().isEmpty() )
             m_pPlaylistWindow->setCaption( i18n("amaroK - %1").arg( bundle.veryNiceTitle() ) );
         break;
