@@ -241,12 +241,6 @@ MediaBrowser::MediaBrowser( const char *name )
     configPopup->insertItem( i18n("Configure..."), this, SLOT(config()) );
     configPopup->insertItem( i18n("Manage Plugins..."), this, SLOT(showPluginManager()) );
     m_toolbar->setDelayedPopup( CONFIGURE, configPopup );
-#if 0
-    m_playlistButton = new KPushButton( KGuiItem( QString::null, "player_playlist_2" ), hb );
-    m_playlistButton->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
-    m_playlistButton->setToggleButton( true );
-    QToolTip::add( m_playlistButton, i18n( "Append transferred items to playlist \"New amaroK additions\"" ) );
-#endif
 
     m_deviceCombo = new KComboBox( this );
 
@@ -2348,18 +2342,6 @@ MediaDevice::transferFiles()
     // ok, let's copy the stuff to the device
 
     MediaItem *playlist = 0;
-#if 0
-    if(m_playlistItem && m_parent->m_playlistButton->isOn())
-    {
-        QString name = i18n("New amaroK additions");
-        playlist = m_playlistItem->findItem( name );
-        if(!playlist)
-        {
-            QPtrList<MediaItem> items;
-            playlist = newPlaylist(name, m_playlistItem, items);
-        }
-    }
-#endif
 
     KURL::List existing, unplayable;
     MediaItem *after = 0; // item after which to insert into playlist
@@ -2485,6 +2467,8 @@ MediaDevice::transferFiles()
         m_transferredItem = 0;
         setProgress( progress() + 1 );
         m_parent->m_queue->itemCountChanged();
+
+        kapp->processEvents( 100 );
     }
     synchronizeDevice();
     unlockDevice();
