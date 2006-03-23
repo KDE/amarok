@@ -359,7 +359,19 @@ MediaBrowser::tagsChanged( const MetaBundle &bundle )
         }
         else
         {
-            // check if it is on the transfer queue
+            // it's an item on the transfer queue
+            item->setBundle( new MetaBundle( bundle ) );
+
+            QString text = item->bundle()->prettyTitle();
+            if( item->type() == MediaItem::PODCASTITEM )
+            {
+                text += " (" + i18n("Podcast") + ")";
+            }
+            if( item->m_playlistName != QString::null )
+            {
+                text += " (" + item->m_playlistName + ")";
+            }
+            item->setText( 0, text);
         }
     }
 }
@@ -661,8 +673,18 @@ MediaItem::setBundle( MetaBundle *bundle )
 {
     if( m_bundle )
     {
-        MediaBrowser::instance()->m_itemMap.remove(url().path());
-        delete m_bundle;
+        MediaBrowser::ItemMap::iterator it = MediaBrowser::instance()->m_itemMap.find( bundle->url().path() );
+        if( it != MediaBrowser::instance()->m_itemMap.end() )
+        {
+            if( *it != this )
+            {
+                // don't overwrite if it's not our own bundle
+                // (as we would probably erase an item on a device that was queued for transferring to another device)
+                return;
+            }
+            MediaBrowser::instance()->m_itemMap.remove(url().path());
+            delete m_bundle;
+        }
     }
     m_bundle = bundle;
     if( m_bundle )
