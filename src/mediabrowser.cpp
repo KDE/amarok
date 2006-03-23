@@ -673,18 +673,23 @@ MediaItem::setBundle( MetaBundle *bundle )
 {
     if( m_bundle )
     {
-        MediaBrowser::ItemMap::iterator it = MediaBrowser::instance()->m_itemMap.find( bundle->url().path() );
-        if( it != MediaBrowser::instance()->m_itemMap.end() )
+        if( bundle )
         {
-            if( *it != this )
+            MediaBrowser::ItemMap::iterator it = MediaBrowser::instance()->m_itemMap.find( bundle->url().path() );
+            if( it != MediaBrowser::instance()->m_itemMap.end() )
             {
-                // don't overwrite if it's not our own bundle
-                // (as we would probably erase an item on a device that was queued for transferring to another device)
-                return;
+                if( *it != this )
+                {
+                    // don't overwrite if it's not our own bundle
+                    // (as we would probably erase an item on a device that was queued for transferring to another device)
+                    return;
+                }
+                MediaBrowser::instance()->m_itemMap.remove(url().path());
+                delete m_bundle;
             }
-            MediaBrowser::instance()->m_itemMap.remove(url().path());
-            delete m_bundle;
         }
+        else
+            delete m_bundle;
     }
     m_bundle = bundle;
     if( m_bundle )
