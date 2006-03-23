@@ -1502,7 +1502,6 @@ PodcastChannel::setParent( PlaylistCategory *newParent )
     
     m_parent = newParent;
     m_bundle.setParentId( m_parent->id() );
-    debug() << "new parent id: " << m_parent->id() << "(" << m_bundle.parentId() << ")" << endl;
             
     CollectionDB::instance()->updatePodcastChannel( m_bundle );
 }

@@ -153,7 +153,7 @@
                 <cstring>m_autoFetchCheck</cstring>
             </property>
             <property name="text">
-                <string>Enable &amp;auto-fetching</string>
+                <string>Automatically scan for updates</string>
             </property>
             <property name="toolTip" stdset="0">
                 <string>When checked, amaroK will automatically scan the podcast for updates</string>

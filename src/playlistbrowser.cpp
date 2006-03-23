@@ -1890,6 +1890,7 @@ void PlaylistBrowser::removePodcastFolder( PlaylistCategory *item )
         if( isPodcastChannel( child ) )
         {
         #define child static_cast<PodcastChannel*>(child)
+            nextChild = child->nextSibling();
             CollectionDB::instance()->removePodcastChannel( child->url() );
             m_podcastItemsToScan.remove( child );
         #undef  child

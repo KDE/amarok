@@ -1510,8 +1510,6 @@ CollectionDB::addPodcastChannel( const PodcastChannelBundle &pcb, const bool &re
     command += pcb.hasPurge() ? boolT() + "," : boolF() + ",";
     command += QString::number( pcb.purgeCount() ) + ");";
 
-    debug() << "command: " << command << endl;
-
     //FIXME: currently there's no way to check if an INSERT query failed or not - always return true atm.
     // Now it might be possible as insert returns the rowid.
     insert( command, NULL );
