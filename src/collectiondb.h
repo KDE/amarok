@@ -196,6 +196,7 @@ class CollectionDB : public QObject, public EngineObserver
 
         void scoreChanged( const QString &url, int score );
         void ratingChanged( const QString &url, int rating );
+        void fileMoved( const QString &srcUrl, const QString &dstUrl );
         void coverChanged( const QString &artist, const QString &album ); //whenever a cover changes
         void coverFetched( const QString &artist, const QString &album ); //only when fetching from amazon
         void coverRemoved( const QString &artist, const QString &album );

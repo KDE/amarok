@@ -296,6 +296,8 @@ Playlist::Playlist( QWidget *parent )
              this,       SLOT( scoreChanged( const QString&, int ) ) );
     connect( CollectionDB::instance(), SIGNAL( ratingChanged( const QString&, int ) ),
              this,       SLOT( ratingChanged( const QString&, int ) ) );
+    connect( CollectionDB::instance(), SIGNAL( fileMoved( const QString&, const QString& ) ),
+             this,       SLOT( fileMoved( const QString&, const QString& ) ) );
     connect( header(), SIGNAL( indexChange( int, int, int ) ),
              this,       SLOT( columnOrderChanged() ) ),
 
@@ -3426,6 +3428,20 @@ Playlist::ratingChanged( const QString &path, int rating )
         if ( item->url().path() == path )
         {
             item->setRating( rating );
+            item->filter( m_filter );
+        }
+    }
+}
+
+void
+Playlist::fileMoved( const QString &srcPath, const QString &dstPath )
+{
+    for( MyIt it( this, MyIt::All ); *it; ++it )
+    {
+        PlaylistItem *item = static_cast<PlaylistItem*>( *it );
+        if ( item->url().path() == srcPath )
+        {
+            item->setUrl( KURL::fromPathOrURL( dstPath ) );
             item->filter( m_filter );
         }
     }

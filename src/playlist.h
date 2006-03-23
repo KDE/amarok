@@ -192,6 +192,7 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void safeClear();
         void scoreChanged( const QString &path, int score );
         void ratingChanged( const QString &path, int rating );
+        void fileMoved( const QString &srcPath, const QString &dstPath );
         void selectAll() { QListView::selectAll( true ); }
         void setFilter( const QString &filter );
         void setFilterSlot( const QString &filter );                       //uses a delay where applicable
