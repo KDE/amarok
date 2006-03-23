@@ -243,7 +243,6 @@ class PodcastEpisode : public QObject, public PlaylistBrowserEntry
 
         void  downloadMedia();
         const bool isOnDisk();
-        const bool hasXml( const QDomNode &xml, const int feedType );
         QListViewItem *itemChannel() { return m_parent; }
 
         
@@ -367,6 +366,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
 
         bool containsItem( QDomElement xml );
         void downloadChildren();
+        const bool episodeExists( const QDomNode &xml, const int feedType );
         void purge();
         void removeChildren();
         void startAnimation();

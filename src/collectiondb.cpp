@@ -1563,7 +1563,6 @@ CollectionDB::addPodcastEpisode( const PodcastEpisodeBundle &episode, const int 
     //highest id.  Change this if threaded insertions are used in the future.
     QStringList values = query( QString("SELECT id FROM podcastepisodes WHERE url='%1' ORDER BY id DESC;")
                                         .arg( escapeString( episode.url().url() ) ) );
-    debug() << "values[0]: " << values[0] << endl;
     if( values.isEmpty() ) return -1;
     
     return values[0].toInt();

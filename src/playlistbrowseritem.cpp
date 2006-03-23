@@ -1403,8 +1403,6 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
 
     /// Podcast Episodes information
 
-    PodcastEpisode *first = (PodcastEpisode*)firstChild();
-
     QDomNode n;
     if( isAtom )
         n = xml.namedItem( "entry" );
@@ -1423,8 +1421,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
     {
         if( m_updating )
         {
-            // TODO: if pubDate < nextSibling.pubdate() the items aren't in chronological order, try to work around this
-            if( first && first->hasXml( n, feedType ) )
+            if( episodeExists( n, feedType ) )
                 break;
                 
             if( !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
@@ -1493,13 +1490,78 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
     }
 }
 
+const bool
+PodcastChannel::episodeExists( const QDomNode &xml, const int feedType )
+{
+    QString command;
+    if( feedType == RSS )
+    {
+        //check id
+        QString guid = xml.namedItem( "guid" ).toElement().text();
+        if( !guid.isEmpty() )
+        {
+            command = QString("SELECT id FROM podcastepisodes WHERE parent='%1' AND guid='%2';")
+                              .arg( CollectionDB::instance()->escapeString( url().url() ) )
+                              .arg( CollectionDB::instance()->escapeString( guid ) );
+            QStringList values = CollectionDB::instance()->query( command );
+            return !values.isEmpty();
+        }
+        
+        QString episodeTitle = xml.namedItem( "title" ).toElement().text();
+        QString episodeURL   = xml.namedItem( "enclosure" ).toElement().attribute( "url" );
+        command = QString("SELECT id FROM podcastepisodes WHERE parent='%1' AND url='%2' AND title='%3';")
+                          .arg( CollectionDB::instance()->escapeString( url().url() ) )
+                          .arg( CollectionDB::instance()->escapeString( episodeURL ) )
+                          .arg( CollectionDB::instance()->escapeString( episodeTitle ) );
+        QStringList values = CollectionDB::instance()->query( command );
+        
+        return !values.isEmpty();
+    }
+
+    else if( feedType == ATOM )
+    {
+        //check id
+        QString guid = xml.namedItem( "id" ).toElement().text();
+        if( !guid.isEmpty() )
+        {
+            command = QString("SELECT id FROM podcastepisodes WHERE parent='%1' AND guid='%2';")
+                              .arg( CollectionDB::instance()->escapeString( url().url() ) )
+                              .arg( CollectionDB::instance()->escapeString( guid ) );
+            QStringList values = CollectionDB::instance()->query( command );
+            return !values.isEmpty();
+        }
+        
+        QString episodeTitle = xml.namedItem("title").toElement().text();
+        QString episodeURL = QString::null;
+        QDomNode n = xml.namedItem("link");
+        for( ; !n.isNull(); n = n.nextSibling() )
+        {
+            if( n.nodeName() == "link" && n.toElement().attribute("rel") == "enclosure" )
+            {
+                episodeURL = n.toElement().attribute( "href" );
+                break;
+            }
+        }
+
+        command = QString("SELECT id FROM podcastepisodes WHERE parent='%1' AND url='%2' AND title='%3';")
+                          .arg( CollectionDB::instance()->escapeString( url().url() ) )
+                          .arg( CollectionDB::instance()->escapeString( episodeURL ) )
+                          .arg( CollectionDB::instance()->escapeString( episodeTitle ) );
+        QStringList values = CollectionDB::instance()->query( command );
+        
+        return !values.isEmpty();
+    }
+    
+    return false;
+}
+
 void
 PodcastChannel::setParent( PlaylistCategory *newParent )
 {
     m_parent->takeItem( this );
     newParent->insertItem( this );
     newParent->sortChildItems( 0, true );
-    
+
     m_parent = newParent;
     m_bundle.setParentId( m_parent->id() );
             
@@ -1874,47 +1936,6 @@ PodcastEpisode::addToMediaDevice()
     QTime time = QTime::fromString( t );
     info->date = QDateTime( date, time );
     MediaBrowser::queue()->addURL( localUrl(), bundle, info );
-}
-
-
-const bool
-PodcastEpisode::hasXml( const QDomNode& xml, const int feedType )
-{
-    if( feedType == ATOM )
-    {
-        bool same = true;
-        for( QDomNode n = xml.firstChild(); !n.isNull(); n = n.nextSibling() )
-        {
-            if( n.nodeName() == "summary" )         same &= ( description() == n.toElement().text() );
-            else if ( n.nodeName() == "author" )    same &= ( author()      == n.toElement().text() );
-            else if ( n.nodeName() == "published" ) same &= ( date()        == n.toElement().text() );
-            else if ( n.nodeName() == "link" )
-            {
-                if( n.toElement().attribute( "rel" ) == "enclosure" )
-                {
-                    const QString x_url = n.toElement().attribute( "href" );
-                    same &= ( url().prettyURL() == x_url );
-                }
-            }
-            if( !same )
-                break;
-        }
-        return same;
-    }
-    //rss
-    //first check for a guid
-    if( !guid().isNull() )
-    {
-        if ( guid() == xml.namedItem( "guid" ).toElement().text() )
-            return true;
-    }
-    bool a = title()           == xml.namedItem( "title" ).toElement().text();
-    bool d = duration()        == xml.namedItem( "enclosure" ).toElement().attribute( "length" ).toInt();
-    bool e = type()            == xml.namedItem( "enclosure" ).toElement().attribute( "type" );
-    bool f = url().prettyURL() == xml.namedItem( "enclosure" ).toElement().attribute( "url" );
-
-    // leaving pubdate out of the check to fix a problem with dynamicly generated rss feeds
-    return a && d && e && f;
 }
 
 void
