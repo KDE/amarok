@@ -182,7 +182,7 @@ TagDialog::queryDone( KTRMResultList results, QString error ) //SLOT
 #if HAVE_TUNEPIMP
 
     if ( !error.isEmpty() ) {
-        KMessageBox::sorry( this, i18n( "Tunepimp (MusicBrainz tagging library) returned the following error: \"%1\"." ).arg(error) );
+        KMessageBox::sorry( this, error );
     }
     else {
         if ( !results.isEmpty() )
