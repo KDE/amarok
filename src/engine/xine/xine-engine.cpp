@@ -338,6 +338,19 @@ XineEngine::position() const
 
     xine_get_pos_length( m_stream, &pos, &time, &length );
 
+
+    // Here we check for new metadata periodically, because xine does not emit an event
+    // in all cases (e.g. with ogg streams). See BUG 122505
+    const Engine::SimpleMetaBundle bundle = fetchMetaData();
+    if( bundle.title != m_currentBundle.title && bundle.artist != m_currentBundle.artist ) {
+        debug() << "Metadata received." << endl;
+        m_currentBundle = bundle;
+
+        XineEngine* p = const_cast<XineEngine*>( this );
+        p->emit metaData( bundle );
+    }
+
+
     return time;
 }
 
@@ -588,20 +601,9 @@ XineEngine::customEvent( QCustomEvent *e )
         break;
 
     case 3003: { //meta info has changed
-
         debug() << "Metadata received." << endl;
-
-        Engine::SimpleMetaBundle bundle;
-        bundle.title      = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_TITLE ) );
-        bundle.artist     = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_ARTIST ) );
-        bundle.album      = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_ALBUM ) );
-        bundle.comment    = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_COMMENT ) );
-        bundle.genre      = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_GENRE ) );
-        bundle.bitrate    = QString::number( xine_get_stream_info( m_stream, XINE_STREAM_INFO_AUDIO_BITRATE ) / 1000 );
-        bundle.samplerate = QString::number( xine_get_stream_info( m_stream, XINE_STREAM_INFO_AUDIO_SAMPLERATE ) );
-        bundle.year       = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_YEAR ) );
-        bundle.tracknr    = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_TRACK_NUMBER ) );
-
+        const Engine::SimpleMetaBundle bundle = fetchMetaData();
+        m_currentBundle = bundle;
         emit metaData( bundle );
     }   break;
 
@@ -810,6 +812,24 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
     #undef xe
 }
 
+Engine::SimpleMetaBundle
+XineEngine::fetchMetaData() const
+{
+    Engine::SimpleMetaBundle bundle;
+    bundle.title      = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_TITLE ) );
+    bundle.artist     = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_ARTIST ) );
+    bundle.album      = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_ALBUM ) );
+    bundle.comment    = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_COMMENT ) );
+    bundle.genre      = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_GENRE ) );
+    bundle.bitrate    = QString::number( xine_get_stream_info( m_stream, XINE_STREAM_INFO_AUDIO_BITRATE ) / 1000 );
+    bundle.samplerate = QString::number( xine_get_stream_info( m_stream, XINE_STREAM_INFO_AUDIO_SAMPLERATE ) );
+    bundle.year       = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_YEAR ) );
+    bundle.tracknr    = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_TRACK_NUMBER ) );
+
+    return bundle;
+}
+
+
 //////////////////
 /// class Fader
 //////////////////
@@ -985,7 +1005,7 @@ bool XineEngine::metaDataForUrl(const KURL &url, Engine::SimpleMetaBundle &b)
             int nbrChannels = xine_get_stream_info( tmpstream, XINE_STREAM_INFO_AUDIO_CHANNELS );
             int bitrate = (samplerate * bitsPerSample * nbrChannels) / 1000;
 
-            b.bitrate = QString::number(bitrate);    
+            b.bitrate = QString::number(bitrate);
             b.samplerate = QString::number(samplerate);
             int pos, time, length = 0;
             xine_get_pos_length(tmpstream, &pos, &time, &length);

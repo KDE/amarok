@@ -41,7 +41,7 @@ class XineEngine : public Engine::Base
 
     virtual bool metaDataForUrl(const KURL &url, Engine::SimpleMetaBundle &b);
     virtual bool getAudioCDContents(const QString &device, KURL::List &urls);
-    
+
 
     virtual Engine::State state() const;
     virtual const Engine::Scope &scope();
@@ -54,6 +54,8 @@ class XineEngine : public Engine::Base
     static  void XineEventListener( void*, const xine_event_t* );
     virtual void customEvent( QCustomEvent* );
     virtual void timerEvent( QTimerEvent* );
+
+    Engine::SimpleMetaBundle fetchMetaData() const;
 
     bool makeNewStream();
 
@@ -74,6 +76,8 @@ class XineEngine : public Engine::Base
     bool                m_equalizerEnabled;
     int                 m_intPreamp;
     QValueList<int>     m_equalizerGains;
+
+    mutable Engine::SimpleMetaBundle m_currentBundle;
 
 private slots:
     void configChanged();
