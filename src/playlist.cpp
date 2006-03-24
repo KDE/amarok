@@ -3095,8 +3095,6 @@ Playlist::removeSelectedItems() //SLOT
 {
     if( isLocked() ) return;
 
-    setSelected( currentItem(), true );     //remove currentItem, no matter if selected or not
-
     //assemble a list of what needs removing
     //calling removeItem() iteratively is more efficient if they are in _reverse_ order, hence the prepend()
     PLItemList queued, list;

@@ -51,6 +51,8 @@ VERSION 1.4-beta3:
       (BR 123199)
     * Escape newline characters when showing detailed information for podcast
       items in the playlistbrowser. (BR 123109)
+    * Stop delete key in playlist browser deleting last deselected item.
+      (BR 123265)
 
 
 VERSION 1.4-beta2:
