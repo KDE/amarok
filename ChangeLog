@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.4-beta3:
   FEATURES:
+    * GStreamer-0.10 engine now supports visualizations
     * xine-engine: Show metadata for ogg vorbis streams. (BR 122505)
     * Drag and drop podcast urls directly onto podcast folders for addition.
     * Add media directly into directories for iRiver ifp devices.
