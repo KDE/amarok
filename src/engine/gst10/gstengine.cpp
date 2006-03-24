@@ -184,8 +184,7 @@ GstEngine::kio_resume_cb() //static
 
 GstEngine::GstEngine()
         : Engine::Base()
-/*      , m_gst_adapter( 0 )
-        , m_streamBuf( new char[STREAMBUF_SIZE] )
+/*      , m_streamBuf( new char[STREAMBUF_SIZE] )
         , m_streamBuffering( false )
         , m_transferJob( 0 )
 */      , m_delayq(0)
@@ -208,13 +207,12 @@ GstEngine::GstEngine()
 GstEngine::~GstEngine()
 {
     DEBUG_BLOCK
-//    debug() << "bytes left in gst_adapter: " << gst_adapter_available( m_gst_adapter ) << endl;
 
     destroyPipeline();
 
 //    delete[] m_streamBuf;
 
-    // Destroy scope adapter
+    // Destroy scope delay queue
     g_queue_free(m_delayq);
 
     // Save configuration
@@ -243,8 +241,6 @@ GstEngine::init()
                   "<p>For further assistance consult the GStreamer manual, and join #gstreamer on irc.freenode.net.</p>" ) );
         return false;
     }
-
-//    m_gst_adapter = gst_adapter_new();
 
     // Check if registry exists
     GstElement* dummy = gst_element_factory_make ( "fakesink", "fakesink" );
@@ -418,62 +414,6 @@ GstEngine::scope()
       m_current = 0;
    }
 
-/*
-    const int channels = 2;
-
-    if ( gst_adapter_available( m_gst_adapter ) < SCOPE_VALUES*channels*sizeof( gint16 ) )
-        return m_scope;
-
-    m_mutexScope.lock();
-
-    guint64 firstStamp, lastStamp;
-    GstBuffer* buf;
-    GSList* list = m_gst_adapter->buflist;
-
-    // Get timestamp from first buffer
-    buf = (GstBuffer*) g_slist_nth_data( list, 0 );
-    firstStamp = GST_BUFFER_TIMESTAMP( buf );
-
-    // Get timestamp from last buffer
-    GSList* last = g_slist_last( list );
-    buf = (GstBuffer*) last->data;
-    lastStamp = GST_BUFFER_TIMESTAMP( buf );
-
-    // Get current clock time from sink
-    GstFormat fmt = GST_FORMAT_TIME;
-    gint64 sinkStamp = 0; // Must be initalised to 0
-    gst_element_query( m_gst_audiosink, GST_QUERY_POSITION, &fmt, &sinkStamp );
-
-    guint available = gst_adapter_available( m_gst_adapter );
-    gint16* data = (gint16*) gst_adapter_peek( m_gst_adapter, available );
-
-    double factor = (double) ( lastStamp - sinkStamp ) / ( lastStamp - firstStamp );
-    int offset = available - static_cast<int>( factor * (double) available );
-    offset /= channels;
-    offset *= channels;
-    if ( offset < 0 ) offset = -offset; //FIXME Offset should never become < 0. Find out why this happens.
-    offset = QMIN( (guint) offset, available - SCOPE_VALUES*channels*sizeof( gint16 ) );
-
-    for ( long i = 0; i < SCOPE_VALUES; i++, data += channels ) {
-        long temp = 0;
-
-        for ( int chan = 0; chan < channels; chan++ ) {
-            // Add all channels together so we effectively get a mono scope
-            temp += data[offset / sizeof( gint16 ) + chan];
-        }
-        m_scope[i] = temp / channels;
-    }
-
-//     debug() << "Timestamp first: " << firstStamp << endl;
-//     debug() << "Timestamp last:  " << lastStamp << endl;
-//     debug() << "Timestamp sink:  " << sinkStamp << endl;
-//     debug() << "factor: " << factor << endl;
-//     debug() << "offset: " << offset << endl;
-//     debug() << endl;
-
-    m_mutexScope.unlock();
-    return m_scope;
-*/
    return m_scope;
 
 }
@@ -920,11 +860,7 @@ GstEngine::destroyPipeline()
     m_fadeValue = 0.0;
 
     clearScopeQ();
-/*    // Clear the scope adapter
-    m_mutexScope.lock();
-    gst_adapter_clear( m_gst_adapter );
-    m_mutexScope.unlock();
-*/
+
     if ( m_pipelineFilled ) {
         debug() << "Unreffing pipeline." << endl;
         gst_element_set_state( m_gst_pipeline, GST_STATE_NULL );

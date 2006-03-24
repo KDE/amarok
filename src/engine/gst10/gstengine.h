@@ -182,7 +182,6 @@ class GstEngine : public Engine::Base
         gint       m_current;
         gint64 pruneScope();
         void clearScopeQ();
-//        GstAdapter* m_gst_adapter;
 
         // These variables are shared between gst-engine and streamsrc
 /*        char*    m_streamBuf;
