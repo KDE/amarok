@@ -714,7 +714,7 @@ IpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
 bool
 IpodMediaDevice::createLockFile( const QString &mountpoint )
 {
-    m_lockFile = new QFile( QFile::encodeName(mountpoint + "/iPod_Control/iTunesLock") );
+    m_lockFile = new QFile( QFile::encodeName(mountpoint + "/iPod_Control/iTunes/iTunesLock") );
     QString msg;
     bool ok = true;
     if( m_lockFile->exists() )
@@ -726,7 +726,7 @@ IpodMediaDevice::createLockFile( const QString &mountpoint )
                      "once because of being manually connected "
                      "and a second time because of being auto-detected thereafter.<br>" );
         msg += i18n( "If you are sure that this is an error, then remove the file %1 and try again." )
-           .arg( mountpoint + "/iPod_Control/iTunesLock" );
+           .arg( mountpoint + "/iPod_Control/iTunes/iTunesLock" );
 
     }
     else if( !m_lockFile->open( IO_WriteOnly ) )
