@@ -299,6 +299,7 @@ PlaylistBrowser::~PlaylistBrowser()
         saveStreams();
         saveSmartPlaylists();
         saveDynamics();
+        savePodcastFolderStates( m_podcastCategory );
 
         QStringList list;
         for( uint i=0; i < m_dynamicEntries.count(); i++ )
@@ -313,6 +314,7 @@ PlaylistBrowser::~PlaylistBrowser()
         config->writeEntry( "View", m_viewMode );
         config->writeEntry( "Sorting", m_listview->sortOrder() );
         config->writeEntry( "Podcast Interval", m_podcastTimerInterval );
+        config->writeEntry( "Podcast Folder Open", m_podcastCategory->isOpen() );
     }
 }
 
@@ -939,7 +941,7 @@ PlaylistBrowser::loadPodcastFolders( PlaylistCategory *p )
         const int     id       =     (*it).toInt();
         const QString t        =    *++it;
         const int     parentId =   (*++it).toInt();
-        const bool    isOpen   = ( (*++it) == "true" ? true : false );
+        const bool    isOpen   = ( (*++it) == CollectionDB::instance()->boolT() ? true : false );
         
         PlaylistCategory *parent = p;
         if( parentId > 0 && folderMap.find( parentId ) != folderMap.end() )
@@ -950,7 +952,30 @@ PlaylistBrowser::loadPodcastFolders( PlaylistCategory *p )
         
         folderMap[id] = folder;
     }
+    // check if the base folder exists
+    KConfig *config = amaroK::config( "PlaylistBrowser" );
+    p->setOpen( config->readBoolEntry( "Podcast Folder Open", true ) );
+    
     return folderMap;
+}
+
+void PlaylistBrowser::savePodcastFolderStates( PlaylistCategory *folder )
+{
+    if( !folder ) return;
+    
+    PlaylistCategory *child = static_cast<PlaylistCategory*>(folder->firstChild());
+    while( child )
+    {
+        if( isCategory( child ) )
+            savePodcastFolderStates( child );
+        else
+            break;
+            
+        child = static_cast<PlaylistCategory*>(child->nextSibling());
+    }
+    if( folder != m_podcastCategory )
+        CollectionDB::instance()->updatePodcastFolder( folder->id(), folder->text(0), 
+                              static_cast<PlaylistCategory*>(folder->parent())->id(), folder->isOpen() );
 }
 
 void PlaylistBrowser::scanPodcasts()
