@@ -67,14 +67,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 void
 CollectionSetup::writeConfig()
 {
-    QStringList freshDirs;
-    for( uint i=0; i < m_dirs.count(); i++ )
-    {
-        if( QFile::exists( m_dirs[i] ) )
-            freshDirs << m_dirs[i];
-    }
-
-    AmarokConfig::setCollectionFolders( freshDirs );
+    AmarokConfig::setCollectionFolders( m_dirs );
     AmarokConfig::setScanRecursively( recursive() );
     AmarokConfig::setMonitorChanges( monitor() );
     AmarokConfig::setImportPlaylists( importPlaylists() );
@@ -145,19 +138,42 @@ Item::setOpen( bool b )
 void
 Item::stateChange( bool b )
 {
+    QStringList &cs_m_dirs = CollectionSetup::instance()->m_dirs;
+
     if( CollectionSetup::instance()->recursive() )
         for( QListViewItem *item = firstChild(); item; item = item->nextSibling() )
             static_cast<QCheckListItem*>(item)->QCheckListItem::setOn( b );
 
     // Update folder list
-    QStringList::Iterator it = CollectionSetup::instance()->m_dirs.find( m_url.path() );
+    QStringList::Iterator it = cs_m_dirs.find( m_url.path() );
     if ( isOn() ) {
-        if ( it == CollectionSetup::instance()->m_dirs.end() )
-            CollectionSetup::instance()->m_dirs << m_url.path();
-
+        if ( it == cs_m_dirs.end() )
+            cs_m_dirs << m_url.path();
+    }
+    else {
+        //Deselect item and recurse through children but only deselect children if they
+        //do not exist unless we are in recursive mode (where no children should be
+        //selected if the parent is being unselected)
+        //Note this does not do anything to the checkboxes, but they should be doing
+        //the same thing as we are (hopefully)
+        cs_m_dirs.erase( it );
+        QStringList::Iterator diriter = cs_m_dirs.begin();
+        while ( diriter != cs_m_dirs.end() )
+        {
+            if ( (*diriter).startsWith( m_url.path() + '/' ) )
+            {
+                if ( CollectionSetup::instance()->recursive() ||
+                     !QFile::exists( *diriter ) )
+                {
+                    diriter = cs_m_dirs.erase(diriter);
+                }
+                else
+                    ++diriter;
     }
     else
-        CollectionSetup::instance()->m_dirs.erase( it );
+                ++diriter;
+        }
+    }
 
     // Redraw parent items
     listView()->triggerUpdate();
