@@ -5,7 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.4-beta3:
   FEATURES:
-    * GStreamer-0.10 engine now supports visualizations
+    * GStreamer-0.10 engine now supports visualizations.
     * xine-engine: Show metadata for ogg vorbis streams. (BR 122505)
     * Drag and drop podcast urls directly onto podcast folders for addition.
     * Add media directly into directories for iRiver ifp devices.
@@ -25,6 +25,8 @@ VERSION 1.4-beta3:
       Peter C. Ndikuwera <pndiku@gmail.com>. (BR 118304)
 
   BUGFIXES:
+    * Stop delete key in playlist browser deleting last deselected item.
+      (BR 123265)
     * xine-engine: Show bitrate and samplerate for CD-Audio and WAV. Patch by
       Markus Kaufhold <M.Kaufhold@gmx.de>. (BR 123625)
     * Some podcasts would cause amaroK to hang.
@@ -52,8 +54,6 @@ VERSION 1.4-beta3:
       (BR 123199)
     * Escape newline characters when showing detailed information for podcast
       items in the playlistbrowser. (BR 123109)
-    * Stop delete key in playlist browser deleting last deselected item.
-      (BR 123265)
 
 
 VERSION 1.4-beta2:
