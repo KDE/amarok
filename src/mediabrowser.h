@@ -142,6 +142,7 @@ class MediaQueue : public KListView
         void contentsDragEnterEvent( QDragEnterEvent* );
         void contentsDropEvent( QDropEvent *e );
         void contentsDragMoveEvent( QDragMoveEvent* e );
+        void startDrag();
 
     public slots:
         void itemCountChanged();

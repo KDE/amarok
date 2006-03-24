@@ -1097,7 +1097,7 @@ MediaView::nodeBuildDragList( MediaItem* item, bool onlySelected )
             if ( fi->isSelected() || !onlySelected )
             {
                 if( fi->isLeafItem() )
-                    items += fi->url().path();
+                    items += fi->url();
                 else
                 {
                     if(fi->childCount() )
@@ -1993,6 +1993,23 @@ MediaQueue::URLsAdded()
             && m_parent->currentDevice()->asynchronousTransfer()
             && !m_parent->currentDevice()->isTransferring() )
         m_parent->currentDevice()->transferFiles();
+}
+
+void
+MediaQueue::startDrag()
+{
+    KURL::List urls;
+
+    for( QListViewItem *it = firstChild(); it; it = it->nextSibling() )
+    {
+        if( it->isVisible() && it->isSelected() && dynamic_cast<MediaItem *>(it) )
+            urls += static_cast<MediaItem *>(it)->url();
+    }
+
+    KURLDrag* d = new KURLDrag( urls, this );
+    d->setPixmap( CollectionDB::createDragPixmap( urls ),
+                  QPoint( CollectionDB::DRAGPIXMAP_OFFSET_X, CollectionDB::DRAGPIXMAP_OFFSET_Y ) );
+    d->dragCopy();
 }
 
 QString
