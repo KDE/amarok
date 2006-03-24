@@ -26,8 +26,9 @@ VERSION 1.4-beta3:
       Peter C. Ndikuwera <pndiku@gmail.com>. (BR 118304)
 
   BUGFIXES:
-    * Stop delete key in playlist browser deleting last deselected item.
-      (BR 123265)
+    * Stop collection folders being automatically removed. Instead, allow
+      user to remove non-existent folders by deselecting parent. (BR 123745)
+    * Stop delete key in playlist deleting last deselected item. (BR 123265)
     * xine-engine: Show bitrate and samplerate for CD-Audio and WAV. Patch by
       Markus Kaufhold <M.Kaufhold@gmx.de>. (BR 123625)
     * Some podcasts would cause amaroK to hang.
