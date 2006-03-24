@@ -36,7 +36,15 @@ QString OrganizeCollectionDialog::buildDestination( const QString &format, const
     args["track"] = track;
 
     amaroK::QStringx formatx( format );
-    return formatx.namedArgs( args );
+    QString result = formatx.namedArgs( args );
+    if( result.startsWith( folderCombo->currentText() ) )
+    {
+        QString tail = result.mid( folderCombo->currentText().length() );
+        if( !tail.startsWith( "/" ) )
+            tail.prepend( "/" );
+        return folderCombo->currentText() + tail.replace( QRegExp( "/\\.*" ), "/" );
+    }
+    return result.replace( QRegExp( "/\\.*" ), "/" );
 }
 
 
@@ -133,7 +141,7 @@ QString OrganizeCollectionDialog::cleanPath( const QString &component )
     if( spaceCheck->isChecked() )
         result.replace( QRegExp( "\\s" ), "_" );
     if( vfatCheck->isChecked() )
-        result.replace( "?", "_" ).replace( "\\", "_" ).replace( "*", "_" ).replace( ":", "_" );
+        result.replace( "?", "" ).replace( "\\", "_" ).replace( "*", "_" ).replace( ":", "_" ).replace("\"","");
 
     result.replace( "/", "-" );
 
