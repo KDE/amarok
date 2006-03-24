@@ -65,12 +65,12 @@ scope_port_close( xine_audio_port_t *port_gen, xine_stream_t *stream )
 static void
 scope_port_put_buffer( xine_audio_port_t *port_gen, audio_buffer_t *buf, xine_stream_t *stream )
 {
+/* FIXME With 8-bit samples the scope won't work correctly. For a special 8-bit code path,
+         the sample size could be checked like this: if( port->bits == 8 ) */
+
     const int num_samples = buf->num_frames * this->channels;
     metronom_t *myMetronom = &this->metronom;
     MyNode *new_node;
-
-    if( port->bits == 8 ) {
-       printf( "You dare tempt me with 8 bits?!\n" ); return; }
 
     /* I keep my own metronom because xine wouldn't for some reason */
     memcpy( &this->metronom, stream->metronom, sizeof(metronom_t) );
