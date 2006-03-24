@@ -109,6 +109,10 @@ Menu::Menu()
 
     insertSeparator();
 
+    safePlug( ac, "play_audiocd", this );
+
+    insertSeparator();
+
     insertItem( SmallIconSet( "covermanager" ), i18n( "C&over Manager" ), ID_SHOW_COVER_MANAGER );
     safePlug( ac, "queue_manager", this );
     insertItem( SmallIconSet( "visualizations"), i18n( "&Visualizations" ), ID_SHOW_VIS_SELECTOR );

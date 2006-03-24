@@ -672,6 +672,8 @@ void App::applySettings( bool firstTime )
         engine->setEqualizerEnabled( AmarokConfig::equalizerEnabled() );
         if ( AmarokConfig::equalizerEnabled() )
             engine->setEqualizerParameters( AmarokConfig::equalizerPreamp(), AmarokConfig::equalizerGains() );
+
+        amaroK::actionCollection()->action("play_audiocd")->setEnabled( EngineController::hasEngineProperty( "HasKIO" ) || EngineController::hasEngineProperty("HasCDDA"));
     } //</Engine>
 
     { //<Collection>

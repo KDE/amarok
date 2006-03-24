@@ -860,7 +860,6 @@ void PlaylistWindow::slotMenuActivated( int index ) //SLOT
 
 void PlaylistWindow::actionsMenuAboutToShow() //SLOT
 {
-    actionCollection()->action("play_audiocd")->setEnabled( EngineController::hasEngineProperty( "HasKIO" ) || EngineController::hasEngineProperty("HasCDDA"));
 }
 
 void PlaylistWindow::toolsMenuAboutToShow() //SLOT
