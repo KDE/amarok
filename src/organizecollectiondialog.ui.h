@@ -192,8 +192,10 @@ void OrganizeCollectionDialog::slotDetails()
         formatEdit->hide();
     }
 
-    if( dynamic_cast<QWidget *>(parent()) )
+    if( dynamic_cast<QWidget *>(parent()) ) {
         static_cast<QWidget *>(parent())->adjustSize();
+        static_cast<QWidget *>(parent())->updateGeometry();
+    }
 }
 
 
