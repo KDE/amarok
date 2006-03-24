@@ -12,6 +12,8 @@ VERSION 1.3.9:
       user to remove non-existent folders by deselecting parent. (BR 123745)
     * When libtunepimp returns errors, show the proper error message,
       instead of a misleading one. (BR 104264)
+    * Playlist popup menu had a visual glitch with Lipstik and (probably)
+      earlier versions of Plastik.
     * Fix preamp and frequency band scaling in the xine equalizer. Patch by
       Tobias Knieper <webmaster@micekiller.de>. (BR 116633)
     * Fixed a huge memory leak when using xine-engine with crossfading.
