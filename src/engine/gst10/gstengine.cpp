@@ -144,6 +144,10 @@ GstEngine::handoff_cb( GstPad*, GstBuffer* buf, gpointer arg) //static
 {
    GstEngine *thisObj = static_cast<GstEngine *>( arg );
 
+   // push copy of the buffer onto the delay queue
+   // we make a copy because we don't want volume or equalization to affect the scope
+   // maybe data probes are already copies?  I don't know - can't find it in the documentation
+   // so we'll make a copy for now and investigate further later...
    gpointer newbuf = gst_buffer_copy(buf);
    g_queue_push_tail(thisObj->m_delayq, newbuf);
 }
@@ -200,6 +204,7 @@ GstEngine::GstEngine()
     addPluginProperty( "HasEqualizer",  "true" );
     addPluginProperty( "HasKIO",        "false" );
 
+    // initialize the scope delay queue
     m_delayq = g_queue_new();
 }
 
@@ -360,34 +365,55 @@ const Engine::Scope&
 GstEngine::scope()
 {
    const int channels = 2;
+
+   // prune the scope and get the current pos of the audio device
    gint64 pos = pruneScope();
    guint64 stime = 0, etime = 0, dur = 0;
    gint off, frames, sz;
    gint16 *data;
 
+   // head of the delay queue is the most delayed, so we work with that one
    GstBuffer *buf = reinterpret_cast<GstBuffer *>( g_queue_peek_head(m_delayq) );
    if (buf)
    {
+      // start time for this buffer
       stime = static_cast<guint64>( GST_BUFFER_TIMESTAMP( buf ) );
+      // duration of the buffer...
       dur = static_cast<guint64>( GST_BUFFER_DURATION( buf ) );
+      // therefore we can calculate the end time for the buffer
       etime = stime + dur;
+
+      // if the audio device is playing this buffer now
       if (static_cast<guint64>(pos) > stime && static_cast<guint64>(pos) < etime)
       {
+         // calculate the number of samples in the buffer
          sz = GST_BUFFER_SIZE(buf) / sizeof(guint16);
+         // number of frames is the number of samples in each channel (frames like in the alsa sense)
          frames = sz / channels;
+
+         // find the offset into the buffer to the sample closest to where the audio device is playing
+         // it is the (time into the buffer cooresponding to the audio device pos) / (the sample rate)
+         // sample rate = duration of the buffer / number of frames in the buffer
+         // then we multiply by the number of channels to find the offset of the left channel sample 
+         // of the frame in the buffer
          off = channels * (pos - stime) / (dur / frames);
-         //debug() << "offset is " << off << " buffer size is " << sz << endl;
+
+         // note that we are assuming 16 bit samples, but this should probably be generalized...
          data = reinterpret_cast<gint16 *>( GST_BUFFER_DATA(buf) );
          if (off < sz) // better be...
          {
-            int i = off;
+            int i = off; // starting at offset
+
+            // loop while we fill the current buffer.  If we need another buffer and one is available, 
+            // get it and keep filling.  If there are no more buffers available (not too likely)
+            // then leave everything in this state and wait until the next time the scope updates
             while (buf && m_current < 512 && i < sz)
             {
-               // convert to mono, for now
+               // convert to mono, for now - not generalize for >2 channels 'cause it'll be removed soon
                m_currentScope[m_current] = (data[i] + data[i+1]) / channels; 
                m_current++;
-               i+=channels;
-               if (i >= sz)
+               i+=channels; // advance to the next frame
+               if (i >= sz) // here we are out of samples in the current buffer, so we get another one
                {
                   buf = reinterpret_cast<GstBuffer *>( g_queue_pop_head(m_delayq) );
                   gst_buffer_unref(buf);
@@ -409,6 +435,7 @@ GstEngine::scope()
 
    if (m_current >= 512)
    {
+      // ok, we have a full buffer now, so give it to the scope
       for (int i=0; i< 512; i++)
          m_scope[i] = m_currentScope[i];
       m_current = 0;
@@ -630,6 +657,8 @@ GstEngine::setVolumeSW( uint percent )
 void GstEngine::timerEvent( QTimerEvent* )
 {
     // keep the scope from building while we are not visible
+    // this is why the timer must run as long as we are playing, and not just when
+    // we are fading
     pruneScope();
 
     // *** Volume fading ***
@@ -836,6 +865,9 @@ GstEngine::createPipeline()
     gst_element_add_pad(m_gst_audiobin,gst_ghost_pad_new("sink",p));
     gst_object_unref(p);
 
+    // add a data probe on the src pad if the audioconvert element for our scope
+    // we do it here because we want pre-equalized and pre-volume samples
+    // so that our visualization are not affected by them
     p = gst_element_get_pad (m_gst_audioconvert, "src");
     gst_pad_add_buffer_probe (p, G_CALLBACK(handoff_cb), this);
     gst_object_unref (p);
@@ -889,24 +921,31 @@ GstEngine::sendBufferStatus()
 
 gint64 GstEngine::pruneScope()
 {
-    if ( !m_pipelineFilled ) return 0;
+    if ( !m_pipelineFilled ) return 0; // dont prune if we aren't playing
 
+    // get the position playing in the audio device
     GstFormat fmt = GST_FORMAT_TIME;
-
     gint64 pos = 0;
     gst_element_query_position( m_gst_pipeline, &fmt, &pos );
 
     GstBuffer *buf = 0;
     guint64 stime, etime, dur;
-   
+  
+    // free up the buffers that the audio device has advanced past already 
     do
     {
+       // most delayed buffers are at the head of the queue
        buf = reinterpret_cast<GstBuffer *>( g_queue_peek_head(m_delayq) );
        if (buf)
        {
+          // the start time of the buffer
           stime = static_cast<guint64>( GST_BUFFER_TIMESTAMP( buf ) );
+          // the duration of the buffer
           dur = static_cast<guint64>( GST_BUFFER_DURATION( buf ) );
+          // therefore we can calculate the end time of the buffer
           etime = stime + dur;
+
+          // purge this buffer if the pos is past the end time of the buffer
           if (static_cast<guint64>(pos) > etime)
           {
              g_queue_pop_head(m_delayq);
@@ -922,6 +961,7 @@ void GstEngine::clearScopeQ()
 {
    GstBuffer *buf;
 
+   // just free them all
    while (g_queue_get_length(m_delayq))
    {
       buf = reinterpret_cast<GstBuffer *>( g_queue_pop_head(m_delayq) );

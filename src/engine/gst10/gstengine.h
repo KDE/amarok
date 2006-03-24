@@ -1,5 +1,7 @@
 /***************************************************************************
  *   Copyright (C) 2003-2005 by Mark Kretschmann <markey@web.de>           *
+ *   Copyright (C) 2005 by Jakub Stachowski <qbast@go2.pl>                 *
+ *   Portions Copyright (C) 2006 Paul Cifarelli <paul@cifarelli.net>       *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -176,11 +178,20 @@ class GstEngine : public Engine::Base
         QString m_gst_error;
         QString m_gst_debug;
 
+        //////////
         // scope
+        //////////
+        // delay queue for synchronizing samples to where the audio device is playing
         GQueue    *m_delayq;
+        // the current set of samples for the scope, in case we dont have enough buffers yet
+        // and end up with an incomplete buffer
         guint16    m_currentScope[512];
+        // the sample in m_currentScope we are working on
         gint       m_current;
+        // function to remove buffers that are no longer relevant
+        // returns the position currently playing in the audio device
         gint64 pruneScope();
+        // free all the buffers in the delay queue
         void clearScopeQ();
 
         // These variables are shared between gst-engine and streamsrc
