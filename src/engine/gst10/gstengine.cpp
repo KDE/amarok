@@ -1,6 +1,7 @@
 /***************************************************************************
  *   Copyright (C) 2003-2005 by Mark Kretschmann <markey@web.de>           *
  *   Copyright (C) 2005 by Jakub Stachowski <qbast@go2.pl>                 *
+ *   Portions Copyright (C) 2006 Paul Cifarelli <paul@cifarelli.net>       *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -137,27 +138,16 @@ GstEngine::newPad_cb( GstElement*, GstPad* pad, gboolean, gpointer ) //static
     gst_object_unref( audiopad );
 }
 
-/*
+
 void
-GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer ) //static
+GstEngine::handoff_cb( GstPad*, GstBuffer* buf, gpointer arg) //static
 {
-    instance()->m_mutexScope.lock();
+   GstEngine *thisObj = static_cast<GstEngine *>( arg );
 
-    // Check for buffer overflow
-    const uint available = gst_adapter_available( instance()->m_gst_adapter );
-    if ( available > SCOPEBUF_SIZE )
-        gst_adapter_flush( instance()->m_gst_adapter, available - 30000 );
-
-    // TODO On some systems buf is always 0. Why?
-    if ( buf ) {
-        gst_buffer_ref( buf );
-        // Push buffer into adapter, where it's chopped into chunks
-        gst_adapter_push( instance()->m_gst_adapter, buf );
-    }
-
-    instance()->m_mutexScope.unlock();
+   gpointer newbuf = gst_buffer_copy(buf);
+   g_queue_push_tail(thisObj->m_delayq, newbuf);
 }
-*/
+
 
 void
 GstEngine::candecode_newPad_cb( GstElement*, GstPad* pad, gboolean, gpointer ) //static
@@ -194,11 +184,13 @@ GstEngine::kio_resume_cb() //static
 
 GstEngine::GstEngine()
         : Engine::Base()
-/*        , m_gst_adapter( 0 )
+/*      , m_gst_adapter( 0 )
         , m_streamBuf( new char[STREAMBUF_SIZE] )
         , m_streamBuffering( false )
         , m_transferJob( 0 )
-*/        , m_pipelineFilled( false )
+*/      , m_delayq(0)
+        , m_current(0)
+        , m_pipelineFilled( false )
         , m_fadeValue( 0.0 )
         , m_equalizerEnabled( false )
         , m_shutdown( false )
@@ -208,6 +200,8 @@ GstEngine::GstEngine()
     addPluginProperty( "HasConfigure",  "true" );
     addPluginProperty( "HasEqualizer",  "true" );
     addPluginProperty( "HasKIO",        "false" );
+
+    m_delayq = g_queue_new();
 }
 
 
@@ -216,12 +210,12 @@ GstEngine::~GstEngine()
     DEBUG_BLOCK
 //    debug() << "bytes left in gst_adapter: " << gst_adapter_available( m_gst_adapter ) << endl;
 
-      destroyPipeline();
+    destroyPipeline();
 
 //    delete[] m_streamBuf;
 
     // Destroy scope adapter
-//    g_object_unref( G_OBJECT( m_gst_adapter ) );
+    g_queue_free(m_delayq);
 
     // Save configuration
     GstConfig::writeConfig();
@@ -365,10 +359,66 @@ GstEngine::state() const
     }
 }
 
-/*
+
 const Engine::Scope&
 GstEngine::scope()
 {
+   const int channels = 2;
+   gint64 pos = pruneScope();
+   guint64 stime = 0, etime = 0, dur = 0;
+   gint off, frames, sz;
+   gint16 *data;
+
+   GstBuffer *buf = reinterpret_cast<GstBuffer *>( g_queue_peek_head(m_delayq) );
+   if (buf)
+   {
+      stime = static_cast<guint64>( GST_BUFFER_TIMESTAMP( buf ) );
+      dur = static_cast<guint64>( GST_BUFFER_DURATION( buf ) );
+      etime = stime + dur;
+      if (static_cast<guint64>(pos) > stime && static_cast<guint64>(pos) < etime)
+      {
+         sz = GST_BUFFER_SIZE(buf) / sizeof(guint16);
+         frames = sz / channels;
+         off = channels * (pos - stime) / (dur / frames);
+         //debug() << "offset is " << off << " buffer size is " << sz << endl;
+         data = reinterpret_cast<gint16 *>( GST_BUFFER_DATA(buf) );
+         if (off < sz) // better be...
+         {
+            int i = off;
+            while (buf && m_current < 512 && i < sz)
+            {
+               // convert to mono, for now
+               m_currentScope[m_current] = (data[i] + data[i+1]) / channels; 
+               m_current++;
+               i+=channels;
+               if (i >= sz)
+               {
+                  buf = reinterpret_cast<GstBuffer *>( g_queue_pop_head(m_delayq) );
+                  gst_buffer_unref(buf);
+                  buf = reinterpret_cast<GstBuffer *>( g_queue_peek_head(m_delayq) );
+                  if (buf)
+                  {
+                     stime = static_cast<guint64>( GST_BUFFER_TIMESTAMP( buf ) );
+                     dur = static_cast<guint64>( GST_BUFFER_DURATION( buf ) );
+                     etime = stime + dur;
+                     i = 0;
+                     sz = GST_BUFFER_SIZE(buf) / sizeof(guint16);
+                     data = reinterpret_cast<gint16 *>( GST_BUFFER_DATA(buf) );
+                  }
+               }
+            }
+         }
+      }
+   }
+
+   if (m_current >= 512)
+   {
+      for (int i=0; i< 512; i++)
+         m_scope[i] = m_currentScope[i];
+      m_current = 0;
+   }
+
+/*
     const int channels = 2;
 
     if ( gst_adapter_available( m_gst_adapter ) < SCOPE_VALUES*channels*sizeof( gint16 ) )
@@ -423,8 +473,11 @@ GstEngine::scope()
 
     m_mutexScope.unlock();
     return m_scope;
-}
 */
+   return m_scope;
+
+}
+
 
 amaroK::PluginConfig*
 GstEngine::configure() const
@@ -506,6 +559,8 @@ GstEngine::play( uint offset )  //SLOT
     // If "Resume playback on start" is enabled, we must seek to the last position
     if ( offset ) seek( offset );
 
+    m_current = 0;
+    startTimer( TIMER_INTERVAL );
     emit stateChanged( Engine::Playing );
     return true;
 }
@@ -524,7 +579,6 @@ GstEngine::stop()  //SLOT
         if ( m_fadeValue == 0.0 ) {
             // Not fading --> start fade now
             m_fadeValue = 1.0;
-            startTimer( TIMER_INTERVAL );
         }
         else
             // Fading --> stop playback
@@ -635,6 +689,9 @@ GstEngine::setVolumeSW( uint percent )
 
 void GstEngine::timerEvent( QTimerEvent* )
 {
+    // keep the scope from building while we are not visible
+    pruneScope();
+
     // *** Volume fading ***
 
     // Are we currently fading?
@@ -647,11 +704,10 @@ void GstEngine::timerEvent( QTimerEvent* )
             // Fade transition has finished, stop playback
             debug() << "[Gst-Engine] Fade-out finished.\n";
             destroyPipeline();
+            killTimers();
         }
         setVolume( volume() );
     }
-    else
-        killTimers();
 }
 
 
@@ -835,11 +891,14 @@ GstEngine::createPipeline()
     if ( !( m_gst_volume = createElement( "volume", m_gst_audiobin ) ) ) { return false; }
     if ( !( m_gst_audioscale = createElement( "audioresample", m_gst_audiobin ) ) ) { return false; }
 
-    GstPad* p = gst_element_get_pad(m_gst_audioconvert, "sink");
+    GstPad* p;
+    p = gst_element_get_pad(m_gst_audioconvert, "sink");
     gst_element_add_pad(m_gst_audiobin,gst_ghost_pad_new("sink",p));
     gst_object_unref(p);
 
-//    g_signal_connect( G_OBJECT( m_gst_identity ), "handoff", G_CALLBACK( handoff_cb ), NULL );
+    p = gst_element_get_pad (m_gst_audioconvert, "src");
+    gst_pad_add_buffer_probe (p, G_CALLBACK(handoff_cb), this);
+    gst_object_unref (p);
 
     /* link elements */
     gst_element_link_many( m_gst_audioconvert, m_gst_equalizer, m_gst_identity,
@@ -860,6 +919,7 @@ GstEngine::destroyPipeline()
 
     m_fadeValue = 0.0;
 
+    clearScopeQ();
 /*    // Clear the scope adapter
     m_mutexScope.lock();
     gst_adapter_clear( m_gst_adapter );
@@ -890,5 +950,47 @@ GstEngine::sendBufferStatus()
     }
 }
 */
+
+gint64 GstEngine::pruneScope()
+{
+    if ( !m_pipelineFilled ) return 0;
+
+    GstFormat fmt = GST_FORMAT_TIME;
+
+    gint64 pos = 0;
+    gst_element_query_position( m_gst_pipeline, &fmt, &pos );
+
+    GstBuffer *buf = 0;
+    guint64 stime, etime, dur;
+   
+    do
+    {
+       buf = reinterpret_cast<GstBuffer *>( g_queue_peek_head(m_delayq) );
+       if (buf)
+       {
+          stime = static_cast<guint64>( GST_BUFFER_TIMESTAMP( buf ) );
+          dur = static_cast<guint64>( GST_BUFFER_DURATION( buf ) );
+          etime = stime + dur;
+          if (static_cast<guint64>(pos) > etime)
+          {
+             g_queue_pop_head(m_delayq);
+             gst_buffer_unref(buf);
+          }
+       }
+    } while (buf && static_cast<guint64>(pos) > etime);
+
+    return pos;
+}
+
+void GstEngine::clearScopeQ()
+{
+   GstBuffer *buf;
+
+   while (g_queue_get_length(m_delayq))
+   {
+      buf = reinterpret_cast<GstBuffer *>( g_queue_pop_head(m_delayq) );
+      gst_buffer_unref(buf);
+   }
+}
 
 #include "gstengine.moc"

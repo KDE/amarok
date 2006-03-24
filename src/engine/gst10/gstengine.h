@@ -35,7 +35,6 @@
 class QTimerEvent;
 class KURL;
 
-
 /**
  * @class GstEngine
  * @short GStreamer engine plugin
@@ -51,9 +50,6 @@ class GstEngine : public Engine::Base
 
         Q_OBJECT
 
-    signals:
-        void sigScopeData( GstBuffer* );
-
     public:
         GstEngine();
         ~GstEngine();
@@ -64,7 +60,7 @@ class GstEngine : public Engine::Base
         uint position() const;
         uint length() const;
         Engine::State state() const;
-//        const Engine::Scope& scope();
+        const Engine::Scope& scope();
 
         amaroK::PluginConfig* configure() const;
 
@@ -130,7 +126,7 @@ class GstEngine : public Engine::Base
         /** Used by canDecode(). Called after last pad so it makes no sense to wait anymore */
         static void candecode_last_cb( GstElement*, gpointer );
         /** Duplicates audio data for application side processing */
-//        static void handoff_cb( GstElement*, GstBuffer*, gpointer );
+        static void handoff_cb( GstPad*, GstBuffer*, gpointer );
         /** Called when the KIO buffer is empty */
 //        static void kio_resume_cb();
 
@@ -180,6 +176,12 @@ class GstEngine : public Engine::Base
         QString m_gst_error;
         QString m_gst_debug;
 
+        // scope
+        GQueue    *m_delayq;
+        guint16    m_currentScope[512];
+        gint       m_current;
+        gint64 pruneScope();
+        void clearScopeQ();
 //        GstAdapter* m_gst_adapter;
 
         // These variables are shared between gst-engine and streamsrc
