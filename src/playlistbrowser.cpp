@@ -1909,9 +1909,9 @@ void PlaylistBrowser::removePodcastFolder( PlaylistCategory *item )
     }
     
     QListViewItem *child = item->firstChild();
-    QListViewItem *nextChild;
     while( child )
     {
+        QListViewItem *nextChild = 0;
         if( isPodcastChannel( child ) )
         {
         #define child static_cast<PodcastChannel*>(child)
