@@ -1632,6 +1632,33 @@ CollectionDB::getPodcastEpisodes( const KURL &parent )
     return bundles;
 }
 
+PodcastEpisodeBundle
+CollectionDB::getPodcastEpisodeById( int id )
+{
+    QString command = QString( "SELECT url, localurl, parent, guid, title, composer, comment, filetype, createdate, length, isNew FROM podcastepisodes WHERE id=%1;").arg( id );
+
+    QStringList values = query( command );
+    PodcastEpisodeBundle peb;
+    foreach( values )
+    {
+        peb.setDBId        ( id );
+        peb.setURL         ( KURL::fromPathOrURL(*it) );
+        if( *++it != "NULL" )
+            peb.setLocalURL    ( KURL::fromPathOrURL(*it) );
+        peb.setParent      ( KURL::fromPathOrURL(*++it) );
+        peb.setGuid        ( *++it );
+        peb.setTitle       ( *++it );
+        peb.setAuthor      ( *++it );
+        peb.setDescription ( *++it );
+        peb.setType        ( *++it );
+        peb.setDate        ( *++it );
+        peb.setDuration    ( (*++it).toInt() );
+        peb.setNew         ( (*++it) == boolT() ? true : false  );
+    }
+
+    return peb;
+}
+
 // return newly created folder id
 int
 CollectionDB::addPodcastFolder( const QString &name, const int parent_id, const bool isOpen )
@@ -1888,6 +1915,27 @@ CollectionDB::bundleForUrl( MetaBundle* bundle )
 
     if ( !values.empty() )
         fillInBundle( values, *bundle );
+    else
+    {
+        values = query( QString(
+                    "SELECT id FROM podcastepisodes WHERE localurl = '%1';" )
+                .arg( escapeString( bundle->url().url() ) ) );
+        if( !values.isEmpty() )
+        {
+            MetaBundle mb( bundle->url(), true /* avoid infinite recursion */ );
+            *bundle = mb;
+            int id = values[0].toInt();
+            bundle->setPodcastBundle( getPodcastEpisodeById( id ) );
+        }
+        else
+        {
+            values = query( QString(
+                        "SELECT id FROM podcastepisodes WHERE url = '%1';" )
+                    .arg( escapeString( bundle->url().url() ) ) );
+            int id = values[0].toInt();
+            bundle->setPodcastBundle( getPodcastEpisodeById( id ) );
+        }
+    }
 
     return !values.isEmpty();
 }

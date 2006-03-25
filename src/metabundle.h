@@ -24,6 +24,7 @@ template<class T> class QValueList;
 namespace TagLib {
     class File;
 }
+class PodcastEpisodeBundle;
 
 /**
  * @class MetaBundle
@@ -92,6 +93,10 @@ public:
             const QString &genre,
             const QString &streamName,
             const KURL &url );
+
+    LIBAMAROK_EXPORT MetaBundle( const MetaBundle &bundle );
+
+    ~MetaBundle();
 
     bool operator==( const MetaBundle& bundle ) const;
     bool operator!=( const MetaBundle& bundle ) const;
@@ -179,6 +184,7 @@ public: //accessors
     QString      filename()  const;
     QString      directory() const;
     QString      type()      const;
+    PodcastEpisodeBundle *podcastBundle() const;
 
     int     year()       const;
     int     discNumber() const;
@@ -213,6 +219,7 @@ public: //modifiers
     virtual void setAlbum( const AtomicString &album );
     virtual void setGenre( const AtomicString &genre );
     virtual void setComment( const AtomicString &comment );
+    virtual void MetaBundle::setPodcastBundle( const PodcastEpisodeBundle &peb );
 
     virtual void setYear( int year );
     virtual void setDiscNumber( int discNumber );
@@ -270,6 +277,8 @@ protected:
 
     bool m_exists;
     bool m_isValidMedia;
+
+    PodcastEpisodeBundle *m_podcastBundle;
 
 private:
 
@@ -336,6 +345,7 @@ inline QString MetaBundle::type() const
            ? i18n( "Stream" )
            : filename().mid( filename().findRev( '.' ) + 1 );
 }
+inline PodcastEpisodeBundle *MetaBundle::podcastBundle() const { return m_podcastBundle; }
 
 inline QString MetaBundle::prettyURL() const { return m_url.prettyURL(); }
 inline QString MetaBundle::prettyBitrate() const { return prettyBitrate( m_bitrate ); }

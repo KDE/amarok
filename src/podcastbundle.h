@@ -118,16 +118,22 @@ inline int     PodcastChannelBundle::purgeCount()   const { return m_purgeCount;
 class PodcastEpisodeBundle
 {
     public:
-        PodcastEpisodeBundle() { }
+        PodcastEpisodeBundle()
+            : m_id( 0 )
+            , m_duration( 0 )
+            , m_isNew( false )
+        {
+        }
         PodcastEpisodeBundle( const KURL &url,       const KURL &parent,  const QString &title,
                               const QString &author, const QString &desc, const QString &date,
                               const QString &type,   const int duration,  const QString &guid,
                               const bool isNew  )
+            : m_id( 0 )
         {
             m_url = url;
             m_parent = parent;
-            m_title = title;
             m_author = author;
+            m_title = title;
             m_description = desc;
             m_type = type;
             m_date = date;
@@ -135,6 +141,7 @@ class PodcastEpisodeBundle
             m_guid = guid;
             m_isNew = isNew;
         }
+
 
         /// The row id which this podcast episode has in the database
         int     dBId()        const;

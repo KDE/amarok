@@ -273,6 +273,7 @@ class CollectionDB : public QObject, public EngineObserver
         int  addPodcastEpisode( const PodcastEpisodeBundle &episode, const int idToUpdate=0 );
         int  addPodcastFolder( const QString &name, const int parent_id=0, const bool isOpen=false );
         QValueList<PodcastChannelBundle> getPodcastChannels();
+        PodcastEpisodeBundle getPodcastEpisodeById( int id );
         QValueList<PodcastEpisodeBundle> getPodcastEpisodes( const KURL &parent );
         void removePodcastChannel( const KURL &url ); // will remove all episodes too
         void removePodcastEpisode( const int id );
