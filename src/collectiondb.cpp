@@ -2100,15 +2100,20 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
                     else
                     {
                         debug() << "No bundle recovered for: " << *it << endl;
-                        b = MetaBundle();
-                        b.setUrl( url );
-
-                        if ( !url.isLocalFile() )
+                        if( url.isLocalFile() )
+                        {
+                            b = MetaBundle( url );
+                        }
+                        else
+                        {
+                            b = MetaBundle();
+                            b.setUrl( url );
                             b.setTitle( QString( "%1 %2 %3%4" )
                                     .arg( url.filename() )
                                     .arg( i18n( "from" ) )
                                     .arg( url.hasHost() ? url.host() : QString() )
                                     .arg( url.directory( false ) ) );
+                        }
 
                         // try to see if the engine has some info about the
                         // item (the intended behaviour should be that if the
@@ -2133,6 +2138,7 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
                         PodcastEpisodeBundle peb;
                         if( getPodcastEpisodeBundle( url, &peb ) )
                         {
+                            b.setPodcastBundle( peb );
                             b.setTitle( peb.title() );
                             if( b.artist().isEmpty() )
                                 b.setArtist( peb.author() );
@@ -2147,7 +2153,7 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
                 }
                 bundles += b;
 
-            success: ;
+success: ;
             }
 
             paths.clear();
