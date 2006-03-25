@@ -220,7 +220,7 @@ public: //modifiers
     virtual void setAlbum( const AtomicString &album );
     virtual void setGenre( const AtomicString &genre );
     virtual void setComment( const AtomicString &comment );
-    virtual void MetaBundle::setPodcastBundle( const PodcastEpisodeBundle &peb );
+    virtual void setPodcastBundle( const PodcastEpisodeBundle &peb );
 
     virtual void setYear( int year );
     virtual void setDiscNumber( int discNumber );
@@ -387,8 +387,8 @@ inline void MetaBundle::setFilesize( int bytes ) { m_filesize = bytes; }
 inline void MetaBundle::setFileType( int type ) { m_type = type; }
 
 inline bool MetaBundle::hasExtendedMetaInformation() const
-{ 
-    return ( m_type == mp3 || m_type == ogg || 
+{
+    return ( m_type == mp3 || m_type == ogg ||
              m_type== mp4  || m_type == flac );
 }
 
