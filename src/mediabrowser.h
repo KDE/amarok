@@ -41,19 +41,6 @@ namespace Browser
     class ToolBar;
 }
 
-struct PodcastInfo
-{
-    // per show
-    QString url;
-    QString description;
-    QDateTime date;
-    QString author;
-
-    // per channel
-    QString rss;
-    QString webpage;
-};
-
 class LIBAMAROK_EXPORT MediaItem : public KListViewItem
 {
     public:
@@ -69,7 +56,6 @@ class LIBAMAROK_EXPORT MediaItem : public KListViewItem
         KURL url() const;
         const MetaBundle *bundle() const;
         void setBundle( MetaBundle *bundle );
-        PodcastInfo *podcastInfo() const { return m_podcastInfo; }
 
         enum Type { UNKNOWN, ARTIST, ALBUM, TRACK, PODCASTSROOT, PODCASTCHANNEL,
                     PODCASTITEM, PLAYLISTSROOT, PLAYLIST, PLAYLISTITEM, INVISIBLEROOT,
@@ -98,7 +84,6 @@ class LIBAMAROK_EXPORT MediaItem : public KListViewItem
         int          m_order;
         Type         m_type;
         QString      m_playlistName;
-        PodcastInfo *m_podcastInfo;
         MediaDevice *m_device;
 
         static QPixmap *s_pixUnknown;
@@ -132,7 +117,7 @@ class MediaQueue : public KListView
 
         void load( const QString &path );
         void save( const QString &path );
-        void addURL( const KURL& url, MetaBundle *bundle=NULL, PodcastInfo *info=NULL, const QString &playlistName=QString::null );
+        void addURL( const KURL& url, MetaBundle *bundle=NULL, const QString &playlistName=QString::null );
         void addURLs( const KURL::List urls, const QString &playlistName=QString::null );
         void URLsAdded(); // call after finishing adding single urls
 
@@ -507,10 +492,9 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         /**
          * Copy a track to the device
          * @param bundle The MetaBundle of the item to transfer. Will move the item specified by bundle().url().path()
-         * @param isPodcast true if item is a podcast
          * @return If successful, the created MediaItem in the media device view, else 0
          */
-        virtual MediaItem *copyTrackToDevice(const MetaBundle& bundle, const PodcastInfo *info) = 0;
+        virtual MediaItem *copyTrackToDevice(const MetaBundle& bundle) = 0;
 
         /**
          * Recursively remove MediaItem from the tracklist and the device
