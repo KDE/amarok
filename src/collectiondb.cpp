@@ -603,6 +603,7 @@ CollectionDB::createPodcastTables()
     query( QString( "CREATE TABLE podcastepisodes ("
                     "id INTEGER PRIMARY KEY %1, "
                     "url " + textColumnType() + " UNIQUE,"
+                    "localurl " + textColumnType() + ","
                     "parent " + textColumnType() + ","
                     "guid " + textColumnType() + ","
                     "title " + textColumnType() + ","
@@ -622,6 +623,7 @@ CollectionDB::createPodcastTables()
 
     query( "CREATE INDEX url_podchannel ON podcastchannels( url );" );
     query( "CREATE INDEX url_podepisode ON podcastepisodes( url );" );
+    query( "CREATE INDEX localurl_podepisode ON podcastepisodes( localurl );" );
     query( "CREATE INDEX url_podfolder ON podcastfolders( id );" );
 }
 
@@ -1523,14 +1525,15 @@ CollectionDB::addPodcastEpisode( const PodcastEpisodeBundle &episode, const int 
      
     if( idToUpdate ) {
         command = "REPLACE INTO podcastepisodes "
-                  "( id, url, parent, title, composer, comment, filetype, createdate, guid, length, isNew ) "
+                  "( id, url, localurl, parent, title, composer, comment, filetype, createdate, guid, length, isNew ) "
                   "VALUES (";
     } else {
         command = "INSERT INTO podcastepisodes "
-                  "( url, parent, title, composer, comment, filetype, createdate, guid, length, isNew ) "
+                  "( url, localurl, parent, title, composer, comment, filetype, createdate, guid, length, isNew ) "
                   "VALUES (";
     }
 
+    QString localurl    = episode.localUrl().url();
     QString title       = episode.title();
     QString author      = episode.author();
     QString description = episode.description();
@@ -1545,8 +1548,9 @@ CollectionDB::addPodcastEpisode( const PodcastEpisodeBundle &episode, const int 
     if( idToUpdate )
         command += QString::number( idToUpdate ) + ",";
         
-    command += "'" + escapeString( episode.url().url() )   + "','";
-    command += escapeString( episode.parent().url()) + "',";
+    command += "'" + escapeString( episode.url().url() )   + "',";
+    command += ( localurl.isEmpty()       ? "NULL" : "'" + escapeString( localurl )       + "'" ) + ",";
+    command += "'" + escapeString( episode.parent().url()) + "',";
     command += ( title.isEmpty()       ? "NULL" : "'" + escapeString( title )       + "'" ) + ",";
     command += ( author.isEmpty()      ? "NULL" : "'" + escapeString( author )      + "'" ) + ",";
     command += ( description.isEmpty() ? "NULL" : "'" + escapeString( description ) + "'" ) + ",";
@@ -1601,7 +1605,7 @@ CollectionDB::getPodcastChannels()
 QValueList<PodcastEpisodeBundle>
 CollectionDB::getPodcastEpisodes( const KURL &parent )
 {
-    QString command = QString( "SELECT * FROM podcastepisodes WHERE parent='%1' ORDER BY id;").arg( parent.url() );
+    QString command = QString( "SELECT id, url, localurl, parent, guid, title, composer, comment, filetype, createdate, length, isNew FROM podcastepisodes WHERE parent='%1' ORDER BY id;").arg( parent.url() );
 
     QStringList values = query( command );
     QValueList<PodcastEpisodeBundle> bundles;
@@ -1611,6 +1615,8 @@ CollectionDB::getPodcastEpisodes( const KURL &parent )
         PodcastEpisodeBundle peb;
         peb.setDBId        ( (*it).toInt() );
         peb.setURL         ( KURL::fromPathOrURL(*++it) );
+        if( *++it != "NULL" )
+            peb.setLocalURL    ( KURL::fromPathOrURL(*it) );
         peb.setParent      ( KURL::fromPathOrURL(*++it) );
         peb.setGuid        ( *++it );
         peb.setTitle       ( *++it );
@@ -1670,14 +1676,14 @@ CollectionDB::updatePodcastEpisode( const int id, const PodcastEpisodeBundle &b 
 {
     if( getDbConnectionType() == DbConnection::postgresql ) 
     {
-        query( QString( "UPDATE podcastepisode SET url='%1', parent='%2', title='%3', composer='%4', comment='%5', "
-                        "filetype='%6', createdate='%7', guid='%8', length=%9, isNew=%10 WHERE id=%11;" )
-                        .arg( escapeString( b.url().url() ) )    .arg( escapeString( b.parent().url() ) )
-                        .arg( escapeString( b.title() ) )        .arg( escapeString( b.author() ) )
-                        .arg( escapeString( b.description() ) )  .arg( escapeString( b.type() ) )
-                        .arg( escapeString( b.date() ) )         .arg( escapeString( b.guid() ) )
-                        .arg( QString::number( b.duration() ) )  .arg( b.isNew() ? boolT() : boolF() )
-                        .arg( QString::number( id ) ) );
+        query( QString( "UPDATE podcastepisode SET url='%1', localurl='%2', parent='%3', title='%4', composer='%5', comment='%6', "
+                        "filetype='%7', createdate='%8', guid='%9', length=%10, isNew=%11 WHERE id=%12;" )
+                        .arg( escapeString( b.url().url() ) )    .arg( b.localUrl().isValid() ? escapeString( b.url().url() ) : "NULL" )
+                        .arg( escapeString( b.parent().url() ) ) .arg( escapeString( b.title() ) )
+                        .arg( escapeString( b.author() ) )       .arg( escapeString( b.description() ) )
+                        .arg( escapeString( b.type() ) )         .arg( escapeString( b.date() ) )
+                        .arg( escapeString( b.guid() ) )         .arg( QString::number( b.duration() ) )
+                        .arg( b.isNew() ? boolT() : boolF() )    .arg( QString::number( id ) ) );
     }
     else {
         addPodcastEpisode( b, id );
@@ -3093,6 +3099,12 @@ CollectionDB::initialize()
         {
             debug() << "Building podcast tables" << endl;
             createPodcastTables();
+        }
+        else if ( PersistentVersion.toInt() < 5 )
+        {
+            debug() << "Updating podcast tables" << endl;
+            query( "ALTER TABLE podcastepisodes ADD localurl " + textColumnType() + ";" );
+            query( "CREATE INDEX localurl_podepisode ON podcastepisodes( localurl );" );
         }
         else {
             if ( adminValue( "Database Persistent Tables Version" ).toInt() != DATABASE_PERSISTENT_TABLES_VERSION ) {

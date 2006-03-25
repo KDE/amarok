@@ -265,7 +265,7 @@ class CollectionDB : public QObject, public EngineObserver
 
         //podcast methods
         
-        /// Insert a podcast channe into the database.  If @param replace is true, replace the row
+        /// Insert a podcast channel into the database.  If @param replace is true, replace the row
         /// use updatePodcastChannel() always in preference
         bool addPodcastChannel( const PodcastChannelBundle &pcb, const bool &replace=false );
         /// Insert a podcast episode into the database.  If @param idToUpdate is provided, replace the row
@@ -396,7 +396,7 @@ class CollectionDB : public QObject, public EngineObserver
         static const int DATABASE_VERSION = 25;
         // Persistent Tables hold data that is somehow valuable to the user, and can't be erased when rescaning.
         // When bumping this, write code to convert the data!
-        static const int DATABASE_PERSISTENT_TABLES_VERSION = 4;
+        static const int DATABASE_PERSISTENT_TABLES_VERSION = 5;
         // Bumping this erases stats table. If you ever need to, write code to convert the data!
         static const int DATABASE_STATS_VERSION = 4;
 

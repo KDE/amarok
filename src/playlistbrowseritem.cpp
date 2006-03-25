@@ -1663,7 +1663,7 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
     QString title = xml.namedItem( "title" ).toElement().text();
 
     QString description, author, date, guid, type;
-    int duration;
+    int duration = 0;
     KURL link;
 
     if( isAtom )
@@ -1720,6 +1720,8 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
     KURL parentUrl = static_cast<PodcastChannel*>(parent)->url();
     m_bundle.setDBId( -1 );
     m_bundle.setURL( link );
+    if( m_onDisk )
+        m_bundle.setLocalURL( m_localUrl );
     m_bundle.setParent( parentUrl );
     m_bundle.setTitle( title );
     m_bundle.setAuthor( author );
@@ -1859,6 +1861,9 @@ PodcastEpisode::downloadResult( KIO::Job* job ) //SLOT
     m_onDisk = true;
     m_downloaded = true;
     setNew( false );
+    
+    m_bundle.setLocalURL( m_localUrl );
+    CollectionDB::instance()->updatePodcastEpisode( dBId(), m_bundle );
 
     PodcastChannel *channel = dynamic_cast<PodcastChannel *>( m_parent );
     if( channel && channel->autotransfer() && MediaBrowser::isAvailable() )
