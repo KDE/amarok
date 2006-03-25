@@ -13,8 +13,6 @@ SHORT-TERM (URGENT):
  <sebr>    Refactor code for PlaylistBrowser::removeSelectedItems(). I can see pathological cases
            where it won't work.
 
- <markey>  Goddamn. In the settings dialog, the Apply button is broken again. Always active.
-
  <markey>  When podcast retrieval fails, the red "stop" icon appears, but the podcast entry
            still says "Retrieving Podcast.." forever on.
 
