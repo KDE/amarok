@@ -20,6 +20,7 @@ VERSION 1.4-beta3:
     * Add autocompletion to the composer field in the tag dialog. (BR 123026)
 
   CHANGES:
+    * Visualizations now receive stereo data from amaroK. (BR 118765)
     * Upgraded internal SQLite library to version 3.3.4.
     * Podcast information is stored in the database.
     * Improved password handling in the PostgreSQL config dialog. Patch by
