@@ -1659,6 +1659,61 @@ CollectionDB::getPodcastEpisodeById( int id )
     return peb;
 }
 
+bool
+CollectionDB::getPodcastEpisodeBundle( const KURL &url, PodcastEpisodeBundle *peb )
+{
+    int id = 0;
+    if( url.isLocalFile() )
+    {
+        QStringList values =
+            query( QString( "SELECT id FROM podcastepisodes WHERE localurl = '%1';" )
+                    .arg( escapeString( url.url() ) ) );
+        if( !values.isEmpty() )
+            id = values[0].toInt();
+    }
+    else
+    {
+        QStringList values =
+            query( QString( "SELECT id FROM podcastepisodes WHERE url = '%1';" )
+                    .arg( escapeString( url.url() ) ) );
+        if( !values.isEmpty() )
+            id = values[0].toInt();
+    }
+
+    if( id )
+    {
+        *peb = getPodcastEpisodeById( id );
+        return true;
+    }
+
+    return false;
+}
+
+bool
+CollectionDB::getPodcastChannelBundle( const KURL &url, PodcastChannelBundle *pcb )
+{
+    QStringList values = query( QString( "SELECT * FROM podcastchannels WHERE url = '%1';" )
+            .arg( escapeString( url.url() ) ) );
+
+    foreach( values )
+    {
+        pcb->setURL         ( KURL::fromPathOrURL(*it) );
+        pcb->setTitle       ( *++it );
+        pcb->setLink        ( KURL::fromPathOrURL(*++it) );
+        pcb->setDescription ( *++it );
+        pcb->setCopyright   ( *++it );
+        pcb->setParentId    ( (*++it).toInt() );
+        pcb->setSaveLocation( KURL::fromPathOrURL(*++it) );
+        pcb->setAutoScan    ( *++it == boolT() ? true : false );
+        pcb->setFetchType   ( (*++it).toInt() );
+        pcb->setAutoTransfer( *++it == boolT() ? true : false  );
+        pcb->setPurge       ( *++it == boolT() ? true : false  );
+        pcb->setPurgeCount  ( (*++it).toInt() );
+    }
+
+    return !values.isEmpty();
+}
+
 // return newly created folder id
 int
 CollectionDB::addPodcastFolder( const QString &name, const int parent_id, const bool isOpen )
@@ -1917,6 +1972,7 @@ CollectionDB::bundleForUrl( MetaBundle* bundle )
         fillInBundle( values, *bundle );
     else
     {
+        int id = 0;
         values = query( QString(
                     "SELECT id FROM podcastepisodes WHERE localurl = '%1';" )
                 .arg( escapeString( bundle->url().url() ) ) );
@@ -1924,8 +1980,7 @@ CollectionDB::bundleForUrl( MetaBundle* bundle )
         {
             MetaBundle mb( bundle->url(), true /* avoid infinite recursion */ );
             *bundle = mb;
-            int id = values[0].toInt();
-            bundle->setPodcastBundle( getPodcastEpisodeById( id ) );
+            id = values[0].toInt();
         }
         else
         {
@@ -1933,10 +1988,21 @@ CollectionDB::bundleForUrl( MetaBundle* bundle )
                         "SELECT id FROM podcastepisodes WHERE url = '%1';" )
                     .arg( escapeString( bundle->url().url() ) ) );
             if( !values.isEmpty() )
+                id = values[0].toInt();
+        }
+
+        if( id )
+        {
+            bundle->setPodcastBundle( getPodcastEpisodeById( id ) );
+            bundle->setTitle( bundle->podcastBundle()->title() );
+            if( bundle->artist().isEmpty() )
+                bundle->setArtist( bundle->podcastBundle()->author() );
+            PodcastChannelBundle pcb;
+            if( getPodcastChannelBundle( bundle->podcastBundle()->parent(), &pcb ) )
             {
-                int id = values[0].toInt();
-                bundle->setPodcastBundle( getPodcastEpisodeById( id ) );
+                bundle->setAlbum( pcb.title() );
             }
+            bundle->setGenre( QString( "Podcast" ) );
         }
     }
 
@@ -2024,8 +2090,8 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
                 // if we get here, we didn't find an entry
                 {
                     KURL url = KURL::fromPathOrURL( *it );
-                    const MetaBundle *mb = MediaBrowser::instance()->getBundle( url );
 
+                    const MetaBundle *mb = MediaBrowser::instance()->getBundle( url );
                     if ( mb )
                     {
                         debug() << "Bundle recovered from media browser for: " << *it << endl;
@@ -2035,14 +2101,14 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
                     {
                         debug() << "No bundle recovered for: " << *it << endl;
                         b = MetaBundle();
-                        b.setUrl( KURL::fromPathOrURL( *it ) );
+                        b.setUrl( url );
 
                         if ( !url.isLocalFile() )
                             b.setTitle( QString( "%1 %2 %3%4" )
-                                        .arg( url.filename() )
-                                        .arg( i18n( "from" ) )
-                                        .arg( url.hasHost() ? url.host() : QString() )
-                                        .arg( url.directory( false ) ) );
+                                    .arg( url.filename() )
+                                    .arg( i18n( "from" ) )
+                                    .arg( url.hasHost() ? url.host() : QString() )
+                                    .arg( url.directory( false ) ) );
 
                         // try to see if the engine has some info about the
                         // item (the intended behaviour should be that if the
@@ -2061,6 +2127,21 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
                             b.setLength( smb.length.toInt() );
                             b.setYear( smb.year.toInt() );
                             b.setTrack( smb.tracknr.toInt() );
+                        }
+
+                        // check if it's a podcast
+                        PodcastEpisodeBundle peb;
+                        if( getPodcastEpisodeBundle( url, &peb ) )
+                        {
+                            b.setTitle( peb.title() );
+                            if( b.artist().isEmpty() )
+                                b.setArtist( peb.author() );
+                            PodcastChannelBundle pcb;
+                            if( getPodcastChannelBundle( peb.parent(), &pcb ) )
+                            {
+                                b.setAlbum( pcb.title() );
+                            }
+                            b.setGenre( QString ( "Podcast" ) );
                         }
                     }
                 }

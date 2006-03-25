@@ -22,6 +22,7 @@ class QLineEdit;
 class QFile;
 
 class IpodMediaItem;
+class PodcastInfo;
 
 class IpodMediaDevice : public KioMediaDevice
 {
@@ -50,7 +51,7 @@ class IpodMediaDevice : public KioMediaDevice
         bool              openDevice( bool silent=false );
         bool              closeDevice();
 
-        virtual MediaItem*copyTrackToDevice(const MetaBundle& bundle, const PodcastInfo *podcastInfo);
+        virtual MediaItem*copyTrackToDevice(const MetaBundle& bundle);
         /**
          * Insert track already located on media device into the device's database
          * @param pathname Location of file on the device to add to the database

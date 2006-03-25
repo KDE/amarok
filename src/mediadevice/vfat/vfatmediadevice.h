@@ -53,7 +53,7 @@ class VfatMediaDevice : public MediaDevice
         void              unlockDevice() {}
         void              synchronizeDevice() {}
 
-        MediaItem        *copyTrackToDevice( const MetaBundle& bundle, const PodcastInfo *info );
+        MediaItem        *copyTrackToDevice( const MetaBundle& bundle );
         int               deleteItemFromDevice( MediaItem *item, bool onlyPlayed = false );
         bool              getCapacity( KIO::filesize_t *total, KIO::filesize_t *available );
         MediaItem        *newDirectory( const QString &name, MediaItem *parent );

@@ -363,7 +363,7 @@ IfpMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> items 
 /// Uploading
 
 MediaItem *
-IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle, const PodcastInfo* /*info*/ )
+IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
 {
     if( !m_connected ) return 0;
     m_transferring = true;

@@ -1887,6 +1887,7 @@ PodcastEpisode::addToMediaDevice()
         bundle->setAlbum(channel->title());
     if(!title().isEmpty())
         bundle->setTitle(title());
+#if 0
     PodcastInfo *info = new PodcastInfo;
     info->url = url().url();
     info->rss = channel->url().url();
@@ -1943,7 +1944,8 @@ PodcastEpisode::addToMediaDevice()
     QString t = dt.section( " ", 3, 3 );
     QTime time = QTime::fromString( t );
     info->date = QDateTime( date, time );
-    MediaBrowser::queue()->addURL( localUrl(), bundle, info );
+#endif
+    MediaBrowser::queue()->addURL( localUrl(), bundle );
 }
 
 void

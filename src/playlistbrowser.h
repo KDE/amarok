@@ -62,7 +62,7 @@ class PlaylistBrowser : public QVBox
         void addPlaylist( const QString &path, QListViewItem *parent = 0, bool force=false );
         int loadPlaylist( const QString &playlist, bool force=false );
         void addPodcast( QListViewItem *parent = 0 );
-        void addPodcast( const QString &url, QListViewItem *parent = 0 );
+        void addPodcast( const KURL &url, QListViewItem *parent = 0 );
         void registerPodcastSettings( const QString &title, const PodcastSettings *settings );
         PodcastSettings *getPodcastSettings( const PlaylistCategory * category );
 

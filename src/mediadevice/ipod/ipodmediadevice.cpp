@@ -58,7 +58,17 @@ AMAROK_EXPORT_PLUGIN( IpodMediaDevice )
 
 #include "metadata/audible/taglib_audiblefile.h"
 
-#include <glib-object.h>
+struct PodcastInfo
+{
+    // per show
+    QString url;
+    QString description;
+    QDateTime date;
+    QString author;
+
+    // per channel
+    QString rss;
+};
 
 class TrackList : public QPtrList<Itdb_Track>
 {
@@ -81,7 +91,8 @@ class IpodMediaItem : public MediaItem
         IpodMediaItem(QListViewItem *parent, MediaDevice *dev ) : MediaItem(parent) { init( dev ); }
         IpodMediaItem(QListView *parent, QListViewItem *after, MediaDevice *dev ) : MediaItem(parent, after) { init( dev ); }
         IpodMediaItem(QListViewItem *parent, QListViewItem *after, MediaDevice *dev ) : MediaItem(parent, after) { init( dev ); }
-        void init(MediaDevice *dev) {m_track=0; m_playlist=0; m_device=dev;}
+        ~IpodMediaItem() { delete m_podcastInfo; }
+        void init(MediaDevice *dev) {m_track=0; m_playlist=0; m_device=dev;m_podcastInfo=0;}
         void bundleFromTrack( Itdb_Track *track, const QString& path )
         {
             MetaBundle *bundle = new MetaBundle();
@@ -103,6 +114,7 @@ class IpodMediaItem : public MediaItem
         }
         Itdb_Track *m_track;
         Itdb_Playlist *m_playlist;
+        PodcastInfo *m_podcastInfo;
         int played() const { if(m_track) return m_track->playcount; else return 0; }
         int recentlyPlayed() const { if(m_track) return m_track->recent_playcount; else return 0; }
         int rating() const { if(m_track) return m_track->rating; else return 0; }
@@ -363,7 +375,7 @@ IpodMediaDevice::updateTrackInDB(IpodMediaItem *item,
 }
 
 MediaItem *
-IpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle, const PodcastInfo *podcastInfo)
+IpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle)
 {
     KURL url = determineURLOnDevice(bundle);
 
@@ -449,7 +461,20 @@ IpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle, const PodcastInfo *
         return NULL;
     }
 
-    return insertTrackIntoDB( url.path(), bundle, podcastInfo );
+    PodcastInfo *podcastInfo = 0;
+    if( bundle.podcastBundle() )
+    {
+        PodcastEpisodeBundle *peb = bundle.podcastBundle();
+        podcastInfo = new PodcastInfo;
+        podcastInfo->url = peb->url().url();
+        podcastInfo->description = peb->description();
+        podcastInfo->author = peb->author();
+        podcastInfo->rss = peb->parent().url();
+    }
+
+    MediaItem *ret = insertTrackIntoDB( url.path(), bundle, podcastInfo );
+    delete podcastInfo;
+    return ret;
 }
 
 MediaItem *
@@ -1240,7 +1265,7 @@ IpodMediaDevice::addTrackToView(Itdb_Track *track, IpodMediaItem *item)
         visible = true;
 
         QString channelName(QString::fromUtf8(track->album));
-        MediaItem *channel = m_podcastItem->findItem(channelName);
+        IpodMediaItem *channel = dynamic_cast<IpodMediaItem *>(m_podcastItem->findItem(channelName));
         if(!channel)
         {
             channel = new IpodMediaItem(m_podcastItem, this);
@@ -1265,9 +1290,9 @@ IpodMediaDevice::addTrackToView(Itdb_Track *track, IpodMediaItem *item)
         info->description = QString::fromUtf8( track->description );
         info->date.setTime_t( itdb_time_mac_to_host( track->time_released) );
 
-        if( !info->rss.isEmpty() && channel->podcastInfo()->rss.isEmpty() )
+        if( !info->rss.isEmpty() && channel->m_podcastInfo->rss.isEmpty() )
         {
-           channel->podcastInfo()->rss = info->rss;
+           channel->m_podcastInfo->rss = info->rss;
         }
     }
 
@@ -1732,7 +1757,7 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                  || item->type() == MediaItem::PODCASTCHANNEL) )
         {
             menu.insertItem( SmallIconSet( "favorites" ), i18n( "Subscribe to This Podcast" ), SUBSCRIBE );
-            menu.setItemEnabled( SUBSCRIBE, item->podcastInfo() && !item->podcastInfo()->rss.isEmpty() );
+            menu.setItemEnabled( SUBSCRIBE, item->bundle()->podcastBundle() && item->bundle()->podcastBundle()->parent().isValid() );
             menu.insertSeparator();
         }
 
@@ -1839,7 +1864,7 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                 K3bExporter::instance()->exportTracks( urls, K3bExporter::AudioCD );
                 break;
             case SUBSCRIBE:
-                PlaylistBrowser::instance()->addPodcast( item->podcastInfo()->rss );
+                PlaylistBrowser::instance()->addPodcast( item->bundle()->podcastBundle()->parent().url() );
                 break;
             default:
                 break;
@@ -1893,7 +1918,7 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                     {
                         next = dynamic_cast<MediaItem *>(it->nextSibling());
                         item->takeItem(it);
-                        insertTrackIntoDB(it->url().path(), *it->bundle(), false);
+                        insertTrackIntoDB(it->url().path(), *it->bundle(), 0);
                         delete it;
                     }
                 }
@@ -1907,7 +1932,7 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                         if(it->type() == MediaItem::ORPHANED)
                         {
                             it->parent()->takeItem(it);
-                            insertTrackIntoDB(it->url().path(), *it->bundle(), false);
+                            insertTrackIntoDB(it->url().path(), *it->bundle(), 0);
                             delete it;
                         }
                     }

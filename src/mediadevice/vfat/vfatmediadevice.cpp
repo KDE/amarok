@@ -340,7 +340,7 @@ VfatMediaDevice::copyTrackSortHelper( const MetaBundle& bundle, QString& sort, Q
 
 
 MediaItem *
-VfatMediaDevice::copyTrackToDevice( const MetaBundle& bundle, const PodcastInfo* /*info*/ )
+VfatMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
 {
     DEBUG_BLOCK
     debug() << "dirlister autoupdate = " << (m_dirLister->autoUpdate() ? "true" : "false") << endl;

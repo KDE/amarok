@@ -281,6 +281,10 @@ class CollectionDB : public QObject, public EngineObserver
         void updatePodcastChannel( const PodcastChannelBundle &b );
         void updatePodcastEpisode( const int id, const PodcastEpisodeBundle &b );
         void updatePodcastFolder( const int folder_id, const QString &name, const int parent_id=0, const bool isOpen=false );
+        // these return false when no bundle was available
+        bool getPodcastChannelBundle( const KURL &url, PodcastChannelBundle *channel );
+        bool getPodcastEpisodeBundle( const KURL &url, PodcastEpisodeBundle *channel );
+
 
         /**
          * The @p bundle parameter's url() will be looked up in the Collection

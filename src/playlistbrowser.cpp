@@ -1010,7 +1010,7 @@ void PlaylistBrowser::addPodcast( QListViewItem *parent )
 
     if( ok && !name.isEmpty() )
     {
-        addPodcast( name, parent );
+        addPodcast( KURL::fromPathOrURL( name ), parent );
     }
 }
 
@@ -1042,22 +1042,22 @@ PlaylistBrowser::findPodcastChannel( const KURL &feed, QListViewItem *parent ) c
     return NULL;
 }
 
-void PlaylistBrowser::addPodcast( const QString &url, QListViewItem *parent )
+void PlaylistBrowser::addPodcast( const KURL& url, QListViewItem *parent )
 {
     if( !parent ) parent = static_cast<QListViewItem*>(m_podcastCategory);
 
-    PodcastChannel *channel = findPodcastChannel( KURL( url ) );
+    PodcastChannel *channel = findPodcastChannel( url );
     if( channel )
     {
         amaroK::StatusBar::instance()->longMessage(
                 i18n( "Already subscribed to feed %1 as %2" )
-                .arg( url )
+                .arg( url.prettyURL() )
                 .arg( channel->title() ),
                 KDE::StatusBar::Sorry );
         return;
     }
 
-    PodcastChannel *pc = new PodcastChannel( parent, 0, KURL( url ) );
+    PodcastChannel *pc = new PodcastChannel( parent, 0, url );
 
     if( m_podcastItemsToScan.isEmpty() )
     {
@@ -2835,7 +2835,7 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
                         cat = cat->parent();
                         
                     if( cat == PlaylistBrowser::instance()->podcastCategory() )
-                        PlaylistBrowser::instance()->addPodcast((*it).url(),item);
+                        PlaylistBrowser::instance()->addPodcast(*it, item);
                     continue;
                 }
                 
