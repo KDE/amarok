@@ -1932,8 +1932,11 @@ CollectionDB::bundleForUrl( MetaBundle* bundle )
             values = query( QString(
                         "SELECT id FROM podcastepisodes WHERE url = '%1';" )
                     .arg( escapeString( bundle->url().url() ) ) );
-            int id = values[0].toInt();
-            bundle->setPodcastBundle( getPodcastEpisodeById( id ) );
+            if( !values.isEmpty() )
+            {
+                int id = values[0].toInt();
+                bundle->setPodcastBundle( getPodcastEpisodeById( id ) );
+            }
         }
     }
 
@@ -2009,12 +2012,14 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
             foreach( paths )
             {
                 for( BundleList::Iterator jt = buns50.begin(), end = buns50.end(); jt != end; ++jt )
+                {
                     if ( ( *jt ).url().path() == ( *it ) )
                     {
                         bundles += *jt;
                         buns50.remove( jt );
                         goto success;
                     }
+                }
 
                 // if we get here, we didn't find an entry
                 {
