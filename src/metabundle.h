@@ -98,6 +98,7 @@ public:
 
     ~MetaBundle();
 
+    MetaBundle& operator=( const MetaBundle& bundle );
     bool operator==( const MetaBundle& bundle ) const;
     bool operator!=( const MetaBundle& bundle ) const;
 

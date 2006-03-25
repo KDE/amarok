@@ -232,6 +232,40 @@ MetaBundle::~MetaBundle()
     delete m_podcastBundle;
 }
 
+MetaBundle&
+MetaBundle::operator=( const MetaBundle& bundle )
+{
+    m_url = bundle.m_url;
+    m_title = bundle.m_title;
+    m_artist = bundle.m_artist;
+    m_composer = bundle.m_composer;
+    m_album = bundle.m_album;
+    m_comment = bundle.m_comment;
+    m_genre = bundle.m_genre;
+    m_streamName = bundle.m_streamName;
+    m_streamUrl = bundle.m_streamUrl;
+    m_year = bundle.m_year;
+    m_discNumber = bundle.m_discNumber;
+    m_track = bundle.m_track;
+    m_bitrate = bundle.m_bitrate;
+    m_length = bundle.m_length;
+    m_sampleRate = bundle.m_sampleRate;
+    m_score = bundle.m_score;
+    m_rating = bundle.m_rating;
+    m_playCount = bundle.m_playCount;
+    m_lastPlay = bundle.m_lastPlay;
+    m_filesize = bundle.m_filesize;
+    m_type = bundle.m_type;
+    m_exists = bundle.m_exists;
+    m_isValidMedia = bundle.m_isValidMedia;
+    m_podcastBundle = 0;
+    if( bundle.m_podcastBundle )
+        setPodcastBundle( *bundle.m_podcastBundle );
+
+    return *this;
+}
+
+
 bool
 MetaBundle::checkExists()
 {
