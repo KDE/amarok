@@ -686,6 +686,9 @@ int HelixEngine::scope(int playerIndex)
    if (!prune(playerIndex))
       return 0;
 
+   if (hscope[playerIndex].m_item->nchan > 2)
+      return 0;
+
    int j,k=0;
    short int *pint;
    unsigned char b[4];
@@ -715,8 +718,18 @@ int HelixEngine::scope(int playerIndex)
 
             pint = (short *) &b[0];
 
-            hscope[playerIndex].m_currentScope[hscope[playerIndex].m_scopeindex] = *pint;
-            hscope[playerIndex].m_scopeindex++;
+            if (hscope[playerIndex].m_item->nchan == 1) // duplicate mono samples
+            {
+               hscope[playerIndex].m_currentScope[hscope[playerIndex].m_scopeindex] = *pint;
+               hscope[playerIndex].m_scopeindex++;
+               hscope[playerIndex].m_currentScope[hscope[playerIndex].m_scopeindex] = *pint;
+               hscope[playerIndex].m_scopeindex++;               
+            }
+            else
+            {
+               hscope[playerIndex].m_currentScope[hscope[playerIndex].m_scopeindex] = *pint;
+               hscope[playerIndex].m_scopeindex++;
+            }
 
             k += hscope[playerIndex].m_item->bps;
          }

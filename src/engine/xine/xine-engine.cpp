@@ -484,6 +484,10 @@ XineEngine::scope()
     MyNode* const myList         = scope_plugin_list( m_post );
     metronom_t* const myMetronom = scope_plugin_metronom( m_post );
     const int myChannels         = scope_plugin_channels( m_post );
+    int scopeidx = 0;
+
+    if (myChannels > 2)
+       return m_scope;
 
     //prune the buffer list and update m_currentVpts
     timerEvent( 0 );
@@ -522,8 +526,12 @@ XineEngine::scope()
 
         for( int a, c; frame < n; ++frame, data16 += myChannels ) {
             for( a = c = 0; c < myChannels; ++c )
+            {
                // we now give interleaved pcm to the scope
-               m_scope[frame * myChannels + c] = data16[c];
+               m_scope[scopeidx++] = data16[c];
+               if (myChannels == 1) // duplicate mono samples
+                  m_scope[scopeidx++] = data16[c];
+            }
         }
 
         m_currentVpts = best_node->vpts_end;
