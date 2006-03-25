@@ -53,7 +53,7 @@ int main( int argc, char *argv[] )
     aboutData.addAuthor( "Roman '" I18N_NOOP("And God said, let there be Mac") "' Becker",
             I18N_NOOP( "amaroK logo, splash screen, icons" ), "roman@formmorf.de", "http://www.formmorf.de" );
     aboutData.addAuthor( "Seb '" I18N_NOOP("Surfin' down under") "' Ruiz",
-            I18N_NOOP( "Playlist-browser, Dynamic-mode, Queue-manager (sebr)" ), "me@sebruiz.net", "http://www.sebruiz.net" );
+            I18N_NOOP( "Developer (sebr)" ), "me@sebruiz.net", "http://www.sebruiz.net" );
     aboutData.addAuthor( "Stanislav '" I18N_NOOP("All you need is DCOP") "' Karchebny",
             I18N_NOOP( "DCOP, improvements, cleanups, i18n (berkus)" ), "berkus@madfire.net" );
 
