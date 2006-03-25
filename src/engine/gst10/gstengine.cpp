@@ -144,12 +144,9 @@ GstEngine::handoff_cb( GstPad*, GstBuffer* buf, gpointer arg) //static
 {
    GstEngine *thisObj = static_cast<GstEngine *>( arg );
 
-   // push copy of the buffer onto the delay queue
-   // we make a copy because we don't want volume or equalization to affect the scope
-   // maybe data probes are already copies?  I don't know - can't find it in the documentation
-   // so we'll make a copy for now and investigate further later...
-   gpointer newbuf = gst_buffer_copy(buf);
-   g_queue_push_tail(thisObj->m_delayq, newbuf);
+   // push the buffer onto the delay queue
+   gst_buffer_ref(buf);
+   g_queue_push_tail(thisObj->m_delayq, buf);
 }
 
 
