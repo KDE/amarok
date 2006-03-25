@@ -407,11 +407,15 @@ GstEngine::scope()
             // loop while we fill the current buffer.  If we need another buffer and one is available, 
             // get it and keep filling.  If there are no more buffers available (not too likely)
             // then leave everything in this state and wait until the next time the scope updates
-            while (buf && m_current < 512 && i < sz)
+            while (buf && m_current < SCOPESIZE && i < sz)
             {
                // convert to mono, for now - not generalize for >2 channels 'cause it'll be removed soon
-               m_currentScope[m_current] = (data[i] + data[i+1]) / channels; 
-               m_current++;
+               //m_currentScope[m_current] = (data[i] + data[i+1]) / channels; 
+               for (int j = 0; j < channels && m_current < SCOPESIZE; j++)
+               {
+                  m_currentScope[m_current] = data[i + j]; 
+                  m_current++;
+               }
                i+=channels; // advance to the next frame
                if (i >= sz) // here we are out of samples in the current buffer, so we get another one
                {
@@ -433,10 +437,10 @@ GstEngine::scope()
       }
    }
 
-   if (m_current >= 512)
+   if (m_current >= SCOPESIZE)
    {
       // ok, we have a full buffer now, so give it to the scope
-      for (int i=0; i< 512; i++)
+      for (int i=0; i< SCOPESIZE; i++)
          m_scope[i] = m_currentScope[i];
       m_current = 0;
    }

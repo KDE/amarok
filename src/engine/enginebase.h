@@ -237,6 +237,7 @@ namespace Engine
         Effects      *m_effects;
 
     protected:
+        static const int SCOPESIZE = 1024;
         uint  m_volume;
         KURL  m_url;
         Scope m_scope;

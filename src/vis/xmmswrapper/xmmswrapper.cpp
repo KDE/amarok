@@ -147,10 +147,17 @@ main( int argc, char** argv )
         }
 
         ::send( sockfd, "PCM", 4, 0 );
-        nbytes = ::recv( sockfd, pcm_data, 512 * sizeof( gint16 ), 0 );
+        // get 1024 samples, interleaved PCM from amaroK
+        gint16 data[1024];
+        nbytes = ::recv( sockfd, data, 1024 * sizeof( gint16 ), 0 );
 
+        int i = 0;
         for( uint x = 0; x < 512; ++x )
-            pcm_data[1][x] = pcm_data[0][x];
+        {
+           pcm_data[1][x] = data[i];
+           pcm_data[0][x] = data[i+1];
+           i+=2;
+        }
 
         wrap.render( pcm_data );
     }

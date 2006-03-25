@@ -100,8 +100,14 @@ Analyzer::Base<W>::drawFrame()
     {
         const Engine::Scope &thescope = engine->scope();
         static Analyzer::Scope scope( 512 );
+        int i = 0;
 
-        for( uint x = 0; (int)x < m_fht->size(); ++x ) scope[x] = double(thescope[x]) / (1<<15);
+        // convert to mono here - our built in analyzers need mono, but we the engines provide interleaved pcm
+        for( uint x = 0; (int)x < m_fht->size(); ++x ) 
+        {
+           scope[x] = double(thescope[i] + thescope[i+1]) / (2*(1<<15));
+           i += 2;
+        }
 
         transform( scope );
         analyze( scope );

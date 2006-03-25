@@ -101,7 +101,7 @@ main( int argc, char** argv )
 
         //request pcm data
         ::send( sockfd, "PCM", 4, 0 );
-        nbytes = ::recv( sockfd, Vis::pcm_data, 512 * sizeof( int16_t ), 0 );
+        nbytes = ::recv( sockfd, Vis::pcm_data, 1024 * sizeof( int16_t ), 0 );
 
         render_time = LibVisual::render();
     }
@@ -301,10 +301,11 @@ namespace LibVisual
     static int
     upload_callback( VisInput*, VisAudio *audio, void* )
     {
-        for( uint i = 0; i < 512; i++ )
+        for( uint i = 0; i < 1024; i+=2 )
         {
+            // amarok provides us with dual channel interleaved PCM
             audio->plugpcm[0][i] = pcm_data[i];
-            audio->plugpcm[1][i] = pcm_data[i];
+            audio->plugpcm[1][i] = pcm_data[i+1];
         }
 
         return 0;

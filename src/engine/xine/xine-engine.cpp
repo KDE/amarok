@@ -522,10 +522,8 @@ XineEngine::scope()
 
         for( int a, c; frame < n; ++frame, data16 += myChannels ) {
             for( a = c = 0; c < myChannels; ++c )
-                a += data16[c];
-
-            a /= myChannels;
-            m_scope[frame] = a;
+               // we now give interleaved pcm to the scope
+               m_scope[frame * myChannels + c] = data16[c];
         }
 
         m_currentVpts = best_node->vpts_end;

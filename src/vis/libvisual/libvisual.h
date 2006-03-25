@@ -51,7 +51,7 @@ namespace LibVisual
     static VisBin     *bin;
     static const char *plugin;
     static bool        pluginIsGL = false;
-    static int16_t     pcm_data[512];
+    static int16_t     pcm_data[1024];
 
     static void init( int&, char**& );
     static uint render();

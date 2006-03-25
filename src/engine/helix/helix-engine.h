@@ -86,7 +86,7 @@ private:
       DelayQueue *m_item;
       unsigned long  m_lasttime;
       unsigned long  m_lastpos;
-      unsigned short m_currentScope[512];
+      unsigned short m_currentScope[SCOPESIZE];
       int            m_scopeindex;
       unsigned long  m_w; // more accurate position estimate for the player 
    } hscope[2];

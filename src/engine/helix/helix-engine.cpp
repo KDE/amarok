@@ -690,18 +690,15 @@ int HelixEngine::scope(int playerIndex)
    short int *pint;
    unsigned char b[4];
 
-   // convert to mono
-   int a;
    // calculate the starting offset into the buffer
    int off =  (hscope[playerIndex].m_item->spb * (hscope[playerIndex].m_w - hscope[playerIndex].m_item->time) /
                (hscope[playerIndex].m_item->etime - hscope[playerIndex].m_item->time)) *
               hscope[playerIndex].m_item->nchan * hscope[playerIndex].m_item->bps;
    k = off;
-   while (hscope[playerIndex].m_item && hscope[playerIndex].m_scopeindex < 512)
+   while (hscope[playerIndex].m_item && hscope[playerIndex].m_scopeindex < SCOPESIZE)
    {
       while (k < (int) hscope[playerIndex].m_item->len)
       {
-         a = 0;
          for (j=0; j<hscope[playerIndex].m_item->nchan; j++)
          {
             switch (hscope[playerIndex].m_item->bps)
@@ -718,21 +715,20 @@ int HelixEngine::scope(int playerIndex)
 
             pint = (short *) &b[0];
 
-            a += (int) *pint;
+            hscope[playerIndex].m_currentScope[hscope[playerIndex].m_scopeindex] = *pint;
+            hscope[playerIndex].m_scopeindex++;
+
             k += hscope[playerIndex].m_item->bps;
          }
-         a /= hscope[playerIndex].m_item->nchan;
 
-         hscope[playerIndex].m_currentScope[hscope[playerIndex].m_scopeindex] = a;
-         hscope[playerIndex].m_scopeindex++;
-         if (hscope[playerIndex].m_scopeindex >= 512)
+         if (hscope[playerIndex].m_scopeindex >= SCOPESIZE)
          {
-            hscope[playerIndex].m_scopeindex = 512;
+            hscope[playerIndex].m_scopeindex = SCOPESIZE;
             break;
          }
       }
       // as long as we know there's another buffer...otherwise we need to wait for another
-      if (hscope[playerIndex].m_scopeindex < 512)
+      if (hscope[playerIndex].m_scopeindex < SCOPESIZE)
       {
          if (hscope[playerIndex].m_item && hscope[playerIndex].m_item->allocd)
             delete hscope[playerIndex].m_item;
@@ -756,7 +752,7 @@ int HelixEngine::scope(int playerIndex)
    }
 
    // ok, we must have a full buffer here, give it to the scope
-   for (i=0; i<512; i++)
+   for (i=0; i<SCOPESIZE; i++)
       m_scope[i] = hscope[playerIndex].m_currentScope[i];
    hscope[playerIndex].m_scopeindex = 0;
 

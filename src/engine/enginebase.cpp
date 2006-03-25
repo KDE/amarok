@@ -11,7 +11,7 @@ Engine::Base::Base( Effects *effects )
         : amaroK::Plugin()
         , m_effects( effects )
         , m_volume( 50 )
-        , m_scope( 512 )
+        , m_scope( SCOPESIZE )
         , m_isStream( false )
 {}
 

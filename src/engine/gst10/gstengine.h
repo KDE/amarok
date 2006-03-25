@@ -185,7 +185,7 @@ class GstEngine : public Engine::Base
         GQueue    *m_delayq;
         // the current set of samples for the scope, in case we dont have enough buffers yet
         // and end up with an incomplete buffer
-        guint16    m_currentScope[512];
+        guint16    m_currentScope[SCOPESIZE];
         // the sample in m_currentScope we are working on
         gint       m_current;
         // function to remove buffers that are no longer relevant
