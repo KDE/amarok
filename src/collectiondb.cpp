@@ -793,8 +793,7 @@ CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
             if ( !l.isEmpty() )
             {
                 debug() << "Found APIC frame(s)" << endl;
-                TagLib::ID3v2::Frame *f = l.front();
-                TagLib::ID3v2::AttachedPictureFrame *ap = (TagLib::ID3v2::AttachedPictureFrame*)f;
+                TagLib::ID3v2::AttachedPictureFrame *ap = (TagLib::ID3v2::AttachedPictureFrame*)l.front();
 
                 const TagLib::ByteVector &imgVector = ap->picture();
                 debug() << "Size of image: " <<  imgVector.size() << " byte" << endl;
