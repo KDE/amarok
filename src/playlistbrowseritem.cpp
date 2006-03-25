@@ -1076,7 +1076,6 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
         , m_updating( false )
         , m_new( false )
         , m_hasProblem( false )
-        , m_last( 0 )
         , m_parent( static_cast<PlaylistCategory*>(parent) )
 {
     setDragEnabled( true );
@@ -1098,7 +1097,6 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
     , m_new( false )
     , m_hasProblem( false )
     , m_channelSettings( channelSettings )
-    , m_last( 0 )
     , m_parent( static_cast<PlaylistCategory*>(parent) )
 {
     setDragEnabled( true );
@@ -1122,7 +1120,6 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
     , m_new( false )
     , m_hasProblem( false )
     , m_channelSettings( channelSettings )
-    , m_last( 0 )
     , m_parent( static_cast<PlaylistCategory*>(parent) )
 {
     QDomNode type = xmlDefinition.namedItem("rss");
@@ -1147,7 +1144,6 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
     , m_updating( false )
     , m_new( false )
     , m_hasProblem( false )
-    , m_last( 0 )
     , m_parent( static_cast<PlaylistCategory*>(parent) )
 {
     setText( 0, title() );
@@ -1596,27 +1592,34 @@ PodcastChannel::updateInfo()
 void
 PodcastChannel::purge()
 {
-    int removeCount = childCount() - purgeCount();
-    if( removeCount <= 0 )
+    if( childCount() - purgeCount() <= 0 )
         return;
 
-    KURL::List urls;
-    for( int i=0; i < removeCount; i++ )
+    KURL::List urlsToDelete;
+    QListViewItem *removeMe = 0;
+    QListViewItem *removeNext = firstChild();
+    for( int i=0; i < childCount(); i++ )
     {
-        PodcastEpisode *newLast = 0;
-
-        if( m_last && m_last != firstChild() )
-            newLast = (PodcastEpisode *)m_last->itemAbove();
-
-        if( m_last && m_last->isOnDisk() )
-            urls.append( m_last->localUrl() );
-
-        CollectionDB::instance()->removePodcastEpisode( m_last->dBId() );
-        delete m_last;
-        m_last = newLast;
+        removeMe = removeNext;
+        
+        if( !removeMe )
+            break;
+            
+        removeNext = removeMe->nextSibling();
+        if( i <= purgeCount() ) 
+            continue;
+        
+    #define removeMe static_cast<PodcastEpisode*>(removeMe)
+        if( removeMe->isOnDisk() )
+            urlsToDelete.append( removeMe->localUrl() );
+            
+        CollectionDB::instance()->removePodcastEpisode( removeMe->dBId() );
+    #undef  removeMe
+        delete removeMe;
     }
-    if( !urls.isEmpty() )
-        KIO::del( urls );
+    
+    if( !urlsToDelete.isEmpty() )
+        KIO::del( urlsToDelete );
 }
 
 void

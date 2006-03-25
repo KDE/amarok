@@ -387,7 +387,6 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         // Configuration
         QDomNode m_channelSettings;
 
-        PodcastEpisode          *m_last;
         KIO::TransferJob        *m_podcastJob;
         PlaylistCategory        *m_parent; // category it belongs to
         QString                  m_podcastCurrentUrl;
