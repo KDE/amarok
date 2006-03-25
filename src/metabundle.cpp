@@ -39,6 +39,7 @@
 #endif
 
 #include "metabundle.h"
+#include "podcastbundle.h"
 
 /// These are untranslated and used for storing/retrieving XML playlist
 const QString MetaBundle::exactColumnName( int c ) //static
@@ -122,6 +123,7 @@ MetaBundle::MetaBundle()
         , m_type( other )
         , m_exists( true )
         , m_isValidMedia( true )
+        , m_podcastBundle( 0 )
 {
     init();
 }
@@ -142,6 +144,7 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
     , m_type( other )
     , m_exists( url.protocol() == "file" && QFile::exists( url.path() ) )
     , m_isValidMedia( false ) //will be updated
+    , m_podcastBundle( 0 )
 {
     if ( m_exists )
     {
@@ -180,6 +183,7 @@ MetaBundle::MetaBundle( const QString& title,
         , m_type( other )
         , m_exists( true )
         , m_isValidMedia( true )
+        , m_podcastBundle( 0 )
 {
     if( title.contains( '-' ) )
     {
@@ -191,6 +195,17 @@ MetaBundle::MetaBundle( const QString& title,
         m_title  = title;
         m_artist = streamName; //which is sort of correct..
     }
+}
+
+MetaBundle::MetaBundle( const MetaBundle &bundle )
+    : m_podcastBundle( 0 )
+{
+    copyFrom( bundle );
+}
+
+MetaBundle::~MetaBundle()
+{
+    delete m_podcastBundle;
 }
 
 bool
@@ -445,6 +460,8 @@ void MetaBundle::copyFrom( const MetaBundle &bundle )
     setLastPlay( bundle.lastPlay() );
     setFileType( bundle.fileType() );
     setFilesize( bundle.filesize() );
+    if( bundle.m_podcastBundle )
+        setPodcastBundle( *bundle.m_podcastBundle );
 }
 
 void MetaBundle::setExactText( int column, const QString &newText )
@@ -956,6 +973,13 @@ MetaBundle::setExtendedTag( TagLib::File *file, int tag, const QString value )
             }
         }
     }
+}
+
+void
+MetaBundle::setPodcastBundle( const PodcastEpisodeBundle &peb )
+{
+    m_podcastBundle = new PodcastEpisodeBundle;
+    *m_podcastBundle = peb;
 }
 
 bool
