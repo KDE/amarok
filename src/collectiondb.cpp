@@ -1255,8 +1255,7 @@ CollectionDB::findMetaBundleImage( MetaBundle trackInformation, uint width )
         if ( !l.isEmpty() )
         {
             debug() << "Found APIC frame(s)" << endl;
-            TagLib::ID3v2::Frame *f = l.front();
-            TagLib::ID3v2::AttachedPictureFrame *ap = (TagLib::ID3v2::AttachedPictureFrame*)f;
+            TagLib::ID3v2::AttachedPictureFrame *ap = (TagLib::ID3v2::AttachedPictureFrame*)l.front();
 
             const TagLib::ByteVector &imgVector = ap->picture();
             debug() << "Size of image: " <<  imgVector.size() << " byte" << endl;
@@ -1490,7 +1489,7 @@ CollectionDB::addPodcastChannel( const PodcastChannelBundle &pcb, const bool &re
                   ", autoscan, fetchtype, autotransfer, haspurge, purgecount ) "
                   "VALUES (";
     }
-    
+
     QString title       = pcb.title();
     KURL    link        = pcb.link();
     QString description = pcb.description();
@@ -1522,7 +1521,7 @@ int
 CollectionDB::addPodcastEpisode( const PodcastEpisodeBundle &episode, const int idToUpdate )
 {
     QString command;
-     
+
     if( idToUpdate ) {
         command = "REPLACE INTO podcastepisodes "
                   "( id, url, localurl, parent, title, composer, comment, filetype, createdate, guid, length, isNew ) "
@@ -1547,7 +1546,7 @@ CollectionDB::addPodcastEpisode( const PodcastEpisodeBundle &episode, const int 
 
     if( idToUpdate )
         command += QString::number( idToUpdate ) + ",";
-        
+
     command += "'" + escapeString( episode.url().url() )   + "',";
     command += ( localurl.isEmpty()       ? "NULL" : "'" + escapeString( localurl )       + "'" ) + ",";
     command += "'" + escapeString( episode.parent().url()) + "',";
@@ -1561,14 +1560,14 @@ CollectionDB::addPodcastEpisode( const PodcastEpisodeBundle &episode, const int 
     command += episode.isNew() ? boolT() + " );" : boolF() + " );";
 
     insert( command, NULL );
-    
+
     if( idToUpdate ) return idToUpdate;
     //This is a bit of a hack. We have just inserted an item, so it is going to be the one with the
     //highest id.  Change this if threaded insertions are used in the future.
     QStringList values = query( QString("SELECT id FROM podcastepisodes WHERE url='%1' ORDER BY id DESC;")
                                         .arg( escapeString( episode.url().url() ) ) );
     if( values.isEmpty() ) return -1;
-    
+
     return values[0].toInt();
 }
 
@@ -1651,18 +1650,18 @@ CollectionDB::addPodcastFolder( const QString &name, const int parent_id, const 
     return values[0].toInt();
 }
 
-void 
+void
 CollectionDB::updatePodcastChannel( const PodcastChannelBundle &b )
 {
-    if( getDbConnectionType() == DbConnection::postgresql ) 
+    if( getDbConnectionType() == DbConnection::postgresql )
     {
         query( QString( "UPDATE podcastepisode SET title='%1', weblink='%2', comment='%3', "
                         "copyright='%4', parent=%5, directory='%6', autoscan=%7, fetchtype=%8, "
                         "autotransfer=%9, haspurge=%10, purgecount=%11 WHERE url='%12';" )
-                        .arg( escapeString( b.title() ) )       .arg( escapeString( b.link().url() ) )   
-                        .arg( escapeString( b.description() ) ) .arg( escapeString( b.copyright() ) )    
+                        .arg( escapeString( b.title() ) )       .arg( escapeString( b.link().url() ) )
+                        .arg( escapeString( b.description() ) ) .arg( escapeString( b.copyright() ) )
                         .arg( QString::number( b.parentId() ) ) .arg( escapeString( b.saveLocation().url() ) )
-                        .arg( b.autoscan() ? boolT() : boolF() ).arg( QString::number( b.fetchType() ) ) 
+                        .arg( b.autoscan() ? boolT() : boolF() ).arg( QString::number( b.fetchType() ) )
                         .arg( b.hasPurge() ? boolT() : boolF() ).arg( b.autotransfer() ? boolT() : boolF() )
                         .arg( QString::number( b.purgeCount() )).arg( escapeString( b.url().url() ) ) );
     }
@@ -1674,7 +1673,7 @@ CollectionDB::updatePodcastChannel( const PodcastChannelBundle &b )
 void
 CollectionDB::updatePodcastEpisode( const int id, const PodcastEpisodeBundle &b )
 {
-    if( getDbConnectionType() == DbConnection::postgresql ) 
+    if( getDbConnectionType() == DbConnection::postgresql )
     {
         query( QString( "UPDATE podcastepisode SET url='%1', localurl='%2', parent='%3', title='%4', composer='%5', comment='%6', "
                         "filetype='%7', createdate='%8', guid='%9', length=%10, isNew=%11 WHERE id=%12;" )
