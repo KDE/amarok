@@ -3088,12 +3088,15 @@ void PlaylistBrowserView::startDrag()
         else if( isPodcastChannel( *it ) )
         {
             #define item static_cast<PodcastChannel *>(*it)
-            KURL::List list;
             QListViewItem *child = item->firstChild();
             while( child )
             {
-                list.append( static_cast<PodcastEpisode*>( child )->url() );
-                static_cast<PodcastEpisode*>( child )->setNew( false );
+                PodcastEpisode *pe = static_cast<PodcastEpisode*>( child ); 
+                if( pe->isOnDisk() )
+                    urls += pe->localUrl();
+                else
+                    urls += pe->url();
+                pe->setNew( false ); // FIXME: why?
                 child = child->nextSibling();
             }
 
