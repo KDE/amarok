@@ -65,7 +65,8 @@ void HSPPlayerControlled::onBuffering(int percentage)
 
 
 PlayerControl::PlayerControl() : m_eq_enabled(false), m_preamp(0), m_err(0), iamparent(0), m_index(0), nNumPlayers(0),
-                                 m_inited(false), m_api( HelixSimplePlayer::OSS ), m_device(0), mimehead(0), mimelistlen(0) 
+                                 m_inited(false), m_api( HelixSimplePlayer::OSS ), m_device(0), mimehead(0), mimelistlen(0),
+                                 m_numPlugins(0), m_pluginInfo(0)
 {
    memset(m_children, 0, sizeof(m_children));
 }
@@ -995,7 +996,7 @@ int PlayerControl::numPlugins() const
 
 int PlayerControl::getPluginInfo(int index, const char *&description, const char *&copyright, const char *&moreinfourl) const
 {
-   if (index < m_numPlugins)
+   if (m_pluginInfo && index < m_numPlugins)
    {
       description = m_pluginInfo[index]->description;
       copyright   = m_pluginInfo[index]->copyright;

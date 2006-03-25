@@ -360,11 +360,13 @@ HelixConfigDialogBase::HelixConfigDialogBase( HelixEngine *engine, amaroK::Plugi
     row = 0;
     for (int i=0; i<n; i++)
     {
-       engine->getPluginInfo(i, description, copyright, moreinfourl);
-       le->append(QString(description));
-       le->append(QString(copyright));
-       le->append(QString(moreinfourl));
-       le->append(QString(" "));
+       if (!engine->getPluginInfo(i, description, copyright, moreinfourl))
+       {
+          le->append(QString(description));
+          le->append(QString(copyright));
+          le->append(QString(moreinfourl));
+          le->append(QString(" "));
+       }
     }
 
     le->setReadOnly(true);
