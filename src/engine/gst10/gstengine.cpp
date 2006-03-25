@@ -361,7 +361,7 @@ GstEngine::state() const
 const Engine::Scope&
 GstEngine::scope()
 {
-   const int channels = 2;
+   gint channels = 2;
 
    // prune the scope and get the current pos of the audio device
    gint64 pos = pruneScope();
@@ -379,6 +379,14 @@ GstEngine::scope()
       dur = static_cast<guint64>( GST_BUFFER_DURATION( buf ) );
       // therefore we can calculate the end time for the buffer
       etime = stime + dur;
+
+      // determine the number of channels
+      GstStructure* structure = gst_caps_get_structure ( GST_BUFFER_CAPS( buf ), 0);
+      gst_structure_get_int (structure, "channels", &channels);
+
+      // scope does not support >2 channels
+      if (channels > 2)
+         return m_scope;
 
       // if the audio device is playing this buffer now
       if (static_cast<guint64>(pos) > stime && static_cast<guint64>(pos) < etime)
@@ -406,12 +414,15 @@ GstEngine::scope()
             // then leave everything in this state and wait until the next time the scope updates
             while (buf && m_current < SCOPESIZE && i < sz)
             {
-               // convert to mono, for now - not generalize for >2 channels 'cause it'll be removed soon
-               //m_currentScope[m_current] = (data[i] + data[i+1]) / channels; 
                for (int j = 0; j < channels && m_current < SCOPESIZE; j++)
                {
                   m_currentScope[m_current] = data[i + j]; 
                   m_current++;
+                  if (channels == 1)
+                  {
+                     m_currentScope[m_current] = data[i]; 
+                     m_current++;
+                  }
                }
                i+=channels; // advance to the next frame
                if (i >= sz) // here we are out of samples in the current buffer, so we get another one
