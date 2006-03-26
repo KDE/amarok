@@ -507,12 +507,13 @@ PlaylistCategory* PlaylistBrowser::loadSmartPlaylists()
     }
     else {
         e = d.namedItem( "category" ).toElement();
-        if ( e.attribute("formatversion") == "1.2" ) {
+        if ( e.attribute("formatversion") == "1.3" ) {
             PlaylistCategory* p = new PlaylistCategory(m_listview, after, e );
             p->setText( 0, i18n("Smart Playlists") );
             return p;
         }
-        else if ( e.attribute("formatversion") == "1.1" ) {
+        else if ( e.attribute("formatversion") == "1.1"
+               || e.attribute("formatversion") == "1.2" ) {
             PlaylistCategory* p = new PlaylistCategory(m_listview, after, e );
             p->setText( 0, i18n("Smart Playlists") );
             debug() << "loading old format smart playlists, converted to new format" << endl;
@@ -546,6 +547,7 @@ void PlaylistBrowser::updateSmartPlaylists( QListViewItem *p )
         {
             QDomElement xml = spl->xml();
             QDomElement query = xml.namedItem( "sqlquery" ).toElement();
+            QRegExp limitSearch( "LIMIT.*(\\d+)\\s*,\\s*(\\d+)" );
             for(QDomNode child = query.firstChild();
                     !child.isNull();
                     child = child.nextSibling() )
@@ -554,7 +556,13 @@ void PlaylistBrowser::updateSmartPlaylists( QListViewItem *p )
                 {
                     QDomText text = child.toText();
                     QString sql = text.data();
+                    //1.1 to 1.2 (if it's already with 1.2 format, no problem)
                     sql.replace( "tags.samplerate, tags.url", "tags.samplerate, tags.filesize, tags.url" );
+                    //1.2 to 1.3
+                    if ( limitSearch.search( sql ) != -1 )
+                        sql.replace( limitSearch,
+                          QString( "LIMIT %1 OFFSET %2").arg( limitSearch.capturedTexts()[2].toInt() ).arg( limitSearch.capturedTexts()[1].toInt() ) );
+
                     text.setData( sql );
                     break;
                 }
@@ -702,7 +710,7 @@ void PlaylistBrowser::saveSmartPlaylists( PlaylistCategory *smartCategory )
     QDomElement smartB = smartCategory->xml();
     smartB.setAttribute( "product", "amaroK" );
     smartB.setAttribute( "version", APP_VERSION );
-    smartB.setAttribute( "formatversion", "1.2" );
+    smartB.setAttribute( "formatversion", "1.3" );
     QDomNode smartplaylistsNode = doc.importNode( smartB, true );
     doc.appendChild( smartplaylistsNode );
 
@@ -911,7 +919,7 @@ void PlaylistBrowser::loadPodcastsFromDatabase( PlaylistCategory *p )
         const int parentId = (*it).parentId();
         if( parentId > 0 && folderMap.find( parentId ) != folderMap.end() )
             parent = folderMap[parentId];
-            
+
         channel  = new PodcastChannel( parent, channel, *it );
         episodes = CollectionDB::instance()->getPodcastEpisodes( (*it).url() );
 
@@ -942,27 +950,27 @@ PlaylistBrowser::loadPodcastFolders( PlaylistCategory *p )
         const QString t        =    *++it;
         const int     parentId =   (*++it).toInt();
         const bool    isOpen   = ( (*++it) == CollectionDB::instance()->boolT() ? true : false );
-        
+
         PlaylistCategory *parent = p;
         if( parentId > 0 && folderMap.find( parentId ) != folderMap.end() )
             parent = folderMap[parentId];
-        
+
         folder = new PlaylistCategory( parent, folder, t, id );
         folder->setOpen( isOpen );
-        
+
         folderMap[id] = folder;
     }
     // check if the base folder exists
     KConfig *config = amaroK::config( "PlaylistBrowser" );
     p->setOpen( config->readBoolEntry( "Podcast Folder Open", true ) );
-    
+
     return folderMap;
 }
 
 void PlaylistBrowser::savePodcastFolderStates( PlaylistCategory *folder )
 {
     if( !folder ) return;
-    
+
     PlaylistCategory *child = static_cast<PlaylistCategory*>(folder->firstChild());
     while( child )
     {
@@ -970,11 +978,11 @@ void PlaylistBrowser::savePodcastFolderStates( PlaylistCategory *folder )
             savePodcastFolderStates( child );
         else
             break;
-            
+
         child = static_cast<PlaylistCategory*>(child->nextSibling());
     }
     if( folder != m_podcastCategory )
-        CollectionDB::instance()->updatePodcastFolder( folder->id(), folder->text(0), 
+        CollectionDB::instance()->updatePodcastFolder( folder->id(), folder->text(0),
                               static_cast<PlaylistCategory*>(folder->parent())->id(), folder->isOpen() );
 }
 
@@ -1772,7 +1780,7 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
 
         if( isCategory( *it ) && !static_cast<PlaylistCategory*>(*it)->isFolder() ) //its a base category
             continue;
-            
+
         // if the playlist containing this item is already selected the current item will be skipped
         // it will be deleted from the parent
         QListViewItem *parent = it.current()->parent();
@@ -1891,7 +1899,7 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
 
             foreachType( QPtrList<PlaylistCategory>, playlistFoldersToDelete )
                 delete (*it);
-                
+
             savePlaylists();
         }
     }
@@ -1901,13 +1909,13 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
 void PlaylistBrowser::removePodcastFolder( PlaylistCategory *item )
 {
     if( !item ) return;
-    if( !item->childCount() ) 
+    if( !item->childCount() )
     {
         CollectionDB::instance()->removePodcastFolder( item->id() );
         delete item;
         return;
     }
-    
+
     QListViewItem *child = item->firstChild();
     while( child )
     {
@@ -1925,7 +1933,7 @@ void PlaylistBrowser::removePodcastFolder( PlaylistCategory *item )
             nextChild = child->nextSibling();
             removePodcastFolder( static_cast<PlaylistCategory*>(child) );
         }
-            
+
         child = nextChild;
     }
     CollectionDB::instance()->removePodcastFolder( item->id() );
@@ -2828,22 +2836,22 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
 
             for ( ; it != decodedList.end(); ++it )
             {
-                if( isCategory(item) ) 
+                if( isCategory(item) )
                 { // check if it is podcast category
                     QListViewItem *cat = item;
                     while( isCategory(cat) && cat!=PlaylistBrowser::instance()->podcastCategory() )
                         cat = cat->parent();
-                        
+
                     if( cat == PlaylistBrowser::instance()->podcastCategory() )
                         PlaylistBrowser::instance()->addPodcast(*it, item);
                     continue;
                 }
-                
+
                 QString filename = (*it).fileName();
 
                 if( filename.endsWith("m3u") || filename.endsWith("pls") )
                     PlaylistBrowser::instance()->addPlaylist( (*it).path() );
-                else if( (*it).protocol() == "album"       || 
+                else if( (*it).protocol() == "album"       ||
                          (*it).protocol() == "compilation" ||
                          (*it).protocol() == "fetchcover" )
                 {
@@ -3091,7 +3099,7 @@ void PlaylistBrowserView::startDrag()
             QListViewItem *child = item->firstChild();
             while( child )
             {
-                PodcastEpisode *pe = static_cast<PodcastEpisode*>( child ); 
+                PodcastEpisode *pe = static_cast<PodcastEpisode*>( child );
                 if( pe->isOnDisk() )
                     urls += pe->localUrl();
                 else

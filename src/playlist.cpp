@@ -669,8 +669,8 @@ Playlist::addSpecialCustomTracks( uint songCount )
             {   // There's a Limit, so we've got to respect it.
                 limitSearch.search( sql );
                 // capturedTexts() gives us the strings that were matched by each subexpression
-                first = limitSearch.capturedTexts()[1].toInt();
-                limit = limitSearch.capturedTexts()[2].toInt();
+                first = limitSearch.capturedTexts()[2].toInt();
+                limit = limitSearch.capturedTexts()[1].toInt();
             }
             if ( limit <= songCount )
                 // The list is even smaller than the number of songs we want :-(
