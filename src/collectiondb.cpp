@@ -865,9 +865,8 @@ CollectionDB::createDragPixmap( const KURL::List &urls )
     const int maxCovers = 4; // maximum number of cover images to show
     const int coverSpacing = 20; // spacing between stacked covers
     const int fontSpacing = 5; // spacing between covers and info text
-    const int fontSize = 12; // font size for info text
     const int minWidth = 300; // minimum width (such that info text fits)
-    const int coverW = AmarokConfig::coverPreviewSize();
+    const int coverW = AmarokConfig::coverPreviewSize() > 100 ? 100 : AmarokConfig::coverPreviewSize(); // size for "..." cover
     const int coverH = coverW;
 
     int covers = 0;
@@ -879,36 +878,40 @@ CollectionDB::createDragPixmap( const KURL::List &urls )
     QMap<QString, int> albumMap;
     QPixmap coverPm[maxCovers];
 
+
     // iterate urls, get covers and count artist/albums
+    bool correctAlbumCount = true;
     KURL::List::ConstIterator it = urls.begin();
     for ( ; it != urls.end(); ++it )
     {
         if ( (*it).isLocalFile() )
         {
-            MetaBundle mb = MetaBundle( *it );
             songs++;
 
+            if( covers >= maxCovers )
+            {
+                correctAlbumCount = false;
+                continue;
+            }
+
+            MetaBundle mb( *it );
             if ( !albumMap.contains( mb.artist() + mb.album() ) )
             {
+                albumMap[ mb.artist() + mb.album() ] = 1;
+
                 debug() << "fetching cover for " <<  mb.artist() << " / " << mb.album() << endl;
                 QString coverName = CollectionDB::instance()->albumImage( mb.artist(), mb.album(), coverW );
-                
-                if ( ( coverName.find( "nocover.png" ) == -1 ) && ( covers < maxCovers ) )
+                if ( !coverName.endsWith( "@nocover.png" ) )
                 {
                     debug() << "adding cover " << coverName << endl;
                     coverPm[covers++].load( coverName );
                 }
                 else
                     debug() << "no cover found - skipping " << coverName << endl;
-
-                albumMap[ mb.artist() + mb.album() ] = 1;
             }
         }
         else
             remoteUrls++;
-            
-        if( covers >= maxCovers )
-            break;
     }
 
     // make a better text...
@@ -916,14 +919,20 @@ CollectionDB::createDragPixmap( const KURL::List &urls )
     QString text;
     
     if( songs > 0 )
-        text = i18n( "One song from ", "%n songs from ", songs ) + i18n( "one album", "%n albums",albums );
+    {
+        text = i18n( "One song", "%n songs", songs );
+        if( correctAlbumCount )
+        {
+            text += i18n( " from one album", " from %n albums",albums );
+        }
+    }
     else if ( remoteUrls > 0 )
         text = i18n( "One remote file", "%n remote files", remoteUrls );
     else
         text = i18n( "Unknown item" );
 
     // font... TODO: from config?
-    QFont font( "Arial", fontSize );
+    QFont font;
     QFontMetrics fm( font );
     int fontH = fm.height() + 2;
 
