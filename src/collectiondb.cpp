@@ -876,7 +876,6 @@ CollectionDB::createDragPixmap( const KURL::List &urls )
     int pixmapH = 0;
     int remoteUrls = 0;
 
-//    QMap<QString, int> artistMap;
     QMap<QString, int> albumMap;
     QPixmap coverPm[maxCovers];
 
@@ -884,60 +883,48 @@ CollectionDB::createDragPixmap( const KURL::List &urls )
     KURL::List::ConstIterator it = urls.begin();
     for ( ; it != urls.end(); ++it )
     {
-        KURL src = ( *it );
-        // if its a playlist we need an other iteration pass...
-        BundleList bundles;
-        if ( PlaylistFile::isPlaylistFile( src ) )
+        if( PlaylistFile::isPlaylistFile( *it ) )
         {
-            if( src.isLocalFile() )
+            if( !(*it).isLocalFile() )
+                    remoteUrls++;
+            continue;
+        }
+        
+
+        if ( (*it).isLocalFile() )
+        {
+            MetaBundle mb = MetaBundle( *it );
+            songs++;
+
+            if ( !albumMap.contains( mb.artist() + mb.album() ) )
             {
-                PlaylistFile plf( src.path() );
-                bundles = plf.bundles();
+                debug() << "fetching cover for " <<  mb.artist() << " / " << mb.album() << endl;
+                QString coverName = CollectionDB::instance()->albumImage( mb.artist(), mb.album(), 1 );
+                if ( ( coverName.find( "nocover.png" ) == -1 ) && ( covers < maxCovers ) )
+                {
+                    debug() << "adding cover " << coverName << endl;
+                    coverPm[covers++].load( coverName );
+                }
+                else
+                    debug() << "no cover found - skipping " << coverName << endl;
+
+                albumMap[ mb.artist() + mb.album() ] = 1;
             }
-            else
-                remoteUrls++;
         }
         else
-            bundles += MetaBundle( src );
-
-        for ( BundleList::Iterator bundit = bundles.begin(), end = bundles.end(); bundit != end; ++bundit )
-        {
-            KURL url = ( *bundit ).url();
-            if ( url.isLocalFile() )
-            {
-                MetaBundle mb = MetaBundle( url ); // why does the metabundle from playlistfile not have an artist/album field?
-                songs++;
-
-                if ( !albumMap.contains( mb.artist() + mb.album() ) )
-                {
-                    debug() << "fetching cover for " <<  mb.artist() << " / " << mb.album() << endl;
-                    QString coverName = CollectionDB::instance()->albumImage( mb.artist(), mb.album(), 1 );
-                    if ( ( coverName.find( "nocover.png" ) == -1 ) && ( covers < maxCovers ) )
-                    {
-                        debug() << "adding cover " << coverName << endl;
-                        coverPm[covers++].load( coverName );
-                    }
-                    else
-                        debug() << "no cover found - skipping " << coverName << endl;
-
-                    albumMap[ mb.artist() + mb.album() ] = 1;
-                }
-            }
-            else {
-                remoteUrls++;
-            }
-        }
+            remoteUrls++;
     }
 
     // make a better text...
     int albums = albumMap.count();
-    QString m_text;
-    if ( songs > 0 )
-        m_text= i18n( "One song from ", "%n songs from ", songs ) + i18n( "one album", "%n albums",albums );
+    QString text;
+    
+    if( songs > 0 )
+        text = i18n( "One song from ", "%n songs from ", songs ) + i18n( "one album", "%n albums",albums );
     else if ( remoteUrls > 0 )
-        m_text= i18n( "One remote file", "%n remote files", remoteUrls );
+        text = i18n( "One remote file", "%n remote files", remoteUrls );
     else
-        m_text= i18n( "Unknown item" );
+        text = i18n( "Unknown item" );
 
     // font... TODO: from config?
     QFont font( "Arial", fontSize );
@@ -988,7 +975,7 @@ CollectionDB::createDragPixmap( const KURL::List &urls )
     p.fillRect( 0, 0, pixmapW, fontH, QBrush( Qt::black ) );
     p.setPen( Qt::white );
     p.setFont( font );
-    p.drawText( 2, fm.ascent() + 1, m_text );
+    p.drawText( 2, fm.ascent() + 1, text );
     p.end();
 
     int w = pmtext.width();
