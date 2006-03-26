@@ -42,6 +42,8 @@ class PodcastChannelBundle
         QString title()       const;
         /// A url to the webpage of the podcast
         KURL    link()        const;
+        /// A url to the image of the podcast
+        KURL    imageURL()        const;
         QString description() const;
         QString copyright()   const;
         /// The id which the parent folder has in the database
@@ -50,6 +52,7 @@ class PodcastChannelBundle
         void    setURL( const KURL &u );
         void    setTitle( const QString &t );
         void    setLink( const KURL &l );
+        void    setImageURL( const KURL &i );
         void    setDescription( const QString &d );
         void    setCopyright( const QString &c );
         void    setParentId( const int p );
@@ -73,6 +76,7 @@ class PodcastChannelBundle
         KURL    m_url;
         QString m_title;
         KURL    m_link;
+        KURL    m_imageUrl;
         QString m_description;
         QString m_copyright;
         int     m_parentId;
@@ -88,6 +92,7 @@ class PodcastChannelBundle
 inline KURL    PodcastChannelBundle::url()         const { return m_url; }
 inline QString PodcastChannelBundle::title()       const { return m_title; }
 inline KURL    PodcastChannelBundle::link()        const { return m_link; }
+inline KURL    PodcastChannelBundle::imageURL()    const { return m_imageUrl; }
 inline QString PodcastChannelBundle::description() const { return m_description; }
 inline QString PodcastChannelBundle::copyright()   const { return m_copyright; }
 inline int     PodcastChannelBundle::parentId()    const { return m_parentId; }
@@ -95,6 +100,7 @@ inline int     PodcastChannelBundle::parentId()    const { return m_parentId; }
 inline void    PodcastChannelBundle::setURL         ( const KURL &u )    { m_url = u; }
 inline void    PodcastChannelBundle::setTitle       ( const QString &t ) { m_title = t; }
 inline void    PodcastChannelBundle::setLink        ( const KURL &l )    { m_link = l; }
+inline void    PodcastChannelBundle::setImageURL    ( const KURL &i )    { m_imageUrl = i; }
 inline void    PodcastChannelBundle::setDescription ( const QString &d ) { m_description = d; }
 inline void    PodcastChannelBundle::setCopyright   ( const QString &c ) { m_copyright = c; }
 inline void    PodcastChannelBundle::setParentId    ( const int p )      { m_parentId = p; }
@@ -153,11 +159,13 @@ class PodcastEpisodeBundle
         KURL    parent()      const;
         QString author()      const;
         QString title()       const;
+        QString subtitle()    const;
         QString description() const;
         QString date()        const;
         /// File type of the podcast episode, eg ogg, mp3 etc
         QString type()        const;
-        int     duration()    const;
+        int     duration()    const; // duration in seconds
+        uint    size()        const; // file/stream size in bytes
         /// unique identifier that should be available in the feed (RSS 2.0: guid ATOM: id)
         QString guid()        const;
         /// Has this particular podcast episode been listened to?
@@ -169,10 +177,12 @@ class PodcastEpisodeBundle
         void    setParent( const KURL &u );
         void    setAuthor( const QString &a );
         void    setTitle( const QString &t );
+        void    setSubtitle( const QString &s );
         void    setDescription( const QString &d );
         void    setDate( const QString &d );
         void    setType( const QString &t );
         void    setDuration( const int i );
+        void    setSize( const uint i );
         void    setGuid( const QString &g );
         void    setNew( const bool &b );
 
@@ -183,10 +193,12 @@ class PodcastEpisodeBundle
         KURL    m_parent;
         QString m_author;
         QString m_title;
+        QString m_subtitle;
         QString m_description;
         QString m_date;
         QString m_type;
         int     m_duration;
+        uint    m_size;
         QString m_guid;
         bool    m_isNew;
 };
@@ -197,10 +209,12 @@ inline KURL    PodcastEpisodeBundle::localUrl()    const { return m_localUrl; }
 inline KURL    PodcastEpisodeBundle::parent()      const { return m_parent; }
 inline QString PodcastEpisodeBundle::author()      const { return m_author; }
 inline QString PodcastEpisodeBundle::title()       const { return m_title; }
+inline QString PodcastEpisodeBundle::subtitle()    const { return m_subtitle; }
 inline QString PodcastEpisodeBundle::description() const { return m_description; }
 inline QString PodcastEpisodeBundle::date()        const { return m_date; }
 inline QString PodcastEpisodeBundle::type()        const { return m_type; }
 inline int     PodcastEpisodeBundle::duration()    const { return m_duration; }
+inline uint    PodcastEpisodeBundle::size()        const { return m_size; }
 inline QString PodcastEpisodeBundle::guid()        const { return m_guid; }
 inline bool    PodcastEpisodeBundle::isNew()       const { return m_isNew; }
 
@@ -210,10 +224,12 @@ inline void    PodcastEpisodeBundle::setLocalURL( const KURL &u )       { m_loca
 inline void    PodcastEpisodeBundle::setParent( const KURL &u )         { m_parent = u; }
 inline void    PodcastEpisodeBundle::setAuthor( const QString &a )      { m_author = a; }
 inline void    PodcastEpisodeBundle::setTitle( const QString &t )       { m_title = t; }
+inline void    PodcastEpisodeBundle::setSubtitle( const QString &t )    { m_subtitle = t; }
 inline void    PodcastEpisodeBundle::setDescription( const QString &d ) { m_description = d; }
 inline void    PodcastEpisodeBundle::setDate( const QString &d )        { m_date = d; }
 inline void    PodcastEpisodeBundle::setType( const QString &t )        { m_type = t; }
 inline void    PodcastEpisodeBundle::setDuration( const int i )         { m_duration = i; }
+inline void    PodcastEpisodeBundle::setSize( const uint i )            { m_size = i; }
 inline void    PodcastEpisodeBundle::setGuid( const QString &g )        { m_guid = g; }
 inline void    PodcastEpisodeBundle::setNew( const bool &b )            { m_isNew = b; }
 
