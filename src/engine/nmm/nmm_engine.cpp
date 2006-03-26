@@ -28,6 +28,7 @@
 
 #include "nmm_kdeconfig.h"
 #include "nmm_configdialog.h"
+#include "HostListItem.h"
 #include "debug.h"
 #include "plugin/plugin.h"
 
@@ -75,7 +76,8 @@ NmmEngine::NmmEngine()
     __av_sync(NULL),
     __synchronizer(NULL),
     __with_video(false),
-    __seeking(false)
+    __seeking(false),
+    m_localhostonly_errordialog(false)
 {
   addPluginProperty( "HasConfigure", "true" );
 }
@@ -183,14 +185,25 @@ bool NmmEngine::load(const KURL& url, bool stream)
 {
   DEBUG_BLOCK
 
+  static int error;
+  error = STATUS_UNKNOWN;
+
   // check security options
   static bool already_checked = false;
-  if( !already_checked)
+  if( !already_checked) {
     QTimer::singleShot(100, this, SLOT( checkSecurity() ) );
-  already_checked = true;
+    already_checked = true;
+  }
+
+  // Don't play a track if 'localhost only' error dialog is being shown
+  if( m_localhostonly_errordialog )
+    return false;
 
   // play only local files
-  if (!url.isLocalFile()) return false;
+  if( !url.isLocalFile() ) {
+    debug() << "Currently NMM engine can only play local files!" << endl;
+    return false;
+  }
 
   Engine::Base::load(url, stream);
 
@@ -232,29 +245,35 @@ bool NmmEngine::load(const KURL& url, bool stream)
       // get a playback node interface from the registry
       try {
       list<Response> playback_response = registry.initRequest(playback_nd);
-      // if (playback_response.empty()) // TODO: do we need this? would mean the host has not a plabacknode available
+      if (playback_response.empty()) // playback node not available
+        throw( NMMEngineException( playback_nd.getLocation(), NmmEngine::ERROR_PLAYBACKNODE ) );
         
       __playback = registry.requestNode( playback_response.front() );
       }
       catch( RegistryException ) {
+        error = NmmEngine::ERROR_PLAYBACKNODE;
         throw( NMMEngineException( playback_nd.getLocation(), NmmEngine::ERROR_PLAYBACKNODE ) );
       }
       catch(...) {
-        throw Exception("Playback node request failed.");
+        error = NmmEngine::ERROR_PLAYBACKNODE;
+        throw;
       }
 
       // get a display node interface from the registry
       try {
       list<Response> display_response = registry.initRequest(display_nd);
-      //if (display_response.empty()) // TODO do wee need this
+      if (display_response.empty()) // Display Node not available
+        throw NMMEngineException( display_nd.getLocation(), NmmEngine::ERROR_DISPLAYNODE );
 
       __display = registry.requestNode(display_response.front());
       }
       catch( RegistryException ) {
+        error = NmmEngine::ERROR_DISPLAYNODE;
         throw NMMEngineException( display_nd.getLocation(), NmmEngine::ERROR_DISPLAYNODE );
       }
       catch(...) {
-        throw Exception("Display node request failed.");
+        error = NmmEngine::ERROR_DISPLAYNODE;
+        throw;
       }
 
       //debug() << "##############< ClientRegistry " << endl;
@@ -329,7 +348,7 @@ bool NmmEngine::load(const KURL& url, bool stream)
   }
   catch ( const NMMEngineException e) {
     QString host = e.hostname.c_str();
-    emit hostError(host, e.error);
+    emit hostError(host, error);
     emit statusText( i18n("NMM engine: Stopping playback...") );
   }
   catch (const Exception& e) {
@@ -343,6 +362,16 @@ bool NmmEngine::load(const KURL& url, bool stream)
 
   // loading failed, clean up 
   cleanup();
+
+  // if 'Localhost only' playback, show user an error message 
+  // and explanation how to test current NMM setup
+  if( NmmKDEConfig::location() == NmmKDEConfig::EnumLocation::LocalhostOnly )
+  {
+    m_localhostonly_errordialog = true;
+    QString detailed_status = HostListItem::prettyStatus( error );
+    KMessageBox::detailedError( 0, i18n("Local NMM playback failed."), detailed_status, i18n("Error"), KMessageBox::AllowLink );
+    m_localhostonly_errordialog = false;
+  }
 
   return false;
 }

@@ -64,7 +64,12 @@ class HostListItem : public KListViewItem {
      */
     void statusToolTip();
 
-    QString prettyStatus( int );
+    /**
+     * Create detailed status message.
+     * \todo make it user friendly/understandable
+     * \todo right place for this method?
+     */
+    static QString prettyStatus( int );
 
   protected:
     void paintCell( QPainter * painter, const QColorGroup & cg, int column, int width, int align );

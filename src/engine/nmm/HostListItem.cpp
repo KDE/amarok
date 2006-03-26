@@ -88,9 +88,33 @@ void HostListItem::updateColumn( int column ) const
 
 void HostListItem::statusToolTip()
 {
-  if( !m_status ) // NmmEngine::STATUS_UNKNOWN
-    QWhatsThis::display( i18n("<html><body>So far no status available for this host entry.<br>Probably this means the host has not been used yet for playback.</body></html>") );
-  // TODO: display QWhatsThis messages for errors
+  QWhatsThis::display( prettyStatus( m_status ) );
+}
+
+QString HostListItem::prettyStatus( int error )
+{
+  QString st;
+
+  debug() << "### ERROR code : " << error << endl;
+
+  st = "<html><body>";
+
+  if(!error)
+    st += i18n("So far no status available for this host entry.<br/>Probably this means the host has not been used yet for playback.");
+
+
+  if( error & NmmEngine::ERROR_PLAYBACKNODE )
+    // TODO distinguish between ALSAPlaybackNode and PlaybackNode
+    st += i18n("An error appeared during audio playback initialization. Make sure the <b>PlaybackNode</b> is present on your system. If it is present, the command <b>serverregistry -s</b> in a console will list <b>PlaybackNode</b> as <b>available</b>.<br/>");
+
+  if( error & NmmEngine::ERROR_DISPLAYNODE )
+    st += i18n("An error appeared during video playback initialization. Make sure the <b>XDisplayNode</b> is present on your system. If it is present, the command <b>serverregistry -s</b> in a console will list <b>XDisplayNode</b> as <b>available</b>.<br/>");
+
+  if( error )
+    st += i18n("In general have a look at the <a href=\"http://www.networkmultimedia.org/Download/Binary/index.html#configure\">Configuration and tests</a> instructions.");
+
+  st += "</body></html>";
+  return st;
 }
 
 void HostListItem::paintCell(QPainter * p, const QColorGroup & cg, int column, int width, int align )

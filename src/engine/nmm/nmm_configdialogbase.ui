@@ -102,7 +102,7 @@
                         <cstring>environmentButton</cstring>
                     </property>
                     <property name="text">
-                        <string>Enviroment variables</string>
+                        <string>Environment variables</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Environment variables are AUDIO_HOSTS and VIDEO_HOSTS.</string>

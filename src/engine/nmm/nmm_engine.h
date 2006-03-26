@@ -223,6 +223,13 @@ private:
      */
     bool __seeking;
 
+    /** 
+     * Used to determine whether an errorDialog is being displayed 
+     * in 'localhost only' mode. No track should be played till 
+     * the user clicked 'Ok'.
+     */
+    bool m_localhostonly_errordialog;
+
     /**
      * Environment variables host list.
      * Only read on startup, volume can be changed via settings dialog.
@@ -239,9 +246,9 @@ private:
 public:
     enum HostStatus {
       STATUS_UNKNOWN = 0,
-      STATUS_OK,
-      ERROR_PLAYBACKNODE,
-      ERROR_DISPLAYNODE,
+      STATUS_OK            = 1 << 0,
+      ERROR_PLAYBACKNODE   = 1 << 1,
+      ERROR_DISPLAYNODE    = 1 << 2,
     };
 };
 
