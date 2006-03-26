@@ -175,9 +175,6 @@ void OrganizeCollectionDialog::slotDetails()
 {
     detailed = !detailed;
 
-    if( dynamic_cast<QWidget *>(parent()) )
-        static_cast<QWidget *>(parent())->setUpdatesEnabled( false ); //Prevent flicker
-
     if( detailed )
     {
         ignoreTheCheck->show();
@@ -195,11 +192,9 @@ void OrganizeCollectionDialog::slotDetails()
         formatEdit->hide();
     }
 
-
     if( dynamic_cast<QWidget *>(parent()) ) {
         static_cast<QWidget *>(parent())->adjustSize();
         static_cast<QWidget *>(parent())->updateGeometry();
-        static_cast<QWidget *>(parent())->setUpdatesEnabled( true );
     }
 }
 
