@@ -3584,8 +3584,8 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
        amaroK::actionCollection()->action( "pause" )->plug( &popup );
 
     bool afterCurrent = false;
-    if( m_currentTrack )
-        for( MyIt it( m_currentTrack, MyIt::Visible ); *it; ++it )
+    if(  !m_nextTracks.isEmpty() ? m_nextTracks.getLast() : m_currentTrack  )
+        for( MyIt it( !m_nextTracks.isEmpty() ? m_nextTracks.getLast() : m_currentTrack, MyIt::Visible ); *it; ++it )
             if( *it == item )
             {
                 afterCurrent = true;

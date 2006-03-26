@@ -29,6 +29,9 @@ VERSION 1.4-beta3:
       Peter C. Ndikuwera <pndiku@gmail.com>. (BR 118304)
 
   BUGFIXES:
+    * Stop Playing After Track option wouldn't be shown for the right tracks,
+      when there were queued tracks. Patch by Marcelo Penna Guerra
+      <eu@marcelopenna.org>. (BR 124297)
     * Don't submit podcast episodes to last.fm. (BR 118987)
     * Accept system:/media/ urls into the playlist. (BR 120249)
     * Fix leak of file descriptors with embedded cover art. Patch by Shane
