@@ -3150,6 +3150,9 @@ Playlist::removeSelectedItems() //SLOT
 
     updateNextPrev();
     //NOTE no need to emit childCountChanged(), removeItem() does that for us
+
+    //select next item in list
+    setSelected(  currentItem(), true );
 }
 
 void
