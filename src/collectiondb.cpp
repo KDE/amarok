@@ -867,7 +867,7 @@ CollectionDB::createDragPixmap( const KURL::List &urls )
     const int fontSpacing = 5; // spacing between covers and info text
     const int fontSize = 12; // font size for info text
     const int minWidth = 300; // minimum width (such that info text fits)
-    const int coverW = AmarokConfig::coverPreviewSize(); // size for "..." cover
+    const int coverW = AmarokConfig::coverPreviewSize();
     const int coverH = coverW;
 
     int covers = 0;
@@ -883,14 +883,6 @@ CollectionDB::createDragPixmap( const KURL::List &urls )
     KURL::List::ConstIterator it = urls.begin();
     for ( ; it != urls.end(); ++it )
     {
-        if( PlaylistFile::isPlaylistFile( *it ) )
-        {
-            if( !(*it).isLocalFile() )
-                    remoteUrls++;
-            continue;
-        }
-        
-
         if ( (*it).isLocalFile() )
         {
             MetaBundle mb = MetaBundle( *it );
@@ -899,7 +891,8 @@ CollectionDB::createDragPixmap( const KURL::List &urls )
             if ( !albumMap.contains( mb.artist() + mb.album() ) )
             {
                 debug() << "fetching cover for " <<  mb.artist() << " / " << mb.album() << endl;
-                QString coverName = CollectionDB::instance()->albumImage( mb.artist(), mb.album(), 1 );
+                QString coverName = CollectionDB::instance()->albumImage( mb.artist(), mb.album(), coverW );
+                
                 if ( ( coverName.find( "nocover.png" ) == -1 ) && ( covers < maxCovers ) )
                 {
                     debug() << "adding cover " << coverName << endl;
@@ -913,6 +906,9 @@ CollectionDB::createDragPixmap( const KURL::List &urls )
         }
         else
             remoteUrls++;
+            
+        if( covers >= maxCovers )
+            break;
     }
 
     // make a better text...
