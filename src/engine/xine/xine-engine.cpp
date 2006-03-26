@@ -88,7 +88,7 @@ XineEngine::~XineEngine()
     }
 
     // NOTE The fadeout gets stuck when the EQ is active, so we skip it then
-    if( !m_equalizerEnabled && m_stream && xine_get_status( m_stream ) == XINE_STATUS_PLAY )
+    if( !m_equalizerEnabled && m_stream && state() == Engine::Playing )
     {
         const int volume = xine_get_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL );
         const double D = 300000 * std::pow( (double)volume, -0.4951 );
