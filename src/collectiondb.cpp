@@ -592,7 +592,8 @@ CollectionDB::createPodcastTables()
                     "url " + textColumnType() + " UNIQUE,"
                     "title " + textColumnType() + ","
                     "weblink " + textColumnType() + ","
-                    "comment " + textColumnType() + ","
+                    "image " + textColumnType() + ","
+                    "comment " + longTextColumnType() + ","
                     "copyright "  + textColumnType() + ","
                     "parent INTEGER,"
                     "directory "  + textColumnType() + ","
@@ -607,11 +608,14 @@ CollectionDB::createPodcastTables()
                     "parent " + textColumnType() + ","
                     "guid " + textColumnType() + ","
                     "title " + textColumnType() + ","
+                    "subtitle " + textColumnType() + ","
                     "composer " + textColumnType() + ","
-                    "comment " + textColumnType() + ","
+                    "comment " + longTextColumnType() + ","
                     "filetype "  + textColumnType() + ","
                     "createdate "  + textColumnType() + ","
-                    "length INTEGER, isNew BOOL );" )
+                    "length INTEGER,"
+                    "size INTEGER,"
+                    "isNew BOOL );" )
                     .arg( podcastAutoIncrement ) );
 
     // create podcast folders table
@@ -1472,18 +1476,19 @@ CollectionDB::addPodcastChannel( const PodcastChannelBundle &pcb, const bool &re
     QString command;
     if( replace ) {
         command = "REPLACE INTO podcastchannels "
-                  "( url, title, weblink, comment, copyright, parent, directory"
+                  "( url, title, weblink, image, comment, copyright, parent, directory"
                   ", autoscan, fetchtype, autotransfer, haspurge, purgecount ) "
                   "VALUES (";
     } else {
         command = "INSERT INTO podcastchannels "
-                  "( url, title, weblink, comment, copyright, parent, directory"
+                  "( url, title, weblink, image, comment, copyright, parent, directory"
                   ", autoscan, fetchtype, autotransfer, haspurge, purgecount ) "
                   "VALUES (";
     }
 
     QString title       = pcb.title();
     KURL    link        = pcb.link();
+    KURL    image       = pcb.imageURL();
     QString description = pcb.description();
     QString copyright   = pcb.copyright();
 
@@ -1493,6 +1498,7 @@ CollectionDB::addPodcastChannel( const PodcastChannelBundle &pcb, const bool &re
     command += "'" + escapeString( pcb.url().url() )  + "',";
     command += ( title.isEmpty() ?       "NULL" : "'" + escapeString( title ) + "'" ) + ",";
     command += ( link.isEmpty() ?        "NULL" : "'" + escapeString( link.url() ) + "'" ) + ",";
+    command += ( image.isEmpty() ?       "NULL" : "'" + escapeString( image.url() ) + "'" ) + ",";
     command += ( description.isEmpty() ? "NULL" : "'" + escapeString( description ) + "'" ) + ",";
     command += ( copyright.isEmpty() ?   "NULL" : "'" + escapeString( copyright ) + "'" ) + ",";
     command += QString::number( pcb.parentId() ) + ",'";
@@ -1516,22 +1522,24 @@ CollectionDB::addPodcastEpisode( const PodcastEpisodeBundle &episode, const int 
 
     if( idToUpdate ) {
         command = "REPLACE INTO podcastepisodes "
-                  "( id, url, localurl, parent, title, composer, comment, filetype, createdate, guid, length, isNew ) "
+                  "( id, url, localurl, parent, title, subtitle, composer, comment, filetype, createdate, guid, length, size, isNew ) "
                   "VALUES (";
     } else {
         command = "INSERT INTO podcastepisodes "
-                  "( url, localurl, parent, title, composer, comment, filetype, createdate, guid, length, isNew ) "
+                  "( url, localurl, parent, title, subtitle, composer, comment, filetype, createdate, guid, length, size, isNew ) "
                   "VALUES (";
     }
 
     QString localurl    = episode.localUrl().url();
     QString title       = episode.title();
+    QString subtitle    = episode.subtitle();
     QString author      = episode.author();
     QString description = episode.description();
     QString type        = episode.type();
     QString date        = episode.date();
     QString guid        = episode.guid();
     int     duration    = episode.duration();
+    uint    size        = episode.size();
 
     if( title.isEmpty() )
         title = episode.url().prettyURL();
@@ -1543,12 +1551,14 @@ CollectionDB::addPodcastEpisode( const PodcastEpisodeBundle &episode, const int 
     command += ( localurl.isEmpty()       ? "NULL" : "'" + escapeString( localurl )       + "'" ) + ",";
     command += "'" + escapeString( episode.parent().url()) + "',";
     command += ( title.isEmpty()       ? "NULL" : "'" + escapeString( title )       + "'" ) + ",";
+    command += ( subtitle.isEmpty()    ? "NULL" : "'" + escapeString( subtitle )    + "'" ) + ",";
     command += ( author.isEmpty()      ? "NULL" : "'" + escapeString( author )      + "'" ) + ",";
     command += ( description.isEmpty() ? "NULL" : "'" + escapeString( description ) + "'" ) + ",";
     command += ( type.isEmpty()        ? "NULL" : "'" + escapeString( type )        + "'" ) + ",";
     command += ( date.isEmpty()        ? "NULL" : "'" + escapeString( date )        + "'" ) + ",";
     command += ( guid.isEmpty()        ? "NULL" : "'" + escapeString( guid )        + "'" ) + ",";
     command += QString::number( duration ) + ",";
+    command += QString::number( size ) + ",";
     command += episode.isNew() ? boolT() + " );" : boolF() + " );";
 
     insert( command, NULL );
@@ -1566,7 +1576,8 @@ CollectionDB::addPodcastEpisode( const PodcastEpisodeBundle &episode, const int 
 QValueList<PodcastChannelBundle>
 CollectionDB::getPodcastChannels()
 {
-    QString command = "SELECT * FROM podcastchannels;";
+    QString command = "SELECT url, title, weblink, image, comment, copyright, parent, directory "
+        ", autoscan, fetchtype, autotransfer, haspurge, purgecount FROM podcastchannels;";
 
     QStringList values = query( command );
     QValueList<PodcastChannelBundle> bundles;
@@ -1577,6 +1588,7 @@ CollectionDB::getPodcastChannels()
         pcb.setURL         ( KURL::fromPathOrURL(*it) );
         pcb.setTitle       ( *++it );
         pcb.setLink        ( KURL::fromPathOrURL(*++it) );
+        pcb.setImageURL    ( KURL::fromPathOrURL(*++it) );
         pcb.setDescription ( *++it );
         pcb.setCopyright   ( *++it );
         pcb.setParentId    ( (*++it).toInt() );
@@ -1596,7 +1608,7 @@ CollectionDB::getPodcastChannels()
 QValueList<PodcastEpisodeBundle>
 CollectionDB::getPodcastEpisodes( const KURL &parent )
 {
-    QString command = QString( "SELECT id, url, localurl, parent, guid, title, composer, comment, filetype, createdate, length, isNew FROM podcastepisodes WHERE parent='%1' ORDER BY id;").arg( parent.url() );
+    QString command = QString( "SELECT id, url, localurl, parent, guid, title, subtitle, composer, comment, filetype, createdate, length, size, isNew FROM podcastepisodes WHERE parent='%1' ORDER BY id;").arg( parent.url() );
 
     QStringList values = query( command );
     QValueList<PodcastEpisodeBundle> bundles;
@@ -1611,11 +1623,17 @@ CollectionDB::getPodcastEpisodes( const KURL &parent )
         peb.setParent      ( KURL::fromPathOrURL(*++it) );
         peb.setGuid        ( *++it );
         peb.setTitle       ( *++it );
+        if( *++it != NULL )
+            peb.setSubtitle( *it );
         peb.setAuthor      ( *++it );
         peb.setDescription ( *++it );
         peb.setType        ( *++it );
         peb.setDate        ( *++it );
         peb.setDuration    ( (*++it).toInt() );
+        if( *++it == NULL )
+            peb.setSize        ( 0 );
+        else
+            peb.setSize        ( (*it).toInt() );
         peb.setNew         ( (*++it) == boolT() ? true : false  );
 
         bundles.append( peb );
@@ -1627,7 +1645,7 @@ CollectionDB::getPodcastEpisodes( const KURL &parent )
 PodcastEpisodeBundle
 CollectionDB::getPodcastEpisodeById( int id )
 {
-    QString command = QString( "SELECT url, localurl, parent, guid, title, composer, comment, filetype, createdate, length, isNew FROM podcastepisodes WHERE id=%1;").arg( id );
+    QString command = QString( "SELECT url, localurl, parent, guid, title, subtitle, composer, comment, filetype, createdate, length, size, isNew FROM podcastepisodes WHERE id=%1;").arg( id );
 
     QStringList values = query( command );
     PodcastEpisodeBundle peb;
@@ -1636,15 +1654,20 @@ CollectionDB::getPodcastEpisodeById( int id )
         peb.setDBId        ( id );
         peb.setURL         ( KURL::fromPathOrURL(*it) );
         if( *++it != "NULL" )
-            peb.setLocalURL    ( KURL::fromPathOrURL(*it) );
+            peb.setLocalURL( KURL::fromPathOrURL(*it) );
         peb.setParent      ( KURL::fromPathOrURL(*++it) );
         peb.setGuid        ( *++it );
         peb.setTitle       ( *++it );
+        peb.setSubtitle    ( *++it );
         peb.setAuthor      ( *++it );
         peb.setDescription ( *++it );
         peb.setType        ( *++it );
         peb.setDate        ( *++it );
         peb.setDuration    ( (*++it).toInt() );
+        if( *++it == NULL )
+            peb.setSize    ( 0 );
+        else
+            peb.setSize    ( (*it).toInt() );
         peb.setNew         ( (*++it) == boolT() ? true : false  );
     }
 
@@ -1684,14 +1707,18 @@ CollectionDB::getPodcastEpisodeBundle( const KURL &url, PodcastEpisodeBundle *pe
 bool
 CollectionDB::getPodcastChannelBundle( const KURL &url, PodcastChannelBundle *pcb )
 {
-    QStringList values = query( QString( "SELECT * FROM podcastchannels WHERE url = '%1';" )
-            .arg( escapeString( url.url() ) ) );
+    QStringList values = query( QString(
+                "SELECT url, title, weblink, image, comment, copyright, parent, directory "
+                ", autoscan, fetchtype, autotransfer, haspurge, purgecount FROM podcastchannels WHERE url = '%1';"
+                ).arg( escapeString( url.url() ) ) );
 
     foreach( values )
     {
         pcb->setURL         ( KURL::fromPathOrURL(*it) );
         pcb->setTitle       ( *++it );
         pcb->setLink        ( KURL::fromPathOrURL(*++it) );
+        if( *++it != "NULL" )
+            pcb->setImageURL( KURL::fromPathOrURL(*it) );
         pcb->setDescription ( *++it );
         pcb->setCopyright   ( *++it );
         pcb->setParentId    ( (*++it).toInt() );
@@ -1749,13 +1776,14 @@ CollectionDB::updatePodcastEpisode( const int id, const PodcastEpisodeBundle &b 
 {
     if( getDbConnectionType() == DbConnection::postgresql )
     {
-        query( QString( "UPDATE podcastepisode SET url='%1', localurl='%2', parent='%3', title='%4', composer='%5', comment='%6', "
-                        "filetype='%7', createdate='%8', guid='%9', length=%10, isNew=%11 WHERE id=%12;" )
+        query( QString( "UPDATE podcastepisode SET url='%1', localurl='%2', parent='%3', title='%4', subtitle='%5', composer='%6', comment='%7', "
+                        "filetype='%8', createdate='%9', guid='%10', length=%11, size=%12, isNew=%13 WHERE id=%14;" )
                         .arg( escapeString( b.url().url() ) )    .arg( b.localUrl().isValid() ? escapeString( b.url().url() ) : "NULL" )
                         .arg( escapeString( b.parent().url() ) ) .arg( escapeString( b.title() ) )
-                        .arg( escapeString( b.author() ) )       .arg( escapeString( b.description() ) )
-                        .arg( escapeString( b.type() ) )         .arg( escapeString( b.date() ) )
-                        .arg( escapeString( b.guid() ) )         .arg( QString::number( b.duration() ) )
+                        .arg( escapeString( b.subtitle() ) )     .arg( escapeString( b.author() ) )
+                        .arg( escapeString( b.description() ) )  .arg( escapeString( b.type() ) )
+                        .arg( escapeString( b.date() ) )         .arg( escapeString( b.guid() ) )
+                        .arg( QString::number( b.duration() ) )  .arg( escapeString( QString::number( b.size() ) ) )
                         .arg( b.isNew() ? boolT() : boolF() )    .arg( QString::number( id ) ) );
     }
     else {
@@ -1970,8 +1998,11 @@ CollectionDB::bundleForUrl( MetaBundle* bundle )
                 .arg( escapeString( bundle->url().url() ) ) );
         if( !values.isEmpty() )
         {
-            MetaBundle mb( bundle->url(), true /* avoid infinite recursion */ );
-            *bundle = mb;
+            if( bundle->url().protocol() == "file" && QFile::exists( bundle->url().path() ) )
+            {
+                MetaBundle mb( bundle->url(), true /* avoid infinite recursion */ );
+                *bundle = mb;
+            }
             id = values[0].toInt();
         }
         else
@@ -3234,8 +3265,22 @@ CollectionDB::initialize()
         else if ( PersistentVersion.toInt() < 5 )
         {
             debug() << "Updating podcast tables" << endl;
+            query( "ALTER TABLE podcastchannels ADD image " + textColumnType() + ";" );
             query( "ALTER TABLE podcastepisodes ADD localurl " + textColumnType() + ";" );
+            query( "ALTER TABLE podcastepisodes ADD subtitle " + textColumnType() + ";" );
+            query( "ALTER TABLE podcastepisodes ADD size INTEGER;" );
+            query( "ALTER TABLE podcastepisodes DROP comment;" );
+            query( "ALTER TABLE podcastepisodes ADD comment " + longTextColumnType() + ";" );
             query( "CREATE INDEX localurl_podepisode ON podcastepisodes( localurl );" );
+        }
+        else if ( PersistentVersion.toInt() < 6 )
+        {
+            debug() << "Updating podcast tables" << endl;
+            query( "ALTER TABLE podcastchannels ADD image " + textColumnType() + ";" );
+            query( "ALTER TABLE podcastepisodes ADD subtitle " + textColumnType() + ";" );
+            query( "ALTER TABLE podcastepisodes ADD size INTEGER;" );
+            query( "ALTER TABLE podcastepisodes DROP comment;" );
+            query( "ALTER TABLE podcastepisodes ADD comment " + longTextColumnType() + ";" );
         }
         else {
             if ( adminValue( "Database Persistent Tables Version" ).toInt() != DATABASE_PERSISTENT_TABLES_VERSION ) {
