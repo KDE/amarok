@@ -1387,9 +1387,11 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
 
     QString d = xml.namedItem( "description" ).toElement().text();
     QString c = xml.namedItem( "copyright" ).toElement().text();
+    QString img = xml.namedItem( "image" ).toElement().text();
 
     PodcastSettings *parentSettings = PlaylistBrowser::instance()->getPodcastSettings( m_parent );
     PodcastChannelBundle pcb( m_url, t, l, d, c, parentSettings );
+    pcb.setImageURL( KURL::fromPathOrURL( img ) );
 
     if( !m_updating )
     { // don't reinsert on a refresh
@@ -1664,9 +1666,11 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
 {
     const bool isAtom = ( feedType == ATOM );
     QString title = xml.namedItem( "title" ).toElement().text();
+    QString subtitle;
 
     QString description, author, date, guid, type;
     int duration = 0;
+    uint size = 0;
     KURL link;
 
     if( isAtom )
@@ -1694,9 +1698,24 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
         if( description.isEmpty() )
             description = xml.namedItem( "itunes:summary" ).toElement().text();
 
+        if( subtitle.isEmpty() )
+            subtitle = xml.namedItem( "itunes:subtitle" ).toElement().text();
+
         author   = xml.namedItem( "author" ).toElement().text();
+        if( author.isEmpty() )
+            author = xml.namedItem( "itunes:author" ).toElement().text();
+
         date     = xml.namedItem( "pubDate" ).toElement().text();
-        duration = xml.namedItem( "enclosure" ).toElement().attribute( "length" ).toInt();
+
+        QString ds = xml.namedItem( "itunes:duration" ).toElement().text();
+        QString secs = ds.section( ":", -1 );
+        duration = secs.toInt();
+        QString min = ds.section( ":", -2, -1 );
+        duration += min.toInt() * 60;
+        QString h = ds.section( ":", -3, -2 );
+        duration += h.toInt() * 3600;
+
+        size     = xml.namedItem( "enclosure" ).toElement().attribute( "length" ).toInt();
         type     = xml.namedItem( "enclosure" ).toElement().attribute( "type" );
         guid     = xml.namedItem( "guid" ).toElement().text();
 
@@ -1727,11 +1746,13 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
         m_bundle.setLocalURL( m_localUrl );
     m_bundle.setParent( parentUrl );
     m_bundle.setTitle( title );
+    m_bundle.setSubtitle( subtitle );
     m_bundle.setAuthor( author );
     m_bundle.setDescription( description );
     m_bundle.setDate( date );
     m_bundle.setType( type );
     m_bundle.setDuration( duration );
+    m_bundle.setSize( size );
     m_bundle.setGuid( guid );
     m_bundle.setNew( isNew );
 
