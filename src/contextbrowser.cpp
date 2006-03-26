@@ -1203,7 +1203,9 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
     {
         PodcastEpisodeBundle &ep = episodes.back();
         QString date;
-        time_t t = KRFCDate::parseDate( ep.date() );
+        time_t t = 0;
+        if( !ep.date().isEmpty() )
+            t = KRFCDate::parseDate( ep.date() );
         if( t )
         {
             QDateTime d;
