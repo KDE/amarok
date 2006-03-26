@@ -209,13 +209,31 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
     }
 
     {
-        QStringList actions;
-        actions << "up" << "back" << "forward" << "home" << "reload" << "short view"
-                << "detailed view" << "sorting menu" << "bookmarks";
+        if ( KAction *a = actionCollection->action( "up" ) )
+            a->plug( toolbar );
+        if ( KAction *a = actionCollection->action( "back" ) )
+            a->plug( toolbar );
+        if ( KAction *a = actionCollection->action( "forward" ) )
+            a->plug( toolbar );
+        if ( KAction *a = actionCollection->action( "home" ) )
+            a->plug( toolbar );
+        if ( KAction *a = actionCollection->action( "reload" ) )
+            a->plug( toolbar );
 
-        foreach( actions )
-            if ( KAction *a = actionCollection->action( (*it).latin1() ) )
-                a->plug( toolbar );
+        toolbar->insertLineSeparator();
+
+        if ( KAction *a = actionCollection->action( "short view" ) )
+            a->plug( toolbar );
+        if ( KAction *a = actionCollection->action( "detailed view" ) )
+            a->plug( toolbar );
+
+        toolbar->insertLineSeparator();
+
+        if ( KAction *a = actionCollection->action( "sorting menu" ) )
+            a->plug( toolbar );
+        if ( KAction *a = actionCollection->action( "bookmarks" ) )
+            a->plug( toolbar );
+
 
         KAction *gotoCurrent = new KAction( i18n("Goto Current Track Folder"), "today", 0,
                                             this, SLOT( gotoCurrentFolder() ), actionCollection );
