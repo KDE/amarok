@@ -237,6 +237,10 @@ void Scrobbler::engineNewMetaData( const MetaBundle& bundle, bool trackChanged )
         debug() << "Won't submit: It's a stream." << endl;
         m_validForSending = false;
     }
+    else if( bundle.podcastBundle() != NULL ) {
+        debug() << "Won't submit: It's a podcast." << endl;
+        m_validForSending = false;
+    }
     else
     {
         delete m_item;
