@@ -102,10 +102,14 @@ UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, bool playFir
                 m_URLs += url;
         }
 
-       else if( protocol == "media" ) {
+        else if( protocol == "media" || url.url().startsWith( "system:/media/" ) )
+        {
+            QString path = url.path( -1 );
+            if( url.url().startsWith( "system:/media/" ) )
+                path = path.mid( 6 );
             // url looks like media:/device/path
             DCOPRef mediamanager( "kded", "mediamanager" );
-            QString device = url.path( -1 ).mid( 1 ); // remove first slash
+            QString device = path.mid( 1 ); // remove first slash
             const int slash = device.find( '/' );
             const QString filePath = device.mid( slash ); // extract relative path
             device = device.left( slash ); // extract device
