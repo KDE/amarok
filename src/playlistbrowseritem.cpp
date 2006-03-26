@@ -1386,17 +1386,27 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
         l = xml.namedItem( "link" ).toElement().text();
 
     QString d = xml.namedItem( "description" ).toElement().text();
+    if( d.isEmpty() )
+        d = xml.namedItem( "itunes:summary" ).toElement().text();
     QString c = xml.namedItem( "copyright" ).toElement().text();
-    QString img = xml.namedItem( "image" ).toElement().text();
+    QString img = xml.namedItem( "image" ).toElement().namedItem( "url" ).toElement().text();
+    if( img.isEmpty() )
+        img = xml.namedItem( "itunes:image" ).toElement().text();
 
     PodcastSettings *parentSettings = PlaylistBrowser::instance()->getPodcastSettings( m_parent );
     PodcastChannelBundle pcb( m_url, t, l, d, c, parentSettings );
     pcb.setImageURL( KURL::fromPathOrURL( img ) );
 
+    pcb.setParentId( m_parent->id() );
     if( !m_updating )
     { // don't reinsert on a refresh
         debug() << "Adding podcast to database" << endl;
         CollectionDB::instance()->addPodcastChannel( pcb );
+    }
+    else
+    {
+        debug() << "Updating podcast in database" << endl;
+        CollectionDB::instance()->updatePodcastChannel( pcb );
     }
 
     /// Podcast Episodes information
@@ -1708,11 +1718,11 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
         date     = xml.namedItem( "pubDate" ).toElement().text();
 
         QString ds = xml.namedItem( "itunes:duration" ).toElement().text();
-        QString secs = ds.section( ":", -1 );
+        QString secs = ds.section( ":", -1, -1 );
         duration = secs.toInt();
-        QString min = ds.section( ":", -2, -1 );
+        QString min = ds.section( ":", -2, -2 );
         duration += min.toInt() * 60;
-        QString h = ds.section( ":", -3, -2 );
+        QString h = ds.section( ":", -3, -3 );
         duration += h.toInt() * 3600;
 
         size     = xml.namedItem( "enclosure" ).toElement().attribute( "length" ).toInt();
