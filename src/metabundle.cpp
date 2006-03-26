@@ -155,7 +155,11 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
             readTags( readStyle );
     }
     else
+    {
+        // if it's a podcast we might get some info this way
+        CollectionDB::instance()->bundleForUrl( this );
         m_bitrate = m_length = m_sampleRate = Unavailable;
+    }
 }
 
 //StreamProvider ctor
