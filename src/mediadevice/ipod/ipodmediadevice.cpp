@@ -471,7 +471,8 @@ IpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle)
         podcastInfo->description = peb->description();
         podcastInfo->author = peb->author();
         podcastInfo->rss = peb->parent().url();
-        podcastInfo->date.setTime_t( KRFCDate::parseDate( peb->date() ) );
+        if( !peb->date().isEmpty()  )
+            podcastInfo->date.setTime_t( KRFCDate::parseDate( peb->date() ) );
     }
 
     MediaItem *ret = insertTrackIntoDB( url.path(), bundle, podcastInfo );
@@ -1758,8 +1759,10 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
         if( (item->type() == MediaItem::PODCASTITEM
                  || item->type() == MediaItem::PODCASTCHANNEL) )
         {
+            IpodMediaItem *it = static_cast<IpodMediaItem *>(item);
             menu.insertItem( SmallIconSet( "favorites" ), i18n( "Subscribe to This Podcast" ), SUBSCRIBE );
-            menu.setItemEnabled( SUBSCRIBE, item->bundle()->podcastBundle() && item->bundle()->podcastBundle()->parent().isValid() );
+            //menu.setItemEnabled( SUBSCRIBE, item->bundle()->podcastBundle() && item->bundle()->podcastBundle()->parent().isValid() );
+            menu.setItemEnabled( SUBSCRIBE, it->m_podcastInfo && !it->m_podcastInfo->rss.isEmpty() );
             menu.insertSeparator();
         }
 
@@ -1866,7 +1869,7 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                 K3bExporter::instance()->exportTracks( urls, K3bExporter::AudioCD );
                 break;
             case SUBSCRIBE:
-                PlaylistBrowser::instance()->addPodcast( item->bundle()->podcastBundle()->parent().url() );
+                PlaylistBrowser::instance()->addPodcast( static_cast<IpodMediaItem *>(item)->m_podcastInfo->rss );
                 break;
             default:
                 break;
