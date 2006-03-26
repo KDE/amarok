@@ -675,27 +675,19 @@ MediaItem::setBundle( MetaBundle *bundle )
 {
     if( m_bundle )
     {
-        if( bundle )
-        {
-            MediaBrowser::ItemMap::iterator it = MediaBrowser::instance()->m_itemMap.find( bundle->url().path() );
-            if( it != MediaBrowser::instance()->m_itemMap.end() )
-            {
-                if( *it != this )
-                {
-                    // don't overwrite if it's not our own bundle
-                    // (as we would probably erase an item on a device that was queued for transferring to another device)
-                    return;
-                }
-                MediaBrowser::instance()->m_itemMap.remove(url().path());
-                delete m_bundle;
-            }
-        }
-        else
-            delete m_bundle;
+        MediaBrowser::ItemMap::iterator it = MediaBrowser::instance()->m_itemMap.find( url().path() );
+        if( it != MediaBrowser::instance()->m_itemMap.end() && *it == this )
+            MediaBrowser::instance()->m_itemMap.remove(url().path());
     }
+    delete m_bundle;
     m_bundle = bundle;
+
     if( m_bundle )
-        MediaBrowser::instance()->m_itemMap[url().path()] = this;
+    {
+        MediaBrowser::ItemMap::iterator it = MediaBrowser::instance()->m_itemMap.find( url().path() );
+        if( it == MediaBrowser::instance()->m_itemMap.end() )
+            MediaBrowser::instance()->m_itemMap[url().path()] = this;
+    }
 }
 
 void MediaItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
