@@ -68,14 +68,13 @@ public slots:
     void dropped( const KFileItem*, QDropEvent*, const KURL::List& );
 
 private slots:
-    void urlChanged( const KURL& );
     void activate( const KFileItem* );
     void contextMenuActivated( int );
+    void gotoCurrentFolder();
     void prepareContextMenu();
-    void slotViewChanged( KFileView* );
     void selectAll();
-
-
+    void slotViewChanged( KFileView* );
+    void urlChanged( const KURL& );
 
 private:
     KURL::List selectedItems();

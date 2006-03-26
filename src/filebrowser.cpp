@@ -217,6 +217,10 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
             if ( KAction *a = actionCollection->action( (*it).latin1() ) )
                 a->plug( toolbar );
 
+        KAction *gotoCurrent = new KAction( i18n("Goto Current Track Folder"), "today", 0,
+                                            this, SLOT( gotoCurrentFolder() ), actionCollection );
+        gotoCurrent->plug( toolbar );
+
         if (disconnect( actionCollection->action( "up" ), SIGNAL( activated() ), m_dir, SLOT( cdUp() ) ))
             debug() << "First disconnect succeeded" << endl;
         else
@@ -464,6 +468,16 @@ FileBrowser::contextMenuActivated( int id )
         K3bExporter::instance()->exportTracks( selectedItems() );
         break;
     }
+}
+
+inline void
+FileBrowser::gotoCurrentFolder()
+{
+    const KURL &url = EngineController::instance()->bundle().url();
+    KURL dirURL = KURL::fromPathOrURL( url.directory() );
+
+    m_combo->setURL( dirURL );
+    setUrl( dirURL );
 }
 
 //END Private Slots
