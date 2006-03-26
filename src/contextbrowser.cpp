@@ -22,6 +22,7 @@
 #include "mediabrowser.h"
 #include "metabundle.h"
 #include "playlist.h"      //appendMedia()
+#include "podcastbundle.h"
 #include "qstringx.h"
 #include "scriptmanager.h"
 #include "statusbar.h"
@@ -51,6 +52,7 @@
 #include <kmdcodec.h> // for data: URLs
 #include <kmessagebox.h>
 #include <kpopupmenu.h>
+#include <krfcdate.h>
 #include <kstandarddirs.h>
 #include <ktoolbarbutton.h>
 #include <kurl.h>
@@ -379,7 +381,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
     }
 
     else if ( url.protocol() == "externalurl" )
-        amaroK::invokeBrowser( url.url().replace("externalurl:", "http:") );
+        amaroK::invokeBrowser( url.url().replace( QRegExp( "^externalurl:" ), "http:") );
 
     else if ( url.protocol() == "togglebox" )
     {
@@ -417,6 +419,11 @@ void ContextBrowser::openURLRequest( const KURL &url )
         const QString url2 = QString( "http://www.google.com/musicsearch?q=%1&res=artist" )
             .arg( KURL::encode_string_no_slash( unEscapeHTMLAttr( url.path() ).replace( " ", "+" ), 106 /*utf-8*/ ) );
         amaroK::invokeBrowser( url2 );
+    }
+
+    else if( url.protocol() == "stream" )
+    {
+        Playlist::instance()->insertMedia( KURL::fromPathOrURL( url.url().replace( QRegExp( "^stream:" ), "http:" ) ), Playlist::Unique|Playlist::DirectPlay );
     }
 
     else
@@ -681,6 +688,13 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
     {
         amaroK::coverContextMenu( this, point, artist, album );
         return;
+    }
+    else if( url.protocol() == "stream" )
+    {
+        menu.insertTitle( i18n("Podcast"), TITLE );
+        menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), MAKE );
+        menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
+        menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue Podcast" ), ASNEXT );
     }
     else if( url.protocol() == "file" || url.protocol() == "album" || url.protocol() == "compilation" )
     {
@@ -951,6 +965,7 @@ public:
 private:
     virtual bool doJob();
     void showStream( const MetaBundle &currentTrack );
+    void showPodcast( const MetaBundle &currentTrack );
     void showBrowseArtistHeader( const QString &artist );
     void showCurrentArtistHeader( const MetaBundle &currentTrack );
     void showRelatedArtists( const QString &artist, const QStringList &relArtists );
@@ -1101,6 +1116,143 @@ void CurrentTrackJob::showStream( const MetaBundle &currentTrack )
         m_HTMLSource.append(
                 "</table>"
                 "</div>" );
+    }
+
+    m_HTMLSource.append("</body></html>" );
+}
+
+void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
+{
+    if( !currentTrack.podcastBundle() )
+        return;
+
+    PodcastEpisodeBundle peb = *currentTrack.podcastBundle();
+    PodcastChannelBundle pcb;
+    if( !CollectionDB::instance()->getPodcastChannelBundle( peb.parent(), &pcb ) )
+    {
+        debug() << "this podcast is not in your collection" << endl;
+        return;
+    }
+
+    QString image = CollectionDB::instance()->notAvailCover( 0 );
+    image = ContextBrowser::makeShadowedImage( image );
+    QString imageAttr = escapeHTMLAttr( i18n( "Click to go to podcast website: %1." ).arg( pcb.link().prettyURL() ) );
+
+    m_HTMLSource.append( QStringx(
+                "<div id='current_box' class='box'>"
+                "<div id='current_box-header' class='box-header'>"
+                "<span id='current_box-header-artist' class='box-header-title'>%1</span> "
+                "<br />"
+                "<span id='current_box-header-album' class='box-header-title'>%2</span>"
+                "</div>"
+
+                "<table id='current_box-table' class='box-body' width='100%' cellpadding='0' cellspacing='0'>"
+                "<tr>"
+                "<td id='current_box-largecover-td'>"
+                "<a id='current_box-largecover-a' href='%3'>"
+                "<img id='current_box-largecover-image' src='%4' title='%5'>"
+                "</a>"
+                "</td>"
+                "<td id='current_box-information-td' align='right'>"
+                "%6 <br />"
+                "</td>"
+                "</table>"
+                "</div>" )
+            .args( QStringList()
+                << escapeHTML( pcb.title() )
+                << escapeHTML( peb.title() )
+                << escapeHTMLAttr( pcb.link().url().replace( QRegExp( "^http:" ), "externalurl:" ) )
+                << image
+                << imageAttr
+                << i18n( "Podcast" )
+                << escapeHTML( peb.author() )
+                )
+            );
+
+    if ( EngineController::engine()->isStream() && b->m_metadataHistory.count() > 1 )
+    {
+        m_HTMLSource.append(
+                "<div id='stream-history_box' class='box'>"
+                "<div id='stream-history_box-header' class='box-header'>" + i18n( "Metadata History" ) + "</div>"
+                "<table id='stream-history_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
+
+        for ( uint i = 0; i < b->m_metadataHistory.count(); ++i )
+        {
+            const QString str = b->m_metadataHistory[i];
+            m_HTMLSource.append( QStringx( "<tr class='box-row'><td>%1</td></tr>" ).arg( str ) );
+        }
+
+        m_HTMLSource.append(
+                "</table>"
+                "</div>" );
+    }
+
+    // write the script to toggle blocks visibility
+    m_HTMLSource.append(
+            "<div id='albums_box' class='box'>"
+            "<div id='albums_box-header' class='box-header'>"
+            "<span id='albums_box-header-title' class='box-header-title'>"
+            + i18n( "Episodes from %1" ).arg( escapeHTML( pcb.title() ) ) +
+            "</span>"
+            "</div>"
+            "<table id='albums_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='0'>" );
+
+    uint i = 0;
+    QValueList<PodcastEpisodeBundle> episodes = CollectionDB::instance()->getPodcastEpisodes( peb.parent() );
+    while( !episodes.isEmpty() )
+    {
+        PodcastEpisodeBundle &ep = episodes.back();
+        QString date;
+        time_t t = KRFCDate::parseDate( ep.date() );
+        if( t )
+        {
+            QDateTime d;
+            d.setTime_t( t );
+            date = d.toString( Qt::LocalDate );
+        }
+        else
+        {
+            date = ep.date();
+        }
+
+        m_HTMLSource.append( QStringx (
+                    "<tr class='" + QString( (i % 2) ? "box-row-alt" : "box-row" ) + "'>"
+                    "<td>"
+                    "<div class='album-header' onClick=\"toggleBlock('IDE%1')\">"
+                    "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
+                    "<tr>"
+                    "<td width='1'></td>"
+                    "<td valign='middle' align='left'>"
+                    "<span class='album-info'>%2</span> "
+                    "<a href='%3'><span class='album-title'>%4</span></a>"
+                    "<br />"
+                    "<span class='album-year'>%5</span>"
+                    "</td>"
+                    "</tr>"
+                    "</table>"
+                    "</div>"
+                    "<div class='album-body' style='display:%6;' id='IDE%7'>" )
+                .args( QStringList()
+                    << QString::number( i )
+                    << escapeHTML( ep.duration() ? MetaBundle::prettyTime( ep.duration() ) : QString( "" ) )
+                    << escapeHTMLAttr( ep.localUrl().isValid()
+                        ? ep.localUrl().url()
+                        : ep.url().url().replace( QRegExp( "^http:" ), "stream:" ) )
+                    << escapeHTML( ep.title() )
+                    << escapeHTML( date )
+                    << (peb.url() == ep.url() ? "block" : "none" )
+                    << QString::number( i )
+                    )
+                );
+
+        m_HTMLSource.append( QStringx ( "<p>%1</p>" ).arg( ep.description() ) );
+
+        m_HTMLSource.append(
+                "</div>"
+                "</td>"
+                "</tr>" );
+        i++;
+        episodes.pop_back();
     }
 
     m_HTMLSource.append("</body></html>" );
@@ -1849,21 +2001,6 @@ bool CurrentTrackJob::doJob()
 
     const MetaBundle &currentTrack = EngineController::instance()->bundle();
 
-    QString artist;
-    if( b->m_browseArtists )
-    {
-        artist = b->m_artist;
-        if( artist == currentTrack.artist() )
-        {
-            b->m_browseArtists = false;
-            b->m_artist = QString::null;
-            b->m_contextBackHistory.clear();
-            b->m_contextBackHistory.push_back( "current://track" );
-        }
-    }
-    else
-        artist = currentTrack.artist();
-
     m_HTMLSource.append( "<html><body>"
                     "<script type='text/javascript'>"
                       //Toggle visibility of a block. NOTE: if the block ID starts with the T
@@ -1880,12 +2017,36 @@ bool CurrentTrackJob::doJob()
                         "}"
                       "}"
                     "</script>" );
-
-    if ( !b->m_browseArtists && EngineController::engine()->isStream() )
+    if( !b->m_browseArtists )
     {
-        showStream( currentTrack );
-        return true;
+        MetaBundle mb( currentTrack.url() );
+        if( mb.podcastBundle() )
+        {
+            showPodcast( mb );
+            return true;
+        }
+
+        if( EngineController::engine()->isStream() )
+        {
+            showStream( currentTrack );
+            return true;
+        }
     }
+
+    QString artist;
+    if( b->m_browseArtists )
+    {
+        artist = b->m_artist;
+        if( artist == currentTrack.artist() )
+        {
+            b->m_browseArtists = false;
+            b->m_artist = QString::null;
+            b->m_contextBackHistory.clear();
+            b->m_contextBackHistory.push_back( "current://track" );
+        }
+    }
+    else
+        artist = currentTrack.artist();
 
     const uint artist_id = CollectionDB::instance()->artistID( artist );
     const uint album_id  = CollectionDB::instance()->albumID ( currentTrack.album() );
@@ -2886,6 +3047,11 @@ ContextBrowser::expandURL( const KURL &url )
             }
         }
     }
+
+    else if( protocol == "stream" ) {
+        urls += KURL::fromPathOrURL( url.url().replace( QRegExp( "^stream:" ), "http:" ) );
+    }
+
     return urls;
 }
 

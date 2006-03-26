@@ -138,6 +138,7 @@ UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, bool playFir
 
         else if( protocol == "album"
                 || protocol == "compilation"
+                || protocol == "stream"
                 || protocol == "fetchcover" )
             m_URLs += ContextBrowser::expandURL( url );
 

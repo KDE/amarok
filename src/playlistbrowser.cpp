@@ -2853,6 +2853,7 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
                     PlaylistBrowser::instance()->addPlaylist( (*it).path() );
                 else if( (*it).protocol() == "album"       ||
                          (*it).protocol() == "compilation" ||
+                         (*it).protocol() == "stream" ||
                          (*it).protocol() == "fetchcover" )
                 {
                     KURL::List urls = ContextBrowser::expandURL( *it );
