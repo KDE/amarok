@@ -466,7 +466,8 @@ PlaylistItem::compare( QListViewItem *i, int col, bool ascending ) const
         case PlayCount:  return cmp( playCount(), i->playCount() );
         case LastPlayed: return cmp( lastPlay(),  i->lastPlay() );
         case Bitrate:    return cmp( bitrate(),   i->bitrate() );
-        case Mood:    return cmp( theHueOrder, i->theHueOrder );
+        case Filesize:   return cmp( filesize(),  i->filesize() );
+        case Mood:       return cmp( theHueOrder, i->theHueOrder );
         case Year:
             if( year() == i->year() )
                 return compare( i, Artist, ascending );

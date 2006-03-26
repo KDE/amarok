@@ -349,7 +349,7 @@ MetaBundle::init( const KFileMetaInfo& info )
     }
     else
     {
-        m_bitrate = m_length = m_sampleRate = Undetermined;
+        m_bitrate = m_length = m_sampleRate = m_filesize = Undetermined;
         m_isValidMedia = false;
     }
 }
