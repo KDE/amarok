@@ -5,6 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.4-beta3:
   FEATURES:
+    * Filebrowser: toolbar button to change to the directory of the currently
+      playing song. (BR 115479)
     * Added "Play Audio CD" entry to the amaroK menu. (BR 103409)
     * GStreamer-0.10 engine now supports visualizations.
     * xine-engine: Show metadata for ogg vorbis streams. (BR 122505)
