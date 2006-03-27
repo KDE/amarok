@@ -317,7 +317,15 @@ IpodMediaDevice::updateTrackInDB(IpodMediaItem *item,
 #ifdef HAVE_ITDB_TRACK_SET_THUMBNAILS
     if( m_supportsArtwork )
     {
-        QString image = CollectionDB::instance()->albumImage(bundle.artist(), bundle.album(), 0);
+        QString image;
+        if( bundle.podcastBundle() )
+        {
+            PodcastChannelBundle pcb;
+            if( CollectionDB::instance()->getPodcastChannelBundle( bundle.podcastBundle()->parent(), &pcb ) )
+                image = CollectionDB::instance()->podcastImage( pcb.imageURL().url(), 0 );
+        }
+        if( image.isEmpty() )
+            image  = CollectionDB::instance()->albumImage(bundle.artist(), bundle.album(), 0);
         if( !image.endsWith( "@nocover.png" ) )
         {
             debug() << "adding image " << image << " to " << bundle.artist() << ":" << bundle.album() << endl;
