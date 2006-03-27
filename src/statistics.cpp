@@ -1,5 +1,5 @@
 /***************************************************************************
- * copyright            : (C) 2005 Seb Ruiz <me@sebruiz.net>               *
+ * copyright            : (C) 2005-2006 Seb Ruiz <me@sebruiz.net>          *
  **************************************************************************/
 
 /***************************************************************************
@@ -11,7 +11,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "amarok.h"         //foreach macro
+#include "amarok.h"             //foreach macro
+#include "browserToolBar.h"     //search toolbar
+#include "clicklineedit.h"
 #include "collectiondb.h"
 #include "debug.h"
 #include "statistics.h"
@@ -21,6 +23,7 @@
 #include <kiconloader.h>
 #include <klocale.h>
 #include <kmultipledrag.h>     //startDrag()
+#include <ktoolbarbutton.h>    //ctor
 #include <kurldrag.h>          //startDrag()
 #include <kwin.h>
 
@@ -32,6 +35,7 @@
 #include <qpixmap.h>
 #include <qsimplerichtext.h>
 #include <qtimer.h>
+#include <qtooltip.h>
 #include <qvbox.h>
 
 
@@ -56,6 +60,7 @@ Statistics *Statistics::s_instance = 0;
 
 Statistics::Statistics( QWidget *parent, const char *name )
     : KDialogBase( KDialogBase::Swallow, 0, parent, name, false, 0, Close )
+    , m_timer( new QTimer( this ) )
 {
     s_instance = this;
 
@@ -70,15 +75,50 @@ Statistics::Statistics( QWidget *parent, const char *name )
     QVBox *mainBox = new QVBox( this );
     setMainWidget( mainBox );
 
-    QHBox *box = new QHBox( mainWidget() );
+    QVBox *box = new QVBox( mainWidget() );
     box->setSpacing( 5 );
+    
+    { //<Search LineEdit>
+        KToolBar *bar = new Browser::ToolBar( box );
+        bar->setIconSize( 22, false ); //looks more sensible
+        bar->setFlat( true ); //removes the ugly frame
+        bar->setMovingEnabled( false ); //removes the ugly frame
 
-    m_listview = new StatisticsList( box );
+        QWidget *button = new KToolBarButton( "locationbar_erase", 1, bar );
+        m_lineEdit = new ClickLineEdit( i18n( "Enter search terms here" ), bar );
+
+        bar->setStretchableWidget( m_lineEdit );
+        m_lineEdit->setFrame( QFrame::Sunken );
+        m_lineEdit->installEventFilter( this ); //we intercept keyEvents
+
+        connect( button,     SIGNAL( clicked() )      , m_lineEdit  , SLOT( clear() ) );
+        connect( m_timer,    SIGNAL( timeout() )                    , SLOT( slotSetFilter() ) );
+        connect( m_lineEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
+        connect( m_lineEdit, SIGNAL( returnPressed() )              , SLOT( slotSetFilter() ) );
+
+        QToolTip::add( button, i18n( "Clear filter" ) );
+    } //</Search LineEdit>
+    
+    m_listView = new StatisticsList( box );
 }
 
 Statistics::~Statistics()
 {
     s_instance = 0;
+}
+
+void
+Statistics::slotSetFilterTimeout() //SLOT
+{
+    m_timer->start( 280, true ); //stops the timer for us first
+}
+
+void
+Statistics::slotSetFilter() //SLOT
+{
+    m_timer->stop();
+    m_listView->setFilter( m_lineEdit->text() );
+    m_listView->renderView();
 }
 
 
@@ -107,7 +147,7 @@ StatisticsList::StatisticsList( QWidget *parent, const char *name )
     if( CollectionDB::instance()->isEmpty() )
         return;
 
-    initDisplay();
+    renderView();
 }
 
 void
@@ -190,7 +230,7 @@ StatisticsList::startDrag()
 }
 
 void
-StatisticsList::initDisplay()
+StatisticsList::renderView()
 {
     //ensure cleanliness - this function is not just called from the ctor, but also when returning to the initial display
     while( firstChild() )
@@ -271,7 +311,7 @@ StatisticsList::itemClicked( QListViewItem *item ) //SLOT
 
     if( item->isExpanded() )
     {
-        initDisplay();
+        renderView();
         return;
     }
 
@@ -301,6 +341,7 @@ StatisticsList::expandInformation( StatisticsItem *item )
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
         qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
+        qb.setGoogleFilter( QueryBuilder::tabSong | QueryBuilder::tabArtist, m_filter );
         qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
         qb.setLimit( 0, 50 );
         QStringList fave = qb.run();
@@ -327,6 +368,7 @@ StatisticsList::expandInformation( StatisticsItem *item )
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
         qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
+        qb.setGoogleFilter( QueryBuilder::tabSong | QueryBuilder::tabArtist, m_filter );
         qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, true );
         qb.setLimit( 0, 50 );
         QStringList fave = qb.run();
@@ -352,6 +394,7 @@ StatisticsList::expandInformation( StatisticsItem *item )
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
         qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage );
         qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
+        qb.setGoogleFilter( QueryBuilder::tabArtist, m_filter );
         qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valName);
         qb.setLimit( 0, 50 );
         QStringList fave = qb.run();
@@ -381,6 +424,7 @@ StatisticsList::expandInformation( StatisticsItem *item )
         qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
         qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage );
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valIsCompilation );
+        qb.setGoogleFilter( QueryBuilder::tabAlbum | QueryBuilder::tabArtist, m_filter );
         qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
         qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
         qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID);
@@ -412,6 +456,7 @@ StatisticsList::expandInformation( StatisticsItem *item )
 
         qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
         qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valScore );
+        qb.setGoogleFilter( QueryBuilder::tabGenre, m_filter );
         qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valScore, true );
         qb.groupBy( QueryBuilder::tabGenre, QueryBuilder::valName);
         qb.setLimit( 0, 50 );
@@ -441,6 +486,7 @@ StatisticsList::expandInformation( StatisticsItem *item )
         qb.addReturnFunctionValue( QueryBuilder::funcMax, QueryBuilder::tabSong, QueryBuilder::valCreateDate );
         qb.sortByFunction( QueryBuilder::funcMax, QueryBuilder::tabSong, QueryBuilder::valCreateDate, true );
         qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
+        qb.setGoogleFilter( QueryBuilder::tabAlbum | QueryBuilder::tabArtist, m_filter );
         qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID);
         qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName);
         qb.setLimit( 0, 50 );

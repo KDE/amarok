@@ -1,5 +1,5 @@
 /***************************************************************************
- * copyright            : (C) 2005 Seb Ruiz <me@sebruiz.net>               *
+ * copyright            : (C) 2005-2006 Seb Ruiz <me@sebruiz.net>          *
  **************************************************************************/
 
 /***************************************************************************
@@ -21,7 +21,9 @@
 
 #include <qtimer.h>
 
+class ClickLineEdit;
 class QColor;
+class QTimer;
 
 class StatisticsList;
 class StatisticsItem;
@@ -37,8 +39,14 @@ class Statistics : public KDialogBase
 
         static Statistics *instance() { return s_instance; }
 
+    private slots:
+        void    slotSetFilter();
+        void    slotSetFilterTimeout();
+
     private:
-        StatisticsList *m_listview;
+        StatisticsList *m_listView;
+        ClickLineEdit  *m_lineEdit;
+        QTimer         *m_timer;
 
         static Statistics *s_instance;
 };
@@ -50,6 +58,10 @@ class StatisticsList : public KListView
     public:
         StatisticsList( QWidget *parent, const char *name=0 );
         ~StatisticsList() {};
+        
+        QString filter()                           { return m_filter; }
+        void    setFilter( const QString &filter ) { m_filter = filter; }
+        void    renderView();
 
     private slots:
         void    clearHover();
@@ -59,8 +71,6 @@ class StatisticsList : public KListView
     private:
         void    startDrag();
         void    viewportPaintEvent( QPaintEvent* );
-
-        void    initDisplay();
         void    expandInformation( StatisticsItem *item );
 
         StatisticsItem *m_trackItem;
@@ -71,7 +81,7 @@ class StatisticsList : public KListView
         StatisticsItem *m_newestItem;
 
         QListViewItem  *m_currentItem;
-
+        QString         m_filter;
 };
 
 class StatisticsItem : public QObject, public KListViewItem
