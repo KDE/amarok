@@ -106,11 +106,11 @@ class DbConnection
         enum DbConnectionType { sqlite = 0, mysql = 1, postgresql = 2 };
 
         DbConnection( DbConfig* /* config */ );
-        virtual ~DbConnection() = 0;
+        virtual ~DbConnection() { delete m_config; }
 
         virtual QStringList query( const QString& /* statement */ ) = 0;
         virtual int insert( const QString& /* statement */, const QString& /* table */ ) = 0;
-        const bool isInitialized() const { return m_initialized; }
+        bool isInitialized() const { return m_initialized; }
         virtual bool isConnected() const = 0;
         virtual const QString lastError() const { return "None"; }
     protected:
@@ -265,7 +265,7 @@ class CollectionDB : public QObject, public EngineObserver
         bool addSong( MetaBundle* bundle, const bool incremental = false );
 
         //podcast methods
-        
+
         /// Insert a podcast channel into the database.  If @param replace is true, replace the row
         /// use updatePodcastChannel() always in preference
         bool addPodcastChannel( const PodcastChannelBundle &pcb, const bool &replace=false );

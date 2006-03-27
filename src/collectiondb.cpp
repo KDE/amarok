@@ -921,7 +921,7 @@ CollectionDB::createDragPixmap( const KURL::List &urls )
     // make a better text...
     int albums = albumMap.count();
     QString text;
-    
+
     if( songs > 0 )
     {
         text = i18n( "One song", "%n songs", songs );
@@ -3420,10 +3420,6 @@ CollectionDB::cacheCoverDir()  //static
 DbConnection::DbConnection( DbConfig* config )
     : m_initialized( false )
     , m_config( config )
-{}
-
-
-DbConnection::~DbConnection()
 {}
 
 
