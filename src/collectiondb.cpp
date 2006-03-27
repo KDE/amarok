@@ -1123,18 +1123,12 @@ CollectionDB::podcastImageResult( KIO::Job *gjob )
         return;
     }
 
-    QCString key = md5sum( "Podcast", job->url().url() );
-    QString filename = amaroK::saveLocation( "podcasts/" ) + KURL::encode_string_no_slash( job->url().url() );
-    QFile file( filename );
-    file.open( IO_WriteOnly );
-    file.writeBlock( job->data() );
-    file.close();
-
-    QImage image( filename );
+    QImage image( job->data() );
     if( !image.isNull() )
     {
-        image.save( largeCoverDir().filePath( key ), "PNG");
-        emit imageFetched( job->url().url() );
+        QCString key = md5sum( "Podcast", job->url().url() );
+        if( image.save( largeCoverDir().filePath( key ), "PNG") )
+           emit imageFetched( job->url().url() );
     }
 }
 
