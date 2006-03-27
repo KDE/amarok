@@ -162,7 +162,7 @@ void TrackToolTip::setTrack( const MetaBundle &tags, bool force )
 
         m_tooltip += "%1"; //the cover gets substituted in, in tooltip()
         m_cover = CollectionDB::instance()->podcastImage( tags );
-        if( m_cover.isEmpty() || m_cover == CollectionDB::instance()->notAvailCover() )
+        if( m_cover.isEmpty() || m_cover.contains( "nocover" ) != -1 )
         {
             m_cover = CollectionDB::instance()->albumImage( tags );
             if ( m_cover == CollectionDB::instance()->notAvailCover() )
