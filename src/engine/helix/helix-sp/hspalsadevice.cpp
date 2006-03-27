@@ -157,7 +157,7 @@ HSPAudioDevice::Close( const BOOL bFlush )
 
    m_closed = true;
 
-   m_ulCurrentTime = 0;
+   m_ulCurrentTime = m_ulQTime = 0;
 
    if (m_pStreamResponse)
       m_pStreamResponse->Release();
@@ -201,8 +201,10 @@ HSPAudioDevice::GetCurrentAudioTime( REF(ULONG32) ulCurrentTime )
          pthread_mutex_unlock(&m_m);
          return -1;
       }
-      
-      ulCurrentTime = m_ulCurrentTime - (frame_delay * 1000) / m_unSampleRate;
+
+      ulCurrentTime = m_ulCurrentTime - (ULONG32)(((double)frame_delay * 1000.0) / (double)m_unSampleRate);
+
+      //m_Player->print2stderr("########## HSPAudioDevice::GetCurrentAudioTime %d\n", ulCurrentTime);
    }
    pthread_mutex_unlock(&m_m);
 
@@ -246,7 +248,7 @@ HSPAudioDevice::Open(const HXAudioFormat* pAudioFormat, IHXAudioDeviceResponse* 
       if (err) m_Player->print2stderr("########## HSPAudioDevice::Open error (device) %d\n", err);
       err = SetDeviceConfig(pAudioFormat);
       if (err) m_Player->print2stderr("########## HSPAudioDevice::Open error (config) %d\n", err);
-      m_ulCurrentTime = m_ulLastTime = 0;
+      m_ulCurrentTime = m_ulLastTime = m_ulQTime = 0;
    }
 
     if (m_pAlsaMixerHandle != NULL)
@@ -298,7 +300,7 @@ HSPAudioDevice::Write( const HXAudioData* pAudioData )
    return 0;
 }
 
-void HSPAudioDevice::sync()
+int HSPAudioDevice::sync()
 {
    if (m_pStreamResponse)
    {
@@ -308,10 +310,12 @@ void HSPAudioDevice::sync()
       else
       {
          // probably a seek occurred
-         Reset();
          clearQueue();
+         //Reset();
+         return -1;
       }
    }
+   return 0;
 }
 
 
@@ -321,13 +325,33 @@ HSPAudioDevice::_Write( const HXAudioData* pAudioData )
    unsigned long len;
    long bytes;
    unsigned char *data;
+   int err = 0;
    
    pAudioData->pData->Get(data, len);
 
-   m_ulCurrentTime = pAudioData->ulAudioTime;
+   HX_RESULT res = HXR_OK;
 
-   sync();
-   int err = WriteBytes(data, len, bytes);
+   // if the time of this buf is earlier than the last, or the time between this buf and the last is > 1 buffer's worth, this was a seek
+   if ( pAudioData->ulAudioTime < m_ulCurrentTime ||
+        pAudioData->ulAudioTime - m_ulCurrentTime > (1000 * len) / (m_unNumChannels * m_unSampleRate) + 1 ) 
+   {
+      m_Player->print2stderr("########## seek detected %d %d, len = %d %d\n", m_ulCurrentTime, pAudioData->ulAudioTime, len,
+                             abs(pAudioData->ulAudioTime - (m_ulCurrentTime + (1000 * len) / (m_unNumChannels * m_unSampleRate))));
+      _Reset();
+      clearQueue();
+   }
+
+
+   ULONG32 bytesavail = 0;
+   // don't write anything to the device unless we can fit the whole thing
+   while ( ( (res = GetRoomOnDevice(bytesavail)) == HXR_OK ) && bytesavail < len )
+      usleep(10000);
+
+   if (!sync())
+      err = WriteBytes(data, len, bytes);
+
+   m_ulCurrentTime = pAudioData->ulAudioTime;
+   //m_Player->print2stderr("########## %d %d\n", m_ulCurrentTime,pAudioData->ulAudioTime);
 
    //m_Player->print2stderr("########## Got to HSPAudioDevice::Write len=%d  byteswriten=%d err=%d time=%d\n",
    //                       len,bytes,err,m_ulCurrentTime);
@@ -418,6 +442,7 @@ void HSPAudioDevice::addBuf(struct AudioQueue *item)
 {
    pthread_mutex_lock(&m_m);
 
+   m_ulQTime = item->ad.ulAudioTime;
    if (m_tail)
    {
       item->fwd = 0;
@@ -461,14 +486,14 @@ void HSPAudioDevice::clearQueue()
    if (!m_tail)
       return;
 
-   do
+   while (m_tail)
    {
       item = m_head;
       m_head = item->fwd;
       if (!m_head)
          m_tail = 0;
       delete item;
-   } while (m_tail);
+   } 
 }
 
 
@@ -1366,8 +1391,6 @@ HX_RESULT HSPAudioDevice::WriteBytes( UCHAR* buffer, ULONG32 ulBuffLength, LONG3
        {
           frames_written = err;
           
-          m_ulCurrentTime += (num_frames * 1000) / m_unSampleRate;
-
           pthread_mutex_lock(&m_m);
           if (!m_closed)
              ulBytesWrote = snd_pcm_frames_to_bytes (m_pAlsaPCMHandle, frames_written);

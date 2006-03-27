@@ -170,7 +170,7 @@ protected:
 
    int _Write( const HXAudioData *pAudioData );
 
-   void sync();
+   int sync();
    
 private:
    HSPAudioDevice();
@@ -217,6 +217,7 @@ private:
    UINT16             m_uSampFrameSize;
    UINT32             m_ulTotalWritten;
    UINT32             m_ulCurrentTime;
+   UINT32             m_ulQTime;
    UINT32             m_ulLastTime;
    BOOL               m_SWPause;
 

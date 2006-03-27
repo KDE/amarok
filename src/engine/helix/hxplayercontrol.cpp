@@ -700,7 +700,7 @@ void PlayerControl::dispatch()
                   len = sizeof(mimelistlen);
                   
                   print2stderr("%%%%%%% Received %d mimetypes\n", mimelistlen);
-                  for (int i = 0; i < mimelistlen; i++)
+                  for (int j = 0; j < mimelistlen; j++)
                   {
                      tmp = (char *) &buf[len];
                      slen = strlen(tmp);
@@ -732,26 +732,26 @@ void PlayerControl::dispatch()
                   m_numPlugins = nplugins;
                   
                   print2stderr("%%%%%%% Received %d plugins\n", nplugins);
-                  for (int i = 0; i < nplugins; i++)
+                  for (int j = 0; j < nplugins; j++)
                   {
-                     m_pluginInfo[i] = new pluginInfo;
+                     m_pluginInfo[j] = new pluginInfo;
                      
                      tmp = (char *) &buf[len];
                      slen = strlen(tmp);
-                     m_pluginInfo[i]->description = new char[ slen + 1 ];
-                     strcpy(m_pluginInfo[i]->description, tmp);
+                     m_pluginInfo[j]->description = new char[ slen + 1 ];
+                     strcpy(m_pluginInfo[j]->description, tmp);
                      len += slen + 1;
                      
                      tmp = (char *) &buf[len];
                      slen = strlen(tmp);
-                     m_pluginInfo[i]->copyright = new char[ slen + 1 ];
-                     strcpy(m_pluginInfo[i]->copyright, tmp);
+                     m_pluginInfo[j]->copyright = new char[ slen + 1 ];
+                     strcpy(m_pluginInfo[j]->copyright, tmp);
                      len += slen + 1;
                      
                      tmp = (char *) &buf[len];
                      slen = strlen(tmp);
-                     m_pluginInfo[i]->moreinfourl = new char[ slen + 1 ];
-                     strcpy(m_pluginInfo[i]->moreinfourl, tmp);
+                     m_pluginInfo[j]->moreinfourl = new char[ slen + 1 ];
+                     strcpy(m_pluginInfo[j]->moreinfourl, tmp);
                      len += slen + 1;
                   }
 
@@ -1135,7 +1135,7 @@ bool PlayerControl::getmessage(int fd, msgid &m, unsigned char *buf, int &sz)
    unsigned char mm;
 
    bytes = read(fd, (void *) &mm, 1);
-   if (!bytes)
+   if (bytes <= 0)
       return false;
 
    m = (msgid) mm;
@@ -1144,7 +1144,7 @@ bool PlayerControl::getmessage(int fd, msgid &m, unsigned char *buf, int &sz)
 
    nbytes = 0;
    char *tmp = (char *) &sz;
-   while ( 4 != nbytes )
+   while ( bytes > 0 && 4 != nbytes )
    {
       bytes = read(fd, (void *) &tmp[ nbytes ], 4 - nbytes);
       nbytes += bytes;
@@ -1153,7 +1153,7 @@ bool PlayerControl::getmessage(int fd, msgid &m, unsigned char *buf, int &sz)
    if (sz)
    {
       nbytes = 0;
-      while ( sz != nbytes )
+      while ( bytes > 0 && sz != nbytes )
       {
          bytes = read(fd, (void *) &buf[ nbytes ], sz - nbytes);
          nbytes += bytes;
