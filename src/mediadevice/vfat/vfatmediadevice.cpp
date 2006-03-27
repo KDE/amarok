@@ -364,15 +364,12 @@ VfatMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
 
     QString  newFilename = base + newFilenameSansMountpoint;
 
-    const QCString src  = QFile::encodeName( bundle.url().path() );
     const QCString dest = QFile::encodeName( newFilename ); // TODO: add to directory
-
-    const KURL srcurl(src);
-    const KURL desturl(dest);
+    const KURL desturl = KURL::fromPathOrURL( dest );
 
     kapp->processEvents( 100 );
 
-    if( KIO::NetAccess::file_copy( srcurl, desturl, -1, false, false, m_parent) ) //success
+    if( KIO::NetAccess::file_copy( bundle.url(), desturl, -1, false, false, m_parent) ) //success
     {
         addTrackToList( MediaItem::TRACK, newFilenameSansMountpoint );
         m_tmpParent = previousTmpParent;
