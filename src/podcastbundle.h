@@ -23,9 +23,9 @@ class PodcastChannelBundle
         void setSettings( PodcastSettings *settings )
         {
             m_saveLocation = settings->saveLocation();
-            m_autoscan     = settings->hasAutoScan();
-            m_fetchType    = settings->fetch();
-            m_autotransfer = settings->addToMediaDevice();
+            m_autoscan     = settings->autoscan();
+            m_fetchType    = settings->fetchType();
+            m_autotransfer = settings->autoTransfer();
             m_purge        = settings->hasPurge();
             m_purgeCount   = settings->purgeCount();
         }

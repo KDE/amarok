@@ -25,18 +25,16 @@ class PodcastSettings
         PodcastSettings( const QString &title, const QString &save, const bool autoScan,
                          const int fetchType, const bool autotransfer, const bool purge, const int purgecount );
 
-        const KURL &saveLocation(){ return m_saveLocation; }
-        bool    hasAutoScan() { return m_autoScan; }
-        int     interval()    { return m_interval; }
-        int     fetch()       { return m_fetch; }
-        bool    addToMediaDevice() { return m_addToMediaDevice; }
-        bool    hasPurge()    { return m_purge; }
-        int     purgeCount()  { return m_purgeCount; }
+        const KURL &saveLocation() { return m_saveLocation; }
+        bool    autoscan()         { return m_autoScan; }
+        int     fetchType()        { return m_fetch; }
+        bool    autoTransfer()     { return m_addToMediaDevice; }
+        bool    hasPurge()         { return m_purge; }
+        int     purgeCount()       { return m_purgeCount; }
 
         QString m_title;    //the title of the podcast or category these settings belong to
         KURL    m_saveLocation;
         bool    m_autoScan;
-        int     m_interval;
         int     m_fetch;
         bool    m_addToMediaDevice;
         bool    m_purge;
@@ -51,7 +49,8 @@ class PodcastSettingsDialog : public KDialogBase
     public:
         PodcastSettingsDialog( PodcastSettings *settings, PodcastSettings *parentSettings, QWidget* parent = 0 );
 
-        bool configure();
+        bool    configure();
+        PodcastSettings *getSettings() { return m_settings; }
 
     protected:
         bool    hasChanged();
