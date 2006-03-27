@@ -1383,8 +1383,9 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
         l = xml.namedItem( "link" ).toElement().text();
 
     QString d = xml.namedItem( "description" ).toElement().text();
-    if( d.isEmpty() )
-        d = xml.namedItem( "itunes:summary" ).toElement().text();
+    QString id = xml.namedItem( "itunes:summary" ).toElement().text();
+    if( id.length() > d.length() )
+       d = id;
     QString c = xml.namedItem( "copyright" ).toElement().text();
     QString img = xml.namedItem( "image" ).toElement().namedItem( "url" ).toElement().text();
     if( img.isEmpty() )
@@ -1701,9 +1702,9 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
     else
     {
         description = xml.namedItem( "description" ).toElement().text();
-
-        if( description.isEmpty() )
-            description = xml.namedItem( "itunes:summary" ).toElement().text();
+        QString idescription = xml.namedItem( "itunes:summary" ).toElement().text();
+        if( idescription.length() > description.length() )
+           description = idescription;
 
         if( subtitle.isEmpty() )
             subtitle = xml.namedItem( "itunes:subtitle" ).toElement().text();
