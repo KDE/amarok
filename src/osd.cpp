@@ -19,6 +19,7 @@
 #include "osd.h"
 #include "playlist.h"        //if osdUsePlaylistColumns()
 #include "playlistitem.h"    //ditto
+#include "podcastbundle.h"
 #include "qstringx.h"
 
 #include <kapplication.h>
@@ -540,7 +541,19 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
         if ( AmarokConfig::osdCover() ) {
             //avoid showing the generic cover.  we can overwrite this by passing an arg.
             //get large cover for scaling if big cover needed
-            QString location = CollectionDB::instance()->albumImage( bundle, 0 );
+
+            QString location;
+            PodcastEpisodeBundle peb;
+            if( CollectionDB::instance()->getPodcastEpisodeBundle( bundle.url().url(), &peb ) )
+            {
+                PodcastChannelBundle pcb;
+                if( CollectionDB::instance()->getPodcastChannelBundle( peb.parent().url(), &pcb ) )
+                {
+                    location = CollectionDB::instance()->podcastImage( pcb.imageURL().url(), 0 );
+                }
+            }
+            if( location.isEmpty() )
+                location = CollectionDB::instance()->albumImage( bundle, 0 );
 
             if ( location.find( "nocover" ) != -1 )
                 setImage( amaroK::icon() );
