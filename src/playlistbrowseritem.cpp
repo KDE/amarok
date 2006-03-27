@@ -1918,64 +1918,7 @@ PodcastEpisode::addToMediaDevice()
         bundle->setAlbum(channel->title());
     if(!title().isEmpty())
         bundle->setTitle(title());
-#if 0
-    PodcastInfo *info = new PodcastInfo;
-    info->url = url().url();
-    info->rss = channel->url().url();
-    info->webpage = channel->link().url();
-    //info->title = title();
-    info->description = description();
-    info->author = author();
-    QString dt = date();
-    if(
-            dt.startsWith( "Mon," ) ||
-            dt.startsWith( "Tue," ) ||
-            dt.startsWith( "Wed," ) ||
-            dt.startsWith( "Thu," ) ||
-            dt.startsWith( "Fri," ) ||
-            dt.startsWith( "Sat," ) ||
-            dt.startsWith( "Sun," )
-        )
-    {
-        dt = dt.section( " ", 1 );
-    }
 
-    int day = dt.section( " ", 0, 0 ).toInt();
-
-    QString mon = dt.section( " ", 1, 1 );
-    int month = 0;
-    if( mon=="Jan" )
-        month = 1;
-    else if( mon=="Feb" )
-        month = 2;
-    else if( mon=="Mar" )
-        month = 3;
-    else if( mon=="Apr" )
-        month = 4;
-    else if( mon=="May" )
-        month = 5;
-    else if( mon=="Jun" )
-        month = 6;
-    else if( mon=="Jul" )
-        month = 7;
-    else if( mon=="Aug" )
-        month = 8;
-    else if( mon=="Sep" )
-        month = 9;
-    else if( mon=="Oct" )
-        month = 10;
-    else if( mon=="Nov" )
-        month = 11;
-    else if( mon=="Dec" )
-        month = 12;
-
-    int year = dt.section( " ", 2, 2 ).toInt();
-
-    QDate date( year, month, day );
-    QString t = dt.section( " ", 3, 3 );
-    QTime time = QTime::fromString( t );
-    info->date = QDateTime( date, time );
-#endif
     MediaBrowser::queue()->addURL( localUrl(), bundle );
 }
 
