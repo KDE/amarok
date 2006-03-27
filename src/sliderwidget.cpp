@@ -205,6 +205,33 @@ amaroK::PrettySlider::paintEvent( QPaintEvent* )
     bitBlt( this, 0, 0, &buf );
 }
 
+#if 0
+/** these functions aren't required in our fixed size world,
+    but they may become useful one day **/
+
+QSize
+amaroK::PrettySlider::minimumSizeHint() const
+{
+    return sizeHint();
+}
+
+QSize
+amaroK::PrettySlider::sizeHint() const
+{
+    constPolish();
+
+    return (orientation() == Horizontal
+             ? QSize( maxValue(), THICKNESS + MARGIN )
+             : QSize( THICKNESS + MARGIN, maxValue() )).expandedTo( QApplit ication::globalStrut() );
+}
+#endif
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+/// CLASS TrackSlider
+//////////////////////////////////////////////////////////////////////////////////////////
+
 amaroK::TrackSlider::TrackSlider( QWidget *parent, uint max )
    : amaroK::PrettySlider( Qt::Horizontal, parent, max ), theArrayChanged(true)
 {
@@ -217,7 +244,7 @@ amaroK::TrackSlider::~TrackSlider()
 }
 
 void
-amaroK::TrackSlider::paintEvent( QPaintEvent* )
+amaroK::TrackSlider::paintEvent( QPaintEvent * )
 {
     const int w   = orientation() == Qt::Horizontal ? width() : height();
     const int pos = int(double((w-2) * Slider::value()) / maxValue());
@@ -238,22 +265,40 @@ amaroK::TrackSlider::paintEvent( QPaintEvent* )
 
     if(WANT_MOODBAR && pos >= 0 && theArray.size())
     {	
-        if(theArrayChanged || theMoodbar.isNull())
+        if(theArrayChanged || theMoodbar.width() != w || theMoodbar.height() != h )
         {
-            if(theMoodbar.isNull() || theMoodbar.width() != w || theMoodbar.height() != h)
-                theMoodbar.resize(w, h);
+            theMoodbar.resize(w, h);
             QPainter paint(&theMoodbar);
+            // paint the moodbar
+            int samples = w;
+            int aSize = theArray.size(); 
             for(int x = 0; x < w; x++)
             {
-                int ch, cs, cv;
-                theArray[x].getHsv(&ch, &cs, &cv);
+                uint a = x * aSize / samples, aa = ((x + 1) * aSize / samples);
+                if(a == aa) aa = a + 1;
+                float r = 0., g = 0., b = 0.;
+                for(uint j = a; j < aa; j++)
+                    if(j < theArray.size())
+                    {
+                        r += theArray[j].red();
+                        g += theArray[j].green();
+                        b += theArray[j].blue();
+                    }
+                    else
+                    {
+                        r += 220;
+                        g += 220;
+                        b += 220;
+                    }
+                int hue, s, v;
+                QColor(CLAMP(0, int(r / float(aa - a)), 255), CLAMP(0, int(g / float(aa - a)), 255), CLAMP(0, int(b / float(aa - a)), 255), QColor::Rgb).getHsv(&hue, &s, &v);
                 for(int y = 0; y <= h / 2; y++)
                 {
                     float coeff = float(y) / float(h / 2);
                     float coeff2 = 1.f - ((1.f - coeff) * (1.f - coeff));
                     coeff = 1.f - (1.f - coeff) / 2.f;
                     coeff2 = 1.f - (1.f - coeff2) / 2.f;
-                    paint.setPen( QColor(ch, int(cs * coeff), int(255 - (255 - cv) * coeff2), QColor::Hsv) );
+                    paint.setPen( QColor(hue, CLAMP(0, int(s * coeff), 255), CLAMP(0, int(255 - (255 - v) * coeff2), 255), QColor::Hsv) );
                     paint.drawPoint(x, y);
                     paint.drawPoint(x, h - 1 - y);
                 }
@@ -336,27 +381,26 @@ void amaroK::TrackSlider::engineNewMetaData( const MetaBundle &bundle, bool /*tr
         qDebug("New track doesn't appear to be a file");
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////
+/// CLASS MixedSlider
+//////////////////////////////////////////////////////////////////////////////////////////
 
-#if 0
-/** these functions aren't required in our fixed size world,
-    but they may become useful one day **/
-
-QSize
-amaroK::PrettySlider::minimumSizeHint() const
+amaroK::MixedSlider::MixedSlider( QWidget *parent, uint max )
+   : amaroK::TrackSlider( parent, max )
 {
-    return sizeHint();
 }
 
-QSize
-amaroK::PrettySlider::sizeHint() const
+amaroK::MixedSlider::~MixedSlider()
 {
-    constPolish();
-
-    return (orientation() == Horizontal
-             ? QSize( maxValue(), THICKNESS + MARGIN )
-             : QSize( THICKNESS + MARGIN, maxValue() )).expandedTo( QApplit ication::globalStrut() );
+    EngineController::instance()->detach(this);
 }
-#endif
+
+void
+amaroK::MixedSlider::paintEvent( QPaintEvent *pEvent )
+{
+    if(WANT_MOODBAR) return TrackSlider::paintEvent( pEvent );
+    return QSlider::paintEvent( pEvent );
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// CLASS VolumeSlider

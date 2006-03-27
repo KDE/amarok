@@ -69,7 +69,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     QWidget *positionBox = new QWidget( this, "positionBox" );
     QBoxLayout *box = new QHBoxLayout( positionBox, 1, 3 );
 
-    m_slider = new amaroK::Slider( Qt::Horizontal, positionBox );
+    m_slider = new amaroK::MixedSlider( positionBox );
     m_timeLabel = new TimeLabel( positionBox );
     m_slider->setMinimumWidth( m_timeLabel->width() );
 

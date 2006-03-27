@@ -119,6 +119,22 @@ namespace amaroK
             void newMoodData();
     };
 
+    class MixedSlider : public TrackSlider
+    {
+        friend class TrackSlider;
+
+        Q_OBJECT
+
+        public:
+            MixedSlider( QWidget *parent, uint max = 0 );
+            ~MixedSlider();
+
+        protected:
+            virtual void paintEvent( QPaintEvent* );
+
+    };
+
+
     class VolumeSlider: public Slider
     {
         Q_OBJECT

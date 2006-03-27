@@ -5,6 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.4-beta3:
   FEATURES:
+    * Ease navigation with track slider below playlist window by showing mood.
+      (BR 121715)
     * Show some context information for podcasts.
     * Filebrowser: toolbar button to change to the directory of the currently
       playing song. (BR 115479)
