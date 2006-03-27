@@ -171,46 +171,46 @@ AC_SUBST(LIBS_XINE)
 # BEGIN AKODE CHECK
 ###############################################################################
 
-AC_ARG_WITH(akode,
-    AC_HELP_STRING([--without-akode],[build amaroK without akode-engine]),
-    [build_akode=$withval],
-    [build_akode=yes]
-)
-
-if test "$build_akode" != "no"; then
-
-    AC_CHECK_PROG(AKODE_CONFIG, akode-config, yes)
-
-    if test x$AKODE_CONFIG = xyes ; then
-        AC_DEFINE(HAVE_AKODE, 1, [have aKode])
-        CFLAGS_AKODE=[`akode-config --cflags`]
-        LIBS_AKODE=[`akode-config --libs`]
-
-        akode_version=`akode-config --version`
-        akode_version=VERSION_TO_NUMBER(echo $akode_version)
-        akode_version_min="2.0.0"
-        akode_version_min=VERSION_TO_NUMBER(echo $akode_version_min)
-
-        AC_MSG_CHECKING([for akode-lib version >= 2.0])
-
-        if test $akode_version -eq $akode_version_min \
-             -o $akode_version -gt $akode_version_min; then
-
-            echo "yes"
-
-        else
-            echo "no"
-
-            build_akode=no
-        fi
-    else
-        build_akode=no
-    fi
-fi
-
-AM_CONDITIONAL(with_akode, test x$build_akode = xyes)
-AC_SUBST(CFLAGS_AKODE)
-AC_SUBST(LIBS_AKODE)
+#AC_ARG_WITH(akode,
+#    AC_HELP_STRING([--without-akode],[build amaroK without akode-engine]),
+#    [build_akode=$withval],
+#    [build_akode=yes]
+#)
+#
+#if test "$build_akode" != "no"; then
+#
+#    AC_CHECK_PROG(AKODE_CONFIG, akode-config, yes)
+#
+#    if test x$AKODE_CONFIG = xyes ; then
+#        AC_DEFINE(HAVE_AKODE, 1, [have aKode])
+#        CFLAGS_AKODE=[`akode-config --cflags`]
+#        LIBS_AKODE=[`akode-config --libs`]
+#
+#        akode_version=`akode-config --version`
+#        akode_version=VERSION_TO_NUMBER(echo $akode_version)
+#        akode_version_min="2.0.0"
+#        akode_version_min=VERSION_TO_NUMBER(echo $akode_version_min)
+#
+#        AC_MSG_CHECKING([for akode-lib version >= 2.0])
+#
+#        if test $akode_version -eq $akode_version_min \
+#             -o $akode_version -gt $akode_version_min; then
+#
+#            echo "yes"
+#
+#        else
+#            echo "no"
+#
+#            build_akode=no
+#        fi
+#    else
+#        build_akode=no
+#    fi
+#fi
+#
+#AM_CONDITIONAL(with_akode, test x$build_akode = xyes)
+#AC_SUBST(CFLAGS_AKODE)
+#AC_SUBST(LIBS_AKODE)
 
 ###############################################################################
 # END AKODE CHECK
@@ -255,35 +255,35 @@ AC_SUBST(LDFLAGS_NMM)
 # BEGIN MAS CHECK
 ###############################################################################
 
-AC_ARG_WITH(mas,
-    AC_HELP_STRING([--with-mas],[build amaroK with MAS-engine]),
-    [build_mas=$withval],
-    [build_mas=no]
-)
-
-
-if test "$build_mas" != "no"; then
-
-    AC_PATH_PROG(MAS_CONFIG, mas-config, no)
-
-    if test $MAS_CONFIG = "no"
-    then
-        amarok_warning_mas_notfound=yes
-    echo "amarok_warning_mas_notfound: $amarok_warning_mas_notfound"
-        build_mas=no
-    else
-        AC_DEFINE(HAVE_MAS, 1, [have MAS])
-
-        CFLAGS_MAS=[`$MAS_CONFIG --cflags`]
-        LIBS_MAS=[`$MAS_CONFIG --libs`]
-
-        build_mas=yes
-    fi
-fi
-
-AM_CONDITIONAL(with_mas, test x$build_mas = xyes)
-AC_SUBST(CFLAGS_MAS)
-AC_SUBST(LIBS_MAS)
+#AC_ARG_WITH(mas,
+#    AC_HELP_STRING([--with-mas],[build amaroK with MAS-engine]),
+#    [build_mas=$withval],
+#    [build_mas=no]
+#)
+#
+#
+#if test "$build_mas" != "no"; then
+#
+#    AC_PATH_PROG(MAS_CONFIG, mas-config, no)
+#
+#    if test $MAS_CONFIG = "no"
+#    then
+#        amarok_warning_mas_notfound=yes
+#    echo "amarok_warning_mas_notfound: $amarok_warning_mas_notfound"
+#        build_mas=no
+#    else
+#        AC_DEFINE(HAVE_MAS, 1, [have MAS])
+#
+#        CFLAGS_MAS=[`$MAS_CONFIG --cflags`]
+#        LIBS_MAS=[`$MAS_CONFIG --libs`]
+#
+#        build_mas=yes
+#    fi
+#fi
+#
+#AM_CONDITIONAL(with_mas, test x$build_mas = xyes)
+#AC_SUBST(CFLAGS_MAS)
+#AC_SUBST(LIBS_MAS)
 
 ###############################################################################
 # END MAS CHECK

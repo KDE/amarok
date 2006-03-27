@@ -56,19 +56,17 @@ if test x$PKGCONFIGFOUND != xyes; then
     echo " = GStreamer-engine) cannot be built."
     echo " = See README for help with this issue."
     echo " ="
-
 fi
 
-if test x$amarok_warning_mas_notfound = xyes; then
-    echo " =========================="
-    echo " ===  amaroK - WARNING  ========================================================"
-    echo " =========================="
-    echo " ="
-    echo " = mas-config could not be found, this means that MAS-engine"
-    echo " = cannot be built."
-    echo " ="
-
-fi
+#if test x$amarok_warning_mas_notfound = xyes; then
+#    echo " =========================="
+#    echo " ===  amaroK - WARNING  ========================================================"
+#    echo " =========================="
+#    echo " ="
+#    echo " = mas-config could not be found, this means that MAS-engine"
+#    echo " = cannot be built."
+#    echo " ="
+#fi
 
 if test x$build_xine = xno; then
     echo " =========================="
@@ -172,9 +170,9 @@ else
     echo " = The following extra functionality will NOT be included:"
 
 
-    if test x$build_akode != xyes; then
-        echo " =   - aKode-engine"
-    fi
+#    if test x$build_akode != xyes; then
+#        echo " =   - aKode-engine"
+#    fi
 
     if test x$have_gst10 != xyes; then
         echo " =   - GStreamer0.10-engine"
@@ -188,9 +186,9 @@ else
         echo " =   - NMM-engine"
     fi
 
-    if test x$build_mas != xyes; then
-        echo " =   - MAS-engine"
-    fi
+#    if test x$build_mas != xyes; then
+#        echo " =   - MAS-engine"
+#    fi
 
     if test x$build_helix = xno; then
         echo " =   - Helix-engine"
@@ -241,9 +239,9 @@ else
     echo " = The following extra functionality will be included:"
 
 
-    if test x$build_akode = xyes; then
-        echo " =   + aKode-engine"
-    fi
+#    if test x$build_akode = xyes; then
+#        echo " =   + aKode-engine"
+#    fi
 
     if test x$have_gst10 = xyes; then
         echo " =   + GStreamer0.10-engine"
@@ -257,9 +255,9 @@ else
         echo " =   + NMM-engine"
     fi
 
-    if test x$build_mas = xyes; then
-        echo " =   + MAS-engine"
-    fi
+#    if test x$build_mas = xyes; then
+#        echo " =   + MAS-engine"
+#    fi
 
     if test x$build_helix != xno; then
         echo " =   + Helix-engine"
