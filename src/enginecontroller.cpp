@@ -362,7 +362,7 @@ void EngineController::play( const MetaBundle &bundle )
         if ( m_playFailureCount <= 5  && AmarokConfig::soundSystem() != "nmm-engine" /*&& !amaroK::repeatPlaylist()*/ ) {
            debug() << "Skipping to next track." << endl;
            next();
-           play();
+           QTimer::singleShot( 0, this, SLOT( play() ) );
         }
 }
 
