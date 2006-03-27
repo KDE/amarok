@@ -3314,10 +3314,6 @@ Playlist::applySettings()
         AmarokConfig::setMoodbarColumnSize( columnWidth( PlaylistItem::Mood ) );
         setColumnWidth( PlaylistItem::Mood, 0 );
     }
-    if( AmarokConfig::showMoodbar() && !columnWidth( PlaylistItem::Mood ) )
-    {
-        setColumnWidth( PlaylistItem::Mood, AmarokConfig::moodbarColumnSize() );
-    }
 }
 
 void
