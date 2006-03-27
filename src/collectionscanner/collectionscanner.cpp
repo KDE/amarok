@@ -219,7 +219,7 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
         {
             const QString file = QFile::decodeName( entry );
 
-            bool isInCollection;
+            bool isInCollection = false;
             if( m_incremental )
                 dcopRef.call( "isDirInCollection", file ).get( isInCollection );
 
