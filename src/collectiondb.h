@@ -204,6 +204,7 @@ class CollectionDB : public QObject, public EngineObserver
 
         void similarArtistsFetched( const QString &artist );
         void tagsChanged( const MetaBundle &bundle );
+        void imageFetched( const QString &remoteURL ); //for fetching remote podcast images
 
     public:
         CollectionDB();
@@ -349,6 +350,13 @@ class CollectionDB : public QObject, public EngineObserver
         static const int DRAGPIXMAP_OFFSET_X = -12;
         static const int DRAGPIXMAP_OFFSET_Y = -28;
 
+        /*
+         * Retrieves the path to the local copy of the image pointed to by url,
+         * initiates fetching of the remote image if necessary.
+         * @param width the size of the image. 0 == full size, 1 == preview size
+         */
+        QString podcastImage( const QString &remoteURL, const uint width = 1 );
+
         /**
          * Retrieves the path to the image for the album of the requested item
          * @param width the size of the image. 0 == full size, 1 == preview size
@@ -394,6 +402,7 @@ class CollectionDB : public QObject, public EngineObserver
         void coverFetcherResult( CoverFetcher* );
         void similarArtistsFetched( const QString& artist, const QStringList& suggestions );
         void fileOperationResult( KIO::Job *job ); // moveFile depends on it
+        void podcastImageResult( KIO::Job *job ); //for fetching remote podcast images
 
     private:
         //bump DATABASE_VERSION whenever changes to the table structure are made.

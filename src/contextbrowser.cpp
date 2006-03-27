@@ -263,6 +263,8 @@ ContextBrowser::ContextBrowser( const char *name )
              this, SLOT( similarArtistsFetched( const QString& ) ) );
     connect( CollectionDB::instance(), SIGNAL( tagsChanged( const MetaBundle& ) ),
              this, SLOT( tagsChanged( const MetaBundle& ) ) );
+    connect( CollectionDB::instance(), SIGNAL( imageFetched( const QString& ) ),
+             this, SLOT( imageFetched( const QString& ) ) );
 
     showContext( KURL( "current://track" ) );
 }
@@ -695,6 +697,8 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), MAKE );
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue Podcast" ), ASNEXT );
+        //menu.insertSeparator();
+        //menu.insertItem( SmallIconSet( "down" ), i18n( "&Download" ), DOWNLOAD );
     }
     else if( url.protocol() == "file" || url.protocol() == "album" || url.protocol() == "compilation" )
     {
@@ -1134,7 +1138,7 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
         return;
     }
 
-    QString image = CollectionDB::instance()->notAvailCover( 0 );
+    QString image = CollectionDB::instance()->podcastImage( pcb.imageURL().url() );
     image = ContextBrowser::makeShadowedImage( image );
     QString imageAttr = escapeHTMLAttr( i18n( "Click to go to podcast website: %1." ).arg( pcb.link().prettyURL() ) );
 
@@ -1155,6 +1159,7 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
                 "</td>"
                 "<td id='current_box-information-td' align='right'>"
                 "%6 <br />"
+                "%7 <br />"
                 "</td>"
                 "</table>"
                 "</div>" )
@@ -1164,8 +1169,12 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
                 << escapeHTMLAttr( pcb.link().url().replace( QRegExp( "^http:" ), "externalurl:" ) )
                 << image
                 << imageAttr
-                << i18n( "Podcast" )
-                << escapeHTML( peb.author() )
+                << escapeHTML( peb.author().isEmpty()
+                    ? i18n( "Podcast" )
+                    : i18n( "Podcast by %1" ).arg( peb.author() ) )
+                << escapeHTML( peb.localUrl().isValid()
+                    ?  i18n( "(Cached)" )
+                    : "" )
                 )
             );
 
@@ -2921,6 +2930,25 @@ ContextBrowser::similarArtistsFetched( const QString &artist ) //SLOT
         m_dirtyCurrentTrackPage = true;
         if ( currentPage() == m_contextTab )
             showCurrentTrack();
+    }
+}
+
+void
+ContextBrowser::imageFetched( const QString &url ) //SLOT
+{
+    const MetaBundle &currentTrack = EngineController::instance()->bundle();
+    PodcastEpisodeBundle peb;
+    if( CollectionDB::instance()->getPodcastEpisodeBundle( currentTrack.url(), &peb ) )
+    {
+        PodcastChannelBundle pcb;
+        if( CollectionDB::instance()->getPodcastChannelBundle( peb.parent(), &pcb ) )
+        {
+            if( pcb.imageURL().url() == url )
+            {
+                m_dirtyCurrentTrackPage = true;
+                showCurrentTrack();
+            }
+        }
     }
 }
 

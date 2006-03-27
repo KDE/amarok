@@ -1087,6 +1087,56 @@ CollectionDB::setAlbumImage( const QString& artist, const QString& album, QImage
 }
 
 QString
+CollectionDB::podcastImage( const QString &remoteURL, uint width )
+{
+    QString s;
+    // we aren't going to need a 1x1 size image. this is just a quick hack to be able to show full size images.
+    // width of 0 == full size
+    if( width == 1 ) width = AmarokConfig::coverPreviewSize();
+
+    s = findAmazonImage( "Podcast", remoteURL, width );
+
+    if( s.isEmpty() )
+    {
+        s = notAvailCover( width );
+
+        KIO::Job *job = KIO::storedGet( remoteURL, false, false );
+        connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( podcastImageResult( KIO::Job* ) ) );
+    }
+
+    return s;
+}
+
+void
+CollectionDB::podcastImageResult( KIO::Job *gjob )
+{
+    KIO::StoredTransferJob *job = dynamic_cast<KIO::StoredTransferJob *>( gjob );
+    if( !job )
+    {
+        debug() << "connected to wrong job type" << endl;
+        return;
+    }
+
+    if( job->error() )
+    {
+        debug() << "job finished with error" << endl;
+        return;
+    }
+
+    QCString key = md5sum( "Podcast", job->url().url() );
+    QString filename = amaroK::saveLocation( "podcasts/" ) + KURL::encode_string_no_slash( job->url().url() );
+    QFile file( filename );
+    file.open( IO_WriteOnly );
+    file.writeBlock( job->data() );
+    file.close();
+
+    QImage image( filename );
+    image.save( largeCoverDir().filePath( key ), "PNG");
+    emit imageFetched( job->url().url() );
+}
+
+
+QString
 CollectionDB::albumImage( const QString &artist, const QString &album, uint width )
 {
     QString s;
