@@ -1131,8 +1131,11 @@ CollectionDB::podcastImageResult( KIO::Job *gjob )
     file.close();
 
     QImage image( filename );
-    image.save( largeCoverDir().filePath( key ), "PNG");
-    emit imageFetched( job->url().url() );
+    if( !image.isNull() )
+    {
+        image.save( largeCoverDir().filePath( key ), "PNG");
+        emit imageFetched( job->url().url() );
+    }
 }
 
 
