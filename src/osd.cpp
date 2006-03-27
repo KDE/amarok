@@ -448,6 +448,8 @@ amaroK::OSD::OSD(): OSDWidget( 0 )
 {
     connect( CollectionDB::instance(), SIGNAL( coverChanged( const QString&, const QString& ) ),
              this,                   SLOT( slotCoverChanged( const QString&, const QString& ) ) );
+    connect( CollectionDB::instance(), SIGNAL( imageFetched( const QString& ) ),
+             this,                   SLOT( slotImageChanged( const QString& ) ) );
 }
 
 template<class T>
@@ -542,17 +544,8 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
             //avoid showing the generic cover.  we can overwrite this by passing an arg.
             //get large cover for scaling if big cover needed
 
-            QString location;
-            PodcastEpisodeBundle peb;
-            if( CollectionDB::instance()->getPodcastEpisodeBundle( bundle.url().url(), &peb ) )
-            {
-                PodcastChannelBundle pcb;
-                if( CollectionDB::instance()->getPodcastChannelBundle( peb.parent().url(), &pcb ) )
-                {
-                    location = CollectionDB::instance()->podcastImage( pcb.imageURL().url(), 0 );
-                }
-            }
-            if( location.isEmpty() )
+            QString location = CollectionDB::instance()->podcastImage( bundle, 0 );
+            if( location.isEmpty() || location.find( "nocover" ) != -1 )
                 location = CollectionDB::instance()->albumImage( bundle, 0 );
 
             if ( location.find( "nocover" ) != -1 )
@@ -621,6 +614,28 @@ amaroK::OSD::slotCoverChanged( const QString &artist, const QString &album )
             setImage( amaroK::icon() );
         else
             setImage( location );
+    }
+}
+
+void
+amaroK::OSD::slotImageChanged( const QString &remoteURL )
+{
+    QString url = EngineController::instance()->bundle().url().url();
+    PodcastEpisodeBundle peb;
+    if( CollectionDB::instance()->getPodcastEpisodeBundle( url, &peb ) )
+    {
+        PodcastChannelBundle pcb;
+        if( CollectionDB::instance()->getPodcastChannelBundle( peb.parent().url(), &pcb ) )
+        {
+            if( pcb.imageURL().url() == remoteURL )
+            {
+                QString location = CollectionDB::instance()->podcastImage( remoteURL, 0 );
+                if( location == CollectionDB::instance()->notAvailCover( 0 ) )
+                    setImage( amaroK::icon() );
+                else
+                    setImage( location );
+            }
+        }
     }
 }
 

@@ -21,6 +21,7 @@
 #include "collectiondb.h"
 #include "playlist.h"
 #include "playlistitem.h"
+#include "podcastbundle.h"
 #include <qapplication.h>
 #include <kstandarddirs.h>
 
@@ -38,6 +39,8 @@ TrackToolTip::TrackToolTip(): m_haspos( false )
 {
     connect( CollectionDB::instance(), SIGNAL( coverChanged( const QString &, const QString & ) ),
              this, SLOT( slotCoverChanged( const QString &, const QString & ) ) );
+    connect( CollectionDB::instance(), SIGNAL( imageFetched( const QString & ) ),
+             this, SLOT( slotImageChanged( const QString & ) ) );
     connect( Playlist::instance(), SIGNAL( columnsChanged() ), this, SLOT( slotUpdate() ) );
     connect( CollectionDB::instance(), SIGNAL( scoreChanged( const QString&, int ) ),
              this, SLOT( slotUpdate( const QString& ) ) );
@@ -158,9 +161,13 @@ void TrackToolTip::setTrack( const MetaBundle &tags, bool force )
         m_tooltip += "<center><b>amaroK</b></center><table cellpadding='2' cellspacing='2' align='center'><tr>";
 
         m_tooltip += "%1"; //the cover gets substituted in, in tooltip()
-        m_cover = CollectionDB::instance()->albumImage( tags );
-        if ( m_cover == CollectionDB::instance()->notAvailCover() )
-            m_cover = QString::null;
+        m_cover = CollectionDB::instance()->podcastImage( tags );
+        if( m_cover.isEmpty() || m_cover == CollectionDB::instance()->notAvailCover() )
+        {
+            m_cover = CollectionDB::instance()->albumImage( tags );
+            if ( m_cover == CollectionDB::instance()->notAvailCover() )
+                m_cover = QString::null;
+        }
 
         m_tooltip += "<td><table cellpadding='0' cellspacing='0'>";
 
@@ -214,6 +221,27 @@ void TrackToolTip::slotCoverChanged( const QString &artist, const QString &album
             m_cover = QString::null;
 
         updateWidgets();
+    }
+}
+
+void TrackToolTip::slotImageChanged( const QString &remoteURL )
+{
+    PodcastEpisodeBundle peb;
+    if( CollectionDB::instance()->getPodcastEpisodeBundle( m_tags.url().url(), &peb ) )
+    {
+        PodcastChannelBundle pcb;
+        if( CollectionDB::instance()->getPodcastChannelBundle( peb.parent().url(), &pcb ) )
+        {
+            if( pcb.imageURL().url() == remoteURL )
+            {
+                m_cover = CollectionDB::instance()->podcastImage( remoteURL );
+                if( m_cover == CollectionDB::instance()->notAvailCover() )
+                    m_cover = QString::null;
+
+                updateWidgets();
+            }
+
+        }
     }
 }
 

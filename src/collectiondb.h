@@ -355,6 +355,7 @@ class CollectionDB : public QObject, public EngineObserver
          * initiates fetching of the remote image if necessary.
          * @param width the size of the image. 0 == full size, 1 == preview size
          */
+        QString podcastImage( const MetaBundle &bundle, const uint width = 1 );
         QString podcastImage( const QString &remoteURL, const uint width = 1 );
 
         /**

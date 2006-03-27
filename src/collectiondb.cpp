@@ -1087,6 +1087,22 @@ CollectionDB::setAlbumImage( const QString& artist, const QString& album, QImage
 }
 
 QString
+CollectionDB::podcastImage( const MetaBundle &bundle, uint width )
+{
+    PodcastEpisodeBundle peb;
+    if( getPodcastEpisodeBundle( bundle.url().url(), &peb ) )
+    {
+        PodcastChannelBundle pcb;
+        if( getPodcastChannelBundle( peb.parent().url(), &pcb ) )
+        {
+            return podcastImage( pcb.imageURL().url(), width );
+        }
+    }
+
+    return notAvailCover( width );
+}
+
+QString
 CollectionDB::podcastImage( const QString &remoteURL, uint width )
 {
     QString s;

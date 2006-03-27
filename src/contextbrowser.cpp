@@ -1158,8 +1158,8 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
                 "</a>"
                 "</td>"
                 "<td id='current_box-information-td' align='right'>"
-                "%6 <br />"
-                "%7 <br />"
+                "%6"
+                "%7"
                 "</td>"
                 "</table>"
                 "</div>" )
@@ -1172,8 +1172,8 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
                 << escapeHTML( peb.author().isEmpty()
                     ? i18n( "Podcast" )
                     : i18n( "Podcast by %1" ).arg( peb.author() ) )
-                << escapeHTML( peb.localUrl().isValid()
-                    ?  i18n( "(Cached)" )
+                << ( peb.localUrl().isValid()
+                    ? "<br />" + escapeHTML( i18n( "(Cached)" ) )
                     : "" )
                 )
             );

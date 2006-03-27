@@ -163,6 +163,7 @@ namespace amaroK
 
     private slots:
         void slotCoverChanged( const QString &artist, const QString &album );
+        void slotImageChanged( const QString &remoteURL );
     };
 }
 
