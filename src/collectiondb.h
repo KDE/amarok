@@ -43,7 +43,7 @@ class SqliteConfig : public DbConfig
     public:
         SqliteConfig( const QString& /* dbfile */ );
 
-        const QString dbFile() const { return m_dbfile; }
+        QString dbFile() const { return m_dbfile; }
 
     private:
         QString m_dbfile;
@@ -60,11 +60,11 @@ class MySqlConfig : public DbConfig
             const QString& /* username */,
             const QString& /* password */);
 
-        const QString host() const { return m_host; }
-        const int port() const { return m_port; }
-        const QString database() const { return m_database; }
-        const QString username() const { return m_username; }
-        const QString password() const { return m_password; }
+        QString host() const { return m_host; }
+        int port() const { return m_port; }
+        QString database() const { return m_database; }
+        QString username() const { return m_username; }
+        QString password() const { return m_password; }
 
     private:
         QString m_host;
@@ -85,11 +85,11 @@ class PostgresqlConfig : public DbConfig
             const QString& /* username */,
             const QString& /* password */);
 
-        const QString host() const { return m_host; }
-        const int port() const { return m_port; }
-        const QString database() const { return m_database; }
-        const QString username() const { return m_username; }
-        const QString password() const { return m_password; }
+        QString host() const { return m_host; }
+        int port() const { return m_port; }
+        QString database() const { return m_database; }
+        QString username() const { return m_username; }
+        QString password() const { return m_password; }
 
     private:
         QString m_host;
@@ -112,7 +112,7 @@ class DbConnection
         virtual int insert( const QString& /* statement */, const QString& /* table */ ) = 0;
         bool isInitialized() const { return m_initialized; }
         virtual bool isConnected() const = 0;
-        virtual const QString lastError() const { return "None"; }
+        virtual QString lastError() const { return "None"; }
     protected:
         bool m_initialized;
         DbConfig *m_config;
@@ -152,7 +152,7 @@ class MySqlConnection : public DbConnection
         QStringList query( const QString& /* statement */ );
         int insert( const QString& /* statement */, const QString& /* table */ );
         bool isConnected()const { return m_connected; }
-        const QString lastError() const { return m_error; }
+        QString lastError() const { return m_error; }
     private:
         void setMysqlError();
         MYSQL* m_db;
@@ -174,7 +174,7 @@ class PostgresqlConnection : public DbConnection
         QStringList query( const QString& /* statement */ );
         int insert( const QString& /* statement */, const QString& /* table */ );
         bool isConnected()const { return m_connected; }
-        const QString lastError() const { return m_error; }
+        QString lastError() const { return m_error; }
     private:
         void setPostgresqlError();
         PGconn* m_db;
@@ -212,7 +212,7 @@ class CollectionDB : public QObject, public EngineObserver
 
         static CollectionDB *instance();
 
-        const QString escapeString(QString string )
+        QString escapeString(QString string ) const
             {
                 return
                 #ifdef USE_MYSQL
@@ -222,14 +222,14 @@ class CollectionDB : public QObject, public EngineObserver
                 #endif
                     string.replace( '\'', "''" );
             }
-        const QString boolT() { if (getDbConnectionType() == DbConnection::postgresql) return "'t'"; else return "1"; }
-        const QString boolF() { if (getDbConnectionType() == DbConnection::postgresql) return "'f'"; else return "0"; }
-        const QString textColumnType() { if ( getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return "VARCHAR(255)"; }
-        const QString textColumnType(int length){ if ( getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return QString("VARCHAR(%1)").arg(length); }
+        QString boolT() const { if (getDbConnectionType() == DbConnection::postgresql) return "'t'"; else return "1"; }
+        QString boolF() const { if (getDbConnectionType() == DbConnection::postgresql) return "'f'"; else return "0"; }
+        QString textColumnType() const { if ( getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return "VARCHAR(255)"; }
+        QString textColumnType(int length) const { if ( getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return QString("VARCHAR(%1)").arg(length); }
         // We might consider using LONGTEXT type, as some lyrics could be VERY long..???
-        const QString longTextColumnType() { if ( getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return "TEXT"; }
-        const QString randomFunc() { if ( getDbConnectionType() == DbConnection::postgresql ) return "random()"; else return "RAND()"; }
-        static const QString likeCondition( const QString &right, bool anyBegin=false, bool anyEnd=false );
+        QString longTextColumnType() const { if ( getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return "TEXT"; }
+        QString randomFunc() const { if ( getDbConnectionType() == DbConnection::postgresql ) return "random()"; else return "RAND()"; }
+        static QString likeCondition( const QString &right, bool anyBegin=false, bool anyEnd=false );
 
         int getType() { return getDbConnectionType(); }
 
@@ -380,7 +380,7 @@ class CollectionDB : public QObject, public EngineObserver
         void newAmazonReloadDate( const QString& asin, const QString& locale, const QString& md5sum );
         QStringList staleImages();
 
-        const DbConnection::DbConnectionType getDbConnectionType() const { return m_dbConnType; }
+        DbConnection::DbConnectionType getDbConnectionType() const { return m_dbConnType; }
         bool isConnected();
         void releasePreviousConnection(QThread *currThread);
 

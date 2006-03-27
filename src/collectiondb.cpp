@@ -149,7 +149,7 @@ CollectionDB::~CollectionDB()
     destroy();
 }
 
-const QString
+QString
 CollectionDB::likeCondition( const QString &right, bool anyBegin, bool anyEnd )
 {
     QString escaped = right;
@@ -3741,13 +3741,13 @@ PostgresqlConnection::PostgresqlConnection( PostgresqlConfig* config )
     if ( config->username().isEmpty() )
         pApp->slotConfigAmarok("Postgresql");
 
-	conninfo = "host='" + config->host() +
-	  "' port=" + QString::number( config->port() ) +
-	  " dbname='" + config->database() +
-	  "' user='" + config->username() +
-	  "' password='" + config->password() + "'";
+    conninfo = "host='" + config->host() +
+      "' port=" + QString::number( config->port() ) +
+      " dbname='" + config->database() +
+      "' user='" + config->username() +
+      "' password='" + config->password() + "'";
 
-	m_db = PQconnectdb( conninfo.utf8() );
+    m_db = PQconnectdb( conninfo.utf8() );
 
     if (!m_db)
     {
@@ -3898,8 +3898,7 @@ void PostgresqlConnection::setPostgresqlError()
 
 SqliteConfig::SqliteConfig( const QString& dbfile )
     : m_dbfile( dbfile )
-{
-}
+{}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -3917,8 +3916,7 @@ MySqlConfig::MySqlConfig(
       m_database( database ),
       m_username( username ),
       m_password( password )
-{
-}
+{}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
