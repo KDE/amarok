@@ -176,7 +176,7 @@ void
 CollectionBrowser::slotSetFilter() //SLOT
 {
     m_timer->stop();
-
+    m_view->m_dirty = true;
     m_view->setFilter( m_searchEdit->text() );
     m_view->setTimeFilter( m_timeFilter->currentItem() );
     m_view->renderView();
@@ -307,6 +307,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         : KListView( parent )
         , m_parent( parent )
         , m_timeFilter( 0 )
+        , m_dirty( true )
 {
     DEBUG_FUNC_INFO
     m_instance = this;
@@ -369,13 +370,18 @@ CollectionView::~CollectionView() {
 void
 CollectionView::renderView()  //SLOT
 {
+    if( !m_dirty )
+        return;
+
     if( BrowserBar::instance()->currentBrowser() != m_parent )
     {
         // the collectionbrowser is intensive for sql, so we only renderView() if the tab
         // is currently active.  else, wait until user focuses it.
         debug() << "current browser is not collection, aborting renderView()" << endl;
+        m_dirty = true;
         return;
     }
+    m_dirty = false;
         
     if( childCount() )
         cacheView();
@@ -705,7 +711,10 @@ void
 CollectionView::scanDone( bool changed ) //SLOT
 {
     if( changed )
+    {
+        m_dirty = true;
         renderView();
+    }
 
     m_parent->m_scanAction->setEnabled( !AmarokConfig::monitorChanges() );
 }
@@ -1097,6 +1106,7 @@ CollectionView::presetMenu( int id )  //SLOT
             break;
     }
 
+    m_dirty = true;
     renderView();
 }
 
@@ -1130,7 +1140,10 @@ CollectionView::cat1Menu( int id, bool rerender )  //SLOT
     }
     updateTrackDepth();
     if ( rerender )
+    {
+        m_dirty = true;
         renderView();
+    }
 }
 
 
@@ -1157,7 +1170,10 @@ CollectionView::cat2Menu( int id, bool rerender )  //SLOT
     }
     updateTrackDepth();
     if ( rerender )
+    {
+        m_dirty = true;
         renderView();
+    }
 }
 
 
@@ -1170,7 +1186,10 @@ CollectionView::cat3Menu( int id, bool rerender )  //SLOT
     updateColumnHeader();
     updateTrackDepth();
     if ( rerender )
+    {
+        m_dirty = true;
         renderView();
+    }
 }
 
 
@@ -1415,7 +1434,10 @@ CollectionView::setViewMode( int mode, bool rerender )
 
     m_viewMode = mode;
     if ( rerender )
+    {
+        m_dirty = true;
         renderView();
+    }
 }
 
 
@@ -1505,6 +1527,7 @@ CollectionView::deleteSelectedFiles() //SLOT
 
         // we must handle delete errors somehow
         CollectionDB::instance()->removeSongs( urls );
+        m_dirty = true;
         QTimer::singleShot( 0, this, SLOT( renderView() ) );
     }
 }
@@ -1655,6 +1678,7 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
                     "Sorry, %n files could not be organized.", skipped.count() );
             amaroK::StatusBar::instance()->shortLongMessage( shortMsg, longMsg, KDE::StatusBar::Sorry );
         }
+        m_dirty = true;
         QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
         amaroK::StatusBar::instance()->endProgressOperation( this );
     }
@@ -2434,6 +2458,7 @@ CollectionView::eventFilter( QObject* o, QEvent* e )
             if ( columnWidth( returnID ) == 0 ) {
                 adjustColumn( returnID );   // show column
                 header()->setResizeEnabled( true, returnID );
+                m_dirty = true;
                 renderView();
                 }
             else {

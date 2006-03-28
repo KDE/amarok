@@ -209,6 +209,7 @@ class CollectionView : public KListView
         int m_cat3;
         int m_trackDepth;
         int m_viewMode;
+        bool m_dirty; // we use this to avoid re-rendering the view when unnecessary (eg, browser is not visible)
 
         QValueList<QStringList> m_cacheOpenItemPaths;
         QString                 m_cacheViewportTopItem;
