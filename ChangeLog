@@ -25,6 +25,14 @@ VERSION 1.4-beta3:
     * Add autocompletion to the composer field in the tag dialog. (BR 123026)
 
   CHANGES:
+    * Disable detection of iPod model and thus solve g_object_get related
+      problems. (BR 121990)
+    * Don't block GUI when trying to transfer large numbers of items already
+      on media device. (BR 123570)
+    * Update playlist items when their location is changed during organizing
+      files. (BR 123752)
+    * Recursively add tracks when directories are dropped to the media browser 
+      and the collection browser. (BR 123982)
     * Visualizations now receive stereo data from amaroK. (BR 118765)
     * Upgraded internal SQLite library to version 3.3.4.
     * Podcast information is stored in the database.
@@ -32,6 +40,9 @@ VERSION 1.4-beta3:
       Peter C. Ndikuwera <pndiku@gmail.com>. (BR 118304)
 
   BUGFIXES:
+    * Fix error with 'Back' link when browsing related artists. (BR 123227)
+    * Files with names containing '#' or '?' from smart playlists would not
+      get transferred to media devcice. (BR 122488)
     * Stop Playing After Track option wouldn't be shown for the right tracks,
       when there were queued tracks. Patch by Marcelo Penna Guerra
       <eu@marcelopenna.org>. (BR 124297)
@@ -51,7 +62,7 @@ VERSION 1.4-beta3:
       earlier versions of Plastik.
     * Fixed a huge memory leak when using xine-engine with crossfading.
       (BR 119230)
-    * Sometimes iRiver devices would crash upon disconnecting.
+    * Sometimes iRiver devices would crash upon disconnecting. (BR 123416)
     * Adjust the Astraweb lyrics script for a layout change on the site. Patch
       by Andrew Turner <andrewturner512+kdebugs googlemail com>. (BR 123636)
     * Directory selection would incorrectly highlight a directory in a
@@ -80,6 +91,8 @@ VERSION 1.4-beta2:
       Hurrelmann <j@outpo.st>.
 
   CHANGES:
+    * Summarize transfer failures to media devices instead of a message for each.
+      (BR 122491)
     * Don't list the <no engine> entry in the engine selection widget, when
       it's not the active engine. Makes no sense to select this dummy engine.
     * The aRts and GStreamer-0.8 engines have been removed for being obsolete.
@@ -89,6 +102,11 @@ VERSION 1.4-beta2:
       disabled. (BR 116173)
 
   BUGFIXES:
+    * Handle .m4a files as audio when transferring to iPod video. (BR 122492)
+    * Smart playlists would not transfer to media devices. (BR 122838)
+    * Assume that .mp4 files are audio only when transferring to iPod. (BR 122591)
+    * Dereference symbolic links when transferring to iPod. (BR 123206)
+    * Correct domain for japanese wikipedia locale. (BR 122319)
     * When deleting a downloaded podcast, the icon wouldn't be updated.
       (BR 122440)
     * Manage Files would create duplicates on collection. (BR 122519)
