@@ -265,8 +265,8 @@ ContextBrowser::ContextBrowser( const char *name )
              this, SLOT( tagsChanged( const MetaBundle& ) ) );
     connect( CollectionDB::instance(), SIGNAL( imageFetched( const QString& ) ),
              this, SLOT( imageFetched( const QString& ) ) );
-
-    showContext( KURL( "current://track" ) );
+             
+//     showContext( KURL( "current://track" ) );
 }
 
 
@@ -640,17 +640,28 @@ void ContextBrowser::wheelDelta( int delta )
 // PRIVATE SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
 
-void ContextBrowser::tabChanged( QWidget *page )
+void ContextBrowser::browserActivated() //slot
 {
-    setFocusProxy( page ); //so focus is given to a sensible widget when the tab is opened
-    if ( m_dirtyCurrentTrackPage && ( page == m_contextTab ) )
+    // We don't check if current browser is context, because each of the following does so.
+    if( currentPage() == m_contextTab )
         showCurrentTrack();
-    else if ( m_dirtyLyricsPage && ( page == m_lyricsTab ) )
+    else if( currentPage() == m_lyricsTab )
         showLyrics();
-    else if ( m_dirtyWikiPage && ( page == m_wikiTab ) )
+    else if( currentPage() == m_wikiTab )
         showWikipedia();
 }
 
+void ContextBrowser::tabChanged( QWidget *page )
+{
+DEBUG_FUNC_INFO
+    setFocusProxy( page ); //so focus is given to a sensible widget when the tab is opened
+    if ( page == m_contextTab )
+        showCurrentTrack();
+    else if ( page == m_lyricsTab )
+        showLyrics();
+    else if ( page == m_wikiTab )
+        showWikipedia();
+}
 
 void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& point )
 {
@@ -1047,6 +1058,14 @@ ContextBrowser::contextHistoryBack() //SLOT
 
 void ContextBrowser::showCurrentTrack() //SLOT
 {
+    if( BrowserBar::instance()->currentBrowser() != this )
+    {
+        debug() << "current browser is not context, aborting showCurrentTrack()" << endl;
+        m_dirtyCurrentTrackPage = true;
+        return;
+    }
+    debug() << "Redering showCurrentTrack()" << endl;
+    
     if( m_contextURL.protocol() == "current" && !EngineController::engine()->loaded() )
     {
         showHome();
@@ -2174,6 +2193,15 @@ void ContextBrowser::showScanning()
 
 void ContextBrowser::showLyrics( const QString &url )
 {
+    if( BrowserBar::instance()->currentBrowser() != this )
+    {
+        debug() << "current browser is not context, aborting showLyrics()" << endl;
+        m_dirtyLyricsPage = true;
+        return;
+    }
+    
+    debug() << "rendering showLyrics()" << endl;
+
     if ( currentPage() != m_lyricsTab )
     {
         blockSignals( true );
@@ -2556,6 +2584,13 @@ ContextBrowser::showWikipediaEntry( const QString &entry )
 
 void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
 {
+    if( BrowserBar::instance()->currentBrowser() != this )
+    {
+        debug() << "current browser is not context, aborting showWikipedia()" << endl;
+        m_dirtyWikiPage = true;
+        return;
+    }
+
     if ( currentPage() != m_wikiTab )
     {
         blockSignals( true );
