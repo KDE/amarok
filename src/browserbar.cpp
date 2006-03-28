@@ -58,6 +58,7 @@ namespace amaroK
     };
 }
 
+BrowserBar* BrowserBar::s_instance = 0;
 
 BrowserBar::BrowserBar( QWidget *parent )
         : QWidget( parent, "BrowserBar" )
@@ -70,6 +71,7 @@ BrowserBar::BrowserBar( QWidget *parent )
         , m_lastIndex( -1 )
         , m_mapper( new QSignalMapper( this ) )
 {
+    s_instance = this;
     m_pos = m_tabBar->sizeHint().width() + 5; //5 = aesthetic spacing
 
     m_tabBar->setStyle( MultiTabBar::AMAROK );
@@ -264,6 +266,8 @@ BrowserBar::showHideBrowser( int index )
             adjustWidgetSizes();
         }
     }
+    
+    emit browserActivated( index );
 }
 
 void

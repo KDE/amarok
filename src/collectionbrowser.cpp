@@ -9,6 +9,7 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
+#include "browserbar.h"
 #include "browserToolBar.h"
 #include "clicklineedit.h"
 #include "collectionbrowser.h"
@@ -332,6 +333,8 @@ CollectionView::CollectionView( CollectionBrowser* parent )
              this,                      SLOT( scanStarted() ) );
     connect( CollectionDB::instance(), SIGNAL( scanDone( bool ) ),
              this,                      SLOT( scanDone( bool ) ) );
+    connect( BrowserBar::instance(),   SIGNAL( browserActivated( int ) ),
+             this,                      SLOT( renderView() ) ); // renderView() checks if current tab is this
 
     connect( this,           SIGNAL( expanded( QListViewItem* ) ),
              this,             SLOT( slotExpand( QListViewItem* ) ) );
@@ -366,7 +369,15 @@ CollectionView::~CollectionView() {
 void
 CollectionView::renderView()  //SLOT
 {
-    if ( childCount() )
+    if( BrowserBar::instance()->currentBrowser() != m_parent )
+    {
+        // the collectionbrowser is intensive for sql, so we only renderView() if the tab
+        // is currently active.  else, wait until user focuses it.
+        debug() << "current browser is not collection, aborting renderView()" << endl;
+        return;
+    }
+        
+    if( childCount() )
         cacheView();
 
     clear();

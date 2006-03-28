@@ -11,6 +11,7 @@
 #ifndef BROWSERBAR_H
 #define BROWSERBAR_H
 
+#include "amarok_export.h"  //LIBAMAROK_EXPORT
 #include "engineobserver.h" //baseclass
 #include <qwidget.h>        //baseclass
 #include <qvaluevector.h>   //stack allocated
@@ -32,6 +33,7 @@ public:
     BrowserBar( QWidget *parent );
    ~BrowserBar();
 
+    LIBAMAROK_EXPORT static BrowserBar* instance() { return s_instance; }
     QVBox *container() const { return m_playlistBox; }
 
     QWidget *browser( const QString& ) const;
@@ -62,6 +64,9 @@ public slots:
     void showHideVisibleBrowser( int );
     void closeCurrentBrowser() { showHideBrowser( m_currentIndex ); }
 
+signals:
+    void browserActivated( int );
+
 private:
     int indexForName( const QString& ) const;
 
@@ -70,6 +75,7 @@ private:
 
     static const int DEFAULT_HEIGHT = 50;
 
+    LIBAMAROK_EXPORT static BrowserBar    *s_instance;
     uint           m_pos;         ///the x-axis position of m_divider
     QVBox         *m_playlistBox; ///parent to playlist, playlist filter and toolbar
     QWidget       *m_divider;     ///a qsplitter like widget

@@ -60,12 +60,12 @@ class CollectionBrowser: public QVBox
         enum CatMenuId { IdAlbum = 1, IdArtist = 2, IdGenre = 4, IdYear = 8 , IdScan = 16, IdNone = 32,
                     IdArtistAlbum = 64, IdGenreArtist = 128, IdGenreArtistAlbum = 256, IdVisYearAlbum = 512, IdArtistVisYearAlbum = 1024 };
 
-        class KToolBar* m_toolbar;
-        KAction* m_configureAction;
-        KAction* m_scanAction;
-        KRadioAction* m_treeViewAction;
-        KRadioAction* m_flatViewAction;
-        class KActionMenu* m_tagfilterMenuButton;
+        class KToolBar    *m_toolbar;
+        KAction           *m_configureAction;
+        KAction           *m_scanAction;
+        KRadioAction      *m_treeViewAction;
+        KRadioAction      *m_flatViewAction;
+        class KActionMenu *m_tagfilterMenuButton;
 
         KPopupMenu* m_categoryMenu;
         KPopupMenu* m_cat1Menu;
@@ -123,10 +123,10 @@ class CollectionView : public KListView
 
         LIBAMAROK_EXPORT static CollectionView* instance() { return m_instance; }
 
-        void setFilter( const QString &filter ) { m_filter = filter; }
+        void setFilter( const QString &filter )     { m_filter = filter; }
         void setTimeFilter( const uint timeFilter ) { m_timeFilter = timeFilter; }
-        QString filter() { return m_filter; }
-        uint timeFilter() { return m_timeFilter; }
+        QString filter()                            { return m_filter; }
+        uint    timeFilter()                        { return m_timeFilter; }
         CollectionItem* currentItem() { return static_cast<CollectionItem*>( KListView::currentItem() ); }
 
         int trackDepth() { return m_trackDepth; }
