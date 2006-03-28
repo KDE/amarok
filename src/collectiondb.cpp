@@ -4607,14 +4607,7 @@ QueryBuilder::groupBy( int table, Q_INT64 value )
 void
 QueryBuilder::setLimit( int startPos, int length )
 {
-    if (CollectionDB::instance()->getType() == DbConnection::postgresql)
-    {
-        m_limit = QString( " OFFSET %1 LIMIT %2 " ).arg( startPos ).arg( length );
-    }
-    else
-    {
-        m_limit = QString( " LIMIT %1, %2 " ).arg( startPos ).arg( length );
-    }
+    m_limit = QString( " LIMIT %2 OFFSET %1 " ).arg( startPos ).arg( length );
 }
 
 
