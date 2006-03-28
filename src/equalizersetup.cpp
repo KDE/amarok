@@ -90,14 +90,14 @@ EqualizerSetup::EqualizerSetup()
     // END Presets
 
     // BEGIN GroupBox
-    QGroupBox* groupBoxSliders = new QGroupBox( 1, Qt::Vertical, i18n("Enable Equalizer"), vbox );
-    groupBoxSliders->setCheckable( true );
-    groupBoxSliders->setChecked( AmarokConfig::equalizerEnabled() );
-    groupBoxSliders->setInsideMargin( KDialog::marginHint() );
-    connect( groupBoxSliders, SIGNAL( toggled( bool ) ), SLOT( setEqualizerEnabled( bool ) ) );
+    m_groupBoxSliders = new QGroupBox( 1, Qt::Vertical, i18n("Enable Equalizer"), vbox );
+    m_groupBoxSliders->setCheckable( true );
+    m_groupBoxSliders->setChecked( AmarokConfig::equalizerEnabled() );
+    m_groupBoxSliders->setInsideMargin( KDialog::marginHint() );
+    connect( m_groupBoxSliders, SIGNAL( toggled( bool ) ), SLOT( setEqualizerEnabled( bool ) ) );
 
     // Helper widget for layouting inside the groupbox
-    QWidget* slidersLayoutWidget = new QWidget( groupBoxSliders );
+    QWidget* slidersLayoutWidget = new QWidget( m_groupBoxSliders );
     slidersLayoutWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     QGridLayout* slidersGridLayout = new QGridLayout( slidersLayoutWidget, 1, 1, 0, KDialog::spacingHint() );
     // END GroupBox
@@ -172,6 +172,12 @@ EqualizerSetup::~EqualizerSetup()
 {
     savePresets();
     s_instance = 0;
+}
+
+void
+EqualizerSetup::setActive( bool active )
+{
+    m_groupBoxSliders->setChecked( active );
 }
 
 void

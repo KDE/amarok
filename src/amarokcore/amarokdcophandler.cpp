@@ -375,6 +375,9 @@ namespace amaroK
     {
         EngineController::engine()->setEqualizerEnabled( active );
         AmarokConfig::setEqualizerEnabled( active );
+
+        if( EqualizerSetup::isInstantiated() )
+            EqualizerSetup::instance()->setActive( active );
     }
 
     void DcopPlayerHandler::setEqualizerPreset( QString name )

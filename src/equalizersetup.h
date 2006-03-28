@@ -22,6 +22,7 @@
 #include <kdialogbase.h>
 
 class EqualizerGraph;
+class QGroupBox;
 class QCheckBox;
 class KComboBox;
 class KPopupMenu;
@@ -41,8 +42,9 @@ class EqualizerSetup : public KDialogBase
        ~EqualizerSetup();
 
         // for use by DCOP
-        void setPreset( QString name );
+        void setActive( bool active );
         void setBands( int preamp, QValueList<int> gains );
+        void setPreset( QString name );
 
     private slots:
         void presetChanged( int id );
@@ -65,8 +67,10 @@ class EqualizerSetup : public KDialogBase
         EqualizerGraph* m_equalizerGraph;
         QPtrList<amaroK::Slider> m_bandSliders;
 
+        QGroupBox*      m_groupBoxSliders;
         KComboBox*      m_presetCombo;
         uint            m_manualPos;
+
         QMap< QString, QValueList<int> > m_presets;
 };
 
