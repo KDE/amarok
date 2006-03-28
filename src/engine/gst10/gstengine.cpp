@@ -592,6 +592,7 @@ GstEngine::seek( uint ms )  //SLOT
 
     if (!gst_element_seek(m_gst_pipeline, 1.0, GST_FORMAT_TIME, GST_SEEK_FLAG_FLUSH, GST_SEEK_TYPE_SET, ms*GST_MSECOND,
        GST_SEEK_TYPE_NONE, GST_CLOCK_TIME_NONE)) kdDebug() << "Seek failed" << endl; 
+    else clearScopeQ();
     gst_element_get_state(m_gst_pipeline, NULL, NULL, 100*GST_MSECOND);
 }
 
