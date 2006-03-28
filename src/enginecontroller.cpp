@@ -406,11 +406,11 @@ void EngineController::seek( int ms ) //SLOT
 
 void EngineController::seekRelative( int ms ) //SLOT
 {
-  if( m_engine->state() == Engine::Playing )
-  {
-    int newPos = m_engine->position() + ms;
-    seek( newPos <= 0 ? 1 : newPos );
-  }
+    if( m_engine->state() != Engine::Empty )
+    {
+        int newPos = m_engine->position() + ms;
+        seek( newPos <= 0 ? 1 : newPos );
+    }
 }
 
 
