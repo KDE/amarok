@@ -305,7 +305,7 @@
     </entry>
     <entry key="Organize Directory" type="Int">
         <label>Index of collection folder destination for Organize files.</label>
-        <whatsthis>The ID of the collection folder destination fo Organize files.</whatsthis>
+        <whatsthis>The ID of the collection folder destination for Organize files.</whatsthis>
         <default>0</default>
     </entry>
     <entry key="Vfat Compatible" type="Bool">
