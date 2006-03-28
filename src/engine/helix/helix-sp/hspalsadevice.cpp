@@ -342,11 +342,6 @@ HSPAudioDevice::_Write( const HXAudioData* pAudioData )
    }
 
 
-   ULONG32 bytesavail = 0;
-   // don't write anything to the device unless we can fit the whole thing
-   while ( ( (res = GetRoomOnDevice(bytesavail)) == HXR_OK ) && bytesavail < len )
-      usleep(10000);
-
    if (!sync())
       err = WriteBytes(data, len, bytes);
 
