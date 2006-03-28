@@ -640,17 +640,6 @@ void ContextBrowser::wheelDelta( int delta )
 // PRIVATE SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
 
-void ContextBrowser::browserActivated() //slot
-{
-    // We don't check if current browser is context, because each of the following does so.
-    if( currentPage() == m_contextTab )
-        showCurrentTrack();
-    else if( currentPage() == m_lyricsTab )
-        showLyrics();
-    else if( currentPage() == m_wikiTab )
-        showWikipedia();
-}
-
 void ContextBrowser::tabChanged( QWidget *page )
 {
 DEBUG_FUNC_INFO
