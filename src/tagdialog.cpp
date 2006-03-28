@@ -1085,7 +1085,7 @@ TagDialog::writeTag( MetaBundle mb, bool updateCB )
     QCString path = QFile::encodeName( mb.url().path() );
     if ( !TagLib::File::isWritable( path ) ) {
         amaroK::StatusBar::instance()->longMessage( i18n(
-           "TagLib claims %1 file is not writable." ).arg( path ), KDE::StatusBar::Error );
+           "The file %1 is not writable." ).arg( path ), KDE::StatusBar::Error );
         return false;
     }
 
