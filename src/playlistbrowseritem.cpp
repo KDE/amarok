@@ -1941,7 +1941,7 @@ PodcastEpisode::setNew( const bool &n )
 
 void PodcastEpisode::setListened( const bool &n )
 {
-    setNew( n );
+    setNew( !n );
 }
 
 void
