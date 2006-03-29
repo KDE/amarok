@@ -7,7 +7,7 @@ VERSION 1.4-beta3:
   FEATURES:
     * Ease navigation with track slider below playlist window by showing mood.
       (BR 121715)
-    * Show some context information for podcasts.
+    * Show context information for podcasts.
     * Filebrowser: toolbar button to change to the directory of the currently
       playing song. (BR 115479)
     * Added "Play Audio CD" entry to the amaroK menu. (BR 103409)
@@ -25,6 +25,7 @@ VERSION 1.4-beta3:
     * Add autocompletion to the composer field in the tag dialog. (BR 123026)
 
   CHANGES:
+    * Optimise: Only rerender the CollectionBrowser when relevant.
     * Disable detection of iPod model and thus solve g_object_get related
       problems. (BR 121990)
     * Don't block GUI when trying to transfer large numbers of items already
