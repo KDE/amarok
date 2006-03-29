@@ -869,9 +869,9 @@ CollectionDB::createDragPixmap( const KURL::List &urls )
     const int maxCovers = 4; // maximum number of cover images to show
     const int coverSpacing = 20; // spacing between stacked covers
     const int fontSpacing = 5; // spacing between covers and info text
-    const int minWidth = 300; // minimum width (such that info text fits)
-    const int coverW = AmarokConfig::coverPreviewSize() > 100 ? 100 : AmarokConfig::coverPreviewSize(); // size for "..." cover
+    const int coverW = AmarokConfig::coverPreviewSize() > 100 ? 100 : AmarokConfig::coverPreviewSize();
     const int coverH = coverW;
+    const int margin = 2; //px margin
 
     int covers = 0;
     int songs = 0;
@@ -938,7 +938,8 @@ CollectionDB::createDragPixmap( const KURL::List &urls )
     // font... TODO: from config?
     QFont font;
     QFontMetrics fm( font );
-    int fontH = fm.height() + 2;
+    int fontH = fm.height() + margin;
+    int minWidth = fm.width( text ) + margin*2; //margin either side
 
     if ( covers > 0 )
     {
@@ -984,10 +985,10 @@ CollectionDB::createDragPixmap( const KURL::List &urls )
     QPainter p;
     p.begin( &pmtext );
     p.fillRect( 0, 0, pixmapW, fontH, QBrush( Qt::black ) ); // border
-    p.fillRect( 1, 1, pixmapW-2, fontH-2, palette.brush( QPalette::Normal, QColorGroup::Background ) );
+    p.fillRect( 1, 1, pixmapW-margin, fontH-margin, palette.brush( QPalette::Normal, QColorGroup::Background ) );
     p.setBrush( palette.color( QPalette::Normal, QColorGroup::Text ) );
     p.setFont( font );
-    p.drawText( 2, fm.ascent() + 1, text );
+    p.drawText( margin, fm.ascent() + 1, text );
     p.end();
 
     QBitmap pmtextMask(pixmapW, fontH);
