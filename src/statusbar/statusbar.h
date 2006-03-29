@@ -43,6 +43,8 @@ namespace amaroK
 
         static StatusBar* instance() { return s_instance; }
 
+        Slider *slider() { return m_slider; }
+
     public slots:
         /** update total song count */
         void slotItemCountChanged( int newCount, int newLength, int, int, int, int ); //TODO improve

@@ -346,7 +346,7 @@ void amaroK::TrackSlider::engineNewMetaData( const MetaBundle &bundle, bool /*tr
     {
         QValueVector<QColor> array = amaroK::readMood(bundle.url().path());
 #ifdef HAVE_EXSCALIBAR
-        if(!array.size() && AmarokConfig::calculateMoodOnPlay())
+        if(!array.size())
         {
             CreateMood *c = new CreateMood( bundle.url().path() );
             connect(c, SIGNAL(completed(const QString)), SLOT(newMoodData()));
