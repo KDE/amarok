@@ -24,37 +24,41 @@
 #include "xmlloader_p.h"
 #include "xmlloader_p.moc"
 
-MetaBundleXmlLoader::MetaBundleXmlLoader(): m_target( 0 )
+MetaBundle::XmlLoader::XmlLoader(): m_aborted( false ), m_target( 0 )
 {
     m_reader.setContentHandler( this );
     m_reader.setErrorHandler( this );
 }
 
-MetaBundleXmlLoader::~MetaBundleXmlLoader() {}
+MetaBundle::XmlLoader::~XmlLoader() {}
 
-BundleList MetaBundleXmlLoader::loadBundles( QXmlInputSource *source, bool *ok ) //static
+bool MetaBundle::XmlLoader::load( QXmlInputSource *source, QObject *target )
+{
+    m_target = target;
+    return m_reader.parse( source, false );
+}
+
+void MetaBundle::XmlLoader::abort()
+{
+    m_aborted = true;
+}
+
+QString MetaBundle::XmlLoader::lastError() const
+{
+    return m_lastError;
+}
+
+BundleList MetaBundle::XmlLoader::loadBundles( QXmlInputSource *source, bool *ok ) //static
 {
     return SimpleLoader( source, ok ).bundles;
 }
 
-bool MetaBundleXmlLoader::load( QXmlInputSource *source, QObject *target )
-{
-    m_target = target;
-    const bool success = m_reader.parse( source, false );
-    if( !success && target )
-    {
-        BundleLoadedEvent e( true );
-        QApplication::sendEvent( target, &e );
-    }
-    return success;
-}
-
-void MetaBundleXmlLoader::loadInThread( QXmlInputSource *source, QObject *target ) //static
+void MetaBundle::XmlLoader::loadInThread( QXmlInputSource *source, QObject *target ) //static
 {
     ( new ThreadedLoader( source, target ) )->start();
 }
 
-void MetaBundleXmlLoader::newAttribute( const QString &key, const QString &value )
+void MetaBundle::XmlLoader::newAttribute( const QString &key, const QString &value )
 {
     if( key == "url" )
         m_bundle.setUrl( value );
@@ -62,28 +66,28 @@ void MetaBundleXmlLoader::newAttribute( const QString &key, const QString &value
         m_attributes << QPair<QString, QString>( key, value );
 }
 
-void MetaBundleXmlLoader::newTag( const QString &name, const QString &value )
+void MetaBundle::XmlLoader::newTag( const QString &name, const QString &value )
 {
     static int start = 0; //most of the time, the columns should be in order
-    for( int i = start; i < MetaBundle::NUM_COLUMNS; ++i )
-        if( name == MetaBundle::exactColumnName( i ) )
+    for( int i = start; i < NUM_COLUMNS; ++i )
+        if( name == exactColumnName( i ) )
         {
             switch( i )
             {
-                case MetaBundle::Artist:
-                case MetaBundle::Composer:
-                case MetaBundle::Year:
-                case MetaBundle::Album:
-                case MetaBundle::DiscNumber:
-                case MetaBundle::Track:
-                case MetaBundle::Title:
-                case MetaBundle::Genre:
-                case MetaBundle::Comment:
-                case MetaBundle::Length:
-                case MetaBundle::Bitrate:
-                case MetaBundle::Filesize:
-                case MetaBundle::Type:
-                case MetaBundle::SampleRate:
+                case Artist:
+                case Composer:
+                case Year:
+                case Album:
+                case DiscNumber:
+                case Track:
+                case Title:
+                case Genre:
+                case Comment:
+                case Length:
+                case Bitrate:
+                case Filesize:
+                case Type:
+                case SampleRate:
                     m_bundle.setExactText( i, value );
                     continue;
 
@@ -94,24 +98,24 @@ void MetaBundleXmlLoader::newTag( const QString &name, const QString &value )
             return;
         }
     for( int i = 0; i < start; ++i )
-        if( m_currentElement == MetaBundle::exactColumnName( i ) )
+        if( m_currentElement == exactColumnName( i ) )
         {
             switch( i )
             {
-                case MetaBundle::Artist:
-                case MetaBundle::Composer:
-                case MetaBundle::Year:
-                case MetaBundle::Album:
-                case MetaBundle::DiscNumber:
-                case MetaBundle::Track:
-                case MetaBundle::Title:
-                case MetaBundle::Genre:
-                case MetaBundle::Comment:
-                case MetaBundle::Length:
-                case MetaBundle::Bitrate:
-                case MetaBundle::Filesize:
-                case MetaBundle::Type:
-                case MetaBundle::SampleRate:
+                case Artist:
+                case Composer:
+                case Year:
+                case Album:
+                case DiscNumber:
+                case Track:
+                case Title:
+                case Genre:
+                case Comment:
+                case Length:
+                case Bitrate:
+                case Filesize:
+                case Type:
+                case SampleRate:
                     m_bundle.setExactText( i, value );
                     continue;
 
@@ -121,22 +125,30 @@ void MetaBundleXmlLoader::newTag( const QString &name, const QString &value )
             start = i+1;
             return;
         }
-
-    return;
 }
 
-void MetaBundleXmlLoader::bundleLoaded()
+void MetaBundle::XmlLoader::bundleLoaded()
 {
     m_bundle.checkExists();
     emit newBundle( m_bundle, m_attributes );
     if( m_target )
     {
-        BundleLoadedEvent e( false, m_bundle, m_attributes );
+        BundleLoadedEvent e( m_bundle, m_attributes );
         QApplication::sendEvent( m_target, &e );
     }
 }
 
-bool MetaBundleXmlLoader::startElement( const QString &, const QString &localName, const QString &, const QXmlAttributes &atts )
+void MetaBundle::XmlLoader::errorEncountered( const QString &, int, int )
+{
+    emit error( m_lastError );
+    if( m_target )
+    {
+        BundleLoadedEvent e( m_lastError );
+        QApplication::sendEvent( m_target, &e );
+    }
+}
+
+bool MetaBundle::XmlLoader::startElement( const QString &, const QString &localName, const QString &, const QXmlAttributes &atts )
 {
     if( localName == "item" )
     {
@@ -153,13 +165,15 @@ bool MetaBundleXmlLoader::startElement( const QString &, const QString &localNam
     return true;
 }
 
-bool MetaBundleXmlLoader::endElement( const QString &, const QString &localName, const QString & )
+bool MetaBundle::XmlLoader::endElement( const QString &, const QString &localName, const QString & )
 {
     if( localName == "item" )
     {
         bundleLoaded();
         m_bundle.clear();
         m_attributes.clear();
+        if( m_aborted )
+            return false;
     }
 
     m_currentElement = QString::null;
@@ -167,7 +181,7 @@ bool MetaBundleXmlLoader::endElement( const QString &, const QString &localName,
     return true;
 }
 
-bool MetaBundleXmlLoader::characters( const QString &ch )
+bool MetaBundle::XmlLoader::characters( const QString &ch )
 {
     if( m_currentElement.isNull() )
         return true;
@@ -177,18 +191,22 @@ bool MetaBundleXmlLoader::characters( const QString &ch )
     return true;
 }
 
-bool MetaBundleXmlLoader::endDocument()
+bool MetaBundle::XmlLoader::endDocument()
 {
     if( !m_bundle.isEmpty() )
         bundleLoaded();
 
-    return true;
+    return !m_aborted;
 }
 
-bool MetaBundleXmlLoader::fatalError( const QXmlParseException& )
+bool MetaBundle::XmlLoader::fatalError( const QXmlParseException &e )
 {
     if( !m_bundle.isEmpty() )
         bundleLoaded();
+
+    m_lastError = QString( "Error loading XML: \"%1\", at line %2, column %3." )
+                  .arg( e.message() ).arg( e.lineNumber() ).arg( e.columnNumber() );
+    errorEncountered( e.message(), e.lineNumber(), e.columnNumber() );
 
     return false;
 }

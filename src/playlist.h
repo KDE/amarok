@@ -88,7 +88,10 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         static const int Unique     = 16;    /// don't insert anything already in the playlist
 
         // it's really just the *ListView parts we want to hide...
-        QScrollView *qscrollview() const { return (QScrollView*)this; }
+        QScrollView *qscrollview() const
+        {
+            return reinterpret_cast<QScrollView*>( const_cast<Playlist*>( this ) );
+        }
 
         /** Add media to the playlist
          *  @param options you can OR these together, see the enum
@@ -97,11 +100,11 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void insertMediaSql( const QString& sql, int options = Append );
 
         /// Dynamic mode functions
-        void addSpecialTracks( uint songCount, const int type = Party::RANDOM );
+        void addSpecialTracks( uint songCount, const int type = DynamicMode::RANDOM );
         void addSpecialCustomTracks( uint songCount );
-        void adjustPartyUpcoming( bool saveUndo = false, const int type = Party::RANDOM );
-        void adjustPartyPrevious( uint songCount, bool saveUndo = false );
-        void advancePartyTrack( PlaylistItem *item = 0 );
+        void adjustDynamicUpcoming( bool saveUndo = false, const int type = DynamicMode::RANDOM );
+        void adjustDynamicPrevious( uint songCount, bool saveUndo = false );
+        void advanceDynamicTrack( PlaylistItem *item = 0 );
         void alterHistoryItems( bool enable = false, bool entire = false );
 
         void burnPlaylist      ( int projectType = -1 );
@@ -115,6 +118,15 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void saveXML( const QString& );
         int  totalTrackCount() const;
         BundleList nextTracks() const;
+
+        //const so you don't change it behind Playlist's back, use modifyDynamicMode() for that
+        const DynamicMode *dynamicMode() const;
+
+        //modify the returned DynamicMode, then finishedModifying() it when done
+        DynamicMode *modifyDynamicMode();
+
+        //call this every time you modifyDynamicMode(), otherwise you'll get memory leaks and/or crashes
+        void finishedModifying( DynamicMode *mode );
 
         int  stopAfterMode() const;
 
@@ -170,6 +182,7 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void itemCountChanged( int newCount, int newLength, int visCount, int visLength, int selCount, int selLength );
         void queueChanged( const PLItemList &queued, const PLItemList &dequeued );
         void columnsChanged();
+        void dynamicModeChanged( const DynamicMode *newMode );
 
     public slots:
         void activateByIndex(int);
@@ -188,7 +201,11 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void redo();
         void removeDuplicates();
         void removeSelectedItems();
-        void repopulate();
+        void setDynamicMode( DynamicMode *mode );
+        void loadDynamicMode( DynamicMode *mode ); //saveUndoState() + setDynamicMode() + repopulate()
+        void disableDynamicMode() { setDynamicMode( 0 ); }
+        void editActiveDynamicMode();
+        void repopulate( bool ignorethisparameter = true );
         void safeClear();
         void scoreChanged( const QString &path, int score );
         void ratingChanged( const QString &path, int rating );
@@ -342,11 +359,12 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         QStringList   m_redoList;
         uint          m_undoCounter;
 
+        DynamicMode  *m_dynamicMode;
         KURL::List    m_queueList;
         PlaylistItem *m_stopAfterTrack;
         bool          m_showHelp;
         bool          m_stateSwitched;
-        bool          m_partyDirt;          //So we dont call advancePartyTrack() on activate()
+        bool          m_dynamicDirt;          //So we dont call advanceDynamicTrack() on activate()
         bool          m_queueDirt;          //When queuing disabled items, we need to place the marker on the newly inserted item
         bool          m_undoDirt;           //Make sure we dont repopulate the playlist when dynamic mode and undo()
 

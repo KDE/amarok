@@ -152,7 +152,6 @@ PlaylistWindow::PlaylistWindow()
     new amaroK::RandomAction( ac );
     new amaroK::EntireAlbumsAction( ac );
     new amaroK::FavorAction( ac );
-    new amaroK::DynamicAction( ac );
     new amaroK::VolumeAction( ac );
 
     if( K3bExporter::isAvailable() )
@@ -190,10 +189,8 @@ void PlaylistWindow::init()
 
     m_browsers = new BrowserBar( this );
 
-    { //<Dynamic Mode Status Bar>
-        DynamicBar *bar = new DynamicBar( m_browsers->container());
-        connect(actionCollection()->action("dynamic_mode"), SIGNAL(toggled(bool)), bar, SLOT(toggledDynamic(bool)));
-    } //</Dynamic Mode Status Bar>
+    //<Dynamic Mode Status Bar />
+    DynamicBar *dynamicBar = new DynamicBar( m_browsers->container());
 
     { //<Search LineEdit>
         KToolBar *bar = new KToolBar( m_browsers->container(), "NotMainToolBar" );
@@ -225,6 +222,7 @@ void PlaylistWindow::init()
 
 
     QFrame *playlist = new Playlist( m_browsers->container() );
+    dynamicBar->init();
     m_toolbar = new amaroK::ToolBar( m_browsers->container(), "mainToolBar" );
     m_toolbar->setShown( AmarokConfig::showToolbar() );
     QWidget *statusbar = new amaroK::StatusBar( this );
@@ -383,6 +381,9 @@ void PlaylistWindow::init()
         #undef addInstBrowserMacro
     }
     //</Browsers>
+
+    connect( Playlist::instance()->qscrollview(), SIGNAL( dynamicModeChanged( const DynamicMode* ) ),
+             PlaylistBrowser::instance(), SLOT( loadDynamicItems() ) );
 
 
     qApp->installEventFilter( this ); // keyboards shortcuts for the browsers
@@ -925,24 +926,31 @@ DynamicBar::DynamicBar(QWidget* parent)
 
     QWidget *spacer = new QWidget( this );
     setStretchFactor( spacer, 10 );
+}
+
+// necessary because it has to be constructed before Playlist::instance(), but also connect to it
+void DynamicBar::init()
+{
+    connect(Playlist::instance()->qscrollview(), SIGNAL(dynamicModeChanged(const DynamicMode*)),
+                                                   SLOT(slotNewDynamicMode(const DynamicMode*)));
 
     KPushButton* editDynamicButton = new KPushButton( i18n("Edit Playlist"), this, "DynamicModeEdit" );
-    connect( editDynamicButton, SIGNAL(clicked()), Party::instance(), SLOT(editActiveParty()) );
+    connect( editDynamicButton, SIGNAL(clicked()), Playlist::instance()->qscrollview(), SLOT(editActiveDynamicMode()) );
 
     KPushButton* repopButton = new KPushButton( i18n("Repopulate"), this, "DynamicModeRepopulate" );
-    connect( repopButton, SIGNAL(clicked()), Party::instance(), SLOT(repopulate()) );
+    connect( repopButton, SIGNAL(clicked()), Playlist::instance()->qscrollview(), SLOT(repopulate()) );
 
     KPushButton* disableButton = new KPushButton( i18n("Turn Off"), this, "DynamicModeDisable" );
-    connect( disableButton, SIGNAL(clicked()), Party::instance(), SLOT(disable()) );
+    connect( disableButton, SIGNAL(clicked()), Playlist::instance()->qscrollview(), SLOT(disableDynamicMode()) );
 
-    connect(Party::instance(), SIGNAL(titleChanged(const QString&)), this, SLOT( changeTitle(const QString&)));
-    toggledDynamic( AmarokConfig::dynamicMode() );
+    slotNewDynamicMode( Playlist::instance()->dynamicMode() );
 }
-void DynamicBar::toggledDynamic(bool on)
+
+void DynamicBar::slotNewDynamicMode(const DynamicMode* mode)
 {
-    setShown( on );
-    if( on )
-        changeTitle(Party::instance()->title());
+    setShown(mode);
+    if (mode)
+        changeTitle(mode->title());
 }
 
 void DynamicBar::changeTitle(const QString& title)

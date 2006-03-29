@@ -13,6 +13,7 @@
 #include <kurl.h>         //KURL::List
 #include "metabundle.h"   //stack allocated
 #include "threadweaver.h" //baseclass
+#include "xmlloader.h"    //baseclass
 
 class QListViewItem;
 class QTextStream;
@@ -84,8 +85,6 @@ PlaylistFile::format( const QString &fileName )
     return Unknown;
 }
 
-
-
 /**
  * @author Max Howell
  * @author Mark Kretschmann
@@ -95,7 +94,7 @@ PlaylistFile::format( const QString &fileName )
  * + List directories, remote and local
  * + Read tags, from file:/// and from DB
  */
-class UrlLoader : public ThreadWeaver::DependentJob, public QXmlDefaultHandler
+class UrlLoader : public ThreadWeaver::DependentJob
 {
 Q_OBJECT
 
@@ -116,11 +115,9 @@ protected:
 
     void loadXml( const KURL& );
 
-    virtual bool startElement( const QString &namespaceURI, const QString &localName, const QString &qName, const QXmlAttributes &atts );
-    virtual bool endElement( const QString &namespaceURI, const QString &localName, const QString &qName );
-    virtual bool characters( const QString &ch );
-    virtual bool endDocument();
-    virtual bool fatalError( const QXmlParseException &exception );
+private slots:
+    void slotNewBundle( const MetaBundle &bundle, const XmlAttributeList &attributes );
+    void slotPlaylistInfo( const QString &product, const QString &version, const QString &dynamicMode );
 
 private:
     KURL::List recurse( const KURL& );
@@ -132,12 +129,10 @@ private:
     bool          m_playFirstUrl;
     Debug::Block  m_block;
     QPtrList<PlaylistItem> m_oldQueue;
-    QXmlSimpleReader m_xmlReader;
     QXmlInputSource  *m_xmlSource;
-    XMLData *m_tempData;
     QValueList<XMLData> m_xml;
-    QString m_currentElement;
     KURL m_currentURL;
+    QString m_dynamicMode;
 
 protected:
     UrlLoader( const UrlLoader& ); //undefined
@@ -185,6 +180,18 @@ public:
 private slots:
     void result( KIO::Job* );
     void abort() { delete this; }
+};
+
+// PRIVATE -- should be in the .cpp, but fucking moc.
+
+class MyXmlLoader: public MetaBundle::XmlLoader
+{
+    Q_OBJECT
+public:
+    MyXmlLoader() { }
+    virtual bool startElement( const QString&, const QString&, const QString &, const QXmlAttributes& );
+signals:
+    void playlistInfo( const QString &product, const QString &version, const QString &dynamicMode );
 };
 
 

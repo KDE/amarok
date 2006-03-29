@@ -65,7 +65,7 @@ namespace amaroK
 
     bool DcopPlayerHandler::dynamicModeStatus()
     {
-        return AmarokConfig::dynamicMode();
+        return amaroK::dynamicMode();
     }
 
     bool DcopPlayerHandler::equalizerEnabled()
@@ -269,11 +269,6 @@ namespace amaroK
         if(EngineController::hasEngineProperty( "HasEqualizer" ))
             EqualizerSetup::instance()->show();
             EqualizerSetup::instance()->raise();
-    }
-
-    void DcopPlayerHandler::enableDynamicMode( bool enable )
-    {
-        static_cast<KToggleAction*>(amaroK::actionCollection()->action( "dynamic_mode" ))->setChecked( enable );
     }
 
     void DcopPlayerHandler::enableOSD(bool enable)

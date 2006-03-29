@@ -201,10 +201,10 @@ void PlaylistCategory::setXml( const QDomElement &xml )
             else if ( e.tagName() == "playlist" ) {
                 last = new PlaylistEntry( this, last, e );
             }
-            else if ( e.tagName() == "party" ) {
+            else if ( e.tagName() == "dynamic" ) {
                 if ( e.attribute( "name" ) == i18n("Random Mix") || e.attribute( "name" ) == i18n("Suggested Songs" ) )
                     continue;
-                last = new PartyEntry( this, last, e );
+                last = new DynamicEntry( this, last, e );
             }
             else if ( e.tagName() == "podcast" )
             {
@@ -269,8 +269,8 @@ QDomElement PlaylistCategory::xml()
                     e.setAttribute( "isOpen", "true" );
                 i.appendChild( d.importNode( e, true ) );
             }
-            else if( it != PlaylistBrowser::instance()->m_randomParty &&
-                     it != PlaylistBrowser::instance()->m_suggestedParty )
+            else if( it != PlaylistBrowser::instance()->m_randomDynamic &&
+                     it != PlaylistBrowser::instance()->m_suggestedDynamic )
                 i.appendChild( d.importNode( it->xml(), true ) );
         }
         return i;
@@ -638,7 +638,7 @@ void PlaylistEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, i
 
     pBuf.setPen( isSelected() ? cg.highlightedText() : cg.text() );
 
-    if( m_dynamic && m_dynamicPix && AmarokConfig::dynamicMode() )
+    if( m_dynamic && m_dynamicPix && amaroK::dynamicMode() )
     {
         pBuf.drawPixmap( text_x, (textHeight - m_dynamicPix->height())/2, *m_dynamicPix );
         text_x += m_dynamicPix->width()+4;
@@ -961,75 +961,73 @@ StreamEditor::StreamEditor( QWidget *parent, const QString &title, const QString
 
 
 /////////////////////////////////////////////////////////////////////////////
-///    CLASS PartyEntry
+///    CLASS DynamicEntry
 ////////////////////////////////////////////////////////////////////////////
-PartyEntry::PartyEntry( QListViewItem *parent, QListViewItem *after, const QString &name )
+DynamicEntry::DynamicEntry( QListViewItem *parent, QListViewItem *after, const QString &name )
         : PlaylistBrowserEntry( parent, after, name )
-        , m_items( NULL )
-        , m_cycled( true )
-        , m_marked( true )
-        , m_upcoming( 20 )
-        , m_previous( 5 )
-        , m_appendCount( 1 )
-        , m_appendType( Party::RANDOM )
+        , DynamicMode( name )
 {
     setPixmap( 0, SmallIcon("dynamic") );
     setDragEnabled( false );
-
-    setTitle( name );
 }
 
-PartyEntry::PartyEntry( QListViewItem *parent, QListViewItem *after, const QDomElement &xmlDefinition )
+DynamicEntry::DynamicEntry( QListViewItem *parent, QListViewItem *after, const QDomElement &xmlDefinition )
         : PlaylistBrowserEntry( parent, after )
+        , DynamicMode( xmlDefinition.attribute( "name" ) )
 {
     setPixmap( 0, SmallIcon( "dynamic" ) );
     setDragEnabled( false );
 
-    setTitle(xmlDefinition.attribute( "name" ));
-
     QDomElement e;
 
-    setCycled( xmlDefinition.namedItem( "cycleTracks" ).toElement().text() == "true" );
-    setMarked( xmlDefinition.namedItem( "markHistory" ).toElement().text() == "true" );
+    setCycleTracks( xmlDefinition.namedItem( "cycleTracks" ).toElement().text() == "true" );
+    setMarkHistory( xmlDefinition.namedItem( "markHistory" ).toElement().text() == "true" );
 
-    setUpcoming( xmlDefinition.namedItem( "upcoming" ).toElement().text().toInt() );
-    setPrevious( xmlDefinition.namedItem( "previous" ).toElement().text().toInt() );
+    setUpcomingCount( xmlDefinition.namedItem( "upcoming" ).toElement().text().toInt() );
+    setPreviousCount( xmlDefinition.namedItem( "previous" ).toElement().text().toInt() );
 
     setAppendType( xmlDefinition.namedItem( "appendType" ).toElement().text().toInt() );
     setAppendCount( xmlDefinition.namedItem( "appendCount" ).toElement().text().toInt() );
 
-    if ( m_appendType == 2 ) {
+    if ( appendType() == 2 ) {
         setItems( QStringList::split( ',', xmlDefinition.namedItem( "items" ).toElement().text() ) );
     }
 }
 
-QDomElement PartyEntry::xml()
+QString DynamicEntry::text( int column ) const
+{
+    if( column == 0 )
+        return title();
+    return PlaylistBrowserEntry::text( column );
+}
+
+QDomElement DynamicEntry::xml()
 {
     QDomDocument doc;
     QDomElement i;
 
-    i = doc.createElement("party");
-    i.setAttribute( "name", text(0) );
+    i = doc.createElement("dynamic");
+    i.setAttribute( "name", title() );
     if( isOpen() )
         i.setAttribute( "isOpen", "true" );
 
     QDomElement attr = doc.createElement( "cycleTracks" );
-    QDomText t = doc.createTextNode( isCycled() ? "true" : "false" );
+    QDomText t = doc.createTextNode( cycleTracks() ? "true" : "false" );
     attr.appendChild( t );
     i.appendChild( attr );
 
     attr = doc.createElement( "markHistory" );
-    t = doc.createTextNode( isMarked() ? "true" : "false" );
+    t = doc.createTextNode( markHistory() ? "true" : "false" );
     attr.appendChild( t );
     i.appendChild( attr );
 
     attr = doc.createElement( "upcoming" );
-    t = doc.createTextNode( QString::number( upcoming() ) );
+    t = doc.createTextNode( QString::number( upcomingCount() ) );
     attr.appendChild( t );
     i.appendChild( attr );
 
     attr = doc.createElement( "previous" );
-    t = doc.createTextNode( QString::number( previous() ) );
+    t = doc.createTextNode( QString::number( previousCount() ) );
     attr.appendChild( t );
     i.appendChild( attr );
 

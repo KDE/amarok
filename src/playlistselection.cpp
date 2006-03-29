@@ -97,24 +97,24 @@ namespace ConfigDynamic
             addDynamic( nd );
     }
 
-    void editDynamicPlaylist( QWidget* parent, PartyEntry* entry )
+    void editDynamicPlaylist( QWidget* parent, DynamicMode* mode )
     {
         DEBUG_BLOCK
         KDialogBase* dialog = basicDialog( parent );
         NewDynamic*  nd     = static_cast<NewDynamic*>(dialog->mainWidget());
 
-        nd->m_name->setText( entry->title() );
-        nd->m_cycleTracks->setChecked( entry->isCycled() );
-        nd->m_markHistory->setChecked( entry->isMarked() );
-        nd->m_upcomingIntSpinBox->setValue( entry->upcoming() );
-        nd->m_previousIntSpinBox->setValue( entry->previous() );
-        nd->m_appendCountIntSpinBox->setValue( entry->appendCount() );
+        nd->m_name->setText( mode->title() );
+        nd->m_cycleTracks->setChecked( mode->cycleTracks() );
+        nd->m_markHistory->setChecked( mode->markHistory() );
+        nd->m_upcomingIntSpinBox->setValue( mode->upcomingCount() );
+        nd->m_previousIntSpinBox->setValue( mode->previousCount() );
+        nd->m_appendCountIntSpinBox->setValue( mode->appendCount() );
 
-        if( entry->appendType() == Party::CUSTOM )
+        if( mode->appendType() == DynamicMode::CUSTOM )
         {
             //check items in the custom playlist
             nd->m_mixLabel->setText( i18n("Edit Dynamic Playlist") );
-            QStringList items = entry->items();
+            QStringList items = mode->items();
             foreach( items )
             {
                 QCheckListItem* current = static_cast<QCheckListItem*>( nd->selectPlaylist->findItem((*it),0) );
@@ -126,7 +126,7 @@ namespace ConfigDynamic
         {
            nd->selectPlaylist->hide();
            nd->layout()->remove( nd->selectPlaylist );
-           if( entry->appendType() == Party::RANDOM )
+           if( mode->appendType() == DynamicMode::RANDOM )
            {
               nd->m_mixLabel->setText( i18n("Random Mix") );
            }
@@ -141,20 +141,20 @@ namespace ConfigDynamic
 
         if( dialog->exec() == QDialog::Accepted )
         {
-            loadPartyEntry( entry, nd );
+            loadDynamicMode( mode, nd );
             PlaylistBrowser::instance()->getDynamicCategory()->sortChildItems( 0, true );
             PlaylistBrowser::instance()->saveDynamics();
         }
 
     }
 
-    void loadPartyEntry( PartyEntry* saveMe, NewDynamic* dialog )
+    void loadDynamicMode( DynamicMode* saveMe, NewDynamic* dialog )
     {
         saveMe->setTitle( dialog->m_name->text() );
-        saveMe->setCycled( dialog->m_cycleTracks->isChecked() );
-        saveMe->setMarked( dialog->m_markHistory->isChecked() );
-        saveMe->setUpcoming( dialog->m_upcomingIntSpinBox->value() );
-        saveMe->setPrevious( dialog->m_previousIntSpinBox->value() );
+        saveMe->setCycleTracks( dialog->m_cycleTracks->isChecked() );
+        saveMe->setMarkHistory( dialog->m_markHistory->isChecked() );
+        saveMe->setUpcomingCount( dialog->m_upcomingIntSpinBox->value() );
+        saveMe->setPreviousCount( dialog->m_previousIntSpinBox->value() );
         saveMe->setAppendCount( dialog->m_appendCountIntSpinBox->value() );
 
         QStringList list;
@@ -172,10 +172,10 @@ namespace ConfigDynamic
     void addDynamic( NewDynamic* dialog )
     {
         QListViewItem *parent = PlaylistBrowser::instance()->getDynamicCategory();
-        PartyEntry    *saveMe = new PartyEntry( parent, 0, dialog->m_name->text() );
-        saveMe->setAppendType( Party::CUSTOM );
+        DynamicEntry    *saveMe = new DynamicEntry( parent, 0, dialog->m_name->text() );
+        saveMe->setAppendType( DynamicMode::CUSTOM );
 
-        loadPartyEntry( saveMe, dialog );
+        loadDynamicMode( saveMe, dialog );
 
         parent->sortChildItems( 0, true );
         parent->setOpen( true );

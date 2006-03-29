@@ -156,14 +156,6 @@ namespace amaroK
             RepeatAction( KActionCollection *ac );
     };
 
-
-    class DynamicAction : public ToggleAction
-    {
-        public:
-            DynamicAction( KActionCollection *ac );
-            virtual void setChecked( bool b );
-    };
-
     class BurnMenu : public KPopupMenu
     {
             Q_OBJECT

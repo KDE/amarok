@@ -173,6 +173,13 @@ public:
         The tags in \p defaultColumns are checked for matches where the expression doesn't specify any manually. */
     bool matchesParsedExpression( ParsedExpression parsedData, QValueList<int> defaultColumns ) const;
 
+public:
+    /**
+     * A class to load MetaBundles from XML.
+     * #include "xmlloader.h"
+     */
+    class XmlLoader;
+
 public: //accessors
     KURL url()               const;
 

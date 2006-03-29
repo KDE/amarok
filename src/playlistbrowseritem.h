@@ -5,6 +5,7 @@
 #ifndef PLAYLISTBROWSERITEM_H
 #define PLAYLISTBROWSERITEM_H
 
+#include "party.h"
 #include "podcastbundle.h"
 #include "podcastsettings.h"
 
@@ -30,7 +31,7 @@ namespace KIO { class Job; class TransferJob; class CopyJob; } //podcast downloa
  *  1002 - PlaylistTrackItem
  *  1003 - StreamEntry
  *  1004 - SmartPlaylist
- *  1005 - PartyEntry (Dynamic)
+ *  1005 - DynamicEntry (Dynamic)
  *  1006 - PodcastChannel
  *  1007 - PodcastEpisode
  */
@@ -64,48 +65,19 @@ class PlaylistBrowserEntry : public KListViewItem
         bool    m_notify;
 };
 
-class PartyEntry : public PlaylistBrowserEntry
+class DynamicEntry : public PlaylistBrowserEntry, public DynamicMode
 {
     public:
-        PartyEntry( QListViewItem *parent, QListViewItem *after, const QString &title );
-        PartyEntry( QListViewItem *parent, QListViewItem *after, const QDomElement &xmlDefinition );
-        ~PartyEntry() { };
+        DynamicEntry( QListViewItem *parent, QListViewItem *after, const QString &title );
+        DynamicEntry( QListViewItem *parent, QListViewItem *after, const QDomElement &xmlDefinition );
+        ~DynamicEntry() { };
 
-        QString title() const { return text(0); }
-
-        QStringList items() { return m_items; }
-
-        void  setItems( QStringList list ) { m_items = list; }
-        void  setCycled( bool e )  { m_cycled = e; }
-        void  setMarked( bool e )  { m_marked = e; }
-        void  setUpcoming( int c ) { m_upcoming = c; }
-        void  setPrevious( int c ) { m_previous = c; }
-        void  setAppendCount( int c ) { m_appendCount = c; }
-        void  setAppendType( int type ) { m_appendType = type; }
-        void  setTitle( const QString& title ) { setText(0,title); }
-
-
-        bool  isCycled() { return m_cycled; }
-        bool  isMarked() { return m_marked; }
-        int   upcoming() { return m_upcoming; }
-        int   previous() { return m_previous; }
-        int   appendCount() { return m_appendCount; }
-        int   appendType() { return m_appendType; }
+        virtual QString text( int column ) const;
 
         QDomElement xml();
 
-        int   rtti() const { return RTTI; }
         static const int RTTI = 1005;
-
-    private:
-        QStringList m_items;
-
-        bool    m_cycled;
-        bool    m_marked;
-        int     m_upcoming;
-        int     m_previous;
-        int     m_appendCount;
-        int     m_appendType;
+        int rtti() const { return RTTI; }
 };
 
 class PlaylistCategory : public PlaylistBrowserEntry

@@ -107,9 +107,10 @@ class DynamicBar : public QHBox
     Q_OBJECT
     public:
         DynamicBar(QWidget* parent);
+        void init();
 
     public slots:
-        void toggledDynamic(bool on);
+        void slotNewDynamicMode(const DynamicMode* mode);
         void changeTitle(const QString& title);
 
     private:

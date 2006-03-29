@@ -17,6 +17,7 @@ class QDateTime;
 class QEvent;
 class QPixmap;
 class QWidget;
+class DynamicMode;
 
 namespace amaroK
 {
@@ -39,6 +40,9 @@ namespace amaroK
         ///eg. KListView alternative row color
         extern QColor AltBase; //grey toned base
     }
+
+    /** The version of the playlist XML format. Increase whenever it changes backwards-incompatibly. */
+    inline QString xmlVersion() { return "2.4"; }
 
     /**
      * Convenience function to return the KApplication instance KConfig object
@@ -154,6 +158,8 @@ namespace amaroK
     bool favorScores();
     bool favorRatings();
     bool favorLastPlay();
+
+    const DynamicMode *dynamicMode(); //defined in playlist.cpp
 }
 
 /**

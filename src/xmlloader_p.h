@@ -23,16 +23,16 @@
 #include <qapplication.h>
 #include <qthread.h>
 
-class MetaBundleXmlLoader::ThreadedLoader: public QObject, public QThread
+class MetaBundle::XmlLoader::ThreadedLoader: public QObject, public QThread
 {
     Q_OBJECT
     QObject *m_target;
     QXmlInputSource *m_source;
 
     private slots:
-        void bundleLoaded( const MetaBundle &bundle, const AttributeList &attributes )
+        void bundleLoaded( const MetaBundle &bundle, const XmlAttributeList &attributes )
         {
-            QApplication::postEvent( m_target, new BundleLoadedEvent( false, bundle, attributes ) );
+            QApplication::postEvent( m_target, new BundleLoadedEvent( bundle, attributes ) );
         }
 
     public:
@@ -42,18 +42,19 @@ class MetaBundleXmlLoader::ThreadedLoader: public QObject, public QThread
         virtual void run()
         {
             {
-                MetaBundleXmlLoader loader;
-                connect( &loader, SIGNAL( newBundle( const MetaBundle&, const AttributeList& ) ),
-                         this,  SLOT( bundleLoaded( const MetaBundle&, const AttributeList& ) ) );
+                XmlLoader loader;
+                connect( &loader, SIGNAL( newBundle( const MetaBundle&, const XmlAttributeList& ) ),
+                         this,  SLOT( bundleLoaded( const MetaBundle&, const XmlAttributeList& ) ) );
                 bool success = loader.load( m_source );
                 if( !success )
-                    QApplication::postEvent( m_target, new BundleLoadedEvent( true ) );
+                    QApplication::postEvent( m_target, new BundleLoadedEvent( loader.m_lastError ) );
             }
+
             delete this;
         }
 };
 
-class MetaBundleXmlLoader::SimpleLoader: public QObject
+class MetaBundle::XmlLoader::SimpleLoader: public QObject
 {
     Q_OBJECT
 
@@ -62,16 +63,16 @@ public:
 
     SimpleLoader( QXmlInputSource *source, bool *ok )
     {
-        MetaBundleXmlLoader loader;
-        connect( &loader, SIGNAL( newBundle( const MetaBundle&, const AttributeList& ) ),
-                 this,  SLOT( bundleLoaded( const MetaBundle&, const AttributeList& ) ) );
+        XmlLoader loader;
+        connect( &loader, SIGNAL( newBundle( const MetaBundle&, const XmlAttributeList& ) ),
+                 this,  SLOT( bundleLoaded( const MetaBundle&, const XmlAttributeList& ) ) );
         const bool success = loader.load( source );
         if( ok )
             (*ok) = success;
     }
 
 private slots:
-    void bundleLoaded( const MetaBundle &bundle, const AttributeList& )
+    void bundleLoaded( const MetaBundle &bundle, const XmlAttributeList& )
     {
         bundles << bundle;
     }

@@ -1,5 +1,6 @@
 /***************************************************************************
  * copyright            : (C) 2005 Seb Ruiz <me@sebruiz.net>               *
+ * copyright            : (C) 2006 Gábor Lehel <illissius@gmail.com>       *
  ***************************************************************************/
 
 /***************************************************************************
@@ -12,82 +13,72 @@
  ***************************************************************************/
 
 /***************************************************************************
- * Infiltrations of Party Mode                                             *
- *   Party mode is a complex playlist handling mechanism - acting          *
+ * Infiltrations of Dynamic Mode                                           *
+ *   Dynamic mode is a complex playlist handling mechanism - acting        *
  *   basically on the concept of a 'rotating' playlist.  The playlist can  *
  *   be modelled as a queuing system, FIFO.  As a track is advanced,       *
  *   the first track in the playlist is removed, and another appended to   *
  *   the end.  The type of addition is selected by the user during         *
  *   configuration.                                                        *
  *                                                                         *
- *   Due to the nature of this type of handling, the status of party-mode  *
+ *   Due to the nature of this type of handling, the status of dynamicmode *
  *   must be determined, as many function require alternate handling.      *
  *      Examples include:                                                  *
  *          - Context Menus                                                *
  *          - Double clicking on an item -> requires moving the item to    *
  *            front of the queue                                           *
  *          - Undo/Redo states, to reinit history items                    *
- *   Please be aware of these when working with party mode.                *
+ *   Please be aware of these when working with dynamic mode.              *
  ***************************************************************************/
 
-#ifndef AMAROK_PARTY_H
-#define AMAROK_PARTY_H
+#ifndef AMAROK_DYNAMIC_H
+#define AMAROK_DYNAMIC_H
 
-#include <qlistview.h>
+class QString;
+class QStringList;
+template<class T> class QPtrList;
+class QListViewItem;
 
-class QLabel;
-class KAction;
-class KActionCollection;
-class PartyEntry;
-
-class Party : public QObject
+class DynamicMode
 {
-        Q_OBJECT
-    friend class PlaylistBrowser;
-
     public:
+        DynamicMode( const QString &name );
+        virtual ~DynamicMode();
+        enum Type { RANDOM=0, SUGGESTION=1, CUSTOM=2 };
 
-       ~Party();
+        void edit();
+        void setDynamicItems(const QPtrList<QListViewItem>& newList);
 
-        enum    Mode { RANDOM=0, SUGGESTION=1, CUSTOM=2 };
+    public: //accessors
+        QString title() const;
+        QStringList items() const;
+        bool  cycleTracks() const;
+        bool  markHistory() const;
+        int   upcomingCount() const;
+        int   previousCount() const;
+        int   appendCount() const;
+        int   appendType() const;
 
-        void    loadConfig( PartyEntry *config = 0 ); // 0 -> load amarokrc config
-
-        int     previousCount();
-        int     upcomingCount();
-        int     appendCount();
-        int     appendType();
-        bool    cycleTracks();
-        bool    markHistory();
-        QString title(); //title of currently running playlist
-        void    setDynamicItems(const QPtrList<QListViewItem>& newList);
-
-        static  Party *instance();
-
-    public slots:
-        void    repopulate();
-        void    disable();
-        void    editActiveParty();
-
-    signals:
-        void titleChanged(const QString&);
-
-    private slots:
-        void    applySettings();
-        void    setDynamicMode( bool enable, bool showDialog = true );
+    public: //setters
+        void  setTitle( const QString& title );
+        void  setItems( const QStringList &list );
+        void  setCycleTracks( bool cycle );
+        void  setMarkHistory( bool mark );
+        void  setUpcomingCount( int count );
+        void  setPreviousCount( int count );
+        void  setAppendCount( int count );
+        void  setAppendType( int type );
 
     private:
-        Party( QWidget *parent, const char *name = 0 );
-        PartyEntry* m_currentParty;
+        QStringList m_items;
 
-        enum    UpdateMe{ PARTY, CYCLE, HISTORY, PREVIOUS, UPCOMING, APPEND, TYPE };
-
-        KActionCollection *m_ac;
-        KAction    *m_repopulate;
-
-        QPtrList<QListViewItem> m_selected;
-
-        static Party *s_instance;
+        QString m_title;
+        bool    m_cycle;
+        bool    m_mark;
+        int     m_upcoming;
+        int     m_previous;
+        int     m_appendCount;
+        int     m_appendType;
 };
 
-#endif //AMAROK_PARTY_H
+#endif //AMAROK_DYNAMIC_H

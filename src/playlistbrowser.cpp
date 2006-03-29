@@ -66,9 +66,6 @@ fileExtension( const QString &fileName )
 PlaylistBrowser *PlaylistBrowser::s_instance = 0;
 
 
-static inline bool isDynamicEnabled() { return AmarokConfig::dynamicMode(); }
-
-
 PlaylistBrowser::PlaylistBrowser( const char *name )
         : QVBox( 0, name )
         , m_polished( false )
@@ -165,9 +162,9 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
         loadDefaultSmartPlaylists();
     }
     m_dynamicCategory = loadDynamics();
-    m_randomParty    = new PartyEntry( m_dynamicCategory, 0, i18n("Random Mix") );
-    m_suggestedParty = new PartyEntry( m_dynamicCategory, m_randomParty, i18n("Suggested Songs" ) );
-    m_suggestedParty->setAppendType( Party::SUGGESTION );
+    m_randomDynamic    = new DynamicEntry( m_dynamicCategory, 0, i18n("Random Mix") );
+    m_suggestedDynamic = new DynamicEntry( m_dynamicCategory, m_randomDynamic, i18n("Suggested Songs" ) );
+    m_suggestedDynamic->setAppendType( DynamicMode::SUGGESTION );
 
     m_streamsCategory = loadStreams();
     loadCoolStreams();
@@ -175,31 +172,20 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     // must be loaded after streams
     m_podcastCategory = loadPodcasts();
 
-    if ( AmarokConfig::dynamicMode() ) {
+    if ( amaroK::dynamicMode() ) {
 
-        bool playlistFound = false;
-        for ( QListViewItem *item = m_dynamicCategory->firstChild(); item; item = item->nextSibling() ) {
-            PartyEntry *party = dynamic_cast<PartyEntry *>( item );
-            if ( party && party->title() == AmarokConfig::dynamicPlaylist() ) {
-                Party::instance()->loadConfig( party );
-                playlistFound = true;
-                break;
-            }
-        }
-        if ( playlistFound ) {
-            QStringList playlists = AmarokConfig::dynamicCustomList();
+        QStringList playlists = amaroK::dynamicMode()->items();
 
-            for( uint i=0; i < playlists.count(); i++ )
+        for( uint i=0; i < playlists.count(); i++ )
+        {
+            QListViewItem *item = m_listview->findItem( playlists[i], 0, Qt::ExactMatch );
+            if( item )
             {
-                QListViewItem *item = m_listview->findItem( playlists[i], 0, Qt::ExactMatch );
-                if( item )
-                {
-                    m_dynamicEntries.append( item );
-                    if( item->rtti() == PlaylistEntry::RTTI )
-                        static_cast<PlaylistEntry*>( item )->setDynamic( true );
-                    if( item->rtti() == SmartPlaylist::RTTI )
-                        static_cast<SmartPlaylist*>( item )->setDynamic( true );
-                }
+                m_dynamicEntries.append( item );
+                if( item->rtti() == PlaylistEntry::RTTI )
+                    static_cast<PlaylistEntry*>( item )->setDynamic( true );
+                if( item->rtti() == SmartPlaylist::RTTI )
+                    static_cast<SmartPlaylist*>( item )->setDynamic( true );
             }
         }
     }
@@ -247,7 +233,7 @@ PlaylistBrowser::polish()
     m_streamsCategory->setOpen( true );
     m_dynamicCategory->setOpen( true );
 
-    QStringList playlists = AmarokConfig::dynamicCustomList();
+    QStringList playlists = amaroK::dynamicMode()->items();
 
     for( uint i=0; i < playlists.count(); i++ )
     {
@@ -307,8 +293,6 @@ PlaylistBrowser::~PlaylistBrowser()
             QListViewItem *item = m_dynamicEntries.at( i );
             list.append( item->text(0) );
         }
-
-        AmarokConfig::setDynamicCustomList( list );
 
         KConfig *config = amaroK::config( "PlaylistBrowser" );
         config->writeEntry( "View", m_viewMode );
@@ -731,14 +715,14 @@ void PlaylistBrowser::saveSmartPlaylists( PlaylistCategory *smartCategory )
  *************************************************************************
  **/
 
-QString PlaylistBrowser::partyBrowserCache() const
+QString PlaylistBrowser::dynamicBrowserCache() const
 {
-    return amaroK::saveLocation() + "partybrowser_save.xml";
+    return amaroK::saveLocation() + "dynamicbrowser_save.xml";
 }
 
 PlaylistCategory* PlaylistBrowser::loadDynamics()
 {
-    QFile file( partyBrowserCache() );
+    QFile file( dynamicBrowserCache() );
 
     QTextStream stream( &file );
     stream.setEncoding( QTextStream::UnicodeUTF8 );
@@ -765,9 +749,9 @@ PlaylistCategory* PlaylistBrowser::loadDynamics()
         else { // Old unversioned format
             PlaylistCategory* p = new PlaylistCategory( m_listview, after, i18n("Dynamic Playlists") );
             QListViewItem *last = 0;
-            QDomNode n = d.namedItem( "partybrowser" ).namedItem("party");
+            QDomNode n = d.namedItem( "dynamicbrowser" ).namedItem("dynamic");
             for( ; !n.isNull();  n = n.nextSibling() ) {
-                last = new PartyEntry( p, last, n.toElement() );
+                last = new DynamicEntry( p, last, n.toElement() );
             }
             return p;
         }
@@ -776,7 +760,7 @@ PlaylistCategory* PlaylistBrowser::loadDynamics()
 
 void PlaylistBrowser::saveDynamics()
 {
-    QFile file( partyBrowserCache() );
+    QFile file( dynamicBrowserCache() );
     QTextStream stream( &file );
 
     QDomDocument doc;
@@ -821,9 +805,9 @@ void PlaylistBrowser::loadDynamicItems()
     m_dynamicEntries.clear();  // Dont use remove(), since we do i++, which would cause skip overs!!!
 
     // Mark appropriate items as used
-    if( AmarokConfig::dynamicType() == Party::CUSTOM )
+    if( amaroK::dynamicMode() && amaroK::dynamicMode()->appendType()== DynamicMode::CUSTOM )
     {
-        QStringList playlists = AmarokConfig::dynamicCustomList();
+        QStringList playlists = amaroK::dynamicMode()->items();
         for( uint i=0; i < playlists.count(); i++ )
         {
             QListViewItem *it = findItem( playlists[i], 0 );
@@ -1358,6 +1342,18 @@ PlaylistBrowser::findItemInTree( const QString &searchstring, int c ) const
     return pli;
 }
 
+DynamicMode *PlaylistBrowser::findDynamicModeByTitle( const QString &title ) const
+{
+    for ( QListViewItem *item = m_dynamicCategory->firstChild(); item; item = item->nextSibling() )
+    {
+        DynamicEntry *entry = dynamic_cast<DynamicEntry *>( item );
+        if ( entry && entry->title() == title )
+            return entry;
+    }
+
+    return 0;
+}
+
 int PlaylistBrowser::loadPlaylist( const QString &playlist, bool /*force*/ )
 {
     // roland
@@ -1689,12 +1685,7 @@ void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
         Playlist::instance()->insertMedia( list, Playlist::DirectPlay );
     }
     else if( isDynamic( item ) )
-    {
-        static_cast<KToggleAction*>(amaroK::actionCollection()->action( "dynamic_mode" ))->setChecked( true );
-        Party::instance()->loadConfig( static_cast<PartyEntry *>(item) );
-        loadDynamicItems();
-        Playlist::instance()->repopulate();
-    }
+        Playlist::instance()->loadDynamicMode( static_cast<DynamicEntry *>(item) );
     else
         warning() << "No functionality for item double click implemented" << endl;
 }
@@ -1735,7 +1726,9 @@ void PlaylistBrowser::addToDynamic()
         }
     }
 
-    Party::instance()->setDynamicItems(m_dynamicEntries);
+    DynamicMode *m = Playlist::instance()->modifyDynamicMode();
+    m->setDynamicItems(m_dynamicEntries);
+    Playlist::instance()->finishedModifying( m );
 }
 
 void PlaylistBrowser::subFromDynamic()
@@ -1760,7 +1753,9 @@ void PlaylistBrowser::subFromDynamic()
         }
     }
 
-    Party::instance()->setDynamicItems( m_dynamicEntries );
+    DynamicMode *m = Playlist::instance()->modifyDynamicMode();
+    m->setDynamicItems( m_dynamicEntries );
+    Playlist::instance()->finishedModifying( m );
 }
 
 void PlaylistBrowser::removeSelectedItems() //SLOT
@@ -1775,7 +1770,7 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
     for( ; it.current(); ++it )
     {
         if( (*it) == m_coolStreams || (*it) == m_smartDefaults ||
-            (*it) == m_randomParty || (*it) == m_suggestedParty )
+            (*it) == m_randomDynamic || (*it) == m_suggestedDynamic )
             continue;
 
         if( isCategory( *it ) && !static_cast<PlaylistCategory*>(*it)->isFolder() ) //its a base category
@@ -1945,7 +1940,7 @@ void PlaylistBrowser::renameSelectedItem() //SLOT
     QListViewItem *item = m_listview->currentItem();
     if( !item ) return;
 
-    if( item == m_randomParty || item == m_suggestedParty )
+    if( item == m_randomDynamic || item == m_suggestedDynamic )
         return;
 
     if( isCategory( item ) && static_cast<PlaylistCategory*>(item)->isFolder() )
@@ -2124,8 +2119,8 @@ void PlaylistBrowser::currentItemChanged( QListViewItem *item )    //SLOT
     }
     else if( isDynamic( item ) )
     {
-        enable_remove = ( item != m_randomParty && item != m_suggestedParty );
-        enable_rename = ( item != m_randomParty && item != m_suggestedParty );
+        enable_remove = ( item != m_randomDynamic && item != m_suggestedDynamic );
+        enable_rename = ( item != m_randomDynamic && item != m_suggestedDynamic );
     }
     else if( isCategory( item ) )
     {
@@ -2226,12 +2221,12 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), LOAD );
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), ADD );
 
-        if( isDynamicEnabled() && AmarokConfig::dynamicType() == Party::CUSTOM )
+        if( amaroK::dynamicMode() && amaroK::dynamicMode()->appendType()== DynamicMode::CUSTOM )
         {
             if( static_cast<PlaylistEntry*>(item)->isDynamic() )
-                menu.insertItem( SmallIconSet( "edit_remove" ), i18n( "Remove From %1" ).arg(Party::instance()->title()), DYNSUB );
+                menu.insertItem( SmallIconSet( "edit_remove" ), i18n( "Remove From %1" ).arg(amaroK::dynamicMode()->title()), DYNSUB );
             else
-                menu.insertItem( SmallIconSet( "edit_add" ), i18n( "Add to the %1 Entries" ).arg(Party::instance()->title()), DYNADD );
+                menu.insertItem( SmallIconSet( "edit_add" ), i18n( "Add to the %1 Entries" ).arg(amaroK::dynamicMode()->title()), DYNADD );
         }
 
         if( MediaBrowser::isAvailable() )
@@ -2287,12 +2282,12 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                     i18n( "Add Contents to Media Device &Transfer Queue" ), MEDIA_DEVICE );
         }
 
-        if( isDynamicEnabled() && AmarokConfig::dynamicType() == Party::CUSTOM )
+        if( amaroK::dynamicMode() && amaroK::dynamicMode()->appendType()== DynamicMode::CUSTOM )
         {
             if( static_cast<SmartPlaylist*>(item)->isDynamic() )
-                menu.insertItem( SmallIconSet( "edit_remove" ), i18n( "Remove From %1" ).arg(Party::instance()->title()), DYNSUB );
+                menu.insertItem( SmallIconSet( "edit_remove" ), i18n( "Remove From %1" ).arg(amaroK::dynamicMode()->title()), DYNSUB );
             else
-                menu.insertItem( SmallIconSet( "edit_add" ), i18n( "Add to the %1 Entries" ).arg(Party::instance()->title()), DYNADD );
+                menu.insertItem( SmallIconSet( "edit_add" ), i18n( "Add to the %1 Entries" ).arg(amaroK::dynamicMode()->title()), DYNADD );
         }
 
 
@@ -2381,7 +2376,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         #undef  item
     }
     else if( isDynamic( item ) ) {
-        #define item static_cast<PartyEntry*>(item)
+        #define item static_cast<DynamicEntry*>(item)
         enum Actions { LOAD, RENAME, REMOVE, EDIT };
         menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), LOAD );
         menu.insertSeparator();
@@ -2394,7 +2389,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 slotDoubleClicked( item );
                 break;
             case EDIT:
-                ConfigDynamic::editDynamicPlaylist(this,item); //fn may delete item
+                item->edit();
                 break;
             case REMOVE:
                 removeSelectedItems();

@@ -74,7 +74,6 @@ k_dcop:
    virtual QString type() = 0;                              ///< Return the file type.
    virtual QString year() = 0;                              ///< Return the year of the currently playing track.
    virtual void configEqualizer() = 0;                      ///< Toggle equalizer config dialog.
-   virtual void enableDynamicMode(bool enable) = 0;         ///< Switch Dynamic Mode on or off.
    virtual void enableOSD(bool enable) = 0;                 ///< Switch OSD display on or off.
    virtual void enableRandomMode(bool enable) = 0;          ///< Switch Random Mode on or off.
    virtual void enableRepeatPlaylist(bool enable) = 0;      ///< Switch Repeat Playlist on or off.

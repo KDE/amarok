@@ -18,6 +18,7 @@
 #include "debug.h"
 #include "enginecontroller.h"
 #include "playlist.h"
+#include "playlistbrowser.h"
 #include "playlistitem.h"
 #include "playlistloader.h"
 #include "statusbar.h"
@@ -72,7 +73,6 @@ UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, bool playFir
         , m_block( "UrlLoader" )
         , m_oldQueue( Playlist::instance()->m_nextTracks )
         , m_xmlSource( 0 )
-        , m_tempData( 0 )
 {
     DEBUG_BLOCK
 
@@ -162,7 +162,6 @@ UrlLoader::~UrlLoader()
 
     delete m_markerListViewItem;
     delete m_xmlSource;
-    delete m_tempData;
 }
 
 bool
@@ -300,6 +299,9 @@ UrlLoader::completeJob()
                 i18n("Some media could not be loaded (not playable)."), text );
     }
 
+    if( !m_dynamicMode.isEmpty() )
+        Playlist::instance()->setDynamicMode( PlaylistBrowser::instance()->findDynamicModeByTitle( m_dynamicMode ) );
+
     //syncronous, ie not using eventLoop
     QApplication::sendEvent( dependent(), this );
 }
@@ -396,176 +398,69 @@ UrlLoader::loadXml( const KURL &url )
 
     delete m_xmlSource;
     m_xmlSource = new QXmlInputSource( file );
-    m_xmlReader.setContentHandler( this );
-    m_xmlReader.setErrorHandler( this );
-    m_xmlReader.parse( m_xmlSource, false );
+    MyXmlLoader loader;
+    connect( &loader, SIGNAL( newBundle( const MetaBundle&, const XmlAttributeList& ) ),
+             this, SLOT( slotNewBundle( const MetaBundle&, const XmlAttributeList& ) ) );
+    connect( &loader, SIGNAL( playlistInfo( const QString&, const QString&, const QString& ) ),
+             this, SLOT( slotPlaylistInfo( const QString&, const QString&, const QString& ) ) );
+    loader.load( m_xmlSource );
+    if( !m_xml.isEmpty() )
+    {
+        QApplication::postEvent( this, new TagsEvent( m_xml ) );
+        m_xml.clear();
+    }
+    if( !loader.lastError().isEmpty() )
+    {
+        amaroK::StatusBar::instance()->longMessageThreadSafe( i18n(
+                //TODO add a link to the path to the playlist
+                "The XML in the playlist was invalid. Please report this as a bug to the amaroK "
+                "developers. Thank you." ), KDE::StatusBar::Error );
+        ::error() << "[PLAYLISTLOADER]: Error in file " << m_currentURL.prettyURL() << ": " << loader.lastError();
+    }
 }
 
-bool UrlLoader::startElement( const QString &, const QString &localName, const QString &, const QXmlAttributes &atts )
+void UrlLoader::slotNewBundle( const MetaBundle &bundle, const XmlAttributeList &atts )
 {
-    if( localName == "playlist" )
+    XMLData data;
+    data.bundle = bundle;
+    for( int i = 0, n = atts.count(); i < n; ++i )
     {
-        QString version;
-        for( int i = 0, n = atts.count(); i < n; ++i )
-            if( atts.localName(i) == "version" )
-                version = atts.value(i);
-        //increase this whenever the format changes, in Playlist::saveXML() also
-        if( version != "2.4" )
+        if( atts[i].first == "queue_index" )
         {
-            amaroK::StatusBar::instance()->longMessageThreadSafe( i18n(
-                "Your last playlist was saved with a different version of amaroK than this one, "
-                "and this version can no longer read it.\n"
-                "You will have to create a new one.\n"
-                "Sorry :(" ) );
-            return false;
+            bool ok = true;
+            data.queue = atts[i].second.toInt( &ok );
+            if( !ok )
+                data.queue = -1;
         }
+        else if( atts[i].first == "stop_after" )
+            data.stopafter = true;
+        else if( atts[i].first == "disabled" )
+            data.disabled = true;
     }
-    else if( localName == "item" )
+    data.bundle.checkExists();
+    m_xml.append( data );
+    if( m_xml.count() == OPTIMUM_BUNDLE_COUNT )
     {
-        delete m_tempData;
-        m_tempData = new XMLData;
-        for( int i = 0, n = atts.count(); i < n; ++i )
-        {
-            if( atts.localName(i) == "url" )
-                m_tempData->bundle.setUrl( atts.value(i) );
-            if( atts.localName(i) == "queue_index" )
-            {
-                bool ok = true;
-                m_tempData->queue = atts.value(i).toInt( &ok );
-                if( !ok )
-                    m_tempData->queue = -1;
-            }
-            else if( atts.localName(i) == "stop_after" )
-                m_tempData->stopafter = true;
-            else if( atts.localName(i) == "disabled" )
-                m_tempData->disabled = true;
-        }
-        m_tempData->bundle.checkExists();
+        QApplication::postEvent( this, new TagsEvent( m_xml ) );
+        m_xml.clear();
+    }
+}
 
-        m_currentElement = QString::null;
+void UrlLoader::slotPlaylistInfo( const QString &, const QString &version, const QString &dynamicMode )
+{
+    if( version != amaroK::xmlVersion() )
+    {
+        amaroK::StatusBar::instance()->longMessageThreadSafe( i18n(
+            "Your last playlist was saved with a different version of amaroK than this one, "
+            "and this version can no longer read it.\n"
+            "You will have to create a new one.\n"
+            "Sorry :(" ) );
+        static_cast<MyXmlLoader*>( const_cast<QObject*>( sender() ) )->abort(); //HACK?
+        return;
     }
     else
-        m_currentElement = localName;
-
-    return true;
+        m_dynamicMode = dynamicMode;
 }
-
-bool UrlLoader::endElement( const QString &, const QString &localName, const QString & )
-{
-    if( localName == "item" )
-    {
-        m_xml.append( *m_tempData );
-        delete m_tempData;
-        m_tempData = 0;
-        if( m_xml.count() == OPTIMUM_BUNDLE_COUNT )
-        {
-            QApplication::postEvent( this, new TagsEvent( m_xml ) );
-            m_xml.clear();
-        }
-    }
-    m_currentElement = QString::null;
-
-    return true;
-}
-
-bool UrlLoader::characters( const QString &ch )
-{
-    if( m_currentElement.isNull() )
-        return true;
-
-    static int start = 0; //most of the time, the columns should be in order
-    for( int i = start; i < MetaBundle::NUM_COLUMNS; ++i )
-        if( m_currentElement == MetaBundle::exactColumnName( i ) )
-        {
-            switch( i )
-            {
-                case MetaBundle::Artist:
-                case MetaBundle::Composer:
-                case MetaBundle::Year:
-                case MetaBundle::Album:
-                case MetaBundle::DiscNumber:
-                case MetaBundle::Track:
-                case MetaBundle::Title:
-                case MetaBundle::Genre:
-                case MetaBundle::Comment:
-                case MetaBundle::Length:
-                case MetaBundle::Bitrate:
-                case MetaBundle::Filesize:
-                case MetaBundle::Type:
-                case MetaBundle::SampleRate:
-                    m_tempData->bundle.setExactText( i, ch );
-                    continue;
-
-                default:
-                    continue;
-            }
-            start = i+1;
-            return true;
-        }
-    for( int i = 0; i < start; ++i )
-        if( m_currentElement == MetaBundle::exactColumnName( i ) )
-        {
-            switch( i )
-            {
-                case MetaBundle::Artist:
-                case MetaBundle::Composer:
-                case MetaBundle::Year:
-                case MetaBundle::Album:
-                case MetaBundle::DiscNumber:
-                case MetaBundle::Track:
-                case MetaBundle::Title:
-                case MetaBundle::Genre:
-                case MetaBundle::Comment:
-                case MetaBundle::Length:
-                case MetaBundle::Bitrate:
-                case MetaBundle::Filesize:
-                case MetaBundle::Type:
-                case MetaBundle::SampleRate:
-                    m_tempData->bundle.setExactText( i, ch );
-                    continue;
-
-                default:
-                    continue;
-            }
-            start = i+1;
-            return true;
-        }
-
-    return true;
-}
-
-bool UrlLoader::endDocument()
-{
-    if( !m_xml.isEmpty() )
-    {
-        QApplication::postEvent( this, new TagsEvent( m_xml ) );
-        m_xml.clear();
-    }
-
-    return true;
-}
-
-bool UrlLoader::fatalError( const QXmlParseException &e )
-{
-    if( !m_xml.isEmpty() )
-    {
-        QApplication::postEvent( this, new TagsEvent( m_xml ) );
-        m_xml.clear();
-    }
-
-    amaroK::StatusBar::instance()->longMessageThreadSafe( i18n(
-            //TODO add a link to the path to the playlist
-            "The XML in the playlist was invalid. Please report this as a bug to the amaroK "
-            "developers. Thank you." ), KDE::StatusBar::Error );
-    ::error() << "[PLAYLISTLOADER]: Error loading xml file: " << m_currentURL.prettyURL()
-            << "(" << e.message() << ")"
-            << " at line " << e.lineNumber() << ", column " << e.columnNumber() << endl;
-
-    return false;
-}
-
-
-
 
 /// @class PlaylistFile
 
@@ -1074,4 +969,26 @@ QTime PlaylistFile::stringToTime(const QString& timeString)
          else
             return QTime();
 }
+
+bool MyXmlLoader::startElement( const QString &a, const QString &name, const QString &b, const QXmlAttributes &atts )
+{
+    if( name == "playlist" )
+    {
+        QString product, version, dynamic;
+        for( int i = 0, n = atts.count(); i < n; ++i )
+        {
+            if( atts.localName( i ) == "product" )
+                product = atts.value( i );
+            else if( atts.localName( i ) == "version" )
+                version = atts.value( i );
+            else if( atts.localName( i ) == "dynamicMode" )
+                dynamic = atts.value( i );
+        }
+        emit playlistInfo( product, version, dynamic );
+        return !m_aborted;
+    }
+    else
+        return XmlLoader::startElement( a, name, b, atts );
+}
+
 #include "playlistloader.moc"

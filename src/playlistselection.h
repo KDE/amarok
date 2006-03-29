@@ -11,11 +11,10 @@
 #define PLAYLISTSELECTION_H
 
 #include <klistview.h>
-#include <qlistview.h>
 
 class NewDynamic;
 class KDialogBase;
-class PartyEntry;
+class DynamicMode;
 
 //this is a widget used in newdynamic.ui
 class PlaylistSelection : public KListView
@@ -36,8 +35,8 @@ namespace ConfigDynamic
 {
     void addDynamic( NewDynamic* dialog );
     void dynamicDialog( QWidget* parent );
-    void editDynamicPlaylist( QWidget* parent, PartyEntry* entry );
-    void loadPartyEntry( PartyEntry* saveMe, NewDynamic* dialog );
+    void editDynamicPlaylist( QWidget* parent, DynamicMode* mode );
+    void loadDynamicMode( DynamicMode* saveMe, NewDynamic* dialog );
 
     KDialogBase* basicDialog( QWidget* parent );
 }

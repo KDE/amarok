@@ -462,7 +462,6 @@ RandomAction::RandomAction( KActionCollection *ac ) :
 {
     setChecked( AmarokConfig::randomMode() );
     setIcon( "random" );
-    setEnabled( !AmarokConfig::dynamicMode() );
 }
 
 void
@@ -536,24 +535,6 @@ RepeatAction::RepeatAction( KActionCollection *ac ) :
         setCurrentItem( AmarokConfig::repeat() );
     popupMenu()->setItemEnabled( AmarokConfig::EnumRepeat::Album, AmarokConfig::entireAlbums() );
     popupMenu()->insertSeparator( 1 );
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
-// PartyAction
-//////////////////////////////////////////////////////////////////////////////////////////
-DynamicAction::DynamicAction( KActionCollection *ac ) :
-    ToggleAction( i18n( "&Dynamic Mode" ), &AmarokConfig::setDynamicMode, ac, "dynamic_mode" )
-{
-    setChecked( AmarokConfig::dynamicMode() );
-    setIcon( "dynamic" );
-}
-
-void
-DynamicAction::setChecked( bool b )
-{
-    if( KAction *a = parentCollection()->action( "random_mode" ) )
-        a->setEnabled( !b );
-    ToggleAction::setChecked( b );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

@@ -122,9 +122,6 @@ App::App()
 
     fixHyperThreading();
 
-    if ( !AmarokConfig::savePlaylist() )
-        AmarokConfig::setDynamicMode( false );
-
     m_pDeviceManager = DeviceManager::instance();
 
     m_pGlobalAccel    = new KGlobalAccel( this );

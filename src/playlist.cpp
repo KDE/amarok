@@ -31,6 +31,7 @@
 #include "playlistbrowser.h"
 #include "playlistbrowseritem.h" //for stream editor dialog
 #include "playlistloader.h"
+#include "playlistselection.h"
 #include "queuemanager.h"
 #include "prettypopupmenu.h"
 #include "scriptmanager.h"
@@ -82,6 +83,11 @@ extern "C"
 }
 
 #include "playlist.h"
+
+namespace amaroK
+{
+    const DynamicMode *dynamicMode() { return Playlist::instance()->dynamicMode(); }
+}
 
 /**
  * Iterator class that only edits visible items! Preferentially always use
@@ -182,8 +188,6 @@ namespace Glow
 /// CLASS Playlist
 //////////////////////////////////////////////////////////////////////////////////////////
 
-static inline bool isDynamic() { return AmarokConfig::dynamicMode(); }
-
 Playlist *Playlist::s_instance = 0;
 
 Playlist::Playlist( QWidget *parent )
@@ -208,7 +212,7 @@ Playlist::Playlist( QWidget *parent )
         , m_stopAfterTrack( 0 )
         , m_showHelp( true )
         , m_stateSwitched( false )
-        , m_partyDirt( false )
+        , m_dynamicDirt( false )
         , m_queueDirt( false )
         , m_undoDirt( false )
         , m_itemToReallyCenter( 0 )
@@ -314,6 +318,7 @@ Playlist::Playlist( QWidget *parent )
     m_clearButton = KStdAction::clear( this, SLOT( clear() ), ac, "playlist_clear" );
     m_undoButton  = KStdAction::undo( this, SLOT( undo() ), ac, "playlist_undo" );
     m_redoButton  = KStdAction::redo( this, SLOT( redo() ), ac, "playlist_redo" );
+    new KAction( i18n( "&Repopulate" ), "rebuild", 0, this, SLOT( repopulate() ), ac, "repopulate" );
     new KAction( i18n( "S&huffle" ), "rebuild", CTRL+Key_H, this, SLOT( shuffle() ), ac, "playlist_shuffle" );
     new KAction( i18n( "&Goto Current Track" ), "today", CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "playlist_show" );
     new KAction( i18n( "&Remove Duplicate && Dead Entries" ), 0, this, SLOT( removeDuplicates() ), ac, "playlist_remove_duplicates" );
@@ -344,6 +349,8 @@ Playlist::Playlist( QWidget *parent )
 
     // Sorting must be disabled when current.xml is being loaded. See BUG 113042
     KListView::setSorting( NO_SORT ); //use base so we don't saveUndoState() too
+
+    setDynamicMode( 0 );
 
     m_smartResizing = amaroK::config( "PlaylistWindow" )->readBoolEntry( "Smart Resizing", true );
 
@@ -544,19 +551,19 @@ Playlist::addSpecialTracks( uint songCount, const int type )
     }
     currentPos++;
 
-    int required  = currentPos + AmarokConfig::dynamicUpcomingCount(); // currentPos handles currentTrack
+    int required  = currentPos + dynamicMode()->upcomingCount(); // currentPos handles currentTrack
     int remainder = totalTrackCount();
 
     if( required > remainder )
         songCount = required - remainder;
 
-    if( type == Party::SUGGESTION )
+    if( type == DynamicMode::SUGGESTION )
     {
         if( !m_currentTrack ) return;
         QStringList suggestions = CollectionDB::instance()->similarArtists( currentTrack()->artist(), 16 );
         qb.addMatches( QueryBuilder::tabArtist, suggestions );
     }
-    else if( type != Party::RANDOM ) //we have playlists to choose from.
+    else if( type != DynamicMode::RANDOM ) //we have playlists to choose from.
     {
         addSpecialCustomTracks( songCount );
         return;
@@ -604,7 +611,7 @@ Playlist::addSpecialCustomTracks( uint songCount )
     }
 
     if ( !item ) {
-        debug() << "[PARTY]: No valid source found." << endl;
+        debug() << "[DYNAMIC]: No valid source found." << endl;
         amaroK::StatusBar::instance()->shortMessage( i18n("No valid sources set for this Dynamic Playlist.") );
         return;
     }
@@ -743,7 +750,7 @@ Playlist::addSpecialCustomTracks( uint songCount )
  */
 
 void
-Playlist::adjustPartyUpcoming( bool saveUndo, const int type )
+Playlist::adjustDynamicUpcoming( bool saveUndo, const int type )
 {
     int  x = 0;
 
@@ -765,11 +772,11 @@ Playlist::adjustPartyUpcoming( bool saveUndo, const int type )
         ++it;
 
 
-    for ( ; *it && x < AmarokConfig::dynamicUpcomingCount() ; ++it, ++x );
+    for ( ; *it && x < dynamicMode()->upcomingCount() ; ++it, ++x );
 
-    if ( x < AmarokConfig::dynamicUpcomingCount() )
+    if ( x < dynamicMode()->upcomingCount() )
     {
-        addSpecialTracks( AmarokConfig::dynamicUpcomingCount() - x, type );
+        addSpecialTracks( dynamicMode()->upcomingCount() - x, type );
     }
     else
     {
@@ -801,7 +808,7 @@ Playlist::adjustPartyUpcoming( bool saveUndo, const int type )
   */
 
 void
-Playlist::adjustPartyPrevious( uint songCount, bool saveUndo )
+Playlist::adjustDynamicPrevious( uint songCount, bool saveUndo )
 {
     int current = currentTrackIndex();
     int x = current - songCount;
@@ -825,7 +832,7 @@ Playlist::adjustPartyPrevious( uint songCount, bool saveUndo )
 void
 Playlist::alterHistoryItems( bool enable /*false*/, bool entire /*FALSE*/ )
 {
-    //NOTE: we must make sure that partyMode works perfectly as we expect it to,
+    //NOTE: we must make sure that dynamicMode works perfectly as we expect it to,
     //      for this functionality to be guarranteed. <sebr>
 
     if( !entire && !m_currentTrack )
@@ -987,9 +994,9 @@ Playlist::playNextTrack( bool forceNext )
 
     if( !m_visCount || ( m_currentTrack && m_stopAfterTrack == m_currentTrack ) )
     {
-        if( isDynamic() && m_visCount ) {
-            advancePartyTrack( item );
-            m_partyDirt = false;
+        if( dynamicMode() && m_visCount ) {
+            advanceDynamicTrack( item );
+            m_dynamicDirt = false;
         }
 
         m_stopAfterTrack = 0;
@@ -1198,8 +1205,8 @@ Playlist::playNextTrack( bool forceNext )
         }
 
 
-        if ( isDynamic() && item != firstChild() )
-            advancePartyTrack();
+        if ( dynamicMode() && item != firstChild() )
+            advanceDynamicTrack();
 
         if ( !item && amaroK::repeatPlaylist() )
             item = *MyIt( this ); //ie. first visible item
@@ -1214,7 +1221,7 @@ Playlist::playNextTrack( bool forceNext )
 
 //This is called before setCurrentItem( item );
 void
-Playlist::advancePartyTrack( PlaylistItem *item )
+Playlist::advanceDynamicTrack( PlaylistItem *item )
 {
     MyIterator it( this, MyIterator::Visible );
     if( !item ) item = currentTrack();
@@ -1223,9 +1230,9 @@ Playlist::advancePartyTrack( PlaylistItem *item )
     {
         if( *it == item )
         {
-            if( AmarokConfig::dynamicMarkHistory() ) (*it)->setEnabled( false );
+            if( dynamicMode()->markHistory() ) (*it)->setEnabled( false );
             for ( PlaylistItem *first = firstChild();
-                  AmarokConfig::dynamicCycleTracks() && x >= AmarokConfig::dynamicPreviousCount() && first;
+                  dynamicMode()->cycleTracks() && x >= dynamicMode()->previousCount() && first;
                   first = firstChild(), x-- ) {
                 removeItem( first ); //first visible item
                 delete first;
@@ -1237,10 +1244,10 @@ Playlist::advancePartyTrack( PlaylistItem *item )
     //keep upcomingTracks requirement, this seems to break StopAfterCurrent
     if( m_stopAfterTrack != m_currentTrack )
     {
-        const int appendNo = AmarokConfig::dynamicAppendCount();
-        if( appendNo ) addSpecialTracks( appendNo, AmarokConfig::dynamicType() );
+        const int appendNo = dynamicMode()->appendCount();
+        if( appendNo ) addSpecialTracks( appendNo, dynamicMode()->appendType() );
     }
-    m_partyDirt = true;
+    m_dynamicDirt = true;
 }
 
 void
@@ -1329,7 +1336,7 @@ Playlist::queueSelected()
     for( MyIt it( this, MyIt::Selected ); *it; ++it )
     {
         // Dequeuing selection with dynamic doesnt work due to the moving of the track after the last queued
-        if( isDynamic() )
+        if( dynamicMode() )
             dynamicList.append( *it );
         else
             queue( *it, true );
@@ -1337,7 +1344,7 @@ Playlist::queueSelected()
         ( m_nextTracks.containsRef( *it ) ? in : out ).append( *it );
     }
 
-    if( isDynamic() )
+    if( dynamicMode() )
     {
         QListViewItem *item = dynamicList.first();
         if( m_nextTracks.containsRef( static_cast<PlaylistItem*>(item) ) )
@@ -1368,7 +1375,7 @@ Playlist::queue( QListViewItem *item, bool multi )
         //remove the item, this is better way than remove( item )
         m_nextTracks.remove( queueIndex ); //sets current() to next item
 
-        if( isDynamic() ) // we move the item after the last queued item to preserve the ordered 'queue'.
+        if( dynamicMode() ) // we move the item after the last queued item to preserve the ordered 'queue'.
         {
             PlaylistItem *after = m_nextTracks.last();
 
@@ -1376,7 +1383,7 @@ Playlist::queue( QListViewItem *item, bool multi )
                 moveItem( item, 0, after );
         }
     }
-    else if( !isDynamic() )
+    else if( !dynamicMode() )
         m_nextTracks.append( item );
 
     else // Dynamic mode
@@ -1589,7 +1596,7 @@ Playlist::activate( QListViewItem *item )
 
     #define item static_cast<PlaylistItem*>(item)
 
-    if( isDynamic() && !m_partyDirt && item != firstChild() && !amaroK::repeatTrack() )
+    if( dynamicMode() && !m_dynamicDirt && item != firstChild() && !amaroK::repeatTrack() )
     {
         if( m_currentTrack && item->isEnabled() )
             this->moveItem( item, 0, m_currentTrack );
@@ -1614,12 +1621,12 @@ Playlist::activate( QListViewItem *item )
                 hasHistory ?
                     insertMediaInternal( item->url(), *it ):
                     insertMediaInternal( item->url(), 0 );
-                m_partyDirt = true;
+                m_dynamicDirt = true;
                 return;
             }
 
         }
-        advancePartyTrack();
+        advanceDynamicTrack();
     }
 
 
@@ -1645,7 +1652,7 @@ Playlist::activate( QListViewItem *item )
 
     setCurrentTrack( item );
 
-    m_partyDirt = false;
+    m_dynamicDirt = false;
 
     //use PlaylistItem::MetaBundle as it also updates the audioProps
     EngineController::instance()->play( *item );
@@ -1822,6 +1829,30 @@ Playlist::nextTracks() const
     for( QPtrListIterator<PlaylistItem> it( m_nextTracks ); *it; ++it )
         list << (**it);
     return list;
+}
+
+const DynamicMode*
+Playlist::dynamicMode() const
+{
+    return m_dynamicMode;
+}
+
+DynamicMode*
+Playlist::modifyDynamicMode()
+{
+    DynamicMode *m = m_dynamicMode;
+    if( !m )
+        return 0;
+    m_dynamicMode = new DynamicMode( *m );
+    return m;
+}
+
+void
+Playlist::finishedModifying( DynamicMode *mode )
+{
+    DynamicMode *m = m_dynamicMode;
+    setDynamicMode( mode );
+    delete m;
 }
 
 void
@@ -2028,10 +2059,9 @@ Playlist::clear() //SLOT
 {
     if( isLocked() || renameLineEdit()->isVisible() ) return;
 
-    emit aboutToClear(); //will saveUndoState()
+    disableDynamicMode();
 
-    static_cast<KToggleAction*>(amaroK::actionCollection()->action( "playlist_shuffle" ))->setEnabled( true );
-    static_cast<KToggleAction*>(amaroK::actionCollection()->action( "dynamic_mode" ))->setChecked( false );
+    emit aboutToClear(); //will saveUndoState()
 
     setCurrentTrack( 0 );
     m_prevTracks.clear();
@@ -2840,13 +2870,13 @@ Playlist::customEvent( QCustomEvent *e )
             m_queueList.clear();
         }
         //re-disable history items
-        if( isDynamic() && m_stateSwitched )
+        if( dynamicMode() && m_stateSwitched )
         {
-            alterHistoryItems( !AmarokConfig::dynamicMarkHistory() );
+            alterHistoryItems( !dynamicMode()->markHistory() );
             m_stateSwitched = false;
         }
 
-        if( m_partyDirt )
+        if( m_dynamicDirt )
         {
             PlaylistItem *after = m_currentTrack;
             if( !after )
@@ -2863,8 +2893,8 @@ Playlist::customEvent( QCustomEvent *e )
                 prev->setEnabled( false );
 
             activate( after );
-            if ( AmarokConfig::dynamicCycleTracks() )
-                adjustPartyPrevious( AmarokConfig::dynamicPreviousCount() );
+            if ( dynamicMode()->cycleTracks() )
+                adjustDynamicPrevious( dynamicMode()->previousCount() );
         }
 
         if( m_queueDirt )
@@ -2936,9 +2966,11 @@ Playlist::saveXML( const QString &path )
     stream.setEncoding( QTextStream::UnicodeUTF8 );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 
-    // increase the version whenever the format changes backwards-incompatibly
-    // in PlaylistLoader::startElement() also
-    stream << QString( "<playlist product=\"%1\" version=\"%2\">\n" ).arg( "amaroK" ).arg( "2.4" );
+    QString dynamic;
+    if( dynamicMode() )
+        dynamic = QString(" dynamicMode=\"%1\"").arg( dynamicMode()->title() );
+    stream << QString( "<playlist product=\"%1\" version=\"%2\"%3>\n" )
+              .arg( "amaroK" ).arg( amaroK::xmlVersion() ).arg( dynamic );
 
     for( const PlaylistItem *item = firstChild(); item; item = item->nextSibling() )
     {
@@ -3031,7 +3063,50 @@ Playlist::customMenuClicked(int id)  //adapted from burnSelectedTracks
 }
 
 void
-Playlist::repopulate() //SLOT
+Playlist::setDynamicMode( DynamicMode *mode ) //SLOT
+{
+    amaroK::actionCollection()->action( "random_mode" )->setEnabled( !mode );
+    amaroK::actionCollection()->action( "playlist_shuffle" )->setEnabled( !mode );
+    amaroK::actionCollection()->action( "repopulate" )->setEnabled( mode );
+    if( m_dynamicMode && mode )
+    {
+        //if( m_dynamicMode->appendType()    != mode->appendType() ) //DYNAMICDISABLE
+        //    PlaylistBrowser::instance()->loadDynamicItems();
+        if( m_dynamicMode->previousCount() != mode->previousCount() )
+            adjustDynamicPrevious( mode->previousCount(), true );
+        if( m_dynamicMode->upcomingCount() != mode->upcomingCount() )
+            adjustDynamicUpcoming( true, mode->appendType() );
+        if( m_dynamicMode->markHistory() != mode->markHistory() )
+            alterHistoryItems( !mode->markHistory() );
+    }
+    else if( !mode )
+        alterHistoryItems( true, true );
+
+    m_dynamicMode = mode;
+    emit dynamicModeChanged( mode );
+}
+
+void
+Playlist::loadDynamicMode( DynamicMode *mode ) //SLOT
+{
+    saveUndoState();
+    setDynamicMode( mode );
+    repopulate( false );
+}
+
+void
+Playlist::editActiveDynamicMode() //SLOT
+{
+    if( !dynamicMode() )
+        return;
+
+    DynamicMode *m = modifyDynamicMode();
+    ConfigDynamic::editDynamicPlaylist( PlaylistWindow::self(), m );
+    finishedModifying( m );
+}
+
+void
+Playlist::repopulate( bool savestate ) //SLOT
 {
     DEBUG_BLOCK
     // Repopulate the upcoming tracks
@@ -3052,7 +3127,8 @@ Playlist::repopulate() //SLOT
         list.prepend( *it );
     }
 
-    saveUndoState();
+    if( savestate )
+        saveUndoState();
 
     //remove the items
     for( QListViewItem *item = list.first(); item; item = list.next() )
@@ -3061,17 +3137,17 @@ Playlist::repopulate() //SLOT
         delete item;
     }
 
-    //calling advancePartyTrack will remove an item too, which is undesirable
+    //calling advanceDynamicTrack will remove an item too, which is undesirable
     //block signals to avoid saveUndoState being called
     blockSignals( true );
-    addSpecialTracks( AmarokConfig::dynamicUpcomingCount(), AmarokConfig::dynamicType() );
+    addSpecialTracks( dynamicMode()->upcomingCount(), dynamicMode()->appendType() );
     blockSignals( false );
 }
 
 void
 Playlist::shuffle() //SLOT
 {
-    if( isDynamic() )
+    if( dynamicMode() )
         return;
 
     QPtrList<QListViewItem> list;
@@ -3124,10 +3200,10 @@ Playlist::removeSelectedItems() //SLOT
     if( list.isEmpty() && queued.isEmpty() ) return;
     saveUndoState();
 
-    if( isDynamic() )
+    if( dynamicMode() )
     {
         int currentTracks = childCount();
-        int minTracks     = AmarokConfig::dynamicUpcomingCount();
+        int minTracks     = dynamicMode()->upcomingCount();
 
         if( m_currentTrack )
             currentTracks -= currentTrackIndex() + 1;
@@ -3139,7 +3215,7 @@ Playlist::removeSelectedItems() //SLOT
 
         if( difference < 0 )
         {
-            addSpecialTracks( -difference, AmarokConfig::dynamicType() );
+            addSpecialTracks( -difference, dynamicMode()->appendType() );
         }
     }
 
@@ -3356,7 +3432,7 @@ Playlist::showQueueManager()
         emit queueChanged( in, out );
 
         // repaint newly queued or altered queue items
-        if( isDynamic() )
+        if( dynamicMode() )
             sortQueuedItems();
         else
             refreshNextTracks();
@@ -3512,19 +3588,19 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         KPopupMenu popup;
         amaroK::actionCollection()->action("playlist_save")->plug( &popup );
         amaroK::actionCollection()->action("playlist_clear")->plug( &popup );
-        if(AmarokConfig::dynamicMode())
+        if(dynamicMode())
              popup.insertItem( SmallIconSet( "dynamic" ), i18n("Repopulate"), REPOPULATE);
         else
         {
             amaroK::actionCollection()->action("playlist_shuffle")->plug( &popup );
-            popup.insertItem( SmallIconSet( "dynamic" ), i18n("Load Dynamic Playlist"), ENABLEDYNAMIC);
+            //popup.insertItem( SmallIconSet( "dynamic" ), i18n("Load Dynamic Playlist"), ENABLEDYNAMIC); //DYNAMICDISABLE
         }
         switch(popup.exec(p))
         {
-            case  ENABLEDYNAMIC:
+            /*case  ENABLEDYNAMIC:
                 static_cast<KToggleAction*>(amaroK::actionCollection()->action( "dynamic_mode" ))->setChecked( true );
                 repopulate();
-                break;
+                break; DYNAMICDISABLE*/
             case REPOPULATE: repopulate(); break;
         }
         return;
@@ -3704,8 +3780,8 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         if( itemCount == 1 )
         {
             //Restarting track on dynamic mode
-            if( isCurrent && isPlaying && isDynamic() )
-                m_partyDirt = true;
+            if( isCurrent && isPlaying && dynamicMode() )
+                m_dynamicDirt = true;
             activate( item );
         }
         else
@@ -4206,6 +4282,7 @@ Playlist::switchState( QStringList &loadFromMe, QStringList &saveToMe )
 
     //this is clear() minus some parts, for instance we don't want to cause a saveUndoState() here
     m_currentTrack = 0;
+    disableDynamicMode();
     Glow::reset();
     m_prevTracks.clear();
     m_prevAlbums.clear();
@@ -4222,7 +4299,7 @@ Playlist::switchState( QStringList &loadFromMe, QStringList &saveToMe )
     m_undoButton->setEnabled( !m_undoList.isEmpty() );
     m_redoButton->setEnabled( !m_redoList.isEmpty() );
 
-    if( isDynamic() ) alterHistoryItems( !AmarokConfig::dynamicMarkHistory() );
+    if( dynamicMode() ) alterHistoryItems( !dynamicMode()->markHistory() );
     m_undoDirt = false;
 }
 

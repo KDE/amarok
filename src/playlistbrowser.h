@@ -41,7 +41,7 @@ class PlaylistTrackItem;
 class PlaylistBrowser : public QVBox
 {
         Q_OBJECT
-    friend class Party;
+    friend class DynamicMode;
     friend class PlaylistBrowserView;
     friend class PlaylistBrowserEntry;
     friend class PlaylistCategory;
@@ -71,7 +71,7 @@ class PlaylistBrowser : public QVBox
                                   const QValueList<int> &lengths = QValueList<int>(),
                                   bool relative = AmarokConfig::relativePlaylist() );
 
-        QString partyBrowserCache() const;
+        QString dynamicBrowserCache() const;
         QString playlistBrowserCache() const;
         QString podcastBrowserCache() const;
         QString streamBrowserCache() const;
@@ -81,7 +81,8 @@ class PlaylistBrowser : public QVBox
         QListViewItem *findItemInTree( const QString &searchstring, int c ) const;
 
         QPtrList<QListViewItem> dynamicEntries() const { return m_dynamicEntries; }
-	    QListViewItem* podcastCategory() const { return m_podcastCategory; }
+        DynamicMode *findDynamicModeByTitle( const QString &title ) const;
+        QListViewItem *podcastCategory() const { return m_podcastCategory; }
 
         ViewMode viewMode() const { return m_viewMode; }
 
@@ -120,6 +121,8 @@ class PlaylistBrowser : public QVBox
         void slotViewMenu( int id );
         void showContextMenu( QListViewItem*, const QPoint&, int );
 
+        void loadDynamicItems();
+
     private:
         PlaylistBrowser( const char* name=0 );
         void polish();
@@ -137,7 +140,6 @@ class PlaylistBrowser : public QVBox
         void updateSmartPlaylists( QListViewItem *root );
 
         PlaylistCategory* loadDynamics();
-        void loadDynamicItems();
 
         PlaylistCategory* loadPodcasts();
         void loadPodcastsFromDatabase( PlaylistCategory *p );
@@ -177,8 +179,8 @@ class PlaylistBrowser : public QVBox
         PlaylistCategory    *m_smartDefaults;
         PlaylistEntry       *m_lastPlaylist;
 
-        PartyEntry          *m_randomParty;
-        PartyEntry          *m_suggestedParty;
+        DynamicEntry          *m_randomDynamic;
+        DynamicEntry          *m_suggestedDynamic;
 
         bool                 m_coolStreamsOpen;
         bool                 m_smartDefaultsOpen;
@@ -191,7 +193,7 @@ class PlaylistBrowser : public QVBox
         KToolBar            *m_toolbar;
         ViewMode             m_viewMode;
         QDict<PodcastSettings> m_podcastSettings;
-        QValueList<int>      m_partySizeSave;
+        QValueList<int>      m_dynamicSizeSave;
         QPtrList<QListViewItem> m_dynamicEntries;
 
         QTimer              *m_podcastTimer;
@@ -263,14 +265,14 @@ class PlaylistDialog: public KDialogBase
        void slotCustomPath();
 };
 
-// Returns true if item is Playlist, Stream, Smart Playlist or Party.
+// Returns true if item is Playlist, Stream, Smart Playlist or DynamicMode.
 inline bool
 isElement( QListViewItem *item )
 {
     if( !item )
         return false;
     return item->rtti() == ( PlaylistEntry::RTTI || StreamEntry::RTTI ||
-                             SmartPlaylist::RTTI /*|| PartyEntry::RTTI */) ? true : false;
+                             SmartPlaylist::RTTI /*|| DynamicEntry::RTTI */) ? true : false;
 }
 
 inline bool
@@ -286,7 +288,7 @@ isDynamic( QListViewItem *item )
 {
     if( !item )
         return false;
-    return item->rtti() == PartyEntry::RTTI ? true : false;
+    return item->rtti() == DynamicEntry::RTTI ? true : false;
 }
 
 inline bool

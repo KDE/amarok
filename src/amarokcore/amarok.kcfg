@@ -94,55 +94,6 @@
         <whatsthis>If set, amaroK plays the tracks in the playlist in random order.</whatsthis>
         <default>false</default>
     </entry>
-    <entry key="Dynamic Mode" type="Bool">
-        <label>Plays a dynamic playlist</label>
-        <whatsthis>Dynamic playlist which removes the played track from the playlist and appends another song.</whatsthis>
-        <default>false</default>
-    </entry>
-    <entry key="Dynamic Info" type="Bool">
-        <label>Shows help</label>
-        <whatsthis>Whether to show or hide the dynamic information dialog</whatsthis>
-        <default>true</default>
-    </entry>
-    <entry key="Dynamic Type" type="Int">
-        <label>Adds this type of song</label>
-        <whatsthis>Dynamic mode will append this type of song to the end of the playlist.</whatsthis>
-        <default>0</default>
-    </entry>
-    <entry key="Dynamic Custom List" type="StringList">
-        <label>List of smart playlists to be appended for dynamic mode.</label>
-        <whatsthis>List of smart playlists to be appended for dynamic mode.</whatsthis>
-        <default></default>
-    </entry>
-    <entry key="Dynamic Upcoming Count" type="Int">
-        <label>Number of upcoming songs to show</label>
-        <whatsthis>Number of upcoming songs to show in the Playlist for dynamic mode.</whatsthis>
-        <default>15</default>
-    </entry>
-    <entry key="Dynamic Previous Count" type="Int">
-        <label>History of songs count</label>
-        <whatsthis>Number of previously played songs to show in the Playlist for dynamic mode.</whatsthis>
-        <default>4</default>
-    </entry>
-    <entry key="Dynamic Append Count" type="Int">
-        <label>Number of tracks to append</label>
-        <whatsthis>Number of tracks to append to the Playlist for dynamic mode.</whatsthis>
-        <default>1</default>
-    </entry>
-    <entry key="Dynamic Cycle Tracks" type="Bool">
-        <label>Cycle Tracks</label>
-        <whatsthis>Whether to remove first item in playlist.</whatsthis>
-        <default>true</default>
-    </entry>
-    <entry key="Dynamic Mark History" type="Bool">
-        <label>Mark History</label>
-        <whatsthis>Whether to mark items in the playlist as history once played.</whatsthis>
-        <default>false</default>
-    </entry>
-    <entry key="Dynamic Playlist" type="String">
-        <label>Dynamic Playlist</label>
-        <whatsthis>Name of current Dynamic Playlist.</whatsthis>
-    </entry>
     <entry key="Show Tray Icon" type="Bool">
         <label>Whether to show icon in system tray</label>
         <whatsthis>Enable/Disable tray icon for amaroK.</whatsthis>
