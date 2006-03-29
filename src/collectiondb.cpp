@@ -36,7 +36,7 @@
 #include <qregexp.h>              //setHTMLLyrics()
 #include <qtimer.h>
 #include <qpainter.h>             //createDragPixmap()
-
+#include <qpalette.h>
 #include <pthread.h>              //debugging, can be removed later
 
 #include <kapplication.h>
@@ -978,42 +978,23 @@ CollectionDB::createDragPixmap( const KURL::List &urls )
 
     QPixmap pmdrag( pixmapW, pixmapH );
     QPixmap pmtext( pixmapW, fontH );
+    
+    QPalette palette = QToolTip::palette();
 
     QPainter p;
     p.begin( &pmtext );
-    p.fillRect( 0, 0, pixmapW, fontH, QBrush( Qt::black ) );
-    p.setPen( Qt::white );
+    p.fillRect( 0, 0, pixmapW, fontH, QBrush( Qt::black ) ); // border
+    p.fillRect( 1, 1, pixmapW-2, fontH-2, palette.brush( QPalette::Normal, QColorGroup::Background ) );
+    p.setBrush( palette.color( QPalette::Normal, QColorGroup::Text ) );
     p.setFont( font );
     p.drawText( 2, fm.ascent() + 1, text );
     p.end();
 
-    int w = pmtext.width();
-    int h = pmtext.height();
-
-    // simple morphological dilation of image for masking with outline (to get font with contour)
-    QImage input = pmtext.convertToImage().convertDepth( 32 );
-    QImage output( w, h, 1, 2, QImage::LittleEndian ); // check endianess?
-    output.fill( 0 );
-    int x, y;
-    for ( x = 1; x < w - 1; x++ )
-    {
-        for ( y = 1; y < h - 1; y++ )
-        {
-            if ((*((uint *) input.scanLine(y) + x - 1) ^ 0xff000000)
-                || (*((uint *) input.scanLine(y - 1) + x) ^ 0xff000000)
-                || (*((uint *) input.scanLine(y) + x) ^ 0xff000000)
-                || (*((uint *) input.scanLine(y + 1) + x) ^ 0xff000000)
-                || (*((uint *) input.scanLine(y) + x + 1) ^ 0xff000000))
-            {
-                *(output.scanLine(y) + (x >> 3)) |= 1 << (x & 7);
-            }
-        }
-    }
     QBitmap pmtextMask(pixmapW, fontH);
-    pmtextMask = output;
+    pmtextMask.fill( Qt::color1 );
 
     // when we have found no covers, just display the text message
-    if (covers == 0)
+    if( !covers )
     {
         pmtext.setMask(pmtextMask);
         return pmtext;
