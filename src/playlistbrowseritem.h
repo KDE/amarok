@@ -243,15 +243,14 @@ class PodcastEpisode : public QObject, public PlaylistBrowserEntry
 
         void  downloadMedia();
         const bool isOnDisk();
+        void setOnDisk( bool d = true );
         QListViewItem *itemChannel() { return m_parent; }
 
         
         const bool isNew()         const { return m_bundle.isNew(); }
-        const bool hasDownloaded() const { return m_downloaded; }
         
         void setNew( const bool &n = true );
         void setListened( const bool &n = true );
-        void setDownloaded( const bool &b ) { m_downloaded = b; updatePixmap(); }
 
         // for convenience
         const int     dBId()        { return m_bundle.dBId(); }
@@ -296,7 +295,6 @@ class PodcastEpisode : public QObject, public PlaylistBrowserEntry
         QListViewItem *m_parent;           //podcast channel it belongs to
         PodcastEpisodeBundle m_bundle;
         KURL        m_localUrl;
-        QString     m_localUrlString;      //convenience for QFile()
 
         QPixmap     m_loading1;
         QPixmap     m_loading2;

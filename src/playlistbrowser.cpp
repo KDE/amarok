@@ -1130,7 +1130,7 @@ bool PlaylistBrowser::deletePodcastItems()
 
     PodcastEpisode *item;
     for ( item = erasedItems.first(); item; item = erasedItems.next() )
-        item->setDownloaded( false );
+        item->isOnDisk();
     return true;
 }
 

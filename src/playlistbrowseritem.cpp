@@ -1392,19 +1392,19 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
         img = xml.namedItem( "itunes:image" ).toElement().text();
 
     PodcastSettings *parentSettings = PlaylistBrowser::instance()->getPodcastSettings( m_parent );
-    PodcastChannelBundle pcb( m_url, t, l, d, c, parentSettings );
-    pcb.setImageURL( KURL::fromPathOrURL( img ) );
+    m_bundle = PodcastChannelBundle( m_url, t, l, d, c, parentSettings );
+    m_bundle.setImageURL( KURL::fromPathOrURL( img ) );
 
-    pcb.setParentId( m_parent->id() );
+    m_bundle.setParentId( m_parent->id() );
     if( !m_updating )
     { // don't reinsert on a refresh
         debug() << "Adding podcast to database" << endl;
-        CollectionDB::instance()->addPodcastChannel( pcb );
+        CollectionDB::instance()->addPodcastChannel( m_bundle );
     }
     else
     {
         debug() << "Updating podcast in database" << endl;
-        CollectionDB::instance()->updatePodcastChannel( pcb );
+        CollectionDB::instance()->updatePodcastChannel( m_bundle );
     }
 
     /// Podcast Episodes information
@@ -1669,7 +1669,6 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
       , m_loading1( QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
       , m_loading2( QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
       , m_fetching( false )
-      , m_downloaded( false )
       , m_onDisk( false )
 {
     const bool isAtom = ( feedType == ATOM );
@@ -1735,16 +1734,16 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
     if( title.isEmpty() )
         title = link.fileName();
 
-    m_localUrl = dynamic_cast<PodcastChannel*>(m_parent)->saveLocation();
-
+    PodcastChannel *channel = dynamic_cast<PodcastChannel*>(m_parent);
+    if( channel )
+        m_localUrl = channel->saveLocation();
+    else
+        m_localUrl = PodcastSettings( "Podcasts" ).saveLocation();
     m_localUrl.addPath( link.fileName() );
-
-    m_localUrlString = m_localUrl.path();
 
     if( QFile::exists( m_localUrl.path() ) )
     {
         m_onDisk = true;
-        m_downloaded = true;
     }
 
     KURL parentUrl = static_cast<PodcastChannel*>(parent)->url();
@@ -1781,20 +1780,19 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after, Pod
       , m_loading1( QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
       , m_loading2( QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
       , m_fetching( false )
-      , m_downloaded( false )
       , m_onDisk( false )
 {
     m_localUrl = dynamic_cast<PodcastChannel*>(m_parent)->saveLocation();
 
     m_localUrl.addPath( bundle.url().fileName() );
 
-    m_localUrlString = m_localUrl.path();
-
     if( QFile::exists( m_localUrl.path() ) )
     {
         m_onDisk = true;
-        m_downloaded = true;
+        m_bundle.setLocalURL( m_localUrl );
     }
+    if( m_bundle.dBId() )
+        CollectionDB::instance()->updatePodcastEpisode( m_bundle.dBId(), m_bundle );
 
     setText( 0, bundle.title() );
     updatePixmap();
@@ -1807,8 +1805,6 @@ PodcastEpisode::updatePixmap()
 {
     if( m_onDisk )
         setPixmap( 0, SmallIcon( "down" ) );
-    else if( m_downloaded )
-        setPixmap( 0, SmallIcon( "sound" ) );
     else if( isNew() )
         setPixmap( 0, SmallIcon("favorites") );
     else
@@ -1818,8 +1814,11 @@ PodcastEpisode::updatePixmap()
 const bool
 PodcastEpisode::isOnDisk()
 {
-    m_onDisk = QFile::exists( m_localUrlString );
+    m_onDisk = QFile::exists( m_localUrl.path() );
     updatePixmap();
+    m_bundle.setLocalURL( m_onDisk ? m_localUrl : KURL() );
+    if( dBId() )
+        CollectionDB::instance()->updatePodcastEpisode( dBId(), m_bundle );
     return m_onDisk;
 }
 
@@ -1868,7 +1867,9 @@ PodcastEpisode::abortDownload() //SLOT
     emit downloadAborted();
     m_podcastEpisodeJob->kill();
 
-    KIO::del( KURL::fromPathOrURL( m_localUrlString + ".part" ) );
+    KURL part = m_localUrl;
+    part.addPath( ".part" );
+    KIO::del( part );
 
     stopAnimation();
     setText( 0, title() );
@@ -1893,7 +1894,6 @@ PodcastEpisode::downloadResult( KIO::Job* job ) //SLOT
     }
 
     m_onDisk = true;
-    m_downloaded = true;
     setNew( false );
     
     m_bundle.setLocalURL( m_localUrl );
@@ -1941,8 +1941,7 @@ PodcastEpisode::setNew( const bool &n )
 
 void PodcastEpisode::setListened( const bool &n )
 {
-    m_downloaded = n;
-    updatePixmap();
+    setNew( n );
 }
 
 void
