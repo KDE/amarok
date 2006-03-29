@@ -878,6 +878,7 @@ CollectionDB::createDragPixmap( const KURL::List &urls )
     int pixmapW = 0;
     int pixmapH = 0;
     int remoteUrls = 0;
+    int playlists = 0;
 
     QMap<QString, int> albumMap;
     QPixmap coverPm[maxCovers];
@@ -888,7 +889,11 @@ CollectionDB::createDragPixmap( const KURL::List &urls )
     KURL::List::ConstIterator it = urls.begin();
     for ( ; it != urls.end(); ++it )
     {
-        if ( (*it).isLocalFile() )
+        if( PlaylistFile::isPlaylistFile( *it ) )
+        {
+            playlists++;
+        }
+        else if( (*it).isLocalFile() )
         {
             songs++;
 
@@ -922,7 +927,13 @@ CollectionDB::createDragPixmap( const KURL::List &urls )
     int albums = albumMap.count();
     QString text;
 
-    if( songs > 0 )
+    if( ( songs && remoteUrls ) ||
+        ( songs && playlists  ) ||
+        ( playlists && remoteUrls ) )
+    {
+        text = i18n( "One item", "%n items", songs + remoteUrls + playlists );
+    }
+    else if( songs > 0 )
     {
         text = i18n( "One song", "%n songs", songs );
         if( correctAlbumCount )
@@ -930,6 +941,8 @@ CollectionDB::createDragPixmap( const KURL::List &urls )
             text += i18n( " from one album", " from %n albums",albums );
         }
     }
+    else if( playlists > 0 )
+        text = i18n( "One playlist", "%n playlists", playlists );
     else if ( remoteUrls > 0 )
         text = i18n( "One remote file", "%n remote files", remoteUrls );
     else
