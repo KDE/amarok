@@ -1090,7 +1090,8 @@ CollectionDB::podcastImage( const MetaBundle &bundle, uint width )
         PodcastChannelBundle pcb;
         if( getPodcastChannelBundle( peb.parent().url(), &pcb ) )
         {
-            return podcastImage( pcb.imageURL().url(), width );
+            if( pcb.imageURL().isValid() )
+               return podcastImage( pcb.imageURL().url(), width );
         }
     }
 
@@ -1111,7 +1112,8 @@ CollectionDB::podcastImage( const QString &remoteURL, uint width )
     {
         s = notAvailCover( width );
 
-        KIO::Job *job = KIO::storedGet( remoteURL, false, false );
+        KIO::Job *job = KIO::storedGet( KURL::fromPathOrURL( remoteURL ), false, false );
+        m_podcastImageJobs[job] = remoteURL;
         connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( podcastImageResult( KIO::Job* ) ) );
     }
 
@@ -1121,6 +1123,9 @@ CollectionDB::podcastImage( const QString &remoteURL, uint width )
 void
 CollectionDB::podcastImageResult( KIO::Job *gjob )
 {
+    QString url = m_podcastImageJobs[gjob];
+    m_podcastImageJobs.remove( gjob );
+
     KIO::StoredTransferJob *job = dynamic_cast<KIO::StoredTransferJob *>( gjob );
     if( !job )
     {
@@ -1134,12 +1139,21 @@ CollectionDB::podcastImageResult( KIO::Job *gjob )
         return;
     }
 
+    if( job->isErrorPage() )
+    {
+        debug() << "error page" << endl;
+        return;
+    }
+
     QImage image( job->data() );
     if( !image.isNull() )
     {
-        QCString key = md5sum( "Podcast", job->url().url() );
+       if( url.isEmpty() )
+          url = job->url().url();
+
+        QCString key = md5sum( "Podcast", url );
         if( image.save( largeCoverDir().filePath( key ), "PNG") )
-           emit imageFetched( job->url().url() );
+           emit imageFetched( url );
     }
 }
 

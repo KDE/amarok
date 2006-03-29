@@ -466,6 +466,9 @@ class CollectionDB : public QObject, public EngineObserver
         //organize files stuff
         bool m_waitForFileOperation;
         bool m_fileOperationFailed;
+
+        // for handling podcast image url redirects
+        QMap<KIO::Job *, QString> m_podcastImageJobs;
 };
 
 

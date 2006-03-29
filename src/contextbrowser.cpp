@@ -1148,7 +1148,11 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
         return;
     }
 
-    QString image = CollectionDB::instance()->podcastImage( pcb.imageURL().url() );
+    QString image;
+    if( pcb.imageURL().isValid() )
+       image = CollectionDB::instance()->podcastImage( pcb.imageURL().url() );
+    else
+       image = CollectionDB::instance()->notAvailCover(); 
     image = ContextBrowser::makeShadowedImage( image );
     QString imageAttr = escapeHTMLAttr( i18n( "Click to go to podcast website: %1." ).arg( pcb.link().prettyURL() ) );
 
