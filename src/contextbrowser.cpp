@@ -268,7 +268,7 @@ ContextBrowser::ContextBrowser( const char *name )
     connect( CollectionDB::instance(), SIGNAL( imageFetched( const QString& ) ),
              this, SLOT( imageFetched( const QString& ) ) );
 
-//     showContext( KURL( "current://track" ) );
+    showContext( KURL( "current://track" ) );
 }
 
 

@@ -38,7 +38,7 @@ public:
 
     QWidget *browser( const QString& ) const;
     QWidget *browser( int index ) const { if( index < 0 ) index = 0; return m_browsers[index]; }
-    QWidget *currentBrowser() const { return browser( m_currentIndex ); }
+    QWidget *currentBrowser() const { return m_currentIndex < 0 ? 0 : browser( m_currentIndex ); }
 
     int count() const { return m_browsers.count(); }
     int visibleCount() const;
