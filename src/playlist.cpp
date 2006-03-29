@@ -34,6 +34,7 @@
 #include "queuemanager.h"
 #include "prettypopupmenu.h"
 #include "scriptmanager.h"
+#include "sliderwidget.h"
 #include "statusbar.h"       //for status messages
 #include "tagdialog.h"
 #include "threadweaver.h"
