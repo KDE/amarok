@@ -316,9 +316,9 @@ amaroK::TrackSlider::paintEvent( QPaintEvent * )
 
     //<Triangle Marker>
     QPointArray pa( 3 );
-    pa.setPoint( 0, pos - 3, 1 );
-    pa.setPoint( 1, pos + 3, 1 );
-    pa.setPoint( 2, pos,     5 );
+    pa.setPoint( 0, pos - 5, 1 );
+    pa.setPoint( 1, pos + 5, 1 );
+    pa.setPoint( 2, pos,     9 );
     p.setBrush( paletteForegroundColor() );
     p.drawConvexPolygon( pa );
     //</Triangle Marker>
