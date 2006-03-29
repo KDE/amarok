@@ -862,7 +862,7 @@ QString VfatMediaDevice::cleanPath( const QString &component )
     if( m_spacesToUnderscores )
         result.replace( QRegExp( "\\s" ), "_" );
     if( m_actuallyVfat )
-        result.replace( "?", "_" ).replace( "\\", "_" ).replace( "*", "_" ).replace( ":", "_" );
+        result.replace( "?", "_" ).replace( "\\", "_" ).replace( "*", "_" ).replace( ":", "_" ).replace( "\"", "" );
 
     result.replace( "/", "-" );
 
