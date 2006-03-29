@@ -5,7 +5,7 @@
 #ifndef PLAYLISTBROWSERITEM_H
 #define PLAYLISTBROWSERITEM_H
 
-#include "party.h"
+#include "dynamicmode.h"
 #include "podcastbundle.h"
 #include "podcastsettings.h"
 

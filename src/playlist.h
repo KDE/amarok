@@ -22,7 +22,7 @@
 #include "amarokconfig.h"
 #include "amarokdcophandler.h"
 #include "engineobserver.h"  //baseclass
-#include "party.h"
+#include "dynamicmode.h"
 #include "playlistwindow.h"  //friend
 #include "playlistitem.h"
 #include "metabundle.h"

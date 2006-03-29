@@ -100,7 +100,7 @@ libamarok_la_SOURCES = \
     newdynamic.ui \
     osd.cpp \
     organizecollectiondialog.ui \
-    party.cpp \
+    dynamicmode.cpp \
     playerwindow.cpp \
     playlist.cpp \
     playlistbrowser.cpp \

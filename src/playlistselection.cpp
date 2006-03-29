@@ -13,7 +13,7 @@
 #include "amarok.h" //foreach
 #include "debug.h"
 #include "newdynamic.h"
-#include "party.h"
+#include "dynamicmode.h"
 #include "playlistbrowser.h"
 #include "playlistselection.h"
 

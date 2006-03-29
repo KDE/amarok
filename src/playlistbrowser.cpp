@@ -14,7 +14,7 @@
 #include "htmlview.h"
 #include "k3bexporter.h"
 #include "mediabrowser.h"
-#include "party.h"
+#include "dynamicmode.h"
 #include "playlist.h"
 #include "playlistbrowser.h"
 #include "playlistbrowseritem.h"

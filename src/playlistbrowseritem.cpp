@@ -7,7 +7,7 @@
 #include "amarok.h"
 #include "collectiondb.h"
 #include "debug.h"
-#include "party.h"
+#include "dynamicmode.h"
 #include "playlistbrowser.h"
 #include "playlistbrowseritem.h"
 #include "playlistloader.h"    //load()

@@ -29,7 +29,7 @@
 #include "filebrowser.h"
 #include "k3bexporter.h"
 #include "mediabrowser.h"
-#include "party.h"
+#include "dynamicmode.h"
 #include "playlist.h"
 #include "playlistbrowser.h"
 #include "playlistwindow.h"

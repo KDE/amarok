@@ -19,7 +19,7 @@
 #include "playlistselection.h"
 #include "playlistwindow.h"
 
-#include "party.h"
+#include "dynamicmode.h"
 
 /////////////////////////////////////////////////////////////////////////////
 ///    CLASS DynamicMode
