@@ -20,27 +20,28 @@
  ***************************************************************************/
 
 #include <config.h>
+
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "app.h"
 #include "enginecontroller.h"
+#include "moodbar.h"
+#include "playlist.h"
 #include "sliderwidget.h"
 #include "threadweaver.h"
-#include "playlist.h"
-#include "moodbar.h"
 
 #include <qapplication.h>
 #include <qbitmap.h>
 #include <qbrush.h>
+#include <qfile.h>
 #include <qimage.h>
 #include <qpainter.h>
 #include <qsize.h>
 #include <qtimer.h>
-#include <qfile.h>
 
 #include <kiconloader.h>
-#include <klocale.h>
 #include <kimageeffect.h>
+#include <klocale.h>
 #include <kpixmapeffect.h>
 #include <kpopupmenu.h>
 #include <kstandarddirs.h>
@@ -264,14 +265,14 @@ amaroK::TrackSlider::paintEvent( QPaintEvent * )
     p.translate( 0, MARGIN );
 
     if(WANT_MOODBAR && pos >= 0 && theArray.size())
-    {	
+    {
         if(theArrayChanged || theMoodbar.width() != w || theMoodbar.height() != h )
         {
             theMoodbar.resize(w, h);
             QPainter paint(&theMoodbar);
             // paint the moodbar
             int samples = w;
-            int aSize = theArray.size(); 
+            int aSize = theArray.size();
             for(int x = 0; x < w; x++)
             {
                 uint a = x * aSize / samples, aa = ((x + 1) * aSize / samples);

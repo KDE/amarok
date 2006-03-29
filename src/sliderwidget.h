@@ -20,17 +20,16 @@
 #ifndef AMAROKSLIDER_H
 #define AMAROKSLIDER_H
 
-#include <qcolor.h>
-#include <qvaluevector.h>
-#include <qslider.h>
-#include <qvaluevector.h>
-#include <qpixmap.h>
 #include <kpixmap.h>
 #include <kurl.h>
 
-#include "metabundle.h"
-#include "threadweaver.h"
+#include <qcolor.h>
+#include <qpixmap.h>
+#include <qslider.h>
+#include <qvaluevector.h>
+
 #include "engineobserver.h"
+#include "metabundle.h"
 
 class QPalette;
 class QTimer;
