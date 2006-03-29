@@ -57,6 +57,8 @@
 #include <ktoolbarbutton.h>
 #include <kurl.h>
 
+#include <unistd.h> //usleep()
+
 #define escapeHTML(s)     QString(s).replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" )
 // .replace( "%", "%25" ) has to be the first(!) one, otherwise we would do things like converting spaces into %20 and then convert them into %25%20
 #define escapeHTMLAttr(s) QString(s).replace( "%", "%25" ).replace( "'", "%27" ).replace( "\"", "%22" ).replace( "#", "%23" ).replace( "?", "%3F" )
@@ -265,7 +267,7 @@ ContextBrowser::ContextBrowser( const char *name )
              this, SLOT( tagsChanged( const MetaBundle& ) ) );
     connect( CollectionDB::instance(), SIGNAL( imageFetched( const QString& ) ),
              this, SLOT( imageFetched( const QString& ) ) );
-             
+
 //     showContext( KURL( "current://track" ) );
 }
 
@@ -1054,7 +1056,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
         return;
     }
     debug() << "Redering showCurrentTrack()" << endl;
-    
+
     if( m_contextURL.protocol() == "current" && !EngineController::engine()->loaded() )
     {
         showHome();
@@ -1355,6 +1357,7 @@ void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
     qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
     qb.addMatch( QueryBuilder::tabStats, QueryBuilder::valURL, currentTrack.url().path() );
     values = qb.run();
+    usleep( 10000 );
 
     //making 2 tables is most probably not the cleanest way to do it, but it works.
     QString albumImageTitleAttr;
@@ -1677,6 +1680,7 @@ void CurrentTrackJob::showArtistsFaves( const QString &artist, uint artist_id )
     qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
     qb.setLimit( 0, 10 );
     values = qb.run();
+    usleep( 10000 );
 
     if ( !values.isEmpty() )
     {
@@ -1765,6 +1769,7 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
             qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
             qb.setOptions( QueryBuilder::optNoCompilations );
             QStringList albumValues = qb.run();
+            usleep( 10000 );
 
             QString albumYear;
             if ( !albumValues.isEmpty() )
@@ -1909,6 +1914,7 @@ void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artis
             qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
             qb.setOptions( QueryBuilder::optOnlyCompilations );
             QStringList albumValues = qb.run();
+            usleep( 10000 );
 
             QString albumYear;
             if ( !albumValues.isEmpty() )
@@ -2188,7 +2194,7 @@ void ContextBrowser::showLyrics( const QString &url )
         m_dirtyLyricsPage = true;
         return;
     }
-    
+
     debug() << "rendering showLyrics()" << endl;
 
     if ( currentPage() != m_lyricsTab )
