@@ -23,15 +23,17 @@
 #include "amarokcore/amarokconfig.h"
 #include "debug.h"
 #include "enginecontroller.h"
+#include "queueLabel.h"
+#include "metabundle.h"
+#include "sliderwidget.h"
+#include "statusbar.h"
+
 #include <kiconloader.h>
 #include <klocale.h>
-#include "metabundle.h"
+
 #include <qhbox.h>
 #include <qlayout.h>
 #include <qtimer.h>
-#include "sliderwidget.h"
-#include "statusbar.h"
-#include "queueLabel.h"
 
 // stuff that must be included last
 //#include "startupTips.h"
