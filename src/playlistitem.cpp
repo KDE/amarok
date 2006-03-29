@@ -153,7 +153,7 @@ void PlaylistItem::ReadMood::completeJob()
             o->item->refreshMood();
         }
         #ifdef HAVE_EXSCALIBAR
-        else if(AmarokConfig::calculateMoodOnQueue())
+        else
         {
             amaroK::CreateMood *c = new amaroK::CreateMood( thePath );
             Playlist::instance()->connect(c, SIGNAL(completed(const QString)), SLOT(fileHasMood( const QString )));
@@ -180,7 +180,8 @@ void PlaylistItem::refreshMood()
 
 void PlaylistItem::checkMood()
 {
-    if( url().isLocalFile() )
+    Playlist *pl = Playlist::instance();
+    if( url().isLocalFile() && (pl && pl->columnWidth( Mood ) > 0) )
     {
         m_proxyForMoods = new MoodProxyObject( this );
         ReadMood *c = new ReadMood( m_proxyForMoods );

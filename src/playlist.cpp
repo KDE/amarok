@@ -16,6 +16,7 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
+#include "app.h"
 #include "debug.h"
 #include "collectiondb.h"
 #include "collectionbrowser.h"
@@ -25,6 +26,7 @@
 #include "k3bexporter.h"
 #include "metabundle.h"
 #include "osd.h"
+#include "playerwindow.h"
 #include "playlistitem.h"
 #include "playlistbrowser.h"
 #include "playlistbrowseritem.h" //for stream editor dialog
@@ -2447,6 +2449,10 @@ Playlist::viewportResizeEvent( QResizeEvent *e )
 void
 Playlist::columnResizeEvent( int col, int oldw, int neww )
 {
+    if( col == PlaylistItem::Mood && oldw == 0 && neww > 0 )
+    {
+        refreshMoods();
+    }
 
     if ( !m_smartResizing )
         return;
@@ -3294,6 +3300,10 @@ Playlist::fileHasMood( const QString path )
     for( MyIt it( this, MyIt::All ); *it; ++it )
         if( (*it)->url().isLocalFile() && (*it)->url().path() == path )
             (*it)->checkMood();
+
+    amaroK::MixedSlider *s = dynamic_cast<amaroK::MixedSlider *>( amaroK::StatusBar::instance()->slider() );
+    if( s )
+        s->newMoodData();
 }
 
 void

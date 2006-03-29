@@ -26,6 +26,7 @@
 #include "playlistwindow.h"  //friend
 #include "playlistitem.h"
 #include "metabundle.h"
+#include "sliderwidget.h"
 #include "tooltip.h"         //baseclass
 #include "tracktooltip.h"
 
