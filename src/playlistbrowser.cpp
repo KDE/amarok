@@ -846,6 +846,8 @@ QString PlaylistBrowser::podcastBrowserCache() const
 
 PlaylistCategory* PlaylistBrowser::loadPodcasts()
 {
+    DEBUG_BLOCK
+
     QFile file( podcastBrowserCache() );
     QTextStream stream( &file );
     stream.setEncoding( QTextStream::UnicodeUTF8 );

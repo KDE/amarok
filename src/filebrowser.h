@@ -32,7 +32,6 @@
 class ClickLineEdit;
 class QTimer;
 class KActionCollection;
-class KDirOperator;
 class KFileItem;
 class KFileView;
 class KURLComboBox;
