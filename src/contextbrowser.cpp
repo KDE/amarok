@@ -663,6 +663,8 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         urlString.startsWith( "http" ) ||
         urlString.startsWith( "wikipedia" ) ||
         urlString.startsWith( "seek" ) ||
+        urlString.startsWith( "ggartist" ) ||
+        urlString.startsWith( "artistback" ) ||
         urlString.startsWith( "current" ) ||
         currentPage() != m_contextTab
         )
