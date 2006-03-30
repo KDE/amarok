@@ -2610,7 +2610,7 @@ Playlist::eventFilter( QObject *o, QEvent *e )
         //sub.insertSeparator();
         //sub.insertItem( i18n("&Add Custom Column..."), CUSTOM ); //TODO
 
-        popup.insertItem( i18n("&Add Column" ), &sub );
+        popup.insertItem( i18n("&Show Column" ), &sub );
 
         popup.insertItem( i18n("&Select Columns..."), SELECT );
 
