@@ -1,5 +1,6 @@
 // Max Howell <max.howell@methylblue.com>, (C) 2004
 // Alexandre Pereira de Oliveira <aleprj@gmail.com>, (C) 2005
+// Shane King <kde@dontletsstart.com>, (C) 2006
 // License: GNU General Public License V2
 
 #ifndef METABUNDLE_H
@@ -19,10 +20,16 @@
 #include "amarok_export.h"
 
 class KFileMetaInfo;
+class QDir;
 class QTextStream;
 template<class T> class QValueList;
 namespace TagLib {
     class File;
+    class ByteVector;
+    class String;
+    namespace ID3v2 {
+        class Tag;
+    }
 }
 class PodcastEpisodeBundle;
 
@@ -62,6 +69,23 @@ public:
         Filesize,
         NUM_COLUMNS
     };
+
+    class LIBAMAROK_EXPORT EmbeddedImage {
+    public:
+        EmbeddedImage() {}
+        EmbeddedImage( const TagLib::ByteVector& data, const TagLib::String& description );
+
+        const QCString &hash() const;
+        const QString &description() const { return m_description; }
+        bool save( const QDir& dir ) const;
+
+    private:
+        QByteArray m_data;
+        QString m_description;
+        mutable QCString m_hash;
+    };
+
+    typedef QValueList<EmbeddedImage> EmbeddedImageList;
 
     /** Returns the name of the column at \p index as a string -- not i18ned, for internal purposes. */
     static const QString exactColumnName( int index );
@@ -113,6 +137,9 @@ public:
 
     /** The bundle doesn't yet know its audioProperties */
     bool audioPropertiesUndetermined() const;
+
+    /** The embedded artwork in the file (loaded on demand if necessary, returns empty EmbeddedImageList if not present */
+    const EmbeddedImageList &embeddedImages();
 
     /** If you want Accurate reading say so */
     void readTags( TagLib::AudioProperties::ReadStyle );
@@ -288,6 +315,9 @@ protected:
 
     PodcastEpisodeBundle *m_podcastBundle;
 
+    bool m_imagesLoaded;
+    EmbeddedImageList m_images;
+
 private:
 
     static inline QString prettyGeneric( const QString &s, const int i )
@@ -299,6 +329,8 @@ private:
     void init( const KFileMetaInfo& info );
 
     void setExtendedTag( TagLib::File *file, int tag, const QString value );
+
+    void loadImagesFromTag( const TagLib::ID3v2::Tag &tag );
 };
 
 /// for your convenience

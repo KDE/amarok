@@ -20,6 +20,8 @@
 #ifndef COLLECTIONSCANNER_H
 #define COLLECTIONSCANNER_H
 
+#include "metabundle.h"
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -28,7 +30,6 @@
 #include <qstringlist.h>
 
 #include <kapplication.h>
-
 
 typedef QMap<QString, QString> AttributeMap;
 
@@ -57,14 +58,15 @@ private slots:
 private:
     void readDir( const QString& dir, QStringList& entries );
     void scanFiles( const QStringList& entries );
+    
+    MetaBundle createMetaBundle( const QString &path );
 
     /**
      * Read metadata tags of a given file.
-     * @path Path of the file.
+     * @mb MetaBundle for the file.
      * @return QMap containing tags, or empty QMap on failure.
      */
-    AttributeMap readTags( const QString& path );
-
+    AttributeMap readTags( const MetaBundle& mb );
 
     /**
      * Helper method for writing XML elements to stdout.

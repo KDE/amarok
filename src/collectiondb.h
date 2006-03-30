@@ -6,6 +6,7 @@
 // (c) 2005 Isaiah Damron <xepo@trifault.net>
 // (c) 2005 Alexandre Pereira de Oliveira <aleprj@gmail.com>
 // (c) 2006 Jonas Hurrelmann <j@outpo.st>
+// (c) 2006 Shane King <kde@dontletsstart.com>
 // See COPYING file for licensing information.
 
 #ifndef AMAROK_COLLECTIONDB_H
@@ -345,6 +346,7 @@ class CollectionDB : public QObject, public EngineObserver
 
         QString findAmazonImage( const QString &artist, const QString &album, const uint width = 1 );
         QString findDirectoryImage( const QString& artist, const QString& album, uint width = 0 );
+        QString findEmbeddedImage( const QString& artist, const QString& album, uint width = 1 );
         QString findMetaBundleImage( MetaBundle trackInformation, const uint = 1 );
 
         static QPixmap createDragPixmap(const KURL::List &urls);
@@ -373,6 +375,10 @@ class CollectionDB : public QObject, public EngineObserver
         //local cover methods
         void addImageToAlbum( const QString& image, QValueList< QPair<QString, QString> > info, const bool temporary );
         QString notAvailCover( int width = 0 );
+
+        //embedded cover methods
+        void addEmbeddedImage( const QString& path, const QString& hash, const QString& description );
+        void removeOrphanedEmbeddedImages();
 
         void applySettings();
 
@@ -408,8 +414,8 @@ class CollectionDB : public QObject, public EngineObserver
 
     private:
         //bump DATABASE_VERSION whenever changes to the table structure are made.
-        // This erases tags, album, artist, genre, year, images, directory and related_artists tables.
-        static const int DATABASE_VERSION = 25;
+        // This erases tags, album, artist, genre, year, images, embed, directory and related_artists tables.
+        static const int DATABASE_VERSION = 26;
         // Persistent Tables hold data that is somehow valuable to the user, and can't be erased when rescaning.
         // When bumping this, write code to convert the data!
         static const int DATABASE_PERSISTENT_TABLES_VERSION = 6;
@@ -429,6 +435,10 @@ class CollectionDB : public QObject, public EngineObserver
 
         void customEvent( QCustomEvent * );
 
+        // helpers for embedded images
+        QString loadHashFile( const QCString& hash, uint width );
+        bool extractEmbeddedImage( MetaBundle &trackInformation, QCString& hash );
+        
         //general management methods
         void createStatsTable();
         void dropStatsTable();

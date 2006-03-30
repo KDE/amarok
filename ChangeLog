@@ -27,6 +27,8 @@ VERSION 1.4-beta3:
     * Add autocompletion to the composer field in the tag dialog. (BR 123026)
 
   CHANGES:
+    * Improved handling of embedded cover art, utilizing the database. Patch
+      by Shane King <kde@dontletsstart.com>. (BR 124563)
     * Statistics tool has had numerous improvements.
     * Optimise: Only rerender the CollectionBrowser when relevant.
     * Disable detection of iPod model and thus solve g_object_get related

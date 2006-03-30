@@ -21,7 +21,6 @@
 
 #include "amarok.h"
 #include "collectionscanner.h"
-#include "metabundle.h"
 #include "debug.h"
 
 #include <cerrno>
@@ -271,7 +270,8 @@ CollectionScanner::scanFiles( const QStringList& entries )
         }
 
         else {
-            const AttributeMap attributes = readTags( path );
+            MetaBundle mb = createMetaBundle( path );
+            const AttributeMap attributes = readTags( mb );
 
             if( !attributes.empty() ) {
                 writeElement( "tags", attributes );
@@ -280,6 +280,14 @@ CollectionScanner::scanFiles( const QStringList& entries )
 
                 if( !covers.contains( cover ) )
                     covers += cover;
+
+                foreachType( MetaBundle::EmbeddedImageList, mb.embeddedImages() ) {
+                    AttributeMap attributes;
+                    attributes["path"] = path;
+                    attributes["hash"] = (*it).hash();
+                    attributes["description"] = (*it).description();
+                    writeElement( "embed", attributes );
+                }
             }
         }
 
@@ -315,8 +323,16 @@ CollectionScanner::scanFiles( const QStringList& entries )
 }
 
 
+MetaBundle CollectionScanner::createMetaBundle( const QString& path )
+{
+    KURL escapedPath;
+    escapedPath.setPath( path );
+
+    return MetaBundle( escapedPath, true, TagLib::AudioProperties::Fast );
+}
+
 AttributeMap
-CollectionScanner::readTags( const QString& path )
+CollectionScanner::readTags( const MetaBundle& mb )
 {
     // Tests reveal the following:
     //
@@ -329,17 +345,12 @@ CollectionScanner::readTags( const QString& path )
 
     AttributeMap attributes;
 
-    KURL escapedPath;
-    escapedPath.setPath( path );
-
-    MetaBundle mb ( escapedPath, true, TagLib::AudioProperties::Fast );
-
     if ( !mb.isValidMedia() ) {
         std::cout << "<dud/>";
         return attributes;
     }
 
-    attributes["path"]    = path;
+    attributes["path"]    = mb.url().path();
     attributes["title"]   = mb.title();
     attributes["artist"]  = mb.artist();
     attributes["composer"]= mb.composer();

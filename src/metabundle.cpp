@@ -1,5 +1,6 @@
 // Max Howell <max.howell@methylblue.com>, (C) 2004
 // Alexandre Pereira de Oliveira <aleprj@gmail.com>, (C) 2005
+// Shane King <kde@dontletsstart.com>, (C) 2006
 // License: GNU General Public License V2
 
 
@@ -10,9 +11,11 @@
 #include "collectiondb.h"
 #include <kfilemetainfo.h>
 #include <kio/global.h>
+#include <kmdcodec.h>
 #include <kmimetype.h>
 #include <qdom.h>
 #include <qfile.h> //decodePath()
+#include <taglib/attachedpictureframe.h>
 #include <taglib/fileref.h>
 #include <taglib/id3v1genres.h> //used to load genre list
 #include <taglib/mpegfile.h>
@@ -27,7 +30,6 @@
 #include <taglib/flacfile.h>
 #include <taglib/textidentificationframe.h>
 #include <taglib/xiphcomment.h>
-#include <taglib/tbytevector.h>
 
 #include <config.h>
 #ifdef HAVE_MP4V2
@@ -40,6 +42,35 @@
 
 #include "metabundle.h"
 #include "podcastbundle.h"
+
+MetaBundle::EmbeddedImage::EmbeddedImage( const TagLib::ByteVector& data, const TagLib::String& description )
+    : m_description( TStringToQString( description ) )
+{
+    m_data.duplicate( data.data(), data.size() );
+}
+        
+const QCString &MetaBundle::EmbeddedImage::hash() const
+{
+    if( m_hash.isEmpty() ) {
+        m_hash = KMD5( m_data ).hexDigest();
+    }
+    return m_hash;
+}
+
+bool MetaBundle::EmbeddedImage::save( const QDir& dir ) const
+{
+    QFile   file( dir.filePath( hash() ) );
+
+    if( file.open( IO_WriteOnly | IO_Raw ) ) {
+        if( file.writeBlock( m_data.data(), m_data.size() ) == m_data.size() ) {
+            debug() << "EmbeddedImage::save " << file.name() << endl;
+            return true;
+        }
+        file.remove();
+    }
+    debug() << "EmbeddedImage::save failed! " << file.name() << endl;
+    return false;
+}
 
 /// These are untranslated and used for storing/retrieving XML playlist
 const QString MetaBundle::exactColumnName( int c ) //static
@@ -124,6 +155,7 @@ MetaBundle::MetaBundle()
         , m_exists( true )
         , m_isValidMedia( true )
         , m_podcastBundle( 0 )
+        , m_imagesLoaded( false )
 {
     init();
 }
@@ -145,6 +177,7 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
     , m_exists( url.protocol() == "file" && QFile::exists( url.path() ) )
     , m_isValidMedia( false ) //will be updated
     , m_podcastBundle( 0 )
+    , m_imagesLoaded( false )
 {
     if ( m_exists )
     {
@@ -188,6 +221,7 @@ MetaBundle::MetaBundle( const QString& title,
         , m_exists( true )
         , m_isValidMedia( true )
         , m_podcastBundle( 0 )
+        , m_imagesLoaded( false )
 {
     if( title.contains( '-' ) )
     {
@@ -226,6 +260,8 @@ MetaBundle::MetaBundle( const MetaBundle &bundle )
     , m_exists( bundle.m_exists )
     , m_isValidMedia( bundle.m_isValidMedia )
     , m_podcastBundle( 0 )
+    , m_imagesLoaded( bundle.m_imagesLoaded )
+    , m_images( bundle.m_images )
 {
     if( bundle.m_podcastBundle )
         setPodcastBundle( *bundle.m_podcastBundle );
@@ -354,9 +390,31 @@ MetaBundle::init( const KFileMetaInfo& info )
     }
 }
 
+const MetaBundle::EmbeddedImageList &MetaBundle::embeddedImages()
+{
+    if (!m_imagesLoaded) {
+        if ( url().protocol() == "file" ) {
+            TagLib::FileRef fileref = TagLib::FileRef( QFile::encodeName( url().path() ), false );
+            if ( !fileref.isNull() ) {
+                if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) ) {
+                    if ( file->ID3v2Tag() )
+                        loadImagesFromTag( *file->ID3v2Tag() );
+                } else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) ) { 
+                    if ( file->ID3v2Tag() )
+                        loadImagesFromTag( *file->ID3v2Tag() );
+                }
+            }
+        }
+        m_imagesLoaded = true;
+    }
+
+    return m_images;
+}
+
 void
 MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
 {
+    m_imagesLoaded = true; // well, we'll try by the time we exit, so no point trying (and failing) again
     if( url().protocol() != "file" )
         return;
 
@@ -403,6 +461,8 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
 
                 if ( !file->ID3v2Tag()->frameListMap()["TCOM"].isEmpty() )
                     setComposer( TStringToQString( file->ID3v2Tag()->frameListMap()["TCOM"].front()->toString() ).stripWhiteSpace() );
+
+                loadImagesFromTag( *file->ID3v2Tag() );
             }
         }
         else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
@@ -427,6 +487,10 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
 
                 if ( !file->xiphComment()->fieldListMap()[ "DISCNUMBER" ].isEmpty() )
                     disc = TStringToQString( file->xiphComment()->fieldListMap()["DISCNUMBER"].front() ).stripWhiteSpace();
+            }
+
+            if ( file->ID3v2Tag() ) {
+                loadImagesFromTag( *file->ID3v2Tag() );
             }
         }
         else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
@@ -1048,6 +1112,22 @@ MetaBundle::setPodcastBundle( const PodcastEpisodeBundle &peb )
     delete m_podcastBundle;
     m_podcastBundle = new PodcastEpisodeBundle;
     *m_podcastBundle = peb;
+}
+
+void MetaBundle::loadImagesFromTag( const TagLib::ID3v2::Tag &tag )
+{
+    TagLib::ID3v2::FrameList l = tag.frameListMap()[ "APIC" ];
+    foreachType( TagLib::ID3v2::FrameList, l ) {
+        debug() << "Found APIC frame" << endl;
+        TagLib::ID3v2::AttachedPictureFrame *ap = (TagLib::ID3v2::AttachedPictureFrame*)*it;
+
+        const TagLib::ByteVector &imgVector = ap->picture();
+        debug() << "Size of image: " <<  imgVector.size() << " byte" << endl;
+        // ignore APIC frames without picture and those with obviously bogus size
+        if( imgVector.size() > 0 && imgVector.size() < 10000000 /*10MB*/ ) {
+            m_images.push_back( EmbeddedImage( imgVector, ap->description() ) );
+        }
+    }
 }
 
 bool

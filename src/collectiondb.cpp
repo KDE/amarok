@@ -6,6 +6,7 @@
 // (c) 2005 Isaiah Damron <xepo@trifault.net>
 // (c) 2005 Alexandre Pereira de Oliveira <aleprj@gmail.com>
 // (c) 2006 Jonas Hurrelmann <j@outpo.st>
+// (c) 2006 Shane King <kde@dontletsstart.com>
 // See COPYING file for licensing information.
 
 #define DEBUG_PREFIX "CollectionDB"
@@ -387,6 +388,14 @@ CollectionDB::createTables( const bool temporary )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
+    //create embed table
+    query( QString( "CREATE %1 TABLE embed%2 ("
+                    "url " + textColumnType() + ","
+                    "hash " + textColumnType() + ","
+                    "description " + textColumnType() + ");" )
+                    .arg( temporary ? "TEMPORARY" : "" )
+                    .arg( temporary ? "_temp" : "" ) );
+
     // create directory statistics table
     query( QString( "CREATE %1 TABLE directories%2 ("
                     "dir " + textColumnType() + " UNIQUE,"
@@ -435,6 +444,9 @@ CollectionDB::createIndices()
     query( "CREATE INDEX images_album ON images( album );" );
     query( "CREATE INDEX images_artist ON images( artist );" );
 
+    query( "CREATE INDEX embed_url ON embed( url );" );
+    query( "CREATE INDEX embed_hash ON embed( hash );" );
+
     query( "CREATE INDEX directories_dir ON directories( dir );" );
 }
 
@@ -448,6 +460,7 @@ CollectionDB::dropTables( const bool temporary )
     query( QString( "DROP TABLE genre%1;" ).arg( temporary ? "_temp" : "" ) );
     query( QString( "DROP TABLE year%1;" ).arg( temporary ? "_temp" : "" ) );
     query( QString( "DROP TABLE images%1;" ).arg( temporary ? "_temp" : "" ) );
+    query( QString( "DROP TABLE embed%1;" ).arg( temporary ? "_temp" : "" ) );
     query( QString( "DROP TABLE directories%1;" ).arg( temporary ? "_temp" : "" ) );
     if ( !temporary )
     {
@@ -482,6 +495,7 @@ CollectionDB::clearTables( const bool temporary )
     query( QString( "%1 genre%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
     query( QString( "%1 year%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
     query( QString( "%1 images%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
+    query( QString( "%1 embed%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
     query( QString( "%1 directories%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
     if ( !temporary )
     {
@@ -501,6 +515,7 @@ CollectionDB::copyTempTables( )
     insert( "INSERT INTO genre SELECT * FROM genre_temp;", NULL );
     insert( "INSERT INTO year SELECT * FROM year_temp;", NULL );
     insert( "INSERT INTO images SELECT * FROM images_temp;", NULL );
+    insert( "INSERT INTO embed SELECT * FROM embed_temp;", NULL );
     insert( "INSERT INTO directories SELECT * FROM directories_temp;", NULL );
 }
 
@@ -857,6 +872,27 @@ CollectionDB::addImageToAlbum( const QString& image, QValueList< QPair<QString, 
     }
 }
 
+void
+CollectionDB::addEmbeddedImage( const QString& path, const QString& hash, const QString& description )
+{
+    debug() << "Added embedded image hash " << hash << " for file " << path << endl;
+    insert( QString( "INSERT INTO embed_temp ( url, hash, description ) VALUES ( '%1', '%2', '%3' );" )
+     .arg( escapeString( path ) )
+     .arg( escapeString( hash ) )
+     .arg( escapeString( description ) ), NULL );
+}
+
+void
+CollectionDB::removeOrphanedEmbeddedImages()
+{
+    // do it the hard way, since a delete subquery wont work on MySQL
+    QStringList orphaned = query( "SELECT embed.url FROM embed LEFT JOIN tags ON embed.url = tags.url WHERE tags.url IS NULL;" );
+    foreachType( QStringList, orphaned ) {
+        query( QString( "DELETE FROM embed WHERE embed.url = '%1';" )
+                .arg( escapeString( *it ) ) );
+    }
+}
+
 QPixmap
 CollectionDB::createDragPixmap( const KURL::List &urls )
 {
@@ -1170,6 +1206,9 @@ CollectionDB::albumImage( const QString &artist, const QString &album, uint widt
         s = findDirectoryImage( artist, album, width );
 
     if( s.isEmpty() )
+        s = findEmbeddedImage( artist, album, width );
+
+    if( s.isEmpty() )
         s = notAvailCover( width );
 
     return s;
@@ -1190,16 +1229,17 @@ CollectionDB::albumImage( MetaBundle trackInformation, uint width )
     QString album = trackInformation.album();
     QString artist = trackInformation.artist();
 
-    s = findAmazonImage( artist, album, width );
+    // this art is per track, so should check for it first
+    s = findMetaBundleImage( trackInformation, width );
+
+    if( s.isEmpty() )
+        s = findAmazonImage( artist, album, width );
 
     if( s.isEmpty() )
         s = findAmazonImage( "", album, width );
 
     if( s.isEmpty() )
         s = findDirectoryImage( artist, album, width );
-
-    if( s.isEmpty() )
-        s = findMetaBundleImage( trackInformation, width );
 
     if( s.isEmpty() )
         s = notAvailCover( width );
@@ -1290,68 +1330,76 @@ CollectionDB::findDirectoryImage( const QString& artist, const QString& album, u
 }
 
 QString
-CollectionDB::findMetaBundleImage( MetaBundle trackInformation, uint width )
+CollectionDB::findEmbeddedImage( const QString& artist, const QString& album, uint width )
 {
-    if( width == 1 ) width = AmarokConfig::coverPreviewSize();
-
-    QCString widthKey = makeWidthKey( width );
-    QCString tagKey = md5sum( trackInformation.artist(), trackInformation.album() );
-
-    TagLib::File *f = 0;
-    TagLib::ID3v2::Tag *tag = 0;
-
-    if ( trackInformation.url().path().endsWith( ".mp3", false ) )
-    {
-        f = new TagLib::MPEG::File( QFile::encodeName( trackInformation.url().path() ) );
-        tag = ( (TagLib::MPEG::File*)f )->ID3v2Tag();
+    // In the case of multiple embedded images, we arbitrarily choose one from the newest file
+    // could potentially select multiple images within a file based on description, although a
+    // lot of tagging software doesn't fill in that field, so we just get whatever the DB
+    // happens to return for us
+    QStringList values;
+    if ( artist == i18n("Various Artists") ) {
+        // VAs need special handling to not match on artist name but instead check for sampler flag
+        values = query( QString(
+                "SELECT embed.hash, embed.url FROM tags, embed, album "
+                "WHERE tags.url = embed.url "
+                "AND tags.album = album.id "
+                "AND album.name = '%1' "
+                "AND tags.sampler = 1 "
+                "ORDER BY modifydate DESC LIMIT 1;" )
+                .arg( escapeString( album ) ) );
+    } else {
+        values = query( QString(
+                "SELECT embed.hash, embed.url FROM tags, embed, artist, album "
+                "WHERE tags.url = embed.url "
+                "AND tags.artist = artist.id "
+                "AND tags.album = album.id "
+                "AND artist.name = '%1' "
+                "AND album.name = '%2' "
+                "ORDER BY modifydate DESC LIMIT 1;" )
+                .arg( escapeString( artist ) )
+                .arg( escapeString( album ) ) );
     }
 
-    else if ( trackInformation.url().path().endsWith( ".flac", false ) )
-    {
-        f = new TagLib::FLAC::File( QFile::encodeName( trackInformation.url().path() ) );
-        tag = ( (TagLib::FLAC::File*)f )->ID3v2Tag();
-    }
-
-    if ( tag )
-    {
-        TagLib::ID3v2::FrameList l = tag->frameListMap()[ "APIC" ];
-        if ( !l.isEmpty() )
-        {
-            debug() << "Found APIC frame(s)" << endl;
-            TagLib::ID3v2::AttachedPictureFrame *ap = (TagLib::ID3v2::AttachedPictureFrame*)l.front();
-
-            const TagLib::ByteVector &imgVector = ap->picture();
-            debug() << "Size of image: " <<  imgVector.size() << " byte" << endl;
-
-            // ignore APIC frames without picture and those with obviously bogus size
-            if( imgVector.size() == 0 || imgVector.size() > 10000000 /*10MB*/ )
-            {
-                delete f;
-                return QString::null;
-            }
-
-            QImage image;
-            if( image.loadFromData((const uchar*)imgVector.data(), imgVector.size()) )
-            {
-                if ( width > 1 )
-                {
-                    image.smoothScale( width, width, QImage::ScaleMin ).save( cacheCoverDir().filePath( widthKey + tagKey ), "PNG" );
-                    delete f;
-                    return cacheCoverDir().filePath( widthKey + tagKey );
-                }
-                else
-                {
-                    image.save( tagCoverDir().filePath( tagKey ), "PNG" );
-                    delete f;
-                    return tagCoverDir().filePath( tagKey );
-                }
+    if ( values.count() == 2 ) {
+        QCString hash = values.first().utf8();
+        QString result = loadHashFile( hash, width );
+        if ( result.isEmpty() ) {
+            // need to get original from file first
+            MetaBundle mb(  KURL::fromPathOrURL( values.last() ) );
+            if ( extractEmbeddedImage( mb, hash ) ) {
+                // try again, as should be possible now
+                result = loadHashFile( hash, width );
             }
         }
+        return result;
     }
+    return QString::null;
+}
 
-    if ( f )
-        delete f; // destroying f will destroy the tag it generated, according to taglib docs
+QString
+CollectionDB::findMetaBundleImage( MetaBundle trackInformation, uint width )
+{
+    QStringList values =
+            query( QString(
+            "SELECT embed.hash FROM tags LEFT JOIN embed ON tags.url = embed.url WHERE tags.url = '%1' LIMIT 1;" )
+            .arg( escapeString( trackInformation.url().path() ) ) );
 
+    if ( values.empty() || !values.first().isEmpty() ) {
+        QCString hash;
+        QString result;
+        if( !values.empty() ) { // file in collection, so we know the hash
+            hash = values.first().utf8();
+            result = loadHashFile( hash, width );
+        }
+        if ( result.isEmpty() ) {
+            // need to get original from file first
+            if ( extractEmbeddedImage( trackInformation, hash ) ) {
+                // try again, as should be possible now
+                result = loadHashFile( hash, width );
+            }
+        }
+        return result;
+    }
     return QString::null;
 }
 
@@ -3398,6 +3446,54 @@ CollectionDB::customEvent( QCustomEvent *e )
     }
 }
 
+QString
+CollectionDB::loadHashFile( const QCString& hash, uint width )
+{
+    debug() << "loadHashFile: " << hash << " - " << width << endl;
+    
+    QString full = tagCoverDir().filePath( hash );
+    
+    if ( width == 0 ) {
+        if ( QFileInfo( full ).isReadable() ) {
+            debug() << "loadHashFile: fullsize: " << full << endl;
+            return full;
+        }
+    } else {
+        if ( width == 1 ) width = AmarokConfig::coverPreviewSize();
+        QCString widthKey = makeWidthKey( width );
+
+        QString path = cacheCoverDir().filePath( widthKey + hash );
+        if ( QFileInfo( path ).isReadable() ) {
+            debug() << "loadHashFile: scaled: " << path << endl;
+            return path;
+        } else if ( QFileInfo( full ).isReadable() ) {
+            debug() << "loadHashFile: scaling: " << full << endl;
+            QImage image( full );
+            if ( image.smoothScale( width, width, QImage::ScaleMin ).save( path, "PNG" ) ) {
+                debug() << "loadHashFile: scaled: " << path << endl;
+                return path;
+            }
+        }
+    }
+    return QString::null;
+}
+
+bool
+CollectionDB::extractEmbeddedImage( MetaBundle &trackInformation, QCString& hash )
+{
+    debug() << "extractEmbeddedImage: " << hash << " - " << trackInformation.url().path() << endl;
+    
+    foreachType ( MetaBundle::EmbeddedImageList, trackInformation.embeddedImages() ) {
+        if ( hash.isEmpty() || (*it).hash() == hash ) {
+            if ( (*it).save( tagCoverDir() ) ) {
+                debug() << "extractEmbeddedImage: saved to " << tagCoverDir().path() << endl;
+                hash = (*it).hash();
+                return true;
+            }
+        }
+    }
+    return false;
+}
 
 QDir
 CollectionDB::largeCoverDir() //static

@@ -233,6 +233,7 @@ main_loop:
                     CollectionDB::instance()->removeSongsInDir( *it );
                     CollectionDB::instance()->removeDirFromCollection( *it );
                 }
+                CollectionDB::instance()->removeOrphanedEmbeddedImages();
             }
             else
                 CollectionDB::instance()->clearTables( false ); // empty permanent tables
@@ -363,6 +364,9 @@ ScanController::startElement( const QString&, const QString& localName, const QS
         CollectionDB::instance()->addImageToAlbum( attrs.value( "path" ), covers, CollectionDB::instance()->isConnected() );
     }
 
+    if( localName == "embed" ) {
+        CollectionDB::instance()->addEmbeddedImage( attrs.value( "path" ), attrs.value( "hash" ), attrs.value( "description" ) );
+    }
 
     return true;
 }
