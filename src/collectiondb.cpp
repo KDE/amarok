@@ -844,6 +844,14 @@ CollectionDB::albumTracks( const QString &artist_id, const QString &album_id, co
     }
 }
 
+QStringList
+CollectionDB::artistTracks( const QString &artist_id )
+{
+    return query( QString( "SELECT url FROM tags WHERE artist = '%1' "
+                "ORDER BY tags.discnumber, tags.track;" )
+            .arg( artist_id ) );
+}
+
 
 void
 CollectionDB::addImageToAlbum( const QString& image, QValueList< QPair<QString, QString> > info, const bool temporary )
