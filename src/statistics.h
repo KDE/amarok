@@ -62,6 +62,7 @@ class StatisticsList : public KListView
         QString filter()                           { return m_filter; }
         void    setFilter( const QString &filter ) { m_filter = filter; }
         void    renderView();
+        void    refreshView();
 
     private slots:
         void    clearHover();
@@ -71,7 +72,7 @@ class StatisticsList : public KListView
     private:
         void    startDrag();
         void    viewportPaintEvent( QPaintEvent* );
-        void    expandInformation( StatisticsItem *item );
+        void    expandInformation( StatisticsItem *item, bool refresh=false );
 
         StatisticsItem *m_trackItem;
         StatisticsItem *m_mostplayedItem;
@@ -82,8 +83,10 @@ class StatisticsList : public KListView
 
         QListViewItem  *m_currentItem;
         QString         m_filter;
+        bool            m_expanded;
 };
 
+/// The listview items which are the headers for the categories
 class StatisticsItem : public QObject, public KListViewItem
 {
         Q_OBJECT
@@ -102,7 +105,7 @@ class StatisticsItem : public QObject, public KListViewItem
         void       setExpanded( const bool b ) { m_isExpanded = b; }
         const bool isExpanded() { return m_isExpanded; }
 
-        void        setSubtext( QString t ) { m_subText = t; }
+        void       setSubtext( QString t ) { m_subText = t; }
 
     protected:
         static const int ANIM_INTERVAL = 18;
@@ -124,26 +127,33 @@ class StatisticsItem : public QObject, public KListViewItem
         QString m_subText;
 };
 
+/// Listview items for the children of expanded items (the actual results)
 class StatisticsDetailedItem : public KListViewItem
 {
     public:
-        StatisticsDetailedItem( QString &text, StatisticsItem *parent,
+        StatisticsDetailedItem( QString &text, QString &subtext, StatisticsItem *parent,
                                 StatisticsDetailedItem *after=0, const char *name=0 );
         ~StatisticsDetailedItem() {};
 
         enum    ItemType { NONE, TRACK, ARTIST, ALBUM, GENRE, HISTORY };
+        
+        void    setup();
+        void    paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align );
 
         void    setItemType( const ItemType t ) { m_type = t; }
         const   ItemType itemType() { return m_type; }
 
         void    setUrl( QString &url ) { m_url = url; }
         const   QString url() { return m_url; }
+        
+        void    setSubtext( QString t ) { m_subText = t; }
 
         void    paintFocus( QPainter*, const QColorGroup& , const QRect& ) {};  //reimp
 
     private:
         ItemType m_type;
         QString  m_url;
+        QString  m_subText;
 };
 
 

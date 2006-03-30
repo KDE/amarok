@@ -118,7 +118,10 @@ Statistics::slotSetFilter() //SLOT
 {
     m_timer->stop();
     m_listView->setFilter( m_lineEdit->text() );
-    m_listView->renderView();
+    if( m_listView->childCount() > 1 )
+        m_listView->renderView();
+    else
+        m_listView->refreshView();
 }
 
 
@@ -129,6 +132,7 @@ Statistics::slotSetFilter() //SLOT
 StatisticsList::StatisticsList( QWidget *parent, const char *name )
     : KListView( parent, name )
     , m_currentItem( 0 )
+    , m_expanded( false )
 {
     header()->hide();
 
@@ -225,13 +229,36 @@ StatisticsList::startDrag()
     clearSelection();
 
     drag->addDragObject( new KURLDrag( list, viewport() ) );
-    drag->setPixmap(CollectionDB::createDragPixmap(list), QPoint(CollectionDB::DRAGPIXMAP_OFFSET_X,CollectionDB::DRAGPIXMAP_OFFSET_Y));
+    drag->setPixmap( CollectionDB::createDragPixmap(list),
+                    QPoint( CollectionDB::DRAGPIXMAP_OFFSET_X,
+                            CollectionDB::DRAGPIXMAP_OFFSET_Y ) );
     drag->dragCopy();
+}
+
+void
+StatisticsList::refreshView()
+{
+    if( m_expanded )
+    {
+        if( !firstChild() )
+        {
+            error() << "Statistics: uh oh, no first child!" << endl;
+            return;
+        }
+        while( firstChild()->firstChild() )
+            delete firstChild()->firstChild();
+        
+        expandInformation( static_cast<StatisticsItem*>(firstChild()), true /*refresh*/ );
+    }
+    else
+        renderView();
 }
 
 void
 StatisticsList::renderView()
 {
+    m_expanded = false;
+    
     //ensure cleanliness - this function is not just called from the ctor, but also when returning to the initial display
     while( firstChild() )
         delete firstChild();
@@ -322,8 +349,10 @@ StatisticsList::itemClicked( QListViewItem *item ) //SLOT
 }
 
 void
-StatisticsList::expandInformation( StatisticsItem *item )
+StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
 {
+    m_expanded = true;
+    
     QueryBuilder qb;
 
     StatisticsDetailedItem *m_last = 0;
@@ -331,16 +360,19 @@ StatisticsList::expandInformation( StatisticsItem *item )
 
     if( item == m_trackItem )
     {
-        delete m_newestItem;
-        delete m_genreItem;
-        delete m_albumItem;
-        delete m_artistItem;
-        delete m_mostplayedItem;
+        if( !refresh ) {
+            delete m_newestItem;
+            delete m_genreItem;
+            delete m_albumItem;
+            delete m_artistItem;
+            delete m_mostplayedItem;
+        }
 
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
         qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
+        qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
         qb.setGoogleFilter( QueryBuilder::tabSong | QueryBuilder::tabArtist, m_filter );
         qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
         qb.setLimit( 0, 50 );
@@ -349,7 +381,8 @@ StatisticsList::expandInformation( StatisticsItem *item )
         for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
         {
             QString name = i18n("%1. %2 - %3").arg( QString::number(c), fave[i], fave[i+1] );
-            m_last = new StatisticsDetailedItem( name, item, m_last );
+            QString subtext = i18n("Score: %1  Rating: %2").arg( fave[i+3], fave[i+4] );
+            m_last = new StatisticsDetailedItem( name, subtext, item, m_last );
             m_last->setItemType( StatisticsDetailedItem::TRACK );
             m_last->setUrl( fave[i+2] );
             c++;
@@ -358,16 +391,19 @@ StatisticsList::expandInformation( StatisticsItem *item )
 
     else if( item == m_mostplayedItem )
     {
-        delete m_newestItem;
-        delete m_genreItem;
-        delete m_albumItem;
-        delete m_artistItem;
-        delete m_trackItem;
+        if( !refresh ) {
+            delete m_newestItem;
+            delete m_genreItem;
+            delete m_albumItem;
+            delete m_artistItem;
+            delete m_trackItem;
+        }
 
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
         qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
+        qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
         qb.setGoogleFilter( QueryBuilder::tabSong | QueryBuilder::tabArtist, m_filter );
         qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, true );
         qb.setLimit( 0, 50 );
@@ -376,7 +412,8 @@ StatisticsList::expandInformation( StatisticsItem *item )
         for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
         {
             QString name = i18n("%1. %2 - %3").arg( QString::number(c), fave[i], fave[i+1] );
-            m_last = new StatisticsDetailedItem( name, item, m_last );
+            QString subtext = i18n("Score: %1  Rating: %2").arg( fave[i+3], fave[i+4] );
+            m_last = new StatisticsDetailedItem( name, subtext, item, m_last );
             m_last->setItemType( StatisticsDetailedItem::TRACK );
             m_last->setUrl( fave[i+2] );
             c++;
@@ -385,14 +422,17 @@ StatisticsList::expandInformation( StatisticsItem *item )
 
     else if( item == m_artistItem )
     {
-        delete m_newestItem;
-        delete m_genreItem;
-        delete m_albumItem;
-        delete m_mostplayedItem;
-        delete m_trackItem;
+        if( !refresh ) {
+            delete m_newestItem;
+            delete m_genreItem;
+            delete m_albumItem;
+            delete m_mostplayedItem;
+            delete m_trackItem;
+        }
 
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
         qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage );
+        qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valRating );
         qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
         qb.setGoogleFilter( QueryBuilder::tabArtist, m_filter );
         qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valName);
@@ -402,7 +442,8 @@ StatisticsList::expandInformation( StatisticsItem *item )
         for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
         {
             QString name = i18n("%1. %2").arg( QString::number(c), fave[i] );
-            m_last = new StatisticsDetailedItem( name, item, m_last );
+            QString subtext = i18n("Score: %1  Rating: %2").arg( fave[i+1], fave[i+2] );
+            m_last = new StatisticsDetailedItem( name, subtext, item, m_last );
             m_last->setItemType( StatisticsDetailedItem::ARTIST );
             QString url = QString("%1").arg( fave[i] );
             m_last->setUrl( url );
@@ -412,17 +453,20 @@ StatisticsList::expandInformation( StatisticsItem *item )
 
     else if( item == m_albumItem )
     {
-        delete m_newestItem;
-        delete m_genreItem;
-        delete m_artistItem;
-        delete m_mostplayedItem;
-        delete m_trackItem;
-
+        if( !refresh ) {
+            delete m_newestItem;
+            delete m_genreItem;
+            delete m_artistItem;
+            delete m_mostplayedItem;
+            delete m_trackItem;
+        }
+        
         qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valID );
         qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
         qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage );
+        qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valRating );
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valIsCompilation );
         qb.setGoogleFilter( QueryBuilder::tabAlbum | QueryBuilder::tabArtist, m_filter );
         qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
@@ -436,9 +480,10 @@ StatisticsList::expandInformation( StatisticsItem *item )
         const QString trueValue = CollectionDB::instance()->boolT();
         for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
         {
-            const bool isSampler = fave[i+5] == trueValue;
+            const bool isSampler = (fave[i+6] == trueValue);
             QString name = i18n("%1. %2 - %3").arg( QString::number(c), fave[i], isSampler ? i18n( "Various Artists" ) : fave[i+1] );
-            m_last = new StatisticsDetailedItem( name, item, m_last );
+            QString subtext = i18n("Score: %1  Rating: %2").arg( fave[i+4], fave[i+5] );
+            m_last = new StatisticsDetailedItem( name, subtext, item, m_last );
             m_last->setItemType( StatisticsDetailedItem::ALBUM );
             QString url = QString("%1 @@@ %2").arg( isSampler ? "0" : fave[i+2], fave[i+3] );
             m_last->setUrl( url );
@@ -448,14 +493,17 @@ StatisticsList::expandInformation( StatisticsItem *item )
 
     else if( item == m_genreItem )
     {
-        delete m_newestItem;
-        delete m_albumItem;
-        delete m_artistItem;
-        delete m_mostplayedItem;
-        delete m_trackItem;
+        if( !refresh ) {
+            delete m_newestItem;
+            delete m_albumItem;
+            delete m_artistItem;
+            delete m_mostplayedItem;
+            delete m_trackItem;
+        }
 
         qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
         qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valScore );
+        qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage );
         qb.setGoogleFilter( QueryBuilder::tabGenre, m_filter );
         qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valScore, true );
         qb.groupBy( QueryBuilder::tabGenre, QueryBuilder::valName);
@@ -465,7 +513,8 @@ StatisticsList::expandInformation( StatisticsItem *item )
         for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
         {
             QString name = i18n("%1. %2").arg( QString::number(c), fave[i] );
-            m_last = new StatisticsDetailedItem( name, item, m_last );
+            QString subtext =  i18n("Score: %1  Rating: %2").arg( fave[i+1], fave[i+2] );
+            m_last = new StatisticsDetailedItem( name, subtext, item, m_last );
             m_last->setItemType( StatisticsDetailedItem::GENRE );
             QString url = QString("%1").arg( fave[i] );
             m_last->setUrl( url );
@@ -475,11 +524,13 @@ StatisticsList::expandInformation( StatisticsItem *item )
 
     else if( item == m_newestItem )
     {
-        delete m_genreItem;
-        delete m_albumItem;
-        delete m_artistItem;
-        delete m_mostplayedItem;
-        delete m_trackItem;
+        if( !refresh ) {
+            delete m_genreItem;
+            delete m_albumItem;
+            delete m_artistItem;
+            delete m_mostplayedItem;
+            delete m_trackItem;
+        }
 
         qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
@@ -495,7 +546,10 @@ StatisticsList::expandInformation( StatisticsItem *item )
         for( uint i=0; i < newest.count(); i += qb.countReturnValues() )
         {
             QString name = i18n("%1. %2 - %3").arg( QString::number(c), newest[i], newest[i+1] );
-            m_last = new StatisticsDetailedItem( name, item, m_last );
+            QDateTime added = QDateTime();
+            added.setTime_t( newest[i+2].toUInt() );
+            QString subtext = i18n("Added: %1").arg( amaroK::verboseTimeSince( added ) );
+            m_last = new StatisticsDetailedItem( name, subtext, item, m_last );
             m_last->setItemType( StatisticsDetailedItem::HISTORY );
             QString url = QString("%1 @@@ %2").arg( newest[i+2], newest[i+3] );
             m_last->setUrl( url );
@@ -748,16 +802,112 @@ StatisticsItem::blendColors( const QColor& color1, const QColor& color2, int per
 /// CLASS StatisticsDetailedItem
 //////////////////////////////////////////////////////////////////////////////////////////
 
-StatisticsDetailedItem::StatisticsDetailedItem( QString &text, StatisticsItem *parent,
+StatisticsDetailedItem::StatisticsDetailedItem( QString &text, QString &subtext, StatisticsItem *parent,
                                                 StatisticsDetailedItem *after, const char *name )
     : KListViewItem( parent, after, name )
     , m_type( NONE )
+    , m_subText( subtext )
 {
     setDragEnabled( true );
     setDropEnabled( false );
     setSelectable( true );
 
     setText( 0, text );
+}
+
+void
+StatisticsDetailedItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
+{
+    bool showDetails = !m_subText.isEmpty();
+
+    //flicker-free drawing
+    static QPixmap buffer;
+    buffer.resize( width, height() );
+
+    if( buffer.isNull() )
+    {
+        KListViewItem::paintCell( p, cg, column, width, align );
+        return;
+    }
+
+    QPainter pBuf( &buffer, true );
+    // use alternate background
+#if KDE_VERSION < KDE_MAKE_VERSION(3,3,91)
+    pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor() );
+#else
+    pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor(0) );
+#endif
+
+    KListView *lv = (KListView *)listView();
+
+    QFont font( p->font() );
+    QFontMetrics fm( p->fontMetrics() );
+
+    int text_x = 0;
+    int textHeight;
+    
+    if( showDetails )
+        textHeight = fm.lineSpacing() + lv->itemMargin() + 1;
+    else
+        textHeight = height();
+        
+    pBuf.setPen( isSelected() ? cg.highlightedText() : cg.text() );
+
+    if( pixmap( column ) )
+    {
+        int y = (textHeight - pixmap(column)->height())/2;
+        if( showDetails ) y++;
+        pBuf.drawPixmap( text_x, y, *pixmap(column) );
+        text_x += pixmap(column)->width() + 4;
+    }
+
+    pBuf.setFont( font );
+    QFontMetrics fmName( font );
+
+    QString name = text(column);
+    if( fmName.width( name ) + text_x + lv->itemMargin()*2 > width )
+    {
+        int ellWidth = fmName.width( i18n("...") );
+        QString text = QString::fromLatin1("");
+        int i = 0;
+        int len = name.length();
+        while ( i < len && fmName.width( text + name[ i ] ) + ellWidth < width - text_x - lv->itemMargin()*2  )
+        {
+            text += name[ i ];
+            i++;
+        }
+        name = text + i18n("...");
+    }
+
+    pBuf.drawText( text_x, 0, width, textHeight, AlignVCenter, name );
+
+    if( showDetails ) 
+    {
+        const QColorGroup _cg = listView()->palette().disabled();
+        
+        text_x = lv->treeStepSize() + 3;
+        font.setItalic( true );
+        pBuf.setFont( font );
+        pBuf.setPen( isSelected() ? _cg.highlightedText() : _cg.text().dark() );
+        pBuf.drawText( text_x, textHeight, width, fm.lineSpacing(), AlignVCenter, m_subText );
+    }
+
+    pBuf.end();
+    p->drawPixmap( 0, 0, buffer );
+}
+
+void 
+StatisticsDetailedItem::setup()
+{
+    QFontMetrics fm( listView()->font() );
+    int margin = listView()->itemMargin()*2;
+    int h = fm.lineSpacing();
+    if ( h % 2 > 0 )
+        h++;
+    if( !m_subText.isEmpty() )
+        setHeight( h + fm.lineSpacing() + margin );
+    else
+        setHeight( h + margin );
 }
 
 #include "statistics.moc"
