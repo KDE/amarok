@@ -2846,10 +2846,7 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
 
                 if( filename.endsWith("m3u") || filename.endsWith("pls") )
                     PlaylistBrowser::instance()->addPlaylist( (*it).path() );
-                else if( (*it).protocol() == "album"       ||
-                         (*it).protocol() == "compilation" ||
-                         (*it).protocol() == "stream" ||
-                         (*it).protocol() == "fetchcover" )
+                else if( ContextBrowser::hasContextProtocol( *it ) )
                 {
                     KURL::List urls = ContextBrowser::expandURL( *it );
                     for( KURL::List::iterator i = urls.begin();

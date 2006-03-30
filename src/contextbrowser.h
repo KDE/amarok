@@ -47,7 +47,8 @@ class ContextBrowser : public KTabWidget, public EngineObserver
 
         void setFont( const QFont& );
         void reloadStyleSheet();
-        static KURL::List expandURL( const KURL &url ); // expand album: and compilation:
+        static KURL::List expandURL( const KURL &url ); // expand urls (album, compilation, ...)
+        static bool hasContextProtocol( const KURL &url ); // is url expandable by context browser?
 
     public slots:
         void openURLRequest(const KURL &url );
@@ -69,7 +70,6 @@ class ContextBrowser : public KTabWidget, public EngineObserver
     private slots:
         void tabChanged( QWidget *page );
         void slotContextMenu( const QString& urlString, const QPoint& point );
-        void showHome();
         void showContext( const KURL& url, bool fromHistory = false );
         void showCurrentTrack();
         void showLyrics( const QString& url = QString::null );

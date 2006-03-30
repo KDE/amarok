@@ -470,7 +470,7 @@ void ContextBrowser::renderView()
     }
     else
     {
-        showHome();
+        showCurrentTrack();
     }
 }
 
@@ -549,8 +549,7 @@ void ContextBrowser::engineStateChanged( Engine::State state, Engine::State oldS
             m_metadataHistory.clear();
             if ( currentPage() == m_contextTab || currentPage() == m_lyricsTab )
             {
-                if( m_contextURL.protocol() == "current" )
-                    showHome();
+                showCurrentTrack();
             }
             blockSignals( true );
             setTabEnabled( m_lyricsTab, false );
@@ -664,7 +663,6 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         urlString.startsWith( "http" ) ||
         urlString.startsWith( "wikipedia" ) ||
         urlString.startsWith( "seek" ) ||
-        urlString.startsWith( "artist" ) ||
         urlString.startsWith( "current" ) ||
         currentPage() != m_contextTab
         )
@@ -702,7 +700,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         //menu.insertSeparator();
         //menu.insertItem( SmallIconSet( "down" ), i18n( "&Download" ), DOWNLOAD );
     }
-    else if( url.protocol() == "file" || url.protocol() == "album" || url.protocol() == "compilation" )
+    else if( url.protocol() == "file" || url.protocol() == "artist" || url.protocol() == "album" || url.protocol() == "compilation" )
     {
         //TODO it would be handy and more usable to have this menu under the cover one too
 
@@ -716,23 +714,17 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( "info" ), i18n( "Edit Track &Information..." ), INFO );
 
+        if ( url.protocol() == "artist" )
+        {
+            urls = expandURL( url );
+
+            menu.changeTitle( TITLE, i18n("Artist") );
+            menu.changeItem( INFO,   i18n("Edit Artist &Information..." ) );
+            menu.changeItem( ASNEXT, i18n("&Queue Artist's Songs") );
+        }
         if ( url.protocol() == "album" )
         {
-            QueryBuilder qb;
-            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-            qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, artist );
-            qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, album );
-            qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
-            QStringList values = qb.run();
-
-            urls.clear(); //remove urlString
-            KURL url;
-            QStringList::ConstIterator end ( values.end() );
-            for( QStringList::ConstIterator it = values.begin(); it != end; ++it )
-            {
-                url.setPath( *it );
-                urls.append( url );
-            }
+            urls = expandURL( url );
 
             menu.changeTitle( TITLE, i18n("Album") );
             menu.changeItem( INFO,   i18n("Edit Album &Information..." ) );
@@ -740,19 +732,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         }
         if ( url.protocol() == "compilation" )
         {
-            QueryBuilder qb;
-            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-            qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, url.path() );
-            qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
-            qb.setOptions( QueryBuilder::optOnlyCompilations );
-            QStringList values = qb.run();
-
-            urls.clear();
-            KURL url;
-            foreach( values ) {
-                url.setPath( *it );
-                urls.append( url );
-            }
+            urls = expandURL( url );
 
             menu.changeTitle( TITLE, i18n("Compilation") );
             menu.changeItem( INFO,   i18n("Edit Album &Information..." ) );
@@ -820,141 +800,6 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 }
 
 
-//////////////////////////////////////////////////////////////////////////////////////////
-// Shows the statistics summary when no track is playing
-//////////////////////////////////////////////////////////////////////////////////////////
-
-void ContextBrowser::showHome() //SLOT
-{
-    DEBUG_BLOCK
-
-    if ( currentPage() != m_contextTab ) {
-        blockSignals( true );
-        showPage( m_contextTab );
-        blockSignals( false );
-    }
-
-    QueryBuilder qb;
-    qb.clear();
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
-    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valAccessDate, true );
-    qb.setLimit( 0, 10 );
-    QStringList lastplayed = qb.run();
-
-    qb.clear(); //Song count
-    qb.addReturnFunctionValue(QueryBuilder::funcCount, QueryBuilder::tabSong, QueryBuilder::valURL );
-    qb.setOptions( QueryBuilder::optRemoveDuplicates );
-    QStringList a = qb.run();
-    QString songCount = a[0];
-
-    qb.clear(); //Artist count
-    qb.addReturnFunctionValue(QueryBuilder::funcCount, QueryBuilder::tabArtist, QueryBuilder::valID );
-    qb.setOptions( QueryBuilder::optRemoveDuplicates );
-    a = qb.run();
-    QString artistCount = a[0];
-
-    qb.clear(); //Album count
-    qb.addReturnFunctionValue(QueryBuilder::funcCount, QueryBuilder::tabAlbum, QueryBuilder::valID );
-    qb.setOptions( QueryBuilder::optRemoveDuplicates );
-    a = qb.run();
-    QString albumCount = a[0];
-
-    qb.clear(); //Genre count
-    qb.addReturnFunctionValue(QueryBuilder::funcCount, QueryBuilder::tabGenre, QueryBuilder::valID );
-    qb.setOptions( QueryBuilder::optRemoveDuplicates );
-    a = qb.run();
-    QString genreCount = a[0];
-
-    m_HTMLSource="";
-    m_HTMLSource.append(
-        QStringx(
-        "<div id='introduction_box' class='box'>"
-            "<div id='introduction_box-header-title' class='box-header'>"
-                "<span id='introduction_box-header-title' class='box-header-title'>"
-                    + i18n( "No Track Playing" ) +
-                "</span>"
-            "</div>"
-            "<table id='current_box-table' class='box-body' width='100%' cellpadding='0' cellspacing='0'>"
-                "<tr>"
-                    "<td id='current_box-largecover-td'>"
-                        "<img id='current_box-largecover-image' src='%1' title='amaroK'>"
-                    "</td>"
-                    "<td id='current_box-information-td' align='right'>"
-                        "<span>%2</span><br />"
-                        "<span>%3</span><br />"
-                        "<span>%4</span><br />"
-                        "<span>%5</span><br />"
-                    "</td"
-                "</tr>"
-            "</table>"
-        "</div>" )
-                .args( QStringList()
-                        << escapeHTMLAttr( KGlobal::iconLoader()->iconPath( "amarok", -KIcon::SizeEnormous ) )
-                        << i18n( "1 Song",   "%n Songs",   songCount.toInt() )
-                        << i18n( "1 Artist", "%n Artists", artistCount.toInt() )
-                        << i18n( "1 Album",  "%n Albums",  albumCount.toInt() )
-                        << i18n( "1 Genre",  "%n Genres",  genreCount.toInt() ) ) );
-
-
-    // <Recent Tracks Information>
-    m_HTMLSource.append(
-            "<div id='newest_box' class='box'>"
-                "<div id='newest_box-header' class='box-header'>"
-                    "<span id='newest_box-header-title' class='box-header-title'>"
-                    + i18n( "Recently Played Tracks" ) +
-                    "</span>"
-                "</div>" );
-
-    if ( lastplayed.count() == 0 )
-    {
-        m_HTMLSource.append(
-                "<div id='newest_box-body' class='box-body'><p>" +
-                i18n( "A list of your recently played tracks will appear here, once you have played a few of your songs." ) +
-                "</p></div>" );
-    }
-    else
-    {
-        m_HTMLSource.append(
-                "<div id='newest_box-body' class='box-body'>"
-                             "<table border='0' cellspacing='0' cellpadding='0' width='100%' class='song'>" );
-
-        for( uint i = 0; i < lastplayed.count(); i = i + 4 )
-        {
-            m_HTMLSource.append(
-                    "<div class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
-                        "<div class='song'>"
-                            "<a href=\"file:" + escapeHTMLAttr ( lastplayed[i + 1] ) + "\">"
-                            "<span class='song-title'>" + escapeHTML( lastplayed[i] ) + "</span><br />"
-                            "<span class='song-artist'>" + escapeHTML( lastplayed[i + 2] ) + "</span>"
-                        );
-
-            if ( !lastplayed[i + 3].isEmpty() )
-                m_HTMLSource.append(
-                    "<span class='song-separator'>"
-                    + i18n("&#xa0;&#8211 ") +
-                    "</span><span class='song-album'>" + escapeHTML( lastplayed[i + 3] ) + "</span>"
-                            );
-
-            m_HTMLSource.append(
-                            "</a>"
-                        "</div>"
-                        "</div>");
-        }
-        m_HTMLSource.append("</table> </div>");
-    }
-    m_HTMLSource.append(
-            "</div></body></html>");
-
-    // </Recent Tracks Information>
-    m_currentTrackPage->set( m_HTMLSource );
-
-    saveHtmlData(); // Send html code to file
-}
-
-
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Current-Tab
@@ -979,6 +824,9 @@ private:
     void showArtistsFaves( const QString &artistName, uint artist_id );
     void showArtistsAlbums( const QString &artist, uint artist_id, uint album_id );
     void showArtistsCompilations( const QString &artist, uint artist_id, uint album_id );
+    void showHome();
+    void showHomeByAlbums();
+    void constructHTMLAlbums( const QStringList &albums, QString &htmlCode, const QString &idPrefix );
 
     virtual void completeJob()
     {
@@ -1055,13 +903,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
         m_dirtyCurrentTrackPage = true;
         return;
     }
-    debug() << "Redering showCurrentTrack()" << endl;
-
-    if( m_contextURL.protocol() == "current" && !EngineController::engine()->loaded() )
-    {
-        showHome();
-        return;
-    }
+    debug() << "Rendering showCurrentTrack()" << endl;
 
     if ( currentPage() != m_contextTab ) {
         blockSignals( true );
@@ -1077,6 +919,316 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
     ThreadWeaver::instance()->onlyOneJob( new CurrentTrackJob( this ) );
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// Shows the statistics summary when no track is playing
+//////////////////////////////////////////////////////////////////////////////////////////
+
+void CurrentTrackJob::showHome()
+{
+    DEBUG_BLOCK
+
+    QueryBuilder qb;
+    qb.clear();
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valAccessDate, true );
+    qb.setLimit( 0, 10 );
+    QStringList lastplayed = qb.run();
+
+    qb.clear(); //Song count
+    qb.addReturnFunctionValue(QueryBuilder::funcCount, QueryBuilder::tabSong, QueryBuilder::valURL );
+    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    QStringList a = qb.run();
+    QString songCount = a[0];
+
+    qb.clear(); //Artist count
+    qb.addReturnFunctionValue(QueryBuilder::funcCount, QueryBuilder::tabArtist, QueryBuilder::valID );
+    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    a = qb.run();
+    QString artistCount = a[0];
+
+    qb.clear(); //Album count
+    qb.addReturnFunctionValue(QueryBuilder::funcCount, QueryBuilder::tabAlbum, QueryBuilder::valID );
+    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    a = qb.run();
+    QString albumCount = a[0];
+
+    qb.clear(); //Genre count
+    qb.addReturnFunctionValue(QueryBuilder::funcCount, QueryBuilder::tabGenre, QueryBuilder::valID );
+    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    a = qb.run();
+    QString genreCount = a[0];
+
+    m_HTMLSource.append(
+            QStringx(
+                "<div id='introduction_box' class='box'>"
+                "<div id='introduction_box-header-title' class='box-header'>"
+                "<span id='introduction_box-header-title' class='box-header-title'>"
+                + i18n( "No Track Playing" ) +
+                "</span>"
+                "</div>"
+                "<table id='current_box-table' class='box-body' width='100%' cellpadding='0' cellspacing='0'>"
+                "<tr>"
+                "<td id='current_box-largecover-td'>"
+                "<img id='current_box-largecover-image' src='%1' title='amaroK'>"
+                "</td>"
+                "<td id='current_box-information-td' align='right'>"
+                "<span>%2</span><br />"
+                "<span>%3</span><br />"
+                "<span>%4</span><br />"
+                "<span>%5</span><br />"
+                "</td"
+                "</tr>"
+                "</table>"
+                "</div>" )
+            .args( QStringList()
+                    << escapeHTMLAttr( KGlobal::iconLoader()->iconPath( "amarok", -KIcon::SizeEnormous ) )
+                    << i18n( "1 Song",   "%n Songs",   songCount.toInt() )
+                    << i18n( "1 Artist", "%n Artists", artistCount.toInt() )
+                    << i18n( "1 Album",  "%n Albums",  albumCount.toInt() )
+                    << i18n( "1 Genre",  "%n Genres",  genreCount.toInt() ) ) );
+
+
+    showHomeByAlbums();
+
+    m_HTMLSource.append(
+            "</div></body></html>");
+}
+
+
+void
+CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htmlCode, const QString &stID )
+{
+    // This function create the html code used to display a list of albums. Each album
+    // is a 'toggleable' block.
+    // Parameter stID is used to diff�entiate same albums in different album list. So if this function
+    // is called multiple time in the same HTML code, stID must be different.
+    for ( uint i = 0; i < reqResult.count(); i += 3 )
+    {
+        QueryBuilder qb;
+        qb.clear();
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTrack );
+        qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLength );
+        qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+        qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valID );
+        qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, reqResult[i+1] );
+        qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+        //qb.setOptions( QueryBuilder::optNoCompilations );
+        QStringList albumValues = qb.run();
+
+        QString albumYear;
+        if ( !albumValues.isEmpty() )
+        {
+            albumYear = albumValues[ 3 ];
+            for ( uint j = 0; j < albumValues.count(); j += 7 )
+                if ( albumValues[j + 3] != albumYear || albumYear == "0" )
+                {
+                    albumYear = QString::null;
+                    break;
+                }
+        }
+
+        htmlCode.append( QStringx (
+                    "<tr class='" + QString( (i % 4) ? "box-row-alt" : "box-row" ) + "'>"
+                    "<td>"
+                    "<div class='album-header' onClick=\"toggleBlock('IDA%1')\">"
+                    "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
+                    "<tr>")
+                .args( QStringList()
+                    << stID + reqResult[i+1] ));
+
+        QString albumName = escapeHTML( reqResult[ i ].isEmpty() ? i18n( "Unknown album" ) : reqResult[ i ] );
+
+        if (CollectionDB::instance()->albumIsCompilation(reqResult[ i + 1 ]))
+        {
+            QString albumImage = CollectionDB::instance()->albumImage( albumValues[5], reqResult[ i ], 50 );
+            if ( albumImage != CollectionDB::instance()->notAvailCover( 50 ) )
+                albumImage = ContextBrowser::makeShadowedImage( albumImage );
+
+            // Compilation image
+            htmlCode.append( QStringx (
+                        "<td width='1'>"
+                        "<a href='fetchcover: @@@ %1'>"
+                        "<img class='album-image' align='left' vspace='2' hspace='2' title='%2' src='%3'/>"
+                        "</a>"
+                        "</td>"
+                        "<td valign='middle' align='left'>"
+                        "<a href='compilation:%4'><span class='album-title'>%5</span></a>" )
+                    .args( QStringList()
+                        << escapeHTMLAttr( reqResult[ i ].isEmpty() ? i18n( "Unknown" ) : reqResult[ i ] ) // album.name
+                        << i18n( "Click for information from amazon.com, right-click for menu." )
+                        << escapeHTMLAttr( albumImage )
+                        << reqResult[ i + 1 ] //album.id
+                        << albumName ) );
+        }
+        else
+        {
+            QString artistName = albumValues[5].isEmpty() ? i18n( "Unknown artist" ) : albumValues[5];
+
+            QString albumImage = CollectionDB::instance()->albumImage( albumValues[5], reqResult[ i ], 50 );
+            if ( albumImage != CollectionDB::instance()->notAvailCover( 50 ) )
+                albumImage = ContextBrowser::makeShadowedImage( albumImage );
+
+            // Album image
+            htmlCode.append( QStringx (
+                        "<td width='1'>"
+                        "<a href='fetchcover:%1 @@@ %2'>"
+                        "<img class='album-image' align='left' vspace='2' hspace='2' title='%3' src='%4'/>"
+                        "</a>"
+                        "</td>"
+                        "<td valign='middle' align='left'>"
+                        "<a href='artist:%5'>"
+                        "<span class='album-title'>%6</span>"
+                        "</a>"
+                        "<span class='song-separator'> - </span>"
+                        "<a href='album:%7 @@@ %8'>"
+                        "<span class='album-title'>%9</span>"
+                        "</a>" )
+                    .args( QStringList()
+                        << escapeHTMLAttr( albumValues[5] ) // artist name
+                        << escapeHTMLAttr( reqResult[ i ].isEmpty() ? i18n( "Unknown" ) : reqResult[ i ] ) // album.name
+                        << i18n( "Click for information from amazon, right-click for menu." )
+                        << escapeHTMLAttr( albumImage )
+                        << escapeHTMLAttr( artistName )
+                        << escapeHTML( artistName )
+                        << albumValues[6]
+                        << reqResult[ i + 1 ] //album.id
+                        << albumName ) );
+        }
+
+        // Tracks number and year
+        htmlCode.append( QStringx (
+                    "<span class='album-info'>%1</span> "
+                    "<br />"
+                    "<span class='album-year'>%2</span>"
+                    "</td>")
+                .args( QStringList()
+                    << i18n( "Single", "%n Tracks",  albumValues.count() / qb.countReturnValues() )
+                    << albumYear) );
+
+        // Begining of the 'toggleable div' that contains the songs
+        htmlCode.append( QStringx (
+                    "</tr>"
+                    "</table>"
+                    "</div>"
+                    "<div class='album-body' style='display:%1;' id='IDA%2'>" )
+                .args( QStringList()
+                    << "none" /* shows it if it's the current track album */
+                    << stID + reqResult[ i + 1 ] ) );
+
+        if ( !albumValues.isEmpty() )
+        {
+            for ( uint j = 0; j < albumValues.count(); j += 7 )
+            {
+                QString track = albumValues[j + 2].stripWhiteSpace();
+                if( track.length() > 0 )
+                {
+                    if( track.length() == 1 )
+                        track.prepend( "0" );
+
+                    track = "<span class='album-song-trackno'>" + track + "&nbsp;</span>";
+                }
+
+                QString length;
+                if( albumValues[j + 4] != "0" )
+                    length = "<span class='album-song-time'>(" + MetaBundle::prettyTime( QString(albumValues[j + 4]).toInt(), false ) + ")</span>";
+
+                htmlCode.append(
+                        "<div class='album-song'>"
+                        "<a href=\"file:" + escapeHTMLAttr( albumValues[j + 1] ) + "\">"
+                        + track +
+                        "<span class='album-song-title'>" + escapeHTML( albumValues[j] ) + "</span>&nbsp;"
+                        + length +
+                        "</a>"
+                        "</div>" );
+            }
+        }
+
+        htmlCode.append(
+                "</div>"
+                "</td>"
+                "</tr>" );
+    }
+}
+
+
+void CurrentTrackJob::showHomeByAlbums()
+{
+    QueryBuilder qb;
+
+    // <Newest Albums Information>
+    qb.clear();
+    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
+    qb.addReturnFunctionValue(QueryBuilder::funcMax, QueryBuilder::tabSong, QueryBuilder::valCreateDate);
+    qb.sortByFunction( QueryBuilder::funcMax, QueryBuilder::tabSong, QueryBuilder::valCreateDate, true );
+    qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
+    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID);
+    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName);
+    qb.setLimit( 0, 5 );
+    QStringList recentAlbums = qb.run();
+
+    m_HTMLSource.append(
+        "<div id='least_box' class='box'>"
+        "<div id='least_box-header' class='box-header'>"
+        "<span id='least_box-header-title' class='box-header-title'>"
+        + i18n( "Your Newest Albums" ) +
+        "</span>"
+        "</div>"
+        "<div id='least_box-body' class='box-body'>" );
+    constructHTMLAlbums( recentAlbums, m_HTMLSource, "1" );
+
+    m_HTMLSource.append(
+        "</div>"
+        "</div>");
+
+    // </Recent Tracks Information>
+
+    // <Favorite Albums Information>
+    qb.clear();
+    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
+    qb.addReturnFunctionValue(QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage);
+    qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
+    qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
+    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID);
+    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName);
+    qb.setLimit( 0, 5 );
+    QStringList faveAlbums = qb.run();
+
+    m_HTMLSource.append(
+        "<div id='albums_box' class='box'>"
+        "<div id='albums_box-header' class='box-header'>"
+        "<span id='albums_box-header-title' class='box-header-title'>"
+        + i18n( "Favorite Albums" ) +
+        "</span>"
+        "</div>"
+        "<table id='albums_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='0'>" );
+
+    if ( faveAlbums.count() == 0 )
+    {
+        m_HTMLSource.append(
+            "<div id='favorites_box-body' class='box-body'><p>" +
+            i18n( "A list of your favorite albums will appear here, once you have played a few of your songs." ) +
+            "</p></div>" );
+    }
+    else
+    {
+        constructHTMLAlbums( faveAlbums, m_HTMLSource, "2" );
+    }
+
+    m_HTMLSource.append("</div>");
+
+    // </Favorite Tracks Information>
+}
+
+
 
 void CurrentTrackJob::showStream( const MetaBundle &currentTrack )
 {
@@ -2048,6 +2200,12 @@ bool CurrentTrackJob::doJob()
                     "</script>" );
     if( !b->m_browseArtists )
     {
+        if( !EngineController::engine()->loaded() )
+        {
+            showHome();
+            return true;
+        }
+
         MetaBundle mb( currentTrack.url() );
         if( mb.podcastBundle() )
         {
@@ -3036,13 +3194,33 @@ ContextBrowser::makeShadowedImage( const QString& albumImage ) //static
     return QString("data:image/png;base64,%1").arg( KCodecs::base64Encode( ba ) );
 }
 
+bool
+ContextBrowser::hasContextProtocol( const KURL &url )
+{
+    QString protocol = url.protocol();
+    return protocol == "album"
+        || protocol == "artist"
+        || protocol == "stream"
+        || protocol == "compilation"
+        || protocol == "fetchcover";
+}
+
 KURL::List
 ContextBrowser::expandURL( const KURL &url )
 {
     KURL::List urls;
     QString protocol = url.protocol();
 
-    if( protocol == "album" ) {
+    if( protocol == "artist" ) {
+        uint artist_id = CollectionDB::instance()->artistID( url.path(), false );
+        if( artist_id )
+        {
+            QStringList trackUrls = CollectionDB::instance()->artistTracks( QString::number( artist_id ) );
+            foreach( trackUrls )
+                urls += KURL::fromPathOrURL( *it );
+        }
+    }
+    else if( protocol == "album" ) {
         // url looks like:   album:<artist_id> @@@ <album_id>
         QString myUrl = url.path();
         if ( myUrl.endsWith( " @@@" ) )
@@ -3053,10 +3231,8 @@ ContextBrowser::expandURL( const KURL &url )
         QString album_id = list.back();
 
         QStringList trackUrls = CollectionDB::instance()->albumTracks( artist_id, album_id );
-        KURL url;
         foreach( trackUrls ) {
-            url.setPath( *it );
-            urls += url;
+            urls += KURL::fromPathOrURL( *it );
         }
     }
     else if( protocol == "compilation" ) {
@@ -3067,10 +3243,8 @@ ContextBrowser::expandURL( const KURL &url )
         qb.setOptions( QueryBuilder::optOnlyCompilations );
         QStringList values = qb.run();
 
-        KURL url;
         for( QStringList::ConstIterator it = values.begin(), end = values.end(); it != end; ++it ) {
-            url.setPath( *it );
-            urls += url;
+            urls += KURL::fromPathOrURL( *it );
         }
     }
 
@@ -3095,19 +3269,15 @@ ContextBrowser::expandURL( const KURL &url )
             qb.setOptions( QueryBuilder::optOnlyCompilations );
             QStringList values = qb.run();
 
-            KURL url;
             for( QStringList::ConstIterator it = values.begin(), end = values.end(); it != end; ++it ) {
-                url.setPath( *it );
-                urls += url;
+                urls += KURL::fromPathOrURL( *it );
             }
         }
         else
         {
             QStringList trackUrls = CollectionDB::instance()->albumTracks( artist_name, album_name, true );
-            KURL url;
             foreach( trackUrls ) {
-                url.setPath( *it );
-                urls += url;
+                urls += KURL::fromPathOrURL( *it );
             }
         }
     }

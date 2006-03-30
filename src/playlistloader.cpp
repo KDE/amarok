@@ -136,11 +136,13 @@ UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, bool playFir
         else if( protocol == "seek" )
             continue;
 
-        else if( protocol == "album"
-                || protocol == "compilation"
-                || protocol == "stream"
-                || protocol == "fetchcover" )
+        else if( ContextBrowser::hasContextProtocol( url ) )
+        {
+            DEBUG_BLOCK
+            debug() << "context expandurl" << endl;
+
             m_URLs += ContextBrowser::expandURL( url );
+        }
 
         else {
             // this is the best way I found for recursing if required

@@ -1906,10 +1906,7 @@ MediaQueue::addURL( const KURL& url, MetaBundle *bundle, const QString &playlist
         }
         return;
     }
-    else if( url.protocol() == "album"
-            || url.protocol() == "compilation"
-            || url.protocol() == "stream"
-            || url.protocol() == "fetchcover" )
+    else if( ContextBrowser::hasContextProtocol( url ) )
     {
         KURL::List urls = ContextBrowser::expandURL( url );
 
