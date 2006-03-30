@@ -245,14 +245,7 @@ CollectionDB::isEmpty( )
 {
     QStringList values;
 
-    if (getDbConnectionType() == DbConnection::postgresql)
-    {
-        values = query( "SELECT COUNT( url ) FROM tags OFFSET 0 LIMIT 1;" );
-    }
-    else
-    {
-        values = query( "SELECT COUNT( url ) FROM tags LIMIT 0, 1;" );
-    }
+    values = query( "SELECT COUNT( url ) FROM tags LIMIT 1 OFFSET 0;" );
 
     return values.isEmpty() ? true : values.first() == "0";
 }
@@ -264,15 +257,8 @@ CollectionDB::isValid( )
     QStringList values1;
     QStringList values2;
 
-    if (getDbConnectionType() == DbConnection::postgresql) {
-        values1 = query( "SELECT COUNT( url ) FROM tags OFFSET 0 LIMIT 1;" );
-        values2 = query( "SELECT COUNT( url ) FROM statistics OFFSET 0 LIMIT 1;" );
-    }
-    else
-    {
-        values1 = query( "SELECT COUNT( url ) FROM tags LIMIT 0, 1;" );
-        values2 = query( "SELECT COUNT( url ) FROM statistics LIMIT 0, 1;" );
-    }
+    values1 = query( "SELECT COUNT( url ) FROM tags LIMIT 1 OFFSET 0;" );
+    values2 = query( "SELECT COUNT( url ) FROM statistics LIMIT 1 OFFSET 0;" );
 
     //TODO? this returns true if value1 or value2 is not empty. Shouldn't this be and (&&)???
     return !values1.isEmpty() || !values2.isEmpty();
@@ -2722,15 +2708,8 @@ CollectionDB::similarArtists( const QString &artist, uint count )
 {
     QStringList values;
 
-    if (getDbConnectionType() == DbConnection::postgresql) {
-        values = query( QString( "SELECT suggestion FROM related_artists WHERE artist = '%1' OFFSET 0 LIMIT %2;" )
+    values = query( QString( "SELECT suggestion FROM related_artists WHERE artist = '%1' LIMIT %2 OFFSET 0;" )
                                  .arg( escapeString( artist ) ).arg( count ) );
-    }
-    else
-    {
-        values = query( QString( "SELECT suggestion FROM related_artists WHERE artist = '%1' LIMIT 0, %2;" )
-                                 .arg( escapeString( artist ) ).arg( count ) );
-    }
 
     if ( values.isEmpty() )
         Scrobbler::instance()->similarArtists( artist );
