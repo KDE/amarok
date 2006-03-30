@@ -738,6 +738,15 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
             menu.changeItem( INFO,   i18n("Edit Album &Information..." ) );
             menu.changeItem( ASNEXT, i18n("&Queue Album") );
         }
+
+        if( urls.count() == 0 )
+        {
+            menu.setItemEnabled( MAKE, false );
+            menu.setItemEnabled( APPEND, false );
+            menu.setItemEnabled( ASNEXT, false );
+            menu.setItemEnabled( MEDIA_DEVICE, false );
+            menu.setItemEnabled( INFO, false );
+        }
     }
 
     //Not all these are used in the menu, it depends on the context
