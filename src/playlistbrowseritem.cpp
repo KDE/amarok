@@ -1783,22 +1783,27 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after, Pod
       , m_onDisk( false )
 {
     m_localUrl = m_bundle.localUrl();
+    bool dbOnDisk = m_localUrl.isEmpty();
     
     if( m_localUrl.isEmpty() )
     {
         m_localUrl = dynamic_cast<PodcastChannel*>(m_parent)->saveLocation();
         m_localUrl.addPath( bundle.url().fileName() );
-        
-        m_bundle.setLocalURL( m_localUrl );
-        
-        if( m_bundle.dBId() )
-            CollectionDB::instance()->updatePodcastEpisode( m_bundle.dBId(), m_bundle );
     }
 
     if( QFile::exists( m_localUrl.path() ) )
     {
         m_onDisk = true;
     }
+        
+    if( m_onDisk )
+    {
+        m_bundle.setLocalURL( m_localUrl );
+    }
+
+    if( dbOnDisk != m_onDisk && m_bundle.dBId() )
+       CollectionDB::instance()->updatePodcastEpisode( m_bundle.dBId(), m_bundle );
+
 
     setText( 0, bundle.title() );
     updatePixmap();
@@ -1820,10 +1825,11 @@ PodcastEpisode::updatePixmap()
 const bool
 PodcastEpisode::isOnDisk()
 {
+    bool oldOnDisk = m_onDisk;
     m_onDisk = QFile::exists( m_localUrl.path() );
     updatePixmap();
     m_bundle.setLocalURL( m_onDisk ? m_localUrl : KURL() );
-    if( dBId() )
+    if( oldOnDisk != m_onDisk && dBId() )
         CollectionDB::instance()->updatePodcastEpisode( dBId(), m_bundle );
     return m_onDisk;
 }
