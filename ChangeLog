@@ -27,6 +27,7 @@ VERSION 1.4-beta3:
     * Add autocompletion to the composer field in the tag dialog. (BR 123026)
 
   CHANGES:
+    * Statistics tool has had numerous improvements.
     * Optimise: Only rerender the CollectionBrowser when relevant.
     * Disable detection of iPod model and thus solve g_object_get related
       problems. (BR 121990)
