@@ -834,7 +834,7 @@ private:
     void showArtistsAlbums( const QString &artist, uint artist_id, uint album_id );
     void showArtistsCompilations( const QString &artist, uint artist_id, uint album_id );
     void showHome();
-    void showHomeByAlbums();
+    QStringList showHomeByAlbums();
     void constructHTMLAlbums( const QStringList &albums, QString &htmlCode, const QString &idPrefix );
 
     virtual void completeJob()
@@ -1001,7 +1001,7 @@ void CurrentTrackJob::showHome()
                     << i18n( "1 Genre",  "%n Genres",  genreCount.toInt() ) ) );
 
 
-    showHomeByAlbums();
+    b->m_shownAlbums = showHomeByAlbums();
 
     m_HTMLSource.append(
             "</div></body></html>");
@@ -1167,8 +1167,11 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
 }
 
 
-void CurrentTrackJob::showHomeByAlbums()
+// return list of albums shown
+QStringList
+CurrentTrackJob::showHomeByAlbums()
 {
+    QStringList albums;
     QueryBuilder qb;
 
     // <Newest Albums Information>
@@ -1182,6 +1185,13 @@ void CurrentTrackJob::showHomeByAlbums()
     qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName);
     qb.setLimit( 0, 5 );
     QStringList recentAlbums = qb.run();
+
+    foreach( recentAlbums )
+    {
+        albums += *it;
+        it++;
+        it++;
+    }
 
     m_HTMLSource.append(
         "<div id='least_box' class='box'>"
@@ -1211,6 +1221,13 @@ void CurrentTrackJob::showHomeByAlbums()
     qb.setLimit( 0, 5 );
     QStringList faveAlbums = qb.run();
 
+    foreach( faveAlbums )
+    {
+        albums += *it;
+        it++;
+        it++;
+    }
+
     m_HTMLSource.append(
         "<div id='albums_box' class='box'>"
         "<div id='albums_box-header' class='box-header'>"
@@ -1235,6 +1252,8 @@ void CurrentTrackJob::showHomeByAlbums()
     m_HTMLSource.append("</div>");
 
     // </Favorite Tracks Information>
+
+    return albums;
 }
 
 
@@ -3095,6 +3114,16 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
 void
 ContextBrowser::coverFetched( const QString &artist, const QString &album ) //SLOT
 {
+    if ( currentPage() == m_contextTab &&
+            !EngineController::engine()->loaded() &&
+            !m_browseArtists )
+    {
+        m_dirtyCurrentTrackPage = true;
+        if( m_shownAlbums.contains( album ) )
+            showCurrentTrack();
+        return;
+    }
+
     const MetaBundle &currentTrack = EngineController::instance()->bundle();
     if ( currentTrack.artist().isEmpty() && currentTrack.album().isEmpty() )
         return;
@@ -3111,6 +3140,16 @@ ContextBrowser::coverFetched( const QString &artist, const QString &album ) //SL
 void
 ContextBrowser::coverRemoved( const QString &artist, const QString &album ) //SLOT
 {
+    if ( currentPage() == m_contextTab &&
+            !EngineController::engine()->loaded() &&
+            !m_browseArtists )
+    {
+        m_dirtyCurrentTrackPage = true;
+        if( m_shownAlbums.contains( album ) )
+            showCurrentTrack();
+        return;
+    }
+
     const MetaBundle &currentTrack = EngineController::instance()->bundle();
     if ( currentTrack.artist().isEmpty() && currentTrack.album().isEmpty() && m_artist.isNull() )
         return;

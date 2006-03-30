@@ -171,6 +171,7 @@ class ContextBrowser : public KTabWidget, public EngineObserver
 
         bool          m_browseArtists;
         QString       m_artist;
+        QStringList   m_shownAlbums;
 
         CueFile      *m_cuefile;
 };
