@@ -1782,17 +1782,23 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after, Pod
       , m_fetching( false )
       , m_onDisk( false )
 {
-    m_localUrl = dynamic_cast<PodcastChannel*>(m_parent)->saveLocation();
-
-    m_localUrl.addPath( bundle.url().fileName() );
+    m_localUrl = m_bundle.localUrl();
+    
+    if( m_localUrl.isEmpty() )
+    {
+        m_localUrl = dynamic_cast<PodcastChannel*>(m_parent)->saveLocation();
+        m_localUrl.addPath( bundle.url().fileName() );
+        
+        m_bundle.setLocalURL( m_localUrl );
+        
+        if( m_bundle.dBId() )
+            CollectionDB::instance()->updatePodcastEpisode( m_bundle.dBId(), m_bundle );
+    }
 
     if( QFile::exists( m_localUrl.path() ) )
     {
         m_onDisk = true;
-        m_bundle.setLocalURL( m_localUrl );
     }
-    if( m_bundle.dBId() )
-        CollectionDB::instance()->updatePodcastEpisode( m_bundle.dBId(), m_bundle );
 
     setText( 0, bundle.title() );
     updatePixmap();
@@ -1851,6 +1857,8 @@ PodcastEpisode::downloadMedia()
 
 void PodcastEpisode::createLocalDir( const KURL &localDir )
 {
+    if( localDir.isEmpty() ) return;
+    
     QString localDirString = localDir.path();
     if( !QFile::exists( localDirString ) )
     {
