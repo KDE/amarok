@@ -1065,16 +1065,15 @@ TagDialog::applyToAllTracks()
             changed = true;
         }
 
-        int score = scoreForURL( *it );
-        if( kIntSpinBox_score->value() && kIntSpinBox_score->value() != score ||
-                !kIntSpinBox_score->value() && score )
+        if( kIntSpinBox_score->value() && kIntSpinBox_score->value() != m_score ||
+                !kIntSpinBox_score->value() && m_score )
         {
-            score = kIntSpinBox_score->value();
+            m_score = kIntSpinBox_score->value();
             changed = true;
         }
 
         if( changed )
-            storeTags( *it, mb, score );
+            storeTags( *it, mb, m_score );
     }
 }
 
