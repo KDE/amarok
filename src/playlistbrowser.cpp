@@ -1,9 +1,11 @@
-// (c) 2004 Pierpaolo Di Panfilo
-// (c) 2004 Mark Kretschmann <markey@web.de>
-// (c) 2005-2006 Seb Ruiz <me@sebruiz.net>
-// (c) 2005 Gábor Lehel <illissius@gmail.com>
-// (c) 2005 Christian Muehlhaeuser <chris@chris.de>
-// License: GPL V2. See COPYING file for information.
+/***************************************************************************
+ * copyright            : (c) 2004 Pierpaolo Di Panfilo                    *
+ *                        (c) 2004 Mark Kretschmann <markey@web.de>        *
+ *                        (c) 2005-2006 Seb Ruiz <me@sebruiz.net>          *
+ *                        (c) 2005 Gábor Lehel <illissius@gmail.com>       *
+ *                        (c) 2005 Christian Muehlhaeuser <chris@chris.de> *
+ * See COPYING file for licensing information                              *
+ ***************************************************************************/
 
 #define DEBUG_PREFIX "PlaylistBrowser"
 
@@ -3061,6 +3063,7 @@ void PlaylistBrowserView::keyPressEvent( QKeyEvent *e )
 void PlaylistBrowserView::startDrag()
 {
     KURL::List urls;
+    KURL::List itemList; // this is for CollectionDB::createDragPixmap()
 
     KMultipleDrag *drag = new KMultipleDrag( this );
 
@@ -3069,18 +3072,29 @@ void PlaylistBrowserView::startDrag()
     for( ; it.current(); ++it )
     {
         if( isPlaylist( *it ) )
-            urls += ((PlaylistEntry*)*it)->url();
-
+        {
+            urls     += static_cast<PlaylistItem*>(*it)->url();
+            itemList += KURL::fromPathOrURL( "playlist://" );
+        }
         else if( isStream( *it ) )
-            urls += ((StreamEntry*)*it)->url();
+        {
+            urls     += static_cast<StreamEntry*>(*it)->url();
+            itemList += KURL::fromPathOrURL( "stream://" );
+        }
 
         else if( isPodcastEpisode( *it ) )
         {
             #define item static_cast<PodcastEpisode *>(*it)
             if( item->isOnDisk() )
-                urls += item->localUrl();
+            {
+                urls     += item->localUrl();
+                itemList += item->localUrl();
+            }
             else
-                urls += item->url();
+            {
+                urls     += item->url();
+                itemList += item->url();
+            }
 
             item->setNew( false );
 
@@ -3100,7 +3114,7 @@ void PlaylistBrowserView::startDrag()
                 pe->setNew( false ); // FIXME: why?
                 child = child->nextSibling();
             }
-
+            itemList += KURL::fromPathOrURL( QString("podcast://%1").arg( item->url().url() ) );
             item->setNew( false );
 
             #undef item
@@ -3116,16 +3130,20 @@ void PlaylistBrowserView::startDrag()
                 textdrag->setSubtype( "amarok-sql" );
                 drag->addDragObject( textdrag );
             }
+            itemList += KURL::fromPathOrURL( "smartplaylist://" );
 
         }
         else if( isPlaylistTrackItem( *it ) )
-            urls += ((PlaylistTrackItem*)*it)->url();
+        {
+            urls     += static_cast<PlaylistTrackItem*>(*it)->url();
+            itemList += static_cast<PlaylistTrackItem*>(*it)->url();
+        }
     }
 
     drag->addDragObject( new KURLDrag( urls, viewport() ) );
-    drag->setPixmap(CollectionDB::createDragPixmap(urls), QPoint(CollectionDB::DRAGPIXMAP_OFFSET_X,CollectionDB::DRAGPIXMAP_OFFSET_Y));
+    drag->setPixmap( CollectionDB::createDragPixmap( itemList ),
+                     QPoint( CollectionDB::DRAGPIXMAP_OFFSET_X, CollectionDB::DRAGPIXMAP_OFFSET_Y ) );
     drag->dragCopy();
-
 }
 
 /////////////////////////////////////////////////////////////////////////////

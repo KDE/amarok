@@ -1,6 +1,8 @@
-// (c) 2004 Pierpaolo Di Panfilo
-// (c) 2005-2006 Seb Ruiz <me@sebruiz.net>
-// See COPYING file for licensing information
+/***************************************************************************
+ * copyright            : (c) 2004 Pierpaolo Di Panfilo                    *
+ *                        (c) 2005-2006 Seb Ruiz <me@sebruiz.net>          *
+ * See COPYING file for licensing information                              *
+ ***************************************************************************/
 
 #ifndef PLAYLISTBROWSERITEM_H
 #define PLAYLISTBROWSERITEM_H

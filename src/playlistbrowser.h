@@ -1,8 +1,10 @@
-// (c) 2004 Pierpaolo Di Panfilo
-// (c) 2004 Mark Kretschmann <markey@web.de>
-// (c) 2005-2006 Seb Ruiz <me@sebruiz.net>
-// (c) 2005 Gábor Lehel <illissius@gmail.com>
-// License: GPL V2. See COPYING file for information.
+/***************************************************************************
+ * copyright            : (c) 2004 Pierpaolo Di Panfilo                    *
+ *                        (c) 2004 Mark Kretschmann <markey@web.de>        *
+ *                        (c) 2005-2006 Seb Ruiz <me@sebruiz.net>          *
+ *                        (c) 2005 Gábor Lehel <illissius@gmail.com>       *
+ * See COPYING file for licensing information                              *
+ ***************************************************************************/
 
 #ifndef PLAYLISTBROWSER_H
 #define PLAYLISTBROWSER_H

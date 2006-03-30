@@ -1,8 +1,10 @@
-// (c) 2004 Pierpaolo Di Panfilo
-// (c) 2004 Mark Kretschmann <markey@web.de>
-// (c) 2005-2006 Seb Ruiz <me@sebruiz.net>
-// (c) 2005 Christian Muehlhaeuser <chris@chris.de>
-// License: GPL V2. See COPYING file for information.
+/***************************************************************************
+ * copyright            : (c) 2004 Pierpaolo Di Panfilo                    *
+ *                        (c) 2004 Mark Kretschmann <markey@web.de>        *
+ *                        (c) 2005-2006 Seb Ruiz <me@sebruiz.net>          *
+ *                        (c) 2005 Christian Muehlhaeuser <chris@chris.de> *
+ * See COPYING file for licensing information                              *
+ ***************************************************************************/
 
 #include "amarok.h"
 #include "collectiondb.h"

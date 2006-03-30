@@ -884,10 +884,8 @@ StatisticsDetailedItem::paintCell( QPainter *p, const QColorGroup &cg, int colum
     if( showDetails ) 
     {
         const QColorGroup _cg = listView()->palette().disabled();
-        
         text_x = lv->treeStepSize() + 3;
         font.setItalic( true );
-        pBuf.setFont( font );
         pBuf.setPen( isSelected() ? _cg.highlightedText() : _cg.text().dark() );
         pBuf.drawText( text_x, textHeight, width, fm.lineSpacing(), AlignVCenter, m_subText );
     }
