@@ -5,6 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.4-beta3:
   FEATURES:
+    * Support for loading and saving XSPF playlists. Patch by Mattias
+      Fliesberg <mattias.fliesberg@gmail.com>. (BR 114360)
     * Ease navigation with track slider below playlist window by showing mood.
       (BR 121715)
     * Show context information for podcasts.
@@ -32,7 +34,7 @@ VERSION 1.4-beta3:
       on media device. (BR 123570)
     * Update playlist items when their location is changed during organizing
       files. (BR 123752)
-    * Recursively add tracks when directories are dropped to the media browser 
+    * Recursively add tracks when directories are dropped to the media browser
       and the collection browser. (BR 123982)
     * Visualizations now receive stereo data from amaroK. (BR 118765)
     * Upgraded internal SQLite library to version 3.3.4.

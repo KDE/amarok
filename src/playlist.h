@@ -116,6 +116,7 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void restoreSession();          // called during initialisation
         bool saveM3U( const QString&, bool relative = AmarokConfig::relativePlaylist() ) const;
         void saveXML( const QString& );
+        bool saveXSPF( const QString& );
         int  totalTrackCount() const;
         BundleList nextTracks() const;
 

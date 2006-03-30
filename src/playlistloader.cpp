@@ -5,6 +5,7 @@
 // .asx file support from Kaffeine, Copyright (C) 2004-2005 by Jürgen Kofler (GPL 2 or later)
 // .smil file support from Kaffeine 0.7
 // .pls parser (C) Copyright 2005 by Michael Buesch <mbuesch@freenet.de>
+// .xspf file support added by Mattias Fliesberg <mattias.fliesberg@gmail.com> Copyright (C) 2006
 // Copyright: See COPYING file that comes with this distribution
 //
 
@@ -486,6 +487,7 @@ PlaylistFile::PlaylistFile( const QString &path )
     case RAM: loadRealAudioRam( stream ); break;
     case ASX: loadASX( stream ); break;
     case SMIL: loadSMIL( stream ); break;
+	case XSPF: loadXSPF( stream ); break;
     default:
         m_error = i18n( "amaroK does not support this playlist format." );
         return;
@@ -654,6 +656,98 @@ PlaylistFile::loadPls( QTextStream &stream )
         }
         warning() << ".pls playlist: Unrecognized line: \"" << *i << "\"" << endl;
     }
+    return true;
+}
+
+bool
+PlaylistFile::loadXSPF( QTextStream &stream )
+{
+    MetaBundle b;
+    QDomDocument doc;
+    QString errorMsg;
+    int errorLine, errorColumn;
+    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    if (!doc.setContent(stream.read(), &errorMsg, &errorLine, &errorColumn)){
+        debug() << "[PLAYLISTLOADER]: Error loading xml file: " "(" << errorMsg << ")"
+                << " at line " << errorLine << ", column " << errorColumn << endl;
+        return false;
+    }
+
+    QDomElement root = doc.documentElement();
+
+    QString url;
+    QString title;
+    QString author;
+    QTime length;
+    QString comment;
+    QString album;
+    int tracknum;
+
+    QDomNode node = root.firstChild();
+    QDomNode subNode;
+    QDomNode subSubNode;
+
+    while ( !node.isNull() )
+    {
+        subNode = node.firstChild();
+        if ( node.nodeName().lower() == "tracklist" )
+        {
+            while ( !subNode.isNull() )
+            {
+                url = QString::null;
+                title = QString::null;
+                author = QString::null;
+                length = QTime();
+                comment = QString::null;
+                album = QString::null;
+                tracknum = 0;
+
+                subSubNode = subNode.firstChild();
+                if ( subNode.nodeName().lower() == "track" )
+                {
+                    while ( !subSubNode.isNull() )
+                    {
+                        if ( subSubNode.nodeName().lower() == "location" )
+                            url = subSubNode.firstChild().nodeValue();
+                        else if ( subSubNode.nodeName().lower() == "title" )
+                            title = subSubNode.firstChild().nodeValue();
+                        else if ( subSubNode.nodeName().lower() == "creator" )
+                            author = subSubNode.firstChild().nodeValue();
+                        else if ( subSubNode.nodeName().lower() == "duration" )
+                            length = PlaylistFile::stringToTime(subSubNode.firstChild().nodeValue());
+                        else if ( subSubNode.nodeName().lower() == "annotation" )
+                            comment = subSubNode.firstChild().nodeValue();
+                        else if ( subSubNode.nodeName().lower() == "album" )
+                            album = subSubNode.firstChild().nodeValue();
+                        else if ( subSubNode.nodeName().lower() == "tracknum" )
+                            tracknum = subSubNode.firstChild().nodeValue().toInt();
+
+                        subSubNode = subSubNode.nextSibling();
+                    }
+                }
+                if ( !url.isNull() )
+                {
+                    KURL tmp(url);
+
+                    if ( title.isNull() )
+                        title = tmp.fileName();
+
+                    b.setUrl( tmp );
+                    b.setTitle( title );
+                    b.setComment( comment );
+                    b.setAlbum( album );
+                    if ( tracknum > 0 )
+                        b.setTrack( tracknum );
+
+                    m_bundles += b;
+                    b = MetaBundle();
+                }
+                subNode = subNode.nextSibling();
+            }
+        }
+        node = node.nextSibling();
+    }
+
     return true;
 }
 

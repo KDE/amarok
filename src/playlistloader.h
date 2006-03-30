@@ -39,7 +39,7 @@ class PlaylistFile
 public:
     PlaylistFile( const QString &path );
 
-    enum Format { M3U, PLS, XML, RAM, SMIL, ASX, Unknown, NotPlaylist = Unknown };
+    enum Format { M3U, PLS, XML, RAM, SMIL, ASX, XSPF, Unknown, NotPlaylist = Unknown };
 
     /// the bundles from this playlist, they only contain
     /// the information that can be extracted from the playlists
@@ -65,6 +65,7 @@ protected:
     bool loadRealAudioRam( QTextStream& ); 
     bool loadASX( QTextStream& );
     bool loadSMIL( QTextStream& );
+    bool loadXSPF( QTextStream& );
     QString m_path;
     QString m_error;
     BundleList m_bundles;
@@ -81,6 +82,7 @@ PlaylistFile::format( const QString &fileName )
     if( ext == "smil") return SMIL;
     if( ext == "asx" || ext == "wax" ) return ASX;
     if( ext == "xml" ) return XML;
+    if( ext == "xspf" ) return XSPF;
 
     return Unknown;
 }
