@@ -437,8 +437,9 @@ void ContextBrowser::openURLRequest( const KURL &url )
 
 void ContextBrowser::collectionScanStarted()
 {
-    if( m_emptyDB && !AmarokConfig::collectionFolders().isEmpty() )
-       showScanning();
+    m_emptyDB = CollectionDB::instance()->isEmpty();
+    if( m_emptyDB )
+        showCurrentTrack();
 }
 
 
@@ -446,13 +447,13 @@ void ContextBrowser::collectionScanDone()
 {
     if ( CollectionDB::instance()->isEmpty() )
     {
-        showIntroduction();
         m_emptyDB = true;
+        showCurrentTrack();
     }
     else if ( m_emptyDB )
     {
-        PlaylistWindow::self()->showBrowser("CollectionBrowser");
         m_emptyDB = false;
+        PlaylistWindow::self()->showBrowser("CollectionBrowser");
     }
 }
 
@@ -462,16 +463,9 @@ void ContextBrowser::renderView()
     m_dirtyCurrentTrackPage = true;
     m_dirtyLyricsPage = true;
     m_dirtyWikiPage = true;
+    m_emptyDB = CollectionDB::instance()->isEmpty();
 
-    // TODO: Show CurrentTrack or Lyric tab if they were selected
-    if ( CollectionDB::instance()->isEmpty() )
-    {
-        showIntroduction();
-    }
-    else
-    {
-        showCurrentTrack();
-    }
+    showCurrentTrack();
 }
 
 
@@ -514,7 +508,7 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
     else if ( currentPage() == m_lyricsTab )
         showLyrics();
     else if ( CollectionDB::instance()->isEmpty() || !CollectionDB::instance()->isValid() )
-        showIntroduction();
+        showCurrentTrack();
 
 
     if (trackChanged && bundle.url().isLocalFile())
@@ -920,6 +914,18 @@ void ContextBrowser::showCurrentTrack() //SLOT
         blockSignals( true );
         showPage( m_contextTab );
         blockSignals( false );
+    }
+
+    // TODO: Show CurrentTrack or Lyric tab if they were selected
+    if ( m_emptyDB && CollectionDB::instance()->isValid() && !AmarokConfig::collectionFolders().isEmpty() )
+    {
+        showScanning();
+        return;
+    }
+    else if ( CollectionDB::instance()->isEmpty() || !CollectionDB::instance()->isValid() )
+    {
+        showIntroduction();
+        return;
     }
 
     if( !m_dirtyCurrentTrackPage )
