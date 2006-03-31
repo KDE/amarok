@@ -1230,7 +1230,8 @@ CurrentTrackJob::showHomeByAlbums()
     qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
     qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
     qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID );
-    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valID );
+    qb.setOptions( QueryBuilder::optNoCompilations ); // samplers __need__ to be handled differently
     qb.setLimit( 0, 5 );
     QStringList faveAlbums = qb.run();
 
