@@ -1003,7 +1003,7 @@ void CurrentTrackJob::showHome()
                 "</div>" )
             .args( QStringList()
                     << escapeHTMLAttr( KGlobal::iconLoader()->iconPath( "amarok", -KIcon::SizeEnormous ) )
-                    << i18n( "1 Song",   "%n Songs",   songCount.toInt() )
+                    << i18n( "1 Track",  "%n Tracks",  songCount.toInt() )
                     << i18n( "1 Artist", "%n Artists", artistCount.toInt() )
                     << i18n( "1 Album",  "%n Albums",  albumCount.toInt() )
                     << i18n( "1 Genre",  "%n Genres",  genreCount.toInt() ) ) );
@@ -1459,7 +1459,7 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
     if( pcb.imageURL().isValid() )
        image = CollectionDB::instance()->podcastImage( pcb.imageURL().url() );
     else
-       image = CollectionDB::instance()->notAvailCover(); 
+       image = CollectionDB::instance()->notAvailCover();
     image = ContextBrowser::makeShadowedImage( image );
     QString imageAttr = escapeHTMLAttr( i18n( "Click to go to podcast website: %1." ).arg( pcb.link().prettyURL() ) );
 
