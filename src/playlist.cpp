@@ -2351,7 +2351,7 @@ Playlist::contentsDropEvent( QDropEvent *e )
             // Deserialize pointer
             DynamicEntry* entry = (DynamicEntry*)data.toULongLong();
 
-            Playlist::instance()->loadDynamicMode( entry );
+            loadDynamicMode( entry );
         }
 
         else if( KURLDrag::canDecode( e ) )
