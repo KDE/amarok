@@ -381,7 +381,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
         {
             QString name = i18n("%1. %2 - %3").arg( QString::number(c), fave[i], fave[i+1] );
-            QString subtext = i18n("Score: %1  Rating: %2").arg( fave[i+3], fave[i+4] );
+            QString subtext = i18n("Score: %1  Rating: %2").arg( fave[i+3].toInt(), fave[i+4].toInt()  );
             m_last = new StatisticsDetailedItem( name, subtext, item, m_last );
             m_last->setItemType( StatisticsDetailedItem::TRACK );
             m_last->setUrl( fave[i+2] );
@@ -412,7 +412,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
         {
             QString name = i18n("%1. %2 - %3").arg( QString::number(c), fave[i], fave[i+1] );
-            QString subtext = i18n("Score: %1  Rating: %2").arg( fave[i+3], fave[i+4] );
+            QString subtext = i18n("Score: %1  Rating: %2").arg( QString::number(fave[i+3].toInt()), fave[i+4].toInt() );
             m_last = new StatisticsDetailedItem( name, subtext, item, m_last );
             m_last->setItemType( StatisticsDetailedItem::TRACK );
             m_last->setUrl( fave[i+2] );
@@ -442,7 +442,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
         {
             QString name = i18n("%1. %2").arg( QString::number(c), fave[i] );
-            QString subtext = i18n("Score: %1  Rating: %2").arg( fave[i+1], fave[i+2] );
+            QString subtext = i18n("Score: %1  Rating: %2").arg( fave[i+1].toInt(), fave[i+2].toInt()  );
             m_last = new StatisticsDetailedItem( name, subtext, item, m_last );
             m_last->setItemType( StatisticsDetailedItem::ARTIST );
             QString url = QString("%1").arg( fave[i] );
@@ -482,7 +482,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         {
             const bool isSampler = (fave[i+6] == trueValue);
             QString name = i18n("%1. %2 - %3").arg( QString::number(c), fave[i], isSampler ? i18n( "Various Artists" ) : fave[i+1] );
-            QString subtext = i18n("Score: %1  Rating: %2").arg( fave[i+4], fave[i+5] );
+            QString subtext = i18n("Score: %1  Rating: %2").arg( fave[i+4].toInt(), fave[i+5].toInt() );
             m_last = new StatisticsDetailedItem( name, subtext, item, m_last );
             m_last->setItemType( StatisticsDetailedItem::ALBUM );
             QString url = QString("%1 @@@ %2").arg( isSampler ? "0" : fave[i+2], fave[i+3] );
@@ -513,7 +513,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
         {
             QString name = i18n("%1. %2").arg( QString::number(c), fave[i] );
-            QString subtext =  i18n("Score: %1  Rating: %2").arg( fave[i+1], fave[i+2] );
+            QString subtext =  i18n("Score: %1  Rating: %2").arg( fave[i+1].toInt(), fave[i+2].toInt() );
             m_last = new StatisticsDetailedItem( name, subtext, item, m_last );
             m_last->setItemType( StatisticsDetailedItem::GENRE );
             QString url = QString("%1").arg( fave[i] );
