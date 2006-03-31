@@ -46,24 +46,6 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
         static QColor glowText;
         static QColor glowBase;
 
-    public: //reimplemented to update()
-    virtual void setTitle( const QString &title );
-    virtual void setArtist( const AtomicString &artist );
-    virtual void setComposer( const AtomicString &composer );
-    virtual void setAlbum( const AtomicString &album );
-    virtual void setComment( const AtomicString &comment );
-    virtual void setGenre( const AtomicString &genre );
-    virtual void setYear( int year );
-    virtual void setDiscNumber( int discNumber );
-    virtual void setTrack( int track );
-    virtual void setLength( int length );
-    virtual void setBitrate( int bitrate );
-    virtual void setFilesize( int bitrate );
-    virtual void setRating( int rating );
-    virtual void setScore( int score );
-    virtual void setPlayCount( int playcount );
-    virtual void setLastPlay( uint lastplay );
-
     public:
         PlaylistItem( QListView*, QListViewItem* ); //used by PlaylistLoader
         PlaylistItem( const MetaBundle&, QListViewItem* );
@@ -119,6 +101,10 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
 
         PlaylistItem *nextInAlbum() const;
         PlaylistItem *prevInAlbum() const;
+
+    protected:
+        virtual void aboutToChange( const QValueList<int> &columns );
+        virtual void reactToChanges( const QValueList<int> &columns );
 
     private:
         friend class Playlist;
@@ -190,118 +176,5 @@ class PLItemList: public QPtrList<PlaylistItem>
 
 
 inline void PlaylistItem::setText( int column, const QString &text ) { setExactText( column, text ); }
-
-
-inline void PlaylistItem::setTitle( const QString &title )
-{
-    super::setTitle( title );
-    update();
-}
-
-inline void PlaylistItem::setArtist( const AtomicString &artist )
-{
-    decrementTotals();
-    derefAlbum();
-    super::setArtist( artist );
-    refAlbum();
-    incrementTotals();
-    update();
-}
-
-inline void PlaylistItem::setComposer( const AtomicString &composer )
-{
-    super::setComposer( composer );
-    update();
-}
-
-inline void PlaylistItem::setAlbum( const AtomicString &album )
-{
-    decrementTotals();
-    derefAlbum();
-    super::setAlbum( album );
-    refAlbum();
-    incrementTotals();
-    update();
-}
-
-inline void PlaylistItem::setComment( const AtomicString &comment )
-{
-    super::setComment( comment );
-    update();
-}
-
-inline void PlaylistItem::setGenre( const AtomicString &genre )
-{
-    super::setGenre( genre );
-    update();
-}
-
-inline void PlaylistItem::setYear( int year )
-{
-    super::setYear( year );
-    update();
-}
-
-inline void PlaylistItem::setDiscNumber( int discNumber )
-{
-    super::setDiscNumber( discNumber );
-    update();
-}
-
-inline void PlaylistItem::setTrack( int track )
-{
-    decrementTotals();
-    super::setTrack( track );
-    incrementTotals();
-    update();
-}
-
-inline void PlaylistItem::setLength( int length )
-{
-    super::setLength( length );
-    update();
-}
-
-inline void PlaylistItem::setBitrate( int bitrate )
-{
-    super::setBitrate( bitrate );
-    update();
-}
-
-inline void PlaylistItem::setFilesize( int bytes )
-{
-    super::setFilesize( bytes );
-    update();
-}
-
-inline void PlaylistItem::setRating( int rating )
-{
-    decrementTotals();
-    super::setRating( rating );
-    incrementTotals();
-    updateColumn( Rating );
-}
-
-inline void PlaylistItem::setScore( int score )
-{
-    decrementTotals();
-    super::setScore( score );
-    incrementTotals();
-    update();
-}
-
-inline void PlaylistItem::setPlayCount( int playcount )
-{
-    super::setPlayCount( playcount );
-    update();
-}
-
-inline void PlaylistItem::setLastPlay( uint lastplay )
-{
-    decrementTotals();
-    super::setLastPlay( lastplay );
-    incrementTotals();
-    update();
-}
 
 #endif

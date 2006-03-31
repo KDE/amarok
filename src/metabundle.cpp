@@ -1181,3 +1181,71 @@ bool MetaBundle::save( QTextStream &stream, const QStringList &attributes, int i
     item.save( stream, indent );
     return true;
 }
+
+void MetaBundle::setUrl( const KURL &url )
+{
+    QValueList<int> changes;
+    for( int i = 0; i < NUM_COLUMNS; ++i ) changes << i;
+    aboutToChange( changes ); m_url = url; reactToChanges( changes );
+}
+
+void MetaBundle::setPath( const QString &path )
+{
+    QValueList<int> changes;
+    for( int i = 0; i < NUM_COLUMNS; ++i ) changes << i;
+    aboutToChange( changes ); m_url.setPath( path ); reactToChanges( changes );
+}
+
+void MetaBundle::setTitle( const QString &title )
+{ aboutToChange( Title ); m_title = title; reactToChange( Title ); }
+
+void MetaBundle::setArtist( const AtomicString &artist )
+{ aboutToChange( Artist ); m_artist = artist; reactToChange( Artist ); }
+
+void MetaBundle::setAlbum( const AtomicString &album )
+{ aboutToChange( Album ); m_album = album; reactToChange( Album ); }
+
+void MetaBundle::setComment( const AtomicString &comment )
+{ aboutToChange( Comment ); m_comment = comment; reactToChange( Comment ); }
+
+void MetaBundle::setGenre( const AtomicString &genre )
+{ aboutToChange( Genre ); m_genre = genre; reactToChange( Genre ); }
+
+void MetaBundle::setYear( int year)
+{ aboutToChange( Year ); m_year = year; reactToChange( Year ); }
+
+void MetaBundle::setTrack( int track )
+{ aboutToChange( Track ); m_track = track; reactToChange( Track ); }
+
+void MetaBundle::setLength( int length )
+{ aboutToChange( Length ); m_length = length; reactToChange( Length ); }
+
+void MetaBundle::setBitrate( int bitrate )
+{ aboutToChange( Bitrate ); m_bitrate = bitrate; reactToChange( Bitrate ); }
+
+void MetaBundle::setSampleRate( int sampleRate )
+{ aboutToChange( SampleRate ); m_sampleRate = sampleRate; reactToChange( SampleRate ); }
+
+void MetaBundle::setDiscNumber( int discnumber )
+{ aboutToChange( DiscNumber ); m_discNumber = discnumber; reactToChange( DiscNumber ); }
+
+void MetaBundle::setComposer( const AtomicString &composer )
+{ aboutToChange( Composer ); m_composer = composer; reactToChange( Composer ); }
+
+void MetaBundle::setPlayCount( int playcount )
+{ aboutToChange( PlayCount ); m_playCount = playcount; reactToChange( PlayCount ); }
+
+void MetaBundle::setLastPlay( uint lastplay )
+{ aboutToChange( LastPlayed ); m_lastPlay = lastplay; reactToChange( LastPlayed ); }
+
+void MetaBundle::setRating( int rating )
+{ aboutToChange( Rating ); m_rating = rating; reactToChange( Rating ); }
+
+void MetaBundle::setScore( int score )
+{ aboutToChange( Score ); m_score = score; reactToChange( Score ); }
+
+void MetaBundle::setFilesize( int bytes )
+{ aboutToChange( Filesize ); m_filesize = bytes; reactToChange( Filesize ); }
+
+void MetaBundle::setFileType( int type ) { m_type = type; }
+

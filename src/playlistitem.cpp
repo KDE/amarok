@@ -213,6 +213,37 @@ QString PlaylistItem::text( int column ) const
     }
 }
 
+void PlaylistItem::aboutToChange( const QValueList<int> &columns )
+{
+    bool totals = false, ref = false;
+    for( int i = 0, n = columns.count(); i < n; ++i )
+        switch( columns[i] )
+        {
+            case Artist: case Album: ref = true; //note, no breaks
+            case Track: case Rating: case Score: case LastPlayed: totals = true;
+        }
+    if( totals )
+        decrementTotals();
+    if( ref )
+        derefAlbum();
+}
+
+void PlaylistItem::reactToChanges( const QValueList<int> &columns )
+{
+    bool totals = false, ref = false;
+    for( int i = 0, n = columns.count(); i < n; ++i )
+        switch( columns[i] )
+        {
+            case Artist: case Album: ref = true; //note, no breaks
+            case Track: case Rating: case Score: case LastPlayed: totals = true;
+            default: updateColumn( columns[i] );
+        }
+    if( ref )
+        refAlbum();
+    if( totals )
+        incrementTotals();
+}
+
 void PlaylistItem::filter( const QString &expression )
 {
     setVisible( matchesExpression( expression, listView()->visibleColumns() ) );

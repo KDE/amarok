@@ -246,29 +246,29 @@ public: //accessors
     QString prettyRating() const;
 
 public: //modifiers
-    virtual void setUrl( const KURL &url );
-    virtual void setPath( const QString &path );
-    virtual void setTitle( const QString &title );
-    virtual void setArtist( const AtomicString &artist );
-    virtual void setComposer( const AtomicString &composer );
-    virtual void setAlbum( const AtomicString &album );
-    virtual void setGenre( const AtomicString &genre );
-    virtual void setComment( const AtomicString &comment );
-    virtual void setPodcastBundle( const PodcastEpisodeBundle &peb );
+    void setUrl( const KURL &url );
+    void setPath( const QString &path );
+    void setTitle( const QString &title );
+    void setArtist( const AtomicString &artist );
+    void setComposer( const AtomicString &composer );
+    void setAlbum( const AtomicString &album );
+    void setGenre( const AtomicString &genre );
+    void setComment( const AtomicString &comment );
+    void setPodcastBundle( const PodcastEpisodeBundle &peb );
 
-    virtual void setYear( int year );
-    virtual void setDiscNumber( int discNumber );
-    virtual void setTrack( int track );
-    virtual void setLength( int length );
-    virtual void setBitrate( int bitrate );
-    virtual void setSampleRate( int sampleRate );
-    virtual void setScore( int score );
-    virtual void setRating( int rating );
-    virtual void setPlayCount( int playcount );
-    virtual void setLastPlay( uint lastplay );
-    virtual void setFilesize( int bytes );
-    virtual void setFileType( int type );
-    virtual void updateFilesize();
+    void setYear( int year );
+    void setDiscNumber( int discNumber );
+    void setTrack( int track );
+    void setLength( int length );
+    void setBitrate( int bitrate );
+    void setSampleRate( int sampleRate );
+    void setScore( int score );
+    void setRating( int rating );
+    void setPlayCount( int playcount );
+    void setLastPlay( uint lastplay );
+    void setFilesize( int bytes );
+    void setFileType( int type );
+    void updateFilesize();
 
 public: //static helper functions
     static QString prettyBitrate( int );
@@ -283,6 +283,18 @@ public: //static helper functions
 
 protected:
     enum ExtendedTags { composerTag,  discNumberTag };
+
+    /** Called before the tags in \p columns are changed. */
+    virtual void aboutToChange( const QValueList<int> &columns );
+
+    /** Convenience method. */
+    void aboutToChange( int column );
+
+    /** Called after the tags in \p columns are changed. */
+    virtual void reactToChanges( const QValueList<int> &columns );
+
+    /** Convenience method. */
+    void reactToChange( int column );
 
     KURL m_url;
 //     AtomicURL m_url;
@@ -349,6 +361,11 @@ inline bool MetaBundle::audioPropertiesUndetermined() const
     return m_bitrate == Undetermined || m_sampleRate == Undetermined || m_length == Undetermined;
 }
 
+inline void MetaBundle::aboutToChange( const QValueList<int>& ) { }
+inline void MetaBundle::aboutToChange( int column ) { aboutToChange( QValueList<int>() << column ); }
+inline void MetaBundle::reactToChanges( const QValueList<int>& ) { }
+inline void MetaBundle::reactToChange( int column ) { reactToChanges( QValueList<int>() << column ); }
+
 inline bool MetaBundle::exists() const { return m_exists; }
 
 inline bool MetaBundle::isStream() const { return url().protocol() == "http"; }
@@ -401,29 +418,6 @@ inline QString MetaBundle::prettySampleRate( bool shortened ) const
     }
 
 inline QString MetaBundle::zeroPad( uint i ) { return ( i < 10 ) ? QString( "0%1" ).arg( i ) : QString::number( i ); }
-
-inline void MetaBundle::setUrl( const KURL &url ) { m_url = url; }
-inline void MetaBundle::setPath( const QString &path ) { m_url.setPath( path ); }
-inline void MetaBundle::setTitle( const QString &title ) { m_title = title; }
-inline void MetaBundle::setArtist( const AtomicString &artist ) { m_artist = artist; }
-inline void MetaBundle::setAlbum( const AtomicString &album ) { m_album = album; }
-inline void MetaBundle::setComment( const AtomicString &comment ) { m_comment = comment; }
-inline void MetaBundle::setGenre( const AtomicString &genre ) { m_genre = genre; }
-inline void MetaBundle::setYear( int year) { m_year = year; }
-inline void MetaBundle::setTrack( int track ) { m_track = track; }
-inline void MetaBundle::setLength( int length ) { m_length = length; }
-inline void MetaBundle::setBitrate( int bitrate ) { m_bitrate = bitrate; }
-inline void MetaBundle::setSampleRate( int sampleRate ) { m_sampleRate = sampleRate; }
-
-inline void MetaBundle::setDiscNumber( int discnumber ) { m_discNumber = discnumber; }
-inline void MetaBundle::setComposer( const AtomicString &composer ) { m_composer = composer; }
-
-inline void MetaBundle::setPlayCount( int playcount ) { m_playCount = playcount; }
-inline void MetaBundle::setLastPlay( uint lastplay ) { m_lastPlay = lastplay; }
-inline void MetaBundle::setRating( int rating ) { m_rating = rating; }
-inline void MetaBundle::setScore( int score ) { m_score = score; }
-inline void MetaBundle::setFilesize( int bytes ) { m_filesize = bytes; }
-inline void MetaBundle::setFileType( int type ) { m_type = type; }
 
 inline bool MetaBundle::hasExtendedMetaInformation() const
 {
