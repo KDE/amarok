@@ -63,6 +63,7 @@
 #include <kcursor.h>         //setOverrideCursor()
 #include <kdialogbase.h>
 #include <kglobalsettings.h> //rename()
+#include <kiconeffect.h>
 #include <kiconloader.h>     //slotShowContextMenu()
 #include <kio/job.h>         //deleteSelectedFiles()
 #include <klineedit.h>       //setCurrentTrack()
@@ -221,6 +222,13 @@ Playlist::Playlist( QWidget *parent )
         , m_columnFraction( PlaylistItem::NUM_COLUMNS, 0 )
 {
     s_instance = this;
+
+    const int h = fontMetrics().height() + itemMargin() * 2 - 4 + ( ( fontMetrics().height() % 2 ) ? 1 : 0 );
+    QImage img = QImage( locate( "data", "amarok/images/star.png" ) ).smoothScale( h, h, QImage::ScaleMin );
+    PlaylistItem::s_star = new QPixmap( img );
+    PlaylistItem::s_grayedStar = new QPixmap;
+    KIconEffect::toGray( img, 1.0 );
+    PlaylistItem::s_grayedStar->convertFromImage( img );
 
     EngineController* const ec = EngineController::instance();
     connect( ec, SIGNAL(orderPrevious()), SLOT(playPrevTrack()) );

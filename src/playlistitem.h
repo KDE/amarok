@@ -84,8 +84,8 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
         void checkMood();
         bool readMood();
 
-        enum { DrawNormal, DrawGrayed };
-        static QPixmap *star( int type = DrawNormal );
+        static QPixmap *star();
+        static QPixmap *grayedStar();
         static int ratingAtPoint( int x );
 
         /// like QWidget::update()
@@ -162,6 +162,8 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
 
         static bool s_pixmapChanged;
         static const QString &editingText();
+        static QPixmap *s_star;
+        static QPixmap *s_grayedStar;
 };
 
 class PLItemList: public QPtrList<PlaylistItem>
@@ -176,5 +178,7 @@ class PLItemList: public QPtrList<PlaylistItem>
 
 
 inline void PlaylistItem::setText( int column, const QString &text ) { setExactText( column, text ); }
+inline QPixmap *PlaylistItem::star() { return s_star; }
+inline QPixmap *PlaylistItem::grayedStar() { return s_grayedStar; }
 
 #endif

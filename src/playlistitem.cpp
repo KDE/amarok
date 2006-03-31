@@ -42,7 +42,6 @@
 #include <kdeversion.h>
 #include <kfilemetainfo.h>
 #include <kglobal.h>
-#include <kiconloader.h>
 #include <kiconeffect.h>
 #include <kstandarddirs.h>
 #include <kstringhandler.h>
@@ -378,28 +377,6 @@ bool PlaylistItem::isEditing( int column ) const
         case LastPlayed: return m_lastPlay   ==  1;
         default: return false;
     }
-}
-
-QPixmap *PlaylistItem::star( int type ) //static
-{
-    Playlist* const pl = Playlist::instance();
-
-    static const int h = pl->fontMetrics().height() + pl->itemMargin() * 2 - 4
-                         + ( ( pl->fontMetrics().height() % 2 ) ? 1 : 0 );
-    static QImage img = QImage( locate( "data", "amarok/images/star.png" ) ).smoothScale( h, h, QImage::ScaleMin );
-    static QPixmap normal( img );
-    static QPixmap grayed;
-    static bool asdf = true;
-    if( asdf )
-    {
-        KIconEffect::toGray( img, 1.0 );
-        grayed.convertFromImage( img );
-        asdf = false;
-    }
-
-    if( type == DrawGrayed )
-        return &grayed;
-    return &normal;
 }
 
 int PlaylistItem::ratingAtPoint( int x ) //static
@@ -938,7 +915,7 @@ void PlaylistItem::drawRating( QPainter *p )
     if( this == listView()->m_hoveredRating || ( isSelected() && listView()->m_selCount > 1 &&
         listView()->m_hoveredRating && listView()->m_hoveredRating->isSelected() ) )
     {
-        pix = star( DrawGrayed );
+        pix = grayedStar();
         const int pos = listView()->viewportToContents( listView()->viewport()->mapFromGlobal( QCursor::pos() ) ).x();
         for( int n = ratingAtPoint( pos ); i <= n; ++i )
         {
@@ -1086,4 +1063,5 @@ int PlaylistItem::totalIncrementAmount() const
     }
 }
 
-
+QPixmap *PlaylistItem::s_star = 0;
+QPixmap *PlaylistItem::s_grayedStar = 0;
