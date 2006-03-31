@@ -1,6 +1,3 @@
-nmmicondir = $(kde_datadir)/amarok/icons
-nmmicon_ICON = AUTO
-
 imagesdir = $(kde_datadir)/amarok/images
 images_DATA = \
     nmm-gradient-left.png \
@@ -46,3 +43,5 @@ kde_services_DATA = \
     amarok_nmmengine_plugin.desktop
 
 kde_kcfg_DATA = nmm_kdeconfig.kcfg
+
+SUBDIRS = icons
