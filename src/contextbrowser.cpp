@@ -2410,7 +2410,7 @@ bool CurrentTrackJob::doJob()
             showSuggestedSongs( relArtists );
     }
 
-    QString artistName = artist.isEmpty() ? escapeHTML( i18n( "This Artist" ) ) : escapeHTML( artist );
+    QString artistName = artist.isEmpty() ? i18n( "This Artist" ) : artist ;
     if ( !artist.isEmpty() ) {
     if( ContextBrowser::instance()->m_showFaves )
         showArtistsFaves( artistName, artist_id );
