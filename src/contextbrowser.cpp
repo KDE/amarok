@@ -1023,7 +1023,7 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
     // is a 'toggleable' block.
     // Parameter stID is used to diff�entiate same albums in different album list. So if this function
     // is called multiple time in the same HTML code, stID must be different.
-    for ( uint i = 0; i < reqResult.count(); i += 3 )
+    for ( uint i = 0; i < reqResult.count(); i += 4 )
     {
         QueryBuilder qb;
         qb.clear();
@@ -1035,8 +1035,9 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valID );
         qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, reqResult[i+1] );
+        qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, reqResult[i+3] );
         qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
-        //qb.setOptions( QueryBuilder::optNoCompilations );
+        qb.setOptions( QueryBuilder::optNoCompilations ); // samplers __need__ to be handled differently
         QStringList albumValues = qb.run();
 
         QString albumYear;
@@ -1062,7 +1063,7 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
 
         QString albumName = escapeHTML( reqResult[ i ].isEmpty() ? i18n( "Unknown album" ) : reqResult[ i ] );
 
-        if (CollectionDB::instance()->albumIsCompilation(reqResult[ i + 1 ]))
+        if ( CollectionDB::instance()->albumIsCompilation( reqResult[ i + 1 ] ) )
         {
             QString albumImage = CollectionDB::instance()->albumImage( albumValues[5], reqResult[ i ], 50 );
             if ( albumImage != CollectionDB::instance()->notAvailCover( 50 ) )
@@ -1186,17 +1187,20 @@ CurrentTrackJob::showHomeByAlbums()
     qb.clear();
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
-    qb.addReturnFunctionValue(QueryBuilder::funcMax, QueryBuilder::tabSong, QueryBuilder::valCreateDate);
+    qb.addReturnFunctionValue( QueryBuilder::funcMax, QueryBuilder::tabSong, QueryBuilder::valCreateDate );
+    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valID );
     qb.sortByFunction( QueryBuilder::funcMax, QueryBuilder::tabSong, QueryBuilder::valCreateDate, true );
     qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
-    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID);
-    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName);
+    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID );
+    qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valID );
+    qb.setOptions( QueryBuilder::optNoCompilations ); // samplers __need__ to be handled differently
     qb.setLimit( 0, 5 );
     QStringList recentAlbums = qb.run();
 
     foreach( recentAlbums )
     {
         albums += *it;
+        it++;
         it++;
         it++;
     }
@@ -1221,17 +1225,19 @@ CurrentTrackJob::showHomeByAlbums()
     qb.clear();
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
-    qb.addReturnFunctionValue(QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage);
+    qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage );
+    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valID );
     qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
     qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
-    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID);
-    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName);
+    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID );
+    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.setLimit( 0, 5 );
     QStringList faveAlbums = qb.run();
 
     foreach( faveAlbums )
     {
         albums += *it;
+        it++;
         it++;
         it++;
     }
