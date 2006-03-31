@@ -1180,8 +1180,119 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
 QStringList
 CurrentTrackJob::showHomeByAlbums()
 {
-    QStringList albums;
     QueryBuilder qb;
+
+    // <Fresh Podcasts Information>
+    qb.clear();
+    qb.addReturnValue( QueryBuilder::tabPodcastEpisodes, QueryBuilder::valParent );
+    qb.addMatch( QueryBuilder::tabPodcastEpisodes, QueryBuilder::valIsNew, CollectionDB::instance()->boolT() );
+    qb.sortBy( QueryBuilder::tabPodcastEpisodes, QueryBuilder::valID, true );
+    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    qb.setLimit( 0, 5 );
+    QStringList channels = qb.run();
+
+    if( channels.count() > 0 )
+    {
+        m_HTMLSource.append(
+                "<div id='least_box' class='box'>"
+                "<div id='least_box-header' class='box-header'>"
+                "<span id='least_box-header-title' class='box-header-title'>"
+                + i18n( "Fresh Podcast Episodes" ) +
+                "</span>"
+                "</div>"
+                "<div id='least_box-body' class='box-body'>" );
+
+        uint i = 0;
+        for( QStringList::iterator it = channels.begin();
+                it != channels.end();
+                it++ )
+        {
+            PodcastChannelBundle pcb;
+            if( !CollectionDB::instance()->getPodcastChannelBundle( *it, &pcb ) )
+                continue;
+
+            QValueList<PodcastEpisodeBundle> episodes = CollectionDB::instance()->getPodcastEpisodes( *it );
+            while( !episodes.isEmpty() )
+            {
+                PodcastEpisodeBundle &ep = episodes.back();
+                if( !ep.isNew() )
+                {
+                    episodes.pop_back();
+                    continue;
+                }
+
+                QString date;
+                time_t t = 0;
+                if( !ep.date().isEmpty() )
+                    t = KRFCDate::parseDate( ep.date() );
+                if( t )
+                {
+                    QDateTime d;
+                    d.setTime_t( t );
+                    date = d.toString( Qt::LocalDate );
+                }
+                else
+                {
+                    date = ep.date();
+                }
+
+                QString image = CollectionDB::instance()->podcastImage( pcb.imageURL().url(), 50 );
+                if( image != CollectionDB::instance()->notAvailCover( 50 ) )
+                    image = ContextBrowser::makeShadowedImage( image );
+                QString imageAttr = escapeHTMLAttr( i18n( "Click to go to podcast website: %1." ).arg( pcb.link().prettyURL() ) );
+
+                m_HTMLSource.append( QStringx (
+                            "<tr class='" + QString( (i % 2) ? "box-row-alt" : "box-row" ) + "'>"
+                            "<td>"
+                            "<div class='album-header' onClick=\"toggleBlock('IDP%1')\">"
+                            "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
+                            "<tr>"
+                            "<td width='1'>"
+                            "<a href='%2'>"
+                            "<img class='album-image' align='left' vspace='2' hspace='2' title='%3' src='%4' />"
+                            "</a>"
+                            "</td>"
+                            "<td valign='middle' align='left'>"
+                            "<span class='album-info'>%5</span> "
+                            "<a href='%6'><span class='album-title'>%7</span></a>"
+                            "<br />"
+                            "<span class='album-year'>%8</span>"
+                            "</td>"
+                            "</tr>"
+                            "</table>"
+                            "</div>"
+                            "<div class='album-body' style='display:%9;' id='IDP%10'>" )
+                        .args( QStringList()
+                            << QString::number( i )
+                            << pcb.link().url().replace( QRegExp( "^http:" ), "externalurl:" )
+                            << escapeHTMLAttr( imageAttr )
+                            << escapeHTMLAttr( image )
+                            << escapeHTML( ep.duration() ? MetaBundle::prettyTime( ep.duration() ) : QString( "" ) )
+                            << ( ep.localUrl().isValid()
+                                ? ep.localUrl().url()
+                                : ep.url().url().replace( QRegExp( "^http:" ), "stream:" ) )
+                            << escapeHTML( pcb.title() + ": " + ep.title() )
+                            << escapeHTML( date )
+                            << "none"
+                            << QString::number( i )
+                            )
+                        );
+
+                m_HTMLSource.append( QStringx ( "<p>%1</p>" ).arg( ep.description() ) );
+
+                m_HTMLSource.append(
+                        "</div>"
+                        "</td>"
+                        "</tr>" );
+                i++;
+                break;
+            }
+        }
+        m_HTMLSource.append(
+                "</div>"
+                "</div>");
+    }
+    // </Fresh Podcasts Information>
 
     // <Newest Albums Information>
     qb.clear();
@@ -1197,6 +1308,7 @@ CurrentTrackJob::showHomeByAlbums()
     qb.setLimit( 0, 5 );
     QStringList recentAlbums = qb.run();
 
+    QStringList albums;
     foreach( recentAlbums )
     {
         albums += *it;
@@ -1375,7 +1487,7 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
             .args( QStringList()
                 << escapeHTML( pcb.title() )
                 << escapeHTML( peb.title() )
-                << escapeHTMLAttr( pcb.link().url().replace( QRegExp( "^http:" ), "externalurl:" ) )
+                << pcb.link().url().replace( QRegExp( "^http:" ), "externalurl:" )
                 << image
                 << imageAttr
                 << escapeHTML( peb.author().isEmpty()
@@ -1455,7 +1567,7 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
                 .args( QStringList()
                     << QString::number( i )
                     << escapeHTML( ep.duration() ? MetaBundle::prettyTime( ep.duration() ) : QString( "" ) )
-                    << escapeHTMLAttr( ep.localUrl().isValid()
+                    << ( ep.localUrl().isValid()
                         ? ep.localUrl().url()
                         : ep.url().url().replace( QRegExp( "^http:" ), "stream:" ) )
                     << escapeHTML( ep.title() )
