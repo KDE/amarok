@@ -163,9 +163,9 @@ PlaylistCategory::PlaylistCategory( PlaylistCategory *parent, QListViewItem *aft
 void PlaylistCategory::okRename( int col )
 {
     QListViewItem::okRename( col );
-    
+
     if( m_id < 0 )  return;
-    
+
     // update the database entry to have the correct name
     const int parentId = parent() ? static_cast<PlaylistCategory*>(parent())->id() : 0;
     CollectionDB::instance()->updatePodcastFolder( m_id, text(0), parentId, isOpen() );
@@ -970,7 +970,7 @@ DynamicEntry::DynamicEntry( QListViewItem *parent, QListViewItem *after, const Q
         , DynamicMode( name )
 {
     setPixmap( 0, SmallIcon("dynamic") );
-    setDragEnabled( false );
+    setDragEnabled( true );
 }
 
 DynamicEntry::DynamicEntry( QListViewItem *parent, QListViewItem *after, const QDomElement &xmlDefinition )
@@ -978,7 +978,7 @@ DynamicEntry::DynamicEntry( QListViewItem *parent, QListViewItem *after, const Q
         , DynamicMode( xmlDefinition.attribute( "name" ) )
 {
     setPixmap( 0, SmallIcon( "dynamic" ) );
-    setDragEnabled( false );
+    setDragEnabled( true );
 
     QDomElement e;
 
@@ -1161,7 +1161,7 @@ PodcastChannel::configure()
     if( dialog->configure() )
     {
         PodcastSettings *newSettings = dialog->getSettings();
-        
+
         bool downloadMedia = ( (fetchType() != newSettings->fetchType()) && (newSettings->fetchType() == AUTOMATIC) );
 
         if( !hasPurge() && newSettings->hasPurge() )
@@ -1208,7 +1208,7 @@ PodcastChannel::configure()
 
         if( downloadMedia )
             downloadChildren();
-        
+
         m_bundle.setSettings( newSettings );
         CollectionDB::instance()->updatePodcastChannel( m_bundle );
     }
@@ -1418,7 +1418,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
     int  children = 0;
     bool downloadMedia = ( fetchType() == AUTOMATIC );
     QDomNode node;
-    
+
     // We use an auto-increment id in the database, so we must insert podcasts in the reverse order
     // to ensure we can pull them out reliably.
     QValueList<QDomElement> eList;
@@ -1429,7 +1429,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
         {
             if( episodeExists( n, feedType ) )
                 break;
-                
+
             if( !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
             {
                 eList.prepend( n.toElement() );
@@ -1447,7 +1447,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
                     }
                 }
             }
-            
+
         }
         else // Freshly added podcast
         {
@@ -1475,7 +1475,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
             }
         }
     }
-    
+
     foreachType( QValueList<QDomElement>, eList )
     {
         PodcastEpisode *ep = new PodcastEpisode( this, 0 /*adding in reverse!*/, *it, feedType, m_updating/*new*/ );
@@ -1512,7 +1512,7 @@ PodcastChannel::episodeExists( const QDomNode &xml, const int feedType )
             QStringList values = CollectionDB::instance()->query( command );
             return !values.isEmpty();
         }
-        
+
         QString episodeTitle = xml.namedItem( "title" ).toElement().text();
         QString episodeURL   = xml.namedItem( "enclosure" ).toElement().attribute( "url" );
         command = QString("SELECT id FROM podcastepisodes WHERE parent='%1' AND url='%2' AND title='%3';")
@@ -1520,7 +1520,7 @@ PodcastChannel::episodeExists( const QDomNode &xml, const int feedType )
                           .arg( CollectionDB::instance()->escapeString( episodeURL ) )
                           .arg( CollectionDB::instance()->escapeString( episodeTitle ) );
         QStringList values = CollectionDB::instance()->query( command );
-        
+
         return !values.isEmpty();
     }
 
@@ -1536,7 +1536,7 @@ PodcastChannel::episodeExists( const QDomNode &xml, const int feedType )
             QStringList values = CollectionDB::instance()->query( command );
             return !values.isEmpty();
         }
-        
+
         QString episodeTitle = xml.namedItem("title").toElement().text();
         QString episodeURL = QString::null;
         QDomNode n = xml.namedItem("link");
@@ -1554,10 +1554,10 @@ PodcastChannel::episodeExists( const QDomNode &xml, const int feedType )
                           .arg( CollectionDB::instance()->escapeString( episodeURL ) )
                           .arg( CollectionDB::instance()->escapeString( episodeTitle ) );
         QStringList values = CollectionDB::instance()->query( command );
-        
+
         return !values.isEmpty();
     }
-    
+
     return false;
 }
 
@@ -1570,7 +1570,7 @@ PodcastChannel::setParent( PlaylistCategory *newParent )
 
     m_parent = newParent;
     m_bundle.setParentId( m_parent->id() );
-            
+
     CollectionDB::instance()->updatePodcastChannel( m_bundle );
 }
 
@@ -1611,23 +1611,23 @@ PodcastChannel::purge()
     for( int i=0; i < childCount(); i++ )
     {
         removeMe = removeNext;
-        
+
         if( !removeMe )
             break;
-            
+
         removeNext = removeMe->nextSibling();
-        if( i <= purgeCount() ) 
+        if( i <= purgeCount() )
             continue;
-        
+
     #define removeMe static_cast<PodcastEpisode*>(removeMe)
         if( removeMe->isOnDisk() )
             urlsToDelete.append( removeMe->localUrl() );
-            
+
         CollectionDB::instance()->removePodcastEpisode( removeMe->dBId() );
     #undef  removeMe
         delete removeMe;
     }
-    
+
     if( !urlsToDelete.isEmpty() )
         KIO::del( urlsToDelete );
 }
@@ -1661,7 +1661,7 @@ PodcastChannel::slotAnimation()
 ///    @note we fucking hate itunes for taking over podcasts and inserting
 ///          their own attributes.
 ////////////////////////////////////////////////////////////////////////////
-PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after, 
+PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
                                 const QDomElement &xml, const int feedType, const bool &isNew )
     : PlaylistBrowserEntry( parent, after )
       , m_parent( parent )
@@ -1765,7 +1765,7 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
 
     int id = CollectionDB::instance()->addPodcastEpisode( m_bundle );
     m_bundle.setDBId( id );
-    
+
     setText( 0, title );
     updatePixmap();
     setDragEnabled( true );
@@ -1784,7 +1784,7 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after, Pod
 {
     m_localUrl = m_bundle.localUrl();
     bool dbOnDisk = !m_localUrl.isEmpty();
-    
+
     if( m_localUrl.isEmpty() )
     {
         m_localUrl = dynamic_cast<PodcastChannel*>(m_parent)->saveLocation();
@@ -1795,7 +1795,7 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after, Pod
     {
         m_onDisk = true;
     }
-        
+
     if( m_onDisk )
     {
         m_bundle.setLocalURL( m_localUrl );
@@ -1864,7 +1864,7 @@ PodcastEpisode::downloadMedia()
 void PodcastEpisode::createLocalDir( const KURL &localDir )
 {
     if( localDir.isEmpty() ) return;
-    
+
     QString localDirString = localDir.path();
     if( !QFile::exists( localDirString ) )
     {
@@ -1909,7 +1909,7 @@ PodcastEpisode::downloadResult( KIO::Job* job ) //SLOT
 
     m_onDisk = true;
     setNew( false );
-    
+
     m_bundle.setLocalURL( m_localUrl );
     CollectionDB::instance()->updatePodcastEpisode( dBId(), m_bundle );
 

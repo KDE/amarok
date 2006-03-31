@@ -3064,6 +3064,8 @@ void PlaylistBrowserView::keyPressEvent( QKeyEvent *e )
 
 void PlaylistBrowserView::startDrag()
 {
+    DEBUG_BLOCK
+
     KURL::List urls;
     KURL::List itemList; // this is for CollectionDB::createDragPixmap()
 
@@ -3135,6 +3137,19 @@ void PlaylistBrowserView::startDrag()
             itemList += KURL::fromPathOrURL( "smartplaylist://" );
 
         }
+
+        else if( isDynamic( *it ) )
+        {
+            DynamicEntry *item = (DynamicEntry*)*it;
+
+            // Serialize pointer to string
+            const QString str = QString::number( (Q_ULLONG)item );
+
+            QTextDrag *textdrag = new QTextDrag( str, 0 );
+            textdrag->setSubtype( "dynamic" );
+            drag->addDragObject( textdrag );
+        }
+
         else if( isPlaylistTrackItem( *it ) )
         {
             urls     += static_cast<PlaylistTrackItem*>(*it)->url();

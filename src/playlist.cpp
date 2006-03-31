@@ -2346,6 +2346,14 @@ Playlist::contentsDropEvent( QDropEvent *e )
             setSorting( NO_SORT );
             ThreadWeaver::instance()->queueJob( new SqlLoader( data, after ) );
         }
+
+        else if( subtype == "dynamic" ) {
+            // Deserialize pointer
+            DynamicEntry* entry = (DynamicEntry*)data.toULongLong();
+
+            Playlist::instance()->loadDynamicMode( entry );
+        }
+
         else if( KURLDrag::canDecode( e ) )
         {
             debug() << "KURLDrag::canDecode" << endl;
