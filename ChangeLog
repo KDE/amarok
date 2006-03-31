@@ -27,6 +27,8 @@ VERSION 1.4-beta3:
     * Add autocompletion to the composer field in the tag dialog. (BR 123026)
 
   CHANGES:
+    * Ratings can now have half stars: click again on the last star in the
+      rating to toggle it between a half and a full star.
     * Improved handling of embedded cover art, utilizing the database. Patch
       by Shane King <kde@dontletsstart.com>. (BR 124563)
     * Statistics tool has had numerous improvements.
