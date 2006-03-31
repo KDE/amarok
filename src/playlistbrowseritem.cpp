@@ -1783,7 +1783,7 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after, Pod
       , m_onDisk( false )
 {
     m_localUrl = m_bundle.localUrl();
-    bool dbOnDisk = m_localUrl.isEmpty();
+    bool dbOnDisk = !m_localUrl.isEmpty();
     
     if( m_localUrl.isEmpty() )
     {
