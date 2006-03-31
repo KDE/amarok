@@ -3144,6 +3144,9 @@ Playlist::setDynamicMode( DynamicMode *mode ) //SLOT
     else if( !mode )
         alterHistoryItems( true, true );
 
+    if( mode )
+        AmarokConfig::setLastDynamicMode( mode->title() );
+
     m_dynamicMode = mode;
     emit dynamicModeChanged( mode );
 }
@@ -3650,19 +3653,20 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         KPopupMenu popup;
         amaroK::actionCollection()->action("playlist_save")->plug( &popup );
         amaroK::actionCollection()->action("playlist_clear")->plug( &popup );
+        DynamicMode *m = 0;
         if(dynamicMode())
              popup.insertItem( SmallIconSet( "dynamic" ), i18n("Repopulate"), REPOPULATE);
         else
         {
             amaroK::actionCollection()->action("playlist_shuffle")->plug( &popup );
-            //popup.insertItem( SmallIconSet( "dynamic" ), i18n("Load Dynamic Playlist"), ENABLEDYNAMIC); //DYNAMICDISABLE
+                if( m = PlaylistBrowser::instance()->findDynamicModeByTitle( AmarokConfig::lastDynamicMode() ) )
+                    popup.insertItem( SmallIconSet( "dynamic" ), i18n("Load %1").arg( m->title() ), ENABLEDYNAMIC);
         }
         switch(popup.exec(p))
         {
-            /*case  ENABLEDYNAMIC:
-                static_cast<KToggleAction*>(amaroK::actionCollection()->action( "dynamic_mode" ))->setChecked( true );
-                repopulate();
-                break; DYNAMICDISABLE*/
+            case ENABLEDYNAMIC:
+                loadDynamicMode( m );
+                break;
             case REPOPULATE: repopulate(); break;
         }
         return;

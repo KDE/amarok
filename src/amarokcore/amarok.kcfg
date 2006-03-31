@@ -94,6 +94,11 @@
         <whatsthis>If set, amaroK plays the tracks in the playlist in random order.</whatsthis>
         <default>false</default>
     </entry>
+    <entry key="Last Dynamic Mode" type="String">
+        <label>The most recently used Dynamic Mode</label>
+        <whatsthis>The title of the Dynamic Mode that was most recently loaded in the playlist</whatsthis>
+        <default>Random Mix</default>
+    </entry>
     <entry key="Show Tray Icon" type="Bool">
         <label>Whether to show icon in system tray</label>
         <whatsthis>Enable/Disable tray icon for amaroK.</whatsthis>
