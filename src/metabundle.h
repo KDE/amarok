@@ -228,7 +228,7 @@ public: //accessors
     int     bitrate()    const;
     int     sampleRate() const;
     int     score()      const;
-    int     rating()     const;
+    int     rating()     const; //ratings 1-5 == the same, 6-9 == rating - 5 + 0.5
     int     playCount()  const;
     uint    lastPlay()   const;
     int     filesize()   const;
@@ -275,6 +275,7 @@ public: //static helper functions
     static QString prettyLength( int, bool showHours = false ); //must be int, see Unavailable, etc. above
     static QString prettyFilesize( int );
     static QString prettyRating( int );
+    static QString ratingDescription( int );
     static QStringList ratingList();
     static QString prettyTime( uint, bool showHours = true );
     static QString zeroPad( uint i );

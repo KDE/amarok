@@ -904,27 +904,39 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
 
 void PlaylistItem::drawRating( QPainter *p )
 {
-    QPixmap *pix = star();
-    int i = 1, x = 1;
-    const int y = height() / 2 - pix->height() / 2;
-    for(; i <= rating(); ++i )
-    {
-        bitBlt( p->device(), x, y, pix );
-        x += pix->width() + listView()->itemMargin();
-    }
+    int gray = 0;
     if( this == listView()->m_hoveredRating || ( isSelected() && listView()->m_selCount > 1 &&
         listView()->m_hoveredRating && listView()->m_hoveredRating->isSelected() ) )
     {
-        pix = grayedStar();
         const int pos = listView()->viewportToContents( listView()->viewport()->mapFromGlobal( QCursor::pos() ) ).x();
-        for( int n = ratingAtPoint( pos ); i <= n; ++i )
-        {
-            bitBlt( p->device(), x, y, pix );
-            x += pix->width() + listView()->itemMargin();
-        }
+        gray = ratingAtPoint( pos );
     }
+
+    drawRating( p, rating() > 5 ? rating() - 5 + 1 : rating(), gray, rating() > 5 );
 }
 
+void PlaylistItem::drawRating( QPainter *p, int stars, int graystars, bool half )
+{
+    int i = 1, x = 1;
+    const int w = star()->width(), h = star()->height(), y = height() / 2 - h / 2;
+    if( half )
+        i++;
+    for(; i <= stars; ++i )
+    {
+        bitBlt( p->device(), x, y, star() );
+        x += w + listView()->itemMargin();
+    }
+    if( half )
+    {
+        bitBlt( p->device(), x + ( w - smallStar()->width() ) / 2, y + ( h - smallStar()->height() ) / 2, smallStar() );
+        x += w + listView()->itemMargin();
+    }
+    for(; i <= graystars; ++i )
+    {
+        bitBlt( p->device(), x, y, grayedStar() );
+        x += w + listView()->itemMargin();
+    }
+}
 
 void PlaylistItem::setup()
 {
@@ -1049,7 +1061,16 @@ int PlaylistItem::totalIncrementAmount() const
     {
         case AmarokConfig::EnumFavorTracks::None: return 0;
         case AmarokConfig::EnumFavorTracks::HigherScores: return score() ? score() : 50;
-        case AmarokConfig::EnumFavorTracks::HigherRatings: return rating() ? rating() : 2;
+        case AmarokConfig::EnumFavorTracks::HigherRatings:
+            if( rating() )
+            {
+                if( rating() > 5 )
+                    return ( rating() - 5 ) * 2 + 1;
+                else
+                    return rating() * 2;
+            }
+            else
+                return 5; // 2.5
         case AmarokConfig::EnumFavorTracks::LessRecentlyPlayed:
         {
             if( lastPlay() )
@@ -1065,3 +1086,4 @@ int PlaylistItem::totalIncrementAmount() const
 
 QPixmap *PlaylistItem::s_star = 0;
 QPixmap *PlaylistItem::s_grayedStar = 0;
+QPixmap *PlaylistItem::s_smallStar = 0;

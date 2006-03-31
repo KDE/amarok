@@ -86,6 +86,7 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
 
         static QPixmap *star();
         static QPixmap *grayedStar();
+        static QPixmap *smallStar();
         static int ratingAtPoint( int x );
 
         /// like QWidget::update()
@@ -124,6 +125,7 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
 
         virtual void paintCell( QPainter*, const QColorGroup&, int, int, int );
         void drawRating( QPainter *p );
+        void drawRating( QPainter *p, int stars, int graystars, bool half );
 
         // Used for sorting
         virtual int compare( QListViewItem*, int, bool ) const;
@@ -164,6 +166,7 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
         static const QString &editingText();
         static QPixmap *s_star;
         static QPixmap *s_grayedStar;
+        static QPixmap *s_smallStar;
 };
 
 class PLItemList: public QPtrList<PlaylistItem>
@@ -180,5 +183,6 @@ class PLItemList: public QPtrList<PlaylistItem>
 inline void PlaylistItem::setText( int column, const QString &text ) { setExactText( column, text ); }
 inline QPixmap *PlaylistItem::star() { return s_star; }
 inline QPixmap *PlaylistItem::grayedStar() { return s_grayedStar; }
+inline QPixmap *PlaylistItem::smallStar() { return s_smallStar; }
 
 #endif

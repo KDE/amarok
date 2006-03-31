@@ -223,12 +223,19 @@ Playlist::Playlist( QWidget *parent )
 {
     s_instance = this;
 
-    const int h = fontMetrics().height() + itemMargin() * 2 - 4 + ( ( fontMetrics().height() % 2 ) ? 1 : 0 );
-    QImage img = QImage( locate( "data", "amarok/images/star.png" ) ).smoothScale( h, h, QImage::ScaleMin );
-    PlaylistItem::s_star = new QPixmap( img );
-    PlaylistItem::s_grayedStar = new QPixmap;
-    KIconEffect::toGray( img, 1.0 );
-    PlaylistItem::s_grayedStar->convertFromImage( img );
+    { // initialize star pixmaps
+        const int h = fontMetrics().height() + itemMargin() * 2 - 4 + ( ( fontMetrics().height() % 2 ) ? 1 : 0 );
+        QImage star = QImage( locate( "data", "amarok/images/star.png" ) );
+        QImage img = star.smoothScale( h, h, QImage::ScaleMin );
+        PlaylistItem::s_star = new QPixmap( img );
+
+        const int h2 = int( float( h ) * 3 / 4 );
+        PlaylistItem::s_smallStar = new QPixmap( star.smoothScale( h2, h2, QImage::ScaleMin ) );
+
+        PlaylistItem::s_grayedStar = new QPixmap;
+        KIconEffect::toGray( img, 1.0 );
+        PlaylistItem::s_grayedStar->convertFromImage( img );
+    }
 
     EngineController* const ec = EngineController::instance();
     connect( ec, SIGNAL(orderPrevious()), SLOT(playPrevTrack()) );
@@ -1677,7 +1684,10 @@ QPair<QString, QRect> Playlist::toolTipText( QWidget*, const QPoint &pos ) const
     const int col = header()->sectionAt( contentsPos.x() );
 
     QString text;
-    text = item->text( col );
+    if( col == PlaylistItem::Rating )
+        text = item->ratingDescription( item->rating() );
+    else
+        text = item->text( col );
 
     QRect irect = itemRect( item );
     const int headerPos = header()->sectionPos( col );
@@ -1711,7 +1721,7 @@ QPair<QString, QRect> Playlist::toolTipText( QWidget*, const QPoint &pos ) const
     int dright = QApplication::desktop()->screenGeometry( qscrollview() ).topRight().x();
     t.setWidth( dright - globalRect.left() );
     if( col == PlaylistItem::Rating )
-        globalRect.setRight( kMin( dright, kMax( globalRect.left() + t.widthUsed(), globalRect.left() + ( PlaylistItem::star()->width() + 1 ) * item->rating() ) ) );
+        globalRect.setRight( kMin( dright, kMax( globalRect.left() + t.widthUsed(), globalRect.left() + ( PlaylistItem::star()->width() + 1 ) * ( item->rating() > 5 ? item->rating() - 4 : item->rating() ) ) ) );
     else
         globalRect.setRight( kMin( globalRect.left() + t.widthUsed(), dright ) );
     globalRect.setBottom( globalRect.top() + kMax( irect.height(), t.height() ) - 1 );
@@ -2193,7 +2203,20 @@ Playlist::writeTag( QListViewItem *qitem, const QString &newTag, int column ) //
         if( column == PlaylistItem::Score )
             CollectionDB::instance()->setSongPercentage( item->url().path(), newTag.toInt() );
         else if( column == PlaylistItem::Rating )
-            CollectionDB::instance()->setSongRating( item->url().path(), newTag.toInt() );
+        {
+            int rating;
+            float f = newTag.toFloat();
+            if( float( int( f ) ) != f )
+            {
+                if( f < 1 )
+                    rating = 0;
+                else
+                    rating = int( f ) + 5;
+            }
+            else
+                rating = int( f );
+            CollectionDB::instance()->setSongRating( item->url().path(), rating );
+        }
         else
             if (oldTag != newTag)
                 ThreadWeaver::instance()->queueJob( new TagWriter( item, oldTag, newTag, column ) );
@@ -4081,11 +4104,22 @@ void Playlist::contentsMousePressEvent( QMouseEvent *e )
         item && e->pos().x() > header()->sectionPos( PlaylistItem::Rating ) &&
         e->pos().x() < header()->sectionPos( PlaylistItem::Rating ) + header()->sectionSize( PlaylistItem::Rating ) )
     {
-        const int rating = item->ratingAtPoint( e->pos().x() );
+        int rating = item->ratingAtPoint( e->pos().x() );
         if( m_selCount > 1 && item->isSelected() )
             setSelectedRatings( rating );
         else
+        {
+            if( rating == item->rating() ) // toggle half star
+            {
+                if( rating == 1 )
+                    rating = 0;
+                else if( rating <= 5 )
+                    rating = rating - 1 + 5;
+                else
+                    rating = rating - 5 + 1;
+            }
             CollectionDB::instance()->setSongRating( item->url().path(), rating );
+        }
     }
     else
         KListView::contentsMousePressEvent( e );

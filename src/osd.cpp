@@ -453,7 +453,7 @@ amaroK::OSD::OSD(): OSDWidget( 0 )
 }
 
 template<class T>
-class MyVector: public QValueVector<T> //fucking QValueVector doesn't have operator<<, wtf?
+class MyVector: public QValueVector<T> //QValueVector doesn't have operator<<, wtf?
 {
     public:
     inline MyVector<T> &operator<< (const T &x)
@@ -482,7 +482,7 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
             tags[PlaylistItem::Score+1] = QString::number( score );
         const int rating = CollectionDB::instance()->getSongRating( bundle.url().path() );
         if( rating > 0 )
-            tags[PlaylistItem::Rating+1] = QString().fill( '*', rating );
+            tags[PlaylistItem::Rating+1] = QString().fill( '*', rating > 5 ? rating - 5 : rating );
         tags[PlaylistItem::PlayCount+1] = QString::number( CollectionDB::instance()
                                                            ->getPlayCount( bundle.url().path() ) );
         tags[PlaylistItem::LastPlayed+1] = amaroK::verboseTimeSince(
@@ -525,7 +525,7 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
             for( int i = 0; i < PlaylistItem::NUM_COLUMNS; ++i )
                 args[bundle.exactColumnName( i ).lower()] = bundle.prettyText( i );
             args["score"] = QString::number( score );
-            args["rating"] = QString().fill( '*', rating );
+            args["rating"] = QString().fill( '*', rating > 5 ? rating - 5 : rating );
             args["playcount"] =  QString::number( CollectionDB::instance() ->getPlayCount( bundle.url().path() ) );
             args["lastplayed"] = amaroK::verboseTimeSince(
                     CollectionDB::instance()->getLastPlay( bundle.url().path() ).toTime_t() );
