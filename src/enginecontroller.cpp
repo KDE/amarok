@@ -269,7 +269,7 @@ void EngineController::restoreSession()
 void EngineController::endSession()
 {
     //only update song stats, when we're not going to resume it
-    if ( m_bundle.length() > 0 && !AmarokConfig::resumePlayback() )
+    if ( !AmarokConfig::resumePlayback() )
         trackEnded( m_engine->position(), m_bundle.length() * 1000 );
 
     PluginManager::unload( m_voidEngine );
@@ -313,7 +313,7 @@ void EngineController::play( const MetaBundle &bundle )
 
     //TODO bummer why'd I do it this way? it should _not_ be in play!
     //let amaroK know that the previous track is no longer playing
-    if ( m_timer->isActive() && m_bundle.length() > 0 )
+    if ( m_timer->isActive() )
         trackEnded( m_engine->position(), m_bundle.length() * 1000 );
 
     if ( url.isLocalFile() ) {
@@ -377,8 +377,7 @@ void EngineController::pause() //SLOT
 void EngineController::stop() //SLOT
 {
     //let amaroK know that the previous track is no longer playing
-    if ( m_bundle.length() > 0 )
-        trackEnded( m_engine->position(), m_bundle.length() * 1000 );
+    trackEnded( m_engine->position(), m_bundle.length() * 1000 );
 
     if ( m_engine->loaded() )
         m_engine->stop();

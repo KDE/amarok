@@ -3120,6 +3120,18 @@ void CollectionDB::engineTrackEnded( int finalPosition, int trackLength )
     // if ( finalPosition < 15000 ) return;
 
     const KURL url = EngineController::instance()->bundle().url();
+    debug() << "track ended: " << url.url() << endl;
+    PodcastEpisodeBundle peb;
+    if( getPodcastEpisodeBundle( url.url(), &peb ) )
+    {
+        peb.setNew( false );
+        if( peb.dBId() )
+            updatePodcastEpisode( peb.dBId(), peb );
+
+        if( !url.isLocalFile() )
+            return;
+    }
+
     if ( url.path().isEmpty() ) return;
 
     // sanity check
@@ -4065,7 +4077,7 @@ QueryBuilder::linkTables( int tables )
     if ( !(tables & tabSong ) )
     {
         // check if only one table is selected (does somebody know a better way to check that?)
-        if (tables == tabAlbum || tables==tabArtist || tables==tabGenre || tables == tabYear || tables == tabStats)
+        if (tables == tabAlbum || tables==tabArtist || tables==tabGenre || tables == tabYear || tables == tabStats || tables == tabPodcastEpisodes || tables == tabPodcastFolders || tables == tabPodcastChannels)
             m_tables = tableName(tables);
         else
             tables |= tabSong;
