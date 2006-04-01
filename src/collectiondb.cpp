@@ -4227,6 +4227,7 @@ QueryBuilder::setGoogleFilter( int defaultTables, QString query )
                 table = tabStats;
                 value = valRating;
                 exact = true;
+                s = QString::number( int( s.toFloat() * 2 ) );
             }
             else if( field == "directory" )
             {

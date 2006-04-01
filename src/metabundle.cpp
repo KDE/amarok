@@ -815,7 +815,6 @@ bool MetaBundle::matchesParsedExpression( ParsedExpression data, QValueList<int>
                     case Bitrate:
                     case SampleRate:
                     case Score:
-                    case Rating:
                     case PlayCount:
                     case LastPlayed:
                     case Filesize:
@@ -833,6 +832,8 @@ bool MetaBundle::matchesParsedExpression( ParsedExpression data, QValueList<int>
                     w = w.mid( 1 );
                     if( numeric )
                         condition = v.toInt() > w.toInt();
+                    else if( column == Rating )
+                        condition = v.toFloat() > w.toFloat();
                     else if( column == Length )
                     {
                         int g = v.find( ":" ), h = w.find( ":" );
@@ -848,6 +849,8 @@ bool MetaBundle::matchesParsedExpression( ParsedExpression data, QValueList<int>
                     w = w.mid(1);
                     if( numeric )
                         condition = v.toInt() < w.toInt();
+                    else if( column == Rating )
+                        condition = v.toFloat() < w.toFloat();
                     else if( column == Length )
                     {
                         int g = v.find( ":" ), h = w.find( ":" );
@@ -862,6 +865,8 @@ bool MetaBundle::matchesParsedExpression( ParsedExpression data, QValueList<int>
                 {
                     if( numeric )
                         condition = v.toInt() == w.toInt();
+                    else if( column == Rating )
+                        condition = v.toFloat() == w.toFloat();
                     else if( column == Length )
                     {
                         int g = v.find( ":" ), h = w.find( ":" );
