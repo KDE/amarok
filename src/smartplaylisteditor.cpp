@@ -306,8 +306,8 @@ QDomElement SmartPlaylistEditor::result() {
 void SmartPlaylistEditor::buildQuery()
 {
 
-    QString joins = "tags INNER JOIN year ON year.id=tags.year INNER JOIN genre ON genre.id=tags.genre"
-                    " INNER JOIN artist ON artist.id=tags.artist INNER JOIN album ON album.id=tags.album";
+    QString joins = "tags LEFT JOIN year ON year.id=tags.year LEFT JOIN genre ON genre.id=tags.genre"
+                    " LEFT JOIN artist ON artist.id=tags.artist LEFT JOIN album ON album.id=tags.album";
     QString whereStr;
     QString criteriaListStr;
     QString orderStr;
@@ -330,7 +330,7 @@ void SmartPlaylistEditor::buildQuery()
                  || str.contains(" OR statistics.percentage IS NULL") )
                     joins += " LEFT JOIN statistics ON statistics.url=tags.url";
                 else
-                    joins += " INNER JOIN statistics ON statistics.url=tags.url";
+                    joins += " LEFT JOIN statistics ON statistics.url=tags.url";
             }
             if( i ) { //multiple conditions
                 QString op = m_matchCombo->currentItem() == 0 ? "AND" : "OR";
@@ -349,7 +349,7 @@ void SmartPlaylistEditor::buildQuery()
             QString table = field.left( field.find('.') );
             if( !joins.contains( table ) ) {
                 if( table=="statistics")
-                    joins += " INNER JOIN statistics ON statistics.url=tags.url";
+                    joins += " LEFT JOIN statistics ON statistics.url=tags.url";
             }
             QString orderType = m_orderTypeCombo->currentItem() == 1 ? " DESC" : " ASC";
             orderStr = " ORDER BY " +  field + orderType;
@@ -372,7 +372,7 @@ void SmartPlaylistEditor::buildQuery()
             */
            orderStr = " ORDER BY POWER(" + CollectionDB::instance()->randomFunc() + ",1.0/(statistics.percentage+1)) DESC";
             if( !joins.contains( "statistics" ) ) {
-                joins += " INNER JOIN statistics ON statistics.url=tags.url";
+                joins += " LEFT JOIN statistics ON statistics.url=tags.url";
             }
         }
     }
@@ -390,7 +390,7 @@ void SmartPlaylistEditor::buildQuery()
         QString field = m_expandableDbFields[ m_expandCombo->currentItem() ];
         QString table = field.left( field.find('.') );
         if( !joins.contains( table ) ) {
-            joins += " INNER JOIN statistics ON statistics.url=tags.url";
+            joins += " LEFT JOIN statistics ON statistics.url=tags.url";
         }
         if ( !criteriaListStr.isEmpty() )
             whereStr = QString(" WHERE (%1) AND %2 = '(*ExpandString*)'").arg(criteriaListStr).arg(field);

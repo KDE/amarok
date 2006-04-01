@@ -821,7 +821,7 @@ CollectionDB::albumTracks( const QString &artist_id, const QString &album_id, co
 {
     if ( isValue)
     {
-        return query( QString( "SELECT tags.url FROM tags INNER JOIN artist ON artist.id=tags.artist INNER JOIN album ON "
+        return query( QString( "SELECT tags.url FROM tags LEFT JOIN artist ON artist.id=tags.artist LEFT JOIN album ON "
                         "album.id=tags.album WHERE (album.name = \"%1\" ) AND (artist.name = \"%2\" ) ORDER BY tags.discnumber, tags.track;" )
                         .arg( album_id )
                         .arg( artist_id ) );
@@ -4087,17 +4087,17 @@ QueryBuilder::linkTables( int tables )
     if ( tables & tabSong )
     {
         if ( tables & tabAlbum )
-            m_tables += " INNER JOIN " + tableName( tabAlbum) + " ON album.id=tags.album";
+            m_tables += " LEFT JOIN " + tableName( tabAlbum) + " ON album.id=tags.album";
         if ( tables & tabArtist )
-            m_tables += " INNER JOIN " + tableName( tabArtist) + " ON artist.id=tags.artist";
+            m_tables += " LEFT JOIN " + tableName( tabArtist) + " ON artist.id=tags.artist";
         if ( tables & tabGenre )
-            m_tables += " INNER JOIN " + tableName( tabGenre) + " ON genre.id=tags.genre";
+            m_tables += " LEFT JOIN " + tableName( tabGenre) + " ON genre.id=tags.genre";
         if ( tables & tabYear )
-            m_tables += " INNER JOIN " + tableName( tabYear) + " ON year.id=tags.year";
+            m_tables += " LEFT JOIN " + tableName( tabYear) + " ON year.id=tags.year";
         if ( tables & tabStats )
-            m_tables += " INNER JOIN " + tableName( tabStats) + " ON statistics.url=tags.url";
+            m_tables += " LEFT JOIN " + tableName( tabStats) + " ON statistics.url=tags.url";
         if ( tables & tabLyrics )
-            m_tables += " INNER JOIN " + tableName( tabLyrics) + " ON lyrics.url=tags.url";
+            m_tables += " LEFT JOIN " + tableName( tabLyrics) + " ON lyrics.url=tags.url";
 
     }
 }
