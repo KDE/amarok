@@ -2847,6 +2847,7 @@ Playlist::eventFilter( QObject *o, QEvent *e )
             if( !item->isSelected() )
                 m_itemsToChangeTagsFor.clear();
                 //the item that actually got changed will get added back, in writeTag()
+            m_renameItem->setText( m_renameColumn, renameLineEdit()->text() );
             doneEditing( m_renameItem, m_renameColumn );
             rename( item, column );
             return true;
