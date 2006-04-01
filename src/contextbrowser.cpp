@@ -1304,6 +1304,7 @@ CurrentTrackJob::showHomeByAlbums()
     qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
     qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID );
     qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valID );
+    qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valName );
     qb.setOptions( QueryBuilder::optNoCompilations ); // samplers __need__ to be handled differently
     qb.setLimit( 0, 5 );
     QStringList recentAlbums = qb.run();
@@ -1343,6 +1344,7 @@ CurrentTrackJob::showHomeByAlbums()
     qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
     qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID );
     qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valID );
+    qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valName );
     qb.setOptions( QueryBuilder::optNoCompilations ); // samplers __need__ to be handled differently
     qb.setLimit( 0, 5 );
     QStringList faveAlbums = qb.run();
