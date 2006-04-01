@@ -2372,7 +2372,7 @@ Playlist::contentsDropEvent( QDropEvent *e )
 
         else if( subtype == "dynamic" ) {
             // Deserialize pointer
-            DynamicEntry* entry = (DynamicEntry*)data.toULongLong();
+            DynamicEntry* entry = reinterpret_cast<DynamicEntry*>( data.toULongLong() );
 
             loadDynamicMode( entry );
         }

@@ -62,7 +62,8 @@ bool MetaBundle::EmbeddedImage::save( const QDir& dir ) const
     QFile   file( dir.filePath( hash() ) );
 
     if( file.open( IO_WriteOnly | IO_Raw ) ) {
-        if( file.writeBlock( m_data.data(), m_data.size() ) == m_data.size() ) {
+        const Q_LONG s = file.writeBlock( m_data.data(), m_data.size() );
+        if( s >= 0 && Q_ULONG( s ) == m_data.size() ) {
             debug() << "EmbeddedImage::save " << file.name() << endl;
             return true;
         }

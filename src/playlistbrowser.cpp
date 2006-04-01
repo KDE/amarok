@@ -3143,7 +3143,7 @@ void PlaylistBrowserView::startDrag()
             DynamicEntry *item = (DynamicEntry*)*it;
 
             // Serialize pointer to string
-            const QString str = QString::number( (Q_ULLONG)item );
+            const QString str = QString::number( reinterpret_cast<Q_ULLONG>( item ) );
 
             QTextDrag *textdrag = new QTextDrag( str, 0 );
             textdrag->setSubtype( "dynamic" );
