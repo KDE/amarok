@@ -1575,7 +1575,7 @@ void Playlist::doubleClicked( QListViewItem *item )
 {
     /* We have to check if the item exists before calling activate, otherwise clicking on an empty
     playlist space would stop playing (check BR #105106)*/
-    if( item && item->isEnabled() )
+    if( item && item->isEnabled() && m_hoveredRating != item )
         activate( item );
 }
 
