@@ -1683,6 +1683,9 @@ QPair<QString, QRect> Playlist::toolTipText( QWidget*, const QPoint &pos ) const
     const QPoint contentsPos = viewportToContents( pos );
     const int col = header()->sectionAt( contentsPos.x() );
 
+    if( item == m_renameItem && col == m_renameColumn )
+        return QPair<QString, QRect>( QString::null, QRect() );
+
     QString text;
     if( col == PlaylistItem::Rating )
         text = item->ratingDescription( item->rating() );
