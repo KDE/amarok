@@ -1783,7 +1783,8 @@ void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
                     "<span>%4</span>"
                     )
                 .arg( i18n( "Track played once", "Track played %n times", playtimes ),
-                    showRating ? scoreBox.arg( score ).arg( score ).arg( rating * 10 ).arg( rating )
+                    showRating ? scoreBox.arg( score ).arg( score ).arg( rating * 5 )
+                                         .arg( MetaBundle::prettyRating( rating ) )
                     : scoreBox.arg( score ).arg( score ).arg(  score / 2  ),
                     i18n( "Last played: %1" ).arg( amaroK::verboseTimeSince( lastPlay ) ),
                     i18n( "First played: %1" ).arg( amaroK::verboseTimeSince( firstPlay ) ) ) );
@@ -1959,7 +1960,7 @@ void CurrentTrackJob::showSuggestedSongs( const QStringList &relArtists )
                     "<td class='rbtext' width='1' title='" + ( showRating ? i18n( "Rating" ) : i18n( "Score" ) ) + "'>"
                     "<div class='sbouter'>"
                     "<div class='sbinner' style='width: "
-                    + QString::number( showRating ? values[i + 4].toInt() * 10 : values[i + 3].toInt() / 2 ) + "px;'></div>"
+                    + QString::number( showRating ? values[i + 4].toInt() * 5 : values[i + 3].toInt() / 2 ) + "px;'></div>"
                     "</div>"
                     "</td>"
                     "<td width='1'></td>"
@@ -2016,7 +2017,7 @@ void CurrentTrackJob::showArtistsFaves( const QString &artist, uint artist_id )
                     "<td class='rbtext' width='1' title='" + ( showRating ? i18n( "Rating" ) : i18n( "Score" ) ) + "'>"
                     "<div class='sbouter'>"
                     "<div class='sbinner' style='width: "
-                    + QString::number( showRating ? values[i + 3].toInt() * 10 : values[i + 2].toInt() / 2 ) + "px;'></div>"
+                    + QString::number( showRating ? values[i + 3].toInt() * 5 : values[i + 2].toInt() / 2 ) + "px;'></div>"
                     "</div>"
                     "</td>"
                     "<td width='1'></td>"
