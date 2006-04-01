@@ -50,7 +50,7 @@ VERSION 1.4-beta3:
   BUGFIXES:
     * Fix error with 'Back' link when browsing related artists. (BR 123227)
     * Files with names containing '#' or '?' from smart playlists would not
-      get transferred to media devcice. (BR 122488)
+      get transferred to media device. (BR 122488)
     * Stop Playing After Track option wouldn't be shown for the right tracks,
       when there were queued tracks. Patch by Marcelo Penna Guerra
       <eu@marcelopenna.org>. (BR 124297)
