@@ -477,16 +477,8 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
         for( int i = 0; i < PlaylistItem::NUM_COLUMNS; ++i )
             tags << bundle.prettyText( i );
 
-        const int score = CollectionDB::instance()->getSongPercentage( bundle.url().path() );
-        if( score > 0 )
-            tags[PlaylistItem::Score+1] = QString::number( score );
-        const int rating = CollectionDB::instance()->getSongRating( bundle.url().path() );
-        if( rating > 0 )
-            tags[PlaylistItem::Rating+1] = QString().fill( '*', rating / 2 );
-        tags[PlaylistItem::PlayCount+1] = QString::number( CollectionDB::instance()
-                                                           ->getPlayCount( bundle.url().path() ) );
-        tags[PlaylistItem::LastPlayed+1] = amaroK::verboseTimeSince(
-            CollectionDB::instance()->getLastPlay( bundle.url().path() ).toTime_t() );
+        if( bundle.rating() )
+            tags[PlaylistItem::Rating+1] = QString().fill( '*', bundle.rating() / 2 );
         if( bundle.length() <= 0 )
             tags[PlaylistItem::Length+1] = QString::null;
 
@@ -524,14 +516,9 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
             args["prettytitle"] = bundle.prettyTitle();
             for( int i = 0; i < PlaylistItem::NUM_COLUMNS; ++i )
                 args[bundle.exactColumnName( i ).lower()] = bundle.prettyText( i );
-            args["score"] = QString::number( score );
-            args["rating"] = QString().fill( '*', rating / 2 );
-            args["playcount"] =  QString::number( CollectionDB::instance() ->getPlayCount( bundle.url().path() ) );
-            args["lastplayed"] = amaroK::verboseTimeSince(
-                    CollectionDB::instance()->getLastPlay( bundle.url().path() ).toTime_t() );
+            args["rating"] = QString().fill( '*', bundle.rating() / 2 );
             if( bundle.length() <= 0 )
                 args["length"] = QString::null;
-            args["filesize"] = QString::number( bundle.filesize() );
 
             QStringx osd = AmarokConfig::osdText();
             text = osd.namedOptArgs( args );
