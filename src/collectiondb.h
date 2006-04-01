@@ -420,7 +420,7 @@ class CollectionDB : public QObject, public EngineObserver
         // When bumping this, write code to convert the data!
         static const int DATABASE_PERSISTENT_TABLES_VERSION = 6;
         // Bumping this erases stats table. If you ever need to, write code to convert the data!
-        static const int DATABASE_STATS_VERSION = 4;
+        static const int DATABASE_STATS_VERSION = 5;
 
         static const int MONITOR_INTERVAL = 60; //sec
         static const bool DEBUG = false;

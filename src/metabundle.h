@@ -228,7 +228,7 @@ public: //accessors
     int     bitrate()    const;
     int     sampleRate() const;
     int     score()      const;
-    int     rating()     const; //ratings 1-5 == the same, 6-9 == rating - 5 + 0.5
+    int     rating()     const; //returns rating * 2, to accomodate .5 ratings
     int     playCount()  const;
     uint    lastPlay()   const;
     int     filesize()   const;

@@ -998,12 +998,7 @@ MetaBundle::prettyFilesize( int s )
 QString
 MetaBundle::prettyRating( int r ) //static
 {
-    if( !r )
-        return QString();
-    else if( r > 5 )
-        return QString::number( r - 5 + 0.5 );
-    else
-        return QString::number( r );
+    return r ? QString::number( float( r ) / 2 ) : QString();
 }
 
 QString
@@ -1011,15 +1006,15 @@ MetaBundle::ratingDescription( int r )
 {
     switch( r )
     {
-        case 1: return i18n( "Awful" );
-        case 6: return i18n( "Barely tolerable" );   // 1.5
-        case 2: return i18n( "Tolerable" );
-        case 7: return i18n( "Okay" );               // 2.5
-        case 3: return i18n( "Good" );
-        case 8: return i18n( "Pretty good" );        // 3.5
-        case 4: return i18n( "Excellent" );
-        case 9: return i18n( "Amazing" );            // 4.5
-        case 5: return i18n( "Favorite" );
+        case 2: return i18n( "Awful" );
+        case 3: return i18n( "Barely tolerable" );
+        case 4: return i18n( "Tolerable" );
+        case 5: return i18n( "Okay" );
+        case 6: return i18n( "Good" );
+        case 7: return i18n( "Pretty good" );
+        case 8: return i18n( "Excellent" );
+        case 9: return i18n( "Amazing" );
+        case 10: return i18n( "Favorite" );
         case 0: default: return i18n( "Not rated" ); // assume weird values as not rated
     }
     return "if you can see this, then that's a bad sign.";
@@ -1031,12 +1026,8 @@ MetaBundle::ratingList()
     QString s = i18n( "rating - description", "%1 - %2" );
     QStringList list;
     list += ratingDescription( 0 );
-    for ( int i = 1; i<=4; i++ )
-    {
+    for ( int i = 2; i<=10; i++ )
         list += s.arg( prettyRating( i ) ).arg( ratingDescription( i ) );
-        list += s.arg( prettyRating( i + 5 ) ).arg( ratingDescription( i + 5 ) );
-    }
-    list += s.arg( prettyRating( 5 ) ).arg( ratingDescription( 5 ) );
     return list;
 }
 

@@ -1721,7 +1721,7 @@ QPair<QString, QRect> Playlist::toolTipText( QWidget*, const QPoint &pos ) const
     int dright = QApplication::desktop()->screenGeometry( qscrollview() ).topRight().x();
     t.setWidth( dright - globalRect.left() );
     if( col == PlaylistItem::Rating )
-        globalRect.setRight( kMin( dright, kMax( globalRect.left() + t.widthUsed(), globalRect.left() + ( PlaylistItem::star()->width() + 1 ) * ( item->rating() > 5 ? item->rating() - 4 : item->rating() ) ) ) );
+        globalRect.setRight( kMin( dright, kMax( globalRect.left() + t.widthUsed(), globalRect.left() + ( PlaylistItem::star()->width() + 1 ) * ( ( item->rating() + 1 ) / 2 ) ) ) );
     else
         globalRect.setRight( kMin( globalRect.left() + t.widthUsed(), dright ) );
     globalRect.setBottom( globalRect.top() + kMax( irect.height(), t.height() ) - 1 );
@@ -2191,32 +2191,21 @@ Playlist::rename( QListViewItem *item, int column ) //SLOT
 }
 
 void
-Playlist::writeTag( QListViewItem *qitem, const QString &newTag, int column ) //SLOT
+Playlist::writeTag( QListViewItem *qitem, const QString &, int column ) //SLOT
 {
     if( m_itemsToChangeTagsFor.isEmpty() )
         m_itemsToChangeTagsFor.append( static_cast<PlaylistItem*>( qitem ) );
 
+    const QString newTag = static_cast<PlaylistItem*>( qitem )->exactText( column );
+
     for( PlaylistItem *item = m_itemsToChangeTagsFor.first(); item; item = m_itemsToChangeTagsFor.next() )
     {
-        const QString &oldTag = item == qitem ? m_editOldTag : item->exactText(column);
+        const QString oldTag = item == qitem ? m_editOldTag : item->exactText(column);
 
         if( column == PlaylistItem::Score )
             CollectionDB::instance()->setSongPercentage( item->url().path(), newTag.toInt() );
         else if( column == PlaylistItem::Rating )
-        {
-            int rating;
-            float f = newTag.toFloat();
-            if( float( int( f ) ) != f )
-            {
-                if( f < 1 )
-                    rating = 0;
-                else
-                    rating = int( f ) + 5;
-            }
-            else
-                rating = int( f );
-            CollectionDB::instance()->setSongRating( item->url().path(), rating );
-        }
+            CollectionDB::instance()->setSongRating( item->url().path(), newTag.toInt() );
         else
             if (oldTag != newTag)
                 ThreadWeaver::instance()->queueJob( new TagWriter( item, oldTag, newTag, column ) );
@@ -2855,7 +2844,7 @@ Playlist::eventFilter( QObject *o, QEvent *e )
             if( !item->isSelected() )
                 m_itemsToChangeTagsFor.clear();
                 //the item that actually got changed will get added back, in writeTag()
-            writeTag( m_renameItem, renameLineEdit()->text(), m_renameColumn );
+            doneEditing( m_renameItem, m_renameColumn );
             rename( item, column );
             return true;
         }
@@ -4113,10 +4102,10 @@ void Playlist::contentsMousePressEvent( QMouseEvent *e )
             {
                 if( rating == 1 )
                     rating = 0;
-                else if( rating <= 5 )
-                    rating = rating - 1 + 5;
+                else if( rating % 2 ) //.5
+                    rating++;
                 else
-                    rating = rating - 5 + 1;
+                    rating--;
             }
             CollectionDB::instance()->setSongRating( item->url().path(), rating );
         }
@@ -4704,7 +4693,7 @@ Playlist::addCustomColumn()
             for( p.start(); p.isRunning(); /*kapp->processEvents()*/ )
                 ::usleep( 5000 );
 
-            (*it)->setText( index, p.readStdout() );
+            (*it)->setExactText( index, p.readStdout() );
         }
     }
 }
@@ -4787,13 +4776,13 @@ TagWriter::completeJob()
     switch( m_failed ) {
     case true:
         // we write a space for some reason I cannot recall
-        m_item->setText( m_tagType, m_oldTagString.isEmpty() ? " " : m_oldTagString );
+        m_item->setExactText( m_tagType, m_oldTagString.isEmpty() ? " " : m_oldTagString );
         amaroK::StatusBar::instance()->longMessage( i18n(
                 "Sorry, the tag for %1 could not be changed." ).arg( m_item->url().fileName() ), KDE::StatusBar::Sorry );
         break;
 
     case false:
-        m_item->setText( m_tagType, m_newTagString.isEmpty() ? " " : m_newTagString );
+        m_item->setExactText( m_tagType, m_newTagString.isEmpty() ? " " : m_newTagString );
         CollectionDB::instance()->updateURL( m_item->url().path(), m_updateView );
 
     }

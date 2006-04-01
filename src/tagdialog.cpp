@@ -41,11 +41,6 @@
 #include <kstandarddirs.h>
 
 
-static int convertRating( int r )
-{
-    return r == 0 ? r : r <= 5 ? r * 2 - 1 : ( r - 5 ) * 2;
-}
-
 TagDialog::TagDialog( const KURL& url, QWidget* parent )
     : TagDialogBase( parent )
     , m_bundle( url )
@@ -595,7 +590,7 @@ void TagDialog::readTags()
     kComboBox_artist       ->setCurrentText( m_bundle.artist() );
     kComboBox_album        ->setCurrentText( m_bundle.album() );
     kComboBox_genre        ->setCurrentText( m_bundle.genre() );
-    kComboBox_rating       ->setCurrentItem( convertRating( m_bundle.rating() ) );
+    kComboBox_rating       ->setCurrentItem( m_bundle.rating() ? m_bundle.rating() - 1 : 0 );
     kIntSpinBox_track      ->setValue( m_bundle.track() );
     kComboBox_composer     ->setCurrentText( m_bundle.composer() );
     kIntSpinBox_year       ->setValue( m_bundle.year() );
@@ -848,7 +843,7 @@ TagDialog::changes()
 
     if (kIntSpinBox_score->value() != m_score)
         result |= TagDialog::SCORECHANGED;
-    if (kComboBox_rating->currentItem() != convertRating( m_bundle.rating() ) )
+    if (kComboBox_rating->currentItem() != ( m_bundle.rating() ? m_bundle.rating() - 1 : 0 ) )
         result |= TagDialog::RATINGCHANGED;
     if ( !equalString( kTextEdit_lyrics->text(), m_lyrics ) )
         result |= TagDialog::LYRICSCHANGED;
@@ -887,11 +882,7 @@ TagDialog::storeTags( const KURL &kurl )
     if( result & TagDialog::SCORECHANGED )
         storedScores.replace( url, kIntSpinBox_score->value() );
     if( result & TagDialog::RATINGCHANGED )
-    {
-        int r = kComboBox_rating->currentItem();
-        r = r == 0 ? 0 : r % 2 ? ( r + 1 ) / 2 : r / 2 + 5;
-        storedRatings.replace( url, r );
-    }
+        storedRatings.replace( url, kComboBox_rating->currentItem() ? kComboBox_rating->currentItem() + 1 : 0 );
     if( result & TagDialog::LYRICSCHANGED ) {
         if ( kTextEdit_lyrics->text().isEmpty() )
             storedLyrics.replace( url, QString::null );

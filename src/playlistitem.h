@@ -180,7 +180,6 @@ class PLItemList: public QPtrList<PlaylistItem>
 };
 
 
-inline void PlaylistItem::setText( int column, const QString &text ) { setExactText( column, text ); }
 inline QPixmap *PlaylistItem::star() { return s_star; }
 inline QPixmap *PlaylistItem::grayedStar() { return s_grayedStar; }
 inline QPixmap *PlaylistItem::smallStar() { return s_smallStar; }

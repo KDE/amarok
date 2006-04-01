@@ -188,6 +188,14 @@ void PlaylistItem::checkMood()
     }
 }
 
+void PlaylistItem::setText( int column, const QString &text )
+{
+    if( column == Rating )
+        setExactText( column, QString::number( int( text.toFloat() * 2 ) ) );
+    else
+        setExactText( column, text );
+}
+
 QString PlaylistItem::text( int column ) const
 {
     if( column == Title && listView()->header()->sectionSize( Filename ) ) //don't show the filename twice
@@ -383,7 +391,7 @@ int PlaylistItem::ratingAtPoint( int x ) //static
 {
     Playlist* const pl = Playlist::instance();
     x -= pl->header()->sectionPos( Rating );
-    return kClamp( ( x - 1 ) / ( star()->width() + pl->itemMargin() ) + 1, 1, 5 );
+    return kClamp( ( x - 1 ) / ( star()->width() + pl->itemMargin() ) + 1, 1, 5 ) * 2;
 }
 
 void PlaylistItem::update() const
@@ -912,7 +920,7 @@ void PlaylistItem::drawRating( QPainter *p )
         gray = ratingAtPoint( pos );
     }
 
-    drawRating( p, rating() > 5 ? rating() - 5 + 1 : rating(), gray, rating() > 5 );
+    drawRating( p, ( rating() + 1 ) / 2, gray / 2, rating() % 2 );
 }
 
 void PlaylistItem::drawRating( QPainter *p, int stars, int graystars, bool half )
@@ -1061,16 +1069,7 @@ int PlaylistItem::totalIncrementAmount() const
     {
         case AmarokConfig::EnumFavorTracks::None: return 0;
         case AmarokConfig::EnumFavorTracks::HigherScores: return score() ? score() : 50;
-        case AmarokConfig::EnumFavorTracks::HigherRatings:
-            if( rating() )
-            {
-                if( rating() > 5 )
-                    return ( rating() - 5 ) * 2 + 1;
-                else
-                    return rating() * 2;
-            }
-            else
-                return 5; // 2.5
+        case AmarokConfig::EnumFavorTracks::HigherRatings: return rating() ? rating() : 5; // 2.5
         case AmarokConfig::EnumFavorTracks::LessRecentlyPlayed:
         {
             if( lastPlay() )

@@ -2396,7 +2396,7 @@ CollectionDB::getSongRating( const QString &url )
                                          .arg( escapeString( url ) ) );
 
     if( values.count() )
-        return values.first().toInt();
+        return kClamp( values.first().toInt(), 0, 10 );
 
     return 0;
 }
@@ -2455,8 +2455,8 @@ CollectionDB::setSongRating( const QString &url, int rating )
             .arg( escapeString( url ) ));
 
     // check boundaries
-    if ( rating > 9 ) rating = 5;
-    if ( rating < 0 ) rating = 0;
+    if ( rating > 10 ) rating = 10;
+    if ( rating < 0 || rating == 1 ) rating = 0; //no 0.5 rating exists
 
     if ( !values.isEmpty() )
     {
@@ -3337,7 +3337,12 @@ CollectionDB::initialize()
                 prev = 3;
             }
 
-            if( prev == 3 ) //every version from 1.2 forward had a stats version of 3
+            if( prev == 4 )
+            {
+                debug() << "Updating stats-database!" << endl;
+                query( "UPDATE statistics SET rating = rating * 2;" );
+            }
+            else if( prev == 3 ) //every version from 1.2 forward had a stats version of 3
             {
                 debug() << "Updating stats-database!" << endl;
                 query( "ALTER TABLE statistics ADD rating INTEGER DEFAULT 0;" );
@@ -4606,7 +4611,7 @@ QueryBuilder::setOptions( int options )
 }
 
 
-void // FIXME doesn't work right for ratings -- but we don't use it at all for ratings right now.
+void
 QueryBuilder::sortBy( int table, Q_INT64 value, bool descending )
 {
     //shall we sort case-sensitively? (not for integer columns!)
