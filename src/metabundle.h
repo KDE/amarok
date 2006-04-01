@@ -353,7 +353,7 @@ typedef QValueList<MetaBundle> BundleList;
 
 inline bool MetaBundle::operator!=(const MetaBundle &bundle) const { return !operator==( bundle ); }
 
-inline bool MetaBundle::isEmpty() const { return m_url.isEmpty(); }
+inline bool MetaBundle::isEmpty() const { return url().isEmpty(); }
 
 inline bool MetaBundle::isValidMedia() const { return m_isValidMedia; }
 
@@ -380,10 +380,10 @@ inline int MetaBundle::filesize()   const { return m_filesize == Undetermined ? 
 inline int MetaBundle::fileType()   const { return m_type; }
 
 inline KURL     MetaBundle::url()        const { return m_url; }
-inline QString  MetaBundle::filename()   const { return m_url.fileName(); }
+inline QString  MetaBundle::filename()   const { return url().fileName(); }
 inline QString  MetaBundle::directory()  const
 {
-    return m_url.isLocalFile() ? m_url.directory() : m_url.upURL().prettyURL();
+    return url().isLocalFile() ? url().directory() : url().upURL().prettyURL();
 }
 inline QString MetaBundle::title()      const { return m_title; }
 inline AtomicString MetaBundle::artist()     const { return m_artist; }
@@ -405,11 +405,11 @@ inline QString MetaBundle::type() const
 }
 inline PodcastEpisodeBundle *MetaBundle::podcastBundle() const { return m_podcastBundle; }
 
-inline QString MetaBundle::prettyURL() const { return m_url.prettyURL(); }
+inline QString MetaBundle::prettyURL() const { return url().prettyURL(); }
 inline QString MetaBundle::prettyBitrate() const { return prettyBitrate( m_bitrate ); }
 inline QString MetaBundle::prettyLength() const { return prettyLength( m_length, true ); }
-inline QString MetaBundle::prettyFilesize() const { return prettyFilesize( m_filesize ); }
-inline QString MetaBundle::prettyRating() const { return prettyRating( m_rating ); }
+inline QString MetaBundle::prettyFilesize() const { return prettyFilesize( filesize() ); }
+inline QString MetaBundle::prettyRating() const { return prettyRating( rating() ); }
 inline QString MetaBundle::prettySampleRate( bool shortened ) const
     {
         if ( shortened )
