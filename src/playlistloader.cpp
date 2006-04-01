@@ -418,7 +418,7 @@ UrlLoader::loadXml( const KURL &url )
                 //TODO add a link to the path to the playlist
                 "The XML in the playlist was invalid. Please report this as a bug to the amaroK "
                 "developers. Thank you." ), KDE::StatusBar::Error );
-        ::error() << "[PLAYLISTLOADER]: Error in file " << m_currentURL.prettyURL() << ": " << loader.lastError();
+        ::error() << "[PLAYLISTLOADER]: Error in " << m_currentURL.prettyURL() << ": " << loader.lastError() << endl;
     }
 }
 
