@@ -225,12 +225,11 @@ Playlist::Playlist( QWidget *parent )
 
     { // initialize star pixmaps
         const int h = fontMetrics().height() + itemMargin() * 2 - 4 + ( ( fontMetrics().height() % 2 ) ? 1 : 0 );
-        QImage star = QImage( locate( "data", "amarok/images/star.png" ) );
-        QImage img = star.smoothScale( h, h, QImage::ScaleMin );
+        QImage img = QImage( locate( "data", "amarok/images/star.png" ) ).smoothScale( h, h, QImage::ScaleMin );
         PlaylistItem::s_star = new QPixmap( img );
 
-        const int h2 = int( float( h ) * 3 / 4 );
-        PlaylistItem::s_smallStar = new QPixmap( star.smoothScale( h2, h2, QImage::ScaleMin ) );
+        QImage small = QImage( locate( "data", "amarok/images/smallstar.png" ) );
+        PlaylistItem::s_smallStar = new QPixmap( small.smoothScale( h, h, QImage::ScaleMin ) );
 
         PlaylistItem::s_grayedStar = new QPixmap;
         KIconEffect::toGray( img, 1.0 );

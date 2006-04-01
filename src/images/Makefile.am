@@ -36,6 +36,7 @@ images_DATA = \
     pl_inactive2.png \
     shadow_albumcover.png \
     sbinner_stars.png \
+    smallstar.png \
     splash_screen.png \
     star.png \
     time_minus.png \

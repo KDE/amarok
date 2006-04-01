@@ -926,23 +926,23 @@ void PlaylistItem::drawRating( QPainter *p )
 void PlaylistItem::drawRating( QPainter *p, int stars, int graystars, bool half )
 {
     int i = 1, x = 1;
-    const int w = star()->width(), h = star()->height(), y = height() / 2 - h / 2;
+    const int y = height() / 2 - star()->height() / 2;
     if( half )
         i++;
     for(; i <= stars; ++i )
     {
         bitBlt( p->device(), x, y, star() );
-        x += w + listView()->itemMargin();
+        x += star()->width() + listView()->itemMargin();
     }
     if( half )
     {
-        bitBlt( p->device(), x + ( w - smallStar()->width() ) / 2, y + ( h - smallStar()->height() ) / 2, smallStar() );
-        x += w + listView()->itemMargin();
+        bitBlt( p->device(), x, y, smallStar() );
+        x += star()->width() + listView()->itemMargin();
     }
     for(; i <= graystars; ++i )
     {
         bitBlt( p->device(), x, y, grayedStar() );
-        x += w + listView()->itemMargin();
+        x += star()->width() + listView()->itemMargin();
     }
 }
 
