@@ -203,10 +203,10 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void removeDuplicates();
         void removeSelectedItems();
         void setDynamicMode( DynamicMode *mode );
-        void loadDynamicMode( DynamicMode *mode ); //saveUndoState() + setDynamicMode() + repopulate()
+        void loadDynamicMode( DynamicMode *mode ); //saveUndoState() + setDynamicMode()
         void disableDynamicMode() { setDynamicMode( 0 ); }
         void editActiveDynamicMode();
-        void repopulate( bool ignorethisparameter = true );
+        void repopulate();
         void safeClear();
         void scoreChanged( const QString &path, int score );
         void ratingChanged( const QString &path, int rating );

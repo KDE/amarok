@@ -3158,28 +3158,26 @@ Playlist::customMenuClicked(int id)  //adapted from burnSelectedTracks
 void
 Playlist::setDynamicMode( DynamicMode *mode ) //SLOT
 {
+    DynamicMode* const prev = m_dynamicMode;
+    m_dynamicMode = mode;
+    if( mode )
+        AmarokConfig::setLastDynamicMode( mode->title() );
+    emit dynamicModeChanged( mode );
+
     amaroK::actionCollection()->action( "random_mode" )->setEnabled( !mode );
     amaroK::actionCollection()->action( "playlist_shuffle" )->setEnabled( !mode );
     amaroK::actionCollection()->action( "repopulate" )->setEnabled( mode );
-    if( m_dynamicMode && mode )
+    if( prev && mode )
     {
-        //if( m_dynamicMode->appendType()    != mode->appendType() ) //DYNAMICDISABLE
-        //    PlaylistBrowser::instance()->loadDynamicItems();
-        if( m_dynamicMode->previousCount() != mode->previousCount() )
+        if( prev->previousCount() != mode->previousCount() )
             adjustDynamicPrevious( mode->previousCount(), true );
-        if( m_dynamicMode->upcomingCount() != mode->upcomingCount() )
+        if( prev->upcomingCount() != mode->upcomingCount() )
             adjustDynamicUpcoming( true, mode->appendType() );
-        if( m_dynamicMode->markHistory() != mode->markHistory() )
+        if( prev->markHistory() != mode->markHistory() )
             alterHistoryItems( !mode->markHistory() );
     }
     else if( !mode )
         alterHistoryItems( true, true );
-
-    if( mode )
-        AmarokConfig::setLastDynamicMode( mode->title() );
-
-    m_dynamicMode = mode;
-    emit dynamicModeChanged( mode );
 }
 
 void
@@ -3187,7 +3185,6 @@ Playlist::loadDynamicMode( DynamicMode *mode ) //SLOT
 {
     saveUndoState();
     setDynamicMode( mode );
-    repopulate( false );
 }
 
 void
@@ -3202,7 +3199,7 @@ Playlist::editActiveDynamicMode() //SLOT
 }
 
 void
-Playlist::repopulate( bool savestate ) //SLOT
+Playlist::repopulate() //SLOT
 {
     DEBUG_BLOCK
     // Repopulate the upcoming tracks
@@ -3223,8 +3220,7 @@ Playlist::repopulate( bool savestate ) //SLOT
         list.prepend( *it );
     }
 
-    if( savestate )
-        saveUndoState();
+    saveUndoState();
 
     //remove the items
     for( QListViewItem *item = list.first(); item; item = list.next() )
