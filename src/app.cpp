@@ -1061,12 +1061,14 @@ void App::firstRunWizard()
 
 void App::setRating( int n )
 {
+    n *= 2;
+
     if( EngineController::instance()->engine()->state() == Engine::Playing ||
         EngineController::instance()->engine()->state() == Engine::Paused  ||
         EngineController::instance()->engine()->state() == Engine::Idle    )
     {
         CollectionDB::instance()->setSongRating( EngineController::instance()->playingURL().path(), n );
-        amaroK::OSD::instance()->OSDWidget::show( i18n("Rating: %1").arg( QString().fill( '*', n ) ) );
+        amaroK::OSD::instance()->OSDWidget::show( i18n("Rating: %1").arg( QString().fill( '*', n/2 ) ) );
     }
     else if( PlaylistWindow::self()->isReallyShown() && Playlist::instance()->qscrollview()->hasFocus() )
         Playlist::instance()->setSelectedRatings( n );
