@@ -135,7 +135,7 @@ TagDialog::previousTrack()
 
         storeTags();
 
-        m_playlistItem = (PlaylistItem *)m_playlistItem->itemAbove();
+        m_playlistItem = static_cast<PlaylistItem *>( m_playlistItem->itemAbove() );
 
         loadTags( m_playlistItem->url() );
     }
@@ -161,7 +161,7 @@ TagDialog::nextTrack()
 
         storeTags();
 
-        m_playlistItem = (PlaylistItem *)m_playlistItem->itemBelow();
+        m_playlistItem = static_cast<PlaylistItem *>( m_playlistItem->itemBelow() );
 
         loadTags( m_playlistItem->url() );
     }
@@ -352,7 +352,7 @@ void TagDialog::init()
 {
 
     //NOTE We allocate on the stack in Playlist
-    if( parent() != (void*)Playlist::instance() )
+    if( parent() != Playlist::instance()->qscrollview() )
         setWFlags( getWFlags() | Qt::WDestructiveClose );
 
     KConfig *config = amaroK::config( "TagDialog" );

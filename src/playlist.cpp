@@ -116,13 +116,13 @@ public:
         All = QListViewItemIterator::Invisible
     };
 
-    inline PlaylistItem *operator*() { return (PlaylistItem*)QListViewItemIterator::operator*(); }
+    inline PlaylistItem *operator*() { return static_cast<PlaylistItem*>( QListViewItemIterator::operator*() ); }
 
     /// @return the next visible PlaylistItem after item
     static PlaylistItem *nextVisible( PlaylistItem *item )
     {
         MyIterator it( item );
-        return (*it == item) ? *(MyIterator&)(++it) : *it;
+        return (*it == item) ? *static_cast<MyIterator&>(++it) : *it;
     }
 
 };
@@ -522,7 +522,7 @@ Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool
         // prevent association with something that is about to be deleted
         // TODO improve the playlist with a list of items that are volatile or something
         while( after && after->url().isEmpty() )
-            after = (PlaylistItem*)after->itemAbove();
+            after = static_cast<PlaylistItem*>( after->itemAbove() );
 
         ThreadWeaver::instance()->queueJob( new UrlLoader( list, after, directPlay ) );
     }
@@ -811,7 +811,7 @@ Playlist::adjustDynamicUpcoming( bool saveUndo, const int type )
         //remove the items
         for( QListViewItem *item = list.last(); item; item = list.prev() )
         {
-            removeItem( (PlaylistItem*)item );
+            removeItem( static_cast<PlaylistItem*>( item ) );
             delete item;
         }
         //NOTE no need to emit childCountChanged(), removeItem() does that for us
@@ -839,7 +839,7 @@ Playlist::adjustDynamicPrevious( uint songCount, bool saveUndo )
     //remove the items
     for( QListViewItem *item = list.first(); item; item = list.next() )
     {
-        removeItem( (PlaylistItem*)item );
+        removeItem( static_cast<PlaylistItem*>( item ) );
         delete item;
     }
 }
@@ -2124,7 +2124,7 @@ Playlist::safeClear()
     QListViewItem *n;
     while( c ) {
         n = c->nextSibling();
-        if ( !( (PlaylistItem *)( c ) )->isEmpty() ) //avoid deleting markers
+        if ( !static_cast<PlaylistItem *>( c )->isEmpty() ) //avoid deleting markers
             delete c;
         c = n;
     }
@@ -2383,7 +2383,7 @@ Playlist::contentsDropEvent( QDropEvent *e )
 
             KURL::List list;
             KURLDrag::decode( e, list );
-            insertMediaInternal( list, (PlaylistItem*)after );
+            insertMediaInternal( list, static_cast<PlaylistItem*>( after ) );
         }
         else
             e->ignore();
@@ -2401,7 +2401,7 @@ Playlist::dragObject()
 
     for( MyIt it( this, MyIt::Selected ); *it; ++it )
     {
-        const PlaylistItem *item = (PlaylistItem*)*it;
+        const PlaylistItem *item = static_cast<PlaylistItem*>( *it );
         const KURL url = item->url();
         list += url;
     }
@@ -2918,9 +2918,9 @@ Playlist::customEvent( QCustomEvent *e )
                     after = after->nextSibling();
             }
             else
-                after = (PlaylistItem *)after->itemBelow();
+                after = static_cast<PlaylistItem *>( after->itemBelow() );
 
-            PlaylistItem *prev = (PlaylistItem *)after->itemAbove();
+            PlaylistItem *prev = static_cast<PlaylistItem *>( after->itemAbove() );
             if( prev )
                 prev->setEnabled( false );
 
@@ -2944,7 +2944,7 @@ Playlist::customEvent( QCustomEvent *e )
                     after = after->nextSibling();
             }
             else
-                after = (PlaylistItem *)after->itemBelow();
+                after = static_cast<PlaylistItem *>( after->itemBelow() );
 
             if( after )
             {
@@ -3212,7 +3212,7 @@ Playlist::repopulate( bool savestate ) //SLOT
 
     for( ; *it; ++it )
     {
-        PlaylistItem *item = (PlaylistItem *)(*it);
+        PlaylistItem *item = static_cast<PlaylistItem *>(*it);
         int     queueIndex = m_nextTracks.findRef( item );
         bool    isQueued   = queueIndex != -1;
         bool    isMarker   = item->isEmpty();
@@ -3230,7 +3230,7 @@ Playlist::repopulate( bool savestate ) //SLOT
     //remove the items
     for( QListViewItem *item = list.first(); item; item = list.next() )
     {
-        removeItem( (PlaylistItem*)item );
+        removeItem( static_cast<PlaylistItem*>( item ) );
         delete item;
     }
 
@@ -3318,13 +3318,13 @@ Playlist::removeSelectedItems() //SLOT
 
     //remove the items
     for( QListViewItem *item = queued.first(); item; item = queued.next() )
-        removeItem( (PlaylistItem*)item, true );
+        removeItem( static_cast<PlaylistItem*>( item ), true );
     emit queueChanged( PLItemList(), queued );
     for( QListViewItem *item = queued.first(); item; item = queued.next() )
         delete item;
     for( QListViewItem *item = list.first(); item; item = list.next() )
     {
-        removeItem( (PlaylistItem*)item );
+        removeItem( static_cast<PlaylistItem*>( item ) );
         delete item;
     }
 
@@ -3399,7 +3399,7 @@ Playlist::removeDuplicates() //SLOT
 
     QSortedList<PlaylistItem> list;
     for( QListViewItemIterator it( this ); it.current(); ++it )
-        list.prepend( (PlaylistItem*)it.current() );
+        list.prepend( static_cast<PlaylistItem*>( it.current() ) );
 
     list.sort();
 
@@ -4463,7 +4463,7 @@ Playlist::slotMouseButtonPressed( int button, QListViewItem *after, const QPoint
         const KURL url = KURL::fromPathOrURL( path );
 
         if( url.isValid() )
-            insertMediaInternal( url, (PlaylistItem*)(after ? after : lastItem()) );
+            insertMediaInternal( url, static_cast<PlaylistItem*>(after ? after : lastItem()) );
 
         break;
     }

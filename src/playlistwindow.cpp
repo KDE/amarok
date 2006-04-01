@@ -453,7 +453,7 @@ void PlaylistWindow::createGUI()
     const QStringList::ConstIterator last = list.fromLast();
     for( QStringList::ConstIterator it = list.constBegin(); it != end; ++it )
     {
-        KToolBarButton* const button = (KToolBarButton*)m_toolbar->child( (*it).latin1() );
+        KToolBarButton* const button = static_cast<KToolBarButton*>( m_toolbar->child( (*it).latin1() ) );
 
         if ( it == last ) {
             //if the user has no PlayerWindow, he MUST have the menu action plugged

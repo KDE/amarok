@@ -3646,7 +3646,7 @@ QStringList SqliteConnection::query( const QString& statement )
             //iterate over columns
             for ( int i = 0; i < number; i++ )
             {
-                values << QString::fromUtf8( (const char*) sqlite3_column_text( stmt, i ) );
+                values << QString::fromUtf8( reinterpret_cast<const char*>( sqlite3_column_text( stmt, i ) ) );
             }
         }
         //deallocate vm ressources

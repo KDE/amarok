@@ -77,8 +77,8 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
         bool isEditing( int column ) const;
 
         /// convenience functions
-        Playlist *listView() const { return (Playlist*)KListViewItem::listView(); }
-        PlaylistItem *nextSibling() const { return (PlaylistItem*)KListViewItem::nextSibling(); }
+        Playlist *listView() const { return reinterpret_cast<Playlist*>( KListViewItem::listView() ); }
+        PlaylistItem *nextSibling() const { return static_cast<PlaylistItem*>( KListViewItem::nextSibling() ); }
 
         void refreshMood();
         void checkMood();

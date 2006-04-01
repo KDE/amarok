@@ -73,7 +73,7 @@ amaroK::SocketServer::SocketServer( const QString &socketName, QObject *parent )
     qstrcpy( &local.sun_path[0], m_path );
     ::unlink( m_path ); //FIXME why do we delete it?
 
-    if( ::bind( m_sockfd, (sockaddr*) &local, sizeof(local) ) == -1 ) {
+    if( ::bind( m_sockfd, reinterpret_cast<sockaddr*>( &local ), sizeof(local) ) == -1 ) {
         warning() << "bind() error\n";
         ::close( m_sockfd );
         m_sockfd = -1;
@@ -133,7 +133,7 @@ Vis::SocketNotifier::request( int sockfd ) //slot
 
         if( result == "REG" )
         {
-            pid_t *pid = (pid_t*)(buf + 4);
+            pid_t *pid = reinterpret_cast<pid_t*>(buf + 4);
 
             debug() << "Registration pid: " << *pid << endl;
 
@@ -160,12 +160,12 @@ Vis::SocketNotifier::request( int sockfd ) //slot
 Vis::Selector*
 Vis::Selector::instance()
 {
-    QWidget *parent = (QWidget*)pApp->playlistWindow();
+    QWidget *parent = reinterpret_cast<QWidget*>( pApp->playlistWindow() );
     QObject *o = parent->child( "Vis::Selector::instance" );
 
     debug() << bool(o == 0) << endl;
 
-    return o ? (Selector*)o : new Selector( parent );
+    return o ? static_cast<Selector*>( o ) : new Selector( parent );
 }
 
 Vis::Selector::Selector( QWidget *parent )
@@ -194,7 +194,7 @@ Vis::Selector::Selector( QWidget *parent )
     //can I get a pointer to the data section of a QCString?
     char str[4096];
     FILE *vis = popen( "amarok_xmmswrapper2 --list", "r" );
-    str[ fread( (void*)str, sizeof(char), 4096, vis ) ] = '\0';
+    str[ fread( static_cast<void*>( str ), sizeof(char), 4096, vis ) ] = '\0';
     pclose( vis );
 
     QStringList entries = QStringList::split( '\n', QString::fromLocal8Bit( str ) );
@@ -203,7 +203,7 @@ Vis::Selector::Selector( QWidget *parent )
         new Item( this, "amarok_xmmswrapper2", *it, "xmms" );
 
     vis = popen( "amarok_libvisual --list", "r" );
-    str[ fread( (void*)str, sizeof(char), 4096, vis ) ] = '\0';
+    str[ fread( static_cast<void*>( str ), sizeof(char), 4096, vis ) ] = '\0';
     pclose( vis );
 
     entries = QStringList::split( '\n', QString::fromLocal8Bit( str ) );
@@ -219,7 +219,7 @@ Vis::Selector::Selector( QWidget *parent )
 void
 Vis::Selector::processExited( KProcess *proc )
 {
-    for( Item *item = (Item*)firstChild(); item; item = (Item*)item->nextSibling() )
+    for( Item *item = static_cast<Item*>( firstChild() ); item; item = static_cast<Item*>( item->nextSibling() ) )
         if( item->m_proc == proc )
             item->setOn( false ); //will delete m_proc via stateChange( bool )
 }
@@ -236,7 +236,7 @@ Vis::Selector::mapPID( int pid, int sockfd )
 {
     //TODO if we don't find the PID, request process plugin so we can assign the correct checkitem
 
-    for( Item *item = (Item*)firstChild(); item; item = (Item*)item->nextSibling() )
+    for( Item *item = static_cast<Item*>( firstChild() ); item; item = static_cast<Item*>( item->nextSibling() ) )
         if( item->m_proc && item->m_proc->pid() == pid )
         {
             item->m_sockfd = sockfd;
@@ -254,7 +254,7 @@ Vis::Selector::rightButton( QListViewItem* qitem, const QPoint& pos, int )
     if( !qitem )
         return;
 
-    Item *item = (Item*)qitem;
+    Item *item = static_cast<Item*>( qitem );
 
     KPopupMenu menu( this );
     menu.insertItem( i18n( "Configure" ), 0 );

@@ -940,7 +940,7 @@ PlaylistFile::loadSMIL( QTextStream &stream )
 #include <klocale.h>
 
 RemotePlaylistFetcher::RemotePlaylistFetcher( const KURL &source, QListViewItem *after, bool playFirstUrl )
-        : QObject( (QObject*)Playlist::instance() )
+        : QObject( Playlist::instance()->qscrollview() )
         , m_source( source )
         , m_after( after )
         , m_playFirstUrl( playFirstUrl )

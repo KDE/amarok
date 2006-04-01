@@ -698,7 +698,7 @@ App::applyColorScheme()
     QColorGroup group;
     using amaroK::ColorScheme::AltBase;
     int h, s, v;
-    QWidget* const browserBar = (QWidget*)playlistWindow()->child( "BrowserBar" );
+    QWidget* const browserBar = static_cast<QWidget*>( playlistWindow()->child( "BrowserBar" ) );
 
     if( AmarokConfig::schemeKDE() )
     {
@@ -967,7 +967,7 @@ void App::slotConfigAmarok( const QCString& page )
 {
     DEBUG_THREAD_FUNC_INFO
 
-    AmarokConfigDialog* dialog = (AmarokConfigDialog*) KConfigDialog::exists( "settings" );
+    AmarokConfigDialog* dialog = static_cast<AmarokConfigDialog*>( KConfigDialog::exists( "settings" ) );
 
     if( !dialog )
     {
@@ -1074,7 +1074,8 @@ void App::setRating( int n )
 
 QWidget *App::mainWindow() const
 {
-    return AmarokConfig::showPlayerWindow() ? (QWidget*)m_pPlayerWindow : (QWidget*)m_pPlaylistWindow;
+    return AmarokConfig::showPlayerWindow() ? static_cast<QWidget*>( m_pPlayerWindow )
+                                            : static_cast<QWidget*>( m_pPlaylistWindow );
 }
 
 namespace amaroK

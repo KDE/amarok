@@ -816,7 +816,7 @@ void CoverManager::updateStatusBar()
         //album info
         for( QIconViewItem *item = m_coverView->firstItem(); item; item = item->nextItem() ) {
             totalCounter++;
-            if( !((CoverViewItem*)item)->hasCover() )
+            if( !static_cast<CoverViewItem*>( item )->hasCover() )
                 missingCounter++;    //counter for albums without cover
         }
 

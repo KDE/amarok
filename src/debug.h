@@ -61,7 +61,7 @@ namespace Debug
     inline QCString &indent()
     {
         QObject *o = qApp ? qApp->child( "DEBUG_indent" ) : 0;
-        return (o ? (Indent*)o : new Indent)->m_string;
+        return (o ? static_cast<Indent*>( o ) : new Indent)->m_string;
     }
     #undef qApp
 

@@ -519,7 +519,7 @@ CoverFetcher::getUserQuery( QString explanation )
         explanation = i18n("Ask Amazon for covers using this query:");
 
     EditSearchDialog dialog(
-            (QWidget*)parent(),
+            static_cast<QWidget*>( parent() ),
             explanation,
             m_userQuery,
             this );
@@ -587,7 +587,7 @@ CoverFetcher::getUserQuery( QString explanation )
 void
 CoverFetcher::showCover()
 {
-    CoverFoundDialog dialog( (QWidget*)parent(), m_image, m_currentCoverName );
+    CoverFoundDialog dialog( static_cast<QWidget*>( parent() ), m_image, m_currentCoverName );
 
     switch( dialog.exec() )
     {

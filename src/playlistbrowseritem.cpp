@@ -251,7 +251,7 @@ QDomElement PlaylistCategory::xml()
         i.setAttribute( "name", text(0) );
         if( isOpen() )
             i.setAttribute( "isOpen", "true" );
-        for( PlaylistBrowserEntry *it = (PlaylistBrowserEntry*)firstChild(); it; it = (PlaylistBrowserEntry*)it->nextSibling() )
+        for( PlaylistBrowserEntry *it = static_cast<PlaylistBrowserEntry*>( firstChild() ); it; it = static_cast<PlaylistBrowserEntry*>( it->nextSibling() ) )
         {
             if( it == PlaylistBrowser::instance()->m_coolStreams )
             {
@@ -370,7 +370,7 @@ void PlaylistEntry::load()
     m_loaded = false;
     m_loading = true;
     //starts loading animation
-    ((PlaylistBrowserView *)listView())->startAnimation( this );
+    static_cast<PlaylistBrowserView *>(listView())->startAnimation( this );
 
     //delete all children, so that we don't duplicate things
     while( firstChild() )
@@ -394,7 +394,7 @@ void PlaylistEntry::insertTracks( QListViewItem *after, QValueList<MetaBundle> b
 {
     int pos = 0;
     if( after ) {
-        pos = m_trackList.find( ((PlaylistTrackItem*)after)->trackInfo() ) + 1;
+        pos = m_trackList.find( static_cast<PlaylistTrackItem*>(after)->trackInfo() ) + 1;
         if( pos == -1 )
             return;
     }
@@ -444,7 +444,7 @@ void PlaylistEntry::removeTrack( QListViewItem *item, bool isLast )
     m_trackList.remove( info );
     if( item == m_lastTrack ) {
         QListViewItem *above = item->itemAbove();
-        m_lastTrack = above ? (PlaylistTrackItem *)above : 0;
+        m_lastTrack = above ? static_cast<PlaylistTrackItem *>( above ) : 0;
     }
     delete item;
 
@@ -479,7 +479,7 @@ void PlaylistEntry::customEvent( QCustomEvent *e )
 
         m_loading = false;
         m_loaded = true;
-        ((PlaylistBrowserView *)listView())->stopAnimation( this );  //stops the loading animation
+        static_cast<PlaylistBrowserView *>(listView())->stopAnimation( this );  //stops the loading animation
 
         if( m_trackCount && !m_dynamic && !isDynamic() ) setOpen( true );
         else listView()->repaintItem( this );
@@ -619,7 +619,7 @@ void PlaylistEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, i
     pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor(0) );
 #endif
 
-    KListView *lv = (KListView *)listView();
+    KListView *lv = static_cast<KListView *>( listView() );
 
     if( m_loading && m_loadingPix ) {
         pBuf.drawPixmap( (lv->treeStepSize() - m_loadingPix->width())/2,
@@ -875,7 +875,7 @@ void StreamEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, int
     pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor(0) );
 #endif
 
-    KListView *lv = (KListView *)listView();
+    KListView *lv = static_cast<KListView *>( listView() );
 
     QFont font( p->font() );
     QFontMetrics fm( p->fontMetrics() );
@@ -2019,7 +2019,7 @@ PodcastEpisode::paintCell( QPainter *p, const QColorGroup &cg, int column, int w
     pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor(0) );
 #endif
 
-    KListView *lv = (KListView *)listView();
+    KListView *lv = static_cast<KListView *>( listView() );
 
     QFont font( p->font() );
     QFontMetrics fm( p->fontMetrics() );

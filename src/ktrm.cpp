@@ -598,7 +598,7 @@ void KTRMLookup::collision()
         case eTrackList:
         {
             debug() << "eTrackList" << endl;
-            albumtrackresult_t **tracks = (albumtrackresult_t **) results;
+            albumtrackresult_t **tracks = reinterpret_cast<albumtrackresult_t **>( results );
             d->results.clear();
 
             for(int i = 0; i < resultCount; i++) {

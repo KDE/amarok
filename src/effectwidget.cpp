@@ -126,14 +126,14 @@ void EffectWidget::slotAdd()
 
 void EffectWidget::slotConfigure()
 {
-    EffectListItem *item = (EffectListItem*)m_pListView->currentItem();
+    EffectListItem *item = static_cast<EffectListItem*>( m_pListView->currentItem() );
     item->configure();
 }
 
 
 void EffectWidget::slotRemove()
 {
-    if ( EffectListItem *item = (EffectListItem*)m_pListView->currentItem() )
+    if ( EffectListItem *item = static_cast<EffectListItem*>( m_pListView->currentItem() ) )
     {
         EngineController::engine()->effects().removeEffect( item->m_id );
         delete item;
@@ -143,7 +143,7 @@ void EffectWidget::slotRemove()
 
 void EffectWidget::slotChanged( QListViewItem *selectedItem ) //SLOT
 {
-    const EffectListItem* const item = (EffectListItem*)selectedItem;
+    const EffectListItem* const item = static_cast<EffectListItem*>( selectedItem );
     const bool enabled = item && EngineController::engine()->effects().effectConfigurable( item->m_id );
 
     m_pConfigureButton->setEnabled( enabled );

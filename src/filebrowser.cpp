@@ -165,7 +165,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
     }
 
     {
-        QPopupMenu* const menu = ((KActionMenu*)actionCollection->action("popupMenu"))->popupMenu();
+        QPopupMenu* const menu = static_cast<KActionMenu*>(actionCollection->action("popupMenu"))->popupMenu();
 
         menu->clear();
         menu->insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), MakePlaylist );
@@ -196,7 +196,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
     {
         KActionMenu *a;
 
-        a = (KActionMenu*)actionCollection->action( "sorting menu" );
+        a = static_cast<KActionMenu*>( actionCollection->action( "sorting menu" ) );
         a->setIcon( "configure" );
         a->setDelayed( false ); //TODO should be done by KDirOperator
 
@@ -426,9 +426,9 @@ inline void
 FileBrowser::prepareContextMenu()
 {
     const KFileItemList &items = *m_dir->selectedItems();
-    ((KActionMenu*)m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( SavePlaylist,
+    static_cast<KActionMenu*>(m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( SavePlaylist,
         items.count() > 1 || ( items.count() == 1 && items.getFirst()->isDir() ) );
-    ((KActionMenu*)m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( MediaDevice,
+    static_cast<KActionMenu*>(m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( MediaDevice,
         MediaBrowser::isAvailable() );
 }
 
@@ -537,7 +537,7 @@ public:
         QPtrList<QListViewItem> items = selectedItems();
         KURL::List urls;
 
-        for( Item *item = (Item*)items.first(); item; item = (Item*)items.next() )
+        for( Item *item = static_cast<Item*>( items.first() ); item; item = static_cast<Item*>( items.next() ) )
             urls += item->m_url;
 
         return new KURLDrag( urls, this );
@@ -662,7 +662,7 @@ SearchPane::searchMatches( const KFileItemList &list )
         if( (*it)->isDir() )
             m_dirs += (*it)->url();
         else if( m_filter.exactMatch( (*it)->name() ) )
-            new KURLView::Item( (*it)->url(), (KURLView*)m_listView );
+            new KURLView::Item( (*it)->url(), static_cast<KURLView*>( m_listView ) );
     }
 }
 

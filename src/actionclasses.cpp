@@ -428,7 +428,7 @@ VolumeAction::plug( QWidget *w, int index )
 {
     //NOTE we only support one plugging currently
 
-    delete (amaroK::VolumeSlider*) m_slider; //just in case, remember, we only support one plugging!
+    delete static_cast<amaroK::VolumeSlider*>( m_slider ); //just in case, remember, we only support one plugging!
 
     m_slider = new amaroK::VolumeSlider( w, amaroK::VOLUME_MAX );
     m_slider->setName( "ToolBarVolume" );

@@ -36,7 +36,7 @@ QueueItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width,
 {
     KListViewItem::paintCell( p, cg, column, width, align );
 
-    QString str = QString::number( ( (KListView *)listView() )->itemIndex( this ) + 1 );
+    QString str = QString::number( ( static_cast<KListView *>( listView() ) )->itemIndex( this ) + 1 );
 
     //draw the symbol's outline
           uint fw = p->fontMetrics().width( str ) + 2;

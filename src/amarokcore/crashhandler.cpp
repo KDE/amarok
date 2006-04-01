@@ -55,7 +55,7 @@ namespace amaroK
         debug() << "Running: " << command << endl;
 
         FILE *process = ::popen( command, "r" );
-        stdoutBuf[ std::fread( (void*)stdoutBuf, sizeof(char), SIZE-1, process ) ] = '\0';
+        stdoutBuf[ std::fread( static_cast<void*>( stdoutBuf ), sizeof(char), SIZE-1, process ) ] = '\0';
         ::pclose( process );
 
         return QString::fromLocal8Bit( stdoutBuf );

@@ -58,7 +58,7 @@ EngineController::EngineController()
         , m_timer( new QTimer( this ) )
         , m_playFailureCount( 0 )
 {
-    m_voidEngine = m_engine = (EngineBase*)loadEngine( "void-engine" );
+    m_voidEngine = m_engine = static_cast<EngineBase*>( loadEngine( "void-engine" ) );
 
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotMainTimer() ) );
 }
@@ -155,7 +155,7 @@ EngineController::loadEngine( const QString &engineName )
 
         if( plugin ) {
             QObject *bar = amaroK::StatusBar::instance();
-            EngineBase *engine = (EngineBase*)plugin;
+            EngineBase *engine = static_cast<EngineBase*>( plugin );
 
             connect( engine, SIGNAL(stateChanged( Engine::State )),
                        this,   SLOT(slotStateChanged( Engine::State )) );

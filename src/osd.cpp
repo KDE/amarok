@@ -572,7 +572,7 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
 void
 amaroK::OSD::applySettings()
 {
-    setAlignment( (OSDWidget::Alignment)AmarokConfig::osdAlignment() );
+    setAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) );
     setDuration( AmarokConfig::osdDuration() );
     setEnabled( AmarokConfig::osdEnabled() );
     setOffset( AmarokConfig::osdYOffset() );

@@ -407,7 +407,7 @@ CollectionView::renderView()  //SLOT
         QValueList<Tag> visibleColumns;
         for ( int c = 0; c < columns(); ++c )
             if ( columnWidth( c ) != 0 )
-                visibleColumns.append( (Tag)c );
+                visibleColumns.append( static_cast<Tag>( c ) );
 
         //always fetch URL
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
@@ -2434,7 +2434,7 @@ CollectionView::eventFilter( QObject* o, QEvent* e )
 {
     if( o == header()
         && e->type() == QEvent::MouseButtonPress
-        && ( (QMouseEvent*)e )->button() == Qt::RightButton
+        && static_cast<QMouseEvent*>( e )->button() == Qt::RightButton
         && m_viewMode == modeFlatView )
     {
         KPopupMenu popup;
@@ -2443,7 +2443,7 @@ CollectionView::eventFilter( QObject* o, QEvent* e )
 
         for ( int i = 0; i < columns(); ++i )
         {
-            popup.insertItem( captionForTag( (Tag)i ), i );
+            popup.insertItem( captionForTag( static_cast<Tag>( i ) ), i );
             popup.setItemChecked( i, ( columnWidth(i) != 0 ) );
 
             //title column should always be shown

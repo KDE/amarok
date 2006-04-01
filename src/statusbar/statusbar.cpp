@@ -80,9 +80,9 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     QBoxLayout *layout = new QHBoxLayout( hbox, 0, 2 );
     layout->addSpacing( 3 );
     layout->addWidget( m_queueLabel = new QueueLabel( hbox ) );
-    layout->addWidget( new SelectLabel( (amaroK::SelectAction*)amaroK::action( "repeat" ), hbox ) );
-    layout->addWidget( new ToggleLabel( (KToggleAction*)amaroK::action( "random_mode" ), hbox ) );
-    layout->addWidget( new ToggleLabel( (KToggleAction*)amaroK::action( "entire_albums" ), hbox ) );
+    layout->addWidget( new SelectLabel( static_cast<amaroK::SelectAction*>( amaroK::action( "repeat" ) ), hbox ) );
+    layout->addWidget( new ToggleLabel( static_cast<KToggleAction*>( amaroK::action( "random_mode" ) ), hbox ) );
+    layout->addWidget( new ToggleLabel( static_cast<KToggleAction*>( amaroK::action( "entire_albums" ) ), hbox ) );
     layout->addSpacing( 3 );
 
     //TODO reimplement insertChild() instead

@@ -725,7 +725,7 @@ StatisticsItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int w
 
     QPainter pBuf( &buffer, true );
 
-    KListView *lv = (KListView *)listView();
+    KListView *lv = static_cast<KListView *>( listView() );
 
     QFont font( p->font() );
     font.setBold( true );
@@ -838,7 +838,7 @@ StatisticsDetailedItem::paintCell( QPainter *p, const QColorGroup &cg, int colum
     pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor(0) );
 #endif
 
-    KListView *lv = (KListView *)listView();
+    KListView *lv = static_cast<KListView *>( listView() );
 
     QFont font( p->font() );
     QFontMetrics fm( p->fontMetrics() );

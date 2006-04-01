@@ -398,8 +398,8 @@ QDomElement SubmitItem::toDomElement( QDomDocument& document ) const
 
 int SubmitQueue::compareItems( QPtrCollection::Item item1, QPtrCollection::Item item2 )
 {
-    SubmitItem *sItem1 = (SubmitItem*) item1;
-    SubmitItem *sItem2 = (SubmitItem*) item2;
+    SubmitItem *sItem1 = static_cast<SubmitItem*>( item1 );
+    SubmitItem *sItem2 = static_cast<SubmitItem*>( item2 );
     int result;
 
     if ( sItem1 == sItem2 )

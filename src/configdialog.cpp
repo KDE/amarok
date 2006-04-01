@@ -199,7 +199,7 @@ void AmarokConfigDialog::showPage( const QCString& page )
  */
 void AmarokConfigDialog::updateSettings()
 {
-    OSDPreviewWidget *osd = (OSDPreviewWidget*)child( "osdpreview" );
+    OSDPreviewWidget *osd = static_cast<OSDPreviewWidget*>( child( "osdpreview" ) );
     AmarokConfig::setOsdAlignment( osd->alignment() );
     AmarokConfig::setOsdYOffset( osd->y() );
     amaroK::OSD::instance()->applySettings();
@@ -266,7 +266,7 @@ void AmarokConfigDialog::updateWidgetsDefault()
  */
 bool AmarokConfigDialog::hasChanged()
 {
-    OSDPreviewWidget *osd = (OSDPreviewWidget*) child( "osdpreview" );
+    OSDPreviewWidget *osd = static_cast<OSDPreviewWidget*>( child( "osdpreview" ) );
 
     return  m_soundSystem->currentText() != m_pluginAmarokName[AmarokConfig::soundSystem()] ||
             osd->alignment() != AmarokConfig::osdAlignment() ||

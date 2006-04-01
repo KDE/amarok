@@ -1133,7 +1133,7 @@ void MetaBundle::loadImagesFromTag( const TagLib::ID3v2::Tag &tag )
     TagLib::ID3v2::FrameList l = tag.frameListMap()[ "APIC" ];
     foreachType( TagLib::ID3v2::FrameList, l ) {
         debug() << "Found APIC frame" << endl;
-        TagLib::ID3v2::AttachedPictureFrame *ap = (TagLib::ID3v2::AttachedPictureFrame*)*it;
+        TagLib::ID3v2::AttachedPictureFrame *ap = static_cast<TagLib::ID3v2::AttachedPictureFrame*>( *it );
 
         const TagLib::ByteVector &imgVector = ap->picture();
         debug() << "Size of image: " <<  imgVector.size() << " byte" << endl;

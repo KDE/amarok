@@ -731,7 +731,7 @@ void CriteriaEditor::loadEditWidgets()
 
     QObjectList* list = m_editBox->queryList( "QWidget" );
     for( QObject *obj = list->first(); obj; obj = list->next()  )
-        ((QWidget*)obj)->deleteLater();
+        static_cast<QWidget*>(obj)->deleteLater();
 
     delete list;
 
@@ -748,7 +748,7 @@ void CriteriaEditor::loadEditWidgets()
         case AutoCompletionString:    //artist, album, genre
         {
             m_comboBox = new KComboBox( true, m_editBox );
-            m_lineEdit = (KLineEdit*)m_comboBox->lineEdit();
+            m_lineEdit = static_cast<KLineEdit*>( m_comboBox->lineEdit() );
             m_lineEdit->setFocus();
             m_comboBox->setMinimumSize( QSize( 240, 20 ) );
             m_comboBox->show();

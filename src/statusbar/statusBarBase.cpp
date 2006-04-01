@@ -60,7 +60,7 @@ namespace SingleShotPool
 {
     static void startTimer( int timeout, QObject *receiver, const char *slot )
     {
-        QTimer *timer = (QTimer*)receiver->child( slot );
+        QTimer *timer = static_cast<QTimer*>( receiver->child( slot ) );
         if( !timer ) {
             timer = new QTimer( receiver, slot );
             receiver->connect( timer, SIGNAL(timeout()), slot );
@@ -71,7 +71,7 @@ namespace SingleShotPool
 
     static inline bool isActive( QObject *parent, const char *slot )
     {
-        QTimer *timer = (QTimer*)parent->child( slot );
+        QTimer *timer = static_cast<QTimer*>( parent->child( slot ) );
 
         return timer && timer->isA( "QTimer" ) && timer->isActive();
     }
@@ -175,7 +175,7 @@ StatusBar::paintEvent( QPaintEvent* )
     QPainter p( this );
 
     for( QObject * o = list->first(); o; o = list->next() ) {
-        QWidget *w = (QWidget*)o;
+        QWidget *w = static_cast<QWidget*>( o );
 
         if ( !w->isVisible() )
             continue;
@@ -376,7 +376,7 @@ StatusBar::newProgressOperation( QObject *owner )
 ProgressBar&
 StatusBar::newProgressOperation( KIO::Job *job )
 {
-    ProgressBar & bar = newProgressOperation( (QObject*)job );
+    ProgressBar & bar = newProgressOperation( static_cast<QObject*>( job ) );
     bar.setTotalSteps( 100 );
 
     if(!allDone())
@@ -391,7 +391,7 @@ StatusBar::newProgressOperation( KIO::Job *job )
 void
 StatusBar::endProgressOperation()
 {
-    QObject *owner = (QObject*)sender(); //HACK deconsting it
+    QObject *owner = const_cast<QObject*>( sender() ); //HACK deconsting it
     KIO::Job *job = dynamic_cast<KIO::Job*>( owner );
 
     //FIXME doesn't seem to work for KIO::DeleteJob, it has it's own error handler and returns no error too
@@ -486,7 +486,7 @@ StatusBar::setProgress( int steps )
 void
 StatusBar::setProgress( KIO::Job *job, unsigned long percent )
 {
-    setProgress( ( QObject* ) job, percent );
+    setProgress( static_cast<QObject*>( job ), percent );
 }
 
 void

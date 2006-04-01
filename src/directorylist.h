@@ -77,7 +77,7 @@ public:
     Item( QListView *parent );
     Item( QListViewItem *parent, const KURL &url );
 
-    QCheckListItem *parent() const { return (QCheckListItem*)QListViewItem::parent(); }
+    QCheckListItem *parent() const { return static_cast<QCheckListItem*>( QListViewItem::parent() ); }
     bool isDisabled() const { return CollectionSetup::instance()->recursive() && parent() && parent()->isOn(); }
     QString fullPath() const;
 

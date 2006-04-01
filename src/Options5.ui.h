@@ -32,7 +32,7 @@ email                : fh@ez.no
 void Options5::init()
 {
     m_pOSDPreview = new OSDPreviewWidget( this ); //must be child!!!
-    m_pOSDPreview->setAlignment( (OSDWidget::Alignment)AmarokConfig::osdAlignment() );
+    m_pOSDPreview->setAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) );
     m_pOSDPreview->setOffset( AmarokConfig::osdYOffset() );
 
     connect( m_pOSDPreview, SIGNAL( positionChanged() ), SLOT( slotPositionChanged() ) );

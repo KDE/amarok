@@ -645,7 +645,7 @@ QSize MultiTabBarButton::sizeHint() const
         w += style().pixelMetric( QStyle::PM_MenuButtonIndicator, this );
 
     if ( pixmap() ) {
-        QPixmap * pm = ( QPixmap * ) pixmap();
+        QPixmap * pm = const_cast< QPixmap * >( pixmap() );
         w += pm->width();
         h += pm->height();
     } else {

@@ -144,7 +144,7 @@ ThreadWeaver::event( QEvent *e )
     switch( e->type() )
     {
     case JobEvent: {
-        Job *job = (Job*)e;
+        Job *job = static_cast<Job*>( e );
         DebugStream d = debug() << "Job ";
         const QCString name = job->name();
         Thread *thread = job->m_thread;

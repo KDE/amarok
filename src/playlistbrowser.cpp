@@ -130,7 +130,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     m_listview = new PlaylistBrowserView( browserBox );
 
     KConfig *config = amaroK::config( "PlaylistBrowser" );
-    m_viewMode = (ViewMode)config->readNumEntry( "View", LISTVIEW );  //restore the view mode
+    m_viewMode = static_cast<ViewMode>( config->readNumEntry( "View", LISTVIEW ) );  //restore the view mode
     viewMenu->setItemChecked( m_viewMode, true );
 
     int sort = config->readNumEntry( "Sorting", Qt::Ascending );
@@ -1383,8 +1383,8 @@ void PlaylistBrowser::addPlaylist( const QString &path, QListViewItem *parent, b
 
     PlaylistEntry *playlist = 0;
     for( QListViewItemIterator it( m_listview ); *it; ++it )
-        if( isPlaylist( *it ) && path == ((PlaylistEntry *)*it)->url().path() ) {
-            playlist = ((PlaylistEntry *)*it); //the playlist is already in the playlist browser
+        if( isPlaylist( *it ) && path == static_cast<PlaylistEntry *>(*it)->url().path() ) {
+            playlist = static_cast<PlaylistEntry *>(*it); //the playlist is already in the playlist browser
             parent = (*it)->parent();
             if( force )
                 playlist->load(); //reload the playlist
@@ -1567,7 +1567,7 @@ void PlaylistBrowser::savePlaylist( PlaylistEntry *item )
 PlaylistBrowserEntry *
 PlaylistBrowser::findItem( QString &t, int c ) const
 {
-    return (PlaylistBrowserEntry *)m_listview->findItem( t, c, Qt::ExactMatch );
+    return static_cast<PlaylistBrowserEntry *>( m_listview->findItem( t, c, Qt::ExactMatch ) );
 }
 
 bool PlaylistBrowser::createPlaylist( QListViewItem *parent, bool current, QString title )
@@ -2153,7 +2153,7 @@ void PlaylistBrowser::customEvent( QCustomEvent *e )
     // If a playlist is found in collection folders it will be automatically added to the playlist browser
     // The ScanController sends a PlaylistFoundEvent when a playlist is found.
 
-    ScanController::PlaylistFoundEvent* p = (ScanController::PlaylistFoundEvent*)e;
+    ScanController::PlaylistFoundEvent* p = static_cast<ScanController::PlaylistFoundEvent*>( e );
     addPlaylist( p->path() );
 }
 
@@ -2194,12 +2194,12 @@ void PlaylistBrowser::slotSave() // SLOT
 
 void PlaylistBrowser::slotViewMenu( int id ) //SL0T
 {
-    if( m_viewMode == (ViewMode) id )
+    if( m_viewMode == static_cast<ViewMode>( id ) )
         return;
 
     viewMenuButton->popupMenu()->setItemChecked( m_viewMode, false );
     viewMenuButton->popupMenu()->setItemChecked( id, true );
-    m_viewMode = (ViewMode) id;
+    m_viewMode = static_cast<ViewMode>( id );
 
     QListViewItemIterator it( m_listview );
     for( ; it.current(); ++it )
@@ -2760,7 +2760,7 @@ void PlaylistBrowserView::slotAnimation() //SLOT
     static uint iconCounter=1;
 
     for( QListViewItem *item = m_loadingItems.first(); item; item = m_loadingItems.next() )
-        ((PlaylistEntry *)item)->setLoadingPix( iconCounter==1 ? m_loading1 : m_loading2 );
+        static_cast<PlaylistEntry *>(item)->setLoadingPix( iconCounter==1 ? m_loading1 : m_loading2 );
 
     iconCounter++;
     if( iconCounter > 2 )
@@ -2876,7 +2876,7 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
 
             if( parent && isPlaylist( parent ) ) {
                 //insert the dropped tracks
-                PlaylistEntry *playlist = (PlaylistEntry *)parent;
+                PlaylistEntry *playlist = static_cast<PlaylistEntry *>( parent );
                 playlist->insertTracks( after, bundles );
             }
             else //dropped on a playlist item
@@ -2895,7 +2895,7 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
                 }
 
                 if( isPlaylist( item ) ) {
-                    PlaylistEntry *playlist = (PlaylistEntry *)item;
+                    PlaylistEntry *playlist = static_cast<PlaylistEntry *>( item );
                     //append the dropped tracks
                     playlist->insertTracks( 0, bundles );
                 }
@@ -3126,7 +3126,7 @@ void PlaylistBrowserView::startDrag()
 
         else if( isSmartPlaylist( *it ) )
         {
-            SmartPlaylist *item = (SmartPlaylist*)*it;
+            SmartPlaylist *item = static_cast<SmartPlaylist*>( *it );
 
             if( !item->query().isEmpty() )
             {
@@ -3140,7 +3140,7 @@ void PlaylistBrowserView::startDrag()
 
         else if( isDynamic( *it ) )
         {
-            DynamicEntry *item = (DynamicEntry*)*it;
+            DynamicEntry *item = static_cast<DynamicEntry*>( *it );
 
             // Serialize pointer to string
             const QString str = QString::number( reinterpret_cast<Q_ULLONG>( item ) );

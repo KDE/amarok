@@ -975,7 +975,7 @@ const QString &PlaylistItem::editingText()
  */
 void PlaylistItem::imageTransparency( QImage& image, float factor ) //static
 {
-    uint *data = (unsigned int *)image.bits();
+    uint *data = reinterpret_cast<unsigned int *>( image.bits() );
     const int pixels = image.width() * image.height();
     uint table[256];
     register int c;

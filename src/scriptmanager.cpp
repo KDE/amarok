@@ -433,7 +433,7 @@ ScriptManager::recurseInstall( const KArchiveDirectory* archiveDir, const QStrin
         const KArchiveEntry* const archEntry = archiveDir->entry( entry );
 
         if( archEntry->isDirectory() ) {
-            KArchiveDirectory* const dir = (KArchiveDirectory*) archEntry;
+            const KArchiveDirectory* const dir = static_cast<const KArchiveDirectory*>( archEntry );
             recurseInstall( dir, destination + entry + "/" );
         }
         else {
@@ -536,7 +536,7 @@ ScriptManager::slotRunScript()
     if( m_scripts[name].process ) return false;
 
     AmaroKProcIO* script = new AmaroKProcIO();
-    script->setComm( (KProcess::Communication) ( KProcess::All ) );
+    script->setComm( static_cast<KProcess::Communication>( KProcess::All ) );
     const KURL url = m_scripts[name].url;
     *script << url.path();
     script->setWorkingDirectory( amaroK::saveLocation( "scripts-data/" ) );
