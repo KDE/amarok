@@ -138,6 +138,8 @@ class CollectionView : public KListView
         /** Rebuilds and displays the treeview by querying the database. */
         void renderView();
 
+        void databaseChanged() { m_dirty = true; renderView(); };
+
         void setTreeMode() { setViewMode( modeTreeView ); };
         void setFlatMode() { setViewMode( modeFlatView ); };
 

@@ -1023,7 +1023,7 @@ CollectionDB::createDragPixmap( const KURL::List &urls )
 
     QPixmap pmdrag( pixmapW, pixmapH );
     QPixmap pmtext( pixmapW, fontH );
-    
+
     QPalette palette = QToolTip::palette();
 
     QPainter p;
@@ -2854,7 +2854,7 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
     // Update the Collection-Browser view,
     // using QTimer to make sure we don't manipulate the GUI from a thread
     if ( updateView )
-        QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
+        QTimer::singleShot( 0, CollectionView::instance(), SLOT( databaseChanged() ) );
 
     emit tagsChanged( bundle );
 }
@@ -3467,9 +3467,9 @@ QString
 CollectionDB::loadHashFile( const QCString& hash, uint width )
 {
     debug() << "loadHashFile: " << hash << " - " << width << endl;
-    
+
     QString full = tagCoverDir().filePath( hash );
-    
+
     if ( width == 0 ) {
         if ( QFileInfo( full ).isReadable() ) {
             debug() << "loadHashFile: fullsize: " << full << endl;
@@ -3499,7 +3499,7 @@ bool
 CollectionDB::extractEmbeddedImage( MetaBundle &trackInformation, QCString& hash )
 {
     debug() << "extractEmbeddedImage: " << hash << " - " << trackInformation.url().path() << endl;
-    
+
     foreachType ( MetaBundle::EmbeddedImageList, trackInformation.embeddedImages() ) {
         if ( hash.isEmpty() || (*it).hash() == hash ) {
             if ( (*it).save( tagCoverDir() ) ) {
