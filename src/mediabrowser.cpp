@@ -235,13 +235,12 @@ MediaBrowser::MediaBrowser( const char *name )
     m_toolbar->insertLineSeparator();
     m_toolbar->setIconText( KToolBar::IconOnly, false );
 
-    m_toolbar->insertButton( "configure", CONFIGURE, true, i18n("Configure") );
-    QToolTip::add( m_toolbar->getButton(CONFIGURE), i18n( "Configure this media device" ) );
-    connect( m_toolbar->getButton(CONFIGURE),  SIGNAL( clicked() ),        SLOT( config() ) );
-    KPopupMenu *configPopup = new KPopupMenu( this );
+    KActionMenu* configButton = new KActionMenu( i18n("Configure this media device"), "configure", this );
+    configButton->setDelayed( false );
+    KPopupMenu *configPopup = configButton->popupMenu();
     configPopup->insertItem( i18n("Configure..."), this, SLOT(config()) );
     configPopup->insertItem( i18n("Manage Plugins..."), this, SLOT(showPluginManager()) );
-    m_toolbar->setDelayedPopup( CONFIGURE, configPopup );
+    configButton->plug( m_toolbar );
 
     m_deviceCombo = new KComboBox( this );
 
@@ -1153,7 +1152,7 @@ MediaView::contentsDropEvent( QDropEvent *e )
     {
         const QPoint p = contentsToViewport( e->pos() );
         MediaItem *item = dynamic_cast<MediaItem *>(itemAt( p ));
-        
+
         if( !item )
             return;
 
@@ -2069,7 +2068,7 @@ MediaBrowser::transferClicked()
         {
             currentDevice()->runTransferDialog();
             //may not work with non-TransferDialog-class object, but maybe some run time introspection could solve it?
-            if( currentDevice()->getTransferDialog() && 
+            if( currentDevice()->getTransferDialog() &&
               ( reinterpret_cast<TransferDialog *>(currentDevice()->getTransferDialog()))->isAccepted() )
                 currentDevice()->transferFiles();
             else
