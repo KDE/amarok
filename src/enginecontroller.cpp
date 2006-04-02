@@ -260,8 +260,7 @@ void EngineController::restoreSession()
     {
         const KURL url = AmarokConfig::resumeTrack();
 
-        if ( m_engine->load( url ) && m_engine->play( AmarokConfig::resumeTime() ) )
-            newMetaDataNotify( m_bundle = MetaBundle( url ), true );
+        play( MetaBundle( url ), AmarokConfig::resumeTime() );
     }
 }
 
@@ -303,7 +302,7 @@ void EngineController::play() //SLOT
 }
 
 
-void EngineController::play( const MetaBundle &bundle )
+void EngineController::play( const MetaBundle &bundle, uint offset )
 {
     DEBUG_BLOCK
 
@@ -334,7 +333,7 @@ void EngineController::play( const MetaBundle &bundle )
         //emits stateChanged( Playing )
         m_bundle = bundle;
 
-        if( m_engine->play() )
+        if( m_engine->play( offset ) )
         {
             m_playFailureCount = 0;
 
@@ -346,7 +345,7 @@ void EngineController::play( const MetaBundle &bundle )
                                m_engine->hasPluginProperty( "HasCrossfade" ) &&
                               !m_engine->isStream() &&
                               !(url.protocol() == "cdda") &&
-                               m_bundle.length()*1000 - AmarokConfig::crossfadeLength()*2 > 0;
+                               m_bundle.length()*1000 - offset - AmarokConfig::crossfadeLength()*2 > 0;
 
             newMetaDataNotify( m_bundle, true /* track change */ );
             return;
