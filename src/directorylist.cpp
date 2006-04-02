@@ -71,6 +71,32 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 void
 CollectionSetup::writeConfig()
 {
+    //If we are in recursive mode then we don't need to store the names of the
+    //subdirectories of the selected directories
+    if ( recursive() )
+    {
+        for ( QStringList::iterator it=m_dirs.begin(); it!=m_dirs.end(); ++it )
+        {
+            QStringList::iterator jt=m_dirs.begin();
+            while ( jt!=m_dirs.end() )
+            {
+                if ( it==jt )
+                {
+                    ++jt;
+                    continue;
+                }
+                //Note: all directories except "/" lack a trailing '/'.
+                //If (*jt) is a subdirectory of (*it) it is redundant.
+                //As all directories are subdirectories of "/", if "/" is selected, we
+                //can delete everything else.
+                if ( ( *jt ).startsWith( *it + '/' ) || *it=="/" )
+                    jt = m_dirs.remove( jt );
+                else
+                    ++jt;
+            }
+        }
+    }
+
     AmarokConfig::setCollectionFolders( m_dirs );
     AmarokConfig::setScanRecursively( recursive() );
     AmarokConfig::setMonitorChanges( monitor() );
@@ -90,6 +116,9 @@ Item::Item( QListView *parent )
     , m_url( "file:/" )
     , m_listed( false )
 {
+    //Since we create the "/" checklistitem here, we need to enable it if needed
+    if ( CollectionSetup::instance()->m_dirs.contains( "/" ) )
+        static_cast<QCheckListItem*>( this )->setOn(true);
     m_lister.setDirOnlyMode( true );
     connect( &m_lister, SIGNAL(newItems( const KFileItemList& )), SLOT(newItems( const KFileItemList& )) );
     setOpen( true );
@@ -148,11 +177,31 @@ Item::stateChange( bool b )
         for( QListViewItem *item = firstChild(); item; item = item->nextSibling() )
             static_cast<QCheckListItem*>(item)->QCheckListItem::setOn( b );
 
+    //If it is disabled, allow us to change its appearance (above code) but not add it
+    //to the list of folders (code below)
+    if ( isDisabled() )
+        return;
+
     // Update folder list
     QStringList::Iterator it = cs_m_dirs.find( m_url.path() );
     if ( isOn() ) {
         if ( it == cs_m_dirs.end() )
             cs_m_dirs << m_url.path();
+
+        // Deselect subdirectories if we are in recursive mode as they are redundant
+        if ( CollectionSetup::instance()->recursive() )
+        {
+            QStringList::Iterator diriter = cs_m_dirs.begin();
+            while ( diriter != cs_m_dirs.end() )
+            {
+                // Since the dir "/" starts with '/', we need a hack to stop it removing 
+                // itself (it being the only path with a trailing '/')
+                if ( (*diriter).startsWith( m_url.path(1) ) && *diriter != "/" )
+                    diriter = cs_m_dirs.erase(diriter);
+                else
+                    ++diriter;
+            }
+        }
     }
     else {
         //Deselect item and recurse through children but only deselect children if they
@@ -160,11 +209,14 @@ Item::stateChange( bool b )
         //selected if the parent is being unselected)
         //Note this does not do anything to the checkboxes, but they should be doing
         //the same thing as we are (hopefully)
-        cs_m_dirs.erase( it );
+        //Note: all paths lack a trailing '/' except for "/", which must be handled as a
+        //special case
+        if ( it != cs_m_dirs.end() )
+            cs_m_dirs.erase( it );
         QStringList::Iterator diriter = cs_m_dirs.begin();
         while ( diriter != cs_m_dirs.end() )
         {
-            if ( (*diriter).startsWith( m_url.path() + '/' ) )
+            if ( (*diriter).startsWith( m_url.path(1) ) )   //path(1) adds a trailing '/'
             {
                 if ( CollectionSetup::instance()->recursive() ||
                      !QFile::exists( *diriter ) )
@@ -214,11 +266,14 @@ void
 Item::paintCell( QPainter * p, const QColorGroup & cg, int column, int width, int align )
 {
     bool dirty = false;
+    QStringList &cs_m_dirs = CollectionSetup::instance()->m_dirs;
 
     // Figure out if a child folder is activated
-    for ( uint i = 0; i < CollectionSetup::instance()->m_dirs.count(); i++ )
-        if ( CollectionSetup::instance()->m_dirs[i].startsWith( m_url.path() + "/" ) )
-            dirty = true;
+    for ( QStringList::const_iterator iter = cs_m_dirs.begin(); iter != cs_m_dirs.end();
+            ++iter )
+        if ( ( *iter ).startsWith( m_url.path(1) ) )
+            if ( *iter != "/" ) // "/" should not match as a child of "/"
+                dirty = true;
 
     // Use a different color if this folder has an activated child folder
     const QFont f = p->font();
