@@ -5,10 +5,6 @@ TODO-list for amaroK
 
 
 SHORT-TERM (URGENT):
- <markey>  Actions -> Play Media: Change the dialog caption to reflect that the user can
-           open files /and/ URLs. Cuz, it isn't obvious that the dialog accepts URLs.
-           Perhaps "Play File or URL".
-
  <sebr>    Adding an m3u with non existant items has filesize = 16,777,216.0 TB!
 
  <markey>  Valgrind detected memory leaks in the moodbar code and in libGeddei. I don't
