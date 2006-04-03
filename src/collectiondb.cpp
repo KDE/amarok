@@ -1138,12 +1138,13 @@ CollectionDB::podcastImage( const QString &remoteURL, uint width )
     if( width == 1 ) width = AmarokConfig::coverPreviewSize();
 
     s = findAmazonImage( "Podcast", remoteURL, width );
+    const KURL url = KURL::fromPathOrURL( remoteURL );
 
-    if( s.isEmpty() )
+    if( s.isEmpty() && url.isValid() ) //KIO crashes with invalid URLs
     {
         s = notAvailCover( width );
 
-        KIO::Job *job = KIO::storedGet( KURL::fromPathOrURL( remoteURL ), false, false );
+        KIO::Job *job = KIO::storedGet( url, false, false );
         m_podcastImageJobs[job] = remoteURL;
         connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( podcastImageResult( KIO::Job* ) ) );
     }
