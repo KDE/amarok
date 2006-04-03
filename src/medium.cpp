@@ -121,6 +121,16 @@ void Medium::setName(const QString &name)
 	m_properties[NAME] = name;
 }
 
+void Medium::setMountPoint(const QString &mountPoint)
+{
+	m_properties[MOUNT_POINT] = mountPoint;
+}
+
+void Medium::setId(const QString &id)
+{
+	m_properties[ID] = id;
+}
+
 void Medium::setLabel(const QString &label)
 {
 	m_properties[LABEL] = label;

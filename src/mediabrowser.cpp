@@ -317,6 +317,7 @@ MediaBrowser::MediaBrowser( const char *name )
             it != mmap.end();
             it++ )
     {
+        debug() << "[MediaBrowser] (*it)->id() = " << (*it)->id() << ", config->readEntry = " << config->readEntry( (*it)->id() ) << endl;
         if( !config->readEntry( (*it)->id() ) )
         {
             newflag = 1;
@@ -1310,10 +1311,12 @@ MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/, bool construc
         MediaDevice *device = loadDevicePlugin( handler );
         if( device )
         {
-            device->m_uniqueId = medium->id();
             device->m_deviceNode = medium->deviceNode();
             device->m_mountPoint = medium->mountPoint();
             device->m_medium = const_cast<Medium *>(medium);
+            device->m_uniqueId = device->m_medium->isAutodetected() ?
+                        medium->id() :
+                        medium->mountPoint();
             addDevice( device );
             if( m_currentDevice == m_devices.begin() || m_currentDevice == m_devices.end() )
                 activateDevice( m_devices.count()-1 );
@@ -1459,13 +1462,18 @@ MediaBrowser::unloadDevicePlugin( MediaDevice *device )
 bool
 MediaBrowser::config()
 {
+    if( m_deviceCombo->currentText() == "No Device Selected" )
+    {
+        showPluginManager();
+        return true;
+    }
     KDialogBase dialog( this, 0, false );
     dialog.showButtonApply( false );
     kapp->setTopWidget( &dialog );
     dialog.setCaption( kapp->makeStdCaption( i18n("Configure Media Device") ) );
     m_configBox = dialog.makeVBoxMainWidget();
 
-    m_configPluginCombo = new KComboBox( m_configBox );
+    /*m_configPluginCombo = new KComboBox( m_configBox );
     int index = 0;
     for( QMap<QString,QString>::iterator it = m_pluginAmarokName.begin();
             it != m_pluginAmarokName.end();
@@ -1479,6 +1487,7 @@ MediaBrowser::config()
         index++;
     }
     connect( m_configPluginCombo, SIGNAL(activated( int )), SLOT(configSelectPlugin( int )) );
+    */
 
     QLabel *connectLabel = 0;
     HintLineEdit *connectEdit = 0;
@@ -1568,8 +1577,8 @@ MediaBrowser::config()
         delete disconnectLabel;
     }
 
-    delete m_configPluginCombo;
-    m_configPluginCombo = 0;
+//    delete m_configPluginCombo;
+//    m_configPluginCombo = 0;
 
     updateButtons();
     updateStats();
@@ -1751,6 +1760,7 @@ MediaView::setFilter( const QString &filter, MediaItem *parent )
 
 MediaDevice::MediaDevice()
     : amaroK::Plugin()
+    , m_hasMountPoint( true )
     , m_autoDeletePodcasts( false )
     , m_syncStats( false )
     , m_transcode( false )

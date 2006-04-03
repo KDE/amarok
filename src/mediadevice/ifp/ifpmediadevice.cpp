@@ -114,7 +114,7 @@ IfpMediaDevice::IfpMediaDevice()
     , m_td( 0 )
 {
     m_name = "iRiver";
-    
+    m_hasMountPoint = false;
     m_firstSort  = "None";
     m_secondSort = "None";
     m_thirdSort  = "None";

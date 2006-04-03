@@ -383,6 +383,7 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         void setConfigBool( const QString &name, bool value );
 
         void         setRequireMount( const bool b ) { m_requireMount = b; }
+        bool         hasMountPoint() { return m_hasMountPoint; }
         void         setDeviceType( const QString &type ) { m_type = type; }
         QString      deviceType() { return m_type; }
         virtual bool autoConnect() { return false; }
@@ -523,6 +524,8 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         QString     m_uniqueId;
         QString     m_deviceNode;
         QString     m_mountPoint;
+
+        bool        m_hasMountPoint;
 
         QString     m_preconnectcmd;
         QString     m_postdisconnectcmd;

@@ -69,6 +69,8 @@ public:
 	QString prettyLabel() const;
 
         void setAutodetected(bool autodetected);
+        void setId(const QString &id);
+        void setMountPoint(const QString &mountPoint);
 	void setName(const QString &name);
 	void setLabel(const QString &label);
 	void setUserLabel(const QString &label);

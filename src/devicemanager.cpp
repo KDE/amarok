@@ -195,5 +195,11 @@ Medium* DeviceManager::getDevice( QString name )
     return returnedMedium;
 }
 
+void
+DeviceManager::addManualDevice( Medium* added )
+{
+    m_mediumMap[added->name()] = added;
+}
+
 #include "devicemanager.moc"
 

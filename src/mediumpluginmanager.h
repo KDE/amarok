@@ -28,6 +28,7 @@ class QLabel;
 class QSignalMapper;
 class QVBox;
 class KComboBox;
+class KLineEdit;
 class Medium;
 class MediumPluginManager;
 class MediumPluginDetailView;
@@ -46,6 +47,7 @@ class MediumPluginManager : public KDialogBase
 
     public:
         MediumPluginManager();
+        ~MediumPluginManager();
 
     signals:
         void selectedPlugin( const Medium*, const QString );
@@ -55,6 +57,7 @@ class MediumPluginManager : public KDialogBase
         void infoRequested( int buttonId );
         void deleteMedium( int buttonId );
         void reDetectDevices();
+        void newDevice();
 
     private:
 
@@ -90,7 +93,26 @@ class MediumPluginDetailView : public KDialogBase
 
     public:
         MediumPluginDetailView( const Medium* medium );
+        ~MediumPluginDetailView();
+};
 
+class ManualDeviceAdder : public KDialogBase
+{
+    Q_OBJECT
+
+    public:
+        ManualDeviceAdder();
+        ~ManualDeviceAdder();
+        Medium* getMedium();
+
+    private:
+        KComboBox* m_mdaCombo;
+        KLineEdit* m_mdaName;
+        KLineEdit* m_mdaMountPoint;
+
+        KTrader::OfferList m_mdaOffers;
+        KTrader::OfferList::ConstIterator m_mdaOffersEnd;
+        KTrader::OfferList::ConstIterator m_mdaPlugit;
 };
 
 #endif

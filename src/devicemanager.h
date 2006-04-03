@@ -25,8 +25,10 @@ class DeviceManager : public QObject
         void mediumChanged( QString name);
         void mediumRemoved( QString name);
 
-        Medium* getDevice(QString name);
+        Medium* getDevice( QString name );
         MediumMap getMediumMap( ) { return m_mediumMap; }
+
+        void addManualDevice( Medium* added );
 
         bool isValid( ) { return m_valid; }
 

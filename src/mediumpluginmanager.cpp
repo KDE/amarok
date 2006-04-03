@@ -29,12 +29,13 @@
 #include <kapplication.h>
 #include <kcombobox.h>
 #include <kconfig.h>
+#include <klineedit.h>
 #include <klocale.h>
 #include <kpushbutton.h>
 
 typedef QMap<QString, Medium*> MediumMap;
 
-MediumPluginManager::MediumPluginManager( )
+MediumPluginManager::MediumPluginManager()
         : KDialogBase( amaroK::mainWindow(), "mediumpluginmanagerdialog", true, QString::null, Ok|Cancel, Ok )
 {
     //TODO: make this a member function, so that hboxes can be rebuilt if user selects to rescan
@@ -68,15 +69,20 @@ MediumPluginManager::MediumPluginManager( )
 
     m_hbox = new QHBox( vbox );
 
-    //KPushButton *addButton = new KPushButton( i18n( "Add Device..." ), hbox );
     KPushButton *detectDevices = new KPushButton( i18n( "Autodetect Devices" ), m_hbox);
+    KPushButton *addButton = new KPushButton( i18n( "Add Device..." ), m_hbox );
     connect( detectDevices, SIGNAL( clicked() ), this, SLOT( reDetectDevices() ) );
+    connect( addButton, SIGNAL( clicked() ), this, SLOT( newDevice() ) );
 
     connect( m_siginfomap, SIGNAL( mapped( int ) ), this, SLOT( infoRequested ( int ) ) );
     connect( m_sigdelmap, SIGNAL( mapped( int ) ), this, SLOT( deleteMedium( int ) ) );
     connect( this, SIGNAL( selectedPlugin( const Medium*, const QString ) ), MediaBrowser::instance(), SLOT( pluginSelected( const Medium*, const QString ) ) );
 
     exec();
+}
+
+MediumPluginManager::~MediumPluginManager()
+{
 }
 
 void
@@ -114,6 +120,8 @@ MediumPluginManager::detectDevices()
         m_hbox->show();
         m_hmap[m_buttonnum] = m_hbox;
 
+        //debug() << "[MediumPluginManager] (*it)->id() = " << (*it)->id() << ", config->readEntry = " << m_config->readEntry( (*it)->id() ) << endl;
+
         if ( m_config->readEntry( (*it)->id() ).isEmpty() )
             m_currlabel = new QLabel( i18n("  (NEW!)  Device Name: "), m_hbox );
         else
@@ -135,7 +143,6 @@ MediumPluginManager::detectDevices()
         m_currlabel = new QLabel( i18n(", Plugin Selected:  "), m_hbox );
         m_currlabel->show();
         m_currcombo = new KComboBox( false, m_hbox, m_currtext->latin1() );
-        //m_currcombo->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
         m_currcombo->show();
         m_currcombo->insertItem( i18n( "Do not handle" ) );
         for( m_plugit = m_offers.begin(); m_plugit != m_offersEnd; ++m_plugit ){
@@ -222,6 +229,15 @@ MediumPluginManager::deleteMedium( int buttonId )
     m_cmap.remove(medium);
 }
 
+void
+MediumPluginManager::newDevice()
+{
+    ManualDeviceAdder* mda = new ManualDeviceAdder();
+    mda->exec();
+    DeviceManager::instance()->addManualDevice( mda->getMedium() );
+    detectDevices();
+}
+
 /////////////////////////////////////////////////////////////////////
 
 MediumPluginDetailView::MediumPluginDetailView( const Medium* medium )
@@ -256,5 +272,56 @@ MediumPluginDetailView::MediumPluginDetailView( const Medium* medium )
     new QLabel( medium->mimeType().isEmpty() ? labelTextNone : medium->mimeType(), vbox2 );
 }
 
+MediumPluginDetailView::~MediumPluginDetailView()
+{
+}
+
+/////////////////////////////////////////////////////////////////////
+
+ManualDeviceAdder::ManualDeviceAdder()
+: KDialogBase( amaroK::mainWindow(), "manualdeviceadder", true, QString::null, Ok, Ok )
+{
+    kapp->setTopWidget( this );
+    setCaption( kapp->makeStdCaption( i18n( "Add New Device") ) );
+
+    QHBox* hbox = makeHBoxMainWidget();
+    hbox->setSpacing( KDialog::spacingHint() );
+
+    QVBox* vbox1 = new QVBox( hbox );
+
+    m_mdaOffers = PluginManager::query( "[X-KDE-amaroK-plugintype] == 'mediadevice'" );
+    m_mdaOffersEnd = m_mdaOffers.end();
+
+    new QLabel( i18n( "Select the plugin to use with this device:"), vbox1 );
+    m_mdaCombo = new KComboBox( false, vbox1, "m_mdacombo" );
+    m_mdaCombo->insertItem( i18n( "Do not handle" ) );
+    for( m_mdaPlugit = m_mdaOffers.begin(); m_mdaPlugit != m_mdaOffersEnd; ++m_mdaPlugit )
+        m_mdaCombo->insertItem( (*m_mdaPlugit)->name() );
+
+    new QLabel( i18n( "Enter a name for this device (required):" ), vbox1 );
+    m_mdaName = new KLineEdit( this, "m_mdaname" );
+
+    new QLabel( "", vbox1 );
+    new QLabel( i18n( "Enter the device's mountpoint, if applicable:"), vbox1 );
+    m_mdaMountPoint = new KLineEdit( this, "m_mdamountpoint" );
+    KCompletion *comp = m_mdaMountPoint->completionObject();
+    connect( m_mdaMountPoint, SIGNAL( returnPressed(const QString&) ), comp, SLOT( addItem(const QString&) ) );
+
+}
+
+ManualDeviceAdder::~ManualDeviceAdder()
+{
+}
+
+Medium*
+ManualDeviceAdder::getMedium()
+{
+    QString id = "manual|" + m_mdaName->text()  +
+            ( m_mdaMountPoint->text() == QString::null ? QString::null : '|' + m_mdaMountPoint->text() );
+    Medium* added = new Medium( id, m_mdaName->text() );
+    added->setAutodetected( false );
+    added->setMountPoint( m_mdaMountPoint->text() );
+    return added;
+}
 
 #include "mediumpluginmanager.moc"
