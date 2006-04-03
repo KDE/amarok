@@ -26,6 +26,7 @@
 #include "playlistloader.h"
 #include "playlistbrowser.h"
 #include "podcastbundle.h"        //addPodcast
+#include "qstringx.h"
 #include "scancontroller.h"
 #include "scrobbler.h"
 #include "statusbar.h"
@@ -73,6 +74,8 @@
 #ifdef USE_POSTGRESQL
 #include <libpq-fe.h>
 #endif
+
+using amaroK::QStringx;
 
 #define DEBUG 0
 
@@ -1892,15 +1895,25 @@ CollectionDB::updatePodcastEpisode( const int id, const PodcastEpisodeBundle &b 
 {
     if( getDbConnectionType() == DbConnection::postgresql )
     {
-        query( QString( "UPDATE podcastepisode SET url='%1', localurl='%2', parent='%3', title='%4', subtitle='%5', composer='%6', comment='%7', "
-                        "filetype='%8', createdate='%9', guid='%10', length=%11, size=%12, isNew=%13 WHERE id=%14;" )
-                        .arg( escapeString( b.url().url() ) )    .arg( b.localUrl().isValid() ? escapeString( b.url().url() ) : "NULL" )
-                        .arg( escapeString( b.parent().url() ) ) .arg( escapeString( b.title() ) )
-                        .arg( escapeString( b.subtitle() ) )     .arg( escapeString( b.author() ) )
-                        .arg( escapeString( b.description() ) )  .arg( escapeString( b.type() ) )
-                        .arg( escapeString( b.date() ) )         .arg( escapeString( b.guid() ) )
-                        .arg( QString::number( b.duration() ) )  .arg( escapeString( QString::number( b.size() ) ) )
-                        .arg( b.isNew() ? boolT() : boolF() )    .arg( QString::number( id ) ) );
+        query( QStringx( "UPDATE podcastepisode SET url='%1', localurl='%2', parent='%3', title='%4', subtitle='%5', composer='%6', comment='%7', "
+                 "filetype='%8', createdate='%9', guid='%10', length=%11, size=%12, isNew=%13 WHERE id=%14;" )
+              .args( QStringList()
+                  << escapeString( b.url().url() )
+                  << ( b.localUrl().isValid() ? escapeString( b.url().url() ) : "NULL" )
+                  << escapeString( b.parent().url() )
+                  << escapeString( b.title() )
+                  << escapeString( b.subtitle() )
+                  << escapeString( b.author() )
+                  << escapeString( b.description() )
+                  << escapeString( b.type() )
+                  << escapeString( b.date() )
+                  << escapeString( b.guid() )
+                  << QString::number( b.duration() )
+                  << escapeString( QString::number( b.size() ) )
+                  << ( b.isNew() ? boolT() : boolF() )
+                  << QString::number( id )
+                  )
+             );
     }
     else {
         addPodcastEpisode( b, id );
@@ -1911,19 +1924,25 @@ void
 CollectionDB::updatePodcastFolder( const int folder_id, const QString &name, const int parent_id, const bool isOpen )
 {
     if( getDbConnectionType() == DbConnection::postgresql ) {
-        query( QString( "UPDATE podcastfolders SET name='%1', parent=%2, isOpen=%3 WHERE id=%4;" )
-                        .arg( escapeString(name) )
-                        .arg( QString::number(parent_id) )
-                        .arg( isOpen ? boolT() : boolF() )
-                        .arg( QString::number(folder_id) ) );
+        query( QStringx( "UPDATE podcastfolders SET name='%1', parent=%2, isOpen=%3 WHERE id=%4;" )
+                .args( QStringList()
+                    << escapeString(name)
+                    << QString::number(parent_id)
+                    << ( isOpen ? boolT() : boolF() )
+                    << QString::number(folder_id)
+                    )
+             );
     }
     else {
-        query( QString( "REPLACE INTO podcastfolders ( id, name, parent, isOpen ) "
+        query( QStringx( "REPLACE INTO podcastfolders ( id, name, parent, isOpen ) "
                         "VALUES ( %1, '%2', %3, %4 );" )
-                        .arg( QString::number(folder_id) )
-                        .arg( escapeString(name) )
-                        .arg( QString::number(parent_id) )
-                        .arg( isOpen ? boolT() : boolF() ) );
+                .args( QStringList()
+                    << QString::number(folder_id)
+                    << escapeString(name)
+                    << QString::number(parent_id)
+                    << ( isOpen ? boolT() : boolF() )
+                    )
+             );
     }
 }
 
