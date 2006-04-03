@@ -3077,7 +3077,7 @@ void PlaylistBrowserView::startDrag()
     {
         if( isPlaylist( *it ) )
         {
-            urls     += static_cast<PlaylistItem*>(*it)->url();
+            urls     += static_cast<PlaylistEntry*>(*it)->url();
             itemList += KURL::fromPathOrURL( "playlist://" );
         }
         else if( isStream( *it ) )

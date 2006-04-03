@@ -5,8 +5,6 @@ TODO-list for amaroK
 
 
 SHORT-TERM (URGENT):
- <markey>  Dragging playlist from Playlist Browser -> Crash.
-
  <sebr>    Adding an m3u with non existant items has filesize = 16,777,216.0 TB!
 
  <markey>  Valgrind detected memory leaks in the moodbar code and in libGeddei. I don't
