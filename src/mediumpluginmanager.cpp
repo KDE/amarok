@@ -36,7 +36,7 @@
 typedef QMap<QString, Medium*> MediumMap;
 
 MediumPluginManager::MediumPluginManager()
-        : KDialogBase( amaroK::mainWindow(), "mediumpluginmanagerdialog", true, QString::null, Ok|Cancel, Ok )
+        : KDialogBase( amaroK::mainWindow(), "mediumpluginmanagerdialog", false, QString::null, Ok|Cancel, Ok )
 {
     //TODO: make this a member function, so that hboxes can be rebuilt if user selects to rescan
     kapp->setTopWidget( this );
