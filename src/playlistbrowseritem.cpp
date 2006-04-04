@@ -10,6 +10,7 @@
 #include "collectiondb.h"
 #include "debug.h"
 #include "dynamicmode.h"
+#include "iconloader.h"
 #include "playlistbrowser.h"
 #include "playlistbrowseritem.h"
 #include "playlistloader.h"    //load()
@@ -318,7 +319,7 @@ PlaylistEntry::PlaylistEntry( QListViewItem *parent, QListViewItem *after, const
     setExpandable(true);
 
     setText(0, fileBaseName( url.path() ) );
-    setPixmap( 0, SmallIcon("player_playlist_2") );
+    setPixmap( 0, SmallIcon( amaroK::icon( "player_playlist_2" ) ) );
 
     if( !m_trackCount )
         load();   //load the playlist file
@@ -346,7 +347,7 @@ PlaylistEntry::PlaylistEntry( QListViewItem *parent, QListViewItem *after, const
     setExpandable(true);
 
     setText(0, fileBaseName( m_url.path() ) );
-    setPixmap( 0, SmallIcon("player_playlist_2") );
+    setPixmap( 0, SmallIcon( amaroK::icon( "player_playlist_2" ) ) );
 
 
     if( !m_trackCount )
@@ -789,7 +790,7 @@ StreamEntry::StreamEntry( QListViewItem *parent, QListViewItem *after, const KUR
     if( m_title.isEmpty() )
         m_title = fileBaseName( m_url.prettyURL() );
 
-    setPixmap( 0, SmallIcon("player_playlist_2") );
+    setPixmap( 0, SmallIcon( amaroK::icon(  "player_playlist_2" ) ) );
 
     setText( 0, m_title );
 }
@@ -809,7 +810,7 @@ StreamEntry::StreamEntry( QListViewItem *parent, QListViewItem *after, const QDo
     if( m_title.isEmpty() )
         m_title = fileBaseName( m_url.prettyURL() );
 
-    setPixmap( 0, SmallIcon("player_playlist_2") );
+    setPixmap( 0, SmallIcon( amaroK::icon( "player_playlist_2" ) ) );
 
     setText( 0, m_title );
 }
@@ -1082,7 +1083,7 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
     setRenameEnabled( 0, false );
 
     setText(0, i18n("Retrieving Podcast...") ); //HACK to fill loading time space
-    setPixmap( 0, SmallIcon("player_playlist_2") );
+    setPixmap( 0, SmallIcon( amaroK::icon( "podcast" ) ) );
 
     fetch();
 }
@@ -1103,7 +1104,7 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
     setRenameEnabled( 0, false );
 
     setText(0, i18n("Retrieving Podcast...") ); //HACK to fill loading time space
-    setPixmap( 0, SmallIcon("player_playlist_2") );
+    setPixmap( 0, SmallIcon( amaroK::icon( "podcast" ) ) );
 
     fetch();
 }
@@ -1131,7 +1132,7 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
     setDragEnabled( true );
     setRenameEnabled( 0, false );
 
-    setPixmap( 0, SmallIcon("player_playlist_2") );
+    setPixmap( 0, SmallIcon( amaroK::icon( "podcast" ) ) );
 }
 
 PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, const PodcastChannelBundle &pcb )
@@ -1149,7 +1150,7 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
     setText( 0, title() );
     setDragEnabled( true );
     setRenameEnabled( 0, false );
-    setPixmap( 0, SmallIcon("player_playlist_2") );
+    setPixmap( 0, SmallIcon( amaroK::icon( "podcast" ) ) );
 }
 
 void
@@ -1359,7 +1360,7 @@ PodcastChannel::setNew( bool n )
     else if( m_hasProblem )
         setPixmap( 0, SmallIcon("cancel") );
     else
-        setPixmap( 0, SmallIcon("player_playlist_2") );
+        setPixmap( 0, SmallIcon( amaroK::icon( "podcast" ) ) );
 
     m_new = n;
 }
@@ -1643,7 +1644,7 @@ void
 PodcastChannel::stopAnimation()
 {
     m_animationTimer.stop();
-    setPixmap( 0, SmallIcon("player_playlist_2") );
+    setPixmap( 0, SmallIcon( amaroK::icon( "podcast" ) ) );
 }
 
 void
@@ -1819,7 +1820,7 @@ PodcastEpisode::updatePixmap()
     else if( isNew() )
         setPixmap( 0, SmallIcon("favorites") );
     else
-        setPixmap( 0, SmallIcon("player_playlist_2") );
+        setPixmap( 0, SmallIcon( amaroK::icon( "podcast" ) ) );
 }
 
 const bool

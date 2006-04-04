@@ -298,7 +298,10 @@
         <label>Filename of the external web browser to be invoked by amaroK.</label>
         <default>kfmclient openURL</default>
     </entry>
-
+    <entry key="Use Custom Icon Theme" type="Bool">
+        <label>Whether amaroK's custom icon theme or the system icon theme is used.</label>
+        <default>true</default>
+    </entry>
 </group>
 
 <group name="Playback">
@@ -349,6 +352,7 @@
         <default>Zero</default>
     </entry>
 </group>
+
 <group name="Cover Manager">
     <entry key="Amazon Locale" type="String">
         <label>Amazon locale for cover retrieval</label>
@@ -356,6 +360,7 @@
         <default>us</default>
     </entry>
 </group>
+
 <group name="Wikipedia">
     <entry key="Wikipedia Locale" type="String">
         <label>Wikipedia locale for information retrieval</label>

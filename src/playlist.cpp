@@ -23,6 +23,7 @@
 #include "columnlist.h"
 #include "devicemanager.h"
 #include "enginecontroller.h"
+#include "iconloader.h"
 #include "k3bexporter.h"
 #include "metabundle.h"
 #include "osd.h"
@@ -329,9 +330,14 @@ Playlist::Playlist( QWidget *parent )
     KActionCollection* const ac = amaroK::actionCollection();
     KAction *copy = KStdAction::copy( this, SLOT( copyToClipboard() ), ac, "playlist_copy" );
     KStdAction::selectAll( this, SLOT( selectAll() ), ac, "playlist_select_all" );
+
     m_clearButton = KStdAction::clear( this, SLOT( clear() ), ac, "playlist_clear" );
     m_undoButton  = KStdAction::undo( this, SLOT( undo() ), ac, "playlist_undo" );
     m_redoButton  = KStdAction::redo( this, SLOT( redo() ), ac, "playlist_redo" );
+    m_clearButton->setIcon( amaroK::icon( "view_remove" ) );
+    m_undoButton ->setIcon( amaroK::icon( "undo" ) );
+    m_redoButton ->setIcon( amaroK::icon( "redo" ) );
+
     new KAction( i18n( "&Repopulate" ), "rebuild", 0, this, SLOT( repopulate() ), ac, "repopulate" );
     new KAction( i18n( "S&huffle" ), "rebuild", CTRL+Key_H, this, SLOT( shuffle() ), ac, "playlist_shuffle" );
     new KAction( i18n( "&Goto Current Track" ), "today", CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "playlist_show" );
@@ -353,7 +359,6 @@ Playlist::Playlist( QWidget *parent )
     connect( ac->action( "favor_tracks" ), SIGNAL( activated( int ) ), SLOT( generateTotals( int ) ) );
     connect( ac->action( "entire_albums" ), SIGNAL( toggled( bool ) ), SLOT( generateAlbumInfo( bool ) ) );
 
-    m_clearButton->setIcon( "view_remove" );
     m_undoButton->setEnabled( false );
     m_redoButton->setEnabled( false );
 

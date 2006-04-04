@@ -1,4 +1,5 @@
-SUBDIRS = icons
+SUBDIRS = \
+    icons
 
 imagesdir = \
     $(kde_datadir)/amarok/images

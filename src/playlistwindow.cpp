@@ -27,6 +27,7 @@
 #include "devicemanager.h"
 #include "enginecontroller.h" //for actions in ctor
 #include "filebrowser.h"
+#include "iconloader.h"
 #include "k3bexporter.h"
 #include "mediabrowser.h"
 #include "dynamicmode.h"
@@ -131,10 +132,10 @@ PlaylistWindow::PlaylistWindow()
 
     ac->action( "options_configure_globals" )->setText( i18n( "Configure &Global Shortcuts..." ) );
 
-    new KAction( i18n( "Previous Track" ), "player_start", 0, ec, SLOT( previous() ), ac, "prev" );
-    new KAction( i18n( "Play" ), "player_play", 0, ec, SLOT( play() ), ac, "play" );
-    new KAction( i18n( "Pause" ), "player_pause", 0, ec, SLOT( pause() ), ac, "pause" );
-    new KAction( i18n( "Next Track" ), "player_end", 0, ec, SLOT( next() ), ac, "next" );
+    new KAction( i18n( "Previous Track" ), amaroK::icon( "player_start" ), 0, ec, SLOT( previous() ), ac, "prev" );
+    new KAction( i18n( "Play" ), amaroK::icon( "player_play" ), 0, ec, SLOT( play() ), ac, "play" );
+    new KAction( i18n( "Pause" ), amaroK::icon( "player_pause" ), 0, ec, SLOT( pause() ), ac, "pause" );
+    new KAction( i18n( "Next Track" ), amaroK::icon( "player_end" ), 0, ec, SLOT( next() ), ac, "next" );
 
     {
         KAction *gah = new KAction( i18n( "Toggle Focus" ), "reload", CTRL+Key_Tab,

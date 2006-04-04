@@ -11,6 +11,7 @@
 #include "collectiondb.h"
 #include "covermanager.h"
 #include "enginecontroller.h"
+#include "iconloader.h"
 #include "k3bexporter.h"
 #include "mediumpluginmanager.h"
 #include "playlistwindow.h"
@@ -226,17 +227,17 @@ PlayPauseAction::engineStateChanged( Engine::State state,  Engine::State /*oldSt
     switch( state ) {
     case Engine::Playing:
         setChecked( false );
-        setIcon( "player_pause" );
+        setIcon( amaroK::icon( "player_pause" ) );
         text = i18n( "Pause" );
         break;
     case Engine::Paused:
         setChecked( true );
-        setIcon( "player_pause" );
+        setIcon( amaroK::icon( "player_pause" ) );
         text = i18n( "Pause" );
         break;
     case Engine::Empty:
         setChecked( false );
-        setIcon( "player_play" );
+        setIcon( amaroK::icon( "player_play" ) );
         text = i18n( "Play" );
         break;
     case Engine::Idle:
@@ -612,7 +613,7 @@ BurnMenu::slotActivated( int index )
 //////////////////////////////////////////////////////////////////////////////////////////
 
 StopAction::StopAction( KActionCollection *ac )
-  : KAction( i18n( "Stop" ), "player_stop", 0, EngineController::instance(), SLOT( stop() ), ac, "stop" )
+  : KAction( i18n( "Stop" ), amaroK::icon( "player_stop" ), 0, EngineController::instance(), SLOT( stop() ), ac, "stop" )
 {}
 
 int
@@ -633,7 +634,7 @@ StopAction::plug( QWidget *w, int index )
         KToolBarButton* button = bar->getButton( id );
         button->setDelayedPopup( amaroK::StopMenu::instance() );
         button->setName( "toolbutton_stop_menu" );
-        button->setIcon( "player_stop" );
+        button->setIcon( amaroK::icon( "player_stop" ) );
         button->setEnabled( false ); // Required, otherwise the button is always enabled at startup
 
         return containerCount() - 1;
