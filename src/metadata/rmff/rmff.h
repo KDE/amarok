@@ -26,12 +26,19 @@
 #ifndef _RMFF_H_INCLUDED_
 #define _RMFF_H_INCLUDED_
 
+#include <config.h>
+
 namespace TagLib
 {
    namespace RealMedia
    {
-
+#if SIZEOF_LONG == 4
       typedef unsigned long  UINT32;
+#elif SIZEOF_INT == 4
+      typedef unsigned int  UINT32;
+#else
+#error At least 1 builtin type needs to be 4 bytes!!
+#endif
       typedef unsigned short UINT16;
       typedef unsigned char  UINT8;
 
