@@ -21,6 +21,7 @@ email                : markey@web.de
 #include "app.h"
 #include "config.h"
 #include "configdialog.h"
+#include "contextbrowser.h"
 #include "collectionbrowser.h"
 #include "dbsetup.h"             //firstRunWizard()
 #include "debug.h"
@@ -674,8 +675,11 @@ void App::applySettings( bool firstTime )
     } //</Engine>
 
     { //<Collection>
-
+        CollectionView::instance()->renderView(true);
     } //</Collection>
+    { //<Context>
+        ContextBrowser::instance()->renderView();
+    } //</Context>
 
     {   // delete unneeded cover images from cache
         const QString size = QString::number( AmarokConfig::coverPreviewSize() ) + '@';

@@ -27,6 +27,7 @@
 #include "qstringx.h"
 
 #include <unistd.h>         //CollectionView ctor
+#include <map>
 
 #include <qapplication.h>
 #include <qcstring.h>
@@ -110,6 +111,9 @@ CollectionBrowser::CollectionBrowser( const char* name )
     else
         m_flatViewAction->setChecked(true);
 
+    m_showDividerAction = new KToggleAction( i18n( "Show Divider" ), "leftjust", 0, this, SLOT( toggleDivider() ), ac, "Show Divider" );
+    m_showDividerAction->setChecked(m_view->m_showDivider);
+
     m_tagfilterMenuButton = new KActionMenu( i18n( "Group By" ), "filter", ac );
     m_tagfilterMenuButton->setDelayed( false );
     m_tagfilterMenuButton->setEnabled( m_view->m_viewMode == CollectionView::modeTreeView );
@@ -188,7 +192,14 @@ CollectionBrowser::setupDirs()  //SLOT
     m_view->setupDirs();
 }
 
-bool CollectionBrowser::eventFilter( QObject *o, QEvent *e )
+void
+CollectionBrowser::toggleDivider() //SLOT
+{
+    m_view->setShowDivider( m_showDividerAction->isChecked() );
+}
+
+bool
+CollectionBrowser::eventFilter( QObject *o, QEvent *e )
 {
     typedef QListViewItemIterator It;
 
@@ -290,6 +301,8 @@ CollectionBrowser::layoutToolbar()
 
     m_configureAction->plug( m_toolbar );
 
+    m_showDividerAction->plug( m_toolbar );
+
     //This would break things if the toolbar is too big, see bug #121915
     //setMinimumWidth( m_toolbar->sizeHint().width() + 2 ); //set a reasonable minWidth
 }
@@ -325,6 +338,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         m_cat2 = config->readNumEntry( "Category2", CollectionBrowser::IdAlbum );
         m_cat3 = config->readNumEntry( "Category3", CollectionBrowser::IdNone );
         m_viewMode = config->readNumEntry( "ViewMode", modeTreeView );
+        m_showDivider = config->readBoolEntry( "ShowDivider", true);
         updateTrackDepth();
     //</READ CONFIG>
      KActionCollection* ac = new KActionCollection( this );
@@ -360,17 +374,26 @@ CollectionView::~CollectionView() {
     config->writeEntry( "Category2", m_cat2 );
     config->writeEntry( "Category3", m_cat3 );
     config->writeEntry( "ViewMode", m_viewMode );
+    config->writeEntry( "ShowDivider", m_showDivider );
 }
 
+void
+CollectionView::setShowDivider( bool show )
+{
+    if (show != m_showDivider) {
+        m_showDivider = show;
+        renderView(true);
+    }
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // public slots
 //////////////////////////////////////////////////////////////////////////////////////////
 
 void
-CollectionView::renderView()  //SLOT
+CollectionView::renderView(bool force /* = false */)  //SLOT
 {
-    if( !m_dirty )
+    if(!force && !m_dirty )
         return;
 
     if( BrowserBar::instance()->currentBrowser() != m_parent )
@@ -382,7 +405,7 @@ CollectionView::renderView()  //SLOT
         return;
     }
     m_dirty = false;
-        
+
     if( childCount() )
         cacheView();
 
@@ -611,15 +634,29 @@ CollectionView::renderView()  //SLOT
                 values = tmpvalues;
             }
 
+            //keep track of headers already added
+            std::map<QString, bool> containedDivider;
+
             for ( QStringList::Iterator it = values.fromLast(), begin = values.begin(); true; --it )
             {
-                if ( (*it).stripWhiteSpace().isEmpty() )
-                    (*it) = i18n( "Unknown" );
-
                 if ( (*it).startsWith( "the ", false ) )
                     manipulateThe( *it, true );
 
-                KListViewItem* item = new CollectionItem( this, m_cat1 );
+                if ( (*it).stripWhiteSpace().isEmpty() ) {
+                    (*it) = i18n( "Unknown" );
+                }
+                else if (m_showDivider)
+                {
+                    QString headerStr = DividerItem::createGroup( (*it), m_cat1);
+
+                    if (!containedDivider[headerStr])
+                    {
+                        containedDivider[headerStr] = true;
+                        (void)new DividerItem(this, headerStr, m_cat1/*, m_sortYearsInverted*/);
+                    }
+                }
+
+                CollectionItem* item = new CollectionItem( this, m_cat1 );
                 item->setExpandable( true );
                 item->setDragEnabled( true );
                 item->setDropEnabled( false );
@@ -646,11 +683,16 @@ CollectionView::renderView()  //SLOT
 
             if ( values.count() )
             {
-                KListViewItem* item = new CollectionItem( this, m_cat1 );
+//                 KListViewItem* x = new DividerItem(this, i18n( "Various" ), m_cat1);
+//                 x->setExpandable(false);
+//                 x->setDropEnabled( false );
+//                 x->setSelectable(false);
+
+                CollectionItem* item = new CollectionItem( this, m_cat1 );
                 item->setExpandable( true );
                 item->setDragEnabled( true );
                 item->setDropEnabled( false );
-                    item->setText( 0, i18n( "Various Artists" ) );
+                item->setText( 0, i18n( "Various Artists" ) );
                 item->setPixmap( 0, pixmap );
             }
         }
@@ -712,8 +754,7 @@ CollectionView::scanDone( bool changed ) //SLOT
 {
     if( changed )
     {
-        m_dirty = true;
-        renderView();
+        renderView(true);
     }
 
     m_parent->m_scanAction->setEnabled( !AmarokConfig::monitorChanges() );
@@ -1106,8 +1147,7 @@ CollectionView::presetMenu( int id )  //SLOT
             break;
     }
 
-    m_dirty = true;
-    renderView();
+    renderView(true);
 }
 
 
@@ -1141,8 +1181,7 @@ CollectionView::cat1Menu( int id, bool rerender )  //SLOT
     updateTrackDepth();
     if ( rerender )
     {
-        m_dirty = true;
-        renderView();
+        renderView(true);
     }
 }
 
@@ -1171,8 +1210,7 @@ CollectionView::cat2Menu( int id, bool rerender )  //SLOT
     updateTrackDepth();
     if ( rerender )
     {
-        m_dirty = true;
-        renderView();
+        renderView(true);
     }
 }
 
@@ -1187,8 +1225,7 @@ CollectionView::cat3Menu( int id, bool rerender )  //SLOT
     updateTrackDepth();
     if ( rerender )
     {
-        m_dirty = true;
-        renderView();
+        renderView(true);
     }
 }
 
@@ -1214,8 +1251,9 @@ CollectionView::enableCat3Menu( bool enable )
 void
 CollectionView::invokeItem( QListViewItem* item ) //SLOT
 {
-    if ( !item )
+    if ( !item || dynamic_cast<DividerItem*>(item))
         return;
+
     item->setSelected( true );
     setCurrentItem( item );
     //append and prevent doubles in playlist
@@ -1230,6 +1268,10 @@ CollectionView::invokeItem( QListViewItem* item ) //SLOT
 void
 CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SLOT
 {
+    if (dynamic_cast<DividerItem*>(item)) {
+        return;
+    }
+
     if ( item ) {
         KPopupMenu menu( this );
 
@@ -1435,8 +1477,7 @@ CollectionView::setViewMode( int mode, bool rerender )
     m_viewMode = mode;
     if ( rerender )
     {
-        m_dirty = true;
-        renderView();
+        renderView(true);
     }
 }
 
@@ -2458,8 +2499,7 @@ CollectionView::eventFilter( QObject* o, QEvent* e )
             if ( columnWidth( returnID ) == 0 ) {
                 adjustColumn( returnID );   // show column
                 header()->setResizeEnabled( true, returnID );
-                m_dirty = true;
-                renderView();
+                renderView(true);
                 }
             else {
                 setColumnWidth ( returnID, 0 ); // hide column
@@ -2513,11 +2553,15 @@ uint CollectionView::translateTimeFilter( uint filterMode )
 // CLASS CollectionItem
 //////////////////////////////////////////////////////////////////////////////////////////
 int
-CollectionItem::compare( QListViewItem* i, int col, bool /* ascending */) const
+CollectionItem::compare( QListViewItem* i, int col, bool ascending ) const
 {
     QString a =    text( col );
     QString b = i->text( col );
     int ia, ib;
+
+    if (dynamic_cast<DividerItem*>(i) && DividerItem::shareTheSameGroup(a, b, m_cat)) {
+        return ascending == false ? -1 : 1;
+    }
 
     switch( m_cat ) {
         case CollectionBrowser::IdVisYearAlbum:
@@ -2564,5 +2608,153 @@ CollectionItem::sortChildItems ( int column, bool ascending ) {
         QListViewItem::sortChildItems( column, ascending );
 }
 
+//
+// DividerItem
+
+DividerItem::DividerItem( QListView* parent, QString txt, int cat/*, bool sortYearsInverted*/)
+: KListViewItem( parent), m_blockText(false), m_text(txt), m_cat(cat)/*, m_sortYearsInverted(sortYearsInverted)*/
+{
+    setExpandable(false);
+    setDropEnabled(false);
+    setSelectable(false);
+}
+
+void
+DividerItem::paintCell ( QPainter * p, const QColorGroup & cg,
+                         int column, int width, int align )
+{
+    p->save();
+
+    // be sure, that KListViewItem::paintCell() does not draw its text
+    setBlockText( true );
+    KListViewItem::paintCell(p, cg, column, width, align);
+    setBlockText( false );
+
+        //use bold font for the divider
+    QFont f = p->font();
+    f.setBold( true );
+    p->setFont( f );
+
+    // draw the text offset a little bit
+    QFontMetrics fm(p->fontMetrics());
+    int x = !QApplication::reverseLayout() ? 25 : width - 25;
+    int y = fm.ascent() + (height() - fm.height())/2;
+    p->drawText(x, y, m_text);
+
+    //draw the baseline
+    p->setPen( QPen(Qt::gray, 2) );
+    p->drawLine(0, height() -2 , width, height() -2 );
+
+    p->restore();
+}
+
+void
+DividerItem::paintFocus ( QPainter* /*p*/, const QColorGroup& /*cg*/, const QRect& /*r*/ )
+{
+    //not implemented, we don't to show focus
+}
+
+//to draw the text on my own I have to be able to block the text, otherwise I could
+// not use QListViewItem::paintCell() to draw the basic cell
+QString
+DividerItem::text(int column) const
+{
+    if (column == 0) {
+        return m_blockText ? "" : m_text;
+    }
+    return KListViewItem::text(column);
+}
+
+int
+DividerItem::compare( QListViewItem* i, int col, bool ascending ) const
+{
+    if (dynamic_cast<CollectionItem*>(i)) {
+        return -1 * i->compare(const_cast<DividerItem*>(this), col, ascending);
+    }
+
+    if (m_cat == CollectionBrowser::IdYear ||
+        m_cat == CollectionBrowser::IdVisYearAlbum)
+    {
+        bool ok_a, ok_b;
+        int ia =    text(col).toInt(&ok_a);
+        int ib = i->text(col).toInt(&ok_b);
+
+        if (ok_a && ok_b)
+        {
+            if      (ia == ib) return 0;
+            else if (ia  < ib) return 1;
+            else               return -1;
+        }
+    }
+    return QString::localeAwareCompare( text(col).lower(), i->text(col).lower() );
+}
+
+QString
+DividerItem::createGroup(const QString& src, int cat)
+{
+    QString ret;
+    switch (cat) {
+    case CollectionBrowser::IdVisYearAlbum: {
+        ret = src.left( src.find(" - ") );
+        break;
+    }
+    case CollectionBrowser::IdYear: {
+        ret = src;
+        if (ret.length() == 2 || ret.length() == 4) {
+            ret = ret.left(ret.length() - 1) + "0";
+        }
+        break;
+    }
+    default:
+        ret = src.mid(src.find(QRegExp("[a-zA-Z0-9]")),1).upper();
+        if (QChar(ret.at(0)).isDigit()) {
+            ret = "0-9";
+        }
+    }
+
+    return ret;
+}
+
+bool
+DividerItem::shareTheSameGroup(const QString& itemStr, const QString& divStr, int cat)
+{
+    bool inGroup = false;
+
+    switch (cat) {
+    case CollectionBrowser::IdVisYearAlbum: {
+        QString sa = itemStr.left( itemStr.find( i18n(" - ") ) );
+        QString sb = divStr.left(  divStr.find( i18n(" - ") ) );
+        if (sa == sb) {
+            inGroup = true;
+        }
+        break;
+    }
+    case CollectionBrowser::IdYear: {
+        int ia = itemStr.toInt();
+        int ib = divStr.toInt();
+        // they share one group if:
+        //   o they are < 100 (short years '98')
+        //   o they are > 1000 (long years '1998')
+        //      o their 'century' is the same
+        //   o are the same
+        if (((ia < 100 || ia > 1000) && ia/10 == ib/10) ||
+            (ia == ib)) {
+            inGroup = true;
+        }
+        break;
+    }
+    default: {
+        QString tmp = itemStr.mid( itemStr.find(QRegExp("[a-zA-Z0-9]")) );
+        if (divStr == "0-9" && QChar(tmp.at(0)).isDigit()) {
+            inGroup = true;
+        }
+        else if (tmp.startsWith(divStr)) {
+            inGroup = true;
+        }
+    }
+    }
+
+    return inGroup;
+}
 
 #include "collectionbrowser.moc"

@@ -28,6 +28,7 @@ class QPoint;
 class QStringList;
 
 class KAction;
+class KToggleAction;
 class KComboBox;
 class KRadioAction;
 class KPopupMenu;
@@ -35,6 +36,7 @@ class KProgress;
 
 class CollectionView;
 class CollectionItem;
+class DividerItem;
 class OrganizeCollectionDialog;
 
 class CollectionBrowser: public QVBox
@@ -48,6 +50,7 @@ class CollectionBrowser: public QVBox
 
     public slots:
         void setupDirs();
+        void toggleDivider();
 
     private slots:
         void slotSetFilterTimeout();
@@ -63,6 +66,7 @@ class CollectionBrowser: public QVBox
         class KToolBar    *m_toolbar;
         KAction           *m_configureAction;
         KAction           *m_scanAction;
+        KToggleAction     *m_showDividerAction;
         KRadioAction      *m_treeViewAction;
         KRadioAction      *m_flatViewAction;
         class KActionMenu *m_tagfilterMenuButton;
@@ -76,8 +80,36 @@ class CollectionBrowser: public QVBox
         CollectionView* m_view;
         QTimer*     m_timer;
 
-    friend class CollectionItem; // for CatMenuId
+    // for CatMenuId
+    friend class CollectionItem;
+    friend class DividerItem;
 };
+
+class DividerItem : public KListViewItem
+{
+public:
+    static QString createGroup(const QString& src, int cat);
+    static bool shareTheSameGroup(const QString& a, const QString& b, int cat);
+
+public:
+    DividerItem( QListView* parent, QString txt, int cat);
+
+    virtual void paintCell ( QPainter * p, const QColorGroup & cg, int column, int width, int align );
+    virtual void paintFocus ( QPainter * p, const QColorGroup & cg, const QRect & r );
+
+    virtual QString text(int column) const;
+
+    void setBlockText(bool block) { m_blockText = block; }
+
+private:
+    virtual int compare( QListViewItem*, int, bool ) const;
+
+private:
+    bool m_blockText;
+    QString m_text;
+    int m_cat;
+};
+
 
 
 class CollectionItem : public KListViewItem {
@@ -134,9 +166,11 @@ class CollectionView : public KListView
         // avoid duplicated code
         static void manipulateThe( QString &original, bool reverse = false );
 
+        void setShowDivider(bool show);
+
     public slots:
         /** Rebuilds and displays the treeview by querying the database. */
-        void renderView();
+        void renderView(bool force = false);
 
         void databaseChanged() { m_dirty = true; renderView(); };
 
@@ -216,6 +250,8 @@ class CollectionView : public KListView
         QValueList<QStringList> m_cacheOpenItemPaths;
         QString                 m_cacheViewportTopItem;
         QString                 m_cacheCurrentItem;
+
+        bool m_showDivider;
 };
 
 // why is signal detailsClicked() missing from KDialogBase?
