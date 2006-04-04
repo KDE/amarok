@@ -21,6 +21,7 @@ email                : markey@web.de
 #include "debug.h"
 #include "directorylist.h"
 #include "enginecontroller.h"
+#include "iconloader.h"
 #include "Options1.h"
 #include "Options2.h"
 #include "Options4.h"
@@ -136,7 +137,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     addPage( m_opt4, i18n( "Playback" ), "kmix", i18n( "Configure Playback" ) );
     addPage( opt5,   i18n( "OSD" ), "tv", i18n( "Configure On-Screen-Display" ) );
     addPage( opt6,   i18n( "Engine" ), "amarok", i18n( "Configure Engine" ) );
-    addPage( m_opt7, i18n( "Collection" ), "collection", i18n( "Configure Collection" ) );
+    addPage( m_opt7, i18n( "Collection" ), amaroK::icon( "collection" ), i18n( "Configure Collection" ) );
     addPage( opt8,   i18n( "last.fm" ), "audioscrobbler", i18n( "Configure last.fm Support" ) );
 
     // Show information labels (must be done after insertions)

@@ -367,7 +367,7 @@ void PlaylistWindow::init()
             m_browsers->addBrowser( Type::instance(), text, icon ); }
 
         addBrowserMacro( ContextBrowser, "ContextBrowser", i18n( "Context" ), amaroK::icon( "info" ) )
-        addBrowserMacro( CollectionBrowser, "CollectionBrowser", i18n( "Collection" ), "collection" )
+        addBrowserMacro( CollectionBrowser, "CollectionBrowser", i18n( "Collection" ), amaroK::icon( "collection" ) )
         addInstBrowserMacro( PlaylistBrowser, "PlaylistBrowser", i18n( "Playlists" ), amaroK::icon( "player_playlist_2" ) )
 
         // disable this check for now as isAvailable() returned always true before
