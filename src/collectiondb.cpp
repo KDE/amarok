@@ -582,6 +582,8 @@ CollectionDB::createPodcastTables()
     {
         query( QString( "CREATE SEQUENCE podcastepisode_seq;" ) );
 
+        query( QString( "CREATE SEQUENCE podcastfolder_seq;" ) );
+
         podcastAutoIncrement = QString("DEFAULT nextval('podcastepisode_seq')");
         podcastFolderAutoInc = QString("DEFAULT nextval('podcastfolder_seq')");
     }
