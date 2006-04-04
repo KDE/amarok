@@ -2312,10 +2312,10 @@ MediaDevice::syncStatsFromDevice( MediaItem *root )
                 {
                     // copy rating from media device to amaroK
                     QString url = CollectionDB::instance()->getURL( *bundle );
-                    debug() << "rating changed " << url << ": " << it->rating()/20 << endl;
+                    debug() << "rating changed " << url << ": " << it->rating()/10 << endl;
                     if( url != QString::null )
                     {
-                        CollectionDB::instance()->setSongRating( url, it->rating()/20 );
+                        CollectionDB::instance()->setSongRating( url, it->rating()/10 );
                         it->setRating( it->rating() ); // prevent setting it again next time
                     }
                 }
@@ -2351,7 +2351,7 @@ MediaDevice::syncStatsToDevice( MediaItem *root )
                 if( url != QString::null )
                 {
                     // copy amaroK rating to device
-                    int rating = CollectionDB::instance()->getSongRating( url )*20;
+                    int rating = CollectionDB::instance()->getSongRating( url )*10;
                     it->setRating( rating );
                 }
             }
@@ -2475,7 +2475,7 @@ MediaDevice::transferFiles()
             bundle = 0;
         }
 
-        int rating = CollectionDB::instance()->getSongRating( m_transferredItem->bundle()->url().path() ) * 20;
+        int rating = CollectionDB::instance()->getSongRating( m_transferredItem->bundle()->url().path() ) * 10;
         item->setRating( rating );
 
         if( playlist )
