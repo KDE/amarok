@@ -366,9 +366,9 @@ void PlaylistWindow::init()
             Debug::Block block( name ); \
             m_browsers->addBrowser( Type::instance(), text, icon ); }
 
-        addBrowserMacro( ContextBrowser, "ContextBrowser", i18n( "Context" ), "info" )
+        addBrowserMacro( ContextBrowser, "ContextBrowser", i18n( "Context" ), amaroK::icon( "info" ) )
         addBrowserMacro( CollectionBrowser, "CollectionBrowser", i18n( "Collection" ), "collection" )
-        addInstBrowserMacro( PlaylistBrowser, "PlaylistBrowser", i18n( "Playlists" ), "player_playlist_2" )
+        addInstBrowserMacro( PlaylistBrowser, "PlaylistBrowser", i18n( "Playlists" ), amaroK::icon( "player_playlist_2" ) )
 
         // disable this check for now as isAvailable() returned always true before
         //if( MediaBrowser::isAvailable() )
