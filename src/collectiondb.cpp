@@ -1875,15 +1875,24 @@ CollectionDB::updatePodcastChannel( const PodcastChannelBundle &b )
 {
     if( getDbConnectionType() == DbConnection::postgresql )
     {
-        query( QString( "UPDATE podcastepisode SET title='%1', weblink='%2', comment='%3', "
-                        "copyright='%4', parent=%5, directory='%6', autoscan=%7, fetchtype=%8, "
-                        "autotransfer=%9, haspurge=%10, purgecount=%11 WHERE url='%12';" )
-                        .arg( escapeString( b.title() ) )       .arg( escapeString( b.link().url() ) )
-                        .arg( escapeString( b.description() ) ) .arg( escapeString( b.copyright() ) )
-                        .arg( QString::number( b.parentId() ) ) .arg( escapeString( b.saveLocation().url() ) )
-                        .arg( b.autoscan() ? boolT() : boolF() ).arg( QString::number( b.fetchType() ) )
-                        .arg( b.hasPurge() ? boolT() : boolF() ).arg( b.autotransfer() ? boolT() : boolF() )
-                        .arg( QString::number( b.purgeCount() )).arg( escapeString( b.url().url() ) ) );
+        query( QStringx( "UPDATE podcastchannels SET title='%1', weblink='%2', comment='%3', "
+			 "copyright='%4', parent=%5, directory='%6', autoscan=%7, fetchtype=%8, "
+			 "autotransfer=%9, haspurge=%10, purgecount=%11 WHERE url='%12';" )
+	       .args ( QStringList()
+		       << escapeString( b.title() )
+		       << escapeString( b.link().url() ) 
+		       << escapeString( b.description() ) 
+		       << escapeString( b.copyright() )
+		       << QString::number( b.parentId() ) 
+		       << escapeString( b.saveLocation().url() ) 
+		       << ( b.autoscan() ? boolT() : boolF() )
+		       << QString::number( b.fetchType() ) 
+		       << (b.hasPurge() ? boolT() : boolF() )
+		       << (b.autotransfer() ? boolT() : boolF() )
+		       << QString::number( b.purgeCount() )
+		       << escapeString( b.url().url() )
+		   )
+	    );
     }
     else {
         addPodcastChannel( b, true ); //replace the already existing row
@@ -1895,7 +1904,7 @@ CollectionDB::updatePodcastEpisode( const int id, const PodcastEpisodeBundle &b 
 {
     if( getDbConnectionType() == DbConnection::postgresql )
     {
-        query( QStringx( "UPDATE podcastepisode SET url='%1', localurl='%2', parent='%3', title='%4', subtitle='%5', composer='%6', comment='%7', "
+        query( QStringx( "UPDATE podcastepisodes SET url='%1', localurl='%2', parent='%3', title='%4', subtitle='%5', composer='%6', comment='%7', "
                  "filetype='%8', createdate='%9', guid='%10', length=%11, size=%12, isNew=%13 WHERE id=%14;" )
               .args( QStringList()
                   << escapeString( b.url().url() )
