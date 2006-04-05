@@ -204,7 +204,7 @@ HSPAudioDevice::GetCurrentAudioTime( REF(ULONG32) ulCurrentTime )
 
       ulCurrentTime = m_ulCurrentTime - (ULONG32)(((double)frame_delay * 1000.0) / (double)m_unSampleRate);
 
-      //m_Player->print2stderr("########## HSPAudioDevice::GetCurrentAudioTime %d\n", ulCurrentTime);
+      //m_Player->print2stderr("########## HSPAudioDevice::GetCurrentAudioTime %d %d\n", ulCurrentTime, m_ulCurrentTime);
    }
    pthread_mutex_unlock(&m_m);
 
@@ -305,19 +305,28 @@ int HSPAudioDevice::sync()
    if (m_pStreamResponse)
    {
       ULONG32 curtime;
-      if (!GetCurrentAudioTime(curtime))
-         m_pStreamResponse->OnTimeSync(curtime);
+      if (!GetCurrentAudioTime(curtime) && curtime)
+         return m_pStreamResponse->OnTimeSync(curtime);
       else
       {
          // probably a seek occurred
-         clearQueue();
-         //Reset();
-         return -1;
+         //clearQueue();
+         _Reset();
       }
    }
-   return 0;
+   return -1;
 }
 
+
+HX_RESULT HSPAudioDevice::OnTimeSync()
+{
+   HX_RESULT err;
+
+   if (!(err = sync()))
+      return HXR_OK;
+
+   return err;
+}
 
 int
 HSPAudioDevice::_Write( const HXAudioData* pAudioData )
@@ -329,23 +338,23 @@ HSPAudioDevice::_Write( const HXAudioData* pAudioData )
    
    pAudioData->pData->Get(data, len);
 
-   HX_RESULT res = HXR_OK;
-
    // if the time of this buf is earlier than the last, or the time between this buf and the last is > 1 buffer's worth, this was a seek
    if ( pAudioData->ulAudioTime < m_ulCurrentTime ||
         pAudioData->ulAudioTime - m_ulCurrentTime > (1000 * len) / (m_unNumChannels * m_unSampleRate) + 1 ) 
    {
       m_Player->print2stderr("########## seek detected %d %d, len = %d %d\n", m_ulCurrentTime, pAudioData->ulAudioTime, len,
                              abs(pAudioData->ulAudioTime - (m_ulCurrentTime + (1000 * len) / (m_unNumChannels * m_unSampleRate))));
-      _Reset();
-      clearQueue();
+      //_Reset();
+      //clearQueue();
    }
 
-
-   if (!sync())
+   if (!err)
+   {
       err = WriteBytes(data, len, bytes);
+      m_ulCurrentTime = pAudioData->ulAudioTime;
+   }
+   err = sync();
 
-   m_ulCurrentTime = pAudioData->ulAudioTime;
    //m_Player->print2stderr("########## %d %d\n", m_ulCurrentTime,pAudioData->ulAudioTime);
 
    //m_Player->print2stderr("########## Got to HSPAudioDevice::Write len=%d  byteswriten=%d err=%d time=%d\n",
@@ -1340,7 +1349,7 @@ HX_RESULT HSPAudioDevice::WriteBytes( UCHAR* buffer, ULONG32 ulBuffLength, LONG3
 {
     int err = 0, count = 0;
     unsigned int frames_written = 0;
-    snd_pcm_sframes_t num_frames;
+    snd_pcm_sframes_t num_frames = 0;
     ULONG32 ulBytesToWrite = ulBuffLength;
     ULONG32 ulBytesWrote = 0;
 

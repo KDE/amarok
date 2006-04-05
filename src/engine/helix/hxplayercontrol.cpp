@@ -542,7 +542,8 @@ void PlayerControl::tearDown()
             sendteardown(m_children[i].m_pipeB[1]);
             close(m_children[i].m_pipeB[1]);
             close(m_children[i].m_pipeA[0]);
-            cerr << "About to waitpid for pid " << m_children[i].m_pid << endl;;
+            cerr << "About to waitpid for pid " << m_children[i].m_pid << endl;
+            kill(m_children[i].m_pid, SIGTERM);
             waitpid(m_children[i].m_pid, &tmp, 0);
          }
       }
@@ -1026,7 +1027,7 @@ bool PlayerControl::sendsetoutputsink()
 {
    int i;
    char c = (char) m_api;
-   bool ok;
+   bool ok = false;
 
    for (i=0; i<nNumPlayers; i++)
       ok |= sendmessage(m_children[i].m_pipeB[1], OUTPUTSINK, (unsigned char *) &c, 1); 
@@ -1040,7 +1041,7 @@ bool PlayerControl::sendsetdevice()
       return false;
 
    int i, len = strlen( m_device );
-   bool ok;
+   bool ok = false;
 
    for (i=0; i<nNumPlayers; i++)
       ok |= sendmessage(m_children[i].m_pipeB[1], DEVICE, (unsigned char *) m_device, len + 1);
@@ -1051,7 +1052,7 @@ bool PlayerControl::sendsetdevice()
 bool PlayerControl::sendinit()
 {
    int i;
-   bool ok;
+   bool ok = false;
 
    for (i=0; i<nNumPlayers; i++)
       ok |= sendrequest(m_children[i].m_pipeB[1], INIT);
@@ -1064,7 +1065,7 @@ bool PlayerControl::sendupdateeqgains()
    unsigned char buf[ 65535 ];
    int bandGain;
    uint i;
-   bool ok;
+   bool ok = false;
 
    memcpy((void *) buf, (void *) &m_preamp, sizeof(m_preamp));
    i = m_equalizerGains.size();

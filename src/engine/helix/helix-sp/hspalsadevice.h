@@ -116,6 +116,8 @@ public:
       const HXAudioData* pAudioData
       );
 
+   HX_RESULT  OnTimeSync();
+
    void setDevice( const char *device );
    
 protected:
