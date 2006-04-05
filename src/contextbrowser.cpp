@@ -1185,7 +1185,7 @@ CurrentTrackJob::showHomeByAlbums()
     // <Fresh Podcasts Information>
     qb.clear();
     qb.addReturnValue( QueryBuilder::tabPodcastEpisodes, QueryBuilder::valParent );
-    qb.addMatch( QueryBuilder::tabPodcastEpisodes, QueryBuilder::valIsNew, CollectionDB::instance()->boolT() );
+    qb.addFilter( QueryBuilder::tabPodcastEpisodes, QueryBuilder::valIsNew, CollectionDB::instance()->boolT(), QueryBuilder::modeNormal, true );
     qb.sortBy( QueryBuilder::tabPodcastEpisodes, QueryBuilder::valID, true );
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     qb.setLimit( 0, 5 );
@@ -1341,6 +1341,7 @@ CurrentTrackJob::showHomeByAlbums()
     qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage );
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valID );
     qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
+    qb.addFilter( QueryBuilder::tabStats, QueryBuilder::valPercentage, QString::number( -1 ), QueryBuilder::modeGreater, true);
     qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
     qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID );
     qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valID );

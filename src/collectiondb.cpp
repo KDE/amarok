@@ -4389,7 +4389,12 @@ QueryBuilder::addFilter( int tables, Q_INT64 value, const QString& filter, int m
         if (mode == modeLess || mode == modeGreater)
             s = ( mode == modeLess ? "< '" : "> '" ) + CollectionDB::instance()->escapeString( filter ) + "' ";
         else
-            s = CollectionDB::likeCondition( filter, !exact, !exact && !mode != modeEndMatch );
+        {
+            if (exact)
+                s = " = " + CollectionDB::instance()->escapeString( filter );
+            else
+                s = CollectionDB::likeCondition( filter, false, false && !mode != modeEndMatch );
+        }
 
         m_where += QString( "OR %1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
 
@@ -4471,7 +4476,12 @@ QueryBuilder::excludeFilter( int tables, Q_INT64 value, const QString& filter, i
         if (mode == modeLess || mode == modeGreater)
             s = ( mode == modeLess ? ">= '" : "<= '" ) + CollectionDB::instance()->escapeString( filter ) + "' ";
         else
-            s = "NOT " + CollectionDB::instance()->likeCondition( filter, !exact, !exact && mode != modeEndMatch ) + " ";
+        {
+            if (exact)
+                s = " <> " + CollectionDB::instance()->escapeString( filter );
+            else
+                s = "NOT " + CollectionDB::instance()->likeCondition( filter, false, false && mode != modeEndMatch ) + " ";
+        }
 
         m_where += QString( "AND %1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
 

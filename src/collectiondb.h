@@ -223,8 +223,8 @@ class CollectionDB : public QObject, public EngineObserver
                 #endif
                     string.replace( '\'', "''" );
             }
-        QString boolT() const { if (getDbConnectionType() == DbConnection::postgresql) return "'t'"; else return "1"; }
-        QString boolF() const { if (getDbConnectionType() == DbConnection::postgresql) return "'f'"; else return "0"; }
+        QString boolT() const { if (getDbConnectionType() == DbConnection::postgresql) return "true"; else return "1"; }
+        QString boolF() const { if (getDbConnectionType() == DbConnection::postgresql) return "false"; else return "0"; }
         QString textColumnType() const { if ( getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return "VARCHAR(255)"; }
         QString textColumnType(int length) const { if ( getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return QString("VARCHAR(%1)").arg(length); }
         // We might consider using LONGTEXT type, as some lyrics could be VERY long..???
