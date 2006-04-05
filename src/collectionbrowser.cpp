@@ -293,6 +293,8 @@ CollectionBrowser::layoutToolbar()
     m_flatViewAction->plug( m_toolbar );
     m_toolbar->insertLineSeparator();
 
+    m_showDividerAction->plug( m_toolbar );
+
     if ( !AmarokConfig::monitorChanges() ) {
         m_toolbar->setIconText( KToolBar::IconTextRight, false );
         m_scanAction->plug( m_toolbar );
@@ -300,8 +302,6 @@ CollectionBrowser::layoutToolbar()
     }
 
     m_configureAction->plug( m_toolbar );
-
-    m_showDividerAction->plug( m_toolbar );
 
     //This would break things if the toolbar is too big, see bug #121915
     //setMinimumWidth( m_toolbar->sizeHint().width() + 2 ); //set a reasonable minWidth
