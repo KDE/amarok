@@ -5,6 +5,11 @@ TODO-list for amaroK
 
 
 SHORT-TERM (URGENT):
+ <markey>  OSD preview widget: make the snap-to-grid more sensitive.
+
+ <markey>  xine-engine: when "xine could not init any audio driver" happens, always retry
+           with Autodetect. This seems to be an issue with leftover amarokrc's from 1.3.
+
  <sebr>    Adding an m3u with non existant items has filesize = 16,777,216.0 TB!
 
  <markey>  Valgrind detected memory leaks in the moodbar code and in libGeddei. I don't
