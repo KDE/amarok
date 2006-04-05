@@ -37,6 +37,7 @@ typedef QMap<Medium*, KComboBox*> ComboMap;
 typedef QMap<int, Medium*> ButtonMap;
 typedef QMap<int, QHBox*> HBoxMap;
 typedef QMap<QString, Medium*> DeletedList;
+typedef QMap<QString, QString> PluginStringMap;
 
 /**
 	@author Jeff Mitchell <kde-dev@emailgoeshere.com>
@@ -48,6 +49,7 @@ class MediumPluginManager : public KDialogBase
     public:
         MediumPluginManager();
         ~MediumPluginManager();
+        QString getPluginName( const QString name ) { return m_dmap[name]; }
 
     signals:
         void selectedPlugin( const Medium*, const QString );
@@ -66,6 +68,7 @@ class MediumPluginManager : public KDialogBase
         ComboMap m_cmap;
         ButtonMap m_bmap;
         HBoxMap m_hmap;
+        PluginStringMap m_dmap;
         QSignalMapper *m_siginfomap;
         QSignalMapper *m_sigdelmap;
         DeletedList m_deletedList;
@@ -101,11 +104,23 @@ class ManualDeviceAdder : public KDialogBase
     Q_OBJECT
 
     public:
-        ManualDeviceAdder();
+        ManualDeviceAdder( MediumPluginManager* mdm );
         ~ManualDeviceAdder();
+        bool successful() const { return m_successful; }
         Medium* getMedium();
+        QString getPlugin() const { return m_selectedPlugin; }
+
+    private slots:
+        void slotCancel();
+        void slotOk();
+        void comboChanged( const QString & );
 
     private:
+        MediumPluginManager* m_mdm;
+        bool m_successful;
+        QString m_comboOldText;
+        QString m_selectedPlugin;
+
         KComboBox* m_mdaCombo;
         KLineEdit* m_mdaName;
         KLineEdit* m_mdaMountPoint;

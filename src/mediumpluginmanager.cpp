@@ -145,7 +145,10 @@ MediumPluginManager::detectDevices()
         m_currcombo = new KComboBox( false, m_hbox, m_currtext->latin1() );
         m_currcombo->show();
         m_currcombo->insertItem( i18n( "Do not handle" ) );
+        m_dmap[("Do not handle")] = "ignore";
+
         for( m_plugit = m_offers.begin(); m_plugit != m_offersEnd; ++m_plugit ){
+            m_dmap[(*m_plugit)->name()] = (*m_plugit)->property( "X-KDE-amaroK-name" ).toString();
             m_currcombo->insertItem( (*m_plugit)->name() );
             if ( (*m_plugit)->property( "X-KDE-amaroK-name" ).toString() == m_config->readEntry( (*it)->id() ) )
                 m_currcombo->setCurrentItem( (*m_plugit)->name() );
@@ -232,10 +235,24 @@ MediumPluginManager::deleteMedium( int buttonId )
 void
 MediumPluginManager::newDevice()
 {
-    ManualDeviceAdder* mda = new ManualDeviceAdder();
+    ManualDeviceAdder* mda = new ManualDeviceAdder( this );
     mda->exec();
-    DeviceManager::instance()->addManualDevice( mda->getMedium() );
-    detectDevices();
+    if( mda->successful() && mda->getMedium() != 0 )
+    {
+        if( m_config->readEntry( mda->getMedium()->id() ) != QString::null )
+        {
+            //abort!  Can't have the same device defined twice...
+            amaroK::StatusBar::instance()->longMessageThreadSafe( i18n("Sorry, you cannot define two devices\n"
+                                                                       "with the same name and mountpoint!") );
+        }
+        else
+        {
+            DeviceManager::instance()->addManualDevice( mda->getMedium() );
+            m_config->writeEntry( mda->getMedium()->id(), mda->getPlugin() );
+            detectDevices();
+        }
+    }
+    delete mda;
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -278,9 +295,12 @@ MediumPluginDetailView::~MediumPluginDetailView()
 
 /////////////////////////////////////////////////////////////////////
 
-ManualDeviceAdder::ManualDeviceAdder()
+ManualDeviceAdder::ManualDeviceAdder( MediumPluginManager* mdm )
 : KDialogBase( amaroK::mainWindow(), "manualdeviceadder", true, QString::null, Ok, Ok )
 {
+    m_mdm = mdm;
+    m_successful = false;
+
     kapp->setTopWidget( this );
     setCaption( kapp->makeStdCaption( i18n( "Add New Device") ) );
 
@@ -298,26 +318,68 @@ ManualDeviceAdder::ManualDeviceAdder()
     for( m_mdaPlugit = m_mdaOffers.begin(); m_mdaPlugit != m_mdaOffersEnd; ++m_mdaPlugit )
         m_mdaCombo->insertItem( (*m_mdaPlugit)->name() );
 
+    new QLabel( "", vbox1 );
     new QLabel( i18n( "Enter a name for this device (required):" ), vbox1 );
-    m_mdaName = new KLineEdit( this, "m_mdaname" );
+    m_mdaName = new KLineEdit( vbox1, "m_mdaname" );
 
     new QLabel( "", vbox1 );
     new QLabel( i18n( "Enter the device's mountpoint, if applicable:"), vbox1 );
-    m_mdaMountPoint = new KLineEdit( this, "m_mdamountpoint" );
+    m_mdaMountPoint = new KLineEdit( vbox1, "m_mdamountpoint" );
     KCompletion *comp = m_mdaMountPoint->completionObject();
     connect( m_mdaMountPoint, SIGNAL( returnPressed(const QString&) ), comp, SLOT( addItem(const QString&) ) );
-
+    connect( m_mdaCombo, SIGNAL( activated(const QString&) ), this, SLOT( comboChanged(const QString&) ) );
 }
 
 ManualDeviceAdder::~ManualDeviceAdder()
 {
 }
 
+void
+ManualDeviceAdder::slotCancel()
+{
+    KDialogBase::slotCancel( );
+}
+
+void
+ManualDeviceAdder::slotOk()
+{
+    m_successful = true;
+    KDialogBase::slotOk( );
+}
+
+void
+ManualDeviceAdder::comboChanged( const QString &string )
+{
+    //best thing to do here would be to find out if the plugin selected
+    //has m_hasMountPoint set to false...but any way to do this
+    //without instantiating it?  This way will suffice for now...
+    if( m_mdm->getPluginName( string ) == "ifp-mediadevice" )
+    {
+        m_comboOldText = m_mdaMountPoint->text();
+        m_mdaMountPoint->setText( i18n("(not applicable)") );
+        m_mdaMountPoint->setEnabled(false);
+    }
+    else if( m_mdaMountPoint->isEnabled() == false )
+    {
+        m_mdaMountPoint->setText( m_comboOldText );
+        m_mdaMountPoint->setEnabled(true);
+    }
+    m_selectedPlugin = m_mdm->getPluginName( string );
+}
+
 Medium*
 ManualDeviceAdder::getMedium()
 {
-    QString id = "manual|" + m_mdaName->text()  +
-            ( m_mdaMountPoint->text() == QString::null ? QString::null : '|' + m_mdaMountPoint->text() );
+    if( m_mdaMountPoint->isEnabled() == false &&
+            m_mdaName->text() == QString::null )
+        return 0;
+    if( m_mdaMountPoint->text() == QString::null &&
+            m_mdaName->text() == QString::null )
+        return 0;
+    QString id = "manual|" + m_mdaName->text() + '|' +
+            ( m_mdaMountPoint->text() == QString::null ||
+                m_mdaMountPoint->isEnabled() == false ?
+                "(null)" : m_mdaMountPoint->text() );
     Medium* added = new Medium( id, m_mdaName->text() );
     added->setAutodetected( false );
     added->setMountPoint( m_mdaMountPoint->text() );
