@@ -1417,6 +1417,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
         n = xml.namedItem( "item" );
 
     int  children = 0;
+    int  episode_limit = (m_bundle.purgeCount() > 0 ? m_bundle.purgeCount() : EPISODE_LIMIT );
     bool downloadMedia = ( fetchType() == AUTOMATIC );
     QDomNode node;
 
@@ -1452,7 +1453,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
         }
         else // Freshly added podcast
         {
-            if( children > EPISODE_LIMIT - 1 )
+            if( children > episode_limit-1 )
                 break;
 
             if( !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
