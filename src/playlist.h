@@ -119,6 +119,9 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         bool saveXSPF( const QString& );
         int  totalTrackCount() const;
         BundleList nextTracks() const;
+        uint repeatAlbumTrackCount() const;    //returns number of tracks from same album
+        //as current track that are in playlist (may require Play Albums in Order on). 
+        //If the information is not available, returns 0.
 
         //const so you don't change it behind Playlist's back, use modifyDynamicMode() for that
         const DynamicMode *dynamicMode() const;

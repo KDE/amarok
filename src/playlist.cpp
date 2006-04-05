@@ -1856,6 +1856,15 @@ Playlist::nextTracks() const
     return list;
 }
 
+uint
+Playlist::repeatAlbumTrackCount() const
+{
+    if ( m_currentTrack && m_currentTrack->m_album )
+        return m_currentTrack->m_album->tracks.count();
+    else
+        return 0;
+}
+
 const DynamicMode*
 Playlist::dynamicMode() const
 {

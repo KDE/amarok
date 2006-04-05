@@ -306,6 +306,12 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
 {
     DEBUG_BLOCK
 
+    //Holds the time since we started trying to play non-existent files
+    //so we know when to abort
+    static QTime failure_time;
+    if ( !m_playFailureCount )
+        failure_time.start();
+
     const KURL url = bundle.url();
     debug() << "Loading URL: " << url.url() << endl;
     m_lastMetadata.clear();
@@ -335,6 +341,7 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
 
         if( m_engine->play( offset ) )
         {
+            //Reset failure count as we are now successfully playing a song
             m_playFailureCount = 0;
 
             // Ask engine for track length, if available. It's more reliable than TagLib.
@@ -355,13 +362,48 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
     some_kind_of_failure:
         debug() << "Failed to play this track." << endl;
 
-        m_playFailureCount++;
+        ++m_playFailureCount;
 
-        // Don't skip more than 5 times in a row, to prevent GUI freezes and endless loops
-        if ( m_playFailureCount <= 5  && AmarokConfig::soundSystem() != "nmm-engine" /*&& !amaroK::repeatPlaylist()*/ ) {
+        //Code to skip to next track if playback fails:
+        //
+        //* The failure counter is reset if a track plays successfully or if playback is
+        //  stopped, for whatever reason.
+        //* For normal playback, the attempt to play is stopped at the end of the playlist
+        //* For repeat playlist , a whole playlist worth of songs is tried
+        //* For repeat album, the number of songs tried is the number of tracks from the
+        //  album that are in the playlist.
+        //* For repeat track, no attempts are made
+        //* For the nmm engine, no attempts are made (necessary? / FIXME)
+        //* To prevent GUI freezes we don't try to play again after 0.5s of failure
+        int totalTracks = Playlist::instance()->totalTrackCount();
+        int currentTrack = Playlist::instance()->currentTrackIndex();
+        if ( ( ( amaroK::repeatPlaylist() && static_cast<int>(m_playFailureCount) < totalTracks )
+            || ( amaroK::repeatNone() && currentTrack != totalTracks - 1 )
+            || ( amaroK::repeatAlbum() && m_playFailureCount < Playlist::instance()->repeatAlbumTrackCount() ) )
+            && AmarokConfig::soundSystem() != "nmm-engine"
+            && failure_time.elapsed() < 500 )
+        {
+
            debug() << "Skipping to next track." << endl;
-           next();
-           QTimer::singleShot( 0, this, SLOT( play() ) );
+
+           // The test for loaded must be done _before_ next is called
+           if ( !m_engine->loaded() )
+           {
+               //False gives behaviour as if track played successfully
+               next( false );
+               QTimer::singleShot(   0, this, SLOT(   play() ) );
+           }
+           else
+           {
+               //False gives behaviour as if track played successfully
+               next( false );
+           }
+        }
+        else
+        {
+            //Stop playback, including resetting failure count (as all new failures are
+            //treated as independent after playback is stopped)
+            stop();
         }
 }
 
@@ -375,6 +417,9 @@ void EngineController::pause() //SLOT
 
 void EngineController::stop() //SLOT
 {
+    //Reset failure counter as after stop, everything else is unrelated
+    m_playFailureCount = 0;
+
     //let amaroK know that the previous track is no longer playing
     trackEnded( m_engine->position(), m_bundle.length() * 1000 );
 
