@@ -731,8 +731,8 @@ MetaBundle::ParsedExpression MetaBundle::parseExpression( QString expression ) /
     expression = expression.simplifyWhiteSpace();
 
     int x; //position in string of the end of the next element
-    bool OR = false, minus = false; //whether the next element is to be OR, and/or negated
-    QString tmp, s = "", field = ""; //the current element, a tempstring, and the field: of the next element
+    bool OR = false; //whether the next element is to be ORed with the current one
+    QString s = "", field = ""; //the current element, and the field: of the next element
     QStringList tmpl; //list of elements of which at least one has to match (OR)
     QValueList<QStringList> allof; //list of all the tmpls, of which all have to match
     while( !expression.isEmpty() )  //seperate expression into parts which all have to match
@@ -761,21 +761,13 @@ MetaBundle::ParsedExpression MetaBundle::parseExpression( QString expression ) /
             }
             else
                 OR = false;
-            tmp = field + s;
-            if( minus )
-            {
-                tmp = "-" + tmp;
-                minus = false;
-            }
-            tmpl += tmp;
-            tmp = field = "";
+            tmpl += ( field + s );
+            field = "";
         }
         else if( s.endsWith( ":" ) || s.endsWith( ":>" ) || s.endsWith( ":<" ) )
             field = s;
         else if( s == "OR" )
             OR = true;
-        else if( s == "-" )
-            minus = true;
         else
             OR = false;
     }
