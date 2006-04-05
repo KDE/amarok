@@ -906,6 +906,8 @@ void ContextBrowser::showCurrentTrack() //SLOT
     {
         debug() << "current browser is not context, aborting showCurrentTrack()" << endl;
         m_dirtyCurrentTrackPage = true;
+        m_currentTrackPage->set( QString( "<html><body><div class='box-body'>%1</div></body></html>" )
+                                 .arg( i18n( "Updating..." ) ) );
         return;
     }
     debug() << "Rendering showCurrentTrack()" << endl;
