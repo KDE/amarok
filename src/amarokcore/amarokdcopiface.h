@@ -179,6 +179,7 @@ k_dcop:
    virtual void migrateFile( const QString &oldURL, const QString &newURL ) = 0; ///<Move a file in the collection, keeping stats intact.
    virtual void scanCollection() = 0;                      ///< Scan the collection.
    virtual void scanCollectionChanges() = 0;               ///< Scan the collection for changes only.
+   virtual void disableAutoScoring( bool disable ) = 0;    ///< Disable updating track stats on track change
 };
 
 

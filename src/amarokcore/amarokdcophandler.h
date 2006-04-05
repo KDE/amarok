@@ -183,6 +183,7 @@ class DcopCollectionHandler : public QObject, virtual public AmarokCollectionInt
       virtual void migrateFile( const QString &oldURL, const QString &newURL );
       virtual void scanCollection();
       virtual void scanCollectionChanges();
+      virtual void disableAutoScoring( bool disable );
 };
 
 

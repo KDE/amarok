@@ -743,6 +743,11 @@ namespace amaroK
         CollectionDB::instance()->scanMonitor();
     }
 
+    void DcopCollectionHandler::disableAutoScoring( bool disable )
+    {
+        CollectionDB::instance()->disableAutoScoring( disable );
+    }
+
 /////////////////////////////////////////////////////////////////////////////////////
 // class DcopScriptHandler
 /////////////////////////////////////////////////////////////////////////////////////

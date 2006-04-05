@@ -98,6 +98,7 @@ CollectionDB* CollectionDB::instance()
 CollectionDB::CollectionDB()
         : EngineObserver( EngineController::instance() )
         , m_noCover ( locate( "data", "amarok/images/nocover.png" ) )
+        , m_autoScoring( true )
 {
     DEBUG_BLOCK
 
@@ -135,6 +136,8 @@ CollectionDB::CollectionDB()
     setAdminValue( "Database Stats Version", QString::number(DATABASE_STATS_VERSION) );
     setAdminValue( "Database Persistent Tables Version", QString::number(DATABASE_PERSISTENT_TABLES_VERSION) );
 
+
+    connect( qApp, SIGNAL( aboutToQuit() ), this, SLOT( disableAutoScoring() ) );
 
     startTimer( MONITOR_INTERVAL * 1000 );
     connect( this, SIGNAL( coverRemoved( const QString&, const QString& ) ),
@@ -3163,7 +3166,7 @@ void CollectionDB::engineTrackEnded( int finalPosition, int trackLength )
             return;
     }
 
-    if ( url.path().isEmpty() ) return;
+    if ( url.path().isEmpty() || !m_autoScoring ) return;
 
     // sanity check
     if ( finalPosition > trackLength || finalPosition <= 0 )

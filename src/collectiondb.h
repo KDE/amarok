@@ -404,6 +404,7 @@ class CollectionDB : public QObject, public EngineObserver
         void startScan();
         void stopScan();
         void scanModifiedDirs();
+        void disableAutoScoring( bool disable = true ) { m_autoScoring = !disable; }
 
     private slots:
         void dirDirty( const QString& path );
@@ -469,6 +470,8 @@ class CollectionDB : public QObject, public EngineObserver
 
         bool m_monitor;
         QImage m_noCover;
+
+        bool m_autoScoring;
 
         static QMap<QThread *, DbConnection *> *threadConnections;
         DbConnection::DbConnectionType m_dbConnType;
