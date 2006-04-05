@@ -423,8 +423,10 @@ void EngineController::stop() //SLOT
     //let amaroK know that the previous track is no longer playing
     trackEnded( m_engine->position(), m_bundle.length() * 1000 );
 
-    if ( m_engine->loaded() )
-        m_engine->stop();
+    //Remove requirement for track to be loaded for stop to be called (fixes gltiches
+    //where stop never properly happens if call to m_engine->load fails in play)
+    //if ( m_engine->loaded() )
+    m_engine->stop();
 }
 
 
