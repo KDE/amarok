@@ -128,7 +128,7 @@ PlaylistWindow::PlaylistWindow()
     new KAction( i18n("Play Audio CD"), "cdaudio_unmount", 0, this, SLOT(playAudioCD()), ac, "play_audiocd" );
     new KAction( i18n("Script Manager"), "pencil", 0, this, SLOT(showScriptSelector()), ac, "script_manager" );
     new KAction( i18n("Queue Manager"), "goto", 0, this, SLOT(showQueueManager()), ac, "queue_manager" );
-    new KAction( i18n("Statistics"), "info", 0, this, SLOT(showStatistics()), ac, "statistics" );
+    new KAction( i18n("Statistics"), amaroK::icon( "info" ), 0, this, SLOT(showStatistics()), ac, "statistics" );
 
     ac->action( "options_configure_globals" )->setText( i18n( "Configure &Global Shortcuts..." ) );
 

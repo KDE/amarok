@@ -5,6 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.4-beta3:
   FEATURES:
+    * amaroK now has a custom icon theme, and an option to switch back to the
+      system icons, if preferred (in the General settings section).
     * Collection browser view is separated alphabetically. Patch by
       Christian Hoenig <list@hoenig.cc>.
     * Support for loading and saving XSPF playlists. Patch by Mattias

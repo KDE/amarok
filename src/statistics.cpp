@@ -16,6 +16,7 @@
 #include "clicklineedit.h"
 #include "collectiondb.h"
 #include "debug.h"
+#include "iconloader.h"
 #include "statistics.h"
 
 #include <kapplication.h>
@@ -77,7 +78,7 @@ Statistics::Statistics( QWidget *parent, const char *name )
 
     QVBox *box = new QVBox( mainWidget() );
     box->setSpacing( 5 );
-    
+
     { //<Search LineEdit>
         KToolBar *bar = new Browser::ToolBar( box );
         bar->setIconSize( 22, false ); //looks more sensible
@@ -98,7 +99,7 @@ Statistics::Statistics( QWidget *parent, const char *name )
 
         QToolTip::add( button, i18n( "Clear filter" ) );
     } //</Search LineEdit>
-    
+
     m_listView = new StatisticsList( box );
 }
 
@@ -247,7 +248,7 @@ StatisticsList::refreshView()
         }
         while( firstChild()->firstChild() )
             delete firstChild()->firstChild();
-        
+
         expandInformation( static_cast<StatisticsItem*>(firstChild()), true /*refresh*/ );
     }
     else
@@ -258,7 +259,7 @@ void
 StatisticsList::renderView()
 {
     m_expanded = false;
-    
+
     //ensure cleanliness - this function is not just called from the ctor, but also when returning to the initial display
     while( firstChild() )
         delete firstChild();
@@ -322,7 +323,7 @@ StatisticsList::renderView()
     m_artistItem->setPixmap( QString("personal") );
     m_albumItem ->setPixmap( QString("cdrom_unmount") );
     m_genreItem ->setPixmap( QString("kfm") );
-    m_newestItem->setPixmap( QString("history") );
+    m_newestItem->setPixmap( amaroK::icon("history") );
 }
 
 void
@@ -352,7 +353,7 @@ void
 StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
 {
     m_expanded = true;
-    
+
     QueryBuilder qb;
 
     StatisticsDetailedItem *m_last = 0;
@@ -467,7 +468,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
             delete m_mostplayedItem;
             delete m_trackItem;
         }
-        
+
         qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valID );
@@ -488,12 +489,12 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
         {
             const bool isSampler = (fave[i+6] == trueValue);
-            QString name = i18n("%1. %2 - %3").arg( QString::number(c), fave[i], 
+            QString name = i18n("%1. %2 - %3").arg( QString::number(c), fave[i],
                                                     isSampler ? i18n( "Various Artists" ) : fave[i+1] );
             double score  = fave[i+4].toDouble();
             double rating = fave[i+5].toDouble() / (double)2;
             QString subtext = i18n("Score: %1  Rating: %2").arg( QString::number(score) ).arg( QString::number(rating) );
-            
+
             m_last = new StatisticsDetailedItem( name, subtext, item, m_last );
             m_last->setItemType( StatisticsDetailedItem::ALBUM );
             QString url = QString("%1 @@@ %2").arg( isSampler ? "0" : fave[i+2], fave[i+3] );
@@ -527,7 +528,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
             double score  = fave[i+1].toDouble();
             double rating = fave[i+2].toDouble() / (double)2;
             QString subtext = i18n("Score: %1  Rating: %2").arg( QString::number(score) ).arg( QString::number(rating) );
-            
+
             m_last = new StatisticsDetailedItem( name, subtext, item, m_last );
             m_last->setItemType( StatisticsDetailedItem::GENRE );
             QString url = QString("%1").arg( fave[i] );
@@ -859,12 +860,12 @@ StatisticsDetailedItem::paintCell( QPainter *p, const QColorGroup &cg, int colum
 
     int text_x = 0;
     int textHeight;
-    
+
     if( showDetails )
         textHeight = fm.lineSpacing() + lv->itemMargin() + 1;
     else
         textHeight = height();
-        
+
     pBuf.setPen( isSelected() ? cg.highlightedText() : cg.text() );
 
     if( pixmap( column ) )
@@ -895,7 +896,7 @@ StatisticsDetailedItem::paintCell( QPainter *p, const QColorGroup &cg, int colum
 
     pBuf.drawText( text_x, 0, width, textHeight, AlignVCenter, name );
 
-    if( showDetails ) 
+    if( showDetails )
     {
         const QColorGroup _cg = listView()->palette().disabled();
         text_x = lv->treeStepSize() + 3;
@@ -908,7 +909,7 @@ StatisticsDetailedItem::paintCell( QPainter *p, const QColorGroup &cg, int colum
     p->drawPixmap( 0, 0, buffer );
 }
 
-void 
+void
 StatisticsDetailedItem::setup()
 {
     QFontMetrics fm( listView()->font() );
