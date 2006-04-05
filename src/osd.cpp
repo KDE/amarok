@@ -398,10 +398,12 @@ void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 {
     if( m_dragging && this == mouseGrabber() )
     {
+        // Here we implement a "snap-to-grid" like positioning system for the preview widget
+
         const QRect screen      = QApplication::desktop()->screenGeometry( m_screen );
         const uint  hcenter     = screen.width() / 2;
         const uint  eGlobalPosX = e->globalPos().x() - screen.left();
-        const uint  snapZone    = screen.width() / 12;
+        const uint  snapZone    = screen.width() / 24;
 
         QPoint destination = e->globalPos() - m_dragOffset - screen.topLeft();
         int maxY = screen.height() - height() - MARGIN;
