@@ -1374,6 +1374,8 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
 
     QString t = xml.namedItem( "title" ).toElement().text();
 
+    QString a = xml.namedItem( "author" ).toElement().text();
+
     setText( 0, t );
 
     QString l = QString::null;
@@ -1390,10 +1392,14 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
     QString c = xml.namedItem( "copyright" ).toElement().text();
     QString img = xml.namedItem( "image" ).toElement().namedItem( "url" ).toElement().text();
     if( img.isEmpty() )
+        img = xml.namedItem( "itunes:image" ).toElement().namedItem( "url" ).toElement().text();
+    if( img.isEmpty() )
+        img = xml.namedItem( "itunes:image" ).toElement().attribute( "href" );
+    if( img.isEmpty() )
         img = xml.namedItem( "itunes:image" ).toElement().text();
 
     PodcastSettings *parentSettings = PlaylistBrowser::instance()->getPodcastSettings( m_parent );
-    m_bundle = PodcastChannelBundle( m_url, t, l, d, c, parentSettings );
+    m_bundle = PodcastChannelBundle( m_url, t, a, l, d, c, parentSettings );
     m_bundle.setImageURL( KURL::fromPathOrURL( img ) );
 
     m_bundle.setParentId( m_parent->id() );

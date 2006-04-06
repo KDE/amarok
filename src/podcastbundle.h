@@ -11,10 +11,11 @@ class PodcastChannelBundle
 {
     public:
         PodcastChannelBundle() { }
-        PodcastChannelBundle( const KURL &url, const QString &title, const KURL &link,
+        PodcastChannelBundle( const KURL &url, const QString &title, const QString &author, const KURL &link,
                               const QString &desc,  const QString &copy, PodcastSettings *settings )
         {   m_url = url;
             m_title = title;
+            m_author = author;
             m_link = link;
             m_description = desc;
             m_copyright = copy;
@@ -40,6 +41,8 @@ class PodcastChannelBundle
         KURL    url()         const;
         /// The title of the Podcast channel
         QString title()       const;
+        /// The author of the Podcast channel
+        QString author()      const;
         /// A url to the webpage of the podcast
         KURL    link()        const;
         /// A url to the image of the podcast
@@ -51,6 +54,7 @@ class PodcastChannelBundle
 
         void    setURL( const KURL &u );
         void    setTitle( const QString &t );
+        void    setAuthor( const QString &a );
         void    setLink( const KURL &l );
         void    setImageURL( const KURL &i );
         void    setDescription( const QString &d );
@@ -75,6 +79,7 @@ class PodcastChannelBundle
     private:
         KURL    m_url;
         QString m_title;
+        QString m_author;
         KURL    m_link;
         KURL    m_imageUrl;
         QString m_description;
@@ -91,6 +96,7 @@ class PodcastChannelBundle
 
 inline KURL    PodcastChannelBundle::url()         const { return m_url; }
 inline QString PodcastChannelBundle::title()       const { return m_title; }
+inline QString PodcastChannelBundle::author()      const { return m_author; }
 inline KURL    PodcastChannelBundle::link()        const { return m_link; }
 inline KURL    PodcastChannelBundle::imageURL()    const { return m_imageUrl; }
 inline QString PodcastChannelBundle::description() const { return m_description; }
@@ -99,6 +105,7 @@ inline int     PodcastChannelBundle::parentId()    const { return m_parentId; }
 
 inline void    PodcastChannelBundle::setURL         ( const KURL &u )    { m_url = u; }
 inline void    PodcastChannelBundle::setTitle       ( const QString &t ) { m_title = t; }
+inline void    PodcastChannelBundle::setAuthor      ( const QString &a ) { m_author = a; }
 inline void    PodcastChannelBundle::setLink        ( const KURL &l )    { m_link = l; }
 inline void    PodcastChannelBundle::setImageURL    ( const KURL &i )    { m_imageUrl = i; }
 inline void    PodcastChannelBundle::setDescription ( const QString &d ) { m_description = d; }
