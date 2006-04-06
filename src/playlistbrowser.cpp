@@ -1472,7 +1472,7 @@ void PlaylistBrowser::openPlaylist( QListViewItem *parent ) //SLOT
 {
     // open a file selector to add playlists to the playlist browser
     QStringList files;
-    files = KFileDialog::getOpenFileNames( QString::null, "*.m3u *.pls|" + i18n("Playlist Files"), this, i18n("Add Playlists") );
+    files = KFileDialog::getOpenFileNames( QString::null, "*.m3u *.pls|" + i18n("Playlist Files"), this, i18n("Import Playlists") );
 
     const QStringList::ConstIterator end  = files.constEnd();
     for( QStringList::ConstIterator it = files.constBegin(); it != end; ++it )
@@ -2551,16 +2551,16 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         }
 
         if( parentCat == static_cast<QListViewItem*>(m_playlistCategory) )
-            menu.insertItem( SmallIconSet("edit_add"), i18n("Add Playlist..."), PLAYLIST );
+            menu.insertItem( SmallIconSet("edit_add"), i18n("Import Playlist..."), PLAYLIST );
 
         else if( parentCat == static_cast<QListViewItem*>(m_smartCategory) )
-            menu.insertItem( SmallIconSet("edit_add"), i18n("Add Smart-Playlist..."), SMART );
+            menu.insertItem( SmallIconSet("edit_add"), i18n("New Smart Playlist..."), SMART );
+
+        else if( parentCat == static_cast<QListViewItem*>(m_dynamicCategory) )
+            menu.insertItem( SmallIconSet("edit_add"), i18n("New Dynamic Playlist..."), DYNAMIC );
 
         else if( parentCat == static_cast<QListViewItem*>(m_streamsCategory) )
             menu.insertItem( SmallIconSet("edit_add"), i18n("Add Radio Stream..."), STREAM );
-
-        else if( parentCat == static_cast<QListViewItem*>(m_dynamicCategory) )
-            menu.insertItem( SmallIconSet("edit_add"), i18n("New Dynamic Playlist"), DYNAMIC );
 
         else if( parentCat == static_cast<QListViewItem*>(m_podcastCategory) )
         {
