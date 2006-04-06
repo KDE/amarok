@@ -2991,11 +2991,11 @@ Playlist::saveM3U( const QString &path, bool relative ) const
     QValueList<KURL> urls;
     QValueList<QString> titles;
     QValueList<int> lengths;
-    for( const PlaylistItem *item = firstChild(); item; item = item->nextSibling() )
+    for( MyIt it( firstChild(), MyIt::Visible ); *it; ++it )
     {
-        urls << item->url();
-        titles << item->title();
-        lengths << item->length();
+        urls << (*it)->url();
+        titles << (*it)->title();
+        lengths << (*it)->length();
     }
     return PlaylistBrowser::savePlaylist( path, urls, titles, lengths, relative );
 }
