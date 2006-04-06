@@ -2706,7 +2706,7 @@ DividerItem::createGroup(const QString& src, int cat)
         break;
     }
     default:
-        ret = src.mid(src.find(QRegExp("[a-zA-Z0-9]")),1).upper();
+        ret = src.stripWhiteSpace().left( 1 ).upper();
         if (QChar(ret.at(0)).isDigit()) {
             ret = "0-9";
         }
@@ -2744,12 +2744,14 @@ DividerItem::shareTheSameGroup(const QString& itemStr, const QString& divStr, in
         break;
     }
     default: {
-        QString tmp = itemStr.mid( itemStr.find(QRegExp("[a-zA-Z0-9]")) );
-        if (divStr == "0-9" && QChar(tmp.at(0)).isDigit()) {
-            inGroup = true;
-        }
-        else if (tmp.startsWith(divStr)) {
-            inGroup = true;
+        QString tmp = itemStr.stripWhiteSpace();
+        if ( !tmp.isEmpty() ) {
+            if (divStr == "0-9" && QChar(tmp.at(0)).isDigit()) {
+                inGroup = true;
+            }
+            else if (tmp.startsWith(divStr, 0)) {
+                inGroup = true;
+            }
         }
     }
     }
