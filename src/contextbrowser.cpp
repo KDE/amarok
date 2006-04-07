@@ -1454,10 +1454,11 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
 
     PodcastEpisodeBundle peb = *currentTrack.podcastBundle();
     PodcastChannelBundle pcb;
+    bool channelInDB = true;
     if( !CollectionDB::instance()->getPodcastChannelBundle( peb.parent(), &pcb ) )
     {
-        debug() << "this podcast is not in your collection" << endl;
-        return;
+        pcb.setTitle( i18n( "Unknown Channel (not in Database)" ) );
+        channelInDB = false;
     }
 
     QString image;
@@ -1466,7 +1467,10 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
     else
        image = CollectionDB::instance()->notAvailCover();
     image = ContextBrowser::makeShadowedImage( image );
-    QString imageAttr = escapeHTMLAttr( i18n( "Click to go to podcast website: %1." ).arg( pcb.link().prettyURL() ) );
+    QString imageAttr = escapeHTMLAttr( pcb.link().isValid()
+            ? i18n( "Click to go to podcast website: %1." ).arg( pcb.link().prettyURL() )
+            : i18n( "No podcast website." )
+            );
 
     m_HTMLSource.append( QStringx(
                 "<div id='current_box' class='box'>"
@@ -1492,7 +1496,9 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
             .args( QStringList()
                 << escapeHTML( pcb.title() )
                 << escapeHTML( peb.title() )
-                << pcb.link().url().replace( QRegExp( "^http:" ), "externalurl:" )
+                << ( pcb.link().isValid()
+                    ? pcb.link().url().replace( QRegExp( "^http:" ), "externalurl:" )
+                    : "current://track" )
                 << image
                 << imageAttr
                 << escapeHTML( peb.author().isEmpty()
@@ -1522,13 +1528,15 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
                 "</div>" );
     }
 
-    // write the script to toggle blocks visibility
     m_HTMLSource.append(
             "<div id='albums_box' class='box'>"
             "<div id='albums_box-header' class='box-header'>"
             "<span id='albums_box-header-title' class='box-header-title'>"
-            + i18n( "Episodes from %1" ).arg( escapeHTML( pcb.title() ) ) +
-            "</span>"
+            + ( channelInDB
+                ? i18n( "Episodes from %1" ).arg( escapeHTML( pcb.title() ) )
+                : i18n( "Episodes from this Channel" )
+              )
+            + "</span>"
             "</div>"
             "<table id='albums_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='0'>" );
 
