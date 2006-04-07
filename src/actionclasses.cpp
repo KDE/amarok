@@ -462,7 +462,7 @@ RandomAction::RandomAction( KActionCollection *ac ) :
     ToggleAction( i18n( "Random &Mode" ), &AmarokConfig::setRandomMode, ac, "random_mode" )
 {
     setChecked( AmarokConfig::randomMode() );
-    setIcon( "random" );
+    setIcon( amaroK::icon( "random" ) );
 }
 
 void

@@ -43,6 +43,7 @@ amaroK::icon( const QString& name )
         iconMap["next"]           = "player_end";
         iconMap["rescan"]         = "reload";
         iconMap["refresh"]        = "reload";
+        iconMap["random"]         = "random";
     }
 
 
