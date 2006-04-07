@@ -108,7 +108,8 @@ public:
     /// Creates a MetaBundle for url, tags will be obtained and set
     LIBAMAROK_EXPORT explicit MetaBundle( const KURL &url,
                                           bool noCache = false,
-                                          TagLib::AudioProperties::ReadStyle = TagLib::AudioProperties::Fast );
+                                          TagLib::AudioProperties::ReadStyle = TagLib::AudioProperties::Fast,
+                                          EmbeddedImageList* images = 0 );
 
     /** For the StreamProvider */
     LIBAMAROK_EXPORT MetaBundle( const QString &title,
@@ -138,11 +139,11 @@ public:
     /** The bundle doesn't yet know its audioProperties */
     bool audioPropertiesUndetermined() const;
 
-    /** The embedded artwork in the file (loaded on demand if necessary, returns empty EmbeddedImageList if not present */
-    const EmbeddedImageList &embeddedImages();
+    /** The embedded artwork in the file (loaded from file into images variable, unmodified if no images present/loadable) */
+    void embeddedImages(EmbeddedImageList &images);
 
-    /** If you want Accurate reading say so */
-    void readTags( TagLib::AudioProperties::ReadStyle );
+    /** If you want Accurate reading say so. If EmbeddedImageList != NULL, embedded art is loaded into it */
+    void readTags( TagLib::AudioProperties::ReadStyle, EmbeddedImageList* images = 0 );
 
     /** Saves the changes to the file. Returns false on error. */
     bool save();
@@ -328,9 +329,6 @@ protected:
 
     PodcastEpisodeBundle *m_podcastBundle;
 
-    bool m_imagesLoaded;
-    EmbeddedImageList m_images;
-
 private:
 
     static inline QString prettyGeneric( const QString &s, const int i )
@@ -343,7 +341,7 @@ private:
 
     void setExtendedTag( TagLib::File *file, int tag, const QString value );
 
-    void loadImagesFromTag( const TagLib::ID3v2::Tag &tag );
+    void loadImagesFromTag( const TagLib::ID3v2::Tag &tag, EmbeddedImageList& images );
 };
 
 /// for your convenience

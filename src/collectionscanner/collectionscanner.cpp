@@ -270,7 +270,8 @@ CollectionScanner::scanFiles( const QStringList& entries )
         }
 
         else {
-            MetaBundle mb = createMetaBundle( path );
+            MetaBundle::EmbeddedImageList images;
+            MetaBundle mb( KURL::fromPathOrURL( path ), true, TagLib::AudioProperties::Fast, &images );
             const AttributeMap attributes = readTags( mb );
 
             if( !attributes.empty() ) {
@@ -281,7 +282,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
                 if( !covers.contains( cover ) )
                     covers += cover;
 
-                foreachType( MetaBundle::EmbeddedImageList, mb.embeddedImages() ) {
+                foreachType( MetaBundle::EmbeddedImageList, images ) {
                     AttributeMap attributes;
                     attributes["path"] = path;
                     attributes["hash"] = (*it).hash();
@@ -322,14 +323,6 @@ CollectionScanner::scanFiles( const QStringList& entries )
     }
 }
 
-
-MetaBundle CollectionScanner::createMetaBundle( const QString& path )
-{
-    KURL escapedPath;
-    escapedPath.setPath( path );
-
-    return MetaBundle( escapedPath, true, TagLib::AudioProperties::Fast );
-}
 
 AttributeMap
 CollectionScanner::readTags( const MetaBundle& mb )

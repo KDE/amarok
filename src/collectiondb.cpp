@@ -3536,7 +3536,9 @@ CollectionDB::extractEmbeddedImage( MetaBundle &trackInformation, QCString& hash
 {
     debug() << "extractEmbeddedImage: " << hash << " - " << trackInformation.url().path() << endl;
 
-    foreachType ( MetaBundle::EmbeddedImageList, trackInformation.embeddedImages() ) {
+    MetaBundle::EmbeddedImageList images;
+    trackInformation.embeddedImages( images );
+    foreachType ( MetaBundle::EmbeddedImageList, images ) {
         if ( hash.isEmpty() || (*it).hash() == hash ) {
             if ( (*it).save( tagCoverDir() ) ) {
                 debug() << "extractEmbeddedImage: saved to " << tagCoverDir().path() << endl;

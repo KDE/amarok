@@ -58,8 +58,6 @@ private slots:
 private:
     void readDir( const QString& dir, QStringList& entries );
     void scanFiles( const QStringList& entries );
-    
-    MetaBundle createMetaBundle( const QString &path );
 
     /**
      * Read metadata tags of a given file.

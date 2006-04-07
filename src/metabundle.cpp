@@ -156,12 +156,11 @@ MetaBundle::MetaBundle()
         , m_exists( true )
         , m_isValidMedia( true )
         , m_podcastBundle( 0 )
-        , m_imagesLoaded( false )
 {
     init();
 }
 
-MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::ReadStyle readStyle )
+MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImageList* images )
     : m_url( url )
     , m_year( Undetermined )
     , m_discNumber( Undetermined )
@@ -178,7 +177,6 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
     , m_exists( url.protocol() == "file" && QFile::exists( url.path() ) )
     , m_isValidMedia( false ) //will be updated
     , m_podcastBundle( 0 )
-    , m_imagesLoaded( false )
 {
     if ( m_exists )
     {
@@ -186,7 +184,7 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
             m_isValidMedia = CollectionDB::instance()->bundleForUrl( this );
 
         if ( !m_isValidMedia || m_length <= 0 )
-            readTags( readStyle );
+            readTags( readStyle, images );
     }
     else
     {
@@ -222,7 +220,6 @@ MetaBundle::MetaBundle( const QString& title,
         , m_exists( true )
         , m_isValidMedia( true )
         , m_podcastBundle( 0 )
-        , m_imagesLoaded( false )
 {
     if( title.contains( '-' ) )
     {
@@ -261,8 +258,6 @@ MetaBundle::MetaBundle( const MetaBundle &bundle )
     , m_exists( bundle.m_exists )
     , m_isValidMedia( bundle.m_isValidMedia )
     , m_podcastBundle( 0 )
-    , m_imagesLoaded( bundle.m_imagesLoaded )
-    , m_images( bundle.m_images )
 {
     if( bundle.m_podcastBundle )
         setPodcastBundle( *bundle.m_podcastBundle );
@@ -391,31 +386,26 @@ MetaBundle::init( const KFileMetaInfo& info )
     }
 }
 
-const MetaBundle::EmbeddedImageList &MetaBundle::embeddedImages()
+void
+MetaBundle::embeddedImages( MetaBundle::EmbeddedImageList& images )
 {
-    if (!m_imagesLoaded) {
-        if ( url().protocol() == "file" ) {
-            TagLib::FileRef fileref = TagLib::FileRef( QFile::encodeName( url().path() ), false );
-            if ( !fileref.isNull() ) {
-                if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) ) {
-                    if ( file->ID3v2Tag() )
-                        loadImagesFromTag( *file->ID3v2Tag() );
-                } else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) ) { 
-                    if ( file->ID3v2Tag() )
-                        loadImagesFromTag( *file->ID3v2Tag() );
-                }
+    if ( url().protocol() == "file" ) {
+        TagLib::FileRef fileref = TagLib::FileRef( QFile::encodeName( url().path() ), false );
+        if ( !fileref.isNull() ) {
+            if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) ) {
+                if ( file->ID3v2Tag() )
+                    loadImagesFromTag( *file->ID3v2Tag(), images );
+            } else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) ) {
+                if ( file->ID3v2Tag() )
+                    loadImagesFromTag( *file->ID3v2Tag(), images );
             }
         }
-        m_imagesLoaded = true;
     }
-
-    return m_images;
 }
 
 void
-MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
+MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImageList* images )
 {
-    m_imagesLoaded = true; // well, we'll try by the time we exit, so no point trying (and failing) again
     if( url().protocol() != "file" )
         return;
 
@@ -463,7 +453,9 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
                 if ( !file->ID3v2Tag()->frameListMap()["TCOM"].isEmpty() )
                     setComposer( TStringToQString( file->ID3v2Tag()->frameListMap()["TCOM"].front()->toString() ).stripWhiteSpace() );
 
-                loadImagesFromTag( *file->ID3v2Tag() );
+                if(images) {
+                    loadImagesFromTag( *file->ID3v2Tag(), *images );
+                }
             }
         }
         else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
@@ -490,8 +482,8 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
                     disc = TStringToQString( file->xiphComment()->fieldListMap()["DISCNUMBER"].front() ).stripWhiteSpace();
             }
 
-            if ( file->ID3v2Tag() ) {
-                loadImagesFromTag( *file->ID3v2Tag() );
+            if ( images && file->ID3v2Tag() ) {
+                loadImagesFromTag( *file->ID3v2Tag(), *images );
             }
         }
         else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
@@ -1125,7 +1117,7 @@ MetaBundle::setPodcastBundle( const PodcastEpisodeBundle &peb )
     *m_podcastBundle = peb;
 }
 
-void MetaBundle::loadImagesFromTag( const TagLib::ID3v2::Tag &tag )
+void MetaBundle::loadImagesFromTag( const TagLib::ID3v2::Tag &tag, EmbeddedImageList& images )
 {
     TagLib::ID3v2::FrameList l = tag.frameListMap()[ "APIC" ];
     foreachType( TagLib::ID3v2::FrameList, l ) {
@@ -1136,7 +1128,7 @@ void MetaBundle::loadImagesFromTag( const TagLib::ID3v2::Tag &tag )
         debug() << "Size of image: " <<  imgVector.size() << " byte" << endl;
         // ignore APIC frames without picture and those with obviously bogus size
         if( imgVector.size() > 0 && imgVector.size() < 10000000 /*10MB*/ ) {
-            m_images.push_back( EmbeddedImage( imgVector, ap->description() ) );
+            images.push_back( EmbeddedImage( imgVector, ap->description() ) );
         }
     }
 }
