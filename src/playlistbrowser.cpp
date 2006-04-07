@@ -3078,7 +3078,7 @@ void PlaylistBrowserView::startDrag()
         if( isPlaylist( *it ) )
         {
             urls     += static_cast<PlaylistEntry*>(*it)->url();
-            itemList += KURL::fromPathOrURL( "playlist://" );
+            itemList += KURL::fromPathOrURL( QString( "playlist://%1" ).arg(static_cast<PlaylistEntry*>(*it)->text(0))  );
         }
         else if( isStream( *it ) )
         {
@@ -3134,7 +3134,7 @@ void PlaylistBrowserView::startDrag()
                 textdrag->setSubtype( "amarok-sql" );
                 drag->addDragObject( textdrag );
             }
-            itemList += KURL::fromPathOrURL( "smartplaylist://" );
+            itemList += KURL::fromPathOrURL( QString("smartplaylist://%1").arg( item->text(0) ) );
 
         }
 
@@ -3148,6 +3148,7 @@ void PlaylistBrowserView::startDrag()
             QTextDrag *textdrag = new QTextDrag( str, 0 );
             textdrag->setSubtype( "dynamic" );
             drag->addDragObject( textdrag );
+            itemList += KURL::fromPathOrURL( QString("dynamic://%1").arg( item->text(0) ) );
         }
 
         else if( isPlaylistTrackItem( *it ) )

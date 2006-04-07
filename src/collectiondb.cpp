@@ -928,7 +928,9 @@ CollectionDB::createDragPixmap( const KURL::List &urls )
     KURL::List::ConstIterator it = urls.begin();
     for ( ; it != urls.end(); ++it )
     {
-        if( PlaylistFile::isPlaylistFile( *it ) )
+        if( PlaylistFile::isPlaylistFile( *it )
+            || (*it).protocol() == "playlist" || (*it).protocol() == "smartplaylist"
+            || (*it).protocol() == "dynamic" )
         {
             playlists++;
         }
@@ -1887,13 +1889,13 @@ CollectionDB::updatePodcastChannel( const PodcastChannelBundle &b )
 			 "autotransfer=%9, haspurge=%10, purgecount=%11 WHERE url='%12';" )
 	       .args ( QStringList()
 		       << escapeString( b.title() )
-		       << escapeString( b.link().url() ) 
-		       << escapeString( b.description() ) 
+		       << escapeString( b.link().url() )
+		       << escapeString( b.description() )
 		       << escapeString( b.copyright() )
-		       << QString::number( b.parentId() ) 
-		       << escapeString( b.saveLocation().url() ) 
+		       << QString::number( b.parentId() )
+		       << escapeString( b.saveLocation().url() )
 		       << ( b.autoscan() ? boolT() : boolF() )
-		       << QString::number( b.fetchType() ) 
+		       << QString::number( b.fetchType() )
 		       << (b.hasPurge() ? boolT() : boolF() )
 		       << (b.autotransfer() ? boolT() : boolF() )
 		       << QString::number( b.purgeCount() )
