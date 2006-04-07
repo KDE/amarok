@@ -338,7 +338,7 @@ Playlist::Playlist( QWidget *parent )
     m_undoButton ->setIcon( amaroK::icon( "undo" ) );
     m_redoButton ->setIcon( amaroK::icon( "redo" ) );
 
-    new KAction( i18n( "&Repopulate" ), "rebuild", 0, this, SLOT( repopulate() ), ac, "repopulate" );
+    new KAction( i18n( "&Repopulate" ), amaroK::icon( "refresh_playlist" ), 0, this, SLOT( repopulate() ), ac, "repopulate" );
     new KAction( i18n( "S&huffle" ), "rebuild", CTRL+Key_H, this, SLOT( shuffle() ), ac, "playlist_shuffle" );
     new KAction( i18n( "&Goto Current Track" ), "today", CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "playlist_show" );
     new KAction( i18n( "&Remove Duplicate && Dead Entries" ), 0, this, SLOT( removeDuplicates() ), ac, "playlist_remove_duplicates" );
