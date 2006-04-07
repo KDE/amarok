@@ -135,7 +135,8 @@ libamarok_la_SOURCES = \
     trackpickerdialog.cpp \
     trackpickerdialogbase.ui \
     transferdialog.cpp \
-    xmlloader.cpp
+    xmlloader.cpp \
+    xspfplaylist.cpp
 
 libamarok_la_LIBADD = \
     $(top_builddir)/amarok/src/amarokcore/libamarokcore.la \

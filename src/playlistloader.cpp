@@ -24,6 +24,7 @@
 #include "playlistloader.h"
 #include "statusbar.h"
 #include "contextbrowser.h"
+#include "xspfplaylist.h"
 
 #include <qdatetime.h>   //::recurse()
 #include <qeventloop.h>  //::recurse()
@@ -663,89 +664,31 @@ bool
 PlaylistFile::loadXSPF( QTextStream &stream )
 {
     MetaBundle b;
-    QDomDocument doc;
-    QString errorMsg;
-    int errorLine, errorColumn;
-    stream.setEncoding( QTextStream::UnicodeUTF8 );
-    if (!doc.setContent(stream.read(), &errorMsg, &errorLine, &errorColumn)){
-        debug() << "[PLAYLISTLOADER]: Error loading xml file: " "(" << errorMsg << ")"
-                << " at line " << errorLine << ", column " << errorColumn << endl;
-        return false;
-    }
 
-    QDomElement root = doc.documentElement();
+    XSPFPlaylist* doc = new XSPFPlaylist( stream );
 
-    QString url;
-    QString title;
-    QString author;
-    QTime length;
-    QString comment;
-    QString album;
-    int tracknum;
+    XSPFtrackList trackList = doc->trackList();
 
-    QDomNode node = root.firstChild();
-    QDomNode subNode;
-    QDomNode subSubNode;
+    XSPFtrackList::iterator it;
 
-    while ( !node.isNull() )
+    for ( it = trackList.begin(); it != trackList.end(); ++it )
     {
-        subNode = node.firstChild();
-        if ( node.nodeName().lower() == "tracklist" )
+        if ( !(*it).location.url().isNull() )
         {
-            while ( !subNode.isNull() )
-            {
-                url = QString::null;
-                title = QString::null;
-                author = QString::null;
-                length = QTime();
-                comment = QString::null;
-                album = QString::null;
-                tracknum = 0;
+            if ( (*it).title.isNull() )
+                b.setTitle( (*it).location.fileName() );
+            else
+                b.setTitle( (*it).title );
 
-                subSubNode = subNode.firstChild();
-                if ( subNode.nodeName().lower() == "track" )
-                {
-                    while ( !subSubNode.isNull() )
-                    {
-                        if ( subSubNode.nodeName().lower() == "location" )
-                            url = subSubNode.firstChild().nodeValue();
-                        else if ( subSubNode.nodeName().lower() == "title" )
-                            title = subSubNode.firstChild().nodeValue();
-                        else if ( subSubNode.nodeName().lower() == "creator" )
-                            author = subSubNode.firstChild().nodeValue();
-                        else if ( subSubNode.nodeName().lower() == "duration" )
-                            length = PlaylistFile::stringToTime(subSubNode.firstChild().nodeValue());
-                        else if ( subSubNode.nodeName().lower() == "annotation" )
-                            comment = subSubNode.firstChild().nodeValue();
-                        else if ( subSubNode.nodeName().lower() == "album" )
-                            album = subSubNode.firstChild().nodeValue();
-                        else if ( subSubNode.nodeName().lower() == "tracknum" )
-                            tracknum = subSubNode.firstChild().nodeValue().toInt();
+            b.setUrl( (*it).location );
+            b.setComment( (*it).annotation );
+            b.setAlbum( (*it).album );
+            if ( (*it).trackNum > 0 )
+                b.setTrack( (*it).trackNum );
 
-                        subSubNode = subSubNode.nextSibling();
-                    }
-                }
-                if ( !url.isNull() )
-                {
-                    KURL tmp(url);
-
-                    if ( title.isNull() )
-                        title = tmp.fileName();
-
-                    b.setUrl( tmp );
-                    b.setTitle( title );
-                    b.setComment( comment );
-                    b.setAlbum( album );
-                    if ( tracknum > 0 )
-                        b.setTrack( tracknum );
-
-                    m_bundles += b;
-                    b = MetaBundle();
-                }
-                subNode = subNode.nextSibling();
-            }
+            m_bundles += b;
+            b = MetaBundle();
         }
-        node = node.nextSibling();
     }
 
     return true;
