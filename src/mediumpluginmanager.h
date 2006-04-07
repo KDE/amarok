@@ -36,7 +36,7 @@ class MediumPluginDetailView;
 typedef QMap<Medium*, KComboBox*> ComboMap;
 typedef QMap<int, Medium*> ButtonMap;
 typedef QMap<int, QHBox*> HBoxMap;
-typedef QMap<QString, Medium*> DeletedList;
+typedef QMap<QString, Medium*> DeletedMap;
 typedef QMap<QString, QString> PluginStringMap;
 
 /**
@@ -71,7 +71,7 @@ class MediumPluginManager : public KDialogBase
         PluginStringMap m_dmap;
         QSignalMapper *m_siginfomap;
         QSignalMapper *m_sigdelmap;
-        DeletedList m_deletedList;
+        DeletedMap m_deletedMap;
 
         QVBox *m_devicesBox;
         KConfig *m_config;

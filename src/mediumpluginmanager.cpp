@@ -105,7 +105,9 @@ MediumPluginManager::detectDevices()
             ButtonMap::Iterator bit;
             for( bit = m_bmap.begin(); bit != m_bmap.end(); ++bit )
             {
-                if( (*it)->id() == (*bit)->id() )
+                if( (*it)->id() == (*bit)->id() ||
+                        ( m_deletedMap.contains( (*it)->id() ) &&
+                        !(*it)->isAutodetected() ) )
                     skipflag = 1;
             }
         }
@@ -113,8 +115,8 @@ MediumPluginManager::detectDevices()
         if( skipflag == 1 )
             continue;
 
-        if( m_deletedList.contains( (*it)->id() ) )
-            m_deletedList.remove( (*it)->id() );
+        if( m_deletedMap.contains( (*it)->id() ) )
+            m_deletedMap.remove( (*it)->id() );
 
         m_hbox = new QHBox( m_devicesBox );
         m_hbox->show();
@@ -201,8 +203,8 @@ MediumPluginManager::slotOk( )
         }
     }
     KConfig *config = amaroK::config( "MediaBrowser" );
-    DeletedList::Iterator dit;
-    for( dit = m_deletedList.begin(); dit != m_deletedList.end(); ++dit )
+    DeletedMap::Iterator dit;
+    for( dit = m_deletedMap.begin(); dit != m_deletedMap.end(); ++dit )
     {
         if( (*dit)->isAutodetected() )
             config->writeEntry( (*dit)->id(), "deleted" );
@@ -229,7 +231,7 @@ MediumPluginManager::deleteMedium( int buttonId )
     delete box;
     Medium *medium = m_bmap[buttonId];
     m_bmap.remove(buttonId);
-    m_deletedList[medium->id()] = medium;
+    m_deletedMap[medium->id()] = medium;
     //TODO: maybe don't remove, but mark somehow, so that they have to hit OK to remember deleting it?
     m_cmap.remove(medium);
 }
