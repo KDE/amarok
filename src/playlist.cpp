@@ -343,7 +343,7 @@ Playlist::Playlist( QWidget *parent )
     new KAction( i18n( "&Goto Current Track" ), "today", CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "playlist_show" );
     new KAction( i18n( "&Remove Duplicate && Dead Entries" ), 0, this, SLOT( removeDuplicates() ), ac, "playlist_remove_duplicates" );
     new KAction( i18n( "&Queue Selected Tracks" ), CTRL+Key_D, this, SLOT( queueSelected() ), ac, "queue_selected" );
-    KAction *stopafter = new KAction( i18n( "&Stop Playing After Track" ), "player_stop", CTRL+ALT+Key_V,
+    KAction *stopafter = new KAction( i18n( "&Stop Playing After Track" ), amaroK::icon( "stop" ), CTRL+ALT+Key_V,
                             this, SLOT( toggleStopAfterCurrentItem() ), ac, "stop_after" );
 
     { // KAction idiocy -- shortcuts don't work until they've been plugged into a menu
@@ -3737,7 +3737,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 //     else
 //         popup.insertTitle(i18n("1 Track", "%n Selected Tracks", itemCount));
 
-    popup.insertItem( SmallIconSet( "player_play" ), isCurrent && isPlaying
+    popup.insertItem( SmallIconSet( amaroK::icon( "play" ) ), isCurrent && isPlaying
             ? i18n( "&Restart" )
             : i18n( "&Play" ), 0, 0, Key_Enter, PLAY );
 
@@ -3831,7 +3831,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     if( itemCount > 1 )
     {
-        popup.insertItem( SmallIconSet( "player_playlist_2" ), i18n("Set as Playlist (Crop)"), CROP_PLAYLIST );
+        popup.insertItem( SmallIconSet( amaroK::icon( "playlist" ) ), i18n("Set as Playlist (Crop)"), CROP_PLAYLIST );
         popup.insertItem( SmallIconSet( "filesave" ), i18n("Save as Playlist..."), SAVE_PLAYLIST );
         popup.insertSeparator();
     }
@@ -3842,7 +3842,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
             : i18n("&Delete Selected Files"), this, SLOT( deleteSelectedFiles() ), SHIFT+Key_Delete, DELETE );
     popup.insertSeparator();
 
-    popup.insertItem( SmallIconSet( "info" )
+    popup.insertItem( SmallIconSet( amaroK::icon( "info" ) )
         , item->url().isLocalFile() ?
               i18n( "Edit Track &Information...",  "Edit &Information for %n Tracks...", itemCount):
               i18n( "Track &Information...",  "&Information for %n Tracks...", itemCount)

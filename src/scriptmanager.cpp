@@ -24,6 +24,7 @@
 #include "contextbrowser.h"
 #include "debug.h"
 #include "enginecontroller.h"
+#include "iconloader.h"
 #include "metabundle.h"
 #include "scriptmanager.h"
 #include "scriptmanagerbase.h"
@@ -59,9 +60,6 @@
 #include <knewstuff/engine.h>         // "
 #include <knewstuff/knewstuff.h>      // "
 #include <knewstuff/provider.h>       // "
-
-
-#define ICON_RUNNING "player_play"
 
 
 namespace amaroK {
@@ -155,8 +153,8 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     m_gui->installButton  ->setIconSet( SmallIconSet( "fileopen" ) );
     m_gui->retrieveButton ->setIconSet( SmallIconSet( "khtml_kget" ) );
     m_gui->uninstallButton->setIconSet( SmallIconSet( "remove" ) );
-    m_gui->runButton      ->setIconSet( SmallIconSet( ICON_RUNNING ) );
-    m_gui->stopButton     ->setIconSet( SmallIconSet( "player_stop" ) );
+    m_gui->runButton      ->setIconSet( SmallIconSet( amaroK::icon( "play" ) ) );
+    m_gui->stopButton     ->setIconSet( SmallIconSet( amaroK::icon( "stop" ) ) );
     m_gui->configureButton->setIconSet( SmallIconSet( "configure" ) );
     m_gui->aboutButton    ->setIconSet( SmallIconSet( "help" ) );
 
@@ -552,7 +550,7 @@ ScriptManager::slotRunScript()
         return false;
     }
 
-    li->setPixmap( 0, SmallIcon( ICON_RUNNING ) );
+    li->setPixmap( 0, SmallIcon( amaroK::icon( "play" ) ) );
     debug() << "Running script: " << url.path() << endl;
 
     m_scripts[name].process = script;
@@ -648,7 +646,7 @@ ScriptManager::slotShowContextMenu( QListViewItem* item, const QPoint& pos )
     enum { SHOW_LOG, EDIT };
     KPopupMenu menu;
     menu.insertTitle( i18n( "Debugging" ) );
-    menu.insertItem( SmallIconSet( "history" ), i18n( "Show Output &Log" ), SHOW_LOG );
+    menu.insertItem( SmallIconSet( amaroK::icon( "time" ) ), i18n( "Show Output &Log" ), SHOW_LOG );
     menu.insertItem( SmallIconSet( "edit" ), i18n( "&Edit" ), EDIT );
     menu.setItemEnabled( SHOW_LOG, it.data().process );
     const int id = menu.exec( pos );

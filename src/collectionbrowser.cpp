@@ -1336,7 +1336,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         menu.setItemEnabled(COVER, cat == CollectionBrowser::IdAlbum || cat == CollectionBrowser::IdVisYearAlbum );
         #endif
 
-        menu.insertItem( SmallIconSet( "info" )
+        menu.insertItem( SmallIconSet( amaroK::icon( "info" ) )
             , i18n( "Edit Track &Information...",  "Edit &Information for %n Tracks...", selection.count())
             , this, SLOT( showTrackInfo() ), 0, INFO );
 

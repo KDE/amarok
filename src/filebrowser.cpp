@@ -26,7 +26,9 @@
 #include "clicklineedit.h"
 #include "enginecontroller.h"
 #include "filebrowser.h"
+#include "iconloader.h"
 #include "k3bexporter.h"
+
 #include <kaction.h>
 #include <kapplication.h>
 #include "kbookmarkhandler.h"
@@ -176,15 +178,15 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         if (!m_medium)
             menu->insertItem( SmallIconSet( "usbpendrive_unmount" ), i18n( "Add to Media Device &Transfer Queue" ), MediaDevice );
 
-        menu->insertItem( SmallIconSet( "collection" ), i18n( "&Copy to Collection" ), CopyToCollection );
-        menu->insertItem( SmallIconSet( "collection" ), i18n( "&Move to Collection" ), MoveToCollection );
+        menu->insertItem( SmallIconSet( amaroK::icon( "collection" ) ), i18n( "&Copy to Collection" ), CopyToCollection );
+        menu->insertItem( SmallIconSet( amaroK::icon( "collection" ) ), i18n( "&Move to Collection" ), MoveToCollection );
         menu->insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn to CD"), BurnCd );
         menu->insertSeparator();
         menu->insertItem( i18n( "&Select All Files" ), SelectAllFiles );
         menu->insertSeparator();
         actionCollection->action( "delete" )->plug( menu );
         menu->insertSeparator();
-        menu->insertItem( SmallIconSet( "info" ), i18n( "Edit Track &Information..." ), EditTags );
+        menu->insertItem( SmallIconSet( amaroK::icon( "info" ) ), i18n( "Edit Track &Information..." ), EditTags );
         actionCollection->action( "properties" )->plug( menu );
 
         menu->setItemEnabled( BurnCd, K3bExporter::isAvailable() );
