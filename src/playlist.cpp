@@ -334,7 +334,7 @@ Playlist::Playlist( QWidget *parent )
     m_clearButton = KStdAction::clear( this, SLOT( clear() ), ac, "playlist_clear" );
     m_undoButton  = KStdAction::undo( this, SLOT( undo() ), ac, "playlist_undo" );
     m_redoButton  = KStdAction::redo( this, SLOT( redo() ), ac, "playlist_redo" );
-    m_clearButton->setIcon( amaroK::icon( "view_remove" ) );
+    m_clearButton->setIcon( amaroK::icon( "clear_playlist" ) );
     m_undoButton ->setIcon( amaroK::icon( "undo" ) );
     m_redoButton ->setIcon( amaroK::icon( "redo" ) );
 

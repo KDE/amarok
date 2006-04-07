@@ -20,14 +20,39 @@
 #include "amarokconfig.h"
 #include "iconloader.h"
 
+#include <qmap.h>
+
 
 QString
 amaroK::icon( const QString& name )
 {
+    // We map our amaroK icon theme names to system icons, instead of using the same
+    // naming scheme. This has two advantages:
+    // 1. Our icons can have simpler and more meaningful names
+    // 2. We can map several of our icons to one system icon, if necessary
+    static QMap<QString, QString> iconMap;
+
+    if( iconMap.empty() ) {
+        iconMap["time"]           = "history";
+        iconMap["clear_playlist"] = "view_remove";
+        iconMap["playlist"]       = "player_playlist_2";
+        iconMap["play"]           = "player_play";
+        iconMap["stop"]           = "player_stop";
+        iconMap["pause"]          = "player_pause";
+        iconMap["previous"]       = "player_start";
+        iconMap["next"]           = "player_end";
+        iconMap["rescan"]         = "reload";
+        iconMap["refresh"]        = "reload";
+    }
+
+
     if( AmarokConfig::useCustomIconTheme() )
         return QString( "amarok_" ) + name;
-    else
-        return name;
+
+    else if( iconMap.contains( name ) )
+        return iconMap[name];
+
+    return name;
 }
 
 

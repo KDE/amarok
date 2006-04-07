@@ -323,7 +323,7 @@ StatisticsList::renderView()
     m_artistItem->setPixmap( QString("personal") );
     m_albumItem ->setPixmap( QString("cdrom_unmount") );
     m_genreItem ->setPixmap( QString("kfm") );
-    m_newestItem->setPixmap( amaroK::icon("history") );
+    m_newestItem->setPixmap( amaroK::icon("time") );
 }
 
 void

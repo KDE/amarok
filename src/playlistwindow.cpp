@@ -132,10 +132,10 @@ PlaylistWindow::PlaylistWindow()
 
     ac->action( "options_configure_globals" )->setText( i18n( "Configure &Global Shortcuts..." ) );
 
-    new KAction( i18n( "Previous Track" ), amaroK::icon( "player_start" ), 0, ec, SLOT( previous() ), ac, "prev" );
-    new KAction( i18n( "Play" ), amaroK::icon( "player_play" ), 0, ec, SLOT( play() ), ac, "play" );
-    new KAction( i18n( "Pause" ), amaroK::icon( "player_pause" ), 0, ec, SLOT( pause() ), ac, "pause" );
-    new KAction( i18n( "Next Track" ), amaroK::icon( "player_end" ), 0, ec, SLOT( next() ), ac, "next" );
+    new KAction( i18n( "Previous Track" ), amaroK::icon( "previous" ), 0, ec, SLOT( previous() ), ac, "prev" );
+    new KAction( i18n( "Play" ), amaroK::icon( "play" ), 0, ec, SLOT( play() ), ac, "play" );
+    new KAction( i18n( "Pause" ), amaroK::icon( "pause" ), 0, ec, SLOT( pause() ), ac, "pause" );
+    new KAction( i18n( "Next Track" ), amaroK::icon( "next" ), 0, ec, SLOT( next() ), ac, "next" );
 
     {
         KAction *gah = new KAction( i18n( "Toggle Focus" ), "reload", CTRL+Key_Tab,
@@ -288,7 +288,7 @@ void PlaylistWindow::init()
     actionCollection()->action("statistics")->plug( m_toolsMenu );
     m_toolsMenu->insertSeparator();
     m_toolsMenu->insertItem( SmallIconSet( "wizard"), i18n("&First-Run Wizard"), amaroK::Menu::ID_SHOW_WIZARD );
-    m_toolsMenu->insertItem( SmallIconSet( "reload" ), i18n("&Rescan Collection"), amaroK::Menu::ID_RESCAN_COLLECTION );
+    m_toolsMenu->insertItem( SmallIconSet( amaroK::icon( "rescan" ) ), i18n("&Rescan Collection"), amaroK::Menu::ID_RESCAN_COLLECTION );
 
     #if defined HAVE_XMMS || defined HAVE_LIBVISUAL
     m_toolsMenu->setItemEnabled( amaroK::Menu::ID_SHOW_VIS_SELECTOR, true );
@@ -368,7 +368,7 @@ void PlaylistWindow::init()
 
         addBrowserMacro( ContextBrowser, "ContextBrowser", i18n( "Context" ), amaroK::icon( "info" ) )
         addBrowserMacro( CollectionBrowser, "CollectionBrowser", i18n( "Collection" ), amaroK::icon( "collection" ) )
-        addInstBrowserMacro( PlaylistBrowser, "PlaylistBrowser", i18n( "Playlists" ), amaroK::icon( "player_playlist_2" ) )
+        addInstBrowserMacro( PlaylistBrowser, "PlaylistBrowser", i18n( "Playlists" ), amaroK::icon( "playlist" ) )
 
         // disable this check for now as isAvailable() returned always true before
         //if( MediaBrowser::isAvailable() )

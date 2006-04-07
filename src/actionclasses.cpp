@@ -124,7 +124,7 @@ Menu::Menu()
     insertSeparator();
 
     insertItem( SmallIconSet( "wizard" ), i18n( "First-Run &Wizard" ), ID_SHOW_WIZARD );
-    insertItem( i18n("&Rescan Collection"), ID_RESCAN_COLLECTION );
+    insertItem( SmallIconSet( amaroK::icon( "rescan" ) ), i18n("&Rescan Collection"), ID_RESCAN_COLLECTION );
     setItemEnabled( ID_RESCAN_COLLECTION, !ThreadWeaver::instance()->isJobPending( "CollectionScanner" ) );
 
     insertSeparator();
@@ -227,17 +227,17 @@ PlayPauseAction::engineStateChanged( Engine::State state,  Engine::State /*oldSt
     switch( state ) {
     case Engine::Playing:
         setChecked( false );
-        setIcon( amaroK::icon( "player_pause" ) );
+        setIcon( amaroK::icon( "pause" ) );
         text = i18n( "Pause" );
         break;
     case Engine::Paused:
         setChecked( true );
-        setIcon( amaroK::icon( "player_pause" ) );
+        setIcon( amaroK::icon( "pause" ) );
         text = i18n( "Pause" );
         break;
     case Engine::Empty:
         setChecked( false );
-        setIcon( amaroK::icon( "player_play" ) );
+        setIcon( amaroK::icon( "play" ) );
         text = i18n( "Play" );
         break;
     case Engine::Idle:
@@ -613,7 +613,7 @@ BurnMenu::slotActivated( int index )
 //////////////////////////////////////////////////////////////////////////////////////////
 
 StopAction::StopAction( KActionCollection *ac )
-  : KAction( i18n( "Stop" ), amaroK::icon( "player_stop" ), 0, EngineController::instance(), SLOT( stop() ), ac, "stop" )
+  : KAction( i18n( "Stop" ), amaroK::icon( "stop" ), 0, EngineController::instance(), SLOT( stop() ), ac, "stop" )
 {}
 
 int
@@ -634,7 +634,7 @@ StopAction::plug( QWidget *w, int index )
         KToolBarButton* button = bar->getButton( id );
         button->setDelayedPopup( amaroK::StopMenu::instance() );
         button->setName( "toolbutton_stop_menu" );
-        button->setIcon( amaroK::icon( "player_stop" ) );
+        button->setIcon( amaroK::icon( "stop" ) );
         button->setEnabled( false ); // Required, otherwise the button is always enabled at startup
 
         return containerCount() - 1;

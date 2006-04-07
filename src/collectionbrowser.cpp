@@ -16,6 +16,7 @@
 #include "collectiondb.h"
 #include "debug.h"
 #include "directorylist.h"
+#include "iconloader.h"
 #include "k3bexporter.h"
 #include "mediabrowser.h"
 #include "metabundle.h"
@@ -95,7 +96,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_timeFilter->insertItem( i18n( "Added Today" ) );
 
     KActionCollection* ac = new KActionCollection( this );
-    m_scanAction = new KAction( i18n( "Scan Changes" ), "reload", 0, CollectionDB::instance(), SLOT( scanMonitor() ), ac, "Start Scan" );
+    m_scanAction = new KAction( i18n( "Scan Changes" ), amaroK::icon( "refresh" ), 0, CollectionDB::instance(), SLOT( scanMonitor() ), ac, "Start Scan" );
 
     // we need m_scanAction to be initialized before CollectionView's CTOR
     m_view = new CollectionView( this );

@@ -319,7 +319,7 @@ PlaylistEntry::PlaylistEntry( QListViewItem *parent, QListViewItem *after, const
     setExpandable(true);
 
     setText(0, fileBaseName( url.path() ) );
-    setPixmap( 0, SmallIcon( amaroK::icon( "player_playlist_2" ) ) );
+    setPixmap( 0, SmallIcon( amaroK::icon( "playlist" ) ) );
 
     if( !m_trackCount )
         load();   //load the playlist file
@@ -347,7 +347,7 @@ PlaylistEntry::PlaylistEntry( QListViewItem *parent, QListViewItem *after, const
     setExpandable(true);
 
     setText(0, fileBaseName( m_url.path() ) );
-    setPixmap( 0, SmallIcon( amaroK::icon( "player_playlist_2" ) ) );
+    setPixmap( 0, SmallIcon( amaroK::icon( "playlist" ) ) );
 
 
     if( !m_trackCount )
@@ -790,7 +790,7 @@ StreamEntry::StreamEntry( QListViewItem *parent, QListViewItem *after, const KUR
     if( m_title.isEmpty() )
         m_title = fileBaseName( m_url.prettyURL() );
 
-    setPixmap( 0, SmallIcon( amaroK::icon(  "player_playlist_2" ) ) );
+    setPixmap( 0, SmallIcon( amaroK::icon( "playlist" ) ) );
 
     setText( 0, m_title );
 }
@@ -810,7 +810,7 @@ StreamEntry::StreamEntry( QListViewItem *parent, QListViewItem *after, const QDo
     if( m_title.isEmpty() )
         m_title = fileBaseName( m_url.prettyURL() );
 
-    setPixmap( 0, SmallIcon( amaroK::icon( "player_playlist_2" ) ) );
+    setPixmap( 0, SmallIcon( amaroK::icon( "playlist" ) ) );
 
     setText( 0, m_title );
 }
@@ -2132,7 +2132,7 @@ SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, const
         , m_title( name )
         , m_dynamic( false )
 {
-    setPixmap( 0, SmallIcon( amaroK::icon( "player_playlist_2" ) ) );
+    setPixmap( 0, SmallIcon( amaroK::icon( "playlist" ) ) );
     setDragEnabled( query.isEmpty() ? false : true );
 
     setText( 0, name );
@@ -2144,7 +2144,7 @@ SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, const
         , m_title( name )
         , m_dynamic( false )
 {
-    setPixmap( 0, SmallIcon( amaroK::icon( "player_playlist_2" ) ) );
+    setPixmap( 0, SmallIcon( amaroK::icon( "playlist" ) ) );
     setDragEnabled( !urls.isEmpty() && !tags.isEmpty() );
 
     setText( 0, name );
@@ -2156,7 +2156,7 @@ SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, const
         , m_after( after )
         , m_dynamic( false )
 {
-    setPixmap( 0, SmallIcon( amaroK::icon( "player_playlist_2" ) ) );
+    setPixmap( 0, SmallIcon( amaroK::icon( "playlist" ) ) );
     setXml( xmlDefinition );
     setDragEnabled( !m_sqlForTags.isEmpty() );
 }
@@ -2237,7 +2237,7 @@ void SmartPlaylist::setDynamic( bool enable )
     {
         enable ?
             setPixmap( 0, SmallIcon( "favorites" ) ) :
-            setPixmap( 0, SmallIcon( amaroK::icon( "player_playlist_2" ) ) );
+            setPixmap( 0, SmallIcon( amaroK::icon( "playlist" ) ) );
         m_dynamic = enable;
     }
 }
