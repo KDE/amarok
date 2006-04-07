@@ -2693,6 +2693,7 @@ QString
 DividerItem::createGroup(const QString& src, int cat)
 {
     QString ret;
+    static const QRegExp uselessChars( "^[',()#%.]" ); /* ^ = beginning of the string */
     switch (cat) {
     case CollectionBrowser::IdVisYearAlbum: {
         ret = src.left( src.find(" - ") );
@@ -2706,7 +2707,10 @@ DividerItem::createGroup(const QString& src, int cat)
         break;
     }
     default:
-        ret = src.stripWhiteSpace().left( 1 ).upper();
+        ret = src.stripWhiteSpace();
+        while ( ret.contains( uselessChars ) )
+            ret.remove( uselessChars );
+        ret = ret.left( 1 ).upper();
         if (QChar(ret.at(0)).isDigit()) {
             ret = "0-9";
         }
