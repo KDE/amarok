@@ -13,7 +13,9 @@ email                : markey@web.de
  *                                                                         *
  ***************************************************************************/
 
+#include "amarok.h"
 #include "amarokconfig.h"
+#include "collectiondb.h"
 #include "config.h" // Has USE_MYSQL
 #include "configdialog.h"
 #include "contextbrowser.h"
@@ -21,7 +23,6 @@ email                : markey@web.de
 #include "debug.h"
 #include "directorylist.h"
 #include "enginecontroller.h"
-#include "iconloader.h"
 #include "Options1.h"
 #include "Options2.h"
 #include "Options4.h"
@@ -31,9 +32,7 @@ email                : markey@web.de
 #include "osd.h"
 #include "plugin/pluginconfig.h"
 #include "pluginmanager.h"
-#include "collectiondb.h"
 
-#include <qcombobox.h>
 #include <qgroupbox.h>
 #include <qlabel.h>
 #include <qlayout.h>

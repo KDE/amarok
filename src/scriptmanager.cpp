@@ -24,7 +24,6 @@
 #include "contextbrowser.h"
 #include "debug.h"
 #include "enginecontroller.h"
-#include "iconloader.h"
 #include "metabundle.h"
 #include "scriptmanager.h"
 #include "scriptmanagerbase.h"

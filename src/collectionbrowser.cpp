@@ -16,7 +16,6 @@
 #include "collectiondb.h"
 #include "debug.h"
 #include "directorylist.h"
-#include "iconloader.h"
 #include "k3bexporter.h"
 #include "mediabrowser.h"
 #include "metabundle.h"

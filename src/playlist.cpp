@@ -23,7 +23,6 @@
 #include "columnlist.h"
 #include "devicemanager.h"
 #include "enginecontroller.h"
-#include "iconloader.h"
 #include "k3bexporter.h"
 #include "metabundle.h"
 #include "osd.h"

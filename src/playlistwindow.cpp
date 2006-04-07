@@ -27,7 +27,6 @@
 #include "devicemanager.h"
 #include "enginecontroller.h" //for actions in ctor
 #include "filebrowser.h"
-#include "iconloader.h"
 #include "k3bexporter.h"
 #include "mediabrowser.h"
 #include "dynamicmode.h"

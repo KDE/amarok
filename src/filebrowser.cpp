@@ -26,7 +26,6 @@
 #include "clicklineedit.h"
 #include "enginecontroller.h"
 #include "filebrowser.h"
-#include "iconloader.h"
 #include "k3bexporter.h"
 
 #include <kaction.h>

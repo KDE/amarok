@@ -16,7 +16,6 @@
 #include "clicklineedit.h"
 #include "collectiondb.h"
 #include "debug.h"
-#include "iconloader.h"
 #include "statistics.h"
 
 #include <kapplication.h>

@@ -10,7 +10,6 @@
 #include "collectiondb.h"
 #include "debug.h"
 #include "dynamicmode.h"
-#include "iconloader.h"
 #include "playlistbrowser.h"
 #include "playlistbrowseritem.h"
 #include "playlistloader.h"    //load()

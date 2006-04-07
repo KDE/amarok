@@ -160,7 +160,13 @@ namespace amaroK
     bool favorLastPlay();
 
     const DynamicMode *dynamicMode(); //defined in playlist.cpp
+
+    /**
+     * Maps the icon name to a system icon or custom amaroK icon, depending on the settings.
+     */
+    QString icon( const QString& name ); //defined in iconloader.cpp
 }
+
 
 /**
  * Use this to const-iterate over QStringLists, if you like.

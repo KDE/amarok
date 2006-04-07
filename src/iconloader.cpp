@@ -17,14 +17,14 @@
  *   51 Franklin Steet, Fifth Floor, Boston, MA  02111-1307, USA.          *
  ***************************************************************************/
 
+#include "amarok.h"
 #include "amarokconfig.h"
-#include "iconloader.h"
 
 #include <qmap.h>
 
 
 QString
-amaroK::icon( const QString& name )
+amaroK::icon( const QString& name ) //declared in amarok.h
 {
     // We map our amaroK icon theme names to system icons, instead of using the same
     // naming scheme. This has two advantages:

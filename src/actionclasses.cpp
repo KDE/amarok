@@ -11,7 +11,6 @@
 #include "collectiondb.h"
 #include "covermanager.h"
 #include "enginecontroller.h"
-#include "iconloader.h"
 #include "k3bexporter.h"
 #include "mediumpluginmanager.h"
 #include "playlistwindow.h"
