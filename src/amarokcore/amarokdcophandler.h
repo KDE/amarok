@@ -215,6 +215,7 @@ class DcopDevicesHandler : public QObject, virtual public AmarokDevicesInterface
       virtual void mediumAdded(QString name);
       virtual void mediumRemoved(QString name);
       virtual void mediumChanged(QString name);
+      virtual QStringList showDeviceList();
 };
 
 class DcopMediaBrowserHandler : public QObject, virtual public AmarokMediaBrowserInterface

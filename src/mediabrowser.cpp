@@ -312,19 +312,21 @@ MediaBrowser::MediaBrowser( const char *name )
 
     int newflag = 0;
     KConfig *config = amaroK::config( "MediaBrowser" );
-    //This deals with auto-detectable devices
+    //This deals with <strike>auto-detectable</strike> ALL devices!
     for( it = mmap.begin();
             it != mmap.end();
             it++ )
     {
-        debug() << "[MediaBrowser] (*it)->id() = " << (*it)->id() << ", config->readEntry = " << config->readEntry( (*it)->id() ) << endl;
+        //debug() << "[MediaBrowser] (*it)->id() = " << (*it)->id() << ", config->readEntry = " << config->readEntry( (*it)->id() ) << endl;
         if( !config->readEntry( (*it)->id() ) )
         {
+            //this should probably never be the case with a manually added device, unless amarokrc's been messed with
             newflag = 1;
-            mediumAdded( (*it),  (*it)->name(), true );
+            mediumAdded( (*it), (*it)->name(), true );
         }
+        //and this definitely shouldn't!
         else if( config->readEntry( (*it)->id() ) != "deleted" )
-            mediumAdded( (*it),  (*it)->name(), true );
+            mediumAdded( (*it), (*it)->name(), true );
     }
 
     if ( newflag )
@@ -479,6 +481,18 @@ MediaBrowser::removeDevice( MediaDevice *device )
     unloadDevicePlugin( device );
 
     updateDevices();
+}
+
+void
+MediaBrowser::removeDevice( Medium *medium )
+{
+    for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
+            it != m_devices.end();
+            it++ )
+    {
+        if( (*it)->getMedium()->id() == medium->id() )
+            removeDevice( (*it) );
+    }
 }
 
 void
@@ -1302,7 +1316,7 @@ MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/, bool construc
         QString handler = config->readEntry( medium->id() );
         if( handler.isEmpty() )
         {
-            if( !constructing )
+            if( !constructing && medium->isAutodetected() )
             {
                 mpc = new MediumPluginChooser( medium );
                 mpc->exec();
@@ -1348,7 +1362,7 @@ MediaBrowser::pluginSelected( const Medium *medium, const QString plugin )
             }
         }
 
-        mediumAdded( medium, "doesntmatter" );
+        mediumAdded( medium, "doesntmatter", false );
     }
     else
         debug() << "Medium id is " << medium->id() << " and you opted not to use a plugin" << endl;

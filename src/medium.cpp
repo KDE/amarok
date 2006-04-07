@@ -90,7 +90,7 @@ const Medium Medium::create(const QStringList &properties)
 Medium::List Medium::createList(const QStringList &properties)
 {
 	List l;
-	if ( properties.size() % (PROPERTIES_COUNT+1) == 0)
+	if ( properties.size() % (PROPERTIES_COUNT+1) == 0 )
 	{
 		int media_count = properties.size()/(PROPERTIES_COUNT+1);
 
@@ -134,6 +134,11 @@ void Medium::setId(const QString &id)
 void Medium::setLabel(const QString &label)
 {
 	m_properties[LABEL] = label;
+}
+
+void Medium::setFsType(const QString &type)
+{
+	m_properties[FS_TYPE] = type;
 }
 
 void Medium::setUserLabel(const QString &label)

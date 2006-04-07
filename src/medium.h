@@ -74,6 +74,7 @@ public:
 	void setName(const QString &name);
 	void setLabel(const QString &label);
 	void setUserLabel(const QString &label);
+        void setFsType(const QString &type);
 
 	bool mountableState(bool mounted);
 	void mountableState(const QString &deviceNode,

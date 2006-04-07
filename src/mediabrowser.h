@@ -207,6 +207,7 @@ class MediaBrowser : public QVBox
         QMap<QString, QString> m_pluginAmarokName;
         void addDevice( MediaDevice *device );
         void removeDevice( MediaDevice *device );
+        void removeDevice( Medium *);
 
         MediaQueue* m_queue;
         bool m_waitForTranscode;

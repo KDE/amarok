@@ -206,6 +206,8 @@ MediumPluginManager::slotOk( )
     {
         if( (*dit)->isAutodetected() )
             config->writeEntry( (*dit)->id(), "deleted" );
+        else
+            config->deleteEntry( (*dit)->id() );
     }
     KDialogBase::slotOk( );
 }
@@ -241,7 +243,8 @@ MediumPluginManager::newDevice()
     {
         if( m_config->readEntry( mda->getMedium()->id() ) != QString::null )
         {
-            //abort!  Can't have the same device defined twice...
+            //abort!  Can't have the same device defined twice...should never
+            //happen due to name checking earlier...right?
             amaroK::StatusBar::instance()->longMessageThreadSafe( i18n("Sorry, you cannot define two devices\n"
                                                                        "with the same name and mountpoint!") );
         }
@@ -295,10 +298,10 @@ MediumPluginDetailView::~MediumPluginDetailView()
 
 /////////////////////////////////////////////////////////////////////
 
-ManualDeviceAdder::ManualDeviceAdder( MediumPluginManager* mdm )
+ManualDeviceAdder::ManualDeviceAdder( MediumPluginManager* mpm )
 : KDialogBase( amaroK::mainWindow(), "manualdeviceadder", true, QString::null, Ok, Ok )
 {
-    m_mdm = mdm;
+    m_mpm = mpm;
     m_successful = false;
 
     kapp->setTopWidget( this );
@@ -343,8 +346,17 @@ ManualDeviceAdder::slotCancel()
 void
 ManualDeviceAdder::slotOk()
 {
-    m_successful = true;
-    KDialogBase::slotOk( );
+    if( DeviceManager::instance()->getDevice( getMedium()->name() ) == NULL )
+    {
+        m_successful = true;
+        KDialogBase::slotOk( );
+    }
+    else
+    {
+        amaroK::StatusBar::instance()->longMessageThreadSafe( i18n("Sorry, you cannot define two devices\n"
+                                                                   "with the same name. These names must be\n"
+                                                                   "unique across autodetected devices as well.\n") );
+    }
 }
 
 void
@@ -353,7 +365,7 @@ ManualDeviceAdder::comboChanged( const QString &string )
     //best thing to do here would be to find out if the plugin selected
     //has m_hasMountPoint set to false...but any way to do this
     //without instantiating it?  This way will suffice for now...
-    if( m_mdm->getPluginName( string ) == "ifp-mediadevice" )
+    if( m_mpm->getPluginName( string ) == "ifp-mediadevice" )
     {
         m_comboOldText = m_mdaMountPoint->text();
         m_mdaMountPoint->setText( i18n("(not applicable)") );
@@ -364,7 +376,7 @@ ManualDeviceAdder::comboChanged( const QString &string )
         m_mdaMountPoint->setText( m_comboOldText );
         m_mdaMountPoint->setEnabled(true);
     }
-    m_selectedPlugin = m_mdm->getPluginName( string );
+    m_selectedPlugin = m_mpm->getPluginName( string );
 }
 
 Medium*

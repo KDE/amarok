@@ -1,10 +1,27 @@
+//
+// C++ Implementation: devicemanager
+//
+// Description: Controls device/medium object handling, providing
+//              helper functions for other objects
+//
+//
+// Author: Jeff Mitchell <kde-dev@emailgoeshere.com>, (C) 2006
+//
+// Copyright: See COPYING file that comes with this distribution
+//
+//
+
+#include "amarok.h"
+#include "amarokconfig.h"
+#include "debug.h"
+#include "devicemanager.h"
+#include "medium.h"
+
+#include <qptrlist.h>
+
+#include <dcopclient.h>
 #include <dcopobject.h>
 #include <kapplication.h>
-#include <dcopclient.h>
-#include "medium.h"
-#include <qptrlist.h>
-#include "devicemanager.h"
-#include "debug.h"
 
 typedef Medium::List MediumList;
 
@@ -31,7 +48,7 @@ DeviceManager::DeviceManager()
             !m_dc->connectDCOPSignal("kded", "mediamanager", "mediumRemoved(QString)", "devices", "mediumRemoved(QString)", false) ||
             !m_dc->connectDCOPSignal("kded", "mediamanager", "mediumChanged(QString)", "devices", "mediumChanged(QString)", false))
         {
-            debug() << "DeviceManager:  Could not connect to signal mediumAdded!" << endl;
+            debug() << "DeviceManager:  Could not connect to signal mediumAdded/Removed/Changed!" << endl;
         }
         else
         {
@@ -108,13 +125,22 @@ Use the Medium's name or id, not the pointer value, for equality comparison!!!
 This function does rebuild the map every time it is called, however this should be rare enough
 that it is not a problem.
 */
-Medium::List DeviceManager::getDeviceList()
+Medium::List DeviceManager::getDeviceList( bool autoonly )
+{
+    return Medium::createList( getDeviceStringList( autoonly ) );
+}
+
+QStringList
+DeviceManager::getDeviceStringList( bool autoonly )
 {
     DEBUG_BLOCK
     MediumList currMediumList;
 
     if ( !m_valid )
-        return currMediumList;
+    {
+        QStringList blah;
+        return blah;
+    }
 
     //normal kded Medium doesn't have autodetect, so decrease by 1
     int autodetect_insert = Medium::PROPERTIES_COUNT - 1;
@@ -122,30 +148,62 @@ Medium::List DeviceManager::getDeviceList()
     QByteArray data, replyData;
     QCString replyType;
     QDataStream arg(data, IO_WriteOnly);
+    QStringList result;
     arg << 5;
     if (!m_dc->call("kded", "mediamanager", "fullList()", data, replyType, replyData))
-        debug() << "Error during DCOP call" << endl;
-    else
     {
-        QDataStream reply(replyData, IO_ReadOnly);
-        QStringList result;
-        while(!reply.atEnd())
-        {
-            reply >> result;
-        }
-        QStringList::Iterator it;
-        for( it = result.begin(); it != result.end(); ++it )
-        {
-            if (autodetect_insert == Medium::PROPERTIES_COUNT - 1)
-                result.insert(it, QString("true"));
-            autodetect_insert--;
-            if (autodetect_insert == -1)
-                autodetect_insert = Medium::PROPERTIES_COUNT - 1;
-        }
-        currMediumList = Medium::createList( result );
+        debug() << "Error during DCOP call" << endl;
+        return NULL;
+    }
+    QDataStream reply(replyData, IO_ReadOnly);
+    while(!reply.atEnd())
+    {
+        reply >> result;
+    }
+    QStringList::Iterator it;
+    for( it = result.begin(); it != result.end(); ++it )
+    {
+        if (autodetect_insert == Medium::PROPERTIES_COUNT - 1)
+            result.insert(it, QString("true"));
+        autodetect_insert--;
+        if (autodetect_insert == -1)
+            autodetect_insert = Medium::PROPERTIES_COUNT - 1;
     }
 
-    return currMediumList;
+    if( autoonly )
+        return result;
+
+    KConfig *config = amaroK::config( "MediaBrowser" );
+    QMap<QString,QString> savedDevices = config->entryMap( "MediaBrowser" );
+    QMap<QString,QString>::Iterator qit;
+    QString curr, currMountPoint, currName;
+    for( qit = savedDevices.begin(); qit != savedDevices.end(); ++qit )
+    {
+        //only handle manual devices, autodetected devices should be added on the fly
+        if( qit.key().startsWith( "manual|" ) )
+        {
+            curr = qit.key();
+            curr = curr.remove( "manual|" );
+            currName = curr.left( curr.find( '|' ) );
+            currMountPoint = curr.remove( currName + '|' );
+            result.append( "false" );           //autodetected
+            result.append( qit.key() );          //id
+            result.append( currName );          //name
+            result.append( currName );          //label
+            result.append( QString::null );     //userLabel
+            result.append( "unknown" );         //mountable?
+            result.append( QString::null );     //device node
+            result.append( currMountPoint );    //mountPoint
+            result.append( "manual" );          //fsType
+            result.append( "unknown" );         //mounted
+            result.append( QString::null );     //baseURL
+            result.append( QString::null );     //MIMEtype
+            result.append( QString::null );     //iconName
+            result.append( "---" );             //separator
+        }
+    }
+
+    return result;
 }
 
 Medium* DeviceManager::getDevice( QString name )
@@ -163,30 +221,17 @@ Medium* DeviceManager::getDevice( QString name )
     for ( it = currMediumList.begin(); it != currMediumList.end(); it++ )
     {
         if ( (*it).fsType() != "vfat" &&
-                (*it).fsType() != "hfsplus" ) //&& other supported fsTypes here later
+             (*it).fsType() != "hfsplus" &&
+             (*it).fsType() != "manual" ) //&& other supported fsTypes here later
             continue;
         if ( (*it).name() == name )
         {
-            debug() << "ID of name argument = " << (*it).id() << endl;
             returnedMedium = new Medium(*it);
         }
-        //the following code is currently simply as proof of concept, will likely not be relevant in the end
-        if ( (*it).mimeType().contains( "removable", false ) )
-        {
-            if ( (*it).isMounted() )
-            {
-                mountwhere = (*it).mountPoint();
-                debug() << "Removable device " << (*it).id() << " detected, and is mounted at: " << mountwhere << endl;
-            }
-            else
-                debug() << "Removable device " << (*it).id() << " detected but not mounted" << endl;
-        }
-        else
-            debug() << "Apparently non-removable device " << (*it).id() << " with fstype " << (*it).fsType() << endl;
-        if(m_mediumMap.contains(name))
+        if( m_mediumMap.contains( name ) )
         {
             tempMedium = m_mediumMap[(*it).name()];
-            m_mediumMap.remove((*it).name());
+            m_mediumMap.remove( (*it).name() );
             delete tempMedium;
         }
         m_mediumMap[(*it).name()] = new Medium(*it);
@@ -199,6 +244,8 @@ void
 DeviceManager::addManualDevice( Medium* added )
 {
     m_mediumMap[added->name()] = added;
+    added->setFsType( "manual" );
+    emit mediumAdded( added, added->name() );
 }
 
 #include "devicemanager.moc"

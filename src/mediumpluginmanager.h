@@ -116,7 +116,7 @@ class ManualDeviceAdder : public KDialogBase
         void comboChanged( const QString & );
 
     private:
-        MediumPluginManager* m_mdm;
+        MediumPluginManager* m_mpm;
         bool m_successful;
         QString m_comboOldText;
         QString m_selectedPlugin;

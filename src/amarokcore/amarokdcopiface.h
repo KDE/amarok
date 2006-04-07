@@ -206,6 +206,7 @@ k_dcop:
    virtual void mediumAdded(QString name) = 0;           ///< Called when there is a mediumAdded event
    virtual void mediumRemoved(QString name) = 0;         ///< Called when there is a mediumRemoved event
    virtual void mediumChanged(QString name) = 0;         ///< Called when there is a mediumChanged event
+   virtual QStringList showDeviceList() = 0;                 ///< Call to display the DeviceManager's current device list
 };
 
 class AmarokMediaBrowserInterface : virtual public DCOPObject

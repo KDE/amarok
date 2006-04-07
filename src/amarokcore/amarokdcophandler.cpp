@@ -834,6 +834,11 @@ namespace amaroK
         DeviceManager::instance()->mediumChanged(name);
     }
 
+    QStringList DcopDevicesHandler::showDeviceList()
+    {
+        return DeviceManager::instance()->getDeviceStringList();
+    }
+
 /////////////////////////////////////////////////////////////////////////////////////
 // class DcopDevicesHandler
 /////////////////////////////////////////////////////////////////////////////////////
