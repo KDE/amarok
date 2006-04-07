@@ -142,6 +142,15 @@ void albumArtistTrackFromUrl( QString url, QString &artist, QString &album, QStr
     track  = unEscapeHTMLAttr( list[2] );
 }
 
+static
+QString albumImageTitle( const QString &albumImage, int size )
+{
+    if ( albumImage == CollectionDB::instance()->notAvailCover( size ) )
+        return escapeHTMLAttr( i18n( "Click to fetch cover from amazon.%1, right-click for menu." ).arg( CoverManager::amazonTld() ) );
+
+    return escapeHTMLAttr( i18n( "Click for information from Amazon, right-click for menu." ) );
+}
+
 
 ContextBrowser *ContextBrowser::s_instance = 0;
 QString ContextBrowser::s_wikiLocale = "en";
@@ -992,18 +1001,19 @@ void CurrentTrackJob::showHome()
                 "<table id='current_box-table' class='box-body' width='100%' cellpadding='0' cellspacing='0'>"
                 "<tr>"
                 "<td id='current_box-largecover-td'>"
-                "<img id='current_box-largecover-image' src='%1' title='amaroK'>"
+                "<a href='%1'><img id='current_box-largecover-image' src='%2' title='amaroK'></a>"
                 "</td>"
                 "<td id='current_box-information-td' align='right'>"
-                "<span>%2</span><br />"
                 "<span>%3</span><br />"
                 "<span>%4</span><br />"
                 "<span>%5</span><br />"
+                "<span>%6</span><br />"
                 "</td"
                 "</tr>"
                 "</table>"
                 "</div>" )
             .args( QStringList()
+                    << escapeHTMLAttr( "externalurl://amarok.kde.org" )
                     << escapeHTMLAttr( KGlobal::iconLoader()->iconPath( "amarok", -KIcon::SizeEnormous ) )
                     << i18n( "1 Track",  "%n Tracks",  songCount.toInt() )
                     << i18n( "1 Artist", "%n Artists", artistCount.toInt() )
@@ -1068,8 +1078,8 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
         if ( CollectionDB::instance()->albumIsCompilation( reqResult[ i + 1 ] ) )
         {
             QString albumImage = CollectionDB::instance()->albumImage( albumValues[5], reqResult[ i ], 50 );
-            if ( albumImage != CollectionDB::instance()->notAvailCover( 50 ) )
-                albumImage = ContextBrowser::makeShadowedImage( albumImage );
+            QString albumImageTitleAttr = albumImageTitle( albumImage, 50 );
+            albumImage = ContextBrowser::makeShadowedImage( albumImage );
 
             // Compilation image
             htmlCode.append( QStringx (
@@ -1082,7 +1092,7 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
                         "<a href='compilation:%4'><span class='album-title'>%5</span></a>" )
                     .args( QStringList()
                         << escapeHTMLAttr( reqResult[ i ].isEmpty() ? i18n( "Unknown" ) : reqResult[ i ] ) // album.name
-                        << i18n( "Click for information from amazon.com, right-click for menu." )
+                        << albumImageTitleAttr
                         << escapeHTMLAttr( albumImage )
                         << reqResult[ i + 1 ] //album.id
                         << albumName ) );
@@ -1092,8 +1102,8 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
             QString artistName = albumValues[5].isEmpty() ? i18n( "Unknown artist" ) : albumValues[5];
 
             QString albumImage = CollectionDB::instance()->albumImage( albumValues[5], reqResult[ i ], 50 );
-            if ( albumImage != CollectionDB::instance()->notAvailCover( 50 ) )
-                albumImage = ContextBrowser::makeShadowedImage( albumImage );
+            QString albumImageTitleAttr = albumImageTitle( albumImage, 50 );
+            albumImage = ContextBrowser::makeShadowedImage( albumImage );
 
             // Album image
             htmlCode.append( QStringx (
@@ -1113,7 +1123,7 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
                     .args( QStringList()
                         << escapeHTMLAttr( albumValues[5] ) // artist name
                         << escapeHTMLAttr( reqResult[ i ].isEmpty() ? i18n( "Unknown" ) : reqResult[ i ] ) // album.name
-                        << i18n( "Click for information from amazon, right-click for menu." )
+                        << albumImageTitleAttr
                         << escapeHTMLAttr( albumImage )
                         << escapeHTMLAttr( artistName )
                         << escapeHTML( artistName )
@@ -1239,8 +1249,7 @@ CurrentTrackJob::showHomeByAlbums()
                 }
 
                 QString image = CollectionDB::instance()->podcastImage( pcb.imageURL().url(), 50 );
-                if( image != CollectionDB::instance()->notAvailCover( 50 ) )
-                    image = ContextBrowser::makeShadowedImage( image );
+                image = ContextBrowser::makeShadowedImage( image );
                 QString imageAttr = escapeHTMLAttr( i18n( "Click to go to podcast website: %1." ).arg( pcb.link().prettyURL() ) );
 
                 m_HTMLSource.append( QStringx (
@@ -1684,15 +1693,8 @@ void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
     usleep( 10000 );
 
     //making 2 tables is most probably not the cleanest way to do it, but it works.
-    QString albumImageTitleAttr;
     QString albumImage = CollectionDB::instance()->albumImage( currentTrack, 1 );
-
-    if ( albumImage == CollectionDB::instance()->notAvailCover( 0 ) )
-        albumImageTitleAttr = i18n( "Click to fetch cover from amazon.%1, right-click for menu." ).arg( CoverManager::amazonTld() );
-    else {
-        albumImageTitleAttr = i18n( "Click for information from Amazon, right-click for menu." );
-    }
-
+    QString albumImageTitleAttr = albumImageTitle( albumImage, 0 );
     albumImage = ContextBrowser::makeShadowedImage( albumImage );
 
     bool isCompilation = false;
@@ -2109,6 +2111,7 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
             }
 
             QString albumImage = CollectionDB::instance()->albumImage( artist, values[ i ], 50 );
+            QString albumImageTitleAttr = albumImageTitle( albumImage, 50 );
             albumImage = ContextBrowser::makeShadowedImage( albumImage );
 
             m_HTMLSource.append( QStringx (
@@ -2136,7 +2139,7 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
                         << values[ i + 1 ]
                         << escapeHTMLAttr( artist ) // artist name
                         << escapeHTMLAttr( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] ) // album.name
-                        << i18n( "Click for information from Amazon, right-click for menu." )
+                        << albumImageTitleAttr
                         << escapeHTMLAttr( albumImage )
                         << i18n( "Single", "%n Tracks",  albumValues.count() / qb.countReturnValues() )
                         << QString::number( artist_id )
@@ -2254,6 +2257,7 @@ void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artis
             }
 
             QString albumImage = CollectionDB::instance()->albumImage( artist, values[ i ], 50 );
+            QString albumImageTitleAttr = albumImageTitle( albumImage, 50 );
             albumImage = ContextBrowser::makeShadowedImage( albumImage );
 
             m_HTMLSource.append( QStringx (
@@ -2280,7 +2284,7 @@ void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artis
                     .args( QStringList()
                         << values[ i + 1 ]
                         << escapeHTMLAttr( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] ) // album.name
-                        << i18n( "Click for information from Amazon, right-click for menu." )
+                        << albumImageTitleAttr
                         << escapeHTMLAttr( albumImage )
                         << i18n( "Single", "%n Tracks",  albumValues.count() / qb.countReturnValues() )
                         << values[ i + 1 ] //album.id
