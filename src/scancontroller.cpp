@@ -266,11 +266,10 @@ void
 ScanController::slotReadReady()
 {
     QString line;
-    bool partial;
 
     m_dataMutex.lock();
 
-    while( m_scanner->readln( line, true, &partial ) != -1 )
+    while( m_scanner->readln( line, true, 0 ) != -1 )
         m_xmlData += line;
 
     m_dataMutex.unlock();
