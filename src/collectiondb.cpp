@@ -1140,21 +1140,23 @@ CollectionDB::podcastImage( const MetaBundle &bundle, uint width )
 QString
 CollectionDB::podcastImage( const QString &remoteURL, uint width )
 {
-    QString s;
     // we aren't going to need a 1x1 size image. this is just a quick hack to be able to show full size images.
     // width of 0 == full size
     if( width == 1 ) width = AmarokConfig::coverPreviewSize();
 
-    s = findAmazonImage( "Podcast", remoteURL, width );
-    const KURL url = KURL::fromPathOrURL( remoteURL );
+    QString s = findAmazonImage( "Podcast", remoteURL, width );
 
-    if( s.isEmpty() && url.isValid() ) //KIO crashes with invalid URLs
+    if( s.isEmpty() )
     {
         s = notAvailCover( width );
 
-        KIO::Job *job = KIO::storedGet( url, false, false );
-        m_podcastImageJobs[job] = remoteURL;
-        connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( podcastImageResult( KIO::Job* ) ) );
+        const KURL url = KURL::fromPathOrURL( remoteURL );
+        if( url.isValid() ) //KIO crashes with invalid URLs
+        {
+            KIO::Job *job = KIO::storedGet( url, false, false );
+            m_podcastImageJobs[job] = remoteURL;
+            connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( podcastImageResult( KIO::Job* ) ) );
+        }
     }
 
     return s;
