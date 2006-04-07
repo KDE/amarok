@@ -28,6 +28,9 @@
 
 #include <unistd.h>         //CollectionView ctor
 #include <map>
+#include <algorithm>
+#include <vector>
+#include <iterator>
 
 #include <qapplication.h>
 #include <qcstring.h>
@@ -635,24 +638,98 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
             }
 
             //keep track of headers already added
-            std::map<QString, bool> containedDivider;
+            std::map<QString,bool,localeAwareCompare> containedDivider;
 
-            for ( QStringList::Iterator it = values.fromLast(), begin = values.begin(); true; --it )
+            for ( QStringList::iterator it = values.begin(); it != values.end(); ++it )
             {
                 if ( (*it).startsWith( "the ", false ) )
                     manipulateThe( *it, true );
+            }
 
+            //create a sorted vector of the strings (needed for generating headers)
+            std::vector<QString> sortedValues;
+            sortedValues.reserve( values.size() );
+            for (  QStringList::iterator it = values.begin(); it != values.end(); ++it )
+            {
+                sortedValues.push_back( *it );
+            }
+            std::sort ( sortedValues.begin(), sortedValues.end(), localeAwareCompare::compare );
+
+            QString lastHeader;
+            for ( std::vector<QString>::iterator it = sortedValues.begin(); it != sortedValues.end(); ++it )
+            {
                 if ( (*it).stripWhiteSpace().isEmpty() ) {
                     (*it) = i18n( "Unknown" );
                 }
                 else if (m_showDivider)
                 {
-                    QString headerStr = DividerItem::createGroup( (*it), m_cat1);
-
-                    if (!containedDivider[headerStr])
+                    QString headerStr;
+                    if ( CollectionBrowser::IdVisYearAlbum == m_cat1
+                        || CollectionBrowser::IdYear == m_cat1 )
                     {
-                        containedDivider[headerStr] = true;
-                        (void)new DividerItem(this, headerStr, m_cat1/*, m_sortYearsInverted*/);
+                        headerStr = DividerItem::createGroup( (*it), m_cat1);
+                    }
+                    else        //just normal text eg artist
+                    {
+                        if ( ( *it ).at( 0 ).isDigit() )    //group digits together
+                            headerStr = "0-9";
+                        else
+                        {
+                            bool fits = false, perfect=false;
+                            QString firstFitsHeader, perfectHeader;
+                            QString currentStripped = it->stripWhiteSpace();
+                            QString *prev = 0;
+                            if ( it -1 != sortedValues.begin() )
+                                prev = &( *( it - 1 ) );
+                            for ( uint strPos=0; strPos!=currentStripped.length(); ++strPos )
+                            {
+                                QString tmpHeader( currentStripped.at( strPos ) );
+                                tmpHeader = tmpHeader.upper();
+                                //Test to see if header comes after the previous text
+                                //field
+                                if ( prev && !localeAwareCompare::compare( *prev, tmpHeader ) )
+                                {
+                                    //It does not, so abort. But we make an exception
+                                    //if it is considered to be the same as the last
+                                    //header we added.
+                                    if ( !localeAwareCompare::compare( lastHeader + 'a', tmpHeader + 'b' )
+                                            || !localeAwareCompare::compare( tmpHeader + 'a', lastHeader + 'b' ) )
+                                        continue;
+                                }
+                                //Test to see if the header comes before the current text
+                                //field
+                                if ( !localeAwareCompare::compare( tmpHeader, *it ) )
+                                    continue;
+                                if ( !fits )
+                                {
+                                    fits = true;
+                                    firstFitsHeader = tmpHeader;
+                                }
+                                //Test to see if the character is ignored (eg "(A" is
+                                //treated as "A")
+                                if ( localeAwareCompare::compare ( tmpHeader + 'A', "B" )
+                                        && localeAwareCompare::compare ( "B", tmpHeader + 'C' ) )
+                                    continue;
+                                perfect = true;
+                                perfectHeader = tmpHeader;
+                                break;
+                            }
+                            if ( perfect )
+                                headerStr = perfectHeader;
+                            else if ( fits )
+                                headerStr = firstFitsHeader;
+                            else
+                            {
+                                debug() << "Failed to generate header in collection browser for: " << *it << endl;
+                                headerStr = "";
+                            }
+                        }
+                    }
+                    //If the header string is not in the map, add it (value unimportant)
+                    if (  containedDivider.end() == containedDivider.find(  headerStr ) && headerStr != "" )
+                    {
+                        lastHeader = headerStr;
+                        containedDivider[  headerStr ] = true;
                     }
                 }
 
@@ -663,8 +740,41 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
                 item->setText( 0, *it );
                 item->setPixmap( 0, pixmap );
 
-                if ( it == begin )
+            }
+
+            //Filter out some unnecessary headers and create the other headers
+            std::map<QString,bool,localeAwareCompare>::iterator iter=containedDivider.begin();
+            bool goAroundAgain=false;
+            while ( true )
+            {
+                //Create header divider
+                if ( !goAroundAgain )
+                    ( void )new DividerItem( this, iter->first, m_cat1/*, m_sortYearsInverted*/ );
+                goAroundAgain=false;
+
+                std::map<QString,bool,localeAwareCompare>::iterator next=iter;
+                ++next;
+                if ( containedDivider.end() == next )
                     break;
+
+                //We don't need to be clever if we're dealing with years, so save time
+                if ( CollectionBrowser::IdVisYearAlbum == m_cat1
+                        || CollectionBrowser::IdYear == m_cat1 )
+                {
+                    ++iter;
+                    continue;
+                }
+
+                //Check to see if two headings are equivalent (eg 'a' with and without
+                //an umlaut). If they are, then delete the last alphabetically.
+                if ( QString::localeAwareCompare( iter->first + 'a' , next->first + 'b' ) < 0
+                        && QString::localeAwareCompare( iter->first + 'b' , next->first + 'a' ) > 0 )
+                {
+                    containedDivider.erase( next );
+                    goAroundAgain = true;
+                }
+                else
+                    ++iter;
             }
         }
 
@@ -2693,7 +2803,7 @@ QString
 DividerItem::createGroup(const QString& src, int cat)
 {
     QString ret;
-    static const QRegExp uselessChars( "^[',()#%.]" ); /* ^ = beginning of the string */
+    static const QRegExp uselessChars(  "^[',()#%.]" ); //* ^ = beginning of the string
     switch (cat) {
     case CollectionBrowser::IdVisYearAlbum: {
         ret = src.left( src.find(" - ") );
@@ -2706,14 +2816,10 @@ DividerItem::createGroup(const QString& src, int cat)
         }
         break;
     }
-    default:
-        ret = src.stripWhiteSpace();
-        while ( ret.contains( uselessChars ) )
-            ret.remove( uselessChars );
-        ret = ret.left( 1 ).upper();
-        if (QChar(ret.at(0)).isDigit()) {
-            ret = "0-9";
-        }
+    default: {
+        debug() << "Why are we in this code (in DividerItem::createGroup)" << endl;
+        break;
+    }
     }
 
     return ret;
@@ -2749,11 +2855,9 @@ DividerItem::shareTheSameGroup(const QString& itemStr, const QString& divStr, in
     }
     default: {
         QString tmp = itemStr.stripWhiteSpace();
+        //Numbers are the only special case
         if ( !tmp.isEmpty() ) {
             if (divStr == "0-9" && QChar(tmp.at(0)).isDigit()) {
-                inGroup = true;
-            }
-            else if (tmp.startsWith(divStr, 0)) {
                 inGroup = true;
             }
         }
@@ -2761,6 +2865,11 @@ DividerItem::shareTheSameGroup(const QString& itemStr, const QString& divStr, in
     }
 
     return inGroup;
+}
+
+bool localeAwareCompare::compare ( const QString &a, const QString &b )
+{
+    return QString::localeAwareCompare( a, b ) < 0;
 }
 
 #include "collectionbrowser.moc"
