@@ -69,9 +69,9 @@ fi
 ###############################################################################
 
 AC_ARG_WITH(gstreamer10,
-    AC_HELP_STRING([--without-gstreamer10],[build amaroK without GStreamer 0.10-engine]),
+    AC_HELP_STRING([--with-gstreamer10],[build amaroK with GStreamer 0.10-engine]),
     [build_gstreamer10=$withval],
-    [build_gstreamer10=yes]
+    [build_gstreamer10=no]
 )
 
 if test "$build_gstreamer10" != "no"; then
