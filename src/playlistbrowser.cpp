@@ -2356,7 +2356,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             menu.insertItem( SmallIconSet("edittrash"), i18n( "R&emove" ), REMOVE );
         }
         else
-            menu.insertItem( SmallIconSet("info"), i18n( "Show &Information" ), INFO );
+            menu.insertItem( SmallIconSet( amaroK::icon( "info" ) ), i18n( "Show &Information" ), INFO );
 
         #define item static_cast<StreamEntry *>(item)
         switch( menu.exec( p ) )
@@ -2408,7 +2408,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), ADD );
         menu.insertItem( SmallIconSet( "editdelete" ), i18n( "&Delete" ), DELETE );
         menu.insertSeparator();
-        menu.insertItem( SmallIconSet( "reload" ), i18n( "&Check for Updates" ), RESCAN );
+        menu.insertItem( SmallIconSet( amaroK::icon( "refresh" ) ), i18n( "&Check for Updates" ), RESCAN );
         menu.insertItem( SmallIconSet( "configure" ), i18n( "&Configure..." ), CONFIG );
 
 
@@ -2567,7 +2567,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             isPodcastFolder = true;
             menu.insertItem( SmallIconSet("edit_add"), i18n("Add Podcast..."), PODCAST );
             menu.insertSeparator();
-            menu.insertItem( SmallIconSet("reload"), i18n("Refresh All Podcasts"), REFRESH );
+            menu.insertItem( SmallIconSet( amaroK::icon( "refresh" ) ), i18n("Refresh All Podcasts"), REFRESH );
             menu.insertItem( SmallIconSet( "configure" ), i18n( "&Configure..." ), CONFIG );
             if( parentCat == item )
                 menu.insertItem( SmallIconSet("tool_timer"), i18n("Scan Interval..."), INTERVAL );
@@ -2657,7 +2657,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue Track" ), QUEUE );
-        menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
+        menu.insertItem( SmallIconSet( amaroK::icon( "playlist" ) ), i18n( "&Make Playlist" ), MAKE );
 
 
         menu.insertSeparator();
@@ -2668,7 +2668,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         menu.insertSeparator();
 
         menu.insertItem( SmallIconSet("edittrash"), i18n( "&Remove" ), REMOVE );
-        menu.insertItem( SmallIconSet("info"), i18n( "Edit Track &Information..." ), INFO );
+        menu.insertItem( SmallIconSet( amaroK::icon( "info" ) ), i18n( "Edit Track &Information..." ), INFO );
 
         switch( menu.exec( p ) ) {
             case MAKE:
