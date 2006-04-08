@@ -167,6 +167,7 @@ class PlaylistBrowser : public QVBox
         void customEvent( QCustomEvent* e );
         void saveM3U( PlaylistEntry *, bool append );
         void savePLS( PlaylistEntry *, bool append );
+        void saveXSPF( PlaylistEntry *, bool append );
 
         static KURL::List recurse( const KURL &url );
 

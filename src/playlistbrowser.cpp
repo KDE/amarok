@@ -29,6 +29,7 @@
 #include "threadweaver.h"
 #include "statusbar.h"
 #include "contextbrowser.h"
+#include "xspfplaylist.h"
 
 #include <qevent.h>            //customEvent()
 #include <qheader.h>           //mousePressed()
@@ -1554,6 +1555,8 @@ void PlaylistBrowser::savePlaylist( PlaylistEntry *item )
     const QString ext = fileExtension( item->url().path() );
     if( ext.lower() == "m3u" )
         saveM3U( item, append );
+    else if ( ext.lower() == "xspf" )
+        saveXSPF( item, append );
     else
         savePLS( item, append );
 }
@@ -2026,6 +2029,34 @@ void PlaylistBrowser::saveM3U( PlaylistEntry *item, bool append )
 
         file.close();
     }
+}
+
+void PlaylistBrowser::saveXSPF( PlaylistEntry *item, bool append )
+{
+    XSPFPlaylist* playlist = new XSPFPlaylist();
+
+    playlist->creator( "amaroK" );
+
+    XSPFtrackList list;
+
+    QPtrList<TrackItemInfo> trackList = append ? item->droppedTracks() : item->trackList();
+    for( TrackItemInfo *info = trackList.first(); info; info = trackList.next() )
+    {
+        XSPFtrack track;
+        track.location = info->url().url();
+        list.append( track );
+    }
+
+    playlist->trackList( list, append );
+
+    QFile file( item->url().path() );
+    file.open( IO_WriteOnly );
+
+    QTextStream stream ( &file );
+
+    playlist->save( stream, 2 );
+
+    file.close();
 }
 
 

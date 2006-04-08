@@ -669,9 +669,7 @@ PlaylistFile::loadXSPF( QTextStream &stream )
 
     XSPFtrackList trackList = doc->trackList();
 
-    XSPFtrackList::iterator it;
-
-    for ( it = trackList.begin(); it != trackList.end(); ++it )
+    foreachType( XSPFtrackList, trackList )
     {
         if ( !(*it).location.url().isNull() )
         {

@@ -29,7 +29,7 @@ typedef struct {
     KURL image;
     QString album;
     uint trackNum;
-    int duration;
+    uint duration;
     KURL link;
 //     meta,
 //     extension
@@ -79,9 +79,6 @@ public:
 
 private:
     bool loadXSPF( QTextStream& );
-
-private:
-    QDomElement m_root;
 };
 
 #endif // XSPFPlaylist_H

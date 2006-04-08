@@ -39,6 +39,7 @@
 #include "statusbar.h"       //for status messages
 #include "tagdialog.h"
 #include "threadweaver.h"
+#include "xspfplaylist.h"
 
 #include <cmath> //for pow() in playNextTrack()
 
@@ -3046,58 +3047,30 @@ Playlist::saveXSPF( const QString &path )
 
     if( !file.open( IO_WriteOnly ) ) return false;
 
-    QDomDocument doc;
+    XSPFPlaylist* playlist = new XSPFPlaylist();
 
-    QDomElement playlist = doc.createElement( "playlist" );
+    playlist->creator( "amarok" );
+    playlist->info( "http://amarok.kde.org/" );
 
-    playlist.setAttribute( "version", 1 );
-    playlist.setAttribute( "xmlns", "http://xspf.org/ns/0/" );
+    playlist->date( QDateTime::currentDateTime( Qt::UTC ) );
 
-    doc.appendChild( playlist );
-
-    QDomElement subNode, subSubNode, subSubSubNode;
-
-    subNode = doc.createElement( "creator" );
-    subNode.appendChild(doc.createTextNode( "amaroK" ));
-    playlist.appendChild( subNode );
-
-    subNode = doc.createElement( "info" );
-    subNode.appendChild(doc.createTextNode( "http://amarok.kde.org/" ));
-    playlist.appendChild( subNode );
-
-    /* date needs timezone info to be compliant with the standard
-       (ex. 2005-01-08T17:10:47-05:00 ) */
-
-    subNode = doc.createElement( "date" );
-    subNode.appendChild(doc.createTextNode(
-            QDateTime::currentDateTime( Qt::UTC ).toString( "yyyy-MM-ddThh:mm:ss" )
-            ));
-    playlist.appendChild( subNode );
-
-    subNode = doc.createElement( "trackList" );
+    XSPFtrackList trackList;
 
     for( const PlaylistItem *item = firstChild(); item; item = item->nextSibling() )
     {
-        subSubNode = doc.createElement( "track" );
-
-        subSubSubNode = doc.createElement( "location" );
-        subSubSubNode.appendChild( doc.createTextNode( item->url().url() ) );
-        subSubNode.appendChild( subSubSubNode );
-
-        subNode.appendChild( subSubNode );
+        XSPFtrack track;
+        track.location = item->url();
+        trackList.append( track );
     }
 
-    playlist.appendChild( subNode );
+    playlist->trackList( trackList );
 
     QTextStream stream( &file );
-    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    playlist->save( stream, 2 );
 
-    stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-
-    doc.save( stream, 2 );
+    file.close();
 
     return true;
-
 }
 
 

@@ -7,18 +7,19 @@
 
 XSPFPlaylist::XSPFPlaylist( )
 {
-    m_root = documentElement();
+    QDomElement root = createElement( "playlist" );
 
-    m_root.setAttribute( "version", 1 );
-    m_root.setAttribute( "xmlns", "http://xspf.org/ns/0/" );
+    root.setAttribute( "version", 1 );
+    root.setAttribute( "xmlns", "http://xspf.org/ns/0/" );
 
-    m_root.appendChild( createElement( "trackList" ) );
+    root.appendChild( createElement( "trackList" ) );
+
+    appendChild( root );
 }
 
 XSPFPlaylist::XSPFPlaylist( QTextStream &stream )
 {
     loadXSPF( stream );
-    m_root = documentElement();
 }
 
 bool
@@ -40,61 +41,61 @@ XSPFPlaylist::loadXSPF( QTextStream &stream )
 QString
 XSPFPlaylist::title()
 {
-    return m_root.namedItem( "title" ).firstChild().nodeValue();
+    return documentElement().namedItem( "title" ).firstChild().nodeValue();
 }
 
 QString
 XSPFPlaylist::creator()
 {
-    return m_root.namedItem( "creator" ).firstChild().nodeValue();
+    return documentElement().namedItem( "creator" ).firstChild().nodeValue();
 }
 
 QString
 XSPFPlaylist::annotation()
 {
-    return m_root.namedItem( "annotation" ).firstChild().nodeValue();
+    return documentElement().namedItem( "annotation" ).firstChild().nodeValue();
 }
 
 KURL
 XSPFPlaylist::info()
 {
-    return KURL::fromPathOrURL( m_root.namedItem( "info" ).firstChild().nodeValue() );
+    return KURL::fromPathOrURL( documentElement().namedItem( "info" ).firstChild().nodeValue() );
 }
 
 KURL
 XSPFPlaylist::location()
 {
-    return KURL::fromPathOrURL( m_root.namedItem( "location" ).firstChild().nodeValue() );
+    return KURL::fromPathOrURL( documentElement().namedItem( "location" ).firstChild().nodeValue() );
 }
 
 QString
 XSPFPlaylist::identifier()
 {
-    return m_root.namedItem( "identifier" ).firstChild().nodeValue();
+    return documentElement().namedItem( "identifier" ).firstChild().nodeValue();
 }
 
 KURL
 XSPFPlaylist::image()
 {
-    return KURL::fromPathOrURL( m_root.namedItem( "image" ).firstChild().nodeValue() );
+    return KURL::fromPathOrURL( documentElement().namedItem( "image" ).firstChild().nodeValue() );
 }
 
 QDateTime
 XSPFPlaylist::date()
 {
-    return QDateTime::fromString( m_root.namedItem( "date" ).firstChild().nodeValue(), Qt::ISODate );
+    return QDateTime::fromString( documentElement().namedItem( "date" ).firstChild().nodeValue(), Qt::ISODate );
 }
 
 KURL
 XSPFPlaylist::license()
 {
-    return KURL::fromPathOrURL( m_root.namedItem( "license" ).firstChild().nodeValue() );
+    return KURL::fromPathOrURL( documentElement().namedItem( "license" ).firstChild().nodeValue() );
 }
 
 KURL::List
 XSPFPlaylist::attribution()
 {
-    QDomNode node = m_root.namedItem( "attribution" );
+    QDomNode node = documentElement().namedItem( "attribution" );
     KURL::List list;
 
     while ( !node.isNull() )
@@ -113,147 +114,150 @@ XSPFPlaylist::attribution()
 KURL
 XSPFPlaylist::link()
 {
-    return KURL::fromPathOrURL( m_root.namedItem( "link" ).firstChild().nodeValue() );
+    return KURL::fromPathOrURL( documentElement().namedItem( "link" ).firstChild().nodeValue() );
 }
 
 void
 XSPFPlaylist::title( QString title )
 {
-    if ( m_root.namedItem( "title" ).isNull() )
+    if ( documentElement().namedItem( "title" ).isNull() )
     {
         QDomNode node = createElement( "title" );
         QDomNode subNode = createTextNode( title );
         node.appendChild( subNode );
-        m_root.insertBefore( node, m_root.namedItem( "trackList" ) );
+        documentElement().insertBefore( node, documentElement().namedItem( "trackList" ) );
     }
     else
-        m_root.namedItem( "title" ).replaceChild( createTextNode( title ), m_root.namedItem( "title" ).firstChild() );
+        documentElement().namedItem( "title" ).replaceChild( createTextNode( title ), documentElement().namedItem( "title" ).firstChild() );
 }
 
 void
 XSPFPlaylist::creator( QString creator )
 {
-    if ( m_root.namedItem( "creator" ).isNull() )
+    if ( documentElement().namedItem( "creator" ).isNull() )
     {
         QDomNode node = createElement( "creator" );
         QDomNode subNode = createTextNode( creator );
         node.appendChild( subNode );
-        m_root.insertBefore( node, m_root.namedItem( "trackList" ) );
+        documentElement().insertBefore( node, documentElement().namedItem( "trackList" ) );
     }
     else
-        m_root.namedItem( "creator" ).replaceChild( createTextNode( creator ), m_root.namedItem( "creator" ).firstChild() );
+        documentElement().namedItem( "creator" ).replaceChild( createTextNode( creator ), documentElement().namedItem( "creator" ).firstChild() );
 }
 
 void
 XSPFPlaylist::annotation( QString annotation )
 {
-    if ( m_root.namedItem( "annotation" ).isNull() )
+    if ( documentElement().namedItem( "annotation" ).isNull() )
     {
         QDomNode node = createElement( "annotation" );
         QDomNode subNode = createTextNode( annotation );
         node.appendChild( subNode );
-        m_root.insertBefore( node, m_root.namedItem( "trackList" ) );
+        documentElement().insertBefore( node, documentElement().namedItem( "trackList" ) );
     }
     else
-        m_root.namedItem( "annotation" ).replaceChild( createTextNode( annotation ), m_root.namedItem( "annotation" ).firstChild() );
+        documentElement().namedItem( "annotation" ).replaceChild( createTextNode( annotation ), documentElement().namedItem( "annotation" ).firstChild() );
 }
 
 void
 XSPFPlaylist::info( KURL info )
 {
-    if ( m_root.namedItem( "info" ).isNull() )
+    if ( documentElement().namedItem( "info" ).isNull() )
     {
         QDomNode node = createElement( "info" );
         QDomNode subNode = createTextNode( info.url() );
         node.appendChild( subNode );
-        m_root.insertBefore( node, m_root.namedItem( "trackList" ) );
+        documentElement().insertBefore( node, documentElement().namedItem( "trackList" ) );
     }
     else
-        m_root.namedItem( "info" ).replaceChild( createTextNode( info.url() ), m_root.namedItem( "info" ).firstChild() );
+        documentElement().namedItem( "info" ).replaceChild( createTextNode( info.url() ), documentElement().namedItem( "info" ).firstChild() );
 }
 
 void
 XSPFPlaylist::location( KURL location )
 {
-    if ( m_root.namedItem( "location" ).isNull() )
+    if ( documentElement().namedItem( "location" ).isNull() )
     {
         QDomNode node = createElement( "location" );
         QDomNode subNode = createTextNode( location.url() );
         node.appendChild( subNode );
-        m_root.insertBefore( node, m_root.namedItem( "trackList" ) );
+        documentElement().insertBefore( node, documentElement().namedItem( "trackList" ) );
     }
     else
-        m_root.namedItem( "location" ).replaceChild( createTextNode( location.url() ), m_root.namedItem( "location" ).firstChild() );
+        documentElement().namedItem( "location" ).replaceChild( createTextNode( location.url() ), documentElement().namedItem( "location" ).firstChild() );
 }
 
 void
 XSPFPlaylist::identifier( QString identifier )
 {
-    if ( m_root.namedItem( "identifier" ).isNull() )
+    if ( documentElement().namedItem( "identifier" ).isNull() )
     {
         QDomNode node = createElement( "identifier" );
         QDomNode subNode = createTextNode( identifier );
         node.appendChild( subNode );
-        m_root.insertBefore( node, m_root.namedItem( "trackList" ) );
+        documentElement().insertBefore( node, documentElement().namedItem( "trackList" ) );
     }
     else
-        m_root.namedItem( "identifier" ).replaceChild( createTextNode( identifier ), m_root.namedItem( "identifier" ).firstChild() );
+        documentElement().namedItem( "identifier" ).replaceChild( createTextNode( identifier ), documentElement().namedItem( "identifier" ).firstChild() );
 }
 
 void
 XSPFPlaylist::image( KURL image )
 {
-    if ( m_root.namedItem( "image" ).isNull() )
+    if ( documentElement().namedItem( "image" ).isNull() )
     {
         QDomNode node = createElement( "image" );
         QDomNode subNode = createTextNode( image.url() );
         node.appendChild( subNode );
-        m_root.insertBefore( node, m_root.namedItem( "trackList" ) );
+        documentElement().insertBefore( node, documentElement().namedItem( "trackList" ) );
     }
     else
-        m_root.namedItem( "image" ).replaceChild( createTextNode( image.url() ), m_root.namedItem( "image" ).firstChild() );
+        documentElement().namedItem( "image" ).replaceChild( createTextNode( image.url() ), documentElement().namedItem( "image" ).firstChild() );
 }
 
 void
 XSPFPlaylist::date( QDateTime date )
 {
-    if ( m_root.namedItem( "date" ).isNull() )
+    /* date needs timezone info to be compliant with the standard
+       (ex. 2005-01-08T17:10:47-05:00 ) */
+
+    if ( documentElement().namedItem( "date" ).isNull() )
     {
         QDomNode node = createElement( "date" );
         QDomNode subNode = createTextNode( date.toString( "yyyy-MM-ddThh:mm:ss" ) );
         node.appendChild( subNode );
-        m_root.insertBefore( node, m_root.namedItem( "trackList" ) );
+        documentElement().insertBefore( node, documentElement().namedItem( "trackList" ) );
     }
     else
-        m_root.namedItem( "date" ).replaceChild( createTextNode( date.toString( "yyyy-MM-ddThh:mm:ss" ) ), m_root.namedItem( "date" ).firstChild() );
+        documentElement().namedItem( "date" ).replaceChild( createTextNode( date.toString( "yyyy-MM-ddThh:mm:ss" ) ), documentElement().namedItem( "date" ).firstChild() );
 }
 
 void
 XSPFPlaylist::license( KURL license )
 {
-    if ( m_root.namedItem( "license" ).isNull() )
+    if ( documentElement().namedItem( "license" ).isNull() )
     {
         QDomNode node = createElement( "license" );
         QDomNode subNode = createTextNode( license.url() );
         node.appendChild( subNode );
-        m_root.insertBefore( node, m_root.namedItem( "trackList" ) );
+        documentElement().insertBefore( node, documentElement().namedItem( "trackList" ) );
     }
     else
-        m_root.namedItem( "license" ).replaceChild( createTextNode( license.url() ), m_root.namedItem( "license" ).firstChild() );
+        documentElement().namedItem( "license" ).replaceChild( createTextNode( license.url() ), documentElement().namedItem( "license" ).firstChild() );
 }
 
 void
 XSPFPlaylist::attribution( KURL attribution, bool append )
 {
-    if ( m_root.namedItem( "attribution" ).isNull() )
-        m_root.insertBefore( createElement( "attribution" ), m_root.namedItem( "trackList" ) );
+    if ( documentElement().namedItem( "attribution" ).isNull() )
+        documentElement().insertBefore( createElement( "attribution" ), documentElement().namedItem( "trackList" ) );
 
     if ( append )
     {
         QDomNode subNode = createElement( "location" );
         QDomNode subSubNode = createTextNode( attribution.url() );
         subNode.appendChild( subSubNode );
-        m_root.namedItem( "attribution" ).insertBefore( subNode, m_root.namedItem( "attribution" ).firstChild() );
+        documentElement().namedItem( "attribution" ).insertBefore( subNode, documentElement().namedItem( "attribution" ).firstChild() );
     }
     else
     {
@@ -262,22 +266,22 @@ XSPFPlaylist::attribution( KURL attribution, bool append )
         QDomNode subSubNode = createTextNode( attribution.url() );
         subNode.appendChild( subSubNode );
         node.appendChild( subNode );
-        m_root.replaceChild( node, m_root.namedItem( "attribution" ) );
+        documentElement().replaceChild( node, documentElement().namedItem( "attribution" ) );
     }
 }
 
 void
 XSPFPlaylist::link( KURL link )
 {
-    if ( m_root.namedItem( "link" ).isNull() )
+    if ( documentElement().namedItem( "link" ).isNull() )
     {
         QDomNode node = createElement( "link" );
         QDomNode subNode = createTextNode( link.url() );
         node.appendChild( subNode );
-        m_root.insertBefore( node, m_root.namedItem( "trackList" ) );
+        documentElement().insertBefore( node, documentElement().namedItem( "trackList" ) );
     }
     else
-        m_root.namedItem( "link" ).replaceChild( createTextNode( link.url() ), m_root.namedItem( "link" ).firstChild() );
+        documentElement().namedItem( "link" ).replaceChild( createTextNode( link.url() ), documentElement().namedItem( "link" ).firstChild() );
 }
 
 
@@ -286,7 +290,7 @@ XSPFPlaylist::trackList()
 {
     XSPFtrackList list;
 
-    QDomNode trackList = m_root.namedItem( "trackList" );
+    QDomNode trackList = documentElement().namedItem( "trackList" );
     QDomNode subNode = trackList.firstChild();
     QDomNode subSubNode;
 
@@ -336,9 +340,8 @@ XSPFPlaylist::trackList()
 void
 XSPFPlaylist::trackList( XSPFtrackList trackList, bool append )
 {
-
-    if ( m_root.namedItem( "trackList" ).isNull() )
-        m_root.appendChild( createElement( "trackList" ) );
+    if ( documentElement().namedItem( "trackList" ).isNull() )
+        documentElement().appendChild( createElement( "trackList" ) );
 
     QDomNode node = createElement( "trackList" );
 
@@ -364,7 +367,52 @@ XSPFPlaylist::trackList( XSPFtrackList trackList, bool append )
         // QDomNode meta
         // QDomNode extension
 
-        subNode.appendChild( location.appendChild( createTextNode( track.location.url() ) ) );
+        if ( !track.location.url().isNull() )
+            location.appendChild( createTextNode( track.location.url() ) );
+        if ( !track.identifier.isNull() )
+            identifier.appendChild( createTextNode( track.identifier ) );
+        if ( !track.title.isNull() )
+            title.appendChild( createTextNode( track.title ) );
+        if ( !track.creator.isNull() )
+            creator.appendChild( createTextNode( track.creator ) );
+        if ( !track.annotation.isNull() )
+            annotation.appendChild( createTextNode( track.annotation ) );
+        if ( !track.info.url().isNull() )
+            info.appendChild( createTextNode( track.info.url() ) );
+        if ( !track.image.url().isNull() )
+            image.appendChild( createTextNode( track.image.url() ) );
+        if ( !track.album.isNull() )
+            album.appendChild( createTextNode( track.album ) );
+        if ( track.trackNum > 0 )
+            trackNum.appendChild( createTextNode( QString::number( track.trackNum ) ) );
+        if ( track.duration > 0 )
+            duration.appendChild( createTextNode( QString::number( track.duration ) ) );
+        if ( !track.link.url().isNull() )
+            link.appendChild( createTextNode( track.link.url() ) );
+
+
+        if ( !location.firstChild().isNull() )
+            subNode.appendChild( location );
+        if ( !identifier.firstChild().isNull() )
+            subNode.appendChild( identifier );
+        if ( !title.firstChild().isNull() )
+            subNode.appendChild( title );
+        if ( !creator.firstChild().isNull() )
+            subNode.appendChild( creator );
+        if ( !annotation.firstChild().isNull() )
+            subNode.appendChild( annotation );
+        if ( !info.firstChild().isNull() )
+            subNode.appendChild( info );
+        if ( !image.firstChild().isNull() )
+            subNode.appendChild( image );
+        if ( !album.firstChild().isNull() )
+            subNode.appendChild( album );
+        if ( !trackNum.firstChild().isNull() )
+            subNode.appendChild( trackNum );
+        if ( !duration.firstChild().isNull() )
+            subNode.appendChild( duration );
+        if ( !link.firstChild().isNull() )
+            subNode.appendChild( link );
 
         node.appendChild( subNode );
     }
@@ -373,12 +421,12 @@ XSPFPlaylist::trackList( XSPFtrackList trackList, bool append )
     {
         while ( !node.isNull() )
         {
-            m_root.namedItem( "trackList" ).appendChild( node.firstChild() );
+            documentElement().namedItem( "trackList" ).appendChild( node.firstChild() );
             node = node.nextSibling();
         }
     }
     else
-        m_root.replaceChild( node, m_root.namedItem( "trackList" ) );
+        documentElement().replaceChild( node, documentElement().namedItem( "trackList" ) );
 }
 
 
