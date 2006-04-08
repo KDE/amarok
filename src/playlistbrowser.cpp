@@ -1472,7 +1472,7 @@ void PlaylistBrowser::openPlaylist( QListViewItem *parent ) //SLOT
 {
     // open a file selector to add playlists to the playlist browser
     QStringList files;
-    files = KFileDialog::getOpenFileNames( QString::null, "*.m3u *.pls|" + i18n("Playlist Files"), this, i18n("Import Playlists") );
+    files = KFileDialog::getOpenFileNames( QString::null, "*.m3u *.pls *.xspf|" + i18n("Playlist Files"), this, i18n("Import Playlists") );
 
     const QStringList::ConstIterator end  = files.constEnd();
     for( QStringList::ConstIterator it = files.constBegin(); it != end; ++it )
