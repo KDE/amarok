@@ -237,6 +237,8 @@ class WebControl( QApplication ):
         RequestHandler.AmarokStatus.dcop_trackcurrenttime.result()
         RequestHandler.AmarokStatus.dcop_tracktotaltime = Globals.PlayerDcop("trackTotalTime")
         RequestHandler.AmarokStatus.dcop_tracktotaltime.result()
+	RequestHandler.AmarokStatus.dcop_trackrating = Globals.PlayerDcop("rating")
+	RequestHandler.AmarokStatus.dcop_trackrating.result()
         RequestHandler.AmarokStatus.playState = RequestHandler.AmarokStatus.EnginePlay
 
     def engineStateIdle( self ):
@@ -259,6 +261,10 @@ class WebControl( QApplication ):
         RequestHandler.AmarokStatus.dcop_trackcurrenttime.result()
         RequestHandler.AmarokStatus.dcop_tracktotaltime = Globals.PlayerDcop("trackTotalTime")
         RequestHandler.AmarokStatus.dcop_tracktotaltime.result()
+	RequestHandler.AmarokStatus.dcop_trackrating = Globals.PlayerDcop("rating")
+	RequestHandler.AmarokStatus.dcop_trackrating.result()
+		 
+
 
 
 ############################################################################
