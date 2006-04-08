@@ -165,6 +165,8 @@ namespace amaroK
      * Maps the icon name to a system icon or custom amaroK icon, depending on the settings.
      */
     QString icon( const QString& name ); //defined in iconloader.cpp
+
+    QString cleanPath( const QString &, bool useUnderscore = false ); //defined in organizecollection.ui.h
 }
 
 

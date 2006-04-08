@@ -272,11 +272,7 @@ class OrganizeCollectionDialogBase : public KDialogBase
         void slotDetails() { KDialogBase::slotDetails(); emit detailsClicked(); adjustSize(); }
 };
 
-struct localeAwareCompare
-{
-    static bool compare (  const QString &a, const QString &b );
-    bool operator() (  const QString &a, const QString &b ) {return compare( a,b );}
-};
+
 
 
 #endif /* AMAROK_COLLECTIONBROWSER_H */
