@@ -250,7 +250,7 @@ VfatMediaDevice::newDirectory( const QString &name, MediaItem *parent )
     debug() << "fullPath = " << fullPath << endl;
 
     QCString dirPath;
-    
+
     QString cleanedName = cleanPath(name);
 
     if( equal )
@@ -804,8 +804,7 @@ VfatMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
     }
 }
 
-//So what's better, keep instantiating a new OrganizeCollectionDialog, or duplicate code?
-//or maybe make this a static function somewhere?
+
 QString VfatMediaDevice::cleanPath( const QString &component )
 {
     QString result = component;

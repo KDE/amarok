@@ -166,7 +166,7 @@ namespace amaroK
      */
     QString icon( const QString& name ); //defined in iconloader.cpp
 
-    QString cleanPath( const QString &, bool useUnderscore = false ); //defined in organizecollection.ui.h
+    QString cleanPath( const QString &, bool useUnderscore = false ); //defined in collectionbrowser.cpp
 }
 
 
