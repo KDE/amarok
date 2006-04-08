@@ -16,6 +16,7 @@
 #include "colorgenerator.h"
 #include "contextbrowser.h"
 #include "debug.h"
+#include "deviceconfiguredialog.h"
 #include "devicemanager.h"
 #include "hintlineedit.h"
 #include "mediabrowser.h"
@@ -163,9 +164,12 @@ class SpaceLabel : public QLabel {
 class DummyMediaDevice : public MediaDevice
 {
     public:
-    DummyMediaDevice() : MediaDevice() {
+    DummyMediaDevice() : MediaDevice()
+    {
         m_name = i18n( "No Device Selected" );
-        m_type = "dummy-mediadevice"; }
+        m_type = "dummy-mediadevice";
+        m_medium = new Medium( "DummyDevice", "DummyDevice" );
+    }
     void init( MediaBrowser *browser ) { MediaDevice::init( browser ); }
     virtual ~DummyMediaDevice() {}
     virtual bool isConnected() { return false; }
@@ -238,8 +242,8 @@ MediaBrowser::MediaBrowser( const char *name )
     KActionMenu* configButton = new KActionMenu( i18n("Configure this media device"), "configure", this );
     configButton->setDelayed( false );
     KPopupMenu *configPopup = configButton->popupMenu();
-    configPopup->insertItem( i18n("Configure..."), this, SLOT(config()) );
-    configPopup->insertItem( i18n("Manage Plugins..."), this, SLOT(showPluginManager()) );
+    configPopup->insertItem( i18n("Configure Device..."), this, SLOT(config()) );
+    configPopup->insertItem( i18n("Manage Devices and Plugins..."), this, SLOT(showPluginManager()) );
     configButton->plug( m_toolbar );
 
     m_deviceCombo = new KComboBox( this );
@@ -490,8 +494,11 @@ MediaBrowser::removeDevice( Medium *medium )
             it != m_devices.end();
             it++ )
     {
-        if( (*it)->getMedium()->id() == medium->id() )
+        if( (*it)->uniqueId() == medium->id() )
+        {
+            debug() << "Found device to remove: " << medium->id() << endl;
             removeDevice( (*it) );
+        }
     }
 }
 
@@ -1328,9 +1335,7 @@ MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/, bool construc
             device->m_deviceNode = medium->deviceNode();
             device->m_mountPoint = medium->mountPoint();
             device->m_medium = const_cast<Medium *>(medium);
-            device->m_uniqueId = device->m_medium->isAutodetected() ?
-                        medium->id() :
-                        medium->mountPoint();
+            device->m_uniqueId = device->m_medium->id();
             addDevice( device );
             if( m_currentDevice == m_devices.begin() || m_currentDevice == m_devices.end() )
                 activateDevice( m_devices.count()-1 );
@@ -1481,124 +1486,9 @@ MediaBrowser::config()
         showPluginManager();
         return true;
     }
-    KDialogBase dialog( this, 0, false );
-    dialog.showButtonApply( false );
-    kapp->setTopWidget( &dialog );
-    dialog.setCaption( kapp->makeStdCaption( i18n("Configure Media Device") ) );
-    m_configBox = dialog.makeVBoxMainWidget();
 
-    /*m_configPluginCombo = new KComboBox( m_configBox );
-    int index = 0;
-    for( QMap<QString,QString>::iterator it = m_pluginAmarokName.begin();
-            it != m_pluginAmarokName.end();
-            ++it )
-    {
-        m_configPluginCombo->insertItem( *it );
-        if( currentDevice() && *it == m_pluginAmarokName[currentDevice()->deviceType()] )
-        {
-            m_configPluginCombo->setCurrentItem( index );
-        }
-        index++;
-    }
-    connect( m_configPluginCombo, SIGNAL(activated( int )), SLOT(configSelectPlugin( int )) );
-    */
-
-    QLabel *connectLabel = 0;
-    HintLineEdit *connectEdit = 0;
-    QLabel *disconnectLabel = 0;
-    HintLineEdit *disconnectEdit = 0;
-    QCheckBox *transcodeCheck = 0;
-    QButtonGroup *transcodeGroup = 0;
-    QRadioButton *transcodeAlways = 0;
-    QRadioButton *transcodeWhenNecessary = 0;
-    QCheckBox *transcodeRemove = 0;
-    if( currentDevice() )
-    {
-        currentDevice()->loadConfig();
-
-        // pre-connect/post-disconnect (mount/umount)
-        connectLabel = new QLabel( m_configBox );
-        connectLabel->setText( i18n( "Pre-&connect command:" ) );
-        connectEdit = new HintLineEdit( currentDevice()->m_preconnectcmd, m_configBox );
-        connectEdit->setHint( i18n( "Example: mount %d" ) );
-        connectLabel->setBuddy( connectEdit );
-        QToolTip::add( connectEdit, i18n( "Set a command to be run before connecting to your device (e.g. a mount command) here.\n%d is replaced by the device node, %m by the mount point.\nEmpty commands are not executed." ) );
-
-        disconnectLabel = new QLabel( m_configBox );
-        disconnectLabel->setText( i18n( "Post-&disconnect command:" ) );
-        disconnectEdit = new HintLineEdit( currentDevice()->m_postdisconnectcmd, m_configBox );
-        disconnectLabel->setBuddy( disconnectEdit );
-        disconnectEdit->setHint( i18n( "Example: eject %d" ) );
-        QToolTip::add( disconnectEdit, i18n( "Set a command to be run after disconnecting from your device (e.g. an eject command) here.\n%d is replaced by the device node, %m by the mount point.\nEmpty commands are not executed." ) );
-
-        // transcode
-        transcodeCheck = new QCheckBox( m_configBox );
-        transcodeCheck->setText( i18n( "&Transcode before transferring to device" ) );
-        transcodeCheck->setChecked( currentDevice()->m_transcode );
-
-        transcodeGroup = new QVButtonGroup( m_configBox );
-        transcodeGroup->setTitle( i18n( "Transcode to preferred format for device" ) );
-        transcodeAlways = new QRadioButton( transcodeGroup );
-        transcodeAlways->setText( i18n( "Whenever possible" ) );
-        transcodeAlways->setChecked( currentDevice()->m_transcodeAlways );
-        transcodeWhenNecessary = new QRadioButton( transcodeGroup );
-        transcodeWhenNecessary->setText( i18n( "When necessary" ) );
-        transcodeWhenNecessary->setChecked( !currentDevice()->m_transcodeAlways );
-        transcodeGroup->setEnabled( currentDevice()->m_transcode );
-        connect( transcodeCheck, SIGNAL(toggled( bool )),
-                transcodeGroup, SLOT(setEnabled( bool )) );
-        transcodeGroup->insert( transcodeAlways );
-        transcodeGroup->insert( transcodeWhenNecessary );
-        transcodeRemove = new QCheckBox( transcodeGroup );
-        transcodeRemove->setText( i18n( "Remove transcoded files after transfer" ) );
-        transcodeRemove->setChecked( currentDevice()->m_transcodeRemove );
-
-        currentDevice()->addConfigElements( m_configBox );
-    }
-
-    bool accepted = false;
-    if ( dialog.exec() != QDialog::Rejected )
-    {
-        accepted = true;
-        if( currentDevice() )
-        {
-            currentDevice()->applyConfig();
-            currentDevice()->m_preconnectcmd = connectEdit->text();
-            currentDevice()->setConfigString( "PreConnectCommand", currentDevice()->m_preconnectcmd );
-            currentDevice()->m_postdisconnectcmd = disconnectEdit->text();
-            currentDevice()->setConfigString( "PostDisconnectCommand", currentDevice()->m_postdisconnectcmd );
-            currentDevice()->setConfigBool( "Transcode", currentDevice()->m_transcode );
-            currentDevice()->m_transcode = transcodeCheck->isChecked();
-            currentDevice()->setConfigBool( "Transcode", currentDevice()->m_transcode );
-            currentDevice()->m_transcodeAlways = transcodeAlways->isChecked();
-            currentDevice()->setConfigBool( "TranscodeAlways", currentDevice()->m_transcodeAlways );
-            currentDevice()->m_transcodeRemove = transcodeRemove->isChecked();
-            currentDevice()->setConfigBool( "TranscodeRemove", currentDevice()->m_transcodeRemove );
-        }
-    }
-
-    if( currentDevice() )
-    {
-        currentDevice()->removeConfigElements( m_configBox );
-        delete transcodeCheck;
-        delete transcodeAlways;
-        delete transcodeRemove;
-        delete transcodeWhenNecessary;
-        delete transcodeGroup;
-        delete connectEdit;
-        delete connectLabel;
-        delete disconnectEdit;
-        delete disconnectLabel;
-    }
-
-//    delete m_configPluginCombo;
-//    m_configPluginCombo = 0;
-
-    updateButtons();
-    updateStats();
-    updateDevices();
-
-    return accepted;
+    DeviceConfigureDialog* dcd = new DeviceConfigureDialog( currentDevice()->m_medium );
+    return dcd->successful();
 }
 
 void
@@ -1626,9 +1516,9 @@ MediaBrowser::configSelectPlugin( int index )
     {
         MediaDevice *dev = currentDevice();
         dev->removeConfigElements( m_configBox );
-        QString uniqueId = dev->uniqueId();
-        QString deviceNode = dev->deviceNode();
-        QString mountPoint = dev->mountPoint();
+        //QString uniqueId = dev->uniqueId();
+        //QString deviceNode = dev->deviceNode();
+        //QString mountPoint = dev->mountPoint();
         if( dev->isConnected() )
         {
             dev->disconnectDevice( false );
@@ -1646,9 +1536,9 @@ MediaBrowser::configSelectPlugin( int index )
         }
         dev = currentDevice();
         dev->init( this );
-        dev->m_uniqueId = uniqueId;
-        dev->m_deviceNode = deviceNode;
-        dev->m_mountPoint = mountPoint;
+        //dev->m_uniqueId = dev->m_medium->id();
+        //dev->m_deviceNode = deviceNode;
+        //dev->m_mountPoint = mountPoint;
         dev->loadConfig();
 
         m_configBox->hide();

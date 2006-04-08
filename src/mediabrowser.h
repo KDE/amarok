@@ -8,6 +8,7 @@
 
 #include "amarok.h"
 #include "amarok_export.h"
+#include "medium.h"
 #include "plugin/plugin.h"   //baseclass
 
 #include <qvbox.h>           //baseclass
@@ -23,7 +24,6 @@ class MediaDevice;
 class MediaView;
 class MetaBundle;
 class SpaceLabel;
-class Medium;
 class TransferDialog;
 
 class KComboBox;
@@ -146,6 +146,7 @@ class MediaQueue : public KListView
 class MediaBrowser : public QVBox
 {
     Q_OBJECT
+    friend class DeviceConfigureDialog;
     friend class MediaDevice;
     friend class MediaView;
     friend class MediaQueue;
@@ -162,6 +163,7 @@ class MediaBrowser : public QVBox
         MediaDevice *currentDevice();
         QStringList deviceNames();
         bool deviceSwitch( const QString &name );
+        void removeDevice( Medium *);
 
         QString getPluginName ( const QString string ) { return m_pluginName[string]; }
         void transcodingFinished( const QString &src, const QString &dst );
@@ -207,7 +209,6 @@ class MediaBrowser : public QVBox
         QMap<QString, QString> m_pluginAmarokName;
         void addDevice( MediaDevice *device );
         void removeDevice( MediaDevice *device );
-        void removeDevice( Medium *);
 
         MediaQueue* m_queue;
         bool m_waitForTranscode;
@@ -273,6 +274,7 @@ class MediaView : public KListView
 class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
 {
     Q_OBJECT
+    friend class DeviceConfigureDialog;
     friend class MediaBrowser;
     friend class MediaView;
     friend class MediaQueue;
@@ -522,7 +524,7 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         void syncStatsToDevice( MediaItem *root=0 );
 
         QString     m_name;
-        QString     m_uniqueId;
+        QString     m_uniqueId;   //deprecated?
         QString     m_deviceNode;
         QString     m_mountPoint;
 

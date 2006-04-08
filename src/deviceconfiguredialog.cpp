@@ -1,0 +1,147 @@
+//
+// C++ Implementation: deviceconfiguredialog.cpp
+//
+// Description: 
+//
+//
+// Author: Jeff Mitchell <kde-dev@emailgoeshere.com>, (C) 2006
+//         Martin Aumueller <aumuell@reserv.at>, (C) 2005
+//
+// Copyright: See COPYING file that comes with this distribution
+//
+//
+#include "amarok.h"
+#include "debug.h"
+#include "deviceconfiguredialog.h"
+#include "hintlineedit.h"
+#include "mediabrowser.h"
+#include "medium.h"
+#include "plugin/pluginconfig.h"
+#include "pluginmanager.h"
+
+#include <qlabel.h>
+#include <qtooltip.h>
+#include <qvbox.h>
+#include <qbuttongroup.h>
+#include <qvbuttongroup.h>
+
+#include <kapplication.h>
+#include <kcombobox.h>
+#include <klocale.h>
+#include <kpushbutton.h>
+#include <kwin.h>
+
+DeviceConfigureDialog::DeviceConfigureDialog( const Medium *medium )
+        : KDialogBase( amaroK::mainWindow(), "deviceconfiguredialog", true, QString("Select Plugin for " + medium->name()), Ok|Cancel, Ok, false )
+{
+    m_medium = medium;
+    kapp->setTopWidget( this );
+    setCaption( kapp->makeStdCaption( i18n( "Configure Media Device" ) ) );
+    showButtonApply( false );
+
+    QVBox* vbox = makeVBoxMainWidget();
+    vbox->setSpacing( KDialog::spacingHint() );
+
+    m_mb = MediaBrowser::instance();
+
+    QLabel *connectLabel = 0;
+    m_connectEdit = 0;
+    QLabel *disconnectLabel = 0;
+    m_disconnectEdit = 0;
+    m_transcodeCheck = 0;
+    QButtonGroup *transcodeGroup = 0;
+    m_transcodeAlways = 0;
+    m_transcodeWhenNecessary = 0;
+    m_transcodeRemove = 0;
+
+    MediaDevice* currDev = m_mb->currentDevice();
+
+    if( currDev )
+    {
+        currDev->loadConfig();
+
+        // pre-connect/post-disconnect (mount/umount)
+        connectLabel = new QLabel( vbox );
+        connectLabel->setText( i18n( "Pre-&connect command:" ) );
+        m_connectEdit = new HintLineEdit( currDev->m_preconnectcmd, vbox );
+        m_connectEdit->setHint( i18n( "Example: mount %d" ) );
+        connectLabel->setBuddy( m_connectEdit );
+        QToolTip::add( m_connectEdit, i18n( "Set a command to be run before connecting to your device (e.g. a mount command) here.\n%d is replaced by the device node, %m by the mount point.\nEmpty commands are not executed." ) );
+
+        disconnectLabel = new QLabel( vbox );
+        disconnectLabel->setText( i18n( "Post-&disconnect command:" ) );
+        m_disconnectEdit = new HintLineEdit( currDev->m_postdisconnectcmd, vbox );
+        disconnectLabel->setBuddy( m_disconnectEdit );
+        m_disconnectEdit->setHint( i18n( "Example: eject %d" ) );
+        QToolTip::add( m_disconnectEdit, i18n( "Set a command to be run after disconnecting from your device (e.g. an eject command) here.\n%d is replaced by the device node, %m by the mount point.\nEmpty commands are not executed." ) );
+
+        // transcode
+        m_transcodeCheck = new QCheckBox( vbox );
+        m_transcodeCheck->setText( i18n( "&Transcode before transferring to device" ) );
+        m_transcodeCheck->setChecked( currDev->m_transcode );
+
+        transcodeGroup = new QVButtonGroup( vbox );
+        transcodeGroup->setTitle( i18n( "Transcode to preferred format for device" ) );
+        m_transcodeAlways = new QRadioButton( transcodeGroup );
+        m_transcodeAlways->setText( i18n( "Whenever possible" ) );
+        m_transcodeAlways->setChecked( currDev->m_transcodeAlways );
+        m_transcodeWhenNecessary = new QRadioButton( transcodeGroup );
+        m_transcodeWhenNecessary->setText( i18n( "When necessary" ) );
+        m_transcodeWhenNecessary->setChecked( !currDev->m_transcodeAlways );
+        transcodeGroup->setEnabled( currDev->m_transcode );
+        connect( m_transcodeCheck, SIGNAL(toggled( bool )),
+                transcodeGroup, SLOT(setEnabled( bool )) );
+        transcodeGroup->insert( m_transcodeAlways );
+        transcodeGroup->insert( m_transcodeWhenNecessary );
+        m_transcodeRemove = new QCheckBox( transcodeGroup );
+        m_transcodeRemove->setText( i18n( "Remove transcoded files after transfer" ) );
+        m_transcodeRemove->setChecked( currDev->m_transcodeRemove );
+
+        currDev->addConfigElements( vbox );
+    }
+
+    m_accepted = false;
+
+    exec();
+}
+
+DeviceConfigureDialog::~DeviceConfigureDialog()
+{
+}
+
+void
+DeviceConfigureDialog::slotCancel()
+{
+    KDialogBase::slotCancel( );
+}
+
+void
+DeviceConfigureDialog::slotOk()
+{
+    m_accepted = true;
+    MediaDevice* currDev = m_mb->currentDevice();
+
+    if( currDev )
+    {
+        currDev->m_preconnectcmd = m_connectEdit->text();
+        currDev->setConfigString( "PreConnectCommand", currDev->m_preconnectcmd );
+        currDev->m_postdisconnectcmd = m_disconnectEdit->text();
+        currDev->setConfigString( "PostDisconnectCommand", currDev->m_postdisconnectcmd );
+        currDev->setConfigBool( "Transcode", currDev->m_transcode );
+        currDev->m_transcode = m_transcodeCheck->isChecked();
+        currDev->setConfigBool( "Transcode", currDev->m_transcode );
+        currDev->m_transcodeAlways = m_transcodeAlways->isChecked();
+        currDev->setConfigBool( "TranscodeAlways", currDev->m_transcodeAlways );
+        currDev->m_transcodeRemove = m_transcodeRemove->isChecked();
+        currDev->setConfigBool( "TranscodeRemove", currDev->m_transcodeRemove );
+        currDev->applyConfig();
+    }
+
+    m_mb->updateButtons();
+    m_mb->updateStats();
+    m_mb->updateDevices();
+
+    KDialogBase::slotOk();
+}
+
+#include "deviceconfiguredialog.moc"

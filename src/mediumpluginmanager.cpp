@@ -40,7 +40,7 @@ MediumPluginManager::MediumPluginManager()
 {
     //TODO: make this a member function, so that hboxes can be rebuilt if user selects to rescan
     kapp->setTopWidget( this );
-    setCaption( kapp->makeStdCaption( i18n( "Manage Device Plugins" ) ) );
+    setCaption( kapp->makeStdCaption( i18n( "Manage Devices and Plugins" ) ) );
 
     QVBox* vbox = makeVBoxMainWidget();
     vbox->setSpacing( KDialog::spacingHint() );
@@ -70,7 +70,9 @@ MediumPluginManager::MediumPluginManager()
     m_hbox = new QHBox( vbox );
 
     KPushButton *detectDevices = new KPushButton( i18n( "Autodetect Devices" ), m_hbox);
+    detectDevices->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
     KPushButton *addButton = new KPushButton( i18n( "Add Device..." ), m_hbox );
+    addButton->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
     connect( detectDevices, SIGNAL( clicked() ), this, SLOT( reDetectDevices() ) );
     connect( addButton, SIGNAL( clicked() ), this, SLOT( newDevice() ) );
 
@@ -206,10 +208,11 @@ MediumPluginManager::slotOk( )
     DeletedMap::Iterator dit;
     for( dit = m_deletedMap.begin(); dit != m_deletedMap.end(); ++dit )
     {
-        if( (*dit)->isAutodetected() )
-            config->writeEntry( (*dit)->id(), "deleted" );
+        if( dit.data()->isAutodetected() )
+            config->writeEntry( dit.data()->id(), "deleted" );
         else
-            config->deleteEntry( (*dit)->id() );
+            config->deleteEntry( dit.data()->id() );
+        MediaBrowser::instance()->removeDevice( dit.data() );
     }
     KDialogBase::slotOk( );
 }
