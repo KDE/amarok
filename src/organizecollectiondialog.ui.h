@@ -1,9 +1,7 @@
-#include <kdialog.h>
-#include <qstringx.h>
-#include <collectiondb.h>
-#include <collectionbrowser.h>
-#include "debug.h"
-
+#include "amarok.h"
+#include "collectionbrowser.h"
+#include "collectiondb.h"
+#include "qstringx.h"
 
 
 QString OrganizeCollectionDialog::buildDestination( const QString &format, const MetaBundle &mb )
