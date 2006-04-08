@@ -40,8 +40,11 @@ interface that really makes playlist handling easy.
  RELEASE NOTES 1.4-BETA3
 =========================
 
-The GStreamer-0.10 engine is still experimental and not yet completed. For
-everyday usage we recommend the xine or Helix engines.
+* The GStreamer-0.10 engine is still experimental and not yet completed. For
+  everyday usage we recommend the xine or Helix engines.
+
+* The new amaroK icon theme is not yet complete. You can disable it in the
+  the settings dialog, "General" section.
 --------------------------------------------------------------------------------
 
 
