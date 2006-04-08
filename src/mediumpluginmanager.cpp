@@ -212,7 +212,7 @@ MediumPluginManager::slotOk( )
             config->writeEntry( dit.data()->id(), "deleted" );
         else
             config->deleteEntry( dit.data()->id() );
-        MediaBrowser::instance()->removeDevice( dit.data() );
+        DeviceManager::instance()->removeManualDevice( dit.data() );
     }
     KDialogBase::slotOk( );
 }

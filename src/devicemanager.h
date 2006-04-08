@@ -44,6 +44,7 @@ class DeviceManager : public QObject
         MediumMap getMediumMap() { return m_mediumMap; }
 
         void addManualDevice( Medium* added );
+        void removeManualDevice( Medium* removed );
 
         bool isValid() { return m_valid; }
 

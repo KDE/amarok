@@ -163,7 +163,6 @@ class MediaBrowser : public QVBox
         MediaDevice *currentDevice();
         QStringList deviceNames();
         bool deviceSwitch( const QString &name );
-        void removeDevice( Medium *);
 
         QString getPluginName ( const QString string ) { return m_pluginName[string]; }
         void transcodingFinished( const QString &src, const QString &dst );

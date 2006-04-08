@@ -248,5 +248,11 @@ DeviceManager::addManualDevice( Medium* added )
     emit mediumAdded( added, added->name() );
 }
 
-#include "devicemanager.moc"
+void
+DeviceManager::removeManualDevice( Medium* removed )
+{
+    m_mediumMap.remove( removed->name() );
+    emit mediumRemoved( removed, removed->name() );
+}
 
+#include "devicemanager.moc"

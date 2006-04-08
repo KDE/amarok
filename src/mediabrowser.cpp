@@ -169,6 +169,7 @@ class DummyMediaDevice : public MediaDevice
         m_name = i18n( "No Device Selected" );
         m_type = "dummy-mediadevice";
         m_medium = new Medium( "DummyDevice", "DummyDevice" );
+        m_uniqueId = m_medium->id();
     }
     void init( MediaBrowser *browser ) { MediaDevice::init( browser ); }
     virtual ~DummyMediaDevice() {}
@@ -485,21 +486,6 @@ MediaBrowser::removeDevice( MediaDevice *device )
     unloadDevicePlugin( device );
 
     updateDevices();
-}
-
-void
-MediaBrowser::removeDevice( Medium *medium )
-{
-    for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
-            it != m_devices.end();
-            it++ )
-    {
-        if( (*it)->uniqueId() == medium->id() )
-        {
-            debug() << "Found device to remove: " << medium->id() << endl;
-            removeDevice( (*it) );
-        }
-    }
 }
 
 void
@@ -1422,9 +1408,9 @@ MediaBrowser::mediumRemoved( const Medium *medium, QString name )
                 if( (*it)->isConnected() )
                 {
                     amaroK::StatusBar::instance()->longMessage(
-                            i18n( "The device %1 was removed before it was synchronized. "
-                                "In order to avoid data loss, press the \"Disconnect\" button "
-                                "before disconnecting the device." ).arg( name ),
+                            i18n( "The device %1 was removed before it was disconnected. "
+                                "In order to avoid possible data loss, press the \"Disconnect\""
+                                "button before disconnecting the device." ).arg( name ),
                             KDE::StatusBar::Warning );
                 }
                 removeDevice( *it );
