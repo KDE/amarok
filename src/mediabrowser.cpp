@@ -907,6 +907,8 @@ MediaItem::findItem( const QString &key, const MediaItem *after ) const
     {
         if(key == it->text(0))
             return it;
+        if(key.isEmpty() && it->text(0).isEmpty())
+            return it;
     }
     return 0;
 }
