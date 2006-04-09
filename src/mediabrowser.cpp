@@ -2296,6 +2296,7 @@ MediaDevice::transferFiles()
     MediaItem *playlist = 0;
 
     KURL::List existing, unplayable;
+    unsigned transcodeFail = 0;
     MediaItem *after = 0; // item after which to insert into playlist
     // iterate through items
     while( (m_transferredItem = static_cast<MediaItem *>(m_parent->m_queue->firstChild())) != 0 )
@@ -2336,6 +2337,7 @@ MediaDevice::transferFiles()
                 if( transcoded.isEmpty() )
                 {
                     debug() << "transcoding failed" << endl;
+                    transcodeFail++;
                 }
                 else
                 {
@@ -2441,7 +2443,21 @@ MediaDevice::transferFiles()
             msg += i18n( ", one track already on media device",
                     ", %n tracks already on media device", existing.count() );
     }
-    if( !msg.isEmpty() )
+    if( transcodeFail > 0 )
+    {
+        if( msg.isEmpty() )
+            msg = i18n( "One track was not transcoded",
+                    "%n tracks were not transcoded", transcodeFail );
+        else
+            msg = i18n( ", one track was not transcoded",
+                    ", %n tracks were not transcoded", transcodeFail );
+
+        const ScriptManager* const sm = ScriptManager::instance();
+        if( sm->transcodeScriptRunning() == QString::null )
+            msg += i18n( " (no transcode script running)" );
+    }
+
+    if( unplayable.count() + existing.count() > 0 )
     {
         QString longMsg = i18n( "The following tracks were not transferred: ");
         for( KURL::List::Iterator it = existing.begin();
@@ -2457,6 +2473,10 @@ MediaDevice::transferFiles()
             longMsg += "<br>" + (*it).prettyURL();
         }
         amaroK::StatusBar::instance()->shortLongMessage( msg, longMsg, KDE::StatusBar::Sorry );
+    }
+    else
+    {
+        amaroK::StatusBar::instance()->shortMessage( msg, KDE::StatusBar::Sorry );
     }
 
     setSpacesToUnderscores( false );
