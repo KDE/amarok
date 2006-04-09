@@ -508,6 +508,8 @@ MediaBrowser::updateDevices()
             it != m_devices.end();
             it++ )
     {
+        if( m_devices.count() > 1 && dynamic_cast<DummyMediaDevice *>(*it) )
+            continue;
         QString name = (*it)->name();
         if( !(*it)->deviceNode().isEmpty() )
         {
@@ -524,6 +526,7 @@ MediaBrowser::updateDevices()
         }
         i++;
     }
+    m_deviceCombo->setEnabled( m_devices.count() > 1 );
 }
 
 QStringList
