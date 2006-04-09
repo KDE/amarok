@@ -44,6 +44,24 @@ Medium::Medium(const QString &id, const QString &name)
 	loadUserLabel();
 }
 
+Medium::Medium(const Medium *medium)
+{
+        m_properties += ( medium->isAutodetected() ? "true" : "false" );
+        m_properties += medium->id();
+        m_properties += medium->name();
+        m_properties += medium->label();
+        m_properties += medium->userLabel();
+        m_properties += ( medium->isMountable() ? "true" : "false" );
+        m_properties += medium->deviceNode();
+        m_properties += medium->mountPoint();
+        m_properties += medium->fsType();
+        m_properties += ( medium->isMounted() ? "true" : "false" );
+        m_properties += medium->baseURL();
+        m_properties += medium->mimeType();
+        m_properties += medium->iconName();
+	loadUserLabel();
+}
+
 Medium::Medium()
 {
         m_properties+= QString::null; /* AUTODETECTED */

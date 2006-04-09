@@ -44,6 +44,7 @@ public:
 	static const uint PROPERTIES_COUNT = 13;
 	static const QString SEPARATOR;
 
+        Medium(const Medium *medium);
 	Medium(const QString &id, const QString &name);
 	static const Medium create(const QStringList &properties);
 	static List createList(const QStringList &properties);

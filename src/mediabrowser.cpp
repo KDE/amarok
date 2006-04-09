@@ -300,9 +300,7 @@ MediaBrowser::MediaBrowser( const char *name )
 
     m_progressBox->hide();
 
-    MediaDevice *dev = loadDevicePlugin( AmarokConfig::deviceType() );
-    if( !dev)
-        dev = new DummyMediaDevice();
+    MediaDevice *dev = new DummyMediaDevice();
     dev->init( this );
     addDevice( dev );
     activateDevice( 0 );
@@ -1375,7 +1373,9 @@ MediaBrowser::pluginSelected( const Medium *medium, const QString plugin )
 void
 MediaBrowser::showPluginManager()
 {
-    new MediumPluginManager();
+    MediumPluginManager* mpm = new MediumPluginManager();
+    mpm->exec();
+    delete mpm;
 }
 
 void
@@ -1488,7 +1488,9 @@ MediaBrowser::config()
 
     DeviceConfigureDialog* dcd = new DeviceConfigureDialog( currentDevice()->m_medium );
     dcd->exec();
-    return dcd->successful();
+    bool successful = dcd->successful();
+    delete dcd;
+    return successful;
 }
 
 void

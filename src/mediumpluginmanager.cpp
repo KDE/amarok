@@ -13,6 +13,7 @@
 #include "debug.h"
 #include "deviceconfiguredialog.h"
 #include "devicemanager.h"
+#include "hintlineedit.h"
 #include "mediabrowser.h"
 #include "medium.h"
 #include "mediumpluginchooser.h"
@@ -25,6 +26,7 @@
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qsignalmapper.h>
+#include <qtooltip.h>
 #include <qvbox.h>
 
 #include <kapplication.h>
@@ -61,7 +63,7 @@ MediumPluginManager::MediumPluginManager()
     m_location = new QGroupBox( 1, Qt::Vertical, i18n( "Devices" ), vbox );
     m_location->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred ) );
     m_devicesBox = new QVBox( m_location );
-    m_devicesBox->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred ) );
+    m_devicesBox->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
 
     detectDevices();
     //Obsolete with manual addition of devices?
@@ -84,7 +86,6 @@ MediumPluginManager::MediumPluginManager()
     connect( m_sigconfmap, SIGNAL( mapped( int ) ), this, SLOT( configureDevice( int ) ) );
     connect( this, SIGNAL( selectedPlugin( const Medium*, const QString ) ), MediaBrowser::instance(), SLOT( pluginSelected( const Medium*, const QString ) ) );
 
-    exec();
 }
 
 MediumPluginManager::~MediumPluginManager()
@@ -242,6 +243,7 @@ MediumPluginManager::infoRequested( int buttonId )
     Medium* medium = m_bmap[buttonId];
     MediumPluginDetailView* mpdv = new MediumPluginDetailView( medium );
     mpdv->exec();
+    delete mpdv;
 }
 
 void
@@ -250,6 +252,7 @@ MediumPluginManager::configureDevice( int buttonId )
     Medium* medium = m_bmap[buttonId];
     DeviceConfigureDialog* dcd = new DeviceConfigureDialog( medium );
     dcd->exec();
+    delete dcd;
 }
 
 void
@@ -354,19 +357,28 @@ ManualDeviceAdder::ManualDeviceAdder( MediumPluginManager* mpm )
         m_mdaCombo->insertItem( (*m_mdaPlugit)->name() );
 
     new QLabel( "", vbox1 );
-    new QLabel( i18n( "Enter a name for this device (required):" ), vbox1 );
-    m_mdaName = new KLineEdit( vbox1, "m_mdaname" );
+    QLabel* nameLabel = new QLabel( vbox1 );
+    nameLabel->setText( i18n( "Enter a &name for this device (required):" ) );
+    m_mdaName = new HintLineEdit( QString::null, vbox1);
+    nameLabel->setBuddy( m_mdaName );
+    m_mdaName->setHint( i18n( "Example: My_Ipod" ) );
+    QToolTip::add( m_mdaName, i18n( "Enter a name for the device.  The name must be unique across all devices, including autodetected devices.  It must not contain the pipe ( | ) character." ) );
 
     new QLabel( "", vbox1 );
-    new QLabel( i18n( "Enter the device's mountpoint, if applicable:"), vbox1 );
-    m_mdaMountPoint = new KLineEdit( vbox1, "m_mdamountpoint" );
-    KCompletion *comp = m_mdaMountPoint->completionObject();
-    connect( m_mdaMountPoint, SIGNAL( returnPressed(const QString&) ), comp, SLOT( addItem(const QString&) ) );
+    QLabel* mpLabel = new QLabel( vbox1 );
+    mpLabel->setText( i18n( "Enter the &mount point of the device, if applicable:" ) );
+    m_mdaMountPoint = new HintLineEdit( QString::null, vbox1);
+    mpLabel->setBuddy( m_mdaMountPoint );
+    m_mdaMountPoint->setHint( i18n( "Example: /mnt/ipod" ) );
+    QToolTip::add( m_mdaName, i18n( "Enter the device's mount point.  Some devices (such as iRiver iFP devices) may not have a mount point and this can be ignored.  All other devices (iPods, UMS/VFAT devices) should enter the mount point here." ) );
+
     connect( m_mdaCombo, SIGNAL( activated(const QString&) ), this, SLOT( comboChanged(const QString&) ) );
 }
 
 ManualDeviceAdder::~ManualDeviceAdder()
 {
+    delete m_mdaName;
+    delete m_mdaMountPoint;
 }
 
 void

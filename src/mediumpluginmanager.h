@@ -13,6 +13,7 @@
 #define MEDIUMPLUGINMANAGER_H
 
 #include "amarok.h"
+#include "hintlineedit.h"
 #include "plugin/pluginconfig.h"
 #include "pluginmanager.h"
 
@@ -125,8 +126,8 @@ class ManualDeviceAdder : public KDialogBase
         QString m_selectedPlugin;
 
         KComboBox* m_mdaCombo;
-        KLineEdit* m_mdaName;
-        KLineEdit* m_mdaMountPoint;
+        HintLineEdit* m_mdaName;
+        HintLineEdit* m_mdaMountPoint;
 
         KTrader::OfferList m_mdaOffers;
         KTrader::OfferList::ConstIterator m_mdaOffersEnd;

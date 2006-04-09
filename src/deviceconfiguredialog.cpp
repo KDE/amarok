@@ -34,15 +34,13 @@
 DeviceConfigureDialog::DeviceConfigureDialog( const Medium *medium )
         : KDialogBase( amaroK::mainWindow(), "deviceconfiguredialog", true, QString("Select Plugin for " + medium->name()), Ok|Cancel, Ok, false )
 {
-    m_medium = medium;
+    m_medium = new Medium( medium );
     kapp->setTopWidget( this );
     setCaption( kapp->makeStdCaption( i18n( "Configure Media Device" ) ) );
     showButtonApply( false );
 
     QVBox* vbox = makeVBoxMainWidget();
     vbox->setSpacing( KDialog::spacingHint() );
-
-    m_mb = MediaBrowser::instance();
 
     QLabel *connectLabel = 0;
     m_connectEdit = 0;
@@ -54,7 +52,7 @@ DeviceConfigureDialog::DeviceConfigureDialog( const Medium *medium )
     m_transcodeWhenNecessary = 0;
     m_transcodeRemove = 0;
 
-    MediaDevice* device = m_mb->deviceFromId( m_medium->id() );
+    MediaDevice* device = MediaBrowser::instance()->deviceFromId( m_medium->id() );
 
     if( device )
     {
@@ -105,6 +103,11 @@ DeviceConfigureDialog::DeviceConfigureDialog( const Medium *medium )
 
 DeviceConfigureDialog::~DeviceConfigureDialog()
 {
+     DEBUG_BLOCK
+     debug() << "Starting deleting..." << endl;
+     delete m_connectEdit;
+     delete m_disconnectEdit;
+     debug() << "Deleted private variables..." << endl;
 }
 
 void
@@ -117,7 +120,7 @@ void
 DeviceConfigureDialog::slotOk()
 {
     m_accepted = true;
-    MediaDevice* device = m_mb->deviceFromId( m_medium->id() );
+    MediaDevice* device = MediaBrowser::instance()->deviceFromId( m_medium->id() );
 
     if( device )
     {
@@ -135,9 +138,9 @@ DeviceConfigureDialog::slotOk()
         device->applyConfig();
     }
 
-    m_mb->updateButtons();
-    m_mb->updateStats();
-    m_mb->updateDevices();
+    MediaBrowser::instance()->updateButtons();
+    MediaBrowser::instance()->updateStats();
+    MediaBrowser::instance()->updateDevices();
 
     KDialogBase::slotOk();
 }

@@ -40,9 +40,8 @@ class DeviceConfigureDialog : public KDialogBase
         void slotCancel();
 
     private:
-        bool          m_accepted;
-        MediaBrowser* m_mb;
-        const Medium* m_medium;
+        bool            m_accepted;
+        Medium*         m_medium;
 
         HintLineEdit    *m_connectEdit;
         HintLineEdit    *m_disconnectEdit;
