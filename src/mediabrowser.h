@@ -111,7 +111,7 @@ class MediaQueue : public KListView
         MediaQueue(MediaBrowser *parent);
         MediaItem *findPath( QString path );
 
-        unsigned totalSize() const; // total size of items to transfer in KB
+        KIO::filesize_t totalSize() const; // total size of items to transfer in KB
         void removeSelected();
         void clearItems();
 

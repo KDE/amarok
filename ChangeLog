@@ -31,6 +31,8 @@ VERSION 1.4-beta3:
     * Add autocompletion to the composer field in the tag dialog. (BR 123026)
 
   CHANGES:
+    * In context browser, show information about recently updated podcasts,
+      recently added and favourite albums when nothing is playing.
     * Ratings can now have half stars: click again on the last star in the
       rating to toggle it between a half and a full star.
     * Improved handling of embedded cover art, utilizing the database. Patch
@@ -52,6 +54,11 @@ VERSION 1.4-beta3:
       Peter C. Ndikuwera <pndiku@gmail.com>. (BR 118304)
 
   BUGFIXES:
+    * Fix display of media device transfer queues larger than 4 GB. (BR 125247)
+    * Fix duplicate detection when transferring to media device for tracks having
+      empty album tags. (BR 125203)
+    * Fix spuriously garbled collection scans. Patch by Shane King
+      <kde@dontletsstart.com>. (BR 125114)
     * Fix error with 'Back' link when browsing related artists. (BR 123227)
     * Files with names containing '#' or '?' from smart playlists would not
       get transferred to media device. (BR 122488)

@@ -156,9 +156,9 @@ class SpaceLabel : public QLabel {
         QLabel::paintEvent(e);
     }
 
-    unsigned long m_total;
-    unsigned long m_used;
-    unsigned long m_scheduled;
+    KIO::filesize_t m_total;
+    KIO::filesize_t m_used;
+    KIO::filesize_t m_scheduled;
 };
 
 class DummyMediaDevice : public MediaDevice
@@ -2931,10 +2931,10 @@ MediaQueue::findPath( QString path )
     return 0;
 }
 
-unsigned
+KIO::filesize_t
 MediaQueue::totalSize() const
 {
-    unsigned total = 0;
+    KIO::filesize_t total = 0;
     for( QListViewItem *it = firstChild();
             it;
             it = it->nextSibling())
