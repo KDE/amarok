@@ -876,7 +876,7 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
             PlaylistCategory *p = new PlaylistCategory( m_listview, after, e );
             p->setId( 0 );
             //delete the file, it is deprecated
-            KIO::del( KURL( podcastBrowserCache() ) );
+            KIO::del( KURL::fromPathOrURL( podcastBrowserCache() ) );
 
             if( !m_podcastItemsToScan.isEmpty() )
                 m_podcastTimer->start( m_podcastTimerInterval );
