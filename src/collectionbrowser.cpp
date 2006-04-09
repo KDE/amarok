@@ -27,12 +27,12 @@
 #include "qstringx.h"
 
 #include <unistd.h>         //CollectionView ctor
-#include <map>
 
 #include <qapplication.h>
 #include <qcstring.h>
 #include <qdragobject.h>
 #include <qlayout.h>        //infobox
+#include <qmap.h>
 #include <qpainter.h>
 #include <qpixmap.h>
 #include <qptrlist.h>
@@ -635,7 +635,7 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
             }
 
             //keep track of headers already added
-            std::map<QString, bool> containedDivider;
+            QMap<QString, bool> containedDivider;
 
             for ( QStringList::Iterator it = values.fromLast(), begin = values.begin(); true; --it )
             {
@@ -704,6 +704,35 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
             item->setOpen( true );
             count = item->childCount();
             item = item->firstChild();
+        }
+
+        sort();
+        DividerItem *current=0, *last=0;
+        bool empty;
+        for( item = firstChild(),empty=false; item; item=item->nextSibling() )
+        {
+            if ( (current = dynamic_cast<DividerItem *>( item )) ) {
+                if ( empty ) {
+                    if ( !current->text(0).at(0).isLetterOrNumber()
+                        || ( last->text(0).at(0).isLetterOrNumber()
+                            && current->text(0).at(0).unicode() > last->text(0).ref(0).unicode() ) )
+                    {
+                        item = (QListViewItem*)last;
+                        delete current;
+                    }
+                    else
+                    {
+                        item = (QListViewItem*)current;
+                        delete last;
+                        last=current;
+                    }
+                }
+                else
+                    last=current;
+                empty=true;
+            }
+            else
+                empty=false;
         }
     }
     restoreView();
@@ -2693,7 +2722,6 @@ QString
 DividerItem::createGroup(const QString& src, int cat)
 {
     QString ret;
-    static const QRegExp uselessChars( "^[][<>',()#%.]" ); /* ^ = beginning of the string */
     switch (cat) {
     case CollectionBrowser::IdVisYearAlbum: {
         ret = src.left( src.find(" - ") );
@@ -2708,13 +2736,13 @@ DividerItem::createGroup(const QString& src, int cat)
     }
     default:
         ret = src.stripWhiteSpace();
-        while ( ret.contains( uselessChars ) )
-            ret.remove( uselessChars );
-        ret = ret.left( 1 ).upper();
-        /* Removes accents and so */
-        ret = amaroK::cleanPath( ret );
-        /* yep, we run it again, because umlauts are turned into two chars */
-        ret = ret.left( 1 );
+        while ( !ret.isEmpty() && !ret.at(0).isLetterOrNumber() ) {
+            ret = ret.right( ret.length()-1 );
+        }
+        if ( ret.isEmpty() )
+            ret = /*i18n( "Others" )*/ "";
+        else
+            ret = ret.left( 1 ).upper();
         if (QChar(ret.at(0)).isDigit()) {
             ret = "0-9";
         }

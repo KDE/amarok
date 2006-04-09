@@ -922,6 +922,8 @@ CollectionDB::createDragPixmap( const KURL::List &urls )
     QMap<QString, int> albumMap;
     QPixmap coverPm[maxCovers];
 
+    QString song, album;
+
 
     // iterate urls, get covers and count artist/albums
     bool correctAlbumCount = true;
@@ -945,6 +947,10 @@ CollectionDB::createDragPixmap( const KURL::List &urls )
             }
 
             MetaBundle mb( *it );
+
+            song = mb.title();
+            album = mb.album();
+
             if ( !albumMap.contains( mb.artist() + mb.album() ) )
             {
                 albumMap[ mb.artist() + mb.album() ] = 1;
@@ -976,11 +982,13 @@ CollectionDB::createDragPixmap( const KURL::List &urls )
     }
     else if( songs > 0 )
     {
-        text = i18n( "One song", "%n songs", songs );
-        if( correctAlbumCount )
-        {
-            text += i18n( " from one album", " from %n albums",albums );
+        if( correctAlbumCount ) {
+            text = i18n( "X songs from X album", "%2 from %1" );
+            text = text.arg( albums == 1 && !album.isEmpty() ? album : i18n( "one album", "%n albums",albums ) );
         }
+        else
+            text = "%1";
+        text = text.arg( songs == 1 && !song.isEmpty() ? song : i18n( "One song", "%n songs", songs ) );
     }
     else if( playlists > 0 )
         text = i18n( "One playlist", "%n playlists", playlists );
