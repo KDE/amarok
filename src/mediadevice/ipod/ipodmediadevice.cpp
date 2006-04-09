@@ -171,8 +171,6 @@ IpodMediaDevice::IpodMediaDevice()
     // config stuff
     m_syncStatsCheck = 0;
     m_autoDeletePodcastsCheck = 0;
-    m_mntpntEdit = 0;
-    m_mntpntLabel = 0;
 }
 
 void
@@ -2016,13 +2014,6 @@ IpodMediaDevice::supportedFiletypes()
 void
 IpodMediaDevice::addConfigElements( QWidget *parent )
 {
-    m_mntpntLabel = new QLabel( parent );
-    m_mntpntLabel->setText( i18n( "&Mount point:" ) );
-    m_mntpntEdit = new HintLineEdit( m_medium->mountPoint(), parent );
-    static_cast<HintLineEdit *>(m_mntpntEdit)->setHint( i18n( "(Not used when device is auto-detected)" ) );
-    m_mntpntLabel->setBuddy( m_mntpntEdit );
-    QToolTip::add( m_mntpntEdit, i18n( "Set the mount point of your device here, if empty auto-detection is tried." ) );
-
     m_autoDeletePodcastsCheck = new QCheckBox( parent );
     m_autoDeletePodcastsCheck->setText( i18n( "&Automatically delete podcasts" ) );
     QToolTip::add( m_autoDeletePodcastsCheck, i18n( "Automatically delete podcast shows already played when connecting device" ) );
@@ -2043,21 +2034,14 @@ IpodMediaDevice::removeConfigElements( QWidget * /*parent*/ )
     delete m_autoDeletePodcastsCheck;
     m_autoDeletePodcastsCheck = 0;
 
-    delete m_mntpntEdit;
-    m_mntpntEdit = 0;
-
-    delete m_mntpntLabel;
-    m_mntpntLabel = 0;
 }
 
 void
 IpodMediaDevice::applyConfig()
 {
-    m_mntpnt = m_mntpntEdit->text();
     m_autoDeletePodcasts = m_autoDeletePodcastsCheck->isChecked();
     m_syncStats = m_syncStatsCheck->isChecked();
 
-    setConfigString( "MountPoint", m_mntpnt );
     setConfigBool( "SyncStats", m_syncStats );
     setConfigBool( "AutoDeletePodcasts", m_autoDeletePodcasts );
 }
@@ -2067,7 +2051,7 @@ IpodMediaDevice::loadConfig()
 {
     MediaDevice::loadConfig();
 
-    m_mntpnt = configString( "MountPoint" );
+    m_mntpnt = m_medium->mountPoint();
     m_syncStats = configBool( "SyncStats", false );
     m_autoDeletePodcasts = configBool( "AutoDeletePodcasts", false );
 }
