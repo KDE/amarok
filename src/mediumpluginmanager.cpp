@@ -378,16 +378,17 @@ ManualDeviceAdder::slotCancel()
 void
 ManualDeviceAdder::slotOk()
 {
-    if( DeviceManager::instance()->getDevice( getMedium()->name() ) == NULL )
+    if( getMedium() != NULL && DeviceManager::instance()->getDevice( getMedium()->name() ) == NULL )
     {
         m_successful = true;
         KDialogBase::slotOk( );
     }
     else
     {
-        amaroK::StatusBar::instance()->longMessageThreadSafe( i18n("Sorry, you cannot define two devices\n"
-                                                                   "with the same name. These names must be\n"
-                                                                   "unique across autodetected devices as well.\n") );
+        amaroK::StatusBar::instance()->longMessageThreadSafe( i18n("Sorry, every device must have a name and\n"
+                                                                   "you cannot define two devices with the\n"
+                                                                   "same name. These names must be unique\n"
+                                                                   "across autodetected devices as well.\n") );
     }
 }
 
@@ -416,10 +417,10 @@ ManualDeviceAdder::getMedium()
 {
     if( m_mdaMountPoint->isEnabled() == false &&
             m_mdaName->text() == QString::null )
-        return 0;
+        return NULL;
     if( m_mdaMountPoint->text() == QString::null &&
             m_mdaName->text() == QString::null )
-        return 0;
+        return NULL;
     QString id = "manual|" + m_mdaName->text() + '|' +
             ( m_mdaMountPoint->text() == QString::null ||
                 m_mdaMountPoint->isEnabled() == false ?
