@@ -270,8 +270,6 @@ class PodcastEpisode : public QObject, public PlaylistBrowserEntry
         PodcastEpisodeBundle m_bundle;
         KURL        m_localUrl;
 
-        QPixmap     m_loading1;
-        QPixmap     m_loading2;
         bool        m_fetching;
         QTimer      m_animationTimer;
         uint        m_iconCounter;
@@ -347,8 +345,6 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         PodcastChannelBundle m_bundle;
 
         KURL        m_url;                         //remote xml url
-        QPixmap     m_loading1;
-        QPixmap     m_loading2;
         bool        m_fetching;
         bool        m_updating;
         QTimer      m_animationTimer;

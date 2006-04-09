@@ -1056,8 +1056,6 @@ QDomElement DynamicEntry::xml()
 PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url )
     : PlaylistBrowserEntry( parent, after )
         , m_url( url )
-        , m_loading1( SmallIcon( amaroK::icon( "podcast" ) ) )
-        , m_loading2( SmallIcon( amaroK::icon( "podcast2" ) ) )
         , m_fetching( false )
         , m_updating( false )
         , m_new( false )
@@ -1076,8 +1074,6 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
 PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url, const QDomNode &channelSettings )
     : PlaylistBrowserEntry( parent, after )
     , m_url( url )
-    , m_loading1( SmallIcon( amaroK::icon( "podcast" ) ) )
-    , m_loading2( SmallIcon( amaroK::icon( "podcast2" ) ) )
     , m_fetching( false )
     , m_updating( false )
     , m_new( false )
@@ -1099,8 +1095,6 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
                                 const KURL &url, const QDomNode &channelSettings, const QDomDocument &xmlDefinition )
     : PlaylistBrowserEntry( parent, after )
     , m_url( url )
-    , m_loading1( SmallIcon( amaroK::icon( "podcast" ) ) )
-    , m_loading2( SmallIcon( amaroK::icon( "podcast2" ) ) )
     , m_fetching( false )
     , m_updating( false )
     , m_new( false )
@@ -1124,8 +1118,6 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
     : PlaylistBrowserEntry( parent, after )
     , m_bundle( pcb )
     , m_url( pcb.url() )
-    , m_loading1( SmallIcon( amaroK::icon( "podcast" ) ) )
-    , m_loading2( SmallIcon( amaroK::icon( "podcast2" ) ) )
     , m_fetching( false )
     , m_updating( false )
     , m_new( false )
@@ -1643,8 +1635,8 @@ void
 PodcastChannel::slotAnimation()
 {
     m_iconCounter % 2 ?
-        setPixmap( 0, m_loading1 ):
-        setPixmap( 0, m_loading2 );
+        setPixmap( 0, SmallIcon( amaroK::icon( "podcast" ) ) ):
+        setPixmap( 0, SmallIcon( amaroK::icon( "podcast2" ) ) );
 
     m_iconCounter++;
 }
@@ -1659,8 +1651,6 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
     : PlaylistBrowserEntry( parent, after )
       , m_parent( parent )
       , m_localUrl( 0 )
-      , m_loading1( SmallIcon( amaroK::icon( "podcast" ) ) )
-      , m_loading2( SmallIcon( amaroK::icon( "podcast2" ) ) )
       , m_fetching( false )
       , m_onDisk( false )
 {
@@ -1770,13 +1760,12 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after, Pod
       , m_parent( parent )
       , m_bundle( bundle )
       , m_localUrl( 0 )
-      , m_loading1( SmallIcon( amaroK::icon( "podcast" ) ) )
-      , m_loading2( SmallIcon( amaroK::icon( "podcast2" ) ) )
       , m_fetching( false )
       , m_onDisk( false )
 {
-    m_localUrl = m_bundle.localUrl();
+    m_localUrl    =  m_bundle.localUrl();
     bool dbOnDisk = !m_localUrl.isEmpty();
+    QString _url  =  m_localUrl.path();
 
     if( m_localUrl.isEmpty() )
     {
@@ -1794,7 +1783,7 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after, Pod
         m_bundle.setLocalURL( m_localUrl );
     }
 
-    if( dbOnDisk != m_onDisk && m_bundle.dBId() )
+    if( _url != m_bundle.localUrl().path() && dbOnDisk != m_onDisk && m_bundle.dBId() )
        CollectionDB::instance()->updatePodcastEpisode( m_bundle.dBId(), m_bundle );
 
 
@@ -1969,8 +1958,8 @@ void
 PodcastEpisode::slotAnimation()
 {
     m_iconCounter % 2 ?
-        setPixmap( 0, m_loading1 ):
-        setPixmap( 0, m_loading2 );
+        setPixmap( 0, SmallIcon( amaroK::icon( "podcast") ) ):
+        setPixmap( 0, SmallIcon( amaroK::icon( "podcast2") ) );
 
     m_iconCounter++;
 }
