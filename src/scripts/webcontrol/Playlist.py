@@ -233,7 +233,7 @@ class Playlist:
     def _setFullPage(self, status):
         """Renders the fullpage into the varialbe self.fullPage"""
         counter = ""
-        if status.playState == status.EnginePlay:
+        if status.isPlaying():
             counter = "countdown(" + str(status.timeLeft()) + ");"
 
         self.fullPage = code % ( counter,

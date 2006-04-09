@@ -48,7 +48,6 @@ class AmarokStatus:
     dcop_trackcurrentindex = None
     dcop_trackcurrenttime = None
     dcop_tracktotaltime = None
-    dcop_trackrating = None
     
     def __init__(self):
         self.controls_enabled = 0
@@ -59,7 +58,6 @@ class AmarokStatus:
         self.dcop_trackcurrentindex = Globals.PlaylistDcop("getActiveIndex")
         self.dcop_trackcurrenttime = Globals.PlayerDcop("trackCurrentTime")
         self.dcop_tracktotaltime = Globals.PlayerDcop("trackTotalTime")
-	self.dcop_trackrating = Globals.PlayerDcop("rating")
         
     def isPlaying(self):
         if self.playState != -1:
@@ -248,7 +246,6 @@ class RequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             status.dcop_volume.init()
             status.dcop_trackcurrenttime.init()
             status.dcop_tracktotaltime.init()
-	    status.dcop_trackrating.init()
             self.send_header("content-type","text/html")
             self.send_header("Cache-Control","no-cache")
             self.end_headers()
