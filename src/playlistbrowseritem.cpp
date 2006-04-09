@@ -1722,7 +1722,21 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
         m_localUrl = channel->saveLocation();
     else
         m_localUrl = PodcastSettings( "Podcasts" ).saveLocation();
-    m_localUrl.addPath( link.fileName() );
+
+    /*
+    sometimes a cgi script is used for tracking of listeners
+    like http://www.podtrac.com/pts/redirect.mp3?.
+    the actual file to download is the query for a cgi script.
+    So get the filename from the query.
+    */
+    QString query = link.query();
+    if( !query.isNull() )
+    {
+        query.remove("?");
+        m_localUrl.addPath( KURL::fromPathOrURL( query ).fileName() );
+    }
+    else
+        m_localUrl.addPath( link.fileName() );
 
     if( QFile::exists( m_localUrl.path() ) )
     {
