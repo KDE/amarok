@@ -649,7 +649,7 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
                 {
                     QString headerStr = DividerItem::createGroup( (*it), m_cat1);
 
-                    if (!containedDivider[headerStr])
+                    if ( !containedDivider[headerStr] && headerStr != "" )
                     {
                         containedDivider[headerStr] = true;
                         (void)new DividerItem(this, headerStr, m_cat1/*, m_sortYearsInverted*/);
