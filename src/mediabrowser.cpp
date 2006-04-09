@@ -243,8 +243,8 @@ MediaBrowser::MediaBrowser( const char *name )
     KActionMenu* configButton = new KActionMenu( i18n("Configure this media device"), "configure", this );
     configButton->setDelayed( false );
     KPopupMenu *configPopup = configButton->popupMenu();
-    configPopup->insertItem( i18n("Configure Device..."), this, SLOT(config()) );
-    configPopup->insertItem( i18n("Manage Devices and Plugins..."), this, SLOT(showPluginManager()) );
+    configPopup->insertItem( i18n("Configure Device..."), this, SLOT( config()) );
+    configPopup->insertItem( i18n("Manage Devices and Plugins..."), this, SLOT( showPluginManager()) );
     configButton->plug( m_toolbar );
 
     m_deviceCombo = new KComboBox( this );
@@ -411,6 +411,19 @@ MediaBrowser::currentDevice()
     return 0;
 }
 
+MediaDevice *
+MediaBrowser::deviceFromId( const QString &id )
+{
+    for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
+                it != m_devices.end();
+                it++ )
+        {
+            if( (*it)->uniqueId() == id )
+                return (*it);
+        }
+
+    return NULL;
+}
 
 void
 MediaBrowser::activateDevice( int index )
@@ -1474,6 +1487,7 @@ MediaBrowser::config()
     }
 
     DeviceConfigureDialog* dcd = new DeviceConfigureDialog( currentDevice()->m_medium );
+    dcd->exec();
     return dcd->successful();
 }
 

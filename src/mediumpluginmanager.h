@@ -57,6 +57,7 @@ class MediumPluginManager : public KDialogBase
     private slots:
         void slotOk();
         void infoRequested( int buttonId );
+        void configureDevice( int buttonId );
         void deleteMedium( int buttonId );
         void reDetectDevices();
         void newDevice();
@@ -69,9 +70,10 @@ class MediumPluginManager : public KDialogBase
         ButtonMap m_bmap;
         HBoxMap m_hmap;
         PluginStringMap m_dmap;
+        DeletedMap m_deletedMap;
         QSignalMapper *m_siginfomap;
         QSignalMapper *m_sigdelmap;
-        DeletedMap m_deletedMap;
+        QSignalMapper *m_sigconfmap;
 
         QVBox *m_devicesBox;
         KConfig *m_config;
@@ -80,6 +82,7 @@ class MediumPluginManager : public KDialogBase
         QLabel *m_currlabel;
         QGroupBox *m_location;
         KComboBox *m_currcombo;
+        KPushButton *m_configurebutton;
         KPushButton *m_currbutton;
         KPushButton *m_deletebutton;
         int m_buttonnum;

@@ -54,23 +54,23 @@ DeviceConfigureDialog::DeviceConfigureDialog( const Medium *medium )
     m_transcodeWhenNecessary = 0;
     m_transcodeRemove = 0;
 
-    MediaDevice* currDev = m_mb->currentDevice();
+    MediaDevice* device = m_mb->deviceFromId( m_medium->id() );
 
-    if( currDev )
+    if( device )
     {
-        currDev->loadConfig();
+        device->loadConfig();
 
         // pre-connect/post-disconnect (mount/umount)
         connectLabel = new QLabel( vbox );
         connectLabel->setText( i18n( "Pre-&connect command:" ) );
-        m_connectEdit = new HintLineEdit( currDev->m_preconnectcmd, vbox );
+        m_connectEdit = new HintLineEdit( device->m_preconnectcmd, vbox );
         m_connectEdit->setHint( i18n( "Example: mount %d" ) );
         connectLabel->setBuddy( m_connectEdit );
         QToolTip::add( m_connectEdit, i18n( "Set a command to be run before connecting to your device (e.g. a mount command) here.\n%d is replaced by the device node, %m by the mount point.\nEmpty commands are not executed." ) );
 
         disconnectLabel = new QLabel( vbox );
         disconnectLabel->setText( i18n( "Post-&disconnect command:" ) );
-        m_disconnectEdit = new HintLineEdit( currDev->m_postdisconnectcmd, vbox );
+        m_disconnectEdit = new HintLineEdit( device->m_postdisconnectcmd, vbox );
         disconnectLabel->setBuddy( m_disconnectEdit );
         m_disconnectEdit->setHint( i18n( "Example: eject %d" ) );
         QToolTip::add( m_disconnectEdit, i18n( "Set a command to be run after disconnecting from your device (e.g. an eject command) here.\n%d is replaced by the device node, %m by the mount point.\nEmpty commands are not executed." ) );
@@ -78,31 +78,29 @@ DeviceConfigureDialog::DeviceConfigureDialog( const Medium *medium )
         // transcode
         m_transcodeCheck = new QCheckBox( vbox );
         m_transcodeCheck->setText( i18n( "&Transcode before transferring to device" ) );
-        m_transcodeCheck->setChecked( currDev->m_transcode );
+        m_transcodeCheck->setChecked( device->m_transcode );
 
         transcodeGroup = new QVButtonGroup( vbox );
         transcodeGroup->setTitle( i18n( "Transcode to preferred format for device" ) );
         m_transcodeAlways = new QRadioButton( transcodeGroup );
         m_transcodeAlways->setText( i18n( "Whenever possible" ) );
-        m_transcodeAlways->setChecked( currDev->m_transcodeAlways );
+        m_transcodeAlways->setChecked( device->m_transcodeAlways );
         m_transcodeWhenNecessary = new QRadioButton( transcodeGroup );
         m_transcodeWhenNecessary->setText( i18n( "When necessary" ) );
-        m_transcodeWhenNecessary->setChecked( !currDev->m_transcodeAlways );
-        transcodeGroup->setEnabled( currDev->m_transcode );
+        m_transcodeWhenNecessary->setChecked( !device->m_transcodeAlways );
+        transcodeGroup->setEnabled( device->m_transcode );
         connect( m_transcodeCheck, SIGNAL(toggled( bool )),
                 transcodeGroup, SLOT(setEnabled( bool )) );
         transcodeGroup->insert( m_transcodeAlways );
         transcodeGroup->insert( m_transcodeWhenNecessary );
         m_transcodeRemove = new QCheckBox( transcodeGroup );
         m_transcodeRemove->setText( i18n( "Remove transcoded files after transfer" ) );
-        m_transcodeRemove->setChecked( currDev->m_transcodeRemove );
+        m_transcodeRemove->setChecked( device->m_transcodeRemove );
 
-        currDev->addConfigElements( vbox );
+        device->addConfigElements( vbox );
     }
 
     m_accepted = false;
-
-    exec();
 }
 
 DeviceConfigureDialog::~DeviceConfigureDialog()
@@ -119,22 +117,22 @@ void
 DeviceConfigureDialog::slotOk()
 {
     m_accepted = true;
-    MediaDevice* currDev = m_mb->currentDevice();
+    MediaDevice* device = m_mb->deviceFromId( m_medium->id() );
 
-    if( currDev )
+    if( device )
     {
-        currDev->m_preconnectcmd = m_connectEdit->text();
-        currDev->setConfigString( "PreConnectCommand", currDev->m_preconnectcmd );
-        currDev->m_postdisconnectcmd = m_disconnectEdit->text();
-        currDev->setConfigString( "PostDisconnectCommand", currDev->m_postdisconnectcmd );
-        currDev->setConfigBool( "Transcode", currDev->m_transcode );
-        currDev->m_transcode = m_transcodeCheck->isChecked();
-        currDev->setConfigBool( "Transcode", currDev->m_transcode );
-        currDev->m_transcodeAlways = m_transcodeAlways->isChecked();
-        currDev->setConfigBool( "TranscodeAlways", currDev->m_transcodeAlways );
-        currDev->m_transcodeRemove = m_transcodeRemove->isChecked();
-        currDev->setConfigBool( "TranscodeRemove", currDev->m_transcodeRemove );
-        currDev->applyConfig();
+        device->m_preconnectcmd = m_connectEdit->text();
+        device->setConfigString( "PreConnectCommand", device->m_preconnectcmd );
+        device->m_postdisconnectcmd = m_disconnectEdit->text();
+        device->setConfigString( "PostDisconnectCommand", device->m_postdisconnectcmd );
+        device->setConfigBool( "Transcode", device->m_transcode );
+        device->m_transcode = m_transcodeCheck->isChecked();
+        device->setConfigBool( "Transcode", device->m_transcode );
+        device->m_transcodeAlways = m_transcodeAlways->isChecked();
+        device->setConfigBool( "TranscodeAlways", device->m_transcodeAlways );
+        device->m_transcodeRemove = m_transcodeRemove->isChecked();
+        device->setConfigBool( "TranscodeRemove", device->m_transcodeRemove );
+        device->applyConfig();
     }
 
     m_mb->updateButtons();

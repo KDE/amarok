@@ -11,6 +11,7 @@
 //
 #include "amarok.h"
 #include "debug.h"
+#include "deviceconfiguredialog.h"
 #include "devicemanager.h"
 #include "mediabrowser.h"
 #include "medium.h"
@@ -29,6 +30,7 @@
 #include <kapplication.h>
 #include <kcombobox.h>
 #include <kconfig.h>
+#include <kiconloader.h>
 #include <klineedit.h>
 #include <klocale.h>
 #include <kpushbutton.h>
@@ -47,6 +49,7 @@ MediumPluginManager::MediumPluginManager()
 
     m_siginfomap = new QSignalMapper( this );
     m_sigdelmap = new QSignalMapper( this );
+    m_sigconfmap = new QSignalMapper( this );
     m_buttonnum = 0;
     m_redetect = false;
 
@@ -78,6 +81,7 @@ MediumPluginManager::MediumPluginManager()
 
     connect( m_siginfomap, SIGNAL( mapped( int ) ), this, SLOT( infoRequested ( int ) ) );
     connect( m_sigdelmap, SIGNAL( mapped( int ) ), this, SLOT( deleteMedium( int ) ) );
+    connect( m_sigconfmap, SIGNAL( mapped( int ) ), this, SLOT( configureDevice( int ) ) );
     connect( this, SIGNAL( selectedPlugin( const Medium*, const QString ) ), MediaBrowser::instance(), SLOT( pluginSelected( const Medium*, const QString ) ) );
 
     exec();
@@ -124,29 +128,33 @@ MediumPluginManager::detectDevices()
         m_hbox->show();
         m_hmap[m_buttonnum] = m_hbox;
 
+        QHBox *temphbox = new QHBox( m_hbox );
+
         //debug() << "[MediumPluginManager] (*it)->id() = " << (*it)->id() << ", config->readEntry = " << m_config->readEntry( (*it)->id() ) << endl;
 
         if ( m_config->readEntry( (*it)->id() ).isEmpty() )
-            m_currlabel = new QLabel( i18n("  (NEW!)  Device Name: "), m_hbox );
+            m_currlabel = new QLabel( i18n("  (NEW!)  Device Name: "), temphbox );
         else
-            m_currlabel = new QLabel( i18n("          Device Name: "), m_hbox );
+            m_currlabel = new QLabel( i18n("          Device Name: "), temphbox );
 
         m_currlabel->show();
 
         m_currtext = new QString( (*it)->name() );
 
-        m_currlabel = new QLabel( *m_currtext, m_hbox );
+        m_currlabel = new QLabel( *m_currtext, temphbox );
         m_currlabel->show();
 
-        m_currbutton = new KPushButton( i18n("(Detail)"), m_hbox );
+        temphbox = new QHBox( m_hbox );
+        m_currbutton = new KPushButton( i18n("(Detail)"), temphbox );
         m_currbutton->show();
         m_bmap[m_buttonnum] = (*it);
         m_siginfomap->setMapping( m_currbutton, m_buttonnum );
         connect( m_currbutton, SIGNAL( clicked() ), m_siginfomap, SLOT( map() ) );
 
-        m_currlabel = new QLabel( i18n(", Plugin Selected:  "), m_hbox );
+        temphbox = new QHBox( m_hbox );
+        m_currlabel = new QLabel( i18n(", Plugin Selected:  "), temphbox );
         m_currlabel->show();
-        m_currcombo = new KComboBox( false, m_hbox, m_currtext->latin1() );
+        m_currcombo = new KComboBox( false, temphbox, m_currtext->latin1() );
         m_currcombo->show();
         m_currcombo->insertItem( i18n( "Do not handle" ) );
         m_dmap[("Do not handle")] = "ignore";
@@ -158,11 +166,22 @@ MediumPluginManager::detectDevices()
                 m_currcombo->setCurrentItem( (*m_plugit)->name() );
         }
 
-        m_currlabel = new QLabel( "          ", m_hbox);
+        temphbox = new QHBox( m_hbox );
+        m_currlabel = new QLabel( "     ", temphbox);
         m_currlabel->show();
-        m_deletebutton = new KPushButton( i18n( "Remove" ) , m_hbox );
+        m_configurebutton = new KPushButton( SmallIconSet( "configure" ), QString::null, temphbox );
+        m_configurebutton->show();
+        if( m_currcombo->currentText() == "Do not handle" )
+            m_configurebutton->setEnabled( false );
+        m_sigconfmap->setMapping( m_configurebutton, m_buttonnum );
+
+        temphbox = new QHBox( m_hbox );
+        m_currlabel = new QLabel( "     ", temphbox);
+        m_currlabel->show();
+        m_deletebutton = new KPushButton( i18n( "Remove" ) , temphbox );
         m_deletebutton->show();
         m_sigdelmap->setMapping( m_deletebutton, m_buttonnum );
+        connect( m_configurebutton, SIGNAL( clicked() ), m_sigconfmap, SLOT( map() ) );
         connect( m_deletebutton, SIGNAL( clicked() ), m_sigdelmap, SLOT( map() ) );
 
         m_cmap[(*it)] = m_currcombo;
@@ -223,6 +242,14 @@ MediumPluginManager::infoRequested( int buttonId )
     Medium* medium = m_bmap[buttonId];
     MediumPluginDetailView* mpdv = new MediumPluginDetailView( medium );
     mpdv->exec();
+}
+
+void
+MediumPluginManager::configureDevice( int buttonId )
+{
+    Medium* medium = m_bmap[buttonId];
+    DeviceConfigureDialog* dcd = new DeviceConfigureDialog( medium );
+    dcd->exec();
 }
 
 void

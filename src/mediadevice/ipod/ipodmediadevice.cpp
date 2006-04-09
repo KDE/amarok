@@ -2018,7 +2018,7 @@ IpodMediaDevice::addConfigElements( QWidget *parent )
 {
     m_mntpntLabel = new QLabel( parent );
     m_mntpntLabel->setText( i18n( "&Mount point:" ) );
-    m_mntpntEdit = new HintLineEdit( m_mntpnt, parent );
+    m_mntpntEdit = new HintLineEdit( m_medium->mountPoint(), parent );
     static_cast<HintLineEdit *>(m_mntpntEdit)->setHint( i18n( "(Not used when device is auto-detected)" ) );
     m_mntpntLabel->setBuddy( m_mntpntEdit );
     QToolTip::add( m_mntpntEdit, i18n( "Set the mount point of your device here, if empty auto-detection is tried." ) );
