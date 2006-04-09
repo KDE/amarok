@@ -18,6 +18,7 @@
 #include "medium.h"
 #include "plugin/pluginconfig.h"
 #include "pluginmanager.h"
+#include "scriptmanager.h"
 
 #include <qlabel.h>
 #include <qtooltip.h>
@@ -94,6 +95,10 @@ DeviceConfigureDialog::DeviceConfigureDialog( const Medium *medium )
         m_transcodeRemove = new QCheckBox( transcodeGroup );
         m_transcodeRemove->setText( i18n( "Remove transcoded files after transfer" ) );
         m_transcodeRemove->setChecked( device->m_transcodeRemove );
+
+        const ScriptManager *sm = ScriptManager::instance();
+        m_transcodeCheck->setEnabled( sm->transcodeScriptRunning() != QString::null );
+        transcodeGroup->setEnabled( sm->transcodeScriptRunning() != QString::null );
 
         device->addConfigElements( vbox );
     }
