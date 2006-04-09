@@ -42,12 +42,12 @@ typedef QMap<QString, Medium*> MediumMap;
 MediumPluginManager::MediumPluginManager()
         : KDialogBase( amaroK::mainWindow(), "mediumpluginmanagerdialog", false, QString::null, Ok|Cancel, Ok )
 {
-    //TODO: make this a member function, so that hboxes can be rebuilt if user selects to rescan
     kapp->setTopWidget( this );
     setCaption( kapp->makeStdCaption( i18n( "Manage Devices and Plugins" ) ) );
 
     QVBox* vbox = makeVBoxMainWidget();
     vbox->setSpacing( KDialog::spacingHint() );
+    vbox->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
 
     m_siginfomap = new QSignalMapper( this );
     m_sigdelmap = new QSignalMapper( this );
@@ -66,11 +66,6 @@ MediumPluginManager::MediumPluginManager()
     m_devicesBox->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
 
     detectDevices();
-    //Obsolete with manual addition of devices?
-    //if ( buttonnum == 0 ) {
-    //    new QLabel( i18n( "You do not have any devices that can be managed by amaroK."), vbox );
-    //    showButtonCancel( false );
-    //}
 
     m_hbox = new QHBox( vbox );
 
@@ -82,7 +77,7 @@ MediumPluginManager::MediumPluginManager()
     connect( addButton, SIGNAL( clicked() ), this, SLOT( newDevice() ) );
 
     connect( m_siginfomap, SIGNAL( mapped( int ) ), this, SLOT( infoRequested ( int ) ) );
-    connect( m_sigdelmap, SIGNAL( mapped( int ) ), this, SLOT( deleteMedium( int ) ) );
+    connect( m_sigdelmap, SIGNAL( mapped( int ) ), this, SLOT( deleteDevice( int ) ) );
     connect( m_sigconfmap, SIGNAL( mapped( int ) ), this, SLOT( configureDevice( int ) ) );
     connect( this, SIGNAL( selectedPlugin( const Medium*, const QString ) ), MediaBrowser::instance(), SLOT( pluginSelected( const Medium*, const QString ) ) );
 
@@ -112,24 +107,26 @@ MediumPluginManager::detectDevices()
             ButtonMap::Iterator bit;
             for( bit = m_bmap.begin(); bit != m_bmap.end(); ++bit )
             {
-                if( (*it)->id() == (*bit)->id() ||
-                        ( m_deletedMap.contains( (*it)->id() ) &&
-                        !(*it)->isAutodetected() ) )
+                if( (*it)->id() == (*bit)->id() )
                     skipflag = 1;
             }
         }
+        if( m_deletedMap.contains( (*it)->id() ) && !(*it)->isAutodetected() )
+            skipflag = 1;
 
         if( skipflag == 1 )
-            continue;
+            continue;   
 
         if( m_deletedMap.contains( (*it)->id() ) )
             m_deletedMap.remove( (*it)->id() );
 
         m_hbox = new QHBox( m_devicesBox );
+        m_hbox->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred ) );
         m_hbox->show();
         m_hmap[m_buttonnum] = m_hbox;
 
         QHBox *temphbox = new QHBox( m_hbox );
+        temphbox->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred ) );
 
         //debug() << "[MediumPluginManager] (*it)->id() = " << (*it)->id() << ", config->readEntry = " << m_config->readEntry( (*it)->id() ) << endl;
 
@@ -137,28 +134,25 @@ MediumPluginManager::detectDevices()
             m_currlabel = new QLabel( i18n("  (NEW!)  Device Name: "), temphbox );
         else
             m_currlabel = new QLabel( i18n("          Device Name: "), temphbox );
-
         m_currlabel->show();
 
         m_currtext = new QString( (*it)->name() );
-
         m_currlabel = new QLabel( *m_currtext, temphbox );
         m_currlabel->show();
 
-        temphbox = new QHBox( m_hbox );
         m_currbutton = new KPushButton( i18n("(Detail)"), temphbox );
         m_currbutton->show();
         m_bmap[m_buttonnum] = (*it);
         m_siginfomap->setMapping( m_currbutton, m_buttonnum );
         connect( m_currbutton, SIGNAL( clicked() ), m_siginfomap, SLOT( map() ) );
 
-        temphbox = new QHBox( m_hbox );
         m_currlabel = new QLabel( i18n(", Plugin Selected:  "), temphbox );
         m_currlabel->show();
         m_currcombo = new KComboBox( false, temphbox, m_currtext->latin1() );
         m_currcombo->show();
         m_currcombo->insertItem( i18n( "Do not handle" ) );
         m_dmap[("Do not handle")] = "ignore";
+        temphbox->show();
 
         for( m_plugit = m_offers.begin(); m_plugit != m_offersEnd; ++m_plugit ){
             m_dmap[(*m_plugit)->name()] = (*m_plugit)->property( "X-KDE-amaroK-name" ).toString();
@@ -168,15 +162,15 @@ MediumPluginManager::detectDevices()
         }
 
         temphbox = new QHBox( m_hbox );
+        temphbox->setFixedWidth( 200 );
         m_currlabel = new QLabel( "     ", temphbox);
         m_currlabel->show();
         m_configurebutton = new KPushButton( SmallIconSet( "configure" ), QString::null, temphbox );
         m_configurebutton->show();
-        if( m_currcombo->currentText() == "Do not handle" )
+        if( m_newDevMap.contains( (*it)->id() ) )
             m_configurebutton->setEnabled( false );
         m_sigconfmap->setMapping( m_configurebutton, m_buttonnum );
 
-        temphbox = new QHBox( m_hbox );
         m_currlabel = new QLabel( "     ", temphbox);
         m_currlabel->show();
         m_deletebutton = new KPushButton( i18n( "Remove" ) , temphbox );
@@ -184,6 +178,8 @@ MediumPluginManager::detectDevices()
         m_sigdelmap->setMapping( m_deletebutton, m_buttonnum );
         connect( m_configurebutton, SIGNAL( clicked() ), m_sigconfmap, SLOT( map() ) );
         connect( m_deletebutton, SIGNAL( clicked() ), m_sigdelmap, SLOT( map() ) );
+
+        temphbox->show();
 
         m_cmap[(*it)] = m_currcombo;
 
@@ -256,7 +252,7 @@ MediumPluginManager::configureDevice( int buttonId )
 }
 
 void
-MediumPluginManager::deleteMedium( int buttonId )
+MediumPluginManager::deleteDevice( int buttonId )
 {
     //TODO:save something in amarokrc such that it's not shown again until hit autoscan
     QHBox *box = m_hmap[buttonId];
@@ -272,8 +268,10 @@ MediumPluginManager::deleteMedium( int buttonId )
 void
 MediumPluginManager::newDevice()
 {
+    DEBUG_BLOCK
     ManualDeviceAdder* mda = new ManualDeviceAdder( this );
     mda->exec();
+    Medium *newdev;
     if( mda->successful() && mda->getMedium() != 0 )
     {
         if( m_config->readEntry( mda->getMedium()->id() ) != QString::null )
@@ -285,8 +283,10 @@ MediumPluginManager::newDevice()
         }
         else
         {
-            DeviceManager::instance()->addManualDevice( mda->getMedium() );
-            m_config->writeEntry( mda->getMedium()->id(), mda->getPlugin() );
+            newdev = mda->getMedium();
+            DeviceManager::instance()->addManualDevice( newdev );
+            m_config->writeEntry( newdev->id(), mda->getPlugin() );
+            m_newDevMap[newdev->id()] = newdev;
             detectDevices();
         }
     }

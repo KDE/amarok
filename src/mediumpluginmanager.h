@@ -38,6 +38,7 @@ typedef QMap<Medium*, KComboBox*> ComboMap;
 typedef QMap<int, Medium*> ButtonMap;
 typedef QMap<int, QHBox*> HBoxMap;
 typedef QMap<QString, Medium*> DeletedMap;
+typedef QMap<QString, Medium*> NewDeviceMap;
 typedef QMap<QString, QString> PluginStringMap;
 
 /**
@@ -59,7 +60,7 @@ class MediumPluginManager : public KDialogBase
         void slotOk();
         void infoRequested( int buttonId );
         void configureDevice( int buttonId );
-        void deleteMedium( int buttonId );
+        void deleteDevice( int buttonId );
         void reDetectDevices();
         void newDevice();
 
@@ -72,6 +73,7 @@ class MediumPluginManager : public KDialogBase
         HBoxMap m_hmap;
         PluginStringMap m_dmap;
         DeletedMap m_deletedMap;
+        NewDeviceMap m_newDevMap;
         QSignalMapper *m_siginfomap;
         QSignalMapper *m_sigdelmap;
         QSignalMapper *m_sigconfmap;
