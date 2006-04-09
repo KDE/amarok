@@ -23,6 +23,7 @@
 #include <kiconloader.h>
 #include <klocale.h>
 #include <kmultipledrag.h>     //startDrag()
+#include <kstringhandler.h>    //paintCell
 #include <ktoolbarbutton.h>    //ctor
 #include <kurldrag.h>          //startDrag()
 #include <kwin.h>
@@ -763,15 +764,8 @@ StatisticsItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int w
     QString name = text(column);
     if( fmName.width( name ) + text_x + lv->itemMargin()*2 > width )
     {
-        int ellWidth = fmName.width( i18n("...") );
-        QString text = QString::fromLatin1("");
-        int i = 0;
-        int len = name.length();
-        while ( i < len && fmName.width( text + name[ i ] ) + ellWidth < width - text_x - lv->itemMargin()*2  ) {
-            text += name[ i ];
-            i++;
-        }
-        name = text + i18n("...");
+        const int _width = width - text_x - lv->itemMargin()*2;
+        name = KStringHandler::rPixelSqueeze( name, pBuf.fontMetrics(), _width );
     }
 
     pBuf.drawText( text_x, 0, width, textHeight, AlignVCenter, name );
@@ -879,18 +873,10 @@ StatisticsDetailedItem::paintCell( QPainter *p, const QColorGroup &cg, int colum
     QFontMetrics fmName( font );
 
     QString name = text(column);
-    if( fmName.width( name ) + text_x + lv->itemMargin()*2 > width )
+    const int _width = width - text_x - lv->itemMargin()*2;
+    if( fmName.width( name ) > _width )
     {
-        int ellWidth = fmName.width( i18n("...") );
-        QString text = QString::fromLatin1("");
-        int i = 0;
-        int len = name.length();
-        while ( i < len && fmName.width( text + name[ i ] ) + ellWidth < width - text_x - lv->itemMargin()*2  )
-        {
-            text += name[ i ];
-            i++;
-        }
-        name = text + i18n("...");
+        name = KStringHandler::rPixelSqueeze( name, pBuf.fontMetrics(), _width );
     }
 
     pBuf.drawText( text_x, 0, width, textHeight, AlignVCenter, name );

@@ -20,7 +20,6 @@
 #include "threadweaver.h"
 #include "mediabrowser.h"
 
-#include <qfile.h>             //loadPlaylists(), renamePlaylist()
 #include <qlabel.h>
 #include <qpainter.h>          //paintCell()
 #include <qpixmap.h>           //paintCell()
@@ -34,6 +33,7 @@
 #include <kmdcodec.h>          //podcast media saving
 #include <kmessagebox.h>       //podcast info box
 #include <kstandarddirs.h>     //podcast loading icons
+#include <kstringhandler.h>
 
 /////////////////////////////////////////////////////////////////////////////
 ///    CLASS PlaylistReader
@@ -660,17 +660,10 @@ void PlaylistEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, i
     QFontMetrics fmName( font );
 
     QString name = text(column);
-    if( fmName.width( name ) + text_x + lv->itemMargin()*2 > width )
+    const int _width = width - text_x - lv->itemMargin()*2;
+    if( fmName.width( name ) > _width )
     {
-        int ellWidth = fmName.width( i18n("...") );
-        QString text = QString::fromLatin1("");
-        int i = 0;
-        int len = name.length();
-        while ( i < len && fmName.width( text + name[ i ] ) + ellWidth < width - text_x - lv->itemMargin()*2  ) {
-            text += name[ i ];
-            i++;
-        }
-        name = text + i18n("...");
+        name = KStringHandler::rPixelSqueeze( name, pBuf.fontMetrics(), _width );
     }
 
     pBuf.drawText( text_x, 0, width, textHeight, AlignVCenter, name );
@@ -903,17 +896,10 @@ void StreamEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, int
     QFontMetrics fmName( font );
 
     QString name = text(column);
-    if( fmName.width( name ) + text_x + lv->itemMargin()*2 > width )
+    const int _width = width - text_x - lv->itemMargin()*2;
+    if( fmName.width( name ) > _width )
     {
-        int ellWidth = fmName.width( i18n("...") );
-        QString text = QString::fromLatin1("");
-        int i = 0;
-        int len = name.length();
-        while ( i < len && fmName.width( text + name[ i ] ) + ellWidth < width - text_x - lv->itemMargin()*2  ) {
-            text += name[ i ];
-            i++;
-        }
-        name = text + i18n("...");
+        name = KStringHandler::rPixelSqueeze( name, pBuf.fontMetrics(), _width );
     }
 
     pBuf.drawText( text_x, 0, width, textHeight, AlignVCenter, name );
@@ -2056,17 +2042,10 @@ PodcastEpisode::paintCell( QPainter *p, const QColorGroup &cg, int column, int w
     QFontMetrics fmName( font );
 
     QString name = text(column);
-    if( fmName.width( name ) + text_x + lv->itemMargin()*2 > width )
+    const int _width = width - text_x - lv->itemMargin()*2;
+    if( fmName.width( name ) > _width )
     {
-        int ellWidth = fmName.width( i18n("...") );
-        QString text = QString::fromLatin1("");
-        int i = 0;
-        int len = name.length();
-        while ( i < len && fmName.width( text + name[ i ] ) + ellWidth < width - text_x - lv->itemMargin()*2  ) {
-            text += name[ i ];
-            i++;
-        }
-        name = text + i18n("...");
+        name = KStringHandler::rPixelSqueeze( name, pBuf.fontMetrics(), _width );
     }
 
     pBuf.drawText( text_x, 0, width, textHeight, AlignVCenter, name );
@@ -2082,17 +2061,10 @@ PodcastEpisode::paintCell( QPainter *p, const QColorGroup &cg, int column, int w
         info.replace( "\n", " " );
         info.replace( QRegExp("<[^>]*>"), "" ); //html tags
 
-        if( fmInfo.width( info ) + text_x + lv->itemMargin()*2 > width )
+        const int _width = width - text_x - lv->itemMargin()*2;
+        if( fmInfo.width( info ) > _width )
         {
-            int ellWidth = fmInfo.width( i18n("...") );
-            QString text = QString::fromLatin1("");
-            int i = 0;
-            int len = info.length();
-            while ( i < len && fmInfo.width( text + info[ i ] ) + ellWidth < width - text_x - lv->itemMargin()*2  ) {
-                text += info[ i ];
-                i++;
-            }
-            info = text + i18n("...");
+            info = KStringHandler::rPixelSqueeze( info, pBuf.fontMetrics(), _width );
         }
 
         pBuf.drawText( text_x, textHeight, width, fm.lineSpacing(), AlignVCenter, info );
