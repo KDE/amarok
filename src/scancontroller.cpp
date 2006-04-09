@@ -123,7 +123,7 @@ ScanController::~ScanController()
     else if( m_crashedFiles.size() >= MAX_RESTARTS ) {
         KMessageBox::error( 0, i18n( "<p>Sorry, the Collection Scan was aborted, since too many problems were encountered.</p>" ) +
                             "<p>Advice: A common source for this problem is a broken 'TagLib' package on your computer. Replacing this package may help fixing the issue.</p>"
-                            "</p>The following files caused problems:</p>" +
+                            "<p>The following files caused problems:</p>" +
                             "<i>" + m_crashedFiles.join( "<br>" ) + "</i>",
                             i18n( "Collection Scan Error" ) );
     }
