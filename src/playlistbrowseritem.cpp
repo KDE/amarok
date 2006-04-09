@@ -1070,8 +1070,8 @@ QDomElement DynamicEntry::xml()
 PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url )
     : PlaylistBrowserEntry( parent, after )
         , m_url( url )
-        , m_loading1( QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
-        , m_loading2( QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
+        , m_loading1( SmallIcon( amaroK::icon( "podcast" ) ) )
+        , m_loading2( SmallIcon( amaroK::icon( "podcast2" ) ) )
         , m_fetching( false )
         , m_updating( false )
         , m_new( false )
@@ -1090,8 +1090,8 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
 PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url, const QDomNode &channelSettings )
     : PlaylistBrowserEntry( parent, after )
     , m_url( url )
-    , m_loading1( QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
-    , m_loading2( QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
+    , m_loading1( SmallIcon( amaroK::icon( "podcast" ) ) )
+    , m_loading2( SmallIcon( amaroK::icon( "podcast2" ) ) )
     , m_fetching( false )
     , m_updating( false )
     , m_new( false )
@@ -1113,8 +1113,8 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
                                 const KURL &url, const QDomNode &channelSettings, const QDomDocument &xmlDefinition )
     : PlaylistBrowserEntry( parent, after )
     , m_url( url )
-    , m_loading1( QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
-    , m_loading2( QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
+    , m_loading1( SmallIcon( amaroK::icon( "podcast" ) ) )
+    , m_loading2( SmallIcon( amaroK::icon( "podcast2" ) ) )
     , m_fetching( false )
     , m_updating( false )
     , m_new( false )
@@ -1138,8 +1138,8 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
     : PlaylistBrowserEntry( parent, after )
     , m_bundle( pcb )
     , m_url( pcb.url() )
-    , m_loading1( QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
-    , m_loading2( QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
+    , m_loading1( SmallIcon( amaroK::icon( "podcast" ) ) )
+    , m_loading2( SmallIcon( amaroK::icon( "podcast2" ) ) )
     , m_fetching( false )
     , m_updating( false )
     , m_new( false )
@@ -1355,7 +1355,7 @@ void
 PodcastChannel::setNew( bool n )
 {
     if( n )
-        setPixmap( 0, SmallIcon("favorites") );
+        setPixmap( 0, SmallIcon( amaroK::icon( "podcast2" ) ) );
     else if( m_hasProblem )
         setPixmap( 0, SmallIcon("cancel") );
     else
@@ -1673,8 +1673,8 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
     : PlaylistBrowserEntry( parent, after )
       , m_parent( parent )
       , m_localUrl( 0 )
-      , m_loading1( QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
-      , m_loading2( QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
+      , m_loading1( SmallIcon( amaroK::icon( "podcast" ) ) )
+      , m_loading2( SmallIcon( amaroK::icon( "podcast2" ) ) )
       , m_fetching( false )
       , m_onDisk( false )
 {
@@ -1784,8 +1784,8 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after, Pod
       , m_parent( parent )
       , m_bundle( bundle )
       , m_localUrl( 0 )
-      , m_loading1( QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
-      , m_loading2( QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
+      , m_loading1( SmallIcon( amaroK::icon( "podcast" ) ) )
+      , m_loading2( SmallIcon( amaroK::icon( "podcast2" ) ) )
       , m_fetching( false )
       , m_onDisk( false )
 {
@@ -1824,7 +1824,7 @@ PodcastEpisode::updatePixmap()
     if( m_onDisk )
         setPixmap( 0, SmallIcon( "down" ) );
     else if( isNew() )
-        setPixmap( 0, SmallIcon("favorites") );
+        setPixmap( 0, SmallIcon( amaroK::icon( "podcast2" ) ) );
     else
         setPixmap( 0, SmallIcon( amaroK::icon( "podcast" ) ) );
 }
