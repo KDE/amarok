@@ -182,7 +182,7 @@ class MediaBrowser : public QVBox
         void mediumAdded( const Medium *, QString , bool constructing = false);
         void mediumChanged( const Medium *, QString );
         void mediumRemoved( const Medium *, QString );
-        void activateDevice( int index );
+        void activateDevice( int index, bool skipDummy = true );
         void pluginSelected( const Medium *, const QString );
         void showPluginManager();
         void cancelClicked();

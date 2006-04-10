@@ -303,7 +303,7 @@ MediaBrowser::MediaBrowser( const char *name )
     MediaDevice *dev = new DummyMediaDevice();
     dev->init( this );
     addDevice( dev );
-    activateDevice( 0 );
+    activateDevice( 0, false );
     queue()->load( amaroK::saveLocation() + "transferlist.xml" );
 
     setFocusProxy( m_queue );
@@ -424,7 +424,7 @@ MediaBrowser::deviceFromId( const QString &id )
 }
 
 void
-MediaBrowser::activateDevice( int index )
+MediaBrowser::activateDevice( int index, bool skipDummy )
 {
     for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
             it != m_devices.end();
@@ -433,7 +433,16 @@ MediaBrowser::activateDevice( int index )
         (*it)->view()->hide();
     }
 
-    if( index < 0 || (uint)index >= m_devices.count() )
+    if( index < 0 )
+    {
+        m_currentDevice = m_devices.end();
+        return;
+    }
+
+    if( skipDummy )
+       index++;
+
+    if( (uint)index >= m_devices.count() )
     {
         m_currentDevice = m_devices.end();
         return;
@@ -485,7 +494,7 @@ MediaBrowser::removeDevice( MediaDevice *device )
             bool current = (it == m_currentDevice);
             m_devices.remove( device );
             if( current )
-                activateDevice( 0 );
+                activateDevice( 0, false );
             break;
         }
     }
@@ -555,7 +564,7 @@ MediaBrowser::deviceSwitch( const QString &name )
     {
         if( (*it)->name() == name )
         {
-            activateDevice( index );
+            activateDevice( index, false );
             return true;
         }
         index++;
@@ -1340,7 +1349,7 @@ MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/, bool construc
             device->m_uniqueId = device->m_medium->id();
             addDevice( device );
             if( m_currentDevice == m_devices.begin() || m_currentDevice == m_devices.end() )
-                activateDevice( m_devices.count()-1 );
+                activateDevice( m_devices.count()-1, false );
         }
     }
 }
@@ -1514,7 +1523,7 @@ MediaBrowser::configSelectPlugin( int index )
     }
 
     if( !currentDevice() )
-        activateDevice( 0 );
+        activateDevice( 0, false );
 
     if( !currentDevice() )
         return;
