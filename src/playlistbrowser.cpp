@@ -893,6 +893,11 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
 
 void PlaylistBrowser::loadPodcastsFromDatabase( PlaylistCategory *p )
 {
+    if( !p )   p = m_podcastCategory;
+        
+    while( p->firstChild() )
+        delete p->firstChild();
+        
     QMap<int,PlaylistCategory*> folderMap = loadPodcastFolders( p );
 
     QValueList<PodcastChannelBundle> channels;

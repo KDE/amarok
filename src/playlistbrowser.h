@@ -62,9 +62,10 @@ class PlaylistBrowser : public QVBox
         void addSmartPlaylist( QListViewItem *parent = 0 );
         void addDynamic( QListViewItem *parent = 0 );
         void addPlaylist( const QString &path, QListViewItem *parent = 0, bool force=false );
-        int loadPlaylist( const QString &playlist, bool force=false );
+        int  loadPlaylist( const QString &playlist, bool force=false );
         void addPodcast( QListViewItem *parent = 0 );
         void addPodcast( const KURL &url, QListViewItem *parent = 0 );
+        void loadPodcastsFromDatabase( PlaylistCategory *p = 0 );
         void registerPodcastSettings( const QString &title, const PodcastSettings *settings );
         PodcastSettings *getPodcastSettings( const PlaylistCategory * category );
 
@@ -144,7 +145,6 @@ class PlaylistBrowser : public QVBox
         PlaylistCategory* loadDynamics();
 
         PlaylistCategory* loadPodcasts();
-        void loadPodcastsFromDatabase( PlaylistCategory *p );
         QMap<int,PlaylistCategory*> loadPodcastFolders( PlaylistCategory *p );
         void changePodcastInterval();
         bool deletePodcastItems();

@@ -3045,6 +3045,7 @@ CollectionDB::applySettings()
         destroy();
         initialize();
         CollectionView::instance()->renderView();
+        PlaylistBrowser::instance()->loadPodcastsFromDatabase();
         emit databaseEngineChanged();
     }
 }

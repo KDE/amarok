@@ -9,6 +9,7 @@ VERSION 1.4:
   CHANGES:
 
   BUGFIXES:
+    * Reload playlist browser podcasts when switching database engines.
 
 
 VERSION 1.4-beta3:
