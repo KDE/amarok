@@ -46,14 +46,20 @@ amaroK::icon( const QString& name ) //declared in amarok.h
         iconMap["rescan"]           = "reload";
         iconMap["stop"]             = "player_stop";
         iconMap["time"]             = "history";
+        iconMap["podcast"]          = "sound";
+        iconMap["podcast2"]         = "favorites";
+        iconMap["collection"]       = "collection";
+        iconMap["redo"]             = "redo";
+        iconMap["undo"]             = "undo";
     }
 
-
-    if( AmarokConfig::useCustomIconTheme() )
-        return QString( "amarok_" ) + name;
-
-    else if( iconMap.contains( name ) )
-        return iconMap[name];
+    if( iconMap.contains( name ) )
+    {
+        if( AmarokConfig::useCustomIconTheme() )
+            return QString( "amarok_" ) + name;
+        else
+            return iconMap[name];
+    }
 
     return name;
 }
