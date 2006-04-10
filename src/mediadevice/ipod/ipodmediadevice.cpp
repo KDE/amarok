@@ -1734,28 +1734,28 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
             DELETE_PLAYED, DELETE,
             FIRST_PLAYLIST};
 
-        menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Load" ), LOAD );
-        menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
-        menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue Tracks" ), QUEUE );
+        menu.insertItem( SmallIconSet( amaroK::icon( "playlist" ) ), i18n( "&Load" ), LOAD );
+        menu.insertItem( SmallIconSet( amaroK::icon( "1downarrow" ) ), i18n( "&Append to Playlist" ), APPEND );
+        menu.insertItem( SmallIconSet( amaroK::icon( "2rightarrow" ) ), i18n( "&Queue Tracks" ), QUEUE );
         menu.insertSeparator();
 
-        menu.insertItem( SmallIconSet( "collection" ), i18n( "&Copy to Collection" ), COPY_TO_COLLECTION );
+        menu.insertItem( SmallIconSet( amaroK::icon( "collection" ) ), i18n( "&Copy to Collection" ), COPY_TO_COLLECTION );
         switch( item->type() )
         {
         case MediaItem::ARTIST:
-            menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n( "Burn All Tracks by This Artist" ), BURN_ARTIST );
+            menu.insertItem( SmallIconSet( amaroK::icon( "cdrom_unmount" ) ), i18n( "Burn All Tracks by This Artist" ), BURN_ARTIST );
             menu.setItemEnabled( BURN_ARTIST, K3bExporter::isAvailable() );
             break;
 
         case MediaItem::ALBUM:
-            menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n( "Burn This Album" ), BURN_ALBUM );
+            menu.insertItem( SmallIconSet( amaroK::icon( "cdrom_unmount" ) ), i18n( "Burn This Album" ), BURN_ALBUM );
             menu.setItemEnabled( BURN_ALBUM, K3bExporter::isAvailable() );
             break;
 
         default:
-            menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n( "Burn to CD as Data" ), BURN_DATACD );
+            menu.insertItem( SmallIconSet( amaroK::icon( "cdrom_unmount" ) ), i18n( "Burn to CD as Data" ), BURN_DATACD );
             menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
-            menu.insertItem( SmallIconSet( "cdaudio_unmount" ), i18n( "Burn to CD as Audio" ), BURN_AUDIOCD );
+            menu.insertItem( SmallIconSet( amaroK::icon( "cdaudio_unmount" ) ), i18n( "Burn to CD as Audio" ), BURN_AUDIOCD );
             menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
             break;
         }
@@ -1766,7 +1766,7 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                  || item->type() == MediaItem::PODCASTCHANNEL) )
         {
             IpodMediaItem *it = static_cast<IpodMediaItem *>(item);
-            menu.insertItem( SmallIconSet( "favorites" ), i18n( "Subscribe to This Podcast" ), SUBSCRIBE );
+            menu.insertItem( SmallIconSet( amaroK::icon( "podcast" ) ), i18n( "Subscribe to This Podcast" ), SUBSCRIBE );
             //menu.setItemEnabled( SUBSCRIBE, item->bundle()->podcastBundle() && item->bundle()->podcastBundle()->parent().isValid() );
             menu.setItemEnabled( SUBSCRIBE, it->m_podcastInfo && !it->m_podcastInfo->rss.isEmpty() );
             menu.insertSeparator();
@@ -1783,7 +1783,7 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
         case MediaItem::PODCASTITEM:
             if(m_playlistItem)
             {
-                menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "Make Media Device Playlist" ), MAKE_PLAYLIST );
+                menu.insertItem( SmallIconSet( amaroK::icon( "playlist" ) ), i18n( "Make Media Device Playlist" ), MAKE_PLAYLIST );
                 menu.setItemEnabled( MAKE_PLAYLIST, !locked );
 
                 playlistsMenu = new KPopupMenu(&menu);
@@ -1792,10 +1792,10 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                         it;
                         it = dynamic_cast<MediaItem *>(it->nextSibling()))
                 {
-                    playlistsMenu->insertItem( SmallIconSet( "player_playlist_2" ), it->text(0), FIRST_PLAYLIST+i );
+                    playlistsMenu->insertItem( SmallIconSet( amaroK::icon( "playlist" ) ), it->text(0), FIRST_PLAYLIST+i );
                     i++;
                 }
-                menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n("Add to Playlist"), playlistsMenu, ADD_TO_PLAYLIST );
+                menu.insertItem( SmallIconSet( amaroK::icon( "playlist" ) ), i18n("Add to Playlist"), playlistsMenu, ADD_TO_PLAYLIST );
                 menu.setItemEnabled( ADD_TO_PLAYLIST, !locked && m_playlistItem->childCount()>0 );
                 menu.insertSeparator();
             }
@@ -1804,7 +1804,7 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                     item->type() == MediaItem::ALBUM ||
                     item->type() == MediaItem::TRACK )
             {
-                menu.insertItem( SmallIconSet( "editclear" ),
+                menu.insertItem( SmallIconSet( amaroK::icon( "editclear" ) ),
                         i18n( "Edit &Information...", "Edit &Information for %n Tracks...", urls.count()),
                         RENAME );
             }
@@ -1812,12 +1812,12 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
 
         case MediaItem::ORPHANED:
         case MediaItem::ORPHANEDROOT:
-            menu.insertItem( SmallIconSet( "editrename" ), i18n( "Add to Database" ), ADD );
+            menu.insertItem( SmallIconSet( amaroK::icon( "editrename" ) ), i18n( "Add to Database" ), ADD );
             menu.setItemEnabled( ADD, !locked );
             break;
 
         case MediaItem::PLAYLIST:
-            menu.insertItem( SmallIconSet( "editclear" ), i18n( "Rename" ), RENAME );
+            menu.insertItem( SmallIconSet( amaroK::icon( "editclear" ) ), i18n( "Rename" ), RENAME );
             menu.setItemEnabled( RENAME, !locked );
             break;
 
@@ -1827,10 +1827,10 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
 
         if( item->type() == MediaItem::PODCASTSROOT || item->type() == MediaItem::PODCASTCHANNEL )
         {
-            menu.insertItem( SmallIconSet( "editdelete" ), i18n( "Delete Podcasts Already Played" ), DELETE_PLAYED );
+            menu.insertItem( SmallIconSet( amaroK::icon( "editdelete" ) ), i18n( "Delete Podcasts Already Played" ), DELETE_PLAYED );
             menu.setItemEnabled( DELETE_PLAYED, !locked );
         }
-        menu.insertItem( SmallIconSet( "editdelete" ), i18n( "Delete" ), DELETE );
+        menu.insertItem( SmallIconSet( amaroK::icon( "editdelete" ) ), i18n( "Delete" ), DELETE );
         menu.setItemEnabled( DELETE, !locked );
 
         int id =  menu.exec( point );

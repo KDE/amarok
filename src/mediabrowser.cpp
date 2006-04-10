@@ -202,12 +202,12 @@ MediaBrowser::MediaBrowser( const char *name )
 
     // preload pixmaps used in browser
     KIconLoader iconLoader;
-    MediaItem::s_pixUnknown = new QPixmap(iconLoader.loadIcon( "unknown", KIcon::Toolbar, KIcon::SizeSmall ));
-    MediaItem::s_pixTrack = new QPixmap(iconLoader.loadIcon( "player_playlist_2", KIcon::Toolbar, KIcon::SizeSmall ));
-    MediaItem::s_pixFile = new QPixmap(iconLoader.loadIcon( "sound", KIcon::Toolbar, KIcon::SizeSmall ) );
-    MediaItem::s_pixPodcast = new QPixmap(iconLoader.loadIcon( "favorites", KIcon::Toolbar, KIcon::SizeSmall ) );
-    MediaItem::s_pixPlaylist = new QPixmap(iconLoader.loadIcon( "player_playlist_2", KIcon::Toolbar, KIcon::SizeSmall ) );
-    MediaItem::s_pixRootItem = new QPixmap(iconLoader.loadIcon( "folder_red", KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixUnknown = new QPixmap(iconLoader.loadIcon( amaroK::icon( "unknown" ), KIcon::Toolbar, KIcon::SizeSmall ));
+    MediaItem::s_pixTrack = new QPixmap(iconLoader.loadIcon( amaroK::icon( "playlist" ), KIcon::Toolbar, KIcon::SizeSmall ));
+    MediaItem::s_pixFile = new QPixmap(iconLoader.loadIcon( amaroK::icon( "sound" ), KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixPodcast = new QPixmap(iconLoader.loadIcon( amaroK::icon( "podcast" ), KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixPlaylist = new QPixmap(iconLoader.loadIcon( amaroK::icon( "playlist" ), KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixRootItem = new QPixmap(iconLoader.loadIcon( amaroK::icon( "folder_red" ), KIcon::Toolbar, KIcon::SizeSmall ) );
     // history
     // favorites
     // collection
@@ -216,12 +216,12 @@ MediaBrowser::MediaBrowser( const char *name )
     // player_playlist_2
     // cancel
     // sound
-    MediaItem::s_pixArtist = new QPixmap(iconLoader.loadIcon( "personal", KIcon::Toolbar, KIcon::SizeSmall ) );
-    MediaItem::s_pixAlbum = new QPixmap(iconLoader.loadIcon( "cdrom_unmount", KIcon::Toolbar, KIcon::SizeSmall ) );
-    MediaItem::s_pixInvisible = new QPixmap(iconLoader.loadIcon( "cancel", KIcon::Toolbar, KIcon::SizeSmall ) );
-    MediaItem::s_pixStale = new QPixmap(iconLoader.loadIcon( "cancel", KIcon::Toolbar, KIcon::SizeSmall ) );
-    MediaItem::s_pixOrphaned = new QPixmap(iconLoader.loadIcon( "cancel", KIcon::Toolbar, KIcon::SizeSmall ) );
-    MediaItem::s_pixDirectory = new QPixmap(iconLoader.loadIcon( "folder", KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixArtist = new QPixmap(iconLoader.loadIcon( amaroK::icon( "personal" ), KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixAlbum = new QPixmap(iconLoader.loadIcon( amaroK::icon( "cdrom_unmount" ), KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixInvisible = new QPixmap(iconLoader.loadIcon( amaroK::icon( "cancel" ), KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixStale = new QPixmap(iconLoader.loadIcon( amaroK::icon( "cancel" ), KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixOrphaned = new QPixmap(iconLoader.loadIcon( amaroK::icon( "cancel" ), KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixDirectory = new QPixmap(iconLoader.loadIcon( amaroK::icon( "folder" ), KIcon::Toolbar, KIcon::SizeSmall ) );
 
     setSpacing( 4 );
 
@@ -293,7 +293,7 @@ MediaBrowser::MediaBrowser( const char *name )
     m_queue = new MediaQueue( this );
     m_progressBox  = new QHBox( this );
     m_progress     = new KProgress( m_progressBox );
-    m_cancelButton = new KPushButton( SmallIconSet("cancel"), i18n("Cancel"), m_progressBox );
+    m_cancelButton = new KPushButton( SmallIconSet( amaroK::icon( "cancel" ) ), i18n("Cancel"), m_progressBox );
 
 
     m_stats = new SpaceLabel(this);
@@ -456,7 +456,7 @@ MediaBrowser::activateDevice( int index, bool skipDummy )
 
     m_currentDevice = m_devices.at( index );
     currentDevice()->view()->show();
-    m_deviceCombo->setCurrentItem( index );
+    m_deviceCombo->setCurrentItem( index-1 );
 
     updateButtons();
     updateStats();
@@ -814,7 +814,6 @@ MediaItem::setType( Type type )
             break;
         case INVISIBLE:
         case TRACK:
-        case PODCASTITEM:
             setPixmap(0, *s_pixFile);
             break;
         case PLAYLISTITEM:
@@ -830,6 +829,7 @@ MediaItem::setType( Type type )
         case PODCASTSROOT:
             setPixmap(0, *s_pixRootItem);
             break;
+        case PODCASTITEM:
         case PODCASTCHANNEL:
             setPixmap(0, *s_pixPodcast);
             break;
@@ -3035,10 +3035,10 @@ MediaQueue::slotShowContextMenu( QListViewItem* item, const QPoint& point, int )
     enum Actions { REMOVE_SELECTED, CLEAR_ALL, START_TRANSFER };
 
     if( item )
-        menu.insertItem( SmallIconSet( "edittrash" ), i18n( "&Remove From Queue" ), REMOVE_SELECTED );
+        menu.insertItem( SmallIconSet( amaroK::icon( "edittrash" ) ), i18n( "&Remove From Queue" ), REMOVE_SELECTED );
 
-    menu.insertItem( SmallIconSet( "view_remove" ), i18n( "&Clear Queue" ), CLEAR_ALL );
-    menu.insertItem( SmallIconSet( "rebuild" ), i18n( "&Start Transfer" ), START_TRANSFER );
+    menu.insertItem( SmallIconSet( amaroK::icon( "view_remove" ) ), i18n( "&Clear Queue" ), CLEAR_ALL );
+    menu.insertItem( SmallIconSet( amaroK::icon( "rebuild" ) ), i18n( "&Start Transfer" ), START_TRANSFER );
     menu.setItemEnabled( START_TRANSFER,
             MediaBrowser::instance()->currentDevice() &&
             MediaBrowser::instance()->currentDevice()->isConnected() );
