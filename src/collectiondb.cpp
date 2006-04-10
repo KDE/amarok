@@ -983,7 +983,7 @@ CollectionDB::createDragPixmap( const KURL::List &urls )
     else if( songs > 0 )
     {
         if( correctAlbumCount ) {
-            text = i18n( "X songs from X album", "%2 from %1" );
+            text = i18n( "X songs from X albums", "%2 from %1" );
             text = text.arg( albums == 1 && !album.isEmpty() ? album : i18n( "one album", "%n albums",albums ) );
         }
         else
