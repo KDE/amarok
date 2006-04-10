@@ -1229,7 +1229,10 @@ PodcastSettings *PlaylistBrowser::getPodcastSettings( const PlaylistCategory *ca
         else
         {
             PlaylistCategory *p = static_cast<PlaylistCategory*>( category->parent() );
-            settings = new PodcastSettings( getPodcastSettings( p ), category->title() );
+            if( !p )
+                settings = new PodcastSettings( category->title() );
+            else
+                settings = new PodcastSettings( getPodcastSettings( p ), category->title() );
         }
         registerPodcastSettings( category->title(), settings );
     }
