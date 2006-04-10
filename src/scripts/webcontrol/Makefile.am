@@ -21,4 +21,6 @@ webcontrol_DATA = \
     player_start.png \
     player_stop.png \
     template.thtml \
-    vol_speaker.png
+    vol_speaker.png \
+    star.png \
+    smallstar.png
