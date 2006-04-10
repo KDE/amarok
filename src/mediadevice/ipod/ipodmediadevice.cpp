@@ -912,9 +912,6 @@ IpodMediaDevice::openDevice( bool silent )
         return false;
     }
 
-    if( !createLockFile( mountPoint() ) )
-        return false;
-
     GError *err = 0;
     m_itdb = itdb_parse(QFile::encodeName(mountPoint()), &err);
     if(err)
@@ -943,6 +940,16 @@ IpodMediaDevice::openDevice( bool silent )
 
             return false;
         }
+    }
+
+    if( !createLockFile( mountPoint() ) )
+    {
+        if( m_itdb )
+        {
+            itdb_free( m_itdb );
+            m_itdb = 0;
+        }
+        return false;
     }
 
 #if 0
