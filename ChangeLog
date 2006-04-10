@@ -9,6 +9,8 @@ VERSION 1.4:
   CHANGES:
 
   BUGFIXES:
+    * Disable option to delete remote items in playlist right-click menu.
+      (BR 124745)
     * Reload playlist browser podcasts when switching database engines.
 
 

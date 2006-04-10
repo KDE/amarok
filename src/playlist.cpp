@@ -3672,7 +3672,8 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         else
         {
             amaroK::actionCollection()->action("playlist_shuffle")->plug( &popup );
-                if( m = PlaylistBrowser::instance()->findDynamicModeByTitle( AmarokConfig::lastDynamicMode() ) )
+                m = PlaylistBrowser::instance()->findDynamicModeByTitle( AmarokConfig::lastDynamicMode() );
+                if( m )
                     popup.insertItem( SmallIconSet( "dynamic" ), i18n("Load %1").arg( m->title() ), ENABLEDYNAMIC);
         }
         switch(popup.exec(p))
@@ -3812,6 +3813,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     popup.insertItem( SmallIconSet( "editdelete" ), itemCount == 1
             ? i18n("&Delete File")
             : i18n("&Delete Selected Files"), this, SLOT( deleteSelectedFiles() ), SHIFT+Key_Delete, DELETE );
+
     popup.insertSeparator();
 
     popup.insertItem( SmallIconSet( amaroK::icon( "info" ) )
@@ -3824,7 +3826,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     popup.setItemEnabled( FILL_DOWN, canRename );
     popup.setItemEnabled( BURN_MENU, item->url().isLocalFile() && K3bExporter::isAvailable() );
     popup.setItemEnabled( REMOVE, !isLocked() ); // can't remove things when playlist is locked,
-    popup.setItemEnabled( DELETE, !isLocked() ); // that's the whole point
+    popup.setItemEnabled( DELETE, !isLocked() && item->url().isLocalFile() ); // that's the whole point
 
     QValueList<QString> submenuTexts = m_customSubmenuItem.keys();
     for( QValueList<QString>::Iterator keyIt =submenuTexts.begin(); keyIt !=  submenuTexts.end(); ++keyIt )
