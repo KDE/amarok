@@ -50,7 +50,10 @@ AMAROK_EXPORT_PLUGIN( VfatMediaDevice )
 #include <qfile.h>
 #include <qstringx.h>
 
-namespace amaroK { extern KConfig *config( const QString& ); }
+namespace amaroK {
+    extern KConfig *config( const QString& );
+    extern QString cleanPath( const QString&, bool );
+}
 
 /**
  * VfatMediaItem Class

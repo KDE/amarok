@@ -706,9 +706,12 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
             item = item->firstChild();
         }
 
+        /* Following code depends on the order! */
         sort();
+
         DividerItem *current=0, *last=0;
         bool empty;
+        /* If we have two consecutive headers, one of them is useless, and should be removed */
         for( item = firstChild(),empty=false; item; item=item->nextSibling() )
         {
             if ( (current = dynamic_cast<DividerItem *>( item )) ) {
@@ -2739,10 +2742,12 @@ DividerItem::createGroup(const QString& src, int cat)
         while ( !ret.isEmpty() && !ret.at(0).isLetterOrNumber() ) {
             ret = ret.right( ret.length()-1 );
         }
-        if ( ret.isEmpty() )
-            ret = /*i18n( "Others" )*/ "";
-        else
+        if ( !ret.isEmpty() )
             ret = ret.left( 1 ).upper();
+        /*else
+            ret = i18n( "Others" );*/
+        /* By returning an empty string, no header is created. */
+
         if (QChar(ret.at(0)).isDigit()) {
             ret = "0-9";
         }
@@ -2794,59 +2799,5 @@ DividerItem::shareTheSameGroup(const QString& itemStr, const QString& divStr, in
 
     return inGroup;
 }
-
-namespace amaroK {
-    QString cleanPath( const QString &path, bool useUnderscore )
-    {
-        QString result = path;
-        // german umlauts
-        result.replace( QChar(0x00e4), "ae" ).replace( QChar(0x00c4), "Ae" );
-        result.replace( QChar(0x00f6), "oe" ).replace( QChar(0x00d6), "Oe" );
-        result.replace( QChar(0x00dc), "ue" ).replace( QChar(0x00fc), "Ue" );
-        result.replace( QChar(0x00df), "ss" );
-
-        // some strange accents
-        result.replace( QChar(0x00e7), "c" ).replace( QChar(0x00c7), "C" );
-        result.replace( QChar(0x00fd), "y" ).replace( QChar(0x00dd), "Y" );
-        result.replace( QChar(0x00f1), "n" ).replace( QChar(0x00d1), "N" );
-
-        // accented vowels
-        QChar a[] = { 'a', 0xe0,0xe1,0xe2,0xe3,0xe5, 0 };
-        QChar A[] = { 'A', 0xc0,0xc1,0xc2,0xc3,0xc5, 0 };
-        QChar E[] = { 'e', 0xe8,0xe9,0xea,0xeb, 0 };
-        QChar e[] = { 'E', 0xc8,0xc9,0xca,0xcb, 0 };
-        QChar i[] = { 'i', 0xec,0xed,0xee,0xef, 0 };
-        QChar I[] = { 'I', 0xcc,0xcd,0xce,0xcf, 0 };
-        QChar o[] = { 'o', 0xf2,0xf3,0xf4,0xf5,0xf8, 0 };
-        QChar O[] = { 'O', 0xd2,0xd3,0xd4,0xd5,0xd8, 0 };
-        QChar u[] = { 'u', 0xf9,0xfa,0xfb, 0 };
-        QChar U[] = { 'U', 0xd9,0xda,0xdb, 0 };
-        QChar nul[] = { 0 };
-        QChar *replacements[] = { a, A, e, E, i, I, o, O, u, U, nul };
-
-        for( uint i = 0; i < result.length(); i++ )
-        {
-            QChar c = result.ref( i );
-            for( uint n = 0; replacements[n][0] != QChar(0); n++ )
-            {
-                for( uint k=0; replacements[n][k] != QChar(0); k++ )
-                {
-                    if( replacements[n][k] == c )
-                    {
-                        c = replacements[n][0];
-                    }
-                }
-            }
-            if( useUnderscore && ( c > QChar(0x7f) || c == QChar(0) ) )
-            {
-                c = '_';
-            }
-            result.ref( i ) = c;
-        }
-        return result;
-    }
-}
-
-
 
 #include "collectionbrowser.moc"

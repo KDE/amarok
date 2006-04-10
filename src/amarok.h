@@ -166,7 +166,13 @@ namespace amaroK
      */
     QString icon( const QString& name ); //defined in iconloader.cpp
 
-    QString cleanPath( const QString &, bool useUnderscore = false ); //defined in collectionbrowser.cpp
+    /**
+     * Removes accents from the string, making it an usable path for fat filesystem.
+     * @param path The original path.
+     * @param useUnderscore If set, unknown chars will be replaced by '-'.
+     * @return The cleaned up path.
+     */
+    QString cleanPath( const QString &path, bool useUnderscore = false ); //defined in app.cpp
 }
 
 
