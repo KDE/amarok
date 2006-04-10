@@ -2043,25 +2043,6 @@ MediaBrowser::disconnectClicked()
     m_toolbar->getButton(TRANSFER)->setEnabled( false );
     m_toolbar->getButton(DISCONNECT)->setEnabled( false );
 
-    if ( m_queue->childCount() != 0 &&
-            currentDevice() &&
-            currentDevice()->isConnected() &&
-            !currentDevice()->isTransferring() )
-    {
-        KGuiItem transfer = KGuiItem(i18n("&Transfer"),"rebuild");
-        KGuiItem disconnect = KGuiItem(i18n("Disconnect immediately"),"connect_no");
-        int button = KMessageBox::warningYesNo( this,
-                i18n( "There are tracks queued for transfer."
-                    " Would you like to transfer them before disconnecting?"),
-                i18n( "Media Device Browser" ),
-                transfer, disconnect);
-
-        if ( button == KMessageBox::Yes )
-        {
-            currentDevice()->transferFiles();
-        }
-    }
-
     if( currentDevice() )
     {
         currentDevice()->disconnectDevice();
