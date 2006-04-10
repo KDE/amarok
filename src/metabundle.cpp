@@ -930,6 +930,10 @@ MetaBundle::prettyTitle( const QString &filename ) //static
 {
     QString s = filename; //just so the code is more readable
 
+    //remove .part extension if it exists
+    if (s.endsWith( ".part" ))
+        s = s.left( s.length() - 5 );
+
     //remove file extension, s/_/ /g and decode %2f-like sequences
     s = s.left( s.findRev( '.' ) ).replace( '_', ' ' );
     s = KURL::decode_string( s );

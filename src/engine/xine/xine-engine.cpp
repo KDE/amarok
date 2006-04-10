@@ -469,8 +469,13 @@ XineEngine::canDecode( const KURL &url ) const
         if(!list.contains("m4a"))
             list << "m4a";
     }
-    const QString path = url.path();
-    const QString ext  = path.mid( path.findRev( '.' ) + 1 ).lower();
+
+    QString path = url.path();
+
+    if (path.endsWith( ".part" ))
+        path = path.left( path.length() - 5 );
+
+    const QString ext = path.mid( path.findRev( '.' ) + 1 ).lower();
 
     return list.contains( ext ) || url.protocol() == "cdda";
 }
