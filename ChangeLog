@@ -3,14 +3,22 @@ amaroK ChangeLog
 (C) 2002-2006 the amaroK authors.
 
 
+VERSION 1.4:
+  FEATURES:
+
+  CHANGES:
+
+  BUGFIXES:
+
+
 VERSION 1.4-beta3:
   FEATURES:
     * amaroK now supports multiple media devices of varying types (currently
-    iPods, UMS/vfat, and iFP devices).
+      iPods, UMS/vfat, and iFP devices).
     * Autodetection of iPods and UMS/vfat devices (if KDE has HAL/DBUS support
-    compiled in).
+      compiled in).
     * New DCOP call "devices: showDeviceList()" to show the Device Manager's
-    current device knowledge.
+      current device knowledge.
     * amaroK now has a custom icon theme, and an option to switch back to the
       system icons, if preferred (in the General settings section).
     * Collection browser view is separated alphabetically. Patch by
