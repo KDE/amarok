@@ -173,12 +173,19 @@ namespace amaroK
     QString icon( const QString& name ); //defined in iconloader.cpp
 
     /**
-     * Removes accents from the string, making it an usable path for fat filesystem.
+     * Removes accents from the string
      * @param path The original path.
-     * @param useUnderscore If set, unknown chars will be replaced by '-'.
+     * @param onlyASCII If set, non-ascii chars will be replaced by '_'.
      * @return The cleaned up path.
      */
-    QString cleanPath( const QString &path, bool useUnderscore = false ); //defined in app.cpp
+    QString cleanPath( const QString &path, bool onlyASCII = false ); //defined in app.cpp
+
+    /**
+     * Transform path into one valid on VFAT file systems
+     * @param path The original path.
+     * @return The cleaned up path.
+     */
+    QString vfatPath( const QString &path ); //defined in app.cpp
 }
 
 

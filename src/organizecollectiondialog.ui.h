@@ -96,7 +96,7 @@ QString OrganizeCollectionDialog::cleanPath( const QString &component )
     if( spaceCheck->isChecked() )
         result.replace( QRegExp( "\\s" ), "_" );
     if( vfatCheck->isChecked() )
-        result.replace( "?", "" ).replace( "\\", "_" ).replace( "*", "_" ).replace( ":", "_" ).replace("\"","");
+        result = amaroK::vfatPath( result );
 
     result.replace( "/", "-" );
 

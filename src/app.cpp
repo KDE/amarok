@@ -1138,7 +1138,7 @@ namespace amaroK
         return KGlobal::dirs()->saveLocation( "data", QString("amarok/") + directory, true );
     }
 
-    QString cleanPath( const QString &path, bool useUnderscore )
+    QString cleanPath( const QString &path, bool onlyASCII )
     {
         QString result = path;
         // german umlauts
@@ -1179,13 +1179,53 @@ namespace amaroK
                     }
                 }
             }
-            if( useUnderscore && ( c > QChar(0x7f) || c == QChar(0) ) )
+            if( onlyASCII && ( c > QChar(0x7f) || c == QChar(0) ) )
             {
                 c = '_';
             }
             result.ref( i ) = c;
         }
         return result;
+    }
+
+    QString vfatPath( const QString &path )
+    {
+        QString s = path;
+
+        for( uint i = 0; i < s.length(); i++ )
+        {
+            QChar c = s.ref( i );
+            if( c < QChar(0x20)
+                    || c=='*' || c=='?' || c=='<' || c=='>'
+                    || c=='|' || c=='"' || c==':' || c=='/'
+                    || c=='\\' )
+                c = '_';
+            s.ref( i ) = c;
+        }
+
+        uint len = s.length();
+        if( len == 3 || (len > 3 && s[3] == '.') )
+        {
+            QString l = s.left(3).lower();
+            if( l=="aux" || l=="con" || l=="nul" || l=="prn" )
+                s = "_" + s;
+        }
+        else if( len == 4 || (len > 4 && s[4] == '.') )
+        {
+            QString l = s.left(3).lower();
+            QString d = s.mid(3,1);
+            if( (l=="com" || l=="lpt") &&
+                    (d=="0" || d=="1" || d=="2" || d=="3" || d=="4" ||
+                     d=="5" || d=="6" || d=="7" || d=="8" || d=="9") )
+                s = "_" + s;
+        }
+
+        s = s.left(255);
+        len = s.length();
+        if( s[len-1] == ' ' )
+            s[len-1] = '_';
+
+        return s;
     }
 }
 
