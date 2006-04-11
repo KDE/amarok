@@ -110,8 +110,8 @@ class VfatMediaDevice : public MediaDevice
         //used to specify new VfatMediaItem parent. Make sure it is restored to 0 (m_listview)
         QListViewItem     *m_tmpParent;
 
-        unsigned long     m_kBSize;
-        unsigned long     m_kBAvail;
+        KIO::filesize_t   m_kBSize;
+        KIO::filesize_t   m_kBAvail;
 
         KDirLister        *m_dirLister;
         KIO::UDSEntry     m_udsentry;

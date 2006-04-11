@@ -123,7 +123,7 @@ VfatMediaDevice::VfatMediaDevice()
     m_name = "VFAT Device";
     m_td = NULL;
     m_dirLister = new KDirLister();
-    m_dirLister->setNameFilter( "*.mp3 *.wav *.asf *.flac *.wma *.ogg" );
+    m_dirLister->setNameFilter( "*.mp3 *.wav *.asf *.flac *.wma *.ogg *.aac *.m4a" );
     m_dirLister->setAutoUpdate( false );
     m_spacesToUnderscores = false;
     m_isInCopyTrack = false;
