@@ -3796,9 +3796,9 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     KPopupMenu burnMenu;
     burnMenu.insertItem( SmallIconSet( "cdrom_unmount" ), ( itemCount > 1 ) ? i18n( "Selected Tracks" ) : i18n("This Track" ), BURN_SELECTION );
     if ( !item->album().isEmpty() )
-        burnMenu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("This Album: %1").arg( item->album() ), BURN_ALBUM );
+        burnMenu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("This Album: %1").arg( item->album().string().replace( "&", "&&" ) ), BURN_ALBUM );
     if ( !item->artist().isEmpty() )
-        burnMenu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("All Tracks by %1").arg( item->artist() ), BURN_ARTIST );
+        burnMenu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("All Tracks by %1").arg( item->artist().string().replace( "&", "&&" ) ), BURN_ARTIST );
     popup.insertItem( SmallIconSet( "cdwriter_unmount" ), i18n("Burn"), &burnMenu, BURN_MENU );
     popup.insertSeparator();
 

@@ -9,6 +9,8 @@ VERSION 1.4:
   CHANGES:
 
   BUGFIXES:
+    * Correctly show &amp; in playlist 'Burn' right-click submenu. Patch by
+      Laszlo Pandy <laszlok2@gmail.com> (BR 125117)
     * Disable option to delete remote items in playlist right-click menu.
       (BR 124745)
     * Reload playlist browser podcasts when switching database engines.
