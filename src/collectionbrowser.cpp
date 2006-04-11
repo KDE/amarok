@@ -1612,6 +1612,22 @@ CollectionView::deleteSelectedFiles() //SLOT
 void
 CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, bool copy )  //SLOT
 {
+    if( m_organizeURLs.count() )
+    {
+        if( copy != m_organizeCopyMode )
+        {
+            QString shortMsg = i18n( "Cannot start organize operation of different kind while another is in progress." );
+            amaroK::StatusBar::instance()->shortMessage( shortMsg, KDE::StatusBar::Sorry );
+            return;
+        }
+        else
+        {
+            m_organizeURLs += urls;
+            amaroK::StatusBar::instance()->incrementProgressTotalSteps( this, urls.count() );
+            return;
+        }
+    }
+
     QStringList folders = AmarokConfig::collectionFolders();
 
     OrganizeCollectionDialogBase base( m_parent, "OrganizeFiles", true, caption,
@@ -1669,14 +1685,16 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
         bool write = dialog.overwriteCheck->isChecked();
         KURL::List skipped;
 
+        m_organizeURLs = urls;
+        m_organizeCopyMode = copy;
         CollectionDB::instance()->createTables( true ); // create temp tables
         amaroK::StatusBar::instance()->newProgressOperation( this )
             .setDescription( caption )
-            .setTotalSteps( urls.count() );
-        KURL::List::ConstIterator it = urls.begin();
-        for( ; it != urls.end(); ++it )
+            .setTotalSteps( m_organizeURLs.count() );
+
+        while( !m_organizeURLs.empty() )
         {
-            KURL src = ( *it );
+            KURL &src = m_organizeURLs.first();
 
             //Building destination here.
             MetaBundle mb( src );
@@ -1728,6 +1746,7 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
                 src = src.upURL();
             }
 
+            m_organizeURLs.pop_front();
             amaroK::StatusBar::instance()->incrementProgress( this );
         }
 

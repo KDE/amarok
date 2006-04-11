@@ -9,6 +9,8 @@ VERSION 1.4:
   CHANGES:
 
   BUGFIXES:
+    * Instead of cancelling collection organiziation operations when starting
+      new one append to running one.
     * Correctly show &amp; in playlist 'Burn' right-click submenu. Patch by
       Laszlo Pandy <laszlok2@gmail.com> (BR 125117)
     * Disable option to delete remote items in playlist right-click menu.

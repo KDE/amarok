@@ -14,6 +14,7 @@
 #include <qstringlist.h>     //stack allocated
 #include <kurl.h>            //stack allocated
 #include <kdialogbase.h>     //baseclass
+#include <kprogress.h>
 
 #include "collectiondb.h"
 #include "amarok_export.h"
@@ -32,7 +33,6 @@ class KToggleAction;
 class KComboBox;
 class KRadioAction;
 class KPopupMenu;
-class KProgress;
 
 class CollectionView;
 class CollectionItem;
@@ -250,6 +250,8 @@ class CollectionView : public KListView
         QValueList<QStringList> m_cacheOpenItemPaths;
         QString                 m_cacheViewportTopItem;
         QString                 m_cacheCurrentItem;
+        KURL::List              m_organizeURLs;
+        bool                    m_organizeCopyMode;
 
         bool m_showDivider;
 };
