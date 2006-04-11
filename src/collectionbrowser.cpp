@@ -619,6 +619,7 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
 
         //add items to the view
 
+        uint dividerCount = 0;
         if( values.count() )
         {
             // if year - artist is cat 1 rebuild the list
@@ -653,6 +654,7 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
                     {
                         containedDivider[headerStr] = true;
                         (void)new DividerItem(this, headerStr, m_cat1/*, m_sortYearsInverted*/);
+                        dividerCount++;
                     }
                 }
 
@@ -697,8 +699,10 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
             }
         }
 
-        int count = childCount();
+        int count = childCount() - dividerCount;
         QListViewItem *item = firstChild();
+        if( dynamic_cast<DividerItem *>( item ) )
+            item = item->nextSibling();
         while( count == 1 && item && item->isExpandable() )
         {
             item->setOpen( true );
