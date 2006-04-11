@@ -122,6 +122,12 @@ namespace amaroK
     QString verboseTimeSince( uint time_t ); //defined in contextbrowser.cpp
 
     /**
+     * Function that must be used when separating contextBrowser escaped urls
+     */
+     inline                               // defined in contextbrowser.cpp
+     void albumArtistTrackFromUrl( QString url, QString &artist, QString &album, QString &track );
+
+    /**
      * @return the LOWERCASE file extension without the preceding '.', or "" if there is none
      */
     inline QString extension( const QString &fileName )

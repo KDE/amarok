@@ -117,30 +117,32 @@ namespace amaroK
     }
 
     extern KConfig *config( const QString& );
+
+    /**
+    * Function that must be used when separating contextBrowser escaped urls
+    */
+    inline
+    void albumArtistTrackFromUrl( QString url, QString &artist, QString &album, QString &track )
+    {
+        if ( !url.contains("@@@") ) return;
+        //KHTML removes the trailing space!
+        if ( url.endsWith( " @@@" ) )
+            url += ' ';
+
+        const QStringList list = QStringList::split( " @@@ ", url, true );
+
+        Q_ASSERT( !list.isEmpty() );
+
+        artist = unEscapeHTMLAttr( list[0] );
+        album  = unEscapeHTMLAttr( list[1] );
+        track  = unEscapeHTMLAttr( list[2] );
+    }
+
 }
 
 
 using amaroK::QStringx;
 
-/**
- * Function that must be used when separating contextBrowser escaped urls
- */
-static inline
-void albumArtistTrackFromUrl( QString url, QString &artist, QString &album, QString &track )
-{
-    if ( !url.contains("@@@") ) return;
-    //KHTML removes the trailing space!
-    if ( url.endsWith( " @@@" ) )
-        url += ' ';
-
-    const QStringList list = QStringList::split( " @@@ ", url, true );
-
-    Q_ASSERT( !list.isEmpty() );
-
-    artist = unEscapeHTMLAttr( list[0] );
-    album  = unEscapeHTMLAttr( list[1] );
-    track  = unEscapeHTMLAttr( list[2] );
-}
 
 static
 QString albumImageTitle( const QString &albumImage, int size )
@@ -305,7 +307,7 @@ void ContextBrowser::setFont( const QFont &newFont )
 void ContextBrowser::openURLRequest( const KURL &url )
 {
     QString artist, album, track;
-    albumArtistTrackFromUrl( url.path(), artist, album, track );
+    amaroK::albumArtistTrackFromUrl( url.path(), artist, album, track );
 
     // All http links should be loaded inside wikipedia tab, as that is the only tab that should contain them.
     // Streams should use stream:// protocol.
@@ -678,7 +680,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
     KPopupMenu menu;
     KURL::List urls( url );
     QString artist, album, track; // track unused here
-    albumArtistTrackFromUrl( url.path(), artist, album, track );
+    amaroK::albumArtistTrackFromUrl( url.path(), artist, album, track );
 
     if( urlString.isEmpty() )
     {
@@ -3414,16 +3416,10 @@ ContextBrowser::expandURL( const KURL &url )
         }
     }
     else if( protocol == "album" ) {
-        // url looks like:   album:<artist_id> @@@ <album_id>
-        QString myUrl = url.path();
-        if ( myUrl.endsWith( " @@@" ) )
-            myUrl += ' ';
-        const QStringList list = QStringList::split( " @@@ ", myUrl, true );
-        Q_ASSERT( !list.isEmpty() );
-        QString artist_id = list.front();
-        QString album_id = list.back();
+        QString artist, album, track; // track unused here
+        amaroK::albumArtistTrackFromUrl( url.path(), artist, album, track );
 
-        QStringList trackUrls = CollectionDB::instance()->albumTracks( artist_id, album_id );
+        QStringList trackUrls = CollectionDB::instance()->albumTracks( artist, album );
         foreach( trackUrls ) {
             urls += KURL::fromPathOrURL( *it );
         }
@@ -3442,19 +3438,13 @@ ContextBrowser::expandURL( const KURL &url )
     }
 
     else if( protocol == "fetchcover" ) {
-        // url looks like:   fetchcover:<artist_name> @@@ <album_name>
-        QString myUrl = url.path();
-        if ( myUrl.endsWith( " @@@" ) )
-            myUrl += ' ';
-        const QStringList list = QStringList::split( " @@@ ", myUrl, true );
-        Q_ASSERT( !list.isEmpty() );
-        QString artist_name = list.front();
-        QString album_name  = list.back();
+        QString artist, album, track; // track unused here
+        amaroK::albumArtistTrackFromUrl( url.path(), artist, album, track );
 
-        if( artist_name.isEmpty() )
+        if( artist.isEmpty() )
         {
             // probably a compilation
-            QString albumID = QString::number( CollectionDB::instance()->albumID( album_name ) );
+            QString albumID = QString::number( CollectionDB::instance()->albumID( album ) );
             QueryBuilder qb;
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
             qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, albumID );
@@ -3468,7 +3458,7 @@ ContextBrowser::expandURL( const KURL &url )
         }
         else
         {
-            QStringList trackUrls = CollectionDB::instance()->albumTracks( artist_name, album_name, true );
+            QStringList trackUrls = CollectionDB::instance()->albumTracks( artist, album, true );
             foreach( trackUrls ) {
                 urls += KURL::fromPathOrURL( *it );
             }

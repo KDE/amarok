@@ -39,20 +39,6 @@
 #include <qtooltip.h>
 #include <qvbox.h>
 
-
-static inline
-void albumArtistTrackFromUrl( QString url, QString &artist, QString &album )
-{
-    if ( !url.contains("@@@") ) return;
-
-    const QStringList list = QStringList::split( " @@@ ", url, true );
-
-    Q_ASSERT( !list.isEmpty() );
-
-    artist = list[0];
-    album  = list[1];
-}
-
 //////////////////////////////////////////////////////////////////////////////////////////
 /// CLASS Statistics
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -163,7 +149,6 @@ StatisticsList::startDrag()
     KURL::List list;
     QueryBuilder qb;
 
-    QString artist, album;
 
     KMultipleDrag *drag = new KMultipleDrag( this );
 
@@ -174,7 +159,8 @@ StatisticsList::startDrag()
         StatisticsDetailedItem *item = static_cast<StatisticsDetailedItem*>(*it);
 
         debug() << "url: " << item->url() << endl;
-        albumArtistTrackFromUrl( item->url(), artist, album );
+        QString artist, album, track;   // track is unused here
+        amaroK::albumArtistTrackFromUrl( item->url(), artist, album, track );
 
         if( item->itemType() == StatisticsDetailedItem::TRACK )
         {
