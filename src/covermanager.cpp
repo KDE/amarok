@@ -496,7 +496,7 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
         menu.insertItem( SmallIconSet("editdelete"), i18n("&Unset Cover Image"), DELETE );
 
         menu.setItemEnabled( SHOW, item->hasCover() );
-        menu.setItemEnabled( DELETE, item->hasCover() );
+        menu.setItemEnabled( DELETE, item->canRemoveCover() );
     }
 
     switch( menu.exec(p) ) {
@@ -926,7 +926,7 @@ CoverViewItem::CoverViewItem( QIconView *parent, QIconViewItem *after, const QSt
     : KIconViewItem( parent, after, album )
     , m_artist( artist )
     , m_album( album )
-    , m_coverImagePath( CollectionDB::instance()->albumImage( m_artist, m_album, 0 ) )
+    , m_coverImagePath( CollectionDB::instance()->albumImage( m_artist, m_album, 0, &m_embedded ) )
     , m_coverPixmap( 0 )
 {
     setDragEnabled( true );
@@ -941,7 +941,7 @@ bool CoverViewItem::hasCover() const
 
 void CoverViewItem::loadCover()
 {
-    m_coverImagePath = CollectionDB::instance()->albumImage( m_artist, m_album );
+    m_coverImagePath = CollectionDB::instance()->albumImage( m_artist, m_album, 1, &m_embedded );
     m_coverPixmap = QPixmap( m_coverImagePath );  //create the scaled cover
 
     repaint();

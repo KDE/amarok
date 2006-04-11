@@ -364,10 +364,11 @@ class CollectionDB : public QObject, public EngineObserver
         /**
          * Retrieves the path to the image for the album of the requested item
          * @param width the size of the image. 0 == full size, 1 == preview size
+         * @param embedded if not NULL, sets a bool indicating whether the path is an embedded image
          */
-        QString albumImage( MetaBundle trackInformation, const uint width = 1 );
-        QString albumImage( const uint artist_id, const uint album_id, const uint width = 1 );
-        QString albumImage( const QString &artist, const QString &album, const uint width = 1 );
+        QString albumImage( MetaBundle trackInformation, const uint width = 1, bool* embedded = 0 );
+        QString albumImage( const uint artist_id, const uint album_id, const uint width = 1, bool* embedded = 0 );
+        QString albumImage( const QString &artist, const QString &album, const uint width = 1, bool* embedded = 0 );
 
         bool removeAlbumImage( const uint artist_id, const uint album_id );
         bool removeAlbumImage( const QString &artist, const QString &album );

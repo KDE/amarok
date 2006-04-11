@@ -128,6 +128,7 @@ class CoverViewItem : public KIconViewItem
 
         void loadCover();
         bool hasCover() const;
+        bool canRemoveCover() const { return !m_embedded && hasCover(); }
         QString artist() const { return m_artist; }
         QString album() const { return m_album; }
         QPixmap coverPixmap() const { return m_coverPixmap; }
@@ -145,6 +146,7 @@ class CoverViewItem : public KIconViewItem
         QString m_album;
         QString m_coverImagePath;
         QPixmap m_coverPixmap;
+        bool    m_embedded;
 };
 
 

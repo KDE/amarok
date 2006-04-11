@@ -1211,12 +1211,13 @@ CollectionDB::podcastImageResult( KIO::Job *gjob )
 
 
 QString
-CollectionDB::albumImage( const QString &artist, const QString &album, uint width )
+CollectionDB::albumImage( const QString &artist, const QString &album, uint width, bool* embedded )
 {
     QString s;
     // we aren't going to need a 1x1 size image. this is just a quick hack to be able to show full size images.
     // width of 0 == full size
     if( width == 1 ) width = AmarokConfig::coverPreviewSize();
+    if( embedded ) *embedded = false;
 
     s = findAmazonImage( artist, album, width );
 
@@ -1226,8 +1227,11 @@ CollectionDB::albumImage( const QString &artist, const QString &album, uint widt
     if( s.isEmpty() )
         s = findDirectoryImage( artist, album, width );
 
-    if( s.isEmpty() )
+    if( s.isEmpty() ) {
         s = findEmbeddedImage( artist, album, width );
+        if( embedded && !s.isEmpty() )
+            *embedded = true;
+    }
 
     if( s.isEmpty() )
         s = notAvailCover( width );
@@ -1236,13 +1240,13 @@ CollectionDB::albumImage( const QString &artist, const QString &album, uint widt
 }
 
 QString
-CollectionDB::albumImage( const uint artist_id, const uint album_id, const uint width )
+CollectionDB::albumImage( const uint artist_id, const uint album_id, const uint width, bool* embedded )
 {
-    return albumImage( artistValue( artist_id ), albumValue( album_id ), width );
+    return albumImage( artistValue( artist_id ), albumValue( album_id ), width, embedded );
 }
 
 QString
-CollectionDB::albumImage( MetaBundle trackInformation, uint width )
+CollectionDB::albumImage( MetaBundle trackInformation, uint width, bool* embedded )
 {
     QString s;
     if( width == 1 ) width = AmarokConfig::coverPreviewSize();
@@ -1252,6 +1256,8 @@ CollectionDB::albumImage( MetaBundle trackInformation, uint width )
 
     // this art is per track, so should check for it first
     s = findMetaBundleImage( trackInformation, width );
+    if( embedded )
+        *embedded = !s.isEmpty();
 
     if( s.isEmpty() )
         s = findAmazonImage( artist, album, width );
