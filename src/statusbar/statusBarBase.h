@@ -102,6 +102,7 @@ namespace KDE
         ProgressBar &newProgressOperation( KIO::Job* );
 
         void setProgress( const QObject *owner, int steps );
+        void incrementProgressTotalSteps( const QObject *owner, int inc = 1 );
         void incrementProgress( const QObject *owner );
         void setProgressStatus( const QObject *owner, const QString &text );
 

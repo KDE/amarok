@@ -501,6 +501,17 @@ StatusBar::setProgress( const QObject *owner, int steps )
 }
 
 void
+StatusBar::incrementProgressTotalSteps( const QObject *owner, int inc )
+{
+    if ( !m_progressMap.contains( owner ) )
+        return ;
+
+    m_progressMap[ owner ] ->setTotalSteps( m_progressMap[ owner ] ->totalSteps() + inc );
+
+    updateTotalProgress();
+}
+
+void
 StatusBar::setProgressStatus( const QObject *owner, const QString &text )
 {
     if ( !m_progressMap.contains( owner ) )
