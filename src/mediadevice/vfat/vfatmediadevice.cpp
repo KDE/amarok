@@ -394,21 +394,21 @@ VfatMediaDevice::trackExists( const MetaBundle& bundle )
     QString  base = m_transferDir + "/";
     QString  temp;
 
-    debug() << "m_firstSort = " << m_firstSort << endl;
+    //debug() << "m_firstSort = " << m_firstSort << endl;
     if( m_firstSort != "None")
     {
         temp = bundle.prettyText( bundle.columnIndex(m_firstSort) );
         base += cleanPath( ( temp == QString::null ? "Unknown" : temp ) ) + "/";
     }
 
-    debug() << "m_secondSort = " << m_secondSort << endl;
+    //debug() << "m_secondSort = " << m_secondSort << endl;
     if( m_secondSort != "None")
     {
         temp = bundle.prettyText( bundle.columnIndex(m_secondSort) );
         base += cleanPath( ( temp == QString::null ? "Unknown" : temp ) ) + "/";
     }
 
-    debug() << "m_thirdSort = " << m_thirdSort << endl;
+    //debug() << "m_thirdSort = " << m_thirdSort << endl;
     if( m_thirdSort != "None")
     {
         temp = bundle.prettyText( bundle.columnIndex(m_thirdSort) );
@@ -629,7 +629,8 @@ VfatMediaDevice::addTrackToList( int type, QString name, int /*size*/ )
     {
         if( name.endsWith( "mp3", false ) || name.endsWith( "wma", false ) ||
             name.endsWith( "wav", false ) || name.endsWith( "ogg", false ) ||
-            name.endsWith( "asf", false ) || name.endsWith( "flac", false ) )
+            name.endsWith( "asf", false ) || name.endsWith( "flac", false ) ||
+            name.endsWith( "aac", false ) || name.endsWith( "m4a", false ) )
 
             m_last->setType( MediaItem::TRACK );
 
