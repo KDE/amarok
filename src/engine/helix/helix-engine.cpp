@@ -561,29 +561,58 @@ HelixEngine::timerEvent( QTimerEvent * )
    {
       memcpy(&m_md, md, sizeof(m_md));
 
-      //debug() << "Title: " << md->title << " Artist: " << md->artist << " Bitrate: " << md->bitrate << endl;
+      debug() << "{Title}: " << md->title << " {Artist}: " << md->artist << " {Bitrate}: " << md->bitrate << endl;
 
-      // Ok, helix sends the title of the song in the artist string for streams.
+      // Real Radio One (and Rhapsody?) streams have their own format, where title is:
+      // clipinfo:title=<title>|artist name=<artist>|Album name=<album>|Artist:Next artist=<next artist>| \
+      // ordinal=<some number>|duration=<in secs>|Track:Rhapsody Track Id=<some number>
+
+      // for all other streams helix sends the title of the song in the artist string.
       // this prevents context lookup, so we split it here (the artist and title are separated by a '-'
       // we'll put the 'title' in album instead...
       Engine::SimpleMetaBundle bndl;
       bndl.album = QString::fromUtf8( m_md.title );
-      char c,*tmp = strchr(m_md.artist, '-');
-      if (tmp)
+      if ( bndl.album.startsWith( QString("clipinfo:") ) )
       {
-         tmp--;
-         c = *tmp;
-         *tmp = '\0';
-         bndl.artist = QString::fromUtf8( m_md.artist );
-         *tmp = c;
-         tmp+=3;
-         bndl.title = QString::fromUtf8( tmp );
-         bndl.album = QString::fromUtf8( m_md.title );
+         debug() << "Real radio station detected!!!!!!!!!!!!!!!!!!!!\n";
+         bndl.album = bndl.album.remove(0, 9);
+         QStringList sl = QStringList::split('|', bndl.album);
+         for ( QStringList::Iterator it = sl.begin(); it != sl.end(); ++it ) 
+         {
+            if ((*it).startsWith("title="))
+                bndl.title = (*it).section('=', 1, 1);
+            if ((*it).startsWith("artist name="))
+                bndl.artist = (*it).section('=', 1, 1);
+            if ((*it).startsWith("Album name="))
+                bndl.album = (*it).section('=', 1, 1);
+            if ((*it).startsWith("duration="))
+                bndl.length = (*it).section('=', 1, 1);
+         }
+
+         debug() << "Title: " << bndl.title << endl;
+         debug() << "Artist: " << bndl.artist << endl;
+         debug() << "Album: " << bndl.album << endl;
+         debug() << "length: " << bndl.length << endl;
       }
-      else // just copy them as is...
+      else
       {
-         bndl.title = QString::fromUtf8( m_md.title );
-         bndl.artist = QString::fromUtf8( m_md.artist );
+         char c,*tmp = strchr(m_md.artist, '-');
+         if (tmp)
+         {
+            tmp--;
+            c = *tmp;
+            *tmp = '\0';
+            bndl.artist = QString::fromUtf8( m_md.artist );
+            *tmp = c;
+            tmp+=3;
+            bndl.title = QString::fromUtf8( tmp );
+            bndl.album = QString::fromUtf8( m_md.title );
+         }
+         else // just copy them as is...
+         {
+            bndl.title = QString::fromUtf8( m_md.title );
+            bndl.artist = QString::fromUtf8( m_md.artist );
+         }
       }
       bndl.bitrate = QString::number( m_md.bitrate / 1000 );
       emit EngineBase::metaData( bndl );
