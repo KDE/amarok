@@ -5,7 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.4:
   FEATURES:
-
+    * Collection Browser now has tabs for switching between tree and flat view.
   CHANGES:
 
   BUGFIXES:

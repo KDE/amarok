@@ -38,6 +38,7 @@
 #include <qptrlist.h>
 #include <qpushbutton.h>
 #include <qsimplerichtext.h>
+#include <qtabbar.h>
 #include <qtimer.h>
 #include <qtooltip.h>       //QToolTip::add()
 #include <qheader.h>
@@ -53,6 +54,7 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kpopupmenu.h>
+#include <ktabbar.h>
 #include <ktoolbarbutton.h> //ctor
 #include <kurldrag.h>       //dragObject()
 #include <kio/job.h>
@@ -66,8 +68,25 @@ CollectionBrowser::CollectionBrowser( const char* name )
     , m_cat3Menu( new KPopupMenu( this ) )
     , m_timer( new QTimer( this ) )
 {
-    setSpacing( 4 );
+    setSpacing( 4 ); 
 
+    KActionCollection* ac = new KActionCollection( this );
+    KTabBar* tabs;
+    { //<Tabs>
+        KToolBar* tabsToolBar = new KToolBar( this );
+        tabs = new KTabBar( tabsToolBar, "collectionbrowser_tabs" );
+        QTab* treeTab = new QTab( KGlobal::iconLoader()->loadIconSet( "view_tree", KIcon::Small )    , i18n( "Tree View" ) );
+        QTab* flatTab = new QTab( KGlobal::iconLoader()->loadIconSet( "view_detailed", KIcon::Small ), i18n( "Flat View" ) );
+        tabs->insertTab( treeTab, CollectionView::modeTreeView );
+        tabs->insertTab( flatTab, CollectionView::modeFlatView );
+        tabsToolBar->setItemAutoSized(tabsToolBar->insertWidget(0, tabs->width(), tabs));
+
+        m_scanAction = new KAction( i18n( "Scan Changes" ), amaroK::icon( "refresh" ), 0, CollectionDB::instance(), SLOT( scanMonitor() ), ac, "Start Scan" );
+        if ( !AmarokConfig::monitorChanges() )
+            m_scanAction->plug( tabsToolBar );
+        m_configureAction = new KAction( i18n( "Configure Folders" ), "configure", 0, this, SLOT( setupDirs() ), ac, "Configure" );
+        m_configureAction->plug( tabsToolBar );
+    } //</Tabs>
     m_toolbar = new Browser::ToolBar( this );
 
     { //<Search LineEdit>
@@ -94,22 +113,9 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_timeFilter->insertItem( i18n( "Added Within One Week" ) );
     m_timeFilter->insertItem( i18n( "Added Today" ) );
 
-    KActionCollection* ac = new KActionCollection( this );
-    m_scanAction = new KAction( i18n( "Scan Changes" ), amaroK::icon( "refresh" ), 0, CollectionDB::instance(), SLOT( scanMonitor() ), ac, "Start Scan" );
-
     // we need m_scanAction to be initialized before CollectionView's CTOR
     m_view = new CollectionView( this );
     m_view->installEventFilter( this );
-
-    m_configureAction = new KAction( i18n( "Configure Folders" ), "configure", 0, this, SLOT( setupDirs() ), ac, "Configure" );
-    m_treeViewAction = new KRadioAction( i18n( "Tree View" ), "view_tree", 0, m_view, SLOT( setTreeMode() ), ac, "Tree View" );
-    m_flatViewAction = new KRadioAction( i18n( "Flat View" ), "view_detailed", 0, m_view, SLOT( setFlatMode() ), ac, "Flat View" );
-    m_treeViewAction->setExclusiveGroup("view mode");
-    m_flatViewAction->setExclusiveGroup("view mode");
-    if(m_view->m_viewMode == CollectionView::modeTreeView)
-        m_treeViewAction->setChecked(true);
-    else
-        m_flatViewAction->setChecked(true);
 
     m_showDividerAction = new KToggleAction( i18n( "Show Divider" ), "leftjust", 0, this, SLOT( toggleDivider() ), ac, "Show Divider" );
     m_showDividerAction->setChecked(m_view->m_showDivider);
@@ -117,7 +123,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_tagfilterMenuButton = new KActionMenu( i18n( "Group By" ), "filter", ac );
     m_tagfilterMenuButton->setDelayed( false );
     m_tagfilterMenuButton->setEnabled( m_view->m_viewMode == CollectionView::modeTreeView );
-    connect ( m_treeViewAction, SIGNAL ( toggled(bool) ), m_tagfilterMenuButton, SLOT( setEnabled (bool) ) );
+//    connect ( m_treeViewAction, SIGNAL ( toggled(bool) ), m_tagfilterMenuButton, SLOT( setEnabled (bool) ) );
 
     layoutToolbar();
 
@@ -166,7 +172,9 @@ CollectionBrowser::CollectionBrowser( const char* name )
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
     connect( m_searchEdit, SIGNAL( returnPressed() ), SLOT( slotSetFilter() ) );
     connect( m_timeFilter, SIGNAL( activated( int ) ), SLOT( slotSetFilter() ) );
-
+    connect(tabs, SIGNAL( selected( int ) ), m_view, SLOT( setMode( int ) ) ); 
+    connect(tabs, SIGNAL( selected( int ) ), this, SLOT( setMode( int ) ) ); 
+    
     setFocusProxy( m_view ); //default object to get focus
 }
 
@@ -288,26 +296,21 @@ CollectionBrowser::layoutToolbar()
     m_tagfilterMenuButton->plug( m_toolbar );
     m_toolbar->setIconText( KToolBar::IconOnly, false );
 
-    m_toolbar->insertLineSeparator();
-    m_treeViewAction->plug( m_toolbar );
-    m_flatViewAction->plug( m_toolbar );
-    m_toolbar->insertLineSeparator();
-
     m_showDividerAction->plug( m_toolbar );
-
-    if ( !AmarokConfig::monitorChanges() ) {
-        m_toolbar->setIconText( KToolBar::IconTextRight, false );
-        m_scanAction->plug( m_toolbar );
-        m_toolbar->setIconText( KToolBar::IconOnly, false );
-    }
-
-    m_configureAction->plug( m_toolbar );
 
     //This would break things if the toolbar is too big, see bug #121915
     //setMinimumWidth( m_toolbar->sizeHint().width() + 2 ); //set a reasonable minWidth
 }
 
+void
+CollectionBrowser::setMode(int id)
+{
+    if ( id == CollectionView::modeTreeView)
+        m_toolbar->show();
+    else
+        m_toolbar->hide();
 
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS CollectionView
