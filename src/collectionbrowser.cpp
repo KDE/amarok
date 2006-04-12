@@ -71,15 +71,15 @@ CollectionBrowser::CollectionBrowser( const char* name )
     setSpacing( 4 ); 
 
     KActionCollection* ac = new KActionCollection( this );
-    KTabBar* tabs;
     { //<Tabs>
         KToolBar* tabsToolBar = new KToolBar( this );
-        tabs = new KTabBar( tabsToolBar, "collectionbrowser_tabs" );
+        m_tabs = new KTabBar( tabsToolBar, "collectionbrowser_tabs" );
         QTab* treeTab = new QTab( KGlobal::iconLoader()->loadIconSet( "view_tree", KIcon::Small )    , i18n( "Tree View" ) );
         QTab* flatTab = new QTab( KGlobal::iconLoader()->loadIconSet( "view_detailed", KIcon::Small ), i18n( "Flat View" ) );
-        tabs->insertTab( treeTab, CollectionView::modeTreeView );
-        tabs->insertTab( flatTab, CollectionView::modeFlatView );
-        tabsToolBar->setItemAutoSized(tabsToolBar->insertWidget(0, tabs->width(), tabs));
+        m_tabs->insertTab( treeTab, CollectionView::modeTreeView );
+        m_tabs->insertTab( flatTab, CollectionView::modeFlatView );
+        m_tabs->setCurrentTab( AmarokConfig::collectionBrowserViewMode() );
+        tabsToolBar->setItemAutoSized(tabsToolBar->insertWidget(0, m_tabs->width(), m_tabs));
 
         m_scanAction = new KAction( i18n( "Scan Changes" ), amaroK::icon( "refresh" ), 0, CollectionDB::instance(), SLOT( scanMonitor() ), ac, "Start Scan" );
         if ( !AmarokConfig::monitorChanges() )
@@ -172,10 +172,20 @@ CollectionBrowser::CollectionBrowser( const char* name )
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
     connect( m_searchEdit, SIGNAL( returnPressed() ), SLOT( slotSetFilter() ) );
     connect( m_timeFilter, SIGNAL( activated( int ) ), SLOT( slotSetFilter() ) );
-    connect(tabs, SIGNAL( selected( int ) ), m_view, SLOT( setMode( int ) ) ); 
-    connect(tabs, SIGNAL( selected( int ) ), this, SLOT( setMode( int ) ) ); 
+    connect(m_tabs, SIGNAL( wheelDelta( int ) ), this, SLOT( swapMode() ) );
+    connect(m_tabs, SIGNAL( selected( int ) ), this, SLOT( setMode( int ) ) ); 
     
     setFocusProxy( m_view ); //default object to get focus
+}
+
+void
+CollectionBrowser::swapMode()
+{
+    int newMode = ( m_tabs->currentTab() == CollectionView::modeTreeView ) ? 
+       CollectionView::modeFlatView
+       :  CollectionView::modeTreeView;
+  m_tabs->setCurrentTab(newMode);
+  setMode(newMode);
 }
 
 void
@@ -305,11 +315,12 @@ CollectionBrowser::layoutToolbar()
 void
 CollectionBrowser::setMode(int id)
 {
+    m_view->setMode( id );
     if ( id == CollectionView::modeTreeView)
         m_toolbar->show();
     else
         m_toolbar->hide();
-
+    AmarokConfig::setCollectionBrowserViewMode(id);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

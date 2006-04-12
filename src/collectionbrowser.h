@@ -29,10 +29,11 @@ class QPoint;
 class QStringList;
 
 class KAction;
-class KToggleAction;
 class KComboBox;
-class KRadioAction;
 class KPopupMenu;
+class KRadioAction;
+class KTabBar;
+class KToggleAction;
 
 class CollectionView;
 class CollectionItem;
@@ -54,6 +55,7 @@ class CollectionBrowser: public QVBox
 
     private slots:
         void setMode(int id);
+        void swapMode();
         void slotSetFilterTimeout();
         void slotSetFilter();
 
@@ -64,6 +66,7 @@ class CollectionBrowser: public QVBox
         enum CatMenuId { IdAlbum = 1, IdArtist = 2, IdGenre = 4, IdYear = 8 , IdScan = 16, IdNone = 32,
                     IdArtistAlbum = 64, IdGenreArtist = 128, IdGenreArtistAlbum = 256, IdVisYearAlbum = 512, IdArtistVisYearAlbum = 1024 };
 
+        KTabBar* m_tabs; //tree-view, flat-view tabs
         class KToolBar    *m_toolbar;
         KAction           *m_configureAction;
         KAction           *m_scanAction;
@@ -239,6 +242,7 @@ class CollectionView : public KListView
         LIBAMAROK_EXPORT static CollectionView* m_instance;
 
         CollectionBrowser* m_parent;
+
         QString m_filter;
         uint m_timeFilter;
         int m_cat1;

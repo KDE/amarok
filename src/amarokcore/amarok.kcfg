@@ -302,6 +302,10 @@
         <label>Whether amaroK's custom icon theme or the system icon theme is used.</label>
         <default>true</default>
     </entry>
+    <entry key="Collection Browser View Mode" type="Int">
+        <label>Whether the collection view is in the flat or tree view mode</label>
+        <default>0</default>
+    </entry>
 </group>
 
 <group name="Playback">
