@@ -574,7 +574,6 @@ HelixEngine::timerEvent( QTimerEvent * )
       bndl.album = QString::fromUtf8( m_md.title );
       if ( bndl.album.startsWith( QString("clipinfo:") ) )
       {
-         debug() << "Real radio station detected!!!!!!!!!!!!!!!!!!!!\n";
          bndl.album = bndl.album.remove(0, 9);
          QStringList sl = QStringList::split('|', bndl.album);
          for ( QStringList::Iterator it = sl.begin(); it != sl.end(); ++it ) 
@@ -589,10 +588,10 @@ HelixEngine::timerEvent( QTimerEvent * )
                 bndl.length = (*it).section('=', 1, 1);
          }
 
-         debug() << "Title: " << bndl.title << endl;
-         debug() << "Artist: " << bndl.artist << endl;
-         debug() << "Album: " << bndl.album << endl;
-         debug() << "length: " << bndl.length << endl;
+         //debug() << "Title: " << bndl.title << endl;
+         //debug() << "Artist: " << bndl.artist << endl;
+         //debug() << "Album: " << bndl.album << endl;
+         //debug() << "length: " << bndl.length << endl;
       }
       else
       {
