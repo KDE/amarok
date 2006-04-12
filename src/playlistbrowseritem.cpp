@@ -1733,7 +1733,12 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
     if( !query.isNull() )
     {
         query.remove("?");
-        m_localUrl.addPath( KURL::fromPathOrURL( query ).fileName() );
+        QString filename = KURL::fromPathOrURL( query ).fileName();
+        // some shows, like lugradio, do it even different, there the filename is found in the part before the ?
+        if( filename.isEmpty() )
+            m_localUrl.addPath( link.fileName() );
+        else
+            m_localUrl.addPath( filename );
     }
     else
         m_localUrl.addPath( link.fileName() );
