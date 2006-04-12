@@ -9,6 +9,7 @@ VERSION 1.4:
   CHANGES:
 
   BUGFIXES:
+    * Skip hidden directories while scanning the collection. (BR115478)
     * Instead of cancelling collection organiziation operations when starting
       new one append to running one.
     * Correctly show &amp; in playlist 'Burn' right-click submenu. Patch by
