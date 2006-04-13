@@ -34,7 +34,7 @@
   <url>http://somafm.com/dronezone.pls</url>
  </stream>
  <stream name="Tags Trance Trip [Trance]">
-	<url>http://somafm.com/tagstrance.pls</url>
+  <url>http://somafm.com/tagstrance.pls</url>
  </stream>
  <stream name="Indie Pop Rocks [Indie]">
   <url>http://www.somafm.com/indiepop.pls</url>
@@ -59,6 +59,9 @@
  </stream>
  <stream name="Pure DJ [House]">
   <url>http://www.puredj.com/etc/pls/128K.pls</url>
+ </stream>
+ <stream name="Raggakings [Reggae]">
+  <url>http://www.raggakings.net/listen.m3u</url>
  </stream>
  <stream name="Radio.BMJ.net [Trance/Livesets]">
   <url>http://radio.bmj.net:8000/listen.pls</url>
