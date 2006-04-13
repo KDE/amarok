@@ -3,17 +3,19 @@ amaroK ChangeLog
 (C) 2002-2006 the amaroK authors.
 
 
-VERSION 1.4:
+VERSION 1.4.0:
   FEATURES:
-    * Collection Browser now has tabs for switching between tree and flat view.
+    * Collection Browser now has tabs for switching between tree and flat
+      view.
+
   CHANGES:
 
   BUGFIXES:
-    * Skip hidden directories while scanning the collection. (BR115478)
+    * Skip hidden directories while scanning the collection. (BR 115478)
     * Instead of cancelling collection organiziation operations when starting
       new one append to running one.
     * Correctly show &amp; in playlist 'Burn' right-click submenu. Patch by
-      Laszlo Pandy <laszlok2@gmail.com> (BR 125117)
+      Laszlo Pandy <laszlok2@gmail.com>. (BR 125117)
     * Disable option to delete remote items in playlist right-click menu.
       (BR 124745)
     * Reload playlist browser podcasts when switching database engines.
