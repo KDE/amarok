@@ -104,6 +104,8 @@ UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, bool playFir
                 m_URLs += url;
         }
 
+        // Note: remove for kde 4 - we don't need to be hacking around KFileDialog,
+        // it has been fixed for kde 3.5.3
         else if( protocol == "media" || url.url().startsWith( "system:/media/" ) )
         {
             QString path = url.path( -1 );
