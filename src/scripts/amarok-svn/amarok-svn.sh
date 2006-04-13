@@ -7,12 +7,12 @@
 # If you've run it once, and then run it again, it will update your version of amaroK and only compile the new files.
 #
 # Made by Jocke "Firetech" Andersson.
-# Based on a script by Greg "oggb4mp3" Meyer.
+# Idea and inspiration from a small script by Greg "oggb4mp3" Meyer.
 # # # # # # # # # # # # # # # # # # # # # #   # # # # #   # # #   # #   # #   # #   #   #
 
 echo
-echo "amaroK-svn (Version 3.1-SVN) by Jocke \"Firetech\" Andersson"
-echo "============================================================"
+echo "amaroK-svn (Version 3.1-SVN)"
+echo "=============================="
 echo
 
 ## Define global variables
@@ -274,7 +274,7 @@ if  [ -z "$SVN_SERVER" ]; then #Save default value if empty
   WriteConfig svn_server "$SVN_SERVER"
 fi
 
-## Start the installation processand show the settings
+## Start the installation process and show the settings
 INST_START=`date +%s`
 echo "Used configuration"
 echo "--------------------"
@@ -595,7 +595,7 @@ if [ "$?" = "0" ]; then #If the command did finish successfully
   let INST_S=INST_TIME%60
   echo
   echo -e "# DONE - amaroK was successfully installed/updated after $INST_M minute(s) and $INST_S second(s)."
-  Dialog --msgbox "Done!\namaroK was successfully installed/updated after $INST_M minute(s) and $INST_S second(s).\nStart amaroK from your menu or by running the command \"amarok\"."
+  Dialog --msgbox "Done!\namaroK was successfully installed/updated after $INST_M minute(s) and $INST_S second(s).\nCompilation took $COMP_M minute(s) and $COMP_S second(s).\nStart amaroK from your menu or by running the command \"amarok\"."
   exit 0 #Exit succsessfully
 else
   echo
