@@ -5,19 +5,20 @@ using namespace TagLib;
 class MP4::Tag::TagPrivate
 {
 public:
-  MP4::File*     mp4file;
-  TagLib::String title;
-  TagLib::String artist;
-  TagLib::String album;
-  TagLib::String genre;
-  TagLib::uint   year;
-  TagLib::uint   track;
-  TagLib::String comment;
-  TagLib::String grouping;
-  TagLib::String composer;
-  TagLib::uint   disk;
-  TagLib::uint   bpm;
-  bool           isEmpty;
+  MP4::File*         mp4file;
+  TagLib::String     title;
+  TagLib::String     artist;
+  TagLib::String     album;
+  TagLib::String     genre;
+  TagLib::uint       year;
+  TagLib::uint       track;
+  TagLib::String     comment;
+  TagLib::String     grouping;
+  TagLib::String     composer;
+  TagLib::uint       disk;
+  TagLib::uint       bpm;
+  bool               isEmpty;
+  TagLib::ByteVector cover;
 };
 
 
@@ -91,6 +92,11 @@ TagLib::uint MP4::Tag::bpm() const
   return d->bpm;
 }
 
+TagLib::ByteVector MP4::Tag::cover() const
+{
+  return d->cover;
+}
+
 void MP4::Tag::setTitle(const String &s)
 {
   d->title = s;
@@ -154,6 +160,12 @@ void MP4::Tag::setDisk(const TagLib::uint i)
 void MP4::Tag::setBpm(const TagLib::uint i)
 {
   d->bpm = i;
+  d->isEmpty = false;
+}
+
+void MP4::Tag::setCover(const TagLib::ByteVector& c)
+{
+  d->cover = c;
   d->isEmpty = false;
 }
 

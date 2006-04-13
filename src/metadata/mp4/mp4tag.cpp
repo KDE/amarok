@@ -52,12 +52,15 @@ bool MP4::Tag::isEmpty() const {
         m_composer == String::null &&
         m_year == 0 &&
         m_track == 0 &&
-        m_disk == 0;
+        m_disk == 0 &&
+        m_image.size() == 0;
 }
 
 void MP4::Tag::duplicate(const Tag *source, Tag *target, bool overwrite) {
     // No nonstandard information stored yet
     Tag::duplicate(source, target, overwrite);
+    if (overwrite || target->cover().size() == 0)
+        target->setCover(source->cover());
 }
 
 void MP4::Tag::readTags( MP4FileHandle mp4file )
@@ -65,6 +68,8 @@ void MP4::Tag::readTags( MP4FileHandle mp4file )
     // Now parse tag.
     char *value;
     uint16_t numvalue, numvalue2;
+    uint8_t *image;
+    uint32_t imageSize;
     if (MP4GetMetadataName(mp4file, &value) && value != NULL) {
         m_title = String(value, String::UTF8);
         free(value);
@@ -100,5 +105,9 @@ void MP4::Tag::readTags( MP4FileHandle mp4file )
     if (MP4GetMetadataWriter(mp4file, &value) && value != NULL) {
         m_composer = String(value, String::UTF8);
         free(value);
+    }
+    if (MP4GetMetadataCoverArt(mp4file, &image, &imageSize) && image && imageSize) {
+        m_image.setData(reinterpret_cast<const char *>( image ), imageSize);
+        free(image);
     }
 }

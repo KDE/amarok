@@ -1,6 +1,5 @@
 #include <tbytevector.h>
 #include <tstring.h>
-//#include <tdebug.h>
 #include "tlist.h"
 
 #include "mp4itunestag.h"
@@ -16,12 +15,20 @@ using namespace TagLib;
 class MP4::File::FilePrivate
 {
 public:
+  //! list for all boxes of the mp4 file
   TagLib::List<MP4::Mp4IsoBox*> boxes;
+  //! the box factory - will create all boxes by tag and size
   MP4::BoxFactory             boxfactory;
+  //! proxy for the tags is filled after parsing
   MP4::Mp4TagsProxy           tagsProxy;
+  //! proxy for audio properties
   MP4::Mp4PropsProxy          propsProxy;
+  //! the tag returned by tag() function
   MP4::Tag                    mp4tag;
+  //! container for the audio properties returned by properties() function
   MP4::AudioProperties        mp4audioproperties;
+  //! is set to valid after successfull parsing
+  bool                        isValid;
 };
 
 //! function to fill the tags with converted proxy data, which has been parsed out of the file previously
@@ -34,6 +41,7 @@ MP4::File::File(const char *file, bool , AudioProperties::ReadStyle  )
   d = new MP4::File::FilePrivate();
 
 
+  d->isValid = false;
   TagLib::uint size;
   MP4::Fourcc  fourcc;
 
@@ -44,6 +52,23 @@ MP4::File::File(const char *file, bool , AudioProperties::ReadStyle  )
     curbox->parsebox();
     d->boxes.append( curbox );
   }
+
+  for( TagLib::List<MP4::Mp4IsoBox*>::Iterator iter  = d->boxes.begin();
+                                               iter != d->boxes.end();
+					       iter++ )
+  {
+    if( (*iter)->fourcc() == MP4::Fourcc("moov") )
+    {
+      d->isValid = true;
+      break;
+    }
+  }
+   
+  //if( d->isValid )
+    //debug( "file is valid" );
+  //else
+    //debug( "file is NOT valid" );
+
   // fill tags from proxy data
   fillTagFromProxy( d->tagsProxy, d->mp4tag );
 }
@@ -316,5 +341,12 @@ void fillTagFromProxy( MP4::Mp4TagsProxy& proxy, MP4::Tag& mp4tag )
     }
     else
       mp4tag.setBpm( 0 );
+  }
+
+  databox = proxy.coverData();
+  if( databox != 0 )
+  {
+    // get byte vector
+    mp4tag.setCover( databox->data() );
   }
 }

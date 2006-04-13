@@ -398,6 +398,11 @@ MetaBundle::embeddedImages( MetaBundle::EmbeddedImageList& images )
             } else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) ) {
                 if ( file->ID3v2Tag() )
                     loadImagesFromTag( *file->ID3v2Tag(), images );
+            } else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) ) {
+                TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
+                if( mp4tag && mp4tag->cover().size() ) {
+                    images.push_back( EmbeddedImage( mp4tag->cover(), "" ) );
+                }
             }
         }
     }
@@ -494,6 +499,9 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
             {
                 setComposer( TStringToQString( mp4tag->composer() ) );
                 disc = QString::number( mp4tag->disk() );
+                if ( images && mp4tag->cover().size() ) {
+                    images->push_back( EmbeddedImage( mp4tag->cover(), "" ) );
+                }
             }
         }
 

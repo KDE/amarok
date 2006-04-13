@@ -5,10 +5,14 @@ amaroK ChangeLog
 
 VERSION 1.4.0:
   FEATURES:
+    * 
     * Collection Browser now has tabs for switching between tree and flat
       view.
 
   CHANGES:
+    * Cover art from m4a files. Updated m4a taglib patch by Jochen Issing
+      <jochen@isign-softart.de> and patch by Shane King <kde@dontletsstart.com>.
+      (BR 125414)
 
   BUGFIXES:
     * Skip hidden directories while scanning the collection. (BR 115478)

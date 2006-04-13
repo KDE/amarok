@@ -61,7 +61,7 @@ void MP4::Mp4AudioSampleEntry::parseEntry()
   mp4file->propProxy()->registerAudioSampleEntry( this );
 
 
-  std::cout << "fourcc of audio sample entry: " << fourcc().toString() << std::endl;
+  //std::cout << "fourcc of audio sample entry: " << fourcc().toString() << std::endl;
   // check for both mp4a (plain files) and drms (encrypted files)
   if( (fourcc() == MP4::Fourcc("mp4a")) ||
       (fourcc() == MP4::Fourcc("drms"))  )

@@ -44,15 +44,17 @@ namespace TagLib
 
       // MP4 specific fields
 
-      String grouping() const;
-      String composer() const;
-      uint   disk() const;
-      uint   bpm() const;
+      String     grouping() const;
+      String     composer() const;
+      uint       disk() const;
+      uint       bpm() const;
+      ByteVector cover() const;
       
       void setGrouping(const String &s);
       void setComposer(const String &s);
       void setDisk(const uint i);
       void setBpm(const uint i);
+      void setCover( const ByteVector& cover );
   
       virtual bool isEmpty() const;
   

@@ -109,10 +109,6 @@ bool MP4::File::save()
     char *tool = NULL;
     MP4GetMetadataTool(handle, &tool);
 
-    uint8_t *cover = NULL;
-    uint32_t coversize = 0;
-    MP4GetMetadataCoverArt(handle, &cover, &coversize);
-
     MP4MetadataDelete(handle);
 #endif
 
@@ -140,6 +136,8 @@ bool MP4::File::save()
     MP4GetMetadataTrack(handle, &t1, &t2);
     MP4SetMetadataTrack(handle, mp4tag->track(), t2);
 
+    MP4SetMetadataCoverArt(handle, mp4tag->cover().size() ? const_cast<u_int8_t *>( reinterpret_cast<const u_int8_t *>( mp4tag->cover().data() ) ) : 0, mp4tag->cover().size());
+
 #ifdef MP4V2_HAS_WRITE_BUG
     // set the saved data again
 
@@ -151,11 +149,6 @@ bool MP4::File::save()
     {
         MP4SetMetadataTool(handle, tool);
         free(tool);
-    }
-    if(cover)
-    {
-        MP4SetMetadataCoverArt(handle, cover, coversize);
-        free(cover);
     }
 #endif
 

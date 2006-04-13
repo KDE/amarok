@@ -102,6 +102,12 @@ namespace TagLib {
                 virtual uint disk() const { return m_disk; }
 
                 /*!
+                * Returns the embedded cover image; if there is no cover set, this will
+                * return an empty ByteVector.
+                */
+                virtual const ByteVector &cover() const { return m_image; }
+
+                /*!
                  * Sets the title to \a s.  If \a s is String::null then this value will be
                  * cleared.
                  */
@@ -156,6 +162,12 @@ namespace TagLib {
                 virtual void setComposer(const String &s) { m_composer = s; }
 
                 /*!
+                 * Sets the embedded cover image to \a i. If \a i is empty then this value
+                 * will be cleared.
+                 */
+                virtual void setCover(const ByteVector &i) { m_image = i; }
+
+                /*!
                  * Returns true if the tag does not contain any data.  This should be
                  * reimplemented in subclasses that provide more than the basic tagging
                  * abilities in this class.
@@ -185,6 +197,7 @@ namespace TagLib {
                 uint m_year;
                 uint m_track;
                 uint m_disk;
+                ByteVector m_image;
         };
     }
 }

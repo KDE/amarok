@@ -9,6 +9,7 @@ public:
   ITunesDataBox* titleData;
   ITunesDataBox* artistData;
   ITunesDataBox* albumData;
+  ITunesDataBox* coverData;
   ITunesDataBox* genreData;
   ITunesDataBox* yearData;
   ITunesDataBox* trknData;
@@ -25,6 +26,7 @@ MP4::Mp4TagsProxy::Mp4TagsProxy()
   d->titleData    = 0;
   d->artistData   = 0;
   d->albumData    = 0;
+  d->coverData    = 0;
   d->genreData    = 0;
   d->yearData     = 0;
   d->trknData     = 0;
@@ -95,6 +97,11 @@ MP4::ITunesDataBox* MP4::Mp4TagsProxy::bpmData() const
   return d->bpmData;
 }
 
+MP4::ITunesDataBox* MP4::Mp4TagsProxy::coverData() const
+{
+  return d->coverData;
+}
+
 void MP4::Mp4TagsProxy::registerBox( EBoxType boxtype, ITunesDataBox* databox )
 {
   switch( boxtype )
@@ -107,6 +114,9 @@ void MP4::Mp4TagsProxy::registerBox( EBoxType boxtype, ITunesDataBox* databox )
       break;
     case album:
       d->albumData = databox;
+      break;
+    case cover:
+      d->coverData = databox;
       break;
     case genre:
       d->genreData = databox;

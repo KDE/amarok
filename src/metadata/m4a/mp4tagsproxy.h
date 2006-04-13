@@ -23,6 +23,7 @@ namespace TagLib
 	title = 0,
 	artist,
 	album,
+	cover,
 	genre,
 	year,
 	trackno,
@@ -60,6 +61,8 @@ namespace TagLib
       ITunesDataBox* diskData() const;
       //! function to get the data box for the bpm
       ITunesDataBox* bpmData() const;
+      //! function to get the data box for the cover
+      ITunesDataBox* coverData() const;
 
       //! function to register a data box for a certain box type
       void registerBox( EBoxType boxtype, ITunesDataBox* databox );

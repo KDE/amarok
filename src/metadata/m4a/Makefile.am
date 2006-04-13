@@ -33,6 +33,7 @@ libtagm4a_la_SOURCES = \
                        itunesnambox.cpp \
                        itunesartbox.cpp \
                        itunesalbbox.cpp \
+                       itunescvrbox.cpp \
                        itunesgenbox.cpp \
                        itunestrknbox.cpp \
                        itunesdaybox.cpp \
@@ -75,6 +76,7 @@ noinst_HEADERS = \
                          itunestrknbox.h \
                          itunesdaybox.h \
                          itunescmtbox.h \
+                         itunescvrbox.h \
                          itunesgrpbox.h \
                          ituneswrtbox.h \
                          itunesdiskbox.h \
