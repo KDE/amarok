@@ -121,7 +121,6 @@ namespace amaroK
     /**
     * Function that must be used when separating contextBrowser escaped urls
     */
-    inline
     void albumArtistTrackFromUrl( QString url, QString &artist, QString &album, QString &track )
     {
         if ( !url.contains("@@@") ) return;
