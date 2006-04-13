@@ -24,6 +24,7 @@
 #include "playlistbrowser.h"
 #include "statusbar.h"
 #include "tagdialog.h"
+#include "threadweaver.h"
 #include "qstringx.h"
 
 #include <unistd.h>         //CollectionView ctor
@@ -407,6 +408,8 @@ CollectionView::setShowDivider( bool show )
 void
 CollectionView::renderView(bool force /* = false */)  //SLOT
 {
+    SHOULD_BE_GUI
+    DEBUG_BLOCK
     if(!force && !m_dirty )
         return;
 
@@ -727,6 +730,7 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
         /* Following code depends on the order! */
         sort();
 
+        QValueList<DividerItem *> toDelete;
         DividerItem *current=0, *last=0;
         bool empty;
         /* If we have two consecutive headers, one of them is useless, and should be removed */
@@ -737,14 +741,9 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
                     if ( !current->text(0).at(0).isLetterOrNumber()
                         || ( last->text(0).at(0).isLetterOrNumber()
                             && current->text(0).at(0).unicode() > last->text(0).at(0).unicode() ) )
-                    {
-                        item = (QListViewItem*)last;
-                        delete current;
-                    }
-                    else
-                    {
-                        item = (QListViewItem*)current;
-                        delete last;
+                        toDelete += current;
+                    else {
+                        toDelete += last;
                         last=current;
                     }
                 }
@@ -755,6 +754,9 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
             else
                 empty=false;
         }
+
+        for ( QValueList<DividerItem *>::iterator it = toDelete.begin(); it != toDelete.end(); ++it )
+            delete *it;
     }
     restoreView();
 }
