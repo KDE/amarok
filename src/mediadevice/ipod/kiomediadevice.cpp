@@ -343,27 +343,6 @@ KioMediaDevice::fileDeleted( KIO::Job *job )  //SLOT, used in GpodMediaDevice
 }
 
 void
-KioMediaDevice::fileTransferred( KIO::Job *job )  //SLOT, used in GpodMediaDevice
-{
-    if(job->error())
-    {
-        m_copyFailed = true;
-        debug() << "file transfer failed: " << job->errorText() << endl;
-    }
-    else
-    {
-        m_copyFailed = false;
-
-        // the track just transferred has not yet been removed from the queue
-        // FIXME
-        MediaBrowser::instance()->queue()->takeItem( MediaBrowser::instance()->queue()->firstChild() );
-    }
-    m_parent->updateStats();
-
-    m_wait = false;
-}
-
-void
 KioMediaDevice::rmbPressed( MediaView *deviceList, QListViewItem* qitem, const QPoint& point, int )
 {
     MediaItem *item = dynamic_cast<MediaItem *>(qitem);

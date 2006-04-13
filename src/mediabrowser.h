@@ -275,6 +275,7 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
 {
     Q_OBJECT
     friend class DeviceConfigureDialog;
+    friend class TransferDialog;
     friend class MediaBrowser;
     friend class MediaView;
     friend class MediaQueue;
@@ -425,12 +426,16 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         QString           getTransferDir() { return m_transferDir; }
         Medium *          getMedium() { return m_medium; }
 
-        void              setSpacesToUnderscores( bool yesno ) { m_spacesToUnderscores = yesno; }
+        void              setSpacesToUnderscores( bool yesno ) { m_spacesToUnderscores = yesno;
+            setConfigBool( "spacesToUnderscores", yesno); }
         bool              getSpacesToUnderscores() { return m_spacesToUnderscores; }
 
-        void              setFirstSort( QString text ) { m_firstSort = text; }
-        void              setSecondSort( QString text ) { m_secondSort = text; }
-        void              setThirdSort( QString text ) { m_thirdSort = text; }
+        void              setFirstSort( QString text ) { m_firstSort = text;
+            setConfigString( "firstGrouping", text ); }
+        void              setSecondSort( QString text ) { m_secondSort = text;
+            setConfigString( "secondGrouping", text ); }
+        void              setThirdSort( QString text ) { m_thirdSort = text;
+            setConfigString( "thirdGrouping", text ); }
 
 
 
@@ -443,6 +448,7 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         bool disconnectDevice( bool postdisconnecthook=true );
 
     protected slots:
+        void fileTransferred( KIO::Job *job );
         void fileTransferFinished();
 
     private:
@@ -522,6 +528,8 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         void purgeEmptyItems( MediaItem *root=0 );
         void syncStatsFromDevice( MediaItem *root=0 );
         void syncStatsToDevice( MediaItem *root=0 );
+
+        bool kioCopyTrack( const KURL &src, const KURL &dst );
 
         QString     m_name;
         QString     m_uniqueId;   //deprecated?

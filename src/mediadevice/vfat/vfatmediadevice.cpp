@@ -108,6 +108,24 @@ class VfatMediaItem : public MediaItem
         QCString m_encodedName;
 };
 
+QString
+VfatMediaDevice::fileName( const MetaBundle &bundle )
+{
+    QString result;
+
+    if( bundle.track() )
+    {
+        result.sprintf( "%02d", bundle.track() );
+
+        if( m_spacesToUnderscores )
+            result += "_";
+        else
+            result += " ";
+    }
+
+    return result + cleanPath( bundle.prettyTitle().remove( "'" ) + "." + bundle.type() );
+}
+
 
 /**
  * VfatMediaDevice Class
@@ -144,6 +162,17 @@ VfatMediaDevice::init( MediaBrowser* parent )
 VfatMediaDevice::~VfatMediaDevice()
 {
     closeDevice();
+}
+
+void
+VfatMediaDevice::loadConfig()
+{
+    MediaDevice::loadConfig();
+
+    m_spacesToUnderscores = configBool("spacesToUnderscores");
+    m_firstSort = configString( "firstGrouping", "None" );
+    m_secondSort = configString( "secondGrouping", "None" );
+    m_thirdSort = configString( "thirdGrouping", "None" );
 }
 
 bool
@@ -317,7 +346,7 @@ VfatMediaDevice::copyTrackSortHelper( const MetaBundle& bundle, QString& sort, Q
     QListViewItem *it;
     if( sort != "None" )
     {
-        debug() << "sort = " << sort << endl;
+        //debug() << "sort = " << sort << endl;
         temp = bundle.prettyText( bundle.columnIndex(sort) );
         temp = ( temp == QString::null ? "Unknown" : cleanPath(temp) );
         base += temp + "/";
@@ -326,7 +355,7 @@ VfatMediaDevice::copyTrackSortHelper( const MetaBundle& bundle, QString& sort, Q
             m_tmpParent = static_cast<MediaItem *>(newDirectory( temp, static_cast<MediaItem*>(m_tmpParent) ));
         else
         {
-            debug() << "m_tmpParent (firstSort) " << m_tmpParent << endl;
+            //debug() << "m_tmpParent (firstSort) " << m_tmpParent << endl;
             if( m_tmpParent)
                 it = m_tmpParent->firstChild();
             else
@@ -334,7 +363,7 @@ VfatMediaDevice::copyTrackSortHelper( const MetaBundle& bundle, QString& sort, Q
             while( it && it->text(0) != temp )
             {
                 it = it->nextSibling();
-                debug() << "Looking for next in firstSort, temp = " << temp << ", text(0) = " << it->text(0) << endl;
+                //debug() << "Looking for next in firstSort, temp = " << temp << ", text(0) = " << it->text(0) << endl;
             }
             m_tmpParent = static_cast<MediaItem *>( it );
         }
@@ -357,7 +386,7 @@ VfatMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
     debug() << "m_tmpParent = " << m_tmpParent << endl;
     MediaItem *previousTmpParent = static_cast<MediaItem *>(m_tmpParent);
 
-    QString  newFilenameSansMountpoint = cleanPath( bundle.prettyTitle().remove( "'" ) + "." + bundle.type() );
+    QString  newFilenameSansMountpoint = fileName( bundle );
     QString  base = m_transferDir + "/";
     QString  temp;
 
@@ -372,7 +401,8 @@ VfatMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
 
     kapp->processEvents( 100 );
 
-    if( KIO::NetAccess::file_copy( bundle.url(), desturl, -1, false, false, m_parent) ) //success
+    //if( KIO::NetAccess::file_copy( bundle.url(), desturl, -1, false, false, m_parent) ) //success
+    if( kioCopyTrack( bundle.url(), desturl ) )
     {
         addTrackToList( MediaItem::TRACK, newFilenameSansMountpoint );
         m_tmpParent = previousTmpParent;
@@ -390,44 +420,54 @@ VfatMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
 MediaItem *
 VfatMediaDevice::trackExists( const MetaBundle& bundle )
 {
-    QString  newFilenameSansMountpoint = cleanPath( bundle.prettyTitle().remove( "'" ) + "." + bundle.type() );
-    QString  base = m_transferDir + "/";
-    QString  temp;
-
-    //debug() << "m_firstSort = " << m_firstSort << endl;
+    QString key;
+    QListViewItem *it = view()->firstChild();
     if( m_firstSort != "None")
     {
-        temp = bundle.prettyText( bundle.columnIndex(m_firstSort) );
-        base += cleanPath( ( temp == QString::null ? "Unknown" : temp ) ) + "/";
+        key = bundle.prettyText( bundle.columnIndex( m_firstSort ) );
+        key = cleanPath( ( key.isEmpty() ? "Unknown" : key ) );
+        while( it && it->text( 0 ) != key )
+            it = it->nextSibling();
+        if( !it )
+            return 0;
+        if( !it->childCount() )
+           expandItem( it );
+        it = it->firstChild();
     }
 
-    //debug() << "m_secondSort = " << m_secondSort << endl;
     if( m_secondSort != "None")
     {
-        temp = bundle.prettyText( bundle.columnIndex(m_secondSort) );
-        base += cleanPath( ( temp == QString::null ? "Unknown" : temp ) ) + "/";
+        key = bundle.prettyText( bundle.columnIndex( m_secondSort ) );
+        key = cleanPath( ( key.isEmpty() ? "Unknown" : key ) );
+        while( it && it->text( 0 ) != key )
+        {
+            it = it->nextSibling();
+        }
+        if( !it )
+            return 0;
+        if( !it->childCount() )
+           expandItem( it );
+        it = it->firstChild();
     }
 
-    //debug() << "m_thirdSort = " << m_thirdSort << endl;
     if( m_thirdSort != "None")
     {
-        temp = bundle.prettyText( bundle.columnIndex(m_thirdSort) );
-        base += cleanPath( ( temp == QString::null ? "Unknown" : temp ) ) + "/";
+        key = bundle.prettyText( bundle.columnIndex( m_thirdSort ) );
+        key = cleanPath( ( key.isEmpty() ? "Unknown" : key ) );
+        while( it && it->text( 0 ) != key )
+            it = it->nextSibling();
+        if( !it )
+            return 0;
+        if( !it->childCount() )
+           expandItem( it );
+        it = it->firstChild();
     }
 
-    QString  newFilename = base + newFilenameSansMountpoint;
+    key = fileName( bundle );
+    while( it && it->text( 0 ) != key )
+        it = it->nextSibling();
 
-    if ( KIO::NetAccess::stat( KURL(newFilename), m_udsentry, m_parent ) )
-    {
-        QListViewItemIterator it( m_view );
-        while ( it.current() )
-        {
-            if ( (*it)->text( 0 ) == newFilenameSansMountpoint )
-                return static_cast<MediaItem *>(it.current());
-            ++it;
-        }
-    }
-    return 0;
+    return dynamic_cast<MediaItem *>( it );
 }
 
 /// File transfer methods
@@ -554,7 +594,7 @@ VfatMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/ )
 void
 VfatMediaDevice::expandItem( QListViewItem *item ) // SLOT
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     if( !item || !item->isExpandable() ) return;
 
     while( item->firstChild() )
@@ -563,13 +603,20 @@ VfatMediaDevice::expandItem( QListViewItem *item ) // SLOT
     m_tmpParent = item;
 
     QString path = getFullPath( item );
+    m_dirListerComplete = false;
     listDir( path );
+
+    while( !m_dirListerComplete && !m_stopDirLister && !m_isInCopyTrack )
+    {
+        kapp->processEvents( 100 );
+        usleep(10000);
+    }
 }
 
 void
 VfatMediaDevice::listDir( const QString &dir )
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     if ( m_dirLister->openURL( KURL(dir), true, true ) )
     {
         //debug() << "Waiting for KDirLister, do anything here?" << endl;
@@ -606,7 +653,8 @@ VfatMediaDevice::newItems( const KFileItemList &items )
 void
 VfatMediaDevice::dirListerCompleted()
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
+    m_dirListerComplete = true;
     if( !m_stopDirLister && !m_isInCopyTrack)
         m_tmpParent = NULL;
 }
@@ -614,7 +662,7 @@ VfatMediaDevice::dirListerCompleted()
 int
 VfatMediaDevice::addTrackToList( int type, QString name, int /*size*/ )
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     m_tmpParent ?
         m_last = new VfatMediaItem( m_tmpParent ):
         m_last = new VfatMediaItem( m_view );

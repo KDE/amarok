@@ -79,11 +79,6 @@ TransferDialog::TransferDialog( MediaDevice *mdev )
     m_label3 = new QLabel( i18n( "Select third grouping:\n" ), sorting ); 
     m_sort3  = new KComboBox( sorting );
 
-    m_label2->setDisabled(true);
-    m_sort2->setDisabled(true);
-    m_label3->setDisabled(true);
-    m_sort3->setDisabled(true);
-
     m_combolist = new QPtrList<KComboBox>();
     m_combolist->append( m_sort1 );
     m_combolist->append( m_sort2 );
@@ -98,6 +93,15 @@ TransferDialog::TransferDialog( MediaDevice *mdev )
         comboTemp->insertItem( "Genre" );
         comboTemp->setCurrentItem( 0 );
     }
+
+    m_sort1->setCurrentItem( mdev->m_firstSort );
+    m_sort2->setCurrentItem( mdev->m_secondSort );
+    m_sort3->setCurrentItem( mdev->m_thirdSort );
+
+    m_label2->setDisabled( m_sort1->currentItem() == 0 );
+    m_sort2->setDisabled( m_sort1->currentItem() == 0 );
+    m_label3->setDisabled( m_sort2->currentItem() == 0 );
+    m_sort3->setDisabled( m_sort2->currentItem() == 0 );
 
     connect( m_sort1, SIGNAL( activated(int) ), SLOT( sort1_activated(int)) );
     connect( m_sort2, SIGNAL( activated(int) ), SLOT( sort2_activated(int)) );

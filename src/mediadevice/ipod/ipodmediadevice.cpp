@@ -407,64 +407,16 @@ IpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle)
             break;
         }
     }
-
-    m_wait = true;
-
-    KIO::FileCopyJob *job = KIO::file_copy( bundle.url(), url,
-          -1 /* permissions */,
-          false /* overwrite */,
-          false /* resume */,
-          false /* show progress */ );
-    connect( job, SIGNAL( result( KIO::Job * ) ),
-            this,  SLOT( fileTransferred( KIO::Job * ) ) );
-
-    bool tryToRemove = false;
-    while ( m_wait )
+    if ( !dir.exists() )
     {
-        usleep(10000);
-        kapp->processEvents( 100 );
-        if( isCancelled() )
-        {
-           job->kill( false /* still emit result */ );
-           tryToRemove = true;
-        }
+        amaroK::StatusBar::instance()->longMessage(
+                i18n( "Media Device: Creating directory for file %1 failed" ).arg( url.path() ),
+                KDE::StatusBar::Error );
+        return NULL;
     }
 
-    if( !tryToRemove )
+    if( !kioCopyTrack( bundle.url(), url ) )
     {
-       if(m_copyFailed)
-       {
-          tryToRemove = true;
-          if ( !dir.exists() )
-          {
-             amaroK::StatusBar::instance()->longMessage(
-                   i18n( "Media Device: Creating directory for file %1 failed" ).arg( url.path() ),
-                   KDE::StatusBar::Error );
-          }
-          else
-          {
-             amaroK::StatusBar::instance()->longMessage(
-                   i18n( "Media Device: Copying %1 to %2 failed" ).arg(bundle.url().prettyURL()).arg(url.prettyURL()),
-                   KDE::StatusBar::Error );
-          }
-       }
-       else
-       {
-          MetaBundle bundle2(url);
-          if(!bundle2.isValidMedia())
-          {
-             tryToRemove = true;
-             // probably s.th. went wrong
-             amaroK::StatusBar::instance()->longMessage(
-                   i18n( "Media Device: Reading tags from %1 failed" ).arg( url.prettyURL() ),
-                   KDE::StatusBar::Error );
-          }
-       }
-    }
-
-    if( tryToRemove )
-    {
-        QFile::remove( url.path() );
         return NULL;
     }
 

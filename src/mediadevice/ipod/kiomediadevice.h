@@ -48,7 +48,6 @@ class KioMediaDevice : public MediaDevice
         QMutex m_mutex;
 
     protected slots:
-        virtual void      fileTransferred( KIO::Job *job );
         virtual void      fileDeleted( KIO::Job *job );
 
     private:

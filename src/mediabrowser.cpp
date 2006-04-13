@@ -57,6 +57,7 @@
 #include <kglobal.h>
 #include <kiconloader.h>
 #include <kinputdialog.h>
+#include <kio/job.h>
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kpopupmenu.h>
@@ -636,14 +637,10 @@ void
 MediaBrowser::prepareToQuit()
 {
     m_waitForTranscode = false;
-    QValueList<MediaDevice *>::iterator next = m_devices.end();
-    for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
-            it != m_devices.end();
-            it = next )
+    debug() << "having to remove " << m_devices.count() << " devices" << endl;
+    while( !m_devices.isEmpty() )
     {
-        next = it;
-        next++;
-        removeDevice( *it );
+        removeDevice( m_devices.last() );
     }
 }
 
@@ -1864,15 +1861,11 @@ MediaQueue::addURL( const KURL& url, MetaBundle *bundle, const QString &playlist
     item->setBundle( bundle );
     if(bundle->podcastBundle() )
     {
-        item->m_type = MediaItem::PODCASTITEM;
+        item->setType( MediaItem::PODCASTITEM );
     }
     item->m_playlistName = playlistName;
 
     QString text = item->bundle()->prettyTitle();
-    if( item->type() == MediaItem::PODCASTITEM )
-    {
-        text += " (" + i18n("Podcast") + ")";
-    }
     if( item->m_playlistName != QString::null )
     {
         text += " (" + item->m_playlistName + ")";
@@ -1976,9 +1969,90 @@ MediaDevice::abortTransfer()
     cancelTransfer();
 }
 
+bool
+MediaDevice::kioCopyTrack( const KURL &src, const KURL &dst )
+{
+    m_wait = true;
+
+    KIO::FileCopyJob *job = KIO::file_copy( src, dst,
+            -1 /* permissions */,
+            false /* overwrite */,
+            false /* resume */,
+            false /* show progress */ );
+    connect( job, SIGNAL( result( KIO::Job * ) ),
+            this,  SLOT( fileTransferred( KIO::Job * ) ) );
+
+    bool tryToRemove = false;
+    while ( m_wait )
+    {
+        if( isCancelled() )
+        {
+            job->kill( false /* still emit result */ );
+            tryToRemove = true;
+            m_wait = false;
+        }
+        usleep(10000);
+        kapp->processEvents( 100 );
+    }
+
+    if( !tryToRemove )
+    {
+        if(m_copyFailed)
+        {
+            tryToRemove = true;
+            amaroK::StatusBar::instance()->longMessage(
+                    i18n( "Media Device: Copying %1 to %2 failed" )
+                    .arg(src.prettyURL()).arg(dst.prettyURL()),
+                    KDE::StatusBar::Error );
+        }
+        else
+        {
+            MetaBundle bundle2(dst);
+            if(!bundle2.isValidMedia())
+            {
+                tryToRemove = true;
+                // probably s.th. went wrong
+                amaroK::StatusBar::instance()->longMessage(
+                        i18n( "Media Device: Reading tags from %1 failed" ).arg( dst.prettyURL() ),
+                        KDE::StatusBar::Error );
+            }
+        }
+    }
+
+    if( tryToRemove )
+    {
+        QFile::remove( dst.path() );
+        return false;
+    }
+
+    return true;
+}
+
+void
+MediaDevice::fileTransferred( KIO::Job *job )  //SLOT
+{
+    if(job->error())
+    {
+        m_copyFailed = true;
+        debug() << "file transfer failed: " << job->errorText() << endl;
+    }
+    else
+    {
+        m_copyFailed = false;
+
+        // the track just transferred has not yet been removed from the queue
+        MediaBrowser::instance()->queue()->takeItem( MediaBrowser::instance()->queue()->firstChild() );
+        m_parent->updateStats();
+    }
+
+    m_wait = false;
+}
+
 void
 MediaBrowser::cancelClicked()
 {
+    DEBUG_BLOCK
+
     m_waitForTranscode = false;
     if( currentDevice() )
         currentDevice()->abortTransfer();
@@ -2270,7 +2344,6 @@ MediaDevice::transferFiles()
 {
     if( !lockDevice( true ) )
     {
-        setSpacesToUnderscores( false );
         return;
     }
 
@@ -2291,6 +2364,8 @@ MediaDevice::transferFiles()
     // iterate through items
     while( (m_transferredItem = static_cast<MediaItem *>(m_parent->m_queue->firstChild())) != 0 )
     {
+        if( isCancelled() )
+            break;
         debug() << "Transferring: " << m_transferredItem->url().path() << endl;
 
         const MetaBundle *bundle = m_transferredItem->bundle();
@@ -2357,9 +2432,10 @@ MediaDevice::transferFiles()
 
         if( !item ) // copyTrackToDevice() failed
         {
-            amaroK::StatusBar::instance()->longMessage(
-                    i18n( "Failed to copy track to media device: %1" ).arg( bundle->url().path() ),
-                    KDE::StatusBar::Sorry );
+            if( !isCancelled() )
+                amaroK::StatusBar::instance()->longMessage(
+                        i18n( "Failed to copy track to media device: %1" ).arg( bundle->url().path() ),
+                        KDE::StatusBar::Sorry );
             if( transcoding )
             {
                 delete bundle;
@@ -2464,12 +2540,11 @@ MediaDevice::transferFiles()
         }
         amaroK::StatusBar::instance()->shortLongMessage( msg, longMsg, KDE::StatusBar::Sorry );
     }
-    else
+    else if( !msg.isEmpty() )
     {
         amaroK::StatusBar::instance()->shortMessage( msg, KDE::StatusBar::Sorry );
     }
 
-    setSpacesToUnderscores( false );
     m_parent->updateButtons();
     m_transferring = false;
 

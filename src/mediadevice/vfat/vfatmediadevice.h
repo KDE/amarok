@@ -44,6 +44,7 @@ class VfatMediaDevice : public MediaDevice
         void              runTransferDialog();
         TransferDialog   *getTransferDialog() { return m_td; }
         bool              needsManualConfig() { return false; }
+        void              loadConfig();
 
     protected:
         bool              openDevice( bool silent=false );
@@ -61,8 +62,7 @@ class VfatMediaDevice : public MediaDevice
 
         void              addToPlaylist( MediaItem *, MediaItem *, QPtrList<MediaItem> ) {}
         MediaItem        *newPlaylist( const QString &, MediaItem *, QPtrList<MediaItem> ) { return 0; }
-
-        void              cancelTransfer() {} // we don't have to do anything, we check m_cancelled
+        QString           fileName( const MetaBundle & );
 
     signals:
         void              startTransfer();
@@ -120,6 +120,7 @@ class VfatMediaDevice : public MediaDevice
         bool              m_actuallyVfat;
         bool              m_isInCopyTrack;
         bool              m_stopDirLister;
+        bool              m_dirListerComplete;
 
         KURL::List        m_downloadList;
         bool              m_downloadListerFinished;
