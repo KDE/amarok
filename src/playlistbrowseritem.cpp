@@ -1375,8 +1375,13 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
     if( img.isEmpty() )
         img = xml.namedItem( "itunes:image" ).toElement().text();
 
-    PodcastSettings *parentSettings = PlaylistBrowser::instance()->getPodcastSettings( m_parent );
-    m_bundle = PodcastChannelBundle( m_url, t, a, l, d, c, parentSettings );
+    PodcastSettings *settings = 0;
+    if( &m_bundle )
+        settings = m_bundle.getSettings();
+    else
+        settings = new PodcastSettings( PlaylistBrowser::instance()->getPodcastSettings( m_parent ), t);
+
+    m_bundle = PodcastChannelBundle( m_url, t, a, l, d, c, settings );
     m_bundle.setImageURL( KURL::fromPathOrURL( img ) );
 
     m_bundle.setParentId( m_parent->id() );
