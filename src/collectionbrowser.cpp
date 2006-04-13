@@ -68,7 +68,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     , m_cat3Menu( new KPopupMenu( this ) )
     , m_timer( new QTimer( this ) )
 {
-    setSpacing( 4 ); 
+    setSpacing( 4 );
 
     KActionCollection* ac = new KActionCollection( this );
     { //<Tabs>
@@ -173,15 +173,15 @@ CollectionBrowser::CollectionBrowser( const char* name )
     connect( m_searchEdit, SIGNAL( returnPressed() ), SLOT( slotSetFilter() ) );
     connect( m_timeFilter, SIGNAL( activated( int ) ), SLOT( slotSetFilter() ) );
     connect(m_tabs, SIGNAL( wheelDelta( int ) ), this, SLOT( swapMode() ) );
-    connect(m_tabs, SIGNAL( selected( int ) ), this, SLOT( setMode( int ) ) ); 
-    
+    connect(m_tabs, SIGNAL( selected( int ) ), this, SLOT( setMode( int ) ) );
+
     setFocusProxy( m_view ); //default object to get focus
 }
 
 void
 CollectionBrowser::swapMode()
 {
-    int newMode = ( m_tabs->currentTab() == CollectionView::modeTreeView ) ? 
+    int newMode = ( m_tabs->currentTab() == CollectionView::modeTreeView ) ?
        CollectionView::modeFlatView
        :  CollectionView::modeTreeView;
   m_tabs->setCurrentTab(newMode);
@@ -736,7 +736,7 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
                 if ( empty ) {
                     if ( !current->text(0).at(0).isLetterOrNumber()
                         || ( last->text(0).at(0).isLetterOrNumber()
-                            && current->text(0).at(0).unicode() > last->text(0).ref(0).unicode() ) )
+                            && current->text(0).at(0).unicode() > last->text(0).at(0).unicode() ) )
                     {
                         item = (QListViewItem*)last;
                         delete current;
@@ -2651,13 +2651,6 @@ CollectionItem::compare( QListViewItem* i, int col, bool ascending ) const
                 return 1;
             else
                 return -1;
-
-        // Various Artists is always the last one
-        case CollectionBrowser::IdArtist:
-            if ( b == i18n("Various Artists") )
-                return -1;
-            if ( a == i18n("Various Artists") )
-                return 1;
         default:
         // Unknown is always the first one
             if ( a == i18n("Unknown") )
@@ -2665,6 +2658,13 @@ CollectionItem::compare( QListViewItem* i, int col, bool ascending ) const
             if ( b == i18n("Unknown") )
                 return 1;
     }
+    // Various Artists is always after unknown
+    if ( m_cat == CollectionBrowser::IdArtist )
+        if ( a == i18n("Various Artists") )
+            return -1;
+        if ( b == i18n("Various Artists") )
+            return 1;
+
     // No special case, then fall on default
     return QString::localeAwareCompare( a.lower(), b.lower() );
 }
