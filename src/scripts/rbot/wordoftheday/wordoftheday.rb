@@ -6,7 +6,7 @@
 
 class WordofthedayPlugin < Plugin
     def help( plugin, topic="" )
-        "Wordoftheday plugin. Knowledge is power!"
+        "Fetches the 'Word of the day' from uncyclopedia.org. Knowledge is power!"
     end
 
     def privmsg( m )
