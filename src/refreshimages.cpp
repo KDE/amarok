@@ -5,6 +5,7 @@
 
 #include "amarok.h"
 #include "collectiondb.h"
+#include "debug.h"
 #include "refreshimages.h"
 #include "statusbar.h"
 
@@ -12,6 +13,7 @@
 #include <qimage.h>
 #include <qmap.h>
 #include <qobject.h>
+#include <qstringlist.h>
 #include <qvaluelist.h> 
 #include <qvariant.h>
 
@@ -24,7 +26,6 @@
 
 RefreshImages::RefreshImages()
 {
-    static const QString LICENSE = "0RQSQ0B8CRY7VX2VF3G2"; //Ian Monroe
     const QStringList staleImages = CollectionDB::instance()->staleImages();
     //"SELECT asin, locale, filename FROM amazon WHERE refetchdate > %1 ;"
     QStringList::ConstIterator it = staleImages.begin();
@@ -36,11 +37,14 @@ RefreshImages::RefreshImages()
         QString locale = *it;
         it++;
         QString md5sum = *it;
+        if( asin.isEmpty() || locale.isEmpty() || md5sum.isEmpty() )
+           {it++; continue; }
         QString url =
             QString("http://webservices.amazon.%1/onca/xml?Service=AWSECommerceService&SubscriptionId=%2&Operation=ItemLookup&ItemId=%3&ResponseGroup=Small,Images")
              .arg(localeToTLD(locale))
-             .arg(LICENSE)
+             .arg("0RQSQ0B8CRY7VX2VF3G2") //Ian Monroe
              .arg(asin);
+        debug() << url << endl;
         KIO::TransferJob* job = KIO::storedGet( url, false, false );
         KIO::Scheduler::scheduleJob(job);
         amaroK::StatusBar::instance()->newProgressOperation( job );
@@ -65,12 +69,23 @@ void RefreshImages::finishedXmlFetch( KIO::Job* xmlJob ) //SLOT
     if( !doc.setContent( xml ) )
       return;
 
-    QString imageUrl = doc.documentElement()
-       .namedItem( "Items" )
-       .namedItem( "Item" )
-       .namedItem( "LargeImage" )
-       .namedItem( "URL" ).firstChild().toText().data();
-
+    QStringList imageSizes;
+    imageSizes << "LargeImage" << "MediumImage" << "SmallImage";
+    QString imageUrl;
+    foreach( imageSizes )
+    {
+        QDomNode imageNode = doc.documentElement()
+            .namedItem( "Items" )
+            .namedItem( "Item" )
+            .namedItem( *it );
+        if( !imageNode.isNull() )
+        {
+            imageUrl = imageNode.namedItem( "URL" ).firstChild().toText().data();
+            if( !imageUrl.isEmpty() ) 
+                break;
+        } 
+    }
+    debug() << imageUrl << endl;
     KURL testUrl( imageUrl );
     if( !testUrl.isValid() ) //KIO crashs on empty strings!!!
         return;
