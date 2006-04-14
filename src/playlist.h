@@ -19,6 +19,7 @@
 #ifndef AMAROK_PLAYLIST_H
 #define AMAROK_PLAYLIST_H
 
+#include "amarok_export.h"
 #include "amarokconfig.h"
 #include "amarokdcophandler.h"
 #include "engineobserver.h"  //baseclass
@@ -96,7 +97,7 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         /** Add media to the playlist
          *  @param options you can OR these together, see the enum
          *  @param sql     Sql program to execute */
-        void insertMedia( KURL::List, int options = Append );
+        LIBAMAROK_EXPORT void insertMedia( KURL::List, int options = Append );
         void insertMediaSql( const QString& sql, int options = Append );
 
         /// Dynamic mode functions

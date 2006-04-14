@@ -174,7 +174,7 @@ namespace amaroK
     /**
      * Maps the icon name to a system icon or custom amaroK icon, depending on the settings.
      */
-    QString icon( const QString& name ); //defined in iconloader.cpp
+    LIBAMAROK_EXPORT QString icon( const QString& name ); //defined in iconloader.cpp
 
     /**
      * Removes accents from the string
@@ -182,7 +182,7 @@ namespace amaroK
      * @param onlyASCII If set, non-ascii chars will be replaced by '_'.
      * @return The cleaned up path.
      */
-    QString cleanPath( const QString &path, bool onlyASCII = false ); //defined in app.cpp
+    LIBAMAROK_EXPORT QString cleanPath( const QString &path, bool onlyASCII = false ); //defined in app.cpp
 
     /**
      * Transform path into one valid on VFAT file systems

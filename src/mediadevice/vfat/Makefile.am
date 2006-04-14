@@ -3,7 +3,7 @@ kde_services_DATA = amarok_vfat-mediadevice.desktop
 
 INCLUDES = \
     -I$(top_srcdir)/amarok/src \
-    -I$(top_srcdir)/amarok/src/amarokcore \
+    -I$(top_builddir)/amarok/src/amarokcore \
     -I$(top_srcdir)/amarok/src/amarokcore \
     -I$(top_srcdir)/amarok/src/engine \
     -I$(top_srcdir)/amarok/src/engine \

@@ -17,6 +17,7 @@
 #ifndef K3BEXPORTER_H
 #define K3BEXPORTER_H
 
+#include "amarok_export.h"
 #include "collectiondb.h"
 #include <kurl.h>
 
@@ -33,7 +34,7 @@ public:
     /**
     * @return true if the executable of K3B is found
     */
-    static bool isAvailable();
+    LIBAMAROK_EXPORT static bool isAvailable();
 
 
     /**
@@ -41,7 +42,7 @@ public:
     * @param urls The list of urls to export
     * @param openmode The mode of the album
     */
-    void exportTracks( const KURL::List &urls, int openmode=-1 );
+    LIBAMAROK_EXPORT void exportTracks( const KURL::List &urls, int openmode=-1 );
 
     /**
     * Exports the current playlist to K3B. The mode @p openmode will be used
