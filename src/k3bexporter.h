@@ -82,7 +82,7 @@ private:
     bool startNewK3bProject( DCOPRef &ref, int mode );
     K3bOpenMode openMode();
 
-    static K3bExporter *s_instance;
+    LIBAMAROK_EXPORT static K3bExporter *s_instance;
 };
 
 

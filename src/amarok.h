@@ -189,7 +189,7 @@ namespace amaroK
      * @param path The original path.
      * @return The cleaned up path.
      */
-    QString vfatPath( const QString &path ); //defined in app.cpp
+    LIBAMAROK_EXPORT QString vfatPath( const QString &path ); //defined in app.cpp
 }
 
 
