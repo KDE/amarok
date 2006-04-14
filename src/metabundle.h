@@ -68,7 +68,6 @@ public:
         LastPlayed,
         Mood,
         Filesize,
-        UniqueId,
         NUM_COLUMNS
     };
 

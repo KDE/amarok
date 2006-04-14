@@ -102,7 +102,6 @@ const QString MetaBundle::exactColumnName( int c ) //static
         case LastPlayed: return "LastPlayed";
         case Filesize:   return "Filesize";
         case Mood:       return "Mood";
-        case UniqueId:   return "UniqueId";
     }
     return "<ERROR>";
 }
@@ -132,7 +131,6 @@ const QString MetaBundle::prettyColumnName( int index ) //static
         case LastPlayed: return i18n( "Last Played" );
         case Mood:       return i18n( "Mood"        );
         case Filesize:   return i18n( "File Size"   );
-        case UniqueId:   return i18n( "Unique ID"   );
     }
     return "This is a bug.";
 }
