@@ -1220,6 +1220,12 @@ namespace amaroK
                 s = "_" + s;
         }
 
+        while( s.startsWith( "." ) )
+            s = s.mid(1);
+
+        while( s.endsWith( "." ) )
+            s = s.left( s.length()-1 );
+
         s = s.left(255);
         len = s.length();
         if( s[len-1] == ' ' )
