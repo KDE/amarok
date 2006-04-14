@@ -1638,7 +1638,7 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
         }
         else
         {
-            m_organizeURLs += urls;
+            m_organizeURLs += amaroK::recursiveUrlExpand( urls );
             amaroK::StatusBar::instance()->incrementProgressTotalSteps( this, urls.count() );
             return;
         }
@@ -1701,7 +1701,7 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
         bool write = dialog.overwriteCheck->isChecked();
         KURL::List skipped;
 
-        m_organizeURLs = urls;
+        m_organizeURLs = amaroK::recursiveUrlExpand( urls );
         m_organizeCopyMode = copy;
         CollectionDB::instance()->createTables( true ); // create temp tables
         amaroK::StatusBar::instance()->newProgressOperation( this )

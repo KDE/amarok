@@ -452,7 +452,7 @@ FileBrowser::contextMenuActivated( int id )
 
     case EditTags:
         {
-            KURL::List list = selectedItems();
+            KURL::List list = amaroK::recursiveUrlExpand( selectedItems() );
             TagDialog *dialog = NULL;
             if( list.count() == 1 )
             {

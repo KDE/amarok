@@ -116,6 +116,7 @@ namespace amaroK
      * (playlists are ignored)
      */
     LIBAMAROK_EXPORT KURL::List recursiveUrlExpand( const KURL &url ); //defined in playlistloader.cpp
+    LIBAMAROK_EXPORT KURL::List recursiveUrlExpand( const KURL::List &urls ); //defined in playlistloader.cpp
 
     QString verboseTimeSince( const QDateTime &datetime ); //defined in contextbrowser.cpp
 

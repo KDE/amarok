@@ -390,6 +390,16 @@ recursiveUrlExpand( const KURL &url )
     return urls;
 }
 
+KURL::List
+recursiveUrlExpand( const KURL::List &list )
+{
+    KURL::List urls;
+    foreachType( KURL::List, list )
+        urls += recursiveUrlExpand( *it );
+
+    return urls;
+}
+
 } // amaroK
 
 void
