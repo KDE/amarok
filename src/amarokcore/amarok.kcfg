@@ -272,7 +272,7 @@
     <entry key="Ascii Only" type="Bool">
         <label>Whether organize files will rename files such that they only contain 7-bit ASCII characters.</label>
         <whatsthis>If set, Organize files will replace characters that are not compatible with the 7-bit ASCII character set.</whatsthis>
-        <default>true</default>
+        <default>false</default>
     </entry>
     <entry key="Use Custom Scheme" type="Bool">
         <label>Whether organize files will use a custom file naming scheme.</label>
