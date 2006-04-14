@@ -2950,6 +2950,11 @@ CollectionDB::getLyrics( const QString &url )
     return values[0];
 }
 
+void CollectionDB::removeInvalidAmazonInfo( const QString& md5sum )
+{
+    query( QString( "DELETE FROM amazon WHERE filename='%1'" ).arg( md5sum ) );
+}
+
 void CollectionDB::newAmazonReloadDate( const QString& asin, const QString& locale, const QString& md5sum)
 {
     QStringList values = query(QString("SELECT filename FROM amazon WHERE filename = '%1'")

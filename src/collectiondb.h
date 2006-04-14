@@ -385,7 +385,9 @@ class CollectionDB : public QObject, public EngineObserver
 
         void setLyrics( const QString& url, const QString& lyrics );
         QString getLyrics( const QString& url );
-
+        
+        /** Remove from the amazon table the item with the specified md5sum **/
+        void removeInvalidAmazonInfo( const QString& md5sum );
         void newAmazonReloadDate( const QString& asin, const QString& locale, const QString& md5sum );
         QStringList staleImages();
 
