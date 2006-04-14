@@ -8,6 +8,7 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
+#include "app.h"
 #include "browserToolBar.h"
 #include "debug.h"
 #include "collectiondb.h"
@@ -277,6 +278,11 @@ ContextBrowser::ContextBrowser( const char *name )
              this, SLOT( tagsChanged( const MetaBundle& ) ) );
     connect( CollectionDB::instance(), SIGNAL( imageFetched( const QString& ) ),
              this, SLOT( imageFetched( const QString& ) ) );
+
+    connect( static_cast<App*>( qApp ), SIGNAL( useScores( bool ) ),
+             this, SLOT( refreshCurrentTrackPage() ) );
+    connect( static_cast<App*>( qApp ), SIGNAL( useRatings( bool ) ),
+             this, SLOT( refreshCurrentTrackPage() ) );
 
     showContext( KURL( "current://track" ) );
 }
@@ -842,6 +848,7 @@ private:
     void showHome();
     QStringList showHomeByAlbums();
     void constructHTMLAlbums( const QStringList &albums, QString &htmlCode, const QString &idPrefix );
+    static QString statsHTML( int score, int rating );
 
     virtual void completeJob()
     {
@@ -948,6 +955,8 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
     ThreadWeaver::instance()->onlyOneJob( new CurrentTrackJob( this ) );
 }
+
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Shows the statistics summary when no track is playing
@@ -1679,7 +1688,6 @@ void CurrentTrackJob::showBrowseArtistHeader( const QString &artist )
 
 void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
 {
-    const bool showRating = Playlist::instance()->visibleColumns().contains( MetaBundle::Rating );
     QueryBuilder qb;
     QStringList values;
     // <Current Track Information>
@@ -1775,21 +1783,6 @@ void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
         const uint score = values[3].toInt();
         const uint rating = values[4].toInt();
 
-        const QString scoreBox =
-            "<div align='right'>"
-            "<table class='scoreBox' border='0' cellspacing='0' cellpadding='0' title='"
-            + ( showRating ? i18n( "Score: %2, Rating: %4" ) : i18n( "Score: %2" ) ) + "'>" +
-                                                               "<tr>"
-                                                                   "<td nowrap>%1&nbsp;</td>"
-                                                                   "<td>"
-                                                                   "<div class='sbouter'>"
-                                                                   "<div class='sbinner' style='width: %3px;'></div>"
-                                                                   "</div>"
-                                                                   "</td>"
-                                                                   "</tr>"
-                                                                   "</table>"
-                                                                   "</div>";
-
         //SAFE   = .arg( x, y )
         //UNSAFE = .arg( x ).arg( y )
         m_HTMLSource.append( QString(
@@ -1799,9 +1792,7 @@ void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
                     "<span>%4</span>"
                     )
                 .arg( i18n( "Track played once", "Track played %n times", playtimes ),
-                    showRating ? scoreBox.arg( score ).arg( score ).arg( rating * 5 )
-                                         .arg( MetaBundle::prettyRating( rating ) )
-                    : scoreBox.arg( score ).arg( score ).arg(  score / 2  ),
+                    statsHTML( score, rating ),
                     i18n( "Last played: %1" ).arg( amaroK::verboseTimeSince( lastPlay ) ),
                     i18n( "First played: %1" ).arg( amaroK::verboseTimeSince( firstPlay ) ) ) );
     }
@@ -1909,7 +1900,6 @@ void CurrentTrackJob::showRelatedArtists( const QString &artist, const QStringLi
 
 void CurrentTrackJob::showSuggestedSongs( const QStringList &relArtists )
 {
-    const bool showRating = Playlist::instance()->visibleColumns().contains( MetaBundle::Rating );
     QString token;
 
     QueryBuilder qb;
@@ -1971,14 +1961,8 @@ void CurrentTrackJob::showSuggestedSongs( const QStringList &relArtists )
                     + i18n("&#xa0;&#8211; ") +
                     "</span><span class='album-song-title'>" + escapeHTML( values[i + 1] ) + "</span>"
                     "</a>"
-                    "</td>" +
-                    QString("<td class='sbtext' width='1' title='%1'>").arg( i18n( "Score" ) ) + values[i + 3] + "</td>"
-                    "<td class='rbtext' width='1' title='" + ( showRating ? i18n( "Rating" ) : i18n( "Score" ) ) + "'>"
-                    "<div class='sbouter'>"
-                    "<div class='sbinner' style='width: "
-                    + QString::number( showRating ? values[i + 4].toInt() * 5 : values[i + 3].toInt() / 2 ) + "px;'></div>"
-                    "</div>"
                     "</td>"
+                    "<td>" + statsHTML( values[i + 3].toInt(), values[i + 4].toInt() ) + "</td>"
                     "<td width='1'></td>"
                     "</tr>" );
 
@@ -1995,7 +1979,6 @@ void CurrentTrackJob::showSuggestedSongs( const QStringList &relArtists )
 void CurrentTrackJob::showArtistsFaves( const QString &artist, uint artist_id )
 {
     QString artistName = artist.isEmpty() ? escapeHTML( i18n( "This Artist" ) ) : escapeHTML( artist );
-    const bool showRating = Playlist::instance()->visibleColumns().contains( MetaBundle::Rating );
     QueryBuilder qb;
     QStringList values;
 
@@ -2029,13 +2012,7 @@ void CurrentTrackJob::showArtistsFaves( const QString &artist, uint artist_id )
                     "<span class='album-song-title'>" + escapeHTML( values[i] ) + "</span>"
                     "</a>"
                     "</td>"
-                    "<td class='sbtext' width='1' title='" + i18n( "Score" ) + "'>" + values[i + 2] + "</td>"
-                    "<td class='rbtext' width='1' title='" + ( showRating ? i18n( "Rating" ) : i18n( "Score" ) ) + "'>"
-                    "<div class='sbouter'>"
-                    "<div class='sbinner' style='width: "
-                    + QString::number( showRating ? values[i + 3].toInt() * 5 : values[i + 2].toInt() / 2 ) + "px;'></div>"
-                    "</div>"
-                    "</td>"
+                    "<td>" + statsHTML( values[i + 2].toInt(), values[i + 3].toInt() ) + "</td>"
                     "<td width='1'></td>"
                     "</tr>"
                     );
@@ -2350,6 +2327,47 @@ void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artis
     // </Compilations with this artist>
 }
 
+QString CurrentTrackJob::statsHTML( int score, int rating ) //static
+{
+    if( !AmarokConfig::useScores() && !AmarokConfig::useRatings() )
+        return "";
+
+    const QString table = "<table class='statsBox' align='right' border='0' cellspacing='0' cellpadding='0'>%1</table>";
+    QString contents;
+
+    if( AmarokConfig::useScores() )
+        contents += QString( "<tr title='%1'>" ).arg( i18n( "Score: %1" ).arg( score ) ) +
+                    "<td class='sbtext' width='1'>" + QString::number( score ) + "</td>"
+                    "<td class='rbtext' width='1'>"
+                    "<div class='sbouter'>"
+                    "<div class='sbinner' style='width: "
+                    + QString::number( score / 2 ) + "px;'></div>"
+                    "</div>"
+                    "</td>"
+                    "</tr>";
+
+    if( AmarokConfig::useRatings() )
+    {
+        contents += QString( "<tr title='%1'" ).arg( i18n( "Rating: %1" )
+                                                      .arg( MetaBundle::prettyRating( rating ) ) ) +
+                    "<td class='ratingbox' align='center' colspan='2'>";
+        if( rating )
+        {
+            const QString img = "<img src='%1' style='height:1em;'></img>";
+            for( int i = 0, n = rating / 2; i < n; ++i )
+                contents += img.arg( locate( "data", "amarok/images/star.png" ) );
+            if( rating % 2 )
+                contents += img.arg( locate( "data", "amarok/images/smallstar.png" ) );
+        }
+        else
+            contents += i18n( "Not rated" );
+        contents += "</td>"
+                    "</tr>";
+    }
+
+    return table.arg( contents );
+}
+
 bool CurrentTrackJob::doJob()
 {
     DEBUG_BLOCK
@@ -2516,7 +2534,6 @@ void ContextBrowser::showScanning()
     m_currentTrackPage->set( m_HTMLSource );
     saveHtmlData(); // Send html code to file
 }
-
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Lyrics-Tab
@@ -3352,6 +3369,11 @@ void ContextBrowser::tagsChanged( const MetaBundle &bundle ) //SLOT
             return;
     }
 
+    refreshCurrentTrackPage();
+}
+
+void ContextBrowser::refreshCurrentTrackPage() //SLOT
+{
     if ( currentPage() == m_contextTab ) // this is for compilations or artist == ""
     {
         m_dirtyCurrentTrackPage = true;

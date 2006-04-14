@@ -81,6 +81,12 @@ email                : markey@web.de
     #endif //SCHEDAFFINITY_SUPPORT
 #endif //__linux__
 
+namespace amaroK
+{
+    void setUseScores( bool use ) { static_cast<App*>( qApp )->setUseScores( use ); }
+    void setUseRatings( bool use ) { static_cast<App*>( qApp )->setUseRatings( use ); }
+}
+
 int App::mainThreadId = 0;
 
 LIBAMAROK_EXPORT KAboutData aboutData( "amarok",
@@ -1061,6 +1067,18 @@ void App::firstRunWizard()
 
         config->updateSettings();
     }
+}
+
+void App::setUseScores( bool use )
+{
+    AmarokConfig::setUseScores( use );
+    emit useScores( use );
+}
+
+void App::setUseRatings( bool use )
+{
+    AmarokConfig::setUseRatings( use );
+    emit useRatings( use );
 }
 
 void App::setRating( int n )

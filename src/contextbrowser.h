@@ -81,6 +81,7 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         void similarArtistsFetched( const QString &artist );
         void imageFetched( const QString &remoteURL );
         void tagsChanged( const MetaBundle &bundle );
+        void refreshCurrentTrackPage();
 
         void contextHistoryBack();
 

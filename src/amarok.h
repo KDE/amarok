@@ -157,6 +157,9 @@ namespace amaroK
     */
     int databaseTypeCode( const QString type ); //defined in configdialog.cpp
 
+    void setUseScores( bool use ); //defined in app.cpp
+    void setUseRatings( bool use );
+
     bool repeatNone(); //defined in actionclasses.cpp
     bool repeatTrack();
     bool repeatAlbum();

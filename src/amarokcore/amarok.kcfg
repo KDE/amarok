@@ -46,6 +46,16 @@
         <whatsthis>Set this to display remaining track time instead of past track time in the player window.</whatsthis>
         <default>false</default>
     </entry>
+    <entry key="Use Scores" type="Bool">
+        <label>Whether to show scores for tracks</label>
+        <whatsthis>A score is a number from 0 to 100, determined automatically by amaroK based on how often you listen to a track and how much of it you listen to.</whatsthis>
+        <default>true</default>
+    </entry>
+    <entry key="Use Ratings" type="Bool">
+        <label>Whether to show ratings for tracks</label>
+        <whatsthis>A rating is 1 to 5 stars, set manually by you to describe how well you like a given track.</whatsthis>
+        <default>false</default>
+    </entry>
     <entry key="Entire Albums" type="Bool">
         <label>Whether to play entire albums</label>
         <whatsthis>If set, after the end of a track amaroK will play the next track from the same album it finds in the playlist, and at the end go to the beginning of the next album.</whatsthis>

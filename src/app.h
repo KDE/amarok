@@ -52,6 +52,10 @@ class LIBAMAROK_EXPORT App : public KApplication, public EngineObserver
 
         // FRIENDS ------
         friend class PlaylistWindow; //requires access to applySettings()
+
+    signals:
+        void useScores( bool use );
+        void useRatings( bool use );
     protected: /* for OSD, tray, and dcop */
         void engineStateChanged( Engine::State state, Engine::State oldState = Engine::Empty );
         void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
@@ -74,6 +78,8 @@ class LIBAMAROK_EXPORT App : public KApplication, public EngineObserver
         void slotConfigToolBars();
         void slotConfigEqualizer();
         void firstRunWizard();
+        void setUseScores( bool use );
+        void setUseRatings( bool use );
 
     private:
         /** Workaround for HyperThreading CPU's, @see BUG 99199 */
