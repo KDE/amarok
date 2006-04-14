@@ -85,6 +85,21 @@ class QuizPlugin < Plugin
             when "quiz_fetch" then
                 fetch_data( m )
                 shuffle
+
+            when "hint" then
+                if @current_question == nil
+                   @bot.say( m.replyto, "Get a question first!" )
+                else
+                   s = ""
+                   @current_answer.length.times do
+                       s << "_"
+                   end
+
+                   index = rand( s.length )
+                   s[index] = @current_answer[index]
+
+                   @bot.say( m.replyto, "Hint: #{s}" )
+                end
         end
     end
 
@@ -103,6 +118,7 @@ end
 plugin = QuizPlugin.new
 plugin.register("ask")
 plugin.register("answer")
+plugin.register("hint")
 plugin.register("quiz_fetch")
 
 
