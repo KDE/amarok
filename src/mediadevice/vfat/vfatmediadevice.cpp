@@ -27,6 +27,8 @@ AMAROK_EXPORT_PLUGIN( VfatMediaDevice )
 #include "metabundle.h"
 #include "collectiondb.h"
 #include "collectionbrowser.h"
+#include "k3bexporter.h"
+#include "playlist.h"
 #include "statusbar/statusbar.h"
 #include "transferdialog.h"
 
@@ -111,7 +113,15 @@ class VfatMediaItem : public MediaItem
 QString
 VfatMediaDevice::fileName( const MetaBundle &bundle )
 {
-    QString result;
+    QString result = bundle.artist();
+
+    if( !result.isEmpty() )
+    {
+        if( m_spacesToUnderscores )
+            result += "_";
+        else
+            result += " ";
+    }
 
     if( bundle.track() )
     {
@@ -123,7 +133,9 @@ VfatMediaDevice::fileName( const MetaBundle &bundle )
             result += " ";
     }
 
-    return result + cleanPath( bundle.prettyTitle().remove( "'" ) + "." + bundle.type() );
+    result += cleanPath( bundle.title() + "." + bundle.type() );
+
+    return result;
 }
 
 
@@ -254,7 +266,7 @@ VfatMediaDevice::renameItem( QListViewItem *item ) // SLOT
     debug() << "Renaming: " << src << " to: " << dest << endl;
 
     //TODO: do we want a progress dialog?  If so, set last false to true
-    KIO::NetAccess::file_move( KURL(src), KURL(dest), -1, false, false, false );
+    KIO::NetAccess::file_move( KURL::fromPathOrURL(src), KURL::fromPathOrURL(dest), -1, false, false, false );
 
     #undef item
 
@@ -476,27 +488,38 @@ VfatMediaDevice::trackExists( const MetaBundle& bundle )
 void
 VfatMediaDevice::downloadSelectedItems()
 {
+    KURL::List urls = getSelectedItems();
+
+    CollectionView::instance()->organizeFiles( urls, "Copy Files to Collection", true );
+
+    hideProgress();
+}
+
+KURL::List
+VfatMediaDevice::getSelectedItems()
+{
     while ( !m_downloadList.empty() )
         m_downloadList.pop_front();
+
     QListViewItemIterator it( m_view, QListViewItemIterator::Selected );
     MediaItem *curritem;
     for( ; it.current(); ++it )
     {
         curritem = static_cast<MediaItem *>(*it);
+        debug() << "text(0)=" << curritem->text( 0 ) << endl;
         if( curritem->type() == MediaItem::DIRECTORY )
+        {
+            debug() << "drill" << curritem->text( 0 ) << endl;
             drillDown( curritem );
+        }
         else //file
-            m_downloadList.append( KURL( getFullPath( curritem ) ) );
+        {
+            debug() << "file: " << curritem->text( 0 )<< ", path: " << getFullPath( curritem, true, true, false ) << endl;
+            m_downloadList.append( KURL::fromPathOrURL( getFullPath( curritem, true, true, false ) ) );
+        }
     }
 
-    //here is where to call the dialog...maybe test first by printing out the entries
-    KURL::List::iterator kit;
-    //for( kit = m_downloadList.begin(); kit != m_downloadList.end(); ++kit)
-    //    debug() << "Going to download: " << (*kit).path() << endl;
-
-    CollectionView::instance()->organizeFiles( m_downloadList, "Download Files to Collection", true );
-
-    hideProgress();
+    return m_downloadList;
 }
 
 void
@@ -505,7 +528,7 @@ VfatMediaDevice::drillDown( MediaItem *curritem )
     //okay, can recursively call this for directories...
     m_downloadListerFinished  = 0;
     int count = 0;
-    m_currentJobUrl = KURL( getFullPath( curritem ) );
+    m_currentJobUrl = KURL::fromPathOrURL( getFullPath( curritem, true, true, false ) );
     KIO::ListJob * listjob = KIO::listRecursive( m_currentJobUrl, false, false );
     connect( listjob, SIGNAL( result( KIO::Job* ) ), this, SLOT( downloadSlotResult( KIO::Job* ) ) );
     connect( listjob, SIGNAL( entries( KIO::Job*, const KIO::UDSEntryList& ) ), this, SLOT( downloadSlotEntries( KIO::Job*, const KIO::UDSEntryList& ) ) );
@@ -688,7 +711,7 @@ VfatMediaDevice::addTrackToList( int type, QString name, int /*size*/ )
     m_last->setEncodedName( name );
     m_last->setText( 0, name );
 
-    m_last->setBundle( new MetaBundle( KURL( getFullPath(m_last, true) ), true, TagLib::AudioProperties::Fast ) );
+    m_last->setBundle( new MetaBundle( KURL::fromPathOrURL( getFullPath(m_last, true) ), true, TagLib::AudioProperties::Fast ) );
 
     return 0;
 }
@@ -773,13 +796,25 @@ VfatMediaDevice::getFullPath( const QListViewItem *item, const bool getFilename,
 void
 VfatMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
 {
-    enum Actions { DOWNLOAD, DIRECTORY, RENAME, DELETE, TRANSFER_HERE };
+    enum Actions { APPEND, LOAD, QUEUE,
+        DOWNLOAD,
+        BURN_DATACD, BURN_AUDIOCD,
+        DIRECTORY, RENAME,
+        DELETE, TRANSFER_HERE };
 
     MediaItem *item = static_cast<MediaItem *>(qitem);
     if ( item )
     {
         KPopupMenu menu( m_view );
-        menu.insertItem( SmallIconSet( "down" ), i18n( "Download" ), DOWNLOAD );
+        menu.insertItem( SmallIconSet( amaroK::icon( "playlist" ) ), i18n( "&Load" ), LOAD );
+        menu.insertItem( SmallIconSet( amaroK::icon( "1downarrow" ) ), i18n( "&Append to Playlist" ), APPEND );
+        menu.insertItem( SmallIconSet( amaroK::icon( "2rightarrow" ) ), i18n( "&Queue Tracks" ), QUEUE );
+        menu.insertSeparator();
+        menu.insertItem( SmallIconSet( "collection" ), i18n( "&Copy to Collection" ), DOWNLOAD );
+        menu.insertItem( SmallIconSet( amaroK::icon( "cdrom_unmount" ) ), i18n( "Burn to CD as Data" ), BURN_DATACD );
+        menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
+        menu.insertItem( SmallIconSet( amaroK::icon( "cdaudio_unmount" ) ), i18n( "Burn to CD as Audio" ), BURN_AUDIOCD );
+        menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( "folder" ), i18n("Add Directory" ), DIRECTORY );
         menu.insertItem( SmallIconSet( "editclear" ), i18n( "Rename" ), RENAME );
@@ -793,8 +828,23 @@ VfatMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
         int id =  menu.exec( point );
         switch( id )
         {
+            case LOAD:
+                Playlist::instance()->insertMedia( getSelectedItems(), Playlist::Replace );
+                break;
+            case APPEND:
+                Playlist::instance()->insertMedia( getSelectedItems(), Playlist::Append );
+                break;
+            case QUEUE:
+                Playlist::instance()->insertMedia( getSelectedItems(), Playlist::Queue );
+                break;
             case DOWNLOAD:
                 downloadSelectedItems();
+                break;
+            case BURN_DATACD:
+                K3bExporter::instance()->exportTracks( getSelectedItems(), K3bExporter::DataCD );
+                break;
+            case BURN_AUDIOCD:
+                K3bExporter::instance()->exportTracks( getSelectedItems(), K3bExporter::AudioCD );
                 break;
 
             case DIRECTORY:
