@@ -28,18 +28,26 @@ class QuizPlugin < Plugin
     end
 
     def privmsg( m )
-        i = rand( @quest.length / 2 ) * 2
-        @current_question = @quest[ i ]
-        @current_answer   = @quest[ i + 1 ]
+        if m.message == "ask"
+            i = rand( @quest.length / 2 ) * 2
+            @current_question = @quest[ i ]
+            @current_answer   = @quest[ i + 1 ]
 
-        @bot.say( m.replyto, @current_question )
+            @bot.say( m.replyto, @current_question )
+        end
+
+        if m.message == "answer"
+            @bot.say( m.replyto, "The correct answer is: #{@current_answer}" )
+
+            @current_question = nil
+        end
     end
 
     def listen( m )
         return if @current_question == nil
 
         if m.message.downcase == @current_answer.downcase
-            @bot.say( m.replyto, "BINGO!! Correct answer." )
+            @bot.say( m.replyto, "BINGO!! #{m.sourcenick} got it right. The answer was: #{@current_answer}" )
             @current_question = nil
         end
     end
@@ -49,4 +57,6 @@ end
 
 plugin = QuizPlugin.new
 plugin.register("ask")
+plugin.register("answer")
+
 
