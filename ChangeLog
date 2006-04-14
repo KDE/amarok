@@ -15,6 +15,7 @@ VERSION 1.4.0:
       (BR 125414)
 
   BUGFIXES:
+    * Amazon no longer needlessly tries to refetch invalid entries. (BR 125168)
     * Skip hidden directories while scanning the collection. (BR 115478)
     * Instead of cancelling collection organiziation operations when starting
       new one append to running one.
