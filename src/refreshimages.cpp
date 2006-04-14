@@ -37,15 +37,16 @@ RefreshImages::RefreshImages()
         QString locale = *it;
         it++;
         QString md5sum = *it;
-        if( asin.isEmpty() || locale.isEmpty() )
+        if( asin.isEmpty() || locale.isEmpty() || md5sum.isEmpty())
         {   
             //somehow we have entries without ASIN    
-            CollectionDB::instance()->removeInvalidAmazonInfo(md5sum); 
-            it++; 
+            if ( !md5sum.isEmpty() ) //I've never seen this, just to be sure
+                CollectionDB::instance()->removeInvalidAmazonInfo(md5sum); 
+            it++;
+            if(it==end)
+                deleteLater();
             continue; 
         }
-        else if ( md5sum.isEmpty() ) //I've never seen this, just to be sure
-            { it++; continue; }
         QString url =
             QString("http://webservices.amazon.%1/onca/xml?Service=AWSECommerceService&SubscriptionId=%2&Operation=ItemLookup&ItemId=%3&ResponseGroup=Small,Images")
              .arg(localeToTLD(locale))
