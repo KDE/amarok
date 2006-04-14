@@ -8,19 +8,34 @@ class QuizPlugin < Plugin
         super
 
         @quest = Array.new
-        @quest << "What, in population terms, is the largest Spanish speaking country in the world?"
-        @quest << "Mexico"
-        @quest << "In which country would you find both the rivers Oder and Vistula, which flow into the Baltic Sea?"
-        @quest << "Poland"
-        @quest << "What is the capital of Iran?"
-        @quest << "Tehran"
-        @quest << "Lusitania was the Roman name for which EU country?"
-        @quest << "Portugal"
-        @quest << "In which country is Timbuktu?"
-        @quest << "Mali"
 
         @current_question = nil
         @current_answer  = nil
+    end
+
+    def fetch_data( m )
+        @bot.say( m.replyto, "Fetching questions from server.." )
+        data = ""
+
+        begin
+            data = bot.httputil.get( URI.parse( "http://amarok.kde.org/amarokwiki/index.php/Rbot_Quiz" ) )
+            @bot.say( m.replyto, "done." )
+        rescue
+            @bot.say( m.replyto, "Failed to connect to the server. oioi." )
+            return
+        end
+
+        @quest = []
+        data = data.split( "QUIZ DATA START" )[1]
+        data = data.split( "QUIZ DATA END" )[0]
+
+        entries = data.split( "</p><p><br />" )
+
+        entries.each do |e|
+            p = e.split( "</p><p>" )
+            @quest << p[0].chomp
+            @quest << p[1].chomp
+        end
     end
 
     def help( plugin, topic="" )
@@ -28,18 +43,23 @@ class QuizPlugin < Plugin
     end
 
     def privmsg( m )
-        if m.message == "ask"
-            i = rand( @quest.length / 2 ) * 2
-            @current_question = @quest[ i ]
-            @current_answer   = @quest[ i + 1 ]
+        case m.message
+            when "ask" then
+                if @quest.empty? then fetch_data( m ) end
 
-            @bot.say( m.replyto, @current_question )
-        end
+                i = rand( @quest.length / 2 ) * 2
+                @current_question = @quest[ i ]
+                @current_answer   = @quest[ i + 1 ]
 
-        if m.message == "answer"
-            @bot.say( m.replyto, "The correct answer is: #{@current_answer}" )
+                @bot.say( m.replyto, @current_question )
 
-            @current_question = nil
+            when "answer" then
+                @bot.say( m.replyto, "The correct answer is: #{@current_answer}" )
+
+                @current_question = nil
+
+            when "quiz_fetch" then
+                fetch_data( m )
         end
     end
 
@@ -58,5 +78,6 @@ end
 plugin = QuizPlugin.new
 plugin.register("ask")
 plugin.register("answer")
+plugin.register("quiz_fetch")
 
 
