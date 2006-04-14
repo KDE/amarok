@@ -1070,15 +1070,18 @@ Playlist::playNextTrack( bool forceNext )
                         while( m_prevAlbums.count() )
                             removeFromPreviousAlbums();
 
-                        // don't add it to previous albums if we only have one album in the playlist
-                        // would loop infinitely otherwise
-                        QPtrList<PlaylistAlbum> albums;
-                        for( MyIterator it( this, MyIterator::Visible ); *it && albums.count() <= 1; ++it )
-                            if( albums.findRef( (*it)->m_album ) == -1 )
-                                albums.append( (*it)->m_album );
+                        if( m_currentTrack )
+                        {
+                            // don't add it to previous albums if we only have one album in the playlist
+                            // would loop infinitely otherwise
+                            QPtrList<PlaylistAlbum> albums;
+                            for( MyIterator it( this, MyIterator::Visible ); *it && albums.count() <= 1; ++it )
+                                if( albums.findRef( (*it)->m_album ) == -1 )
+                                    albums.append( (*it)->m_album );
 
-                        if ( albums.count() > 1 )
-                            appendToPreviousAlbums( m_currentTrack->m_album );
+                            if ( albums.count() > 1 )
+                                appendToPreviousAlbums( m_currentTrack->m_album );
+                        }
                     }
                     else {
                         m_prevAlbums.first(); //set's current item to first item
@@ -1086,7 +1089,7 @@ Playlist::playNextTrack( bool forceNext )
                         //keep 80 tracks in the previous list so item time user pushes play
                         //we don't risk playing anything too recent
                         while( m_prevAlbums.count() > 8 )
-                            removeFromPreviousAlbums();; //removes current item
+                            removeFromPreviousAlbums(); //removes current item
                     }
                 }
 
@@ -1097,14 +1100,17 @@ Playlist::playNextTrack( bool forceNext )
                         while( m_prevTracks.count() )
                             removeFromPreviousTracks();
 
-                        // don't add it to previous tracks if we only have one file in the playlist
-                        // would loop infinitely otherwise
-                        int count = 0;
-                        for( MyIterator it( this, MyIterator::Visible ); *it && count <= 1; ++it )
-                            ++count;
+                        if( m_currentTrack )
+                        {
+                            // don't add it to previous tracks if we only have one file in the playlist
+                            // would loop infinitely otherwise
+                            int count = 0;
+                            for( MyIterator it( this, MyIterator::Visible ); *it && count <= 1; ++it )
+                                ++count;
 
-                        if ( count > 1 )
-                            appendToPreviousTracks( m_currentTrack );
+                            if ( count > 1 )
+                                appendToPreviousTracks( m_currentTrack );
+                        }
                     }
                     else {
                         m_prevTracks.first(); //set's current item to first item
@@ -2938,7 +2944,7 @@ Playlist::customEvent( QCustomEvent *e )
                 prev->setEnabled( false );
 
             activate( after );
-            if ( dynamicMode()->cycleTracks() )
+            if ( dynamicMode() && dynamicMode()->cycleTracks() )
                 adjustDynamicPrevious( dynamicMode()->previousCount() );
         }
 
