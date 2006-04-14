@@ -551,6 +551,10 @@
     <entry key="Collection Folders" type="StringList">
         <label>List of folders in the Collection</label>
     </entry>
+    <entry key="AdvancedTagFeatures" type="Bool">
+        <label>Enable/disable advanced tag-based features (warning: alpha status, and changes your files!)</label>
+        <default>false</default>
+    </entry>
 </group>
 
 <group name="MySql">

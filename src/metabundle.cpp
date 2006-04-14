@@ -7,6 +7,7 @@
 #define DEBUG_PREFIX "MetaBundle"
 
 #include "amarok.h"
+#include "amarokconfig.h"
 #include "debug.h"
 #include "collectiondb.h"
 #include <kfilemetainfo.h>
@@ -26,9 +27,11 @@
 #include <taglib/xiphcomment.h>
 #include <taglib/mpegfile.h>
 #include <taglib/oggfile.h>
+#include <taglib/oggflacfile.h>
 #include <taglib/vorbisfile.h>
 #include <taglib/flacfile.h>
 #include <taglib/textidentificationframe.h>
+#include <taglib/uniquefileidentifierframe.h>
 #include <taglib/xiphcomment.h>
 
 #include <config.h>
@@ -48,7 +51,7 @@ MetaBundle::EmbeddedImage::EmbeddedImage( const TagLib::ByteVector& data, const 
 {
     m_data.duplicate( data.data(), data.size() );
 }
-        
+
 const QCString &MetaBundle::EmbeddedImage::hash() const
 {
     if( m_hash.isEmpty() ) {
@@ -99,6 +102,7 @@ const QString MetaBundle::exactColumnName( int c ) //static
         case LastPlayed: return "LastPlayed";
         case Filesize:   return "Filesize";
         case Mood:       return "Mood";
+        case UniqueId:   return "UniqueId";
     }
     return "<ERROR>";
 }
@@ -128,6 +132,7 @@ const QString MetaBundle::prettyColumnName( int index ) //static
         case LastPlayed: return i18n( "Last Played" );
         case Mood:       return i18n( "Mood"        );
         case Filesize:   return i18n( "File Size"   );
+        case UniqueId:   return i18n( "Unique ID"   );
     }
     return "This is a bug.";
 }
@@ -243,6 +248,7 @@ MetaBundle::MetaBundle( const MetaBundle &bundle )
     , m_genre( bundle.m_genre )
     , m_streamName( bundle.m_streamName )
     , m_streamUrl( bundle.m_streamUrl )
+    , m_uniqueId( bundle.m_uniqueId )
     , m_year( bundle.m_year )
     , m_discNumber( bundle.m_discNumber )
     , m_track( bundle.m_track )
@@ -280,6 +286,7 @@ MetaBundle::operator=( const MetaBundle& bundle )
     m_genre = bundle.m_genre;
     m_streamName = bundle.m_streamName;
     m_streamUrl = bundle.m_streamUrl;
+    m_uniqueId = bundle.m_uniqueId;
     m_year = bundle.m_year;
     m_discNumber = bundle.m_discNumber;
     m_track = bundle.m_track;
@@ -313,7 +320,8 @@ MetaBundle::checkExists()
 bool
 MetaBundle::operator==( const MetaBundle& bundle ) const
 {
-    return artist()     == bundle.artist() &&
+    return uniqueId()   == bundle.uniqueId() && //first, since if using IDs will return faster
+           artist()     == bundle.artist() &&
            title()      == bundle.title() &&
            composer()   == bundle.composer() &&
            album()      == bundle.album() &&
@@ -364,8 +372,11 @@ MetaBundle::init( const KFileMetaInfo& info )
 
         // For title, check if it is valid. If not, use prettyTitle.
         // @see bug:83650
-        const KFileMetaInfoItem item = info.item( "Title" );
-        m_title = item.isValid() ? item.string() : prettyTitle( m_url.fileName() );
+        const KFileMetaInfoItem itemtitle = info.item( "Title" );
+        m_title = itemtitle.isValid() ? itemtitle.string() : prettyTitle( m_url.fileName() );
+
+        const KFileMetaInfoItem itemid = info.item( "Unique ID" );
+        m_uniqueId = itemid.isValid() ? itemid.string() : QString::null;
 
         // because whoever designed KMetaInfoItem is a donkey
         #define makeSane( x ) if( x == "---" ) x = null;
@@ -447,10 +458,11 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
        we have to cast the files, not the tags! */
 
         QString disc;
+        bool atf = AmarokConfig::advancedTagFeatures();
         if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
         {
             m_type = mp3;
-            if ( file->ID3v2Tag() )
+            if ( file->ID3v2Tag( atf ) )
             {
                 if ( !file->ID3v2Tag()->frameListMap()["TPOS"].isEmpty() )
                     disc = TStringToQString( file->ID3v2Tag()->frameListMap()["TPOS"].front()->toString() ).stripWhiteSpace();
@@ -461,6 +473,9 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
                 if(images) {
                     loadImagesFromTag( *file->ID3v2Tag(), *images );
                 }
+
+                if ( atf )
+                    setUniqueId( fileref );
             }
         }
         else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
@@ -473,18 +488,24 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
 
                 if ( !file->tag()->fieldListMap()[ "DISCNUMBER" ].isEmpty() )
                     disc = TStringToQString( file->tag()->fieldListMap()["DISCNUMBER"].front() ).stripWhiteSpace();
+
+                if ( atf )
+                    setUniqueId( fileref );
             }
         }
         else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
         {
             m_type = flac;
-            if ( file->xiphComment() )
+            if ( file->xiphComment( atf ) )
             {
                 if ( !file->xiphComment()->fieldListMap()[ "COMPOSER" ].isEmpty() )
                     setComposer( TStringToQString( file->xiphComment()->fieldListMap()["COMPOSER"].front() ).stripWhiteSpace() );
 
                 if ( !file->xiphComment()->fieldListMap()[ "DISCNUMBER" ].isEmpty() )
                     disc = TStringToQString( file->xiphComment()->fieldListMap()["DISCNUMBER"].front() ).stripWhiteSpace();
+
+                if ( atf )
+                    setUniqueId( fileref );
             }
 
             if ( images && file->ID3v2Tag() ) {
@@ -1214,6 +1235,105 @@ void MetaBundle::setPath( const QString &path )
     aboutToChange( changes ); m_url.setPath( path ); reactToChanges( changes );
 }
 
+void MetaBundle::setUniqueId( TagLib::FileRef &fileref )
+{
+    if( !AmarokConfig::advancedTagFeatures() )
+        return;
+
+    int createID = 0;
+    int randSize = 64; //largest size allowed by ID3v2.4
+    
+    QString ourId = QString( "amaroK - rediscover your music at http://amarok.kde.org" ).upper();
+    
+    if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
+    {
+        if ( file->ID3v2Tag( true ) )
+        {
+            if( file->ID3v2Tag()->frameListMap()["UFID"].isEmpty() )
+                createID = 1;
+            else
+            {
+                TagLib::ID3v2::UniqueFileIdentifierFrame* ufidf = 
+                        dynamic_cast<TagLib::ID3v2::UniqueFileIdentifierFrame*>(
+                                    file->ID3v2Tag()->frameListMap()["UFID"].front() );
+                if( TStringToQString( ufidf->owner() ) != ourId )
+                {
+                    file->ID3v2Tag()->removeFrames( "UFID" );
+                    createID = 1;
+                }
+                else
+                    m_uniqueId = QString( ufidf->identifier().data() );
+            }
+            if( createID == 1 )
+            {
+                m_uniqueId = getRandomString( randSize );
+                file->ID3v2Tag()->addFrame( new TagLib::ID3v2::UniqueFileIdentifierFrame(
+                            QStringToTString( ourId ),
+                            TagLib::ByteVector( m_uniqueId.ascii(), randSize )
+                            ) );
+                file->save( TagLib::MPEG::File::ID3v2 );
+            }
+        }
+    }
+    else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
+    {
+        if( file->tag() )
+        {
+            if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) )
+            {
+                file->tag()->addField( QStringToTString( ourId ),
+                        TagLib::ByteVector( getRandomString( randSize ).ascii(), randSize )
+                        );
+                file->save();
+            }
+            else
+                m_uniqueId = TStringToQString( file->tag()->fieldListMap()[QStringToTString( ourId )].front() );
+        }
+    }
+    else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
+    {
+        if ( file->xiphComment( true ) )
+        {
+            if( !file->xiphComment()->fieldListMap().contains( QStringToTString( ourId ) ) )
+            {
+                file->xiphComment()->addField( QStringToTString( ourId ),
+                        TagLib::ByteVector( getRandomString( randSize ).ascii(), randSize )
+                        );
+                file->save();
+            }
+            else
+                m_uniqueId = TStringToQString( file->xiphComment()->fieldListMap()[QStringToTString( ourId )].front() );
+        }
+    }
+    else if ( TagLib::Ogg::FLAC::File *file = dynamic_cast<TagLib::Ogg::FLAC::File *>( fileref.file() ) )
+    {
+        if( file->tag() )
+        {
+            if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) )
+            {
+                file->tag()->addField( QStringToTString( ourId ),
+                        TagLib::ByteVector( getRandomString( randSize ).ascii(), randSize )
+                        );
+                file->save();
+            }
+            else
+                m_uniqueId = TStringToQString( file->tag()->fieldListMap()[QStringToTString( ourId )].front() );
+        }
+    }
+    else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
+    {
+        if( file || !file )
+        return; //not handled, at least not yet
+    }
+
+}
+
+QString
+MetaBundle::getRandomString( int /*size*/ )
+{
+    return QString::null;
+}
+
 void MetaBundle::setTitle( const QString &title )
 { aboutToChange( Title ); m_title = title; reactToChange( Title ); }
 
@@ -1266,4 +1386,3 @@ void MetaBundle::setFilesize( int bytes )
 { aboutToChange( Filesize ); m_filesize = bytes; reactToChange( Filesize ); }
 
 void MetaBundle::setFileType( int type ) { m_type = type; }
-

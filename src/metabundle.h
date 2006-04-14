@@ -25,6 +25,7 @@ class QTextStream;
 template<class T> class QValueList;
 namespace TagLib {
     class File;
+    class FileRef;
     class ByteVector;
     class String;
     namespace ID3v2 {
@@ -67,6 +68,7 @@ public:
         LastPlayed,
         Mood,
         Filesize,
+        UniqueId,
         NUM_COLUMNS
     };
 
@@ -220,6 +222,7 @@ public: //accessors
     QString      filename()  const;
     QString      directory() const;
     QString      type()      const;
+    QString      uniqueId()  const;
     PodcastEpisodeBundle *podcastBundle() const;
 
     int     year()       const;
@@ -256,6 +259,7 @@ public: //modifiers
     void setGenre( const AtomicString &genre );
     void setComment( const AtomicString &comment );
     void setPodcastBundle( const PodcastEpisodeBundle &peb );
+    void setUniqueId( TagLib::FileRef &fileref);
 
     void setYear( int year );
     void setDiscNumber( int discNumber );
@@ -308,6 +312,7 @@ protected:
     AtomicString m_genre;
     QString m_streamName;
     QString m_streamUrl;
+    QString m_uniqueId;
 
     int m_year;
     int m_discNumber;
@@ -342,6 +347,8 @@ private:
     void setExtendedTag( TagLib::File *file, int tag, const QString value );
 
     void loadImagesFromTag( const TagLib::ID3v2::Tag &tag, EmbeddedImageList& images );
+
+    QString getRandomString( int randSize );
 };
 
 /// for your convenience
@@ -390,6 +397,7 @@ inline AtomicString MetaBundle::comment()    const { return m_comment; }
 inline AtomicString MetaBundle::genre()      const { return m_genre; }
 inline QString MetaBundle::streamName() const { return m_streamName; }
 inline QString MetaBundle::streamUrl()  const { return m_streamUrl; }
+inline QString MetaBundle::uniqueId()   const { return m_uniqueId; }
 
 inline int MetaBundle::discNumber() const { return m_discNumber == Undetermined ? 0 : m_discNumber; }
 
