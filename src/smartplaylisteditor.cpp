@@ -487,6 +487,13 @@ CriteriaEditor::CriteriaEditor( SmartPlaylistEditor *editor, QWidget *parent, QD
                     m_intSpinBox2->setValue( values.last().toInt() );
                 break;
             }
+            case Rating:
+            {
+                m_comboBox->setCurrentItem( ratingToIndex( values.first().toInt() ) );
+                if( condition == i18n("is between") )
+                    m_comboBox2->setCurrentItem( ratingToIndex( values.last().toInt() ) );
+                break;
+            }
             case Date:
             {
                 if( condition == i18n("is in the last") || condition == i18n("is not in the last") ) {
@@ -541,10 +548,19 @@ QDomElement CriteriaEditor::getDomSearchCriteria( QDomDocument &doc )
             break;
          case Year: // fall through
          case Number:
+         {
             values << QString::number( m_intSpinBox1->value() );
             if( condition == i18n("is between")  )
                 values << QString::number( m_intSpinBox2->value() );
             break;
+         }
+         case Rating:
+         {
+            values << QString::number( indexToRating( m_comboBox->currentItem() ) );
+            if( condition == i18n("is between")  )
+                    values << QString::number( indexToRating( m_comboBox2->currentItem() ) );
+            break;
+         }
          case Date:
          {
             if( condition == i18n("is in the last") || condition == i18n("is not in the last") ) {
@@ -595,6 +611,13 @@ QString CriteriaEditor::getSearchCriteria()
             if( criteria == i18n("is between")  )
                 value += " AND " + QString::number( m_intSpinBox2->value() );
             break;
+        case Rating:
+        {
+            value = QString::number( indexToRating( m_comboBox->currentItem() ) );
+            if( criteria == i18n("is between")  )
+                value += " AND " + QString::number( indexToRating( m_comboBox2->currentItem() ) );
+            break;
+        }
         case Date:
         {
             if( criteria == i18n("is in the last") || criteria == i18n("is not in the last") ) {
@@ -785,6 +808,24 @@ void CriteriaEditor::loadEditWidgets()
             break;
         }
 
+        case Rating:
+        {
+            const QStringList list = MetaBundle::ratingList();
+            m_comboBox = new KComboBox( false, m_editBox );
+            m_comboBox->insertStringList( list );
+            m_comboBox->show();
+
+            if( m_criteriaCombo->currentText() == i18n("is between") ) {
+                m_rangeLabel = new QLabel( i18n("and"), m_editBox );
+                m_rangeLabel->setAlignment( AlignCenter );
+                m_rangeLabel->show();
+                m_comboBox2 = new KComboBox( false, m_editBox );
+                m_comboBox2->insertStringList( list );
+                m_comboBox2->show();
+            }
+            break;
+        }
+
         case Date:
         {
             if( m_criteriaCombo->currentText() == i18n("is in the last") ||
@@ -834,6 +875,7 @@ void CriteriaEditor::loadCriteriaList( int valueType, QString condition )
                   << i18n( "starts with" ) << i18n( "ends with" );
             break;
 
+        case Rating:
         case Number:
             items << i18n( "is" ) << i18n( "is not" ) << i18n( "is greater than" ) << i18n( "is smaller than" )
                   << i18n( "is between" );
@@ -877,8 +919,10 @@ int CriteriaEditor::getValueType( int index )
         case 5:
         case 8:
         case 9:
-        case 10:
             valueType = Number;
+            break;
+        case 10:
+            valueType = Rating;
             break;
         case 6:
             valueType = Year;

@@ -998,9 +998,12 @@ MetaBundle::prettyFilesize( int s )
 }
 
 QString
-MetaBundle::prettyRating( int r ) //static
+MetaBundle::prettyRating( int r, bool trailingzero ) //static
 {
-    return r ? QString::number( float( r ) / 2 ) : QString();
+    if( trailingzero )
+        return QString::number( float( r ) / 2, 'f', 1 );
+    else
+        return r ? QString::number( float( r ) / 2 ) : QString();
 }
 
 QString
@@ -1029,7 +1032,7 @@ MetaBundle::ratingList()
     QStringList list;
     list += ratingDescription( 0 );
     for ( int i = 2; i<=10; i++ )
-        list += s.arg( prettyRating( i ) ).arg( ratingDescription( i ) );
+        list += s.arg( prettyRating( i, true ) ).arg( ratingDescription( i ) );
     return list;
 }
 

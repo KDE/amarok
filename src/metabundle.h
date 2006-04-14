@@ -275,7 +275,7 @@ public: //static helper functions
     static QString prettyBitrate( int );
     static QString prettyLength( int, bool showHours = false ); //must be int, see Unavailable, etc. above
     static QString prettyFilesize( int );
-    static QString prettyRating( int );
+    static QString prettyRating( int rating, bool trailingzero = false );
     static QString ratingDescription( int );
     static QStringList ratingList();
     static QString prettyTime( uint, bool showHours = true );

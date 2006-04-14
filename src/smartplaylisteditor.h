@@ -93,10 +93,12 @@ Q_OBJECT
         void loadEditWidgets();
 
     private:
-        enum ValueType { String, AutoCompletionString, Number, Year, Date };
+        enum ValueType { String, AutoCompletionString, Number, Year, Date, Rating };
 
         void loadCriteriaList( int valueType, QString condition = QString::null );
         int getValueType( int fieldIndex );
+        inline int indexToRating( int );
+        inline int ratingToIndex( int );
 
         SmartPlaylistEditor *m_playlistEditor;
         int m_currentValueType;
@@ -111,6 +113,7 @@ Q_OBJECT
         QHBox *m_editBox;
         KLineEdit *m_lineEdit;
         KComboBox *m_comboBox;
+        KComboBox *m_comboBox2;
         KIntSpinBox *m_intSpinBox1;
         KIntSpinBox *m_intSpinBox2;
         QDateEdit *m_dateEdit1;
@@ -118,5 +121,21 @@ Q_OBJECT
         KComboBox *m_dateCombo;
         QLabel *m_rangeLabel;
 };
+
+inline int
+CriteriaEditor::indexToRating( int index )
+{
+    if ( index <= 9 && index >= 1 ) return index + 1;
+    if ( index == 0 ) return index;
+    return -1;
+}
+
+inline int
+CriteriaEditor::ratingToIndex( int rating )
+{
+    if ( rating <= 10 && rating >= 2 ) return rating - 1;
+    if ( rating == 0 ) return rating;
+    return -1;
+}
 
 #endif
