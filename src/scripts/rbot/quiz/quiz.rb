@@ -54,7 +54,7 @@ class QuizPlugin < Plugin
                 @bot.say( m.replyto, @current_question )
 
             when "answer" then
-                @bot.say( m.replyto, "The correct answer is: #{@current_answer}" )
+                @bot.say( m.replyto, "The correct answer was: #{@current_answer}" )
 
                 @current_question = nil
 
