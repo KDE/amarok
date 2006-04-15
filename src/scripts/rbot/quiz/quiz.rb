@@ -51,9 +51,21 @@ class Quiz
                 shuffle if @quest.empty?
 
                 i = rand( @quest.length )
-                @current_question = @quest[ i ].question
-                @current_answer   = @quest[ i ].answer
+                @current_question = @quest[i].question
+                @current_answer   = @quest[i].answer
                 @quest.delete_at( i )
+
+                @current_hint = ""
+                (0..@current_answer.length-1).each do |index|
+                    if @current_answer[index, 1] == " "
+                        @current_hint << " "
+                    else
+                        @current_hint << "."
+                    end
+                end
+
+                # Generate array of unique random range
+                @current_hintrange = (0..@current_answer.length-1).sort_by{rand}
 
                 @plugin.bot.say( m.replyto, @current_question )
 
@@ -79,10 +91,13 @@ class Quiz
                         end
                     end
 
-                    index = rand( s.length )
-                    s[index] = @current_answer[index]
-
-                    @plugin.bot.say( m.replyto, "Hint: #{s}" )
+                    index = @current_hintrange.pop
+                    if not index == nil
+                        @current_hint[index] = @current_answer[index]
+                        @plugin.bot.say( m.replyto, "Hint: #{@current_hint}" )
+                    else
+                        @plugin.bot.say( m.replyto, "You lazy bum, what more can you want?" )
+                    end
                 end
 
             when "quiz_stats"
