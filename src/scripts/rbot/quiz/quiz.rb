@@ -100,6 +100,11 @@ class QuizPlugin < Plugin
 
                    @bot.say( m.replyto, "Hint: #{s}" )
                 end
+
+                when "quiz_stats" then
+                    if @quest_orig.empty? then fetch_data( m ) end
+
+                    @bot.say( m.replyto, "Questions in database: #{@quest_orig.length}" )
         end
     end
 
@@ -120,5 +125,6 @@ plugin.register("ask")
 plugin.register("answer")
 plugin.register("hint")
 plugin.register("quiz_fetch")
+plugin.register("quiz_stats")
 
 
