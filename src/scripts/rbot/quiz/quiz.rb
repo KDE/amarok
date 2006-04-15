@@ -82,21 +82,25 @@ class Quiz
                 if @current_question == nil
                     @plugin.bot.say( m.replyto, "Get a question first!" )
                 else
-                    s = ""
-                    (0..@current_answer.length-1).each do |index|
-                        if @current_answer[index, 1] == " "
-                            s << " "
-                        else
-                            s << "."
-                        end
-                    end
-
-                    index = @current_hintrange.pop
-                    if not index == nil
+                    if @current_hintrange.length >= 5
+                        # Reveal two characters
+                        index = @current_hintrange.pop
+                        @current_hint[index] = @current_answer[index]
+                        index = @current_hintrange.pop
+                        @current_hint[index] = @current_answer[index]
+                        @plugin.bot.say( m.replyto, "Hint: #{@current_hint}" )
+                    elsif @current_hintrange.length >= 1
+                        # Reveal one character
+                        index = @current_hintrange.pop
                         @current_hint[index] = @current_answer[index]
                         @plugin.bot.say( m.replyto, "Hint: #{@current_hint}" )
                     else
+                        # Bust
                         @plugin.bot.say( m.replyto, "You lazy bum, what more can you want?" )
+                    end
+
+                    if not index == nil
+                    else
                     end
                 end
 
