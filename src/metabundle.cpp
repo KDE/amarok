@@ -1338,21 +1338,16 @@ MetaBundle::getRand()
 {
     //KRandom  supposedly exists in SVN, although it's not checked out on my machine, and it's certainly not in 3.3, so I'm just going to steal its code
 
-    static bool init = false;
-    if (!init)
+    unsigned int seed;
+    int fd = open("/dev/urandom", O_RDONLY);
+    if (fd < 0 || ::read(fd, &seed, sizeof(seed)) != sizeof(seed))
     {
-       unsigned int seed;
-       init = true;
-       int fd = open("/dev/urandom", O_RDONLY);
-       if (fd < 0 || ::read(fd, &seed, sizeof(seed)) != sizeof(seed))
-       {
-             // No /dev/urandom... try something else.
-             srand(getpid());
-             seed = rand()+time(0);
-       }
-       if (fd >= 0) close(fd);
-       srand(seed);
+            // No /dev/urandom... try something else.
+            srand(getpid());
+            seed = rand()+time(0);
     }
+    if (fd >= 0) close(fd);
+    srand(seed);
     return rand();
 }
 
@@ -1367,13 +1362,14 @@ MetaBundle::getRandomString( int size )
 
     QString str;
     str.reserve( size );
-    int i = 0;
+    int i = getRand(); //seed it
+    i = 0;
     while (size--)
     {
-       int r=random() % 62;
+       int r=rand() % 74;
        r+=48;
        if (r>57 && r<65) r+=7;
-       if (r>90) r+=6;
+       if (r>90 && r<97) r+=6;
        str[i++] =  char(r);
        // so what if I work backwards?
     }
