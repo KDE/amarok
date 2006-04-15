@@ -112,6 +112,8 @@ class Quiz
     end
 
     def listen( m )
+        return if @current_question == nil
+
         if m.message.downcase == @current_answer.downcase
             replies = []
             replies << "BINGO!! #{m.sourcenick} got it right. The answer was: #{@current_answer}"
