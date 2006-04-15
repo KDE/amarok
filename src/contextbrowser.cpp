@@ -848,7 +848,7 @@ private:
     void showHome();
     QStringList showHomeByAlbums();
     void constructHTMLAlbums( const QStringList &albums, QString &htmlCode, const QString &idPrefix );
-    static QString statsHTML( int score, int rating );
+    static QString statsHTML( int score, int rating, bool statsbox = true ); // meh.
 
     virtual void completeJob()
     {
@@ -1787,14 +1787,14 @@ void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
         //UNSAFE = .arg( x ).arg( y )
         m_HTMLSource.append( QString(
                     "<span>%1</span><br />"
-                    "%2"
+                    "<div>%2</div>"
                     "<span>%3</span><br />"
                     "<span>%4</span>"
                     )
                 .arg( i18n( "Track played once", "Track played %n times", playtimes ),
-                    statsHTML( score, rating ),
-                    i18n( "Last played: %1" ).arg( amaroK::verboseTimeSince( lastPlay ) ),
-                    i18n( "First played: %1" ).arg( amaroK::verboseTimeSince( firstPlay ) ) ) );
+                      statsHTML( score, rating, false ),
+                      i18n( "Last played: %1" ).arg( amaroK::verboseTimeSince( lastPlay ) ),
+                      i18n( "First played: %1" ).arg( amaroK::verboseTimeSince( firstPlay ) ) ) );
     }
     else
         m_HTMLSource.append( i18n( "Never played before" ) );
@@ -2327,18 +2327,25 @@ void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artis
     // </Compilations with this artist>
 }
 
-QString CurrentTrackJob::statsHTML( int score, int rating ) //static
+QString CurrentTrackJob::statsHTML( int score, int rating, bool statsbox ) //static
 {
     if( !AmarokConfig::useScores() && !AmarokConfig::useRatings() )
         return "";
 
-    const QString table = "<table class='statsBox' align='right' border='0' cellspacing='0' cellpadding='0'>%1</table>";
+    QString table = QString( "<table %1 align='right' border='0' cellspacing='0' cellpadding='0'>%2</table>" )
+                          .arg( statsbox ? "class='statsBox'" : "" );
+    if( !statsbox )
+    {
+        table += "<br />";
+        if( AmarokConfig::useScores() && AmarokConfig::useRatings() )
+            table += "<br /><br />";
+    }
     QString contents;
 
     if( AmarokConfig::useScores() )
         contents += QString( "<tr title='%1'>" ).arg( i18n( "Score: %1" ).arg( score ) ) +
                     "<td class='sbtext' width='1'>" + QString::number( score ) + "</td>"
-                    "<td class='rbtext' width='1'>"
+                    "<td>"
                     "<div class='sbouter'>"
                     "<div class='sbinner' style='width: "
                     + QString::number( score / 2 ) + "px;'></div>"
@@ -2348,12 +2355,11 @@ QString CurrentTrackJob::statsHTML( int score, int rating ) //static
 
     if( AmarokConfig::useRatings() )
     {
-        contents += QString( "<tr title='%1'" ).arg( i18n( "Rating: %1" )
-                                                      .arg( MetaBundle::prettyRating( rating ) ) ) +
-                    "<td class='ratingbox' align='center' colspan='2'>";
+        contents += QString( "<tr title='%1'>" ).arg( MetaBundle::ratingDescription( rating ) ) +
+                    "<td class='ratingBox' align='center' colspan='2'>";
         if( rating )
         {
-            const QString img = "<img src='%1' style='height:1em;'></img>";
+            const QString img = "<img src='%1' class='ratingStar'></img>";
             for( int i = 0, n = rating / 2; i < n; ++i )
                 contents += img.arg( locate( "data", "amarok/images/star.png" ) );
             if( rating % 2 )

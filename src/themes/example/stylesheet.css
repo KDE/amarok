@@ -198,29 +198,19 @@ a {
 .sbtext {
     text-align: center;
     padding: 0px 4px;
+  }
+
+.ratingBox {
+    padding: 0px 4px;
+  }
+
+.statsBox {
     border-left: solid AMAROK_DARKBASECOLOR 1px;
   }
 
-
-.rbinner {
-    height: 8px;
-    background-color: AMAROK_BGCOLOR;
-    border: solid AMAROK_FGCOLOR 1px;
+.ratingStar {
+    height: 1.1em;
   }
-
-.rbouter {
-    width: 52px;
-    height: 10px;
-    background-color: AMAROK_DARKBASECOLOR;
-    border: solid AMAROK_BGCOLOR 1px;
-  }
-
-.rbtext {
-    text-align: center;
-    padding: 0px 4px;
-    border-left: dashed AMAROK_DARKBASECOLOR 1px;
-  }
-
 
 .scoreBox {
   }
