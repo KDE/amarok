@@ -112,7 +112,15 @@ class QuizPlugin < Plugin
         return if @current_question == nil
 
         if m.message.downcase == @current_answer.downcase
-            @bot.say( m.replyto, "BINGO!! #{m.sourcenick} got it right. The answer was: #{@current_answer}" )
+            replies = []
+            replies << "BINGO!! #{m.sourcenick} got it right. The answer was: #{@current_answer}"
+            replies << "OMG!! PONIES!!! #{m.sourcenick} is the cutest. The answer was: #{@current_answer}"
+            replies << "HUZZAAAH! #{m.sourcenick} did it again. The answer was: #{@current_answer}"
+            replies << "YEEEHA! Cowboy #{m.sourcenick} scored again. The answer was: #{@current_answer}"
+            replies << "STRIKE! #{m.sourcenick} pwned you all. The answer was: #{@current_answer}"
+
+            @bot.say( m.replyto, replies[rand( replies.length )] )
+
             @current_question = nil
         end
     end
