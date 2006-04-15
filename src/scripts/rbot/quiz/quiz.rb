@@ -61,7 +61,7 @@ class QuizPlugin < Plugin
     end
 
     def help( plugin, topic="" )
-        "Quiz game. Tell me 'ask' to start."
+        "Quiz game. Tell me 'ask' to start. You can add new questions at http://amarok.kde.org/amarokwiki/index.php/Rbot_Quiz"
     end
 
     def privmsg( m )
@@ -92,7 +92,7 @@ class QuizPlugin < Plugin
                 else
                    s = ""
                    @current_answer.length.times do
-                       s << "_"
+                       s << "."
                    end
 
                    index = rand( s.length )
