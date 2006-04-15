@@ -315,6 +315,7 @@ ScanController::startElement( const QString&, const QString& localName, const QS
         bundle.setTrack     ( attrs.value( "track" ).toInt() );
         bundle.setDiscNumber( attrs.value( "discnumber" ).toInt() );
         bundle.setFileType( attrs.value( "filetype" ).toInt() );
+        bundle.setUniqueId( attrs.value( "uniqueid" ) );
 
         if( attrs.value( "audioproperties" ) == "true" ) {
             bundle.setBitrate   ( attrs.value( "bitrate" ).toInt() );

@@ -442,7 +442,7 @@ class CollectionDB : public QObject, public EngineObserver
         // helpers for embedded images
         QString loadHashFile( const QCString& hash, uint width );
         bool extractEmbeddedImage( MetaBundle &trackInformation, QCString& hash );
-        
+
         //general management methods
         void createStatsTable();
         void dropStatsTable();

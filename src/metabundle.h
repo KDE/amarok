@@ -258,6 +258,7 @@ public: //modifiers
     void setGenre( const AtomicString &genre );
     void setComment( const AtomicString &comment );
     void setPodcastBundle( const PodcastEpisodeBundle &peb );
+    void setUniqueId( const QString &id ); //WARNING WARNING WARNING SEE COMMENT in .CPP
     void setUniqueId( TagLib::FileRef &fileref);
 
     void setYear( int year );

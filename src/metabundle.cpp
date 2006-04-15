@@ -478,9 +478,6 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
                 if(images) {
                     loadImagesFromTag( *file->ID3v2Tag(), *images );
                 }
-
-                if ( atf )
-                    setUniqueId( fileref );
             }
         }
         else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
@@ -493,9 +490,6 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
 
                 if ( !file->tag()->fieldListMap()[ "DISCNUMBER" ].isEmpty() )
                     disc = TStringToQString( file->tag()->fieldListMap()["DISCNUMBER"].front() ).stripWhiteSpace();
-
-                if ( atf )
-                    setUniqueId( fileref );
             }
         }
         else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
@@ -508,9 +502,6 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
 
                 if ( !file->xiphComment()->fieldListMap()[ "DISCNUMBER" ].isEmpty() )
                     disc = TStringToQString( file->xiphComment()->fieldListMap()["DISCNUMBER"].front() ).stripWhiteSpace();
-
-                if ( atf )
-                    setUniqueId( fileref );
             }
 
             if ( images && file->ID3v2Tag() ) {
@@ -530,6 +521,9 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
                 }
             }
         }
+
+        if ( atf )
+            setUniqueId( fileref );
 
         if ( !disc.isEmpty() )
         {
@@ -1238,6 +1232,13 @@ void MetaBundle::setPath( const QString &path )
     QValueList<int> changes;
     for( int i = 0; i < NUM_COLUMNS; ++i ) changes << i;
     aboutToChange( changes ); m_url.setPath( path ); reactToChanges( changes );
+}
+
+void MetaBundle::setUniqueId( const QString &id )
+{
+    //WARNING WARNING WARNING
+    //NEVER CALL THIS FUNCTION UNLESS YOU'RE DAMN SURE YOU KNOW WHAT YOU ARE DOING
+    m_uniqueId = id;
 }
 
 void MetaBundle::setUniqueId( TagLib::FileRef &fileref )
