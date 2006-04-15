@@ -1372,7 +1372,7 @@ MetaBundle::getRandomString( int size )
     {
        int r=random() % 62;
        r+=48;
-       if (r>57) r+=7;
+       if (r>57 && r<65) r+=7;
        if (r>90) r+=6;
        str[i++] =  char(r);
        // so what if I work backwards?
