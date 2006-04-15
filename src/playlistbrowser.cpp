@@ -894,10 +894,10 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
 void PlaylistBrowser::loadPodcastsFromDatabase( PlaylistCategory *p )
 {
     if( !p )   p = m_podcastCategory;
-        
+
     while( p->firstChild() )
         delete p->firstChild();
-        
+
     QMap<int,PlaylistCategory*> folderMap = loadPodcastFolders( p );
 
     QValueList<PodcastChannelBundle> channels;
@@ -2275,7 +2275,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         if( MediaBrowser::isAvailable() )
         {
             menu.insertSeparator();
-            menu.insertItem( SmallIconSet( "usbpendrive_unmount" ),
+            menu.insertItem( SmallIconSet( amaroK::icon( "device" ) ),
                     i18n( "Add to Media Device &Transfer Queue" ), MEDIA_DEVICE );
         }
 
@@ -2321,7 +2321,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         if( MediaBrowser::isAvailable() )
         {
             menu.insertSeparator();
-            menu.insertItem( SmallIconSet( "usbpendrive_unmount" ),
+            menu.insertItem( SmallIconSet( amaroK::icon( "device" ) ),
                     i18n( "Add Contents to Media Device &Transfer Queue" ), MEDIA_DEVICE );
         }
 
@@ -2512,7 +2512,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         if( MediaBrowser::isAvailable() )
         {
             menu.insertSeparator();
-            menu.insertItem( SmallIconSet( "usbpendrive_unmount" ),
+            menu.insertItem( SmallIconSet( amaroK::icon( "device" ) ),
                              i18n( "Add to Media Device &Transfer Queue" ), MEDIA_DEVICE );
             menu.setItemEnabled( MEDIA_DEVICE, item->isOnDisk() );
         }

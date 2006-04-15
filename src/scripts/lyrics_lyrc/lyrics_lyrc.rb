@@ -19,8 +19,6 @@ require "uri"
 
 
 def showLyrics( lyrics )
-#     debug_block
-
     # Important, otherwise we might execute arbitrary nonsense in the DCOP call
     lyrics.gsub!( '"', "'" )
     lyrics.gsub!( '`', "'" )
@@ -30,8 +28,6 @@ end
 
 
 def parseLyrics( lyrics )
-#     debug_block
-
     if lyrics.include?( "<p><hr" )
         lyrics = lyrics[0, lyrics.index( "<p><hr" )]
     else
@@ -40,7 +36,8 @@ def parseLyrics( lyrics )
 
     lyrics.gsub!( /<[fF][oO][nN][tT][^>]*>/, "" )
 
-    doc = REXML::Document.new( "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" )
+    doc = REXML::Document.new()
+#     doc = REXML::Document.new( "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" )
     root = doc.add_element( "lyrics" )
 
     root.add_attribute( "page_url", @page_url )
@@ -50,7 +47,8 @@ def parseLyrics( lyrics )
     lyrics = /(<\/u><\/font>)(.*)/.match( lyrics )[2].to_s()
     lyrics.gsub!( /<[Bb][Rr][^>]*>/, "\n" ) # HTML -> Plaintext
 
-    root.text =  lyrics.unpack("C*").pack("U*") #Convert to UTF-8
+    root.text = lyrics
+     #.unpack("C*").pack("U*") #Convert to UTF-8
 
     xml = ""
     doc.write( xml )
@@ -61,15 +59,13 @@ end
 
 
 def parseSuggestions( lyrics )
-#     debug_block
-
     lyrics = lyrics[lyrics.index( "Suggestions : " )..lyrics.index( "<br><br>" )]
 
     lyrics.gsub!( "<font color='white'>", "" )
     lyrics.gsub!( "</font>", "" )
     lyrics.gsub!( "<br /><br />", "" )
 
-    doc = REXML::Document.new()
+    doc = REXML::Document.new( "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" )
     root = doc.add_element( "suggestions" )
     root.add_attribute( "page_url", @page_url )
 
@@ -84,8 +80,8 @@ def parseSuggestions( lyrics )
 
         suggestion = root.add_element( "suggestion" )
         suggestion.add_attribute( "url", url )
-        suggestion.add_attribute( "artist", artist )
-        suggestion.add_attribute( "title", title )
+        suggestion.add_attribute( "artist", artist.unpack("C*").pack("U*") )
+        suggestion.add_attribute( "title", title.unpack("C*").pack("U*") )
     end
 
     xml = ""
@@ -97,8 +93,6 @@ end
 
 
 def fetchLyrics( artist, title, url )
-#     debug_block
-
     proxy_host = nil
     proxy_port = nil
     if ( ENV['http_proxy'] && proxy_uri = URI.parse( ENV['http_proxy'] ) )
@@ -120,9 +114,12 @@ def fetchLyrics( artist, title, url )
     end
 
     lyrics = response.body()
+
+    puts( lyrics )
+
     lyrics.gsub!( "\n", "" ) # No need for LF, just complicates our RegExps
     lyrics.gsub!( "\r", "" ) # No need for CR, just complicates our RegExps
-    lyrics.gsub!( '´', "'" ) # Lyrc has weird encodings
+#     lyrics.gsub!( '´', "'" ) # Lyrc has weird encodings
 
     # Remove images, links, scripts, styles and fonts
     lyrics.gsub!( /<[iI][mM][gG][^>]*>/, "" )

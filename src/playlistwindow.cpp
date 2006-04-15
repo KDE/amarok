@@ -131,7 +131,7 @@ PlaylistWindow::PlaylistWindow()
 
     ac->action( "options_configure_globals" )->setText( i18n( "Configure &Global Shortcuts..." ) );
 
-    new KAction( i18n( "Previous Track" ), amaroK::icon( "previous" ), 0, ec, SLOT( previous() ), ac, "prev" );
+    new KAction( i18n( "Previous Track" ), amaroK::icon( "back" ), 0, ec, SLOT( previous() ), ac, "prev" );
     new KAction( i18n( "Play" ), amaroK::icon( "play" ), 0, ec, SLOT( play() ), ac, "play" );
     new KAction( i18n( "Pause" ), amaroK::icon( "pause" ), 0, ec, SLOT( pause() ), ac, "pause" );
     new KAction( i18n( "Next Track" ), amaroK::icon( "next" ), 0, ec, SLOT( next() ), ac, "next" );
@@ -371,7 +371,7 @@ void PlaylistWindow::init()
 
         // disable this check for now as isAvailable() returned always true before
         //if( MediaBrowser::isAvailable() )
-            addBrowserMacro( MediaBrowser, "MediaBrowser", i18n( "Media Device" ), "usbpendrive_unmount" )
+            addBrowserMacro( MediaBrowser, "MediaBrowser", i18n( "Media Device" ), amaroK::icon( "device" ) )
 
         //DEBUG: Comment out the addBrowserMacro line and uncomment the m_browsers line (passing in a vfat device name) to see the "virtual root" functionality
 

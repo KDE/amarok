@@ -196,7 +196,7 @@ FSBrowser::FSBrowser( QWidget *parent, MediaDevice *device, const char * name, M
         menu->insertSeparator();
 
         if (!m_medium)
-            menu->insertItem( SmallIconSet( "usbpendrive_unmount" ), i18n( "Add to Media Device &Transfer Queue" ), CopyMediaDevice );
+            menu->insertItem( SmallIconSet( amaroK::icon( "device" ) ), i18n( "Add to Media Device &Transfer Queue" ), CopyMediaDevice );
 
         menu->insertItem( SmallIconSet( "collection" ), i18n( "&Copy to Collection" ), CopyToCollection );
         menu->insertItem( SmallIconSet( "collection" ), i18n( "&Move to Collection" ), MoveToCollection );

@@ -33,23 +33,24 @@ amaroK::icon( const QString& name ) //declared in amarok.h
     static QMap<QString, QString> iconMap;
 
     if( iconMap.empty() ) {
-        iconMap["clear_playlist"]   = "view_remove";
+        iconMap["back"]             = "player_start";
+        iconMap["clock"]            = "history";
+        iconMap["collection"]       = "collection";
+        iconMap["device"]           = "usbpendrive_unmount";
         iconMap["info"]             = "info";
         iconMap["next"]             = "player_end";
         iconMap["pause"]            = "player_pause";
         iconMap["play"]             = "player_play";
         iconMap["playlist"]         = "player_playlist_2";
-        iconMap["previous"]         = "player_start";
+        iconMap["playlist_clear"]   = "view_remove";
+        iconMap["playlist_refresh"] = "rebuild";
         iconMap["random"]           = "random";
+        iconMap["redo"]             = "redo";
         iconMap["refresh"]          = "reload";
-        iconMap["refresh_playlist"] = "rebuild";
         iconMap["rescan"]           = "reload";
         iconMap["stop"]             = "player_stop";
-        iconMap["time"]             = "history";
         iconMap["podcast"]          = "sound";
         iconMap["podcast2"]         = "favorites";
-        iconMap["collection"]       = "collection";
-        iconMap["redo"]             = "redo";
         iconMap["undo"]             = "undo";
     }
 
