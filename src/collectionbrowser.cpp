@@ -1353,7 +1353,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         KURL::List selection = listSelected();
         menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), MAKE );
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
-        menu.insertItem( SmallIconSet( "2rightarrow" ), selection.count() == 1 ? i18n( "&Queue Track" )
+        menu.insertItem( SmallIconSet( amaroK::icon( "fastforward" ) ), selection.count() == 1 ? i18n( "&Queue Track" )
             : i18n( "&Queue Tracks" ), QUEUE );
 
         if( selection.count() > 1 || item->isExpandable() )

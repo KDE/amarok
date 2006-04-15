@@ -7,12 +7,13 @@
 #include <config.h>
 #include "kiomediadevice.h"
 
-#include "debug.h"
-#include "metabundle.h"
-#include "statusbar/statusbar.h"
-#include "k3bexporter.h"
-#include "playlist.h"
+#include "amarok.h"
 #include "collectionbrowser.h"
+#include "debug.h"
+#include "k3bexporter.h"
+#include "metabundle.h"
+#include "playlist.h"
+#include "statusbar/statusbar.h"
 
 #include <kapplication.h>
 #include <kmountpoint.h>
@@ -361,7 +362,7 @@ KioMediaDevice::rmbPressed( MediaView *deviceList, QListViewItem* qitem, const Q
 
         menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Load" ), LOAD );
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
-        menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue Tracks" ), QUEUE );
+        menu.insertItem( SmallIconSet( amaroK::icon( "fastforward" ) ), i18n( "&Queue Tracks" ), QUEUE );
         menu.insertSeparator();
 
         menu.insertItem( SmallIconSet( "collection" ), i18n( "&Copy to Collection" ), COPY_TO_COLLECTION );

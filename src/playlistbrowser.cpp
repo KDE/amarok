@@ -2506,8 +2506,8 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     else if( isPodcastEpisode( item ) ) {
         #define item static_cast<PodcastEpisode*>(item)
         enum Actions { LOAD, QUEUE, GET, DELETE, MEDIA_DEVICE };
-        menu.insertItem( SmallIconSet( "player_play" ), i18n( "&Play" ), LOAD );
-        menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue" ), QUEUE );
+        menu.insertItem( SmallIconSet( amaroK::icon( "play" ) ), i18n( "&Play" ), LOAD );
+        menu.insertItem( SmallIconSet( amaroK::icon( "fastforward" ) ), i18n( "&Queue" ), QUEUE );
 
         if( MediaBrowser::isAvailable() )
         {
@@ -2695,7 +2695,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         enum Actions { MAKE, APPEND, QUEUE, BURN, REMOVE, INFO };
 
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
-        menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue Track" ), QUEUE );
+        menu.insertItem( SmallIconSet( amaroK::icon( "fastforward" ) ), i18n( "&Queue Track" ), QUEUE );
         menu.insertItem( SmallIconSet( amaroK::icon( "playlist" ) ), i18n( "&Make Playlist" ), MAKE );
 
 

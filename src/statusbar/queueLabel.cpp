@@ -17,12 +17,12 @@
  *   51 Franklin Steet, Fifth Floor, Boston, MA  02111-1307, USA.          *
  ***************************************************************************/
 
-#include "queueLabel.h"
 #include "amarok.h"
 #include "collectiondb.h"
 #include "metabundle.h"
 #include "playlist.h"
 #include "playlistitem.h"
+#include "queueLabel.h"
 #include "statusbar.h"
 
 #include <qapplication.h>
@@ -32,10 +32,10 @@
 #include <qtimer.h>
 
 #include <kactioncollection.h>
-#include <kpopupmenu.h>
-#include <kiconloader.h>
-#include <kstringhandler.h>
 #include <kglobal.h>
+#include <kiconloader.h>
+#include <kpopupmenu.h>
+#include <kstringhandler.h>
 
 static const uint MAX_TO_SHOW = 20;
 
@@ -179,7 +179,7 @@ void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
     else
         menu->insertTitle( i18n( "1 Queued Track", "%n Queued Tracks", count ) );
     amaroK::actionCollection()->action( "queue_manager" )->plug( menu );
-    menu->insertItem( SmallIconSet( "2leftarrow" ),
+    menu->insertItem( SmallIconSet( amaroK::icon( "rewind" ) ),
                       count > 1 ? i18n( "&Dequeue All Tracks" ) : i18n( "&Dequeue Track" ), 0 );
     menu->insertSeparator();
 

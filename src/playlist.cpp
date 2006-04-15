@@ -3726,7 +3726,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
             : i18n( "&Play" ), 0, 0, Key_Enter, PLAY );
 
     // Begin queue entry logic
-    popup.insertItem( SmallIconSet( "2rightarrow" ), i18n("&Queue Selected Tracks"), PLAY_NEXT );
+    popup.insertItem( SmallIconSet( amaroK::icon( "fastforward" ) ), i18n("&Queue Selected Tracks"), PLAY_NEXT );
 
     bool queueToggle = false;
     MyIt it( this, MyIt::Selected );
@@ -3743,7 +3743,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         if ( !firstQueued )
             popup.changeItem( PLAY_NEXT, i18n( "&Queue Track" ) );
         else
-            popup.changeItem( PLAY_NEXT, SmallIconSet( "2leftarrow" ), i18n("&Dequeue Track") );
+            popup.changeItem( PLAY_NEXT, SmallIconSet( amaroK::icon( "rewind" ) ), i18n("&Dequeue Track") );
     } else {
         if ( queueToggle )
             popup.changeItem( PLAY_NEXT, i18n( "Toggle &Queue Status (1 track)", "Toggle &Queue Status (%n tracks)", itemCount ) );
@@ -3753,7 +3753,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
             if ( !firstQueued )
                 popup.changeItem( PLAY_NEXT, i18n( "&Queue Selected Tracks" ) );
             else
-                popup.changeItem( PLAY_NEXT, SmallIconSet( "2leftarrow" ), i18n("&Dequeue Selected Tracks") );
+                popup.changeItem( PLAY_NEXT, SmallIconSet( amaroK::icon( "rewind" ) ), i18n("&Dequeue Selected Tracks") );
     }
     // End queue entry logic
 

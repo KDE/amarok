@@ -808,7 +808,7 @@ VfatMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
         KPopupMenu menu( m_view );
         menu.insertItem( SmallIconSet( amaroK::icon( "playlist" ) ), i18n( "&Load" ), LOAD );
         menu.insertItem( SmallIconSet( amaroK::icon( "1downarrow" ) ), i18n( "&Append to Playlist" ), APPEND );
-        menu.insertItem( SmallIconSet( amaroK::icon( "2rightarrow" ) ), i18n( "&Queue Tracks" ), QUEUE );
+        menu.insertItem( SmallIconSet( amaroK::icon( "fastforward" ) ), i18n( "&Queue Tracks" ), QUEUE );
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( "collection" ), i18n( "&Copy to Collection" ), DOWNLOAD );
         menu.insertItem( SmallIconSet( amaroK::icon( "cdrom_unmount" ) ), i18n( "Burn to CD as Data" ), BURN_DATACD );

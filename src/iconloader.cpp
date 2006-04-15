@@ -37,6 +37,7 @@ amaroK::icon( const QString& name ) //declared in amarok.h
         iconMap["clock"]            = "history";
         iconMap["collection"]       = "collection";
         iconMap["device"]           = "usbpendrive_unmount";
+        iconMap["fastforward"]      = "2rightarrow";
         iconMap["info"]             = "info";
         iconMap["next"]             = "player_end";
         iconMap["pause"]            = "player_pause";
@@ -48,6 +49,7 @@ amaroK::icon( const QString& name ) //declared in amarok.h
         iconMap["redo"]             = "redo";
         iconMap["refresh"]          = "reload";
         iconMap["rescan"]           = "reload";
+        iconMap["rewind"]           = "2leftarrow";
         iconMap["stop"]             = "player_stop";
         iconMap["podcast"]          = "sound";
         iconMap["podcast2"]         = "favorites";
