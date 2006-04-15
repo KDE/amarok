@@ -66,9 +66,9 @@ class QuizPlugin < Plugin
 
     def privmsg( m )
         case m.message
-            when "ask" then
-                if @quest_orig.empty? then fetch_data( m ) end
-                if @quest.empty? then shuffle end
+            when "ask"
+                fetch_data( m ) if @quest_orig.empty?
+                shuffle if @quest.empty?
 
                 i = rand( @quest.length )
                 @current_question = @quest[ i ].question
@@ -77,16 +77,16 @@ class QuizPlugin < Plugin
 
                 @bot.say( m.replyto, @current_question )
 
-            when "answer" then
+            when "answer"
                 @bot.say( m.replyto, "The correct answer was: #{@current_answer}" )
 
                 @current_question = nil
 
-            when "quiz_fetch" then
+            when "quiz_fetch"
                 fetch_data( m )
                 shuffle
 
-            when "hint" then
+            when "hint"
                 if @current_question == nil
                    @bot.say( m.replyto, "Get a question first!" )
                 else
@@ -101,8 +101,8 @@ class QuizPlugin < Plugin
                    @bot.say( m.replyto, "Hint: #{s}" )
                 end
 
-                when "quiz_stats" then
-                    if @quest_orig.empty? then fetch_data( m ) end
+                when "quiz_stats"
+                    fetch_data( m ) if @quest_orig.empty?
 
                     @bot.say( m.replyto, "Questions in database: #{@quest_orig.length}" )
         end
