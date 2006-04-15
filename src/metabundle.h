@@ -347,6 +347,7 @@ private:
 
     void loadImagesFromTag( const TagLib::ID3v2::Tag &tag, EmbeddedImageList& images );
 
+    int getRand();
     QString getRandomString( int randSize );
 };
 

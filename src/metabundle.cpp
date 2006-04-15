@@ -6,6 +6,13 @@
 
 #define DEBUG_PREFIX "MetaBundle"
 
+#include <stdlib.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <time.h>
+#include <sys/time.h>
+#include <fcntl.h>
+
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "debug.h"
@@ -1240,9 +1247,9 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref )
 
     int createID = 0;
     int randSize = 64; //largest size allowed by ID3v2.4
-    
+
     QString ourId = QString( "amaroK - rediscover your music at http://amarok.kde.org" ).upper();
-    
+
     if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
     {
         if ( file->ID3v2Tag( true ) )
@@ -1326,11 +1333,53 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref )
 
 }
 
-QString
-MetaBundle::getRandomString( int /*size*/ )
+int
+MetaBundle::getRand()
 {
-    return QString::null;
+    //KRandom  supposedly exists in SVN, although it's not checked out on my machine, and it's certainly not in 3.3, so I'm just going to steal its code
+
+    static bool init = false;
+    if (!init)
+    {
+       unsigned int seed;
+       init = true;
+       int fd = open("/dev/urandom", O_RDONLY);
+       if (fd < 0 || ::read(fd, &seed, sizeof(seed)) != sizeof(seed))
+       {
+             // No /dev/urandom... try something else.
+             srand(getpid());
+             seed = rand()+time(0);
+       }
+       if (fd >= 0) close(fd);
+       srand(seed);
+    }
+    return rand();
 }
+
+QString
+MetaBundle::getRandomString( int size )
+{
+    if( size != 64 )
+    {
+        debug() << "Wrong size passed in!" << endl;
+        return QString::null;
+    }
+
+    QString str;
+    str.reserve( size );
+    int i = 0;
+    while (size--)
+    {
+       int r=random() % 62;
+       r+=48;
+       if (r>57) r+=7;
+       if (r>90) r+=6;
+       str[i++] =  char(r);
+       // so what if I work backwards?
+    }
+    return str;
+}
+
 
 void MetaBundle::setTitle( const QString &title )
 { aboutToChange( Title ); m_title = title; reactToChange( Title ); }
