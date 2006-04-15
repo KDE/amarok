@@ -71,8 +71,12 @@ class Quiz
                     @plugin.bot.say( m.replyto, "Get a question first!" )
                 else
                     s = ""
-                    @current_answer.length.times do
-                        s << "."
+                    (0..@current_answer.length-1).each do |index|
+                        if @current_answer[index, 1] == " "
+                            s << " "
+                        else
+                            s << "."
+                        end
                     end
 
                     index = rand( s.length )
