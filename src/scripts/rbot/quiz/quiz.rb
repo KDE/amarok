@@ -88,23 +88,23 @@ class QuizPlugin < Plugin
 
             when "hint"
                 if @current_question == nil
-                   @bot.say( m.replyto, "Get a question first!" )
+                    @bot.say( m.replyto, "Get a question first!" )
                 else
-                   s = ""
-                   @current_answer.length.times do
-                       s << "."
-                   end
+                    s = ""
+                    @current_answer.length.times do
+                        s << "."
+                    end
 
-                   index = rand( s.length )
-                   s[index] = @current_answer[index]
+                    index = rand( s.length )
+                    s[index] = @current_answer[index]
 
-                   @bot.say( m.replyto, "Hint: #{s}" )
+                    @bot.say( m.replyto, "Hint: #{s}" )
                 end
 
-                when "quiz_stats"
-                    fetch_data( m ) if @quest_orig.empty?
+            when "quiz_stats"
+                fetch_data( m ) if @quest_orig.empty?
 
-                    @bot.say( m.replyto, "Questions in database: #{@quest_orig.length}" )
+                @bot.say( m.replyto, "Questions in database: #{@quest_orig.length}" )
         end
     end
 
