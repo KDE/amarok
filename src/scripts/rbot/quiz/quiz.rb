@@ -155,7 +155,7 @@ class QuizPlugin < Plugin
         data = ""
 
         begin
-            data = bot.httputil.get( URI.parse( "http://amarok.kde.org/amarokwiki/index.php/Rbot_Quiz" ) )
+            data = @bot.httputil.get( URI.parse( "http://amarok.kde.org/amarokwiki/index.php/Rbot_Quiz" ) )
             @bot.say( m.replyto, "done." )
         rescue
             @bot.say( m.replyto, "Failed to connect to the server. oioi." )
