@@ -902,6 +902,21 @@ CollectionDB::removeOrphanedEmbeddedImages()
 }
 
 QPixmap
+CollectionDB::createDragPixmapFromSQL( const QString &sql )
+{
+    // it is too slow to check if the url is actually in the colleciton.
+    QStringList values = instance()->query( sql );
+    KURL::List list;
+    foreach( values )
+    {
+        KURL u = KURL::fromPathOrURL( *it );
+        if( u.isValid() )
+            list += u;
+    }
+    return createDragPixmap( list );
+}
+
+QPixmap
 CollectionDB::createDragPixmap( const KURL::List &urls )
 {
     // settings

@@ -149,35 +149,36 @@ StatisticsList::StatisticsList( QWidget *parent, const char *name )
 void
 StatisticsList::startDrag()
 {
+    // there is only one item ever selected in this tool.  maybe this needs to change
+
     DEBUG_FUNC_INFO
 
     KURL::List list;
     KMultipleDrag *drag = new KMultipleDrag( this );
-
+    
     QListViewItemIterator it( this, QListViewItemIterator::Selected );
+    
+    StatisticsDetailedItem *item = static_cast<StatisticsDetailedItem*>(*it);
 
-    for( ; it.current(); ++it )
+    if( item->itemType() == StatisticsDetailedItem::TRACK )
     {
-        StatisticsDetailedItem *item = static_cast<StatisticsDetailedItem*>(*it);
-
-        if( item->itemType() == StatisticsDetailedItem::TRACK )
-        {
-            list += KURL::fromPathOrURL( item->url() );
-        }
-        else 
-        {
-            QTextDrag *textdrag = new QTextDrag( item->getSQL(), 0 );
-            textdrag->setSubtype( "amarok-sql" );
-            drag->addDragObject( textdrag );
-        }
+        list += KURL::fromPathOrURL( item->url() );
+        drag->addDragObject( new KURLDrag( list, viewport() ) );
+        drag->setPixmap( CollectionDB::createDragPixmap(list),
+                         QPoint( CollectionDB::DRAGPIXMAP_OFFSET_X,
+                                 CollectionDB::DRAGPIXMAP_OFFSET_Y ) );
+    }
+    else 
+    {
+        QTextDrag *textdrag = new QTextDrag( item->getSQL(), 0 );
+        textdrag->setSubtype( "amarok-sql" );
+        drag->addDragObject( textdrag );
+        drag->setPixmap( CollectionDB::createDragPixmapFromSQL( item->getSQL() ),
+                         QPoint( CollectionDB::DRAGPIXMAP_OFFSET_X,
+                                 CollectionDB::DRAGPIXMAP_OFFSET_Y ) );
     }
 
     clearSelection();
-
-    drag->addDragObject( new KURLDrag( list, viewport() ) );
-    drag->setPixmap( CollectionDB::createDragPixmap(list),
-                     QPoint( CollectionDB::DRAGPIXMAP_OFFSET_X,
-                             CollectionDB::DRAGPIXMAP_OFFSET_Y ) );
     drag->dragCopy();
 }
 

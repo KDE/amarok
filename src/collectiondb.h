@@ -349,6 +349,8 @@ class CollectionDB : public QObject, public EngineObserver
         QString findEmbeddedImage( const QString& artist, const QString& album, uint width = 1 );
         QString findMetaBundleImage( MetaBundle trackInformation, const uint = 1 );
 
+        /// ensure the sql only return urls to tracks for efficiency
+        static QPixmap createDragPixmapFromSQL( const QString &sql );
         static QPixmap createDragPixmap(const KURL::List &urls);
         static const int DRAGPIXMAP_OFFSET_X = -12;
         static const int DRAGPIXMAP_OFFSET_Y = -28;
