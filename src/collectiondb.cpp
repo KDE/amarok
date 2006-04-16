@@ -945,6 +945,7 @@ CollectionDB::createDragPixmap( const KURL::List &urls )
     KURL::List::ConstIterator it = urls.begin();
     for ( ; it != urls.end(); ++it )
     {
+        debug() << "finding cover for " << (*it).prettyURL() << endl;
         if( PlaylistFile::isPlaylistFile( *it )
             || (*it).protocol() == "playlist" || (*it).protocol() == "smartplaylist"
             || (*it).protocol() == "dynamic" )
@@ -966,12 +967,11 @@ CollectionDB::createDragPixmap( const KURL::List &urls )
             song = mb.title();
             album = mb.album();
 
-            if ( !albumMap.contains( mb.artist() + mb.album() ) )
+            if( !albumMap.contains( mb.artist() + mb.album() ) )
             {
                 albumMap[ mb.artist() + mb.album() ] = 1;
-
-                debug() << "fetching cover for " <<  mb.artist() << " / " << mb.album() << endl;
                 QString coverName = CollectionDB::instance()->albumImage( mb.artist(), mb.album(), coverW );
+                
                 if ( !coverName.endsWith( "@nocover.png" ) )
                 {
                     debug() << "adding cover " << coverName << endl;
@@ -982,7 +982,21 @@ CollectionDB::createDragPixmap( const KURL::List &urls )
             }
         }
         else
+        {
+            MetaBundle mb( *it );
+            if( !albumMap.contains( mb.artist() + mb.album() ) )
+            {
+                albumMap[ mb.artist() + mb.album() ] = 1;
+                QString coverName = CollectionDB::instance()->podcastImage( mb, coverW );
+                    
+                if ( !coverName.endsWith( "@nocover.png" ) )
+                {
+                    debug() << "adding cover " << coverName << endl;
+                    coverPm[covers++].load( coverName );
+                }
+            }
             remoteUrls++;
+        }
     }
 
     // make a better text...

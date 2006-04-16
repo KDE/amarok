@@ -3092,7 +3092,7 @@ void PlaylistBrowserView::startDrag()
             if( item->isOnDisk() )
             {
                 urls     += item->localUrl();
-                itemList += item->localUrl();
+                itemList += item->url();
             }
             else
             {
@@ -3118,7 +3118,7 @@ void PlaylistBrowserView::startDrag()
                 pe->setNew( false ); // FIXME: why?
                 child = child->nextSibling();
             }
-            itemList += KURL::fromPathOrURL( QString("podcast://%1").arg( item->url().url() ) );
+            itemList += KURL::fromPathOrURL( item->url().url() );
             item->setNew( false );
 
             #undef item
