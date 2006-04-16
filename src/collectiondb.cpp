@@ -902,7 +902,7 @@ CollectionDB::removeOrphanedEmbeddedImages()
 }
 
 QPixmap
-CollectionDB::createDragPixmapFromSQL( const QString &sql )
+CollectionDB::createDragPixmapFromSQL( const QString &sql, QString textOverRide )
 {
     // it is too slow to check if the url is actually in the colleciton.
     QStringList values = instance()->query( sql );
@@ -913,11 +913,11 @@ CollectionDB::createDragPixmapFromSQL( const QString &sql )
         if( u.isValid() )
             list += u;
     }
-    return createDragPixmap( list );
+    return createDragPixmap( list, textOverRide );
 }
 
 QPixmap
-CollectionDB::createDragPixmap( const KURL::List &urls )
+CollectionDB::createDragPixmap( const KURL::List &urls, QString textOverRide )
 {
     // settings
     const int maxCovers = 4; // maximum number of cover images to show
@@ -927,12 +927,12 @@ CollectionDB::createDragPixmap( const KURL::List &urls )
     const int coverH = coverW;
     const int margin = 2; //px margin
 
-    int covers = 0;
-    int songs = 0;
-    int pixmapW = 0;
-    int pixmapH = 0;
-    int remoteUrls = 0;
-    int playlists = 0;
+    int covers      = 0;
+    int songs       = 0;
+    int pixmapW     = 0;
+    int pixmapH     = 0;
+    int remoteUrls  = 0;
+    int playlists   = 0;
 
     QMap<QString, int> albumMap;
     QPixmap coverPm[maxCovers];
@@ -999,13 +999,17 @@ CollectionDB::createDragPixmap( const KURL::List &urls )
         }
     }
 
-    // make a better text...
+    // make better text...
     int albums = albumMap.count();
     QString text;
 
-    if( ( songs && remoteUrls ) ||
-        ( songs && playlists  ) ||
-        ( playlists && remoteUrls ) )
+    if( !textOverRide.isEmpty() )
+    {
+        text = textOverRide;
+    }
+    else if( ( songs && remoteUrls ) ||
+             ( songs && playlists  ) ||
+             ( playlists && remoteUrls ) )
     {
         text = i18n( "One item", "%n items", songs + remoteUrls + playlists );
     }
@@ -1026,7 +1030,6 @@ CollectionDB::createDragPixmap( const KURL::List &urls )
     else
         text = i18n( "Unknown item" );
 
-    // font... TODO: from config?
     QFont font;
     QFontMetrics fm( font );
     int fontH = fm.height() + margin;

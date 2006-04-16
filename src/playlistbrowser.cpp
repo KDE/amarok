@@ -3072,18 +3072,22 @@ void PlaylistBrowserView::startDrag()
     KMultipleDrag *drag = new KMultipleDrag( this );
 
     QListViewItemIterator it( this, QListViewItemIterator::Selected );
-
+    QString pixText = QString::null;
+    uint count = 0;
+    
     for( ; it.current(); ++it )
     {
         if( isPlaylist( *it ) )
         {
             urls     += static_cast<PlaylistEntry*>(*it)->url();
             itemList += KURL::fromPathOrURL( QString( "playlist://%1" ).arg(static_cast<PlaylistEntry*>(*it)->text(0))  );
+            pixText = (*it)->text(0);
         }
         else if( isStream( *it ) )
         {
             urls     += static_cast<StreamEntry*>(*it)->url();
             itemList += KURL::fromPathOrURL( "stream://" );
+            pixText = (*it)->text(0);
         }
 
         else if( isPodcastEpisode( *it ) )
@@ -3101,7 +3105,7 @@ void PlaylistBrowserView::startDrag()
             }
 
             item->setNew( false );
-
+            pixText = (*it)->text(0);
             #undef item
         }
         else if( isPodcastChannel( *it ) )
@@ -3120,7 +3124,7 @@ void PlaylistBrowserView::startDrag()
             }
             itemList += KURL::fromPathOrURL( item->url().url() );
             item->setNew( false );
-
+            pixText = (*it)->text(0);
             #undef item
         }
 
@@ -3135,7 +3139,7 @@ void PlaylistBrowserView::startDrag()
                 drag->addDragObject( textdrag );
             }
             itemList += KURL::fromPathOrURL( QString("smartplaylist://%1").arg( item->text(0) ) );
-
+            pixText = (*it)->text(0);
         }
 
         else if( isDynamic( *it ) )
@@ -3149,6 +3153,7 @@ void PlaylistBrowserView::startDrag()
             textdrag->setSubtype( "dynamic" );
             drag->addDragObject( textdrag );
             itemList += KURL::fromPathOrURL( QString("dynamic://%1").arg( item->text(0) ) );
+            pixText = (*it)->text(0);
         }
 
         else if( isPlaylistTrackItem( *it ) )
@@ -3156,10 +3161,12 @@ void PlaylistBrowserView::startDrag()
             urls     += static_cast<PlaylistTrackItem*>(*it)->url();
             itemList += static_cast<PlaylistTrackItem*>(*it)->url();
         }
+        count++;
     }
+    if( count > 1 ) pixText = QString::null;
 
     drag->addDragObject( new KURLDrag( urls, viewport() ) );
-    drag->setPixmap( CollectionDB::createDragPixmap( itemList ),
+    drag->setPixmap( CollectionDB::createDragPixmap( itemList, pixText ),
                      QPoint( CollectionDB::DRAGPIXMAP_OFFSET_X, CollectionDB::DRAGPIXMAP_OFFSET_Y ) );
     drag->dragCopy();
 }
