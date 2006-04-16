@@ -67,6 +67,7 @@ class StatisticsList : public KListView
     private slots:
         void    clearHover();
         void    itemClicked( QListViewItem *item );
+        void    showContextMenu( QListViewItem *item, const QPoint &p, int );
         void    startHover( QListViewItem *item );
 
     private:
@@ -105,7 +106,10 @@ class StatisticsItem : public QObject, public KListViewItem
         void       setExpanded( const bool b ) { m_isExpanded = b; }
         const bool isExpanded() { return m_isExpanded; }
 
-        void       setSubtext( QString t ) { m_subText = t; }
+        void    setSubtext( QString t ) { m_subText = t; }
+        
+        int     rtti() const { return RTTI; }
+        static  const int RTTI = 1000;    //header item
 
     protected:
         static const int ANIM_INTERVAL = 18;
@@ -147,8 +151,12 @@ class StatisticsDetailedItem : public KListViewItem
         const   QString url() { return m_url; }
         
         void    setSubtext( QString t ) { m_subText = t; }
+        QString getSQL(); //get the sql query for all the urls the item represents
 
         void    paintFocus( QPainter*, const QColorGroup& , const QRect& ) {};  //reimp
+        
+        int     rtti() const { return RTTI; }
+        static  const int RTTI = 1001;    //detailed item
 
     private:
         ItemType m_type;
