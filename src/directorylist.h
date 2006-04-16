@@ -75,10 +75,11 @@ class Item : public QObject, public QCheckListItem
 Q_OBJECT
 public:
     Item( QListView *parent );
-    Item( QListViewItem *parent, const KURL &url );
+    Item( QListViewItem *parent, const KURL &url , bool full_disable=false );
 
     QCheckListItem *parent() const { return static_cast<QCheckListItem*>( QListViewItem::parent() ); }
-    bool isDisabled() const { return CollectionSetup::instance()->recursive() && parent() && parent()->isOn(); }
+    bool isFullyDisabled() const { return m_fullyDisabled; }
+    bool isDisabled() const { return isFullyDisabled() || ( CollectionSetup::instance()->recursive() && parent() && parent()->isOn() ); }
     QString fullPath() const;
 
     void setOpen( bool b ); // reimpl.
@@ -94,6 +95,7 @@ private:
     KDirLister m_lister;
     KURL       m_url;
     bool       m_listed;
+    bool       m_fullyDisabled;
 };
 }
 

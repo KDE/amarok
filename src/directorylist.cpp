@@ -126,11 +126,12 @@ Item::Item( QListView *parent )
 }
 
 
-Item::Item( QListViewItem *parent, const KURL &url )
-    : QCheckListItem( parent, url.fileName(), QCheckListItem::CheckBox  )
+Item::Item( QListViewItem *parent, const KURL &url , bool full_disable /* default=false */ )
+    : QCheckListItem( parent, url.fileName(), QCheckListItem::CheckBox )
     , m_lister( true )
     , m_url( url )
     , m_listed( false )
+    , m_fullyDisabled( full_disable )
 {
     m_lister.setDirOnlyMode( true );
     setExpandable( true );
@@ -173,9 +174,13 @@ Item::stateChange( bool b )
 {
     QStringList &cs_m_dirs = CollectionSetup::instance()->m_dirs;
 
+    if ( isFullyDisabled() )
+        return;
+
     if( CollectionSetup::instance()->recursive() )
         for( QListViewItem *item = firstChild(); item; item = item->nextSibling() )
-            static_cast<QCheckListItem*>(item)->QCheckListItem::setOn( b );
+            if ( dynamic_cast<Item*>( item ) && !dynamic_cast<Item*>( item )->isFullyDisabled() )
+               static_cast<QCheckListItem*>(item)->QCheckListItem::setOn( b );
 
     //If it is disabled, allow us to change its appearance (above code) but not add it
     //to the list of folders (code below)
@@ -249,12 +254,27 @@ Item::newItems( const KFileItemList &list ) //SLOT
 {
     for( KFileItemListIterator it( list ); *it; ++it )
     {
-        Item *item = new Item( this, (*it)->url() );
+        //Fully disable (always appears off and greyed-out) if it is "/proc", "/sys" or
+        //"/dev" or one of their children. This is because we will never scan them, so we
+        //might as well show that.
+        //These match up with the skipped dirs in CollectionScanner::readDir.
+        bool fully_disable=false;
 
-        if( CollectionSetup::instance()->recursive() && isOn() ||
-            CollectionSetup::instance()->m_dirs.contains( item->fullPath() ) )
+        if ( this->m_url.fileName().isEmpty() && ( ( *it )->url().fileName()=="proc"
+             || ( *it )->url().fileName()=="dev" || ( *it )->url().fileName()=="sys" ) )
         {
-            item->setOn( true );
+            fully_disable=true;
+        }
+
+        Item *item = new Item( this, (*it)->url() , fully_disable || this->isFullyDisabled() );
+
+        if ( !item->isFullyDisabled() )
+        {
+            if( CollectionSetup::instance()->recursive() && isOn() ||
+                CollectionSetup::instance()->m_dirs.contains( item->fullPath() ) )
+            {
+                item->setOn( true );
+            }
         }
 
         item->setPixmap( 0, (*it)->pixmap( KIcon::SizeSmall ) );

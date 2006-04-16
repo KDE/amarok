@@ -69,19 +69,6 @@ CollectionScanner::CollectionScanner( const QStringList& folders,
     if( !restart )
         QFile::remove( m_logfile );
 
-    // Don't traverse /
-    struct stat statBuf;
-    if( stat( "/", &statBuf ) == 0 ) {
-        struct direntry de;
-        memset( &de, 0, sizeof( struct direntry ) );
-        de.dev = statBuf.st_dev;
-        de.ino = statBuf.st_ino;
-
-        m_processedDirs.resize( m_processedDirs.size() + 1 );
-        m_processedDirs[m_processedDirs.size() - 1] = de;
-    }
-
-
     QTimer::singleShot( 0, this, SLOT( doJob() ) );
 }
 
