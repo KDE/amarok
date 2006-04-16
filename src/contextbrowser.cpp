@@ -2355,7 +2355,8 @@ QString CurrentTrackJob::statsHTML( int score, int rating, bool statsbox ) //sta
 
     if( AmarokConfig::useRatings() )
     {
-        contents += QString( "<tr title='%1'>" ).arg( MetaBundle::ratingDescription( rating ) ) +
+        contents += QString( "<tr title='%1'>" ).arg( i18n( "Rating: %1" )
+                                                      .arg( MetaBundle::ratingDescription( rating ) ) ) +
                     "<td class='ratingBox' align='center' colspan='2'>";
         if( rating )
         {
