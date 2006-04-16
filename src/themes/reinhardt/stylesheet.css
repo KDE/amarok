@@ -41,10 +41,12 @@ h6 { font-size: AMAROK_FONTSIZEpx; background-color: ButtonFace; color: ButtonTe
 .album-song-trackno { text-align: right; width: 2em; display: block; float: left; font-weight: bold; }
 .album-song-title { }
 .album-song-time { }
-.sbtext { padding: 0px 4px; border-left: solid Highlight 1px; font-size: AMAROK_FONTSIZEpx; }
+.statsBox { border-left: solid Highlight 1px; }
+.sbtext { padding: 0px 4px; font-size: AMAROK_FONTSIZEpx; }
 .sbouter { width: 52px; height: 10px; background-color: ThreeDFace; border: solid ThreeDShadow 1px; }
 .sbinner { height: 8px; background-color: Highlight; border: solid ThreeDFace 1px; }
-.ratingStar { height: 1em; }
+.ratingBox { padding: 0px 4px; }
+.ratingStar { height: 1.1em; }
 .default { font-size: AMAROK_FONTSIZEpx }
 
 
