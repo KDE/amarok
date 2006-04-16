@@ -62,6 +62,7 @@ email                : markey@web.de
 #include <kstandarddirs.h>
 #include <kurldrag.h>            //genericEventHandler()
 #include <kaboutdata.h>
+#include <kio/job.h>
 
 #include <qevent.h>              //genericEventHandler()
 #include <qeventloop.h>          //applySettings()
@@ -80,12 +81,6 @@ email                : markey@web.de
         #include <sched.h>
     #endif //SCHEDAFFINITY_SUPPORT
 #endif //__linux__
-
-namespace amaroK
-{
-    void setUseScores( bool use ) { static_cast<App*>( qApp )->setUseScores( use ); }
-    void setUseRatings( bool use ) { static_cast<App*>( qApp )->setUseRatings( use ); }
-}
 
 int App::mainThreadId = 0;
 
@@ -1081,6 +1076,18 @@ void App::setUseRatings( bool use )
     emit useRatings( use );
 }
 
+KIO::Job *App::trashFiles( const KURL::List &files )
+{
+#if KDE_IS_VERSION( 3, 3, 91 )
+    KIO::Job *job = KIO::trash( files, true /*show progress*/ );
+    amaroK::StatusBar::instance()->newProgressOperation( job ).setDescription( i18n("Moving files to trash") );
+    connect( job, SIGNAL( result( KIO::Job* ) ), this, SLOT( slotTrashResult( KIO::Job* ) ) );
+    return job;
+#else
+    return 0;
+#endif
+}
+
 void App::setRating( int n )
 {
     n *= 2;
@@ -1094,6 +1101,12 @@ void App::setRating( int n )
     }
     else if( PlaylistWindow::self()->isReallyShown() && Playlist::instance()->qscrollview()->hasFocus() )
         Playlist::instance()->setSelectedRatings( n );
+}
+
+void App::slotTrashResult( KIO::Job *job )
+{
+    if( job->error() )
+        job->showErrorDialog( PlaylistWindow::self() );
 }
 
 QWidget *App::mainWindow() const
@@ -1251,6 +1264,10 @@ namespace amaroK
 
         return s;
     }
+
+    void setUseScores( bool use ) { static_cast<App*>( qApp )->setUseScores( use ); }
+    void setUseRatings( bool use ) { static_cast<App*>( qApp )->setUseRatings( use ); }
+    KIO::Job *trashFiles( const KURL::List &files ) { return static_cast<App*>( qApp )->trashFiles( files ); }
 }
 
 #include "app.moc"

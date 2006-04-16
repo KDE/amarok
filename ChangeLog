@@ -10,6 +10,8 @@ VERSION 1.4.0:
       view.
 
   CHANGES:
+    * The Konqueror setting to show a 'delete' entry in the menu is now
+      respected, if the setting exists and KDE is version 3.4 or higher.
     * Cover art from m4a files. Updated m4a taglib patch by Jochen Issing
       <jochen@isign-softart.de> and patch by Shane King <kde@dontletsstart.com>.
       (BR 125414)

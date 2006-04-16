@@ -18,6 +18,7 @@ class QEvent;
 class QPixmap;
 class QWidget;
 class DynamicMode;
+namespace KIO { class Job; }
 
 namespace amaroK
 {
@@ -110,6 +111,11 @@ namespace amaroK
      *                  with '/'
      */
     LIBAMAROK_EXPORT QString saveLocation( const QString &directory = QString::null ); //defined in collectionreader.cpp
+
+    /// whether to allow deleting files
+    bool useDelete(); //defined in playlist.cpp
+
+    KIO::Job *trashFiles( const KURL::List &files ); //defined in app.cpp
 
     /**
      * For recursively expanding the contents of a directory into a KURL::List

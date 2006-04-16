@@ -21,10 +21,13 @@
 #include "amarok_export.h"
 #include "engineobserver.h" //baseclass
 #include <kapplication.h>   //baseclass
+#include <kurl.h>
 
 namespace amaroK {
     class TrayIcon;
 }
+
+namespace KIO { class Job; }
 
 class KActionCollection;
 class KConfig;
@@ -34,7 +37,6 @@ class PlayerWidget;
 class Playlist;
 class PlaylistWindow;
 class DeviceManager;
-
 
 class LIBAMAROK_EXPORT App : public KApplication, public EngineObserver
 {
@@ -80,6 +82,10 @@ class LIBAMAROK_EXPORT App : public KApplication, public EngineObserver
         void firstRunWizard();
         void setUseScores( bool use );
         void setUseRatings( bool use );
+        KIO::Job *trashFiles( const KURL::List &files );
+
+    private slots:
+        void slotTrashResult( KIO::Job *job );
 
     private:
         /** Workaround for HyperThreading CPU's, @see BUG 99199 */

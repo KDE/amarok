@@ -89,6 +89,16 @@ extern "C"
 namespace amaroK
 {
     const DynamicMode *dynamicMode() { return Playlist::instance()->dynamicMode(); }
+    bool useDelete()
+    {
+#if KDE_IS_VERSION( 3, 3, 91 ) // prior versions don't have a good trashing mechanism
+        KConfig c( QString::null, true /*read only*/, true /*use globals*/ );
+        c.setGroup( "KDE" );
+        return c.readBoolEntry( "ShowDeleteCommand", true );
+#else
+        return true;
+#endif
+    }
 }
 
 /**
@@ -3361,6 +3371,29 @@ Playlist::deleteSelectedFiles() //SLOT
 }
 
 void
+Playlist::trashSelectedFiles() //SLOT
+{
+    if( isLocked() ) return;
+
+    KURL::List urls;
+
+    //assemble a list of what needs removing
+    for( MyIt it( this, MyIt::Selected );
+         it.current();
+         urls << static_cast<PlaylistItem*>( *it )->url(), ++it );
+
+    // TODO We need to check which files have been trashed successfully
+    if( KIO::Job* job = amaroK::trashFiles( urls ) )
+    {
+        connect( job, SIGNAL(result( KIO::Job* )), SLOT(removeSelectedItems()) );
+
+        // we must handle errors somehow
+        CollectionDB::instance()->removeSongs( urls );
+        QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
+    }
+}
+
+void
 Playlist::removeDuplicates() //SLOT
 {
     // Remove dead entries:
@@ -3690,7 +3723,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     enum {
         PLAY, PLAY_NEXT, STOP_DONE, VIEW, EDIT, FILL_DOWN, COPY, CROP_PLAYLIST, SAVE_PLAYLIST, REMOVE, DELETE,
-        BURN_MENU, BURN_SELECTION, BURN_ALBUM, BURN_ARTIST, REPEAT, LAST }; //keep LAST last
+        TRASH, BURN_MENU, BURN_SELECTION, BURN_ALBUM, BURN_ARTIST, REPEAT, LAST }; //keep LAST last
 
     const bool canRename   = isRenameable( col );
     const bool isCurrent   = (item == m_currentTrack);
@@ -3809,10 +3842,16 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         popup.insertSeparator();
     }
 
-    popup.insertItem( SmallIconSet( "edittrash" ), i18n( "&Remove From Playlist" ), this, SLOT( removeSelectedItems() ), Key_Delete, REMOVE );
-    popup.insertItem( SmallIconSet( "editdelete" ), itemCount == 1
-            ? i18n("&Delete File")
-            : i18n("&Delete Selected Files"), this, SLOT( deleteSelectedFiles() ), SHIFT+Key_Delete, DELETE );
+    popup.insertItem( SmallIconSet( "remove" ), i18n( "&Remove From Playlist" ), this, SLOT( removeSelectedItems() ), Key_Delete, REMOVE );
+
+    if( amaroK::useDelete() || ( KApplication::keyboardMouseState() & Qt::ShiftButton ) )
+        popup.insertItem( SmallIconSet( "editdelete" ), itemCount == 1
+                ? i18n("&Delete File")
+                : i18n("&Delete Selected Files"), this, SLOT( deleteSelectedFiles() ), SHIFT+Key_Delete, DELETE );
+    else
+        popup.insertItem( SmallIconSet( "edittrash" ), itemCount == 1
+                ? i18n( "Move to &Trash" )
+                : i18n( "Move Files to &Trash" ), this, SLOT( trashSelectedFiles() ), SHIFT+Key_Delete, TRASH );
 
     popup.insertSeparator();
 

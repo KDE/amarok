@@ -1350,10 +1350,10 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 
         #ifdef AMAZON_SUPPORT
         enum Actions { APPEND, QUEUE, MAKE, SAVE, MEDIA_DEVICE, BURN_ARTIST, BURN_ALBUM, BURN_CD, COVER, INFO,
-                       COMPILATION_SET, COMPILATION_UNSET, ORGANIZE, DELETE, FILE_MENU  };
+                       COMPILATION_SET, COMPILATION_UNSET, ORGANIZE, DELETE, TRASH, FILE_MENU  };
         #else
         enum Actions { APPEND, QUEUE, MAKE, SAVE, MEDIA_DEVICE, BURN_ARTIST, BURN_ALBUM, BURN_CD, INFO,
-                       COMPILATION_SET, COMPILATION_UNSET, ORGANIZE, DELETE, FILE_MENU  };
+                       COMPILATION_SET, COMPILATION_UNSET, ORGANIZE, DELETE, TRASH, FILE_MENU  };
         #endif
         KURL::List selection = listSelected();
         menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), MAKE );
@@ -1399,8 +1399,12 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         KPopupMenu fileMenu;
         fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18n("Organize File...", "Organize %n Files..." , selection.count() )
                 , ORGANIZE );
-        fileMenu.insertItem( SmallIconSet( "editdelete" ), i18n("Delete File...", "Delete %n Files..." , selection.count() )
-                , DELETE );
+        if( amaroK::useDelete() || ( KApplication::keyboardMouseState() & Qt::ShiftButton ) )
+            fileMenu.insertItem( SmallIconSet( "editdelete" ), i18n("Delete File...", "Delete %n Files..." , selection.count() )
+                    , DELETE );
+        else
+            fileMenu.insertItem( SmallIconSet( "edittrash" ), i18n("Move to Trash...", "Move %n Files to Trash..." , selection.count() )
+                    , TRASH );
         menu.insertItem( SmallIconSet( "folder" ), i18n("Manage Files"), &fileMenu, FILE_MENU );
 
        if ( cat == CollectionBrowser::IdAlbum || cat == CollectionBrowser::IdVisYearAlbum )
@@ -1464,6 +1468,15 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                 break;
             case DELETE:
                 deleteSelectedFiles();
+                break;
+            case TRASH:
+                // TODO We need to check which files have been trashed successfully
+                if( amaroK::trashFiles( selection ) )
+                {
+                    CollectionDB::instance()->removeSongs( selection );
+                    m_dirty = true;
+                    QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
+                }
                 break;
         }
     }
