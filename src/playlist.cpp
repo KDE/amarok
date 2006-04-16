@@ -224,18 +224,7 @@ Playlist::Playlist( QWidget *parent )
 {
     s_instance = this;
 
-    { // initialize star pixmaps
-        const int h = fontMetrics().height() + itemMargin() * 2 - 4 + ( ( fontMetrics().height() % 2 ) ? 1 : 0 );
-        QImage img = QImage( locate( "data", "amarok/images/star.png" ) ).smoothScale( h, h, QImage::ScaleMin );
-        PlaylistItem::s_star = new QPixmap( img );
-
-        QImage small = QImage( locate( "data", "amarok/images/smallstar.png" ) );
-        PlaylistItem::s_smallStar = new QPixmap( small.smoothScale( h, h, QImage::ScaleMin ) );
-
-        PlaylistItem::s_grayedStar = new QPixmap;
-        KIconEffect::toGray( img, 1.0 );
-        PlaylistItem::s_grayedStar->convertFromImage( img );
-    }
+    initStarPixmaps();
 
     EngineController* const ec = EngineController::instance();
     connect( ec, SIGNAL(orderPrevious()), SLOT(playPrevTrack()) );
@@ -4042,6 +4031,17 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 ////////////////////////////////////////////////////////////////////////////////
 
 void
+Playlist::fontChange( const QFont &old )
+{
+    KListView::fontChange( old );
+    delete PlaylistItem::s_star;
+    delete PlaylistItem::s_smallStar;
+    delete PlaylistItem::s_grayedStar;
+    initStarPixmaps();
+    triggerUpdate();
+}
+
+void
 Playlist::contentsMouseMoveEvent( QMouseEvent *e )
 {
     if( e )
@@ -4444,6 +4444,20 @@ Playlist::saveSelectedAsPlaylist()
 
     if( PlaylistBrowser::savePlaylist( path, urls, titles, lengths ) )
         PlaylistWindow::self()->showBrowser( "PlaylistBrowser" );
+}
+
+void Playlist::initStarPixmaps()
+{
+    const int h = fontMetrics().height() + itemMargin() * 2 - 4 + ( ( fontMetrics().height() % 2 ) ? 1 : 0 );
+    QImage img = QImage( locate( "data", "amarok/images/star.png" ) ).smoothScale( h, h, QImage::ScaleMin );
+    PlaylistItem::s_star = new QPixmap( img );
+
+    QImage small = QImage( locate( "data", "amarok/images/smallstar.png" ) );
+    PlaylistItem::s_smallStar = new QPixmap( small.smoothScale( h, h, QImage::ScaleMin ) );
+
+    PlaylistItem::s_grayedStar = new QPixmap;
+    KIconEffect::toGray( img, 1.0 );
+    PlaylistItem::s_grayedStar->convertFromImage( img );
 }
 
 void

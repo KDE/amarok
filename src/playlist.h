@@ -231,6 +231,9 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void refreshMoods();
         void applySettings();
 
+    protected:
+        virtual void fontChange( const QFont &old );
+
     protected slots:
         void contentsMouseMoveEvent( QMouseEvent *e = 0 );
         void leaveEvent( QEvent *e );
@@ -289,6 +292,7 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void sortQueuedItems();
         void switchState( QStringList&, QStringList& );
         void saveSelectedAsPlaylist();
+        void initStarPixmaps();
 
         //engine observer functions
         void engineNewMetaData( const MetaBundle&, bool );
