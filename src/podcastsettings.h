@@ -47,7 +47,7 @@ class PodcastSettingsDialog : public KDialogBase
     Q_OBJECT
 
     public:
-        PodcastSettingsDialog( PodcastSettings *settings, PodcastSettings *parentSettings, QWidget* parent = 0 );
+        PodcastSettingsDialog( PodcastSettings *list, QWidget* parent=0 );
 
         bool    configure();
         PodcastSettings *getSettings() { return m_settings; }
@@ -61,12 +61,12 @@ class PodcastSettingsDialog : public KDialogBase
         void    slotUser1();
 
     private:
+        void init();
         void setSettings( PodcastSettings *settings, bool changeSaveLocation );
         QString requesterSaveLocation();
 
         PodcastSettingsDialogBase *m_ps;
-        PodcastSettings *m_settings;
-        PodcastSettings *m_parentSettings;
+        PodcastSettings           *m_settings;
 };
 
 #endif /*AMAROK_PODCASTSETTINGS_H*/

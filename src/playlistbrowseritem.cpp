@@ -1133,8 +1133,7 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
 void
 PodcastChannel::configure()
 {
-    PodcastSettingsDialog *dialog = new PodcastSettingsDialog( m_bundle.getSettings(),
-            PlaylistBrowser::instance()->getPodcastSettings( m_parent ) );
+    PodcastSettingsDialog *dialog = new PodcastSettingsDialog( m_bundle.getSettings() );
 
     if( dialog->configure() )
     {
@@ -1379,7 +1378,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
     if( &m_bundle )
         settings = m_bundle.getSettings();
     else
-        settings = new PodcastSettings( PlaylistBrowser::instance()->getPodcastSettings( m_parent ), t);
+        settings = new PodcastSettings( t );
 
     m_bundle = PodcastChannelBundle( m_url, t, a, l, d, c, settings );
     m_bundle.setImageURL( KURL::fromPathOrURL( img ) );

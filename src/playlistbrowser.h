@@ -67,7 +67,6 @@ class PlaylistBrowser : public QVBox
         void addPodcast( const KURL &url, QListViewItem *parent = 0 );
         void loadPodcastsFromDatabase( PlaylistCategory *p = 0 );
         void registerPodcastSettings( const QString &title, const PodcastSettings *settings );
-        PodcastSettings *getPodcastSettings( const PlaylistCategory * category );
 
         static bool savePlaylist( const QString &path, const QValueList<KURL> &urls,
                                   const QValueList<QString> &titles = QValueList<QString>(),
@@ -153,7 +152,6 @@ class PlaylistBrowser : public QVBox
         void refreshPodcasts( QListViewItem *category );
         void removePodcastFolder( PlaylistCategory *item );
         void savePodcastFolderStates( PlaylistCategory *folder );
-        void configurePodcastCategory( const PlaylistCategory  *category );
         PodcastChannel *findPodcastChannel( const KURL &feed, QListViewItem *parent=0 ) const;
 
         PlaylistCategory* loadPlaylists();

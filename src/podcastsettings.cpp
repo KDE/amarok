@@ -30,18 +30,6 @@ PodcastSettings::PodcastSettings( const QDomNode &channelSettings, const QString
     m_purgeCount = channelSettings.namedItem( "purgecount").toElement().text().toInt();
 }
 
-PodcastSettings::PodcastSettings( const PodcastSettings *parentSettings, const QString &title )
-    : m_title( title )
-{
-    m_saveLocation = parentSettings->m_saveLocation;
-    m_saveLocation.addPath( m_title ); //default savelocation is a folder with podcastchannel's name in savelocation of parent
-    m_autoScan = parentSettings->m_autoScan;
-    m_fetch = parentSettings->m_fetch;
-    m_addToMediaDevice = parentSettings->m_addToMediaDevice;
-    m_purge = parentSettings->m_purge;
-    m_purgeCount = parentSettings->m_purgeCount;
-}
-
 PodcastSettings::PodcastSettings( const QString &title )
     : m_title( title )
 {
@@ -65,13 +53,19 @@ PodcastSettings::PodcastSettings( const QString &title, const QString &save, con
     m_purgeCount = purgecount;
 }
 
-PodcastSettingsDialog::PodcastSettingsDialog( PodcastSettings *settings, PodcastSettings *parentSettings, QWidget* parent )
+PodcastSettingsDialog::PodcastSettingsDialog( PodcastSettings *settings, QWidget* parent )
                             : KDialogBase(  parent, 0, true, i18n("Configure %1").arg( settings->m_title )
                             , KDialogBase::User1|KDialogBase::Ok|KDialogBase::Cancel
                             , KDialogBase::Ok, true
                             , KGuiItem(i18n("Reset"), "reset" ) )
         , m_settings( settings )
-        , m_parentSettings( parentSettings )
+{
+    init();
+    setSettings( settings, false );
+}
+
+void
+PodcastSettingsDialog::init()
 {
         m_ps = new PodcastSettingsDialogBase(this);
 
@@ -81,8 +75,6 @@ PodcastSettingsDialog::PodcastSettingsDialog( PodcastSettings *settings, Podcast
         m_ps->m_saveLocation->setMode( KFile::Directory | KFile::ExistingOnly );
 
         m_ps->m_addToMediaDeviceCheck->setEnabled( MediaBrowser::isAvailable() );
-
-        setSettings( settings, false );
 
         enableButtonOK( false );
 
@@ -106,7 +98,7 @@ PodcastSettingsDialog::hasChanged()
 
         fetchTypeChanged = false;
 
-    return ( m_settings->m_saveLocation    != requesterSaveLocation()             ||
+    return( m_settings->m_saveLocation    != requesterSaveLocation()              ||
             m_settings->m_autoScan         != m_ps->m_autoFetchCheck->isChecked() ||
             m_settings->m_addToMediaDevice != m_ps->m_addToMediaDeviceCheck->isChecked() ||
             m_settings->m_purge            != m_ps->m_purgeCheck->isChecked()     ||
@@ -123,7 +115,7 @@ PodcastSettingsDialog::checkModified() //slot
 void PodcastSettingsDialog::slotOk()       //slot
 {
     enableButtonOK( false ); //visual feedback
-
+    
     m_settings->m_saveLocation     = requesterSaveLocation();
     m_settings->m_autoScan         = m_ps->m_autoFetchCheck->isChecked();
     m_settings->m_addToMediaDevice = m_ps->m_addToMediaDeviceCheck->isChecked();
@@ -180,11 +172,10 @@ void PodcastSettingsDialog::setSettings( PodcastSettings *settings, bool changeS
     }
 }
 
-//reset to parents settings button
+//reset to default settings button
 void PodcastSettingsDialog::slotUser1()    //slot
 {
-    bool changeSaveLocation = m_parentSettings->m_title != i18n("default");
-    setSettings( m_parentSettings, changeSaveLocation );
+    setSettings( new PodcastSettings(m_settings->m_title), true );
     checkModified();
 }
 
