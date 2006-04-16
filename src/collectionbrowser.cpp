@@ -316,12 +316,17 @@ CollectionBrowser::layoutToolbar()
 void
 CollectionBrowser::setMode(int id)
 {
-    m_view->setMode( id );
-    if ( id == CollectionView::modeTreeView)
-        m_toolbar->show();
-    else
-        m_toolbar->hide();
-    AmarokConfig::setCollectionBrowserViewMode(id);
+    if ( id != m_view->m_viewMode ) //don't switch mode when you don't need to, silly!
+    {
+        m_view->setMode( id );
+        if ( id == CollectionView::modeTreeView)
+            m_toolbar->show();
+        else
+            m_toolbar->hide();
+        AmarokConfig::setCollectionBrowserViewMode(id);
+    }
+    else //selected(int) is fired by QTabBar whenever it feels like it
+        debug() << "mysterious setMode: " << id << endl; 
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -1466,7 +1471,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 
 
 void
-CollectionView::setViewMode( int mode, bool rerender )
+CollectionView::setViewMode( int mode, bool rerender /*=true*/ )
 {
     clear();
 
