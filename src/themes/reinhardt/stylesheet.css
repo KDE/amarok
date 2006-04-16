@@ -44,6 +44,7 @@ h6 { font-size: AMAROK_FONTSIZEpx; background-color: ButtonFace; color: ButtonTe
 .sbtext { padding: 0px 4px; border-left: solid Highlight 1px; font-size: AMAROK_FONTSIZEpx; }
 .sbouter { width: 52px; height: 10px; background-color: ThreeDFace; border: solid ThreeDShadow 1px; }
 .sbinner { height: 8px; background-color: Highlight; border: solid ThreeDFace 1px; }
+.ratingStar { height: 1em; }
 .default { font-size: AMAROK_FONTSIZEpx }
 
 
