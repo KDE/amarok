@@ -1166,16 +1166,23 @@ QString
 CollectionDB::podcastImage( const MetaBundle &bundle, uint width )
 {
     PodcastEpisodeBundle peb;
-    if( getPodcastEpisodeBundle( bundle.url().url(), &peb ) )
+    PodcastChannelBundle pcb;
+    
+    KURL url = bundle.url().url();
+    
+    if( getPodcastEpisodeBundle( url, &peb ) )
     {
-        PodcastChannelBundle pcb;
-        if( getPodcastChannelBundle( peb.parent().url(), &pcb ) )
-        {
-            if( pcb.imageURL().isValid() )
-               return podcastImage( pcb.imageURL().url(), width );
-        }
+        debug() << "getting image for episode" << endl;
+        url = peb.parent().url();
     }
-
+        
+    if( getPodcastChannelBundle( url, &pcb ) )
+    {
+        debug() << "getting image for channel" << endl;
+        if( pcb.imageURL().isValid() )
+            return podcastImage( pcb.imageURL().url(), width );
+    }
+    debug() << "not found :(" << endl;
     return notAvailCover( width );
 }
 

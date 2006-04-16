@@ -3080,7 +3080,7 @@ void PlaylistBrowserView::startDrag()
         if( isPlaylist( *it ) )
         {
             urls     += static_cast<PlaylistEntry*>(*it)->url();
-            itemList += KURL::fromPathOrURL( QString( "playlist://%1" ).arg(static_cast<PlaylistEntry*>(*it)->text(0))  );
+            itemList += static_cast<PlaylistEntry*>(*it)->url();
             pixText = (*it)->text(0);
         }
         else if( isStream( *it ) )
