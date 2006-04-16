@@ -122,6 +122,11 @@ class Quiz
             replies << "YEEEHA! Cowboy #{m.sourcenick} scored again. The answer was: #{@current_answer}"
             replies << "STRIKE! #{m.sourcenick} pwned you all. The answer was: #{@current_answer}"
             replies << "YAY :)) #{m.sourcenick} is totally invited to my next sleepover. The answer was: #{@current_answer}"
+            replies << "And the crowd GOES WILD for #{m.sourcenick}.  The answer was: #{@current_answer}"
+            replies << "GOOOAAALLLL! That was one fine strike by #{m.sourcenick}. The answer was: #{@current_answer}"
+            replies << "#{m.sourcenick} deserves a medal! Only #{m.sourcenick} could have known the answer was: #{@current_answer}"
+            replies << "Okay, #{m.sourcenick} is officially a spermatologist! Answer was: #{@current_answer}"
+            replies << "I bet that #{m.sourcenick} knows where the word 'trivia' comes from too! Answer was: #{@current_answer}"
 
             @plugin.bot.say( m.replyto, replies[rand( replies.length )] )
 
