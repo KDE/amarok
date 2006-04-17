@@ -677,7 +677,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         urlString.startsWith( "artistback" ) ||
         urlString.startsWith( "current" ) ||
         currentPage() != m_contextTab ||
-        !EngineController::engine()->loaded() )
+        ( urlString.isEmpty() && !EngineController::engine()->loaded() ) )
         return;
 
     KURL url( urlString );
