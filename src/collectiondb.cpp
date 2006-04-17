@@ -2057,7 +2057,6 @@ CollectionDB::removePodcastFolder( const int id )
 bool
 CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
 {
-    debug() << "bundle's uniqueid = " << bundle->uniqueId() << endl;
     if ( !QFileInfo( bundle->url().path() ).isReadable() ) return false;
 
     QString command = "INSERT INTO tags_temp "
