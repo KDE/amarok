@@ -967,9 +967,11 @@ void Playlist::restoreLayout(KConfig *config, const QString &group)
     QStringList::ConstIterator it = cols.constBegin();
     const QStringList::ConstIterator itEnd = cols.constEnd();
     for (; it != itEnd; ++it)
+    {
+      if (iorder[i] == MetaBundle::Rating)
+        amaroK::setUseRatings( (*it).toInt() > 0 ); // TODO remove this hack
       setColumnWidth(iorder[i++], (*it).toInt());
-    if (iorder[i++] == MetaBundle::Rating)
-      amaroK::setUseRatings( (*it).toInt() > 0 ); // TODO remove this hack
+    }
   }
 
 
