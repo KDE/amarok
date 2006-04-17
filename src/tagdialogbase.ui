@@ -324,7 +324,7 @@
                             <enum>PlainText</enum>
                         </property>
                         <property name="buddy" stdset="0">
-                            <cstring>kIntSpinBox_track</cstring>
+                            <cstring>kTextEdit_comment</cstring>
                         </property>
                     </widget>
                     <widget class="QPushButton" row="7" column="1">
@@ -468,7 +468,7 @@
                             <string>&amp;Composer:</string>
                         </property>
                         <property name="buddy" stdset="0">
-                            <cstring>kComboBox_album</cstring>
+                            <cstring>kComboBox_composer</cstring>
                         </property>
                     </widget>
                     <widget class="QLayoutWidget" row="3" column="1">
@@ -506,7 +506,7 @@
                                     <string>&amp;Disc Number:</string>
                                 </property>
                                 <property name="buddy" stdset="0">
-                                    <cstring>kComboBox_album</cstring>
+                                    <cstring>kIntSpinBox_discNumber</cstring>
                                 </property>
                             </widget>
                             <widget class="KIntSpinBox">
@@ -734,38 +734,33 @@
     <tabstop>kTabWidget</tabstop>
     <tabstop>kLineEdit_title</tabstop>
     <tabstop>kComboBox_artist</tabstop>
+    <tabstop>kComboBox_composer</tabstop>
     <tabstop>kComboBox_album</tabstop>
+    <tabstop>kIntSpinBox_discNumber</tabstop>
     <tabstop>kComboBox_genre</tabstop>
     <tabstop>kIntSpinBox_track</tabstop>
     <tabstop>kIntSpinBox_year</tabstop>
     <tabstop>kTextEdit_comment</tabstop>
     <tabstop>pushButton_musicbrainz</tabstop>
+    <tabstop>pushButton_guessTags</tabstop>
+    <tabstop>pushButton_setFilenameSchemes</tabstop>
     <tabstop>kTextEdit_lyrics</tabstop>
     <tabstop>kIntSpinBox_score</tabstop>
+    <tabstop>kComboBox_rating</tabstop>
     <tabstop>pushButton_open</tabstop>
     <tabstop>pushButton_previous</tabstop>
     <tabstop>pushButton_next</tabstop>
+    <tabstop>checkBox_perTrack</tabstop>
     <tabstop>pushButton_ok</tabstop>
     <tabstop>pushButton_cancel</tabstop>
 </tabstops>
 <pixmapinproject/>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>klineedit.h</includehint>
     <includehint>ktabwidget.h</includehint>
-    <includehint>kcombobox.h</includehint>
     <includehint>klineedit.h</includehint>
-    <includehint>klineedit.h</includehint>
-    <includehint>knuminput.h</includehint>
     <includehint>knuminput.h</includehint>
     <includehint>ktextedit.h</includehint>
-    <includehint>kcombobox.h</includehint>
-    <includehint>klineedit.h</includehint>
-    <includehint>knuminput.h</includehint>
-    <includehint>kcombobox.h</includehint>
-    <includehint>klineedit.h</includehint>
-    <includehint>ktextedit.h</includehint>
-    <includehint>knuminput.h</includehint>
     <includehint>kcombobox.h</includehint>
 </includehints>
 </UI>
