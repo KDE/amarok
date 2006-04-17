@@ -572,8 +572,15 @@ CollectionDB::createPersistentTables()
         "url " + textColumnType() + ","
         "label " + textColumnType() + ");" ) );
 
+    //create uniqueid table
+    query( QString( "CREATE TABLE uniqueid ("
+        "url " + textColumnType() + ","
+        "uniqueid " + textColumnType(64) + ");" ) );
+
     query( "CREATE INDEX url_label ON label( url );" );
     query( "CREATE INDEX label_label ON label( label );" );
+    query( "CREATE INDEX url_uniqueid ON uniqueid( url );");
+    query( "CREATE INDEX uniqueid_uniqueid ON uniqueid( uniqueid );");
 }
 
 void
@@ -646,6 +653,7 @@ CollectionDB::dropPersistentTables()
     query( "DROP TABLE amazon;" );
     query( "DROP TABLE lyrics;" );
     query( "DROP TABLE labels;" );
+    query( "DROP TABLE uniqueid;" );
     query( "DROP TABLE podcastchannels;" );
     query( "DROP TABLE podcastepisodes;" );
     query( "DROP TABLE podcastfolders;" );
@@ -2049,6 +2057,8 @@ CollectionDB::removePodcastFolder( const int id )
 bool
 CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
 {
+    DEBUG_BLOCK
+    debug() << "bundle's uniqueid = " << bundle->uniqueId() << endl;
     if ( !QFileInfo( bundle->url().path() ).isReadable() ) return false;
 
     QString command = "INSERT INTO tags_temp "
@@ -2104,6 +2114,10 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
     //FIXME: currently there's no way to check if an INSERT query failed or not - always return true atm.
     // Now it might be possible as insert returns the rowid.
     insert( command, NULL );
+
+    command = QString( "INSERT INTO uniqueid ( url, uniqueid) VALUES (%1, %2)" )
+                .arg( escapeString( bundle->url().path() ) )
+                .arg( bundle->uniqueId() );
     return true;
 }
 
@@ -2654,6 +2668,10 @@ CollectionDB::migrateFile( const QString &oldURL, const QString &newURL )
 
     query( QString( "DELETE FROM lyrics WHERE url = '%1';" )
         .arg( escapeString( oldURL ) ) );
+
+    query( QString( "UPDATE uniqueid SET url = '%1' WHERE url = '%2';" )
+        .arg( escapeString( newURL ) )
+        .arg( escapeString( oldURL ) ) );
 }
 
 void
@@ -2687,6 +2705,8 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
     // Clean it.
     srcURL.cleanPath();
     dstURL.cleanPath();
+
+    QString uid = getUniqueId( src );
 
     // Make sure it is valid.
     if(!srcURL.isValid() || !dstURL.isValid())
@@ -2730,6 +2750,7 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
             MetaBundle bundle( dstURL );
             if( bundle.isValidMedia() )
             {
+                bundle.newUniqueId();
                 addSong( &bundle, true );
                 return true;
             }
@@ -2739,6 +2760,7 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
             if( isFileInCollection( srcURL.path() ) )
             {
                 migrateFile( src, dest );
+                emit fileMoved( src, dest, uid );
                 return true;
             }
             else
@@ -2746,6 +2768,7 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
                 MetaBundle bundle( dstURL );
                 if( bundle.isValidMedia() )
                 {
+                    bundle.newUniqueId();
                     addSong( &bundle, true );
                     return true;
                 }
@@ -2962,6 +2985,12 @@ CollectionDB::updateURL( const QString &url, const bool updateView )
     updateTags( url, bundle, updateView);
 }
 
+QString
+CollectionDB::getUniqueId( const QString &url )
+{
+    QStringList values = query( QString( "SELECT url FROM uniqueid WHERE url = '%1';" ).arg( escapeString( url ) ));
+    return values[0];
+}
 
 void
 CollectionDB::setLyrics( const QString &url, const QString &lyrics )
@@ -3503,6 +3532,11 @@ CollectionDB::initialize()
             query( "ALTER TABLE podcastepisodes ADD size INTEGER;" );
             query( "ALTER TABLE podcastepisodes DROP comment;" );
             query( "ALTER TABLE podcastepisodes ADD comment " + longTextColumnType() + ";" );
+        }
+        else if ( PersistentVersion.toInt() < 7 )
+        {
+            debug() << "Building uniqueid tables" << endl;
+            createPersistentTables();
         }
         else {
             if ( adminValue( "Database Persistent Tables Version" ).toInt() != DATABASE_PERSISTENT_TABLES_VERSION ) {

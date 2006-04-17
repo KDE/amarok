@@ -188,6 +188,7 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
     , m_isValidMedia( false ) //will be updated
     , m_podcastBundle( 0 )
 {
+    DEBUG_BLOCK
     if ( m_exists )
     {
         if ( !noCache )
@@ -427,6 +428,7 @@ MetaBundle::embeddedImages( MetaBundle::EmbeddedImageList& images )
 void
 MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImageList* images )
 {
+    DEBUG_BLOCK
     if( url().protocol() != "file" )
         return;
 
@@ -464,6 +466,7 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
 
         QString disc;
         bool atf = AmarokConfig::advancedTagFeatures();
+        debug() << "atf is " << atf << endl;
         if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
         {
             m_type = mp3;
@@ -1243,6 +1246,7 @@ void MetaBundle::setUniqueId( const QString &id )
 
 void MetaBundle::setUniqueId( TagLib::FileRef &fileref )
 {
+    DEBUG_BLOCK
     if( !AmarokConfig::advancedTagFeatures() )
         return;
 
@@ -1331,7 +1335,20 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref )
         if( file || !file )
         return; //not handled, at least not yet
     }
+    debug() << "Unique id for file = " << fileref.file()->name() << " is " << m_uniqueId << endl;
+}
 
+void
+MetaBundle::newUniqueId()
+{
+    const QString path = url().path();
+    TagLib::FileRef fileref;
+    fileref = TagLib::FileRef( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );
+
+    if( !fileref.isNull() )
+        setUniqueId( fileref );
+    else
+        debug() << "ERROR: failed to set new uniqueid (could not open fileref)" << endl;
 }
 
 int

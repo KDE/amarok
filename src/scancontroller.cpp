@@ -303,7 +303,7 @@ ScanController::startElement( const QString&, const QString& localName, const QS
 
     if( localName == "tags") {
         MetaBundle bundle;
-
+        debug() << "In localName = \"tags\"" << endl;
         bundle.setPath      ( attrs.value( "path" ) );
         bundle.setTitle     ( attrs.value( "title" ) );
         bundle.setArtist    ( attrs.value( "artist" ) );

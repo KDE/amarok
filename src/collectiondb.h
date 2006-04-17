@@ -198,6 +198,7 @@ class CollectionDB : public QObject, public EngineObserver
         void scoreChanged( const QString &url, int score );
         void ratingChanged( const QString &url, int rating );
         void fileMoved( const QString &srcUrl, const QString &dstUrl );
+        void fileMoved( const QString &srcUrl, const QString &dstUrl, const QString &uniqueid );
         void coverChanged( const QString &artist, const QString &album ); //whenever a cover changes
         void coverFetched( const QString &artist, const QString &album ); //only when fetching from amazon
         void coverRemoved( const QString &artist, const QString &album );
@@ -299,6 +300,7 @@ class CollectionDB : public QObject, public EngineObserver
 
         void updateTags( const QString &url, const MetaBundle &bundle, const bool updateView = true);
         void updateURL( const QString &url, const bool updateView = true );
+        QString getUniqueId( const QString &url );
 
         //statistics methods
         int addSongPercentage( const QString &url, int percentage, const QDateTime *playtime = 0 );
@@ -387,7 +389,7 @@ class CollectionDB : public QObject, public EngineObserver
 
         void setLyrics( const QString& url, const QString& lyrics );
         QString getLyrics( const QString& url );
-        
+
         /** Remove from the amazon table the item with the specified md5sum **/
         void removeInvalidAmazonInfo( const QString& md5sum );
         void newAmazonReloadDate( const QString& asin, const QString& locale, const QString& md5sum );
@@ -424,7 +426,7 @@ class CollectionDB : public QObject, public EngineObserver
         static const int DATABASE_VERSION = 26;
         // Persistent Tables hold data that is somehow valuable to the user, and can't be erased when rescaning.
         // When bumping this, write code to convert the data!
-        static const int DATABASE_PERSISTENT_TABLES_VERSION = 6;
+        static const int DATABASE_PERSISTENT_TABLES_VERSION = 7;
         // Bumping this erases stats table. If you ever need to, write code to convert the data!
         static const int DATABASE_STATS_VERSION = 5;
 

@@ -260,6 +260,7 @@ public: //modifiers
     void setPodcastBundle( const PodcastEpisodeBundle &peb );
     void setUniqueId( const QString &id ); //WARNING WARNING WARNING SEE COMMENT in .CPP
     void setUniqueId( TagLib::FileRef &fileref);
+    void newUniqueId();
 
     void setYear( int year );
     void setDiscNumber( int discNumber );
