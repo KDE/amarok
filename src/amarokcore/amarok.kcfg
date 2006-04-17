@@ -5,6 +5,7 @@
       xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
       http://www.kde.org/standards/kcfg/1.0/kcfg.xsd" >
 <include>qdir.h</include>
+<include>amarok.h</include>
 
 <kcfgfile name="amarokrc"/>
 
@@ -554,6 +555,10 @@
     <entry key="AdvancedTagFeatures" type="Bool">
         <label>Enable/disable advanced tag-based features (warning: alpha status, and changes your files!)</label>
         <default>false</default>
+    </entry>
+    <entry key="Podcast Folder" type="Path">
+        <label>The folder where downloaded podcasts are saved</label>
+        <default code="true">amaroK::saveLocation( "podcasts" )</default>
     </entry>
 </group>
 

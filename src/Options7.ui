@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>404</width>
-            <height>215</height>
+            <height>273</height>
         </rect>
     </property>
     <property name="caption">
@@ -48,6 +48,24 @@
                 </widget>
             </vbox>
         </widget>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>podcastFolderBox</cstring>
+            </property>
+            <property name="title">
+                <string>Podcast Folder</string>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="KURLRequester">
+                    <property name="name">
+                        <cstring>podcastURLLine</cstring>
+                    </property>
+                </widget>
+            </vbox>
+        </widget>
     </vbox>
 </widget>
 <customwidgets>
@@ -74,4 +92,10 @@
     </image>
 </images>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>dbsetup.h</includehint>
+    <includehint>kurlrequester.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+</includehints>
 </UI>

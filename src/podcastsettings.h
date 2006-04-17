@@ -62,7 +62,7 @@ class PodcastSettingsDialog : public KDialogBase
 
     private:
         void init();
-        void setSettings( PodcastSettings *settings, bool changeSaveLocation );
+        void setSettings( PodcastSettings *settings );
         QString requesterSaveLocation();
 
         PodcastSettingsDialogBase *m_ps;

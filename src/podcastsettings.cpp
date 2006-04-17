@@ -2,9 +2,11 @@
 // (c) 2006 Bart Cerneels <shanachie@yucom.be>
 // See COPYING file for licensing information.
 
-#include "podcastsettings.h"
-#include "podcastsettingsbase.h"
+#include "amarokconfig.h"
+#include "amarok.h"
 #include "mediabrowser.h"
+#include "podcastsettingsbase.h"
+#include "podcastsettings.h"
 
 #include <klineedit.h>
 #include <knuminput.h>
@@ -30,10 +32,12 @@ PodcastSettings::PodcastSettings( const QDomNode &channelSettings, const QString
     m_purgeCount = channelSettings.namedItem( "purgecount").toElement().text().toInt();
 }
 
+// default settings
 PodcastSettings::PodcastSettings( const QString &title )
     : m_title( title )
 {
-    m_saveLocation = KURL::fromPathOrURL( amaroK::saveLocation( "podcasts/data/" ) );
+    m_saveLocation = KURL::fromPathOrURL( AmarokConfig::podcastFolder() );
+    m_saveLocation.addPath( m_title.replace("/", "-") );
     m_autoScan = false;
     m_fetch = STREAM;
     m_addToMediaDevice = false;
@@ -61,7 +65,7 @@ PodcastSettingsDialog::PodcastSettingsDialog( PodcastSettings *settings, QWidget
         , m_settings( settings )
 {
     init();
-    setSettings( settings, false );
+    setSettings( settings );
 }
 
 void
@@ -115,7 +119,7 @@ PodcastSettingsDialog::checkModified() //slot
 void PodcastSettingsDialog::slotOk()       //slot
 {
     enableButtonOK( false ); //visual feedback
-    
+
     m_settings->m_saveLocation     = requesterSaveLocation();
     m_settings->m_autoScan         = m_ps->m_autoFetchCheck->isChecked();
     m_settings->m_addToMediaDevice = m_ps->m_addToMediaDeviceCheck->isChecked();
@@ -140,12 +144,9 @@ QString PodcastSettingsDialog::requesterSaveLocation()
         return url + "/";
 }
 
-void PodcastSettingsDialog::setSettings( PodcastSettings *settings, bool changeSaveLocation )
+void PodcastSettingsDialog::setSettings( PodcastSettings *settings )
 {
     KURL saveLocation = settings->m_saveLocation;
-
-    if( changeSaveLocation )
-        saveLocation.addPath( (m_settings->m_title).replace("/", "-") );
 
     m_ps->m_saveLocation->setURL( saveLocation.prettyURL() );
     m_ps->m_autoFetchCheck->setChecked( settings->m_autoScan );
@@ -175,7 +176,7 @@ void PodcastSettingsDialog::setSettings( PodcastSettings *settings, bool changeS
 //reset to default settings button
 void PodcastSettingsDialog::slotUser1()    //slot
 {
-    setSettings( new PodcastSettings(m_settings->m_title), true );
+    setSettings( new PodcastSettings(m_settings->m_title) );
     checkModified();
 }
 

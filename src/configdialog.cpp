@@ -52,6 +52,7 @@ email                : markey@web.de
 #include <klineedit.h>
 #include <klocale.h>
 #include <kstandarddirs.h>
+#include <kurlrequester.h>
 
 namespace amaroK {
     int databaseTypeCode( const QString type )
@@ -84,7 +85,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
             m_opt4 = new Options4( 0, "Playback" );
     Options5 *opt5 = new Options5( 0, "OSD" );
     QVBox    *opt6 = new QVBox;
-            m_opt7 = new Options7( 0, "Collection" );
+    m_opt7 = new Options7( 0, "Collection" );
     Options8 *opt8 = new Options8( 0, "Scrobbler" );
 
     // Sound System
@@ -129,6 +130,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
 #endif
     m_opt7->collectionFoldersBox->setColumns( 1 );
     new CollectionSetup( m_opt7->collectionFoldersBox ); //TODO this widget doesn't update the apply/ok buttons
+    m_opt7->podcastURLLine->setURL( AmarokConfig::podcastFolder() );
 
     // add pages
     addPage( m_opt1, i18n( "General" ), "misc", i18n( "Configure General Options" ) );
@@ -156,6 +158,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     connect( opt5, SIGNAL(settingsChanged()), SLOT(updateButtons()) ); //see options5.ui.h
     connect( m_opt2->styleComboBox, SIGNAL( activated( int ) ), SLOT( updateButtons() ) );
     connect( m_opt7->dbSetupFrame->databaseEngine, SIGNAL( activated( int ) ), SLOT( updateButtons() ) );
+    connect( m_opt7->podcastURLLine, SIGNAL( textChanged (const QString &) ), SLOT( updateButtons() ) );
     connect( m_opt1->kComboBox_browser, SIGNAL( activated( int ) ), SLOT( updateButtons() ) );
     connect( m_opt1->kLineEdit_customBrowser, SIGNAL( textChanged( const QString& ) ), SLOT( updateButtons() ) );
 }
@@ -228,6 +231,8 @@ void AmarokConfigDialog::updateSettings()
         AmarokConfig::setDatabaseEngine( QString::number( dbType ) );
         emit settingsChanged();
     }
+
+    AmarokConfig::setPodcastFolder( m_opt7->podcastURLLine->url() );
 }
 
 
@@ -252,6 +257,7 @@ void AmarokConfigDialog::updateWidgets()
 void AmarokConfigDialog::updateWidgetsDefault()
 {
     m_soundSystem->setCurrentItem( 0 );
+    m_opt7->podcastURLLine->setURL( amaroK::saveLocation( "podcasts" ) );
 }
 
 
@@ -274,7 +280,8 @@ bool AmarokConfigDialog::hasChanged()
             m_opt2->styleComboBox->currentText() != AmarokConfig::contextBrowserStyleSheet() ||
             amaroK::databaseTypeCode(  m_opt7->dbSetupFrame->databaseEngine->currentText()  ) != AmarokConfig::databaseEngine().toInt() ||
             m_engineConfig && m_engineConfig->hasChanged() ||
-            externalBrowser() != AmarokConfig::externalBrowser();
+            externalBrowser() != AmarokConfig::externalBrowser() ||
+            m_opt7->podcastURLLine->url() != AmarokConfig::podcastFolder();
 }
 
 
