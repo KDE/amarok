@@ -2057,7 +2057,6 @@ CollectionDB::removePodcastFolder( const int id )
 bool
 CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
 {
-    DEBUG_BLOCK
     debug() << "bundle's uniqueid = " << bundle->uniqueId() << endl;
     if ( !QFileInfo( bundle->url().path() ).isReadable() ) return false;
 
@@ -2115,10 +2114,56 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
     // Now it might be possible as insert returns the rowid.
     insert( command, NULL );
 
-    command = QString( "INSERT INTO uniqueid (url, uniqueid) VALUES ('%1', '%2')" )
-                .arg( escapeString( bundle->url().path() ) )
-                .arg( bundle->uniqueId() );
-    insert( command, NULL );
+    //ATF Stuff
+    QString currid = bundle->uniqueId();
+    QString currurl = escapeString( bundle->url().path() );
+
+    QStringList urls = query( QString(
+            "SELECT uniqueid.url, uniqueid.uniqueid "
+            "FROM uniqueid "
+            "WHERE uniqueid.url = '%1';" )
+                .arg( currurl ) );
+    QStringList uniqueids = query( QString(
+            "SELECT uniqueid.url, uniqueid.uniqueid "
+            "FROM uniqueid "
+            "WHERE uniqueid.uniqueid = '%1';" )
+                .arg( currid ) );
+
+    if( urls.count() > 2 || uniqueids.count() > 2)
+    {
+        debug() << "ATF: YOU HAVE MULTIPLE ENTRIES FOR A SINGLE UNIQUEID OR PATH.  THIS SHOULD NOT HAPPEN.  CONSIDER RECREATING THIS TABLE." << endl;
+    }
+    else if( (currid == QString::null || currid.length() == 0) && !urls.empty() )
+    {
+        debug() << "ATF: The same url exists, but the new uniqueid is null.  Perhaps you're turning off ATF.  Removing entry from database." << endl;
+        query( QString("DELETE FROM uniqueid WHERE url='%1';")
+              .arg( currurl ) );
+    }
+    //checking length below because for some reason the != check does not always work, even when length is zero
+    else if( currid != QString::null && currid.length() > 0 ) //new item, but no uniqueid...probably ATF off
+    {
+        //debug() << "Currid = " << currid << ", length is " << currid.length() << ", url is " << currurl << endl;
+        if( urls.empty() && uniqueids.empty() ) // new item
+            insert( QString( "INSERT INTO uniqueid (url, uniqueid) VALUES ('%1', '%2')" )
+                .arg( currurl )
+                .arg( currid ), NULL );
+        else if( urls.empty() )  //detected same uniqueid, so file moved
+        {
+            query( QString( "UPDATE uniqueid SET url='%1' WHERE uniqueid='%2';" )
+                    .arg( currurl )
+                    .arg( currid ) );
+            emit fileMoved( uniqueids[0], currurl, currid );
+        }
+        //a file exists in the same place as before, but new uniqueid...assume
+        //that this is desired user behavior
+        else //uniqueids.empty()
+        {
+            query( QString( "UPDATE uniqueid SET uniqueid='%1' WHERE url='%2';" )
+                    .arg( currid )
+                    .arg( currurl ) );
+            emit uniqueidChanged( currurl, urls[1], currid );
+        }
+    }
     return true;
 }
 
@@ -3537,6 +3582,13 @@ CollectionDB::initialize()
         else if ( PersistentVersion.toInt() < 7 )
         {
             debug() << "Building uniqueid tables" << endl;
+            createPersistentTables();
+        }
+        else if ( PersistentVersion.toInt() < 8 )
+        {
+            debug() << "Dropping old uniqueid table, unsafe values could be inside." << endl;
+            //This is okay, as 7 was only a short lived development release...should not cause problems.
+            query( "DROP TABLE uniqueid;" );
             createPersistentTables();
         }
         else {

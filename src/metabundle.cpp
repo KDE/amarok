@@ -1253,6 +1253,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref )
     int createID = 0;
     int randSize = 64; //largest size allowed by ID3v2.4
     bool newID = false;
+    m_uniqueId = QString::null;
 
     QString ourId = QString( "amaroK - rediscover your music at http://amarok.kde.org" ).upper();
 

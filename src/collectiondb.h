@@ -199,6 +199,7 @@ class CollectionDB : public QObject, public EngineObserver
         void ratingChanged( const QString &url, int rating );
         void fileMoved( const QString &srcUrl, const QString &dstUrl );
         void fileMoved( const QString &srcUrl, const QString &dstUrl, const QString &uniqueid );
+        void uniqueidChanged( const QString &url, const QString &originalid, const QString &newid );
         void coverChanged( const QString &artist, const QString &album ); //whenever a cover changes
         void coverFetched( const QString &artist, const QString &album ); //only when fetching from amazon
         void coverRemoved( const QString &artist, const QString &album );
@@ -426,7 +427,7 @@ class CollectionDB : public QObject, public EngineObserver
         static const int DATABASE_VERSION = 26;
         // Persistent Tables hold data that is somehow valuable to the user, and can't be erased when rescaning.
         // When bumping this, write code to convert the data!
-        static const int DATABASE_PERSISTENT_TABLES_VERSION = 7;
+        static const int DATABASE_PERSISTENT_TABLES_VERSION = 8;
         // Bumping this erases stats table. If you ever need to, write code to convert the data!
         static const int DATABASE_STATS_VERSION = 5;
 
