@@ -2115,9 +2115,10 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
     // Now it might be possible as insert returns the rowid.
     insert( command, NULL );
 
-    command = QString( "INSERT INTO uniqueid ( url, uniqueid) VALUES (%1, %2)" )
+    command = QString( "INSERT INTO uniqueid (url, uniqueid) VALUES ('%1', '%2')" )
                 .arg( escapeString( bundle->url().path() ) )
                 .arg( bundle->uniqueId() );
+    insert( command, NULL );
     return true;
 }
 

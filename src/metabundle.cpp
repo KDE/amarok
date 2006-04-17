@@ -1252,6 +1252,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref )
 
     int createID = 0;
     int randSize = 64; //largest size allowed by ID3v2.4
+    bool newID = false;
 
     QString ourId = QString( "amaroK - rediscover your music at http://amarok.kde.org" ).upper();
 
@@ -1282,6 +1283,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref )
                             TagLib::ByteVector( m_uniqueId.ascii(), randSize )
                             ) );
                 file->save( TagLib::MPEG::File::ID3v2 );
+                newID = true;
             }
         }
     }
@@ -1295,6 +1297,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref )
                         TagLib::ByteVector( getRandomString( randSize ).ascii(), randSize )
                         );
                 file->save();
+                newID = true;
             }
             else
                 m_uniqueId = TStringToQString( file->tag()->fieldListMap()[QStringToTString( ourId )].front() );
@@ -1310,6 +1313,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref )
                         TagLib::ByteVector( getRandomString( randSize ).ascii(), randSize )
                         );
                 file->save();
+                newID = true;
             }
             else
                 m_uniqueId = TStringToQString( file->xiphComment()->fieldListMap()[QStringToTString( ourId )].front() );
@@ -1325,6 +1329,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref )
                         TagLib::ByteVector( getRandomString( randSize ).ascii(), randSize )
                         );
                 file->save();
+                newID = true;
             }
             else
                 m_uniqueId = TStringToQString( file->tag()->fieldListMap()[QStringToTString( ourId )].front() );
@@ -1335,7 +1340,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref )
         if( file || !file )
         return; //not handled, at least not yet
     }
-    debug() << "Unique id for file = " << fileref.file()->name() << " is " << m_uniqueId << endl;
+    debug() << "Unique id for file = " << fileref.file()->name() << " is " << m_uniqueId << " and this " << (newID ? "IS" : "is NOT" ) << " a new unique id." << endl;
 }
 
 void
