@@ -39,9 +39,14 @@
 #include "threadweaver.h"
 
 #include <qevent.h>           //eventFilter()
+#include <qfont.h>
 #include <qheader.h>
 #include <qlayout.h>
 #include <qlabel.h>           //search filter label
+
+#include <qpainter.h>         //dynamic title
+#include <qpen.h>
+
 #include <qsizepolicy.h>      //qspaceritem in dynamic bar
 #include <qtimer.h>           //search filter timer
 #include <qtooltip.h>         //QToolTip::add()
@@ -920,10 +925,9 @@ bool PlaylistWindow::isReallyShown() const
 DynamicBar::DynamicBar(QWidget* parent)
     : QHBox( parent, "DynamicModeStatusBar" )
 {
-    setSpacing( KDialog::spacingHint() );
-    new QLabel( i18n( "Dynamic Playlist: " ), this );
-    m_titleLabel = new QLabel( this, "DynamicModeTitle" );
+    m_titleWidget = new DynamicTitle(this);
 
+    setSpacing( KDialog::spacingHint() );
     QWidget *spacer = new QWidget( this );
     setStretchFactor( spacer, 10 );
 }
@@ -955,6 +959,52 @@ void DynamicBar::slotNewDynamicMode(const DynamicMode* mode)
 
 void DynamicBar::changeTitle(const QString& title)
 {
-   m_titleLabel->setText(title);
+   m_titleWidget->setTitle(title);
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////
+/// DynamicTitle
+//////////////////////////////////////////////////////////////////////////////////////////
+DynamicTitle::DynamicTitle(QWidget* w)
+    : QWidget(w, "dynamic title")
+{
+    m_font.setBold( true );
+    setTitle("");
+}
+
+void DynamicTitle::setTitle(const QString& newTitle)
+{
+    m_title = i18n("Dynamic Playlist: ") + newTitle;
+    QFontMetrics fm(m_font);
+    setMinimumWidth( s_curveWidth*3 + fm.width(m_title) + s_imageSize );
+    setMinimumHeight( fm.height() );
+}
+
+void DynamicTitle::paintEvent(QPaintEvent* /*e*/)
+{
+    QPainter p;
+    p.begin( this, false );
+    QPen pen( colorGroup().highlightedText(), 0 );
+    p.setPen( pen );
+    p.setBrush( colorGroup().highlight() );
+    p.setFont(m_font);
+
+    QFontMetrics fm(m_font);
+    int textHeight = fm.height();
+    if (textHeight < s_imageSize)
+        textHeight = s_imageSize;
+    int textWidth = fm.width(m_title);
+    int yStart = (height() - textHeight) / 2;
+    if(yStart < 0)
+        yStart = 0;
+
+    p.drawEllipse( 0, yStart, s_curveWidth * 2, textHeight);
+    p.drawEllipse( s_curveWidth + textWidth + s_imageSize, yStart, s_curveWidth*2, textHeight);
+    p.fillRect( s_curveWidth, yStart, textWidth + s_imageSize + s_curveWidth, textHeight
+                    , QBrush( colorGroup().highlight()) );
+    p.drawPixmap( s_curveWidth, yStart + ((textHeight - s_imageSize) /2), SmallIcon("dynamic") );
+    //not sure why first arg of Rect shouldn't add @curveWidth
+    p.drawText( QRect(s_imageSize, yStart, s_curveWidth + textWidth +s_imageSize, textHeight), Qt::AlignCenter, m_title);
+}
+
 #include "playlistwindow.moc"

@@ -102,6 +102,23 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
         static PlaylistWindow *s_instance;
 };
 
+class DynamicTitle : public QWidget
+{
+    Q_OBJECT
+    public:
+        DynamicTitle(QWidget* parent);
+        void setTitle(const QString& newTitle);
+
+    protected:
+        virtual void paintEvent(QPaintEvent* e);
+
+    private:
+        const static int s_curveWidth = 5;
+        const static int s_imageSize = 16;
+        QString m_title;
+        QFont m_font;
+};
+
 class DynamicBar : public QHBox
 {
     Q_OBJECT
@@ -114,6 +131,8 @@ class DynamicBar : public QHBox
         void changeTitle(const QString& title);
 
     private:
-        QLabel* m_titleLabel;
+        DynamicTitle* m_titleWidget;
 };
+
+
 #endif //AMAROK_PLAYLISTWINDOW_H
