@@ -984,7 +984,7 @@ void DynamicTitle::paintEvent(QPaintEvent* /*e*/)
 {
     QPainter p;
     p.begin( this, false );
-    QPen pen( colorGroup().highlightedText(), 0 );
+    QPen pen( colorGroup().highlightedText(), 0, Qt::NoPen );
     p.setPen( pen );
     p.setBrush( colorGroup().highlight() );
     p.setFont(m_font);
