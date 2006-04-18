@@ -153,23 +153,25 @@ DeviceManager::getDeviceStringList( bool autoonly )
     if (!m_dc->call("kded", "mediamanager", "fullList()", data, replyType, replyData))
     {
         debug() << "Error during DCOP call" << endl;
-        return NULL;
     }
-    QDataStream reply(replyData, IO_ReadOnly);
-    while(!reply.atEnd())
+    else
     {
-        reply >> result;
+        QDataStream reply(replyData, IO_ReadOnly);
+        while(!reply.atEnd())
+        {
+            reply >> result;
+        }
+        QStringList::Iterator it;
+        for( it = result.begin(); it != result.end(); ++it )
+        {
+            if (autodetect_insert == Medium::PROPERTIES_COUNT - 1)
+                result.insert(it, QString("true"));
+            autodetect_insert--;
+            if (autodetect_insert == -1)
+                autodetect_insert = Medium::PROPERTIES_COUNT - 1;
+        }
     }
-    QStringList::Iterator it;
-    for( it = result.begin(); it != result.end(); ++it )
-    {
-        if (autodetect_insert == Medium::PROPERTIES_COUNT - 1)
-            result.insert(it, QString("true"));
-        autodetect_insert--;
-        if (autodetect_insert == -1)
-            autodetect_insert = Medium::PROPERTIES_COUNT - 1;
-    }
-
+    
     if( autoonly )
         return result;
 
