@@ -35,6 +35,7 @@ class MediumPluginManager;
 class MediumPluginDetailView;
 
 typedef QMap<Medium*, KComboBox*> ComboMap;
+typedef QMap<Medium*, QString> OldPluginMap;
 typedef QMap<int, Medium*> ButtonMap;
 typedef QMap<int, QHBox*> HBoxMap;
 typedef QMap<QString, Medium*> DeletedMap;
@@ -69,6 +70,7 @@ class MediumPluginManager : public KDialogBase
         void detectDevices();
 
         ComboMap m_cmap;
+        OldPluginMap m_omap;
         ButtonMap m_bmap;
         HBoxMap m_hmap;
         PluginStringMap m_dmap;
@@ -79,14 +81,9 @@ class MediumPluginManager : public KDialogBase
         QSignalMapper *m_sigconfmap;
 
         QVBox *m_devicesBox;
-        KConfig *m_config;
         QHBox *m_hbox;
-        QString *m_currtext;
-        QLabel *m_currlabel;
         QGroupBox *m_location;
-        KComboBox *m_currcombo;
         KPushButton *m_configurebutton;
-        KPushButton *m_currbutton;
         KPushButton *m_deletebutton;
         int m_buttonnum;
         bool m_redetect;
