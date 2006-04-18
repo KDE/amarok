@@ -1355,11 +1355,10 @@ void
 MediaBrowser::pluginSelected( const Medium *medium, const QString plugin )
 {
     DEBUG_BLOCK
-    KConfig *config = amaroK::config( "MediaBrowser" );
     if( !plugin.isEmpty() )
     {
         debug() << "Medium id is " << medium->id() << " and plugin selected is: " << plugin << endl;
-        config->writeEntry( medium->id(), plugin );
+        amaroK::config( "MediaBrowser" )->writeEntry( medium->id(), plugin );
 
         for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
                 it != m_devices.end();

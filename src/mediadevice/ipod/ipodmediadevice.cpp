@@ -203,6 +203,9 @@ MediaItem *
 IpodMediaDevice::updateTrackInDB(IpodMediaItem *item,
         const QString &pathname, const MetaBundle &bundle, const PodcastInfo *podcastInfo)
 {
+    if( !m_itdb )
+        return 0;
+
     Itdb_Track *track = 0;
     if( item )
         track = item->m_track;
@@ -1141,6 +1144,9 @@ IpodMediaDevice::renameItem( QListViewItem *i ) // SLOT
 void
 IpodMediaDevice::playlistFromItem(IpodMediaItem *item)
 {
+    if( !m_itdb )
+        return;
+
     m_dbChanged = true;
 
     item->m_playlist = itdb_playlist_new(item->text(0).utf8(), false /* dumb playlist */ );
@@ -1575,6 +1581,12 @@ IpodMediaDevice::getTrack( const Itdb_Track *itrack )
 KURL
 IpodMediaDevice::determineURLOnDevice(const MetaBundle &bundle)
 {
+    if( !m_itdb )
+    {
+        debug() << "m_itdb is NULL" << endl;
+        return KURL();
+    }
+
     QString local = bundle.filename();
     QString type = local.section('.', -1);
 
@@ -1836,14 +1848,6 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
             case SUBSCRIBE:
                 PlaylistBrowser::instance()->addPodcast( static_cast<IpodMediaItem *>(item)->m_podcastInfo->rss );
                 break;
-            default:
-                break;
-        }
-
-        if( !m_mutex.locked() )
-        {
-            switch( id )
-            {
             case RENAME:
                 if( item->type() == MediaItem::PLAYLIST )
                 {
@@ -1859,6 +1863,14 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                     dialog->show();
                 }
                 break;
+            default:
+                break;
+        }
+
+        if( !m_mutex.locked() )
+        {
+            switch( id )
+            {
             case MAKE_PLAYLIST:
                 {
                     QPtrList<MediaItem> items;
