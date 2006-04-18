@@ -819,11 +819,9 @@ VfatMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
         menu.insertItem( SmallIconSet( "folder" ), i18n("Add Directory" ), DIRECTORY );
         menu.insertItem( SmallIconSet( "editclear" ), i18n( "Rename" ), RENAME );
         menu.insertItem( SmallIconSet( "editdelete" ), i18n( "Delete" ), DELETE );
-        if ( MediaBrowser::queue()->childCount())
-        {
-            menu.insertSeparator();
-            menu.insertItem( SmallIconSet( "up" ), i18n(" Transfer queue to here..." ), TRANSFER_HERE );
-        }
+        menu.insertSeparator();
+        menu.insertItem( SmallIconSet( "up" ), i18n(" Transfer queue to here..." ), TRANSFER_HERE );
+        menu.setItemEnabled( TRANSFER_HERE, MediaBrowser::queue()->childCount() );
 
         int id =  menu.exec( point );
         switch( id )
