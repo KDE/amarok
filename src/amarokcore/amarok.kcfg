@@ -242,7 +242,7 @@
     </entry>
     <entry key="Overwrite Files" type="Bool">
         <label>Whether organize files will overwrite existing files.</label>
-        <whatsthis>If set, Organize files will overwrite any existing destination..</whatsthis>
+        <whatsthis>If set, Organize files will overwrite any existing destination.</whatsthis>
         <default>false</default>
     </entry>
     <entry key="Group By Filetype" type="Bool">
