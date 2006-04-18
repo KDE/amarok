@@ -68,6 +68,7 @@ class MediumPluginManager : public KDialogBase
     private:
 
         void detectDevices();
+        void renderDevice( QWidget *parent, Medium *medium );
 
         ComboMap m_cmap;
         OldPluginMap m_omap;
@@ -83,8 +84,6 @@ class MediumPluginManager : public KDialogBase
         QVBox *m_devicesBox;
         QHBox *m_hbox;
         QGroupBox *m_location;
-        KPushButton *m_configurebutton;
-        KPushButton *m_deletebutton;
         int m_buttonnum;
         bool m_redetect;
 

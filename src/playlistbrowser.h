@@ -20,8 +20,6 @@
 #include <qptrlist.h>
 #include <qvbox.h>
 
-#define escapeHTML(s)     QString(s).replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" )
-
 class KTextBrowser;
 class KToolBar;
 

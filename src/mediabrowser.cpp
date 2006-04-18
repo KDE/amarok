@@ -1323,16 +1323,15 @@ void
 MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/, bool constructing )
 {
     debug() << "mediumAdded: " << (medium? medium->properties():"null") << endl;
-    KConfig *config = amaroK::config( "MediaBrowser" );
-    MediumPluginChooser *mpc;
     if( medium )
     {
+        KConfig *config = amaroK::config( "MediaBrowser" );
         QString handler = config->readEntry( medium->id() );
         if( handler.isEmpty() )
         {
             if( !constructing && medium->isAutodetected() )
             {
-                mpc = new MediumPluginChooser( medium );
+                MediumPluginChooser *mpc = new MediumPluginChooser( medium );
                 mpc->exec();
             }
         }

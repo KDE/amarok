@@ -56,10 +56,6 @@
 #include <kurldrag.h>
 #include <kwin.h>
 
-
-//Tooltips
-#define escapeHTMLAttr(s) QString(s).replace( "%", "%25" ).replace( "'", "%27" ).replace( "#", "%23" ).replace( "?", "%3F" )
-
 static QString artistToSelectInInitFunction;
 CoverManager *CoverManager::s_instance = 0;
 

@@ -60,13 +60,23 @@
 
 #include <unistd.h> //usleep()
 
-#define escapeHTML(s)     QString(s).replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" )
-// .replace( "%", "%25" ) has to be the first(!) one, otherwise we would do things like converting spaces into %20 and then convert them into %25%20
-#define escapeHTMLAttr(s) QString(s).replace( "%", "%25" ).replace( "'", "%27" ).replace( "\"", "%22" ).replace( "#", "%23" ).replace( "?", "%3F" )
-#define unEscapeHTMLAttr(s) QString(s).replace( "%3F", "?" ).replace( "%23", "#" ).replace( "%22", "\"" ).replace( "%27", "'" ).replace( "%25", "%" )
-
 namespace amaroK
 {
+    QString escapeHTML( const QString &s )
+    {
+        return QString(s).replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" );
+        // .replace( "%", "%25" ) has to be the first(!) one, otherwise we would do things like converting spaces into %20 and then convert them into %25%20
+    }
+
+    QString escapeHTMLAttr( const QString &s )
+    {
+        return QString(s).replace( "%", "%25" ).replace( "'", "%27" ).replace( "\"", "%22" ).replace( "#", "%23" ).replace( "?", "%3F" );
+    }
+
+    QString unescapeHTMLAttr( const QString &s )
+    {
+        return QString(s).replace( "%3F", "?" ).replace( "%23", "#" ).replace( "%22", "\"" ).replace( "%27", "'" ).replace( "%25", "%" );
+    }
 
     QString verboseTimeSince( const QDateTime &datetime )
     {
@@ -133,15 +143,18 @@ namespace amaroK
 
         Q_ASSERT( !list.isEmpty() );
 
-        artist = unEscapeHTMLAttr( list[0] );
-        album  = unEscapeHTMLAttr( list[1] );
-        track  = unEscapeHTMLAttr( list[2] );
+        artist = unescapeHTMLAttr( list[0] );
+        album  = unescapeHTMLAttr( list[1] );
+        track  = unescapeHTMLAttr( list[2] );
     }
 
 }
 
 
 using amaroK::QStringx;
+using amaroK::escapeHTML;
+using amaroK::escapeHTMLAttr;
+using amaroK::unescapeHTMLAttr;
 
 
 static
@@ -430,14 +443,14 @@ void ContextBrowser::openURLRequest( const KURL &url )
     else if ( url.protocol() == "wikipedia" )
     {
         m_dirtyWikiPage = true;
-        QString entry = unEscapeHTMLAttr( url.path() );
+        QString entry = unescapeHTMLAttr( url.path() );
         showWikipediaEntry( entry );
     }
 
     else if( url.protocol() == "ggartist" )
     {
         const QString url2 = QString( "http://www.google.com/musicsearch?q=%1&res=artist" )
-            .arg( KURL::encode_string_no_slash( unEscapeHTMLAttr( url.path() ).replace( " ", "+" ), 106 /*utf-8*/ ) );
+            .arg( KURL::encode_string_no_slash( unescapeHTMLAttr( url.path() ).replace( " ", "+" ), 106 /*utf-8*/ ) );
         amaroK::invokeBrowser( url2 );
     }
 
@@ -889,7 +902,7 @@ ContextBrowser::showContext( const KURL &url, bool fromHistory )
     else if( url.protocol() == "artist" )
     {
         m_browseArtists = true;
-        m_artist = unEscapeHTMLAttr( url.path() );
+        m_artist = unescapeHTMLAttr( url.path() );
     }
 
     // Append new URL to history

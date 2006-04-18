@@ -196,6 +196,14 @@ namespace amaroK
      * @return The cleaned up path.
      */
     LIBAMAROK_EXPORT QString vfatPath( const QString &path ); //defined in app.cpp
+
+    /*
+     * Transform to be usable within HTML/HTML attributes
+     * defined in contextbrowser.cpp
+     */
+    LIBAMAROK_EXPORT QString escapeHTML( const QString &s );
+    LIBAMAROK_EXPORT QString escapeHTMLAttr( const QString &s );
+    LIBAMAROK_EXPORT QString unescapeHTMLAttr( const QString &s );
 }
 
 
