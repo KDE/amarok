@@ -115,6 +115,7 @@ Item::Item( QListView *parent )
     , m_lister( true )
     , m_url( "file:/" )
     , m_listed( false )
+    , m_fullyDisabled( false )
 {
     //Since we create the "/" checklistitem here, we need to enable it if needed
     if ( CollectionSetup::instance()->m_dirs.contains( "/" ) )
