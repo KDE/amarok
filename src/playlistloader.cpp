@@ -354,7 +354,7 @@ namespace amaroK
 
 // almost the same as UrlLoader::recurse, but global
 KURL::List
-recursiveUrlExpand( const KURL &url )
+recursiveUrlExpand( const KURL &url, int maxURLs )
 {
     typedef QMap<QString, KURL> FileMap;
 
@@ -379,26 +379,36 @@ recursiveUrlExpand( const KURL &url )
     KURL::List urls;
     FileMap files;
     for( KFileItem *item = items.first(); item; item = items.next() ) {
-        if( item->isFile() ) { files[item->name()] = item->url(); continue; }
-        if( item->isDir() ) urls += recursiveUrlExpand( item->url() );
+        if( maxURLs >= 0 && (int)(urls.count() + files.count()) >= maxURLs )
+            break;
+        if( item->isFile() && !PlaylistFile::isPlaylistFile( item->url().fileName() ) )
+        {
+            files[item->name()] = item->url();
+            continue;
+        }
+        if( item->isDir() )
+            urls += recursiveUrlExpand( item->url(), maxURLs - urls.count() - files.count() );
     }
 
     foreachType( FileMap, files )
         // users often have playlist files that reflect directories
         // higher up, or stuff in this directory. Don't add them as
         // it produces double entries
-        if( !PlaylistFile::isPlaylistFile( (*it).fileName() ) )
-            urls += *it;
+        urls += *it;
 
     return urls;
 }
 
 KURL::List
-recursiveUrlExpand( const KURL::List &list )
+recursiveUrlExpand( const KURL::List &list, int maxURLs )
 {
     KURL::List urls;
     foreachType( KURL::List, list )
-        urls += recursiveUrlExpand( *it );
+    {
+        if( maxURLs >= 0 && (int)urls.count() >= maxURLs )
+            break;
+        urls += recursiveUrlExpand( *it, maxURLs - urls.count() );
+    }
 
     return urls;
 }

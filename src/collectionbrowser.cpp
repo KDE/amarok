@@ -1693,9 +1693,10 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
         dialog.slotDetails();
     }
 
-    if( urls.count() )
+    KURL::List previewURLs = amaroK::recursiveUrlExpand( urls.first(), 1 );
+    if( previewURLs.count() )
     {
-        dialog.setPreviewBundle( MetaBundle( amaroK::recursiveUrlExpand( urls.first() ).first() ) );
+        dialog.setPreviewBundle( MetaBundle( previewURLs.first() ) );
         dialog.update( 0 );
     }
 
