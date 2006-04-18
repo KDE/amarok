@@ -312,25 +312,24 @@ MediaBrowser::MediaBrowser( const char *name )
     updateStats();
 
     QMap<QString, Medium*> mmap = DeviceManager::instance()->getMediumMap();
-    QMap<QString, Medium*>::Iterator it;
 
-    int newflag = 0;
-    KConfig *config = amaroK::config( "MediaBrowser" );
+    bool newflag = false;
     //This deals with <strike>auto-detectable</strike> ALL devices!
-    for( it = mmap.begin();
+    for( QMap<QString, Medium*>::Iterator it = mmap.begin();
             it != mmap.end();
             it++ )
     {
-        //debug() << "[MediaBrowser] (*it)->id() = " << (*it)->id() << ", config->readEntry = " << config->readEntry( (*it)->id() ) << endl;
-        if( !config->readEntry( (*it)->id() ) )
+        QString handler = amaroK::config( "MediaBrowser" )->readEntry( (*it)->id() );
+        //debug() << "[MediaBrowser] (*it)->id() = " << (*it)->id() << ", handler = " << handler << endl;
+        if( handler.isEmpty() )
         {
             //this should probably never be the case with a manually added device, unless amarokrc's been messed with
-            newflag = 1;
-            mediumAdded( (*it), (*it)->name(), true );
+            newflag = true;
+            mediumAdded( *it, (*it)->name(), true );
         }
         //and this definitely shouldn't!
-        else if( config->readEntry( (*it)->id() ) != "deleted" )
-            mediumAdded( (*it), (*it)->name(), true );
+        else if( handler != "deleted" )
+            mediumAdded( *it, (*it)->name(), true );
     }
 
     if ( newflag )
@@ -1337,6 +1336,7 @@ MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/, bool construc
                 mpc->exec();
             }
         }
+        //debug() << "id=" << medium->id() << ", handler=" << handler << endl;
         MediaDevice *device = loadDevicePlugin( handler );
         if( device )
         {
