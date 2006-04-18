@@ -11,12 +11,7 @@
 //
 #include "amarok.h"
 #include "debug.h"
-#include "devicemanager.h"
 #include "mediabrowser.h"
-#include "medium.h"
-#include "mediumpluginchooser.h"
-#include "plugin/pluginconfig.h"
-#include "pluginmanager.h"
 #include "transferdialog.h"
 
 #include <qcheckbox.h>

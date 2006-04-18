@@ -32,7 +32,6 @@ class KComboBox;
 class KLineEdit;
 class Medium;
 class MediumPluginManager;
-class MediumPluginDetailView;
 
 typedef QMap<Medium*, KComboBox*> ComboMap;
 typedef QMap<Medium*, QString> OldPluginMap;
@@ -59,7 +58,6 @@ class MediumPluginManager : public KDialogBase
 
     private slots:
         void slotOk();
-        void infoRequested( int buttonId );
         void configureDevice( int buttonId );
         void deleteDevice( int buttonId );
         void reDetectDevices();
@@ -77,7 +75,6 @@ class MediumPluginManager : public KDialogBase
         PluginStringMap m_dmap;
         DeletedMap m_deletedMap;
         NewDeviceMap m_newDevMap;
-        QSignalMapper *m_siginfomap;
         QSignalMapper *m_sigdelmap;
         QSignalMapper *m_sigconfmap;
 
@@ -90,15 +87,6 @@ class MediumPluginManager : public KDialogBase
         KTrader::OfferList m_offers;
         KTrader::OfferList::ConstIterator m_offersEnd;
         KTrader::OfferList::ConstIterator m_plugit;
-};
-
-class MediumPluginDetailView : public KDialogBase
-{
-    Q_OBJECT
-
-    public:
-        MediumPluginDetailView( const Medium* medium );
-        ~MediumPluginDetailView();
 };
 
 class ManualDeviceAdder : public KDialogBase

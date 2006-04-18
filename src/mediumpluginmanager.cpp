@@ -16,7 +16,6 @@
 #include "hintlineedit.h"
 #include "mediabrowser.h"
 #include "medium.h"
-#include "mediumpluginchooser.h"
 #include "mediumpluginmanager.h"
 #include "plugin/pluginconfig.h"
 #include "pluginmanager.h"
@@ -53,7 +52,6 @@ MediumPluginManager::MediumPluginManager()
     vbox->setSpacing( KDialog::spacingHint() );
     vbox->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
 
-    m_siginfomap = new QSignalMapper( this );
     m_sigdelmap = new QSignalMapper( this );
     m_sigconfmap = new QSignalMapper( this );
     m_buttonnum = 0;
@@ -78,7 +76,6 @@ MediumPluginManager::MediumPluginManager()
     connect( detectDevices, SIGNAL( clicked() ), this, SLOT( reDetectDevices() ) );
     connect( addButton, SIGNAL( clicked() ), this, SLOT( newDevice() ) );
 
-    connect( m_siginfomap, SIGNAL( mapped( int ) ), this, SLOT( infoRequested ( int ) ) );
     connect( m_sigdelmap, SIGNAL( mapped( int ) ), this, SLOT( deleteDevice( int ) ) );
     connect( m_sigconfmap, SIGNAL( mapped( int ) ), this, SLOT( configureDevice( int ) ) );
     connect( this, SIGNAL( selectedPlugin( const Medium*, const QString ) ), MediaBrowser::instance(), SLOT( pluginSelected( const Medium*, const QString ) ) );
@@ -260,15 +257,6 @@ MediumPluginManager::slotOk( )
 }
 
 void
-MediumPluginManager::infoRequested( int buttonId )
-{
-    Medium* medium = m_bmap[buttonId];
-    MediumPluginDetailView* mpdv = new MediumPluginDetailView( medium );
-    mpdv->exec();
-    delete mpdv;
-}
-
-void
 MediumPluginManager::configureDevice( int buttonId )
 {
     Medium* medium = m_bmap[buttonId];
@@ -317,44 +305,6 @@ MediumPluginManager::newDevice()
         }
     }
     delete mda;
-}
-
-/////////////////////////////////////////////////////////////////////
-
-MediumPluginDetailView::MediumPluginDetailView( const Medium* medium )
-: KDialogBase( amaroK::mainWindow(), "mediumplugindetailview", true, QString::null, Ok, Ok )
-{
-    kapp->setTopWidget( this );
-    setCaption( kapp->makeStdCaption( i18n( "Device information for %1").arg(medium->name() ) ) );
-
-    QHBox* hbox = makeHBoxMainWidget();
-    hbox->setSpacing( KDialog::spacingHint() );
-
-    QVBox* vbox1 = new QVBox( hbox );
-    QVBox* vbox2 = new QVBox( hbox );
-
-    const QString labelTextNone = i18n( "(none)" );
-
-    new QLabel( i18n( "Autodetected:"), vbox1 );
-    new QLabel( medium->isAutodetected() ? i18n("Yes") : i18n("No"), vbox2 );
-    new QLabel( i18n( "ID:"), vbox1 );
-    new QLabel( medium->id(), vbox2 );
-    new QLabel( i18n( "Name:"), vbox1 );
-    new QLabel( medium->name(), vbox2 );
-    new QLabel( i18n( "Label:"), vbox1 );
-    new QLabel( medium->label().isEmpty() ? labelTextNone : medium->label(), vbox2 );
-    new QLabel( i18n( "User Label:"), vbox1 );
-    new QLabel( medium->userLabel().isEmpty() ? labelTextNone : medium->userLabel(), vbox2 );
-    new QLabel( i18n( "Device Node:"), vbox1 );
-    new QLabel( medium->deviceNode().isEmpty() ? labelTextNone : medium->deviceNode(), vbox2 );
-    new QLabel( i18n( "Mount Point:"), vbox1 );
-    new QLabel( medium->mountPoint().isEmpty() ? labelTextNone : medium->mountPoint(), vbox2 );
-    new QLabel( i18n( "Mime Type:"), vbox1 );
-    new QLabel( medium->mimeType().isEmpty() ? labelTextNone : medium->mimeType(), vbox2 );
-}
-
-MediumPluginDetailView::~MediumPluginDetailView()
-{
 }
 
 /////////////////////////////////////////////////////////////////////

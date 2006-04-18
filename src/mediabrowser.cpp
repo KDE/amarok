@@ -1331,8 +1331,8 @@ MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/, bool construc
         {
             if( !constructing && medium->isAutodetected() )
             {
-                MediumPluginChooser *mpc = new MediumPluginChooser( medium );
-                mpc->exec();
+                MediumPluginManager *mpm = new MediumPluginManager();
+                mpm->exec();
             }
         }
         //debug() << "id=" << medium->id() << ", handler=" << handler << endl;
