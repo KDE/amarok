@@ -1005,22 +1005,22 @@ IpodMediaDevice::openDevice( bool silent )
 
     m_playlistItem = new IpodMediaItem( m_view, this );
     m_playlistItem->setText( 0, i18n("Playlists") );
-    m_playlistItem->m_order = -5;
+    m_playlistItem->m_order = -6;
     m_playlistItem->setType( MediaItem::PLAYLISTSROOT );
 
     m_podcastItem = new IpodMediaItem( m_view, this );
     m_podcastItem->setText( 0, i18n("Podcasts") );
-    m_podcastItem->m_order = -4;
+    m_podcastItem->m_order = -5;
     m_podcastItem->setType( MediaItem::PODCASTSROOT );
 
     m_invisibleItem = new IpodMediaItem( m_view, this );
     m_invisibleItem->setText( 0, i18n("Invisible") );
-    m_invisibleItem->m_order = -3;
+    m_invisibleItem->m_order = -4;
     m_invisibleItem->setType( MediaItem::INVISIBLEROOT );
 
     m_staleItem = new IpodMediaItem( m_view, this );
     m_staleItem->setText( 0, i18n("Stale") );
-    m_staleItem->m_order = -2;
+    m_staleItem->m_order = -3;
     m_staleItem->setType( MediaItem::STALEROOT );
 
     m_orphanedItem = new IpodMediaItem( m_view, this );
@@ -1201,7 +1201,7 @@ IpodMediaDevice::addTrackToView(Itdb_Track *track, IpodMediaItem *item)
             artist->setText( 0, artistName );
             artist->setType( MediaItem::ARTIST );
             if( artistName == i18n( "Various Artists" ) )
-                artist->m_order = 1;
+                artist->m_order = -1;
         }
 
         QString albumName(QString::fromUtf8(track->album));
