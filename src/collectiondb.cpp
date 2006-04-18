@@ -2113,6 +2113,14 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
     // Now it might be possible as insert returns the rowid.
     insert( command, NULL );
 
+    doATFStuff( bundle );
+
+    return true;
+}
+
+void
+CollectionDB::doATFStuff( MetaBundle* bundle )
+{
     //ATF Stuff
     QString currid = bundle->uniqueId();
     QString currurl = escapeString( bundle->url().path() );
@@ -2155,7 +2163,7 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
         }
         //a file exists in the same place as before, but new uniqueid...assume
         //that this is desired user behavior
-        else //uniqueids.empty()
+        else if( uniqueids.empty() )
         {
             query( QString( "UPDATE uniqueid SET uniqueid='%1' WHERE url='%2';" )
                     .arg( currid )
@@ -2163,7 +2171,19 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
             emit uniqueidChanged( currurl, urls[1], currid );
         }
     }
-    return true;
+}
+
+void
+CollectionDB::newUniqueIdForFile( const QString &path )
+{
+    KURL url = KURL::fromPathOrURL( path );
+
+    // Clean it.
+    url.cleanPath();
+
+    MetaBundle bundle( url );
+    bundle.newUniqueId();
+    doATFStuff( &bundle );
 }
 
 QString

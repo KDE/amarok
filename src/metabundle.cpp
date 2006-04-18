@@ -1244,9 +1244,10 @@ void MetaBundle::setUniqueId( const QString &id )
     m_uniqueId = id;
 }
 
-void MetaBundle::setUniqueId( TagLib::FileRef &fileref )
+void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
 {
     DEBUG_BLOCK
+
     if( !AmarokConfig::advancedTagFeatures() )
         return;
 
@@ -1268,7 +1269,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref )
                 TagLib::ID3v2::UniqueFileIdentifierFrame* ufidf = 
                         dynamic_cast<TagLib::ID3v2::UniqueFileIdentifierFrame*>(
                                     file->ID3v2Tag()->frameListMap()["UFID"].front() );
-                if( TStringToQString( ufidf->owner() ) != ourId )
+                if( TStringToQString( ufidf->owner() ) != ourId || recreate )
                 {
                     file->ID3v2Tag()->removeFrames( "UFID" );
                     createID = 1;
@@ -1292,6 +1293,8 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref )
     {
         if( file->tag() )
         {
+            if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) && recreate )
+                file->tag()->removeField( QStringToTString( ourId ) );
             if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) )
             {
                 file->tag()->addField( QStringToTString( ourId ),
@@ -1308,6 +1311,8 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref )
     {
         if ( file->xiphComment( true ) )
         {
+            if( file->xiphComment()->fieldListMap().contains( QStringToTString( ourId ) ) && recreate )
+                file->xiphComment()->removeField( QStringToTString( ourId ) );
             if( !file->xiphComment()->fieldListMap().contains( QStringToTString( ourId ) ) )
             {
                 file->xiphComment()->addField( QStringToTString( ourId ),
@@ -1324,6 +1329,8 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref )
     {
         if( file->tag() )
         {
+            if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) && recreate )
+                file->tag()->removeField( QStringToTString( ourId ) );
             if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) )
             {
                 file->tag()->addField( QStringToTString( ourId ),
@@ -1352,7 +1359,7 @@ MetaBundle::newUniqueId()
     fileref = TagLib::FileRef( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );
 
     if( !fileref.isNull() )
-        setUniqueId( fileref );
+        setUniqueId( fileref, true );
     else
         debug() << "ERROR: failed to set new uniqueid (could not open fileref)" << endl;
 }

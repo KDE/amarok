@@ -259,7 +259,7 @@ public: //modifiers
     void setComment( const AtomicString &comment );
     void setPodcastBundle( const PodcastEpisodeBundle &peb );
     void setUniqueId( const QString &id ); //WARNING WARNING WARNING SEE COMMENT in .CPP
-    void setUniqueId( TagLib::FileRef &fileref);
+    void setUniqueId( TagLib::FileRef &fileref, bool recreate = false );
     void newUniqueId();
 
     void setYear( int year );

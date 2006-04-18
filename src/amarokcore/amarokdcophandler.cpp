@@ -748,6 +748,11 @@ namespace amaroK
         CollectionDB::instance()->disableAutoScoring( disable );
     }
 
+    void DcopCollectionHandler::newUniqueIdForFile( const QString &path )
+    {
+        CollectionDB::instance()->newUniqueIdForFile( path );
+    }
+
 /////////////////////////////////////////////////////////////////////////////////////
 // class DcopScriptHandler
 /////////////////////////////////////////////////////////////////////////////////////
