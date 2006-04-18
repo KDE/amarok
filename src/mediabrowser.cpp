@@ -21,7 +21,6 @@
 #include "hintlineedit.h"
 #include "mediabrowser.h"
 #include "medium.h"
-#include "mediumpluginchooser.h"
 #include "mediumpluginmanager.h"
 #include "metabundle.h"
 #include "playlist.h"
