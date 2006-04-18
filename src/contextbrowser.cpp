@@ -2332,7 +2332,7 @@ QString CurrentTrackJob::statsHTML( int score, int rating, bool statsbox ) //sta
     if( !AmarokConfig::useScores() && !AmarokConfig::useRatings() )
         return "";
 
-    QString table = QString( "<table %1 align='right' border='0' cellspacing='0' cellpadding='0'>%2</table>" )
+    QString table = QString( "<table %1 align='right' border='0' cellspacing='0' cellpadding='0' width='100%'>%2</table>" )
                           .arg( statsbox ? "class='statsBox'" : "" );
     if( !statsbox )
     {
@@ -2344,8 +2344,8 @@ QString CurrentTrackJob::statsHTML( int score, int rating, bool statsbox ) //sta
 
     if( AmarokConfig::useScores() )
         contents += QString( "<tr title='%1'>" ).arg( i18n( "Score: %1" ).arg( score ) ) +
-                    "<td class='sbtext' width='1'>" + QString::number( score ) + "</td>"
-                    "<td>"
+                    "<td class='sbtext' width='100%' align='right'>" + QString::number( score ) + "</td>"
+                    "<td align='right' width='1'>"
                     "<div class='sbouter'>"
                     "<div class='sbinner' style='width: "
                     + QString::number( score / 2 ) + "px;'></div>"
@@ -2357,14 +2357,16 @@ QString CurrentTrackJob::statsHTML( int score, int rating, bool statsbox ) //sta
     {
         contents += QString( "<tr title='%1'>" ).arg( i18n( "Rating: %1" )
                                                       .arg( MetaBundle::ratingDescription( rating ) ) ) +
-                    "<td class='ratingBox' align='center' colspan='2'>";
+                    "<td class='ratingBox' align='right' colspan='2'>";
         if( rating )
         {
-            const QString img = "<img src='%1' class='ratingStar'></img>";
+            contents += "<nobr>";
+            const QString img = "<img src='%1' height='13px' class='ratingStar'></img>";
             for( int i = 0, n = rating / 2; i < n; ++i )
                 contents += img.arg( locate( "data", "amarok/images/star.png" ) );
             if( rating % 2 )
                 contents += img.arg( locate( "data", "amarok/images/smallstar.png" ) );
+            contents += "</nobr>";
         }
         else
             contents += i18n( "Not rated" );

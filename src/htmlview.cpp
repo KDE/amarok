@@ -205,7 +205,7 @@ HTMLView::loadStyleSheet()
         styleSheet += QString( ".button { width: 100%; }" );
 
         //boxes used to display score (sb: score box)
-        styleSheet += QString( ".sbtext { text-align: center; padding: 0px 4px; }" );
+        styleSheet += QString( ".sbtext { text-align: right; padding: 0px 4px; }" );
         styleSheet += QString( ".sbinner { height: 8px; background-color: %1; border: solid %2 1px; }" )
                             .arg( ContextBrowser::instance()->colorGroup().highlight().name() )
                             .arg( ContextBrowser::instance()->colorGroup().highlightedText().name() );
@@ -214,7 +214,7 @@ HTMLView::loadStyleSheet()
                             .arg( ContextBrowser::instance()->colorGroup().highlight().name() );
 
         styleSheet += QString( ".ratingBox { padding: 0px 4px; }" );
-        styleSheet += QString( ".ratingStar { height: 1.1em; }" );
+        styleSheet += QString( ".ratingStar { height: 0.9em; }" );
 
         styleSheet += QString( ".statsBox { border-left: solid %1 1px; }" )
                       .arg( ContextBrowser::instance()->colorGroup().base().dark( 120 ).name() );

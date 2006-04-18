@@ -196,7 +196,7 @@ a {
 
 
 .sbtext {
-    text-align: center;
+    text-align: right;
     padding: 0px 4px;
   }
 
@@ -209,7 +209,7 @@ a {
   }
 
 .ratingStar {
-    height: 1.1em;
+    height: 0.9em;
   }
 
 .scoreBox {
