@@ -358,6 +358,9 @@ recursiveUrlExpand( const KURL &url )
 {
     typedef QMap<QString, KURL> FileMap;
 
+    if( url.protocol() != "file" || !QFileInfo( url.path() ).isDir() )
+        return KURL::List( url );
+
     KDirLister lister( false );
     lister.setAutoUpdate( false );
     lister.setAutoErrorHandlingEnabled( false, 0 );
