@@ -113,8 +113,8 @@ class DynamicTitle : public QWidget
         virtual void paintEvent(QPaintEvent* e);
 
     private:
-        const static int s_curveWidth = 5;
-        const static int s_imageSize = 16;
+        static const int s_curveWidth = 5;
+        static const int s_imageSize = 16;
         QString m_title;
         QFont m_font;
 };

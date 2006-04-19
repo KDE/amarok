@@ -3846,7 +3846,13 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     popup.insertItem( SmallIconSet( "remove" ), i18n( "&Remove From Playlist" ), this, SLOT( removeSelectedItems() ), Key_Delete, REMOVE );
 
-    if( amaroK::useDelete() || ( KApplication::keyboardMouseState() & Qt::ShiftButton ) )
+    #if KDE_IS_VERSION( 3, 3, 91 )
+    const bool shiftPressed = KApplication::keyboardMouseState() & Qt::ShiftButton;
+    #else
+    const bool shiftPressed = KApplication::keyboardModifiers() & ShiftMask;
+    #endif
+
+    if( amaroK::useDelete() || shiftPressed )
         popup.insertItem( SmallIconSet( "editdelete" ), itemCount == 1
                 ? i18n("&Delete File")
                 : i18n("&Delete Selected Files"), this, SLOT( deleteSelectedFiles() ), SHIFT+Key_Delete, DELETE );

@@ -60,7 +60,15 @@
 #include <kurldrag.h>       //dragObject()
 #include <kio/job.h>
 
+extern "C"
+{
+    #if KDE_VERSION < KDE_MAKE_VERSION(3,3,91)
+    #include <X11/Xlib.h>    //ControlMask in contentsDragMoveEvent()
+    #endif
+}
+
 namespace amaroK { extern KConfig *config( const QString& ); }
+
 
 CollectionBrowser::CollectionBrowser( const char* name )
     : QVBox( 0, name )
@@ -326,7 +334,7 @@ CollectionBrowser::setMode(int id)
         AmarokConfig::setCollectionBrowserViewMode(id);
     }
     else //selected(int) is fired by QTabBar whenever it feels like it
-        debug() << "mysterious setMode: " << id << endl; 
+        debug() << "mysterious setMode: " << id << endl;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -1399,7 +1407,14 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         KPopupMenu fileMenu;
         fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18n("Organize File...", "Organize %n Files..." , selection.count() )
                 , ORGANIZE );
-        if( amaroK::useDelete() || ( KApplication::keyboardMouseState() & Qt::ShiftButton ) )
+
+        #if KDE_IS_VERSION( 3, 3, 91 )
+        const bool shiftPressed = KApplication::keyboardMouseState() & Qt::ShiftButton;
+        #else
+        const bool shiftPressed = KApplication::keyboardModifiers() & ShiftMask;
+        #endif
+
+        if( amaroK::useDelete() || shiftPressed )
             fileMenu.insertItem( SmallIconSet( "editdelete" ), i18n("Delete File...", "Delete %n Files..." , selection.count() )
                     , DELETE );
         else
