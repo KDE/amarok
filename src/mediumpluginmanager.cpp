@@ -42,7 +42,7 @@ using amaroK::escapeHTMLAttr;
 
 typedef QMap<QString, Medium*> MediumMap;
 
-MediumPluginManager::MediumPluginManager()
+MediumPluginManagerDialog::MediumPluginManagerDialog()
         : KDialogBase( amaroK::mainWindow(), "mediumpluginmanagerdialog", false, QString::null, Ok|Cancel, Ok )
 {
     kapp->setTopWidget( this );
@@ -57,16 +57,34 @@ MediumPluginManager::MediumPluginManager()
     m_devicesBox = new QVBox( m_location );
     m_devicesBox->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
 
-    detectDevices();
+    m_manager = new MediumPluginManager( m_devicesBox );
 
     QHBox *hbox = new QHBox( vbox );
-
     KPushButton *detectDevices = new KPushButton( i18n( "Autodetect Devices" ), hbox);
     detectDevices->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
+    connect( detectDevices, SIGNAL( clicked() ), m_manager, SLOT( redetectDevices() ) );
+
     KPushButton *addButton = new KPushButton( i18n( "Add Device..." ), hbox );
     addButton->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
-    connect( detectDevices, SIGNAL( clicked() ), this, SLOT( redetectDevices() ) );
-    connect( addButton, SIGNAL( clicked() ), this, SLOT( newDevice() ) );
+    connect( addButton, SIGNAL( clicked() ), m_manager, SLOT( newDevice() ) );
+}
+
+MediumPluginManagerDialog::~MediumPluginManagerDialog()
+{
+    delete m_manager;
+}
+
+void
+MediumPluginManagerDialog::slotOk()
+{
+    m_manager->finished();
+    KDialogBase::slotOk();
+}
+
+MediumPluginManager::MediumPluginManager( QWidget *widget )
+: m_widget( widget )
+{
+    detectDevices();
 
     connect( this, SIGNAL( selectedPlugin( const Medium*, const QString ) ), MediaBrowser::instance(), SLOT( pluginSelected( const Medium*, const QString ) ) );
 
@@ -74,6 +92,12 @@ MediumPluginManager::MediumPluginManager()
 
 MediumPluginManager::~MediumPluginManager()
 {
+}
+
+void
+MediumPluginManager::slotChanged()//slot
+{
+    emit changed();
 }
 
 bool
@@ -117,7 +141,7 @@ MediumPluginManager::detectDevices( bool redetect )
         if( m_deletedMap.contains( (*it)->id() ) )
             m_deletedMap.remove( (*it)->id() );
 
-        MediaDeviceConfig *dev = new MediaDeviceConfig( *it, m_devicesBox );
+        MediaDeviceConfig *dev = new MediaDeviceConfig( *it, this, m_widget );
         m_deviceList.append( dev );
         connect( dev, SIGNAL(deleteMedium(Medium *)), SLOT(deleteMedium(Medium *)) );
 
@@ -155,10 +179,11 @@ MediumPluginManager::deleteMedium( Medium *medium )
             break;
         }
     }
+    emit changed();
 }
 
 void
-MediumPluginManager::slotOk( )
+MediumPluginManager::finished()
 {
     for( DeviceList::Iterator it = m_deviceList.begin();
             it != m_deviceList.end();
@@ -181,8 +206,6 @@ MediumPluginManager::slotOk( )
             config->deleteEntry( dit.data()->id() );
         DeviceManager::instance()->removeManualDevice( dit.data() );
     }
-
-    KDialogBase::slotOk( );
 }
 
 void
@@ -210,6 +233,7 @@ MediumPluginManager::newDevice()
         }
     }
     delete mda;
+    emit changed();
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -329,8 +353,9 @@ ManualDeviceAdder::getMedium()
     return added;
 }
 
-MediaDeviceConfig::MediaDeviceConfig( Medium *medium, QWidget *parent, const char *name )
+MediaDeviceConfig::MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, QWidget *parent, const char *name )
 : QHBox( parent, name )
+, m_manager( mgr )
 , m_medium( medium )
 , m_configButton( 0 )
 , m_removeButton( 0 )
@@ -376,7 +401,7 @@ MediaDeviceConfig::MediaDeviceConfig( Medium *medium, QWidget *parent, const cha
     label->setFixedWidth( IconSize( KIcon::Small ) + 10 );
     if ( config->readEntry( medium->id() ).isEmpty() )
         label->setPixmap( kapp->iconLoader()->loadIcon( amaroK::icon( "new" ), KIcon::Toolbar, KIcon::SizeSmall ) );
-    (void)new QLabel( i18n("Device Name: "), this );
+    (void)new QLabel( i18n("Name: "), this );
     (void)new QLabel( medium->name(), this );
     (void)new KActiveLabel( i18n( "(<a href='whatsthis:%1'>Details</a>)" )
                             .arg( amaroK::escapeHTMLAttr( details ) ), this );
@@ -403,6 +428,9 @@ MediaDeviceConfig::MediaDeviceConfig( Medium *medium, QWidget *parent, const cha
     button = new KPushButton( i18n( "Remove" ), this );
     connect( button, SIGNAL(clicked()), SLOT(deleteDevice()) );
     //button->setToolTip( "Remove entries corresponding to this device from configuration file" );
+
+    connect( m_pluginCombo, SIGNAL(textChanged(const QString&)), m_manager, SLOT(slotChanged()) );
+    connect( this, SIGNAL(changed()), m_manager, SLOT(slotChanged()) );
 
     show();
 }

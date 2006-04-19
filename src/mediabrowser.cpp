@@ -1331,7 +1331,7 @@ MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/, bool construc
         {
             if( !constructing && medium->isAutodetected() )
             {
-                MediumPluginManager *mpm = new MediumPluginManager();
+                MediumPluginManagerDialog *mpm = new MediumPluginManagerDialog();
                 mpm->exec();
             }
         }
@@ -1382,7 +1382,7 @@ MediaBrowser::pluginSelected( const Medium *medium, const QString plugin )
 void
 MediaBrowser::showPluginManager()
 {
-    MediumPluginManager* mpm = new MediumPluginManager();
+    MediumPluginManagerDialog* mpm = new MediumPluginManagerDialog();
     mpm->exec();
     delete mpm;
 }

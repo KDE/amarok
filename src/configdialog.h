@@ -29,6 +29,8 @@ namespace amaroK {
     class PluginConfig;
 }
 
+class MediumPluginManager;
+
 class AmarokConfigDialog : public KConfigDialog
 {
     Q_OBJECT
@@ -65,6 +67,7 @@ class AmarokConfigDialog : public KConfigDialog
         class Options2       *m_opt2;
         class Options4       *m_opt4;
         class Options7       *m_opt7;
+        MediumPluginManager  *m_deviceManager;
 
         QValueList<QWidget*> m_pageList;
         QMap<QString, QString> m_pluginName;

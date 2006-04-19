@@ -46,7 +46,7 @@ class MediaDeviceConfig : public QHBox
     Q_OBJECT
 
     public:
-        MediaDeviceConfig( Medium *medium, QWidget *parent=0, const char *name=0 );
+        MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, QWidget *parent=0, const char *name=0 );
         ~MediaDeviceConfig();
         QString oldPlugin();
         QString plugin();
@@ -61,8 +61,10 @@ class MediaDeviceConfig : public QHBox
 
     signals:
         void deleteMedium( Medium *medium );
+        void changed();
 
     protected:
+        MediumPluginManager *m_manager;
         Medium *m_medium;
         QString m_oldPlugin;
         KComboBox * m_pluginCombo;
@@ -73,32 +75,50 @@ class MediaDeviceConfig : public QHBox
 
 typedef QValueList<MediaDeviceConfig *> DeviceList;
 
-class MediumPluginManager : public KDialogBase
+class MediumPluginManager : public QObject
 {
     Q_OBJECT
 
     public:
-        MediumPluginManager();
+        MediumPluginManager( QWidget *widget );
         ~MediumPluginManager();
+        void finished();
 
     signals:
         void selectedPlugin( const Medium*, const QString );
+        void changed();
 
-    private slots:
-        void slotOk();
+    public slots:
         void redetectDevices();
         void newDevice();
         void deleteMedium( Medium *medium );
+        void slotChanged();
 
     private:
-
         bool detectDevices( bool redetect=false );
         DeletedMap m_deletedMap;
         NewDeviceMap m_newDevMap;
+        DeviceList m_deviceList;
+        QWidget *m_widget;
+
+};
+
+class MediumPluginManagerDialog : public KDialogBase
+{
+    Q_OBJECT
+
+    public:
+        MediumPluginManagerDialog();
+        ~MediumPluginManagerDialog();
+
+    private slots:
+        void slotOk();
+
+    private:
 
         QVBox *m_devicesBox;
         QGroupBox *m_location;
-        DeviceList m_deviceList;
+        MediumPluginManager *m_manager;
 };
 
 class ManualDeviceAdder : public KDialogBase

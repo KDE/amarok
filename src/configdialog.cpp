@@ -23,6 +23,7 @@ email                : markey@web.de
 #include "debug.h"
 #include "directorylist.h"
 #include "enginecontroller.h"
+#include "mediumpluginmanager.h"
 #include "Options1.h"
 #include "Options2.h"
 #include "Options4.h"
@@ -87,6 +88,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     QVBox    *opt6 = new QVBox;
     m_opt7 = new Options7( 0, "Collection" );
     Options8 *opt8 = new Options8( 0, "Scrobbler" );
+    QVBox    *opt9 = new QVBox;
 
     // Sound System
     opt6->setName( "Engine" );
@@ -132,6 +134,30 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     new CollectionSetup( m_opt7->collectionFoldersBox ); //TODO this widget doesn't update the apply/ok buttons
     m_opt7->podcastURLLine->setURL( AmarokConfig::podcastFolder() );
 
+    // Media Devices
+    opt9->setName( "Media Devices" );
+    opt9->setSpacing( KDialog::spacingHint() );
+    QVBox *topbox = new QVBox( opt9 );
+    topbox->setSpacing( KDialog::spacingHint() );
+    QGroupBox *mediaBox  = new QGroupBox( 2, Qt::Horizontal, i18n("Media Devices"), topbox );
+    mediaBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
+    QVBox *vbox = new QVBox( mediaBox );
+    vbox->setSpacing( KDialog::spacingHint() );
+    m_deviceManager = new MediumPluginManager( vbox );
+
+    QHBox *hbox = new QHBox( topbox );
+    hbox->setSpacing( KDialog::spacingHint() );
+    hbox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
+    KPushButton *autodetect = new KPushButton( i18n( "Autodetect Devices" ), hbox );
+    autodetect->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
+    connect( autodetect, SIGNAL(clicked()), m_deviceManager, SLOT(redetectDevices()) );
+    KPushButton *add = new KPushButton( i18n( "Add Device..." ), hbox );
+    add->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
+    connect( add, SIGNAL(clicked()), m_deviceManager, SLOT(newDevice()) );
+
+    QFrame *frame = new QFrame( topbox );
+    frame->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+
     // add pages
     addPage( m_opt1, i18n( "General" ), "misc", i18n( "Configure General Options" ) );
     addPage( m_opt2, i18n( "Appearance" ), "colors", i18n( "Configure amaroK's Appearance" ) );
@@ -140,6 +166,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     addPage( opt6,   i18n( "Engine" ), "amarok", i18n( "Configure Engine" ) );
     addPage( m_opt7, i18n( "Collection" ), amaroK::icon( "collection" ), i18n( "Configure Collection" ) );
     addPage( opt8,   i18n( "last.fm" ), "audioscrobbler", i18n( "Configure last.fm Support" ) );
+    addPage( opt9,   i18n( "Media Devices" ), amaroK::icon( "device" ), i18n( "Configure Portable Player Support" ) );
 
     // Show information labels (must be done after insertions)
     QObjectList *list = queryList( "QLabel", "infoPixmap" );
@@ -153,6 +180,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
         static_cast<QLabel*>(label)->setMaximumWidth( 250 );
     delete list;
 
+    connect( m_deviceManager, SIGNAL(changed()), SLOT(updateButtons()) );
     connect( m_soundSystem, SIGNAL(activated( int )), SLOT(updateButtons()) );
     connect( aboutEngineButton, SIGNAL(clicked()), SLOT(aboutEngine()) );
     connect( opt5, SIGNAL(settingsChanged()), SLOT(updateButtons()) ); //see options5.ui.h
@@ -166,6 +194,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
 AmarokConfigDialog::~AmarokConfigDialog()
 {
     delete m_engineConfig;
+    delete m_deviceManager;
 }
 
 
@@ -233,6 +262,8 @@ void AmarokConfigDialog::updateSettings()
     }
 
     AmarokConfig::setPodcastFolder( m_opt7->podcastURLLine->url() );
+
+    m_deviceManager->finished();
 }
 
 
