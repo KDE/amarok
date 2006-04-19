@@ -1962,7 +1962,7 @@ void CurrentTrackJob::showSuggestedSongs( const QStringList &relArtists )
                 + i18n( "Suggested Songs" ) +
                 "</span>"
                 "</div>"
-                "<table class='box-body' id='T_SS' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
+                "<table class='box-body' id='T_SS' width='100%' border='0' cellspacing='0' cellpadding='0'>" );
 
         for ( uint i = 0; i < values.count(); i += 5 )
             m_HTMLSource.append(
@@ -2015,7 +2015,7 @@ void CurrentTrackJob::showArtistsFaves( const QString &artist, uint artist_id )
                 + i18n( "Favorite Tracks by %1" ).arg( artistName ) +
                 "</span>"
                 "</div>"
-                "<table class='box-body' id='T_FT' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
+                "<table class='box-body' id='T_FT' width='100%' border='0' cellspacing='0' cellpadding='0'>" );
 
         for ( uint i = 0; i < values.count(); i += 4 )
             m_HTMLSource.append(
@@ -2347,18 +2347,12 @@ QString CurrentTrackJob::statsHTML( int score, int rating, bool statsbox ) //sta
 
     QString table = QString( "<table %1 align='right' border='0' cellspacing='0' cellpadding='0' width='100%'>%2</table>" )
                           .arg( statsbox ? "class='statsBox'" : "" );
-    if( !statsbox )
-    {
-        table += "<br />";
-        if( AmarokConfig::useScores() && AmarokConfig::useRatings() )
-            table += "<br /><br />";
-    }
     QString contents;
 
     if( AmarokConfig::useScores() )
         contents += QString( "<tr title='%1'>" ).arg( i18n( "Score: %1" ).arg( score ) ) +
                     "<td class='sbtext' width='100%' align='right'>" + QString::number( score ) + "</td>"
-                    "<td align='right' width='1'>"
+                    "<td align='left' width='1'>"
                     "<div class='sbouter'>"
                     "<div class='sbinner' style='width: "
                     + QString::number( score / 2 ) + "px;'></div>"
