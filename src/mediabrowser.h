@@ -10,6 +10,7 @@
 #include "amarok_export.h"
 #include "medium.h"
 #include "plugin/plugin.h"   //baseclass
+#include "pluginmanager.h"
 
 #include <qvbox.h>           //baseclass
 #include <qdatetime.h>
@@ -165,7 +166,9 @@ class MediaBrowser : public QVBox
         QStringList deviceNames();
         bool deviceSwitch( const QString &name );
 
-        QString getPluginName ( const QString string ) { return m_pluginName[string]; }
+        QString getInternalPluginName ( const QString string ) { return m_pluginName[string]; }
+        QString getDisplayPluginName ( const QString string ) { return m_pluginAmarokName[string]; }
+        const KTrader::OfferList &getPlugins() { return m_plugins; }
         void transcodingFinished( const QString &src, const QString &dst );
         void updateStats();
         void updateButtons();
@@ -228,6 +231,7 @@ class MediaBrowser : public QVBox
         Browser::ToolBar*m_toolbar;
         typedef QMap<QString, MediaItem*> ItemMap;
         ItemMap          m_itemMap;
+        KTrader::OfferList m_plugins;
 };
 
 class MediaView : public KListView

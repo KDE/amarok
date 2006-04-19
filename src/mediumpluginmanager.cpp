@@ -52,14 +52,6 @@ MediumPluginManager::MediumPluginManager()
     vbox->setSpacing( KDialog::spacingHint() );
     vbox->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
 
-    m_sigdelmap = new QSignalMapper( this );
-    m_sigconfmap = new QSignalMapper( this );
-    m_buttonnum = 0;
-    m_redetect = false;
-
-    m_offers = PluginManager::query( "[X-KDE-amaroK-plugintype] == 'mediadevice'" );
-    m_offersEnd = m_offers.end();
-
     m_location = new QGroupBox( 1, Qt::Vertical, i18n( "Devices" ), vbox );
     m_location->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred ) );
     m_devicesBox = new QVBox( m_location );
@@ -67,17 +59,15 @@ MediumPluginManager::MediumPluginManager()
 
     detectDevices();
 
-    m_hbox = new QHBox( vbox );
+    QHBox *hbox = new QHBox( vbox );
 
-    KPushButton *detectDevices = new KPushButton( i18n( "Autodetect Devices" ), m_hbox);
+    KPushButton *detectDevices = new KPushButton( i18n( "Autodetect Devices" ), hbox);
     detectDevices->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
-    KPushButton *addButton = new KPushButton( i18n( "Add Device..." ), m_hbox );
+    KPushButton *addButton = new KPushButton( i18n( "Add Device..." ), hbox );
     addButton->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
-    connect( detectDevices, SIGNAL( clicked() ), this, SLOT( reDetectDevices() ) );
+    connect( detectDevices, SIGNAL( clicked() ), this, SLOT( redetectDevices() ) );
     connect( addButton, SIGNAL( clicked() ), this, SLOT( newDevice() ) );
 
-    connect( m_sigdelmap, SIGNAL( mapped( int ) ), this, SLOT( deleteDevice( int ) ) );
-    connect( m_sigconfmap, SIGNAL( mapped( int ) ), this, SLOT( configureDevice( int ) ) );
     connect( this, SIGNAL( selectedPlugin( const Medium*, const QString ) ), MediaBrowser::instance(), SLOT( pluginSelected( const Medium*, const QString ) ) );
 
 }
@@ -86,16 +76,17 @@ MediumPluginManager::~MediumPluginManager()
 {
 }
 
-void
-MediumPluginManager::detectDevices()
+bool
+MediumPluginManager::detectDevices( bool redetect )
 {
-    KConfig *config = amaroK::config( "MediaBrowser" );
+    bool foundNew = false;
 
+    KConfig *config = amaroK::config( "MediaBrowser" );
     MediumMap mmap = DeviceManager::instance()->getMediumMap();
     for ( MediumMap::Iterator it = mmap.begin(); it != mmap.end(); it++ )
     {
         if( !config->readEntry( (*it)->id() ).isEmpty() &&
-                config->readEntry( (*it)->id() ) == "deleted" && !m_redetect)
+                config->readEntry( (*it)->id() ) == "deleted" && !redetect)
         {
             debug() << "skipping: deleted" << endl;
             continue;
@@ -103,18 +94,17 @@ MediumPluginManager::detectDevices()
 
         bool skipflag = false;
 
-        if( !m_bmap.empty() )
+        for( DeviceList::Iterator dit = m_deviceList.begin();
+                dit != m_deviceList.end();
+                dit++ )
         {
-            ButtonMap::Iterator bit;
-            for( bit = m_bmap.begin(); bit != m_bmap.end(); ++bit )
+            if( (*it)->id() == (*dit)->medium()->id() )
             {
-                if( (*it)->id() == (*bit)->id() )
-                {
-                    skipflag = true;
-                    debug() << "skipping: already listed" << endl;
-                }
+                skipflag = true;
+                debug() << "skipping: already listed" << endl;
             }
         }
+
         if( m_deletedMap.contains( (*it)->id() ) && !(*it)->isAutodetected() )
         {
             skipflag = true;
@@ -127,96 +117,20 @@ MediumPluginManager::detectDevices()
         if( m_deletedMap.contains( (*it)->id() ) )
             m_deletedMap.remove( (*it)->id() );
 
-        renderDevice( m_devicesBox, *it );
+        MediaDeviceConfig *dev = new MediaDeviceConfig( *it, m_devicesBox );
+        m_deviceList.append( dev );
+        connect( dev, SIGNAL(deleteMedium(Medium *)), SLOT(deleteMedium(Medium *)) );
 
+        foundNew = true;
     }
+
+    return foundNew;
 }
 
 void
-MediumPluginManager::renderDevice( QWidget *parent, Medium *medium )
+MediumPluginManager::redetectDevices()
 {
-    KConfig *config = amaroK::config( "MediaBrowser" );
-    QHBox *hbox = new QHBox( parent );
-    hbox->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
-    hbox->setSpacing( 5 );
-    m_hmap[m_buttonnum] = hbox;
-
-    //debug() << "[MediumPluginManager] medium->id() = " << medium->id() << ", config->readEntry = " << config->readEntry( medium->id() ) << endl;
-
-    const QString labelTextNone = i18n( "(none)" );
-    QString row = "<tr><td>%1</td><td>%2</td></tr>";
-    QString table;
-    table += row.arg( escapeHTML( i18n( "Autodetected:" ) ),
-            escapeHTML( medium->isAutodetected() ? i18n("Yes") : i18n("No") ) );
-    table += row.arg( escapeHTML( i18n( "ID:" ) ),
-            escapeHTML( medium->id() ) );
-    table += row.arg( escapeHTML( i18n( "Name:" ) ),
-            escapeHTML( medium->name() ) );
-    table += row.arg( escapeHTML( i18n( "Label:" ) ),
-            escapeHTML( medium->label().isEmpty() ? labelTextNone : medium->label() ) );
-    table += row.arg( escapeHTML( i18n( "User Label:" ) ),
-            escapeHTML( medium->userLabel().isEmpty() ? labelTextNone : medium->userLabel() ) );
-    table += row.arg( escapeHTML( i18n( "Device Node:" ) ),
-            escapeHTML( medium->deviceNode().isEmpty() ? labelTextNone : medium->deviceNode() ) );
-    table += row.arg( escapeHTML( i18n( "Mount Point:" ) ),
-            escapeHTML( medium->mountPoint().isEmpty() ? labelTextNone : medium->mountPoint() ) );
-    table += row.arg( escapeHTML( i18n( "Mime Type:" ) ),
-            escapeHTML( medium->mimeType().isEmpty() ? labelTextNone : medium->mimeType() ) );
-
-    QString title = escapeHTML( i18n( "Device information for %1").arg(medium->name() ) );
-    QString details = QString( "<em>%1</em><br />" "<table>%2</table>" ).arg( title, table );
-
-    QLabel *label = new QLabel( hbox );
-    label->setFixedWidth( IconSize( KIcon::Small ) + 10 );
-    if ( config->readEntry( medium->id() ).isEmpty() )
-        label->setPixmap( kapp->iconLoader()->loadIcon( amaroK::icon( "new" ), KIcon::Toolbar, KIcon::SizeSmall ) );
-    (void)new QLabel( i18n("Device Name: "), hbox );
-    (void)new QLabel( medium->name(), hbox );
-    (void)new KActiveLabel( i18n( "(<a href='whatsthis:%1'>Details</a>)" )
-                            .arg( amaroK::escapeHTMLAttr( details ) ), hbox );
-
-    (void)new QLabel( i18n("Plugin:"), hbox );
-    KComboBox *combo = new KComboBox( false, hbox );
-    combo->insertItem( i18n( "Do not handle" ) );
-    m_dmap[("Do not handle")] = "ignore";
-
-    for( m_plugit = m_offers.begin(); m_plugit != m_offersEnd; ++m_plugit ){
-        m_dmap[(*m_plugit)->name()] = (*m_plugit)->property( "X-KDE-amaroK-name" ).toString();
-        combo->insertItem( (*m_plugit)->name() );
-        if ( (*m_plugit)->property( "X-KDE-amaroK-name" ).toString() == config->readEntry( medium->id() ) )
-            combo->setCurrentItem( (*m_plugit)->name() );
-    }
-
-    KPushButton *button = 0;
-
-    button = new KPushButton( SmallIconSet( amaroK::icon( "configure" ) ), QString::null, hbox );
-    if( m_newDevMap.contains( medium->id() ) )
-        button->setEnabled( false );
-    m_sigconfmap->setMapping( button, m_buttonnum );
-    connect( button, SIGNAL( clicked() ), m_sigconfmap, SLOT( map() ) );
-    //button->setToolTip( "Configure device settings" );
-
-    button = new KPushButton( i18n( "Remove" ), hbox );
-    m_sigdelmap->setMapping( button, m_buttonnum );
-    connect( button, SIGNAL( clicked() ), m_sigdelmap, SLOT( map() ) );
-    //button->setToolTip( "Remove entries corresponding to this device from configuration file" );
-
-    m_bmap[m_buttonnum] = medium;
-    m_cmap[medium] = combo;
-    m_omap[medium] = config->readEntry( medium->id() );
-
-    hbox->show();
-
-    m_buttonnum++;
-}
-
-void
-MediumPluginManager::reDetectDevices()
-{
-    m_redetect = true;
-    uint currsize = m_bmap.count();
-    detectDevices();
-    if( currsize == m_bmap.count() )
+    if( !detectDevices( true ) )
     {
         amaroK::StatusBar::instance()->longMessageThreadSafe( i18n("No new media devices were found. If you feel this is an\n"
                                                                    "error, ensure that the DBUS and HAL daemons are running\n"
@@ -225,27 +139,41 @@ MediumPluginManager::reDetectDevices()
                                                                    "     \"dcop kded mediamanager fullList\"\n"
                                                                    "in a Konsole window.") );
     }
-    m_redetect = false;
+}
+
+void
+MediumPluginManager::deleteMedium( Medium *medium )
+{
+    for( DeviceList::Iterator it = m_deviceList.begin();
+            it != m_deviceList.end();
+            it++ )
+    {
+        if( (*it)->medium() == medium )
+        {
+            m_deletedMap[medium->id()] = medium;
+            m_deviceList.remove( *it );
+            break;
+        }
+    }
 }
 
 void
 MediumPluginManager::slotOk( )
 {
-    ComboMap::Iterator it;
-    for( it = m_cmap.begin(); it != m_cmap.end(); ++it )
+    for( DeviceList::Iterator it = m_deviceList.begin();
+            it != m_deviceList.end();
+            it++ )
     {
-        QString plugin( "ignore" );
-        if( it.data()->currentText() != i18n( "Do not handle" ) )
+        if( (*it)->plugin() != (*it)->oldPlugin() )
         {
-            plugin = MediaBrowser::instance()->getPluginName( it.data()->currentText() );
+            emit selectedPlugin( (*it)->medium(), (*it)->plugin() );
         }
-
-        if( plugin != m_omap[it.key()] )
-            emit selectedPlugin( it.key(), plugin );
     }
+
     KConfig *config = amaroK::config( "MediaBrowser" );
-    DeletedMap::Iterator dit;
-    for( dit = m_deletedMap.begin(); dit != m_deletedMap.end(); ++dit )
+    for( DeletedMap::Iterator dit = m_deletedMap.begin();
+            dit != m_deletedMap.end();
+            ++dit )
     {
         if( dit.data()->isAutodetected() )
             config->writeEntry( dit.data()->id(), "deleted" );
@@ -253,31 +181,8 @@ MediumPluginManager::slotOk( )
             config->deleteEntry( dit.data()->id() );
         DeviceManager::instance()->removeManualDevice( dit.data() );
     }
+
     KDialogBase::slotOk( );
-}
-
-void
-MediumPluginManager::configureDevice( int buttonId )
-{
-    Medium* medium = m_bmap[buttonId];
-    DeviceConfigureDialog* dcd = new DeviceConfigureDialog( medium );
-    dcd->exec();
-    delete dcd;
-}
-
-void
-MediumPluginManager::deleteDevice( int buttonId )
-{
-    //TODO:save something in amarokrc such that it's not shown again until hit autoscan
-    QHBox *box = m_hmap[buttonId];
-    m_hmap.remove(buttonId);
-    delete box;
-    Medium *medium = m_bmap[buttonId];
-    m_bmap.remove(buttonId);
-    m_deletedMap[medium->id()] = medium;
-    //TODO: maybe don't remove, but mark somehow, so that they have to hit OK to remember deleting it?
-    m_cmap.remove(medium);
-    m_omap.remove(medium);
 }
 
 void
@@ -323,14 +228,13 @@ ManualDeviceAdder::ManualDeviceAdder( MediumPluginManager* mpm )
 
     QVBox* vbox1 = new QVBox( hbox );
 
-    m_mdaOffers = PluginManager::query( "[X-KDE-amaroK-plugintype] == 'mediadevice'" );
-    m_mdaOffersEnd = m_mdaOffers.end();
-
     new QLabel( i18n( "Select the plugin to use with this device:"), vbox1 );
     m_mdaCombo = new KComboBox( false, vbox1, "m_mdacombo" );
     m_mdaCombo->insertItem( i18n( "Do not handle" ) );
-    for( m_mdaPlugit = m_mdaOffers.begin(); m_mdaPlugit != m_mdaOffersEnd; ++m_mdaPlugit )
-        m_mdaCombo->insertItem( (*m_mdaPlugit)->name() );
+    for( KTrader::OfferList::ConstIterator it = MediaBrowser::instance()->getPlugins().begin();
+            it != MediaBrowser::instance()->getPlugins().end();
+            ++it )
+        m_mdaCombo->insertItem( (*it)->name() );
 
     new QLabel( "", vbox1 );
     QLabel* nameLabel = new QLabel( vbox1 );
@@ -391,7 +295,7 @@ ManualDeviceAdder::comboChanged( const QString &string )
     //best thing to do here would be to find out if the plugin selected
     //has m_hasMountPoint set to false...but any way to do this
     //without instantiating it?  This way will suffice for now...
-    if( m_mpm->getPluginName( string ) == "ifp-mediadevice" )
+    if( MediaBrowser::instance()->getInternalPluginName( string ) == "ifp-mediadevice" )
     {
         m_comboOldText = m_mdaMountPoint->text();
         m_mdaMountPoint->setText( i18n("(not applicable)") );
@@ -402,7 +306,7 @@ ManualDeviceAdder::comboChanged( const QString &string )
         m_mdaMountPoint->setText( m_comboOldText );
         m_mdaMountPoint->setEnabled(true);
     }
-    m_selectedPlugin = m_mpm->getPluginName( string );
+    m_selectedPlugin = MediaBrowser::instance()->getInternalPluginName( string );
     debug() << "selected plugin: " << m_selectedPlugin << endl;
 }
 
@@ -423,6 +327,141 @@ ManualDeviceAdder::getMedium()
     added->setAutodetected( false );
     added->setMountPoint( m_mdaMountPoint->text() );
     return added;
+}
+
+MediaDeviceConfig::MediaDeviceConfig( Medium *medium, QWidget *parent, const char *name )
+: QHBox( parent, name )
+, m_medium( medium )
+, m_configButton( 0 )
+, m_removeButton( 0 )
+, m_new( true )
+{
+    if( !m_medium )
+        return;
+
+    KConfig *config = amaroK::config( "MediaBrowser" );
+    m_oldPlugin = config->readEntry( m_medium->id() );
+    if( !m_oldPlugin.isEmpty() )
+        m_new = false;
+
+    setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
+    setSpacing( 5 );
+
+    //debug() << "[MediumPluginManager] medium->id() = " << medium->id() << ", config->readEntry = " << config->readEntry( medium->id() ) << endl;
+
+    const QString labelTextNone = i18n( "(none)" );
+    QString row = "<tr><td>%1</td><td>%2</td></tr>";
+    QString table;
+    table += row.arg( escapeHTML( i18n( "Autodetected:" ) ),
+            escapeHTML( medium->isAutodetected() ? i18n("Yes") : i18n("No") ) );
+    table += row.arg( escapeHTML( i18n( "ID:" ) ),
+            escapeHTML( medium->id() ) );
+    table += row.arg( escapeHTML( i18n( "Name:" ) ),
+            escapeHTML( medium->name() ) );
+    table += row.arg( escapeHTML( i18n( "Label:" ) ),
+            escapeHTML( medium->label().isEmpty() ? labelTextNone : medium->label() ) );
+    table += row.arg( escapeHTML( i18n( "User Label:" ) ),
+            escapeHTML( medium->userLabel().isEmpty() ? labelTextNone : medium->userLabel() ) );
+    table += row.arg( escapeHTML( i18n( "Device Node:" ) ),
+            escapeHTML( medium->deviceNode().isEmpty() ? labelTextNone : medium->deviceNode() ) );
+    table += row.arg( escapeHTML( i18n( "Mount Point:" ) ),
+            escapeHTML( medium->mountPoint().isEmpty() ? labelTextNone : medium->mountPoint() ) );
+    table += row.arg( escapeHTML( i18n( "Mime Type:" ) ),
+            escapeHTML( medium->mimeType().isEmpty() ? labelTextNone : medium->mimeType() ) );
+
+    QString title = escapeHTML( i18n( "Device information for %1").arg(medium->name() ) );
+    QString details = QString( "<em>%1</em><br />" "<table>%2</table>" ).arg( title, table );
+
+    QLabel *label = new QLabel( this );
+    label->setFixedWidth( IconSize( KIcon::Small ) + 10 );
+    if ( config->readEntry( medium->id() ).isEmpty() )
+        label->setPixmap( kapp->iconLoader()->loadIcon( amaroK::icon( "new" ), KIcon::Toolbar, KIcon::SizeSmall ) );
+    (void)new QLabel( i18n("Device Name: "), this );
+    (void)new QLabel( medium->name(), this );
+    (void)new KActiveLabel( i18n( "(<a href='whatsthis:%1'>Details</a>)" )
+                            .arg( amaroK::escapeHTMLAttr( details ) ), this );
+
+    (void)new QLabel( i18n("Plugin:"), this );
+    m_pluginCombo = new KComboBox( false, this );
+    m_pluginCombo->insertItem( i18n( "Do not handle" ) );
+
+    for( KTrader::OfferList::ConstIterator it = MediaBrowser::instance()->getPlugins().begin();
+            it != MediaBrowser::instance()->getPlugins().end();
+            ++it ){
+        m_pluginCombo->insertItem( (*it)->name() );
+        if ( (*it)->property( "X-KDE-amaroK-name" ).toString() == config->readEntry( medium->id() ) )
+            m_pluginCombo->setCurrentItem( (*it)->name() );
+    }
+
+    KPushButton *button = 0;
+
+    button = new KPushButton( SmallIconSet( amaroK::icon( "configure" ) ), QString::null, this );
+    connect( button, SIGNAL(clicked()), SLOT(configureDevice()) );
+    button->setEnabled( !m_new );
+    //button->setToolTip( "Configure device settings" );
+
+    button = new KPushButton( i18n( "Remove" ), this );
+    connect( button, SIGNAL(clicked()), SLOT(deleteDevice()) );
+    //button->setToolTip( "Remove entries corresponding to this device from configuration file" );
+
+    show();
+}
+
+MediaDeviceConfig::~MediaDeviceConfig()
+{
+}
+
+bool
+MediaDeviceConfig::isNew()
+{
+    return m_new;
+}
+
+Medium *
+MediaDeviceConfig::medium()
+{
+    return m_medium;
+}
+
+QString
+MediaDeviceConfig::plugin()
+{
+    return MediaBrowser::instance()->getInternalPluginName( m_pluginCombo->currentText() );
+}
+
+QString
+MediaDeviceConfig::oldPlugin()
+{
+    return m_oldPlugin;
+}
+
+QButton *
+MediaDeviceConfig::configButton()
+{
+    return m_configButton;
+}
+
+QButton *
+MediaDeviceConfig::removeButton()
+{
+    return m_removeButton;
+}
+
+void
+MediaDeviceConfig::configureDevice() //slot
+{
+    DeviceConfigureDialog* dcd = new DeviceConfigureDialog( m_medium );
+    dcd->exec();
+    delete dcd;
+}
+
+void
+MediaDeviceConfig::deleteDevice() //slot
+{
+    //TODO:save something in amarokrc such that it's not shown again until hit autoscan
+    //m_deletedMap[medium->id()] = medium;
+    emit deleteMedium( medium() );
+    delete this;
 }
 
 #include "mediumpluginmanager.moc"

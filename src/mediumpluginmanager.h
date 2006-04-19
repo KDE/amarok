@@ -15,15 +15,16 @@
 #include "amarok.h"
 #include "hintlineedit.h"
 #include "plugin/pluginconfig.h"
-#include "pluginmanager.h"
 
 #include <qlayout.h>
 #include <qmap.h>
+#include <qhbox.h>
 
 #include <kconfig.h>
 #include <kdialogbase.h>
 #include <klocale.h>
 
+class QButton;
 class QGroupBox;
 class QLabel;
 class QSignalMapper;
@@ -33,17 +34,45 @@ class KLineEdit;
 class Medium;
 class MediumPluginManager;
 
-typedef QMap<Medium*, KComboBox*> ComboMap;
-typedef QMap<Medium*, QString> OldPluginMap;
-typedef QMap<int, Medium*> ButtonMap;
-typedef QMap<int, QHBox*> HBoxMap;
 typedef QMap<QString, Medium*> DeletedMap;
 typedef QMap<QString, Medium*> NewDeviceMap;
-typedef QMap<QString, QString> PluginStringMap;
 
 /**
 	@author Jeff Mitchell <kde-dev@emailgoeshere.com>
 */
+
+class MediaDeviceConfig : public QHBox
+{
+    Q_OBJECT
+
+    public:
+        MediaDeviceConfig( Medium *medium, QWidget *parent=0, const char *name=0 );
+        ~MediaDeviceConfig();
+        QString oldPlugin();
+        QString plugin();
+        QButton *configButton();
+        QButton *removeButton();
+        Medium *medium();
+        bool isNew();
+
+    public slots:
+        void configureDevice();
+        void deleteDevice();
+
+    signals:
+        void deleteMedium( Medium *medium );
+
+    protected:
+        Medium *m_medium;
+        QString m_oldPlugin;
+        KComboBox * m_pluginCombo;
+        QButton *m_configButton;
+        QButton *m_removeButton;
+        bool m_new;
+};
+
+typedef QValueList<MediaDeviceConfig *> DeviceList;
+
 class MediumPluginManager : public KDialogBase
 {
     Q_OBJECT
@@ -51,42 +80,25 @@ class MediumPluginManager : public KDialogBase
     public:
         MediumPluginManager();
         ~MediumPluginManager();
-        QString getPluginName( const QString name ) { return m_dmap[name]; }
 
     signals:
         void selectedPlugin( const Medium*, const QString );
 
     private slots:
         void slotOk();
-        void configureDevice( int buttonId );
-        void deleteDevice( int buttonId );
-        void reDetectDevices();
+        void redetectDevices();
         void newDevice();
+        void deleteMedium( Medium *medium );
 
     private:
 
-        void detectDevices();
-        void renderDevice( QWidget *parent, Medium *medium );
-
-        ComboMap m_cmap;
-        OldPluginMap m_omap;
-        ButtonMap m_bmap;
-        HBoxMap m_hmap;
-        PluginStringMap m_dmap;
+        bool detectDevices( bool redetect=false );
         DeletedMap m_deletedMap;
         NewDeviceMap m_newDevMap;
-        QSignalMapper *m_sigdelmap;
-        QSignalMapper *m_sigconfmap;
 
         QVBox *m_devicesBox;
-        QHBox *m_hbox;
         QGroupBox *m_location;
-        int m_buttonnum;
-        bool m_redetect;
-
-        KTrader::OfferList m_offers;
-        KTrader::OfferList::ConstIterator m_offersEnd;
-        KTrader::OfferList::ConstIterator m_plugit;
+        DeviceList m_deviceList;
 };
 
 class ManualDeviceAdder : public KDialogBase
@@ -114,10 +126,6 @@ class ManualDeviceAdder : public KDialogBase
         KComboBox* m_mdaCombo;
         HintLineEdit* m_mdaName;
         HintLineEdit* m_mdaMountPoint;
-
-        KTrader::OfferList m_mdaOffers;
-        KTrader::OfferList::ConstIterator m_mdaOffersEnd;
-        KTrader::OfferList::ConstIterator m_mdaPlugit;
 };
 
 #endif

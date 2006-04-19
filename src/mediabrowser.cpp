@@ -280,10 +280,11 @@ MediaBrowser::MediaBrowser( const char *name )
     // we always have a dummy device
     m_pluginName[ i18n( "Disable" ) ] = "dummy-mediadevice";
     m_pluginAmarokName["dummy-mediadevice"] = i18n( "Disable" );
+    m_pluginName[ i18n( "Do not handle" ) ] = "ignore";
+    m_pluginAmarokName["ignore"] = i18n( "Do not handle" );
     // query available device plugins
-    KTrader::OfferList offers = PluginManager::query( "[X-KDE-amaroK-plugintype] == 'mediadevice'" );
-    KTrader::OfferList::ConstIterator end( offers.end() );
-    for( KTrader::OfferList::ConstIterator it = offers.begin(); it != end; ++it ) {
+    m_plugins = PluginManager::query( "[X-KDE-amaroK-plugintype] == 'mediadevice'" );
+    for( KTrader::OfferList::ConstIterator it = m_plugins.begin(); it != m_plugins.end(); ++it ) {
         // Save name properties in QMap for lookup
         m_pluginName[(*it)->name()] = (*it)->property( "X-KDE-amaroK-name" ).toString();
         m_pluginAmarokName[(*it)->property( "X-KDE-amaroK-name" ).toString()] = (*it)->name();
