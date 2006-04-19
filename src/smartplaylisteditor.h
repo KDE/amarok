@@ -37,10 +37,16 @@ Q_OBJECT
         QString query() const { return m_query; }
         QString expandableQuery() const { return m_expandQuery; }
 
+        enum CriteriaType { criteriaAll = 0, criteriaAny = 1 };
+
     public slots:
-        void addCriteria();
-        void addCriteria( QDomElement &xml );
-        void removeCriteria( CriteriaEditor *criteria );
+        void addCriteriaAny();
+        void addCriteriaAny( QDomElement &xml);
+        void removeCriteriaAny( CriteriaEditor *criteria);
+
+        void addCriteriaAll();
+        void addCriteriaAll( QDomElement &xml);
+        void removeCriteriaAll( CriteriaEditor *criteria);
 
     private slots:
         void updateOrderTypes( int index );
@@ -52,11 +58,13 @@ Q_OBJECT
 
         KLineEdit *m_nameLineEdit;
 
-        QCheckBox *m_matchCheck;
-        KComboBox *m_matchCombo;
-        QLabel *m_matchLabel;
+        QCheckBox *m_matchAnyCheck;
+        QCheckBox *m_matchAllCheck;
 
-        QVGroupBox *m_criteriaGroupBox;
+        // matching boxes
+        QVGroupBox *m_criteriaAnyGroupBox;
+        QVGroupBox *m_criteriaAllGroupBox;
+
         //limit widgets
         QCheckBox *m_limitCheck;
         KIntSpinBox *m_limitSpin;
@@ -71,7 +79,8 @@ Q_OBJECT
         QString m_query;
         QString m_expandQuery;
 
-        QPtrList<CriteriaEditor> m_criteriaEditorList;
+        QPtrList<CriteriaEditor> m_criteriaEditorAnyList;
+        QPtrList<CriteriaEditor> m_criteriaEditorAllList;
 };
 
 
@@ -80,7 +89,7 @@ class CriteriaEditor : public QHBox
 {
 Q_OBJECT
     public:
-        CriteriaEditor( SmartPlaylistEditor *editor, QWidget *parent, QDomElement criteria = QDomElement() );
+        CriteriaEditor( SmartPlaylistEditor *editor, QWidget *parent, int criteriaType, QDomElement criteria = QDomElement() );
         ~CriteriaEditor();
         QString getSearchCriteria();
         void setSearchCriteria( const QString &str );
@@ -88,7 +97,10 @@ Q_OBJECT
         void enableRemove( bool );
 
     private slots:
-        void slotRemoveCriteria();
+        void slotRemoveCriteriaAny();
+        void slotRemoveCriteriaAll();
+        void slotAddCriteriaAny();
+        void slotAddCriteriaAll();
         void slotFieldSelected( int );
         void loadEditWidgets();
 

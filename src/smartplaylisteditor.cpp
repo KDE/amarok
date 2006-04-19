@@ -39,7 +39,8 @@ SmartPlaylistEditor::SmartPlaylistEditor( QString defaultName, QWidget *parent, 
       Ok|Cancel, Ok, true )
 {
     init(defaultName);
-    addCriteria();
+    addCriteriaAny();
+    addCriteriaAll();
 }
 
 
@@ -50,25 +51,41 @@ SmartPlaylistEditor::SmartPlaylistEditor( QWidget *parent, QDomElement xml, cons
     init( xml.attribute( "name" ) );
     // matches
     QDomNodeList matchesList =  xml.elementsByTagName( "matches" );
-    if ( matchesList.count() ) {
-        m_matchCheck->setChecked( true );
+    bool matchedANY = false, matchedALL = false;
+    
+    m_matchAllCheck->setChecked( true );
+    m_matchAnyCheck->setChecked( true );
 
-        QDomElement matches = matchesList.item(0).toElement(); // we only allow one matches node
+    for (int i = 0, m = matchesList.count(); i<m; i++) {
+        QDomElement matches = matchesList.item(i).toElement();
         QDomNodeList criteriaList =  matches.elementsByTagName( "criteria" );
-        for (int i = 0, c=criteriaList.count() ; i<c; ++i ) {
-
-            QDomElement criteria = criteriaList.item(i).toElement();
-            addCriteria( criteria );
+        
+        if ( criteriaList.count() ) {
+            for (int j = 0, c=criteriaList.count() ; j<c; ++j ) {
+                QDomElement criteria = criteriaList.item(j).toElement();
+              
+                if (matches.attribute( "glue" ) == "OR") {
+                    matchedANY = true;
+                    addCriteriaAny( criteria );
+                }
+                else {
+                    matchedALL = true;
+                    addCriteriaAll( criteria );
+                }
+            }
         }
-        if ( matches.attribute( "glue" ) == "AND" )
-            m_matchCombo->setCurrentItem( 0 );
-        else
-            m_matchCombo->setCurrentItem( 1 );
     }
-    else {
-        addCriteria();
-        m_matchCheck->setChecked( false );
+
+    if ( !matchedALL ) {
+        addCriteriaAll();
+        m_matchAllCheck->setChecked( false );
     }
+
+    if ( !matchedANY ) {
+        m_matchAnyCheck->setChecked( false );
+        addCriteriaAny( );
+    }
+
     // orderby
     QDomNodeList orderbyList =  xml.elementsByTagName( "orderby" );
     if ( orderbyList.count() ) {
@@ -131,18 +148,21 @@ void SmartPlaylistEditor::init(QString defaultName)
     QFrame *sep = new QFrame( mainWidget() );
     sep->setFrameStyle( QFrame::HLine | QFrame::Sunken );
 
-    //match box
-    QHBox *matchBox = new QHBox( mainWidget() );
-    m_matchCheck = new QCheckBox( i18n("Match the following condition" ), matchBox );
-    m_matchCheck->setChecked( true );
-    m_matchCombo = new KComboBox( matchBox );
-    m_matchCombo->insertItem( i18n("All") );
-    m_matchCombo->insertItem( i18n("Any") );
-    m_matchLabel = new QLabel( i18n(" of the following conditions"), matchBox );
-    matchBox->setStretchFactor( new QWidget( matchBox ), 1 );
+    //match box (any)
+    QHBox *matchAnyBox = new QHBox( mainWidget() );
+    m_matchAnyCheck = new QCheckBox( i18n("Match Any of the following conditions" ), matchAnyBox );
+    matchAnyBox->setStretchFactor( new QWidget( matchAnyBox ), 1 );
 
     //criteria box
-    m_criteriaGroupBox = new QVGroupBox( QString::null, mainWidget() );
+    m_criteriaAnyGroupBox = new QVGroupBox( QString::null, mainWidget() );
+
+    //match box (all)
+    QHBox *matchAllBox = new QHBox( mainWidget() );
+    m_matchAllCheck = new QCheckBox( i18n("Match All of the following conditions" ), matchAllBox );
+    matchAllBox->setStretchFactor( new QWidget( matchAllBox ), 1 );
+
+    //criteria box
+    m_criteriaAllGroupBox = new QVGroupBox( QString::null, mainWidget() );
 
     //order box
     QHBox *hbox2 = new QHBox( mainWidget() );
@@ -182,11 +202,15 @@ void SmartPlaylistEditor::init(QString defaultName)
     //add stretch
     static_cast<QHBox *>(mainWidget())->setStretchFactor(new QWidget(mainWidget()), 1);
 
-    connect( m_matchCheck, SIGNAL( toggled(bool) ), m_criteriaGroupBox, SLOT( setEnabled(bool) ) );
+    connect( m_matchAnyCheck, SIGNAL( toggled(bool) ), m_criteriaAnyGroupBox, SLOT( setEnabled(bool) ) );
+    connect( m_matchAllCheck, SIGNAL( toggled(bool) ), m_criteriaAllGroupBox, SLOT( setEnabled(bool) ) );
     connect( m_orderCheck, SIGNAL( toggled(bool) ), orderBox, SLOT( setEnabled(bool) ) );
     connect( m_limitCheck, SIGNAL( toggled(bool) ), limitBox, SLOT(  setEnabled(bool) ) );
     connect( m_expandCheck, SIGNAL( toggled(bool) ), expandBox, SLOT( setEnabled(bool) ) );
     connect( m_orderCombo, SIGNAL( activated(int) ), this, SLOT( updateOrderTypes(int) ) );
+
+    m_criteriaAnyGroupBox->setEnabled( false );
+    m_criteriaAllGroupBox->setEnabled( false );
 
     orderBox->setEnabled( false );
     limitBox->setEnabled( false );
@@ -198,32 +222,52 @@ void SmartPlaylistEditor::init(QString defaultName)
 }
 
 
-void SmartPlaylistEditor::addCriteria()
+void SmartPlaylistEditor::addCriteriaAny()
 {
-    CriteriaEditor *criteria = new CriteriaEditor( this, m_criteriaGroupBox );
-    m_criteriaEditorList.append( criteria );
-    updateMatchWidgets();
-    m_criteriaEditorList.first()->enableRemove( m_criteriaEditorList.count() > 1 );
+    CriteriaEditor *criteria= new CriteriaEditor( this, m_criteriaAnyGroupBox, criteriaAny );
+    m_criteriaEditorAnyList.append( criteria );
+    m_criteriaEditorAnyList.first()->enableRemove( m_criteriaEditorAnyList.count() > 1 );
 }
 
-void SmartPlaylistEditor::addCriteria( QDomElement &xml )
+void SmartPlaylistEditor::addCriteriaAll()
 {
-    CriteriaEditor *criteria = new CriteriaEditor( this, m_criteriaGroupBox, xml );
-    m_criteriaEditorList.append( criteria );
-    updateMatchWidgets();
-    m_criteriaEditorList.first()->enableRemove( m_criteriaEditorList.count() > 1 );
+    CriteriaEditor *criteria= new CriteriaEditor( this, m_criteriaAllGroupBox, criteriaAll );
+    m_criteriaEditorAllList.append( criteria );
+    m_criteriaEditorAllList.first()->enableRemove( m_criteriaEditorAllList.count() > 1 );
 }
 
-
-void SmartPlaylistEditor::removeCriteria( CriteriaEditor *criteria )
+void SmartPlaylistEditor::addCriteriaAny( QDomElement &xml )
 {
-    m_criteriaEditorList.remove( criteria );
+    CriteriaEditor *criteria = new CriteriaEditor( this, m_criteriaAnyGroupBox, criteriaAny, xml );
+    m_criteriaEditorAnyList.append( criteria );
+    m_criteriaEditorAnyList.first()->enableRemove( m_criteriaEditorAnyList.count() > 1 );
+}
+
+void SmartPlaylistEditor::addCriteriaAll( QDomElement &xml )
+{
+    CriteriaEditor *criteria = new CriteriaEditor( this, m_criteriaAllGroupBox, criteriaAll, xml );
+    m_criteriaEditorAllList.append( criteria );
+    m_criteriaEditorAllList.first()->enableRemove( m_criteriaEditorAllList.count() > 1 );
+}
+
+void SmartPlaylistEditor::removeCriteriaAny( CriteriaEditor *criteria )
+{
+    m_criteriaEditorAnyList.remove( criteria );
     criteria->deleteLater();
-    updateMatchWidgets();
     resize( size().width(), sizeHint().height() );
+    
+    if( m_criteriaEditorAnyList.count() == 1 )
+	m_criteriaEditorAnyList.first()->enableRemove( false );
+}
 
-    if( m_criteriaEditorList.count() == 1 )
-        m_criteriaEditorList.first()->enableRemove( false );
+void SmartPlaylistEditor::removeCriteriaAll( CriteriaEditor *criteria )
+{
+    m_criteriaEditorAllList.remove( criteria );
+    criteria->deleteLater();
+    resize( size().width(), sizeHint().height() );
+    
+    if( m_criteriaEditorAllList.count() == 1 )
+	m_criteriaEditorAllList.first()->enableRemove( false );
 }
 
 void SmartPlaylistEditor::updateOrderTypes( int index )
@@ -261,19 +305,30 @@ QDomElement SmartPlaylistEditor::result() {
 
     nodeE.appendChild( smartplaylist );
     // Matches
-    if( m_matchCheck->isChecked() ) {
+    if( m_matchAnyCheck->isChecked() ) {
         QDomElement matches = doc.createElement("matches");
         smartplaylist.appendChild( matches );
         // Iterate through all criteria list
-        CriteriaEditor *criteriaeditor = m_criteriaEditorList.first();
-        for( int i=0; criteriaeditor; criteriaeditor = m_criteriaEditorList.next(), ++i ) {
+        CriteriaEditor *criteriaeditor = m_criteriaEditorAnyList.first();
+        for( int i=0; criteriaeditor; criteriaeditor = m_criteriaEditorAnyList.next(), ++i ) {
             matches.appendChild( doc.importNode( criteriaeditor->getDomSearchCriteria( doc ), true ) );
         }
-        if ( m_criteriaEditorList.count() > 1 ) {
-            matches.setAttribute( "glue", m_matchCombo->currentItem() == 0 ? "AND" : "OR" );
-        }
+        matches.setAttribute( "glue",  "OR" );
         smartplaylist.appendChild( matches );
     }
+
+    if( m_matchAllCheck->isChecked() ) {
+        QDomElement matches = doc.createElement("matches");
+        smartplaylist.appendChild( matches );
+        // Iterate through all criteria list
+        CriteriaEditor *criteriaeditor = m_criteriaEditorAllList.first();
+        for( int i=0; criteriaeditor; criteriaeditor = m_criteriaEditorAllList.next(), ++i ) {
+            matches.appendChild( doc.importNode( criteriaeditor->getDomSearchCriteria( doc ), true ) );
+        }
+        matches.setAttribute( "glue",  "AND" );
+        smartplaylist.appendChild( matches );
+    }
+    
     // Order By
     if( m_orderCheck->isChecked() ) {
         QDomElement orderby = doc.createElement("orderby");
@@ -314,32 +369,68 @@ void SmartPlaylistEditor::buildQuery()
     QString limitStr;
 
     //where expression
-    if( m_matchCheck->isChecked() ) {
-        criteriaListStr += " (";
+    if( m_matchAnyCheck->isChecked() || m_matchAllCheck->isChecked() ) {
+	int i = 0;
 
-        CriteriaEditor *criteria = m_criteriaEditorList.first();
-        for( int i=0; criteria; criteria = m_criteriaEditorList.next(), i++ ) {
+	if( m_matchAnyCheck->isChecked() ) {
+	    criteriaListStr += "( (";
+	    
+	    CriteriaEditor *criteria = m_criteriaEditorAnyList.first();
+	    for( i=0; criteria; criteria = m_criteriaEditorAnyList.next(), i++ ) {
+		
+		QString str = criteria->getSearchCriteria();
+		//add the table used in the search expression to tables
+		QString table = str.left( str.find('.') );
+		if( !joins.contains( table ) ) {
+		    // that makes it possible to search for tracks never played. it looks ugly but is works
+		    if( str.contains(" OR statistics.playcounter IS NULL")
+			|| str.contains(" OR statistics.rating IS NULL")
+			|| str.contains(" OR statistics.percentage IS NULL") )
+			joins += " LEFT JOIN statistics ON statistics.url=tags.url";
+		    else
+			joins += " LEFT JOIN statistics ON statistics.url=tags.url";
+		}
+		if( i ) { //multiple conditions
+		    str.prepend( " OR (");
+		    
+		}
+		criteriaListStr += str+")";
+	    }
 
-            QString str = criteria->getSearchCriteria();
-            //add the table used in the search expression to tables
-            QString table = str.left( str.find('.') );
-             if( !joins.contains( table ) ) {
-                // that makes it possible to search for tracks never played. it looks ugly but is works
-                if( str.contains(" OR statistics.playcounter IS NULL")
-                 || str.contains(" OR statistics.rating IS NULL")
-                 || str.contains(" OR statistics.percentage IS NULL") )
-                    joins += " LEFT JOIN statistics ON statistics.url=tags.url";
-                else
-                    joins += " LEFT JOIN statistics ON statistics.url=tags.url";
-            }
-            if( i ) { //multiple conditions
-                QString op = m_matchCombo->currentItem() == 0 ? "AND" : "OR";
-                str.prepend( " " + op + " (");
+	    criteriaListStr += " )"; // we want our ORs all in one bracket. :-)
+	}
 
-            }
-            criteriaListStr += str+")";
-        }
-        whereStr = " WHERE" + criteriaListStr;
+	if( m_matchAllCheck->isChecked() ) {
+            if ( i ) // conditions exist from above
+                criteriaListStr += " AND ";
+
+	    criteriaListStr += "( (";
+
+	    CriteriaEditor *criteria2 = m_criteriaEditorAllList.first();
+	    for( i=0; criteria2; criteria2 = m_criteriaEditorAllList.next(), i++ ) {
+		
+		QString str = criteria2->getSearchCriteria();
+		//add the table used in the search expression to tables
+		QString table = str.left( str.find('.') );
+		if( !joins.contains( table ) ) {
+		    // that makes it possible to search for tracks never played. it looks ugly but is works
+		    if( str.contains(" OR statistics.playcounter IS NULL")
+			|| str.contains(" OR statistics.rating IS NULL")
+			|| str.contains(" OR statistics.percentage IS NULL") )
+			joins += " LEFT JOIN statistics ON statistics.url=tags.url";
+		    else
+			joins += " LEFT JOIN statistics ON statistics.url=tags.url";
+		}
+		if( i ) { //multiple conditions
+		    str.prepend( " AND (");
+		    
+		}
+		criteriaListStr += str+")";
+	    }
+	    criteriaListStr += " )";
+	}
+
+        whereStr = " WHERE " + criteriaListStr;
     }
 
     //order by expression
@@ -403,27 +494,11 @@ void SmartPlaylistEditor::buildQuery()
 }
 
 
-void SmartPlaylistEditor::updateMatchWidgets()
-{
-    int count = m_criteriaEditorList.count();
-    if( count > 1 ) {
-        m_matchCheck->setText( i18n("Match") );
-        m_matchCombo->show();
-        m_matchLabel->show();
-    }
-    else {
-        m_matchCheck->setText( i18n("Match the following conditions" ) );
-        m_matchCombo->hide();
-        m_matchLabel->hide();
-    }
-}
-
-
 /////////////////////////////////////////////////////////////////////////////
 //    CLASS CriteriaEditor
 ////////////////////////////////////////////////////////////////////////////
 
-CriteriaEditor::CriteriaEditor( SmartPlaylistEditor *editor, QWidget *parent, QDomElement criteria )
+CriteriaEditor::CriteriaEditor( SmartPlaylistEditor *editor, QWidget *parent, int criteriaType, QDomElement criteria )
     : QHBox( parent )
     , m_playlistEditor( editor )
     , m_currentValueType( -1 )
@@ -448,8 +523,14 @@ CriteriaEditor::CriteriaEditor( SmartPlaylistEditor *editor, QWidget *parent, QD
 
     connect( m_fieldCombo,    SIGNAL( activated(int) ), SLOT( slotFieldSelected(int) ) );
     connect( m_criteriaCombo, SIGNAL( activated(int) ), SLOT( loadEditWidgets() ) );
-    connect( m_addButton, SIGNAL( clicked() ), editor, SLOT( addCriteria() ) );
-    connect( m_removeButton, SIGNAL( clicked() ), SLOT( slotRemoveCriteria() ) );
+    if (criteriaType == SmartPlaylistEditor::criteriaAny) {
+	connect( m_addButton, SIGNAL( clicked() ), editor, SLOT( addCriteriaAny() ) );
+	connect( m_removeButton, SIGNAL( clicked() ), SLOT( slotRemoveCriteriaAny() ) );
+    }
+    else {
+	connect( m_addButton, SIGNAL( clicked() ), editor, SLOT( addCriteriaAll() ) );
+	connect( m_removeButton, SIGNAL( clicked() ), SLOT( slotRemoveCriteriaAll() ) );
+    }
 
     if ( !criteria.isNull() ) {
         int field = m_dbFields.findIndex( criteria.attribute( "field" ) );
@@ -700,11 +781,25 @@ void CriteriaEditor::enableRemove( bool enable )
 }
 
 
-void CriteriaEditor::slotRemoveCriteria()
+void CriteriaEditor::slotRemoveCriteriaAny()
 {
-    m_playlistEditor->removeCriteria( this );
+    m_playlistEditor->removeCriteriaAny( this );
 }
 
+void CriteriaEditor::slotRemoveCriteriaAll()
+{
+    m_playlistEditor->removeCriteriaAll( this );
+}
+
+void CriteriaEditor::slotAddCriteriaAny()
+{
+    m_playlistEditor->addCriteriaAny();
+}
+
+void CriteriaEditor::slotAddCriteriaAll()
+{
+    m_playlistEditor->addCriteriaAll();
+}
 
 void CriteriaEditor::slotFieldSelected( int field )
 {
