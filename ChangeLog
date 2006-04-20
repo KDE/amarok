@@ -12,7 +12,7 @@ VERSION 1.4.0:
   CHANGES:
     * Configure media devices in global settings, disable media browser when
       no media device is configured.
-    * Dynamic Playlist bar made more conspicuous
+    * Dynamic Playlist bar made more conspicuous.
     * The Konqueror setting to show a 'delete' entry in the menu is now
       respected, if the setting exists and KDE is version 3.4 or higher.
     * Cover art from m4a files. Updated m4a taglib patch by Jochen Issing
