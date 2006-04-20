@@ -18,6 +18,8 @@ VERSION 1.4.0:
     * Cover art from m4a files. Updated m4a taglib patch by Jochen Issing
       <jochen@isign-softart.de> and patch by Shane King
       <kde@dontletsstart.com>. (BR 125414)
+    * Smart playlists can be constructed using mixed ALL and ANY matches
+      (BR 124483)
 
   BUGFIXES:
     * The MySQL connection will no longer time out when idle. (BR 120198)
