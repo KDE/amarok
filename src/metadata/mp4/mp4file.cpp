@@ -102,8 +102,9 @@ bool MP4::File::save()
     uint16_t tempo = 0;
     bool has_tempo = MP4GetMetadataTempo(handle, &tempo);
 
+    // need to fetch/rewrite this only if we aren't going to anyway
     uint8_t compilation = 0;
-    bool has_compilation = MP4GetMetadataCompilation(handle, &compilation);
+    bool has_compilation = mp4tag->compilation() == MP4::Tag::Undefined ? MP4GetMetadataCompilation(handle, &compilation) : false;
 
     char *tool = NULL;
     MP4GetMetadataTool(handle, &tool);
@@ -134,6 +135,9 @@ bool MP4::File::save()
     u_int16_t t1, t2;
     MP4GetMetadataTrack(handle, &t1, &t2);
     MP4SetMetadataTrack(handle, mp4tag->track(), t2);
+    if(mp4tag->compilation() != MP4::Tag::Undefined) {
+        MP4SetMetadataCompilation(handle, mp4tag->compilation());
+    }
 
     MP4SetMetadataCoverArt(handle, mp4tag->cover().size() ? const_cast<u_int8_t *>( reinterpret_cast<const u_int8_t *>( mp4tag->cover().data() ) ) : 0, mp4tag->cover().size());
 

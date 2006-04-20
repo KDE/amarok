@@ -154,6 +154,7 @@ MetaBundle::MetaBundle()
         : m_year( Undetermined )
         , m_discNumber( Undetermined )
         , m_track( Undetermined )
+        , m_compilation( CompilationUnknown )
         , m_bitrate( Undetermined )
         , m_length( Undetermined )
         , m_sampleRate( Undetermined )
@@ -175,6 +176,7 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
     , m_year( Undetermined )
     , m_discNumber( Undetermined )
     , m_track( Undetermined )
+    , m_compilation( CompilationUnknown )
     , m_bitrate( Undetermined )
     , m_length( Undetermined )
     , m_sampleRate( Undetermined )
@@ -219,6 +221,7 @@ MetaBundle::MetaBundle( const QString& title,
         , m_year( 0 )
         , m_discNumber( 0 )
         , m_track( 0 )
+        , m_compilation( CompilationUnknown )
         , m_bitrate( bitrate )
         , m_length( Irrelevant )
         , m_sampleRate( Unavailable )
@@ -258,6 +261,7 @@ MetaBundle::MetaBundle( const MetaBundle &bundle )
     , m_year( bundle.m_year )
     , m_discNumber( bundle.m_discNumber )
     , m_track( bundle.m_track )
+    , m_compilation( bundle.m_compilation )
     , m_bitrate( bundle.m_bitrate )
     , m_length( bundle.m_length )
     , m_sampleRate( bundle.m_sampleRate )
@@ -296,6 +300,7 @@ MetaBundle::operator=( const MetaBundle& bundle )
     m_year = bundle.m_year;
     m_discNumber = bundle.m_discNumber;
     m_track = bundle.m_track;
+    m_compilation = bundle.m_compilation;
     m_bitrate = bundle.m_bitrate;
     m_length = bundle.m_length;
     m_sampleRate = bundle.m_sampleRate;
@@ -465,6 +470,7 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
        we have to cast the files, not the tags! */
 
         QString disc;
+        QString compilation;
         bool atf = AmarokConfig::advancedTagFeatures();
         debug() << "atf is " << atf << endl;
         if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
@@ -477,6 +483,9 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
 
                 if ( !file->ID3v2Tag()->frameListMap()["TCOM"].isEmpty() )
                     setComposer( TStringToQString( file->ID3v2Tag()->frameListMap()["TCOM"].front()->toString() ).stripWhiteSpace() );
+
+                if ( !file->ID3v2Tag()->frameListMap()["TCMP"].isEmpty() )
+                    compilation = TStringToQString( file->ID3v2Tag()->frameListMap()["TCMP"].front()->toString() ).stripWhiteSpace();
 
                 if(images) {
                     loadImagesFromTag( *file->ID3v2Tag(), *images );
@@ -493,6 +502,9 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
 
                 if ( !file->tag()->fieldListMap()[ "DISCNUMBER" ].isEmpty() )
                     disc = TStringToQString( file->tag()->fieldListMap()["DISCNUMBER"].front() ).stripWhiteSpace();
+
+                if ( !file->tag()->fieldListMap()[ "COMPILATION" ].isEmpty() )
+                    compilation = TStringToQString( file->tag()->fieldListMap()["COMPILATION"].front() ).stripWhiteSpace();
             }
         }
         else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
@@ -505,6 +517,9 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
 
                 if ( !file->xiphComment()->fieldListMap()[ "DISCNUMBER" ].isEmpty() )
                     disc = TStringToQString( file->xiphComment()->fieldListMap()["DISCNUMBER"].front() ).stripWhiteSpace();
+
+                if ( !file->xiphComment()->fieldListMap()[ "COMPILATION" ].isEmpty() )
+                    compilation = TStringToQString( file->xiphComment()->fieldListMap()["COMPILATION"].front() ).stripWhiteSpace();
             }
 
             if ( images && file->ID3v2Tag() ) {
@@ -519,6 +534,7 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
             {
                 setComposer( TStringToQString( mp4tag->composer() ) );
                 disc = QString::number( mp4tag->disk() );
+                compilation = QString::number( mp4tag->compilation() );
                 if ( images && mp4tag->cover().size() ) {
                     images->push_back( EmbeddedImage( mp4tag->cover(), "" ) );
                 }
@@ -536,6 +552,18 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
                 setDiscNumber( disc.left( i ).toInt() );
             else
                 setDiscNumber( disc.toInt() );
+        }
+
+        if ( compilation.isEmpty() ) {
+            // well, it wasn't set, but if the artist is VA assume it's a compilation
+            if ( artist().string() == i18n( "Various Artists" ) )
+                setCompilation( CompilationYes );
+        } else {
+            int i = compilation.toInt();
+            if ( i == CompilationNo )
+                setCompilation( CompilationNo );
+            else if ( i == CompilationYes )
+                setCompilation( CompilationYes );
         }
 
         init( fileref.audioProperties() );
@@ -1084,6 +1112,7 @@ MetaBundle::setExtendedTag( TagLib::File *file, int tag, const QString value )
         {
             case ( composerTag ): id = "TCOM"; break;
             case ( discNumberTag ): id = "TPOS"; break;
+            case ( compilationTag ): id = "TCMP"; break;
         }
         TagLib::MPEG::File *mpegFile = dynamic_cast<TagLib::MPEG::File *>( file );
         if ( mpegFile && mpegFile->ID3v2Tag() )
@@ -1109,6 +1138,7 @@ MetaBundle::setExtendedTag( TagLib::File *file, int tag, const QString value )
         {
             case ( composerTag ): id = "COMPOSER"; break;
             case ( discNumberTag ): id = "DISCNUMBER"; break;
+            case ( compilationTag ): id = "COMPILATION"; break;
         }
         TagLib::Ogg::Vorbis::File *oggFile = dynamic_cast<TagLib::Ogg::Vorbis::File *>( file );
         if ( oggFile && oggFile->tag() )
@@ -1124,6 +1154,7 @@ MetaBundle::setExtendedTag( TagLib::File *file, int tag, const QString value )
         {
             case ( composerTag ): id = "COMPOSER"; break;
             case ( discNumberTag ): id = "DISCNUMBER"; break;
+            case ( compilationTag ): id = "COMPILATION"; break;
         }
         TagLib::FLAC::File *flacFile = dynamic_cast<TagLib::FLAC::File *>( file );
         if ( flacFile && flacFile->xiphComment() )
@@ -1142,6 +1173,7 @@ MetaBundle::setExtendedTag( TagLib::File *file, int tag, const QString value )
             {
                 case ( composerTag ): mp4tag->setComposer( QStringToTString( value ) ); break;
                 case ( discNumberTag ): mp4tag->setDisk( value.toInt() );
+                case ( compilationTag ): mp4tag->setCompilation( value.toInt() == CompilationYes );
             }
         }
     }
@@ -1195,6 +1227,8 @@ MetaBundle::save()
         {
             setExtendedTag( f.file(), composerTag, composer() );
             setExtendedTag( f.file(), discNumberTag, discNumber() ? QString::number( discNumber() ) : QString() );
+            if ( compilation() != CompilationUnknown )
+                setExtendedTag( f.file(), compilationTag, QString::number( compilation() ) );
         }
         return f.save();
     }
@@ -1428,6 +1462,9 @@ void MetaBundle::setYear( int year)
 
 void MetaBundle::setTrack( int track )
 { aboutToChange( Track ); m_track = track; reactToChange( Track ); }
+
+void MetaBundle::setCompilation( int compilation )
+{ m_compilation = compilation; }
 
 void MetaBundle::setLength( int length )
 { aboutToChange( Length ); m_length = length; reactToChange( Length ); }

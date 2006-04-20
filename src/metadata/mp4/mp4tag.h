@@ -34,6 +34,8 @@ namespace TagLib {
         class Tag : public TagLib::Tag
         {
             public:
+                static const int Undefined = -1;
+                
                 Tag();
 
                 /*!
@@ -106,6 +108,12 @@ namespace TagLib {
                 virtual const ByteVector &cover() const { return m_image; }
 
                 /*!
+                 * Returns whether this is part of a compilation; if this flag is not set,
+                 * this will return the Undefined constant.
+                 */
+                virtual int compilation() const { return m_compilation; }
+
+                /*!
                  * Sets the title to \a s.  If \a s is String::null then this value will be
                  * cleared.
                  */
@@ -154,6 +162,11 @@ namespace TagLib {
                 virtual void setDisk(uint i) { m_disk = i; }
 
                 /*!
+                 * Sets whether this is part of a compilation.
+                 */
+                virtual void setCompilation(bool compilation) { m_compilation = compilation ? 1 : 0; }
+
+                /*!
                  * Sets the composer to \a s.  If \a s is String::null then this value will
                  * be cleared.
                  */
@@ -195,6 +208,7 @@ namespace TagLib {
                 uint m_year;
                 uint m_track;
                 uint m_disk;
+                int m_compilation;
                 ByteVector m_image;
         };
     }

@@ -103,6 +103,9 @@ public:
     static const int Irrelevant   = -1; /// not applicable to this stream/media type, eg length for http streams
     static const int Unavailable  =  0; /// cannot be obtained
 
+    // whether file is part of a compilation
+    enum Compilation { CompilationNo = 0, CompilationYes = 1, CompilationUnknown = -1 };
+
     /// Creates an empty MetaBundle
     LIBAMAROK_EXPORT MetaBundle();
 
@@ -224,17 +227,18 @@ public: //accessors
     QString      uniqueId()  const;
     PodcastEpisodeBundle *podcastBundle() const;
 
-    int     year()       const;
-    int     discNumber() const;
-    int     track()      const;
-    int     length()     const;
-    int     bitrate()    const;
-    int     sampleRate() const;
-    int     score()      const;
-    int     rating()     const; //returns rating * 2, to accomodate .5 ratings
-    int     playCount()  const;
-    uint    lastPlay()   const;
-    int     filesize()   const;
+    int     year()        const;
+    int     discNumber()  const;
+    int     track()       const;
+    int     compilation() const;
+    int     length()      const;
+    int     bitrate()     const;
+    int     sampleRate()  const;
+    int     score()       const;
+    int     rating()      const; //returns rating * 2, to accomodate .5 ratings
+    int     playCount()   const;
+    uint    lastPlay()    const;
+    int     filesize()    const;
 
     QString streamName() const;
     QString streamUrl()  const;
@@ -265,6 +269,7 @@ public: //modifiers
     void setYear( int year );
     void setDiscNumber( int discNumber );
     void setTrack( int track );
+    void setCompilation( int compilation );
     void setLength( int length );
     void setBitrate( int bitrate );
     void setSampleRate( int sampleRate );
@@ -289,7 +294,7 @@ public: //static helper functions
     static QStringList genreList();
 
 protected:
-    enum ExtendedTags { composerTag,  discNumberTag };
+    enum ExtendedTags { composerTag,  discNumberTag, compilationTag };
 
     /** Called before the tags in \p columns are changed. */
     virtual void aboutToChange( const QValueList<int> &columns );
@@ -318,6 +323,7 @@ protected:
     int m_year;
     int m_discNumber;
     int m_track;
+    int m_compilation;
     int m_bitrate;
     int m_length;
     int m_sampleRate;
@@ -402,6 +408,7 @@ inline QString MetaBundle::streamUrl()  const { return m_streamUrl; }
 inline QString MetaBundle::uniqueId()   const { return m_uniqueId; }
 
 inline int MetaBundle::discNumber() const { return m_discNumber == Undetermined ? 0 : m_discNumber; }
+inline int MetaBundle::compilation() const { return m_compilation; }
 
 inline AtomicString MetaBundle::composer() const { return m_composer; }
 

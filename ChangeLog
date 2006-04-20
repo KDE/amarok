@@ -27,6 +27,8 @@ VERSION 1.4.0:
       <kde@dontletsstart.com>. (BR 125414)
 
   BUGFIXES:
+    * Mask/unmark as compilation is now stored in the file tag so it is 
+      remembered when the colection is rescanned. (BR 120428)
     * Submissions from media devices are timestamped so as to be less likely
       to conflict with submissions from another last.fm client. (BR 125367)
     * The MySQL connection will no longer time out when idle. (BR 120198)

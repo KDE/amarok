@@ -217,6 +217,8 @@ class CollectionView : public KListView
         QString captionForCategory( const int cat ) const;
         inline QString captionForTag( const Tag ) const;
 
+        void setCompilation( const QString &album, bool compilation );
+
         /** Rebuild selections, viewport and expanded items after reloads */
         void cacheView();
         void restoreView();

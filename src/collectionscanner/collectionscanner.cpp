@@ -343,6 +343,7 @@ CollectionScanner::readTags( const MetaBundle& mb )
     attributes["discnumber"]   = mb.discNumber() ? QString::number( mb.discNumber() ) : QString();
     attributes["filetype"]  = QString::number( mb.fileType() );
     attributes["uniqueid"] = mb.uniqueId();
+    attributes["compilation"] = QString::number( mb.compilation() );
 
     if ( mb.audioPropertiesUndetermined() )
         attributes["audioproperties"] = "false";

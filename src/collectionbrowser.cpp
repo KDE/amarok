@@ -49,6 +49,7 @@
 #include <kapplication.h>   //kapp
 #include <kconfig.h>
 #include <kcombobox.h>
+#include <kcursor.h>
 #include <kdialogbase.h>
 #include <kglobal.h>
 #include <kiconloader.h>    //renderView()
@@ -1462,21 +1463,21 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                 break;
             case COMPILATION_SET:
                 if ( cat == CollectionBrowser::IdVisYearAlbum )
-                    CollectionDB::instance()->setCompilation(
+                    setCompilation(
                         item->text(0).right( item->text(0).length() - item->text(0).find( i18n(" - ") ) - i18n(" - ").length() ),
                         true
                     );
                 else
-                    CollectionDB::instance()->setCompilation( item->text(0), true );
+                    setCompilation( item->text(0), true );
                 break;
             case COMPILATION_UNSET:
                 if ( cat == CollectionBrowser::IdVisYearAlbum )
-                    CollectionDB::instance()->setCompilation(
+                    setCompilation(
                         item->text(0).right( item->text(0).length() - item->text(0).find( i18n(" - ") ) - i18n(" - ").length() ),
                         false
                     );
                 else
-                    CollectionDB::instance()->setCompilation( item->text(0), false );
+                    setCompilation( item->text(0), false );
                 break;
             case ORGANIZE:
                 organizeFiles( listSelected(), i18n( "Organize Collection Files" ), false /* don't add to collection, just move */ );
@@ -2387,6 +2388,29 @@ CollectionView::captionForTag( const Tag tag) const
         default: break;
     }
     return caption;
+}
+
+void
+CollectionView::setCompilation( const QString &album, bool compilation )
+{
+    //visual feedback
+    QApplication::setOverrideCursor( KCursor::waitCursor() );
+
+    QStringList files = CollectionDB::instance()->setCompilation( album, compilation );
+    foreachType( QStringList, files ) {
+        MetaBundle mb( KURL::fromPathOrURL( *it ) );
+
+        mb.setCompilation( compilation ? MetaBundle::CompilationYes : MetaBundle::CompilationNo );
+
+        bool result = mb.save();
+        mb.updateFilesize();
+
+        if( result )
+        //update the collection db, since filesize might have changed
+            CollectionDB::instance()->updateTags( mb.url().path(), mb, it == --files.end() );
+    }
+    //visual feedback
+    QApplication::restoreOverrideCursor();
 }
 
 void

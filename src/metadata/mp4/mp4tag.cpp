@@ -37,6 +37,7 @@ MP4::Tag::Tag() : TagLib::Tag::Tag() {
     m_year = 0;
     m_track = 0;
     m_disk = 0;
+    m_compilation = Undefined;
 }
 
 MP4::Tag::~Tag() {
@@ -52,12 +53,17 @@ bool MP4::Tag::isEmpty() const {
         m_year == 0 &&
         m_track == 0 &&
         m_disk == 0 &&
+        m_compilation == Undefined &&
         m_image.size() == 0;
 }
 
 void MP4::Tag::duplicate(const Tag *source, Tag *target, bool overwrite) {
-    // No nonstandard information stored yet
+    // Duplicate standard information
     Tag::duplicate(source, target, overwrite);
+
+    if (overwrite || target->compilation() == Undefined && source->compilation() != Undefined)
+        target->setCompilation(source->compilation());
+
     if (overwrite || target->cover().size() == 0)
         target->setCover(source->cover());
 }
@@ -66,6 +72,7 @@ void MP4::Tag::readTags( MP4FileHandle mp4file )
 {
     // Now parse tag.
     char *value;
+    uint8_t boolvalue;
     uint16_t numvalue, numvalue2;
     uint8_t *image;
     uint32_t imageSize;
@@ -96,6 +103,9 @@ void MP4::Tag::readTags( MP4FileHandle mp4file )
     }
     if (MP4GetMetadataDisk(mp4file, &numvalue, &numvalue2)) {
         m_disk = numvalue;
+    }
+    if (MP4GetMetadataCompilation(mp4file, &boolvalue)) {
+        m_compilation = boolvalue;
     }
     if (MP4GetMetadataGenre(mp4file, &value) && value != NULL) {
         m_genre = String(value, String::UTF8);

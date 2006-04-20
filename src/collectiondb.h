@@ -322,7 +322,7 @@ class CollectionDB : public QObject, public EngineObserver
 
         //album methods
         void checkCompilations( const QString &path, const bool temporary = false );
-        void setCompilation( const QString &album, const bool enabled, const bool updateView = true );
+        QStringList setCompilation( const QString &album, const bool enabled, const bool updateView = true );
         QString albumSongCount( const QString &artist_id, const QString &album_id );
         bool albumIsCompilation( const QString &album_id );
 

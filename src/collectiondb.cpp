@@ -2101,7 +2101,20 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
     command += escapeString( bundle->comment() ) + "', ";
     command += escapeString( QString::number( bundle->track() ) ) + " , ";
     command += escapeString( QString::number( bundle->discNumber() ) ) + " , ";
-    command += artist == i18n( "Various Artists" ) ? boolT() + "," : boolF() + ",";
+    switch( bundle->compilation() ) {
+        case MetaBundle::CompilationNo:
+            command += boolF();
+            break;
+
+        case MetaBundle::CompilationYes:
+            command += boolT();
+            break;
+
+        case MetaBundle::CompilationUnknown:
+        default:
+            command += "NULL";
+    }
+    command += ",";
 
     // NOTE any of these may be -1 or -2, this is what we want
     //      see MetaBundle::Undetermined
@@ -2241,7 +2254,7 @@ fillInBundle( QStringList values, MetaBundle &bundle )
     //TODO use this whenever possible
 
     // crash prevention
-    while( values.count() < 12 )
+    while( values.count() < 13 )
         values += "IF YOU CAN SEE THIS THERE IS A BUG!";
 
     QStringList::ConstIterator it = values.begin();
@@ -2259,7 +2272,11 @@ fillInBundle( QStringList values, MetaBundle &bundle )
     bundle.setLength    ( (*it).toInt() ); ++it;
     bundle.setSampleRate( (*it).toInt() ); ++it;
     bundle.setFilesize  ( (*it).toInt() ); ++it;
-    bundle.setFileType  ( (*it).toInt() );
+    bundle.setFileType  ( (*it).toInt() ); ++it;
+
+    bool ok;
+    int val = (*it).toInt( &ok );
+    bundle.setCompilation( ok ? val : MetaBundle::CompilationUnknown );
 }
 
 bool
@@ -2269,7 +2286,7 @@ CollectionDB::bundleForUrl( MetaBundle* bundle )
             "SELECT album.name, artist.name, genre.name, tags.title, "
             "year.name, tags.comment, tags.discnumber, tags.composer, "
             "tags.track, tags.bitrate, tags.length, tags.samplerate, "
-            "tags.filesize, tags.filetype "
+            "tags.filesize, tags.filetype, tags.sampler "
             "FROM tags, album, artist, genre, year "
             "WHERE album.id = tags.album AND artist.id = tags.artist AND "
             "genre.id = tags.genre AND year.id = tags.year AND tags.url = '%1';" )
@@ -2954,7 +2971,7 @@ CollectionDB::checkCompilations( const QString &path, const bool temporary )
     QStringList artists;
     QStringList dirs;
 
-    albums = query( QString( "SELECT DISTINCT album.name FROM tags_temp, album%1 AS album WHERE tags_temp.dir = '%2' AND album.id = tags_temp.album;" )
+    albums = query( QString( "SELECT DISTINCT album.name FROM tags_temp, album%1 AS album WHERE tags_temp.dir = '%2' AND album.id = tags_temp.album AND tags_temp.sampler IS NULL;" )
               .arg( temporary ? "_temp" : "" )
               .arg( escapeString( path ) ));
 
@@ -2972,14 +2989,14 @@ CollectionDB::checkCompilations( const QString &path, const bool temporary )
         if ( artists.count() > dirs.count() )
         {
             debug() << "Detected compilation: " << albums[ i ] << " - " << artists.count() << ":" << dirs.count() << endl;
-            query( QString( "UPDATE tags_temp SET sampler = %1 WHERE album = '%2';" )
-                            .arg(boolT()).arg( album_id ) );
         }
+        query( QString( "UPDATE tags_temp SET sampler = %1 WHERE album = '%2' AND sampler IS NULL;" )
+                         .arg(artists.count() > dirs.count() ? boolT() : boolF()).arg( album_id ) );
     }
 }
 
 
-void
+QStringList
 CollectionDB::setCompilation( const QString &album, const bool enabled, const bool updateView )
 {
     QStringList values = query( QString( "SELECT album.id FROM album WHERE album.name = '%1';" )
@@ -2993,6 +3010,9 @@ CollectionDB::setCompilation( const QString &album, const bool enabled, const bo
     // using QTimer to make sure we don't manipulate the GUI from a thread
     if ( updateView )
         QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
+
+    // return a list so tags can be updated
+    return query( QString( "SELECT url FROM tags WHERE tags.album = %1;" ).arg( values[0] ) );
 }
 
 
