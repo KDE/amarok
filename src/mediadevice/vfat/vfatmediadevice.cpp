@@ -113,14 +113,14 @@ class VfatMediaItem : public MediaItem
 QString
 VfatMediaDevice::fileName( const MetaBundle &bundle )
 {
-    QString result = bundle.artist();
+    QString result = cleanPath( bundle.artist() );
 
     if( !result.isEmpty() )
     {
         if( m_spacesToUnderscores )
-            result += "_";
+            result += "_-_";
         else
-            result += " ";
+            result += " - ";
     }
 
     if( bundle.track() )
