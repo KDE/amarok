@@ -202,6 +202,8 @@ CollectionDB::query( const QString& statement )
         debug() << "Query-start: " << statement << endl;
         start = clock();
     }
+    if ( statement.stripWhiteSpace().isEmpty() )
+        return QStringList();
 
     DbConnection *dbConn;
     dbConn = getMyConnection();
@@ -979,7 +981,7 @@ CollectionDB::createDragPixmap( const KURL::List &urls, QString textOverRide )
             {
                 albumMap[ mb.artist() + mb.album() ] = 1;
                 QString coverName = CollectionDB::instance()->albumImage( mb.artist(), mb.album(), coverW );
-                
+
                 if ( !coverName.endsWith( "@nocover.png" ) )
                 {
                     debug() << "adding cover " << coverName << endl;
@@ -996,7 +998,7 @@ CollectionDB::createDragPixmap( const KURL::List &urls, QString textOverRide )
             {
                 albumMap[ mb.artist() + mb.album() ] = 1;
                 QString coverName = CollectionDB::instance()->podcastImage( mb, coverW );
-                    
+
                 if ( !coverName.endsWith( "@nocover.png" ) )
                 {
                     debug() << "adding cover " << coverName << endl;
@@ -1175,15 +1177,15 @@ CollectionDB::podcastImage( const MetaBundle &bundle, uint width )
 {
     PodcastEpisodeBundle peb;
     PodcastChannelBundle pcb;
-    
+
     KURL url = bundle.url().url();
-    
+
     if( getPodcastEpisodeBundle( url, &peb ) )
     {
         debug() << "getting image for episode" << endl;
         url = peb.parent().url();
     }
-        
+
     if( getPodcastChannelBundle( url, &pcb ) )
     {
         debug() << "getting image for channel" << endl;
