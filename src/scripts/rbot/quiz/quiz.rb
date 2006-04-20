@@ -26,6 +26,7 @@ class Quiz
 
         @current_question = nil
         @current_answer  = nil
+        @current_answer_core = nil
     end
 
     def shuffle()
@@ -45,13 +46,19 @@ class Quiz
                 shuffle if @quest.empty?
 
                 i = rand( @quest.length )
-                @current_question = @quest[i].question
-                @current_answer   = @quest[i].answer
+                @current_question    = @quest[i].question
+                @current_answer      = @quest[i].answer.gsub( "#", "" )
+                begin
+                    @current_answer_core = /(#)(.*)(#)/.match( @quest[i].answer )[2]
+                rescue
+                end
+                @current_answer_core = @current_answer if @current_answer_core == nil
+
                 @quest.delete_at( i )
 
                 @current_hint = ""
-                (0..@current_answer.length-1).each do |index|
-                    if @current_answer[index, 1] == " "
+                (0..@current_answer_core.length-1).each do |index|
+                    if @current_answer_core[index, 1] == " "
                         @current_hint << " "
                     else
                         @current_hint << "."
@@ -59,7 +66,7 @@ class Quiz
                 end
 
                 # Generate array of unique random range
-                @current_hintrange = (0..@current_answer.length-1).sort_by{rand}
+                @current_hintrange = (0..@current_answer_core.length-1).sort_by{rand}
 
                 @plugin.bot.say( m.replyto, @current_question )
 
@@ -121,7 +128,9 @@ class Quiz
     def listen( m )
         return if @current_question == nil
 
-        if m.message.downcase == @current_answer.downcase
+        message = m.message.downcase.strip
+
+        if message == @current_answer.downcase or message == @current_answer_core.downcase
             replies = []
             replies << "BINGO!! #{m.sourcenick} got it right. The answer was: #{@current_answer}"
             replies << "OMG!! PONIES!! #{m.sourcenick} is the cutest. The answer was: #{@current_answer}"
