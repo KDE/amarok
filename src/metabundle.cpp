@@ -1286,7 +1286,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
         return;
 
     int createID = 0;
-    int randSize = 64; //largest size allowed by ID3v2.4
+    int randSize = 8; //largest size allowed by ID3v2.4
     bool newID = false;
     m_uniqueId = QString::null;
 
@@ -1313,7 +1313,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
             }
             if( createID == 1 )
             {
-                m_uniqueId = getRandomString( randSize );
+                m_uniqueId = getRandomStringHelper( randSize );
                 file->ID3v2Tag()->addFrame( new TagLib::ID3v2::UniqueFileIdentifierFrame(
                             QStringToTString( ourId ),
                             TagLib::ByteVector( m_uniqueId.ascii(), randSize )
@@ -1332,7 +1332,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
             if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) )
             {
                 file->tag()->addField( QStringToTString( ourId ),
-                        TagLib::ByteVector( getRandomString( randSize ).ascii(), randSize )
+                        TagLib::ByteVector( getRandomStringHelper( randSize ).ascii(), randSize )
                         );
                 file->save();
                 newID = true;
@@ -1343,44 +1343,49 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
     }
     else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
     {
-        if ( file->xiphComment( true ) )
+        /*if ( file->xiphComment( true ) )
         {
             if( file->xiphComment()->fieldListMap().contains( QStringToTString( ourId ) ) && recreate )
                 file->xiphComment()->removeField( QStringToTString( ourId ) );
             if( !file->xiphComment()->fieldListMap().contains( QStringToTString( ourId ) ) )
             {
                 file->xiphComment()->addField( QStringToTString( ourId ),
-                        TagLib::ByteVector( getRandomString( randSize ).ascii(), randSize )
+                        TagLib::ByteVector( getRandomStringHelper( randSize ).ascii(), randSize )
                         );
                 file->save();
                 newID = true;
             }
             else
                 m_uniqueId = TStringToQString( file->xiphComment()->fieldListMap()[QStringToTString( ourId )].front() );
-        }
+        }*/
+        //don't handle FLAC yet because causes whole file to be rewritten -- bug in TagLib?
+        if( file || !file )
+            return;
     }
     else if ( TagLib::Ogg::FLAC::File *file = dynamic_cast<TagLib::Ogg::FLAC::File *>( fileref.file() ) )
     {
-        if( file->tag() )
+        /*if( file->tag() )
         {
             if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) && recreate )
                 file->tag()->removeField( QStringToTString( ourId ) );
             if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) )
             {
                 file->tag()->addField( QStringToTString( ourId ),
-                        TagLib::ByteVector( getRandomString( randSize ).ascii(), randSize )
+                        TagLib::ByteVector( getRandomStringHelper( randSize ).ascii(), randSize )
                         );
                 file->save();
                 newID = true;
             }
             else
                 m_uniqueId = TStringToQString( file->tag()->fieldListMap()[QStringToTString( ourId )].front() );
-        }
+        }*/
+        if( file || !file )
+            return;
     }
     else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
     {
         if( file || !file )
-        return; //not handled, at least not yet
+            return; //not handled, at least not yet
     }
     debug() << "Unique id for file = " << fileref.file()->name() << " is " << m_uniqueId << " and this " << (newID ? "IS" : "is NOT" ) << " a new unique id." << endl;
 }
@@ -1419,7 +1424,7 @@ MetaBundle::getRand()
 QString
 MetaBundle::getRandomString( int size )
 {
-    if( size != 64 )
+    if( size != 8 )
     {
         debug() << "Wrong size passed in!" << endl;
         return QString::null;
@@ -1429,18 +1434,37 @@ MetaBundle::getRandomString( int size )
     str.reserve( size );
     int i = getRand(); //seed it
     i = 0;
+    //we don't want ', ", %, \, or `
     while (size--)
     {
-       int r=rand() % 74;
-       r+=48;
-       if (r>57 && r<65) r+=7;
-       if (r>90 && r<97) r+=6;
+       int r=rand() % 93;
+       r+=33;
+       if (r==34 || r==37 || r==39 || r==92 || r==96) r+=1;
        str[i++] =  char(r);
        // so what if I work backwards?
     }
     return str;
 }
 
+QString getRandomStringHelper( int size )
+{
+    QString returnvalue;
+    bool goodvalue = false;
+    QStringList uniqueids;
+    while( !goodvalue )
+    {
+        returnvalue = getRandomString( size );
+        uniqueids = query( QString(
+            "SELECT uniqueid.url, uniqueid.uniqueid "
+            "FROM uniqueid "
+            "WHERE uniqueid.uniqueid = '%1';" )
+                .arg( returnvalue ) );
+
+        if( uniqueids.count() == 0 )
+            goodvalue = true;
+    }
+    return returnvalue;
+}
 
 void MetaBundle::setTitle( const QString &title )
 { aboutToChange( Title ); m_title = title; reactToChange( Title ); }

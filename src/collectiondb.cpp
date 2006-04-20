@@ -577,7 +577,7 @@ CollectionDB::createPersistentTables()
     //create uniqueid table
     query( QString( "CREATE TABLE uniqueid ("
         "url " + textColumnType() + ","
-        "uniqueid " + textColumnType(64) + ");" ) );
+        "uniqueid " + textColumnType(8) + ");" ) );
 
     query( "CREATE INDEX url_label ON label( url );" );
     query( "CREATE INDEX label_label ON label( label );" );
@@ -3625,7 +3625,7 @@ CollectionDB::initialize()
             debug() << "Building uniqueid tables" << endl;
             createPersistentTables();
         }
-        else if ( PersistentVersion.toInt() < 8 )
+        else if ( PersistentVersion.toInt() < 9 )
         {
             debug() << "Dropping old uniqueid table, unsafe values could be inside." << endl;
             //This is okay, as 7 was only a short lived development release...should not cause problems.
