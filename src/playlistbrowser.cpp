@@ -647,6 +647,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
 
     /********** Ever Played **************/
     qb.initSQLDrag();
+    qb.excludeFilter( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, "1", QueryBuilder::modeGreater );
     qb.sortBy( QueryBuilder::tabArtist, QueryBuilder::valName );
     qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
@@ -3074,7 +3075,7 @@ void PlaylistBrowserView::startDrag()
     QListViewItemIterator it( this, QListViewItemIterator::Selected );
     QString pixText = QString::null;
     uint count = 0;
-    
+
     for( ; it.current(); ++it )
     {
         if( isPlaylist( *it ) )
