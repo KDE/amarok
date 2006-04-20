@@ -138,6 +138,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     m_listview->setSorting( 0, sort == Qt::Ascending ? true : false );
 
     m_podcastTimerInterval = config->readNumEntry( "Podcast Interval", 14400000 );
+    connect( m_podcastTimer, SIGNAL(timeout()), this, SLOT(scanPodcasts()) );
 
     // signals and slots connections
     connect( m_listview, SIGNAL( rightButtonPressed( QListViewItem *, const QPoint &, int ) ),
@@ -872,7 +873,6 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
         if ( e.attribute("formatversion") == "1.1" ) {
             debug() << "Podcasts are being moved to the database..." << endl;
             m_podcastItemsToScan.clear();
-            if( !m_podcastTimerInterval ) m_podcastTimerInterval = 14400000;  // 4 hours
 
             PlaylistCategory *p = new PlaylistCategory( m_listview, after, e );
             p->setId( 0 );
@@ -881,8 +881,6 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
 
             if( !m_podcastItemsToScan.isEmpty() )
                 m_podcastTimer->start( m_podcastTimerInterval );
-
-            connect( m_podcastTimer, SIGNAL(timeout()), this, SLOT(scanPodcasts()) );
 
             return p;
         }
@@ -895,6 +893,7 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
 void PlaylistBrowser::loadPodcastsFromDatabase( PlaylistCategory *p )
 {
     if( !p )   p = m_podcastCategory;
+    m_podcastItemsToScan.clear();
 
     while( p->firstChild() )
         delete p->firstChild();
@@ -927,7 +926,13 @@ void PlaylistBrowser::loadPodcastsFromDatabase( PlaylistCategory *p )
 
             episodes.pop_front();
         }
+        
+        if( channel->autoscan() )
+            m_podcastItemsToScan.append( channel );
     }
+    
+    if( !m_podcastItemsToScan.isEmpty() )
+        m_podcastTimer->start( m_podcastTimerInterval );
 }
 
 QMap<int,PlaylistCategory*>
@@ -983,6 +988,9 @@ void PlaylistBrowser::savePodcastFolderStates( PlaylistCategory *folder )
 
 void PlaylistBrowser::scanPodcasts()
 {
+    //don't want to restart timer unnecessarily.  addPodcast will start it if it is necessary
+    if( m_podcastItemsToScan.isEmpty() ) return;
+
     for( uint i=0; i < m_podcastItemsToScan.count(); i++ )
     {
         QListViewItem  *item = m_podcastItemsToScan.at( i );
