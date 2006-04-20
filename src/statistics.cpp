@@ -320,6 +320,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
         qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
         qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
+        qb.addFilter( QueryBuilder::tabStats, QueryBuilder::valScore, QString::number( -1 ), QueryBuilder::modeGreater, true);
         qb.setGoogleFilter( QueryBuilder::tabSong | QueryBuilder::tabArtist, m_filter );
         qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
         qb.setLimit( 0, 50 );
@@ -353,6 +354,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
         qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
         qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
+        qb.addFilter( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, QString::number( -1 ), QueryBuilder::modeGreater, true);
         qb.setGoogleFilter( QueryBuilder::tabSong | QueryBuilder::tabArtist, m_filter );
         qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, true );
         qb.setLimit( 0, 50 );
@@ -385,6 +387,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
         qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage );
         qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valRating );
+        qb.addFilter( QueryBuilder::tabStats, QueryBuilder::valPercentage, QString::number( -1 ), QueryBuilder::modeGreater, true);
         qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
         qb.setGoogleFilter( QueryBuilder::tabArtist, m_filter );
         qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valName);
@@ -422,11 +425,15 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage );
         qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valRating );
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valIsCompilation );
+        qb.addFilter( QueryBuilder::tabStats, QueryBuilder::valPercentage, QString::number( -1 ), QueryBuilder::modeGreater, true);
         qb.setGoogleFilter( QueryBuilder::tabAlbum | QueryBuilder::tabArtist, m_filter );
         qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
         qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
         qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID);
         qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName);
+        qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valID);
+        qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valName);
+        qb.groupBy( QueryBuilder::tabSong, QueryBuilder::valIsCompilation);
 
         qb.setLimit( 0, 50 );
         QStringList fave = qb.run();
@@ -462,6 +469,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
         qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage );
         qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valRating );
+        qb.addFilter( QueryBuilder::tabStats, QueryBuilder::valPercentage, QString::number( -1 ), QueryBuilder::modeGreater, true);
         qb.setGoogleFilter( QueryBuilder::tabGenre, m_filter );
         qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valScore, true );
         qb.groupBy( QueryBuilder::tabGenre, QueryBuilder::valName);
@@ -499,8 +507,8 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         qb.sortByFunction( QueryBuilder::funcMax, QueryBuilder::tabSong, QueryBuilder::valCreateDate, true );
         qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
         qb.setGoogleFilter( QueryBuilder::tabAlbum | QueryBuilder::tabArtist, m_filter );
-        qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID);
         qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName);
+        qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valName);
         qb.setLimit( 0, 50 );
         QStringList newest = qb.run();
 
