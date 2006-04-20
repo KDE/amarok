@@ -155,9 +155,9 @@ StatisticsList::startDrag()
 
     KURL::List list;
     KMultipleDrag *drag = new KMultipleDrag( this );
-    
+
     QListViewItemIterator it( this, QListViewItemIterator::Selected );
-    
+
     StatisticsDetailedItem *item = static_cast<StatisticsDetailedItem*>(*it);
 
     if( item->itemType() == StatisticsDetailedItem::TRACK )
@@ -168,7 +168,7 @@ StatisticsList::startDrag()
                          QPoint( CollectionDB::DRAGPIXMAP_OFFSET_X,
                                  CollectionDB::DRAGPIXMAP_OFFSET_Y ) );
     }
-    else 
+    else
     {
         QTextDrag *textdrag = new QTextDrag( item->getSQL(), 0 );
         textdrag->setSubtype( "amarok-sql" );
@@ -579,39 +579,39 @@ StatisticsList::viewportPaintEvent( QPaintEvent *e )
     }
 }
 
-void 
+void
 StatisticsList::showContextMenu( QListViewItem *item, const QPoint &p, int )  //SLOT
 {
     if( !item || item->rtti() == StatisticsItem::RTTI ) return;
-    
+
 #define item static_cast<StatisticsDetailedItem*>(item)
-    
+
     bool hasSQL = !( item->itemType() == StatisticsDetailedItem::TRACK ); //track is url
 
     KPopupMenu menu( this );
     enum Actions { APPEND, QUEUE, INFO };
-    
+
     menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
     menu.insertItem( SmallIconSet( amaroK::icon( "fastforward" ) ), i18n( "&Queue Track" ), QUEUE );
 
     menu.insertSeparator();
 
     menu.insertItem( SmallIconSet( amaroK::icon( "info" ) ), i18n( "Edit Track &Information..." ), INFO );
-    
-    switch( menu.exec( p ) ) 
+
+    switch( menu.exec( p ) )
     {
         case APPEND:
             hasSQL ?
                 Playlist::instance()->insertMediaSql( item->getSQL() ):
                 Playlist::instance()->insertMedia( KURL::fromPathOrURL( item->url() ) );
             break;
-            
+
         case QUEUE:
             hasSQL ?
                 Playlist::instance()->insertMediaSql( item->getSQL(), Playlist::Queue ):
                 Playlist::instance()->insertMedia( KURL::fromPathOrURL( item->url() ), Playlist::Queue );
             break;
-            
+
         case INFO:
             if( hasSQL )
             {
@@ -621,12 +621,12 @@ StatisticsList::showContextMenu( QListViewItem *item, const QPoint &p, int )  //
                 {
                     list += KURL::fromPathOrURL( *it );
                 }
-                TagDialog* dialog = new TagDialog( list );
+                TagDialog* dialog = new TagDialog( list, Statistics::instance() );
                 dialog->show();
             }
             else
             {
-                TagDialog* dialog = new TagDialog( KURL::fromPathOrURL( item->url() ) );
+                TagDialog* dialog = new TagDialog( KURL::fromPathOrURL( item->url() ), Statistics::instance() );
                 dialog->show();
             }
     }
@@ -915,7 +915,7 @@ StatisticsDetailedItem::getSQL()
     QString query = QString::null;
     QString artist, album, track;   // track is unused here
     amaroK::albumArtistTrackFromUrl( url(), artist, album, track );
-    
+
     if( itemType() == StatisticsDetailedItem::ALBUM )
     {
         qb.initSQLDrag();
@@ -937,12 +937,12 @@ StatisticsDetailedItem::getSQL()
     else if( itemType() == StatisticsDetailedItem::GENRE )
     {
         const uint genre_id = CollectionDB::instance()->genreID( url() );
-        
+
         qb.initSQLDrag();
         qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valGenreID, QString::number( genre_id ) );
         qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
     }
-    
+
     return qb.query();
 }
 
