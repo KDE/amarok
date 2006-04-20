@@ -1446,7 +1446,8 @@ MetaBundle::getRandomString( int size )
     return str;
 }
 
-QString getRandomStringHelper( int size )
+QString
+MetaBundle::getRandomStringHelper( int size )
 {
     QString returnvalue;
     bool goodvalue = false;
