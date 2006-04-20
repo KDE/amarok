@@ -51,8 +51,9 @@ class Quiz
                 begin
                     @current_answer_core = /(#)(.*)(#)/.match( @quest[i].answer )[2]
                 rescue
+                    @current_answer_core = nil
                 end
-                @current_answer_core = @current_answer if @current_answer_core == nil
+                @current_answer_core = @current_answer.dup if @current_answer_core == nil
 
                 @quest.delete_at( i )
 
@@ -85,15 +86,15 @@ class Quiz
                 else
                     if @current_hintrange.length >= 5
                         # Reveal two characters
-                        index = @current_hintrange.pop
-                        @current_hint[index] = @current_answer[index]
-                        index = @current_hintrange.pop
-                        @current_hint[index] = @current_answer[index]
+                        2.times do
+                            index = @current_hintrange.pop
+                            @current_hint[index] = @current_answer_core[index]
+                        end
                         @plugin.bot.say( m.replyto, "Hint: #{@current_hint}" )
                     elsif @current_hintrange.length >= 1
                         # Reveal one character
                         index = @current_hintrange.pop
-                        @current_hint[index] = @current_answer[index]
+                        @current_hint[index] = @current_answer_core[index]
                         @plugin.bot.say( m.replyto, "Hint: #{@current_hint}" )
                     else
                         # Bust
