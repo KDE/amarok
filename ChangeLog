@@ -10,6 +10,11 @@ VERSION 1.4.0:
       view.
 
   CHANGES:
+    * Tracks from a media device scan be submitted to last.fm immediately,
+      without waiting for tracks to be played in amaroK. Patch by Iain
+      Benson <iain@arctos.me.uk>. (BR 125690)
+    * Any failed attempts to submit to last.fm are now automatically retried
+      in the background, without waiting for new tracks to be played.
     * Smart playlists can be constructed using mixed ALL and ANY matches
       (BR 124483)
     * Configure media devices in global settings, disable media browser when
@@ -22,6 +27,8 @@ VERSION 1.4.0:
       <kde@dontletsstart.com>. (BR 125414)
 
   BUGFIXES:
+    * Submissions from media devices are timestamped so as to be less likely
+      to conflict with submissions from another last.fm client. (BR 125367)
     * The MySQL connection will no longer time out when idle. (BR 120198)
     * Load manually configured media devices even after failed DCOP queries.
       Patch by Iain Benson <iain@arctos.me.uk>. (BR 125692)

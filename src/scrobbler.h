@@ -1,5 +1,7 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // (c) 2004 Sami Nieminen <sami.nieminen@iki.fi>
+// (c) 2006 Shane King <kde@dontletsstart.com>
+// (c) 2006 Iain Benson <iain@arctos.me.uk>
 // See COPYING file for licensing information
 
 #ifndef AMAROK_SCROBBLER_H
@@ -116,18 +118,14 @@ class ScrobblerSubmitter : public QObject
         ScrobblerSubmitter();
         ~ScrobblerSubmitter();
 
-        void handshake();
         void submitItem( SubmitItem* /* item */ );
 
-        const QString username() const { return m_username; }
-        const QString password() const { return m_password; }
-        const bool enabled() const { return m_scrobblerEnabled; }
+        void configure( const QString& /*username*/, const QString& /* password*/, bool /*enabled*/ );
 
-        void setUsername( const QString& /*username*/ );
-        void setPassword( const QString& /* password*/ );
-        void setEnabled( bool /*enabled*/ );
+        void syncComplete();
 
     private slots:
+        void scheduledTimeReached();
         void audioScrobblerHandshakeResult( KIO::Job* /*job*/ );
         void audioScrobblerSubmitResult( KIO::Job* /*job*/ );
         void audioScrobblerSubmitData(
@@ -143,6 +141,15 @@ class ScrobblerSubmitter : public QObject
             SubmitItem* /* item */, int /* tracks */, bool /* success */ ) const;
         void saveSubmitQueue();
         void readSubmitQueue();
+        bool schedule( bool failure );
+        void performHandshake();
+        void performSubmit();
+
+        // on failure, start at MIN_BACKOFF, and double on subsequent failures
+        // until MAX_BACKOFF is reached
+        static const int MIN_BACKOFF = 60;
+        static const int MAX_BACKOFF = 60 * 60;
+
         QString m_submitResultBuffer;
         QString m_username;
         QString m_password;
@@ -150,13 +157,20 @@ class ScrobblerSubmitter : public QObject
         QString m_challenge;
         QString m_savePath;
         bool m_scrobblerEnabled;
+        bool m_holdFakeQueue;
+        bool m_inProgress;
+        bool m_needHandshake;
         uint m_prevSubmitTime;
         uint m_interval;
+        uint m_backoff;
         uint m_lastSubmissionFinishTime;
+        uint m_fakeQueueLength;
 
         QPtrDict<SubmitItem> m_ongoingSubmits;
         SubmitQueue m_submitQueue; // songs played by amaroK
         SubmitQueue m_fakeQueue; // songs for which play times have to be faked (e.g. when submitting from media device)
+
+        QTimer m_timer;
 };
 
 

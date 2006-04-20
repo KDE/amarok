@@ -1,5 +1,7 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // (c) 2004 Sami Nieminen <sami.nieminen@iki.fi>
+// (c) 2006 Shane King <kde@dontletsstart.com>
+// (c) 2006 Iain Benson <iain@arctos.me.uk>
 // See COPYING file for licensing information.
 
 #define DEBUG_PREFIX "Scrobbler"
@@ -293,22 +295,7 @@ void Scrobbler::engineTrackPositionChanged( long position, bool userSeek )
  */
 void Scrobbler::applySettings()
 {
-    bool handshakeNeeded = false;
-    if ( m_submitter->username() != AmarokConfig::scrobblerUsername() )
-    {
-        handshakeNeeded = true;
-    }
-    else if ( m_submitter->password() != AmarokConfig::scrobblerPassword() )
-    {
-        handshakeNeeded = true;
-    }
-
-    m_submitter->setEnabled( AmarokConfig::submitPlayedSongs() );
-    m_submitter->setUsername( AmarokConfig::scrobblerUsername() );
-    m_submitter->setPassword( AmarokConfig::scrobblerPassword() );
-
-    if ( handshakeNeeded )
-        m_submitter->handshake();
+    m_submitter->configure( AmarokConfig::scrobblerUsername(), AmarokConfig::scrobblerPassword(), AmarokConfig::submitPlayedSongs() );
 }
 
 
@@ -435,10 +422,16 @@ ScrobblerSubmitter::ScrobblerSubmitter()
     , m_submitUrl( 0 )
     , m_challenge( 0 )
     , m_scrobblerEnabled( false )
+    , m_holdFakeQueue( false )
+    , m_inProgress( false )
+    , m_needHandshake( true )
     , m_prevSubmitTime( 0 )
     , m_interval( 0 )
+    , m_backoff( 0 )
     , m_lastSubmissionFinishTime( 0 )
+    , m_fakeQueueLength( 0 )
 {
+    connect( &m_timer, SIGNAL(timeout()), this, SLOT(scheduledTimeReached()) );
     readSubmitQueue();
 }
 
@@ -459,13 +452,10 @@ ScrobblerSubmitter::~ScrobblerSubmitter()
 /**
  * Performs handshake with Audioscrobbler.
  */
-void ScrobblerSubmitter::handshake()
+void ScrobblerSubmitter::performHandshake()
 {
-    if ( !canSubmit() )
-        return;
-
     QString handshakeUrl = QString::null;
-    uint currentTime = QDateTime::currentDateTime().toTime_t();
+    uint currentTime = QDateTime::currentDateTime( Qt::UTC ).toTime_t();
 
     if ( PROTOCOL_VERSION == "1.1" )
     {
@@ -476,8 +466,8 @@ void ScrobblerSubmitter::handshake()
         // &v=<clientver>
         // &u=<user>
         handshakeUrl =
-            HANDSHAKE_URL +
-            QString(
+                HANDSHAKE_URL +
+                QString(
                 "&p=%1"
                 "&c=%2"
                 "&v=%3"
@@ -499,8 +489,8 @@ void ScrobblerSubmitter::handshake()
         // &t=<unix_timestamp>
         // &a=<passcode>
         handshakeUrl =
-            HANDSHAKE_URL +
-            QString(
+                HANDSHAKE_URL +
+                QString(
                 "&p=%1"
                 "&c=%2"
                 "&v=%3"
@@ -513,7 +503,7 @@ void ScrobblerSubmitter::handshake()
                 .arg( m_username )
                 .arg( currentTime )
                 .arg( KMD5( KMD5( m_password.utf8() ).hexDigest() +
-                    currentTime ).hexDigest() );
+                currentTime ).hexDigest() );
     }
 
     else
@@ -524,9 +514,9 @@ void ScrobblerSubmitter::handshake()
 
     debug() << "Handshake url: " << handshakeUrl << endl;
 
-    m_prevSubmitTime = currentTime;
     m_submitResultBuffer = "";
 
+    m_inProgress = true;
     KIO::TransferJob* job = KIO::storedGet( handshakeUrl, false, false );
     connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( audioScrobblerHandshakeResult( KIO::Job* ) ) );
 }
@@ -539,29 +529,24 @@ void ScrobblerSubmitter::handshake()
  */
 void ScrobblerSubmitter::submitItem( SubmitItem* item )
 {
-    if ( !canSubmit() )
-    {
-        if ( m_scrobblerEnabled )
-        {
-            // If scrobbling is enabled but can't submit for some reason,
-            // enqueue item.
-            enqueueItem( item );
-            announceSubmit( item, 1, false );
-        }
-        return;
-    }
-    else if ( m_challenge.isEmpty() )
-    {
-        enqueueItem( item );
-        announceSubmit( item, 1, false );
-        handshake();
-        return;
-    }
-    else
+    if ( m_scrobblerEnabled ) {
         enqueueItem( item );
 
+        if ( item->playStartTime() == 0 )
+            m_holdFakeQueue = true; // hold on to fake queue until we get it all and can compute when to submit
+        else if ( !schedule( false ) )
+            announceSubmit( item, 1, false ); // couldn't perform submit immediately, let user know
+    }
+}
+
+
+/**
+ * Flushes the submit queues
+ */
+void ScrobblerSubmitter::performSubmit()
+{
     QString data;
-    uint currentTime = QDateTime::currentDateTime().toTime_t();
+
     // Audioscrobbler accepts max 10 tracks on one submit.
     SubmitItem* items[10];
     for ( int submitCounter = 0; submitCounter < 10; submitCounter++ )
@@ -583,10 +568,10 @@ void ScrobblerSubmitter::submitItem( SubmitItem* item )
 
 
         data =
-            "u=" + KURL::encode_string_no_slash( m_username ) +
-            "&s=" +
+                "u=" + KURL::encode_string_no_slash( m_username ) +
+                "&s=" +
                 KURL::encode_string_no_slash( KMD5( KMD5( m_password.utf8() ).hexDigest() +
-                    m_challenge.utf8() ).hexDigest() );
+                m_challenge.utf8() ).hexDigest() );
 
         m_submitQueue.first();
         for ( int submitCounter = 0; submitCounter < 10; submitCounter++ )
@@ -596,7 +581,8 @@ void ScrobblerSubmitter::submitItem( SubmitItem* item )
             {
                 if( submitCounter == 0 )
                 {
-                    // this happens if there are only items on the fake submit queue
+                    // this shouldn't happen, since we shouldn't be scheduled until we have something to do!
+                    debug() << "Nothing to submit!" << endl;
                     return;
                 }
                 else
@@ -614,12 +600,12 @@ void ScrobblerSubmitter::submitItem( SubmitItem* item )
             const QString count = QString::number( submitCounter );
 
             data +=
-                "a["  + count + "]=" + KURL::encode_string_no_slash( itemFromQueue->artist(), 106 /*utf-8*/ ) +
-                "&t[" + count + "]=" + KURL::encode_string_no_slash( itemFromQueue->title(), 106 /*utf-8*/ ) +
-                "&b[" + count + "]=" + KURL::encode_string_no_slash( itemFromQueue->album(), 106 /*utf-8*/ ) +
-                "&m[" + count + "]=" +
-                "&l[" + count + "]=" + QString::number( itemFromQueue->length() ) +
-                "&i[" + count + "]=" + KURL::encode_string_no_slash( playStartTime.toString( "yyyy-MM-dd hh:mm:ss" ) );
+                    "a["  + count + "]=" + KURL::encode_string_no_slash( itemFromQueue->artist(), 106 /*utf-8*/ ) +
+                    "&t[" + count + "]=" + KURL::encode_string_no_slash( itemFromQueue->title(), 106 /*utf-8*/ ) +
+                    "&b[" + count + "]=" + KURL::encode_string_no_slash( itemFromQueue->album(), 106 /*utf-8*/ ) +
+                    "&m[" + count + "]=" +
+                    "&l[" + count + "]=" + QString::number( itemFromQueue->length() ) +
+                    "&i[" + count + "]=" + KURL::encode_string_no_slash( playStartTime.toString( "yyyy-MM-dd hh:mm:ss" ) );
         }
     }
 
@@ -631,9 +617,9 @@ void ScrobblerSubmitter::submitItem( SubmitItem* item )
 
     debug() << "Submit data: " << data << endl;
 
-    m_prevSubmitTime = currentTime;
     m_submitResultBuffer = "";
 
+    m_inProgress = true;
     KIO::TransferJob* job = KIO::http_post( m_submitUrl, data.utf8(), false );
     job->addMetaData( "content-type", "Content-Type: application/x-www-form-urlencoded" );
 
@@ -655,31 +641,19 @@ void ScrobblerSubmitter::submitItem( SubmitItem* item )
 
 
 /**
- * Sets Audioscrobbler profile username.
+ * Configures the username/password and whether to scrobble
  */
-void ScrobblerSubmitter::setUsername( const QString& username )
+void ScrobblerSubmitter::configure( const QString& username, const QString& password, bool enabled )
 {
+    if ( username != m_username || password != m_password )
+        m_needHandshake = true;
+
     m_username = username;
-}
-
-
-/**
- * Sets Audioscrobbler profile password.
- */
-void ScrobblerSubmitter::setPassword( const QString& password )
-{
     m_password = password;
-}
-
-
-/**
- * Sets whether scrobbling is enabled.
- */
-void ScrobblerSubmitter::setEnabled( bool enabled )
-{
     m_scrobblerEnabled = enabled;
-
-    if ( !enabled )
+    if ( enabled )
+        schedule( false );
+    else
     {
         // If submit is disabled, clear submitqueue.
         m_ongoingSubmits.setAutoDelete( true );
@@ -691,17 +665,44 @@ void ScrobblerSubmitter::setEnabled( bool enabled )
         m_fakeQueue.setAutoDelete( true );
         m_fakeQueue.clear();
         m_fakeQueue.setAutoDelete( false );
+        m_fakeQueueLength = 0;
+        m_timer.stop();
     }
 }
 
+
+/**
+ * Sync from external device complete, can send them off
+ */
+void ScrobblerSubmitter::syncComplete()
+{
+    m_holdFakeQueue = false;
+    schedule( false );
+}
+
+
+/**
+ * Called when timer set up in the schedule function goes off.
+ */
+void ScrobblerSubmitter::scheduledTimeReached()
+{
+    if ( m_needHandshake || m_challenge.isEmpty() )
+        performHandshake();
+    else
+        performSubmit();
+}
 
 /**
  * Called when handshake TransferJob has finished and data is received.
  */
 void ScrobblerSubmitter::audioScrobblerHandshakeResult( KIO::Job* job ) //SLOT
 {
+    m_prevSubmitTime = QDateTime::currentDateTime( Qt::UTC ).toTime_t();
+    m_inProgress = false;
+
     if ( job->error() ) {
         warning() << "KIO error! errno: " << job->error() << endl;
+        schedule( true );
         return;
     }
 
@@ -766,6 +767,8 @@ void ScrobblerSubmitter::audioScrobblerHandshakeResult( KIO::Job* job ) //SLOT
         warning() << "Unknown handshake response: " << m_submitResultBuffer << endl;
 
     debug() << "Handshake result parsed: challenge=" << m_challenge << ", submitUrl=" << m_submitUrl << endl;
+
+    schedule( m_challenge.isEmpty() ); // schedule to submit or re-attempt handshake
 }
 
 
@@ -774,6 +777,9 @@ void ScrobblerSubmitter::audioScrobblerHandshakeResult( KIO::Job* job ) //SLOT
  */
 void ScrobblerSubmitter::audioScrobblerSubmitResult( KIO::Job* job ) //SLOT
 {
+    m_prevSubmitTime = QDateTime::currentDateTime( Qt::UTC ).toTime_t();
+    m_inProgress = false;
+
     if ( job->error() ) {
         warning() << "KIO error! errno: " << job->error() << endl;
         enqueueJob( job );
@@ -821,8 +827,8 @@ void ScrobblerSubmitter::audioScrobblerSubmitResult( KIO::Job* job ) //SLOT
         if ( interval.startsWith( "INTERVAL" ) )
             m_interval = interval.mid( 9 ).toUInt();
 
+        m_challenge = QString::null;
         enqueueJob( job );
-        handshake();
     }
     else
     {
@@ -849,14 +855,9 @@ void ScrobblerSubmitter::audioScrobblerSubmitData(
 bool ScrobblerSubmitter::canSubmit() const
 {
     if ( !m_scrobblerEnabled || m_username.isEmpty() || m_password.isEmpty() )
-        return false;
-
-    if ( m_interval != 0 )
     {
-        uint currentTime = QDateTime::currentDateTime().toTime_t();
-        if ( ( currentTime - m_prevSubmitTime ) < m_interval )
-            // Not enough time passed since previous handshake/submit
-            return false;
+        debug() << "Unable to submit - no uname/pass or disabled" << endl;
+        return false;
     }
 
     return true;
@@ -877,8 +878,11 @@ void ScrobblerSubmitter::enqueueItem( SubmitItem* item )
         m_fakeQueue.removeFirst();
 
         if ( itemFromQueue )
+        {
             debug() << "Dropping " << itemFromQueue->artist()
                     << " - " << itemFromQueue->title() << " from fake queue" << endl;
+            m_fakeQueueLength -= itemFromQueue->length();
+        }
 
         delete itemFromQueue;
     }
@@ -896,6 +900,7 @@ void ScrobblerSubmitter::enqueueItem( SubmitItem* item )
     if( item->playStartTime() == 0 )
     {
         m_fakeQueue.inSort( item );
+        m_fakeQueueLength += item->length();
     }
     else
     {
@@ -913,16 +918,24 @@ void ScrobblerSubmitter::enqueueItem( SubmitItem* item )
 SubmitItem* ScrobblerSubmitter::dequeueItem()
 {
     SubmitItem* item = 0;
-    if( m_lastSubmissionFinishTime > 0 && m_fakeQueue.getFirst() && m_submitQueue.getFirst() )
+    if( m_lastSubmissionFinishTime > 0 && !m_holdFakeQueue && m_fakeQueue.getFirst() )
     {
-        uint  limit = m_submitQueue.getFirst()->playStartTime();
-        if( limit > QDateTime::currentDateTime().toTime_t() )
-            limit = QDateTime::currentDateTime().toTime_t();
-        if( m_lastSubmissionFinishTime + m_fakeQueue.getFirst()->length() < limit )
+        uint limit = QDateTime::currentDateTime( Qt::UTC ).toTime_t();
+
+        if ( m_submitQueue.getFirst() )
+            if ( m_submitQueue.getFirst()->playStartTime() <= limit )
+                limit = m_submitQueue.getFirst()->playStartTime();
+
+        if( m_lastSubmissionFinishTime + m_fakeQueue.getFirst()->length() <= limit )
         {
             m_fakeQueue.first();
             item = m_fakeQueue.take();
-            item->m_playStartTime = m_lastSubmissionFinishTime;
+            // don't backdate earlier than we have to
+            if( m_lastSubmissionFinishTime + m_fakeQueueLength < limit )
+                item->m_playStartTime = limit - m_fakeQueueLength;
+            else
+                item->m_playStartTime = m_lastSubmissionFinishTime;
+            m_fakeQueueLength -= item->length();
         }
     }
 
@@ -971,6 +984,8 @@ void ScrobblerSubmitter::enqueueJob( KIO::Job* job )
 
     if( lastItem )
         announceSubmit( lastItem, counter, false );
+
+    schedule( true ); // arrange to flush queue after failure
 }
 
 
@@ -995,6 +1010,8 @@ void ScrobblerSubmitter::finishJob( KIO::Job* job )
     if( firstItem )
         announceSubmit( firstItem, counter, true );
     delete firstItem;
+
+    schedule( false ); // arrange to flush rest of queue
 }
 
 
@@ -1057,6 +1074,9 @@ void ScrobblerSubmitter::saveSubmitQueue()
         debug() << "[SCROBBLER] Couldn't write submit queue to file: " << m_savePath << endl;
         return;
     }
+
+    if ( m_lastSubmissionFinishTime == 0 )
+        m_lastSubmissionFinishTime = QDateTime::currentDateTime( Qt::UTC ).toTime_t();
 
     QDomDocument newdoc;
     QDomElement submitQueue = newdoc.createElement( "submit" );
@@ -1123,6 +1143,71 @@ void ScrobblerSubmitter::readSubmitQueue()
         enqueueItem( new SubmitItem( n.toElement() ) );
 
     m_submitQueue.first();
+}
+
+
+/**
+ * Schedules an Audioscrobbler handshake or submit as required.
+ * Returns true if an immediate submit was possible
+ */
+bool ScrobblerSubmitter::schedule( bool failure )
+{
+    m_timer.stop();
+    if ( m_inProgress || !canSubmit() )
+        return false;
+
+    uint when, currentTime = QDateTime::currentDateTime( Qt::UTC ).toTime_t();
+    if ( currentTime - m_prevSubmitTime > m_interval )
+        when = 0;
+    else
+        when = m_interval - ( currentTime - m_prevSubmitTime );
+
+    if ( failure )
+    {
+        m_backoff = kMin( kMax( m_backoff, unsigned( MIN_BACKOFF ) ), unsigned( MAX_BACKOFF ) );
+        when = kMax( m_backoff, m_interval );
+    }
+    else
+        m_backoff = 0;
+
+    if ( m_needHandshake || m_challenge.isEmpty() )
+    {
+        m_challenge = QString::null;
+        m_needHandshake = false;
+
+        if ( when == 0 )
+        {
+            debug() << "Performing immediate handshake" << endl;
+            performHandshake();
+        }
+        else
+        {
+            debug() << "Performing handshake in " << when << " seconds" << endl;
+            m_timer.start( when * 1000, true );
+        }
+    }
+    else if ( !m_submitQueue.isEmpty() || !m_holdFakeQueue && !m_fakeQueue.isEmpty() )
+    {
+        // if we only have stuff in the fake queue, we need to only schedule for when we can actually do something with it
+        if ( m_submitQueue.isEmpty() && m_lastSubmissionFinishTime + m_fakeQueue.getFirst()->length() > currentTime + when )
+            when = m_lastSubmissionFinishTime + m_fakeQueue.getFirst()->length() - currentTime;
+
+        if ( when == 0 )
+        {
+            debug() << "Performing immediate submit" << endl;
+            performSubmit();
+            return true;
+        }
+        else
+        {
+            debug() << "Performing submit in " << when << " seconds" << endl;
+            m_timer.start( when * 1000, true );
+        }
+    } else {
+        debug() << "Nothing to schedule" << endl;
+    }
+
+    return false;
 }
 
 
