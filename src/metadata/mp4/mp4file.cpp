@@ -25,7 +25,6 @@ email                : andrew.leadbetter@gmail.com
 #include <tfile.h>
 #include <audioproperties.h>
 
-#include <mp4.h>
 #include <stdint.h>
 
 #define MP4V2_HAS_WRITE_BUG 1

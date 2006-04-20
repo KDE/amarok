@@ -116,7 +116,7 @@ WMA::Properties *WMA::File::audioProperties() const
   return d->properties;
 } 
 
-void WMA::File::read(bool readProperties, Properties::ReadStyle propertiesStyle)
+void WMA::File::read(bool readProperties, Properties::ReadStyle /*propertiesStyle*/)
 {
   WMA::GUID guid;
 

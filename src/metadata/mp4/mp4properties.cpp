@@ -24,9 +24,7 @@ email                : andrew.leadbetter@gmail.com
 
 #include <tstring.h>
 
-#include "mp4file.h"
-#include <mp4.h>
-
+#include <config.h>
 #ifdef HAVE_SYSTEMS_H
 #include <systems.h>
 #endif

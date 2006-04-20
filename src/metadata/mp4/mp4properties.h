@@ -22,11 +22,13 @@ email                : andrew.leadbetter@gmail.com
 #ifndef TAGLIB_MP4PROPERTIES_H
 #define TAGLIB_MP4PROPERTIES_H
 
-#include <config.h>
-
 #include <audioproperties.h>
 #include <tstring.h>
 #include <mp4.h>
+// mp4.h drags in mp4_config.h that defines these
+// get rid of them so they don't conflict with our config.h
+#undef VERSION
+#undef PACKAGE
 
 namespace TagLib {
 

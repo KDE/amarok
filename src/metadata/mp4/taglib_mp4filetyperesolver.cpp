@@ -4,8 +4,6 @@
 #include "taglib_mp4filetyperesolver.h"
 #include "mp4file.h"
 
-#include <mp4.h>
-
 TagLib::File *MP4FileTypeResolver::createFile(const char *fileName,
         bool readProperties,
         TagLib::AudioProperties::ReadStyle propertiesStyle) const

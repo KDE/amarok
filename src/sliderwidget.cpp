@@ -357,7 +357,7 @@ void amaroK::TrackSlider::engineNewMetaData( const MetaBundle &bundle, bool /*tr
 #endif
         if(array.size())
         {
-            qDebug("Loaded mood data with %d samples", array.size());
+            qDebug("Loaded mood data with %zu samples", array.size());
             theArray.resize(samples);
             for(uint i = 0; i < samples; i++)
             {
