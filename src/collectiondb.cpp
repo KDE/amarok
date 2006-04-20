@@ -3967,7 +3967,7 @@ MySqlConnection::MySqlConnection( MySqlConfig* config )
         {
             m_initialized = true;
             m_db->reconnect=1; //setting reconnect flag for newer mysqld
-	    m_connected = true;
+            m_connected = true;
         }
         else
         {
