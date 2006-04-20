@@ -533,8 +533,10 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
             //avoid showing the generic cover.  we can overwrite this by passing an arg.
             //get large cover for scaling if big cover needed
 
-            QString location = CollectionDB::instance()->podcastImage( bundle, 0 );
-            if( location.isEmpty() || location.find( "nocover" ) != -1 )
+            QString location = QString::null;
+            if( bundle.podcastBundle() ) 
+                location = CollectionDB::instance()->podcastImage( bundle, 0 );
+            else
                 location = CollectionDB::instance()->albumImage( bundle, 0 );
 
             if ( location.find( "nocover" ) != -1 )
