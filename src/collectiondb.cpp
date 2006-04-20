@@ -4674,30 +4674,26 @@ QueryBuilder::excludeFilter( int tables, Q_INT64 value, const QString& filter, i
 void
 QueryBuilder::addMatch( int tables, const QString& match )
 {
-    if ( !match.isEmpty() )
+    m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
+    if ( tables & tabAlbum )
+        m_where += "OR album.name " + CollectionDB::likeCondition( match );
+    if ( tables & tabArtist )
+        m_where += "OR artist.name " + CollectionDB::likeCondition( match );
+    if ( tables & tabGenre )
+        m_where += "OR genre.name " + CollectionDB::likeCondition( match );
+    if ( tables & tabYear )
+        m_where += "OR year.name " + CollectionDB::likeCondition( match, false, false );
+    if ( tables & tabSong )
+        m_where += "OR tags.title " + CollectionDB::likeCondition( match );
+
+    if ( match == i18n( "Unknown" ) )
     {
-        m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
-        if ( tables & tabAlbum )
-            m_where += "OR album.name " + CollectionDB::likeCondition( match );
-        if ( tables & tabArtist )
-            m_where += "OR artist.name " + CollectionDB::likeCondition( match );
-        if ( tables & tabGenre )
-            m_where += "OR genre.name " + CollectionDB::likeCondition( match );
-        if ( tables & tabYear )
-            m_where += "OR year.name " + CollectionDB::likeCondition( match, false, false );
-        if ( tables & tabSong )
-            m_where += "OR tags.title " + CollectionDB::likeCondition( match );
-
-
-        if ( match == i18n( "Unknown" ) )
-        {
-            if ( tables & tabAlbum ) m_where += "OR album.name = '' ";
-            if ( tables & tabArtist ) m_where += "OR artist.name = '' ";
-            if ( tables & tabGenre ) m_where += "OR genre.name = '' ";
-            if ( tables & tabYear ) m_where += "OR year.name = '' ";
-        }
-        m_where += " ) ";
+        if ( tables & tabAlbum ) m_where += "OR album.name = '' ";
+        if ( tables & tabArtist ) m_where += "OR artist.name = '' ";
+        if ( tables & tabGenre ) m_where += "OR genre.name = '' ";
+        if ( tables & tabYear ) m_where += "OR year.name = '' ";
     }
+    m_where += " ) ";
 
     m_linkTables |= tables;
 }
@@ -4706,16 +4702,13 @@ QueryBuilder::addMatch( int tables, const QString& match )
 void
 QueryBuilder::addMatch( int tables, Q_INT64 value, const QString& match )
 {
-    if ( !match.isEmpty() )
-    {
-        m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
-        m_where += QString( "OR %1.%2 %3" ).arg( tableName( tables ) ).arg( valueName( value ) ).arg( CollectionDB::likeCondition( match ) );
+    m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
+    m_where += QString( "OR %1.%2 %3" ).arg( tableName( tables ) ).arg( valueName( value ) ).arg( CollectionDB::likeCondition( match ) );
 
-        if ( ( value & valName ) && match == i18n( "Unknown" ) )
-            m_where += QString( "OR %1.%2 = '' " ).arg( tableName( tables ) ).arg( valueName( value ) );
+    if ( ( value & valName ) && match == i18n( "Unknown" ) )
+        m_where += QString( "OR %1.%2 = '' " ).arg( tableName( tables ) ).arg( valueName( value ) );
 
-        m_where += " ) ";
-    }
+    m_where += " ) ";
 
     m_linkTables |= tables;
 }
@@ -4724,62 +4717,55 @@ QueryBuilder::addMatch( int tables, Q_INT64 value, const QString& match )
 void
 QueryBuilder::addMatches( int tables, const QStringList& match )
 {
-    if ( !match.isEmpty() )
+    m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
+
+    for ( uint i = 0; i < match.count(); i++ )
     {
-        m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
+        if ( tables & tabAlbum )
+            m_where += "OR album.name " + CollectionDB::likeCondition( match[i] );
+        if ( tables & tabArtist )
+            m_where += "OR artist.name " + CollectionDB::likeCondition( match[i] );
+        if ( tables & tabGenre )
+            m_where += "OR genre.name " + CollectionDB::likeCondition( match[i] );
+        if ( tables & tabYear )
+            m_where += "OR year.name " + CollectionDB::likeCondition( match[i], false, false );
+        if ( tables & tabSong )
+            m_where += "OR tags.title " + CollectionDB::likeCondition( match[i] );
+        if ( tables & tabStats )
+            m_where += "OR statistics.url " + CollectionDB::likeCondition( match[i] );
 
-        for ( uint i = 0; i < match.count(); i++ )
+
+        if ( match[i] == i18n( "Unknown" ) )
         {
-            if ( tables & tabAlbum )
-                m_where += "OR album.name " + CollectionDB::likeCondition( match[i] );
-            if ( tables & tabArtist )
-                m_where += "OR artist.name " + CollectionDB::likeCondition( match[i] );
-            if ( tables & tabGenre )
-                m_where += "OR genre.name " + CollectionDB::likeCondition( match[i] );
-            if ( tables & tabYear )
-                m_where += "OR year.name " + CollectionDB::likeCondition( match[i], false, false );
-            if ( tables & tabSong )
-                m_where += "OR tags.title " + CollectionDB::likeCondition( match[i] );
-            if ( tables & tabStats )
-                m_where += "OR statistics.url " + CollectionDB::likeCondition( match[i] );
-
-
-            if ( match[i] == i18n( "Unknown" ) )
-            {
-                if ( tables & tabAlbum ) m_where += "OR album.name = '' ";
-                if ( tables & tabArtist ) m_where += "OR artist.name = '' ";
-                if ( tables & tabGenre ) m_where += "OR genre.name = '' ";
-                if ( tables & tabYear ) m_where += "OR year.name = '' ";
-            }
+            if ( tables & tabAlbum ) m_where += "OR album.name = '' ";
+            if ( tables & tabArtist ) m_where += "OR artist.name = '' ";
+            if ( tables & tabGenre ) m_where += "OR genre.name = '' ";
+            if ( tables & tabYear ) m_where += "OR year.name = '' ";
         }
-
-        m_where += " ) ";
     }
 
+    m_where += " ) ";
     m_linkTables |= tables;
 }
 
 void
 QueryBuilder::excludeMatch( int tables, const QString& match )
 {
-    if ( !match.isEmpty() )
-    {
-        m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolT() + " ";
-        if ( tables & tabAlbum ) m_where += "AND album.name <> '" + CollectionDB::instance()->escapeString( match ) + "' ";
-        if ( tables & tabArtist ) m_where += "AND artist.name <> '" + CollectionDB::instance()->escapeString( match ) + "' ";
-        if ( tables & tabGenre ) m_where += "AND genre.name <> '" + CollectionDB::instance()->escapeString( match ) + "' ";
-        if ( tables & tabYear ) m_where += "AND year.name <> '" + CollectionDB::instance()->escapeString( match ) + "' ";
-        if ( tables & tabSong ) m_where += "AND tags.title <> '" + CollectionDB::instance()->escapeString( match ) + "' ";
+    m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolT() + " ";
+    if ( tables & tabAlbum ) m_where += "AND album.name <> '" + CollectionDB::instance()->escapeString( match ) + "' ";
+    if ( tables & tabArtist ) m_where += "AND artist.name <> '" + CollectionDB::instance()->escapeString( match ) + "' ";
+    if ( tables & tabGenre ) m_where += "AND genre.name <> '" + CollectionDB::instance()->escapeString( match ) + "' ";
+    if ( tables & tabYear ) m_where += "AND year.name <> '" + CollectionDB::instance()->escapeString( match ) + "' ";
+    if ( tables & tabSong ) m_where += "AND tags.title <> '" + CollectionDB::instance()->escapeString( match ) + "' ";
 
-        if ( match == i18n( "Unknown" ) )
-        {
-            if ( tables & tabAlbum ) m_where += "AND album.name <> '' ";
-            if ( tables & tabArtist ) m_where += "AND artist.name <> '' ";
-            if ( tables & tabGenre ) m_where += "AND genre.name <> '' ";
-            if ( tables & tabYear ) m_where += "AND year.name <> '' ";
-        }
-        m_where += " ) ";
+    if ( match == i18n( "Unknown" ) )
+    {
+        if ( tables & tabAlbum ) m_where += "AND album.name <> '' ";
+        if ( tables & tabArtist ) m_where += "AND artist.name <> '' ";
+        if ( tables & tabGenre ) m_where += "AND genre.name <> '' ";
+        if ( tables & tabYear ) m_where += "AND year.name <> '' ";
     }
+    m_where += " ) ";
 
     m_linkTables |= tables;
 }
