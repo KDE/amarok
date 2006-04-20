@@ -43,6 +43,11 @@ class Quiz
     def privmsg( m )
         case m.message
             when "ask"
+                unless @current_question == nil
+                    @plugin.bot.say( m.replyto, "#{m.sourcenick}: Answer the current question first!" )
+                    return
+                end
+
                 shuffle if @quest.empty?
 
                 i = rand( @quest.length )
