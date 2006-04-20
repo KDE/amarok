@@ -111,6 +111,14 @@ class Quiz
                     end
                 end
 
+            when "score"
+                if @plugin.registry.has_key?( m.sourcenick )
+                    score = @plugin.registry[m.sourcenick].score
+                    @plugin.bot.say( m.replyto, "#{m.sourcenick}: Your score is: #{score}" )
+                else
+                    @plugin.bot.say( m.replyto, "#{m.sourcenick}: You don't have a score yet, lamer." )
+                end
+
             when "quiz_stats"
                 fetch_data( m ) if @plugin.quest_orig.empty?
 
@@ -235,6 +243,7 @@ plugin = QuizPlugin.new
 plugin.register("ask")
 plugin.register("answer")
 plugin.register("hint")
+plugin.register("score")
 plugin.register("quiz_fetch")
 plugin.register("quiz_stats")
 
