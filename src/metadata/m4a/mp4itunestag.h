@@ -49,12 +49,14 @@ namespace TagLib
       uint       disk() const;
       uint       bpm() const;
       ByteVector cover() const;
+      int        compilation() const { return 0; }
       
       void setGrouping(const String &s);
       void setComposer(const String &s);
       void setDisk(const uint i);
       void setBpm(const uint i);
       void setCover( const ByteVector& cover );
+      void setCompilation( bool /*isCompilation*/ ) {}
   
       virtual bool isEmpty() const;
   
