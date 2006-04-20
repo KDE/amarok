@@ -10,20 +10,21 @@ VERSION 1.4.0:
       view.
 
   CHANGES:
-    * Configure media devices in global settings, disable media browser when no
-      media device is configured.
+    * Configure media devices in global settings, disable media browser when
+      no media device is configured.
     * Dynamic Playlist bar made more conspicuous
     * The Konqueror setting to show a 'delete' entry in the menu is now
       respected, if the setting exists and KDE is version 3.4 or higher.
     * Cover art from m4a files. Updated m4a taglib patch by Jochen Issing
-      <jochen@isign-softart.de> and patch by Shane King <kde@dontletsstart.com>.
-      (BR 125414)
+      <jochen@isign-softart.de> and patch by Shane King
+      <kde@dontletsstart.com>. (BR 125414)
 
   BUGFIXES:
+    * The MySQL connection will no longer time out when idle. (BR 120198)
     * Load manually configured media devices even after failed DCOP queries.
       Patch by Iain Benson <iain@arctos.me.uk>. (BR 125692)
     * Copy/move to collection recurses into directories. (BR 125334)
-    * Amazon no longer needlessly tries to refetch invalid entries. (BR 125168)
+    * Amazon no longer tries to refetch invalid entries. (BR 125168)
     * Skip hidden directories while scanning the collection. (BR 115478)
     * Instead of cancelling collection organiziation operations when starting
       new one append to running one.
