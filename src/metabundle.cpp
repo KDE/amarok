@@ -1455,7 +1455,7 @@ MetaBundle::getRandomStringHelper( int size )
     while( !goodvalue )
     {
         returnvalue = getRandomString( size );
-        uniqueids = query( QString(
+        uniqueids = CollectionDB::instance()->query( QString(
             "SELECT uniqueid.url, uniqueid.uniqueid "
             "FROM uniqueid "
             "WHERE uniqueid.uniqueid = '%1';" )
