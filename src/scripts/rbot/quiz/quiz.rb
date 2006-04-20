@@ -1,23 +1,13 @@
 # Plugin for the Ruby IRC bot (http://linuxbrit.co.uk/rbot/)
 #
-# A quiz game.
+# A trivia quiz game.
 #
 # (c) 2006 Mark Kretschmann <markey@web.de>
 # Licensed under GPL V2.
 
 
-#######################################################################
-# CLASS Bundle
-#######################################################################
-class Bundle
-    attr_reader :question, :answer
-
-    def initialize( question, answer )
-        @question = question
-        @answer = answer
-    end
-end
-
+# Generate class for storing question/answer pairs
+QuizBundle = Struct.new( "QuizBundle", :question, :answer )
 
 #######################################################################
 # CLASS Quiz
@@ -170,7 +160,7 @@ class QuizPlugin < Plugin
 
         entries.each do |e|
             p = e.split( "</p><p>" )
-            b = Bundle.new( p[0].chomp, p[1].chomp )
+            b = QuizBundle.new( p[0].chomp, p[1].chomp )
             @quest_orig << b
         end
     end
