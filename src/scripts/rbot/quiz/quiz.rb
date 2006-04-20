@@ -101,16 +101,19 @@ class Quiz
             when "quiz_stats"
                 fetch_data( m ) if @plugin.quest_orig.empty?
 
-                @plugin.bot.say( m.replyto, "Questions in database: #{@plugin.quest_orig.length}" )
+                @plugin.bot.say( m.replyto, "* Total Number of Questions:" )
+                @plugin.bot.say( m.replyto, "  #{@plugin.quest_orig.length}" )
 
-                @plugin.bot.say( m.replyto, "Score for each player:" )
+                @plugin.bot.say( m.replyto, "* Top 5 Players:" )
 
-                # Print scores
-                @plugin.registry.each_key do |nick|
-                    score = @plugin.registry[nick].score
-                    unless score == 0
-                        @plugin.bot.say( m.replyto, "#{nick}: #{score}" )
-                    end
+                # Convert registry to array, then sort by score
+                players = @plugin.registry.to_a.sort { |a,b| a[1].score<=>b[1].score }
+
+                1.upto( 5 ) do |i|
+                    player = players.pop
+                    nick = player[0]
+                    score = player[1].score
+                    @plugin.bot.say( m.replyto, "  #{i}. #{nick} (#{score})" )
                 end
         end
     end
