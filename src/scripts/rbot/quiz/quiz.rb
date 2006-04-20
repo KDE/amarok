@@ -9,6 +9,10 @@
 # Generate class for storing question/answer pairs
 QuizBundle = Struct.new( "QuizBundle", :question, :answer )
 
+# Generate class for storing player stats
+PlayerStats = Struct.new( "PlayerStats", :score )
+
+
 #######################################################################
 # CLASS Quiz
 # One Quiz instance per channel, handles all channel specific stuff
@@ -98,6 +102,16 @@ class Quiz
                 fetch_data( m ) if @plugin.quest_orig.empty?
 
                 @plugin.bot.say( m.replyto, "Questions in database: #{@plugin.quest_orig.length}" )
+
+                @plugin.bot.say( m.replyto, "Score for each player:" )
+
+                # Print scores
+                @plugin.registry.each_key do |nick|
+                    score = @plugin.registry[nick].score
+                    unless score == 0
+                        @plugin.bot.say( m.replyto, "#{nick}: #{score}" )
+                    end
+                end
         end
     end
 
@@ -120,6 +134,17 @@ class Quiz
 
             @plugin.bot.say( m.replyto, replies[rand( replies.length )] )
 
+            stats = nil
+            if @plugin.registry.has_key?( m.sourcenick )
+                stats = @plugin.registry[m.sourcenick]
+            else
+                stats = PlayerStats.new( 0 )
+                puts( "NEW PLAYER" )
+            end
+
+            stats["score"] = stats.score + 1
+            @plugin.registry[m.sourcenick] = stats
+
             @current_question = nil
         end
     end
@@ -130,7 +155,7 @@ end
 # CLASS QuizPlugin
 #######################################################################
 class QuizPlugin < Plugin
-    attr_accessor :bot
+    attr_accessor :bot, :registry
     attr_reader   :quest_orig
 
     def initialize()
