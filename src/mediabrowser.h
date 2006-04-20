@@ -232,6 +232,7 @@ class MediaBrowser : public QVBox
         typedef QMap<QString, MediaItem*> ItemMap;
         ItemMap          m_itemMap;
         KTrader::OfferList m_plugins;
+        bool             m_haveDevices;
 };
 
 class MediaView : public KListView

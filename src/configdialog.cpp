@@ -23,6 +23,7 @@ email                : markey@web.de
 #include "debug.h"
 #include "directorylist.h"
 #include "enginecontroller.h"
+#include "mediabrowser.h"
 #include "mediumpluginmanager.h"
 #include "Options1.h"
 #include "Options2.h"
@@ -31,6 +32,7 @@ email                : markey@web.de
 #include "Options7.h"
 #include "Options8.h"
 #include "osd.h"
+#include "playlistwindow.h"
 #include "plugin/pluginconfig.h"
 #include "pluginmanager.h"
 
@@ -264,6 +266,11 @@ void AmarokConfigDialog::updateSettings()
     AmarokConfig::setPodcastFolder( m_opt7->podcastURLLine->url() );
 
     m_deviceManager->finished();
+
+    if( MediaBrowser::isAvailable() )
+    {
+        PlaylistWindow::self()->addBrowser( "MediaBrowser", MediaBrowser::instance(), i18n( "Media Device" ), amaroK::icon( "device" ) );
+    }
 }
 
 

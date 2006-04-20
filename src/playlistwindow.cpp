@@ -374,14 +374,14 @@ void PlaylistWindow::init()
         addBrowserMacro( CollectionBrowser, "CollectionBrowser", i18n( "Collection" ), amaroK::icon( "collection" ) )
         addInstBrowserMacro( PlaylistBrowser, "PlaylistBrowser", i18n( "Playlists" ), amaroK::icon( "playlist" ) )
 
-        // disable this check for now as isAvailable() returned always true before
-        //if( MediaBrowser::isAvailable() )
-            addBrowserMacro( MediaBrowser, "MediaBrowser", i18n( "Media Device" ), amaroK::icon( "device" ) )
-
         //DEBUG: Comment out the addBrowserMacro line and uncomment the m_browsers line (passing in a vfat device name) to see the "virtual root" functionality
 
         addBrowserMacro( FileBrowser, "FileBrowser", i18n( "Files" ), "folder" )
         //m_browsers->addBrowser( new FileBrowser( "FileBrowser", DeviceManager::instance()->getDevice( "hda5" ) ), i18n( "Files" ), "folder" );
+
+        new MediaBrowser( "MediaBrowser" );
+        if( MediaBrowser::isAvailable() )
+            addInstBrowserMacro( MediaBrowser, "MediaBrowser", i18n( "Media Device" ), amaroK::icon( "device" ) )
         #undef addBrowserMacro
         #undef addInstBrowserMacro
     }
@@ -399,6 +399,12 @@ void PlaylistWindow::init()
              statusbar,  SLOT( updateQueueLabel() ) );
     connect( playlist, SIGNAL( aboutToClear() ), m_lineEdit, SLOT( clear() ) );
     amaroK::MessageQueue::instance()->sendMessages();
+}
+
+void PlaylistWindow::addBrowser( const QString &name, QWidget *browser, const QString &text, const QString &icon )
+{
+    if( !m_browsers->browser( name ) )
+        m_browsers->addBrowser( browser, text, icon );
 }
 
 

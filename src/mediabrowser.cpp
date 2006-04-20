@@ -92,7 +92,7 @@ bool MediaBrowser::isAvailable() //static
     if( !MediaBrowser::instance() )
         return false;
 
-    return true;
+    return MediaBrowser::instance()->m_haveDevices;
 }
 
 class SpaceLabel : public QLabel {
@@ -240,12 +240,8 @@ MediaBrowser::MediaBrowser( const char *name )
     m_toolbar->insertLineSeparator();
     m_toolbar->setIconText( KToolBar::IconOnly, false );
 
-    KActionMenu* configButton = new KActionMenu( i18n("Configure this media device"), "configure", this );
-    configButton->setDelayed( false );
-    KPopupMenu *configPopup = configButton->popupMenu();
-    configPopup->insertItem( i18n("Configure Device..."), this, SLOT( config()) );
-    configPopup->insertItem( i18n("Manage Devices and Plugins..."), this, SLOT( showPluginManager()) );
-    configButton->plug( m_toolbar );
+    m_toolbar->insertButton( "configure", CONFIGURE, true, i18n("Configure") );
+    QToolTip::add( m_toolbar->getButton(CONFIGURE), i18n( "Configure device" ) );
 
     m_deviceCombo = new KComboBox( this );
 
@@ -341,6 +337,7 @@ MediaBrowser::MediaBrowser( const char *name )
     connect( m_toolbar->getButton(CONNECT),    SIGNAL( clicked() ),        SLOT( connectClicked() ) );
     connect( m_toolbar->getButton(DISCONNECT), SIGNAL( clicked() ),        SLOT( disconnectClicked() ) );
     connect( m_toolbar->getButton(TRANSFER),   SIGNAL( clicked() ),        SLOT( transferClicked() ) );
+    connect( m_toolbar->getButton(CONFIGURE),  SIGNAL( clicked() ),        SLOT( config() ) );
 
     connect( m_deviceCombo,      SIGNAL( activated( int ) ), SLOT( activateDevice( int ) ) );
 
@@ -349,7 +346,18 @@ MediaBrowser::MediaBrowser( const char *name )
     connect( CollectionDB::instance(), SIGNAL( tagsChanged( const MetaBundle& ) ),
             SLOT( tagsChanged( const MetaBundle& ) ) );
 
-
+    m_haveDevices = false;
+    QMap<QString,QString> savedDevices = amaroK::config( "MediaBrowser" )->entryMap( "MediaBrowser" );
+    for( QMap<QString,QString>::Iterator it = savedDevices.begin();
+            it != savedDevices.end();
+            ++it )
+    {
+        if( it.data() != "deleted" && it.data() != "ignore" )
+        {
+            m_haveDevices = true;
+            break;
+        }
+    }
 }
 
 void
@@ -1325,6 +1333,7 @@ MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/, bool construc
     debug() << "mediumAdded: " << (medium? medium->properties():"null") << endl;
     if( medium )
     {
+        m_haveDevices = true;
         KConfig *config = amaroK::config( "MediaBrowser" );
         QString handler = config->readEntry( medium->id() );
         if( handler.isEmpty() )
