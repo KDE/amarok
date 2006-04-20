@@ -49,7 +49,7 @@ namespace TagLib
       uint       disk() const;
       uint       bpm() const;
       ByteVector cover() const;
-      int        compilation() const { return 0; }
+      int        compilation() const { return -1; }
       
       void setGrouping(const String &s);
       void setComposer(const String &s);
