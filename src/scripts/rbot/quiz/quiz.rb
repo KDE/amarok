@@ -12,9 +12,23 @@ QuizBundle = Struct.new( "QuizBundle", :question, :answer )
 # Class for storing player stats
 PlayerStats = Struct.new( "PlayerStats", :score )
 
+
+#######################################################################
+# CLASS Quiz
 # One Quiz instance per channel, contains channel specific data
-Quiz = Struct.new( "Quiz", :channel, :quest, :current_question, :current_answer,
-                           :current_answer_core )
+#######################################################################
+class Quiz
+    attr_accessor :questions, :question, :answer, :answer_core, :hint, :hintrange
+
+    def initialize()
+        @questions = Array.new
+        @question = nil
+        @answer = nil
+        @answer_core = nil
+        @hint = nil
+        @hintrange = nil
+    end
+end
 
 
 #######################################################################
@@ -24,7 +38,7 @@ class QuizPlugin < Plugin
     def initialize()
         super
 
-        @quest_orig = Array.new
+        @questions = Array.new
         @quizzes = Hash.new
     end
 
@@ -41,7 +55,7 @@ class QuizPlugin < Plugin
             return
         end
 
-        @quest_orig = []
+        @questions = []
         data = data.split( "QUIZ DATA START" )[1]
         data = data.split( "QUIZ DATA END" )[0]
 
@@ -50,28 +64,28 @@ class QuizPlugin < Plugin
         entries.each do |e|
             p = e.split( "</p><p>" )
             b = QuizBundle.new( p[0].chomp, p[1].chomp )
-            @quest_orig << b
+            @questions << b
         end
     end
 
 
-    def shuffle()
+    def shuffle( m )
         return unless @quizzes.has_key?( m.target )
         q = @quizzes[m.target]
 
-        q.quest.clear
-        temp = quest_orig.dup
+        q.questions.clear
+        temp = @questions.dup
 
         temp.length.times do
             i = rand( temp.length )
-            q.quest << temp[i]
+            q.questions << temp[i]
             temp.delete_at( i )
         end
     end
 
 
     def help( plugin, topic="" )
-        "Quiz game. Tell me 'ask' to start. 'hint' for getting a hint and 'answer' for quick solving.\nYou can add new questions at http://amarok.kde.org/amarokwiki/index.php/Rbot_Quiz"
+        "Quiz game. 'quiz' => ask a question. 'quiz hint' => get a hint. 'quiz solve' => solve this question. 'quiz score' => show your score. 'quiz top5' => show top 5 players. 'quiz stats' => show some statistics. 'quiz fetch' => fetch new questions from server.\nYou can add new questions at http://amarok.kde.org/amarokwiki/index.php/Rbot_Quiz"
     end
 
 
@@ -79,23 +93,23 @@ class QuizPlugin < Plugin
         return unless @quizzes.has_key?( m.target )
         q = @quizzes[m.target]
 
-        return if q.current_question == nil
+        return if q.question == nil
 
         message = m.message.downcase.strip
 
-        if message == q.current_answer.downcase or message == q.current_answer_core.downcase
+        if message == q.answer.downcase or message == q.answer_core.downcase
             replies = []
-            replies << "BINGO!! #{m.sourcenick} got it right. The answer was: #{q.current_answer}"
-            replies << "OMG!! PONIES!! #{m.sourcenick} is the cutest. The answer was: #{q.current_answer}"
-            replies << "HUZZAAAH! #{m.sourcenick} did it again. The answer was: #{q.current_answer}"
-            replies << "YEEEHA! Cowboy #{m.sourcenick} scored again. The answer was: #{q.current_answer}"
-            replies << "STRIKE! #{m.sourcenick} pwned you all. The answer was: #{q.current_answer}"
-            replies << "YAY :)) #{m.sourcenick} is totally invited to my next sleepover. The answer was: #{q.current_answer}"
-            replies << "And the crowd GOES WILD for #{m.sourcenick}.  The answer was: #{q.current_answer}"
-            replies << "GOOOAAALLLL! That was one fine strike by #{m.sourcenick}. The answer was: #{q.current_answer}"
-            replies << "#{m.sourcenick} deserves a medal! Only #{m.sourcenick} could have known the answer was: #{q.current_answer}"
-            replies << "Okay, #{m.sourcenick} is officially a spermatologist! Answer was: #{q.current_answer}"
-            replies << "I bet that #{m.sourcenick} knows where the word 'trivia' comes from too! Answer was: #{q.current_answer}"
+            replies << "BINGO!! #{m.sourcenick} got it right. The answer was: #{q.answer}"
+            replies << "OMG!! PONIES!! #{m.sourcenick} is the cutest. The answer was: #{q.answer}"
+            replies << "HUZZAAAH! #{m.sourcenick} did it again. The answer was: #{q.answer}"
+            replies << "YEEEHA! Cowboy #{m.sourcenick} scored again. The answer was: #{q.answer}"
+            replies << "STRIKE! #{m.sourcenick} pwned you all. The answer was: #{q.answer}"
+            replies << "YAY :)) #{m.sourcenick} is totally invited to my next sleepover. The answer was: #{q.answer}"
+            replies << "And the crowd GOES WILD for #{m.sourcenick}.  The answer was: #{q.answer}"
+            replies << "GOOOAAALLLL! That was one fine strike by #{m.sourcenick}. The answer was: #{q.answer}"
+            replies << "#{m.sourcenick} deserves a medal! Only #{m.sourcenick} could have known the answer was: #{q.answer}"
+            replies << "Okay, #{m.sourcenick} is officially a spermatologist! Answer was: #{q.answer}"
+            replies << "I bet that #{m.sourcenick} knows where the word 'trivia' comes from too! Answer was: #{q.answer}"
 
             @bot.say( m.replyto, replies[rand( replies.length )] )
 
@@ -110,52 +124,53 @@ class QuizPlugin < Plugin
             stats["score"] = stats.score + 1
             @registry[m.sourcenick] = stats
 
-            q.current_question = nil
+            q.question = nil
+        end
     end
 
     #######################################################################
     # Command handling
     #######################################################################
     def cmd_quiz( m, params )
-        fetch_data( m ) if @quest_orig.empty?
+        fetch_data( m ) if @questions.empty?
 
         unless @quizzes.has_key?( m.target )
-            @quizzes[m.target] = Quiz.new( m.target, Arraw.new, nil, nil, nil )
+            @quizzes[m.target] = Quiz.new
         end
         q = @quizzes[m.target]
 
-        unless q.current_question == nil
+        unless q.question == nil
             @bot.say( m.replyto, "#{m.sourcenick}: Answer the current question first!" )
             return
         end
 
-        shuffle if q.quest.empty?
+        shuffle( m ) if q.questions.empty?
 
-        i = rand( @quest.length )
-        q.current_question    = q.quest[i].question
-        q.current_answer      = q.quest[i].answer.gsub( "#", "" )
+        i = rand( q.questions.length )
+        q.question    = q.questions[i].question
+        q.answer      = q.questions[i].answer.gsub( "#", "" )
         begin
-            q.current_answer_core = /(#)(.*)(#)/.match( q.quest[i].answer )[2]
+            q.answer_core = /(#)(.*)(#)/.match( q.questions[i].answer )[2]
         rescue
-            q.current_answer_core = nil
+            q.answer_core = nil
         end
-        q.current_answer_core = q.current_answer.dup if q.current_answer_core == nil
+        q.answer_core = q.answer.dup if q.answer_core == nil
 
-        q.quest.delete_at( i )
+        q.questions.delete_at( i )
 
-        q.current_hint = ""
-        (0..q.current_answer_core.length-1).each do |index|
-            if q.current_answer_core[index, 1] == " "
-                q.current_hint << " "
+        q.hint = ""
+        (0..q.answer_core.length-1).each do |index|
+            if q.answer_core[index, 1] == " "
+                q.hint << " "
             else
-                q.current_hint << "."
+                q.hint << "."
             end
         end
 
         # Generate array of unique random range
-        q.current_hintrange = (0..q.current_answer_core.length-1).sort_by{rand}
+        q.hintrange = (0..q.answer_core.length-1).sort_by{rand}
 
-        @bot.say( m.replyto, q.current_question )
+        @bot.say( m.replyto, q.question )
     end
 
 
@@ -163,9 +178,9 @@ class QuizPlugin < Plugin
         return unless @quizzes.has_key?( m.target )
         q = @quizzes[m.target]
 
-        @bot.say( m.replyto, "The correct answer was: #{q.current_answer}" )
+        @bot.say( m.replyto, "The correct answer was: #{q.answer}" )
 
-        q.current_question = nil
+        q.question = nil
     end
 
 
@@ -173,21 +188,21 @@ class QuizPlugin < Plugin
         return unless @quizzes.has_key?( m.target )
         q = @quizzes[m.target]
 
-        if q.current_question == nil
+        if q.question == nil
             @bot.say( m.replyto, "Get a question first!" )
         else
             if q.hintrange.length >= 5
                 # Reveal two characters
                 2.times do
-                    index = q.current_hintrange.pop
-                    q.current_hint[index] = q.current_answer_core[index]
+                    index = q.hintrange.pop
+                    q.hint[index] = q.answer_core[index]
                 end
-                @bot.say( m.replyto, "Hint: #{q.current_hint}" )
-            elsif q.current_hintrange.length >= 1
+                @bot.say( m.replyto, "Hint: #{q.hint}" )
+            elsif q.hintrange.length >= 1
                 # Reveal one character
-                index = q.current_hintrange.pop
-                q.current_hint[index] = q.current_answer_core[index]
-                @bot.say( m.replyto, "Hint: #{q.current_hint}" )
+                index = q.hintrange.pop
+                q.hint[index] = q.answer_core[index]
+                @bot.say( m.replyto, "Hint: #{q.hint}" )
             else
                 # Bust
                 @bot.say( m.replyto, "You lazy bum, what more can you want?" )
@@ -198,16 +213,11 @@ class QuizPlugin < Plugin
 
     def cmd_fetch( m, params )
         fetch_data( m )
-        shuffle
+        shuffle( m )
     end
 
 
-    def cmd_stats( m, params )
-        fetch_data( m ) if @quest_orig.empty?
-
-        @bot.say( m.replyto, "* Total Number of Questions:" )
-        @bot.say( m.replyto, "  #{@quest_orig.length}" )
-
+    def cmd_top5( m, params )
         @bot.say( m.replyto, "* Top 5 Players:" )
 
         # Convert registry to array, then sort by score
@@ -222,6 +232,14 @@ class QuizPlugin < Plugin
     end
 
 
+    def cmd_stats( m, params )
+        fetch_data( m ) if @questions.empty?
+
+        @bot.say( m.replyto, "* Total Number of Questions:" )
+        @bot.say( m.replyto, "  #{@questions.length}" )
+    end
+
+
     def cmd_score( m, params )
         if @registry.has_key?( m.sourcenick )
             score = @registry[m.sourcenick].score
@@ -230,16 +248,28 @@ class QuizPlugin < Plugin
             @bot.say( m.replyto, "#{m.sourcenick}: You don't have a score yet, lamer." )
         end
     end
+
+
+    def cmd_score_player( m, params )
+        if @registry.has_key?( params[:player] )
+            score = @registry[params[:player]].score
+            @bot.say( m.replyto, "#{params[:player]}'s score is: #{score}" )
+        else
+            @bot.say( m.replyto, "#{params[:player]} does not have a score yet. Lamer." )
+        end
+    end
 end
 
 
 
 plugin = QuizPlugin.new
 
-plugin.map 'quiz',       :action => 'cmd_quiz'
-plugin.map 'quiz solve', :action => 'cmd_solve'
-plugin.map 'quiz hint',  :action => 'cmd_hint'
-plugin.map 'quiz score', :action => 'cmd_score'
-plugin.map 'quiz fetch', :action => 'cmd_fetch'
-plugin.map 'quiz stats', :action => 'cmd_stats'
+plugin.map 'quiz',               :action => 'cmd_quiz'
+plugin.map 'quiz solve',         :action => 'cmd_solve'
+plugin.map 'quiz hint',          :action => 'cmd_hint'
+plugin.map 'quiz score',         :action => 'cmd_score'
+plugin.map 'quiz score :player', :action => 'cmd_score_player'
+plugin.map 'quiz fetch',         :action => 'cmd_fetch'
+plugin.map 'quiz top5',          :action => 'cmd_top5'
+plugin.map 'quiz stats',         :action => 'cmd_stats'
 
