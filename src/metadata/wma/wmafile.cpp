@@ -126,10 +126,10 @@ void WMA::File::read(bool readProperties, Properties::ReadStyle /*propertiesStyl
     return;
   }
 
-  int length;
-  int bitrate;
-  int sampleRate;
-  int channels;
+  int length = 0;
+  int bitrate = 0;
+  int sampleRate = 0;
+  int channels = 0;
   
   d->tag = new WMA::Tag();
   if(!d->tag)
