@@ -701,7 +701,7 @@ IpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
 }
 
 bool
-IpodMediaDevice::createLockFile( const QString &mountpoint )
+IpodMediaDevice::createLockFile( const QString &mountpoint, bool silent )
 {
     m_lockFile = new QFile( QFile::encodeName(mountpoint + "/iPod_Control/iTunes/iTunesLock") );
     QString msg;
@@ -710,18 +710,31 @@ IpodMediaDevice::createLockFile( const QString &mountpoint )
     {
         ok = false;
         msg = i18n( "Media Device: iPod mounted at %1 already locked! " ).arg( mountpoint );
-        msg += i18n( "This problem is common with subfs/submount.<br>"
-                     "But it could also be that your iPod is connected twice, "
-                     "once because of being manually connected "
-                     "and a second time because of being auto-detected thereafter.<br>" );
         msg += i18n( "If you are sure that this is an error, then remove the file %1 and try again." )
            .arg( mountpoint + "/iPod_Control/iTunes/iTunesLock" );
 
+        if( !silent )
+        {
+            if( KMessageBox::warningContinueCancel( m_parent, msg, i18n( "Remove iTunes Lock File?" ),
+                        KGuiItem(i18n("&Remove"), "editdelete"), QString::null, KMessageBox::Dangerous )
+                    == KMessageBox::Continue )
+            {
+                msg = i18n( "Media Device: removing lockfile %1 failed: %2! " )
+                    .arg( mountpoint + "/iPod_Control/iTunes/iTunesLock", m_lockFile->errorString() );
+                ok = m_lockFile->remove();
+            }
+            else
+            {
+                msg = "";
+            }
+        }
     }
-    else if( !m_lockFile->open( IO_WriteOnly ) )
+
+    if( ok && !m_lockFile->open( IO_WriteOnly ) )
     {
         ok = false;
-        msg = i18n( "Media Device: failed to create lockfile on iPod mounted at %1" ).arg(mountpoint);
+        msg = i18n( "Media Device: failed to create lockfile on iPod mounted at %1: %2" )
+            .arg(mountpoint, m_lockFile->errorString());
     }
 
     if( ok )
@@ -730,7 +743,8 @@ IpodMediaDevice::createLockFile( const QString &mountpoint )
     delete m_lockFile;
     m_lockFile = 0;
 
-    amaroK::StatusBar::instance()->longMessage( msg, KDE::StatusBar::Sorry );
+    if( !msg.isEmpty() )
+        amaroK::StatusBar::instance()->longMessage( msg, KDE::StatusBar::Sorry );
     return false;
 }
 
@@ -897,7 +911,7 @@ IpodMediaDevice::openDevice( bool silent )
         }
     }
 
-    if( !createLockFile( mountPoint() ) )
+    if( !createLockFile( mountPoint(), silent ) )
     {
         if( m_itdb )
         {
