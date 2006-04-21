@@ -868,7 +868,7 @@ bool MetaBundle::matchesParsedExpression( ParsedExpression data, QValueList<int>
                 }
 
                 if( column == Filesize )
-                    v = QString::number( filesize() / ( 1024 * 1024 ) );
+                    v = QString::number( filesize() );
 
                 if( q.startsWith( ">" ) )
                 {
