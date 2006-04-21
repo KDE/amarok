@@ -6,190 +6,28 @@
 # Licensed under GPL V2.
 
 
-# Generate class for storing question/answer pairs
+# Class for storing question/answer pairs
 QuizBundle = Struct.new( "QuizBundle", :question, :answer )
 
-# Generate class for storing player stats
+# Class for storing player stats
 PlayerStats = Struct.new( "PlayerStats", :score )
 
-
-#######################################################################
-# CLASS Quiz
-# One Quiz instance per channel, handles all channel specific stuff
-#######################################################################
-class Quiz
-    def initialize( channel, plugin )
-        @channel = channel
-        @plugin = plugin
-
-        @quest = Array.new
-
-        @current_question = nil
-        @current_answer  = nil
-        @current_answer_core = nil
-    end
-
-    def shuffle()
-        @quest.clear
-        temp = @plugin.quest_orig.dup
-
-        temp.length.times do
-            i = rand( temp.length )
-            @quest << temp[i]
-            temp.delete_at( i )
-        end
-    end
-
-    def privmsg( m )
-        case m.message
-            when "ask"
-                unless @current_question == nil
-                    @plugin.bot.say( m.replyto, "#{m.sourcenick}: Answer the current question first!" )
-                    return
-                end
-
-                shuffle if @quest.empty?
-
-                i = rand( @quest.length )
-                @current_question    = @quest[i].question
-                @current_answer      = @quest[i].answer.gsub( "#", "" )
-                begin
-                    @current_answer_core = /(#)(.*)(#)/.match( @quest[i].answer )[2]
-                rescue
-                    @current_answer_core = nil
-                end
-                @current_answer_core = @current_answer.dup if @current_answer_core == nil
-
-                @quest.delete_at( i )
-
-                @current_hint = ""
-                (0..@current_answer_core.length-1).each do |index|
-                    if @current_answer_core[index, 1] == " "
-                        @current_hint << " "
-                    else
-                        @current_hint << "."
-                    end
-                end
-
-                # Generate array of unique random range
-                @current_hintrange = (0..@current_answer_core.length-1).sort_by{rand}
-
-                @plugin.bot.say( m.replyto, @current_question )
-
-            when "answer"
-                @plugin.bot.say( m.replyto, "The correct answer was: #{@current_answer}" )
-
-                @current_question = nil
-
-            when "quiz_fetch"
-                @plugin.fetch_data( m )
-                shuffle
-
-            when "hint"
-                if @current_question == nil
-                    @plugin.bot.say( m.replyto, "Get a question first!" )
-                else
-                    if @current_hintrange.length >= 5
-                        # Reveal two characters
-                        2.times do
-                            index = @current_hintrange.pop
-                            @current_hint[index] = @current_answer_core[index]
-                        end
-                        @plugin.bot.say( m.replyto, "Hint: #{@current_hint}" )
-                    elsif @current_hintrange.length >= 1
-                        # Reveal one character
-                        index = @current_hintrange.pop
-                        @current_hint[index] = @current_answer_core[index]
-                        @plugin.bot.say( m.replyto, "Hint: #{@current_hint}" )
-                    else
-                        # Bust
-                        @plugin.bot.say( m.replyto, "You lazy bum, what more can you want?" )
-                    end
-
-                    if not index == nil
-                    else
-                    end
-                end
-
-            when "score"
-                if @plugin.registry.has_key?( m.sourcenick )
-                    score = @plugin.registry[m.sourcenick].score
-                    @plugin.bot.say( m.replyto, "#{m.sourcenick}: Your score is: #{score}" )
-                else
-                    @plugin.bot.say( m.replyto, "#{m.sourcenick}: You don't have a score yet, lamer." )
-                end
-
-            when "quiz_stats"
-                fetch_data( m ) if @plugin.quest_orig.empty?
-
-                @plugin.bot.say( m.replyto, "* Total Number of Questions:" )
-                @plugin.bot.say( m.replyto, "  #{@plugin.quest_orig.length}" )
-
-                @plugin.bot.say( m.replyto, "* Top 5 Players:" )
-
-                # Convert registry to array, then sort by score
-                players = @plugin.registry.to_a.sort { |a,b| a[1].score<=>b[1].score }
-
-                1.upto( 5 ) do |i|
-                    player = players.pop
-                    nick = player[0]
-                    score = player[1].score
-                    @plugin.bot.say( m.replyto, "  #{i}. #{nick} (#{score})" )
-                end
-        end
-    end
-
-    def listen( m )
-        return if @current_question == nil
-
-        message = m.message.downcase.strip
-
-        if message == @current_answer.downcase or message == @current_answer_core.downcase
-            replies = []
-            replies << "BINGO!! #{m.sourcenick} got it right. The answer was: #{@current_answer}"
-            replies << "OMG!! PONIES!! #{m.sourcenick} is the cutest. The answer was: #{@current_answer}"
-            replies << "HUZZAAAH! #{m.sourcenick} did it again. The answer was: #{@current_answer}"
-            replies << "YEEEHA! Cowboy #{m.sourcenick} scored again. The answer was: #{@current_answer}"
-            replies << "STRIKE! #{m.sourcenick} pwned you all. The answer was: #{@current_answer}"
-            replies << "YAY :)) #{m.sourcenick} is totally invited to my next sleepover. The answer was: #{@current_answer}"
-            replies << "And the crowd GOES WILD for #{m.sourcenick}.  The answer was: #{@current_answer}"
-            replies << "GOOOAAALLLL! That was one fine strike by #{m.sourcenick}. The answer was: #{@current_answer}"
-            replies << "#{m.sourcenick} deserves a medal! Only #{m.sourcenick} could have known the answer was: #{@current_answer}"
-            replies << "Okay, #{m.sourcenick} is officially a spermatologist! Answer was: #{@current_answer}"
-            replies << "I bet that #{m.sourcenick} knows where the word 'trivia' comes from too! Answer was: #{@current_answer}"
-
-            @plugin.bot.say( m.replyto, replies[rand( replies.length )] )
-
-            stats = nil
-            if @plugin.registry.has_key?( m.sourcenick )
-                stats = @plugin.registry[m.sourcenick]
-            else
-                stats = PlayerStats.new( 0 )
-                puts( "NEW PLAYER" )
-            end
-
-            stats["score"] = stats.score + 1
-            @plugin.registry[m.sourcenick] = stats
-
-            @current_question = nil
-        end
-    end
-end
+# One Quiz instance per channel, contains channel specific data
+Quiz = Struct.new( "Quiz", :channel, :quest, :current_question, :current_answer,
+                           :current_answer_core )
 
 
 #######################################################################
 # CLASS QuizPlugin
 #######################################################################
 class QuizPlugin < Plugin
-    attr_accessor :bot, :registry
-    attr_reader   :quest_orig
-
     def initialize()
         super
 
         @quest_orig = Array.new
         @quizzes = Hash.new
     end
+
 
     def fetch_data( m )
         @bot.say( m.replyto, "Fetching questions from server.." )
@@ -216,23 +54,180 @@ class QuizPlugin < Plugin
         end
     end
 
+
+    def shuffle()
+        return unless @quizzes.has_key?( m.target )
+        q = @quizzes[m.target]
+
+        q.quest.clear
+        temp = quest_orig.dup
+
+        temp.length.times do
+            i = rand( temp.length )
+            q.quest << temp[i]
+            temp.delete_at( i )
+        end
+    end
+
+
     def help( plugin, topic="" )
         "Quiz game. Tell me 'ask' to start. 'hint' for getting a hint and 'answer' for quick solving.\nYou can add new questions at http://amarok.kde.org/amarokwiki/index.php/Rbot_Quiz"
     end
 
-    def privmsg( m )
+
+    def listen( m )
+        return unless @quizzes.has_key?( m.target )
+        q = @quizzes[m.target]
+
+        return if q.current_question == nil
+
+        message = m.message.downcase.strip
+
+        if message == q.current_answer.downcase or message == q.current_answer_core.downcase
+            replies = []
+            replies << "BINGO!! #{m.sourcenick} got it right. The answer was: #{q.current_answer}"
+            replies << "OMG!! PONIES!! #{m.sourcenick} is the cutest. The answer was: #{q.current_answer}"
+            replies << "HUZZAAAH! #{m.sourcenick} did it again. The answer was: #{q.current_answer}"
+            replies << "YEEEHA! Cowboy #{m.sourcenick} scored again. The answer was: #{q.current_answer}"
+            replies << "STRIKE! #{m.sourcenick} pwned you all. The answer was: #{q.current_answer}"
+            replies << "YAY :)) #{m.sourcenick} is totally invited to my next sleepover. The answer was: #{q.current_answer}"
+            replies << "And the crowd GOES WILD for #{m.sourcenick}.  The answer was: #{q.current_answer}"
+            replies << "GOOOAAALLLL! That was one fine strike by #{m.sourcenick}. The answer was: #{q.current_answer}"
+            replies << "#{m.sourcenick} deserves a medal! Only #{m.sourcenick} could have known the answer was: #{q.current_answer}"
+            replies << "Okay, #{m.sourcenick} is officially a spermatologist! Answer was: #{q.current_answer}"
+            replies << "I bet that #{m.sourcenick} knows where the word 'trivia' comes from too! Answer was: #{q.current_answer}"
+
+            @bot.say( m.replyto, replies[rand( replies.length )] )
+
+            stats = nil
+            if @registry.has_key?( m.sourcenick )
+                stats = @registry[m.sourcenick]
+            else
+                stats = PlayerStats.new( 0 )
+                puts( "NEW PLAYER" )
+            end
+
+            stats["score"] = stats.score + 1
+            @registry[m.sourcenick] = stats
+
+            q.current_question = nil
+    end
+
+    #######################################################################
+    # Command handling
+    #######################################################################
+    def cmd_quiz( m, params )
         fetch_data( m ) if @quest_orig.empty?
 
         unless @quizzes.has_key?( m.target )
-            @quizzes[m.target] = Quiz.new( m.target, self )
+            @quizzes[m.target] = Quiz.new( m.target, Arraw.new, nil, nil, nil )
+        end
+        q = @quizzes[m.target]
+
+        unless q.current_question == nil
+            @bot.say( m.replyto, "#{m.sourcenick}: Answer the current question first!" )
+            return
         end
 
-        @quizzes[m.target].privmsg( m )
+        shuffle if q.quest.empty?
+
+        i = rand( @quest.length )
+        q.current_question    = q.quest[i].question
+        q.current_answer      = q.quest[i].answer.gsub( "#", "" )
+        begin
+            q.current_answer_core = /(#)(.*)(#)/.match( q.quest[i].answer )[2]
+        rescue
+            q.current_answer_core = nil
+        end
+        q.current_answer_core = q.current_answer.dup if q.current_answer_core == nil
+
+        q.quest.delete_at( i )
+
+        q.current_hint = ""
+        (0..q.current_answer_core.length-1).each do |index|
+            if q.current_answer_core[index, 1] == " "
+                q.current_hint << " "
+            else
+                q.current_hint << "."
+            end
+        end
+
+        # Generate array of unique random range
+        q.current_hintrange = (0..q.current_answer_core.length-1).sort_by{rand}
+
+        @bot.say( m.replyto, q.current_question )
     end
 
-    def listen( m )
-        if @quizzes.has_key?( m.target )
-            @quizzes[m.target].listen( m )
+
+    def cmd_solve( m, params )
+        return unless @quizzes.has_key?( m.target )
+        q = @quizzes[m.target]
+
+        @bot.say( m.replyto, "The correct answer was: #{q.current_answer}" )
+
+        q.current_question = nil
+    end
+
+
+    def cmd_hint( m, params )
+        return unless @quizzes.has_key?( m.target )
+        q = @quizzes[m.target]
+
+        if q.current_question == nil
+            @bot.say( m.replyto, "Get a question first!" )
+        else
+            if q.hintrange.length >= 5
+                # Reveal two characters
+                2.times do
+                    index = q.current_hintrange.pop
+                    q.current_hint[index] = q.current_answer_core[index]
+                end
+                @bot.say( m.replyto, "Hint: #{q.current_hint}" )
+            elsif q.current_hintrange.length >= 1
+                # Reveal one character
+                index = q.current_hintrange.pop
+                q.current_hint[index] = q.current_answer_core[index]
+                @bot.say( m.replyto, "Hint: #{q.current_hint}" )
+            else
+                # Bust
+                @bot.say( m.replyto, "You lazy bum, what more can you want?" )
+            end
+        end
+    end
+
+
+    def cmd_fetch( m, params )
+        fetch_data( m )
+        shuffle
+    end
+
+
+    def cmd_stats( m, params )
+        fetch_data( m ) if @quest_orig.empty?
+
+        @bot.say( m.replyto, "* Total Number of Questions:" )
+        @bot.say( m.replyto, "  #{@quest_orig.length}" )
+
+        @bot.say( m.replyto, "* Top 5 Players:" )
+
+        # Convert registry to array, then sort by score
+        players = @registry.to_a.sort { |a,b| a[1].score<=>b[1].score }
+
+        1.upto( 5 ) do |i|
+            player = players.pop
+            nick = player[0]
+            score = player[1].score
+            @bot.say( m.replyto, "  #{i}. #{nick} (#{score})" )
+        end
+    end
+
+
+    def cmd_score( m, params )
+        if @registry.has_key?( m.sourcenick )
+            score = @registry[m.sourcenick].score
+            @bot.say( m.replyto, "#{m.sourcenick}: Your score is: #{score}" )
+        else
+            @bot.say( m.replyto, "#{m.sourcenick}: You don't have a score yet, lamer." )
         end
     end
 end
@@ -240,11 +235,11 @@ end
 
 
 plugin = QuizPlugin.new
-plugin.register("ask")
-plugin.register("answer")
-plugin.register("hint")
-plugin.register("score")
-plugin.register("quiz_fetch")
-plugin.register("quiz_stats")
 
+plugin.map 'quiz',       :action => 'cmd_quiz'
+plugin.map 'quiz solve', :action => 'cmd_solve'
+plugin.map 'quiz hint',  :action => 'cmd_hint'
+plugin.map 'quiz score', :action => 'cmd_score'
+plugin.map 'quiz fetch', :action => 'cmd_fetch'
+plugin.map 'quiz stats', :action => 'cmd_stats'
 
