@@ -99,17 +99,29 @@ class QuizPlugin < Plugin
 
         if message == q.answer.downcase or message == q.answer_core.downcase
             replies = []
-            replies << "BINGO!! #{m.sourcenick} got it right. The answer was: #{q.answer}"
-            replies << "OMG!! PONIES!! #{m.sourcenick} is the cutest. The answer was: #{q.answer}"
-            replies << "HUZZAAAH! #{m.sourcenick} did it again. The answer was: #{q.answer}"
-            replies << "YEEEHA! Cowboy #{m.sourcenick} scored again. The answer was: #{q.answer}"
-            replies << "STRIKE! #{m.sourcenick} pwned you all. The answer was: #{q.answer}"
-            replies << "YAY :)) #{m.sourcenick} is totally invited to my next sleepover. The answer was: #{q.answer}"
-            replies << "And the crowd GOES WILD for #{m.sourcenick}.  The answer was: #{q.answer}"
-            replies << "GOOOAAALLLL! That was one fine strike by #{m.sourcenick}. The answer was: #{q.answer}"
-            replies << "#{m.sourcenick} deserves a medal! Only #{m.sourcenick} could have known the answer was: #{q.answer}"
-            replies << "OKAY, #{m.sourcenick} is officially a spermatologist! Answer was: #{q.answer}"
-            replies << "I bet that #{m.sourcenick} knows where the word 'trivia' comes from too! Answer was: #{q.answer}"
+
+            # Convert registry to array, then sort by score
+            players = @registry.to_a.sort { |a,b| b[1].score<=>a[1].score }
+
+            if m.sourcenick == players[0][0]
+                replies << "THE QUIZ CHAMPION defends his throne! Seems like #{m.sourcenick} is invicible!"
+            elsif m.sourcenick == players[1][0]
+                replies << "THE SECOND CHAMPION is on the way up! Hurry up, you only need #{players[0][1].score - players[1][1].score} points to beat #{players[0][0]}!"
+            elsif m.sourcenick == players[2][0]
+                replies << "THE THIRD CHAMPION strikes again! Give it all, with #{players[1][1].score - players[2][1].score} more points you can beat #{players[1][0]}!"
+            else
+                replies << "BINGO!! #{m.sourcenick} got it right. The answer was: #{q.answer}"
+                replies << "OMG!! PONIES!! #{m.sourcenick} is the cutest. The answer was: #{q.answer}"
+                replies << "HUZZAAAH! #{m.sourcenick} did it again. The answer was: #{q.answer}"
+                replies << "YEEEHA! Cowboy #{m.sourcenick} scored again. The answer was: #{q.answer}"
+                replies << "STRIKE! #{m.sourcenick} pwned you all. The answer was: #{q.answer}"
+                replies << "YAY :)) #{m.sourcenick} is totally invited to my next sleepover. The answer was: #{q.answer}"
+                replies << "And the crowd GOES WILD for #{m.sourcenick}.  The answer was: #{q.answer}"
+                replies << "GOOOAAALLLL! That was one fine strike by #{m.sourcenick}. The answer was: #{q.answer}"
+                replies << "#{m.sourcenick} deserves a medal! Only #{m.sourcenick} could have known the answer was: #{q.answer}"
+                replies << "OKAY, #{m.sourcenick} is officially a spermatologist! Answer was: #{q.answer}"
+                replies << "I bet that #{m.sourcenick} knows where the word 'trivia' comes from too! Answer was: #{q.answer}"
+            end
 
             @bot.say( m.replyto, replies[rand( replies.length )] )
 
