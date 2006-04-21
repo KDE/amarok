@@ -85,7 +85,7 @@ class QuizPlugin < Plugin
 
 
     def help( plugin, topic="" )
-        "Quiz game. 'quiz' => ask a question. 'quiz hint' => get a hint. 'quiz solve' => solve this question. 'quiz score' => show your score. 'quiz top5' => show top 5 players. 'quiz stats' => show some statistics. 'quiz fetch' => fetch new questions from server.\nYou can add new questions at http://amarok.kde.org/amarokwiki/index.php/Rbot_Quiz"
+        "Quiz game. 'quiz' => ask a question. 'quiz hint' => get a hint. 'quiz solve' => solve this question. 'quiz skip' => skip to next question. 'quiz score <player>' => show score from <player>. 'quiz top5' => show top 5 players. 'quiz stats' => show some statistics. 'quiz fetch' => fetch new questions from server.\nYou can add new questions at http://amarok.kde.org/amarokwiki/index.php/Rbot_Quiz"
     end
 
 
@@ -108,7 +108,7 @@ class QuizPlugin < Plugin
             replies << "And the crowd GOES WILD for #{m.sourcenick}.  The answer was: #{q.answer}"
             replies << "GOOOAAALLLL! That was one fine strike by #{m.sourcenick}. The answer was: #{q.answer}"
             replies << "#{m.sourcenick} deserves a medal! Only #{m.sourcenick} could have known the answer was: #{q.answer}"
-            replies << "Okay, #{m.sourcenick} is officially a spermatologist! Answer was: #{q.answer}"
+            replies << "OKAY, #{m.sourcenick} is officially a spermatologist! Answer was: #{q.answer}"
             replies << "I bet that #{m.sourcenick} knows where the word 'trivia' comes from too! Answer was: #{q.answer}"
 
             @bot.say( m.replyto, replies[rand( replies.length )] )
@@ -191,23 +191,32 @@ class QuizPlugin < Plugin
         if q.question == nil
             @bot.say( m.replyto, "Get a question first!" )
         else
-            if q.hintrange.length >= 5
-                # Reveal two characters
-                2.times do
-                    index = q.hintrange.pop
-                    q.hint[index] = q.answer_core[index]
-                end
-                @bot.say( m.replyto, "Hint: #{q.hint}" )
-            elsif q.hintrange.length >= 1
-                # Reveal one character
+            num_chars = case q.hintrange.length  # Number of characters to reveal
+                when  8..1000 then 3
+                when  5..1000 then 2
+                when  1..1000 then 1
+            end
+
+            num_chars.times do
                 index = q.hintrange.pop
                 q.hint[index] = q.answer_core[index]
-                @bot.say( m.replyto, "Hint: #{q.hint}" )
-            else
-                # Bust
-                @bot.say( m.replyto, "You lazy bum, what more can you want?" )
+            end
+            @bot.say( m.replyto, "Hint: #{q.hint}" )
+
+            if q.hintrange.length == 0
+                @bot.say( m.replyto, "BUST! This round is over." )
+                q.question = nil
             end
         end
+    end
+
+
+    def cmd_skip( m, params )
+        return unless @quizzes.has_key?( m.target )
+        q = @quizzes[m.target]
+
+        q.question = nil
+        cmd_quiz( m, params )
     end
 
 
@@ -267,6 +276,7 @@ plugin = QuizPlugin.new
 plugin.map 'quiz',               :action => 'cmd_quiz'
 plugin.map 'quiz solve',         :action => 'cmd_solve'
 plugin.map 'quiz hint',          :action => 'cmd_hint'
+plugin.map 'quiz skip',          :action => 'cmd_skip'
 plugin.map 'quiz score',         :action => 'cmd_score'
 plugin.map 'quiz score :player', :action => 'cmd_score_player'
 plugin.map 'quiz fetch',         :action => 'cmd_fetch'
