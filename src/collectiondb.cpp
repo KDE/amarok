@@ -4590,7 +4590,7 @@ QueryBuilder::addFilter( int tables, Q_INT64 value, const QString& filter, int m
             if (exact)
                 s = " = " + CollectionDB::instance()->escapeString( filter );
             else
-                s = CollectionDB::likeCondition( filter, false, false && !mode != modeEndMatch );
+                s = CollectionDB::likeCondition( filter, true, mode != modeEndMatch );
         }
 
         m_where += QString( "OR %1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
