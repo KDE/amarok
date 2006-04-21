@@ -159,7 +159,7 @@ class QuizPlugin < Plugin
         shuffle( m ) if q.questions.empty?
 
         i = rand( q.questions.length )
-        q.question    = q.questions[i].question
+        q.question    = q.questions[i].question.gsub( "&nbsp;", "" )
         q.answer      = q.questions[i].answer.gsub( "#", "" )
         begin
             q.answer_core = /(#)(.*)(#)/.match( q.questions[i].answer )[2]
