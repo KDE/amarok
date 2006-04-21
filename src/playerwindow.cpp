@@ -777,7 +777,7 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
         if ( rect.contains( e->pos() ) )
         {
             AmarokConfig::setTimeDisplayRemaining( !AmarokConfig::timeDisplayRemaining() );
-            timeDisplay( EngineController::engine()->position() / 1000 );
+            timeDisplay( EngineController::engine()->position() );
         }
         else m_startDragPos = e->pos();
     }
