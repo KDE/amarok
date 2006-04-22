@@ -46,26 +46,47 @@ class QuizPlugin < Plugin
 
 
     def fetch_data( m )
-        @bot.say( m.replyto, "Fetching questions from server.." )
-        data = ""
+        # TODO: Make this configurable, and add support for more than one file (there's a limit in linux too ;) )
+        path = "rbot.quiz"
+
+        @bot.say( m.replyto, "Fetching questions from the local database and the server.." )
+        datafile  = File.new( path,  File::RDONLY )
+        begin
+            localdata = datafile.read
+        rescue
+            @bot.say( m.replyto, "Failed to read local database. oioi." )
+        end
 
         begin
-            data = @bot.httputil.get( URI.parse( "http://amarok.kde.org/amarokwiki/index.php/Rbot_Quiz" ) )
+            serverdata = @bot.httputil.get( URI.parse( "http://amarok.kde.org/amarokwiki/index.php/Rbot_Quiz" ) )
+            serverdata = serverdata.split( "QUIZ DATA START" )[1]
+            serverdata = serverdata.split( "QUIZ DATA END" )[0]
             @bot.say( m.replyto, "done." )
         rescue
             @bot.say( m.replyto, "Failed to connect to the server. oioi." )
-            return
+            if localdata == nil
+              return
+            end
         end
 
         @questions = []
-        data = data.split( "QUIZ DATA START" )[1]
-        data = data.split( "QUIZ DATA END" )[0]
 
-        entries = data.split( "</p><p><br />" )
+        if localdata != nil
+            serverdata = "\n\n#{serverdata}"
+        end
+
+        data = "#{localdata}#{serverdata}".gsub( /^#.*$/, "" ) # fuse together and remove comments
+
+        entries = data.split( "\n\n" )
 
         entries.each do |e|
-            p = e.split( "</p><p>" )
-            b = QuizBundle.new( p[0].chomp, p[1].chomp )
+            if p[0].index( "Category: " ) != nil
+                p.delete_at(0)
+            end
+            p = e.split( "\n" )
+            p[0] = p[0].split( "Question: " )[0].chomp
+            p[1] = p[1].split( "Answer: " )[0].chomp
+            b = QuizBundle.new( p[0], p[1] )
             @questions << b
         end
     end
