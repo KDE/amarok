@@ -1164,7 +1164,7 @@ bool ScrobblerSubmitter::schedule( bool failure )
 
     if ( failure )
     {
-        m_backoff = kMin( kMax( m_backoff, unsigned( MIN_BACKOFF ) ), unsigned( MAX_BACKOFF ) );
+        m_backoff = kMin( kMax( m_backoff * 2, unsigned( MIN_BACKOFF ) ), unsigned( MAX_BACKOFF ) );
         when = kMax( m_backoff, m_interval );
     }
     else
