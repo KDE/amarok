@@ -120,7 +120,7 @@ class QuizPlugin < Plugin
 
 
     def help( plugin, topic="" )
-        "Quiz game. 'quiz' => ask a question. 'quiz hint' => get a hint. 'quiz solve' => solve this question. 'quiz skip' => skip to next question. 'quiz score <player>' => show score from <player>. 'quiz top5' => show top 5 players. 'quiz stats' => show some statistics. 'quiz fetch' => fetch new questions from server.\nYou can add new questions at http://amarok.kde.org/amarokwiki/index.php/Rbot_Quiz"
+        "Quiz game. 'quiz' => ask a question. 'quiz hint' => get a hint. 'quiz solve' => solve this question. 'quiz skip' => skip to next question. 'quiz repeat' => repeat the current question. 'quiz score <player>' => show score from <player>. 'quiz top5' => show top 5 players. 'quiz top10' => show top 10 players. 'quiz stats' => show some statistics. 'quiz fetch' => fetch new questions from server.\nYou can add new questions at http://amarok.kde.org/amarokwiki/index.php/Rbot_Quiz"
     end
 
 
@@ -153,9 +153,9 @@ class QuizPlugin < Plugin
                 replies << "YAY :)) #{m.sourcenick} is totally invited to my next sleepover. The answer was: #{q.answer}"
                 replies << "And the crowd GOES WILD for #{m.sourcenick}. The answer was: #{q.answer}"
                 replies << "GOOOAAALLLL! That was one fine strike by #{m.sourcenick}. The answer was: #{q.answer}"
-                replies << "#{m.sourcenick} deserves a medal! Only #{m.sourcenick} could have known the answer was: #{q.answer}"
+                replies << "HOO-RAY, #{m.sourcenick} deserves a medal! Only #{m.sourcenick} could have known the answer was: #{q.answer}"
                 replies << "OKAY, #{m.sourcenick} is officially a spermatologist! Answer was: #{q.answer}"
-                replies << "I bet that #{m.sourcenick} knows where the word 'trivia' comes from too! Answer was: #{q.answer}"
+                replies << "WOO, I bet that #{m.sourcenick} knows where the word 'trivia' comes from too! Answer was: #{q.answer}"
             end
 
             @bot.say( m.replyto, replies[rand( replies.length )] )
@@ -232,7 +232,7 @@ class QuizPlugin < Plugin
         q = @quizzes[m.target]
 
         if q.question == nil
-            @bot.say( m.replyto, "Get a question first!" )
+            @bot.say( m.replyto, "#{m.sourcenick}: Get a question first!" )
         else
             num_chars = case q.hintrange.length  # Number of characters to reveal
                 when  8..1000 then 3
@@ -263,6 +263,17 @@ class QuizPlugin < Plugin
     end
 
 
+    def cmd_repeat( m, params )
+        q = @quizzes[m.target]
+
+        if q.question == nil
+            @bot.say( m.replyto, "#{m.sourcenick}: There's currently no open question!" )
+        else
+            @bot.say( m.replyto, "Current question: #{q.question}" )
+        end
+    end
+
+
     def cmd_fetch( m, params )
         fetch_data( m )
         shuffle( m )
@@ -283,6 +294,26 @@ class QuizPlugin < Plugin
             score = player[1].score
             @bot.say( m.replyto, "  #{i}. #{nick} (#{score})" )
         end
+    end
+
+
+    def cmd_top10( m, params )
+        q = create_quiz( m.target )
+
+        @bot.say( m.replyto, "* Top 10 Players for #{m.target}:" )
+
+        # Convert registry to array, then sort by score
+        players = q.registry.to_a.sort { |a,b| a[1].score<=>b[1].score }
+
+        str = ""
+        1.upto( [10, players.length].min ) do |i|
+            player = players.pop
+            nick = player[0]
+            score = player[1].score
+            str << "#{i}. #{nick} (#{score}) | "
+        end
+
+        @bot.say( m.replyto, str )
     end
 
 
@@ -312,9 +343,11 @@ plugin.map 'quiz',               :action => 'cmd_quiz'
 plugin.map 'quiz solve',         :action => 'cmd_solve'
 plugin.map 'quiz hint',          :action => 'cmd_hint'
 plugin.map 'quiz skip',          :action => 'cmd_skip'
+plugin.map 'quiz repeat',        :action => 'cmd_repeat'
 plugin.map 'quiz score',         :action => 'cmd_score'
 plugin.map 'quiz score :player', :action => 'cmd_score_player'
 plugin.map 'quiz fetch',         :action => 'cmd_fetch'
 plugin.map 'quiz top5',          :action => 'cmd_top5'
+plugin.map 'quiz top10',         :action => 'cmd_top10'
 plugin.map 'quiz stats',         :action => 'cmd_stats'
 
