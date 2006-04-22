@@ -157,15 +157,15 @@ class QuizPlugin < Plugin
             replies = []
 
             # Convert registry to array, then sort by score
-            players = q.registry.to_a.sort { |a,b| b[1].score<=>a[1].score }
+#            players = q.registry.to_a.sort { |a,b| b[1].score<=>a[1].score }
 
-            if q.registry.length >= 1 and m.sourcenick == players[0][0]
-                replies << "THE QUIZ CHAMPION defends his throne! Seems like #{m.sourcenick} is invicible! Answer was: #{q.answer}"
-            elsif q.registry.length >= 2 and m.sourcenick == players[1][0]
-                replies << "THE SECOND CHAMPION is on the way up! Hurry up #{m.sourcenick}, you only need #{players[0][1].score - players[1][1].score} points to beat the king! Answer was: #{q.answer}"
-            elsif  q.registry.length >= 3 and m.sourcenick == players[2][0]
-                replies << "THE THIRD CHAMPION strikes again! Give it all #{m.sourcenick}, with #{players[1][1].score - players[2][1].score} more points you'll reach the 2nd place! Answer was: #{q.answer}"
-            else
+#            if q.registry.length >= 1 and m.sourcenick == players[0][0]
+#                replies << "THE QUIZ CHAMPION defends his throne! Seems like #{m.sourcenick} is invicible! Answer was: #{q.answer}"
+#            elsif q.registry.length >= 2 and m.sourcenick == players[1][0]
+#                replies << "THE SECOND CHAMPION is on the way up! Hurry up #{m.sourcenick}, you only need #{players[0][1].score - players[1][1].score} points to beat the king! Answer was: #{q.answer}"
+#            elsif  q.registry.length >= 3 and m.sourcenick == players[2][0]
+#                replies << "THE THIRD CHAMPION strikes again! Give it all #{m.sourcenick}, with #{players[1][1].score - players[2][1].score} more points you'll reach the 2nd place! Answer was: #{q.answer}"
+#            else
                 replies << "BINGO!! #{m.sourcenick} got it right. The answer was: #{q.answer}"
                 replies << "OMG!! PONIES!! #{m.sourcenick} is the cutest. The answer was: #{q.answer}"
                 replies << "HUZZAAAH! #{m.sourcenick} did it again. The answer was: #{q.answer}"
@@ -177,7 +177,7 @@ class QuizPlugin < Plugin
                 replies << "HOO-RAY, #{m.sourcenick} deserves a medal! Only #{m.sourcenick} could have known the answer: #{q.answer}"
                 replies << "OKAY, #{m.sourcenick} is officially a spermatologist! Answer was: #{q.answer}"
                 replies << "WOO, I bet that #{m.sourcenick} knows where the word 'trivia' comes from too! Answer was: #{q.answer}"
-            end
+#            end
 
             @bot.say( m.replyto, replies[rand( replies.length )] )
 
