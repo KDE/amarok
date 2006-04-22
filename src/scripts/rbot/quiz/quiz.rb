@@ -235,6 +235,10 @@ class QuizPlugin < Plugin
             @bot.say( m.replyto, "#{m.sourcenick}: Get a question first!" )
         else
             num_chars = case q.hintrange.length  # Number of characters to reveal
+                when 25..1000 then 7
+                when 20..1000 then 6
+                when 16..1000 then 5
+                when 12..1000 then 4
                 when  8..1000 then 3
                 when  5..1000 then 2
                 when  1..1000 then 1
