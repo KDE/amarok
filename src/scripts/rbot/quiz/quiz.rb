@@ -18,9 +18,11 @@ PlayerStats = Struct.new( "PlayerStats", :score )
 # One Quiz instance per channel, contains channel specific data
 #######################################################################
 class Quiz
-    attr_accessor :questions, :question, :answer, :answer_core, :hint, :hintrange
+    attr_accessor :registry, :questions, :question, :answer, :answer_core, :hint, :hintrange
 
-    def initialize()
+    def initialize( channel, registry )
+        @registry = registry.sub_registry( channel )
+
         @questions = Array.new
         @question = nil
         @answer = nil
@@ -84,6 +86,17 @@ class QuizPlugin < Plugin
     end
 
 
+    # Return new Quiz instance for channel, or existing one
+    #
+    def create_quiz( channel )
+        unless @quizzes.has_key?( channel )
+            @quizzes[channel] = Quiz.new( channel, @registry )
+        end
+
+        return @quizzes[channel]
+    end
+
+
     def help( plugin, topic="" )
         "Quiz game. 'quiz' => ask a question. 'quiz hint' => get a hint. 'quiz solve' => solve this question. 'quiz skip' => skip to next question. 'quiz score <player>' => show score from <player>. 'quiz top5' => show top 5 players. 'quiz stats' => show some statistics. 'quiz fetch' => fetch new questions from server.\nYou can add new questions at http://amarok.kde.org/amarokwiki/index.php/Rbot_Quiz"
     end
@@ -101,13 +114,13 @@ class QuizPlugin < Plugin
             replies = []
 
             # Convert registry to array, then sort by score
-            players = @registry.to_a.sort { |a,b| b[1].score<=>a[1].score }
+            players = q.registry.to_a.sort { |a,b| b[1].score<=>a[1].score }
 
-            if m.sourcenick == players[0][0]
+            if q.registry.length >= 1 and m.sourcenick == players[0][0]
                 replies << "THE QUIZ CHAMPION defends his throne! Seems like #{m.sourcenick} is invicible! Answer was: #{q.answer}"
-            elsif m.sourcenick == players[1][0]
+            elsif q.registry.length >= 2 and m.sourcenick == players[1][0]
                 replies << "THE SECOND CHAMPION is on the way up! Hurry up #{m.sourcenick}, you only need #{players[0][1].score - players[1][1].score} points to beat the king! Answer was: #{q.answer}"
-            elsif m.sourcenick == players[2][0]
+            elsif  q.registry.length >= 3 and m.sourcenick == players[2][0]
                 replies << "THE THIRD CHAMPION strikes again! Give it all #{m.sourcenick}, with #{players[1][1].score - players[2][1].score} more points you'll reach the 2nd place! Answer was: #{q.answer}"
             else
                 replies << "BINGO!! #{m.sourcenick} got it right. The answer was: #{q.answer}"
@@ -126,15 +139,14 @@ class QuizPlugin < Plugin
             @bot.say( m.replyto, replies[rand( replies.length )] )
 
             stats = nil
-            if @registry.has_key?( m.sourcenick )
-                stats = @registry[m.sourcenick]
+            if q.registry.has_key?( m.sourcenick )
+                stats = q.registry[m.sourcenick]
             else
                 stats = PlayerStats.new( 0 )
-                puts( "NEW PLAYER" )
             end
 
             stats["score"] = stats.score + 1
-            @registry[m.sourcenick] = stats
+            q.registry[m.sourcenick] = stats
 
             q.question = nil
         end
@@ -146,10 +158,7 @@ class QuizPlugin < Plugin
     def cmd_quiz( m, params )
         fetch_data( m ) if @questions.empty?
 
-        unless @quizzes.has_key?( m.target )
-            @quizzes[m.target] = Quiz.new
-        end
-        q = @quizzes[m.target]
+        q = create_quiz( m.target )
 
         unless q.question == nil
             @bot.say( m.replyto, "#{m.sourcenick}: Answer the current question first!" )
@@ -159,8 +168,8 @@ class QuizPlugin < Plugin
         shuffle( m ) if q.questions.empty?
 
         i = rand( q.questions.length )
-        q.question    = q.questions[i].question.gsub( "&nbsp;", "" )
-        q.answer      = q.questions[i].answer.gsub( "#", "" )
+        q.question = q.questions[i].question.gsub( "&nbsp;", "" )
+        q.answer   = q.questions[i].answer.gsub( "#", "" )
         begin
             q.answer_core = /(#)(.*)(#)/.match( q.questions[i].answer )[2]
         rescue
@@ -239,12 +248,14 @@ class QuizPlugin < Plugin
 
 
     def cmd_top5( m, params )
-        @bot.say( m.replyto, "* Top 5 Players:" )
+        q = create_quiz( m.target )
+
+        @bot.say( m.replyto, "* Top 5 Players for #{m.target}:" )
 
         # Convert registry to array, then sort by score
-        players = @registry.to_a.sort { |a,b| a[1].score<=>b[1].score }
+        players = q.registry.to_a.sort { |a,b| a[1].score<=>b[1].score }
 
-        1.upto( 5 ) do |i|
+        1.upto( [5, players.length].min ) do |i|
             player = players.pop
             nick = player[0]
             score = player[1].score
@@ -262,8 +273,10 @@ class QuizPlugin < Plugin
 
 
     def cmd_score( m, params )
-        if @registry.has_key?( m.sourcenick )
-            score = @registry[m.sourcenick].score
+        q = create_quiz( m.target )
+
+        if q.registry.has_key?( m.sourcenick )
+            score = q.registry[m.sourcenick].score
             @bot.say( m.replyto, "#{m.sourcenick}: Your score is: #{score}" )
         else
             @bot.say( m.replyto, "#{m.sourcenick}: You don't have a score yet, lamer." )
@@ -272,8 +285,10 @@ class QuizPlugin < Plugin
 
 
     def cmd_score_player( m, params )
-        if @registry.has_key?( params[:player] )
-            score = @registry[params[:player]].score
+        q = create_quiz( m.target )
+
+        if q.registry.has_key?( params[:player] )
+            score = q.registry[params[:player]].score
             @bot.say( m.replyto, "#{params[:player]}'s score is: #{score}" )
         else
             @bot.say( m.replyto, "#{params[:player]} does not have a score yet. Lamer." )
