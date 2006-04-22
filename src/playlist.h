@@ -77,7 +77,7 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
     public:
         ~Playlist();
 
-        static Playlist *instance() { return s_instance; }
+        LIBAMAROK_EXPORT static Playlist *instance() { return s_instance; }
         static QString defaultPlaylistPath();
         static const int NO_SORT = 200;
 
