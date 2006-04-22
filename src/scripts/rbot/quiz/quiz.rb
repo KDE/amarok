@@ -46,7 +46,7 @@ class QuizPlugin < Plugin
 
 
     def fetch_data( m )
-        # TODO: Make this configurable, and add support for more than one file (there's a limit in linux too ;) )
+        # TODO: Make this configurable, and add support for more than one file (there's a size limit in linux too ;) )
         path = "/home/eean/.rbot/quiz.rbot"
 
         @bot.say( m.replyto, "Fetching questions from the local database and the server.." )
@@ -174,7 +174,7 @@ class QuizPlugin < Plugin
                 replies << "YAY :)) #{m.sourcenick} is totally invited to my next sleepover. The answer was: #{q.answer}"
                 replies << "And the crowd GOES WILD for #{m.sourcenick}. The answer was: #{q.answer}"
                 replies << "GOOOAAALLLL! That was one fine strike by #{m.sourcenick}. The answer was: #{q.answer}"
-                replies << "HOO-RAY, #{m.sourcenick} deserves a medal! Only #{m.sourcenick} could have known the answer was: #{q.answer}"
+                replies << "HOO-RAY, #{m.sourcenick} deserves a medal! Only #{m.sourcenick} could have known the answer: #{q.answer}"
                 replies << "OKAY, #{m.sourcenick} is officially a spermatologist! Answer was: #{q.answer}"
                 replies << "WOO, I bet that #{m.sourcenick} knows where the word 'trivia' comes from too! Answer was: #{q.answer}"
             end
@@ -272,7 +272,18 @@ class QuizPlugin < Plugin
             @bot.say( m.replyto, "Hint: #{q.hint}" )
 
             if q.hintrange.length == 0
-                @bot.say( m.replyto, "BUST! This round is over." )
+                @bot.say( m.replyto, "BUST! This round is over. Minus one point for #{m.sourcenick}." )
+
+                stats = nil
+                if q.registry.has_key?( m.sourcenick )
+                    stats = q.registry[m.sourcenick]
+                else
+                    stats = PlayerStats.new( 0 )
+                end
+
+                stats["score"] = stats.score -  1
+                q.registry[m.sourcenick] = stats
+
                 q.question = nil
             end
         end
