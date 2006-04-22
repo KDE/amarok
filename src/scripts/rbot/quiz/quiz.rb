@@ -47,11 +47,11 @@ class QuizPlugin < Plugin
 
     def fetch_data( m )
         # TODO: Make this configurable, and add support for more than one file (there's a limit in linux too ;) )
-        path = "rbot.quiz"
+        path = "/home/eean/.rbot/quiz.rbot"
 
         @bot.say( m.replyto, "Fetching questions from the local database and the server.." )
-        datafile  = File.new( path,  File::RDONLY )
         begin
+            datafile  = File.new( path,  File::RDONLY )
             localdata = datafile.read
         rescue
             @bot.say( m.replyto, "Failed to read local database. oioi." )
@@ -59,9 +59,8 @@ class QuizPlugin < Plugin
 
         begin
             serverdata = @bot.httputil.get( URI.parse( "http://amarok.kde.org/amarokwiki/index.php/Rbot_Quiz" ) )
-            serverdata = serverdata.split( "QUIZ DATA START" )[1]
-            serverdata = serverdata.split( "QUIZ DATA END" )[0]
-            @bot.say( m.replyto, "done." )
+            serverdata = serverdata.split( "QUIZ DATA START\n" )[1]
+            serverdata = serverdata.split( "\nQUIZ DATA END" )[0]
         rescue
             @bot.say( m.replyto, "Failed to connect to the server. oioi." )
             if localdata == nil
@@ -76,19 +75,20 @@ class QuizPlugin < Plugin
         end
 
         data = "#{localdata}#{serverdata}".gsub( /^#.*$/, "" ) # fuse together and remove comments
-
         entries = data.split( "\n\n" )
 
         entries.each do |e|
-            if p[0].index( "Category: " ) != nil
+            p = e.split( "\n" )
+            if p[0].match( /^Category: (.*)$/ ) != nil
                 p.delete_at(0)
             end
-            p = e.split( "\n" )
-            p[0] = p[0].split( "Question: " )[0].chomp
-            p[1] = p[1].split( "Answer: " )[0].chomp
+            p[0] = p[0].gsub( /Question: /, "" )
+            p[1] = p[1].gsub( /Answer: /, "" )
             b = QuizBundle.new( p[0], p[1] )
             @questions << b
         end
+
+        @bot.say( m.replyto, "done." )
     end
 
 
