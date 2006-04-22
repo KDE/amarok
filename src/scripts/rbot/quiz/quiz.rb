@@ -97,6 +97,28 @@ class QuizPlugin < Plugin
     end
 
 
+    def say_score( m, nick )
+        q = create_quiz( m.target )
+
+        if q.registry.has_key?( nick )
+            score = q.registry[nick].score
+
+            # Convert registry to array, then sort by score
+            players = q.registry.to_a.sort { |a,b| b[1].score<=>a[1].score }
+
+            rank = 0
+            while rank < players.length
+                if players[rank][0] == nick then break end
+                rank += 1
+            end
+
+            @bot.say( m.replyto, "#{nick}'s score is: #{score}  Rank: #{rank + 1}" )
+        else
+            @bot.say( m.replyto, "#{nick} does not have a score yet. Lamer." )
+        end
+    end
+
+
     def help( plugin, topic="" )
         "Quiz game. 'quiz' => ask a question. 'quiz hint' => get a hint. 'quiz solve' => solve this question. 'quiz skip' => skip to next question. 'quiz score <player>' => show score from <player>. 'quiz top5' => show top 5 players. 'quiz stats' => show some statistics. 'quiz fetch' => fetch new questions from server.\nYou can add new questions at http://amarok.kde.org/amarokwiki/index.php/Rbot_Quiz"
     end
@@ -273,26 +295,12 @@ class QuizPlugin < Plugin
 
 
     def cmd_score( m, params )
-        q = create_quiz( m.target )
-
-        if q.registry.has_key?( m.sourcenick )
-            score = q.registry[m.sourcenick].score
-            @bot.say( m.replyto, "#{m.sourcenick}: Your score is: #{score}" )
-        else
-            @bot.say( m.replyto, "#{m.sourcenick}: You don't have a score yet, lamer." )
-        end
+        say_score( m, m.sourcenick )
     end
 
 
     def cmd_score_player( m, params )
-        q = create_quiz( m.target )
-
-        if q.registry.has_key?( params[:player] )
-            score = q.registry[params[:player]].score
-            @bot.say( m.replyto, "#{params[:player]}'s score is: #{score}" )
-        else
-            @bot.say( m.replyto, "#{params[:player]} does not have a score yet. Lamer." )
-        end
+        say_score( m, params[:player] )
     end
 end
 
