@@ -21,12 +21,13 @@
 # Licensed under GPL V2.
 
 
-if $*.empty?() or $*[0] == "--help"
-    puts( "Usage: oneline_to_mox.rb source" )
+if $*.empty?() or $*[0] == "--help" or $*[1] == nil
+    puts( "Usage: oneline_to_mox.rb source output" )
     exit( 1 )
 end
 
-path = $*[0]
+infile = $*[0]
+outfile = $*[1]
 
 puts( "What divider is used between the question and the answer (and any other data)?" )
 divider = STDIN.gets().chomp()
@@ -35,8 +36,8 @@ qpos = Integer( STDIN.gets().chomp() )
 puts( "And what position does the ANSWER have?" )
 apos = Integer( STDIN.gets().chomp() )
 
-input  = File.new( path,  File::RDONLY )
-output = File.new( "RBOT.txt", File::CREAT | File::RDWR | File::TRUNC )
+input  = File.new( infile,  File::RDONLY )
+output = File.new( outfile, File::CREAT | File::RDWR | File::TRUNC )
 
 rawdata = input.read
 output.write( "#Questions converted using oneline_to_mox.rb" )
