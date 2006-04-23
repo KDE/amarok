@@ -21,7 +21,7 @@
 
 class KDESVNPlugin < Plugin
     def help(plugin,topic="")
-	"svn #<number> - outputs URL to websvn.kde.org with given revision"
+	"svn <path>/<revision#> - outputs websvn.kde.org URL of given path or revision"
     end
 
     def privmsg(m)
@@ -31,8 +31,14 @@ class KDESVNPlugin < Plugin
 	end
 	revision = m.params.scan(/^#?([0-9]+)/)
 	if revision.length == 0
-	    m.reply("You called a wrong number...")
-	    return
+	    revision = m.params.scan(/^#?[bt].{4,}/)
+	        if revision.length == 0
+	            m.reply("Input not processible")
+	            return
+		else
+		    m.reply("http://websvn.kde.org/#{revision}")
+	            return
+		end
 	end
 	str = "http://websvn.kde.org/?rev=#{revision}&view=rev"
 	m.reply(str)
