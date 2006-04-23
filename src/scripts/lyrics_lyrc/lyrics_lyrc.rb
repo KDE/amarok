@@ -41,8 +41,8 @@ def parseLyrics( lyrics )
     root = doc.add_element( "lyrics" )
 
     root.add_attribute( "page_url", @page_url )
-    root.add_attribute( "title", /(<b>)([^<]*)/.match( lyrics )[2].to_s() )
-    root.add_attribute( "artist", /(<u>)([^<]*)/.match( lyrics )[2].to_s() )
+    root.add_attribute( "title", /(<b>)([^<]*)/.match( lyrics )[2].to_s().unpack("C*").pack("U*") )
+    root.add_attribute( "artist", /(<u>)([^<]*)/.match( lyrics )[2].to_s().unpack("C*").pack("U*") )
 
     lyrics = /(<\/u><\/font>)(.*)/.match( lyrics )[2].to_s()
     lyrics.gsub!( /<[Bb][Rr][^>]*>/, "\n" ) # HTML -> Plaintext
