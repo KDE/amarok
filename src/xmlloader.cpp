@@ -62,6 +62,8 @@ void MetaBundle::XmlLoader::newAttribute( const QString &key, const QString &val
 {
     if( key == "url" )
         m_bundle.setUrl( value );
+    else if( key == "compilation" )
+        m_bundle.setCompilation( MetaBundle::CompilationYes );
     else
         m_attributes << QPair<QString, QString>( key, value );
 }

@@ -155,14 +155,7 @@ public:
     /** Saves the MetaBundle's data as XML to a text stream. */
     bool save( QTextStream &stream, const QStringList &attributes = QStringList(), int indent = 0 ) const;
 
-    /** used by PlaylistItem, should be true for everything but local files that aren't there */
-    bool exists() const;
-    bool checkExists();
-
     bool isStream() const;
-
-    /** Returns a value from enum FileType. */
-    int fileType() const;
 
     /** Returns whether composer and disc number fields are available. */
     bool hasExtendedMetaInformation() const;
@@ -214,7 +207,6 @@ public:
 
 public: //accessors
     KURL url()               const;
-
     QString      title()     const;
     AtomicString artist()    const;
     AtomicString composer()  const;
@@ -224,13 +216,9 @@ public: //accessors
     QString      filename()  const;
     QString      directory() const;
     QString      type()      const;
-    QString      uniqueId()  const;
-    PodcastEpisodeBundle *podcastBundle() const;
-
     int     year()        const;
     int     discNumber()  const;
     int     track()       const;
-    int     compilation() const;
     int     length()      const;
     int     bitrate()     const;
     int     sampleRate()  const;
@@ -240,6 +228,11 @@ public: //accessors
     uint    lastPlay()    const;
     int     filesize()    const;
 
+    int compilation() const;
+    int fileType() const;  // returns a value from enum FileType 
+    bool exists() const; // true for everything but local files that aren't there
+    QString uniqueId() const;
+    PodcastEpisodeBundle *podcastBundle() const;
     QString streamName() const;
     QString streamUrl()  const;
 
@@ -261,15 +254,9 @@ public: //modifiers
     void setAlbum( const AtomicString &album );
     void setGenre( const AtomicString &genre );
     void setComment( const AtomicString &comment );
-    void setPodcastBundle( const PodcastEpisodeBundle &peb );
-    void setUniqueId( const QString &id ); //WARNING WARNING WARNING SEE COMMENT in .CPP
-    void setUniqueId( TagLib::FileRef &fileref, bool recreate = false );
-    void newUniqueId();
-
     void setYear( int year );
     void setDiscNumber( int discNumber );
     void setTrack( int track );
-    void setCompilation( int compilation );
     void setLength( int length );
     void setBitrate( int bitrate );
     void setSampleRate( int sampleRate );
@@ -278,8 +265,15 @@ public: //modifiers
     void setPlayCount( int playcount );
     void setLastPlay( uint lastplay );
     void setFilesize( int bytes );
-    void setFileType( int type );
+
     void updateFilesize();
+    void setFileType( int type );
+    void setCompilation( int compilation );
+    bool checkExists();
+    void setPodcastBundle( const PodcastEpisodeBundle &peb );
+    void setUniqueId( const QString &id ); //WARNING WARNING WARNING SEE COMMENT in .CPP
+    void setUniqueId( TagLib::FileRef &fileref, bool recreate = false );
+    void newUniqueId();
 
 public: //static helper functions
     static QString prettyBitrate( int );
@@ -323,7 +317,6 @@ protected:
     int m_year;
     int m_discNumber;
     int m_track;
-    int m_compilation;
     int m_bitrate;
     int m_length;
     int m_sampleRate;
@@ -336,8 +329,9 @@ protected:
 
     int m_type;
 
-    bool m_exists;
-    bool m_isValidMedia;
+    struct Flags { enum { Exists = 1, ValidMedia = 2, IsCompilation = 4, NotCompilation = 8 }; };
+
+    uint m_flags: 4;
 
     PodcastEpisodeBundle *m_podcastBundle;
 
@@ -369,7 +363,7 @@ inline bool MetaBundle::operator!=(const MetaBundle &bundle) const { return !ope
 
 inline bool MetaBundle::isEmpty() const { return url().isEmpty(); }
 
-inline bool MetaBundle::isValidMedia() const { return m_isValidMedia; }
+inline bool MetaBundle::isValidMedia() const { return m_flags & Flags::ValidMedia; }
 
 inline bool MetaBundle::audioPropertiesUndetermined() const
 {
@@ -381,7 +375,7 @@ inline void MetaBundle::aboutToChange( int column ) { aboutToChange( QValueList<
 inline void MetaBundle::reactToChanges( const QValueList<int>& ) { }
 inline void MetaBundle::reactToChange( int column ) { reactToChanges( QValueList<int>() << column ); }
 
-inline bool MetaBundle::exists() const { return m_exists; }
+inline bool MetaBundle::exists() const { return m_flags & Flags::Exists; }
 
 inline bool MetaBundle::isStream() const { return url().protocol() == "http"; }
 
@@ -409,7 +403,15 @@ inline QString MetaBundle::streamUrl()  const { return m_streamUrl; }
 inline QString MetaBundle::uniqueId()   const { return m_uniqueId; }
 
 inline int MetaBundle::discNumber() const { return m_discNumber == Undetermined ? 0 : m_discNumber; }
-inline int MetaBundle::compilation() const { return m_compilation; }
+inline int MetaBundle::compilation() const
+{
+    if( m_flags & Flags::IsCompilation )
+        return CompilationYes;
+    else if( m_flags & Flags::NotCompilation )
+        return CompilationNo;
+    else
+        return CompilationUnknown;
+}
 
 inline AtomicString MetaBundle::composer() const { return m_composer; }
 

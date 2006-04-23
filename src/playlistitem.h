@@ -138,6 +138,8 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
 
         static void imageTransparency( QImage& image, float factor );
 
+        AtomicString artist_album() const; // returns a placeholder 'artist' for compilations
+
         void refAlbum();
         void derefAlbum();
 

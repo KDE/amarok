@@ -994,14 +994,22 @@ void PlaylistItem::imageTransparency( QImage& image, float factor ) //static
     }
 }
 
+AtomicString PlaylistItem::artist_album() const
+{
+    static const AtomicString various_artist = QString( "Various Artists (INTERNAL) [ASDF!]" );
+    if( compilation() == CompilationYes )
+        return various_artist;
+    else
+        return artist();
+}
 
 void PlaylistItem::refAlbum()
 {
     if( AmarokConfig::entireAlbums() )
     {
-        if( listView()->m_albums[artist()].find( album() ) == listView()->m_albums[artist()].end() )
-            listView()->m_albums[artist()][album()] = new PlaylistAlbum;
-        m_album = listView()->m_albums[artist()][album()];
+        if( listView()->m_albums[artist_album()].find( album() ) == listView()->m_albums[artist_album()].end() )
+            listView()->m_albums[artist_album()][album()] = new PlaylistAlbum;
+        m_album = listView()->m_albums[artist_album()][album()];
         m_album->refcount++;
     }
 }
@@ -1014,9 +1022,9 @@ void PlaylistItem::derefAlbum()
         if( !m_album->refcount )
         {
             listView()->m_prevAlbums.removeRef( m_album );
-            listView()->m_albums[artist()].remove( album() );
-            if( listView()->m_albums[artist()].isEmpty() )
-                listView()->m_albums.remove( artist() );
+            listView()->m_albums[artist_album()].remove( album() );
+            if( listView()->m_albums[artist_album()].isEmpty() )
+                listView()->m_albums.remove( artist_album() );
             delete m_album;
         }
     }

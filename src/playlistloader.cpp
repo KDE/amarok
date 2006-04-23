@@ -996,6 +996,9 @@ SqlLoader::doJob()
         b.setSampleRate( (*++it).toInt() );
         b.setFilesize  ( (*++it).toInt() );
         b.setPath      (  *++it );
+        bool ok;
+        const int val = (*++it).toInt( &ok );
+        b.setCompilation( ok ? val : MetaBundle::CompilationUnknown );
 
         bundles += b;
 

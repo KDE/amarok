@@ -2340,7 +2340,6 @@ CollectionDB::bundleForUrl( MetaBundle* bundle )
 QValueList<MetaBundle>
 CollectionDB::bundlesByUrls( const KURL::List& urls )
 {
-    typedef QValueList<MetaBundle> BundleList;
     BundleList bundles;
     QStringList paths;
     QueryBuilder qb;
@@ -2370,6 +2369,7 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFilesize );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFileType );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valIsCompilation );
 
             qb.addURLFilters( paths );
             qb.setOptions( QueryBuilder::optRemoveDuplicates );
@@ -2395,6 +2395,9 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
                 b.setFilesize  ( (*++it).toInt() );
                 b.setFileType  ( (*++it).toInt() );
                 b.setPath      (  *++it );
+                bool ok;
+                int val = (*++it).toInt( &ok );
+                b.setCompilation( ok ? val : MetaBundle::CompilationUnknown );
 
                 buns50.append( b );
             }
@@ -4972,6 +4975,7 @@ QueryBuilder::initSQLDrag()
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valSamplerate );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFilesize );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+    addReturnValue( QueryBuilder::tabSong, QueryBuilder::valIsCompilation );
 }
 
 

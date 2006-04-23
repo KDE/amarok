@@ -472,9 +472,9 @@ void SmartPlaylistEditor::buildQuery()
         limitStr = " LIMIT " + QString::number( m_limitSpin->value() )+" OFFSET 0 ";
     
 
-    // album / artist / genre / title / year / comment / track / bitrate / length / samplerate / path
-    m_query = "SELECT album.name, artist.name, genre.name, tags.title, year.name, "
-                    "tags.comment, tags.track, tags.bitrate, tags.length, tags.samplerate, tags.filesize, tags.url"
+    // album / artist / genre / title / year / comment / track / bitrate / length / samplerate / path / compilation
+    m_query = "SELECT album.name, artist.name, genre.name, tags.title, year.name, tags.comment, tags.track, "
+                    "tags.bitrate, tags.length, tags.samplerate, tags.filesize, tags.url, tags.sampler"
                     " FROM " + joins + whereStr + orderStr + limitStr + ";";
 
     if( m_expandCheck->isChecked() ) { //We use "(*ExpandString*)" as a marker, if a artist/track/album has this bizarre name, it won't work.

@@ -154,7 +154,6 @@ MetaBundle::MetaBundle()
         : m_year( Undetermined )
         , m_discNumber( Undetermined )
         , m_track( Undetermined )
-        , m_compilation( CompilationUnknown )
         , m_bitrate( Undetermined )
         , m_length( Undetermined )
         , m_sampleRate( Undetermined )
@@ -164,8 +163,7 @@ MetaBundle::MetaBundle()
         , m_lastPlay( abs( Undetermined ) )
         , m_filesize( Undetermined )
         , m_type( other )
-        , m_exists( true )
-        , m_isValidMedia( true )
+        , m_flags( Flags::Exists | Flags::ValidMedia )
         , m_podcastBundle( 0 )
 {
     init();
@@ -176,7 +174,6 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
     , m_year( Undetermined )
     , m_discNumber( Undetermined )
     , m_track( Undetermined )
-    , m_compilation( CompilationUnknown )
     , m_bitrate( Undetermined )
     , m_length( Undetermined )
     , m_sampleRate( Undetermined )
@@ -186,17 +183,22 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
     , m_lastPlay( abs( Undetermined ) )
     , m_filesize( Undetermined )
     , m_type( other )
-    , m_exists( url.protocol() == "file" && QFile::exists( url.path() ) )
-    , m_isValidMedia( false ) //will be updated
+    , m_flags( ( url.protocol() == "file" && QFile::exists( url.path() ) ) ? Flags::Exists : 0 )
     , m_podcastBundle( 0 )
 {
     DEBUG_BLOCK
-    if ( m_exists )
+    if ( exists() )
     {
         if ( !noCache )
-            m_isValidMedia = CollectionDB::instance()->bundleForUrl( this );
+        {
+            const bool valid = CollectionDB::instance()->bundleForUrl( this );
+            if( valid )
+                m_flags |= Flags::ValidMedia;
+            else
+                m_flags &= ~Flags::ValidMedia;
+        }
 
-        if ( !m_isValidMedia || m_length <= 0 )
+        if ( !isValidMedia() || m_length <= 0 )
             readTags( readStyle, images );
     }
     else
@@ -221,7 +223,6 @@ MetaBundle::MetaBundle( const QString& title,
         , m_year( 0 )
         , m_discNumber( 0 )
         , m_track( 0 )
-        , m_compilation( CompilationUnknown )
         , m_bitrate( bitrate )
         , m_length( Irrelevant )
         , m_sampleRate( Unavailable )
@@ -231,8 +232,7 @@ MetaBundle::MetaBundle( const QString& title,
         , m_lastPlay( abs( Undetermined ) )
         , m_filesize( Undetermined )
         , m_type( other )
-        , m_exists( true )
-        , m_isValidMedia( true )
+        , m_flags( Flags::Exists | Flags::ValidMedia )
         , m_podcastBundle( 0 )
 {
     if( title.contains( '-' ) )
@@ -248,35 +248,8 @@ MetaBundle::MetaBundle( const QString& title,
 }
 
 MetaBundle::MetaBundle( const MetaBundle &bundle )
-    : m_url( bundle.m_url )
-    , m_title( bundle.m_title )
-    , m_artist( bundle.m_artist )
-    , m_composer( bundle.m_composer )
-    , m_album( bundle.m_album )
-    , m_comment( bundle.m_comment )
-    , m_genre( bundle.m_genre )
-    , m_streamName( bundle.m_streamName )
-    , m_streamUrl( bundle.m_streamUrl )
-    , m_uniqueId( bundle.m_uniqueId )
-    , m_year( bundle.m_year )
-    , m_discNumber( bundle.m_discNumber )
-    , m_track( bundle.m_track )
-    , m_compilation( bundle.m_compilation )
-    , m_bitrate( bundle.m_bitrate )
-    , m_length( bundle.m_length )
-    , m_sampleRate( bundle.m_sampleRate )
-    , m_score( bundle.m_score )
-    , m_rating( bundle.m_rating )
-    , m_playCount( bundle.m_playCount )
-    , m_lastPlay( bundle.m_lastPlay )
-    , m_filesize( bundle.m_filesize )
-    , m_type( bundle.m_type )
-    , m_exists( bundle.m_exists )
-    , m_isValidMedia( bundle.m_isValidMedia )
-    , m_podcastBundle( 0 )
 {
-    if( bundle.m_podcastBundle )
-        setPodcastBundle( *bundle.m_podcastBundle );
+    *this = bundle;
 }
 
 MetaBundle::~MetaBundle()
@@ -300,7 +273,6 @@ MetaBundle::operator=( const MetaBundle& bundle )
     m_year = bundle.m_year;
     m_discNumber = bundle.m_discNumber;
     m_track = bundle.m_track;
-    m_compilation = bundle.m_compilation;
     m_bitrate = bundle.m_bitrate;
     m_length = bundle.m_length;
     m_sampleRate = bundle.m_sampleRate;
@@ -310,8 +282,7 @@ MetaBundle::operator=( const MetaBundle& bundle )
     m_lastPlay = bundle.m_lastPlay;
     m_filesize = bundle.m_filesize;
     m_type = bundle.m_type;
-    m_exists = bundle.m_exists;
-    m_isValidMedia = bundle.m_isValidMedia;
+    m_flags = bundle.m_flags;
     m_podcastBundle = 0;
     if( bundle.m_podcastBundle )
         setPodcastBundle( *bundle.m_podcastBundle );
@@ -323,9 +294,14 @@ MetaBundle::operator=( const MetaBundle& bundle )
 bool
 MetaBundle::checkExists()
 {
-    m_exists = isStream() || ( url().protocol() == "file" && QFile::exists( url().path() ) );
+    const bool exists = isStream() || ( url().protocol() == "file" && QFile::exists( url().path() ) );
 
-    return m_exists;
+    if( exists )
+        m_flags |= Flags::Exists;
+    else
+        m_flags &= ~Flags::Exists;
+
+    return exists;
 }
 
 bool
@@ -399,12 +375,12 @@ MetaBundle::init( const KFileMetaInfo& info )
         makeSane( m_title );
         #undef makeSane
 
-        m_isValidMedia = true;
+        m_flags |= Flags::ValidMedia;
     }
     else
     {
         m_bitrate = m_length = m_sampleRate = m_filesize = Undetermined;
-        m_isValidMedia = false;
+        m_flags &= ~Flags::ValidMedia;
     }
 }
 
@@ -460,7 +436,7 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
             setTrack( tag->track() );
             #undef strip
 
-            m_isValidMedia = true;
+            m_flags |= Flags::ValidMedia;
 
             m_filesize = QFile( path ).size();
         }
@@ -1240,6 +1216,8 @@ bool MetaBundle::save( QTextStream &stream, const QStringList &attributes, int i
     QDomDocument QDomSucksItNeedsADocument;
     QDomElement item = QDomSucksItNeedsADocument.createElement( "item" );
     item.setAttribute( "url", url().url() );
+    if( m_flags & Flags::IsCompilation )
+        item.setAttribute( "compilation", "true" );
 
     for( int i = 0, n = attributes.count(); i < n; i += 2 )
         item.setAttribute( attributes[i], attributes[i+1] );
@@ -1489,7 +1467,23 @@ void MetaBundle::setTrack( int track )
 { aboutToChange( Track ); m_track = track; reactToChange( Track ); }
 
 void MetaBundle::setCompilation( int compilation )
-{ m_compilation = compilation; }
+{
+    switch( compilation )
+    {
+        case CompilationYes:
+            m_flags |= Flags::IsCompilation;
+            m_flags &= ~Flags::NotCompilation;
+            break;
+        case CompilationNo:
+            m_flags |= Flags::NotCompilation;
+            m_flags &= ~Flags::IsCompilation;
+            break;
+        case CompilationUnknown:
+            m_flags &= ~Flags::IsCompilation;
+            m_flags &= ~Flags::NotCompilation;
+            break;
+    }
+}
 
 void MetaBundle::setLength( int length )
 { aboutToChange( Length ); m_length = length; reactToChange( Length ); }
