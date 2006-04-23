@@ -4019,7 +4019,7 @@ MySqlConnection::MySqlConnection( MySqlConfig* config )
 
             // now set the right charset for the connection
             QStringList my_qslist = query( "SHOW VARIABLES LIKE 'character_set_database'" );
-            if( !my_qslist.isEmpty() && !mysql_set_character_set( m_db, my_qslist[1].latin1() ) )
+            if( !my_qslist.isEmpty() && !mysql_set_character_set( m_db, const_cast<char *>( my_qslist[1].latin1() ) ) )
                 //charset was updated
                 debug() << "Connection Charset is now: " << my_qslist[1].latin1() << endl;
             else
