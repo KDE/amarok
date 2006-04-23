@@ -43,32 +43,39 @@ def fetchLyrics( artist, title )
     body = response.body()
 
     body.gsub!( "\n", "" ) # No need for \n, just complicates our RegExps
-    body = /(<tr><td bgcolor="#BBBBBB".*)(More Songs &gt)/.match( body )[1].to_s()
 
-    doc = REXML::Document.new( "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" )
-    root = doc.add_element( "suggestions" )
-    root.add_attribute( "page_url", page_url )
+    md = /(<tr><td bgcolor="#BBBBBB".*)(More Songs &gt)/.match( body )
 
-    entries = body.split( '<tr><td bgcolor="#BBBBBB"' )
-    entries.delete_at( 0 )
+    if  not md == nil
 
-    entries.each do |entry|
-        url = /(display\.lyrics\.astraweb.com:2000)([^"]*)/.match( entry )[2].to_s()
-        artist = /(Artist:.*html">)([^<]*)/.match( entry )[2].to_s()
-        title = /(display\.lyrics.*?>)([^<]*)/.match( entry )[2].to_s()
-#         album = /(Album:.*?">)([^<]*)/.match( entry )[2].to_s()
+        body = md[1].to_s()
 
-        suggestion = root.add_element( "suggestion" )
-        suggestion.add_attribute( "url", url )
-        suggestion.add_attribute( "artist", artist.unpack("C*").pack("U*") )
-        suggestion.add_attribute( "title", title.unpack("C*").pack("U*") )
+        doc = REXML::Document.new( "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" )
+        root = doc.add_element( "suggestions" )
+        root.add_attribute( "page_url", page_url )
+
+        entries = body.split( '<tr><td bgcolor="#BBBBBB"' )
+        entries.delete_at( 0 )
+
+        entries.each do |entry|
+            url = /(display\.lyrics\.astraweb.com:2000)([^"]*)/.match( entry )[2].to_s()
+            artist = /(Artist:.*html">)([^<]*)/.match( entry )[2].to_s()
+            title = /(display\.lyrics.*?>)([^<]*)/.match( entry )[2].to_s()
+    #         album = /(Album:.*?">)([^<]*)/.match( entry )[2].to_s()
+
+            suggestion = root.add_element( "suggestion" )
+            suggestion.add_attribute( "url", url )
+            suggestion.add_attribute( "artist", artist.unpack("C*").pack("U*") )
+            suggestion.add_attribute( "title", title.unpack("C*").pack("U*") )
+        end
+
+        xml = ""
+        doc.write( xml )
+
+    #     puts( xml )
+        showLyrics( xml )
+
     end
-
-    xml = ""
-    doc.write( xml )
-
-#     puts( xml )
-    showLyrics( xml )
 end
 
 

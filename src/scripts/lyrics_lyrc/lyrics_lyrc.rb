@@ -108,7 +108,7 @@ def fetchLyrics( artist, title, url )
 
     unless response.code == "200"
 #         error "HTTP Error: #{response.message}"
-        `dcop amarok contextbrowser showLyrics"`
+        `dcop amarok contextbrowser showLyrics ""`
         return
     end
 
