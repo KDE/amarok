@@ -45,7 +45,7 @@ def fetchLyrics( artist, title )
     body.gsub!( "\n", "" ) # No need for \n, just complicates our RegExps
     body = /(<tr><td bgcolor="#BBBBBB".*)(More Songs &gt)/.match( body )[1].to_s()
 
-    doc = REXML::Document.new()
+    doc = REXML::Document.new( "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" )
     root = doc.add_element( "suggestions" )
     root.add_attribute( "page_url", page_url )
 
@@ -60,8 +60,8 @@ def fetchLyrics( artist, title )
 
         suggestion = root.add_element( "suggestion" )
         suggestion.add_attribute( "url", url )
-        suggestion.add_attribute( "artist", artist )
-        suggestion.add_attribute( "title", title )
+        suggestion.add_attribute( "artist", artist.unpack("C*").pack("U*") )
+        suggestion.add_attribute( "title", title.unpack("C*").pack("U*") )
     end
 
     xml = ""
@@ -93,12 +93,12 @@ def fetchLyricsByUrl( url )
     lyricstwo = /(SPONSORS<\/font><br><\/center>)(.*?)(<\/font>)/.match( body )[2].to_s()
     lyrics.concat(lyricstwo)
     lyrics.gsub!( /<[Bb][Rr][^>]*>/, "\n" ) # HTML -> Plaintext
-    doc = REXML::Document.new()
+    doc = REXML::Document.new( "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" )
     root = doc.add_element( "lyrics" )
     root.add_attribute( "page_url", page_url )
-    root.add_attribute( "artist", artist )
-    root.add_attribute( "title", title )
-    root.text = lyrics
+    root.add_attribute( "artist", artist.unpack("C*").pack("U*") )
+    root.add_attribute( "title", title.unpack("C*").pack("U*") )
+    root.text = lyrics.unpack("C*").pack("U*")
 
     xml = ""
     doc.write( xml )
