@@ -176,7 +176,7 @@ class QuizPlugin < Plugin
                 replies << "GOOOAAALLLL! That was one fine strike by #{m.sourcenick}. The answer was: #{q.answer}"
                 replies << "HOO-RAY, #{m.sourcenick} deserves a medal! Only #{m.sourcenick} could have known the answer: #{q.answer}"
                 replies << "OKAY, #{m.sourcenick} is officially a spermatologist! Answer was: #{q.answer}"
-                replies << "WOO, I bet that #{m.sourcenick} knows where the word 'trivia' comes from too! Answer was: #{q.answer}"
+                replies << "WOOO, I bet that #{m.sourcenick} knows where the word 'trivia' comes from too! Answer was: #{q.answer}"
 #            end
 
             @bot.say( m.replyto, replies[rand( replies.length )] )
@@ -199,6 +199,11 @@ class QuizPlugin < Plugin
     # Command handling
     #######################################################################
     def cmd_quiz( m, params )
+        if m.target == "#amarok"
+            @bot.say( m.replyto, "Please join #amarok.gaming for quizzing! :)" )
+            return
+        end
+
         fetch_data( m ) if @questions.empty?
 
         q = create_quiz( m.target )
