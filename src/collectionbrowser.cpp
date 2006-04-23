@@ -1755,7 +1755,7 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
 
             if( src.path() != dest ) //supress error warning that file couldn't be moved
             {
-                if( !CollectionDB::instance()->moveFile( src.path(), dest, write, copy ) )
+                if( !CollectionDB::instance()->moveFile( src.url(), dest, write, copy ) )
                 {
                     skipped += src;
                 }
@@ -1855,25 +1855,32 @@ CollectionView::contentsDropEvent( QDropEvent *e )
     {
         KURL::List cleanList;
         int dropped = 0;
+        int invalid = 0;
         for( KURL::List::iterator it = list.begin();
                 it != list.end();
                 ++it )
         {
-            if( (*it).protocol() == "file" && !CollectionDB::instance()->isFileInCollection( (*it).path() ) )
+            if( ( (*it).protocol() == "file" || (*it).protocol() == "audiocd" ) &&
+                    !CollectionDB::instance()->isFileInCollection( (*it).path() ) )
             {
                 if( QFileInfo( (*it).path() ).isDir() )
                     cleanList += amaroK::recursiveUrlExpand( *it );
                 else
                     cleanList += *it;
             }
-            else
+            else if( (*it).protocol() == "file" || (*it).protocol() == "audiocd" )
                 dropped++;
-
+            else 
+                invalid++;
         }
         if( dropped > 0 )
             amaroK::StatusBar::instance()->shortMessage(
                     i18n( "One file already in collection",
                         "%n files already in collection", dropped ) );
+        if( invalid > 0 )
+            amaroK::StatusBar::instance()->shortMessage(
+                    i18n( "One dropped file is invalid",
+                        "%n dropped files are invalid", invalid ) );
         if( cleanList.count() > 0 )
             organizeFiles( list, i18n( "Copy Files To Collection" ), true /* copy */ );
     }

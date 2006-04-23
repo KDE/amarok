@@ -2777,6 +2777,7 @@ CollectionDB::fileOperationResult( KIO::Job *job ) // slot
 bool
 CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite, bool copy )
 {
+    DEBUG_BLOCK
     if(src == dest){
         debug() << "Source and destination URLs are the same, aborting."  << endl;
         return false;
