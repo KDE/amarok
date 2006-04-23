@@ -299,7 +299,8 @@ ManualDeviceAdder::slotOk()
     {
        debug() << "name: " << getMedium()->name() << ", managed: " << DeviceManager::instance()->getDevice( getMedium()->name() ) << endl;
     }
-    if( getMedium() != NULL && DeviceManager::instance()->getDevice( getMedium()->name() ) == NULL )
+    if( getMedium() != NULL && !getMedium()->name().isEmpty() &&
+            DeviceManager::instance()->getDevice( getMedium()->name() ) == NULL )
     {
         m_successful = true;
         KDialogBase::slotOk( );
