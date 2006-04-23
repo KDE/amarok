@@ -2675,8 +2675,8 @@ void
 ContextBrowser::lyricsResult( const QString& xmldoc, bool cached ) //SLOT
 {
     QDomDocument doc;
-
-    if( !doc.setContent( xmldoc ) )
+    QString utf8Xml =  QString::fromUtf8( xmldoc.local8Bit() );
+    if( !doc.setContent( utfXml ) )
     {
         m_HTMLSource="";
         m_HTMLSource.append(

@@ -36,8 +36,8 @@ def parseLyrics( lyrics )
 
     lyrics.gsub!( /<[fF][oO][nN][tT][^>]*>/, "" )
 
-    doc = REXML::Document.new()
-#     doc = REXML::Document.new( "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" )
+#    doc = REXML::Document.new()
+    doc = REXML::Document.new( "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" )
     root = doc.add_element( "lyrics" )
 
     root.add_attribute( "page_url", @page_url )
@@ -47,8 +47,7 @@ def parseLyrics( lyrics )
     lyrics = /(<\/u><\/font>)(.*)/.match( lyrics )[2].to_s()
     lyrics.gsub!( /<[Bb][Rr][^>]*>/, "\n" ) # HTML -> Plaintext
 
-    root.text = lyrics
-     #.unpack("C*").pack("U*") #Convert to UTF-8
+    root.text = lyrics.unpack("C*").pack("U*") #Convert to UTF-8
 
     xml = ""
     doc.write( xml )
