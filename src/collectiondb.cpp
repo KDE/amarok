@@ -3989,6 +3989,15 @@ MySqlConnection::MySqlConnection( MySqlConfig* config )
                                               NULL, CLIENT_COMPRESS ) )
         {
             m_initialized = true;
+
+            // now set the right charset for the connection
+            QStringList my_qslist = query( "SHOW VARIABLES LIKE 'character_set_database'" );
+            if( !my_qslist.isEmpty() && !mysql_set_character_set( m_db, my_qslist[1].latin1() ) )
+                //charset was updated
+                debug() << "Connection Charset is now: " << my_qslist[1].latin1() << endl;
+            else
+                error() << "Failed to set database charset\n";
+
             m_db->reconnect=1; //setting reconnect flag for newer mysqld
             m_connected = true;
         }
