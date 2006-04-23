@@ -2672,11 +2672,12 @@ void ContextBrowser::showLyrics( const QString &url )
 
 
 void
-ContextBrowser::lyricsResult( const QString& xmldoc, bool cached ) //SLOT
+ContextBrowser::lyricsResult( QString xmldoc, bool cached ) //SLOT
 {
     QDomDocument doc;
-    QString utf8Xml =  QString::fromUtf8( xmldoc.local8Bit() );
-    if( !doc.setContent( utf8Xml ) )
+    if ( !cached )
+        xmldoc = QString::fromUtf8( xmldoc.local8Bit() );
+    if( !doc.setContent( xmldoc ) )
     {
         m_HTMLSource="";
         m_HTMLSource.append(
