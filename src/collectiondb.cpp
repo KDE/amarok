@@ -2164,17 +2164,30 @@ CollectionDB::doATFStuff( MetaBundle* bundle )
     //checking length below because for some reason the != check does not always work, even when length is zero
     else if( currid != QString::null && currid.length() > 0 ) //new item, but no uniqueid...probably ATF off
     {
-        //debug() << "Currid = " << currid << ", length is " << currid.length() << ", url is " << currurl << endl;
         if( urls.empty() && uniqueids.empty() ) // new item
             insert( QString( "INSERT INTO uniqueid (url, uniqueid) VALUES ('%1', '%2')" )
                 .arg( currurl )
                 .arg( currid ), NULL );
         else if( urls.empty() )  //detected same uniqueid, so file moved
         {
-            query( QString( "UPDATE uniqueid SET url='%1' WHERE uniqueid='%2';" )
+            debug() << "At doATFStuff, stat-ing file " << uniqueids[0] << endl;
+            //stat the original URL
+            KURL oldurl;
+            oldurl.setPath( uniqueids[0] );
+            KIO::UDSEntry result;
+            bool statSuccessful = KIO::NetAccess::stat( oldurl, result );
+            if( statSuccessful ) //if true, new one is a copy
+            {
+                bundle->newUniqueId();
+                doATFStuff( bundle ); //yes, it's recursive, but what's wrong with that? :-)
+            }
+            else
+            {
+                query( QString( "UPDATE uniqueid SET url='%1' WHERE uniqueid='%2';" )
                     .arg( currurl )
                     .arg( currid ) );
-            emit fileMoved( uniqueids[0], currurl, currid );
+                emit fileMoved( uniqueids[0], currurl, currid );
+            }
         }
         //a file exists in the same place as before, but new uniqueid...assume
         //that this is desired user behavior
@@ -2185,6 +2198,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle )
                     .arg( currurl ) );
             emit uniqueidChanged( currurl, urls[1], currid );
         }
+        //else, urls.count == 2 and uniqueids.count == 2, so the correct URL/ID pair already exists
     }
 }
 
