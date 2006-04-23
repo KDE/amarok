@@ -1873,14 +1873,19 @@ CollectionView::contentsDropEvent( QDropEvent *e )
             else 
                 invalid++;
         }
+        QString msg;
         if( dropped > 0 )
-            amaroK::StatusBar::instance()->shortMessage(
-                    i18n( "One file already in collection",
-                        "%n files already in collection", dropped ) );
+            msg += i18n( "One file already in collection",
+                    "%n files already in collection", dropped );
         if( invalid > 0 )
-            amaroK::StatusBar::instance()->shortMessage(
-                    i18n( "One dropped file is invalid",
-                        "%n dropped files are invalid", invalid ) );
+            if( msg.isEmpty() )
+                msg += i18n( "One dropped file is invalid",
+                        "%n dropped files are invalid", invalid );
+            else
+                msg += i18n( ", one dropped file is invalid",
+                        ", %n dropped files are invalid", invalid );
+        if( !msg.isEmpty() )
+            amaroK::StatusBar::instance()->shortMessage( msg );
         if( cleanList.count() > 0 )
             organizeFiles( list, i18n( "Copy Files To Collection" ), true /* copy */ );
     }
