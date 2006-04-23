@@ -1628,6 +1628,7 @@ MediaBrowser::updateStats()
     }
 
     m_stats->setText(text);
+    QToolTip::add( m_stats, text );
 }
 
 
