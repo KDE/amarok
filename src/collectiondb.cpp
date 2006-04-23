@@ -577,7 +577,8 @@ CollectionDB::createPersistentTables()
     //create uniqueid table
     query( QString( "CREATE TABLE uniqueid ("
         "url " + textColumnType() + ","
-        "uniqueid " + textColumnType(8) + ");" ) );
+        "uniqueid " + textColumnType(8) + ","
+        "dir " + textColumnType() + ");" ) );
 
     query( "CREATE INDEX url_label ON label( url );" );
     query( "CREATE INDEX label_label ON label( label );" );
@@ -2139,6 +2140,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle )
     //ATF Stuff
     QString currid = bundle->uniqueId();
     QString currurl = escapeString( bundle->url().path() );
+    QString currdir = escapeString( bundle->url().directory() );
 
     QStringList urls = query( QString(
             "SELECT uniqueid.url, uniqueid.uniqueid "
@@ -2165,9 +2167,10 @@ CollectionDB::doATFStuff( MetaBundle* bundle )
     else if( currid != QString::null && currid.length() > 0 ) //new item, but no uniqueid...probably ATF off
     {
         if( urls.empty() && uniqueids.empty() ) // new item
-            insert( QString( "INSERT INTO uniqueid (url, uniqueid) VALUES ('%1', '%2')" )
+            insert( QString( "INSERT INTO uniqueid (url, uniqueid, dir) VALUES ('%1', '%2', '%3')" )
                 .arg( currurl )
-                .arg( currid ), NULL );
+                .arg( currid )
+                .arg( currdir ), NULL );
         else if( urls.empty() )  //detected same uniqueid, so file moved
         {
             debug() << "At doATFStuff, stat-ing file " << uniqueids[0] << endl;
@@ -2183,8 +2186,9 @@ CollectionDB::doATFStuff( MetaBundle* bundle )
             }
             else
             {
-                query( QString( "UPDATE uniqueid SET url='%1' WHERE uniqueid='%2';" )
+                query( QString( "UPDATE uniqueid SET url='%1', dir='%2' WHERE uniqueid='%3';" )
                     .arg( currurl )
+                    .arg( currdir )
                     .arg( currid ) );
                 emit fileMoved( uniqueids[0], currurl, currid );
             }
@@ -2928,6 +2932,9 @@ CollectionDB::removeSongsInDir( QString path )
 
     query( QString( "DELETE FROM tags WHERE dir = '%1';" )
               .arg( escapeString( path ) ) );
+    if( AmarokConfig::advancedTagFeatures() )
+            query( QString( "DELETE FROM uniqueid WHERE dir = '%1';" )
+                .arg( escapeString( path ) ) );
 }
 
 
@@ -2963,6 +2970,9 @@ CollectionDB::removeSongs( const KURL::List& urls )
     {
         query( QString( "DELETE FROM tags WHERE url = '%1';" )
             .arg( escapeString( (*it).path() ) ) );
+        if( AmarokConfig::advancedTagFeatures() )
+            query( QString( "DELETE FROM uniqueid WHERE url = '%1';" )
+                .arg( escapeString( (*it).path() ) ) );
     }
 }
 
@@ -3643,7 +3653,7 @@ CollectionDB::initialize()
             debug() << "Building uniqueid tables" << endl;
             createPersistentTables();
         }
-        else if ( PersistentVersion.toInt() < 9 )
+        else if ( PersistentVersion.toInt() < 10 )
         {
             debug() << "Dropping old uniqueid table, unsafe values could be inside." << endl;
             //This is okay, as 7 was only a short lived development release...should not cause problems.

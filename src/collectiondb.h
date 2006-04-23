@@ -429,7 +429,7 @@ class CollectionDB : public QObject, public EngineObserver
         static const int DATABASE_VERSION = 26;
         // Persistent Tables hold data that is somehow valuable to the user, and can't be erased when rescaning.
         // When bumping this, write code to convert the data!
-        static const int DATABASE_PERSISTENT_TABLES_VERSION = 9;
+        static const int DATABASE_PERSISTENT_TABLES_VERSION = 10;
         // Bumping this erases stats table. If you ever need to, write code to convert the data!
         static const int DATABASE_STATS_VERSION = 5;
 
