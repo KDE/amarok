@@ -1913,9 +1913,12 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                             it = next)
                     {
                         next = dynamic_cast<MediaItem *>(it->nextSibling());
-                        item->takeItem(it);
-                        insertTrackIntoDB(it->url().path(), *it->bundle(), 0);
-                        delete it;
+                        if( !trackExists( *it->bundle() ) )
+                        {
+                            item->takeItem(it);
+                            insertTrackIntoDB(it->url().path(), *it->bundle(), 0);
+                            delete it;
+                        }
                     }
                 }
                 else
@@ -1925,7 +1928,7 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                             m_view->selectedItems().next())
                     {
                         MediaItem *it = dynamic_cast<MediaItem *>(m_view->selectedItems().current());
-                        if(it->type() == MediaItem::ORPHANED)
+                        if(it->type() == MediaItem::ORPHANED && !trackExists(*it->bundle()))
                         {
                             it->parent()->takeItem(it);
                             insertTrackIntoDB(it->url().path(), *it->bundle(), 0);
