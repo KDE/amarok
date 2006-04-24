@@ -18,7 +18,8 @@ PlayerStats = Struct.new( "PlayerStats", :score )
 # One Quiz instance per channel, contains channel specific data
 #######################################################################
 class Quiz
-    attr_accessor :registry, :questions, :question, :answer, :answer_core, :hint, :hintrange
+    attr_accessor :registry, :questions, :question, :answer, :answer_core,
+                  :hint, :hintrange, :rank_table
 
     def initialize( channel, registry )
         @registry = registry.sub_registry( channel )
@@ -29,6 +30,9 @@ class Quiz
         @answer_core = nil
         @hint = nil
         @hintrange = nil
+
+        # Convert registry to array, then sort by score
+        @rank_table = @registry.to_a.sort { |a,b| b[1].score<=>a[1].score }
     end
 end
 
@@ -49,7 +53,7 @@ class QuizPlugin < Plugin
         # TODO: Make this configurable, and add support for more than one file (there's a size limit in linux too ;) )
         path = "/home/eean/.rbot/quiz.rbot"
 
-        @bot.say( m.replyto, "Fetching questions from the local database and the server.." )
+        @bot.say( m.replyto, "Fetching questions from local database and server.." )
         begin
             datafile  = File.new( path,  File::RDONLY )
             localdata = datafile.read
@@ -124,13 +128,9 @@ class QuizPlugin < Plugin
         if q.registry.has_key?( nick )
             score = q.registry[nick].score
 
-            # Convert registry to array, then sort by score
-            players = q.registry.to_a.sort { |a,b| b[1].score<=>a[1].score }
-
             rank = 0
-            while rank < players.length
-                if players[rank][0] == nick then break end
-                rank += 1
+            q.rank_table.length.times do |rank|
+                break if nick == q.rank_table[rank][0]
             end
 
             @bot.say( m.replyto, "#{nick}'s score is: #{score}  Rank: #{rank + 1}" )
@@ -156,16 +156,13 @@ class QuizPlugin < Plugin
         if message == q.answer.downcase or message == q.answer_core.downcase
             replies = []
 
-            # Convert registry to array, then sort by score
-#            players = q.registry.to_a.sort { |a,b| b[1].score<=>a[1].score }
-
-#            if q.registry.length >= 1 and m.sourcenick == players[0][0]
-#                replies << "THE QUIZ CHAMPION defends his throne! Seems like #{m.sourcenick} is invicible! Answer was: #{q.answer}"
-#            elsif q.registry.length >= 2 and m.sourcenick == players[1][0]
-#                replies << "THE SECOND CHAMPION is on the way up! Hurry up #{m.sourcenick}, you only need #{players[0][1].score - players[1][1].score} points to beat the king! Answer was: #{q.answer}"
-#            elsif  q.registry.length >= 3 and m.sourcenick == players[2][0]
-#                replies << "THE THIRD CHAMPION strikes again! Give it all #{m.sourcenick}, with #{players[1][1].score - players[2][1].score} more points you'll reach the 2nd place! Answer was: #{q.answer}"
-#            else
+            if q.rank_table.length >= 1 and m.sourcenick == q.rank_table[0][0]
+                replies << "THE QUIZ CHAMPION defends his throne! Seems like #{m.sourcenick} is invicible! Answer was: #{q.answer}"
+            elsif q.rank_table.length >= 2 and m.sourcenick == q.rank_table[1][0]
+                replies << "THE SECOND CHAMPION is on the way up! Hurry up #{m.sourcenick}, you only need #{q.rank_table[0][1].score - q.rank_table[1][1].score} points to beat the king! Answer was: #{q.answer}"
+            elsif  q.rank_table.length >= 3 and m.sourcenick == q.rank_table[2][0]
+                replies << "THE THIRD CHAMPION strikes again! Give it all #{m.sourcenick}, with #{q.rank_table[1][1].score - q.rank_table[2][1].score} more points you'll reach the 2nd place! Answer was: #{q.answer}"
+            else
                 replies << "BINGO!! #{m.sourcenick} got it right. The answer was: #{q.answer}"
                 replies << "OMG!! PONIES!! #{m.sourcenick} is the cutest. The answer was: #{q.answer}"
                 replies << "HUZZAAAH! #{m.sourcenick} did it again. The answer was: #{q.answer}"
@@ -177,7 +174,7 @@ class QuizPlugin < Plugin
                 replies << "HOO-RAY, #{m.sourcenick} deserves a medal! Only #{m.sourcenick} could have known the answer: #{q.answer}"
                 replies << "OKAY, #{m.sourcenick} is officially a spermatologist! Answer was: #{q.answer}"
                 replies << "WOOO, I bet that #{m.sourcenick} knows where the word 'trivia' comes from too! Answer was: #{q.answer}"
-#            end
+            end
 
             @bot.say( m.replyto, replies[rand( replies.length )] )
 
@@ -190,6 +187,27 @@ class QuizPlugin < Plugin
 
             stats["score"] = stats.score + 1
             q.registry[m.sourcenick] = stats
+
+            if q.registry.has_key?( m.sourcenick )
+                # Find player in table
+                i = 0
+                q.rank_table.length.times do |i|
+                    break if m.sourcenick == q.rank_table[i][0]
+                end
+
+                q.rank_table.delete_at( i )
+
+                # Insert player at new position
+                q.rank_table.length.times do |i|
+                    if stats.score > q.rank_table[i][1].score
+                        q.rank_table[i,0] = [[m.sourcenick, stats]]
+                        break
+                    end
+                end
+            else
+                q.rank_table << [[m.sourcenick, stats]]
+            end
+
 
             q.question = nil
         end
@@ -326,14 +344,11 @@ class QuizPlugin < Plugin
 
         @bot.say( m.replyto, "* Top 5 Players for #{m.target}:" )
 
-        # Convert registry to array, then sort by score
-        players = q.registry.to_a.sort { |a,b| a[1].score<=>b[1].score }
-
-        1.upto( [5, players.length].min ) do |i|
-            player = players.pop
+        [5, q.rank_table.length].min.times do |i|
+            player = q.rank_table[i]
             nick = player[0]
             score = player[1].score
-            @bot.say( m.replyto, "  #{i}. #{nick} (#{score})" )
+            @bot.say( m.replyto, "  #{i + 1}. #{nick} (#{score})" )
         end
     end
 
@@ -343,15 +358,12 @@ class QuizPlugin < Plugin
 
         @bot.say( m.replyto, "* Top 10 Players for #{m.target}:" )
 
-        # Convert registry to array, then sort by score
-        players = q.registry.to_a.sort { |a,b| a[1].score<=>b[1].score }
-
         str = ""
-        1.upto( [10, players.length].min ) do |i|
-            player = players.pop
+        [10, q.rank_table.length].min.times do |i|
+            player = q.rank_table[i]
             nick = player[0]
             score = player[1].score
-            str << "#{i}. #{nick} (#{score}) | "
+            str << "#{i + 1}. #{nick} (#{score}) | "
         end
 
         @bot.say( m.replyto, str )
