@@ -31,7 +31,9 @@ class Quiz
         @hint = nil
         @hintrange = nil
 
-        # Convert registry to array, then sort by score
+        # We keep this array of player stats for performance reasons. It's sorted by score
+        # and always synced with the registry player stats hash. This way we can do fast
+        # rank lookups, without extra sorting.
         @rank_table = @registry.to_a.sort { |a,b| b[1].score<=>a[1].score }
     end
 end
