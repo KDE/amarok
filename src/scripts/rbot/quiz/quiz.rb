@@ -55,7 +55,7 @@ class QuizPlugin < Plugin
         # TODO: Make this configurable, and add support for more than one file (there's a size limit in linux too ;) )
         path = "/home/eean/.rbot/quiz.rbot"
 
-        @bot.say( m.replyto, "Fetching questions from local database and server.." )
+        @bot.say( m.replyto, "Fetching questions from local database and wiki.." )
         begin
             datafile  = File.new( path,  File::RDONLY )
             localdata = datafile.read
@@ -69,7 +69,7 @@ class QuizPlugin < Plugin
             serverdata = serverdata.split( "\nQUIZ DATA END" )[0]
             serverdata = serverdata.gsub( /&nbsp;/, " " ).gsub( /&amp;/, "&" ).gsub( /&quot;/, "\"" )
         rescue
-            @bot.say( m.replyto, "Failed to connect to the server. oioi." )
+            @bot.say( m.replyto, "Failed to download wiki questions. oioi." )
             if localdata == nil
               @bot.say( m.replyto, "No questions loaded, aborting." )
               return
