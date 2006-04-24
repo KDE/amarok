@@ -145,6 +145,38 @@ class QuizPlugin < Plugin
     end
 
 
+    def calculate_ranks( m, q )
+        if q.registry.has_key?( m.sourcenick )
+            stats = q.registry[m.sourcenick]
+
+            # Find player in table
+            i = 0
+            q.rank_table.length.times do |i|
+                break if m.sourcenick == q.rank_table[i][0]
+            end
+
+            old_rank = i
+            q.rank_table.delete_at( i )
+
+            # Insert player at new position
+            q.rank_table.length.times do |i|
+                if stats.score > q.rank_table[i][1].score
+                    q.rank_table[i,0] = [[m.sourcenick, stats]]
+                    break
+                end
+            end
+
+            if i < old_rank
+                @bot.say( m.replyto, "#{m.sourcenick} ascends to rank #{i + 1}. Congratulations :)" )
+            elsif i > old_rank
+                @bot.say( m.replyto, "#{m.sourcenick} slides down to rank #{i + 1}. So Sorry! NOT. :p" )
+            end
+        else
+            q.rank_table << [[m.sourcenick, PlayerStats.new( 1 )]]
+        end
+    end
+
+
     def listen( m )
         return unless @quizzes.has_key?( m.target )
         q = @quizzes[m.target]
@@ -188,31 +220,7 @@ class QuizPlugin < Plugin
             stats["score"] = stats.score + 1
             q.registry[m.sourcenick] = stats
 
-            if q.registry.has_key?( m.sourcenick )
-                # Find player in table
-                i = 0
-                q.rank_table.length.times do |i|
-                    break if m.sourcenick == q.rank_table[i][0]
-                end
-
-                old_rank = i
-                q.rank_table.delete_at( i )
-
-                # Insert player at new position
-                q.rank_table.length.times do |i|
-                    if stats.score > q.rank_table[i][1].score
-                        q.rank_table[i,0] = [[m.sourcenick, stats]]
-                        break
-                    end
-                end
-
-                unless i == old_rank
-                    @bot.say( m.replyto, "#{m.sourcenick} ascends to rank #{i + 1}. Congratulations!" )
-                end
-            else
-                q.rank_table << [[m.sourcenick, stats]]
-            end
-
+            calculate_ranks( m, q )
 
             q.question = nil
         end
@@ -311,6 +319,8 @@ class QuizPlugin < Plugin
 
                 stats["score"] = stats.score -  1
                 q.registry[m.sourcenick] = stats
+
+                calculate_ranks( m, q )
 
                 q.question = nil
             end
