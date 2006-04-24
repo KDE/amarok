@@ -661,7 +661,7 @@ CollectionDB::dropPersistentTables()
 {
     query( "DROP TABLE amazon;" );
     query( "DROP TABLE lyrics;" );
-    query( "DROP TABLE labels;" );
+    query( "DROP TABLE label;" );
     query( "DROP TABLE uniqueid;" );
     query( "DROP TABLE podcastchannels;" );
     query( "DROP TABLE podcastepisodes;" );
