@@ -5,6 +5,9 @@ TODO-list for amaroK
 
 
 SHORT-TERM (URGENT):
+ <sebr>    Editing meta info for an album and changing the disc number for all tracks causes
+           the score for each item to be reset to 0.
+
  <markey>  xine-engine: when "xine could not init any audio driver" happens, always retry
            with Autodetect. This seems to be an issue with leftover amarokrc's from 1.3.
 
