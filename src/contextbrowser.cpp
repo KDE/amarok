@@ -2086,6 +2086,7 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
             qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
             qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
             qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+            qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTitle );
             qb.setOptions( QueryBuilder::optNoCompilations );
             QStringList albumValues = qb.run();
             usleep( 10000 );
