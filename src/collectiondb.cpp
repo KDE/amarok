@@ -2149,14 +2149,14 @@ CollectionDB::doATFStuff( MetaBundle* bundle )
     QString currdir = escapeString( bundle->url().directory() );
 
     QStringList urls = query( QString(
-            "SELECT uniqueid.url, uniqueid.uniqueid "
+            "SELECT url, uniqueid "
             "FROM uniqueid_temp "
-            "WHERE uniqueid.url = '%1';" )
+            "WHERE url = '%1';" )
                 .arg( currurl ) );
     QStringList uniqueids = query( QString(
-            "SELECT uniqueid.url, uniqueid.uniqueid "
+            "SELECT url, uniqueid "
             "FROM uniqueid_temp "
-            "WHERE uniqueid.uniqueid = '%1';" )
+            "WHERE uniqueid = '%1';" )
                 .arg( currid ) );
 
     if( urls.count() > 2 || uniqueids.count() > 2)
