@@ -263,7 +263,7 @@ class QuizPlugin < Plugin
             if q.answer_core[index, 1] == " "
                 q.hint << " "
             else
-                q.hint << "."
+                q.hint << "^"
             end
         end
 
