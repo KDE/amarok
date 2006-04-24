@@ -60,7 +60,7 @@ class QuizPlugin < Plugin
             datafile  = File.new( path,  File::RDONLY )
             localdata = datafile.read
         rescue
-            @bot.say( m.replyto, "Failed to read local database. oioi." )
+            @bot.say( m.replyto, "Failed to read local database file. oioi." )
         end
 
         begin
