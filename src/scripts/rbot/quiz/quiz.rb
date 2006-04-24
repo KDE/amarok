@@ -159,15 +159,17 @@ class QuizPlugin < Plugin
             q.rank_table.delete_at( i )
 
             # Insert player at new position
+            inserted = false
             q.rank_table.length.times do |i|
                 if stats.score >= q.rank_table[i][1].score
                     q.rank_table[i,0] = [[m.sourcenick, stats]]
+                    inserted = true
                     break
                 end
             end
 
             # If less than all other players' scores, append at the end
-            if i == q.rank_table.length - 1
+            unless inserted == true
                 q.rank_table << [[m.sourcenick, stats]]
             end
 
