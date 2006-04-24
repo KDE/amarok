@@ -1371,6 +1371,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
 void
 MetaBundle::newUniqueId()
 {
+    DEBUG_BLOCK
     const QString path = url().path();
     TagLib::FileRef fileref;
     fileref = TagLib::FileRef( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );
@@ -1429,17 +1430,23 @@ MetaBundle::getRandomStringHelper( int size )
 {
     QString returnvalue;
     bool goodvalue = false;
-    QStringList uniqueids;
+    QStringList uniqueidsreg, uniqueidstemp;
     while( !goodvalue )
     {
         returnvalue = getRandomString( size );
-        uniqueids = CollectionDB::instance()->query( QString(
+        uniqueidsreg = CollectionDB::instance()->query( QString(
             "SELECT uniqueid.url, uniqueid.uniqueid "
             "FROM uniqueid "
             "WHERE uniqueid.uniqueid = '%1';" )
                 .arg( returnvalue ) );
+        //also temp, don't know if we'll be scanning or not
+        uniqueidstemp = CollectionDB::instance()->query( QString(
+            "SELECT uniqueid.url, uniqueid.uniqueid "
+            "FROM uniqueid_temp "
+            "WHERE uniqueid.uniqueid = '%1';" )
+                .arg( returnvalue ) );
 
-        if( uniqueids.count() == 0 )
+        if( uniqueidsreg.count() == 0  && uniqueidstemp.count() == 0 )
             goodvalue = true;
     }
     return returnvalue;

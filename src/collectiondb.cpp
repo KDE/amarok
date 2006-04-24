@@ -411,6 +411,14 @@ CollectionDB::createTables( const bool temporary )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
+    //create uniqueid table
+    query( QString( "CREATE %1 TABLE uniqueid%2 ("
+                    "url " + textColumnType() + ","
+                    "uniqueid " + textColumnType(8) + ","
+                    "dir " + textColumnType() + ");" )
+                    .arg( temporary ? "TEMPORARY" : "" )
+                    .arg( temporary ? "_temp" : "" ) );
+
     //create indexes
     query( QString( "CREATE INDEX album_idx%1 ON album%2( name );" )
                     .arg( temporary ? "_temp" : "" ).arg( temporary ? "_temp" : "" ) );
@@ -456,6 +464,8 @@ CollectionDB::createIndices()
     query( "CREATE INDEX embed_hash ON embed( hash );" );
 
     query( "CREATE INDEX directories_dir ON directories( dir );" );
+    query( "CREATE INDEX uniqueid_uniqueid ON uniqueid( uniqueid );");
+    query( "CREATE INDEX uniqueid_url ON uniqueid( url );");
 }
 
 
@@ -470,6 +480,7 @@ CollectionDB::dropTables( const bool temporary )
     query( QString( "DROP TABLE images%1;" ).arg( temporary ? "_temp" : "" ) );
     query( QString( "DROP TABLE embed%1;" ).arg( temporary ? "_temp" : "" ) );
     query( QString( "DROP TABLE directories%1;" ).arg( temporary ? "_temp" : "" ) );
+    query( QString( "DROP TABLE uniqueid%1;" ).arg( temporary ? "_temp" : "" ) );
     if ( !temporary )
     {
         query( QString( "DROP TABLE related_artists;" ) );
@@ -505,6 +516,7 @@ CollectionDB::clearTables( const bool temporary )
     query( QString( "%1 images%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
     query( QString( "%1 embed%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
     query( QString( "%1 directories%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
+    query( QString( "%1 uniqueid%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
     if ( !temporary )
     {
         query( QString( "%1 related_artists;" ).arg( clearCommand ) );
@@ -525,6 +537,7 @@ CollectionDB::copyTempTables( )
     insert( "INSERT INTO images SELECT * FROM images_temp;", NULL );
     insert( "INSERT INTO embed SELECT * FROM embed_temp;", NULL );
     insert( "INSERT INTO directories SELECT * FROM directories_temp;", NULL );
+    insert( "INSERT INTO uniqueid SELECT * FROM uniqueid_temp;", NULL );
 }
 
 
@@ -574,16 +587,8 @@ CollectionDB::createPersistentTables()
         "url " + textColumnType() + ","
         "label " + textColumnType() + ");" ) );
 
-    //create uniqueid table
-    query( QString( "CREATE TABLE uniqueid ("
-        "url " + textColumnType() + ","
-        "uniqueid " + textColumnType(8) + ","
-        "dir " + textColumnType() + ");" ) );
-
     query( "CREATE INDEX url_label ON label( url );" );
     query( "CREATE INDEX label_label ON label( label );" );
-    query( "CREATE INDEX url_uniqueid ON uniqueid( url );");
-    query( "CREATE INDEX uniqueid_uniqueid ON uniqueid( uniqueid );");
 }
 
 void
@@ -2144,12 +2149,12 @@ CollectionDB::doATFStuff( MetaBundle* bundle )
 
     QStringList urls = query( QString(
             "SELECT uniqueid.url, uniqueid.uniqueid "
-            "FROM uniqueid "
+            "FROM uniqueid_temp "
             "WHERE uniqueid.url = '%1';" )
                 .arg( currurl ) );
     QStringList uniqueids = query( QString(
             "SELECT uniqueid.url, uniqueid.uniqueid "
-            "FROM uniqueid "
+            "FROM uniqueid_temp "
             "WHERE uniqueid.uniqueid = '%1';" )
                 .arg( currid ) );
 
@@ -2164,10 +2169,10 @@ CollectionDB::doATFStuff( MetaBundle* bundle )
               .arg( currurl ) );
     }
     //checking length below because for some reason the != check does not always work, even when length is zero
-    else if( currid != QString::null && currid.length() > 0 ) //new item, but no uniqueid...probably ATF off
+    else if( currid != QString::null && currid.length() > 0 ) //if doesn't match, new item, but no uniqueid...probably ATF off
     {
         if( urls.empty() && uniqueids.empty() ) // new item
-            insert( QString( "INSERT INTO uniqueid (url, uniqueid, dir) VALUES ('%1', '%2', '%3')" )
+            insert( QString( "INSERT INTO uniqueid_temp (url, uniqueid, dir) VALUES ('%1', '%2', '%3')" )
                 .arg( currurl )
                 .arg( currid )
                 .arg( currdir ), NULL );
@@ -2186,7 +2191,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle )
             }
             else
             {
-                query( QString( "UPDATE uniqueid SET url='%1', dir='%2' WHERE uniqueid='%3';" )
+                query( QString( "UPDATE uniqueid_temp SET url='%1', dir='%2' WHERE uniqueid='%3';" )
                     .arg( currurl )
                     .arg( currdir )
                     .arg( currid ) );
@@ -2197,18 +2202,25 @@ CollectionDB::doATFStuff( MetaBundle* bundle )
         //that this is desired user behavior
         else if( uniqueids.empty() )
         {
-            query( QString( "UPDATE uniqueid SET uniqueid='%1' WHERE url='%2';" )
+            query( QString( "UPDATE uniqueid_temp SET uniqueid='%1' WHERE url='%2';" )
                     .arg( currid )
                     .arg( currurl ) );
             emit uniqueidChanged( currurl, urls[1], currid );
         }
-        //else, urls.count == 2 and uniqueids.count == 2, so the correct URL/ID pair already exists
+        //else, urls.count == 2 and uniqueids.count == 2, so the correct URL/ID pair already exists, and the new one is a copy -- give it a new uniqueID!
+        else
+        {
+            debug() << "Detected old file, setting new unique id for new file" << endl;
+            bundle->newUniqueId();
+            doATFStuff( bundle );
+        }
     }
 }
 
 void
 CollectionDB::newUniqueIdForFile( const QString &path )
 {
+    DEBUG_BLOCK
     KURL url = KURL::fromPathOrURL( path );
 
     // Clean it.
@@ -3647,18 +3659,6 @@ CollectionDB::initialize()
             query( "ALTER TABLE podcastepisodes ADD size INTEGER;" );
             query( "ALTER TABLE podcastepisodes DROP comment;" );
             query( "ALTER TABLE podcastepisodes ADD comment " + longTextColumnType() + ";" );
-        }
-        else if ( PersistentVersion.toInt() < 7 )
-        {
-            debug() << "Building uniqueid tables" << endl;
-            createPersistentTables();
-        }
-        else if ( PersistentVersion.toInt() < 10 )
-        {
-            debug() << "Dropping old uniqueid table, unsafe values could be inside." << endl;
-            //This is okay, as 7 was only a short lived development release...should not cause problems.
-            query( "DROP TABLE uniqueid;" );
-            createPersistentTables();
         }
         else {
             if ( adminValue( "Database Persistent Tables Version" ).toInt() != DATABASE_PERSISTENT_TABLES_VERSION ) {
