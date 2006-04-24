@@ -31,9 +31,7 @@ class Quiz
         @hint = nil
         @hintrange = nil
 
-        # We keep this array of player stats for performance reasons. It's sorted by score
-        # and always synced with the registry player stats hash. This way we can do fast
-        # rank lookups, without extra sorting.
+        # Convert registry to array, then sort by score
         @rank_table = @registry.to_a.sort { |a,b| b[1].score<=>a[1].score }
     end
 end
@@ -67,9 +65,11 @@ class QuizPlugin < Plugin
             serverdata = @bot.httputil.get( URI.parse( "http://amarok.kde.org/amarokwiki/index.php/Rbot_Quiz" ) )
             serverdata = serverdata.split( "QUIZ DATA START\n" )[1]
             serverdata = serverdata.split( "\nQUIZ DATA END" )[0]
+            serverdata = serverdata.gsub( /&nbsp;/, " " ).gsub( /&amp;/, "&" ).gsub( /&quot;/, "\"" )
         rescue
             @bot.say( m.replyto, "Failed to connect to the server. oioi." )
             if localdata == nil
+              @bot.say( m.replyto, "No questions loaded, aborting." )
               return
             end
         end
@@ -81,17 +81,15 @@ class QuizPlugin < Plugin
         end
 
         data = "#{localdata}#{serverdata}".gsub( /^#.*$/, "" ) # fuse together and remove comments
-        entries = data.split( "\n\n" )
+        entries = data.split( "\nQuestion: " )
 
         entries.each do |e|
             p = e.split( "\n" )
-            if p[0].match( /^Category: (.*)$/ ) != nil
-                p.delete_at(0)
+            if p[0] != nil
+                p[1] = p[1].gsub( /Answer: /, "" )
+                b = QuizBundle.new( p[0], p[1] )
+                @questions << b
             end
-            p[0] = p[0].gsub( /Question: /, "" )
-            p[1] = p[1].gsub( /Answer: /, "" )
-            b = QuizBundle.new( p[0], p[1] )
-            @questions << b
         end
 
         @bot.say( m.replyto, "done." )
@@ -256,7 +254,7 @@ class QuizPlugin < Plugin
         shuffle( m ) if q.questions.empty?
 
         i = rand( q.questions.length )
-        q.question = q.questions[i].question.gsub( "&nbsp;", "" )
+        q.question = q.questions[i].question
         q.answer   = q.questions[i].answer.gsub( "#", "" )
         begin
             q.answer_core = /(#)(.*)(#)/.match( q.questions[i].answer )[2]
