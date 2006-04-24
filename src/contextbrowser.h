@@ -57,7 +57,7 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         void renderView();
         void lyricsChanged( const QString& );
         void lyricsScriptChanged();
-        void lyricsResult( QString xmldoc, bool cached = false );
+        void lyricsResult( QCString cXmlDoc, bool cached = false );
 
     protected:
         void engineNewMetaData( const MetaBundle&, bool );

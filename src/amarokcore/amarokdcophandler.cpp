@@ -658,7 +658,7 @@ namespace amaroK
         ContextBrowser::instance()->showWikipedia();
     }
 
-    void DcopContextBrowserHandler::showLyrics( const QString& lyrics )
+    void DcopContextBrowserHandler::showLyrics( const QCString& lyrics )
     {
         ContextBrowser::instance()->lyricsResult( lyrics );
     }

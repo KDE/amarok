@@ -158,7 +158,7 @@ k_dcop:
    virtual void showCurrentTrack() = 0;                     ///< Show the current track in the context browser.
    virtual void showLyrics() = 0;                           ///< Show the lyrics tab in the context browser.
    virtual void showWiki() = 0;                             ///< Show the wikipedia tab in the context browser.
-   virtual void showLyrics( const QString& lyrics ) = 0;    ///< Renders the lyrics (plan text) in the Lyrics tab.
+   virtual void showLyrics( const QCString& lyrics ) = 0;    ///< Renders the lyrics (plan text) in the Lyrics tab.
 };
 
 

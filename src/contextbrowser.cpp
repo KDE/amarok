@@ -2641,7 +2641,7 @@ void ContextBrowser::showLyrics( const QString &url )
 
     if( cached && url.isEmpty() )
     {
-        lyricsResult( lyrics, true );
+        lyricsResult( lyrics.utf8(), true );
     }
     else
     {
@@ -2672,11 +2672,10 @@ void ContextBrowser::showLyrics( const QString &url )
 
 
 void
-ContextBrowser::lyricsResult( QString xmldoc, bool cached ) //SLOT
+ContextBrowser::lyricsResult( QCString cXmlDoc, bool cached ) //SLOT
 {
     QDomDocument doc;
-    if ( !cached )
-        xmldoc = QString::fromUtf8( xmldoc.local8Bit() );
+    QString xmldoc = QString::fromUtf8( cXmlDoc );
     if( !doc.setContent( xmldoc ) )
     {
         m_HTMLSource="";

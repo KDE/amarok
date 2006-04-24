@@ -159,7 +159,7 @@ class DcopContextBrowserHandler : public QObject, virtual public AmarokContextBr
       virtual void showCurrentTrack();
       virtual void showLyrics();
       virtual void showWiki();
-      virtual void showLyrics( const QString& lyrics );
+      virtual void showLyrics( const QCString& lyrics );
 };
 
 
