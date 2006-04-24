@@ -195,6 +195,7 @@ class QuizPlugin < Plugin
                     break if m.sourcenick == q.rank_table[i][0]
                 end
 
+                old_rank = i
                 q.rank_table.delete_at( i )
 
                 # Insert player at new position
@@ -203,6 +204,10 @@ class QuizPlugin < Plugin
                         q.rank_table[i,0] = [[m.sourcenick, stats]]
                         break
                     end
+                end
+
+                unless i == old_rank
+                    @bot.say( m.replyto, "#{m.sourcenick} ascends to rank #{i + 1}. Congratulations!" )
                 end
             else
                 q.rank_table << [[m.sourcenick, stats]]
