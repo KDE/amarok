@@ -69,6 +69,7 @@
 
 #ifdef USE_MYSQL
 #include <mysql/mysql.h>
+#include <mysql/mysql_version.h>
 #endif
 
 #ifdef USE_POSTGRESQL
@@ -4017,7 +4018,7 @@ MySqlConnection::MySqlConnection( MySqlConfig* config )
         {
             m_initialized = true;
 
-#if USE_MYSQL >= 4113
+#if MYSQL_VERSION_ID >= 40113
             // now set the right charset for the connection
             QStringList my_qslist = query( "SHOW VARIABLES LIKE 'character_set_database'" );
             if( !my_qslist.isEmpty() && !mysql_set_character_set( m_db, const_cast<char *>( my_qslist[1].latin1() ) ) )
