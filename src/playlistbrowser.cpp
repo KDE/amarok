@@ -584,6 +584,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
 
     /********** Favorite Tracks **************/
     qb.initSQLDrag();
+    qb.addFilter( QueryBuilder::tabStats, QueryBuilder::valPercentage, QString::number( -1 ), QueryBuilder::modeGreater, true);
     qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
     qb.setLimit( 0, 15 );
 
@@ -600,6 +601,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
 
     /********** Most Played **************/
     qb.initSQLDrag();
+    qb.addFilter( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, QString::number( -1 ), QueryBuilder::modeGreater, true);
     qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, true );
     qb.setLimit( 0, 15 );
 
