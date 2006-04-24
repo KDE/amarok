@@ -160,10 +160,15 @@ class QuizPlugin < Plugin
 
             # Insert player at new position
             q.rank_table.length.times do |i|
-                if stats.score > q.rank_table[i][1].score
+                if stats.score >= q.rank_table[i][1].score
                     q.rank_table[i,0] = [[m.sourcenick, stats]]
                     break
                 end
+            end
+
+            # If less than all other players' scores, append at the end
+            if i == q.rank_table.length - 1
+                q.rank_table << [[m.sourcenick, stats]]
             end
 
             if i < old_rank
@@ -374,11 +379,13 @@ class QuizPlugin < Plugin
         @bot.say( m.replyto, "* Top 10 Players for #{m.target}:" )
 
         str = ""
-        [10, q.rank_table.length].min.times do |i|
+        n = [10, q.rank_table.length].min
+        n.times do |i|
             player = q.rank_table[i]
             nick = player[0]
             score = player[1].score
-            str << "#{i + 1}. #{nick} (#{score}) | "
+            str << "#{i + 1}. #{nick} (#{score})"
+            str << " | " unless i == n - 1
         end
 
         @bot.say( m.replyto, str )
