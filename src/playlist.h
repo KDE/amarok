@@ -275,7 +275,7 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         Playlist( QWidget* );
         Playlist( const Playlist& ); //not defined
 
-        static Playlist *s_instance;
+        LIBAMAROK_EXPORT static Playlist *s_instance;
 
         void countChanged();
 
