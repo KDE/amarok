@@ -470,7 +470,9 @@ if test "$enable_mysql" = "yes"; then
     AC_CHECK_PROG(MYSQL_CONFIG, mysql_config, yes)
 
     if test x$MYSQL_CONFIG = xyes; then
-        AC_DEFINE(USE_MYSQL, 1, [MySql database support enabled])
+        AC_CHECK_LIB(mysql, mysql_set_character_set,
+            AC_DEFINE(USE_MYSQL, 4113, [have MySQL >= 4.1.13]),
+            AC_DEFINE(USE_MYSQL, 1, [have MySQL]))
 
         mysql_includes=`mysql_config --cflags`
         mysql_libs=`mysql_config --libs`
