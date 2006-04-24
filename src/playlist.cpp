@@ -1040,7 +1040,7 @@ Playlist::playNextTrack( bool forceNext )
             item = m_currentTrack->nextInAlbum();
 
         else if( AmarokConfig::entireAlbums() && amaroK::repeatAlbum() &&
-                 m_currentTrack && m_currentTrack->m_album->tracks.count() )
+                 repeatAlbumTrackCount() && ( repeatAlbumTrackCount() > 1 || !forceNext ) )
             item = m_currentTrack->m_album->tracks.getFirst();
 
         else if( AmarokConfig::randomMode() || AmarokConfig::entireAlbums() )
@@ -1964,7 +1964,8 @@ Playlist::isTrackAfter() const
    return !currentTrack() && !isEmpty() ||
           !m_nextTracks.isEmpty() ||
           currentTrack() && currentTrack()->itemBelow() ||
-          totalTrackCount() > 1 && ( AmarokConfig::randomMode() || amaroK::repeatPlaylist() );
+          totalTrackCount() > 1 && ( AmarokConfig::randomMode() || amaroK::repeatPlaylist()
+          || amaroK::repeatAlbum() && repeatAlbumTrackCount() > 1 );
 }
 
 bool
