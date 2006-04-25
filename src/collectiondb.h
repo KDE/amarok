@@ -456,6 +456,7 @@ class CollectionDB : public QObject, public EngineObserver
         void createPersistentTables();
         void dropPersistentTables();
         void createPodcastTables();
+        void dropPodcastTables();
 
         QCString makeWidthKey( uint width );
         QString artistValue( uint id );

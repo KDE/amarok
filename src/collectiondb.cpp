@@ -663,6 +663,11 @@ CollectionDB::dropPersistentTables()
     query( "DROP TABLE lyrics;" );
     query( "DROP TABLE label;" );
     query( "DROP TABLE uniqueid;" );
+}
+
+void
+CollectionDB::dropPodcastTables()
+{
     query( "DROP TABLE podcastchannels;" );
     query( "DROP TABLE podcastepisodes;" );
     query( "DROP TABLE podcastfolders;" );
@@ -3663,6 +3668,9 @@ CollectionDB::initialize()
         }
         else {
             if ( adminValue( "Database Persistent Tables Version" ).toInt() != DATABASE_PERSISTENT_TABLES_VERSION ) {
+                debug() << "There is a bug in amaroK: instead of destroying your valuable database tables, I'm quitting" << endl;
+                exit( 1 );
+
                 debug() << "Rebuilding persistent tables database!" << endl;
                 dropPersistentTables();
                 createPersistentTables();
