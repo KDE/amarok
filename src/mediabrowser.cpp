@@ -1178,7 +1178,13 @@ MediaView::getSelectedLeaves( MediaItem *parent, QPtrList<MediaItem> *list, bool
 void
 MediaView::contentsDragEnterEvent( QDragEnterEvent *e )
 {
-    e->accept( e->source() == viewport() || KURLDrag::canDecode( e ) );
+    QString data;
+    QCString subtype;
+    QTextDrag::decode( e, data, subtype );
+
+    e->accept( e->source() == viewport() 
+            || subtype == "amarok-sql"
+            || KURLDrag::canDecode( e ) );
 }
 
 
@@ -1250,8 +1256,25 @@ MediaView::contentsDropEvent( QDropEvent *e )
     }
     else
     {
+        QString data;
+        QCString subtype;
+        QTextDrag::decode( e, data, subtype );
         KURL::List list;
-        if ( KURLDrag::decode( e, list ) )
+
+        if( subtype == "amarok-sql" )
+        {
+            QStringList values = CollectionDB::instance()->query( data );
+            for( QStringList::iterator it = values.begin();
+                    it != values.end();
+                    it++ )
+            {
+                it += 11;
+                list += KURL::fromPathOrURL( *it );
+                it++;
+            }
+            MediaBrowser::queue()->addURLs( list );
+        }
+        else if ( KURLDrag::decode( e, list ) )
         {
             MediaBrowser::queue()->addURLs( list );
         }
@@ -2967,9 +2990,13 @@ MediaQueue::dragEnterEvent( QDragEnterEvent *e )
 {
     KListView::dragEnterEvent( e );
 
-    e->accept( e->source() != viewport()
+    QString data;
+    QCString subtype;
+    QTextDrag::decode( e, data, subtype );
+
+    e->accept( e->source() != viewport() 
             && e->source() != m_parent
-            && KURLDrag::canDecode( e ) );
+            && (subtype == "amarok-sql" || KURLDrag::canDecode( e )) );
 }
 
 
@@ -2978,9 +3005,28 @@ MediaQueue::dropEvent( QDropEvent *e )
 {
     KListView::dropEvent( e );
 
+    QString data;
+    QCString subtype;
+    QTextDrag::decode( e, data, subtype );
     KURL::List list;
-    if ( KURLDrag::decode( e, list ) )
+
+    if( subtype == "amarok-sql" )
+    {
+        QStringList values = CollectionDB::instance()->query( data );
+        for( QStringList::iterator it = values.begin();
+                it != values.end();
+                it++ )
+        {
+            it += 11;
+            list += KURL::fromPathOrURL( *it );
+            it++;
+        }
         addURLs( list );
+    }
+    else if ( KURLDrag::decode( e, list ) )
+    {
+        addURLs( list );
+    }
 }
 
 void
