@@ -223,10 +223,9 @@ void PlaylistCategory::setXml( const QDomElement &xml )
                 {
                     // Invalid podcasts should still be added to the browser, which means there is no cached xml.
                     last = new PodcastChannel( this, last, url, n );
-                    continue;
                 }
-
-                last = new PodcastChannel( this, last, url, n, xml );
+                else
+                    last = new PodcastChannel( this, last, url, n, xml );
 
                 #define item static_cast<PodcastChannel*>(last)
                 if( item->autoscan() )
@@ -1078,18 +1077,18 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
     , m_updating( false )
     , m_new( false )
     , m_hasProblem( false )
-    , m_channelSettings( channelSettings )
     , m_parent( static_cast<PlaylistCategory*>(parent) )
 {
     setDragEnabled( true );
     setRenameEnabled( 0, false );
+    
+    setDOMSettings( channelSettings );
 
     setText(0, i18n("Retrieving Podcast...") ); //HACK to fill loading time space
     setPixmap( 0, SmallIcon( amaroK::icon( "podcast" ) ) );
 
     fetch();
 }
-
 
 PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
                                 const KURL &url, const QDomNode &channelSettings, const QDomDocument &xmlDefinition )
@@ -1099,7 +1098,6 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
     , m_updating( false )
     , m_new( false )
     , m_hasProblem( false )
-    , m_channelSettings( channelSettings )
     , m_parent( static_cast<PlaylistCategory*>(parent) )
 {
     QDomNode type = xmlDefinition.namedItem("rss");
@@ -1107,6 +1105,8 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
         setXml( type.namedItem("channel"), RSS );
     else
         setXml( type, ATOM );
+        
+    setDOMSettings( channelSettings );
 
     setDragEnabled( true );
     setRenameEnabled( 0, false );
@@ -1128,6 +1128,27 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
     setDragEnabled( true );
     setRenameEnabled( 0, false );
     setPixmap( 0, SmallIcon( amaroK::icon( "podcast" ) ) );
+}
+
+void
+PodcastChannel::setDOMSettings( const QDomNode &channelSettings )
+{
+    QString save   = channelSettings.namedItem("savelocation").toElement().text();
+    bool scan      = channelSettings.namedItem("autoscan").toElement().text() == "true";
+    bool hasPurge  = channelSettings.namedItem("purge").toElement().text() == "true";
+    int purgeCount = channelSettings.namedItem("purgecount").toElement().text().toInt();
+    int fetchType  = STREAM;
+
+    if( channelSettings.namedItem( "fetch").toElement().text() == "automatic" )
+        fetchType  = AUTOMATIC;
+
+    KURL saveURL;
+    QString t = title();
+    if( save.isEmpty() )
+        save = amaroK::saveLocation( "podcasts/" + t );
+        
+    PodcastSettings *settings = new PodcastSettings( t, save, scan, fetchType, false/*transfer*/, hasPurge, purgeCount );
+    m_bundle.setSettings( settings );
 }
 
 void

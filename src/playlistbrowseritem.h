@@ -339,6 +339,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         const bool episodeExists( const QDomNode &xml, const int feedType );
         void purge();
         void removeChildren();
+        void setDOMSettings( const QDomNode &channelSettings );
         void startAnimation();
         void stopAnimation();
         
@@ -351,9 +352,6 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         uint        m_iconCounter;
         bool        m_new;
         bool        m_hasProblem;
-
-        // Configuration
-        QDomNode m_channelSettings;
 
         KIO::TransferJob        *m_podcastJob;
         PlaylistCategory        *m_parent; // category it belongs to
