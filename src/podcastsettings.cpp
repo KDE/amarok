@@ -49,7 +49,14 @@ PodcastSettings::PodcastSettings( const QString &title, const QString &save, con
                                   const int fetchType, const bool autotransfer, const bool purge, const int purgecount )
 {
     m_title = title;
-    m_saveLocation = KURL::fromPathOrURL( save );
+    if( save.isEmpty() )
+    {
+        m_saveLocation = KURL::fromPathOrURL( AmarokConfig::podcastFolder() );
+        m_saveLocation.addPath( m_title.replace("/", "-") );
+    }
+    else
+        m_saveLocation = KURL::fromPathOrURL( save );
+        
     m_autoScan = autoScan;
     m_fetch = fetchType;
     m_addToMediaDevice = autotransfer;
