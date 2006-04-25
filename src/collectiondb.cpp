@@ -132,10 +132,12 @@ CollectionDB::CollectionDB()
     config->writeEntry( "Database Version", DATABASE_VERSION );
     config->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
     config->writeEntry( "Database Persistent Tables Version", DATABASE_PERSISTENT_TABLES_VERSION );
+    config->writeEntry( "Database Podcast Tables Version", DATABASE_PODCAST_TABLES_VERSION );
 
     setAdminValue( "Database Version", QString::number(DATABASE_VERSION) );
     setAdminValue( "Database Stats Version", QString::number(DATABASE_STATS_VERSION) );
     setAdminValue( "Database Persistent Tables Version", QString::number(DATABASE_PERSISTENT_TABLES_VERSION) );
+    setAdminValue( "Database Podcast Tables Version", QString::number(DATABASE_PODCAST_TABLES_VERSION) );
 
 
     connect( qApp, SIGNAL( aboutToQuit() ), this, SLOT( disableAutoScoring() ) );
@@ -3678,8 +3680,19 @@ CollectionDB::initialize()
                 debug() << "Rebuilding persistent tables database!" << endl;
                 dropPersistentTables();
                 createPersistentTables();
-                createPodcastTables();
             }
+        }
+
+        QString PodcastVersion = adminValue( "Database Podcast Tables Version" );
+        if ( PodcastVersion.isEmpty() || PodcastVersion.toInt() < 2 )
+        {
+            debug() << "Podcast tables created and up to date" << endl;
+        }
+        else
+        {
+            debug() << "Rebuilding podcast tables database!" << endl;
+            dropPodcastTables();
+            createPodcastTables();
         }
 
         //remove database file if version is incompatible
