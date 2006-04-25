@@ -158,7 +158,7 @@ class QuizPlugin < Plugin
 
 
     def help( plugin, topic="" )
-        "Quiz game. 'quiz' => ask a question. 'quiz hint' => get a hint. 'quiz solve' => solve this question. 'quiz skip' => skip to next question. 'quiz repeat' => repeat the current question. 'quiz score <player>' => show score from <player>. 'quiz top5' => show top 5 players. 'quiz top10' => show top 10 players. 'quiz stats' => show some statistics. 'quiz fetch' => fetch new questions from server.\nYou can add new questions at http://amarok.kde.org/amarokwiki/index.php/Rbot_Quiz"
+        "Quiz game. 'quiz' => ask a question. 'quiz hint' => get a hint. 'quiz solve' => solve this question. 'quiz skip' => skip to next question. 'quiz repeat' => repeat the current question. 'quiz score <player>' => show score from <player>. 'quiz top5' => show top 5 players. 'quiz top10' => show top 10 players. 'quiz top20' => show top 20 players. 'quiz stats' => show some statistics. 'quiz fetch' => fetch new questions from server.\nYou can add new questions at http://amarok.kde.org/amarokwiki/index.php/Rbot_Quiz"
     end
 
 
@@ -411,6 +411,25 @@ class QuizPlugin < Plugin
     end
 
 
+    def cmd_top20( m, params )
+        q = create_quiz( m.target )
+
+        @bot.say( m.replyto, "* Top 20 Players for #{m.target}:" )
+
+        str = ""
+        n = [20, q.rank_table.length].min
+        n.times do |i|
+            player = q.rank_table[i]
+            nick = player[0]
+            score = player[1].score
+            str << "#{i + 1}. #{nick} (#{score})"
+            str << " | " unless i == n - 1
+        end
+
+        @bot.say( m.replyto, str )
+    end
+
+
     def cmd_stats( m, params )
         fetch_data( m ) if @questions.empty?
 
@@ -443,5 +462,6 @@ plugin.map 'quiz score :player', :action => 'cmd_score_player'
 plugin.map 'quiz fetch',         :action => 'cmd_fetch'
 plugin.map 'quiz top5',          :action => 'cmd_top5'
 plugin.map 'quiz top10',         :action => 'cmd_top10'
+plugin.map 'quiz top20',         :action => 'cmd_top20'
 plugin.map 'quiz stats',         :action => 'cmd_stats'
 
