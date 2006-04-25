@@ -3,6 +3,7 @@
 # A trivia quiz game.
 #
 # (c) 2006 Mark Kretschmann <markey@web.de>
+# (c) 2006 Jocke Andersson <ajocke@gmail.com>
 # Licensed under GPL V2.
 
 
@@ -19,7 +20,7 @@ PlayerStats = Struct.new( "PlayerStats", :score )
 #######################################################################
 class Quiz
     attr_accessor :registry, :questions, :question, :answer, :answer_core,
-                  :hint, :hintrange, :rank_table
+                  :first_try, :hint, :hintrange, :rank_table
 
     def initialize( channel, registry )
         @registry = registry.sub_registry( channel )
@@ -28,6 +29,7 @@ class Quiz
         @question = nil
         @answer = nil
         @answer_core = nil
+        @first_try = false
         @hint = nil
         @hintrange = nil
 
@@ -158,7 +160,7 @@ class QuizPlugin < Plugin
 
 
     def help( plugin, topic="" )
-        "Quiz game. 'quiz' => ask a question. 'quiz hint' => get a hint. 'quiz solve' => solve this question. 'quiz skip' => skip to next question. 'quiz repeat' => repeat the current question. 'quiz score <player>' => show score from <player>. 'quiz top5' => show top 5 players. 'quiz top10' => show top 10 players. 'quiz top20' => show top 20 players. 'quiz stats' => show some statistics. 'quiz fetch' => fetch new questions from server.\nYou can add new questions at http://amarok.kde.org/amarokwiki/index.php/Rbot_Quiz"
+        "Quiz game. 'quiz' => ask a question. 'quiz hint' => get a hint. 'quiz solve' => solve this question. 'quiz skip' => skip to next question. 'quiz repeat' => repeat the current question. 'quiz score <player>' => show score from <player>. 'quiz top5' => show top 5 players. 'quiz top <number>' => show top <number> players (max 50). 'quiz stats' => show some statistics. 'quiz fetch' => fetch new questions from server.\nYou can add new questions at http://amarok.kde.org/amarokwiki/index.php/Rbot_Quiz"
     end
 
 
@@ -212,12 +214,16 @@ class QuizPlugin < Plugin
         if message == q.answer.downcase or message == q.answer_core.downcase
             replies = []
 
-            if q.rank_table.length >= 1 and m.sourcenick == q.rank_table[0][0]
+            points = 1
+            if q.first_try
+                points += 1
+                replies << "WHOPEEE! #{m.sourcenick} got it on the first try! That's worth an extra point. Answer was: #{q.answer}"
+            elsif q.rank_table.length >= 1 and m.sourcenick == q.rank_table[0][0]
                 replies << "THE QUIZ CHAMPION defends his throne! Seems like #{m.sourcenick} is invicible! Answer was: #{q.answer}"
             elsif q.rank_table.length >= 2 and m.sourcenick == q.rank_table[1][0]
-                replies << "THE SECOND CHAMPION is on the way up! Hurry up #{m.sourcenick}, you only need #{q.rank_table[0][1].score - q.rank_table[1][1].score} points to beat the king! Answer was: #{q.answer}"
+                replies << "THE SECOND CHAMPION is on the way up! Hurry up #{m.sourcenick}, you only need #{q.rank_table[0][1].score - q.rank_table[1][1].score - 1} points to beat the king! Answer was: #{q.answer}"
             elsif  q.rank_table.length >= 3 and m.sourcenick == q.rank_table[2][0]
-                replies << "THE THIRD CHAMPION strikes again! Give it all #{m.sourcenick}, with #{q.rank_table[1][1].score - q.rank_table[2][1].score} more points you'll reach the 2nd place! Answer was: #{q.answer}"
+                replies << "THE THIRD CHAMPION strikes again! Give it all #{m.sourcenick}, with #{q.rank_table[1][1].score - q.rank_table[2][1].score - 1} more points you'll reach the 2nd place! Answer was: #{q.answer}"
             else
                 replies << "BINGO!! #{m.sourcenick} got it right. The answer was: #{q.answer}"
                 replies << "OMG!! PONIES!! #{m.sourcenick} is the cutest. The answer was: #{q.answer}"
@@ -241,12 +247,15 @@ class QuizPlugin < Plugin
                 stats = PlayerStats.new( 0 )
             end
 
-            stats["score"] = stats.score + 1
+            stats["score"] = stats.score + points
             q.registry[m.sourcenick] = stats
 
             calculate_ranks( m, q )
 
             q.question = nil
+        else
+            # First try is used, and it wasn't the answer.
+            q.first_try = false
         end
     end
 
@@ -273,6 +282,11 @@ class QuizPlugin < Plugin
         i = rand( q.questions.length )
         q.question = q.questions[i].question
         q.answer   = q.questions[i].answer.gsub( "#", "" )
+
+        # Check if answer is numerical and tell the players if that's the case
+        # The rather obscure statement is needed because to_i returns 99 for "99 red balloons", and 0 for "balloon"
+        q.question += " (Numerical answer)" if q.answer.to_i.to_s == q.answer
+
         begin
             q.answer_core = /(#)(.*)(#)/.match( q.questions[i].answer )[2]
         rescue
@@ -281,6 +295,8 @@ class QuizPlugin < Plugin
         q.answer_core = q.answer.dup if q.answer_core == nil
 
         q.questions.delete_at( i )
+
+        q.first_try = true
 
         q.hint = ""
         (0..q.answer_core.length-1).each do |index|
@@ -326,7 +342,10 @@ class QuizPlugin < Plugin
             end
 
             num_chars.times do
-                index = q.hintrange.pop
+                begin
+                    index = q.hintrange.pop
+                # New hint char until the char isn't a space
+                end until q.answer_core[index, 1] != " "
                 q.hint[index] = q.answer_core[index]
             end
             @bot.say( m.replyto, "Hint: #{q.hint}" )
@@ -392,13 +411,12 @@ class QuizPlugin < Plugin
     end
 
 
-    def cmd_top10( m, params )
+    def cmd_top_number( m, params )
+        return if params[:number] == "0"
         q = create_quiz( m.target )
-
-        @bot.say( m.replyto, "* Top 10 Players for #{m.target}:" )
-
         str = ""
-        n = [10, q.rank_table.length].min
+        @bot.say( m.replyto, "* Top #{[ params[:number].to_i, 50].min} Players for #{m.target}:" )
+        n = [ params[:number].to_i, 50, q.rank_table.length ].min
         n.times do |i|
             player = q.rank_table[i]
             nick = player[0]
@@ -407,26 +425,11 @@ class QuizPlugin < Plugin
             str << " | " unless i == n - 1
         end
 
-        @bot.say( m.replyto, str )
-    end
-
-
-    def cmd_top20( m, params )
-        q = create_quiz( m.target )
-
-        @bot.say( m.replyto, "* Top 20 Players for #{m.target}:" )
-
-        str = ""
-        n = [20, q.rank_table.length].min
-        n.times do |i|
-            player = q.rank_table[i]
-            nick = player[0]
-            score = player[1].score
-            str << "#{i + 1}. #{nick} (#{score})"
-            str << " | " unless i == n - 1
+        if str != ""
+            @bot.say( m.replyto, str )
+        else
+            @bot.say( m.replyto, "Noone in #{m.target} has a score!" )
         end
-
-        @bot.say( m.replyto, str )
     end
 
 
@@ -461,7 +464,6 @@ plugin.map 'quiz score',         :action => 'cmd_score'
 plugin.map 'quiz score :player', :action => 'cmd_score_player'
 plugin.map 'quiz fetch',         :action => 'cmd_fetch'
 plugin.map 'quiz top5',          :action => 'cmd_top5'
-plugin.map 'quiz top10',         :action => 'cmd_top10'
-plugin.map 'quiz top20',         :action => 'cmd_top20'
+plugin.map 'quiz top :number',   :action => 'cmd_top_number'
 plugin.map 'quiz stats',         :action => 'cmd_stats'
 
