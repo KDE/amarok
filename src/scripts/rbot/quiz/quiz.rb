@@ -56,13 +56,17 @@ class QuizPlugin < Plugin
         path = "/home/eean/.rbot/quiz.rbot"
 
         @bot.say( m.replyto, "Fetching questions from local database and wiki.." )
+
+        # Local data
         begin
             datafile  = File.new( path,  File::RDONLY )
             localdata = datafile.read
         rescue
             @bot.say( m.replyto, "Failed to read local database file. oioi." )
+            localdata = nil
         end
 
+        # Wiki data
         begin
             serverdata = @bot.httputil.get( URI.parse( "http://amarok.kde.org/amarokwiki/index.php/Rbot_Quiz" ) )
             serverdata = serverdata.split( "QUIZ DATA START\n" )[1]
@@ -78,19 +82,30 @@ class QuizPlugin < Plugin
 
         @questions = []
 
-        if localdata != nil
-            serverdata = "\n\n#{serverdata}"
-        end
-
-        data = "#{localdata}#{serverdata}".gsub( /^#.*$/, "" ) # fuse together and remove comments
+        # Fuse together and remove comments, then split
+        data = "#{localdata}\n\n#{serverdata}".gsub( /^#.*$/, "" )
         entries = data.split( "\nQuestion: " )
+        #First entry will be empty.
+        entries.delete_at(0)
 
         entries.each do |e|
             p = e.split( "\n" )
-            if p[0] != nil
-                p[1] = p[1].gsub( /Answer: /, "" ).strip
-                b = QuizBundle.new( p[0], p[1] )
-                @questions << b
+            # We'll need at least two lines of data
+            unless p.size < 2
+                # Check if question isn't empty
+                if p[0].length > 0
+                    while p[1].match( /^Answer: (.*)$/ ) == nil and p.size > 2
+                        # Delete all lines between the question and the answer
+                        p.delete_at(1)
+                    end
+                    p[1] = p[1].gsub( /Answer: /, "" ).strip
+                    # If the answer was found
+                    if p[1].length > 0
+                        # Add the data to the array
+                        b = QuizBundle.new( p[0], p[1] )
+                        @questions << b
+                    end
+                end
             end
         end
 
