@@ -3666,6 +3666,10 @@ CollectionDB::initialize()
             query( "ALTER TABLE podcastepisodes DROP comment;" );
             query( "ALTER TABLE podcastepisodes ADD comment " + longTextColumnType() + ";" );
         }
+        else if ( PersistentVersion.toInt() < 11 )
+        {
+            debug() << "This is used to handle problems from uniqueid changeover and should not do anything" << endl;
+        }
         else {
             if ( adminValue( "Database Persistent Tables Version" ).toInt() != DATABASE_PERSISTENT_TABLES_VERSION ) {
                 debug() << "There is a bug in amaroK: instead of destroying your valuable database tables, I'm quitting" << endl;
