@@ -1291,9 +1291,13 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
 
     QDomDocument d;
 
-    if( !d.setContent( storedJob->data() ) )
+    QString error;
+    int errorline, errorcolumn;
+    if( !d.setContent( storedJob->data(), true /* enable namespace processing */,
+                &error, &errorline, &errorcolumn ) )
     {
         amaroK::StatusBar::instance()->shortMessage( i18n("Podcast returned invalid data.") );
+        debug() << "Podcast DOM failure in line " << errorline << ", column " << errorcolumn << ": " << error << endl;
 
         if( title().isEmpty() )
             setText( 0, m_url.prettyURL() );
