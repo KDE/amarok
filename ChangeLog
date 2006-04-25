@@ -28,7 +28,7 @@ VERSION 1.4.0:
 
   BUGFIXES:
     * Fixed encoding problems with lyrics scripts.
-    * Mask/unmark as compilation is now stored in the file tag so it is
+    * Mark/unmark as compilation is now stored in the file tag so it is
       remembered when the colection is rescanned. (BR 120428)
     * Submissions from media devices are timestamped so as to be less likely
       to conflict with submissions from another last.fm client. (BR 125367)
