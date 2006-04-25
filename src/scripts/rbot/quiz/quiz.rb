@@ -88,7 +88,7 @@ class QuizPlugin < Plugin
         entries.each do |e|
             p = e.split( "\n" )
             if p[0] != nil
-                p[1] = p[1].gsub( /Answer: /, "" )
+                p[1] = p[1].gsub( /Answer: /, "" ).strip
                 b = QuizBundle.new( p[0], p[1] )
                 @questions << b
             end
