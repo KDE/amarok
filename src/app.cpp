@@ -639,7 +639,6 @@ void App::applySettings( bool firstTime )
     Scrobbler::instance()->applySettings();
     amaroK::OSD::instance()->applySettings();
     CollectionDB::instance()->applySettings();
-    amaroK::StatusBar::instance()->setShown( AmarokConfig::showStatusBar() );
     m_pTray->setShown( AmarokConfig::showTrayIcon() );
     TrackToolTip::instance()->addToWidget( m_pTray );
 
@@ -1039,13 +1038,11 @@ void App::firstRunWizard()
             AmarokConfig::setShowPlayerWindow( true );
             //FIXME the statusbar is now quite essential and also without it
             // the popup messages break. Fix in 1.2.1
-            AmarokConfig::setShowStatusBar( /*false*/ true );
             break;
 
         case FirstRunWizard::Compact:
             amaroK::config()->writeEntry( "XMLFile", "amarokui.rc" );
             AmarokConfig::setShowPlayerWindow( false );
-            AmarokConfig::setShowStatusBar( true );
             break;
         }
 

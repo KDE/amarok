@@ -574,20 +574,6 @@
                         <string>Switch to the context browser, when playing a track.</string>
                     </property>
                 </widget>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>kcfg_ShowStatusBar</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Show statusbar</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Check to enable the statusbar on the playlist window.&lt;br&gt;</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Check to enable the statusbar on the playlist window.</string>
-                    </property>
-                </widget>
             </vbox>
         </widget>
         <spacer>
