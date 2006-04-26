@@ -64,8 +64,8 @@ OverlayWidget::reposition()
 bool
 OverlayWidget::eventFilter( QObject* o, QEvent* e )
 {
-    if ( e->type() == QEvent::Move || e->type() == QEvent::Resize )
-        reposition();
+//     if ( e->type() == QEvent::Move || e->type() == QEvent::Resize )
+//         reposition();
 
     return QFrame::eventFilter( o, e );
 }
@@ -73,7 +73,7 @@ OverlayWidget::eventFilter( QObject* o, QEvent* e )
 void
 OverlayWidget::resizeEvent( QResizeEvent* ev )
 {
-    reposition();
+//     reposition();
     QFrame::resizeEvent( ev );
 }
 

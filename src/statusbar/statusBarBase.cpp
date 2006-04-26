@@ -22,7 +22,6 @@
 
 #include "amarok.h"
 #include "debug.h"
-#include "overlayWidget.h"
 #include "squeezedtextlabel.h"
 #include "statusBarBase.h"
 
@@ -306,7 +305,6 @@ StatusBar::longMessage( const QString &text, int type )
     if ( !m_messageQueue.isEmpty() )
          message->stackUnder( m_messageQueue.last() );
 
-    message->reposition();
     message->display();
 
     raise();
@@ -360,7 +358,8 @@ StatusBar::newProgressOperation( QObject *owner )
     QLabel *label = new QLabel( m_popupProgress );
     m_progressMap.insert( owner, new ProgressBar( m_popupProgress, label ) );
 
-
+    m_popupProgress->reposition();
+    
     connect( owner, SIGNAL(destroyed( QObject* )), SLOT(endProgressOperation( QObject* )) );
 
     // so we can show the correct progress information
@@ -438,7 +437,7 @@ StatusBar::abortAllProgressOperations() //slot
 void
 StatusBar::toggleProgressWindow( bool show ) //slot
 {
-    m_popupProgress->adjustSize(); //FIXME shouldn't be needed, adding bars doesn't seem to do this
+    m_popupProgress->reposition(); //FIXME shouldn't be needed, adding bars doesn't seem to do this
     m_popupProgress->setShown( show );
 
     if( !show )

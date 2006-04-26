@@ -30,6 +30,7 @@ VERSION 1.4.0:
       <kde@dontletsstart.com>. (BR 125414)
 
   BUGFIXES:
+    * Popup Messages would flicker when being shown.
     * Fixed encoding problems with lyrics scripts.
     * Mark/unmark as compilation is now stored in the file tag so it is
       remembered when the colection is rescanned. (BR 120428)
