@@ -19,11 +19,12 @@ PlayerStats = Struct.new( "PlayerStats", :score )
 # One Quiz instance per channel, contains channel specific data
 #######################################################################
 class Quiz
-    attr_accessor :registry, :questions, :question, :answer, :answer_core,
+    attr_accessor :registry, :registry_conf, :questions, :question, :answer, :answer_core,
                   :first_try, :hint, :hintrange, :rank_table
 
     def initialize( channel, registry )
         @registry = registry.sub_registry( channel )
+        @registry_conf = @registry.sub_registry( "config" )
 
         @questions = Array.new
         @question = nil
@@ -160,7 +161,7 @@ class QuizPlugin < Plugin
 
 
     def help( plugin, topic="" )
-        "Quiz game. 'quiz' => ask a question. 'quiz hint' => get a hint. 'quiz solve' => solve this question. 'quiz skip' => skip to next question. 'quiz repeat' => repeat the current question. 'quiz score <player>' => show score from <player>. 'quiz top5' => show top 5 players. 'quiz top <number>' => show top <number> players (max 50). 'quiz stats' => show some statistics. 'quiz fetch' => fetch new questions from server.\nYou can add new questions at http://amarok.kde.org/amarokwiki/index.php/Rbot_Quiz"
+        "Quiz game. 'quiz' => ask a question. 'quiz hint' => get a hint. 'quiz solve' => solve this question. 'quiz skip' => skip to next question. 'quiz repeat' => repeat the current question. 'quiz score <player>' => show score from <player>. 'quiz top5' => show top 5 players. 'quiz top <number>' => show top <number> players (max 50). 'quiz stats' => show some statistics. 'quiz fetch' => fetch new questions from server. 'quiz autoask <on/off>' => Enable/disable autoask mode.\nYou can add new questions at http://amarok.kde.org/amarokwiki/index.php/Rbot_Quiz"
     end
 
 
@@ -188,7 +189,7 @@ class QuizPlugin < Plugin
             end
 
             # If less than all other players' scores, append at the end
-            unless inserted == true
+            unless inserted
                 q.rank_table << [[m.sourcenick, stats]]
             end
 
@@ -253,6 +254,7 @@ class QuizPlugin < Plugin
             calculate_ranks( m, q )
 
             q.question = nil
+            cmd_quiz( m, nil ) if q.registry_conf["autoask"]
         else
             # First try is used, and it wasn't the answer.
             q.first_try = false
@@ -321,6 +323,8 @@ class QuizPlugin < Plugin
         @bot.say( m.replyto, "The correct answer was: #{q.answer}" )
 
         q.question = nil
+
+        cmd_quiz( m, nil ) if q.registry_conf["autoask"]
     end
 
 
@@ -414,6 +418,7 @@ class QuizPlugin < Plugin
     def cmd_top_number( m, params )
         return if params[:number] == "0"
         q = create_quiz( m.target )
+
         str = ""
         @bot.say( m.replyto, "* Top #{[ params[:number].to_i, 50].min} Players for #{m.target}:" )
         n = [ params[:number].to_i, 50, q.rank_table.length ].min
@@ -449,21 +454,38 @@ class QuizPlugin < Plugin
     def cmd_score_player( m, params )
         say_score( m, params[:player] )
     end
+
+
+    def cmd_autoask( m, params )
+        q = create_quiz( m.target )
+
+        if params[:enable].downcase == "on"
+            q.registry_conf["autoask"] = true
+            @bot.say( m.replyto, "Enabled autoask mode." )
+            cmd_quiz( m, nil ) if q.registry_conf["autoask"]
+        elsif params[:enable].downcase == "off"
+            q.registry_conf["autoask"] = false
+            @bot.say( m.replyto, "Disabled autoask mode." )
+        else
+            @bot.say( m.replyto, "Invalid autoask parameter. Use 'on' or 'off'." )
+        end
+    end
 end
 
 
 
 plugin = QuizPlugin.new
 
-plugin.map 'quiz',               :action => 'cmd_quiz'
-plugin.map 'quiz solve',         :action => 'cmd_solve'
-plugin.map 'quiz hint',          :action => 'cmd_hint'
-plugin.map 'quiz skip',          :action => 'cmd_skip'
-plugin.map 'quiz repeat',        :action => 'cmd_repeat'
-plugin.map 'quiz score',         :action => 'cmd_score'
-plugin.map 'quiz score :player', :action => 'cmd_score_player'
-plugin.map 'quiz fetch',         :action => 'cmd_fetch'
-plugin.map 'quiz top5',          :action => 'cmd_top5'
-plugin.map 'quiz top :number',   :action => 'cmd_top_number'
-plugin.map 'quiz stats',         :action => 'cmd_stats'
+plugin.map 'quiz',                 :action => 'cmd_quiz'
+plugin.map 'quiz solve',           :action => 'cmd_solve'
+plugin.map 'quiz hint',            :action => 'cmd_hint'
+plugin.map 'quiz skip',            :action => 'cmd_skip'
+plugin.map 'quiz repeat',          :action => 'cmd_repeat'
+plugin.map 'quiz score',           :action => 'cmd_score'
+plugin.map 'quiz score :player',   :action => 'cmd_score_player'
+plugin.map 'quiz fetch',           :action => 'cmd_fetch'
+plugin.map 'quiz top5',            :action => 'cmd_top5'
+plugin.map 'quiz top :number',     :action => 'cmd_top_number'
+plugin.map 'quiz stats',           :action => 'cmd_stats'
+plugin.map 'quiz autoask :enable', :action => 'cmd_autoask'
 
