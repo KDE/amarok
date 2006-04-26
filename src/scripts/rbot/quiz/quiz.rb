@@ -283,16 +283,16 @@ class QuizPlugin < Plugin
         q.question = q.questions[i].question
         q.answer   = q.questions[i].answer.gsub( "#", "" )
 
-        # Check if answer is numerical and tell the players if that's the case
-        # The rather obscure statement is needed because to_i returns 99 for "99 red balloons", and 0 for "balloon"
-        q.question += " (Numerical answer)" if q.answer.to_i.to_s == q.answer
-
         begin
             q.answer_core = /(#)(.*)(#)/.match( q.questions[i].answer )[2]
         rescue
             q.answer_core = nil
         end
         q.answer_core = q.answer.dup if q.answer_core == nil
+
+        # Check if core answer is numerical and tell the players so, if that's the case
+        # The rather obscure statement is needed because to_i returns 99 for "99 red balloons", and 0 for "balloon"
+        q.question += " (Numerical answer)" if q.answer_core.to_i.to_s == q.answer_core
 
         q.questions.delete_at( i )
 
