@@ -680,9 +680,9 @@ Playlist::addSpecialCustomTracks( uint songCount )
         }
         else {
             // if we do not limit the sql, it takes a long time to populate for large collections
-            // we also dont want stupid limits such as LIMIT 0, 5 which would return the same results always
+            // we also dont want stupid limits such as LIMIT 5 OFFSET 0 which would return the same results always
             uint first=0, limit=0;
-            QRegExp limitSearch( "LIMIT.*(\\d+).*(\\d+)" );
+            QRegExp limitSearch( "LIMIT.*(\\d+).*OFFSET.*(\\d+)" );
             int findLocation = sql.find( limitSearch, false );
             if( findLocation == -1 ) //not found, let's find out the higher limit the hard way
             {
