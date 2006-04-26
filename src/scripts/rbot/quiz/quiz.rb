@@ -358,7 +358,10 @@ class QuizPlugin < Plugin
             @bot.say( m.replyto, "Hint: #{q.hint}" )
 
             if q.hintrange.length == 0
-                @bot.say( m.replyto, "BUST! This round is over. Minus one point for #{m.sourcenick}." )
+                color = "   "
+                color[0] = 3 #ctrl-c
+                color[1..2] = "04" #red
+                @bot.say( m.replyto, color + "BUST! This round is over. Minus one point for #{m.sourcenick}." )
 
                 stats = nil
                 if q.registry.has_key?( m.sourcenick )
