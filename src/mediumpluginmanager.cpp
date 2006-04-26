@@ -203,7 +203,7 @@ MediumPluginManager::finished()
         {
             emit selectedPlugin( (*it)->medium(), (*it)->plugin() );
         }
-        (*it)->configButton()->setEnabled( (*it)->pluginCombo()->currentText() != "Do not handle" );
+        (*it)->configButton()->setEnabled( (*it)->pluginCombo()->currentText() != i18n( "Do not handle" ) );
     }
 
     KConfig *config = amaroK::config( "MediaBrowser" );
@@ -428,7 +428,7 @@ MediaDeviceConfig::MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, 
 
     m_configButton = new KPushButton( SmallIconSet( amaroK::icon( "configure" ) ), QString::null, this );
     connect( m_configButton, SIGNAL(clicked()), SLOT(configureDevice()) );
-    m_configButton->setEnabled( !m_new && m_pluginCombo->currentText() != "Do not handle" );
+    m_configButton->setEnabled( !m_new && m_pluginCombo->currentText() != i18n( "Do not handle" ) );
     QToolTip::add( m_configButton, "Configure device settings" );
 
     m_removeButton = new KPushButton( i18n( "Remove" ), this );
