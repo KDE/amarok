@@ -203,12 +203,7 @@ VfatMediaDevice::openDevice( bool /*silent*/ )
 {
     if( !m_medium )
     {
-        amaroK::StatusBar::instance()->longMessage( i18n( "VFAT Devices cannot be manually configured.  Ensure DBUS and HAL are running\n"
-                                                          "and your kioslaves were built with DBUS and HAL support.  The device should be\n"
-                                                          "autodetected; click the \"Manage Plugins...\" suboption of the Configure button\n"
-                                                          "in the Media Device tab and choose the VFAT plugin for the detected device.  Then\n"
-                                                          "ensure the device is mounted and click \"Connect\" again." ),
-                                                    KDE::StatusBar::Sorry );
+        debug() << "VFAT openDevice:  no Medium present!" << endl;
         return false;
     }
     if( !m_medium->mountPoint() )
@@ -639,28 +634,13 @@ VfatMediaDevice::expandItem( QListViewItem *item ) // SLOT
 void
 VfatMediaDevice::listDir( const QString &dir )
 {
-    //DEBUG_BLOCK
-    if ( m_dirLister->openURL( KURL(dir), true, true ) )
-    {
-        //debug() << "Waiting for KDirLister, do anything here?" << endl;
-    }
-    else
-    {
+    if ( !m_dirLister->openURL( KURL(dir), true, true ) )
         debug() << "KDirLister::openURL FAILED" << endl;
-    }
-
-    /*
-        for each entry in directory
-        addTrackToList( type (MediaItem::DIRECTORY/TRACK), name, size (not used, can be 0))
-
-        ...handled by newItems slot
-    */
 }
 
 void
 VfatMediaDevice::newItems( const KFileItemList &items )
 {
-    DEBUG_BLOCK
     //iterate over items, calling addTrackToList
     if( m_stopDirLister || m_isInCopyTrack )
         return;
