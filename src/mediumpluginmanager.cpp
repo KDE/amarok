@@ -398,10 +398,6 @@ MediaDeviceConfig::MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, 
     QString title = escapeHTML( i18n( "Device information for %1").arg(medium->name() ) );
     QString details = QString( "<em>%1</em><br />" "<table>%2</table>" ).arg( title, table );
 
-    QLabel *label = new QLabel( this );
-    label->setFixedWidth( IconSize( KIcon::Small ) + 10 );
-    if ( config->readEntry( medium->id() ).isEmpty() )
-        label->setPixmap( kapp->iconLoader()->loadIcon( amaroK::icon( "new" ), KIcon::Toolbar, KIcon::SizeSmall ) );
     (void)new QLabel( i18n("Name: "), this );
     (void)new QLabel( medium->name(), this );
     (void)new KActiveLabel( i18n( "(<a href='whatsthis:%1'>Details</a>)" )

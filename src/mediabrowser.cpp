@@ -320,6 +320,7 @@ MediaBrowser::MediaBrowser( const char *name )
         if( handler.isEmpty() )
         {
             //this should probably never be the case with a manually added device, unless amarokrc's been messed with
+            amaroK::config( "MediaBrowser" )->writeEntry( (*it)->id(), "ignore" );
             newflag = true;
             mediumAdded( *it, (*it)->name(), true );
         }
@@ -330,9 +331,8 @@ MediaBrowser::MediaBrowser( const char *name )
 
     if ( newflag )
         amaroK::StatusBar::instance()->longMessageThreadSafe( i18n("amaroK has detected new portable media devices.\n"
-                                                                   "Press the \"Manage Plugins...\" suboption of the\n"
-                                                                   "Configure button in the Media Browser tab to\n"
-                                                                   "select plugins for these devices.") );
+                                                                   "Go to the \"Media Devices\" pane of the configuration\n"
+                                                                   "dialog to choose a plugin for these devices.") );
 
     connect( m_toolbar->getButton(CONNECT),    SIGNAL( clicked() ),        SLOT( connectClicked() ) );
     connect( m_toolbar->getButton(DISCONNECT), SIGNAL( clicked() ),        SLOT( disconnectClicked() ) );
