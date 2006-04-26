@@ -1375,7 +1375,6 @@ CurrentTrackJob::showHomeByAlbums()
     qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage );
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valID );
     qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
-    qb.addFilter( QueryBuilder::tabStats, QueryBuilder::valPercentage, QString::number( -1 ), QueryBuilder::modeGreater, true);
     qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
     qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID );
     qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valID );
@@ -2001,7 +2000,6 @@ void CurrentTrackJob::showArtistsFaves( const QString &artist, uint artist_id )
     qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
     qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
     qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
-    qb.addFilter( QueryBuilder::tabStats, QueryBuilder::valPercentage, QString::number( -1 ), QueryBuilder::modeGreater, true);
     qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
     qb.setLimit( 0, 10 );
     values = qb.run();

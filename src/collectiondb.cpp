@@ -4911,21 +4911,19 @@ QueryBuilder::sortBy( int table, Q_INT64 value, bool descending )
          table & tabYear )
         b = false;
 
+	// only coalesce for certain columns
+	bool c = false;
+    if ( value & valScore || value & valRating || value & valPlayCounter || value & valPercentage )
+		c = true;
+
     if ( !m_sort.isEmpty() ) m_sort += ",";
     if ( b ) m_sort += "LOWER( ";
-    if ( table & tabYear ) m_sort += "(";
+    if ( c ) m_sort += "COALESCE( ";
 
     m_sort += tableName( table ) + ".";
     m_sort += valueName( value );
 
-    if (CollectionDB::instance()->getType() == DbConnection::postgresql)
-    {
-        if ( table & tabYear ) m_sort += ")";
-    }
-    else
-    {
-        if ( table & tabYear ) m_sort += "+0)";
-    }
+    if ( c ) m_sort += ", 0 )";
 
     if ( b ) m_sort += " ) ";
     if ( descending ) m_sort += " DESC ";
@@ -4956,22 +4954,26 @@ QueryBuilder::sortByFunction( int function, int table, Q_INT64 value, bool desce
          table & tabYear )
         b = false;
 
+	// only coalesce for certain columns
+	bool c = false;
+    if ( value & valScore || value & valRating || value & valPlayCounter || value & valPercentage )
+		c = true;
+
     if ( !m_sort.isEmpty() ) m_sort += ",";
     //m_sort += functionName( function ) + "(";
     if ( b ) m_sort += "LOWER( ";
-    if ( table & tabYear ) m_sort += "(";
+    if ( c && CollectionDB::instance()->getType() != DbConnection::mysql) m_sort += "COALESCE( ";
 
-    QString columnName = functionName( function )+tableName( table )+valueName( value );
-    m_sort += columnName;
+	QString columnName;
 
     if (CollectionDB::instance()->getType() == DbConnection::postgresql)
-    {
-        if ( table & tabYear ) m_sort += ")";
-    }
-    else
-    {
-        if ( table & tabYear ) m_sort += "+0)";
-    }
+		columnName = functionName( function )+"("+tableName( table )+"."+valueName( value )+")";
+	else
+		columnName = functionName( function )+tableName( table )+valueName( value );
+
+    m_sort += columnName;
+
+	if ( c && CollectionDB::instance()->getType() != DbConnection::mysql) m_sort += ", 0 )";
 
     if ( b ) m_sort += " ) ";
     //m_sort += " ) ";
