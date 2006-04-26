@@ -10,6 +10,8 @@ VERSION 1.4.0:
       view.
 
   CHANGES:
+    * Replace 'Move to Collection' in file browser context menu by 'Organize
+      Files' for collection directories. (BR 125702)
     * Removed the "Show Status Bar" option.
     * Tracks from a media device scan be submitted to last.fm immediately,
       without waiting for tracks to be played in amaroK. Patch by Iain

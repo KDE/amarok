@@ -177,9 +177,10 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         if (!m_medium)
             menu->insertItem( SmallIconSet( amaroK::icon( "device" ) ), i18n( "Add to Media Device &Transfer Queue" ), MediaDevice );
 
-        menu->insertItem( SmallIconSet( amaroK::icon( "collection" ) ), i18n( "&Copy to Collection" ), CopyToCollection );
-        menu->insertItem( SmallIconSet( amaroK::icon( "collection" ) ), i18n( "&Move to Collection" ), MoveToCollection );
-        menu->insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn to CD"), BurnCd );
+        menu->insertItem( SmallIconSet( amaroK::icon( "collection" ) ), i18n( "&Organize Files..." ), OrganizeFiles );
+        menu->insertItem( SmallIconSet( amaroK::icon( "collection" ) ), i18n( "&Copy Files to Collection..." ), CopyToCollection );
+        menu->insertItem( SmallIconSet( amaroK::icon( "collection" ) ), i18n( "&Move Files to Collection..." ), MoveToCollection );
+        menu->insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn to CD..."), BurnCd );
         menu->insertSeparator();
         menu->insertItem( i18n( "&Select All Files" ), SelectAllFiles );
         menu->insertSeparator();
@@ -431,6 +432,9 @@ FileBrowser::prepareContextMenu()
         items.count() > 1 || ( items.count() == 1 && items.getFirst()->isDir() ) );
     static_cast<KActionMenu*>(m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( MediaDevice,
         MediaBrowser::isAvailable() );
+    static_cast<KActionMenu*>(m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( MoveToCollection, !CollectionDB::instance()->isDirInCollection( url().path() ) );
+    static_cast<KActionMenu*>(m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( CopyToCollection, !CollectionDB::instance()->isDirInCollection( url().path() ) );
+    static_cast<KActionMenu*>(m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( OrganizeFiles, CollectionDB::instance()->isDirInCollection( url().path() ) );
 }
 
 inline void
@@ -474,6 +478,9 @@ FileBrowser::contextMenuActivated( int id )
         CollectionView::instance()->organizeFiles( selectedItems(), i18n( "Move Files To Collection" ), false );
         break;
 
+    case OrganizeFiles:
+        CollectionView::instance()->organizeFiles( selectedItems(), i18n( "Organize Collection Files" ), false );
+        break;
 
     case MediaDevice:
         MediaBrowser::queue()->addURLs( selectedItems() );

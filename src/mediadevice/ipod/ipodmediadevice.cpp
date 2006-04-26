@@ -1724,7 +1724,7 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
         menu.insertItem( SmallIconSet( amaroK::icon( "fastforward" ) ), i18n( "&Queue Tracks" ), QUEUE );
         menu.insertSeparator();
 
-        menu.insertItem( SmallIconSet( amaroK::icon( "collection" ) ), i18n( "&Copy to Collection" ), COPY_TO_COLLECTION );
+        menu.insertItem( SmallIconSet( amaroK::icon( "collection" ) ), i18n( "&Copy Files to Collection..." ), COPY_TO_COLLECTION );
         switch( item->type() )
         {
         case MediaItem::ARTIST:

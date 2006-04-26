@@ -810,17 +810,17 @@ VfatMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
         menu.insertItem( SmallIconSet( amaroK::icon( "1downarrow" ) ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( SmallIconSet( amaroK::icon( "fastforward" ) ), i18n( "&Queue Tracks" ), QUEUE );
         menu.insertSeparator();
-        menu.insertItem( SmallIconSet( "collection" ), i18n( "&Copy to Collection" ), DOWNLOAD );
+        menu.insertItem( SmallIconSet( "collection" ), i18n( "&Copy Files to Collection..." ), DOWNLOAD );
         menu.insertItem( SmallIconSet( amaroK::icon( "cdrom_unmount" ) ), i18n( "Burn to CD as Data" ), BURN_DATACD );
         menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
         menu.insertItem( SmallIconSet( amaroK::icon( "cdaudio_unmount" ) ), i18n( "Burn to CD as Audio" ), BURN_AUDIOCD );
         menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
         menu.insertSeparator();
-        menu.insertItem( SmallIconSet( "folder" ), i18n("Add Directory" ), DIRECTORY );
+        menu.insertItem( SmallIconSet( "folder" ), i18n( "Add Directory" ), DIRECTORY );
         menu.insertItem( SmallIconSet( "editclear" ), i18n( "Rename" ), RENAME );
         menu.insertItem( SmallIconSet( "editdelete" ), i18n( "Delete" ), DELETE );
         menu.insertSeparator();
-        menu.insertItem( SmallIconSet( "up" ), i18n(" Transfer queue to here..." ), TRANSFER_HERE );
+        menu.insertItem( SmallIconSet( "up" ), i18n( "Transfer Queue to Here..." ), TRANSFER_HERE );
         menu.setItemEnabled( TRANSFER_HERE, MediaBrowser::queue()->childCount() );
 
         int id =  menu.exec( point );
