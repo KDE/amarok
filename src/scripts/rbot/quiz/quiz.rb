@@ -312,9 +312,9 @@ class QuizPlugin < Plugin
         # Generate array of unique random range
         q.hintrange = (0..q.answer_core.length-1).sort_by{rand}
 
-        color = "  "
+        color = "   "
         color[0] = 3 #ctrl-c
-        color[1] = 51 #green
+        color[1..2] = "03" #green
         @bot.say( m.replyto, color + q.question )
     end
 
@@ -393,9 +393,9 @@ class QuizPlugin < Plugin
         if q.question == nil
             @bot.say( m.replyto, "#{m.sourcenick}: There's currently no open question!" )
         else
-            color = "  "
+            color = "   "
             color[0] = 3 #ctrl-c
-            color[1] = 51 #green
+            color[1..2] = "03" #green
             @bot.say( m.replyto, color + "Current question: #{q.question}" )
         end
     end
