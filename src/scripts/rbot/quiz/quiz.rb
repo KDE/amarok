@@ -26,7 +26,11 @@ class Quiz
         @registry = registry.sub_registry( channel )
         @registry_conf = @registry.sub_registry( "config" )
 
-        @questions = Array.new
+        unless @registry_conf.has_key?( "questions" )
+            @registry_conf["questions"] = Array.new
+        end
+
+        @questions = @registry_conf["questions"]
         @question = nil
         @answer = nil
         @answer_core = nil
@@ -114,22 +118,6 @@ class QuizPlugin < Plugin
 
         @bot.say( m.replyto, "done." )
     end
-
-
-    def shuffle( m )
-        return unless @quizzes.has_key?( m.target )
-        q = @quizzes[m.target]
-
-        q.questions.clear
-        temp = @questions.dup
-
-        temp.length.times do
-            i = rand( temp.length )
-            q.questions << temp[i]
-            temp.delete_at( i )
-        end
-    end
-
 
     # Return new Quiz instance for channel, or existing one
     #
@@ -279,7 +267,16 @@ class QuizPlugin < Plugin
             return
         end
 
-        shuffle( m ) if q.questions.empty?
+        # Fill per-channel questions buffer
+        if q.questions.empty?
+            temp = @questions.dup
+
+            temp.length.times do
+                i = rand( temp.length )
+                q.questions << temp[i]
+                temp.delete_at( i )
+            end
+        end
 
         i = rand( q.questions.length )
         q.question = q.questions[i].question
@@ -406,7 +403,6 @@ class QuizPlugin < Plugin
 
     def cmd_fetch( m, params )
         fetch_data( m )
-        shuffle( m )
     end
 
 
