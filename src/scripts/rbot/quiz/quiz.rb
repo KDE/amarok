@@ -291,7 +291,12 @@ class QuizPlugin < Plugin
 
         # Check if core answer is numerical and tell the players so, if that's the case
         # The rather obscure statement is needed because to_i returns 99 for "99 red balloons", and 0 for "balloon"
-        q.question += " (Numerical answer)" if q.answer_core.to_i.to_s == q.answer_core
+        if q.answer_core.to_i.to_s == q.answer_core
+            ctrl = "   "
+            ctrl[0] = 3 #ctrl-c
+            ctrl[1..2] = "07" #orange
+            q.question += ctrl + " (Numerical answer)"
+        end
 
         q.questions.delete_at( i )
 
@@ -309,10 +314,14 @@ class QuizPlugin < Plugin
         # Generate array of unique random range
         q.hintrange = (0..q.answer_core.length-1).sort_by{rand}
 
-        color = "   "
-        color[0] = 3 #ctrl-c
-        color[1..2] = "03" #green
-        @bot.say( m.replyto, color + q.question )
+        ctrl = "    "
+        ctrl[0] = 2 #ctrl+b (bold)
+        ctrl[1] = 3 #ctrl-c
+        ctrl[2..3] = "03" #green
+        ctrl_end = "  "
+        ctrl_end[0] = 3 #ctrl+c
+        ctrl_end[1] = 2 #ctrl+b
+        @bot.say( m.replyto, "#{ctrl}Question: #{ctrl_end}" + q.question )
     end
 
 
@@ -373,6 +382,7 @@ class QuizPlugin < Plugin
                 calculate_ranks( m, q )
 
                 q.question = nil
+                cmd_quiz( m, nil ) if q.registry_conf["autoask"]
             end
         end
     end
@@ -390,13 +400,17 @@ class QuizPlugin < Plugin
     def cmd_repeat( m, params )
         q = @quizzes[m.target]
 
-        if q.question == nil
+        begin
+            ctrl = "    "
+            ctrl[0] = 2 #ctrl+b (bold)
+            ctrl[1] = 3 #ctrl-c
+            ctrl[2..3] = "03" #green
+            ctrl_end = "  "
+            ctrl_end[0] = 3 #ctrl+c
+            ctrl_end[1] = 2 #ctrl+b
+            @bot.say( m.replyto, "#{ctrl}Current question: #{ctrl_end}" + q.question )
+        rescue
             @bot.say( m.replyto, "#{m.sourcenick}: There's currently no open question!" )
-        else
-            color = "   "
-            color[0] = 3 #ctrl-c
-            color[1..2] = "03" #green
-            @bot.say( m.replyto, color + "Current question: #{q.question}" )
         end
     end
 
@@ -421,12 +435,12 @@ class QuizPlugin < Plugin
 
 
     def cmd_top_number( m, params )
-        return if params[:number] == "0"
+        return if params[:number].to_i < 1 or params[:number].to_i > 50
         q = create_quiz( m.target )
 
         str = ""
-        @bot.say( m.replyto, "* Top #{[ params[:number].to_i, 50].min} Players for #{m.target}:" )
-        n = [ params[:number].to_i, 50, q.rank_table.length ].min
+        @bot.say( m.replyto, "* Top #{params[:number].to_i} Players for #{m.target}:" )
+        n = [ params[:number].to_i, q.rank_table.length ].min
         n.times do |i|
             player = q.rank_table[i]
             nick = player[0]
