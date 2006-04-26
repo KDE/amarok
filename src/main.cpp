@@ -83,6 +83,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Nenad Grujicic", I18N_NOOP( "Splash screen" ), "mchitman@neobee.net" );
     aboutData.addCredit( "Olivier Bédard", I18N_NOOP( "Website hosting" ), "paleo@pwsp.net" );
     aboutData.addCredit( "Paul Cifarelli", I18N_NOOP( "HelixPlayer engine" ), "paul@cifarelli.net" );
+    aboutData.addCredit( "Peter C. Ndikuwera", I18N_NOOP( "Bugfixes, PostgreSQL support" ), "pndiku@gmail.com" );
     aboutData.addCredit( "Reigo Reinmets", I18N_NOOP( "Wikipedia support, patches" ), "xatax@hot.ee" );
     aboutData.addCredit( "Roland Gigler", I18N_NOOP( "MAS engine" ), "rolandg@web.de" );
     aboutData.addCredit( "Sami Nieminen", I18N_NOOP( "Audioscrobbler support" ), "sami.nieminen@iki.fi" );
