@@ -1293,7 +1293,7 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
 
     QString error;
     int errorline, errorcolumn;
-    if( !d.setContent( storedJob->data(), true /* enable namespace processing */,
+    if( !d.setContent( storedJob->data(), false /* disable namespace processing */,
                 &error, &errorline, &errorcolumn ) )
     {
         amaroK::StatusBar::instance()->shortMessage( i18n("Podcast returned invalid data.") );
