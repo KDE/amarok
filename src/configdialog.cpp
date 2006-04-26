@@ -155,7 +155,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     KPushButton *add = new KPushButton( i18n( "Add Device..." ), hbox );
     add->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
     connect( add, SIGNAL(clicked()), m_deviceManager, SLOT(newDevice()) );
-
+ 
     QFrame *frame = new QFrame( topbox );
     frame->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
@@ -180,7 +180,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     for( QObject *label = list->first(); label; label = list->next() )
         static_cast<QLabel*>(label)->setMaximumWidth( 250 );
     delete list;
-
+    
     connect( m_deviceManager, SIGNAL(changed()), SLOT(updateButtons()) );
     connect( m_soundSystem, SIGNAL(activated( int )), SLOT(updateButtons()) );
     connect( aboutEngineButton, SIGNAL(clicked()), SLOT(aboutEngine()) );
@@ -223,6 +223,16 @@ void AmarokConfigDialog::showPage( const QCString& page )
 //////////////////////////////////////////////////////////////////////////////////////////
 // PROTECTED SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Update the buttons.
+ * REIMPLEMENTED
+ */
+
+void AmarokConfigDialog::updateButtons()
+{
+    KConfigDialog::updateButtons();
+}
 
 /**
  * Update the settings from the dialog.
@@ -313,6 +323,7 @@ bool AmarokConfigDialog::hasChanged()
             m_opt2->styleComboBox->currentText() != AmarokConfig::contextBrowserStyleSheet() ||
             amaroK::databaseTypeCode(  m_opt7->dbSetupFrame->databaseEngine->currentText()  ) != AmarokConfig::databaseEngine().toInt() ||
             m_engineConfig && m_engineConfig->hasChanged() ||
+            m_deviceManager && m_deviceManager->hasChanged() ||
             externalBrowser() != AmarokConfig::externalBrowser();
 }
 

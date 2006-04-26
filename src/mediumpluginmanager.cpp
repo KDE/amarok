@@ -4,7 +4,8 @@
 // Description:
 //
 //
-// Author: Jeff Mitchell <kde-dev@emailgoeshere.com>, (C) 2005
+// Authors: Jeff Mitchell <kde-dev@emailgoeshere.com>, (C) 2005, 2006
+//          Martin Aumueller <aumuell@reserv.at>, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
 //
@@ -94,9 +95,18 @@ MediumPluginManager::~MediumPluginManager()
 {
 }
 
+bool
+MediumPluginManager::hasChanged()
+{
+    bool temp = m_hasChanged;
+    m_hasChanged = false;
+    return temp;
+}
+
 void
 MediumPluginManager::slotChanged()//slot
 {
+    m_hasChanged = true;
     emit changed();
 }
 
@@ -193,6 +203,7 @@ MediumPluginManager::finished()
         {
             emit selectedPlugin( (*it)->medium(), (*it)->plugin() );
         }
+        (*it)->configButton()->setEnabled( (*it)->pluginCombo()->currentText() != "Do not handle" );
     }
 
     KConfig *config = amaroK::config( "MediaBrowser" );
@@ -415,18 +426,16 @@ MediaDeviceConfig::MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, 
             m_pluginCombo->setCurrentItem( (*it)->name() );
     }
 
-    KPushButton *button = 0;
+    m_configButton = new KPushButton( SmallIconSet( amaroK::icon( "configure" ) ), QString::null, this );
+    connect( m_configButton, SIGNAL(clicked()), SLOT(configureDevice()) );
+    m_configButton->setEnabled( !m_new && m_pluginCombo->currentText() != "Do not handle" );
+    QToolTip::add( m_configButton, "Configure device settings" );
 
-    button = new KPushButton( SmallIconSet( amaroK::icon( "configure" ) ), QString::null, this );
-    connect( button, SIGNAL(clicked()), SLOT(configureDevice()) );
-    button->setEnabled( !m_new );
-    QToolTip::add( button, "Configure device settings" );
+    m_removeButton = new KPushButton( i18n( "Remove" ), this );
+    connect( m_removeButton, SIGNAL(clicked()), SLOT(deleteDevice()) );
+    QToolTip::add( m_removeButton, "Remove entries corresponding to this device from configuration file" );
 
-    button = new KPushButton( i18n( "Remove" ), this );
-    connect( button, SIGNAL(clicked()), SLOT(deleteDevice()) );
-    QToolTip::add( button, "Remove entries corresponding to this device from configuration file" );
-
-    connect( m_pluginCombo, SIGNAL(textChanged(const QString&)), m_manager, SLOT(slotChanged()) );
+    connect( m_pluginCombo, SIGNAL(activated(const QString&)), m_manager, SLOT(slotChanged()) );
     connect( this, SIGNAL(changed()), m_manager, SLOT(slotChanged()) );
 
     show();
@@ -470,6 +479,12 @@ QButton *
 MediaDeviceConfig::removeButton()
 {
     return m_removeButton;
+}
+
+KComboBox *
+MediaDeviceConfig::pluginCombo()
+{
+    return m_pluginCombo;
 }
 
 void

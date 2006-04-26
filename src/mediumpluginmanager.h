@@ -38,7 +38,8 @@ typedef QMap<QString, Medium*> DeletedMap;
 typedef QMap<QString, Medium*> NewDeviceMap;
 
 /**
-	@author Jeff Mitchell <kde-dev@emailgoeshere.com>
+    @author Jeff Mitchell <kde-dev@emailgoeshere.com>
+    @author Martin Aumueller <aumuell@reserv.at>
 */
 
 class MediaDeviceConfig : public QHBox
@@ -50,6 +51,7 @@ class MediaDeviceConfig : public QHBox
         ~MediaDeviceConfig();
         QString oldPlugin();
         QString plugin();
+        KComboBox *pluginCombo();
         QButton *configButton();
         QButton *removeButton();
         Medium *medium();
@@ -83,6 +85,7 @@ class MediumPluginManager : public QObject
         MediumPluginManager( QWidget *widget );
         ~MediumPluginManager();
         void finished();
+        bool hasChanged();
 
     signals:
         void selectedPlugin( const Medium*, const QString );
@@ -100,6 +103,7 @@ class MediumPluginManager : public QObject
         NewDeviceMap m_newDevMap;
         DeviceList m_deviceList;
         QWidget *m_widget;
+        bool m_hasChanged;
 
 };
 
