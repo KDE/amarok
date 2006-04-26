@@ -2,8 +2,6 @@
 // (c) 2006 Bart Cerneels <shanachie@yucom.be>
 // See COPYING file for licensing information.
 
-#include "amarokconfig.h"
-#include "amarok.h"
 #include "mediabrowser.h"
 #include "podcastsettingsbase.h"
 #include "podcastsettings.h"
@@ -36,7 +34,7 @@ PodcastSettings::PodcastSettings( const QDomNode &channelSettings, const QString
 PodcastSettings::PodcastSettings( const QString &title )
     : m_title( title )
 {
-    m_saveLocation = KURL::fromPathOrURL( AmarokConfig::podcastFolder() );
+    m_saveLocation = KURL::fromPathOrURL( amaroK::saveLocation( "podcasts/" ) );
     m_saveLocation.addPath( m_title.replace("/", "-") );
     m_autoScan = true;
     m_fetch = STREAM;
@@ -51,7 +49,7 @@ PodcastSettings::PodcastSettings( const QString &title, const QString &save, con
     m_title = title;
     if( save.isEmpty() )
     {
-        m_saveLocation = KURL::fromPathOrURL( AmarokConfig::podcastFolder() );
+        m_saveLocation = KURL::fromPathOrURL( amaroK::saveLocation( "podcasts/" ) );
         m_saveLocation.addPath( m_title.replace("/", "-") );
     }
     else
