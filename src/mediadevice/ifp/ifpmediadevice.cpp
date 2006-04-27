@@ -187,7 +187,7 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
     int i = ifp_init( &m_ifpdev, m_dh );
     if( i )
     {
-        error() << "IFP device: Device cannot be opened." << endl;
+        error() << "iFP device: Device cannot be opened." << endl;
         amaroK::StatusBar::instance()->shortLongMessage( genericError,
                                         i18n("iFP: Could not open device"), KDE::StatusBar::Error );
         usb_release_interface( m_dh, m_dev->config->interface->altsetting->bInterfaceNumber );
@@ -385,9 +385,8 @@ IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
             if( m_thirdSort != "None" )
                 directory += bundle.prettyText( bundle.columnIndex(m_thirdSort) ) + "\\";
         }
-        if( (m_firstSort == "Artist" && m_secondSort == "Album") ||
-            (m_secondSort == "Artist" && m_thirdSort == "Album") )
-                cleverFilename = true;
+        if( m_firstSort == "Album" || m_secondSort == "Album" || m_thirdSort == "Album" )
+            cleverFilename = true;
     }
     newDirectoryRecursive( directory, 0 ); // recursively create folders as required.
     
