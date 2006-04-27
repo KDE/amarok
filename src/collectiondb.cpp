@@ -3287,8 +3287,8 @@ DbConnection * CollectionDB::getMyConnection()
     {
         QString appVersion = amaroK::config( "General Options" )->readEntry( "Version" );
         QString passwd = QString::null;
-        
-        if( appVersion.contains( "1.3" ) )
+
+        if( appVersion.startsWith( "1.3" ) )
         {
             /// This is because of the encrypted -> plaintext conversion
             passwd = AmarokConfig::mySqlPassword(); // stored as password type
@@ -3298,7 +3298,7 @@ DbConnection * CollectionDB::getMyConnection()
         {
             passwd = AmarokConfig::mySqlPassword2(); // stored as string type
         }
-        
+
         config =
             new MySqlConfig(
                 AmarokConfig::mySqlHost(),
@@ -3315,8 +3315,8 @@ DbConnection * CollectionDB::getMyConnection()
     {
         QString appVersion = amaroK::config( "General Options" )->readEntry( "Version" );
         QString passwd = QString::null;
-        
-        if( appVersion.contains( "1.3" ) )
+
+        if( appVersion.startsWith( "1.3" ) )
         {
             /// This is because of the encrypted -> plaintext conversion
             passwd = AmarokConfig::postgresqlPassword(); // stored as password type
