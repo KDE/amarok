@@ -3294,10 +3294,13 @@ DbConnection * CollectionDB::getMyConnection()
             passwd = AmarokConfig::mySqlPassword(); // stored as password type
             AmarokConfig::setMySqlPassword2( passwd );
         }
-        else
+        else if( appVersion.startsWith( "1.4" ) && appVersion.contains( "beta", false ) )
         {
-            passwd = AmarokConfig::mySqlPassword2(); // stored as string type
+            passwd = amaroK::config( "MySql" )->readEntry( "MySqlPassword" );
+            AmarokConfig::setMySqlPassword2( passwd );
         }
+        else
+            passwd = AmarokConfig::mySqlPassword2(); // stored as string type
 
         config =
             new MySqlConfig(
@@ -3322,10 +3325,14 @@ DbConnection * CollectionDB::getMyConnection()
             passwd = AmarokConfig::postgresqlPassword(); // stored as password type
             AmarokConfig::setPostgresqlPassword2( passwd );
         }
-        else
+        else if( appVersion.startsWith( "1.4" ) && appVersion.contains( "beta", false ) )
         {
-            passwd = AmarokConfig::postgresqlPassword2(); // stored as string type
+            passwd = amaroK::config( "Postgresql" )->readEntry( "PostgresqlPassword" );
+            AmarokConfig::setPostgresqlPassword2( passwd );
         }
+        else
+            passwd = AmarokConfig::postgresqlPassword2(); // stored as string type
+
         config =
             new PostgresqlConfig(
                 AmarokConfig::postgresqlHost(),
