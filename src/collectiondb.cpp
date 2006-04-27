@@ -3285,13 +3285,27 @@ DbConnection * CollectionDB::getMyConnection()
 #ifdef USE_MYSQL
     if ( m_dbConnType == DbConnection::mysql )
     {
+        QString appVersion = amaroK::config( "General Options" )->readEntry( "Version" );
+        QString passwd = QString::null;
+        
+        if( appVersion.contains( "1.3" ) )
+        {
+            /// This is because of the encrypted -> plaintext conversion
+            passwd = AmarokConfig::mySqlPassword(); // stored as password type
+            AmarokConfig::setMySqlPassword2( passwd );
+        }
+        else
+        {
+            passwd = AmarokConfig::mySqlPassword2(); // stored as string type
+        }
+        
         config =
             new MySqlConfig(
                 AmarokConfig::mySqlHost(),
                 AmarokConfig::mySqlPort(),
                 AmarokConfig::mySqlDbName(),
                 AmarokConfig::mySqlUser(),
-                AmarokConfig::mySqlPassword() );
+                passwd );
         dbConn = new MySqlConnection( static_cast<MySqlConfig*> ( config ) );
     }
     else
@@ -3299,13 +3313,26 @@ DbConnection * CollectionDB::getMyConnection()
 #ifdef USE_POSTGRESQL
     if ( m_dbConnType == DbConnection::postgresql )
     {
+        QString appVersion = amaroK::config( "General Options" )->readEntry( "Version" );
+        QString passwd = QString::null;
+        
+        if( appVersion.contains( "1.3" ) )
+        {
+            /// This is because of the encrypted -> plaintext conversion
+            passwd = AmarokConfig::postgresqlPassword(); // stored as password type
+            AmarokConfig::setPostgresqlPassword2( passwd );
+        }
+        else
+        {
+            passwd = AmarokConfig::postgresqlPassword2(); // stored as string type
+        }
         config =
             new PostgresqlConfig(
                 AmarokConfig::postgresqlHost(),
                 AmarokConfig::postgresqlPort(),
                 AmarokConfig::postgresqlDbName(),
                 AmarokConfig::postgresqlUser(),
-                AmarokConfig::postgresqlPassword() );
+                passwd );
         dbConn = new PostgresqlConnection( static_cast<PostgresqlConfig*> ( config ) );
     }
     else
@@ -3542,7 +3569,7 @@ CollectionDB::initialize()
 {
     DEBUG_BLOCK
 
-    DbConnection *dbConn = getMyConnection( );
+    DbConnection *dbConn = getMyConnection();
 
     KConfig* config = amaroK::config( "Collection Browser" );
     if(!dbConn->isConnected())
