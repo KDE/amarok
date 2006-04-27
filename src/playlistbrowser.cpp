@@ -2454,15 +2454,6 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             {
                 item->configure();
 
-                if( item->autoscan() && m_podcastItemsToScan.find( item ) < 0 ) // check that it is not there
-                {
-                    m_podcastItemsToScan.append( item );
-                }
-                else if( !item->autoscan() )
-                {   // don't need to check it's not there, it makes no difference to remove()
-                    m_podcastItemsToScan.remove( item );
-                }
-
                 if( m_podcastItemsToScan.isEmpty() )
                     m_podcastTimer->stop();
 
