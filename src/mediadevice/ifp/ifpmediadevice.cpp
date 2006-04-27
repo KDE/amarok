@@ -115,9 +115,12 @@ IfpMediaDevice::IfpMediaDevice()
 {
     m_name = "iRiver";
     m_hasMountPoint = false;
-    m_firstSort  = "None";
-    m_secondSort = "None";
-    m_thirdSort  = "None";
+    
+    // Save the sorts as defaults
+    KConfig *config = amaroK::config( "IfpMediaDevice" );
+    m_firstSort  = config->readEntry( "FirstSort",  "None" );
+    m_secondSort = config->readEntry( "SecondSort", "None" );
+    m_thirdSort  = config->readEntry( "ThirdSort",  "None" );
 }
 
 void
@@ -128,6 +131,12 @@ IfpMediaDevice::init( MediaBrowser* parent )
 
 IfpMediaDevice::~IfpMediaDevice()
 {
+    // Save the sorts categories
+    KConfig *config = amaroK::config( "IfpMediaDevice" );
+    config->writeEntry( "FirstSort", m_firstSort );
+    config->writeEntry( "SecondSort", m_secondSort );
+    config->writeEntry( "ThirdSort", m_thirdSort );
+    
     closeDevice();
 }
 
@@ -388,6 +397,7 @@ IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
         if( m_firstSort == "Album" || m_secondSort == "Album" || m_thirdSort == "Album" )
             cleverFilename = true;
     }
+    
     newDirectoryRecursive( directory, 0 ); // recursively create folders as required.
     
     QString newFilename;
