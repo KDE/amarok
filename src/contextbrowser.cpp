@@ -1216,6 +1216,7 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
 QStringList
 CurrentTrackJob::showHomeByAlbums()
 {
+    KLocale locale( "locale" );
     QueryBuilder qb;
 
     // <Fresh Podcasts Information>
@@ -1265,7 +1266,7 @@ CurrentTrackJob::showHomeByAlbums()
                 {
                     QDateTime d;
                     d.setTime_t( t );
-                    date = d.toString( Qt::LocalDate );
+                    date = locale.formatDateTime( d );
                 }
                 else
                 {
