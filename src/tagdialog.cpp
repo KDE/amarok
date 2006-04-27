@@ -900,7 +900,7 @@ TagDialog::storeTags( const KURL &kurl )
 }
 
 void
-TagDialog::storeTags( const KURL &url, int changes, MetaBundle &mb, int score )
+TagDialog::storeTags( const KURL &url, int changes, const MetaBundle &mb, int score )
 {
     if ( changes & TagDialog::TAGSCHANGED )
         storedTags.replace( url.path(), mb );

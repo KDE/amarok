@@ -75,7 +75,7 @@ class TagDialog : public TagDialogBase
         int changes();
         void storeTags();
         void storeTags( const KURL& url );
-        void storeTags( const KURL& url, int changes, MetaBundle &mb = MetaBundle(), int score = 0 );
+        void storeTags( const KURL& url, int changes, const MetaBundle &mb, int score = 0 );
         void loadTags( const KURL& url );
         void loadLyrics( const KURL& url );
         MetaBundle bundleForURL( const KURL &url );
