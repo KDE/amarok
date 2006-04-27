@@ -900,10 +900,12 @@ TagDialog::storeTags( const KURL &kurl )
 }
 
 void
-TagDialog::storeTags( const KURL &url, MetaBundle &mb, int score )
+TagDialog::storeTags( const KURL &url, int changes, MetaBundle &mb, int score )
 {
-    storedTags.replace( url.path(), mb );
-    storedScores.replace( url.path(), score );
+    if ( changes & TagDialog::TAGSCHANGED )
+        storedTags.replace( url.path(), mb );
+    if ( changes & TagDialog::SCORECHANGED )
+        storedScores.replace( url.path(), score );
 }
 
 
@@ -1026,54 +1028,53 @@ TagDialog::applyToAllTracks()
 
         MetaBundle mb = bundleForURL( *it );
 
-        bool changed = false;
+        int changed = 0;
         if( !kComboBox_artist->currentText().isEmpty() && kComboBox_artist->currentText() != mb.artist() ||
                 kComboBox_artist->currentText().isEmpty() && !m_bundle.artist().isEmpty() ) {
             mb.setArtist( kComboBox_artist->currentText() );
-            changed = true;
+            changed |= TagDialog::TAGSCHANGED;
         }
 
         if( !kComboBox_album->currentText().isEmpty() && kComboBox_album->currentText() != mb.album() ||
                 kComboBox_album->currentText().isEmpty() && !m_bundle.album().isEmpty() ) {
             mb.setAlbum( kComboBox_album->currentText() );
-            changed = true;
+            changed |= TagDialog::TAGSCHANGED;
         }
         if( !kComboBox_genre->currentText().isEmpty() && kComboBox_genre->currentText() != mb.genre() ||
                 kComboBox_genre->currentText().isEmpty() && !m_bundle.genre().isEmpty() ) {
             mb.setGenre( kComboBox_genre->currentText() );
-            changed = true;
+            changed |= TagDialog::TAGSCHANGED;
         }
         if( !kTextEdit_comment->text().isEmpty() && kTextEdit_comment->text() != mb.comment() ||
                 kTextEdit_comment->text().isEmpty() && !m_bundle.comment().isEmpty() ) {
             mb.setComment( kTextEdit_comment->text() );
-            changed = true;
+            changed |= TagDialog::TAGSCHANGED;
         }
         if( !kComboBox_composer->currentText().isEmpty() && kComboBox_composer->currentText() != mb.composer() ||
              kComboBox_composer->currentText().isEmpty() && !m_bundle.composer().isEmpty() ) {
             mb.setComposer( kComboBox_composer->currentText() );
-            changed = true;
+            changed |= TagDialog::TAGSCHANGED;
         }
 
         if( kIntSpinBox_year->value() && kIntSpinBox_year->value() != mb.year() ||
                 !kIntSpinBox_year->value() && m_bundle.year() ) {
             mb.setYear( kIntSpinBox_year->value() );
-            changed = true;
+            changed |= TagDialog::TAGSCHANGED;
         }
         if( kIntSpinBox_discNumber->value() && kIntSpinBox_discNumber->value() != mb.discNumber() ||
                 !kIntSpinBox_discNumber->value() && m_bundle.discNumber() ) {
             mb.setDiscNumber( kIntSpinBox_discNumber->value() );
-            changed = true;
+            changed |= TagDialog::TAGSCHANGED;
         }
 
         if( kIntSpinBox_score->value() && kIntSpinBox_score->value() != m_score ||
                 !kIntSpinBox_score->value() && m_score )
         {
             m_score = kIntSpinBox_score->value();
-            changed = true;
+            changed |= TagDialog::SCORECHANGED;
         }
 
-        if( changed )
-            storeTags( *it, mb, m_score );
+        storeTags( *it, changed, mb, m_score );
     }
 }
 
