@@ -121,6 +121,7 @@ IfpMediaDevice::IfpMediaDevice()
     m_firstSort  = config->readEntry( "FirstSort",  "None" );
     m_secondSort = config->readEntry( "SecondSort", "None" );
     m_thirdSort  = config->readEntry( "ThirdSort",  "None" );
+    m_spacesToUnderscores = config->readBoolEntry( "SpacesToUnderscores", false );
 }
 
 void
@@ -136,6 +137,7 @@ IfpMediaDevice::~IfpMediaDevice()
     config->writeEntry( "FirstSort", m_firstSort );
     config->writeEntry( "SecondSort", m_secondSort );
     config->writeEntry( "ThirdSort", m_thirdSort );
+    config->writeEntry( "SpacesToUnderscores", m_spacesToUnderscores );
     
     closeDevice();
 }
