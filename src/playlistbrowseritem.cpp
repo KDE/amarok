@@ -1158,13 +1158,9 @@ PodcastChannel::configure()
     
     if( dialog->configure() )
     {
-        bool requirePurge = false;
         PodcastSettings *newSettings = dialog->getSettings();
 
         bool downloadMedia = ( (fetchType() != newSettings->fetchType()) && (newSettings->fetchType() == AUTOMATIC) );
-
-        if( newSettings->hasPurge() )
-            requirePurge = true;
 
         /**
          * Rewrite local url
@@ -1206,7 +1202,7 @@ PodcastChannel::configure()
         m_bundle.setSettings( newSettings );
         CollectionDB::instance()->updatePodcastChannel( m_bundle );
         
-        if( requirePurge )
+        if( hasPurge() )
             purge();
             
         if( downloadMedia )
