@@ -26,9 +26,10 @@ class Quiz
         @registry = registry.sub_registry( channel )
         @registry_conf = @registry.sub_registry( "config" )
 
-        unless @registry_conf.has_key?( "questions" )
-            @registry_conf["questions"] = Array.new
-        end
+        # Per-channel copy of the global questions table. Acts like a shuffled queue
+        # from which questions are taken, until empty. Then we refill it with questions
+        # from the global table.
+        @registry_conf["questions"] = [] unless @registry_conf.has_key?( "questions" )
 
         @questions = @registry_conf["questions"]
         @question = nil
@@ -58,6 +59,9 @@ class QuizPlugin < Plugin
     end
 
 
+    # Fetches questions from a file on the server and from the wiki, then merges
+    # and transforms the questions and fills the global question table.
+    #
     def fetch_data( m )
         # TODO: Make this configurable, and add support for more than one file (there's a size limit in linux too ;) )
         path = "/home/eean/.rbot/quiz.rbot"
@@ -119,7 +123,8 @@ class QuizPlugin < Plugin
         @bot.say( m.replyto, "done." )
     end
 
-    # Return new Quiz instance for channel, or existing one
+
+    # Returns new Quiz instance for channel, or existing one
     #
     def create_quiz( channel )
         unless @quizzes.has_key?( channel )
@@ -153,6 +158,8 @@ class QuizPlugin < Plugin
     end
 
 
+    # Updates the per-channel rank table, which is kept for performance reasons
+    #
     def calculate_ranks( m, q )
         if q.registry.has_key?( m.sourcenick )
             stats = q.registry[m.sourcenick]
@@ -192,6 +199,8 @@ class QuizPlugin < Plugin
     end
 
 
+    # Reimplemented from Plugin
+    #
     def listen( m )
         return unless @quizzes.has_key?( m.target )
         q = @quizzes[m.target]
