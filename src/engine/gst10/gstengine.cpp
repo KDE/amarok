@@ -531,7 +531,10 @@ GstEngine::getAudioCDContents(const QString &device, KURL::List &urls)
                 debug() << "Found " << tracks << " cdda tracks" << endl;
                 for ( int i = 1; i <= tracks; ++i )
                 {
-                    urls << KURL( device.isNull() ? QString( "cdda://%1" ).arg( i ) : QString( "cdda://%1?%2" ).arg( i ).arg( device ) );
+                    KURL temp( QString( "cdda://%1" ).arg( i ) );
+                    if ( !device.isNull() )
+                        temp.setQuery( device );
+                    urls << temp;
                 }
                 result = true;
             }
