@@ -523,6 +523,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
 
     item->setExpanded( true );
     repaintItem( item );  // Better than ::repaint(), flickers less
+    delete locale;
 }
 
 void
