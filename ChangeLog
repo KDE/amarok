@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.4.0:
   FEATURES:
+    * GStreamer-0.10 engine now supports Audio CDs.
     * Context menus for entries in the statistics tool. (BR 124945)
     * Collection Browser now has tabs for switching between tree and flat
       view.

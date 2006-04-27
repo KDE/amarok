@@ -34,6 +34,7 @@
 #include <vector>
 
 #include <qfile.h>
+#include <qregexp.h>
 #include <qtimer.h>
 
 #include <kapplication.h>
@@ -458,6 +459,92 @@ GstEngine::scope()
 }
 
 
+bool
+GstEngine::metaDataForUrl(const KURL &url, Engine::SimpleMetaBundle &b)
+{
+    debug() << "GstEngine::metaDataForUrl " << url << endl;
+    if ( url.protocol() == "cdda" )
+    {
+        // TODO: gstreamer doesn't support cddb natively, but could perhaps use libkcddb?
+        b.title = QString( i18n( "Track %1" ) ).arg( url.host() );
+        b.album = i18n( "AudioCD" );
+
+        if ( setupAudioCD( url.query().remove( QRegExp( "^\\?" ) ), url.host().toUInt(), true ) )
+        {
+            GstPad *pad;
+            if ( ( pad = gst_element_get_pad( m_gst_src, "src" ) ) )
+            {
+                GstCaps *caps;
+                if ( ( caps = gst_pad_get_caps( pad ) ) )
+                {
+                    GstStructure *structure;
+                    if ( ( structure = gst_caps_get_structure( GST_CAPS(caps), 0 ) ) )
+                    {
+                        gint channels, rate, width;
+                        gst_structure_get_int( structure, "channels", &channels );
+                        gst_structure_get_int( structure, "rate", &rate );
+                        gst_structure_get_int( structure, "width", &width );
+                        b.bitrate = ( rate * width * channels ) / 1000;
+                        b.samplerate = rate;
+                    }
+                    gst_caps_unref( caps );
+                }
+
+                GstQuery *query;
+                if ( ( query = gst_query_new_duration( GST_FORMAT_TIME ) ) )
+                {
+                    if ( gst_pad_query( pad, query )) {
+                        gint64 time;
+
+                        gst_query_parse_duration( query, NULL, &time );
+                        b.length = QString::number( time / GST_SECOND );
+                    }
+                    gst_query_unref( query );
+                }
+            }
+            gst_object_unref( GST_OBJECT( pad ) );
+            if ( !gst_element_set_state( m_gst_pipeline, GST_STATE_NULL ) ) {
+                warning() << "Could not set thread to NULL.\n";
+                destroyPipeline();
+            }
+        }
+        return true;
+    }
+    return false;
+}
+
+
+bool
+GstEngine::getAudioCDContents(const QString &device, KURL::List &urls)
+{
+    debug() << "GstEngine::getAudioCDContents " << device << endl;
+
+    bool result = false;
+    if ( setupAudioCD( device, 0, true ) )
+    {
+        GstFormat format;
+        if ( ( format = gst_format_get_by_nick("track") ) != GST_FORMAT_UNDEFINED )
+        {
+            gint64 tracks = 0;
+            if ( gst_element_query_duration( m_gst_pipeline, &format, &tracks ) )
+            {
+                debug() << "Found " << tracks << " cdda tracks" << endl;
+                for ( int i = 1; i <= tracks; ++i )
+                {
+                    urls << KURL( device.isNull() ? QString( "cdda://%1" ).arg( i ) : QString( "cdda://%1?%2" ).arg( i ).arg( device ) );
+                }
+                result = true;
+            }
+        }
+        if ( !gst_element_set_state( m_gst_pipeline, GST_STATE_NULL ) ) {
+            warning() << "Could not set thread to NULL.\n";
+            destroyPipeline();
+        }
+    }
+    return result;
+}
+
+
 amaroK::PluginConfig*
 GstEngine::configure() const
 {
@@ -481,14 +568,23 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     Engine::Base::load( url, stream );
     debug() << "Loading url: " << url.url() << endl;
 
-    if ( !createPipeline() )
-        return false;
-
     if ( url.isLocalFile() ) {
+        if ( !createPipeline() )
+            return false;
+        
         // Use gst's filesrc element for local files, cause it's less overhead than KIO
         if ( !( m_gst_src = createElement( "filesrc", m_gst_pipeline ) ) ) { destroyPipeline(); return false; }
         // Set file path
         g_object_set( G_OBJECT(m_gst_src), "location", static_cast<const char*>( QFile::encodeName( url.path() ) ), NULL );
+
+        if ( !( m_gst_decodebin = createElement( "decodebin", m_gst_pipeline ) ) ) { destroyPipeline(); return false; }
+        g_signal_connect( G_OBJECT( m_gst_decodebin ), "new-decoded-pad", G_CALLBACK( newPad_cb ), NULL );
+
+        // Link elements. The link from decodebin to audioconvert will be made in the newPad-callback
+        gst_element_link( m_gst_src, m_gst_decodebin );
+    } else if ( url.protocol() == "cdda" ) {
+        if ( !setupAudioCD( url.query().remove( QRegExp( "^\\?" ) ), url.host().toUInt(), false ) )
+            return false;
     }
       else { destroyPipeline(); return false; }
 /*    else {
@@ -510,11 +606,6 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
         }
     }
 */
-    if ( !( m_gst_decodebin = createElement( "decodebin", m_gst_pipeline ) ) ) { destroyPipeline(); return false; }
-    g_signal_connect( G_OBJECT( m_gst_decodebin ), "new-decoded-pad", G_CALLBACK( newPad_cb ), NULL );
-
-    // Link elements. The link from decodebin to audioconvert will be made in the newPad-callback
-    gst_element_link( m_gst_src, m_gst_decodebin );
 
     setVolume( m_volume );
     setEqualizerEnabled( m_equalizerEnabled );
@@ -919,6 +1010,35 @@ GstEngine::destroyPipeline()
         m_transferJob->kill();
         m_transferJob = 0;
     } */
+}
+
+
+bool
+GstEngine::setupAudioCD( const QString& device, unsigned track, bool pause )
+{
+    debug() << "setupAudioCD: device = " << device << ", track = " << track << ", pause = " << pause << endl;
+    bool filled = m_pipelineFilled && m_gst_src && strcmp( gst_element_get_name( m_gst_src ), "cdiocddasrc" ) == 0;
+    if ( filled || createPipeline() )
+    {
+        if ( filled || ( m_gst_src = createElement( "cdiocddasrc", m_gst_pipeline, "cdiocddasrc" ) ) )
+        {
+            // TODO: allow user to configure default device rather than falling back to gstreamer default when no device passed in
+            if ( !device.isNull() )
+                g_object_set( G_OBJECT(m_gst_src), "device", device.latin1(), NULL );
+            if ( track )
+                g_object_set (G_OBJECT (m_gst_src), "track", track, NULL);
+            if ( filled || gst_element_link( m_gst_src, m_gst_audiobin ) )
+            {
+                // the doco says we should only have to go to READY to read metadata, but that doesn't actually work
+                if ( gst_element_set_state( m_gst_pipeline, pause ? GST_STATE_PAUSED : GST_STATE_READY ) != GST_STATE_CHANGE_FAILURE && gst_element_get_state( m_gst_pipeline, NULL, NULL, GST_CLOCK_TIME_NONE ) == GST_STATE_CHANGE_SUCCESS )
+                {
+                    return true;
+                }
+            }
+        }
+        destroyPipeline();
+    }
+    return false;
 }
 
 /*

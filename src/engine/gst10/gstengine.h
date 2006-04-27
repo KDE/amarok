@@ -64,6 +64,9 @@ class GstEngine : public Engine::Base
         Engine::State state() const;
         const Engine::Scope& scope();
 
+        virtual bool metaDataForUrl(const KURL &url, Engine::SimpleMetaBundle &b);
+        virtual bool getAudioCDContents(const QString &device, KURL::List &urls);
+
         amaroK::PluginConfig* configure() const;
 
     public slots:
@@ -140,6 +143,9 @@ class GstEngine : public Engine::Base
 
         /** Stops playback, destroys all input pipelines, destroys output pipeline, and frees ressources */
         void destroyPipeline();
+
+        /* Constructs the pipeline for audio CDs, optionally selecting a device and/or track and/or setting the state to paused */
+        bool setupAudioCD( const QString& device, unsigned track, bool pause );
 
         /** Beams the streaming buffer status to amaroK */
 //        void sendBufferStatus();
