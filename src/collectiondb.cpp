@@ -3286,21 +3286,24 @@ DbConnection * CollectionDB::getMyConnection()
     if ( m_dbConnType == DbConnection::mysql )
     {
         QString appVersion = amaroK::config( "General Options" )->readEntry( "Version" );
-        QString passwd = QString::null;
+        QString passwd = AmarokConfig::mySqlPassword2(); // stored as string type
 
-        if( appVersion.startsWith( "1.3" ) )
+        if( passwd.isEmpty() )
         {
-            /// This is because of the encrypted -> plaintext conversion
-            passwd = AmarokConfig::mySqlPassword(); // stored as password type
-            AmarokConfig::setMySqlPassword2( passwd );
+            if( appVersion.startsWith( "1.3" ) )
+            {
+                /// This is because of the encrypted -> plaintext conversion
+                passwd = AmarokConfig::mySqlPassword(); // stored as password type
+                AmarokConfig::setMySqlPassword2( passwd );
+            }
+            else if( appVersion.startsWith( "1.4" ) && 
+                   ( appVersion.contains( "beta", false ) || 
+                     appVersion.contains( "svn",  false ) ) )
+            {
+                passwd = amaroK::config( "MySql" )->readEntry( "MySqlPassword" );
+                AmarokConfig::setMySqlPassword2( passwd );
+            }
         }
-        else if( appVersion.startsWith( "1.4" ) && appVersion.contains( "beta", false ) )
-        {
-            passwd = amaroK::config( "MySql" )->readEntry( "MySqlPassword" );
-            AmarokConfig::setMySqlPassword2( passwd );
-        }
-        else
-            passwd = AmarokConfig::mySqlPassword2(); // stored as string type
 
         config =
             new MySqlConfig(
@@ -3317,21 +3320,24 @@ DbConnection * CollectionDB::getMyConnection()
     if ( m_dbConnType == DbConnection::postgresql )
     {
         QString appVersion = amaroK::config( "General Options" )->readEntry( "Version" );
-        QString passwd = QString::null;
+        QString passwd = AmarokConfig::postgresqlPassword2();
 
-        if( appVersion.startsWith( "1.3" ) )
+        if( passwd.isEmpty() )
         {
-            /// This is because of the encrypted -> plaintext conversion
-            passwd = AmarokConfig::postgresqlPassword(); // stored as password type
-            AmarokConfig::setPostgresqlPassword2( passwd );
+            if( appVersion.startsWith( "1.3" ) )
+            {
+                /// This is because of the encrypted -> plaintext conversion
+                passwd = AmarokConfig::postgresqlPassword(); // stored as password type
+                AmarokConfig::setPostgresqlPassword2( passwd );
+            }
+            else if( appVersion.startsWith( "1.4" ) && 
+                   ( appVersion.contains( "beta", false ) || 
+                     appVersion.contains( "svn",  false ) ) )
+            {
+                passwd = amaroK::config( "Postgresql" )->readEntry( "PostgresqlPassword" );
+                AmarokConfig::setPostgresqlPassword2( passwd );
+            }
         }
-        else if( appVersion.startsWith( "1.4" ) && appVersion.contains( "beta", false ) )
-        {
-            passwd = amaroK::config( "Postgresql" )->readEntry( "PostgresqlPassword" );
-            AmarokConfig::setPostgresqlPassword2( passwd );
-        }
-        else
-            passwd = AmarokConfig::postgresqlPassword2(); // stored as string type
 
         config =
             new PostgresqlConfig(
