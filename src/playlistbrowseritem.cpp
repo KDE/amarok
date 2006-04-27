@@ -1155,17 +1155,16 @@ void
 PodcastChannel::configure()
 {
     PodcastSettingsDialog *dialog = new PodcastSettingsDialog( m_bundle.getSettings() );
-
+    
     if( dialog->configure() )
     {
+        bool requirePurge = false;
         PodcastSettings *newSettings = dialog->getSettings();
 
         bool downloadMedia = ( (fetchType() != newSettings->fetchType()) && (newSettings->fetchType() == AUTOMATIC) );
 
-        if( !hasPurge() && newSettings->hasPurge() )
-        {
-            purge();
-        }
+        if( newSettings->hasPurge() )
+            requirePurge = true;
 
         /**
          * Rewrite local url
@@ -1204,11 +1203,14 @@ PodcastChannel::configure()
                 PlaylistBrowser::instance()->m_podcastItemsToScan.remove( this );
         }
 
-        if( downloadMedia )
-            downloadChildren();
-
         m_bundle.setSettings( newSettings );
         CollectionDB::instance()->updatePodcastChannel( m_bundle );
+        
+        if( requirePurge )
+            purge();
+            
+        if( downloadMedia )
+            downloadChildren();
     }
 
     delete dialog;
@@ -1620,26 +1622,28 @@ PodcastChannel::purge()
         return;
 
     KURL::List urlsToDelete;
-    QListViewItem *removeMe = 0;
-    QListViewItem *removeNext = firstChild();
-    for( int i=0; i < childCount(); i++ )
+    QValueList<QListViewItem*> purgedItems;
+    
+    QListViewItem *current = firstChild();
+    for( int i=0; current && i < childCount(); current = current->nextSibling(), i++ )
     {
-        removeMe = removeNext;
-
-        if( !removeMe )
-            break;
-
-        removeNext = removeMe->nextSibling();
-        if( i <= purgeCount() )
+        if( i < purgeCount() )
             continue;
+        
+        purgedItems.append( current );
+    }
+    
+    foreachType( QValueList<QListViewItem*>, purgedItems )
+    {
+        QListViewItem *item = *it;
+            
+    #define item static_cast<PodcastEpisode*>(item)
+        if( item->isOnDisk() )
+            urlsToDelete.append( item->localUrl() );
 
-    #define removeMe static_cast<PodcastEpisode*>(removeMe)
-        if( removeMe->isOnDisk() )
-            urlsToDelete.append( removeMe->localUrl() );
-
-        CollectionDB::instance()->removePodcastEpisode( removeMe->dBId() );
-    #undef  removeMe
-        delete removeMe;
+        CollectionDB::instance()->removePodcastEpisode( item->dBId() );
+    #undef  item
+        delete item;
     }
 
     if( !urlsToDelete.isEmpty() )
