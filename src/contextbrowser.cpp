@@ -467,7 +467,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
 void ContextBrowser::collectionScanStarted()
 {
     m_emptyDB = CollectionDB::instance()->isEmpty();
-    if( m_emptyDB )
+    if( m_emptyDB && currentPage() == m_contextTab )
         showCurrentTrack();
 }
 
@@ -477,7 +477,8 @@ void ContextBrowser::collectionScanDone()
     if ( CollectionDB::instance()->isEmpty() )
     {
         m_emptyDB = true;
-        showCurrentTrack();
+        if ( currentPage() == m_contextTab )
+            showCurrentTrack();
     }
     else if ( m_emptyDB )
     {
