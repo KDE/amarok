@@ -299,8 +299,8 @@ class QuizPlugin < Plugin
         q.answer_core = q.answer.dup if q.answer_core == nil
 
         # Check if core answer is numerical and tell the players so, if that's the case
-        # The rather obscure statement is needed because to_i returns 99 for "99 red balloons", and 0 for "balloon"
-        if q.answer_core.to_i.to_s == q.answer_core
+        # The rather obscure statement is needed because to_i and to_f returns 99 for "99 red balloons", and 0 for "balloon"
+        if q.answer_core.to_i.to_s == q.answer_core or q.answer_core.to_f.to_s == q.answer_core
             ctrl = "   "
             ctrl[0] = 3 #ctrl-c
             ctrl[1..2] = "07" #orange
