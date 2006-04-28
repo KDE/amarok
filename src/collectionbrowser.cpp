@@ -132,7 +132,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
     m_tagfilterMenuButton = new KActionMenu( i18n( "Group By" ), "filter", ac );
     m_tagfilterMenuButton->setDelayed( false );
-    m_tagfilterMenuButton->setEnabled( m_view->m_viewMode == CollectionView::modeTreeView );
+//    m_tagfilterMenuButton->setEnabled( m_view->m_viewMode == CollectionView::modeTreeView );
 //    connect ( m_treeViewAction, SIGNAL ( toggled(bool) ), m_tagfilterMenuButton, SLOT( setEnabled (bool) ) );
 
     layoutToolbar();
@@ -1870,7 +1870,7 @@ CollectionView::contentsDropEvent( QDropEvent *e )
             }
             else if( (*it).protocol() == "file" || (*it).protocol() == "audiocd" )
                 dropped++;
-            else 
+            else
                 invalid++;
         }
         QString msg;
