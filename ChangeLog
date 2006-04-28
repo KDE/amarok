@@ -34,6 +34,8 @@ VERSION 1.4.0:
       <kde@dontletsstart.com>. (BR 125414)
 
   BUGFIXES:
+    * Fix regression causing drag and drop of playlist track items in the 
+      playlistbrowser to be functionless. (BR 126387)
     * Fix regression causing podcast purge property to be ignored. (BR 126194)
     * Automatically convert MySql/PostgreSql passwords from 1.3 to 1.4 state.
     * Popup Messages would flicker when being shown.
