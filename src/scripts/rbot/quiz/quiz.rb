@@ -185,7 +185,7 @@ class QuizPlugin < Plugin
 
             # If less than all other players' scores, append at the end
             unless inserted
-                q.rank_table << [[m.sourcenick, stats]]
+                q.rank_table << [m.sourcenick, stats]
             end
 
             if i < old_rank
