@@ -5,12 +5,15 @@ amaroK ChangeLog
 
 VERSION 1.4.0:
   FEATURES:
+    * iFP has persistent settings when transferring tracks to the device.
     * GStreamer-0.10 engine now supports Audio CDs.
     * Context menus for entries in the statistics tool. (BR 124945)
     * Collection Browser now has tabs for switching between tree and flat
       view.
 
   CHANGES:
+    * Podcasts are automatically configured to be checked for updates.
+    * Show only 2 decimal places for scores in the statistics module.
     * Replace 'Move to Collection' in file browser context menu by 'Organize
       Files' for collection directories. (BR 125702)
     * Removed the "Show Status Bar" option.
@@ -31,7 +34,11 @@ VERSION 1.4.0:
       <kde@dontletsstart.com>. (BR 125414)
 
   BUGFIXES:
+    * Fix regression causing podcast purge property to be ignored. (BR 126194)
+    * Automatically convert MySql/PostgreSql passwords from 1.3 to 1.4 state.
     * Popup Messages would flicker when being shown.
+    * Some 1.3 podcasts wouldn't get transferred to 1.4 settings.
+    * New podcasts didn't get a default save location. (BR 126196)
     * Fixed encoding problems with lyrics scripts.
     * Mark/unmark as compilation is now stored in the file tag so it is
       remembered when the colection is rescanned. (BR 120428)
