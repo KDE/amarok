@@ -3013,6 +3013,12 @@ CollectionDB::similarArtists( const QString &artist, uint count )
 
 
 void
+CollectionDB::sanitizeCompilations()
+{
+    query( QString( "UPDATE tags_temp SET sampler = %1 WHERE sampler IS NULL;").arg( boolF() ) );
+}
+
+void
 CollectionDB::checkCompilations( const QString &path, const bool temporary )
 {
     QStringList albums;
@@ -3296,8 +3302,8 @@ DbConnection * CollectionDB::getMyConnection()
                 passwd = AmarokConfig::mySqlPassword(); // stored as password type
                 AmarokConfig::setMySqlPassword2( passwd );
             }
-            else if( appVersion.startsWith( "1.4" ) && 
-                   ( appVersion.contains( "beta", false ) || 
+            else if( appVersion.startsWith( "1.4" ) &&
+                   ( appVersion.contains( "beta", false ) ||
                      appVersion.contains( "svn",  false ) ) )
             {
                 passwd = amaroK::config( "MySql" )->readEntry( "MySqlPassword" );
@@ -3330,8 +3336,8 @@ DbConnection * CollectionDB::getMyConnection()
                 passwd = AmarokConfig::postgresqlPassword(); // stored as password type
                 AmarokConfig::setPostgresqlPassword2( passwd );
             }
-            else if( appVersion.startsWith( "1.4" ) && 
-                   ( appVersion.contains( "beta", false ) || 
+            else if( appVersion.startsWith( "1.4" ) &&
+                   ( appVersion.contains( "beta", false ) ||
                      appVersion.contains( "svn",  false ) ) )
             {
                 passwd = amaroK::config( "Postgresql" )->readEntry( "PostgresqlPassword" );

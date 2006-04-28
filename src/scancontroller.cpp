@@ -227,6 +227,7 @@ main_loop:
 
     if( !isAborted() ) {
         if( m_scanner->normalExit() && !m_scanner->signalled() ) {
+            CollectionDB::instance()->sanitizeCompilations();
             if ( m_incremental ) {
                 m_foldersToRemove += m_folders;
                 foreach( m_foldersToRemove ) {

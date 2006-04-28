@@ -325,6 +325,7 @@ class CollectionDB : public QObject, public EngineObserver
         QStringList setCompilation( const QString &album, const bool enabled, const bool updateView = true );
         QString albumSongCount( const QString &artist_id, const QString &album_id );
         bool albumIsCompilation( const QString &album_id );
+        void sanitizeCompilations();
 
         //list methods
         QStringList artistList( bool withUnknowns = true, bool withCompilations = true );
