@@ -186,7 +186,6 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
     , m_flags( ( url.protocol() == "file" && QFile::exists( url.path() ) ) ? Flags::Exists : 0 )
     , m_podcastBundle( 0 )
 {
-    DEBUG_BLOCK
     if ( exists() )
     {
         if ( !noCache )

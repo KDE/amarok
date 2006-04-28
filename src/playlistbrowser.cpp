@@ -2992,18 +2992,30 @@ void PlaylistBrowserView::moveSelectedItems( QListViewItem *newParent )
         selected.append( *it );
     }
 
+    QListViewItem *after=0;
     for( QListViewItem *item = selected.first(); item; item = selected.next() )
     {
         QListViewItem *itemParent = item->parent();
         if( isPlaylistTrackItem( item ) )
         {
-            if( !isPlaylist( newParent ) )
-                continue;
-            else
+            if( isPlaylistTrackItem( newParent ) )
             {
-                itemParent->takeItem( item );
-                newParent->insertItem( item );
+                if( !after && newParent != newParent->parent()->firstChild() )
+                    after = newParent->itemAbove();
+
+                newParent = static_cast<PlaylistEntry*>(newParent->parent());
             }
+            else if( !isPlaylist( newParent ) )
+                continue;
+            
+            
+            #define newParent static_cast<PlaylistEntry*>(newParent)
+            newParent->insertTracks( after, KURL::List( static_cast<PlaylistTrackItem*>(item)->url() ));
+            #undef  newParent
+            #define itemParent static_cast<PlaylistEntry*>(itemParent)
+            itemParent->removeTrack( static_cast<PlaylistTrackItem*>(item) );
+            #undef  itemParent
+            continue;
         }
         else if( !isCategory( newParent ) )
             continue;
