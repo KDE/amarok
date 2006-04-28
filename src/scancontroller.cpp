@@ -196,6 +196,7 @@ ScanController::doJob()
         return true;
 
     CollectionDB::instance()->createTables( true );
+    CollectionDB::instance()->invalidateArtistAlbumCache();
     setProgressTotalSteps( 100 );
 
 main_loop:

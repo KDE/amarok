@@ -679,14 +679,15 @@ uint
 CollectionDB::artistID( QString value, bool autocreate, const bool temporary, const bool updateSpelling )
 {
     // lookup cache
-    if ( m_cacheArtist == value )
-        return m_cacheArtistID;
+    if ( m_validArtistCache && m_cacheArtist[(int)temporary] == value )
+        return m_cacheArtistID[(int)temporary];
 
     uint id = IDFromValue( "artist", value, autocreate, temporary, updateSpelling );
 
     // cache values
-    m_cacheArtist = value;
-    m_cacheArtistID = id;
+    m_cacheArtist[(int)temporary] = value;
+    m_cacheArtistID[(int)temporary] = id;
+    m_validArtistCache = 1;
 
     return id;
 }
@@ -696,14 +697,14 @@ QString
 CollectionDB::artistValue( uint id )
 {
     // lookup cache
-    if ( m_cacheArtistID == id )
-        return m_cacheArtist;
+    if ( m_cacheArtistID[0] == id )
+        return m_cacheArtist[0];
 
     QString value = valueFromID( "artist", id );
 
     // cache values
-    m_cacheArtist = value;
-    m_cacheArtistID = id;
+    m_cacheArtist[0] = value;
+    m_cacheArtistID[0] = id;
 
     return value;
 }
@@ -714,14 +715,15 @@ uint
 CollectionDB::albumID( QString value, bool autocreate, const bool temporary, const bool updateSpelling )
 {
     // lookup cache
-    if ( m_cacheAlbum == value )
-        return m_cacheAlbumID;
+    if ( m_validAlbumCache && m_cacheAlbum[(int)temporary] == value )
+        return m_cacheAlbumID[(int)temporary];
 
     uint id = IDFromValue( "album", value, autocreate, temporary, updateSpelling );
 
     // cache values
-    m_cacheAlbum = value;
-    m_cacheAlbumID = id;
+    m_cacheAlbum[(int)temporary] = value;
+    m_cacheAlbumID[(int)temporary] = id;
+    m_validAlbumCache = 1;
 
     return id;
 }
@@ -731,14 +733,14 @@ QString
 CollectionDB::albumValue( uint id )
 {
     // lookup cache
-    if ( m_cacheAlbumID == id )
-        return m_cacheAlbum;
+    if ( m_cacheAlbumID[0] == id )
+        return m_cacheAlbum[0];
 
     QString value = valueFromID( "album", id );
 
     // cache values
-    m_cacheAlbum = value;
-    m_cacheAlbumID = id;
+    m_cacheAlbum[0] = value;
+    m_cacheAlbumID[0] = id;
 
     return value;
 }

@@ -403,6 +403,8 @@ class CollectionDB : public QObject, public EngineObserver
         bool isConnected();
         void releasePreviousConnection(QThread *currThread);
 
+        void invalidateArtistAlbumCache() { m_validArtistCache=0; m_validAlbumCache=0; };
+
     protected:
         QCString md5sum( const QString& artist, const QString& album, const QString& file = QString::null );
         void engineTrackEnded( int finalPosition, int trackLength );
@@ -476,10 +478,12 @@ class CollectionDB : public QObject, public EngineObserver
 
         //member variables
         QString m_amazonLicense;
-        QString m_cacheArtist;
-        uint m_cacheArtistID;
-        QString m_cacheAlbum;
-        uint m_cacheAlbumID;
+        bool m_validArtistCache;
+        bool m_validAlbumCache;
+        QString m_cacheArtist[2];
+        uint m_cacheArtistID[2];
+        QString m_cacheAlbum[2];
+        uint m_cacheAlbumID[2];
         static QMutex *connectionMutex;
 
         bool m_monitor;
