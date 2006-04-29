@@ -63,6 +63,11 @@ namespace amaroK
         }
     }
 
+    QString DcopPlayerHandler::version()
+    {
+        return APP_VERSION;
+    }
+
     bool DcopPlayerHandler::dynamicModeStatus()
     {
         return amaroK::dynamicMode();

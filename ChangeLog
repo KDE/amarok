@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.4.0:
   FEATURES:
+    * New DCOP call "player: version()". Returns the amaroK version.
     * iFP has persistent settings when transferring tracks to the device.
     * GStreamer-0.10 engine now supports Audio CDs.
     * Context menus for entries in the statistics tool. (BR 124945)
@@ -34,7 +35,7 @@ VERSION 1.4.0:
       <kde@dontletsstart.com>. (BR 125414)
 
   BUGFIXES:
-    * Fix regression causing drag and drop of playlist track items in the 
+    * Fix regression causing drag and drop of playlist track items in the
       playlistbrowser to be functionless. (BR 126387)
     * Fix regression causing podcast purge property to be ignored. (BR 126194)
     * Automatically convert MySql/PostgreSql passwords from 1.3 to 1.4 state.

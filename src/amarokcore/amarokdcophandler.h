@@ -35,6 +35,7 @@ class DcopPlayerHandler : public QObject, virtual public AmarokPlayerInterface
       DcopPlayerHandler();
 
    public:
+      virtual QString version();
       virtual bool dynamicModeStatus();
       virtual bool equalizerEnabled();
       virtual bool osdEnabled();

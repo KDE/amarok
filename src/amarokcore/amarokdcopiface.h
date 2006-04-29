@@ -34,6 +34,7 @@ class AmarokPlayerInterface : virtual public DCOPObject
    K_DCOP
 
 k_dcop:
+   virtual QString version() = 0;                           ///< returns amarok version string
 
    virtual bool dynamicModeStatus() = 0;                    ///< Return dynamic mode status.
    virtual bool equalizerEnabled() = 0;                     ///< Return the equalizer status.
@@ -114,7 +115,6 @@ class AmarokPlaylistInterface : virtual public DCOPObject
    K_DCOP
 
 k_dcop:
-
    virtual int  getActiveIndex() = 0;                       ///< Return the index of the currently active track. -1 if none.
    virtual int  getTotalTrackCount() = 0;                   ///< Return number of tracks in playlist. 0 if none.
    virtual QString saveCurrentPlaylist() = 0;               ///< Saves the current playlist to current.xml and returns its path.
