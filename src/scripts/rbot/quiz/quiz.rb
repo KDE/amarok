@@ -11,7 +11,13 @@
 QuizBundle = Struct.new( "QuizBundle", :question, :answer )
 
 # Class for storing player stats
-PlayerStats = Struct.new( "PlayerStats", :score )
+PlayerStats = Struct.new( "PlayerStats", :score, :jokers, :jokers_time )
+
+# Maximum number of jokers a player can use per hour
+Max_Jokers = 3
+
+# Number of minutes until the jokers are refreshed
+Joker_Interval = 60
 
 
 #######################################################################
@@ -22,9 +28,11 @@ class Quiz
     attr_accessor :registry, :registry_conf, :questions, :question, :answer, :answer_core,
                   :first_try, :hint, :hintrange, :rank_table
 
-    def initialize( channel, registry )
+    def initialize( channel, registry, plugin )
+        @channel = channel
         @registry = registry.sub_registry( channel )
         @registry_conf = @registry.sub_registry( "config" )
+        @plugin = plugin
 
         # Per-channel copy of the global questions table. Acts like a shuffled queue
         # from which questions are taken, until empty. Then we refill it with questions
@@ -43,6 +51,46 @@ class Quiz
         # and always synced with the registry player stats hash. This way we can do fast
         # rank lookups, without extra sorting.
         @rank_table = @registry.to_a.sort { |a,b| b[1].score<=>a[1].score }
+
+        # Convert old PlayerStats to new. Can be removed later on
+        @registry.each_key do |player|
+            begin
+                j = @registry[player].joker
+            rescue
+                @registry[player] = PlayerStats.new( @registry[player].score, Max_Jokers, Joker_Interval )
+            end
+        end
+
+
+        Thread.new { jokerthread_handler }
+    end
+
+
+    # This method runs in a separate thread. It updates the player's joker supply regularly.
+    #
+    def jokerthread_handler()
+        loop do
+            @registry.each_key do |player|
+                p = @registry[player]
+                if p.jokers_time == 0
+                    if p.jokers < Max_Jokers
+                        if Max_Jokers - p.jokers > 1
+                            @plugin.bot.say( @channel, "#{player} gains #{Max_Jokers - p.jokers} new jokers." )
+                        else
+                            @plugin.bot.say( @channel, "#{player} gains #{Max_Jokers - p.jokers} new joker." )
+                        end
+                        p.jokers_time = Joker_Interval
+                        p.jokers = Max_Jokers
+                    end
+                else
+                    p.jokers_time -= 1
+                end
+
+                @registry[player] = p
+            end
+
+            sleep( 60 )
+        end
     end
 end
 
@@ -51,6 +99,8 @@ end
 # CLASS QuizPlugin
 #######################################################################
 class QuizPlugin < Plugin
+    attr_accessor :bot
+
     def initialize()
         super
 
@@ -128,7 +178,7 @@ class QuizPlugin < Plugin
     #
     def create_quiz( channel )
         unless @quizzes.has_key?( channel )
-            @quizzes[channel] = Quiz.new( channel, @registry )
+            @quizzes[channel] = Quiz.new( channel, @registry, self )
         end
 
         return @quizzes[channel]
@@ -140,13 +190,13 @@ class QuizPlugin < Plugin
 
         if q.registry.has_key?( nick )
             score = q.registry[nick].score
+            jokers = q.registry[nick].jokers
 
             rank = 0
-            q.rank_table.length.times do |rank|
-                break if nick == q.rank_table[rank][0]
-            end
+            q.rank_table.length.times { |rank| break if nick == q.rank_table[rank][0] }
+            rank += 1
 
-            @bot.say( m.replyto, "#{nick}'s score is: #{score}  Rank: #{rank + 1}" )
+            @bot.say( m.replyto, "#{nick}'s score is: #{score}  Rank: #{rank}  Jokers: #{jokers}" )
         else
             @bot.say( m.replyto, "#{nick} does not have a score yet. Lamer." )
         end
@@ -154,7 +204,7 @@ class QuizPlugin < Plugin
 
 
     def help( plugin, topic="" )
-        "Quiz game. 'quiz' => ask a question. 'quiz hint' => get a hint. 'quiz solve' => solve this question. 'quiz skip' => skip to next question. 'quiz repeat' => repeat the current question. 'quiz score <player>' => show score from <player>. 'quiz top5' => show top 5 players. 'quiz top <number>' => show top <number> players (max 50). 'quiz stats' => show some statistics. 'quiz fetch' => fetch new questions from server. 'quiz autoask <on/off>' => Enable/disable autoask mode.\nYou can add new questions at http://amarok.kde.org/amarokwiki/index.php/Rbot_Quiz"
+        "Quiz game. 'quiz' => ask a question. 'quiz hint' => get a hint. 'quiz solve' => solve this question. 'quiz skip' => skip to next question. 'quiz repeat' => repeat the current question. 'quiz joker' => draw a joker to win this round. 'quiz score <player>' => show score from <player>. 'quiz top5' => show top 5 players. 'quiz top <number>' => show top <number> players (max 50). 'quiz stats' => show some statistics. 'quiz fetch' => fetch new questions from server. 'quiz autoask <on/off>' => Enable/disable autoask mode.\nYou can add new questions at http://amarok.kde.org/amarokwiki/index.php/Rbot_Quiz"
     end
 
 
@@ -424,6 +474,45 @@ class QuizPlugin < Plugin
     end
 
 
+    def cmd_joker( m, params )
+        q = create_quiz( m.target )
+
+        if q.question == nil
+            @bot.say( m.replyto, "#{m.sourcenick}: There is no open question." )
+            return
+        end
+
+        if q.registry[m.sourcenick].jokers > 0
+            player = q.registry[m.sourcenick]
+            player.jokers -= 1
+            player.score += 1
+            q.registry[m.sourcenick] = player
+
+            calculate_ranks( m, q )
+
+            ctrl = "    "
+            ctrl[0] = 2 #ctrl+b (bold)
+            ctrl[1] = 3 #ctrl-c
+            ctrl[2..3] = "12" #blue
+            ctrl_end = "  "
+            ctrl_end[0] = 3 #ctrl+c
+            ctrl_end[1] = 2 #ctrl+b
+
+            if player.jokers > 1
+                @bot.say( m.replyto, "#{ctrl}JOKER!#{ctrl_end} #{m.sourcenick} draws a joker and wins this round. You have #{player.jokers} jokers left." )
+            else
+                @bot.say( m.replyto, "#{ctrl}JOKER!#{ctrl_end} #{m.sourcenick} draws a joker and wins this round. You have #{player.jokers} joker left." )
+            end
+            @bot.say( m.replyto, "The answer was: #{q.answer}." )
+
+            q.question = nil
+            cmd_quiz( m, nil ) if q.registry_conf["autoask"]
+        else
+            @bot.say( m.replyto, "#{m.sourcenick}: You don't have any jokers left ;(" )
+        end
+    end
+
+
     def cmd_fetch( m, params )
         fetch_data( m )
     end
@@ -509,6 +598,7 @@ plugin.map 'quiz solve',           :action => 'cmd_solve'
 plugin.map 'quiz hint',            :action => 'cmd_hint'
 plugin.map 'quiz skip',            :action => 'cmd_skip'
 plugin.map 'quiz repeat',          :action => 'cmd_repeat'
+plugin.map 'quiz joker',           :action => 'cmd_joker'
 plugin.map 'quiz score',           :action => 'cmd_score'
 plugin.map 'quiz score :player',   :action => 'cmd_score_player'
 plugin.map 'quiz fetch',           :action => 'cmd_fetch'
