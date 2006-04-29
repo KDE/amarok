@@ -19,6 +19,10 @@ Max_Jokers = 3
 # Number of minutes until the jokers are refreshed
 Joker_Interval = 60
 
+# Control codes
+Color = "\003"
+Bold = "\002"
+
 
 #######################################################################
 # CLASS Quiz
@@ -106,6 +110,21 @@ class QuizPlugin < Plugin
 
         @questions = Array.new
         @quizzes = Hash.new
+    end
+
+    # Function that returns whether a char is a "separator", used for hints
+    #
+    def is_sep( ch )
+        return case ch
+            when " " then true
+            when "." then true
+            when "," then true
+            when "-" then true
+            when "'" then true
+            when "&" then true
+            when "\"" then true
+            else false
+        end
     end
 
 
@@ -349,13 +368,8 @@ class QuizPlugin < Plugin
         q.answer_core = q.answer.dup if q.answer_core == nil
 
         # Check if core answer is numerical and tell the players so, if that's the case
-        # The rather obscure statement is needed because to_i and to_f returns 99 for "99 red balloons", and 0 for "balloon"
-        if q.answer_core.to_i.to_s == q.answer_core or q.answer_core.to_f.to_s == q.answer_core
-            ctrl = "   "
-            ctrl[0] = 3 #ctrl-c
-            ctrl[1..2] = "07" #orange
-            q.question += ctrl + " (Numerical answer)"
-        end
+        # The rather obscure statement is needed because to_i and to_f returns 99(.0) for "99 red balloons", and 0 for "balloon"
+        q.question += "#{Color}07 (Numerical answer)" if q.answer_core.to_i.to_s == q.answer_core or q.answer_core.to_f.to_s == q.answer_core
 
         q.questions.delete_at( i )
 
@@ -363,8 +377,8 @@ class QuizPlugin < Plugin
 
         q.hint = ""
         (0..q.answer_core.length-1).each do |index|
-            if q.answer_core[index, 1] == " "
-                q.hint << " "
+            if is_sep(q.answer_core[index,1])
+                q.hint << q.answer_core[index]
             else
                 q.hint << "^"
             end
@@ -373,14 +387,7 @@ class QuizPlugin < Plugin
         # Generate array of unique random range
         q.hintrange = (0..q.answer_core.length-1).sort_by{rand}
 
-        ctrl = "    "
-        ctrl[0] = 2 #ctrl+b (bold)
-        ctrl[1] = 3 #ctrl-c
-        ctrl[2..3] = "03" #green
-        ctrl_end = "  "
-        ctrl_end[0] = 3 #ctrl+c
-        ctrl_end[1] = 2 #ctrl+b
-        @bot.say( m.replyto, "#{ctrl}Question: #{ctrl_end}" + q.question )
+        @bot.say( m.replyto, "#{Bold}#{Color}03Question: #{Color}#{Bold}" + q.question )
     end
 
 
@@ -416,17 +423,14 @@ class QuizPlugin < Plugin
             num_chars.times do
                 begin
                     index = q.hintrange.pop
-                # New hint char until the char isn't a space
-                end until q.answer_core[index, 1] != " "
+                # New hint char until the char isn't a "separator" (space etc.)
+                end while is_sep(q.answer_core[index,1])
                 q.hint[index] = q.answer_core[index]
             end
             @bot.say( m.replyto, "Hint: #{q.hint}" )
 
             if q.hintrange.length == 0
-                color = "   "
-                color[0] = 3 #ctrl-c
-                color[1..2] = "04" #red
-                @bot.say( m.replyto, color + "BUST! This round is over. Minus one point for #{m.sourcenick}." )
+                @bot.say( m.replyto, "#{Bold}#{Color}04BUST!#{Color}#{Bold} This round is over. #{Color}04Minus one point for #{m.sourcenick}#{Color}." )
 
                 stats = nil
                 if q.registry.has_key?( m.sourcenick )
@@ -460,14 +464,7 @@ class QuizPlugin < Plugin
         q = @quizzes[m.target]
 
         begin
-            ctrl = "    "
-            ctrl[0] = 2 #ctrl+b (bold)
-            ctrl[1] = 3 #ctrl-c
-            ctrl[2..3] = "03" #green
-            ctrl_end = "  "
-            ctrl_end[0] = 3 #ctrl+c
-            ctrl_end[1] = 2 #ctrl+b
-            @bot.say( m.replyto, "#{ctrl}Current question: #{ctrl_end}" + q.question )
+            @bot.say( m.replyto, "#{Bold}#{Color}03Current question: #{Color}#{Bold}" + q.question )
         rescue
             @bot.say( m.replyto, "#{m.sourcenick}: There's currently no open question!" )
         end
@@ -490,18 +487,10 @@ class QuizPlugin < Plugin
 
             calculate_ranks( m, q )
 
-            ctrl = "    "
-            ctrl[0] = 2 #ctrl+b (bold)
-            ctrl[1] = 3 #ctrl-c
-            ctrl[2..3] = "12" #blue
-            ctrl_end = "  "
-            ctrl_end[0] = 3 #ctrl+c
-            ctrl_end[1] = 2 #ctrl+b
-
-            if player.jokers > 1
-                @bot.say( m.replyto, "#{ctrl}JOKER!#{ctrl_end} #{m.sourcenick} draws a joker and wins this round. You have #{player.jokers} jokers left." )
+            if player.jokers != 1
+                @bot.say( m.replyto, "#{Bold}#{Color}12JOKER!#{Color}#{Bold} #{m.sourcenick} draws a joker and wins this round. You have #{player.jokers} jokers left." )
             else
-                @bot.say( m.replyto, "#{ctrl}JOKER!#{ctrl_end} #{m.sourcenick} draws a joker and wins this round. You have #{player.jokers} joker left." )
+                @bot.say( m.replyto, "#{Bold}#{Color}12JOKER!#{Color}#{Bold} #{m.sourcenick} draws a joker and wins this round. You have #{player.jokers} joker left." )
             end
             @bot.say( m.replyto, "The answer was: #{q.answer}." )
 
