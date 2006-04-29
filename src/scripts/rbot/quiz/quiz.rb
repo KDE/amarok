@@ -311,7 +311,7 @@ class QuizPlugin < Plugin
             if q.registry.has_key?( m.sourcenick )
                 stats = q.registry[m.sourcenick]
             else
-                stats = PlayerStats.new( 0 )
+                stats = PlayerStats.new( 0, Max_Jokers, Joker_Interval )
             end
 
             stats["score"] = stats.score + points
