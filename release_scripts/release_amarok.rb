@@ -156,6 +156,10 @@ Dir.chdir( "amarok" )
 `mv README ..`
 `mv TODO ..`
 
+# This stuff doesn't belong in the tarball
+`rm -rf src/scripts/rbot`
+`rf -rf release_scripts`
+
 Dir.chdir( "src" )
 
 # Exchange APP_VERSION string with targeted version
