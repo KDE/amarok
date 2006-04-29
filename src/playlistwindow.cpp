@@ -944,7 +944,7 @@ void DynamicBar::init()
     connect(Playlist::instance()->qscrollview(), SIGNAL(dynamicModeChanged(const DynamicMode*)),
                                                    SLOT(slotNewDynamicMode(const DynamicMode*)));
 
-    KPushButton* editDynamicButton = new KPushButton( i18n("Edit Playlist"), this, "DynamicModeEdit" );
+    KPushButton* editDynamicButton = new KPushButton( i18n("Edit"), this, "DynamicModeEdit" );
     connect( editDynamicButton, SIGNAL(clicked()), Playlist::instance()->qscrollview(), SLOT(editActiveDynamicMode()) );
 
     KPushButton* repopButton = new KPushButton( i18n("Repopulate"), this, "DynamicModeRepopulate" );
@@ -980,7 +980,7 @@ DynamicTitle::DynamicTitle(QWidget* w)
 
 void DynamicTitle::setTitle(const QString& newTitle)
 {
-    m_title = i18n("Dynamic Playlist: ") + newTitle;
+    m_title = newTitle;
     QFontMetrics fm(m_font);
     setMinimumWidth( s_curveWidth*3 + fm.width(m_title) + s_imageSize );
     setMinimumHeight( fm.height() );
