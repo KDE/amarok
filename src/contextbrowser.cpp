@@ -2721,17 +2721,25 @@ ContextBrowser::lyricsResult( QCString cXmlDoc, bool cached ) //SLOT
 
     if ( el.tagName() == "suggestions" )
     {
-        lyrics = i18n( "Lyrics for track not found, here are some suggestions:" ) + "<br/><br/>";
+        
 
         const QDomNodeList l = doc.elementsByTagName( "suggestion" );
+        
+        if( l.length() ==0 )
+        {
+            lyrics = i18n( "Lyrics for track not found" );
+        }
+        else
+        {
+            lyrics = i18n( "Lyrics for track not found, here are some suggestions:" ) + "<br/><br/>";
+            for( uint i = 0; i < l.length(); ++i ) {
+                const QString url    = l.item( i ).toElement().attribute( "url" );
+                const QString artist = l.item( i ).toElement().attribute( "artist" );
+                const QString title  = l.item( i ).toElement().attribute( "title" );
 
-        for( uint i = 0; i < l.length(); ++i ) {
-            const QString url    = l.item( i ).toElement().attribute( "url" );
-            const QString artist = l.item( i ).toElement().attribute( "artist" );
-            const QString title  = l.item( i ).toElement().attribute( "title" );
-
-            lyrics += "<a href='show:suggestLyric-" + url + "'>" + i18n("%1 - %2").arg( artist, title );
-            lyrics += "</a><br/>";
+                lyrics += "<a href='show:suggestLyric-" + url + "'>" + i18n("%1 - %2").arg( artist, title );
+                lyrics += "</a><br/>";
+            }
         }
     }
     else {
