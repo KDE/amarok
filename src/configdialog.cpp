@@ -277,6 +277,9 @@ void AmarokConfigDialog::updateSettings()
     {
         PlaylistWindow::self()->addBrowser( "MediaBrowser", MediaBrowser::instance(), i18n( "Media Device" ), amaroK::icon( "device" ) );
     }
+
+    amaroK::setUseScores( m_opt1->kcfg_UseScores->isChecked() );
+    amaroK::setUseRatings( m_opt1->kcfg_UseRatings->isChecked() );
 }
 
 
@@ -324,7 +327,9 @@ bool AmarokConfigDialog::hasChanged()
             amaroK::databaseTypeCode(  m_opt7->dbSetupFrame->databaseEngine->currentText()  ) != AmarokConfig::databaseEngine().toInt() ||
             m_engineConfig && m_engineConfig->hasChanged() ||
             m_deviceManager && m_deviceManager->hasChanged() ||
-            externalBrowser() != AmarokConfig::externalBrowser();
+            externalBrowser() != AmarokConfig::externalBrowser() ||
+            m_opt1->kcfg_UseScores->isChecked() != AmarokConfig::useScores() ||
+            m_opt1->kcfg_UseRatings->isChecked() != AmarokConfig::useRatings();
 }
 
 

@@ -1262,9 +1262,9 @@ namespace amaroK
         return s;
     }
 
-    void setUseScores( bool use ) { static_cast<App*>( qApp )->setUseScores( use ); }
-    void setUseRatings( bool use ) { static_cast<App*>( qApp )->setUseRatings( use ); }
-    KIO::Job *trashFiles( const KURL::List &files ) { return static_cast<App*>( qApp )->trashFiles( files ); }
+    void setUseScores( bool use ) { App::instance()->setUseScores( use ); }
+    void setUseRatings( bool use ) { App::instance()->setUseRatings( use ); }
+    KIO::Job *trashFiles( const KURL::List &files ) { return App::instance()->trashFiles( files ); }
 }
 
 #include "app.moc"

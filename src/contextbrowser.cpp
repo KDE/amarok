@@ -292,9 +292,9 @@ ContextBrowser::ContextBrowser( const char *name )
     connect( CollectionDB::instance(), SIGNAL( imageFetched( const QString& ) ),
              this, SLOT( imageFetched( const QString& ) ) );
 
-    connect( static_cast<App*>( qApp ), SIGNAL( useScores( bool ) ),
+    connect( App::instance(), SIGNAL( useScores( bool ) ),
              this, SLOT( refreshCurrentTrackPage() ) );
-    connect( static_cast<App*>( qApp ), SIGNAL( useRatings( bool ) ),
+    connect( App::instance(), SIGNAL( useRatings( bool ) ),
              this, SLOT( refreshCurrentTrackPage() ) );
 
     showContext( KURL( "current://track" ) );
