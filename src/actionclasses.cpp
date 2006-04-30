@@ -107,7 +107,6 @@ Menu::Menu()
 
     safePlug( ac, "repeat", this );
     safePlug( ac, "random_mode", this );
-    safePlug( ac, "favor_tracks", this );
 
     insertSeparator();
 
