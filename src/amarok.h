@@ -170,6 +170,9 @@ namespace amaroK
     bool repeatTrack();
     bool repeatAlbum();
     bool repeatPlaylist();
+    bool randomOff();
+    bool randomTracks();
+    bool randomAlbums();
     bool favorNone();
     bool favorScores();
     bool favorRatings();

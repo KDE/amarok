@@ -56,16 +56,11 @@
         <whatsthis>A rating is 1 to 5 stars, set manually by you to describe how well you like a given track.</whatsthis>
         <default>false</default>
     </entry>
-    <entry key="Entire Albums" type="Bool">
-        <label>Whether to play entire albums</label>
-        <whatsthis>If set, after the end of a track amaroK will play the next track from the same album it finds in the playlist, and at the end go to the beginning of the next album.</whatsthis>
-        <default>false</default>
-    </entry>
     <entry key="Repeat" type="Enum">
         <label>Which track(s) to play repeatedly</label>
         <whatsthis>Whether to repeat the current track, the current album, or the current playlist indefinitely, or neither.</whatsthis>
         <choices>
-            <choice name="None">
+            <choice name="Off">
                 <label>Don't Repeat</label>
             </choice>
             <choice name="Track">
@@ -78,31 +73,28 @@
                 <label>Repeat Playlist</label>
             </choice>
         </choices>
-        <default>None</default>
+        <default>Off</default>
     </entry>
     <entry key="Favor Tracks" type="Enum">
-        <label>Which tracks to favor in Random or Dynamic Mode</label>
-        <whatsthis>Tracks with the chosen property will be more likely to be chosen as the next track in Random or Dynamic Mode.</whatsthis>
+        <label>Which tracks or albums to favor in Random Mode</label>
+        <whatsthis>Tracks or albums with the chosen property will be more likely to be chosen in Random Mode.</whatsthis>
         <choices>
-            <choice name="None">
-                <label>Favor Tracks Equally</label>
-            </choice>
-            <choice name="HigherScores">
-                <label>Favor Tracks With Higher Scores</label>
-            </choice>
-            <choice name="HigherRatings">
-                <label>Favor Tracks With Higher Ratings</label>
-            </choice>
-            <choice name="LessRecentlyPlayed">
-                <label>Favor Tracks Less Recently Played</label>
-            </choice>
+            <choice name="Off"></choice>
+            <choice name="HigherScores"></choice>
+            <choice name="HigherRatings"></choice>
+            <choice name="LessRecentlyPlayed"></choice>
         </choices>
-        <default>None</default>
+        <default>Off</default>
     </entry>
-    <entry key="Random Mode" type="Bool">
-        <label>Whether to play tracks in random order</label>
-        <whatsthis>If set, amaroK plays the tracks in the playlist in random order.</whatsthis>
-        <default>false</default>
+    <entry key="Random Mode" type="Enum">
+        <label>Whether to play tracks or albums in random order</label>
+        <whatsthis>If set, amaroK plays the tracks or albums in the playlist in a random order.</whatsthis>
+        <choices>
+            <choice name="Off"></choice>
+            <choice name="Tracks"></choice>
+            <choice name="Albums"></choice>
+        </choices>
+        <default>Off</default>
     </entry>
     <entry key="Last Dynamic Mode" type="String">
         <label>The most recently used Dynamic Mode</label>

@@ -130,18 +130,11 @@ namespace amaroK
     };
 
 
-    class RandomAction : public ToggleAction
+    class RandomAction : public SelectAction
     {
         public:
             RandomAction( KActionCollection *ac );
-            virtual void setChecked( bool b );
-    };
-
-    class EntireAlbumsAction : public ToggleAction
-    {
-        public:
-            EntireAlbumsAction( KActionCollection *ac );
-            virtual void setChecked( bool b );
+            virtual void setCurrentItem( int n );
     };
 
     class FavorAction : public SelectAction

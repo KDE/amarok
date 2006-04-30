@@ -32,11 +32,14 @@
 
 namespace amaroK
 {
-    bool repeatNone() { return AmarokConfig::repeat() == AmarokConfig::EnumRepeat::None; }
+    bool repeatNone() { return AmarokConfig::repeat() == AmarokConfig::EnumRepeat::Off; }
     bool repeatTrack() { return AmarokConfig::repeat() == AmarokConfig::EnumRepeat::Track; }
     bool repeatAlbum() { return AmarokConfig::repeat() == AmarokConfig::EnumRepeat::Album; }
     bool repeatPlaylist() { return AmarokConfig::repeat() == AmarokConfig::EnumRepeat::Playlist; }
-    bool favorNone() { return AmarokConfig::favorTracks() == AmarokConfig::EnumFavorTracks::None; }
+    bool randomOff() { return AmarokConfig::randomMode() == AmarokConfig::EnumRandomMode::Off; }
+    bool randomTracks() { return AmarokConfig::randomMode() == AmarokConfig::EnumRandomMode::Tracks; }
+    bool randomAlbums() { return AmarokConfig::randomMode() == AmarokConfig::EnumRandomMode::Albums; }
+    bool favorNone() { return AmarokConfig::favorTracks() == AmarokConfig::EnumFavorTracks::Off; }
     bool favorScores() { return AmarokConfig::favorTracks() == AmarokConfig::EnumFavorTracks::HigherScores; }
     bool favorRatings() { return AmarokConfig::favorTracks() == AmarokConfig::EnumFavorTracks::HigherRatings; }
     bool favorLastPlay() { return AmarokConfig::favorTracks() == AmarokConfig::EnumFavorTracks::LessRecentlyPlayed; }
@@ -103,7 +106,6 @@ Menu::Menu()
     setCheckable( true );
 
     safePlug( ac, "repeat", this );
-    safePlug( ac, "entire_albums", this );
     safePlug( ac, "random_mode", this );
     safePlug( ac, "favor_tracks", this );
 
@@ -377,11 +379,6 @@ void SelectAction::setCurrentItem( int n )
 
     m_function( n );
     KSelectAction::setCurrentItem( n );
-    if( !currentIcon().isEmpty() )
-        setIconSet( kapp->iconLoader()->loadIconSet( currentIcon(), KIcon::Small ) );
-    else
-        setIconSet( QIconSet() );
-    setText( popupMenu()->text( n ) );
     AmarokConfig::writeConfig(); //So we don't lose the setting when crashing
     if( announce ) emit activated( n );
 }
@@ -459,55 +456,38 @@ VolumeAction::engineVolumeChanged( int value )
 // RandomAction
 //////////////////////////////////////////////////////////////////////////////////////////
 RandomAction::RandomAction( KActionCollection *ac ) :
-    ToggleAction( i18n( "Random &Mode" ), &AmarokConfig::setRandomMode, ac, "random_mode" )
+    SelectAction( i18n( "Ra&ndom" ), &AmarokConfig::setRandomMode, ac, "random_mode" )
 {
-    setChecked( AmarokConfig::randomMode() );
-    setIcon( amaroK::icon( "random" ) );
+    setItems( QStringList() << i18n( "&Off" ) << i18n( "&Tracks" ) << i18n( "&Albums" ) );
+    setCurrentItem( AmarokConfig::randomMode() );
+    setIcons( QStringList() << "forward" << amaroK::icon( "random" ) << "cd" );
 }
 
 void
-RandomAction::setChecked( bool b )
+RandomAction::setCurrentItem( int n )
 {
     if( KAction *a = parentCollection()->action( "favor_tracks" ) )
-        a->setEnabled( b );
-    ToggleAction::setChecked( b );
+        a->setEnabled( n );
+    SelectAction *a = static_cast<SelectAction*>( parentCollection()->action( "repeat" ) );
+    if( a->currentItem() == AmarokConfig::EnumRepeat::Album && n != AmarokConfig::EnumRandomMode::Albums )
+        a->setCurrentItem( AmarokConfig::EnumRepeat::Off );
+    a->popupMenu()->setItemEnabled( AmarokConfig::EnumRepeat::Album, n == AmarokConfig::EnumRandomMode::Albums );
+    SelectAction::setCurrentItem( n );
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////
-// EntireAlbumsAction
-//////////////////////////////////////////////////////////////////////////////////////////
-EntireAlbumsAction::EntireAlbumsAction( KActionCollection *ac ) :
-    ToggleAction( i18n( "Play &Albums In Order" ), &AmarokConfig::setEntireAlbums, ac, "entire_albums" )
-{
-    setChecked( AmarokConfig::entireAlbums() );
-    setIcon( "cd" );
-}
-
-void
-EntireAlbumsAction::setChecked( bool b )
-{
-    if( b == isChecked() )
-        return;
-    ToggleAction::setChecked( b );
-    SelectAction* a = static_cast<SelectAction*>( parentCollection()->action( "repeat" ) );
-    if( a->currentItem() == AmarokConfig::EnumRepeat::Album && !b )
-        a->setCurrentItem( AmarokConfig::EnumRepeat::None );
-    a->popupMenu()->setItemEnabled( AmarokConfig::EnumRepeat::Album, b );
-}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // FavorAction
 //////////////////////////////////////////////////////////////////////////////////////////
 FavorAction::FavorAction( KActionCollection *ac ) :
-    SelectAction( i18n( "&Favor Tracks" ), &AmarokConfig::setFavorTracks, ac, "favor_tracks" )
+    SelectAction( i18n( "&Favor" ), &AmarokConfig::setFavorTracks, ac, "favor_tracks" )
 {
-    setItems( QStringList() << i18n( "Favor Tracks &Equally" )
-                            << i18n( "Favor Tracks With Higher &Scores" )
-                            << i18n( "Favor Tracks With Higher &Ratings" )
-                            << i18n( "Favor Tracks Less Recently &Played" ) );
+    setItems( QStringList() << i18n( "Off" )
+                            << i18n( "Higher &Scores" )
+                            << i18n( "Higher &Ratings" )
+                            << i18n( "Not Recently &Played" ) );
 
     setCurrentItem( AmarokConfig::favorTracks() );
-    popupMenu()->insertSeparator( 1 );
     setEnabled( AmarokConfig::randomMode() );
 }
 
@@ -517,25 +497,14 @@ FavorAction::FavorAction( KActionCollection *ac ) :
 RepeatAction::RepeatAction( KActionCollection *ac ) :
     SelectAction( i18n( "&Repeat" ), &AmarokConfig::setRepeat, ac, "repeat" )
 {
-    setItems( QStringList() << i18n( "&Don't Repeat" ) << i18n( "Repeat &Track" )
-                            << i18n( "Repeat &Album" ) << i18n( "Repeat &Playlist" ) );
-    QStringList icons;
-    for( int i = 0; i < AmarokConfig::EnumRepeat::COUNT; ++i )
-        switch( i )
-        {
-            case AmarokConfig::EnumRepeat::None:     icons.append( "bottom" );          break;
-            case AmarokConfig::EnumRepeat::Track:    icons.append( "repeat_track" );    break;
-            case AmarokConfig::EnumRepeat::Album:    icons.append( "cdrom_mount" );     break;
-            case AmarokConfig::EnumRepeat::Playlist: icons.append( "repeat_playlist" ); break;
-            default: break;
-        }
-    setIcons( icons );
-    if( amaroK::repeatAlbum() && !AmarokConfig::entireAlbums() )
-        setCurrentItem( AmarokConfig::EnumRepeat::None );
+    setItems( QStringList() << i18n( "&Off" ) << i18n( "&Track" )
+                            << i18n( "&Album" ) << i18n( "&Playlist" ) );
+    setIcons( QStringList() << "bottom" << "repeat_track" << "cdrom_mount" << "repeat_playlist" );
+    if( amaroK::repeatAlbum() && !amaroK::randomAlbums() )
+        setCurrentItem( AmarokConfig::EnumRepeat::Off );
     else
         setCurrentItem( AmarokConfig::repeat() );
-    popupMenu()->setItemEnabled( AmarokConfig::EnumRepeat::Album, AmarokConfig::entireAlbums() );
-    popupMenu()->insertSeparator( 1 );
+    popupMenu()->setItemEnabled( AmarokConfig::EnumRepeat::Album, amaroK::randomAlbums() );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

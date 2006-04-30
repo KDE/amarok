@@ -356,7 +356,7 @@ Playlist::Playlist( QWidget *parent )
     //ensure we update action enabled states when repeat Playlist is toggled
     connect( ac->action( "repeat" ), SIGNAL(activated( int )), SLOT(updateNextPrev()) );
     connect( ac->action( "favor_tracks" ), SIGNAL( activated( int ) ), SLOT( generateTotals( int ) ) );
-    connect( ac->action( "entire_albums" ), SIGNAL( toggled( bool ) ), SLOT( generateAlbumInfo( bool ) ) );
+    connect( ac->action( "random_mode" ), SIGNAL( activated( int ) ), SLOT( generateAlbumInfo( int ) ) );
 
     m_undoButton->setEnabled( false );
     m_redoButton->setEnabled( false );
@@ -1036,19 +1036,19 @@ Playlist::playNextTrack( bool forceNext )
             emit queueChanged( PLItemList(), PLItemList( item ) );
         }
 
-        else if( AmarokConfig::entireAlbums() && m_currentTrack && m_currentTrack->nextInAlbum() )
+        else if( amaroK::randomAlbums() && m_currentTrack && m_currentTrack->nextInAlbum() )
             item = m_currentTrack->nextInAlbum();
 
-        else if( AmarokConfig::entireAlbums() && amaroK::repeatAlbum() &&
+        else if( amaroK::randomAlbums() && amaroK::repeatAlbum() &&
                  repeatAlbumTrackCount() && ( repeatAlbumTrackCount() > 1 || !forceNext ) )
             item = m_currentTrack->m_album->tracks.getFirst();
 
-        else if( AmarokConfig::randomMode() || AmarokConfig::entireAlbums() )
+        else if( AmarokConfig::randomMode() )
         {
             QValueVector<PlaylistItem*> tracks;
 
             //make a list of everything we can play
-            if( AmarokConfig::entireAlbums() ) // add the first visible track from every unplayed album
+            if( amaroK::randomAlbums() ) // add the first visible track from every unplayed album
             {
                 for( ArtistAlbumMap::const_iterator it = m_albums.constBegin(), end = m_albums.constEnd(); it != end;   ++it )
                     for( AlbumMap::const_iterator it2 = (*it).constBegin(), end2 = (*it).constEnd(); it2 != end2; ++it2 )
@@ -1066,7 +1066,7 @@ Playlist::playNextTrack( bool forceNext )
 
                 item = 0;
 
-                if( AmarokConfig::entireAlbums() )
+                if( amaroK::randomAlbums() )
                 {
                     if ( m_prevAlbums.count() <= 8 ) {
                         m_prevAlbums.first();
@@ -1132,7 +1132,7 @@ Playlist::playNextTrack( bool forceNext )
                 }
                 //else we stop via activate( 0 ) below
             }
-            else if( AmarokConfig::randomMode() )
+            else
             {
                 if( amaroK::favorNone() )
                     item = tracks.at( KApplication::random() % tracks.count() ); //is O(1)
@@ -1141,7 +1141,7 @@ Playlist::playNextTrack( bool forceNext )
                     const uint currenttime_t = QDateTime::currentDateTime().toTime_t();
                     QValueVector<int> weights( tracks.size() );
                     Q_INT64 total = m_total;
-                    if( AmarokConfig::entireAlbums() )
+                    if( amaroK::randomAlbums() )
                     {
                         for( int i = 0, n = tracks.count(); i < n; ++i )
                         {
@@ -1182,41 +1182,6 @@ Playlist::playNextTrack( bool forceNext )
                         random -= weights.at( i );
                     item = tracks.at( i-1 );
                 }
-            }
-            else //entireAlbums()
-            {
-                bool b = false;
-                PlaylistItem* const begin = m_currentTrack
-                                          ? MyIt::nextVisible( m_currentTrack->m_album->tracks.getFirst() )
-                                          : (*MyIt( this, MyIt::Visible ));
-                PlaylistItem *pi = 0;
-                for( MyIt it( begin, MyIt::Visible ); *it; ++it )
-                {
-                    for( int i = 0, n = tracks.count(); i < n; ++i )
-                        if( tracks.at( i ) == *it )
-                        {
-                            pi = *it;
-                            b = true;
-                            break;
-                        }
-                    if( b )
-                        break;
-                }
-                if( !pi && m_currentTrack ) //hate copy-pasting code like this. meh.
-                    for( MyIt it( this, MyIt::Visible ); *it && ( *it != begin ); ++it )
-                    {
-                        for( int i = 0, n = tracks.count(); i < n; ++i )
-                            if( tracks.at( i ) == *it )
-                            {
-                                pi = *it;
-                                b = true;
-                                break;
-                            }
-                        if( b )
-                            break;
-                    }
-                if( pi )
-                    item = pi;
             }
         }
         else if( item )
@@ -1283,7 +1248,7 @@ Playlist::playPrevTrack()
 {
     PlaylistItem *item = m_currentTrack;
 
-    if( AmarokConfig::entireAlbums() )
+    if( amaroK::randomAlbums() )
     {
         item = 0;
         if( m_currentTrack )
@@ -1568,10 +1533,10 @@ int Playlist::stopAfterMode() const
         return DoNotStop;
 }
 
-void Playlist::generateAlbumInfo( bool on )
+void Playlist::generateAlbumInfo( int n )
 {
     m_albums.clear();
-    if( on )
+    if( n == AmarokConfig::EnumRandomMode::Albums )
         for( MyIt it( this, MyIt::All ); *it; ++it )
             (*it)->refAlbum();
     m_total = 0;
@@ -1581,7 +1546,7 @@ void Playlist::generateAlbumInfo( bool on )
 
 void Playlist::generateTotals( int /*favor*/ )
 {
-    generateAlbumInfo( AmarokConfig::entireAlbums() );
+    generateAlbumInfo( AmarokConfig::randomMode() );
 }
 
 void Playlist::doubleClicked( QListViewItem *item )
@@ -1661,7 +1626,7 @@ Playlist::activate( QListViewItem *item )
     if( !item->isEnabled() )
         return;
 
-    if( AmarokConfig::entireAlbums() )
+    if( amaroK::randomAlbums() )
     {
         if( !item->nextInAlbum() )
             appendToPreviousAlbums( item->m_album );
@@ -1788,7 +1753,7 @@ Playlist::setCurrentTrack( PlaylistItem *item )
             if( prevY <= contentsY() + visibleHeight() && prevY + prevH >= contentsY() )
             {
                 // in random mode always jump, if previous track is visible
-                if( AmarokConfig::randomMode() || AmarokConfig::entireAlbums() )
+                if( AmarokConfig::randomMode() )
                     ensureItemCentered( item );
 
                 //FIXME would be better to just never be annoying
@@ -3164,6 +3129,7 @@ Playlist::setDynamicMode( DynamicMode *mode ) //SLOT
     emit dynamicModeChanged( mode );
 
     amaroK::actionCollection()->action( "random_mode" )->setEnabled( !mode );
+    amaroK::actionCollection()->action( "repeat" )->setEnabled( !mode  );
     amaroK::actionCollection()->action( "playlist_shuffle" )->setEnabled( !mode );
     amaroK::actionCollection()->action( "repopulate" )->setEnabled( mode );
     if( prev && mode )
@@ -3796,7 +3762,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     if( itemCount == 1 && ( item->isCurrent() || item->isQueued() || m_stopAfterTrack == item ||
                             ( !AmarokConfig::randomMode() && ( amaroK::repeatPlaylist() || afterCurrent ) ) ||
-                            ( AmarokConfig::entireAlbums() && m_currentTrack &&
+                            ( amaroK::randomAlbums() && m_currentTrack &&
                               item->m_album == m_currentTrack->m_album &&
                               ( amaroK::repeatAlbum() || ( ( !item->track() && afterCurrent ) ||
                                                              item->track() > m_currentTrack->track() ) ) ) ) )
@@ -4060,7 +4026,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         // FIXME HACK Accessing AmarokConfig::Enum* yields compile errors with GCC 3.3.
         static_cast<KSelectAction*>( amaroK::actionCollection()->action( "repeat" ) )
             ->setCurrentItem( amaroK::repeatTrack()
-                              ? 0 /*AmarokConfig::EnumRepeat::None*/
+                              ? 0 /*AmarokConfig::EnumRepeat::Off*/
                               : 1 /*AmarokConfig::EnumRepeat::Track*/ );
         break;
 

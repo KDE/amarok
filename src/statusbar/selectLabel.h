@@ -94,11 +94,8 @@ class SelectLabel : public QLabel
     public slots:
         void setCurrentItem( int )
         {
-            if( isEnabled() )
-            {
-                if( !m_action->iconSet().isNull() )
-                    setPixmap( m_action->iconSet().pixmap( QIconSet::Small, QIconSet::Normal ) );
-            }
+            if( isEnabled() && !m_action->currentIcon().isNull() )
+                setPixmap( SmallIcon( m_action->currentIcon() ) );
         }
 
         void setEnabled( bool /*on*/ ) { }
@@ -118,10 +115,19 @@ class SelectLabel : public QLabel
 
             m_tooltipShowing = true;
 
-            QString tip = m_action->currentText().remove( '&' );
+            QString tip = i18n("%1: %2")
+                          .arg( m_action->text().remove( '&' ) )
+                          .arg( m_action->currentText().remove( '&' ) );
 
             if( !isEnabled() )
                 tip += i18n("&nbsp;<br>&nbsp;<i>Disabled</i>");
+            else if( AmarokConfig::favorTracks() ) //hack?
+            {
+                KSelectAction *a = static_cast<KSelectAction*>( amaroK::actionCollection()->action( "favor_tracks" ) );
+                tip += QString("<br>") + i18n("%1: %2")
+                                         .arg( a->text().remove( '&' ) )
+                                         .arg( a->currentText().remove( '&' ) );
+            }
 
             tip += "&nbsp;";
             const QString path = KGlobal::iconLoader()->iconPath( m_action->currentIcon(), -KIcon::SizeHuge );

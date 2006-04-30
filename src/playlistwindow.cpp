@@ -155,7 +155,6 @@ PlaylistWindow::PlaylistWindow()
     new amaroK::AnalyzerAction( ac );
     new amaroK::RepeatAction( ac );
     new amaroK::RandomAction( ac );
-    new amaroK::EntireAlbumsAction( ac );
     new amaroK::FavorAction( ac );
     new amaroK::VolumeAction( ac );
 
@@ -277,9 +276,10 @@ void PlaylistWindow::init()
     //BEGIN Mode menu
     KPopupMenu *modeMenu = new KPopupMenu( m_menubar );
     actionCollection()->action("repeat")->plug( modeMenu );
-    actionCollection()->action("entire_albums")->plug( modeMenu );
-    actionCollection()->action("random_mode")->plug( modeMenu );
-    actionCollection()->action("favor_tracks")->plug( modeMenu );
+    KSelectAction *random = static_cast<KSelectAction*>( actionCollection()->action("random_mode") );
+    random->plug( modeMenu );
+    random->popupMenu()->insertSeparator();
+    actionCollection()->action("favor_tracks")->plug( random->popupMenu() );
     //END Mode menu
 
     //BEGIN Tools menu

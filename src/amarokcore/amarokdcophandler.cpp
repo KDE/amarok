@@ -284,7 +284,8 @@ namespace amaroK
 
     void DcopPlayerHandler::enableRandomMode( bool enable )
     {
-        static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( enable );
+        static_cast<KSelectAction*>(amaroK::actionCollection()->action( "random_mode" ))
+            ->setCurrentItem( enable ? AmarokConfig::EnumRandomMode::Tracks : AmarokConfig::EnumRandomMode::Off );
     }
 
     void DcopPlayerHandler::enableRepeatPlaylist( bool enable )

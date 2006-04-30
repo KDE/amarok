@@ -249,7 +249,7 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void columnResizeEvent( int, int, int );
         void doubleClicked( QListViewItem* );
 
-        void generateAlbumInfo( bool on ); //generates info for Play Entire Albums
+        void generateAlbumInfo( int n ); //generates info for Random Albums
         void generateTotals( int favor ); //generates info for Favor Tracks
 
         void queue( QListViewItem*, bool multi = false );
