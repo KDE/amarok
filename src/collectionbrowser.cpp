@@ -440,7 +440,8 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
     if( childCount() )
         cacheView();
 
-    clear();
+    //clear();
+    safeClear();
 
     //query database for all records with the specified category
     QStringList values;
@@ -1892,6 +1893,24 @@ CollectionView::contentsDropEvent( QDropEvent *e )
         if( cleanList.count() > 0 )
             organizeFiles( list, i18n( "Copy Files To Collection" ), true /* copy */ );
     }
+}
+
+void
+CollectionView::safeClear()
+{
+    bool block = signalsBlocked();
+    blockSignals( true );
+    clearSelection();
+
+    QListViewItem *c = firstChild();
+    QListViewItem *n;
+    while( c ) {
+        n = c->nextSibling();
+        delete c;
+        c = n;
+    }
+    blockSignals( block );
+    triggerUpdate();
 }
 
 void

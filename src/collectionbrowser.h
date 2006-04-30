@@ -240,6 +240,8 @@ class CollectionView : public KListView
         void contentsDragMoveEvent( QDragMoveEvent* );
         void contentsDropEvent( QDropEvent *e );
 
+        void safeClear();
+
     //attributes:
         LIBAMAROK_EXPORT static CollectionView* m_instance;
 
