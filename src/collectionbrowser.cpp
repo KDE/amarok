@@ -646,6 +646,9 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
         if( q_cat1 == QueryBuilder::tabArtist )
             qb.setOptions( QueryBuilder::optNoCompilations );
 
+        // ensure we don't get empty genres/albums/etc due to tag changes
+        qb.addFilter( QueryBuilder::tabSong, QString::null );
+
         values = qb.run();
 
         //add items to the view

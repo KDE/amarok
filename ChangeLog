@@ -35,6 +35,8 @@ VERSION 1.4.0:
       <kde@dontletsstart.com>. (BR 125414)
 
   BUGFIXES:
+    * Empty genres are no longer displayed in the collection browser.
+      (BR 126495)
     * Fix regression causing drag and drop of playlist track items in the
       playlistbrowser to be functionless. (BR 126387)
     * Fix regression causing podcast purge property to be ignored. (BR 126194)
