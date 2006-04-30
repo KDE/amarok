@@ -69,10 +69,13 @@ GstEngine::bus_cb(GstBus*, GstMessage* msg, gpointer) // static
    	case GST_MESSAGE_ERROR:
 	{
 	    GError* error;
-	    gchar* debug;
-            gst_message_parse_error(msg,&error,&debug);
+	    gchar* debugs;
+          
+            gst_message_parse_error(msg,&error,&debugs);
+            debug() << "ERROR RECEIVED IN BUS_CB <" << error->message << ">" << endl;;
+
             instance()->m_gst_error = QString::fromAscii( error->message );
-    	    instance()->m_gst_debug = QString::fromAscii( debug );
+    	    instance()->m_gst_debug = QString::fromAscii( debugs );
             QTimer::singleShot( 0, instance(), SLOT( handlePipelineError() ) );
 	    break;
 	}
@@ -571,25 +574,40 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     Engine::Base::load( url, stream );
     debug() << "Loading url: " << url.url() << endl;
 
-    if ( url.isLocalFile() ) {
-        if ( !createPipeline() )
-            return false;
-        
-        // Use gst's filesrc element for local files, cause it's less overhead than KIO
-        if ( !( m_gst_src = createElement( "filesrc", m_gst_pipeline ) ) ) { destroyPipeline(); return false; }
-        // Set file path
-        g_object_set( G_OBJECT(m_gst_src), "location", static_cast<const char*>( QFile::encodeName( url.path() ) ), NULL );
-
-        if ( !( m_gst_decodebin = createElement( "decodebin", m_gst_pipeline ) ) ) { destroyPipeline(); return false; }
-        g_signal_connect( G_OBJECT( m_gst_decodebin ), "new-decoded-pad", G_CALLBACK( newPad_cb ), NULL );
-
-        // Link elements. The link from decodebin to audioconvert will be made in the newPad-callback
-        gst_element_link( m_gst_src, m_gst_decodebin );
-    } else if ( url.protocol() == "cdda" ) {
+    if ( url.protocol() == "cdda" ) 
+    {
         if ( !setupAudioCD( url.query().remove( QRegExp( "^\\?" ) ), url.host().toUInt(), false ) )
             return false;
     }
-      else { destroyPipeline(); return false; }
+    else 
+    { 
+       if ( !createPipeline() )
+          return false;
+        
+       GstElement *src;
+       src = gst_element_make_from_uri(GST_URI_SRC, url.prettyURL().utf8(), NULL);
+       if (src)
+       {
+          debug() << "******* Got src element for URI " << url.prettyURL().utf8() << endl;
+
+          m_gst_src = src;
+          gst_bin_add( GST_BIN( m_gst_pipeline ), m_gst_src );
+          g_object_set( G_OBJECT(m_gst_src), "location", static_cast<const char*>( QFile::encodeName( url.url() ) ), NULL );
+          
+          if ( !( m_gst_decodebin = createElement( "decodebin", m_gst_pipeline ) ) ) { destroyPipeline(); return false; }
+          g_signal_connect( G_OBJECT( m_gst_decodebin ), "new-decoded-pad", G_CALLBACK( newPad_cb ), NULL );
+          
+          // Link elements. The link from decodebin to audioconvert will be made in the newPad-callback
+          gst_element_link( m_gst_src, m_gst_decodebin );
+       }
+       else
+       {
+          debug() << "******* cannot get stream src " << endl;
+
+          destroyPipeline(); 
+          return false; 
+       }
+    }
 /*    else {
         // Create our custom streamsrc element, which transports data into the pipeline
         m_gst_src = GST_ELEMENT( gst_streamsrc_new( m_streamBuf, &m_streamBufIndex, &m_streamBufStop, &m_streamBuffering ) );
