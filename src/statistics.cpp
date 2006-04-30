@@ -158,7 +158,10 @@ StatisticsList::startDrag()
 
     QListViewItemIterator it( this, QListViewItemIterator::Selected );
 
-    StatisticsDetailedItem *item = static_cast<StatisticsDetailedItem*>(*it);
+    StatisticsDetailedItem *item = dynamic_cast<StatisticsDetailedItem*>(*it);
+
+    if ( !item )
+        return;
 
     if( item->itemType() == StatisticsDetailedItem::TRACK )
     {
@@ -498,6 +501,8 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
 
         qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+        qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valID );
+        qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
         qb.addReturnFunctionValue( QueryBuilder::funcMax, QueryBuilder::tabSong, QueryBuilder::valCreateDate );
         qb.sortByFunction( QueryBuilder::funcMax, QueryBuilder::tabSong, QueryBuilder::valCreateDate, true );
         qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
@@ -920,7 +925,7 @@ StatisticsDetailedItem::getSQL()
     QString artist, album, track;   // track is unused here
     amaroK::albumArtistTrackFromUrl( url(), artist, album, track );
 
-    if( itemType() == StatisticsDetailedItem::ALBUM )
+    if( itemType() == StatisticsDetailedItem::ALBUM || itemType() == StatisticsDetailedItem::HISTORY )
     {
         qb.initSQLDrag();
         if ( artist != "0" )
