@@ -249,8 +249,7 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void columnResizeEvent( int, int, int );
         void doubleClicked( QListViewItem* );
 
-        void generateAlbumInfo( int n ); //generates info for Random Albums
-        void generateTotals( int favor ); //generates info for Favor Tracks
+        void generateInfo(); //generates info for Random Albums
 
         void queue( QListViewItem*, bool multi = false );
            /* the only difference multi makes is whether it emits queueChanged(). (if multi, then no)

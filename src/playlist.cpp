@@ -355,8 +355,9 @@ Playlist::Playlist( QWidget *parent )
 
     //ensure we update action enabled states when repeat Playlist is toggled
     connect( ac->action( "repeat" ), SIGNAL(activated( int )), SLOT(updateNextPrev()) );
-    connect( ac->action( "favor_tracks" ), SIGNAL( activated( int ) ), SLOT( generateTotals( int ) ) );
-    connect( ac->action( "random_mode" ), SIGNAL( activated( int ) ), SLOT( generateAlbumInfo( int ) ) );
+    connect( ac->action( "repeat" ), SIGNAL( activated( int ) ), SLOT( generateInfo() ) );
+    connect( ac->action( "favor_tracks" ), SIGNAL( activated( int ) ), SLOT( generateInfo() ) );
+    connect( ac->action( "random_mode" ), SIGNAL( activated( int ) ), SLOT( generateInfo() ) );
 
     m_undoButton->setEnabled( false );
     m_redoButton->setEnabled( false );
@@ -1036,10 +1037,10 @@ Playlist::playNextTrack( bool forceNext )
             emit queueChanged( PLItemList(), PLItemList( item ) );
         }
 
-        else if( amaroK::randomAlbums() && m_currentTrack && m_currentTrack->nextInAlbum() )
+        else if( amaroK::entireAlbums() && m_currentTrack && m_currentTrack->nextInAlbum() )
             item = m_currentTrack->nextInAlbum();
 
-        else if( amaroK::randomAlbums() && amaroK::repeatAlbum() &&
+        else if( amaroK::repeatAlbum() &&
                  repeatAlbumTrackCount() && ( repeatAlbumTrackCount() > 1 || !forceNext ) )
             item = m_currentTrack->m_album->tracks.getFirst();
 
@@ -1248,7 +1249,7 @@ Playlist::playPrevTrack()
 {
     PlaylistItem *item = m_currentTrack;
 
-    if( amaroK::randomAlbums() )
+    if( amaroK::entireAlbums() )
     {
         item = 0;
         if( m_currentTrack )
@@ -1533,20 +1534,16 @@ int Playlist::stopAfterMode() const
         return DoNotStop;
 }
 
-void Playlist::generateAlbumInfo( int n )
+void Playlist::generateInfo()
 {
     m_albums.clear();
-    if( n == AmarokConfig::EnumRandomMode::Albums )
+    if( amaroK::entireAlbums() )
         for( MyIt it( this, MyIt::All ); *it; ++it )
             (*it)->refAlbum();
     m_total = 0;
-    for( MyIt it( this, MyIt::Visible ); *it; ++it )
-        (*it)->incrementTotals();
-}
-
-void Playlist::generateTotals( int /*favor*/ )
-{
-    generateAlbumInfo( AmarokConfig::randomMode() );
+    if( amaroK::entireAlbums() || AmarokConfig::favorTracks() )
+        for( MyIt it( this, MyIt::Visible ); *it; ++it )
+            (*it)->incrementTotals();
 }
 
 void Playlist::doubleClicked( QListViewItem *item )
@@ -1626,7 +1623,7 @@ Playlist::activate( QListViewItem *item )
     if( !item->isEnabled() )
         return;
 
-    if( amaroK::randomAlbums() )
+    if( amaroK::entireAlbums() )
     {
         if( !item->nextInAlbum() )
             appendToPreviousAlbums( item->m_album );
@@ -3762,7 +3759,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     if( itemCount == 1 && ( item->isCurrent() || item->isQueued() || m_stopAfterTrack == item ||
                             ( !AmarokConfig::randomMode() && ( amaroK::repeatPlaylist() || afterCurrent ) ) ||
-                            ( amaroK::randomAlbums() && m_currentTrack &&
+                            ( amaroK::entireAlbums() && m_currentTrack &&
                               item->m_album == m_currentTrack->m_album &&
                               ( amaroK::repeatAlbum() || ( ( !item->track() && afterCurrent ) ||
                                                              item->track() > m_currentTrack->track() ) ) ) ) )

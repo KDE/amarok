@@ -1005,7 +1005,7 @@ AtomicString PlaylistItem::artist_album() const
 
 void PlaylistItem::refAlbum()
 {
-    if( amaroK::randomAlbums() )
+    if( amaroK::entireAlbums() )
     {
         if( listView()->m_albums[artist_album()].find( album() ) == listView()->m_albums[artist_album()].end() )
             listView()->m_albums[artist_album()][album()] = new PlaylistAlbum;
@@ -1016,7 +1016,7 @@ void PlaylistItem::refAlbum()
 
 void PlaylistItem::derefAlbum()
 {
-    if( amaroK::randomAlbums() )
+    if( amaroK::entireAlbums() )
     {
         m_album->refcount--;
         if( !m_album->refcount )
@@ -1032,7 +1032,7 @@ void PlaylistItem::derefAlbum()
 
 void PlaylistItem::incrementTotals()
 {
-    if( amaroK::randomAlbums() )
+    if( amaroK::entireAlbums() )
     {
         const uint prevCount = m_album->tracks.count();
         if( !track() || !m_album->tracks.count() || ( m_album->tracks.getLast()->track() && m_album->tracks.getLast()->track() < track() ) )
@@ -1057,7 +1057,7 @@ void PlaylistItem::incrementTotals()
 
 void PlaylistItem::decrementTotals()
 {
-    if( amaroK::randomAlbums() )
+    if( amaroK::entireAlbums() )
     {
         const Q_INT64 prevTotal = m_album->total;
         Q_INT64 total = m_album->total * m_album->tracks.count();

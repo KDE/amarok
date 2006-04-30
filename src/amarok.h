@@ -177,6 +177,7 @@ namespace amaroK
     bool favorScores();
     bool favorRatings();
     bool favorLastPlay();
+    bool entireAlbums(); //repeatAlbum() || randomAlbums()
 
     const DynamicMode *dynamicMode(); //defined in playlist.cpp
 
