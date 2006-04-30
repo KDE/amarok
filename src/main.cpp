@@ -88,6 +88,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Roland Gigler", I18N_NOOP( "MAS engine" ), "rolandg@web.de" );
     aboutData.addCredit( "Sami Nieminen", I18N_NOOP( "Audioscrobbler support" ), "sami.nieminen@iki.fi" );
     aboutData.addCredit( "Scott Wheeler", I18N_NOOP( "TagLib & ktrm code" ), "wheeler@kde.org" );
+    aboutData.addCredit( "Shane King", I18N_NOOP( "Patches" ), "kde@dontletsstart.com" );
     aboutData.addCredit( "Stefan Bogner", I18N_NOOP( "Loadsa stuff" ), "bochi@online.ms" );
     aboutData.addCredit( "Stefan Siegel", I18N_NOOP( "Patches, Bugfixes" ), "kde@sdas.de" );
     aboutData.addCredit( "Sven Krohlas", I18N_NOOP( "roKymoter (sven423)" ), "sven@asbest-online.de" );
