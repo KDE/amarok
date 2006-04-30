@@ -968,11 +968,7 @@ void Playlist::restoreLayout(KConfig *config, const QString &group)
     QStringList::ConstIterator it = cols.constBegin();
     const QStringList::ConstIterator itEnd = cols.constEnd();
     for (; it != itEnd; ++it)
-    {
-      if (iorder[i] == MetaBundle::Rating)
-        amaroK::setUseRatings( (*it).toInt() > 0 ); // TODO remove this hack
       setColumnWidth(iorder[i++], (*it).toInt());
-    }
   }
 
 
@@ -2496,9 +2492,6 @@ Playlist::viewportResizeEvent( QResizeEvent *e )
 void
 Playlist::columnResizeEvent( int col, int oldw, int neww )
 {
-    if( col == PlaylistItem::Rating && ( oldw <= 0 || neww <= 0 ) ) // TODO remove this hack
-        amaroK::setUseRatings( neww > 0 );
-
     if( col == PlaylistItem::Mood && oldw == 0 && neww > 0 )
     {
         refreshMoods();
