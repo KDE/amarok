@@ -589,7 +589,7 @@ MediaBrowser::transcodingFinished( const QString &src, const QString &dst )
 
     if( srcJob.path() == srcResult.path() )
     {
-        m_transcodedUrl = dst;
+        m_transcodedUrl = KURL::fromPathOrURL( dst );
         m_waitForTranscode = false;
     }
     else
