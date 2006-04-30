@@ -110,7 +110,7 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
 
         void burnPlaylist      ( int projectType = -1 );
         void burnSelectedTracks( int projectType = -1 );
-        int  currentTrackIndex();
+        int  currentTrackIndex( bool onlyCountVisible = true );
         bool isEmpty()       const  { return childCount() == 0; }
         bool isTrackBefore() const;
         bool isTrackAfter()  const;

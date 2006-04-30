@@ -1837,10 +1837,10 @@ Playlist::setCurrentTrack( PlaylistItem *item )
 }
 
 int
-Playlist::currentTrackIndex()
+Playlist::currentTrackIndex( bool onlyCountVisible )
 {
     int index = 0;
-    for( MyIt it( this, MyIt::Visible ); *it; ++it )
+    for( MyIt it( this, onlyCountVisible ? MyIt::Visible : MyIt::All ); *it; ++it )
     {
         if ( *it == m_currentTrack )
             return index;

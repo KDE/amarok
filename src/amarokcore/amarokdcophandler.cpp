@@ -516,7 +516,7 @@ namespace amaroK
 
     int  DcopPlaylistHandler::getActiveIndex()
     {
-        return Playlist::instance()->currentTrackIndex();
+        return Playlist::instance()->currentTrackIndex( false );
     }
 
     int  DcopPlaylistHandler::getTotalTrackCount()
