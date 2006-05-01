@@ -2547,7 +2547,7 @@ MediaDevice::transferFiles()
             msg = i18n( "One track was not transcoded",
                     "%n tracks were not transcoded", transcodeFail );
         else
-            msg = i18n( ", one track was not transcoded",
+            msg += i18n( ", one track was not transcoded",
                     ", %n tracks were not transcoded", transcodeFail );
 
         const ScriptManager* const sm = ScriptManager::instance();
