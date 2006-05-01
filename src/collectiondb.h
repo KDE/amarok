@@ -552,7 +552,7 @@ class QueryBuilder
         static const Q_INT64 valPurgeCount    = 1LL << 33;
         static const Q_INT64 valIsNew         = 1LL << 34;
 
-        enum qBuilderFunctions  { funcCount = 1, funcMax = 2, funcMin = 4, funcAvg = 8, funcSum = 16 };
+        enum qBuilderFunctions  { funcNone = 0, funcCount = 1, funcMax = 2, funcMin = 4, funcAvg = 8, funcSum = 16 };
 
         enum qBuilderFilter  { modeNormal = 0, modeLess = 1, modeGreater = 2, modeEndMatch = 3 };
 
@@ -579,6 +579,7 @@ class QueryBuilder
         void addMatch( int tables, Q_INT64 value, const QString& match );
         void addMatches( int tables, const QStringList& match );
         void excludeMatch( int tables, const QString& match );
+        void having( int table, Q_INT64 value, int function, int mode, const QString& match );
 
         void exclusiveFilter( int tableMatching, int tableNotMatching, Q_INT64 value );
 
@@ -614,6 +615,7 @@ class QueryBuilder
         QString m_sort;
         QString m_group;
         QString m_limit;
+        QString m_having;
 
         int m_linkTables;
         uint m_returnValues;

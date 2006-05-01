@@ -5053,6 +5053,33 @@ QueryBuilder::groupBy( int table, Q_INT64 value )
     m_linkTables |= table;
 }
 
+void
+QueryBuilder::having( int table, Q_INT64 value, int function, int mode, const QString& match )
+{
+    if( !m_having.isEmpty() ) m_having += ",";
+    
+    QString fn = functionName( function );
+    fn.isEmpty() ?
+        m_having += tableName( table ) + "." + valueName( value ) :
+        m_having += functionName( function )+"("+tableName( table )+"."+valueName( value )+")";
+        
+    switch( mode )
+    {
+        case modeNormal:
+            m_having += "=" + match;
+            break;
+            
+        case modeLess:
+            m_having += "<" + match;
+            break;
+        
+        case modeGreater:
+            m_having += ">" + match;
+        
+        default:
+            break;
+    }
+}
 
 void
 QueryBuilder::setLimit( int startPos, int length )
@@ -5090,8 +5117,10 @@ QueryBuilder::buildQuery()
 
         m_query = "SELECT " + m_values + " FROM " + m_tables + " " + m_join + " WHERE " + CollectionDB::instance()->boolT() + " " + m_where;
         // GROUP BY must be before ORDER BY for sqlite
-        if ( !m_group.isEmpty() ) m_query += " GROUP BY " + m_group;
-        if ( !m_sort.isEmpty() ) m_query += " ORDER BY " + m_sort;
+        // HAVING must be between GROUP BY and ORDER BY
+        if ( !m_group.isEmpty() )  m_query += " GROUP BY " + m_group;
+        if ( !m_having.isEmpty() ) m_query += " HAVING " + m_having;
+        if ( !m_sort.isEmpty() )   m_query += " ORDER BY " + m_sort;
         m_query += m_limit;
         m_query += ";";
     }
@@ -5192,16 +5221,16 @@ QueryBuilder::valueName( Q_INT64 value )
     if ( value & valYearID )      values += "year";
     if ( value & valFilesize )    values += "filesize";
     if ( value & valFileType )    values += "filetype";
-    if ( value & valIsCompilation )   values += "sampler";
+    if ( value & valIsCompilation)values += "sampler";
     if ( value & valCopyright )   values += "copyright";
     if ( value & valParent )      values += "parent";
     if ( value & valWeblink )     values += "weblink";
     if ( value & valAutoscan )    values += "autoscan";
     if ( value & valFetchtype )   values += "fetchtype";
-    if ( value & valAutotransfer ) values += "autotransfer";
+    if ( value & valAutotransfer )values += "autotransfer";
     if ( value & valPurge )       values += "haspurge";
     if ( value & valPurgeCount )  values += "purgeCount";
-    if ( value & valIsNew )  values += "isNew";
+    if ( value & valIsNew )       values += "isNew";
 
     return values;
 }
@@ -5209,7 +5238,7 @@ QueryBuilder::valueName( Q_INT64 value )
 QString
 QueryBuilder::functionName( int function )
 {
-    QString functions;
+    QString functions = QString::null;
 
     if ( function & funcCount )     functions += "Count";
     if ( function & funcMax )       functions += "Max";

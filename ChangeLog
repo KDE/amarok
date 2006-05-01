@@ -13,7 +13,9 @@ VERSION 1.4.0:
       view.
 
   CHANGES:
-    * Can now compile against libtunepimp 0.5.
+    * Only show albums with more than 5 tracks when listing favourite
+      albums. (BR 126435)
+    * libtunepimp 0.5 compiles successfully.
     * Podcasts are automatically configured to be checked for updates.
     * Show only 2 decimal places for scores in the statistics module.
     * Replace 'Move to Collection' in file browser context menu by 'Organize

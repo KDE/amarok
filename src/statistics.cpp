@@ -425,6 +425,8 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage );
         qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valRating );
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valIsCompilation );
+        // only albums with more than 5 tracks
+        qb.having( QueryBuilder::tabAlbum, QueryBuilder::valID, QueryBuilder::funcCount, QueryBuilder::modeGreater, "5" );
         qb.setGoogleFilter( QueryBuilder::tabAlbum | QueryBuilder::tabArtist, m_filter );
         qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
         qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
