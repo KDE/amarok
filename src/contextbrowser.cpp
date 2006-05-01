@@ -1376,6 +1376,8 @@ CurrentTrackJob::showHomeByAlbums()
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
     qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage );
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valID );
+    // only albums with more than 3 tracks
+    qb.having( QueryBuilder::tabAlbum, QueryBuilder::valID, QueryBuilder::funcCount, QueryBuilder::modeGreater, "3" );
     qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
     qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
     qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID );
