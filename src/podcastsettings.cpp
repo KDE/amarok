@@ -35,7 +35,7 @@ PodcastSettings::PodcastSettings( const QString &title )
     : m_title( title )
 {
     m_saveLocation = KURL::fromPathOrURL( amaroK::saveLocation( "podcasts/" ) );
-    m_saveLocation.addPath( m_title.replace("/", "-") );
+    m_saveLocation.addPath( amaroK::vfatPath( m_title ) );
     m_autoScan = true;
     m_fetch = STREAM;
     m_addToMediaDevice = false;
