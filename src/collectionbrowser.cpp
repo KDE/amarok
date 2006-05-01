@@ -1145,11 +1145,40 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     for ( int i = values.count() - countReturnValues; i >= 0; i -= countReturnValues )
     {
         QString text;
+        bool unknown=false, ct=false;
 
         //show "artist - title" for compilations
         if ( c )
-            text = values[ i + 2 ].stripWhiteSpace().isEmpty() ? i18n( "Unknown" ) : values[ i + 2 ] + i18n(" - ");
-        text += values[ i ].stripWhiteSpace().isEmpty() ? i18n( "Unknown" ) : values[ i ];
+        {
+            if ( values[ i + 2 ].stripWhiteSpace().isEmpty() )
+            {
+                text = i18n( "Unknown" ) + i18n( " - " );
+                unknown = true;
+            }
+            else
+                text = values[ i + 2 ] + i18n( " - " );
+        }
+
+        if ( values[ i ].stripWhiteSpace().isEmpty() )
+        {
+            text +=  i18n( "Unknown" );
+            unknown = true;
+        }
+        else
+            text += values[ i ];
+
+        //Make it so if there is an item "Unknown" and one "", that we do not generate
+        //two "Unknown" items
+        if ( unknown )
+            for ( QListViewItem *iter = item->firstChild(); iter; iter = iter->nextSibling() )
+                if ( iter->text( 0 ) == text )
+                {
+                    ct = true;
+                    break;
+                }
+
+        if ( ct )
+            continue;
 
         CollectionItem* child = new CollectionItem( item, category );
         child->setDragEnabled( true );
