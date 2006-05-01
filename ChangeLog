@@ -13,6 +13,8 @@ VERSION 1.4.0:
       view.
 
   CHANGES:
+    * Derive filename for downloaded podcast episodes from their url in the
+      rss feed. (BR 125966)
     * Only show albums with more than 5 tracks when listing favourite
       albums. (BR 126435)
     * libtunepimp 0.5 compiles successfully.

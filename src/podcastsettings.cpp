@@ -50,7 +50,7 @@ PodcastSettings::PodcastSettings( const QString &title, const QString &save, con
     if( save.isEmpty() )
     {
         m_saveLocation = KURL::fromPathOrURL( amaroK::saveLocation( "podcasts/" ) );
-        m_saveLocation.addPath( m_title.replace("/", "-") );
+        m_saveLocation.addPath( amaroK::vfatPath( m_title ) );
     }
     else
         m_saveLocation = KURL::fromPathOrURL( save );
@@ -107,7 +107,7 @@ PodcastSettingsDialog::hasChanged()
 
         fetchTypeChanged = false;
 
-    return( m_settings->m_saveLocation    != requesterSaveLocation()              ||
+    return( m_settings->m_saveLocation     != requesterSaveLocation()             ||
             m_settings->m_autoScan         != m_ps->m_autoFetchCheck->isChecked() ||
             m_settings->m_addToMediaDevice != m_ps->m_addToMediaDeviceCheck->isChecked() ||
             m_settings->m_purge            != m_ps->m_purgeCheck->isChecked()     ||

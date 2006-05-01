@@ -1060,6 +1060,7 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
         , m_new( false )
         , m_hasProblem( false )
         , m_parent( static_cast<PlaylistCategory*>(parent) )
+        , m_settingsValid( false )
 {
     setDragEnabled( true );
     setRenameEnabled( 0, false );
@@ -1078,6 +1079,7 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
     , m_new( false )
     , m_hasProblem( false )
     , m_parent( static_cast<PlaylistCategory*>(parent) )
+    , m_settingsValid( true )
 {
     setDragEnabled( true );
     setRenameEnabled( 0, false );
@@ -1099,6 +1101,7 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
     , m_new( false )
     , m_hasProblem( false )
     , m_parent( static_cast<PlaylistCategory*>(parent) )
+    , m_settingsValid( true )
 {
     QDomNode type = xmlDefinition.namedItem("rss");
     if( !type.isNull() )
@@ -1123,6 +1126,7 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
     , m_new( false )
     , m_hasProblem( false )
     , m_parent( static_cast<PlaylistCategory*>(parent) )
+    , m_settingsValid( true )
 {
     setText( 0, title() );
     setDragEnabled( true );
@@ -1145,7 +1149,7 @@ PodcastChannel::setDOMSettings( const QDomNode &channelSettings )
     KURL saveURL;
     QString t = title();
     if( save.isEmpty() )
-        save = amaroK::saveLocation( "podcasts/" + t );
+        save = amaroK::saveLocation( "podcasts/" + amaroK::vfatPath( t ) );
         
     PodcastSettings *settings = new PodcastSettings( t, save, scan, fetchType, false/*transfer*/, hasPurge, purgeCount );
     m_bundle.setSettings( settings );
@@ -1209,6 +1213,7 @@ PodcastChannel::configure()
             downloadChildren();
     }
 
+    delete dialog->getSettings();
     delete dialog;
 }
 
@@ -1397,13 +1402,19 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
     if( img.isEmpty() )
         img = xml.namedItem( "itunes:image" ).toElement().text();
 
-    PodcastSettings *settings = 0;
-    if( &m_bundle )
+    PodcastSettings * settings = 0;
+    if( m_settingsValid )
+    {
         settings = m_bundle.getSettings();
+    }
     else
+    {
         settings = new PodcastSettings( t );
+        m_settingsValid = true;
+    }
 
     m_bundle = PodcastChannelBundle( m_url, t, a, l, d, c, settings );
+    delete settings;
     m_bundle.setImageURL( KURL::fromPathOrURL( img ) );
 
     m_bundle.setParentId( m_parent->id() );

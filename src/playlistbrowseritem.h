@@ -357,6 +357,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         PlaylistCategory        *m_parent; // category it belongs to
         QString                  m_podcastCurrentUrl;
         QPtrList<PodcastEpisode> m_podcastDownloadQueue;
+        bool        m_settingsValid;
 };
 
 class StreamEntry : public PlaylistBrowserEntry
