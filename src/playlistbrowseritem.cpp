@@ -30,8 +30,8 @@
 #include <kio/jobclasses.h>    //podcast retrieval
 #include <kio/job.h>           //podcast retrieval
 #include <klocale.h>
-#include <kmdcodec.h>          //podcast media saving
 #include <kmessagebox.h>       //podcast info box
+#include <kmimetype.h>
 #include <kstandarddirs.h>     //podcast loading icons
 #include <kstringhandler.h>
 
@@ -1691,6 +1691,7 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
     int duration = 0;
     uint size = 0;
     KURL link;
+    QString mimetype;
 
     if( isAtom )
     {
@@ -1739,6 +1740,7 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
         guid     = xml.namedItem( "guid" ).toElement().text();
 
         const QString weblink = xml.namedItem( "enclosure" ).toElement().attribute( "url" );
+        mimetype = xml.namedItem( "enclosure" ).toElement().attribute( "type" );
 
         link     = KURL::fromPathOrURL( weblink );
     }
@@ -1752,25 +1754,34 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
     else
         m_localUrl = PodcastSettings( "Podcasts" ).saveLocation();
 
-    /*
-    sometimes a cgi script is used for tracking of listeners
-    like http://www.podtrac.com/pts/redirect.mp3?.
-    the actual file to download is the query for a cgi script.
-    So get the filename from the query.
-    */
-    QString query = link.query();
-    if( !query.isNull() )
+    QString filename = amaroK::vfatPath( KURL::encode_string_no_slash( link.url() ) );
+    QString ext = filename.section( ".", -1 );
+    QStringList acceptExtensions, rejectExtensions;
+    acceptExtensions << "mp3" << "ogg" << "m4a" << "m4a" << "m4v";
+    rejectExtensions << "cgi" << "php";
+    QStringList patterns;
+    if( !mimetype.isEmpty() )
+        patterns = KMimeType::mimeType( mimetype )->patterns();
+    if( !patterns.isEmpty() )
     {
-        query.remove("?");
-        QString filename = KURL::fromPathOrURL( query ).fileName();
-        // some shows, like lugradio, do it even different, there the filename is found in the part before the ?
-        if( filename.isEmpty() )
-            m_localUrl.addPath( link.fileName() );
-        else
-            m_localUrl.addPath( filename );
+        if( ext.isEmpty() || !patterns.contains( ext ) )
+            filename += patterns[0];
     }
-    else
-        m_localUrl.addPath( link.fileName() );
+    else if( ext.isEmpty() || !acceptExtensions.contains( ext ) )
+    {
+        QString path = link.path();
+        QString newext = path.section( ".", -1 );
+        if( !newext.isEmpty() && acceptExtensions.contains( newext ) )
+            filename += "." + newext;
+        else if( ext.isEmpty() || rejectExtensions.contains( ext ) )
+        {
+            if( !newext.isEmpty() && !rejectExtensions.contains( newext ) )
+                filename += "." + newext;
+            else
+                filename += ".mp3";
+        }
+    }
+    m_localUrl.setFileName( filename );
 
     if( QFile::exists( m_localUrl.path() ) )
     {
