@@ -175,7 +175,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         menu->insertSeparator();
 
         if (!m_medium)
-            menu->insertItem( SmallIconSet( amaroK::icon( "device" ) ), i18n( "Add to Media Device &Transfer Queue" ), MediaDevice );
+            menu->insertItem( SmallIconSet( amaroK::icon( "device" ) ), i18n( "&Transfer to Media Device" ), MediaDevice );
 
         menu->insertItem( SmallIconSet( amaroK::icon( "collection" ) ), i18n( "&Organize Files..." ), OrganizeFiles );
         menu->insertItem( SmallIconSet( amaroK::icon( "collection" ) ), i18n( "&Copy Files to Collection..." ), CopyToCollection );

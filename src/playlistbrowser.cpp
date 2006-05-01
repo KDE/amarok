@@ -2252,7 +2252,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         {
             menu.insertSeparator();
             menu.insertItem( SmallIconSet( amaroK::icon( "device" ) ),
-                    i18n( "Add to Media Device &Transfer Queue" ), MEDIA_DEVICE );
+                    i18n( "&Transfer to Media Device" ), MEDIA_DEVICE );
         }
 
         menu.insertSeparator();
@@ -2298,7 +2298,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         {
             menu.insertSeparator();
             menu.insertItem( SmallIconSet( amaroK::icon( "device" ) ),
-                    i18n( "Add Contents to Media Device &Transfer Queue" ), MEDIA_DEVICE );
+                    i18n( "&Transfer Contents to Media Device" ), MEDIA_DEVICE );
         }
 
         if( amaroK::dynamicMode() && amaroK::dynamicMode()->appendType()== DynamicMode::CUSTOM )
@@ -2480,7 +2480,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         {
             menu.insertSeparator();
             menu.insertItem( SmallIconSet( amaroK::icon( "device" ) ),
-                             i18n( "Add to Media Device &Transfer Queue" ), MEDIA_DEVICE );
+                             i18n( "&Transfer to Media Device" ), MEDIA_DEVICE );
             menu.setItemEnabled( MEDIA_DEVICE, item->isOnDisk() );
         }
 

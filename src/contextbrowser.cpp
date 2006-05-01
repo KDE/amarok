@@ -735,7 +735,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( SmallIconSet( amaroK::icon( "fastforward" ) ), i18n( "&Queue Track" ), ASNEXT );
         if( MediaBrowser::isAvailable() )
-            menu.insertItem( SmallIconSet( amaroK::icon( "device" ) ), i18n( "Add to Media Device &Transfer Queue" ), MEDIA_DEVICE );
+            menu.insertItem( SmallIconSet( amaroK::icon( "device" ) ), i18n( "&Transfer to Media Device" ), MEDIA_DEVICE );
 
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( "info" ), i18n( "Edit Track &Information..." ), INFO );

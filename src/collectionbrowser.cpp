@@ -1380,7 +1380,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         menu.insertSeparator();
 
         if( MediaBrowser::isAvailable() )
-            menu.insertItem( SmallIconSet( amaroK::icon( "device" ) ), i18n( "Add to Media Device &Transfer Queue" ), MEDIA_DEVICE );
+            menu.insertItem( SmallIconSet( amaroK::icon( "device" ) ), i18n( "&Transfer to Media Device" ), MEDIA_DEVICE );
 
         if( cat == CollectionBrowser::IdArtist )
         {
