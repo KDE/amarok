@@ -2760,6 +2760,13 @@ CollectionItem::compare( QListViewItem* i, int col, bool ascending ) const
         if ( b == i18n("Various Artists") )
             return 1;
 
+    // Need to make single letter artist names sort lower than acented divider items
+    // (e.g. The artist "A" should sort below the divider "Ä") so the divider colapsing
+    // code works correctly. Making the artist a two letter word makes localeAwareCompare
+    // give the result we want. See BR 126545.
+    if ( a.length() == 1 && dynamic_cast<DividerItem*>(i) )
+        a += a;
+
     // No special case, then fall on default
     return QString::localeAwareCompare( a.lower(), b.lower() );
 }
