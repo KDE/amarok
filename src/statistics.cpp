@@ -430,11 +430,11 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         qb.setGoogleFilter( QueryBuilder::tabAlbum | QueryBuilder::tabArtist, m_filter );
         qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, sortBy, true );
         qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
-        qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID);
-        qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName);
-        qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valID);
-        qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valName);
-        qb.groupBy( QueryBuilder::tabSong, QueryBuilder::valIsCompilation);
+        qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID );
+        qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
+        qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valID );
+        qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valName );
+        qb.groupBy( QueryBuilder::tabSong, QueryBuilder::valIsCompilation );
 
         qb.setLimit( 0, 50 );
         QStringList fave = qb.run();
