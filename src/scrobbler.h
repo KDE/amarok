@@ -54,7 +54,7 @@ class Scrobbler : public QObject, public EngineObserver
     private:
         QTimer m_timer; //works around xine bug 
                         //http://sourceforge.net/tracker/index.php?func=detail&aid=1401026&group_id=9655&atid=109655
-        QString m_similarArtistsBuffer;
+        QByteArray m_similarArtistsBuffer;
         KIO::Job* m_similarArtistsJob;
         QString m_artist;
         bool m_validForSending;

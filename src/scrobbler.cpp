@@ -120,7 +120,7 @@ void Scrobbler::similarArtists( const QString & artist )
         QDataStream stream( postData, IO_WriteOnly );
         stream.writeRawBytes( xmlRequest.utf8(), xmlRequest.length() );
 
-        m_similarArtistsBuffer = QString::null;
+        m_similarArtistsBuffer = QByteArray();
         m_artist = artist;
 
         m_similarArtistsJob = KIO::http_post( "http://ws.audioscrobbler.com/xmlrpc", postData, false );
@@ -202,10 +202,14 @@ void Scrobbler::audioScrobblerSimilarArtistsResult( KIO::Job* job ) //SLOT
 /**
  * Called when similar artists data is received for the TransferJob.
  */
-void Scrobbler::audioScrobblerSimilarArtistsData( KIO::Job*, const QByteArray& data ) //SLOT
+void Scrobbler::audioScrobblerSimilarArtistsData( KIO::Job* job, const QByteArray& data ) //SLOT
 {
-    // Append new chunk of string
-    m_similarArtistsBuffer += QString::fromUtf8( data, data.size() );
+    if ( m_similarArtistsJob != job )
+        return; //not the right job, so let's ignore it
+
+    uint oldSize = m_similarArtistsBuffer.size();
+    m_similarArtistsBuffer.resize( oldSize + data.size() );
+    memcpy( m_similarArtistsBuffer.data() + oldSize, data.data(), data.size() );
 }
 
 
