@@ -277,7 +277,7 @@ void QueueLabel::showToolTip()
     m_tooltip->setText( text );
     m_tooltip->setImage( m_cover );
 
-    m_tooltip->move( x(), y() + m_tooltip->height() );
+    m_tooltip->reposition(); //make sure it is in the correct location
 
     m_tooltip->display();
 }
