@@ -438,10 +438,15 @@ ScrobblerSubmitter::ScrobblerSubmitter()
 
 ScrobblerSubmitter::~ScrobblerSubmitter()
 {
+    // need to rescue current submit. This may meant it gets submitted twice,
+    // but last.fm handles that, and it's better than losing it when you quit
+    // while a submit is happening
+    for ( QPtrDictIterator<SubmitItem> it( m_ongoingSubmits ); it.current(); ++it )
+        m_submitQueue.inSort( it.current() );
+    m_ongoingSubmits.clear();
+
     saveSubmitQueue();
 
-    m_ongoingSubmits.setAutoDelete( true );
-    m_ongoingSubmits.clear();
     m_submitQueue.setAutoDelete( true );
     m_submitQueue.clear();
     m_fakeQueue.setAutoDelete( true );
