@@ -195,6 +195,7 @@ HTMLView::loadStyleSheet()
         styleSheet += QString( ".album-body { background-color: %1; border-bottom: solid %2 1px; border-top: solid %3 1px; }" ).arg( ContextBrowser::instance()->colorGroup().base().name() ).arg( bg ).arg( bg );
         styleSheet += QString( ".album-title { font-weight: bold; }" );
         styleSheet += QString( ".album-info { float:right; padding-right:4px; font-size: %1px }" ).arg( pxSize );
+        styleSheet += QString( ".album-length { float:right; padding-right:4px; font-size: %1px; clear:right; }" ).arg( pxSize );
         styleSheet += QString( ".album-image { padding-right: 4px; }" );
         styleSheet += QString( ".album-song a { display: block; padding: 1px 2px; font-weight: normal; text-decoration: none; }" );
         styleSheet += QString( ".album-song a:hover { color: %1; background-color: %2; }" ).arg( fg ).arg( bg );

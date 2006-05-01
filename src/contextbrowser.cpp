@@ -1077,16 +1077,21 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
         QStringList albumValues = qb.run();
 
         QString albumYear;
+		uint i_albumLength = 0;
         if ( !albumValues.isEmpty() )
         {
             albumYear = albumValues[ 3 ];
-            for ( uint j = 0; j < albumValues.count(); j += 7 )
+            for ( uint j = 0; j < albumValues.count(); j += 7 ) {
+				i_albumLength += QString(albumValues[j + 4]).toInt();
                 if ( albumValues[j + 3] != albumYear || albumYear == "0" )
                 {
                     albumYear = QString::null;
                     break;
                 }
+			}
         }
+
+		QString albumLength = MetaBundle::prettyTime( i_albumLength, true );
 
         htmlCode.append( QStringx (
                     "<tr class='" + QString( (i % 4) ? "box-row-alt" : "box-row" ) + "'>"
@@ -1156,15 +1161,17 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
                         << albumName ) );
         }
 
-        // Tracks number and year
+        // Tracks number, year and length
         htmlCode.append( QStringx (
                     "<span class='album-info'>%1</span> "
                     "<br />"
                     "<span class='album-year'>%2</span>"
+                    "<span class='album-length'>%3</span>"
                     "</td>")
                 .args( QStringList()
                     << i18n( "Single", "%n Tracks",  albumValues.count() / qb.countReturnValues() )
-                    << albumYear) );
+                    << albumYear
+					<< albumLength) );
 
         // Begining of the 'toggleable div' that contains the songs
         htmlCode.append( QStringx (
@@ -2094,17 +2101,21 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
             usleep( 10000 );
 
             QString albumYear;
+            uint i_albumLength = 0;
             if ( !albumValues.isEmpty() )
             {
                 albumYear = albumValues[ 3 ];
-                for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() )
+                for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() ) {
+                    i_albumLength += QString(albumValues[j + 4]).toInt();
                     if ( albumValues[j + 3] != albumYear || albumYear == "0" )
                     {
                         albumYear = QString::null;
                         break;
                     }
+                }
             }
 
+            QString albumLength = MetaBundle::prettyTime( i_albumLength, true );
             QString albumImage = CollectionDB::instance()->albumImage( artist, values[ i ], 50 );
             QString albumImageTitleAttr = albumImageTitle( albumImage, 50 );
             albumImage = ContextBrowser::makeShadowedImage( albumImage );
@@ -2125,11 +2136,12 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
                         "<a href='album:%7 @@@ %8'><span class='album-title'>%9</span></a>"
                         "<br />"
                         "<span class='album-year'>%10</span>"
+                        "<span class='album-length'>%11</span>"
                         "</td>"
                         "</tr>"
                         "</table>"
                         "</div>"
-                        "<div class='album-body' style='display:%11;' id='IDA%12'>" )
+                        "<div class='album-body' style='display:%12;' id='IDA%13'>" )
                     .args( QStringList()
                         << values[ i + 1 ]
                         << escapeHTMLAttr( artist ) // artist name
@@ -2141,6 +2153,7 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
                         << values[ i + 1 ] //album.id
                         << escapeHTML( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] )
                         << albumYear
+                        << albumLength
                         << ( i!=vectorPlace ? "none" : "block" ) /* shows it if it's the current track album */
                         << values[ i + 1 ] ) );
 
@@ -2240,17 +2253,21 @@ void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artis
             usleep( 10000 );
 
             QString albumYear;
+            uint i_albumLength = 0;
             if ( !albumValues.isEmpty() )
             {
                 albumYear = albumValues[ 3 ];
-                for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() )
+                for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() ) {
+                    i_albumLength += QString(albumValues[j + 4]).toInt();
                     if ( albumValues[j + 3] != albumYear || albumYear == "0" )
                     {
                         albumYear = QString::null;
                         break;
                     }
+				}
             }
 
+            QString albumLength = MetaBundle::prettyTime( i_albumLength, true );
             QString albumImage = CollectionDB::instance()->albumImage( artist, values[ i ], 50 );
             QString albumImageTitleAttr = albumImageTitle( albumImage, 50 );
             albumImage = ContextBrowser::makeShadowedImage( albumImage );
@@ -2271,11 +2288,12 @@ void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artis
                         "<a href='compilation:%6'><span class='album-title'>%7</span></a>"
                         "<br />"
                         "<span class='album-year'>%8</span>"
+                        "<span class='album-length'>%9</span>"
                         "</td>"
                         "</tr>"
                         "</table>"
                         "</div>"
-                        "<div class='album-body' style='display:%9;' id='IDA%10'>" )
+                        "<div class='album-body' style='display:%10;' id='IDA%11'>" )
                     .args( QStringList()
                         << values[ i + 1 ]
                         << escapeHTMLAttr( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] ) // album.name
@@ -2285,6 +2303,7 @@ void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artis
                         << values[ i + 1 ] //album.id
                         << escapeHTML( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] )
                         << albumYear
+                        << albumLength
                         << ( i!=vectorPlace ? "none" : "block" ) /* shows it if it's the current track album */
                         << values[ i + 1 ] ) );
 
