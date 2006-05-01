@@ -74,6 +74,7 @@ class StatisticsList : public KListView
         void    startDrag();
         void    viewportPaintEvent( QPaintEvent* );
         void    expandInformation( StatisticsItem *item, bool refresh=false );
+        static QString subText( const QString &score, double rating );
 
         StatisticsItem *m_trackItem;
         StatisticsItem *m_mostplayedItem;
@@ -135,7 +136,7 @@ class StatisticsItem : public QObject, public KListViewItem
 class StatisticsDetailedItem : public KListViewItem
 {
     public:
-        StatisticsDetailedItem( QString &text, QString &subtext, StatisticsItem *parent,
+        StatisticsDetailedItem( const QString &text, const QString &subtext, StatisticsItem *parent,
                                 StatisticsDetailedItem *after=0, const char *name=0 );
         ~StatisticsDetailedItem() {};
 

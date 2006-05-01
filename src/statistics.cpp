@@ -309,6 +309,10 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
     StatisticsDetailedItem *m_last = 0;
     uint c = 1;
 
+    const int sortBy = ( AmarokConfig::useScores() || !AmarokConfig::useRatings() )
+                       ? QueryBuilder::valPercentage
+                       : QueryBuilder::valRating;
+
     if( item == m_trackItem )
     {
         if( !refresh ) {
@@ -325,7 +329,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
         qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
         qb.setGoogleFilter( QueryBuilder::tabSong | QueryBuilder::tabArtist, m_filter );
-        qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
+        qb.sortBy( QueryBuilder::tabStats, sortBy, true );
         qb.setLimit( 0, 50 );
         QStringList fave = qb.run();
 
@@ -334,8 +338,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
             QString name = i18n("%1. %2 - %3").arg( QString::number(c), fave[i], fave[i+1] );
             QString score = locale->formatNumber( fave[i+3].toDouble(), 2 );
             double rating = fave[i+4].toDouble() / (double)2;
-            QString subtext = i18n("Score: %1  Rating: %2").arg( score ).arg( rating );
-            m_last = new StatisticsDetailedItem( name, subtext, item, m_last );
+            m_last = new StatisticsDetailedItem( name, subText( score, rating ), item, m_last );
             m_last->setItemType( StatisticsDetailedItem::TRACK );
             m_last->setUrl( fave[i+2] );
             c++;
@@ -356,7 +359,6 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
         qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
-        qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
         qb.setGoogleFilter( QueryBuilder::tabSong | QueryBuilder::tabArtist, m_filter );
         qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, true );
         qb.setLimit( 0, 50 );
@@ -366,8 +368,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         {
             QString name = i18n("%1. %2 - %3").arg( QString::number(c), fave[i], fave[i+1] );
             double plays  = fave[i+3].toDouble();
-            double rating = fave[i+4].toDouble() / (double)2;
-            QString subtext = i18n("Playcount: %1  Rating: %2").arg( plays ).arg( rating );
+            QString subtext = i18n("%1: %2").arg( i18n( "Playcount" ) ).arg( plays );
             m_last = new StatisticsDetailedItem( name, subtext, item, m_last );
             m_last->setItemType( StatisticsDetailedItem::TRACK );
             m_last->setUrl( fave[i+2] );
@@ -388,7 +389,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
         qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage );
         qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valRating );
-        qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
+        qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, sortBy, true );
         qb.setGoogleFilter( QueryBuilder::tabArtist, m_filter );
         qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valName);
         qb.setLimit( 0, 50 );
@@ -399,8 +400,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
             QString name   = i18n("%1. %2").arg( QString::number(c), fave[i] );
             QString score  = locale->formatNumber( fave[i+1].toDouble(), 2 );
             double rating = fave[i+2].toDouble() / (double)2;
-            QString subtext = i18n("Score: %1  Rating: %2").arg( score ).arg( rating );
-            m_last = new StatisticsDetailedItem( name, subtext, item, m_last );
+            m_last = new StatisticsDetailedItem( name, subText( score, rating ), item, m_last );
             m_last->setItemType( StatisticsDetailedItem::ARTIST );
             QString url = QString("%1").arg( fave[i] );
             m_last->setUrl( url );
@@ -428,7 +428,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         // only albums with more than 5 tracks
         qb.having( QueryBuilder::tabAlbum, QueryBuilder::valID, QueryBuilder::funcCount, QueryBuilder::modeGreater, "5" );
         qb.setGoogleFilter( QueryBuilder::tabAlbum | QueryBuilder::tabArtist, m_filter );
-        qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
+        qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, sortBy, true );
         qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
         qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID);
         qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName);
@@ -447,9 +447,8 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
                                                     isSampler ? i18n( "Various Artists" ) : fave[i+1] );
             QString score = locale->formatNumber( fave[i+4].toDouble(), 2 );
             double rating = fave[i+5].toDouble() / (double)2;
-            QString subtext = i18n("Score: %1  Rating: %2").arg( score ).arg( rating );
 
-            m_last = new StatisticsDetailedItem( name, subtext, item, m_last );
+            m_last = new StatisticsDetailedItem( name, subText( score, rating ), item, m_last );
             m_last->setItemType( StatisticsDetailedItem::ALBUM );
             QString url = QString("%1 @@@ %2").arg( isSampler ? "0" : fave[i+2], fave[i+3] );
             m_last->setUrl( url );
@@ -471,7 +470,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage );
         qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valRating );
         qb.setGoogleFilter( QueryBuilder::tabGenre, m_filter );
-        qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valScore, true );
+        qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, sortBy, true );
         qb.groupBy( QueryBuilder::tabGenre, QueryBuilder::valName);
         qb.setLimit( 0, 50 );
         QStringList fave = qb.run();
@@ -481,9 +480,8 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
             QString name = i18n("%1. %2").arg( QString::number(c), fave[i] );
             QString score  = locale->formatNumber( fave[i+1].toDouble(), 2 );
             double rating = fave[i+2].toDouble() / (double)2;
-            QString subtext = i18n("Score: %1  Rating: %2").arg( score ).arg( rating );
 
-            m_last = new StatisticsDetailedItem( name, subtext, item, m_last );
+            m_last = new StatisticsDetailedItem( name, subText( score, rating ), item, m_last );
             m_last->setItemType( StatisticsDetailedItem::GENRE );
             QString url = QString("%1").arg( fave[i] );
             m_last->setUrl( url );
@@ -531,6 +529,18 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
     item->setExpanded( true );
     repaintItem( item );  // Better than ::repaint(), flickers less
     delete locale;
+}
+
+QString StatisticsList::subText( const QString &score, double rating ) //static
+{
+    if( AmarokConfig::useScores() && AmarokConfig::useRatings() )
+        return i18n( "Score: %1 Rating: %1" ).arg( score ).arg( rating );
+    else if( AmarokConfig::useScores() )
+        return i18n( "Score: %1" ).arg( score );
+    else if( AmarokConfig::useRatings() )
+        return i18n( "Rating: %1" ).arg( rating );
+    else
+        return QString::null;
 }
 
 void
@@ -821,7 +831,7 @@ StatisticsItem::blendColors( const QColor& color1, const QColor& color2, int per
 /// CLASS StatisticsDetailedItem
 //////////////////////////////////////////////////////////////////////////////////////////
 
-StatisticsDetailedItem::StatisticsDetailedItem( QString &text, QString &subtext, StatisticsItem *parent,
+StatisticsDetailedItem::StatisticsDetailedItem( const QString &text, const QString &subtext, StatisticsItem *parent,
                                                 StatisticsDetailedItem *after, const char *name )
     : KListViewItem( parent, after, name )
     , m_type( NONE )
