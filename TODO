@@ -142,6 +142,10 @@ SHORT-TERM (URGENT):
   <markey> When the KDE color scheme is changed while amaroK is running, all toolbar buttons (those with text)
            lose their texts.
 
+ <shakes>  The scrobbler code should report some sort of error message rather than just saying that the
+           submit failed. That way when last.fm goes down we wouldn't get so many people asking why they
+           can't submit. It'd also be nice to be able to tell people they've got their password wrong.
+
 MID-TERM:
  <eean>    The FileBrowser doesn't check for recursive symlinks. This is a KDirOperator (or the
            classes it depends on) problem.
