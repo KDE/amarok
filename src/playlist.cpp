@@ -287,7 +287,10 @@ Playlist::Playlist( QWidget *parent )
     setColumnWidth( PlaylistItem::Artist, 100 );
     setColumnWidth( PlaylistItem::Album,  100 );
     setColumnWidth( PlaylistItem::Length, 80 );
-    setColumnWidth( PlaylistItem::Mood,   AmarokConfig::showMoodbar() ? 40 : 0 );
+    if( AmarokConfig::showMoodbar() )
+        setColumnWidth( PlaylistItem::Mood, 40 );
+    if( AmarokConfig::useRatings() )
+        setColumnWidth( PlaylistItem::Rating, PlaylistItem::ratingColumnWidth() );
 
     setColumnAlignment( PlaylistItem::Length,     Qt::AlignRight  );
     setColumnAlignment( PlaylistItem::Track,      Qt::AlignCenter );
@@ -381,6 +384,9 @@ Playlist::Playlist( QWidget *parent )
     connect( header(), SIGNAL(sizeChange( int, int, int )), SLOT(columnResizeEvent( int, int, int )) );
 
     connect( this, SIGNAL( contentsMoving( int, int ) ), SLOT( slotContentsMoving() ) );
+
+    connect( App::instance(), SIGNAL( useScores( bool ) ), this, SLOT( slotUseScores( bool ) ) );
+    connect( App::instance(), SIGNAL( useRatings( bool ) ), this, SLOT( slotUseRatings( bool ) ) );
 
     amaroK::ToolTip::add( this, viewport() );
 
@@ -997,6 +1003,13 @@ void Playlist::restoreLayout(KConfig *config, const QString &group)
     if( sort >= 0 && uint(sort) < iorder.count() )
         setSorting(iorder[config->readNumEntry("SortColumn")], config->readBoolEntry("SortAscending", true));
   }
+
+  if( !AmarokConfig::useScores() )
+    hideColumn( PlaylistItem::Score );
+  if( !AmarokConfig::useRatings() )
+    hideColumn( PlaylistItem::Rating );
+  if( !AmarokConfig::showMoodbar() )
+    hideColumn( PlaylistItem::Mood );
 }
 
 
@@ -2615,8 +2628,11 @@ Playlist::eventFilter( QObject *o, QEvent *e )
 
         KPopupMenu sub;
         for( int i = 0; i < columns(); ++i ) //columns() references a property
-            if( !columnWidth( i ) && ( i != PlaylistItem::Mood || AmarokConfig::showMoodbar() ) )
+            if( !columnWidth( i ) )
                 sub.insertItem( columnText( i ), i, i + 1 );
+        sub.setItemVisible( PlaylistItem::Score, AmarokConfig::useScores() );
+        sub.setItemVisible( PlaylistItem::Rating, AmarokConfig::useRatings() );
+        sub.setItemVisible( PlaylistItem::Mood, AmarokConfig::showMoodbar() );
 
         //TODO for 1.2.1
         //sub.insertSeparator();
@@ -3471,6 +3487,15 @@ Playlist::applySettings()
         AmarokConfig::setMoodbarColumnSize( columnWidth( PlaylistItem::Mood ) );
         setColumnWidth( PlaylistItem::Mood, 0 );
     }
+}
+
+void
+Playlist::adjustColumn( int n )
+{
+    if( n == PlaylistItem::Rating )
+        setColumnWidth( n, PlaylistItem::ratingColumnWidth() );
+    else
+        KListView::adjustColumn( n );
 }
 
 void
@@ -4504,6 +4529,22 @@ Playlist::slotQueueChanged( const PLItemList &in, const PLItemList &out)
         (*it)->setSelected( false ); //for prettiness
     refreshNextTracks( 0 );
     updateNextPrev();
+}
+
+void
+Playlist::slotUseScores( bool use )
+{
+    if( !use && columnWidth( MetaBundle::Score ) )
+        hideColumn( MetaBundle::Score );
+}
+
+void
+Playlist::slotUseRatings( bool use )
+{
+    if( use && !columnWidth( MetaBundle::Rating ) )
+        adjustColumn( MetaBundle::Rating );
+    else if( !use && columnWidth( MetaBundle::Rating ) )
+        hideColumn( MetaBundle::Rating );
 }
 
 void

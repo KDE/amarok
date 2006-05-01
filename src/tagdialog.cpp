@@ -396,6 +396,17 @@ void TagDialog::init()
     kIntSpinBox_score->setSpecialValueText( " " );
     kIntSpinBox_discNumber->setSpecialValueText( " " );
 
+    if( !AmarokConfig::useRatings() )
+    {
+        kComboBox_rating->hide();
+        ratingLabel->hide();
+    }
+    if( !AmarokConfig::useScores() )
+    {
+        kIntSpinBox_score->hide();
+        scoreLabel->hide();
+    }
+
     //HACK due to deficiency in Qt that will be addressed in version 4
     // QSpinBox doesn't emit valueChanged if you edit the value with
     // the lineEdit until you change the keyboard focus
@@ -616,8 +627,10 @@ void TagDialog::readTags()
     summaryText += body2cols.arg( i18n("Format"), unknownSafe( m_bundle.type() ) );
 
     summaryText += "</table></td><td width=50%><table>";
-    summaryText += body2cols.arg( i18n("Score"), QString::number( m_score ) );
-    summaryText += body2cols.arg( i18n("Rating"), m_bundle.prettyRating() );
+    if( AmarokConfig::useScores() )
+        summaryText += body2cols.arg( i18n("Score"), QString::number( m_score ) );
+    if( AmarokConfig::useRatings() )
+        summaryText += body2cols.arg( i18n("Rating"), m_bundle.prettyRating() );
 
     summaryText += body2cols.arg( i18n("Playcount"), QString::number( m_playcount ) );
     summaryText += body2cols.arg( i18n("First Played"), m_playcount ? KGlobal::locale()->formatDate( m_firstPlay.date() , true ) : i18n("Never") );

@@ -394,6 +394,11 @@ int PlaylistItem::ratingAtPoint( int x ) //static
     return kClamp( ( x - 1 ) / ( star()->width() + pl->itemMargin() ) + 1, 1, 5 ) * 2;
 }
 
+int PlaylistItem::ratingColumnWidth() //static
+{
+    return star()->width() * 5 + Playlist::instance()->itemMargin() * 6;
+}
+
 void PlaylistItem::update() const
 {
     listView()->repaintItem( this );

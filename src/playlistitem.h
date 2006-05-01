@@ -88,6 +88,7 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
         static QPixmap *grayedStar();
         static QPixmap *smallStar();
         static int ratingAtPoint( int x );
+        static int ratingColumnWidth();
 
         /// like QWidget::update()
         void update() const;

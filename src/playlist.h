@@ -231,6 +231,7 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void fileHasMood( const QString path );
         void refreshMoods();
         void applySettings();
+        void adjustColumn( int n );
 
     protected:
         virtual void fontChange( const QFont &old );
@@ -266,6 +267,8 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void slotContentsMoving();
         void slotRepeatTrackToggled( int mode );
         void slotQueueChanged( const PLItemList &in, const PLItemList &out);
+        void slotUseScores( bool use );
+        void slotUseRatings( bool use );
         void updateNextPrev();
         void writeTag( QListViewItem*, const QString&, int );
 
