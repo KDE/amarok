@@ -28,6 +28,10 @@
 #include <qptrlist.h>
 
 class VfatMediaItem;
+class VfatMediaFile;
+
+typedef QMap<QString, VfatMediaFile*> MediaFileMap;
+typedef QMap<VfatMediaItem*, VfatMediaFile*> MediaItemMap;
 
 class VfatMediaDevice : public MediaDevice
 {
@@ -45,6 +49,8 @@ class VfatMediaDevice : public MediaDevice
         TransferDialog   *getTransferDialog() { return m_td; }
         bool              needsManualConfig() { return false; }
         void              loadConfig();
+        MediaFileMap     &getFileMap() { return m_mfm; }
+        MediaItemMap     &getItemMap() { return m_mim; }
 
     protected:
         bool              openDevice( bool silent=false );
@@ -71,8 +77,13 @@ class VfatMediaDevice : public MediaDevice
         void              renameItem( QListViewItem *item );
         void              expandItem( QListViewItem *item );
         void              foundMountPoint( const QString & mountPoint, unsigned long kBSize, unsigned long kBUsed, unsigned long kBAvail );
+        void              refreshDir( const QString &dir );
+
         void              newItems( const KFileItemList &items );
         void              dirListerCompleted();
+        void              dirListerClear();
+        void              dirListerClear( const KURL &url );
+        void              dirListerDeleteItem( KFileItem *fileitem );
 
         void              downloadSlotRedirection( KIO::Job *job, const KURL &url );
         void              downloadSlotResult( KIO::Job *job );
@@ -83,8 +94,6 @@ class VfatMediaDevice : public MediaDevice
 
         MediaItem        *trackExists( const MetaBundle& );
 
-        bool              checkResult( int result, QString message );
-
         // file transfer
         void              downloadSelectedItems();
         void              drillDown( MediaItem *curritem );
@@ -94,7 +103,7 @@ class VfatMediaDevice : public MediaDevice
         // listDir
         void              listDir( const QString &dir );
         static int        listDirCallback( void *pData, int type, const char *name, int size );
-        int               addTrackToList( int type, QString name, int size=0 );
+        int               addTrackToList( int type, KURL name, int size=0 );
 
         // miscellaneous methods
         //static int        filetransferCallback( void *pData, struct vfat_transfer_status *progress );
@@ -105,9 +114,8 @@ class VfatMediaDevice : public MediaDevice
 
         QString           cleanPath( const QString &component );
 
-        bool              m_connected;
-
         VfatMediaItem     *m_last;
+        VfatMediaFile     *m_initialFile;
         //used to specify new VfatMediaItem parent. Make sure it is restored to 0 (m_listview)
         QListViewItem     *m_tmpParent;
 
@@ -122,11 +130,12 @@ class VfatMediaDevice : public MediaDevice
         bool              m_isInCopyTrack;
         bool              m_stopDirLister;
         bool              m_dirListerComplete;
-
+        bool              m_connected;
         KURL::List        m_downloadList;
         bool              m_downloadListerFinished;
         KURL              m_currentJobUrl;
-
+        MediaFileMap      m_mfm;
+        MediaItemMap      m_mim;
 };
 
 #endif /*AMAROK_VFATMEDIADEVICE_H*/

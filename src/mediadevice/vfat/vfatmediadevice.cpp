@@ -57,6 +57,8 @@ namespace amaroK {
     extern QString cleanPath( const QString&, bool );
 }
 
+typedef QPtrList<VfatMediaFile> MediaFileList;
+
 /**
  * VfatMediaItem Class
  */
@@ -110,6 +112,100 @@ class VfatMediaItem : public MediaItem
         QCString m_encodedName;
 };
 
+class VfatMediaFile
+{
+    public:
+        VfatMediaFile( VfatMediaFile *parent, QString basename, VfatMediaDevice *device )
+        : m_parent( parent )
+        , m_device( device )
+        {
+            DEBUG_BLOCK
+            m_listed = false;
+            setNamesFromBase( basename );
+            m_children = new MediaFileList();
+            debug() << "m_fullName is " << m_fullName << endl;
+
+            if( m_device->getFileMap()[m_fullName] )
+            {
+                debug() << "Trying to create two VfatMediaFile items with same fullName!" << endl;
+                return;
+            }
+            else
+            {
+                m_device->getFileMap()[m_fullName] = this;
+            }
+
+            if( m_parent )
+            {
+                m_viewItem = new VfatMediaItem( m_parent->getViewItem() );
+                m_viewItem->setText( 0, m_baseName );
+                m_parent->getChildren()->append( this );
+                m_device->getItemMap()[m_viewItem] = this;
+            }
+            else
+            {
+                m_viewItem = new VfatMediaItem( m_device->view() );
+                m_viewItem->setText( 0, m_fullName );
+                m_device->getItemMap()[m_viewItem] = this;
+            }
+
+            m_viewItem->setBundle( new MetaBundle( KURL::fromPathOrURL( m_fullName ), true, TagLib::AudioProperties::Fast ) );
+
+        }
+
+        ~VfatMediaFile() {}
+
+        VfatMediaFile*
+        getParent() { return m_parent; }
+
+        VfatMediaItem*
+        getViewItem() { return m_viewItem; }
+
+        bool
+        getListed() { return m_listed; }
+
+        void
+        setListed( bool listed ) { m_listed = listed; }
+
+        QString
+        getFullName() { return m_fullName; }
+
+        QCString
+        getEncodedFullName() { return m_encodedFullName; }
+
+        QString
+        getBaseName() { return m_baseName; }
+
+        //always follow this function with setNamesFromBase()
+        void
+        setBaseName( QString &name ) { m_baseName = name; }
+
+        void
+        setNamesFromBase( QString &name = QString::null )
+        {
+            if( name != QString::null )
+                m_baseName = name;
+            if( m_parent )
+                m_fullName = m_parent->getFullName() + '/' + m_baseName;
+            else
+                m_fullName = m_baseName;
+            m_encodedFullName = QFile::encodeName( m_fullName );
+        }
+
+        MediaFileList*
+        getChildren() { return m_children; }
+
+    private:
+        QString m_fullName;
+        QCString m_encodedFullName;
+        QString m_baseName;
+        VfatMediaFile *m_parent;
+        MediaFileList *m_children;
+        VfatMediaItem *m_viewItem;
+        VfatMediaDevice* m_device;
+        bool m_listed;
+};
+
 QString
 VfatMediaDevice::fileName( const MetaBundle &bundle )
 {
@@ -145,11 +241,12 @@ VfatMediaDevice::fileName( const MetaBundle &bundle )
 
 VfatMediaDevice::VfatMediaDevice()
     : MediaDevice()
-    , m_connected( false )
     , m_tmpParent( 0 )
     , m_kBSize( 0 )
     , m_kBAvail( 0 )
+    , m_connected( false )
 {
+    DEBUG_BLOCK
     m_name = "VFAT Device";
     m_td = NULL;
     m_dirLister = new KDirLister();
@@ -163,6 +260,9 @@ VfatMediaDevice::VfatMediaDevice()
     m_thirdSort = "None";
     connect( m_dirLister, SIGNAL( newItems(const KFileItemList &) ), this, SLOT( newItems(const KFileItemList &) ) );
     connect( m_dirLister, SIGNAL( completed() ), this, SLOT( dirListerCompleted() ) );
+    connect( m_dirLister, SIGNAL( clear() ), this, SLOT( dirListerClear() ) );
+    connect( m_dirLister, SIGNAL( clear(const KURL &) ), this, SLOT( dirListerClear(const KURL &) ) );
+    connect( m_dirLister, SIGNAL( deleteItem(KFileItem *) ), this, SLOT( dirListerDeleteItem(KFileItem *) ) );
 }
 
 void
@@ -188,19 +288,9 @@ VfatMediaDevice::loadConfig()
 }
 
 bool
-VfatMediaDevice::checkResult( int result, QString message )
-{
-    if( result == 0 )
-        return true;
-
-    error() << result << ": " << message << endl;
-    return false;
-}
-
-
-bool
 VfatMediaDevice::openDevice( bool /*silent*/ )
 {
+    DEBUG_BLOCK
     if( !m_medium )
     {
         debug() << "VFAT openDevice:  no Medium present!" << endl;
@@ -216,6 +306,7 @@ VfatMediaDevice::openDevice( bool /*silent*/ )
     m_actuallyVfat = m_medium->fsType() == "vfat" ? true : false;
     m_connected = true;
     m_transferDir = m_medium->mountPoint();
+    m_initialFile = new VfatMediaFile( 0, m_medium->mountPoint(), this );
     listDir( m_medium->mountPoint() );
     connect( this, SIGNAL( startTransfer() ), MediaBrowser::instance(), SLOT( transferClicked() ) );
     return true;
@@ -226,11 +317,15 @@ VfatMediaDevice::closeDevice()  //SLOT
 {
     if( m_connected )
     {
+        foreachType( MediaFileMap, m_mfm )
+            delete (*it);
         m_view->clear();
-
         m_connected = false;
-    }
 
+    }
+    //delete these?
+    m_mfm.clear();
+    m_mim.clear();
     return true;
 }
 
@@ -322,7 +417,6 @@ VfatMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> items
 
     MediaItem *previousTmpParent = static_cast<MediaItem *>(m_tmpParent);
 
-    m_stopDirLister = true;
     m_tmpParent = directory;
     for( QPtrListIterator<MediaItem> it(items); *it; ++it )
     {
@@ -337,11 +431,10 @@ VfatMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> items
             debug() << "Failed moving " << src << " to " << dest << endl;
         else
         {
-            addTrackToList( (*it)->type(), (*it)->text(0) );
+            refreshDir( desturl.path() );
             delete *it;
         }
     }
-    m_stopDirLister = false;
     m_tmpParent = previousTmpParent;
 }
 
@@ -615,16 +708,12 @@ VfatMediaDevice::expandItem( QListViewItem *item ) // SLOT
     //DEBUG_BLOCK
     if( !item || !item->isExpandable() ) return;
 
-    while( item->firstChild() )
-        delete item->firstChild();
-
-    m_tmpParent = item;
-
-    QString path = getFullPath( item );
+    #define item static_cast<VfatMediaItem *>(item)
     m_dirListerComplete = false;
-    listDir( path );
+    listDir( m_mim[item]->getFullName() );
+    #undef item
 
-    while( !m_dirListerComplete && !m_stopDirLister && !m_isInCopyTrack )
+    while( !m_dirListerComplete )
     {
         kapp->processEvents( 100 );
         usleep(10000);
@@ -634,22 +723,34 @@ VfatMediaDevice::expandItem( QListViewItem *item ) // SLOT
 void
 VfatMediaDevice::listDir( const QString &dir )
 {
-    if ( !m_dirLister->openURL( KURL(dir), true, true ) )
-        debug() << "KDirLister::openURL FAILED" << endl;
+    DEBUG_BLOCK
+    if( m_mfm[dir]->getListed() )
+        m_dirLister->updateDirectory( KURL(dir) );
+    else
+    {
+        m_dirLister->openURL( KURL(dir), true, true );
+        m_mfm[dir]->setListed( true );
+    }
+}
+
+void
+VfatMediaDevice::refreshDir( const QString &dir )
+{
+    m_dirLister->updateDirectory( KURL(dir) );
 }
 
 void
 VfatMediaDevice::newItems( const KFileItemList &items )
 {
     //iterate over items, calling addTrackToList
-    if( m_stopDirLister || m_isInCopyTrack )
-        return;
+    //if( m_stopDirLister || m_isInCopyTrack )
+    //    return;
 
     QPtrListIterator<KFileItem> it( items );
     KFileItem *kfi;
     while ( (kfi = it.current()) != 0 ) {
         ++it;
-        addTrackToList( kfi->isFile() ? MediaItem::TRACK : MediaItem::DIRECTORY, kfi->name(), 0 );
+        addTrackToList( kfi->isFile() ? MediaItem::TRACK : MediaItem::DIRECTORY, kfi->url(), 0 );
     }
 }
 
@@ -658,40 +759,77 @@ VfatMediaDevice::dirListerCompleted()
 {
     //DEBUG_BLOCK
     m_dirListerComplete = true;
-    if( !m_stopDirLister && !m_isInCopyTrack)
-        m_tmpParent = NULL;
+    //if( !m_stopDirLister && !m_isInCopyTrack)
+    //    m_tmpParent = NULL;
+}
+
+void
+VfatMediaDevice::dirListerClear()
+{
+    DEBUG_BLOCK
+
+    foreachType( MediaFileMap, m_mfm )
+            delete (*it);
+    m_view->clear();
+
+    //delete these?
+    m_mfm.clear();
+    m_mim.clear();
+
+    m_initialFile = new VfatMediaFile( 0, m_medium->mountPoint(), this );
+    listDir( m_medium->mountPoint() );
+}
+
+void
+VfatMediaDevice::dirListerClear( const KURL &/*url*/ )
+{
+    DEBUG_BLOCK
+}
+
+void
+VfatMediaDevice::dirListerDeleteItem( KFileItem */*fileitem*/ )
+{
+    DEBUG_BLOCK
 }
 
 int
-VfatMediaDevice::addTrackToList( int type, QString name, int /*size*/ )
+VfatMediaDevice::addTrackToList( int type, KURL url, int /*size*/ )
 {
+
     //DEBUG_BLOCK
-    m_tmpParent ?
-        m_last = new VfatMediaItem( m_tmpParent ):
-        m_last = new VfatMediaItem( m_view );
+    //m_tmpParent ?
+    //    m_last = new VfatMediaItem( m_tmpParent ):
+    //    m_last = new VfatMediaItem( m_view );
+
+    debug() << "addTrackToList: url.path = " << url.path() << endl;
+
+    QString path = url.path( -1 ); //no trailing slash
+    int index = path.findRev( '/', -1 );
+    QString baseName = path.right( path.length() - index - 1 );
+    QString parentName = path.left( index );
+
+    debug() << "index is " << index << ", baseName = " << baseName << ", parentName = " << parentName << endl;
+
+    VfatMediaFile* parent = m_mfm[parentName];
+    VfatMediaFile* newItem = new VfatMediaFile( parent, baseName, this );
 
     if( type == MediaItem::DIRECTORY ) //directory
-        m_last->setType( MediaItem::DIRECTORY );
-
+        newItem->getViewItem()->setType( MediaItem::DIRECTORY );
     //TODO: this logic could maybe be taken out later...or the dirlister shouldn't
     //filter, one or the other...depends if we want to allow viewing any files
     //or just update the list in the plugin as appropriate
     else if( type == MediaItem::TRACK ) //file
     {
-        if( name.endsWith( "mp3", false ) || name.endsWith( "wma", false ) ||
-            name.endsWith( "wav", false ) || name.endsWith( "ogg", false ) ||
-            name.endsWith( "asf", false ) || name.endsWith( "flac", false ) ||
-            name.endsWith( "aac", false ) || name.endsWith( "m4a", false ) )
+        if( baseName.endsWith( "mp3", false ) || baseName.endsWith( "wma", false ) ||
+            baseName.endsWith( "wav", false ) || baseName.endsWith( "ogg", false ) ||
+            baseName.endsWith( "asf", false ) || baseName.endsWith( "flac", false ) ||
+            baseName.endsWith( "aac", false ) || baseName.endsWith( "m4a", false ) )
 
-            m_last->setType( MediaItem::TRACK );
+            newItem->getViewItem()->setType( MediaItem::TRACK );
 
         else
-            m_last->setType( MediaItem::UNKNOWN );
+            newItem->getViewItem()->setType( MediaItem::UNKNOWN );
     }
-    m_last->setEncodedName( name );
-    m_last->setText( 0, name );
-
-    m_last->setBundle( new MetaBundle( KURL::fromPathOrURL( getFullPath(m_last, true) ), true, TagLib::AudioProperties::Fast ) );
 
     return 0;
 }
