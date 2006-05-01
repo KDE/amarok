@@ -4472,11 +4472,28 @@ QueryBuilder::addReturnValue( int table, Q_INT64 value )
 void
 QueryBuilder::addReturnFunctionValue( int function, int table, Q_INT64 value)
 {
+    // don't let nulls blow out averages
+    bool defaults = function == funcAvg && ( value & valPercentage || value & valRating );
+
     if ( !m_values.isEmpty() && m_values != "DISTINCT " ) m_values += ",";
     m_values += functionName( function ) + "(";
+    if ( defaults )
+    {
+        m_values += CollectionDB::instance()->getType() == DbConnection::mysql ? "IFNULL" : "COALESCE";
+        m_values += "(NULLIF(";
+    }
     m_values += tableName( table ) + ".";
-    m_values += valueName( value )+ ")";
-    m_values += " AS ";
+    m_values += valueName( value );
+    if ( defaults )
+    {
+        m_values += ", 0), ";
+        if ( value & valPercentage )
+            m_values += "50";
+        else
+            m_values += "6";
+        m_values += ")";
+    }
+    m_values += ") AS ";
     m_values += functionName( function )+tableName( table )+valueName( value );
 
     m_linkTables |= table;
@@ -4995,6 +5012,9 @@ QueryBuilder::sortByFunction( int function, int table, Q_INT64 value, bool desce
     // This function should be used with the equivalent addReturnFunctionValue (with the same function on same values)
     // since it uses the "func(table.value) AS functablevalue" definition.
 
+    // this column is already coalesced, but need to reconstruct for postgres
+    bool defaults = function == funcAvg && ( value & valPercentage || value & valRating );
+
     //shall we sort case-sensitively? (not for integer columns!)
     bool b = true;
     if ( value & valID || value & valTrack || value & valScore || value & valRating || value & valLength || value & valBitrate ||
@@ -5004,7 +5024,7 @@ QueryBuilder::sortByFunction( int function, int table, Q_INT64 value, bool desce
 
 	// only coalesce for certain columns
 	bool c = false;
-    if ( value & valScore || value & valRating || value & valPlayCounter || value & valPercentage )
+    if ( !defaults && ( value & valScore || value & valRating || value & valPlayCounter || value & valPercentage ) )
 		c = true;
 
     if ( !m_sort.isEmpty() ) m_sort += ",";
@@ -5015,8 +5035,23 @@ QueryBuilder::sortByFunction( int function, int table, Q_INT64 value, bool desce
 	QString columnName;
 
     if (CollectionDB::instance()->getType() == DbConnection::postgresql)
-		columnName = functionName( function )+"("+tableName( table )+"."+valueName( value )+")";
-	else
+    {
+        columnName = functionName( function ) + "(";
+        if ( defaults )
+            columnName += "COALESCE(NULLIF(";
+        columnName += tableName( table )+"."+valueName( value );
+        if ( defaults )
+        {
+            columnName += ", 0), ";
+            if ( value & valPercentage )
+                columnName += "50";
+            else
+                columnName += "6";
+            columnName += ")";
+        }
+        columnName += ")";
+    }
+    else
 		columnName = functionName( function )+tableName( table )+valueName( value );
 
     m_sort += columnName;
