@@ -2649,11 +2649,12 @@ CollectionView::eventFilter( QObject* o, QEvent* e )
         {
             popup.insertItem( captionForTag( static_cast<Tag>( i ) ), i );
             popup.setItemChecked( i, ( columnWidth(i) != 0 ) );
-
-            //title column should always be shown
-            if ( i == Title )
-                popup.setItemEnabled ( i, false );
         }
+
+        //title column should always be shown
+        popup.setItemEnabled( Title, false );
+        popup.setItemVisible( Score, AmarokConfig::useScores() );
+        popup.setItemVisible( Rating, AmarokConfig::useRatings() );
 
         const int returnID = popup.exec( static_cast<QMouseEvent *>(e)->globalPos() );
 
