@@ -98,7 +98,11 @@ class SelectLabel : public QLabel
                 setPixmap( SmallIcon( m_action->currentIcon() ) );
         }
 
-        void setEnabled( bool /*on*/ ) { }
+        void setEnabled( bool /*on*/ )
+        {
+            if( !m_action->currentIcon().isNull() )
+                setPixmap( SmallIconSet( m_action->currentIcon() ).pixmap( QIconSet::Small, QIconSet::Disabled ) );
+        }
 
     private slots:
         void aboutToShow()
@@ -124,21 +128,24 @@ class SelectLabel : public QLabel
             else if( AmarokConfig::favorTracks() ) //hack?
             {
                 KSelectAction *a = static_cast<KSelectAction*>( amaroK::actionCollection()->action( "favor_tracks" ) );
-                tip += QString("<br>") + i18n("%1: %2")
-                                         .arg( a->text().remove( '&' ) )
-                                         .arg( a->currentText().remove( '&' ) );
+                tip += QString("<br><br>") + i18n("%1: %2")
+                                             .arg( a->text().remove( '&' ) )
+                                             .arg( a->currentText().remove( '&' ) );
             }
 
             tip += "&nbsp;";
-            const QString path = KGlobal::iconLoader()->iconPath( m_action->currentIcon(), -KIcon::SizeHuge );
-
 
             m_tooltip = new KDE::PopupMessage( parentWidget()->parentWidget(), parentWidget(), 0 /*timeout*/ );
             m_tooltip->showCloseButton( false );
             m_tooltip->showCounter( false );
             m_tooltip->setMaskEffect( KDE::PopupMessage::Plain );
             m_tooltip->setText( tip );
-            m_tooltip->setImage( path );
+            const QPixmap pix = KGlobal::iconLoader()
+                                ->loadIconSet( m_action->currentIcon(), KIcon::Toolbar, KIcon::SizeHuge )
+                                .pixmap( QIconSet::Large, m_action->isEnabled()
+                                                          ? QIconSet::Normal
+                                                          : QIconSet::Disabled );
+            m_tooltip->setImage( pix );
 
             m_tooltip->reposition();
             m_tooltip->display();
