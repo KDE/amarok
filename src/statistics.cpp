@@ -509,6 +509,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         qb.setGoogleFilter( QueryBuilder::tabAlbum | QueryBuilder::tabArtist, m_filter );
         qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName);
         qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valName);
+        qb.setOptions( QueryBuilder::optNoCompilations ); // samplers __need__ to be handled differently
         qb.setLimit( 0, 50 );
         QStringList newest = qb.run();
 
