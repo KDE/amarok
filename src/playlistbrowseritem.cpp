@@ -1752,7 +1752,6 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
     else
         m_localUrl = PodcastSettings( "Podcasts" ).saveLocation();
 
-#if 0
     /*
     sometimes a cgi script is used for tracking of listeners
     like http://www.podtrac.com/pts/redirect.mp3?.
@@ -1772,11 +1771,6 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
     }
     else
         m_localUrl.addPath( link.fileName() );
-#else
-    debug() << "setting filename to " << amaroK::vfatPath( KURL::encode_string_no_slash( link.url() ) ) << endl;;
-    m_localUrl.setFileName( amaroK::vfatPath( KURL::encode_string_no_slash( link.url() ) ) );
-    debug() << "url = " <<  m_localUrl.url() << endl;
-#endif
 
     if( QFile::exists( m_localUrl.path() ) )
     {
