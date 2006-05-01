@@ -516,7 +516,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         {
             QString name = i18n("%1. %2 - %3").arg( QString::number(c), newest[i], newest[i+1] );
             QDateTime added = QDateTime();
-            added.setTime_t( newest[i+2].toUInt() );
+            added.setTime_t( newest[i+4].toUInt() );
             QString subtext = i18n("Added: %1").arg( amaroK::verboseTimeSince( added ) );
             m_last = new StatisticsDetailedItem( name, subtext, item, m_last );
             m_last->setItemType( StatisticsDetailedItem::HISTORY );
