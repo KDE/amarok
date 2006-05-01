@@ -181,7 +181,7 @@ class VfatMediaFile
         setBaseName( QString &name ) { m_baseName = name; }
 
         void
-        setNamesFromBase( QString &name = QString::null )
+        setNamesFromBase( const QString &name = QString::null )
         {
             if( name != QString::null )
                 m_baseName = name;
