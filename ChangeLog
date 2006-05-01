@@ -13,6 +13,7 @@ VERSION 1.4.0:
       view.
 
   CHANGES:
+    * Can now compile against libtunepimp 0.5.
     * Podcasts are automatically configured to be checked for updates.
     * Show only 2 decimal places for scores in the statistics module.
     * Replace 'Move to Collection' in file browser context menu by 'Organize

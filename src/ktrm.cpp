@@ -126,7 +126,11 @@ protected:
     {
         m_pimp = tp_New("KTRM", "0.1");
         //tp_SetDebug(m_pimp, true);
+#if HAVE_TUNEPIMP >= 5
+        tp_SetPUIDCollisionThreshold(m_pimp, 100);
+#else
         tp_SetTRMCollisionThreshold(m_pimp, 100);
+#endif
         tp_SetAutoFileLookup(m_pimp,true);
         tp_SetAutoSaveThreshold(m_pimp, -1);
         tp_SetMoveFiles(m_pimp, false);
@@ -282,7 +286,11 @@ static void TRMNotifyCallback(tunepimp_t pimp, void */*data*/, TPCallbackEnum ty
     case eUnrecognized:
         KTRMEventHandler::send(fileId, KTRMEvent::Unrecognized);
         break;
+#if HAVE_TUNEPIMP >= 5
+    case ePUIDCollision:
+#else
     case eTRMCollision:
+#endif
 #if HAVE_TUNEPIMP >= 4
     case eUserSelection:
 #endif
@@ -539,7 +547,11 @@ void KTRMLookup::unrecognized()
     trm[0] = 0;
     track_t track = tp_GetTrack(KTRMRequestHandler::instance()->tunePimp(), d->fileId);
     tr_Lock(track);
+#if HAVE_TUNEPIMP >= 5
+    tr_GetPUID(track, trm, 255);
+#else
     tr_GetTRM(track, trm, 255);
+#endif
     if ( !trm[0] ) {
         tr_SetStatus(track, ePending);
         tp_Wake(KTRMRequestHandler::instance()->tunePimp(), track);

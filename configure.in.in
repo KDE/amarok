@@ -633,9 +633,11 @@ if test "$with_musicbrainz" = "yes"; then
 fi
 
 if test "$build_musicbrainz" = "yes"; then
-    AC_CHECK_LIB(tunepimp, tp_SetFileNameEncoding,
-      AC_DEFINE(HAVE_TUNEPIMP, 4, [have MusicBrainz 0.4.x]),
-      AC_DEFINE(HAVE_TUNEPIMP, 1, [have MusicBrainz]))
+    AC_CHECK_LIB(tunepimp, tp_SetPUIDCollisionThreshold,
+      AC_DEFINE(HAVE_TUNEPIMP, 5, [have MusicBrainz 0.5.x]),      
+        AC_CHECK_LIB(tunepimp, tp_SetFileNameEncoding,
+        AC_DEFINE(HAVE_TUNEPIMP, 4, [have MusicBrainz 0.4.x]),
+        AC_DEFINE(HAVE_TUNEPIMP, 1, [have MusicBrainz])))
     LIB_TUNEPIMP="-ltunepimp"
     have_tunepimp=yes
 else
