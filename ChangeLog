@@ -13,6 +13,7 @@ VERSION 1.4.0:
       view.
 
   CHANGES:
+    * Show total track time in context browser (BR 126548)
     * Derive filename for downloaded podcast episodes from their url in the
       rss feed. (BR 125966)
     * Only show albums with more than 5 tracks when listing favourite
