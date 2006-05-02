@@ -199,7 +199,7 @@
                                             </widget>
                                             <widget class="KLineEdit">
                                                 <property name="name">
-                                                    <cstring>kcfg_MySqlPassword</cstring>
+                                                    <cstring>kcfg_MySqlPassword2</cstring>
                                                 </property>
                                                 <property name="echoMode">
                                                     <enum>Password</enum>
@@ -378,7 +378,7 @@
                                             </widget>
                                             <widget class="KLineEdit">
                                                 <property name="name">
-                                                    <cstring>kcfg_PostgresqlPassword</cstring>
+                                                    <cstring>kcfg_PostgresqlPassword2</cstring>
                                                 </property>
                                                 <property name="echoMode">
                                                     <enum>Password</enum>

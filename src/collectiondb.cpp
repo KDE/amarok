@@ -3302,12 +3302,10 @@ DbConnection * CollectionDB::getMyConnection()
                 passwd = AmarokConfig::mySqlPassword(); // stored as password type
                 AmarokConfig::setMySqlPassword2( passwd );
             }
-            else if( appVersion.startsWith( "1.4" ) &&
-                   ( appVersion.contains( "beta", false ) ||
-                     appVersion.contains( "svn",  false ) ) )
+            else if( appVersion.startsWith( "1.4" ) )
             {
-                passwd = amaroK::config( "MySql" )->readEntry( "MySqlPassword" );
-                AmarokConfig::setMySqlPassword2( passwd );
+                passwd = amaroK::config( "MySql" )->readEntry( "MySqlPassword" ); //read the field as plaintext
+                AmarokConfig::setMySqlPassword2( passwd ); // store it in plaintext field
             }
         }
 
