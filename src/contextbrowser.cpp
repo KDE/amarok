@@ -1077,19 +1077,20 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
         QStringList albumValues = qb.run();
 
         QString albumYear;
-		uint i_albumLength = 0;
         if ( !albumValues.isEmpty() )
         {
             albumYear = albumValues[ 3 ];
-            for ( uint j = 0; j < albumValues.count(); j += 7 ) {
-				i_albumLength += QString(albumValues[j + 4]).toInt();
+            for ( uint j = 0; j < albumValues.count(); j += 7 )
                 if ( albumValues[j + 3] != albumYear || albumYear == "0" )
                 {
                     albumYear = QString::null;
                     break;
                 }
-			}
         }
+
+        uint i_albumLength = 0;
+        for ( uint j = 0; j < albumValues.count(); j += 7 )
+            i_albumLength += QString(albumValues[j + 4]).toInt();
 
 		QString albumLength = MetaBundle::prettyTime( i_albumLength, true );
 
@@ -1392,12 +1393,11 @@ CurrentTrackJob::showHomeByAlbums()
     qb.having( QueryBuilder::tabAlbum, QueryBuilder::valID, QueryBuilder::funcCount, QueryBuilder::modeGreater, "3" );
     // only albums which have been played/rated
     qb.having( QueryBuilder::tabStats, sortBy, QueryBuilder::funcAvg, QueryBuilder::modeGreater, "0" );
-    qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
+    qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, sortBy, true );
     qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
     qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID );
     qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valID );
     qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
-    qb.groupBy( QueryBuilder::tabStats, QueryBuilder::valPercentage );
     qb.setOptions( QueryBuilder::optNoCompilations ); // samplers __need__ to be handled differently
     qb.setLimit( 0, 5 );
     QStringList faveAlbums = qb.run();
@@ -2109,19 +2109,21 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
             usleep( 10000 );
 
             QString albumYear;
-            uint i_albumLength = 0;
             if ( !albumValues.isEmpty() )
             {
                 albumYear = albumValues[ 3 ];
-                for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() ) {
-                    i_albumLength += QString(albumValues[j + 4]).toInt();
+                for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() ) 
                     if ( albumValues[j + 3] != albumYear || albumYear == "0" )
                     {
                         albumYear = QString::null;
                         break;
                     }
-                }
             }
+
+            uint i_albumLength = 0;
+            for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() ) 
+                i_albumLength += QString(albumValues[j + 4]).toInt();
+
 
             QString albumLength = MetaBundle::prettyTime( i_albumLength, true );
             QString albumImage = CollectionDB::instance()->albumImage( artist, values[ i ], 50 );
@@ -2261,19 +2263,20 @@ void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artis
             usleep( 10000 );
 
             QString albumYear;
-            uint i_albumLength = 0;
             if ( !albumValues.isEmpty() )
             {
                 albumYear = albumValues[ 3 ];
-                for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() ) {
-                    i_albumLength += QString(albumValues[j + 4]).toInt();
+                for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() )
                     if ( albumValues[j + 3] != albumYear || albumYear == "0" )
                     {
                         albumYear = QString::null;
                         break;
                     }
-				}
             }
+
+            uint i_albumLength = 0;
+            for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() ) 
+                i_albumLength += QString(albumValues[j + 4]).toInt();
 
             QString albumLength = MetaBundle::prettyTime( i_albumLength, true );
             QString albumImage = CollectionDB::instance()->albumImage( artist, values[ i ], 50 );
