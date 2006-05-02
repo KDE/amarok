@@ -334,7 +334,7 @@ ManualDeviceAdder::comboChanged( const QString &string )
     if( MediaBrowser::instance()->getInternalPluginName( string ) == "ifp-mediadevice" )
     {
         m_comboOldText = m_mdaMountPoint->text();
-        m_mdaMountPoint->setText( i18n("(not applicable)") );
+        m_mdaMountPoint->setText( QString::null );
         m_mdaMountPoint->setEnabled(false);
     }
     else if( m_mdaMountPoint->isEnabled() == false )

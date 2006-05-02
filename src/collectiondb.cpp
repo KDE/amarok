@@ -1198,17 +1198,15 @@ CollectionDB::podcastImage( const MetaBundle &bundle, uint width )
 
     if( getPodcastEpisodeBundle( url, &peb ) )
     {
-        debug() << "getting image for episode" << endl;
         url = peb.parent().url();
     }
 
     if( getPodcastChannelBundle( url, &pcb ) )
     {
-        debug() << "getting image for channel" << endl;
         if( pcb.imageURL().isValid() )
             return podcastImage( pcb.imageURL().url(), width );
     }
-    debug() << "not found :(" << endl;
+
     return notAvailCover( width );
 }
 
