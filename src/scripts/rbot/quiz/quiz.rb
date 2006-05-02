@@ -13,7 +13,7 @@ QuizBundle = Struct.new( "QuizBundle", :question, :answer )
 # Class for storing player stats
 PlayerStats = Struct.new( "PlayerStats", :score, :jokers, :jokers_time )
 
-# Maximum number of jokers a player can use per hour
+# Maximum number of jokers a player can gain
 Max_Jokers = 3
 
 # Control codes
@@ -278,6 +278,7 @@ class QuizPlugin < Plugin
 
             player.score = player.score + points
 
+            # Reward player with a joker every X points
             if player.score % 15 == 0 and player.jokers < Max_Jokers
                 player.jokers += 1
                 @bot.say( m.replyto, "#{m.sourcenick} gains a new joker. Rejoice :)" )
