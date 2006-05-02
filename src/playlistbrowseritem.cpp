@@ -1761,38 +1761,9 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
 
     PodcastChannel *channel = dynamic_cast<PodcastChannel*>(m_parent);
     if( channel )
-        m_localUrl = channel->saveLocation();
+        m_localUrl = saveURL( channel->saveLocation(), mimetype, link );
     else
-        m_localUrl = PodcastSettings( "Podcasts" ).saveLocation();
-
-    QString filename = amaroK::vfatPath( KURL::encode_string_no_slash( link.url() ) );
-    QString ext = filename.section( ".", -1 );
-    QStringList acceptExtensions, rejectExtensions;
-    acceptExtensions << "mp3" << "ogg" << "m4a" << "m4a" << "m4v";
-    rejectExtensions << "cgi" << "php";
-    QStringList patterns;
-    if( !mimetype.isEmpty() )
-        patterns = KMimeType::mimeType( mimetype )->patterns();
-    if( !patterns.isEmpty() )
-    {
-        if( ext.isEmpty() || !patterns.contains( ext ) )
-            filename += patterns[0];
-    }
-    else if( ext.isEmpty() || !acceptExtensions.contains( ext ) )
-    {
-        QString path = link.path();
-        QString newext = path.section( ".", -1 );
-        if( !newext.isEmpty() && acceptExtensions.contains( newext ) )
-            filename += "." + newext;
-        else if( ext.isEmpty() || rejectExtensions.contains( ext ) )
-        {
-            if( !newext.isEmpty() && !rejectExtensions.contains( newext ) )
-                filename += "." + newext;
-            else
-                filename += ".mp3";
-        }
-    }
-    m_localUrl.setFileName( filename );
+        m_localUrl = saveURL( PodcastSettings( "Podcasts" ).saveLocation(), mimetype, link );
 
     if( QFile::exists( m_localUrl.path() ) )
     {
@@ -1839,8 +1810,11 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after, Pod
 
     if( m_localUrl.isEmpty() )
     {
-        m_localUrl = dynamic_cast<PodcastChannel*>(m_parent)->saveLocation();
-        m_localUrl.addPath( bundle.url().fileName() );
+        PodcastChannel *channel = dynamic_cast<PodcastChannel*>(m_parent);
+        if( channel )
+           m_localUrl = saveURL( channel->saveLocation(), m_bundle.type(), m_bundle.url() );
+        else
+           m_localUrl = saveURL( PodcastSettings("Podcasts").saveLocation(), m_bundle.type(), m_bundle.url() );
     }
 
     if( QFile::exists( m_localUrl.path() ) )
@@ -1861,6 +1835,43 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after, Pod
     updatePixmap();
     setDragEnabled( true );
     setRenameEnabled( 0, false );
+}
+
+KURL
+PodcastEpisode::saveURL( const KURL &base, const QString &mimetype, const KURL &link )
+{
+    KURL url = base;
+
+    QString filename = amaroK::vfatPath( KURL::encode_string_no_slash( link.url() ) );
+    QString ext = filename.section( ".", -1 );
+    QStringList acceptExtensions, rejectExtensions;
+    acceptExtensions << "mp3" << "ogg" << "m4a" << "m4a" << "m4v";
+    rejectExtensions << "cgi" << "php";
+    QStringList patterns;
+    if( !mimetype.isEmpty() )
+        patterns = KMimeType::mimeType( mimetype )->patterns();
+    if( !patterns.isEmpty() )
+    {
+        if( ext.isEmpty() || !patterns.contains( ext ) )
+            filename += patterns[0];
+    }
+    else if( ext.isEmpty() || !acceptExtensions.contains( ext ) )
+    {
+        QString path = link.path();
+        QString newext = path.section( ".", -1 );
+        if( !newext.isEmpty() && acceptExtensions.contains( newext ) )
+            filename += "." + newext;
+        else if( ext.isEmpty() || rejectExtensions.contains( ext ) )
+        {
+            if( !newext.isEmpty() && !rejectExtensions.contains( newext ) )
+                filename += "." + newext;
+            else
+                filename += ".mp3";
+        }
+    }
+    url.setFileName( filename );
+
+    return url;
 }
 
 void
@@ -1889,7 +1900,6 @@ PodcastEpisode::isOnDisk()
 void
 PodcastEpisode::downloadMedia()
 {
-    KURL m_localDir = KURL::fromPathOrURL( m_localUrl.directory(true, true) );
     if( isOnDisk() )
         return;
 
@@ -1900,6 +1910,7 @@ PodcastEpisode::downloadMedia()
     connect( &m_animationTimer, SIGNAL(timeout()), this, SLOT(slotAnimation()) );
     KURL::List list( url() );
 
+    KURL m_localDir = KURL::fromPathOrURL( m_localUrl.directory(true, true) );
     createLocalDir( m_localDir );
 
     m_podcastEpisodeJob = KIO::copy( list, m_localUrl, false );

@@ -265,6 +265,7 @@ class PodcastEpisode : public QObject, public PlaylistBrowserEntry
         void startAnimation();
         void stopAnimation();
         void updatePixmap();
+        KURL saveURL( const KURL &base, const QString &filetype, const KURL &link );
 
         QListViewItem *m_parent;           //podcast channel it belongs to
         PodcastEpisodeBundle m_bundle;
