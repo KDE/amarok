@@ -130,7 +130,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     //type="string" also fixes this bug, but means the password is stored in plain
     //text. This is a temporary fix so that the majority of users get a fixed Apply
     //button.
-    delete m_opt7->dbSetupFrame->kcfg_MySqlPassword;
+    delete m_opt7->dbSetupFrame->kcfg_MySqlPassword2;
 #endif
     m_opt7->collectionFoldersBox->setColumns( 1 );
     new CollectionSetup( m_opt7->collectionFoldersBox ); //TODO this widget doesn't update the apply/ok buttons
