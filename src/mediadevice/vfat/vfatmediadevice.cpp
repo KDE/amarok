@@ -383,28 +383,13 @@ VfatMediaDevice::newDirectory( const QString &name, MediaItem *parent )
 
     debug() << "newDirectory called with name = " << name << ", and parent = " << parent << endl;
 
-    bool equal = name.startsWith( m_medium->mountPoint(), true );
+    #define parent static_cast<VfatMediaItem*>(parent)
 
-    debug() << "name.startsWith(m_medium->mountPoint() = " << (equal ? "true" : "false") << endl;
-
-    QString fullPath = getFullPath( parent, true, ( equal ? false : true ), false );
-
-    if( fullPath == QString::null )
-        fullPath += m_medium->mountPoint();
-
-    debug() << "fullPath = " << fullPath << endl;
-
-    QCString dirPath;
-
+    QString fullName = m_mim[parent]->getFullName();
     QString cleanedName = cleanPath(name);
-
-    if( equal )
-        dirPath = QFile::encodeName( cleanedName );
-    else
-        dirPath = QFile::encodeName( fullPath + "/" + cleanedName );
-
+    QString fullPath = fullName + '/' + cleanedName;
+    QCString dirPath = QFile::encodeName( fullPath );
     debug() << "Creating directory: " << dirPath << endl;
-
     const KURL url( dirPath );
 
     if( ! KIO::NetAccess::mkdir( url, m_parent ) ) //failed
@@ -413,11 +398,14 @@ VfatMediaDevice::newDirectory( const QString &name, MediaItem *parent )
         return NULL;
     }
 
-    if( m_isInCopyTrack )
-        addTrackToList( MediaItem::DIRECTORY, cleanedName );
+    addTrackToList( MediaItem::DIRECTORY, cleanedName );
+    listDir( m_mim[parent]->getFullName() );
 
-    return m_last;
+    #undef parent
 
+    debug() << "newDirectory returning viewobject of: " << m_mfm[fullPath] << endl;
+
+    return m_mfm[fullPath]->getViewItem();
 }
 
 void
