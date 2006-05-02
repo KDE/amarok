@@ -792,10 +792,10 @@ CollectionDB::IDFromValue( QString name, QString value, bool autocreate, const b
     if ( updateSpelling && !values.isEmpty() && ( values[1] != value ) )
     {
         query( QString( "UPDATE %1 SET id = %2, name = '%3' WHERE id = %4;" )
-                  .arg( name )
-                  .arg( values.first() )
-                  .arg( CollectionDB::instance()->escapeString( value ) )
-                  .arg( values.first() ) );
+                  .arg( name,
+                        values.first(),
+                        escapeString( value ),
+                        values.first() ) );
     }
 
     //check if item exists. if not, should we autocreate it?
@@ -899,10 +899,10 @@ CollectionDB::addImageToAlbum( const QString& image, QValueList< QPair<QString, 
 
 //         debug() << "Added image for album: " << (*it).first << " - " << (*it).second << ": " << image << endl;
         insert( QString( "INSERT INTO images%1 ( path, artist, album ) VALUES ( '%1', '%2', '%3' );" )
-         .arg( temporary ? "_temp" : "" )
-         .arg( escapeString( image ) )
-         .arg( escapeString( (*it).first ) )
-         .arg( escapeString( (*it).second ) ), NULL );
+              .arg( temporary ? "_temp" : "",
+                 escapeString( image ),
+                 escapeString( (*it).first ),
+                 escapeString( (*it).second ) ), NULL );
     }
 }
 
@@ -911,9 +911,9 @@ CollectionDB::addEmbeddedImage( const QString& path, const QString& hash, const 
 {
 //     debug() << "Added embedded image hash " << hash << " for file " << path << endl;
     insert( QString( "INSERT INTO embed_temp ( url, hash, description ) VALUES ( '%1', '%2', '%3' );" )
-     .arg( escapeString( path ) )
-     .arg( escapeString( hash ) )
-     .arg( escapeString( description ) ), NULL );
+     .arg( escapeString( path ),
+        escapeString( hash ),
+        escapeString( description ) ), NULL );
 }
 
 void
@@ -1384,8 +1384,8 @@ CollectionDB::findDirectoryImage( const QString& artist, const QString& album, u
     QStringList values =
         query( QString(
             "SELECT path FROM images WHERE artist %1 AND album %2 ORDER BY path;" )
-            .arg( CollectionDB::likeCondition( artist ) )
-            .arg( CollectionDB::likeCondition( album ) ) );
+            .arg( CollectionDB::likeCondition( artist ),
+                  CollectionDB::likeCondition( album ) ) );
 
     if ( !values.isEmpty() )
     {
@@ -1950,7 +1950,7 @@ CollectionDB::addPodcastFolder( const QString &name, const int parent_id, const 
     insert( command, NULL );
 
     command = QString( "SELECT id FROM podcastfolders WHERE name = '%1' AND parent = '%2';" )
-                       .arg( name ).arg( QString::number(parent_id) );
+                       .arg( name, QString::number(parent_id) );
     QStringList values = query( command );
 
     return values[0].toInt();
@@ -2181,9 +2181,9 @@ CollectionDB::doATFStuff( MetaBundle* bundle )
     {
         if( urls.empty() && uniqueids.empty() ) // new item
             insert( QString( "INSERT INTO uniqueid_temp (url, uniqueid, dir) VALUES ('%1', '%2', '%3')" )
-                .arg( currurl )
-                .arg( currid )
-                .arg( currdir ), NULL );
+                  .arg( currurl,
+                     currid,
+                     currdir ), NULL );
         else if( urls.empty() )  //detected same uniqueid, so file moved
         {
             debug() << "At doATFStuff, stat-ing file " << uniqueids[0] << endl;
@@ -2200,9 +2200,9 @@ CollectionDB::doATFStuff( MetaBundle* bundle )
             else
             {
                 query( QString( "UPDATE uniqueid_temp SET url='%1', dir='%2' WHERE uniqueid='%3';" )
-                    .arg( currurl )
-                    .arg( currdir )
-                    .arg( currid ) );
+                      .arg( currurl,
+                         currdir,
+                         currid ) );
                 emit fileMoved( uniqueids[0], currurl, currid );
             }
         }
@@ -2476,11 +2476,12 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
                         {
                             b = MetaBundle();
                             b.setUrl( url );
+                            // FIXME: more context for i18n after string freeze
                             b.setTitle( QString( "%1 %2 %3%4" )
-                                    .arg( url.filename() )
-                                    .arg( i18n( "from" ) )
-                                    .arg( url.hasHost() ? url.host() : QString() )
-                                    .arg( url.directory( false ) ) );
+                                  .arg( url.filename(),
+                                     i18n( "from" ),
+                                     url.hasHost() ? url.host() : QString(),
+                                     url.directory( false ) ) );
                         }
 
                         // try to see if the engine has some info about the
@@ -2774,16 +2775,16 @@ CollectionDB::migrateFile( const QString &oldURL, const QString &newURL )
             .arg( escapeString( newURL ) ) );
     //  Migrate
     query( QString( "UPDATE tags SET url = '%1' WHERE url = '%2';" )
-        .arg( escapeString( newURL ) )
-        .arg( escapeString( oldURL ) ) );
+        .arg( escapeString( newURL ),
+              escapeString( oldURL ) ) );
 
     query( QString( "UPDATE statistics SET url = '%1' WHERE url = '%2';" )
-        .arg( escapeString( newURL ) )
-        .arg( escapeString( oldURL ) ) );
+        .arg( escapeString( newURL ),
+              escapeString( oldURL ) ) );
 
     query( QString( "UPDATE lyrics SET url = '%1' WHERE url = '%2';" )
-        .arg( escapeString( newURL ) )
-        .arg( escapeString( oldURL ) ) );
+        .arg( escapeString( newURL ),
+              escapeString( oldURL ) ) );
     //  Clean up.
     query( QString( "DELETE FROM tags WHERE url = '%1';" )
         .arg( escapeString( oldURL ) ) );
@@ -2795,8 +2796,8 @@ CollectionDB::migrateFile( const QString &oldURL, const QString &newURL )
         .arg( escapeString( oldURL ) ) );
 
     query( QString( "UPDATE uniqueid SET url = '%1' WHERE url = '%2';" )
-        .arg( escapeString( newURL ) )
-        .arg( escapeString( oldURL ) ) );
+        .arg( escapeString( newURL ),
+              escapeString( oldURL ) ) );
 }
 
 void
@@ -3003,7 +3004,7 @@ CollectionDB::similarArtists( const QString &artist, uint count )
     QStringList values;
 
     values = query( QString( "SELECT suggestion FROM related_artists WHERE artist = '%1' LIMIT %2 OFFSET 0;" )
-                                 .arg( escapeString( artist ) ).arg( count ) );
+                                 .arg( escapeString( artist ), QString::number( count ) ) );
 
     if ( values.isEmpty() )
         Scrobbler::instance()->similarArtists( artist );
@@ -3140,7 +3141,7 @@ CollectionDB::setLyrics( const QString &url, const QString &lyrics )
     if(values.count() > 0)
     {
         if ( !lyrics.isEmpty() )
-            query( QString( "UPDATE lyrics SET lyrics = '%1' WHERE url = '%2';" ).arg( escapeString( lyrics ), escapeString( url ) ));
+            query( QString( "UPDATE lyrics SET lyrics = '%1' WHERE url = '%2';" ).arg( escapeString( lyrics), escapeString( url ) ));
         else
             query( QString( "DELETE FROM lyrics WHERE url = '%1';" ).arg( escapeString( url ) ));
     }
@@ -3547,8 +3548,8 @@ class SimilarArtistsInsertionJob : public ThreadWeaver::DependentJob
         const QString sql = "INSERT INTO related_artists ( artist, suggestion, changedate ) VALUES ( '%1', '%2', 0 );";
         foreach( suggestions )
             CollectionDB::instance()->insert( sql
-                    .arg( escapedArtist )
-                    .arg( CollectionDB::instance()->escapeString( *it ) ), NULL);
+                    .arg( escapedArtist,
+                          CollectionDB::instance()->escapeString( *it ) ), NULL);
 
         return true;
     }
