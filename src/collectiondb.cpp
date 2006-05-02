@@ -5091,7 +5091,7 @@ QueryBuilder::groupBy( int table, Q_INT64 value )
 void
 QueryBuilder::having( int table, Q_INT64 value, int function, int mode, const QString& match )
 {
-    if( !m_having.isEmpty() ) m_having += ",";
+    if( !m_having.isEmpty() ) m_having += " AND ";
     
     QString fn = functionName( function );
     fn.isEmpty() ?

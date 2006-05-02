@@ -1378,13 +1378,20 @@ CurrentTrackJob::showHomeByAlbums()
     // </Recent Tracks Information>
 
     // <Favorite Albums Information>
+
+    const int sortBy = ( AmarokConfig::useScores() || !AmarokConfig::useRatings() )
+            ? QueryBuilder::valPercentage
+            : QueryBuilder::valRating;
+
     qb.clear();
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
-    qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage );
+    qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, sortBy );
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valID );
     // only albums with more than 3 tracks
     qb.having( QueryBuilder::tabAlbum, QueryBuilder::valID, QueryBuilder::funcCount, QueryBuilder::modeGreater, "3" );
+    // only albums which have been played/rated
+    qb.having( QueryBuilder::tabStats, sortBy, QueryBuilder::funcAvg, QueryBuilder::modeGreater, "0" );
     qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
     qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
     qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID );
