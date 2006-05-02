@@ -1245,7 +1245,8 @@ MediaView::contentsDropEvent( QDropEvent *e )
             ensureItemVisible(pl);
             rename(pl, 0);
         }
-        else if( item->type() == MediaItem::DIRECTORY )
+        else if( item->type() == MediaItem::DIRECTORY ||
+                    item->type() == MediaItem::TRACK )
         {
             QPtrList<MediaItem> items;
             getSelectedLeaves( 0, &items );

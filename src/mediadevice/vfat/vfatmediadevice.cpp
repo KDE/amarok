@@ -440,7 +440,12 @@ VfatMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> items
     DEBUG_BLOCK
     if( !directory || items.isEmpty() ) return;
 
+    VfatMediaFile *dropDir;
+    if( directory->type() == MediaItem::TRACK )
     #define directory static_cast<VfatMediaItem *>(directory)
+        dropDir = m_mim[directory]->getParent();
+    else
+        dropDir = m_mim[directory];
 
     for( QPtrListIterator<MediaItem> it(items); *it; ++it )
     {
@@ -448,7 +453,7 @@ VfatMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> items
         VfatMediaItem *currItem = static_cast<VfatMediaItem *>(*it);
 
         QCString src  = m_mim[currItem]->getEncodedFullName();
-        QCString dst = m_mim[directory]->getEncodedFullName() + "/" + QFile::encodeName( currItem->text(0) );
+        QCString dst = dropDir->getEncodedFullName() + "/" + QFile::encodeName( currItem->text(0) );
         debug() << "Moving: " << src << " to: " << dst << endl;
 
         const KURL srcurl(src);
@@ -460,8 +465,8 @@ VfatMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> items
         {
             refreshDir( m_mim[currItem]->getParent()->getFullName() );
             //not needed/causes crashes if dirLister is autoupdating, but needed otherwise
-            //m_mim[currItem]->setParent( m_mim[directory] );
-            refreshDir( m_mim[directory]->getFullName() );
+            //m_mim[currItem]->setParent( dropDir );
+            refreshDir( dropDir->getFullName() );
         }
     }
     #undef directory
