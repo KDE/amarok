@@ -154,7 +154,13 @@ class VfatMediaFile
 
         }
 
-        ~VfatMediaFile() { delete m_viewItem; }
+        ~VfatMediaFile()
+        {
+            m_device->getItemMap().erase( m_viewItem );
+            m_device->getFileMap().erase( m_fullName );
+            delete m_children;
+            delete m_viewItem;
+        }
 
         VfatMediaFile*
         getParent() { return m_parent; }
@@ -218,9 +224,13 @@ class VfatMediaFile
         deleteAll()
         {
             VfatMediaFile *vmf;
-            for( vmf = m_children->first(); vmf; vmf = m_children->next() )
+            if( m_children && !m_children->isEmpty() )
             {
-                vmf->deleteAll();
+                for( vmf = m_children->first(); vmf; vmf = m_children->next() )
+                {
+                    vmf->deleteAll();
+                    m_children->remove( vmf );
+                }
             }
             delete this;
         }
@@ -382,7 +392,7 @@ VfatMediaDevice::renameItem( QListViewItem *item ) // SLOT
 
     debug() << "Renaming: " << src << " to: " << dst << endl;
 
-    //TODO: do we want a progress dialog?  If so, set last false to true
+    //do we want a progress dialog?  If so, set last false to true
     if( KIO::NetAccess::file_move( KURL::fromPathOrURL(src), KURL::fromPathOrURL(dst), -1, false, false, false ) )
     {
         m_mfm.erase( m_mim[item]->getFullName() );
@@ -515,9 +525,6 @@ VfatMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
 
     m_isInCopyTrack = true;
 
-    //TODO: dirlister's autoupdate should be off, but it's running, setting m_tmpParent to null and generally fucking everything up
-    //what to do?  not have it return null?  figure out how to actually turn the dirlister's autoupdate off?
-
     debug() << "m_tmpParent = " << m_tmpParent << endl;
     MediaItem *previousTmpParent = static_cast<MediaItem *>(m_tmpParent);
 
@@ -531,7 +538,7 @@ VfatMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
 
     QString  newFilename = base + newFilenameSansMountpoint;
 
-    const QCString dest = QFile::encodeName( newFilename ); // TODO: add to directory
+    const QCString dest = QFile::encodeName( newFilename );
     const KURL desturl = KURL::fromPathOrURL( dest );
 
     kapp->processEvents( 100 );
@@ -763,6 +770,7 @@ VfatMediaDevice::listDir( const QString &dir )
         m_dirLister->updateDirectory( KURL(dir) );
     else
     {
+        debug() << "in listDir, dir = " << dir << endl;
         m_dirLister->openURL( KURL(dir), true, true );
         m_mfm[dir]->setListed( true );
     }
@@ -795,31 +803,41 @@ VfatMediaDevice::dirListerCompleted()
 {
     DEBUG_BLOCK
     m_dirListerComplete = true;
-    //if( !m_stopDirLister && !m_isInCopyTrack)
-    //    m_tmpParent = NULL;
 }
 
 void
 VfatMediaDevice::dirListerClear()
 {
     DEBUG_BLOCK
+    m_initialFile->deleteAll();
 
-    foreachType( MediaFileMap, m_mfm )
-            delete (*it);
     m_view->clear();
-
-    //delete these?
     m_mfm.clear();
     m_mim.clear();
 
     m_initialFile = new VfatMediaFile( 0, m_medium->mountPoint(), this );
-    listDir( m_medium->mountPoint() );
 }
 
 void
-VfatMediaDevice::dirListerClear( const KURL &/*url*/ )
+VfatMediaDevice::dirListerClear( const KURL &url )
 {
     DEBUG_BLOCK
+    //TODO: Fill this in.  Should be able to use the deleteAll method on the appropriate VfatMediaFile?
+    QString directory = url.path(-1);
+    debug() << "Removing: " << directory << endl;
+    VfatMediaFile *vmf = m_mfm[directory];
+    if( vmf == m_initialFile )
+    {
+        vmf->deleteAll();
+        debug() << "creating new m_initialFile with name of " << m_medium->mountPoint() << endl;
+        m_initialFile = new VfatMediaFile( 0, m_medium->mountPoint(), this );
+    }
+    else
+    {
+        VfatMediaFile *vmfParent = vmf->getParent();
+        vmf->deleteAll();
+        refreshDir( vmfParent->getFullName() );
+    }
 }
 
 void
@@ -830,12 +848,9 @@ VfatMediaDevice::dirListerDeleteItem( KFileItem *fileitem )
     debug() << "Removing file: " << filename << endl;
     VfatMediaFile *vmf = m_mfm[filename];
     VfatMediaFile *vmfParent = vmf->getParent();
-    vmfParent->getChildren()->remove( vmf );
-    VfatMediaItem *vmi = vmf->getViewItem();
-    m_mim.remove( vmi );
-    m_mfm.remove( filename );
-    delete vmf;
-    refreshDir( vmfParent->getFullName() );
+    vmf->deleteAll();
+    if( vmfParent )
+        refreshDir( vmfParent->getFullName() );
 }
 
 int
