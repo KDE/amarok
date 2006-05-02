@@ -530,7 +530,7 @@ MediaBrowser::updateDevices()
         QString name = (*it)->name();
         if( !(*it)->deviceNode().isEmpty() )
         {
-            name = i18n( "%1 at %2" ).arg( name ).arg( (*it)->deviceNode() );
+            name = i18n( "%1 at %2" ).arg( name, (*it)->deviceNode() );
         }
         if( !(*it)->mountPoint().isEmpty() )
         {
@@ -964,9 +964,7 @@ class MediaItemTip : public QToolTip
                 {
                     if( b->track() )
                         text = QString( "%1 - %2 (%3)" )
-                            .arg( b->track() )
-                            .arg( b->title() )
-                            .arg( b->prettyLength() );
+                            .arg( QString::number(b->track()), b->title(), b->prettyLength() );
                     if( !b->genre().isEmpty() )
                     {
                         if( !text.isEmpty() )
@@ -2033,7 +2031,7 @@ MediaDevice::kioCopyTrack( const KURL &src, const KURL &dst )
             tryToRemove = true;
             amaroK::StatusBar::instance()->longMessage(
                     i18n( "Media Device: Copying %1 to %2 failed" )
-                    .arg(src.prettyURL()).arg(dst.prettyURL()),
+                    .arg( src.prettyURL(), dst.prettyURL() ),
                     KDE::StatusBar::Error );
         }
         else
