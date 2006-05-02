@@ -337,8 +337,8 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
         {
             QString name = i18n("%1. %2 - %3").arg( QString::number(c), fave[i], fave[i+1] );
-            QString score = locale->formatNumber( fave[i+3].toDouble(), 2 );
-            double rating = fave[i+4].toDouble() / (double)2;
+            QString score = locale->formatNumber( fave[i+3].toDouble(), 0 );
+            QString rating = locale->formatNumber( fave[i+4].toDouble() / 2.0, 1 );
             m_last = new StatisticsDetailedItem( name, subText( score, rating ), item, m_last );
             m_last->setItemType( StatisticsDetailedItem::TRACK );
             m_last->setUrl( fave[i+2] );
@@ -405,7 +405,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         {
             QString name   = i18n("%1. %2").arg( QString::number(c), fave[i] );
             QString score  = locale->formatNumber( fave[i+1].toDouble(), 2 );
-            double rating = fave[i+2].toDouble() / (double)2;
+            QString rating = locale->formatNumber( fave[i+2].toDouble() / 2.0, 2 );
             m_last = new StatisticsDetailedItem( name, subText( score, rating ), item, m_last );
             m_last->setItemType( StatisticsDetailedItem::ARTIST );
             QString url = QString("%1").arg( fave[i] );
@@ -453,7 +453,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
             QString name = i18n("%1. %2 - %3").arg( QString::number(c), fave[i],
                                                     isSampler ? i18n( "Various Artists" ) : fave[i+1] );
             QString score = locale->formatNumber( fave[i+4].toDouble(), 2 );
-            double rating = fave[i+5].toDouble() / (double)2;
+            QString rating = locale->formatNumber( fave[i+5].toDouble() / 2.0, 2 );
 
             m_last = new StatisticsDetailedItem( name, subText( score, rating ), item, m_last );
             m_last->setItemType( StatisticsDetailedItem::ALBUM );
@@ -490,7 +490,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         {
             QString name = i18n("%1. %2").arg( QString::number(c), fave[i] );
             QString score  = locale->formatNumber( fave[i+1].toDouble(), 2 );
-            double rating = fave[i+2].toDouble() / (double)2;
+            QString rating = locale->formatNumber( fave[i+2].toDouble() / 2.0, 2 );
 
             m_last = new StatisticsDetailedItem( name, subText( score, rating ), item, m_last );
             m_last->setItemType( StatisticsDetailedItem::GENRE );
@@ -543,7 +543,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
     delete locale;
 }
 
-QString StatisticsList::subText( const QString &score, double rating ) //static
+QString StatisticsList::subText( const QString &score, const QString &rating ) //static
 {
     if( AmarokConfig::useScores() && AmarokConfig::useRatings() )
         return i18n( "Score: %1 Rating: %1" ).arg( score ).arg( rating );
