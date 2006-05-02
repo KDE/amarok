@@ -4077,15 +4077,15 @@ MySqlConnection::MySqlConnection( MySqlConfig* config )
     m_db = mysql_init(NULL);
     if (m_db)
     {
-        if ( config->username().isEmpty() )
-            pApp->slotConfigAmarok("MySql");
+//         if ( config->username().isEmpty() )
+//             pApp->slotConfigAmarok("MySql");
 
         if ( mysql_real_connect( m_db, config->host().latin1(),
-                                              config->username().latin1(),
-                                              config->password().latin1(),
-                                              config->database().latin1(),
-                                              config->port(),
-                                              NULL, CLIENT_COMPRESS ) )
+                                       config->username().latin1(),
+                                       config->password().latin1(),
+                                       config->database().latin1(),
+                                       config->port(),
+                                       NULL, CLIENT_COMPRESS ) )
         {
             m_initialized = true;
 
@@ -4099,7 +4099,7 @@ MySqlConnection::MySqlConnection( MySqlConfig* config )
                 error() << "Failed to set database charset\n";
 #endif
 
-            m_db->reconnect=1; //setting reconnect flag for newer mysqld
+            m_db->reconnect = 1; //setting reconnect flag for newer mysqld
             m_connected = true;
         }
         else
@@ -4203,8 +4203,8 @@ PostgresqlConnection::PostgresqlConnection( PostgresqlConfig* config )
   QString conninfo;
     debug() << k_funcinfo << endl;
 
-    if ( config->username().isEmpty() )
-        pApp->slotConfigAmarok("Postgresql");
+//     if ( config->username().isEmpty() )
+//         pApp->slotConfigAmarok("Postgresql");
 
     conninfo = "host='" + config->host() +
       "' port=" + QString::number( config->port() ) +
