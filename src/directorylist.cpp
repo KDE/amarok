@@ -43,18 +43,15 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_view = new QFixedListView( this );
     m_recursive = new QCheckBox( i18n("&Scan folders recursively"), this );
     m_monitor   = new QCheckBox( i18n("&Watch folders for changes"), this );
-    m_playlists = new QCheckBox( i18n("&Import playlists"), this );
 
     QToolTip::add( m_recursive, i18n( "If selected, amaroK will read all subfolders." ) );
     QToolTip::add( m_monitor,   i18n( "If selected, folders will automatically get rescanned when the content is modified, e.g. when a new file was added." ) );
-    QToolTip::add( m_playlists, i18n( "If selected, playlist files (.m3u) will automatically be added to the Playlist-Browser." ) );
 
     // Read config values
     m_dirs = AmarokConfig::collectionFolders();
 
     m_recursive->setChecked( AmarokConfig::scanRecursively() );
     m_monitor->setChecked( AmarokConfig::monitorChanges() );
-    m_playlists->setChecked( AmarokConfig::importPlaylists() );
 
     m_view->addColumn( QString::null );
     m_view->setRootIsDecorated( true );
@@ -100,7 +97,6 @@ CollectionSetup::writeConfig()
     AmarokConfig::setCollectionFolders( m_dirs );
     AmarokConfig::setScanRecursively( recursive() );
     AmarokConfig::setMonitorChanges( monitor() );
-    AmarokConfig::setImportPlaylists( importPlaylists() );
 }
 
 
@@ -200,7 +196,7 @@ Item::stateChange( bool b )
             QStringList::Iterator diriter = cs_m_dirs.begin();
             while ( diriter != cs_m_dirs.end() )
             {
-                // Since the dir "/" starts with '/', we need a hack to stop it removing 
+                // Since the dir "/" starts with '/', we need a hack to stop it removing
                 // itself (it being the only path with a trailing '/')
                 if ( (*diriter).startsWith( m_url.path(1) ) && *diriter != "/" )
                     diriter = cs_m_dirs.erase(diriter);

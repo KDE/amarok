@@ -103,7 +103,7 @@ ScanController::ScanController( CollectionDB* parent, bool incremental, const QS
     }
     else {
         setDescription( i18n( "Building Collection" ) );
-        if( AmarokConfig::importPlaylists() ) *m_scanner << "-p";
+        *m_scanner << "-p";
         if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
         *m_scanner << m_folders;
         m_scanner->start();

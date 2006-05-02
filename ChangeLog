@@ -13,6 +13,7 @@ VERSION 1.4.0:
       view.
 
   CHANGES:
+    * Removed the option "Import Playlists". It's now always enabled.
     * Show total track time in context browser (BR 126548)
     * Derive filename for downloaded podcast episodes from their url in the
       rss feed. (BR 125966)
@@ -23,7 +24,7 @@ VERSION 1.4.0:
     * Show only 2 decimal places for scores in the statistics module.
     * Replace 'Move to Collection' in file browser context menu by 'Organize
       Files' for collection directories. (BR 125702)
-    * Removed the "Show Status Bar" option.
+    * Removed the option "Show Status Bar". It's now always enabled.
     * Tracks from a media device scan be submitted to last.fm immediately,
       without waiting for tracks to be played in amaroK. Patch by Iain
       Benson <iain@arctos.me.uk>. (BR 125690)
