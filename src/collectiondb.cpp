@@ -3793,13 +3793,13 @@ CollectionDB::customEvent( QCustomEvent *e )
 QString
 CollectionDB::loadHashFile( const QCString& hash, uint width )
 {
-    debug() << "loadHashFile: " << hash << " - " << width << endl;
+    //debug() << "loadHashFile: " << hash << " - " << width << endl;
 
     QString full = tagCoverDir().filePath( hash );
 
     if ( width == 0 ) {
         if ( QFileInfo( full ).isReadable() ) {
-            debug() << "loadHashFile: fullsize: " << full << endl;
+            //debug() << "loadHashFile: fullsize: " << full << endl;
             return full;
         }
     } else {
@@ -3808,13 +3808,13 @@ CollectionDB::loadHashFile( const QCString& hash, uint width )
 
         QString path = cacheCoverDir().filePath( widthKey + hash );
         if ( QFileInfo( path ).isReadable() ) {
-            debug() << "loadHashFile: scaled: " << path << endl;
+            //debug() << "loadHashFile: scaled: " << path << endl;
             return path;
         } else if ( QFileInfo( full ).isReadable() ) {
-            debug() << "loadHashFile: scaling: " << full << endl;
+            //debug() << "loadHashFile: scaling: " << full << endl;
             QImage image( full );
             if ( image.smoothScale( width, width, QImage::ScaleMin ).save( path, "PNG" ) ) {
-                debug() << "loadHashFile: scaled: " << path << endl;
+                //debug() << "loadHashFile: scaled: " << path << endl;
                 return path;
             }
         }
@@ -3825,14 +3825,14 @@ CollectionDB::loadHashFile( const QCString& hash, uint width )
 bool
 CollectionDB::extractEmbeddedImage( MetaBundle &trackInformation, QCString& hash )
 {
-    debug() << "extractEmbeddedImage: " << hash << " - " << trackInformation.url().path() << endl;
+    //debug() << "extractEmbeddedImage: " << hash << " - " << trackInformation.url().path() << endl;
 
     MetaBundle::EmbeddedImageList images;
     trackInformation.embeddedImages( images );
     foreachType ( MetaBundle::EmbeddedImageList, images ) {
         if ( hash.isEmpty() || (*it).hash() == hash ) {
             if ( (*it).save( tagCoverDir() ) ) {
-                debug() << "extractEmbeddedImage: saved to " << tagCoverDir().path() << endl;
+                //debug() << "extractEmbeddedImage: saved to " << tagCoverDir().path() << endl;
                 hash = (*it).hash();
                 return true;
             }
