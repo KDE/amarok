@@ -946,7 +946,7 @@ MetaBundle::veryNiceTitle() const
     if( !title().isEmpty() )
     {
         if( !artist().isEmpty() )
-            s = i18n( "%1 by %2" ).arg( title() ).arg( artist() );
+            s = i18n( "%1 by %2" ).arg( title(), artist() );
         else
             s = title();
     }

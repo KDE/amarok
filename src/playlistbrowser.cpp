@@ -1066,8 +1066,7 @@ void PlaylistBrowser::addPodcast( const KURL& url, QListViewItem *parent )
     {
         amaroK::StatusBar::instance()->longMessage(
                 i18n( "Already subscribed to feed %1 as %2" )
-                .arg( url.prettyURL() )
-                .arg( channel->title() ),
+                .arg( url.prettyURL(), channel->title() ),
                 KDE::StatusBar::Sorry );
         return;
     }
@@ -3200,9 +3199,9 @@ QString PlaylistDialog::getSaveFileName( const QString &suggestion ) //static
         if( QFileInfo( path.arg( suggestion ) ).exists() )
         {
             int n = 2;
-            while( QFileInfo( path.arg( i18n( "%1 (%2)" ).arg( suggestion).arg( n ) ) ).exists() )
+            while( QFileInfo( path.arg( i18n( "%1 (%2)" ).arg( suggestion, QString::number( n ) ) ) ).exists() )
                 n++;
-            dialog.edit->setText( i18n( "%1 (%2)" ).arg( suggestion).arg( n ) );
+            dialog.edit->setText( i18n( "%1 (%2)" ).arg( suggestion, QString::number( n ) ) );
         }
         else
           dialog.edit->setText( suggestion );

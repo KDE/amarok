@@ -1530,8 +1530,8 @@ PodcastChannel::episodeExists( const QDomNode &xml, const int feedType )
         if( !guid.isEmpty() )
         {
             command = QString("SELECT id FROM podcastepisodes WHERE parent='%1' AND guid='%2';")
-                              .arg( CollectionDB::instance()->escapeString( url().url() ) )
-                              .arg( CollectionDB::instance()->escapeString( guid ) );
+                              .arg( CollectionDB::instance()->escapeString( url().url() ),
+                                    CollectionDB::instance()->escapeString( guid ) );
             QStringList values = CollectionDB::instance()->query( command );
             return !values.isEmpty();
         }
@@ -1539,9 +1539,9 @@ PodcastChannel::episodeExists( const QDomNode &xml, const int feedType )
         QString episodeTitle = xml.namedItem( "title" ).toElement().text();
         QString episodeURL   = xml.namedItem( "enclosure" ).toElement().attribute( "url" );
         command = QString("SELECT id FROM podcastepisodes WHERE parent='%1' AND url='%2' AND title='%3';")
-                          .arg( CollectionDB::instance()->escapeString( url().url() ) )
-                          .arg( CollectionDB::instance()->escapeString( episodeURL ) )
-                          .arg( CollectionDB::instance()->escapeString( episodeTitle ) );
+                          .arg( CollectionDB::instance()->escapeString( url().url() ),
+                                CollectionDB::instance()->escapeString( episodeURL ),
+                                CollectionDB::instance()->escapeString( episodeTitle ) );
         QStringList values = CollectionDB::instance()->query( command );
 
         return !values.isEmpty();
@@ -1554,8 +1554,8 @@ PodcastChannel::episodeExists( const QDomNode &xml, const int feedType )
         if( !guid.isEmpty() )
         {
             command = QString("SELECT id FROM podcastepisodes WHERE parent='%1' AND guid='%2';")
-                              .arg( CollectionDB::instance()->escapeString( url().url() ) )
-                              .arg( CollectionDB::instance()->escapeString( guid ) );
+                              .arg( CollectionDB::instance()->escapeString( url().url() ),
+                                    CollectionDB::instance()->escapeString( guid ) );
             QStringList values = CollectionDB::instance()->query( command );
             return !values.isEmpty();
         }
@@ -1573,9 +1573,9 @@ PodcastChannel::episodeExists( const QDomNode &xml, const int feedType )
         }
 
         command = QString("SELECT id FROM podcastepisodes WHERE parent='%1' AND url='%2' AND title='%3';")
-                          .arg( CollectionDB::instance()->escapeString( url().url() ) )
-                          .arg( CollectionDB::instance()->escapeString( episodeURL ) )
-                          .arg( CollectionDB::instance()->escapeString( episodeTitle ) );
+                          .arg( CollectionDB::instance()->escapeString( url().url() ),
+                                CollectionDB::instance()->escapeString( episodeURL ),
+                                CollectionDB::instance()->escapeString( episodeTitle ) );
         QStringList values = CollectionDB::instance()->query( command );
 
         return !values.isEmpty();

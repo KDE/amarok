@@ -207,7 +207,7 @@ bool MetaBundle::XmlLoader::fatalError( const QXmlParseException &e )
         bundleLoaded();
 
     m_lastError = QString( "Error loading XML: \"%1\", at line %2, column %3." )
-                  .arg( e.message() ).arg( e.lineNumber() ).arg( e.columnNumber() );
+                  .arg( e.message(), QString::number( e.lineNumber() ), QString::number( e.columnNumber() ) );
     errorEncountered( e.message(), e.lineNumber(), e.columnNumber() );
 
     return false;
