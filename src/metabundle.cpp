@@ -408,7 +408,6 @@ MetaBundle::embeddedImages( MetaBundle::EmbeddedImageList& images )
 void
 MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImageList* images )
 {
-    DEBUG_BLOCK
     if( url().protocol() != "file" )
         return;
 
@@ -447,7 +446,6 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
         QString disc;
         QString compilation;
         bool atf = AmarokConfig::advancedTagFeatures();
-        debug() << "atf is " << atf << endl;
         if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
         {
             m_type = mp3;

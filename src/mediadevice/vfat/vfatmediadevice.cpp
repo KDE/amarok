@@ -128,6 +128,7 @@ class VfatMediaFile
             if( m_device->getFileMap()[m_fullName] )
             {
                 debug() << "Trying to create two VfatMediaFile items with same fullName!" << endl;
+                debug() << "name already existing: " << m_device->getFileMap()[m_fullName]->getFullName() << endl;
                 return;
             }
             else
@@ -212,6 +213,17 @@ class VfatMediaFile
 
         MediaFileList*
         getChildren() { return m_children; }
+
+        void
+        deleteAll()
+        {
+            VfatMediaFile *vmf;
+            for( vmf = m_children->first(); vmf; vmf = m_children->next() )
+            {
+                vmf->deleteAll();
+            }
+            delete this;
+        }
 
     private:
         QString m_fullName;
@@ -336,8 +348,7 @@ VfatMediaDevice::closeDevice()  //SLOT
 {
     if( m_connected )
     {
-        foreachType( MediaFileMap, m_mfm )
-            delete (*it);
+        m_mfm[m_medium->mountPoint()]->deleteAll();
         m_view->clear();
         m_connected = false;
 
@@ -411,17 +422,16 @@ VfatMediaDevice::newDirectory( const QString &name, MediaItem *parent )
     if( ! KIO::NetAccess::mkdir( url, m_parent ) ) //failed
     {
         debug() << "Failed to create directory " << dirPath << endl;
-        return NULL;
+        return 0;
     }
 
-    addTrackToList( MediaItem::DIRECTORY, cleanedName );
-    listDir( m_mim[parent]->getFullName() );
+
+    //this would be necessary if dirlister wasn't autoupdating; if dirlister *is*, then it causes crashes because of multiple definitions
+    //addTrackToList( MediaItem::DIRECTORY, KURL( fullPath ) );
 
     #undef parent
 
-    debug() << "newDirectory returning viewobject of: " << m_mfm[fullPath] << endl;
-
-    return m_mfm[fullPath]->getViewItem();
+    return 0;
 }
 
 void
@@ -449,7 +459,8 @@ VfatMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> items
         else
         {
             refreshDir( m_mim[currItem]->getParent()->getFullName() );
-            m_mim[currItem]->setParent( m_mim[directory] );
+            //not needed/causes crashes if dirLister is autoupdating, but needed otherwise
+            //m_mim[currItem]->setParent( m_mim[directory] );
             refreshDir( m_mim[directory]->getFullName() );
         }
     }
@@ -470,7 +481,8 @@ VfatMediaDevice::copyTrackSortHelper( const MetaBundle& bundle, QString& sort, Q
         base += temp + "/";
 
         if( !KIO::NetAccess::stat( KURL(base), m_udsentry, m_parent ) )
-            m_tmpParent = static_cast<MediaItem *>(newDirectory( temp, static_cast<MediaItem*>(m_tmpParent) ));
+        //   m_tmpParent = static_cast<MediaItem *>(newDirectory( temp, static_cast<MediaItem*>(m_tmpParent) ));
+            debug() << "copyTrackSortHelper: stat failed" << endl;
         else
         {
             //debug() << "m_tmpParent (firstSort) " << m_tmpParent << endl;
@@ -760,6 +772,7 @@ VfatMediaDevice::refreshDir( const QString &dir )
 void
 VfatMediaDevice::newItems( const KFileItemList &items )
 {
+    DEBUG_BLOCK
     //iterate over items, calling addTrackToList
     //if( m_stopDirLister || m_isInCopyTrack )
     //    return;
@@ -768,14 +781,14 @@ VfatMediaDevice::newItems( const KFileItemList &items )
     KFileItem *kfi;
     while ( (kfi = it.current()) != 0 ) {
         ++it;
-        addTrackToList( kfi->isFile() ? MediaItem::TRACK : MediaItem::DIRECTORY, kfi->url().url(-1), 0 );
+        addTrackToList( kfi->isFile() ? MediaItem::TRACK : MediaItem::DIRECTORY, kfi->url().path(-1), 0 );
     }
 }
 
 void
 VfatMediaDevice::dirListerCompleted()
 {
-    //DEBUG_BLOCK
+    DEBUG_BLOCK
     m_dirListerComplete = true;
     //if( !m_stopDirLister && !m_isInCopyTrack)
     //    m_tmpParent = NULL;
@@ -808,9 +821,11 @@ void
 VfatMediaDevice::dirListerDeleteItem( KFileItem *fileitem )
 {
     DEBUG_BLOCK
-    QString filename = fileitem->url().url(-1);
+    QString filename = fileitem->url().path(-1);
+    debug() << "Removing file: " << filename << endl;
     VfatMediaFile *vmf = m_mfm[filename];
     VfatMediaFile *vmfParent = vmf->getParent();
+    vmfParent->getChildren()->remove( vmf );
     VfatMediaItem *vmi = vmf->getViewItem();
     m_mim.remove( vmi );
     m_mfm.remove( filename );
@@ -827,7 +842,7 @@ VfatMediaDevice::addTrackToList( int type, KURL url, int /*size*/ )
     //    m_last = new VfatMediaItem( m_tmpParent ):
     //    m_last = new VfatMediaItem( m_view );
 
-    debug() << "addTrackToList: url.path = " << url.path() << endl;
+    debug() << "addTrackToList: url.path = " << url.path(-1) << endl;
 
     QString path = url.path( -1 ); //no trailing slash
     int index = path.findRev( '/', -1 );
@@ -837,6 +852,7 @@ VfatMediaDevice::addTrackToList( int type, KURL url, int /*size*/ )
     debug() << "index is " << index << ", baseName = " << baseName << ", parentName = " << parentName << endl;
 
     VfatMediaFile* parent = m_mfm[parentName];
+    debug() << "parent's getFullName is: " << parent->getFullName() << endl;
     VfatMediaFile* newItem = new VfatMediaFile( parent, baseName, this );
 
     if( type == MediaItem::DIRECTORY ) //directory
@@ -856,6 +872,8 @@ VfatMediaDevice::addTrackToList( int type, KURL url, int /*size*/ )
         else
             newItem->getViewItem()->setType( MediaItem::UNKNOWN );
     }
+
+    refreshDir( parent->getFullName() );
 
     return 0;
 }
