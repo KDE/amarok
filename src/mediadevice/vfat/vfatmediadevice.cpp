@@ -153,10 +153,24 @@ class VfatMediaFile
 
         }
 
-        ~VfatMediaFile() {}
+        ~VfatMediaFile() { delete m_viewItem; }
 
         VfatMediaFile*
         getParent() { return m_parent; }
+
+        void
+        setParent( VfatMediaFile* parent )
+        {
+            m_device->getFileMap().erase( m_fullName );
+            m_parent->getChildren()->remove( this );
+            m_parent = parent;
+            m_parent->getChildren()->append( this );
+            setNamesFromBase( m_baseName );
+            m_device->getFileMap()[m_fullName] = this;
+        }
+
+        void
+        removeChild( VfatMediaFile* childToDelete ) { m_children->remove( childToDelete ); }
 
         VfatMediaItem*
         getViewItem() { return m_viewItem; }
@@ -360,7 +374,9 @@ VfatMediaDevice::renameItem( QListViewItem *item ) // SLOT
     //TODO: do we want a progress dialog?  If so, set last false to true
     if( KIO::NetAccess::file_move( KURL::fromPathOrURL(src), KURL::fromPathOrURL(dst), -1, false, false, false ) )
     {
+        m_mfm.erase( m_mim[item]->getFullName() );
         m_mim[item]->setNamesFromBase( item->text(0) );
+        m_mfm[m_mim[item]->getFullName()] = m_mim[item];
     }
     else
     {
@@ -414,27 +430,30 @@ VfatMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> items
     DEBUG_BLOCK
     if( !directory || items.isEmpty() ) return;
 
-    MediaItem *previousTmpParent = static_cast<MediaItem *>(m_tmpParent);
+    #define directory static_cast<VfatMediaItem *>(directory)
 
-    m_tmpParent = directory;
     for( QPtrListIterator<MediaItem> it(items); *it; ++it )
     {
-        QCString src  = QFile::encodeName( getFullPath( *it, true, true, false ) );
-        QCString dest = QFile::encodeName( getFullPath( directory, true, true, false ) + "/" + (*it)->text(0) );
-        debug() << "Moving: " << src << " to: " << dest << endl;
+
+        VfatMediaItem *currItem = static_cast<VfatMediaItem *>(*it);
+
+        QCString src  = m_mim[currItem]->getEncodedFullName();
+        QCString dst = m_mim[directory]->getEncodedFullName() + "/" + QFile::encodeName( currItem->text(0) );
+        debug() << "Moving: " << src << " to: " << dst << endl;
 
         const KURL srcurl(src);
-        const KURL desturl(dest);
+        const KURL dsturl(dst);
 
-        if ( !KIO::NetAccess::file_move( srcurl, desturl, -1, false, false, m_parent ) )
-            debug() << "Failed moving " << src << " to " << dest << endl;
+        if ( !KIO::NetAccess::file_move( srcurl, dsturl, -1, false, false, m_parent ) )
+            debug() << "Failed moving " << src << " to " << dst << endl;
         else
         {
-            refreshDir( desturl.path() );
-            delete *it;
+            refreshDir( m_mim[currItem]->getParent()->getFullName() );
+            m_mim[currItem]->setParent( m_mim[directory] );
+            refreshDir( m_mim[directory]->getFullName() );
         }
     }
-    m_tmpParent = previousTmpParent;
+    #undef directory
 }
 
 /// Uploading
@@ -749,7 +768,7 @@ VfatMediaDevice::newItems( const KFileItemList &items )
     KFileItem *kfi;
     while ( (kfi = it.current()) != 0 ) {
         ++it;
-        addTrackToList( kfi->isFile() ? MediaItem::TRACK : MediaItem::DIRECTORY, kfi->url(), 0 );
+        addTrackToList( kfi->isFile() ? MediaItem::TRACK : MediaItem::DIRECTORY, kfi->url().url(-1), 0 );
     }
 }
 
@@ -786,9 +805,17 @@ VfatMediaDevice::dirListerClear( const KURL &/*url*/ )
 }
 
 void
-VfatMediaDevice::dirListerDeleteItem( KFileItem */*fileitem*/ )
+VfatMediaDevice::dirListerDeleteItem( KFileItem *fileitem )
 {
     DEBUG_BLOCK
+    QString filename = fileitem->url().url(-1);
+    VfatMediaFile *vmf = m_mfm[filename];
+    VfatMediaFile *vmfParent = vmf->getParent();
+    VfatMediaItem *vmi = vmf->getViewItem();
+    m_mim.remove( vmi );
+    m_mfm.remove( filename );
+    delete vmf;
+    refreshDir( vmfParent->getFullName() );
 }
 
 int
