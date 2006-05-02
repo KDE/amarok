@@ -155,7 +155,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     KPushButton *add = new KPushButton( i18n( "Add Device..." ), hbox );
     add->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
     connect( add, SIGNAL(clicked()), m_deviceManager, SLOT(newDevice()) );
- 
+
     QFrame *frame = new QFrame( topbox );
     frame->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
@@ -180,7 +180,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     for( QObject *label = list->first(); label; label = list->next() )
         static_cast<QLabel*>(label)->setMaximumWidth( 250 );
     delete list;
-    
+
     connect( m_deviceManager, SIGNAL(changed()), SLOT(updateButtons()) );
     connect( m_soundSystem, SIGNAL(activated( int )), SLOT(updateButtons()) );
     connect( aboutEngineButton, SIGNAL(clicked()), SLOT(aboutEngine()) );
@@ -327,9 +327,7 @@ bool AmarokConfigDialog::hasChanged()
             amaroK::databaseTypeCode(  m_opt7->dbSetupFrame->databaseEngine->currentText()  ) != AmarokConfig::databaseEngine().toInt() ||
             m_engineConfig && m_engineConfig->hasChanged() ||
             m_deviceManager && m_deviceManager->hasChanged() ||
-            externalBrowser() != AmarokConfig::externalBrowser() ||
-            m_opt1->kcfg_UseScores->isChecked() != AmarokConfig::useScores() ||
-            m_opt1->kcfg_UseRatings->isChecked() != AmarokConfig::useRatings();
+            externalBrowser() != AmarokConfig::externalBrowser();
 }
 
 
