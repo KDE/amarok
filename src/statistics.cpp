@@ -328,6 +328,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
         qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
         qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
+        qb.excludeFilter( QueryBuilder::tabStats, sortBy, "1", QueryBuilder::modeLess );
         qb.setGoogleFilter( QueryBuilder::tabSong | QueryBuilder::tabArtist, m_filter );
         qb.sortBy( QueryBuilder::tabStats, sortBy, true );
         qb.setLimit( 0, 50 );
@@ -359,6 +360,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
         qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
+        qb.excludeFilter( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, "1", QueryBuilder::modeLess );
         qb.setGoogleFilter( QueryBuilder::tabSong | QueryBuilder::tabArtist, m_filter );
         qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, true );
         qb.setLimit( 0, 50 );
@@ -427,6 +429,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valIsCompilation );
         // only albums with more than 3 tracks
         qb.having( QueryBuilder::tabAlbum, QueryBuilder::valID, QueryBuilder::funcCount, QueryBuilder::modeGreater, "3" );
+        qb.having( QueryBuilder::tabStats, sortBy, QueryBuilder::funcAvg, QueryBuilder::modeGreater, "0" );
         qb.setGoogleFilter( QueryBuilder::tabAlbum | QueryBuilder::tabArtist, m_filter );
         qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, sortBy, true );
         qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
