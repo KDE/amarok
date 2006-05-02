@@ -4470,16 +4470,14 @@ QueryBuilder::addReturnValue( int table, Q_INT64 value )
 void
 QueryBuilder::addReturnFunctionValue( int function, int table, Q_INT64 value)
 {
-    // don't let nulls blow out averages
+    // translate NULL and 0 values into the default value for percentage/rating
+    // First translate 0 to NULL via NULLIF, then NULL to default via COALESCE
     bool defaults = function == funcAvg && ( value & valPercentage || value & valRating );
 
     if ( !m_values.isEmpty() && m_values != "DISTINCT " ) m_values += ",";
     m_values += functionName( function ) + "(";
     if ( defaults )
-    {
-        m_values += CollectionDB::instance()->getType() == DbConnection::mysql ? "IFNULL" : "COALESCE";
-        m_values += "(NULLIF(";
-    }
+        m_values += "COALESCE(NULLIF(";
     m_values += tableName( table ) + ".";
     m_values += valueName( value );
     if ( defaults )
