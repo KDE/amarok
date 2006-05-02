@@ -897,7 +897,7 @@ CollectionDB::addImageToAlbum( const QString& image, QValueList< QPair<QString, 
         if ( (*it).first.isEmpty() || (*it).second.isEmpty() )
             continue;
 
-        debug() << "Added image for album: " << (*it).first << " - " << (*it).second << ": " << image << endl;
+//         debug() << "Added image for album: " << (*it).first << " - " << (*it).second << ": " << image << endl;
         insert( QString( "INSERT INTO images%1 ( path, artist, album ) VALUES ( '%1', '%2', '%3' );" )
          .arg( temporary ? "_temp" : "" )
          .arg( escapeString( image ) )
@@ -909,7 +909,7 @@ CollectionDB::addImageToAlbum( const QString& image, QValueList< QPair<QString, 
 void
 CollectionDB::addEmbeddedImage( const QString& path, const QString& hash, const QString& description )
 {
-    debug() << "Added embedded image hash " << hash << " for file " << path << endl;
+//     debug() << "Added embedded image hash " << hash << " for file " << path << endl;
     insert( QString( "INSERT INTO embed_temp ( url, hash, description ) VALUES ( '%1', '%2', '%3' );" )
      .arg( escapeString( path ) )
      .arg( escapeString( hash ) )
