@@ -176,6 +176,9 @@ class VfatMediaFile
         QString
         getBaseName() { return m_baseName; }
 
+        QString
+        getEncodedBaseName() { return m_encodedBaseName; }
+
         //always follow this function with setNamesFromBase()
         void
         setBaseName( QString &name ) { m_baseName = name; }
@@ -190,6 +193,7 @@ class VfatMediaFile
             else
                 m_fullName = m_baseName;
             m_encodedFullName = QFile::encodeName( m_fullName );
+            m_encodedBaseName = QFile::encodeName( m_baseName );
         }
 
         MediaFileList*
@@ -199,6 +203,7 @@ class VfatMediaFile
         QString m_fullName;
         QCString m_encodedFullName;
         QString m_baseName;
+        QCString m_encodedBaseName;
         VfatMediaFile *m_parent;
         MediaFileList *m_children;
         VfatMediaItem *m_viewItem;
@@ -347,16 +352,22 @@ VfatMediaDevice::renameItem( QListViewItem *item ) // SLOT
 
     #define item static_cast<VfatMediaItem*>(item)
 
-    QCString src  = QFile::encodeName( getFullPath( item, false ) );
-    src.append( item->encodedName() );
+    QCString src = m_mim[item]->getEncodedFullName();
+    QCString dst = m_mim[item]->getParent()->getEncodedFullName() + '/' + QFile::encodeName( item->text(0) );
 
-     //the rename line edit has already changed the QListViewItem text
-    QCString dest = QFile::encodeName( getFullPath( item ) );
-
-    debug() << "Renaming: " << src << " to: " << dest << endl;
+    debug() << "Renaming: " << src << " to: " << dst << endl;
 
     //TODO: do we want a progress dialog?  If so, set last false to true
-    KIO::NetAccess::file_move( KURL::fromPathOrURL(src), KURL::fromPathOrURL(dest), -1, false, false, false );
+    if( KIO::NetAccess::file_move( KURL::fromPathOrURL(src), KURL::fromPathOrURL(dst), -1, false, false, false ) )
+    {
+        m_mim[item]->setNamesFromBase( item->text(0) );
+    }
+    else
+    {
+        debug() << "Renaming FAILED!" << endl;
+        //failed, so set the item's text back to how it should be
+        item->setText( 0, m_mim[item]->getBaseName() );
+    }
 
     #undef item
 
