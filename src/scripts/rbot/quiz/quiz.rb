@@ -16,9 +16,6 @@ PlayerStats = Struct.new( "PlayerStats", :score, :jokers, :jokers_time )
 # Maximum number of jokers a player can use per hour
 Max_Jokers = 3
 
-# Number of minutes until the jokers are refreshed
-Joker_Interval = 60
-
 # Control codes
 Color = "\003"
 Bold = "\002"
@@ -32,11 +29,9 @@ class Quiz
     attr_accessor :registry, :registry_conf, :questions, :question, :answer, :answer_core,
                   :first_try, :hint, :hintrange, :rank_table
 
-    def initialize( channel, registry, plugin )
-        @channel = channel
+    def initialize( channel, registry )
         @registry = registry.sub_registry( channel )
         @registry_conf = @registry.sub_registry( "config" )
-        @plugin = plugin
 
         # Per-channel copy of the global questions table. Acts like a shuffled queue
         # from which questions are taken, until empty. Then we refill it with questions
@@ -61,39 +56,8 @@ class Quiz
             begin
                 j = @registry[player].joker
             rescue
-                @registry[player] = PlayerStats.new( @registry[player].score, Max_Jokers, Joker_Interval )
+                @registry[player] = PlayerStats.new( @registry[player].score, 0, 0 )
             end
-        end
-
-
-        Thread.new { jokerthread_handler }
-    end
-
-
-    # This method runs in a separate thread. It updates the player's joker supply regularly.
-    #
-    def jokerthread_handler()
-        loop do
-            @registry.each_key do |player|
-                p = @registry[player]
-                if p.jokers_time == 0
-                    if p.jokers < Max_Jokers
-                        if Max_Jokers - p.jokers > 1
-                            @plugin.bot.say( @channel, "#{player} gains #{Max_Jokers - p.jokers} new jokers." )
-                        else
-                            @plugin.bot.say( @channel, "#{player} gains #{Max_Jokers - p.jokers} new joker." )
-                        end
-                        p.jokers_time = Joker_Interval
-                        p.jokers = Max_Jokers
-                    end
-                else
-                    p.jokers_time -= 1
-                end
-
-                @registry[player] = p
-            end
-
-            sleep( 60 )
         end
     end
 end
@@ -103,8 +67,6 @@ end
 # CLASS QuizPlugin
 #######################################################################
 class QuizPlugin < Plugin
-    attr_accessor :bot
-
     def initialize()
         super
 
@@ -197,7 +159,7 @@ class QuizPlugin < Plugin
     #
     def create_quiz( channel )
         unless @quizzes.has_key?( channel )
-            @quizzes[channel] = Quiz.new( channel, @registry, self )
+            @quizzes[channel] = Quiz.new( channel, @registry )
         end
 
         return @quizzes[channel]
@@ -307,16 +269,21 @@ class QuizPlugin < Plugin
 
             @bot.say( m.replyto, replies[rand( replies.length )] )
 
-            stats = nil
+            player = nil
             if q.registry.has_key?( m.sourcenick )
-                stats = q.registry[m.sourcenick]
+                player = q.registry[m.sourcenick]
             else
-                stats = PlayerStats.new( 0, Max_Jokers, Joker_Interval )
+                player = PlayerStats.new( 0, 0, 0 )
             end
 
-            stats["score"] = stats.score + points
-            q.registry[m.sourcenick] = stats
+            player.score = player.score + points
 
+            if player.score % 15 == 0 and player.jokers < Max_Jokers
+                player.jokers += 1
+                @bot.say( m.replyto, "#{m.sourcenick} gains a new joker. Rejoice :)" )
+            end
+
+            q.registry[m.sourcenick] = player
             calculate_ranks( m, q )
 
             q.question = nil
@@ -436,7 +403,7 @@ class QuizPlugin < Plugin
                 if q.registry.has_key?( m.sourcenick )
                     stats = q.registry[m.sourcenick]
                 else
-                    stats = PlayerStats.new( 0, Max_Jokers, Joker_Interval )
+                    stats = PlayerStats.new( 0, 0, 0 )
                 end
 
                 stats["score"] = stats.score -  1
