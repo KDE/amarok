@@ -398,7 +398,6 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         qb.having( QueryBuilder::tabStats, sortBy, QueryBuilder::funcAvg, QueryBuilder::modeGreater, "0" );
         qb.setGoogleFilter( QueryBuilder::tabArtist, m_filter );
         qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valName);
-        qb.groupBy( QueryBuilder::tabStats, QueryBuilder::valPercentage);
         qb.setLimit( 0, 50 );
         QStringList fave = qb.run();
 
