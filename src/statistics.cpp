@@ -398,6 +398,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         qb.having( QueryBuilder::tabStats, sortBy, QueryBuilder::funcAvg, QueryBuilder::modeGreater, "0" );
         qb.setGoogleFilter( QueryBuilder::tabArtist, m_filter );
         qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valName);
+        qb.groupBy( QueryBuilder::tabStats, QueryBuilder::valPercentage);
         qb.setLimit( 0, 50 );
         QStringList fave = qb.run();
 
@@ -519,7 +520,9 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
         qb.setGoogleFilter( QueryBuilder::tabAlbum | QueryBuilder::tabArtist, m_filter );
         qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName);
+        qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID);
         qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valName);
+        qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valID);
         qb.setOptions( QueryBuilder::optNoCompilations ); // samplers __need__ to be handled differently
         qb.setLimit( 0, 50 );
         QStringList newest = qb.run();
