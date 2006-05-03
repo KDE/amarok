@@ -650,13 +650,7 @@ StatisticsList::showContextMenu( QListViewItem *item, const QPoint &p, int )  //
         case INFO:
             if( hasSQL )
             {
-                QStringList values = CollectionDB::instance()->query( item->getSQL() );
-                KURL::List list;
-                foreach( values )
-                {
-                    list += KURL::fromPathOrURL( *it );
-                }
-                TagDialog* dialog = new TagDialog( list, Statistics::instance() );
+                TagDialog* dialog = new TagDialog( item->getURLs(), Statistics::instance() );
                 dialog->show();
             }
             else
@@ -979,6 +973,48 @@ StatisticsDetailedItem::getSQL()
     }
 
     return qb.query();
+}
+
+KURL::List
+StatisticsDetailedItem::getURLs()
+{
+    if( itemType() == StatisticsDetailedItem::TRACK )
+        return KURL::List( KURL::fromPathOrURL(url()) );
+        
+    QueryBuilder qb;
+    QString query = QString::null;
+    QString artist, album, track;   // track is unused here
+    amaroK::albumArtistTrackFromUrl( m_url, artist, album, track );
+
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+    
+    if( itemType() == StatisticsDetailedItem::ALBUM || itemType() == StatisticsDetailedItem::HISTORY )
+    {
+        if ( artist != "0" )
+            qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, artist );
+        qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, album );
+        qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+    }
+
+    else if( itemType() == StatisticsDetailedItem::ARTIST )
+    {
+        const uint artist_id = CollectionDB::instance()->artistID( url() );
+        qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
+        qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+    }
+
+    else if( itemType() == StatisticsDetailedItem::GENRE )
+    {
+        const uint genre_id = CollectionDB::instance()->genreID( url() );
+        qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valGenreID, QString::number( genre_id ) );
+        qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+    }
+
+    QStringList values = qb.run();
+    KURL::List urls;
+    foreach( values )
+        urls += KURL::fromPathOrURL( *it );
+    return urls;
 }
 
 #include "statistics.moc"

@@ -153,6 +153,7 @@ class StatisticsDetailedItem : public KListViewItem
         
         void    setSubtext( QString t ) { m_subText = t; }
         QString getSQL(); //get the sql query for all the urls the item represents
+        KURL::List getURLs();
 
         void    paintFocus( QPainter*, const QColorGroup& , const QRect& ) {};  //reimp
         
