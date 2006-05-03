@@ -44,7 +44,6 @@ class VfatMediaDevice : public MediaDevice
 
         bool              isConnected() { return m_connected; }
 
-        //TODO
         void              rmbPressed( QListViewItem* qitem, const QPoint& point, int );
         bool              hasTransferDialog() { return true; }
         void              runTransferDialog();
@@ -105,11 +104,10 @@ class VfatMediaDevice : public MediaDevice
         // file transfer
         //TODO
         void              downloadSelectedItems();
-        //TODO: needed?
-        void              drillDown( MediaItem *curritem );
+
         //TODO
         void              copyTrackSortHelper( const MetaBundle& bundle, QString& sort, QString& temp, QString& base );
-        //TODO
+
         KURL::List        getSelectedItems();
 
         // listDir

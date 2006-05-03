@@ -657,50 +657,7 @@ VfatMediaDevice::downloadSelectedItems()
 KURL::List
 VfatMediaDevice::getSelectedItems()
 {
-    while ( !m_downloadList.empty() )
-        m_downloadList.pop_front();
-
-    QListViewItemIterator it( m_view, QListViewItemIterator::Selected );
-    MediaItem *curritem;
-    for( ; it.current(); ++it )
-    {
-        curritem = static_cast<MediaItem *>(*it);
-        debug() << "text(0)=" << curritem->text( 0 ) << endl;
-        if( curritem->type() == MediaItem::DIRECTORY )
-        {
-            debug() << "drill" << curritem->text( 0 ) << endl;
-            drillDown( curritem );
-        }
-        else //file
-        {
-            debug() << "file: " << curritem->text( 0 )<< ", path: " << getFullPath( curritem, true, true, false ) << endl;
-            m_downloadList.append( KURL::fromPathOrURL( getFullPath( curritem, true, true, false ) ) );
-        }
-    }
-
-    return m_downloadList;
-}
-
-void
-VfatMediaDevice::drillDown( MediaItem *curritem )
-{
-    //okay, can recursively call this for directories...
-    m_downloadListerFinished  = 0;
-    int count = 0;
-    m_currentJobUrl = KURL::fromPathOrURL( getFullPath( curritem, true, true, false ) );
-    KIO::ListJob * listjob = KIO::listRecursive( m_currentJobUrl, false, false );
-    connect( listjob, SIGNAL( result( KIO::Job* ) ), this, SLOT( downloadSlotResult( KIO::Job* ) ) );
-    connect( listjob, SIGNAL( entries( KIO::Job*, const KIO::UDSEntryList& ) ), this, SLOT( downloadSlotEntries( KIO::Job*, const KIO::UDSEntryList& ) ) );
-    connect( listjob, SIGNAL( redirection( KIO::Job*, const KURL& ) ), this, SLOT( downloadSlotRedirection( KIO::Job*, const KURL& ) ) );
-    while( !m_downloadListerFinished ){
-        usleep( 10000 );
-        kapp->processEvents( 100 );
-        count++;
-        if (count > 120){
-            debug() << "Taking too long to find files, returning from drillDown in " << m_currentJobUrl << endl;
-            return;
-        }
-    }
+    return m_view->nodeBuildDragList( m_initialFile->getViewItem(), true );
 }
 
 void
@@ -817,9 +774,6 @@ void
 VfatMediaDevice::newItems( const KFileItemList &items )
 {
     DEBUG_BLOCK
-    //iterate over items, calling addTrackToList
-    //if( m_stopDirLister || m_isInCopyTrack )
-    //    return;
 
     QPtrListIterator<KFileItem> it( items );
     KFileItem *kfi;
@@ -874,11 +828,6 @@ VfatMediaDevice::dirListerDeleteItem( KFileItem *fileitem )
 int
 VfatMediaDevice::addTrackToList( int type, KURL url, int /*size*/ )
 {
-
-    //DEBUG_BLOCK
-    //m_tmpParent ?
-    //    m_last = new VfatMediaItem( m_tmpParent ):
-    //    m_last = new VfatMediaItem( m_view );
 
     debug() << "addTrackToList: url.path = " << url.path(-1) << endl;
 
@@ -1061,17 +1010,12 @@ VfatMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                 break;
 
             case TRANSFER_HERE:
-                m_tmpParent = item;
+                #define item static_cast<VfatMediaItem*>(item)
                 if( item->type() == MediaItem::DIRECTORY )
-                {
-                    m_transferDir = getFullPath( item, true );
-                }
+                    m_transferDir = m_mim[item]->getFullName();
                 else
-                {
-                    m_transferDir = getFullPath( item, false );
-                    if (m_transferDir != QString::null)
-                        m_transferDir = m_transferDir.remove( m_transferDir.length() - 1, 1 );
-                }
+                    m_transferDir = m_mim[item]->getParent()->getFullName();
+                #undef item
                 emit startTransfer();
                 break;
         }
