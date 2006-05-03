@@ -2712,7 +2712,8 @@ Playlist::eventFilter( QObject *o, QEvent *e )
             bool edit = item
                 && item->isSelected()
                 && selectedItems().count()==1
-                && (me->state() & ~LeftButton) == 0;
+                && (me->state() & ~LeftButton) == 0
+                && item->url().isLocalFile();
             if( edit )
             {
                 m_clickPos = me->pos();
