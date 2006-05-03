@@ -846,8 +846,6 @@ VfatMediaDevice::dirListerClear( const KURL &url )
     debug() << "Removing: " << directory << endl;
     VfatMediaFile *vmf = m_mfm[directory];
     vmf->deleteAllChildren();
-    if( vmf->getParent() )
-        refreshDir( vmf->getParent()->getFullName() );
 }
 
 void
@@ -859,8 +857,6 @@ VfatMediaDevice::dirListerDeleteItem( KFileItem *fileitem )
     VfatMediaFile *vmf = m_mfm[filename];
     VfatMediaFile *vmfParent = vmf->getParent();
     vmf->deleteAll();
-    if( vmfParent )
-        refreshDir( vmfParent->getFullName() );
 }
 
 int
