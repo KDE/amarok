@@ -1146,15 +1146,20 @@ MediaView::getSelectedLeaves( MediaItem *parent, QPtrList<MediaItem> *list, bool
 
     for( ; it; it = dynamic_cast<MediaItem*>(it->nextSibling()))
     {
+
+        debug() << "in for loop, it->url() = " << it->url().path(-1) << ", it->isVisible() = " << (it->isVisible() ? "true" : "false") << ", it->isSelected() = " << (it->isSelected() ? "true" : "false") << endl;
+
         if( it->isVisible() )
         {
-            if( it->childCount() )
+            if( it->childCount() && !( it->type() == MediaItem::DIRECTORY && it->isSelected() ) )
             {
                 numFiles += getSelectedLeaves(it, list, onlySelected && !it->isSelected(), onlyPlayed);
             }
-            else if( it->isSelected() || !onlySelected )
+            if( it->isSelected() || !onlySelected )
             {
+                debug() << "it->type() == MediaItem::DIRECTORY: " << (it->type() == MediaItem::DIRECTORY ? "true" : "false") << endl;
                 if( it->type() == MediaItem::TRACK       ||
+                    it->type() == MediaItem::DIRECTORY   ||
                     it->type() == MediaItem::PODCASTITEM ||
                     it->type() == MediaItem::INVISIBLE   ||
                     it->type() == MediaItem::ORPHANED     )
@@ -1167,11 +1172,13 @@ MediaView::getSelectedLeaves( MediaItem *parent, QPtrList<MediaItem> *list, bool
                     else
                         numFiles++;
                 }
-                if( it->isLeafItem() && (!onlyPlayed || it->played()>0) )
+                if( ( it->isLeafItem() && (!onlyPlayed || it->played()>0) )
+                        || it->type() == MediaItem::DIRECTORY )
                     list->append( it );
             }
         }
     }
+    debug() << "returning numFiles = " << numFiles << endl;
     return numFiles;
 }
 

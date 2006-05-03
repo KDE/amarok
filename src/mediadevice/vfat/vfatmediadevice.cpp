@@ -843,9 +843,10 @@ VfatMediaDevice::dirListerClear( const KURL &url )
 {
     DEBUG_BLOCK
     QString directory = url.path(-1);
-    debug() << "Removing: " << directory << endl;
+    debug() << "Removing url: " << directory << endl;
     VfatMediaFile *vmf = m_mfm[directory];
-    vmf->deleteAllChildren();
+    if( vmf )
+        vmf->deleteAllChildren();
 }
 
 void
@@ -853,9 +854,10 @@ VfatMediaDevice::dirListerDeleteItem( KFileItem *fileitem )
 {
     DEBUG_BLOCK
     QString filename = fileitem->url().path(-1);
-    debug() << "Removing file: " << filename << endl;
+    debug() << "Removing item: " << filename << endl;
     VfatMediaFile *vmf = m_mfm[filename];
-    vmf->deleteAll();
+    if( vmf )
+        vmf->deleteAll();
 }
 
 int
