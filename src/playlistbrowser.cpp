@@ -2308,12 +2308,10 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 menu.insertItem( SmallIconSet( "edit_add" ), i18n( "Add to the %1 Entries" ).arg(amaroK::dynamicMode()->title()), DYNADD );
         }
 
-
-
-        menu.insertSeparator();
         // Forbid removal of Collection
         if( item->parent()->text(0) != i18n("Collection") )
         {
+            menu.insertSeparator();
             if ( static_cast<SmartPlaylist *>(item)->isEditable() )
                 menu.insertItem( SmallIconSet("editclear"), i18n( "E&dit..." ), EDIT );
             menu.insertItem( SmallIconSet("edittrash"), i18n( "R&emove" ), REMOVE );
