@@ -418,11 +418,11 @@ void ContextBrowser::openURLRequest( const KURL &url )
         EngineController::engine()->seek(url.path().toLong());
     }
 
-    // browse albums of a related artist
-    else if ( url.protocol() == "artist"
-            || url.protocol() == "current" )
+    // browse albums of a related artist.  Don't do this if we are viewing Home tab
+    else if ( url.protocol() == "artist" || url.protocol() == "current" )
     {
-        showContext( url );
+        if( EngineController::engine()->loaded() ) // song must be active
+            showContext( url );
     }
 
     else if( url.protocol() == "artistback" )
