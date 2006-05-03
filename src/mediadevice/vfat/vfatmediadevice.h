@@ -43,12 +43,15 @@ class VfatMediaDevice : public MediaDevice
         virtual           ~VfatMediaDevice();
 
         bool              isConnected() { return m_connected; }
+
+        //TODO
         void              rmbPressed( QListViewItem* qitem, const QPoint& point, int );
         bool              hasTransferDialog() { return true; }
         void              runTransferDialog();
         TransferDialog   *getTransferDialog() { return m_td; }
         bool              needsManualConfig() { return false; }
         void              loadConfig();
+
         MediaFileMap     &getFileMap() { return m_mfm; }
         MediaItemMap     &getItemMap() { return m_mim; }
 
@@ -60,9 +63,12 @@ class VfatMediaDevice : public MediaDevice
         void              unlockDevice() {}
         void              synchronizeDevice() {}
 
+        //TODO
         MediaItem        *copyTrackToDevice( const MetaBundle& bundle );
+        //TODO
         int               deleteItemFromDevice( MediaItem *item, bool onlyPlayed = false );
         bool              getCapacity( KIO::filesize_t *total, KIO::filesize_t *available );
+        //TODO
         MediaItem        *newDirectory( const QString &name, MediaItem *parent );
         void              addToDirectory( MediaItem *directory, QPtrList<MediaItem> items );
 
@@ -74,6 +80,7 @@ class VfatMediaDevice : public MediaDevice
         void              startTransfer();
 
     protected slots:
+        //TODO
         void              renameItem( QListViewItem *item );
         void              expandItem( QListViewItem *item );
         void              foundMountPoint( const QString & mountPoint, unsigned long kBSize, unsigned long kBUsed, unsigned long kBAvail );
@@ -85,8 +92,11 @@ class VfatMediaDevice : public MediaDevice
         void              dirListerClear( const KURL &url );
         void              dirListerDeleteItem( KFileItem *fileitem );
 
+        //TODO
         void              downloadSlotRedirection( KIO::Job *job, const KURL &url );
+        //TODO
         void              downloadSlotResult( KIO::Job *job );
+        //TODO
         void              downloadSlotEntries( KIO::Job *, const KIO::UDSEntryList &entries );
 
     private:
@@ -95,27 +105,29 @@ class VfatMediaDevice : public MediaDevice
         MediaItem        *trackExists( const MetaBundle& );
 
         // file transfer
+        //TODO
         void              downloadSelectedItems();
+        //TODO: needed?
         void              drillDown( MediaItem *curritem );
+        //TODO
         void              copyTrackSortHelper( const MetaBundle& bundle, QString& sort, QString& temp, QString& base );
+        //TODO
         KURL::List        getSelectedItems();
 
         // listDir
         void              listDir( const QString &dir );
-        static int        listDirCallback( void *pData, int type, const char *name, int size );
         int               addTrackToList( int type, KURL name, int size=0 );
 
         // miscellaneous methods
-        //static int        filetransferCallback( void *pData, struct vfat_transfer_status *progress );
-        //int               setProgressInfo( struct vfat_transfer_status *progress );
-        // Will iterate over parents and add directory name to the item.
-        // getFilename = false will return only parent structure, as opposed to returning the filename as well
+
+        //TODO: remove when possible!
         QString           getFullPath( const QListViewItem *item, const bool getFilename = true, const bool prependMount = true, const bool clean = true );
 
         QString           cleanPath( const QString &component );
 
         VfatMediaItem     *m_last;
         VfatMediaFile     *m_initialFile;
+        //TODO: remove when possible!
         //used to specify new VfatMediaItem parent. Make sure it is restored to 0 (m_listview)
         QListViewItem     *m_tmpParent;
 

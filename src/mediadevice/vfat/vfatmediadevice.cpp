@@ -447,15 +447,13 @@ VfatMediaDevice::newDirectory( const QString &name, MediaItem *parent )
     debug() << "Creating directory: " << dirPath << endl;
     const KURL url( dirPath );
 
-    if( ! KIO::NetAccess::mkdir( url, m_parent ) ) //failed
+    if( !KIO::NetAccess::mkdir( url, m_parent ) ) //failed
     {
         debug() << "Failed to create directory " << dirPath << endl;
         return 0;
     }
 
-
-    //this would be necessary if dirlister wasn't autoupdating; if dirlister *is*, then it causes crashes because of multiple definitions
-    //addTrackToList( MediaItem::DIRECTORY, KURL( fullPath ) );
+    refreshDir( m_mim[parent]->getFullName() );
 
     #undef parent
 
