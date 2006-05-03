@@ -2008,6 +2008,7 @@ void CurrentTrackJob::showArtistsFaves( const QString &artist, uint artist_id )
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
     qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
     qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
+    qb.excludeFilter( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, "1", QueryBuilder::modeLess );
     qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
     qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
     qb.setLimit( 0, 10 );
