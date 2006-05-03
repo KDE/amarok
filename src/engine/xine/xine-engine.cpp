@@ -342,7 +342,7 @@ XineEngine::position() const
     // Here we check for new metadata periodically, because xine does not emit an event
     // in all cases (e.g. with ogg streams). See BUG 122505
     const Engine::SimpleMetaBundle bundle = fetchMetaData();
-    if( bundle.title != m_currentBundle.title && bundle.artist != m_currentBundle.artist ) {
+    if( bundle.title != m_currentBundle.title || bundle.artist != m_currentBundle.artist ) {
         debug() << "Metadata received." << endl;
         m_currentBundle = bundle;
 

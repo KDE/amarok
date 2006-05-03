@@ -43,6 +43,9 @@ VERSION 1.4.0:
       <kde@dontletsstart.com>. (BR 125414)
 
   BUGFIXES:
+    * xine-engine will now correctly detect a change when only one of the 
+      artist or album metadata changes. Patch by Kim Rasmussen 
+      <kml@elreki.net> (BR 126648)
     * Less than and between criteria in a smart playlist for playcount, rating
       or score of 0 now work. (BR 97046)
     * Empty genres are no longer displayed in the collection browser.
