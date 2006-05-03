@@ -20,6 +20,7 @@ extern "C"
     #include <xine.h>
 }
 
+class XineConfigDialog;
 
 class XineEngine : public Engine::Base
 {
