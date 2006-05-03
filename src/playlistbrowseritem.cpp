@@ -1877,10 +1877,10 @@ PodcastEpisode::saveURL( const KURL &base, const QString &mimetype, const KURL &
 void
 PodcastEpisode::updatePixmap()
 {
-    if( m_onDisk )
-        setPixmap( 0, SmallIcon( "down" ) );
-    else if( isNew() )
+    if( isNew() )
         setPixmap( 0, SmallIcon( amaroK::icon( "podcast2" ) ) );
+    else if( m_onDisk )
+        setPixmap( 0, SmallIcon( "down" ) );
     else
         setPixmap( 0, SmallIcon( amaroK::icon( "podcast" ) ) );
 }
@@ -1971,7 +1971,6 @@ PodcastEpisode::downloadResult( KIO::Job* job ) //SLOT
     }
 
     m_onDisk = true;
-    setNew( false );
 
     m_bundle.setLocalURL( m_localUrl );
     CollectionDB::instance()->updatePodcastEpisode( dBId(), m_bundle );

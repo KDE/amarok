@@ -79,6 +79,7 @@ class PlaylistBrowser : public QVBox
 
         PlaylistBrowserEntry *findItem( QString &t, int c ) const;
         QListViewItem *findItemInTree( const QString &searchstring, int c ) const;
+        PodcastEpisode *findPodcastEpisode( const KURL &episode, const KURL &feed ) const;
 
         QPtrList<QListViewItem> dynamicEntries() const { return m_dynamicEntries; }
         DynamicMode *findDynamicModeByTitle( const QString &title ) const;

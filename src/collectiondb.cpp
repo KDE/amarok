@@ -3429,9 +3429,7 @@ void CollectionDB::engineTrackEnded( int finalPosition, int trackLength )
     PodcastEpisodeBundle peb;
     if( getPodcastEpisodeBundle( url.url(), &peb ) )
     {
-        peb.setNew( false );
-        if( peb.dBId() )
-            updatePodcastEpisode( peb.dBId(), peb );
+        PlaylistBrowser::instance()->findPodcastEpisode( peb.url(), peb.parent() )->setListened();
 
         if( !url.isLocalFile() )
             return;

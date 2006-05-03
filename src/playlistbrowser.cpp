@@ -1059,7 +1059,24 @@ PlaylistBrowser::findPodcastChannel( const KURL &feed, QListViewItem *parent ) c
         }
     }
 
-    return NULL;
+    return 0;
+}
+
+PodcastEpisode *
+PlaylistBrowser::findPodcastEpisode( const KURL &episode, const KURL &feed ) const
+{
+    PodcastChannel *channel = findPodcastChannel( feed );
+    QListViewItem *child = channel->firstChild();
+    while( child )
+    {
+        #define child static_cast<PodcastEpisode*>(child)
+        if( child->url() == episode )
+            return child;
+        #undef  child
+        child = child->nextSibling();
+    }
+    
+    return 0;
 }
 
 void PlaylistBrowser::addPodcast( const KURL& url, QListViewItem *parent )
@@ -1632,8 +1649,6 @@ void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
             child->isOnDisk() ?
                 list.append( child->localUrl() ):
                 list.append( child->url()      );
-
-            child->setNew( false );
 
             #undef child
             child = child->nextSibling();
@@ -3122,7 +3137,6 @@ void PlaylistBrowserView::startDrag()
                 itemList += item->url();
             }
 
-            item->setNew( false );
             pixText = (*it)->text(0);
             #undef item
         }
@@ -3137,11 +3151,9 @@ void PlaylistBrowserView::startDrag()
                     urls += pe->localUrl();
                 else
                     urls += pe->url();
-                pe->setNew( false ); // FIXME: why?
                 child = child->nextSibling();
             }
             itemList += KURL::fromPathOrURL( item->url().url() );
-            item->setNew( false );
             pixText = (*it)->text(0);
             #undef item
         }
