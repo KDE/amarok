@@ -35,8 +35,8 @@ namespace KDE
         virtual void reposition();
 
     protected:
-        virtual void resizeEvent( QResizeEvent* );
-        virtual bool eventFilter( QObject*, QEvent* );
+//         virtual void resizeEvent( QResizeEvent* );
+//         virtual bool eventFilter( QObject*, QEvent* );
         virtual bool event( QEvent* );
 
     private:

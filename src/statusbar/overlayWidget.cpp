@@ -61,21 +61,21 @@ OverlayWidget::reposition()
     move( pParent );
 }
 
-bool
-OverlayWidget::eventFilter( QObject* o, QEvent* e )
-{
+// bool
+// OverlayWidget::eventFilter( QObject* o, QEvent* e )
+// {
 //     if ( e->type() == QEvent::Move || e->type() == QEvent::Resize )
 //         reposition();
+// 
+//     return QFrame::eventFilter( o, e );
+// }
 
-    return QFrame::eventFilter( o, e );
-}
-
-void
-OverlayWidget::resizeEvent( QResizeEvent* ev )
-{
+// void
+// OverlayWidget::resizeEvent( QResizeEvent* ev )
+// {
 //     reposition();
-    QFrame::resizeEvent( ev );
-}
+//     QFrame::resizeEvent( ev );
+// }
 
 bool
 OverlayWidget::event( QEvent *e )
