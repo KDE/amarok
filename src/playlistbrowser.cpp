@@ -919,6 +919,7 @@ void PlaylistBrowser::loadPodcastsFromDatabase( PlaylistCategory *p )
             parent = folderMap[parentId];
 
         channel  = new PodcastChannel( parent, channel, *it );
+        bool hasNew = false;
         episodes = CollectionDB::instance()->getPodcastEpisodes( (*it).url() );
 
         PodcastEpisodeBundle bundle;
@@ -927,9 +928,13 @@ void PlaylistBrowser::loadPodcastsFromDatabase( PlaylistCategory *p )
         {
             bundle = episodes.first();
             new PodcastEpisode( channel, 0, bundle );
+            
+            if( bundle.isNew() ) 
+                hasNew = true;
 
             episodes.pop_front();
         }
+        channel->setNew( hasNew );
         
         if( channel->autoscan() )
             m_podcastItemsToScan.append( channel );
