@@ -27,7 +27,6 @@
 #include "qstringx.h"
 #include "scriptmanager.h"
 #include "statusbar.h"
-#include "statistics.h"
 #include "tagdialog.h"
 #include "threadweaver.h"
 
@@ -355,15 +354,6 @@ void ContextBrowser::openURLRequest( const KURL &url )
             debug() << "Clicked lyrics URL: " << _url << endl;
             m_dirtyLyricsPage = true;
             showLyrics( _url );
-        }
-        else if ( url.path() == "statistics" )
-        {
-            if( Statistics::instance() ) {
-                Statistics::instance()->raise();
-                return;
-            }
-            Statistics dialog;
-            dialog.exec();
         }
         else if ( url.path() == "collectionSetup" )
         {
