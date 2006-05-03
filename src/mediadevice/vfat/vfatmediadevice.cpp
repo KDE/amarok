@@ -156,6 +156,8 @@ class VfatMediaFile
 
         ~VfatMediaFile()
         {
+            if( m_parent )
+                m_parent->removeChild( this );
             m_device->getItemMap().erase( m_viewItem );
             m_device->getFileMap().erase( m_fullName );
             delete m_children;
@@ -171,7 +173,8 @@ class VfatMediaFile
             m_device->getFileMap().erase( m_fullName );
             m_parent->getChildren()->remove( this );
             m_parent = parent;
-            m_parent->getChildren()->append( this );
+            if( m_parent )
+                m_parent->getChildren()->append( this );
             setNamesFromBase( m_baseName );
             m_device->getFileMap()[m_fullName] = this;
         }
@@ -221,9 +224,24 @@ class VfatMediaFile
         getChildren() { return m_children; }
 
         void
+        deleteAllChildren()
+        {
+            VfatMediaFile *vmf;
+            if( m_children && !m_children->isEmpty() )
+            {
+                for( vmf = m_children->first(); vmf; vmf = m_children->next() )
+                {
+                    vmf->deleteAll();
+                    m_children->remove( vmf );
+                }
+            }
+        }
+
+        void
         deleteAll()
         {
             VfatMediaFile *vmf;
+            debug() << "m_children is " << m_children << endl;
             if( m_children && !m_children->isEmpty() )
             {
                 for( vmf = m_children->first(); vmf; vmf = m_children->next() )
@@ -358,7 +376,7 @@ VfatMediaDevice::closeDevice()  //SLOT
 {
     if( m_connected )
     {
-        m_mfm[m_medium->mountPoint()]->deleteAll();
+        m_initialFile->deleteAll();
         m_view->clear();
         m_connected = false;
 
@@ -473,9 +491,9 @@ VfatMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> items
             debug() << "Failed moving " << src << " to " << dst << endl;
         else
         {
+            debug() << "Entering first refreshDir" << endl;
             refreshDir( m_mim[currItem]->getParent()->getFullName() );
-            //not needed/causes crashes if dirLister is autoupdating, but needed otherwise
-            //m_mim[currItem]->setParent( dropDir );
+            debug() << "Entering second refreshDir" << endl;
             refreshDir( dropDir->getFullName() );
         }
     }
@@ -495,7 +513,7 @@ VfatMediaDevice::copyTrackSortHelper( const MetaBundle& bundle, QString& sort, Q
         temp = ( temp == QString::null ? "Unknown" : cleanPath(temp) );
         base += temp + "/";
 
-        if( !KIO::NetAccess::stat( KURL(base), m_udsentry, m_parent ) )
+        if( !KIO::NetAccess::exists( KURL(base), true, m_parent ) )
         //   m_tmpParent = static_cast<MediaItem *>(newDirectory( temp, static_cast<MediaItem*>(m_tmpParent) ));
             debug() << "copyTrackSortHelper: stat failed" << endl;
         else
@@ -779,6 +797,8 @@ VfatMediaDevice::listDir( const QString &dir )
 void
 VfatMediaDevice::refreshDir( const QString &dir )
 {
+    DEBUG_BLOCK
+    debug() << "refreshDir, dir = " << dir << endl;
     m_dirLister->updateDirectory( KURL(dir) );
 }
 
@@ -822,22 +842,12 @@ void
 VfatMediaDevice::dirListerClear( const KURL &url )
 {
     DEBUG_BLOCK
-    //TODO: Fill this in.  Should be able to use the deleteAll method on the appropriate VfatMediaFile?
     QString directory = url.path(-1);
     debug() << "Removing: " << directory << endl;
     VfatMediaFile *vmf = m_mfm[directory];
-    if( vmf == m_initialFile )
-    {
-        vmf->deleteAll();
-        debug() << "creating new m_initialFile with name of " << m_medium->mountPoint() << endl;
-        m_initialFile = new VfatMediaFile( 0, m_medium->mountPoint(), this );
-    }
-    else
-    {
-        VfatMediaFile *vmfParent = vmf->getParent();
-        vmf->deleteAll();
-        refreshDir( vmfParent->getFullName() );
-    }
+    vmf->deleteAllChildren();
+    if( vmf->getParent() )
+        refreshDir( vmf->getParent()->getFullName() );
 }
 
 void
