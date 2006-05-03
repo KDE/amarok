@@ -382,12 +382,6 @@ void SmartPlaylistEditor::buildQuery()
 		//add the table used in the search expression to tables
 		QString table = str.left( str.find('.') );
 		if( !joins.contains( table ) ) {
-		    // that makes it possible to search for tracks never played. it looks ugly but is works
-		    if( str.contains(" OR statistics.playcounter IS NULL")
-			|| str.contains(" OR statistics.rating IS NULL")
-			|| str.contains(" OR statistics.percentage IS NULL") )
-			joins += " LEFT JOIN statistics ON statistics.url=tags.url";
-		    else
 			joins += " LEFT JOIN statistics ON statistics.url=tags.url";
 		}
 		if( i ) { //multiple conditions
@@ -413,12 +407,6 @@ void SmartPlaylistEditor::buildQuery()
 		//add the table used in the search expression to tables
 		QString table = str.left( str.find('.') );
 		if( !joins.contains( table ) ) {
-		    // that makes it possible to search for tracks never played. it looks ugly but is works
-		    if( str.contains(" OR statistics.playcounter IS NULL")
-			|| str.contains(" OR statistics.rating IS NULL")
-			|| str.contains(" OR statistics.percentage IS NULL") )
-			joins += " LEFT JOIN statistics ON statistics.url=tags.url";
-		    else
 			joins += " LEFT JOIN statistics ON statistics.url=tags.url";
 		}
 		if( i ) { //multiple conditions
@@ -678,7 +666,10 @@ QString CriteriaEditor::getSearchCriteria()
     if( field.isEmpty() )
         return QString::null;
 
-    searchCriteria += field;
+    if ( ( field=="statistics.playcounter" || field=="statistics.rating" || field=="statistics.percentage" ) )
+        searchCriteria += "COALESCE(" + field + ",0)";
+    else
+        searchCriteria += field;
 
     QString value;
     switch( getValueType( m_fieldCombo->currentItem() ) ) {
@@ -739,9 +730,6 @@ QString CriteriaEditor::getSearchCriteria()
         if( m_currentValueType == String || m_currentValueType == AutoCompletionString )
             value.prepend("'").append("'");
         searchCriteria += value;
-        if ( ( field=="statistics.playcounter" || field=="statistics.rating" || field=="statistics.percentage" )
-             && value=="0")
-            searchCriteria += " OR " + field + " IS NULL";
     }
     else if( criteria == i18n("is not") ) {
         if( m_currentValueType == Date )

@@ -43,6 +43,8 @@ VERSION 1.4.0:
       <kde@dontletsstart.com>. (BR 125414)
 
   BUGFIXES:
+    * Less than and between criteria in a smart playlist for playcount, rating
+      or score of 0 now work. (BR 97046)
     * Empty genres are no longer displayed in the collection browser.
       (BR 126495)
     * Fix regression causing drag and drop of playlist track items in the
