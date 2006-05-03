@@ -491,9 +491,9 @@ VfatMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> items
             debug() << "Failed moving " << src << " to " << dst << endl;
         else
         {
-            debug() << "Entering first refreshDir" << endl;
+            //debug() << "Entering first refreshDir" << endl;
             refreshDir( m_mim[currItem]->getParent()->getFullName() );
-            debug() << "Entering second refreshDir" << endl;
+            //debug() << "Entering second refreshDir" << endl;
             refreshDir( dropDir->getFullName() );
         }
     }
@@ -788,7 +788,7 @@ VfatMediaDevice::listDir( const QString &dir )
         m_dirLister->updateDirectory( KURL(dir) );
     else
     {
-        debug() << "in listDir, dir = " << dir << endl;
+        //debug() << "in listDir, dir = " << dir << endl;
         m_dirLister->openURL( KURL(dir), true, true );
         m_mfm[dir]->setListed( true );
     }
@@ -798,7 +798,7 @@ void
 VfatMediaDevice::refreshDir( const QString &dir )
 {
     DEBUG_BLOCK
-    debug() << "refreshDir, dir = " << dir << endl;
+    //debug() << "refreshDir, dir = " << dir << endl;
     m_dirLister->updateDirectory( KURL(dir) );
 }
 
@@ -855,7 +855,6 @@ VfatMediaDevice::dirListerDeleteItem( KFileItem *fileitem )
     QString filename = fileitem->url().path(-1);
     debug() << "Removing file: " << filename << endl;
     VfatMediaFile *vmf = m_mfm[filename];
-    VfatMediaFile *vmfParent = vmf->getParent();
     vmf->deleteAll();
 }
 

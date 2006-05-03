@@ -2190,8 +2190,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle )
             //stat the original URL
             KURL oldurl;
             oldurl.setPath( uniqueids[0] );
-            KIO::UDSEntry result;
-            bool statSuccessful = KIO::NetAccess::stat( oldurl, result );
+            bool statSuccessful = KIO::NetAccess::exists( oldurl, true, amaroK::mainWindow() );
             if( statSuccessful ) //if true, new one is a copy
             {
                 bundle->newUniqueId();

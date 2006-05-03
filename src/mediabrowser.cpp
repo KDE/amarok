@@ -1091,7 +1091,7 @@ MediaView::startDrag()
 
 
 KURL::List
-MediaView::nodeBuildDragList( MediaItem* item, bool onlySelected )
+MediaView::nodeBuildDragList( MediaItem* item )
 {
     KURL::List items;
     MediaItem* fi;
@@ -1105,24 +1105,10 @@ MediaView::nodeBuildDragList( MediaItem* item, bool onlySelected )
 
     while ( fi )
     {
-        if( fi->isVisible() )
-        {
-            if ( fi->isSelected() || !onlySelected )
-            {
-                if( fi->isLeafItem() )
-                    items += fi->url();
-                else
-                {
-                    if(fi->childCount() )
-                        items += nodeBuildDragList( static_cast<MediaItem*>(fi->firstChild()), false );
-                }
-            }
-            else
-            {
-                if ( fi->childCount() )
-                    items += nodeBuildDragList( static_cast<MediaItem*>(fi->firstChild()), true );
-            }
-        }
+        if( fi->isSelected() )
+            items += fi->url();
+        else if( fi->childCount() )
+            items += nodeBuildDragList( static_cast<MediaItem*>(fi->firstChild()) );
         fi = static_cast<MediaItem*>(fi->nextSibling());
     }
     return items;
