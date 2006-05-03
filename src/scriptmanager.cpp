@@ -172,8 +172,6 @@ ScriptManager::~ScriptManager()
 {
     DEBUG_BLOCK
 
-    debug() << "Terminating running scripts.\n";
-
     QStringList runningScripts;
     ScriptMap::Iterator it;
     ScriptMap::Iterator end( m_scripts.end() );
@@ -315,8 +313,6 @@ void ScriptManager::notifyTranscode( const QString& srcUrl, const QString& filet
 void
 ScriptManager::findScripts() //SLOT
 {
-    DEBUG_BLOCK
-
     const QStringList allFiles = kapp->dirs()->findAllResources( "data", "amarok/scripts/*", true );
 
     // Add found scripts to listview:
@@ -369,8 +365,6 @@ ScriptManager::slotCurrentChanged( QListViewItem* item )
 bool
 ScriptManager::slotInstallScript( const QString& path )
 {
-    DEBUG_BLOCK
-
     QString _path = path;
 
     if( path.isNull() ) {
@@ -470,8 +464,6 @@ ScriptManager::slotRetrieveScript()
 void
 ScriptManager::slotUninstallScript()
 {
-    DEBUG_BLOCK
-
     const QString name = m_gui->listView->currentItem()->text( 0 );
 
     if( KMessageBox::warningContinueCancel( 0, i18n( "Are you sure you want to uninstall the script '%1'?" ).arg( name ), i18n("Uninstall Script"), i18n("Uninstall") ) == KMessageBox::Cancel )
@@ -512,8 +504,6 @@ ScriptManager::slotUninstallScript()
 bool
 ScriptManager::slotRunScript()
 {
-    DEBUG_BLOCK
-
     QListViewItem* const li = m_gui->listView->currentItem();
     const QString name = li->text( 0 );
 
@@ -564,8 +554,6 @@ ScriptManager::slotRunScript()
 void
 ScriptManager::slotStopScript()
 {
-    DEBUG_BLOCK
-
     QListViewItem* const li = m_gui->listView->currentItem();
     const QString name = li->text( 0 );
 
@@ -584,8 +572,6 @@ ScriptManager::slotStopScript()
 void
 ScriptManager::slotConfigureScript()
 {
-    DEBUG_BLOCK
-
     const QString name = m_gui->listView->currentItem()->text( 0 );
     if( !m_scripts[name].process ) return;
 
@@ -593,16 +579,12 @@ ScriptManager::slotConfigureScript()
     QDir::setCurrent( url.directory() );
 
     m_scripts[name].process->writeStdin( "configure" );
-
-    debug() << "Starting script configuration." << endl;
 }
 
 
 void
 ScriptManager::slotAboutScript()
 {
-    DEBUG_BLOCK
-
     const QString name = m_gui->listView->currentItem()->text( 0 );
     QFile readme( m_scripts[name].url.directory( false ) + "README" );
     QFile license( m_scripts[name].url.directory( false ) + "COPYING" );
@@ -690,8 +672,6 @@ ScriptManager::slotReceivedStdout( KProcess*, char* buf, int len )
 void
 ScriptManager::slotReceivedStderr( KProcess* process, char* buf, int len )
 {
-    DEBUG_BLOCK
-
     // Look up script entry in our map
     ScriptMap::Iterator it;
     ScriptMap::Iterator end( m_scripts.end() );
@@ -710,8 +690,6 @@ ScriptManager::slotReceivedStderr( KProcess* process, char* buf, int len )
 void
 ScriptManager::scriptFinished( KProcess* process ) //SLOT
 {
-    DEBUG_BLOCK
-
     // Look up script entry in our map
     ScriptMap::Iterator it;
     ScriptMap::Iterator end( m_scripts.end() );
@@ -753,10 +731,6 @@ ScriptManager::terminateProcess( KProcIO** proc )
 void
 ScriptManager::notifyScripts( const QString& message )
 {
-    DEBUG_BLOCK
-
-    debug() << "Sending notification: " << message << endl;
-
     foreachType( ScriptMap, m_scripts ) {
         KProcIO* const proc = it.data().process;
         if( proc ) proc->writeStdin( message );
@@ -767,8 +741,6 @@ ScriptManager::notifyScripts( const QString& message )
 void
 ScriptManager::loadScript( const QString& path )
 {
-    DEBUG_BLOCK
-
     if( !path.isEmpty() ) {
         const KURL url = KURL::fromPathOrURL( path );
         QString name = url.fileName();
@@ -778,7 +750,6 @@ ScriptManager::loadScript( const QString& path )
         QFileInfo info( path );
         const QString specPath = info.dirPath() + "/" + info.baseName() + ".spec";
         if( QFile::exists( specPath ) ) {
-            debug() << "Found spec file: " + specPath << endl;
             KConfig spec( specPath, true, false );
             if( spec.hasKey( "name" ) )
                 name = spec.readEntry( "name" );
@@ -811,8 +782,6 @@ ScriptManager::loadScript( const QString& path )
 void
 ScriptManager::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
 {
-    DEBUG_BLOCK
-
     switch( state )
     {
         case Engine::Empty:
