@@ -113,6 +113,7 @@ DeviceConfigureDialog::~DeviceConfigureDialog()
      delete m_connectEdit;
      delete m_disconnectEdit;
      debug() << "Deleted private variables..." << endl;
+     delete m_medium;
 }
 
 void
