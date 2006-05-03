@@ -3156,6 +3156,8 @@ Playlist::loadDynamicMode( DynamicMode *mode ) //SLOT
 {
     saveUndoState();
     setDynamicMode( mode );
+    if( isEmpty() )
+        repopulate();
 }
 
 void
@@ -3172,7 +3174,6 @@ Playlist::editActiveDynamicMode() //SLOT
 void
 Playlist::repopulate() //SLOT
 {
-    DEBUG_BLOCK
     // Repopulate the upcoming tracks
     MyIt it( this, MyIt::All );
     QPtrList<QListViewItem> list;
