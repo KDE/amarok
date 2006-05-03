@@ -50,6 +50,7 @@ class MediaDeviceConfig : public QHBox
         MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, QWidget *parent=0, const char *name=0 );
         ~MediaDeviceConfig();
         QString oldPlugin();
+        void setOldPlugin( const QString &oldPlugin );
         QString plugin();
         KComboBox *pluginCombo();
         QButton *configButton();

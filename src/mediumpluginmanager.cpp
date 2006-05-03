@@ -202,6 +202,7 @@ MediumPluginManager::finished()
         if( (*it)->plugin() != (*it)->oldPlugin() )
         {
             emit selectedPlugin( (*it)->medium(), (*it)->plugin() );
+            (*it)->setOldPlugin( (*it)->plugin() );
         }
         (*it)->configButton()->setEnabled( (*it)->pluginCombo()->currentText() != i18n( "Do not handle" ) );
     }
@@ -217,6 +218,7 @@ MediumPluginManager::finished()
             config->deleteEntry( dit.data()->id() );
         DeviceManager::instance()->removeManualDevice( dit.data() );
     }
+    m_deletedMap.clear();
 }
 
 void
@@ -467,6 +469,12 @@ QString
 MediaDeviceConfig::oldPlugin()
 {
     return m_oldPlugin;
+}
+
+void
+MediaDeviceConfig::setOldPlugin( const QString &oldPlugin )
+{
+    m_oldPlugin = oldPlugin;
 }
 
 QButton *
