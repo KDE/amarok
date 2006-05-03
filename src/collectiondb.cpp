@@ -898,7 +898,7 @@ CollectionDB::addImageToAlbum( const QString& image, QValueList< QPair<QString, 
             continue;
 
 //         debug() << "Added image for album: " << (*it).first << " - " << (*it).second << ": " << image << endl;
-        insert( QString( "INSERT INTO images%1 ( path, artist, album ) VALUES ( '%1', '%2', '%3' );" )
+        insert( QString( "INSERT INTO images%1 ( path, artist, album ) VALUES ( '%2', '%3', '%4' );" )
               .arg( temporary ? "_temp" : "",
                  escapeString( image ),
                  escapeString( (*it).first ),
@@ -5087,25 +5087,25 @@ void
 QueryBuilder::having( int table, Q_INT64 value, int function, int mode, const QString& match )
 {
     if( !m_having.isEmpty() ) m_having += " AND ";
-    
+
     QString fn = functionName( function );
     fn.isEmpty() ?
         m_having += tableName( table ) + "." + valueName( value ) :
         m_having += functionName( function )+"("+tableName( table )+"."+valueName( value )+")";
-        
+
     switch( mode )
     {
         case modeNormal:
             m_having += "=" + match;
             break;
-            
+
         case modeLess:
             m_having += "<" + match;
             break;
-        
+
         case modeGreater:
             m_having += ">" + match;
-        
+
         default:
             break;
     }
