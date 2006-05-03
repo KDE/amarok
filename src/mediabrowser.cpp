@@ -1082,7 +1082,9 @@ MediaView::~MediaView()
 void
 MediaView::startDrag()
 {
+    DEBUG_BLOCK
     KURL::List urls = nodeBuildDragList( 0 );
+    debug() << "size of urls is: " << urls.count() << endl;
     KURLDrag* d = new KURLDrag( urls, this );
     d->setPixmap( CollectionDB::createDragPixmap( urls ),
                   QPoint( CollectionDB::DRAGPIXMAP_OFFSET_X, CollectionDB::DRAGPIXMAP_OFFSET_Y ) );
@@ -1091,7 +1093,7 @@ MediaView::startDrag()
 
 
 KURL::List
-MediaView::nodeBuildDragList( MediaItem* item )
+MediaView::nodeBuildDragList( MediaItem* item, bool onlySelected )
 {
     KURL::List items;
     MediaItem* fi;
@@ -1105,10 +1107,24 @@ MediaView::nodeBuildDragList( MediaItem* item )
 
     while ( fi )
     {
-        if( fi->isSelected() )
-            items += fi->url();
-        else if( fi->childCount() )
-            items += nodeBuildDragList( static_cast<MediaItem*>(fi->firstChild()) );
+        if( fi->isVisible() )
+        {
+            if ( fi->isSelected() || !onlySelected )
+            {
+                if( fi->isLeafItem() || fi->type() == MediaItem::DIRECTORY )
+                    items += fi->url();
+                else
+                {
+                    if(fi->childCount() )
+                        items += nodeBuildDragList( static_cast<MediaItem*>(fi->firstChild()), false );
+                }
+            }
+            else
+            {
+                if ( fi->childCount() )
+                    items += nodeBuildDragList( static_cast<MediaItem*>(fi->firstChild()), true );
+            }
+        }
         fi = static_cast<MediaItem*>(fi->nextSibling());
     }
     return items;
@@ -1117,6 +1133,7 @@ MediaView::nodeBuildDragList( MediaItem* item )
 int
 MediaView::getSelectedLeaves( MediaItem *parent, QPtrList<MediaItem> *list, bool onlySelected, bool onlyPlayed )
 {
+    DEBUG_BLOCK
     int numFiles = 0;
     if( !list )
         list = new QPtrList<MediaItem>;
@@ -1175,6 +1192,7 @@ MediaView::contentsDragEnterEvent( QDragEnterEvent *e )
 void
 MediaView::contentsDropEvent( QDropEvent *e )
 {
+    DEBUG_BLOCK
     if(e->source() == viewport() || e->source() == this)
     {
         const QPoint p = contentsToViewport( e->pos() );

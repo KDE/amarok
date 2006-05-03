@@ -466,6 +466,7 @@ void
 VfatMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> items )
 {
     DEBUG_BLOCK
+    debug() << "items.count() is " << items.count() << endl;
     if( !directory || items.isEmpty() ) return;
 
     VfatMediaFile *dropDir;
@@ -477,9 +478,8 @@ VfatMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> items
 
     for( QPtrListIterator<MediaItem> it(items); *it; ++it )
     {
-
         VfatMediaItem *currItem = static_cast<VfatMediaItem *>(*it);
-
+        debug() << "currItem fullname = " << m_mim[currItem]->getFullName() << ", of type " << ((*it)->type() == MediaItem::TRACK ? "track" : ( (*it)->type() == MediaItem::DIRECTORY ? "directory" : "unknown" ) ) << endl;
         QCString src  = m_mim[currItem]->getEncodedFullName();
         QCString dst = dropDir->getEncodedFullName() + "/" + QFile::encodeName( currItem->text(0) );
         debug() << "Moving: " << src << " to: " << dst << endl;
