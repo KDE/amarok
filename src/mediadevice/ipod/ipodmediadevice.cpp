@@ -985,13 +985,14 @@ IpodMediaDevice::openDevice( bool silent )
             .arg( QString::fromUtf8( modelString ) );
     }
     else
-#endif
     {
         debug() << "device type detection failed, assuming iPod shuffle" << endl;
         amaroK::StatusBar::instance()->shortMessage( i18n("Media device: device type detection failed, assuming iPod shuffle") );
-        m_isShuffle = true;
-        m_supportsArtwork = true;
     }
+#endif
+
+    m_isShuffle = true;
+    m_supportsArtwork = true;
 
     for( int i=0; i < itdb_musicdirs_number(m_itdb); i++)
     {
