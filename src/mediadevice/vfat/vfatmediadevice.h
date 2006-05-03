@@ -68,7 +68,6 @@ class VfatMediaDevice : public MediaDevice
         //TODO
         int               deleteItemFromDevice( MediaItem *item, bool onlyPlayed = false );
         bool              getCapacity( KIO::filesize_t *total, KIO::filesize_t *available );
-        //TODO
         MediaItem        *newDirectory( const QString &name, MediaItem *parent );
         void              addToDirectory( MediaItem *directory, QPtrList<MediaItem> items );
 
@@ -80,7 +79,6 @@ class VfatMediaDevice : public MediaDevice
         void              startTransfer();
 
     protected slots:
-        //TODO
         void              renameItem( QListViewItem *item );
         void              expandItem( QListViewItem *item );
         void              foundMountPoint( const QString & mountPoint, unsigned long kBSize, unsigned long kBUsed, unsigned long kBAvail );

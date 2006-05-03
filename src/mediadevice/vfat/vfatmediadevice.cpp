@@ -119,38 +119,35 @@ class VfatMediaFile
         : m_parent( parent )
         , m_device( device )
         {
-            DEBUG_BLOCK
             m_listed = false;
-            setNamesFromBase( basename );
             m_children = new MediaFileList();
-            debug() << "m_fullName is " << m_fullName << endl;
+
+            if( m_parent )
+            {
+                m_viewItem = new VfatMediaItem( m_parent->getViewItem() );
+                setNamesFromBase( basename );
+                m_viewItem->setText( 0, m_baseName );
+                m_parent->getChildren()->append( this );
+            }
+            else
+            {
+                m_viewItem = new VfatMediaItem( m_device->view() );
+                setNamesFromBase( basename );
+                m_viewItem->setText( 0, m_fullName );
+            }
+
+            m_device->getItemMap()[m_viewItem] = this;
 
             if( m_device->getFileMap()[m_fullName] )
             {
                 debug() << "Trying to create two VfatMediaFile items with same fullName!" << endl;
                 debug() << "name already existing: " << m_device->getFileMap()[m_fullName]->getFullName() << endl;
-                return;
+                delete this;
             }
             else
             {
                 m_device->getFileMap()[m_fullName] = this;
             }
-
-            if( m_parent )
-            {
-                m_viewItem = new VfatMediaItem( m_parent->getViewItem() );
-                m_viewItem->setText( 0, m_baseName );
-                m_parent->getChildren()->append( this );
-                m_device->getItemMap()[m_viewItem] = this;
-            }
-            else
-            {
-                m_viewItem = new VfatMediaItem( m_device->view() );
-                m_viewItem->setText( 0, m_fullName );
-                m_device->getItemMap()[m_viewItem] = this;
-            }
-
-            m_viewItem->setBundle( new MetaBundle( KURL::fromPathOrURL( m_fullName ), true, TagLib::AudioProperties::Fast ) );
 
         }
 
@@ -218,6 +215,7 @@ class VfatMediaFile
                 m_fullName = m_baseName;
             m_encodedFullName = QFile::encodeName( m_fullName );
             m_encodedBaseName = QFile::encodeName( m_baseName );
+            m_viewItem->setBundle( new MetaBundle( KURL::fromPathOrURL( m_fullName ), true, TagLib::AudioProperties::Fast ) );
         }
 
         MediaFileList*
@@ -241,7 +239,6 @@ class VfatMediaFile
         deleteAll()
         {
             VfatMediaFile *vmf;
-            debug() << "m_children is " << m_children << endl;
             if( m_children && !m_children->isEmpty() )
             {
                 for( vmf = m_children->first(); vmf; vmf = m_children->next() )
@@ -251,6 +248,18 @@ class VfatMediaFile
                 }
             }
             delete this;
+        }
+
+        void
+        renameAllChildren()
+        {
+            VfatMediaFile *vmf;
+            if( m_children && !m_children->isEmpty() )
+            {
+                for( vmf = m_children->first(); vmf; vmf = m_children->next() )
+                    vmf->renameAllChildren();
+            }
+            setNamesFromBase();
         }
 
     private:
@@ -423,6 +432,10 @@ VfatMediaDevice::renameItem( QListViewItem *item ) // SLOT
         //failed, so set the item's text back to how it should be
         item->setText( 0, m_mim[item]->getBaseName() );
     }
+
+
+    refreshDir( m_mim[item]->getParent()->getFullName() );
+    m_mim[item]->renameAllChildren();
 
     #undef item
 
