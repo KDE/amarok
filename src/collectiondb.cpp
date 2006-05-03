@@ -4814,7 +4814,7 @@ QueryBuilder::excludeFilter( int tables, Q_INT64 value, const QString& filter, i
 }
 
 void
-QueryBuilder::addMatch( int tables, const QString& match )
+QueryBuilder::addMatch( int tables, const QString& match, bool interpretUnknown /* = true */ )
 {
     m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
     if ( tables & tabAlbum )
@@ -4828,7 +4828,7 @@ QueryBuilder::addMatch( int tables, const QString& match )
     if ( tables & tabSong )
         m_where += "OR tags.title " + CollectionDB::likeCondition( match );
 
-    if ( match == i18n( "Unknown" ) )
+    if ( interpretUnknown && match == i18n( "Unknown" ) )
     {
         if ( tables & tabAlbum ) m_where += "OR album.name = '' ";
         if ( tables & tabArtist ) m_where += "OR artist.name = '' ";
@@ -4857,7 +4857,7 @@ QueryBuilder::addMatch( int tables, Q_INT64 value, const QString& match )
 
 
 void
-QueryBuilder::addMatches( int tables, const QStringList& match )
+QueryBuilder::addMatches( int tables, const QStringList& match, bool interpretUnknown /* = true */ )
 {
     m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
 
@@ -4877,7 +4877,7 @@ QueryBuilder::addMatches( int tables, const QStringList& match )
             m_where += "OR statistics.url " + CollectionDB::likeCondition( match[i] );
 
 
-        if ( match[i] == i18n( "Unknown" ) )
+        if ( interpretUnknown && match[i] == i18n( "Unknown" ) )
         {
             if ( tables & tabAlbum ) m_where += "OR album.name = '' ";
             if ( tables & tabArtist ) m_where += "OR artist.name = '' ";

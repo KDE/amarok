@@ -575,9 +575,9 @@ class QueryBuilder
         void excludeFilter( int tables, const QString& filter );
         void excludeFilter( int tables, Q_INT64 value, const QString& filter, int mode = modeNormal, bool exact = false );
 
-        void addMatch( int tables, const QString& match );
+        void addMatch( int tables, const QString& match, bool interpretUnknown = true );
         void addMatch( int tables, Q_INT64 value, const QString& match );
-        void addMatches( int tables, const QStringList& match );
+        void addMatches( int tables, const QStringList& match, bool interpretUnknown = true );
         void excludeMatch( int tables, const QString& match );
         void having( int table, Q_INT64 value, int function, int mode, const QString& match );
 

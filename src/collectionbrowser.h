@@ -118,20 +118,23 @@ private:
 
 class CollectionItem : public KListViewItem {
     public:
-        CollectionItem( QListView* parent, int cat )
+        CollectionItem( QListView* parent, int cat = 0, bool unknown = false )
             : KListViewItem( parent )
-            , m_cat( cat ) {};
-        CollectionItem( QListView* parent )
-            : KListViewItem( parent ) {};
-        CollectionItem( QListViewItem* parent, int cat )
+            , m_cat( cat )
+            , m_isUnknown( unknown ) {};
+        CollectionItem( QListViewItem* parent, int cat = 0, bool unknown = false)
             : KListViewItem( parent )
-            , m_cat( cat ) {};
-        CollectionItem( QListViewItem* parent )
-            : KListViewItem( parent ) {};
+            , m_cat( cat )
+            , m_isUnknown( unknown ) {};
         void setUrl( const QString& url ) { m_url.setPath( url ); }
         const KURL& url() const { return m_url; }
 
         virtual void sortChildItems ( int column, bool ascending ); //reimplemented
+
+        inline QString getSQLText( int column )
+        {
+            return ( !column && m_isUnknown ) ? "" : text( column );
+        }
 
     private:
         //for sorting
@@ -140,6 +143,7 @@ class CollectionItem : public KListViewItem {
     //attributes:
         KURL m_url;
         int m_cat;
+        bool m_isUnknown;
 };
 
 
