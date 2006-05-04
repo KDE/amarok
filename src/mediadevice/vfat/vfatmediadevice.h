@@ -16,8 +16,8 @@
  ***************************************************************************/
 
 
-#ifndef AMAROK_GENERICMEDIADEVICE_H
-#define AMAROK_GENERICMEDIADEVICE_H
+#ifndef AMAROK_VFATMEDIADEVICE_H
+#define AMAROK_VFATMEDIADEVICE_H
 
 #include "../mediabrowser.h"
 #include "transferdialog.h"
@@ -27,20 +27,20 @@
 
 #include <qptrlist.h>
 
-class GenericMediaItem;
-class GenericMediaFile;
+class VfatMediaItem;
+class VfatMediaFile;
 
-typedef QMap<QString, GenericMediaFile*> MediaFileMap;
-typedef QMap<GenericMediaItem*, GenericMediaFile*> MediaItemMap;
+typedef QMap<QString, VfatMediaFile*> MediaFileMap;
+typedef QMap<VfatMediaItem*, VfatMediaFile*> MediaItemMap;
 
-class GenericMediaDevice : public MediaDevice
+class VfatMediaDevice : public MediaDevice
 {
     Q_OBJECT
 
     public:
-                          GenericMediaDevice();
+                          VfatMediaDevice();
         void              init( MediaBrowser* parent );
-        virtual           ~GenericMediaDevice();
+        virtual           ~VfatMediaDevice();
 
         bool              isConnected() { return m_connected; }
 
@@ -107,7 +107,7 @@ class GenericMediaDevice : public MediaDevice
 
         QString           cleanPath( const QString &component );
 
-        GenericMediaFile     *m_initialFile;
+        VfatMediaFile     *m_initialFile;
 
         KIO::filesize_t   m_kBSize;
         KIO::filesize_t   m_kBAvail;
@@ -123,5 +123,5 @@ class GenericMediaDevice : public MediaDevice
         MediaItemMap      m_mim;
 };
 
-#endif /*AMAROK_GENERICMEDIADEVICE_H*/
+#endif /*AMAROK_VFATMEDIADEVICE_H*/
 

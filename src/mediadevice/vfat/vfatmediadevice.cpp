@@ -16,11 +16,11 @@
  ***************************************************************************/
 
 
-#define DEBUG_PREFIX "GenericMediaDevice"
+#define DEBUG_PREFIX "VfatMediaDevice"
 
-#include "genericmediadevice.h"
+#include "vfatmediadevice.h"
 
-AMAROK_EXPORT_PLUGIN( GenericMediaDevice )
+AMAROK_EXPORT_PLUGIN( VfatMediaDevice )
 
 #include "debug.h"
 #include "medium.h"
@@ -57,21 +57,21 @@ namespace amaroK {
     extern QString cleanPath( const QString&, bool );
 }
 
-typedef QPtrList<GenericMediaFile> MediaFileList;
-typedef QPtrListIterator<GenericMediaFile> MediaFileListIterator;
+typedef QPtrList<VfatMediaFile> MediaFileList;
+typedef QPtrListIterator<VfatMediaFile> MediaFileListIterator;
 
 /**
- * GenericMediaItem Class
+ * VfatMediaItem Class
  */
 
-class GenericMediaItem : public MediaItem
+class VfatMediaItem : public MediaItem
 {
     public:
-        GenericMediaItem( QListView *parent, QListViewItem *after = 0 )
+        VfatMediaItem( QListView *parent, QListViewItem *after = 0 )
             : MediaItem( parent, after )
         { }
 
-        GenericMediaItem( QListViewItem *parent, QListViewItem *after = 0 )
+        VfatMediaItem( QListViewItem *parent, QListViewItem *after = 0 )
             : MediaItem( parent, after )
         { }
 
@@ -91,7 +91,7 @@ class GenericMediaItem : public MediaItem
         int
         compare( QListViewItem *i, int col, bool ascending ) const
         {
-            #define i static_cast<GenericMediaItem *>(i)
+            #define i static_cast<VfatMediaItem *>(i)
             switch( type() )
             {
                 case MediaItem::DIRECTORY:
@@ -113,10 +113,10 @@ class GenericMediaItem : public MediaItem
         QCString m_encodedName;
 };
 
-class GenericMediaFile
+class VfatMediaFile
 {
     public:
-        GenericMediaFile( GenericMediaFile *parent, QString basename, GenericMediaDevice *device )
+        VfatMediaFile( VfatMediaFile *parent, QString basename, VfatMediaDevice *device )
         : m_parent( parent )
         , m_device( device )
         {
@@ -126,7 +126,7 @@ class GenericMediaFile
 
             if( m_parent )
             {
-                m_viewItem = new GenericMediaItem( m_parent->getViewItem() );
+                m_viewItem = new VfatMediaItem( m_parent->getViewItem() );
                 setNamesFromBase( basename );
                 m_viewItem->setText( 0, m_baseName );
                 m_parent->getChildren()->append( this );
@@ -134,7 +134,7 @@ class GenericMediaFile
             }
             else
             {
-                m_viewItem = new GenericMediaItem( m_device->view() );
+                m_viewItem = new VfatMediaItem( m_device->view() );
                 setNamesFromBase( basename );
                 m_viewItem->setText( 0, m_fullName );
             }
@@ -143,7 +143,7 @@ class GenericMediaFile
 
             if( m_device->getFileMap()[m_fullName] )
             {
-                debug() << "Trying to create two GenericMediaFile items with same fullName!" << endl;
+                debug() << "Trying to create two VfatMediaFile items with same fullName!" << endl;
                 debug() << "name already existing: " << m_device->getFileMap()[m_fullName]->getFullName() << endl;
                 delete this;
             }
@@ -154,7 +154,7 @@ class GenericMediaFile
 
         }
 
-        ~GenericMediaFile()
+        ~VfatMediaFile()
         {
             DEBUG_BLOCK
             debug() << "removing: " << m_fullName << endl;
@@ -168,11 +168,11 @@ class GenericMediaFile
                 delete m_viewItem;
         }
 
-        GenericMediaFile*
+        VfatMediaFile*
         getParent() { return m_parent; }
 
         void
-        setParent( GenericMediaFile* parent )
+        setParent( VfatMediaFile* parent )
         {
             m_device->getFileMap().erase( m_fullName );
             m_parent->getChildren()->remove( this );
@@ -184,9 +184,9 @@ class GenericMediaFile
         }
 
         void
-        removeChild( GenericMediaFile* childToDelete ) { m_children->remove( childToDelete ); }
+        removeChild( VfatMediaFile* childToDelete ) { m_children->remove( childToDelete ); }
 
-        GenericMediaItem*
+        VfatMediaItem*
         getViewItem() { return m_viewItem; }
 
         bool
@@ -233,7 +233,7 @@ class GenericMediaFile
         {
             DEBUG_BLOCK
             debug() << "deleteAll...m_fullName is " << m_fullName << " and children count is: " << (m_children ? QString("%1").arg(m_children->count()) : "Undefined" ) << endl;
-            GenericMediaFile *vmf;
+            VfatMediaFile *vmf;
             if( m_children && !m_children->isEmpty() )
             {
                 MediaFileListIterator it( *m_children );
@@ -250,7 +250,7 @@ class GenericMediaFile
         void
         renameAllChildren()
         {
-            GenericMediaFile *vmf;
+            VfatMediaFile *vmf;
             if( m_children && !m_children->isEmpty() )
             {
                 for( vmf = m_children->first(); vmf; vmf = m_children->next() )
@@ -264,15 +264,15 @@ class GenericMediaFile
         QCString m_encodedFullName;
         QString m_baseName;
         QCString m_encodedBaseName;
-        GenericMediaFile *m_parent;
+        VfatMediaFile *m_parent;
         MediaFileList *m_children;
-        GenericMediaItem *m_viewItem;
-        GenericMediaDevice* m_device;
+        VfatMediaItem *m_viewItem;
+        VfatMediaDevice* m_device;
         bool m_listed;
 };
 
 QString
-GenericMediaDevice::fileName( const MetaBundle &bundle )
+VfatMediaDevice::fileName( const MetaBundle &bundle )
 {
     QString result = cleanPath( bundle.artist() );
 
@@ -301,17 +301,17 @@ GenericMediaDevice::fileName( const MetaBundle &bundle )
 
 
 /**
- * GenericMediaDevice Class
+ * VfatMediaDevice Class
  */
 
-GenericMediaDevice::GenericMediaDevice()
+VfatMediaDevice::VfatMediaDevice()
     : MediaDevice()
     , m_kBSize( 0 )
     , m_kBAvail( 0 )
     , m_connected( false )
 {
     DEBUG_BLOCK
-    m_name = "Generic Audio Player";
+    m_name = "VFAT Device";
     m_td = NULL;
     m_dirLister = new KDirLister();
     m_dirLister->setNameFilter( "*.mp3 *.wav *.asf *.flac *.wma *.ogg *.aac *.m4a" );
@@ -328,18 +328,18 @@ GenericMediaDevice::GenericMediaDevice()
 }
 
 void
-GenericMediaDevice::init( MediaBrowser* parent )
+VfatMediaDevice::init( MediaBrowser* parent )
 {
     MediaDevice::init( parent );
 }
 
-GenericMediaDevice::~GenericMediaDevice()
+VfatMediaDevice::~VfatMediaDevice()
 {
     closeDevice();
 }
 
 void
-GenericMediaDevice::loadConfig()
+VfatMediaDevice::loadConfig()
 {
     MediaDevice::loadConfig();
 
@@ -350,7 +350,7 @@ GenericMediaDevice::loadConfig()
 }
 
 bool
-GenericMediaDevice::openDevice( bool /*silent*/ )
+VfatMediaDevice::openDevice( bool /*silent*/ )
 {
     DEBUG_BLOCK
     if( !m_medium.mountPoint() )
@@ -363,14 +363,14 @@ GenericMediaDevice::openDevice( bool /*silent*/ )
     m_actuallyVfat = m_medium.fsType() == "vfat" ? true : false;
     m_connected = true;
     m_transferDir = m_medium.mountPoint();
-    m_initialFile = new GenericMediaFile( 0, m_medium.mountPoint(), this );
+    m_initialFile = new VfatMediaFile( 0, m_medium.mountPoint(), this );
     listDir( m_medium.mountPoint() );
     connect( this, SIGNAL( startTransfer() ), MediaBrowser::instance(), SLOT( transferClicked() ) );
     return true;
 }
 
 bool
-GenericMediaDevice::closeDevice()  //SLOT
+VfatMediaDevice::closeDevice()  //SLOT
 {
     if( m_connected )
     {
@@ -386,7 +386,7 @@ GenericMediaDevice::closeDevice()  //SLOT
 }
 
 void
-GenericMediaDevice::runTransferDialog()
+VfatMediaDevice::runTransferDialog()
 {
     m_td = new TransferDialog( this );
     m_td->exec();
@@ -395,13 +395,13 @@ GenericMediaDevice::runTransferDialog()
 /// Renaming
 
 void
-GenericMediaDevice::renameItem( QListViewItem *item ) // SLOT
+VfatMediaDevice::renameItem( QListViewItem *item ) // SLOT
 {
 
     if( !item )
         return;
 
-    #define item static_cast<GenericMediaItem*>(item)
+    #define item static_cast<VfatMediaItem*>(item)
 
     QCString src = m_mim[item]->getEncodedFullName();
     QCString dst = m_mim[item]->getParent()->getEncodedFullName() + '/' + QFile::encodeName( item->text(0) );
@@ -433,14 +433,14 @@ GenericMediaDevice::renameItem( QListViewItem *item ) // SLOT
 /// Creating a directory
 
 MediaItem *
-GenericMediaDevice::newDirectory( const QString &name, MediaItem *parent )
+VfatMediaDevice::newDirectory( const QString &name, MediaItem *parent )
 {
     DEBUG_BLOCK
     if( !m_connected || name.isEmpty() ) return 0;
 
     debug() << "newDirectory called with name = " << name << ", and parent = " << parent << endl;
 
-    #define parent static_cast<GenericMediaItem*>(parent)
+    #define parent static_cast<VfatMediaItem*>(parent)
 
     QString fullName = m_mim[parent]->getFullName();
     QString cleanedName = cleanPath(name);
@@ -463,22 +463,22 @@ GenericMediaDevice::newDirectory( const QString &name, MediaItem *parent )
 }
 
 void
-GenericMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> items )
+VfatMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> items )
 {
     DEBUG_BLOCK
     debug() << "items.count() is " << items.count() << endl;
     if( !directory || items.isEmpty() ) return;
 
-    GenericMediaFile *dropDir;
+    VfatMediaFile *dropDir;
     if( directory->type() == MediaItem::TRACK )
-    #define directory static_cast<GenericMediaItem *>(directory)
+    #define directory static_cast<VfatMediaItem *>(directory)
         dropDir = m_mim[directory]->getParent();
     else
         dropDir = m_mim[directory];
 
     for( QPtrListIterator<MediaItem> it(items); *it; ++it )
     {
-        GenericMediaItem *currItem = static_cast<GenericMediaItem *>(*it);
+        VfatMediaItem *currItem = static_cast<VfatMediaItem *>(*it);
         QCString src  = m_mim[currItem]->getEncodedFullName();
         QCString dst = dropDir->getEncodedFullName() + "/" + QFile::encodeName( currItem->text(0) );
         debug() << "Moving: " << src << " to: " << dst << endl;
@@ -500,7 +500,7 @@ GenericMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> it
 /// Uploading
 
 void
-GenericMediaDevice::copyTrackSortHelper( const MetaBundle& bundle, QString& sort, QString& base )
+VfatMediaDevice::copyTrackSortHelper( const MetaBundle& bundle, QString& sort, QString& base )
 {
     DEBUG_BLOCK
     debug() << "sort = " << sort << endl;
@@ -528,7 +528,7 @@ GenericMediaDevice::copyTrackSortHelper( const MetaBundle& bundle, QString& sort
 
 
 MediaItem *
-GenericMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
+VfatMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
 {
     DEBUG_BLOCK
     if( !m_connected ) return 0;
@@ -564,7 +564,7 @@ GenericMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
 //Somewhat related...
 
 MediaItem *
-GenericMediaDevice::trackExists( const MetaBundle& bundle )
+VfatMediaDevice::trackExists( const MetaBundle& bundle )
 {
     QString key;
     QListViewItem *it = view()->firstChild();
@@ -620,7 +620,7 @@ GenericMediaDevice::trackExists( const MetaBundle& bundle )
 
 
 void
-GenericMediaDevice::downloadSelectedItems()
+VfatMediaDevice::downloadSelectedItems()
 {
     KURL::List urls = getSelectedItems();
 
@@ -630,7 +630,7 @@ GenericMediaDevice::downloadSelectedItems()
 }
 
 KURL::List
-GenericMediaDevice::getSelectedItems()
+VfatMediaDevice::getSelectedItems()
 {
     return m_view->nodeBuildDragList( m_initialFile->getViewItem(), true );
 }
@@ -638,12 +638,12 @@ GenericMediaDevice::getSelectedItems()
 /// Deleting
 
 int
-GenericMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/ )
+VfatMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/ )
 {
     DEBUG_BLOCK
     if( !item || !m_connected ) return -1;
 
-    #define item static_cast<GenericMediaItem*>(item)
+    #define item static_cast<VfatMediaItem*>(item)
 
     QCString encodedPath = m_mim[item]->getEncodedFullName();
     debug() << "Deleting path: " << encodedPath << endl;
@@ -675,12 +675,12 @@ GenericMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/ )
 /// Directory Reading
 
 void
-GenericMediaDevice::expandItem( QListViewItem *item ) // SLOT
+VfatMediaDevice::expandItem( QListViewItem *item ) // SLOT
 {
     //DEBUG_BLOCK
     if( !item || !item->isExpandable() ) return;
 
-    #define item static_cast<GenericMediaItem *>(item)
+    #define item static_cast<VfatMediaItem *>(item)
     m_dirListerComplete = false;
     listDir( m_mim[item]->getFullName() );
     #undef item
@@ -693,7 +693,7 @@ GenericMediaDevice::expandItem( QListViewItem *item ) // SLOT
 }
 
 void
-GenericMediaDevice::listDir( const QString &dir )
+VfatMediaDevice::listDir( const QString &dir )
 {
     DEBUG_BLOCK
     m_dirListerComplete = false;
@@ -707,7 +707,7 @@ GenericMediaDevice::listDir( const QString &dir )
 }
 
 void
-GenericMediaDevice::refreshDir( const QString &dir )
+VfatMediaDevice::refreshDir( const QString &dir )
 {
     DEBUG_BLOCK
     m_dirListerComplete = false;
@@ -715,7 +715,7 @@ GenericMediaDevice::refreshDir( const QString &dir )
 }
 
 void
-GenericMediaDevice::newItems( const KFileItemList &items )
+VfatMediaDevice::newItems( const KFileItemList &items )
 {
     DEBUG_BLOCK
 
@@ -728,14 +728,14 @@ GenericMediaDevice::newItems( const KFileItemList &items )
 }
 
 void
-GenericMediaDevice::dirListerCompleted()
+VfatMediaDevice::dirListerCompleted()
 {
     DEBUG_BLOCK
     m_dirListerComplete = true;
 }
 
 void
-GenericMediaDevice::dirListerClear()
+VfatMediaDevice::dirListerClear()
 {
     DEBUG_BLOCK
     m_initialFile->deleteAll( true );
@@ -744,33 +744,33 @@ GenericMediaDevice::dirListerClear()
     m_mfm.clear();
     m_mim.clear();
 
-    m_initialFile = new GenericMediaFile( 0, m_medium.mountPoint(), this );
+    m_initialFile = new VfatMediaFile( 0, m_medium.mountPoint(), this );
 }
 
 void
-GenericMediaDevice::dirListerClear( const KURL &url )
+VfatMediaDevice::dirListerClear( const KURL &url )
 {
     DEBUG_BLOCK
     QString directory = url.path(-1);
     debug() << "Removing url: " << directory << endl;
-    GenericMediaFile *vmf = m_mfm[directory];
+    VfatMediaFile *vmf = m_mfm[directory];
     if( vmf )
         vmf->deleteAll( false );
 }
 
 void
-GenericMediaDevice::dirListerDeleteItem( KFileItem *fileitem )
+VfatMediaDevice::dirListerDeleteItem( KFileItem *fileitem )
 {
     DEBUG_BLOCK
     QString filename = fileitem->url().path(-1);
     debug() << "Removing item: " << filename << endl;
-    GenericMediaFile *vmf = m_mfm[filename];
+    VfatMediaFile *vmf = m_mfm[filename];
     if( vmf )
         vmf->deleteAll( true );
 }
 
 int
-GenericMediaDevice::addTrackToList( int type, KURL url, int /*size*/ )
+VfatMediaDevice::addTrackToList( int type, KURL url, int /*size*/ )
 {
 
     debug() << "addTrackToList: url.path = " << url.path(-1) << endl;
@@ -782,9 +782,9 @@ GenericMediaDevice::addTrackToList( int type, KURL url, int /*size*/ )
 
     debug() << "index is " << index << ", baseName = " << baseName << ", parentName = " << parentName << endl;
 
-    GenericMediaFile* parent = m_mfm[parentName];
+    VfatMediaFile* parent = m_mfm[parentName];
     debug() << "parent's getFullName is: " << parent->getFullName() << endl;
-    GenericMediaFile* newItem = new GenericMediaFile( parent, baseName, this );
+    VfatMediaFile* newItem = new VfatMediaFile( parent, baseName, this );
 
     if( type == MediaItem::DIRECTORY ) //directory
         newItem->getViewItem()->setType( MediaItem::DIRECTORY );
@@ -812,11 +812,11 @@ GenericMediaDevice::addTrackToList( int type, KURL url, int /*size*/ )
 /// Capacity, in kB
 
 bool
-GenericMediaDevice::getCapacity( KIO::filesize_t *total, KIO::filesize_t *available )
+VfatMediaDevice::getCapacity( KIO::filesize_t *total, KIO::filesize_t *available )
 {
     if( !m_connected ) return false;
 
-    KDiskFreeSp* kdf = new KDiskFreeSp( m_parent, "generic_kdf" );
+    KDiskFreeSp* kdf = new KDiskFreeSp( m_parent, "vfat_kdf" );
     kdf->readDF( m_medium.mountPoint() );
     connect(kdf, SIGNAL(foundMountPoint( const QString &, unsigned long, unsigned long, unsigned long )),
                  SLOT(foundMountPoint( const QString &, unsigned long, unsigned long, unsigned long )));
@@ -843,7 +843,7 @@ GenericMediaDevice::getCapacity( KIO::filesize_t *total, KIO::filesize_t *availa
 }
 
 void
-GenericMediaDevice::foundMountPoint( const QString & mountPoint, unsigned long kBSize, unsigned long /*kBUsed*/, unsigned long kBAvail )
+VfatMediaDevice::foundMountPoint( const QString & mountPoint, unsigned long kBSize, unsigned long /*kBUsed*/, unsigned long kBAvail )
 {
     if ( mountPoint == m_medium.mountPoint() ){
         m_kBSize = kBSize;
@@ -854,7 +854,7 @@ GenericMediaDevice::foundMountPoint( const QString & mountPoint, unsigned long k
 /// Helper functions
 
 void
-GenericMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
+VfatMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
 {
     enum Actions { APPEND, LOAD, QUEUE,
         DOWNLOAD,
@@ -921,7 +921,7 @@ GenericMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                 break;
 
             case TRANSFER_HERE:
-                #define item static_cast<GenericMediaItem*>(item)
+                #define item static_cast<VfatMediaItem*>(item)
                 if( item->type() == MediaItem::DIRECTORY )
                     m_transferDir = m_mim[item]->getFullName();
                 else
@@ -959,7 +959,7 @@ GenericMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
 }
 
 
-QString GenericMediaDevice::cleanPath( const QString &component )
+QString VfatMediaDevice::cleanPath( const QString &component )
 {
     QString result = component;
 
@@ -979,4 +979,4 @@ QString GenericMediaDevice::cleanPath( const QString &component )
     return result;
 }
 
-#include "genericmediadevice.moc"
+#include "vfatmediadevice.moc"

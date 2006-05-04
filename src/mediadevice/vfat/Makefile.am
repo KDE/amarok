@@ -1,5 +1,5 @@
-kde_module_LTLIBRARIES = libamarok_generic-mediadevice.la
-kde_services_DATA = amarok_generic-mediadevice.desktop
+kde_module_LTLIBRARIES = libamarok_vfat-mediadevice.la
+kde_services_DATA = amarok_vfat-mediadevice.desktop
 
 INCLUDES = \
     -I$(top_srcdir)/amarok/src \
@@ -14,17 +14,17 @@ INCLUDES = \
 
 METASOURCES = AUTO
 
-libamarok_generic_mediadevice_la_LIBADD  = \
+libamarok_vfat_mediadevice_la_LIBADD  = \
     $(top_builddir)/amarok/src/libamarok.la \
     -lkdeui -lkdecore -lkio
 
-libamarok_generic_mediadevice_la_LDFLAGS = \
+libamarok_vfat_mediadevice_la_LDFLAGS = \
     $(KDE_PLUGIN) \
     $(all_libraries)
 
-libamarok_generic_mediadevice_la_SOURCES = \
-    genericmediadevice.cpp
+libamarok_vfat_mediadevice_la_SOURCES = \
+    vfatmediadevice.cpp
 
 noinst_HEADERS = \
-    genericmediadevice.h
+    vfatmediadevice.h
 

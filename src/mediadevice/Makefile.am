@@ -6,12 +6,12 @@ if with_ifp
     IFP_SUBDIR = ifp
 endif
 
-GENERIC_SUBDIR = generic
+VFAT_SUBDIR = vfat
 
 METASOURCES = AUTO
 
 SUBDIRS = \
     $(IPOD_SUBDIR) \
     $(IFP_SUBDIR) \
-    $(GENERIC_SUBDIR)
+    $(VFAT_SUBDIR)
 
