@@ -43,6 +43,8 @@ VERSION 1.4.0:
       <kde@dontletsstart.com>. (BR 125414)
 
   BUGFIXES:
+    * All tracks from a cuesheet will now submit correctly to last.fm.
+      (BR 114969)
     * xine-engine will now correctly detect a change when only one of the 
       artist or album metadata changes. Patch by Kim Rasmussen 
       <kml@elreki.net> (BR 126648)

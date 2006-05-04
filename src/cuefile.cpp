@@ -7,6 +7,8 @@
 #include <qmap.h>
 #include <qstringlist.h>
 
+#include <kglobal.h>
+
 #include "cuefile.h"
 #include "metabundle.h"
 #include "enginecontroller.h"
@@ -220,6 +222,16 @@ void CueFile::engineTrackPositionChanged( long position, bool userSeek )
                     bundle.setAlbum(it.data().getAlbum());
                     bundle.setTrack(it.data().getTrackNumber());
                     emit metaData(bundle);
+
+                    long length = it.data().getLength();
+                    if ( length == -1 ) // need to calculate
+                    {
+                        ++it;
+                        long nextKey = it == end() ? bundle.length() * 1000 : it.key();
+                        --it;
+                        length = kMax( nextKey - it.key(), 0L );
+                    }
+                    emit newCuePoint( position, it.key() / 1000, ( it.key() + length ) / 1000 );
                 }
                 break;
             }

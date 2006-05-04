@@ -18,6 +18,7 @@ class CueFileItem {
             , m_album( album )
             , m_trackNumber( trackNumber )
             , m_index( index )
+            , m_length( -1 )
 
         {}
 
@@ -58,6 +59,8 @@ class CueFile : public QObject, public QMap<long, CueFileItem>, public EngineObs
     signals:
         /** Transmits new metadata bundle */
         void metaData( const MetaBundle& );
+        /** Transmits new length information associated with current cue */
+        void newCuePoint( long currentPos, long startPos, long endPos );
 
     protected:
         CueFile() : EngineObserver(), m_lastSeekPos(-1) { };

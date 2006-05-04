@@ -46,16 +46,17 @@ Scrobbler* Scrobbler::instance()
 Scrobbler::Scrobbler()
     : EngineObserver( EngineController::instance() )
     , m_similarArtistsJob( 0 )
-    , m_validForSending( true )
+    , m_validForSending( false )
+    , m_startPos( 0 )
     , m_submitter( new ScrobblerSubmitter() )
-    , m_item( 0 )
+    , m_item( new SubmitItem() )
 {}
 
 
 Scrobbler::~Scrobbler()
 {
-    delete m_submitter;
     delete m_item;
+    delete m_submitter;
 }
 
 
@@ -220,50 +221,56 @@ void Scrobbler::engineNewMetaData( const MetaBundle& bundle, bool trackChanged )
 {
     if ( !trackChanged )
     {
-        // Tags were changed, update them if not yet submitted.
-        // TODO: In this case submit could be enabled if the artist or title
-        // tag was missing initially and disabled submit
         debug() << "It's still the same track." << endl;
-        if ( m_item )
-        {
-            m_item->setArtist( bundle.artist() );
-            m_item->setAlbum( bundle.album() );
-            m_item->setTitle( bundle.title() );
-        }
+        m_item->setArtist( bundle.artist() );
+        m_item->setAlbum( bundle.album() );
+        m_item->setTitle( bundle.title() );
         return;
     }
+
     //to work around xine bug, we have to explictly prevent submission the first few seconds of a track
     //http://sourceforge.net/tracker/index.php?func=detail&aid=1401026&group_id=9655&atid=109655
     m_timer.stop();
     m_timer.start( 10000, true );
 
+    m_startPos = 0;
+
     // Plugins must not submit tracks played from online radio stations, even
     // if they appear to be providing correct metadata.
-    if ( bundle.streamUrl() != NULL ) {
+    if ( bundle.streamUrl() != NULL )
+    {
         debug() << "Won't submit: It's a stream." << endl;
         m_validForSending = false;
     }
-    else if( bundle.podcastBundle() != NULL ) {
+    else if( bundle.podcastBundle() != NULL )
+    {
         debug() << "Won't submit: It's a podcast." << endl;
         m_validForSending = false;
     }
     else
     {
-        delete m_item;
+        *m_item = SubmitItem( bundle.artist(), bundle.album(), bundle.title(), bundle.length() );
+        m_validForSending = true; // check length etc later
+    }
+}
 
-        // Songs with no artist or title data or a duration of less than
-        // 30 seconds must not be submitted.
-        if ( bundle.artist() != NULL && bundle.title() != NULL && bundle.length() >= 30 )
-        {
-            m_item = new SubmitItem( bundle.artist(), bundle.album(), bundle.title(), bundle.length() );
-            m_validForSending = true;
-        }
-        else
-        {
-            m_item = 0;
-            m_validForSending = false;
-            debug() << "Won't submit: No artist, no title, or less than 30 seconds." << endl;;
-        }
+
+/**
+ * Called when cue file detects track change
+ */
+void Scrobbler::subTrack( long currentPos, long startPos, long endPos )
+{
+    //debug() << "trackLength: " << currentPos << ":" << startPos << ":" << endPos << endl;
+    *m_item = SubmitItem( m_item->artist(), m_item->album(), m_item->title(), endPos - startPos );
+    if ( currentPos <= startPos + 2 ) // only submit if starting from the start of the track (need to allow 2 second difference for rounding/delay)
+    {
+        m_startPos = startPos * 1000;
+        m_validForSending = true;
+    }
+    else
+    {
+        debug() << "Won't submit: Detected cuefile jump to " << currentPos - startPos << " seconds into track." << endl;
+        m_validForSending = false;
     }
 }
 
@@ -273,7 +280,7 @@ void Scrobbler::engineNewMetaData( const MetaBundle& bundle, bool trackChanged )
  */
 void Scrobbler::engineTrackPositionChanged( long position, bool userSeek )
 {
-    if ( !m_validForSending || !m_item || m_timer.isActive() )
+    if ( !m_validForSending || m_timer.isActive() )
         return;
 
     if ( userSeek )
@@ -285,10 +292,12 @@ void Scrobbler::engineTrackPositionChanged( long position, bool userSeek )
 
     // Each track must be submitted to the server when it is 50% or 240
     // seconds complete, whichever comes first.
-    if ( position > 240 * 1000 || position > 0.5 * m_item->length() * 1000 )
+    if ( position - m_startPos > 240 * 1000 || position - m_startPos > 0.5 * m_item->length() * 1000 )
     {
-        m_submitter->submitItem( m_item );
-        m_item = 0;
+        if ( m_item->valid() )
+            m_submitter->submitItem( new SubmitItem( *m_item ) );
+        else
+            debug() << "Won't submit: No artist, no title, or less than 30 seconds." << endl;
         m_validForSending = false;
     }
 }
@@ -332,6 +341,23 @@ SubmitItem::SubmitItem( const QDomElement& element )
     m_playStartTime = element.namedItem( "playtime" ).toElement().text().toUInt();
 }
 
+
+SubmitItem::SubmitItem()
+    : m_length( 0 )
+    , m_playStartTime( 0 )
+{
+}
+
+/*
+SubmitItem::SubmitItem( const SubmitItem& rhs )
+{
+    m_artist = rhs.m_artist;
+    m_album = rhs.m_album;
+    m_title = rhs.m_title;
+    m_length = rhs.m_length;
+    m_playStartTime = rhs.m_playStartTime; 
+}
+*/
 
 bool SubmitItem::operator==( const SubmitItem& item )
 {

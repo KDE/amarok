@@ -229,6 +229,8 @@ ContextBrowser::ContextBrowser( const char *name )
     m_cuefile = CueFile::instance();
     connect( m_cuefile, SIGNAL(metaData( const MetaBundle& )),
              EngineController::instance(), SLOT(currentTrackMetaDataChanged( const MetaBundle& )) );
+    connect( m_cuefile, SIGNAL(newCuePoint( long, long, long )),
+             Scrobbler::instance(), SLOT(subTrack( long, long, long )) );
 
     addTab( m_contextTab, SmallIconSet( "today" ),    i18n( "Music" ) );
     addTab( m_lyricsTab,  SmallIconSet( "document" ), i18n( "Lyrics" ) );

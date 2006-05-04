@@ -39,6 +39,9 @@ class Scrobbler : public QObject, public EngineObserver
     signals:
         void similarArtistsFetched( const QString& artist, const QStringList& suggestions );
 
+    public slots:
+        void subTrack( long currentPos, long startPos, long endPos ); // cuefiles can update length without track change
+
     protected:
         Scrobbler();
         ~Scrobbler();
@@ -58,6 +61,7 @@ class Scrobbler : public QObject, public EngineObserver
         KIO::Job* m_similarArtistsJob;
         QString m_artist;
         bool m_validForSending;
+        long m_startPos;
         ScrobblerSubmitter* m_submitter;
         SubmitItem* m_item;
 };
@@ -75,12 +79,13 @@ class SubmitItem
             int /*length*/,
             bool now = true );
         SubmitItem( const QDomElement& /* domElement */ );
+        SubmitItem();
 
         bool operator==( const SubmitItem& item );
 
-        const void setArtist( const QString& artist ) { m_artist = artist; }
-        const void setAlbum( const QString& album ) { m_album = album; }
-        const void setTitle( const QString& title ) { m_title = title; }
+        void setArtist( const QString& artist ) { m_artist = artist; }
+        void setAlbum( const QString& album ) { m_album = album; }
+        void setTitle( const QString& title ) { m_title = title; }
         const QString artist() const { return m_artist; }
         const QString album() const { return m_album; }
         const QString title() const { return m_title; }
@@ -88,6 +93,8 @@ class SubmitItem
         const uint playStartTime() const { return m_playStartTime; }
 
         QDomElement toDomElement( QDomDocument& /* document */ ) const;
+
+        bool valid() const { return !m_artist.isEmpty() && !m_title.isEmpty() && m_length >= 30; }
 
     private:
         QString m_artist;
