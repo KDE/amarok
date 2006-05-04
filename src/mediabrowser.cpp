@@ -170,7 +170,6 @@ class DummyMediaDevice : public MediaDevice
         m_name = i18n( "No Device Selected" );
         m_type = "dummy-mediadevice";
         m_medium = Medium( "DummyDevice", "DummyDevice" );
-        m_uniqueId = m_medium.id();
     }
     void init( MediaBrowser *browser ) { MediaDevice::init( browser ); }
     virtual ~DummyMediaDevice() {}
@@ -1392,10 +1391,7 @@ MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/, bool construc
         MediaDevice *device = loadDevicePlugin( handler );
         if( device )
         {
-            device->m_deviceNode = medium->deviceNode();
-            device->m_mountPoint = medium->mountPoint();
             device->m_medium = *medium;
-            device->m_uniqueId = device->m_medium.id();
             addDevice( device );
             if( m_currentDevice == m_devices.begin() || m_currentDevice == m_devices.end() )
                 activateDevice( m_devices.count()-1, false );
@@ -1602,9 +1598,6 @@ MediaBrowser::configSelectPlugin( int index )
     {
         MediaDevice *dev = currentDevice();
         dev->removeConfigElements( m_configBox );
-        //QString uniqueId = dev->uniqueId();
-        //QString deviceNode = dev->deviceNode();
-        //QString mountPoint = dev->mountPoint();
         if( dev->isConnected() )
         {
             dev->disconnectDevice( false );
@@ -1622,9 +1615,6 @@ MediaBrowser::configSelectPlugin( int index )
         }
         dev = currentDevice();
         dev->init( this );
-        //dev->m_uniqueId = dev->m_medium->id();
-        //dev->m_deviceNode = deviceNode;
-        //dev->m_mountPoint = mountPoint;
         dev->loadConfig();
 
         m_configBox->hide();

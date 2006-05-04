@@ -116,7 +116,6 @@ class IpodMediaDevice : public KioMediaDevice
 
         QCheckBox        *m_syncStatsCheck;
         QCheckBox        *m_autoDeletePodcastsCheck;
-        QString           m_mntpnt;
         QFile            *m_lockFile;
 };
 

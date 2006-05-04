@@ -413,7 +413,7 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         /**
          * @return a unique identifier that is constant across sessions
          */
-        QString uniqueId() const { return m_uniqueId; }
+        QString uniqueId() const { return m_medium.id(); }
 
         /**
          * @return the name for the device that should be presented to the user
@@ -423,12 +423,12 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         /**
          * @return the device node
          */
-        QString deviceNode() const { return m_deviceNode; }
+        QString deviceNode() const { return m_medium.deviceNode(); }
 
         /*
          * @return the device mount point (or empty if non-applicable or unknown)
          */
-        QString mountPoint() const { return m_mountPoint; }
+        QString mountPoint() const { return m_medium.mountPoint(); }
 
         QString           getTransferDir() { return m_transferDir; }
         Medium           &getMedium() { return m_medium; }
@@ -539,9 +539,6 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         bool kioCopyTrack( const KURL &src, const KURL &dst );
 
         QString     m_name;
-        QString     m_uniqueId;   //deprecated?
-        QString     m_deviceNode;
-        QString     m_mountPoint;
 
         bool        m_hasMountPoint;
 

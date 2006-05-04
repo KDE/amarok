@@ -836,9 +836,9 @@ IpodMediaDevice::openDevice( bool silent )
             if( devicenode != deviceNode() )
                 continue;
         }
-        else if( !m_mntpnt.isEmpty() )
+        else if( !mountPoint().isEmpty() )
         {
-            if( m_mntpnt != mountpoint )
+            if( mountPoint() != mountpoint )
                 continue;
         }
         else
@@ -864,8 +864,8 @@ IpodMediaDevice::openDevice( bool silent )
             m_itdb = 0;
         }
 
-        m_mountPoint = mountpoint;
-        m_deviceNode = devicenode;
+        if( mountPoint().isEmpty() )
+            m_medium.setMountPoint( mountpoint );
         ipodFound = true;
         break;
     }
@@ -2083,7 +2083,6 @@ IpodMediaDevice::loadConfig()
 {
     MediaDevice::loadConfig();
 
-    m_mntpnt = m_medium.mountPoint();
     m_syncStats = configBool( "SyncStats", false );
     m_autoDeletePodcasts = configBool( "AutoDeletePodcasts", false );
 }
