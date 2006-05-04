@@ -915,20 +915,20 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                     if ( isUnknown )
                         tmptext = "";
                 }
+                matches.clear();
+                matches << tmptext;
+                if( endsInThe( tmptext ) )
+                {
+                    manipulateThe( tmptext );
+                    matches << tmptext;
+                }
+                qb.addMatches( q_cat1, matches, false );
             }
             else
             {
                 qb.setOptions( QueryBuilder::optOnlyCompilations );
                 c = true;
             }
-            matches.clear();
-            matches << tmptext;
-            if( endsInThe( tmptext ) )
-            {
-                manipulateThe( tmptext );
-                matches << tmptext;
-            }
-            qb.addMatches( q_cat1, matches, false );
 
             if ( m_cat2 == QueryBuilder::tabSong )
             {
