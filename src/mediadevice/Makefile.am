@@ -6,7 +6,7 @@ if with_ifp
     IFP_SUBDIR = ifp
 endif
 
-VFAT_SUBDIR = generic
+GENERIC_SUBDIR = generic
 
 METASOURCES = AUTO
 
