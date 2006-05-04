@@ -228,7 +228,7 @@ ContextBrowser::ContextBrowser( const char *name )
 
     m_cuefile = CueFile::instance();
     connect( m_cuefile, SIGNAL(metaData( const MetaBundle& )),
-             EngineController::instance(), SLOT(slotStreamMetaData( const MetaBundle& )) );
+             EngineController::instance(), SLOT(currentTrackMetaDataChanged( const MetaBundle& )) );
 
     addTab( m_contextTab, SmallIconSet( "today" ),    i18n( "Music" ) );
     addTab( m_lyricsTab,  SmallIconSet( "document" ), i18n( "Lyrics" ) );

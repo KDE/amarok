@@ -58,8 +58,6 @@ public:
     void restoreSession();
     void endSession();
 
-    void currentTrackMetaDataChanged( const MetaBundle& bundle ) { m_bundle = bundle; newMetaDataNotify( bundle, false /* no track change */ ); }
-
     //xx000, xx100, xx200, so at most will be 200ms delay before time displays are updated
     static const int MAIN_TIMER = 300;
 
@@ -87,6 +85,7 @@ public slots:
     void mute();
 
     void slotStreamMetaData( const MetaBundle &bundle );
+    void currentTrackMetaDataChanged( const MetaBundle& bundle ) { m_bundle = bundle; newMetaDataNotify( bundle, false /* no track change */ ); }
 
 signals:
     void orderPrevious();
