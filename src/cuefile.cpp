@@ -199,14 +199,11 @@ bool CueFile::load()
 
 void CueFile::engineTrackPositionChanged( long position, bool userSeek )
 {
-    if ( isEmpty() )
-        return;
-
     position /= 1000;
     if(userSeek || position > m_lastSeekPos)
     {
         CueFile::Iterator it;
-        for ( it = end(); it-- != begin(); )
+        for ( it = end(); --it != begin(); )
         {
 //            debug() << "Checking " << position << " against pos " << it.key()/1000 << " title " << it.data().getTitle() << endl;
             if(it.key()/1000 <= position)
