@@ -126,7 +126,13 @@ class GenericMediaFile
 
             if( m_parent )
             {
-                m_viewItem = new GenericMediaItem( m_parent->getViewItem() );
+                if( m_parent == m_device->getInitialFile() )
+                {
+                    m_viewItem = new GenericMediaItem( m_parent->getViewItem() );
+                    m_viewItem->setOpen( true );
+                }
+                else
+                    m_viewItem = new GenericMediaItem( m_parent->getViewItem() );
                 setNamesFromBase( basename );
                 m_viewItem->setText( 0, m_baseName );
                 m_parent->getChildren()->append( this );
@@ -135,6 +141,7 @@ class GenericMediaFile
             else
             {
                 m_viewItem = new GenericMediaItem( m_device->view() );
+                m_viewItem->setVisible( false );
                 setNamesFromBase( basename );
                 m_viewItem->setText( 0, m_fullName );
             }

@@ -55,6 +55,7 @@ class GenericMediaDevice : public MediaDevice
 
         MediaFileMap     &getFileMap() { return m_mfm; }
         MediaItemMap     &getItemMap() { return m_mim; }
+        GenericMediaFile *getInitialFile() { return m_initialFile; }
 
     protected:
         bool              openDevice( bool silent=false );
