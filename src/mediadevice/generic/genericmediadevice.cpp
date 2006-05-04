@@ -52,11 +52,6 @@ AMAROK_EXPORT_PLUGIN( GenericMediaDevice )
 #include <qfile.h>
 #include <qstringx.h>
 
-namespace amaroK {
-    extern KConfig *config( const QString& );
-    extern QString cleanPath( const QString&, bool );
-}
-
 typedef QPtrList<GenericMediaFile> MediaFileList;
 typedef QPtrListIterator<GenericMediaFile> MediaFileListIterator;
 
