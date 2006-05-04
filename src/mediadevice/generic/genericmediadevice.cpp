@@ -723,7 +723,7 @@ GenericMediaDevice::newItems( const KFileItemList &items )
     KFileItem *kfi;
     while ( (kfi = it.current()) != 0 ) {
         ++it;
-        addTrackToList( kfi->isFile() ? MediaItem::TRACK : MediaItem::DIRECTORY, kfi->url().path(-1), 0 );
+        addTrackToList( kfi->isFile() ? MediaItem::TRACK : MediaItem::DIRECTORY, kfi->url(), 0 );
     }
 }
 
