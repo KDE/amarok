@@ -139,7 +139,6 @@ class GenericMediaFile
             {
                 m_viewItem = 0;
                 setNamesFromBase( basename );
-                m_viewItem->setText( 0, m_fullName );
             }
 
             m_device->getItemMap()[m_viewItem] = this;
