@@ -225,7 +225,8 @@ class GenericMediaFile
                 m_fullName = m_baseName;
             m_encodedFullName = QFile::encodeName( m_fullName );
             m_encodedBaseName = QFile::encodeName( m_baseName );
-            m_viewItem->setBundle( new MetaBundle( KURL::fromPathOrURL( m_fullName ), true, TagLib::AudioProperties::Fast ) );
+            if( m_viewItem )
+                m_viewItem->setBundle( new MetaBundle( KURL::fromPathOrURL( m_fullName ), true, TagLib::AudioProperties::Fast ) );
         }
 
         MediaFileList*
