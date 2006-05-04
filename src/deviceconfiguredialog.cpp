@@ -32,8 +32,8 @@
 #include <kpushbutton.h>
 #include <kwin.h>
 
-DeviceConfigureDialog::DeviceConfigureDialog( const Medium *medium )
-        : KDialogBase( amaroK::mainWindow(), "deviceconfiguredialog", true, QString("Select Plugin for " + medium->name()), Ok|Cancel, Ok, false )
+DeviceConfigureDialog::DeviceConfigureDialog( const Medium &medium )
+        : KDialogBase( amaroK::mainWindow(), "deviceconfiguredialog", true, QString("Select Plugin for " + medium.name()), Ok|Cancel, Ok, false )
 {
     m_medium = new Medium( medium );
     kapp->setTopWidget( this );

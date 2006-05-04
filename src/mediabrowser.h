@@ -175,6 +175,7 @@ class MediaBrowser : public QVBox
         void updateDevices();
         // return bundle for url if it is known to MediaBrowser
         const MetaBundle *getBundle( const KURL &url ) const;
+        bool isQuitting() const { return m_quitting; }
 
     protected slots:
         void transferClicked();
@@ -233,6 +234,7 @@ class MediaBrowser : public QVBox
         ItemMap          m_itemMap;
         KTrader::OfferList m_plugins;
         bool             m_haveDevices;
+        bool             m_quitting;
 };
 
 class MediaView : public KListView
@@ -429,7 +431,7 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         QString mountPoint() const { return m_mountPoint; }
 
         QString           getTransferDir() { return m_transferDir; }
-        Medium *          getMedium() { return m_medium; }
+        Medium           &getMedium() { return m_medium; }
 
         void              setSpacesToUnderscores( bool yesno ) { m_spacesToUnderscores = yesno;
             setConfigBool( "spacesToUnderscores", yesno); }
@@ -555,7 +557,7 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         KShellProcess   *sysProc;
         MediaBrowser    *m_parent;
         MediaView       *m_view;
-        Medium          *m_medium;
+        Medium           m_medium;
         QString          m_transferDir;
         QString          m_firstSort;
         QString          m_secondSort;

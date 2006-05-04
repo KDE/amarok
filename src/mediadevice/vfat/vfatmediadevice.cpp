@@ -360,23 +360,18 @@ bool
 VfatMediaDevice::openDevice( bool /*silent*/ )
 {
     DEBUG_BLOCK
-    if( !m_medium )
-    {
-        debug() << "VFAT openDevice:  no Medium present!" << endl;
-        return false;
-    }
-    if( !m_medium->mountPoint() )
+    if( !m_medium.mountPoint() )
     {
         amaroK::StatusBar::instance()->longMessage( i18n( "Devices handled by this plugin must be mounted first.\n"
                                                           "Please mount the device and click \"Connect\" again." ),
                                                     KDE::StatusBar::Sorry );
         return false;
     }
-    m_actuallyVfat = m_medium->fsType() == "vfat" ? true : false;
+    m_actuallyVfat = m_medium.fsType() == "vfat" ? true : false;
     m_connected = true;
-    m_transferDir = m_medium->mountPoint();
-    m_initialFile = new VfatMediaFile( 0, m_medium->mountPoint(), this );
-    listDir( m_medium->mountPoint() );
+    m_transferDir = m_medium.mountPoint();
+    m_initialFile = new VfatMediaFile( 0, m_medium.mountPoint(), this );
+    listDir( m_medium.mountPoint() );
     connect( this, SIGNAL( startTransfer() ), MediaBrowser::instance(), SLOT( transferClicked() ) );
     return true;
 }
@@ -771,7 +766,7 @@ VfatMediaDevice::dirListerClear()
     m_mfm.clear();
     m_mim.clear();
 
-    m_initialFile = new VfatMediaFile( 0, m_medium->mountPoint(), this );
+    m_initialFile = new VfatMediaFile( 0, m_medium.mountPoint(), this );
 }
 
 void
@@ -844,7 +839,7 @@ VfatMediaDevice::getCapacity( KIO::filesize_t *total, KIO::filesize_t *available
     if( !m_connected ) return false;
 
     KDiskFreeSp* kdf = new KDiskFreeSp( m_parent, "vfat_kdf" );
-    kdf->readDF( m_medium->mountPoint() );
+    kdf->readDF( m_medium.mountPoint() );
     connect(kdf, SIGNAL(foundMountPoint( const QString &, unsigned long, unsigned long, unsigned long )),
                  SLOT(foundMountPoint( const QString &, unsigned long, unsigned long, unsigned long )));
 
@@ -872,7 +867,7 @@ VfatMediaDevice::getCapacity( KIO::filesize_t *total, KIO::filesize_t *available
 void
 VfatMediaDevice::foundMountPoint( const QString & mountPoint, unsigned long kBSize, unsigned long /*kBUsed*/, unsigned long kBAvail )
 {
-    if ( mountPoint == m_medium->mountPoint() ){
+    if ( mountPoint == m_medium.mountPoint() ){
         m_kBSize = kBSize;
         m_kBAvail = kBAvail;
     }
@@ -977,7 +972,7 @@ VfatMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                 break;
 
             case TRANSFER_HERE:
-                m_transferDir = m_medium->mountPoint();
+                m_transferDir = m_medium.mountPoint();
                 emit startTransfer();
                 break;
 

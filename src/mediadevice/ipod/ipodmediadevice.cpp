@@ -1466,14 +1466,53 @@ IpodMediaDevice::writeITunesDB()
     if(m_dbChanged)
     {
         bool ok = false;
-
-        ThreadWeaver::instance()->queueJob( new IpodWriteDBJob( this, m_itdb, m_isShuffle, &ok ) );
-        while( ThreadWeaver::instance()->isJobPending( "IpodWriteDBJob" ) )
+        if( MediaBrowser::instance()->isQuitting() )
         {
-            kapp->processEvents();
-            usleep( 10000 );
-        }
+            if( !m_itdb )
+            {
+                return;
+            }
 
+            GError *error = 0;
+            if ( !itdb_write (m_itdb, &error) )
+            {   /* an error occured */
+                if(error)
+                {
+                    if (error->message)
+                        debug() << "itdb_write error: " << error->message << endl;
+                    else
+                        debug() << "itdb_write error: " << "error->message == 0!" << endl;
+                    g_error_free (error);
+                }
+                error = 0;
+            }
+
+            if( m_isShuffle )
+            {
+                /* write shuffle data */
+                if (!itdb_shuffle_write (m_itdb, &error))
+                {   /* an error occured */
+                    if(error)
+                    {
+                        if (error->message)
+                            debug() << "itdb_shuffle_write error: " << error->message << endl;
+                        else
+                            debug() << "itdb_shuffle_write error: " << "error->message == 0!" << endl;
+                        g_error_free (error);
+                    }
+                    error = 0;
+                }
+            }
+        }
+        else
+        {
+            ThreadWeaver::instance()->queueJob( new IpodWriteDBJob( this, m_itdb, m_isShuffle, &ok ) );
+            while( ThreadWeaver::instance()->isJobPending( "IpodWriteDBJob" ) )
+            {
+                kapp->processEvents();
+                usleep( 10000 );
+            }
+        }
 
         if( ok )
         {
@@ -2044,7 +2083,7 @@ IpodMediaDevice::loadConfig()
 {
     MediaDevice::loadConfig();
 
-    m_mntpnt = m_medium->mountPoint();
+    m_mntpnt = m_medium.mountPoint();
     m_syncStats = configBool( "SyncStats", false );
     m_autoDeletePodcasts = configBool( "AutoDeletePodcasts", false );
 }

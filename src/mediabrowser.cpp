@@ -10,6 +10,7 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
+#include "app.h"
 #include "browserToolBar.h"
 #include "clicklineedit.h"
 #include "collectiondb.h"
@@ -168,8 +169,8 @@ class DummyMediaDevice : public MediaDevice
     {
         m_name = i18n( "No Device Selected" );
         m_type = "dummy-mediadevice";
-        m_medium = new Medium( "DummyDevice", "DummyDevice" );
-        m_uniqueId = m_medium->id();
+        m_medium = Medium( "DummyDevice", "DummyDevice" );
+        m_uniqueId = m_medium.id();
     }
     void init( MediaBrowser *browser ) { MediaDevice::init( browser ); }
     virtual ~DummyMediaDevice() {}
@@ -197,6 +198,7 @@ MediaBrowser::MediaBrowser( const char *name )
         : QVBox( 0, name )
         , m_timer( new QTimer( this ) )
         , m_currentDevice( m_devices.end() )
+        , m_quitting( false )
 {
     s_instance = this;
 
@@ -342,7 +344,7 @@ MediaBrowser::MediaBrowser( const char *name )
     connect( m_deviceCombo,      SIGNAL( activated( int ) ), SLOT( activateDevice( int ) ) );
 
     connect( m_cancelButton,     SIGNAL( clicked() ),        SLOT( cancelClicked() ) );
-    connect( kapp,               SIGNAL( aboutToQuit() ),    SLOT( prepareToQuit() ) );
+    connect( pApp,               SIGNAL( prepareToQuit() ),  SLOT( prepareToQuit() ) );
     connect( CollectionDB::instance(), SIGNAL( tagsChanged( const MetaBundle& ) ),
             SLOT( tagsChanged( const MetaBundle& ) ) );
 
@@ -509,9 +511,20 @@ MediaBrowser::removeDevice( MediaDevice *device )
 
     if( device->isConnected() )
     {
-        device->disconnectDevice( false /* don't run post-disconnect command */ );
+        if( device->disconnectDevice( false /* don't run post-disconnect command */ ) )
+            unloadDevicePlugin( device );
+        else
+        {
+            debug() << "Cannot remove device because disconnect failed" << endl;
+#ifdef UNFREEZE
+            amaroK::StatusBar::instance()->longMessage(
+                    i18n( "Cannot remove device because disconnect failed" ),
+                    KDE::StatusBar::Warning );
+#endif
+        }
     }
-    unloadDevicePlugin( device );
+    else
+        unloadDevicePlugin( device );
 
     updateDevices();
 }
@@ -644,16 +657,23 @@ void
 MediaBrowser::prepareToQuit()
 {
     m_waitForTranscode = false;
-    debug() << "having to remove " << m_devices.count() << " devices" << endl;
-    while( !m_devices.isEmpty() )
+    m_quitting = true;
+    for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
+            it != m_devices.end();
+            ++it )
     {
-        removeDevice( m_devices.last() );
+        if( (*it)->isConnected() )
+            (*it)->disconnectDevice();
     }
 }
 
 MediaBrowser::~MediaBrowser()
 {
-    prepareToQuit();
+    debug() << "having to remove " << m_devices.count() << " devices" << endl;
+    while( !m_devices.isEmpty() )
+    {
+        removeDevice( m_devices.last() );
+    }
 
     queue()->save( amaroK::saveLocation() + "transferlist.xml" );
 
@@ -1383,8 +1403,8 @@ MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/, bool construc
         {
             device->m_deviceNode = medium->deviceNode();
             device->m_mountPoint = medium->mountPoint();
-            device->m_medium = const_cast<Medium *>(medium);
-            device->m_uniqueId = device->m_medium->id();
+            device->m_medium = *medium;
+            device->m_uniqueId = device->m_medium.id();
             addDevice( device );
             if( m_currentDevice == m_devices.begin() || m_currentDevice == m_devices.end() )
                 activateDevice( m_devices.count()-1, false );
@@ -1401,6 +1421,7 @@ MediaBrowser::pluginSelected( const Medium *medium, const QString plugin )
         debug() << "Medium id is " << medium->id() << " and plugin selected is: " << plugin << endl;
         amaroK::config( "MediaBrowser" )->writeEntry( medium->id(), plugin );
 
+        bool success = false;
         for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
                 it != m_devices.end();
                 it++ )
@@ -1409,13 +1430,28 @@ MediaBrowser::pluginSelected( const Medium *medium, const QString plugin )
             {
                 debug() << "removing " << medium->deviceNode() << endl;
                 if( (*it)->isConnected() )
-                    (*it)->disconnectDevice();
-                removeDevice( *it );
+                    if( (*it)->disconnectDevice() )
+                    {
+                        removeDevice( *it );
+                        success = true;
+                    }
                 break;
             }
         }
 
-        mediumAdded( medium, "doesntmatter", false );
+        if( success )
+        {
+            mediumAdded( medium, "doesntmatter", false );
+        }
+        else
+        {
+            debug() << "Cannot change plugin while operation is in progress" << endl;
+#ifdef UNFREEZE
+            amaroK::StatusBar::instance()->longMessage(
+                    i18n( "Cannot change plugin while operation is in progress" ),
+                    KDE::StatusBar::Warning );
+#endif
+        }
     }
     else
         debug() << "Medium id is " << medium->id() << " and you opted not to use a plugin" << endl;
@@ -1471,13 +1507,16 @@ MediaBrowser::mediumRemoved( const Medium *medium, QString name )
             {
                 if( (*it)->isConnected() )
                 {
+                    if( (*it)->disconnectDevice() )
+                        removeDevice( *it );
                     amaroK::StatusBar::instance()->longMessage(
                             i18n( "The device %1 was removed before it was disconnected. "
                                 "In order to avoid possible data loss, press the \"Disconnect\""
                                 "button before disconnecting the device." ).arg( name ),
                             KDE::StatusBar::Warning );
                 }
-                removeDevice( *it );
+                else
+                    removeDevice( *it );
                 break;
             }
         }
@@ -1726,7 +1765,6 @@ MediaDevice::MediaDevice()
     , m_transcodeRemove( false )
     , m_parent( NULL )
     , m_view( NULL )
-    , m_medium( NULL )
     , m_transferDir( QString::null )
     , m_firstSort( QString::null )
     , m_secondSort( QString::null )
@@ -2032,8 +2070,11 @@ MediaDevice::kioCopyTrack( const KURL &src, const KURL &dst )
             tryToRemove = true;
             m_wait = false;
         }
-        usleep(10000);
-        kapp->processEvents( 100 );
+        else
+        {
+            usleep(10000);
+            kapp->processEvents( 100 );
+        }
     }
 
     if( !tryToRemove )
@@ -2082,7 +2123,8 @@ MediaDevice::fileTransferred( KIO::Job *job )  //SLOT
         m_copyFailed = false;
 
         // the track just transferred has not yet been removed from the queue
-        MediaBrowser::instance()->queue()->takeItem( MediaBrowser::instance()->queue()->firstChild() );
+        if( !isCancelled() )
+            MediaBrowser::instance()->queue()->takeItem( MediaBrowser::instance()->queue()->firstChild() );
         m_parent->updateStats();
     }
 
@@ -2120,8 +2162,7 @@ MediaBrowser::transferClicked()
                 updateButtons();
         }
     }
-    if( currentDevice()->m_medium )
-        currentDevice()->m_transferDir = currentDevice()->m_medium->mountPoint();
+    currentDevice()->m_transferDir = currentDevice()->m_medium.mountPoint();
 }
 
 void
@@ -2160,7 +2201,7 @@ MediaBrowser::disconnectClicked()
 
     if( currentDevice() )
     {
-        currentDevice()->disconnectDevice();
+        currentDevice()->disconnectDevice( true );
     }
 
     updateDevices();
@@ -2171,20 +2212,18 @@ MediaBrowser::disconnectClicked()
 bool
 MediaDevice::connectDevice( bool silent )
 {
+    if( !lockDevice( true ) )
+        return false;
+
     runPreConnectCommand();
     openDevice( silent );
     m_parent->updateStats();
     m_parent->updateButtons();
 
     if( !isConnected() )
-        return false;
-
-    while( !lockDevice( true ) )
     {
-        if( isCancelled() )
-            return false;
-        kapp->processEvents();
-        usleep( 10000 );
+        unlockDevice();
+        return false;
     }
 
     if( m_syncStats )
@@ -2250,12 +2289,16 @@ MediaDevice::disconnectDevice( bool postDisconnectHook )
 
     abortTransfer();
 
+    debug() << "disconnecting: hook=" << postDisconnectHook << endl;
+
     if( !lockDevice( true ) )
     {
         m_runDisconnectHook = postDisconnectHook;
         m_deferredDisconnect = true;
+        debug() << "disconnecting: locked" << endl;
         return false;
     }
+    debug() << "disconnecting: ok" << endl;
 
     if( m_syncStats )
     {
@@ -2490,7 +2533,7 @@ MediaDevice::transferFiles()
         if( transcoding )
         {
             if( m_transcodeRemove )
-                QFile( bundle->url().url() ).remove();
+                QFile( bundle->url().path() ).remove();
 
             delete bundle;
             bundle = 0;

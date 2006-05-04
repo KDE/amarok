@@ -894,7 +894,7 @@ bool amaroK::genericEventHandler( QWidget *recipient, QEvent *e )
                       "Use <B>Quit</B> from the menu, or the amaroK tray-icon to exit the application.</qt>" ),
                 i18n( "Docking in System Tray" ), "hideOnCloseInfo" );
         }
-        else kapp->quit();
+        else pApp->quit();
 
         break;
 
@@ -1110,6 +1110,12 @@ QWidget *App::mainWindow() const
 {
     return AmarokConfig::showPlayerWindow() ? static_cast<QWidget*>( m_pPlayerWindow )
                                             : static_cast<QWidget*>( m_pPlaylistWindow );
+}
+
+void App::quit()
+{
+    emit prepareToQuit();
+    KApplication::quit();
 }
 
 namespace amaroK

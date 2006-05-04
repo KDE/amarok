@@ -44,6 +44,7 @@ public:
 	static const uint PROPERTIES_COUNT = 13;
 	static const QString SEPARATOR;
 
+	Medium();
         Medium(const Medium *medium);
 	Medium(const QString &id, const QString &name);
 	static const Medium create(const QStringList &properties);
@@ -87,7 +88,6 @@ public:
 	void setIconName(const QString &iconName);
 
 private:
-	Medium();
 	void loadUserLabel();
 
 	QStringList m_properties;

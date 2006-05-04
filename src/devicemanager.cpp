@@ -253,8 +253,9 @@ DeviceManager::addManualDevice( Medium* added )
 void
 DeviceManager::removeManualDevice( Medium* removed )
 {
-    m_mediumMap.remove( removed->name() );
     emit mediumRemoved( removed, removed->name() );
+    if( m_mediumMap.contains( removed->name() ) )
+        m_mediumMap.remove( removed->name() );
 }
 
 #include "devicemanager.moc"

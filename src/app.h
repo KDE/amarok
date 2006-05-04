@@ -60,6 +60,7 @@ class LIBAMAROK_EXPORT App : public KApplication, public EngineObserver
     signals:
         void useScores( bool use );
         void useRatings( bool use );
+        void prepareToQuit();
     protected: /* for OSD, tray, and dcop */
         void engineStateChanged( Engine::State state, Engine::State oldState = Engine::Empty );
         void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
@@ -85,6 +86,7 @@ class LIBAMAROK_EXPORT App : public KApplication, public EngineObserver
         void setUseScores( bool use );
         void setUseRatings( bool use );
         KIO::Job *trashFiles( const KURL::List &files );
+        void quit();
 
     private slots:
         void slotTrashResult( KIO::Job *job );

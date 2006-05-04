@@ -31,7 +31,7 @@ class DeviceConfigureDialog : public KDialogBase
     Q_OBJECT
 
     public:
-        DeviceConfigureDialog( const Medium *medium );
+        DeviceConfigureDialog( const Medium &medium );
         ~DeviceConfigureDialog();
         bool successful() { return m_accepted; };
 
