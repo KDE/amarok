@@ -128,7 +128,7 @@ class GenericMediaFile
             {
                 if( m_parent == m_device->getInitialFile() )
                 {
-                    m_viewItem = new GenericMediaItem( m_parent->getViewItem() );
+                    m_viewItem = new GenericMediaItem( m_device->view() );
                     m_viewItem->setOpen( true );
                 }
                 else
@@ -140,7 +140,7 @@ class GenericMediaFile
             }
             else
             {
-                m_viewItem = new GenericMediaItem( m_device->view() );
+                m_viewItem = new GenericMediaItem( 0 );
                 m_viewItem->setVisible( false );
                 setNamesFromBase( basename );
                 m_viewItem->setText( 0, m_fullName );
@@ -565,7 +565,7 @@ GenericMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
 
     //the return value just can't be null, as nothing is done with it
     //other than to see if it is NULL or not
-    return m_initialFile->getViewItem();
+    return m_view()->firstChild();
 }
 
 //Somewhat related...
@@ -639,7 +639,7 @@ GenericMediaDevice::downloadSelectedItems()
 KURL::List
 GenericMediaDevice::getSelectedItems()
 {
-    return m_view->nodeBuildDragList( m_initialFile->getViewItem(), true );
+    return m_view->nodeBuildDragList( m_view->firstChild(), true );
 }
 
 /// Deleting
