@@ -663,7 +663,7 @@ MediaBrowser::prepareToQuit()
             ++it )
     {
         if( (*it)->isConnected() )
-            (*it)->disconnectDevice();
+            (*it)->disconnectDevice( false /* don't unmount */ );
     }
 }
 
@@ -1421,7 +1421,7 @@ MediaBrowser::pluginSelected( const Medium *medium, const QString plugin )
         debug() << "Medium id is " << medium->id() << " and plugin selected is: " << plugin << endl;
         amaroK::config( "MediaBrowser" )->writeEntry( medium->id(), plugin );
 
-        bool success = false;
+        bool success = true;
         for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
                 it != m_devices.end();
                 it++ )
@@ -1430,11 +1430,14 @@ MediaBrowser::pluginSelected( const Medium *medium, const QString plugin )
             {
                 debug() << "removing " << medium->deviceNode() << endl;
                 if( (*it)->isConnected() )
-                    if( (*it)->disconnectDevice() )
-                    {
+                {
+                    if( (*it)->disconnectDevice( false ) )
                         removeDevice( *it );
-                        success = true;
-                    }
+                    else
+                        success = false;
+                }
+                else
+                    removeDevice( *it );
                 break;
             }
         }
