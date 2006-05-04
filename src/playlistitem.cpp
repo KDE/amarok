@@ -663,7 +663,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                 int margin      = listView()->itemMargin();
 
                 const float  colorize  = 0.8;
-                const double intensity = 1.0 - glowIntensity * 0.023;
+                const double intensity = 1.0 - glowIntensity * 0.021;
 
                 // Left part
                 if( column == listView()->m_firstColumn ) {
@@ -957,7 +957,7 @@ void PlaylistItem::setup()
 
     // We make the current track item a bit taller than ordinary items
     if( this == listView()->currentTrack() )
-        setHeight( int( float( listView()->fontMetrics().height() ) * 1.52 ) );
+        setHeight( int( float( listView()->fontMetrics().height() ) * 1.53 ) );
 }
 
 
