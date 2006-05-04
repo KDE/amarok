@@ -137,7 +137,7 @@ class GenericMediaFile
             }
             else
             {
-                m_viewItem = new GenericMediaItem( 0 );
+                m_viewItem = 0;
                 setNamesFromBase( basename );
                 m_viewItem->setText( 0, m_fullName );
             }
@@ -561,7 +561,7 @@ GenericMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
 
     //the return value just can't be null, as nothing is done with it
     //other than to see if it is NULL or not
-    return m_view()->firstChild();
+    return static_cast<MediaItem*>(m_view->firstChild());
 }
 
 //Somewhat related...
@@ -635,7 +635,7 @@ GenericMediaDevice::downloadSelectedItems()
 KURL::List
 GenericMediaDevice::getSelectedItems()
 {
-    return m_view->nodeBuildDragList( m_view->firstChild(), true );
+    return m_view->nodeBuildDragList( static_cast<MediaItem*>(m_view->firstChild()), true );
 }
 
 /// Deleting
