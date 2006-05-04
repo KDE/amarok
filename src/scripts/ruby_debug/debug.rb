@@ -15,19 +15,17 @@ $debug_prefix = "" #this is global, so doesn't seem like it would work well
  #
  # Usage:
  #
- #     def function()
- #         Debug_Block
- #
+ #     debugMethod( :mymethod )
  #         debug "output1"
  #         debug "output2"
  #     end
  #
  # Will output:
  #
- #     BEGIN: function()
+ #     BEGIN: mymethod()
  #       [prefix] output1
  #       [prefix] output2
- #     END: function() - Took 0.1s
+ #     END:   mymethod() - Took 0.1s
  #
 
 module DebugMethods
@@ -35,7 +33,7 @@ module DebugMethods
     #from http://split-s.blogspot.com/2006/02/design-by-contract-for-ruby.html
     @@pending = Hash.new { |hash, key| hash[key] = {} }
 
-    private 
+    private
 
     def self.extract(this, method_name)
         old_method = this.instance_method(method_name) if !method_name.nil? && this.method_defined?(method_name)
@@ -50,7 +48,7 @@ module DebugMethods
     def self.included(mod)
         old_method_added = mod.method :method_added
 
-        new_method_added = lambda { |id|             
+        new_method_added = lambda { |id|
             if @@pending.has_key? mod
                 # save the list of methods and clear the entry
                 # otherwise, we'll have infinite recursion on the call to mod.send(...)
@@ -85,7 +83,7 @@ module DebugMethods
                         puts "#{$app_name}: #{indent}BEGIN: #{method_name.to_s}() "
                         t1 = Time.new
                         returnValue = old_method.bind(self).call(*args)
-                        puts "#{$app_name}: #{indent}END: #{method_name.to_s} - Took #{Time.new - t1}s"
+                        puts "#{$app_name}: #{indent}END:   #{method_name.to_s} - Took #{Time.new - t1}s"
                         return returnValue
                     }
                 else
@@ -132,16 +130,16 @@ end
 if $0 == __FILE__
 
 $app_name = "deBugger"
-$debug_prefix = "header" 
+$debug_prefix = "header"
 
 class Foo
     include DebugMethods
-    
+
     debugMethod(:funA)
     def funA()
         funB()
     end
-    
+
     debugMethod(:funB)
     def funB()
         debug( "This is a test" )
