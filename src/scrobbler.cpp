@@ -984,7 +984,7 @@ SubmitItem* ScrobblerSubmitter::dequeueItem()
     {
         if( item->playStartTime() < m_lastSubmissionFinishTime )
         {
-            debug() << "play times screwed up? - " << item->artist() << " - " << item->title() << ": " << item->playStartTime() << " < " << m_lastSubmissionFinishTime << endl;
+//            debug() << "play times screwed up? - " << item->artist() << " - " << item->title() << ": " << item->playStartTime() << " < " << m_lastSubmissionFinishTime << endl;
         }
         int add = 30;
         if( item->length() / 2 + 1 > add )
