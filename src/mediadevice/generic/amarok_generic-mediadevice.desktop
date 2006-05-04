@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Service
-Name=Generic VFAT Media Device
+Name=Generic Audio Player
 Name[bg]=Устройство VFAT
 Name[bn]=জেনেরিক ভিফ্যাট মিডিয়া ডিভাইস
 Name[cs]=Obecné VFAT mediální zařízení
@@ -67,7 +67,7 @@ Comment[zh_TW]=amaroK 的外掛程式
 ServiceTypes=amaroK/Plugin
 
 X-KDE-amaroK-plugintype=mediadevice
-X-KDE-amaroK-name=vfat-mediadevice
+X-KDE-amaroK-name=generic-mediadevice
 X-KDE-amaroK-authors=Jeff Mitchell
 X-KDE-amaroK-email=kde-dev@emailgoeshere.com
 X-KDE-amaroK-rank=100
