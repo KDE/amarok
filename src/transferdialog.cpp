@@ -42,15 +42,6 @@ TransferDialog::TransferDialog( MediaDevice *mdev )
 
     QString transferDir = mdev->getTransferDir();
 
-    /*new QLabel( i18n( "Enter the directory to use as the transfer operation's root directory.\n"
-                                       "%1 will be prepended automatically.\n"
-                                       "If the directory does not exist, it will be created.\n" )
-                    .arg( transferDir ), vbox );
-
-    KLineEdit *directoryBox = NULL;
-    directoryBox = new KLineEdit( QString::null, vbox, "transferdir_lineedit" );
-    */
-
     QGroupBox *location = new QGroupBox( 1, Qt::Vertical, i18n( "Music Location" ), vbox );
 
     new QLabel( i18n( "Your music will be transferred to:\n%1" )

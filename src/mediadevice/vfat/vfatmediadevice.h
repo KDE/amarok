@@ -62,9 +62,7 @@ class VfatMediaDevice : public MediaDevice
         void              unlockDevice() {}
         void              synchronizeDevice() {}
 
-        //TODO
         MediaItem        *copyTrackToDevice( const MetaBundle& bundle );
-        //TODO
         int               deleteItemFromDevice( MediaItem *item, bool onlyPlayed = false );
         bool              getCapacity( KIO::filesize_t *total, KIO::filesize_t *available );
         MediaItem        *newDirectory( const QString &name, MediaItem *parent );
@@ -105,8 +103,7 @@ class VfatMediaDevice : public MediaDevice
         //TODO
         void              downloadSelectedItems();
 
-        //TODO
-        void              copyTrackSortHelper( const MetaBundle& bundle, QString& sort, QString& temp, QString& base );
+        void              copyTrackSortHelper( const MetaBundle& bundle, QString& sort, QString& base );
 
         KURL::List        getSelectedItems();
 
@@ -115,9 +112,6 @@ class VfatMediaDevice : public MediaDevice
         int               addTrackToList( int type, KURL name, int size=0 );
 
         // miscellaneous methods
-
-        //TODO: remove when possible!
-        QString           getFullPath( const QListViewItem *item, const bool getFilename = true, const bool prependMount = true, const bool clean = true );
 
         QString           cleanPath( const QString &component );
 

@@ -157,8 +157,10 @@ class VfatMediaFile
                 m_parent->removeChild( this );
             m_device->getItemMap().erase( m_viewItem );
             m_device->getFileMap().erase( m_fullName );
-            delete m_children;
-            delete m_viewItem;
+            if ( m_children )
+                delete m_children;
+            if ( m_viewItem )
+                delete m_viewItem;
         }
 
         VfatMediaFile*
@@ -321,7 +323,6 @@ VfatMediaDevice::VfatMediaDevice()
     m_dirLister->setNameFilter( "*.mp3 *.wav *.asf *.flac *.wma *.ogg *.aac *.m4a" );
     m_dirLister->setAutoUpdate( false );
     m_spacesToUnderscores = false;
-    m_isInCopyTrack = false;
     m_stopDirLister = false;
     m_firstSort = "None";
     m_secondSort = "None";
@@ -490,7 +491,6 @@ VfatMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> items
     for( QPtrListIterator<MediaItem> it(items); *it; ++it )
     {
         VfatMediaItem *currItem = static_cast<VfatMediaItem *>(*it);
-        debug() << "currItem fullname = " << m_mim[currItem]->getFullName() << ", of type " << ((*it)->type() == MediaItem::TRACK ? "track" : ( (*it)->type() == MediaItem::DIRECTORY ? "directory" : "unknown" ) ) << endl;
         QCString src  = m_mim[currItem]->getEncodedFullName();
         QCString dst = dropDir->getEncodedFullName() + "/" + QFile::encodeName( currItem->text(0) );
         debug() << "Moving: " << src << " to: " << dst << endl;
@@ -502,9 +502,7 @@ VfatMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> items
             debug() << "Failed moving " << src << " to " << dst << endl;
         else
         {
-            //debug() << "Entering first refreshDir" << endl;
             refreshDir( m_mim[currItem]->getParent()->getFullName() );
-            //debug() << "Entering second refreshDir" << endl;
             refreshDir( dropDir->getFullName() );
         }
     }
@@ -514,33 +512,29 @@ VfatMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> items
 /// Uploading
 
 void
-VfatMediaDevice::copyTrackSortHelper( const MetaBundle& bundle, QString& sort, QString& temp, QString& base )
+VfatMediaDevice::copyTrackSortHelper( const MetaBundle& bundle, QString& sort, QString& base )
 {
-    QListViewItem *it;
+    DEBUG_BLOCK
+    debug() << "sort = " << sort << endl;
     if( sort != "None" )
     {
-        //debug() << "sort = " << sort << endl;
-        temp = bundle.prettyText( bundle.columnIndex(sort) );
+        QString temp = bundle.prettyText( bundle.columnIndex(sort) );
+        debug() << "temp = " << temp << endl;
         temp = ( temp == QString::null ? "Unknown" : cleanPath(temp) );
-        base += temp + "/";
+        debug() << "temp = " << temp << endl;
+        QString newBase = base + '/' + temp;
+        debug() << "newBase = " << newBase << endl;
 
-        if( !KIO::NetAccess::exists( KURL(base), true, m_parent ) )
-        //   m_tmpParent = static_cast<MediaItem *>(newDirectory( temp, static_cast<MediaItem*>(m_tmpParent) ));
-            debug() << "copyTrackSortHelper: stat failed" << endl;
-        else
+        if( !KIO::NetAccess::exists( KURL( newBase ), false, m_parent ) )
         {
-            //debug() << "m_tmpParent (firstSort) " << m_tmpParent << endl;
-            if( m_tmpParent)
-                it = m_tmpParent->firstChild();
-            else
-                it = m_view->firstChild();
-            while( it && it->text(0) != temp )
+            debug() << "directory does not exist, creating..." << endl;
+            if( !KIO::NetAccess::mkdir( KURL( QFile::encodeName( newBase ) ), m_view ) ) //failed
             {
-                it = it->nextSibling();
-                //debug() << "Looking for next in firstSort, temp = " << temp << ", text(0) = " << it->text(0) << endl;
+                debug() << "Failed to create directory " << temp << endl;
+                return;
             }
-            m_tmpParent = static_cast<MediaItem *>( it );
         }
+        base = newBase;
     }
 }
 
@@ -549,41 +543,34 @@ MediaItem *
 VfatMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
 {
     DEBUG_BLOCK
-    debug() << "dirlister autoupdate = " << (m_dirLister->autoUpdate() ? "true" : "false") << endl;
     if( !m_connected ) return 0;
 
-    m_isInCopyTrack = true;
+    QString  newFilenameSansBaseDir = fileName( bundle );
+    QString  base = m_transferDir;
 
-    debug() << "m_tmpParent = " << m_tmpParent << endl;
-    MediaItem *previousTmpParent = static_cast<MediaItem *>(m_tmpParent);
+    copyTrackSortHelper( bundle, m_firstSort, base);
+    copyTrackSortHelper( bundle, m_secondSort, base);
+    copyTrackSortHelper( bundle, m_thirdSort, base);
 
-    QString  newFilenameSansMountpoint = fileName( bundle );
-    QString  base = m_transferDir + "/";
-    QString  temp;
+    QString  newFilename = base + '/' + newFilenameSansBaseDir;
 
-    copyTrackSortHelper( bundle, m_firstSort, temp, base);
-    copyTrackSortHelper( bundle, m_secondSort, temp, base);
-    copyTrackSortHelper( bundle, m_thirdSort, temp, base);
-
-    QString  newFilename = base + newFilenameSansMountpoint;
-
+    debug() << "base = " << base << ", and newFilename = " << newFilename << endl;
     const QCString dest = QFile::encodeName( newFilename );
     const KURL desturl = KURL::fromPathOrURL( dest );
 
-    kapp->processEvents( 100 );
+    //kapp->processEvents( 100 );
 
-    //if( KIO::NetAccess::file_copy( bundle.url(), desturl, -1, false, false, m_parent) ) //success
-    if( kioCopyTrack( bundle.url(), desturl ) )
+    if( !kioCopyTrack( bundle.url(), desturl ) )
     {
-        addTrackToList( MediaItem::TRACK, newFilenameSansMountpoint );
-        m_tmpParent = previousTmpParent;
-        m_isInCopyTrack = false;
-        return m_last;
+        debug() << "Failed to copy track: " << bundle.url().path(-1) << " to " << desturl.path(-1) << endl;
+        return 0;
     }
 
-    m_tmpParent = previousTmpParent;
-    m_isInCopyTrack = false;
-    return 0;
+    refreshDir( m_transferDir );
+
+    //the return value just can't be null, as nothing is done with it
+    //other than to see if it is NULL or not
+    return m_initialFile->getViewItem();
 }
 
 //Somewhat related...
@@ -695,37 +682,21 @@ VfatMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/ )
 {
     if( !item || !m_connected ) return -1;
 
-    QString path = getFullPath( item );
+    #define item static_cast<VfatMediaItem*>(item)
 
-    QCString encodedPath = QFile::encodeName( path );
-    debug() << "Deleting file: " << encodedPath << endl;
-    bool flag = true;
-    int count = 0;
+    QCString encodedPath = m_mim[item]->getEncodedFullName();
+    debug() << "Deleting path: " << encodedPath << endl;
 
-    switch( item->type() )
+    if ( !KIO::NetAccess::del( KURL(encodedPath), m_view ))
     {
-        case MediaItem::DIRECTORY:
-            if ( !KIO::NetAccess::del( KURL(encodedPath), m_parent ))
-            {
-                debug() << "Error deleting directory: " << encodedPath << endl;
-                flag = false;
-            }
-            count++;
-            break;
-
-        default:
-            if ( !KIO::NetAccess::del( KURL(encodedPath), m_parent ))
-            {
-                debug() << "Error deleting file: " << encodedPath << endl;
-                flag = false;
-            }
-            count++;
-            break;
+        debug() << "Could not delete!" << endl;
+        return -1;
     }
-    if( flag ) //success
-        delete item;
 
-    return flag ? count : -1;
+    delete m_mim[item];
+
+    #undef item
+    return 1;
 }
 
 /// Directory Reading
@@ -752,11 +723,11 @@ void
 VfatMediaDevice::listDir( const QString &dir )
 {
     DEBUG_BLOCK
+    m_dirListerComplete = false;
     if( m_mfm[dir]->getListed() )
         m_dirLister->updateDirectory( KURL(dir) );
     else
     {
-        //debug() << "in listDir, dir = " << dir << endl;
         m_dirLister->openURL( KURL(dir), true, true );
         m_mfm[dir]->setListed( true );
     }
@@ -766,7 +737,7 @@ void
 VfatMediaDevice::refreshDir( const QString &dir )
 {
     DEBUG_BLOCK
-    //debug() << "refreshDir, dir = " << dir << endl;
+    m_dirListerComplete = false;
     m_dirLister->updateDirectory( KURL(dir) );
 }
 
@@ -909,39 +880,6 @@ VfatMediaDevice::foundMountPoint( const QString & mountPoint, unsigned long kBSi
 
 /// Helper functions
 
-QString
-VfatMediaDevice::getFullPath( const QListViewItem *item, const bool getFilename, const bool prependMount, const bool clean )
-{
-    //DEBUG_BLOCK
-    if( !item ) return QString::null;
-
-    QString path;
-
-    if ( getFilename && clean )
-        path = cleanPath(item->text(0));
-    else if( getFilename )
-        path = item->text(0);
-
-    QListViewItem *parent = item->parent();
-
-    while( parent )
-    {
-        path.prepend( "/" );
-        path.prepend( ( clean ? cleanPath(parent->text(0)) : parent->text(0) ) );
-        parent = parent->parent();
-    }
-
-    //debug() << "path before prependMount = " << path << endl;
-    if( prependMount )
-        path.prepend( m_medium->mountPoint() + "/" );
-
-    //debug() << "path after prependMount = " << path << endl;
-
-    return path;
-
-}
-
-
 void
 VfatMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
 {
@@ -1040,7 +978,6 @@ VfatMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
 
             case TRANSFER_HERE:
                 m_transferDir = m_medium->mountPoint();
-                m_tmpParent = NULL;
                 emit startTransfer();
                 break;
 
