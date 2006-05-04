@@ -972,7 +972,7 @@ QString GenericMediaDevice::cleanPath( const QString &component )
     if( m_spacesToUnderscores )
         result.replace( QRegExp( "\\s" ), "_" );
     if( m_actuallyVfat )
-        result = amaroK::genericPath( result );
+        result = amaroK::vfatPath( result );
 
     result.replace( "/", "-" );
 
