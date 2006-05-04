@@ -2305,10 +2305,6 @@ MediaDevice::disconnectDevice( bool postDisconnectHook )
     else
         amaroK::StatusBar::instance()->shortMessage( i18n( "Device successfully disconnected" ) );
 
-    //FIXME aumuell, if you need this here for some reason, please exclude VFAT devices
-    //unless there is a good reason not to
-    //m_deviceNode = "";
-
     return result;
 }
 
