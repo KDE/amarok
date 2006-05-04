@@ -45,9 +45,11 @@ class VfatMediaDevice : public MediaDevice
         bool              isConnected() { return m_connected; }
 
         void              rmbPressed( QListViewItem* qitem, const QPoint& point, int );
+
         bool              hasTransferDialog() { return true; }
         void              runTransferDialog();
         TransferDialog   *getTransferDialog() { return m_td; }
+
         bool              needsManualConfig() { return false; }
         void              loadConfig();
 
@@ -58,22 +60,25 @@ class VfatMediaDevice : public MediaDevice
         bool              openDevice( bool silent=false );
         bool              closeDevice();
 
-        bool              lockDevice( bool ) { return true; }
-        void              unlockDevice() {}
-        void              synchronizeDevice() {}
-
         MediaItem        *copyTrackToDevice( const MetaBundle& bundle );
         int               deleteItemFromDevice( MediaItem *item, bool onlyPlayed = false );
-        bool              getCapacity( KIO::filesize_t *total, KIO::filesize_t *available );
         MediaItem        *newDirectory( const QString &name, MediaItem *parent );
         void              addToDirectory( MediaItem *directory, QPtrList<MediaItem> items );
 
+        bool              getCapacity( KIO::filesize_t *total, KIO::filesize_t *available );
+        QString           fileName( const MetaBundle & );
+
+        //methods not implemented/needed
+        bool              lockDevice( bool ) { return true; }
+        void              unlockDevice() {}
+        void              synchronizeDevice() {}
         void              addToPlaylist( MediaItem *, MediaItem *, QPtrList<MediaItem> ) {}
         MediaItem        *newPlaylist( const QString &, MediaItem *, QPtrList<MediaItem> ) { return 0; }
-        QString           fileName( const MetaBundle & );
+
 
     signals:
         void              startTransfer();
+
 
     protected slots:
         void              renameItem( QListViewItem *item );
@@ -87,55 +92,33 @@ class VfatMediaDevice : public MediaDevice
         void              dirListerClear( const KURL &url );
         void              dirListerDeleteItem( KFileItem *fileitem );
 
-        //TODO
-        void              downloadSlotRedirection( KIO::Job *job, const KURL &url );
-        //TODO
-        void              downloadSlotResult( KIO::Job *job );
-        //TODO
-        void              downloadSlotEntries( KIO::Job *, const KIO::UDSEntryList &entries );
 
     private:
         enum              Error { ERR_ACCESS_DENIED, ERR_CANNOT_RENAME, ERR_DISK_FULL, ERR_COULD_NOT_WRITE };
 
         MediaItem        *trackExists( const MetaBundle& );
 
-        // file transfer
-        //TODO
+        KURL::List        getSelectedItems();
         void              downloadSelectedItems();
-
         void              copyTrackSortHelper( const MetaBundle& bundle, QString& sort, QString& base );
 
-        KURL::List        getSelectedItems();
-
-        // listDir
         void              listDir( const QString &dir );
         int               addTrackToList( int type, KURL name, int size=0 );
 
-        // miscellaneous methods
-
         QString           cleanPath( const QString &component );
 
-        VfatMediaItem     *m_last;
         VfatMediaFile     *m_initialFile;
-        //TODO: remove when possible!
-        //used to specify new VfatMediaItem parent. Make sure it is restored to 0 (m_listview)
-        QListViewItem     *m_tmpParent;
 
         KIO::filesize_t   m_kBSize;
         KIO::filesize_t   m_kBAvail;
 
         KDirLister        *m_dirLister;
-        KIO::UDSEntry     m_udsentry;
 
         TransferDialog    *m_td;
         bool              m_actuallyVfat;
-        bool              m_isInCopyTrack;
-        bool              m_stopDirLister;
         bool              m_dirListerComplete;
         bool              m_connected;
         KURL::List        m_downloadList;
-        bool              m_downloadListerFinished;
-        KURL              m_currentJobUrl;
         MediaFileMap      m_mfm;
         MediaItemMap      m_mim;
 };

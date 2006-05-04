@@ -306,7 +306,6 @@ VfatMediaDevice::fileName( const MetaBundle &bundle )
 
 VfatMediaDevice::VfatMediaDevice()
     : MediaDevice()
-    , m_tmpParent( 0 )
     , m_kBSize( 0 )
     , m_kBAvail( 0 )
     , m_connected( false )
@@ -318,7 +317,6 @@ VfatMediaDevice::VfatMediaDevice()
     m_dirLister->setNameFilter( "*.mp3 *.wav *.asf *.flac *.wma *.ogg *.aac *.m4a" );
     m_dirLister->setAutoUpdate( false );
     m_spacesToUnderscores = false;
-    m_stopDirLister = false;
     m_firstSort = "None";
     m_secondSort = "None";
     m_thirdSort = "None";
@@ -635,34 +633,6 @@ KURL::List
 VfatMediaDevice::getSelectedItems()
 {
     return m_view->nodeBuildDragList( m_initialFile->getViewItem(), true );
-}
-
-void
-VfatMediaDevice::downloadSlotResult( KIO::Job *job )
-{
-    if( job->error() )
-        debug() << "downloadSlotResult: ListJob reported an error!  Error code = " << job->error() << endl;
-    m_downloadListerFinished = true;
-}
-
-void
-VfatMediaDevice::downloadSlotRedirection( KIO::Job */*job*/, const KURL &url )
-{
-    m_currentJobUrl = url;
-}
-
-void
-VfatMediaDevice::downloadSlotEntries(KIO::Job */*job*/, const KIO::UDSEntryList &entries)
-{
-        KIO::UDSEntryListConstIterator it = entries.begin();
-        KIO::UDSEntryListConstIterator end = entries.end();
-
-        for (; it != end; ++it)
-        {
-                KFileItem file(*it, m_currentJobUrl, false /* no mimetype detection */, true);
-                if (!file.isDir())
-                        m_downloadList.append(KURL( file.url().path() ) );
-        }
 }
 
 /// Deleting
