@@ -955,8 +955,9 @@ void PlaylistItem::setup()
 {
     KListViewItem::setup();
 
+    // We make the current track item a bit taller than ordinary items
     if( this == listView()->currentTrack() )
-        setHeight( int( float( listView()->fontMetrics().height() ) * 1.7 ) );
+        setHeight( int( float( listView()->fontMetrics().height() ) * 1.52 ) );
 }
 
 
