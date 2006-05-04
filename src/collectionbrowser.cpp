@@ -890,7 +890,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
         qb.addFilter( QueryBuilder::tabSong, QueryBuilder::valCreateDate, QString().setNum( QDateTime::currentDateTime().toTime_t() - translateTimeFilter( timeFilter() ) ), QueryBuilder::modeGreater );
 
     QString itemText;
-    bool isUnknown = itemText.isEmpty();
+    bool isUnknown;
     QStringList matches;
     if ( dynamic_cast<CollectionItem*>( item ) )
         itemText = static_cast<CollectionItem*>( item )->getSQLText( 0 );
@@ -904,6 +904,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     {
         case 0:
             tmptext = itemText;
+            isUnknown = tmptext.isEmpty();
             if ( tmptext != i18n( "Various Artists" ) )
             {
                 if( VisYearAlbum == 1 )
@@ -2058,12 +2059,6 @@ CollectionView::listSelected()
 
             tmptext = static_cast<CollectionItem*>( item )->getSQLText( 0 );
             unknownText = tmptext.isEmpty();
-            QStringList matches( tmptext );
-
-            if( endsInThe( tmptext ) ) {
-                manipulateThe( tmptext );
-                matches << tmptext;
-            }
 
             if ( !sampler )
             {
@@ -2073,10 +2068,17 @@ CollectionView::listSelected()
                     QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
                     yearAlbumCalc( year, tmptext );
                     qb.addMatch( QueryBuilder::tabYear, year );
-                    qb.addMatch( q_cat1, unknownText ? "" : tmptext, false );
+                    if ( unknownText )
+                        tmptext = "";
                 }
-                else
-                    qb.addMatches( q_cat1, matches, false );
+                QStringList matches( tmptext );
+
+                if( endsInThe( tmptext ) ) {
+                    manipulateThe( tmptext );
+                    matches << tmptext;
+                }
+
+                qb.addMatches( q_cat1, matches, false );
             }
             else
                 qb.setOptions( QueryBuilder::optOnlyCompilations );
@@ -2140,12 +2142,6 @@ CollectionView::listSelected()
 
                         tmptext = static_cast<CollectionItem*>( item )->getSQLText( 0 );
                         unknownText = tmptext.isEmpty();
-                        QStringList matches( tmptext );
-
-                        if( endsInThe( tmptext ) ) {
-                            manipulateThe( tmptext );
-                            matches << tmptext;
-                        }
 
                         if( VisYearAlbum == 1 )
                         {
@@ -2153,10 +2149,17 @@ CollectionView::listSelected()
                             QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
                             yearAlbumCalc( year, tmptext );
                             qb.addMatch( QueryBuilder::tabYear, year );
-                            qb.addMatch( q_cat1, unknownText ? "" : tmptext, false );
+                            if ( unknownText )
+                                tmptext = "";
                         }
-                        else
-                            qb.addMatches( q_cat1, matches, false );
+                        QStringList matches( tmptext );
+
+                        if( endsInThe( tmptext ) ) {
+                            manipulateThe( tmptext );
+                            matches << tmptext;
+                        }
+
+                        qb.addMatches( q_cat1, matches, false );
                     }
                     else
                         qb.setOptions( QueryBuilder::optOnlyCompilations );
@@ -2164,12 +2167,6 @@ CollectionView::listSelected()
 
                     tmptext = static_cast<CollectionItem*>( child )->getSQLText( 0 );
                     unknownText = tmptext.isEmpty();
-                    QStringList matches( tmptext );
-
-                    if( endsInThe( tmptext ) ) {
-                        manipulateThe( tmptext );
-                        matches << tmptext;
-                    }
 
                     if( VisYearAlbum == 2 )
                     {
@@ -2177,10 +2174,17 @@ CollectionView::listSelected()
                         QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
                         yearAlbumCalc( year, tmptext );
                         qb.addMatch( QueryBuilder::tabYear, year );
-                        qb.addMatch( q_cat2, unknownText ? "" : tmptext, false );
+                        if ( unknownText )
+                            tmptext = "";
                     }
-                    else
-                        qb.addMatches( q_cat2, matches, false );
+                    QStringList matches( tmptext );
+
+                    if( endsInThe( tmptext ) ) {
+                        manipulateThe( tmptext );
+                        matches << tmptext;
+                    }
+
+                    qb.addMatches( q_cat2, matches, false );
 
                     qb.setGoogleFilter( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, m_filter );
 
@@ -2251,12 +2255,6 @@ CollectionView::listSelected()
                         {
                             tmptext = static_cast<CollectionItem*>( item )->getSQLText( 0 );
                             unknownText = tmptext.isEmpty();
-                            QStringList matches( tmptext );
-
-                            if( endsInThe( tmptext ) ) {
-                                manipulateThe( tmptext );
-                                matches << tmptext;
-                            }
 
                             if( VisYearAlbum == 1 )
                             {
@@ -2264,22 +2262,22 @@ CollectionView::listSelected()
                                 QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
                                 yearAlbumCalc( year, tmptext );
                                 qb.addMatch( QueryBuilder::tabYear, year );
-                                qb.addMatch( q_cat1, unknownText ? "" : tmptext, false );
+                                if ( unknownText )
+                                    tmptext = "";
                             }
-                            else
-                                qb.addMatches( q_cat1, matches, false );
+                            QStringList matches( tmptext );
+
+                            if( endsInThe( tmptext ) ) {
+                                manipulateThe( tmptext );
+                                matches << tmptext;
+                            }
+                            qb.addMatches( q_cat1, matches, false );
                         }
                         else
                             qb.setOptions( QueryBuilder::optOnlyCompilations );
 
                         tmptext = static_cast<CollectionItem*>( child )->getSQLText( 0 );
                         unknownText = tmptext.isEmpty();
-                        QStringList matches( tmptext );
-
-                        if( endsInThe( tmptext ) ) {
-                            manipulateThe( tmptext );
-                            matches << tmptext;
-                        }
 
                         if( VisYearAlbum == 2 )
                         {
@@ -2287,20 +2285,21 @@ CollectionView::listSelected()
                             QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
                             yearAlbumCalc( year, tmptext );
                             qb.addMatch( QueryBuilder::tabYear, year );
-                            qb.addMatch( q_cat2, unknownText ? "" : tmptext, false );
+                            if ( unknownText )
+                                tmptext = "";
                         }
-                        else
-                            qb.addMatches( q_cat2, matches, false );
+                        QStringList matches( tmptext );
+
+                        if( endsInThe( tmptext ) ) 
+                        {
+                            manipulateThe( tmptext );
+                            matches << tmptext;
+                        }
+                        qb.addMatches( q_cat2, matches, false );
 
                         matches.clear();
                         tmptext = static_cast<CollectionItem*>( grandChild )->getSQLText( 0 );
                         unknownText = tmptext.isEmpty();
-                        matches << tmptext;
-
-                        if( endsInThe( tmptext ) ) {
-                            manipulateThe( tmptext );
-                            matches << tmptext;
-                        }
 
                         if( VisYearAlbum == 3 )
                         {
@@ -2308,10 +2307,18 @@ CollectionView::listSelected()
                             QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
                             yearAlbumCalc( year, tmptext );
                             qb.addMatch( QueryBuilder::tabYear, year );
-                            qb.addMatch( q_cat3, unknownText ? "" : tmptext, false );
+                            if ( unknownText )
+                                tmptext = "";
                         }
-                        else
-                            qb.addMatches( q_cat3, matches, false );
+                        matches.clear();
+                        matches << tmptext;
+
+                        if( endsInThe( tmptext ) ) 
+                        {
+                            manipulateThe( tmptext );
+                            matches << tmptext;
+                        }
+                        qb.addMatches( q_cat3, matches, false );
 
                         qb.setGoogleFilter( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, m_filter );
 
