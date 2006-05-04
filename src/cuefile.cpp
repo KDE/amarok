@@ -199,6 +199,9 @@ bool CueFile::load()
 
 void CueFile::engineTrackPositionChanged( long position, bool userSeek )
 {
+    if ( isEmpty() )
+        return;
+
     position /= 1000;
     if(userSeek || position > m_lastSeekPos)
     {
