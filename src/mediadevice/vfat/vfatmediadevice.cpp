@@ -58,6 +58,7 @@ namespace amaroK {
 }
 
 typedef QPtrList<VfatMediaFile> MediaFileList;
+typedef QPtrListIterator<VfatMediaFile> MediaFileListIterator;
 
 /**
  * VfatMediaItem Class
@@ -119,6 +120,7 @@ class VfatMediaFile
         : m_parent( parent )
         , m_device( device )
         {
+            DEBUG_BLOCK
             m_listed = false;
             m_children = new MediaFileList();
 
@@ -128,6 +130,7 @@ class VfatMediaFile
                 setNamesFromBase( basename );
                 m_viewItem->setText( 0, m_baseName );
                 m_parent->getChildren()->append( this );
+                debug() << "m_parent's getChildren count is: " << m_parent->getChildren()->count() << endl;
             }
             else
             {
@@ -153,6 +156,8 @@ class VfatMediaFile
 
         ~VfatMediaFile()
         {
+            DEBUG_BLOCK
+            debug() << "removing: " << m_fullName << endl;
             if( m_parent )
                 m_parent->removeChild( this );
             m_device->getItemMap().erase( m_viewItem );
@@ -224,32 +229,22 @@ class VfatMediaFile
         getChildren() { return m_children; }
 
         void
-        deleteAllChildren()
+        deleteAll( bool onlyChildren )
         {
+            DEBUG_BLOCK
+            debug() << "deleteAll...m_fullName is " << m_fullName << " and children count is: " << (m_children ? QString("%1").arg(m_children->count()) : "Undefined" ) << endl;
             VfatMediaFile *vmf;
             if( m_children && !m_children->isEmpty() )
             {
-                for( vmf = m_children->first(); vmf; vmf = m_children->next() )
+                MediaFileListIterator it( *m_children );
+                while( ( vmf = it.current() ) != 0 )
                 {
-                    vmf->deleteAll();
-                    m_children->remove( vmf );
+                    ++it;
+                    vmf->deleteAll( true );
                 }
             }
-        }
-
-        void
-        deleteAll()
-        {
-            VfatMediaFile *vmf;
-            if( m_children && !m_children->isEmpty() )
-            {
-                for( vmf = m_children->first(); vmf; vmf = m_children->next() )
-                {
-                    vmf->deleteAll();
-                    m_children->remove( vmf );
-                }
-            }
-            delete this;
+            if( onlyChildren )
+                delete this;
         }
 
         void
@@ -381,7 +376,7 @@ VfatMediaDevice::closeDevice()  //SLOT
 {
     if( m_connected )
     {
-        m_initialFile->deleteAll();
+        m_initialFile->deleteAll( true );
         m_view->clear();
         m_connected = false;
 
@@ -675,6 +670,7 @@ VfatMediaDevice::downloadSlotEntries(KIO::Job */*job*/, const KIO::UDSEntryList 
 int
 VfatMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/ )
 {
+    DEBUG_BLOCK
     if( !item || !m_connected ) return -1;
 
     #define item static_cast<VfatMediaItem*>(item)
@@ -688,7 +684,19 @@ VfatMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/ )
         return -1;
     }
 
-    delete m_mim[item];
+    QString path;
+    if( m_mim[item] == m_initialFile )
+    {
+        m_mim[item]->deleteAll( false );
+        debug() << "Not deleting root directory of mount!" << endl;
+        path = m_initialFile->getFullName();
+    }
+    else
+    {
+        path = m_mim[item]->getParent()->getFullName();
+        m_mim[item]->deleteAll( true );
+    }
+    refreshDir( path );
 
     #undef item
     return 1;
@@ -760,7 +768,7 @@ void
 VfatMediaDevice::dirListerClear()
 {
     DEBUG_BLOCK
-    m_initialFile->deleteAll();
+    m_initialFile->deleteAll( true );
 
     m_view->clear();
     m_mfm.clear();
@@ -777,7 +785,7 @@ VfatMediaDevice::dirListerClear( const KURL &url )
     debug() << "Removing url: " << directory << endl;
     VfatMediaFile *vmf = m_mfm[directory];
     if( vmf )
-        vmf->deleteAllChildren();
+        vmf->deleteAll( false );
 }
 
 void
@@ -788,7 +796,7 @@ VfatMediaDevice::dirListerDeleteItem( KFileItem *fileitem )
     debug() << "Removing item: " << filename << endl;
     VfatMediaFile *vmf = m_mfm[filename];
     if( vmf )
-        vmf->deleteAll();
+        vmf->deleteAll( true );
 }
 
 int

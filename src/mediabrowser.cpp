@@ -1102,9 +1102,7 @@ MediaView::~MediaView()
 void
 MediaView::startDrag()
 {
-    DEBUG_BLOCK
     KURL::List urls = nodeBuildDragList( 0 );
-    debug() << "size of urls is: " << urls.count() << endl;
     KURLDrag* d = new KURLDrag( urls, this );
     d->setPixmap( CollectionDB::createDragPixmap( urls ),
                   QPoint( CollectionDB::DRAGPIXMAP_OFFSET_X, CollectionDB::DRAGPIXMAP_OFFSET_Y ) );
@@ -1153,7 +1151,6 @@ MediaView::nodeBuildDragList( MediaItem* item, bool onlySelected )
 int
 MediaView::getSelectedLeaves( MediaItem *parent, QPtrList<MediaItem> *list, bool onlySelected, bool onlyPlayed )
 {
-    DEBUG_BLOCK
     int numFiles = 0;
     if( !list )
         list = new QPtrList<MediaItem>;
@@ -1166,9 +1163,6 @@ MediaView::getSelectedLeaves( MediaItem *parent, QPtrList<MediaItem> *list, bool
 
     for( ; it; it = dynamic_cast<MediaItem*>(it->nextSibling()))
     {
-
-        debug() << "in for loop, it->url() = " << it->url().path(-1) << ", it->isVisible() = " << (it->isVisible() ? "true" : "false") << ", it->isSelected() = " << (it->isSelected() ? "true" : "false") << endl;
-
         if( it->isVisible() )
         {
             if( it->childCount() && !( it->type() == MediaItem::DIRECTORY && it->isSelected() ) )
@@ -1177,7 +1171,6 @@ MediaView::getSelectedLeaves( MediaItem *parent, QPtrList<MediaItem> *list, bool
             }
             if( it->isSelected() || !onlySelected )
             {
-                debug() << "it->type() == MediaItem::DIRECTORY: " << (it->type() == MediaItem::DIRECTORY ? "true" : "false") << endl;
                 if( it->type() == MediaItem::TRACK       ||
                     it->type() == MediaItem::DIRECTORY   ||
                     it->type() == MediaItem::PODCASTITEM ||
@@ -1198,7 +1191,6 @@ MediaView::getSelectedLeaves( MediaItem *parent, QPtrList<MediaItem> *list, bool
             }
         }
     }
-    debug() << "returning numFiles = " << numFiles << endl;
     return numFiles;
 }
 
@@ -1219,7 +1211,6 @@ MediaView::contentsDragEnterEvent( QDragEnterEvent *e )
 void
 MediaView::contentsDropEvent( QDropEvent *e )
 {
-    DEBUG_BLOCK
     if(e->source() == viewport() || e->source() == this)
     {
         const QPoint p = contentsToViewport( e->pos() );
