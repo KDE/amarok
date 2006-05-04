@@ -203,17 +203,23 @@ void CueFile::engineTrackPositionChanged( long position, bool userSeek )
     if(userSeek || position > m_lastSeekPos)
     {
         CueFile::Iterator it;
-        for ( it = begin(); it != end(); ++it )
+        for ( it = end(); it-- != begin(); )
         {
-//             debug() << "Checking " << position << " against pos " << it.key()/1000 << " title " << it.data().getTitle() << endl;
-            if(it.key()/1000 == position)
+//            debug() << "Checking " << position << " against pos " << it.key()/1000 << " title " << it.data().getTitle() << endl;
+            if(it.key()/1000 <= position)
             {
                 MetaBundle bundle = EngineController::instance()->bundle(); // take current one and modify it
-                bundle.setTitle(it.data().getTitle());
-                bundle.setArtist(it.data().getArtist());
-                bundle.setAlbum(it.data().getAlbum());
-                bundle.setTrack(it.data().getTrackNumber());
-                emit metaData(bundle);
+                if(it.data().getTitle() != bundle.title()
+                   || it.data().getArtist() != bundle.artist()
+                   || it.data().getAlbum() != bundle.album()
+                   || it.data().getTrackNumber() != bundle.track())
+                {
+                    bundle.setTitle(it.data().getTitle());
+                    bundle.setArtist(it.data().getArtist());
+                    bundle.setAlbum(it.data().getAlbum());
+                    bundle.setTrack(it.data().getTrackNumber());
+                    emit metaData(bundle);
+                }
                 break;
             }
         }
