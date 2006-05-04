@@ -433,6 +433,23 @@ MediaBrowser::deviceFromId( const QString &id )
 }
 
 void
+MediaBrowser::activateDevice( const MediaDevice *dev )
+{
+    int index = 0;
+    for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
+            it != m_devices.end();
+            it++ )
+    {
+        if( *it == dev )
+        {
+            activateDevice( index );
+            break;
+        }
+        index++;
+    }
+}
+
+void
 MediaBrowser::activateDevice( int index, bool skipDummy )
 {
     for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
@@ -2201,6 +2218,13 @@ MediaDevice::connectDevice( bool silent )
 
     runPreConnectCommand();
     openDevice( silent );
+
+    if( isConnected()
+            && MediaBrowser::instance()->currentDevice() != this
+            && !MediaBrowser::instance()->currentDevice()->isConnected() )
+    {
+        MediaBrowser::instance()->activateDevice( this );
+    }
     m_parent->updateStats();
     m_parent->updateButtons();
 
