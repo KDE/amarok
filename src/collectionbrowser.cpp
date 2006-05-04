@@ -921,13 +921,14 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                 qb.setOptions( QueryBuilder::optOnlyCompilations );
                 c = true;
             }
-            qb.addMatch( q_cat1, tmptext, false );
-
+            matches.clear();
+            matches << tmptext;
             if( endsInThe( tmptext ) )
             {
                 manipulateThe( tmptext );
-                qb.addMatch( q_cat1, tmptext, false );
+                matches << tmptext;
             }
+            qb.addMatches( q_cat1, matches, false );
 
             if ( m_cat2 == QueryBuilder::tabSong )
             {
