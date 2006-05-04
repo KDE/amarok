@@ -3,7 +3,7 @@
  *                       (C) 2005 Seb Ruiz <me@sebruiz.net>                 *
  *                                                                          *
  * With some code helpers from KIO_VFAT                                     *
- *                        (c) 2004 Thomas Loeber <generic@loeber1.de>          *
+ *                        (c) 2004 Thomas Loeber <vfat@loeber1.de>          *
  ***************************************************************************/
 
 /***************************************************************************
@@ -358,7 +358,7 @@ GenericMediaDevice::openDevice( bool /*silent*/ )
                                                     KDE::StatusBar::Sorry );
         return false;
     }
-    m_actuallyVfat = m_medium.fsType() == "generic" ? true : false;
+    m_actuallyVfat = m_medium.fsType() == "vfat" ? true : false;
     m_connected = true;
     m_transferDir = m_medium.mountPoint();
     m_initialFile = new GenericMediaFile( 0, m_medium.mountPoint(), this );
