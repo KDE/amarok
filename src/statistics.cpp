@@ -548,7 +548,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
 QString StatisticsList::subText( const QString &score, const QString &rating ) //static
 {
     if( AmarokConfig::useScores() && AmarokConfig::useRatings() )
-        return i18n( "Score: %1 Rating: %1" ).arg( score ).arg( rating );
+        return i18n( "Score: %1 Rating: %2" ).arg( score ).arg( rating );
     else if( AmarokConfig::useScores() )
         return i18n( "Score: %1" ).arg( score );
     else if( AmarokConfig::useRatings() )
