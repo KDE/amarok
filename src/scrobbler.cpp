@@ -219,6 +219,7 @@ void Scrobbler::audioScrobblerSimilarArtistsData( KIO::Job* job, const QByteArra
  */
 void Scrobbler::engineNewMetaData( const MetaBundle& bundle, bool trackChanged )
 {
+    //debug() << "engineNewMetaData: " << bundle.artist() << ":" << bundle.album() << ":" << bundle.title() << ":" << trackChanged << endl;
     if ( !trackChanged )
     {
         debug() << "It's still the same track." << endl;
@@ -260,7 +261,7 @@ void Scrobbler::engineNewMetaData( const MetaBundle& bundle, bool trackChanged )
  */
 void Scrobbler::subTrack( long currentPos, long startPos, long endPos )
 {
-    //debug() << "trackLength: " << currentPos << ":" << startPos << ":" << endPos << endl;
+    //debug() << "subTrack: " << currentPos << ":" << startPos << ":" << endPos << endl;
     *m_item = SubmitItem( m_item->artist(), m_item->album(), m_item->title(), endPos - startPos );
     if ( currentPos <= startPos + 2 ) // only submit if starting from the start of the track (need to allow 2 second difference for rounding/delay)
     {
@@ -280,6 +281,7 @@ void Scrobbler::subTrack( long currentPos, long startPos, long endPos )
  */
 void Scrobbler::engineTrackPositionChanged( long position, bool userSeek )
 {
+    //debug() << "engineTrackPositionChanged: " << position << ":" << userSeek << endl;
     if ( !m_validForSending || m_timer.isActive() )
         return;
 
@@ -348,16 +350,6 @@ SubmitItem::SubmitItem()
 {
 }
 
-/*
-SubmitItem::SubmitItem( const SubmitItem& rhs )
-{
-    m_artist = rhs.m_artist;
-    m_album = rhs.m_album;
-    m_title = rhs.m_title;
-    m_length = rhs.m_length;
-    m_playStartTime = rhs.m_playStartTime; 
-}
-*/
 
 bool SubmitItem::operator==( const SubmitItem& item )
 {

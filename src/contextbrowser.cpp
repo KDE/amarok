@@ -417,7 +417,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
 
     else if ( url.protocol() == "seek" )
     {
-        EngineController::engine()->seek(url.path().toLong());
+        EngineController::instance()->seek(url.path().toLong());
     }
 
     // browse albums of a related artist.  Don't do this if we are viewing Home tab
