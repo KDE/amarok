@@ -13,6 +13,8 @@ VERSION 1.4.0:
       view.
 
   CHANGES:
+    * Automatically populate the playlist with items if it is empty when a
+      dynamic playlist is loaded. (BR 126594)
     * Unplayed/unrated tracks are no longer shown in the statistics dialog.
     * Removed the option "Import Playlists". It's now always enabled.
     * Show total track time in context browser (BR 126548)
@@ -43,6 +45,10 @@ VERSION 1.4.0:
       <kde@dontletsstart.com>. (BR 125414)
 
   BUGFIXES:
+    * Statusbar log files would only ever write to the first log after all
+      four logs had been filled.
+    * iFP: Don't pretend to add newly transferred files to wrong folders.
+    * Set a podcast as listened only when it really has been listened to.
     * All tracks from a cuesheet will now submit correctly to last.fm.
       (BR 114969)
     * xine-engine will now correctly detect a change when only one of the 
