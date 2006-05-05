@@ -1438,7 +1438,7 @@ MetaBundle::getRandomStringHelper( int size )
         returnvalue = getRandomString( size );
         uniqueids = CollectionDB::instance()->query( QString(
             "SELECT url, uniqueid "
-            "FROM uniqueid%1"
+            "FROM uniqueid%1 "
             "WHERE uniqueid = '%2';" )
                 .arg( temporary ? "_temp" : "" )
                 .arg( CollectionDB::instance()->escapeString( returnvalue ) ) );

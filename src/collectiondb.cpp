@@ -2149,15 +2149,15 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
     // Now it might be possible as insert returns the rowid.
     insert( command, NULL );
 
-    doATFStuff( bundle );
+    doATFStuff( bundle, true );
 
     return true;
 }
 
 void
-CollectionDB::doATFStuff( MetaBundle* bundle )
+CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     //ATF Stuff
     QString currid = escapeString( bundle->uniqueId() );
     QString currurl = escapeString( bundle->url().path() );
@@ -2167,75 +2167,99 @@ CollectionDB::doATFStuff( MetaBundle* bundle )
 
     QStringList urls = query( QString(
             "SELECT url, uniqueid "
-            "FROM uniqueid_temp "
-            "WHERE url = '%1';" )
+            "FROM uniqueid%1 "
+            "WHERE url = '%2';" )
+                .arg( tempTables ? "_temp" : "" )
                 .arg( currurl ) );
     QStringList uniqueids = query( QString(
             "SELECT url, uniqueid "
-            "FROM uniqueid_temp "
-            "WHERE uniqueid = '%1';" )
+            "FROM uniqueid%1 "
+            "WHERE uniqueid = '%2';" )
+                .arg( tempTables ? "_temp" : "" )
                 .arg( currid ) );
 
-    if( urls.count() > 2 || uniqueids.count() > 2)
+    bool onlyInTemp = true;
+
+    QStringList nonTempIDs = query( QString(
+            "SELECT url, uniqueid "
+            "FROM uniqueid "
+            "WHERE uniqueid = '%1';" )
+                .arg( currid ) );
+    if( tempTables && nonTempIDs.count() > 0 )
+            onlyInTemp = false;
+
+    //most common case first...detected the file
+    if( urls.count() == 2 && uniqueids.count() == 2 )
+        return;
+    else if( urls.count() > 2 || uniqueids.count() > 2 )
     {
         debug() << "ATF: YOU HAVE MULTIPLE ENTRIES FOR A SINGLE UNIQUEID OR PATH.  THIS SHOULD NOT HAPPEN.  CONSIDER RECREATING THIS TABLE." << endl;
     }
     else if( currid.length() == 0 && !urls.empty() )
     {
         debug() << "ATF: The same url exists, but the new uniqueid is null.  Perhaps you're turning off ATF.  Removing entry from database." << endl;
-        query( QString("DELETE FROM uniqueid WHERE url='%1';")
+        query( QString("DELETE FROM uniqueid%1 WHERE url='%2';")
+              .arg( tempTables ? "_temp" : "" )
               .arg( currurl ) );
     }
     //checking length below because for some reason the != check does not always work, even when length is zero
     else if( currid.length() > 0 ) //if doesn't match, new item, but no uniqueid...probably ATF off
     {
-        debug() << "urls.empty() = " << (urls.empty() ? "true" : "false") << ", uniqueids.empty() = " << (uniqueids.empty() ? "true" : "false") << endl;
-        if( urls.empty() && uniqueids.empty() ) // new item
-            insert( QString( "INSERT INTO uniqueid_temp (url, uniqueid, dir) VALUES ('%1', '%2', '%3')" )
-                  .arg( currurl,
-                     currid,
-                     currdir ), NULL );
-        else if( urls.empty() )  //detected same uniqueid, so file moved
+        debug() << "urls.empty() = " << (urls.empty() ? "true" : "false") << ", uniqueids.empty() = " << (uniqueids.empty() ? "true" : "false") << ", onlyInTemp = " << (onlyInTemp ? "true" : "false") << endl;
+        if( urls.empty() && uniqueids.empty() && onlyInTemp ) // new item
         {
-            debug() << "At doATFStuff, stat-ing file " << uniqueids[0] << endl;
+            QString insertline = QString( "INSERT INTO uniqueid%1 (url, uniqueid, dir) VALUES ('%2', '%3', '%4')" )
+                  .arg( ( tempTables ? "_temp" : "" ),
+                     currurl,
+                     currid,
+                     currdir );
+            //debug() << "running command: " << insertline << endl;
+            insert( insertline, NULL );
+        }
+        else if( urls.empty() || !onlyInTemp )  //detected same uniqueid, so file moved, or copied and both copies moved
+        {
+            QString pathToUse;
+            if( !onlyInTemp )
+                pathToUse = nonTempIDs[0];
+            else
+                pathToUse = uniqueids[0];
+            debug() << "At doATFStuff, stat-ing file " << pathToUse << endl;
             //stat the original URL
             KURL oldurl;
-            oldurl.setPath( uniqueids[0] );
+            oldurl.setPath( pathToUse );
             bool statSuccessful = KIO::NetAccess::exists( oldurl, true, amaroK::mainWindow() );
             if( statSuccessful ) //if true, new one is a copy
             {
                 debug() << "stat was successful, new file is a copy" << endl;
                 bundle->newUniqueId();
-                doATFStuff( bundle ); //yes, it's recursive, but what's wrong with that? :-)
+                doATFStuff( bundle, true ); //yes, it's recursive, but what's wrong with that? :-)
             }
-            else
+            else  //it's a move, not a copy, or a copy and then both files were moved...can't detect that
             {
                 debug() << "stat was NOT successful, updating tables" << endl;
-                query( QString( "UPDATE uniqueid_temp SET url='%1', dir='%2' WHERE uniqueid='%3';" )
-                      .arg( currurl,
+                query( QString( "UPDATE uniqueid%1 SET url='%2', dir='%3' WHERE uniqueid='%4';" )
+                      .arg( ( tempTables ? "_temp" : "" ),
+                         currurl,
                          currdir,
                          currid ) );
-                emit fileMoved( uniqueids[0], currurl, currid );
+                emit fileMoved( pathToUse, currurl, currid );
             }
         }
         //a file exists in the same place as before, but new uniqueid...assume
         //that this is desired user behavior
-        else if( uniqueids.empty() )
+        else //uniqueids.empty()
         {
             debug() << "file exists in same place as before, new uniqueid" << endl;
-            query( QString( "UPDATE uniqueid_temp SET uniqueid='%1' WHERE url='%2';" )
+            query( QString( "UPDATE uniqueid%1 SET uniqueid='%2' WHERE url='%3';" )
+                    .arg( tempTables ? "_temp" : "" )
                     .arg( currid )
                     .arg( currurl ) );
             emit uniqueidChanged( currurl, urls[1], currid );
         }
-        //else, urls.count == 2 and uniqueids.count == 2, so the correct URL/ID pair already exists, and the new one is a copy -- give it a new uniqueID!
-        else
-        {
-            debug() << "Detected old file, setting new unique id for new file" << endl;
-            bundle->newUniqueId();
-            doATFStuff( bundle );
-        }
     }
+    else
+        debug() << "new uniqueid length is zero...not doing anything" << endl;
+
 }
 
 void
@@ -2244,12 +2268,15 @@ CollectionDB::newUniqueIdForFile( const QString &path )
     DEBUG_BLOCK
     KURL url = KURL::fromPathOrURL( path );
 
+    if( !KIO::NetAccess::exists( url, true, amaroK::mainWindow() ) )
+        return;
+
     // Clean it.
     url.cleanPath();
 
     MetaBundle bundle( url );
     bundle.newUniqueId();
-    doATFStuff( &bundle );
+    doATFStuff( &bundle, false );
 }
 
 QString

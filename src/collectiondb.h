@@ -267,7 +267,7 @@ class CollectionDB : public QObject, public EngineObserver
 
         //song methods
         bool addSong( MetaBundle* bundle, const bool incremental = false );
-        void doATFStuff( MetaBundle *bundle );
+        void doATFStuff( MetaBundle *bundle, const bool tempTables = true );
         void newUniqueIdForFile( const QString &path );
 
         //podcast methods
