@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# Now playing script for IRC. Use with the /exec command of your client.
+# Now playing script for IRC. Use with the "/exec -o" command of your client.
 #
 # (c) 2005 Mark Kretschmann <markey@web.de>
 # License: GNU General Public License V2
