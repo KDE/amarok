@@ -232,6 +232,7 @@ class CollectionDB : public QObject, public EngineObserver
         // We might consider using LONGTEXT type, as some lyrics could be VERY long..???
         QString longTextColumnType() const { if ( getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return "TEXT"; }
         QString randomFunc() const { if ( getDbConnectionType() == DbConnection::postgresql ) return "random()"; else return "RAND()"; }
+        inline static QString exactCondition( const QString &right );
         static QString likeCondition( const QString &right, bool anyBegin=false, bool anyEnd=false );
 
         int getType() { return getDbConnectionType(); }
@@ -575,9 +576,9 @@ class QueryBuilder
         void excludeFilter( int tables, const QString& filter );
         void excludeFilter( int tables, Q_INT64 value, const QString& filter, int mode = modeNormal, bool exact = false );
 
-        void addMatch( int tables, const QString& match, bool interpretUnknown = true );
+        void addMatch( int tables, const QString& match, bool interpretUnknown = true, bool caseSensitive = false );
         void addMatch( int tables, Q_INT64 value, const QString& match );
-        void addMatches( int tables, const QStringList& match, bool interpretUnknown = true );
+        void addMatches( int tables, const QStringList& match, bool interpretUnknown = true, bool caseSensitive = false );
         void excludeMatch( int tables, const QString& match );
         void having( int table, Q_INT64 value, int function, int mode, const QString& match );
 

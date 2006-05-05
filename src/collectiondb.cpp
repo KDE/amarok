@@ -159,6 +159,13 @@ CollectionDB::~CollectionDB()
     destroy();
 }
 
+inline QString
+CollectionDB::exactCondition( const QString &right )
+{
+    //Use / as the escape character
+    return QString ("= '" + instance()->escapeString( right ) + "'");
+}
+
 QString
 CollectionDB::likeCondition( const QString &right, bool anyBegin, bool anyEnd )
 {
@@ -4814,19 +4821,21 @@ QueryBuilder::excludeFilter( int tables, Q_INT64 value, const QString& filter, i
 }
 
 void
-QueryBuilder::addMatch( int tables, const QString& match, bool interpretUnknown /* = true */ )
+QueryBuilder::addMatch( int tables, const QString& match, bool interpretUnknown /* = true */, bool caseSensitive /* = false */ )
 {
+    QString matchCondition = caseSensitive ? CollectionDB::exactCondition( match ) : CollectionDB::likeCondition( match );
+
     m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
     if ( tables & tabAlbum )
-        m_where += "OR album.name " + CollectionDB::likeCondition( match );
+        m_where += "OR album.name " + matchCondition;
     if ( tables & tabArtist )
-        m_where += "OR artist.name " + CollectionDB::likeCondition( match );
+        m_where += "OR artist.name " + matchCondition;
     if ( tables & tabGenre )
-        m_where += "OR genre.name " + CollectionDB::likeCondition( match );
+        m_where += "OR genre.name " + matchCondition;
     if ( tables & tabYear )
-        m_where += "OR year.name " + CollectionDB::likeCondition( match, false, false );
+        m_where += "OR year.name " + matchCondition;
     if ( tables & tabSong )
-        m_where += "OR tags.title " + CollectionDB::likeCondition( match );
+        m_where += "OR tags.title " + matchCondition;
 
     if ( interpretUnknown && match == i18n( "Unknown" ) )
     {
@@ -4857,24 +4866,28 @@ QueryBuilder::addMatch( int tables, Q_INT64 value, const QString& match )
 
 
 void
-QueryBuilder::addMatches( int tables, const QStringList& match, bool interpretUnknown /* = true */ )
+QueryBuilder::addMatches( int tables, const QStringList& match, bool interpretUnknown /* = true */, bool caseSensitive /* = false */ )
 {
+    QStringList matchConditions;
+    for ( uint i = 0; i < match.count(); i++ )
+        matchConditions << ( caseSensitive ? CollectionDB::exactCondition( match[i] ) : CollectionDB::likeCondition( match[i] ) );
+
     m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
 
     for ( uint i = 0; i < match.count(); i++ )
     {
         if ( tables & tabAlbum )
-            m_where += "OR album.name " + CollectionDB::likeCondition( match[i] );
+            m_where += "OR album.name " + matchConditions[ i ];
         if ( tables & tabArtist )
-            m_where += "OR artist.name " + CollectionDB::likeCondition( match[i] );
+            m_where += "OR artist.name " + matchConditions[ i ];
         if ( tables & tabGenre )
-            m_where += "OR genre.name " + CollectionDB::likeCondition( match[i] );
+            m_where += "OR genre.name " + matchConditions[ i ];
         if ( tables & tabYear )
-            m_where += "OR year.name " + CollectionDB::likeCondition( match[i], false, false );
+            m_where += "OR year.name " + matchConditions[ i ];
         if ( tables & tabSong )
-            m_where += "OR tags.title " + CollectionDB::likeCondition( match[i] );
+            m_where += "OR tags.title " + matchConditions[ i ];
         if ( tables & tabStats )
-            m_where += "OR statistics.url " + CollectionDB::likeCondition( match[i] );
+            m_where += "OR statistics.url " + matchConditions[ i ];
 
 
         if ( interpretUnknown && match[i] == i18n( "Unknown" ) )
