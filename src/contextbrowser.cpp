@@ -1084,7 +1084,7 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
         for ( uint j = 0; j < albumValues.count(); j += 7 )
             i_albumLength += QString(albumValues[j + 4]).toInt();
 
-        QString albumLength = ( i_albumLength==0 ? "" : MetaBundle::prettyTime( i_albumLength, true ) );
+        QString albumLength = ( i_albumLength==0 ? i18n( "Unknown" ) : MetaBundle::prettyTime( i_albumLength, true ) );
 
         htmlCode.append( QStringx (
                     "<tr class='" + QString( (i % 4) ? "box-row-alt" : "box-row" ) + "'>"
@@ -2117,8 +2117,7 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
             for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() ) 
                 i_albumLength += QString(albumValues[j + 4]).toInt();
 
-
-            QString albumLength = ( i_albumLength==0 ? "" : MetaBundle::prettyTime( i_albumLength, true ) );
+            QString albumLength = ( i_albumLength==0 ? i18n( "Unknown" ) : MetaBundle::prettyTime( i_albumLength, true ) );
             QString albumImage = CollectionDB::instance()->albumImage( artist, values[ i ], 50 );
             QString albumImageTitleAttr = albumImageTitle( albumImage, 50 );
             albumImage = ContextBrowser::makeShadowedImage( albumImage );
@@ -2271,7 +2270,7 @@ void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artis
             for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() )
                 i_albumLength += QString(albumValues[j + 4]).toInt();
 
-            QString albumLength = ( i_albumLength==0 ? "" : MetaBundle::prettyTime( i_albumLength, true ) );
+            QString albumLength = ( i_albumLength==0 ? i18n( "Unknown" ) : MetaBundle::prettyTime( i_albumLength, true ) );
             QString albumImage = CollectionDB::instance()->albumImage( artist, values[ i ], 50 );
             QString albumImageTitleAttr = albumImageTitle( albumImage, 50 );
             albumImage = ContextBrowser::makeShadowedImage( albumImage );
