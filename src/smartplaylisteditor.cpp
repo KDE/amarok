@@ -3,7 +3,10 @@
 // (c) 2005 Isaiah Damron <xepo@trifault.net>
 // See COPYING file for licensing information
 
+#define DEBUG_PREFIX "SmartPlaylistEditor"
+
 #include "amarok.h" //foreach
+#include "debug.h"
 #include "collectiondb.h"
 #include "metabundle.h"
 #include "smartplaylisteditor.h"
@@ -132,7 +135,7 @@ void SmartPlaylistEditor::init(QString defaultName)
     m_dbFields << "artist.name" << "album.name" << "genre.name" << "tags.title" << "tags.length"
                << "tags.track" << "year.name" << "tags.comment" << "statistics.playcounter"
                << "statistics.percentage" << "statistics.rating" << "statistics.createdate"
-               << "statistics.accessdate" << "tags.createdate" << "tags.url";
+               << "statistics.accessdate" << "tags.createdate" << "tags.url" << "tags.sampler";
 
     m_expandableFields.clear();
     m_expandableFields << i18n("Artist") << i18n("Album") << i18n("Genre") <<  i18n("Year");
@@ -360,6 +363,7 @@ QDomElement SmartPlaylistEditor::result() {
 
 void SmartPlaylistEditor::buildQuery()
 {
+    DEBUG_BLOCK
 
     QString joins = "tags LEFT JOIN year ON year.id=tags.year LEFT JOIN genre ON genre.id=tags.genre"
                     " LEFT JOIN artist ON artist.id=tags.artist LEFT JOIN album ON album.id=tags.album";
@@ -367,69 +371,67 @@ void SmartPlaylistEditor::buildQuery()
     QString criteriaListStr;
     QString orderStr;
     QString limitStr;
-
+    
     //where expression
     if( m_matchAnyCheck->isChecked() || m_matchAllCheck->isChecked() ) {
-	int i = 0;
-
-	if( m_matchAnyCheck->isChecked() ) {
-	    criteriaListStr += "( (";
-	    
-	    CriteriaEditor *criteria = m_criteriaEditorAnyList.first();
-	    for( i=0; criteria; criteria = m_criteriaEditorAnyList.next(), i++ ) {
-		
-		QString str = criteria->getSearchCriteria();
-		//add the table used in the search expression to tables
-		QString table = str.left( str.find('.') );
-		if( !joins.contains( table ) ) {
-			joins += " LEFT JOIN statistics ON statistics.url=tags.url";
-		}
-		if( i ) { //multiple conditions
-		    str.prepend( " OR (");
-		    
-		}
-		criteriaListStr += str+")";
-	    }
-
-	    criteriaListStr += " )"; // we want our ORs all in one bracket. :-)
-	}
-
-	if( m_matchAllCheck->isChecked() ) {
+        int i = 0;
+        
+        if( m_matchAnyCheck->isChecked() ) {
+            criteriaListStr += "( (";
+            
+            CriteriaEditor *criteria = m_criteriaEditorAnyList.first();
+            for( i=0; criteria; criteria = m_criteriaEditorAnyList.next(), i++ ) {
+                
+                QString str = criteria->getSearchCriteria();
+                //add the table used in the search expression to tables
+                QString table = str.left( str.find('.') );
+                
+                if( table=="statistics" && !joins.contains( "statistics" ) )
+                    joins += " LEFT JOIN statistics ON statistics.url=tags.url";
+                
+                if( i ) //multiple conditions
+                    str.prepend( " OR (");
+                
+                criteriaListStr += str+")";
+            }
+            
+            criteriaListStr += " )"; // we want our ORs all in one bracket. :-)
+        }
+        
+        if( m_matchAllCheck->isChecked() ) {
             if ( i ) // conditions exist from above
                 criteriaListStr += " AND ";
-
-	    criteriaListStr += "( (";
-
-	    CriteriaEditor *criteria2 = m_criteriaEditorAllList.first();
-	    for( i=0; criteria2; criteria2 = m_criteriaEditorAllList.next(), i++ ) {
-		
-		QString str = criteria2->getSearchCriteria();
-		//add the table used in the search expression to tables
-		QString table = str.left( str.find('.') );
-		if( !joins.contains( table ) ) {
-			joins += " LEFT JOIN statistics ON statistics.url=tags.url";
-		}
-		if( i ) { //multiple conditions
-		    str.prepend( " AND (");
-		    
-		}
-		criteriaListStr += str+")";
-	    }
-	    criteriaListStr += " )";
-	}
-
+            
+            criteriaListStr += "( (";
+            
+            CriteriaEditor *criteria2 = m_criteriaEditorAllList.first();
+            for( i=0; criteria2; criteria2 = m_criteriaEditorAllList.next(), i++ ) {
+                
+                QString str = criteria2->getSearchCriteria();
+                //add the table used in the search expression to tables
+                QString table = str.left( str.find('.') );
+                if( table=="statistics" && !joins.contains( "statistics" ) )
+                    joins += " LEFT JOIN statistics ON statistics.url=tags.url";
+                
+                if( i ) //multiple conditions
+                    str.prepend( " AND (");
+                
+                criteriaListStr += str+")";
+            }
+            criteriaListStr += " )";
+        }
+        
         whereStr = " WHERE " + criteriaListStr;
     }
-
+    
     //order by expression
     if( m_orderCheck->isChecked() ) {
         if( m_orderCombo->currentItem() != m_orderCombo->count()-1 ) {
             QString field = m_dbFields[ m_orderCombo->currentItem() ];
             QString table = field.left( field.find('.') );
-            if( !joins.contains( table ) ) {
-                if( table=="statistics")
-                    joins += " LEFT JOIN statistics ON statistics.url=tags.url";
-            }
+            if( table=="statistics" && !joins.contains( "statistics" ) )
+                joins += " LEFT JOIN statistics ON statistics.url=tags.url";
+
             QString orderType = m_orderTypeCombo->currentItem() == 1 ? " DESC" : " ASC";
             orderStr = " ORDER BY " +  field + orderType;
         }
@@ -476,7 +478,7 @@ void SmartPlaylistEditor::buildQuery()
         else
             whereStr = QString("WHERE %1 = '(*ExpandString*)'").arg(field);
         m_expandQuery = "SELECT album.name, artist.name, genre.name, tags.title, year.name, "
-                            "tags.comment, tags.track, tags.bitrate, tags.length, tags.samplerate, tags.filesize, tags.url"
+                            "tags.comment, tags.track, tags.bitrate, tags.length, tags.samplerate, tags.filesize, tags.url, tags.sampler"
                             " FROM " + joins + whereStr + orderStr + limitStr + ";";
     }
 }

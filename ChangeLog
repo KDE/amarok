@@ -136,6 +136,7 @@ VERSION 1.4-beta3:
       Peter C. Ndikuwera <pndiku@gmail.com>. (BR 118304)
 
   BUGFIXES:
+    * Expand-By smart playlists were returning the wrong number of values.
     * Fix display of media device transfer queues larger than 4 GB. (BR 125247)
     * Fix duplicate detection when transferring to media device for tracks having
       empty album tags. (BR 125203)
