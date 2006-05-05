@@ -113,6 +113,7 @@ IfpMediaDevice::IfpMediaDevice()
     , m_dev( 0 )
     , m_dh( 0 )
     , m_connected( false )
+    , m_last( 0 )
     , m_tmpParent( 0 )
     , m_td( 0 )
 {
@@ -312,6 +313,7 @@ IfpMediaDevice::newDirectoryRecursive( const QString &name, MediaItem *parent )
     
     foreach( folders )
     {
+        debug() << "Checking folder: " << progress << endl;
         progress += *it;
         const QCString dirPath = QFile::encodeName( progress );
         
@@ -324,12 +326,13 @@ IfpMediaDevice::newDirectoryRecursive( const QString &name, MediaItem *parent )
                 addTrackToList( IFP_DIR, *it );
                 parent = m_last;
             }
-            progress += "\\";
-            continue;
         }
-        parent = newDirectory( *it, parent );
-        if( !parent ) //failed
-            return 0;
+        else
+        {
+            parent = newDirectory( *it, parent );
+            if( !parent ) //failed
+                return 0;
+        }
         progress += "\\";
     }
     return parent;
@@ -403,7 +406,7 @@ IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
             cleverFilename = true;
     }
     
-    newDirectoryRecursive( directory, 0 ); // recursively create folders as required.
+    m_tmpParent = newDirectoryRecursive( directory, 0 ); // recursively create folders as required.
     
     QString newFilename;
     // we don't put this in cleanPath because of remote directory delimiters
@@ -519,7 +522,6 @@ IfpMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/ )
     QString path = getFullPath( item );
 
     QCString encodedPath = QFile::encodeName( path );
-    debug() << "Deleting file: " << encodedPath << endl;
     int err;
     int count = 0;
 
@@ -527,11 +529,13 @@ IfpMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/ )
     {
         case MediaItem::DIRECTORY:
             err = ifp_delete_dir_recursive( &m_ifpdev, encodedPath );
+            debug() << "Deleting folder: " << encodedPath << endl;
             checkResult( err, i18n("Directory cannot be deleted: '%1'").arg(encodedPath) );
             break;
 
         default:
             err = ifp_delete( &m_ifpdev, encodedPath );
+            debug() << "Deleting file: " << encodedPath << endl;
             count += 1;
             checkResult( err, i18n("File does not exist: '%1'").arg(encodedPath) );
             break;
