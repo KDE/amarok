@@ -2157,10 +2157,13 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
 void
 CollectionDB::doATFStuff( MetaBundle* bundle )
 {
+    DEBUG_BLOCK
     //ATF Stuff
-    QString currid = bundle->uniqueId();
+    QString currid = escapeString( bundle->uniqueId() );
     QString currurl = escapeString( bundle->url().path() );
     QString currdir = escapeString( bundle->url().directory() );
+
+    debug() << "Checking currid = " << currid << ", currurl = " << currurl << endl;
 
     QStringList urls = query( QString(
             "SELECT url, uniqueid "
@@ -2177,15 +2180,16 @@ CollectionDB::doATFStuff( MetaBundle* bundle )
     {
         debug() << "ATF: YOU HAVE MULTIPLE ENTRIES FOR A SINGLE UNIQUEID OR PATH.  THIS SHOULD NOT HAPPEN.  CONSIDER RECREATING THIS TABLE." << endl;
     }
-    else if( (currid == QString::null || currid.length() == 0) && !urls.empty() )
+    else if( currid.length() == 0 && !urls.empty() )
     {
         debug() << "ATF: The same url exists, but the new uniqueid is null.  Perhaps you're turning off ATF.  Removing entry from database." << endl;
         query( QString("DELETE FROM uniqueid WHERE url='%1';")
               .arg( currurl ) );
     }
     //checking length below because for some reason the != check does not always work, even when length is zero
-    else if( currid != QString::null && currid.length() > 0 ) //if doesn't match, new item, but no uniqueid...probably ATF off
+    else if( currid.length() > 0 ) //if doesn't match, new item, but no uniqueid...probably ATF off
     {
+        debug() << "urls.empty() = " << (urls.empty() ? "true" : "false") << ", uniqueids.empty() = " << (uniqueids.empty() ? "true" : "false") << endl;
         if( urls.empty() && uniqueids.empty() ) // new item
             insert( QString( "INSERT INTO uniqueid_temp (url, uniqueid, dir) VALUES ('%1', '%2', '%3')" )
                   .arg( currurl,
@@ -2200,11 +2204,13 @@ CollectionDB::doATFStuff( MetaBundle* bundle )
             bool statSuccessful = KIO::NetAccess::exists( oldurl, true, amaroK::mainWindow() );
             if( statSuccessful ) //if true, new one is a copy
             {
+                debug() << "stat was successful, new file is a copy" << endl;
                 bundle->newUniqueId();
                 doATFStuff( bundle ); //yes, it's recursive, but what's wrong with that? :-)
             }
             else
             {
+                debug() << "stat was NOT successful, updating tables" << endl;
                 query( QString( "UPDATE uniqueid_temp SET url='%1', dir='%2' WHERE uniqueid='%3';" )
                       .arg( currurl,
                          currdir,
@@ -2216,6 +2222,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle )
         //that this is desired user behavior
         else if( uniqueids.empty() )
         {
+            debug() << "file exists in same place as before, new uniqueid" << endl;
             query( QString( "UPDATE uniqueid_temp SET uniqueid='%1' WHERE url='%2';" )
                     .arg( currid )
                     .arg( currurl ) );

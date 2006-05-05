@@ -408,7 +408,7 @@ MetaBundle::embeddedImages( MetaBundle::EmbeddedImageList& images )
 void
 MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImageList* images )
 {
-    if( url().protocol() != "file" )
+    if(!( url().protocol() == "file" || url().protocol() == "audiocd" ) )
         return;
 
     const QString path = url().path();
@@ -1284,7 +1284,8 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
                     createID = 1;
                 }
                 else
-                    m_uniqueId = QString( ufidf->identifier().data() );
+                    //this is really ugly, but otherwise we get an incorrect ? at the end of the string...possibly a null value?  Not sure of another way to fix this.
+                    m_uniqueId = TStringToQString( TagLib::String( ufidf->identifier().data() ) ).left( randSize );
             }
             if( createID == 1 )
             {
@@ -1427,23 +1428,21 @@ MetaBundle::getRandomStringHelper( int size )
 {
     QString returnvalue;
     bool goodvalue = false;
-    QStringList uniqueidsreg, uniqueidstemp;
+    bool temporary = false;
+    QStringList tempcheck, uniqueids;
+    tempcheck = CollectionDB::instance()->query( QString( "SHOW TABLES;" ) );
+    if( tempcheck.contains( "uniqueid_temp" ) > 0 )
+        temporary = true;
     while( !goodvalue )
     {
         returnvalue = getRandomString( size );
-        uniqueidsreg = CollectionDB::instance()->query( QString(
-            "SELECT uniqueid.url, uniqueid.uniqueid "
-            "FROM uniqueid "
-            "WHERE uniqueid.uniqueid = '%1';" )
-                .arg( returnvalue ) );
-        //also temp, don't know if we'll be scanning or not
-        uniqueidstemp = CollectionDB::instance()->query( QString(
-            "SELECT uniqueid.url, uniqueid.uniqueid "
-            "FROM uniqueid_temp "
-            "WHERE uniqueid.uniqueid = '%1';" )
-                .arg( returnvalue ) );
-
-        if( uniqueidsreg.count() == 0  && uniqueidstemp.count() == 0 )
+        uniqueids = CollectionDB::instance()->query( QString(
+            "SELECT url, uniqueid "
+            "FROM uniqueid%1"
+            "WHERE uniqueid = '%2';" )
+                .arg( temporary ? "_temp" : "" )
+                .arg( CollectionDB::instance()->escapeString( returnvalue ) ) );
+        if( uniqueids.count() == 0 )
             goodvalue = true;
     }
     return returnvalue;
