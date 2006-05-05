@@ -668,21 +668,24 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
                 if ( VisYearAlbum == 1 )
                 {
                     ( *it ) = ( *it ).isEmpty() ? "?" : ( *it ) + i18n(  " - " );
-                    QStringList::Iterator artist = it; 
-                    --artist;
-                    if ( (*artist).isEmpty() )
+                    QStringList::Iterator album = it;
+                    --album;
+                    if ( (*album).startsWith( "the ", false ) )
+                        manipulateThe( *album, true );
+                    if ( (*album).isEmpty() )
                     {
                         unknown = true;
                         ( *it ) += i18n( "Unknown" );
                     }
                     else
-                        ( *it ) += *artist;
+                        ( *it ) += *album;
                 }
 
                 if ( (*it).startsWith( "the ", false ) )
                     manipulateThe( *it, true );
 
-                if ( (*it).stripWhiteSpace().isEmpty() ) {
+                if ( (*it).stripWhiteSpace().isEmpty() ) 
+                {
                     (*it) = i18n( "Unknown" );
                     unknown = true;
                 }
@@ -1189,7 +1192,11 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             unknown = true;
         }
         else
+        {
+            if ( values[ i ].startsWith( "the ", false ) )
+                manipulateThe( values[ i ], true );
             text += values[ i ];
+        }
 
         CollectionItem* child = new CollectionItem( item, category, unknown );
         child->setDragEnabled( true );
