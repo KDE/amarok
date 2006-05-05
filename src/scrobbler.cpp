@@ -282,7 +282,7 @@ void Scrobbler::subTrack( long currentPos, long startPos, long endPos )
 void Scrobbler::engineTrackPositionChanged( long position, bool userSeek )
 {
     //debug() << "engineTrackPositionChanged: " << position << ":" << userSeek << endl;
-    if ( !m_validForSending || m_timer.isActive() )
+    if ( !m_validForSending )
         return;
 
     if ( userSeek )
@@ -291,6 +291,9 @@ void Scrobbler::engineTrackPositionChanged( long position, bool userSeek )
         debug() << "Won't submit: Seek detected." << endl;
         return;
     }
+
+    if ( m_timer.isActive() )
+        return;
 
     // Each track must be submitted to the server when it is 50% or 240
     // seconds complete, whichever comes first.
