@@ -1605,7 +1605,7 @@ PodcastChannel::updateInfo()
     QString str  = "<html><body><table width=\"100%\" border=\"0\">";
 
     str += body.arg( i18n( "Title" ),       title() );
-    str += body.arg( i18n( "Url" ),         m_url.prettyURL() );
+    str += body.arg( i18n( "URL" ),         m_url.prettyURL() );
     str += body.arg( i18n( "Website" ),     link().prettyURL() );
     str += body.arg( i18n( "Copyright" ),   copyright() );
     str += body.arg( i18n( "Description" ), description() );
