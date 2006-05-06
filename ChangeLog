@@ -102,8 +102,6 @@ VERSION 1.4-beta3:
       system icons, if preferred (in the General settings section).
     * Collection browser view is separated alphabetically. Patch by
       Christian Hoenig <list@hoenig.cc>.
-    * Support for loading and saving XSPF playlists. Patch by Mattias
-      Fliesberg <mattias.fliesberg@gmail.com>. (BR 114360)
     * Ease navigation with track slider below playlist window by showing mood.
       (BR 121715)
     * Show context information for podcasts.
