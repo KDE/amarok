@@ -383,10 +383,7 @@ void SmartPlaylistEditor::buildQuery()
             for( i=0; criteria; criteria = m_criteriaEditorAnyList.next(), i++ ) {
                 
                 QString str = criteria->getSearchCriteria();
-                //add the table used in the search expression to tables
-                QString table = str.left( str.find('.') );
-                
-                if( table=="statistics" && !joins.contains( "statistics" ) )
+                if( str.contains( "statistics." ) && !joins.contains( "statistics" ) )
                     joins += " LEFT JOIN statistics ON statistics.url=tags.url";
                 
                 if( i ) //multiple conditions
