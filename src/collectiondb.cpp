@@ -4746,6 +4746,19 @@ QueryBuilder::addFilter( int tables, const QString& filter )
         if ( tables & tabSong )
             m_where += "OR tags.title " + CollectionDB::likeCondition( filter, true, true );
 
+        if ( i18n( "Unknown" ).contains( filter, false ) )
+        {
+            if ( tables & tabAlbum )
+                m_where += "OR album.name = '' ";
+            if ( tables & tabArtist )
+                m_where += "OR artist.name = '' ";
+            if ( tables & tabGenre )
+                m_where += "OR genre.name = '' ";
+            if ( tables & tabYear )
+                m_where += "OR year.name = '' ";
+            if ( tables & tabSong )
+                m_where += "OR tags.title = '' ";
+        }
         m_where += " ) ";
     }
 
@@ -4772,7 +4785,7 @@ QueryBuilder::addFilter( int tables, Q_INT64 value, const QString& filter, int m
 
         m_where += QString( "OR %1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
 
-        if ( ( value & valName ) && mode == modeNormal && filter == i18n( "Unknown" ) )
+        if ( ( value & valName ) && mode == modeNormal && i18n( "Unknown" ).contains( filter, false ) )
             m_where += QString( "OR %1.%2 = '' " ).arg( tableName( tables ) ).arg( valueName( value ) );
 
         m_where += " ) ";
@@ -4803,7 +4816,19 @@ QueryBuilder::addFilters( int tables, const QStringList& filter )
             if ( tables & tabSong )
                 m_where += "OR tags.title " + CollectionDB::likeCondition( filter[i], true, true );
 
-
+            if ( i18n( "Unknown" ).contains( filter[i], false ) )
+            {
+                if ( tables & tabAlbum )
+                    m_where += "OR album.name = '' ";
+                if ( tables & tabArtist )
+                    m_where += "OR artist.name = '' ";
+                if ( tables & tabGenre )
+                    m_where += "OR genre.name = '' ";
+                if ( tables & tabYear )
+                    m_where += "OR year.name = '' ";
+                if ( tables & tabSong )
+                    m_where += "OR tags.title = '' ";
+            }
             m_where += " ) ";
         }
 
