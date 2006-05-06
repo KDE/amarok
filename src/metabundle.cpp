@@ -1314,9 +1314,11 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
                 newID = true;
             }
             else
-                m_uniqueId = TStringToQString( file->tag()->fieldListMap()[QStringToTString( ourId )].front() );
+                m_uniqueId = TStringToQString( file->tag()->fieldListMap()[QStringToTString( ourId )].front() ).left( randSize );
         }
     }
+    //FLACs are commented because supposedly they have to be totally rewritten to add uniqueids, and as they're big this takes a while.
+    //This will have to be tested.  It's also supposedly a TagLib bug so maybe it could be fixed, especially with some pressure on wheels
     else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
     {
         /*if ( file->xiphComment( true ) )
@@ -1332,7 +1334,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
                 newID = true;
             }
             else
-                m_uniqueId = TStringToQString( file->xiphComment()->fieldListMap()[QStringToTString( ourId )].front() );
+                m_uniqueId = TStringToQString( file->xiphComment()->fieldListMap()[QStringToTString( ourId )].front() ).left( randSize );
         }*/
         //don't handle FLAC yet because causes whole file to be rewritten -- bug in TagLib?
         if( file || !file )
@@ -1353,7 +1355,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
                 newID = true;
             }
             else
-                m_uniqueId = TStringToQString( file->tag()->fieldListMap()[QStringToTString( ourId )].front() );
+                m_uniqueId = TStringToQString( file->tag()->fieldListMap()[QStringToTString( ourId )].front() ).left( randSize );
         }*/
         if( file || !file )
             return;
