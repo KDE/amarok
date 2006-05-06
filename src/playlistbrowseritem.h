@@ -343,7 +343,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         void setDOMSettings( const QDomNode &channelSettings );
         void startAnimation();
         void stopAnimation();
-        
+
         PodcastChannelBundle m_bundle;
 
         KURL        m_url;                         //remote xml url

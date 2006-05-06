@@ -1206,7 +1206,7 @@ PodcastChannel::configure()
         m_bundle.setSettings( newSettings );
         CollectionDB::instance()->updatePodcastChannel( m_bundle );
 
-        if( hasPurge() )
+        if( hasPurge() && purgeCount() != 0 )
             purge();
 
         if( downloadMedia )
@@ -1506,7 +1506,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
             ep->setNew( true );
     }
 
-    if( hasPurge() && childCount() > purgeCount() )
+    if( hasPurge() && purgeCount() != 0 && childCount() > purgeCount() )
         purge();
 
     if( downloadMedia )
@@ -1630,20 +1630,20 @@ PodcastChannel::purge()
 
     KURL::List urlsToDelete;
     QValueList<QListViewItem*> purgedItems;
-    
+
     QListViewItem *current = firstChild();
     for( int i=0; current && i < childCount(); current = current->nextSibling(), i++ )
     {
         if( i < purgeCount() )
             continue;
-        
+
         purgedItems.append( current );
     }
-    
+
     foreachType( QValueList<QListViewItem*>, purgedItems )
     {
         QListViewItem *item = *it;
-            
+
     #define item static_cast<PodcastEpisode*>(item)
         if( item->isOnDisk() )
             urlsToDelete.append( item->localUrl() );

@@ -30,7 +30,7 @@ class PodcastChannelBundle
             m_purge        = settings->hasPurge();
             m_purgeCount   = settings->purgeCount();
         }
-        
+
         PodcastSettings * getSettings()
         {
             return new PodcastSettings( m_title, m_saveLocation.url(), m_autoscan, m_fetchType, 
@@ -60,7 +60,7 @@ class PodcastChannelBundle
         void    setDescription( const QString &d );
         void    setCopyright( const QString &c );
         void    setParentId( const int p );
-        
+
         void    setSaveLocation( const KURL &s );
         void    setAutoScan( const bool b );
         void    setFetchType( const int i );

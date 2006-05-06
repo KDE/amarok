@@ -40,7 +40,7 @@ PodcastSettings::PodcastSettings( const QString &title )
     m_fetch = STREAM;
     m_addToMediaDevice = false;
     m_purge = false;
-    m_purgeCount = 10;
+    m_purgeCount = 0;
 }
 
 PodcastSettings::PodcastSettings( const QString &title, const QString &save, const bool autoScan,
@@ -54,7 +54,7 @@ PodcastSettings::PodcastSettings( const QString &title, const QString &save, con
     }
     else
         m_saveLocation = KURL::fromPathOrURL( save );
-        
+
     m_autoScan = autoScan;
     m_fetch = fetchType;
     m_addToMediaDevice = autotransfer;
