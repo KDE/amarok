@@ -275,12 +275,15 @@ CollectionDB::isValid( )
 {
     QStringList values1;
     QStringList values2;
+    QStringList values3;
+    QStringList values4;
 
     values1 = query( "SELECT COUNT( url ) FROM tags LIMIT 1 OFFSET 0;" );
     values2 = query( "SELECT COUNT( url ) FROM statistics LIMIT 1 OFFSET 0;" );
+    values3 = query( "SELECT COUNT( url ) FROM podcastchannels LIMIT 1 OFFSET 0;" );
+    values4 = query( "SELECT COUNT( url ) FROM podcastepisodes LIMIT 1 OFFSET 0;" );
 
-    //TODO? this returns true if value1 or value2 is not empty. Shouldn't this be and (&&)???
-    return !values1.isEmpty() || !values2.isEmpty();
+    return values1.isEmpty() && values2.isEmpty() && values3.isEmpty() && values4.isEmpty();
 }
 
 
