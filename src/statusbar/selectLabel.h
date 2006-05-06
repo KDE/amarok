@@ -125,7 +125,8 @@ class SelectLabel : public QLabel
 
             if( !isEnabled() )
                 tip += i18n("&nbsp;<br>&nbsp;<i>Disabled</i>");
-            else if( AmarokConfig::favorTracks() ) //hack?
+            else if( AmarokConfig::favorTracks() &&
+                     m_action == amaroK::actionCollection()->action( "random_mode" ) ) //hack?
             {
                 KSelectAction *a = static_cast<KSelectAction*>( amaroK::actionCollection()->action( "favor_tracks" ) );
                 tip += QString("<br><br>") + i18n("%1: %2")
