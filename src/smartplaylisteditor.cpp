@@ -405,9 +405,7 @@ void SmartPlaylistEditor::buildQuery()
             for( i=0; criteria2; criteria2 = m_criteriaEditorAllList.next(), i++ ) {
                 
                 QString str = criteria2->getSearchCriteria();
-                //add the table used in the search expression to tables
-                QString table = str.left( str.find('.') );
-                if( table=="statistics" && !joins.contains( "statistics" ) )
+                if( str.contains( "statistics." ) && !joins.contains( "statistics" ) )
                     joins += " LEFT JOIN statistics ON statistics.url=tags.url";
                 
                 if( i ) //multiple conditions
@@ -425,8 +423,7 @@ void SmartPlaylistEditor::buildQuery()
     if( m_orderCheck->isChecked() ) {
         if( m_orderCombo->currentItem() != m_orderCombo->count()-1 ) {
             QString field = m_dbFields[ m_orderCombo->currentItem() ];
-            QString table = field.left( field.find('.') );
-            if( table=="statistics" && !joins.contains( "statistics" ) )
+            if( field.contains( "statistics." ) && !joins.contains( "statistics" ) )
                 joins += " LEFT JOIN statistics ON statistics.url=tags.url";
 
             QString orderType = m_orderTypeCombo->currentItem() == 1 ? " DESC" : " ASC";
