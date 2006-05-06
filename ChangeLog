@@ -13,6 +13,10 @@ VERSION 1.4.0:
       view.
 
   CHANGES:
+    * VFAT plugin completely rewritten since 1.4beta3. Name is now changed to
+	"Generic Audio Player" to make it less needlessely technical.
+    * Don't limit the number of episodes shown with a new podcast, sice the
+	user can limit the number shown afterwards by configuring the channel.
     * Automatically populate the playlist with items if it is empty when a
       dynamic playlist is loaded. (BR 126594)
     * Unplayed/unrated tracks are no longer shown in the statistics dialog.
@@ -83,6 +87,7 @@ VERSION 1.4.0:
     * Disable option to delete remote items in playlist right-click menu.
       (BR 124745)
     * Reload playlist browser podcasts when switching database engines.
+	* Podcast tables recreated on startup if they don't exist.
 
 
 VERSION 1.4-beta3:

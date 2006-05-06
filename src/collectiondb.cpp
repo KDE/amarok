@@ -283,7 +283,7 @@ CollectionDB::isValid( )
     values3 = query( "SELECT COUNT( url ) FROM podcastchannels LIMIT 1 OFFSET 0;" );
     values4 = query( "SELECT COUNT( url ) FROM podcastepisodes LIMIT 1 OFFSET 0;" );
 
-    return values1.isEmpty() && values2.isEmpty() && values3.isEmpty() && values4.isEmpty();
+    return !( values1.isEmpty() || values2.isEmpty() || values3.isEmpty() || values4.isEmpty() );
 }
 
 
