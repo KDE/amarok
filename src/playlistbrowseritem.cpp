@@ -1083,7 +1083,7 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
 {
     setDragEnabled( true );
     setRenameEnabled( 0, false );
-    
+
     setDOMSettings( channelSettings );
 
     setText(0, i18n("Retrieving Podcast...") ); //HACK to fill loading time space
@@ -1108,7 +1108,7 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
         setXml( type.namedItem("channel"), RSS );
     else
         setXml( type, ATOM );
-        
+
     setDOMSettings( channelSettings );
 
     setDragEnabled( true );
@@ -1150,7 +1150,7 @@ PodcastChannel::setDOMSettings( const QDomNode &channelSettings )
     QString t = title();
     if( save.isEmpty() )
         save = amaroK::saveLocation( "podcasts/" + amaroK::vfatPath( t ) );
-        
+
     PodcastSettings *settings = new PodcastSettings( t, save, scan, fetchType, false/*transfer*/, hasPurge, purgeCount );
     m_bundle.setSettings( settings );
 }
@@ -1159,7 +1159,7 @@ void
 PodcastChannel::configure()
 {
     PodcastSettingsDialog *dialog = new PodcastSettingsDialog( m_bundle.getSettings() );
-    
+
     if( dialog->configure() )
     {
         PodcastSettings *newSettings = dialog->getSettings();
@@ -1205,10 +1205,10 @@ PodcastChannel::configure()
 
         m_bundle.setSettings( newSettings );
         CollectionDB::instance()->updatePodcastChannel( m_bundle );
-        
+
         if( hasPurge() )
             purge();
-            
+
         if( downloadMedia )
             downloadChildren();
     }
@@ -1438,7 +1438,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
         n = xml.namedItem( "item" );
 
     int  children = 0;
-    int  episode_limit = (m_bundle.purgeCount() > 0 ? m_bundle.purgeCount() : EPISODE_LIMIT );
+    int  episode_limit = (m_bundle.purgeCount() > 0 ? m_bundle.purgeCount() : 0 );
     bool downloadMedia = ( fetchType() == AUTOMATIC );
     QDomNode node;
 
@@ -1474,7 +1474,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
         }
         else // Freshly added podcast
         {
-            if( children > episode_limit-1 )
+            if( episode_limit != 0 && children > episode_limit-1 )
                 break;
 
             if( !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
