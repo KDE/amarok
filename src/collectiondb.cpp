@@ -1388,11 +1388,25 @@ CollectionDB::findDirectoryImage( const QString& artist, const QString& album, u
     if ( album.isEmpty() )
         return QString::null;
 
-    QStringList values =
-        query( QString(
+    QStringList values;
+    if ( artist == i18n( "Various Artists" ) )
+    {
+         values = query( QString(
+            "SELECT path FROM images, artist, tags "
+            "WHERE images.artist = artist.name "
+            "AND artist.id = tags.artist "
+            "AND tags.sampler = %1 "
+            "AND images.album %2 " )
+                 .arg( boolT() )
+                 .arg( CollectionDB::likeCondition( album ) ) );
+    }
+    else
+    {
+        values = query( QString(
             "SELECT path FROM images WHERE artist %1 AND album %2 ORDER BY path;" )
             .arg( CollectionDB::likeCondition( artist ),
                   CollectionDB::likeCondition( album ) ) );
+    }
 
     if ( !values.isEmpty() )
     {
