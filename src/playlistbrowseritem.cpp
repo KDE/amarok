@@ -282,9 +282,8 @@ PlaylistCategory::paintCell( QPainter *p, const QColorGroup &cg, int column, int
 {
     QFont font( p->font() );
 
-    if( !m_folder ) { // increase font size for base categories
+    if( !m_folder ) {
         font.setBold( true );
-        font.setPointSize( font.pointSize() + 1 );
     }
 
     p->setFont( font );
