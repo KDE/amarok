@@ -14,9 +14,9 @@ VERSION 1.4.0:
 
   CHANGES:
     * VFAT plugin completely rewritten since 1.4beta3. Name is now changed to
-	"Generic Audio Player" to make it less needlessely technical.
+      "Generic Audio Player" to make it less needlessely technical.
     * Don't limit the number of episodes shown with a new podcast, sice the
-	user can limit the number shown afterwards by configuring the channel.
+      user can limit the number shown afterwards by configuring the channel.
     * Automatically populate the playlist with items if it is empty when a
       dynamic playlist is loaded. (BR 126594)
     * Unplayed/unrated tracks are no longer shown in the statistics dialog.
@@ -24,7 +24,7 @@ VERSION 1.4.0:
     * Show total track time in context browser (BR 126548)
     * Derive filename for downloaded podcast episodes from their url in the
       rss feed. (BR 125966)
-    * Only show albums/artists/genres with more than 3 tracks when listing 
+    * Only show albums/artists/genres with more than 3 tracks when listing
       favourite albums/artists/genres. (BR 126435)
     * libtunepimp 0.5 compiles successfully.
     * Podcasts are automatically configured to be checked for updates.
@@ -55,9 +55,9 @@ VERSION 1.4.0:
     * Set a podcast as listened only when it really has been listened to.
     * All tracks from a cuesheet will now submit correctly to last.fm.
       (BR 114969)
-    * xine-engine will now correctly detect a change when only one of the 
-      artist or album metadata changes. Patch by Kim Rasmussen 
-      <kml@elreki.net> (BR 126648)
+    * xine-engine will now correctly detect a change when only one of the
+      artist or album metadata changes. Patch by Kim Rasmussen
+      <kml@elreki.net>. (BR 126648)
     * Less than and between criteria in a smart playlist for playcount, rating
       or score of 0 now work. (BR 97046)
     * Empty genres are no longer displayed in the collection browser.
@@ -87,7 +87,7 @@ VERSION 1.4.0:
     * Disable option to delete remote items in playlist right-click menu.
       (BR 124745)
     * Reload playlist browser podcasts when switching database engines.
-	* Podcast tables recreated on startup if they don't exist.
+    * Podcast tables recreated on startup if they don't exist.
 
 
 VERSION 1.4-beta3:
