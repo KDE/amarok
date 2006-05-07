@@ -14,8 +14,8 @@ VERSION 1.4.0:
 
   CHANGES:
     * VFAT plugin completely rewritten since 1.4beta3. Name is now changed to
-      "Generic Audio Player" to make it less needlessely technical.
-    * Don't limit the number of episodes shown with a new podcast, sice the
+      "Generic Audio Player" to make it less needlessly technical.
+    * Don't limit the number of episodes shown with a new podcast, since the
       user can limit the number shown afterwards by configuring the channel.
     * Automatically populate the playlist with items if it is empty when a
       dynamic playlist is loaded. (BR 126594)

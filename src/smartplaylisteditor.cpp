@@ -1,4 +1,4 @@
-// (c) Pierpaolo Di Panfilo 2004
+/// (c) Pierpaolo Di Panfilo 2004
 // (c) Alexandre Pereira de Oliveira 2005
 // (c) 2005 Isaiah Damron <xepo@trifault.net>
 // See COPYING file for licensing information
@@ -96,7 +96,7 @@ SmartPlaylistEditor::SmartPlaylistEditor( QWidget *parent, QDomElement xml, cons
         QDomElement orderby = orderbyList.item(0).toElement(); // we only allow one orderby node
 
         //random is always the last one.
-        int dbfield = orderby.attribute( "field" ) == "random" ? m_dbFields.count() : m_dbFields.findIndex( orderby.attribute( "field" ) );
+        int dbfield = orderby.attribute( "field" ) == "Random" ? m_dbFields.count() : m_dbFields.findIndex( orderby.attribute( "field" ) );
         m_orderCombo->setCurrentItem( dbfield );
         updateOrderTypes( dbfield );
         if ( orderby.attribute( "order" ) == "DESC" || orderby.attribute( "order" ) == "weighted" )
@@ -339,8 +339,8 @@ QDomElement SmartPlaylistEditor::result() {
             orderby.setAttribute( "field", m_dbFields[ m_orderCombo->currentItem() ] );
             orderby.setAttribute( "order", m_orderTypeCombo->currentItem() == 1 ? "DESC" : "ASC" );
         } else {
-            orderby.setAttribute( "field", "random" );
-            orderby.setAttribute( "order", m_orderTypeCombo->currentItem() == 1 ? "weighted" : "random" );
+            orderby.setAttribute( "field", "Random" );
+            orderby.setAttribute( "order", m_orderTypeCombo->currentItem() == 1 ? "weighted" : "Random" );
         }
 
         smartplaylist.appendChild( orderby );
