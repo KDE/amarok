@@ -96,7 +96,8 @@ SmartPlaylistEditor::SmartPlaylistEditor( QWidget *parent, QDomElement xml, cons
         QDomElement orderby = orderbyList.item(0).toElement(); // we only allow one orderby node
 
         //random is always the last one.
-        int dbfield = orderby.attribute( "field" ) == "Random" ? m_dbFields.count() : m_dbFields.findIndex( orderby.attribute( "field" ) );
+        int dbfield = orderby.attribute( "field" ) == "random" ? m_dbFields.count()-1 : m_dbFields.findIndex( orderby.attribute( "field" ) );
+
         m_orderCombo->setCurrentItem( dbfield );
         updateOrderTypes( dbfield );
         if ( orderby.attribute( "order" ) == "DESC" || orderby.attribute( "order" ) == "weighted" )
@@ -339,8 +340,8 @@ QDomElement SmartPlaylistEditor::result() {
             orderby.setAttribute( "field", m_dbFields[ m_orderCombo->currentItem() ] );
             orderby.setAttribute( "order", m_orderTypeCombo->currentItem() == 1 ? "DESC" : "ASC" );
         } else {
-            orderby.setAttribute( "field", "Random" );
-            orderby.setAttribute( "order", m_orderTypeCombo->currentItem() == 1 ? "weighted" : "Random" );
+            orderby.setAttribute( "field", "random" );
+            orderby.setAttribute( "order", m_orderTypeCombo->currentItem() == 1 ? "weighted" : "random" );
         }
 
         smartplaylist.appendChild( orderby );
