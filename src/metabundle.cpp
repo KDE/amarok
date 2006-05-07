@@ -1432,7 +1432,11 @@ MetaBundle::getRandomStringHelper( int size )
     bool goodvalue = false;
     bool temporary = false;
     QStringList tempcheck, uniqueids;
-    tempcheck = CollectionDB::instance()->query( QString( "SHOW TABLES;" ) );
+    if (CollectionDB::instance()->getType() == DbConnection::postgresql)
+        tempcheck = CollectionDB::instance()->query( QString( "select relname from pg_stat_user_tables order by relname;" ) );
+    else
+        tempcheck = CollectionDB::instance()->query( QString( "SHOW TABLES;" ) );
+
     if( tempcheck.contains( "uniqueid_temp" ) > 0 )
         temporary = true;
     while( !goodvalue )
