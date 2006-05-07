@@ -1586,11 +1586,14 @@ PodcastChannel::episodeExists( const QDomNode &xml, const int feedType )
 void
 PodcastChannel::setParent( PlaylistCategory *newParent )
 {
-    m_parent->takeItem( this );
-    newParent->insertItem( this );
-    newParent->sortChildItems( 0, true );
-
-    m_parent = newParent;
+    if( newParent != m_parent )
+    {
+        m_parent->takeItem( this );
+        newParent->insertItem( this );
+        newParent->sortChildItems( 0, true );
+    
+        m_parent = newParent;
+    }
     m_bundle.setParentId( m_parent->id() );
 
     CollectionDB::instance()->updatePodcastChannel( m_bundle );

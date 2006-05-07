@@ -991,8 +991,27 @@ void PlaylistBrowser::savePodcastFolderStates( PlaylistCategory *folder )
         child = static_cast<PlaylistCategory*>(child->nextSibling());
     }
     if( folder != m_podcastCategory )
-        CollectionDB::instance()->updatePodcastFolder( folder->id(), folder->text(0),
+    {
+        if( folder->id() < 0 ) // probably due to a 1.3->1.4 migration
+        {                      // we add the folder to the db, set the id and then update all the children
+            int parentId = static_cast<PlaylistCategory*>(folder->parent())->id();
+            int newId = CollectionDB::instance()->addPodcastFolder( folder->text(0), parentId, folder->isOpen() );
+            folder->setId( newId );
+            PodcastChannel *chan = static_cast<PodcastChannel*>(folder->firstChild());
+            while( chan )
+            {
+                if( isPodcastChannel( chan ) )
+                    // will update the database so child has correct parentId.
+                    chan->setParent( folder );
+                chan = static_cast<PodcastChannel*>(chan->nextSibling());
+            }
+        }
+        else
+        {
+            CollectionDB::instance()->updatePodcastFolder( folder->id(), folder->text(0),
                               static_cast<PlaylistCategory*>(folder->parent())->id(), folder->isOpen() );
+        }
+    }
 }
 
 void PlaylistBrowser::scanPodcasts()
