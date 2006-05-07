@@ -49,6 +49,7 @@ VERSION 1.4.0:
       <kde@dontletsstart.com>. (BR 125414)
 
   BUGFIXES:
+    * Smart-Playlist random mode was not 'sticking'. (BR 126877)
     * Statusbar log files would only ever write to the first log after all
       four logs had been filled.
     * iFP: Don't pretend to add newly transferred files to wrong folders.
