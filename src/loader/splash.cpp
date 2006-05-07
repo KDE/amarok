@@ -24,7 +24,7 @@ extern "C"
 Splash::Splash()
         : QWidget( 0, 0, WType_TopLevel | WX11BypassWM | WStyle_StaysOnTop )
 {
-    QString path = KStandardDirs().findResource("data", "amarok/images/splash_screen.png");
+    QString path = KStandardDirs().findResource("data", "amarok/images/splash_screen.jpg");
 
     QPixmap splash( path );
     resize( splash.size() );

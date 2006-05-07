@@ -38,7 +38,7 @@ images_DATA = \
     shadow_albumcover.png \
     sbinner_stars.png \
     smallstar.png \
-    splash_screen.png \
+    splash_screen.jpg \
     star.png \
     time_minus.png \
     time_plus.png \
