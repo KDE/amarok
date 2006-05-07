@@ -13,6 +13,7 @@ VERSION 1.4.0:
       view.
 
   CHANGES:
+    * Only pick genres for Smart playlists that exist in your collection.
     * VFAT plugin completely rewritten since 1.4beta3. Name is now changed to
       "Generic Audio Player" to make it less needlessly technical.
     * Don't limit the number of episodes shown with a new podcast, since the

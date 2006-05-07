@@ -805,7 +805,7 @@ void CriteriaEditor::slotFieldSelected( int field )
         else if( currentField == 1 ) //album
            items = CollectionDB::instance()->albumList();
         else  //genre
-           items = MetaBundle::genreList();
+           items = CollectionDB::instance()->genreList();
 
         m_comboBox->insertStringList( items );
         m_comboBox->completionObject()->insertItems( items );
