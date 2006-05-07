@@ -479,15 +479,15 @@ class CollectionDB : public QObject, public EngineObserver
 
         //member variables
         QString m_amazonLicense;
-        bool m_validArtistCache;
-        bool m_validAlbumCache;
+        bool    m_validArtistCache;
+        bool    m_validAlbumCache;
         QString m_cacheArtist[2];
-        uint m_cacheArtistID[2];
+        uint    m_cacheArtistID[2];
         QString m_cacheAlbum[2];
-        uint m_cacheAlbumID[2];
-        static QMutex *connectionMutex;
+        uint    m_cacheAlbumID[2];
+        static  QMutex *connectionMutex;
 
-        bool m_monitor;
+        bool   m_monitor;
         QImage m_noCover;
 
         bool m_autoScoring;
@@ -499,6 +499,7 @@ class CollectionDB : public QObject, public EngineObserver
         //organize files stuff
         bool m_waitForFileOperation;
         bool m_fileOperationFailed;
+        bool m_atfEnabled;
 
         // for handling podcast image url redirects
         QMap<KIO::Job *, QString> m_podcastImageJobs;
