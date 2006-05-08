@@ -1836,9 +1836,15 @@ CollectionDB::getPodcastChannels()
 }
 
 QValueList<PodcastEpisodeBundle>
-CollectionDB::getPodcastEpisodes( const KURL &parent )
+CollectionDB::getPodcastEpisodes( const KURL &parent, bool onlyNew, int limit )
 {
-    QString command = QString( "SELECT id, url, localurl, parent, guid, title, subtitle, composer, comment, filetype, createdate, length, size, isNew FROM podcastepisodes WHERE parent='%1' ORDER BY id;").arg( parent.url() );
+    QString command = QString( "SELECT id, url, localurl, parent, guid, title, subtitle, composer, comment, filetype, createdate, length, size, isNew FROM podcastepisodes WHERE ( parent='%1'" ).arg( parent.url() );
+    if( onlyNew )
+        command += QString( " AND isNew='%1'" ).arg( boolT() );
+    command += " ) ORDER BY id";
+    if( limit != -1 )
+        command += QString( " DESC LIMIT %1 OFFSET 0" ).arg( limit );
+    command += ";";
 
     QStringList values = query( command );
     QValueList<PodcastEpisodeBundle> bundles;

@@ -281,7 +281,7 @@ class CollectionDB : public QObject, public EngineObserver
         int  addPodcastFolder( const QString &name, const int parent_id=0, const bool isOpen=false );
         QValueList<PodcastChannelBundle> getPodcastChannels();
         PodcastEpisodeBundle getPodcastEpisodeById( int id );
-        QValueList<PodcastEpisodeBundle> getPodcastEpisodes( const KURL &parent );
+        QValueList<PodcastEpisodeBundle> getPodcastEpisodes( const KURL &parent, bool newOnly=false, int limit=-1 );
         void removePodcastChannel( const KURL &url ); // will remove all episodes too
         void removePodcastEpisode( const int id );
         void removePodcastFolder( const int id );

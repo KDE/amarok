@@ -1244,19 +1244,15 @@ CurrentTrackJob::showHomeByAlbums()
                 it != channels.end();
                 it++ )
         {
+            debug() << "processing podcast channel" << endl;
             PodcastChannelBundle pcb;
             if( !CollectionDB::instance()->getPodcastChannelBundle( *it, &pcb ) )
                 continue;
 
-            QValueList<PodcastEpisodeBundle> episodes = CollectionDB::instance()->getPodcastEpisodes( *it );
-            while( !episodes.isEmpty() )
+            QValueList<PodcastEpisodeBundle> episodes = CollectionDB::instance()->getPodcastEpisodes( *it, true /* only new */, 1 );
+            if( !episodes.isEmpty() )
             {
-                PodcastEpisodeBundle &ep = episodes.back();
-                if( !ep.isNew() )
-                {
-                    episodes.pop_back();
-                    continue;
-                }
+                PodcastEpisodeBundle &ep = *episodes.begin();
 
                 QString date;
                 time_t t = 0;
@@ -1321,7 +1317,6 @@ CurrentTrackJob::showHomeByAlbums()
                         "</td>"
                         "</tr>" );
                 i++;
-                break;
             }
         }
         m_HTMLSource.append(
