@@ -843,11 +843,6 @@ IpodMediaDevice::openDevice( bool silent )
         }
         else
         {
-            if( !devicenode.startsWith("/dev/sd") &&
-                    !devicenode.startsWith("/dev/hd") &&
-                    devicenode.find("scsi") < 0 )
-                continue;
-
             GError *err = 0;
             m_itdb = itdb_parse(QFile::encodeName(mountpoint), &err);
             if(err)
