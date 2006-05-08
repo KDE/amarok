@@ -78,7 +78,7 @@
 
 using amaroK::QStringx;
 
-#define DEBUG 1
+#define DEBUG 0
 
 QMutex* CollectionDB::connectionMutex = new QMutex();
 //we don't have to worry about this map leaking memory since ThreadWeaver limits the total
