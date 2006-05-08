@@ -78,7 +78,7 @@
 
 using amaroK::QStringx;
 
-#define DEBUG 0
+#define DEBUG 1
 
 QMutex* CollectionDB::connectionMutex = new QMutex();
 //we don't have to worry about this map leaking memory since ThreadWeaver limits the total
@@ -164,7 +164,6 @@ CollectionDB::~CollectionDB()
 inline QString
 CollectionDB::exactCondition( const QString &right )
 {
-    //Use / as the escape character
     return QString ("= '" + instance()->escapeString( right ) + "'");
 }
 
