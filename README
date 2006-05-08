@@ -37,22 +37,8 @@ interface that really makes playlist handling easy.
 --------------------------------------------------------------------------------
 
 
- RELEASE NOTES 1.4-BETA3
-=========================
-
-* The GStreamer-0.10 engine is still experimental and not yet completed. For
-  everyday usage we recommend the xine or Helix engines.
-
-* The new amaroK icon theme is not yet complete. You can disable it in the
-  the settings dialog, "General" section.
---------------------------------------------------------------------------------
-
-
  DEPENDENCIES
 ==============
-
-FIXME: Does media auto-detection require KDE 3.5/dbus/hal/media-kioslave?
-       What happens if these don't exist? Update accordingly.
 
 Required
     * KDE-Libs 3.3
@@ -79,10 +65,6 @@ Optional
       (multimedia framework)
       http://www.real.com
       (Note: only HelixPlayer is exactly RealPlayer without MP3 support)
-
-    * GStreamer-0.10 + GStreamer-Plugins-0.10
-      (multimedia framework)
-      http://gstreamer.net
 
     * NMM 0.7.0
       (multimedia framework)

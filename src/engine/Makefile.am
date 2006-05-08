@@ -31,7 +31,6 @@ METASOURCES = \
 
 SUBDIRS = . \
     void \
-    $(GST10_ENGINE_SUBDIR) \
     $(XINE_ENGINE_SUBDIR) \
     $(NMM_ENGINE_SUBDIR) \
     $(HELIX_ENGINE_SUBDIR)
