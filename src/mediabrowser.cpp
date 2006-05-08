@@ -772,7 +772,6 @@ void MediaItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int w
         {
             QFont font( p->font() );
             font.setBold( true );
-            font.setPointSize( font.pointSize() + 1 );
             p->setFont( font );
         }
     default:
