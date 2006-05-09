@@ -226,8 +226,7 @@ MediumPluginManager::newDevice()
 {
     DEBUG_BLOCK
     ManualDeviceAdder* mda = new ManualDeviceAdder( this );
-    mda->exec();
-    if( mda->successful() && mda->getMedium() != 0 )
+    if( mda->exec() == QDialog::Accepted && mda->successful() && mda->getMedium() != 0 )
     {
         if( amaroK::config( "MediaBrowser" )->readEntry( mda->getMedium()->id() ) != QString::null )
         {
@@ -252,7 +251,7 @@ MediumPluginManager::newDevice()
 /////////////////////////////////////////////////////////////////////
 
 ManualDeviceAdder::ManualDeviceAdder( MediumPluginManager* mpm )
-: KDialogBase( amaroK::mainWindow(), "manualdeviceadder", true, QString::null, Ok, Ok )
+: KDialogBase( amaroK::mainWindow(), "manualdeviceadder", true, QString::null, Ok|Cancel, Ok )
 {
     m_mpm = mpm;
     m_successful = false;
