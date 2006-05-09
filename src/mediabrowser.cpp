@@ -331,9 +331,10 @@ MediaBrowser::MediaBrowser( const char *name )
     }
 
     if ( newflag )
-        amaroK::StatusBar::instance()->longMessageThreadSafe( i18n("amaroK has detected new portable media devices.\n"
-                                                                   "Go to the \"Media Devices\" pane of the configuration\n"
-                                                                   "dialog to choose a plugin for these devices.") );
+        amaroK::StatusBar::instance()->longMessageThreadSafe(
+                i18n("amaroK has detected new portable media devices.\n"
+                    "Go to the \"Media Devices\" pane of the configuration\n"
+                    "dialog to choose a plugin for these devices.") );
 
     connect( m_toolbar->getButton(CONNECT),    SIGNAL( clicked() ),        SLOT( connectClicked() ) );
     connect( m_toolbar->getButton(DISCONNECT), SIGNAL( clicked() ),        SLOT( disconnectClicked() ) );

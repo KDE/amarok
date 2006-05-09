@@ -767,14 +767,14 @@ IpodMediaDevice::initializeIpod( const QString &mountpoint )
     if( m_itdb == 0 )
         return false;
 
+    itdb_set_mountpoint(m_itdb, QFile::encodeName(mountpoint));
+
     Itdb_Playlist *mpl = itdb_playlist_new("iPod", false);
     itdb_playlist_set_mpl(mpl);
     Itdb_Playlist *podcasts = itdb_playlist_new("Podcasts", false);
     itdb_playlist_set_podcasts(podcasts);
     itdb_playlist_add(m_itdb, podcasts, -1);
     itdb_playlist_add(m_itdb, mpl, 0);
-
-    itdb_set_mountpoint(m_itdb, QFile::encodeName(mountpoint));
 
     QString path = mountpoint + "/iPod_Control";
     dir.setPath(path);
@@ -796,6 +796,9 @@ IpodMediaDevice::initializeIpod( const QString &mountpoint )
     if(!dir.exists())
         dir.mkdir(dir.absPath());
     if(!dir.exists())
+        return false;
+
+    if( !writeITunesDB( false ) )
         return false;
 
     amaroK::StatusBar::instance()->longMessage(
@@ -890,20 +893,30 @@ IpodMediaDevice::openDevice( bool silent )
 
     if( !m_itdb )
     {
-        if( !initializeIpod( mountPoint() ) )
+        QString msg = i18n( "Media Device: could not find iTunesDB on device mounted at %1. "
+                "Should I try to initialize your iPod?" ).arg( mountPoint() );
+
+        if( !silent
+                && KMessageBox::warningContinueCancel( m_parent, msg, i18n( "Initialize iPod?" ),
+                    KGuiItem(i18n("&Initialize"), "new") ) == KMessageBox::Continue )
         {
-            if( m_itdb )
+            if( !initializeIpod( mountPoint() ) )
             {
-                itdb_free( m_itdb );
-                m_itdb = 0;
+                if( m_itdb )
+                {
+                    itdb_free( m_itdb );
+                    m_itdb = 0;
+                }
+
+                amaroK::StatusBar::instance()->longMessage(
+                        i18n("Media Device: Failed to initialize iPod mounted at %1").arg(mountPoint()),
+                        KDE::StatusBar::Sorry );
+
+                return false;
             }
-
-            amaroK::StatusBar::instance()->longMessage(
-                    i18n("Media Device: Failed to initialize iPod mounted at %1").arg(mountPoint()),
-                    KDE::StatusBar::Sorry );
-
-            return false;
         }
+        else
+           return false;
     }
 
     if( !createLockFile( mountPoint(), silent ) )
@@ -1236,7 +1249,9 @@ IpodMediaDevice::addTrackToView(Itdb_Track *track, IpodMediaItem *item)
         if( item )
             album->insertItem( item );
         else
+        {
             item = new IpodMediaItem( album, this );
+        }
         QString titleName = QString::fromUtf8(track->title);
         if( track->compilation )
             item->setText( 0, QString::fromUtf8(track->artist) + i18n( " - " ) + titleName );
@@ -1452,8 +1467,8 @@ class IpodWriteDBJob : public ThreadWeaver::DependentJob
         bool m_return;
 };
 
-void
-IpodMediaDevice::writeITunesDB()
+bool
+IpodMediaDevice::writeITunesDB( bool threaded )
 {
     if(m_itdb)
         m_dbChanged = true; // write unconditionally for resetting recent_playcount
@@ -1461,13 +1476,14 @@ IpodMediaDevice::writeITunesDB()
     if(m_dbChanged)
     {
         bool ok = false;
-        if( MediaBrowser::instance()->isQuitting() )
+        if( !threaded || MediaBrowser::instance()->isQuitting() )
         {
             if( !m_itdb )
             {
-                return;
+                return false;
             }
 
+            ok = true;
             GError *error = 0;
             if ( !itdb_write (m_itdb, &error) )
             {   /* an error occured */
@@ -1480,6 +1496,7 @@ IpodMediaDevice::writeITunesDB()
                     g_error_free (error);
                 }
                 error = 0;
+                ok = false;
             }
 
             if( m_isShuffle )
@@ -1496,6 +1513,7 @@ IpodMediaDevice::writeITunesDB()
                         g_error_free (error);
                     }
                     error = 0;
+                    ok = false;
                 }
             }
         }
@@ -1519,7 +1537,10 @@ IpodMediaDevice::writeITunesDB()
                     i18n("Media device: failed to write iPod database"),
                     KDE::StatusBar::Error );
         }
+
+        return ok;
     }
+    return true;
 }
 
 
@@ -1648,8 +1669,8 @@ IpodMediaDevice::determineURLOnDevice(const MetaBundle &bundle)
     do
     {
         int num = std::rand() % 1000000;
-        int music_dirs = itdb_musicdirs_number(m_itdb); 
-        int dir = music_dirs ? (num % music_dirs) : 0;
+        int music_dirs = itdb_musicdirs_number(m_itdb) > 0 ? itdb_musicdirs_number(m_itdb) : 20; 
+        int dir = num % music_dirs;
         QString dirname;
         dirname.sprintf( ":iPod_Control:Music:f%02d", dir );
         QString realdir = realPath(dirname.latin1());

@@ -84,7 +84,7 @@ class IpodMediaDevice : public KioMediaDevice
 
     private:
         bool              initializeIpod( const QString &mountpoint );
-        void              writeITunesDB();
+        bool              writeITunesDB( bool threaded=true );
         bool              createLockFile( const QString &mountpoint, bool silent );
         IpodMediaItem    *addTrackToView(Itdb_Track *track, IpodMediaItem *item=0);
         void              addPlaylistToView(Itdb_Playlist *playlist);
