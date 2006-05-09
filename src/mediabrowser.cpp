@@ -2702,6 +2702,8 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
             if ( button != KMessageBox::Continue )
             {
                 m_parent->updateStats();
+                m_deleting = false;
+                unlockDevice();
                 return 0;
             }
 
