@@ -27,6 +27,8 @@
 #include "threadweaver.h"
 #include "qstringx.h"
 
+#include <taglib/tfile.h> //TagLib::File::isWritable
+
 #include <unistd.h>         //CollectionView ctor
 
 #include <qapplication.h>
@@ -2496,19 +2498,22 @@ CollectionView::setCompilation( const QString &album, bool compilation )
 
     QStringList files = CollectionDB::instance()->setCompilation( album, compilation );
     foreachType( QStringList, files ) {
+        if ( !TagLib::File::isWritable( QFile::encodeName( *it ) ) )
+            continue;
+
         MetaBundle mb( KURL::fromPathOrURL( *it ) );
 
         mb.setCompilation( compilation ? MetaBundle::CompilationYes : MetaBundle::CompilationNo );
 
-        bool result = mb.save();
-        mb.updateFilesize();
-
-        if( result )
-        //update the collection db, since filesize might have changed
-            CollectionDB::instance()->updateTags( mb.url().path(), mb, it == --files.end() );
+        if( mb.save() ) {
+            mb.updateFilesize();
+            //update the collection db, since filesize might have changed
+            CollectionDB::instance()->updateTags( mb.url().path(), mb, false );
+        }
     }
     //visual feedback
     QApplication::restoreOverrideCursor();
+    if ( !files.isEmpty() ) renderView(true);
 }
 
 void

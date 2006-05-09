@@ -1188,22 +1188,24 @@ MetaBundle::save()
     if ( !f.isNull() )
     {
         TagLib::Tag * t = f.tag();
-        t->setTitle( QStringToTString( title() ) );
-        t->setArtist( QStringToTString( artist().string() ) );
-        t->setAlbum( QStringToTString( album().string() ) );
-        t->setTrack( track() );
-        t->setYear( year() );
-        t->setComment( QStringToTString( comment().string() ) );
-        t->setGenre( QStringToTString( genre().string() ) );
+        if ( t ) { // f.tag() can return null if the file couldn't be opened for writing
+            t->setTitle( QStringToTString( title() ) );
+            t->setArtist( QStringToTString( artist().string() ) );
+            t->setAlbum( QStringToTString( album().string() ) );
+            t->setTrack( track() );
+            t->setYear( year() );
+            t->setComment( QStringToTString( comment().string() ) );
+            t->setGenre( QStringToTString( genre().string() ) );
 
-        if ( hasExtendedMetaInformation() )
-        {
-            setExtendedTag( f.file(), composerTag, composer() );
-            setExtendedTag( f.file(), discNumberTag, discNumber() ? QString::number( discNumber() ) : QString() );
-            if ( compilation() != CompilationUnknown )
-                setExtendedTag( f.file(), compilationTag, QString::number( compilation() ) );
+            if ( hasExtendedMetaInformation() )
+            {
+                setExtendedTag( f.file(), composerTag, composer() );
+                setExtendedTag( f.file(), discNumberTag, discNumber() ? QString::number( discNumber() ) : QString() );
+                if ( compilation() != CompilationUnknown )
+                    setExtendedTag( f.file(), compilationTag, QString::number( compilation() ) );
+            }
+            return f.save();
         }
-        return f.save();
     }
     return false;
 }
