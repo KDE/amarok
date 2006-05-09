@@ -556,13 +556,8 @@ Playlist::insertMediaSql( const QString& sql, int options )
 }
 
 void
-Playlist::addSpecialTracks( uint songCount, const int type )
+Playlist::addSpecialTracks( const int type )
 {
-    if( songCount < 1 ) return;
-
-    QueryBuilder qb;
-    qb.setOptions( QueryBuilder::optRandomize | QueryBuilder::optRemoveDuplicates );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
 
     int  currentPos = 0;
     for( MyIt it( this, MyIt::Visible ); *it; ++it )
@@ -578,39 +573,44 @@ Playlist::addSpecialTracks( uint songCount, const int type )
 
     int required  = currentPos + dynamicMode()->upcomingCount(); // currentPos handles currentTrack
     int remainder = totalTrackCount();
+    while( required > remainder ){
+      remainder += dynamicMode()->appendCount();
 
-    if( required > remainder )
-        songCount = required - remainder;
 
-    if( type == DynamicMode::SUGGESTION )
-    {
+      QueryBuilder qb;
+      qb.setOptions( QueryBuilder::optRandomize | QueryBuilder::optRemoveDuplicates );
+      qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+
+      if( type == DynamicMode::SUGGESTION )
+      {
         if( !m_currentTrack ) return;
         QStringList suggestions = CollectionDB::instance()->similarArtists( currentTrack()->artist(), 16 );
         qb.addMatches( QueryBuilder::tabArtist, suggestions );
-    }
-    else if( type != DynamicMode::RANDOM ) //we have playlists to choose from.
-    {
-        addSpecialCustomTracks( songCount );
-        return;
-    }
+      }
+      else if( type != DynamicMode::RANDOM ) //we have playlists to choose from.
+      {
+        addSpecialCustomTracks( dynamicMode()->appendCount());
+        continue;
+      }
 
-    qb.setLimit( 0, songCount );
-    QStringList url = qb.run();
-    //FIXME: No items to add or if user wants non-unique entries!
-    if( url.isEmpty() )
-    {
+      qb.setLimit( 0, dynamicMode()->appendCount());
+      QStringList url = qb.run();
+      //FIXME: No items to add or if user wants non-unique entries!
+      if( url.isEmpty() )
+      {
         amaroK::StatusBar::instance()->shortMessage( i18n("No tracks were returned to be inserted.") );
         return;
-    }
-    //QStringList list;
-    KURL::List escapedPaths;
-    foreach(url) //we have to run setPath on all raw paths
-    {
+      }
+      //QStringList list;
+      KURL::List escapedPaths;
+      foreach(url) //we have to run setPath on all raw paths
+      {
         KURL tmp;
         tmp.setPath( *it );
         escapedPaths << tmp;
+      }
+      insertMedia( escapedPaths, Playlist::Unique );
     }
-    insertMedia( escapedPaths, Playlist::Unique );
 }
 
 void
@@ -624,16 +624,36 @@ Playlist::addSpecialCustomTracks( uint songCount )
 
     QPtrList<QListViewItem> dynamicEntries = pb->dynamicEntries();
 
-    //FIXME: What if the randomiser grabs the same playlist again and again?  Lets remove the playlist from the list.
+    // Create an array of the sizes of each of the playlists
+    int trackCount[dynamicEntries.count()] ;
+    int trackCountTotal = 0;
     for( uint y=0; y < dynamicEntries.count(); y++ )
     {
-        int x = KApplication::random() % dynamicEntries.count();
-
-        item = dynamicEntries.at( x );
-
-        if( item )
-            break;
+      trackCount[y] = 0;
+      item = dynamicEntries.at( y );
+      if (item)
+      {
+        if( item->rtti() == PlaylistEntry::RTTI ){
+            trackCount[y] = static_cast<PlaylistEntry *>(item)->tracksURL().count();}
+        else if( item->rtti() == SmartPlaylist::RTTI  ){
+            trackCount[y] = static_cast<SmartPlaylist *>(item)->length();}
+        trackCountTotal += trackCount[y];
+      }
     }
+    if (trackCountTotal > 0){
+        // randomly select a 'track' from the total number of tracks (this weights the selection of playlists by the 
+        // number of tracks in eack list.
+        int selectedTrack = KApplication::random() % trackCountTotal;
+        // figure out which playlist that 'track' would be in
+        uint list = 0;
+        int tracks = trackCount[list];
+        while (selectedTrack - tracks > 0 && list < dynamicEntries.count()){
+          list++;
+          tracks+= trackCount[list]; 
+        }
+        // use that playlist
+        item = dynamicEntries.at( list );
+    }//Don't do anything here: let it fall through below so we get the error message
 
     if ( !item ) {
         debug() << "[DYNAMIC]: No valid source found." << endl;
@@ -801,7 +821,7 @@ Playlist::adjustDynamicUpcoming( bool saveUndo, const int type )
 
     if ( x < dynamicMode()->upcomingCount() )
     {
-        addSpecialTracks( dynamicMode()->upcomingCount() - x, type );
+        addSpecialTracks(  type );
     }
     else
     {
@@ -1247,8 +1267,7 @@ Playlist::advanceDynamicTrack( PlaylistItem *item )
     //keep upcomingTracks requirement, this seems to break StopAfterCurrent
     if( m_stopAfterTrack != m_currentTrack )
     {
-        const int appendNo = dynamicMode()->appendCount();
-        if( appendNo ) addSpecialTracks( appendNo, dynamicMode()->appendType() );
+        addSpecialTracks( dynamicMode()->appendType() );
     }
     m_dynamicDirt = true;
 }
@@ -3205,7 +3224,7 @@ Playlist::repopulate() //SLOT
     //calling advanceDynamicTrack will remove an item too, which is undesirable
     //block signals to avoid saveUndoState being called
     blockSignals( true );
-    addSpecialTracks( dynamicMode()->upcomingCount(), dynamicMode()->appendType() );
+    addSpecialTracks(  dynamicMode()->appendType() );
     blockSignals( false );
 }
 
@@ -3267,21 +3286,7 @@ Playlist::removeSelectedItems() //SLOT
 
     if( dynamicMode() )
     {
-        int currentTracks = childCount();
-        int minTracks     = dynamicMode()->upcomingCount();
-
-        if( m_currentTrack )
-            currentTracks -= currentTrackIndex() + 1;
-
-        int difference = currentTracks - minTracks;
-
-        if( difference >= 0 )
-            difference -= list.count();
-
-        if( difference < 0 )
-        {
-            addSpecialTracks( -difference, dynamicMode()->appendType() );
-        }
+            addSpecialTracks(  dynamicMode()->appendType() );
     }
 
     //remove the items
