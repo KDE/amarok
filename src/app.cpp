@@ -98,7 +98,8 @@ App::App()
     DEBUG_BLOCK
 
     const KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
-    bool restoreSession = args->count() == 0 || args->isSet( "append" ) || args->isSet( "enqueue" );
+    bool restoreSession = args->count() == 0 || args->isSet( "append" ) || args->isSet( "enqueue" )
+                                || amaroK::config()->readBoolEntry( "AppendAsDefault", false );    
 
     QPixmap::setDefaultOptimization( QPixmap::MemoryOptim );
 
