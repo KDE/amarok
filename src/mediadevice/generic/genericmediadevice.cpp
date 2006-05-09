@@ -115,7 +115,6 @@ class GenericMediaFile
         : m_parent( parent )
         , m_device( device )
         {
-            DEBUG_BLOCK
             m_listed = false;
             m_children = new MediaFileList();
 
@@ -128,7 +127,6 @@ class GenericMediaFile
                 setNamesFromBase( basename );
                 m_viewItem->setText( 0, m_baseName );
                 m_parent->getChildren()->append( this );
-                debug() << "m_parent's getChildren count is: " << m_parent->getChildren()->count() << endl;
             }
             else
             {
@@ -153,8 +151,6 @@ class GenericMediaFile
 
         ~GenericMediaFile()
         {
-            DEBUG_BLOCK
-            debug() << "removing: " << m_fullName << endl;
             if( m_parent )
                 m_parent->removeChild( this );
             m_device->getItemMap().erase( m_viewItem );
@@ -229,8 +225,6 @@ class GenericMediaFile
         void
         deleteAll( bool onlyChildren )
         {
-            DEBUG_BLOCK
-            debug() << "deleteAll...m_fullName is " << m_fullName << " and children count is: " << (m_children ? QString("%1").arg(m_children->count()) : "Undefined" ) << endl;
             GenericMediaFile *vmf;
             if( m_children && !m_children->isEmpty() )
             {
@@ -433,10 +427,7 @@ GenericMediaDevice::renameItem( QListViewItem *item ) // SLOT
 MediaItem *
 GenericMediaDevice::newDirectory( const QString &name, MediaItem *parent )
 {
-    DEBUG_BLOCK
     if( !m_connected || name.isEmpty() ) return 0;
-
-    debug() << "newDirectory called with name = " << name << ", and parent = " << parent << endl;
 
     #define parent static_cast<GenericMediaItem*>(parent)
 
@@ -463,8 +454,6 @@ GenericMediaDevice::newDirectory( const QString &name, MediaItem *parent )
 void
 GenericMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> items )
 {
-    DEBUG_BLOCK
-    debug() << "items.count() is " << items.count() << endl;
     if( !directory || items.isEmpty() ) return;
 
     GenericMediaFile *dropDir;
@@ -500,16 +489,11 @@ GenericMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> it
 void
 GenericMediaDevice::copyTrackSortHelper( const MetaBundle& bundle, QString& sort, QString& base )
 {
-    DEBUG_BLOCK
-    debug() << "sort = " << sort << endl;
     if( sort != "None" )
     {
         QString temp = bundle.prettyText( bundle.columnIndex(sort) );
-        debug() << "temp = " << temp << endl;
         temp = ( temp == QString::null ? "Unknown" : cleanPath(temp) );
-        debug() << "temp = " << temp << endl;
         QString newBase = base + '/' + temp;
-        debug() << "newBase = " << newBase << endl;
 
         if( !KIO::NetAccess::exists( KURL( newBase ), false, m_parent ) )
         {
@@ -528,7 +512,6 @@ GenericMediaDevice::copyTrackSortHelper( const MetaBundle& bundle, QString& sort
 MediaItem *
 GenericMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
 {
-    DEBUG_BLOCK
     if( !m_connected ) return 0;
 
     QString  newFilenameSansBaseDir = fileName( bundle );
@@ -540,7 +523,6 @@ GenericMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
 
     QString  newFilename = base + '/' + newFilenameSansBaseDir;
 
-    debug() << "base = " << base << ", and newFilename = " << newFilename << endl;
     const QCString dest = QFile::encodeName( newFilename );
     const KURL desturl = KURL::fromPathOrURL( dest );
 
@@ -638,7 +620,6 @@ GenericMediaDevice::getSelectedItems()
 int
 GenericMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/ )
 {
-    DEBUG_BLOCK
     if( !item || !m_connected ) return -1;
 
     #define item static_cast<GenericMediaItem*>(item)
@@ -675,7 +656,6 @@ GenericMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/ )
 void
 GenericMediaDevice::expandItem( QListViewItem *item ) // SLOT
 {
-    //DEBUG_BLOCK
     if( !item || !item->isExpandable() ) return;
 
     #define item static_cast<GenericMediaItem *>(item)
@@ -693,7 +673,6 @@ GenericMediaDevice::expandItem( QListViewItem *item ) // SLOT
 void
 GenericMediaDevice::listDir( const QString &dir )
 {
-    DEBUG_BLOCK
     m_dirListerComplete = false;
     if( m_mfm[dir]->getListed() )
         m_dirLister->updateDirectory( KURL(dir) );
@@ -707,7 +686,6 @@ GenericMediaDevice::listDir( const QString &dir )
 void
 GenericMediaDevice::refreshDir( const QString &dir )
 {
-    DEBUG_BLOCK
     m_dirListerComplete = false;
     m_dirLister->updateDirectory( KURL(dir) );
 }
@@ -715,8 +693,6 @@ GenericMediaDevice::refreshDir( const QString &dir )
 void
 GenericMediaDevice::newItems( const KFileItemList &items )
 {
-    DEBUG_BLOCK
-
     QPtrListIterator<KFileItem> it( items );
     KFileItem *kfi;
     while ( (kfi = it.current()) != 0 ) {
@@ -728,14 +704,12 @@ GenericMediaDevice::newItems( const KFileItemList &items )
 void
 GenericMediaDevice::dirListerCompleted()
 {
-    DEBUG_BLOCK
     m_dirListerComplete = true;
 }
 
 void
 GenericMediaDevice::dirListerClear()
 {
-    DEBUG_BLOCK
     m_initialFile->deleteAll( true );
 
     m_view->clear();
@@ -748,9 +722,7 @@ GenericMediaDevice::dirListerClear()
 void
 GenericMediaDevice::dirListerClear( const KURL &url )
 {
-    DEBUG_BLOCK
     QString directory = url.path(-1);
-    debug() << "Removing url: " << directory << endl;
     GenericMediaFile *vmf = m_mfm[directory];
     if( vmf )
         vmf->deleteAll( false );
@@ -759,9 +731,7 @@ GenericMediaDevice::dirListerClear( const KURL &url )
 void
 GenericMediaDevice::dirListerDeleteItem( KFileItem *fileitem )
 {
-    DEBUG_BLOCK
     QString filename = fileitem->url().path(-1);
-    debug() << "Removing item: " << filename << endl;
     GenericMediaFile *vmf = m_mfm[filename];
     if( vmf )
         vmf->deleteAll( true );
@@ -770,18 +740,12 @@ GenericMediaDevice::dirListerDeleteItem( KFileItem *fileitem )
 int
 GenericMediaDevice::addTrackToList( int type, KURL url, int /*size*/ )
 {
-
-    debug() << "addTrackToList: url.path = " << url.path(-1) << endl;
-
     QString path = url.path( -1 ); //no trailing slash
     int index = path.findRev( '/', -1 );
     QString baseName = path.right( path.length() - index - 1 );
     QString parentName = path.left( index );
 
-    debug() << "index is " << index << ", baseName = " << baseName << ", parentName = " << parentName << endl;
-
     GenericMediaFile* parent = m_mfm[parentName];
-    debug() << "parent's getFullName is: " << parent->getFullName() << endl;
     GenericMediaFile* newItem = new GenericMediaFile( parent, baseName, this );
 
     if( type == MediaItem::DIRECTORY ) //directory
