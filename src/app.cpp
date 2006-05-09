@@ -289,9 +289,10 @@ void App::handleCliArgs() //static
             list << args->url( i );
 
         int options;
+        bool appendAsDefault = amaroK::config()->readBoolEntry( "AppendAsDefault", false );
         if( args->isSet( "queue" ) )
            options = Playlist::Queue;
-        else if( args->isSet( "append" ) || args->isSet( "enqueue" ) ) {
+        else if( args->isSet( "append" ) || args->isSet( "enqueue" ) || appendAsDefault ) {
            options = Playlist::Append;
            if( args->isSet( "play" ) )
               options |= Playlist::DirectPlay;

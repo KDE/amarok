@@ -133,7 +133,7 @@ CollectionDB::CollectionDB()
     config->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
     config->writeEntry( "Database Persistent Tables Version", DATABASE_PERSISTENT_TABLES_VERSION );
     config->writeEntry( "Database Podcast Tables Version", DATABASE_PODCAST_TABLES_VERSION );
-    
+
     m_atfEnabled = config->readBoolEntry( "AdvancedTagFeatures", false );
 
     setAdminValue( "Database Version", QString::number(DATABASE_VERSION) );
