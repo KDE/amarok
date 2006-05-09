@@ -23,9 +23,6 @@ SHORT-TERM (URGENT):
  <markey>  When podcast retrieval fails, the red "stop" icon appears, but the podcast entry
            still says "Retrieving Podcast.." forever on.
 
- <illiss.> Do VFAT media devices work properly yet? If not, either it should be fixed, or support
-           disabled for the beta. (So we don't get tons of bug reports we already know about.)
-
  <illiss.> Is using the score for the number, but the rating for the vis. in the context browser
            confusing? (I think it is, but that might be becuase my theme doesn't use stars but a
            partially-filled bar). If so it should be reverted for beta 1, I have a better solution
@@ -110,9 +107,6 @@ SHORT-TERM (URGENT):
            that the "next" number can be determined by looking at one XML file.
            Remembering which PartyEntry was used on close should be remembered with the same method.
 
- <markey>  Use tabs for Collection Browser switching between tree and flat view. The buttons
-           suck.
-
  <eean>    Smart playlists bypass checks on whether the media is playable or not.
            Or perhaps such media shouldn't be in the collection at all? This is the sort of
            thing we're going to have to worry about now that we have m4a and wma tag support.
@@ -145,6 +139,13 @@ SHORT-TERM (URGENT):
  <shakes>  The scrobbler code should report some sort of error message rather than just saying that the
            submit failed. That way when last.fm goes down we wouldn't get so many people asking why they
            can't submit. It'd also be nice to be able to tell people they've got their password wrong.
+
+<jefferai> When hovering the mouse over the Repeat/Random icons in the bottom taskbar, the popups that appear
+           not only have inconsistent icons with the ones shown in the taskbar, but they're pixellated and ugly
+           as sin.  Should probably be redone as SVGs.
+
+<jefferai> Xine proxy value is not saved across sessions.  Problem exists in Xine-UI as well, at least for me.
+           Maybe an upstream bug and nothing we can fix.
 
 MID-TERM:
  <eean>    The FileBrowser doesn't check for recursive symlinks. This is a KDirOperator (or the
