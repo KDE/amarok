@@ -2951,7 +2951,7 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
         {
             if( isFileInCollection( srcURL.path() ) )
             {
-                migrateFile( src, dest );
+                migrateFile( srcURL.path(), dstURL.path() );
                 emit fileMoved( src, dest, uid );
                 return true;
             }
