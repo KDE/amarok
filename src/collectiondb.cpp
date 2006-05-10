@@ -426,7 +426,7 @@ CollectionDB::createTables( const bool temporary )
     //create uniqueid table
     query( QString( "CREATE %1 TABLE uniqueid%2 ("
                     "url " + textColumnType() + ","
-                    "uniqueid " + textColumnType(8) + ","
+                    "uniqueid " + textColumnType(8) + " UNIQUE,"
                     "dir " + textColumnType() + ");" )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
