@@ -55,6 +55,9 @@ VERSION 1.4.0:
       <kde@dontletsstart.com>. (BR 125414)
 
   BUGFIXES:
+    * If "Transcode Whenever Possible" was selected for transferring to media
+      devices, if the file was in the device's preferred format, transcoding
+      would not take place.  Thanks to Ants Aasma for the patch. (BR 127109)
     * Fix possible loss of database after changing settings. (BR 126880)
     * Only include audio files when expanding directories. (BR 126765)
     * Correctly handle 'Cancel' in confirmation dialog for deleting items

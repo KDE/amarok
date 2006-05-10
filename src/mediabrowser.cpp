@@ -2483,7 +2483,7 @@ MediaDevice::transferFiles()
         else if( !item ) // the item does not exist already on the media device
         {
             if( m_transcode &&
-                    (!isPlayable( *bundle ) || (m_transcodeAlways && !isPreferredFormat( *bundle )) ) )
+                    ( !isPlayable( *bundle ) || m_transcodeAlways ) ) 
             {
                 QString preferred = supportedFiletypes().isEmpty() ? "mp3" : supportedFiletypes().first();
                 debug() << "transcoding " << bundle->url() << " to " << preferred << endl;
