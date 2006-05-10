@@ -57,6 +57,7 @@ VERSION 1.4.0:
       <kde@dontletsstart.com>. (BR 125414)
 
   BUGFIXES:
+    * Fix possible loss of database after changing settings. (BR 126880)
     * Only include audio files when expanding directories. (BR 126765)
     * Correctly handle 'Cancel' in confirmation dialog for deleting items
       from media devices. (BR 126989)
