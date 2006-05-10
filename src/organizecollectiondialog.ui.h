@@ -15,26 +15,34 @@ QString OrganizeCollectionDialog::buildDestination( const QString &format, const
 
     QMap<QString, QString> args;
     QString artist = mb.artist();
+    QString albumartist = artist;
     if( isCompilation )
-        artist = i18n( "Various Artists" );
+        albumartist = i18n( "Various Artists" );
     args["theartist"] = cleanPath( artist );
+    args["thealbumartist"] = cleanPath( albumartist );
     if( ignoreTheCheck->isChecked() && artist.startsWith( "The " ) )
         CollectionView::instance()->manipulateThe( artist, true );
     artist = cleanPath( artist );
+    if( ignoreTheCheck->isChecked() && albumartist.startsWith( "The " ) )
+        CollectionView::instance()->manipulateThe( albumartist, true );
+    albumartist = cleanPath( albumartist );
     for( int i = 0; i < MetaBundle::NUM_COLUMNS; i++ )
     {
+        if( i == MetaBundle::Mood || i == MetaBundle::Score || i == MetaBundle::PlayCount || i == MetaBundle::LastPlayed )
+            continue;
         args[mb.exactColumnName( i ).lower()] = cleanPath( mb.prettyText( i ) );
     }
     args["artist"] = artist;
+    args["albumartist"] = albumartist;
     args["folder"] = folderCombo->currentText();
-    args["initial"] = artist.mid( 0, 1 ).upper();
+    args["initial"] = albumartist.mid( 0, 1 ).upper();
     args["filetype"] = mb.url().path().section( ".", -1 ).lower();
     QString track;
     track.sprintf( "%02d", mb.track() );
     args["track"] = track;
 
     amaroK::QStringx formatx( format );
-    QString result = formatx.namedArgs( args );
+    QString result = formatx.namedOptArgs( args );
     if( result.startsWith( folderCombo->currentText() ) )
     {
         QString tail = result.mid( folderCombo->currentText().length() );
@@ -43,6 +51,41 @@ QString OrganizeCollectionDialog::buildDestination( const QString &format, const
         return folderCombo->currentText() + tail.replace( QRegExp( "/\\.*" ), "/" );
     }
     return result.replace( QRegExp( "/\\.*" ), "/" );
+}
+
+QString OrganizeCollectionDialog::buildFormatTip() const
+{
+    QMap<QString, QString> args;
+    for( int i = 0; i < MetaBundle::NUM_COLUMNS; i++ )
+    {
+        if( i == MetaBundle::Mood || i == MetaBundle::Score || i == MetaBundle::PlayCount || i == MetaBundle::LastPlayed )
+            continue;
+        args[MetaBundle::exactColumnName( i ).lower()] = MetaBundle::prettyColumnName( i );
+    }
+    args["albumartist"] = i18n( "%1 or %2" ).arg( "Album Artist, The" , "The Album Artist" );
+    args["thealbumartist"] = "The Album Artist";
+    args["theartist"] = "The Artist";
+    args["artist"] = i18n( "%1 or %2" ).arg( "Artist, The" , "The Artist" );
+    args["folder"] = i18n( "Collection Base Folder" );
+    args["initial"] = i18n( "Artist's Initial" );
+    args["filetype"] = i18n( "File Extension of Source" );
+    args["track"] = i18n( "Track Number" );
+
+    QString tooltip = i18n( "<h3>Custom Format String</h3>" );
+    tooltip += i18n( "You can use the following tokens:" );
+    tooltip += "<ul>";
+    for( QMap<QString, QString>::iterator it = args.begin();
+            it != args.end();
+            ++it )
+    {
+        tooltip += QString( "<li>%1 - %2" ).arg( it.data(), "%" + it.key() );
+    }
+    tooltip += "</ul>";
+
+    tooltip += i18n( "If you surround sections of text that contain a token with curly-braces, "
+            "that section will be hidden if the token is empty." );
+
+    return tooltip;
 }
 
 
@@ -54,7 +97,7 @@ QString OrganizeCollectionDialog::buildFormatString()
     if( initialCheck->isChecked() )
         format += "%initial/";
 
-    format += "%artist/";
+    format += "%albumartist/";
     format += "%album/";
     if( spaceCheck->isChecked() )
         format += "%track_-_%title.%filetype";
@@ -137,6 +180,9 @@ void OrganizeCollectionDialog::slotDetails()
         replacementGroup->show();
         formatLabel->show();
         formatEdit->show();
+#ifdef UNFREEZE
+        formatHelp->show();
+#endif
     }
     else
     {
@@ -145,6 +191,7 @@ void OrganizeCollectionDialog::slotDetails()
         replacementGroup->hide();
         formatLabel->hide();
         formatEdit->hide();
+        formatHelp->hide();
     }
 
     if( dynamic_cast<QWidget *>(parent()) ) {
@@ -157,4 +204,10 @@ void OrganizeCollectionDialog::slotDetails()
 void OrganizeCollectionDialog::init()
 {
     detailed = true;
+
+    formatHelp->setText( QString( "<a href='whatsthis:%1'>%2</a>" ).
+            arg( amaroK::escapeHTMLAttr( buildFormatTip() ), i18n( "(Help)" ) ) );
+#ifndef UNFREEZE
+    formatHelp->hide();
+#endif
 }

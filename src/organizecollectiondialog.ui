@@ -181,6 +181,22 @@
                                 <string></string>
                             </property>
                         </widget>
+                        <widget class="KActiveLabel">
+                            <property name="name">
+                                <cstring>formatHelp</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>5</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="text">
+                                <string>(Help)</string>
+                            </property>
+                        </widget>
                     </hbox>
                 </widget>
             </vbox>
@@ -488,6 +504,7 @@
 </slots>
 <functions>
     <function returnType="QString">buildDestination( const QString &amp; format, const MetaBundle &amp; mb )</function>
+    <function returnType="QString">buildFormatTip() const</function>
     <function returnType="QString">buildFormatString()</function>
     <function>setPreviewBundle( const MetaBundle &amp; bundle )</function>
     <function returnType="QString">cleanPath( const QString &amp; component )</function>
@@ -497,6 +514,7 @@
 <includehints>
     <includehint>kcombobox.h</includehint>
     <includehint>klineedit.h</includehint>
+    <includehint>kactivelabel.h</includehint>
     <includehint>klineedit.h</includehint>
     <includehint>klineedit.h</includehint>
 </includehints>

@@ -13,6 +13,10 @@ VERSION 1.4.0:
       view.
 
   CHANGES:
+    * Set %albumartist to Various Artists, but keep %artist as the track's
+      artist when organizing compilations. (BR 126936)
+    * Discard empty tokens surrounded by {} in custom organize file format.
+      (BR 124337)
     * GStreamer-0.10 engine was disabled for this release (not yet stable).
     * Only pick genres for Smart playlists that exist in your collection.
     * VFAT plugin completely rewritten since 1.4beta3. Name is now changed to
