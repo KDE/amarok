@@ -1952,7 +1952,6 @@ MediaQueue::addURL( const KURL& url, MetaBundle *bundle, const QString &playlist
     }
     item->setText( 0, text);
 
-    m_parent->updateStats();
     m_parent->updateButtons();
     m_parent->m_progress->setTotalSteps( m_parent->m_progress->totalSteps() + 1 );
     itemCountChanged();
@@ -1971,6 +1970,7 @@ MediaQueue::addURLs( const KURL::List urls, const QString &playlistName )
 void
 MediaQueue::URLsAdded()
 {
+    m_parent->updateStats();
     if( m_parent->currentDevice()
             && m_parent->currentDevice()->isConnected()
             && m_parent->currentDevice()->asynchronousTransfer()
@@ -2994,7 +2994,7 @@ MediaQueue::load( const QString& filename )
         addURL( url, bundle, playlist );
     }
 
-    //URLsAdded();
+    URLsAdded();
 }
 
 bool
