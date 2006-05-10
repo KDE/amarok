@@ -3343,7 +3343,6 @@ DbConnection * CollectionDB::getMyConnection()
     connectionMutex->lock();
 
     DbConnection *dbConn;
-    DbConfig *config;
     QThread *currThread = ThreadWeaver::Thread::getRunning();
 
     if (threadConnections->contains(currThread))
@@ -3357,95 +3356,27 @@ DbConnection * CollectionDB::getMyConnection()
 #ifdef USE_MYSQL
     if ( m_dbConnType == DbConnection::mysql )
     {
-        QString appVersion = amaroK::config( "General Options" )->readEntry( "Version" );
-        QString passwd = AmarokConfig::mySqlPassword2(); // stored as string type
-
-        if( passwd.isEmpty() )
-        {
-            if( appVersion.startsWith( "1.3" ) )
-            {
-                /// This is because of the encrypted -> plaintext conversion
-                passwd = AmarokConfig::mySqlPassword(); // stored as password type
-                AmarokConfig::setMySqlPassword2( passwd );
-            }
-            else if( appVersion.startsWith( "1.4" ) )
-            {
-                passwd = amaroK::config( "MySql" )->readEntry( "MySqlPassword" ); //read the field as plaintext
-                AmarokConfig::setMySqlPassword2( passwd ); // store it in plaintext field
-            }
-        }
-
-        config =
-            new MySqlConfig(
-                AmarokConfig::mySqlHost(),
-                AmarokConfig::mySqlPort(),
-                AmarokConfig::mySqlDbName(),
-                AmarokConfig::mySqlUser(),
-                passwd );
-        dbConn = new MySqlConnection( static_cast<MySqlConfig*> ( config ) );
+        dbConn = new MySqlConnection();
     }
     else
 #endif
 #ifdef USE_POSTGRESQL
     if ( m_dbConnType == DbConnection::postgresql )
     {
-        QString appVersion = amaroK::config( "General Options" )->readEntry( "Version" );
-        QString passwd = AmarokConfig::postgresqlPassword2();
-
-        if( passwd.isEmpty() )
-        {
-            if( appVersion.startsWith( "1.3" ) )
-            {
-                /// This is because of the encrypted -> plaintext conversion
-                passwd = AmarokConfig::postgresqlPassword(); // stored as password type
-                AmarokConfig::setPostgresqlPassword2( passwd );
-            }
-            else if( appVersion.startsWith( "1.4" ) &&
-                   ( appVersion.contains( "beta", false ) ||
-                     appVersion.contains( "svn",  false ) ) )
-            {
-                passwd = amaroK::config( "Postgresql" )->readEntry( "PostgresqlPassword" );
-                AmarokConfig::setPostgresqlPassword2( passwd );
-            }
-        }
-
-        config =
-            new PostgresqlConfig(
-                AmarokConfig::postgresqlHost(),
-                AmarokConfig::postgresqlPort(),
-                AmarokConfig::postgresqlDbName(),
-                AmarokConfig::postgresqlUser(),
-                passwd );
-        dbConn = new PostgresqlConnection( static_cast<PostgresqlConfig*> ( config ) );
+        dbConn = new PostgresqlConnection();
     }
     else
 #endif
     {
-        config = new SqliteConfig( "collection.db" );
-        dbConn = new SqliteConnection( static_cast<SqliteConfig*> ( config ) );
+        dbConn = new SqliteConnection();
     }
 
     threadConnections->insert(currThread, dbConn);
 
-    m_dbConfig = config;
-
     connectionMutex->unlock();
     return dbConn;
-
 }
 
-void
-CollectionDB::destroyConnections()
-{
-    //do we need or want to delete the actual connection objects as well as clearing them from the QMap?
-    //or does QMap's clear function delete them?
-    //this situation is not at all likely to happen often, so leaving them might be okay to prevent a
-    //thread from having its connection torn out from under it...not likely, but possible
-    //and leaving it should not end up eating much memory at all
-    connectionMutex->lock();
-    threadConnections->clear();
-    connectionMutex->unlock();
-}
 
 void
 CollectionDB::releasePreviousConnection(QThread *currThread)
@@ -3650,6 +3581,75 @@ CollectionDB::initialize()
 {
     DEBUG_BLOCK
 
+    /// Create DBConfig instance:
+
+#ifdef USE_MYSQL
+    if ( m_dbConnType == DbConnection::mysql )
+    {
+        QString appVersion = amaroK::config( "General Options" )->readEntry( "Version" );
+        QString passwd = AmarokConfig::mySqlPassword2(); // stored as string type
+
+        if( passwd.isEmpty() )
+        {
+            if( appVersion.startsWith( "1.3" ) )
+            {
+                /// This is because of the encrypted -> plaintext conversion
+                passwd = AmarokConfig::mySqlPassword(); // stored as password type
+                AmarokConfig::setMySqlPassword2( passwd );
+            }
+            else if( appVersion.startsWith( "1.4" ) )
+            {
+                passwd = amaroK::config( "MySql" )->readEntry( "MySqlPassword" ); //read the field as plaintext
+                AmarokConfig::setMySqlPassword2( passwd ); // store it in plaintext field
+            }
+        }
+
+        m_dbConfig = new MySqlConfig(
+                    AmarokConfig::mySqlHost(),
+                    AmarokConfig::mySqlPort(),
+                    AmarokConfig::mySqlDbName(),
+                    AmarokConfig::mySqlUser(),
+                    passwd );
+    }
+    else
+#endif
+#ifdef USE_POSTGRESQL
+    if ( m_dbConnType == DbConnection::postgresql )
+    {
+        QString appVersion = amaroK::config( "General Options" )->readEntry( "Version" );
+        QString passwd = AmarokConfig::postgresqlPassword2();
+
+        if( passwd.isEmpty() )
+        {
+            if( appVersion.startsWith( "1.3" ) )
+            {
+                /// This is because of the encrypted -> plaintext conversion
+                passwd = AmarokConfig::postgresqlPassword(); // stored as password type
+                AmarokConfig::setPostgresqlPassword2( passwd );
+            }
+            else if( appVersion.startsWith( "1.4" ) &&
+                   ( appVersion.contains( "beta", false ) ||
+                     appVersion.contains( "svn",  false ) ) )
+            {
+                passwd = amaroK::config( "Postgresql" )->readEntry( "PostgresqlPassword" );
+                AmarokConfig::setPostgresqlPassword2( passwd );
+            }
+        }
+
+        m_dbConfig = new PostgresqlConfig(
+                    AmarokConfig::postgresqlHost(),
+                    AmarokConfig::postgresqlPort(),
+                    AmarokConfig::postgresqlDbName(),
+                    AmarokConfig::postgresqlUser(),
+                    passwd );
+    }
+    else
+#endif
+    {
+        m_dbConfig = new SqliteConfig( "collection.db" );
+    }
+
+
     DbConnection *dbConn = getMyConnection();
 
     KConfig* config = amaroK::config( "Collection Browser" );
@@ -3818,7 +3818,18 @@ CollectionDB::initialize()
 void
 CollectionDB::destroy()
 {
-    destroyConnections();
+    //do we need or want to delete the actual connection objects as well as clearing them from the QMap?
+    //or does QMap's clear function delete them?
+    //this situation is not at all likely to happen often, so leaving them might be okay to prevent a
+    //thread from having its connection torn out from under it...not likely, but possible
+    //and leaving it should not end up eating much memory at all
+
+    connectionMutex->lock();
+
+    threadConnections->clear();
+    delete m_dbConfig;
+
+    connectionMutex->unlock();
 }
 
 
@@ -3926,9 +3937,8 @@ CollectionDB::cacheCoverDir()  //static
 // CLASS DbConnection
 //////////////////////////////////////////////////////////////////////////////////////////
 
-DbConnection::DbConnection( DbConfig* config )
+DbConnection::DbConnection()
     : m_initialized( false )
-    , m_config( config )
 {}
 
 
@@ -3936,8 +3946,8 @@ DbConnection::DbConnection( DbConfig* config )
 // CLASS SqliteConnection
 //////////////////////////////////////////////////////////////////////////////////////////
 
-SqliteConnection::SqliteConnection( SqliteConfig* config )
-    : DbConnection( config )
+SqliteConnection::SqliteConnection()
+    : DbConnection()
 {
 
     DEBUG_BLOCK
@@ -4129,8 +4139,8 @@ void SqliteConnection::sqlite_power(sqlite3_context *context, int argc, sqlite3_
 //////////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef USE_MYSQL
-MySqlConnection::MySqlConnection( MySqlConfig* config )
-    : DbConnection( config )
+MySqlConnection::MySqlConnection()
+    : DbConnection()
     , m_connected( false )
 {
     DEBUG_BLOCK
@@ -4258,8 +4268,8 @@ MySqlConnection::setMysqlError()
 //////////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef USE_POSTGRESQL
-PostgresqlConnection::PostgresqlConnection( PostgresqlConfig* config )
-      : DbConnection( config )
+PostgresqlConnection::PostgresqlConnection()
+      : DbConnection()
       , m_connected( false )
 {
   QString conninfo;

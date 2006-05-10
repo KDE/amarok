@@ -106,8 +106,7 @@ class DbConnection
     public:
         enum DbConnectionType { sqlite = 0, mysql = 1, postgresql = 2 };
 
-        DbConnection( DbConfig* /* config */ );
-        virtual ~DbConnection() { delete m_config; }
+        DbConnection();
 
         virtual QStringList query( const QString& /* statement */ ) = 0;
         virtual int insert( const QString& /* statement */, const QString& /* table */ ) = 0;
@@ -116,7 +115,6 @@ class DbConnection
         virtual QString lastError() const { return "None"; }
     protected:
         bool m_initialized;
-        DbConfig *m_config;
 };
 
 
@@ -127,7 +125,7 @@ typedef struct Mem sqlite3_value;
 class SqliteConnection : public DbConnection
 {
     public:
-        SqliteConnection( SqliteConfig* /* config */ );
+        SqliteConnection();
        ~SqliteConnection();
 
         QStringList query( const QString& /* statement */ );
@@ -147,7 +145,7 @@ typedef struct st_mysql MYSQL;
 class MySqlConnection : public DbConnection
 {
     public:
-        MySqlConnection( MySqlConfig* /* config */ );
+        MySqlConnection();
        ~MySqlConnection();
 
         QStringList query( const QString& /* statement */ );
@@ -475,7 +473,6 @@ class CollectionDB : public QObject, public EngineObserver
 
         QString valueFromID( QString table, uint id );
 
-        void destroyConnections();
 
         //member variables
         QString m_amazonLicense;
