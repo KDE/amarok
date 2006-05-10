@@ -2284,15 +2284,5 @@ void SmartPlaylist::setDynamic( bool enable )
     }
 }
 
-int SmartPlaylist::length()
-{
-  QString sql = m_sqlForTags;
-  sql.replace(QRegExp("SELECT.*FROM"), "SELECT COUNT(*) FROM");
-  QStringList result = CollectionDB::instance()->query(sql);
-
-  if (! result.isEmpty())
-    return result.first().toInt();
-  else return 0;
-}
 
 #include "playlistbrowseritem.moc"

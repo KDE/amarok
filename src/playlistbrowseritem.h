@@ -422,7 +422,6 @@ class SmartPlaylist : public PlaylistBrowserEntry
 
         bool  isDynamic() { return m_dynamic; }
         void  setDynamic( bool );
-        int   length();
 
         int   rtti() const { return RTTI; }
         static const int RTTI = 1004;    //smart playlist item

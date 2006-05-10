@@ -101,7 +101,7 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void insertMediaSql( const QString& sql, int options = Append );
 
         /// Dynamic mode functions
-        void addSpecialTracks(const int type = DynamicMode::RANDOM );
+        void addSpecialTracks( uint songCount, const int type = DynamicMode::RANDOM );
         void addSpecialCustomTracks( uint songCount );
         void adjustDynamicUpcoming( bool saveUndo = false, const int type = DynamicMode::RANDOM );
         void adjustDynamicPrevious( uint songCount, bool saveUndo = false );
