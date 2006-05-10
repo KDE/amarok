@@ -1289,7 +1289,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
                     //this is really ugly, but otherwise we get an incorrect ? at the end of the string...possibly a null value?  Not sure of another way to fix this.
                     m_uniqueId = TStringToQString( TagLib::String( ufidf->identifier().data() ) ).left( randSize );
             }
-            if( createID == 1 )
+            if( createID == 1 && TagLib::File::isWritable( file->name() ) )
             {
                 m_uniqueId = getRandomStringHelper( randSize );
                 file->ID3v2Tag()->addFrame( new TagLib::ID3v2::UniqueFileIdentifierFrame(
@@ -1307,7 +1307,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
         {
             if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) && recreate )
                 file->tag()->removeField( QStringToTString( ourId ) );
-            if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) )
+            if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) && TagLib::File::isWritable( file->name() ) )
             {
                 file->tag()->addField( QStringToTString( ourId ),
                         TagLib::ByteVector( getRandomStringHelper( randSize ).ascii(), randSize )
@@ -1327,7 +1327,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
         {
             if( file->xiphComment()->fieldListMap().contains( QStringToTString( ourId ) ) && recreate )
                 file->xiphComment()->removeField( QStringToTString( ourId ) );
-            if( !file->xiphComment()->fieldListMap().contains( QStringToTString( ourId ) ) )
+            if( !file->xiphComment()->fieldListMap().contains( QStringToTString( ourId ) ) && TagLib::File::isWritable( file->name() ) )
             {
                 file->xiphComment()->addField( QStringToTString( ourId ),
                         TagLib::ByteVector( getRandomStringHelper( randSize ).ascii(), randSize )
@@ -1348,7 +1348,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
         {
             if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) && recreate )
                 file->tag()->removeField( QStringToTString( ourId ) );
-            if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) )
+            if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) && TagLib::File::isWritable( file->name() ) )
             {
                 file->tag()->addField( QStringToTString( ourId ),
                         TagLib::ByteVector( getRandomStringHelper( randSize ).ascii(), randSize )
