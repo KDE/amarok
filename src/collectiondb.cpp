@@ -131,6 +131,7 @@ CollectionDB::CollectionDB()
     config->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
     config->writeEntry( "Database Persistent Tables Version", DATABASE_PERSISTENT_TABLES_VERSION );
     config->writeEntry( "Database Podcast Tables Version", DATABASE_PODCAST_TABLES_VERSION );
+    config->writeEntry( "Database ATF Version", DATABASE_ATF_VERSION );
 
     m_atfEnabled = config->readBoolEntry( "AdvancedTagFeatures", false );
 
@@ -138,6 +139,7 @@ CollectionDB::CollectionDB()
     setAdminValue( "Database Stats Version", QString::number(DATABASE_STATS_VERSION) );
     setAdminValue( "Database Persistent Tables Version", QString::number(DATABASE_PERSISTENT_TABLES_VERSION) );
     setAdminValue( "Database Podcast Tables Version", QString::number(DATABASE_PODCAST_TABLES_VERSION) );
+    setAdminValue( "Database ATF Version", QString::number(DATABASE_ATF_VERSION) );
 
 
     connect( qApp, SIGNAL( aboutToQuit() ), this, SLOT( disableAutoScoring() ) );
