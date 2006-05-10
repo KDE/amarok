@@ -13,6 +13,8 @@ VERSION 1.4.0:
       view.
 
   CHANGES:
+    * Transfer contents of smart playlists to media device without adding
+      them to a playlist. (BR 126997)
     * Set %albumartist to Various Artists, but keep %artist as the track's
       artist when organizing compilations. (BR 126936)
     * Discard empty tokens surrounded by {} in custom organize file format.

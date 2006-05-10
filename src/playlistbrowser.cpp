@@ -2328,13 +2328,15 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     }
     else if( isSmartPlaylist( item ) )
     {
-        enum Actions { LOAD, ADD, DYNADD, DYNSUB, EDIT, REMOVE, MEDIA_DEVICE };
+        enum Actions { LOAD, ADD, DYNADD, DYNSUB, EDIT, REMOVE, MEDIA_DEVICE, MEDIA_DEVICE_PLAYLIST };
 
         menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), LOAD );
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), ADD );
         if( MediaBrowser::isAvailable() )
         {
             menu.insertSeparator();
+            menu.insertItem( SmallIconSet( amaroK::icon( "device" ) ),
+                    i18n( "&Transfer to Media Device" ), MEDIA_DEVICE_PLAYLIST );
             menu.insertItem( SmallIconSet( amaroK::icon( "device" ) ),
                     i18n( "&Transfer Contents to Media Device" ), MEDIA_DEVICE );
         }
@@ -2356,6 +2358,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             menu.insertItem( SmallIconSet("edittrash"), i18n( "R&emove" ), REMOVE );
         }
 
+        QString playlist;
         switch( menu.exec( p ) )
         {
             case LOAD:
@@ -2376,6 +2379,9 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             case REMOVE:
                 removeSelectedItems();
                 break;
+            case MEDIA_DEVICE_PLAYLIST:
+                playlist = item->text(0);
+                /* fall through */
             case MEDIA_DEVICE:
                 {
                     KURL::List urls;
@@ -2388,7 +2394,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                         }
                         i++;
                     }
-                    MediaBrowser::queue()->addURLs( urls, item->text(0) );
+                    MediaBrowser::queue()->addURLs( urls, playlist );
                 }
                 break;
         }
