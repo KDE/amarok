@@ -18,6 +18,7 @@
 #include "collectiondb.h"
 #include "debug.h"
 #include "enginecontroller.h"
+#include "mydirlister.h"
 #include "playlist.h"
 #include "playlistbrowser.h"
 #include "playlistitem.h"
@@ -36,7 +37,6 @@
 
 #include <dcopref.h>
 #include <kapplication.h>
-#include <kdirlister.h>
 #include <kurl.h>
 
 
@@ -361,7 +361,7 @@ recursiveUrlExpand( const KURL &url, int maxURLs )
     if( url.protocol() != "file" || !QFileInfo( url.path() ).isDir() )
         return KURL::List( url );
 
-    KDirLister lister( false );
+    MyDirLister lister( false );
     lister.setAutoUpdate( false );
     lister.setAutoErrorHandlingEnabled( false, 0 );
     if ( !lister.openURL( url ) )
@@ -381,7 +381,9 @@ recursiveUrlExpand( const KURL &url, int maxURLs )
     for( KFileItem *item = items.first(); item; item = items.next() ) {
         if( maxURLs >= 0 && (int)(urls.count() + files.count()) >= maxURLs )
             break;
-        if( item->isFile() && !PlaylistFile::isPlaylistFile( item->url().fileName() ) )
+        if( item->isFile()
+                && !PlaylistFile::isPlaylistFile( item->url().fileName() )
+                )
         {
             files[item->name()] = item->url();
             continue;

@@ -57,6 +57,7 @@ VERSION 1.4.0:
       <kde@dontletsstart.com>. (BR 125414)
 
   BUGFIXES:
+    * Only include audio files when expanding directories. (BR 126765)
     * Correctly handle 'Cancel' in confirmation dialog for deleting items
       from media devices. (BR 126989)
     * Smart-Playlist random mode was not 'sticking'. (BR 126877)
