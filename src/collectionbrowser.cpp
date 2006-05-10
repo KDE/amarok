@@ -41,7 +41,6 @@
 #include <qptrlist.h>
 #include <qpushbutton.h>
 #include <qsimplerichtext.h>
-#include <qtabbar.h>
 #include <qtimer.h>
 #include <qtooltip.h>       //QToolTip::add()
 #include <qheader.h>
@@ -58,7 +57,6 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kpopupmenu.h>
-#include <ktabbar.h>
 #include <ktoolbarbutton.h> //ctor
 #include <kurldrag.h>       //dragObject()
 #include <kio/job.h>
@@ -82,23 +80,6 @@ CollectionBrowser::CollectionBrowser( const char* name )
 {
     setSpacing( 4 );
 
-    KActionCollection* ac = new KActionCollection( this );
-    { //<Tabs>
-        KToolBar* tabsToolBar = new KToolBar( this );
-        m_tabs = new KTabBar( tabsToolBar, "collectionbrowser_tabs" );
-        QTab* treeTab = new QTab( KGlobal::iconLoader()->loadIconSet( "view_tree", KIcon::Small )    , i18n( "Tree View" ) );
-        QTab* flatTab = new QTab( KGlobal::iconLoader()->loadIconSet( "view_detailed", KIcon::Small ), i18n( "Flat View" ) );
-        m_tabs->insertTab( treeTab, CollectionView::modeTreeView );
-        m_tabs->insertTab( flatTab, CollectionView::modeFlatView );
-        m_tabs->setCurrentTab( AmarokConfig::collectionBrowserViewMode() );
-        tabsToolBar->setItemAutoSized(tabsToolBar->insertWidget(0, m_tabs->width(), m_tabs));
-
-        m_scanAction = new KAction( i18n( "Scan Changes" ), amaroK::icon( "refresh" ), 0, CollectionDB::instance(), SLOT( scanMonitor() ), ac, "Start Scan" );
-        if ( !AmarokConfig::monitorChanges() )
-            m_scanAction->plug( tabsToolBar );
-        m_configureAction = new KAction( i18n( "Configure Folders" ), "configure", 0, this, SLOT( setupDirs() ), ac, "Configure" );
-        m_configureAction->plug( tabsToolBar );
-    } //</Tabs>
     m_toolbar = new Browser::ToolBar( this );
 
     { //<Search LineEdit>
@@ -125,9 +106,22 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_timeFilter->insertItem( i18n( "Added Within One Week" ) );
     m_timeFilter->insertItem( i18n( "Added Today" ) );
 
+    KActionCollection* ac = new KActionCollection( this );
+    m_scanAction = new KAction( i18n( "Scan Changes" ), amaroK::icon( "refresh" ), 0, CollectionDB::instance(), SLOT( scanMonitor() ), ac, "Start Scan" );
+
     // we need m_scanAction to be initialized before CollectionView's CTOR
     m_view = new CollectionView( this );
     m_view->installEventFilter( this );
+
+    m_configureAction = new KAction( i18n( "Configure Folders" ), "configure", 0, this, SLOT( setupDirs() ), ac, "Configure" );
+    m_treeViewAction = new KRadioAction( i18n( "Tree View" ), "view_tree", 0, m_view, SLOT( setTreeMode() ), ac, "Tree View" );
+    m_flatViewAction = new KRadioAction( i18n( "Flat View" ), "view_detailed", 0, m_view, SLOT( setFlatMode() ), ac, "Flat View" );
+    m_treeViewAction->setExclusiveGroup("view mode");
+    m_flatViewAction->setExclusiveGroup("view mode");
+    if(m_view->m_viewMode == CollectionView::modeTreeView)
+        m_treeViewAction->setChecked(true);
+    else
+        m_flatViewAction->setChecked(true);
 
     m_showDividerAction = new KToggleAction( i18n( "Show Divider" ), "leftjust", 0, this, SLOT( toggleDivider() ), ac, "Show Divider" );
     m_showDividerAction->setChecked(m_view->m_showDivider);
@@ -135,7 +129,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_tagfilterMenuButton = new KActionMenu( i18n( "Group By" ), "filter", ac );
     m_tagfilterMenuButton->setDelayed( false );
 //    m_tagfilterMenuButton->setEnabled( m_view->m_viewMode == CollectionView::modeTreeView );
-//    connect ( m_treeViewAction, SIGNAL ( toggled(bool) ), m_tagfilterMenuButton, SLOT( setEnabled (bool) ) );
+    connect ( m_treeViewAction, SIGNAL ( toggled(bool) ), m_tagfilterMenuButton, SLOT( setEnabled (bool) ) );
 
     layoutToolbar();
 
@@ -184,20 +178,8 @@ CollectionBrowser::CollectionBrowser( const char* name )
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
     connect( m_searchEdit, SIGNAL( returnPressed() ), SLOT( slotSetFilter() ) );
     connect( m_timeFilter, SIGNAL( activated( int ) ), SLOT( slotSetFilter() ) );
-    connect(m_tabs, SIGNAL( wheelDelta( int ) ), this, SLOT( swapMode() ) );
-    connect(m_tabs, SIGNAL( selected( int ) ), this, SLOT( setMode( int ) ) );
 
     setFocusProxy( m_view ); //default object to get focus
-}
-
-void
-CollectionBrowser::swapMode()
-{
-    int newMode = ( m_tabs->currentTab() == CollectionView::modeTreeView ) ?
-       CollectionView::modeFlatView
-       :  CollectionView::modeTreeView;
-  m_tabs->setCurrentTab(newMode);
-  setMode(newMode);
 }
 
 void
@@ -318,27 +300,25 @@ CollectionBrowser::layoutToolbar()
     m_tagfilterMenuButton->plug( m_toolbar );
     m_toolbar->setIconText( KToolBar::IconOnly, false );
 
+    m_toolbar->insertLineSeparator();
+    m_treeViewAction->plug( m_toolbar );
+    m_flatViewAction->plug( m_toolbar );
+    m_toolbar->insertLineSeparator();
+
     m_showDividerAction->plug( m_toolbar );
+
+    if ( !AmarokConfig::monitorChanges() ) {
+        m_toolbar->setIconText( KToolBar::IconTextRight, false );
+        m_scanAction->plug( m_toolbar );
+        m_toolbar->setIconText( KToolBar::IconOnly, false );
+    }
+
+    m_configureAction->plug( m_toolbar );
 
     //This would break things if the toolbar is too big, see bug #121915
     //setMinimumWidth( m_toolbar->sizeHint().width() + 2 ); //set a reasonable minWidth
 }
 
-void
-CollectionBrowser::setMode(int id)
-{
-    if ( id != m_view->m_viewMode ) //don't switch mode when you don't need to, silly!
-    {
-        m_view->setMode( id );
-        if ( id == CollectionView::modeTreeView)
-            m_toolbar->show();
-        else
-            m_toolbar->hide();
-        AmarokConfig::setCollectionBrowserViewMode(id);
-    }
-    else //selected(int) is fired by QTabBar whenever it feels like it
-        debug() << "mysterious setMode: " << id << endl;
-}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS CollectionView
@@ -686,7 +666,7 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
                 if ( (*it).startsWith( "the ", false ) )
                     manipulateThe( *it, true );
 
-                if ( (*it).stripWhiteSpace().isEmpty() ) 
+                if ( (*it).stripWhiteSpace().isEmpty() )
                 {
                     (*it) = i18n( "Unknown" );
                     unknown = true;
@@ -986,7 +966,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                 }
                 matches << tmptext;
 
-                if( endsInThe( tmptext ) ) 
+                if( endsInThe( tmptext ) )
                 {
                     manipulateThe( tmptext );
                     matches << tmptext;
@@ -2299,7 +2279,7 @@ CollectionView::listSelected()
                         }
                         QStringList matches( tmptext );
 
-                        if( endsInThe( tmptext ) ) 
+                        if( endsInThe( tmptext ) )
                         {
                             manipulateThe( tmptext );
                             matches << tmptext;
@@ -2323,7 +2303,7 @@ CollectionView::listSelected()
                         matches.clear();
                         matches << tmptext;
 
-                        if( endsInThe( tmptext ) ) 
+                        if( endsInThe( tmptext ) )
                         {
                             manipulateThe( tmptext );
                             matches << tmptext;

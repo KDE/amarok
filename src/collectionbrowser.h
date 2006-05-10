@@ -54,8 +54,6 @@ class CollectionBrowser: public QVBox
         void toggleDivider();
 
     private slots:
-        void setMode(int id);
-        void swapMode();
         void slotSetFilterTimeout();
         void slotSetFilter();
 
@@ -182,7 +180,8 @@ class CollectionView : public KListView
 
         void databaseChanged() { m_dirty = true; renderView(); };
 
-        void setMode(int id) { setViewMode( id ); }
+        void setTreeMode() { setViewMode( modeTreeView ); };
+        void setFlatMode() { setViewMode( modeFlatView ); };
 
         void presetMenu( int id );
         void cat1Menu( int id, bool rerender = true );
@@ -191,7 +190,6 @@ class CollectionView : public KListView
         void organizeFiles( const KURL::List &list, const QString &caption, bool addToCollection=false ) LIBAMAROK_EXPORT;
 
     private slots:
-
         void setupDirs();
 
         void scanStarted();
