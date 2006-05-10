@@ -41,7 +41,6 @@
 #include <qpalette.h>
 #include <pthread.h>              //debugging, can be removed later
 
-#include <kapplication.h>
 #include <kcharsets.h>            //setHTMLLyrics()
 #include <kconfig.h>
 #include <kglobal.h>
@@ -50,7 +49,6 @@
 #include <klocale.h>
 #include <kmdcodec.h>
 #include <kstandarddirs.h>
-#include <kurl.h>
 #include <kio/job.h>
 #include <kio/netaccess.h>
 
@@ -1993,7 +1991,7 @@ CollectionDB::updatePodcastChannel( const PodcastChannelBundle &b )
     if( getDbConnectionType() == DbConnection::postgresql )
     {
         query( QStringx( "UPDATE podcastchannels SET title='%1', weblink='%2', comment='%3', "
-			 "copyright='%4', parent=%5, directory='%6', autoscan=%7, fetchtype=%8, "
+                         "copyright='%4', parent=%5, directory='%6', autoscan=%7, fetchtype=%8, "
 			 "autotransfer=%9, haspurge=%10, purgecount=%11 WHERE url='%12';" )
 	       .args ( QStringList()
 		       << escapeString( b.title() )
@@ -3301,7 +3299,7 @@ CollectionDB::applySettings()
     {
       const PostgresqlConfig *config =
           static_cast<const PostgresqlConfig*> ( m_dbConfig );
-	  if ( AmarokConfig::postgresqlHost() != config->host() )
+        if ( AmarokConfig::postgresqlHost() != config->host() )
         {
             recreateConnections = true;
         }
@@ -3356,19 +3354,19 @@ DbConnection * CollectionDB::getMyConnection()
 #ifdef USE_MYSQL
     if ( m_dbConnType == DbConnection::mysql )
     {
-        dbConn = new MySqlConnection();
+        dbConn = new MySqlConnection( static_cast<MySqlConfig*>( m_dbConfig ) );
     }
     else
 #endif
 #ifdef USE_POSTGRESQL
     if ( m_dbConnType == DbConnection::postgresql )
     {
-        dbConn = new PostgresqlConnection();
+        dbConn = new PostgresqlConnection( static_cast<PostgresqlConfig*>( m_dbConfig ) );
     }
     else
 #endif
     {
-        dbConn = new SqliteConnection();
+        dbConn = new SqliteConnection( static_cast<SqliteConfig*>( m_dbConfig ) );
     }
 
     threadConnections->insert(currThread, dbConn);
@@ -3946,7 +3944,7 @@ DbConnection::DbConnection()
 // CLASS SqliteConnection
 //////////////////////////////////////////////////////////////////////////////////////////
 
-SqliteConnection::SqliteConnection()
+SqliteConnection::SqliteConnection( const SqliteConfig* /*config*/ )
     : DbConnection()
 {
 
@@ -4139,7 +4137,7 @@ void SqliteConnection::sqlite_power(sqlite3_context *context, int argc, sqlite3_
 //////////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef USE_MYSQL
-MySqlConnection::MySqlConnection()
+MySqlConnection::MySqlConnection( const MySqlConfig* config )
     : DbConnection()
     , m_connected( false )
 {
@@ -4268,7 +4266,7 @@ MySqlConnection::setMysqlError()
 //////////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef USE_POSTGRESQL
-PostgresqlConnection::PostgresqlConnection()
+PostgresqlConnection::PostgresqlConnection( const PostgresqlConfig* config )
       : DbConnection()
       , m_connected( false )
 {
@@ -5121,17 +5119,17 @@ QueryBuilder::sortByFunction( int function, int table, Q_INT64 value, bool desce
          table & tabYear )
         b = false;
 
-	// only coalesce for certain columns
-	bool c = false;
+    // only coalesce for certain columns
+    bool c = false;
     if ( !defaults && ( value & valScore || value & valRating || value & valPlayCounter || value & valPercentage ) )
-		c = true;
+        c = true;
 
     if ( !m_sort.isEmpty() ) m_sort += ",";
     //m_sort += functionName( function ) + "(";
     if ( b ) m_sort += "LOWER( ";
     if ( c && CollectionDB::instance()->getType() != DbConnection::mysql) m_sort += "COALESCE( ";
 
-	QString columnName;
+    QString columnName;
 
     if (CollectionDB::instance()->getType() == DbConnection::postgresql)
     {
@@ -5151,11 +5149,11 @@ QueryBuilder::sortByFunction( int function, int table, Q_INT64 value, bool desce
         columnName += ")";
     }
     else
-		columnName = functionName( function )+tableName( table )+valueName( value );
+        columnName = functionName( function )+tableName( table )+valueName( value );
 
     m_sort += columnName;
 
-	if ( c && CollectionDB::instance()->getType() != DbConnection::mysql) m_sort += ", 0 )";
+    if ( c && CollectionDB::instance()->getType() != DbConnection::mysql) m_sort += ", 0 )";
 
     if ( b ) m_sort += " ) ";
     //m_sort += " ) ";

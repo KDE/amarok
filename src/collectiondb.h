@@ -125,7 +125,7 @@ typedef struct Mem sqlite3_value;
 class SqliteConnection : public DbConnection
 {
     public:
-        SqliteConnection();
+        SqliteConnection( const SqliteConfig* /* config */ );
        ~SqliteConnection();
 
         QStringList query( const QString& /* statement */ );
@@ -145,7 +145,7 @@ typedef struct st_mysql MYSQL;
 class MySqlConnection : public DbConnection
 {
     public:
-        MySqlConnection();
+        MySqlConnection( const MySqlConfig* /* config */ );
        ~MySqlConnection();
 
         QStringList query( const QString& /* statement */ );
@@ -167,7 +167,7 @@ typedef struct pg_conn PGconn;
 class PostgresqlConnection : public DbConnection
 {
     public:
-        PostgresqlConnection( PostgresqlConfig* /* config */ );
+        PostgresqlConnection( const PostgresqlConfig* /* config */ );
        ~PostgresqlConnection();
 
         QStringList query( const QString& /* statement */ );
