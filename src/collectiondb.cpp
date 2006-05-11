@@ -5071,7 +5071,8 @@ QueryBuilder::sortBy( int table, Q_INT64 value, bool descending )
     //shall we sort case-sensitively? (not for integer columns!)
     bool b = true;
     if ( value & valID || value & valTrack || value & valScore || value & valRating || value & valLength || value & valBitrate ||
-         value & valSamplerate || value & valPlayCounter || value & valAccessDate || value & valCreateDate || value & valPercentage || value & valFilesize ||
+         value & valSamplerate || value & valPlayCounter || value & valAccessDate || value & valCreateDate || 
+         value & valPercentage || value & valFilesize || value & valDiscNumber ||
          table & tabYear )
         b = false;
 
@@ -5117,7 +5118,8 @@ QueryBuilder::sortByFunction( int function, int table, Q_INT64 value, bool desce
     //shall we sort case-sensitively? (not for integer columns!)
     bool b = true;
     if ( value & valID || value & valTrack || value & valScore || value & valRating || value & valLength || value & valBitrate ||
-         value & valSamplerate || value & valPlayCounter || value & valAccessDate || value & valCreateDate || value & valPercentage || value & valFilesize ||
+         value & valSamplerate || value & valPlayCounter || value & valAccessDate || value & valCreateDate || 
+         value & valPercentage || value & valFilesize || value & valDiscNumber ||
          table & tabYear )
         b = false;
 
