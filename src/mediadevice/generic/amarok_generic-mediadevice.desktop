@@ -2,7 +2,9 @@
 Type=Service
 Name=Generic Audio Player
 Name[da]=Generisk lydafspiller
+Name[el]=Γενικός αναπαραγωγέας ήχου
 Name[ga]=Seinnteoir Ginearálta Fuaime
+Name[it]=Lettore audio generico
 Name[ja]=一般的なオーディオプレーヤ
 Name[pt]=Leitor de Áudio Genérico
 Name[pt_BR]=Leitor de Áudio Genérico
