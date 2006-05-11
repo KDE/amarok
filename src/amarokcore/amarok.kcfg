@@ -389,7 +389,7 @@
     <entry key="Osd Font" type="Font">
         <label>Font for On-Screen Display</label>
         <whatsthis>The font to use for the On-Screen Display.</whatsthis>
-        <default code="true">QFont("Arial",20)</default>
+        <default code="true">QFont("Arial",12)</default>
     </entry>
     <entry key="Osd Draw Shadow" type="Bool">
         <label>Draw a shadow around the text.</label>
@@ -399,7 +399,7 @@
     <entry key="Osd Use Fake Translucency" type="Bool">
         <label>Fake-translucency Toggle</label>
         <whatsthis>Make the background of the OSD use fake-translucency.</whatsthis>
-        <default>false</default>
+        <default>true</default>
     </entry>
     <entry key="Osd Use Custom Colors" type="Bool">
         <label>Whether to use custom colors for the OSD</label>
@@ -448,7 +448,7 @@
             <choice name="Center"/>
             <choice name="Right"/>
         </choices>
-        <default>Left</default>
+        <default>Center</default>
     </entry>
 
 </group>
