@@ -250,10 +250,10 @@ class CollectionDB : public QObject, public EngineObserver
         void clearTables( const bool temporary = false);
         void copyTempTables(  );
 
-        uint artistID( QString value, bool autocreate = true, const bool temporary = false, const bool updateSpelling = false );
-        uint albumID( QString value, bool autocreate = true, const bool temporary = false, const bool updateSpelling = false );
-        uint genreID( QString value, bool autocreate = true, const bool temporary = false, const bool updateSpelling = false );
-        uint yearID( QString value, bool autocreate = true, const bool temporary = false, const bool updateSpelling = false );
+        uint artistID( QString value, bool autocreate = true, const bool temporary = false );
+        uint albumID( QString value, bool autocreate = true, const bool temporary = false );
+        uint genreID( QString value, bool autocreate = true, const bool temporary = false );
+        uint yearID( QString value, bool autocreate = true, const bool temporary = false );
 
         bool isDirInCollection( QString path );
         bool isFileInCollection( const QString &url );
@@ -299,6 +299,10 @@ class CollectionDB : public QObject, public EngineObserver
         bool bundleForUrl( MetaBundle* bundle );
         QValueList<MetaBundle> bundlesByUrls( const KURL::List& urls );
         void addAudioproperties( const MetaBundle& bundle );
+
+        //Helper functions for updateTags
+        QString IDfromExactValue( const QString& table, QString value, bool autocreate = true );
+        void deleteRedundantName( const QString &table, QString ID );
 
         void updateTags( const QString &url, const MetaBundle &bundle, const bool updateView = true);
         void updateURL( const QString &url, const bool updateView = true );
@@ -469,8 +473,7 @@ class CollectionDB : public QObject, public EngineObserver
         QString genreValue( uint id );
         QString yearValue( uint id );
 
-        uint IDFromValue( QString name, QString value, bool autocreate = true, const bool temporary = false,
-                          const bool updateSpelling = false );
+        uint IDFromValue( QString name, QString value, bool autocreate = true, const bool temporary = false );
 
         QString valueFromID( QString table, uint id );
 

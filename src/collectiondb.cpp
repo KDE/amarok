@@ -685,15 +685,14 @@ CollectionDB::dropPodcastTables()
     query( "DROP TABLE podcastepisodes;" );
     query( "DROP TABLE podcastfolders;" );
 }
-
 uint
-CollectionDB::artistID( QString value, bool autocreate, const bool temporary, const bool updateSpelling )
+CollectionDB::artistID( QString value, bool autocreate, const bool temporary )
 {
     // lookup cache
     if ( m_validArtistCache && m_cacheArtist[(int)temporary] == value )
         return m_cacheArtistID[(int)temporary];
 
-    uint id = IDFromValue( "artist", value, autocreate, temporary, updateSpelling );
+    uint id = IDFromValue( "artist", value, autocreate, temporary );
 
     // cache values
     m_cacheArtist[(int)temporary] = value;
@@ -702,7 +701,6 @@ CollectionDB::artistID( QString value, bool autocreate, const bool temporary, co
 
     return id;
 }
-
 
 QString
 CollectionDB::artistValue( uint id )
@@ -721,15 +719,14 @@ CollectionDB::artistValue( uint id )
 }
 
 
-
 uint
-CollectionDB::albumID( QString value, bool autocreate, const bool temporary, const bool updateSpelling )
+CollectionDB::albumID( QString value, bool autocreate, const bool temporary )
 {
     // lookup cache
     if ( m_validAlbumCache && m_cacheAlbum[(int)temporary] == value )
         return m_cacheAlbumID[(int)temporary];
 
-    uint id = IDFromValue( "album", value, autocreate, temporary, updateSpelling );
+    uint id = IDFromValue( "album", value, autocreate, temporary );
 
     // cache values
     m_cacheAlbum[(int)temporary] = value;
@@ -738,7 +735,6 @@ CollectionDB::albumID( QString value, bool autocreate, const bool temporary, con
 
     return id;
 }
-
 
 QString
 CollectionDB::albumValue( uint id )
@@ -756,13 +752,11 @@ CollectionDB::albumValue( uint id )
     return value;
 }
 
-
 uint
-CollectionDB::genreID( QString value, bool autocreate, const bool temporary, const bool updateSpelling)
+CollectionDB::genreID( QString value, bool autocreate, const bool temporary )
 {
-    return IDFromValue( "genre", value, autocreate, temporary, updateSpelling);
+    return IDFromValue( "genre", value, autocreate, temporary );
 }
-
 
 QString
 CollectionDB::genreValue( uint id )
@@ -772,9 +766,9 @@ CollectionDB::genreValue( uint id )
 
 
 uint
-CollectionDB::yearID( QString value, bool autocreate, const bool temporary, const bool updateSpelling)
+CollectionDB::yearID( QString value, bool autocreate, const bool temporary )
 {
-    return IDFromValue( "year", value, autocreate, temporary, updateSpelling);
+    return IDFromValue( "year", value, autocreate, temporary );
 }
 
 
@@ -786,7 +780,7 @@ CollectionDB::yearValue( uint id )
 
 
 uint
-CollectionDB::IDFromValue( QString name, QString value, bool autocreate, const bool temporary, const bool updateSpelling )
+CollectionDB::IDFromValue( QString name, QString value, bool autocreate, const bool temporary )
 {
     if ( temporary )
         name.append( "_temp" );
@@ -799,15 +793,6 @@ CollectionDB::IDFromValue( QString name, QString value, bool autocreate, const b
             "SELECT id, name FROM %1 WHERE name %2;" )
             .arg( name )
             .arg( CollectionDB::likeCondition( value ) ) );
-
-    if ( updateSpelling && !values.isEmpty() && ( values[1] != value ) )
-    {
-        query( QString( "UPDATE %1 SET id = %2, name = '%3' WHERE id = %4;" )
-                  .arg( name,
-                        values.first(),
-                        escapeString( value ),
-                        values.first() ) );
-    }
 
     //check if item exists. if not, should we autocreate it?
     uint id;
@@ -2136,10 +2121,10 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
     command += QString::number( QFileInfo( bundle->url().path() ).created().toTime_t() ) + ",";
     command += QString::number( QFileInfo( bundle->url().path() ).lastModified().toTime_t() ) + ",";
 
-    command += escapeString( QString::number( albumID( bundle->album(),   true, !incremental, false ) ) ) + ",";
-    command += escapeString( QString::number( artistID( bundle->artist(), true, !incremental, false ) ) ) + ",";
-    command += escapeString( QString::number( genreID( bundle->genre(),   true, !incremental, false ) ) ) + ",'";
-    command += escapeString( QString::number( yearID( QString::number( bundle->year() ), true, !incremental, false ) ) ) + "','";
+    command += escapeString( QString::number( albumID( bundle->album(),   true, !incremental ) ) ) + ",";
+    command += escapeString( QString::number( artistID( bundle->artist(), true, !incremental ) ) ) + ",";
+    command += escapeString( QString::number( genreID( bundle->genre(),   true, !incremental ) ) ) + ",'";
+    command += escapeString( QString::number( yearID( QString::number( bundle->year() ), true, !incremental ) ) ) + "','";
 
     command += escapeString( bundle->title() ) + "',";
     command += ( bundle->composer().isEmpty() ? "NULL" : "'"+escapeString( bundle->composer() ) + "'" ) + ",'";
@@ -3099,7 +3084,7 @@ CollectionDB::checkCompilations( const QString &path, const bool temporary )
     {
         if ( albums[ i ].isEmpty() ) continue;
 
-        const uint album_id = albumID( albums[ i ], false, temporary, false );
+        const uint album_id = albumID( albums[ i ], false, temporary );
         artists = query( QString( "SELECT DISTINCT artist.name FROM tags_temp, artist%1 AS artist WHERE tags_temp.album = '%2' AND tags_temp.artist = artist.id;" )
                             .arg( temporary ? "_temp" : "" )
                             .arg( album_id ) );
@@ -3147,24 +3132,125 @@ CollectionDB::removeDirFromCollection( QString path )
 }
 
 
+QString CollectionDB::IDfromExactValue( const QString& table, QString value, bool autocreate )
+{
+    value = escapeString( value );
+    QString querystr( QString( "SELECT id FROM %1 WHERE name = '%2';" ).arg( table, value ) );
+    QStringList result = query( querystr );
+    if ( result.isEmpty() )
+    {
+        if ( autocreate )
+            return QString::number( insert( QString( "INSERT INTO %1 ( name ) VALUES ( '%2' );" )
+                 .arg( table, escapeString( value ) ),
+                 table ) );
+        else
+            return 0;
+    }
+    else
+    {
+        if ( result.count() > 1 )
+            debug() << "More than one entry in the " << table << " database for '" << value << '\'' << endl;
+        return result.first();
+    }
+}
+
+void CollectionDB::deleteRedundantName( const QString &table, QString ID )
+{
+    QString querystr( QString( "SELECT %1 FROM tags WHERE tags.%1 = %2 LIMIT 1;" ).arg( table, ID ) );
+    QStringList result = query( querystr );
+    if ( result.isEmpty() )
+        query( QString( "DELETE FROM %1 WHERE id = %2;" ).arg( table,ID ) );
+}
+
+
 void
 CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bool updateView )
 {
-    QString command = "UPDATE tags SET ";
-    command += "title = '" + escapeString( bundle.title() ) + "', ";
-    command += "artist = " + QString::number( artistID( bundle.artist(), true, false, true ) ) + ", ";
-    command += "album = "  + QString::number( albumID( bundle.album(), true, false, true ) ) + ", ";
-    command += "genre = "  + QString::number( genreID( bundle.genre(), true, false, true ) ) + ", ";
-    command += "year = "   + QString::number( yearID( QString::number( bundle.year() ), true, false, true ) ) + ", ";
-    command += "track = " + QString::number( bundle.track() ) + ", ";
-    command += "comment = '" + escapeString( bundle.comment() ) + "', ";
-    command += "composer = '" + escapeString( bundle.composer() ) + "', ";
-    command += "discnumber = '" + QString::number( bundle.discNumber() ) + "', ";
-    command += "filesize = '" + QString::number( bundle.filesize() ) + "', ";
-    command += "filetype = '" + QString::number( bundle.fileType() ) + "' ";
-    command += "WHERE url = '" + escapeString( url ) + "';";
+    QueryBuilder qb;
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTrack );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valComment );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valComposer );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFilesize );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFileType );
+    // [10] is above. [11] is below.
+    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valID );
+    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
+    qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valID );
+    qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valID );
 
-    query( command );
+    qb.addURLFilters ( QStringList( url ) );
+    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    QStringList values = qb.run();
+
+    if ( values.isEmpty() || values.count() > 15 )
+    {
+        error() << "Query returned more than 1 song. Aborting updating metadata" << endl;
+        return;
+    }
+
+    bool art=false, alb=false, gen=false, year=false;
+
+    QString command = "UPDATE tags SET ";
+    if ( values[ 0 ] != bundle.title() )
+        command += "title = '" + escapeString( bundle.title() ) + "', ";
+    if ( values[ 1 ] != bundle.artist() )
+    {
+        art = true;
+        command += "artist = " + IDfromExactValue( "artist", bundle.artist() ) + ", ";
+    }
+    if ( values[ 2 ] != bundle.album() )
+    {
+        alb = true;
+        command += "album = "  + IDfromExactValue( "album", bundle.album() ) + ", ";
+    }
+    if ( values[ 3 ] != bundle.genre() )
+    {
+        gen = true;
+        command += "genre = "  + IDfromExactValue( "genre", bundle.genre() ) + ", ";
+    }
+    if ( values[ 4 ] != QString::number( bundle.year() ) )
+    {
+        year = false;
+        command += "year = "   + IDfromExactValue( "year", QString::number( bundle.year() ) ) + ", ";
+    }
+    if ( values[ 5 ] != QString::number( bundle.track() ) )
+        command += "track = " + QString::number( bundle.track() ) + ", ";
+    if ( values[ 6 ] != bundle.comment() )
+        command += "comment = '" + escapeString( bundle.comment() ) + "', ";
+    if ( values[ 7 ] != bundle.composer() )
+        command += "composer = '" + escapeString( bundle.composer() ) + "', ";
+    if ( values[ 8 ] != QString::number( bundle.discNumber() ) )
+        command += "discnumber = '" + QString::number( bundle.discNumber() ) + "', ";
+    if ( values[ 9 ] != QString::number( bundle.filesize() ) )
+        command += "filesize = '" + QString::number( bundle.filesize() ) + "', ";
+    if ( values[ 10 ] != QString::number( bundle.fileType() ) )
+        command += "filetype = '" + QString::number( bundle.fileType() ) + "', ";
+
+    if ( "UPDATE tags SET " == command )
+    {
+        debug() << "No tags selected to be changed" << endl;
+    }
+    else
+    {
+        //We have to remove the trailing comma from command
+        query( command.left( command.length() - 2 ) + " WHERE url = '" + escapeString( url ) + "';" );
+    }
+
+    //Check to see if we use the entry anymore. If not, delete it
+    if ( art )
+        deleteRedundantName( "artist", values[ 11 ] );
+    if ( alb )
+        deleteRedundantName( "album", values[ 12 ] );
+    if ( gen )
+        deleteRedundantName( "genre", values[ 13 ] );
+    if ( year )
+        deleteRedundantName( "year", values[ 14 ] );
 
     if ( EngineController::instance()->bundle().url() == bundle.url() )
     {
