@@ -5291,6 +5291,7 @@ QueryBuilder::clear()
     m_sort = "";
     m_group = "";
     m_limit = "";
+    m_having = "";
 
     m_linkTables = 0;
     m_returnValues = 0;
