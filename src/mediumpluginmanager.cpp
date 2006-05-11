@@ -430,11 +430,11 @@ MediaDeviceConfig::MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, 
     m_configButton = new KPushButton( SmallIconSet( amaroK::icon( "configure" ) ), QString::null, this );
     connect( m_configButton, SIGNAL(clicked()), SLOT(configureDevice()) );
     m_configButton->setEnabled( !m_new && m_pluginCombo->currentText() != i18n( "Do not handle" ) );
-    QToolTip::add( m_configButton, "Configure device settings" );
+    QToolTip::add( m_configButton, i18n( "Configure device settings" ) );
 
     m_removeButton = new KPushButton( i18n( "Remove" ), this );
     connect( m_removeButton, SIGNAL(clicked()), SLOT(deleteDevice()) );
-    QToolTip::add( m_removeButton, "Remove entries corresponding to this device from configuration file" );
+    QToolTip::add( m_removeButton, i18n( "Remove entries corresponding to this device from configuration file" ) );
 
     connect( m_pluginCombo, SIGNAL(activated(const QString&)), m_manager, SLOT(slotChanged()) );
     connect( this, SIGNAL(changed()), m_manager, SLOT(slotChanged()) );
