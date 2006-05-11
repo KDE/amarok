@@ -5077,7 +5077,7 @@ QueryBuilder::sortBy( int table, Q_INT64 value, bool descending )
 
 	// only coalesce for certain columns
 	bool c = false;
-    if ( value & valScore || value & valRating || value & valPlayCounter || value & valPercentage )
+    if ( value & valScore || value & valRating || value & valPlayCounter || value & valPercentage || value & valAccessDate || value & valCreateDate )
 		c = true;
 
     if ( !m_sort.isEmpty() ) m_sort += ",";
@@ -5123,7 +5123,7 @@ QueryBuilder::sortByFunction( int function, int table, Q_INT64 value, bool desce
 
     // only coalesce for certain columns
     bool c = false;
-    if ( !defaults && ( value & valScore || value & valRating || value & valPlayCounter || value & valPercentage ) )
+    if ( !defaults && ( value & valScore || value & valRating || value & valPlayCounter || value & valPercentage|| value & valAccessDate || value & valCreateDate ) )
         c = true;
 
     if ( !m_sort.isEmpty() ) m_sort += ",";

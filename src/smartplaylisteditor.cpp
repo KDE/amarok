@@ -663,7 +663,7 @@ QString CriteriaEditor::getSearchCriteria()
     if( field.isEmpty() )
         return QString::null;
 
-    if ( ( field=="statistics.playcounter" || field=="statistics.rating" || field=="statistics.percentage" ) )
+    if ( ( field=="statistics.playcounter" || field=="statistics.rating" || field=="statistics.percentage" || field=="statistics.accessdate" || field=="statistics.createdate") )
         searchCriteria += "COALESCE(" + field + ",0)";
     else
         searchCriteria += field;
