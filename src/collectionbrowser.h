@@ -116,14 +116,16 @@ private:
 
 class CollectionItem : public KListViewItem {
     public:
-        CollectionItem( QListView* parent, int cat = 0, bool unknown = false )
+        CollectionItem( QListView* parent, int cat = 0, bool unknown = false, bool sampler=false )
             : KListViewItem( parent )
             , m_cat( cat )
-            , m_isUnknown( unknown ) {};
-        CollectionItem( QListViewItem* parent, int cat = 0, bool unknown = false)
+            , m_isUnknown( unknown )
+            , m_isSampler( sampler ) {};
+        CollectionItem( QListViewItem* parent, int cat = 0, bool unknown = false, bool sampler=false )
             : KListViewItem( parent )
             , m_cat( cat )
-            , m_isUnknown( unknown ) {};
+            , m_isUnknown( unknown )
+            , m_isSampler( sampler ) {};
         void setUrl( const QString& url ) { m_url.setPath( url ); }
         const KURL& url() const { return m_url; }
 
@@ -134,6 +136,8 @@ class CollectionItem : public KListViewItem {
             return ( !column && m_isUnknown ) ? "" : text( column );
         }
 
+        inline bool isSampler() {return m_isSampler;}
+
     private:
         //for sorting
         virtual int compare( QListViewItem*, int, bool ) const; //reimplemented
@@ -142,6 +146,7 @@ class CollectionItem : public KListViewItem {
         KURL m_url;
         int m_cat;
         bool m_isUnknown;
+        bool m_isSampler;
 };
 
 

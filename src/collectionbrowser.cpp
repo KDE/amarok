@@ -719,7 +719,7 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
 //                 x->setDropEnabled( false );
 //                 x->setSelectable(false);
 
-                CollectionItem* item = new CollectionItem( this, m_cat1 );
+                CollectionItem* item = new CollectionItem( this, m_cat1, false, true );
                 item->setExpandable( true );
                 item->setDragEnabled( true );
                 item->setDropEnabled( false );
@@ -875,10 +875,13 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
         qb.addFilter( QueryBuilder::tabSong, QueryBuilder::valCreateDate, QString().setNum( QDateTime::currentDateTime().toTime_t() - translateTimeFilter( timeFilter() ) ), QueryBuilder::modeGreater );
 
     QString itemText;
-    bool isUnknown;
+    bool isUnknown, isSampler=false;
     QStringList matches;
     if ( dynamic_cast<CollectionItem*>( item ) )
+    {
+        isSampler = static_cast<CollectionItem*>(  item )->isSampler();
         itemText = static_cast<CollectionItem*>( item )->getSQLText( 0 );
+    }
     else
     {
         debug() << "slotExpand in CollectionView of a non-CollectionItem" << endl;
@@ -890,7 +893,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
         case 0:
             tmptext = itemText;
             isUnknown = tmptext.isEmpty();
-            if ( tmptext != i18n( "Various Artists" ) )
+            if ( !isSampler )
             {
                 if( VisYearAlbum == 1 )
                 {
@@ -953,7 +956,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                 item->parent()->text( 0 );
             isUnknown = tmptext.isEmpty();
 
-            if( tmptext != i18n( "Various Artists" ) )
+            if( !isSampler )
             {
                 if( VisYearAlbum == 1 )
                 {
@@ -1039,7 +1042,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                 item->parent()->parent()->text( 0 );
             isUnknown = tmptext.isEmpty();
 
-            if ( item->parent()->parent()->text( 0 ) != i18n( "Various Artists" ) )
+            if ( !isSampler )
             {
                 if (VisYearAlbum==1)
                 {
@@ -2034,12 +2037,11 @@ CollectionView::listSelected()
 
         return list;
     }
-
     //first pass: parents
     for ( item = firstChild(); item; item = item->nextSibling() )
         if ( item->isSelected() )
         {
-            bool sampler = item->text( 0 ) == i18n( "Various Artists" );
+            const bool sampler = static_cast<CollectionItem*>(  item )->isSampler();
             qb.clear();
             if ( translateTimeFilter( timeFilter() ) > 0 )
                 qb.addFilter( QueryBuilder::tabSong, QueryBuilder::valCreateDate, QString().setNum( QDateTime::currentDateTime().toTime_t() - translateTimeFilter( timeFilter() ) ), QueryBuilder::modeGreater );
@@ -2119,7 +2121,7 @@ CollectionView::listSelected()
             for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
                 if ( child->isSelected() && !child->parent()->isSelected() )
                 {
-                    bool sampler = item->text( 0 ) == i18n( "Various Artists" );
+                    const bool sampler = static_cast<CollectionItem*>( item )->isSampler();
                     qb.clear();
                     if ( translateTimeFilter( timeFilter() ) > 0 )
                         qb.addFilter( QueryBuilder::tabSong, QueryBuilder::valCreateDate, QString().setNum( QDateTime::currentDateTime().toTime_t() - translateTimeFilter( timeFilter() ) ), QueryBuilder::modeGreater );
@@ -2233,7 +2235,7 @@ CollectionView::listSelected()
                 for ( QListViewItem* grandChild = child->firstChild(); grandChild; grandChild = grandChild->nextSibling() )
                     if ( grandChild->isSelected() && !grandChild->parent()->isSelected() )
                     {
-                        bool sampler = item->text( 0 ) == i18n( "Various Artists" );
+                        const bool sampler = static_cast<CollectionItem*>( item )->isSampler();
                         qb.clear();
                         if ( translateTimeFilter( timeFilter() ) > 0 )
                             qb.addFilter( QueryBuilder::tabSong, QueryBuilder::valCreateDate, QString().setNum( QDateTime::currentDateTime().toTime_t() - translateTimeFilter( timeFilter() ) ), QueryBuilder::modeGreater );
@@ -2804,9 +2806,9 @@ CollectionItem::compare( QListViewItem* i, int col, bool ascending ) const
     }
     // Various Artists is always after unknown
     if ( m_cat == CollectionBrowser::IdArtist )
-        if ( a == i18n("Various Artists") )
+        if ( m_isSampler )
             return -1;
-        if ( b == i18n("Various Artists") )
+        if ( dynamic_cast<CollectionItem*>( i ) && static_cast<CollectionItem*>( i )->m_isSampler )
             return 1;
 
     // Need to make single letter artist names sort lower than acented divider items
