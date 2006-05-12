@@ -4866,6 +4866,8 @@ QueryBuilder::addFilter( int tables, const QString& filter )
             if ( tables & tabSong )
                 m_where += "OR tags.title = '' ";
         }
+        if ( ( tables & tabArtist ) && i18n( "Various Artists" ).contains( filter, false ) )
+            m_where += QString( "OR tags.sampler = %1 " ).arg( CollectionDB::instance()->boolT() );
         m_where += " ) ";
     }
 
@@ -4892,7 +4894,7 @@ QueryBuilder::addFilter( int tables, Q_INT64 value, const QString& filter, int m
 
         m_where += QString( "OR %1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
 
-        if ( ( value & valName ) && mode == modeNormal && i18n( "Unknown" ).contains( filter, false ) )
+        if ( !exact && ( value & valName ) && mode == modeNormal && i18n( "Unknown" ) == filter )
             m_where += QString( "OR %1.%2 = '' " ).arg( tableName( tables ) ).arg( valueName( value ) );
 
         m_where += " ) ";
@@ -4936,6 +4938,8 @@ QueryBuilder::addFilters( int tables, const QStringList& filter )
                 if ( tables & tabSong )
                     m_where += "OR tags.title = '' ";
             }
+            if ( i18n( "Various Artists" ).contains( filter[ i ], false ) && ( tables & tabArtist ) )
+                m_where += "OR tags.sampler = " + CollectionDB::instance()->boolT() + ' ';
             m_where += " ) ";
         }
 
@@ -4964,6 +4968,23 @@ QueryBuilder::excludeFilter( int tables, const QString& filter )
         if ( tables & tabSong )
             m_where += "AND tags.title NOT " + CollectionDB::likeCondition( filter, true, true );
 
+        if ( i18n( "Unknown" ).contains( filter, false ) )
+        {
+            if ( tables & tabAlbum )
+                m_where += "AND album.name <> '' ";
+            if ( tables & tabArtist )
+                m_where += "AND artist.name <> '' ";
+            if ( tables & tabGenre )
+                m_where += "AND genre.name <> '' ";
+            if ( tables & tabYear )
+                m_where += "AND year.name <> '' ";
+            if ( tables & tabSong )
+                m_where += "AND tags.title <> '' ";
+        }
+
+       if ( i18n( "Various Artists" ).contains( filter, false ) && (  tables & tabArtist ) )
+            m_where += "AND tags.sampler = " + CollectionDB::instance()->boolF() + ' ';
+
 
         m_where += " ) ";
     }
@@ -4991,7 +5012,7 @@ QueryBuilder::excludeFilter( int tables, Q_INT64 value, const QString& filter, i
 
         m_where += QString( "AND %1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
 
-        if ( ( value & valName ) && mode == modeNormal && filter == i18n( "Unknown" ) )
+        if ( !exact && ( value & valName ) && mode == modeNormal && filter == i18n( "Unknown" ) )
             m_where += QString( "AND %1.%2 <> '' " ).arg( tableName( tables ) ).arg( valueName( value ) );
 
         m_where += " ) ";
