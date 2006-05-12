@@ -16,7 +16,7 @@
 #include "plugin/pluginconfig.h"
 #include "xineconfigbase.h"
 
-#include <qscrollview.h>
+#include <qobject.h>
 
 #include <xine.h>
 
@@ -25,15 +25,12 @@ class KLineEdit;
 
 class XineGeneralEntry : public QObject
 {
-    Q_OBJECT
-
+Q_OBJECT
     public:
         virtual void save() = 0;
         bool hasChanged()  const { return m_valueChanged; };
-
     signals:
         void viewChanged();
-
     protected:
         XineGeneralEntry(const QString& key, xine_t *xine, XineConfigDialog* xcf);
         void entryChanged();
@@ -60,61 +57,51 @@ void saveXineEntry(Functor& storeEntry, T val, const QString& key, xine_t *xine)
 
 class XineStrEntry : public XineGeneralEntry
 {
-    Q_OBJECT
-
+Q_OBJECT
     public:
         XineStrEntry(QLineEdit* input, const QCString & key, xine_t *m_xine, XineConfigDialog* xcf);
         void save();
-
     private slots:
         void entryChanged(const QString& newEntry);
-
     private:
         QString m_val;
 };
 
 class XineIntEntry : public XineGeneralEntry
 {
-    Q_OBJECT
-
+Q_OBJECT
     public:
         XineIntEntry(KIntSpinBox* input, const QCString & key, xine_t *xine, XineConfigDialog* xcf);
         XineIntEntry(const QString& key, xine_t *xine, XineConfigDialog* xcf);
         void save();
-
     protected slots:
         void entryChanged(int newEntry);
-
     protected:
         int m_val;
 };
 
 class XineEnumEntry : public XineIntEntry
 {
-    Q_OBJECT
-
-    public:
-        XineEnumEntry(QComboBox* input, const QCString & key, xine_t *xine, XineConfigDialog* xcf);
+Q_OBJECT
+public:
+    XineEnumEntry(QComboBox* input, const QCString & key, xine_t *xine, XineConfigDialog* xcf);
 };
 
 class XineConfigDialog : public amaroK::PluginConfig
 {
-    Q_OBJECT
-
+Q_OBJECT
     public:
         XineConfigDialog( const xine_t* const xine);
         ~XineConfigDialog();
-        QWidget* view() { return m_container; }
+        QWidget* view() { return m_view; }
         /** Return true if any of the view settings are different to the currently saved state */
         bool hasChanged() const;
         /** Return true if all view settings are in their default states */
         bool isDefault() const;
-
     public slots:
         /** Save view state using, eg KConfig */
         void save();
         void reset(xine_t *xine);
-
     private:
         /** All data structures with m_xine initiated **/
         void init();
@@ -122,7 +109,6 @@ class XineConfigDialog : public amaroK::PluginConfig
         xine_t *m_xine;
         QPtrList<XineGeneralEntry> m_entries;
         XineConfigBase* m_view;
-        QScrollView* m_container;
 };
 
 #endif

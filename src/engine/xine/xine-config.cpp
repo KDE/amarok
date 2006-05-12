@@ -1,4 +1,4 @@
-//(C) 2005 Ian Monroe <ian@monroe.nu>
+//(C) 2005 Ian Monroe <ian@monroe.nu> 
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -78,7 +78,7 @@ XineStrEntry::XineStrEntry(QLineEdit* input, const QCString & key, xine_t *xine,
     if( xine_config_lookup_entry(m_xine,  m_key.ascii(), &ent) )
     {
         input->setText(ent.str_value);
-        m_val = ent.str_value;
+        m_val = ent.str_value; 
     }
      connect( input, SIGNAL( textChanged( const QString & ) ), this, SLOT( entryChanged(const QString &) ) );
 }
@@ -103,7 +103,7 @@ XineIntEntry::XineIntEntry(KIntSpinBox* input, const QCString & key, xine_t *xin
   : XineGeneralEntry(key,xine,xcf)
 {
     xine_cfg_entry_t ent;
-    if(xine_config_lookup_entry(m_xine,  m_key.ascii(), &ent))
+    if(xine_config_lookup_entry(m_xine,  m_key.ascii(), &ent)) 
         {
             input->setValue(ent.num_value);
             m_val = ent.num_value;
@@ -134,7 +134,7 @@ XineEnumEntry::XineEnumEntry(QComboBox* input, const QCString & key, xine_t *xin
 {
     input->clear();
     xine_cfg_entry_t ent;
-    if(xine_config_lookup_entry(m_xine,  m_key.ascii(), &ent))
+    if(xine_config_lookup_entry(m_xine,  m_key.ascii(), &ent)) 
     {
         for( int i = 0; ent.enum_values[i]; ++i )
         {
@@ -155,13 +155,6 @@ XineConfigDialog::XineConfigDialog( const xine_t* const xine)
         , m_xine (const_cast<xine_t*>(xine))
 {
     m_view = new XineConfigBase();
-
-    m_container = new QScrollView();
-    m_container->addChild( m_view );
-//     m_container->setFrameShape( QFrame::NoFrame );
-    m_container->setResizePolicy( QScrollView::AutoOneFit );
-    m_container->setMaximumHeight( 400 );
-
     m_view->xineLogo->setPixmap( QPixmap( locate( "data", "amarok/images/xine_logo.png" ) ) );
     //sound output combo box
     m_view->deviceComboBox->insertItem(i18n("Autodetect"));
@@ -171,7 +164,7 @@ XineConfigDialog::XineConfigDialog( const xine_t* const xine)
         if(qstrcmp(drivers[i],"none") != 0) //returns 0 if equal
             m_view->deviceComboBox->insertItem(drivers[i]);
     }
-
+    
     connect( m_view->deviceComboBox, SIGNAL( activated( int ) ), SIGNAL( viewChanged() ) );
     m_entries.setAutoDelete(true);
     m_view->deviceComboBox->setCurrentItem( (XineCfg::outputPlugin() == "auto" ) ? "Autodetect" : XineCfg::outputPlugin() );
@@ -182,7 +175,7 @@ XineConfigDialog::XineConfigDialog( const xine_t* const xine)
 XineConfigDialog::~XineConfigDialog()
 {
     XineCfg::writeConfig();
-    delete m_container;
+    delete m_view;
 }
 void XineConfigDialog::init()
 {
@@ -225,7 +218,7 @@ void XineConfigDialog::showHidePluginConfigs() const
        if(XineCfg::outputPlugin() == "oss")
             m_view->ossGroupBox->setEnabled(true);
         else
-            m_view->ossGroupBox->setEnabled(false);
+            m_view->ossGroupBox->setEnabled(false); 
     }
     else
     {
@@ -253,7 +246,7 @@ XineConfigDialog::hasChanged() const
     {
         ++it;
         if(entry->hasChanged())
-            return true;
+            return true; 
     }
     return false;
 }
@@ -279,7 +272,7 @@ XineConfigDialog::save()//SLOT
     if(hasChanged())
     {
         //its not Autodetect really, its just auto
-        XineCfg::setOutputPlugin((m_view->deviceComboBox->currentItem() == 0)
+        XineCfg::setOutputPlugin((m_view->deviceComboBox->currentItem() == 0) 
             ? "auto" : m_view->deviceComboBox->currentText());
         XineGeneralEntry* entry;
         for(entry = m_entries.first(); entry; entry=m_entries.next())
