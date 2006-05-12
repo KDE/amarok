@@ -57,6 +57,15 @@ def parseLyrics( lyrics )
 end
 
 
+def notFound()
+    doc = REXML::Document.new( "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" )
+    root = doc.add_element( "suggestions" )
+    root.add_attribute( "page_url", @page_url )
+    xml = ""
+    doc.write( xml )
+    showLyrics( xml )
+end
+
 def parseSuggestions( lyrics )
     lyrics = lyrics[lyrics.index( "Suggestions : " )..lyrics.index( "<br><br>" )]
 
@@ -134,6 +143,9 @@ def fetchLyrics( artist, title, url )
 
     elsif lyrics.include?( "Suggestions : " )
         parseSuggestions( lyrics )
+
+    else
+        notFound()
     end
 end
 

@@ -46,13 +46,14 @@ def fetchLyrics( artist, title )
 
     md = /(<tr><td bgcolor="#BBBBBB".*)(More Songs &gt)/.match( body )
 
+    doc = REXML::Document.new( "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" )
+    root = doc.add_element( "suggestions" )
+    root.add_attribute( "page_url", page_url )
+    xml = ""
+
     if  not md == nil
 
         body = md[1].to_s()
-
-        doc = REXML::Document.new( "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" )
-        root = doc.add_element( "suggestions" )
-        root.add_attribute( "page_url", page_url )
 
         entries = body.split( '<tr><td bgcolor="#BBBBBB"' )
         entries.delete_at( 0 )
@@ -68,14 +69,10 @@ def fetchLyrics( artist, title )
             suggestion.add_attribute( "artist", artist.unpack("C*").pack("U*") )
             suggestion.add_attribute( "title", title.unpack("C*").pack("U*") )
         end
-
-        xml = ""
-        doc.write( xml )
-
-    #     puts( xml )
-        showLyrics( xml )
-
     end
+    doc.write( xml )
+#     puts( xml )
+    showLyrics( xml )
 end
 
 
