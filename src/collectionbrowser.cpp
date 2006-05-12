@@ -875,11 +875,10 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
         qb.addFilter( QueryBuilder::tabSong, QueryBuilder::valCreateDate, QString().setNum( QDateTime::currentDateTime().toTime_t() - translateTimeFilter( timeFilter() ) ), QueryBuilder::modeGreater );
 
     QString itemText;
-    bool isUnknown, isSampler=false;
+    bool isUnknown;
     QStringList matches;
     if ( dynamic_cast<CollectionItem*>( item ) )
     {
-        isSampler = static_cast<CollectionItem*>(  item )->isSampler();
         itemText = static_cast<CollectionItem*>( item )->getSQLText( 0 );
     }
     else
@@ -893,7 +892,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
         case 0:
             tmptext = itemText;
             isUnknown = tmptext.isEmpty();
-            if ( !isSampler )
+            if ( !static_cast<CollectionItem*>( item )->isSampler() )
             {
                 if( VisYearAlbum == 1 )
                 {
@@ -956,7 +955,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                 item->parent()->text( 0 );
             isUnknown = tmptext.isEmpty();
 
-            if( !isSampler )
+            if( !static_cast<CollectionItem*>( item->parent() )->isSampler() )
             {
                 if( VisYearAlbum == 1 )
                 {
@@ -1042,7 +1041,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                 item->parent()->parent()->text( 0 );
             isUnknown = tmptext.isEmpty();
 
-            if ( !isSampler )
+            if ( !static_cast<CollectionItem*>( item->parent()->parent() )->isSampler() )
             {
                 if (VisYearAlbum==1)
                 {
