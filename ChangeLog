@@ -11,6 +11,8 @@ VERSION 1.4.0:
     * Context menus for entries in the statistics tool. (BR 124945)
 
   CHANGES:
+    * Groupings when transferring files to mediadevices are now persistent.
+      (BR 127158)
     * Transfer contents of smart playlists to media device without adding
       them to a playlist. (BR 126997)
     * Set %albumartist to Various Artists, but keep %artist as the track's
