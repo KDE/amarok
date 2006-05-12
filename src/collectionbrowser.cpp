@@ -2774,6 +2774,24 @@ CollectionItem::compare( QListViewItem* i, int col, bool ascending ) const
     QString b = i->text( col );
     int ia, ib;
 
+    //Special cases go first to take priority
+
+    // Unknown is always the first one
+    if ( m_isUnknown )
+        return -1;
+    if ( dynamic_cast<CollectionItem*>( i ) && static_cast<CollectionItem*>( i )->m_isUnknown )
+        return 1;
+
+    // Various Artists is always after unknown
+    if ( m_cat == CollectionBrowser::IdArtist )
+    {
+        if ( m_isSampler )
+            return -1;
+        if ( dynamic_cast<CollectionItem*>( i ) && static_cast<CollectionItem*>( i )->m_isSampler )
+            return 1;
+    }
+
+    //Group heading should go above the items in that group
     if (dynamic_cast<DividerItem*>(i) && DividerItem::shareTheSameGroup(a, b, m_cat)) {
         return ascending == false ? -1 : 1;
     }
@@ -2797,20 +2815,7 @@ CollectionItem::compare( QListViewItem* i, int col, bool ascending ) const
                 return 1;
             else
                 return -1;
-        default:
-        // Unknown is always the first one
-            if ( m_isUnknown )
-                return -1;
-            if ( dynamic_cast<CollectionItem*>( i ) && static_cast<CollectionItem*>( i )->m_isUnknown )
-                return 1;
     }
-    // Various Artists is always after unknown
-    if ( m_cat == CollectionBrowser::IdArtist )
-        if ( m_isSampler )
-            return -1;
-        if ( dynamic_cast<CollectionItem*>( i ) && static_cast<CollectionItem*>( i )->m_isSampler )
-            return 1;
-
     // Need to make single letter artist names sort lower than acented divider items
     // (e.g. The artist "A" should sort below the divider "Ä") so the divider colapsing
     // code works correctly. Making the artist a two letter word makes localeAwareCompare
