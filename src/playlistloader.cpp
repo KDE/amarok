@@ -227,8 +227,7 @@ UrlLoader::customEvent( QCustomEvent *e)
                     continue;
 
                 //add anyways, but disable
-                PlaylistItem *item = new PlaylistItem( *it, m_markerListViewItem );
-                item->setEnabled( false );
+                new PlaylistItem( *it, m_markerListViewItem, false );
             }
             else
             {

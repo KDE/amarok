@@ -136,6 +136,12 @@ public:
         return (*it == item) ? *static_cast<MyIterator&>(++it) : *it;
     }
 
+    static PlaylistItem *prevVisible( PlaylistItem *item )
+    {
+        MyIterator it( item );
+        return (*it == item) ? *static_cast<MyIterator&>(--it) : *it;
+    }
+
 };
 
 typedef MyIterator MyIt;
@@ -409,6 +415,8 @@ Playlist::Playlist( QWidget *parent )
 
     m_clicktimer = new QTimer( this );
     connect( m_clicktimer, SIGNAL(timeout()), this, SLOT(slotSingleClick()) );
+
+    connect( CollectionDB::instance(), SIGNAL(scanDone( bool )), SLOT(collectionScanDone( bool )) );
 }
 
 Playlist::~Playlist()
@@ -1200,13 +1208,13 @@ Playlist::playNextTrack( bool forceNext )
         else if( item )
         {
             item = MyIt::nextVisible( item );
-            while( item && !item->isEnabled() )
+            while( item && ( !item->isEnabled() || !item->exists() ) )
                 item = MyIt::nextVisible( item );
         }
         else
         {
             item = *MyIt( this ); //ie. first visible item
-            while( item && !item->isEnabled() )
+            while( item && ( !item->isEnabled() || !item->exists() ) )
                 item = item->nextSibling();
         }
 
@@ -1259,7 +1267,7 @@ Playlist::advanceDynamicTrack( PlaylistItem *item )
 void
 Playlist::playPrevTrack()
 {
-    PlaylistItem *item = m_currentTrack;
+    PlaylistItem *item = currentTrack();
 
     if( amaroK::entireAlbums() )
     {
@@ -1285,13 +1293,29 @@ Playlist::playPrevTrack()
             }
         }
         if( !item )
+        {
             item = *static_cast<MyIt&>(--MyIt( item ));
+            while( item && !item->isEnabled() )
+                item = *static_cast<MyIt&>(--MyIt( item ));
+        }
     }
     else
     {
         if ( !AmarokConfig::randomMode() || m_prevTracks.count() <= 1 )
-            item = *static_cast<MyIt&>(--MyIt( item )); //the previous track to item that is visible
-
+        {
+            if( item )
+            {
+                item = MyIt::prevVisible( item );
+                while( item && ( !item->isEnabled() || !item->exists() ) )
+                    item = MyIt::prevVisible( item );
+            }
+            else
+            {
+                item = *MyIt( this ); //ie. first visible item
+                while( item && ( !item->isEnabled() || !item->exists() ) )
+                    item = item->nextSibling();
+            }
+        }
         else {
             // if enough songs in buffer, jump to the previous one
             m_prevTracks.last();
@@ -1562,8 +1586,11 @@ void Playlist::doubleClicked( QListViewItem *item )
 {
     /* We have to check if the item exists before calling activate, otherwise clicking on an empty
     playlist space would stop playing (check BR #105106)*/
-    if( item && item->isEnabled() && m_hoveredRating != item )
-        activate( item );
+    if( item && m_hoveredRating != item )
+    {
+        if( item->isEnabled() )
+            activate( item );
+    }
 }
 
 void
@@ -2213,6 +2240,12 @@ Playlist::writeTag( QListViewItem *qitem, const QString &, int column ) //SLOT
 
     m_itemsToChangeTagsFor.clear();
     m_editOldTag = QString::null;
+}
+
+void
+Playlist::collectionScanDone( bool changed ) //SLOT
+{
+    DEBUG_BLOCK
 }
 
 void

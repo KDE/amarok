@@ -48,7 +48,7 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
 
     public:
         PlaylistItem( QListView*, QListViewItem* ); //used by PlaylistLoader
-        PlaylistItem( const MetaBundle&, QListViewItem* );
+        PlaylistItem( const MetaBundle&, QListViewItem*, bool enabled = true );
         ~PlaylistItem();
 
         /// pass 'raw' data here, for example "92" for Length, and not "1:32"

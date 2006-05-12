@@ -2491,6 +2491,8 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
                 if( m_atfEnabled )
                     b.setUniqueId();
 
+                b.checkExists();
+
                 buns50.append( b );
             }
 

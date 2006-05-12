@@ -60,9 +60,8 @@ PlaylistItem::PlaylistItem( QListView *listview, QListViewItem *item )
     KListViewItem::setVisible( false );
 }
 
-PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi )
+PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi, bool enabled )
         : MetaBundle( bundle ), KListViewItem( lvi->listView(), lvi->itemAbove() )
-        , m_enabled( true )
         , m_proxyForMoods( 0 )
 {
     setDragEnabled( true );
@@ -89,6 +88,7 @@ PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi )
     filter( listView()->m_filter );
 
     listView()->countChanged();
+    setEnabled( enabled );
 }
 
 PlaylistItem::~PlaylistItem()

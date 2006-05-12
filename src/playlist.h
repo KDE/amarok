@@ -272,6 +272,7 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void updateNextPrev();
         void writeTag( QListViewItem*, const QString&, int );
 
+        void collectionScanDone( bool changed );
 
     private:
         Playlist( QWidget* );
