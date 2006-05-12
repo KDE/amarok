@@ -68,6 +68,7 @@ public:
         LastPlayed,
         Mood,
         Filesize,
+        UniqueId,
         NUM_COLUMNS
     };
 
@@ -231,10 +232,10 @@ public: //accessors
     int compilation() const;
     int fileType() const;  // returns a value from enum FileType 
     bool exists() const; // true for everything but local files that aren't there
-    QString uniqueId() const;
     PodcastEpisodeBundle *podcastBundle() const;
     QString streamName() const;
     QString streamUrl()  const;
+    QString uniqueId() const;
 
     QString prettyTitle() const;
     QString veryNiceTitle() const;

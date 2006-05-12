@@ -262,24 +262,27 @@ Playlist::Playlist( QWidget *parent )
 
     for( int i = 0; i < MetaBundle::NUM_COLUMNS; ++i )
     {
-        addColumn( PlaylistItem::prettyColumnName( i ), 0 );
-        switch( i )
+        if( i != MetaBundle::UniqueId )
         {
-            case PlaylistItem::Title:
-            case PlaylistItem::Artist:
-            case PlaylistItem::Composer:
-            case PlaylistItem::Year:
-            case PlaylistItem::Album:
-            case PlaylistItem::DiscNumber:
-            case PlaylistItem::Track:
-            case PlaylistItem::Genre:
-            case PlaylistItem::Comment:
-            case PlaylistItem::Score:
-            case PlaylistItem::Rating:
-                setRenameable( i, true );
-                continue;
-            default:
-                setRenameable( i, false );
+            addColumn( PlaylistItem::prettyColumnName( i ), 0 );
+            switch( i )
+            {
+                case PlaylistItem::Title:
+                case PlaylistItem::Artist:
+                case PlaylistItem::Composer:
+                case PlaylistItem::Year:
+                case PlaylistItem::Album:
+                case PlaylistItem::DiscNumber:
+                case PlaylistItem::Track:
+                case PlaylistItem::Genre:
+                case PlaylistItem::Comment:
+                case PlaylistItem::Score:
+                case PlaylistItem::Rating:
+                    setRenameable( i, true );
+                    continue;
+                default:
+                    setRenameable( i, false );
+            }
         }
     }
 

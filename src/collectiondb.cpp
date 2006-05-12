@@ -133,14 +133,14 @@ CollectionDB::CollectionDB()
     config->writeEntry( "Database Podcast Tables Version", DATABASE_PODCAST_TABLES_VERSION );
     config->writeEntry( "Database ATF Version", DATABASE_ATF_VERSION );
 
-    m_atfEnabled = config->readBoolEntry( "AdvancedTagFeatures", false );
-
     setAdminValue( "Database Version", QString::number(DATABASE_VERSION) );
     setAdminValue( "Database Stats Version", QString::number(DATABASE_STATS_VERSION) );
     setAdminValue( "Database Persistent Tables Version", QString::number(DATABASE_PERSISTENT_TABLES_VERSION) );
     setAdminValue( "Database Podcast Tables Version", QString::number(DATABASE_PODCAST_TABLES_VERSION) );
     setAdminValue( "Database ATF Version", QString::number(DATABASE_ATF_VERSION) );
 
+    KConfig* atfconfig = amaroK::config( "Collection" );
+    m_atfEnabled = atfconfig->readBoolEntry( "AdvancedTagFeatures", false );
 
     connect( qApp, SIGNAL( aboutToQuit() ), this, SLOT( disableAutoScoring() ) );
 
@@ -2167,13 +2167,14 @@ void
 CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
 {
     //DEBUG_BLOCK
+    //debug() << "m_atfEnabled = " << (m_atfEnabled ? "true" : "false") << endl;
     if( !m_atfEnabled ) return;
     //ATF Stuff
     QString currid = escapeString( bundle->uniqueId() );
     QString currurl = escapeString( bundle->url().path() );
     QString currdir = escapeString( bundle->url().directory() );
 
-    debug() << "Checking currid = " << currid << ", currurl = " << currurl << endl;
+    //debug() << "Checking currid = " << currid << ", currurl = " << currurl << endl;
 
     QStringList urls = query( QString(
             "SELECT url, uniqueid "
@@ -2215,7 +2216,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
     //checking length below because for some reason the != check does not always work, even when length is zero
     else if( currid.length() > 0 ) //if doesn't match, new item, but no uniqueid...probably ATF off
     {
-        debug() << "urls.empty() = " << (urls.empty() ? "true" : "false") << ", uniqueids.empty() = " << (uniqueids.empty() ? "true" : "false") << ", onlyInTemp = " << (onlyInTemp ? "true" : "false") << endl;
+        //debug() << "urls.empty() = " << (urls.empty() ? "true" : "false") << ", uniqueids.empty() = " << (uniqueids.empty() ? "true" : "false") << ", onlyInTemp = " << (onlyInTemp ? "true" : "false") << endl;
         if( urls.empty() && uniqueids.empty() && onlyInTemp ) // new item
         {
             QString insertline = QString( "INSERT INTO uniqueid%1 (url, uniqueid, dir) VALUES ('%2', '%3', '%4')" )
@@ -2233,7 +2234,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
                 pathToUse = nonTempIDs[0];
             else
                 pathToUse = uniqueids[0];
-            debug() << "At doATFStuff, stat-ing file " << pathToUse << endl;
+            //debug() << "At doATFStuff, stat-ing file " << pathToUse << endl;
             //stat the original URL
             KURL oldurl;
             oldurl.setPath( pathToUse );

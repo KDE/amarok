@@ -109,6 +109,7 @@ const QString MetaBundle::exactColumnName( int c ) //static
         case LastPlayed: return "LastPlayed";
         case Filesize:   return "Filesize";
         case Mood:       return "Mood";
+        case UniqueId:   return "UniqueId";
     }
     return "<ERROR>";
 }
@@ -671,6 +672,7 @@ QString MetaBundle::exactText( int column ) const
         case LastPlayed: return QString::number( lastPlay() );
         case Filesize:   return QString::number( filesize() );
         case Mood:       return QString::null;
+        case UniqueId:   return uniqueId();
         default: warning() << "Tried to get the text of a nonexistent column! [" << column << endl;
     }
 
@@ -1224,7 +1226,9 @@ bool MetaBundle::save( QTextStream &stream, const QStringList &attributes, int i
     for( int i = 0; i < NUM_COLUMNS; ++i )
     {
         QDomElement tag = QDomSucksItNeedsADocument.createElement( exactColumnName( i ) );
+        //debug() << "exactColumName(i) = " << exactColumnName( i ) << endl;
         QDomText text = QDomSucksItNeedsADocument.createTextNode( exactText( i ) );
+        //debug() << "exactText(i) = " << exactText( i ) << endl;
         tag.appendChild( text );
 
         item.appendChild( tag );
