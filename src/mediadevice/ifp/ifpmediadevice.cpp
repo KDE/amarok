@@ -120,12 +120,10 @@ IfpMediaDevice::IfpMediaDevice()
     m_name = "iRiver";
     m_hasMountPoint = false;
     
-    // Save the sorts as defaults
-    KConfig *config = amaroK::config( "IfpMediaDevice" );
-    m_firstSort  = config->readEntry( "FirstSort",  "None" );
-    m_secondSort = config->readEntry( "SecondSort", "None" );
-    m_thirdSort  = config->readEntry( "ThirdSort",  "None" );
-    m_spacesToUnderscores = config->readBoolEntry( "SpacesToUnderscores", false );
+    m_spacesToUnderscores = configBool("spacesToUnderscores");
+    m_firstSort           = configString( "firstGrouping", "None" );
+    m_secondSort          = configString( "secondGrouping", "None" );
+    m_thirdSort           = configString( "thirdGrouping", "None" );
 }
 
 void
@@ -136,12 +134,10 @@ IfpMediaDevice::init( MediaBrowser* parent )
 
 IfpMediaDevice::~IfpMediaDevice()
 {
-    // Save the sorts categories
-    KConfig *config = amaroK::config( "IfpMediaDevice" );
-    config->writeEntry( "FirstSort", m_firstSort );
-    config->writeEntry( "SecondSort", m_secondSort );
-    config->writeEntry( "ThirdSort", m_thirdSort );
-    config->writeEntry( "SpacesToUnderscores", m_spacesToUnderscores );
+    setConfigString( "firstGrouping"    , m_firstSort );
+    setConfigString( "secondGrouping"   , m_secondSort );
+    setConfigString( "thirdGrouping"    , m_thirdSort );
+    setConfigBool( "spacesToUnderscores", m_spacesToUnderscores );
     
     closeDevice();
 }

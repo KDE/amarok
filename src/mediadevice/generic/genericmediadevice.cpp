@@ -304,7 +304,7 @@ GenericMediaDevice::GenericMediaDevice()
 {
     DEBUG_BLOCK
     m_name = "Generic Audio Player";
-    m_td = NULL;
+    m_td = 0;
     m_dirLister = new KDirLister();
     m_dirLister->setNameFilter( "*.mp3 *.wav *.asf *.flac *.wma *.ogg *.aac *.m4a" );
     m_dirLister->setAutoUpdate( false );
@@ -327,6 +327,11 @@ GenericMediaDevice::init( MediaBrowser* parent )
 
 GenericMediaDevice::~GenericMediaDevice()
 {
+    setConfigString( "firstGrouping"    , m_firstSort );
+    setConfigString( "secondGrouping"   , m_secondSort );
+    setConfigString( "thirdGrouping"    , m_thirdSort );
+    setConfigBool( "spacesToUnderscores", m_spacesToUnderscores );
+    
     closeDevice();
 }
 
@@ -336,9 +341,9 @@ GenericMediaDevice::loadConfig()
     MediaDevice::loadConfig();
 
     m_spacesToUnderscores = configBool("spacesToUnderscores");
-    m_firstSort = configString( "firstGrouping", "None" );
-    m_secondSort = configString( "secondGrouping", "None" );
-    m_thirdSort = configString( "thirdGrouping", "None" );
+    m_firstSort           = configString( "firstGrouping", "None" );
+    m_secondSort          = configString( "secondGrouping", "None" );
+    m_thirdSort           = configString( "thirdGrouping", "None" );
 }
 
 bool
