@@ -241,22 +241,10 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
                                             this, SLOT( gotoCurrentFolder() ), actionCollection );
         gotoCurrent->plug( toolbar );
 
-        if (disconnect( actionCollection->action( "up" ), SIGNAL( activated() ), m_dir, SLOT( cdUp() ) ))
-            debug() << "First disconnect succeeded" << endl;
-        else
-            debug() << "First disconnect did NOT succeed" << endl;
-        if (connect( actionCollection->action( "up" ), SIGNAL( activated() ), m_dir, SLOT( myCdUp() ) ))
-            debug() << "First connect succeeded" << endl;
-        else
-            debug() << "First connect did NOT succeed" << endl;
-        if (disconnect( actionCollection->action( "home" ), SIGNAL( activated() ), m_dir, SLOT( home() ) ))
-            debug() << "Second disconnect succeeded" << endl;
-        else
-            debug() << "Second disconnect did NOT succeed" << endl;
-        if (connect( actionCollection->action( "home" ), SIGNAL( activated() ), m_dir, SLOT( myHome() ) ))
-            debug() << "Second connect succeeded" << endl;
-        else
-            debug() << "Second connect did NOT succeed" << endl;
+        disconnect( actionCollection->action( "up" ), SIGNAL( activated() ), m_dir, SLOT( cdUp() ) );
+        connect( actionCollection->action( "up" ), SIGNAL( activated() ), m_dir, SLOT( myCdUp() ) );
+        disconnect( actionCollection->action( "home" ), SIGNAL( activated() ), m_dir, SLOT( home() ) );
+        connect( actionCollection->action( "home" ), SIGNAL( activated() ), m_dir, SLOT( myHome() ) );
     }
 
     connect( m_filter, SIGNAL(textChanged( const QString& )), SLOT(setFilter( const QString& )) );

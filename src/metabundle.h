@@ -272,6 +272,7 @@ public: //modifiers
     void setCompilation( int compilation );
     bool checkExists();
     void setPodcastBundle( const PodcastEpisodeBundle &peb );
+    void setUniqueId(); //will find the fileref
     void setUniqueId( const QString &id ); //WARNING WARNING WARNING SEE COMMENT in .CPP
     void setUniqueId( TagLib::FileRef &fileref, bool recreate = false );
     void newUniqueId();

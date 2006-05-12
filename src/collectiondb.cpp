@@ -2488,6 +2488,9 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
                 int val = (*++it).toInt( &ok );
                 b.setCompilation( ok ? val : MetaBundle::CompilationUnknown );
 
+                if( m_atfEnabled )
+                    b.setUniqueId();
+
                 buns50.append( b );
             }
 
@@ -2578,6 +2581,7 @@ success: ;
 
             paths.clear();
         }
+        
     }
 
     return bundles;

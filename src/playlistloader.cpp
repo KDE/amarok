@@ -220,6 +220,7 @@ UrlLoader::customEvent( QCustomEvent *e)
         foreachType( BundleList, e->bundles )
         {
             //Only add files that exist to the playlist
+            //TODO: Here's where we can put ATF stuff...
             if( !(*it).exists() )
                 continue;
 

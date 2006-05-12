@@ -1252,6 +1252,16 @@ void MetaBundle::setPath( const QString &path )
     aboutToChange( changes ); m_url.setPath( path ); reactToChanges( changes );
 }
 
+void MetaBundle::setUniqueId()
+{
+    const QString path = url().path();
+    TagLib::FileRef fileref;
+    fileref = TagLib::FileRef( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );
+
+    if( !fileref.isNull() )
+        setUniqueId( fileref );
+}
+
 void MetaBundle::setUniqueId( const QString &id )
 {
     //WARNING WARNING WARNING
@@ -1261,7 +1271,7 @@ void MetaBundle::setUniqueId( const QString &id )
 
 void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
 
     if( !AmarokConfig::advancedTagFeatures() )
         return;
@@ -1371,7 +1381,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
         if( file || !file )
             return; //not handled, at least not yet
     }
-    debug() << "Unique id for file = " << fileref.file()->name() << " is " << m_uniqueId << " and this " << (newID ? "IS" : "is NOT" ) << " a new unique id." << endl;
+    //debug() << "Unique id for file = " << fileref.file()->name() << " is " << m_uniqueId << " and this " << (newID ? "IS" : "is NOT" ) << " a new unique id." << endl;
 }
 
 void
@@ -1424,7 +1434,7 @@ MetaBundle::getRandomString( int size )
     {
        int r=rand() % 93;
        r+=33;
-       if (r==34 || r==37 || r==39 || r==92 || r==96) r+=1;
+       if (r==34 || r==37 || r==39 || r==60 ||r == 62 || r==92 || r==96) r+=1;
        str[i++] =  char(r);
        // so what if I work backwards?
     }

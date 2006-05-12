@@ -759,6 +759,12 @@ namespace amaroK
         CollectionDB::instance()->newUniqueIdForFile( path );
     }
 
+    void DcopCollectionHandler::newUniqueIdForFiles( const QStringList &list )
+    {
+        foreach( list )
+            CollectionDB::instance()->newUniqueIdForFile( *it );
+    }
+
 /////////////////////////////////////////////////////////////////////////////////////
 // class DcopScriptHandler
 /////////////////////////////////////////////////////////////////////////////////////
