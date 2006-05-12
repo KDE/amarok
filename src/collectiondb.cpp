@@ -2212,6 +2212,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
         query( QString("DELETE FROM uniqueid%1 WHERE url='%2';")
               .arg( tempTables ? "_temp" : "" )
               .arg( currurl ) );
+
     }
     //checking length below because for some reason the != check does not always work, even when length is zero
     else if( currid.length() > 0 ) //if doesn't match, new item, but no uniqueid...probably ATF off
@@ -2247,7 +2248,8 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
             }
             else  //it's a move, not a copy, or a copy and then both files were moved...can't detect that
             {
-                debug() << "stat was NOT successful, updating tables" << endl;
+                //debug() << "stat was NOT successful, updating tables with: " << endl;
+                //debug() << QString( "UPDATE uniqueid%1 SET url='%2', dir='%3' WHERE uniqueid='%4';" ).arg( ( tempTables ? "_temp" : "" ), currurl, currdir, currid ) << endl;
                 query( QString( "UPDATE uniqueid%1 SET url='%2', dir='%3' WHERE uniqueid='%4';" )
                       .arg( ( tempTables ? "_temp" : "" ),
                          currurl,

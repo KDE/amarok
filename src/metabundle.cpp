@@ -1387,7 +1387,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
 void
 MetaBundle::newUniqueId()
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     const QString path = url().path();
     TagLib::FileRef fileref;
     fileref = TagLib::FileRef( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );
