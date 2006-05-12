@@ -214,21 +214,30 @@ UrlLoader::doJob()
 void
 UrlLoader::customEvent( QCustomEvent *e)
 {
+    bool atfEnabled = AmarokConfig::advancedTagFeatures();
     #define e static_cast<TagsEvent*>(e)
     switch( e->type() ) {
     case 1000:
         foreachType( BundleList, e->bundles )
         {
             //Only add files that exist to the playlist
-            //TODO: Here's where we can put ATF stuff...
             if( !(*it).exists() )
-                continue;
+            {
+                if( !atfEnabled )
+                    continue;
 
-            PlaylistItem *item = new PlaylistItem( *it, m_markerListViewItem );
+                //add anyways, but disable
+                PlaylistItem *item = new PlaylistItem( *it, m_markerListViewItem );
+                item->setEnabled( false );
+            }
+            else
+            {
+                PlaylistItem *item = new PlaylistItem( *it, m_markerListViewItem );
 
-            if( m_playFirstUrl ) {
-                Playlist::instance()->activate( item );
-                m_playFirstUrl = false;
+                if( m_playFirstUrl ) {
+                    Playlist::instance()->activate( item );
+                    m_playFirstUrl = false;
+                }
             }
         }
         break;

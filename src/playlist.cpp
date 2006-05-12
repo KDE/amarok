@@ -1598,7 +1598,7 @@ Playlist::activate( QListViewItem *item )
 
     #define item static_cast<PlaylistItem*>(item)
 
-    if( dynamicMode() && !m_dynamicDirt && item != firstChild() && !amaroK::repeatTrack() )
+    if( dynamicMode() && !m_dynamicDirt && !amaroK::repeatTrack() )
     {
         if( m_currentTrack && item->isEnabled() )
             this->moveItem( item, 0, m_currentTrack );
