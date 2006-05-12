@@ -2291,6 +2291,24 @@ CollectionDB::newUniqueIdForFile( const QString &path )
 }
 
 QString
+CollectionDB::urlFromUniqueId( const QString &id )
+{
+    if( !m_atfEnabled )
+        return QString::null;
+
+    QStringList urls = query( QString(
+            "SELECT url, uniqueid "
+            "FROM uniqueid "
+            "WHERE uniqueid = '%1';" )
+                .arg( id ) );
+
+    if( urls.empty() )
+        return QString::null;
+
+    return urls[0];
+}
+
+QString
 CollectionDB::getURL( const MetaBundle &bundle )
 {
     uint artID = artistID( bundle.artist(), false );
@@ -2583,7 +2601,6 @@ success: ;
 
             paths.clear();
         }
-        
     }
 
     return bundles;

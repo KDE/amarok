@@ -415,8 +415,6 @@ Playlist::Playlist( QWidget *parent )
 
     m_clicktimer = new QTimer( this );
     connect( m_clicktimer, SIGNAL(timeout()), this, SLOT(slotSingleClick()) );
-
-    connect( CollectionDB::instance(), SIGNAL(scanDone( bool )), SLOT(collectionScanDone( bool )) );
 }
 
 Playlist::~Playlist()
@@ -1587,10 +1585,7 @@ void Playlist::doubleClicked( QListViewItem *item )
     /* We have to check if the item exists before calling activate, otherwise clicking on an empty
     playlist space would stop playing (check BR #105106)*/
     if( item && m_hoveredRating != item )
-    {
-        if( item->isEnabled() )
-            activate( item );
-    }
+        activate( item );
 }
 
 void
@@ -1624,6 +1619,23 @@ Playlist::activate( QListViewItem *item )
     }
 
     #define item static_cast<PlaylistItem*>(item)
+
+    if( !item->checkExists() )
+    {
+        QString path = CollectionDB::instance()->urlFromUniqueId( item->uniqueId() );
+        if( path != QString::null && path != item->url().path() )
+        {
+            item->setUrl( KURL( path ) );
+            if( item->checkExists() )
+                item->setEnabled( true );
+            else
+                item->setEnabled( false );
+        }
+        else
+            item->setEnabled( false );
+    }
+    else
+        item->setEnabled( true );
 
     if( dynamicMode() && !m_dynamicDirt && !amaroK::repeatTrack() )
     {
