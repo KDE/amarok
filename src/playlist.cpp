@@ -1206,13 +1206,13 @@ Playlist::playNextTrack( bool forceNext )
         else if( item )
         {
             item = MyIt::nextVisible( item );
-            while( item && ( !item->isEnabled() || !item->exists() ) )
+            while( item && ( !checkFileStatus( item ) || !item->exists() ) )
                 item = MyIt::nextVisible( item );
         }
         else
         {
             item = *MyIt( this ); //ie. first visible item
-            while( item && ( !item->isEnabled() || !item->exists() ) )
+            while( item && ( !checkFileStatus( item ) || !item->exists() ) )
                 item = item->nextSibling();
         }
 
@@ -1293,7 +1293,7 @@ Playlist::playPrevTrack()
         if( !item )
         {
             item = *static_cast<MyIt&>(--MyIt( item ));
-            while( item && !item->isEnabled() )
+            while( item && !checkFileStatus( item ) )
                 item = *static_cast<MyIt&>(--MyIt( item ));
         }
     }
@@ -1304,13 +1304,13 @@ Playlist::playPrevTrack()
             if( item )
             {
                 item = MyIt::prevVisible( item );
-                while( item && ( !item->isEnabled() || !item->exists() ) )
+                while( item && ( !checkFileStatus( item ) || !item->isEnabled() ) )
                     item = MyIt::prevVisible( item );
             }
             else
             {
                 item = *MyIt( this ); //ie. first visible item
-                while( item && ( !item->isEnabled() || !item->exists() ) )
+                while( item && ( !checkFileStatus( item ) || !item->isEnabled() ) )
                     item = item->nextSibling();
             }
         }
@@ -1599,6 +1599,29 @@ Playlist::slotCountChanged()
     m_itemCountDirty = false;
 }
 
+bool
+Playlist::checkFileStatus( PlaylistItem * item )
+{
+    if( !item->checkExists() )
+    {
+        QString path = CollectionDB::instance()->urlFromUniqueId( item->uniqueId() );
+        if( path != QString::null && path != item->url().path() )
+        {
+            item->setUrl( KURL( path ) );
+            if( item->checkExists() )
+                item->setEnabled( true );
+            else
+                item->setEnabled( false );
+        }
+        else
+            item->setEnabled( false );
+    }
+    else
+        item->setEnabled( true );
+
+    return item->isEnabled();
+}
+
 void
 Playlist::activate( QListViewItem *item )
 {
@@ -1620,22 +1643,7 @@ Playlist::activate( QListViewItem *item )
 
     #define item static_cast<PlaylistItem*>(item)
 
-    if( !item->checkExists() )
-    {
-        QString path = CollectionDB::instance()->urlFromUniqueId( item->uniqueId() );
-        if( path != QString::null && path != item->url().path() )
-        {
-            item->setUrl( KURL( path ) );
-            if( item->checkExists() )
-                item->setEnabled( true );
-            else
-                item->setEnabled( false );
-        }
-        else
-            item->setEnabled( false );
-    }
-    else
-        item->setEnabled( true );
+    checkFileStatus( item );
 
     if( dynamicMode() && !m_dynamicDirt && !amaroK::repeatTrack() )
     {
@@ -2252,12 +2260,6 @@ Playlist::writeTag( QListViewItem *qitem, const QString &, int column ) //SLOT
 
     m_itemsToChangeTagsFor.clear();
     m_editOldTag = QString::null;
-}
-
-void
-Playlist::collectionScanDone( bool changed ) //SLOT
-{
-    DEBUG_BLOCK
 }
 
 void

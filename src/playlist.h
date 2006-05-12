@@ -161,6 +161,9 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void saveLayout(KConfig *config, const QString &group) const;
         void restoreLayout(KConfig *config, const QString &group);
 
+        //ATF-related functions
+        bool checkFileStatus( PlaylistItem * item );
+
         enum RequestType { Prev = -1, Current = 0, Next = 1 };
         enum StopAfterMode { DoNotStop, StopAfterCurrent, StopAfterQueue, StopAfterOther };
 
@@ -271,8 +274,6 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void slotUseRatings( bool use );
         void updateNextPrev();
         void writeTag( QListViewItem*, const QString&, int );
-
-        void collectionScanDone( bool changed );
 
     private:
         Playlist( QWidget* );
