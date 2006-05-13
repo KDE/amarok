@@ -459,22 +459,22 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
             switch ( *it )
             {
                 case Artist: {
-                    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+                    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName, true );
                     filterTables |= QueryBuilder::tabArtist;
                     }
                     break;
                 case Album: {
-                    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
+                    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName, true );
                     filterTables |= QueryBuilder::tabAlbum;
                     }
                     break;
                 case Genre: {
-                    qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
+                    qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName, true );
                     filterTables |= QueryBuilder::tabGenre;
                     }
                     break;
                 case Title: {
-                    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+                    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle, true );
                     filterTables |= QueryBuilder::tabSong;
                     }
                     break;
@@ -634,10 +634,10 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
         }
         QPixmap pixmap = iconForCategory( m_cat1 );
 
-        qb.addReturnValue( q_cat1, QueryBuilder::valName );
+        qb.addReturnValue( q_cat1, QueryBuilder::valName, true );
 
         if( VisYearAlbum == 1 )
-            qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
+            qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName, true );
 
         qb.setGoogleFilter( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, m_filter );
 
@@ -727,7 +727,7 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
             if ( translateTimeFilter( timeFilter() ) > 0 )
                 qb.addFilter( QueryBuilder::tabSong, QueryBuilder::valCreateDate, QString().setNum( QDateTime::currentDateTime().toTime_t() - translateTimeFilter( timeFilter() ) ), QueryBuilder::modeGreater );
 
-            qb.addReturnValue( q_cat1, QueryBuilder::valName );
+            qb.addReturnValue( q_cat1, QueryBuilder::valName, true );
             qb.setGoogleFilter( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, m_filter );
             qb.setOptions( QueryBuilder::optOnlyCompilations | QueryBuilder::optRemoveDuplicates );
             qb.setLimit( 0, 1 );
@@ -941,9 +941,9 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
 
             if ( m_cat2 == QueryBuilder::tabSong )
             {
-                qb.addReturnValue( q_cat2, QueryBuilder::valTitle );
+                qb.addReturnValue( q_cat2, QueryBuilder::valTitle, true );
                 qb.addReturnValue( q_cat2, QueryBuilder::valURL );
-                if ( c ) qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+                if ( c ) qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName, true );
                 if ( SortbyTrackFirst ) {
                     qb.sortBy( q_cat2, QueryBuilder::valDiscNumber );
                     qb.sortBy( q_cat2, QueryBuilder::valTrack );
@@ -958,10 +958,10 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             else
             {
                 c = false;
-                qb.addReturnValue( q_cat2, QueryBuilder::valName );
+                qb.addReturnValue( q_cat2, QueryBuilder::valName, true );
                 if( VisYearAlbum == 2 )
                 {
-                    qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
+                    qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName, true );
                     qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName );
                 }
                 qb.sortBy( q_cat2, QueryBuilder::valName );
@@ -1027,9 +1027,9 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
 
             if( m_cat3 == QueryBuilder::tabSong )
             {
-                qb.addReturnValue( q_cat3, QueryBuilder::valTitle );
+                qb.addReturnValue( q_cat3, QueryBuilder::valTitle, true );
                 qb.addReturnValue( q_cat3, QueryBuilder::valURL );
-                if ( c ) qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+                if ( c ) qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName, true );
                 if ( SortbyTrackFirst ) {
                     qb.sortBy( q_cat3, QueryBuilder::valDiscNumber );
                     qb.sortBy( q_cat3, QueryBuilder::valTrack );
@@ -1044,7 +1044,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             else
             {
                 c = false;
-                qb.addReturnValue( q_cat3, QueryBuilder::valName );
+                qb.addReturnValue( q_cat3, QueryBuilder::valName, true );
                 if( VisYearAlbum == 3 )
                 {
                     qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
@@ -1136,11 +1136,11 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
 
             qb.addMatches( q_cat3, matches, false, true );
 
-            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle, true );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
 
             if( c )
-                qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+                qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName, true );
             if ( SortbyTrackFirst ) {
                 qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
                 qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
