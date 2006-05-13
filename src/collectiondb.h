@@ -514,7 +514,8 @@ class QueryBuilder
         //attributes:
         enum qBuilderTables  { tabAlbum = 1, tabArtist = 2, tabGenre = 4, tabYear = 8, tabSong = 32,
                                tabStats = 64, tabLyrics = 128, tabPodcastChannels = 256,
-                               tabPodcastEpisodes = 512, tabPodcastFolders = 1024, tabDummy = 0 };
+                               tabPodcastEpisodes = 512, tabPodcastFolders = 1024,
+                               tabComposer = 2048 /* dummy table for filtering */, tabDummy = 0 };
         enum qBuilderOptions { optNoCompilations = 1, optOnlyCompilations = 2, optRemoveDuplicates = 4,
                                optRandomize = 8 };
         /* This has been an enum in the past, but 32 bits wasn't enough anymore :-( */

@@ -4883,6 +4883,8 @@ QueryBuilder::addFilter( int tables, const QString& filter )
             m_where += "OR year.name " + CollectionDB::likeCondition( filter, false, false );
         if ( tables & tabSong )
             m_where += "OR tags.title " + CollectionDB::likeCondition( filter, true, true );
+        if ( tables & tabComposer )
+            m_where += "OR tags.composer " + CollectionDB::likeCondition( filter, true, true );
 
         if ( i18n( "Unknown" ).contains( filter, false ) )
         {
@@ -4896,6 +4898,8 @@ QueryBuilder::addFilter( int tables, const QString& filter )
                 m_where += "OR year.name = '' ";
             if ( tables & tabSong )
                 m_where += "OR tags.title = '' ";
+            if ( tables & tabComposer )
+                m_where += "OR tags.composer = '' ";
         }
         if ( ( tables & tabArtist ) && i18n( "Various Artists" ).contains( filter, false ) )
             m_where += QString( "OR tags.sampler = %1 " ).arg( CollectionDB::instance()->boolT() );
@@ -4998,6 +5002,8 @@ QueryBuilder::excludeFilter( int tables, const QString& filter )
             m_where += "AND year.name NOT " + CollectionDB::likeCondition( filter, false, false );
         if ( tables & tabSong )
             m_where += "AND tags.title NOT " + CollectionDB::likeCondition( filter, true, true );
+        if ( tables & tabComposer )
+            m_where += "AND tags.composer NOT " + CollectionDB::likeCondition( filter, true, true );
 
         if ( i18n( "Unknown" ).contains( filter, false ) )
         {
@@ -5011,6 +5017,8 @@ QueryBuilder::excludeFilter( int tables, const QString& filter )
                 m_where += "AND year.name <> '' ";
             if ( tables & tabSong )
                 m_where += "AND tags.title <> '' ";
+            if ( tables & tabComposer )
+                m_where += "AND tags.composer <> '' ";
         }
 
        if ( i18n( "Various Artists" ).contains( filter, false ) && (  tables & tabArtist ) )

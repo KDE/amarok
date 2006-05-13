@@ -485,6 +485,7 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
                 case Composer: {
                     qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valComposer );
                     filterTables |= QueryBuilder::tabSong;
+                    filterTables |= QueryBuilder::tabComposer;
                     }
                     break;
                 case DiscNumber: {
