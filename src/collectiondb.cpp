@@ -4636,7 +4636,7 @@ QueryBuilder::linkTables( int tables )
 
 
 void
-QueryBuilder::addReturnValue( int table, Q_INT64 value, bool cs /* = false */ )
+QueryBuilder::addReturnValue( int table, Q_INT64 value, bool caseSensitive /* = false */ )
 {
     if ( !m_values.isEmpty() && m_values != "DISTINCT " ) m_values += ",";
     if ( table & tabStats && value & valScore ) m_values += "round(";
@@ -4645,7 +4645,7 @@ QueryBuilder::addReturnValue( int table, Q_INT64 value, bool cs /* = false */ )
         m_values += "''";
     else
     {
-        if ( cs && CollectionDB::instance()->getType() == DbConnection::mysql )
+        if ( caseSensitive && CollectionDB::instance()->getType() == DbConnection::mysql )
             m_values += " BINARY ";
         m_values += tableName( table ) + ".";
         m_values += valueName( value );
