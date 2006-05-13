@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>358</width>
-            <height>667</height>
+            <width>362</width>
+            <height>476</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -27,321 +27,9 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>xineLogo</cstring>
-            </property>
-            <property name="paletteForegroundColor">
-                <color>
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="paletteBackgroundColor">
-                <color>
-                    <red>255</red>
-                    <green>255</green>
-                    <blue>255</blue>
-                </color>
-            </property>
-            <property name="frameShape">
-                <enum>StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Raised</enum>
-            </property>
-            <property name="margin">
-                <number>1</number>
-            </property>
-            <property name="text">
-                <string></string>
-            </property>
-            <property name="alignment">
-                <set>AlignCenter</set>
-            </property>
-        </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout2</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel2</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Output plugin:</string>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>deviceComboBox</cstring>
-                    </property>
-                </widget>
-                <widget class="KComboBox">
-                    <property name="name">
-                        <cstring>deviceComboBox</cstring>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>textLabel3</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>1</hsizetype>
-                    <vsizetype>1</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="text">
-                <string>Sound device may be modified after the output plugin has been changed to ALSA or OSS.</string>
-            </property>
-            <property name="alignment">
-                <set>WordBreak|AlignVCenter</set>
-            </property>
-        </widget>
-        <widget class="QGroupBox">
-            <property name="name">
-                <cstring>alsaGroupBox</cstring>
-            </property>
-            <property name="title">
-                <string>ALSA Device Configuration</string>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel" row="0" column="0">
-                    <property name="name">
-                        <cstring>textLabel2_3</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Mono:</string>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>monoLineEdit</cstring>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="1" column="0">
-                    <property name="name">
-                        <cstring>textLabel3_3</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Stereo:</string>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>stereoLineEdit</cstring>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="0" column="2">
-                    <property name="name">
-                        <cstring>textLabel4_2</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;4 Channels:</string>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>chan4LineEdit</cstring>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="1" column="2">
-                    <property name="name">
-                        <cstring>chan5Label</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;6 Channels:</string>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>chan5LineEdit</cstring>
-                    </property>
-                </widget>
-                <widget class="QLineEdit" row="0" column="1">
-                    <property name="name">
-                        <cstring>monoLineEdit</cstring>
-                    </property>
-                </widget>
-                <widget class="QLineEdit" row="1" column="1">
-                    <property name="name">
-                        <cstring>stereoLineEdit</cstring>
-                    </property>
-                </widget>
-                <widget class="QLineEdit" row="0" column="3">
-                    <property name="name">
-                        <cstring>chan4LineEdit</cstring>
-                    </property>
-                </widget>
-                <widget class="QLineEdit" row="1" column="3">
-                    <property name="name">
-                        <cstring>chan5LineEdit</cstring>
-                    </property>
-                </widget>
-            </grid>
-        </widget>
-        <widget class="QGroupBox">
-            <property name="name">
-                <cstring>ossGroupBox</cstring>
-            </property>
-            <property name="title">
-                <string>OSS Device Configuration</string>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel1</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Device:</string>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>ossDeviceComboBox</cstring>
-                    </property>
-                </widget>
-                <widget class="QComboBox">
-                    <property name="name">
-                        <cstring>ossDeviceComboBox</cstring>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>layout5</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel1_2</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Speaker &amp;arrangement:</string>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>speakerComboBox</cstring>
-                    </property>
-                </widget>
-                <widget class="QComboBox">
-                    <property name="name">
-                        <cstring>speakerComboBox</cstring>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QGroupBox">
-            <property name="name">
-                <cstring>groupBox1</cstring>
-            </property>
-            <property name="title">
-                <string>HTTP Proxy for Streaming</string>
-            </property>
-            <vbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout4</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>textLabel2_2</cstring>
-                            </property>
-                            <property name="text">
-                                <string>&amp;Host:</string>
-                            </property>
-                            <property name="buddy" stdset="0">
-                                <cstring>hostLineEdit</cstring>
-                            </property>
-                        </widget>
-                        <widget class="QLineEdit">
-                            <property name="name">
-                                <cstring>hostLineEdit</cstring>
-                            </property>
-                        </widget>
-                        <widget class="KIntSpinBox">
-                            <property name="name">
-                                <cstring>portIntBox</cstring>
-                            </property>
-                            <property name="maxValue">
-                                <number>65534</number>
-                            </property>
-                            <property name="minValue">
-                                <number>1</number>
-                            </property>
-                            <property name="value">
-                                <number>60000</number>
-                            </property>
-                        </widget>
-                    </hbox>
-                </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout2</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>textLabel3_2</cstring>
-                            </property>
-                            <property name="text">
-                                <string>&amp;User:</string>
-                            </property>
-                            <property name="buddy" stdset="0">
-                                <cstring>userLineEdit</cstring>
-                            </property>
-                        </widget>
-                        <widget class="QLineEdit">
-                            <property name="name">
-                                <cstring>userLineEdit</cstring>
-                            </property>
-                        </widget>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>textLabel4</cstring>
-                            </property>
-                            <property name="text">
-                                <string>&amp;Password:</string>
-                            </property>
-                            <property name="buddy" stdset="0">
-                                <cstring>passLineEdit</cstring>
-                            </property>
-                        </widget>
-                        <widget class="QLineEdit">
-                            <property name="name">
-                                <cstring>passLineEdit</cstring>
-                            </property>
-                            <property name="echoMode">
-                                <enum>Password</enum>
-                            </property>
-                        </widget>
-                    </hbox>
-                </widget>
-            </vbox>
-        </widget>
-        <widget class="QGroupBox">
-            <property name="name">
-                <cstring>audiocdGroupBox</cstring>
-            </property>
-            <property name="title">
-                <string>Audio CD Configuration</string>
+                <cstring>layout11</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -349,101 +37,433 @@
                 </property>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>layout11</cstring>
+                        <cstring>layout10</cstring>
                     </property>
                     <vbox>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>textLabel2_3_2</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Default device:</string>
-                            </property>
-                            <property name="buddy" stdset="0">
-                                <cstring>monoLineEdit</cstring>
-                            </property>
-                        </widget>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>textLabel2_2_2</cstring>
-                            </property>
-                            <property name="text">
-                                <string>CDDB Server:</string>
-                            </property>
-                            <property name="buddy" stdset="0">
-                                <cstring>hostLineEdit</cstring>
-                            </property>
-                        </widget>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>textLabel2_3_2_2</cstring>
-                            </property>
-                            <property name="text">
-                                <string>CDDB Cache dir:</string>
-                            </property>
-                            <property name="buddy" stdset="0">
-                                <cstring>monoLineEdit</cstring>
-                            </property>
-                        </widget>
-                    </vbox>
-                </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout12</cstring>
-                    </property>
-                    <vbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QLineEdit">
-                            <property name="name">
-                                <cstring>audiocd_device</cstring>
-                            </property>
-                            <property name="text">
-                                <string></string>
-                            </property>
-                        </widget>
                         <widget class="QLayoutWidget">
                             <property name="name">
-                                <cstring>layout10</cstring>
+                                <cstring>layout2</cstring>
                             </property>
                             <hbox>
                                 <property name="name">
                                     <cstring>unnamed</cstring>
                                 </property>
-                                <widget class="QLineEdit">
+                                <widget class="QLabel">
                                     <property name="name">
-                                        <cstring>cddb_server</cstring>
+                                        <cstring>textLabel2</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>&amp;Output plugin:</string>
+                                    </property>
+                                    <property name="buddy" stdset="0">
+                                        <cstring>deviceComboBox</cstring>
                                     </property>
                                 </widget>
-                                <widget class="KIntSpinBox">
+                                <widget class="KComboBox">
                                     <property name="name">
-                                        <cstring>cddb_port</cstring>
-                                    </property>
-                                    <property name="maxValue">
-                                        <number>65534</number>
-                                    </property>
-                                    <property name="minValue">
-                                        <number>1</number>
-                                    </property>
-                                    <property name="value">
-                                        <number>60000</number>
+                                        <cstring>deviceComboBox</cstring>
                                     </property>
                                 </widget>
                             </hbox>
                         </widget>
-                        <widget class="QLineEdit">
+                        <widget class="QLabel">
                             <property name="name">
-                                <cstring>cddb_cache_dir</cstring>
+                                <cstring>textLabel3</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>1</hsizetype>
+                                    <vsizetype>1</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
                             </property>
                             <property name="text">
-                                <string></string>
+                                <string>Sound device may be modified after the output plugin has been changed to ALSA or OSS.</string>
+                            </property>
+                            <property name="alignment">
+                                <set>WordBreak|AlignVCenter</set>
                             </property>
                         </widget>
+                        <widget class="QGroupBox">
+                            <property name="name">
+                                <cstring>alsaGroupBox</cstring>
+                            </property>
+                            <property name="title">
+                                <string>ALSA Device Configuration</string>
+                            </property>
+                            <grid>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLabel" row="0" column="0">
+                                    <property name="name">
+                                        <cstring>textLabel2_3</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>&amp;Mono:</string>
+                                    </property>
+                                    <property name="buddy" stdset="0">
+                                        <cstring>monoLineEdit</cstring>
+                                    </property>
+                                </widget>
+                                <widget class="QLabel" row="1" column="0">
+                                    <property name="name">
+                                        <cstring>textLabel3_3</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>&amp;Stereo:</string>
+                                    </property>
+                                    <property name="buddy" stdset="0">
+                                        <cstring>stereoLineEdit</cstring>
+                                    </property>
+                                </widget>
+                                <widget class="QLabel" row="0" column="2">
+                                    <property name="name">
+                                        <cstring>textLabel4_2</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>&amp;4 Channels:</string>
+                                    </property>
+                                    <property name="buddy" stdset="0">
+                                        <cstring>chan4LineEdit</cstring>
+                                    </property>
+                                </widget>
+                                <widget class="QLabel" row="1" column="2">
+                                    <property name="name">
+                                        <cstring>chan5Label</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>&amp;6 Channels:</string>
+                                    </property>
+                                    <property name="buddy" stdset="0">
+                                        <cstring>chan5LineEdit</cstring>
+                                    </property>
+                                </widget>
+                                <widget class="QLineEdit" row="0" column="1">
+                                    <property name="name">
+                                        <cstring>monoLineEdit</cstring>
+                                    </property>
+                                </widget>
+                                <widget class="QLineEdit" row="1" column="1">
+                                    <property name="name">
+                                        <cstring>stereoLineEdit</cstring>
+                                    </property>
+                                </widget>
+                                <widget class="QLineEdit" row="0" column="3">
+                                    <property name="name">
+                                        <cstring>chan4LineEdit</cstring>
+                                    </property>
+                                </widget>
+                                <widget class="QLineEdit" row="1" column="3">
+                                    <property name="name">
+                                        <cstring>chan5LineEdit</cstring>
+                                    </property>
+                                </widget>
+                            </grid>
+                        </widget>
+                        <widget class="QGroupBox">
+                            <property name="name">
+                                <cstring>ossGroupBox</cstring>
+                            </property>
+                            <property name="title">
+                                <string>OSS Device Configuration</string>
+                            </property>
+                            <hbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>textLabel1</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>&amp;Device:</string>
+                                    </property>
+                                    <property name="buddy" stdset="0">
+                                        <cstring>ossDeviceComboBox</cstring>
+                                    </property>
+                                </widget>
+                                <widget class="QComboBox">
+                                    <property name="name">
+                                        <cstring>ossDeviceComboBox</cstring>
+                                    </property>
+                                </widget>
+                            </hbox>
+                        </widget>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>layout5</cstring>
+                            </property>
+                            <hbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>textLabel1_2</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Speaker &amp;arrangement:</string>
+                                    </property>
+                                    <property name="buddy" stdset="0">
+                                        <cstring>speakerComboBox</cstring>
+                                    </property>
+                                </widget>
+                                <widget class="QComboBox">
+                                    <property name="name">
+                                        <cstring>speakerComboBox</cstring>
+                                    </property>
+                                </widget>
+                            </hbox>
+                        </widget>
+                        <widget class="QGroupBox">
+                            <property name="name">
+                                <cstring>groupBox1</cstring>
+                            </property>
+                            <property name="title">
+                                <string>HTTP Proxy for Streaming</string>
+                            </property>
+                            <vbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLayoutWidget">
+                                    <property name="name">
+                                        <cstring>layout4</cstring>
+                                    </property>
+                                    <hbox>
+                                        <property name="name">
+                                            <cstring>unnamed</cstring>
+                                        </property>
+                                        <widget class="QLabel">
+                                            <property name="name">
+                                                <cstring>textLabel2_2</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>&amp;Host:</string>
+                                            </property>
+                                            <property name="buddy" stdset="0">
+                                                <cstring>hostLineEdit</cstring>
+                                            </property>
+                                        </widget>
+                                        <widget class="QLineEdit">
+                                            <property name="name">
+                                                <cstring>hostLineEdit</cstring>
+                                            </property>
+                                        </widget>
+                                        <widget class="KIntSpinBox">
+                                            <property name="name">
+                                                <cstring>portIntBox</cstring>
+                                            </property>
+                                            <property name="maxValue">
+                                                <number>65534</number>
+                                            </property>
+                                            <property name="minValue">
+                                                <number>1</number>
+                                            </property>
+                                            <property name="value">
+                                                <number>60000</number>
+                                            </property>
+                                        </widget>
+                                    </hbox>
+                                </widget>
+                                <widget class="QLayoutWidget">
+                                    <property name="name">
+                                        <cstring>layout2</cstring>
+                                    </property>
+                                    <hbox>
+                                        <property name="name">
+                                            <cstring>unnamed</cstring>
+                                        </property>
+                                        <widget class="QLabel">
+                                            <property name="name">
+                                                <cstring>textLabel3_2</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>&amp;User:</string>
+                                            </property>
+                                            <property name="buddy" stdset="0">
+                                                <cstring>userLineEdit</cstring>
+                                            </property>
+                                        </widget>
+                                        <widget class="QLineEdit">
+                                            <property name="name">
+                                                <cstring>userLineEdit</cstring>
+                                            </property>
+                                        </widget>
+                                        <widget class="QLabel">
+                                            <property name="name">
+                                                <cstring>textLabel4</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>&amp;Password:</string>
+                                            </property>
+                                            <property name="buddy" stdset="0">
+                                                <cstring>passLineEdit</cstring>
+                                            </property>
+                                        </widget>
+                                        <widget class="QLineEdit">
+                                            <property name="name">
+                                                <cstring>passLineEdit</cstring>
+                                            </property>
+                                            <property name="echoMode">
+                                                <enum>Password</enum>
+                                            </property>
+                                        </widget>
+                                    </hbox>
+                                </widget>
+                            </vbox>
+                        </widget>
+                        <widget class="QGroupBox">
+                            <property name="name">
+                                <cstring>audiocdGroupBox</cstring>
+                            </property>
+                            <property name="title">
+                                <string>Audio CD Configuration</string>
+                            </property>
+                            <hbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLayoutWidget">
+                                    <property name="name">
+                                        <cstring>layout11</cstring>
+                                    </property>
+                                    <vbox>
+                                        <property name="name">
+                                            <cstring>unnamed</cstring>
+                                        </property>
+                                        <widget class="QLabel">
+                                            <property name="name">
+                                                <cstring>textLabel2_3_2</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>Default device:</string>
+                                            </property>
+                                            <property name="buddy" stdset="0">
+                                                <cstring>monoLineEdit</cstring>
+                                            </property>
+                                        </widget>
+                                        <widget class="QLabel">
+                                            <property name="name">
+                                                <cstring>textLabel2_2_2</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>CDDB Server:</string>
+                                            </property>
+                                            <property name="buddy" stdset="0">
+                                                <cstring>hostLineEdit</cstring>
+                                            </property>
+                                        </widget>
+                                        <widget class="QLabel">
+                                            <property name="name">
+                                                <cstring>textLabel2_3_2_2</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>CDDB Cache dir:</string>
+                                            </property>
+                                            <property name="buddy" stdset="0">
+                                                <cstring>monoLineEdit</cstring>
+                                            </property>
+                                        </widget>
+                                    </vbox>
+                                </widget>
+                                <widget class="QLayoutWidget">
+                                    <property name="name">
+                                        <cstring>layout12</cstring>
+                                    </property>
+                                    <vbox>
+                                        <property name="name">
+                                            <cstring>unnamed</cstring>
+                                        </property>
+                                        <widget class="QLineEdit">
+                                            <property name="name">
+                                                <cstring>audiocd_device</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string></string>
+                                            </property>
+                                        </widget>
+                                        <widget class="QLayoutWidget">
+                                            <property name="name">
+                                                <cstring>layout10</cstring>
+                                            </property>
+                                            <hbox>
+                                                <property name="name">
+                                                    <cstring>unnamed</cstring>
+                                                </property>
+                                                <widget class="QLineEdit">
+                                                    <property name="name">
+                                                        <cstring>cddb_server</cstring>
+                                                    </property>
+                                                </widget>
+                                                <widget class="KIntSpinBox">
+                                                    <property name="name">
+                                                        <cstring>cddb_port</cstring>
+                                                    </property>
+                                                    <property name="maxValue">
+                                                        <number>65534</number>
+                                                    </property>
+                                                    <property name="minValue">
+                                                        <number>1</number>
+                                                    </property>
+                                                    <property name="value">
+                                                        <number>60000</number>
+                                                    </property>
+                                                </widget>
+                                            </hbox>
+                                        </widget>
+                                        <widget class="QLineEdit">
+                                            <property name="name">
+                                                <cstring>cddb_cache_dir</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string></string>
+                                            </property>
+                                        </widget>
+                                    </vbox>
+                                </widget>
+                            </hbox>
+                        </widget>
                     </vbox>
+                </widget>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>xineLogo</cstring>
+                    </property>
+                    <property name="paletteForegroundColor">
+                        <color>
+                            <red>0</red>
+                            <green>0</green>
+                            <blue>0</blue>
+                        </color>
+                    </property>
+                    <property name="paletteBackgroundColor">
+                        <color>
+                            <red>255</red>
+                            <green>255</green>
+                            <blue>255</blue>
+                        </color>
+                    </property>
+                    <property name="frameShape">
+                        <enum>StyledPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Raised</enum>
+                    </property>
+                    <property name="margin">
+                        <number>1</number>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignCenter</set>
+                    </property>
                 </widget>
             </hbox>
         </widget>
@@ -460,7 +480,7 @@
             <property name="sizeHint">
                 <size>
                     <width>20</width>
-                    <height>1</height>
+                    <height>175</height>
                 </size>
             </property>
         </spacer>
@@ -470,9 +490,4 @@
     <include location="local" impldecl="in declaration">plugin/pluginconfig.h</include>
 </includes>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>kcombobox.h</includehint>
-    <includehint>knuminput.h</includehint>
-    <includehint>knuminput.h</includehint>
-</includehints>
 </UI>

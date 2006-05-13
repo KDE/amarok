@@ -15,7 +15,7 @@
     <description></description>
     <ignoreparts/>
     <secondaryLanguages/>
-    <versioncontrol></versioncontrol>
+    <versioncontrol/>
   </general>
   <kdevautoproject>
     <general>
@@ -31,7 +31,7 @@
       <abortonerror>false</abortonerror>
       <numberofjobs>1</numberofjobs>
       <dontact>false</dontact>
-      <makebin>make</makebin>
+      <makebin>unsermake</makebin>
       <envvars>
         <envvar value="1" name="WANT_AUTOCONF_2_5" />
         <envvar value="1" name="WANT_AUTOMAKE_1_6" />
@@ -44,8 +44,8 @@
       <cxxflags>\s-O0 -g3 -Wall</cxxflags>
     </compiler>
     <run>
-      <mainprogram></mainprogram>
-      <programargs></programargs>
+      <mainprogram/>
+      <programargs/>
       <terminal>false</terminal>
       <autocompile>false</autocompile>
       <envvars/>
@@ -157,7 +157,7 @@
     </codecompletion>
     <references/>
     <creategettersetter>
-      <prefixGet></prefixGet>
+      <prefixGet/>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>
