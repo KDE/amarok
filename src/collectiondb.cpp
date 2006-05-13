@@ -2202,6 +2202,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
     if( tempTables && nonTempIDs.count() > 0 )
             onlyInTemp = false;
 
+
     //most common case first...detected the file
     if( urls.count() == 2 && uniqueids.count() == 2 )
         return;
@@ -2221,7 +2222,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
     else if( currid.length() > 0 ) //if doesn't match, new item, but no uniqueid...probably ATF off
     {
         //debug() << "urls.empty() = " << (urls.empty() ? "true" : "false") << ", uniqueids.empty() = " << (uniqueids.empty() ? "true" : "false") << ", onlyInTemp = " << (onlyInTemp ? "true" : "false") << endl;
-        if( urls.empty() && uniqueids.empty() && onlyInTemp ) // new item
+        if( urls.empty() && uniqueids.empty() && ( onlyInTemp || nonTempIDs[0] == bundle->url().path() ) ) // new item
         {
             QString insertline = QString( "INSERT INTO uniqueid%1 (url, uniqueid, dir) VALUES ('%2', '%3', '%4')" )
                   .arg( ( tempTables ? "_temp" : "" ),
@@ -2231,7 +2232,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
             //debug() << "running command: " << insertline << endl;
             insert( insertline, NULL );
         }
-        else if( urls.empty() || !onlyInTemp )  //detected same uniqueid, so file moved, or copied and both copies moved
+        else if( urls.empty() || ( !onlyInTemp && nonTempIDs[0] != bundle->url().path() ) )  //detected same uniqueid, so file moved, or copied and both copies moved
         {
             QString pathToUse;
             if( !onlyInTemp )
