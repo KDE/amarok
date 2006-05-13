@@ -283,10 +283,10 @@ IpodMediaDevice::updateTrackInDB(IpodMediaItem *item,
 
     if(podcastInfo)
     {
-        track->flag1 |= 0x02; // podcast
+        //track->flag1 |= 0x02; // artwork flag, handled by libgpod
         track->flag2 |= 0x01; // skip  when shuffling
         track->flag3 |= 0x01; // remember playback position
-        track->flag4 |= 0x01; // also show description on iPod
+        track->flag4 |= 0x02; // also show description on iPod
         // FIXME: track->unk176 = 0x00020000; // for podcasts
         QString plaindesc = podcastInfo->description;
         plaindesc.replace( QRegExp("<[^>]*>"), "" );
