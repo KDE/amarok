@@ -128,8 +128,9 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
     m_tagfilterMenuButton = new KActionMenu( i18n( "Group By" ), "filter", ac );
     m_tagfilterMenuButton->setDelayed( false );
-//    m_tagfilterMenuButton->setEnabled( m_view->m_viewMode == CollectionView::modeTreeView );
-    connect ( m_treeViewAction, SIGNAL ( toggled(bool) ), m_tagfilterMenuButton, SLOT( setEnabled (bool) ) );
+    // FIXME: either both or nothing
+    //m_tagfilterMenuButton->setEnabled( m_view->m_viewMode == CollectionView::modeTreeView );
+    //connect ( m_treeViewAction, SIGNAL ( toggled(bool) ), m_tagfilterMenuButton, SLOT( setEnabled (bool) ) );
 
     layoutToolbar();
 
@@ -435,7 +436,8 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
     // MODE FLATVIEW
     if ( m_viewMode == modeFlatView )
     {
-        if ( m_filter.length() < 3 ) {
+        if ( translateTimeFilter( timeFilter() ) <= 0
+                && (m_filter.length() < 3 || (!m_filter.contains( " " ) && m_filter.endsWith( ":" ) ) ) ) {
             // Redraw bubble help
             triggerUpdate();
             return;
@@ -445,7 +447,6 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
         for ( int c = 0; c < columns(); ++c )
             if ( columnWidth( c ) != 0 )
             {
-                debug() << "num visible: " << c << endl;
                 visibleColumns.append( static_cast<Tag>( c ) );
             }
 
@@ -1557,70 +1558,10 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 void
 CollectionView::setViewMode( int mode, bool rerender /*=true*/ )
 {
-    clear();
-
-    // remove all columns
-    for ( int i = columns() - 1; i >= 0 ; --i )
-        removeColumn( i );
-
-    if ( mode == modeTreeView )
-    {
-        QString headerText = captionForCategory( m_cat1 );
-        if ( m_cat2 != CollectionBrowser::IdNone )
-            headerText += " / " + captionForCategory( m_cat2 );
-        if ( m_cat3 != CollectionBrowser::IdNone )
-            headerText += " / " + captionForCategory( m_cat3 );
-
-        addColumn( headerText );
-        setResizeMode( QListView::LastColumn );
-        setRootIsDecorated( true );
-    }
-    else
-    {
-        setRootIsDecorated( false );
-        setResizeMode( QListView::NoColumn );
-
-        addColumn( captionForTag( Title ) );
-        addColumn( captionForTag( Artist ) );
-        addColumn( captionForTag( Composer ), 0 );
-        addColumn( captionForTag( Album ) );
-        addColumn( captionForTag( Genre ), 0  );
-        addColumn( captionForTag( Length ),0  );
-        addColumn( captionForTag( DiscNumber ), 0 );
-        addColumn( captionForTag( Track ), 0 );
-        addColumn( captionForTag( Year ), 0 );
-        addColumn( captionForTag( Comment ), 0 );
-        addColumn( captionForTag( Playcount ), 0 );
-        addColumn( captionForTag( Score ), 0 );
-        addColumn( captionForTag( Rating ), 0 );
-        addColumn( captionForTag( Filename ), 0 );
-        addColumn( captionForTag( Firstplay ), 0 );
-        addColumn( captionForTag( Lastplay ), 0 );
-        addColumn( captionForTag( Modified ), 0 );
-        addColumn( captionForTag( Bitrate ), 0 );
-        addColumn( captionForTag( Filesize ), 0 );
-
-        setColumnAlignment( Track, Qt::AlignCenter );
-        setColumnAlignment( DiscNumber, Qt::AlignCenter );
-        setColumnAlignment( Length, Qt::AlignRight );
-        setColumnAlignment( Bitrate, Qt::AlignCenter );
-        setColumnAlignment( Score, Qt::AlignCenter );
-        setColumnAlignment( Playcount, Qt::AlignCenter );
-        setColumnAlignment( Filesize, Qt::AlignRight );
-
-        //QListView allows invisible columns to be resized, so we disable resizing for them
-        for ( int i = 0; i < columns(); ++i ) {
-            setColumnWidthMode ( i, QListView::Manual );
-            if ( columnWidth( i ) == 0 )
-                header()->setResizeEnabled( false, i );
-        }
-
-        //manage column widths
-        QResizeEvent rev( size(), QSize() );
-        viewportResizeEvent( &rev );
-    }
-
     m_viewMode = mode;
+    clear();
+    updateColumnHeader();
+
     if ( rerender )
     {
         renderView(true);
@@ -1972,12 +1913,13 @@ CollectionView::safeClear()
 void
 CollectionView::updateColumnHeader()
 {
+    // remove all columns
+    for ( int i = columns() - 1; i >= 0 ; --i )
+        removeColumn( i );
+
     if ( m_viewMode == modeFlatView )
     {
         setResizeMode( QListView::NoColumn );
-        // remove all columns
-        for ( int i = columns() - 1; i >= 0 ; --i )
-            removeColumn( i );
 
         addColumn( captionForTag( Title ) );
 #define includesArtist(cat) (((cat)&CollectionBrowser::IdArtist) \
@@ -2044,22 +1986,25 @@ CollectionView::updateColumnHeader()
             if ( columnWidth( i ) == 0 )
                 header()->setResizeEnabled( false, i );
         }
-
-        //manage column widths
-        QResizeEvent rev( size(), QSize() );
-        viewportResizeEvent( &rev );
     }
     else
     {
-        setColumnText( 0, captionForCategory( m_cat1 ) );
+        setResizeMode( QListView::LastColumn );
+
+        QString caption = captionForCategory( m_cat1 );
         int catArr[2] = {m_cat2, m_cat3};
 
         for(int i = 0; i < 2; i++) {
             if (catArr[i] != CollectionBrowser::IdNone ) {
-                setColumnText( 0, columnText(0) + " / " + captionForCategory( catArr[i] ) );
+                caption += " / " + captionForCategory( catArr[i] );
             }
         }
+        addColumn( caption );
     }
+
+    //manage column widths
+    QResizeEvent rev( size(), QSize() );
+    viewportResizeEvent( &rev );
 
     m_parent->m_categoryMenu->setItemChecked( CollectionBrowser::IdArtist, m_cat1 == CollectionBrowser::IdArtist && m_cat2 == CollectionBrowser::IdNone );
     m_parent->m_categoryMenu->setItemChecked( CollectionBrowser::IdAlbum, m_cat1 == CollectionBrowser::IdAlbum && m_cat2 == CollectionBrowser::IdNone );
