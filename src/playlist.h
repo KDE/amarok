@@ -163,8 +163,6 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
 
         //ATF-related functions
         bool checkFileStatus( PlaylistItem * item );
-        ///used by the xine-engine for its gapless playback
-        bool probablyLastTrack();
 
         enum RequestType { Prev = -1, Current = 0, Next = 1 };
         enum StopAfterMode { DoNotStop, StopAfterCurrent, StopAfterQueue, StopAfterOther };
