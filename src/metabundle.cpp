@@ -842,12 +842,20 @@ bool MetaBundle::matchesParsedExpression( ParsedExpression data, QValueList<int>
                         numeric = false;
                 }
 
+                if( q.startsWith( ">" ) || q.startsWith( "<" ) )
+                    w = w.mid( 1 );
+
                 if( column == Filesize )
+                {
                     v = QString::number( filesize() );
+                    if( w.endsWith( "m" ) )
+                        w = QString::number( w.left( w.length()-1 ).toLong() * 1024 * 1024 );
+                    else if( w.endsWith( "k" ) )
+                        w = QString::number( w.left( w.length()-1 ).toLong() * 1024 );
+                }
 
                 if( q.startsWith( ">" ) )
                 {
-                    w = w.mid( 1 );
                     if( numeric )
                         condition = v.toInt() > w.toInt();
                     else if( column == Rating )
@@ -864,7 +872,6 @@ bool MetaBundle::matchesParsedExpression( ParsedExpression data, QValueList<int>
                 }
                 else if( q.startsWith( "<" ) )
                 {
-                    w = w.mid(1);
                     if( numeric )
                         condition = v.toInt() < w.toInt();
                     else if( column == Rating )

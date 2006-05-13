@@ -4807,6 +4807,10 @@ QueryBuilder::setGoogleFilter( int defaultTables, QString query )
                 table = tabSong;
                 value = valFilesize;
                 exact = true;
+                if( s.lower().endsWith( "m" ) )
+                    s = QString::number( s.left( s.length()-1 ).toLong() * 1024 * 1024 );
+                else if( s.lower().endsWith( "k" ) )
+                    s = QString::number( s.left( s.length()-1 ).toLong() * 1024 );
             }
             else if( field == "filename" || field == "url" )
             {
