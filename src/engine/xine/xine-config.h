@@ -16,8 +16,6 @@
 #include "plugin/pluginconfig.h"
 #include "xineconfigbase.h"
 
-#include <qobject.h>
-
 #include <xine.h>
 
 class XineConfigDialog;
@@ -25,12 +23,15 @@ class KLineEdit;
 
 class XineGeneralEntry : public QObject
 {
-Q_OBJECT
+    Q_OBJECT
+
     public:
         virtual void save() = 0;
         bool hasChanged()  const { return m_valueChanged; };
+
     signals:
         void viewChanged();
+
     protected:
         XineGeneralEntry(const QString& key, xine_t *xine, XineConfigDialog* xcf);
         void entryChanged();
@@ -40,11 +41,13 @@ Q_OBJECT
         xine_t *m_xine;
 };
 
+
 class XineStrFunctor
 {
     public:
         void operator()( xine_cfg_entry_t* ent, const QString& val );
 };
+
 
 class XineIntFunctor
 {
@@ -52,44 +55,56 @@ class XineIntFunctor
         void operator()( xine_cfg_entry_t* ent, int val );
 };
 
+
 template<class T, class Functor>
 void saveXineEntry(Functor& storeEntry, T val, const QString& key, xine_t *xine);
 
+
 class XineStrEntry : public XineGeneralEntry
 {
-Q_OBJECT
+    Q_OBJECT
+
     public:
         XineStrEntry(QLineEdit* input, const QCString & key, xine_t *m_xine, XineConfigDialog* xcf);
         void save();
+
     private slots:
         void entryChanged(const QString& newEntry);
+
     private:
         QString m_val;
 };
 
+
 class XineIntEntry : public XineGeneralEntry
 {
-Q_OBJECT
+    Q_OBJECT
+
     public:
         XineIntEntry(KIntSpinBox* input, const QCString & key, xine_t *xine, XineConfigDialog* xcf);
         XineIntEntry(const QString& key, xine_t *xine, XineConfigDialog* xcf);
         void save();
+
     protected slots:
         void entryChanged(int newEntry);
+
     protected:
         int m_val;
 };
 
+
 class XineEnumEntry : public XineIntEntry
 {
-Q_OBJECT
+    Q_OBJECT
 public:
     XineEnumEntry(QComboBox* input, const QCString & key, xine_t *xine, XineConfigDialog* xcf);
 };
 
+
 class XineConfigDialog : public amaroK::PluginConfig
 {
-Q_OBJECT
+    Q_OBJECT
+
     public:
         XineConfigDialog( const xine_t* const xine);
         ~XineConfigDialog();
@@ -98,10 +113,12 @@ Q_OBJECT
         bool hasChanged() const;
         /** Return true if all view settings are in their default states */
         bool isDefault() const;
+
     public slots:
         /** Save view state using, eg KConfig */
         void save();
         void reset(xine_t *xine);
+
     private:
         /** All data structures with m_xine initiated **/
         void init();
