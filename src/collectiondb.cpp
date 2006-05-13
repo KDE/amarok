@@ -4902,7 +4902,7 @@ QueryBuilder::addFilter( int tables, const QString& filter )
             if ( tables & tabSong )
                 m_where += "OR tags.title = '' ";
             if ( tables & tabComposer )
-                m_where += "OR tags.composer = '' ";
+                m_where += "OR tags.composer = '' OR tags.composer IS NULL ";
         }
         if ( ( tables & tabArtist ) && i18n( "Various Artists" ).contains( filter, false ) )
             m_where += QString( "OR tags.sampler = %1 " ).arg( CollectionDB::instance()->boolT() );
@@ -4932,8 +4932,10 @@ QueryBuilder::addFilter( int tables, Q_INT64 value, const QString& filter, int m
 
         m_where += QString( "OR %1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
 
-        if ( !exact && ( value & valName ) && mode == modeNormal && i18n( "Unknown").contains( filter ) )
+        if ( !exact && ( (value & valName) || (value & valComposer) ) && mode == modeNormal && i18n( "Unknown").contains( filter, false ) )
             m_where += QString( "OR %1.%2 = '' " ).arg( tableName( tables ) ).arg( valueName( value ) );
+        if ( !exact && ( value & valComposer ) && mode == modeNormal && i18n( "Unknown").contains( filter, false ) )
+            m_where += QString( "OR %1.%2 IS NULL " ).arg( tableName( tables ) ).arg( valueName( value ) );
 
         m_where += " ) ";
     }
@@ -5021,7 +5023,7 @@ QueryBuilder::excludeFilter( int tables, const QString& filter )
             if ( tables & tabSong )
                 m_where += "AND tags.title <> '' ";
             if ( tables & tabComposer )
-                m_where += "AND tags.composer <> '' ";
+                m_where += "AND tags.composer <> '' AND tags.composer IS NOT NULL ";
         }
 
        if ( i18n( "Various Artists" ).contains( filter, false ) && (  tables & tabArtist ) )
@@ -5054,8 +5056,10 @@ QueryBuilder::excludeFilter( int tables, Q_INT64 value, const QString& filter, i
 
         m_where += QString( "AND %1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
 
-        if ( !exact && ( value & valName ) && mode == modeNormal && i18n( "Unknown").contains( filter ) )
+        if ( !exact && ( (value & valName) || (value & valComposer) ) && mode == modeNormal && i18n( "Unknown").contains( filter, false ) )
             m_where += QString( "AND %1.%2 <> '' " ).arg( tableName( tables ) ).arg( valueName( value ) );
+        if ( !exact && ( value & valComposer ) && mode == modeNormal && i18n( "Unknown").contains( filter, false ) )
+            m_where += QString( "AND %1.%2 IS NOT NULL " ).arg( tableName( tables ) ).arg( valueName( value ) );
 
         m_where += " ) ";
     }
