@@ -164,7 +164,10 @@ CollectionDB::~CollectionDB()
 inline QString
 CollectionDB::exactCondition( const QString &right )
 {
-    return QString ("= '" + instance()->escapeString( right ) + "'");
+    if ( DbConnection::mysql == instance()->getDbConnectionType() )
+        return QString ( "= BINARY '" + instance()->escapeString( right ) + "'" );
+    else
+        return QString ("= '" + instance()->escapeString( right ) + "'");
 }
 
 QString
@@ -3160,8 +3163,8 @@ CollectionDB::removeDirFromCollection( QString path )
 
 QString CollectionDB::IDfromExactValue( const QString& table, QString value, bool autocreate )
 {
-    value = escapeString( value );
-    QString querystr( QString( "SELECT id FROM %1 WHERE name = '%2';" ).arg( table, value ) );
+    QString querystr( QString( "SELECT id FROM %1 WHERE name " ).arg( table ) );
+    querystr += exactCondition( value ) + ';';
     QStringList result = query( querystr );
     if ( result.isEmpty() )
     {
