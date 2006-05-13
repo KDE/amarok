@@ -1062,9 +1062,12 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLength );
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valID );
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
         qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, reqResult[i+1] );
         qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, reqResult[i+3] );
+        qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
         qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+        qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTitle );
         qb.setOptions( QueryBuilder::optNoCompilations ); // samplers __need__ to be handled differently
         QStringList albumValues = qb.run();
 
@@ -1176,34 +1179,44 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
                     << "none" /* shows it if it's the current track album */
                     << stID + reqResult[ i + 1 ] ) );
 
+        QString discNumber;
+        
         if ( !albumValues.isEmpty() )
         {
-            for ( uint j = 0; j < albumValues.count(); j += 7 )
+            for ( uint j = 0; j < albumValues.count(); j += 8 )
             {
+                QString newDiscNumber = albumValues[ j + 7 ].stripWhiteSpace();
+                if( discNumber != newDiscNumber && newDiscNumber.toInt() > 0)
+                {
+                    discNumber = newDiscNumber;
+                    htmlCode.append( "<div class='disc-separator'>"
+                                     +    i18n( "Disc %1" ).arg( discNumber )
+                                     + "</div>" );
+                }
                 QString track = albumValues[j + 2].stripWhiteSpace();
                 if( track.length() > 0 )
                 {
                     if( track.length() == 1 )
                         track.prepend( "0" );
-
+                    
                     track = "<span class='album-song-trackno'>" + track + "&nbsp;</span>";
                 }
-
+                
                 QString length;
                 if( albumValues[j + 4] != "0" )
                     length = "<span class='album-song-time'>(" + MetaBundle::prettyTime( QString(albumValues[j + 4]).toInt(), false ) + ")</span>";
-
+                
                 htmlCode.append(
-                        "<div class='album-song'>"
-                        "<a href=\"file:" + escapeHTMLAttr( albumValues[j + 1] ) + "\">"
-                        + track +
-                        "<span class='album-song-title'>" + escapeHTML( albumValues[j] ) + "</span>&nbsp;"
-                        + length +
-                        "</a>"
-                        "</div>" );
+                    "<div class='album-song'>"
+                    "<a href=\"file:" + escapeHTMLAttr( albumValues[j + 1] ) + "\">"
+                    + track +
+                    "<span class='album-song-title'>" + escapeHTML( albumValues[j] ) + "</span>&nbsp;"
+                    + length +
+                    "</a>"
+                    "</div>" );
             }
         }
-
+        
         htmlCode.append(
                 "</div>"
                 "</td>"
