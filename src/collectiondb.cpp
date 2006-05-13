@@ -4925,7 +4925,7 @@ QueryBuilder::addFilter( int tables, Q_INT64 value, const QString& filter, int m
 
         m_where += QString( "OR %1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
 
-        if ( !exact && ( value & valName ) && mode == modeNormal && i18n( "Unknown" ) == filter )
+        if ( !exact && ( value & valName ) && mode == modeNormal && i18n( "Unknown").contains( filter ) )
             m_where += QString( "OR %1.%2 = '' " ).arg( tableName( tables ) ).arg( valueName( value ) );
 
         m_where += " ) ";
@@ -5043,7 +5043,7 @@ QueryBuilder::excludeFilter( int tables, Q_INT64 value, const QString& filter, i
 
         m_where += QString( "AND %1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
 
-        if ( !exact && ( value & valName ) && mode == modeNormal && filter == i18n( "Unknown" ) )
+        if ( !exact && ( value & valName ) && mode == modeNormal && i18n( "Unknown").contains( filter ) )
             m_where += QString( "AND %1.%2 <> '' " ).arg( tableName( tables ) ).arg( valueName( value ) );
 
         m_where += " ) ";
@@ -5379,6 +5379,7 @@ QueryBuilder::initSQLDrag()
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFilesize );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valIsCompilation );
+    // FIXME: why does this not intclude DiscNumber, Composer, ...?
 }
 
 
