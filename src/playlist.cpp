@@ -1021,8 +1021,11 @@ void Playlist::restoreLayout(KConfig *config, const QString &group)
     hideColumn( PlaylistItem::Mood );
 }
 
-
-
+bool
+Playlist::probablyLastTrack()
+{
+    return ( (m_currentTrack == lastItem() && amaroK::repeatNone() && amaroK::randomOff() ) || ( m_currentTrack && m_stopAfterTrack == m_currentTrack ) );
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 /// Current Track Handling
