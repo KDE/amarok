@@ -4636,7 +4636,7 @@ QueryBuilder::linkTables( int tables )
 
 
 void
-QueryBuilder::addReturnValue( int table, Q_INT64 value )
+QueryBuilder::addReturnValue( int table, Q_INT64 value, bool cs /* = false */ )
 {
     if ( !m_values.isEmpty() && m_values != "DISTINCT " ) m_values += ",";
     if ( table & tabStats && value & valScore ) m_values += "round(";
@@ -4645,6 +4645,8 @@ QueryBuilder::addReturnValue( int table, Q_INT64 value )
         m_values += "''";
     else
     {
+        if ( cs && CollectionDB::instance()->getType() == DbConnection::mysql )
+            m_values += " BINARY ";
         m_values += tableName( table ) + ".";
         m_values += valueName( value );
     }
@@ -5202,13 +5204,17 @@ QueryBuilder::setOptions( int options )
     if ( options & optNoCompilations ) m_where += QString("AND tags.sampler = %1 ").arg(CollectionDB::instance()->boolF());
     if ( options & optOnlyCompilations ) m_where += QString("AND tags.sampler = %1 ").arg(CollectionDB::instance()->boolT());
 
-    if (CollectionDB::instance()->getType() == DbConnection::postgresql && options & optRemoveDuplicates && options & optRandomize) {
+    if (CollectionDB::instance()->getType() == DbConnection::postgresql && options & optRemoveDuplicates && options & optRandomize)
+    {
             m_values = "DISTINCT " + CollectionDB::instance()->randomFunc() + " AS __random "+ m_values;
-            if ( !m_sort.isEmpty() ) m_sort += ",";
+            if ( !m_sort.isEmpty() )
+                m_sort += ",";
             m_sort += CollectionDB::instance()->randomFunc() + " ";
-    } else {
-            if ( options & optRemoveDuplicates ) m_values = "DISTINCT " + m_values;
-
+    }
+    else
+    {
+            if ( options & optRemoveDuplicates )
+                m_values = "DISTINCT " + m_values;
             if ( options & optRandomize )
             {
                 if ( !m_sort.isEmpty() ) m_sort += ",";

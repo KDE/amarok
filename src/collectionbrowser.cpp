@@ -634,7 +634,7 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
         }
         QPixmap pixmap = iconForCategory( m_cat1 );
 
-        qb.addReturnValue( q_cat1, QueryBuilder::valName );
+        qb.addReturnValue( q_cat1, QueryBuilder::valName, true );
 
         if( VisYearAlbum == 1 )
             qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
