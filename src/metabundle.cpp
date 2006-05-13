@@ -1192,6 +1192,7 @@ MetaBundle::save()
     TagLib::ID3v2::FrameFactory::instance()->setDefaultTextEncoding(TagLib::String::UTF8);
 
     QCString path = QFile::encodeName( url().path() );
+    debug() << "Write tag: " << path << endl;
     TagLib::FileRef f( path, false );
 
     if ( !f.isNull() )
@@ -1200,7 +1201,9 @@ MetaBundle::save()
         if ( t ) { // f.tag() can return null if the file couldn't be opened for writing
             t->setTitle( QStringToTString( title() ) );
             t->setArtist( QStringToTString( artist().string() ) );
+            debug() << "Artist: " << ( ( artist().string()==QString::null ) ? QString( "NULL" ) : artist().string() ) << endl;
             t->setAlbum( QStringToTString( album().string() ) );
+            debug() << "Albumname: " << album().string() << endl;
             t->setTrack( track() );
             t->setYear( year() );
             t->setComment( QStringToTString( comment().string() ) );
