@@ -11,6 +11,7 @@ VERSION 1.4.0:
     * Context menus for entries in the statistics tool. (BR 124945)
 
   CHANGES:
+    * Composer, Disc Number and File Size columns in flat collection view.
     * 'k' or 'm' suffixes for matching filesize in kibi or respectively mebi
       bytes.
     * Groupings when transferring files to mediadevices are now persistent.

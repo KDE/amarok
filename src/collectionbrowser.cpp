@@ -444,7 +444,10 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
         QValueList<Tag> visibleColumns;
         for ( int c = 0; c < columns(); ++c )
             if ( columnWidth( c ) != 0 )
+            {
+                debug() << "num visible: " << c << endl;
                 visibleColumns.append( static_cast<Tag>( c ) );
+            }
 
         //always fetch URL
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
@@ -476,6 +479,16 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
                     break;
                 case Length: {
                     qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valLength );
+                    filterTables |= QueryBuilder::tabSong;
+                    }
+                    break;
+                case Composer: {
+                    qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valComposer );
+                    filterTables |= QueryBuilder::tabSong;
+                    }
+                    break;
+                case DiscNumber: {
+                    qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
                     filterTables |= QueryBuilder::tabSong;
                     }
                     break;
@@ -517,6 +530,9 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
                     break;
                 case Bitrate:
                     qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valBitrate );
+                    break;
+                case Filesize:
+                    qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valFilesize );
                     break;
                 default:
                     qb.addReturnValue( QueryBuilder::tabDummy, QueryBuilder::valDummy );
@@ -574,6 +590,9 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
                     }
                     case Filename:
                         item->setText( *it_c, KURL::fromPathOrURL(*it).filename() );
+                        break;
+                    case Filesize:
+                        item->setText( *it_c, MetaBundle::prettyFilesize( (*it).toInt() ) );
                         break;
                     default:
                         item->setText( *it_c, (*it) );
@@ -1562,9 +1581,11 @@ CollectionView::setViewMode( int mode, bool rerender /*=true*/ )
 
         addColumn( captionForTag( Title ) );
         addColumn( captionForTag( Artist ) );
+        addColumn( captionForTag( Composer ), 0 );
         addColumn( captionForTag( Album ) );
         addColumn( captionForTag( Genre ), 0  );
         addColumn( captionForTag( Length ),0  );
+        addColumn( captionForTag( DiscNumber ), 0 );
         addColumn( captionForTag( Track ), 0 );
         addColumn( captionForTag( Year ), 0 );
         addColumn( captionForTag( Comment ), 0 );
@@ -1576,12 +1597,15 @@ CollectionView::setViewMode( int mode, bool rerender /*=true*/ )
         addColumn( captionForTag( Lastplay ), 0 );
         addColumn( captionForTag( Modified ), 0 );
         addColumn( captionForTag( Bitrate ), 0 );
+        addColumn( captionForTag( Filesize ), 0 );
 
         setColumnAlignment( Track, Qt::AlignCenter );
+        setColumnAlignment( DiscNumber, Qt::AlignCenter );
         setColumnAlignment( Length, Qt::AlignRight );
         setColumnAlignment( Bitrate, Qt::AlignCenter );
         setColumnAlignment( Score, Qt::AlignCenter );
         setColumnAlignment( Playcount, Qt::AlignCenter );
+        setColumnAlignment( Filesize, Qt::AlignRight );
 
         //QListView allows invisible columns to be resized, so we disable resizing for them
         for ( int i = 0; i < columns(); ++i ) {
@@ -1949,16 +1973,80 @@ CollectionView::updateColumnHeader()
 {
     if ( m_viewMode == modeFlatView )
     {
+        setResizeMode( QListView::NoColumn );
         // remove all columns
         for ( int i = columns() - 1; i >= 0 ; --i )
             removeColumn( i );
 
-        addColumn( i18n( "Title" ) );
-        addColumn( captionForCategory( m_cat1 ) );
-        if( m_cat2 != CollectionBrowser::IdNone ) addColumn( captionForCategory( m_cat2 ) );
-        if( m_cat3 != CollectionBrowser::IdNone ) addColumn( captionForCategory( m_cat3 ) );
+        addColumn( captionForTag( Title ) );
+#define includesArtist(cat) (((cat)&CollectionBrowser::IdArtist) \
+        ||((cat)&CollectionBrowser::IdArtistAlbum) \
+        ||((cat)&CollectionBrowser::IdGenreArtist) \
+        ||((cat)&CollectionBrowser::IdGenreArtistAlbum) \
+        ||((cat)&CollectionBrowser::IdArtistVisYearAlbum))
+        if( includesArtist(m_cat1)||includesArtist(m_cat2)||includesArtist(m_cat3) )
+            addColumn( captionForTag( Artist ) );
+        else
+            addColumn( captionForTag( Artist ), 0 );
+#undef includesArtist
+        addColumn( captionForTag( Composer ), 0 );
+#define includesAlbum(cat) (((cat)&CollectionBrowser::IdAlbum) \
+        ||((cat)&CollectionBrowser::IdArtistAlbum) \
+        ||((cat)&CollectionBrowser::IdGenreArtistAlbum) \
+        ||((cat)&CollectionBrowser::IdVisYearAlbum) \
+        ||((cat)&CollectionBrowser::IdArtistVisYearAlbum))
+        if( includesAlbum(m_cat1)||includesAlbum(m_cat2)||includesAlbum(m_cat3) )
+            addColumn( captionForTag( Album ) );
+        else
+            addColumn( captionForTag( Album ), 0 );
+#undef includesAlbum
+#define includesGenre(cat) (((cat)&CollectionBrowser::IdGenre) \
+        ||((cat)&CollectionBrowser::IdGenreArtist) \
+        ||((cat)&CollectionBrowser::IdGenreArtistAlbum))
+        if( includesGenre(m_cat1)||includesGenre(m_cat2)||includesGenre(m_cat3) )
+            addColumn( captionForTag( Genre ) );
+        else
+            addColumn( captionForTag( Genre ), 0 );
+#undef includesGenre
+        addColumn( captionForTag( Length ),0  );
+        addColumn( captionForTag( DiscNumber ), 0 );
+        addColumn( captionForTag( Track ), 0 );
+#define includesYear(cat) (((cat)&CollectionBrowser::IdYear) \
+        ||((cat)&CollectionBrowser::IdVisYearAlbum) \
+        ||((cat)&CollectionBrowser::IdArtistVisYearAlbum))
+        if( includesYear(m_cat1)||includesYear(m_cat2)||includesYear(m_cat3) )
+            addColumn( captionForTag( Year ) );
+        else
+            addColumn( captionForTag( Year ), 0 );
+#undef includesYear
+        addColumn( captionForTag( Comment ), 0 );
+        addColumn( captionForTag( Playcount ), 0 );
+        addColumn( captionForTag( Score ), 0 );
+        addColumn( captionForTag( Rating ), 0 );
+        addColumn( captionForTag( Filename ), 0 );
+        addColumn( captionForTag( Firstplay ), 0 );
+        addColumn( captionForTag( Lastplay ), 0 );
+        addColumn( captionForTag( Modified ), 0 );
+        addColumn( captionForTag( Bitrate ), 0 );
+        addColumn( captionForTag( Filesize ), 0 );
 
-        setResizeMode( QListView::AllColumns );
+        setColumnAlignment( Track, Qt::AlignCenter );
+        setColumnAlignment( DiscNumber, Qt::AlignCenter );
+        setColumnAlignment( Length, Qt::AlignRight );
+        setColumnAlignment( Bitrate, Qt::AlignCenter );
+        setColumnAlignment( Score, Qt::AlignCenter );
+        setColumnAlignment( Playcount, Qt::AlignCenter );
+
+        //QListView allows invisible columns to be resized, so we disable resizing for them
+        for ( int i = 0; i < columns(); ++i ) {
+            setColumnWidthMode ( i, QListView::Manual );
+            if ( columnWidth( i ) == 0 )
+                header()->setResizeEnabled( false, i );
+        }
+
+        //manage column widths
+        QResizeEvent rev( size(), QSize() );
+        viewportResizeEvent( &rev );
     }
     else
     {
@@ -2455,9 +2543,11 @@ CollectionView::captionForTag( const Tag tag) const
         case Genre:     caption = i18n( "Genre" );  break;
         case Title:     caption = i18n( "Title" );  break;
         case Length:    caption = i18n( "Length" ); break;
+        case DiscNumber:caption = i18n( "Disc Number" );  break;
         case Track:     caption = i18n( "Track" );  break;
         case Year:      caption = i18n( "Year" );   break;
         case Comment:   caption = i18n( "Comment" ); break;
+        case Composer:  caption = i18n( "Composer" ); break;
         case Playcount: caption = i18n( "Playcount" ); break;
         case Score:     caption = i18n( "Score" );  break;
         case Rating:    caption = i18n( "Rating" ); break;
@@ -2466,6 +2556,7 @@ CollectionView::captionForTag( const Tag tag) const
         case Lastplay:  caption = i18n( "Last Play" ); break;
         case Modified:  caption = i18n( "Modified Date" ); break;
         case Bitrate:   caption = i18n( "Bitrate" ); break;
+        case Filesize:  caption = i18n( "File Size" ); break;
         default: break;
     }
     return caption;
