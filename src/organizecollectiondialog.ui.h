@@ -98,11 +98,16 @@ QString OrganizeCollectionDialog::buildFormatString()
         format += "%initial/";
 
     format += "%albumartist/";
-    format += "%album/";
     if( spaceCheck->isChecked() )
+    {
+        format += "%album{_(Disc_%discnumber)}/";
         format += "%track_-_%title.%filetype";
+    }
     else
+    {
+        format += "%album{ Disc %discnumber)}/";
         format += "%track - %title.%filetype";
+    }
 
     if( customschemeCheck->isChecked() )
         format = formatEdit->text();
