@@ -1615,7 +1615,7 @@ Playlist::checkFileStatus( PlaylistItem * item )
         QString path = QString::null;
         if( m_atfEnabled )
             path = CollectionDB::instance()->urlFromUniqueId( item->uniqueId() );
-        if( path != QString::null && path != item->url().path() )
+        if( !path.isEmpty() && path != item->url().path() )
         {
             item->setUrl( KURL( path ) );
             if( item->checkExists() )
@@ -1690,7 +1690,10 @@ Playlist::activate( QListViewItem *item )
 
 
     if( !item->isEnabled() )
+    {
+        amaroK::StatusBar::instance()->shortMessage( i18n("Local file does not exist.") );
         return;
+    }
 
     if( amaroK::entireAlbums() )
     {
