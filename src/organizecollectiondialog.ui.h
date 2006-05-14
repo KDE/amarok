@@ -180,9 +180,7 @@ void OrganizeCollectionDialog::slotDetails()
         replacementGroup->show();
         formatLabel->show();
         formatEdit->show();
-#ifdef UNFREEZE
         formatHelp->show();
-#endif
     }
     else
     {
@@ -207,7 +205,4 @@ void OrganizeCollectionDialog::init()
 
     formatHelp->setText( QString( "<a href='whatsthis:%1'>%2</a>" ).
             arg( amaroK::escapeHTMLAttr( buildFormatTip() ), i18n( "(Help)" ) ) );
-#ifndef UNFREEZE
-    formatHelp->hide();
-#endif
 }

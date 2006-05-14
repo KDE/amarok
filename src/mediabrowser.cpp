@@ -533,11 +533,9 @@ MediaBrowser::removeDevice( MediaDevice *device )
         else
         {
             debug() << "Cannot remove device because disconnect failed" << endl;
-#ifdef UNFREEZE
             amaroK::StatusBar::instance()->longMessage(
                     i18n( "Cannot remove device because disconnect failed" ),
                     KDE::StatusBar::Warning );
-#endif
         }
     }
     else
@@ -1453,11 +1451,9 @@ MediaBrowser::pluginSelected( const Medium *medium, const QString plugin )
         else
         {
             debug() << "Cannot change plugin while operation is in progress" << endl;
-#ifdef UNFREEZE
             amaroK::StatusBar::instance()->longMessage(
                     i18n( "Cannot change plugin while operation is in progress" ),
                     KDE::StatusBar::Warning );
-#endif
         }
     }
     else
