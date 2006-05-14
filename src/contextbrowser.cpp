@@ -184,6 +184,9 @@ ContextBrowser::ContextBrowser( const char *name )
         , m_relatedOpen( true )
         , m_suggestionsOpen( true )
         , m_favouritesOpen( true )
+	, m_showFreshPodcasts( true )
+	, m_showFavoriteAlbums( true )
+	, m_showNewestAlbums( true )
         , m_browseArtists( false )
         , m_cuefile( NULL )
 {
@@ -242,6 +245,10 @@ ContextBrowser::ContextBrowser( const char *name )
     m_showRelated   = amaroK::config( "ContextBrowser" )->readBoolEntry( "ShowRelated", true );
     m_showSuggested = amaroK::config( "ContextBrowser" )->readBoolEntry( "ShowSuggested", true );
     m_showFaves     = amaroK::config( "ContextBrowser" )->readBoolEntry( "ShowFaves", true );
+
+    m_showFreshPodcasts  = amaroK::config( "ContextBrowser" )->readBoolEntry( "ShowFreshPodcasts", true );
+    m_showNewestAlbums 	 = amaroK::config( "ContextBrowser" )->readBoolEntry( "ShowNewestAlbums", true );
+    m_showFavoriteAlbums = amaroK::config( "ContextBrowser" )->readBoolEntry( "ShowFavoriteAlbums", true );
 
     // Delete folder with the cached coverimage shadow pixmaps
     KIO::del( KURL::fromPathOrURL( amaroK::saveLocation( "covershadow-cache/" ) ), false, false );
@@ -671,7 +678,7 @@ DEBUG_FUNC_INFO
 
 void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& point )
 {
-    enum { APPEND, ASNEXT, MAKE, MEDIA_DEVICE, INFO, TITLE, RELATED, SUGGEST, FAVES };
+    enum { APPEND, ASNEXT, MAKE, MEDIA_DEVICE, INFO, TITLE, RELATED, SUGGEST, FAVES, FRESHPODCASTS, NEWALBUMS, FAVALBUMS };
 
     if( urlString.startsWith( "musicbrainz" ) ||
         urlString.startsWith( "externalurl" ) ||
@@ -682,8 +689,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         urlString.startsWith( "ggartist" ) ||
         urlString.startsWith( "artistback" ) ||
         urlString.startsWith( "current" ) ||
-        currentPage() != m_contextTab ||
-        ( urlString.isEmpty() && !EngineController::engine()->loaded() ) )
+        currentPage() != m_contextTab  )
         return;
 
     KURL url( urlString );
@@ -695,14 +701,26 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
     if( urlString.isEmpty() )
     {
-        menu.setCheckable( true );
-        menu.insertItem( i18n("Show Related Artists"), RELATED );
-        menu.insertItem( i18n("Show Suggested Songs"), SUGGEST );
-        menu.insertItem( i18n("Show Favorite Tracks"), FAVES );
+	 if(EngineController::engine()->loaded()) {
+   	     menu.setCheckable( true );
+	        menu.insertItem( i18n("Show Related Artists"), RELATED );
+	        menu.insertItem( i18n("Show Suggested Songs"), SUGGEST );
+        	menu.insertItem( i18n("Show Favorite Tracks"), FAVES );
 
-        menu.setItemChecked( RELATED, m_showRelated );
-        menu.setItemChecked( SUGGEST, m_showSuggested );
-        menu.setItemChecked( FAVES,   m_showFaves );
+        	menu.setItemChecked( RELATED, m_showRelated );
+        	menu.setItemChecked( SUGGEST, m_showSuggested );
+        	menu.setItemChecked( FAVES,   m_showFaves );
+	} else {
+		// if engine is not loaded  menu 
+		menu.setCheckable( true );
+     		menu.insertItem( i18n("Show Fresh Podcasts"), FRESHPODCASTS );
+		menu.insertItem( i18n("Show Newest Albums"), NEWALBUMS );
+	        menu.insertItem( i18n("Show Favorite Albums"), FAVALBUMS );
+        	
+        	menu.setItemChecked( FRESHPODCASTS, m_showFreshPodcasts );
+        	menu.setItemChecked( NEWALBUMS, m_showNewestAlbums );
+        	menu.setItemChecked( FAVALBUMS, m_showFavoriteAlbums );
+	}
     }
     else if( url.protocol() == "fetchcover" )
     {
@@ -788,6 +806,25 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
     case FAVES:
         m_showFaves = !menu.isItemChecked( FAVES );
         amaroK::config( "ContextBrowser" )->writeEntry( "ShowFaves", m_showFaves );
+        m_dirtyCurrentTrackPage = true;
+        showCurrentTrack();
+        break;
+
+   case FRESHPODCASTS:
+        m_showFreshPodcasts = !menu.isItemChecked( FRESHPODCASTS );
+        amaroK::config( "ContextBrowser" )->writeEntry( "ShowFreshPodcasts", m_showFreshPodcasts );	
+        m_dirtyCurrentTrackPage = true;
+        showCurrentTrack();
+        break;
+   case NEWALBUMS:
+        m_showNewestAlbums = !menu.isItemChecked( NEWALBUMS );
+        amaroK::config( "ContextBrowser" )->writeEntry( "ShowNewestAlbums", m_showNewestAlbums );
+        m_dirtyCurrentTrackPage = true;
+        showCurrentTrack();
+        break;
+   case FAVALBUMS:
+        m_showFavoriteAlbums = !menu.isItemChecked( FAVALBUMS );
+        amaroK::config( "ContextBrowser" )->writeEntry( "ShowFavoriteAlbums", m_showFavoriteAlbums );
         m_dirtyCurrentTrackPage = true;
         showCurrentTrack();
         break;
@@ -1233,206 +1270,212 @@ CurrentTrackJob::showHomeByAlbums()
     QueryBuilder qb;
 
     // <Fresh Podcasts Information>
-    qb.clear();
-    qb.addReturnValue( QueryBuilder::tabPodcastEpisodes, QueryBuilder::valParent );
-    qb.addFilter( QueryBuilder::tabPodcastEpisodes, QueryBuilder::valIsNew, CollectionDB::instance()->boolT(), QueryBuilder::modeNormal, true );
-    qb.sortBy( QueryBuilder::tabPodcastEpisodes, QueryBuilder::valID, true );
-    qb.setOptions( QueryBuilder::optRemoveDuplicates );
-    qb.setLimit( 0, 5 );
-    QStringList channels = qb.run();
-
-    if( channels.count() > 0 )
+    if( ContextBrowser::instance()->m_showFreshPodcasts)
     {
+        qb.clear();
+        qb.addReturnValue( QueryBuilder::tabPodcastEpisodes, QueryBuilder::valParent );
+        qb.addFilter( QueryBuilder::tabPodcastEpisodes, QueryBuilder::valIsNew, CollectionDB::instance()->boolT(), QueryBuilder::modeNormal, true );
+        qb.sortBy( QueryBuilder::tabPodcastEpisodes, QueryBuilder::valID, true );
+        qb.setOptions( QueryBuilder::optRemoveDuplicates );
+        qb.setLimit( 0, 5 );
+        QStringList channels = qb.run();
+
+        if( channels.count() > 0 )
+        {
+            m_HTMLSource.append(
+                    "<div id='least_box' class='box'>"
+                    "<div id='least_box-header' class='box-header'>"
+                    "<span id='least_box-header-title' class='box-header-title'>"
+                    + i18n( "Fresh Podcast Episodes" ) +
+                    "</span>"
+                    "</div>"
+                    "<div id='least_box-body' class='box-body'>" );
+
+            uint i = 0;
+            for( QStringList::iterator it = channels.begin();
+                    it != channels.end();
+                    it++ )
+            {
+                debug() << "processing podcast channel" << endl;
+                PodcastChannelBundle pcb;
+                if( !CollectionDB::instance()->getPodcastChannelBundle( *it, &pcb ) )
+                    continue;
+
+                QValueList<PodcastEpisodeBundle> episodes = CollectionDB::instance()->getPodcastEpisodes( *it, true /* only new */, 1 );
+                if( !episodes.isEmpty() )
+                {
+                    PodcastEpisodeBundle &ep = *episodes.begin();
+
+                    QString date;
+                    time_t t = 0;
+                    if( !ep.date().isEmpty() )
+                        t = KRFCDate::parseDate( ep.date() );
+                    if( t )
+                    {
+                        QDateTime d;
+                        d.setTime_t( t );
+                        date = locale.formatDateTime( d );
+                    }
+                    else
+                    {
+                        date = ep.date();
+                    }
+
+                    QString image = CollectionDB::instance()->podcastImage( pcb.imageURL().url(), 50 );
+                    image = ContextBrowser::makeShadowedImage( image );
+                    QString imageAttr = escapeHTMLAttr( i18n( "Click to go to podcast website: %1." ).arg( pcb.link().prettyURL() ) );
+
+                    m_HTMLSource.append( QStringx (
+                                "<tr class='" + QString( (i % 2) ? "box-row-alt" : "box-row" ) + "'>"
+                                "<td>"
+                                "<div class='album-header' onClick=\"toggleBlock('IDP%1')\">"
+                                "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
+                                "<tr>"
+                                "<td width='1'>"
+                                "<a href='%2'>"
+                                "<img class='album-image' align='left' vspace='2' hspace='2' title='%3' src='%4' />"
+                                "</a>"
+                                "</td>"
+                                "<td valign='middle' align='left'>"
+                                "<span class='album-info'>%5</span> "
+                                "<a href='%6'><span class='album-title'>%7</span></a>"
+                                "<br />"
+                                "<span class='album-year'>%8</span>"
+                                "</td>"
+                                "</tr>"
+                                "</table>"
+                                "</div>"
+                                "<div class='album-body' style='display:%9;' id='IDP%10'>" )
+                                .args( QStringList()
+                                        << QString::number( i )
+                                        << pcb.link().url().replace( QRegExp( "^http:" ), "externalurl:" )
+                                        << escapeHTMLAttr( imageAttr )
+                                        << escapeHTMLAttr( image )
+                                        << escapeHTML( ep.duration() ? MetaBundle::prettyTime( ep.duration() ) : QString( "" ) )
+                                        << ( ep.localUrl().isValid()
+                                            ? ep.localUrl().url()
+                                            : ep.url().url().replace( QRegExp( "^http:" ), "stream:" ) )
+                                        << escapeHTML( pcb.title() + ": " + ep.title() )
+                                        << escapeHTML( date )
+                                        << "none"
+                                        << QString::number( i )
+                                     )
+                                );
+
+                    m_HTMLSource.append( QStringx ( "<p>%1</p>" ).arg( ep.description() ) );
+
+                    m_HTMLSource.append(
+                            "</div>"
+                            "</td>"
+                            "</tr>" );
+                    i++;
+                }
+            }
+            m_HTMLSource.append(
+                    "</div>"
+                    "</div>");
+        }
+    }
+    // </Fresh Podcasts Information>
+
+    QStringList albums;
+    // <Newest Albums Information>
+    if( ContextBrowser::instance()->m_showNewestAlbums )
+    {
+        qb.clear();
+        qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
+        qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
+        qb.addReturnFunctionValue( QueryBuilder::funcMax, QueryBuilder::tabSong, QueryBuilder::valCreateDate );
+        qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valID );
+        qb.sortByFunction( QueryBuilder::funcMax, QueryBuilder::tabSong, QueryBuilder::valCreateDate, true );
+        qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
+        qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID );
+        qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valID );
+        qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
+        qb.setOptions( QueryBuilder::optNoCompilations ); // samplers __need__ to be handled differently
+        qb.setLimit( 0, 5 );
+        QStringList recentAlbums = qb.run();
+
+        foreach( recentAlbums )
+        {
+            albums += *it;
+            it++;
+            it++;
+            it++;
+        }
+        // toggle html here so we get correct albums
         m_HTMLSource.append(
                 "<div id='least_box' class='box'>"
                 "<div id='least_box-header' class='box-header'>"
                 "<span id='least_box-header-title' class='box-header-title'>"
-                + i18n( "Fresh Podcast Episodes" ) +
+                + i18n( "Your Newest Albums" ) +
                 "</span>"
                 "</div>"
                 "<div id='least_box-body' class='box-body'>" );
+        constructHTMLAlbums( recentAlbums, m_HTMLSource, "1" );
 
-        uint i = 0;
-        for( QStringList::iterator it = channels.begin();
-                it != channels.end();
-                it++ )
-        {
-            debug() << "processing podcast channel" << endl;
-            PodcastChannelBundle pcb;
-            if( !CollectionDB::instance()->getPodcastChannelBundle( *it, &pcb ) )
-                continue;
-
-            QValueList<PodcastEpisodeBundle> episodes = CollectionDB::instance()->getPodcastEpisodes( *it, true /* only new */, 1 );
-            if( !episodes.isEmpty() )
-            {
-                PodcastEpisodeBundle &ep = *episodes.begin();
-
-                QString date;
-                time_t t = 0;
-                if( !ep.date().isEmpty() )
-                    t = KRFCDate::parseDate( ep.date() );
-                if( t )
-                {
-                    QDateTime d;
-                    d.setTime_t( t );
-                    date = locale.formatDateTime( d );
-                }
-                else
-                {
-                    date = ep.date();
-                }
-
-                QString image = CollectionDB::instance()->podcastImage( pcb.imageURL().url(), 50 );
-                image = ContextBrowser::makeShadowedImage( image );
-                QString imageAttr = escapeHTMLAttr( i18n( "Click to go to podcast website: %1." ).arg( pcb.link().prettyURL() ) );
-
-                m_HTMLSource.append( QStringx (
-                            "<tr class='" + QString( (i % 2) ? "box-row-alt" : "box-row" ) + "'>"
-                            "<td>"
-                            "<div class='album-header' onClick=\"toggleBlock('IDP%1')\">"
-                            "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
-                            "<tr>"
-                            "<td width='1'>"
-                            "<a href='%2'>"
-                            "<img class='album-image' align='left' vspace='2' hspace='2' title='%3' src='%4' />"
-                            "</a>"
-                            "</td>"
-                            "<td valign='middle' align='left'>"
-                            "<span class='album-info'>%5</span> "
-                            "<a href='%6'><span class='album-title'>%7</span></a>"
-                            "<br />"
-                            "<span class='album-year'>%8</span>"
-                            "</td>"
-                            "</tr>"
-                            "</table>"
-                            "</div>"
-                            "<div class='album-body' style='display:%9;' id='IDP%10'>" )
-                        .args( QStringList()
-                            << QString::number( i )
-                            << pcb.link().url().replace( QRegExp( "^http:" ), "externalurl:" )
-                            << escapeHTMLAttr( imageAttr )
-                            << escapeHTMLAttr( image )
-                            << escapeHTML( ep.duration() ? MetaBundle::prettyTime( ep.duration() ) : QString( "" ) )
-                            << ( ep.localUrl().isValid()
-                                ? ep.localUrl().url()
-                                : ep.url().url().replace( QRegExp( "^http:" ), "stream:" ) )
-                            << escapeHTML( pcb.title() + ": " + ep.title() )
-                            << escapeHTML( date )
-                            << "none"
-                            << QString::number( i )
-                            )
-                        );
-
-                m_HTMLSource.append( QStringx ( "<p>%1</p>" ).arg( ep.description() ) );
-
-                m_HTMLSource.append(
-                        "</div>"
-                        "</td>"
-                        "</tr>" );
-                i++;
-            }
-        }
         m_HTMLSource.append(
                 "</div>"
                 "</div>");
     }
-    // </Fresh Podcasts Information>
-
-    // <Newest Albums Information>
-    qb.clear();
-    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
-    qb.addReturnFunctionValue( QueryBuilder::funcMax, QueryBuilder::tabSong, QueryBuilder::valCreateDate );
-    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valID );
-    qb.sortByFunction( QueryBuilder::funcMax, QueryBuilder::tabSong, QueryBuilder::valCreateDate, true );
-    qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
-    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID );
-    qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valID );
-    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
-    qb.setOptions( QueryBuilder::optNoCompilations ); // samplers __need__ to be handled differently
-    qb.setLimit( 0, 5 );
-    QStringList recentAlbums = qb.run();
-
-    QStringList albums;
-    foreach( recentAlbums )
-    {
-        albums += *it;
-        it++;
-        it++;
-        it++;
-    }
-
-    m_HTMLSource.append(
-        "<div id='least_box' class='box'>"
-        "<div id='least_box-header' class='box-header'>"
-        "<span id='least_box-header-title' class='box-header-title'>"
-        + i18n( "Your Newest Albums" ) +
-        "</span>"
-        "</div>"
-        "<div id='least_box-body' class='box-body'>" );
-    constructHTMLAlbums( recentAlbums, m_HTMLSource, "1" );
-
-    m_HTMLSource.append(
-        "</div>"
-        "</div>");
-
     // </Recent Tracks Information>
 
     // <Favorite Albums Information>
-
-    const int sortBy = ( AmarokConfig::useScores() || !AmarokConfig::useRatings() )
+    if( ContextBrowser::instance()->m_showFavoriteAlbums)
+    {
+        const int sortBy = ( AmarokConfig::useScores() || !AmarokConfig::useRatings() )
             ? QueryBuilder::valPercentage
             : QueryBuilder::valRating;
 
-    qb.clear();
-    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
-    qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, sortBy );
-    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valID );
-    // only albums with more than 3 tracks
-    qb.having( QueryBuilder::tabAlbum, QueryBuilder::valID, QueryBuilder::funcCount, QueryBuilder::modeGreater, "3" );
-    // only albums which have been played/rated
-    qb.having( QueryBuilder::tabStats, sortBy, QueryBuilder::funcAvg, QueryBuilder::modeGreater, "0" );
-    qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, sortBy, true );
-    qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
-    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID );
-    qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valID );
-    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
-    qb.setOptions( QueryBuilder::optNoCompilations ); // samplers __need__ to be handled differently
-    qb.setLimit( 0, 5 );
-    QStringList faveAlbums = qb.run();
+        qb.clear();
+        qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
+        qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
+        qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, sortBy );
+        qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valID );
+        // only albums with more than 3 tracks
+        qb.having( QueryBuilder::tabAlbum, QueryBuilder::valID, QueryBuilder::funcCount, QueryBuilder::modeGreater, "3" );
+        // only albums which have been played/rated
+        qb.having( QueryBuilder::tabStats, sortBy, QueryBuilder::funcAvg, QueryBuilder::modeGreater, "0" );
+        qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, sortBy, true );
+        qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
+        qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID );
+        qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valID );
+        qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
+        qb.setOptions( QueryBuilder::optNoCompilations ); // samplers __need__ to be handled differently
+        qb.setLimit( 0, 5 );
+        QStringList faveAlbums = qb.run();
 
-    foreach( faveAlbums )
-    {
-        albums += *it;
-        it++;
-        it++;
-        it++;
-    }
+        foreach( faveAlbums )
+        {
+            albums += *it;
+            it++;
+            it++;
+            it++;
+        }
 
-    m_HTMLSource.append(
-        "<div id='albums_box' class='box'>"
-        "<div id='albums_box-header' class='box-header'>"
-        "<span id='albums_box-header-title' class='box-header-title'>"
-        + i18n( "Favorite Albums" ) +
-        "</span>"
-        "</div>"
-        "<table id='albums_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='0'>" );
-
-    if ( faveAlbums.count() == 0 )
-    {
         m_HTMLSource.append(
-            "<div id='favorites_box-body' class='box-body'><p>" +
-            i18n( "A list of your favorite albums will appear here, once you have played a few of your songs." ) +
-            "</p></div>" );
-    }
-    else
-    {
-        constructHTMLAlbums( faveAlbums, m_HTMLSource, "2" );
-    }
+                "<div id='albums_box' class='box'>"
+                "<div id='albums_box-header' class='box-header'>"
+                "<span id='albums_box-header-title' class='box-header-title'>"
+                + i18n( "Favorite Albums" ) +
+                "</span>"
+                "</div>"
+                "<table id='albums_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='0'>" );
 
-    m_HTMLSource.append("</div>");
+        if ( faveAlbums.count() == 0 )
+        {
+            m_HTMLSource.append(
+                    "<div id='favorites_box-body' class='box-body'><p>" +
+                    i18n( "A list of your favorite albums will appear here, once you have played a few of your songs." ) +
+                    "</p></div>" );
+        }
+        else
+        {
+            constructHTMLAlbums( faveAlbums, m_HTMLSource, "2" );
+        }
 
+        m_HTMLSource.append("</div>");
+    }
     // </Favorite Tracks Information>
 
     return albums;

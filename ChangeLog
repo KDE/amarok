@@ -7,6 +7,9 @@ VERSION 1.4.1:
   FEATURES:
 
   CHANGES:
+    * Configure, which of fresh podcasts, newest & favorite albums are shown
+      in context browser home view. Patch by Patrick Muench <s7mon@web.de>.
+      (BR 127043)
 
   BUGFIXES:
 
