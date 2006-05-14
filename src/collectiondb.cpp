@@ -2236,21 +2236,19 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
     {
         if( urls.empty() ) //uniqueid already found in temporary table but not url; check the old URL
         {
-            debug() << "At doATFStuff, stat-ing file " << uniqueids[0] << endl;
+            //debug() << "At doATFStuff, stat-ing file " << uniqueids[0] << endl;
             //stat the original URL
-            KURL oldurl;
-            oldurl.setPath( uniqueids[0] );
-            bool statSuccessful = KIO::NetAccess::exists( oldurl, true, amaroK::mainWindow() );
+            bool statSuccessful = QFile::exists( uniqueids[0] );
             if( statSuccessful ) //if true, new one is a copy
             {
-                debug() << "stat was successful, new file is a copy" << endl;
+                //debug() << "stat was successful, new file is a copy" << endl;
                 bundle->newUniqueId();
                 doATFStuff( bundle, true ); //yes, it's recursive, but what's wrong with that? :-)
             }
             else  //it's a move, not a copy, or a copy and then both files were moved...can't detect that
             {
-                debug() << "stat was NOT successful, updating tables with: " << endl;
-                debug() << QString( "UPDATE uniqueid%1 SET url='%2', dir='%3' WHERE uniqueid='%4';" ).arg( ( tempTables ? "_temp" : "" ), currurl, currdir, currid ) << endl;
+                //debug() << "stat was NOT successful, updating tables with: " << endl;
+                //debug() << QString( "UPDATE uniqueid%1 SET url='%2', dir='%3' WHERE uniqueid='%4';" ).arg( ( tempTables ? "_temp" : "" ), currurl, currdir, currid ) << endl;
                 query( QString( "UPDATE uniqueid%1 SET url='%2', dir='%3' WHERE uniqueid='%4';" )
                       .arg( ( tempTables ? "_temp" : "" ),
                          currurl,
@@ -2265,7 +2263,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
         //NOTE: this should never happen during an incremental scan with temporary tables...!
         else //uniqueids.empty()
         {
-            debug() << "file exists in same place as before, new uniqueid" << endl;
+            //debug() << "file exists in same place as before, new uniqueid" << endl;
             query( QString( "UPDATE uniqueid%1 SET uniqueid='%2' WHERE url='%3';" )
                     .arg( tempTables ? "_temp" : "" )
                     .arg( currid )
@@ -2294,20 +2292,18 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
         //second case...full match exists in permanent table, but path is different
         if( nonTempURLs.empty() )
         {
-            debug() << "At doATFStuff part 2, stat-ing file " << nonTempIDs[0] << endl;
+            //debug() << "At doATFStuff part 2, stat-ing file " << nonTempIDs[0] << endl;
             //stat the original URL
-            KURL oldurl;
-            oldurl.setPath( nonTempIDs[0] );
-            bool statSuccessful = KIO::NetAccess::exists( oldurl, true, amaroK::mainWindow() );
+            bool statSuccessful = QFile::exists( nonTempIDs[0] );
             if( statSuccessful ) //if true, new one is a copy
             {
-                debug() << "stat part 2 was successful, new file is a copy" << endl;
+                //debug() << "stat part 2 was successful, new file is a copy" << endl;
                 bundle->newUniqueId();
                 doATFStuff( bundle, true ); //yes, it's recursive, but what's wrong with that? :-)
             }
             else  //it's a move, not a copy, or a copy and then both files were moved...can't detect that
             {
-                debug() << "stat part 2 was NOT successful, updating tables with: " << endl;
+                //debug() << "stat part 2 was NOT successful, updating tables with: " << endl;
                 query( QString( "INSERT INTO uniqueid_temp (url, uniqueid, dir) VALUES ('%1', '%2', '%3')" )
                 .arg( currurl,
                     currid,
@@ -2319,7 +2315,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
         }
         else
         {
-            debug() << "file exists in same place as before, part 2, new uniqueid" << endl;
+            //debug() << "file exists in same place as before, part 2, new uniqueid" << endl;
             query( QString( "INSERT INTO uniqueid_temp (url, uniqueid, dir) VALUES ('%1', '%2', '%3')" )
                 .arg( currurl,
                     currid,
@@ -2338,8 +2334,11 @@ CollectionDB::newUniqueIdForFile( const QString &path )
     DEBUG_BLOCK
     KURL url = KURL::fromPathOrURL( path );
 
-    if( !KIO::NetAccess::exists( url, true, amaroK::mainWindow() ) )
+    if( !QFile::exists( path ) )
+    {
+        debug() << "QFile::exists returned false for " << path << endl;
         return;
+    }
 
     // Clean it.
     url.cleanPath();
@@ -3087,7 +3086,6 @@ CollectionDB::removeSongsInDir( QString path )
     query( QString( "DELETE FROM tags WHERE dir = '%1';" )
               .arg( escapeString( path ) ) );
 
-    //BELOW should not occur, then, since this only happens during an incremental scan when we want the old values?
     query( QString( "DELETE FROM uniqueid WHERE dir = '%1';" )
               .arg( escapeString( path ) ) );
 }
