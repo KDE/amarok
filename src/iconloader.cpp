@@ -58,7 +58,7 @@ amaroK::icon( const QString& name ) //declared in amarok.h
 
     if( iconMap.contains( name ) )
     {
-        if( AmarokConfig::useCustomIconTheme() )
+        if( AmarokConfig::useCustomIconTheme() || name.contains( "podcast" ) )
             return QString( "amarok_" ) + name;
         else
             return iconMap[name];
