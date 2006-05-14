@@ -808,12 +808,6 @@ TagDialog::readMultipleTracks()
         m_bundle.setDiscNumber( first.discNumber() );
         kIntSpinBox_discNumber->setValue( first.discNumber() );
     }
-/*    else
-    {
-        m_bundle.setYear( 0 );
-        kIntSpinBox_year->setValue( 0 );
-    }
-*/
     if (score) {
         m_score = scoreFirst;
         kIntSpinBox_score->setValue( scoreFirst );
@@ -840,9 +834,6 @@ TagDialog::changes()
     int result=TagDialog::NOCHANGE;
     bool modified = false;
     modified |= !equalString( kComboBox_artist->lineEdit()->text(), m_bundle.artist() );
-    debug() << "Artist Modified:" << modified << endl;
-    debug() << "KC:'" <<  kComboBox_artist->lineEdit()->text() << "' e:" << kComboBox_artist->lineEdit()->text().isEmpty() <<  endl;
-    debug() << "MB:'" <<  m_bundle.artist().string() << "' e:" << m_bundle.artist().isEmpty() << " 2e:" << m_bundle.artist().string().isEmpty()<< endl;
     modified |= !equalString( kComboBox_album->lineEdit()->text(), m_bundle.album() );
     modified |= !equalString( kComboBox_genre->lineEdit()->text(), m_bundle.genre() );
     modified |= kIntSpinBox_year->value()  != m_bundle.year();
@@ -1021,9 +1012,6 @@ TagDialog::saveTags()
         CollectionDB::instance()->setLyrics( it.key(), it.data() );
         emit lyricsChanged( it.key() );
     }
-/*    if ( storedTags.count() ) //lyrics and score changes doesn't matter to Collection Browser
-        CollectionView::instance()->renderView();
-*/
 }
 
 
@@ -1049,7 +1037,6 @@ TagDialog::applyToAllTracks()
         int changed = 0;
         if( !kComboBox_artist->currentText().isEmpty() && kComboBox_artist->currentText() != mb.artist() ||
                 kComboBox_artist->currentText().isEmpty() && !m_bundle.artist().isEmpty() ) {
-            debug() << "Artist has Changed" << endl;
             mb.setArtist( kComboBox_artist->currentText() );
             changed |= TagDialog::TAGSCHANGED;
         }

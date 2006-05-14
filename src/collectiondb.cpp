@@ -3322,7 +3322,6 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
     {
         //We have to remove the trailing comma from command
         query( command.left( command.length() - 2 ) + " WHERE url = '" + escapeString( url ) + "';" );
-        debug() << "Exec:" << command.left(  command.length() - 2 ) + " WHERE url = '" + escapeString(  url ) + "';" << endl;
     }
 
     //Check to see if we use the entry anymore. If not, delete it
