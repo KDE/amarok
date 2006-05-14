@@ -401,6 +401,8 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         QString m_editOldTag; //text before inline editing ( the new tag is written only if it's changed )
 
         std::vector<double> m_columnFraction;
+
+        bool m_atfEnabled;
 };
 
 class MyAtomicString: public AtomicString

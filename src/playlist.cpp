@@ -240,6 +240,8 @@ Playlist::Playlist( QWidget *parent )
 {
     s_instance = this;
 
+    m_atfEnabled = AmarokConfig::advancedTagFeatures();
+
     initStarPixmaps();
 
     EngineController* const ec = EngineController::instance();
@@ -1604,7 +1606,9 @@ Playlist::checkFileStatus( PlaylistItem * item )
 {
     if( !item->checkExists() )
     {
-        QString path = CollectionDB::instance()->urlFromUniqueId( item->uniqueId() );
+        QString path = QString::null;
+        if( m_atfEnabled )
+            path = CollectionDB::instance()->urlFromUniqueId( item->uniqueId() );
         if( path != QString::null && path != item->url().path() )
         {
             item->setUrl( KURL( path ) );

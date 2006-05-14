@@ -90,6 +90,7 @@ void MetaBundle::XmlLoader::newTag( const QString &name, const QString &value )
                 case Filesize:
                 case Type:
                 case SampleRate:
+                case UniqueId:
                     m_bundle.setExactText( i, value );
                     continue;
 

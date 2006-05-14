@@ -76,7 +76,7 @@
 
 using amaroK::QStringx;
 
-#define DEBUG 0
+#define DEBUG 1
 
 QMutex* CollectionDB::connectionMutex = new QMutex();
 //we don't have to worry about this map leaking memory since ThreadWeaver limits the total
@@ -2179,6 +2179,9 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
 
     //debug() << "Checking currid = " << currid << ", currurl = " << currurl << endl;
 
+    if( currid.isEmpty() || currurl.isEmpty() )
+        return;
+
     QStringList urls = query( QString(
             "SELECT url, uniqueid "
             "FROM uniqueid%1 "
@@ -2192,57 +2195,51 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
                 .arg( tempTables ? "_temp" : "" )
                 .arg( currid ) );
 
-    bool onlyInTemp = true;
-
     QStringList nonTempIDs = query( QString(
             "SELECT url, uniqueid "
             "FROM uniqueid "
             "WHERE uniqueid = '%1';" )
                 .arg( currid ) );
-    if( tempTables && nonTempIDs.count() > 0 )
-            onlyInTemp = false;
 
+    QStringList nonTempURLs = query( QString(
+            "SELECT url, uniqueid "
+            "FROM uniqueid "
+            "WHERE url = '%1';" )
+                .arg( currurl ) );
 
-    //most common case first...detected the file
-    if( urls.count() == 2 && uniqueids.count() == 2 )
+    bool tempTablesAndInPermanent = false;
+    bool permanentFullMatch = false;
+
+    //if we're not using temp tables here, i.e. tempTables is false,
+    //then the results from both sets of queries above should be equal,
+    //so behavior should be the same
+    if( tempTables && ( nonTempURLs.count() > 0 || nonTempIDs.count() > 0 ) )
+            tempTablesAndInPermanent = true;
+    if( tempTablesAndInPermanent && nonTempURLs.count() > 0 && nonTempIDs.count() > 0 )
+            permanentFullMatch = true;
+
+    //first case: not in permanent table or temporary table
+    if( !tempTablesAndInPermanent && urls.empty() && uniqueids.empty() )
+    {
+        QString insertline = QString( "INSERT INTO uniqueid%1 (url, uniqueid, dir) VALUES ('%2', '%3', '%4')" )
+                .arg( ( tempTables ? "_temp" : "" ),
+                    currurl,
+                    currid,
+                    currdir );
+        //debug() << "running command: " << insertline << endl;
+        insert( insertline, NULL );
         return;
-    else if( urls.count() > 2 || uniqueids.count() > 2 )
-    {
-        debug() << "ATF: YOU HAVE MULTIPLE ENTRIES FOR A SINGLE UNIQUEID OR PATH.  THIS SHOULD NOT HAPPEN.  CONSIDER RECREATING THIS TABLE." << endl;
     }
-    else if( currid.length() == 0 && !urls.empty() )
-    {
-        debug() << "ATF: The same url exists, but the new uniqueid is null.  Perhaps you're turning off ATF.  Removing entry from database." << endl;
-        query( QString("DELETE FROM uniqueid%1 WHERE url='%2';")
-              .arg( tempTables ? "_temp" : "" )
-              .arg( currurl ) );
 
-    }
-    //checking length below because for some reason the != check does not always work, even when length is zero
-    else if( currid.length() > 0 ) //if doesn't match, new item, but no uniqueid...probably ATF off
+    //next case: not in permanent table, but a match on one or the other in the temporary table
+    if( !tempTablesAndInPermanent )
     {
-        //debug() << "urls.empty() = " << (urls.empty() ? "true" : "false") << ", uniqueids.empty() = " << (uniqueids.empty() ? "true" : "false") << ", onlyInTemp = " << (onlyInTemp ? "true" : "false") << endl;
-        if( urls.empty() && uniqueids.empty() && ( onlyInTemp || nonTempIDs[0] == bundle->url().path() ) ) // new item
+        if( urls.empty() ) //uniqueid already found in temporary table but not url; check the old URL
         {
-            QString insertline = QString( "INSERT INTO uniqueid%1 (url, uniqueid, dir) VALUES ('%2', '%3', '%4')" )
-                  .arg( ( tempTables ? "_temp" : "" ),
-                     currurl,
-                     currid,
-                     currdir );
-            //debug() << "running command: " << insertline << endl;
-            insert( insertline, NULL );
-        }
-        else if( urls.empty() || ( !onlyInTemp && nonTempIDs[0] != bundle->url().path() ) )  //detected same uniqueid, so file moved, or copied and both copies moved
-        {
-            QString pathToUse;
-            if( !onlyInTemp )
-                pathToUse = nonTempIDs[0];
-            else
-                pathToUse = uniqueids[0];
-            //debug() << "At doATFStuff, stat-ing file " << pathToUse << endl;
+            debug() << "At doATFStuff, stat-ing file " << uniqueids[0] << endl;
             //stat the original URL
             KURL oldurl;
-            oldurl.setPath( pathToUse );
+            oldurl.setPath( uniqueids[0] );
             bool statSuccessful = KIO::NetAccess::exists( oldurl, true, amaroK::mainWindow() );
             if( statSuccessful ) //if true, new one is a copy
             {
@@ -2252,18 +2249,20 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
             }
             else  //it's a move, not a copy, or a copy and then both files were moved...can't detect that
             {
-                //debug() << "stat was NOT successful, updating tables with: " << endl;
-                //debug() << QString( "UPDATE uniqueid%1 SET url='%2', dir='%3' WHERE uniqueid='%4';" ).arg( ( tempTables ? "_temp" : "" ), currurl, currdir, currid ) << endl;
+                debug() << "stat was NOT successful, updating tables with: " << endl;
+                debug() << QString( "UPDATE uniqueid%1 SET url='%2', dir='%3' WHERE uniqueid='%4';" ).arg( ( tempTables ? "_temp" : "" ), currurl, currdir, currid ) << endl;
                 query( QString( "UPDATE uniqueid%1 SET url='%2', dir='%3' WHERE uniqueid='%4';" )
                       .arg( ( tempTables ? "_temp" : "" ),
                          currurl,
                          currdir,
                          currid ) );
-                emit fileMoved( pathToUse, currurl, currid );
+                emit fileMoved( uniqueids[0], currurl, currid );
             }
         }
+        //okay then, url already found in temporary table but different uniqueid
         //a file exists in the same place as before, but new uniqueid...assume
         //that this is desired user behavior
+        //NOTE: this should never happen during an incremental scan with temporary tables...!
         else //uniqueids.empty()
         {
             debug() << "file exists in same place as before, new uniqueid" << endl;
@@ -2273,10 +2272,64 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
                     .arg( currurl ) );
             emit uniqueidChanged( currurl, urls[1], currid );
         }
+        return;
     }
+    //okay...being here means, we are using temporary tables, AND it exists in the permanent table
     else
-        debug() << "new uniqueid length is zero...not doing anything" << endl;
+    {
+        //first case...full match exists in permanent table, should then be no match in temp table
+        //(since code below deleted from permanent table after changes)
+        //in this case, just insert into temp table
+        if( permanentFullMatch )
+        {
+            QString insertline = QString( "INSERT INTO uniqueid_temp (url, uniqueid, dir) VALUES ('%1', '%2', '%3')" )
+                .arg( currurl,
+                    currid,
+                    currdir );
+            //debug() << "running command: " << insertline << endl;
+            insert( insertline, NULL );
+            return;
+        }
 
+        //second case...full match exists in permanent table, but path is different
+        if( nonTempURLs.empty() )
+        {
+            debug() << "At doATFStuff part 2, stat-ing file " << nonTempIDs[0] << endl;
+            //stat the original URL
+            KURL oldurl;
+            oldurl.setPath( nonTempIDs[0] );
+            bool statSuccessful = KIO::NetAccess::exists( oldurl, true, amaroK::mainWindow() );
+            if( statSuccessful ) //if true, new one is a copy
+            {
+                debug() << "stat part 2 was successful, new file is a copy" << endl;
+                bundle->newUniqueId();
+                doATFStuff( bundle, true ); //yes, it's recursive, but what's wrong with that? :-)
+            }
+            else  //it's a move, not a copy, or a copy and then both files were moved...can't detect that
+            {
+                debug() << "stat part 2 was NOT successful, updating tables with: " << endl;
+                query( QString( "INSERT INTO uniqueid_temp (url, uniqueid, dir) VALUES ('%1', '%2', '%3')" )
+                .arg( currurl,
+                    currid,
+                    currdir ) );
+                query( QString( "DELETE FROM uniqueid WHERE uniqueid='%1';" )
+                      .arg( currid ) );
+                emit fileMoved( nonTempIDs[0], currurl, currid );
+            }
+        }
+        else
+        {
+            debug() << "file exists in same place as before, part 2, new uniqueid" << endl;
+            query( QString( "INSERT INTO uniqueid_temp (url, uniqueid, dir) VALUES ('%1', '%2', '%3')" )
+                .arg( currurl,
+                    currid,
+                    currdir ) );
+                query( QString( "DELETE FROM uniqueid WHERE url='%1';" )
+                      .arg( currurl ) );
+            emit uniqueidChanged( currurl, nonTempURLs[1], currid );
+        }
+        return;
+    }
 }
 
 void
@@ -3033,9 +3086,10 @@ CollectionDB::removeSongsInDir( QString path )
 
     query( QString( "DELETE FROM tags WHERE dir = '%1';" )
               .arg( escapeString( path ) ) );
-    if( AmarokConfig::advancedTagFeatures() )
-            query( QString( "DELETE FROM uniqueid WHERE dir = '%1';" )
-                .arg( escapeString( path ) ) );
+
+    //BELOW should not occur, then, since this only happens during an incremental scan when we want the old values?
+    query( QString( "DELETE FROM uniqueid WHERE dir = '%1';" )
+              .arg( escapeString( path ) ) );
 }
 
 

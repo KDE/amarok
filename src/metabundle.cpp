@@ -643,6 +643,7 @@ void MetaBundle::setExactText( int column, const QString &newText )
         case LastPlayed: setLastPlay(   newText.toInt() ); break;
         case Filesize:   setFilesize(   newText.toInt() ); break;
         case Type:       setFileType(   newText.toInt() ); break;
+        case UniqueId:   setUniqueId(   newText );         break;
         default: warning() << "Tried to set the text of an immutable or nonexistent column! [" << column << endl;
    }
 }

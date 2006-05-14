@@ -249,8 +249,6 @@ UrlLoader::customEvent( QCustomEvent *e)
                 continue;
 
             PlaylistItem* const item = new PlaylistItem( (*it).bundle, m_markerListViewItem );
-            if( atfEnabled )
-                item->setUniqueId();
 
             //TODO scrollbar position
             //TODO previous tracks queue
