@@ -663,7 +663,22 @@
         <receiver>kLineEdit_customBrowser</receiver>
         <slot>setEnabled(bool)</slot>
     </connection>
+    <connection>
+        <sender>kcfg_ShowMoodbar</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>General</receiver>
+        <slot>slotUpdateMoodFrame()</slot>
+    </connection>
+    <connection>
+        <sender>kcfg_MakeMoodier</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>General</receiver>
+        <slot>slotUpdateMoodFrame()</slot>
+    </connection>
 </connections>
+<includes>
+    <include location="local" impldecl="in implementation">Options1.ui.h</include>
+</includes>
 <slots>
     <slot>slotUpdateMoodFrame()</slot>
 </slots>
@@ -672,6 +687,7 @@
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
+    <includehint>kcombobox.h</includehint>
     <includehint>klineedit.h</includehint>
 </includehints>
 </UI>

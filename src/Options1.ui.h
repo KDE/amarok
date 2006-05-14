@@ -21,6 +21,8 @@ void Options1::init()
 {
 #ifndef HAVE_EXSCALIBAR
     moodFrame->hide();
+#else
+    slotUpdateMoodFrame();
 #endif
 
     QStringList browsers;
