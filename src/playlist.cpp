@@ -902,7 +902,14 @@ void
 Playlist::restoreSession()
 {
     KURL url;
-    url.setPath( amaroK::saveLocation() + "current.xml" );
+
+    if ( amaroK::config()->readBoolEntry( "First 1.4 Run", true ) ) {
+        // On first startup of 1.4, we load a special playlist with an intro track
+        url.setPath( locate( "data", "amarok/data/firstrun.m3u" ) );
+        amaroK::config()->writeEntry( "First 1.4 Run", false );
+    }
+    else
+        url.setPath( amaroK::saveLocation() + "current.xml" );
 
     // check it exists, because on the first ever run it doesn't and
     // it looks bad to show "some URLs were not suitable.." on the
