@@ -3,6 +3,14 @@ amaroK ChangeLog
 (C) 2002-2006 the amaroK authors.
 
 
+VERSION 1.4.1:
+  FEATURES:
+
+  CHANGES:
+
+  BUGFIXES:
+
+
 VERSION 1.4.0:
   FEATURES:
     * New DCOP call "player: version()". Returns the amaroK version.
