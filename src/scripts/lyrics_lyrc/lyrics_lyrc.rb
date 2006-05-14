@@ -123,7 +123,7 @@ def fetchLyrics( artist, title, url )
 
     lyrics = response.body()
 
-    puts( lyrics )
+#     puts( lyrics )
 
     lyrics.gsub!( "\n", "" ) # No need for LF, just complicates our RegExps
     lyrics.gsub!( "\r", "" ) # No need for CR, just complicates our RegExps
