@@ -1460,14 +1460,13 @@ Playlist::queue( QListViewItem *item, bool multi )
 }
 
 void
-Playlist::sortQueuedItems()
+Playlist::sortQueuedItems() // used by dynamic mode
 {
     PlaylistItem *last = m_currentTrack;
-    for( PlaylistItem *item = m_nextTracks.getFirst(); item; item = m_nextTracks.next() )
+    for( PlaylistItem *item = m_nextTracks.first(); item; item = m_nextTracks.next() )
     {
         if( item->itemAbove() != last )
-            this->moveItem( item, 0, last );
-
+            item->moveItem( last );
         last = item;
     }
 

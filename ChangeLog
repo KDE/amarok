@@ -60,6 +60,8 @@ VERSION 1.4.0:
       <kde@dontletsstart.com>. (BR 125414)
 
   BUGFIXES:
+    * The playlist would incorrectly sort after using the queue manager in
+      dynamic mode.
     * Sort disc numbers numerically (BR 127114)
     * Smart Playlists using 'last played time' now filter correctly.
       (BR 127145)
