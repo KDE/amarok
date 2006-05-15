@@ -1,0 +1,25 @@
+<div align="center"><b>score_impulsive</b></div>
+
+<p>
+<b>About:</b><br>
+A scoring script which is dominantly influenced by how much of a track you listened to on the most recent occasion.
+</p>
+
+<p>
+<b>Usage:</b><br>
+Just run the script, and it will be used to calculate scores for your tracks from then on.
+</p>
+
+<p>
+<b>Dependencies:</b><br>
+<ul>
+<li>amaroK 1.4</li>
+<li>Ruby 1.8</li>
+</ul>
+</p>
+
+<p>
+<b>Author:</b><br>
+Gábor Lehel (illissius@gmail.com)
+</p>
+

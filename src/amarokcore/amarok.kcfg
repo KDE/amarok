@@ -101,6 +101,11 @@
         <whatsthis>The title of the Dynamic Mode that was most recently loaded in the playlist</whatsthis>
         <default>Random Mix</default>
     </entry>
+    <entry key="Last Score Script" type="String">
+        <label>The most recently used scoring script</label>
+        <whatsthis>The name of the custom scoring script which was most recently loaded</whatsthis>
+        <default></default>
+    </entry>
     <entry key="Show Tray Icon" type="Bool">
         <label>Whether to show icon in system tray</label>
         <whatsthis>Enable/Disable tray icon for amaroK.</whatsthis>

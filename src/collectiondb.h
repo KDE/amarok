@@ -310,7 +310,7 @@ class CollectionDB : public QObject, public EngineObserver
         QString getUniqueId( const QString &url );
 
         //statistics methods
-        int addSongPercentage( const QString &url, int percentage, const QDateTime *playtime = 0 );
+        void addSongPercentage( const QString &url, int percentage, const QDateTime *playtime = 0 );
         int getSongPercentage( const QString &url );
         int getSongRating( const QString &url );
         void setSongPercentage( const QString &url, int percentage );

@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.4.1:
   FEATURES:
+    * Support for custom scoring algorithms, via scripts.
     * Creative Nomad Jukebox support (untested!). Submitted by Andres Oton
       <andres.oton@gmail.com>. (BR 103185)
 

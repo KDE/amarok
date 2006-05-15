@@ -21,12 +21,14 @@
 #define DEBUG_PREFIX "ScriptManager"
 
 #include "amarok.h"
+#include "amarokconfig.h"
 #include "contextbrowser.h"
 #include "debug.h"
 #include "enginecontroller.h"
 #include "metabundle.h"
 #include "scriptmanager.h"
 #include "scriptmanagerbase.h"
+#include "statusbar.h"
 
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -195,13 +197,13 @@ ScriptManager::~ScriptManager()
 ////////////////////////////////////////////////////////////////////////////////
 
 bool
-ScriptManager::runScript( const QString& name )
+ScriptManager::runScript( const QString& name, bool silent )
 {
     if( !m_scripts.contains( name ) )
         return false;
 
     m_gui->listView->setCurrentItem( m_scripts[name].li );
-    return slotRunScript();
+    return slotRunScript( silent );
 }
 
 
@@ -264,47 +266,28 @@ ScriptManager::notifyFetchLyricsByUrl( const QString& url )
 }
 
 
-QStringList
-ScriptManager::lyricsScripts() const
-{
-    QStringList scripts;
-    foreachType( ScriptMap, m_scripts )
-        if( it.data().type == "lyrics" )
-            scripts += it.key();
-
-    return scripts;
-}
-
-
-QString
-ScriptManager::lyricsScriptRunning() const
-{
-    foreachType( ScriptMap, m_scripts )
-        if( it.data().process )
-            if( it.data().type == "lyrics" )
-                return it.key();
-
-    return QString::null;
-}
-
-
-QString
-ScriptManager::transcodeScriptRunning() const
-{
-    foreachType( ScriptMap, m_scripts )
-        if( it.data().process )
-            if( it.data().type == "transcode" )
-                return it.key();
-
-    return QString::null;
-}
-
-
 void ScriptManager::notifyTranscode( const QString& srcUrl, const QString& filetype )
 {
     notifyScripts( "transcode " + srcUrl + " " + filetype );
 }
 
+
+void
+ScriptManager::requestNewScore( const QString &url, double prevscore, int playcount, int length, int percentage )
+{
+    const QString script = ensureScoreScriptRunning();
+    if( script.isNull() )
+    {
+        amaroK::StatusBar::instance()->longMessage(
+            i18n( "No score scripts were found, or none of them worked. Automatic scoring will be disabled. Sorry." ),
+            KDE::StatusBar::Sorry );
+        return;
+    }
+
+    m_scripts[script].process->writeStdin(
+        QString( "requestNewScore %1 %2 %3 %4 %5" )
+        .arg( prevscore ).arg( playcount ).arg( length ).arg( percentage ).arg( KURL::encode_string( url ) ) );
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // private slots
@@ -502,20 +485,22 @@ ScriptManager::slotUninstallScript()
 
 
 bool
-ScriptManager::slotRunScript()
+ScriptManager::slotRunScript( bool silent )
 {
     QListViewItem* const li = m_gui->listView->currentItem();
     const QString name = li->text( 0 );
 
     if( m_scripts[name].type == "lyrics" && lyricsScriptRunning() != QString::null ) {
-        KMessageBox::sorry( 0, i18n( "Another lyrics script is already running. "
-                                     "You may only run one lyrics script at a time." ) );
+        if( !silent )
+            KMessageBox::sorry( 0, i18n( "Another lyrics script is already running. "
+                                         "You may only run one lyrics script at a time." ) );
         return false;
     }
 
     if( m_scripts[name].type == "transcode" && transcodeScriptRunning() != QString::null ) {
-        KMessageBox::sorry( 0, i18n( "Another transcode script is already running. "
-                                     "You may only run one transcode script at a time." ) );
+        if( !silent )
+            KMessageBox::sorry( 0, i18n( "Another transcode script is already running. "
+                                         "You may only run one transcode script at a time." ) );
         return false;
     }
 
@@ -532,9 +517,20 @@ ScriptManager::slotRunScript()
     connect( script, SIGNAL( receivedStdout( KProcess*, char*, int ) ), SLOT( slotReceivedStdout( KProcess*, char*, int ) ) );
     connect( script, SIGNAL( processExited( KProcess* ) ), SLOT( scriptFinished( KProcess* ) ) );
 
-    if( !script->start( KProcess::NotifyOnExit ) ) {
-        KMessageBox::sorry( 0, i18n( "<p>Could not start the script <i>%1</i>.</p>"
-                                     "<p>Please make sure that the file has execute (+x) permissions.</p>" ).arg( name ) );
+    if( script->start( KProcess::NotifyOnExit ) )
+    {
+        if( m_scripts[name].type == "score" && !scoreScriptRunning().isNull() )
+        {
+            stopScript( scoreScriptRunning() );
+            m_gui->listView->setCurrentItem( li );
+        }
+        AmarokConfig::setLastScoreScript( name );
+    }
+    else
+    {
+        if( !silent )
+            KMessageBox::sorry( 0, i18n( "<p>Could not start the script <i>%1</i>.</p>"
+                                         "<p>Please make sure that the file has execute (+x) permissions.</p>" ).arg( name ) );
         delete script;
         return false;
     }
@@ -715,6 +711,47 @@ ScriptManager::scriptFinished( KProcess* process ) //SLOT
 // private
 ////////////////////////////////////////////////////////////////////////////////
 
+QStringList ScriptManager::scriptsOfType( const QString &type ) const
+{
+    QStringList scripts;
+    foreachType( ScriptMap, m_scripts )
+        if( it.data().type == type )
+            scripts += it.key();
+
+    return scripts;
+}
+
+QString ScriptManager::scriptRunningOfType( const QString &type ) const
+{
+    foreachType( ScriptMap, m_scripts )
+        if( it.data().process )
+            if( it.data().type == type )
+                return it.key();
+
+    return QString::null;
+}
+
+QString ScriptManager::ensureScoreScriptRunning()
+{
+    QString s = scoreScriptRunning();
+    if( !s.isNull() )
+        return s;
+
+    if( runScript( AmarokConfig::lastScoreScript(), true /*silent*/ ) )
+        return AmarokConfig::lastScoreScript();
+
+    const QString def = i18n( "Score" ) + ": " + "Default";
+    if( runScript( def, true ) )
+        return def;
+
+    const QStringList scripts = scoreScripts();
+    for( QStringList::const_iterator it = scripts.begin(), end = scripts.end(); it != end; ++it )
+        if( runScript( *it, true ) )
+            return *it;
+
+    return QString::null;
+}
+
 void
 ScriptManager::terminateProcess( KProcIO** proc )
 {
@@ -759,6 +796,8 @@ ScriptManager::loadScript( const QString& path )
                     name.prepend( i18n( "Lyrics" ) + ": " );
                 if( type == "transcode" )
                     name.prepend( i18n( "Transcoding" ) + ": " );
+                if( type == "score" )
+                    name.prepend( i18n( "Score" ) + ": " );
             }
         }
 

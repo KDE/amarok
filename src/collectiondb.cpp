@@ -28,6 +28,7 @@
 #include "podcastbundle.h"        //addPodcast
 #include "qstringx.h"
 #include "scancontroller.h"
+#include "scriptmanager.h"
 #include "scrobbler.h"
 #include "statusbar.h"
 #include "threadweaver.h"
@@ -2676,10 +2677,9 @@ CollectionDB::addAudioproperties( const MetaBundle& bundle )
 }
 
 
-int
+void
 CollectionDB::addSongPercentage( const QString &url, int percentage, const QDateTime *playtime )
 {
-    float score;
     QStringList values =
         query( QString(
             "SELECT playcounter, createdate, percentage, rating FROM statistics "
@@ -2694,17 +2694,9 @@ CollectionDB::addSongPercentage( const QString &url, int percentage, const QDate
 
     if ( !values.isEmpty() )
     {
-        if ( values.first().toInt() )
-            // had already been played
-            score = ( ( values[2].toDouble() * values.first().toInt() ) + percentage ) / ( values.first().toInt() + 1 );
-        else
-            // it's the first time track is played
-            score = ( ( 50 + percentage ) / 2 );
-
         // increment playcounter and update accesstime
         if (getDbConnectionType() == DbConnection::postgresql) {
-            query( QString( "UPDATE statistics SET percentage=%1, playcounter=%2, accessdate=%3 WHERE url='%4';" )
-                            .arg( score )
+            query( QString( "UPDATE statistics SET playcounter=%1, accessdate=%2 WHERE url='%3';" )
                             .arg( values[0] + " + 1" )
                             .arg( atime )
                             .arg( escapeString( url ) ) );
@@ -2716,27 +2708,31 @@ CollectionDB::addSongPercentage( const QString &url, int percentage, const QDate
                             .arg( values[3] )
                             .arg( values[1] )
                             .arg( atime )
-                            .arg( score )
+                            .arg( values[2] )
                             .arg( values[0] + " + 1" )
                             .arg( escapeString( url ) ) );
         }
     }
     else
     {
-        // entry didnt exist yet, create a new one
-        score = ( ( 50 + percentage ) / 2 );
-
         insert( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, playcounter, rating ) "
-                        "VALUES ( '%4', %2, %3, %1, 1, 0 );" )
-                        .arg( score )
+                        "VALUES ( '%3', %1, %2, 0, 1, 0 );" )
                         .arg( atime )
                         .arg( atime )
                         .arg( escapeString( url ) ), NULL );
     }
 
-    int iscore = getSongPercentage( url );
-    emit scoreChanged( url, iscore );
-    return iscore;
+    double prevscore = 50;
+    int playcount = 0;
+    if( !values.isEmpty() )
+    {
+        prevscore = values[2].toDouble();
+        playcount = values[0].toInt();
+    }
+    const QStringList v = query( "SELECT length FROM tags WHERE url = '%1';" );
+    const int length = v.isEmpty() ? 0 : v.first().toInt();
+
+    ScriptManager::instance()->requestNewScore( url, prevscore, playcount, length, percentage );
 }
 
 

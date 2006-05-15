@@ -1,0 +1,2 @@
+name = Impulsive
+type = score

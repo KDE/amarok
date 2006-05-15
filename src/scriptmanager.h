@@ -70,7 +70,7 @@ class ScriptManager : public KDialogBase, public EngineObserver
          * @param name The name of the script.
          * @return True if successful.
          */
-        bool runScript( const QString& name );
+        bool runScript( const QString& name, bool silent = false );
 
         /**
          * Stops the script with the given name. Used by the DCOP handler.
@@ -106,6 +106,15 @@ class ScriptManager : public KDialogBase, public EngineObserver
        /** Sends a transcode notification to all scripts */
        void notifyTranscode( const QString& srcUrl, const QString& filetype );
 
+       /** Return name of the scoring script currently running, or QString::null if none */
+       QString scoreScriptRunning() const;
+
+       /** Returns a list of all scoring scripts */
+       QStringList scoreScripts() const;
+
+        /** Asks the current score script to give a new score based on the parameters. */
+       void requestNewScore( const QString &url, double prevscore, int playcount, int length, int percentage );
+
     signals:
         /** Emitted when the lyrics script changes, so that a lyrics retry can be made */
         void lyricsScriptChanged();
@@ -120,7 +129,7 @@ class ScriptManager : public KDialogBase, public EngineObserver
         bool slotInstallScript( const QString& path = QString::null );
         void slotRetrieveScript();
         void slotUninstallScript();
-        bool slotRunScript();
+        bool slotRunScript( bool silent = false );
         void slotStopScript();
         void slotConfigureScript();
         void slotAboutScript();
@@ -131,6 +140,14 @@ class ScriptManager : public KDialogBase, public EngineObserver
         void scriptFinished( KProcess* process );
 
     private:
+        /** Returns all scripts of the given \p type */
+        QStringList scriptsOfType( const QString &type ) const;
+
+        /** Returns the first running script found of \p type */
+        QString scriptRunningOfType( const QString &type ) const;
+
+        QString ensureScoreScriptRunning();
+
         /** Terminates a process with SIGTERM and deletes the KProcIO object */
         void terminateProcess( KProcIO** proc );
 
@@ -168,6 +185,16 @@ class ScriptManager : public KDialogBase, public EngineObserver
         ScriptMap m_scripts;
 };
 
+
+inline QStringList ScriptManager::lyricsScripts() const { return scriptsOfType( "lyrics" ); }
+
+inline QString ScriptManager::lyricsScriptRunning() const { return scriptRunningOfType( "lyrics" ); }
+
+inline QString ScriptManager::transcodeScriptRunning() const { return scriptRunningOfType( "transcode" ); }
+
+inline QStringList ScriptManager::scoreScripts() const { return scriptsOfType( "score" ); }
+
+inline QString ScriptManager::scoreScriptRunning() const { return scriptRunningOfType( "score" ); }
 
 #endif /* AMAROK_SCRIPTMANAGER_H */
 
