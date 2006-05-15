@@ -17,7 +17,6 @@ SUBDIRS = \
     analyzers \
     data \
     plugin \
-    engine \
     images \
     loader \
     scripts \
@@ -27,6 +26,7 @@ SUBDIRS = \
     $(KONQSIDEBAR_SUBDIR) \
     statusbar \
     . \
+    engine \
     mediadevice \
     collectionscanner
 
