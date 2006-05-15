@@ -163,7 +163,10 @@ MetaBundle::MetaBundle()
         , m_lastPlay( abs( Undetermined ) )
         , m_filesize( Undetermined )
         , m_type( other )
-        , m_flags( Flags::Exists | Flags::ValidMedia )
+        , m_exists( true )
+        , m_isValidMedia( true )
+        , m_isCompilation( false )
+        , m_notCompilation( false )
         , m_podcastBundle( 0 )
 {
     init();
@@ -183,19 +186,16 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
     , m_lastPlay( abs( Undetermined ) )
     , m_filesize( Undetermined )
     , m_type( other )
-    , m_flags( ( url.protocol() == "file" && QFile::exists( url.path() ) ) ? Flags::Exists : 0 )
+    , m_exists( url.protocol() == "file" && QFile::exists( url.path() ) )
+    , m_isValidMedia( false )
+    , m_isCompilation( false )
+    , m_notCompilation( false )
     , m_podcastBundle( 0 )
 {
     if ( exists() )
     {
         if ( !noCache )
-        {
-            const bool valid = CollectionDB::instance()->bundleForUrl( this );
-            if( valid )
-                m_flags |= Flags::ValidMedia;
-            else
-                m_flags &= ~Flags::ValidMedia;
-        }
+            m_isValidMedia = CollectionDB::instance()->bundleForUrl( this );
 
         if ( !isValidMedia() || m_length <= 0 )
             readTags( readStyle, images );
@@ -231,7 +231,10 @@ MetaBundle::MetaBundle( const QString& title,
         , m_lastPlay( abs( Undetermined ) )
         , m_filesize( Undetermined )
         , m_type( other )
-        , m_flags( Flags::Exists | Flags::ValidMedia )
+        , m_exists( true )
+        , m_isValidMedia( false )
+        , m_isCompilation( false )
+        , m_notCompilation( false )
         , m_podcastBundle( 0 )
 {
     if( title.contains( '-' ) )
@@ -281,7 +284,10 @@ MetaBundle::operator=( const MetaBundle& bundle )
     m_lastPlay = bundle.m_lastPlay;
     m_filesize = bundle.m_filesize;
     m_type = bundle.m_type;
-    m_flags = bundle.m_flags;
+    m_exists = bundle.m_exists;
+    m_isValidMedia = bundle.m_isValidMedia;
+    m_isCompilation = bundle.m_isCompilation;
+    m_notCompilation = bundle.m_notCompilation;
     m_podcastBundle = 0;
     if( bundle.m_podcastBundle )
         setPodcastBundle( *bundle.m_podcastBundle );
@@ -293,14 +299,9 @@ MetaBundle::operator=( const MetaBundle& bundle )
 bool
 MetaBundle::checkExists()
 {
-    const bool exists = isStream() || ( url().protocol() == "file" && QFile::exists( url().path() ) );
+    m_exists = isStream() || ( url().protocol() == "file" && QFile::exists( url().path() ) );
 
-    if( exists )
-        m_flags |= Flags::Exists;
-    else
-        m_flags &= ~Flags::Exists;
-
-    return exists;
+    return m_exists;
 }
 
 bool
@@ -374,12 +375,12 @@ MetaBundle::init( const KFileMetaInfo& info )
         makeSane( m_title );
         #undef makeSane
 
-        m_flags |= Flags::ValidMedia;
+        m_isValidMedia = true;
     }
     else
     {
         m_bitrate = m_length = m_sampleRate = m_filesize = Undetermined;
-        m_flags &= ~Flags::ValidMedia;
+        m_isValidMedia = false;
     }
 }
 
@@ -434,7 +435,7 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
             setTrack( tag->track() );
             #undef strip
 
-            m_flags |= Flags::ValidMedia;
+            m_isValidMedia = true;
 
             m_filesize = QFile( path ).size();
         }
@@ -1223,7 +1224,7 @@ bool MetaBundle::save( QTextStream &stream, const QStringList &attributes, int i
     QDomElement item = QDomSucksItNeedsADocument.createElement( "item" );
     item.setAttribute( "url", url().url() );
     item.setAttribute( "uniqueid", uniqueId() );
-    if( m_flags & Flags::IsCompilation )
+    if( m_isCompilation )
         item.setAttribute( "compilation", "true" );
 
     for( int i = 0, n = attributes.count(); i < n; i += 2 )
@@ -1502,16 +1503,15 @@ void MetaBundle::setCompilation( int compilation )
     switch( compilation )
     {
         case CompilationYes:
-            m_flags |= Flags::IsCompilation;
-            m_flags &= ~Flags::NotCompilation;
+            m_isCompilation = true;
+            m_notCompilation = false;
             break;
         case CompilationNo:
-            m_flags |= Flags::NotCompilation;
-            m_flags &= ~Flags::IsCompilation;
+            m_isCompilation = false;
+            m_notCompilation = true;
             break;
         case CompilationUnknown:
-            m_flags &= ~Flags::IsCompilation;
-            m_flags &= ~Flags::NotCompilation;
+            m_isCompilation = m_notCompilation = false;
             break;
     }
 }

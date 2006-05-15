@@ -330,9 +330,10 @@ protected:
 
     int m_type;
 
-    struct Flags { enum { Exists = 1, ValidMedia = 2, IsCompilation = 4, NotCompilation = 8 }; };
-
-    uint m_flags: 4;
+    bool m_exists: 1;
+    bool m_isValidMedia: 1;
+    bool m_isCompilation: 1;
+    bool m_notCompilation: 1;
 
     PodcastEpisodeBundle *m_podcastBundle;
 
@@ -364,7 +365,7 @@ inline bool MetaBundle::operator!=(const MetaBundle &bundle) const { return !ope
 
 inline bool MetaBundle::isEmpty() const { return url().isEmpty(); }
 
-inline bool MetaBundle::isValidMedia() const { return m_flags & Flags::ValidMedia; }
+inline bool MetaBundle::isValidMedia() const { return m_isValidMedia; }
 
 inline bool MetaBundle::audioPropertiesUndetermined() const
 {
@@ -376,7 +377,7 @@ inline void MetaBundle::aboutToChange( int column ) { aboutToChange( QValueList<
 inline void MetaBundle::reactToChanges( const QValueList<int>& ) { }
 inline void MetaBundle::reactToChange( int column ) { reactToChanges( QValueList<int>() << column ); }
 
-inline bool MetaBundle::exists() const { return m_flags & Flags::Exists; }
+inline bool MetaBundle::exists() const { return m_exists; }
 
 inline bool MetaBundle::isStream() const { return url().protocol() == "http"; }
 
@@ -406,9 +407,9 @@ inline QString MetaBundle::uniqueId()   const { return m_uniqueId; }
 inline int MetaBundle::discNumber() const { return m_discNumber == Undetermined ? 0 : m_discNumber; }
 inline int MetaBundle::compilation() const
 {
-    if( m_flags & Flags::IsCompilation )
+    if( m_isCompilation )
         return CompilationYes;
-    else if( m_flags & Flags::NotCompilation )
+    else if( m_notCompilation )
         return CompilationNo;
     else
         return CompilationUnknown;
