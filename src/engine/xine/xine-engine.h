@@ -11,7 +11,7 @@
 #ifndef XINE_ENGINE_H
 #define XINE_ENGINE_H
 
-#include "engine/enginebase.h"
+#include "enginebase.h"
 #include <qthread.h>
 
 extern "C"

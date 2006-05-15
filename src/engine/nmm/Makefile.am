@@ -13,7 +13,7 @@ INCLUDES = \
     $(all_includes)
 
 libamarok_nmmengine_plugin_la_LIBADD = \
-    $(top_builddir)/amarok/src/engine/libengine.la \
+    $(top_builddir)/amarok/src/libamarok.la \
     $(top_builddir)/amarok/src/plugin/libplugin.la \
     $(LIB_KDECORE) $(LIB_KFILE) \
     -lnmmbase -lnmmgraphmgr -lnmmiprogress -lnmmiaudiodevice -lnmmigeneral

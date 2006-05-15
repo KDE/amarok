@@ -1,10 +1,3 @@
-noinst_LTLIBRARIES = libengine.la
-
-INCLUDES = \
-    -I$(top_srcdir)/amarok/src/plugin \
-    -I$(top_srcdir)/amarok/src \
-    $(all_includes)
-
 if with_gst10
     GST10_ENGINE_SUBDIR = gst10
 endif
@@ -21,13 +14,6 @@ if with_helix
     HELIX_ENGINE_SUBDIR = helix
 endif
 
-libengine_la_SOURCES = \
-    enginebase.cpp
-
-noinst_HEADERS = enginebase.h
-
-METASOURCES = \
-    AUTO
 
 SUBDIRS = . \
     void \

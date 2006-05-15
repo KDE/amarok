@@ -35,7 +35,6 @@ INCLUDES = \
     -I$(top_builddir)/amarok/src/amarokcore \
     -I$(top_srcdir)/amarok/src/amarokcore \
     -I$(top_srcdir)/amarok/src/analyzers \
-    -I$(top_srcdir)/amarok/src/engine \
     -I$(top_srcdir)/amarok/src/plugin \
     -I$(top_srcdir)/amarok/src/statusbar \
     -I$(top_srcdir)/amarok/src/mediadevice \
@@ -69,14 +68,15 @@ libamarok_la_SOURCES = \
     contextbrowser.cpp \
     coverfetcher.cpp \
     covermanager.cpp \
-    pixmapviewer.cpp \
     cuefile.cpp \
     dbsetup.ui  \
     dbsetup.ui.h \
     deviceconfiguredialog.cpp \
     devicemanager.cpp \
     directorylist.cpp \
+    dynamicmode.cpp \
     effectwidget.cpp \
+    enginebase.cpp \
     enginecontroller.cpp \
     engineobserver.cpp \
     equalizergraph.cpp \
@@ -96,12 +96,12 @@ libamarok_la_SOURCES = \
     mediumpluginmanager.cpp \
     metabundle.cpp \
     moodbar.cpp \
-    mydiroperator.cpp \
     multitabbar.cpp \
+    mydiroperator.cpp \
     newdynamic.ui \
-    osd.cpp \
     organizecollectiondialog.ui \
-    dynamicmode.cpp \
+    osd.cpp \
+    pixmapviewer.cpp \
     playerwindow.cpp \
     playlist.cpp \
     playlistbrowser.cpp \
@@ -131,9 +131,9 @@ libamarok_la_SOURCES = \
     tagguesserconfigdialog.ui \
     threadweaver.cpp \
     tooltip.cpp \
-    tracktooltip.cpp \
     trackpickerdialog.cpp \
     trackpickerdialogbase.ui \
+    tracktooltip.cpp \
     transferdialog.cpp \
     xmlloader.cpp \
     xspfplaylist.cpp
@@ -141,7 +141,6 @@ libamarok_la_SOURCES = \
 libamarok_la_LIBADD = \
     $(top_builddir)/amarok/src/amarokcore/libamarokcore.la \
     $(top_builddir)/amarok/src/analyzers/libanalyzers.la \
-    $(top_builddir)/amarok/src/engine/libengine.la \
     $(top_builddir)/amarok/src/plugin/libplugin.la \
     $(top_builddir)/amarok/src/statusbar/libstatusbar.la \
     $(top_builddir)/amarok/src/metadata/libmetadata.la \
@@ -172,7 +171,6 @@ amarokapp_LDADD = \
     $(top_builddir)/amarok/src/amarokcore/libamarokcore.la \
     libamarok.la \
     $(top_builddir)/amarok/src/analyzers/libanalyzers.la \
-    $(top_builddir)/amarok/src/engine/libengine.la \
     $(top_builddir)/amarok/src/plugin/libplugin.la \
     $(top_builddir)/amarok/src/statusbar/libstatusbar.la \
     $(top_builddir)/amarok/src/metadata/libmetadata.la \

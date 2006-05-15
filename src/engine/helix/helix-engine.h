@@ -11,7 +11,7 @@
 #ifndef _HELIX_ENGINE_H_
 #define _HELIX_ENGINE_H_
 
-#include "engine/enginebase.h"
+#include "enginebase.h"
 #include <qobject.h>
 #include <sys/types.h>
 #include <hxplayercontrol.h>
@@ -88,7 +88,7 @@ private:
       unsigned long  m_lastpos;
       unsigned short m_currentScope[SCOPESIZE];
       int            m_scopeindex;
-      unsigned long  m_w; // more accurate position estimate for the player 
+      unsigned long  m_w; // more accurate position estimate for the player
    } hscope[2];
 
    typedef struct MimeEntry

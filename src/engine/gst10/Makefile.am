@@ -5,7 +5,6 @@ SUBDIRS = \
     config equalizer
 
 INCLUDES = \
-    -I$(top_srcdir)/amarok/src/engine \
     -I$(top_srcdir)/amarok/src/engine/gst10/config \
     -I$(top_srcdir)/amarok/src/plugin \
     -I$(top_srcdir)/amarok/src \
@@ -13,7 +12,7 @@ INCLUDES = \
     $(all_includes)
 
 libamarok_gst10engine_plugin_la_LIBADD = \
-    $(top_builddir)/amarok/src/engine/libengine.la \
+    $(top_builddir)/amarok/src/libamarok.la \
     $(top_builddir)/amarok/src/engine/gst10/config/libgstconfig.la \
     $(top_builddir)/amarok/src/engine/gst10/equalizer/libgstequalizer.la \
     $(top_builddir)/amarok/src/plugin/libplugin.la \
@@ -28,7 +27,7 @@ libamarok_gst10engine_plugin_la_LDFLAGS = \
 libamarok_gst10engine_plugin_la_SOURCES = \
     gstconfigdialog.cpp \
     gstconfigdialogbase.ui \
-    gstengine.cpp 
+    gstengine.cpp
 
 METASOURCES = \
     AUTO

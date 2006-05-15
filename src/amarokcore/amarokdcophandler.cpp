@@ -26,7 +26,7 @@
 #include "collectiondb.h"
 #include "contextbrowser.h"
 #include "devicemanager.h"
-#include "engine/enginebase.h"
+#include "enginebase.h"
 #include "enginecontroller.h"
 #include "equalizersetup.h"
 #include "htmlview.h"

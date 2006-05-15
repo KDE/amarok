@@ -5,6 +5,11 @@ SUBDIRS = \
     helix-sp \
     config
 
+INCLUDES = \
+    -I$(top_srcdir)/amarok/src \
+    -I$(top_srcdir)/amarok/src/amarokcore \
+    $(all_includes)
+
 AM_CPPFLAGS = \
     -D_UNIX \
     -Wall -Wreturn-type \
@@ -22,9 +27,9 @@ libamarok_helixengine_plugin_la_SOURCES = \
     hxplayercontrol.cpp
 
 libamarok_helixengine_plugin_la_LIBADD = \
+    $(top_builddir)/amarok/src/libamarok.la \
     $(top_builddir)/amarok/src/engine/helix/helix-sp/libhelix-sp.la \
     $(top_builddir)/amarok/src/engine/helix/config/libhelixconfig.la \
-    $(top_builddir)/amarok/src/engine/libengine.la \
     $(top_builddir)/amarok/src/plugin/libplugin.la \
     -lkdeui -lkdecore $(ALSALIB_LIBS)
 
