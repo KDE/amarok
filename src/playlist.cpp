@@ -740,7 +740,7 @@ Playlist::addSpecialCustomTracks( uint songCount )
 
         if ( !sp->query().isEmpty() ) {
             //We have to filter all the un-needed results from query( sql )
-            for (uint x=11; x < queryResult.count() ; x += 13)
+            for (uint x=12; x < queryResult.count() ; x += 14)
                 items << queryResult[x];
         } else {
             items = queryResult;

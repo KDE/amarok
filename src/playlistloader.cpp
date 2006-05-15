@@ -992,7 +992,7 @@ SqlLoader::doJob()
     BundleList bundles;
     uint x = 0;
     for( for_iterators( QStringList, values ); it != end && !isAborted(); ++it ) {
-        setProgress( x += 13 );
+        setProgress( x += 14);
 
         MetaBundle b;
         b.setAlbum     (    *it );
@@ -1003,6 +1003,7 @@ SqlLoader::doJob()
         b.setComment   (  *++it );
         b.setTrack     ( (*++it).toInt() );
         b.setBitrate   ( (*++it).toInt() );
+        b.setDiscNumber( (*++it).toInt() );
         b.setLength    ( (*++it).toInt() );
         b.setSampleRate( (*++it).toInt() );
         b.setFilesize  ( (*++it).toInt() );

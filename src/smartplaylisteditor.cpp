@@ -457,9 +457,9 @@ void SmartPlaylistEditor::buildQuery()
         limitStr = " LIMIT " + QString::number( m_limitSpin->value() )+" OFFSET 0 ";
     
 
-    // album / artist / genre / title / year / comment / track / bitrate / length / samplerate / path / compilation
+    // album / artist / genre / title / year / comment / track / bitrate / discnumber / length / samplerate / path / compilation
     m_query = "SELECT album.name, artist.name, genre.name, tags.title, year.name, tags.comment, tags.track, "
-                    "tags.bitrate, tags.length, tags.samplerate, tags.filesize, tags.url, tags.sampler"
+                    "tags.bitrate, tags.discnumber, tags.length, tags.samplerate, tags.filesize, tags.url, tags.sampler"
                     " FROM " + joins + whereStr + orderStr + limitStr + ";";
 
     if( m_expandCheck->isChecked() ) { //We use "(*ExpandString*)" as a marker, if a artist/track/album has this bizarre name, it won't work.
@@ -473,7 +473,8 @@ void SmartPlaylistEditor::buildQuery()
         else
             whereStr = QString("WHERE %1 = '(*ExpandString*)'").arg(field);
         m_expandQuery = "SELECT album.name, artist.name, genre.name, tags.title, year.name, "
-                            "tags.comment, tags.track, tags.bitrate, tags.length, tags.samplerate, tags.filesize, tags.url, tags.sampler"
+                            "tags.comment, tags.track, tags.bitrate, tags.discnumber, tags.length,"
+                            "tags.samplerate, tags.filesize, tags.url, tags.sampler"
                             " FROM " + joins + whereStr + orderStr + limitStr + ";";
     }
 }
