@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Service
+Name=Creative Nomad Jukebox Media Device
+X-KDE-Library=libamarok_njb-mediadevice
+Comment=Plugin for amaroK
+ServiceTypes=amaroK/Plugin
+X-KDE-amaroK-plugintype=mediadevice
+X-KDE-amaroK-name=njb-mediadevice
+X-KDE-amaroK-authors=Andres Oton
+X-KDE-amaroK-email=andres.oton@gmail.com
+X-KDE-amaroK-rank=100
+X-KDE-amaroK-version=1
+X-KDE-amaroK-framework-version=23
