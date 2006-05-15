@@ -105,7 +105,7 @@ QString OrganizeCollectionDialog::buildFormatString()
     }
     else
     {
-        format += "%album{ Disc %discnumber)}/";
+        format += "%album{ (Disc %discnumber)}/";
         format += "%track - %title.%filetype";
     }
 
