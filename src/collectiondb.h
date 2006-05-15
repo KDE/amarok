@@ -107,6 +107,7 @@ class DbConnection
         enum DbConnectionType { sqlite = 0, mysql = 1, postgresql = 2 };
 
         DbConnection();
+        virtual ~DbConnection() {}
 
         virtual QStringList query( const QString& /* statement */ ) = 0;
         virtual int insert( const QString& /* statement */, const QString& /* table */ ) = 0;
