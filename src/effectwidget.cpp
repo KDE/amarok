@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "effectwidget.h"
-#include "engine/enginebase.h"
+#include "enginebase.h"
 #include "enginecontroller.h"
 
 #include <vector>
