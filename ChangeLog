@@ -7,6 +7,8 @@ VERSION 1.4.1:
   FEATURES:
 
   CHANGES:
+    * Hint at starting a transcode script for transcoding while transferring
+      to media devices. (BR 127155)
     * If a disc number is present, append it to the album's name when
       organizing files. (BR 126867)
     * Configure, which of fresh podcasts, newest & favorite albums are shown

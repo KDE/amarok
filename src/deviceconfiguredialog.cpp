@@ -87,7 +87,6 @@ DeviceConfigureDialog::DeviceConfigureDialog( const Medium &medium )
         m_transcodeWhenNecessary = new QRadioButton( transcodeGroup );
         m_transcodeWhenNecessary->setText( i18n( "When necessary" ) );
         m_transcodeWhenNecessary->setChecked( !device->m_transcodeAlways );
-        transcodeGroup->setEnabled( device->m_transcode );
         connect( m_transcodeCheck, SIGNAL(toggled( bool )),
                 transcodeGroup, SLOT(setEnabled( bool )) );
         transcodeGroup->insert( m_transcodeAlways );
@@ -98,7 +97,12 @@ DeviceConfigureDialog::DeviceConfigureDialog( const Medium &medium )
 
         const ScriptManager *sm = ScriptManager::instance();
         m_transcodeCheck->setEnabled( sm->transcodeScriptRunning() != QString::null );
-        transcodeGroup->setEnabled( sm->transcodeScriptRunning() != QString::null );
+        transcodeGroup->setEnabled( sm->transcodeScriptRunning() != QString::null && device->m_transcode );
+        if( sm->transcodeScriptRunning().isNull() )
+        {
+            QToolTip::add( m_transcodeCheck, i18n( "For this feature, a script of type \"Transcode\" has to be running" ) );
+            QToolTip::add( transcodeGroup, i18n( "For this feature, a script of type \"Transcode\" has to be running" ) );
+        }
 
         device->addConfigElements( vbox );
     }
