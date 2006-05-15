@@ -17,6 +17,7 @@
 #include "xine-config.h"
 #include "xinecfg.h"
 #include "xine-engine.h"
+#include "playlist.h"
 
 AMAROK_EXPORT_PLUGIN( XineEngine )
 
@@ -682,7 +683,9 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
 
     case XINE_EVENT_UI_PLAYBACK_FINISHED:
         #ifdef XINE_PARAM_GAPLESS_SWITCH
-            if ( xine_check_version(1,1,1) && xe->m_url.isLocalFile() ) //Remote media break with gapless
+            if ( xine_check_version(1,1,1) && xe->m_url.isLocalFile() //Remote media break with gapless
+            //don't prepare for a track that isn't coming
+            && ( !Playlist::instance()->isTrackAfter() ) ) 
                 xine_set_param( xe->m_stream, XINE_PARAM_GAPLESS_SWITCH, 1);
         #endif
         //emit signal from GUI thread
