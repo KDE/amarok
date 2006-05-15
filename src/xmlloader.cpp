@@ -62,6 +62,8 @@ void MetaBundle::XmlLoader::newAttribute( const QString &key, const QString &val
 {
     if( key == "url" )
         m_bundle.setUrl( value );
+    else if( key == "uniqueid" )
+        m_bundle.setUniqueId( value );
     else if( key == "compilation" )
         m_bundle.setCompilation( MetaBundle::CompilationYes );
     else
@@ -90,7 +92,6 @@ void MetaBundle::XmlLoader::newTag( const QString &name, const QString &value )
                 case Filesize:
                 case Type:
                 case SampleRate:
-                case UniqueId:
                     m_bundle.setExactText( i, value );
                     continue;
 

@@ -109,7 +109,6 @@ const QString MetaBundle::exactColumnName( int c ) //static
         case LastPlayed: return "LastPlayed";
         case Filesize:   return "Filesize";
         case Mood:       return "Mood";
-        case UniqueId:   return "UniqueId";
     }
     return "<ERROR>";
 }
@@ -643,7 +642,6 @@ void MetaBundle::setExactText( int column, const QString &newText )
         case LastPlayed: setLastPlay(   newText.toInt() ); break;
         case Filesize:   setFilesize(   newText.toInt() ); break;
         case Type:       setFileType(   newText.toInt() ); break;
-        case UniqueId:   setUniqueId(   newText );         break;
         default: warning() << "Tried to set the text of an immutable or nonexistent column! [" << column << endl;
    }
 }
@@ -673,7 +671,6 @@ QString MetaBundle::exactText( int column ) const
         case LastPlayed: return QString::number( lastPlay() );
         case Filesize:   return QString::number( filesize() );
         case Mood:       return QString::null;
-        case UniqueId:   return uniqueId();
         default: warning() << "Tried to get the text of a nonexistent column! [" << column << endl;
     }
 
@@ -1225,6 +1222,7 @@ bool MetaBundle::save( QTextStream &stream, const QStringList &attributes, int i
     QDomDocument QDomSucksItNeedsADocument;
     QDomElement item = QDomSucksItNeedsADocument.createElement( "item" );
     item.setAttribute( "url", url().url() );
+    item.setAttribute( "uniqueid", uniqueId() );
     if( m_flags & Flags::IsCompilation )
         item.setAttribute( "compilation", "true" );
 
