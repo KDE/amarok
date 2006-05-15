@@ -299,7 +299,7 @@ MetaBundle::operator=( const MetaBundle& bundle )
 bool
 MetaBundle::checkExists()
 {
-    m_exists = isStream() || ( url().protocol() == "file" && QFile::exists( url().path() ) );
+    m_exists = isStream() || url().protocol() == "cdda" || ( url().protocol() == "file" && QFile::exists( url().path() ) );
 
     return m_exists;
 }
