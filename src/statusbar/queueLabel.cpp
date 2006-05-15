@@ -264,7 +264,7 @@ void QueueLabel::showToolTip()
         }
         if( length )
             text += QString("<center>%1</center>")
-                    .arg( i18n( "<b>1</b> track (<b>%1</b>)", "<b>%n</b> tracks (<b>%1</b>)", count )
+                    .arg( i18n( "1 track (%1)", "%n tracks (%1)", count )
                           .arg( MetaBundle::prettyLength( length, true ) ) );
     }
 
