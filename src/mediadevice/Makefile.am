@@ -6,12 +6,15 @@ if with_ifp
     IFP_SUBDIR = ifp
 endif
 
-GENERIC_SUBDIR = generic
+if with_libnjb
+    NJB_SUBDIR = njb
+endif
 
 METASOURCES = AUTO
 
 SUBDIRS = \
+    generic \
     $(IPOD_SUBDIR) \
     $(IFP_SUBDIR) \
-    $(GENERIC_SUBDIR)
+    $(NJB_SUBDIR)
 

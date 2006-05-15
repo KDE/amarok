@@ -5,6 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.4.1:
   FEATURES:
+    * Creative Nomad Jukebox support (untested!). Submitted by Andres Oton
+      <andres.oton@gmail.com>. (BR 103185)
 
   CHANGES:
     * Hint at starting a transcode script for transcoding while transferring

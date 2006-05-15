@@ -27,38 +27,38 @@
 
 
 class NjbPlaylist {
-public: 
-	NjbPlaylist();
-	NjbPlaylist( njb_playlist_t* playlist);
-	NjbPlaylist(const NjbPlaylist& _copy);
-	~NjbPlaylist( void);
+    public: 
+        NjbPlaylist();
+        NjbPlaylist( njb_playlist_t* playlist);
+        NjbPlaylist(const NjbPlaylist& _copy);
+        ~NjbPlaylist( void);
 
-	QStringList trackNames( void) const;
-	void operator=(const NjbPlaylist& _copy);
-	bool operator==(const QString& name) const;
-	bool operator==(const NjbPlaylist& rval) const;
-	QString getName(void) const;
+        QStringList trackNames( void) const;
+        void operator=(const NjbPlaylist& _copy);
+        bool operator==(const QString& name) const;
+        bool operator==(const NjbPlaylist& rval) const;
+        QString getName(void) const;
 
-	int setName( const QString& fileName);
-	int addTrack( const QString& fileName);
-	int update( void);
+        int setName( const QString& fileName);
+        int addTrack( const QString& fileName);
+        int update( void);
 
-	u_int32_t getId(void) const { return m_playlist->plid; }
+        u_int32_t getId(void) const { return m_playlist->plid; }
 
-protected:
-	void setPlaylist( njb_playlist_t* _newlist );
+    protected:
+        void setPlaylist( njb_playlist_t* _newlist );
 
-	static QString unescapefilename( const QString& );
-	static QString escapefilename( const QString& );
-	
-private:
-	njb_playlist_t* m_playlist;
+        static QString unescapefilename( const QString& );
+        static QString escapefilename( const QString& );
+
+    private:
+        njb_playlist_t* m_playlist;
 };
 
 class playlistValueList: public QValueList<NjbPlaylist>
 {
-public:
-	int readFromDevice( void);
+    public:
+        int readFromDevice( void);
 };
 
 #endif

@@ -750,6 +750,36 @@ AM_CONDITIONAL(with_konqsidebar, [test x$have_konqsidebar = xyes])
 
 
 ###############################################################################
+# BEGIN NJB CHECK
+###############################################################################
+### mediabrowser.cpp can use libnjb if available
+AC_ARG_WITH(libnjb,
+    AC_HELP_STRING([--with-libnjb],[build amaroK with Nomad Jukebox support from libnjb]),
+    [build_libnjb=$withval],
+    [build_libnjb=yes]
+)
+
+if test "$build_libnjb" != "no"; then
+    if test "$PKGCONFIGFOUND" = "yes" ; then
+
+        # check for libnjb
+        have_libnjb=no
+
+        PKG_CHECK_MODULES(LIBNJB, libnjb, have_libnjb=yes,have_libnjb=no)
+        if test "x$have_libnjb" != "xno"; then
+            AC_DEFINE(HAVE_LIBNJB, 1, [have libnjb])
+        fi
+    fi
+fi
+
+AM_CONDITIONAL(with_libnjb, [test x$have_libnjb = xyes])
+###############################################################################
+# END NJB CHECK
+###############################################################################
+
+
+
+###############################################################################
 # BEGIN IFP CHECK
 ###############################################################################
 ### mediabrowser.cpp can use libifp if available

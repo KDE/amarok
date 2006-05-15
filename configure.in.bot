@@ -234,6 +234,10 @@ else
         echo " =   - iRiver iFP Support"
     fi
 
+    if test x$have_libnjb != xyes; then
+        echo " =   - Creative Nomad Jukebox Support"
+    fi
+
 
     echo " ="
     echo " = The following extra functionality will be included:"
@@ -305,6 +309,10 @@ else
 
     if test x$have_ifp = xyes; then
         echo " =   + iRiver iFP Support"
+    fi
+
+    if test x$have_libnjb = xyes; then
+        echo " =   + Creative Nomad Jukebox Support"
     fi
 
 

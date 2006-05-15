@@ -33,14 +33,14 @@
 #include <kio/slavebase.h>
 
 /**
-This class is used to manipulate Nomad Creative Jukebox and others media player that works with the njb libraries.
+  This class is used to manipulate Nomad Creative Jukebox and others media player that works with the njb libraries.
 
-You can find the njb libs at : http://libnjb.sourceforge.net
+  You can find the njb libs at : http://libnjb.sourceforge.net
 
-Based at kionjb from 
+  Based at kionjb from 
 
-	@author Andres Oton <andres.oton@gmail.com>
-*/
+  @author Andres Oton <andres.oton@gmail.com>
+ */
 
 const int NJB_SUCCESS = 0;
 const int NJB_FAILURE = -1;
@@ -53,10 +53,10 @@ extern trackValueList* theTracks;
 
 struct DataFile
 {
-	QString   filename;
-	QString   folder;
-	u_int32_t dfid;
-	u_int64_t filesize;
+    QString   filename;
+    QString   folder;
+    u_int32_t dfid;
+    u_int64_t filesize;
 };
 typedef QValueList<DataFile> dataFileValueList;
 
@@ -64,158 +64,158 @@ class NjbMediaItem;
 
 class NjbMediaDevice : public MediaDevice
 {
-	Q_OBJECT
+    Q_OBJECT
 
-public:
-	NjbMediaDevice();
-	
-	~NjbMediaDevice();
-	
-//	bool configBool(const QString& name, bool defValue);
-//	bool getSpacesToUnderscores();
-//	bool isCancelled();
-//	bool isDeleting();
-//	bool isTransferring();
-//	int progress() const;
+    public:
+        NjbMediaDevice();
 
-// 	MediaItem* transferredItem();
-// 	MediaView* view();
-// 	Medium* getMedium();
-// 	QString configString(const QString& name, const QString& defValue);
+        ~NjbMediaDevice();
 
-	
-// 	QString deviceNode() const;
-// 	QString deviceType();
-// 	QString getTransferDir();
-// 	QString name() const;
-// 	QString uniqueId() const;
-// 	virtual bool asynchronousTransfer();
-// 	virtual bool autoConnect();
-// 	virtual bool hasTransferDialog();
+        //	bool configBool(const QString& name, bool defValue);
+        //	bool getSpacesToUnderscores();
+        //	bool isCancelled();
+        //	bool isDeleting();
+        //	bool isTransferring();
+        //	int progress() const;
 
-	//Implemented
-	virtual bool isConnected();
+        // 	MediaItem* transferredItem();
+        // 	MediaView* view();
+        // 	Medium* getMedium();
+        // 	QString configString(const QString& name, const QString& defValue);
 
-	//Implemented
-	virtual bool isPlayable(const MetaBundle& bundle);
 
-	//Implemented
-	virtual bool isPreferredFormat(const MetaBundle& bundle);
+        // 	QString deviceNode() const;
+        // 	QString deviceType();
+        // 	QString getTransferDir();
+        // 	QString name() const;
+        // 	QString uniqueId() const;
+        // 	virtual bool asynchronousTransfer();
+        // 	virtual bool autoConnect();
+        // 	virtual bool hasTransferDialog();
 
-//	virtual bool needsManualConfig();
+        //Implemented
+        virtual bool isConnected();
 
-	//Implementing
-	virtual MediaItem* newPlaylist(const QString& name, MediaItem* parent, QPtrList< MediaItem > items);
+        //Implemented
+        virtual bool isPlayable(const MetaBundle& bundle);
 
-//	virtual MediaItem* tagsChanged(MediaItem* item, const MetaBundle& changed);
+        //Implemented
+        virtual bool isPreferredFormat(const MetaBundle& bundle);
 
-	virtual QStringList supportedFiletypes();
-	virtual TransferDialog* getTransferDialog();
-	virtual void addConfigElements(QWidget* arg1);
-	virtual void addToDirectory(MediaItem* directory, QPtrList< MediaItem > items);
-	virtual void addToPlaylist(MediaItem* playlist, MediaItem* after, QPtrList< MediaItem > items);
-	virtual void applyConfig();
-	virtual void init(MediaBrowser* parent);
-	virtual void loadConfig();
-	virtual void removeConfigElements(QWidget* arg1);
-	virtual void rmbPressed(QListViewItem* qitem, const QPoint& point, int arg1);
-	virtual void runTransferDialog();
-	void hideProgress();
-	void setConfigBool(const QString& name, bool value);
-	void setConfigString(const QString& name, const QString& value);
-	void setDeviceType(const QString& type);
-	void setFirstSort(QString text);
-	void setSecondSort(QString text);
-	void setSpacesToUnderscores(bool yesno);
-	void setThirdSort(QString text);
+        //	virtual bool needsManualConfig();
 
-protected:
+        //Implementing
+        virtual MediaItem* newPlaylist(const QString& name, MediaItem* parent, QPtrList< MediaItem > items);
 
-	// Implemented
-	virtual bool closeDevice();
+        //	virtual MediaItem* tagsChanged(MediaItem* item, const MetaBundle& changed);
 
-	//Implemented
-	virtual bool getCapacity(KIO::filesize_t* total, KIO::filesize_t* available);
+        virtual QStringList supportedFiletypes();
+        virtual TransferDialog* getTransferDialog();
+        virtual void addConfigElements(QWidget* arg1);
+        virtual void addToDirectory(MediaItem* directory, QPtrList< MediaItem > items);
+        virtual void addToPlaylist(MediaItem* playlist, MediaItem* after, QPtrList< MediaItem > items);
+        virtual void applyConfig();
+        virtual void init(MediaBrowser* parent);
+        virtual void loadConfig();
+        virtual void removeConfigElements(QWidget* arg1);
+        virtual void rmbPressed(QListViewItem* qitem, const QPoint& point, int arg1);
+        virtual void runTransferDialog();
+        void hideProgress();
+        void setConfigBool(const QString& name, bool value);
+        void setConfigString(const QString& name, const QString& value);
+        void setDeviceType(const QString& type);
+        void setFirstSort(QString text);
+        void setSecondSort(QString text);
+        void setSpacesToUnderscores(bool yesno);
+        void setThirdSort(QString text);
 
-	// virtual bool isSpecialItem(MediaItem* item);
+    protected:
 
-	//Implemented
-	virtual bool lockDevice(bool tryOnly);
+        // Implemented
+        virtual bool closeDevice();
 
-	//Implemented
-	virtual bool openDevice(bool silent);
+        //Implemented
+        virtual bool getCapacity(KIO::filesize_t* total, KIO::filesize_t* available);
 
-	//Implemented
-	int deleteFromDevice(unsigned id);
-	virtual int deleteItemFromDevice(MediaItem* item, bool onlyPlayed);
-	int deleteAlbum(NjbMediaItem *albumItem);
-	int deleteArtist(NjbMediaItem *artistItem);
-	int deleteTrack(NjbMediaItem *trackItem);
+        // virtual bool isSpecialItem(MediaItem* item);
 
-	int downloadSelectedItems( NjbMediaItem *item );
-	int downloadArtist(NjbMediaItem *artistItem);
-	int downloadAlbum(NjbMediaItem *albumItem);
-	int downloadTrack(NjbMediaItem *trackItem);
-	
-	int downloadNow();
-	int downloadTrackNow(NjbMediaItem *item, QString path);
-	
-	//Implemented
-	virtual MediaItem* copyTrackToDevice(const MetaBundle& bundle);
+        //Implemented
+        virtual bool lockDevice(bool tryOnly);
 
-	virtual void cancelTransfer();
-	virtual void synchronizeDevice();
+        //Implemented
+        virtual bool openDevice(bool silent);
 
-	//Implemented
-	virtual void unlockDevice();
+        //Implemented
+        int deleteFromDevice(unsigned id);
+        virtual int deleteItemFromDevice(MediaItem* item, bool onlyPlayed);
+        int deleteAlbum(NjbMediaItem *albumItem);
+        int deleteArtist(NjbMediaItem *artistItem);
+        int deleteTrack(NjbMediaItem *trackItem);
 
-	virtual void updateRootItems();
-	void purgeEmptyItems(MediaItem* root);
-	void syncStatsFromDevice(MediaItem* root);
-	void syncStatsToDevice(MediaItem* root);
+        int downloadSelectedItems( NjbMediaItem *item );
+        int downloadArtist(NjbMediaItem *artistItem);
+        int downloadAlbum(NjbMediaItem *albumItem);
+        int downloadTrack(NjbMediaItem *trackItem);
 
-private:
+        int downloadNow();
+        int downloadTrackNow(NjbMediaItem *item, QString path);
+
+        //Implemented
+        virtual MediaItem* copyTrackToDevice(const MetaBundle& bundle);
+
+        virtual void cancelTransfer();
+        virtual void synchronizeDevice();
+
+        //Implemented
+        virtual void unlockDevice();
+
+        virtual void updateRootItems();
+        void purgeEmptyItems(MediaItem* root);
+        void syncStatsFromDevice(MediaItem* root);
+        void syncStatsToDevice(MediaItem* root);
+
+    private:
         // TODO: 
         MediaItem        *trackExists( const MetaBundle& ) { return 0; }
 
         // miscellaneous methods
         // static int        filetransferCallback( void *pData, struct ifp_transfer_status *progress );
-	static int progressCallback( u_int64_t sent, u_int64_t total, const char* /*buf*/, unsigned /*len*/, void* data);
+        static int progressCallback( u_int64_t sent, u_int64_t total, const char* /*buf*/, unsigned /*len*/, void* data);
 
-	int readJukeboxMusic( void);
+        int readJukeboxMusic( void);
 
-	NjbMediaItem *getAlbum(const QString &artist, const QString &album);
-	
-	NjbMediaItem * getArtist(const QString &artist);
-	
-	NjbMediaItem * getDownloadAlbum(const QString &artist, const QString &album);
-	
-	NjbMediaItem * getDownloadArtist(const QString &artist);
-	
-	NjbMediaItem *addTrackToView(Track *track, NjbMediaItem *item=0);
+        NjbMediaItem *getAlbum(const QString &artist, const QString &album);
 
-	void clearItems();
+        NjbMediaItem * getArtist(const QString &artist);
 
-	NjbMediaItem *m_download;
-	
-	njb_t njbs[NJB_MAX_DEVICES];
+        NjbMediaItem * getDownloadAlbum(const QString &artist, const QString &album);
 
-	QListView *listAmarokPlayLists;
+        NjbMediaItem * getDownloadArtist(const QString &artist);
 
-	QString devNode;
+        NjbMediaItem *addTrackToView(Track *track, NjbMediaItem *item=0);
 
-	QString m_errMsg;
+        void clearItems();
 
-	njb_t* m_njb;
-	bool m_captured;
-	int m_libcount;
-	bool m_busy;
-	trackValueList trackList;
-	// playlistValueList playlistList;
-	dataFileValueList dataFileList;
-// 	friend class Playlist;
-	unsigned m_progressStart;
-	QString m_progressMessage;
+        NjbMediaItem *m_download;
+
+        njb_t njbs[NJB_MAX_DEVICES];
+
+        QListView *listAmarokPlayLists;
+
+        QString devNode;
+
+        QString m_errMsg;
+
+        njb_t* m_njb;
+        bool m_captured;
+        int m_libcount;
+        bool m_busy;
+        trackValueList trackList;
+        // playlistValueList playlistList;
+        dataFileValueList dataFileList;
+        // 	friend class Playlist;
+        unsigned m_progressStart;
+        QString m_progressMessage;
 
 };
 
