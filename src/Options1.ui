@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>419</width>
-            <height>716</height>
+            <width>417</width>
+            <height>686</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -591,20 +591,6 @@
                     </property>
                     <property name="whatsThis" stdset="0">
                         <string>If checked, amaroK uses a relative path for the tracks of manually saved playlists</string>
-                    </property>
-                </widget>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>kcfg_PlaylistFollowActive</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Keep the active song visible on track change</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>If checked, the playlist scrolls on song change to make the currently playing item visible in the playlist. Measures are taken not to scroll if inappropriate.&lt;br&gt;</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>If checked, the playlist scrolls on song change to make the currently playing item visible in the playlist. Measures are taken not to scroll if inappropriate.</string>
                     </property>
                 </widget>
                 <widget class="QCheckBox">

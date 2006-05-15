@@ -201,11 +201,6 @@
         <whatsthis>Currently unused</whatsthis>
         <default>70,140</default>
     </entry>
-    <entry key="Playlist Follow Active" type="Bool">
-        <label>Whether the playlist should scroll with the active playlist item</label>
-        <whatsthis>If set, the playlist scrolls on song change to make the currently playing item visible. Measures are taken not to scroll if inappropriate.</whatsthis>
-        <default>false</default>
-    </entry>
     <entry key="Show Splashscreen" type="Bool">
         <label>Whether a splash-screen should be displayed on startup</label>
         <whatsthis>Enable/Disable splashscreen during amaroK startup.</whatsthis>

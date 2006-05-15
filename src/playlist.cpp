@@ -1805,7 +1805,7 @@ Playlist::setCurrentTrack( PlaylistItem *item )
     PlaylistItem *prev = m_currentTrack;
 
     //FIXME best method would be to observe usage, especially don't shift if mouse is moving nearby
-    if( item && AmarokConfig::playlistFollowActive() && !renameLineEdit()->isVisible() && selectedItems().count() < 2 )
+    if( item && ( !prev || prev == currentItem() ) && !renameLineEdit()->isVisible() && m_selCount < 2 )
     {
         if( !prev )
             //if nothing is current and then playback starts, we must show the currentTrack
