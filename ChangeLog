@@ -10,8 +10,6 @@ VERSION 1.4.1:
       <andres.oton@gmail.com>. (BR 103185)
 
   CHANGES:
-    * xine engine would truncate the last seconds of a track, if no other
-      track followed in the playlist.
     * Hint at starting a transcode script for transcoding while transferring
       to media devices. (BR 127155)
     * If a disc number is present, append it to the album's name when
@@ -21,6 +19,8 @@ VERSION 1.4.1:
       (BR 127043)
 
   BUGFIXES:
+    * xine engine would truncate the last seconds of a track, if no other
+      track followed in the playlist.
     * Fixed AudioCD playback with xine-engine. Patch by Markus Kaufhold
       <M.Kaufhold@gmx.de>. (BR 127388)
 
