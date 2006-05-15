@@ -2528,8 +2528,8 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
             qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valComment );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTrack );
-            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valBitrate );
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLength );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valSamplerate );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFilesize );
@@ -2554,8 +2554,8 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
                 b.setYear      ( (*++it).toInt() );
                 b.setComment   (  *++it );
                 b.setTrack     ( (*++it).toInt() );
-                b.setDiscNumber( (*++it).toInt() );
                 b.setBitrate   ( (*++it).toInt() );
+                b.setDiscNumber( (*++it).toInt() );
                 b.setLength    ( (*++it).toInt() );
                 b.setSampleRate( (*++it).toInt() );
                 b.setFilesize  ( (*++it).toInt() );
@@ -5443,12 +5443,13 @@ QueryBuilder::initSQLDrag()
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valComment );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTrack );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valBitrate );
+    addReturnValue( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLength );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valSamplerate );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFilesize );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valIsCompilation );
-    // FIXME: why does this not intclude DiscNumber, Composer, ...?
+    // FIXME: why does this not intclude Composer, ...?
 }
 
 

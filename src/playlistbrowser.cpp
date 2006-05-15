@@ -495,14 +495,15 @@ PlaylistCategory* PlaylistBrowser::loadSmartPlaylists()
     }
     else {
         e = d.namedItem( "category" ).toElement();
-        if ( e.attribute("formatversion") == "1.4" ) {
+        if ( e.attribute("formatversion") == "1.5" ) {
             PlaylistCategory* p = new PlaylistCategory(m_listview, after, e );
             p->setText( 0, i18n("Smart Playlists") );
             return p;
         }
         else if ( e.attribute("formatversion") == "1.1"
                || e.attribute("formatversion") == "1.2"
-               || e.attribute("formatversion") == "1.3" ) {
+               || e.attribute("formatversion") == "1.3"
+               || e.attribute("formatversion") == "1.4" ) {
             PlaylistCategory* p = new PlaylistCategory(m_listview, after, e );
             p->setText( 0, i18n("Smart Playlists") );
             debug() << "loading old format smart playlists, converted to new format" << endl;
@@ -550,6 +551,8 @@ void PlaylistBrowser::updateSmartPlaylists( QListViewItem *p )
                     sql.replace( "tags.samplerate, tags.url", "tags.samplerate, tags.filesize, tags.url" );
                     //1.3 to 1.4
                     sql.replace( "tags.url FROM", "tags.url, tags.sampler FROM" );
+                    //1.4 to 1.5
+                    sql.replace( "tags.bitrate, tags.length", "tags.bitrate, tags.discnumber, tags.length" );
                     //1.2 to 1.3
                     if ( limitSearch.search( sql ) != -1 )
                         sql.replace( limitSearch,
@@ -703,7 +706,7 @@ void PlaylistBrowser::saveSmartPlaylists( PlaylistCategory *smartCategory )
     QDomElement smartB = smartCategory->xml();
     smartB.setAttribute( "product", "amaroK" );
     smartB.setAttribute( "version", APP_VERSION );
-    smartB.setAttribute( "formatversion", "1.4" );
+    smartB.setAttribute( "formatversion", "1.5" );
     QDomNode smartplaylistsNode = doc.importNode( smartB, true );
     doc.appendChild( smartplaylistsNode );
 
