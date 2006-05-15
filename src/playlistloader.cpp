@@ -272,7 +272,7 @@ UrlLoader::customEvent( QCustomEvent *e)
             if( (*it).stopafter )
                 Playlist::instance()->m_stopAfterTrack = item;
 
-            if( (*it).disabled )
+            if( (*it).disabled || !( (*it).bundle.exists() ) )
                 item->setEnabled( false );
         }
         break;
