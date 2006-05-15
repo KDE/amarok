@@ -151,6 +151,7 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
 
         PlaylistAlbum *m_album;
         bool m_enabled;
+        bool m_atfEnabled;
 
         class MoodProxyObject: public QObject
         {

@@ -241,6 +241,10 @@ Playlist::Playlist( QWidget *parent )
     s_instance = this;
 
     m_atfEnabled = AmarokConfig::advancedTagFeatures();
+    if( m_atfEnabled )
+        connect( CollectionDB::instance(), SIGNAL(fileMoved(const QString&,
+                const QString&, const QString&)), SLOT(checkDisabledChildren(const QString&,
+                const QString&, const QString&)) );
 
     initStarPixmaps();
 
@@ -1027,7 +1031,20 @@ void Playlist::restoreLayout(KConfig *config, const QString &group)
     hideColumn( PlaylistItem::Mood );
 }
 
-
+void
+Playlist::checkDisabledChildren( const QString &oldUrl, const QString &newUrl, const QString &uniqueid )
+{
+    PlaylistItem *item;
+    for ( item = m_disabledChildren.first(); item; item = m_disabledChildren.next() )
+    {
+        if( item && item->uniqueId() == uniqueid )
+        {
+            item->setUrl( KURL( newUrl ) );
+            item->setEnabled( true );
+            return;
+        }
+    }
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1623,7 +1640,7 @@ Playlist::checkFileStatus( PlaylistItem * item )
         else
             item->setEnabled( false );
     }
-    else
+    else if( !item->isEnabled() )
         item->setEnabled( true );
 
     return item->isEnabled();

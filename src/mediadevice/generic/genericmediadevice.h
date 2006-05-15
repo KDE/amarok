@@ -19,7 +19,7 @@
 #ifndef AMAROK_GENERICMEDIADEVICE_H
 #define AMAROK_GENERICMEDIADEVICE_H
 
-#include "../mediabrowser.h"
+#include "mediabrowser.h"
 #include "transferdialog.h"
 
 #include <kdirlister.h>

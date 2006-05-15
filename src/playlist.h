@@ -164,6 +164,9 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         //ATF-related functions
         bool checkFileStatus( PlaylistItem * item );
 
+        void disabledChild( PlaylistItem * item ) { m_disabledChildren.append( item ); }
+        void removeDisabledChild( PlaylistItem * item ) { m_disabledChildren.removeRef( item ); }
+
         enum RequestType { Prev = -1, Current = 0, Next = 1 };
         enum StopAfterMode { DoNotStop, StopAfterCurrent, StopAfterQueue, StopAfterOther };
 
@@ -235,6 +238,7 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void refreshMoods();
         void applySettings();
         void adjustColumn( int n );
+        void checkDisabledChildren( const QString &oldUrl, const QString &newUrl, const QString &uniqueid );
 
     protected:
         virtual void fontChange( const QFont &old );
@@ -403,6 +407,8 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         std::vector<double> m_columnFraction;
 
         bool m_atfEnabled;
+
+        QPtrList<PlaylistItem> m_disabledChildren;
 };
 
 class MyAtomicString: public AtomicString

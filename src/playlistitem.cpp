@@ -66,6 +66,8 @@ PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi, bool e
 {
     setDragEnabled( true );
 
+    m_atfEnabled = AmarokConfig::advancedTagFeatures();
+
     if( AmarokConfig::showMoodbar() )
         checkMood();
 
@@ -118,6 +120,9 @@ PlaylistItem::~PlaylistItem()
         listView()->m_hoveredRating = 0;
 
     delete m_proxyForMoods;
+
+    if( m_atfEnabled )
+        Playlist::instance()->removeDisabledChild( this );
 }
 
 
@@ -274,6 +279,10 @@ int PlaylistItem::queuePosition() const
 void PlaylistItem::setEnabled( bool enabled )
 {
     m_enabled = enabled;
+    if( m_atfEnabled && !m_enabled )
+        Playlist::instance()->disabledChild( this );
+    else if ( m_atfEnabled )
+        Playlist::instance()->removeDisabledChild( this );
     setDropEnabled( enabled ); // this forbids items to be dropped into a history queue.
 
     repaint();
