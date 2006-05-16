@@ -19,6 +19,7 @@ VERSION 1.4.1:
       (BR 127043)
 
   BUGFIXES:
+    * Make database connections actually get closed when no longer used.
     * xine engine would truncate the last seconds of a track, if no other
       track followed in the playlist.
     * Fixed AudioCD playback with xine-engine. Patch by Markus Kaufhold
