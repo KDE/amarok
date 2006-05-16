@@ -184,9 +184,9 @@ ContextBrowser::ContextBrowser( const char *name )
         , m_relatedOpen( true )
         , m_suggestionsOpen( true )
         , m_favouritesOpen( true )
-	, m_showFreshPodcasts( true )
-	, m_showFavoriteAlbums( true )
-	, m_showNewestAlbums( true )
+        , m_showFreshPodcasts( true )
+        , m_showFavoriteAlbums( true )
+        , m_showNewestAlbums( true )
         , m_browseArtists( false )
         , m_cuefile( NULL )
 {
@@ -247,7 +247,7 @@ ContextBrowser::ContextBrowser( const char *name )
     m_showFaves     = amaroK::config( "ContextBrowser" )->readBoolEntry( "ShowFaves", true );
 
     m_showFreshPodcasts  = amaroK::config( "ContextBrowser" )->readBoolEntry( "ShowFreshPodcasts", true );
-    m_showNewestAlbums 	 = amaroK::config( "ContextBrowser" )->readBoolEntry( "ShowNewestAlbums", true );
+    m_showNewestAlbums   = amaroK::config( "ContextBrowser" )->readBoolEntry( "ShowNewestAlbums", true );
     m_showFavoriteAlbums = amaroK::config( "ContextBrowser" )->readBoolEntry( "ShowFavoriteAlbums", true );
 
     // Delete folder with the cached coverimage shadow pixmaps
@@ -679,7 +679,7 @@ DEBUG_FUNC_INFO
 void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& point )
 {
     enum { APPEND, ASNEXT, MAKE, MEDIA_DEVICE, INFO, TITLE, RELATED, SUGGEST, FAVES, FRESHPODCASTS, NEWALBUMS, FAVALBUMS };
-
+    debug() << "url string: " << urlString << endl;
     if( urlString.startsWith( "musicbrainz" ) ||
         urlString.startsWith( "externalurl" ) ||
         urlString.startsWith( "show:suggest" ) ||
@@ -701,26 +701,28 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
     if( urlString.isEmpty() )
     {
-	 if(EngineController::engine()->loaded()) {
-   	     menu.setCheckable( true );
-	        menu.insertItem( i18n("Show Related Artists"), RELATED );
-	        menu.insertItem( i18n("Show Suggested Songs"), SUGGEST );
-        	menu.insertItem( i18n("Show Favorite Tracks"), FAVES );
+        debug() << "url string empty. loaded?" << EngineController::engine()->loaded() << endl;
+        if( EngineController::engine()->loaded() )
+        {
+            menu.setCheckable( true );
+            menu.insertItem( i18n("Show Related Artists"), RELATED );
+            menu.insertItem( i18n("Show Suggested Songs"), SUGGEST );
+            menu.insertItem( i18n("Show Favorite Tracks"), FAVES );
 
-        	menu.setItemChecked( RELATED, m_showRelated );
-        	menu.setItemChecked( SUGGEST, m_showSuggested );
-        	menu.setItemChecked( FAVES,   m_showFaves );
-	} else {
-		// if engine is not loaded  menu 
-		menu.setCheckable( true );
-     		menu.insertItem( i18n("Show Fresh Podcasts"), FRESHPODCASTS );
-		menu.insertItem( i18n("Show Newest Albums"), NEWALBUMS );
-	        menu.insertItem( i18n("Show Favorite Albums"), FAVALBUMS );
-        	
-        	menu.setItemChecked( FRESHPODCASTS, m_showFreshPodcasts );
-        	menu.setItemChecked( NEWALBUMS, m_showNewestAlbums );
-        	menu.setItemChecked( FAVALBUMS, m_showFavoriteAlbums );
-	}
+            menu.setItemChecked( RELATED, m_showRelated );
+            menu.setItemChecked( SUGGEST, m_showSuggested );
+            menu.setItemChecked( FAVES,   m_showFaves );
+        } else {
+            // the home info page
+            menu.setCheckable( true );
+            menu.insertItem( i18n("Show Fresh Podcasts"), FRESHPODCASTS );
+            menu.insertItem( i18n("Show Newest Albums"), NEWALBUMS );
+            menu.insertItem( i18n("Show Favorite Albums"), FAVALBUMS );
+            
+            menu.setItemChecked( FRESHPODCASTS, m_showFreshPodcasts );
+            menu.setItemChecked( NEWALBUMS, m_showNewestAlbums );
+            menu.setItemChecked( FAVALBUMS, m_showFavoriteAlbums );
+        }
     }
     else if( url.protocol() == "fetchcover" )
     {
@@ -812,7 +814,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
    case FRESHPODCASTS:
         m_showFreshPodcasts = !menu.isItemChecked( FRESHPODCASTS );
-        amaroK::config( "ContextBrowser" )->writeEntry( "ShowFreshPodcasts", m_showFreshPodcasts );	
+        amaroK::config( "ContextBrowser" )->writeEntry( "ShowFreshPodcasts", m_showFreshPodcasts );
         m_dirtyCurrentTrackPage = true;
         showCurrentTrack();
         break;
@@ -1204,7 +1206,7 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
                 .args( QStringList()
                     << i18n( "Single", "%n Tracks",  albumValues.count() / qb.countReturnValues() )
                     << albumYear
-					<< albumLength) );
+                    << albumLength) );
 
         // Begining of the 'toggleable div' that contains the songs
         htmlCode.append( QStringx (
@@ -1270,7 +1272,7 @@ CurrentTrackJob::showHomeByAlbums()
     QueryBuilder qb;
 
     // <Fresh Podcasts Information>
-    if( ContextBrowser::instance()->m_showFreshPodcasts)
+    if( ContextBrowser::instance()->m_showFreshPodcasts )
     {
         qb.clear();
         qb.addReturnValue( QueryBuilder::tabPodcastEpisodes, QueryBuilder::valParent );
@@ -1296,7 +1298,6 @@ CurrentTrackJob::showHomeByAlbums()
                     it != channels.end();
                     it++ )
             {
-                debug() << "processing podcast channel" << endl;
                 PodcastChannelBundle pcb;
                 if( !CollectionDB::instance()->getPodcastChannelBundle( *it, &pcb ) )
                     continue;

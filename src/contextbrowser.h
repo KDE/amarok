@@ -170,9 +170,9 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         bool          m_showSuggested;
         bool          m_showFaves;
 	
-	bool 	      m_showFreshPodcasts;
-	bool	      m_showFavoriteAlbums;
-	bool	      m_showNewestAlbums;
+        bool          m_showFreshPodcasts;
+        bool          m_showFavoriteAlbums;
+        bool          m_showNewestAlbums;
 	
         bool          m_browseArtists;
         QString       m_artist;
