@@ -26,7 +26,6 @@ email                : markey@web.de
 #include "dbsetup.h"             //firstRunWizard()
 #include "debug.h"
 #include "devicemanager.h"
-#include "effectwidget.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
 #include "equalizersetup.h"

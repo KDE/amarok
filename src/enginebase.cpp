@@ -7,9 +7,8 @@
 #include <cmath>
 
 
-Engine::Base::Base( Effects *effects )
+Engine::Base::Base()
         : amaroK::Plugin()
-        , m_effects( effects )
         , m_volume( 50 )
         , m_scope( SCOPESIZE )
         , m_isStream( false )
@@ -18,7 +17,6 @@ Engine::Base::Base( Effects *effects )
 
 Engine::Base::~Base()
 {
-    delete m_effects;
 }
 
 //////////////////////////////////////////////////////////////////////

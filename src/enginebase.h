@@ -160,9 +160,6 @@ namespace Engine
         inline bool loaded() const { return state() != Empty; }
 
         inline uint volume() const { return m_volume; }
-        inline bool hasEffects() const { return m_effects; }
-
-        Effects& effects() const { return *m_effects; } //WARNING! calling when there are none will crash amaroK!
 
         /**
          * Fetch the current audio sample buffer.
@@ -216,14 +213,12 @@ namespace Engine
         { return false; }
 
     protected:
-        Base( Effects* = 0 );
+        Base();
 
         /** Shows the amaroK configuration dialog at the engine page */
         void showEngineConfigDialog() { emit showConfigDialog( "Engine" ); }
 
         virtual void setVolumeSW( uint percent ) = 0;
-
-        void setEffects( Effects *e ) { m_effects = e; }
 
         /** Converts master volume to a logarithmic scale */
         static uint makeVolumeLogarithmic( uint volume );
@@ -232,9 +227,6 @@ namespace Engine
         const Base &operator=( const Base& ); //disable copy constructor
 
         int           m_xfadeLength;
-
-    private:
-        Effects      *m_effects;
 
     protected:
         static const int SCOPESIZE = 1024;
@@ -257,19 +249,6 @@ namespace Engine
         QString length;
         QString year;
         QString tracknr;
-    };
-
-
-    class Effects
-    {
-    public:
-        virtual QStringList availableEffects() const = 0;
-        virtual std::vector<long> activeEffects() const = 0;
-        virtual QString effectNameForId( long ) const = 0;
-        virtual bool effectConfigurable( long ) const = 0;
-        virtual long createEffect( const QString& ) = 0;
-        virtual void removeEffect( long ) = 0;
-        virtual void configureEffect( long ) = 0;
     };
 }
 

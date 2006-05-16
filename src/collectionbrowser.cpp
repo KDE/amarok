@@ -2022,7 +2022,9 @@ CollectionView::startDrag()
 {
     KURL::List urls = listSelected();
     KURLDrag* d = new KURLDrag( urls, this );
-    d->setPixmap(CollectionDB::createDragPixmap(urls), QPoint(CollectionDB::DRAGPIXMAP_OFFSET_X,CollectionDB::DRAGPIXMAP_OFFSET_Y));
+    d->setPixmap( CollectionDB::createDragPixmap(urls),
+                  QPoint( CollectionDB::DRAGPIXMAP_OFFSET_X,
+                          CollectionDB::DRAGPIXMAP_OFFSET_Y ) );
     d->dragCopy();
 }
 

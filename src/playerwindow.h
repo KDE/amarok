@@ -101,7 +101,6 @@ class PlayerWidget : public QWidget, public EngineObserver
 
     public slots:
         void createAnalyzer( int = 0 );
-        void setEffectsWindowShown( bool );
         void toggleView() { setMinimalView( !m_minimalView ); }
 
 
@@ -115,7 +114,6 @@ class PlayerWidget : public QWidget, public EngineObserver
 
     signals:
         void playlistToggled( bool on );
-        void effectsWindowToggled( bool );
 
     private slots:
         void drawScroll();

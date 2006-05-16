@@ -75,7 +75,6 @@ libamarok_la_SOURCES = \
     devicemanager.cpp \
     directorylist.cpp \
     dynamicmode.cpp \
-    effectwidget.cpp \
     enginebase.cpp \
     enginecontroller.cpp \
     engineobserver.cpp \

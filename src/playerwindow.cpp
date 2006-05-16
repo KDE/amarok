@@ -810,20 +810,11 @@ void PlayerWidget::createAnalyzer( int increment )
 
 }
 
-
 void PlayerWidget::startDrag()
 {
     QDragObject *d = new QTextDrag( EngineController::instance()->bundle().prettyTitle(), this );
     d->dragCopy();
     // Qt will delete d for us.
-}
-
-
-void PlayerWidget::setEffectsWindowShown( bool on )
-{
-    m_pButtonEq->blockSignals( true );
-    m_pButtonEq->setOn( on );
-    m_pButtonEq->blockSignals( false );
 }
 
 
