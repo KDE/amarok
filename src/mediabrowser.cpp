@@ -1942,6 +1942,8 @@ MediaQueue::addURL( const KURL& url, MetaBundle *bundle, const QString &playlist
     item->m_playlistName = playlistName;
 
     QString text = item->bundle()->prettyTitle();
+    if( text.isEmpty() || (!item->bundle()->isValidMedia() && !item->bundle()->podcastBundle()) )
+        text = item->bundle()->url().prettyURL();
     if( item->m_playlistName != QString::null )
     {
         text += " (" + item->m_playlistName + ")";

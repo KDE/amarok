@@ -436,7 +436,11 @@ IpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle)
             podcastInfo->date.setTime_t( KRFCDate::parseDate( peb->date() ) );
     }
 
-    MediaItem *ret = insertTrackIntoDB( url.path(), bundle, podcastInfo );
+    MetaBundle *newBundle = 0;
+    if( !bundle.isValidMedia() )
+        newBundle = new MetaBundle( url );
+
+    MediaItem *ret = insertTrackIntoDB( url.path(), newBundle ? *newBundle : bundle, podcastInfo );
     delete podcastInfo;
     return ret;
 }
