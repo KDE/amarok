@@ -2739,8 +2739,11 @@ CollectionDB::addSongPercentage( const QString &url, int percentage,
     int playcount = 0;
     if( !values.isEmpty() )
     {
-        prevscore = values[2].toDouble();
-        playcount = values[0].toInt();
+        playcount = values[ 0 ].toInt();
+        // This stops setting the Rating (which creates a row) from affecting the
+        // prevscore of an unplayed track. See bug 127475
+        if ( playcount )
+            prevscore = values[ 2 ].toDouble();
     }
     const QStringList v = query( QString( "SELECT length FROM tags WHERE url = '%1';" ).arg( url ) );
     const int length = v.isEmpty() ? 0 : v.first().toInt();
