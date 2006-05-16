@@ -9,7 +9,7 @@ from xml.dom import minidom
 PLAYLISTFILE = "%s/.kde/share/apps/amarok/current.xml"%(user.home)
 
 # the fields to be shown via http
-FIELDS = ("Artist", "Title", "Album", "TrackNo", "Length", "Genre",  "Score" )
+FIELDS = ("Artist", "Title", "Album", "Track", "Length", "Genre",  "Score" )
 
 class Track(object):
     """Class that holds the information of one track in the current playlist"""
