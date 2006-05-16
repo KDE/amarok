@@ -251,10 +251,10 @@ class CollectionDB : public QObject, public EngineObserver
         void clearTables( const bool temporary = false);
         void copyTempTables(  );
 
-        uint artistID( QString value, bool autocreate = true, const bool temporary = false );
-        uint albumID( QString value, bool autocreate = true, const bool temporary = false );
-        uint genreID( QString value, bool autocreate = true, const bool temporary = false );
-        uint yearID( QString value, bool autocreate = true, const bool temporary = false );
+        uint artistID( QString value, bool autocreate = true, const bool temporary = false, bool exact = false );
+        uint albumID( QString value, bool autocreate = true, const bool temporary = false, bool exact = false );
+        uint genreID( QString value, bool autocreate = true, const bool temporary = false, bool exact = false );
+        uint yearID( QString value, bool autocreate = true, const bool temporary = false, bool exact = false );
 
         bool isDirInCollection( QString path );
         bool isFileInCollection( const QString &url );
@@ -302,8 +302,7 @@ class CollectionDB : public QObject, public EngineObserver
         QValueList<MetaBundle> bundlesByUrls( const KURL::List& urls );
         void addAudioproperties( const MetaBundle& bundle );
 
-        //Helper functions for updateTags
-        QString IDfromExactValue( const QString& table, QString value, bool autocreate = true );
+        //Helper function for updateTags
         void deleteRedundantName( const QString &table, QString ID );
 
         void updateTags( const QString &url, const MetaBundle &bundle, const bool updateView = true);
@@ -476,7 +475,11 @@ class CollectionDB : public QObject, public EngineObserver
         QString genreValue( uint id );
         QString yearValue( uint id );
 
+        //These should be avoided as they will be slow and potentially unsafe.
+        //Use the Exact version where possible (faster and safer).
+        //To convert output from Exact version from QString to uint, use .toUInt()
         uint IDFromValue( QString name, QString value, bool autocreate = true, const bool temporary = false );
+        QString IDfromExactValue(  QString table, QString value, bool autocreate = true, bool temporary = false );
 
         QString valueFromID( QString table, uint id );
 

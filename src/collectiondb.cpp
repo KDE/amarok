@@ -690,13 +690,17 @@ CollectionDB::dropPodcastTables()
     query( "DROP TABLE podcastfolders;" );
 }
 uint
-CollectionDB::artistID( QString value, bool autocreate, const bool temporary )
+CollectionDB::artistID( QString value, bool autocreate, const bool temporary, bool exact /* = false */ )
 {
     // lookup cache
     if ( m_validArtistCache && m_cacheArtist[(int)temporary] == value )
         return m_cacheArtistID[(int)temporary];
 
-    uint id = IDFromValue( "artist", value, autocreate, temporary );
+    uint id;
+    if ( exact )
+        id = IDfromExactValue( "artist", value, autocreate, temporary ).toUInt();
+    else
+        id = IDFromValue( "artist", value, autocreate, temporary );
 
     // cache values
     m_cacheArtist[(int)temporary] = value;
@@ -724,13 +728,17 @@ CollectionDB::artistValue( uint id )
 
 
 uint
-CollectionDB::albumID( QString value, bool autocreate, const bool temporary )
+CollectionDB::albumID( QString value, bool autocreate, const bool temporary, bool exact /* = false */ )
 {
     // lookup cache
     if ( m_validAlbumCache && m_cacheAlbum[(int)temporary] == value )
         return m_cacheAlbumID[(int)temporary];
 
-    uint id = IDFromValue( "album", value, autocreate, temporary );
+    uint id;
+    if ( exact )
+        id = IDfromExactValue( "album", value, autocreate, temporary ).toUInt();
+    else
+        id = IDFromValue( "album", value, autocreate, temporary );
 
     // cache values
     m_cacheAlbum[(int)temporary] = value;
@@ -757,9 +765,11 @@ CollectionDB::albumValue( uint id )
 }
 
 uint
-CollectionDB::genreID( QString value, bool autocreate, const bool temporary )
+CollectionDB::genreID( QString value, bool autocreate, const bool temporary, bool exact /* = false */ )
 {
-    return IDFromValue( "genre", value, autocreate, temporary );
+    return exact ?
+        IDfromExactValue( "genre", value, autocreate, temporary ).toUInt() :
+        IDFromValue( "genre", value, autocreate, temporary );
 }
 
 QString
@@ -770,9 +780,11 @@ CollectionDB::genreValue( uint id )
 
 
 uint
-CollectionDB::yearID( QString value, bool autocreate, const bool temporary )
+CollectionDB::yearID( QString value, bool autocreate, const bool temporary, bool exact /* = false */ )
 {
-    return IDFromValue( "year", value, autocreate, temporary );
+    return exact ?
+        IDfromExactValue( "year", value, autocreate, temporary ).toUInt() :
+        IDFromValue( "year", value, autocreate, temporary );
 }
 
 
@@ -2125,10 +2137,10 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
     command += QString::number( QFileInfo( bundle->url().path() ).created().toTime_t() ) + ",";
     command += QString::number( QFileInfo( bundle->url().path() ).lastModified().toTime_t() ) + ",";
 
-    command += escapeString( QString::number( albumID( bundle->album(),   true, !incremental ) ) ) + ",";
-    command += escapeString( QString::number( artistID( bundle->artist(), true, !incremental ) ) ) + ",";
-    command += escapeString( QString::number( genreID( bundle->genre(),   true, !incremental ) ) ) + ",'";
-    command += escapeString( QString::number( yearID( QString::number( bundle->year() ), true, !incremental ) ) ) + "','";
+    command += escapeString( QString::number( albumID( bundle->album(),   true, !incremental, true ) ) ) + ",";
+    command += escapeString( QString::number( artistID( bundle->artist(), true, !incremental, true ) ) ) + ",";
+    command += escapeString( QString::number( genreID( bundle->genre(),   true, !incremental, true ) ) ) + ",'";
+    command += escapeString( QString::number( yearID( QString::number( bundle->year() ), true, !incremental, true ) ) ) + "','";
 
     command += escapeString( bundle->title() ) + "',";
     command += ( bundle->composer().isEmpty() ? "NULL" : "'"+escapeString( bundle->composer() ) + "'" ) + ",'";
@@ -3163,7 +3175,7 @@ CollectionDB::checkCompilations( const QString &path, const bool temporary )
     {
         if ( albums[ i ].isEmpty() ) continue;
 
-        const uint album_id = albumID( albums[ i ], false, temporary );
+        const uint album_id = albumID( albums[ i ], false, temporary, true );
         artists = query( QString( "SELECT DISTINCT artist.name FROM tags_temp, artist%1 AS artist WHERE tags_temp.album = '%2' AND tags_temp.artist = artist.id;" )
                             .arg( temporary ? "_temp" : "" )
                             .arg( album_id ) );
@@ -3211,8 +3223,12 @@ CollectionDB::removeDirFromCollection( QString path )
 }
 
 
-QString CollectionDB::IDfromExactValue( const QString& table, QString value, bool autocreate )
+QString
+CollectionDB::IDfromExactValue( QString table, QString value, bool autocreate, bool temporary /* = false */ )
 {
+    if ( temporary )
+        table.append( "_temp" );
+
     QString querystr( QString( "SELECT id FROM %1 WHERE name " ).arg( table ) );
     querystr += exactCondition( value ) + ';';
     QStringList result = query( querystr );
