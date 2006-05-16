@@ -2255,7 +2255,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
                          currurl,
                          currdir,
                          currid ) );
-                emit fileMoved( uniqueids[0], currurl, currid );
+                emit fileMoved( uniqueids[0], bundle->url().path(), currid );
             }
         }
         //okay then, url already found in temporary table but different uniqueid
@@ -2269,7 +2269,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
                     .arg( tempTables ? "_temp" : "" )
                     .arg( currid )
                     .arg( currurl ) );
-            emit uniqueidChanged( currurl, urls[1], currid );
+            emit uniqueidChanged( bundle->url().path(), urls[1], currid );
         }
         return;
     }
@@ -2311,7 +2311,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
                     currdir ) );
                 query( QString( "DELETE FROM uniqueid WHERE uniqueid='%1';" )
                       .arg( currid ) );
-                emit fileMoved( nonTempIDs[0], currurl, currid );
+                emit fileMoved( nonTempIDs[0], bundle->url().path(), currid );
             }
         }
         else
@@ -2323,7 +2323,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
                     currdir ) );
                 query( QString( "DELETE FROM uniqueid WHERE url='%1';" )
                       .arg( currurl ) );
-            emit uniqueidChanged( currurl, nonTempURLs[1], currid );
+            emit uniqueidChanged( bundle->url().path(), nonTempURLs[1], currid );
         }
         return;
     }

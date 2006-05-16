@@ -1032,7 +1032,7 @@ void Playlist::restoreLayout(KConfig *config, const QString &group)
 }
 
 void
-Playlist::checkDisabledChildren( const QString &oldUrl, const QString &newUrl, const QString &uniqueid )
+Playlist::checkDisabledChildren( const QString &/*oldUrl*/, const QString &newUrl, const QString &uniqueid )
 {
     PlaylistItem *item;
     for ( item = m_disabledChildren.first(); item; item = m_disabledChildren.next() )
@@ -1040,7 +1040,8 @@ Playlist::checkDisabledChildren( const QString &oldUrl, const QString &newUrl, c
         if( item && item->uniqueId() == uniqueid )
         {
             item->setUrl( KURL( newUrl ) );
-            item->setEnabled( true );
+            if( item->checkExists() )
+                item->setEnabled( true );
             return;
         }
     }

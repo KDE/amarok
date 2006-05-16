@@ -1326,6 +1326,8 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
     {
         if( file->tag() )
         {
+            //debug() << "file->tag() is true" << endl;
+            //debug() << "contains ourid: " << (file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) ? "true" : "false") << endl;
             if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) && recreate )
                 file->tag()->removeField( QStringToTString( ourId ) );
             if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) && TagLib::File::isWritable( file->name() ) )
@@ -1337,7 +1339,10 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
                 newID = true;
             }
             else
+            {
+                //debug() << "what we found: " << TStringToQString( file->tag()->fieldListMap()[QStringToTString(ourId)].front()) << endl;
                 m_uniqueId = TStringToQString( file->tag()->fieldListMap()[QStringToTString( ourId )].front() ).left( randSize );
+            }
         }
     }
     //FLACs are commented because supposedly they have to be totally rewritten to add uniqueids, and as they're big this takes a while.
