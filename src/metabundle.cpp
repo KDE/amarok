@@ -1438,17 +1438,29 @@ MetaBundle::getRandomString( int size )
     }
 
     QString str;
+    //do a memory op once, much faster than doing multiple later, especially since we know how big it will be
     str.reserve( size );
     int i = getRand(); //seed it
     i = 0;
-    //we don't want ', ", %, \, or `
     while (size--)
     {
-       int r=rand() % 93;
-       r+=33;
-       if (r==34 || r==37 || r==39 || r==60 ||r == 62 || r==92 || r==96) r+=1;
-       str[i++] =  char(r);
-       // so what if I work backwards?
+        // check your ASCII tables
+        // we want characters you can see...93 is the range from ! to ~
+        int r=rand() % 93;
+        // shift the value to the visible characters
+        r+=33;
+        // we don't want ", %, ', <, >, \, or `
+        // so that we don't have issues with escaping/quoting in QStrings,
+        // and so that we don't have <> in our XML files where they might cause issues
+        // hopefully this list is final, as once users really start using this
+        // it will be a pain to change...however, there is an ATF version in CollectionDB
+        // which will help if this ever needs to change
+        // In addition we can change our vendor string
+        if (r==34 || r==37 || r==39 || r==60 ||r == 62 || r==92 || r==96) r+=1;
+        str[i++] =  char(r);
+        // this next comment kept in for fun, as it was from the source of KRandomString, where I got
+        // most of this code from to start with :-)
+        // so what if I work backwards?
     }
     return str;
 }
