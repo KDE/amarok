@@ -485,9 +485,12 @@ PlaylistItem::prevInAlbum() const
 int
 PlaylistItem::compare( QListViewItem *i, int col, bool ascending ) const
 {
+    #define i static_cast<PlaylistItem*>(i)
+    if( Playlist::instance()->dynamicMode() && (isEnabled() != i->isEnabled()) )
+        return isEnabled() ? 1 : -1;
+
     //damn C++ and its lack of operator<=>
     #define cmp(a,b) ( (a < b ) ? -1 : ( a > b ) ? 1 : 0 )
-    #define i static_cast<PlaylistItem*>(i)
     switch( col )
     {
         case Track:      return cmp( track(),     i->track() );
