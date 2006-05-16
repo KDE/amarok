@@ -2678,7 +2678,8 @@ CollectionDB::addAudioproperties( const MetaBundle& bundle )
 
 
 void
-CollectionDB::addSongPercentage( const QString &url, int percentage, const QDateTime *playtime )
+CollectionDB::addSongPercentage( const QString &url, int percentage,
+        const QString &reason, const QDateTime *playtime )
 {
     QStringList values =
         query( QString(
@@ -2732,7 +2733,7 @@ CollectionDB::addSongPercentage( const QString &url, int percentage, const QDate
     const QStringList v = query( QString( "SELECT length FROM tags WHERE url = '%1';" ).arg( url ) );
     const int length = v.isEmpty() ? 0 : v.first().toInt();
 
-    ScriptManager::instance()->requestNewScore( url, prevscore, playcount, length, percentage );
+    ScriptManager::instance()->requestNewScore( url, prevscore, playcount, length, percentage, reason );
 }
 
 
@@ -3577,7 +3578,7 @@ CollectionDB::md5sum( const QString& artist, const QString& album, const QString
 }
 
 
-void CollectionDB::engineTrackEnded( int finalPosition, int trackLength )
+void CollectionDB::engineTrackEnded( int finalPosition, int trackLength, const QString &reason )
 {
     //This is where percentages are calculated
     //TODO statistics are not calculated when currentTrack doesn't exist
@@ -3605,7 +3606,7 @@ void CollectionDB::engineTrackEnded( int finalPosition, int trackLength )
     int pct = (int) ( ( (double) finalPosition / (double) trackLength ) * 100 );
 
     // increase song counter & calculate new statistics
-    addSongPercentage( url.path(), pct );
+    addSongPercentage( url.path(), pct, reason );
 }
 
 

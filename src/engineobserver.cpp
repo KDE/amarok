@@ -83,10 +83,10 @@ void EngineSubject::newMetaDataNotify( const MetaBundle &bundle, bool trackChang
 }
 
 
-void EngineSubject::trackEnded( int finalPosition, int trackLength )
+void EngineSubject::trackEnded( int finalPosition, int trackLength, const QString &reason )
 {
     for( QPtrListIterator<EngineObserver> it( Observers ); *it; ++it )
-        (*it)->engineTrackEnded( finalPosition, trackLength );
+        (*it)->engineTrackEnded( finalPosition, trackLength, reason );
 }
 
 

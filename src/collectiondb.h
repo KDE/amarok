@@ -311,7 +311,8 @@ class CollectionDB : public QObject, public EngineObserver
         QString getUniqueId( const QString &url );
 
         //statistics methods
-        void addSongPercentage( const QString &url, int percentage, const QDateTime *playtime = 0 );
+        void addSongPercentage( const QString &url, int percentage,
+                const QString &reason, const QDateTime *playtime = 0 );
         int getSongPercentage( const QString &url );
         int getSongRating( const QString &url );
         void setSongPercentage( const QString &url, int percentage );
@@ -412,7 +413,7 @@ class CollectionDB : public QObject, public EngineObserver
 
     protected:
         QCString md5sum( const QString& artist, const QString& album, const QString& file = QString::null );
-        void engineTrackEnded( int finalPosition, int trackLength );
+        void engineTrackEnded( int finalPosition, int trackLength, const QString &reason );
         /** Manages regular folder monitoring scan */
         void timerEvent( QTimerEvent* e );
 

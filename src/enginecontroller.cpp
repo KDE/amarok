@@ -269,7 +269,7 @@ void EngineController::endSession()
 {
     //only update song stats, when we're not going to resume it
     if ( !AmarokConfig::resumePlayback() )
-        trackEnded( m_engine->position(), m_bundle.length() * 1000 );
+        trackEnded( m_engine->position(), m_bundle.length() * 1000, "quit" );
 
     PluginManager::unload( m_voidEngine );
     m_voidEngine = 0;
@@ -319,7 +319,7 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
     //TODO bummer why'd I do it this way? it should _not_ be in play!
     //let amaroK know that the previous track is no longer playing
     if ( m_timer->isActive() )
-        trackEnded( m_engine->position(), m_bundle.length() * 1000 );
+        trackEnded( m_engine->position(), m_bundle.length() * 1000, "change" );
 
     if ( url.isLocalFile() ) {
         // does the file really exist? the playlist entry might be old
@@ -421,7 +421,7 @@ void EngineController::stop() //SLOT
     m_playFailureCount = 0;
 
     //let amaroK know that the previous track is no longer playing
-    trackEnded( m_engine->position(), m_bundle.length() * 1000 );
+    trackEnded( m_engine->position(), m_bundle.length() * 1000, "stop" );
 
     //Remove requirement for track to be loaded for stop to be called (fixes gltiches
     //where stop never properly happens if call to m_engine->load fails in play)

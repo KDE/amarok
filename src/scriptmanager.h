@@ -113,7 +113,7 @@ class ScriptManager : public KDialogBase, public EngineObserver
        QStringList scoreScripts() const;
 
         /** Asks the current score script to give a new score based on the parameters. */
-       void requestNewScore( const QString &url, double prevscore, int playcount, int length, int percentage );
+       void requestNewScore( const QString &url, double prevscore, int playcount, int length, int percentage, const QString &reason );
 
     signals:
         /** Emitted when the lyrics script changes, so that a lyrics retry can be made */

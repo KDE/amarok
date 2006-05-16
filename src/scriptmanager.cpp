@@ -273,7 +273,7 @@ void ScriptManager::notifyTranscode( const QString& srcUrl, const QString& filet
 
 
 void
-ScriptManager::requestNewScore( const QString &url, double prevscore, int playcount, int length, int percentage )
+ScriptManager::requestNewScore( const QString &url, double prevscore, int playcount, int length, int percentage, const QString &reason )
 {
     const QString script = ensureScoreScriptRunning();
     if( script.isNull() )
@@ -285,8 +285,13 @@ ScriptManager::requestNewScore( const QString &url, double prevscore, int playco
     }
 
     m_scripts[script].process->writeStdin(
-        QString( "requestNewScore %1 %2 %3 %4 %5" )
-        .arg( prevscore ).arg( playcount ).arg( length ).arg( percentage ).arg( KURL::encode_string( url ) ) );
+        QString( "requestNewScore %1 %2 %3 %4 %6 %5" )
+        .arg( prevscore )
+        .arg( playcount )
+        .arg( length )
+        .arg( percentage )
+        .arg( reason )
+        .arg( KURL::encode_string( url ) ) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -22,6 +22,7 @@ email                : fh@ez.no
 
 class EngineSubject;
 class MetaBundle;
+class QString;
 
 /**
  * if you want to observe the engine, inherit from this class and attach yourself to
@@ -36,7 +37,7 @@ public:
     virtual ~EngineObserver();
     virtual void engineStateChanged( Engine::State /*state*/, Engine::State /*oldState*/ = Engine::Empty ) {}
     virtual void engineNewMetaData( const MetaBundle &/*bundle*/, bool /*trackChanged*/ ) {}
-    virtual void engineTrackEnded( int /*finalPosition*/, int /*trackLength*/ ) {}
+    virtual void engineTrackEnded( int /*finalPosition*/, int /*trackLength*/, const QString &/*reason*/ ) {}
     virtual void engineVolumeChanged( int /*percent*/ ) {}
     virtual void engineTrackPositionChanged( long /*position*/ , bool /*userSeek*/ ) {}
     virtual void engineTrackLengthChanged( long /*length*/ ) {}
@@ -61,7 +62,7 @@ protected:
     virtual ~EngineSubject();
     void stateChangedNotify( Engine::State /*state*/ );
     void newMetaDataNotify( const MetaBundle &/*bundle*/, bool /*trackChanged*/ );
-    void trackEnded( int /*finalPosition*/, int /*trackLength*/ );
+    void trackEnded( int /*finalPosition*/, int /*trackLength*/, const QString &reason );
     void volumeChangedNotify( int /*percent*/ );
     /* userSeek means the position didn't change due to normal playback */
     void trackPositionChangedNotify( long /*position*/ , bool userSeek=false );
