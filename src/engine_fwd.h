@@ -7,7 +7,6 @@
 namespace Engine
 {
     class SimpleMetaBundle;
-    class Effects;
     class Base;
 
     /**
