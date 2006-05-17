@@ -1012,6 +1012,60 @@ MetaBundle::prettyTime( uint seconds, bool showHours ) //static
 }
 
 QString
+MetaBundle::veryPrettyTime( int seconds, bool longForm ) //static
+{
+    QString s;
+    QString sec, min, hr, day;
+    
+    if( seconds == Undetermined ) return "?";
+    else if( seconds == Irrelevant ) return "-";
+    else if( seconds > 0 ) {
+
+        if (longForm) {
+            sec = "sec";
+            min = "min ";
+            hr = "hr ";
+            day = "day ";
+        } else {
+            sec = "s";
+            min = "m ";
+            hr = "h ";
+            day = "d ";
+        }
+        
+        s.append( QString::number( seconds % 60 ) ); //seconds
+        s.append( sec );
+        
+        seconds /= 60;
+        
+        if (seconds >= 60)
+        {
+            s.prepend( min );
+            s.prepend( QString::number( seconds % 60 ) ); //minutes
+            seconds /= 60;
+            if (seconds >= 24)
+            {
+                s.prepend( hr );
+                s.prepend( QString::number( seconds % 24 ) ); //hours
+                seconds /= 24;
+                if (seconds > 0)
+                    s.prepend( day );
+                
+            } else if (seconds > 0)
+                s.prepend( hr );
+        } else if (seconds > 0)
+            s.prepend( min );
+        
+        if (seconds > 0)
+            s.prepend( QString::number( seconds ) ); //this can be days, hours, minutes depending on how many prepends we've done.
+        
+        return s;
+    }
+    else
+        return QString::null; //unavailable
+}
+
+QString
 MetaBundle::prettyBitrate( int i )
 {
     //the point here is to force sharing of these strings returned from prettyBitrate()

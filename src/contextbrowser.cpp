@@ -1045,6 +1045,11 @@ void CurrentTrackJob::showHome()
     a = qb.run();
     QString genreCount = a[0];
 
+    qb.clear(); //Total Playtime
+    qb.addReturnFunctionValue(QueryBuilder::funcSum, QueryBuilder::tabSong, QueryBuilder::valLength );
+    a = qb.run();
+    QString playTime = MetaBundle::veryPrettyTime( a[0].toInt() );
+
     m_HTMLSource.append(
             QStringx(
                 "<div id='introduction_box' class='box'>"
@@ -1063,6 +1068,7 @@ void CurrentTrackJob::showHome()
                 "<span>%4</span><br />"
                 "<span>%5</span><br />"
                 "<span>%6</span><br />"
+                "<span>%7</span><br />"
                 "</td"
                 "</tr>"
                 "</table>"
@@ -1073,7 +1079,8 @@ void CurrentTrackJob::showHome()
                     << i18n( "1 Track",  "%n Tracks",  songCount.toInt() )
                     << i18n( "1 Artist", "%n Artists", artistCount.toInt() )
                     << i18n( "1 Album",  "%n Albums",  albumCount.toInt() )
-                    << i18n( "1 Genre",  "%n Genres",  genreCount.toInt() ) ) );
+                    << i18n( "1 Genre",  "%n Genres",  genreCount.toInt() ) 
+                    << i18n( "%1 Play-time" ).arg ( playTime ) ) );
 
 
     b->m_shownAlbums = showHomeByAlbums();

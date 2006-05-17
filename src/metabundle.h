@@ -229,7 +229,7 @@ public: //accessors
     int     filesize()    const;
 
     int compilation() const;
-    int fileType() const;  // returns a value from enum FileType 
+    int fileType() const;  // returns a value from enum FileType
     bool exists() const; // true for everything but local files that aren't there
     PodcastEpisodeBundle *podcastBundle() const;
     QString streamName() const;
@@ -284,6 +284,7 @@ public: //static helper functions
     static QString ratingDescription( int );
     static QStringList ratingList();
     static QString prettyTime( uint, bool showHours = true );
+    static QString veryPrettyTime( int, bool longForm = false );
     static QString zeroPad( uint i );
     static QString prettyTitle( const QString &filename );
     static QStringList genreList();
