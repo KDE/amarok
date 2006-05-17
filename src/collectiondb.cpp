@@ -288,7 +288,8 @@ CollectionDB::isValid( )
     values3 = query( "SELECT COUNT( url ) FROM podcastchannels LIMIT 1 OFFSET 0;" );
     values4 = query( "SELECT COUNT( url ) FROM podcastepisodes LIMIT 1 OFFSET 0;" );
 
-    return !( values1.isEmpty() || values2.isEmpty() || values3.isEmpty() || values4.isEmpty() );
+    //It's valid as long as we've got _some_ tables that have something in.
+    return !( values1.isEmpty() && values2.isEmpty() && values3.isEmpty() && values4.isEmpty() );
 }
 
 
@@ -3841,6 +3842,12 @@ CollectionDB::initialize()
         amaroK::MessageQueue::instance()->addMessage(dbConn->lastError());
     if ( !dbConn->isInitialized() || !isValid() )
     {
+        warning() << "Your database is either corrupt or empty. Dropping all and recreating..." << endl;
+        dropTables( false );
+        dropPersistentTables();
+        dropPodcastTables();
+        dropStatsTable();
+
         createTables(false);
         createPersistentTables();
         createPodcastTables();
@@ -3966,7 +3973,7 @@ CollectionDB::initialize()
         }
         else {
             if ( adminValue( "Database Persistent Tables Version" ).toInt() != DATABASE_PERSISTENT_TABLES_VERSION ) {
-                debug() << "There is a bug in amaroK: instead of destroying your valuable database tables, I'm quitting" << endl;
+                error() << "There is a bug in amaroK: instead of destroying your valuable database tables, I'm quitting" << endl;
                 exit( 1 );
 
                 debug() << "Rebuilding persistent tables database!" << endl;
