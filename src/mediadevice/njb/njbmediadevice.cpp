@@ -255,10 +255,10 @@ bool NjbMediaDevice::isConnected()
 {
     QString genericError = i18n( "Could not connect to Nomad device" );
 
-    kdDebug( 7182) << __func__ << ": pid=" << getpid() << endl;
+    // kdDebug( 7182) << __func__ << ": pid=" << getpid() << endl;
 
 
-    kdDebug( 7182) << __func__ << ": sizeof(njb_t)=" << sizeof(njb_t) << endl;
+    // kdDebug( 7182) << __func__ << ": sizeof(njb_t)=" << sizeof(njb_t) << endl;
 
     int n;
     if( NJB_Discover( njbs, 0, &n) == -1 || n == 0) {
@@ -268,7 +268,7 @@ bool NjbMediaDevice::isConnected()
         return false;
     }
 
-    kdDebug( 7182) << __func__ << ": Connected." << endl;
+    // kdDebug( 7182) << __func__ << ": Connected." << endl;
 
     return true;
 
@@ -678,7 +678,7 @@ MediaItem* NjbMediaDevice::copyTrackToDevice(const MetaBundle& bundle)
         return 0;
     }
 
-    Track *taggedTrack = new Track();
+    NjbTrack *taggedTrack = new NjbTrack();
     taggedTrack->setSize( bundle.filesize() );
     taggedTrack->setDuration( bundle.length() );
     taggedTrack->setFilename( bundle.filename() );
@@ -1033,6 +1033,7 @@ int NjbMediaDevice::readJukeboxMusic( void)
         kdDebug( 7182) << "¡¡¡¡¡  Filling trackList   !!!!!!" << endl;
 
         result = trackList.readFromDevice();
+	kdDebug(7182) << "Read some tracks, or not" << endl;
     }
 
     if(result == NJB_SUCCESS)
@@ -1100,7 +1101,7 @@ int NjbMediaDevice::readJukeboxMusic( void)
 }
 
 NjbMediaItem *
-NjbMediaDevice::addTrackToView(Track *track, NjbMediaItem *item)
+NjbMediaDevice::addTrackToView(NjbTrack *track, NjbMediaItem *item)
 {
     QString artistName;
     artistName = track->getArtist();

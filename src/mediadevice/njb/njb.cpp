@@ -295,14 +295,14 @@ kio_njbProtocol::getAlbum( const KURL& url)
 
     //Getting the album track listing
     // TODO: check by artist if available
-    QMap<int,Track> albumTracks;
+    QMap<int,NjbTrack> albumTracks;
     trackValueList::const_iterator it;
     for( it = trackList.begin(); it != trackList.end(); it++)
         if( (*it).getAlbum() == albumName)
             albumTracks[(*it).getTrackNum()] = *it;
 
     //Finally display album tracks ordered by track number
-    QMap<int,Track>::const_iterator it_track = albumTracks.begin();
+    QMap<int,NjbTrack>::const_iterator it_track = albumTracks.begin();
     while ( it_track != albumTracks.end() )
     {
         dataQString( (*it_track).getFilename() + QString( "\n"));
@@ -1103,7 +1103,7 @@ kio_njbProtocol::putTrack( const KURL& dest, bool overwrite)
     // read the id3 tags
     ID3_Tag tag;
     tag.Link(src);
-    Track taggedTrack( tag);
+    NjbTrack taggedTrack( tag);
     // filename
     taggedTrack.setFilename( dest.fileName() );
     // file size in bytes
@@ -1119,7 +1119,6 @@ kio_njbProtocol::putTrack( const KURL& dest, bool overwrite)
     }
 
     // send the track
-    //kdDebug( 7182) << __func__ << ": sending " << taggedTrack.getTitle() << "..." << endl;
     m_busy = true;
     kdDebug( 7182) << __func__ << ": sending " << src << " as "
         << dest.fileName().latin1() << " info: "
@@ -1237,7 +1236,7 @@ kio_njbProtocol::copyTrack( const KURL& src, const KURL& dst, bool overwrite)
     // read the id3 tags
     ID3_Tag tag;
     tag.Link(src.path());
-    Track taggedTrack( tag);
+    NjbTrack taggedTrack( tag);
     taggedTrack.setSize( QFileInfo( src.path()).size() );
     taggedTrack.setDuration( duration );
     taggedTrack.setFilename( src.fileName() );

@@ -192,7 +192,7 @@ class NjbMediaDevice : public MediaDevice
 
         NjbMediaItem * getDownloadArtist(const QString &artist);
 
-        NjbMediaItem *addTrackToView(Track *track, NjbMediaItem *item=0);
+        NjbMediaItem *addTrackToView(NjbTrack *track, NjbMediaItem *item=0);
 
         void clearItems();
 

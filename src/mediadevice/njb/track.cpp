@@ -43,7 +43,7 @@ static const char* rcsid __attribute__((unused)) =
 #endif
 
 /* ------------------------------------------------------------------------ */
-Track::Track( char** result)
+NjbTrack::NjbTrack( char** result)
 {
     id = atoi( result[ 0]);
     size = atoi( result[ 1]);
@@ -65,16 +65,16 @@ Track::Track( char** result)
 
 
 /* ------------------------------------------------------------------------ */
-Track::Track( njb_songid_t* song)
+NjbTrack::NjbTrack( njb_songid_t* song)
 {
-    // 	kdDebug( 7182) << __func__ << ": pid=" << getpid() << endl;
+    // kdDebug( 7182) << __func__ << ": pid=" << getpid() << endl;
 
     njb_songid_frame_t* frame;
 
     id = song->trid;
 
     frame = NJB_Songid_Findframe( song, FR_SIZE);
-    // 	kdDebug( 7182) << "frame = NJB_Songid_Findframe( song, FR_SIZE);" << endl;
+     //	kdDebug( 7182) << "frame = NJB_Songid_Findframe( song, FR_SIZE);" << endl;
     if ( frame->type == NJB_TYPE_UINT32 )
         size = frame->data.u_int32_val;
     else
@@ -84,7 +84,7 @@ Track::Track( njb_songid_t* song)
     }
 
     frame = NJB_Songid_Findframe( song, FR_LENGTH);
-    //kdDebug( 7182) << "frame = NJB_Songid_Findframe( song, FR_LENGTH);" << endl;
+    // kdDebug( 7182) << "frame = NJB_Songid_Findframe( song, FR_LENGTH);" << endl;
     if ( frame->type == NJB_TYPE_UINT16 )
         duration = frame->data.u_int16_val;
     else
@@ -94,7 +94,7 @@ Track::Track( njb_songid_t* song)
     }
 
     frame = NJB_Songid_Findframe( song, FR_GENRE);
-    //kdDebug( 7182) << "frame = NJB_Songid_Findframe( song, FR_GENRE);" << endl;
+    // kdDebug( 7182) << "frame = NJB_Songid_Findframe( song, FR_GENRE);" << endl;
     if( frame) {
         genre = QCString( frame->data.strval);
         // Form genre : remove starting and ending parenthesis and convert to 
@@ -108,14 +108,14 @@ Track::Track( njb_songid_t* song)
         genre = "(none)";
 
     frame = NJB_Songid_Findframe( song, FR_ARTIST);
-    //kdDebug( 7182) << "frame = NJB_Songid_Findframe( song, FR_ARTIST);" << endl;
+    // kdDebug( 7182) << "frame = NJB_Songid_Findframe( song, FR_ARTIST);" << endl;
     if( frame) {
         artist = QCString( frame->data.strval);
         artist.replace( QRegExp( "/"), "-");
     }
 
     frame = NJB_Songid_Findframe( song, FR_ALBUM);
-    //kdDebug( 7182) << "frame = NJB_Songid_Findframe( song, FR_ALBUM);" << endl;
+    // kdDebug( 7182) << "frame = NJB_Songid_Findframe( song, FR_ALBUM);" << endl;
     if( frame) {
         album = QCString( frame->data.strval);
         album.replace( QRegExp( "/"), "-");
@@ -123,14 +123,14 @@ Track::Track( njb_songid_t* song)
         album = "<Unknown>";
 
     frame = NJB_Songid_Findframe( song, FR_TITLE);
-    //kdDebug( 7182) << "frame = NJB_Songid_Findframe( song, FR_TITLE);" << endl;
+    // kdDebug( 7182) << "frame = NJB_Songid_Findframe( song, FR_TITLE);" << endl;
     if( frame) {
         title = QCString( frame->data.strval);
         title.replace( QRegExp( "/"), "-");
     }
 
     frame = NJB_Songid_Findframe( song, FR_TRACK);
-    //kdDebug( 7182) << "frame = NJB_Songid_Findframe( song, FR_TRACK);" << endl;
+    // kdDebug( 7182) << "frame = NJB_Songid_Findframe( song, FR_TRACK);" << endl;
     if( frame) 
     {
         switch ( frame->type )
@@ -146,7 +146,7 @@ Track::Track( njb_songid_t* song)
             break;
         default:
             tracknum = 0;
-            kdDebug( 7182) << __func__ << ": unknown data type returnd for FR_TRACK;" << endl;
+     // kdDebug( 7182) << __func__ << ": unknown data type returnd for FR_TRACK;" << endl;
         }
     }
 
@@ -156,17 +156,17 @@ Track::Track( njb_songid_t* song)
     else
         codec = "mp3";
 
-    //kdDebug( 7182) << "frame = NJB_Songid_Findframe( song, FR_CODEC): " << codec << endl;
+    // kdDebug( 7182) << "frame = NJB_Songid_Findframe( song, FR_CODEC): " << codec << endl;
 
     frame = NJB_Songid_Findframe( song, FR_FNAME);
     if( frame)
         filename = QCString(  frame->data.strval);
     else
         filename = artist + " - " + title + "." + codec;
-    //kdDebug( 7182) << "frame = NJB_Songid_Findframe( song, FR_FNAME): " << filename << endl;
+    // kdDebug( 7182) << "frame = NJB_Songid_Findframe( song, FR_FNAME): " << filename << endl;
 
     frame = NJB_Songid_Findframe( song, FR_YEAR);
-    //kdDebug( 7182) << "frame = NJB_Songid_Findframe( song, FR_YEAR);" << endl;
+    // kdDebug( 7182) << "frame = NJB_Songid_Findframe( song, FR_YEAR);" << endl;
     if( frame) 
     {
         switch ( frame->type )
@@ -182,10 +182,10 @@ Track::Track( njb_songid_t* song)
             break;
         default:
             year = "0";
-            kdDebug( 7182) << __func__ << ": unknown data type returnd for FR_YEAR;" << endl;
+    // kdDebug( 7182) << __func__ << ": unknown data type returnd for FR_YEAR;" << endl;
         }
     }
-    // 	kdDebug( 7182) << __func__ << ": OK" << endl;
+    // kdDebug( 7182) << __func__ << ": OK" << endl;
 }
 
 
@@ -298,9 +298,11 @@ nocache:
     while( njb_songid_t* song = NJB_Get_Track_Tag( theNjb)) {
         //FIXME (acejones) Make this a signal
         // 		infoMessage( i18n( "Downloading track %1...").arg( i++));
-        append( Track(song));
+        append( NjbTrack(song));
+	kdDebug(7182) << __func__ << "Here" << endl;
         NJB_Songid_Destroy( song);
         ++i;
+	kdDebug(7182) << __func__ << "Got a track" << endl;
     }
     kdDebug( 7182) << __func__ << ": " << i << " jukebox tracks loaded from device." << endl;
 
@@ -322,7 +324,7 @@ done:
     return NJB_SUCCESS;
 }
 
-MetaBundle* Track::getMetaBundle( )
+MetaBundle* NjbTrack::getMetaBundle( )
 {
     MetaBundle *bundle = new MetaBundle();
     // 	unsigned id;
