@@ -4,6 +4,7 @@ kde_services_DATA = amarok_xine-engine.desktop
 INCLUDES = \
     -I$(top_srcdir)/amarok/src \
     -I$(top_srcdir)/amarok/src/amarokcore \
+    -I../../amarokcore \
     $(CFLAGS_XINE) \
     $(all_includes)
 
