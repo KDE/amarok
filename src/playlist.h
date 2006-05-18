@@ -112,8 +112,8 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void burnSelectedTracks( int projectType = -1 );
         int  currentTrackIndex( bool onlyCountVisible = true );
         bool isEmpty()       const  { return childCount() == 0; }
-        bool isTrackBefore() const;
-        bool isTrackAfter()  const;
+        LIBAMAROK_EXPORT bool isTrackBefore() const;
+        LIBAMAROK_EXPORT bool isTrackAfter()  const;
         void restoreSession();          // called during initialisation
         bool saveM3U( const QString&, bool relative = AmarokConfig::relativePlaylist() ) const;
         void saveXML( const QString& );

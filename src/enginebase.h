@@ -6,6 +6,7 @@
 #define AMAROK_ENGINEBASE_H
 
 #include "plugin/plugin.h" //baseclass
+#include "amarok_export.h"
 
 #include <kurl.h>
 #include <qobject.h>       //baseclass
@@ -57,7 +58,7 @@ namespace Engine
 {
     typedef std::vector<int16_t> Scope;
 
-    class Base : public QObject, public amaroK::Plugin
+    class LIBAMAROK_EXPORT Base : public QObject, public amaroK::Plugin
     {
     Q_OBJECT
 

@@ -247,7 +247,7 @@ class MediaView : public KListView
     public:
         MediaView( QWidget *parent, MediaDevice *device );
         virtual ~MediaView();
-        KURL::List nodeBuildDragList( MediaItem* item, bool onlySelected=true );
+        LIBAMAROK_EXPORT KURL::List nodeBuildDragList( MediaItem* item, bool onlySelected=true );
         int getSelectedLeaves(MediaItem *parent, QPtrList<MediaItem> *list, bool onlySelected=true, bool onlyPlayed=false );
         LIBAMAROK_EXPORT MediaItem *newDirectory( MediaItem* parent );
         bool setFilter( const QString &filter, MediaItem *parent=NULL );
