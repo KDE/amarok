@@ -21,6 +21,8 @@ VERSION 1.4.1:
       (BR 127043)
 
   BUGFIXES:
+    * Allow for recognition of the webdav protocol. Patch by Ilya 
+      Konstantinov <kde-bugzilla@future.shiny.co.il>. (BR 126847)
     * Setting a rating on an unplayed track would affect score generated.
       Patch by Patrick Muench <s7mon@web.de>. (BR 127475)
     * Stop tags with different capitalisation being treated as the same

@@ -312,7 +312,7 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
     if ( !m_playFailureCount )
         failure_time.start();
 
-    const KURL url = bundle.url();
+    KURL url = bundle.url();
     debug() << "Loading URL: " << url.url() << endl;
     m_lastMetadata.clear();
 
@@ -332,6 +332,13 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
     else
         amaroK::StatusBar::instance()->shortMessage( i18n("Connecting to stream source...") );
 
+    // WebDAV protocol is HTTP with extensions (and the "webdav" scheme
+    // is a KDE-ism anyway). Most engines cope with HTTP streaming, but
+    // not through KIO, so they don't support KDE-isms.
+    if ( url.protocol() == "webdav" )
+        url.setProtocol( "http" );
+    else if ( url.protocol() == "webdavs" )
+        url.setProtocol( "https" );
 
     if( m_engine->load( url, url.protocol() == "http" || url.protocol() == "rtsp" ) )
     {
