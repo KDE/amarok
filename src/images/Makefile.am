@@ -12,7 +12,6 @@ images_DATA = \
     b_play.png \
     b_prev.png \
     b_stop.png \
-    babelfish.png \
     back_stars_grey.png \
     currenttrack_bar_left.png \
     currenttrack_bar_mid.png \
