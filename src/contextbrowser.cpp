@@ -1121,7 +1121,7 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
         if ( !albumValues.isEmpty() )
         {
             albumYear = albumValues[ 3 ];
-            for ( uint j = 0; j < albumValues.count(); j += 7 )
+            for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues())
                 if ( albumValues[j + 3] != albumYear || albumYear == "0" )
                 {
                     albumYear = QString::null;
@@ -1130,7 +1130,7 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
         }
 
         uint i_albumLength = 0;
-        for ( uint j = 0; j < albumValues.count(); j += 7 )
+        for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() )
             i_albumLength += QString(albumValues[j + 4]).toInt();
 
         QString albumLength = ( i_albumLength==0 ? i18n( "Unknown" ) : MetaBundle::prettyTime( i_albumLength, true ) );
@@ -1229,7 +1229,7 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
         
         if ( !albumValues.isEmpty() )
         {
-            for ( uint j = 0; j < albumValues.count(); j += 8 )
+            for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() )
             {
                 QString newDiscNumber = albumValues[ j + 7 ].stripWhiteSpace();
                 if( discNumber != newDiscNumber && newDiscNumber.toInt() > 0)
