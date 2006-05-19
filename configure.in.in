@@ -55,7 +55,9 @@ AC_SUBST(taglib_libs)
 AC_PATH_PROG(RUBY, ruby, no)
 
 if test "x$RUBY" = "xno" ; then
-    amarok_warning_noruby=yes
+    amarok_error_noruby=yes
+    DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
+    no_amarok=yes
 fi
 
 ###############################################################################
@@ -634,7 +636,7 @@ fi
 
 if test "$build_musicbrainz" = "yes"; then
     AC_CHECK_LIB(tunepimp, tp_SetPUIDCollisionThreshold,
-      AC_DEFINE(HAVE_TUNEPIMP, 5, [have MusicBrainz 0.5.x]),      
+      AC_DEFINE(HAVE_TUNEPIMP, 5, [have MusicBrainz 0.5.x]),
         AC_CHECK_LIB(tunepimp, tp_SetFileNameEncoding,
         AC_DEFINE(HAVE_TUNEPIMP, 4, [have MusicBrainz 0.4.x]),
         AC_DEFINE(HAVE_TUNEPIMP, 1, [have MusicBrainz])))

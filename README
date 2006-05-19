@@ -49,7 +49,7 @@ Required
       http://freshmeat.net/projects/taglib
 
     * Ruby 1.8
-      (programming language. required for lyrics support)
+      (programming language)
       http://www.ruby-lang.org
 
     * One of the multimedia frameworks listed below:
