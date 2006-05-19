@@ -21,6 +21,7 @@
 #include <qfile.h>
 #include <qregexp.h>
 #include <qtextstream.h>
+#include <qglobal.h> //qVersion()
 
 #include <cstdio>         //popen, fread
 #include <iostream>
@@ -91,9 +92,11 @@ namespace amaroK
                     "Build date: " __DATE__ "\n"
                     "CC version: " __VERSION__ "\n" //assuming we're using GCC
                     "KDElibs:    " KDE_VERSION_STRING "\n"
-                    "TagLib:     %2.%3.%4\n";
+                    "Qt:         %2\n"
+                    "TagLib:     %3.%4.%5\n";
 
             body = body.arg( AmarokConfig::soundSystem() )
+                    .arg( qVersion() )
                     .arg( TAGLIB_MAJOR_VERSION )
                     .arg( TAGLIB_MINOR_VERSION )
                     .arg( TAGLIB_PATCH_VERSION );
