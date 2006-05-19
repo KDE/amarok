@@ -1,5 +1,6 @@
 // Max Howell <max.howell@methylblue.com>, (C) 2004
 // Alexandre Pereira de Oliveira <aleprj@gmail.com>, (C) 2005
+// Gábor Lehel <illissius@gmail.com>, (C) 2005, 2006
 // Shane King <kde@dontletsstart.com>, (C) 2006
 // License: GNU General Public License V2
 
@@ -934,57 +935,33 @@ MetaBundle::prettyTime( uint seconds, bool showHours ) //static
 }
 
 QString
-MetaBundle::veryPrettyTime( int seconds, bool longForm ) //static
+MetaBundle::veryPrettyTime( int time )
 {
-    QString s;
-    QString sec, min, hr, day;
-    
-    if( seconds == Undetermined ) return "?";
-    else if( seconds == Irrelevant ) return "-";
-    else if( seconds > 0 ) {
+    if( time == Undetermined )
+        return i18n( "?" );
+    if( time == Irrelevant )
+        return i18n( "-" );
 
-        if (longForm) {
-            sec = "sec";
-            min = "min ";
-            hr = "hr ";
-            day = "day ";
-        } else {
-            sec = "s";
-            min = "m ";
-            hr = "h ";
-            day = "d ";
-        }
-        
-        s.append( QString::number( seconds % 60 ) ); //seconds
-        s.append( sec );
-        
-        seconds /= 60;
-        
-        if (seconds >= 60)
-        {
-            s.prepend( min );
-            s.prepend( QString::number( seconds % 60 ) ); //minutes
-            seconds /= 60;
-            if (seconds >= 24)
-            {
-                s.prepend( hr );
-                s.prepend( QString::number( seconds % 24 ) ); //hours
-                seconds /= 24;
-                if (seconds > 0)
-                    s.prepend( day );
-                
-            } else if (seconds > 0)
-                s.prepend( hr );
-        } else if (seconds > 0)
-            s.prepend( min );
-        
-        if (seconds > 0)
-            s.prepend( QString::number( seconds ) ); //this can be days, hours, minutes depending on how many prepends we've done.
-        
-        return s;
+    QStringList s;
+    s << QString::number( time % 60 ); //seconds
+    time /= 60;
+    if( time )
+        s << QString::number( time % 60 ); //minutes
+    time /= 60;
+    if( time )
+        s << QString::number( time % 24 ); //hours
+    time /= 24;
+    if( time )
+        s << QString::number( time ); //days
+
+    switch( s.count() )
+    {
+        case 1: return i18n( "seconds", "%1s" ).arg( s[0] );
+        case 2: return i18n( "minutes, seconds", "%2m %1s" ).arg( s[0], s[1] );
+        case 3: return i18n( "hours, minutes, seconds", "%3h %2m %1s" ).arg( s[0], s[1], s[2] );
+        case 4: return i18n( "days, hours, minutes, seconds", "%4d %3h %2m %1s" ).arg( s[0], s[1], s[2], s[3] );
+        default: return "omg bug!";
     }
-    else
-        return QString::null; //unavailable
 }
 
 QString
