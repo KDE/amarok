@@ -19,6 +19,7 @@
 #include "debug.h"
 #include "deviceconfiguredialog.h"
 #include "devicemanager.h"
+#include "expression.h"
 #include "hintlineedit.h"
 #include "mediabrowser.h"
 #include "medium.h"
@@ -1704,7 +1705,7 @@ MediaBrowser::updateStats()
 bool
 MediaView::setFilter( const QString &filter, MediaItem *parent )
 {
-    bool advanced = MetaBundle::isAdvancedExpression( filter );
+    bool advanced = ExpressionParser::isAdvancedExpression( filter );
     QValueList<int> defaultColumns;
     defaultColumns << MetaBundle::Album;
     defaultColumns << MetaBundle::Title;
@@ -1728,7 +1729,7 @@ MediaView::setFilter( const QString &filter, MediaItem *parent )
         {
             if( advanced )
             {
-                MetaBundle::ParsedExpression parsed = MetaBundle::parseExpression( filter );
+                ParsedExpression parsed = ExpressionParser::parse( filter );
                 visible = it->bundle() && it->bundle()->matchesParsedExpression( parsed, defaultColumns );
             }
             else

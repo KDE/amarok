@@ -23,6 +23,7 @@
 #include "columnlist.h"
 #include "devicemanager.h"
 #include "enginecontroller.h"
+#include "expression.h"
 #include "k3bexporter.h"
 #include "metabundle.h"
 #include "osd.h"
@@ -3638,7 +3639,7 @@ Playlist::setDelayedFilter() //SLOT
 void
 Playlist::setFilter( const QString &query ) //SLOT
 {
-    const bool advanced = MetaBundle::isAdvancedExpression( query );
+    const bool advanced = ExpressionParser::isAdvancedExpression( query );
     MyIt it( this, ( !advanced && query.lower().contains( m_prevfilter.lower() ) )
                    ? MyIt::Visible
                    : MyIt::All );
@@ -3647,7 +3648,7 @@ Playlist::setFilter( const QString &query ) //SLOT
 
     if( advanced )
     {
-        MetaBundle::ParsedExpression parsed = MetaBundle::parseExpression( query );
+        ParsedExpression parsed = ExpressionParser::parse( query );
         for(; *it; ++it )
             (*it)->setVisible( (*it)->matchesParsedExpression( parsed, visible ) );
     }

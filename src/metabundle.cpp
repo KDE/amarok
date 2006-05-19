@@ -710,16 +710,7 @@ QString MetaBundle::prettyText( int column ) const
     return text.stripWhiteSpace();
 }
 
-bool MetaBundle::isAdvancedExpression( const QString &expression ) //static
-{
-    return ( expression.contains( "\""  ) ||
-             expression.contains( ":"   ) ||
-             expression.contains( "-"   ) ||
-             expression.contains( "AND" ) ||
-             expression.contains( "OR"  ) );
-}
-
-bool MetaBundle::matchesSimpleExpression( const QString &expression, QValueList<int> columns ) const
+bool MetaBundle::matchesSimpleExpression( const QString &expression, const QValueList<int> &columns ) const
 {
     const QStringList terms = QStringList::split( ' ', expression.lower() );
     bool matches = true;
@@ -735,93 +726,27 @@ bool MetaBundle::matchesSimpleExpression( const QString &expression, QValueList<
     return matches;
 }
 
-bool MetaBundle::matchesExpression( const QString &expression, QValueList<int> defaultColumns ) const
+bool MetaBundle::matchesExpression( const QString &expression, const QValueList<int> &defaultColumns ) const
 {
-    return matchesParsedExpression( parseExpression( expression ), defaultColumns );
+    return matchesParsedExpression( ExpressionParser::parse( expression ), defaultColumns );
 }
 
-MetaBundle::ParsedExpression MetaBundle::parseExpression( QString expression ) //static
-{
-    if( expression.contains( "\"" ) % 2 == 1 ) expression += "\""; //make an even number of "s
-
-    //something like thingy"bla"stuff -> thingy "bla" stuff
-    bool odd = false;
-    for( int pos = expression.find( "\"" );
-         pos >= 0 && pos <= (int)expression.length();
-         pos = expression.find( "\"", pos + 1 ) )
-    {
-        expression = expression.insert( odd ? ++pos : pos++, " " );
-        odd = !odd;
-    }
-    expression = expression.simplifyWhiteSpace();
-
-    int x; //position in string of the end of the next element
-    bool OR = false; //whether the next element is to be ORed with the current one
-    QString s = "", field = ""; //the current element, and the field: of the next element
-    QStringList tmpl; //list of elements of which at least one has to match (OR)
-    QValueList<QStringList> allof; //list of all the tmpls, of which all have to match
-    while( !expression.isEmpty() )  //seperate expression into parts which all have to match
-    {
-        if( expression.startsWith( " " ) )
-            expression = expression.mid( 1 ); //cuts off the first character
-        if( expression.startsWith( "\"" ) ) //take stuff in "s literally (basically just ends up ignoring spaces)
-        {
-            expression = expression.mid( 1 );
-            x = expression.find( "\"" );
-        }
-        else
-            x = expression.find( " " );
-        if( x < 0 )
-            x = expression.length();
-        s = expression.left( x ); //get the element
-        expression = expression.mid( x + 1 ); //move on
-
-        if( !field.isEmpty() || ( s != "-" && s != "AND" && s != "OR" &&
-                                  !s.endsWith( ":" ) && !s.endsWith( ":>" ) && !s.endsWith( ":<" ) ) )
-        {
-            if( !OR && !tmpl.isEmpty() ) //add the OR list to the AND list
-            {
-                allof += tmpl;
-                tmpl.clear();
-            }
-            else
-                OR = false;
-            tmpl += ( field + s );
-            field = "";
-        }
-        else if( s.endsWith( ":" ) || s.endsWith( ":>" ) || s.endsWith( ":<" ) )
-            field = s;
-        else if( s == "OR" )
-            OR = true;
-        else
-            OR = false;
-    }
-    if( !tmpl.isEmpty() )
-        allof += tmpl;
-
-    return allof;
-}
-
-bool MetaBundle::matchesParsedExpression( ParsedExpression data, QValueList<int> defaults ) const
+bool MetaBundle::matchesParsedExpression( const ParsedExpression &data, const QValueList<int> &defaults ) const
 {
     for( uint i = 0, n = data.count(); i < n; ++i ) //check each part for matchiness
     {
         bool b = false; //whether at least one matches
         for( uint ii = 0, count = data[i].count(); ii < count; ++ii )
         {
-            QString s = data[i][ii];
-            bool neg = s.startsWith( "-" );
-            if ( neg )
-                s = s.mid( 1 ); //cut off the -
-            int x = s.find( ":" ); //where the field ends and the thing-to-match begins
+            expression_element e = data[i][ii];
             int column = -1;
-            if( x > 0 )
-                column = columnIndex( s.left( x ).lower() );
+            if( !e.field.isEmpty() )
+                column = columnIndex( e.field.lower() );
             if( column >= 0 ) //a field was specified and it exists
             {
-                QString q = s.mid(x + 1), v = prettyText( column ).lower(), w = q.lower();
+                QString q = e.text, v = prettyText( column ).lower(), w = q.lower();
                 //q = query, v = contents of the field, w = match against it
-                bool condition; //whether it matches, not taking negation into account
+                bool condition; //whether it matches, not taking e.negateation into account
 
                 bool numeric;
                 switch( column )
@@ -841,9 +766,6 @@ bool MetaBundle::matchesParsedExpression( ParsedExpression data, QValueList<int>
                         numeric = false;
                 }
 
-                if( q.startsWith( ">" ) || q.startsWith( "<" ) )
-                    w = w.mid( 1 );
-
                 if( column == Filesize )
                 {
                     v = QString::number( filesize() );
@@ -853,7 +775,7 @@ bool MetaBundle::matchesParsedExpression( ParsedExpression data, QValueList<int>
                         w = QString::number( w.left( w.length()-1 ).toLong() * 1024 );
                 }
 
-                if( q.startsWith( ">" ) )
+                if( e.match == expression_element::More )
                 {
                     if( numeric )
                         condition = v.toInt() > w.toInt();
@@ -861,7 +783,7 @@ bool MetaBundle::matchesParsedExpression( ParsedExpression data, QValueList<int>
                         condition = v.toFloat() > w.toFloat();
                     else if( column == Length )
                     {
-                        int g = v.find( ":" ), h = w.find( ":" );
+                        int g = v.find( ':' ), h = w.find( ':' );
                         condition = v.left( g ).toInt() > w.left( h ).toInt() ||
                                     ( v.left( g ).toInt() == w.left( h ).toInt() &&
                                       v.mid( g + 1 ).toInt() > w.mid( h + 1 ).toInt() );
@@ -869,7 +791,7 @@ bool MetaBundle::matchesParsedExpression( ParsedExpression data, QValueList<int>
                     else
                         condition = v > w; //compare the strings
                 }
-                else if( q.startsWith( "<" ) )
+                else if( e.match == expression_element::Less )
                 {
                     if( numeric )
                         condition = v.toInt() < w.toInt();
@@ -877,7 +799,7 @@ bool MetaBundle::matchesParsedExpression( ParsedExpression data, QValueList<int>
                         condition = v.toFloat() < w.toFloat();
                     else if( column == Length )
                     {
-                        int g = v.find( ":" ), h = w.find( ":" );
+                        int g = v.find( ':' ), h = w.find( ':' );
                         condition = v.left( g ).toInt() < w.left( h ).toInt() ||
                                     ( v.left( g ).toInt() == w.left( h ).toInt() &&
                                       v.mid( g + 1 ).toInt() < w.mid( h + 1 ).toInt() );
@@ -893,14 +815,14 @@ bool MetaBundle::matchesParsedExpression( ParsedExpression data, QValueList<int>
                         condition = v.toFloat() == w.toFloat();
                     else if( column == Length )
                     {
-                        int g = v.find( ":" ), h = w.find( ":" );
+                        int g = v.find( ':' ), h = w.find( ':' );
                         condition = v.left( g ).toInt() == w.left( h ).toInt() &&
                                     v.mid( g + 1 ).toInt() == w.mid( h + 1 ).toInt();
                     }
                     else
                         condition = v.contains( q, false );
                 }
-                if( condition == ( neg ? false : true ) )
+                if( condition == ( e.negate ? false : true ) )
                 {
                     b = true;
                     break;
@@ -910,8 +832,8 @@ bool MetaBundle::matchesParsedExpression( ParsedExpression data, QValueList<int>
             {
                 for( int it = 0, end = defaults.size(); it != end; ++it )
                 {
-                    b = prettyText( defaults[it] ).contains( s, false ) == ( neg ? false : true );
-                    if( ( neg && !b ) || ( !neg && b ) )
+                    b = prettyText( defaults[it] ).contains( e.text, false ) == ( e.negate ? false : true );
+                    if( ( e.negate && !b ) || ( !e.negate && b ) )
                         break;
                 }
                 if( b )

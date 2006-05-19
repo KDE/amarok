@@ -14,6 +14,7 @@
 #include <kurl.h>    //inline functions
 #include <klocale.h> //inline functions
 #include <taglib/audioproperties.h>
+#include "expression.h"
 #include "atomicstring.h"
 #include "atomicurl.h"
 
@@ -173,30 +174,22 @@ public:
     /** Returns the tag at \p column in a format suitable for displaying to the user. */
     QString prettyText( int column ) const;
 
-    /** Returns whether \p expression might contain advanced syntactical elements (OR, -, et al). */
-    static bool isAdvancedExpression( const QString &expression );
-
     /** Returns whether the bundle matches \p expression.
         This is fast and doesn't take advanced syntax into account,
         and should only be used when it is certain none is present.
-        The tags in \p columns are checked for matches. */
-    bool matchesSimpleExpression( const QString &expression, QValueList<int> columns ) const;
+        The tags in \p columns are checked for matches.
+        @see ExpressionParser::isAdvancedExpression() */
+    bool matchesSimpleExpression( const QString &expression, const QValueList<int> &columns ) const;
 
     /** Returns whether the bundle matches \p expression.
         This takes advanced syntax into account, and is slightly slower than matchesSimpleExpression().
         The tags in \p defaultColumns are checked for matches where the expression doesn't specify any manually. */
-    bool matchesExpression( const QString &expression, QValueList<int> defaultColumns ) const;
-
-    /** The internal type used for an expression after it has been parsed. */
-    typedef QValueList<QStringList> ParsedExpression;
-
-    /** Parses \p expression into a format suitable for matchesParsedExpression().
-        These functions are useful if you want to check many items, and only parse the expression once. */
-    static ParsedExpression parseExpression( QString expression );
+    bool matchesExpression( const QString &expression, const QValueList<int> &defaultColumns ) const;
 
     /** Returns whether the bundle matches the pre-parsed expression \p parsedData.
-        The tags in \p defaultColumns are checked for matches where the expression doesn't specify any manually. */
-    bool matchesParsedExpression( ParsedExpression parsedData, QValueList<int> defaultColumns ) const;
+        The tags in \p defaultColumns are checked for matches where the expression doesn't specify any manually.
+        @see ExpressionParser */
+    bool matchesParsedExpression( const ParsedExpression &parsedData, const QValueList<int> &defaultColumns ) const;
 
 public:
     /**

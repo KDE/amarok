@@ -20,6 +20,7 @@
 #include "collectiondb.h"
 #include "coverfetcher.h"
 #include "enginecontroller.h"
+#include "expression.h"
 #include "mediabrowser.h"
 #include "metabundle.h"           //updateTags()
 #include "playlist.h"
@@ -4788,102 +4789,89 @@ QueryBuilder::addURLFilters( const QStringList& filter )
 void
 QueryBuilder::setGoogleFilter( int defaultTables, QString query )
 {
-    MetaBundle::ParsedExpression parsed = MetaBundle::parseExpression( query );
+    ParsedExpression parsed = ExpressionParser::parse( query );
 
     for( uint i = 0, n = parsed.count(); i < n; ++i ) //check each part for matchiness
     {
         beginOR();
         for( uint ii = 0, nn = parsed[i].count(); ii < nn; ++ii )
         {
-            QString field = QString::null;
-            QString s = parsed[i][ii];
-            bool neg = s.startsWith( "-" );
-            if ( neg )
-                s = s.mid( 1 ); //cut off the -
-            const int x = s.find( ":" ); //where the field ends and the thing-to-match begins
-            if( x > 0 )
+            const expression_element &e = parsed[i][ii];
+            QString s = e.text;
+            int mode;
+            switch( e.match )
             {
-                field = s.left( x ).lower();
-                s = s.mid( x + 1 );
+                case expression_element::More:     mode = modeGreater; break;
+                case expression_element::Less:     mode = modeLess;    break;
+                case expression_element::Contains:
+                default:                           mode = modeNormal;  break;
             }
-
-            int mode = modeNormal;
             bool exact = false; // enable for numeric values
-            if( !field.isEmpty() && s.startsWith( ">" ) )
-            {
-                s = s.mid( 1 );
-                mode = modeGreater;
-            }
-            else if( !field.isEmpty() && s.startsWith( "<" ) )
-            {
-                s = s.mid( 1 );
-                mode = modeLess;
-            }
 
             int table = -1, value = -1;
-            if( field == "artist" )
+            if( e.field == "artist" )
                 table = tabArtist;
-            else if( field == "album" )
+            else if( e.field == "album" )
                 table = tabAlbum;
-            else if( field == "title" )
+            else if( e.field == "title" )
                 table = tabSong;
-            else if( field == "genre" )
+            else if( e.field == "genre" )
                 table = tabGenre;
-            else if( field == "year" )
+            else if( e.field == "year" )
             {
                 table = tabYear;
                 value = valName;
                 exact = true;
             }
-            else if( field == "score" )
+            else if( e.field == "score" )
             {
                 table = tabStats;
                 value = valScore;
                 exact = true;
             }
-            else if( field == "rating" )
+            else if( e.field == "rating" )
             {
                 table = tabStats;
                 value = valRating;
                 exact = true;
                 s = QString::number( int( s.toFloat() * 2 ) );
             }
-            else if( field == "directory" )
+            else if( e.field == "directory" )
             {
                 table = tabSong;
                 value = valDirectory;
             }
-            else if( field == "length" )
+            else if( e.field == "length" )
             {
                 table = tabSong;
                 value = valLength;
                 exact = true;
             }
-            else if( field == "playcount" )
+            else if( e.field == "playcount" )
             {
                 table = tabStats;
                 value = valPlayCounter;
                 exact = true;
             }
-            else if( field == "samplerate" )
+            else if( e.field == "samplerate" )
             {
                 table = tabSong;
                 value = valSamplerate;
                 exact = true;
             }
-            else if( field == "track" )
+            else if( e.field == "track" )
             {
                 table = tabSong;
                 value = valTrack;
                 exact = true;
             }
-            else if( field == "disc" || field == "discnumber" )
+            else if( e.field == "disc" || e.field == "discnumber" )
             {
                 table = tabSong;
                 value = valDiscNumber;
                 exact = true;
             }
-            else if( field == "size" || field == "filesize" )
+            else if( e.field == "size" || e.field == "filesize" )
             {
                 table = tabSong;
                 value = valFilesize;
@@ -4893,41 +4881,41 @@ QueryBuilder::setGoogleFilter( int defaultTables, QString query )
                 else if( s.lower().endsWith( "k" ) )
                     s = QString::number( s.left( s.length()-1 ).toLong() * 1024 );
             }
-            else if( field == "filename" || field == "url" )
+            else if( e.field == "filename" || e.field == "url" )
             {
                 table = tabSong;
                 value = valURL;
             }
-            else if( field == "filetype" )
+            else if( e.field == "filetype" )
             {
                 table = tabSong;
                 value = valURL;
                 mode = modeEndMatch;
-                s = "." + s;
+                s.prepend( '.' );
             }
-            else if( field == "bitrate" )
+            else if( e.field == "bitrate" )
             {
                 table = tabSong;
                 value = valBitrate;
                 exact = true;
             }
-            else if( field == "comment" )
+            else if( e.field == "comment" )
             {
                 table = tabSong;
                 value = valComment;
             }
-            else if( field == "composer" )
+            else if( e.field == "composer" )
             {
                 table = tabSong;
                 value = valComposer;
             }
-            else if( field == "lyrics" )
+            else if( e.field == "lyrics" )
             {
                 table = tabLyrics;
                 value = valLyrics;
             }
 
-            if( neg )
+            if( e.negate )
             {
                 if( value >= 0 )
                     excludeFilter( table, value, s, mode, exact );

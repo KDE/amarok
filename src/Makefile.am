@@ -81,6 +81,7 @@ libamarok_la_SOURCES = \
     equalizergraph.cpp \
     equalizerpresetmanager.cpp \
     equalizersetup.cpp \
+    expression.cpp \
     fht.cpp \
     filebrowser.cpp \
     firstrunwizard.ui \
