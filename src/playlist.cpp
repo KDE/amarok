@@ -1374,10 +1374,13 @@ Playlist::playCurrentTrack()
 void
 Playlist::setSelectedRatings( int rating )
 {
-    for( MyIt it( this, MyIt::Selected ); *it; ++it )
-        CollectionDB::instance()->setSongRating( (*it)->url().path(), rating );
-    if( currentItem() && !currentItem()->isSelected() )
-        CollectionDB::instance()->setSongRating( currentItem()->url().path(), rating );
+    if( !m_selCount && currentItem() && currentItem()->isVisible() )
+        CollectionDB::instance()->setSongRating( currentItem()->url().path(), rating, true );
+    else if( m_selCount == 1 )
+        CollectionDB::instance()->setSongRating( (*MyIt( this, MyIt::Selected ))->url().path(), rating, true );
+    else
+        for( MyIt it( this, MyIt::Selected ); *it; ++it )
+            CollectionDB::instance()->setSongRating( (*it)->url().path(), rating );
 }
 
 void
@@ -4199,19 +4202,8 @@ void Playlist::contentsMousePressEvent( QMouseEvent *e )
         int rating = item->ratingAtPoint( e->pos().x() );
         if( m_selCount > 1 && item->isSelected() )
             setSelectedRatings( rating );
-        else
-        {
-            if( rating == item->rating() ) // toggle half star
-            {
-                if( rating == 1 )
-                    rating = 0;
-                else if( rating % 2 ) //.5
-                    rating++;
-                else
-                    rating--;
-            }
-            CollectionDB::instance()->setSongRating( item->url().path(), rating );
-        }
+        else // toggle half star
+            CollectionDB::instance()->setSongRating( item->url().path(), rating, true );
     }
     else
         KListView::contentsMousePressEvent( e );

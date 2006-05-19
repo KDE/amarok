@@ -2824,16 +2824,28 @@ CollectionDB::setSongPercentage( const QString &url , int percentage)
 }
 
 void
-CollectionDB::setSongRating( const QString &url, int rating )
+CollectionDB::setSongRating( const QString &url, int rating, bool toggleHalf )
 {
     QStringList values =
         query( QString(
-            "SELECT playcounter, createdate, accessdate, percentage FROM statistics WHERE url = '%1';" )
+            "SELECT playcounter, createdate, accessdate, percentage, rating FROM statistics WHERE url = '%1';" )
             .arg( escapeString( url ) ));
+
+    bool ok = true;
+    int prev = values[4].toInt( &ok );
+    if( ok && toggleHalf && prev == rating )
+    {
+        if( rating == 1 )
+            rating = 0;
+        else if( rating % 2 ) //.5
+            rating++;
+        else
+            rating--;
+    }
 
     // check boundaries
     if ( rating > 10 ) rating = 10;
-    if ( rating < 0 || rating == 1 ) rating = 0; //no 0.5 rating exists
+    if ( rating < 0 || rating == 1 ) rating = 0; //ratings are 1-5
 
     if ( !values.isEmpty() )
     {

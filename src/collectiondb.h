@@ -315,7 +315,7 @@ class CollectionDB : public QObject, public EngineObserver
         int getSongPercentage( const QString &url );
         int getSongRating( const QString &url );
         void setSongPercentage( const QString &url, int percentage );
-        void setSongRating( const QString &url, int percentage );
+        void setSongRating( const QString &url, int percentage, bool toggleHalf = false );
         int getPlayCount( const QString &url );
         QDateTime getFirstPlay( const QString &url );
         QDateTime getLastPlay( const QString &url );

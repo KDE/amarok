@@ -1090,12 +1090,13 @@ void App::setRating( int n )
 {
     n *= 2;
 
-    if( EngineController::instance()->engine()->state() == Engine::Playing ||
-        EngineController::instance()->engine()->state() == Engine::Paused  ||
-        EngineController::instance()->engine()->state() == Engine::Idle    )
+    const Engine::State s = EngineController::instance()->engine()->state();
+    if( s == Engine::Playing || s == Engine::Paused || s == Engine::Idle )
     {
-        CollectionDB::instance()->setSongRating( EngineController::instance()->playingURL().path(), n );
-        amaroK::OSD::instance()->OSDWidget::show( i18n("Rating: %1").arg( QString().fill( '*', n/2 ) ) );
+        const QString path = EngineController::instance()->playingURL().path();
+        CollectionDB::instance()->setSongRating( path, n, true );
+        const int rating = CollectionDB::instance()->getSongRating( path );
+        amaroK::OSD::instance()->OSDWidget::show( i18n("Rating: %1").arg( QString().fill( '*', rating/2 ) ) );
     }
     else if( PlaylistWindow::self()->isReallyShown() && Playlist::instance()->qscrollview()->hasFocus() )
         Playlist::instance()->setSelectedRatings( n );
