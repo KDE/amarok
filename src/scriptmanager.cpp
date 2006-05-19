@@ -285,13 +285,13 @@ ScriptManager::requestNewScore( const QString &url, double prevscore, int playco
     }
 
     m_scripts[script].process->writeStdin(
-        QString( "requestNewScore %1 %2 %3 %4 %6 %5" )
+        QString( "requestNewScore %6 %1 %2 %3 %4 %5" )
         .arg( prevscore )
         .arg( playcount )
         .arg( length )
         .arg( percentage )
         .arg( reason )
-        .arg( KURL::encode_string( url ) ) );
+        .arg( KURL::encode_string( url ) ) ); //last because it might have %s
 }
 
 ////////////////////////////////////////////////////////////////////////////////

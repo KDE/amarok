@@ -17,11 +17,12 @@ loop do
             `dcop amarok playlist popupMessage "#{msg}"`
 
         when "requestNewScore"
-            prevscore = args[1].to_f
-            playcount = args[2].to_i
-            length = args[3].to_i
-            percentage = args[4].to_i
-            url = args[5]
+            url = args[1]
+            prevscore = args[2].to_f
+            playcount = args[3].to_i
+            length = args[4].to_i
+            percentage = args[5].to_i
+            reason = args[6]
 
             if( playcount <= 0 ) # not supposed to be less, but what the hell.
                 newscore = ( prevscore + percentage ) / 2
