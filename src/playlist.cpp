@@ -1792,7 +1792,7 @@ QPair<QString, QRect> Playlist::toolTipText( QWidget*, const QPoint &pos ) const
         globalRect.setRight( kMin( globalRect.left() + t.widthUsed(), dright ) );
     globalRect.setBottom( globalRect.top() + kMax( irect.height(), t.height() ) - 1 );
 
-    if( ( col == PlaylistItem::Rating && PlaylistItem::ratingAtPoint( contentsPos.x() ) <= item->rating() ) ||
+    if( ( col == PlaylistItem::Rating && PlaylistItem::ratingAtPoint( contentsPos.x() ) <= item->rating() + 1 ) ||
         ( col != PlaylistItem::Rating ) )
     {
         text = text.replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" );
@@ -4163,13 +4163,8 @@ Playlist::contentsMouseMoveEvent( QMouseEvent *e )
     if( item && pos.x() > header()->sectionPos( PlaylistItem::Rating ) &&
         pos.x() < header()->sectionPos( PlaylistItem::Rating ) + header()->sectionSize( PlaylistItem::Rating ) )
     {
-        const int rating = item->ratingAtPoint( pos.x() );
-        if( rating > item->rating() )
-            amaroK::ToolTip::hideTips();
         m_hoveredRating = item;
         m_hoveredRating->updateColumn( PlaylistItem::Rating );
-        if( item->ratingAtPoint( pos.x() ) > item->rating() )
-            amaroK::ToolTip::hideTips();
     }
     else
         m_hoveredRating = 0;
