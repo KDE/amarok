@@ -145,8 +145,7 @@ XineEngine::init()
 
    xine_init( m_xine );
 
-   if( !makeNewStream() )
-      return false;
+   makeNewStream();
 
    #ifndef XINE_SAFE_MODE
    startTimer( 200 ); //prunes the scope
@@ -158,28 +157,21 @@ XineEngine::init()
 bool
 XineEngine::makeNewStream()
 {
-    m_currentAudioPlugin = XineCfg::outputPlugin();
-   {
-      ///this block is so we don't crash if we fail to allocate a thingy
-      xine_stream_t     *stream;
-      xine_audio_port_t *port;
+   m_currentAudioPlugin = XineCfg::outputPlugin();
 
-      port = xine_open_audio_driver( m_xine, XineCfg::outputPlugin().local8Bit(), NULL );
-      if( !port ) {
-         //TODO make engine method that is the same but parents the dialog for us
-         KMessageBox::error( 0, i18n("xine was unable to initialize any audio-drivers.") );
-         return false;
-      }
+   m_audioPort = xine_open_audio_driver( m_xine, XineCfg::outputPlugin().local8Bit(), NULL );
+   if( !m_audioPort ) {
+      //TODO make engine method that is the same but parents the dialog for us
+      KMessageBox::error( 0, i18n("xine was unable to initialize any audio drivers.") );
+      return false;
+   }
 
-      stream = xine_stream_new( m_xine, port, NULL );
-      if( !stream ) {
-         KMessageBox::error( 0, i18n("amaroK could not create a new xine-stream.") );
-         return false;
-      }
-
-      //assign temporaries to members, the important bits are now created;
-      m_stream = stream;
-      m_audioPort = port;
+   m_stream = xine_stream_new( m_xine, m_audioPort, NULL );
+   if( !m_stream ) {
+      xine_close_audio_driver( m_xine, m_audioPort );
+      m_audioPort = NULL;
+      KMessageBox::error( 0, i18n("amaroK could not create a new xine stream.") );
+      return false;
    }
 
    if( m_eventQueue )
@@ -207,10 +199,23 @@ XineEngine::makeNewStream()
    return true;
 }
 
+// Makes sure an audio port and a stream exist.
+bool
+XineEngine::ensureStream()
+{
+   if( !m_stream )
+      return makeNewStream();
+
+   return true;
+}
+
 bool
 XineEngine::load( const KURL &url, bool isStream )
 {
     DEBUG_BLOCK
+
+    if( !ensureStream() )
+        return false;
 
     Engine::Base::load( url, isStream );
 
@@ -252,6 +257,9 @@ XineEngine::load( const KURL &url, bool isStream )
 bool
 XineEngine::play( uint offset )
 {
+    if( !ensureStream() )
+        return false;
+
     if( xine_play( m_stream, 0, offset ) )
     {
         if( s_fader )
@@ -291,6 +299,9 @@ XineEngine::play( uint offset )
 void
 XineEngine::stop()
 {
+    if ( !m_stream )
+       return;
+
     m_url = KURL(); //to ensure we return Empty from state()
 
     std::fill( m_scope.begin(), m_scope.end(), 0 );
@@ -321,6 +332,9 @@ XineEngine::pause()
 Engine::State
 XineEngine::state() const
 {
+    if ( !m_stream )
+       return Engine::Empty;
+
     switch( xine_get_status( m_stream ) )
     {
     case XINE_STATUS_PLAY: return xine_get_param( m_stream, XINE_PARAM_SPEED ) ? Engine::Playing : Engine::Paused;
@@ -333,6 +347,9 @@ XineEngine::state() const
 uint
 XineEngine::position() const
 {
+    if ( !m_stream )
+       return 0;
+
     int pos;
     int time = 0;
     int length;
@@ -358,6 +375,9 @@ XineEngine::position() const
 uint
 XineEngine::length() const
 {
+    if ( !m_stream )
+       return 0;
+
     // xine often delivers nonsense values for VBR files and such, so we only
     // use the length for remote files
 
@@ -378,6 +398,9 @@ XineEngine::length() const
 void
 XineEngine::seek( uint ms )
 {
+    if( !ensureStream() )
+        return;
+
     if( xine_get_param( m_stream, XINE_PARAM_SPEED ) == XINE_SPEED_PAUSE ) {
         // FIXME this is a xine API issue really, they need to add a seek function
         xine_play( m_stream, 0, (int)ms );
@@ -390,6 +413,8 @@ XineEngine::seek( uint ms )
 void
 XineEngine::setVolumeSW( uint vol )
 {
+    if ( !m_stream )
+       return;
     if( !s_fader )
         xine_set_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL, static_cast<uint>( vol * m_preamp ) );
 }
@@ -397,6 +422,9 @@ XineEngine::setVolumeSW( uint vol )
 void
 XineEngine::setEqualizerEnabled( bool enable )
 {
+    if ( !m_stream )
+       return;
+
     m_equalizerEnabled = enable;
 
     if( !enable ) {
@@ -484,7 +512,7 @@ XineEngine::canDecode( const KURL &url ) const
 const Engine::Scope&
 XineEngine::scope()
 {
-    if( !m_post || xine_get_status( m_stream ) != XINE_STATUS_PLAY )
+    if( !m_post || !m_stream || xine_get_status( m_stream ) != XINE_STATUS_PLAY )
        return m_scope;
 
     MyNode* const myList         = scope_plugin_list( m_post );
@@ -552,6 +580,9 @@ XineEngine::scope()
 void
 XineEngine::timerEvent( QTimerEvent* )
 {
+   if ( !m_stream )
+      return;
+
    //here we prune the buffer list regularly
 
    MyNode *myList = scope_plugin_list( m_post );

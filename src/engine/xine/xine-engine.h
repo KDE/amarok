@@ -43,7 +43,6 @@ class XineEngine : public Engine::Base
     virtual bool metaDataForUrl(const KURL &url, Engine::SimpleMetaBundle &b);
     virtual bool getAudioCDContents(const QString &device, KURL::List &urls);
 
-
     virtual Engine::State state() const;
     virtual const Engine::Scope &scope();
 
@@ -59,6 +58,8 @@ class XineEngine : public Engine::Base
     Engine::SimpleMetaBundle fetchMetaData() const;
 
     bool makeNewStream();
+    bool ensureStream();
+
 
     xine_t             *m_xine;
     xine_stream_t      *m_stream;
@@ -85,6 +86,7 @@ private slots:
 
 public:
     XineEngine();
+
 signals:
     void resetConfig(xine_t *xine);
 };
