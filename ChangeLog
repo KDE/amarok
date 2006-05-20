@@ -21,6 +21,8 @@ VERSION 1.4.1:
       (BR 127043)
 
   BUGFIXES:
+    * Collection Browser would not set/unset/burn albums with ', The' in
+      their name.
     * Prevent breakage when xine couldn't initialize the audio device. Patch
       from Ilya Konstantinov <kde-bugzilla@future.shiny.co.il>. (BR 115960)
     * Allow for recognition of the webdav protocol. Patch by Ilya
