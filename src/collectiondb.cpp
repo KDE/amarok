@@ -3214,7 +3214,8 @@ CollectionDB::setCompilation( const QString &album, const bool enabled, const bo
 {
     QStringList values = query( QString( "SELECT album.id FROM album WHERE album.name = '%1';" )
               .arg( escapeString( album ) ) );
-    if ( values.count() ) {
+    
+    if ( values.count() > 0 ) {
         query( QString( "UPDATE tags SET sampler = %1 WHERE tags.album = %2;" )
                 .arg( enabled ? boolT() : boolF() )
                 .arg( values[0] ) ) ;

@@ -1479,13 +1479,13 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                     , TRASH );
         menu.insertItem( SmallIconSet( "folder" ), i18n("Manage Files"), &fileMenu, FILE_MENU );
 
-       if ( cat == CollectionBrowser::IdAlbum || cat == CollectionBrowser::IdVisYearAlbum )
-        {
+        if ( cat == CollectionBrowser::IdAlbum || cat == CollectionBrowser::IdVisYearAlbum ) {
             menu.insertSeparator();
             menu.insertItem( SmallIconSet( "ok" ), i18n( "&Mark as Compilation" ), COMPILATION_SET );
             menu.insertItem( SmallIconSet( "cancel" ), i18n( "&Unmark as Compilation" ), COMPILATION_UNSET );
         }
 
+        QString currentAlbum;
         switch( menu.exec( point ) )
         {
             case APPEND:
@@ -1508,32 +1508,39 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                 break;
             case BURN_ALBUM:
                 if ( cat == CollectionBrowser::IdVisYearAlbum )
-                    K3bExporter::instance()->exportAlbum(
-                        item->text(0).right( item->text(0).length() - item->text(0).find( i18n(" - ") ) - i18n(" - ").length() )
-                    );
+                    currentAlbum = item->text(0).right( item->text(0).length() - item->text(0).find( i18n(" - ") ) - i18n(" - ").length() ) ;
                 else
-                    K3bExporter::instance()->exportAlbum( item->text(0) );
+                    currentAlbum = item->text(0);
+                
+                if( endsInThe( currentAlbum ) )
+                    manipulateThe( currentAlbum );
+                
+                K3bExporter::instance()->exportAlbum( currentAlbum );
                 break;
             case BURN_CD:
                 K3bExporter::instance()->exportTracks( selection );
                 break;
             case COMPILATION_SET:
                 if ( cat == CollectionBrowser::IdVisYearAlbum )
-                    setCompilation(
-                        item->text(0).right( item->text(0).length() - item->text(0).find( i18n(" - ") ) - i18n(" - ").length() ),
-                        true
-                    );
+                    currentAlbum = item->text(0).right( item->text(0).length() - item->text(0).find( i18n(" - ") ) - i18n(" - ").length() ) ;
                 else
-                    setCompilation( item->text(0), true );
+                    currentAlbum = item->text(0);
+                
+                if( endsInThe( currentAlbum ) )
+                    manipulateThe( currentAlbum );
+                
+                setCompilation( currentAlbum, true );
                 break;
             case COMPILATION_UNSET:
                 if ( cat == CollectionBrowser::IdVisYearAlbum )
-                    setCompilation(
-                        item->text(0).right( item->text(0).length() - item->text(0).find( i18n(" - ") ) - i18n(" - ").length() ),
-                        false
-                    );
+                    currentAlbum = item->text(0).right( item->text(0).length() - item->text(0).find( i18n(" - ") ) - i18n(" - ").length() ) ;
                 else
-                    setCompilation( item->text(0), false );
+                    currentAlbum = item->text(0);
+
+                if( endsInThe( currentAlbum ) )
+                    manipulateThe( currentAlbum );
+
+                setCompilation( currentAlbum, false );
                 break;
             case ORGANIZE:
                 organizeFiles( listSelected(), i18n( "Organize Collection Files" ), false /* don't add to collection, just move */ );
