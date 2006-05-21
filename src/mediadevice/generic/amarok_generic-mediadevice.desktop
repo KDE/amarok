@@ -18,6 +18,7 @@ Name[sr]=Генерички аудио плејер
 Name[sr@Latn]=Generički audio plejer
 Name[sv]=Generell ljudspelare
 Name[uk]=Загальний аудіо-програвач
+Name[zh_CN]=通用音频播放器
 X-KDE-Library=libamarok_generic-mediadevice
 Comment=Plugin for amaroK
 Comment[bg]=Приставка за amaroK

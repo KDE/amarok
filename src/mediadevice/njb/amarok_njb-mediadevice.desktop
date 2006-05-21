@@ -13,6 +13,7 @@ Name[sr]=Creative-ов мултимедијални уређај Nomad Jukebox
 Name[sr@Latn]=Creative-ov multimedijalni uređaj Nomad Jukebox
 Name[sv]=Creative Nomad Jukebox-mediaenhet
 Name[uk]=Пристрій носія Nomad Jukebox
+Name[zh_CN]=Creative Nomad Jukebox 媒体设备
 X-KDE-Library=libamarok_njb-mediadevice
 Comment=Plugin for amaroK
 Comment[bg]=Приставка за amaroK
