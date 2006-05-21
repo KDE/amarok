@@ -2747,7 +2747,7 @@ CollectionDB::addSongPercentage( const QString &url, int percentage,
         if ( playcount )
             prevscore = values[ 2 ].toDouble();
     }
-    const QStringList v = query( QString( "SELECT length FROM tags WHERE url = '%1';" ).arg( url ) );
+    const QStringList v = query( QString( "SELECT length FROM tags WHERE url = '%1';" ).arg( escapeString( url ) );
     const int length = v.isEmpty() ? 0 : v.first().toInt();
 
     ScriptManager::instance()->requestNewScore( url, prevscore, playcount, length, percentage, reason );
