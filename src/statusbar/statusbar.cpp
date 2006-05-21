@@ -221,7 +221,7 @@ StatusBar::slotItemCountChanged( int newCount, int newLength,  //total
         getValue = newLength;
 
     if( getValue )
-        time = i18n( " (%2)" ).arg( MetaBundle::veryPrettyTime( getValue ) );
+        time = i18n( " (%2)" ).arg( MetaBundle::fuzzyTime( getValue ) );
 
     m_itemCountLabel->setText( ' ' + text + time + ' ' );
 }

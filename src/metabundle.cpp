@@ -965,6 +965,36 @@ MetaBundle::veryPrettyTime( int time )
 }
 
 QString
+MetaBundle::fuzzyTime( int time )
+{
+    QString s;
+    int secs=0, min=0, hr=0, day=0;
+    
+    if( time == Undetermined )
+        return i18n( "?" );
+    if( time == Irrelevant )
+        return i18n( "-" );
+
+    secs = time % 60; //seconds
+    time /= 60;
+    if( time )
+        min = time % 60; //minutes
+    time /= 60;
+    if( time )
+        hr = time % 24 ; //hours
+    time /= 24;
+    if( time )
+        day = time ; //days
+
+    if ( day )
+        return i18n( "days", "%1d" ).arg( QString::number( day + (float( hr ) / 24), 'f', 2 ));
+    else if ( hr )
+        return i18n( "hours", "%1h" ).arg( QString::number( hr + (float( min ) / 60), 'f', 2 ));
+    else
+        return   QString::number( min ) + ":" + zeroPad( secs ) ; 
+}
+
+QString
 MetaBundle::prettyBitrate( int i )
 {
     //the point here is to force sharing of these strings returned from prettyBitrate()

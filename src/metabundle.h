@@ -277,6 +277,7 @@ public: //static helper functions
     static QString ratingDescription( int );
     static QStringList ratingList();
     static QString prettyTime( uint, bool showHours = true );
+    static QString fuzzyTime( int );
     static QString veryPrettyTime( int );
     static QString zeroPad( uint i );
     static QString prettyTitle( const QString &filename );
