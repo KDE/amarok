@@ -987,11 +987,11 @@ MetaBundle::fuzzyTime( int time )
         day = time ; //days
 
     if ( day )
-        return i18n( "days", "%1d" ).arg( QString::number( day + (float( hr ) / 24), 'f', 2 ));
+        return i18n( "days", "%1d" ).arg( QString::number( day + (float( hr ) / 24), 'f', 1 ));
     else if ( hr )
-        return i18n( "hours", "%1h" ).arg( QString::number( hr + (float( min ) / 60), 'f', 2 ));
+        return i18n( "hours", "%1h" ).arg( QString::number( hr + (float( min ) / 60), 'f', 1 ));
     else
-        return   QString::number( min ) + ":" + zeroPad( secs ) ; 
+        return i18n( "%1:%2").arg( min ).arg( zeroPad( secs ) );
 }
 
 QString
