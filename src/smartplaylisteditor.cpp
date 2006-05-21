@@ -1,6 +1,7 @@
 /// (c) Pierpaolo Di Panfilo 2004
 // (c) Alexandre Pereira de Oliveira 2005
 // (c) 2005 Isaiah Damron <xepo@trifault.net>
+// (c) 2006 Peter C. Ndikuwera <pndiku@gmail.com>
 // See COPYING file for licensing information
 
 #define DEBUG_PREFIX "SmartPlaylistEditor"

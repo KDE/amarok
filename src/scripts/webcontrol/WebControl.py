@@ -2,6 +2,7 @@
 ############################################################################
 # WebControl script for amaroK
 # (c) 2005 Jonas Drewsen <kde@xspect.dk>
+# (c) 2006 Peter C. Ndikuwera <pndiku@gmail.com>
 #
 # Depends on: Python 2.2, PyQt
 #

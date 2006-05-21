@@ -2,6 +2,7 @@
 // Alexandre Pereira de Oliveira <aleprj@gmail.com>, (C) 2005
 // Gábor Lehel <illissius@gmail.com>, (C) 2005, 2006
 // Shane King <kde@dontletsstart.com>, (C) 2006
+// Peter C. Ndikuwera <pndiku@gmail.com>, (C) 2006
 // License: GNU General Public License V2
 
 

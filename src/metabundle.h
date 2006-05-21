@@ -1,6 +1,7 @@
 // Max Howell <max.howell@methylblue.com>, (C) 2004
 // Alexandre Pereira de Oliveira <aleprj@gmail.com>, (C) 2005
 // Shane King <kde@dontletsstart.com>, (C) 2006
+// Peter C. Ndikuwera <pndiku@gmail.com>, (C) 2006
 // License: GNU General Public License V2
 
 #ifndef METABUNDLE_H

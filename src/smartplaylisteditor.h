@@ -1,5 +1,6 @@
 // (c) Pierpaolo Di Panfilo 2004
 // (c) Alexandre Pereira de Oliveira 2005
+// (c) 2006 Peter C. Ndikuwera <pndiku@gmail.com>
 // See COPYING file for licensing information
 
 #ifndef SMARTPLAYLISTEDITOR_H

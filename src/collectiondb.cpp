@@ -7,6 +7,7 @@
 // (c) 2005 Alexandre Pereira de Oliveira <aleprj@gmail.com>
 // (c) 2006 Jonas Hurrelmann <j@outpo.st>
 // (c) 2006 Shane King <kde@dontletsstart.com>
+// (c) 2006 Peter C. Ndikuwera <pndiku@gmail.com>
 // See COPYING file for licensing information.
 
 #define DEBUG_PREFIX "CollectionDB"

@@ -1,6 +1,7 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // (c) 2005 Reigo Reinmets <xatax@hot.ee>
 // (c) 2005 Mark Kretschmann <markey@web.de>
+// (c) 2006 Peter C. Ndikuwera <pndiku@gmail.com>
 // License: GNU General Public License V2
 
 
