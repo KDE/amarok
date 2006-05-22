@@ -1666,7 +1666,7 @@ CollectionDB::albumListOfArtist( const QString &artist, bool withUnknown, bool w
     {
         return query( "SELECT DISTINCT album.name, lower( album.name ) AS __discard FROM tags, album, artist WHERE "
                       "tags.album = album.id AND tags.artist = artist.id "
-                      "AND artist.name = '" + escapeString( artist ) + "' " +
+                      "AND lower(artist.name) = lower('" + escapeString( artist ) + "') " +
                       ( withUnknown ? QString::null : "AND album.name <> '' " ) +
                       ( withCompilations ? QString::null : "AND tags.sampler = " + boolF() ) +
                       " ORDER BY lower( album.name );" );
@@ -1675,7 +1675,7 @@ CollectionDB::albumListOfArtist( const QString &artist, bool withUnknown, bool w
     {
         return query( "SELECT DISTINCT album.name FROM tags, album, artist WHERE "
                       "tags.album = album.id AND tags.artist = artist.id "
-                      "AND artist.name = '" + escapeString( artist ) + "' " +
+                      "AND lower(artist.name) = lower('" + escapeString( artist ) + "') " +
                       ( withUnknown ? QString::null : "AND album.name <> '' " ) +
                       ( withCompilations ? QString::null : "AND tags.sampler = " + boolF() ) +
                       " ORDER BY lower( album.name );" );
@@ -5482,7 +5482,7 @@ QueryBuilder::initSQLDrag()
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFilesize );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valIsCompilation );
-    // FIXME: why does this not intclude Composer, ...?
+    // FIXME: why does this not include Composer, ...?
 }
 
 
