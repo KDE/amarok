@@ -1310,21 +1310,21 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
     {
         if( file->tag() )
         {
-            //debug() << "file->tag() is true" << endl;
-            //debug() << "contains ourid: " << (file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) ? "true" : "false") << endl;
             if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) && recreate )
                 file->tag()->removeField( QStringToTString( ourId ) );
-            if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) && TagLib::File::isWritable( file->name() ) )
+            if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) )
             {
-                file->tag()->addField( QStringToTString( ourId ),
-                        TagLib::ByteVector( getRandomStringHelper( randSize ).ascii(), randSize )
-                        );
-                file->save();
-                newID = true;
+                if( TagLib::File::isWritable( file->name() ) )
+                {
+                    file->tag()->addField( QStringToTString( ourId ),
+                            TagLib::ByteVector( getRandomStringHelper( randSize ).ascii(), randSize )
+                            );
+                    file->save();
+                    newID = true;
+                }
             }
             else
             {
-                //debug() << "what we found: " << TStringToQString( file->tag()->fieldListMap()[QStringToTString(ourId)].front()) << endl;
                 m_uniqueId = TStringToQString( file->tag()->fieldListMap()[QStringToTString( ourId )].front() ).left( randSize );
             }
         }
@@ -1337,13 +1337,16 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
         {
             if( file->xiphComment()->fieldListMap().contains( QStringToTString( ourId ) ) && recreate )
                 file->xiphComment()->removeField( QStringToTString( ourId ) );
-            if( !file->xiphComment()->fieldListMap().contains( QStringToTString( ourId ) ) && TagLib::File::isWritable( file->name() ) )
+            if( !file->xiphComment()->fieldListMap().contains( QStringToTString( ourId ) ) )
             {
-                file->xiphComment()->addField( QStringToTString( ourId ),
-                        TagLib::ByteVector( getRandomStringHelper( randSize ).ascii(), randSize )
-                        );
-                file->save();
-                newID = true;
+                if( TagLib::File::isWritable( file->name() ) )
+                {
+                    file->xiphComment()->addField( QStringToTString( ourId ),
+                            TagLib::ByteVector( getRandomStringHelper( randSize ).ascii(), randSize )
+                            );
+                    file->save();
+                    newID = true;
+                }
             }
             else
                 m_uniqueId = TStringToQString( file->xiphComment()->fieldListMap()[QStringToTString( ourId )].front() ).left( randSize );
@@ -1358,13 +1361,16 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
         {
             if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) && recreate )
                 file->tag()->removeField( QStringToTString( ourId ) );
-            if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) && TagLib::File::isWritable( file->name() ) )
+            if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) )
             {
-                file->tag()->addField( QStringToTString( ourId ),
-                        TagLib::ByteVector( getRandomStringHelper( randSize ).ascii(), randSize )
-                        );
-                file->save();
-                newID = true;
+                if( TagLib::File::isWritable( file->name() ) )
+                {
+                    file->tag()->addField( QStringToTString( ourId ),
+                            TagLib::ByteVector( getRandomStringHelper( randSize ).ascii(), randSize )
+                            );
+                    file->save();
+                    newID = true;
+                }
             }
             else
                 m_uniqueId = TStringToQString( file->tag()->fieldListMap()[QStringToTString( ourId )].front() ).left( randSize );
