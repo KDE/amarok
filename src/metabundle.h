@@ -375,7 +375,7 @@ inline void MetaBundle::reactToChange( int column ) { reactToChanges( QValueList
 
 inline bool MetaBundle::exists() const { return m_exists; }
 
-inline bool MetaBundle::isStream() const { return url().protocol() == "http"; }
+inline bool MetaBundle::isStream() const { return !url().isLocalFile(); }
 
 inline int MetaBundle::track()      const { return m_track == Undetermined ? 0 : m_track; }
 inline int MetaBundle::year()       const { return m_year  == Undetermined ? 0 : m_year; }
