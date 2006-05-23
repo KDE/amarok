@@ -1066,7 +1066,14 @@ Playlist::playNextTrack( bool forceNext )
         }
 
         m_stopAfterTrack = 0;
-        activate( 0 );
+        EngineController::instance()->stop();
+
+        if( !AmarokConfig::randomMode() ) {
+            item = MyIt::nextVisible( item );
+            while( item && ( !checkFileStatus( item ) || !item->exists() ) )
+                item = MyIt::nextVisible( item );
+            m_currentTrack = item;
+        }
 
         return;
     }
