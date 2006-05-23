@@ -67,7 +67,7 @@ NjbTrack::NjbTrack( char** result)
 /* ------------------------------------------------------------------------ */
 NjbTrack::NjbTrack( njb_songid_t* song)
 {
-    // kdDebug( 7182) << __func__ << ": pid=" << getpid() << endl;
+    // debug() << ": pid=" << getpid() << endl;
 
     njb_songid_frame_t* frame;
 
@@ -80,7 +80,7 @@ NjbTrack::NjbTrack( njb_songid_t* song)
     else
     {
         size = 0;
-        kdError( 7182) << __func__ << " Unexpected frame type:" << frame->type << endl;
+        error() << " Unexpected frame type:" << frame->type << endl;
     }
 
     frame = NJB_Songid_Findframe( song, FR_LENGTH);
@@ -90,7 +90,7 @@ NjbTrack::NjbTrack( njb_songid_t* song)
     else
     {
         duration = 0;
-        kdError( 7182) << __func__ << " Unexpected frame type:" << frame->type << endl;
+        error() << " Unexpected frame type:" << frame->type << endl;
     }
 
     frame = NJB_Songid_Findframe( song, FR_GENRE);
@@ -146,7 +146,7 @@ NjbTrack::NjbTrack( njb_songid_t* song)
             break;
         default:
             tracknum = 0;
-     // kdDebug( 7182) << __func__ << ": unknown data type returnd for FR_TRACK;" << endl;
+     // debug() << ": unknown data type returnd for FR_TRACK;" << endl;
         }
     }
 
@@ -182,10 +182,10 @@ NjbTrack::NjbTrack( njb_songid_t* song)
             break;
         default:
             year = "0";
-    // kdDebug( 7182) << __func__ << ": unknown data type returnd for FR_YEAR;" << endl;
+    // debug() << ": unknown data type returnd for FR_YEAR;" << endl;
         }
     }
-    // kdDebug( 7182) << __func__ << ": OK" << endl;
+    // debug() << ": OK" << endl;
 }
 
 
@@ -238,7 +238,7 @@ trackValueList::findTrackById( unsigned _id ) const
 int
 trackValueList::readFromDevice( void)
 {
-    kdDebug( 7182) << __func__ << ": pid=" << getpid() << endl;
+    debug() << ": pid=" << getpid() << endl;
 
     // ONLY read in from the device if this list is empty. 
     // 
@@ -262,7 +262,7 @@ trackValueList::readFromDevice( void)
     m_db = sqlite_open("tracks.db",0,&errmsg);
     if ( errmsg )
     {
-        kdDebug(7182) << __func__ << ": cache file not used, " << errmsg << endl;
+        debug() << ": cache file not used, " << errmsg << endl;
         free(errmsg);
         goto nocache;
     }
@@ -272,7 +272,7 @@ trackValueList::readFromDevice( void)
     if ( errmsg )
     {
         sqlite_free_table(result);
-        kdDebug(7182) << __func__ << ": cache file not used, " << errmsg << endl;
+        debug() << ": cache file not used, " << errmsg << endl;
         goto nocache;
     }
 
@@ -281,7 +281,7 @@ trackValueList::readFromDevice( void)
         cachecounter = QString(result[1]).toULong();
     if ( counter != cachecounter )
     {
-        kdDebug(7182) << __func__ << ": cache file not used, counter=" << counter << ", cache=" << cachecounter << endl;
+        debug() << ": cache file not used, counter=" << counter << ", cache=" << cachecounter << endl;
         goto nocache;
     }
 
@@ -292,7 +292,7 @@ nocache:
     // Load from the device
     int i = 0;
     // Don't get extended metadatas
-    kdDebug(7182) << __func__ << ": theNjb is:" << theNjb << endl;
+    debug() << ": theNjb is:" << theNjb << endl;
     NJB_Get_Extended_Tags(theNjb, 0);
     NJB_Reset_Get_Track_Tag( theNjb);
     while( njb_songid_t* song = NJB_Get_Track_Tag( theNjb)) {
@@ -302,7 +302,7 @@ nocache:
         NJB_Songid_Destroy( song);
         ++i;
     }
-    kdDebug( 7182) << __func__ << ": " << i << " jukebox tracks loaded from device." << endl;
+    debug() << ": " << i << " jukebox tracks loaded from device." << endl;
 
 #ifdef HAVE_SQLITE
     // Support for cache:
@@ -312,7 +312,7 @@ nocache:
     m_db = sqlite_open("tracks.db",0,&errmsg);
     if ( errmsg )
     {
-        kdDebug(7182) << __func__ << ": Unable to create db file, " << errmsg << endl;
+        debug() << ": Unable to create db file, " << errmsg << endl;
         free(errmsg);
         goto done;
     }
