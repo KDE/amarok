@@ -206,6 +206,8 @@ class NjbMediaDevice : public MediaDevice
 
         QString m_errMsg;
 
+	bool m_connected;
+	
         njb_t* m_njb;
         bool m_captured;
         int m_libcount;

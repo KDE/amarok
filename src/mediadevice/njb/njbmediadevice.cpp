@@ -93,6 +93,7 @@ NjbMediaDevice::NjbMediaDevice(): MediaDevice()
     m_captured = false;
     m_libcount = 0;
     theTracks = &trackList;
+    m_connected = false;
 
     NJB_Set_Debug(0); // or try DD_SUBTRACE
 
@@ -199,6 +200,7 @@ bool NjbMediaDevice::closeDevice()
         NJB_Release( m_njb);
         m_captured = false;
     }
+    m_connected = false;
 
     if( m_njb ) {
         kdDebug(7182) << __func__ << ": disconnecting. Is captured: "<< m_captured << endl;
@@ -230,13 +232,15 @@ bool NjbMediaDevice::getCapacity(KIO::filesize_t* total, KIO::filesize_t* availa
 {
     kdDebug( 7182) << __func__ << endl;
 
-    if(!lockDevice( false ) )
-        return false;
+    if(!m_connected)
+	return false;
+
 
     u_int64_t itotal;
     u_int64_t ifree;
 
-    NJB_Get_Disk_Usage(m_njb, &itotal, &ifree);
+    if(NJB_Get_Disk_Usage(m_njb, &itotal, &ifree) == -1)
+	return false;
 
     *total = itotal;
     *available = ifree;
@@ -253,24 +257,7 @@ bool NjbMediaDevice::getCapacity(KIO::filesize_t* total, KIO::filesize_t* availa
 //DONE
 bool NjbMediaDevice::isConnected()
 {
-    QString genericError = i18n( "Could not connect to Nomad device" );
-
-    // kdDebug( 7182) << __func__ << ": pid=" << getpid() << endl;
-
-
-    // kdDebug( 7182) << __func__ << ": sizeof(njb_t)=" << sizeof(njb_t) << endl;
-
-    int n;
-    if( NJB_Discover( njbs, 0, &n) == -1 || n == 0) {
-        amaroK::StatusBar::instance()->shortLongMessage( genericError, i18n("Nomad: Connecting "), KDE::StatusBar::Error );
-        kdDebug( 7182) << __func__ << ": no NJBs found\n";
-        theNjb = m_njb = NULL;
-        return false;
-    }
-
-    // kdDebug( 7182) << __func__ << ": Connected." << endl;
-
-    return true;
+    return m_connected;
 
 }
 
@@ -301,27 +288,6 @@ bool NjbMediaDevice::lockDevice(bool tryOnly)
 {
     kdDebug( 7182) << __func__ << ": pid=" << getpid() << endl;
 
-    // 	if(m_captured)
-    // 		return m_captured;
-
-    if(m_captured)
-    {
-
-        if(tryOnly && m_captured)
-        {
-            /*			NJB_Release(m_njb);
-                                m_captured = false;*/
-            closeDevice();
-        }
-    }
-    else
-    {
-        if(openDevice( false ))
-            return true;
-        else
-            return false;
-    }
-
     return true;
 }
 
@@ -341,8 +307,15 @@ bool NjbMediaDevice::openDevice(bool silent)
     if( m_njb )
         return true;
 
-    if(!isConnected())
+    QString genericError = i18n( "Could not connect to Nomad device" );
+
+    int n;
+    if( NJB_Discover( njbs, 0, &n) == -1 || n == 0) {
+        amaroK::StatusBar::instance()->shortLongMessage( genericError, i18n("Nomad: Connecting "), KDE::StatusBar::Error );
+        kdDebug( 7182) << __func__ << ": no NJBs found\n";
+        theNjb = m_njb = NULL;
         return false;
+    }
 
     m_njb = new njb_t;
     *m_njb = njbs[0];
@@ -355,6 +328,7 @@ bool NjbMediaDevice::openDevice(bool silent)
         theNjb = m_njb = NULL;
         return false;
     }
+    m_connected = true;
 
     kdDebug( 7182) << __func__ << ": m_njb " << m_njb << "\n";
 
@@ -368,7 +342,13 @@ bool NjbMediaDevice::openDevice(bool silent)
         m_captured = true;
 
     if(m_captured)
+    {
         readJukeboxMusic( );
+	QString s;
+	s.sprintf("%d tracks found", trackList.size());
+	amaroK::StatusBar::instance()->shortLongMessage( s, s, KDE::StatusBar::Information );
+    }
+
 
     return true;
 
@@ -1033,7 +1013,6 @@ int NjbMediaDevice::readJukeboxMusic( void)
         kdDebug( 7182) << "¡¡¡¡¡  Filling trackList   !!!!!!" << endl;
 
         result = trackList.readFromDevice();
-	kdDebug(7182) << "Read some tracks, or not" << endl;
     }
 
     if(result == NJB_SUCCESS)
@@ -1071,7 +1050,6 @@ int NjbMediaDevice::readJukeboxMusic( void)
         for( it = trackList.begin(); it != trackList.end(); it++)
         {
             //listEntry( createUDSEntry( url, ( *it).getFilename()), false);
-            kdDebug( 7182) << __func__ << "Adding track to m_view : " << (*it).getFilename() << endl;
 
             addTrackToView( &(*it) );
 

@@ -299,10 +299,8 @@ nocache:
         //FIXME (acejones) Make this a signal
         // 		infoMessage( i18n( "Downloading track %1...").arg( i++));
         append( NjbTrack(song));
-	kdDebug(7182) << __func__ << "Here" << endl;
         NJB_Songid_Destroy( song);
         ++i;
-	kdDebug(7182) << __func__ << "Got a track" << endl;
     }
     kdDebug( 7182) << __func__ << ": " << i << " jukebox tracks loaded from device." << endl;
 
