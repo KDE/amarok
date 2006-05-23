@@ -18,6 +18,7 @@ AMAROK_EXPORT_PLUGIN( NjbMediaDevice )
 #include "metabundle.h"
 #include "collectiondb.h"
 #include "statusbar/statusbar.h"
+#include "statusbar/popupMessage.h"
 
 #include <quuid.h>
 
@@ -346,9 +347,8 @@ bool NjbMediaDevice::openDevice(bool silent)
         readJukeboxMusic( );
 	QString s;
 	s.sprintf("%d tracks found", trackList.size());
-	amaroK::StatusBar::instance()->shortLongMessage( s, s, KDE::StatusBar::Information );
+        amaroK::StatusBar::instance()->shortLongMessage( s, s, KDE::StatusBar::Information );
     }
-
 
     return true;
 
@@ -1010,7 +1010,7 @@ int NjbMediaDevice::readJukeboxMusic( void)
     // First, read jukebox tracks
     if(trackList.isEmpty()) {
 
-        kdDebug( 7182) << "¡¡¡¡¡  Filling trackList   !!!!!!" << endl;
+        // kdDebug( 7182) << "¡¡¡¡¡  Filling trackList   !!!!!!" << endl;
 
         result = trackList.readFromDevice();
     }
@@ -1050,6 +1050,7 @@ int NjbMediaDevice::readJukeboxMusic( void)
         for( it = trackList.begin(); it != trackList.end(); it++)
         {
             //listEntry( createUDSEntry( url, ( *it).getFilename()), false);
+            // kdDebug( 7182) << __func__ << "Adding track to m_view : " << (*it).getFilename() << endl;
 
             addTrackToView( &(*it) );
 
