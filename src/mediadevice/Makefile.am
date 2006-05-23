@@ -12,9 +12,5 @@ endif
 
 METASOURCES = AUTO
 
-SUBDIRS = \
-    generic \
-    $(IPOD_SUBDIR) \
-    $(IFP_SUBDIR) \
-    $(NJB_SUBDIR)
+SUBDIRS = generic $(IPOD_SUBDIR) $(IFP_SUBDIR) $(NJB_SUBDIR) fs ifp ipod njb
 
