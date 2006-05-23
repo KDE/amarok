@@ -57,6 +57,7 @@ class OSDWidget : public QWidget
         void setText( const QString &text ) { m_text = text; }
         void setDrawShadow( bool b ) { m_drawShadow = b; }
         void setTranslucency( bool b ) { m_translucency = b; }
+        void setRating( short rating ) { m_rating = rating; }
 
     protected:
         /** determine new size and position */
@@ -79,6 +80,7 @@ class OSDWidget : public QWidget
         uint        m_y;
         bool        m_drawShadow;
         bool        m_translucency;
+        short       m_rating;
         QString     m_text;
         QImage      m_cover;
         QPixmap     m_scaledCover;

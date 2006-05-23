@@ -47,6 +47,7 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
         , m_y( MARGIN )
         , m_drawShadow( false )
         , m_translucency( false )
+        , m_rating( 0 )
 {
     setFocusPolicy( NoFocus );
     setBackgroundMode( NoBackground );
@@ -279,6 +280,32 @@ OSDWidget::render( const uint M, const QSize &size )
         rect.rLeft() += m_scaledCover.width() + M;
     }
 
+    if( m_rating > 1 )
+    {
+        KPixmap star;
+        star.load( locate( "data", "amarok/images/star.png" ) );
+        QRect r( rect );
+        r.setLeft(( rect.left() + rect.width() / 2 ) - star.width() * m_rating / 4 ); //Align to center...
+        r.setTop( rect.top() + rect.height() / 2 - star.width() / 2 );
+        KPixmapEffect::fade( star, 0.50, backgroundColor() );
+
+        if( m_rating % 2 )
+        {
+            KPixmap halfStar;
+            halfStar.load( locate( "data", "amarok/images/smallstar.png" ) );
+            r.setLeft( r.left() - halfStar.width() / 2);
+            KPixmapEffect::fade( halfStar, 0.50, backgroundColor() );
+            p.drawPixmap( r.left() + star.width() * ( m_rating / 2 ), r.top(), halfStar );
+        }
+
+        for( int i = 0; i < m_rating/2; i++ )
+        {
+            p.drawPixmap( r.left() + i * star.width(), r.top(), star );
+        }
+
+        m_rating = 0;
+    }
+
     if( m_drawShadow )
     {
         QPixmap pixmap( rect.size() + QSize(10,10) );
@@ -480,7 +507,7 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
             tags << bundle.prettyText( i );
 
         if( bundle.rating() )
-            tags[PlaylistItem::Rating+1] = QString().fill( '*', bundle.rating() / 2 );
+            OSDWidget::setRating( bundle.rating() );
         if( bundle.length() <= 0 )
             tags[PlaylistItem::Length+1] = QString::null;
 
@@ -491,8 +518,7 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
             static const QValueList<int> parens = //display these in parentheses
                 QValueList<int>() << PlaylistItem::PlayCount  << PlaylistItem::Year   << PlaylistItem::Comment
                                   << PlaylistItem::Genre      << PlaylistItem::Length << PlaylistItem::Bitrate
-                                  << PlaylistItem::LastPlayed << PlaylistItem::Rating << PlaylistItem::Score
-                                  << PlaylistItem::Filesize;
+                                  << PlaylistItem::LastPlayed << PlaylistItem::Score  << PlaylistItem::Filesize;
 
             for( int n = Playlist::instance()->numVisibleColumns(), i = 0, column; i < n; ++i )
             {
@@ -518,7 +544,7 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
             args["prettytitle"] = bundle.prettyTitle();
             for( int i = 0; i < PlaylistItem::NUM_COLUMNS; ++i )
                 args[bundle.exactColumnName( i ).lower()] = bundle.prettyText( i );
-            args["rating"] = QString().fill( '*', bundle.rating() / 2 );
+            OSDWidget::setRating( bundle.rating() );
             if( bundle.length() <= 0 )
                 args["length"] = QString::null;
 
