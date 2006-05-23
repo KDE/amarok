@@ -21,6 +21,7 @@ VERSION 1.4.1:
       (BR 127043)
 
   BUGFIXES:
+    * Radio streams were broken for protocols other than http. (BR 127848)
     * Collection Browser would not set/unset/burn albums with ', The' in
       their name.
     * Prevent breakage when xine couldn't initialize the audio device. Patch
