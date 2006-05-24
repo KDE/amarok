@@ -174,8 +174,8 @@ class CollectionView : public KListView
 
         int trackDepth() { return m_trackDepth; }
 
-        // avoid duplicated code
-        static void manipulateThe( QString &original, bool reverse = false );
+        // Transform "The Who" -> "Who, The" or the other way
+        static void manipulateThe( QString &str, bool reverse );
 
         void setShowDivider(bool show);
 

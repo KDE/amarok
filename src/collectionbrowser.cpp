@@ -673,8 +673,6 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
                     ( *it ) = ( *it ).isEmpty() ? "?" : ( *it ) + i18n(  " - " );
                     QStringList::Iterator album = it;
                     --album;
-                    if ( (*album).startsWith( "the ", false ) )
-                        manipulateThe( *album, true );
                     if ( (*album).isEmpty() )
                     {
                         unknown = true;
@@ -684,9 +682,6 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
                         ( *it ) += *album;
                 }
 
-                if ( (*it).startsWith( "the ", false ) )
-                    manipulateThe( *it, true );
-
                 if ( (*it).stripWhiteSpace().isEmpty() )
                 {
                     (*it) = i18n( "Unknown" );
@@ -694,7 +689,13 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
                 }
                 else if (m_showDivider)
                 {
-                    QString headerStr = DividerItem::createGroup( (*it), m_cat1);
+                    //Dividers for "The Who" should be created as "W", not "T", because
+                    //that's how we sort it
+                    QString actualStr = *it;
+                    if ( m_cat1 == CollectionBrowser::IdArtist && actualStr.startsWith( "the ", false ) )
+                        manipulateThe( actualStr, true );
+
+                    QString headerStr = DividerItem::createGroup( actualStr, m_cat1);
 
                     if ( !containedDivider[headerStr] && headerStr != "" )
                     {
@@ -897,7 +898,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
 
     QString itemText;
     bool isUnknown;
-    QStringList matches;
+
     if ( dynamic_cast<CollectionItem*>( item ) )
     {
         itemText = static_cast<CollectionItem*>( item )->getSQLText( 0 );
@@ -924,14 +925,8 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                     if ( isUnknown )
                         tmptext = "";
                 }
-                matches.clear();
-                matches << tmptext;
-                if( endsInThe( tmptext ) )
-                {
-                    manipulateThe( tmptext );
-                    matches << tmptext;
-                }
-                qb.addMatches( q_cat1, matches, false, true );
+
+                qb.addMatch( q_cat1, tmptext, false, true );
             }
             else
             {
@@ -987,15 +982,8 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                     if ( isUnknown )
                         tmptext = "";
                 }
-                matches << tmptext;
 
-                if( endsInThe( tmptext ) )
-                {
-                    manipulateThe( tmptext );
-                    matches << tmptext;
-                }
-
-                qb.addMatches( q_cat1, matches, false, true );
+                qb.addMatch( q_cat1, tmptext, false, true );
             }
             else
             {
@@ -1005,7 +993,6 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
 
             tmptext = itemText;
             isUnknown = tmptext.isEmpty();
-            matches.clear();
 
             if( VisYearAlbum == 2 )
             {
@@ -1017,13 +1004,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                     tmptext = "";
             }
 
-            matches << tmptext;
-            if( endsInThe( tmptext ) )
-            {
-                manipulateThe( tmptext );
-                matches << tmptext;
-            }
-            qb.addMatches( q_cat2, matches, false, true );
+            qb.addMatch( q_cat2, tmptext, false, true );
 
             if( m_cat3 == QueryBuilder::tabSong )
             {
@@ -1074,14 +1055,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                         tmptext = "";
                 }
 
-                QStringList matches( tmptext );
-
-                if( endsInThe( tmptext ) ) {
-                    manipulateThe( tmptext );
-                    matches << tmptext;
-                }
-
-               qb.addMatches( q_cat1, matches, false, true );
+                qb.addMatch( q_cat1, tmptext, false, true );
             }
             else
             {
@@ -1093,7 +1067,6 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                 static_cast<CollectionItem*>( item->parent() )->getSQLText( 0 ) :
                 item->parent()->text( 0 );
             isUnknown = tmptext.isEmpty();
-            matches.clear();
 
             if( VisYearAlbum == 2 )
             {
@@ -1104,18 +1077,11 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                 if ( isUnknown )
                     tmptext = "";
             }
-            matches << tmptext;
 
-            if( endsInThe( tmptext ) ) {
-                manipulateThe( tmptext );
-                matches << tmptext;
-            }
-
-            qb.addMatches( q_cat2, matches, false, true );
+            qb.addMatch( q_cat2, tmptext, false, true );
 
             tmptext = itemText;
             isUnknown = tmptext.isEmpty();
-            matches.clear();
 
             if( VisYearAlbum == 3 )
             {
@@ -1127,14 +1093,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                     tmptext = "";
             }
 
-            matches << tmptext;
-
-            if( endsInThe( tmptext ) ) {
-                manipulateThe( tmptext );
-                matches << tmptext;
-            }
-
-            qb.addMatches( q_cat3, matches, false, true );
+            qb.addMatch( q_cat3, tmptext, false, true );
 
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle, true );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
@@ -1197,11 +1156,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             unknown = true;
         }
         else
-        {
-            if ( values[ i ].startsWith( "the ", false ) )
-                manipulateThe( values[ i ], true );
             text += values[ i ];
-        }
 
         CollectionItem* child = new CollectionItem( item, category, unknown );
         child->setDragEnabled( true );
@@ -1511,10 +1466,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                     currentAlbum = item->text(0).right( item->text(0).length() - item->text(0).find( i18n(" - ") ) - i18n(" - ").length() ) ;
                 else
                     currentAlbum = item->text(0);
-                
-                if( endsInThe( currentAlbum ) )
-                    manipulateThe( currentAlbum );
-                
+
                 K3bExporter::instance()->exportAlbum( currentAlbum );
                 break;
             case BURN_CD:
@@ -1525,10 +1477,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                     currentAlbum = item->text(0).right( item->text(0).length() - item->text(0).find( i18n(" - ") ) - i18n(" - ").length() ) ;
                 else
                     currentAlbum = item->text(0);
-                
-                if( endsInThe( currentAlbum ) )
-                    manipulateThe( currentAlbum );
-                
+
                 setCompilation( currentAlbum, true );
                 break;
             case COMPILATION_UNSET:
@@ -1536,9 +1485,6 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                     currentAlbum = item->text(0).right( item->text(0).length() - item->text(0).find( i18n(" - ") ) - i18n(" - ").length() ) ;
                 else
                     currentAlbum = item->text(0);
-
-                if( endsInThe( currentAlbum ) )
-                    manipulateThe( currentAlbum );
 
                 setCompilation( currentAlbum, false );
                 break;
@@ -2106,14 +2052,8 @@ CollectionView::listSelected()
                     if ( unknownText )
                         tmptext = "";
                 }
-                QStringList matches( tmptext );
 
-                if( endsInThe( tmptext ) ) {
-                    manipulateThe( tmptext );
-                    matches << tmptext;
-                }
-
-                qb.addMatches( q_cat1, matches, false, true );
+                qb.addMatch( q_cat1, tmptext, false, true );
             }
             else
                 qb.setOptions( QueryBuilder::optOnlyCompilations );
@@ -2187,14 +2127,8 @@ CollectionView::listSelected()
                             if ( unknownText )
                                 tmptext = "";
                         }
-                        QStringList matches( tmptext );
 
-                        if( endsInThe( tmptext ) ) {
-                            manipulateThe( tmptext );
-                            matches << tmptext;
-                        }
-
-                        qb.addMatches( q_cat1, matches, false, true );
+                        qb.addMatch( q_cat1, tmptext, false, true );
                     }
                     else
                         qb.setOptions( QueryBuilder::optOnlyCompilations );
@@ -2212,14 +2146,8 @@ CollectionView::listSelected()
                         if ( unknownText )
                             tmptext = "";
                     }
-                    QStringList matches( tmptext );
 
-                    if( endsInThe( tmptext ) ) {
-                        manipulateThe( tmptext );
-                        matches << tmptext;
-                    }
-
-                    qb.addMatches( q_cat2, matches, false, true );
+                    qb.addMatch( q_cat2, tmptext, false, true );
 
                     qb.setGoogleFilter( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, m_filter );
 
@@ -2300,13 +2228,8 @@ CollectionView::listSelected()
                                 if ( unknownText )
                                     tmptext = "";
                             }
-                            QStringList matches( tmptext );
 
-                            if( endsInThe( tmptext ) ) {
-                                manipulateThe( tmptext );
-                                matches << tmptext;
-                            }
-                            qb.addMatches( q_cat1, matches, false, true );
+                            qb.addMatch( q_cat1, tmptext, false, true );
                         }
                         else
                             qb.setOptions( QueryBuilder::optOnlyCompilations );
@@ -2323,16 +2246,8 @@ CollectionView::listSelected()
                             if ( unknownText )
                                 tmptext = "";
                         }
-                        QStringList matches( tmptext );
 
-                        if( endsInThe( tmptext ) )
-                        {
-                            manipulateThe( tmptext );
-                            matches << tmptext;
-                        }
-                        qb.addMatches( q_cat2, matches, false, true );
-
-                        matches.clear();
+                        qb.addMatch( q_cat2, tmptext, false, true );
 
                         tmptext = static_cast<CollectionItem*>( grandChild )->getSQLText( 0 );
                         unknownText = tmptext.isEmpty();
@@ -2346,15 +2261,8 @@ CollectionView::listSelected()
                             if ( unknownText )
                                 tmptext = "";
                         }
-                        matches.clear();
-                        matches << tmptext;
 
-                        if( endsInThe( tmptext ) )
-                        {
-                            manipulateThe( tmptext );
-                            matches << tmptext;
-                        }
-                        qb.addMatches( q_cat3, matches, false, true );
+                        qb.addMatch( q_cat3, tmptext, false, true );
 
                         qb.setGoogleFilter( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, m_filter );
 
@@ -2618,7 +2526,8 @@ CollectionView::restoreView()
 }
 
 
-// Small function aimed to convert Eagles, The -> The Eagles
+// Small function aimed to convert Eagles, The -> The Eagles (and back again)
+// TODO Internationlise
 void
 CollectionView::manipulateThe( QString &str, bool reverse )
 {
@@ -2862,6 +2771,13 @@ CollectionItem::compare( QListViewItem* i, int col, bool ascending ) const
                 return 1;
             else
                 return -1;
+        //For artists, we sort by ignoring "The" eg "The Who" sorts as if it were "Who"
+        case CollectionBrowser::IdArtist:
+            if ( a.startsWith( "the ", false ) )
+                CollectionView::manipulateThe( a, true );
+            if ( b.startsWith( "the ", false ) )
+                CollectionView::manipulateThe( b, true );
+            break;
     }
     // Need to make single letter artist names sort lower than acented divider items
     // (e.g. The artist "A" should sort below the divider "Ä") so the divider colapsing
@@ -3002,6 +2918,7 @@ bool
 DividerItem::shareTheSameGroup(const QString& itemStr, const QString& divStr, int cat)
 {
     bool inGroup = false;
+    QString tmp = itemStr.stripWhiteSpace();
 
     switch (cat) {
     case CollectionBrowser::IdVisYearAlbum: {
@@ -3026,8 +2943,12 @@ DividerItem::shareTheSameGroup(const QString& itemStr, const QString& divStr, in
         }
         break;
     }
-    default: {
-        QString tmp = itemStr.stripWhiteSpace();
+    case CollectionBrowser::IdArtist:
+        //"The Who" should count as being in "W" and not "T"
+        if ( tmp.startsWith( "the ", false ) )
+            CollectionView::manipulateThe( tmp, true );
+        //Fall through
+    default: 
         if ( !tmp.isEmpty() ) {
             if (divStr == "0-9" && QChar(tmp.at(0)).isDigit()) {
                 inGroup = true;
@@ -3036,7 +2957,6 @@ DividerItem::shareTheSameGroup(const QString& itemStr, const QString& divStr, in
                 inGroup = true;
             }
         }
-    }
     }
 
     return inGroup;
