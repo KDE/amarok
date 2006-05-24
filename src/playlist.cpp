@@ -1274,6 +1274,7 @@ Playlist::advanceDynamicTrack( PlaylistItem *item )
     {
         if( *it == item )
         {
+            //FIXME: SHIT BREAKS HERE
             if( dynamicMode()->markHistory() ) (*it)->setEnabled( false );
             for ( PlaylistItem *first = firstChild();
                   dynamicMode()->cycleTracks() && x >= dynamicMode()->previousCount() && first;
@@ -1681,6 +1682,8 @@ Playlist::activate( QListViewItem *item )
 
     checkFileStatus( item );
 
+    debug() << "item->isEnabled() " << (item->isEnabled() ? "true" : "false") << endl;
+    
     if( dynamicMode() && !m_dynamicDirt && !amaroK::repeatTrack() )
     {
         if( m_currentTrack && item->isEnabled() )
@@ -1711,9 +1714,11 @@ Playlist::activate( QListViewItem *item )
             }
 
         }
+        debug() << "item->isEnabled() " << (item->isEnabled() ? "true" : "false") << endl;
         advanceDynamicTrack();
     }
 
+    debug() << "item->isEnabled() " << (item->isEnabled() ? "true" : "false") << endl;
 
     if( !item->isEnabled() )
     {
