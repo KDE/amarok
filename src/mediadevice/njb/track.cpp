@@ -33,6 +33,7 @@ static const char* rcsid __attribute__((unused)) =
 // #include <id3/globals.h>
 
 // kionjb
+#include "debug.h"
 #include "track.h"
 #include "njbmediadevice.h"
 

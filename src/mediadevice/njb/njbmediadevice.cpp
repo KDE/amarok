@@ -619,7 +619,7 @@ int NjbMediaDevice::downloadTrackNow( NjbMediaItem *item , QString path)
         {
             const char* error;
             while ((error = NJB_Error_Geterror(m_njb)))
-                error() << ": " << error << endl;
+                warning() << ": " << error << endl;
         }
         else
             debug() << ": No reason for failure reported.\n";
@@ -704,7 +704,7 @@ MediaItem* NjbMediaDevice::copyTrackToDevice(const MetaBundle& bundle)
         {
             const char* error;
             while ((error = NJB_Error_Geterror(m_njb)))
-                error() << ": " << error << endl;
+                warning() << ": " << error << endl;
         }
         else
             debug() << ": No reason for failure reported.\n";
