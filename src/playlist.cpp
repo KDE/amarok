@@ -1061,6 +1061,7 @@ Playlist::playNextTrack( bool forceNext )
     if( !m_visCount || ( m_currentTrack && m_stopAfterTrack == m_currentTrack  ) )
     {
         if( dynamicMode() && m_visCount ) {
+            item->setEnabled( false );
             advanceDynamicTrack( item );
             m_dynamicDirt = false;
         }
@@ -1250,7 +1251,11 @@ Playlist::playNextTrack( bool forceNext )
 
 
         if ( dynamicMode() && item != firstChild() )
+        {
+            if( currentTrack() )
+                currentTrack()->setEnabled( false );
             advanceDynamicTrack();
+        }
 
         if ( !item && amaroK::repeatPlaylist() )
             item = *MyIt( this ); //ie. first visible item
@@ -1274,8 +1279,6 @@ Playlist::advanceDynamicTrack( PlaylistItem *item )
     {
         if( *it == item )
         {
-            //FIXME: SHIT BREAKS HERE
-            if( dynamicMode()->markHistory() ) (*it)->setEnabled( false );
             for ( PlaylistItem *first = firstChild();
                   dynamicMode()->cycleTracks() && x >= dynamicMode()->previousCount() && first;
                   first = firstChild(), x-- ) {
@@ -1682,8 +1685,6 @@ Playlist::activate( QListViewItem *item )
 
     checkFileStatus( item );
 
-    debug() << "item->isEnabled() " << (item->isEnabled() ? "true" : "false") << endl;
-    
     if( dynamicMode() && !m_dynamicDirt && !amaroK::repeatTrack() )
     {
         if( m_currentTrack && item->isEnabled() )
@@ -1714,11 +1715,10 @@ Playlist::activate( QListViewItem *item )
             }
 
         }
-        debug() << "item->isEnabled() " << (item->isEnabled() ? "true" : "false") << endl;
+        if( m_currentTrack != item )
+            m_currentTrack->setEnabled( false );
         advanceDynamicTrack();
     }
-
-    debug() << "item->isEnabled() " << (item->isEnabled() ? "true" : "false") << endl;
 
     if( !item->isEnabled() )
     {
