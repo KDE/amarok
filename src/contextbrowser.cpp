@@ -376,8 +376,8 @@ void ContextBrowser::openURLRequest( const KURL &url )
         }
         // Konqueror sidebar needs these
         if (url.path() == "context") { m_dirtyCurrentTrackPage=true; showContext( KURL( "current://track" ) ); saveHtmlData(); }
-        if (url.path() == "wiki") { m_dirtyLyricsPage=true; showWikipedia(); saveHtmlData(); }
-        if (url.path() == "lyrics") { m_dirtyWikiPage=true; m_wikiJob=false; showLyrics(); saveHtmlData(); }
+        if (url.path() == "wiki") { m_dirtyWikiPage=true; showWikipedia(); saveHtmlData(); }
+        if (url.path() == "lyrics") { m_dirtyLyricsPage=true; m_wikiJob=false; showLyrics(); saveHtmlData(); }
     }
 
     else if ( url.protocol() == "runscript" )
