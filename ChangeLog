@@ -19,8 +19,13 @@ VERSION 1.4.1:
     * Configure, which of fresh podcasts, newest & favorite albums are shown
       in context browser home view. Patch by Patrick Muench <s7mon@web.de>.
       (BR 127043)
+    * Dynamic mode no longer skips to the next song if you press play (via
+      dcop, for instance) while already playing a track. Instead it restarts
+      the current one.
 
   BUGFIXES:
+    * Regression in dynamic mode caused it to skip the first track in the
+      playlist whenever it was started. (BR 127451)
     * Stop Playing after Track: remember current track (BR 127312)
     * Radio streams were broken for protocols other than http. (BR 127848)
     * Collection Browser would not set/unset/burn albums with ', The' in
