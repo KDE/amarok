@@ -126,8 +126,10 @@ if do_l10n == "yes"
         makefile = File.new( "po/Makefile.am", File::CREAT | File::RDWR | File::TRUNC )
         makefile << "SUBDIRS = $(AUTODIRS)\n"
         makefile.close()
+        # Remove xx language
+        `rm -rf po/xx`
     else
-        `rm -Rf po`
+        `rm -rf po`
     end
 
     `rm -rf l10n`
