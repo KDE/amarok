@@ -124,7 +124,7 @@ void HelixEngine::notifyUser(unsigned long code, const char *moreinfo, const cha
 {
    QString *err = HelixErrors::errorText(code);
    if (err)
-      emit statusText(i18n("Helix Core returned error: %1 %1 %1").arg(QString(*err)).arg(QString(moreinfo)).arg(QString(moreinfourl)));
+      emit statusText(i18n("Helix Core returned error: %1 %2 %3").arg(QString(*err)).arg(QString(moreinfo)).arg(QString(moreinfourl)));
    else
       emit statusText(i18n("Helix Core returned error: <unknown>"));
 }
