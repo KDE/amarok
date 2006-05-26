@@ -503,11 +503,11 @@
     <slot>slotDetails()</slot>
 </slots>
 <functions>
-    <function returnType="QString">buildDestination( const QString &amp; format, const MetaBundle &amp; mb )</function>
+    <function returnType="QString">buildDestination( const QString &amp; format, const MetaBundle &amp; mb ) const</function>
     <function returnType="QString">buildFormatTip() const</function>
-    <function returnType="QString">buildFormatString()</function>
+    <function returnType="QString">buildFormatString() const</function>
     <function>setPreviewBundle( const MetaBundle &amp; bundle )</function>
-    <function returnType="QString">cleanPath( const QString &amp; component )</function>
+    <function returnType="QString">cleanPath( const QString &amp; component ) const</function>
     <function>init()</function>
 </functions>
 <layoutdefaults spacing="6" margin="0"/>

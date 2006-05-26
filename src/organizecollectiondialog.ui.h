@@ -4,7 +4,7 @@
 #include "qstringx.h"
 
 
-QString OrganizeCollectionDialog::buildDestination( const QString &format, const MetaBundle &mb )
+QString OrganizeCollectionDialog::buildDestination( const QString &format, const MetaBundle &mb ) const
 {
     bool isCompilation = false;
     if( !mb.album().isEmpty() )
@@ -89,7 +89,7 @@ QString OrganizeCollectionDialog::buildFormatTip() const
 }
 
 
-QString OrganizeCollectionDialog::buildFormatString()
+QString OrganizeCollectionDialog::buildFormatString() const
 {
     QString format = "%folder/";
     if( filetypeCheck->isChecked() )
@@ -128,7 +128,7 @@ void OrganizeCollectionDialog::preview( const QString &format )
 }
 
 
-QString OrganizeCollectionDialog::cleanPath( const QString &component )
+QString OrganizeCollectionDialog::cleanPath( const QString &component ) const
 {
     QString result = component;
 
