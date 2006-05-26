@@ -26,6 +26,8 @@ VERSION 1.4.1:
       the current one.
 
   BUGFIXES:
+    * Properly import and save XSPF playlist formats.
+    * Optimise addition of playlists to the playlistbrowser.
     * In context browser, show localized date for podcasts. (BR 127853)
     * Regression in dynamic mode caused it to skip the first track in the
       playlist whenever it was started. (BR 127451)

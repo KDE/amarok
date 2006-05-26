@@ -699,30 +699,33 @@ PlaylistFile::loadPls( QTextStream &stream )
 bool
 PlaylistFile::loadXSPF( QTextStream &stream )
 {
-    MetaBundle b;
-
     XSPFPlaylist* doc = new XSPFPlaylist( stream );
 
     XSPFtrackList trackList = doc->trackList();
 
     foreachType( XSPFtrackList, trackList )
     {
-        if ( !(*it).location.url().isNull() )
-        {
-            if ( (*it).title.isNull() )
-                b.setTitle( (*it).location.fileName() );
-            else
-                b.setTitle( (*it).title );
+          QString artist = (*it).creator;
+          QString title  = (*it).title;
+          QString album  = (*it).album;
 
-            b.setUrl( (*it).location );
-            b.setComment( (*it).annotation );
-            b.setAlbum( (*it).album );
-            if ( (*it).trackNum > 0 )
-                b.setTrack( (*it).trackNum );
+          QueryBuilder qb;
+          qb.addMatch( QueryBuilder::tabArtist, QueryBuilder::valName, artist );
+          qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valTitle, title );
+          if( !album.isEmpty() )
+              qb.addMatch( QueryBuilder::valName, album );
 
-            m_bundles += b;
-            b = MetaBundle();
-        }
+          qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+
+          QStringList values = qb.run();
+
+          debug() << "new xspf item: " << artist << " - " << title << " - " << values[0] << endl;
+
+          if( values.isEmpty() ) continue;
+
+          MetaBundle b( values[0] );
+
+          m_bundles += b;
     }
 
     return true;
@@ -867,7 +870,7 @@ PlaylistFile::loadSMIL( QTextStream &stream )
     {
         debug() << "Could now read smil playlist" << endl;
         return false;
-    }   
+    }
 	QDomElement root = doc.documentElement();
 	stream.setEncoding ( QTextStream::UnicodeUTF8 );
 
@@ -884,7 +887,7 @@ PlaylistFile::loadSMIL( QTextStream &stream )
 	nodeList = doc.elementsByTagName( "audio" );
 	for( uint i = 0; i < nodeList.count(); i++ )
 	{
-        MetaBundle b;   
+        MetaBundle b;
 		node = nodeList.item(i);
 		url = QString::null;
 		if( (node.nodeName().lower() == "audio") && (node.isElement()) )
@@ -892,10 +895,10 @@ PlaylistFile::loadSMIL( QTextStream &stream )
 			element = node.toElement();
 			if( element.hasAttribute("src") )
 				url = element.attribute("src");
-                
+
 			else if( element.hasAttribute("Src") )
 				url = element.attribute("Src");
-                
+
 			else if( element.hasAttribute("SRC") )
 				url = element.attribute("SRC");
 		}

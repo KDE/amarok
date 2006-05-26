@@ -59,23 +59,23 @@ public:
 //    meta();
 //    extension();
 
-    void title( QString title );
-    void creator( QString creator );
-    void annotation( QString annotation );
-    void info( KURL info );
-    void location( KURL location );
-    void identifier( QString identifier );
-    void image( KURL image );
-    void date( QDateTime date );
-    void license( KURL license );
-    void attribution( KURL attribution, bool append = true );
-    void link( KURL link );
+    void setTitle( QString title );
+    void setCreator( QString creator );
+    void setAnnotation( QString annotation );
+    void setInfo( KURL info );
+    void setLocation( KURL location );
+    void setIdentifier( QString identifier );
+    void setImage( KURL image );
+    void setDate( QDateTime date );
+    void setLicense( KURL license );
+    void setAttribution( KURL attribution, bool append = true );
+    void setLink( KURL link );
+    void setTrackList( XSPFtrackList trackList, bool append = false );
 //    meta();
 //    extension();
 
     XSPFtrackList trackList();
 
-    void trackList( XSPFtrackList trackList, bool append = false );
 
 private:
     bool loadXSPF( QTextStream& );

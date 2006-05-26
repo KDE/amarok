@@ -118,7 +118,7 @@ XSPFPlaylist::link()
 }
 
 void
-XSPFPlaylist::title( QString title )
+XSPFPlaylist::setTitle( QString title )
 {
     if ( documentElement().namedItem( "title" ).isNull() )
     {
@@ -132,7 +132,7 @@ XSPFPlaylist::title( QString title )
 }
 
 void
-XSPFPlaylist::creator( QString creator )
+XSPFPlaylist::setCreator( QString creator )
 {
     if ( documentElement().namedItem( "creator" ).isNull() )
     {
@@ -146,7 +146,7 @@ XSPFPlaylist::creator( QString creator )
 }
 
 void
-XSPFPlaylist::annotation( QString annotation )
+XSPFPlaylist::setAnnotation( QString annotation )
 {
     if ( documentElement().namedItem( "annotation" ).isNull() )
     {
@@ -160,7 +160,7 @@ XSPFPlaylist::annotation( QString annotation )
 }
 
 void
-XSPFPlaylist::info( KURL info )
+XSPFPlaylist::setInfo( KURL info )
 {
     if ( documentElement().namedItem( "info" ).isNull() )
     {
@@ -174,7 +174,7 @@ XSPFPlaylist::info( KURL info )
 }
 
 void
-XSPFPlaylist::location( KURL location )
+XSPFPlaylist::setLocation( KURL location )
 {
     if ( documentElement().namedItem( "location" ).isNull() )
     {
@@ -188,7 +188,7 @@ XSPFPlaylist::location( KURL location )
 }
 
 void
-XSPFPlaylist::identifier( QString identifier )
+XSPFPlaylist::setIdentifier( QString identifier )
 {
     if ( documentElement().namedItem( "identifier" ).isNull() )
     {
@@ -202,7 +202,7 @@ XSPFPlaylist::identifier( QString identifier )
 }
 
 void
-XSPFPlaylist::image( KURL image )
+XSPFPlaylist::setImage( KURL image )
 {
     if ( documentElement().namedItem( "image" ).isNull() )
     {
@@ -216,7 +216,7 @@ XSPFPlaylist::image( KURL image )
 }
 
 void
-XSPFPlaylist::date( QDateTime date )
+XSPFPlaylist::setDate( QDateTime date )
 {
     /* date needs timezone info to be compliant with the standard
        (ex. 2005-01-08T17:10:47-05:00 ) */
@@ -233,7 +233,7 @@ XSPFPlaylist::date( QDateTime date )
 }
 
 void
-XSPFPlaylist::license( KURL license )
+XSPFPlaylist::setLicense( KURL license )
 {
     if ( documentElement().namedItem( "license" ).isNull() )
     {
@@ -247,7 +247,7 @@ XSPFPlaylist::license( KURL license )
 }
 
 void
-XSPFPlaylist::attribution( KURL attribution, bool append )
+XSPFPlaylist::setAttribution( KURL attribution, bool append )
 {
     if ( documentElement().namedItem( "attribution" ).isNull() )
         documentElement().insertBefore( createElement( "attribution" ), documentElement().namedItem( "trackList" ) );
@@ -271,7 +271,7 @@ XSPFPlaylist::attribution( KURL attribution, bool append )
 }
 
 void
-XSPFPlaylist::link( KURL link )
+XSPFPlaylist::setLink( KURL link )
 {
     if ( documentElement().namedItem( "link" ).isNull() )
     {
@@ -296,13 +296,12 @@ XSPFPlaylist::trackList()
 
     while ( !subNode.isNull() )
     {
+        XSPFtrack track;
         subSubNode = subNode.firstChild();
         if ( subNode.nodeName() == "track" )
         {
             while ( !subSubNode.isNull() )
             {
-                XSPFtrack track;
-
                 if ( subSubNode.nodeName() == "location" )
                     track.location = subSubNode.firstChild().nodeValue();
                 else if ( subSubNode.nodeName() == "title" )
@@ -326,11 +325,10 @@ XSPFPlaylist::trackList()
                 else if ( subSubNode.nodeName() == "link" )
                     track.link = subSubNode.firstChild().nodeValue();
 
-                list.append(track);
-
                 subSubNode = subSubNode.nextSibling();
             }
         }
+        list.append( track );
         subNode = subNode.nextSibling();
     }
 
@@ -338,7 +336,7 @@ XSPFPlaylist::trackList()
 }
 
 void
-XSPFPlaylist::trackList( XSPFtrackList trackList, bool append )
+XSPFPlaylist::setTrackList( XSPFtrackList trackList, bool append )
 {
     if ( documentElement().namedItem( "trackList" ).isNull() )
         documentElement().appendChild( createElement( "trackList" ) );

@@ -1217,7 +1217,7 @@ MediaView::contentsDragEnterEvent( QDragEnterEvent *e )
     QCString subtype;
     QTextDrag::decode( e, data, subtype );
 
-    e->accept( e->source() == viewport() 
+    e->accept( e->source() == viewport()
             || subtype == "amarok-sql"
             || KURLDrag::canDecode( e ) );
 }
@@ -2482,7 +2482,7 @@ MediaDevice::transferFiles()
         else if( !item ) // the item does not exist already on the media device
         {
             if( m_transcode &&
-                    ( !isPlayable( *bundle ) || m_transcodeAlways ) ) 
+                    ( !isPlayable( *bundle ) || m_transcodeAlways ) )
             {
                 QString preferred = supportedFiletypes().isEmpty() ? "mp3" : supportedFiletypes().first();
                 debug() << "transcoding " << bundle->url() << " to " << preferred << endl;
@@ -3052,7 +3052,7 @@ MediaQueue::dragEnterEvent( QDragEnterEvent *e )
     QCString subtype;
     QTextDrag::decode( e, data, subtype );
 
-    e->accept( e->source() != viewport() 
+    e->accept( e->source() != viewport()
             && e->source() != m_parent
             && (subtype == "amarok-sql" || KURLDrag::canDecode( e )) );
 }

@@ -3129,40 +3129,6 @@ Playlist::saveXML( const QString &path )
     stream << "</playlist>\n";
 }
 
-bool
-Playlist::saveXSPF( const QString &path )
-{
-    QFile file( path );
-
-    if( !file.open( IO_WriteOnly ) ) return false;
-
-    XSPFPlaylist* playlist = new XSPFPlaylist();
-
-    playlist->creator( "amarok" );
-    playlist->info( "http://amarok.kde.org/" );
-
-    playlist->date( QDateTime::currentDateTime( Qt::UTC ) );
-
-    XSPFtrackList trackList;
-
-    for( const PlaylistItem *item = firstChild(); item; item = item->nextSibling() )
-    {
-        XSPFtrack track;
-        track.location = item->url();
-        trackList.append( track );
-    }
-
-    playlist->trackList( trackList );
-
-    QTextStream stream( &file );
-    playlist->save( stream, 2 );
-
-    file.close();
-
-    return true;
-}
-
-
 void
 Playlist::burnPlaylist( int projectType )
 {

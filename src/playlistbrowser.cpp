@@ -917,18 +917,18 @@ void PlaylistBrowser::loadPodcastsFromDatabase( PlaylistCategory *p )
         {
             bundle = episodes.first();
             new PodcastEpisode( channel, 0, bundle );
-            
-            if( bundle.isNew() ) 
+
+            if( bundle.isNew() )
                 hasNew = true;
 
             episodes.pop_front();
         }
         channel->setNew( hasNew );
-        
+
         if( channel->autoscan() )
             m_podcastItemsToScan.append( channel );
     }
-    
+
     if( !m_podcastItemsToScan.isEmpty() )
         m_podcastTimer->start( m_podcastTimerInterval );
 }
@@ -1083,7 +1083,7 @@ PlaylistBrowser::findPodcastEpisode( const KURL &episode, const KURL &feed ) con
         #undef  child
         child = child->nextSibling();
     }
-    
+
     return 0;
 }
 
@@ -1372,6 +1372,36 @@ DynamicMode *PlaylistBrowser::findDynamicModeByTitle( const QString &title ) con
     return 0;
 }
 
+PlaylistEntry *
+PlaylistBrowser::findPlaylistEntry( const QString &url, QListViewItem *parent ) const
+{
+    if( !parent ) parent = static_cast<QListViewItem*>(m_playlistCategory);
+
+    for( QListViewItem *it = parent->firstChild();
+            it;
+            it = it->nextSibling() )
+    {
+        if( isPlaylist( it ) )
+        {
+            PlaylistEntry *pl = static_cast<PlaylistEntry*>( it );
+            debug() << pl->url().path() << " == " << url << endl;
+            if( pl->url().path() == url )
+            {
+                debug() << "ok!" << endl;
+                return pl;
+            }
+        }
+        else if( isCategory( it ) )
+        {
+            PlaylistEntry *pl = findPlaylistEntry( url, it );
+            if( pl )
+                return pl;
+        }
+    }
+
+    return 0;
+}
+
 int PlaylistBrowser::loadPlaylist( const QString &playlist, bool /*force*/ )
 {
     // roland
@@ -1395,15 +1425,12 @@ void PlaylistBrowser::addPlaylist( const QString &path, QListViewItem *parent, b
     QFile file( path );
     if( !file.exists() ) return;
 
-    PlaylistEntry *playlist = 0;
-    for( QListViewItemIterator it( m_listview ); *it; ++it )
-        if( isPlaylist( *it ) && path == static_cast<PlaylistEntry *>(*it)->url().path() ) {
-            playlist = static_cast<PlaylistEntry *>(*it); //the playlist is already in the playlist browser
-            parent = (*it)->parent();
-            if( force )
-                playlist->load(); //reload the playlist
-            break;
-        }
+    PlaylistEntry *playlist = findPlaylistEntry( path );
+    if( playlist )
+    {
+        if( force )
+            playlist->load(); //reload the playlist
+    }
 
     if( !parent ) parent = static_cast<QListViewItem*>(m_playlistCategory);
 
@@ -2046,7 +2073,7 @@ void PlaylistBrowser::saveXSPF( PlaylistEntry *item, bool append )
 {
     XSPFPlaylist* playlist = new XSPFPlaylist();
 
-    playlist->creator( "amaroK" );
+    playlist->setCreator( "amaroK" );
 
     XSPFtrackList list;
 
@@ -2054,11 +2081,14 @@ void PlaylistBrowser::saveXSPF( PlaylistEntry *item, bool append )
     for( TrackItemInfo *info = trackList.first(); info; info = trackList.next() )
     {
         XSPFtrack track;
-        track.location = info->url().url();
+        MetaBundle b( info->url() );
+        track.creator  = b.artist();
+        track.title    = b.title();
+        track.location = b.url().url();
         list.append( track );
     }
 
-    playlist->trackList( list, append );
+    playlist->setTrackList( list, append );
 
     QFile file( item->url().path() );
     file.open( IO_WriteOnly );
@@ -3024,8 +3054,8 @@ void PlaylistBrowserView::moveSelectedItems( QListViewItem *newParent )
             }
             else if( !isPlaylist( newParent ) )
                 continue;
-            
-            
+
+
             #define newParent static_cast<PlaylistEntry*>(newParent)
             newParent->insertTracks( after, KURL::List( static_cast<PlaylistTrackItem*>(item)->url() ));
             #undef  newParent
