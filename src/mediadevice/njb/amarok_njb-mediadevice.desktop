@@ -2,6 +2,7 @@
 Type=Service
 Name=Creative Nomad Jukebox Media Device
 Name[bg]=Устройство Creative Nomad Jukebox
+Name[ca]=Dispositiu de mitjans Creative Nomad Jukebox
 Name[da]=Creative Nomad Jukebox-medieenhed
 Name[it]=Dispositivo multimediale Creative Nomad Jukebox
 Name[ja]=Creative Nomad Jukebox メディアデバイス
@@ -19,6 +20,7 @@ Comment=Plugin for amaroK
 Comment[bg]=Приставка за amaroK
 Comment[bn]=আমারক-এর জন্য প্লাগিন
 Comment[br]=Lugent evit amaroK
+Comment[ca]=Connector per l'amaroK
 Comment[cs]=Modul pro amaroK
 Comment[de]=Modul für amaroK
 Comment[el]=Πρόσθετο για το amaroK
