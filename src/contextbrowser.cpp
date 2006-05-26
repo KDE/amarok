@@ -522,9 +522,10 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
     bool newMetaData = false;
     m_dirtyCurrentTrackPage = true;
     m_dirtyLyricsPage = true;
-    m_dirtyWikiPage = true;
     m_wikiJob = 0; //New metadata, so let's forget previous wiki-fetching jobs
 
+    if ( MetaBundle( m_currentURL ).artist() != bundle.artist() )
+        m_dirtyWikiPage = true;
     // Prepend stream metadata history item to list
     if ( !m_metadataHistory.first().contains( bundle.prettyTitle() ) )
     {
