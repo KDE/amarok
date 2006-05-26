@@ -109,9 +109,6 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     m_toolbar->insertLineSeparator();
     renameButton->plug( m_toolbar);
     removeButton->plug( m_toolbar );
-    m_toolbar->insertLineSeparator();
-    m_toolbar->insertSeparator();
-    m_toolbar->setIconText( KToolBar::IconTextRight, false );
 
     renameButton->setEnabled( false );
     removeButton->setEnabled( false );
