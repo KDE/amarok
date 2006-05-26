@@ -45,6 +45,7 @@ class PlaylistItem;
 class PlaylistEntry;
 class PlaylistLoader;
 class PlaylistAlbum;
+class TagWriter;
 class QBoxLayout;
 class QLabel;
 class QTimer;
@@ -181,6 +182,7 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         friend class ColumnList;
         friend void amaroK::DcopPlaylistHandler::removeCurrentTrack(); //calls removeItem() and currentTrack()
         friend void amaroK::DcopPlaylistHandler::removeByIndex( int ); //calls removeItem()
+        friend class TagWriter; //calls removeItem()
         friend void PlaylistWindow::init(); //setting up connections etc.
         friend TrackToolTip::TrackToolTip();
         friend bool PlaylistWindow::eventFilter( QObject*, QEvent* ); //for convenience we handle some playlist events here

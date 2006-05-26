@@ -63,6 +63,8 @@ PlaylistItem::PlaylistItem( QListView *listview, QListViewItem *item )
 PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi, bool enabled )
         : MetaBundle( bundle ), KListViewItem( lvi->listView(), lvi->itemAbove() )
         , m_proxyForMoods( 0 )
+        , m_isBeingRenamed( false )
+        , m_deleteAfterEdit( false )
 {
     setDragEnabled( true );
 
@@ -394,6 +396,16 @@ bool PlaylistItem::isEditing( int column ) const
         case LastPlayed: return m_lastPlay   ==  1;
         default: return false;
     }
+}
+
+bool PlaylistItem::anyEditing() const
+{
+    for( int i = 0; i < NUM_COLUMNS; i++ )
+    {
+        if( isEditing( i ) )
+            return true;
+    }
+    return false;
 }
 
 int PlaylistItem::ratingAtPoint( int x ) //static

@@ -565,8 +565,13 @@ namespace amaroK
     {
         PlaylistItem* const item = Playlist::instance()->currentTrack();
         if ( item ) {
-            Playlist::instance()->removeItem( item );
-            delete item;
+            if( item->isBeingRenamed() )
+                item->setDeleteAfterEditing( true );
+            else
+            {
+                Playlist::instance()->removeItem( item );
+                delete item;
+            }
         }
     }
 

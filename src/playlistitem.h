@@ -75,6 +75,11 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
 
         void setEditing( int column );
         bool isEditing( int column ) const;
+        bool anyEditing() const;
+        void setIsBeingRenamed( bool renaming ) { m_isBeingRenamed = renaming; }
+        bool isBeingRenamed() const { return m_isBeingRenamed; }
+        void setDeleteAfterEditing( bool dae ) { m_deleteAfterEdit = dae; }
+        bool deleteAfterEditing() const { return m_deleteAfterEdit; }
 
         /// convenience functions
         Playlist *listView() const { return reinterpret_cast<Playlist*>( KListViewItem::listView() ); }
@@ -152,6 +157,8 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
         PlaylistAlbum *m_album;
         bool m_enabled;
         bool m_atfEnabled;
+        bool m_deleteAfterEdit;
+        bool m_isBeingRenamed;
 
         class MoodProxyObject: public QObject
         {

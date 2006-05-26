@@ -2281,6 +2281,9 @@ Playlist::rename( QListViewItem *item, int column ) //SLOT
 
     m_renameItem = item;
     m_renameColumn = column;
+
+    static_cast<PlaylistItem*>(item)->setIsBeingRenamed( true );
+
 }
 
 void
@@ -2302,6 +2305,11 @@ Playlist::writeTag( QListViewItem *qitem, const QString &, int column ) //SLOT
         else
             if (oldTag != newTag)
                 ThreadWeaver::instance()->queueJob( new TagWriter( item, oldTag, newTag, column ) );
+            else if( item->deleteAfterEditing() )
+            {
+                removeItem( item );
+                delete item;
+            }
     }
 
     m_itemsToChangeTagsFor.clear();
@@ -4939,6 +4947,12 @@ TagWriter::completeJob()
         m_item->setExactText( m_tagType, m_newTagString.isEmpty() ? " " : m_newTagString );
         CollectionDB::instance()->updateURL( m_item->url().path(), m_updateView );
 
+    }
+    m_item->setIsBeingRenamed( false );
+    if( m_item->deleteAfterEditing() )
+    {
+        Playlist::instance()->removeItem( m_item );
+        delete m_item;
     }
 }
 
