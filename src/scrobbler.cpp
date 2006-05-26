@@ -707,6 +707,7 @@ void ScrobblerSubmitter::configure( const QString& username, const QString& pass
 void ScrobblerSubmitter::syncComplete()
 {
     m_holdFakeQueue = false;
+    saveSubmitQueue();
     schedule( false );
 }
 
@@ -937,8 +938,11 @@ void ScrobblerSubmitter::enqueueItem( SubmitItem* item )
         m_submitQueue.inSort( item );
     }
 
-    // Save submit queue to disk so it is more uptodate in case of crash.
-    saveSubmitQueue();
+    if( !m_holdFakeQueue )
+    {
+       // Save submit queue to disk so it is more uptodate in case of crash.
+       saveSubmitQueue();
+    }
 }
 
 

@@ -10,6 +10,8 @@ VERSION 1.4.1:
       <andres.oton@gmail.com>. (BR 103185)
 
   CHANGES:
+    * Speed up connecting media devices with a lot of tracks to be submitted
+      to last.fm.
     * For media without meta data, try to read metadata after transfer to
       the iPod (e.g. when copying audio cd via kio slaves).
     * Hint at starting a transcode script for transcoding while transferring
