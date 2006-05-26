@@ -24,6 +24,7 @@
 #include "expression.h"
 #include "mediabrowser.h"
 #include "metabundle.h"           //updateTags()
+#include "organizecollectiondialog.h"
 #include "playlist.h"
 #include "playlistloader.h"
 #include "playlistbrowser.h"
@@ -35,6 +36,7 @@
 #include "statusbar.h"
 #include "threadweaver.h"
 
+#include <qcheckbox.h>
 #include <qfile.h>
 #include <qmap.h>
 #include <qmutex.h>
@@ -45,12 +47,14 @@
 #include <pthread.h>              //debugging, can be removed later
 
 #include <kcharsets.h>            //setHTMLLyrics()
+#include <kcombobox.h>
 #include <kconfig.h>
 #include <kglobal.h>
 #include <kinputdialog.h>         //setupCoverFetcher()
 #include <klineedit.h>            //setupCoverFetcher()
 #include <klocale.h>
 #include <kmdcodec.h>
+#include <ksimpleconfig.h>
 #include <kstandarddirs.h>
 #include <kio/job.h>
 #include <kio/netaccess.h>
@@ -2973,6 +2977,103 @@ CollectionDB::fileOperationResult( KIO::Job *job ) // slot
     }
 
     m_waitForFileOperation = false;
+}
+
+
+bool
+CollectionDB::organizeFile( const KURL &src, const OrganizeCollectionDialog &dialog, bool copy )
+{
+   bool overwrite = dialog.overwriteCheck->isChecked();
+   bool localFile = src.isLocalFile();
+   KURL tmpSrc = src;
+   if( !localFile )
+   {
+      QString tmp;
+      int count = 0;
+      do
+      {
+         QString extension = src.url().section( ".", -1 );
+         tmp = QString( dialog.folderCombo->currentText() + "/amarok-tmp-%1." + extension ).arg( count );
+         count++;
+      } while( QFile::exists( tmp ) );
+      tmpSrc = KURL::fromPathOrURL( tmp );
+
+      KIO::Job *job = 0;
+      if( copy )
+      {
+         job = KIO::file_copy( src, tmpSrc, -1, false, false, false );
+      }
+      else
+      {
+         job = KIO::file_move( src, tmpSrc, -1, false, false, false );
+      }
+      connect( job, SIGNAL(result( KIO::Job * )), SLOT(fileOperationResult( KIO::Job * )) );
+      m_waitForFileOperation = true;
+      while( m_waitForFileOperation )
+      {
+         usleep( 10000 );
+         kapp->processEvents( 100 );
+      }
+
+      if( m_fileOperationFailed )
+      {
+         debug() << "failed to transfer " << src.url() << " to " << tmpSrc << endl;
+         return false;
+      }
+   }
+
+   //Building destination here.
+   MetaBundle mb( tmpSrc );
+   QString dest = dialog.buildDestination( dialog.buildFormatString(), mb );
+
+   debug() << "Destination: " << dest << endl;
+
+   if( tmpSrc.path() != dest ) //supress error warning that file couldn't be moved
+   {
+      if( !CollectionDB::instance()->moveFile( tmpSrc.url(), dest, overwrite, copy && localFile ) )
+      {
+         if( !localFile )
+            QFile::remove( tmpSrc.path() );
+         return false;
+      }
+   }
+
+   //Use cover image for folder icon
+   if( dialog.coverCheck->isChecked() && !mb.artist().isEmpty() && !mb.album().isEmpty() )
+   {
+      KURL dstURL = KURL::fromPathOrURL( dest );
+      dstURL.cleanPath();
+
+      QString path  = dstURL.directory();
+      QString cover = CollectionDB::instance()->albumImage( mb.artist(), mb.album(), 1 );
+
+      if( !QFile::exists(path + "/.directory") && !cover.endsWith( "nocover.png" ) )
+      {
+         //QPixmap thumb;        //Not amazon nice.
+         //if ( thumb.load( cover ) ){
+         //thumb.save(path + "/.front.png", "PNG", -1 ); //hide files
+
+         KSimpleConfig config(path + "/.directory");
+         config.setGroup("Desktop Entry");
+
+         if( !config.hasKey("Icon") )
+         {
+            //config.writeEntry("Icon", QString("%1/.front.png").arg( path ));
+            config.writeEntry( "Icon", cover );
+            config.sync();
+            debug() << "Using this cover as icon for: " << path << endl;
+            debug() << cover << endl;
+         }
+         //}         //Not amazon nice.
+      }
+   }
+
+   if( localFile && QDir().rmdir( src.directory() ) )
+   {
+      debug() << "removed: " << src.directory() << endl;
+   }
+
+   return true;
 }
 
 bool

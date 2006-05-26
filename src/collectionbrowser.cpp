@@ -1687,7 +1687,6 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
         AmarokConfig::setCustomScheme( dialog.formatEdit->text() );
         AmarokConfig::setReplacementRegexp( dialog.regexpEdit->text() );
         AmarokConfig::setReplacementString( dialog.replaceEdit->text() );
-        bool write = dialog.overwriteCheck->isChecked();
         KURL::List skipped;
 
         m_organizeURLs = amaroK::recursiveUrlExpand( urls );
@@ -1701,54 +1700,9 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
         {
             KURL &src = m_organizeURLs.first();
 
-            //Building destination here.
-            MetaBundle mb( src );
-            QString dest = dialog.buildDestination( dialog.buildFormatString(), mb );
-
-            debug() << "Destination: " << dest << endl;
-
-            if( src.path() != dest ) //supress error warning that file couldn't be moved
+            if( !CollectionDB::instance()->organizeFile( src, dialog, copy ) )
             {
-                if( !CollectionDB::instance()->moveFile( src.url(), dest, write, copy ) )
-                {
-                    skipped += src;
-                }
-            }
-
-            //Use cover image for folder icon
-            if( dialog.coverCheck->isChecked() && !mb.artist().isEmpty() && !mb.album().isEmpty() )
-            {
-                KURL dstURL = KURL::fromPathOrURL( dest );
-                dstURL.cleanPath();
-
-                QString path  = dstURL.directory();
-                QString cover = CollectionDB::instance()->albumImage( mb.artist(), mb.album(), 1 );
-
-                if( !QFile::exists(path + "/.directory") && !cover.endsWith( "nocover.png" ) )
-                {
-                    //QPixmap thumb;        //Not amazon nice.
-                    //if ( thumb.load( cover ) ){
-                    //thumb.save(path + "/.front.png", "PNG", -1 ); //hide files
-
-                    KSimpleConfig config(path + "/.directory");
-                    config.setGroup("Desktop Entry");
-
-                    if( !config.hasKey("Icon") )
-                    {
-                        //config.writeEntry("Icon", QString("%1/.front.png").arg( path ));
-                        config.writeEntry( "Icon", cover );
-                        config.sync();
-                        debug() << "Using this cover as icon for: " << path << endl;
-                        debug() << cover << endl;
-                    }
-                    //}         //Not amazon nice.
-                }
-            }
-
-            if( QDir().rmdir( src.directory() ) )
-            {
-                debug() << "removed: " << src.directory() << endl;
-                src = src.upURL();
+                skipped += src;
             }
 
             m_organizeURLs.pop_front();
@@ -1807,26 +1761,30 @@ CollectionView::contentsDropEvent( QDropEvent *e )
     KURL::List list;
     if( KURLDrag::decode( e, list ) )
     {
-        KURL::List cleanList;
+        KURL::List expandedList;
         int dropped = 0;
         int invalid = 0;
         for( KURL::List::iterator it = list.begin();
                 it != list.end();
                 ++it )
         {
-            if( ( (*it).protocol() == "file" || (*it).protocol() == "audiocd" ) &&
-                    !CollectionDB::instance()->isFileInCollection( (*it).path() ) )
-            {
-                if( QFileInfo( (*it).path() ).isDir() )
-                    cleanList += amaroK::recursiveUrlExpand( *it );
-                else
-                    cleanList += *it;
-            }
-            else if( (*it).protocol() == "file" || (*it).protocol() == "audiocd" )
-                dropped++;
+            if( (*it).isLocalFile() && QFileInfo( (*it).path() ).isDir() )
+                expandedList += amaroK::recursiveUrlExpand( *it );
             else
-                invalid++;
+                expandedList += *it;
         }
+
+        KURL::List cleanList;
+        for( KURL::List::iterator it = expandedList.begin();
+                it != expandedList.end();
+                ++it )
+        {
+            if( !(*it).isLocalFile() || !CollectionDB::instance()->isFileInCollection( (*it).path() ) )
+                cleanList += *it;
+            else
+                dropped++;
+        }
+
         QString msg;
         if( dropped > 0 )
             msg += i18n( "One file already in collection",
