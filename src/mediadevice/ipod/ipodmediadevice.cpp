@@ -260,7 +260,7 @@ IpodMediaDevice::updateTrackInDB(IpodMediaItem *item,
             track->drm_userid = t->userID();
         // libgpod also tries to set those, but this won't work
         track->unk126 = 0x01;
-        track->unk144 = 0x01000029;
+        track->unk144 = 0x0029;
     }
     else
     {
