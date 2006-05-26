@@ -62,9 +62,9 @@ PlaylistItem::PlaylistItem( QListView *listview, QListViewItem *item )
 
 PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi, bool enabled )
         : MetaBundle( bundle ), KListViewItem( lvi->listView(), lvi->itemAbove() )
-        , m_proxyForMoods( 0 )
-        , m_isBeingRenamed( false )
         , m_deleteAfterEdit( false )
+        , m_isBeingRenamed( false )
+        , m_proxyForMoods( 0 )
 {
     setDragEnabled( true );
 
