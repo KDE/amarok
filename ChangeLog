@@ -51,6 +51,8 @@ VERSION 1.4.1:
       repeat modes would be forgotten. (BR 123743)
     * Removing the current track through DCOP while editing a field of the
       track in the playlist would cause a crash. (BR 119152)
+    * Make characters encoded with % (such as a forward slash, %2f) display
+      correctly. (BR 105266)
 
 VERSION 1.4.0:
   FEATURES:
