@@ -1717,7 +1717,7 @@ Playlist::activate( QListViewItem *item )
             }
 
         }
-        if( m_currentTrack != item )
+        if( m_currentTrack && m_currentTrack != item )
             m_currentTrack->setEnabled( false );
         advanceDynamicTrack();
     }
