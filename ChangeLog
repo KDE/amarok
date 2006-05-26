@@ -45,7 +45,8 @@ VERSION 1.4.1:
       track followed in the playlist.
     * Fixed AudioCD playback with xine-engine. Patch by Markus Kaufhold
       <M.Kaufhold@gmx.de>. (BR 127388)
-
+    * If dynamic mode was turned on and then off, the previous random and
+      repeat modes would be forgotten. (BR 123743)
 
 VERSION 1.4.0:
   FEATURES:
