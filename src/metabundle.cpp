@@ -685,7 +685,7 @@ QString MetaBundle::prettyText( int column ) const
     QString text;
     switch( column )
     {
-        case Filename:   text = isStream() ? url().prettyURL() : filename();                         break;
+        case Filename:   text = isStream() ? url().prettyURL():MetaBundle::prettyTitle(filename());  break;
         case Title:      text = title().isEmpty() ? MetaBundle::prettyTitle( filename() ) : title(); break;
         case Artist:     text = artist();                                                            break;
         case Composer:   text = composer();                                                          break;
