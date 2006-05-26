@@ -1437,6 +1437,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
         n = xml.namedItem( "item" );
 
     int  children = 0;
+    bool hasNew = false;
     int  episode_limit = (m_bundle.purgeCount() > 0 ? m_bundle.purgeCount() : 0 );
     bool downloadMedia = ( fetchType() == AUTOMATIC );
     QDomNode node;
@@ -1455,6 +1456,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
             if( !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
             {
                 eList.prepend( n.toElement() );
+                hasNew = true;
             }
             else if( isAtom )
             {
@@ -1465,6 +1467,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
                     if( nodes.toElement().attribute("rel") == "enclosure" )
                     {
                         eList.prepend( n.toElement() );
+                        hasNew = true;
                         break;
                     }
                 }
@@ -1480,6 +1483,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
             {
                 eList.prepend( n.toElement() );
                 children++;
+                hasNew = true;
             }
             else if( isAtom )
             {
@@ -1491,6 +1495,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
                     {
                         eList.prepend( n.toElement() );
                         children++;
+                        hasNew = true;
                         break;
                     }
                 }
@@ -1511,7 +1516,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
     if( downloadMedia )
         downloadChildren();
 
-    if( m_updating && firstChild() && static_cast<PodcastEpisode *>( firstChild() )->isNew() )
+    if( m_updating && hasNew )
     {
         setNew();
         amaroK::StatusBar::instance()->shortMessage( i18n("New podcasts have been retrieved!") );
@@ -1591,7 +1596,7 @@ PodcastChannel::setParent( PlaylistCategory *newParent )
         m_parent->takeItem( this );
         newParent->insertItem( this );
         newParent->sortChildItems( 0, true );
-    
+
         m_parent = newParent;
     }
     m_bundle.setParentId( m_parent->id() );
