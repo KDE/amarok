@@ -100,16 +100,6 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     renameButton   = new KAction( i18n("Rename"), "editclear", 0, this, SLOT( renameSelectedItem() ), m_ac );
     removeButton   = new KAction( i18n("Remove"), "edittrash", 0, this, SLOT( removeSelectedItems() ), m_ac );
 
-    viewMenuButton = new KActionMenu( i18n("View"), "configure", m_ac );
-    viewMenuButton->setDelayed( false );
-
-    KPopupMenu *viewMenu = viewMenuButton->popupMenu();
-
-    viewMenu->setCheckable( true );
-    viewMenu->insertItem( i18n("Detailed View"), DETAILEDVIEW );
-    viewMenu->insertItem( i18n("List View"), LISTVIEW );
-    connect( viewMenu, SIGNAL( activated(int) ), SLOT( slotViewMenu(int) ) );
-
     m_toolbar = new Browser::ToolBar( browserBox );
     m_toolbar->setIconText( KToolBar::IconTextRight, false ); //we want the open button to have text on right
     addMenuButton->plug( m_toolbar );
@@ -120,7 +110,6 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     renameButton->plug( m_toolbar);
     removeButton->plug( m_toolbar );
     m_toolbar->insertLineSeparator();
-    viewMenuButton->plug( m_toolbar );
     m_toolbar->insertSeparator();
     m_toolbar->setIconText( KToolBar::IconTextRight, false );
 
@@ -131,8 +120,6 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     m_listview = new PlaylistBrowserView( browserBox );
 
     KConfig *config = amaroK::config( "PlaylistBrowser" );
-    m_viewMode = static_cast<ViewMode>( config->readNumEntry( "View", LISTVIEW ) );  //restore the view mode
-    viewMenu->setItemChecked( m_viewMode, true );
 
     int sort = config->readNumEntry( "Sorting", Qt::Ascending );
     m_listview->setSorting( 0, sort == Qt::Ascending ? true : false );
@@ -299,7 +286,6 @@ PlaylistBrowser::~PlaylistBrowser()
         }
 
         KConfig *config = amaroK::config( "PlaylistBrowser" );
-        config->writeEntry( "View", m_viewMode );
         config->writeEntry( "Sorting", m_listview->sortOrder() );
         config->writeEntry( "Podcast Interval", m_podcastTimerInterval );
         config->writeEntry( "Podcast Folder Open", m_podcastCategory->isOpen() );
@@ -2247,20 +2233,6 @@ void PlaylistBrowser::slotSave() // SLOT
     createPlaylist();
 }
 
-
-void PlaylistBrowser::slotViewMenu( int id ) //SL0T
-{
-    if( m_viewMode == static_cast<ViewMode>( id ) )
-        return;
-
-    viewMenuButton->popupMenu()->setItemChecked( m_viewMode, false );
-    viewMenuButton->popupMenu()->setItemChecked( id, true );
-    m_viewMode = static_cast<ViewMode>( id );
-
-    QListViewItemIterator it( m_listview );
-    for( ; it.current(); ++it )
-        it.current()->setup();
-}
 
 /**
  ************************

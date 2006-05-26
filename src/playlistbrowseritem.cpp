@@ -421,9 +421,6 @@ void PlaylistEntry::insertTracks( QListViewItem *after, QValueList<MetaBundle> b
         ++k;
     }
 
-    if( PlaylistBrowser::instance()->viewMode() == PlaylistBrowser::DETAILEDVIEW && !isOpen() )
-        listView()->repaintItem( this ); //update the info count, don't repaing if open, since new PlaylistTrackItem will do this.
-
     if ( !m_loading ) {
         PlaylistBrowser::instance()->savePlaylist( this );
         if ( !m_loaded )
@@ -586,19 +583,13 @@ void PlaylistEntry::setup()
     QFontMetrics fm( listView()->font() );
     int margin = listView()->itemMargin()*2;
     int h = fm.lineSpacing();
-    if ( h % 2 > 0 )
-        h++;
-    if( PlaylistBrowser::instance()->viewMode() == PlaylistBrowser::DETAILEDVIEW )
-        setHeight( h + fm.lineSpacing() + margin );
-    else
-        setHeight( h + margin );
+    if ( h % 2 > 0 ) h++;
+    setHeight( h + margin );
 }
 
 
 void PlaylistEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
 {
-    bool detailedView = PlaylistBrowser::instance()->viewMode() == PlaylistBrowser::DETAILEDVIEW;
-
     //flicker-free drawing
     static QPixmap buffer;
     buffer.resize( width, height() );
@@ -631,10 +622,7 @@ void PlaylistEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, i
     int text_x = 0;// lv->treeStepSize() + 3;
     int textHeight;
 
-    if( detailedView )
-        textHeight = fm.lineSpacing() + lv->itemMargin() + 1;
-    else
-        textHeight = height();
+    textHeight = height();
 
     pBuf.setPen( isSelected() ? cg.highlightedText() : cg.text() );
 
@@ -646,14 +634,10 @@ void PlaylistEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, i
     else if( pixmap( column ) )
     {
         int y = (textHeight - pixmap(column)->height())/2;
-        if( detailedView ) y++;
         pBuf.drawPixmap( text_x, y, *pixmap(column) );
         text_x += pixmap(column)->width()+4;
     }
 
-    // draw the playlist name in italics
-    font.setBold( PlaylistBrowser::instance()->viewMode() == PlaylistBrowser::DETAILEDVIEW );
-    font.setItalic( PlaylistBrowser::instance()->viewMode() == PlaylistBrowser::DETAILEDVIEW );
     pBuf.setFont( font );
     QFontMetrics fmName( font );
 
@@ -665,26 +649,6 @@ void PlaylistEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, i
     }
 
     pBuf.drawText( text_x, 0, width, textHeight, AlignVCenter, name );
-
-    if( detailedView ) {
-        QString info;
-
-        text_x = lv->treeStepSize() + 3;
-        font.setBold( false );
-        pBuf.setFont( font );
-
-        if( m_loading )
-            info = i18n( "Loading..." );
-        else
-        {    //playlist loaded
-            // draw the number of tracks and the total length of the playlist
-            info += i18n("1 Track", "%n Tracks", m_trackCount);
-            if( m_length )
-        info += QString(i18n(" - [%2]")).arg( MetaBundle::prettyTime( m_length ) );
-        }
-
-        pBuf.drawText( text_x, textHeight, width, fm.lineSpacing(), AlignVCenter, info);
-    }
 
     pBuf.end();
     p->drawPixmap( 0, 0, buffer );
@@ -835,18 +799,12 @@ void StreamEntry::setup()
     QFontMetrics fm( listView()->font() );
     int margin = listView()->itemMargin()*2;
     int h = fm.lineSpacing();
-    if ( h % 2 > 0 )
-        h++;
-    if( PlaylistBrowser::instance()->viewMode() == PlaylistBrowser::DETAILEDVIEW )
-        setHeight( h + fm.lineSpacing() + margin );
-    else
-        setHeight( h + margin );
+    if ( h % 2 > 0 ) h++;
+    setHeight( h + margin );
 }
 
 void StreamEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
 {
-    bool detailedView = PlaylistBrowser::instance()->viewMode() == PlaylistBrowser::DETAILEDVIEW;
-
     //flicker-free drawing
     static QPixmap buffer;
     buffer.resize( width, height() );
@@ -873,22 +831,16 @@ void StreamEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, int
     int text_x = 0;// lv->treeStepSize() + 3;
     int textHeight;
 
-    if( detailedView )
-        textHeight = fm.lineSpacing() + lv->itemMargin() + 1;
-    else
-        textHeight = height();
+    textHeight = height();
 
     pBuf.setPen( isSelected() ? cg.highlightedText() : cg.text() );
 
     if( pixmap(column) ) {
         int y = (textHeight - pixmap(column)->height())/2;
-        if( detailedView ) y++;
         pBuf.drawPixmap( text_x, y, *pixmap(column) );
         text_x += pixmap(column)->width()+4;
     }
 
-    font.setBold( PlaylistBrowser::instance()->viewMode() == PlaylistBrowser::DETAILEDVIEW );
-    font.setItalic( PlaylistBrowser::instance()->viewMode() == PlaylistBrowser::DETAILEDVIEW );
     pBuf.setFont( font );
     QFontMetrics fmName( font );
 
@@ -900,19 +852,6 @@ void StreamEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, int
     }
 
     pBuf.drawText( text_x, 0, width, textHeight, AlignVCenter, name );
-
-    if( detailedView ) {
-        QString info;
-
-        text_x = lv->treeStepSize() + 3;
-        font.setBold( false );
-        font.setItalic( true );
-        pBuf.setFont( font );
-
-        info += m_url.prettyURL();
-
-        pBuf.drawText( text_x, textHeight, width, fm.lineSpacing(), AlignVCenter, info);
-    }
 
     pBuf.end();
     p->drawPixmap( 0, 0, buffer );
@@ -2055,19 +1994,13 @@ PodcastEpisode::setup()
     QFontMetrics fm( listView()->font() );
     int margin = listView()->itemMargin()*2;
     int h = fm.lineSpacing();
-    if ( h % 2 > 0 )
-        h++;
-    if( PlaylistBrowser::instance()->viewMode() == PlaylistBrowser::DETAILEDVIEW )
-        setHeight( h + fm.lineSpacing() + margin );
-    else
-        setHeight( h + margin );
+    if ( h % 2 > 0 ) h++;
+    setHeight( h + margin );
 }
 
 void
 PodcastEpisode::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
 {
-    bool detailedView = PlaylistBrowser::instance()->viewMode() == PlaylistBrowser::DETAILEDVIEW;
-
     //flicker-free drawing
     static QPixmap buffer;
     buffer.resize( width, height() );
@@ -2094,24 +2027,17 @@ PodcastEpisode::paintCell( QPainter *p, const QColorGroup &cg, int column, int w
     int text_x = 0;// lv->treeStepSize() + 3;
     int textHeight;
 
-    if( detailedView )
-        textHeight = fm.lineSpacing() + lv->itemMargin() + 1;
-    else
-        textHeight = height();
+    textHeight = height();
 
     pBuf.setPen( isSelected() ? cg.highlightedText() : cg.text() );
 
     if( pixmap( column ) )
     {
         int y = (textHeight - pixmap(column)->height())/2;
-        if( detailedView ) y++;
         pBuf.drawPixmap( text_x, y, *pixmap(column) );
         text_x += pixmap(column)->width()+4;
     }
 
-    // draw the podcast name in italics
-    font.setBold( PlaylistBrowser::instance()->viewMode() == PlaylistBrowser::DETAILEDVIEW );
-    font.setItalic( PlaylistBrowser::instance()->viewMode() == PlaylistBrowser::DETAILEDVIEW );
     pBuf.setFont( font );
     QFontMetrics fmName( font );
 
@@ -2123,26 +2049,6 @@ PodcastEpisode::paintCell( QPainter *p, const QColorGroup &cg, int column, int w
     }
 
     pBuf.drawText( text_x, 0, width, textHeight, AlignVCenter, name );
-
-    if( detailedView )
-    {
-        text_x = lv->treeStepSize() + 3;
-        font.setBold( false );
-        pBuf.setFont( font );
-        QFontMetrics fmInfo( font );
-        QString info = description();
-        // remove unwanted text
-        info.replace( "\n", " " );
-        info.replace( QRegExp("<[^>]*>"), "" ); //html tags
-
-        const int _width = width - text_x - lv->itemMargin()*2;
-        if( fmInfo.width( info ) > _width )
-        {
-            info = KStringHandler::rPixelSqueeze( info, pBuf.fontMetrics(), _width );
-        }
-
-        pBuf.drawText( text_x, textHeight, width, fm.lineSpacing(), AlignVCenter, info );
-    }
 
     pBuf.end();
     p->drawPixmap( 0, 0, buffer );
