@@ -215,7 +215,7 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void removeSelectedItems();
         void setDynamicMode( DynamicMode *mode );
         void loadDynamicMode( DynamicMode *mode ); //saveUndoState() + setDynamicMode()
-        void disableDynamicMode() { setDynamicMode( 0 ); }
+        void disableDynamicMode();
         void editActiveDynamicMode();
         void repopulate();
         void safeClear();
@@ -409,6 +409,8 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         bool m_atfEnabled;
 
         QPtrList<PlaylistItem> m_disabledChildren;
+        int m_oldRandom;
+        int m_oldRepeat;
 };
 
 class MyAtomicString: public AtomicString

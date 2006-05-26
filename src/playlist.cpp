@@ -238,6 +238,8 @@ Playlist::Playlist( QWidget *parent )
         , m_renameItem( 0 )
         , m_lockStack( 0 )
         , m_columnFraction( PlaylistItem::NUM_COLUMNS, 0 )
+        , m_oldRandom( 0 )
+        , m_oldRepeat( 0 )
 {
     s_instance = this;
 
@@ -3229,6 +3231,11 @@ Playlist::setDynamicMode( DynamicMode *mode ) //SLOT
         AmarokConfig::setLastDynamicMode( mode->title() );
     emit dynamicModeChanged( mode );
 
+    if( mode )
+    {
+        m_oldRandom = AmarokConfig::randomMode();
+        m_oldRepeat = AmarokConfig::repeat();
+    }
     amaroK::actionCollection()->action( "random_mode" )->setEnabled( !mode );
     amaroK::actionCollection()->action( "repeat" )->setEnabled( !mode  );
     amaroK::actionCollection()->action( "playlist_shuffle" )->setEnabled( !mode );
@@ -3264,6 +3271,16 @@ Playlist::editActiveDynamicMode() //SLOT
     DynamicMode *m = modifyDynamicMode();
     ConfigDynamic::editDynamicPlaylist( PlaylistWindow::self(), m );
     finishedModifying( m );
+}
+
+void
+Playlist::disableDynamicMode() //SLOT
+{
+    setDynamicMode( 0 );
+    AmarokConfig::setRandomMode( m_oldRandom );
+    AmarokConfig::setRepeat( m_oldRepeat );
+    static_cast<KSelectAction*>(amaroK::actionCollection()->action( "random_mode" ))->setCurrentItem( m_oldRandom );
+    static_cast<KSelectAction*>(amaroK::actionCollection()->action( "repeat" ))->setCurrentItem( m_oldRepeat );
 }
 
 void
