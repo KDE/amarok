@@ -308,9 +308,9 @@ PlaylistBrowser::~PlaylistBrowser()
 
 
 void
-PlaylistBrowser::setInfo( const QString &info )
+PlaylistBrowser::setInfo( const QString &title, const QString &info )
 {
-    m_infoPane->setInfo( info );
+    m_infoPane->setInfo( title, info );
 }
 
 
@@ -3341,9 +3341,23 @@ InfoPane::toggle( bool toggled )
 
 
 void
-InfoPane::setInfo( const QString &info )
+InfoPane::setInfo( const QString &title, const QString &info )
 {
-    m_infoBrowser->set( info );
+    m_infoBrowser->set( 
+        QString( "<div id='extended_box' class='box'>"
+                  "<div id='extended_box-header-title' class='box-header'>"
+                  "<span id='extended_box-header-title' class='box-header-title'>"
+                  " %1 "
+                  "</span>"
+                  "</div>"
+                  "<table id='extended_box-table' class='box-body' width='100%' cellpadding='0' cellspacing='0'>"
+                  "<tr>"
+                  "<td id='extended_box-information-td'>"
+                  "  %2 "
+                  "</td>"
+                  "</tr>"
+                  "</table>"
+                  "</div>" ).arg( title, info ) );
 }
 
 #include "playlistbrowser.moc"

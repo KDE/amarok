@@ -559,7 +559,7 @@ void PlaylistEntry::updateInfo()
     str += body.arg( i18n( "Location" ),         m_url.prettyURL() );
     str += "</table></body></html>";
 
-    PlaylistBrowser::instance()->setInfo( str );
+    PlaylistBrowser::instance()->setInfo( text(0), str );
 }
 
 void PlaylistEntry::setDynamic( bool enable )
@@ -824,11 +824,10 @@ void StreamEntry::updateInfo()
 
     QString str = "<html><body><table width=\"100%\" border=\"0\">";
 
-    str += body.arg( i18n( "Name" ), text(0) );
     str += body.arg( i18n( "URL" ),  m_url.prettyURL() );
     str += "</table></body></html>";
 
-    PlaylistBrowser::instance()->setInfo( str );
+    PlaylistBrowser::instance()->setInfo( text(0), str );
 }
 
 void StreamEntry::setup()
@@ -1611,7 +1610,6 @@ PodcastChannel::updateInfo()
 
     QString str  = "<html><body><table width=\"100%\" border=\"0\">";
 
-    str += body.arg( i18n( "Title" ),       title() );
     str += body.arg( i18n( "URL" ),         m_url.prettyURL() );
     str += body.arg( i18n( "Website" ),     link().prettyURL() );
     str += body.arg( i18n( "Copyright" ),   copyright() );
@@ -1625,7 +1623,7 @@ PodcastChannel::updateInfo()
 
     str += "</ul></body></html>";
 
-    PlaylistBrowser::instance()->setInfo( str );
+    PlaylistBrowser::instance()->setInfo( text(0), str );
 }
 
 //maintain max items property
@@ -2165,7 +2163,7 @@ PodcastEpisode::updateInfo()
     str += body.arg( i18n( "URL" ),         m_bundle.url().prettyURL() );
     str += "</table></body></html>";
 
-    PlaylistBrowser::instance()->setInfo( str );
+    PlaylistBrowser::instance()->setInfo( text(0), str );
 }
 
 

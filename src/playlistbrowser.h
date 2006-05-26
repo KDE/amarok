@@ -54,7 +54,7 @@ class PlaylistBrowser : public QVBox
 
         ~PlaylistBrowser();
 
-        void setInfo( const QString &info );
+        void setInfo( const QString &title, const QString &info );
 
         void addStream( QListViewItem *parent = 0 );
         void addSmartPlaylist( QListViewItem *parent = 0 );
@@ -364,7 +364,7 @@ public:
     InfoPane( PlaylistBrowser *parent );
 
 public slots:
-    void setInfo( const QString &info );
+    void setInfo( const QString &title, const QString &info );
 
 private slots:
     void toggle( bool );
