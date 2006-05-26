@@ -24,6 +24,7 @@ VERSION 1.4.1:
       the current one.
 
   BUGFIXES:
+    * In context browser, show localized date for podcasts. (BR 127853)
     * Regression in dynamic mode caused it to skip the first track in the
       playlist whenever it was started. (BR 127451)
     * Stop Playing after Track: remember current track (BR 127312)
