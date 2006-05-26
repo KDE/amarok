@@ -1554,6 +1554,7 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
     if( !currentTrack.podcastBundle() )
         return;
 
+    KLocale locale( "locale" );
     PodcastEpisodeBundle peb = *currentTrack.podcastBundle();
     PodcastChannelBundle pcb;
     bool channelInDB = true;
@@ -1655,7 +1656,7 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
         {
             QDateTime d;
             d.setTime_t( t );
-            date = d.toString( Qt::LocalDate );
+	    date = locale.formatDateTime( d );
         }
         else
         {
