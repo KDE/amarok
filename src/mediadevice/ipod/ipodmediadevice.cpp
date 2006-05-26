@@ -437,7 +437,7 @@ IpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle)
     }
 
     MetaBundle *newBundle = 0;
-    if( !bundle.isValidMedia() )
+    if( bundle.url().isLocalFile() && !bundle.isValidMedia() )
         newBundle = new MetaBundle( url );
 
     MediaItem *ret = insertTrackIntoDB( url.path(), newBundle ? *newBundle : bundle, podcastInfo );
