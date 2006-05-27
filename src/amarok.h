@@ -207,7 +207,7 @@ namespace amaroK
      * @param ref a reference to compare input with.
      * @return The cleaned up string.
      */
-    LIBAMAROK_EXPORT QString cleanString( const QString &input, const QString &ref );
+    LIBAMAROK_EXPORT QString decapitateString( const QString &input, const QString &ref );
 
     /*
      * Transform to be usable within HTML/HTML attributes

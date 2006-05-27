@@ -1271,7 +1271,7 @@ namespace amaroK
         return s;
     }
 
-    QString cleanString( const QString &input, const QString &ref )
+    QString decapitateString( const QString &input, const QString &ref )
     {
         QString t = ref;
         QString p = QString();
