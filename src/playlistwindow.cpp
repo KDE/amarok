@@ -208,7 +208,7 @@ void PlaylistWindow::init()
 
         filter_label->setBuddy( m_lineEdit );
 
-        bar->setStretchableWidget( m_lineEdit );
+        //bar->setStretchableWidget( m_lineEdit );
         m_lineEdit->setFrame( QFrame::Sunken );
         m_lineEdit->installEventFilter( this ); //we intercept keyEvents
 
