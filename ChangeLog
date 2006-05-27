@@ -10,6 +10,7 @@ VERSION 1.4.1:
       <andres.oton@gmail.com>. (BR 103185)
 
   CHANGES:
+    * Removed the "detailed mode" in the playlist-browser.
     * Also copy non-local urls to collection when dropped onto collection
       browser.
     * Speed up connecting media devices with a lot of tracks to be submitted
