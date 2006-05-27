@@ -3113,7 +3113,7 @@ CollectionDB::organizeFile( const KURL &src, const OrganizeCollectionDialog &dia
       dstURL.cleanPath();
 
       QString path  = dstURL.directory();
-      QString cover = CollectionDB::instance()->albumImage( mb.artist(), mb.album(), 1 );
+      QString cover = CollectionDB::instance()->albumImage( mb.artist(), mb.album(), false, 1 );
 
       if( !QFile::exists(path + "/.directory") && !cover.endsWith( "nocover.png" ) )
       {
