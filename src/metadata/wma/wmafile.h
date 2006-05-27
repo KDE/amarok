@@ -24,8 +24,8 @@
 
 #include <tfile.h>
 #include <tag.h>
-#include <wmaproperties.h>
-#include <wmatag.h>
+#include "wmaproperties.h"
+#include "wmatag.h"
 
 namespace TagLib {
 
