@@ -208,7 +208,6 @@ StatusBar::slotItemCountChanged( int newCount, int newLength,  //total
                  : ( hasSel ) ? i18n( "%1 selected of %2 tracks" ).arg( selCount ).arg( newCount )
                  : i18n( "1 track", "%n tracks", newCount );
 
-    QString time = QString::null;
     int getValue = 0;
 
     if( hasSel )
@@ -220,10 +219,11 @@ StatusBar::slotItemCountChanged( int newCount, int newLength,  //total
     else
         getValue = newLength;
 
-    if( getValue )
-        time = i18n( " (%2)" ).arg( MetaBundle::fuzzyTime( getValue ) );
-
-    m_itemCountLabel->setText( ' ' + text + time + ' ' );
+    if( getValue ) {
+        m_itemCountLabel->setText( i18n( "X visible/selected tracks (time) ", "%1 (%2)" ).arg( text, MetaBundle::fuzzyTime( getValue ) ) );
+    }
+    else
+    m_itemCountLabel->setText( text );
 }
 
 void
