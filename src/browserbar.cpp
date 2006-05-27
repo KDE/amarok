@@ -102,9 +102,8 @@ BrowserBar::~BrowserBar()
 int
 BrowserBar::restoreWidth()
 {
-    KConfig* const config = amaroK::config( "BrowserBar" );
-    const int index = indexForName( config->readEntry( "CurrentPane" ) );
-    const int width = config->readNumEntry( "Width", browser( index )->sizeHint().width() );
+    const int index = indexForName( amaroK::config( "BrowserBar" )->readEntry( "CurrentPane" ) );
+    const int width = amaroK::config( "BrowserBar" )->readNumEntry( "Width", browser( index )->sizeHint().width() );
 
     m_browserBox->resize( width, height() );
     return index;

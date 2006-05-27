@@ -168,8 +168,6 @@ PlaylistBrowser::polish()
 
     m_polished = true;
 
-    KConfig *config = amaroK::config( "PlaylistBrowser" );
-
     m_playlistCategory = loadPlaylists();
     m_streamsCategory  = loadStreams();
     loadCoolStreams();
@@ -206,8 +204,7 @@ PlaylistBrowser::polish()
     // First we check if the number of items in the listview is the same as it was on last
     // application exit. If true, we iterate over all items and restore their open/closed state.
     // Note: We ignore podcast items, because they are added dynamically added to the ListView.
-
-    QValueList<int> stateList = config->readIntListEntry( "Item State" );
+    QValueList<int> stateList = amaroK::config( "PlaylistBrowser" )->readIntListEntry( "Item State" );
     QListViewItemIterator it( m_listview );
     uint count = 0;
     while ( it.current() ) {
