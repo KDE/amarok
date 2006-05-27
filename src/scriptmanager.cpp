@@ -120,7 +120,7 @@ ScriptManager* ScriptManager::s_instance = 0;
 
 
 ScriptManager::ScriptManager( QWidget *parent, const char *name )
-        : KDialogBase( parent, name, false, 0, 0, Ok, false )
+        : KDialogBase( parent, name, false, QString::null, Close, Close, true )
         , EngineObserver( EngineController::instance() )
         , m_gui( new ScriptManagerBase( this ) )
 {

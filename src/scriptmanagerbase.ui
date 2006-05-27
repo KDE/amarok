@@ -57,18 +57,18 @@
         </spacer>
         <widget class="QPushButton" row="0" column="1">
             <property name="name">
-                <cstring>installButton</cstring>
-            </property>
-            <property name="text">
-                <string>&amp;Install Script</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="1" column="1">
-            <property name="name">
                 <cstring>retrieveButton</cstring>
             </property>
             <property name="text">
                 <string>&amp;Get More Scripts</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="1" column="1">
+            <property name="name">
+                <cstring>installButton</cstring>
+            </property>
+            <property name="text">
+                <string>&amp;Install Script</string>
             </property>
         </widget>
         <widget class="Line" row="2" column="1">
