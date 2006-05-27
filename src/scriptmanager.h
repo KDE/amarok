@@ -183,6 +183,7 @@ class ScriptManager : public KDialogBase, public EngineObserver
             KProcIO*       process;
             QListViewItem* li;
             QString        log;
+            ScriptItem() : process( 0 ), li( 0 ) {}
         };
 
         typedef QMap<QString, ScriptItem> ScriptMap;
