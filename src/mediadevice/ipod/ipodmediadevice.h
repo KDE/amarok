@@ -50,6 +50,7 @@ class IpodMediaDevice : public KioMediaDevice
 
         bool              openDevice( bool silent=false );
         bool              closeDevice();
+        void              initView();
 
         virtual MediaItem*copyTrackToDevice(const MetaBundle& bundle);
         /**
@@ -78,6 +79,7 @@ class IpodMediaDevice : public KioMediaDevice
         MediaItem        *newPlaylist(const QString &name, MediaItem *list, QPtrList<MediaItem> items);
         bool              getCapacity(KIO::filesize_t *total, KIO::filesize_t *available);
         void              rmbPressed( QListViewItem* qitem, const QPoint& point, int );
+        bool              checkIntegrity();
 
     protected slots:
         void              renameItem( QListViewItem *item );
@@ -86,7 +88,7 @@ class IpodMediaDevice : public KioMediaDevice
         bool              initializeIpod( const QString &mountpoint );
         bool              writeITunesDB( bool threaded=true );
         bool              createLockFile( const QString &mountpoint, bool silent );
-        IpodMediaItem    *addTrackToView(Itdb_Track *track, IpodMediaItem *item=0);
+        IpodMediaItem    *addTrackToView(Itdb_Track *track, IpodMediaItem *item=0, bool checkIntegrity=false );
         void              addPlaylistToView(Itdb_Playlist *playlist);
         void              playlistFromItem(IpodMediaItem *item);
 

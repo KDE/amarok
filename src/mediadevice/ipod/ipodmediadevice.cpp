@@ -1004,7 +1004,9 @@ IpodMediaDevice::openDevice( bool silent )
 #endif
 
     m_isShuffle = true;
+#ifdef HAVE_ITDB_TRACK_SET_THUMBNAILS
     m_supportsArtwork = true;
+#endif
 
     for( int i=0; i < itdb_musicdirs_number(m_itdb); i++)
     {
@@ -1033,6 +1035,46 @@ IpodMediaDevice::openDevice( bool silent )
         }
     }
 
+    if( !silent )
+        kapp->processEvents( 100 );
+
+    initView();
+    GList *cur = m_itdb->playlists;
+    while(cur)
+    {
+        Itdb_Playlist *playlist = (Itdb_Playlist *)cur->data;
+
+        addPlaylistToView(playlist);
+
+        cur = cur->next;
+    }
+
+    if( !silent )
+        kapp->processEvents( 100 );
+
+    cur = m_itdb->tracks;
+    while(cur)
+    {
+        Itdb_Track *track = (Itdb_Track *)cur->data;
+
+        addTrackToView(track);
+
+        cur = cur->next;
+    }
+
+    if( !silent )
+        kapp->processEvents( 100 );
+
+    updateRootItems();
+
+    return true;
+}
+
+void
+IpodMediaDevice::initView()
+{
+    m_view->clear();
+
     m_playlistItem = new IpodMediaItem( m_view, this );
     m_playlistItem->setText( 0, i18n("Playlists") );
     m_playlistItem->m_order = -6;
@@ -1058,42 +1100,34 @@ IpodMediaDevice::openDevice( bool silent )
     m_orphanedItem->m_order = -2;
     m_orphanedItem->setType( MediaItem::ORPHANEDROOT );
 
-    if( !silent )
-        kapp->processEvents( 100 );
+    updateRootItems();
+}
 
-    GList *cur = m_itdb->playlists;
-    while(cur)
-    {
-        Itdb_Playlist *playlist = (Itdb_Playlist *)cur->data;
 
-        addPlaylistToView(playlist);
+bool
+IpodMediaDevice::checkIntegrity()
+{
+    if( !m_itdb )
+        return false;
 
-        cur = cur->next;
-    }
+    initView();
 
-    if( !silent )
-        kapp->processEvents( 100 );
-
-    cur = m_itdb->tracks;
+    GList *cur = m_itdb->tracks;
     while(cur)
     {
         Itdb_Track *track = (Itdb_Track *)cur->data;
 
-        addTrackToView(track);
+        addTrackToView(track, 0, true);
 
         cur = cur->next;
     }
 
-#ifdef CHECK_FOR_INTEGRITY
     QString musicpath = QString(itdb_get_mountpoint(m_itdb)) + "/iPod_Control/Music";
     QDir dir( musicpath, QString::null, QDir::Name | QDir::IgnoreCase, QDir::Dirs );
     for(unsigned i=0; i<dir.count(); i++)
     {
         if(dir[i] == "." || dir[i] == "..")
             continue;
-
-        if( !silent )
-            kapp->processEvents( 100 );
 
         QString hashpath = musicpath + "/" + dir[i];
         QDir hashdir( hashpath, QString::null, QDir::Name | QDir::IgnoreCase, QDir::Files );
@@ -1116,9 +1150,6 @@ IpodMediaDevice::openDevice( bool silent )
             }
         }
     }
-#endif // CHECK_FOR_INTEGRITY
-    if( !silent )
-        kapp->processEvents( 100 );
 
     updateRootItems();
 
@@ -1193,33 +1224,34 @@ IpodMediaDevice::playlistFromItem(IpodMediaItem *item)
 
 
 IpodMediaItem *
-IpodMediaDevice::addTrackToView(Itdb_Track *track, IpodMediaItem *item)
+IpodMediaDevice::addTrackToView(Itdb_Track *track, IpodMediaItem *item, bool checkIntegrity )
 {
     bool visible = false;
     bool stale = false;
 
-#ifdef CHECK_FOR_INTEGRITY
-    QString path = realPath(track->ipod_path);
-    QFileInfo finfo(path);
-    if(!finfo.exists())
+    if( checkIntegrity )
     {
-        stale = true;
-        debug() << "track: " << track->artist << " - " << track->album << " - " << track->title << " is stale: " << track->ipod_path << " does not exist" << endl;
-        if( item )
-            m_staleItem->insertItem( item );
+        QString path = realPath(track->ipod_path);
+        QFileInfo finfo(path);
+        if(!finfo.exists())
+        {
+            stale = true;
+            debug() << "track: " << track->artist << " - " << track->album << " - " << track->title << " is stale: " << track->ipod_path << " does not exist" << endl;
+            if( item )
+                m_staleItem->insertItem( item );
+            else
+                item = new IpodMediaItem(m_staleItem, this);
+            item->setType(MediaItem::STALE);
+            QString title = QString::fromUtf8(track->artist) + " - "
+                + QString::fromUtf8(track->title);
+            item->setText( 0, title );
+            item->m_track = track;
+        }
         else
-            item = new IpodMediaItem(m_staleItem, this);
-        item->setType(MediaItem::STALE);
-        QString title = QString::fromUtf8(track->artist) + " - "
-            + QString::fromUtf8(track->title);
-        item->setText( 0, title );
-        item->m_track = track;
+        {
+            m_files.insert( QString(track->ipod_path).lower(), track );
+        }
     }
-    else
-    {
-        m_files.insert( QString(track->ipod_path).lower(), track );
-    }
-#endif // CHECK_FOR_INTEGRITY
 
     if(!stale && m_masterPlaylist && itdb_playlist_contains_track(m_masterPlaylist, track))
     {
@@ -1782,6 +1814,7 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
             RENAME, SUBSCRIBE,
             MAKE_PLAYLIST, ADD_TO_PLAYLIST, ADD,
             DELETE_PLAYED, DELETE,
+            REPAIR_MENU, REPAIR_SCAN, REPAIR_COVERS,
             FIRST_PLAYLIST};
 
         menu.insertItem( SmallIconSet( amaroK::icon( "playlist" ) ), i18n( "&Load" ), LOAD );
@@ -1882,6 +1915,12 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
         }
         menu.insertItem( SmallIconSet( amaroK::icon( "editdelete" ) ), i18n( "Delete" ), DELETE );
         menu.setItemEnabled( DELETE, !locked );
+
+        KPopupMenu repairMenu;
+        repairMenu.insertItem( SmallIconSet( "SCAN" ), i18n( "Scan for Orphaned and Missing Files" ), REPAIR_SCAN );
+        repairMenu.insertItem( SmallIconSet( "COVERS" ), i18n( "Refresh Cover Images" ), REPAIR_COVERS );
+        repairMenu.setItemEnabled( REPAIR_COVERS, m_supportsArtwork );
+        menu.insertItem( SmallIconSet( "folder" ), i18n("Repair iPod"), &repairMenu, REPAIR_MENU );
 
         int id =  menu.exec( point );
         switch( id )
@@ -2014,6 +2053,43 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                 break;
             case DELETE:
                 deleteFromDevice();
+                break;
+            case REPAIR_SCAN:
+                checkIntegrity();
+                break;
+            case REPAIR_COVERS:
+#ifdef HAVE_ITDB_TRACK_SET_THUMBNAILS
+                if( m_supportsArtwork )
+                {
+                    QPtrList<MediaItem> items;
+                    m_view->getSelectedLeaves( 0, &items, false );
+
+                    for( QPtrList<MediaItem>::iterator it = items.begin();
+                            it != items.end();
+                            it++ )
+                    {
+                        IpodMediaItem *i = dynamic_cast<IpodMediaItem *>( *it );
+                        if( !i || i->type() == MediaItem::PLAYLISTITEM )
+                            continue;
+
+                        const MetaBundle *bundle = i->bundle();
+                        QString image;
+                        if( i->m_podcastInfo && !i->m_podcastInfo->rss.isEmpty() )
+                        {
+                            PodcastChannelBundle pcb;
+                            if( CollectionDB::instance()->getPodcastChannelBundle( i->m_podcastInfo->rss, &pcb ) )
+                                image = CollectionDB::instance()->podcastImage( pcb.imageURL().url(), 0 );
+                        }
+                        if( image.isEmpty() )
+                            image  = CollectionDB::instance()->albumImage(bundle->artist(), bundle->album(), false, 0);
+                        if( !image.endsWith( "@nocover.png" ) )
+                        {
+                            debug() << "adding image " << image << " to " << bundle->artist() << ":" << bundle->album() << endl;
+                            itdb_track_set_thumbnails( i->m_track, g_strdup( QFile::encodeName(image) ) );
+                        }
+                    }
+                }
+#endif
                 break;
             default:
                 if( id >= FIRST_PLAYLIST )
