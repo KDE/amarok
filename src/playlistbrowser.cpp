@@ -2032,6 +2032,7 @@ void PlaylistBrowser::saveXSPF( PlaylistEntry *item, bool append )
     XSPFPlaylist* playlist = new XSPFPlaylist();
 
     playlist->setCreator( "amaroK" );
+    playlist->setTitle( item->text(0) );
 
     XSPFtrackList list;
 

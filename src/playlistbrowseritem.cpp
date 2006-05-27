@@ -322,7 +322,7 @@ PlaylistEntry::PlaylistEntry( QListViewItem *parent, QListViewItem *after, const
 
     if( !m_trackCount )
     {
-        setText(0, i18n("Loading playlist");
+        setText(0, i18n("Loading Playlist") );
         load();   //load the playlist file
     }
     // set text is called from within customEvent()
@@ -341,6 +341,7 @@ PlaylistEntry::PlaylistEntry( QListViewItem *parent, QListViewItem *after, const
     m_url.setPath( xmlDefinition.attribute( "file" ) );
     m_trackCount = xmlDefinition.namedItem( "tracks" ).toElement().text().toInt();
     m_length = xmlDefinition.namedItem( "length" ).toElement().text().toInt();
+    setText(0, xmlDefinition.attribute( "title" ) );
 
     m_trackList.setAutoDelete( true );
     tmp_droppedTracks.setAutoDelete( false );
@@ -353,7 +354,7 @@ PlaylistEntry::PlaylistEntry( QListViewItem *parent, QListViewItem *after, const
 
     if( !m_trackCount )
     {
-        setText(0, i18n("Loading playlist");
+        setText(0, i18n("Loading Playlist") );
         load();   //load the playlist file
     }
     // set text is called from within customEvent()
@@ -675,6 +676,7 @@ QDomElement PlaylistEntry::xml()
         QDomDocument doc;
         QDomElement i = doc.createElement("playlist");
         i.setAttribute( "file", url().path() );
+        i.setAttribute( "title", text(0) );
         if( isOpen() )
             i.setAttribute( "isOpen", "true" );
 
