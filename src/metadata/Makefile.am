@@ -9,7 +9,7 @@ endif
 SUBDIRS = wma audible rmff $(MP4_SUBDIR) aac
 
 
-INCLUDES           = $(all_includes) $(taglib_includes)
+INCLUDES           = -I$(top_srcdir)/amarok/src $(all_includes) $(taglib_includes)
 METASOURCES        = AUTO
 libmetadata_la_LDFLAGS  = $(all_libraries)
 noinst_LTLIBRARIES = libmetadata.la
