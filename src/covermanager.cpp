@@ -250,16 +250,16 @@ void CoverManager::init()
 }
 
 
-CoverViewDialog::CoverViewDialog(const QString& artist, const QString& album, QWidget *parent)
-    : QDialog(parent, 0, false, WDestructiveClose | WType_TopLevel | WNoAutoErase)
-    , m_pixmap(CollectionDB::instance()->albumImage( artist, album, 0 ))
+CoverViewDialog::CoverViewDialog( const QString& artist, const QString& album, QWidget *parent )
+    : QDialog( parent, 0, false, WDestructiveClose | WType_TopLevel | WNoAutoErase )
+    , m_pixmap( CollectionDB::instance()->albumImage( artist, album, false, 0 ) )
 {
     KWin::setType( winId(), NET::Utility );
     kapp->setTopWidget( this );
     setCaption( kapp->makeStdCaption( i18n("%1 - %2").arg( artist, album ) ) );
 
     m_layout = new QHBoxLayout( this );
-    m_layout->setAutoAdd(true);
+    m_layout->setAutoAdd( true );
     m_pixmapViewer = new PixmapViewer( this, m_pixmap );
 
     setFixedSize( m_pixmapViewer->maximalSize() );
@@ -884,7 +884,7 @@ QDragObject *CoverView::dragObject()
     for( QStringList::ConstIterator it = values.begin(), end = values.end(); it != end; ++it )
         urls += *it;
 
-    QString imagePath = CollectionDB::instance()->albumImage( item->artist(), item->album(), 1 );
+    QString imagePath = CollectionDB::instance()->albumImage( item->artist(), item->album(), false, 1 );
     KMultipleDrag *drag = new KMultipleDrag( this );
     drag->setPixmap( item->coverPixmap() );
     drag->addDragObject( new QIconDrag( this ) );
@@ -921,7 +921,7 @@ CoverViewItem::CoverViewItem( QIconView *parent, QIconViewItem *after, const QSt
     : KIconViewItem( parent, after, album )
     , m_artist( artist )
     , m_album( album )
-    , m_coverImagePath( CollectionDB::instance()->albumImage( m_artist, m_album, 0, &m_embedded ) )
+    , m_coverImagePath( CollectionDB::instance()->albumImage( m_artist, m_album, false, 0, &m_embedded ) )
     , m_coverPixmap( 0 )
 {
     setDragEnabled( true );
@@ -936,7 +936,7 @@ bool CoverViewItem::hasCover() const
 
 void CoverViewItem::loadCover()
 {
-    m_coverImagePath = CollectionDB::instance()->albumImage( m_artist, m_album, 1, &m_embedded );
+    m_coverImagePath = CollectionDB::instance()->albumImage( m_artist, m_album, false, 1, &m_embedded );
     m_coverPixmap = QPixmap( m_coverImagePath );  //create the scaled cover
 
     repaint();
@@ -1013,7 +1013,7 @@ void CoverViewItem::dropped( QDropEvent *e, const QValueList<QIconDragItem> & )
        QImage img;
        QImageDrag::decode( e, img );
        CollectionDB::instance()->setAlbumImage( artist(), album(), img );
-       m_coverImagePath = CollectionDB::instance()->albumImage( m_artist, m_album, 0 );
+       m_coverImagePath = CollectionDB::instance()->albumImage( m_artist, m_album, false, 0 );
        loadCover();
     }
 }

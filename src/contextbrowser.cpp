@@ -158,9 +158,9 @@ using amaroK::unescapeHTMLAttr;
 
 
 static
-QString albumImageTitle( const QString &albumImage, int size )
+QString albumImageTooltip( const QString &albumImage, int size )
 {
-    if ( albumImage == CollectionDB::instance()->notAvailCover( size ) )
+    if ( albumImage == CollectionDB::instance()->notAvailCover( false, size ) )
         return escapeHTMLAttr( i18n( "Click to fetch cover from amazon.%1, right-click for menu." ).arg( CoverManager::amazonTld() ) );
 
     return escapeHTMLAttr( i18n( "Click for information from Amazon, right-click for menu." ) );
@@ -388,8 +388,8 @@ void ContextBrowser::openURLRequest( const KURL &url )
     // When left-clicking on cover image, open browser with amazon site
     else if ( url.protocol() == "fetchcover" )
     {
-        QString albumPath = CollectionDB::instance()->albumImage(artist, album, 0 );
-        if ( albumPath == CollectionDB::instance()->notAvailCover( 0 ) )
+        QString albumPath = CollectionDB::instance()->albumImage(artist, album, false, 0 );
+        if ( albumPath == CollectionDB::instance()->notAvailCover( false, 0 ) )
         {
             CollectionDB::instance()->fetchCover( this, artist, album, false );
             return;
@@ -720,7 +720,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
             menu.insertItem( i18n("Show Fresh Podcasts"), FRESHPODCASTS );
             menu.insertItem( i18n("Show Newest Albums"), NEWALBUMS );
             menu.insertItem( i18n("Show Favorite Albums"), FAVALBUMS );
-            
+
             menu.setItemChecked( FRESHPODCASTS, m_showFreshPodcasts );
             menu.setItemChecked( NEWALBUMS, m_showNewestAlbums );
             menu.setItemChecked( FAVALBUMS, m_showFavoriteAlbums );
@@ -820,12 +820,14 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         m_dirtyCurrentTrackPage = true;
         showCurrentTrack();
         break;
+
    case NEWALBUMS:
         m_showNewestAlbums = !menu.isItemChecked( NEWALBUMS );
         amaroK::config( "ContextBrowser" )->writeEntry( "ShowNewestAlbums", m_showNewestAlbums );
         m_dirtyCurrentTrackPage = true;
         showCurrentTrack();
         break;
+
    case FAVALBUMS:
         m_showFavoriteAlbums = !menu.isItemChecked( FAVALBUMS );
         amaroK::config( "ContextBrowser" )->writeEntry( "ShowFavoriteAlbums", m_showFavoriteAlbums );
@@ -851,9 +853,9 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         }
         break;
     }
+
     case MAKE:
         Playlist::instance()->clear();
-
         //FALL_THROUGH
 
     case APPEND:
@@ -1024,31 +1026,31 @@ void CurrentTrackJob::showHome()
     QStringList lastplayed = qb.run();
 
     qb.clear(); //Song count
-    qb.addReturnFunctionValue(QueryBuilder::funcCount, QueryBuilder::tabSong, QueryBuilder::valURL );
+    qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabSong, QueryBuilder::valURL );
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     QStringList a = qb.run();
     QString songCount = a[0];
 
     qb.clear(); //Artist count
-    qb.addReturnFunctionValue(QueryBuilder::funcCount, QueryBuilder::tabArtist, QueryBuilder::valID );
+    qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabArtist, QueryBuilder::valID );
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     a = qb.run();
     QString artistCount = a[0];
 
     qb.clear(); //Album count
-    qb.addReturnFunctionValue(QueryBuilder::funcCount, QueryBuilder::tabAlbum, QueryBuilder::valID );
+    qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabAlbum, QueryBuilder::valID );
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     a = qb.run();
     QString albumCount = a[0];
 
     qb.clear(); //Genre count
-    qb.addReturnFunctionValue(QueryBuilder::funcCount, QueryBuilder::tabGenre, QueryBuilder::valID );
+    qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabGenre, QueryBuilder::valID );
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     a = qb.run();
     QString genreCount = a[0];
 
     qb.clear(); //Total Playtime
-    qb.addReturnFunctionValue(QueryBuilder::funcSum, QueryBuilder::tabSong, QueryBuilder::valLength );
+    qb.addReturnFunctionValue( QueryBuilder::funcSum, QueryBuilder::tabSong, QueryBuilder::valLength );
     a = qb.run();
     QString playTime = MetaBundle::veryPrettyTime( a[0].toInt() );
 
@@ -1150,9 +1152,8 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
 
         if ( CollectionDB::instance()->albumIsCompilation( reqResult[ i + 1 ] ) )
         {
-            QString albumImage = CollectionDB::instance()->albumImage( albumValues[5], reqResult[ i ], 50 );
-            QString albumImageTitleAttr = albumImageTitle( albumImage, 50 );
-            albumImage = ContextBrowser::makeShadowedImage( albumImage );
+            QString albumImage = CollectionDB::instance()->albumImage( albumValues[5], reqResult[ i ], true, 50 );
+            QString albumImageTitleAttr = albumImageTooltip( albumImage, 50 );
 
             // Compilation image
             htmlCode.append( QStringx (
@@ -1174,9 +1175,8 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
         {
             QString artistName = albumValues[5].isEmpty() ? i18n( "Unknown artist" ) : albumValues[5];
 
-            QString albumImage = CollectionDB::instance()->albumImage( albumValues[5], reqResult[ i ], 50 );
-            QString albumImageTitleAttr = albumImageTitle( albumImage, 50 );
-            albumImage = ContextBrowser::makeShadowedImage( albumImage );
+            QString albumImage = CollectionDB::instance()->albumImage( albumValues[5], reqResult[ i ], true, 50 );
+            QString albumImageTitleAttr = albumImageTooltip( albumImage, 50 );
 
             // Album image
             htmlCode.append( QStringx (
@@ -1264,7 +1264,7 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
                     "</div>" );
             }
         }
-        
+
         htmlCode.append(
                 "</div>"
                 "</td>"
@@ -1331,8 +1331,7 @@ CurrentTrackJob::showHomeByAlbums()
                         date = ep.date();
                     }
 
-                    QString image = CollectionDB::instance()->podcastImage( pcb.imageURL().url(), 50 );
-                    image = ContextBrowser::makeShadowedImage( image );
+                    QString image = CollectionDB::instance()->podcastImage( pcb.imageURL().url(), true, 50 );
                     QString imageAttr = escapeHTMLAttr( i18n( "Click to go to podcast website: %1." ).arg( pcb.link().prettyURL() ) );
 
                     m_HTMLSource.append( QStringx (
@@ -1431,7 +1430,7 @@ CurrentTrackJob::showHomeByAlbums()
     // </Recent Tracks Information>
 
     // <Favorite Albums Information>
-    if( ContextBrowser::instance()->m_showFavoriteAlbums)
+    if( ContextBrowser::instance()->m_showFavoriteAlbums )
     {
         const int sortBy = ( AmarokConfig::useScores() || !AmarokConfig::useRatings() )
             ? QueryBuilder::valPercentage
@@ -1567,10 +1566,10 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
 
     QString image;
     if( pcb.imageURL().isValid() )
-       image = CollectionDB::instance()->podcastImage( pcb.imageURL().url() );
+       image = CollectionDB::instance()->podcastImage( pcb.imageURL().url(), true );
     else
-       image = CollectionDB::instance()->notAvailCover();
-    image = ContextBrowser::makeShadowedImage( image );
+       image = CollectionDB::instance()->notAvailCover( true );
+
     QString imageAttr = escapeHTMLAttr( pcb.link().isValid()
             ? i18n( "Click to go to podcast website: %1." ).arg( pcb.link().prettyURL() )
             : i18n( "No podcast website." )
@@ -1787,9 +1786,8 @@ void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
     usleep( 10000 );
 
     //making 2 tables is most probably not the cleanest way to do it, but it works.
-    QString albumImage = CollectionDB::instance()->albumImage( currentTrack, 1 );
-    QString albumImageTitleAttr = albumImageTitle( albumImage, 0 );
-    albumImage = ContextBrowser::makeShadowedImage( albumImage );
+    QString albumImage = CollectionDB::instance()->albumImage( currentTrack, true, 1 );
+    QString albumImageTitleAttr = albumImageTooltip( albumImage, 0 );
 
     bool isCompilation = false;
     if( !currentTrack.album().isEmpty() )
@@ -2180,9 +2178,8 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
                 i_albumLength += QString(albumValues[j + 4]).toInt();
 
             QString albumLength = ( i_albumLength==0 ? i18n( "Unknown" ) : MetaBundle::prettyTime( i_albumLength, true ) );
-            QString albumImage = CollectionDB::instance()->albumImage( artist, values[ i ], 50 );
-            QString albumImageTitleAttr = albumImageTitle( albumImage, 50 );
-            albumImage = ContextBrowser::makeShadowedImage( albumImage );
+            QString albumImage = CollectionDB::instance()->albumImage( artist, values[ i ], true, 50 );
+            QString albumImageTitleAttr = albumImageTooltip( albumImage, 50 );
 
             m_HTMLSource.append( QStringx (
                         "<tr class='" + QString( (i % 4) ? "box-row-alt" : "box-row" ) + "'>"
@@ -2333,9 +2330,8 @@ void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artis
                 i_albumLength += QString(albumValues[j + 4]).toInt();
 
             QString albumLength = ( i_albumLength==0 ? i18n( "Unknown" ) : MetaBundle::prettyTime( i_albumLength, true ) );
-            QString albumImage = CollectionDB::instance()->albumImage( artist, values[ i ], 50 );
-            QString albumImageTitleAttr = albumImageTitle( albumImage, 50 );
-            albumImage = ContextBrowser::makeShadowedImage( albumImage );
+            QString albumImage = CollectionDB::instance()->albumImage( artist, values[ i ], true, 50 );
+            QString albumImageTitleAttr = albumImageTooltip( albumImage, 50 );
 
             m_HTMLSource.append( QStringx (
                         "<tr class='" + QString( (i % 4) ? "box-row-alt" : "box-row" ) + "'>"
@@ -2477,7 +2473,6 @@ bool CurrentTrackJob::doJob()
     DEBUG_BLOCK
 
     const MetaBundle &currentTrack = EngineController::instance()->bundle();
-
     m_HTMLSource.append( "<html><body>"
                     "<script type='text/javascript'>"
                       //Toggle visibility of a block. NOTE: if the block ID starts with the T
@@ -2494,6 +2489,7 @@ bool CurrentTrackJob::doJob()
                         "}"
                       "}"
                     "</script>" );
+
     if( !b->m_browseArtists )
     {
         if( !EngineController::engine()->loaded() )
@@ -2552,14 +2548,13 @@ bool CurrentTrackJob::doJob()
     }
 
     QString artistName = artist.isEmpty() ? i18n( "This Artist" ) : artist ;
-    if ( !artist.isEmpty() ) {
-    if( ContextBrowser::instance()->m_showFaves )
-        showArtistsFaves( artistName, artist_id );
+    if ( !artist.isEmpty() )
+    {
+        if( ContextBrowser::instance()->m_showFaves )
+            showArtistsFaves( artistName, artist_id );
 
-    showArtistsAlbums( artist, artist_id, album_id );
-    showArtistsCompilations( artist, artist_id, album_id );
-
-
+        showArtistsAlbums( artist, artist_id, album_id );
+        showArtistsCompilations( artist, artist_id, album_id );
     }
     m_HTMLSource.append( "</body></html>" );
 
@@ -3493,34 +3488,6 @@ void ContextBrowser::refreshCurrentTrackPage() //SLOT
     }
 }
 
-
-QString
-ContextBrowser::makeShadowedImage( const QString& albumImage ) //static
-{
-    const QImage original( albumImage );
-    QImage shadow;
-    const uint shadowSize = static_cast<uint>( original.width() / 100.0 * 6.0 );
-
-    const QString folder = amaroK::saveLocation( "covershadow-cache/" );
-    const QString file = QString( "shadow_albumcover%1x%2.png" ).arg( original.width() + shadowSize ).arg( original.height() + shadowSize  );
-    if ( QFile::exists( folder + file ) )
-        shadow.load( folder + file );
-    else {
-        shadow.load( locate( "data", "amarok/images/shadow_albumcover.png" ) );
-        shadow = shadow.smoothScale( original.width() + shadowSize, original.height() + shadowSize );
-        shadow.save( folder + file, "PNG" );
-    }
-
-    QImage target( shadow );
-    bitBlt( &target, 0, 0, &original );
-
-    QByteArray ba;
-    QBuffer buffer( ba );
-    buffer.open( IO_WriteOnly );
-    target.save( &buffer, "PNG" ); // writes image into ba in PNG format
-
-    return QString("data:image/png;base64,%1").arg( KCodecs::base64Encode( ba ) );
-}
 
 bool
 ContextBrowser::hasContextProtocol( const KURL &url )

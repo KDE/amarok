@@ -116,7 +116,6 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         void showIntroduction();
         void saveHtmlData();
         void showScanning();
-        static QString makeShadowedImage( const QString& albumImage );
         static QString wikiLocale();
         static void setWikiLocale( const QString &locale );
         static QString wikiURL( const QString &item );

@@ -561,9 +561,9 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
 
             QString location = QString::null;
             if( bundle.podcastBundle() ) 
-                location = CollectionDB::instance()->podcastImage( bundle, 0 );
+                location = CollectionDB::instance()->podcastImage( bundle, false, 0 );
             else
-                location = CollectionDB::instance()->albumImage( bundle, 0 );
+                location = CollectionDB::instance()->albumImage( bundle, false, 0 );
 
             if ( location.find( "nocover" ) != -1 )
                 setImage( amaroK::icon() );
@@ -625,7 +625,7 @@ amaroK::OSD::slotCoverChanged( const QString &artist, const QString &album )
     if( AmarokConfig::osdCover() && artist == EngineController::instance()->bundle().artist()
                                  && album  == EngineController::instance()->bundle().album()  )
     {
-        QString location = CollectionDB::instance()->albumImage( artist, album, 0 );
+        QString location = CollectionDB::instance()->albumImage( artist, album, false, 0 );
 
         if( location.find( "nocover" ) != -1 )
             setImage( amaroK::icon() );
@@ -646,8 +646,8 @@ amaroK::OSD::slotImageChanged( const QString &remoteURL )
         {
             if( pcb.imageURL().url() == remoteURL )
             {
-                QString location = CollectionDB::instance()->podcastImage( remoteURL, 0 );
-                if( location == CollectionDB::instance()->notAvailCover( 0 ) )
+                QString location = CollectionDB::instance()->podcastImage( remoteURL, false, 0 );
+                if( location == CollectionDB::instance()->notAvailCover( false, 0 ) )
                     setImage( amaroK::icon() );
                 else
                     setImage( location );

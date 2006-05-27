@@ -36,6 +36,7 @@
 #include "statusbar.h"
 #include "threadweaver.h"
 
+#include <qbuffer.h>
 #include <qcheckbox.h>
 #include <qfile.h>
 #include <qmap.h>
@@ -120,17 +121,15 @@ CollectionDB::CollectionDB()
 #endif
         m_dbConnType = DbConnection::sqlite;
 
-
     //<OPEN DATABASE>
     initialize();
     //</OPEN DATABASE>
 
-
     // Remove cached "nocover" images, so that a new version actually gets shown
-    const QStringList entryList = cacheCoverDir().entryList( "*nocover.png", QDir::Files );
+    // The asterisk is for also deleting the shadow-caches.
+    const QStringList entryList = cacheCoverDir().entryList( "*nocover.png*", QDir::Files );
     foreach( entryList )
         cacheCoverDir().remove( *it );
-
 
     // TODO Should write to config in dtor, but it crashes...
     KConfig* config = amaroK::config( "Collection Browser" );
@@ -172,9 +171,9 @@ inline QString
 CollectionDB::exactCondition( const QString &right )
 {
     if ( DbConnection::mysql == instance()->getDbConnectionType() )
-        return QString ( "= BINARY '" + instance()->escapeString( right ) + "'" );
+        return QString( "= BINARY '" + instance()->escapeString( right ) + "'" );
     else
-        return QString ("= '" + instance()->escapeString( right ) + "'");
+        return QString( "= '" + instance()->escapeString( right ) + "'" );
 }
 
 QString
@@ -680,6 +679,7 @@ CollectionDB::createPodcastTables()
     query( "CREATE INDEX url_podfolder ON podcastfolders( id );" );
 }
 
+
 void
 CollectionDB::dropPersistentTables()
 {
@@ -689,6 +689,7 @@ CollectionDB::dropPersistentTables()
     query( "DROP TABLE uniqueid;" );
 }
 
+
 void
 CollectionDB::dropPodcastTables()
 {
@@ -696,6 +697,8 @@ CollectionDB::dropPodcastTables()
     query( "DROP TABLE podcastepisodes;" );
     query( "DROP TABLE podcastfolders;" );
 }
+
+
 uint
 CollectionDB::artistID( QString value, bool autocreate, const bool temporary, bool exact /* = false */ )
 {
@@ -716,6 +719,7 @@ CollectionDB::artistID( QString value, bool autocreate, const bool temporary, bo
 
     return id;
 }
+
 
 QString
 CollectionDB::artistValue( uint id )
@@ -1015,7 +1019,7 @@ CollectionDB::createDragPixmap( const KURL::List &urls, QString textOverRide )
             if( !albumMap.contains( mb.artist() + mb.album() ) )
             {
                 albumMap[ mb.artist() + mb.album() ] = 1;
-                QString coverName = CollectionDB::instance()->albumImage( mb.artist(), mb.album(), coverW );
+                QString coverName = CollectionDB::instance()->albumImage( mb.artist(), mb.album(), false, coverW );
 
                 if ( !coverName.endsWith( "@nocover.png" ) )
                 {
@@ -1032,7 +1036,7 @@ CollectionDB::createDragPixmap( const KURL::List &urls, QString textOverRide )
             if( !albumMap.contains( mb.artist() + mb.album() ) )
             {
                 albumMap[ mb.artist() + mb.album() ] = 1;
-                QString coverName = CollectionDB::instance()->podcastImage( mb, coverW );
+                QString coverName = CollectionDB::instance()->podcastImage( mb, false, coverW );
 
                 if ( !coverName.endsWith( "@nocover.png" ) )
                 {
@@ -1163,13 +1167,13 @@ CollectionDB::createDragPixmap( const KURL::List &urls, QString textOverRide )
 }
 
 QImage
-CollectionDB::fetchImage(const KURL& url, QString &/*tmpFile*/)
+CollectionDB::fetchImage( const KURL& url, QString &/*tmpFile*/ )
 {
-    if (url.protocol() != "file")
+    if ( url.protocol() != "file" )
     {
         QString tmpFile;
-        KIO::NetAccess::download( url, tmpFile, 0); //TODO set 0 to the window, though it probably doesn't really matter
-        return QImage(tmpFile);
+        KIO::NetAccess::download( url, tmpFile, 0 ); //TODO set 0 to the window, though it probably doesn't really matter
+        return QImage( tmpFile );
     }
     else
     {
@@ -1207,8 +1211,9 @@ CollectionDB::setAlbumImage( const QString& artist, const QString& album, QImage
     return b;
 }
 
+
 QString
-CollectionDB::podcastImage( const MetaBundle &bundle, uint width )
+CollectionDB::podcastImage( const MetaBundle &bundle, const bool withShadow, uint width )
 {
     PodcastEpisodeBundle peb;
     PodcastChannelBundle pcb;
@@ -1223,24 +1228,26 @@ CollectionDB::podcastImage( const MetaBundle &bundle, uint width )
     if( getPodcastChannelBundle( url, &pcb ) )
     {
         if( pcb.imageURL().isValid() )
-            return podcastImage( pcb.imageURL().url(), width );
+            return podcastImage( pcb.imageURL().url(), withShadow, width );
     }
 
-    return notAvailCover( width );
+    return notAvailCover( withShadow, width );
 }
 
+
 QString
-CollectionDB::podcastImage( const QString &remoteURL, uint width )
+CollectionDB::podcastImage( const QString &remoteURL, const bool withShadow, uint width )
 {
     // we aren't going to need a 1x1 size image. this is just a quick hack to be able to show full size images.
     // width of 0 == full size
-    if( width == 1 ) width = AmarokConfig::coverPreviewSize();
+    if( width == 1 )
+        width = AmarokConfig::coverPreviewSize();
 
     QString s = findAmazonImage( "Podcast", remoteURL, width );
 
     if( s.isEmpty() )
     {
-        s = notAvailCover( width );
+        s = notAvailCover( withShadow, width );
 
         const KURL url = KURL::fromPathOrURL( remoteURL );
         if( url.isValid() ) //KIO crashes with invalid URLs
@@ -1250,6 +1257,9 @@ CollectionDB::podcastImage( const QString &remoteURL, uint width )
             connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( podcastImageResult( KIO::Job* ) ) );
         }
     }
+
+    if ( withShadow )
+        s = makeShadowedImage( s );
 
     return s;
 }
@@ -1293,13 +1303,15 @@ CollectionDB::podcastImageResult( KIO::Job *gjob )
 
 
 QString
-CollectionDB::albumImage( const QString &artist, const QString &album, uint width, bool* embedded )
+CollectionDB::albumImage( const QString &artist, const QString &album, bool withShadow, uint width, bool* embedded )
 {
     QString s;
     // we aren't going to need a 1x1 size image. this is just a quick hack to be able to show full size images.
     // width of 0 == full size
-    if( width == 1 ) width = AmarokConfig::coverPreviewSize();
-    if( embedded ) *embedded = false;
+    if( width == 1 )
+        width = AmarokConfig::coverPreviewSize();
+    if( embedded )
+        *embedded = false;
 
     s = findAmazonImage( artist, album, width );
 
@@ -1309,29 +1321,36 @@ CollectionDB::albumImage( const QString &artist, const QString &album, uint widt
     if( s.isEmpty() )
         s = findDirectoryImage( artist, album, width );
 
-    if( s.isEmpty() ) {
+    if( s.isEmpty() )
+    {
         s = findEmbeddedImage( artist, album, width );
         if( embedded && !s.isEmpty() )
             *embedded = true;
     }
 
     if( s.isEmpty() )
-        s = notAvailCover( width );
+        s = notAvailCover( withShadow, width );
+
+    if ( withShadow )
+        s = makeShadowedImage( s );
 
     return s;
 }
 
-QString
-CollectionDB::albumImage( const uint artist_id, const uint album_id, const uint width, bool* embedded )
-{
-    return albumImage( artistValue( artist_id ), albumValue( album_id ), width, embedded );
-}
 
 QString
-CollectionDB::albumImage( MetaBundle trackInformation, uint width, bool* embedded )
+CollectionDB::albumImage( const uint artist_id, const uint album_id, bool withShadow, uint width, bool* embedded )
+{
+    return albumImage( artistValue( artist_id ), albumValue( album_id ), withShadow, width, embedded );
+}
+
+
+QString
+CollectionDB::albumImage( MetaBundle trackInformation, bool withShadow, uint width, bool* embedded )
 {
     QString s;
-    if( width == 1 ) width = AmarokConfig::coverPreviewSize();
+    if( width == 1 )
+        width = AmarokConfig::coverPreviewSize();
 
     QString album = trackInformation.album();
     QString artist = trackInformation.artist();
@@ -1351,10 +1370,44 @@ CollectionDB::albumImage( MetaBundle trackInformation, uint width, bool* embedde
         s = findDirectoryImage( artist, album, width );
 
     if( s.isEmpty() )
-        s = notAvailCover( width );
+        s = notAvailCover( withShadow, width );
+
+    if ( withShadow )
+        s = makeShadowedImage( s );
 
     return s;
 }
+
+
+QString
+CollectionDB::makeShadowedImage( const QString& albumImage )
+{
+    const QImage original( albumImage );
+    const QFileInfo fileInfo( albumImage );
+    const uint shadowSize = static_cast<uint>( original.width() / 100.0 * 6.0 );
+    const QString cacheFile = fileInfo.fileName() + "@shadow";
+    QImage shadow;
+
+    if ( cacheCoverDir().exists( cacheFile ) )
+        return cacheCoverDir().filePath( cacheFile );
+
+    const QString folder = amaroK::saveLocation( "covershadow-cache/" );
+    const QString file = QString( "shadow_albumcover%1x%2.png" ).arg( original.width() + shadowSize ).arg( original.height() + shadowSize  );
+    if ( QFile::exists( folder + file ) )
+        shadow.load( folder + file );
+    else {
+        shadow.load( locate( "data", "amarok/images/shadow_albumcover.png" ) );
+        shadow = shadow.smoothScale( original.width() + shadowSize, original.height() + shadowSize );
+        shadow.save( folder + file, "PNG" );
+    }
+
+    QImage target( shadow );
+    bitBlt( &target, 0, 0, &original );
+    target.save( cacheCoverDir().filePath( cacheFile ), "PNG" );
+
+    return cacheCoverDir().filePath( cacheFile );
+}
+
 
 // Amazon Image
 QString
@@ -1365,7 +1418,6 @@ CollectionDB::findAmazonImage( const QString &artist, const QString &album, uint
     if ( artist.isEmpty() && album.isEmpty() )
         return QString::null;
 
-
     QCString key = md5sum( artist, album );
 
     // check cache for existing cover
@@ -1374,7 +1426,6 @@ CollectionDB::findAmazonImage( const QString &artist, const QString &album, uint
 
     // we need to create a scaled version of this cover
     QDir imageDir = largeCoverDir();
-
     if ( imageDir.exists( key ) )
     {
         if ( width > 1 )
@@ -1391,10 +1442,12 @@ CollectionDB::findAmazonImage( const QString &artist, const QString &album, uint
     return QString::null;
 }
 
+
 QString
 CollectionDB::findDirectoryImage( const QString& artist, const QString& album, uint width )
 {
-    if ( width == 1 ) width = AmarokConfig::coverPreviewSize();
+    if ( width == 1 )
+        width = AmarokConfig::coverPreviewSize();
     QCString widthKey = makeWidthKey( width );
 
     if ( album.isEmpty() )
@@ -1452,6 +1505,7 @@ CollectionDB::findDirectoryImage( const QString& artist, const QString& album, u
     return QString::null;
 }
 
+
 QString
 CollectionDB::findEmbeddedImage( const QString& artist, const QString& album, uint width )
 {
@@ -1499,6 +1553,7 @@ CollectionDB::findEmbeddedImage( const QString& artist, const QString& album, ui
     return QString::null;
 }
 
+
 QString
 CollectionDB::findMetaBundleImage( MetaBundle trackInformation, uint width )
 {
@@ -1526,33 +1581,37 @@ CollectionDB::findMetaBundleImage( MetaBundle trackInformation, uint width )
     return QString::null;
 }
 
+
 QCString
 CollectionDB::makeWidthKey( uint width )
 {
     return QString::number( width ).local8Bit() + "@";
 }
 
+
 bool
 CollectionDB::removeAlbumImage( const QString &artist, const QString &album )
 {
     QCString widthKey = "*@";
     QCString key = md5sum( artist, album );
-    query("DELETE FROM amazon WHERE filename='" + key + "'");
+    query( "DELETE FROM amazon WHERE filename='" + key + "'" );
 
-    // remove scaled versions of images
-    QStringList scaledList = cacheCoverDir().entryList( widthKey + key );
+    // remove scaled versions of images (and add the asterisk for the shadow-caches)
+    QStringList scaledList = cacheCoverDir().entryList( widthKey + key + "*" );
     if ( scaledList.count() > 0 )
         for ( uint i = 0; i < scaledList.count(); i++ )
             QFile::remove( cacheCoverDir().filePath( scaledList[ i ] ) );
 
     // remove large, original image
-    if ( largeCoverDir().exists( key ) && QFile::remove( largeCoverDir().filePath( key ) ) ) {
+    if ( largeCoverDir().exists( key ) && QFile::remove( largeCoverDir().filePath( key ) ) )
+    {
         emit coverRemoved( artist, album );
         return true;
     }
 
     return false;
 }
+
 
 bool
 CollectionDB::removeAlbumImage( const uint artist_id, const uint album_id )
@@ -1562,18 +1621,25 @@ CollectionDB::removeAlbumImage( const uint artist_id, const uint album_id )
 
 
 QString
-CollectionDB::notAvailCover( int width )
+CollectionDB::notAvailCover( const bool withShadow, int width )
 {
-    if ( !width ) width = AmarokConfig::coverPreviewSize();
+    if ( !width )
+        width = AmarokConfig::coverPreviewSize();
     QString widthKey = QString::number( width ) + "@";
+    QString s;
 
     if( cacheCoverDir().exists( widthKey + "nocover.png" ) )
-        return cacheCoverDir().filePath( widthKey + "nocover.png" );
+        s = cacheCoverDir().filePath( widthKey + "nocover.png" );
     else
     {
         m_noCover.smoothScale( width, width, QImage::ScaleMin ).save( cacheCoverDir().filePath( widthKey + "nocover.png" ), "PNG" );
-        return cacheCoverDir().filePath( widthKey + "nocover.png" );
+        s = cacheCoverDir().filePath( widthKey + "nocover.png" );
     }
+
+    if ( withShadow )
+        s = makeShadowedImage( s );
+
+    return s;
 }
 
 
@@ -1593,6 +1659,7 @@ CollectionDB::artistList( bool withUnknowns, bool withCompilations )
     return qb.run();
 }
 
+
 QStringList
 CollectionDB::composerList( bool withUnknowns, bool withCompilations )
 {
@@ -1608,6 +1675,7 @@ CollectionDB::composerList( bool withUnknowns, bool withCompilations )
     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valComposer );
     return qb.run();
 }
+
 
 QStringList
 CollectionDB::albumList( bool withUnknowns, bool withCompilations )

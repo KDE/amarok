@@ -374,24 +374,24 @@ class CollectionDB : public QObject, public EngineObserver
          * initiates fetching of the remote image if necessary.
          * @param width the size of the image. 0 == full size, 1 == preview size
          */
-        QString podcastImage( const MetaBundle &bundle, const uint width = 1 );
-        QString podcastImage( const QString &remoteURL, const uint width = 1 );
+        QString podcastImage( const MetaBundle &bundle, const bool withShadow = false, uint width = 1 );
+        QString podcastImage( const QString &remoteURL, const bool withShadow = false, uint width = 1 );
 
         /**
          * Retrieves the path to the image for the album of the requested item
          * @param width the size of the image. 0 == full size, 1 == preview size
          * @param embedded if not NULL, sets a bool indicating whether the path is an embedded image
          */
-        QString albumImage( MetaBundle trackInformation, const uint width = 1, bool* embedded = 0 );
-        QString albumImage( const uint artist_id, const uint album_id, const uint width = 1, bool* embedded = 0 );
-        QString albumImage( const QString &artist, const QString &album, const uint width = 1, bool* embedded = 0 );
+        QString albumImage( MetaBundle trackInformation, const bool withShadow = false, uint width = 1, bool* embedded = 0 );
+        QString albumImage( const uint artist_id, const uint album_id, const bool withShadow = false, uint width = 1, bool* embedded = 0 );
+        QString albumImage( const QString &artist, const QString &album, const bool withShadow = false, uint width = 1, bool* embedded = 0 );
 
         bool removeAlbumImage( const uint artist_id, const uint album_id );
         bool removeAlbumImage( const QString &artist, const QString &album );
 
         //local cover methods
         void addImageToAlbum( const QString& image, QValueList< QPair<QString, QString> > info, const bool temporary );
-        QString notAvailCover( int width = 0 );
+        QString notAvailCover( const bool withShadow = false, int width = 0 );
 
         //embedded cover methods
         void addEmbeddedImage( const QString& path, const QString& hash, const QString& description );
@@ -453,6 +453,7 @@ class CollectionDB : public QObject, public EngineObserver
         static QDir largeCoverDir();
         static QDir tagCoverDir();
         static QDir cacheCoverDir();
+        static QString makeShadowedImage( const QString& albumImage );
 
         void initialize();
         void destroy();

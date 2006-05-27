@@ -26,10 +26,11 @@
 
 RefreshImages::RefreshImages()
 {
-    const QStringList staleImages = CollectionDB::instance()->staleImages();
     //"SELECT asin, locale, filename FROM amazon WHERE refetchdate > %1 ;"
+    const QStringList staleImages = CollectionDB::instance()->staleImages();
     QStringList::ConstIterator it = staleImages.begin();
     QStringList::ConstIterator end = staleImages.end();
+
     while( it != end )
     {
         QString asin=*it;
@@ -37,46 +38,55 @@ RefreshImages::RefreshImages()
         QString locale = *it;
         it++;
         QString md5sum = *it;
-        if( asin.isEmpty() || locale.isEmpty() || md5sum.isEmpty())
-        {   
-            //somehow we have entries without ASIN    
+        if ( asin.isEmpty() || locale.isEmpty() || md5sum.isEmpty() )
+        {
+            //somehow we have entries without ASIN
             if ( !md5sum.isEmpty() ) //I've never seen this, just to be sure
-                CollectionDB::instance()->removeInvalidAmazonInfo(md5sum); 
+                CollectionDB::instance()->removeInvalidAmazonInfo(md5sum);
             it++;
-            if(it==end)
+            if ( it==end )
                 deleteLater();
-            continue; 
+
+            continue;
         }
+
         QString url =
             QString("http://webservices.amazon.%1/onca/xml?Service=AWSECommerceService&SubscriptionId=%2&Operation=ItemLookup&ItemId=%3&ResponseGroup=Small,Images")
              .arg(localeToTLD(locale))
              .arg("0RQSQ0B8CRY7VX2VF3G2") //Ian Monroe
              .arg(asin);
+
         debug() << url << endl;
+
         KIO::TransferJob* job = KIO::storedGet( url, false, false );
-        KIO::Scheduler::scheduleJob(job);
+        KIO::Scheduler::scheduleJob( job );
+
         //amaroK::StatusBar::instance()->newProgressOperation( job );
-        job->setName(md5sum.ascii());
+        job->setName( md5sum.ascii() );
         it++; //iterate to the next set
-        m_jobInfo[md5sum] = JobInfo(asin, locale, it==end); 
-        connect( job, SIGNAL(result( KIO::Job* )), SLOT(finishedXmlFetch( KIO::Job* )) );
+
+        m_jobInfo[md5sum] = JobInfo( asin, locale, it == end );
+        connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( finishedXmlFetch( KIO::Job* ) ) );
     }
 }
 
-void RefreshImages::finishedXmlFetch( KIO::Job* xmlJob ) //SLOT
+void
+RefreshImages::finishedXmlFetch( KIO::Job* xmlJob ) //SLOT
 {
-
-    if( xmlJob->error() ) {
-        amaroK::StatusBar::instance()->shortMessage(i18n("There was an error communicating with Amazon."));
-        if(m_jobInfo[xmlJob->name()].m_last)
+    if ( xmlJob->error() )
+    {
+        amaroK::StatusBar::instance()->shortMessage( i18n( "There was an error communicating with Amazon." ) );
+        if ( m_jobInfo[ xmlJob->name() ].m_last )
             deleteLater();
+
         return;
     }
+
     KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( xmlJob );
     const QString xml = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
 
     QDomDocument doc;
-    if( !doc.setContent( xml ) )
+    if ( !doc.setContent( xml ) )
       return;
 
     QStringList imageSizes;
@@ -88,7 +98,7 @@ void RefreshImages::finishedXmlFetch( KIO::Job* xmlJob ) //SLOT
             .namedItem( "Items" )
             .namedItem( "Item" )
             .namedItem( *it );
-        if( !imageNode.isNull() )
+        if ( !imageNode.isNull() )
         {
             imageUrl = imageNode.namedItem( "URL" ).firstChild().toText().data();
             if( !imageUrl.isEmpty() ) 
@@ -98,12 +108,12 @@ void RefreshImages::finishedXmlFetch( KIO::Job* xmlJob ) //SLOT
     debug() << imageUrl << endl;
     KURL testUrl( imageUrl );
     if( !testUrl.isValid() ) //KIO crashs on empty strings!!!
-    {    
+    {
         //Amazon sometimes takes down covers
         CollectionDB::instance()->removeInvalidAmazonInfo(xmlJob->name());
         return;
     }
-        
+
     KIO::TransferJob* imageJob = KIO::storedGet( imageUrl, false, false );
     KIO::Scheduler::scheduleJob(imageJob);
     //amaroK::StatusBar::instance()->newProgressOperation( imageJob );
@@ -122,6 +132,7 @@ void RefreshImages::finishedImageFetch(KIO::Job* imageJob)
         amaroK::StatusBar::instance()->shortMessage(i18n("There was an error communicating with Amazon."));
         if(m_jobInfo[imageJob->name()].m_last)
             deleteLater();
+
         return;
     }
     QImage img;
@@ -148,4 +159,5 @@ QString RefreshImages::localeToTLD(const QString& locale)
     else
         return locale;
 }
+
 #include "refreshimages.moc"
