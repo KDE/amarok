@@ -169,8 +169,6 @@ PlaylistBrowser::polish()
     m_polished = true;
 
     m_playlistCategory = loadPlaylists();
-    m_streamsCategory  = loadStreams();
-    loadCoolStreams();
 
     if( !CollectionDB::instance()->isEmpty() )
     {
@@ -180,6 +178,8 @@ PlaylistBrowser::polish()
     }
 
     m_dynamicCategory = loadDynamics();
+    m_streamsCategory  = loadStreams();
+    loadCoolStreams();
 
     m_playlistCategory->setOpen( true );
     m_streamsCategory->setOpen( true );
