@@ -719,8 +719,6 @@ PlaylistFile::loadXSPF( QTextStream &stream )
 
           QStringList values = qb.run();
 
-          debug() << "new xspf item: " << artist << " - " << title << " - " << values[0] << endl;
-
           if( values.isEmpty() ) continue;
 
           MetaBundle b( values[0] );

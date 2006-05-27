@@ -1286,45 +1286,6 @@ PlaylistCategory* PlaylistBrowser::loadPlaylists()
     }
 }
 
-// In case this is the first run using the QDomDocument, for users upgrading from amaroK < 1.3
-void PlaylistBrowser::loadOldPlaylists()
-{
-    QFile path( amaroK::saveLocation() + "playlistbrowser_save" );
-
-    if( !path.open( IO_ReadOnly ) )
-        return;
-
-    QTextStream stream( &path );
-    QString str, file;
-    int tracks=0, length=0;
-    QDateTime lastModified;
-    KURL url;
-
-    while ( !( str = stream.readLine() ).isNull() ) {
-        if ( str.startsWith( "File=" ) ) {
-            file = str.mid( 5 );
-        }
-        else {
-            tracks = str.section( ',', 0, 0 ).toInt();
-            length = str.section( ',', 1, 1 ).toInt();
-            int time_t = str.section( ',', 2, 2 ).toInt();
-            lastModified.setTime_t( time_t );
-
-            QFileInfo fi( file );
-            if( fi.exists() ) {
-                QListViewItem *last = 0;
-                if( fi.lastModified() != lastModified )
-                    addPlaylist( file ); //load the playlist
-                else {
-                    url.setPath(file);
-                    last = new PlaylistEntry( m_playlistCategory, last, url, tracks, length );
-                }
-            }
-        }
-    }
-    m_playlistCategory->setOpen( true );
-}
-
 QListViewItem *
 PlaylistBrowser::findItemInTree( const QString &searchstring, int c ) const
 {
@@ -3342,7 +3303,7 @@ InfoPane::toggle( bool toggled )
 void
 InfoPane::setInfo( const QString &title, const QString &info )
 {
-    m_infoBrowser->set( 
+    m_infoBrowser->set(
         QString( "<div id='extended_box' class='box'>"
                   "<div id='extended_box-header-title' class='box-header'>"
                   "<span id='extended_box-header-title' class='box-header-title'>"
