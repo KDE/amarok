@@ -119,7 +119,8 @@ BrowserBar::polish()
     uint M = 0;
     foreachType( BrowserList, m_browsers ) {
         const uint m = (*it)->minimumWidth();
-        if (m > M) M = m;
+        if (m > M)
+            M = m;
         if (m > 250) {
             warning() << "Browser is too large, mxcl says castrate the developer: " << (*it)->name() << ", " << M << endl;
             M = 250;
@@ -129,7 +130,7 @@ BrowserBar::polish()
     m_browserBox->setMinimumWidth( M );
     const int index = restoreWidth();
 
-    if( index != -1 )
+    if (index != -1)
         // if we did it for -1 it ruins the browserBox size
         showHideBrowser( index );
 }
@@ -358,49 +359,6 @@ BrowserBar::engineStateChanged( Engine::State state, Engine::State oldState )
     default:
         ;
     }
-}
-
-bool
-BrowserBar::eventFilter( QObject *o, QEvent *e )
-{
-    DEBUG_FUNC_INFO;
-
-    switch( e->type() )
-    {
-    case QEvent::MouseMove:
-    case QEvent::MouseButtonRelease:
-    case QEvent::MouseButtonPress:
-    case QEvent::FocusIn:
-    case QEvent::KeyPress:
-    case QEvent::KeyRelease:
-
-        // we put an event filter on this browser to check
-        // if it is still being used within 5 seconds of
-        // playback starting. If so we shouldn't auto-switch
-        // to the context browser
-        o->removeEventFilter( this );
-        killTimers();
-        break;
-
-    default:
-        ;
-    }
-
-    return false;
-}
-
-void
-BrowserBar::timerEvent( QTimerEvent* )
-{
-    if( m_currentIndex != -1 ) //means the browsers are closed
-        showBrowser( "ContextBrowser" );
-
-    // it might be bad to leave excess filters running
-    // so just in case
-    foreachType( BrowserList, m_browsers )
-        (*it)->removeEventFilter( this );
-
-    killTimers();
 }
 
 #include "browserbar.moc"
