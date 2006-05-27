@@ -170,6 +170,11 @@ class ScriptManager : public KDialogBase, public EngineObserver
         /////////////////////////////////////////////////////////////////////////////////////
         static ScriptManager* s_instance;
         ScriptManagerBase*    m_gui;
+
+        QListViewItem*        m_lyricsCategory;
+        QListViewItem*        m_scoreCategory;
+        QListViewItem*        m_transcodeCategory;
+
         bool                  m_installSuccess;
 
         struct ScriptItem {

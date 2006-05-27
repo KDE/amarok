@@ -136,8 +136,13 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     KWin::setState( winId(), NET::SkipTaskbar );
 
     setMainWidget( m_gui );
+    m_gui->listView->setRootIsDecorated( true );
     m_gui->listView->setFullWidth( true );
     m_gui->listView->setShowSortIndicator( true );
+
+    m_lyricsCategory     = new KListViewItem( m_gui->listView, i18n( "Lyrics" ) );
+    m_scoreCategory      = new KListViewItem( m_gui->listView, i18n( "Score" ) );
+    m_transcodeCategory  = new KListViewItem( m_gui->listView, i18n( "Transcoding" ) );
 
     connect( m_gui->listView, SIGNAL( currentChanged( QListViewItem* ) ), SLOT( slotCurrentChanged( QListViewItem* ) ) );
     connect( m_gui->listView, SIGNAL( doubleClicked ( QListViewItem*, const QPoint&, int ) ), SLOT( slotRunScript() ) );
@@ -779,7 +784,7 @@ ScriptManager::notifyScripts( const QString& message )
     }
 }
 
-
+ 
 void
 ScriptManager::loadScript( const QString& path )
 {
@@ -790,6 +795,7 @@ ScriptManager::loadScript( const QString& path )
 
         // Read and parse .spec file, if exists
         QFileInfo info( path );
+        QListViewItem* li = 0;
         const QString specPath = info.dirPath() + "/" + info.baseName() + ".spec";
         if( QFile::exists( specPath ) ) {
             KConfig spec( specPath, true, false );
@@ -797,16 +803,24 @@ ScriptManager::loadScript( const QString& path )
                 name = spec.readEntry( "name" );
             if( spec.hasKey( "type" ) ) {
                 type = spec.readEntry( "type" );
-                if( type == "lyrics" )
+                if( type == "lyrics" ) {
                     name.prepend( i18n( "Lyrics" ) + ": " );
-                if( type == "transcode" )
+                    li = new QListViewItem( m_lyricsCategory, name );
+                }
+                if( type == "transcode" ) {
                     name.prepend( i18n( "Transcoding" ) + ": " );
-                if( type == "score" )
+                    li = new QListViewItem( m_transcodeCategory, name );
+                }
+                if( type == "score" ) {
                     name.prepend( i18n( "Score" ) + ": " );
+                    li = new QListViewItem( m_scoreCategory, name );
+                }
             }
         }
 
-        KListViewItem* li = new KListViewItem( m_gui->listView, name );
+        if( !li )
+            li = new QListViewItem( m_gui->listView, name );
+
         li->setPixmap( 0, QPixmap() );
 
         ScriptItem item;
