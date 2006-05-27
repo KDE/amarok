@@ -455,10 +455,10 @@
                                         <string>Make m&amp;oodier:</string>
                                     </property>
                                     <property name="toolTip" stdset="0">
-                                        <string>When enabled, the hue distribution is quantised and respread evenly, giving a prettier but less meaningful output.</string>
+                                        <string>When enabled, the hue distribution is quantized and respread evenly, giving a prettier but less meaningful output.</string>
                                     </property>
                                     <property name="whatsThis" stdset="0">
-                                        <string>When enabled, the hue distribution is quantised and respread evenly, giving a prettier but less meaningful output.</string>
+                                        <string>When enabled, the hue distribution is quantized and respread evenly, giving a prettier but less meaningful output.</string>
                                     </property>
                                 </widget>
                                 <widget class="QComboBox">

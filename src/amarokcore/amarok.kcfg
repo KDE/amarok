@@ -143,7 +143,7 @@
     </entry>
     <entry key="Make Moodier" type="Bool">
         <label>Maximize color spread of Moodbar</label>
-        <whatsthis>When enabled, the hue distribution is quantised and respread evenly, giving a prettier but less meaningful output.</whatsthis>
+        <whatsthis>When enabled, the hue distribution is quantized and respread evenly, giving a prettier but less meaningful output.</whatsthis>
         <default>true</default>
     </entry>
     <entry key="AlterMood" type="Int">
