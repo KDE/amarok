@@ -705,25 +705,28 @@ PlaylistFile::loadXSPF( QTextStream &stream )
 
     foreachType( XSPFtrackList, trackList )
     {
-          QString artist = (*it).creator;
-          QString title  = (*it).title;
-          QString album  = (*it).album;
+        KURL location = (*it).location;
+        if( location.isEmpty() || !QFile::exists( location.url() ) )
+        {
+            QString artist = (*it).creator;
+            QString title  = (*it).title;
+            QString album  = (*it).album;
 
-          QueryBuilder qb;
-          qb.addMatch( QueryBuilder::tabArtist, QueryBuilder::valName, artist );
-          qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valTitle, title );
-          if( !album.isEmpty() )
-              qb.addMatch( QueryBuilder::valName, album );
+            QueryBuilder qb;
+            qb.addMatch( QueryBuilder::tabArtist, QueryBuilder::valName, artist );
+            qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valTitle, title );
+            if( !album.isEmpty() )
+                qb.addMatch( QueryBuilder::valName, album );
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
 
-          qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+            QStringList values = qb.run();
 
-          QStringList values = qb.run();
+            if( values.isEmpty() ) continue;
 
-          if( values.isEmpty() ) continue;
+            MetaBundle b( values[0] );
 
-          MetaBundle b( values[0] );
-
-          m_bundles += b;
+            m_bundles += b;
+        }
     }
 
     m_title = doc->title();
