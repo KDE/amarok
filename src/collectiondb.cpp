@@ -1383,6 +1383,10 @@ QString
 CollectionDB::makeShadowedImage( const QString& albumImage )
 {
     const QImage original( albumImage );
+
+    if( original.hasAlphaBuffer() )
+        return albumImage;
+
     const QFileInfo fileInfo( albumImage );
     const uint shadowSize = static_cast<uint>( original.width() / 100.0 * 6.0 );
     const QString cacheFile = fileInfo.fileName() + "@shadow";
@@ -3384,7 +3388,7 @@ CollectionDB::setCompilation( const QString &album, const bool enabled, const bo
 {
     QStringList values = query( QString( "SELECT album.id FROM album WHERE album.name = '%1';" )
               .arg( escapeString( album ) ) );
-    
+
     if ( values.count() > 0 ) {
         query( QString( "UPDATE tags SET sampler = %1 WHERE tags.album = %2;" )
                 .arg( enabled ? boolT() : boolF() )
@@ -5480,7 +5484,7 @@ QueryBuilder::sortBy( int table, Q_INT64 value, bool descending )
     //shall we sort case-sensitively? (not for integer columns!)
     bool b = true;
     if ( value & valID || value & valTrack || value & valScore || value & valRating || value & valLength || value & valBitrate ||
-         value & valSamplerate || value & valPlayCounter || value & valAccessDate || value & valCreateDate || 
+         value & valSamplerate || value & valPlayCounter || value & valAccessDate || value & valCreateDate ||
          value & valPercentage || value & valFilesize || value & valDiscNumber ||
          table & tabYear )
         b = false;
@@ -5527,7 +5531,7 @@ QueryBuilder::sortByFunction( int function, int table, Q_INT64 value, bool desce
     //shall we sort case-sensitively? (not for integer columns!)
     bool b = true;
     if ( value & valID || value & valTrack || value & valScore || value & valRating || value & valLength || value & valBitrate ||
-         value & valSamplerate || value & valPlayCounter || value & valAccessDate || value & valCreateDate || 
+         value & valSamplerate || value & valPlayCounter || value & valAccessDate || value & valCreateDate ||
          value & valPercentage || value & valFilesize || value & valDiscNumber ||
          table & tabYear )
         b = false;
