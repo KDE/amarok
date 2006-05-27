@@ -1252,7 +1252,7 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
                 
                 QString length;
                 if( albumValues[j + 4] != "0" )
-                    length = "<span class='album-song-time'>(" + MetaBundle::prettyTime( QString(albumValues[j + 4]).toInt(), false ) + ")</span>";
+                    length = "<span class='album-song-time'>(" + MetaBundle::prettyTime( QString(albumValues[j + 4]).toInt(), true ) + ")</span>";
                 
                 htmlCode.append(
                     "<div class='album-song'>"
@@ -2243,7 +2243,7 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
 
                     QString length;
                     if( albumValues[j + 4] != "0" )
-                        length = "<span class='album-song-time'>(" + MetaBundle::prettyTime( QString(albumValues[j + 4]).toInt(), false ) + ")</span>";
+                        length = "<span class='album-song-time'>(" + MetaBundle::prettyTime( QString(albumValues[j + 4]).toInt(), true ) + ")</span>";
 
                     m_HTMLSource.append(
                             "<div class='album-song'>"
@@ -2395,7 +2395,7 @@ void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artis
 
                     QString length;
                     if( albumValues[j + 4] != "0" )
-                        length = "<span class='album-song-time'>(" + MetaBundle::prettyTime( QString(albumValues[j + 4]).toInt(), false ) + ")</span>";
+                        length = "<span class='album-song-time'>(" + MetaBundle::prettyTime( QString(albumValues[j + 4]).toInt(), true ) + ")</span>";
 
                     QString tracktitle_formated;
                     QString tracktitle;
