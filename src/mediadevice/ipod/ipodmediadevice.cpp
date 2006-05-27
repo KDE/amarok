@@ -326,7 +326,7 @@ IpodMediaDevice::updateTrackInDB(IpodMediaItem *item,
                 image = CollectionDB::instance()->podcastImage( pcb.imageURL().url(), 0 );
         }
         if( image.isEmpty() )
-            image  = CollectionDB::instance()->albumImage(bundle.artist(), bundle.album(), 0);
+            image  = CollectionDB::instance()->albumImage(bundle.artist(), bundle.album(), false, 0);
         if( !image.endsWith( "@nocover.png" ) )
         {
             debug() << "adding image " << image << " to " << bundle.artist() << ":" << bundle.album() << endl;
