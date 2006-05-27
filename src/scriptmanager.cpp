@@ -766,8 +766,7 @@ void
 ScriptManager::terminateProcess( KProcIO** proc )
 {
     if( *proc ) {
-        if( (*proc)->isRunning() )
-            (*proc)->kill(); // Sends SIGTERM
+        (*proc)->kill(); // Sends SIGTERM
         (*proc)->detach();
 
         delete *proc;
