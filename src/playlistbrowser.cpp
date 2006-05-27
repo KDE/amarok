@@ -1286,6 +1286,9 @@ PlaylistBrowser::findItemInTree( const QString &searchstring, int c ) const
 
 DynamicMode *PlaylistBrowser::findDynamicModeByTitle( const QString &title ) const
 {
+    if (!m_dynamicCategory)
+       return 0;
+
     for ( QListViewItem *item = m_dynamicCategory->firstChild(); item; item = item->nextSibling() )
     {
         DynamicEntry *entry = dynamic_cast<DynamicEntry *>( item );
