@@ -45,6 +45,9 @@ public:
     /// the information that can be extracted from the playlists
     BundleList &bundles() { return m_bundles; }
 
+    /// the name of the playlist. often stored in the document (eg xspf) or derived from the filename
+    QString &title() { return m_title; }
+
     ///@return true if couldn't load the playlist's contents
     bool isError() const { return !m_error.isEmpty(); }
 
@@ -55,20 +58,21 @@ public:
     static inline bool isPlaylistFile( const KURL &url ) { return isPlaylistFile( url.fileName() ); }
     static inline bool isPlaylistFile( const QString &fileName ) { return format( fileName ) != Unknown; }
     static inline Format format( const QString &fileName );
-    static QTime stringToTime(const QString&);   
+    static QTime stringToTime(const QString&);
 
 protected:
     /// make these virtual if you need to
     bool loadM3u( QTextStream& );
     bool loadPls( QTextStream& );
     unsigned int loadPls_extractIndex( const QString &str ) const;
-    bool loadRealAudioRam( QTextStream& ); 
+    bool loadRealAudioRam( QTextStream& );
     bool loadASX( QTextStream& );
     bool loadSMIL( QTextStream& );
     bool loadXSPF( QTextStream& );
     QString m_path;
     QString m_error;
     BundleList m_bundles;
+    QString m_title;
 };
 
 inline PlaylistFile::Format

@@ -524,7 +524,7 @@ PlaylistFile::PlaylistFile( const QString &path )
     case RAM: loadRealAudioRam( stream ); break;
     case ASX: loadASX( stream ); break;
     case SMIL: loadSMIL( stream ); break;
-	case XSPF: loadXSPF( stream ); break;
+    case XSPF: loadXSPF( stream ); break;
     default:
         m_error = i18n( "amaroK does not support this playlist format." );
         return;
@@ -725,6 +725,8 @@ PlaylistFile::loadXSPF( QTextStream &stream )
 
           m_bundles += b;
     }
+
+    m_title = doc->title();
 
     return true;
 }

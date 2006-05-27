@@ -47,11 +47,14 @@ class PlaylistReader : public ThreadWeaver::DependentJob
                 , m_path( path ) {}
 
         virtual bool doJob() {
-            bundles = PlaylistFile( m_path ).bundles();
+            PlaylistFile pf = PlaylistFile( m_path );
+            bundles = pf.bundles();
+            title   = pf.title();
             return true;
         }
 
         BundleList bundles;
+        QString    title;
 
     private:
         const QString m_path;
@@ -315,11 +318,14 @@ PlaylistEntry::PlaylistEntry( QListViewItem *parent, QListViewItem *after, const
     setRenameEnabled( 0, false );
     setExpandable(true);
 
-    setText(0, fileBaseName( url.path() ) );
     setPixmap( 0, SmallIcon( amaroK::icon( "playlist" ) ) );
 
     if( !m_trackCount )
+    {
+        setText(0, i18n("Loading playlist");
         load();   //load the playlist file
+    }
+    // set text is called from within customEvent()
 }
 
 
@@ -343,12 +349,14 @@ PlaylistEntry::PlaylistEntry( QListViewItem *parent, QListViewItem *after, const
     setRenameEnabled( 0, false );
     setExpandable(true);
 
-    setText(0, fileBaseName( m_url.path() ) );
     setPixmap( 0, SmallIcon( amaroK::icon( "playlist" ) ) );
 
-
     if( !m_trackCount )
+    {
+        setText(0, i18n("Loading playlist");
         load();   //load the playlist file
+    }
+    // set text is called from within customEvent()
 }
 
 
@@ -361,8 +369,7 @@ PlaylistEntry::~PlaylistEntry()
 
 void PlaylistEntry::load()
 {
-    if ( m_loading )
-	    return;
+    if( m_loading )  return;
     m_trackList.clear();
     m_length = 0;
     m_loaded = false;
@@ -452,37 +459,45 @@ void PlaylistEntry::removeTrack( QListViewItem *item, bool isLast )
 
 void PlaylistEntry::customEvent( QCustomEvent *e )
 {
-    if( e->type() == (int)PlaylistReader::JobFinishedEvent )
+    if( e->type() != (int)PlaylistReader::JobFinishedEvent )
+        return;
+
+#define playlist static_cast<PlaylistReader*>(e)
+    QString str = playlist->title;
+    str.isEmpty() ?
+        setText( 0, fileBaseName( m_url.path() ) ):
+        setText( 0, playlist->title );
+
+    foreachType( BundleList, playlist->bundles )
     {
-        foreachType( BundleList, static_cast<PlaylistReader*>(e)->bundles ) {
-           const MetaBundle &b = *it;
-           TrackItemInfo *info = new TrackItemInfo( b.url(), b.title(), b.length() );
-           m_trackList.append( info );
-           m_length += info->length();
-           if( isOpen() )
-               m_lastTrack = new PlaylistTrackItem( this, m_lastTrack, info );
-        }
-
-        //the tracks dropped on the playlist while it wasn't loaded are added to the track list
-        if( tmp_droppedTracks.count() ) {
-
-            for ( TrackItemInfo *info = tmp_droppedTracks.first(); info; info = tmp_droppedTracks.next() ) {
-                m_trackList.append( info );
-            }
-            tmp_droppedTracks.clear();
-        }
-
-        m_loading = false;
-        m_loaded = true;
-        static_cast<PlaylistBrowserView *>(listView())->stopAnimation( this );  //stops the loading animation
-
-        if( m_trackCount && !m_dynamic && !isDynamic() ) setOpen( true );
-        else listView()->repaintItem( this );
-
-        m_trackCount = m_trackList.count();
-
-        PlaylistBrowser::instance()->savePlaylist( this );
+        const MetaBundle &b = *it;
+        TrackItemInfo *info = new TrackItemInfo( b.url(), b.title(), b.length() );
+        m_trackList.append( info );
+        m_length += info->length();
+        if( isOpen() )
+            m_lastTrack = new PlaylistTrackItem( this, m_lastTrack, info );
     }
+#undef playlist
+
+    //the tracks dropped on the playlist while it wasn't loaded are added to the track list
+    if( tmp_droppedTracks.count() ) {
+
+        for ( TrackItemInfo *info = tmp_droppedTracks.first(); info; info = tmp_droppedTracks.next() ) {
+            m_trackList.append( info );
+        }
+        tmp_droppedTracks.clear();
+    }
+
+    m_loading = false;
+    m_loaded = true;
+    static_cast<PlaylistBrowserView *>(listView())->stopAnimation( this );  //stops the loading animation
+
+    if( m_trackCount && !m_dynamic && !isDynamic() ) setOpen( true );
+    else listView()->repaintItem( this );
+
+    m_trackCount = m_trackList.count();
+
+    PlaylistBrowser::instance()->savePlaylist( this );
 }
 
 /**
@@ -655,7 +670,8 @@ void PlaylistEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, i
 }
 
 
-QDomElement PlaylistEntry::xml() {
+QDomElement PlaylistEntry::xml()
+{
         QDomDocument doc;
         QDomElement i = doc.createElement("playlist");
         i.setAttribute( "file", url().path() );
