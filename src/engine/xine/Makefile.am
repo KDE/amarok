@@ -1,5 +1,6 @@
 kde_module_LTLIBRARIES = libamarok_xine-engine.la
-kde_services_DATA = amarok_xine-engine.desktop
+kde_services_DATA = \ 
+	amarok_xine-engine.desktop
 
 INCLUDES = \
     -I$(top_srcdir)/amarok/src \

@@ -60,6 +60,9 @@ public:
 
     //xx000, xx100, xx200, so at most will be 200ms delay before time displays are updated
     static const int MAIN_TIMER = 300;
+    
+    /*enum Filetype { MP3 };*/ //assuming MP3 for time being
+    LIBAMAROK_EXPORT static bool installDistroCodec(const QString& engine /*Filetype type*/);
 
 public slots:
     void previous();

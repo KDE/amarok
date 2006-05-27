@@ -2,6 +2,7 @@
  *   Copyright (C) 2004 Frederik Holljen <fh@ez.no>                        *
  *             (C) 2004,5 Max Howell <max.howell@methylblue.com>           *
  *             (C) 2004,5 Mark Kretschmann                                 *
+ *             (C) 2006 Ian Monroe                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -235,7 +236,7 @@ bool EngineController::canDecode( const KURL &url ) //static
     const bool valid = engine()->canDecode( url );
 
     //we special case this as otherwise users hate us
-    if ( !valid && ext == "mp3" )
+    if ( !valid && ext.lower() == "mp3" && !installDistroCodec(AmarokConfig::soundSystem()) )
         amaroK::StatusBar::instance()->longMessageThreadSafe(
            i18n( "<p>The %1 claims it <b>cannot</b> play MP3 files."
                  "<p>You may want to choose a different engine from the <i>Configure Dialog</i>, or examine "
@@ -247,9 +248,31 @@ bool EngineController::canDecode( const KURL &url ) //static
     if ( !ext.isEmpty() )
         extensionCache().insert( ext, valid );
 
-    return valid;
+    return valid;   
 }
 
+bool EngineController::installDistroCodec( const QString& engine /*Filetype type*/)
+{
+    KGuiItem installButton("Install MP3 Support");    
+    
+    if(KMessageBox::questionYesNo(PlaylistWindow::self()
+       , i18n("amaroK currently cannot play MP3 files.")
+       , i18n( "No MP3 Support" )
+       , installButton
+       , KStdGuiItem::no()
+       , "codecInstallWarning" )  )
+    {
+        KService::Ptr service = KTrader::self()->query( "amaroK/CodecInstall"
+            , QString("[X-KDE-amaroK-codec] == 'mp3' and [X-KDE-amaroK-engine] == '%1'").arg(engine) ).first();
+        QString installScript = service->exec();
+        if( !installScript.isNull() ) //just a sanity check
+        {
+            KRun::runCommand(installScript);
+            return true;
+        }
+    }
+    return false;
+}
 
 void EngineController::restoreSession()
 {

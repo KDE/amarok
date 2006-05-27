@@ -203,7 +203,8 @@ xdg_apps_DATA = \
     amarok.desktop
 
 kde_servicetypes_DATA = \
-    amarok_plugin.desktop
+    amarok_plugin.desktop \
+    amarok_codecinstall.desktop
 
 
 servicemenudir = \

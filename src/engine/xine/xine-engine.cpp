@@ -17,7 +17,10 @@
 #include "xine-config.h"
 #include "xinecfg.h"
 #include "xine-engine.h"
+#include "amarok.h"
+//these files are from libamarok
 #include "playlist.h"
+#include "enginecontroller.h"
 
 AMAROK_EXPORT_PLUGIN( XineEngine )
 
@@ -77,6 +80,7 @@ XineEngine::XineEngine()
     addPluginProperty( "HasCrossfade", "true" );
     #endif
     addPluginProperty("HasCDDA", "true"); // new property
+    debug() << "hello" << endl;
 }
 
 XineEngine::~XineEngine()
@@ -300,7 +304,12 @@ XineEngine::determineAndShowErrorMessage()
     QString body;
 
     if (!xine_get_stream_info( m_stream, XINE_STREAM_INFO_AUDIO_HANDLED ))
+    {
         body = i18n("There is no available decoder.");
+        const QString ext = amaroK::extension( m_url.url() ).lower();
+        if( ext == "mp3" && EngineController::installDistroCodec("xine-engine") )
+           return;
+    }
     else if (!xine_get_stream_info( m_stream, XINE_STREAM_INFO_HAS_AUDIO ))
         body = i18n("There is no audio channel!");
     else {

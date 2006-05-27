@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=ServiceType
+X-KDE-ServiceType=amaroK/CodecInstall
+
+# The unplayable codec
+[PropertyDef::X-KDE-amaroK-codec]
+Type=QString
+
+[PropertyDef::X-KDE-amaroK-engine]
+Type=QString
+
+# If true, amaroK will show a warning dialog about the experimental nature of this plugin.
+[PropertyDef::Exec]
+Type=QString
