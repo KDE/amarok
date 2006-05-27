@@ -29,6 +29,8 @@ VERSION 1.4.1:
     * Dynamic mode no longer skips to the next song if you press play (via
       dcop, for instance) while already playing a track. Instead it restarts
       the current one.
+    * The Actions menu has been renamed the Engage menu. It's way cooler,
+      right?  I mean, Star Trek is really cool, right?
 
   BUGFIXES:
     * Properly render and optimise playlist loading icons.
