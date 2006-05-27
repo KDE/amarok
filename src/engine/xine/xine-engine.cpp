@@ -249,7 +249,10 @@ XineEngine::load( const KURL &url, bool isStream )
             xine_set_param( m_stream, XINE_PARAM_GAPLESS_SWITCH, 0);
       #endif
    }
+
+   // FAILURE to load!
    //s_fader will delete itself
+   determineAndShowErrorMessage();
 
    return false;
 }
@@ -257,10 +260,15 @@ XineEngine::load( const KURL &url, bool isStream )
 bool
 XineEngine::play( uint offset )
 {
+    DEBUG_BLOCK
+
     if( !ensureStream() )
         return false;
 
-    if( xine_play( m_stream, 0, offset ) )
+    const bool has_audio     = xine_get_stream_info( m_stream, XINE_STREAM_INFO_HAS_AUDIO );
+    const bool audio_handled = xine_get_stream_info( m_stream, XINE_STREAM_INFO_AUDIO_HANDLED );
+
+    if (has_audio && audio_handled && xine_play( m_stream, 0, offset ))
     {
         if( s_fader )
            s_fader->start( QThread::LowestPriority );
@@ -275,25 +283,58 @@ XineEngine::play( uint offset )
 
     emit stateChanged( Engine::Empty );
 
-    switch( xine_get_error( m_stream ) )
-    {
-    case XINE_ERROR_NO_INPUT_PLUGIN:
-        KMessageBox::error( 0, i18n("No input plugin available; check your installation.") );
-        break;
-    case XINE_ERROR_NO_DEMUX_PLUGIN:
-        KMessageBox::error( 0, i18n("No demux plugin available; check your installation.") );
-        break;
-    case XINE_ERROR_DEMUX_FAILED:
-        KMessageBox::error( 0, i18n("Demuxing failed; check your installation.") );
-        break;
-    default:
-        KMessageBox::error( 0, i18n("Internal error; check your installation.") );
-        break;
-    }
+    determineAndShowErrorMessage();
 
     xine_close( m_stream );
 
     return false;
+}
+
+#include "statusbar/statusbar.h"
+
+void
+XineEngine::determineAndShowErrorMessage()
+{
+    DEBUG_BLOCK
+
+    QString body;
+
+    if (!xine_get_stream_info( m_stream, XINE_STREAM_INFO_AUDIO_HANDLED ))
+        body = i18n("There is no available decoder.");
+    else if (!xine_get_stream_info( m_stream, XINE_STREAM_INFO_HAS_AUDIO ))
+        body = i18n("There is no audio channel!");
+    else {
+        debug() << "xine_get_error()\n";
+        switch (xine_get_error( m_stream )) {
+            case XINE_ERROR_NO_INPUT_PLUGIN:
+                body = i18n("No suitable input plugin.");
+            break;
+
+            case XINE_ERROR_NO_DEMUX_PLUGIN:
+                body = i18n("No suitable demux plugin.");
+            break;
+
+            case XINE_ERROR_DEMUX_FAILED:
+                body = i18n("Demuxing failed.");
+            break;
+
+            case XINE_ERROR_INPUT_FAILED:
+                body = i18n("Couldn't open file.");
+            break;
+
+            case XINE_ERROR_MALFORMED_MRL:
+                body = i18n("The location is malformed.");
+            break;
+
+            case XINE_ERROR_NONE:
+            default:
+                return;
+        }
+    }
+
+    amaroK::StatusBar::instance()->longMessage(
+            "<b>" + i18n("Error Loading Media") + "</b><p>" + body + "<p>" + m_url.prettyURL(),
+            KDE::StatusBar::Error );
 }
 
 void
@@ -499,14 +540,20 @@ XineEngine::canDecode( const KURL &url ) const
             list << "m4a";
     }
 
+    if (url.protocol() == "cdda")
+        // play audio CDs pls
+        return true;
+
     QString path = url.path();
 
+    // partial downloads from Konqi and other browsers
+    // tend to have a .part extension
     if (path.endsWith( ".part" ))
         path = path.left( path.length() - 5 );
 
     const QString ext = path.mid( path.findRev( '.' ) + 1 ).lower();
 
-    return list.contains( ext ) || url.protocol() == "cdda";
+    return list.contains( ext );
 }
 
 const Engine::Scope&
@@ -696,6 +743,8 @@ static int    last_error = XINE_MSG_NO_ERROR;
 void
 XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
 {
+    DEBUG_BLOCK
+
     time_t current;
 
     if( !p ) return;
@@ -713,6 +762,8 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
         break;
 
     case XINE_EVENT_UI_PLAYBACK_FINISHED:
+        debug() << "XINE_EVENT_UI_PLAYBACK_FINISHED\n";
+
         #ifdef XINE_PARAM_GAPLESS_SWITCH
             if ( xine_check_version(1,1,1) && xe->m_url.isLocalFile() //Remote media break with gapless
             //don't prepare for a track that isn't coming

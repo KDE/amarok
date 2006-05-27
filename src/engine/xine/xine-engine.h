@@ -60,6 +60,7 @@ class XineEngine : public Engine::Base
     bool makeNewStream();
     bool ensureStream();
 
+    void determineAndShowErrorMessage(); //call after failure to load/play
 
     xine_t             *m_xine;
     xine_stream_t      *m_stream;
