@@ -1271,6 +1271,31 @@ namespace amaroK
         return s;
     }
 
+    QString cleanString( const QString &input, const QString &ref )
+    {
+        QString t = ref;
+        QString p = QString();
+        int length = t.length();
+
+        while( length > 0 )
+        {
+            if ( !input.contains( t ) )
+            {
+                t = ref.left( t.length() - length/2 );
+                length = length/2;
+                debug() << "-"<<length << endl;
+            }
+            else
+            {
+                p = t;
+                t = ref.left( t.length() + length/2 );
+                length = length/2;
+            }
+        }
+        QString clean = input.right( input.length() - p.length() );
+        return clean;
+    }
+
     void setUseScores( bool use ) { App::instance()->setUseScores( use ); }
     void setUseRatings( bool use ) { App::instance()->setUseRatings( use ); }
     KIO::Job *trashFiles( const KURL::List &files ) { return App::instance()->trashFiles( files ); }

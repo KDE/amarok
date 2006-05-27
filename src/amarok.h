@@ -201,6 +201,14 @@ namespace amaroK
      */
     LIBAMAROK_EXPORT QString vfatPath( const QString &path ); //defined in app.cpp
 
+    /**
+     * Compare both strings from left to right and remove the common part from input
+     * @param input the string that get's cleaned.
+     * @param ref a reference to compare input with.
+     * @return The cleaned up string.
+     */
+    LIBAMAROK_EXPORT QString cleanString( const QString &input, const QString &ref );
+
     /*
      * Transform to be usable within HTML/HTML attributes
      * defined in contextbrowser.cpp
