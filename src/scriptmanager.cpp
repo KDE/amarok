@@ -311,8 +311,11 @@ ScriptManager::findScripts() //SLOT
     // Add found scripts to listview:
     {
         foreach( allFiles )
+        {
+            debug() << *it << endl;
             if( QFileInfo( *it ).isExecutable() )
                 loadScript( *it );
+        }
     }
 
     // Handle auto-run:

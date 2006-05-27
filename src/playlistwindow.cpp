@@ -320,7 +320,7 @@ void PlaylistWindow::init()
     connect( m_settingsMenu, SIGNAL( activated(int) ), SLOT( slotMenuActivated(int) ) );
     //END Settings menu
 
-    m_menubar->insertItem( i18n( "&Actions" ), actionsMenu );
+    m_menubar->insertItem( i18n( "&Engage" ), actionsMenu );
     m_menubar->insertItem( i18n( "&Playlist" ), playlistMenu );
     m_menubar->insertItem( i18n( "&Mode" ), modeMenu );
     m_menubar->insertItem( i18n( "&Tools" ), m_toolsMenu );
