@@ -168,7 +168,7 @@ class DummyMediaDevice : public MediaDevice
     public:
     DummyMediaDevice() : MediaDevice()
     {
-        m_name = i18n( "No Device Selected" );
+        m_name = i18n( "No Device Available" );
         m_type = "dummy-mediadevice";
         m_medium = Medium( "DummyDevice", "DummyDevice" );
     }
