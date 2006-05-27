@@ -214,8 +214,6 @@ class PlaylistBrowserView : public KListView
     public:
         PlaylistBrowserView( QWidget *parent, const char *name=0 );
         ~PlaylistBrowserView();
-        void startAnimation( PlaylistEntry * );
-        void stopAnimation( PlaylistEntry * );
 
         void rename( QListViewItem *item, int c );
 
@@ -225,7 +223,6 @@ class PlaylistBrowserView : public KListView
     private slots:
         void mousePressed( int, QListViewItem *, const QPoint &, int );
         void moveSelectedItems( QListViewItem* newParent );
-        void slotAnimation();
 
     private:
         void startDrag();
@@ -237,9 +234,6 @@ class PlaylistBrowserView : public KListView
         void eraseMarker();
 
         QListViewItem   *m_marker;       //track that has the drag/drop marker under it
-        QTimer          *m_animationTimer;
-        QPtrList<QListViewItem> m_loadingItems;
-        QPixmap         *m_loading1, *m_loading2;    //icons for loading animation
 };
 
 class PlaylistDialog: public KDialogBase

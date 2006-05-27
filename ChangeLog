@@ -31,6 +31,7 @@ VERSION 1.4.1:
       the current one.
 
   BUGFIXES:
+    * Properly render and optimise playlist loading icons.
     * Properly import and save XSPF playlist formats.
     * Optimise addition of playlists to the playlistbrowser.
     * In context browser, show localized date for podcasts. (BR 127853)

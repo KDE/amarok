@@ -37,7 +37,6 @@
 #include <qpainter.h>          //paintCell()
 #include <qpixmap.h>           //paintCell()
 #include <qtextstream.h>       //loadPlaylists(), saveM3U(), savePLS()
-#include <qtimer.h>            //loading animation
 
 #include <kaction.h>
 #include <kactionclasses.h>
@@ -2715,9 +2714,6 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 PlaylistBrowserView::PlaylistBrowserView( QWidget *parent, const char *name )
     : KListView( parent, name )
     , m_marker( 0 )
-    , m_animationTimer( new QTimer() )
-    , m_loading1( new QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
-    , m_loading2( new QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
 {
     addColumn( i18n("Playlists") );
 
@@ -2733,8 +2729,6 @@ PlaylistBrowserView::PlaylistBrowserView( QWidget *parent, const char *name )
 
     setTreeStepSize( 20 );
 
-    connect( m_animationTimer, SIGNAL(timeout()), this, SLOT(slotAnimation()) );
-
     connect( this, SIGNAL( mouseButtonPressed ( int, QListViewItem *, const QPoint &, int ) ),
              this,   SLOT( mousePressed( int, QListViewItem *, const QPoint &, int ) ) );
 
@@ -2743,39 +2737,7 @@ PlaylistBrowserView::PlaylistBrowserView( QWidget *parent, const char *name )
     //        this, SLOT( itemMoved(QListViewItem *, QListViewItem *, QListViewItem * )));
 }
 
-PlaylistBrowserView::~PlaylistBrowserView()
-{
-    delete m_animationTimer;
-    delete m_loading1;
-    delete m_loading2;
-}
-
-void PlaylistBrowserView::startAnimation( PlaylistEntry *item )
-{
-    //starts the loading animation for item
-    m_loadingItems.append( item );
-    if( !m_animationTimer->isActive() )
-        m_animationTimer->start( 100 );
-}
-void PlaylistBrowserView::stopAnimation( PlaylistEntry *item )
-{
-    //stops the loading animation for item
-    m_loadingItems.remove( item );
-    if( !m_loadingItems.count() )
-        m_animationTimer->stop();
-}
-
-void PlaylistBrowserView::slotAnimation() //SLOT
-{
-    static uint iconCounter=1;
-
-    for( QListViewItem *item = m_loadingItems.first(); item; item = m_loadingItems.next() )
-        static_cast<PlaylistEntry *>(item)->setLoadingPix( iconCounter==1 ? m_loading1 : m_loading2 );
-
-    iconCounter++;
-    if( iconCounter > 2 )
-        iconCounter = 1;
-}
+PlaylistBrowserView::~PlaylistBrowserView() { }
 
 void PlaylistBrowserView::contentsDragEnterEvent( QDragEnterEvent *e )
 {

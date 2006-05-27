@@ -307,8 +307,8 @@ PlaylistEntry::PlaylistEntry( QListViewItem *parent, QListViewItem *after, const
     , m_loading( false )
     , m_loaded( false )
     , m_dynamic( false )
-    , m_dynamicPix( 0 )
-    , m_loadingPix( 0 )
+    , m_loading1( new QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
+    , m_loading2( new QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
     , m_lastTrack( 0 )
 {
     m_trackList.setAutoDelete( true );
@@ -334,8 +334,8 @@ PlaylistEntry::PlaylistEntry( QListViewItem *parent, QListViewItem *after, const
     , m_loading( false )
     , m_loaded( false )
     , m_dynamic( false )
-    , m_dynamicPix( 0 )
-    , m_loadingPix( 0 )
+    , m_loading1( new QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
+    , m_loading2( new QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
     , m_lastTrack( 0 )
 {
     m_url.setPath( xmlDefinition.attribute( "file" ) );
@@ -375,8 +375,11 @@ void PlaylistEntry::load()
     m_length = 0;
     m_loaded = false;
     m_loading = true;
+
     //starts loading animation
-    static_cast<PlaylistBrowserView *>(listView())->startAnimation( this );
+    m_iconCounter = 1;
+    startAnimation();
+    connect( &m_animationTimer, SIGNAL(timeout()), this, SLOT(slotAnimation()) );
 
     //delete all children, so that we don't duplicate things
     while( firstChild() )
@@ -384,6 +387,29 @@ void PlaylistEntry::load()
 
      //read the playlist file in a thread
     ThreadWeaver::instance()->queueJob( new PlaylistReader( this, m_url.path() ) );
+}
+
+void PlaylistEntry::startAnimation()
+{
+    if( !m_animationTimer.isActive() )
+        m_animationTimer.start( ANIMATION_INTERVAL );
+}
+
+void PlaylistEntry::stopAnimation()
+{
+    m_animationTimer.stop();
+    m_dynamic ?
+        setPixmap( 0, SmallIcon( amaroK::icon( "favorites" ) ) ):
+        setPixmap( 0, SmallIcon( amaroK::icon( "playlist" ) ) );
+}
+
+void PlaylistEntry::slotAnimation()
+{
+    m_iconCounter % 2 ?
+        setPixmap( 0, *m_loading1 ):
+        setPixmap( 0, *m_loading2 );
+
+    m_iconCounter++;
 }
 
 void PlaylistEntry::insertTracks( QListViewItem *after, KURL::List list )
@@ -491,7 +517,7 @@ void PlaylistEntry::customEvent( QCustomEvent *e )
 
     m_loading = false;
     m_loaded = true;
-    static_cast<PlaylistBrowserView *>(listView())->stopAnimation( this );  //stops the loading animation
+    stopAnimation();  //stops the loading animation
 
     if( m_trackCount && !m_dynamic && !isDynamic() ) setOpen( true );
     else listView()->repaintItem( this );
@@ -579,13 +605,12 @@ void PlaylistEntry::setDynamic( bool enable )
     {
         if( enable )
         {
-            m_dynamicPix = new QPixmap( KGlobal::iconLoader()->loadIcon( "favorites", KIcon::NoGroup, 16 ) );
-            if( !m_loaded ) load();
+            if( !m_loaded ) load(); // we need to load it to ensure that we can read the contents
+            setPixmap( 0, SmallIcon( amaroK::icon( "favorites" ) ) );
         }
-        else {
-            delete m_dynamicPix;
-            m_dynamicPix = 0;
-        }
+        else
+            setPixmap( 0, SmallIcon( amaroK::icon( "playlist" ) ) );
+
         m_dynamic = enable;
     }
 
@@ -624,12 +649,6 @@ void PlaylistEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, i
 
     KListView *lv = static_cast<KListView *>( listView() );
 
-    if( m_loading && m_loadingPix ) {
-        pBuf.drawPixmap( (lv->treeStepSize() - m_loadingPix->width())/2,
-                         (height() - m_loadingPix->height())/2,
-                         *m_loadingPix );
-    }
-
     QFont font( p->font() );
     QFontMetrics fm( p->fontMetrics() );
 
@@ -640,12 +659,7 @@ void PlaylistEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, i
 
     pBuf.setPen( isSelected() ? cg.highlightedText() : cg.text() );
 
-    if( m_dynamic && m_dynamicPix && amaroK::dynamicMode() )
-    {
-        pBuf.drawPixmap( text_x, (textHeight - m_dynamicPix->height())/2, *m_dynamicPix );
-        text_x += m_dynamicPix->width()+4;
-    }
-    else if( pixmap( column ) )
+    if( pixmap( column ) )
     {
         int y = (textHeight - pixmap(column)->height())/2;
         pBuf.drawPixmap( text_x, y, *pixmap(column) );

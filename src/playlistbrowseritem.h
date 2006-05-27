@@ -105,7 +105,7 @@ class PlaylistCategory : public PlaylistBrowserEntry
 
         int   rtti() const { return RTTI; }
         static const int RTTI = 1000;    //category item
-        
+
     protected:
         void  okRename( int col );
 
@@ -144,7 +144,6 @@ class PlaylistEntry :  public QObject, public PlaylistBrowserEntry
         bool        isLoaded()                    { return m_loaded; }
 
         void        setDynamic( bool );
-        void        setLoadingPix( QPixmap *pix ) { m_loadingPix = pix; repaint();}
 
         int         compare( QListViewItem* i, int col ) const; //reimpl.
         KURL::List  tracksURL();    //returns the list of tracks url
@@ -173,8 +172,13 @@ class PlaylistEntry :  public QObject, public PlaylistBrowserEntry
         void startingLoading();
         void loaded();
 
+    private slots:
+        void slotAnimation();
+
     private:
         void customEvent( QCustomEvent* e );
+        void startAnimation();
+        void stopAnimation();
 
         KURL                 m_url;                 //playlist url
         int                  m_length;              //total length in seconds
@@ -184,8 +188,9 @@ class PlaylistEntry :  public QObject, public PlaylistBrowserEntry
         bool                 m_loading;
         bool                 m_loaded;              //playlist loaded
         bool                 m_dynamic;             //the playlist is scheduled for dynamic mode rotation
-        QPixmap             *m_dynamicPix;
-        QPixmap             *m_loadingPix;
+        QPixmap             *m_loading1, *m_loading2;    //icons for loading animation
+        QTimer               m_animationTimer;
+        uint                 m_iconCounter;
         PlaylistTrackItem   *m_lastTrack;
 };
 
@@ -211,7 +216,7 @@ class PodcastEpisode : public QObject, public PlaylistBrowserEntry
         Q_OBJECT
 
     public:
-        PodcastEpisode( QListViewItem *parent, QListViewItem *after, const QDomElement &xml, 
+        PodcastEpisode( QListViewItem *parent, QListViewItem *after, const QDomElement &xml,
                         const int feedType, const bool &isNew=false );
         PodcastEpisode( QListViewItem *parent, QListViewItem *after, PodcastEpisodeBundle &bundle );
 
@@ -220,9 +225,9 @@ class PodcastEpisode : public QObject, public PlaylistBrowserEntry
         void setOnDisk( bool d = true );
         QListViewItem *itemChannel() { return m_parent; }
 
-        
+
         const bool isNew()         const { return m_bundle.isNew(); }
-        
+
         void setNew( const bool &n = true );
         void setListened( const bool &n = true );
 
