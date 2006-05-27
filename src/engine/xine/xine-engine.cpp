@@ -743,8 +743,6 @@ static int    last_error = XINE_MSG_NO_ERROR;
 void
 XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
 {
-    DEBUG_BLOCK
-
     time_t current;
 
     if( !p ) return;
