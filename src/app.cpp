@@ -1276,23 +1276,22 @@ namespace amaroK
         QString t = ref;
         QString p = QString();
         int length = t.length();
-
+        int commonLength = 0;
         while( length > 0 )
         {
             if ( !input.contains( t ) )
             {
                 t = ref.left( t.length() - length/2 );
                 length = length/2;
-                debug() << "-"<<length << endl;
             }
             else
             {
-                p = t;
+                commonLength = t.length();
                 t = ref.left( t.length() + length/2 );
                 length = length/2;
             }
         }
-        QString clean = input.right( input.length() - p.length() );
+        QString clean = input.right( input.length() - commonLength ).stripWhiteSpace();
         return clean;
     }
 
