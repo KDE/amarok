@@ -138,44 +138,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     m_infoPane = new InfoPane( this );
 
-    // FIXME the following code moved here from polish(), until the width
-    // forgetting issue is fixed:
-
-    m_polished = true;
-
-    m_playlistCategory = loadPlaylists();
-    if( !CollectionDB::instance()->isEmpty() ) {
-        m_smartCategory = loadSmartPlaylists();
-        loadDefaultSmartPlaylists();
-    }
-    m_dynamicCategory = loadDynamics();
-    m_randomDynamic    = new DynamicEntry( m_dynamicCategory, 0, i18n("Random Mix") );
-    m_suggestedDynamic = new DynamicEntry( m_dynamicCategory, m_randomDynamic, i18n("Suggested Songs" ) );
-    m_suggestedDynamic->setAppendType( DynamicMode::SUGGESTION );
-
-    m_streamsCategory = loadStreams();
-    loadCoolStreams();
-
-    // must be loaded after streams
     m_podcastCategory = loadPodcasts();
-
-    if ( amaroK::dynamicMode() ) {
-
-        QStringList playlists = amaroK::dynamicMode()->items();
-
-        for( uint i=0; i < playlists.count(); i++ )
-        {
-            QListViewItem *item = m_listview->findItem( playlists[i], 0, Qt::ExactMatch );
-            if( item )
-            {
-                m_dynamicEntries.append( item );
-                if( item->rtti() == PlaylistEntry::RTTI )
-                    static_cast<PlaylistEntry*>( item )->setDynamic( true );
-                if( item->rtti() == SmartPlaylist::RTTI )
-                    static_cast<SmartPlaylist*>( item )->setDynamic( true );
-            }
-        }
-    }
 
     setSpacing( 4 );
     setFocusProxy( m_listview );
@@ -188,16 +151,22 @@ PlaylistBrowser::polish()
     // we make startup faster by doing the slow bits for this
     // only when we are shown on screen
 
-    DEBUG_BLOCK
+    DEBUG_FUNC_INFO
 
-//     amaroK::OverrideCursor allocate_on_stack;
+    amaroK::OverrideCursor cursor;
+
+//     blockSignals( true );
+//     BrowserBar::instance()->restoreWidth();
+//     blockSignals( false );
 
     QVBox::polish();
 
     // FIXME the following code moved to the ctor, until the width forgetting
     // issue is fixed:
 
-/*    m_polished = true;
+    /// Podcasting is always initialised in the ctor because of autoscanning
+
+    m_polished = true;
 
     KConfig *config = amaroK::config( "PlaylistBrowser" );
 
@@ -205,30 +174,31 @@ PlaylistBrowser::polish()
     m_streamsCategory  = loadStreams();
     loadCoolStreams();
 
-    if( !CollectionDB::instance()->isEmpty() ) {
+    if( !CollectionDB::instance()->isEmpty() )
+    {
         m_smartCategory = loadSmartPlaylists();
         loadDefaultSmartPlaylists();
         m_smartCategory->setOpen( true );
     }
-    // must be loaded after streams
-    m_podcastCategory = loadPodcasts();
 
     m_dynamicCategory = loadDynamics();
 
     m_playlistCategory->setOpen( true );
-    m_podcastCategory->setOpen( true );
     m_streamsCategory->setOpen( true );
     m_dynamicCategory->setOpen( true );
 
-    QStringList playlists = amaroK::dynamicMode()->items();
-
-    for( uint i=0; i < playlists.count(); i++ )
+    if( amaroK::dynamicMode() )
     {
-        QListViewItem *item = m_listview->findItem( playlists[i], 0, Qt::ExactMatch );
-        if( item )
+        QStringList playlists = amaroK::dynamicMode()->items();
+
+        for( uint i=0; i < playlists.count(); i++ )
         {
-            item->setPixmap( 1, SmallIcon("favorites") );
-            m_dynamicEntries.append( item );
+            QListViewItem *item = m_listview->findItem( playlists[i], 0, Qt::ExactMatch );
+            if( item )
+            {
+                item->setPixmap( 1, SmallIcon("favorites") );
+                m_dynamicEntries.append( item );
+            }
         }
     }
 
@@ -256,7 +226,7 @@ PlaylistBrowser::polish()
             }
             ++it;
         }
-    }*/
+    }
 }
 
 
@@ -847,7 +817,7 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
     QDomDocument d;
     QDomElement e;
 
-    QListViewItem *after = m_streamsCategory;
+    QListViewItem *after = 0;
 
     if( !file.open( IO_ReadOnly ) || !d.setContent( stream.read() ) )
     { /*Couldn't open the file or it had invalid content, so let's create an empty element*/

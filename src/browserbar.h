@@ -44,6 +44,7 @@ public:
     int visibleCount() const;
 
     void addBrowser( QWidget*, const QString&, const QString& );
+    int restoreWidth();
 
     /// for internal use
     void mouseMovedOverSplitter( QMouseEvent* );

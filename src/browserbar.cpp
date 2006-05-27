@@ -99,6 +99,17 @@ BrowserBar::~BrowserBar()
     config->writeEntry( "Width", m_browserBox->width() );
 }
 
+int
+BrowserBar::restoreWidth()
+{
+    KConfig* const config = amaroK::config( "BrowserBar" );
+    const int index = indexForName( config->readEntry( "CurrentPane" ) );
+    const int width = config->readNumEntry( "Width", browser( index )->sizeHint().width() );
+
+    m_browserBox->resize( width, height() );
+    return index;
+}
+
 void
 BrowserBar::polish()
 {
@@ -112,17 +123,13 @@ BrowserBar::polish()
         if( m > M ) M = m;
     }
 
-    KConfig* const config = amaroK::config( "BrowserBar" );
-    const int index = indexForName( config->readEntry( "CurrentPane" ) );
-    const int width = config->readNumEntry( "Width", browser( index )->sizeHint().width() );
-
     if( M > 250 ) {
         warning() << "Some browsers are insisting on a silly minimum size! " << M << endl;
         M = 250;
     }
 
     m_browserBox->setMinimumWidth( M );
-    m_browserBox->resize( width, height() );
+    const int index = restoreWidth();
 
     if( index != -1 )
         // if we did it for -1 it ruins the browserBox size
@@ -266,7 +273,7 @@ BrowserBar::showHideBrowser( int index )
             adjustWidgetSizes();
         }
     }
-    
+
     emit browserActivated( index );
 }
 
