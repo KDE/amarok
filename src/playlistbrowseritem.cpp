@@ -497,8 +497,6 @@ void PlaylistEntry::customEvent( QCustomEvent *e )
     else listView()->repaintItem( this );
 
     m_trackCount = m_trackList.count();
-
-    PlaylistBrowser::instance()->savePlaylist( this );
 }
 
 /**
