@@ -120,12 +120,11 @@ BrowserBar::polish()
     uint M = 0;
     foreachType( BrowserList, m_browsers ) {
         const uint m = (*it)->minimumWidth();
-        if( m > M ) M = m;
-    }
-
-    if( M > 250 ) {
-        warning() << "Some browsers are insisting on a silly minimum size! " << M << endl;
-        M = 250;
+        if (m > M) M = m;
+        if (m > 250) {
+            warning() << "Browser is too large, mxcl says castrate the developer: " << (*it)->name() << ", " << M << endl;
+            M = 250;
+        }
     }
 
     m_browserBox->setMinimumWidth( M );
@@ -142,12 +141,12 @@ BrowserBar::adjustWidgetSizes()
     //TODO set the geometry of the PlaylistWindow before
     // the browsers are loaded so this isn't called twice
 
-    const uint w   = width();
-    const uint h   = height();
-    const uint mxW = maxBrowserWidth();
-    const uint p   = (m_pos < mxW) ? m_pos : mxW;
-    const uint ppw = p + m_divider->width();
-    const uint tbw = m_tabBar->width();
+    const uint w    = width();
+    const uint h    = height();
+    const uint maxW = maxBrowserWidth();
+    const uint p    = (m_pos < maxW) ? m_pos : maxW;
+    const uint ppw  = p + m_divider->width();
+    const uint tbw  = m_tabBar->width();
 
     m_divider->move( p, 0 );
 
