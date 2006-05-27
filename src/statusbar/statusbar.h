@@ -82,7 +82,11 @@ namespace amaroK
         bool m_queueMessages;
     };
 
-
 } //namespace amaroK
+
+namespace The
+{
+    inline amaroK::StatusBar *statusbar() { return amaroK::StatusBar::instance(); }
+}
 
 #endif

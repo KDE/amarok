@@ -50,10 +50,8 @@ public:
     void mouseMovedOverSplitter( QMouseEvent* );
 
 protected:
-    virtual bool eventFilter( QObject*, QEvent* );
     virtual bool event( QEvent* );
     virtual void polish();
-    virtual void timerEvent( QTimerEvent* );
 
 protected:
     virtual void engineStateChanged( Engine::State, Engine::State = Engine::Empty );

@@ -33,6 +33,7 @@
 #include <qmessagebox.h>
 #include <qpainter.h>
 #include <qtimer.h>
+#include <qtooltip.h>
 
 namespace KDE
 {
@@ -54,6 +55,10 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
     setFrameShape( QFrame::StyledPanel );
     setWFlags( Qt::WX11BypassWM );
 
+    QPalette p = QToolTip::palette();
+    setBackgroundColor( p.color( QPalette::Active, QColorGroup::Background ).light() );
+    setPalette( p );
+
     QHBoxLayout *hbox;
     QLabel *label;
     KActiveLabel *alabel;
@@ -73,6 +78,7 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
     alabel = new KActiveLabel( this, "label" );
     alabel->setTextFormat( Qt::RichText );
     alabel->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
+    alabel->setPalette( p );
 
     hbox->add( alabel );
 
