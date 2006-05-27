@@ -2009,36 +2009,56 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                 }
                 break;
             case ADD:
-                if(item->type() == MediaItem::ORPHANEDROOT)
                 {
-                    MediaItem *next = 0;
-                    for(MediaItem *it = dynamic_cast<MediaItem *>(item->firstChild());
-                            it;
-                            it = next)
+                    int dupes = 0;
+
+                    if(item->type() == MediaItem::ORPHANEDROOT)
                     {
-                        next = dynamic_cast<MediaItem *>(it->nextSibling());
-                        if( !trackExists( *it->bundle() ) )
+                        MediaItem *next = 0;
+                        for(MediaItem *it = dynamic_cast<MediaItem *>(item->firstChild());
+                                it;
+                                it = next)
                         {
+                            next = dynamic_cast<MediaItem *>(it->nextSibling());
+                            if( trackExists( *it->bundle() ) )
+                            {
+                                dupes++;
+                                continue;
+                            }
+
                             item->takeItem(it);
                             insertTrackIntoDB(it->url().path(), *it->bundle(), 0);
                             delete it;
                         }
                     }
-                }
-                else
-                {
-                    for(m_view->selectedItems().first();
-                            m_view->selectedItems().current();
-                            m_view->selectedItems().next())
+                    else
                     {
-                        MediaItem *it = dynamic_cast<MediaItem *>(m_view->selectedItems().current());
-                        if(it->type() == MediaItem::ORPHANED && !trackExists(*it->bundle()))
+                        QPtrList<MediaItem> items;
+                        m_view->getSelectedLeaves( 0, &items );
+                        for( QPtrList<MediaItem>::iterator it = items.begin();
+                                it != items.end();
+                                it++ )
                         {
-                            it->parent()->takeItem(it);
-                            insertTrackIntoDB(it->url().path(), *it->bundle(), 0);
+                            IpodMediaItem *i = dynamic_cast<IpodMediaItem *>( *it );
+                            if( !i || i->type() != MediaItem::ORPHANED )
+                                continue;
+
+                            if( trackExists( *i->bundle() ) )
+                            {
+                                dupes++;
+                                continue;
+                            }
+
+                            i->parent()->takeItem(i);
+                            insertTrackIntoDB(i->url().path(), *i->bundle(), 0);
                             delete it;
                         }
                     }
+
+                    if( dupes > 0 )
+                        amaroK::StatusBar::instance()->shortMessage( i18n(
+                                    "One duplicate track not added to database",
+                                    "%n duplicate tracks not added to database", dupes ) );
                 }
                 break;
             case DELETE_PLAYED:
