@@ -795,7 +795,7 @@ ScriptManager::loadScript( const QString& path )
 
         // Read and parse .spec file, if exists
         QFileInfo info( path );
-        QListViewItem* li = 0;
+        KListViewItem* li = 0;
         const QString specPath = info.dirPath() + "/" + info.baseName() + ".spec";
         if( QFile::exists( specPath ) ) {
             KConfig spec( specPath, true, false );
@@ -805,21 +805,21 @@ ScriptManager::loadScript( const QString& path )
                 type = spec.readEntry( "type" );
                 if( type == "lyrics" ) {
                     name.prepend( i18n( "Lyrics" ) + ": " );
-                    li = new QListViewItem( m_lyricsCategory, name );
+                    li = new KListViewItem( m_lyricsCategory, name );
                 }
                 if( type == "transcode" ) {
                     name.prepend( i18n( "Transcoding" ) + ": " );
-                    li = new QListViewItem( m_transcodeCategory, name );
+                    li = new KListViewItem( m_transcodeCategory, name );
                 }
                 if( type == "score" ) {
                     name.prepend( i18n( "Score" ) + ": " );
-                    li = new QListViewItem( m_scoreCategory, name );
+                    li = new KListViewItem( m_scoreCategory, name );
                 }
             }
         }
 
         if( !li )
-            li = new QListViewItem( m_gui->listView, name );
+            li = new KListViewItem( m_gui->listView, name );
 
         li->setPixmap( 0, QPixmap() );
 
