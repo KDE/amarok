@@ -398,7 +398,7 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
            {
                //False gives behaviour as if track played successfully
                next( false );
-               QTimer::singleShot(   0, this, SLOT(   play() ) );
+               QTimer::singleShot( 0, this, SLOT(play()) );
            }
            else
            {
