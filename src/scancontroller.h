@@ -42,6 +42,7 @@ class KProcIO;
  * driven SAX2 parser is used, which can process the entities as they arrive, without
  * the need for a DOM document structure.
  */
+
 class ScanController : public ThreadWeaver::DependentJob, public QXmlDefaultHandler
 {
     Q_OBJECT

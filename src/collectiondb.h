@@ -14,6 +14,8 @@
 #define AMAROK_COLLECTIONDB_H
 
 #include "engineobserver.h"
+#include "threadweaver.h" //baseclass
+
 #include <kurl.h>
 #include <qdir.h>            //stack allocated
 #include <qdatetime.h>
@@ -36,6 +38,22 @@ class PodcastEpisodeBundle;
 class Scrobbler;
 
 class QMutex;
+
+
+class INotify : public ThreadWeaver::DependentJob
+{
+    Q_OBJECT
+
+    public:
+        INotify( QObject *parent, int fd );
+        ~INotify();
+
+    private:
+        virtual bool doJob();
+
+        int m_fd;
+};
+
 
 class DbConfig
 {};
@@ -185,6 +203,7 @@ class PostgresqlConnection : public DbConnection
 };
 #endif
 
+
 class CollectionDB : public QObject, public EngineObserver
 {
     Q_OBJECT
@@ -273,7 +292,6 @@ class CollectionDB : public QObject, public EngineObserver
         QString urlFromUniqueId( const QString &id );
 
         //podcast methods
-
         /// Insert a podcast channel into the database.  If @param replace is true, replace the row
         /// use updatePodcastChannel() always in preference
         bool addPodcastChannel( const PodcastChannelBundle &pcb, const bool &replace=false );
@@ -293,7 +311,6 @@ class CollectionDB : public QObject, public EngineObserver
         // these return false when no bundle was available
         bool getPodcastChannelBundle( const KURL &url, PodcastChannelBundle *channel );
         bool getPodcastEpisodeBundle( const KURL &url, PodcastEpisodeBundle *channel );
-
 
         /**
          * The @p bundle parameter's url() will be looked up in the Collection
@@ -484,9 +501,7 @@ class CollectionDB : public QObject, public EngineObserver
         //To convert output from Exact version from QString to uint, use .toUInt()
         uint IDFromValue( QString name, QString value, bool autocreate = true, const bool temporary = false );
         QString IDfromExactValue(  QString table, QString value, bool autocreate = true, bool temporary = false );
-
         QString valueFromID( QString table, uint id );
-
 
         //member variables
         QString m_amazonLicense;
@@ -496,12 +511,13 @@ class CollectionDB : public QObject, public EngineObserver
         uint    m_cacheArtistID[2];
         QString m_cacheAlbum[2];
         uint    m_cacheAlbumID[2];
-        static  QMutex *connectionMutex;
 
-        bool   m_monitor;
-        QImage m_noCover;
-
+        int  m_inotify;
+        bool m_monitor;
         bool m_autoScoring;
+
+        static  QMutex *connectionMutex;
+        QImage m_noCover;
 
         static QMap<QThread *, DbConnection *> *threadConnections;
         DbConnection::DbConnectionType m_dbConnType;
@@ -511,6 +527,7 @@ class CollectionDB : public QObject, public EngineObserver
         bool m_waitForFileOperation;
         bool m_fileOperationFailed;
         bool m_atfEnabled;
+        bool m_scanInProgress;
 
         // for handling podcast image url redirects
         QMap<KIO::Job *, QString> m_podcastImageJobs;
@@ -609,7 +626,7 @@ class QueryBuilder
         QString query() { buildQuery(); return m_query; };
         void clear();
 
-        QStringList run(  );
+        QStringList run();
 
     private:
         QString tableName( int table );

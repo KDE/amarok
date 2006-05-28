@@ -1230,7 +1230,7 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
                     << stID + reqResult[ i + 1 ] ) );
 
         QString discNumber;
-        
+
         if ( !albumValues.isEmpty() )
         {
             for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() )
@@ -1248,14 +1248,14 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
                 {
                     if( track.length() == 1 )
                         track.prepend( "0" );
-                    
+
                     track = "<span class='album-song-trackno'>" + track + "&nbsp;</span>";
                 }
-                
+
                 QString length;
                 if( albumValues[j + 4] != "0" )
                     length = "<span class='album-song-time'>(" + MetaBundle::prettyTime( QString(albumValues[j + 4]).toInt(), true ) + ")</span>";
-                
+
                 htmlCode.append(
                     "<div class='album-song'>"
                     "<a href=\"file:" + escapeHTMLAttr( albumValues[j + 1] ) + "\">"
@@ -1493,7 +1493,6 @@ CurrentTrackJob::showHomeByAlbums()
 }
 
 
-
 void CurrentTrackJob::showStream( const MetaBundle &currentTrack )
 {
     m_HTMLSource.append( QStringx(
@@ -1548,8 +1547,9 @@ void CurrentTrackJob::showStream( const MetaBundle &currentTrack )
                 "</div>" );
     }
 
-    m_HTMLSource.append("</body></html>" );
+    m_HTMLSource.append( "</body></html>" );
 }
+
 
 void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
 {

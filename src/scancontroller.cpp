@@ -91,17 +91,18 @@ ScanController::ScanController( CollectionDB* parent, bool incremental, const QS
 
     connect( m_scanner, SIGNAL( readReady( KProcIO* ) ), SLOT( slotReadReady() ) );
 
-
     *m_scanner << "amarokcollectionscanner";
     *m_scanner << "--nocrashhandler"; // We want to be able to catch SIGSEGV
 
     // KProcess must be started from the GUI thread, so we're invoking the scanner
     // here in the ctor:
-    if( incremental ) {
+    if( incremental )
+    {
         setDescription( i18n( "Updating Collection" ) );
         initIncremental();
     }
-    else {
+    else
+    {
         setDescription( i18n( "Building Collection" ) );
         *m_scanner << "-p";
         if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
@@ -150,19 +151,22 @@ ScanController::initIncremental()
     DEBUG_BLOCK
 
     const QStringList values = CollectionDB::instance()->query( "SELECT dir, changedate FROM directories;" );
-
-    foreach( values ) {
+    foreach( values )
+    {
         const QString folder = *it;
         const QString mtime  = *++it;
 
         const QFileInfo info( folder );
-        if( info.exists() ) {
-            if( info.lastModified().toTime_t() != mtime.toUInt() ) {
+        if( info.exists() )
+        {
+            if( info.lastModified().toTime_t() != mtime.toUInt() )
+            {
                 m_folders << folder;
                 debug() << "Collection dir changed: " << folder << endl;
             }
         }
-        else {
+        else
+        {
             // this folder has been removed
             m_folders << folder;
             debug() << "Collection dir removed: " << folder << endl;
@@ -171,7 +175,8 @@ ScanController::initIncremental()
         kapp->processEvents(); // Don't block the GUI
     }
 
-    if ( !m_folders.isEmpty() ) {
+    if ( !m_folders.isEmpty() )
+    {
         debug() << "Collection was modified." << endl;
         m_hasChanged = true;
         amaroK::StatusBar::instance()->shortMessage( i18n( "Updating Collection..." ) );
@@ -254,11 +259,8 @@ main_loop:
         }
     }
 
-
-    if( CollectionDB::instance()->isConnected() ) {
+    if( CollectionDB::instance()->isConnected() )
         CollectionDB::instance()->dropTables( true ); // drop temp tables
-    }
-
 
     return !isAborted();
 }
@@ -401,7 +403,9 @@ ScanController::customEvent( QCustomEvent* e )
 
         *m_scanner << "amarokcollectionscanner";
         *m_scanner << "--nocrashhandler"; // We want to be able to catch SIGSEGV
-        if( m_incremental ) *m_scanner << "-i";
+        if( m_incremental )
+            *m_scanner << "-i";
+
         *m_scanner << "-s";
         m_scanner->start();
     }

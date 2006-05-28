@@ -36,6 +36,9 @@
 #include "statusbar.h"
 #include "threadweaver.h"
 
+#include "inotify/inotify.h"
+#include "inotify/inotify-syscalls.h"
+
 #include <qbuffer.h>
 #include <qcheckbox.h>
 #include <qfile.h>
@@ -92,6 +95,67 @@ QMutex* CollectionDB::connectionMutex = new QMutex();
 QMap<QThread *, DbConnection *> *CollectionDB::threadConnections = new QMap<QThread *, DbConnection *>();
 
 //////////////////////////////////////////////////////////////////////////////////////////
+// CLASS INotify
+//////////////////////////////////////////////////////////////////////////////////////////
+
+INotify::INotify( QObject *parent, int fd )
+    : DependentJob( parent, "INotify" )
+    , m_fd( fd )
+{
+}
+
+
+INotify::~INotify()
+{}
+
+
+bool
+INotify::doJob()
+{
+    DEBUG_BLOCK
+
+    /* size of the event structure, not counting name */
+    int EVENT_SIZE = ( sizeof( struct inotify_event ) );
+    /* reasonable guess as to size of 1024 events */
+    int BUF_LEN = 1024 * ( EVENT_SIZE + 16 );
+
+    while ( 1 )
+    {
+        debug() << "INotify Loop runs..." << endl;
+
+        char buf[BUF_LEN];
+        int len, i = 0;
+        len = read( m_fd, buf, BUF_LEN );
+        if ( len < 0 )
+        {
+            debug() << "Read from INotify failed" << endl;
+        }
+        else
+        {
+            if ( !len )
+            {
+                /* BUF_LEN too small? */
+            }
+            else
+                while ( i < len )
+                {
+                    struct inotify_event *event;
+                    event = (struct inotify_event *) &buf[i];
+
+                    if ( event->len )
+                    {
+                        debug() << "INotify changed: " << event->name << endl;
+                        QTimer::singleShot( 0, CollectionDB::instance(), SLOT( scanMonitor() ) );
+                    }
+
+                    i += EVENT_SIZE + event->len;
+                }
+        }
+    }
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
 // CLASS CollectionDB
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -104,8 +168,9 @@ CollectionDB* CollectionDB::instance()
 
 CollectionDB::CollectionDB()
         : EngineObserver( EngineController::instance() )
-        , m_noCover ( locate( "data", "amarok/images/nocover.png" ) )
         , m_autoScoring( true )
+        , m_noCover( locate( "data", "amarok/images/nocover.png" ) )
+        , m_scanInProgress( false )
 {
     DEBUG_BLOCK
 
@@ -150,22 +215,47 @@ CollectionDB::CollectionDB()
 
     connect( qApp, SIGNAL( aboutToQuit() ), this, SLOT( disableAutoScoring() ) );
 
-    startTimer( MONITOR_INTERVAL * 1000 );
+    // Try to initialize inotify, if not available use the old timer approach.
+    m_inotify = inotify_init();
+    if ( m_inotify < 0 )
+    {
+        debug() << "INotify not available, using QTimer!" << endl;
+        startTimer( MONITOR_INTERVAL * 1000 );
+    } else
+    {
+        debug() << "INotify enabled!" << endl;
+        const QStringList values = query( "SELECT dir FROM directories;" );
+
+        foreach( values )
+        {
+            const QString folder = *it;
+            int wd = inotify_add_watch( m_inotify, folder.local8Bit(), IN_CLOSE_WRITE |
+                                                                    IN_DELETE | IN_MOVE );
+            if ( wd < 0 )
+                debug() << "Could not add INotify watch for: " << folder << endl;
+        }
+
+        ThreadWeaver::instance()->onlyOneJob( new INotify( this, m_inotify ) );
+    }
+
     connect( this, SIGNAL( coverRemoved( const QString&, const QString& ) ),
                    SIGNAL( coverChanged( const QString&, const QString& ) ) );
     connect( Scrobbler::instance(), SIGNAL( similarArtistsFetched( const QString&, const QStringList& ) ),
              this,                    SLOT( similarArtistsFetched( const QString&, const QStringList& ) ) );
 }
 
+
 CollectionDB::~CollectionDB()
 {
     DEBUG_BLOCK
-    if (getDbConnectionType() == DbConnection::sqlite) {
+    if ( getDbConnectionType() == DbConnection::sqlite )
+    {
         debug() << "Running VACUUM" << endl;
-        query( "VACUUM; ");
+        query( "VACUUM;" );
     }
     destroy();
 }
+
 
 inline QString
 CollectionDB::exactCondition( const QString &right )
@@ -175,6 +265,7 @@ CollectionDB::exactCondition( const QString &right )
     else
         return QString( "= '" + instance()->escapeString( right ) + "'" );
 }
+
 
 QString
 CollectionDB::likeCondition( const QString &right, bool anyBegin, bool anyEnd )
@@ -3695,6 +3786,7 @@ CollectionDB::applySettings()
           recreateConnections = true;
       }
     }
+
     if ( recreateConnections )
     {
         debug()
@@ -3705,6 +3797,7 @@ CollectionDB::applySettings()
         initialize();
         CollectionView::instance()->renderView();
         PlaylistBrowser::instance()->loadPodcastsFromDatabase();
+
         emit databaseEngineChanged();
     }
 }
@@ -3821,8 +3914,7 @@ void CollectionDB::engineTrackEnded( int finalPosition, int trackLength, const Q
 void
 CollectionDB::timerEvent( QTimerEvent* )
 {
-    if ( AmarokConfig::monitorChanges() )
-        scanMonitor();
+    scanMonitor();
 }
 
 
@@ -3847,7 +3939,8 @@ CollectionDB::fetchCover( QWidget* parent, const QString& artist, const QString&
 void
 CollectionDB::scanMonitor()  //SLOT
 {
-    scanModifiedDirs();
+    if ( AmarokConfig::monitorChanges() )
+        scanModifiedDirs();
 }
 
 
@@ -3856,9 +3949,10 @@ CollectionDB::startScan()  //SLOT
 {
     QStringList folders = AmarokConfig::collectionFolders();
 
-    if ( folders.isEmpty() ) {
-        dropTables(false);
-        createTables(false);
+    if ( folders.isEmpty() )
+    {
+        dropTables( false );
+        createTables( false );
     }
     else if( PlaylistBrowser::instance() )
     {
@@ -4021,7 +4115,6 @@ CollectionDB::initialize()
     {
         m_dbConfig = new SqliteConfig( "collection.db" );
     }
-
 
     DbConnection *dbConn = getMyConnection();
 
@@ -4219,10 +4312,16 @@ CollectionDB::destroy()
 void
 CollectionDB::scanModifiedDirs()
 {
-    //we check if a job is pending because we don't want to abort incremental collection readings
-    if ( !ThreadWeaver::instance()->isJobPending( "CollectionScanner" ) && PlaylistBrowser::instance() ) {
-        emit scanStarted();
-        ThreadWeaver::instance()->onlyOneJob( new ScanController( this, true ) );
+    if ( !m_scanInProgress )
+    {
+        //we check if a job is pending because we don't want to abort incremental collection readings
+        if ( !ThreadWeaver::instance()->isJobPending( "CollectionScanner" ) && PlaylistBrowser::instance() )
+        {
+            m_scanInProgress = true;
+            emit scanStarted();
+
+            ThreadWeaver::instance()->onlyOneJob( new ScanController( this, true ) );
+        }
     }
 }
 
@@ -4230,19 +4329,24 @@ CollectionDB::scanModifiedDirs()
 void
 CollectionDB::customEvent( QCustomEvent *e )
 {
-    if ( e->type() == (int)ScanController::JobFinishedEvent ) {
+    if ( e->type() == (int)ScanController::JobFinishedEvent )
+    {
         ScanController* s = static_cast<ScanController*>( e );
+        m_scanInProgress = false;
 
-        if ( s->isIncremental() ) {
+        if ( s->isIncremental() )
+        {
             debug() << "JobFinishedEvent from Incremental ScanController received.\n";
             emit scanDone( s->hasChanged() );
         }
-        else {
+        else
+        {
             debug() << "JobFinishedEvent from ScanController received.\n";
             emit scanDone( s->wasSuccessful() );
         }
     }
 }
+
 
 QString
 CollectionDB::loadHashFile( const QCString& hash, uint width )
@@ -4275,6 +4379,7 @@ CollectionDB::loadHashFile( const QCString& hash, uint width )
     }
     return QString::null;
 }
+
 
 bool
 CollectionDB::extractEmbeddedImage( MetaBundle &trackInformation, QCString& hash )
