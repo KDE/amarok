@@ -56,7 +56,6 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
     setWFlags( Qt::WX11BypassWM );
 
     QPalette p = QToolTip::palette();
-    setBackgroundColor( p.color( QPalette::Active, QColorGroup::Background ).light() );
     setPalette( p );
 
     QHBoxLayout *hbox;
@@ -96,13 +95,13 @@ void PopupMessage::addWidget( QWidget *widget )
     adjustSize();
 }
 
-void PopupMessage::showCloseButton( const bool show )
+void PopupMessage::setShowCloseButton( const bool show )
 {
     static_cast<KPushButton*>(child( "closeButton" ))->setShown( show );
     adjustSize();
 }
 
-void PopupMessage::showCounter( const bool show )
+void PopupMessage::setShowCounter( const bool show )
 {
     m_showCounter = show;
     static_cast<QFrame*>(child( "counterVisual" ))->setShown( show );

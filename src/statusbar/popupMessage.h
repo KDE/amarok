@@ -52,8 +52,8 @@ namespace KDE
         enum MaskEffect { Plain, Slide, Dissolve };
 
         void addWidget( QWidget *widget );
-        void showCloseButton( const bool show );
-        void showCounter( const bool show );
+        void setShowCloseButton( const bool show );
+        void setShowCounter( const bool show );
         void setImage( const QString &location );
         void setImage( const QPixmap &pix );
         void setMaskEffect( const MaskEffect type ) { m_maskEffect = type; }

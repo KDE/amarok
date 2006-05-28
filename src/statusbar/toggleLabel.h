@@ -119,8 +119,8 @@ class ToggleLabel : public QLabel
 
 
             m_tooltip = new KDE::PopupMessage( parentWidget()->parentWidget(), parentWidget(), 0 /*timeout*/ );
-            m_tooltip->showCloseButton( false );
-            m_tooltip->showCounter( false );
+            m_tooltip->setShowCloseButton( false );
+            m_tooltip->setShowCounter( false );
             m_tooltip->setMaskEffect( KDE::PopupMessage::Plain );
             m_tooltip->setText( tip.arg(m_action->text().remove('&') ) );
             m_tooltip->setImage( path );

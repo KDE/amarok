@@ -271,8 +271,8 @@ void QueueLabel::showToolTip()
     text += i18n( "Next: %1" ).arg( veryNiceTitle( item, true /*bold*/ ) );
 
     m_tooltip = new KDE::PopupMessage( parentWidget()->parentWidget(), this, 0 );
-    m_tooltip->showCloseButton( false );
-    m_tooltip->showCounter( false );
+    m_tooltip->setShowCloseButton( false );
+    m_tooltip->setShowCounter( false );
     m_tooltip->setMaskEffect( KDE::PopupMessage::Plain );
     m_tooltip->setText( text );
     m_tooltip->setImage( m_cover );
