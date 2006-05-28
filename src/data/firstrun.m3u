@@ -1,13 +1,2 @@
 #EXTM3U
-#EXTINF:12,Matthias Ettrich - amaroK 1.4 welcome
-/home/aoliveira/amaroK/multimedia/amarok/src/data/amaroK_1.4_welcome.ogg
-#EXTINF:12,amaroK 1.4 welcome
-/home/aoliveira/amaroK/multimedia/amarok/src/data/amaroK_1.4_welcome.ogg
-#EXTINF:202,All Night
-/home/aoliveira/music/allnight.mp3
-#EXTINF:202,All Night
-/home/aoliveira/music/allnight.mp3
-#EXTINF:216,Sad
-/home/aoliveira/music/Pearl Jam - Sad.mp3
-#EXTINF:2,login
-/home/aoliveira/music/kubuntu-login.ogg
+amaroK_1.4_welcome.ogg
