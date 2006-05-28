@@ -39,6 +39,7 @@
 #include <qvbox.h> //wiki tab
 #include <qhbox.h>
 #include <qlineedit.h>
+#include <qtabbar.h>
 #include <qtooltip.h>
 
 #include <kapplication.h> //kapp
@@ -307,6 +308,8 @@ ContextBrowser::ContextBrowser( const char *name )
              this, SLOT( refreshCurrentTrackPage() ) );
 
     showContext( KURL( "current://track" ) );
+
+    setMinimumHeight( AmarokConfig::coverPreviewSize() + (fontMetrics().height()+2)*5 + tabBar()->height() );
 }
 
 
