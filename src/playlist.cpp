@@ -962,7 +962,7 @@ void Playlist::restoreLayout(KConfig *config, const QString &group)
     for( int i = 0, n = names.count(); i < n; ++i )
     {
         bool found = false;
-        for( int ii = i; i < PlaylistItem::NUM_COLUMNS; ++ii ) //most likely, it's where we left it
+        for( int ii = i; ii < PlaylistItem::NUM_COLUMNS; ++ii ) //most likely, it's where we left it
         {
             if( names[i] == PlaylistItem::exactColumnName(ii) )
             {
