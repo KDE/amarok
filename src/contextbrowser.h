@@ -37,7 +37,6 @@ class ContextBrowser : public KTabWidget, public EngineObserver
 
         friend class CurrentTrackJob;
         friend class amaroK::DcopContextBrowserHandler;
-        friend class PlaylistWindow;
 
         static ContextBrowser *s_instance;
 
@@ -125,7 +124,6 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         HTMLView    *m_lyricsPage;
         HTMLView    *m_wikiPage;
 
-        QVBox        *m_playlistTab;
         QVBox        *m_contextTab;
         QVBox        *m_lyricsTab;
         QVBox        *m_wikiTab;
