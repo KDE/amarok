@@ -78,7 +78,7 @@ BrowserBar::BrowserBar( QWidget *parent )
     m_tabBar->setPosition( MultiTabBar::Left );
     m_tabBar->showActiveTabTexts( true );
     m_tabBar->setFixedWidth( m_pos );
-    m_tabBar->move( 0, 3 );
+//    m_tabBar->move( 0, 3 );
 
     QVBoxLayout *layout = new QVBoxLayout( m_browserBox );
     layout->addSpacing( 3 ); // aesthetics
