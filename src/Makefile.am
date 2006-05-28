@@ -188,8 +188,7 @@ rcdir = \
     $(kde_datadir)/amarok
 
 rc_DATA = \
-    amarokui.rc \
-    amarokui_xmms.rc
+    amarokui.rc
 
 
 configdir = \

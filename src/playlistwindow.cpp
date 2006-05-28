@@ -194,7 +194,8 @@ void PlaylistWindow::init()
     m_browsers = new BrowserBar( this );
 
     QSplitter *split = new QSplitter( m_browsers->container() );
-    split->setOrientation(QSplitter::Vertical);
+    split->setOrientation( QSplitter::Vertical );
+    split->setOpaqueResize( true );
     QVBox *cbBox = new QVBox( split );
     QVBox *plBox = new QVBox( split );
     ContextBrowser *cb = new ContextBrowser( "ContextBrowser" );
@@ -356,10 +357,10 @@ void PlaylistWindow::init()
     {
         QString xmlFile = amaroK::config()->readEntry( "XMLFile", "amarokui.rc" );
 
-        if ( xmlFile == "amarokui_first.rc" )
-            // this bug can bite you if you are a pre 1.2 user, we
-            // deleted amarokui_first.rc, but we must still support it
-            xmlFile = "amarokui.rc";
+        // this bug can bite you if you are a pre 1.2 user, we
+        // deleted amarokui_first.rc, but we must still support it
+        // NOTE 1.4.1 we remove amarokui_xmms.rc too, so we can only be this ui.rc
+        xmlFile = "amarokui.rc";
 
         setXMLFile( xmlFile );
         createGUI(); //NOTE we implement this
@@ -423,7 +424,6 @@ void PlaylistWindow::addBrowser( const QString &name, QWidget *browser, const QS
  */
 void PlaylistWindow::recreateGUI()
 {
-    setXMLFile( amaroK::config()->readEntry( "XMLFile", "amarokui.rc" ) );
     reloadXML();
     createGUI();
 }
@@ -444,9 +444,7 @@ void PlaylistWindow::createGUI()
     //we unplug after clear as otherwise it crashes! dunno why..
      KActionPtrList actions = actionCollection()->actions();
      for( KActionPtrList::Iterator it = actions.begin(), end = actions.end(); it != end; ++it )
-     {
          (*it)->unplug( m_toolbar );
-     }
 
     KXMLGUIBuilder builder( this );
     KXMLGUIFactory factory( &builder, this );
@@ -937,7 +935,7 @@ bool PlaylistWindow::isReallyShown() const
 /// DynamicBar
 //////////////////////////////////////////////////////////////////////////////////////////
 DynamicBar::DynamicBar(QWidget* parent)
-    : QHBox( parent, "DynamicModeStatusBar" )
+       : QHBox( parent, "DynamicModeStatusBar" )
 {
     m_titleWidget = new DynamicTitle(this);
 

@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>822</width>
+            <width>824</width>
             <height>410</height>
         </rect>
     </property>
@@ -85,198 +85,10 @@
     </widget>
     <widget class="QWidget">
         <property name="name">
-            <cstring>WizardPage_1</cstring>
-        </property>
-        <attribute name="title">
-            <string>Step 1 of 3: Choose an Appearance</string>
-        </attribute>
-        <grid>
-            <property name="name">
-                <cstring>unnamed</cstring>
-            </property>
-            <widget class="QButtonGroup" row="2" column="0">
-                <property name="name">
-                    <cstring>group1</cstring>
-                </property>
-                <property name="sizePolicy">
-                    <sizepolicy>
-                        <hsizetype>1</hsizetype>
-                        <vsizetype>5</vsizetype>
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                    </sizepolicy>
-                </property>
-                <property name="frameShape">
-                    <enum>NoFrame</enum>
-                </property>
-                <property name="title">
-                    <string></string>
-                </property>
-                <property name="selectedId" stdset="0">
-                    <number>0</number>
-                </property>
-                <vbox>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
-                    </property>
-                    <property name="spacing">
-                        <number>20</number>
-                    </property>
-                    <widget class="QRadioButton">
-                        <property name="name">
-                            <cstring>option_compact</cstring>
-                        </property>
-                        <property name="sizePolicy">
-                            <sizepolicy>
-                                <hsizetype>5</hsizetype>
-                                <vsizetype>5</vsizetype>
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                            </sizepolicy>
-                        </property>
-                        <property name="text">
-                            <string>Single window with player and playlist functionality
-combined</string>
-                        </property>
-                    </widget>
-                    <widget class="QRadioButton">
-                        <property name="name">
-                            <cstring>option_xmms</cstring>
-                        </property>
-                        <property name="sizePolicy">
-                            <sizepolicy>
-                                <hsizetype>5</hsizetype>
-                                <vsizetype>5</vsizetype>
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                            </sizepolicy>
-                        </property>
-                        <property name="text">
-                            <string>Separate player and playlist-windows</string>
-                        </property>
-                        <property name="checked">
-                            <bool>false</bool>
-                        </property>
-                    </widget>
-                </vbox>
-            </widget>
-            <widget class="QLayoutWidget" row="0" column="0" rowspan="1" colspan="2">
-                <property name="name">
-                    <cstring>layout3</cstring>
-                </property>
-                <hbox>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
-                    </property>
-                    <widget class="KActiveLabel">
-                        <property name="name">
-                            <cstring>text2</cstring>
-                        </property>
-                        <property name="sizePolicy">
-                            <sizepolicy>
-                                <hsizetype>5</hsizetype>
-                                <vsizetype>4</vsizetype>
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                            </sizepolicy>
-                        </property>
-                        <property name="resizePolicy">
-                            <enum>Manual</enum>
-                        </property>
-                        <property name="text">
-                            <string>&lt;p&gt;With amaroK you can use the window layout that you find most comfortable.&lt;/p&gt;
-&lt;p&gt;You can change these settings at a later time using the configuration dialog.&lt;/p&gt;</string>
-                        </property>
-                        <property name="wrapPolicy">
-                            <enum>AtWordBoundary</enum>
-                        </property>
-                    </widget>
-                    <spacer>
-                        <property name="name">
-                            <cstring>spacer4</cstring>
-                        </property>
-                        <property name="orientation">
-                            <enum>Horizontal</enum>
-                        </property>
-                        <property name="sizeType">
-                            <enum>Expanding</enum>
-                        </property>
-                        <property name="sizeHint">
-                            <size>
-                                <width>71</width>
-                                <height>20</height>
-                            </size>
-                        </property>
-                    </spacer>
-                </hbox>
-            </widget>
-            <widget class="QLabel" row="2" column="1">
-                <property name="name">
-                    <cstring>picture_modePreview</cstring>
-                </property>
-                <property name="sizePolicy">
-                    <sizepolicy>
-                        <hsizetype>4</hsizetype>
-                        <vsizetype>4</vsizetype>
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                    </sizepolicy>
-                </property>
-                <property name="backgroundMode">
-                    <enum>PaletteBackground</enum>
-                </property>
-                <property name="frameShape">
-                    <enum>Box</enum>
-                </property>
-                <property name="text">
-                    <string></string>
-                </property>
-                <property name="alignment">
-                    <set>AlignTop|AlignLeft</set>
-                </property>
-            </widget>
-            <spacer row="1" column="0">
-                <property name="name">
-                    <cstring>spacer16</cstring>
-                </property>
-                <property name="orientation">
-                    <enum>Vertical</enum>
-                </property>
-                <property name="sizeType">
-                    <enum>Fixed</enum>
-                </property>
-                <property name="sizeHint">
-                    <size>
-                        <width>21</width>
-                        <height>20</height>
-                    </size>
-                </property>
-            </spacer>
-            <spacer row="3" column="0">
-                <property name="name">
-                    <cstring>spacer17</cstring>
-                </property>
-                <property name="orientation">
-                    <enum>Vertical</enum>
-                </property>
-                <property name="sizeType">
-                    <enum>Expanding</enum>
-                </property>
-                <property name="sizeHint">
-                    <size>
-                        <width>21</width>
-                        <height>16</height>
-                    </size>
-                </property>
-            </spacer>
-        </grid>
-    </widget>
-    <widget class="QWidget">
-        <property name="name">
             <cstring>WizardPage</cstring>
         </property>
         <attribute name="title">
-            <string>Step 2 of 3: Locate your Music</string>
+            <string>Locate your Music</string>
         </attribute>
         <hbox>
             <property name="name">
@@ -302,7 +114,7 @@ combined</string>
             <cstring>WizardPage_3</cstring>
         </property>
         <attribute name="title">
-            <string>Step 3 of 3: Database Setup</string>
+            <string>Database Setup</string>
         </attribute>
         <grid>
             <property name="name">
@@ -462,19 +274,9 @@ combined</string>
     </image>
 </images>
 <connections>
-    <connection>
-        <sender>option_xmms</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>FirstRunWizard</receiver>
-        <slot>xmmsModeToggled(bool)</slot>
-    </connection>
 </connections>
 <tabstops>
-    <tabstop>option_xmms</tabstop>
 </tabstops>
-<includes>
-    <include location="local" impldecl="in implementation">firstrunwizard.ui.h</include>
-</includes>
 <forwards>
     <forward>class CollectionSetup;</forward>
 </forwards>
@@ -484,7 +286,6 @@ combined</string>
 </variables>
 <slots>
     <slot access="private" specifier="non virtual">invokeHandbook()</slot>
-    <slot access="private" specifier="non virtual">xmmsModeToggled( bool on )</slot>
     <slot>openLink( const QString &amp; s )</slot>
 </slots>
 <functions>
@@ -495,6 +296,11 @@ combined</string>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
+    <includehint>kactivelabel.h</includehint>
+    <includehint>kactivelabel.h</includehint>
+    <includehint>kactivelabel.h</includehint>
+    <includehint>kactivelabel.h</includehint>
+    <includehint>dbsetup.h</includehint>
     <includehint>kactivelabel.h</includehint>
 </includehints>
 </UI>

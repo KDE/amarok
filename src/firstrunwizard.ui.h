@@ -35,17 +35,6 @@ FirstRunWizard::init()
     //aesthetics
     helpButton()->hide();
 
-    //would be better as a KConfigXT key now
-    if ( config( "General" )->readEntry( "XMLFile", QString::null ) != "amarokui.rc" ) {
-        option_xmms->setChecked( true );
-        picture_modePreview->setPixmap( getPNG( "wizard_xmms" ) );
-    }
-    else {
-        option_compact->setChecked( true );
-        picture_modePreview->setPixmap( getPNG( "wizard_compact" ) );
-    }
-    picture_modePreview->adjustSize();
-
     picture1->setPixmap( getJPG( "amarok_rocks" ) );
     picture4->setPixmap( *picture1->pixmap() );
 
@@ -77,29 +66,11 @@ FirstRunWizard::invokeHandbook() //SLOT
     kapp->invokeHelp( QString::null, QString::null, 0 );
 }
 
-inline void
-FirstRunWizard::xmmsModeToggled( bool on ) //SLOT
-{
-    using namespace amaroK;
-
-    if ( on )
-        picture_modePreview->setPixmap( getPNG( "wizard_xmms" ) );
-    else
-        picture_modePreview->setPixmap( getPNG( "wizard_compact" ) );
-}
-
-FirstRunWizard::Interface
-FirstRunWizard::interface()
-{
-    return option_xmms->isChecked() ? XMMS : Compact;
-}
-
 void
 FirstRunWizard::writeCollectionConfig()
 {
     m_folderSetup->writeConfig();
 }
-
 
 void
 FirstRunWizard::openLink(const QString& s)
