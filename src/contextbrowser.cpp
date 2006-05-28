@@ -2642,12 +2642,14 @@ void ContextBrowser::showScanning()
 
 void ContextBrowser::showLyrics( const QString &url )
 {
+    #if 0
     if( BrowserBar::instance()->currentBrowser() != this )
     {
         debug() << "current browser is not context, aborting showLyrics()" << endl;
         m_dirtyLyricsPage = true;
         return;
     }
+    #endif
 
     debug() << "rendering showLyrics()" << endl;
 
@@ -3041,12 +3043,14 @@ ContextBrowser::showWikipediaEntry( const QString &entry )
 
 void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
 {
+    #if 0
     if( BrowserBar::instance()->currentBrowser() != this )
     {
         debug() << "current browser is not context, aborting showWikipedia()" << endl;
         m_dirtyWikiPage = true;
         return;
     }
+    #endif
 
     if ( currentPage() != m_wikiTab )
     {
