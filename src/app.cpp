@@ -1031,21 +1031,6 @@ void App::firstRunWizard()
 
     if( wizard.exec() != QDialog::Rejected )
     {
-        switch( wizard.interface() )
-        {
-        case FirstRunWizard::XMMS:
-            amaroK::config()->writeEntry( "XMLFile", "amarokui_xmms.rc" );
-            AmarokConfig::setShowPlayerWindow( true );
-            //FIXME the statusbar is now quite essential and also without it
-            // the popup messages break. Fix in 1.2.1
-            break;
-
-        case FirstRunWizard::Compact:
-            amaroK::config()->writeEntry( "XMLFile", "amarokui.rc" );
-            AmarokConfig::setShowPlayerWindow( false );
-            break;
-        }
-
         const QStringList oldCollectionFolders = AmarokConfig::collectionFolders();
         wizard.writeCollectionConfig();
 
