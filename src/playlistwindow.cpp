@@ -206,17 +206,26 @@ void PlaylistWindow::init()
     //<Dynamic Mode Status Bar />
     DynamicBar *dynamicBar = new DynamicBar( plBox );
 
+    QFrame *playlist;
+
     { //<Search LineEdit>
         KToolBar *bar = new KToolBar( plBox, "NotMainToolBar" );
         bar->setIconSize( 22, false ); //looks more sensible
         bar->setFlat( true ); //removes the ugly frame
         bar->setMovingEnabled( false ); //removes the ugly frame
 
-        QWidget *button = new KToolBarButton( "locationbar_erase", 1, bar );
-        QLabel *filter_label = new QLabel( i18n("S&earch:") + " ", bar );
-        m_lineEdit = new ClickLineEdit( i18n( "Enter search terms here" ), bar );
+        playlist = new Playlist( plBox );
 
-        filter_label->setBuddy( m_lineEdit );
+        actionCollection()->action( "playlist_clear")->plug( bar );
+        bar->addSeparator();
+        actionCollection()->action( "playlist_undo")->plug( bar );
+        actionCollection()->action( "playlist_redo")->plug( bar );
+        bar->addStretch();
+        QWidget *button = new KToolBarButton( "locationbar_erase", 1, bar );
+        //QLabel *filter_label = new QLabel( i18n("S&earch:") + " ", bar );
+        m_lineEdit = new ClickLineEdit( i18n( "Playlist Filter" ), bar );
+
+        //filter_label->setBuddy( m_lineEdit );
 
         //bar->setStretchableWidget( m_lineEdit );
         m_lineEdit->setFrame( QFrame::Sunken );
@@ -229,13 +238,13 @@ void PlaylistWindow::init()
                                   "Advanced, Google-esque syntax is also available;\n"
                                   "see the handbook (The Playlist section of chapter 4) for details." );
 
-        QToolTip::add( filter_label, filtertip );
+        //QToolTip::add( filter_label, filtertip );
         QToolTip::add( m_lineEdit, filtertip );
     } //</Search LineEdit>
 
 
 
-    QFrame *playlist = new Playlist( plBox );
+
     dynamicBar->init();
     m_toolbar = new amaroK::ToolBar( m_browsers->container(), "mainToolBar" );
     m_toolbar->setShown( AmarokConfig::showToolbar() );
