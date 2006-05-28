@@ -264,11 +264,14 @@ bool EngineController::installDistroCodec( const QString& engine /*Filetype type
     {
         KService::Ptr service = KTrader::self()->query( "amaroK/CodecInstall"
             , QString("[X-KDE-amaroK-codec] == 'mp3' and [X-KDE-amaroK-engine] == '%1'").arg(engine) ).first();
-        QString installScript = service->exec();
-        if( !installScript.isNull() ) //just a sanity check
+        if( service )
         {
-            KRun::runCommand(installScript);
-            return true;
+            QString installScript = service->exec();
+            if( !installScript.isNull() ) //just a sanity check
+            {
+                KRun::runCommand(installScript);
+                return true;
+            }
         }
     }
     return false;
