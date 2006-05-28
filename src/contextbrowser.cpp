@@ -194,6 +194,7 @@ ContextBrowser::ContextBrowser( const char *name )
     s_instance = this;
     s_wikiLocale = AmarokConfig::wikipediaLocale();
 
+    m_playlistTab = new QVBox(this, "playlist_tab" );
     m_contextTab = new QVBox(this, "context_tab");
 
     m_currentTrackPage = new HTMLView( m_contextTab, "current_track_page", true /* DNDEnabled */ );
@@ -236,6 +237,7 @@ ContextBrowser::ContextBrowser( const char *name )
     connect( m_cuefile, SIGNAL(newCuePoint( long, long, long )),
              Scrobbler::instance(), SLOT(subTrack( long, long, long )) );
 
+    addTab( m_playlistTab,SmallIconSet( "playlist2" ),i18n( "Playlist" ) );
     addTab( m_contextTab, SmallIconSet( "today" ),    i18n( "Music" ) );
     addTab( m_lyricsTab,  SmallIconSet( "document" ), i18n( "Lyrics" ) );
     addTab( m_wikiTab,    SmallIconSet( "personal" ), i18n( "Artist" ) );
@@ -307,6 +309,8 @@ ContextBrowser::ContextBrowser( const char *name )
              this, SLOT( refreshCurrentTrackPage() ) );
 
     showContext( KURL( "current://track" ) );
+
+    showPage( m_playlistTab );
 }
 
 
@@ -918,12 +922,14 @@ private:
 void
 ContextBrowser::showContext( const KURL &url, bool fromHistory )
 {
+#if 0
     if ( currentPage() != m_contextTab )
     {
         blockSignals( true );
         showPage( m_contextTab );
         blockSignals( false );
     }
+#endif
 
     m_dirtyCurrentTrackPage = true;
     m_contextURL = url.url();
@@ -968,6 +974,7 @@ ContextBrowser::contextHistoryBack() //SLOT
 
 void ContextBrowser::showCurrentTrack() //SLOT
 {
+#if 0
     if( BrowserBar::instance()->currentBrowser() != this )
     {
         debug() << "current browser is not context, aborting showCurrentTrack()" << endl;
@@ -976,13 +983,16 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                  .arg( i18n( "Updating..." ) ) );
         return;
     }
+#endif
     debug() << "Rendering showCurrentTrack()" << endl;
 
+#if 0
     if ( currentPage() != m_contextTab ) {
         blockSignals( true );
         showPage( m_contextTab );
         blockSignals( false );
     }
+#endif
 
     // TODO: Show CurrentTrack or Lyric tab if they were selected
     if ( m_emptyDB && CollectionDB::instance()->isValid() && !AmarokConfig::collectionFolders().isEmpty() )
@@ -2640,12 +2650,14 @@ void ContextBrowser::showScanning()
 
 void ContextBrowser::showLyrics( const QString &url )
 {
+#if 0
     if( BrowserBar::instance()->currentBrowser() != this )
     {
         debug() << "current browser is not context, aborting showLyrics()" << endl;
         m_dirtyLyricsPage = true;
         return;
     }
+#endif
 
     debug() << "rendering showLyrics()" << endl;
 
@@ -3039,12 +3051,14 @@ ContextBrowser::showWikipediaEntry( const QString &entry )
 
 void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
 {
+#if 0
     if( BrowserBar::instance()->currentBrowser() != this )
     {
         debug() << "current browser is not context, aborting showWikipedia()" << endl;
         m_dirtyWikiPage = true;
         return;
     }
+#endif
 
     if ( currentPage() != m_wikiTab )
     {

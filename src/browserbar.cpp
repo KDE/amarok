@@ -336,6 +336,7 @@ BrowserBar::engineStateChanged( Engine::State state, Engine::State oldState )
     if( !AmarokConfig::autoShowContextBrowser() || m_currentIndex == -1 )
         return;
 
+#if 0
     switch( state ) {
     case Engine::Playing:
 
@@ -359,6 +360,7 @@ BrowserBar::engineStateChanged( Engine::State state, Engine::State oldState )
     default:
         ;
     }
+#endif
 }
 
 #include "browserbar.moc"

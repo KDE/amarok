@@ -193,11 +193,14 @@ void PlaylistWindow::init()
 
     m_browsers = new BrowserBar( this );
 
+    ContextBrowser *cb = new ContextBrowser("ContextBrowser");
+    cb->reparent( m_browsers->container(), QPoint() );
+
     //<Dynamic Mode Status Bar />
-    DynamicBar *dynamicBar = new DynamicBar( m_browsers->container());
+    DynamicBar *dynamicBar = new DynamicBar( cb->m_playlistTab );
 
     { //<Search LineEdit>
-        KToolBar *bar = new KToolBar( m_browsers->container(), "NotMainToolBar" );
+        KToolBar *bar = new KToolBar( cb->m_playlistTab, "NotMainToolBar" );
         bar->setIconSize( 22, false ); //looks more sensible
         bar->setFlat( true ); //removes the ugly frame
         bar->setMovingEnabled( false ); //removes the ugly frame
@@ -225,7 +228,7 @@ void PlaylistWindow::init()
 
 
 
-    QFrame *playlist = new Playlist( m_browsers->container() );
+    QFrame *playlist = new Playlist( cb->m_playlistTab );
     dynamicBar->init();
     m_toolbar = new amaroK::ToolBar( m_browsers->container(), "mainToolBar" );
     m_toolbar->setShown( AmarokConfig::showToolbar() );
@@ -370,7 +373,7 @@ void PlaylistWindow::init()
             Debug::Block block( name ); \
             m_browsers->addBrowser( Type::instance(), text, icon ); }
 
-        addBrowserMacro( ContextBrowser, "ContextBrowser", i18n( "Context" ), amaroK::icon( "info" ) )
+        //addBrowserMacro( ContextBrowser, "ContextBrowser", i18n( "Context" ), amaroK::icon( "info" ) )
         addBrowserMacro( CollectionBrowser, "CollectionBrowser", i18n( "Collection" ), amaroK::icon( "collection" ) )
         addInstBrowserMacro( PlaylistBrowser, "PlaylistBrowser", i18n( "Playlists" ), amaroK::icon( "playlist" ) )
 
