@@ -290,10 +290,6 @@ else
         echo " =   + MP4/AAC Tag Write Support"
     fi
 
-    if test x$have_exscalibar = xyes; then
-        echo " =   + Moodbar Support"
-    fi
-
     if test x$have_libgpod = xyes; then
         if test x$have_libgpod_artwork = xyes; then
             echo " =   + iPod Support (with Artwork)"

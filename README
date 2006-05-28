@@ -30,7 +30,6 @@ interface that really makes playlist handling easy.
     * K3B (CD-burning) integration
     * Podcast support
     * Access to iPod, iRiver IFP, and USB Mass Storage devices
-    * Exscalibar interation for Moodbar visualisation
     * Powerful scripting interface
     * Complete DCOP Access
     * KDE integration
