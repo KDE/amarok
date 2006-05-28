@@ -303,42 +303,45 @@ XineEngine::determineAndShowErrorMessage()
 
     QString body;
 
-    if (!xine_get_stream_info( m_stream, XINE_STREAM_INFO_AUDIO_HANDLED ))
-    {
-        body = i18n("There is no available decoder.");
-        const QString ext = amaroK::extension( m_url.url() ).lower();
-        if( ext == "mp3" && EngineController::installDistroCodec("xine-engine") )
-           return;
-    }
-    else if (!xine_get_stream_info( m_stream, XINE_STREAM_INFO_HAS_AUDIO ))
-        body = i18n("There is no audio channel!");
-    else {
-        debug() << "xine_get_error()\n";
-        switch (xine_get_error( m_stream )) {
-            case XINE_ERROR_NO_INPUT_PLUGIN:
-                body = i18n("No suitable input plugin.");
-            break;
+    debug() << "xine_get_error()\n";
+    switch (xine_get_error( m_stream )) {
+        case XINE_ERROR_NO_INPUT_PLUGIN:
+            body = i18n("No suitable input plugin.");
+        break;
 
-            case XINE_ERROR_NO_DEMUX_PLUGIN:
-                body = i18n("No suitable demux plugin.");
-            break;
+        case XINE_ERROR_NO_DEMUX_PLUGIN:
+            body = i18n("No suitable demux plugin.");
+        break;
 
-            case XINE_ERROR_DEMUX_FAILED:
-                body = i18n("Demuxing failed.");
-            break;
+        case XINE_ERROR_DEMUX_FAILED:
+            body = i18n("Demuxing failed.");
+        break;
 
-            case XINE_ERROR_INPUT_FAILED:
-                body = i18n("Couldn't open file.");
-            break;
+        case XINE_ERROR_INPUT_FAILED:
+            body = i18n("Couldn't open file.");
+        break;
 
-            case XINE_ERROR_MALFORMED_MRL:
-                body = i18n("The location is malformed.");
-            break;
+        case XINE_ERROR_MALFORMED_MRL:
+            body = i18n("The location is malformed.");
+        break;
 
-            case XINE_ERROR_NONE:
-            default:
-                return;
-        }
+        case XINE_ERROR_NONE:
+            // xine is thick. xine doesn't think there is an error
+            // but there may be! We check for other errors below.
+
+        default:
+            if (!xine_get_stream_info( m_stream, XINE_STREAM_INFO_AUDIO_HANDLED ))
+            {
+                // xine can read the plugin but it didn't find any codec
+                // THUS xine=daft for telling us it could handle the format in canDecode!
+                body = i18n("There is no available decoder.");
+                QString const ext = amaroK::extension( m_url.url() ).lower();
+                if (ext == "mp3" && EngineController::installDistroCodec( "xine-engine" ))
+                    return;
+            }
+            else if (!xine_get_stream_info( m_stream, XINE_STREAM_INFO_HAS_AUDIO ))
+                body = i18n("There is no audio channel!");
+        break;
     }
 
     amaroK::StatusBar::instance()->longMessage(
