@@ -2,7 +2,10 @@
 //           (C) 2004,2005 Max Howell, <max.howell@methylblue.com>
 //License:   See COPYING
 
+#include "amarokconfig.h"
+#include "debug.h"
 #include "enginebase.h"
+#include "lastfmproxy.h"
 
 #include <cmath>
 
@@ -27,6 +30,14 @@ Engine::Base::load( const KURL &url, bool stream )
 {
     m_url = url;
     m_isStream = stream;
+//     if( stream && url.protocol() == "lastfm" )
+//     {
+//         debug() << "Init lastfm proxy" << endl;
+//         LastFmProxy *lfp = new LastFmProxy();
+//         QString u = AmarokConfig::scrobblerUsername();
+//         QString p = AmarokConfig::scrobblerPassword();
+//         lfp->handshake( u, p );
+//     }
 
     return true;
 }
