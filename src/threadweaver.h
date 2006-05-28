@@ -209,7 +209,7 @@ public:
     protected:
         DISABLE_GENERATED_MEMBER_FUNCTIONS_3( Thread )
     };
-    
+
     /**
      * @class Job
      * @short A small class for doing work in a background thread

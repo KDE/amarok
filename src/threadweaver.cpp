@@ -23,6 +23,7 @@ using amaroK::StatusBar;
 volatile uint ThreadWeaver::threadIdCounter = 1; //main thread grabs zero
 QMutex* ThreadWeaver::threadIdMutex = new QMutex();
 
+
 ThreadWeaver::ThreadWeaver()
 {
     startTimer( 5 * 60 * 1000 ); // prunes the thread pool every 5 minutes
@@ -30,12 +31,20 @@ ThreadWeaver::ThreadWeaver()
 
 ThreadWeaver::~ThreadWeaver()
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
-    for( ThreadList::Iterator it = m_threads.begin(), end = m_threads.end(); it != end; ++it ) {
-        DebugStream d = debug() << "Waiting on thread...";
+    for( ThreadList::Iterator it = m_threads.begin(), end = m_threads.end(); it != end; ++it )
+    {
+        // we don't delete the thread's job as amarok is gone
+        // and the Job dtor may expect amarok to be there etc.
+        if ((*it)->job() && (*it)->job()->name() == QCString("INotify")) {
+            debug() << "Forcibly terminating INotify thread...\n";
+            (*it)->terminate();
+            continue;
+        }
+
+        debug() << "Waiting on thread...\n";
         (*it)->wait();
-        d << "finished\n";
     }
 }
 
@@ -56,7 +65,7 @@ ThreadWeaver::queueJob( Job *job )
 {
     SHOULD_BE_GUI
 
-    if ( !job )
+    if (!job)
         return -1;
 
     // this list contains all pending and running jobs
@@ -212,13 +221,16 @@ ThreadWeaver::event( QEvent *e )
 static pthread_once_t current_thread_key_once = PTHREAD_ONCE_INIT;
 static pthread_key_t current_thread_key;
 static void create_current_thread_key()
-{ debug() << "Creating pthread key, exit value is " << pthread_key_create(&current_thread_key, NULL) << endl; }
+{
+    debug() << "Creating pthread key, exit value is " << pthread_key_create(&current_thread_key, NULL) << endl;
+}
+
+
 /// @class ThreadWeaver::Thread
 
 ThreadWeaver::Thread::Thread()
     : QThread()
-{
-}
+{}
 
 ThreadWeaver::Thread::~Thread()
 {
@@ -235,7 +247,7 @@ ThreadWeaver::Thread::getRunning()
 QString
 ThreadWeaver::Thread::threadId()
 {
-    if( !getRunning() )
+    if (!getRunning())
         return "None";
     else
     {
@@ -272,12 +284,12 @@ ThreadWeaver::Thread::run()
 
     //keep this first, before anything that uses the database, or SQLite may error out
     if ( AmarokConfig::databaseEngine().toInt() == DbConnection::sqlite )
-        CollectionDB::instance()->releasePreviousConnection(this);
+        CollectionDB::instance()->releasePreviousConnection( this );
 
     //register this thread so that it can be returned in a static getRunning() function
     m_threadId = ThreadWeaver::getNewThreadId();
-    pthread_once(&current_thread_key_once, create_current_thread_key);
-    pthread_setspecific(current_thread_key, this);
+    pthread_once( &current_thread_key_once, create_current_thread_key );
+    pthread_setspecific( current_thread_key, this );
 
     m_job->m_aborted |= !m_job->doJob();
 
