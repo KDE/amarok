@@ -115,9 +115,9 @@ INotify::doJob()
     DEBUG_BLOCK
 
     /* size of the event structure, not counting name */
-    int EVENT_SIZE = ( sizeof( struct inotify_event ) );
+    const int EVENT_SIZE = ( sizeof( struct inotify_event ) );
     /* reasonable guess as to size of 1024 events */
-    int BUF_LEN = 1024 * ( EVENT_SIZE + 16 );
+    const int BUF_LEN = 1024 * ( EVENT_SIZE + 16 );
 
     while ( 1 )
     {
