@@ -91,7 +91,7 @@ libamarok_la_SOURCES = \
     k3bexporter.cpp \
     kbookmarkhandler.cpp \
     ktrm.cpp \
-    lastfmproxy.cpp \
+#    lastfmproxy.cpp \
     mediabrowser.cpp \
     medium.cpp \
     mediumpluginmanager.cpp \
