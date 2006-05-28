@@ -220,7 +220,7 @@ void PlaylistWindow::init()
         bar->addSeparator();
         actionCollection()->action( "playlist_undo")->plug( bar );
         actionCollection()->action( "playlist_redo")->plug( bar );
-        //bar->addStretch();
+        bar->boxLayout()->addStretch();
         QWidget *button = new KToolBarButton( "locationbar_erase", 1, bar );
         //QLabel *filter_label = new QLabel( i18n("S&earch:") + " ", bar );
         m_lineEdit = new ClickLineEdit( i18n( "Playlist Filter" ), bar );
