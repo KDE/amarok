@@ -253,28 +253,27 @@ bool EngineController::canDecode( const KURL &url ) //static
 
 bool EngineController::installDistroCodec( const QString& engine /*Filetype type*/)
 {
-    KGuiItem installButton("Install MP3 Support");    
-    
-    if(KMessageBox::questionYesNo(PlaylistWindow::self()
-       , i18n("amaroK currently cannot play MP3 files.")
-       , i18n( "No MP3 Support" )
-       , installButton
-       , KStdGuiItem::no()
-       , "codecInstallWarning" )  )
+    KService::Ptr service = KTrader::self()->query( "amaroK/CodecInstall"
+        , QString("[X-KDE-amaroK-codec] == 'mp3' and [X-KDE-amaroK-engine] == '%1'").arg(engine) ).first();
+    if( service )
     {
-        KService::Ptr service = KTrader::self()->query( "amaroK/CodecInstall"
-            , QString("[X-KDE-amaroK-codec] == 'mp3' and [X-KDE-amaroK-engine] == '%1'").arg(engine) ).first();
-        if( service )
+        QString installScript = service->exec();
+        if( !installScript.isNull() ) //just a sanity check
         {
-            QString installScript = service->exec();
-            if( !installScript.isNull() ) //just a sanity check
+            KGuiItem installButton("Install MP3 Support");    
+            if(KMessageBox::questionYesNo(PlaylistWindow::self()
+            , i18n("amaroK currently cannot play MP3 files.")
+            , i18n( "No MP3 Support" )
+            , installButton
+            , KStdGuiItem::no()
+            , "codecInstallWarning" )  )
             {
-                KRun::runCommand(installScript);
-                return true;
+                    KRun::runCommand(installScript);
+                    return true;
             }
         }
     }
-    return false;
+return false;
 }
 
 void EngineController::restoreSession()
