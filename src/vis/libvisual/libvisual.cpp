@@ -40,7 +40,7 @@ main( int argc, char** argv )
         }
         #endif
 
-        const char *plugin = NULL;
+        const char *plugin = 0;
 
         while( (plugin = visual_actor_get_next_by_name( plugin )) )
             std::cout << plugin << '\n';
@@ -87,7 +87,7 @@ main( int argc, char** argv )
         FD_ZERO( &fds );
         FD_SET( sockfd, &fds );
 
-        ::select( sockfd+1, &fds, NULL, NULL, &tv );
+        ::select( sockfd+1, &fds, 0, 0, &tv );
 
         if( FD_ISSET( sockfd, &fds) ) {
             //amaroK sent us some data
@@ -253,7 +253,7 @@ namespace SDL
                       visual_bin_switch_actor_by_name( Vis::bin, (char*)Vis::plugin );
                     SDL::unlock();
 
-                    SDL_WM_SetCaption( Vis::plugin, NULL );
+                    SDL_WM_SetCaption( Vis::plugin, 0 );
 
                     break;
 
@@ -331,7 +331,7 @@ namespace LibVisual
         bin    = visual_bin_new ();
         depth  = visual_video_depth_enum_from_value( 24 );
 
-        if( !plugin ) plugin = visual_actor_get_next_by_name( NULL );
+        if( !plugin ) plugin = visual_actor_get_next_by_name( 0 );
         if( !plugin ) exit( "Actor plugin not found!" );
 
         visual_bin_set_supported_depth( bin, VISUAL_VIDEO_DEPTH_ALL );
@@ -343,7 +343,7 @@ namespace LibVisual
 
         if( visual_bin_set_video( bin, video ) ) exit( "Cannot set video" );
 
-        visual_bin_connect_by_names( bin, (char*)plugin, NULL );
+        visual_bin_connect_by_names( bin, (char*)plugin, 0 );
 
         if( visual_bin_get_depth( bin ) == VISUAL_VIDEO_DEPTH_GL )
         {

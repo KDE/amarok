@@ -20,7 +20,7 @@ extern "C"
 
 namespace SDL
 {
-    static SDL_Surface *screen = NULL;
+    static SDL_Surface *screen = 0;
     static SDL_Color    pal[256];
 
     static void init();
@@ -62,7 +62,7 @@ namespace LibVisual
     {
         plugin = visual_actor_get_next_by_name( plugin );
 
-        if( plugin == NULL ) plugin = visual_actor_get_next_by_name( NULL );
+        if( plugin == 0 ) plugin = visual_actor_get_next_by_name( 0 );
     }
 
     static inline void
@@ -70,7 +70,7 @@ namespace LibVisual
     {
         plugin = visual_actor_get_prev_by_name( plugin );
 
-        if( plugin == NULL ) plugin = visual_actor_get_prev_by_name( NULL );
+        if( plugin == 0 ) plugin = visual_actor_get_prev_by_name( 0 );
     }
 
     static inline void
