@@ -18,7 +18,6 @@
 #include <qcolor.h>    //stack allocated
 #include <qfont.h>     //stack allocated
 #include <qmap.h>
-#include <qmutex.h>
 #include <qpixmap.h>
 #include <qvaluevector.h>
 
@@ -35,9 +34,6 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
 {
     typedef MetaBundle super;
     public:
-        class ReadMood;
-        friend class ReadMood;
-
         /// Indicates that the current-track pixmap has changed. Animation must be redrawn.
         static void setPixmapChanged() { s_pixmapChanged = true; }
 
@@ -85,10 +81,6 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
         Playlist *listView() const { return reinterpret_cast<Playlist*>( KListViewItem::listView() ); }
         PlaylistItem *nextSibling() const { return static_cast<PlaylistItem*>( KListViewItem::nextSibling() ); }
 
-        void refreshMood();
-        void checkMood();
-        bool readMood();
-
         static QPixmap *star();
         static QPixmap *grayedStar();
         static QPixmap *smallStar();
@@ -127,8 +119,6 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
             QMap<QString, QPixmap> map;
         };
 
-        void setArray(const QValueVector<QColor> array);
-
         virtual void paintCell( QPainter*, const QColorGroup&, int, int, int );
         void drawRating( QPainter *p );
         void drawRating( QPainter *p, int stars, int graystars, bool half );
@@ -159,19 +149,6 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
         bool m_atfEnabled;
         bool m_deleteAfterEdit;
         bool m_isBeingRenamed;
-
-        class MoodProxyObject: public QObject
-        {
-            public:
-            MoodProxyObject( PlaylistItem *i ): item( i ) { }
-            PlaylistItem* item;
-        };
-
-        MoodProxyObject *m_proxyForMoods;
-        QMutex theArrayLock;
-        QValueVector<QColor> theArray;
-        QPixmap theMoodbar;
-        int theHueOrder;
 
         static bool s_pixmapChanged;
         static const QString &editingText();

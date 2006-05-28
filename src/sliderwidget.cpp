@@ -6,9 +6,7 @@
   email                : markey@web.de
   copyright            : (C) 2005 by Gábor Lehel
   email                : illissius@gmail.com
-  copyright            : (C) 2005 by Gav Wood
-  email                : gav@kde.org
-***************************************************************************/
+ ***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -22,18 +20,13 @@
 #include <config.h>
 
 #include "amarok.h"
-#include "amarokconfig.h"
 #include "app.h"
 #include "enginecontroller.h"
-#include "moodbar.h"
-#include "playlist.h"
 #include "sliderwidget.h"
-#include "threadweaver.h"
 
 #include <qapplication.h>
 #include <qbitmap.h>
 #include <qbrush.h>
-#include <qfile.h>
 #include <qimage.h>
 #include <qpainter.h>
 #include <qsize.h>
@@ -226,182 +219,6 @@ amaroK::PrettySlider::sizeHint() const
              : QSize( THICKNESS + MARGIN, maxValue() )).expandedTo( QApplit ication::globalStrut() );
 }
 #endif
-
-
-
-//////////////////////////////////////////////////////////////////////////////////////////
-/// CLASS TrackSlider
-//////////////////////////////////////////////////////////////////////////////////////////
-
-amaroK::TrackSlider::TrackSlider( QWidget *parent, uint max )
-   : amaroK::PrettySlider( Qt::Horizontal, parent, max ), theArrayChanged(true)
-{
-    EngineController::instance()->attach(this);
-}
-
-amaroK::TrackSlider::~TrackSlider()
-{
-    EngineController::instance()->detach(this);
-}
-
-void
-amaroK::TrackSlider::paintEvent( QPaintEvent * )
-{
-    const int w   = orientation() == Qt::Horizontal ? width() : height();
-    const int pos = int(double((w-2) * Slider::value()) / maxValue());
-    const int h   = (orientation() == Qt::Vertical ? width() : height()) - MARGIN;
-
-    QPixmap  buf( size() );
-    QPainter p( &buf, this );
-
-    buf.fill( parentWidget()->backgroundColor() );
-
-    if ( orientation() == Qt::Vertical )
-    {
-        p.translate( 0, height()-1 );
-        p.rotate( -90 ); //90 degrees clockwise
-    }
-
-    p.translate( 0, MARGIN );
-
-    if(WANT_MOODBAR && pos >= 0 && theArray.size())
-    {
-        if(theArrayChanged || theMoodbar.width() != w || theMoodbar.height() != h )
-        {
-            theMoodbar.resize(w, h);
-            QPainter paint(&theMoodbar);
-            // paint the moodbar
-            int samples = w;
-            int aSize = theArray.size();
-            for(int x = 0; x < w; x++)
-            {
-                uint a = x * aSize / samples, aa = ((x + 1) * aSize / samples);
-                if(a == aa) aa = a + 1;
-                float r = 0., g = 0., b = 0.;
-                for(uint j = a; j < aa; j++)
-                    if(j < theArray.size())
-                    {
-                        r += theArray[j].red();
-                        g += theArray[j].green();
-                        b += theArray[j].blue();
-                    }
-                    else
-                    {
-                        r += 220;
-                        g += 220;
-                        b += 220;
-                    }
-                int hue, s, v;
-                QColor(CLAMP(0, int(r / float(aa - a)), 255), CLAMP(0, int(g / float(aa - a)), 255), CLAMP(0, int(b / float(aa - a)), 255), QColor::Rgb).getHsv(&hue, &s, &v);
-                for(int y = 0; y <= h / 2; y++)
-                {
-                    float coeff = float(y) / float(h / 2);
-                    float coeff2 = 1.f - ((1.f - coeff) * (1.f - coeff));
-                    coeff = 1.f - (1.f - coeff) / 2.f;
-                    coeff2 = 1.f - (1.f - coeff2) / 2.f;
-                    paint.setPen( QColor(hue, CLAMP(0, int(s * coeff), 255), CLAMP(0, int(255 - (255 - v) * coeff2), 255), QColor::Hsv) );
-                    paint.drawPoint(x, y);
-                    paint.drawPoint(x, h - 1 - y);
-                }
-            }
-        }
-        p.drawPixmap(0, 0, theMoodbar);
-        theArrayChanged = false;
-    }
-    else
-        p.fillRect( 0, 0, pos, h, QColor( amaroK::ColorScheme::Background ) );
-
-    p.setPen( amaroK::ColorScheme::Foreground );
-    p.drawRect( 0, 0, w, h );
-    p.translate( 0, -MARGIN );
-
-    //<Triangle Marker>
-    QPointArray pa( 3 );
-    pa.setPoint( 0, pos - 5, 1 );
-    pa.setPoint( 1, pos + 5, 1 );
-    pa.setPoint( 2, pos,     9 );
-    p.setBrush( paletteForegroundColor() );
-    p.drawConvexPolygon( pa );
-    //</Triangle Marker>
-
-    p.end();
-
-    bitBlt( this, 0, 0, &buf );
-}
-
-void amaroK::TrackSlider::newMoodData()
-{
-    engineNewMetaData(theBundle, false);
-}
-
-void amaroK::TrackSlider::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
-{
-    theBundle = bundle;
-    if(!WANT_MOODBAR) return;
-
-    theArray.clear();
-
-    uint samples = width() - 2;
-
-    if(bundle.url().isLocalFile())
-    {
-        QValueVector<QColor> array = amaroK::readMood(bundle.url().path());
-#ifdef HAVE_EXSCALIBAR
-        if(!array.size())
-        {
-            CreateMood *c = new CreateMood( bundle.url().path() );
-            connect(c, SIGNAL(completed(const QString)), SLOT(newMoodData()));
-            connect(c, SIGNAL(completed(const QString)), static_cast<QObject *>(Playlist::instance()), SLOT(fileHasMood( const QString )));
-            ThreadWeaver::instance()->queueJob( c );
-        }
-#endif
-        if(array.size())
-        {
-            qDebug("Loaded mood data with %zu samples", array.size());
-            theArray.resize(samples);
-            for(uint i = 0; i < samples; i++)
-            {
-                uint a = i * array.size() / samples, aa = ((i + 1) * array.size() / samples);
-                if(a == aa) aa = a + 1;
-                float r = 0., g = 0., b = 0.;
-                for(uint j = a; j < aa; j++)
-                {
-                    r += array[j].red();
-                    g += array[j].green();
-                    b += array[j].blue();
-                }
-                theArray[i] = QColor(int(r / float(aa - a)), int(g / float(aa - a)), int(b / float(aa - a)), QColor::Rgb);
-                int h, s, v;
-                theArray[i].getHsv(&h, &s, &v);
-                theArray[i].setHsv(h, s, v);
-            }
-            theArrayChanged = true;
-        }
-    }
-    else
-        qDebug("New track doesn't appear to be a file");
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
-/// CLASS MixedSlider
-//////////////////////////////////////////////////////////////////////////////////////////
-
-amaroK::MixedSlider::MixedSlider( QWidget *parent, uint max )
-   : amaroK::TrackSlider( parent, max )
-{
-}
-
-amaroK::MixedSlider::~MixedSlider()
-{
-    EngineController::instance()->detach(this);
-}
-
-void
-amaroK::MixedSlider::paintEvent( QPaintEvent *pEvent )
-{
-    if(WANT_MOODBAR) return TrackSlider::paintEvent( pEvent );
-    return QSlider::paintEvent( pEvent );
-}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// CLASS VolumeSlider

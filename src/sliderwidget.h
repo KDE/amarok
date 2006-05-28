@@ -23,13 +23,9 @@
 #include <kpixmap.h>
 #include <kurl.h>
 
-#include <qcolor.h>
 #include <qpixmap.h>
 #include <qslider.h>
 #include <qvaluevector.h>
-
-#include "engineobserver.h"
-#include "metabundle.h"
 
 class QPalette;
 class QTimer;
@@ -95,44 +91,6 @@ namespace amaroK
             PrettySlider( const PrettySlider& ); //undefined
             PrettySlider &operator=( const PrettySlider& ); //undefined
     };
-
-    class TrackSlider : public PrettySlider, public EngineObserver
-    {
-        Q_OBJECT
-            QValueVector<QColor> theArray;
-            QPixmap theMoodbar;
-            bool theArrayChanged;
-            MetaBundle theBundle;
-
-        public:
-            TrackSlider( QWidget *parent, uint max = 0 );
-            ~TrackSlider();
-            virtual void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
-            void setArraySize(const unsigned int i) { theArray.resize(i); for(unsigned int i = 0; i < theArray.size(); i++) theArray[i] = QColor("black"); }
-            void setArray(const unsigned int i, const QColor &c) { if(theArray.size() <= i) theArray.resize(i + 1); theArray[i] = c; }
-            const bool havePosition(const unsigned i) { if(theArray.size() <= i) theArray.resize(i + 1); return theArray[i].isValid(); }
-
-        protected:
-            virtual void paintEvent( QPaintEvent* );
-        public slots:
-            void newMoodData();
-    };
-
-    class MixedSlider : public TrackSlider
-    {
-        friend class TrackSlider;
-
-        Q_OBJECT
-
-        public:
-            MixedSlider( QWidget *parent, uint max = 0 );
-            ~MixedSlider();
-
-        protected:
-            virtual void paintEvent( QPaintEvent* );
-
-    };
-
 
     class VolumeSlider: public Slider
     {

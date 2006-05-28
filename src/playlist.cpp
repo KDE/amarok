@@ -303,8 +303,6 @@ Playlist::Playlist( QWidget *parent )
     setColumnWidth( PlaylistItem::Artist, 100 );
     setColumnWidth( PlaylistItem::Album,  100 );
     setColumnWidth( PlaylistItem::Length, 80 );
-    if( AmarokConfig::showMoodbar() )
-        setColumnWidth( PlaylistItem::Mood, 40 );
     if( AmarokConfig::useRatings() )
         setColumnWidth( PlaylistItem::Rating, PlaylistItem::ratingColumnWidth() );
 
@@ -965,13 +963,16 @@ void Playlist::restoreLayout(KConfig *config, const QString &group)
     {
         bool found = false;
         for( int ii = i; i < PlaylistItem::NUM_COLUMNS; ++ii ) //most likely, it's where we left it
+        {
             if( names[i] == PlaylistItem::exactColumnName(ii) )
             {
                 iorder.append(ii);
                 found = true;
                 break;
             }
+        }
         if( !found )
+        {
             for( int ii = 0; ii < i; ++ii ) //but maybe it's not
                 if( names[i] == PlaylistItem::exactColumnName(ii) )
                 {
@@ -979,6 +980,7 @@ void Playlist::restoreLayout(KConfig *config, const QString &group)
                     found = true;
                     break;
                 }
+        }
         if( !found )
             return; //oops? -- revert to the default.
     }
@@ -1031,8 +1033,6 @@ void Playlist::restoreLayout(KConfig *config, const QString &group)
     hideColumn( PlaylistItem::Score );
   if( !AmarokConfig::useRatings() )
     hideColumn( PlaylistItem::Rating );
-  if( !AmarokConfig::showMoodbar() )
-    hideColumn( PlaylistItem::Mood );
 }
 
 void
@@ -2593,7 +2593,6 @@ Playlist::viewportResizeEvent( QResizeEvent *e )
         case PlaylistItem::Length:
         case PlaylistItem::Year:
         case PlaylistItem::DiscNumber:
-        case PlaylistItem::Mood:
             break; //these columns retain their width - their items tend to have uniform size
         default:
             if( m_columnFraction[c] > 0 )
@@ -2610,11 +2609,6 @@ Playlist::viewportResizeEvent( QResizeEvent *e )
 void
 Playlist::columnResizeEvent( int col, int oldw, int neww )
 {
-    if( col == PlaylistItem::Mood && oldw == 0 && neww > 0 )
-    {
-        refreshMoods();
-    }
-
     if ( !m_smartResizing )
         return;
     //prevent recursion
@@ -2645,7 +2639,6 @@ Playlist::columnResizeEvent( int col, int oldw, int neww )
             case PlaylistItem::Length:
             case PlaylistItem::Year:
             case PlaylistItem::DiscNumber:
-            case PlaylistItem::Mood:
                 break;
             default:
                 if( m_columnFraction[c] > 0 )
@@ -2690,7 +2683,6 @@ Playlist::columnResizeEvent( int col, int oldw, int neww )
         case PlaylistItem::Length:
         case PlaylistItem::Year:
         case PlaylistItem::DiscNumber:
-        case PlaylistItem::Mood:
             break;
         default:
             w += columnWidth( x );
@@ -2737,11 +2729,6 @@ Playlist::eventFilter( QObject *o, QEvent *e )
                 sub.insertItem( columnText( i ), i, i + 1 );
         sub.setItemVisible( PlaylistItem::Score, AmarokConfig::useScores() );
         sub.setItemVisible( PlaylistItem::Rating, AmarokConfig::useRatings() );
-        sub.setItemVisible( PlaylistItem::Mood, AmarokConfig::showMoodbar() );
-
-        //TODO for 1.2.1
-        //sub.insertSeparator();
-        //sub.insertItem( i18n("&Add Custom Column..."), CUSTOM ); //TODO
 
         popup.insertItem( i18n("&Show Column" ), &sub );
 
@@ -3543,38 +3530,6 @@ Playlist::updateMetaData( const MetaBundle &mb ) //SLOT
             (*it)->copyFrom( mb );
             (*it)->filter( m_filter );
         }
-}
-
-void
-Playlist::fileHasMood( const QString path )
-{
-    for( MyIt it( this, MyIt::All ); *it; ++it )
-        if( (*it)->url().isLocalFile() && (*it)->url().path() == path )
-            (*it)->checkMood();
-
-    amaroK::MixedSlider *s = dynamic_cast<amaroK::MixedSlider *>( amaroK::StatusBar::instance()->slider() );
-    if( s )
-        s->newMoodData();
-}
-
-void
-Playlist::refreshMoods()
-{
-    for( MyIt it( this, MyIt::All ); *it; ++it )
-        if( (*it)->url().isLocalFile() )
-            (*it)->checkMood();
-}
-
-void
-Playlist::applySettings()
-{
-    if( AmarokConfig::showMoodbar() ) refreshMoods();
-
-    if( !AmarokConfig::showMoodbar() && columnWidth( PlaylistItem::Mood ) )
-    {
-        AmarokConfig::setMoodbarColumnSize( columnWidth( PlaylistItem::Mood ) );
-        setColumnWidth( PlaylistItem::Mood, 0 );
-    }
 }
 
 void

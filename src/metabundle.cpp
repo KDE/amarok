@@ -109,7 +109,6 @@ const QString MetaBundle::exactColumnName( int c ) //static
         case PlayCount:  return "PlayCount";
         case LastPlayed: return "LastPlayed";
         case Filesize:   return "Filesize";
-        case Mood:       return "Mood";
     }
     return "<ERROR>";
 }
@@ -137,7 +136,6 @@ const QString MetaBundle::prettyColumnName( int index ) //static
         case Rating:     return i18n( "Rating"      );
         case PlayCount:  return i18n( "Play Count"  );
         case LastPlayed: return i18n( "Last Played" );
-        case Mood:       return i18n( "Mood"        );
         case Filesize:   return i18n( "File Size"   );
     }
     return "This is a bug.";
@@ -672,7 +670,6 @@ QString MetaBundle::exactText( int column ) const
         case PlayCount:  return QString::number( playCount() );
         case LastPlayed: return QString::number( lastPlay() );
         case Filesize:   return QString::number( filesize() );
-        case Mood:       return QString::null;
         default: warning() << "Tried to get the text of a nonexistent column! [" << column << endl;
     }
 
@@ -704,7 +701,6 @@ QString MetaBundle::prettyText( int column ) const
         case PlayCount:  text = QString::number( playCount() );                                      break;
         case LastPlayed: text = amaroK::verboseTimeSince( lastPlay() );                              break;
         case Filesize:   text = prettyFilesize();                                                    break;
-        case Mood:       text = QString::null;                                                       break;
         default: warning() << "Tried to get the text of a nonexistent column!" << endl;              break;
     }
 
@@ -969,7 +965,7 @@ MetaBundle::fuzzyTime( int time )
 {
     QString s;
     int secs=0, min=0, hr=0, day=0;
-    
+
     if( time == Undetermined )
         return i18n( "?" );
     if( time == Irrelevant )
@@ -1281,7 +1277,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
                 createID = 1;
             else
             {
-                TagLib::ID3v2::UniqueFileIdentifierFrame* ufidf = 
+                TagLib::ID3v2::UniqueFileIdentifierFrame* ufidf =
                         dynamic_cast<TagLib::ID3v2::UniqueFileIdentifierFrame*>(
                                     file->ID3v2Tag()->frameListMap()["UFID"].front() );
                 if( TStringToQString( ufidf->owner() ) != ourId || recreate )

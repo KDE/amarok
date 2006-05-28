@@ -10,6 +10,7 @@ VERSION 1.4.1:
       <andres.oton@gmail.com>. (BR 103185)
 
   CHANGES:
+    * MoodBar has been removed.
     * Use KMimeType for resolving file type for metadata acquisition before
       falling back to extension based guessing.
     * Removed the "detailed mode" in the playlist-browser.

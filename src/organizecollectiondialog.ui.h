@@ -28,7 +28,7 @@ QString OrganizeCollectionDialog::buildDestination( const QString &format, const
     albumartist = cleanPath( albumartist );
     for( int i = 0; i < MetaBundle::NUM_COLUMNS; i++ )
     {
-        if( i == MetaBundle::Mood || i == MetaBundle::Score || i == MetaBundle::PlayCount || i == MetaBundle::LastPlayed )
+        if( i == MetaBundle::Score || i == MetaBundle::PlayCount || i == MetaBundle::LastPlayed )
             continue;
         args[mb.exactColumnName( i ).lower()] = cleanPath( mb.prettyText( i ) );
     }
@@ -58,7 +58,7 @@ QString OrganizeCollectionDialog::buildFormatTip() const
     QMap<QString, QString> args;
     for( int i = 0; i < MetaBundle::NUM_COLUMNS; i++ )
     {
-        if( i == MetaBundle::Mood || i == MetaBundle::Score || i == MetaBundle::PlayCount || i == MetaBundle::LastPlayed )
+        if( i == MetaBundle::Score || i == MetaBundle::PlayCount || i == MetaBundle::LastPlayed )
             continue;
         args[MetaBundle::exactColumnName( i ).lower()] = MetaBundle::prettyColumnName( i );
     }

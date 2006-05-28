@@ -45,13 +45,6 @@ email                : markey@web.de
 #include <kurldrag.h>
 #include <kwin.h>            //eventFilter()
 
-#ifdef HAVE_EXSCALIBAR
-#define WANT_MOODBAR AmarokConfig::showMoodbar()
-#else
-#define WANT_MOODBAR false
-#endif
-
-
 //simple function for fetching amarok images
 namespace amaroK
 {
@@ -109,7 +102,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
         move( AmarokConfig::playerPos() );
 
     setModifiedPalette();
-    setFixedSize( 311, WANT_MOODBAR ? 147 : 140 );
+    setFixedSize( 311, 140 );
     setCaption( "amaroK" );
     setAcceptDrops( true );
 
@@ -125,7 +118,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
 
     { //<NavButtons>
         //NOTE we use a layout for the buttons so resizing will be possible
-        m_pFrameButtons = createWidget<QHBox>( QRect(0, WANT_MOODBAR ? 125 : 118, 311, 22), this );
+        m_pFrameButtons = createWidget<QHBox>( QRect(0, 118, 311, 22), this );
 
         KActionCollection *ac =amaroK::actionCollection();
 
@@ -147,10 +140,10 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
     } //</NavButtons>
 
     { //<Sliders>
-        m_pSlider    = new amaroK::TrackSlider( this );
+        m_pSlider    = new amaroK::PrettySlider( Qt::Horizontal, this );
         m_pVolSlider = new amaroK::PrettySlider( Qt::Vertical, this, amaroK::VOLUME_MAX );
 
-        m_pSlider->setGeometry( 4,103, 303, WANT_MOODBAR ? 19 : 12 );
+        m_pSlider->setGeometry( 4,103, 303, 12 );
         m_pVolSlider->setGeometry( 294,18, 12,79 );
         m_pVolSlider->setValue( AmarokConfig::masterVolume() );
 
@@ -486,10 +479,7 @@ void PlayerWidget::applySettings()
     }
 
     if(m_pAnalyzer)
-    {
         setMinimalView(m_minimalView);
-        dynamic_cast<amaroK::TrackSlider *>(m_pSlider)->newMoodData();
-    }
 }
 
 void PlayerWidget::setMinimalView( bool enable )
@@ -505,8 +495,8 @@ void PlayerWidget::setMinimalView( bool enable )
     if( enable )
     {
         uint space = 2;
-        m_pScrollFrame->setGeometry ( 6,space,  m_pScrollFrame->width(),  m_pScrollFrame->height() );
-        m_pSlider->setGeometry      ( 4,space + m_pScrollFrame->height(), 303,WANT_MOODBAR ? 19 : 12 );
+        m_pScrollFrame->setGeometry ( 6,space,  m_pScrollFrame->width(), m_pScrollFrame->height() );
+        m_pSlider->setGeometry      ( 4,space + m_pScrollFrame->height(), 303, 12 );
         m_pFrameButtons->setGeometry( 0,space + m_pScrollFrame->height() + m_pSlider->height(), 311,22 );
         uint height = m_pFrameButtons->height() + m_pScrollFrame->height() + m_pSlider->height() + space;
         setFixedSize( 311, height );
@@ -515,9 +505,9 @@ void PlayerWidget::setMinimalView( bool enable )
     else
     {
         m_pScrollFrame->setGeometry( 6,18, m_pScrollFrame->width(),m_pScrollFrame->height() );
-        m_pSlider->setGeometry( 4,103, 303,WANT_MOODBAR ? 19 : 12 );
-        m_pFrameButtons->setGeometry(0, WANT_MOODBAR ? 125 : 118, 311,22);
-        setFixedSize( 311, WANT_MOODBAR ? 147 : 140 );
+        m_pSlider->setGeometry( 4,103, 303,12 );
+        m_pFrameButtons->setGeometry(0,118, 311,22);
+        setFixedSize( 311, 140 );
         AmarokConfig::setPlayerWindowMinimalView( false );
     }
 

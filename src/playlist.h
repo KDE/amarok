@@ -51,8 +51,6 @@ class QLabel;
 class QTimer;
 
 class Medium;
-class ReadMood;
-namespace amaroK { class TrackSlider; }
 
 /**
  * @authors Mark Kretschmann && Max Howell
@@ -171,8 +169,6 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         enum StopAfterMode { DoNotStop, StopAfterCurrent, StopAfterQueue, StopAfterOther };
 
         class QDragObject *dragObject();
-        friend class amaroK::TrackSlider;
-        friend class PlaylistItem::ReadMood;
         friend class PlaylistItem;
         friend class UrlLoader;
         friend class QueueManager;
@@ -235,9 +231,6 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void shuffle();
         void undo();
         void updateMetaData( const MetaBundle& );
-        void fileHasMood( const QString path );
-        void refreshMoods();
-        void applySettings();
         void adjustColumn( int n );
         void checkDisabledChildren( const QString &oldUrl, const QString &newUrl, const QString &uniqueid );
 

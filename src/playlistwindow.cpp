@@ -510,7 +510,6 @@ void PlaylistWindow::applySettings()
         ContextBrowser::instance()->unsetFont();
         break;
     }
-    Playlist::instance()->applySettings();
 }
 
 

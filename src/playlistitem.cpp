@@ -4,8 +4,6 @@
   begin                : Die Dez 3 2002
   copyright            : (C) 2002 by Mark Kretschmann
   email                : markey@web.de
-  copyright            : (C) 2005 by Gav Wood
-  email                : gav@kde.org
   copyright            : (C) 2005 by Alexandre Oliveira
   email                : aleprj@gmail.com
 ***************************************************************************/
@@ -28,7 +26,6 @@
 #include "debug.h"
 #include "playlist.h"
 #include "sliderwidget.h"
-#include "moodbar.h"
 
 #include <qcursor.h>
 #include <qheader.h>
@@ -64,14 +61,10 @@ PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi, bool e
         : MetaBundle( bundle ), KListViewItem( lvi->listView(), lvi->itemAbove() )
         , m_deleteAfterEdit( false )
         , m_isBeingRenamed( false )
-        , m_proxyForMoods( 0 )
 {
     setDragEnabled( true );
 
     m_atfEnabled = AmarokConfig::advancedTagFeatures();
-
-    if( AmarokConfig::showMoodbar() )
-        checkMood();
 
     refAlbum();
 
@@ -121,8 +114,6 @@ PlaylistItem::~PlaylistItem()
     if( listView()->m_hoveredRating == this )
         listView()->m_hoveredRating = 0;
 
-    delete m_proxyForMoods;
-
     if( m_atfEnabled )
         Playlist::instance()->removeDisabledChild( this );
 }
@@ -132,68 +123,6 @@ PlaylistItem::~PlaylistItem()
 // PUBLIC METHODS
 /////////////////////////////////////////////////////////////////////////////////////
 
-
-void PlaylistItem::setArray(const QValueVector<QColor> array)
-{
-    QMutexLocker lock(&theArrayLock);
-    theArray = array;
-}
-
-class PlaylistItem::ReadMood : public ThreadWeaver::DependentJob
-{
-    QString thePath;
-    QValueVector<QColor> theArray;
-public:
-    ReadMood( MoodProxyObject *o ): DependentJob(o, "ReadMood"), thePath( o->item->url().path()) {}
-    virtual bool doJob();
-    virtual void completeJob();
-};
-
-void PlaylistItem::ReadMood::completeJob()
-{
-    if(MoodProxyObject *o = dynamic_cast<MoodProxyObject *>(dependent()))
-    {
-        if(theArray.size())
-        {
-            o->item->setArray(theArray);
-            o->item->refreshMood();
-        }
-        #ifdef HAVE_EXSCALIBAR
-        else
-        {
-            amaroK::CreateMood *c = new amaroK::CreateMood( thePath );
-            Playlist::instance()->connect(c, SIGNAL(completed(const QString)), SLOT(fileHasMood( const QString )));
-            ThreadWeaver::instance()->queueJob( c );
-        }
-        #endif
-        o->item->m_proxyForMoods = 0;
-        o->deleteLater();
-    }
-}
-
-bool PlaylistItem::ReadMood::doJob()
-{
-    // attempt to open .mood file:
-    theArray = amaroK::readMood(thePath);
-    return true;
-}
-
-void PlaylistItem::refreshMood()
-{
-    theMoodbar.resize( 1, height() );
-    repaint();
-}
-
-void PlaylistItem::checkMood()
-{
-    Playlist *pl = Playlist::instance();
-    if( url().isLocalFile() && (pl && pl->columnWidth( Mood ) > 0) )
-    {
-        m_proxyForMoods = new MoodProxyObject( this );
-        ReadMood *c = new ReadMood( m_proxyForMoods );
-        ThreadWeaver::instance()->queueJob( c );
-    }
-}
 
 void PlaylistItem::setText( int column, const QString &text )
 {
@@ -513,7 +442,6 @@ PlaylistItem::compare( QListViewItem *i, int col, bool ascending ) const
         case LastPlayed: return cmp( lastPlay(),  i->lastPlay() );
         case Bitrate:    return cmp( bitrate(),   i->bitrate() );
         case Filesize:   return cmp( filesize(),  i->filesize() );
-        case Mood:       return cmp( theHueOrder, i->theHueOrder );
         case Year:
             if( year() == i->year() )
                 return compare( i, Artist, ascending );
@@ -570,80 +498,21 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
     QPixmap buf( width, height() );
     QPainter p( &buf, true );
 
-    QMutexLocker lock(&theArrayLock);
-    if( column == Mood && theArray.size() && length() > 0 )
+    if( isCurrent )
     {
-        if(theMoodbar.width() != width || theMoodbar.height() != height())
-        {
-            theMoodbar.resize(width, height());
-            QPainter paint(&theMoodbar);
-            // paint the moodbar
-            int samples = width;
-            int aSize = theArray.size() * 180 / length();
-            int quantise = 12;
-            QMemArray<int> modalHue(quantise);
-            for(int i = 0; i < quantise; i++) modalHue[i] = 0;
-            for(int x = 0; x < width; x++)
-            {
-                uint a = x * aSize / samples, aa = ((x + 1) * aSize / samples);
-                if(a == aa) aa = a + 1;
-                float r = 0., g = 0., b = 0.;
-                for(uint j = a; j < aa; j++)
-                    if(j < theArray.size())
-                    {
-                        r += theArray[j].red();
-                        g += theArray[j].green();
-                        b += theArray[j].blue();
-                    }
-                    else
-                    {
-                        r += 220;
-                        g += 220;
-                        b += 220;
-                    }
-                int h, s, v;
-                QColor(CLAMP(0, int(r / float(aa - a)), 255), CLAMP(0, int(g / float(aa - a)), 255), CLAMP(0, int(b / float(aa - a)), 255), QColor::Rgb).getHsv(&h, &s, &v);
-                modalHue[CLAMP(0, h * quantise / 360, quantise - 1)] += v;
-                for(int y = 0; y <= height() / 2; y++)
-                {
-                    float coeff = float(y) / float(height() / 2);
-                    float coeff2 = 1.f - ((1.f - coeff) * (1.f - coeff));
-                    coeff = 1.f - (1.f - coeff) / 2.f;
-                    coeff2 = 1.f - (1.f - coeff2) / 2.f;
-                    paint.setPen( QColor(h, CLAMP(0, int(s * coeff), 255), CLAMP(0, int(255 - (255 - v) * coeff2), 255), QColor::Hsv) );
-                    paint.drawPoint(x, y);
-                    paint.drawPoint(x, height() - 1 - y);
-                }
-            }
-            int mx = 0;
-            for(int i = 1; i < quantise; i++) if(modalHue[i] > modalHue[mx]) mx = i;
-            theHueOrder = mx * quantise * quantise;
-            modalHue[mx] = 0;
-            for(int i = 0; i < quantise; i++) if(modalHue[i] > modalHue[mx]) mx = i;
-            theHueOrder += mx * quantise;
-            modalHue[mx] = 0;
-            for(int i = 0; i < quantise; i++) if(modalHue[i] > modalHue[mx]) mx = i;
-            theHueOrder += mx;
-        }
-        p.drawPixmap( 0, 0, theMoodbar );
-    }
-    else
-    {
-        if( isCurrent )
-        {
-            static paintCacheItem paintCache[NUM_COLUMNS];
+        static paintCacheItem paintCache[NUM_COLUMNS];
 
-            // Convert intensity to string, so we can use it as a key
-            const QString colorKey = QString::number( glowIntensity );
+        // Convert intensity to string, so we can use it as a key
+        const QString colorKey = QString::number( glowIntensity );
 
-            const bool cacheValid =
-                paintCache[column].width == width &&
-                paintCache[column].height == height() &&
-                paintCache[column].text == colText &&
-                paintCache[column].font == painter->font() &&
-                paintCache[column].color == glowBase &&
-                paintCache[column].selected == isSelected() &&
-                !s_pixmapChanged;
+        const bool cacheValid =
+            paintCache[column].width == width &&
+            paintCache[column].height == height() &&
+            paintCache[column].text == colText &&
+            paintCache[column].font == painter->font() &&
+            paintCache[column].color == glowBase &&
+            paintCache[column].selected == isSelected() &&
+            !s_pixmapChanged;
 
             // If any parameter changed, we must regenerate all pixmaps
             if ( !cacheValid )
@@ -669,7 +538,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                     bg = listView()->colorGroup().highlight();
                 else
                     bg = isAlternate() ? listView()->alternateBackground() :
-                                         listView()->viewport()->backgroundColor();
+                                        listView()->viewport()->backgroundColor();
 
                 buf.fill( bg );
 
@@ -728,7 +597,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                 }
 
                 if( align != Qt::AlignCenter )
-                   align |= Qt::AlignVCenter;
+                align |= Qt::AlignVCenter;
 
                 if( column != Rating )
                 {
@@ -739,7 +608,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                     {
                         font = painter->font();
                         minbearing = painter->fontMetrics().minLeftBearing()
-                                     + painter->fontMetrics().minRightBearing();
+                                    + painter->fontMetrics().minRightBearing();
                     }
                     const bool italic = font.italic();
                     font.setItalic( !italic );
@@ -760,77 +629,76 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
             if( column == Rating )
                 drawRating( &p );
         }
-        else
+    else
+    {
+        const QColorGroup _cg = ( !exists() || !isEnabled() )
+                                ? listView()->palette().disabled()
+                                : listView()->palette().active();
+
+        QColor bg = isSelected()  ? _cg.highlight()
+                    : isAlternate() ? listView()->alternateBackground()
+                    : listView()->viewport()->backgroundColor();
+        #if KDE_IS_VERSION( 3, 3, 91 )
+        if( listView()->shadeSortColumn() && !isSelected() && listView()->columnSorted() == column )
         {
-            const QColorGroup _cg = ( !exists() || !isEnabled() )
-                                  ? listView()->palette().disabled()
-                                  : listView()->palette().active();
-
-            QColor bg = isSelected()  ? _cg.highlight()
-                        : isAlternate() ? listView()->alternateBackground()
-                        : listView()->viewport()->backgroundColor();
-            #if KDE_IS_VERSION( 3, 3, 91 )
-            if( listView()->shadeSortColumn() && !isSelected() && listView()->columnSorted() == column )
-            {
-                /* from klistview.cpp
-                  Copyright (C) 2000 Reginald Stadlbauer <reggie@kde.org>
-                  Copyright (C) 2000,2003 Charles Samuels <charles@kde.org>
-                  Copyright (C) 2000 Peter Putzer */
-                if ( bg == Qt::black )
-                    bg = QColor(55, 55, 55);  // dark gray
-                else
-                {
-                    int h,s,v;
-                    bg.hsv(&h, &s, &v);
-                    if ( v > 175 )
-                        bg = bg.dark(104);
-                    else
-                       bg = bg.light(120);
-                }
-            }
-            #endif
-
-            const QColor textc = isSelected() ? _cg.highlightedText()
-                               : _cg.text();
-
-            buf.fill( bg );
-
-            // Draw column divider line
-            if( !isSelected() )
-            {
-                p.setPen( listView()->viewport()->colorGroup().mid() );
-                p.drawLine( width - 1, 0, width - 1, height() - 1 );
-            }
-
-            // Draw the pixmap, if present
-            int margin = listView()->itemMargin(), leftMargin = margin;
-            if ( pixmap( column ) ) {
-                p.drawPixmap( leftMargin, height() / 2 - pixmap( column )->height() / 2, *pixmap( column ) );
-                leftMargin += pixmap( column )->width();
-            }
-
-            if( align != Qt::AlignCenter )
-                align |= Qt::AlignVCenter;
-
-            if( column == Rating )
-                drawRating( &p );
+            /* from klistview.cpp
+                Copyright (C) 2000 Reginald Stadlbauer <reggie@kde.org>
+                Copyright (C) 2000,2003 Charles Samuels <charles@kde.org>
+                Copyright (C) 2000 Peter Putzer */
+            if ( bg == Qt::black )
+                bg = QColor(55, 55, 55);  // dark gray
             else
             {
-                // Draw the text
-                static QFont font;
-                static int minbearing = 1337 + 666; //can be 0 or negative, 2003 is less likely
-                if( minbearing == 2003 || font != painter->font() )
-                {
-                    font = painter->font(); //getting your bearings can be expensive, so we cache them
-                    minbearing = painter->fontMetrics().minLeftBearing()
-                                 + painter->fontMetrics().minRightBearing();
-                }
-                p.setFont( font );
-                p.setPen( textc );
-                const int _width = width - leftMargin - margin + minbearing - 1; // -1 seems to be necessary
-                const QString _text = KStringHandler::rPixelSqueeze( colText, painter->fontMetrics(), _width );
-                p.drawText( leftMargin, 0, _width, height(), align, _text );
+                int h,s,v;
+                bg.hsv(&h, &s, &v);
+                if ( v > 175 )
+                    bg = bg.dark(104);
+                else
+                    bg = bg.light(120);
             }
+        }
+        #endif
+
+        const QColor textc = isSelected() ? _cg.highlightedText()
+                            : _cg.text();
+
+        buf.fill( bg );
+
+        // Draw column divider line
+        if( !isSelected() )
+        {
+            p.setPen( listView()->viewport()->colorGroup().mid() );
+            p.drawLine( width - 1, 0, width - 1, height() - 1 );
+        }
+
+        // Draw the pixmap, if present
+        int margin = listView()->itemMargin(), leftMargin = margin;
+        if ( pixmap( column ) ) {
+            p.drawPixmap( leftMargin, height() / 2 - pixmap( column )->height() / 2, *pixmap( column ) );
+            leftMargin += pixmap( column )->width();
+        }
+
+        if( align != Qt::AlignCenter )
+            align |= Qt::AlignVCenter;
+
+        if( column == Rating )
+            drawRating( &p );
+        else
+        {
+            // Draw the text
+            static QFont font;
+            static int minbearing = 1337 + 666; //can be 0 or negative, 2003 is less likely
+            if( minbearing == 2003 || font != painter->font() )
+            {
+                font = painter->font(); //getting your bearings can be expensive, so we cache them
+                minbearing = painter->fontMetrics().minLeftBearing()
+                                + painter->fontMetrics().minRightBearing();
+            }
+            p.setFont( font );
+            p.setPen( textc );
+            const int _width = width - leftMargin - margin + minbearing - 1; // -1 seems to be necessary
+            const QString _text = KStringHandler::rPixelSqueeze( colText, painter->fontMetrics(), _width );
+            p.drawText( leftMargin, 0, _width, height(), align, _text );
         }
     }
     /// Track action symbols

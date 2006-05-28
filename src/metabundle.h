@@ -68,7 +68,6 @@ public:
         Rating,
         PlayCount,
         LastPlayed,
-        Mood,
         Filesize,
         NUM_COLUMNS
     };

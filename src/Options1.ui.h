@@ -19,12 +19,6 @@
 
 void Options1::init()
 {
-#ifndef HAVE_EXSCALIBAR
-    moodFrame->hide();
-#else
-    slotUpdateMoodFrame();
-#endif
-
     QStringList browsers;
     browsers << "konqueror" << "firefox" << "opera" << "galeon" << "epiphany"
              << "safari" << "mozilla";
@@ -43,12 +37,4 @@ void Options1::init()
     kComboBox_browser->setCurrentItem( AmarokConfig::externalBrowser() == "kfmclient openURL" ?
                                        0 :
                                        browsers.findIndex( AmarokConfig::externalBrowser() ) );
-}
-
-
-void Options1::slotUpdateMoodFrame()
-{
-    kcfg_MakeMoodier->setEnabled(kcfg_ShowMoodbar->isChecked());
-    kcfg_AlterMood->setEnabled(kcfg_ShowMoodbar->isChecked() && kcfg_MakeMoodier->isChecked());
-    kcfg_MoodsWithMusic->setEnabled(kcfg_ShowMoodbar->isChecked());
 }
