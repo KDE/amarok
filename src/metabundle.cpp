@@ -964,7 +964,7 @@ QString
 MetaBundle::fuzzyTime( int time )
 {
     QString s;
-    int secs=0, min=0, hr=0, day=0;
+    int secs=0, min=0, hr=0, day=0, week=0;
 
     if( time == Undetermined )
         return i18n( "?" );
@@ -981,11 +981,16 @@ MetaBundle::fuzzyTime( int time )
     time /= 24;
     if( time )
         day = time ; //days
+    time /= 7;
+    if( time )
+	week = time ; //weeks
 
-    if ( day )
-        return i18n( "days", "%1d" ).arg( QString::number( day + (float( hr ) / 24), 'f', 1 ));
+    if ( week ) 
+	return i18n( "%1 weeks" ).arg( QString::number( week + (float( day ) / 7), 'f', 1 ));
+    else if ( day )
+        return i18n( "%1 days" ).arg( QString::number( day + (float( hr ) / 24), 'f', 1 ));
     else if ( hr )
-        return i18n( "hours", "%1h" ).arg( QString::number( hr + (float( min ) / 60), 'f', 1 ));
+        return i18n( "%1 hours" ).arg( QString::number( hr + (float( min ) / 60), 'f', 1 ));
     else
         return i18n( "%1:%2").arg( min ).arg( zeroPad( secs ) );
 }
