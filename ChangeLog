@@ -5,7 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.4.1:
   FEATURES:
-    * LibVisual 0.4 supported and required
+    * LibVisual 0.4 supported and required.
     * Support for custom scoring algorithms, via scripts.
     * Creative Nomad Jukebox support (untested!). Submitted by Andres Oton
       <andres.oton@gmail.com>. (BR 103185)
@@ -19,12 +19,12 @@ VERSION 1.4.1:
     * Use KMimeType for resolving file type for metadata acquisition before
       falling back to extension based guessing.
     * Removed the "detailed mode" in the playlist-browser.
-    * Also copy non-local urls to collection when dropped onto collection
+    * Also copy non-local URLs to collection when dropped onto collection
       browser.
     * Speed up connecting media devices with a lot of tracks to be submitted
       to last.fm.
-    * For media without meta data, try to read metadata after transfer to
-      the iPod (e.g. when copying audio cd via kio slaves).
+    * For media without metadata, try to read metadata after transfer to
+      the iPod (e.g. when copying an audio CD via KIOslaves).
     * Hint at starting a transcode script for transcoding while transferring
       to media devices. (BR 127155)
     * If a disc number is present, append it to the album's name when
@@ -42,13 +42,13 @@ VERSION 1.4.1:
     * Show error message when xine mp3 decoder isn't installed, don't just
       play next track.
     * Properly render and optimise playlist loading icons.
-    * Properly import and save XSPF playlist formats.
+    * Properly import and export XSPF playlist formats.
     * Optimise addition of playlists to the playlistbrowser.
     * In context browser, show localized date for podcasts. (BR 127853)
     * Regression in dynamic mode caused it to skip the first track in the
       playlist whenever it was started. (BR 127451)
     * Stop Playing after Track: remember current track (BR 127312)
-    * Radio streams were broken for protocols other than http. (BR 127848)
+    * Radio streams were broken for protocols other than HTTP. (BR 127848)
     * Collection Browser would not set/unset/burn albums with ', The' in
       their name.
     * Prevent breakage when xine couldn't initialize the audio device. Patch
