@@ -36,8 +36,12 @@
 #include "statusbar.h"
 #include "threadweaver.h"
 
-#include "inotify/inotify.h"
-#include "inotify/inotify-syscalls.h"
+#include <sys/syscall.h>
+
+#ifdef syscall
+    #include "inotify/inotify.h"
+    #include "inotify/inotify-syscalls.h"
+#endif
 
 #include <qbuffer.h>
 #include <qcheckbox.h>
@@ -101,8 +105,7 @@ QMap<QThread *, DbConnection *> *CollectionDB::threadConnections = new QMap<QThr
 INotify::INotify( QObject *parent, int fd )
     : DependentJob( parent, "INotify" )
     , m_fd( fd )
-{
-}
+{}
 
 
 INotify::~INotify()
@@ -112,6 +115,7 @@ INotify::~INotify()
 bool
 INotify::doJob()
 {
+#ifdef _LINUX_INOTIFY_H
     DEBUG_BLOCK
 
     /* size of the event structure, not counting name */
@@ -152,6 +156,7 @@ INotify::doJob()
                 }
         }
     }
+#endif
 }
 
 
@@ -215,13 +220,17 @@ CollectionDB::CollectionDB()
 
     connect( qApp, SIGNAL( aboutToQuit() ), this, SLOT( disableAutoScoring() ) );
 
+#ifdef _LINUX_INOTIFY_H
     // Try to initialize inotify, if not available use the old timer approach.
     m_inotify = inotify_init();
     if ( m_inotify < 0 )
+#endif
     {
         debug() << "INotify not available, using QTimer!" << endl;
         startTimer( MONITOR_INTERVAL * 1000 );
-    } else
+    }
+#ifdef _LINUX_INOTIFY_H
+    else
     {
         debug() << "INotify enabled!" << endl;
         const QStringList values = query( "SELECT dir FROM directories;" );
@@ -237,6 +246,7 @@ CollectionDB::CollectionDB()
 
         ThreadWeaver::instance()->onlyOneJob( new INotify( this, m_inotify ) );
     }
+#endif
 
     connect( this, SIGNAL( coverRemoved( const QString&, const QString& ) ),
                    SIGNAL( coverChanged( const QString&, const QString& ) ) );
