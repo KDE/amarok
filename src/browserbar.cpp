@@ -330,37 +330,4 @@ BrowserBar::indexForName( const QString &name ) const
     return -1;
 }
 
-void
-BrowserBar::engineStateChanged( Engine::State state, Engine::State oldState )
-{
-    if( !AmarokConfig::autoShowContextBrowser() || m_currentIndex == -1 )
-        return;
-
-#if 0
-    switch( state ) {
-    case Engine::Playing:
-
-        if( oldState != Engine::Paused && m_currentIndex != -1 ) {
-            m_lastIndex = m_currentIndex;
-            showBrowser( "ContextBrowser" );
-        }
-
-        // we watch for any event, if there's some event we reset the timer
-//         currentBrowser()->installEventFilter( this );
-//         currentBrowser()->setMouseTracking( true );
-//         killTimers();
-//         startTimer( 5000 );
-        break;
-
-    case Engine::Empty:
-
-        if( m_lastIndex >= 0 )
-            showBrowser( m_lastIndex );
-
-    default:
-        ;
-    }
-#endif
-}
-
 #include "browserbar.moc"

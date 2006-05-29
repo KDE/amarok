@@ -53,9 +53,6 @@ protected:
     virtual bool event( QEvent* );
     virtual void polish();
 
-protected:
-    virtual void engineStateChanged( Engine::State, Engine::State = Engine::Empty );
-
 public slots:
     void showBrowser( const QString& name ) { showBrowser( indexForName( name ) ); }
     void showBrowser( int index ) { if( index != m_currentIndex ) showHideBrowser( index ); }
