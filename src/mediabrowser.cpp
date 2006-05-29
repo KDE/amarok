@@ -26,6 +26,7 @@
 #include "mediumpluginmanager.h"
 #include "metabundle.h"
 #include "playlist.h"
+#include "playlistbrowseritem.h"
 #include "playlistloader.h"
 #include "pluginmanager.h"
 #include "podcastbundle.h"
@@ -361,6 +362,20 @@ MediaBrowser::MediaBrowser( const char *name )
             break;
         }
     }
+}
+
+bool
+MediaBrowser::blockQuit() const
+{
+    for( QValueList<MediaDevice *>::const_iterator it = m_devices.begin();
+            it != m_devices.end();
+            ++it )
+    {
+        if( *it && (*it)->isConnected() )
+            return true;
+    }
+
+    return false;
 }
 
 void
@@ -1304,7 +1319,7 @@ MediaView::contentsDropEvent( QDropEvent *e )
                     it != values.end();
                     it++ )
             {
-                it += 11;
+                it += SmartPlaylist::NumReturnValues-2;
                 list += KURL::fromPathOrURL( *it );
                 it++;
             }
@@ -3075,7 +3090,7 @@ MediaQueue::dropEvent( QDropEvent *e )
                 it != values.end();
                 it++ )
         {
-            it += 11;
+            it += SmartPlaylist::NumReturnValues-2;
             list += KURL::fromPathOrURL( *it );
             it++;
         }

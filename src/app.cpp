@@ -30,6 +30,7 @@ email                : markey@web.de
 #include "enginecontroller.h"
 #include "equalizersetup.h"
 #include "firstrunwizard.h"
+#include "mediabrowser.h"
 #include "metabundle.h"
 #include "osd.h"
 #include "playerwindow.h"
@@ -1102,6 +1103,12 @@ QWidget *App::mainWindow() const
 void App::quit()
 {
     emit prepareToQuit();
+    if( MediaBrowser::instance()->blockQuit() )
+    {
+        // don't quit yet, as some media devices still have to finish transferring data
+        QTimer::singleShot( 100, this, SLOT( quit() ) );
+        return;
+    }
     KApplication::quit();
 }
 

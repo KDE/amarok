@@ -161,6 +161,7 @@ class MediaBrowser : public QVBox
 
         MediaBrowser( const char *name );
         virtual ~MediaBrowser();
+        bool blockQuit() const;
         MediaDevice *currentDevice();
         MediaDevice *deviceFromId( const QString &id );
         QStringList deviceNames();

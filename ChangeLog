@@ -14,6 +14,8 @@ VERSION 1.4.1:
       updated as soon as a watched folder has changed.
 
   CHANGES:
+    * Block quitting amaroK until all on-going media device operations have
+      finished with a consistent state.
     * Interface choice in wizard removed.
     * MoodBar has been removed.
     * Use KMimeType for resolving file type for metadata acquisition before

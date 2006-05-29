@@ -2321,7 +2321,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                     const QStringList values = CollectionDB::instance()->query( static_cast<SmartPlaylist *>(item)->query() );
                     int i=0;
                     for( for_iterators( QStringList, values ); it != end; ++it ) {
-                        if(i%13 == 11)
+                        if(i%SmartPlaylist::NumReturnValues == SmartPlaylist::NumReturnValues-2)
                         {
                             urls << KURL::fromPathOrURL( *it );
                         }

@@ -412,6 +412,7 @@ class StreamEditor : public KDialogBase
 class SmartPlaylist : public PlaylistBrowserEntry
 {
     public:
+        enum { NumReturnValues = 14 }; // keep in sync with SmartPlaylistEditor
         SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QString &name, const QString &query );
         SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QString &name,
                                                         const QString &urls, const QString &tags );
