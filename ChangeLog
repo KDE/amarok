@@ -9,7 +9,7 @@ VERSION 1.4.1:
     * Support for custom scoring algorithms, via scripts.
     * Creative Nomad Jukebox support (untested!). Submitted by Andres Oton
       <andres.oton@gmail.com>. (BR 103185)
-    * Inotify support.  On kernels 2.6.13 and above with Inotify support
+    * Inotify support. On kernels 2.6.13 and above with Inotify support
       compiled in, the collection will autmoatically be rescanned and
       updated as soon as a watched folder has changed.
 
@@ -36,7 +36,7 @@ VERSION 1.4.1:
       dcop, for instance) while already playing a track. Instead it restarts
       the current one.
     * The Actions menu has been renamed the Engage menu. It's way cooler,
-      right?  I mean, Star Trek is really cool, right?
+      right? I mean, Star Trek is really cool, right?
 
   BUGFIXES:
     * Show error message when xine mp3 decoder isn't installed, don't just
