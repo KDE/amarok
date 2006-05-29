@@ -157,6 +157,8 @@ INotify::doJob()
         }
     }
 #endif
+    //this shouldn't happen
+    return 0;
 }
 
 
@@ -704,7 +706,7 @@ CollectionDB::createPersistentTables()
 
     // create lyrics table
     query( QString( "CREATE TABLE lyrics ("
-            "url " + textColumnType() + ","
+            "url " + textColumnType() + ", "
             "lyrics " + longTextColumnType() + ");" ) );
 
     // create labels table
@@ -712,8 +714,15 @@ CollectionDB::createPersistentTables()
         "url " + textColumnType() + ","
         "label " + textColumnType() + ");" ) );
 
+    query( QString( "CREATE TABLE playlists ("
+            "playlist " + textColumnType() + ", "
+            "url " + textColumnType() + ", "
+            "tracknum INTEGER );" ) );
+
     query( "CREATE INDEX url_label ON label( url );" );
     query( "CREATE INDEX label_label ON label( label );" );
+    query( "CREATE INDEX playlist_playlists ON playlists( playlist );" );
+    query( "CREATE INDEX url_playlists ON playlists( url );" );
 }
 
 void
@@ -787,7 +796,7 @@ CollectionDB::dropPersistentTables()
     query( "DROP TABLE amazon;" );
     query( "DROP TABLE lyrics;" );
     query( "DROP TABLE label;" );
-    query( "DROP TABLE uniqueid;" );
+    query( "DROP TABLE playlists;" );
 }
 
 
@@ -2635,6 +2644,9 @@ fillInBundle( QStringList values, MetaBundle &bundle )
     bool ok;
     int val = (*it).toInt( &ok );
     bundle.setCompilation( ok ? val : MetaBundle::CompilationUnknown );
+
+    if( AmarokConfig::advancedTagFeatures() )
+        bundle.setUniqueId();
 }
 
 bool
@@ -3132,6 +3144,10 @@ CollectionDB::migrateFile( const QString &oldURL, const QString &newURL )
         .arg( escapeString( oldURL ) ) );
 
     query( QString( "UPDATE uniqueid SET url = '%1' WHERE url = '%2';" )
+        .arg( escapeString( newURL ),
+              escapeString( oldURL ) ) );
+
+    query( QString( "UPDATE playlists SET url = '%1' WHERE url = '%2';" )
         .arg( escapeString( newURL ),
               escapeString( oldURL ) ) );
 }
@@ -3664,6 +3680,7 @@ CollectionDB::updateURL( const QString &url, const bool updateView )
     bundle.readTags( TagLib::AudioProperties::Fast );
 
     updateTags( url, bundle, updateView);
+    doATFStuff( &bundle, false );
 }
 
 QString
@@ -4262,7 +4279,12 @@ CollectionDB::initialize()
         {
             debug() << "This is used to handle problems from uniqueid changeover and should not do anything" << endl;
         }
-        else if ( PersistentVersion.toInt() == 11 )
+        else if ( PersistentVersion.toInt() < 12 )
+        {
+            debug() << "Adding playlists table..." << endl;
+            createPersistentTables();
+        }
+        else if ( PersistentVersion.toInt() == 12 )
         {
             //UP-TO-DATE!  Keep that number in sync to make things easier.
         }
