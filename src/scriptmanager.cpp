@@ -142,14 +142,17 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
 
 
     /// Category items
+    m_generalCategory    = new KListViewItem( m_gui->listView, i18n( "General" ) );
     m_lyricsCategory     = new KListViewItem( m_gui->listView, i18n( "Lyrics" ) );
     m_scoreCategory      = new KListViewItem( m_gui->listView, i18n( "Score" ) );
     m_transcodeCategory  = new KListViewItem( m_gui->listView, i18n( "Transcoding" ) );
 
+    m_generalCategory  ->setSelectable( false );
     m_lyricsCategory   ->setSelectable( false );
     m_scoreCategory    ->setSelectable( false );
     m_transcodeCategory->setSelectable( false );
 
+    m_generalCategory  ->setPixmap( 0, SmallIcon( "folder" ) );
     m_lyricsCategory   ->setPixmap( 0, SmallIcon( "folder" ) );
     m_scoreCategory    ->setPixmap( 0, SmallIcon( "folder" ) );
     m_transcodeCategory->setPixmap( 0, SmallIcon( "folder" ) );
@@ -348,7 +351,8 @@ ScriptManager::findScripts() //SLOT
 void
 ScriptManager::slotCurrentChanged( QListViewItem* item )
 {
-    const bool isCategory = item == m_lyricsCategory ||
+    const bool isCategory = item == m_generalCategory ||
+                            item == m_lyricsCategory ||
                             item == m_scoreCategory ||
                             item == m_transcodeCategory;
 
@@ -840,7 +844,7 @@ ScriptManager::loadScript( const QString& path )
         }
 
         if( !li )
-            li = new KListViewItem( m_gui->listView, name );
+            li = new KListViewItem( m_generalCategory, name );
 
         li->setPixmap( 0, QPixmap() );
 
