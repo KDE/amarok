@@ -284,10 +284,10 @@ CollectionDB::~CollectionDB()
 {
     DEBUG_BLOCK
 
+#ifdef HAVE_INOTIFY
     if ( INotify::instance()->fd() >= 0 )
-    {
         close( INotify::instance()->fd() );
-    }
+#endif
 
     if ( getDbConnectionType() == DbConnection::sqlite )
     {
