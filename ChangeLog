@@ -10,7 +10,7 @@ VERSION 1.4.1:
     * Creative Nomad Jukebox support (untested!). Submitted by Andres Oton
       <andres.oton@gmail.com>. (BR 103185)
     * Inotify support. On kernels 2.6.13 and above with Inotify support
-      compiled in, the collection will autmoatically be rescanned and
+      compiled in, the collection will automatically be rescanned and
       updated as soon as a watched folder has changed.
 
   CHANGES:
