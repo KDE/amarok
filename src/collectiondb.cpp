@@ -83,7 +83,7 @@
 #endif
 
 #ifdef HAVE_INOTIFY
-    #include "inotify/inotify.h"
+    #include <linux/inotify.h>
     #include "inotify/inotify-syscalls.h"
 #endif
 
