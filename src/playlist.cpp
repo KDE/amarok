@@ -1292,8 +1292,13 @@ Playlist::advanceDynamicTrack( PlaylistItem *item )
         }
     }
 
+    //If the same track is playing, don't append...user sent a play() to it so nothing's been removed
+
+    bool dontAppend = EngineController::instance()->engine()->state() == Engine::Playing &&
+                        EngineController::instance()->playingURL() == item->url();
+        
     //keep upcomingTracks requirement, this seems to break StopAfterCurrent
-    if( m_stopAfterTrack != m_currentTrack )
+    if( !dontAppend && m_stopAfterTrack != m_currentTrack )
     {
         const int appendNo = dynamicMode()->appendCount();
         if( appendNo ) addSpecialTracks( appendNo, dynamicMode()->appendType() );
