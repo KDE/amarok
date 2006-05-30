@@ -520,10 +520,10 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
                                   << PlaylistItem::Genre      << PlaylistItem::Length << PlaylistItem::Bitrate
                                   << PlaylistItem::LastPlayed << PlaylistItem::Score  << PlaylistItem::Filesize;
 
-            for( int n = Playlist::instance()->numVisibleColumns(), i = 0, column; i < n; ++i )
+            for( int i = 0, n = Playlist::instance()->numVisibleColumns(); i < n; ++i )
             {
-                column = Playlist::instance()->mapToLogicalColumn( i );
-                if( !tags.at( column + 1 ).isEmpty() )
+                const int column = Playlist::instance()->mapToLogicalColumn( i );
+                if( !tags.at( column + 1 ).isEmpty() && column != PlaylistItem::Rating )
                     availableTags << column;
             }
 
