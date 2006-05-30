@@ -1275,6 +1275,7 @@ Playlist::playNextTrack( bool forceNext )
 void
 Playlist::advanceDynamicTrack( PlaylistItem *item )
 {
+    DEBUG_BLOCK
     MyIterator it( this, MyIterator::Visible );
     if( !item ) item = currentTrack();
 
@@ -1292,10 +1293,8 @@ Playlist::advanceDynamicTrack( PlaylistItem *item )
         }
     }
 
-    //If the same track is playing, don't append...user sent a play() to it so nothing's been removed
-
-    bool dontAppend = EngineController::instance()->engine()->state() == Engine::Playing &&
-                        EngineController::instance()->playingURL() == item->url();
+    //Just starting to play from stopped, don't append something needlessely
+    bool dontAppend = EngineController::instance()->engine()->state() == Engine::Empty;
         
     //keep upcomingTracks requirement, this seems to break StopAfterCurrent
     if( !dontAppend && m_stopAfterTrack != m_currentTrack )
