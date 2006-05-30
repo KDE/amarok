@@ -140,6 +140,8 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     m_gui->listView->setFullWidth( true );
     m_gui->listView->setShowSortIndicator( true );
 
+
+    /// Category items
     m_lyricsCategory     = new KListViewItem( m_gui->listView, i18n( "Lyrics" ) );
     m_scoreCategory      = new KListViewItem( m_gui->listView, i18n( "Score" ) );
     m_transcodeCategory  = new KListViewItem( m_gui->listView, i18n( "Transcoding" ) );
@@ -147,6 +149,11 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     m_lyricsCategory   ->setSelectable( false );
     m_scoreCategory    ->setSelectable( false );
     m_transcodeCategory->setSelectable( false );
+
+    m_lyricsCategory   ->setPixmap( 0, SmallIcon( "folder" ) );
+    m_scoreCategory    ->setPixmap( 0, SmallIcon( "folder" ) );
+    m_transcodeCategory->setPixmap( 0, SmallIcon( "folder" ) );
+
 
     connect( m_gui->listView, SIGNAL( currentChanged( QListViewItem* ) ), SLOT( slotCurrentChanged( QListViewItem* ) ) );
     connect( m_gui->listView, SIGNAL( doubleClicked ( QListViewItem*, const QPoint&, int ) ), SLOT( slotRunScript() ) );
