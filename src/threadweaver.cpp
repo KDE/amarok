@@ -35,13 +35,16 @@ ThreadWeaver::~ThreadWeaver()
 
     for( ThreadList::Iterator it = m_threads.begin(), end = m_threads.end(); it != end; ++it )
     {
+#ifdef HAVE_INOTIFY
         // we don't delete the thread's job as amarok is gone
         // and the Job dtor may expect amarok to be there etc.
-        if ((*it)->job() && (*it)->job()->name() == QCString("INotify")) {
+        if ( (*it)->job() && (*it)->job()->name() == QCString( "INotify" ) )
+        {
             debug() << "Forcibly terminating INotify thread...\n";
             (*it)->terminate();
             continue;
         }
+#endif
 
         debug() << "Waiting on thread...\n";
         (*it)->wait();
