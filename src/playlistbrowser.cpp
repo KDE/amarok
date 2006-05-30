@@ -72,6 +72,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
         : QVBox( 0, name )
         , m_polished( false )
         , m_smartCategory( 0 )
+        , m_playlistImports( 0 )
         , m_coolStreams( 0 )
         , m_smartDefaults( 0 )
         , m_ac( new KActionCollection( this ) )
@@ -160,9 +161,6 @@ PlaylistBrowser::polish()
 //     blockSignals( false );
 
     QVBox::polish();
-
-    // FIXME the following code moved to the ctor, until the width forgetting
-    // issue is fixed:
 
     /// Podcasting is always initialised in the ctor because of autoscanning
 
@@ -1342,7 +1340,7 @@ int PlaylistBrowser::loadPlaylist( const QString &playlist, bool /*force*/ )
     // roland
 }
 
-void PlaylistBrowser::addPlaylist( const QString &path, QListViewItem *parent, bool force )
+void PlaylistBrowser::addPlaylist( const QString &path, QListViewItem *parent, bool force, bool imported )
 {
     // this function adds a playlist to the playlist browser
 
@@ -1353,16 +1351,18 @@ void PlaylistBrowser::addPlaylist( const QString &path, QListViewItem *parent, b
     if( !file.exists() ) return;
 
     PlaylistEntry *playlist = findPlaylistEntry( path );
-    if( playlist )
-    {
-        if( force )
-            playlist->load(); //reload the playlist
-    }
 
-    if( !parent ) parent = static_cast<QListViewItem*>(m_playlistCategory);
+    if( playlist && force )
+        playlist->load(); //reload the playlist
+
+    if( imported ) {
+        if ( !m_playlistImports ) m_playlistImports = new PlaylistCategory( m_playlistCategory, 0, i18n("Imported") );
+        parent = static_cast<QListViewItem*>( m_playlistImports );
+    }
+    else if( !parent ) parent = static_cast<QListViewItem*>(m_playlistCategory);
 
     if( !playlist ) {
-        if( !m_playlistCategory || !m_playlistCategory->childCount() ) {    //first child
+        if( !m_playlistCategory || !m_playlistCategory->childCount() ) {  //first child
             removeButton->setEnabled( true );
             renameButton->setEnabled( true );
         }
@@ -2154,7 +2154,7 @@ void PlaylistBrowser::customEvent( QCustomEvent *e )
     // The ScanController sends a PlaylistFoundEvent when a playlist is found.
 
     ScanController::PlaylistFoundEvent* p = static_cast<ScanController::PlaylistFoundEvent*>( e );
-    addPlaylist( p->path() );
+    addPlaylist( p->path(), 0, false, true );
 }
 
 

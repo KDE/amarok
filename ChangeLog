@@ -14,6 +14,7 @@ VERSION 1.4.1:
       updated as soon as a watched folder has changed.
 
   CHANGES:
+    * Automatically imported playlists go into a separate category.
     * Block quitting amaroK until all on-going media device operations have
       finished with a consistent state.
     * Interface choice in wizard removed.

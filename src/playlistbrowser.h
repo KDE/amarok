@@ -58,7 +58,7 @@ class PlaylistBrowser : public QVBox
         void addStream( QListViewItem *parent = 0 );
         void addSmartPlaylist( QListViewItem *parent = 0 );
         void addDynamic( QListViewItem *parent = 0 );
-        void addPlaylist( const QString &path, QListViewItem *parent = 0, bool force=false );
+        void addPlaylist( const QString &path, QListViewItem *parent = 0, bool force=false, bool imported=false );
         PlaylistEntry *findPlaylistEntry( const QString &url, QListViewItem *parent=0 ) const;
         int  loadPlaylist( const QString &playlist, bool force=false );
 
@@ -173,6 +173,7 @@ class PlaylistBrowser : public QVBox
         PlaylistCategory    *m_smartCategory;
         PlaylistCategory    *m_dynamicCategory;
         PlaylistCategory    *m_podcastCategory;
+        PlaylistCategory    *m_playlistImports;
         PlaylistCategory    *m_coolStreams;
         PlaylistCategory    *m_smartDefaults;
         PlaylistEntry       *m_lastPlaylist;
