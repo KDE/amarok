@@ -39,22 +39,6 @@ class Scrobbler;
 
 class QMutex;
 
-
-class INotify : public ThreadWeaver::DependentJob
-{
-    Q_OBJECT
-
-    public:
-        INotify( QObject *parent, int fd );
-        ~INotify();
-
-    private:
-        virtual bool doJob();
-
-        int m_fd;
-};
-
-
 class DbConfig
 {};
 
@@ -134,6 +118,7 @@ class DbConnection
         bool isInitialized() const { return m_initialized; }
         virtual bool isConnected() const = 0;
         virtual QString lastError() const { return "None"; }
+
     protected:
         bool m_initialized;
 };
@@ -153,8 +138,8 @@ class SqliteConnection : public DbConnection
         int insert( const QString& /* statement */, const QString& /* table */ );
         bool isConnected()const { return true; }
     private:
-        static void sqlite_rand(sqlite3_context *context, int /*argc*/, sqlite3_value ** /*argv*/);
-        static void sqlite_power(sqlite3_context *context, int argc, sqlite3_value **argv);
+        static void sqlite_rand( sqlite3_context *context, int /*argc*/, sqlite3_value ** /*argv*/ );
+        static void sqlite_power( sqlite3_context *context, int argc, sqlite3_value **argv );
 
         sqlite3* m_db;
 };
@@ -236,15 +221,16 @@ class CollectionDB : public QObject, public EngineObserver
         static CollectionDB *instance();
 
         QString escapeString(QString string ) const
-            {
-                return
-                #ifdef USE_MYSQL
-                    // We have to escape "\" for mysql, but can't do so for sqlite
-                    (m_dbConnType == DbConnection::mysql)
-                        ? string.replace("\\", "\\\\").replace( '\'', "''" ) :
-                #endif
-                    string.replace( '\'', "''" );
-            }
+        {
+            return
+            #ifdef USE_MYSQL
+                // We have to escape "\" for mysql, but can't do so for sqlite
+                ( m_dbConnType == DbConnection::mysql )
+                ? string.replace("\\", "\\\\").replace( '\'', "''" ) :
+            #endif
+                  string.replace( '\'', "''" );
+        }
+
         QString boolT() const { if (getDbConnectionType() == DbConnection::postgresql) return "true"; else return "1"; }
         QString boolF() const { if (getDbConnectionType() == DbConnection::postgresql) return "false"; else return "0"; }
         QString textColumnType() const { if ( getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return "VARCHAR(255)"; }
@@ -252,9 +238,9 @@ class CollectionDB : public QObject, public EngineObserver
         // We might consider using LONGTEXT type, as some lyrics could be VERY long..???
         QString longTextColumnType() const { if ( getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return "TEXT"; }
         QString randomFunc() const { if ( getDbConnectionType() == DbConnection::postgresql ) return "random()"; else return "RAND()"; }
+
         inline static QString exactCondition( const QString &right );
         static QString likeCondition( const QString &right, bool anyBegin=false, bool anyEnd=false );
-
         int getType() { return getDbConnectionType(); }
 
         //sql helper methods
@@ -369,7 +355,7 @@ class CollectionDB : public QObject, public EngineObserver
         /** Returns the image from a given URL, network-transparently.
          * You must run KIO::NetAccess::removeTempFile( tmpFile ) when you are finished using the image;
          **/
-        static QImage fetchImage(const KURL& url, QString &tmpFile);
+        static QImage fetchImage( const KURL& url, QString &tmpFile );
         /** Saves images located on the user's filesystem */
         bool setAlbumImage( const QString& artist, const QString& album, const KURL& url );
         /** Saves images obtained from CoverFetcher */
@@ -512,11 +498,10 @@ class CollectionDB : public QObject, public EngineObserver
         QString m_cacheAlbum[2];
         uint    m_cacheAlbumID[2];
 
-        int  m_inotify;
         bool m_monitor;
         bool m_autoScoring;
 
-        static  QMutex *connectionMutex;
+        static QMutex *connectionMutex;
         QImage m_noCover;
 
         static QMap<QThread *, DbConnection *> *threadConnections;
@@ -528,9 +513,33 @@ class CollectionDB : public QObject, public EngineObserver
         bool m_fileOperationFailed;
         bool m_atfEnabled;
         bool m_scanInProgress;
+        bool m_rescanRequired;
 
         // for handling podcast image url redirects
         QMap<KIO::Job *, QString> m_podcastImageJobs;
+};
+
+
+class INotify : public ThreadWeaver::DependentJob
+{
+    Q_OBJECT
+
+    public:
+        INotify( CollectionDB *parent, int fd );
+        ~INotify();
+
+        static INotify *instance() { return s_instance; }
+
+        bool watchDir( QString directory );
+        int fd() { return m_fd; }
+
+    private:
+        virtual bool doJob();
+
+        CollectionDB* m_parent;
+        int m_fd;
+
+        static INotify* s_instance;
 };
 
 

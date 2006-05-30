@@ -36,13 +36,6 @@
 #include "statusbar.h"
 #include "threadweaver.h"
 
-#include <sys/syscall.h>
-
-#ifdef syscall
-    #include "inotify/inotify.h"
-    #include "inotify/inotify-syscalls.h"
-#endif
-
 #include <qbuffer.h>
 #include <qcheckbox.h>
 #include <qfile.h>
@@ -81,31 +74,36 @@
 #include "sqlite/sqlite3.h"
 
 #ifdef USE_MYSQL
-#include <mysql/mysql.h>
-#include <mysql/mysql_version.h>
+    #include <mysql/mysql.h>
+    #include <mysql/mysql_version.h>
 #endif
 
 #ifdef USE_POSTGRESQL
-#include <libpq-fe.h>
+    #include <libpq-fe.h>
+#endif
+
+#ifdef HAVE_INOTIFY
+    #include <linux/inotify.h>
+    #include "inotify/inotify-syscalls.h"
 #endif
 
 using amaroK::QStringx;
 
 #define DEBUG 0
 
-QMutex* CollectionDB::connectionMutex = new QMutex();
-//we don't have to worry about this map leaking memory since ThreadWeaver limits the total
-//number of QThreads ever created
-QMap<QThread *, DbConnection *> *CollectionDB::threadConnections = new QMap<QThread *, DbConnection *>();
-
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS INotify
 //////////////////////////////////////////////////////////////////////////////////////////
 
-INotify::INotify( QObject *parent, int fd )
+INotify* INotify::s_instance = 0;
+
+INotify::INotify( CollectionDB *parent, int fd )
     : DependentJob( parent, "INotify" )
+    , m_parent( parent )
     , m_fd( fd )
-{}
+{
+    s_instance = this;
+}
 
 
 INotify::~INotify()
@@ -113,10 +111,33 @@ INotify::~INotify()
 
 
 bool
+INotify::watchDir( QString directory )
+{
+#ifdef HAVE_INOTIFY
+    int wd = inotify_add_watch( m_fd, directory.local8Bit(), IN_CLOSE_WRITE | IN_DELETE | IN_MOVE |
+                                                             IN_MODIFY | IN_ATTRIB );
+    if ( wd < 0 )
+        debug() << "Could not add INotify watch for: " << directory << endl;
+
+    return ( wd >= 0 );
+#endif
+
+    return false;
+}
+
+
+bool
 INotify::doJob()
 {
-#ifdef _LINUX_INOTIFY_H
+#ifdef HAVE_INOTIFY
     DEBUG_BLOCK
+
+    const QStringList values = m_parent->query( "SELECT dir FROM directories;" );
+    foreach( values )
+    {
+        const QString dir = *it;
+        watchDir( dir );
+    }
 
     /* size of the event structure, not counting name */
     const int EVENT_SIZE = ( sizeof( struct inotify_event ) );
@@ -133,6 +154,7 @@ INotify::doJob()
         if ( len < 0 )
         {
             debug() << "Read from INotify failed" << endl;
+            return false;
         }
         else
         {
@@ -141,30 +163,37 @@ INotify::doJob()
                 /* BUF_LEN too small? */
             }
             else
+            {
                 while ( i < len )
                 {
                     struct inotify_event *event;
                     event = (struct inotify_event *) &buf[i];
 
                     if ( event->len )
-                    {
                         debug() << "INotify changed: " << event->name << endl;
-                        QTimer::singleShot( 0, CollectionDB::instance(), SLOT( scanMonitor() ) );
-                    }
 
                     i += EVENT_SIZE + event->len;
                 }
+
+                QTimer::singleShot( 0, m_parent, SLOT( scanMonitor() ) );
+            }
         }
     }
 #endif
-    //this shouldn't happen
-    return 0;
+
+    // this shouldn't happen
+    return false;
 }
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS CollectionDB
 //////////////////////////////////////////////////////////////////////////////////////////
+
+QMutex* CollectionDB::connectionMutex = new QMutex();
+//we don't have to worry about this map leaking memory since ThreadWeaver limits the total
+//number of QThreads ever created
+QMap<QThread *, DbConnection *> *CollectionDB::threadConnections = new QMap<QThread *, DbConnection *>();
 
 CollectionDB* CollectionDB::instance()
 {
@@ -178,6 +207,7 @@ CollectionDB::CollectionDB()
         , m_autoScoring( true )
         , m_noCover( locate( "data", "amarok/images/nocover.png" ) )
         , m_scanInProgress( false )
+        , m_rescanRequired( false )
 {
     DEBUG_BLOCK
 
@@ -211,42 +241,31 @@ CollectionDB::CollectionDB()
     config->writeEntry( "Database Podcast Tables Version", DATABASE_PODCAST_TABLES_VERSION );
     config->writeEntry( "Database ATF Version", DATABASE_ATF_VERSION );
 
-    setAdminValue( "Database Version", QString::number(DATABASE_VERSION) );
-    setAdminValue( "Database Stats Version", QString::number(DATABASE_STATS_VERSION) );
-    setAdminValue( "Database Persistent Tables Version", QString::number(DATABASE_PERSISTENT_TABLES_VERSION) );
-    setAdminValue( "Database Podcast Tables Version", QString::number(DATABASE_PODCAST_TABLES_VERSION) );
-    setAdminValue( "Database ATF Version", QString::number(DATABASE_ATF_VERSION) );
+    setAdminValue( "Database Version", QString::number( DATABASE_VERSION ) );
+    setAdminValue( "Database Stats Version", QString::number( DATABASE_STATS_VERSION ) );
+    setAdminValue( "Database Persistent Tables Version", QString::number( DATABASE_PERSISTENT_TABLES_VERSION ) );
+    setAdminValue( "Database Podcast Tables Version", QString::number( DATABASE_PODCAST_TABLES_VERSION ) );
+    setAdminValue( "Database ATF Version", QString::number( DATABASE_ATF_VERSION ) );
 
     KConfig* atfconfig = amaroK::config( "Collection" );
     m_atfEnabled = atfconfig->readBoolEntry( "AdvancedTagFeatures", false );
 
     connect( qApp, SIGNAL( aboutToQuit() ), this, SLOT( disableAutoScoring() ) );
 
-#ifdef _LINUX_INOTIFY_H
+#ifdef HAVE_INOTIFY
     // Try to initialize inotify, if not available use the old timer approach.
-    m_inotify = inotify_init();
-    if ( m_inotify < 0 )
+    int inotify_fd = inotify_init();
+    if ( inotify_fd < 0 )
 #endif
     {
         debug() << "INotify not available, using QTimer!" << endl;
         startTimer( MONITOR_INTERVAL * 1000 );
     }
-#ifdef _LINUX_INOTIFY_H
+#ifdef HAVE_INOTIFY
     else
     {
         debug() << "INotify enabled!" << endl;
-        const QStringList values = query( "SELECT dir FROM directories;" );
-
-        foreach( values )
-        {
-            const QString folder = *it;
-            int wd = inotify_add_watch( m_inotify, folder.local8Bit(), IN_CLOSE_WRITE |
-                                                                    IN_DELETE | IN_MOVE );
-            if ( wd < 0 )
-                debug() << "Could not add INotify watch for: " << folder << endl;
-        }
-
-        ThreadWeaver::instance()->onlyOneJob( new INotify( this, m_inotify ) );
+        ThreadWeaver::instance()->onlyOneJob( new INotify( this, inotify_fd ) );
     }
 #endif
 
@@ -254,17 +273,28 @@ CollectionDB::CollectionDB()
                    SIGNAL( coverChanged( const QString&, const QString& ) ) );
     connect( Scrobbler::instance(), SIGNAL( similarArtistsFetched( const QString&, const QStringList& ) ),
              this,                    SLOT( similarArtistsFetched( const QString&, const QStringList& ) ) );
+
+    // If we're supposed to monitor dirs for changes, make sure we run it once
+    // on startup, since inotify can't inform us about old events
+//     QTimer::singleShot( 0, this, SLOT( scanMonitor() ) );
 }
 
 
 CollectionDB::~CollectionDB()
 {
     DEBUG_BLOCK
+
+    if ( INotify::instance()->fd() >= 0 )
+    {
+        close( INotify::instance()->fd() );
+    }
+
     if ( getDbConnectionType() == DbConnection::sqlite )
     {
         debug() << "Running VACUUM" << endl;
         query( "VACUUM;" );
     }
+
     destroy();
 }
 
@@ -3355,34 +3385,36 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
     return false;
 }
 
+
 void
 CollectionDB::updateDirStats( QString path, const long datetime, const bool temporary )
 {
     if ( path.endsWith( "/" ) )
         path = path.left( path.length() - 1 );
 
-    if (getDbConnectionType() == DbConnection::postgresql) {
-    // REPLACE INTO is not valid SQL for postgres, so we need to check whether we
-    // should UPDATE() or INSERT()
-    QStringList values = query( QString("SELECT * FROM directories%1 WHERE dir='%2';")
-        .arg( temporary ? "_temp" : "")
-        .arg( escapeString( path ) ) );
+    if ( getDbConnectionType() == DbConnection::postgresql )
+    {
+        // REPLACE INTO is not valid SQL for postgres, so we need to check whether we
+        // should UPDATE() or INSERT()
+        QStringList values = query( QString("SELECT * FROM directories%1 WHERE dir='%2';")
+            .arg( temporary ? "_temp" : "")
+            .arg( escapeString( path ) ) );
 
-    if(values.count() > 0 )
-    {
-        query( QString( "UPDATE directories%1 SET changedate=%2 WHERE dir='%3';")
-        .arg( temporary ? "_temp" : "" )
-        .arg( datetime )
-        .arg( escapeString( path ) ));
-    }
-    else
-    {
-        query( QString( "INSERT INTO directories%1 (dir,changedate) VALUES ('%3','%2');")
-        .arg( temporary ? "_temp" : "")
-        .arg( datetime )
-        .arg( escapeString( path ) )
-        );
-    }
+        if ( values.count() > 0 )
+        {
+            query( QString( "UPDATE directories%1 SET changedate=%2 WHERE dir='%3';")
+            .arg( temporary ? "_temp" : "" )
+            .arg( datetime )
+            .arg( escapeString( path ) ) );
+        }
+        else
+        {
+            query( QString( "INSERT INTO directories%1 (dir,changedate) VALUES ('%3','%2');")
+            .arg( temporary ? "_temp" : "")
+            .arg( datetime )
+            .arg( escapeString( path ) )
+            );
+        }
     }
     else
     {
@@ -3392,7 +3424,10 @@ CollectionDB::updateDirStats( QString path, const long datetime, const bool temp
                   .arg( escapeString( path ) )
                   );
     }
+
+    INotify::instance()->watchDir( path );
 }
+
 
 void
 CollectionDB::removeSongsInDir( QString path )
@@ -4350,11 +4385,14 @@ CollectionDB::scanModifiedDirs()
         if ( !ThreadWeaver::instance()->isJobPending( "CollectionScanner" ) && PlaylistBrowser::instance() )
         {
             m_scanInProgress = true;
+            m_rescanRequired = false;
             emit scanStarted();
 
             ThreadWeaver::instance()->onlyOneJob( new ScanController( this, true ) );
         }
     }
+    else
+        m_rescanRequired = true;
 }
 
 
@@ -4370,6 +4408,11 @@ CollectionDB::customEvent( QCustomEvent *e )
         {
             debug() << "JobFinishedEvent from Incremental ScanController received.\n";
             emit scanDone( s->hasChanged() );
+
+            // check if something changed while we were scanning. in this case we should
+            // rescan again, now.
+            if ( m_rescanRequired )
+                QTimer::singleShot( 0, CollectionDB::instance(), SLOT( scanMonitor() ) );
         }
         else
         {
