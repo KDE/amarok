@@ -144,6 +144,10 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     m_scoreCategory      = new KListViewItem( m_gui->listView, i18n( "Score" ) );
     m_transcodeCategory  = new KListViewItem( m_gui->listView, i18n( "Transcoding" ) );
 
+    m_lyricsCategory   ->setSelectable( false );
+    m_scoreCategory    ->setSelectable( false );
+    m_transcodeCategory->setSelectable( false );
+
     connect( m_gui->listView, SIGNAL( currentChanged( QListViewItem* ) ), SLOT( slotCurrentChanged( QListViewItem* ) ) );
     connect( m_gui->listView, SIGNAL( doubleClicked ( QListViewItem*, const QPoint&, int ) ), SLOT( slotRunScript() ) );
     connect( m_gui->listView, SIGNAL( rightButtonPressed ( QListViewItem*, const QPoint&, int ) ), SLOT( slotShowContextMenu( QListViewItem*, const QPoint& ) ) );
@@ -337,7 +341,11 @@ ScriptManager::findScripts() //SLOT
 void
 ScriptManager::slotCurrentChanged( QListViewItem* item )
 {
-    if( item ) {
+    const bool isCategory = item == m_lyricsCategory ||
+                            item == m_scoreCategory ||
+                            item == m_transcodeCategory;
+
+    if( item && !isCategory ) {
         const QString name = item->text( 0 );
         m_gui->uninstallButton->setEnabled( true );
         m_gui->runButton->setEnabled( !m_scripts[name].process );
@@ -721,7 +729,8 @@ ScriptManager::scriptFinished( KProcess* process ) //SLOT
 // private
 ////////////////////////////////////////////////////////////////////////////////
 
-QStringList ScriptManager::scriptsOfType( const QString &type ) const
+QStringList
+ScriptManager::scriptsOfType( const QString &type ) const
 {
     QStringList scripts;
     foreachType( ScriptMap, m_scripts )
@@ -731,7 +740,9 @@ QStringList ScriptManager::scriptsOfType( const QString &type ) const
     return scripts;
 }
 
-QString ScriptManager::scriptRunningOfType( const QString &type ) const
+
+QString
+ScriptManager::scriptRunningOfType( const QString &type ) const
 {
     foreachType( ScriptMap, m_scripts )
         if( it.data().process )
@@ -741,7 +752,9 @@ QString ScriptManager::scriptRunningOfType( const QString &type ) const
     return QString::null;
 }
 
-QString ScriptManager::ensureScoreScriptRunning()
+
+QString
+ScriptManager::ensureScoreScriptRunning()
 {
     QString s = scoreScriptRunning();
     if( !s.isNull() )
@@ -761,6 +774,7 @@ QString ScriptManager::ensureScoreScriptRunning()
 
     return QString::null;
 }
+
 
 void
 ScriptManager::terminateProcess( KProcIO** proc )
