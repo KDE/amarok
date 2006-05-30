@@ -516,6 +516,8 @@ ScriptManager::slotUninstallScript()
 bool
 ScriptManager::slotRunScript( bool silent )
 {
+    if( !m_gui->runButton->isEnabled() ) return false;
+
     QListViewItem* const li = m_gui->listView->currentItem();
     const QString name = li->text( 0 );
 
