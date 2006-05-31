@@ -970,7 +970,7 @@ MetaBundle::fuzzyTime( int time )
         return i18n( "?" );
     if( time == Irrelevant )
         return i18n( "-" );
-
+    
     secs = time % 60; //seconds
     time /= 60;
     if( time )
@@ -983,10 +983,10 @@ MetaBundle::fuzzyTime( int time )
         day = time ; //days
     time /= 7;
     if( time )
-	week = time ; //weeks
+        week = time ; //weeks
 
     if ( week ) 
-	return i18n( "%1 weeks" ).arg( QString::number( week + (float( day ) / 7), 'f', 1 ));
+        return i18n( "%1 weeks" ).arg( QString::number( week + (float( day ) / 7), 'f', 1 ));
     else if ( day )
         return i18n( "%1 days" ).arg( QString::number( day + (float( hr ) / 24), 'f', 1 ));
     else if ( hr )
