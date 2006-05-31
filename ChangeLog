@@ -20,6 +20,7 @@ VERSION 1.4.1:
     * Interface choice in wizard removed.
     * MoodBar has been removed. The maintainer has not been updating it, and
       it was causing crashes for many people.
+    * Usability improvements for the Script Manager, including a tree view.
     * Use KMimeType for resolving file type for metadata acquisition before
       falling back to extension based guessing.
     * Removed the "detailed mode" in the playlist-browser.

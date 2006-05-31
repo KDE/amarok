@@ -830,18 +830,12 @@ ScriptManager::loadScript( const QString& path )
                 name = spec.readEntry( "name" );
             if( spec.hasKey( "type" ) ) {
                 type = spec.readEntry( "type" );
-                if( type == "lyrics" ) {
-                    name.prepend( i18n( "Lyrics" ) + ": " );
+                if( type == "lyrics" )
                     li = new KListViewItem( m_lyricsCategory, name );
-                }
-                if( type == "transcode" ) {
-                    name.prepend( i18n( "Transcoding" ) + ": " );
+                if( type == "transcode" )
                     li = new KListViewItem( m_transcodeCategory, name );
-                }
-                if( type == "score" ) {
-                    name.prepend( i18n( "Score" ) + ": " );
+                if( type == "score" )
                     li = new KListViewItem( m_scoreCategory, name );
-                }
             }
         }
 
