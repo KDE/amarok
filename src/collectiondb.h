@@ -349,6 +349,7 @@ class CollectionDB : public QObject, public EngineObserver
         QStringList artistAlbumList( bool withUnknown = true, bool withCompilations = true );
 
         QStringList albumTracks( const QString &artist_id, const QString &album_id, const bool isValue = false );
+        QStringList albumDiscTracks( const QString &artist_id, const QString &album_id, const QString &discNumber );
         QStringList artistTracks( const QString &artist_id );
 
         //cover management methods

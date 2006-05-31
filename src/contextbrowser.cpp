@@ -132,8 +132,9 @@ namespace amaroK
 
     /**
     * Function that must be used when separating contextBrowser escaped urls
+    * detail can contain track/discnumber
     */
-    void albumArtistTrackFromUrl( QString url, QString &artist, QString &album, QString &track )
+    void albumArtistTrackFromUrl( QString url, QString &artist, QString &album, QString &detail )
     {
         if ( !url.contains("@@@") ) return;
         //KHTML removes the trailing space!
@@ -146,7 +147,7 @@ namespace amaroK
 
         artist = unescapeHTMLAttr( list[0] );
         album  = unescapeHTMLAttr( list[1] );
-        track  = unescapeHTMLAttr( list[2] );
+        detail = unescapeHTMLAttr( list[2] );
     }
 
 }
@@ -462,6 +463,11 @@ void ContextBrowser::openURLRequest( const KURL &url )
         Playlist::instance()->insertMedia( KURL::fromPathOrURL( url.url().replace( QRegExp( "^stream:" ), "http:" ) ), Playlist::Unique|Playlist::DirectPlay );
     }
 
+    else if( url.protocol() == "compilationdisc" || url.protocol() == "albumdisc" )
+    {
+        Playlist::instance()->insertMedia( expandURL( url ) , Playlist::Unique|Playlist::DirectPlay );
+    }
+
     else
         HTMLView::openURLRequest( url );
 }
@@ -745,7 +751,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         //menu.insertSeparator();
         //menu.insertItem( SmallIconSet( "down" ), i18n( "&Download" ), DOWNLOAD );
     }
-    else if( url.protocol() == "file" || url.protocol() == "artist" || url.protocol() == "album" || url.protocol() == "compilation" )
+    else if( url.protocol() == "file" || url.protocol() == "artist" || url.protocol() == "album" || url.protocol() == "compilation" || url.protocol() == "albumdisc" || url.protocol() == "compilationdisc")
     {
         //TODO it would be handy and more usable to have this menu under the cover one too
 
@@ -775,6 +781,14 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
             menu.changeItem( INFO,   i18n("Edit Album &Information..." ) );
             menu.changeItem( ASNEXT, i18n("&Queue Album") );
         }
+        if ( url.protocol() == "albumdisc" )
+        {
+            urls = expandURL( url );
+
+            menu.changeTitle( TITLE, i18n("Album Disc") );
+            menu.changeItem( INFO,   i18n("Edit Album Disc &Information..." ) );
+            menu.changeItem( ASNEXT, i18n("&Queue Album Disc") );
+        }
         if ( url.protocol() == "compilation" )
         {
             urls = expandURL( url );
@@ -782,6 +796,14 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
             menu.changeTitle( TITLE, i18n("Compilation") );
             menu.changeItem( INFO,   i18n("Edit Album &Information..." ) );
             menu.changeItem( ASNEXT, i18n("&Queue Album") );
+        }
+        if ( url.protocol() == "compilationdisc" )
+        {
+            urls = expandURL( url );
+
+            menu.changeTitle( TITLE, i18n("Compilation Disc") );
+            menu.changeItem( INFO,   i18n("Edit Album Disc &Information..." ) );
+            menu.changeItem( ASNEXT, i18n("&Queue Album Disc") );
         }
 
         if( urls.count() == 0 )
@@ -1243,9 +1265,17 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
                 if( discNumber != newDiscNumber && newDiscNumber.toInt() > 0)
                 {
                     discNumber = newDiscNumber;
-                    htmlCode.append( "<div class='disc-separator'>\n"
-                                     +    i18n( "Disc %1" ).arg( discNumber )
-                                     + "</div>\n" );
+                    htmlCode.append( QStringx ( 
+                                         "<div class='disc-separator'>\n"
+                                         "<a href=\"albumdisc: %1 @@@ %2 @@@ %3\">\n"
+                                         "%4"
+                                         "</a>\n"
+                                         "</div>\n" )
+                                     .args( QStringList()
+                                            << albumValues[6]
+                                            << reqResult[ i + 1 ] //album.id
+                                            << escapeHTMLAttr( discNumber )
+                                            << i18n( "Disc %1" ).arg( discNumber ) ) );
                 }
                 QString track = albumValues[j + 2].stripWhiteSpace();
                 if( track.length() > 0 )
@@ -2241,9 +2271,17 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
                     if( discNumber != newDiscNumber && newDiscNumber.toInt() > 0)
                     {
                         discNumber = newDiscNumber;
-                        m_HTMLSource.append( "<div class='disc-separator'>\n"
-                                +    i18n( "Disc %1" ).arg( discNumber )
-                                + "</div>\n" );
+                        m_HTMLSource.append( QStringx ( 
+                                                 "<div class='disc-separator'>\n"
+                                                 "<a href=\"albumdisc: %1 @@@ %2 @@@ %3\">\n"
+                                                 "%4"
+                                                 "</a>\n"
+                                                 "</div>\n" )
+                                             .args( QStringList() 
+                                                    << QString::number( artist_id )
+                                                    << values[ i + 1 ] //album.id
+                                                    << escapeHTMLAttr( discNumber )
+                                                    << i18n( "Disc %1" ).arg( discNumber ) ) );
                     }
                     QString track = albumValues[j + 2].stripWhiteSpace();
                     if( track.length() > 0 ) {
@@ -2391,9 +2429,16 @@ void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artis
                     if( discNumber != newDiscNumber && newDiscNumber.toInt() > 0)
                     {
                         discNumber = newDiscNumber;
-                        m_HTMLSource.append( "<div class='disc-separator'>\n"
-                                +    i18n( "Disc %1" ).arg( discNumber )
-                                + "</div>\n" );
+                        m_HTMLSource.append( QStringx ( 
+                                                 "<div class='disc-separator'>\n"
+                                                 "<a href=\"compilationdisc: __discard__ @@@ %1 @@@ %2\">\n"
+                                                 "%3"
+                                                 "</a>\n"
+                                                 "</div>\n" )
+                                             .args( QStringList()
+                                                    << values[ i + 1 ] //album.id
+                                                    << escapeHTMLAttr( discNumber )
+                                                    << i18n( "Disc %1" ).arg( discNumber ) ) );
                     }
 
                     QString track = albumValues[j + 2].stripWhiteSpace();
@@ -3516,6 +3561,8 @@ ContextBrowser::hasContextProtocol( const KURL &url )
         || protocol == "artist"
         || protocol == "stream"
         || protocol == "compilation"
+        || protocol == "albumdisc"
+        || protocol == "compilationdisc"
         || protocol == "fetchcover";
 }
 
@@ -3543,10 +3590,35 @@ ContextBrowser::expandURL( const KURL &url )
             urls += KURL::fromPathOrURL( *it );
         }
     }
+    else if( protocol == "albumdisc" ) {
+        QString artist, album, discnumber; // discnumber is returned in track number field
+        amaroK::albumArtistTrackFromUrl( url.path(), artist, album, discnumber );
+
+        QStringList trackUrls = CollectionDB::instance()->albumDiscTracks( artist, album, discnumber );
+        foreach( trackUrls ) {
+            urls += KURL::fromPathOrURL( *it );
+        }
+    }
     else if( protocol == "compilation" ) {
         QueryBuilder qb;
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
         qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, url.path() );
+        qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+        qb.setOptions( QueryBuilder::optOnlyCompilations );
+        QStringList values = qb.run();
+
+        for( QStringList::ConstIterator it = values.begin(), end = values.end(); it != end; ++it ) {
+            urls += KURL::fromPathOrURL( *it );
+        }
+    }
+    else if( protocol == "compilationdisc") {
+        QString artist, album, discnumber; // artist is unused
+        amaroK::albumArtistTrackFromUrl( url.path(), artist, album, discnumber );
+
+        QueryBuilder qb;
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+        qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, album );
+        qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valDiscNumber, discnumber );
         qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
         qb.setOptions( QueryBuilder::optOnlyCompilations );
         QStringList values = qb.run();

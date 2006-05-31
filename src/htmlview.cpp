@@ -202,6 +202,8 @@ HTMLView::loadStyleSheet()
         styleSheet += QString( ".album-song-trackno { font-weight: bold; }" );
 
         styleSheet += QString( ".disc-separator { color: %1; border-bottom: 1px solid %2; }" ).arg( bg ).arg( bg );
+        styleSheet += QString( ".disc-separator a { display: block; padding: 1px 2px; font-weight: normal; text-decoration: none; }" );
+        styleSheet += QString( ".disc-separator a:hover { color: %1; background-color: %2; }" ).arg( fg ).arg( bg );
 
         styleSheet += QString( ".button { width: 100%; }" );
 

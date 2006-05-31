@@ -1019,27 +1019,27 @@ CollectionDB::albumTracks( const QString &artist_id, const QString &album_id, co
     if ( isValue)
     {
         return query( QString( "SELECT tags.url FROM tags LEFT JOIN artist ON artist.id=tags.artist LEFT JOIN album ON "
-                        "album.id=tags.album WHERE (album.name = \"%1\" ) AND (artist.name = \"%2\" ) ORDER BY tags.discnumber, tags.track;" )
+                        "album.id=tags.album WHERE (album.name = '%1' ) AND (artist.name = '%2' ) ORDER BY tags.discnumber, tags.track;" )
                         .arg( album_id )
                         .arg( artist_id ) );
     }
 
-    if (getDbConnectionType() == DbConnection::postgresql) {
-        return query( QString( "SELECT tags.url, tags.track AS __discard FROM tags, year WHERE tags.album = %1 AND "
-                               "( tags.sampler = %2 OR tags.artist = %3 ) AND year.id = tags.year "
-                               "ORDER BY tags.discnumber, tags.track;" )
-                      .arg( album_id )
-                      .arg( boolT() )
-                      .arg( artist_id ) );
-    }
-    else
-    {
-        return query( QString( "SELECT tags.url FROM tags, year WHERE tags.album = %1 AND "
-                              "( tags.sampler = 1 OR tags.artist = %2 ) AND year.id = tags.year "
-                              "ORDER BY tags.discnumber, tags.track;" )
-                        .arg( album_id )
-                        .arg( artist_id ) );
-    }
+    return query( QString( "SELECT tags.url, tags.track AS __discard FROM tags, year WHERE tags.album = %1 AND "
+                           "( tags.sampler = %2 OR tags.artist = %3 ) AND year.id = tags.year "
+                           "ORDER BY tags.discnumber, tags.track;" )
+                  .arg( album_id )
+                  .arg( boolT() )
+                  .arg( artist_id ) );
+}
+
+QStringList
+CollectionDB::albumDiscTracks( const QString &artist_id, const QString &album_id, const QString &discNumber)
+{
+    return query( QString( "SELECT tags.url, tags.track AS __discard FROM tags, year WHERE tags.album = %1 AND "
+                           "tags.artist = %2 AND year.id = tags.year AND tags.discnumber = %3 ORDER BY tags.track;" )
+                  .arg( album_id )
+                  .arg( artist_id )
+                  .arg( discNumber ) );
 }
 
 QStringList

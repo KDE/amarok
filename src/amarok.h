@@ -133,8 +133,8 @@ namespace amaroK
     /**
      * Function that must be used when separating contextBrowser escaped urls
      */
-                                          // defined in contextbrowser.cpp
-     void albumArtistTrackFromUrl( QString url, QString &artist, QString &album, QString &track );
+    // defined in contextbrowser.cpp
+    void albumArtistTrackFromUrl( QString url, QString &artist, QString &album, QString &detail );
 
     /**
      * @return the LOWERCASE file extension without the preceding '.', or "" if there is none
