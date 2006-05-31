@@ -3627,7 +3627,10 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     QStringList values = qb.run();
 
-    if ( values.isEmpty() || values.count() > 15 )
+    if ( values.isEmpty() )
+        return;
+    
+    if ( values.count() > 15 )
     {
         error() << "Query returned more than 1 song. Aborting updating metadata" << endl;
         return;
