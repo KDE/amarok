@@ -2651,7 +2651,7 @@ fillInBundle( QStringList values, MetaBundle &bundle )
     //TODO use this whenever possible
 
     // crash prevention
-    while( values.count() < 13 )
+    while( values.count() < 14 )
         values += "IF YOU CAN SEE THIS THERE IS A BUG!";
 
     QStringList::ConstIterator it = values.begin();
