@@ -1088,6 +1088,10 @@ Playlist::playNextTrack( bool forceNext )
         {
             item = m_nextTracks.first();
             m_nextTracks.remove();
+            if ( dynamicMode() )
+                // move queued track to the top of the playlist, to prevent it from being played twice
+                // this is done automatically by most queue changing functions, but not if the user manually moves the track
+                moveItem( item, 0, m_currentTrack );
             emit queueChanged( PLItemList(), PLItemList( item ) );
         }
 
@@ -4204,7 +4208,7 @@ void Playlist::contentsWheelEvent( QWheelEvent *e )
                 else // move up, above dest
                     after = m_nextTracks.at( dest );
                 if ( after )
-                    moveItem(item, 0, after);
+                    moveItem( item, 0, after ); // move the item
             }
             m_nextTracks.replace( dest, m_nextTracks.at( dest - s ) );
             m_nextTracks.replace( dest - s, p );
