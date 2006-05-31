@@ -802,8 +802,8 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
             urls = expandURL( url );
 
             menu.changeTitle( TITLE, i18n("Compilation Disc") );
-            menu.changeItem( INFO,   i18n("Edit Album Disc &Information..." ) );
-            menu.changeItem( ASNEXT, i18n("&Queue Album Disc") );
+            menu.changeItem( INFO,   i18n("Edit Compilation Disc &Information..." ) );
+            menu.changeItem( ASNEXT, i18n("&Queue Compilation Disc") );
         }
 
         if( urls.count() == 0 )
