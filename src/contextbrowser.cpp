@@ -618,7 +618,7 @@ void ContextBrowser::saveHtmlData()
     QTextStream stream( &exportedDocument );
     stream.setEncoding( QTextStream::UnicodeUTF8 );
     stream << m_HTMLSource // the pure html data..
-        .replace("<html>",QString("<html><head><style type=\"text/css\">%1</style></head>").arg( HTMLView::loadStyleSheet() ) ); // and the stylesheet code
+        .replace( "<html>", QString( "<html><head><style type=\"text/css\">%1</style></head>" ).arg( HTMLView::loadStyleSheet() ) ); // and the stylesheet code
     exportedDocument.close();
 }
 
@@ -673,6 +673,7 @@ void ContextBrowser::tabChanged( QWidget *page )
 {
 DEBUG_FUNC_INFO
     setFocusProxy( page ); //so focus is given to a sensible widget when the tab is opened
+
     if ( page == m_contextTab )
         showCurrentTrack();
     else if ( page == m_lyricsTab )
@@ -685,6 +686,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 {
     enum { APPEND, ASNEXT, MAKE, MEDIA_DEVICE, INFO, TITLE, RELATED, SUGGEST, FAVES, FRESHPODCASTS, NEWALBUMS, FAVALBUMS };
     debug() << "url string: " << urlString << endl;
+
     if( urlString.startsWith( "musicbrainz" ) ||
         urlString.startsWith( "externalurl" ) ||
         urlString.startsWith( "show:suggest" ) ||
@@ -1061,27 +1063,27 @@ void CurrentTrackJob::showHome()
 
     m_HTMLSource.append(
             QStringx(
-                "<div id='introduction_box' class='box'>"
-                "<div id='introduction_box-header-title' class='box-header'>"
-                "<span id='introduction_box-header-title' class='box-header-title'>"
+                "<div id='introduction_box' class='box'>\n"
+                "<div id='introduction_box-header-title' class='box-header'>\n"
+                "<span id='introduction_box-header-title' class='box-header-title'>\n"
                 + i18n( "No Track Playing" ) +
-                "</span>"
-                "</div>"
-                "<table id='current_box-table' class='box-body' width='100%' cellpadding='0' cellspacing='0'>"
-                "<tr>"
-                "<td id='current_box-largecover-td'>"
-                "<a href='%1'><img id='current_box-largecover-image' src='%2' title='amaroK'></a>"
-                "</td>"
-                "<td id='current_box-information-td' align='right'>"
-                "<span>%3</span><br />"
-                "<span>%4</span><br />"
-                "<span>%5</span><br />"
-                "<span>%6</span><br />"
-                "<span>%7</span><br />"
-                "</td"
-                "</tr>"
-                "</table>"
-                "</div>" )
+                "</span>\n"
+                "</div>\n"
+                "<table id='current_box-table' class='box-body' width='100%' cellpadding='0' cellspacing='0'>\n"
+                "<tr>\n"
+                "<td id='current_box-largecover-td'>\n"
+                "<a href='%1'><img id='current_box-largecover-image' src='%2' title='amaroK'></a>\n"
+                "</td>\n"
+                "<td id='current_box-information-td' align='right'>\n"
+                "<span>%3</span><br />\n"
+                "<span>%4</span><br />\n"
+                "<span>%5</span><br />\n"
+                "<span>%6</span><br />\n"
+                "<span>%7</span><br />\n"
+                "</td>\n"
+                "</tr>\n"
+                "</table>\n"
+                "</div>\n" )
             .args( QStringList()
                     << escapeHTMLAttr( "externalurl://amarok.kde.org" )
                     << escapeHTMLAttr( KGlobal::iconLoader()->iconPath( "amarok", -KIcon::SizeEnormous ) )
@@ -1095,7 +1097,7 @@ void CurrentTrackJob::showHome()
     b->m_shownAlbums = showHomeByAlbums();
 
     m_HTMLSource.append(
-            "</div></body></html>");
+            "</div></body></html>\n");
 }
 
 
@@ -1145,11 +1147,11 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
         QString albumLength = ( i_albumLength==0 ? i18n( "Unknown" ) : MetaBundle::prettyTime( i_albumLength, true ) );
 
         htmlCode.append( QStringx (
-                    "<tr class='" + QString( (i % 4) ? "box-row-alt" : "box-row" ) + "'>"
-                    "<td>"
-                    "<div class='album-header' onClick=\"toggleBlock('IDA%1')\">"
-                    "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
-                    "<tr>")
+                    "<tr class='" + QString( (i % 4) ? "box-row-alt" : "box-row" ) + "'>\n"
+                    "<td>\n"
+                    "<div class='album-header' onClick=\"toggleBlock('IDA%1')\">\n"
+                    "<table width='100%' border='0' cellspacing='0' cellpadding='0'>\n"
+                    "<tr>\n")
                 .args( QStringList()
                     << stID + reqResult[i+1] ));
 
@@ -1162,13 +1164,13 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
 
             // Compilation image
             htmlCode.append( QStringx (
-                        "<td width='1'>"
-                        "<a href='fetchcover: @@@ %1'>"
-                        "<img class='album-image' align='left' vspace='2' hspace='2' title='%2' src='%3'/>"
-                        "</a>"
-                        "</td>"
-                        "<td valign='middle' align='left'>"
-                        "<a href='compilation:%4'><span class='album-title'>%5</span></a>" )
+                        "<td width='1'>\n"
+                        "<a href='fetchcover: @@@ %1'>\n"
+                        "<img class='album-image' align='left' vspace='2' hspace='2' title='%2' src='%3'/>\n"
+                        "</a>\n"
+                        "</td>\n"
+                        "<td valign='middle' align='left'>\n"
+                        "<a href='compilation:%4'><span class='album-title'>%5</span></a>\n" )
                     .args( QStringList()
                         << escapeHTMLAttr( reqResult[ i ].isEmpty() ? i18n( "Unknown" ) : reqResult[ i ] ) // album.name
                         << albumImageTitleAttr
@@ -1185,19 +1187,19 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
 
             // Album image
             htmlCode.append( QStringx (
-                        "<td width='1'>"
-                        "<a href='fetchcover:%1 @@@ %2'>"
-                        "<img class='album-image' align='left' vspace='2' hspace='2' title='%3' src='%4'/>"
-                        "</a>"
-                        "</td>"
-                        "<td valign='middle' align='left'>"
-                        "<a href='artist:%5'>"
-                        "<span class='album-title'>%6</span>"
-                        "</a>"
-                        "<span class='song-separator'> - </span>"
-                        "<a href='album:%7 @@@ %8'>"
-                        "<span class='album-title'>%9</span>"
-                        "</a>" )
+                        "<td width='1'>\n"
+                        "<a href='fetchcover:%1 @@@ %2'>\n"
+                        "<img class='album-image' align='left' vspace='2' hspace='2' title='%3' src='%4'/>\n"
+                        "</a>\n"
+                        "</td>\n"
+                        "<td valign='middle' align='left'>\n"
+                        "<a href='artist:%5'>\n"
+                        "<span class='album-title'>%6</span>\n"
+                        "</a>\n"
+                        "<span class='song-separator'> - </span>\n"
+                        "<a href='album:%7 @@@ %8'>\n"
+                        "<span class='album-title'>%9</span>\n"
+                        "</a>\n" )
                     .args( QStringList()
                         << escapeHTMLAttr( albumValues[5] ) // artist name
                         << escapeHTMLAttr( reqResult[ i ].isEmpty() ? i18n( "Unknown" ) : reqResult[ i ] ) // album.name
@@ -1213,10 +1215,10 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
         // Tracks number, year and length
         htmlCode.append( QStringx (
                     "<span class='album-info'>%1</span> "
-                    "<br />"
-                    "<span class='album-year'>%2</span>"
-                    "<span class='album-length'>%3</span>"
-                    "</td>")
+                    "<br />\n"
+                    "<span class='album-year'>%2</span>\n"
+                    "<span class='album-length'>%3</span>\n"
+                    "</td>\n")
                 .args( QStringList()
                     << i18n( "Single", "%n Tracks",  albumValues.count() / qb.countReturnValues() )
                     << albumYear
@@ -1224,10 +1226,10 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
 
         // Begining of the 'toggleable div' that contains the songs
         htmlCode.append( QStringx (
-                    "</tr>"
-                    "</table>"
-                    "</div>"
-                    "<div class='album-body' style='display:%1;' id='IDA%2'>" )
+                    "</tr>\n"
+                    "</table>\n"
+                    "</div>\n"
+                    "<div class='album-body' style='display:%1;' id='IDA%2'>\n" )
                 .args( QStringList()
                     << "none" /* shows it if it's the current track album */
                     << stID + reqResult[ i + 1 ] ) );
@@ -1242,9 +1244,9 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
                 if( discNumber != newDiscNumber && newDiscNumber.toInt() > 0)
                 {
                     discNumber = newDiscNumber;
-                    htmlCode.append( "<div class='disc-separator'>"
+                    htmlCode.append( "<div class='disc-separator'>\n"
                                      +    i18n( "Disc %1" ).arg( discNumber )
-                                     + "</div>" );
+                                     + "</div>\n" );
                 }
                 QString track = albumValues[j + 2].stripWhiteSpace();
                 if( track.length() > 0 )
@@ -1252,28 +1254,28 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
                     if( track.length() == 1 )
                         track.prepend( "0" );
 
-                    track = "<span class='album-song-trackno'>" + track + "&nbsp;</span>";
+                    track = "<span class='album-song-trackno'>\n" + track + "&nbsp;</span>\n";
                 }
 
                 QString length;
                 if( albumValues[j + 4] != "0" )
-                    length = "<span class='album-song-time'>(" + MetaBundle::prettyTime( QString(albumValues[j + 4]).toInt(), true ) + ")</span>";
+                    length = "<span class='album-song-time'>(" + MetaBundle::prettyTime( QString(albumValues[j + 4]).toInt(), true ) + ")</span>\n";
 
                 htmlCode.append(
-                    "<div class='album-song'>"
-                    "<a href=\"file:" + escapeHTMLAttr( albumValues[j + 1] ) + "\">"
+                    "<div class='album-song'>\n"
+                    "<a href=\"file:" + escapeHTMLAttr( albumValues[j + 1] ) + "\">\n"
                     + track +
-                    "<span class='album-song-title'>" + escapeHTML( albumValues[j] ) + "</span>&nbsp;"
+                    "<span class='album-song-title'>\n" + escapeHTML( albumValues[j] ) + "</span>&nbsp;"
                     + length +
-                    "</a>"
-                    "</div>" );
+                    "</a>\n"
+                    "</div>\n" );
             }
         }
 
         htmlCode.append(
-                "</div>"
-                "</td>"
-                "</tr>" );
+                "</div>\n"
+                "</td>\n"
+                "</tr>\n" );
     }
 }
 
@@ -1284,6 +1286,8 @@ CurrentTrackJob::showHomeByAlbums()
 {
     KLocale locale( "locale" );
     QueryBuilder qb;
+
+    m_HTMLSource.append( "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr>\n" );
 
     // <Fresh Podcasts Information>
     if( ContextBrowser::instance()->m_showFreshPodcasts )
@@ -1299,13 +1303,13 @@ CurrentTrackJob::showHomeByAlbums()
         if( channels.count() > 0 )
         {
             m_HTMLSource.append(
-                    "<div id='least_box' class='box'>"
-                    "<div id='least_box-header' class='box-header'>"
-                    "<span id='least_box-header-title' class='box-header-title'>"
+                    "<td valign='top'><div id='least_box' class='box'>\n"
+                    "<div id='least_box-header' class='box-header'>\n"
+                    "<span id='least_box-header-title' class='box-header-title'>\n"
                     + i18n( "Fresh Podcast Episodes" ) +
-                    "</span>"
-                    "</div>"
-                    "<div id='least_box-body' class='box-body'>" );
+                    "</span>\n"
+                    "</div>\n"
+                    "<table id='least_box-body' class='box-body' width='100%' cellpadding='0' cellspacing='0'>\n" );
 
             uint i = 0;
             for( QStringList::iterator it = channels.begin();
@@ -1340,26 +1344,26 @@ CurrentTrackJob::showHomeByAlbums()
                     QString imageAttr = escapeHTMLAttr( i18n( "Click to go to podcast website: %1." ).arg( pcb.link().prettyURL() ) );
 
                     m_HTMLSource.append( QStringx (
-                                "<tr class='" + QString( (i % 2) ? "box-row-alt" : "box-row" ) + "'>"
-                                "<td>"
-                                "<div class='album-header' onClick=\"toggleBlock('IDP%1')\">"
-                                "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
-                                "<tr>"
-                                "<td width='1'>"
-                                "<a href='%2'>"
-                                "<img class='album-image' align='left' vspace='2' hspace='2' title='%3' src='%4' />"
-                                "</a>"
-                                "</td>"
-                                "<td valign='middle' align='left'>"
-                                "<span class='album-info'>%5</span> "
-                                "<a href='%6'><span class='album-title'>%7</span></a>"
-                                "<br />"
-                                "<span class='album-year'>%8</span>"
-                                "</td>"
-                                "</tr>"
-                                "</table>"
-                                "</div>"
-                                "<div class='album-body' style='display:%9;' id='IDP%10'>" )
+                                "<tr class='" + QString( (i % 2) ? "box-row-alt" : "box-row" ) + "'>\n"
+                                "<td>\n"
+                                "<div class='album-header' onClick=\"toggleBlock('IDP%1')\">\n"
+                                "<table width='100%' border='0' cellspacing='0' cellpadding='0'>\n"
+                                "<tr>\n"
+                                "<td width='1'>\n"
+                                "<a href='%2'>\n"
+                                "<img class='album-image' align='left' vspace='2' hspace='2' title='%3' src='%4' />\n"
+                                "</a>\n"
+                                "</td>\n"
+                                "<td valign='middle' align='left'>\n"
+                                "<span class='album-info'>%5</span> \n"
+                                "<a href='%6'><span class='album-title'>%7</span></a>\n"
+                                "<br />\n"
+                                "<span class='album-year'>%8</span>\n"
+                                "</td>\n"
+                                "</tr>\n"
+                                "</table>\n"
+                                "</div>\n"
+                                "<div class='album-body' style='display:%9;' id='IDP%10'>\n" )
                                 .args( QStringList()
                                         << QString::number( i )
                                         << pcb.link().url().replace( QRegExp( "^http:" ), "externalurl:" )
@@ -1376,18 +1380,19 @@ CurrentTrackJob::showHomeByAlbums()
                                      )
                                 );
 
-                    m_HTMLSource.append( QStringx ( "<p>%1</p>" ).arg( ep.description() ) );
+                    m_HTMLSource.append( QStringx ( "<p>%1</p>\n" ).arg( ep.description() ) );
 
                     m_HTMLSource.append(
-                            "</div>"
-                            "</td>"
-                            "</tr>" );
+                            "</div>\n"
+                            "</td>\n"
+                            "</tr>\n" );
                     i++;
                 }
             }
             m_HTMLSource.append(
-                    "</div>"
-                    "</div>");
+                    "</table>\n"
+                    "</div>\n"
+                    "</td>\n" );
         }
     }
     // </Fresh Podcasts Information>
@@ -1419,18 +1424,20 @@ CurrentTrackJob::showHomeByAlbums()
         }
         // toggle html here so we get correct albums
         m_HTMLSource.append(
-                "<div id='least_box' class='box'>"
-                "<div id='least_box-header' class='box-header'>"
-                "<span id='least_box-header-title' class='box-header-title'>"
+                "<td valign='top'>\n"
+                "<div id='least_box' class='box'>\n"
+                "<div id='least_box-header' class='box-header'>\n"
+                "<span id='least_box-header-title' class='box-header-title'>\n"
                 + i18n( "Your Newest Albums" ) +
-                "</span>"
-                "</div>"
-                "<div id='least_box-body' class='box-body'>" );
+                "</span>\n"
+                "</div>\n"
+                "<table id='least_box-body' class='box-body' width='100%' cellpadding='0' cellspacing='0'>\n" );
         constructHTMLAlbums( recentAlbums, m_HTMLSource, "1" );
 
         m_HTMLSource.append(
-                "</div>"
-                "</div>");
+                "</table>\n"
+                "</div>\n"
+                "</td>\n" );
     }
     // </Recent Tracks Information>
 
@@ -1468,29 +1475,33 @@ CurrentTrackJob::showHomeByAlbums()
         }
 
         m_HTMLSource.append(
-                "<div id='albums_box' class='box'>"
-                "<div id='albums_box-header' class='box-header'>"
-                "<span id='albums_box-header-title' class='box-header-title'>"
+                "<td valign='top'>\n"
+                "<div id='albums_box' class='box'>\n"
+                "<div id='albums_box-header' class='box-header'>\n"
+                "<span id='albums_box-header-title' class='box-header-title'>\n"
                 + i18n( "Favorite Albums" ) +
-                "</span>"
-                "</div>"
-                "<table id='albums_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='0'>" );
+                "</span>\n"
+                "</div>\n"
+                "<table id='albums_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='0'>\n" );
 
         if ( faveAlbums.count() == 0 )
         {
             m_HTMLSource.append(
-                    "<div id='favorites_box-body' class='box-body'><p>" +
+                    "<div id='favorites_box-body' class='box-body'><p>\n" +
                     i18n( "A list of your favorite albums will appear here, once you have played a few of your songs." ) +
-                    "</p></div>" );
+                    "</p></div>\n" );
         }
         else
         {
             constructHTMLAlbums( faveAlbums, m_HTMLSource, "2" );
         }
 
-        m_HTMLSource.append("</div>");
+        m_HTMLSource.append(
+                "</table></div></td>\n" );
     }
     // </Favorite Tracks Information>
+
+    m_HTMLSource.append( "</tr></table>\n" );
 
     return albums;
 }
@@ -1499,30 +1510,30 @@ CurrentTrackJob::showHomeByAlbums()
 void CurrentTrackJob::showStream( const MetaBundle &currentTrack )
 {
     m_HTMLSource.append( QStringx(
-                "<div id='current_box' class='box'>"
-                "<div id='current_box-header' class='box-header'>"
+                "<div id='current_box' class='box'>\n"
+                "<div id='current_box-header' class='box-header'>\n"
                 "<span id='current_box-header-stream' class='box-header-title'>%1</span> "
-                "</div>"
-                "<table id='current_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>"
-                "<tr class='box-row'>"
-                "<td height='42' valign='top' width='90%'>"
-                "<b>%2</b>"
-                "<br />"
-                "<br />"
+                "</div>\n"
+                "<table id='current_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>\n"
+                "<tr class='box-row'>\n"
+                "<td height='42' valign='top' width='90%'>\n"
+                "<b>%2</b>\n"
+                "<br />\n"
+                "<br />\n"
                 "%3"
-                "<br />"
-                "<br />"
+                "<br />\n"
+                "<br />\n"
                 "%4"
-                "<br />"
+                "<br />\n"
                 "%5"
-                "<br />"
+                "<br />\n"
                 "%6"
-                "<br />"
+                "<br />\n"
                 "%7"
-                "</td>"
-                "</tr>"
-                "</table>"
-                "</div>" )
+                "</td>\n"
+                "</tr>\n"
+                "</table>\n"
+                "</div>\n" )
                 .args( QStringList()
                         << i18n( "Stream Details" )
                         << escapeHTML( currentTrack.prettyTitle() )
@@ -1535,22 +1546,22 @@ void CurrentTrackJob::showStream( const MetaBundle &currentTrack )
     if ( b->m_metadataHistory.count() > 0 )
     {
         m_HTMLSource.append(
-                "<div id='stream-history_box' class='box'>"
-                "<div id='stream-history_box-header' class='box-header'>" + i18n( "Metadata History" ) + "</div>"
-                "<table id='stream-history_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
+                "<div id='stream-history_box' class='box'>\n"
+                "<div id='stream-history_box-header' class='box-header'>\n" + i18n( "Metadata History" ) + "</div>\n"
+                "<table id='stream-history_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>\n" );
 
         for ( uint i = 0; i < b->m_metadataHistory.count(); ++i )
         {
             const QString str = b->m_metadataHistory[i];
-            m_HTMLSource.append( QStringx( "<tr class='box-row'><td>%1</td></tr>" ).arg( str ) );
+            m_HTMLSource.append( QStringx( "<tr class='box-row'><td>%1</td></tr>\n" ).arg( str ) );
         }
 
         m_HTMLSource.append(
-                "</table>"
-                "</div>" );
+                "</table>\n"
+                "</div>\n" );
     }
 
-    m_HTMLSource.append( "</body></html>" );
+    m_HTMLSource.append( "</body></html>\n" );
 }
 
 
@@ -1581,26 +1592,26 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
             );
 
     m_HTMLSource.append( QStringx(
-                "<div id='current_box' class='box'>"
-                "<div id='current_box-header' class='box-header'>"
+                "<div id='current_box' class='box'>\n"
+                "<div id='current_box-header' class='box-header'>\n"
                 "<span id='current_box-header-artist' class='box-header-title'>%1</span> "
-                "<br />"
-                "<span id='current_box-header-album' class='box-header-title'>%2</span>"
-                "</div>"
+                "<br />\n"
+                "<span id='current_box-header-album' class='box-header-title'>%2</span>\n"
+                "</div>\n"
 
-                "<table id='current_box-table' class='box-body' width='100%' cellpadding='0' cellspacing='0'>"
-                "<tr>"
-                "<td id='current_box-largecover-td'>"
-                "<a id='current_box-largecover-a' href='%3'>"
-                "<img id='current_box-largecover-image' src='%4' title='%5'>"
-                "</a>"
-                "</td>"
-                "<td id='current_box-information-td' align='right'>"
+                "<table id='current_box-table' class='box-body' width='100%' cellpadding='0' cellspacing='0'>\n"
+                "<tr>\n"
+                "<td id='current_box-largecover-td'>\n"
+                "<a id='current_box-largecover-a' href='%3'>\n"
+                "<img id='current_box-largecover-image' src='%4' title='%5'>\n"
+                "</a>\n"
+                "</td>\n"
+                "<td id='current_box-information-td' align='right'>\n"
                 "%6"
                 "%7"
-                "</td>"
-                "</table>"
-                "</div>" )
+                "</td>\n"
+                "</table>\n"
+                "</div>\n" )
             .args( QStringList()
                 << escapeHTML( pcb.title() )
                 << escapeHTML( peb.title() )
@@ -1613,7 +1624,7 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
                     ? i18n( "Podcast" )
                     : i18n( "Podcast by %1" ).arg( peb.author() ) )
                 << ( peb.localUrl().isValid()
-                    ? "<br />" + escapeHTML( i18n( "(Cached)" ) )
+                    ? "<br />\n" + escapeHTML( i18n( "(Cached)" ) )
                     : "" )
                 )
             );
@@ -1621,32 +1632,32 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
     if ( EngineController::engine()->isStream() && b->m_metadataHistory.count() > 1 )
     {
         m_HTMLSource.append(
-                "<div id='stream-history_box' class='box'>"
-                "<div id='stream-history_box-header' class='box-header'>" + i18n( "Metadata History" ) + "</div>"
-                "<table id='stream-history_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
+                "<div id='stream-history_box' class='box'>\n"
+                "<div id='stream-history_box-header' class='box-header'>\n" + i18n( "Metadata History" ) + "</div>\n"
+                "<table id='stream-history_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>\n" );
 
         for ( uint i = 0; i < b->m_metadataHistory.count(); ++i )
         {
             const QString str = b->m_metadataHistory[i];
-            m_HTMLSource.append( QStringx( "<tr class='box-row'><td>%1</td></tr>" ).arg( str ) );
+            m_HTMLSource.append( QStringx( "<tr class='box-row'><td>%1</td></tr>\n" ).arg( str ) );
         }
 
         m_HTMLSource.append(
-                "</table>"
-                "</div>" );
+                "</table>\n"
+                "</div>\n" );
     }
 
     m_HTMLSource.append(
-            "<div id='albums_box' class='box'>"
-            "<div id='albums_box-header' class='box-header'>"
-            "<span id='albums_box-header-title' class='box-header-title'>"
+            "<div id='albums_box' class='box'>\n"
+            "<div id='albums_box-header' class='box-header'>\n"
+            "<span id='albums_box-header-title' class='box-header-title'>\n"
             + ( channelInDB
                 ? i18n( "Episodes from %1" ).arg( escapeHTML( pcb.title() ) )
                 : i18n( "Episodes from this Channel" )
               )
-            + "</span>"
-            "</div>"
-            "<table id='albums_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='0'>" );
+            + "</span>\n"
+            "</div>\n"
+            "<table id='albums_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='0'>\n" );
 
     uint i = 0;
     QValueList<PodcastEpisodeBundle> episodes = CollectionDB::instance()->getPodcastEpisodes( peb.parent() );
@@ -1669,22 +1680,22 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
         }
 
         m_HTMLSource.append( QStringx (
-                    "<tr class='" + QString( (i % 2) ? "box-row-alt" : "box-row" ) + "'>"
-                    "<td>"
-                    "<div class='album-header' onClick=\"toggleBlock('IDE%1')\">"
-                    "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
-                    "<tr>"
-                    "<td width='1'></td>"
-                    "<td valign='middle' align='left'>"
+                    "<tr class='" + QString( (i % 2) ? "box-row-alt" : "box-row" ) + "'>\n"
+                    "<td>\n"
+                    "<div class='album-header' onClick=\"toggleBlock('IDE%1')\">\n"
+                    "<table width='100%' border='0' cellspacing='0' cellpadding='0'>\n"
+                    "<tr>\n"
+                    "<td width='1'></td>\n"
+                    "<td valign='middle' align='left'>\n"
                     "<span class='album-info'>%2</span> "
-                    "<a href='%3'><span class='album-title'>%4</span></a>"
-                    "<br />"
-                    "<span class='album-year'>%5</span>"
-                    "</td>"
-                    "</tr>"
-                    "</table>"
-                    "</div>"
-                    "<div class='album-body' style='display:%6;' id='IDE%7'>" )
+                    "<a href='%3'><span class='album-title'>%4</span></a>\n"
+                    "<br />\n"
+                    "<span class='album-year'>%5</span>\n"
+                    "</td>\n"
+                    "</tr>\n"
+                    "</table>\n"
+                    "</div>\n"
+                    "<div class='album-body' style='display:%6;' id='IDE%7'>\n" )
                 .args( QStringList()
                     << QString::number( i )
                     << escapeHTML( ep.duration() ? MetaBundle::prettyTime( ep.duration() ) : QString( "" ) )
@@ -1698,17 +1709,17 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
                     )
                 );
 
-        m_HTMLSource.append( QStringx ( "<p>%1</p>" ).arg( ep.description() ) );
+        m_HTMLSource.append( QStringx ( "<p>%1</p>\n" ).arg( ep.description() ) );
 
         m_HTMLSource.append(
-                "</div>"
-                "</td>"
-                "</tr>" );
+                "</div>\n"
+                "</td>\n"
+                "</tr>\n" );
         i++;
         episodes.pop_back();
     }
 
-    m_HTMLSource.append("</body></html>" );
+    m_HTMLSource.append("</body></html>\n" );
 }
 
 void CurrentTrackJob::showBrowseArtistHeader( const QString &artist )
@@ -1716,62 +1727,62 @@ void CurrentTrackJob::showBrowseArtistHeader( const QString &artist )
     // <Artist>
     bool linkback = ( b->m_contextBackHistory.size() > 0 );
     QString back = ( linkback
-            ? "<a id='artist-back-a' href='artistback://back'>"
+            ? "<a id='artist-back-a' href='artistback://back'>\n"
             + escapeHTML( i18n( "<- Back" ) )
-            + "</a>"
+            + "</a>\n"
             : QString( "" )
             );
     m_HTMLSource.append(
             QString(
-                "<div id='current_box' class='box'>"
-                "<div id='current_box-header' class='box-header'>"
-                "<span id='current_box-header-artist' class='box-header-title'>%1</span>"
-                "<br />"
-                "<table width='100%' cellpadding='0' cellspacing='0'><tr>"
-                "<td><span id='current_box-header-album' class='box-header-title'>%2</span></td>"
-                "<td><div id='current_box-header-nav' class='box-header-nav'>%3</div></td>"
-                "</tr></table>"
-                "</div>" )
+                "<div id='current_box' class='box'>\n"
+                "<div id='current_box-header' class='box-header'>\n"
+                "<span id='current_box-header-artist' class='box-header-title'>%1</span>\n"
+                "<br />\n"
+                "<table width='100%' cellpadding='0' cellspacing='0'><tr>\n"
+                "<td><span id='current_box-header-album' class='box-header-title'>%2</span></td>\n"
+                "<td><div id='current_box-header-nav' class='box-header-nav'>%3</div></td>\n"
+                "</tr></table>\n"
+                "</div>\n" )
             .arg( escapeHTML( artist ) )
             .arg( escapeHTML( i18n( "Browse Artist" ) ) )
             .arg( back ) );
     m_HTMLSource.append(
-            "<table id='current_box-table' class='box-body' width='100%' cellpadding='0' cellspacing='0'>"
+            "<table id='current_box-table' class='box-body' width='100%' cellpadding='0' cellspacing='0'>\n"
             );
 
     m_HTMLSource.append(
-            "<tr>"
-            "<td id='context'>"
-            + QString( "<a id='context-a=' href='current://track'>" )
+            "<tr>\n"
+            "<td id='context'>\n"
+            + QString( "<a id='context-a=' href='current://track'>\n" )
             + i18n( "Information for Current Track" )
-            + "</a>"
-            "</td>"
-            "</tr>"
+            + "</a>\n"
+            "</td>\n"
+            "</tr>\n"
             );
 
     m_HTMLSource.append(
-            "<tr>"
-            "<td id='artist-wikipedia'>"
-            + QString( "<a id='artist-wikipedia-a' href='wikipedia:%1'>" ).arg( escapeHTMLAttr( artist ) )
+            "<tr>\n"
+            "<td id='artist-wikipedia'>\n"
+            + QString( "<a id='artist-wikipedia-a' href='wikipedia:%1'>\n" ).arg( escapeHTMLAttr( artist ) )
             + i18n( "Wikipedia Information for %1" ).arg( escapeHTML( artist ) ) +
-            "</a>"
-            "</td>"
-            "</tr>");
+            "</a>\n"
+            "</td>\n"
+            "</tr>\n");
     m_HTMLSource.append(
-            "<tr>"
-            "<td id='artist-google'>"
-            + QString( "<a id='artist-google-a' href='ggartist:%1'>" ).arg( escapeHTMLAttr( artist ) )
+            "<tr>\n"
+            "<td id='artist-google'>\n"
+            + QString( "<a id='artist-google-a' href='ggartist:%1'>\n" ).arg( escapeHTMLAttr( artist ) )
             + i18n( "Google Musicsearch for %1" ).arg( escapeHTML( artist ) ) +
-            "</a>"
-            "</td>"
-            "</tr>"
+            "</a>\n"
+            "</td>\n"
+            "</tr>\n"
             );
 
     m_HTMLSource.append(
-            "</td>"
-            "</tr>"
-            "</table>"
-            "</div>" );
+            "</td>\n"
+            "</tr>\n"
+            "</table>\n"
+            "</div>\n" );
     // </Artist>
 }
 
@@ -1803,30 +1814,30 @@ void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
     }
 
     m_HTMLSource.append(
-            "<div id='current_box' class='box'>"
-            "<div id='current_box-header' class='box-header'>"
+            "<div id='current_box' class='box'>\n"
+            "<div id='current_box-header' class='box-header'>\n"
             // Show "Title - Artist \n Album", or only "PrettyTitle" if there's no title tag
             + ( !currentTrack.title().isEmpty()
                 ? QStringx(
                     "<span id='current_box-header-songname' class='box-header-title'>%1</span> "
                     "<span id='current_box-header-separator' class='box-header-title'>-</span> "
-                    "<span id='current_box-header-artist' class='box-header-title'>%2</span>"
-                    "<br />"
-                    "<span id='current_box-header-album' class='box-header-title'>%3</span>"
-                    "</div>"
-                    "<table id='current_box-table' class='box-body' width='100%' cellpadding='0' cellspacing='0'>"
-                    "<tr>"
-                    "<td id='current_box-largecover-td'>"
-                    "<a id='current_box-largecover-a' href='fetchcover:%4 @@@ %5'>"
-                    "<img id='current_box-largecover-image' src='%6' title='%7'>"
-                    "</a>"
-                    "</td>"
-                    "<td id='current_box-information-td' align='right'>"
-                    "<div id='musicbrainz-div'>"
-                    "<a id='musicbrainz-a' title='%8' href='musicbrainz:%9 @@@ %10 @@@ %11'>"
-                    "<img id='musicbrainz-image' src='%12' />"
-                    "</a>"
-                    "</div>"
+                    "<span id='current_box-header-artist' class='box-header-title'>%2</span>\n"
+                    "<br />\n"
+                    "<span id='current_box-header-album' class='box-header-title'>%3</span>\n"
+                    "</div>\n"
+                    "<table id='current_box-table' class='box-body' width='100%' cellpadding='0' cellspacing='0'>\n"
+                    "<tr>\n"
+                    "<td id='current_box-largecover-td'>\n"
+                    "<a id='current_box-largecover-a' href='fetchcover:%4 @@@ %5'>\n"
+                    "<img id='current_box-largecover-image' src='%6' title='%7'>\n"
+                    "</a>\n"
+                    "</td>\n"
+                    "<td id='current_box-information-td' align='right'>\n"
+                    "<div id='musicbrainz-div'>\n"
+                    "<a id='musicbrainz-a' title='%8' href='musicbrainz:%9 @@@ %10 @@@ %11'>\n"
+                    "<img id='musicbrainz-image' src='%12' />\n"
+                    "</a>\n"
+                    "</div>\n"
                     )
                 .args( QStringList()
                         << escapeHTML( currentTrack.title() )
@@ -1843,15 +1854,15 @@ void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
                         << escapeHTML( locate( "data", "amarok/images/musicbrainz.png" ) ) )
                 : QString ( //no title
                         "<span id='current_box-header-prettytitle' class='box-header-prettytitle'>%1</span> "
-                        "</div>"
-                        "<table id='current_box-table' class='box-body' width='100%' cellpadding='0' cellspacing='0'>"
-                        "<tr>"
-                        "<td id='current_box-largecover-td'>"
-                        "<a id='current_box-largecover-a' href='fetchcover:%2 @@@ %3'>"
-                        "<img id='current_box-largecover-image' src='%4' title='%5'>"
-                        "</a>"
-                        "</td>"
-                        "<td id='current_box-information-td' align='right'>"
+                        "</div>\n"
+                        "<table id='current_box-table' class='box-body' width='100%' cellpadding='0' cellspacing='0'>\n"
+                        "<tr>\n"
+                        "<td id='current_box-largecover-td'>\n"
+                        "<a id='current_box-largecover-a' href='fetchcover:%2 @@@ %3'>\n"
+                        "<img id='current_box-largecover-image' src='%4' title='%5'>\n"
+                        "</a>\n"
+                        "</td>\n"
+                        "<td id='current_box-information-td' align='right'>\n"
                         )
                 .arg( escapeHTML( currentTrack.prettyTitle() ) )
                 .arg( escapeHTMLAttr( currentTrack.artist() ) )
@@ -1874,10 +1885,10 @@ void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
         //SAFE   = .arg( x, y )
         //UNSAFE = .arg( x ).arg( y )
         m_HTMLSource.append( QString(
-                    "<span>%1</span><br />"
-                    "<div>%2</div>"
-                    "<span>%3</span><br />"
-                    "<span>%4</span>"
+                    "<span>%1</span><br />\n"
+                    "<div>%2</div>\n"
+                    "<span>%3</span><br />\n"
+                    "<span>%4</span>\n"
                     )
                 .arg( i18n( "Track played once", "Track played %n times", playtimes ),
                       statsHTML( score, rating, false ),
@@ -1888,66 +1899,66 @@ void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
         m_HTMLSource.append( i18n( "Never played before" ) );
 
     m_HTMLSource.append(
-            "</td>"
-            "</tr>"
-            "</table>"
-            "</div>" );
+            "</td>\n"
+            "</tr>\n"
+            "</table>\n"
+            "</div>\n" );
     // </Current Track Information>
 
     if ( currentTrack.url().isLocalFile() && !CollectionDB::instance()->isFileInCollection( currentTrack.url().path() ) )
     {
         m_HTMLSource.append(
-                "<div id='notindb_box' class='box'>"
-                "<div id='notindb_box-header' class='box-header'>"
-                "<span id='notindb_box-header-title' class='box-header-title'>"
+                "<div id='notindb_box' class='box'>\n"
+                "<div id='notindb_box-header' class='box-header'>\n"
+                "<span id='notindb_box-header-title' class='box-header-title'>\n"
                 + i18n( "This file is not in your Collection!" ) +
-                "</span>"
-                "</div>"
-                "<div id='notindb_box-body' class='box-body'>"
-                "<div class='info'><p>"
+                "</span>\n"
+                "</div>\n"
+                "<div id='notindb_box-body' class='box-body'>\n"
+                "<div class='info'><p>\n"
                 + i18n( "If you would like to see contextual information about this track,"
                     " you should add it to your Collection." ) +
-                "</p></div>"
-                "<div align='center'>"
+                "</p></div>\n"
+                "<div align='center'>\n"
                 "<input type='button' onClick='window.location.href=\"show:collectionSetup\";' value='"
                 + i18n( "Change Collection Setup..." ) +
-                "' class='button' /></div><br />"
-                "</div>"
-                "</div>"
+                "' class='button' /></div><br />\n"
+                "</div>\n"
+                "</div>\n"
                 );
     }
 
     /* cue file code */
     if ( b->m_cuefile && (b->m_cuefile->count() > 0) ) {
         m_HTMLSource.append(
-                "<div id='cue_box' class='box'>"
-                "<div id='cue_box-header' class='box-header'>"
-                "<span id='cue_box-header-title' class='box-header-title' onClick=\"toggleBlock('T_CC'); window.location.href='togglebox:cc';\" style='cursor: pointer;'>"
+                "<div id='cue_box' class='box'>\n"
+                "<div id='cue_box-header' class='box-header'>\n"
+                "<span id='cue_box-header-title' class='box-header-title' onClick=\"toggleBlock('T_CC'); window.location.href='togglebox:cc';\" style='cursor: pointer;'>\n"
                 + i18n( "Cue File" ) +
-                "</span>"
-                "</div>"
-                "<table id='cue_box-body' class='box-body' id='T_CC' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
+                "</span>\n"
+                "</div>\n"
+                "<table id='cue_box-body' class='box-body' id='T_CC' width='100%' border='0' cellspacing='0' cellpadding='1'>\n" );
         CueFile::Iterator it;
         uint i = 0;
         for ( it = b->m_cuefile->begin(); it != b->m_cuefile->end(); ++it ) {
             m_HTMLSource.append(
-                    "<tr class='" + QString( (i++ % 2) ? "box-row-alt" : "box-row" ) + "'>"
-                    "<td class='song'>"
-                    "<a href=\"seek:" + QString::number(it.key()) + "\">"
-                    "<span class='album-song-trackno'>" + QString::number(it.data().getTrackNumber()) + "&nbsp;</span>"
-                    "<span class='album-song-title'>" + escapeHTML( it.data().getTitle() ) + "</span>"
-                    "<span class='song-separator'>"
+                    "<tr class='" + QString( (i++ % 2) ? "box-row-alt" : "box-row" ) + "'>\n"
+                    "<td class='song'>\n"
+                    "<a href=\"seek:" + QString::number(it.key()) + "\">\n"
+                    "<span class='album-song-trackno'>\n" + QString::number(it.data().getTrackNumber()) + "&nbsp;</span>\n"
+                    "<span class='album-song-title'>\n" + escapeHTML( it.data().getTitle() ) + "</span>\n"
+                    "<span class='song-separator'>\n"
                     + i18n("&#xa0;&#8211; ") +
-                    "</span>"
-                    "<span class='album-song-title'>" + escapeHTML( it.data().getArtist() ) + "</span>"
-                    "</a>"
-                    "</td>"
+                    "</span>\n"
+                    "<span class='album-song-title'>\n" + escapeHTML( it.data().getArtist() ) + "</span>\n"
+                    "</a>\n"
+                    "</td>\n"
                     ""
                     );
         }
         m_HTMLSource.append(
-                "</table>"
-                "</div>"
+                "</table>\n"
+                "</div>\n"
                 );
     }
 }
@@ -1957,32 +1968,32 @@ void CurrentTrackJob::showRelatedArtists( const QString &artist, const QStringLi
 {
     // <Related Artists>
     m_HTMLSource.append( QString(
-                "<div id='related_box' class='box'>"
-                "<div id='related_box-header' class='box-header' onClick=\"toggleBlock('T_RA'); window.location.href='togglebox:ra';\" style='cursor: pointer;'>"
-                "<span id='related_box-header-title' class='box-header-title'>%1</span>"
-                "</div>"
-                "<table class='box-body' id='T_RA' width='100%' border='0' cellspacing='0' cellpadding='1'>" )
+                "<div id='related_box' class='box'>\n"
+                "<div id='related_box-header' class='box-header' onClick=\"toggleBlock('T_RA'); window.location.href='togglebox:ra';\" style='cursor: pointer;'>\n"
+                "<span id='related_box-header-title' class='box-header-title'>%1</span>\n"
+                "</div>\n"
+                "<table class='box-body' id='T_RA' width='100%' border='0' cellspacing='0' cellpadding='1'>\n" )
             .arg( i18n( "Artists Related to %1" ).arg( escapeHTML( artist ) ) ) );
-    m_HTMLSource.append( "<tr><td>" );
+    m_HTMLSource.append( "<tr><td>\n" );
     for ( uint i = 0; i < relArtists.count(); i += 1 )
     {
         bool isInCollection = !CollectionDB::instance()->albumListOfArtist( relArtists[i] ).isEmpty();
         m_HTMLSource.append(
-                ( isInCollection ? "" : "<i>" )
-                + QString( "<a href='artist:" ) + escapeHTMLAttr( relArtists[i] ) + "'>" + escapeHTML( relArtists[i] ).replace( " ", "&nbsp;" ) + "</a>"
-                + ( isInCollection ? "" : "</i>" )
+                ( isInCollection ? "" : "<i>\n" )
+                + QString( "<a href='artist:" ) + escapeHTMLAttr( relArtists[i] ) + "'>\n" + escapeHTML( relArtists[i] ).replace( " ", "&nbsp;" ) + "</a>\n"
+                + ( isInCollection ? "" : "</i>\n" )
                 );
         if( i != relArtists.count()-1 )
             m_HTMLSource.append( ", " );
     }
 
-    m_HTMLSource.append( "</td></tr>" );
+    m_HTMLSource.append( "</td></tr>\n" );
     m_HTMLSource.append(
-            "</table>"
-            "</div>" );
+            "</table>\n"
+            "</div>\n" );
 
     if ( !b->m_relatedOpen )
-        m_HTMLSource.append( "<script language='JavaScript'>toggleBlock('T_RA');</script>" );
+        m_HTMLSource.append( "<script language='JavaScript'>toggleBlock('T_RA');</script>\n" );
     // </Related Artists>
 }
 
@@ -2031,35 +2042,35 @@ void CurrentTrackJob::showSuggestedSongs( const QStringList &relArtists )
     if ( !values.isEmpty() )
     {
         m_HTMLSource.append(
-                "<div id='suggested_box' class='box'>"
-                "<div id='suggested_box-header' class='box-header' onClick=\"toggleBlock('T_SS'); window.location.href='togglebox:ss';\" style='cursor: pointer;'>"
-                "<span id='suggested_box-header-title' class='box-header-title'>"
+                "<div id='suggested_box' class='box'>\n"
+                "<div id='suggested_box-header' class='box-header' onClick=\"toggleBlock('T_SS'); window.location.href='togglebox:ss';\" style='cursor: pointer;'>\n"
+                "<span id='suggested_box-header-title' class='box-header-title'>\n"
                 + i18n( "Suggested Songs" ) +
-                "</span>"
-                "</div>"
-                "<table class='box-body' id='T_SS' width='100%' border='0' cellspacing='0' cellpadding='0'>" );
+                "</span>\n"
+                "</div>\n"
+                "<table class='box-body' id='T_SS' width='100%' border='0' cellspacing='0' cellpadding='0'>\n" );
 
         for ( uint i = 0; i < values.count(); i += 5 )
             m_HTMLSource.append(
-                    "<tr class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
-                    "<td class='song'>"
-                    "<a href=\"file:" + escapeHTMLAttr ( values[i] ) + "\">"
-                    "<span class='album-song-title'>"+ escapeHTML( values[i + 2] ) + "</span>"
-                    "<span class='song-separator'>"
+                    "<tr class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>\n"
+                    "<td class='song'>\n"
+                    "<a href=\"file:" + escapeHTMLAttr ( values[i] ) + "\">\n"
+                    "<span class='album-song-title'>\n"+ escapeHTML( values[i + 2] ) + "</span>\n"
+                    "<span class='song-separator'>\n"
                     + i18n("&#xa0;&#8211; ") +
-                    "</span><span class='album-song-title'>" + escapeHTML( values[i + 1] ) + "</span>"
-                    "</a>"
-                    "</td>"
-                    "<td>" + statsHTML( values[i + 3].toInt(), values[i + 4].toInt() ) + "</td>"
-                    "<td width='1'></td>"
-                    "</tr>" );
+                    "</span><span class='album-song-title'>\n" + escapeHTML( values[i + 1] ) + "</span>\n"
+                    "</a>\n"
+                    "</td>\n"
+                    "<td>\n" + statsHTML( values[i + 3].toInt(), values[i + 4].toInt() ) + "</td>\n"
+                    "<td width='1'></td>\n"
+                    "</tr>\n" );
 
         m_HTMLSource.append(
-                "</table>"
-                "</div>" );
+                "</table>\n"
+                "</div>\n" );
 
         if ( !b->m_suggestionsOpen )
-            m_HTMLSource.append( "<script language='JavaScript'>toggleBlock('T_SS');</script>" );
+            m_HTMLSource.append( "<script language='JavaScript'>toggleBlock('T_SS');</script>\n" );
     }
     // </Suggested Songs>
 }
@@ -2085,33 +2096,33 @@ void CurrentTrackJob::showArtistsFaves( const QString &artist, uint artist_id )
     if ( !values.isEmpty() )
     {
         m_HTMLSource.append(
-                "<div id='favoritesby_box' class='box'>"
-                "<div id='favoritesby-header' class='box-header' onClick=\"toggleBlock('T_FT'); window.location.href='togglebox:ft';\" style='cursor: pointer;'>"
-                "<span id='favoritesby_box-header-title' class='box-header-title'>"
+                "<div id='favoritesby_box' class='box'>\n"
+                "<div id='favoritesby-header' class='box-header' onClick=\"toggleBlock('T_FT'); window.location.href='togglebox:ft';\" style='cursor: pointer;'>\n"
+                "<span id='favoritesby_box-header-title' class='box-header-title'>\n"
                 + i18n( "Favorite Tracks by %1" ).arg( artistName ) +
-                "</span>"
-                "</div>"
-                "<table class='box-body' id='T_FT' width='100%' border='0' cellspacing='0' cellpadding='0'>" );
+                "</span>\n"
+                "</div>\n"
+                "<table class='box-body' id='T_FT' width='100%' border='0' cellspacing='0' cellpadding='0'>\n" );
 
         for ( uint i = 0; i < values.count(); i += 4 )
             m_HTMLSource.append(
-                    "<tr class='" + QString( (i % 6) ? "box-row-alt" : "box-row" ) + "'>"
-                    "<td class='song'>"
-                    "<a href=\"file:" + escapeHTMLAttr ( values[i + 1] ) + "\">"
-                    "<span class='album-song-title'>" + escapeHTML( values[i] ) + "</span>"
-                    "</a>"
-                    "</td>"
-                    "<td>" + statsHTML( values[i + 2].toInt(), values[i + 3].toInt() ) + "</td>"
-                    "<td width='1'></td>"
-                    "</tr>"
+                    "<tr class='" + QString( (i % 6) ? "box-row-alt" : "box-row" ) + "'>\n"
+                    "<td class='song'>\n"
+                    "<a href=\"file:" + escapeHTMLAttr ( values[i + 1] ) + "\">\n"
+                    "<span class='album-song-title'>\n" + escapeHTML( values[i] ) + "</span>\n"
+                    "</a>\n"
+                    "</td>\n"
+                    "<td>\n" + statsHTML( values[i + 2].toInt(), values[i + 3].toInt() ) + "</td>\n"
+                    "<td width='1'></td>\n"
+                    "</tr>\n"
                     );
 
         m_HTMLSource.append(
-                "</table>"
-                "</div>" );
+                "</table>\n"
+                "</div>\n" );
 
         if ( !b->m_favouritesOpen )
-            m_HTMLSource.append( "<script language='JavaScript'>toggleBlock('T_FT');</script>" );
+            m_HTMLSource.append( "<script language='JavaScript'>toggleBlock('T_FT');</script>\n" );
 
     }
 }
@@ -2136,13 +2147,13 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
     {
         // write the script to toggle blocks visibility
         m_HTMLSource.append(
-                "<div id='albums_box' class='box'>"
-                "<div id='albums_box-header' class='box-header'>"
-                "<span id='albums_box-header-title' class='box-header-title'>"
+                "<div id='albums_box' class='box'>\n"
+                "<div id='albums_box-header' class='box-header'>\n"
+                "<span id='albums_box-header-title' class='box-header-title'>\n"
                 + i18n( "Albums by %1" ).arg( artistName ) +
-                "</span>"
-                "</div>"
-                "<table id='albums_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='0'>" );
+                "</span>\n"
+                "</div>\n"
+                "<table id='albums_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='0'>\n" );
 
         uint vectorPlace = 0;
         // find album of the current track (if it exists)
@@ -2187,27 +2198,27 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
             QString albumImageTitleAttr = albumImageTooltip( albumImage, 50 );
 
             m_HTMLSource.append( QStringx (
-                        "<tr class='" + QString( (i % 4) ? "box-row-alt" : "box-row" ) + "'>"
-                        "<td>"
-                        "<div class='album-header' onClick=\"toggleBlock('IDA%1')\">"
-                        "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
-                        "<tr>"
-                        "<td width='1'>"
-                        "<a href='fetchcover:%2 @@@ %3'>"
-                        "<img class='album-image' align='left' vspace='2' hspace='2' title='%4' src='%5'/>"
-                        "</a>"
-                        "</td>"
-                        "<td valign='middle' align='left'>"
+                        "<tr class='" + QString( (i % 4) ? "box-row-alt" : "box-row" ) + "'>\n"
+                        "<td>\n"
+                        "<div class='album-header' onClick=\"toggleBlock('IDA%1')\">\n"
+                        "<table width='100%' border='0' cellspacing='0' cellpadding='0'>\n"
+                        "<tr>\n"
+                        "<td width='1'>\n"
+                        "<a href='fetchcover:%2 @@@ %3'>\n"
+                        "<img class='album-image' align='left' vspace='2' hspace='2' title='%4' src='%5'/>\n"
+                        "</a>\n"
+                        "</td>\n"
+                        "<td valign='middle' align='left'>\n"
                         "<span class='album-info'>%6</span> "
-                        "<a href='album:%7 @@@ %8'><span class='album-title'>%9</span></a>"
-                        "<br />"
-                        "<span class='album-year'>%10</span>"
-                        "<span class='album-length'>%11</span>"
-                        "</td>"
-                        "</tr>"
-                        "</table>"
-                        "</div>"
-                        "<div class='album-body' style='display:%12;' id='IDA%13'>" )
+                        "<a href='album:%7 @@@ %8'><span class='album-title'>%9</span></a>\n"
+                        "<br />\n"
+                        "<span class='album-year'>%10</span>\n"
+                        "<span class='album-length'>%11</span>\n"
+                        "</td>\n"
+                        "</tr>\n"
+                        "</table>\n"
+                        "</div>\n"
+                        "<div class='album-body' style='display:%12;' id='IDA%13'>\n" )
                     .args( QStringList()
                         << values[ i + 1 ]
                         << escapeHTMLAttr( artist ) // artist name
@@ -2231,40 +2242,40 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
                     if( discNumber != newDiscNumber && newDiscNumber.toInt() > 0)
                     {
                         discNumber = newDiscNumber;
-                        m_HTMLSource.append( "<div class='disc-separator'>"
+                        m_HTMLSource.append( "<div class='disc-separator'>\n"
                                 +    i18n( "Disc %1" ).arg( discNumber )
-                                + "</div>" );
+                                + "</div>\n" );
                     }
                     QString track = albumValues[j + 2].stripWhiteSpace();
                     if( track.length() > 0 ) {
                         if( track.length() == 1 )
                             track.prepend( "0" );
 
-                        track = "<span class='album-song-trackno'>" + track + "&nbsp;</span>";
+                        track = "<span class='album-song-trackno'>\n" + track + "&nbsp;</span>\n";
                     }
 
                     QString length;
                     if( albumValues[j + 4] != "0" )
-                        length = "<span class='album-song-time'>(" + MetaBundle::prettyTime( QString(albumValues[j + 4]).toInt(), true ) + ")</span>";
+                        length = "<span class='album-song-time'>(" + MetaBundle::prettyTime( QString(albumValues[j + 4]).toInt(), true ) + ")</span>\n";
 
                     m_HTMLSource.append(
-                            "<div class='album-song'>"
-                            "<a href=\"file:" + escapeHTMLAttr ( albumValues[j + 1] ) + "\">"
+                            "<div class='album-song'>\n"
+                            "<a href=\"file:" + escapeHTMLAttr ( albumValues[j + 1] ) + "\">\n"
                             + track +
-                            "<span class='album-song-title'>" + escapeHTML( albumValues[j] ) + "</span>&nbsp;"
+                            "<span class='album-song-title'>\n" + escapeHTML( albumValues[j] ) + "</span>&nbsp;"
                             + length +
-                            "</a>"
-                            "</div>" );
+                            "</a>\n"
+                            "</div>\n" );
                 }
 
             m_HTMLSource.append(
-                    "</div>"
-                    "</td>"
-                    "</tr>" );
+                    "</div>\n"
+                    "</td>\n"
+                    "</tr>\n" );
         }
         m_HTMLSource.append(
-                "</table>"
-                "</div>" );
+                "</table>\n"
+                "</div>\n" );
     }
     // </Albums by this artist>
 }
@@ -2289,13 +2300,13 @@ void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artis
     {
         // write the script to toggle blocks visibility
         m_HTMLSource.append(
-                "<div id='albums_box' class='box'>"
-                "<div id='albums_box-header' class='box-header'>"
-                "<span id='albums_box-header-title' class='box-header-title'>"
+                "<div id='albums_box' class='box'>\n"
+                "<div id='albums_box-header' class='box-header'>\n"
+                "<span id='albums_box-header-title' class='box-header-title'>\n"
                 + i18n( "Compilations with %1" ).arg( artistName ) +
-                "</span>"
-                "</div>"
-                "<table id='albums_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='0'>" );
+                "</span>\n"
+                "</div>\n"
+                "<table id='albums_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='0'>\n" );
 
         uint vectorPlace = 0;
         // find album of the current track (if it exists)
@@ -2339,27 +2350,27 @@ void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artis
             QString albumImageTitleAttr = albumImageTooltip( albumImage, 50 );
 
             m_HTMLSource.append( QStringx (
-                        "<tr class='" + QString( (i % 4) ? "box-row-alt" : "box-row" ) + "'>"
-                        "<td>"
-                        "<div class='album-header' onClick=\"toggleBlock('IDA%1')\">"
-                        "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
-                        "<tr>"
-                        "<td width='1'>"
-                        "<a href='fetchcover: @@@ %2'>"
-                        "<img class='album-image' align='left' vspace='2' hspace='2' title='%3' src='%4'/>"
-                        "</a>"
-                        "</td>"
-                        "<td valign='middle' align='left'>"
+                        "<tr class='" + QString( (i % 4) ? "box-row-alt" : "box-row" ) + "'>\n"
+                        "<td>\n"
+                        "<div class='album-header' onClick=\"toggleBlock('IDA%1')\">\n"
+                        "<table width='100%' border='0' cellspacing='0' cellpadding='0'>\n"
+                        "<tr>\n"
+                        "<td width='1'>\n"
+                        "<a href='fetchcover: @@@ %2'>\n"
+                        "<img class='album-image' align='left' vspace='2' hspace='2' title='%3' src='%4'/>\n"
+                        "</a>\n"
+                        "</td>\n"
+                        "<td valign='middle' align='left'>\n"
                         "<span class='album-info'>%5</span> "
-                        "<a href='compilation:%6'><span class='album-title'>%7</span></a>"
-                        "<br />"
-                        "<span class='album-year'>%8</span>"
-                        "<span class='album-length'>%9</span>"
-                        "</td>"
-                        "</tr>"
-                        "</table>"
-                        "</div>"
-                        "<div class='album-body' style='display:%10;' id='IDA%11'>" )
+                        "<a href='compilation:%6'><span class='album-title'>%7</span></a>\n"
+                        "<br />\n"
+                        "<span class='album-year'>%8</span>\n"
+                        "<span class='album-length'>%9</span>\n"
+                        "</td>\n"
+                        "</tr>\n"
+                        "</table>\n"
+                        "</div>\n"
+                        "<div class='album-body' style='display:%10;' id='IDA%11'>\n" )
                     .args( QStringList()
                         << values[ i + 1 ]
                         << escapeHTMLAttr( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] ) // album.name
@@ -2381,9 +2392,9 @@ void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artis
                     if( discNumber != newDiscNumber && newDiscNumber.toInt() > 0)
                     {
                         discNumber = newDiscNumber;
-                        m_HTMLSource.append( "<div class='disc-separator'>"
+                        m_HTMLSource.append( "<div class='disc-separator'>\n"
                                 +    i18n( "Disc %1" ).arg( discNumber )
-                                + "</div>" );
+                                + "</div>\n" );
                     }
 
                     QString track = albumValues[j + 2].stripWhiteSpace();
@@ -2391,40 +2402,40 @@ void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artis
                         if( track.length() == 1 )
                             track.prepend( "0" );
 
-                        track = "<span class='album-song-trackno'>" + track + "&nbsp;</span>";
+                        track = "<span class='album-song-trackno'>\n" + track + "&nbsp;</span>\n";
                     }
 
                     QString length;
                     if( albumValues[j + 4] != "0" )
-                        length = "<span class='album-song-time'>(" + MetaBundle::prettyTime( QString(albumValues[j + 4]).toInt(), true ) + ")</span>";
+                        length = "<span class='album-song-time'>(" + MetaBundle::prettyTime( QString(albumValues[j + 4]).toInt(), true ) + ")</span>\n";
 
                     QString tracktitle_formated;
                     QString tracktitle;
                     tracktitle = escapeHTML( i18n("%1 - %2").arg( albumValues[j + 5], albumValues[j] ) );
-                    tracktitle_formated = "<span class='album-song-title'>";
+                    tracktitle_formated = "<span class='album-song-title'>\n";
                     if ( artist == albumValues[j + 5] )
-                        tracktitle_formated += "<b>" + tracktitle + "</b>";
+                        tracktitle_formated += "<b>\n" + tracktitle + "</b>\n";
                     else
                         tracktitle_formated += tracktitle;
                     tracktitle_formated += "</span>&nbsp;";
                     m_HTMLSource.append(
-                            "<div class='album-song'>"
-                            "<a href=\"file:" + escapeHTMLAttr ( albumValues[j + 1] ) + "\">"
+                            "<div class='album-song'>\n"
+                            "<a href=\"file:" + escapeHTMLAttr ( albumValues[j + 1] ) + "\">\n"
                             + track
                             + tracktitle_formated
                             + length +
-                            "</a>"
-                            "</div>" );
+                            "</a>\n"
+                            "</div>\n" );
                 }
 
             m_HTMLSource.append(
-                    "</div>"
-                    "</td>"
-                    "</tr>" );
+                    "</div>\n"
+                    "</td>\n"
+                    "</tr>\n" );
         }
         m_HTMLSource.append(
-                "</table>"
-                "</div>" );
+                "</table>\n"
+                "</div>\n" );
     }
     // </Compilations with this artist>
 }
@@ -2434,40 +2445,40 @@ QString CurrentTrackJob::statsHTML( int score, int rating, bool statsbox ) //sta
     if( !AmarokConfig::useScores() && !AmarokConfig::useRatings() )
         return "";
 
-    QString table = QString( "<table %1 align='right' border='0' cellspacing='0' cellpadding='0' width='100%'>%2</table>" )
+    QString table = QString( "<table %1 align='right' border='0' cellspacing='0' cellpadding='0' width='100%'>%2</table>\n" )
                           .arg( statsbox ? "class='statsBox'" : "" );
     QString contents;
 
     if( AmarokConfig::useScores() )
-        contents += QString( "<tr title='%1'>" ).arg( i18n( "Score: %1" ).arg( score ) ) +
-                    "<td class='sbtext' width='100%' align='right'>" + QString::number( score ) + "</td>"
-                    "<td align='left' width='1'>"
-                    "<div class='sbouter'>"
+        contents += QString( "<tr title='%1'>\n" ).arg( i18n( "Score: %1" ).arg( score ) ) +
+                    "<td class='sbtext' width='100%' align='right'>\n" + QString::number( score ) + "</td>\n"
+                    "<td align='left' width='1'>\n"
+                    "<div class='sbouter'>\n"
                     "<div class='sbinner' style='width: "
-                    + QString::number( score / 2 ) + "px;'></div>"
-                    "</div>"
-                    "</td>"
-                    "</tr>";
+                    + QString::number( score / 2 ) + "px;'></div>\n"
+                    "</div>\n"
+                    "</td>\n"
+                    "</tr>\n";
 
     if( AmarokConfig::useRatings() )
     {
-        contents += QString( "<tr title='%1'>" ).arg( i18n( "Rating: %1" )
+        contents += QString( "<tr title='%1'>\n" ).arg( i18n( "Rating: %1" )
                                                       .arg( MetaBundle::ratingDescription( rating ) ) ) +
-                    "<td class='ratingBox' align='right' colspan='2'>";
+                    "<td class='ratingBox' align='right' colspan='2'>\n";
         if( rating )
         {
-            contents += "<nobr>";
-            const QString img = "<img src='%1' height='13px' class='ratingStar'></img>";
+            contents += "<nobr>\n";
+            const QString img = "<img src='%1' height='13px' class='ratingStar'></img>\n";
             for( int i = 0, n = rating / 2; i < n; ++i )
                 contents += img.arg( locate( "data", "amarok/images/star.png" ) );
             if( rating % 2 )
                 contents += img.arg( locate( "data", "amarok/images/smallstar.png" ) );
-            contents += "</nobr>";
+            contents += "</nobr>\n";
         }
         else
             contents += i18n( "Not rated" );
-        contents += "</td>"
-                    "</tr>";
+        contents += "</td>\n"
+                    "</tr>\n";
     }
 
     return table.arg( contents );
@@ -2478,8 +2489,8 @@ bool CurrentTrackJob::doJob()
     DEBUG_BLOCK
 
     const MetaBundle &currentTrack = EngineController::instance()->bundle();
-    m_HTMLSource.append( "<html><body>"
-                    "<script type='text/javascript'>"
+    m_HTMLSource.append( "<html><body>\n"
+                    "<script type='text/javascript'>\n"
                       //Toggle visibility of a block. NOTE: if the block ID starts with the T
                       //letter, 'Table' display will be used instead of the 'Block' one.
                       "function toggleBlock(ID) {"
@@ -2493,7 +2504,7 @@ bool CurrentTrackJob::doJob()
                           "}"
                         "}"
                       "}"
-                    "</script>" );
+                    "</script>\n" );
 
     if( !b->m_browseArtists )
     {
@@ -2561,7 +2572,7 @@ bool CurrentTrackJob::doJob()
         showArtistsAlbums( artist, artist_id, album_id );
         showArtistsCompilations( artist, artist_id, album_id );
     }
-    m_HTMLSource.append( "</body></html>" );
+    m_HTMLSource.append( "</body></html>\n" );
 
     return true;
 }
@@ -2581,27 +2592,27 @@ void ContextBrowser::showIntroduction()
     // Do we have to rebuild the page? I don't care
     m_HTMLSource = QString::null;
     m_HTMLSource.append(
-            "<html><body>"
-            "<div id='introduction_box' class='box'>"
-                "<div id='introduction_box-header' class='box-header'>"
-                    "<span id='introduction_box-header-title' class='box-header-title'>"
+            "<html><body>\n"
+            "<div id='introduction_box' class='box'>\n"
+                "<div id='introduction_box-header' class='box-header'>\n"
+                    "<span id='introduction_box-header-title' class='box-header-title'>\n"
                     + i18n( "Hello amaroK user!" ) +
-                    "</span>"
-                "</div>"
-                "<div id='introduction_box-body' class='box-body'>"
-                    "<div class='info'><p>" +
+                    "</span>\n"
+                "</div>\n"
+                "<div id='introduction_box-body' class='box-body'>\n"
+                    "<div class='info'><p>\n" +
                     i18n( "This is the Context Browser: "
                           "it shows you contextual information about the currently playing track. "
                           "In order to use this feature of amaroK, you need to build a Collection."
                         ) +
-                    "</p></div>"
-                    "<div align='center'>"
+                    "</p></div>\n"
+                    "<div align='center'>\n"
                     "<input type='button' onClick='window.location.href=\"show:collectionSetup\";' value='" +
                     i18n( "Build Collection..." ) +
-                    "'></div><br />"
-                "</div>"
-            "</div>"
-            "</body></html>"
+                    "'></div><br />\n"
+                "</div>\n"
+            "</div>\n"
+            "</body></html>\n"
                        );
 
     m_currentTrackPage->set( m_HTMLSource );
@@ -2621,18 +2632,18 @@ void ContextBrowser::showScanning()
     // Do we have to rebuild the page? I don't care
     m_HTMLSource="";
     m_HTMLSource.append(
-            "<html><body>"
-            "<div id='building_box' class='box'>"
-                "<div id='building_box-header' class='box-header'>"
-                    "<span id='building_box-header-title' class='box-header-title'>"
+            "<html><body>\n"
+            "<div id='building_box' class='box'>\n"
+                "<div id='building_box-header' class='box-header'>\n"
+                    "<span id='building_box-header-title' class='box-header-title'>\n"
                     + i18n( "Building Collection Database..." ) +
-                    "</span>"
-                "</div>"
-                "<div id='building_box-body' class='box-body'>"
-                    "<div class='info'><p>" + i18n( "Please be patient while amaroK scans your music collection. You can watch the progress of this activity in the statusbar." ) + "</p></div>"
-                "</div>"
-            "</div>"
-            "</body></html>"
+                    "</span>\n"
+                "</div>\n"
+                "<div id='building_box-body' class='box-body'>\n"
+                    "<div class='info'><p>\n" + i18n( "Please be patient while amaroK scans your music collection. You can watch the progress of this activity in the statusbar." ) + "</p></div>\n"
+                "</div>\n"
+            "</div>\n"
+            "</body></html>\n"
                        );
 
     m_currentTrackPage->set( m_HTMLSource );
@@ -2694,32 +2705,32 @@ void ContextBrowser::showLyrics( const QString &url )
     if( ( !cached || url == "reload" ) && !ScriptManager::instance()->lyricsScriptRunning() ) {
         const QStringList scripts = ScriptManager::instance()->lyricsScripts();
         lyrics =
-              i18n( "Sorry, no lyrics script running.") + "<br />" +
-              "<br /><div class='info'>"+
-              i18n( "Available Lyrics Scripts:" ) + "<br />";
+              i18n( "Sorry, no lyrics script running.") + "<br />\n" +
+              "<br /><div class='info'>\n"+
+              i18n( "Available Lyrics Scripts:" ) + "<br />\n";
         foreach ( scripts ) {
-            lyrics += QString( "<a href=\"runscript:%1\">%2</a><br />" ).arg( *it, *it );
+            lyrics += QString( "<a href=\"runscript:%1\">%2</a><br />\n" ).arg( *it, *it );
         }
-        lyrics += "<br />" + i18n( "Click on one of the scripts to run it, or use the Script Manager, to be able"
+        lyrics += "<br />\n" + i18n( "Click on one of the scripts to run it, or use the Script Manager, to be able"
                         " to see all the scripts, and download new ones from the Web." );
-        lyrics += "<br /><div align='center'>"
+        lyrics += "<br /><div align='center'>\n"
                   "<input type='button' onClick='window.location.href=\"show:scriptmanager\";' value='" +
                     i18n( "Run Script Manager..." ) +
-                  "'></div><br /></div>";
+                  "'></div><br /></div>\n";
 
         m_HTMLSource = QString (
-            "<html><body>"
-            "<div id='lyrics_box' class='box'>"
-                "<div id='lyrics_box-header' class='box-header'>"
-                    "<span id='lyrics_box-header-title' class='box-header-title'>"
+            "<html><body>\n"
+            "<div id='lyrics_box' class='box'>\n"
+                "<div id='lyrics_box-header' class='box-header'>\n"
+                    "<span id='lyrics_box-header-title' class='box-header-title'>\n"
                     + ( cached ? i18n( "Cached Lyrics" ) : i18n( "Lyrics" ) ) +
-                    "</span>"
-                "</div>"
-                "<div id='lyrics_box-body' class='box-body'>"
+                    "</span>\n"
+                "</div>\n"
+                "<div id='lyrics_box-body' class='box-body'>\n"
                     + lyrics +
-                "</div>"
-            "</div>"
-            "</body></html>"
+                "</div>\n"
+            "</div>\n"
+            "</body></html>\n"
             );
         m_lyricsPage->set( m_HTMLSource );
 
@@ -2736,18 +2747,18 @@ void ContextBrowser::showLyrics( const QString &url )
     else
     {
         m_HTMLSource = QString (
-            "<html><body>"
-            "<div id='lyrics_box' class='box'>"
-                "<div id='lyrics_box-header' class='box-header'>"
-                    "<span id='lyrics_box-header-title' class='box-header-title'>"
+            "<html><body>\n"
+            "<div id='lyrics_box' class='box'>\n"
+                "<div id='lyrics_box-header' class='box-header'>\n"
+                    "<span id='lyrics_box-header-title' class='box-header-title'>\n"
                     + i18n( "Fetching Lyrics" ) +
-                    "</span>"
-                "</div>"
-                "<div id='lyrics_box-body' class='box-body'>"
-                    "<div class='info'><p>" + i18n( "Fetching Lyrics..." ) + "</p></div>"
-                "</div>"
-            "</div>"
-            "</body></html>"
+                    "</span>\n"
+                "</div>\n"
+                "<div id='lyrics_box-body' class='box-body'>\n"
+                    "<div class='info'><p>\n" + i18n( "Fetching Lyrics..." ) + "</p></div>\n"
+                "</div>\n"
+            "</div>\n"
+            "</body></html>\n"
             );
         m_lyricsPage->set( m_HTMLSource );
         saveHtmlData(); // Send html code to file
@@ -2770,18 +2781,18 @@ ContextBrowser::lyricsResult( QCString cXmlDoc, bool cached ) //SLOT
     {
         m_HTMLSource="";
         m_HTMLSource.append(
-                "<html><body>"
-                "<div id='lyrics_box' class='box'>"
-                    "<div id='lyrics_box-header' class='box-header'>"
-                        "<span id='lyrics_box-header-title' class='box-header-title'>"
+                "<html><body>\n"
+                "<div id='lyrics_box' class='box'>\n"
+                    "<div id='lyrics_box-header' class='box-header'>\n"
+                        "<span id='lyrics_box-header-title' class='box-header-title'>\n"
                         + i18n( "Error" ) +
-                        "</span>"
-                    "</div>"
-                    "<div id='lyrics_box-body' class='box-body'><p>"
+                        "</span>\n"
+                    "</div>\n"
+                    "<div id='lyrics_box-body' class='box-body'><p>\n"
                         + i18n( "Lyrics could not be retrieved because the server was not reachable." ) +
-                    "</p></div>"
-                "</div>"
-                "</body></html>"
+                    "</p></div>\n"
+                "</div>\n"
+                "</body></html>\n"
                         );
         m_lyricsPage->set( m_HTMLSource );
         saveHtmlData(); // Send html code to file
@@ -2819,48 +2830,48 @@ ContextBrowser::lyricsResult( QCString cXmlDoc, bool cached ) //SLOT
         }
         else
         {
-            lyrics = i18n( "Lyrics for track not found, here are some suggestions:" ) + "<br/><br/>";
+            lyrics = i18n( "Lyrics for track not found, here are some suggestions:" ) + "<br/><br/>\n";
             for( uint i = 0; i < l.length(); ++i ) {
                 const QString url    = l.item( i ).toElement().attribute( "url" );
                 const QString artist = l.item( i ).toElement().attribute( "artist" );
                 const QString title  = l.item( i ).toElement().attribute( "title" );
 
-                lyrics += "<a href='show:suggestLyric-" + url + "'>" + i18n("%1 - %2").arg( artist, title );
-                lyrics += "</a><br/>";
+                lyrics += "<a href='show:suggestLyric-" + url + "'>\n" + i18n("%1 - %2").arg( artist, title );
+                lyrics += "</a><br/>\n";
             }
         }
     }
     else {
         lyrics = el.text();
-        lyrics.replace( "\n", "<br/>" ); // Plaintext -> HTML
+        lyrics.replace( "\n", "<br/>\n" ); // Plaintext -> HTML
 
         const QString title      = el.attribute( "title" );
         const QString artist     = el.attribute( "artist" );
         const QString site       = spec.readEntry( "site" );
         const QString site_url   = spec.readEntry( "site_url" );
 
-        lyrics.prepend( "<font size='2'><b>" + title + "</b><br/><u>" + artist+ "</font></u></font><br/>" );
+        lyrics.prepend( "<font size='2'><b>\n" + title + "</b><br/><u>\n" + artist+ "</font></u></font><br/>\n" );
 
         if( !cached ) {
-            lyrics.append( "<br/><br/><i>" + i18n( "Powered by %1 (%2)" ).arg( site, site_url ) + "</i>" );
+            lyrics.append( "<br/><br/><i>\n" + i18n( "Powered by %1 (%2)" ).arg( site, site_url ) + "</i>\n" );
             CollectionDB::instance()->setLyrics( EngineController::instance()->bundle().url().path(), xmldoc );
         }
     }
 
     m_HTMLSource="";
     m_HTMLSource.append(
-            "<html><body>"
-            "<div id='lyrics_box' class='box'>"
-                "<div id='lyrics_box-header' class='box-header'>"
-                    "<span id='lyrics_box-header-title' class='box-header-title'>"
+            "<html><body>\n"
+            "<div id='lyrics_box' class='box'>\n"
+                "<div id='lyrics_box-header' class='box-header'>\n"
+                    "<span id='lyrics_box-header-title' class='box-header-title'>\n"
                     + ( cached ? i18n( "Cached Lyrics" ) : i18n( "Lyrics" ) ) +
-                    "</span>"
-                "</div>"
-                "<div id='lyrics_box-body' class='box-body'>"
+                    "</span>\n"
+                "</div>\n"
+                "<div id='lyrics_box-body' class='box-body'>\n"
                     + lyrics +
-                "</div>"
-            "</div>"
-            "</body></html>"
+                "</div>\n"
+            "</div>\n"
+            "</body></html>\n"
     );
 
 
@@ -3068,18 +3079,18 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
 
     m_HTMLSource="";
     m_HTMLSource.append(
-            "<html><body>"
-            "<div id='wiki_box' class='box'>"
-                "<div id='wiki_box-header' class='box-header'>"
-                    "<span id='wiki_box-header-title' class='box-header-title'>"
+            "<html><body>\n"
+            "<div id='wiki_box' class='box'>\n"
+                "<div id='wiki_box-header' class='box-header'>\n"
+                    "<span id='wiki_box-header-title' class='box-header-title'>\n"
                     + i18n( "Wikipedia" ) +
-                    "</span>"
-                "</div>"
-                "<div id='wiki_box-body' class='box-body'>"
-                    "<div class='info'><p>" + i18n( "Fetching Wikipedia Information" ) + " ...</p></div>"
-                "</div>"
-            "</div>"
-            "</body></html>"
+                    "</span>\n"
+                "</div>\n"
+                "<div id='wiki_box-body' class='box-body'>\n"
+                    "<div class='info'><p>\n" + i18n( "Fetching Wikipedia Information" ) + " ...</p></div>\n"
+                "</div>\n"
+            "</div>\n"
+            "</body></html>\n"
                     );
 
     m_wikiPage->set( m_HTMLSource );
@@ -3258,16 +3269,16 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
     {
         m_HTMLSource="";
         m_HTMLSource.append(
-            "<div id='wiki_box' class='box'>"
-                "<div id='wiki_box-header' class='box-header'>"
-                    "<span id='wiki_box-header-title' class='box-header-title'>"
+            "<div id='wiki_box' class='box'>\n"
+                "<div id='wiki_box-header' class='box-header'>\n"
+                    "<span id='wiki_box-header-title' class='box-header-title'>\n"
                     + i18n( "Error" ) +
-                    "</span>"
-                "</div>"
-                "<div id='wiki_box-body' class='box-body'><p>"
+                    "</span>\n"
+                "</div>\n"
+                "<div id='wiki_box-body' class='box-body'><p>\n"
                     + i18n( "Artist information could not be retrieved because the server was not reachable." ) +
-                "</p></div>"
-            "</div>"
+                "</p></div>\n"
+            "</div>\n"
                         );
         m_wikiPage->set( m_HTMLSource );
 
@@ -3298,41 +3309,41 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
 
     m_wikiLanguages = QString::null;
     // Get the avivable language list
-    if ( m_wiki.find("<div id=\"p-lang\" class=\"portlet\">") != -1 )
+    if ( m_wiki.find("<div id=\"p-lang\" class=\"portlet\">\n") != -1 )
     {
-        m_wikiLanguages = m_wiki.mid( m_wiki.find("<div id=\"p-lang\" class=\"portlet\">") );
-        m_wikiLanguages = m_wikiLanguages.mid( m_wikiLanguages.find("<ul>") );
-        m_wikiLanguages = m_wikiLanguages.mid( 0, m_wikiLanguages.find( "</div>" ) );
+        m_wikiLanguages = m_wiki.mid( m_wiki.find("<div id=\"p-lang\" class=\"portlet\">\n") );
+        m_wikiLanguages = m_wikiLanguages.mid( m_wikiLanguages.find("<ul>\n") );
+        m_wikiLanguages = m_wikiLanguages.mid( 0, m_wikiLanguages.find( "</div>\n" ) );
     }
 
     QString copyright;
-    QString copyrightMark = "<li id=\"f-copyright\">";
+    QString copyrightMark = "<li id=\"f-copyright\">\n";
     if ( m_wiki.find( copyrightMark ) != -1 )
     {
         copyright = m_wiki.mid( m_wiki.find(copyrightMark) + copyrightMark.length() );
-        copyright = copyright.mid( 0, copyright.find( "</li>" ) );
-        copyright.replace( "<br />", QString::null );
+        copyright = copyright.mid( 0, copyright.find( "</li>\n" ) );
+        copyright.replace( "<br />\n", QString::null );
         //only one br at the beginning
-        copyright.prepend( "<br />" );
+        copyright.prepend( "<br />\n" );
     }
 
     // Ok lets remove the top and bottom parts of the page
-    m_wiki = m_wiki.mid( m_wiki.find( "<h1 class=\"firstHeading\">" ) );
-    m_wiki = m_wiki.mid( 0, m_wiki.find( "<div class=\"printfooter\">" ) );
+    m_wiki = m_wiki.mid( m_wiki.find( "<h1 class=\"firstHeading\">\n" ) );
+    m_wiki = m_wiki.mid( 0, m_wiki.find( "<div class=\"printfooter\">\n" ) );
     // Adding back license information
     m_wiki += copyright;
-    m_wiki.append( "</div>" );
-    m_wiki.replace( QRegExp("<h3 id=\"siteSub\">[^<]*</h3>"), QString::null );
+    m_wiki.append( "</div>\n" );
+    m_wiki.replace( QRegExp("<h3 id=\"siteSub\">[^<]*</h3>\n"), QString::null );
 
-    m_wiki.replace( QRegExp( "<div class=\"editsection\"[^>]*>[^<]*<[^>]*>[^<]*<[^>]*>[^<]*</div>" ), QString::null );
+    m_wiki.replace( QRegExp( "<div class=\"editsection\"[^>]*>[^<]*<[^>]*>[^<]*<[^>]*>[^<]*</div>\n" ), QString::null );
 
-    m_wiki.replace( QRegExp( "<a href=\"[^\"]*\" class=\"new\"[^>]*>([^<]*)</a>" ), "\\1" );
+    m_wiki.replace( QRegExp( "<a href=\"[^\"]*\" class=\"new\"[^>]*>([^<]*)</a>\n" ), "\\1" );
 
     // Remove anything inside of a class called urlexpansion, as it's pointless for us
-    m_wiki.replace( QRegExp( "<span class= *'urlexpansion'>[^(]*[(][^)]*[)]</span>" ), QString::null );
+    m_wiki.replace( QRegExp( "<span class= *'urlexpansion'>[^(]*[(][^)]*[)]</span>\n" ), QString::null );
 
     // Remove hidden table rows as well
-    QRegExp hidden( "<tr *class= *[\"\']hiddenStructure[\"\']>.*</tr>", false );
+    QRegExp hidden( "<tr *class= *[\"\']hiddenStructure[\"\']>.*</tr>\n", false );
     hidden.setMinimal( true ); //greedy behaviour wouldn't be any good!
     m_wiki.replace( hidden, QString::null );
 
@@ -3340,48 +3351,48 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
     m_wiki.replace( QRegExp( "style= *\"[^\"]*\"" ), QString::null );
     m_wiki.replace( QRegExp( "class= *\"[^\"]*\"" ), QString::null );
     // let's remove the form elements, we don't want them.
-    m_wiki.replace( QRegExp( "<input[^>]*>" ), QString::null );
-    m_wiki.replace( QRegExp( "<select[^>]*>" ), QString::null );
-    m_wiki.replace( "</select>" , QString::null );
-    m_wiki.replace( QRegExp( "<option[^>]*>" ), QString::null );
-    m_wiki.replace( "</option>" , QString::null );
-    m_wiki.replace( QRegExp( "<textarea[^>]*>" ), QString::null );
-    m_wiki.replace( "</textarea>" , QString::null );
+    m_wiki.replace( QRegExp( "<input[^>]*>\n" ), QString::null );
+    m_wiki.replace( QRegExp( "<select[^>]*>\n" ), QString::null );
+    m_wiki.replace( "</select>\n" , QString::null );
+    m_wiki.replace( QRegExp( "<option[^>]*>\n" ), QString::null );
+    m_wiki.replace( "</option>\n" , QString::null );
+    m_wiki.replace( QRegExp( "<textarea[^>]*>\n" ), QString::null );
+    m_wiki.replace( "</textarea>\n" , QString::null );
 
     //first we convert all the links with protocol to external, as they should all be External Links.
     m_wiki.replace( QRegExp( "href= *\"http:" ), "href=\"externalurl:" );
     m_wiki.replace( QRegExp( "href= *\"/" ), "href=\"" +m_wikiBaseUrl );
     m_wiki.replace( QRegExp( "href= *\"#" ), "href=\"" +m_wikiCurrentUrl + "#" );
 
-    m_HTMLSource = "<html><body>";
+    m_HTMLSource = "<html><body>\n";
     m_HTMLSource.append(
-            "<div id='wiki_box' class='box'>"
-                "<div id='wiki_box-header' class='box-header'>"
-                    "<span id='wiki_box-header-title' class='box-header-title'>"
+            "<div id='wiki_box' class='box'>\n"
+                "<div id='wiki_box-header' class='box-header'>\n"
+                    "<span id='wiki_box-header-title' class='box-header-title'>\n"
                     + i18n( "Wikipedia Information" ) +
-                    "</span>"
-                "</div>"
-                "<div id='wiki_box-body' class='box-body'>"
+                    "</span>\n"
+                "</div>\n"
+                "<div id='wiki_box-body' class='box-body'>\n"
                     + m_wiki +
-                "</div>"
-            "</div>"
+                "</div>\n"
+            "</div>\n"
                        );
     if ( !m_wikiLanguages.isEmpty() )
     {
         m_HTMLSource.append(
-                "<div id='wiki_box' class='box'>"
-                    "<div id='wiki_box-header' class='box-header'>"
-                        "<span id='wiki_box-header-title' class='box-header-title'>"
+                "<div id='wiki_box' class='box'>\n"
+                    "<div id='wiki_box-header' class='box-header'>\n"
+                        "<span id='wiki_box-header-title' class='box-header-title'>\n"
                         + i18n( "Wikipedia Other Languages" ) +
-                        "</span>"
-                    "</div>"
-                    "<div id='wiki_box-body' class='box-body'>"
+                        "</span>\n"
+                    "</div>\n"
+                    "<div id='wiki_box-body' class='box-body'>\n"
                         + m_wikiLanguages +
-                    "</div>"
-                "</div>"
+                    "</div>\n"
+                "</div>\n"
         );
     }
-    m_HTMLSource.append( "</body></html>" );
+    m_HTMLSource.append( "</body></html>\n" );
     m_wikiPage->set( m_HTMLSource );
 
     m_dirtyWikiPage = false;
