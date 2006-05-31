@@ -12,7 +12,6 @@
 #include "amarokconfig.h"
 #include "browserbar.h"
 #include "debug.h"
-#include "enginecontroller.h"
 #include "multitabbar.h"   //m_tabBar
 
 #include <kapplication.h>  //kapp
@@ -62,7 +61,6 @@ BrowserBar* BrowserBar::s_instance = 0;
 
 BrowserBar::BrowserBar( QWidget *parent )
         : QWidget( parent, "BrowserBar" )
-        , EngineObserver( EngineController::instance() )
         , m_playlistBox( new QVBox( this ) )
         , m_divider( new amaroK::Splitter( this ) )
         , m_tabBar( new MultiTabBar( MultiTabBar::Vertical, this ) )

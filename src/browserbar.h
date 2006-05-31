@@ -12,7 +12,6 @@
 #define BROWSERBAR_H
 
 #include "amarok_export.h"  //LIBAMAROK_EXPORT
-#include "engineobserver.h" //baseclass
 #include <qwidget.h>        //baseclass
 #include <qvaluevector.h>   //stack allocated
 
@@ -25,7 +24,7 @@ class QSignalMapper;
 class QVBox;
 
 
-class BrowserBar : public QWidget, protected EngineObserver
+class BrowserBar : public QWidget
 {
     Q_OBJECT
 
