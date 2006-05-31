@@ -1086,13 +1086,12 @@ void CurrentTrackJob::showHome()
                 "</div>\n" )
             .args( QStringList()
                     << escapeHTMLAttr( "externalurl://amarok.kde.org" )
-                    << escapeHTMLAttr( KGlobal::iconLoader()->iconPath( "amarok", -KIcon::SizeEnormous ) )
+                    << escapeHTMLAttr( KGlobal::iconLoader()->iconPath( "amarok", -KIcon::SizeHuge ) )
                     << i18n( "1 Track",  "%n Tracks",  songCount.toInt() )
                     << i18n( "1 Artist", "%n Artists", artistCount.toInt() )
                     << i18n( "1 Album",  "%n Albums",  albumCount.toInt() )
                     << i18n( "1 Genre",  "%n Genres",  genreCount.toInt() ) 
                     << i18n( "%1 Play-time" ).arg ( playTime ) ) );
-
 
     b->m_shownAlbums = showHomeByAlbums();
 
