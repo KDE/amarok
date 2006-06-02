@@ -321,9 +321,12 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         const bool hasPurge()       { return m_bundle.hasPurge(); }
         const int  purgeCount()     { return m_bundle.purgeCount(); }
         const KURL saveLocation()   { return m_bundle.saveLocation(); }
+        PodcastSettings * getSettings() { return new PodcastSettings( title(), saveLocation().path(),
+            autoscan(), fetchType(), autotransfer(), hasPurge(), purgeCount() ); }
 
         void  setXml( const QDomNode &xml, const int feedType );
         void  setParent( PlaylistCategory *newParent );
+        void setSettings( PodcastSettings *settings );
 
         void  updateInfo();
 

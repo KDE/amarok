@@ -1129,59 +1129,63 @@ PodcastChannel::configure()
 
     if( dialog->configure() )
     {
-        PodcastSettings *newSettings = dialog->getSettings();
-
-        bool downloadMedia = ( (fetchType() != newSettings->fetchType()) && (newSettings->fetchType() == AUTOMATIC) );
-
-        /**
-         * Rewrite local url
-         * Move any downloaded media to the new location
-         */
-        if( saveLocation() != newSettings->saveLocation() )
-        {
-            KURL::List copyList;
-
-            PodcastEpisode *item = static_cast<PodcastEpisode*>( firstChild() );
-            // get a list of the urls of already downloaded items
-            while( item )
-            {
-                if( item->isOnDisk() )
-                    copyList << item->localUrl();
-
-                item->setLocalUrlBase( newSettings->saveLocation().prettyURL() );
-                item = static_cast<PodcastEpisode*>( item->nextSibling() );
-            }
-            // move the items
-            if( !copyList.isEmpty() )
-            {
-                //create the local directory first
-                PodcastEpisode::createLocalDir( newSettings->saveLocation().path() );
-                KIO::CopyJob* m_podcastMoveJob = KIO::move( copyList, newSettings->saveLocation(), false );
-                amaroK::StatusBar::instance()->newProgressOperation( m_podcastMoveJob )
-                                              .setDescription( i18n( "Moving Podcasts" ) );
-            }
-        }
-
-        if( newSettings->autoscan() != autoscan() )
-        {
-            if( autoscan() )
-                PlaylistBrowser::instance()->m_podcastItemsToScan.append( this );
-            else
-                PlaylistBrowser::instance()->m_podcastItemsToScan.remove( this );
-        }
-
-        m_bundle.setSettings( newSettings );
-        CollectionDB::instance()->updatePodcastChannel( m_bundle );
-
-        if( hasPurge() && purgeCount() != 0 )
-            purge();
-
-        if( downloadMedia )
-            downloadChildren();
+        setSettings( dialog->getSettings() );
     }
 
     delete dialog->getSettings();
     delete dialog;
+}
+
+void
+PodcastChannel::setSettings( PodcastSettings *newSettings )
+{
+    bool downloadMedia = ( (fetchType() != newSettings->fetchType()) && (newSettings->fetchType() == AUTOMATIC) );
+
+        /**
+     * Rewrite local url
+     * Move any downloaded media to the new location
+         */
+    if( saveLocation() != newSettings->saveLocation() )
+    {
+        KURL::List copyList;
+
+        PodcastEpisode *item = static_cast<PodcastEpisode*>( firstChild() );
+            // get a list of the urls of already downloaded items
+        while( item )
+        {
+            if( item->isOnDisk() )
+                copyList << item->localUrl();
+
+            item->setLocalUrlBase( newSettings->saveLocation().prettyURL() );
+            item = static_cast<PodcastEpisode*>( item->nextSibling() );
+        }
+            // move the items
+        if( !copyList.isEmpty() )
+        {
+                //create the local directory first
+            PodcastEpisode::createLocalDir( newSettings->saveLocation().path() );
+            KIO::CopyJob* m_podcastMoveJob = KIO::move( copyList, newSettings->saveLocation(), false );
+            amaroK::StatusBar::instance()->newProgressOperation( m_podcastMoveJob )
+                    .setDescription( i18n( "Moving Podcasts" ) );
+        }
+    }
+
+    if( newSettings->autoscan() != autoscan() )
+    {
+        if( autoscan() )
+            PlaylistBrowser::instance()->m_podcastItemsToScan.append( this );
+        else
+            PlaylistBrowser::instance()->m_podcastItemsToScan.remove( this );
+    }
+
+    m_bundle.setSettings( newSettings );
+    CollectionDB::instance()->updatePodcastChannel( m_bundle );
+
+    if( hasPurge() && purgeCount() != 0 )
+        purge();
+
+    if( downloadMedia )
+        downloadChildren();
 }
 
 void

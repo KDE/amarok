@@ -8,6 +8,8 @@
 
 #include <kurl.h>
 
+#include <qptrlist.h>
+
 class PodcastChannel;
 class PodcastEpisode;
 class PodcastSettingsDialogBase;
@@ -26,6 +28,7 @@ class PodcastSettings
                          const int fetchType, const bool autotransfer, const bool purge, const int purgecount );
 
         const KURL &saveLocation() { return m_saveLocation; }
+        const QString &title() { return m_title; }
         bool    autoscan()         { return m_autoScan; }
         int     fetchType()        { return m_fetch; }
         bool    autoTransfer()     { return m_addToMediaDevice; }
@@ -48,6 +51,7 @@ class PodcastSettingsDialog : public KDialogBase
 
     public:
         PodcastSettingsDialog( PodcastSettings *list, QWidget* parent=0 );
+        PodcastSettingsDialog( const QPtrList<PodcastSettings> &list, const QString &caption, QWidget* parent=0 );
 
         bool    configure();
         PodcastSettings *getSettings() { return m_settings; }
@@ -66,6 +70,7 @@ class PodcastSettingsDialog : public KDialogBase
         QString requesterSaveLocation();
 
         PodcastSettingsDialogBase *m_ps;
+        QPtrList<PodcastSettings> m_settingsList;
         PodcastSettings           *m_settings;
 };
 

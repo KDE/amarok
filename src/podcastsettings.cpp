@@ -73,6 +73,19 @@ PodcastSettingsDialog::PodcastSettingsDialog( PodcastSettings *settings, QWidget
     setSettings( settings );
 }
 
+PodcastSettingsDialog::PodcastSettingsDialog( const QPtrList<PodcastSettings> &list, const QString &caption, QWidget* parent )
+    : KDialogBase(  parent, 0, true, i18n("Configure %1").arg( caption )
+            , KDialogBase::User1|KDialogBase::Ok|KDialogBase::Cancel
+                    , KDialogBase::Ok, true
+                    , KGuiItem(i18n("Reset"), "reset" ) )
+        , m_settingsList( list )
+{
+    init();
+    m_settings = m_settingsList.first();
+    m_settings->m_saveLocation = m_settings->m_saveLocation.directory();
+    setSettings( m_settings );
+}
+
 void
 PodcastSettingsDialog::init()
 {
@@ -125,16 +138,30 @@ void PodcastSettingsDialog::slotOk()       //slot
 {
     enableButtonOK( false ); //visual feedback
 
-    m_settings->m_saveLocation     = requesterSaveLocation();
-    m_settings->m_autoScan         = m_ps->m_autoFetchCheck->isChecked();
-    m_settings->m_addToMediaDevice = m_ps->m_addToMediaDeviceCheck->isChecked();
-    m_settings->m_purge            = m_ps->m_purgeCheck->isChecked();
-    m_settings->m_purgeCount       = m_ps->m_purgeCountSpinBox->value();
-
-    if( m_ps->m_streamRadio->isChecked() )
-        m_settings->m_fetch = STREAM;
+    if ( !m_settingsList.isEmpty() )
+    {
+        foreachType( QPtrList<PodcastSettings>, m_settingsList)
+        {
+            (*it)->m_saveLocation     = requesterSaveLocation().append( amaroK::vfatPath( (*it)->title() ) );
+            (*it)->m_autoScan         = m_ps->m_autoFetchCheck->isChecked();
+            (*it)->m_addToMediaDevice = m_ps->m_addToMediaDeviceCheck->isChecked();
+            (*it)->m_purge            = m_ps->m_purgeCheck->isChecked();
+            (*it)->m_purgeCount       = m_ps->m_purgeCountSpinBox->value();
+        }
+    }
     else
-        m_settings->m_fetch = AUTOMATIC;
+    {
+        m_settings->m_saveLocation     = requesterSaveLocation();
+        m_settings->m_autoScan         = m_ps->m_autoFetchCheck->isChecked();
+        m_settings->m_addToMediaDevice = m_ps->m_addToMediaDeviceCheck->isChecked();
+        m_settings->m_purge            = m_ps->m_purgeCheck->isChecked();
+        m_settings->m_purgeCount       = m_ps->m_purgeCountSpinBox->value();
+
+        if( m_ps->m_streamRadio->isChecked() )
+            m_settings->m_fetch = STREAM;
+        else
+            m_settings->m_fetch = AUTOMATIC;
+    }
 
     KDialogBase::slotOk();
 }

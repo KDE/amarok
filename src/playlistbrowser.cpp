@@ -1003,6 +1003,51 @@ void PlaylistBrowser::addPodcast( QListViewItem *parent )
     }
 }
 
+void PlaylistBrowser::configurePodcasts( QListViewItem *parent )
+{
+    QPtrList<PodcastChannel> podcastChannelList;
+    for( QListViewItem *child = parent->firstChild();
+         child;
+         child = child->nextSibling() )
+    {
+        if( isPodcastChannel( child ) )
+        {
+            podcastChannelList.append( static_cast<PodcastChannel*>( child ) );
+        }
+    }
+    configurePodcasts( podcastChannelList, i18n( "Configure children of %1").arg( parent->text( 0 ) ) );
+}
+
+void PlaylistBrowser::configurePodcasts( QPtrList<PodcastChannel> &podcastChannelList,
+                                         const QString &caption )
+{
+    DEBUG_BLOCK
+
+    QPtrList<PodcastSettings> podcastSettingsList;
+    foreachType( QPtrList<PodcastChannel>, podcastChannelList)
+    {
+        podcastSettingsList.append( (*it)->getSettings() );
+    }
+    debug() << "configuring " << podcastSettingsList.count() << " podcasts" << endl;
+    PodcastSettingsDialog *dialog = new PodcastSettingsDialog( podcastSettingsList, caption );
+    if( dialog->configure() )
+    {
+        PodcastChannel *channel = podcastChannelList.first();
+        foreachType( QPtrList<PodcastSettings>, podcastSettingsList )
+        {
+            debug() << (*it)->title() << "  |  " << channel->title() << endl;
+            if ( (*it)->title() ==  channel->title() )
+            {
+                channel->setSettings( *it );
+            }
+            else
+                debug() << " BUG in playlistbrowser.cpp:configurePodcasts( )" << endl;
+
+            channel = podcastChannelList.next();
+        }
+    }
+}
+
 PodcastChannel *
 PlaylistBrowser::findPodcastChannel( const KURL &feed, QListViewItem *parent ) const
 {
@@ -2548,7 +2593,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             isPodcastFolder = true;
             menu.insertItem( SmallIconSet("edit_add"), i18n("Add Podcast..."), PODCAST );
             menu.insertItem( SmallIconSet( amaroK::icon( "refresh" ) ), i18n("Refresh All Podcasts"), REFRESH );
-//             menu.insertItem( SmallIconSet( "configure" ), i18n( "&Configure children..." ), CONFIG );
+            menu.insertItem( SmallIconSet( "configure" ), i18n( "&Configure children..." ), CONFIG );
             if( parentCat == item )
                 menu.insertItem( SmallIconSet("tool_timer"), i18n("Scan Interval..."), INTERVAL );
         }
@@ -2594,8 +2639,9 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 refreshPodcasts(item);
                 break;
 
-//             case CONFIG:
-//                 break;
+             case CONFIG:
+                 configurePodcasts( item );
+                 break;
 
             case CREATE:
                 tracker = item->firstChild();
