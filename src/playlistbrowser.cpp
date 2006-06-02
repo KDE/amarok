@@ -1015,27 +1015,49 @@ void PlaylistBrowser::configurePodcasts( QListViewItem *parent )
             podcastChannelList.append( static_cast<PodcastChannel*>( child ) );
         }
     }
-    configurePodcasts( podcastChannelList, i18n( "Configure children of %1").arg( parent->text( 0 ) ) );
+    configurePodcasts( podcastChannelList, i18n( "Podcasts contained in %1", "All in %1").arg( parent->text( 0 ) ) );
+}
+
+void PlaylistBrowser::configureSelectedPodcasts()
+{
+    QPtrList<PodcastChannel> selected;
+    QListViewItemIterator it( m_listview, QListViewItemIterator::Selected);
+    for( ; it.current(); ++it )
+    {
+        if( isPodcastChannel( (*it) ) )
+            selected.append( static_cast<PodcastChannel*>(*it) );
+    }
+    if (selected.isEmpty() )
+        return; //shouldn't happen
+
+    if( selected.count() == 1 )
+        selected.getFirst()->configure();
+    else
+        configurePodcasts( selected, i18n("%1 Podcasts").arg( selected.count() ) );
+
+    if( m_podcastItemsToScan.isEmpty() )
+        m_podcastTimer->stop();
+
+    else if( m_podcastItemsToScan.count() == 1 )
+        m_podcastTimer->start( m_podcastTimerInterval );
+                    // else timer is already running
 }
 
 void PlaylistBrowser::configurePodcasts( QPtrList<PodcastChannel> &podcastChannelList,
                                          const QString &caption )
 {
-    DEBUG_BLOCK
 
     QPtrList<PodcastSettings> podcastSettingsList;
     foreachType( QPtrList<PodcastChannel>, podcastChannelList)
     {
         podcastSettingsList.append( (*it)->getSettings() );
     }
-    debug() << "configuring " << podcastSettingsList.count() << " podcasts" << endl;
     PodcastSettingsDialog *dialog = new PodcastSettingsDialog( podcastSettingsList, caption );
     if( dialog->configure() )
     {
         PodcastChannel *channel = podcastChannelList.first();
         foreachType( QPtrList<PodcastSettings>, podcastSettingsList )
         {
-            debug() << (*it)->title() << "  |  " << channel->title() << endl;
             if ( (*it)->title() ==  channel->title() )
             {
                 channel->setSettings( *it );
@@ -2476,15 +2498,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
             case CONFIG:
             {
-                item->configure();
-
-                if( m_podcastItemsToScan.isEmpty() )
-                    m_podcastTimer->stop();
-
-                else if( m_podcastItemsToScan.count() == 1 )
-                    m_podcastTimer->start( m_podcastTimerInterval );
-                // else timer is already running
-
+                configureSelectedPodcasts();
                 break;
             }
         }
