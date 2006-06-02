@@ -1112,7 +1112,7 @@ void CurrentTrackJob::showHome()
                     << i18n( "1 Track",  "%n Tracks",  songCount.toInt() )
                     << i18n( "1 Artist", "%n Artists", artistCount.toInt() )
                     << i18n( "1 Album",  "%n Albums",  albumCount.toInt() )
-                    << i18n( "1 Genre",  "%n Genres",  genreCount.toInt() ) 
+                    << i18n( "1 Genre",  "%n Genres",  genreCount.toInt() )
                     << i18n( "%1 Play-time" ).arg ( playTime ) ) );
 
     b->m_shownAlbums = showHomeByAlbums();
@@ -1265,7 +1265,7 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
                 if( discNumber != newDiscNumber && newDiscNumber.toInt() > 0)
                 {
                     discNumber = newDiscNumber;
-                    htmlCode.append( QStringx ( 
+                    htmlCode.append( QStringx (
                                          "<div class='disc-separator'>\n"
                                          "<a href=\"albumdisc: %1 @@@ %2 @@@ %3\">\n"
                                          "%4"
@@ -2210,7 +2210,7 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
             if ( !albumValues.isEmpty() )
             {
                 albumYear = albumValues[ 3 ];
-                for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() ) 
+                for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() )
                     if ( albumValues[j + 3] != albumYear || albumYear == "0" )
                     {
                         albumYear = QString::null;
@@ -2219,7 +2219,7 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
             }
 
             uint i_albumLength = 0;
-            for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() ) 
+            for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() )
                 i_albumLength += QString(albumValues[j + 4]).toInt();
 
             QString albumLength = ( i_albumLength==0 ? i18n( "Unknown" ) : MetaBundle::prettyTime( i_albumLength, true ) );
@@ -2271,13 +2271,13 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
                     if( discNumber != newDiscNumber && newDiscNumber.toInt() > 0)
                     {
                         discNumber = newDiscNumber;
-                        m_HTMLSource.append( QStringx ( 
+                        m_HTMLSource.append( QStringx (
                                                  "<div class='disc-separator'>\n"
                                                  "<a href=\"albumdisc: %1 @@@ %2 @@@ %3\">\n"
                                                  "%4"
                                                  "</a>\n"
                                                  "</div>\n" )
-                                             .args( QStringList() 
+                                             .args( QStringList()
                                                     << QString::number( artist_id )
                                                     << values[ i + 1 ] //album.id
                                                     << escapeHTMLAttr( discNumber )
@@ -2429,7 +2429,7 @@ void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artis
                     if( discNumber != newDiscNumber && newDiscNumber.toInt() > 0)
                     {
                         discNumber = newDiscNumber;
-                        m_HTMLSource.append( QStringx ( 
+                        m_HTMLSource.append( QStringx (
                                                  "<div class='disc-separator'>\n"
                                                  "<a href=\"compilationdisc: __discard__ @@@ %1 @@@ %2\">\n"
                                                  "%3"
@@ -2864,10 +2864,10 @@ ContextBrowser::lyricsResult( QCString cXmlDoc, bool cached ) //SLOT
 
     if ( el.tagName() == "suggestions" )
     {
-        
+
 
         const QDomNodeList l = doc.elementsByTagName( "suggestion" );
-        
+
         if( l.length() ==0 )
         {
             lyrics = i18n( "Lyrics for track not found" );
@@ -3353,41 +3353,41 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
 
     m_wikiLanguages = QString::null;
     // Get the avivable language list
-    if ( m_wiki.find("<div id=\"p-lang\" class=\"portlet\">\n") != -1 )
+    if ( m_wiki.find("<div id=\"p-lang\" class=\"portlet\">") != -1 )
     {
-        m_wikiLanguages = m_wiki.mid( m_wiki.find("<div id=\"p-lang\" class=\"portlet\">\n") );
-        m_wikiLanguages = m_wikiLanguages.mid( m_wikiLanguages.find("<ul>\n") );
-        m_wikiLanguages = m_wikiLanguages.mid( 0, m_wikiLanguages.find( "</div>\n" ) );
+        m_wikiLanguages = m_wiki.mid( m_wiki.find("<div id=\"p-lang\" class=\"portlet\">") );
+        m_wikiLanguages = m_wikiLanguages.mid( m_wikiLanguages.find("<ul>") );
+        m_wikiLanguages = m_wikiLanguages.mid( 0, m_wikiLanguages.find( "</div>" ) );
     }
 
     QString copyright;
-    QString copyrightMark = "<li id=\"f-copyright\">\n";
+    QString copyrightMark = "<li id=\"f-copyright\">";
     if ( m_wiki.find( copyrightMark ) != -1 )
     {
         copyright = m_wiki.mid( m_wiki.find(copyrightMark) + copyrightMark.length() );
-        copyright = copyright.mid( 0, copyright.find( "</li>\n" ) );
-        copyright.replace( "<br />\n", QString::null );
+        copyright = copyright.mid( 0, copyright.find( "</li>" ) );
+        copyright.replace( "<br />", QString::null );
         //only one br at the beginning
-        copyright.prepend( "<br />\n" );
+        copyright.prepend( "<br />" );
     }
 
     // Ok lets remove the top and bottom parts of the page
-    m_wiki = m_wiki.mid( m_wiki.find( "<h1 class=\"firstHeading\">\n" ) );
-    m_wiki = m_wiki.mid( 0, m_wiki.find( "<div class=\"printfooter\">\n" ) );
+    m_wiki = m_wiki.mid( m_wiki.find( "<h1 class=\"firstHeading\">" ) );
+    m_wiki = m_wiki.mid( 0, m_wiki.find( "<div class=\"printfooter\">" ) );
     // Adding back license information
     m_wiki += copyright;
-    m_wiki.append( "</div>\n" );
-    m_wiki.replace( QRegExp("<h3 id=\"siteSub\">[^<]*</h3>\n"), QString::null );
+    m_wiki.append( "</div>" );
+    m_wiki.replace( QRegExp("<h3 id=\"siteSub\">[^<]*</h3>"), QString::null );
 
-    m_wiki.replace( QRegExp( "<div class=\"editsection\"[^>]*>[^<]*<[^>]*>[^<]*<[^>]*>[^<]*</div>\n" ), QString::null );
+    m_wiki.replace( QRegExp( "<div class=\"editsection\"[^>]*>[^<]*<[^>]*>[^<]*<[^>]*>[^<]*</div>" ), QString::null );
 
-    m_wiki.replace( QRegExp( "<a href=\"[^\"]*\" class=\"new\"[^>]*>([^<]*)</a>\n" ), "\\1" );
+    m_wiki.replace( QRegExp( "<a href=\"[^\"]*\" class=\"new\"[^>]*>([^<]*)</a>" ), "\\1" );
 
     // Remove anything inside of a class called urlexpansion, as it's pointless for us
-    m_wiki.replace( QRegExp( "<span class= *'urlexpansion'>[^(]*[(][^)]*[)]</span>\n" ), QString::null );
+    m_wiki.replace( QRegExp( "<span class= *'urlexpansion'>[^(]*[(][^)]*[)]</span>" ), QString::null );
 
     // Remove hidden table rows as well
-    QRegExp hidden( "<tr *class= *[\"\']hiddenStructure[\"\']>.*</tr>\n", false );
+    QRegExp hidden( "<tr *class= *[\"\']hiddenStructure[\"\']>.*</tr>", false );
     hidden.setMinimal( true ); //greedy behaviour wouldn't be any good!
     m_wiki.replace( hidden, QString::null );
 
@@ -3395,13 +3395,13 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
     m_wiki.replace( QRegExp( "style= *\"[^\"]*\"" ), QString::null );
     m_wiki.replace( QRegExp( "class= *\"[^\"]*\"" ), QString::null );
     // let's remove the form elements, we don't want them.
-    m_wiki.replace( QRegExp( "<input[^>]*>\n" ), QString::null );
-    m_wiki.replace( QRegExp( "<select[^>]*>\n" ), QString::null );
+    m_wiki.replace( QRegExp( "<input[^>]*>" ), QString::null );
+    m_wiki.replace( QRegExp( "<select[^>]*>" ), QString::null );
     m_wiki.replace( "</select>\n" , QString::null );
-    m_wiki.replace( QRegExp( "<option[^>]*>\n" ), QString::null );
+    m_wiki.replace( QRegExp( "<option[^>]*>" ), QString::null );
     m_wiki.replace( "</option>\n" , QString::null );
-    m_wiki.replace( QRegExp( "<textarea[^>]*>\n" ), QString::null );
-    m_wiki.replace( "</textarea>\n" , QString::null );
+    m_wiki.replace( QRegExp( "<textarea[^>]*>" ), QString::null );
+    m_wiki.replace( "</textarea>" , QString::null );
 
     //first we convert all the links with protocol to external, as they should all be External Links.
     m_wiki.replace( QRegExp( "href= *\"http:" ), "href=\"externalurl:" );
