@@ -1024,7 +1024,15 @@ CollectionDB::albumTracks( const QString &artist_id, const QString &album_id, co
                         .arg( artist_id ) );
     }
 
-    return query( QString( "SELECT tags.url, tags.track AS __discard FROM tags, year WHERE tags.album = %1 AND "
+    if (getDbConnectionType() == DbConnection::postgresql)
+        return query( QString( "SELECT tags.url, tags.track AS __discard FROM tags, year WHERE tags.album = %1 AND "
+                           "( tags.sampler = %2 OR tags.artist = %3 ) AND year.id = tags.year "
+                           "ORDER BY tags.discnumber, tags.track;" )
+                  .arg( album_id )
+                  .arg( boolT() )
+                  .arg( artist_id ) );
+    else
+        return query( QString( "SELECT tags.url FROM tags, year WHERE tags.album = %1 AND "
                            "( tags.sampler = %2 OR tags.artist = %3 ) AND year.id = tags.year "
                            "ORDER BY tags.discnumber, tags.track;" )
                   .arg( album_id )
@@ -1035,11 +1043,19 @@ CollectionDB::albumTracks( const QString &artist_id, const QString &album_id, co
 QStringList
 CollectionDB::albumDiscTracks( const QString &artist_id, const QString &album_id, const QString &discNumber)
 {
-    return query( QString( "SELECT tags.url, tags.track AS __discard FROM tags, year WHERE tags.album = %1 AND "
-                           "tags.artist = %2 AND year.id = tags.year AND tags.discnumber = %3 ORDER BY tags.track;" )
+    if (getDbConnectionType() == DbConnection::postgresql)
+        return query( QString( "SELECT tags.url, tags.track AS __discard FROM tags, year WHERE tags.album = %1 AND "
+                            "tags.artist = %2 AND year.id = tags.year AND tags.discnumber = %3 ORDER BY tags.track;" )
                   .arg( album_id )
                   .arg( artist_id )
                   .arg( discNumber ) );
+    else
+        return query( QString( "SELECT tags.url FROM tags, year WHERE tags.album = %1 AND "
+                            "tags.artist = %2 AND year.id = tags.year AND tags.discnumber = %3 ORDER BY tags.track;" )
+                  .arg( album_id )
+                  .arg( artist_id )
+                  .arg( discNumber ) );
+
 }
 
 QStringList
@@ -3629,7 +3645,7 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
 
     if ( values.isEmpty() )
         return;
-    
+
     if ( values.count() > 15 )
     {
         error() << "Query returned more than 1 song. Aborting updating metadata" << endl;
