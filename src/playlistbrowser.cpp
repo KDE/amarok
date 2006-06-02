@@ -172,16 +172,15 @@ PlaylistBrowser::polish()
     {
         m_smartCategory = loadSmartPlaylists();
         loadDefaultSmartPlaylists();
-        m_smartCategory->setOpen( true );
     }
 
     m_dynamicCategory = loadDynamics();
+    m_randomDynamic    = new DynamicEntry( m_dynamicCategory, 0, i18n("Random Mix") );
+    m_suggestedDynamic = new DynamicEntry( m_dynamicCategory, m_randomDynamic, i18n("Suggested Songs" ) );
+    m_suggestedDynamic->setAppendType( DynamicMode::SUGGESTION );
+
     m_streamsCategory  = loadStreams();
     loadCoolStreams();
-
-    m_playlistCategory->setOpen( true );
-    m_streamsCategory->setOpen( true );
-    m_dynamicCategory->setOpen( true );
 
     if( amaroK::dynamicMode() )
     {
@@ -192,8 +191,11 @@ PlaylistBrowser::polish()
             QListViewItem *item = m_listview->findItem( playlists[i], 0, Qt::ExactMatch );
             if( item )
             {
-                item->setPixmap( 1, SmallIcon("favorites") );
                 m_dynamicEntries.append( item );
+                if( item->rtti() == PlaylistEntry::RTTI )
+                     static_cast<PlaylistEntry*>( item )->setDynamic( true );
+                if( item->rtti() == SmartPlaylist::RTTI )
+                     static_cast<SmartPlaylist*>( item )->setDynamic( true );
             }
         }
     }
