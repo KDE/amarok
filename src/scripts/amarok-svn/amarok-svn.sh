@@ -249,7 +249,7 @@ else
     fi
   fi
 
-  ## What to use to get sudo privileges for installation?
+  ## What to use to get root privileges for installation?
   HOW_ROOT="`kdialog --radiolist \"How do you want amaroK-svn to get root privileges for the install/uninstall commands?\" kdesu \"With  'kdesu' (default, choose this if unsure)\" on sudo \"With 'sudo'\" off \"su -c\" \"With 'su -c'\" off`"
   if [ -z "$HOW_ROOT" ]; then #Fallback if the user pressed cancel
     HOW_ROOT="kdesu"
