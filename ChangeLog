@@ -44,6 +44,8 @@ VERSION 1.4.1:
       the current one.
     * The Actions menu has been renamed the Engage menu. It's way cooler,
       right? I mean, Star Trek is really cool, right?
+    * Multiple podcasts can be configured at once by selecting multiple channels
+      or by configuring the children of a folder.
 
   BUGFIXES:
     * Show error message when xine mp3 decoder isn't installed, don't just

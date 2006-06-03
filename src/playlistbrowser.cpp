@@ -1017,7 +1017,8 @@ void PlaylistBrowser::configurePodcasts( QListViewItem *parent )
             podcastChannelList.append( static_cast<PodcastChannel*>( child ) );
         }
     }
-    configurePodcasts( podcastChannelList, i18n( "Podcasts contained in %1", "All in %1").arg( parent->text( 0 ) ) );
+    if( !podcastChannelList.isEmpty() )
+        configurePodcasts( podcastChannelList, i18n( "Podcasts contained in %1", "All in %1").arg( parent->text( 0 ) ) );
 }
 
 void PlaylistBrowser::configureSelectedPodcasts()
@@ -1049,6 +1050,11 @@ void PlaylistBrowser::configurePodcasts( QPtrList<PodcastChannel> &podcastChanne
                                          const QString &caption )
 {
 
+    if( podcastChannelList.isEmpty() )
+    {
+        debug() << "BUG: podcastChannelList is empty" << endl;
+        return;
+    }
     QPtrList<PodcastSettings> podcastSettingsList;
     foreachType( QPtrList<PodcastChannel>, podcastChannelList)
     {
