@@ -222,10 +222,10 @@ void PlaylistWindow::init()
         actionCollection()->action( "playlist_redo")->plug( bar );
         bar->boxLayout()->addStretch();
         QWidget *button = new KToolBarButton( "locationbar_erase", 1, bar );
-        //QLabel *filter_label = new QLabel( i18n("S&earch:") + " ", bar );
+        QLabel *filter_label = new QLabel( i18n("S&earch:") + " ", bar );
         m_lineEdit = new ClickLineEdit( i18n( "Playlist Filter" ), bar );
 
-        //filter_label->setBuddy( m_lineEdit );
+        filter_label->setBuddy( m_lineEdit );
 
         //bar->setStretchableWidget( m_lineEdit );
         m_lineEdit->setFrame( QFrame::Sunken );
@@ -339,7 +339,7 @@ void PlaylistWindow::init()
     connect( m_settingsMenu, SIGNAL( activated(int) ), SLOT( slotMenuActivated(int) ) );
     //END Settings menu
 
-    m_menubar->insertItem( i18n( "&Engage" ), actionsMenu );
+    m_menubar->insertItem( i18n( "E&ngage" ), actionsMenu );
     m_menubar->insertItem( i18n( "&Playlist" ), playlistMenu );
     m_menubar->insertItem( i18n( "&Mode" ), modeMenu );
     m_menubar->insertItem( i18n( "&Tools" ), m_toolsMenu );
