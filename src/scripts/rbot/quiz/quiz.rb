@@ -124,7 +124,6 @@ class QuizPlugin < Plugin
         return
       end
     end
-    serverdata = ""
 
     @questions = []
 
