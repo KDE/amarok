@@ -4,7 +4,7 @@
 #
 # (c) 2006 Mark Kretschmann <markey@web.de>
 # (c) 2006 Jocke Andersson <ajocke@gmail.com>
-# (c) 2006 tango_ <-- FIX REAL NAME!
+# (c) 2006 Giuseppe Bilotta <giuseppe.bilotta@gmail.com>
 # Licensed under GPL V2.
 
 
@@ -98,7 +98,8 @@ class QuizPlugin < Plugin
   #
   def fetch_data( m )
     # TODO: Make this configurable, and add support for more than one file (there's a size limit in linux too ;) )
-    path = "#{@bot.botclass}/quiz.rbot"
+    path = "#{@bot.botclass}/quiz/quiz.rbot"
+    debug "Fetching from #{path}"
 
     m.reply "Fetching questions from local database and wiki.."
 
@@ -686,6 +687,7 @@ end
 
 plugin = QuizPlugin.new
 
+# Normal commands
 plugin.map 'quiz',                 :action => 'cmd_quiz'
 plugin.map 'quiz solve',           :action => 'cmd_solve'
 plugin.map 'quiz hint',            :action => 'cmd_hint'
@@ -699,9 +701,11 @@ plugin.map 'quiz top5',            :action => 'cmd_top5'
 plugin.map 'quiz top :number',     :action => 'cmd_top_number'
 plugin.map 'quiz stats',           :action => 'cmd_stats'
 plugin.map 'quiz autoask :enable', :action => 'cmd_autoask'
-# FIXME: Fix better auth levels here, I couldn't figure out how... //Firetech
-plugin.map 'quiz transfer :source :dest :score :jokers', :action => 'cmd_transfer', :auth => 'config', :defaults => {:score => '-1', :jokers => '-1'}
-plugin.map 'quiz deleteplayer :nick', :action => 'cmd_del_player', :auth => 'config'
-plugin.map 'quiz setscore :nick :score', :action => 'cmd_set_score', :auth => 'config'
-plugin.map 'quiz setjokers :nick :jokers', :action => 'cmd_set_jokers', :auth => 'config'
+
+# Admin commands
+  # FIXME: Help for these...
+plugin.map 'quiz transfer :source :dest :score :jokers', :action => 'cmd_transfer', :auth => 'quizedit', :defaults => {:score => '-1', :jokers => '-1'}
+plugin.map 'quiz deleteplayer :nick', :action => 'cmd_del_player', :auth => 'quizedit'
+plugin.map 'quiz setscore :nick :score', :action => 'cmd_set_score', :auth => 'quizedit'
+plugin.map 'quiz setjokers :nick :jokers', :action => 'cmd_set_jokers', :auth => 'quizedit'
 
