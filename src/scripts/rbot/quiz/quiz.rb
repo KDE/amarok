@@ -54,14 +54,14 @@ class Quiz
     # rank lookups, without extra sorting.
     @rank_table = @registry.to_a.sort { |a,b| b[1].score<=>a[1].score }
 
-    # Convert old PlayerStats to new. Can be removed later on
-    @registry.each_key do |player|
-      begin
-        j = @registry[player].joker
-      rescue
-        @registry[player] = PlayerStats.new( @registry[player].score, 0, 0 )
-      end
-    end
+    # # Convert old PlayerStats to new. Can be removed later on
+    # @registry.each_key do |player|
+    #   begin
+    #     j = @registry[player].joker
+    #   rescue
+    #     @registry[player] = PlayerStats.new( @registry[player].score, 0, 0 )
+    #   end
+    # end
   end
 end
 
@@ -98,7 +98,7 @@ class QuizPlugin < Plugin
   #
   def fetch_data( m )
     # TODO: Make this configurable, and add support for more than one file (there's a size limit in linux too ;) )
-    path = "/home/eean/.rbot/quiz.rbot"
+    path = "#{@bot.botclass}/quiz.rbot"
 
     m.reply "Fetching questions from local database and wiki.."
 
@@ -343,7 +343,7 @@ class QuizPlugin < Plugin
 
     # Check if core answer is numerical and tell the players so, if that's the case
     # The rather obscure statement is needed because to_i and to_f returns 99(.0) for "99 red balloons", and 0 for "balloon"
-    q.question += "#{Color}07 (Numerical answer)" if q.answer_core.to_i.to_s == q.answer_core or q.answer_core.to_f.to_s == q.answer_core
+    q.question += "#{Color}07 (Numerical answer)#{Color}" if q.answer_core.to_i.to_s == q.answer_core or q.answer_core.to_f.to_s == q.answer_core
 
     q.questions.delete_at( i )
 
@@ -668,7 +668,6 @@ class QuizPlugin < Plugin
 
   def cmd_set_jokers(m, params)
     q = create_quiz( m.target )
-    debug q.rank_table.inspect
 
     nick = params[:nick]
     val = [params[:jokers].to_i, Max_Jokers].min
@@ -676,10 +675,9 @@ class QuizPlugin < Plugin
       player = q.registry[nick]
       player.jokers = val
     else
-      player = PlayerStats.new( 0, jokers, 0)
+      player = PlayerStats.new( 0, val, 0)
     end
     q.registry[nick] = player
-    calculate_ranks(m, q, nick)
     m.reply "Jokers for player #{nick} set to #{val}."
   end
 
@@ -702,8 +700,9 @@ plugin.map 'quiz top5',            :action => 'cmd_top5'
 plugin.map 'quiz top :number',     :action => 'cmd_top_number'
 plugin.map 'quiz stats',           :action => 'cmd_stats'
 plugin.map 'quiz autoask :enable', :action => 'cmd_autoask'
-plugin.map 'quiz transfer :source :dest :score :jokers', :action => 'cmd_transfer', :auth => 'quizedit', :defaults => {:score => '-1', :jokers => '-1'}
-plugin.map 'quiz deleteplayer :nick', :action => 'cmd_del_player', :auth => 'quizedit'
-plugin.map 'quiz setscore :nick :score', :action => 'cmd_set_score', :auth => 'quizedit'
-plugin.map 'quiz setjokers :nick :jokers', :action => 'cmd_set_jokers', :auth => 'quizedit'
+# FIXME: Fix better auth levels here, I couldn't figure out how... //Firetech
+plugin.map 'quiz transfer :source :dest :score :jokers', :action => 'cmd_transfer', :auth => 'config', :defaults => {:score => '-1', :jokers => '-1'}
+plugin.map 'quiz deleteplayer :nick', :action => 'cmd_del_player', :auth => 'config'
+plugin.map 'quiz setscore :nick :score', :action => 'cmd_set_score', :auth => 'config'
+plugin.map 'quiz setjokers :nick :jokers', :action => 'cmd_set_jokers', :auth => 'config'
 
