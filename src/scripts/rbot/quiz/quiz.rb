@@ -29,7 +29,7 @@ Bold = "\002"
 #######################################################################
 class Quiz
     attr_accessor :registry, :registry_conf, :questions, :question, :answer, :answer_core,
-    :first_try, :hint, :hintrange, :rank_table, :hinted
+                  :first_try, :hint, :hintrange, :rank_table, :hinted
 
     def initialize( channel, registry )
         @registry = registry.sub_registry( channel )
