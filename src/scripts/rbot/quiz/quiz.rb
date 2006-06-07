@@ -108,7 +108,7 @@ class QuizPlugin < Plugin
 
         # Local data
         begin
-            datafile    = File.new( path,    File::RDONLY )
+            datafile = File.new( path, File::RDONLY )
             localdata = datafile.read
         rescue
             m.reply "Failed to read local database file. oioi."
