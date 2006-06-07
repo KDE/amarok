@@ -191,7 +191,7 @@ class MultiTabBarButton: public QPushButton
         QSize sizeHint() const;
 
     protected:
-        static const int NUM_TABS = 5; //HACK
+        int NUM_TABS;
         static const int ANIM_INTERVAL = 18;
         static const int ANIM_MAX = 20;
 

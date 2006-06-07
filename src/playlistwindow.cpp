@@ -22,6 +22,7 @@
 #include "browserbar.h"
 #include "clicklineedit.h"    //m_lineEdit
 #include "collectionbrowser.h"
+#include "contextbar.h"
 #include "contextbrowser.h"
 #include "debug.h"
 #include "devicemanager.h"
@@ -193,28 +194,21 @@ void PlaylistWindow::init()
 
     m_browsers = new BrowserBar( this );
 
-    QSplitter *split = new QSplitter( m_browsers->container() );
-    split->setOrientation( QSplitter::Vertical );
-    split->setOpaqueResize( true );
-    QVBox *cbBox = new QVBox( split );
-    QVBox *plBox = new QVBox( split );
     ContextBrowser *cb = new ContextBrowser( "ContextBrowser" );
-    cb->reparent( cbBox, QPoint() );
-
-    //addBrowserMacro( ContextBrowser, "ContextBrowser", i18n( "Context" ), amaroK::icon( "info" ) )
+    cb->m_contextBar->reparent( m_browsers->container(), QPoint() );
 
     //<Dynamic Mode Status Bar />
-    DynamicBar *dynamicBar = new DynamicBar( plBox );
+    DynamicBar *dynamicBar = new DynamicBar( cb->m_contextBar->container() );
 
     QFrame *playlist;
 
     { //<Search LineEdit>
-        KToolBar *bar = new KToolBar( plBox, "NotMainToolBar" );
+        KToolBar *bar = new KToolBar( cb->m_contextBar->container(), "NotMainToolBar" );
         bar->setIconSize( 22, false ); //looks more sensible
         bar->setFlat( true ); //removes the ugly frame
         bar->setMovingEnabled( false ); //removes the ugly frame
 
-        playlist = new Playlist( plBox );
+        playlist = new Playlist( cb->m_contextBar->container() );
 
         actionCollection()->action( "playlist_clear")->plug( bar );
         bar->addSeparator();

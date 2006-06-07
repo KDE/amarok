@@ -498,6 +498,12 @@ MultiTabBarButton::MultiTabBarButton( const QPixmap& pic, const QString& text, Q
     setFixedHeight( 24 );
     setFixedWidth( 24 );
 
+    // HACK HACK HACK
+    if( m_position == MultiTabBar::Left || m_position == MultiTabBar::Right )
+        NUM_TABS = 5;
+    else
+        NUM_TABS = 3;
+
 //     QToolTip::add( this, text );  // Deactivated cause it's annoying
     connect( this, SIGNAL( clicked() ), this, SLOT( slotClicked() ) );
     connect( m_animTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
@@ -520,6 +526,13 @@ MultiTabBarButton::MultiTabBarButton( const QString& text, QPopupMenu *popup,
     setFixedWidth( 24 );
     m_id = id;
 //     QToolTip::add( this, text );
+
+    // HACK HACK HACK
+    if( m_position == MultiTabBar::Left || m_position == MultiTabBar::Right )
+        NUM_TABS = 5;
+    else
+        NUM_TABS = 3;
+
     connect( this, SIGNAL( clicked() ), this, SLOT( slotClicked() ) );
     connect( m_animTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
     connect( m_dragSwitchTimer, SIGNAL( timeout() ), this, SLOT( slotDragSwitchTimer() ) );
@@ -662,8 +675,12 @@ QSize MultiTabBarButton::sizeHint() const
     }
 
     //PATCH by markey
-    if ( ( m_style == MultiTabBar::AMAROK ) )
-        w = ( parentWidget()->height() - 3 ) / NUM_TABS;
+    if ( ( m_style == MultiTabBar::AMAROK ) ) {
+        if( m_position == MultiTabBar::Left || m_position == MultiTabBar::Right )
+            w = ( parentWidget()->height() - 3 ) / NUM_TABS;
+        else
+            h = ( parentWidget()->width() - 3 ) / NUM_TABS;
+    }
 
     return ( style().sizeFromContents( QStyle::CT_ToolButton, this, QSize( w, h ) ).
              expandedTo( QApplication::globalStrut() ) );
@@ -1007,34 +1024,66 @@ void MultiTabBarTab::drawButtonAmarok( QPainter *paint )
         textColor = blendColors( colorGroup().text(), colorGroup().highlightedText(), static_cast<int>( m_animCount * 4.5 ) );
     }
 
-    QPixmap pixmap( height(), width() );
-    pixmap.fill( fillColor );
-    QPainter painter( &pixmap );
+    if( m_position == MultiTabBar::Left || m_position == MultiTabBar::Right ) {
+        QPixmap pixmap( height(), width() );
+        pixmap.fill( fillColor );
+        QPainter painter( &pixmap );
 
-    const QPixmap icon = iconSet() ->pixmap( QIconSet::Small, QIconSet::Normal );
+        const QPixmap icon = iconSet() ->pixmap( QIconSet::Small, QIconSet::Normal );
 
-    // Draw the frame
-    painter.setPen( colorGroup().mid() );
-    if ( m_id != NUM_TABS - 1 ) painter.drawLine( 0, 0, 0, pixmap.height() - 1 );
-    painter.drawLine( 0, pixmap.height() - 1, pixmap.width() - 1, pixmap.height() - 1 );
+        // Draw the frame
+        painter.setPen( colorGroup().mid() );
+        if ( m_id != NUM_TABS - 1 ) painter.drawLine( 0, 0, 0, pixmap.height() - 1 );
+        painter.drawLine( 0, pixmap.height() - 1, pixmap.width() - 1, pixmap.height() - 1 );
 
-    // Draw the text
-    QFont font;
-    painter.setFont( font );
-    QString text = KStringHandler::rPixelSqueeze( m_text, QFontMetrics( font ), pixmap.width() - icon.width() - 3 );
-    text.replace( "...", ".." );
-    const int textX = pixmap.width() / 2 - QFontMetrics( font ).width( text ) / 2;
-    painter.setPen( textColor );
-    const QRect rect( textX + icon.width() / 2 + 2, 0, pixmap.width(), pixmap.height() );
-    painter.drawText( rect, Qt::AlignLeft | Qt::AlignVCenter, text );
+        // Draw the text
+        QFont font;
+        painter.setFont( font );
+        QString text = KStringHandler::rPixelSqueeze( m_text, QFontMetrics( font ), pixmap.width() - icon.width() - 3 );
+        text.replace( "...", ".." );
+        const int textX = pixmap.width() / 2 - QFontMetrics( font ).width( text ) / 2;
+        painter.setPen( textColor );
+        const QRect rect( textX + icon.width() / 2 + 2, 0, pixmap.width(), pixmap.height() );
+        painter.drawText( rect, Qt::AlignLeft | Qt::AlignVCenter, text );
 
-    // Draw the icon
-    painter.drawPixmap( textX - icon.width() / 2 - 2, pixmap.height() / 2 - icon.height() / 2, icon );
+        // Draw the icon
+        painter.drawPixmap( textX - icon.width() / 2 - 2, pixmap.height() / 2 - icon.height() / 2, icon );
 
-    // Paint to widget
-    paint->rotate( -90 );
-    paint->drawPixmap( 1 - pixmap.width(), 0, pixmap );
+        // Paint to widget
+        paint->rotate( -90 );
+        paint->drawPixmap( 1 - pixmap.width(), 0, pixmap );
+
+    } else { // Horizontal
+
+        QPixmap pixmap( width(), height() );
+        pixmap.fill( fillColor );
+        QPainter painter( &pixmap );
+
+        const QPixmap icon = iconSet() ->pixmap( QIconSet::Small, QIconSet::Normal );
+
+        // Draw the frame
+        painter.setPen( colorGroup().mid() );
+        if ( m_id != NUM_TABS - 1 ) painter.drawLine( 0, 0, 0, pixmap.height() - 1 );
+        painter.drawLine( 0, pixmap.height() - 1, pixmap.width() - 1, pixmap.height() - 1 );
+
+        // Draw the text
+        QFont font;
+        painter.setFont( font );
+        QString text = KStringHandler::rPixelSqueeze( m_text, QFontMetrics( font ), pixmap.width() - icon.width() - 3 );
+        text.replace( "...", ".." );
+        const int textX = pixmap.width() / 2 - QFontMetrics( font ).width( text ) / 2;
+        painter.setPen( textColor );
+        const QRect rect( textX + icon.width() / 2 + 2, 0, pixmap.width(), pixmap.height() );
+        painter.drawText( rect, Qt::AlignLeft | Qt::AlignVCenter, text );
+
+        // Draw the icon
+        painter.drawPixmap( textX - icon.width() / 2 - 2, pixmap.height() / 2 - icon.height() / 2, icon );
+
+        // Paint to widget
+        paint->drawPixmap( 0, 0, pixmap );
+    }
 }
+
 
 QColor MultiTabBarTab::blendColors( const QColor& color1, const QColor& color2, int percent )
 {
