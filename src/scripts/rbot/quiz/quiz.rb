@@ -40,6 +40,9 @@ class Quiz
         # from the global table.
         @registry_conf["questions"] = [] unless @registry_conf.has_key?( "questions" )
 
+        # Autoask defaults to true
+        @registry_conf["autoask"] = true unless @registry_conf.has_key?( "autoask" )
+
         @questions = @registry_conf["questions"]
         @question = nil
         @answer = nil
@@ -189,7 +192,11 @@ class QuizPlugin < Plugin
 
 
     def help( plugin, topic="" )
-        "Quiz game. 'quiz' => ask a question. 'quiz hint' => get a hint. 'quiz solve' => solve this question. 'quiz skip' => skip to next question. 'quiz repeat' => repeat the current question. 'quiz joker' => draw a joker to win this round. 'quiz score <player>' => show score from <player>. 'quiz top5' => show top 5 players. 'quiz top <number>' => show top <number> players (max 50). 'quiz stats' => show some statistics. 'quiz fetch' => fetch new questions from server. 'quiz autoask <on/off>' => Enable/disable autoask mode.\nYou can add new questions at http://amarok.kde.org/amarokwiki/index.php/Rbot_Quiz"
+        if topic == "admin"
+            "Quiz game aministration commands (requires authentication): 'quiz autoask <on/off>' => enable/disable autoask mode. 'quiz transfer <source> <dest> [score] [jokers]' => transfer [score] points and [jokers] jokers from <source> to <dest> (default is entire score and all jokers). 'quiz setscore <player> <score>' => set <player>'s score to <score>. 'quiz setjokers <player> <jokers>' => set <player>'s number of jokers to <jokers>. 'quiz deleteplayer <player>' => delete one player from the rank table (only works when score and jokers are set to 0)."
+        else
+            "Quiz game. 'quiz' => ask a question. 'quiz hint' => get a hint. 'quiz solve' => solve this question. 'quiz skip' => skip to next question. 'quiz repeat' => repeat the current question. 'quiz joker' => draw a joker to win this round. 'quiz score [player]' => show score for [player] (default is yourself). 'quiz top5' => show top 5 players. 'quiz top <number>' => show top <number> players (max 50). 'quiz stats' => show some statistics. 'quiz fetch' => refetch questions from databases.\nYou can add new questions at http://amarok.kde.org/amarokwiki/index.php/Rbot_Quiz"
+        end
     end
 
 
@@ -305,10 +312,10 @@ class QuizPlugin < Plugin
     # Command handling
     #######################################################################
     def cmd_quiz( m, params )
-        if m.target == "#amarok"
-            m.reply "Please join #amarok.gaming for quizzing! :)"
-            return
-        end
+        # if m.target == "#amarok"
+        #     m.reply "Please join #amarok.gaming for quizzing! :)"
+        #     return
+        # end
 
         fetch_data( m ) if @questions.empty?
 
@@ -465,10 +472,11 @@ class QuizPlugin < Plugin
             calculate_ranks( m, q, m.sourcenick )
 
             if player.jokers != 1
-                m.reply "#{Bold}#{Color}12JOKER!#{Color}#{Bold} #{m.sourcenick} draws a joker and wins this round. You have #{player.jokers} jokers left."
+                jokers = "jokers"
             else
-                m.reply "#{Bold}#{Color}12JOKER!#{Color}#{Bold} #{m.sourcenick} draws a joker and wins this round. You have #{player.jokers} joker left."
+                jokers = "joker"
             end
+            m.reply "#{Bold}#{Color}12JOKER!#{Color}#{Bold} #{m.sourcenick} draws a joker and wins this round. You have #{player.jokers} #{jokers} left."
             m.reply "The answer was: #{q.answer}."
 
             q.question = nil
@@ -550,7 +558,7 @@ class QuizPlugin < Plugin
         if params[:enable].downcase == "on"
             q.registry_conf["autoask"] = true
             m.reply "Enabled autoask mode."
-            cmd_quiz( m, nil ) if q.registry_conf["autoask"]
+            cmd_quiz( m, nil ) if q.question == nil
         elsif params[:enable].downcase == "off"
             q.registry_conf["autoask"] = false
             m.reply "Disabled autoask mode."
@@ -699,12 +707,11 @@ plugin.map 'quiz fetch',            :action => 'cmd_fetch'
 plugin.map 'quiz top5',             :action => 'cmd_top5'
 plugin.map 'quiz top :number',      :action => 'cmd_top_number'
 plugin.map 'quiz stats',            :action => 'cmd_stats'
-plugin.map 'quiz autoask :enable',  :action => 'cmd_autoask'
 
 # Admin commands
-    # FIXME: Help for these...
+plugin.map 'quiz autoask :enable',  :action => 'cmd_autoask', :auth => 'quizedit'
 plugin.map 'quiz transfer :source :dest :score :jokers', :action => 'cmd_transfer', :auth => 'quizedit', :defaults => {:score => '-1', :jokers => '-1'}
-plugin.map 'quiz deleteplayer :nick',                    :action => 'cmd_del_player', :auth => 'quizedit'
-plugin.map 'quiz setscore :nick :score',                 :action => 'cmd_set_score', :auth => 'quizedit'
-plugin.map 'quiz setjokers :nick :jokers',               :action => 'cmd_set_jokers', :auth => 'quizedit'
+plugin.map 'quiz deleteplayer :nick', :action => 'cmd_del_player', :auth => 'quizedit'
+plugin.map 'quiz setscore :nick :score', :action => 'cmd_set_score', :auth => 'quizedit'
+plugin.map 'quiz setjokers :nick :jokers', :action => 'cmd_set_jokers', :auth => 'quizedit'
 
