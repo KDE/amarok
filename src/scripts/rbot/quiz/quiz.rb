@@ -81,14 +81,14 @@ class QuizPlugin < Plugin
     #
     def is_sep( ch )
         return case ch
-        when " " then true
-        when "." then true
-        when "," then true
-        when "-" then true
-        when "'" then true
-        when "&" then true
-        when "\"" then true
-        else false
+            when " " then true
+            when "." then true
+            when "," then true
+            when "-" then true
+            when "'" then true
+            when "&" then true
+            when "\"" then true
+            else false
         end
     end
 
@@ -386,13 +386,13 @@ class QuizPlugin < Plugin
             m.reply "#{m.sourcenick}: Get a question first!"
         else
             num_chars = case q.hintrange.length    # Number of characters to reveal
-            when 25..1000 then 7
-            when 20..1000 then 6
-            when 16..1000 then 5
-            when 12..1000 then 4
-            when    8..1000 then 3
-            when    5..1000 then 2
-            when    1..1000 then 1
+                when 25..1000 then 7
+                when 20..1000 then 6
+                when 16..1000 then 5
+                when 12..1000 then 4
+                when  8..1000 then 3
+                when  5..1000 then 2
+                when  1..1000 then 1
             end
 
             num_chars.times do
@@ -680,7 +680,6 @@ class QuizPlugin < Plugin
         q.registry[nick] = player
         m.reply "Jokers for player #{nick} set to #{val}."
     end
-
 end
 
 
