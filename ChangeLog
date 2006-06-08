@@ -48,6 +48,7 @@ VERSION 1.4.1:
       or by configuring the children of a folder.
 
   BUGFIXES:
+    * Correctly restore podcast channel title when fetching fails.
     * Show error message when xine mp3 decoder isn't installed, don't just
       play next track.
     * Properly render and optimise playlist loading icons.

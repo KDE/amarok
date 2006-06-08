@@ -8,9 +8,6 @@ SHORT-TERM (URGENT):
  <markey>  GHNS for scripts and themes only shows 20 items maximum. I understand this is due
            to some configuration on pwsp.net, where we fetch the feed. This must be fixed!!!
 
- <sebr>    Editing meta info for an album and changing the disc number for all tracks causes
-           the score for each item to be reset to 0.
-
  <markey>  xine-engine: when "xine could not init any audio driver" happens, always retry
            with Autodetect. This seems to be an issue with leftover amarokrc's from 1.3.
 
@@ -18,9 +15,6 @@ SHORT-TERM (URGENT):
 
  <sebr>    Refactor code for PlaylistBrowser::removeSelectedItems(). I can see pathological cases
            where it won't work.
-
- <markey>  When podcast retrieval fails, the red "stop" icon appears, but the podcast entry
-           still says "Retrieving Podcast.." forever on.
 
  <illiss.> Is using the score for the number, but the rating for the vis. in the context browser
            confusing? (I think it is, but that might be becuase my theme doesn't use stars but a

@@ -1253,10 +1253,9 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
         amaroK::StatusBar::instance()->shortMessage( i18n( "Unable to connect to Podcast server." ) );
         debug() << "Unable to retrieve podcast information. KIO Error: " << job->error() << endl;
 
-        if( title().isEmpty() )
-            setText( 0, m_url.prettyURL() );
-
-        setPixmap( 0, SmallIcon("cancel") );
+        title().isEmpty() ?
+            setText( 0, m_url.prettyURL() ) :
+            setText( 0, title() );
 
         return;
     }
