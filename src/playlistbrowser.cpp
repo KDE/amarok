@@ -2615,7 +2615,8 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             isPodcastFolder = true;
             menu.insertItem( SmallIconSet("edit_add"), i18n("Add Podcast..."), PODCAST );
             menu.insertItem( SmallIconSet( amaroK::icon( "refresh" ) ), i18n("Refresh All Podcasts"), REFRESH );
-            menu.insertItem( SmallIconSet( "configure" ), i18n( "&Configure children..." ), CONFIG );
+            menu.insertSeparator();
+            menu.insertItem( SmallIconSet( "configure" ), i18n( "&Configure Children..." ), CONFIG );
             if( parentCat == item )
                 menu.insertItem( SmallIconSet("tool_timer"), i18n("Scan Interval..."), INTERVAL );
         }
