@@ -1,18 +1,18 @@
 #!/bin/bash
 
 # # # # # # # # # # # # # # # # # # # # # #   # # # # #   # # #   # #   # #   # #   #   #
-# amaroK-svn
+# Amarok-svn
 # ============
-# This script installs the current development (SVN) version of amaroK on your computer.
-# If you've run it once, and then run it again, it will update your version of amaroK and only compile the new files.
+# This script installs the current development (SVN) version of Amarok on your computer.
+# If you've run it once, and then run it again, it will update your version of Amarok and only compile the new files.
 #
 # Made by Jocke "Firetech" Andersson.
 # Idea and inspiration from a small script by Greg "oggb4mp3" Meyer.
 # # # # # # # # # # # # # # # # # # # # # #   # # # # #   # # #   # #   # #   # #   #   #
 
 echo
-echo "amaroK-svn (Version 3.1-SVN)"
-echo "=============================="
+echo "Amarok-svn (Version 3.1)"
+echo "=========================="
 echo
 
 ## Define global variables
@@ -24,7 +24,7 @@ TMP_FILES="" #Will be filled with URLs to temporary files
 
 ## Define functions
 function Dialog {
-  kdialog --icon "amarok" --title "amaroK-svn$KDTITLE" "$@"
+  kdialog --icon "amarok" --title "Amarok-svn$KDTITLE" "$@"
 }
 
 function RemoveTemp {
@@ -51,7 +51,7 @@ function WriteConfig {
 
 function CheckBinary {
   if [ ! -x "`which $1`" ]; then #check if $1 is in $PATH and can be executed
-    ERROR_TEXT="amaroK-svn requires $1, which wasn't found in your \$PATH!"
+    ERROR_TEXT="Amarok-svn requires $1, which wasn't found in your \$PATH!"
     if [ "$2" ]; then
       ERROR_TEXT="$ERROR_TEXT ($2)"
     fi 
@@ -62,20 +62,20 @@ function CheckBinary {
 function FlagUsage {
   echo "Usage: $0 [options] [builddir]"
   echo
-  echo "amaroK-svn installs the current development (SVN) version of amaroK on your computer."
+  echo "Amarok-svn installs the current development (SVN) version of Amarok on your computer."
   echo
   echo "Options:"
   echo -e "  -r, --reset\t\tAsk for settings again."
   echo -e "  -s, --select-server\tSpecify which SVN server to use. (Only needed if you want to use your SVN account.)"
-  echo -e "  -c, --clean\t\tClean the source tree before compiling amaroK."
+  echo -e "  -c, --clean\t\tClean the source tree before compiling Amarok."
   echo -e "  -h, --help\t\tShow this message."
   echo
   echo "Arguments:"
-  echo -e "  builddir\t\tDownload and build amaroK in this directory. Default is '[your current dir]/amarok-svn'."
+  echo -e "  builddir\t\tDownload and build Amarok in this directory. Default is '[your current dir]/amarok-svn'."
   echo
   echo "Notes:"
   echo "  * Options can NOT be fused together! (I.E. You can't use '-cr', you have to use '-c -r'.)"
-  echo "  * amaroK-svn will download the amaroK sources directly into the folder you choose, without creating any subdirectory!"
+  echo "  * Amarok-svn will download the Amarok sources directly into the folder you choose, without creating any subdirectory!"
   echo
   exit 1
 }
@@ -100,17 +100,17 @@ function Compile {
   else
     if [ "$CLEAN_BUILD" = "0" ]; then
       echo "Compilation Failed!"
-      Dialog --warningyesno "Compilation failed!\nSometimes, a clean rebuild can fix this.\nDo you want to retry compiling with a clean source tree?\nIf you answer No, amaroK-svn will exit."
+      Dialog --warningyesno "Compilation failed!\nSometimes, a clean rebuild can fix this.\nDo you want to retry compiling with a clean source tree?\nIf you answer No, Amarok-svn will exit."
       if [ "$?" = "0" ]; then #If user said yes
         echo "Retrying with a clean source tree."
         CLEAN_BUILD="1"
         Clean
         Compile
       else
-        Error "Compilation failed! amaroK was NOT installed/updated."
+        Error "Compilation failed! Amarok was NOT installed/updated."
       fi
     else
-      Error "Compilation failed! amaroK was NOT installed/updated."
+      Error "Compilation failed! Amarok was NOT installed/updated."
     fi
   fi
 }
@@ -170,7 +170,7 @@ CheckBinary kwriteconfig
 ## Check the build directory
 if [ -e "$BUILD_DIR" -a ! -f "$BUILD_DIR/.amarok-svn-dir" ]; then #if directory exist and isn't watermarked
   if [ -d "$BUILD_DIR" ]; then
-    Dialog --warningyesno "The directory you chose to build in ($BUILD_DIR) already exists, and it wasn't detected as an amaroK-svn directory.\nFiles in this directory can possibly be overwritten by the amaroK-svn procedures.\nDo you want to use this directory anyway?"
+    Dialog --warningyesno "The directory you chose to build in ($BUILD_DIR) already exists, and it wasn't detected as an Amarok-svn directory.\nFiles in this directory can possibly be overwritten by the Amarok-svn procedures.\nDo you want to use this directory anyway?"
     if [ "$?" != "0" ]; then #If the user said no, exit.
       exit 1
     fi
@@ -181,7 +181,7 @@ fi
 
 ## Check if user is root
 if [ "`id -u`" = "0" ]; then #if user is root
-  Dialog --warningcontinuecancel "You are running amaroK-svn as root! This is not required, and generally not a good idea.\n(amaroK-svn will get root privileges by itself when needed, see the settings for details.)\nAre you sure you want to continue anyway?" --dontagain $RCFILE:root_warning
+  Dialog --warningcontinuecancel "You are running Amarok-svn as root! This is not required, and generally not a good idea.\n(Amarok-svn will get root privileges by itself when needed, see the settings for details.)\nAre you sure you want to continue anyway?" --dontagain $RCFILE:root_warning
   if [ "$?" != "0" ]; then #If the user said cancel.
     exit 1
   fi
@@ -217,7 +217,7 @@ else
   ## Language
   AUTO_LANG="`kreadconfig --group Locale --key Language | sed -re \"s/:.+//\"`"
   if [ "$AUTO_LANG" != "" ]; then #Generally, if the user is running KDE
-    Dialog --yesno "I detected that you are running KDE with language '$AUTO_LANG'.\nIf this is correct (and you want it that way), I will download localization and documentation for amaroK in that language.\nDo you want this language?"
+    Dialog --yesno "I detected that you are running KDE with language '$AUTO_LANG'.\nIf this is correct (and you want it that way), I will download localization and documentation for Amarok in that language.\nDo you want this language?"
   fi
   if [ "$?" = "0" -a "$AUTO_LANG" != "" ]; then #If the user said yes, and is running KDE...
     GET_LANG="$AUTO_LANG"
@@ -231,7 +231,7 @@ else
   WriteConfig get_lang "$GET_LANG"
 
   ## ./configure flags
-  Dialog --yesno "Do you want to use any extra configuration options (in addition to '--prefix=`kde-config --prefix` --enable-debug=full')?\nNo extra options is the default, and that works fine.\n(For a list of available flags, say yes and enter 'help' (CaSe insensitive) in the box, then wait for amaroK-svn to get to the configuration step (step 8).)"
+  Dialog --yesno "Do you want to use any extra configuration options (in addition to '--prefix=`kde-config --prefix` --enable-debug=full')?\nNo extra options is the default, and that works fine.\n(For a list of available flags, say yes and enter 'help' (CaSe insensitive) in the box, then wait for Amarok-svn to get to the configuration step (step 8).)"
   if [ "$?" = "0" ]; then #If the user said yes
     CONF_FLAGS_RAW="`Dialog --inputbox \"Specify extra configuration options to use\"`"
     if [ "`echo $CONF_FLAGS_RAW | tr A-Z a-z`" != "help" ]; then
@@ -250,14 +250,14 @@ else
   fi
 
   ## What to use to get root privileges for installation?
-  HOW_ROOT="`kdialog --radiolist \"How do you want amaroK-svn to get root privileges for the install/uninstall commands?\" kdesu \"With  'kdesu' (default, choose this if unsure)\" on sudo \"With 'sudo'\" off \"su -c\" \"With 'su -c'\" off`"
+  HOW_ROOT="`kdialog --radiolist \"How do you want Amarok-svn to get root privileges for the install/uninstall commands?\" kdesu \"With  'kdesu' (default, choose this if unsure)\" on sudo \"With 'sudo'\" off \"su -c\" \"With 'su -c'\" off`"
   if [ -z "$HOW_ROOT" ]; then #Fallback if the user pressed cancel
     HOW_ROOT="kdesu"
   fi
   WriteConfig how_root "$HOW_ROOT"
 
   USE_ID="0" #Assume default answer
-  Dialog --yesno "Do you want to use build ID?\nThis feature is generally not needed, and often makes the compiling time longer.\nIf you use it, you can tell from the About box in amaroK when your revision was compiled.\nDefault answer is No, you can get this information from other places."
+  Dialog --yesno "Do you want to use build ID?\nThis feature is generally not needed, and often makes the compiling time longer.\nIf you use it, you can tell from the About box in Amarok when your revision was compiled.\nDefault answer is No, you can get this information from other places."
   if [ "$?" = "0" ]; then #If the user said yes
     USE_ID="1"
   fi
@@ -361,7 +361,7 @@ if [ "$?" != "0" ]; then #If the command didn't finish successfully
 fi
 echo
 let C_STEP=C_STEP+1
-echo "# $C_STEP/$S_STEPS - Updating amaroK files."
+echo "# $C_STEP/$S_STEPS - Updating Amarok files."
 svn up amarok
 if [ "$?" != "0" ]; then #If the command didn't finish successfully
   RemoveTemp
@@ -486,7 +486,7 @@ fi
 echo -n "*** Patching the configure script to show when it fails... "
 echo -e "\nif test \"\$all_tests\" = \"bad\"; then\n  exit 1\nfi" >> configure #Does its job, albeit a little bit ugly...
 if [ "$?" != "0" ]; then #If the command didn't finish successfully
-  echo "Fail. amaroK will compile even if some dependencies aren't met!"
+  echo "Fail. Amarok will compile even if some dependencies aren't met!"
 else
   echo "Done."
 fi
@@ -522,7 +522,7 @@ let C_STEP=C_STEP+1
 echo "# $C_STEP/$S_STEPS - Configuring. (This will also take a while.)"
 ./configure --prefix=`kde-config --prefix` --enable-debug=full$CONF_FLAGS
 if [ "$?" != "0" ]; then #If the command didn't finish successfully
-  Error "Configuration failed. amaroK was NOT installed/upgraded."
+  Error "Configuration failed. Amarok was NOT installed/upgraded."
 fi
 
 ## Clean build dir if user wanted to.
@@ -594,10 +594,10 @@ if [ "$?" = "0" ]; then #If the command did finish successfully
   let INST_M=INST_TIME/60
   let INST_S=INST_TIME%60
   echo
-  echo -e "# DONE - amaroK was successfully installed/updated after $INST_M minute(s) and $INST_S second(s)."
-  Dialog --msgbox "Done!\namaroK was successfully installed/updated after $INST_M minute(s) and $INST_S second(s).\nCompilation took $COMP_M minute(s) and $COMP_S second(s).\nStart amaroK from your menu or by running the command \"amarok\"."
+  echo -e "# DONE - Amarok was successfully installed/updated after $INST_M minute(s) and $INST_S second(s)."
+  Dialog --msgbox "Done!\nAmarok was successfully installed/updated after $INST_M minute(s) and $INST_S second(s).\nCompilation took $COMP_M minute(s) and $COMP_S second(s).\nStart Amarok from your menu or by running the command \"amarok\"."
   exit 0 #Exit succsessfully
 else
   echo
-  Error "amaroK was compiled but NOT installed.\nIf the errors above seem to be permission errors, you could try installing amaroK manually.\n(You also might want to have a look at the settings for this script, use --help to see how.)\nTo install manually, get root privileges in some way and then run 'unsermake install' in the '$BUILD_DIR' directory."
+  Error "Amarok was compiled but NOT installed.\nIf the errors above seem to be permission errors, you could try installing Amarok manually.\n(You also might want to have a look at the settings for this script, use --help to see how.)\nTo install manually, get root privileges in some way and then run 'unsermake install' in the '$BUILD_DIR' directory."
 fi
