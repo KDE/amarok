@@ -231,7 +231,7 @@ messages: rc.cpp
 install-exec-hook:
 	@echo ""
 	@echo "=========================="
-	@echo "=  amaroK - INSTALLED  ================================"
+	@echo "=  Amarok - INSTALLED  ================================"
 	@echo "=========================="
 	@echo "="
 	@echo "=  Type amarok to start!"
