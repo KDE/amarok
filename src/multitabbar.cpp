@@ -250,8 +250,9 @@ void MultiTabBarInternal::resizeEvent( QResizeEvent *ev )
             //kdDebug()<<"m_lines recalculated="<<m_lines<<endl;
             for ( uint i = 0;i < tabCount;i++ ) {
                 MultiTabBarTab *tab = m_tabs.at( i );
+                if ( ! tab->visible() ) continue;
                 cnt++;
-                tmp += tab->neededSize() + diff;
+                tmp += sizePerTab() + diff;
                 if ( tmp > space ) {
                     //kdDebug()<<"about to start new line"<<endl;
                     if ( cnt > 1 ) {
@@ -261,7 +262,7 @@ void MultiTabBarInternal::resizeEvent( QResizeEvent *ev )
                         //kdDebug()<<"placing line on old line"<<endl;
                         kdDebug() << "diff=" << diff << endl;
                         tab->removeEventFilter( this );
-                        tab->move( NEARBYINT( tmp - tab->neededSize() ), lines * 24 );
+                        tab->move( NEARBYINT( tmp - sizePerTab() ), lines * 24 );
                         //						tab->setFixedWidth(tab->neededSize()+diff);
                         tab->setFixedWidth( NEARBYINT( tmp + diff ) - tab->x() );;
                         tab->installEventFilter( this );
@@ -277,7 +278,7 @@ void MultiTabBarInternal::resizeEvent( QResizeEvent *ev )
                     //kdDebug()<<"Placing line on line:"<<lines<<" pos: (x/y)=("<<tmp-m_tabs.at(i)->neededSize()<<"/"<<lines*24<<")"<<endl;
                     //kdDebug()<<"diff="<<diff<<endl;
                     tab->removeEventFilter( this );
-                    tab->move( NEARBYINT( tmp - tab->neededSize() ), lines * 24 );
+                    tab->move( NEARBYINT( tmp - sizePerTab() ), lines * 24 );
                     tab->setFixedWidth( NEARBYINT( tmp + diff ) - tab->x() );;
 
                     //tab->setFixedWidth(tab->neededSize()+diff);
@@ -476,7 +477,14 @@ uint MultiTabBarInternal::visibleTabCount()
 
 uint MultiTabBarInternal::sizePerTab()
 {
-    return (height() - 3 ) / visibleTabCount();
+    uint size;
+
+    if( m_position == MultiTabBar::Left || m_position == MultiTabBar::Right )
+        size = (height() - 3 ) / visibleTabCount();
+    else
+        size = (width() - 3 ) / visibleTabCount();
+
+    return size;
 }
 
 
@@ -497,12 +505,6 @@ MultiTabBarButton::MultiTabBarButton( const QPixmap& pic, const QString& text, Q
     setFlat( true );
     setFixedHeight( 24 );
     setFixedWidth( 24 );
-
-    // HACK HACK HACK
-    if( m_position == MultiTabBar::Left || m_position == MultiTabBar::Right )
-        NUM_TABS = 5;
-    else
-        NUM_TABS = 3;
 
 //     QToolTip::add( this, text );  // Deactivated cause it's annoying
     connect( this, SIGNAL( clicked() ), this, SLOT( slotClicked() ) );
@@ -526,12 +528,6 @@ MultiTabBarButton::MultiTabBarButton( const QString& text, QPopupMenu *popup,
     setFixedWidth( 24 );
     m_id = id;
 //     QToolTip::add( this, text );
-
-    // HACK HACK HACK
-    if( m_position == MultiTabBar::Left || m_position == MultiTabBar::Right )
-        NUM_TABS = 5;
-    else
-        NUM_TABS = 3;
 
     connect( this, SIGNAL( clicked() ), this, SLOT( slotClicked() ) );
     connect( m_animTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
@@ -674,13 +670,13 @@ QSize MultiTabBarButton::sizeHint() const
             h = QMAX( h, sz.height() );
     }
 
-    //PATCH by markey
-    if ( ( m_style == MultiTabBar::AMAROK ) ) {
-        if( m_position == MultiTabBar::Left || m_position == MultiTabBar::Right )
-            w = ( parentWidget()->height() - 3 ) / NUM_TABS;
-        else
-            h = ( parentWidget()->width() - 3 ) / NUM_TABS;
-    }
+//     //PATCH by markey
+//     if ( ( m_style == MultiTabBar::AMAROK ) ) {
+//         if( m_position == MultiTabBar::Left || m_position == MultiTabBar::Right )
+//             w = ( parentWidget()->height() - 3 ) / NUM_TABS;
+//         else
+//             h = ( parentWidget()->width() - 3 ) / NUM_TABS;
+//     }
 
     return ( style().sizeFromContents( QStyle::CT_ToolButton, this, QSize( w, h ) ).
              expandedTo( QApplication::globalStrut() ) );
@@ -804,11 +800,7 @@ void MultiTabBarTab::updateState()
 
 int MultiTabBarTab::neededSize()
 {
-/*    //PATCH by markey
-    if ( m_style == MultiTabBar::AMAROK )
-        return ( parentWidget() ->height() - 3 ) / NUM_TABS;
-    else
- */       return ( ( ( m_style != MultiTabBar::KDEV3 ) ? 24 : 0 ) + QFontMetrics( QFont() ).width( m_text ) + 6 );
+    return ( ( ( m_style != MultiTabBar::KDEV3 ) ? 24 : 0 ) + QFontMetrics( QFont() ).width( m_text ) + 6 );
 }
 
 void MultiTabBarTab::setSize( int size )
@@ -1033,7 +1025,7 @@ void MultiTabBarTab::drawButtonAmarok( QPainter *paint )
 
         // Draw the frame
         painter.setPen( colorGroup().mid() );
-        if ( m_id != NUM_TABS - 1 ) painter.drawLine( 0, 0, 0, pixmap.height() - 1 );
+        /*if ( m_id != bar->visibleTabCount() - 1 )*/ painter.drawLine( 0, 0, 0, pixmap.height() - 1 );
         painter.drawLine( 0, pixmap.height() - 1, pixmap.width() - 1, pixmap.height() - 1 );
 
         // Draw the text
@@ -1063,7 +1055,7 @@ void MultiTabBarTab::drawButtonAmarok( QPainter *paint )
 
         // Draw the frame
         painter.setPen( colorGroup().mid() );
-        if ( m_id != NUM_TABS - 1 ) painter.drawLine( 0, 0, 0, pixmap.height() - 1 );
+        /*if ( m_id != bar->visibleTabCount() - 1 )*/ painter.drawLine( 0, 0, 0, pixmap.height() - 1 );
         painter.drawLine( 0, pixmap.height() - 1, pixmap.width() - 1, pixmap.height() - 1 );
 
         // Draw the text

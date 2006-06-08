@@ -197,7 +197,7 @@ ContextBrowser::ContextBrowser( const char *name )
     s_instance = this;
     s_wikiLocale = AmarokConfig::wikipediaLocale();
 
-    m_contextBar = new ContextBar( this );
+    m_contextBar = new ContextBar( 0 );
 
     m_contextTab = new QVBox(this, "context_tab");
 
