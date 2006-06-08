@@ -27,7 +27,7 @@
 
 LastFmProxy::LastFmProxy()
 {
-    debug() << "Initialising Web Service";
+    debug() << "Initialising Web Service" << endl;
 }
 
 

@@ -18,6 +18,7 @@
 #include "debug.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
+#include "lastfmproxy.h"
 #include "playlist.h"
 #include "playlistloader.h"
 #include "pluginmanager.h"
@@ -248,7 +249,7 @@ bool EngineController::canDecode( const KURL &url ) //static
     if ( !ext.isEmpty() )
         extensionCache().insert( ext, valid );
 
-    return valid;   
+    return valid;
 }
 
 bool EngineController::installDistroCodec( const QString& engine /*Filetype type*/)
@@ -260,7 +261,7 @@ bool EngineController::installDistroCodec( const QString& engine /*Filetype type
         QString installScript = service->exec();
         if( !installScript.isNull() ) //just a sanity check
         {
-            KGuiItem installButton("Install MP3 Support");    
+            KGuiItem installButton("Install MP3 Support");
             if(KMessageBox::questionYesNo(PlaylistWindow::self()
             , i18n("amaroK currently cannot play MP3 files.")
             , i18n( "No MP3 Support" )
@@ -364,6 +365,16 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
         url.setProtocol( "http" );
     else if ( url.protocol() == "webdavs" )
         url.setProtocol( "https" );
+    else if ( url.protocol() == "lastfm" )
+    {
+        debug() << "Init lastfm proxy" << endl;
+        LastFmProxy *lfp = new LastFmProxy();
+        QString u = AmarokConfig::scrobblerUsername();
+        QString p = AmarokConfig::scrobblerPassword();
+        lfp->handshake( u, p );
+
+//         url = lfp->getProxyUrl();
+    }
 
     if( m_engine->load( url, url.protocol() == "http" || url.protocol() == "rtsp" ) )
     {
