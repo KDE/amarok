@@ -1,9 +1,9 @@
-Hacking on amaroK
+Hacking on Amarok
 -----------------
 
-Please respect these guidelines when coding for amaroK, thanks!
+Please respect these guidelines when coding for Amarok, thanks!
 
-* Where this document isn't clear, refer to amaroK code.
+* Where this document isn't clear, refer to Amarok code.
 * Avoid large commits of formatting fixes, as they easily cause merge conflicts.
 
 
@@ -41,7 +41,7 @@ bool MyClass::myMethod( QPtrList<QListViewItem> items, const QString &name )
 }
 
 Header includes should be listed in the following order:
-    - amaroK includes
+    - Amarok includes
     - KDE includes
     - Qt includes
 
@@ -86,7 +86,7 @@ class AmaroKProcIO : public KProcIO {
     public:
     virtual int commSetupDoneC() {
         const int i = KProcIO::commSetupDoneC();
-        amaroK::closeOpenFiles(KProcIO::out[0],KProcIO::in[0],KProcIO::err[0]);
+        Amarok::closeOpenFiles(KProcIO::out[0],KProcIO::in[0],KProcIO::err[0]);
         return i;
     }
 };
@@ -210,4 +210,4 @@ those files.
 
 
 Thanks, now have fun!
-  -- the amaroK developers
+  -- the Amarok developers

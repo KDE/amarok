@@ -1,11 +1,11 @@
 
- amaroK - the audio player for KDE
+ Amarok - the audio player for KDE
 ===================================
 
 There are many media players around these days, true. What's missing from most
 players is a user interface that doesn't get in the way of the user. How many
 buttons do you have to press for simply adding some new tracks to the playlist?
-amaroK tries to be a little different, providing a simple drag and drop
+Amarok tries to be a little different, providing a simple drag and drop
 interface that really makes playlist handling easy.
 
 
@@ -131,8 +131,8 @@ of these packages.
  IMPORTANT INSTALL INSTRUCTIONS
 ================================
 
-In order to compile and install amaroK on your system, type the following in the
-base directory of the amaroK distribution:
+In order to compile and install Amarok on your system, type the following in the
+base directory of the Amarok distribution:
 
 
                 % ./configure --prefix=`kde-config --prefix`
@@ -163,9 +163,9 @@ A: Here's an extract from the PKG-CONFIG man page:
 
    So, do export PKG_CONFIG_PATH="/path/to/gstreamer-0.x.y.pc" and reconfigure.
 
-Q: Can I improve amaroK's startup time?
-A: Prelinking amaroK has spectacular results; however if you have binary openGL
-   drivers (eg Nvidia drivers), you will need to compile amaroK --without-opengl
+Q: Can I improve Amarok's startup time?
+A: Prelinking Amarok has spectacular results; however if you have binary openGL
+   drivers (eg Nvidia drivers), you will need to compile Amarok --without-opengl
    in order to get the amarokapp binary to prelink (the amarok binary is not
    important here).
 --------------------------------------------------------------------------------
@@ -174,7 +174,7 @@ A: Prelinking amaroK has spectacular results; however if you have binary openGL
  OTHER-FAQS
 ============
 
-For answers to problems like "amaroK won't play any MP3s!" and "My MP3s skip
+For answers to problems like "Amarok won't play any MP3s!" and "My MP3s skip
 and stutter!" please visit:
 
    http://amarok.kde.org/
@@ -184,7 +184,7 @@ and stutter!" please visit:
  INFORMATION FOR PACKAGERS
 ===========================
 
-For amaroK packages we suggest you build:
+For Amarok packages we suggest you build:
 
                 % ./configure --disable-debug
 
@@ -193,35 +193,35 @@ that is distributed with their operating system:
 
                 % ./configure --without-included-sqlite
 
-It is also possible to build amaroK to use MySQL as the database backend. Using
-MySQL makes the amaroK collection faster. We suggest not building sqlite into
-amaroK if you plan to ship amaroK with a MySQL dependency.
+It is also possible to build Amarok to use MySQL as the database backend. Using
+MySQL makes the Amarok collection faster. We suggest not building sqlite into
+Amarok if you plan to ship Amarok with a MySQL dependency.
 
-However, the sqlite you ship MUST be threadsafe! Also amaroK will take longer
+However, the sqlite you ship MUST be threadsafe! Also Amarok will take longer
 to start with this option since sqlite is not statically linked into the
-amarok binary. The amaroK binary will be approximately 200kB smaller.
+amarok binary. The Amarok binary will be approximately 200kB smaller.
 
-We suggest compiling Os, there is no particular part of amaroK that would
+We suggest compiling Os, there is no particular part of Amarok that would
 benefit from optimisation, so the smallest binary is probably the best route.
 
-In order to limit the dependencies the amaroK package demands we suggest
-splitting amaroK into the following packages:
+In order to limit the dependencies the Amarok package demands we suggest
+splitting Amarok into the following packages:
 
-   1. amaroK + one backend
+   1. Amarok + one backend
    2. GStreamer-engine
    3. xine-engine
    4. Helix-engine
    5. amarok_xmmswrapper + amarok_libvisual
 
-amaroK is modular and will be fully functional as long as one of 2, 3, or 4 is
-also installed. Hence we suggest amaroK + one backend. Feel free to include the
+Amarok is modular and will be fully functional as long as one of 2, 3, or 4 is
+also installed. Hence we suggest Amarok + one backend. Feel free to include the
 helix, MAS and NMM engines if you can satisfy their dependencies.
 
-amaroK ships with two binaries: amarok and amarokapp. The amarok binary is a
+Amarok ships with two binaries: amarok and amarokapp. The amarok binary is a
 wrapper designed to speed up command line argument passing. amarokapp is the
-real amaroK.
+real Amarok.
 
-If you make packages for amaroK please let us know and we'll link to you on the
+If you make packages for Amarok please let us know and we'll link to you on the
 homepage (as long as you don't object).
 --------------------------------------------------------------------------------
 
@@ -229,7 +229,7 @@ homepage (as long as you don't object).
  CONTRIBUTING
 ==============
 
-If you wish to contribute to amaroK, you should build it from SVN and subscribe
+If you wish to contribute to Amarok, you should build it from SVN and subscribe
 to the amarok-devel mailing list. The IRC channel is  also  a  place  where
 it's  nice  to  be, since you can talk to other developers much easier, and
 get instant notification of commits to the SVN. For instant email notification

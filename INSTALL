@@ -1,8 +1,8 @@
-Installing amaroK
+Installing Amarok
 =================
 
-In order to compile and install amaroK on your system, type the following in the
-base directory of the amaroK distribution:
+In order to compile and install Amarok on your system, type the following in the
+base directory of the Amarok distribution:
 
 
                 % ./configure --prefix=`kde-config --prefix`

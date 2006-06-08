@@ -1,4 +1,4 @@
-TODO-list for amaroK
+TODO-list for Amarok
 ======================
 <nick>  == reported by
 -->nick == assigned to
@@ -110,23 +110,23 @@ SHORT-TERM (URGENT):
            possibly download.kde.org or similar. (When our site is down, the GHNS feature fails
            to work entirely)
 
-  <markey> amaroK fails to download any stream playlist from http://dir.xiph.org. Part of the problem is
+  <markey> Amarok fails to download any stream playlist from http://dir.xiph.org. Part of the problem is
            PlaylistLoader::isPlaylistFile(const KURL&), which only looks at the filename's extension. This
            fails for URLs like http://dir.xiph.org/listen.php?pid=669641&file=listen.m3u, because the filename
            is "listen.php". So it must look at the whole url instead.
 
-  <mxcl>   On first-ever-run, if amaroK crashes building the sqlite collection, it is impossible to _ever_
+  <mxcl>   On first-ever-run, if Amarok crashes building the sqlite collection, it is impossible to _ever_
            build a collection unless the user's amarokrc file is deleted! This MUST be fixed before 1.2!
            ::muesli:: We could just _always_ try to create the sql tables on startup. This would fail on
            ::muesli:: systems which already got the tables, but would fix the situation where tables are
            ::muesli:: missing, as in this situation. Just pump the debug of these calls to /dev/null.
 
   <mxcl>   Just before we load any engine plugin, write to a file, and it we don't succeed the next time
-           amaroK starts show a big warning saying "Gah!" and load a different one.
+           Amarok starts show a big warning saying "Gah!" and load a different one.
 
   <mxcl>   If you inline set the title tag to "", prettyTitle gets inserted as the title tag.
 
-  <markey> When the KDE color scheme is changed while amaroK is running, all toolbar buttons (those with text)
+  <markey> When the KDE color scheme is changed while Amarok is running, all toolbar buttons (those with text)
            lose their texts.
 
  <shakes>  The scrobbler code should report some sort of error message rather than just saying that the

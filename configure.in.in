@@ -71,7 +71,7 @@ fi
 ###############################################################################
 
 AC_ARG_WITH(gstreamer10,
-    AC_HELP_STRING([--with-gstreamer10],[build amaroK with GStreamer 0.10-engine]),
+    AC_HELP_STRING([--with-gstreamer10],[build Amarok with GStreamer 0.10-engine]),
     [build_gstreamer10=$withval],
     [build_gstreamer10=no]
 )
@@ -117,7 +117,7 @@ AM_CONDITIONAL(with_gst10, [test x$have_gst10 = xyes])
 ###############################################################################
 
 AC_ARG_WITH(xine,
-    AC_HELP_STRING([--without-xine],[build amaroK without xine-engine]),
+    AC_HELP_STRING([--without-xine],[build Amarok without xine-engine]),
     [build_xine=$withval],
     [build_xine=yes]
 )
@@ -174,7 +174,7 @@ AC_SUBST(LIBS_XINE)
 ###############################################################################
 
 #AC_ARG_WITH(akode,
-#    AC_HELP_STRING([--without-akode],[build amaroK without akode-engine]),
+#    AC_HELP_STRING([--without-akode],[build Amarok without akode-engine]),
 #    [build_akode=$withval],
 #    [build_akode=yes]
 #)
@@ -225,7 +225,7 @@ AC_SUBST(LIBS_XINE)
 ###############################################################################
 
 AC_ARG_WITH(nmm,
-    AC_HELP_STRING([--with-nmm],[build amaroK with NMM-engine]),
+    AC_HELP_STRING([--with-nmm],[build Amarok with NMM-engine]),
     [build_nmm=$withval],
     [build_nmm=no]
 )
@@ -258,7 +258,7 @@ AC_SUBST(LDFLAGS_NMM)
 ###############################################################################
 
 #AC_ARG_WITH(mas,
-#    AC_HELP_STRING([--with-mas],[build amaroK with MAS-engine]),
+#    AC_HELP_STRING([--with-mas],[build Amarok with MAS-engine]),
 #    [build_mas=$withval],
 #    [build_mas=no]
 #)
@@ -298,7 +298,7 @@ AC_SUBST(LDFLAGS_NMM)
 ###############################################################################
 
 AC_ARG_WITH(helix,
-    AC_HELP_STRING([--with-helix],[build amaroK with Helix-engine]),
+    AC_HELP_STRING([--with-helix],[build Amarok with Helix-engine]),
     [build_helix=$withval],
     [build_helix=no]
 )
@@ -379,7 +379,7 @@ fi
 ###############################################################################
 
 AC_ARG_WITH(opengl,
-    AC_HELP_STRING([--without-opengl],[build amaroK without OpenGL support]),
+    AC_HELP_STRING([--without-opengl],[build Amarok without OpenGL support]),
     [build_opengl=$withval],
     [build_opengl=yes]
 )
@@ -438,7 +438,7 @@ fi
 LIB_SQLITE=""
 
 AC_ARG_WITH(included-sqlite,
-    AC_HELP_STRING([--without-included-sqlite],[build amaroK using system sqlite library]),
+    AC_HELP_STRING([--without-included-sqlite],[build Amarok using system sqlite library]),
     [included_sqlite=$withval],
     [included_sqlite=yes]
 )
@@ -478,7 +478,7 @@ AC_DEFINE(SQLITE_PTR_SZ, SIZEOF_CHAR_P, [Determine pointer size for SQLite])
 ###############################################################################
 
 AC_ARG_ENABLE(mysql,
-    AC_HELP_STRING([--enable-mysql],[build amaroK with MySQL support]),
+    AC_HELP_STRING([--enable-mysql],[build Amarok with MySQL support]),
     [enable_mysql=$enableval],
     [enable_mysql=no]
 )
@@ -514,7 +514,7 @@ AC_SUBST(mysql_libs)
 ###############################################################################
 
 AC_ARG_ENABLE(postgresql,
-    AC_HELP_STRING([--enable-postgresql],[build amaroK with PostgreSQL support]),
+    AC_HELP_STRING([--enable-postgresql],[build Amarok with PostgreSQL support]),
     [enable_postgresql=$enableval],
     [enable_postgresql=no]
 )
@@ -551,7 +551,7 @@ AC_SUBST(postgresql_libs)
 ###############################################################################
 
 AC_ARG_WITH(xmms,
-    AC_HELP_STRING([--without-xmms],[build amaroK without xmms visualization support]),
+    AC_HELP_STRING([--without-xmms],[build Amarok without xmms visualization support]),
     [with_xmms=$withval],
     [with_xmms=yes]
 )
@@ -598,7 +598,7 @@ AM_CONDITIONAL(with_xmmswrapper, test x$build_xmmswrapper = xyes )
 ###############################################################################
 
 AC_ARG_WITH(libvisual,
-    AC_HELP_STRING([--without-libvisual],[build amaroK without libvisual support]),
+    AC_HELP_STRING([--without-libvisual],[build Amarok without libvisual support]),
     [with_libvisual=$withval],
     [with_libvisual=yes]
 )
@@ -641,7 +641,7 @@ AM_CONDITIONAL(with_libvisual, test x$build_libvisual = xyes)
 ###############################################################################
 
 AC_ARG_WITH(musicbrainz,
-    AC_HELP_STRING([--without-musicbrainz],[build amaroK without MusicBrainz support]),
+    AC_HELP_STRING([--without-musicbrainz],[build Amarok without MusicBrainz support]),
     [with_musicbrainz=$withval],
     [with_musicbrainz=yes]
 )
@@ -772,7 +772,7 @@ AM_CONDITIONAL(with_konqsidebar, [test x$have_konqsidebar = xyes])
 ###############################################################################
 ### mediabrowser.cpp can use libnjb if available
 AC_ARG_WITH(libnjb,
-    AC_HELP_STRING([--with-libnjb],[build amaroK with Nomad Jukebox support from libnjb]),
+    AC_HELP_STRING([--with-libnjb],[build Amarok with Nomad Jukebox support from libnjb]),
     [build_libnjb=$withval],
     [build_libnjb=yes]
 )
@@ -803,7 +803,7 @@ AM_CONDITIONAL(with_libnjb, [test x$have_libnjb = xyes])
 ### mediabrowser.cpp can use libifp if available
 
 AC_ARG_WITH(ifp,
-    AC_HELP_STRING([--with-ifp],[build amaroK with ifp support]),
+    AC_HELP_STRING([--with-ifp],[build Amarok with ifp support]),
     [build_ifp=$withval],
     [build_ifp=yes]
 )
@@ -839,7 +839,7 @@ AM_CONDITIONAL(with_ifp, [test x$have_ifp = xyes])
 ###############################################################################
 
 AC_ARG_WITH(libgpod,
-    AC_HELP_STRING([--with-libgpod],[build amaroK with iPod support from libgpod]),
+    AC_HELP_STRING([--with-libgpod],[build Amarok with iPod support from libgpod]),
     [build_libgpod=$withval],
     [build_libgpod=yes]
 )
@@ -901,7 +901,7 @@ AC_CHECK_FUNCS(statvfs)
 # m4a/aac tag reading and writing needs libmp4v2 from faad2 or better mpeg4ip
 
 AC_ARG_WITH(mp4v2,
-    AC_HELP_STRING([--with-mp4v2],[build amaroK with M4A/AAC tag support from mp4v2/faad2]),
+    AC_HELP_STRING([--with-mp4v2],[build Amarok with M4A/AAC tag support from mp4v2/faad2]),
     [have_mp4v2=$withval],
     [have_mp4v2=no]
 )
