@@ -115,23 +115,23 @@ class LastFmProxy : public QObject
 
     private slots:
         void handshakeHeaderReceived( const QHttpResponseHeader &resp );
-        void handshakeFinished( bool error );
+        void handshakeFinished( int id, bool error );
 
-        void changeStationFinished( bool error );
-        void metaDataFinished( bool error );
-        void enableScrobblingFinished( bool error );
+        void changeStationFinished( int id, bool error );
+        void metaDataFinished( int id, bool error );
+        void enableScrobblingFinished( int id, bool error );
 
-        void loveFinished( bool error );
-        void skipFinished( bool error );
-        void banFinished( bool error );
+        void loveFinished( int id, bool error );
+        void skipFinished( int id, bool error );
+        void banFinished( int id, bool error );
 
-        void friendsFinished( bool error );
-        void neighboursFinished( bool error );
+        void friendsFinished( int id, bool error );
+        void neighboursFinished( int id, bool error );
 
-        void recentTracksFinished( bool error );
-        void userTagsFinished( bool error );
+        void recentTracksFinished( int id, bool error );
+        void userTagsFinished( int id, bool error );
 
-        void recommendFinished( bool error );
+        void recommendFinished( int id, bool error );
 };
 
 #endif /*AMAROK_LASTFMPROXY_H*/

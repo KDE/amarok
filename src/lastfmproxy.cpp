@@ -35,20 +35,24 @@ void
 LastFmProxy::handshake( const QString& username, const QString& password )
 {
     m_username = username;
+    m_password = password;
 
     QHttp *http = new QHttp( "ws.audioscrobbler.com", 80, this );
-    connect( http, SIGNAL( responseHeaderReceived( QHttpResponseHeader ) ),
-             this,   SLOT( handshakeHeaderReceived( QHttpResponseHeader ) ) );
+    connect( http, SIGNAL( responseHeaderReceived( const QHttpResponseHeader& ) ),
+             this,   SLOT( handshakeHeaderReceived( const QHttpResponseHeader& ) ) );
 
-    connect( http, SIGNAL( requestFinished( bool ) ),
-             this,   SLOT( handshakeFinished( bool ) ) );
+    connect( http, SIGNAL( requestFinished( int, bool ) ),
+             this,   SLOT( handshakeFinished( int, bool ) ) );
 
-    http->get( QString( "/radio/handshake.php?version=%1&platform=%2&username=%3&passwordmd5=%4&debug=%5" )
-                  .arg( "1.2.0" )
-                  .arg( QString("linux") ) //platform
-                  .arg( QString( QUrl( username ).encodedPathAndQuery() ) )
-                  .arg( password )
-                  .arg( "0" ) );
+    QString path =
+            QString( "/radio/handshake.php?version=%1&platform=%2&username=%3&passwordmd5=%4&debug=%5" )
+            .arg( "1.2.0" )
+            .arg( QString("linux") ) //platform
+            .arg( QString( QUrl( username ).encodedPathAndQuery() ) )
+            .arg( KMD5( m_password.utf8() ).hexDigest() )
+            .arg( "0" );
+
+    http->get( path );
     m_lastHttp = http;
 }
 
@@ -58,14 +62,16 @@ LastFmProxy::handshakeHeaderReceived( const QHttpResponseHeader &resp )
 {
     if ( resp.statusCode() == 503 )
     {
-        debug() << "Handshake error";
+        debug() << "Handshake error" << endl;
     }
 }
 
 
 void
-LastFmProxy::handshakeFinished( bool error )
+LastFmProxy::handshakeFinished( int /*id*/, bool error )
 {
+    DEBUG_BLOCK
+
     if ( error )
     {
         emit handshakeResult( -1 );
@@ -73,6 +79,9 @@ LastFmProxy::handshakeFinished( bool error )
     }
 
     QString result( m_lastHttp->readAll() );
+
+    debug() << "result: " << result << endl;
+
     m_session = parameter( "session", result );
     m_baseHost = parameter( "base_url", result );
     m_basePath = parameter( "base_path", result );
@@ -112,7 +121,7 @@ LastFmProxy::changeStation( QString url )
 
 
 void
-LastFmProxy::changeStationFinished( bool error )
+LastFmProxy::changeStationFinished( int /*id*/, bool error )
 {
     if( error ) return;
 
@@ -153,7 +162,7 @@ LastFmProxy::requestMetaData()
 
 
 void
-LastFmProxy::metaDataFinished( bool error )
+LastFmProxy::metaDataFinished( int /*id*/, bool error )
 {
     if( error )
         return;
@@ -199,7 +208,7 @@ LastFmProxy::enableScrobbling( bool enabled )
 
 
 void
-LastFmProxy::enableScrobblingFinished( bool error )
+LastFmProxy::enableScrobblingFinished( int /*id*/, bool error )
 {
     if ( error )
         return;
@@ -248,7 +257,7 @@ LastFmProxy::ban()
 
 
 void
-LastFmProxy::loveFinished( bool error )
+LastFmProxy::loveFinished( int /*id*/, bool error )
 {
     if( error ) return;
     emit loveDone();
@@ -256,7 +265,7 @@ LastFmProxy::loveFinished( bool error )
 
 
 void
-LastFmProxy::skipFinished( bool error )
+LastFmProxy::skipFinished( int /*id*/, bool error )
 {
     if( error ) return;
     emit skipDone();
@@ -264,7 +273,7 @@ LastFmProxy::skipFinished( bool error )
 
 
 void
-LastFmProxy::banFinished( bool error )
+LastFmProxy::banFinished( int /*id*/, bool error )
 {
     if( error ) return;
     emit banDone();
@@ -288,7 +297,7 @@ LastFmProxy::friends( QString username )
 
 
 void
-LastFmProxy::friendsFinished( bool error )
+LastFmProxy::friendsFinished( int /*id*/, bool error )
 {
     if( error ) return;
 
@@ -329,7 +338,7 @@ LastFmProxy::neighbours( QString username )
 
 
 void
-LastFmProxy::neighboursFinished( bool error )
+LastFmProxy::neighboursFinished( int /*id*/, bool error )
 {
     if( error )  return;
 
@@ -370,7 +379,7 @@ LastFmProxy::userTags( QString username )
 
 
 void
-LastFmProxy::userTagsFinished( bool error )
+LastFmProxy::userTagsFinished( int /*id*/, bool error )
 {
     if( error ) return;
 
@@ -411,7 +420,7 @@ LastFmProxy::recentTracks( QString username )
 
 
 void
-LastFmProxy::recentTracksFinished( bool error )
+LastFmProxy::recentTracksFinished( int /*id*/, bool error )
 {
     if( error ) return;
 
@@ -465,9 +474,10 @@ LastFmProxy::recommend( int type, QString username, QString artist, QString toke
     QHttp *http = new QHttp( "wsdev.audioscrobbler.com", 80, this );
     connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( recommendFinished( bool ) ) );
 
-    QString challenge = "12345678";
-    KMD5 context( (currentPassword() + challenge).utf8() );
-    QCString md5pass = context.hexDigest();
+    uint currentTime = QDateTime::currentDateTime( Qt::UTC ).toTime_t();
+    QString challenge = QString::number( currentTime );
+
+    QCString md5pass = KMD5( KMD5( m_password.utf8() ).hexDigest() + currentTime ).hexDigest();
 
     QString token = QString( "user=%1&auth=%2&nonce=%3recipient=%4" )
                        .arg( QString( QUrl( currentUsername() ).encodedPathAndQuery() ) )
@@ -485,7 +495,7 @@ LastFmProxy::recommend( int type, QString username, QString artist, QString toke
 
 
 void
-LastFmProxy::recommendFinished( bool /*error*/ )
+LastFmProxy::recommendFinished( int /*id*/, bool /*error*/ )
 {
     debug() << "Recommendation:" << m_lastHttp->readAll();
 }

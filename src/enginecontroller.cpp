@@ -356,7 +356,10 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
         }
     }
     else
+    {
         amaroK::StatusBar::instance()->shortMessage( i18n("Connecting to stream source...") );
+        debug() << "Connecting to protocol: " << url.protocol() << endl;
+    }
 
     // WebDAV protocol is HTTP with extensions (and the "webdav" scheme
     // is a KDE-ism anyway). Most engines cope with HTTP streaming, but
@@ -365,6 +368,8 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
         url.setProtocol( "http" );
     else if ( url.protocol() == "webdavs" )
         url.setProtocol( "https" );
+
+    // streams from last.fm should be handled by our proxy, in order to authenticate with the server
     else if ( url.protocol() == "lastfm" )
     {
         debug() << "Init lastfm proxy" << endl;
