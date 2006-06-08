@@ -103,7 +103,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
 
     setModifiedPalette();
     setFixedSize( 311, 140 );
-    setCaption( "amaroK" );
+    setCaption( "Amarok" );
     setAcceptDrops( true );
 
     //another quit shortcut because the other window has all the accels

@@ -85,9 +85,9 @@ email                : markey@web.de
 int App::mainThreadId = 0;
 
 LIBAMAROK_EXPORT KAboutData aboutData( "amarok",
-    I18N_NOOP( "amaroK" ), APP_VERSION,
+    I18N_NOOP( "Amarok" ), APP_VERSION,
     I18N_NOOP( "The audio player for KDE" ), KAboutData::License_GPL,
-    I18N_NOOP( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2006, The amaroK Development Squad" ),
+    I18N_NOOP( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2006, The Amarok Development Squad" ),
     I18N_NOOP( "IRC:\nirc.freenode.net - #amarok, #amarok.de, #amarok.es\n\nFeedback:\namarok@kde.org\n\n(Build Date: " __DATE__ ")" ),
              ( "http://amarok.kde.org" ) );
 
@@ -585,7 +585,7 @@ void App::applySettings( bool firstTime )
         {
             //the player Window becomes the main Window
             //it is the focus for hideWithMainWindow behaviour etc.
-            //it gets the majestic "amaroK" caption
+            //it gets the majestic "Amarok" caption
             m_pPlaylistWindow->setCaption( kapp->makeStdCaption( i18n("Playlist") ) );
 
             m_pPlayerWindow = new PlayerWidget( m_pPlaylistWindow, "PlayerWindow", firstTime && AmarokConfig::playlistWindowEnabled() );
@@ -624,9 +624,9 @@ void App::applySettings( bool firstTime )
 
         //Set the caption correctly.
         if ( !EngineController::instance()->bundle().prettyTitle().isEmpty() )
-            m_pPlaylistWindow->setCaption( i18n("amaroK - %1").arg( EngineController::instance()->bundle().veryNiceTitle() ) );
+            m_pPlaylistWindow->setCaption( i18n("Amarok - %1").arg( EngineController::instance()->bundle().veryNiceTitle() ) );
         else
-            m_pPlaylistWindow->setCaption( "amaroK" );
+            m_pPlaylistWindow->setCaption( "Amarok" );
 
 
         //m_pPlaylistWindow->show(); //must be shown //we do below now
@@ -915,7 +915,7 @@ void App::engineStateChanged( Engine::State state, Engine::State oldState )
     case Engine::Empty:
         if ( AmarokConfig::showPlayerWindow() )
             m_pPlaylistWindow->setCaption( kapp->makeStdCaption( i18n("Playlist") ) );
-        else m_pPlaylistWindow->setCaption( "amaroK" );
+        else m_pPlaylistWindow->setCaption( "Amarok" );
         TrackToolTip::instance()->clear();
         amaroK::OSD::instance()->setImage( KIconLoader().iconPath( "amarok", -KIcon::SizeHuge ) );
         break;
@@ -924,7 +924,7 @@ void App::engineStateChanged( Engine::State state, Engine::State oldState )
         if ( oldState == Engine::Paused )
             amaroK::OSD::instance()->OSDWidget::show( i18n( "state, as in playing", "Play" ) );
         if ( !bundle.prettyTitle().isEmpty() )
-            m_pPlaylistWindow->setCaption( i18n("amaroK - %1").arg( bundle.veryNiceTitle() ) );
+            m_pPlaylistWindow->setCaption( i18n("Amarok - %1").arg( bundle.veryNiceTitle() ) );
         break;
 
     case Engine::Paused:
@@ -934,7 +934,7 @@ void App::engineStateChanged( Engine::State state, Engine::State oldState )
     case Engine::Idle:
         if ( AmarokConfig::showPlayerWindow() )
             m_pPlaylistWindow->setCaption( kapp->makeStdCaption( i18n("Playlist") ) );
-        else m_pPlaylistWindow->setCaption( "amaroK" );
+        else m_pPlaylistWindow->setCaption( "Amarok" );
         break;
 
     default:
@@ -946,7 +946,7 @@ void App::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
     amaroK::OSD::instance()->show( bundle );
     if ( !bundle.prettyTitle().isEmpty() )
-        m_pPlaylistWindow->setCaption( i18n("amaroK - %1").arg( bundle.veryNiceTitle() ) );
+        m_pPlaylistWindow->setCaption( i18n("Amarok - %1").arg( bundle.veryNiceTitle() ) );
 
     TrackToolTip::instance()->setTrack( bundle );
 }
