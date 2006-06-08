@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2003-2005 by The amaroK Developers                      *
+ *   Copyright (C) 2003-2005 by The Amarok Developers                      *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -34,10 +34,10 @@ class KProcIO;
  * @author Mark Kretschmann <markey@web.de>
  *
  * The collection scanner itself is run in an external process, unlike before, where it
- * used to be thread. The advantage is that the scanner cannot crash the amaroK main
+ * used to be thread. The advantage is that the scanner cannot crash the Amarok main
  * application any more. If it crashes we can simply restart it.
  *
- * amaroK communicates with the scanner via the ScanController class, which processes
+ * Amarok communicates with the scanner via the ScanController class, which processes
  * XML entities written to stdout by the scanner process. For XML parsing an event
  * driven SAX2 parser is used, which can process the entities as they arrive, without
  * the need for a DOM document structure.
