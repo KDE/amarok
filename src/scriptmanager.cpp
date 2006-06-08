@@ -643,7 +643,12 @@ ScriptManager::slotAboutScript()
 void
 ScriptManager::slotShowContextMenu( QListViewItem* item, const QPoint& pos )
 {
-    if( !item ) return;
+    const bool isCategory = item == m_generalCategory ||
+                            item == m_lyricsCategory ||
+                            item == m_scoreCategory ||
+                            item == m_transcodeCategory;
+
+    if( !item || isCategory ) return;
 
     // Look up script entry in our map
     ScriptMap::Iterator it;
