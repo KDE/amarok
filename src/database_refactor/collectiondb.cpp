@@ -80,7 +80,7 @@ CollectionDB::CollectionDB()
     m_cacheDir.cd( "albumcovers/cache" );
 
     // Load DBEngine plugin
-    QString query = "[X-KDE-amaroK-plugintype] == 'dbengine' and [X-KDE-amaroK-name] != '%1'";
+    QString query = "[X-KDE-Amarok-plugintype] == 'dbengine' and [X-KDE-Amarok-name] != '%1'";
     KTrader::OfferList offers = PluginManager::query( query.arg( "sqlite-dbengine" ) );
     m_dbEngine = (DBEngine*) PluginManager::createFromService( offers.first() );
 

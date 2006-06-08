@@ -282,11 +282,11 @@ MediaBrowser::MediaBrowser( const char *name )
     m_pluginName[ i18n( "Do not handle" ) ] = "ignore";
     m_pluginAmarokName["ignore"] = i18n( "Do not handle" );
     // query available device plugins
-    m_plugins = PluginManager::query( "[X-KDE-amaroK-plugintype] == 'mediadevice'" );
+    m_plugins = PluginManager::query( "[X-KDE-Amarok-plugintype] == 'mediadevice'" );
     for( KTrader::OfferList::ConstIterator it = m_plugins.begin(); it != m_plugins.end(); ++it ) {
         // Save name properties in QMap for lookup
-        m_pluginName[(*it)->name()] = (*it)->property( "X-KDE-amaroK-name" ).toString();
-        m_pluginAmarokName[(*it)->property( "X-KDE-amaroK-name" ).toString()] = (*it)->name();
+        m_pluginName[(*it)->name()] = (*it)->property( "X-KDE-Amarok-name" ).toString();
+        m_pluginAmarokName[(*it)->property( "X-KDE-Amarok-name" ).toString()] = (*it)->name();
     }
 
     m_views = new QVBox( this );
@@ -334,7 +334,7 @@ MediaBrowser::MediaBrowser( const char *name )
 
     if ( newflag )
         amaroK::StatusBar::instance()->longMessageThreadSafe(
-                i18n("amaroK has detected new portable media devices.\n"
+                i18n("Amarok has detected new portable media devices.\n"
                     "Go to the \"Media Devices\" pane of the configuration\n"
                     "dialog to choose a plugin for these devices.") );
 
@@ -1550,7 +1550,7 @@ MediaBrowser::loadDevicePlugin( const QString &deviceType )
     if( deviceType == "ignore" )
         return 0;
 
-    QString query = "[X-KDE-amaroK-plugintype] == 'mediadevice' and [X-KDE-amaroK-name] == '%1'";
+    QString query = "[X-KDE-Amarok-plugintype] == 'mediadevice' and [X-KDE-Amarok-name] == '%1'";
     amaroK::Plugin *plugin = PluginManager::createFromQuery( query.arg( deviceType ) );
 
     if( plugin )
@@ -2376,7 +2376,7 @@ MediaDevice::syncStatsFromDevice( MediaItem *root )
                         Scrobbler::instance()->m_submitter->submitItem( sit );
                     }
 
-                    // increase amaroK playcount
+                    // increase Amarok playcount
                     QString url = CollectionDB::instance()->getURL( *bundle );
                     if( url != QString::null )
                     {
@@ -2388,7 +2388,7 @@ MediaDevice::syncStatsFromDevice( MediaItem *root )
 
                 if( it->ratingChanged() )
                 {
-                    // copy rating from media device to amaroK
+                    // copy rating from media device to Amarok
                     QString url = CollectionDB::instance()->getURL( *bundle );
                     debug() << "rating changed " << url << ": " << it->rating()/10 << endl;
                     if( url != QString::null )
@@ -2428,7 +2428,7 @@ MediaDevice::syncStatsToDevice( MediaItem *root )
 
                 if( url != QString::null )
                 {
-                    // copy amaroK rating to device
+                    // copy Amarok rating to device
                     int rating = CollectionDB::instance()->getSongRating( url )*10;
                     it->setRating( rating );
                 }
@@ -2830,7 +2830,7 @@ MediaQueue::save( const QString &path )
 
     QDomDocument newdoc;
     QDomElement transferlist = newdoc.createElement( "playlist" );
-    transferlist.setAttribute( "product", "amaroK" );
+    transferlist.setAttribute( "product", "Amarok" );
     transferlist.setAttribute( "version", APP_VERSION );
     newdoc.appendChild( transferlist );
 
@@ -2943,7 +2943,7 @@ MediaQueue::load( const QString& filename )
     if( !d.setContent( stream.read(), &er, &l, &c ) ) { // return error values
         amaroK::StatusBar::instance()->longMessageThreadSafe( i18n(
                 //TODO add a link to the path to the playlist
-                "The XML in the transferlist was invalid. Please report this as a bug to the amaroK "
+                "The XML in the transferlist was invalid. Please report this as a bug to the Amarok "
                 "developers. Thank you." ), KDE::StatusBar::Error );
         error() << "[TRANSFERLISTLOADER]: Error loading xml file: " << filename << "(" << er << ")"
                 << " at line " << l << ", column " << c << endl;

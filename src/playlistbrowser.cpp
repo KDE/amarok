@@ -382,7 +382,7 @@ void PlaylistBrowser::saveStreams()
 
     QDomDocument doc;
     QDomElement streamB = m_streamsCategory->xml();
-    streamB.setAttribute( "product", "amaroK" );
+    streamB.setAttribute( "product", "Amarok" );
     streamB.setAttribute( "version", APP_VERSION );
     streamB.setAttribute( "formatversion", "1.1" );
     QDomNode streamsNode = doc.importNode( streamB, true );
@@ -653,7 +653,7 @@ void PlaylistBrowser::saveSmartPlaylists( PlaylistCategory *smartCategory )
 
     QDomDocument doc;
     QDomElement smartB = smartCategory->xml();
-    smartB.setAttribute( "product", "amaroK" );
+    smartB.setAttribute( "product", "Amarok" );
     smartB.setAttribute( "version", APP_VERSION );
     smartB.setAttribute( "formatversion", "1.5" );
     QDomNode smartplaylistsNode = doc.importNode( smartB, true );
@@ -726,7 +726,7 @@ void PlaylistBrowser::saveDynamics()
 
     QDomDocument doc;
     QDomElement dynamicB = m_dynamicCategory->xml();
-    dynamicB.setAttribute( "product", "amaroK" );
+    dynamicB.setAttribute( "product", "Amarok" );
     dynamicB.setAttribute( "version", APP_VERSION );
     dynamicB.setAttribute( "formatversion", "1.1" );
     QDomNode dynamicsNode = doc.importNode( dynamicB, true );
@@ -1530,7 +1530,7 @@ void PlaylistBrowser::savePlaylists()
 
     QDomDocument doc;
     QDomElement playlistsB = m_playlistCategory->xml();
-    playlistsB.setAttribute( "product", "amaroK" );
+    playlistsB.setAttribute( "product", "Amarok" );
     playlistsB.setAttribute( "version", APP_VERSION );
     playlistsB.setAttribute( "formatversion", "1.1" );
     QDomNode playlistsNode = doc.importNode( playlistsB, true );
@@ -1669,7 +1669,7 @@ void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
     if( isPlaylist( item ) ) {
         // open the playlist
         #define item static_cast<PlaylistEntry *>(item)
-        //don't replace, it generally makes people think amaroK behaves like JuK
+        //don't replace, it generally makes people think Amarok behaves like JuK
         //and we don't so they then get really confused about things
         Playlist::instance()->insertMedia( item->url(), Playlist::Replace );
         #undef  item
@@ -2075,7 +2075,7 @@ void PlaylistBrowser::saveXSPF( PlaylistEntry *item, bool append )
 {
     XSPFPlaylist* playlist = new XSPFPlaylist();
 
-    playlist->setCreator( "amaroK" );
+    playlist->setCreator( "Amarok" );
     playlist->setTitle( item->text(0) );
 
     XSPFtrackList list;

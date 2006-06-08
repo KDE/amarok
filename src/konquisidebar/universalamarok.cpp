@@ -168,7 +168,7 @@ extern "C"
         map->insert ("Type", "Link");
         map->insert ("URL", "");
         map->insert ("Icon", "amarok");
-        map->insert ("Name", i18n ("amaroK"));
+        map->insert ("Name", i18n ("Amarok"));
         map->insert ("Open", "true");
         map->insert ("X-KDE-KonqSidebarModule","konqsidebar_universalamarok");
         fn->setLatin1 ("amarok.desktop");
@@ -265,14 +265,14 @@ void UniversalAmarok::showIntroduction()
             "<div id='introduction_box' class='box'>"
                 "<div id='introduction_box-header' class='box-header'>"
                     "<span id='introduction_box-header-title' class='box-header-title'>"
-                    + i18n( "Hello amaroK user!" ) +
+                    + i18n( "Hello Amarok user!" ) +
                     "</span>"
                 "</div>"
                 "<div id='introduction_box-body' class='box-body'>"
                     "<p>" +
                     i18n( "This is the Context Browser: "
                           "it shows you contextual information about the currently playing track. "
-                          "In order to use this feature of amaroK, you need to build a Collection."
+                          "In order to use this feature of Amarok, you need to build a Collection."
                         ) +
                     "</p>"
                     "<a href='show:collectionSetup' class='button'>" + i18n( "Build Collection..." ) + "</a>"

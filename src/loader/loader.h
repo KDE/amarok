@@ -1,5 +1,5 @@
 /***************************************************************************
-                          loader.h  -  loader application for amaroK
+                          loader.h  -  loader application for Amarok
                              -------------------
     begin                : 2004/02/19
     copyright            : (C) 2004 Mark Kretschmann <markey@web.de>

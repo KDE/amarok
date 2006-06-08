@@ -86,9 +86,9 @@ class PlayerWidget : public QWidget, public EngineObserver
         PlayerWidget( QWidget* = 0, const char* = 0, bool enablePlaylist = false );
         ~PlayerWidget();
 
-        /** Set modified amaroK palette */
+        /** Set modified Amarok palette */
         void setModifiedPalette();
-        /** Call after some amaroK setting have changed */
+        /** Call after some Amarok setting have changed */
         void applySettings();
 
         bool isMinimalView() { return m_minimalView; }
@@ -96,7 +96,7 @@ class PlayerWidget : public QWidget, public EngineObserver
 
         virtual void startDrag();
 
-        /** Determines amaroK colours for current KDE scheme */
+        /** Determines Amarok colours for current KDE scheme */
         static void determineAmarokColors();
 
     public slots:

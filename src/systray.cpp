@@ -4,7 +4,7 @@
 // Contributors: Stanislav Karchebny <berkus@users.sf.net>, (C) 2003
 //               berkus, mxcl, eros
 //
-// Copyright: like rest of amaroK
+// Copyright: like rest of Amarok
 //
 
 #include "amarok.h"

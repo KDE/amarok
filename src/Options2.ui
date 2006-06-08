@@ -46,10 +46,10 @@
                         <string>Use custom icon &amp;theme (requires restart)</string>
                     </property>
                     <property name="toolTip" stdset="0">
-                        <string>Check to enable amaroK's custom icon theme.&lt;br&gt;</string>
+                        <string>Check to enable Amarok's custom icon theme.&lt;br&gt;</string>
                     </property>
                     <property name="whatsThis" stdset="0">
-                        <string>Check to enable amaroK's custom icon theme.</string>
+                        <string>Check to enable Amarok's custom icon theme.</string>
                     </property>
                 </widget>
             </vbox>
@@ -353,10 +353,10 @@
                                         <bool>true</bool>
                                     </property>
                                     <property name="toolTip" stdset="0">
-                                        <string>If selected, amaroK uses the user-defined colors in the playlist.</string>
+                                        <string>If selected, Amarok uses the user-defined colors in the playlist.</string>
                                     </property>
                                     <property name="whatsThis" stdset="0">
-                                        <string>If selected, amaroK uses the user-defined colors in the playlist.</string>
+                                        <string>If selected, Amarok uses the user-defined colors in the playlist.</string>
                                     </property>
                                 </widget>
                                 <widget class="QGroupBox">
@@ -538,10 +538,10 @@
                                 <number>0</number>
                             </property>
                             <property name="toolTip" stdset="0">
-                                <string>If selected, amaroK uses the KDE standard colors in the playlist.</string>
+                                <string>If selected, Amarok uses the KDE standard colors in the playlist.</string>
                             </property>
                             <property name="whatsThis" stdset="0">
-                                <string>If selected, amaroK uses the KDE standard colors in the playlist.</string>
+                                <string>If selected, Amarok uses the KDE standard colors in the playlist.</string>
                             </property>
                         </widget>
                         <widget class="QRadioButton" row="1" column="0">
@@ -549,16 +549,16 @@
                                 <cstring>kcfg_SchemeAmarok</cstring>
                             </property>
                             <property name="text">
-                                <string>The classic &amp;amaroK, "funky-monkey", theme</string>
+                                <string>The classic &amp;Amarok, "funky-monkey", theme</string>
                             </property>
                             <property name="buttonGroupId">
                                 <number>1</number>
                             </property>
                             <property name="toolTip" stdset="0">
-                                <string>If selected, amaroK uses the amaroK standard colors in the playlist.</string>
+                                <string>If selected, Amarok uses the Amarok standard colors in the playlist.</string>
                             </property>
                             <property name="whatsThis" stdset="0">
-                                <string>If selected, amaroK uses the amaroK standard colors in the playlist.</string>
+                                <string>If selected, Amarok uses the Amarok standard colors in the playlist.</string>
                             </property>
                         </widget>
                     </grid>

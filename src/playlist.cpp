@@ -2200,7 +2200,7 @@ Playlist::clear() //SLOT
     ThreadWeaver::instance()->abortAllJobsNamed( "TagWriter" );
 
     // something to bear in mind, if there is any event in the loop
-    // that depends on a PlaylistItem, we are about to crash amaroK
+    // that depends on a PlaylistItem, we are about to crash Amarok
     // never unlock() the Playlist until it is safe!
     safeClear();
     m_total = 0;

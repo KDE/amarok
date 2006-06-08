@@ -30,9 +30,9 @@ namespace amaroK
 
     namespace ColorScheme
     {
-        ///eg. base of the amaroK Player-window
+        ///eg. base of the Amarok Player-window
         extern QColor Base; //amaroK::blue
-        ///eg. text in the amaroK Player-window
+        ///eg. text in the Amarok Player-window
         extern QColor Text; //Qt::white
         ///eg. background colour for amaroK::PrettySliders
         extern QColor Background; //brighter blue
@@ -55,7 +55,7 @@ namespace amaroK
     KConfig *config( const QString &group = "General" ); //defined in app.cpp
 
     /**
-     * @return the KActionCollection used by amaroK
+     * @return the KActionCollection used by Amarok
      * The KActionCollection is owned by the PlaylistWindow, so you must ensure
      * you don't try to use this before then, but we've taken steps to prevent
      * this eventuality - you should be safe.
@@ -63,8 +63,8 @@ namespace amaroK
     KActionCollection *actionCollection(); //defined in app.cpp
 
     /**
-     * An event handler that handles events in a generic amaroK fashion. Mainly
-     * useful for drops, ie offers the amaroK popup for adding tracks to the
+     * An event handler that handles events in a generic Amarok fashion. Mainly
+     * useful for drops, ie offers the Amarok popup for adding tracks to the
      * playlist. You shouldn't pass every event here, ie closeEvents will not be
      * handled as expected! Check the source in app.cpp if you want to see what
      * it can do.
@@ -75,25 +75,25 @@ namespace amaroK
     bool genericEventHandler( QWidget *recipient, QEvent *e ); //defined in app.cpp
 
     /**
-     * Invoke the external web browser set in amaroK's configuration.
+     * Invoke the external web browser set in Amarok's configuration.
      * @param url The URL to be opened in the browser.
      * @return True if the browser could be started.
      */
     bool invokeBrowser( const QString& url ); //defined in app.cpp
 
     /**
-     * Obtain an amaroK PNG image as a QPixmap
+     * Obtain an Amarok PNG image as a QPixmap
      */
     QPixmap getPNG( const QString& /*fileName*/ ); //defined in app.cpp
 
     /**
-     * Obtain an amaroK JPG image as a QPixmap
+     * Obtain an Amarok JPG image as a QPixmap
      */
     QPixmap getJPG( const QString& /*fileName*/ ); //defined in app.cpp
 
     /**
      * The mainWindow is the playlistWindow or the playerWindow depending on
-     * the configuration of amaroK
+     * the configuration of Amarok
      */
     QWidget *mainWindow(); //defined in app.cpp
 
@@ -184,7 +184,7 @@ namespace amaroK
     const DynamicMode *dynamicMode(); //defined in playlist.cpp
 
     /**
-     * Maps the icon name to a system icon or custom amaroK icon, depending on the settings.
+     * Maps the icon name to a system icon or custom Amarok icon, depending on the settings.
      */
     LIBAMAROK_EXPORT QString icon( const QString& name ); //defined in iconloader.cpp
 

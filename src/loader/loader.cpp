@@ -1,5 +1,5 @@
 /***************************************************************************
-                        loader.cpp  -  loader application for amaroK
+                        loader.cpp  -  loader application for Amarok
                            -------------------
   begin                : 2004/02/19
   copyright            : (C) 2004 by Mark Kretschmann
@@ -45,7 +45,7 @@ main( int argc, char *argv[] )
 
     if( !args.isEmpty() )
     {
-        // These arguments cannot be passed to amaroK, or amaroK will exit
+        // These arguments cannot be passed to Amarok, or Amarok will exit
         // after processing them. TODO handle -v short hand for version
         QStringList longs; longs
                 << "-help" << "-help-qt" << "-help-kde" << "-help-all" << "-author" << "-version" << "-license";
@@ -151,15 +151,15 @@ Loader::Loader( QStringList args )
     m_proc = new QProcess( args, this );
     m_proc->setCommunication( QProcess::Stdout );
 
-    std::cout << "amaroK: [Loader] Starting amarokapp..\n";
-    std::cout << "amaroK: [Loader] Don't run gdb, valgrind, etc. against this binary! Use amarokapp.\n";
+    std::cout << "Amarok: [Loader] Starting amarokapp..\n";
+    std::cout << "Amarok: [Loader] Don't run gdb, valgrind, etc. against this binary! Use amarokapp.\n";
 
     if( !m_proc->start() )
     {
         delete m_splash; // hide the splash
 
-        QMessageBox::critical( 0, "amaroK",
-                "amaroK could not be started!\n" //FIXME this needs to be translated
+        QMessageBox::critical( 0, "Amarok",
+                "Amarok could not be started!\n" //FIXME this needs to be translated
                     "This may be because the amarokapp binary is not in your PATH.\n"
                     "Try locating and running amarokapp from a terminal.",
                 QMessageBox::Ok, 0 );
@@ -185,7 +185,7 @@ Loader::timerEvent( QTimerEvent* )
     {
          if( ++m_counter == (30000 / INTERVAL) )
              // 30 seconds have passed
-             std::cerr << "amaroK: [Loader] amaroK is taking a long time to load! Perhaps something has gone wrong?\n";
+             std::cerr << "Amarok: [Loader] Amarok is taking a long time to load! Perhaps something has gone wrong?\n";
 
         while( m_proc->canReadLineStdout() )
             if( m_proc->readLineStdout() == "STARTUP" )
@@ -193,7 +193,7 @@ Loader::timerEvent( QTimerEvent* )
     }
     else if( !m_proc->normalExit() ) {
         // no reason to show messagebox, as amarokapp should start drkonqi
-        std::cerr << "amaroK: [Loader] amarokapp probably crashed!\n";
+        std::cerr << "Amarok: [Loader] amarokapp probably crashed!\n";
 
         QApplication::exit( 3 );
     }

@@ -144,7 +144,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         m_dir = new MyDirOperator( *location, container, m_medium );
         m_dir->setEnableDirHighlighting( true );
         m_dir->setMode( KFile::Mode((int)KFile::Files | (int)KFile::Directory) ); //allow selection of multiple files + dirs
-        m_dir->setOnlyDoubleClickSelectsFiles( true ); //amaroK type settings
+        m_dir->setOnlyDoubleClickSelectsFiles( true ); //Amarok type settings
         m_dir->readConfig( config );
         m_dir->setView( KFile::Default ); //will set userconfigured view, will load URL
         m_dir->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Expanding );

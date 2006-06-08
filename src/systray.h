@@ -3,7 +3,7 @@
 //
 // Author: Stanislav Karchebny <berkus@users.sf.net>, (C) 2003
 //
-// Copyright: like rest of amaroK
+// Copyright: like rest of Amarok
 //
 
 #ifndef AMAROKSYSTRAY_H

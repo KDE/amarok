@@ -629,7 +629,7 @@ ScriptManager::slotAboutScript()
     about->setProduct( "", "", "", "" );
     // Get rid of the confusing KDE version text
     QLabel* product = static_cast<QLabel*>( about->mainWidget()->child( "version" ) );
-    if( product ) product->setText( i18n( "%1 amaroK Script" ).arg( name ) );
+    if( product ) product->setText( i18n( "%1 Amarok Script" ).arg( name ) );
 
     about->addTextPage( i18n( "About" ), readme.readAll(), true );
     if( license.open( IO_ReadOnly ) )

@@ -453,7 +453,7 @@ UrlLoader::loadXml( const KURL &url )
     {
         amaroK::StatusBar::instance()->longMessageThreadSafe( i18n(
                 //TODO add a link to the path to the playlist
-                "The XML in the playlist was invalid. Please report this as a bug to the amaroK "
+                "The XML in the playlist was invalid. Please report this as a bug to the Amarok "
                 "developers. Thank you." ), KDE::StatusBar::Error );
         ::error() << "[PLAYLISTLOADER]: Error in " << m_currentURL.prettyURL() << ": " << loader.lastError() << endl;
     }
@@ -491,7 +491,7 @@ void UrlLoader::slotPlaylistInfo( const QString &, const QString &version, const
     if( version != amaroK::xmlVersion() )
     {
         amaroK::StatusBar::instance()->longMessageThreadSafe( i18n(
-            "Your last playlist was saved with a different version of amaroK than this one, "
+            "Your last playlist was saved with a different version of Amarok than this one, "
             "and this version can no longer read it.\n"
             "You will have to create a new one.\n"
             "Sorry :(" ) );
@@ -509,7 +509,7 @@ PlaylistFile::PlaylistFile( const QString &path )
 {
     QFile file( path );
     if( !file.open( IO_ReadOnly ) ) {
-        m_error = i18n( "amaroK could not open the file." );
+        m_error = i18n( "Amarok could not open the file." );
         return;
     }
 
@@ -519,14 +519,14 @@ PlaylistFile::PlaylistFile( const QString &path )
     case M3U: loadM3u( stream ); break;
     case PLS: loadPls( stream ); break;
     case XML:
-        m_error = i18n( "This component of amaroK cannot translate XML playlists." );
+        m_error = i18n( "This component of Amarok cannot translate XML playlists." );
         return;
     case RAM: loadRealAudioRam( stream ); break;
     case ASX: loadASX( stream ); break;
     case SMIL: loadSMIL( stream ); break;
     case XSPF: loadXSPF( stream ); break;
     default:
-        m_error = i18n( "amaroK does not support this playlist format." );
+        m_error = i18n( "Amarok does not support this playlist format." );
         return;
     }
 

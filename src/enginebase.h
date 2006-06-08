@@ -24,7 +24,7 @@
  * This is an abstract base class that you need to derive when making your own backends.
  * It is typdefed to EngineBase for your conveniece.
  *
- * The only key thing to get right is what to return from state(), as some amaroK
+ * The only key thing to get right is what to return from state(), as some Amarok
  * behaviour is dependent on you returning the right state at the right time.
  *
  *   Empty   = No URL loaded and ready to play
@@ -32,21 +32,21 @@
  *   Playing = Playing a stream
  *   Paused  = Stream playback is paused
  *
- * Not returning idle when you have reached End-Of-Stream but amaroK has not told you
+ * Not returning idle when you have reached End-Of-Stream but Amarok has not told you
  * to stop would be bad because some components behave differently when the engine is
  * Empty or not. You are Idle because you still have a URL assigned.
  *
  * load( KURL ) is a key function because after this point your engine is loaded, and
- * amaroK will expect you to be able to play the URL until stop() or another load() is
+ * Amarok will expect you to be able to play the URL until stop() or another load() is
  * called.
  *
- * You must handle your own media, do not rely on amaroK to call stop() before play() etc.
+ * You must handle your own media, do not rely on Amarok to call stop() before play() etc.
  *
  * At this time, emitting stateChanged( Engine::Idle ) is not necessary, otherwise you should
- * let amaroK know of state changes so it updates the UI correctly.
+ * let Amarok know of state changes so it updates the UI correctly.
  *
  * Basically, reimplement everything virtual and ensure you emit stateChanged() correctly,
- * try not to block in any function that is called by amaroK, try to keep the user informed
+ * try not to block in any function that is called by Amarok, try to keep the user informed
  * with emit statusText()
  *
  * Only canDecode() needs to be thread-safe. Everything else is only called from the GUI thread.
@@ -82,7 +82,7 @@ namespace Engine
         /** Signals a change in the engine's state. */
         void stateChanged( Engine::State );
 
-        /** Shows amaroK config dialog at specified page */
+        /** Shows Amarok config dialog at specified page */
         void showConfigDialog( const QCString& );
 
     public:
@@ -116,7 +116,7 @@ namespace Engine
         virtual bool load( const KURL &url, bool stream = false );
 
         /**
-         * Load new track and start Playback. Convenience function for amaroK to use.
+         * Load new track and start Playback. Convenience function for Amarok to use.
          * @param url URL to be played.
          * @param stream True if URL is a stream.
          * @return True for success.
@@ -216,7 +216,7 @@ namespace Engine
     protected:
         Base();
 
-        /** Shows the amaroK configuration dialog at the engine page */
+        /** Shows the Amarok configuration dialog at the engine page */
         void showEngineConfigDialog() { emit showConfigDialog( "Engine" ); }
 
         virtual void setVolumeSW( uint percent ) = 0;

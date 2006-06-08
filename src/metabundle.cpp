@@ -1272,7 +1272,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
     bool newID = false;
     m_uniqueId = QString::null;
 
-    QString ourId = QString( "amaroK - rediscover your music at http://amarok.kde.org" ).upper();
+    QString ourId = QString( "Amarok - rediscover your music at http://amarok.kde.org" ).upper();
 
     if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
     {

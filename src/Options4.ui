@@ -45,7 +45,7 @@
             </property>
             <property name="whatsThis" stdset="0">
                 <string>&lt;b&gt;Transition Behavior&lt;/b&gt;
-&lt;p&gt;During playback, when amaroK transitions between tracks, it can either proceed to the next track instantly (with configurable gap), or crossfade (with configurable fade period).&lt;/p&gt;</string>
+&lt;p&gt;During playback, when Amarok transitions between tracks, it can either proceed to the next track instantly (with configurable gap), or crossfade (with configurable fade period).&lt;/p&gt;</string>
             </property>
             <grid>
                 <property name="name">
@@ -247,7 +247,7 @@
                 <string>&amp;Resume playback on start</string>
             </property>
             <property name="toolTip" stdset="0">
-                <string>If checked, amaroK will&lt;br&gt;resume playback from where you left it the previous session -- just like a tape-player.</string>
+                <string>If checked, Amarok will&lt;br&gt;resume playback from where you left it the previous session -- just like a tape-player.</string>
             </property>
         </widget>
         <spacer>

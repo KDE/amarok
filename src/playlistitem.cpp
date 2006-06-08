@@ -983,7 +983,7 @@ int PlaylistItem::totalIncrementAmount() const
             else if( listView()->m_oldestTime_t )
                 return ( listView()->m_startupTime_t - listView()->m_oldestTime_t ) * 2;
             else
-                return listView()->m_startupTime_t - 1058652000; //july 20, 2003, when amaroK was first released.
+                return listView()->m_startupTime_t - 1058652000; //july 20, 2003, when Amarok was first released.
         }
         default: return 0;
     }

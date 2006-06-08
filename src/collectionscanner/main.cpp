@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2003-2006 by The amaroK Developers                      *
+ *   Copyright (C) 2003-2006 by The Amarok Developers                      *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -30,9 +30,9 @@
 int main( int argc, char *argv[] )
 {
     const KAboutData about( "amarokcollectionscanner",
-    I18N_NOOP( "amaroK Collection Scanner\n\nNote: For debugging purposes this application can be invoked from the command line, but it will not actually build a collection this way." ), "0.1",
-    I18N_NOOP( "Collection Scanner for amaroK" ), KAboutData::License_GPL,
-    I18N_NOOP( "(C) 2003-2006, The amaroK Developers" ),
+    I18N_NOOP( "Amarok Collection Scanner\n\nNote: For debugging purposes this application can be invoked from the command line, but it will not actually build a collection this way." ), "0.1",
+    I18N_NOOP( "Collection Scanner for Amarok" ), KAboutData::License_GPL,
+    I18N_NOOP( "(C) 2003-2006, The Amarok Developers" ),
     I18N_NOOP( "IRC:\nserver: irc.freenode.net / channels: #amarok #amarok.de #amarok.es\n\nFeedback:\namarok@kde.org" ),
     I18N_NOOP( "http://amarok.kde.org" ) );
 

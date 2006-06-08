@@ -321,7 +321,7 @@ void PlayerWidget::engineStateChanged( Engine::State state, Engine::State /*oldS
             m_pTimeSign->hide();
             m_rateString = QString::null;
             m_pSlider->setEnabled( false );
-            setScroll( i18n( "Welcome to amaroK" ) );
+            setScroll( i18n( "Welcome to Amarok" ) );
             update();
             break;
 
@@ -631,7 +631,7 @@ bool PlayerWidget::event( QEvent *e )
             {
                 //if we have been iconified, iconify the Playlist Window too
                 //if we have been shaded, hide the PlaylistWindow
-                //if the user is on another desktop to amaroK, do nothing
+                //if the user is on another desktop to Amarok, do nothing
 
                 const KWin::WindowInfo info = KWin::windowInfo( winId() );
 
@@ -643,7 +643,7 @@ bool PlayerWidget::event( QEvent *e )
 
             }
             else
-                //we caused amaroK to hide, so we should hide the Playlist Window
+                //we caused Amarok to hide, so we should hide the Playlist Window
                 //NOTE we "override" closeEvents and thus they count as non-spontaneous
                 //hideEvents; which frankly is a huge relief!
                 parentWidget()->hide();

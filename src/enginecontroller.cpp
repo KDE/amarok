@@ -96,9 +96,9 @@ EngineController::loadEngine() //static
         PluginManager::unload( oldEngine );
 
         // the engine is not required to do this when we unload it but
-        // we need to do it to ensure amaroK looks correct.
+        // we need to do it to ensure Amarok looks correct.
         // We don't do this for the void-engine because that
-        // means amaroK sets all components to empty on startup, which is
+        // means Amarok sets all components to empty on startup, which is
         // their responsibility.
         slotStateChanged( Engine::Empty );
 
@@ -108,7 +108,7 @@ EngineController::loadEngine() //static
 
     m_engine = loadEngine( AmarokConfig::soundSystem() );
 
-    const QString engineName = PluginManager::getService( m_engine )->property( "X-KDE-amaroK-name" ).toString();
+    const QString engineName = PluginManager::getService( m_engine )->property( "X-KDE-Amarok-name" ).toString();
 
     if( !AmarokConfig::soundSystem().isEmpty() && engineName != AmarokConfig::soundSystem() ) {
         //AmarokConfig::soundSystem() is empty on the first-ever-run
@@ -137,11 +137,11 @@ EngineController::loadEngine( const QString &engineName )
 
     DEBUG_BLOCK
 
-    QString query = "[X-KDE-amaroK-plugintype] == 'engine' and [X-KDE-amaroK-name] != '%1'";
+    QString query = "[X-KDE-Amarok-plugintype] == 'engine' and [X-KDE-Amarok-name] != '%1'";
     KTrader::OfferList offers = PluginManager::query( query.arg( engineName ) );
 
     // sort by rank, QValueList::operator[] is O(n), so this is quite inefficient
-    #define rank( x ) (x)->property( "X-KDE-amaroK-rank" ).toInt()
+    #define rank( x ) (x)->property( "X-KDE-Amarok-rank" ).toInt()
     for( int n = offers.count()-1, i = 0; i < n; i++ )
         for( int j = n; j > i; j-- )
             if( rank( offers[j] ) > rank( offers[j-1] ) )
@@ -149,7 +149,7 @@ EngineController::loadEngine( const QString &engineName )
     #undef rank
 
     // this is the actual engine we want
-    query = "[X-KDE-amaroK-plugintype] == 'engine' and [X-KDE-amaroK-name] == '%1'";
+    query = "[X-KDE-Amarok-plugintype] == 'engine' and [X-KDE-Amarok-name] == '%1'";
     offers = PluginManager::query( query.arg( engineName ) ) + offers;
 
     foreachType( KTrader::OfferList, offers ) {
@@ -185,10 +185,10 @@ EngineController::loadEngine( const QString &engineName )
     KRun::runCommand( "kbuildsycoca" );
 
     KMessageBox::error( 0, i18n(
-            "<p>amaroK could not find any sound-engine plugins. "
-            "amaroK is now updating the KDE configuration database. Please wait a couple of minutes, then restart amaroK.</p>"
+            "<p>Amarok could not find any sound-engine plugins. "
+            "Amarok is now updating the KDE configuration database. Please wait a couple of minutes, then restart Amarok.</p>"
             "<p>If this does not help, "
-            "it is likely that amaroK is installed under the wrong prefix, please fix your installation using:<pre>"
+            "it is likely that Amarok is installed under the wrong prefix, please fix your installation using:<pre>"
             "$ cd /path/to/amarok/source-code/<br>"
             "$ su -c \"make uninstall\"<br>"
             "$ ./configure --prefix=`kde-config --prefix` && su -c \"make install\"<br>"
@@ -221,7 +221,7 @@ bool EngineController::canDecode( const KURL &url ) //static
     // TODO actually, only accept unconditionally http stuff
     // TODO this actually makes things like "Blarrghgjhjh:!!!" automatically get inserted
     // into the playlist
-    // TODO remove for amaroK 1.3 and above silly checks, instead check for http type servers
+    // TODO remove for Amarok 1.3 and above silly checks, instead check for http type servers
     if ( !url.isLocalFile() ) return true;
 
     // If extension is already in the cache, return cache result
@@ -242,7 +242,7 @@ bool EngineController::canDecode( const KURL &url ) //static
            i18n( "<p>The %1 claims it <b>cannot</b> play MP3 files."
                  "<p>You may want to choose a different engine from the <i>Configure Dialog</i>, or examine "
                  "the installation of the multimedia-framework that the current engine uses. "
-                 "<p>You may find useful information in the <i>FAQ</i> section of the <i>amaroK HandBook</i>." )
+                 "<p>You may find useful information in the <i>FAQ</i> section of the <i>Amarok HandBook</i>." )
             .arg( AmarokConfig::soundSystem() ), KDE::StatusBar::Error );
 
     // Cache this result for the next lookup
@@ -254,8 +254,8 @@ bool EngineController::canDecode( const KURL &url ) //static
 
 bool EngineController::installDistroCodec( const QString& engine /*Filetype type*/)
 {
-    KService::Ptr service = KTrader::self()->query( "amaroK/CodecInstall"
-        , QString("[X-KDE-amaroK-codec] == 'mp3' and [X-KDE-amaroK-engine] == '%1'").arg(engine) ).first();
+    KService::Ptr service = KTrader::self()->query( "Amarok/CodecInstall"
+        , QString("[X-KDE-Amarok-codec] == 'mp3' and [X-KDE-Amarok-engine] == '%1'").arg(engine) ).first();
     if( service )
     {
         QString installScript = service->exec();
@@ -263,7 +263,7 @@ bool EngineController::installDistroCodec( const QString& engine /*Filetype type
         {
             KGuiItem installButton("Install MP3 Support");
             if(KMessageBox::questionYesNo(PlaylistWindow::self()
-            , i18n("amaroK currently cannot play MP3 files.")
+            , i18n("Amarok currently cannot play MP3 files.")
             , i18n( "No MP3 Support" )
             , installButton
             , KStdGuiItem::no()
@@ -343,7 +343,7 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
     m_lastMetadata.clear();
 
     //TODO bummer why'd I do it this way? it should _not_ be in play!
-    //let amaroK know that the previous track is no longer playing
+    //let Amarok know that the previous track is no longer playing
     if ( m_timer->isActive() )
         trackEnded( m_engine->position(), m_bundle.length() * 1000, "change" );
 
@@ -463,7 +463,7 @@ void EngineController::stop() //SLOT
     //Reset failure counter as after stop, everything else is unrelated
     m_playFailureCount = 0;
 
-    //let amaroK know that the previous track is no longer playing
+    //let Amarok know that the previous track is no longer playing
     trackEnded( m_engine->position(), m_bundle.length() * 1000, "stop" );
 
     //Remove requirement for track to be loaded for stop to be called (fixes gltiches

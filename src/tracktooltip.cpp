@@ -163,7 +163,7 @@ void TrackToolTip::setTrack( const MetaBundle &tags, bool force )
         }
 
         //NOTE it seems to be necessary to <center> each element indivdually
-        m_tooltip += "<center><b>amaroK</b></center><table cellpadding='2' cellspacing='2' align='center'><tr>";
+        m_tooltip += "<center><b>Amarok</b></center><table cellpadding='2' cellspacing='2' align='center'><tr>";
 
         m_tooltip += "%1"; //the cover gets substituted in, in tooltip()
         m_cover = CollectionDB::instance()->podcastImage( tags );

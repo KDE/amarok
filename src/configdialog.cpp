@@ -105,18 +105,18 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     QToolTip::add( aboutEngineButton, i18n("Click to get the plugin information.") );
 
     /// Populate the engine selection combo box
-    KTrader::OfferList offers = PluginManager::query( "[X-KDE-amaroK-plugintype] == 'engine'" );
+    KTrader::OfferList offers = PluginManager::query( "[X-KDE-Amarok-plugintype] == 'engine'" );
     KTrader::OfferList::ConstIterator end( offers.end() );
     for( KTrader::OfferList::ConstIterator it = offers.begin(); it != end; ++it ) {
         // Don't list the <no engine> (void engine) entry if it's not currenty active,
         // cause there's no point in choosing this engine (it's a dummy, after all).
-        if( (*it)->property( "X-KDE-amaroK-name" ).toString() == "void-engine"
+        if( (*it)->property( "X-KDE-Amarok-name" ).toString() == "void-engine"
             && AmarokConfig::soundSystem() != "void-engine" ) continue;
 
         m_soundSystem->insertItem( (*it)->name() );
         // Save name properties in QMap for lookup
-        m_pluginName[(*it)->name()] = (*it)->property( "X-KDE-amaroK-name" ).toString();
-        m_pluginAmarokName[(*it)->property( "X-KDE-amaroK-name" ).toString()] = (*it)->name();
+        m_pluginName[(*it)->name()] = (*it)->property( "X-KDE-Amarok-name" ).toString();
+        m_pluginAmarokName[(*it)->property( "X-KDE-Amarok-name" ).toString()] = (*it)->name();
     }
 
     // Collection
@@ -161,7 +161,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
 
     // add pages
     addPage( m_opt1, i18n( "General" ), "misc", i18n( "Configure General Options" ) );
-    addPage( m_opt2, i18n( "Appearance" ), "colors", i18n( "Configure amaroK's Appearance" ) );
+    addPage( m_opt2, i18n( "Appearance" ), "colors", i18n( "Configure Amarok's Appearance" ) );
     addPage( m_opt4, i18n( "Playback" ), "kmix", i18n( "Configure Playback" ) );
     addPage( opt5,   i18n( "OSD" ), "tv", i18n( "Configure On-Screen-Display" ) );
     addPage( opt6,   i18n( "Engine" ), "amarok", i18n( "Configure Engine" ) );
@@ -284,7 +284,7 @@ void AmarokConfigDialog::updateSettings()
 
 
 /**
- * Update the configuration-widgets in the dialog based on amaroK's current settings.
+ * Update the configuration-widgets in the dialog based on Amarok's current settings.
  * Example use: Initialisation of dialog.
  * Example use: User clicks Reset button in a configure dialog.
  * REIMPLEMENTED
@@ -297,7 +297,7 @@ void AmarokConfigDialog::updateWidgets()
 
 
 /**
- * Update the configuration-widgets in the dialog based on the default values for amaroK's settings.
+ * Update the configuration-widgets in the dialog based on the default values for Amarok's settings.
  * Example use: User clicks Defaults button in a configure dialog.
  * REIMPLEMENTED
  */
@@ -312,7 +312,7 @@ void AmarokConfigDialog::updateWidgetsDefault()
 //////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * @return true if any configuration items we are managing changed from amaroK's stored settings
+ * @return true if any configuration items we are managing changed from Amarok's stored settings
  * We manage the engine combo box and some of the OSD settings
  * REIMPLEMENTED
  */

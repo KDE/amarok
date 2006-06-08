@@ -251,7 +251,7 @@ public:
         const char *name() const { return m_name; }
 
         /**
-         * If this returns true then in the worst case the entire amaroK UI is
+         * If this returns true then in the worst case the entire Amarok UI is
          * frozen waiting for your Job to abort! You should check for this
          * often, but not so often that your code's readability suffers as a
          * result.

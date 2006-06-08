@@ -31,8 +31,8 @@
                     <cstring>text1</cstring>
                 </property>
                 <property name="text">
-                    <string>&lt;h1&gt;Welcome to amaroK!&lt;/h1&gt;
-&lt;p&gt;There are many media-players around these days, this is true. amaroK however provides an aural experience so pleasurable it always has you coming back for more. What is missing from most players is an interface that does not get in your way. amaroK tries to be a little different, and at the same time intuitive. It provides a simple drag-and-drop interface that makes playlist handling simple and fun. By using amaroK we truly hope you will:&lt;/p&gt;
+                    <string>&lt;h1&gt;Welcome to Amarok!&lt;/h1&gt;
+&lt;p&gt;There are many media-players around these days, this is true. Amarok however provides an aural experience so pleasurable it always has you coming back for more. What is missing from most players is an interface that does not get in your way. Amarok tries to be a little different, and at the same time intuitive. It provides a simple drag-and-drop interface that makes playlist handling simple and fun. By using Amarok we truly hope you will:&lt;/p&gt;
 &lt;p align="center"&gt;&lt;i&gt;&lt;b&gt;"Rediscover your music!"&lt;/b&gt;&lt;/i&gt; &lt;/p&gt;</string>
                 </property>
             </widget>
@@ -61,7 +61,7 @@
                 </property>
                 <property name="text">
                     <string>&lt;h2&gt;First-run Wizard&lt;/h2&gt;
-&lt;p&gt;This wizard will help you setup amaroK in three easy steps. Click &lt;i&gt;Next&lt;/i&gt; to begin, or if you do not like wizards, click &lt;i&gt;Skip&lt;/i&gt;.&lt;/p&gt;</string>
+&lt;p&gt;This wizard will help you setup Amarok in three easy steps. Click &lt;i&gt;Next&lt;/i&gt; to begin, or if you do not like wizards, click &lt;i&gt;Skip&lt;/i&gt;.&lt;/p&gt;</string>
                 </property>
             </widget>
             <spacer row="1" column="1">
@@ -104,7 +104,7 @@
                 <property name="text">
                     <string>&lt;p&gt;Please select the folders on the right where your music files are stored.&lt;/p&gt;
 &lt;p&gt;Doing so is highly recommended, and will enhance the features available to you.&lt;/p&gt;
-&lt;p&gt;If you wish, amaroK is able to monitor these folders for new files and can automatically add them to the collection.&lt;/p&gt;</string>
+&lt;p&gt;If you wish, Amarok is able to monitor these folders for new files and can automatically add them to the collection.&lt;/p&gt;</string>
                 </property>
             </widget>
         </hbox>
@@ -159,7 +159,7 @@
                     <cstring>dbActiveLabel</cstring>
                 </property>
                 <property name="text">
-                    <string>amaroK uses a database to store information about your music. If you are not sure which to use, press Next.
+                    <string>Amarok uses a database to store information about your music. If you are not sure which to use, press Next.
 &lt;p&gt;&lt;b&gt;MySQL&lt;/b&gt; or &lt;b&gt;Postgresql&lt;/b&gt; are faster than &lt;b&gt;sqlite&lt;/b&gt;, but require additional setup.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="http://amarok.kde.org/amarokwiki/index.php/MySQL_HowTo"&gt;Instructions for configuring MySQL&lt;/a&gt;.&lt;/li&gt;
@@ -205,10 +205,10 @@
                 </property>
                 <property name="text">
                     <string>&lt;h1&gt;Congratulations!&lt;/h1&gt;
-&lt;p&gt;amaroK is ready for use! When you click finish amaroK will appear and begin scanning the folders in your collection.&lt;/p&gt;
-&lt;p&gt;amaroK's playlist-window will show your &lt;b&gt;Collection&lt;/b&gt; on the left and the &lt;b&gt;Playlist&lt;/b&gt; on the right. Drag and drop music from the Collection to the Playlist and press &lt;b&gt;Play&lt;/b&gt;.&lt;/p&gt;
-&lt;p&gt;If you want more help or a tutorial, please check out the &lt;a href="help:/amarok"&gt;amaroK handbook&lt;/a&gt;. We hope you enjoy using amaroK.&lt;/p&gt;
-&lt;p align="right"&gt;The amaroK developers&lt;/p&gt;</string>
+&lt;p&gt;Amarok is ready for use! When you click finish Amarok will appear and begin scanning the folders in your collection.&lt;/p&gt;
+&lt;p&gt;Amarok's playlist-window will show your &lt;b&gt;Collection&lt;/b&gt; on the left and the &lt;b&gt;Playlist&lt;/b&gt; on the right. Drag and drop music from the Collection to the Playlist and press &lt;b&gt;Play&lt;/b&gt;.&lt;/p&gt;
+&lt;p&gt;If you want more help or a tutorial, please check out the &lt;a href="help:/amarok"&gt;Amarok handbook&lt;/a&gt;. We hope you enjoy using Amarok.&lt;/p&gt;
+&lt;p align="right"&gt;The Amarok developers&lt;/p&gt;</string>
                 </property>
             </widget>
             <spacer>

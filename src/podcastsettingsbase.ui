@@ -84,10 +84,10 @@
                         <string>Add to media device &amp;transfer queue</string>
                     </property>
                     <property name="toolTip" stdset="0">
-                        <string>When checked, amaroK will automatically add newly downloaded podcast shows to the media device transfer queue</string>
+                        <string>When checked, Amarok will automatically add newly downloaded podcast shows to the media device transfer queue</string>
                     </property>
                     <property name="whatsThis" stdset="0">
-                        <string>When checked, amaroK will automatically add newly downloaded podcast shows to the media device transfer queue</string>
+                        <string>When checked, Amarok will automatically add newly downloaded podcast shows to the media device transfer queue</string>
                     </property>
                 </widget>
             </vbox>
@@ -100,10 +100,10 @@
                 <string>Limit &amp;number of episodes</string>
             </property>
             <property name="toolTip" stdset="0">
-                <string>If checked, amaroK will throw away old podcast episodes</string>
+                <string>If checked, Amarok will throw away old podcast episodes</string>
             </property>
             <property name="whatsThis" stdset="0">
-                <string>If checked, amaroK will throw away old podcast episodes</string>
+                <string>If checked, Amarok will throw away old podcast episodes</string>
             </property>
         </widget>
         <spacer row="4" column="3">
@@ -156,10 +156,10 @@
                 <string>Automatically scan for updates</string>
             </property>
             <property name="toolTip" stdset="0">
-                <string>When checked, amaroK will automatically scan the podcast for updates</string>
+                <string>When checked, Amarok will automatically scan the podcast for updates</string>
             </property>
             <property name="whatsThis" stdset="0">
-                <string>When checked, amaroK will automatically scan the podcast for updates</string>
+                <string>When checked, Amarok will automatically scan the podcast for updates</string>
             </property>
         </widget>
         <widget class="QLabel" row="1" column="0" rowspan="1" colspan="2">

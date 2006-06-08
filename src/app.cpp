@@ -514,7 +514,7 @@ void App::showHyperThreadingWarning() // SLOT
 {
     const QString text =
         i18n( "<p>You are using a processor with the <i>HyperThreading</i> "
-              "feature enabled. Please note that amaroK may be unstable with this "
+              "feature enabled. Please note that Amarok may be unstable with this "
               "configuration.</p>"
               "<p>If you are experiencing problems, use the Linux kernel option 'NOHT', "
               "or disable <i>HyperThreading</i> in your BIOS setup.</p>"
@@ -659,7 +659,7 @@ void App::applySettings( bool firstTime )
         EngineBase *engine = EngineController::engine();
 
         if( firstTime || AmarokConfig::soundSystem() !=
-                         PluginManager::getService( engine )->property( "X-KDE-amaroK-name" ).toString() )
+                         PluginManager::getService( engine )->property( "X-KDE-Amarok-name" ).toString() )
         {
             //will unload engine for us first if necessary
             engine = EngineController::instance()->loadEngine();
@@ -744,7 +744,7 @@ App::applyColorScheme()
         group.setColor( QColorGroup::Midlight, QColor( h, s/3, (int)(v * 1.2), QColor::Hsv ) ); //column separator in playlist
 
         //TODO set all colours, even button colours, that way we can change the dark,
-        //light, etc. colours and amaroK scheme will look much better
+        //light, etc. colours and Amarok scheme will look much better
 
         using namespace amaroK::ColorScheme;
         Base       = amaroK::blue;
@@ -804,7 +804,7 @@ App::applyColorScheme()
 bool amaroK::genericEventHandler( QWidget *recipient, QEvent *e )
 {
     //this is used as a generic event handler for widgets that want to handle
-    //typical events in an amaroK fashion
+    //typical events in an Amarok fashion
 
     //to use it just pass the event eg:
     //
@@ -891,8 +891,8 @@ bool amaroK::genericEventHandler( QWidget *recipient, QEvent *e )
         if( AmarokConfig::showTrayIcon() && !e->spontaneous() && !kapp->sessionSaving() )
         {
             KMessageBox::information( recipient,
-                i18n( "<qt>Closing the main-window will keep amaroK running in the System Tray. "
-                      "Use <B>Quit</B> from the menu, or the amaroK tray-icon to exit the application.</qt>" ),
+                i18n( "<qt>Closing the main-window will keep Amarok running in the System Tray. "
+                      "Use <B>Quit</B> from the menu, or the Amarok tray-icon to exit the application.</qt>" ),
                 i18n( "Docking in System Tray" ), "hideOnCloseInfo" );
         }
         else pApp->quit();

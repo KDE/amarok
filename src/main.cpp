@@ -51,7 +51,7 @@ int main( int argc, char *argv[] )
     aboutData.addAuthor( "Pierpaolo '" I18N_NOOP("Spaghetti Coder") "' Di Panfilo",
             I18N_NOOP( "Playlist-browser, cover-manager (teax)" ), "pippo_dp@libero.it" );
     aboutData.addAuthor( "Roman '" I18N_NOOP("And God said, let there be Mac") "' Becker",
-            I18N_NOOP( "amaroK logo, splash screen, icons" ), "roman@formmorf.de", "http://www.formmorf.de" );
+            I18N_NOOP( "Amarok logo, splash screen, icons" ), "roman@formmorf.de", "http://www.formmorf.de" );
     aboutData.addAuthor( "Seb '" I18N_NOOP("Surfin' down under") "' Ruiz",
             I18N_NOOP( "Developer (sebr)" ), "me@sebruiz.net", "http://www.sebruiz.net" );
     aboutData.addAuthor( "Stanislav '" I18N_NOOP("All you need is DCOP") "' Karchebny",

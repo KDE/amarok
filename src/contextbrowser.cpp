@@ -1097,7 +1097,7 @@ void CurrentTrackJob::showHome()
                 "<table id='current_box-table' class='box-body' width='100%' cellpadding='0' cellspacing='0'>\n"
                 "<tr>\n"
                 "<td id='current_box-largecover-td'>\n"
-                "<a href='%1'><img id='current_box-largecover-image' src='%2' title='amaroK'></a>\n"
+                "<a href='%1'><img id='current_box-largecover-image' src='%2' title='Amarok'></a>\n"
                 "</td>\n"
                 "<td id='current_box-information-td' align='right'>\n"
                 "<span>%3</span><br />\n"
@@ -2643,14 +2643,14 @@ void ContextBrowser::showIntroduction()
             "<div id='introduction_box' class='box'>\n"
                 "<div id='introduction_box-header' class='box-header'>\n"
                     "<span id='introduction_box-header-title' class='box-header-title'>\n"
-                    + i18n( "Hello amaroK user!" ) +
+                    + i18n( "Hello Amarok user!" ) +
                     "</span>\n"
                 "</div>\n"
                 "<div id='introduction_box-body' class='box-body'>\n"
                     "<div class='info'><p>\n" +
                     i18n( "This is the Context Browser: "
                           "it shows you contextual information about the currently playing track. "
-                          "In order to use this feature of amaroK, you need to build a Collection."
+                          "In order to use this feature of Amarok, you need to build a Collection."
                         ) +
                     "</p></div>\n"
                     "<div align='center'>\n"
@@ -2687,7 +2687,7 @@ void ContextBrowser::showScanning()
                     "</span>\n"
                 "</div>\n"
                 "<div id='building_box-body' class='box-body'>\n"
-                    "<div class='info'><p>\n" + i18n( "Please be patient while amaroK scans your music collection. You can watch the progress of this activity in the statusbar." ) + "</p></div>\n"
+                    "<div class='info'><p>\n" + i18n( "Please be patient while Amarok scans your music collection. You can watch the progress of this activity in the statusbar." ) + "</p></div>\n"
                 "</div>\n"
             "</div>\n"
             "</body></html>\n"

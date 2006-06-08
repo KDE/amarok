@@ -67,7 +67,7 @@ safePlug( KActionCollection *ac, const char *name, QWidget *w )
 //////////////////////////////////////////////////////////////////////////////////////////
 
 MenuAction::MenuAction( KActionCollection *ac )
-  : KAction( i18n( "amaroK Menu" ), 0, ac, "amarok_menu" )
+  : KAction( i18n( "Amarok Menu" ), 0, ac, "amarok_menu" )
 {
     setShortcutConfigurable ( false ); //FIXME disabled as it doesn't work, should use QCursor::pos()
 }

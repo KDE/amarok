@@ -45,16 +45,16 @@ PluginManager::query( const QString& constraint )
 {
     // Add versioning constraint
     QString
-    str  = "[X-KDE-amaroK-framework-version] == ";
+    str  = "[X-KDE-Amarok-framework-version] == ";
     str += QString::number( FrameworkVersion );
     if ( !constraint.stripWhiteSpace().isEmpty() )
         str += " and " + constraint;
     str += " and ";
-    str += "[X-KDE-amaroK-rank] > 0";
+    str += "[X-KDE-Amarok-rank] > 0";
 
     debug() << "Plugin trader constraint: " << str << endl;
 
-    return KTrader::self()->query( "amaroK/Plugin", str );
+    return KTrader::self()->query( "Amarok/Plugin", str );
 }
 
 
@@ -74,7 +74,7 @@ PluginManager::createFromQuery( const QString &constraint )
     int rank = 0;
     uint current = 0;
     for ( uint i = 0; i < offers.count(); i++ ) {
-        if ( offers[i]->property( "X-KDE-amaroK-rank" ).toInt() > rank )
+        if ( offers[i]->property( "X-KDE-Amarok-rank" ).toInt() > rank )
             current = i;
     }
 
@@ -174,10 +174,10 @@ PluginManager::showAbout( const QString &constraint )
 
     str += body.arg( i18n( "Name" ),                s->name() );
     str += body.arg( i18n( "Library" ),             s->library() );
-    str += body.arg( i18n( "Authors" ),             s->property( "X-KDE-amaroK-authors" ).toStringList().join( "\n" ) );
-    str += body.arg( i18n( "Email" ),               s->property( "X-KDE-amaroK-email" ).toStringList().join( "\n" ) );
-    str += body.arg( i18n( "Version" ),             s->property( "X-KDE-amaroK-version" ).toString() );
-    str += body.arg( i18n( "Framework Version" ),   s->property( "X-KDE-amaroK-framework-version" ).toString() );
+    str += body.arg( i18n( "Authors" ),             s->property( "X-KDE-Amarok-authors" ).toStringList().join( "\n" ) );
+    str += body.arg( i18n( "Email" ),               s->property( "X-KDE-Amarok-email" ).toStringList().join( "\n" ) );
+    str += body.arg( i18n( "Version" ),             s->property( "X-KDE-Amarok-version" ).toString() );
+    str += body.arg( i18n( "Framework Version" ),   s->property( "X-KDE-Amarok-framework-version" ).toString() );
 
     str += "</table></body></html>";
 
@@ -197,12 +197,12 @@ PluginManager::dump( const KService::Ptr service )
       << "name                          : " << service->name() << ENDLI
       << "library                       : " << service->library() << ENDLI
       << "desktopEntryPath              : " << service->desktopEntryPath() << ENDLI
-      << "X-KDE-amaroK-plugintype       : " << service->property( "X-KDE-amaroK-plugintype" ).toString() << ENDLI
-      << "X-KDE-amaroK-name             : " << service->property( "X-KDE-amaroK-name" ).toString() << ENDLI
-      << "X-KDE-amaroK-authors          : " << service->property( "X-KDE-amaroK-authors" ).toStringList() << ENDLI
-      << "X-KDE-amaroK-rank             : " << service->property( "X-KDE-amaroK-rank" ).toString() << ENDLI
-      << "X-KDE-amaroK-version          : " << service->property( "X-KDE-amaroK-version" ).toString() << ENDLI
-      << "X-KDE-amaroK-framework-version: " << service->property( "X-KDE-amaroK-framework-version" ).toString()
+      << "X-KDE-Amarok-plugintype       : " << service->property( "X-KDE-Amarok-plugintype" ).toString() << ENDLI
+      << "X-KDE-Amarok-name             : " << service->property( "X-KDE-Amarok-name" ).toString() << ENDLI
+      << "X-KDE-Amarok-authors          : " << service->property( "X-KDE-Amarok-authors" ).toStringList() << ENDLI
+      << "X-KDE-Amarok-rank             : " << service->property( "X-KDE-Amarok-rank" ).toString() << ENDLI
+      << "X-KDE-Amarok-version          : " << service->property( "X-KDE-Amarok-version" ).toString() << ENDLI
+      << "X-KDE-Amarok-framework-version: " << service->property( "X-KDE-Amarok-framework-version" ).toString()
       << endl
       << endl;
 

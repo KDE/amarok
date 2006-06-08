@@ -4,7 +4,7 @@
 // Author: Stanislav Karchebny <berkus@users.sf.net>, (C) 2003
 //         Max Howell (I modified it to use boom analyzer code)
 //
-// Copyright: like rest of amaroK
+// Copyright: like rest of Amarok
 //
 
 #include <cmath>

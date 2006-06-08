@@ -127,7 +127,7 @@ StatusBar::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
         break;
 
     case Engine::Paused:
-        m_mainTextLabel->setText( i18n( "amaroK is paused" ) ); // display TEMPORARY message
+        m_mainTextLabel->setText( i18n( "Amarok is paused" ) ); // display TEMPORARY message
         m_pauseTimer->start( 300 );
         break;
 
@@ -156,9 +156,9 @@ StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
     if ( bundle.artist() == "Mike Oldfield" && bundle.title() == "Amarok" ) {
         longMessage( i18n(
                 "<p>One of Mike Oldfield's best pieces of work, Amarok, inspired the name behind "
-                "the audio-player you are currently using. Thanks for choosing amaroK!</p>"
+                "the audio-player you are currently using. Thanks for choosing Amarok!</p>"
                 "<p align=right>Mark Kretschmann<br>Max Howell<br>Chris Muehlhaeuser<br>"
-                "The many other people who have helped make amaroK what it is</p>" ), KDE::StatusBar::Information );
+                "The many other people who have helped make Amarok what it is</p>" ), KDE::StatusBar::Information );
     }
 
     // ugly because of translation requirements

@@ -763,7 +763,7 @@ void ScrobblerSubmitter::audioScrobblerHandshakeResult( KIO::Job* job ) //SLOT
     // INTERVAL n (protocol 1.1)
     else if ( m_submitResultBuffer.startsWith( "UPDATE" ) )
     {
-        warning() << "A new version of amaroK is available" << endl;
+        warning() << "A new version of Amarok is available" << endl;
 
         m_challenge = m_submitResultBuffer.section( "\n", 1, 1 );
         m_submitUrl = m_submitResultBuffer.section( "\n", 2, 2 );
@@ -1114,7 +1114,7 @@ void ScrobblerSubmitter::saveSubmitQueue()
 
     QDomDocument newdoc;
     QDomElement submitQueue = newdoc.createElement( "submit" );
-    submitQueue.setAttribute( "product", "amaroK" );
+    submitQueue.setAttribute( "product", "Amarok" );
     submitQueue.setAttribute( "version", APP_VERSION );
     submitQueue.setAttribute( "lastSubmissionFinishTime", m_lastSubmissionFinishTime );
 

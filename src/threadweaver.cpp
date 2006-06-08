@@ -10,7 +10,7 @@
 #include <kcursor.h>
 #include <qapplication.h>
 
-#include <pthread.h>//we're emulating features of Qt 4, so this can be removed for amaroK 2.0
+#include <pthread.h>//we're emulating features of Qt 4, so this can be removed for Amarok 2.0
 
 #include "debug.h"
 #include "statusbar.h"

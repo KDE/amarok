@@ -35,7 +35,7 @@
                 <cstring>listView</cstring>
             </property>
             <property name="toolTip" stdset="0">
-                <string>These scripts are currently known to amaroK.</string>
+                <string>These scripts are currently known to Amarok.</string>
             </property>
         </widget>
         <spacer row="8" column="1">

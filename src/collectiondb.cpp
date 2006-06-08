@@ -4242,7 +4242,7 @@ CollectionDB::initialize()
 
             int prev = adminValue( "Database Stats Version" ).toInt();
 
-            /* If config returns 3 or lower, it came from an amaroK version that was not aware of
+            /* If config returns 3 or lower, it came from an Amarok version that was not aware of
                admin table, so we can't trust this table at all */
             if( !prev || ( config->readNumEntry( "Database Stats Version", 0 )
                       && config->readNumEntry( "Database Stats Version", 0 ) <= 3  ) )
@@ -4283,7 +4283,7 @@ CollectionDB::initialize()
         if ( PersistentVersion.isEmpty() ) {
             /* persistent tables didn't have a version on 1.3X and older, but let's be nice and try to
                copy/keep the good information instead of just deleting the tables */
-            debug() << "Detected old schema for tables with important data. amaroK will convert the tables, ignore any \"table already exists\" errors." << endl;
+            debug() << "Detected old schema for tables with important data. Amarok will convert the tables, ignore any \"table already exists\" errors." << endl;
             createPersistentTables();
             /* Copy lyrics */
             debug() << "Trying to get lyrics from old db schema." << endl;
@@ -4344,7 +4344,7 @@ CollectionDB::initialize()
         }
         else {
             if ( adminValue( "Database Persistent Tables Version" ).toInt() != DATABASE_PERSISTENT_TABLES_VERSION ) {
-                error() << "There is a bug in amaroK: instead of destroying your valuable database tables, I'm quitting" << endl;
+                error() << "There is a bug in Amarok: instead of destroying your valuable database tables, I'm quitting" << endl;
                 exit( 1 );
 
                 debug() << "Rebuilding persistent tables database!" << endl;
@@ -4840,7 +4840,7 @@ void
 MySqlConnection::setMysqlError()
 {
     m_error = i18n("MySQL reported the following error:<br>") + mysql_error(m_db)
-            + i18n("<p>You can configure MySQL in the Collection section under Settings->Configure amaroK</p>");
+            + i18n("<p>You can configure MySQL in the Collection section under Settings->Configure Amarok</p>");
 }
 #endif
 
@@ -5005,7 +5005,7 @@ int PostgresqlConnection::insert( const QString& statement, const QString& table
 void PostgresqlConnection::setPostgresqlError()
 {
     m_error = i18n("Postgresql reported the following error:<br>") + PQerrorMessage(m_db)
-            + i18n("<p>You can configure Postgresql in the Collection section under Settings->Configure amaroK</p>");
+            + i18n("<p>You can configure Postgresql in the Collection section under Settings->Configure Amarok</p>");
 }
 #endif
 

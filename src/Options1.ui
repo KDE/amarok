@@ -52,10 +52,10 @@
                         <string>Sho&amp;w splash-screen on startup</string>
                     </property>
                     <property name="toolTip" stdset="0">
-                        <string>Check to enable the splashscreen during amaroK startup.</string>
+                        <string>Check to enable the splashscreen during Amarok startup.</string>
                     </property>
                     <property name="whatsThis" stdset="0">
-                        <string>Check to enable the splashscreen during amaroK startup.</string>
+                        <string>Check to enable the splashscreen during Amarok startup.</string>
                     </property>
                 </widget>
                 <widget class="QCheckBox">
@@ -66,10 +66,10 @@
                         <string>Show tray &amp;icon</string>
                     </property>
                     <property name="toolTip" stdset="0">
-                        <string>Check to enable the amaroK system tray icon.</string>
+                        <string>Check to enable the Amarok system tray icon.</string>
                     </property>
                     <property name="whatsThis" stdset="0">
-                        <string>Check to enable the amaroK system tray icon.</string>
+                        <string>Check to enable the Amarok system tray icon.</string>
                     </property>
                 </widget>
                 <widget class="QLayoutWidget">
@@ -108,10 +108,10 @@
                                 <string>&amp;Flash tray icon when playing</string>
                             </property>
                             <property name="toolTip" stdset="0">
-                                <string>Check to animate the amaroK system tray icon.</string>
+                                <string>Check to animate the Amarok system tray icon.</string>
                             </property>
                             <property name="whatsThis" stdset="0">
-                                <string>Check to animate the amaroK system tray icon.</string>
+                                <string>Check to animate the Amarok system tray icon.</string>
                             </property>
                         </widget>
                     </hbox>
@@ -241,7 +241,7 @@
                                 </size>
                             </property>
                             <property name="toolTip" stdset="0">
-                                <string>Choose the external web browser to be used by amaroK.</string>
+                                <string>Choose the external web browser to be used by Amarok.</string>
                             </property>
                         </widget>
                         <spacer>
@@ -397,10 +397,10 @@
                         <string>&amp;Remember current playlist on exit</string>
                     </property>
                     <property name="toolTip" stdset="0">
-                        <string>If checked, amaroK saves the current playlist on quit and restores it when restarted.&lt;br&gt;</string>
+                        <string>If checked, Amarok saves the current playlist on quit and restores it when restarted.&lt;br&gt;</string>
                     </property>
                     <property name="whatsThis" stdset="0">
-                        <string>If checked, amaroK saves the current playlist on quit and restores it when restarted.</string>
+                        <string>If checked, Amarok saves the current playlist on quit and restores it when restarted.</string>
                     </property>
                 </widget>
                 <widget class="QCheckBox">
@@ -411,10 +411,10 @@
                         <string>Manually sa&amp;ved playlists use relative path</string>
                     </property>
                     <property name="toolTip" stdset="0">
-                        <string>If checked, amaroK uses a relative path for the tracks of manually saved playlists</string>
+                        <string>If checked, Amarok uses a relative path for the tracks of manually saved playlists</string>
                     </property>
                     <property name="whatsThis" stdset="0">
-                        <string>If checked, amaroK uses a relative path for the tracks of manually saved playlists</string>
+                        <string>If checked, Amarok uses a relative path for the tracks of manually saved playlists</string>
                     </property>
                 </widget>
                 <widget class="QCheckBox">

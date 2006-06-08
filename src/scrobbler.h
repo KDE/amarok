@@ -55,7 +55,7 @@ class Scrobbler : public QObject, public EngineObserver
             KIO::Job* /*job*/, const QByteArray& /*data*/ );
 
     private:
-        QTimer m_timer; //works around xine bug 
+        QTimer m_timer; //works around xine bug
                         //http://sourceforge.net/tracker/index.php?func=detail&aid=1401026&group_id=9655&atid=109655
         QByteArray m_similarArtistsBuffer;
         KIO::Job* m_similarArtistsJob;
@@ -174,7 +174,7 @@ class ScrobblerSubmitter : public QObject
         uint m_fakeQueueLength;
 
         QPtrDict<SubmitItem> m_ongoingSubmits;
-        SubmitQueue m_submitQueue; // songs played by amaroK
+        SubmitQueue m_submitQueue; // songs played by Amarok
         SubmitQueue m_fakeQueue; // songs for which play times have to be faked (e.g. when submitting from media device)
 
         QTimer m_timer;

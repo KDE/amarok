@@ -1,8 +1,8 @@
 // Maintainer: Max Howell <max.howell@methylblue.com>, (C) 2004
 // Copyright:  See COPYING file that comes with this distribution
 //
-// Description: a popupmenu to control various features of amaroK
-//              also provides amaroK's helpMenu
+// Description: a popupmenu to control various features of Amarok
+//              also provides Amarok's helpMenu
 
 #ifndef AMAROK_ACTIONCLASSES_H
 #define AMAROK_ACTIONCLASSES_H

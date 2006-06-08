@@ -423,7 +423,7 @@ MediaDeviceConfig::MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, 
             it != MediaBrowser::instance()->getPlugins().end();
             ++it ){
         m_pluginCombo->insertItem( (*it)->name() );
-        if ( (*it)->property( "X-KDE-amaroK-name" ).toString() == config->readEntry( medium->id() ) )
+        if ( (*it)->property( "X-KDE-Amarok-name" ).toString() == config->readEntry( medium->id() ) )
             m_pluginCombo->setCurrentItem( (*it)->name() );
     }
 
