@@ -45,7 +45,7 @@ Name[xx]=xxxine Enginexx
 Name[zh_CN]=xine 引擎
 Name[zh_TW]=xine 解碼引擎
 X-KDE-Library=libamarok_xine-engine
-Comment=Plugin for amaroK
+Comment=Plugin for Amarok
 Comment[bg]=Приставка за amaroK
 Comment[bn]=আমারক-এর জন্য প্লাগিন
 Comment[br]=Lugent evit amaroK
@@ -89,14 +89,14 @@ Comment[uz]=amaroK учун плагин
 Comment[xx]=xxPlugin for amaroKxx
 Comment[zh_CN]=amaroK 插件
 Comment[zh_TW]=amaroK 的外掛程式
-ServiceTypes=amaroK/Plugin
+ServiceTypes=Amarok/Plugin
 
-X-KDE-amaroK-plugintype=engine
-X-KDE-amaroK-name=xine-engine
-X-KDE-amaroK-authors=Max Howell
-X-KDE-amaroK-email=max.howell@methylblue.com
-X-KDE-amaroK-rank=255
-X-KDE-amaroK-version=1
-X-KDE-amaroK-framework-version=24
+X-KDE-Amarok-plugintype=engine
+X-KDE-Amarok-name=xine-engine
+X-KDE-Amarok-authors=Max Howell
+X-KDE-Amarok-email=max.howell@methylblue.com
+X-KDE-Amarok-rank=255
+X-KDE-Amarok-version=1
+X-KDE-Amarok-framework-version=24
 
 

@@ -32,7 +32,7 @@ Name[uz]=GStreamer 0.10 тизими
 Name[xx]=xxGStreamer 0.10 Enginexx
 Name[zh_CN]=GStreamer 0.10 引擎
 X-KDE-Library=libamarok_gst10engine_plugin
-Comment=Plugin for amaroK
+Comment=Plugin for Amarok
 Comment[bg]=Приставка за amaroK
 Comment[bn]=আমারক-এর জন্য প্লাগিন
 Comment[br]=Lugent evit amaroK
@@ -76,14 +76,14 @@ Comment[uz]=amaroK учун плагин
 Comment[xx]=xxPlugin for amaroKxx
 Comment[zh_CN]=amaroK 插件
 Comment[zh_TW]=amaroK 的外掛程式
-ServiceTypes=amaroK/Plugin
+ServiceTypes=Amarok/Plugin
 
-X-KDE-amaroK-plugintype=engine
-X-KDE-amaroK-name=gst10-engine
-X-KDE-amaroK-authors=Mark Kretschmann
-X-KDE-amaroK-email=markey@web.de
-X-KDE-amaroK-rank=100
-X-KDE-amaroK-version=1
-X-KDE-amaroK-framework-version=24
+X-KDE-Amarok-plugintype=engine
+X-KDE-Amarok-name=gst10-engine
+X-KDE-Amarok-authors=Mark Kretschmann
+X-KDE-Amarok-email=markey@web.de
+X-KDE-Amarok-rank=100
+X-KDE-Amarok-version=1
+X-KDE-Amarok-framework-version=24
 
 

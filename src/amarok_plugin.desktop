@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=ServiceType
-X-KDE-ServiceType=amaroK/Plugin
-Comment=Plugin for amaroK
+X-KDE-ServiceType=Amarok/Plugin
+Comment=Plugin for Amarok
 Comment[bg]=Приставка за amaroK
 Comment[bn]=আমারক-এর জন্য প্লাগিন
 Comment[br]=Lugent evit amaroK
@@ -47,36 +47,36 @@ Comment[zh_CN]=amaroK 插件
 Comment[zh_TW]=amaroK 的外掛程式
 
 # Type of plugin, e.g. "engine".
-[PropertyDef::X-KDE-amaroK-plugintype]
+[PropertyDef::X-KDE-Amarok-plugintype]
 Type=QString
 
 # Internal name for identification, not translated.
-[PropertyDef::X-KDE-amaroK-name]
+[PropertyDef::X-KDE-Amarok-name]
 Type=QString
 
 # List of authors.
-[PropertyDef::X-KDE-amaroK-authors]
+[PropertyDef::X-KDE-Amarok-authors]
 Type=QStringList
 
 # List of author's email addresses.
-[PropertyDef::X-KDE-amaroK-email]
+[PropertyDef::X-KDE-Amarok-email]
 Type=QStringList
 
 # Priority of the plugin. When KTrader returns multiple offers, the one with the highest rank is chosen.
 # Range: 0 (disabled) - 255 (highest)
-[PropertyDef::X-KDE-amaroK-rank]
+[PropertyDef::X-KDE-Amarok-rank]
 Type=int
 
 # Version of the plugin.
-[PropertyDef::X-KDE-amaroK-version]
+[PropertyDef::X-KDE-Amarok-version]
 Type=int
 
 # Version of the framework this plugin is compatible with.
 # Must be bumped after making binary incompatible changes.
-[PropertyDef::X-KDE-amaroK-framework-version]
+[PropertyDef::X-KDE-Amarok-framework-version]
 Type=int
 
-# If true, amaroK will show a warning dialog about the experimental nature of this plugin.
-[PropertyDef::X-KDE-amaroK-experimental]
+# If true, Amarok will show a warning dialog about the experimental nature of this plugin.
+[PropertyDef::X-KDE-Amarok-experimental]
 Type=bool
 
