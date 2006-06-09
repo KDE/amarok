@@ -3008,6 +3008,8 @@ ContextBrowser::wikiConfigApply() // SLOT
         m_dirtyWikiPage = true;
         showWikipediaEntry( m_wikiCurrentEntry );
     }
+
+    showWikipedia();
 }
 
 void
