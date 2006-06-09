@@ -2,9 +2,6 @@
 ServiceTypes=application/asx,audio/*
 Actions=appendToPlaylist;appendAndPlay;queueTrack;
 X-KDE-Submenu=Amarok
-X-KDE-Submenu[bn]=আমারক
-X-KDE-Submenu[pa]=ਅਮਰੋਕ
-X-KDE-Submenu[xx]=xxamaroKxx
 
 [Desktop Action appendToPlaylist]
 Name=Append to Playlist
