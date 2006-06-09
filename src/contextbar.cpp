@@ -21,7 +21,7 @@
 #include <qcursor.h>       //for resize cursor
 #include <qpainter.h>
 #include <qsignalmapper.h> //m_mapper
-#include <qstyle.h>        //amaroK::Splitter
+#include <qstyle.h>        //amaroK::VSplitter
 
 
 // we emulate a qsplitter, mostly for historic reasons, but there are still a few advantages
@@ -30,9 +30,9 @@
 
 namespace amaroK
 {
-    class Splitter : public QWidget {
+    class VSplitter : public QWidget {
     public:
-        Splitter( ContextBar *w ) : QWidget( w, "divider" )
+        VSplitter( ContextBar *w ) : QWidget( w, "divider" )
         {
             setCursor( QCursor(SplitVCursor) );
             styleChange( style() );
@@ -60,7 +60,7 @@ namespace amaroK
 ContextBar::ContextBar( QWidget *parent )
         : QWidget( parent, "ContextBar" )
         , m_playlistBox( new QVBox( this ) )
-        , m_divider( new amaroK::Splitter( this ) )
+        , m_divider( new amaroK::VSplitter( this ) )
         , m_tabBar( new MultiTabBar( MultiTabBar::Horizontal, this ) )
         , m_browserBox( new QWidget( this ) )
         , m_currentIndex( -1 )
@@ -98,10 +98,10 @@ int
 ContextBar::restoreHeight()
 {
     const int index = indexForName( amaroK::config( "ContextBar" )->readEntry( "CurrentPane" ) );
-//     const int height = amaroK::config( "ContextBar" )->readNumEntry( "Height", browser( index )->sizeHint().height() );
+//    const int height = amaroK::config( "ContextBar" )->readNumEntry( "Height", browser( index )->sizeHint().height() );
     const int height = amaroK::config( "ContextBar" )->readNumEntry( "Height", 200 );
 
-    m_browserBox->resize( width(), 300 /*height*/ );
+    m_browserBox->resize( width(), height );
     return index;
 }
 
@@ -190,8 +190,8 @@ ContextBar::event( QEvent *e )
     case QEvent::Resize:
 //         DEBUG_LINE_INFO
 
-        m_divider->resize( width(), 5 ); //Qt will set width
-        m_tabBar->resize( width(), 5 ); //Qt will set width
+        m_divider->resize( width(), 0 ); //Qt will set height
+        m_tabBar->resize( width(), 0 ); //Qt will set height
 
         adjustWidgetSizes();
 
