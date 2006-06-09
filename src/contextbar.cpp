@@ -270,7 +270,7 @@ ContextBar::showHideBrowser( int index )
         }
     }
 
-    emit browserActivated( index );
+    emit browserActivated( m_browsers.at(index) );
 }
 
 void

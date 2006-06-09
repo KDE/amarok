@@ -259,7 +259,7 @@ ContextBrowser::ContextBrowser( const char *name )
     // Delete folder with the cached coverimage shadow pixmaps
     KIO::del( KURL::fromPathOrURL( amaroK::saveLocation( "covershadow-cache/" ) ), false, false );
 
-    connect( this, SIGNAL( currentChanged( QWidget* ) ), SLOT( tabChanged( QWidget* ) ) );
+    connect( m_contextBar, SIGNAL( browserActivated( QWidget* ) ), this, SLOT( tabChanged( QWidget* ) ) );
 
     connect( m_currentTrackPage->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
              this,                                   SLOT( openURLRequest( const KURL & ) ) );

@@ -58,7 +58,7 @@ public slots:
     void closeCurrentBrowser() { showHideBrowser( m_currentIndex ); }
 
 signals:
-    void browserActivated( int );
+    void browserActivated( QWidget* );
 
 private:
     int indexForName( const QString& ) const;
