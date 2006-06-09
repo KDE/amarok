@@ -1308,18 +1308,20 @@ PlaylistCategory* PlaylistBrowser::loadPlaylists()
     }
     else {
         e = d.namedItem( "category" ).toElement();
-        if ( e.attribute("formatversion") =="1.1" ) {
-            PlaylistCategory* p = new PlaylistCategory(m_listview, 0 , e );
+        if ( e.attribute("formatversion") =="1.1" )
+        {
+            PlaylistCategory* p = new PlaylistCategory( m_listview, 0 , e );
             p->setText( 0, i18n("Playlists") );
             return p;
         }
         else { // Old unversioned format
-            PlaylistCategory* p = new PlaylistCategory(m_listview, 0 , i18n("Playlists") );
+            PlaylistCategory* p = new PlaylistCategory( m_listview, 0 , i18n("Playlists") );
             QListViewItem *last = 0;
             QDomNode n = d.namedItem( "playlistbrowser" ).namedItem("playlist");
-            for( ; !n.isNull();  n = n.nextSibling() ) {
+
+            for ( ; !n.isNull();  n = n.nextSibling() )
                 last = new PlaylistEntry( p, last, n.toElement() );
-            }
+
             return p;
         }
     }
