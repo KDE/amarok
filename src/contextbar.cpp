@@ -34,7 +34,7 @@ namespace amaroK
     public:
         Splitter( ContextBar *w ) : QWidget( w, "divider" )
         {
-            setCursor( QCursor(SplitHCursor) );
+            setCursor( QCursor(SplitVCursor) );
             styleChange( style() );
         }
 
@@ -141,7 +141,7 @@ ContextBar::adjustWidgetSizes()
     const uint h    = height();
     const uint maxH = maxBrowserHeight();
     const uint p    = (m_pos < maxH) ? m_pos : maxH;
-    const uint pph  = p + 5 /*m_divider->height()*/;
+    const uint pph  = p + m_divider->height();
     const uint tbh  = m_tabBar->height();
 
     m_divider->move( 0, p );
@@ -190,8 +190,8 @@ ContextBar::event( QEvent *e )
     case QEvent::Resize:
 //         DEBUG_LINE_INFO
 
-        m_divider->resize( width(), 0 ); //Qt will set width
-        m_tabBar->resize( width(), 0 ); //Qt will set width
+        m_divider->resize( width(), 5 ); //Qt will set width
+        m_tabBar->resize( width(), 5 ); //Qt will set width
 
         adjustWidgetSizes();
 
