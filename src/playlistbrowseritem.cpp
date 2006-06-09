@@ -341,7 +341,14 @@ PlaylistEntry::PlaylistEntry( QListViewItem *parent, QListViewItem *after, const
     m_url.setPath( xmlDefinition.attribute( "file" ) );
     m_trackCount = xmlDefinition.namedItem( "tracks" ).toElement().text().toInt();
     m_length = xmlDefinition.namedItem( "length" ).toElement().text().toInt();
-    setText(0, xmlDefinition.attribute( "title" ) );
+
+    QString title = xmlDefinition.attribute( "title" );
+    if( title.isEmpty() )
+    {
+        title = fileBaseName( m_url.path() );
+        title.replace( '_', ' ' );
+    }
+    setText( 0, title );
 
     m_trackList.setAutoDelete( true );
     tmp_droppedTracks.setAutoDelete( false );
@@ -491,9 +498,12 @@ void PlaylistEntry::customEvent( QCustomEvent *e )
 
 #define playlist static_cast<PlaylistReader*>(e)
     QString str = playlist->title;
-    str.isEmpty() ?
-        setText( 0, fileBaseName( m_url.path() ) ):
-        setText( 0, playlist->title );
+
+    if ( str.isEmpty() )
+        str = fileBaseName( m_url.path() );
+
+    str.replace( '_', ' ' );
+    setText( 0, str );
 
     foreachType( BundleList, playlist->bundles )
     {
