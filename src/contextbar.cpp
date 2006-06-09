@@ -21,7 +21,7 @@
 #include <qcursor.h>       //for resize cursor
 #include <qpainter.h>
 #include <qsignalmapper.h> //m_mapper
-#include <qstyle.h>        //amaroK::VSplitter
+#include <qstyle.h>        //amaroK::CSplitter
 
 
 // we emulate a qsplitter, mostly for historic reasons, but there are still a few advantages
@@ -30,9 +30,10 @@
 
 namespace amaroK
 {
-    class VSplitter : public QWidget {
+    // name this class CSplitter since Splitter is used by the vertical browsers
+    class CSplitter : public QWidget {
     public:
-        VSplitter( ContextBar *w ) : QWidget( w, "divider" )
+        CSplitter( ContextBar *w ) : QWidget( w, "divider" )
         {
             setCursor( QCursor(SplitVCursor) );
             styleChange( style() );
@@ -60,7 +61,7 @@ namespace amaroK
 ContextBar::ContextBar( QWidget *parent )
         : QWidget( parent, "ContextBar" )
         , m_playlistBox( new QVBox( this ) )
-        , m_divider( new amaroK::VSplitter( this ) )
+        , m_divider( new amaroK::CSplitter( this ) )
         , m_tabBar( new MultiTabBar( MultiTabBar::Horizontal, this ) )
         , m_browserBox( new QWidget( this ) )
         , m_currentIndex( -1 )
