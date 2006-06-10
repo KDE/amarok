@@ -338,7 +338,7 @@ StreamProvider::transmitData( const QString &data )
     bundle.bitrate = m_bitRate;
     bundle.genre = codec->toUnicode( m_streamGenre.latin1() );
 
-    bundle.album = codec->toUnicode( m_streamName.latin1() );
+    bundle.album = codec->toUnicode( m_streamName.stripWhiteSpace().latin1() );
 
     emit m_engine.gstMetaData( bundle );
 }
