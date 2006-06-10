@@ -73,14 +73,14 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Greg Meyer", I18N_NOOP( "Live CD, Bug squashing (oggb4mp3)" ), "greg@gkmweb.com" );
     aboutData.addCredit( "Harald Sitter", I18N_NOOP( "handbook enhancements, translations, bug fixes, screenshots, roKymoter (apachelogger)" ), "harald.sitter@kdemail.net" );
     aboutData.addCredit( "Jarkko Lehti", I18N_NOOP( "Tester, IRC channel operator, whipping" ), "grue@iki.fi" );
-    aboutData.addCredit( "Jocke Andersson", I18N_NOOP( "roKymoter and bug fixer (Firetech or Swedish Bitch)" ), "ajocke@gmail.com" );
+    aboutData.addCredit( "Jocke Andersson", I18N_NOOP( "roKymoter, bug fixer and Swedish Bitch (Firetech)" ), "ajocke@gmail.com" );
     aboutData.addCredit( "Kenneth Wesley Wimer II", I18N_NOOP( "Icons" ), "kwwii@bootsplash.org" );
     aboutData.addCredit( "Marco Gulino", I18N_NOOP( "Konqueror Sidebar, some DCOP methods" ), "marco@kmobiletools.org" );
     aboutData.addCredit( "Melchior Franz", I18N_NOOP( "FHT routine, bugfixes" ), "mfranz@kde.org" );
     aboutData.addCredit( "Michael Pyne", I18N_NOOP( "K3B export code" ), "michael.pyne@kdemail.net" );
     aboutData.addCredit( "Nenad Grujicic", I18N_NOOP( "Splash screen" ), "mchitman@neobee.net" );
     aboutData.addCredit( "Olivier Bédard", I18N_NOOP( "Website hosting" ), "paleo@pwsp.net" );
-    aboutData.addCredit( "Paul Cifarelli", I18N_NOOP( "Helix engine,Gst10 Engine (foreboy)" ), "paul@cifarelli.net" );
+    aboutData.addCredit( "Paul Cifarelli", I18N_NOOP( "Helix engine, Gst10 Engine (foreboy)" ), "paul@cifarelli.net" );
     aboutData.addCredit( "Peter C. Ndikuwera", I18N_NOOP( "Bugfixes, PostgreSQL support" ), "pndiku@gmail.com" );
     aboutData.addCredit( "Reigo Reinmets", I18N_NOOP( "Wikipedia support, patches" ), "xatax@hot.ee" );
     aboutData.addCredit( "Roland Gigler", I18N_NOOP( "MAS engine" ), "rolandg@web.de" );
