@@ -406,6 +406,7 @@ ScanController::customEvent( QCustomEvent* e )
         if( m_incremental )
             *m_scanner << "-i";
 
+        *m_scanner << "-p";
         *m_scanner << "-s";
         m_scanner->start();
     }
