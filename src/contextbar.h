@@ -64,9 +64,8 @@ private:
     int indexForName( const QString& ) const;
 
     void adjustWidgetSizes();
-    uint maxBrowserHeight() const { return height() / 2; }
+    uint maxBrowserHeight() const { return uint( height() / 1.5 );  }
 
-    static const int DEFAULT_HEIGHT = 50;
 
     uint           m_pos;         ///the x-axis position of m_divider
     QVBox         *m_playlistBox; ///parent to playlist, playlist filter and toolbar
