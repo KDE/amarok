@@ -66,9 +66,6 @@ using namespace KNetwork;
             /** Returns true if initialisation was successful */
             bool initSuccess() { return m_initSuccess; }
 
-            /** Returns URL for proxy server (only relevant in Socket mode) */
-            KURL proxyUrl();
-
         signals:
             /** Transmits new metadata bundle */
             void metaData( const MetaBundle& );
@@ -80,7 +77,6 @@ using namespace KNetwork;
             void sigError();
 
         private slots:
-            void accept( int socket );
             void resolved(KResolverResults result);
             void connectToHost();
             void sendRequest();
@@ -133,25 +129,6 @@ using namespace KNetwork;
             KResolver m_resolver;
 
             GstEngine &m_engine;
-    };
-
-
-    /**
-     * Stream proxy server.
-     */
-    class StreamProxy : public QServerSocket
-    {
-            Q_OBJECT
-
-        public:
-            StreamProxy( Q_UINT16 port, QObject* parent )
-                : QServerSocket( 0x7f000001 /* 127.0.0.1 */, port, 1, parent ) {};
-
-        signals:
-            void connected( int socket );
-
-        private:
-            void newConnection( int socket ) { emit connected( socket ); }
     };
 
 #endif /*AMAROK_STREAMPROVIDER_H*/

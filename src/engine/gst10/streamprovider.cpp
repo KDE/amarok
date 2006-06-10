@@ -2,7 +2,7 @@
                      streamprovider.cpp - shoutcast streaming client
                         -------------------
 begin                : Nov 20 14:35:18 CEST 2003
-copyright            : (C) 2003 by Mark Kretschmann
+copyright            : (C) 2003 by Mark Kretschmann, small portions (C) 2006 Paul Cifarelli
 email                : markey@web.de
 ***************************************************************************/
 
@@ -56,26 +56,7 @@ StreamProvider::StreamProvider( KURL url, const QString& streamingMode, GstEngin
     connect( &m_sockRemote, SIGNAL( readyRead() ),                  SLOT( readRemote() ) );
     connect( &m_resolver,   SIGNAL( finished( KResolverResults ) ), SLOT( resolved( KResolverResults ) ) );
 
-    if ( streamingMode == "Socket" ) {
-        uint i;
-        StreamProxy* server;
-        for ( i = MIN_PROXYPORT; i <= MAX_PROXYPORT; i++ ) {
-            server = new StreamProxy( i, this );
-            debug() << "Trying to bind to port: " << i << endl;
-            if ( server->ok() )     // found a free port
-                break;
-            delete server;
-        }
-        if ( i > MAX_PROXYPORT ) {
-            warning() << "Unable to find a free local port. Aborting.\n";
-            m_initSuccess = false;
-            return;
-        }
-        m_usedPort = i;
-        connect( server, SIGNAL( connected( int ) ), this, SLOT( accept( int ) ) );
-    }
-    else
-        connectToHost();
+    connectToHost();
 }
 
 
@@ -91,36 +72,10 @@ StreamProvider::~StreamProvider()
 // PUBLIC
 //////////////////////////////////////////////////////////////////////////////////////////
 
-KURL
-StreamProvider::proxyUrl()
-{
-    if ( m_initSuccess ) {
-        KURL url;
-        url.setPort( m_usedPort );
-        url.setHost( "127.0.0.1" );
-        url.setProtocol( "http" );
-        return url;
-
-    } else
-        return m_url;
-}
-
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
-
-void
-StreamProvider::accept( int socket ) //SLOT
-{
-    DEBUG_FUNC_INFO
-
-    m_sockProxy.setSocket( socket );
-    m_sockProxy.waitForMore( KProtocolManager::proxyConnectTimeout() * 1000 );
-
-    connectToHost();
-}
-
 
 void
 StreamProvider::connectToHost() //SLOT
@@ -224,10 +179,7 @@ StreamProvider::readRemote() //SLOT
             if ( m_icyMode && bytesWrite > m_metaInt - m_byteCount )
                 bytesWrite = m_metaInt - m_byteCount;
 
-            if ( m_streamingMode == "Socket" )
-                bytesWrite = m_sockProxy.writeBlock( m_pBuf + index, bytesWrite );
-            else
-                emit streamData( m_pBuf + index, bytesWrite );
+            emit streamData( m_pBuf + index, bytesWrite );
 
             if ( bytesWrite == -1 ) { restartNoIcy(); return; }
 
@@ -286,8 +238,6 @@ StreamProvider::processHeader( Q_LONG &index, Q_LONG bytesRead )
 
             if ( m_streamUrl.startsWith( "www.", true ) )
                 m_streamUrl.prepend( "http://" );
-            if ( m_streamingMode == "Socket" )
-                m_sockProxy.writeBlock( m_headerStr.latin1(), m_headerStr.length() );
 
             m_headerFinished = true;
 
