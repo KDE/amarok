@@ -277,6 +277,7 @@ StreamProvider::processHeader( Q_LONG &index, Q_LONG bytesRead )
                 connectToHost();
                 return false;
             }
+
             m_metaInt = m_headerStr.section( "icy-metaint:", 1, 1, QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0 ).toInt();
             m_bitRate = m_headerStr.section( "icy-br:", 1, 1, QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0 ).toInt();
             m_streamName = m_headerStr.section( "icy-name:", 1, 1, QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0 );
@@ -335,7 +336,7 @@ StreamProvider::transmitData( const QString &data )
        bundle.title = codec->toUnicode( extractStr( data, "StreamTitle" ).latin1() );
     }
 
-    bundle.bitrate = m_bitRate;
+    bundle.bitrate.setNum(m_bitRate);
     bundle.genre = codec->toUnicode( m_streamGenre.latin1() );
 
     bundle.album = codec->toUnicode( m_streamName.stripWhiteSpace().latin1() );
