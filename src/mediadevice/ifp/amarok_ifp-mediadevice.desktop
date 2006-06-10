@@ -32,6 +32,8 @@ Name[xx]=xxiRiver iFP Media Devicexx
 Name[zh_CN]=iRiver iFP 媒体设备
 X-KDE-Library=libamarok_ifp-mediadevice
 Comment=Plugin for Amarok
+Comment[nl]=Plugin voor Amarok
+Comment[sv]=Insticksprogram för Amarok
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-plugintype=mediadevice

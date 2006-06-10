@@ -33,6 +33,8 @@ Name[xx]=xxGStreamer 0.10 Enginexx
 Name[zh_CN]=GStreamer 0.10 引擎
 X-KDE-Library=libamarok_gst10engine_plugin
 Comment=Plugin for Amarok
+Comment[nl]=Plugin voor Amarok
+Comment[sv]=Insticksprogram för Amarok
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-plugintype=engine

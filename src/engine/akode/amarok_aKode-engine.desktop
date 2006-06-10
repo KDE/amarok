@@ -42,6 +42,9 @@ Name[zh_TW]=aKode 解碼引擎
 ServiceTypes=Amarok/Plugin
 X-KDE-Library=libamarok_aKode-engine
 Comment=aKode audio-engine for Amarok
+Comment[da]=aKode lyd-motor for Amarok
+Comment[nl]=aKode audio-engine voor Amarok
+Comment[sv]=aKode ljudgränssnitt för Amarok
 
 X-KDE-Amarok-plugintype=engine
 X-KDE-Amarok-name=akode-engine

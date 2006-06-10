@@ -49,6 +49,9 @@ GenericName[zh_CN]=音频播放器
 GenericName[zh_TW]=音樂播放器
 Exec=amarok %U
 Comment=Uncle Rodney says, "10/10, Amarok is seriously super!"
+Comment[da]=Onkel Rodney siger, "10/10, Amarok er virkelig super!"
+Comment[nl]=Oom Rodney zegt, "10/10, Amarok is werkelijk fantastisch!"
+Comment[sv]=Farbror Rodney säger, "10/10, Amarok är verkligen fantastiskt!"
 Icon=amarok
 #don't add inode/directory to mimetypes it leads to misbehavior
 MimeType=application/asx;audio/aac;audio/ac3;audio/basic;audio/midi;audio/mp4;audio/mpeg;audio/mpegurl;audio/prs.sid;audio/vnd.rn-realaudio;audio/vorbis;audio/x-adpcm;audio/x-aac;audio/x-aiff;audio/x-flac;audio/x-m4a;audio/x-matroska;audio/x-midi;audio/x-mod;audio/x-mp2;audio/x-mp3;audio/x-mpegurl;audio/x-ms-wma;audio/x-musepack;audio/x-oggflac;audio/x-pn-realaudio;audio/x-scpls;audio/x-speex;audio/x-vorbis;audio/x-wav;

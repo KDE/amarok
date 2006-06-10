@@ -45,6 +45,9 @@ Name[zh_CN]=NMM 引擎
 Name[zh_TW]=NMM 解碼引擎
 X-KDE-Library=libamarok_nmmengine_plugin
 Comment=Amarok plugin
+Comment[da]=Plugin for Amarok
+Comment[nl]=Amarok-plugin
+Comment[sv]=Insticksprogram för Amarok
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-plugintype=engine

@@ -2,6 +2,8 @@
 Type=ServiceType
 X-KDE-ServiceType=Amarok/Plugin
 Comment=Plugin for Amarok
+Comment[nl]=Plugin voor Amarok
+Comment[sv]=Insticksprogram för Amarok
 
 # Type of plugin, e.g. "engine".
 [PropertyDef::X-KDE-Amarok-plugintype]

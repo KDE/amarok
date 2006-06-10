@@ -6,6 +6,7 @@ Name[ca]=Reproductor d'àudio genèric
 Name[da]=Generisk lydafspiller
 Name[de]=Generischer Media-Player
 Name[el]=Γενικός αναπαραγωγέας ήχου
+Name[fi]=Yleinen musiikkisoitin
 Name[fr]=Lecteur audio générique
 Name[ga]=Seinnteoir Ginearálta Fuaime
 Name[gl]=Reprodutor de Áudio
@@ -23,6 +24,8 @@ Name[uk]=Загальний аудіо-програвач
 Name[zh_CN]=通用音频播放器
 X-KDE-Library=libamarok_generic-mediadevice
 Comment=Plugin for Amarok
+Comment[nl]=Plugin voor Amarok
+Comment[sv]=Insticksprogram för Amarok
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-plugintype=mediadevice

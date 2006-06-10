@@ -40,6 +40,8 @@ Name[zh_CN]=Helix 引擎
 Name[zh_TW]=Helix 解碼引擎
 X-KDE-Library=libamarok_helixengine_plugin
 Comment=Plugin for Amarok
+Comment[nl]=Plugin voor Amarok
+Comment[sv]=Insticksprogram för Amarok
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-plugintype=engine
