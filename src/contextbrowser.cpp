@@ -2169,9 +2169,10 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
     qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
+    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID );    
     qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName, true );
-    qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
-    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    qb.sortByFunction( QueryBuilder::funcMax, QueryBuilder::tabSong, sortBy, true );
     qb.setOptions( QueryBuilder::optNoCompilations );
     values = qb.run();
 
