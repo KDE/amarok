@@ -103,6 +103,7 @@ ContextBar::restoreHeight()
     const int height = amaroK::config( "ContextBar" )->readNumEntry( "Height", 200 );
 
     m_browserBox->resize( width(), height );
+    m_pos = m_browserBox->height() + m_tabBar->height();
     return index;
 }
 
