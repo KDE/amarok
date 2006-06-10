@@ -1254,11 +1254,6 @@ void MultiTabBar::fontChange( const QFont& /* oldFont */ )
     repaint();
 }
 
-void MultiTabBar::setTabEnabled( int id, bool enabled )
-{
-    tab( id )->setEnabled( enabled );
-}
-
 QPtrList<MultiTabBarTab>* MultiTabBar::tabs() { return m_internal->tabs();}
 QPtrList<MultiTabBarButton>* MultiTabBar::buttons() { return & m_buttons;}
 

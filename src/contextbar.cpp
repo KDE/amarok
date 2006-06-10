@@ -347,7 +347,7 @@ ContextBar::indexForWidget( const QWidget *widget ) const
 void
 ContextBar::setEnabled( int index, const bool enabled )
 {
-    m_tabBar->setTabEnabled( index, enabled );
+    m_tabBar->tab( index )->setEnabled( enabled );
 }
 
 #include "contextbar.moc"

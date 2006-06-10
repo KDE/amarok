@@ -631,7 +631,7 @@ void ContextBrowser::saveHtmlData()
 }
 
 
-void ContextBrowser::paletteChange( const QPalette& pal )
+void ContextBrowser::paletteChange( const QPalette& /* pal */ )
 {
 //     KTabWidget::paletteChange( pal );
     HTMLView::paletteChange();
