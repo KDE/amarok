@@ -2132,11 +2132,6 @@ void CurrentTrackJob::showArtistsFaves( const QString &artist, uint artist_id )
 
 void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, uint album_id )
 {
-
-    const int sortBy = ( AmarokConfig::useScores() || !AmarokConfig::useRatings() )
-        ? QueryBuilder::valPercentage
-        : QueryBuilder::valRating;
-
     QString artistName = artist.isEmpty() ? escapeHTML( i18n( "This Artist" ) ) : escapeHTML( artist );
     QueryBuilder qb;
     QStringList values;
@@ -2145,10 +2140,9 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
     qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
-    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
-    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID );
     qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName, true );
-    qb.sortByFunction( QueryBuilder::funcMax, QueryBuilder::tabSong, sortBy, true );
+    qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.setOptions( QueryBuilder::optRemoveDuplicates );
     qb.setOptions( QueryBuilder::optNoCompilations );
     values = qb.run();
 
