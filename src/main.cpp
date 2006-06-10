@@ -73,7 +73,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Greg Meyer", I18N_NOOP( "Live CD, Bug squashing (oggb4mp3)" ), "greg@gkmweb.com" );
     aboutData.addCredit( "Harald Sitter", I18N_NOOP( "handbook enhancements, translations, bug fixes, screenshots, roKymoter (apachelogger)" ), "harald.sitter@kdemail.net" );
     aboutData.addCredit( "Jarkko Lehti", I18N_NOOP( "Tester, IRC channel operator, whipping" ), "grue@iki.fi" );
-    aboutData.addCredit( "Jocke Andersson", I18N_NOOP( "roKymoter (Firetech)" ), "ajocke@gmail.com" );
+    aboutData.addCredit( "Jocke Andersson", I18N_NOOP( "roKymoter and bug fixer (Firetech or Swedish Bitch)" ), "ajocke@gmail.com" );
     aboutData.addCredit( "Kenneth Wesley Wimer II", I18N_NOOP( "Icons" ), "kwwii@bootsplash.org" );
     aboutData.addCredit( "Marco Gulino", I18N_NOOP( "Konqueror Sidebar, some DCOP methods" ), "marco@kmobiletools.org" );
     aboutData.addCredit( "Melchior Franz", I18N_NOOP( "FHT routine, bugfixes" ), "mfranz@kde.org" );
