@@ -329,4 +329,18 @@ ContextBar::indexForName( const QString &name ) const
     return -1;
 }
 
+void
+ContextBar::setBrowserVisible( QWidget *widget, bool visible )
+{
+    return; //Code isn't finished yet...
+
+    int index = -1;
+    for( uint x = 0; x < m_browsers.count() && index == -1; ++x )
+        if( widget == m_browsers[x] )
+            index = x;
+
+    if( index != -1)
+        m_tabBar->tabs()->at( index )->setVisible( visible );
+}
+
 #include "contextbar.moc"

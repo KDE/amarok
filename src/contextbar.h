@@ -41,6 +41,7 @@ public:
     int visibleCount() const;
 
     void addBrowser( QWidget*, const QString&, const QString& );
+    void setBrowserVisible( QWidget*, bool );
     int restoreHeight();
 
     /// for internal use

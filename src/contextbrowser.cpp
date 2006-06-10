@@ -245,8 +245,8 @@ ContextBrowser::ContextBrowser( const char *name )
     m_contextBar->addBrowser( m_lyricsTab , i18n( "Lyrics" ), "document" );
     m_contextBar->addBrowser( m_wikiTab   , i18n( "Artist" ), "personal" );
 
-//     setTabEnabled( m_lyricsTab, false );
-//     setTabEnabled( m_wikiTab, false );
+    m_contextBar->setBrowserVisible( m_lyricsTab, false );
+    m_contextBar->setBrowserVisible( m_wikiTab, false );
 
     m_showRelated   = amaroK::config( "ContextBrowser" )->readBoolEntry( "ShowRelated", true );
     m_showSuggested = amaroK::config( "ContextBrowser" )->readBoolEntry( "ShowSuggested", true );
@@ -589,9 +589,9 @@ void ContextBrowser::engineStateChanged( Engine::State state, Engine::State oldS
                 showCurrentTrack();
             }
             blockSignals( true );
-//             setTabEnabled( m_lyricsTab, false );
+            m_contextBar->setBrowserVisible( m_lyricsTab, false );
             if ( m_contextBar->currentBrowser() != m_wikiTab ) {
-//                 setTabEnabled( m_wikiTab, false );
+                m_contextBar->setBrowserVisible( m_wikiTab, false );
                 m_dirtyWikiPage = true;
             }
             else // current tab is wikitab, disable some buttons.
@@ -607,8 +607,8 @@ void ContextBrowser::engineStateChanged( Engine::State state, Engine::State oldS
             if ( oldState != Engine::Paused )
                 m_metadataHistory.clear();
             blockSignals( true );
-//             setTabEnabled( m_lyricsTab, true );
-//             setTabEnabled( m_wikiTab, true );
+            m_contextBar->setBrowserVisible( m_lyricsTab, true );
+            m_contextBar->setBrowserVisible( m_wikiTab, true );
             m_wikiToolBar->setItemEnabled( WIKI_ARTIST, true );
             m_wikiToolBar->setItemEnabled( WIKI_ALBUM, true );
             m_wikiToolBar->setItemEnabled( WIKI_TITLE, true );
