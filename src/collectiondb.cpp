@@ -3554,21 +3554,25 @@ CollectionDB::checkCompilations( const QString &path, const bool temporary )
 QStringList
 CollectionDB::setCompilation( const QString &album, const bool enabled, const bool updateView )
 {
-    QStringList values = query( QString( "SELECT album.id FROM album WHERE album.name = '%1';" )
-              .arg( escapeString( album ) ) );
+    uint id = albumID( album, false, false, true );
+    QStringList retval;
 
-    if ( values.count() > 0 ) {
+    if ( id )
+    {
+        QString idString = QString::number( id );
         query( QString( "UPDATE tags SET sampler = %1 WHERE tags.album = %2;" )
                 .arg( enabled ? boolT() : boolF() )
-                .arg( values[0] ) ) ;
+                .arg( idString ) );
+        retval = query( QString( "SELECT url FROM tags WHERE tags.album = %1;" ).arg( idString ) );
     }
+
     // Update the Collection-Browser view,
     // using QTimer to make sure we don't manipulate the GUI from a thread
     if ( updateView )
         QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
 
     // return a list so tags can be updated
-    return query( QString( "SELECT url FROM tags WHERE tags.album = %1;" ).arg( values[0] ) );
+    return retval;
 }
 
 

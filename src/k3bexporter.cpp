@@ -71,7 +71,7 @@ void K3bExporter::exportSelectedTracks( int openmode )
 
 void K3bExporter::exportAlbum( const QString &album, int openmode )
 {
-    QString albumId = QString::number( CollectionDB::instance()->albumID( album, false ) );
+    QString albumId = QString::number( CollectionDB::instance()->albumID( album, false, false, true ) );
 
     QStringList values =
         CollectionDB::instance()->query(
@@ -91,7 +91,7 @@ void K3bExporter::exportAlbum( const QString &album, int openmode )
 
 void K3bExporter::exportArtist( const QString &artist, int openmode )
 {
-    const QString artistId = QString::number( CollectionDB::instance()->artistID( artist, false ) );
+    const QString artistId = QString::number( CollectionDB::instance()->artistID( artist, false, false, true ) );
 
     QStringList values =
         CollectionDB::instance()->query(

@@ -1440,7 +1440,22 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
             menu.insertItem( SmallIconSet( "cancel" ), i18n( "&Unmark as Compilation" ), COMPILATION_UNSET );
         }
 
-        QString currentAlbum;
+        QString trueItemText;
+
+        //Work out the true name of the album ( where Unknown is "" ) , and the 
+        if ( dynamic_cast<CollectionItem*>( item ) )
+        {
+            CollectionItem* collectItem = static_cast<CollectionItem*>( item );
+            trueItemText = collectItem->getSQLText( 0 );
+            if ( cat == CollectionBrowser::IdVisYearAlbum && !collectItem->isUnknown() )
+                trueItemText = trueItemText.right( trueItemText.length() - trueItemText.find( i18n( " - " ) ) - i18n( " - " ).length() );
+        }
+        else
+        {
+            trueItemText = item->text( 0 );
+            warning() << "RMB pressed for non-CollectionItem with text '" << trueItemText << '\'' << endl;
+        }
+
         switch( menu.exec( point ) )
         {
             case APPEND:
@@ -1459,34 +1474,19 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                 MediaBrowser::queue()->addURLs( selection );
                 break;
             case BURN_ARTIST:
-                K3bExporter::instance()->exportArtist( item->text(0) );
+                K3bExporter::instance()->exportArtist( trueItemText );
                 break;
             case BURN_ALBUM:
-                if ( cat == CollectionBrowser::IdVisYearAlbum )
-                    currentAlbum = item->text(0).right( item->text(0).length() - item->text(0).find( i18n(" - ") ) - i18n(" - ").length() ) ;
-                else
-                    currentAlbum = item->text(0);
-
-                K3bExporter::instance()->exportAlbum( currentAlbum );
+                K3bExporter::instance()->exportAlbum( trueItemText );
                 break;
             case BURN_CD:
                 K3bExporter::instance()->exportTracks( selection );
                 break;
             case COMPILATION_SET:
-                if ( cat == CollectionBrowser::IdVisYearAlbum )
-                    currentAlbum = item->text(0).right( item->text(0).length() - item->text(0).find( i18n(" - ") ) - i18n(" - ").length() ) ;
-                else
-                    currentAlbum = item->text(0);
-
-                setCompilation( currentAlbum, true );
+                setCompilation( trueItemText, true );
                 break;
             case COMPILATION_UNSET:
-                if ( cat == CollectionBrowser::IdVisYearAlbum )
-                    currentAlbum = item->text(0).right( item->text(0).length() - item->text(0).find( i18n(" - ") ) - i18n(" - ").length() ) ;
-                else
-                    currentAlbum = item->text(0);
-
-                setCompilation( currentAlbum, false );
+                setCompilation( trueItemText, false );
                 break;
             case ORGANIZE:
                 organizeFiles( listSelected(), i18n( "Organize Collection Files" ), false /* don't add to collection, just move */ );
@@ -2391,7 +2391,9 @@ CollectionView::setCompilation( const QString &album, bool compilation )
     //visual feedback
     QApplication::setOverrideCursor( KCursor::waitCursor() );
 
-    QStringList files = CollectionDB::instance()->setCompilation( album, compilation );
+    //Set it in the DB. We don't need to update the view now as we do it at the end.
+    QStringList files = CollectionDB::instance()->setCompilation( album, compilation, false );
+
     foreachType( QStringList, files ) {
         if ( !TagLib::File::isWritable( QFile::encodeName( *it ) ) )
             continue;

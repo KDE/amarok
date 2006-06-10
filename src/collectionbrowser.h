@@ -136,6 +136,7 @@ class CollectionItem : public KListViewItem {
             return ( !column && m_isUnknown ) ? "" : text( column );
         }
 
+        inline bool isUnknown() {return m_isUnknown;}
         inline bool isSampler() {return m_isSampler;}
 
     private:
