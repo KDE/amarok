@@ -1,4 +1,4 @@
-/***************************************************************************
+ /***************************************************************************
  *   Copyright (C) 2004, 2005 Max Howell <max.howell@methylblue.com>       *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -270,7 +270,8 @@ ContextBar::showHideBrowser( int index )
         }
     }
 
-    emit browserActivated( m_browsers.at(index) );
+    if (m_currentIndex != -1)
+        emit browserActivated( m_browsers.at(index) );
 }
 
 void
