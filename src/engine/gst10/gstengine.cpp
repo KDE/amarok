@@ -1,7 +1,7 @@
 /***************************************************************************
  *   Copyright (C) 2003-2005 by Mark Kretschmann <markey@web.de>           *
  *   Copyright (C) 2005 by Jakub Stachowski <qbast@go2.pl>                 *
- *   Portions Copyright (C) 2006 Paul Cifarelli <paul@cifarelli.net>       *
+ *   Copyright (C) 2006 Paul Cifarelli <paul@cifarelli.net>                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -27,7 +27,7 @@
 #include "equalizer/gstequalizer.h"
 #include "enginebase.h"
 #include "gstengine.h"
-//#include "streamsrc.h"
+#include "streamsrc.h"
 
 #include <math.h>
 #include <unistd.h>
@@ -44,6 +44,7 @@
 #include <kurl.h>
 
 #include <gst/gst.h>
+#include <iostream>
 
 #define RETURN_IF_PIPELINE_EMPTY if ( !m_pipelineFilled ) return;
 
@@ -60,7 +61,8 @@ AMAROK_EXPORT_PLUGIN( GstEngine )
 // CALLBACKS
 /////////////////////////////////////////////////////////////////////////////////////
 
-GstBusSyncReply
+//GstBusSyncReply
+gboolean
 GstEngine::bus_cb(GstBus*, GstMessage* msg, gpointer) // static
 {
    DEBUG_FUNC_INFO
@@ -79,9 +81,10 @@ GstEngine::bus_cb(GstBus*, GstMessage* msg, gpointer) // static
             QTimer::singleShot( 0, instance(), SLOT( handlePipelineError() ) );
 	    break;
 	}
-	case GST_MESSAGE_EOS:
-	     QTimer::singleShot( 0, instance(), SLOT( endOfStreamReached() ) );
-	     break;
+        //case GST_MESSAGE_EOS:
+        //   debug() << "EOS reached\n";
+	//     QTimer::singleShot( 0, instance(), SLOT( endOfStreamReached() ) );
+	//     break;
 	case GST_MESSAGE_TAG:
 	{
 	     gchar* string=NULL;
@@ -153,6 +156,30 @@ GstEngine::handoff_cb( GstPad*, GstBuffer* buf, gpointer arg) //static
    g_queue_push_tail(thisObj->m_delayq, buf);
 }
 
+void
+GstEngine::event_cb( GstPad*, GstEvent* event, gpointer /*arg*/) //static
+{
+   //GstEngine *thisObj = static_cast<GstEngine *>( arg );
+
+   std::cerr << "*** event_cb\n";
+   switch ( static_cast<int>(event->type) )
+   {
+      case GST_EVENT_EOS:
+         debug() << "EOS reached\n";
+         QTimer::singleShot( 0, instance(), SLOT( endOfStreamReached() ) );
+         break;
+      case GST_EVENT_TAG:
+      {
+         std::cerr << "GOT NEW TAG\n";
+      }
+      case GST_EVENT_NEWSEGMENT:
+         break;
+      default:
+         std::cerr << "** unknown event " << static_cast<int>(event->type) << std::endl;
+         break;
+   }
+}
+
 
 void
 GstEngine::candecode_newPad_cb( GstElement*, GstPad* pad, gboolean, gpointer ) //static
@@ -172,7 +199,7 @@ GstEngine::candecode_last_cb( GstElement*, gpointer ) //static
     DEBUG_FUNC_INFO
     instance()->m_canDecodeLast = true;
 }
-/*
+
 void
 GstEngine::kio_resume_cb() //static
 {
@@ -181,7 +208,6 @@ GstEngine::kio_resume_cb() //static
         debug() << "RESUMING kio transfer.\n";
     }
 }
-*/
 
 /////////////////////////////////////////////////////////////////////////////////////
 // CLASS GSTENGINE
@@ -189,11 +215,12 @@ GstEngine::kio_resume_cb() //static
 
 GstEngine::GstEngine()
         : Engine::Base()
-/*      , m_streamBuf( new char[STREAMBUF_SIZE] )
+        , m_gst_streamprovider(0)
+        , m_delayq(0)
+        , m_current(0)
+        , m_streamBuf( new char[STREAMBUF_SIZE] )
         , m_streamBuffering( false )
         , m_transferJob( 0 )
-*/      , m_delayq(0)
-        , m_current(0)
         , m_pipelineFilled( false )
         , m_fadeValue( 0.0 )
         , m_equalizerEnabled( false )
@@ -201,10 +228,17 @@ GstEngine::GstEngine()
 {
     DEBUG_FUNC_INFO
 
+#ifdef GST_KIOSTREAMS
+    addPluginProperty( "StreamingMode", "Signal" );
+#endif
     addPluginProperty( "HasConfigure",  "true" );
     addPluginProperty( "HasEqualizer",  "true" );
-    addPluginProperty( "HasKIO",        "false" );
 
+#ifdef GST_KIOSTREAMS
+    addPluginProperty( "HasKIO",        "true" );
+#else
+    addPluginProperty( "HasKIO",        "false" );
+#endif
     // initialize the scope delay queue
     m_delayq = g_queue_new();
 }
@@ -216,7 +250,9 @@ GstEngine::~GstEngine()
 
     destroyPipeline();
 
-//    delete[] m_streamBuf;
+#ifdef GST_KIOSTREAMS
+    delete[] m_streamBuf;
+#endif
 
     // Destroy scope delay queue
     g_queue_free(m_delayq);
@@ -292,7 +328,12 @@ GstEngine::canDecode( const KURL &url ) const
     g_signal_connect( G_OBJECT( decodebin ), "new-decoded-pad", G_CALLBACK( candecode_newPad_cb ), NULL );
     g_signal_connect( G_OBJECT( decodebin ), "no-more-pads", G_CALLBACK( candecode_last_cb ), NULL );
 
-    gst_element_set_state( pipeline, GST_STATE_PLAYING );
+    GstStateChangeReturn sret;
+    sret = gst_element_set_state( pipeline, GST_STATE_PLAYING );
+    if (sret == GST_STATE_CHANGE_ASYNC)
+       debug() << "gst set state returns ASYNC\n";
+    else
+       debug() << "gst set state does not return ASYNC\n";
 
     // Wait until found audio stream
 
@@ -337,27 +378,38 @@ GstEngine::length() const
 }
 
 
+#define GST_STATE_TIMEOUT 10000000
+
 Engine::State
 GstEngine::state() const
 {
     if ( !m_pipelineFilled )
         return m_url.isEmpty() ? Engine::Empty : Engine::Idle;
 
-    GstState s;
-    gst_element_get_state( m_gst_pipeline, &s, NULL, GST_CLOCK_TIME_NONE );
-    switch ( s )
+    GstStateChangeReturn sret;
+    GstState s, sp;
+    sret = gst_element_get_state( m_gst_pipeline, &s, &sp, GST_STATE_TIMEOUT );
+    if (sret != GST_STATE_CHANGE_FAILURE)
     {
-        case GST_STATE_NULL:
-            return Engine::Empty;
-        case GST_STATE_READY:
-            return Engine::Idle;
-        case GST_STATE_PLAYING:
-            return Engine::Playing;
-        case GST_STATE_PAUSED:
-            return Engine::Paused;
-
-        default:
-            return Engine::Empty;
+       switch ( s )
+       {
+          case GST_STATE_NULL:
+             return Engine::Empty;
+          case GST_STATE_READY:
+             return Engine::Idle;
+          case GST_STATE_PLAYING:
+             return Engine::Playing;
+          case GST_STATE_PAUSED:
+             return Engine::Paused;
+             
+          default:
+             return Engine::Empty;
+       }
+    }
+    else
+    {
+       debug() << "Gst get state fails\n";
+       return Engine::Empty;
     }
 }
 
@@ -583,19 +635,80 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     { 
        if ( !createPipeline() )
           return false;
-        
+
+       GstElementFactory *factory = gst_element_factory_find("gnomevfssrc");
+       if (factory)
+       {
+          debug() << "**** FOUND factory for gnomevfssrc\n";
+          gst_object_unref( GST_OBJECT(factory) );
+       }
+       else
+          debug() << "**** no factory for gnomevfssrc\n";
+                
        GstElement *src;
-       src = gst_element_make_from_uri(GST_URI_SRC, url.prettyURL().utf8(), NULL);
+#ifdef GST_KIOSTREAMS
+       if (url.isLocalFile())
+#endif
+          src = gst_element_make_from_uri(GST_URI_SRC, QFile::encodeName(url.url()), NULL);
+#ifdef GST_KIOSTREAMS
+       else
+       {
+          // Create our custom streamsrc element, which transports data into the pipeline
+          debug() << "***** creating streamsrc\n";
+          src = GST_ELEMENT( gst_streamsrc_new( m_streamBuf, &m_streamBufIndex, &m_streamBufStop, &m_streamBuffering ) );
+          if (src)
+          {
+             // create the streamprovider
+             m_gst_streamprovider = new StreamProvider( url, "Signal", *this );
+             connect( m_gst_streamprovider, SIGNAL(streamData( char*, int )),
+                      this,                 SLOT(newStreamData( char*, int )) );
+              
+             //g_object_set( src, "buffer_min", STREAMBUF_MIN, NULL );
+             //gst_bin_add ( GST_BIN ( m_gst_thread ), src );
+             g_signal_connect( G_OBJECT( src ), "kio_resume", G_CALLBACK( kio_resume_cb ), NULL );
+          
+             m_streamBufIndex = 0;
+             m_streamBufStop = false;
+             m_streamBuffering = true;
+          }
+          else
+             debug() << "UNABLE TO CREATE STREAMSRC\n";
+
+          if ( !stream ) {
+             // Use KIO for non-local files, except http, which is handled by StreamProvider
+             m_transferJob = KIO::get( url, false, false );
+             connect( m_transferJob, SIGNAL( data( KIO::Job*, const QByteArray& ) ), SLOT( newKioData( KIO::Job*, const QByteArray& ) ) );
+             connect( m_transferJob, SIGNAL( result( KIO::Job* ) ), SLOT( kioFinished() ) );
+          }
+       }
+#endif
+
        if (src)
        {
           debug() << "******* Got src element for URI " << url.prettyURL().utf8() << endl;
 
           m_gst_src = src;
+
           gst_bin_add( GST_BIN( m_gst_pipeline ), m_gst_src );
-          g_object_set( G_OBJECT(m_gst_src), "location", static_cast<const char*>( QFile::encodeName( url.url() ) ), NULL );
+          g_object_set( G_OBJECT(m_gst_src), "location", static_cast<const char*>( QFile::encodeName( url.url() ) ), 
+                        //                   "iradio-mode", true,
+                                              NULL );
+
+          //gchar *name;
+          //gboolean mdenabled = false;
+          //g_object_get( G_OBJECT(m_gst_src), "name",  &name, "iradio-mode", &mdenabled, NULL );
+          //debug() << "NAME WAS " << name << " md enabled? " << mdenabled << endl;
           
           if ( !( m_gst_decodebin = createElement( "decodebin", m_gst_pipeline ) ) ) { destroyPipeline(); return false; }
           g_signal_connect( G_OBJECT( m_gst_decodebin ), "new-decoded-pad", G_CALLBACK( newPad_cb ), NULL );
+
+          GstPad *p;
+          p = gst_element_get_pad (m_gst_decodebin, "sink");
+          if (p)
+          {
+             gst_pad_add_event_probe (p, G_CALLBACK(event_cb), this);
+             gst_object_unref (p);
+          }
           
           // Link elements. The link from decodebin to audioconvert will be made in the newPad-callback
           gst_element_link( m_gst_src, m_gst_decodebin );
@@ -608,25 +721,6 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
           return false; 
        }
     }
-/*    else {
-        // Create our custom streamsrc element, which transports data into the pipeline
-        m_gst_src = GST_ELEMENT( gst_streamsrc_new( m_streamBuf, &m_streamBufIndex, &m_streamBufStop, &m_streamBuffering ) );
-        gst_element_set( m_gst_src, "buffer_min", STREAMBUF_MIN, NULL );
-        gst_bin_add ( GST_BIN ( m_gst_thread ), m_gst_src );
-        g_signal_connect( G_OBJECT( m_gst_src ), "kio_resume", G_CALLBACK( kio_resume_cb ), m_gst_thread );
-
-        m_streamBufIndex = 0;
-        m_streamBufStop = false;
-        m_streamBuffering = true;
-
-        if ( !stream ) {
-            // Use KIO for non-local files, except http, which is handled by StreamProvider
-            m_transferJob = KIO::get( url, false, false );
-            connect( m_transferJob, SIGNAL( data( KIO::Job*, const QByteArray& ) ), SLOT( newKioData( KIO::Job*, const QByteArray& ) ) );
-            connect( m_transferJob, SIGNAL( result( KIO::Job* ) ), SLOT( kioFinished() ) );
-        }
-    }
-*/
 
     setVolume( m_volume );
     setEqualizerEnabled( m_equalizerEnabled );
@@ -641,7 +735,8 @@ GstEngine::play( uint offset )  //SLOT
     DEBUG_BLOCK
 
     // Try to play input pipeline; if fails, destroy input bin
-    if ( !gst_element_set_state( m_gst_pipeline, GST_STATE_PLAYING ) ) {
+    GstStateChangeReturn sret;
+    if ( !(sret = gst_element_set_state( m_gst_pipeline, GST_STATE_PLAYING )) ) {
         warning() << "Could not set thread to PLAYING.\n";
         destroyPipeline();
         return false;
@@ -666,14 +761,14 @@ GstEngine::stop()  //SLOT
 
     if ( m_pipelineFilled )
     {
-        // Is a fade running?
-        if ( m_fadeValue == 0.0 ) {
-            // Not fading --> start fade now
-            m_fadeValue = 1.0;
-        }
-        else
-            // Fading --> stop playback
-            destroyPipeline();
+       // Is a fade running?
+       if ( m_fadeValue == 0.0 ) {
+          // Not fading --> start fade now
+          m_fadeValue = 1.0;
+       }
+       else
+          // Fading --> stop playback
+          destroyPipeline(); 
     }
 
     emit stateChanged( Engine::Empty );
@@ -708,7 +803,7 @@ GstEngine::seek( uint ms )  //SLOT
     gst_element_get_state(m_gst_pipeline, NULL, NULL, 100*GST_MSECOND);
 }
 
-/*
+
 void
 GstEngine::newStreamData( char* buf, int size )  //SLOT
 {
@@ -717,6 +812,7 @@ GstEngine::newStreamData( char* buf, int size )  //SLOT
         debug() << "Stream buffer overflow!" << endl;
     }
 
+    //debug() << "new stream data, size " << size << endl;
     sendBufferStatus();
 
     // Copy data into stream buffer
@@ -724,7 +820,6 @@ GstEngine::newStreamData( char* buf, int size )  //SLOT
     // Adjust index
     m_streamBufIndex += size;
 }
-*/
 
 void
 GstEngine::setEqualizerEnabled( bool enabled ) //SLOT
@@ -799,6 +894,8 @@ void GstEngine::timerEvent( QTimerEvent* )
             debug() << "[Gst-Engine] Fade-out finished.\n";
             destroyPipeline();
             killTimers();
+            delete m_gst_streamprovider;
+            m_gst_streamprovider = 0;
         }
         setVolume( volume() );
     }
@@ -839,11 +936,13 @@ GstEngine::endOfStreamReached()  //SLOT
     emit trackEnded();
 }
 
-/*
+
 void
 GstEngine::newKioData( KIO::Job*, const QByteArray& array )  //SLOT
 {
     const int size = array.size();
+
+    debug() << "&&& have a KIO BUFFER\n";
 
     if ( m_streamBufIndex >= STREAMBUF_MAX ) {
         debug() << "SUSPENDING kio transfer.\n";
@@ -862,7 +961,6 @@ GstEngine::newKioData( KIO::Job*, const QByteArray& array )  //SLOT
     // Adjust index
     m_streamBufIndex += size;
 }
-*/
 
 void
 GstEngine::newMetaData()  //SLOT
@@ -870,7 +968,8 @@ GstEngine::newMetaData()  //SLOT
     emit metaData( m_metaBundle );
 }
 
-/*
+
+//#ifdef GST_KIOSTREAMS
 void
 GstEngine::kioFinished()  //SLOT
 {
@@ -882,7 +981,7 @@ GstEngine::kioFinished()  //SLOT
     // Tell streamsrc: This is the end, my friend
     m_streamBufStop = true;
 }
-*/
+//#endif
 
 void
 GstEngine::errorNoOutput() //SLOT
@@ -1002,7 +1101,8 @@ GstEngine::createPipeline()
                            m_gst_volume, m_gst_audioscale, m_gst_audiosink, NULL );
 
     gst_bin_add( GST_BIN(m_gst_pipeline), m_gst_audiobin);
-    gst_bus_set_sync_handler(gst_pipeline_get_bus(GST_PIPELINE(m_gst_pipeline)), bus_cb, NULL);
+    //gst_bus_set_sync_handler(gst_pipeline_get_bus(GST_PIPELINE(m_gst_pipeline)), bus_cb, NULL);
+    gst_bus_add_watch(gst_pipeline_get_bus(GST_PIPELINE(m_gst_pipeline)), bus_cb, NULL);
 
     m_pipelineFilled = true;
     return true;
@@ -1018,6 +1118,17 @@ GstEngine::destroyPipeline()
 
     clearScopeQ();
 
+#ifdef GST_KIOSTREAMS
+    if ( m_gst_streamprovider )
+    {
+       // Tell streamsrc: This is the end, my friend
+       m_streamBufStop = true;
+       delete m_gst_streamprovider;
+       m_gst_streamprovider = 0;
+       destroyPipeline();
+    }
+#endif
+
     if ( m_pipelineFilled ) {
         debug() << "Unreffing pipeline." << endl;
         gst_element_set_state( m_gst_pipeline, GST_STATE_NULL );
@@ -1027,10 +1138,12 @@ GstEngine::destroyPipeline()
     }
 
     // Destroy KIO transmission job
-/*    if ( m_transferJob ) {
-        m_transferJob->kill();
-        m_transferJob = 0;
-    } */
+#ifdef GST_KIOSTREAMS
+    if ( m_transferJob ) {
+       m_transferJob->kill();
+       m_transferJob = 0;
+    }
+#endif
 }
 
 
@@ -1062,7 +1175,8 @@ GstEngine::setupAudioCD( const QString& device, unsigned track, bool pause )
     return false;
 }
 
-/*
+
+//#ifdef GST_KIOSTREAMS
 void
 GstEngine::sendBufferStatus()
 {
@@ -1071,7 +1185,7 @@ GstEngine::sendBufferStatus()
         emit statusText( i18n( "Buffering.. %1%" ).arg( MIN( percent, 100 ) ) );
     }
 }
-*/
+//#endif
 
 gint64 GstEngine::pruneScope()
 {

@@ -4,12 +4,17 @@ kde_module_LTLIBRARIES = \
 SUBDIRS = \
     config equalizer
 
+
 INCLUDES = \
     -I$(top_srcdir)/amarok/src/engine/gst10/config \
     -I$(top_srcdir)/amarok/src/plugin \
+    -I$(top_srcdir)/amarok/src/amarokcore \
     -I$(top_srcdir)/amarok/src \
     $(CFLAGS_GST10) \
     $(all_includes)
+
+AM_CPPFLAGS = \
+    -DGST_KIOSTREAMS
 
 libamarok_gst10engine_plugin_la_LIBADD = \
     $(top_builddir)/amarok/src/libamarok.la \
@@ -26,6 +31,8 @@ libamarok_gst10engine_plugin_la_LDFLAGS = \
 
 libamarok_gst10engine_plugin_la_SOURCES = \
     gstconfigdialog.cpp \
+    streamprovider.cpp \
+    streamsrc.cpp \
     gstconfigdialogbase.ui \
     gstengine.cpp
 

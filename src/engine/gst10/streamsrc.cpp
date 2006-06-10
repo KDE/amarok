@@ -1,4 +1,5 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
+// Portions Copyright (C) 2006 Paul Cifarelli <paul@cifarelli.net>
 // See COPYING file for licensing information.
 
 
@@ -9,10 +10,6 @@
 
 #define DEBUG_PREFIX "[StreamSrc] "
 #define DEFAULT_BLOCKSIZE 4096
-
-GST_DEBUG_CATEGORY_STATIC ( gst_streamsrc_debug );
-#define GST_CAT_DEFAULT gst_streamsrc_debug
-
 
 /* signals and args */
 enum {
@@ -31,7 +28,16 @@ GstElementDetails gst_streamsrc_details =
     GST_ELEMENT_DETAILS ( (gchar*) "Stream Source",
                           (gchar*) "Source",
                           (gchar*) "Reads streaming audio from TitleProxy",
-                          (gchar*) "Mark Kretschmann <markey@web.de>" );
+                          (gchar*) "Mark Kretschmann <markey@web.de>, Paul Cifarelli <paul@cifarelli.net>" );
+
+
+GstStaticPadTemplate src_factory =
+GST_STATIC_PAD_TEMPLATE (
+  "src",
+  GST_PAD_SRC,
+  GST_PAD_ALWAYS,
+  GST_STATIC_CAPS ("ANY")
+);
 
 static guint gst_streamsrc_signals[ LAST_SIGNAL ] = { 0 };
 
@@ -39,7 +45,10 @@ static guint gst_streamsrc_signals[ LAST_SIGNAL ] = { 0 };
     GST_DEBUG_CATEGORY_INIT (gst_streamsrc_debug, "streamsrc", 0, "streamsrc element");
 
 
-GST_BOILERPLATE_FULL ( GstStreamSrc, gst_streamsrc, GstElement, GST_TYPE_ELEMENT, _do_init );
+static gboolean gst_streamsrc_setcaps(GstPad *pad, GstCaps *caps);
+static void     gst_streamsrc_loop(GstStreamSrc * filter);
+
+GST_BOILERPLATE ( GstStreamSrc, gst_streamsrc, GstElement, GST_TYPE_ELEMENT );
 
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -53,6 +62,9 @@ gst_streamsrc_base_init ( gpointer g_class )
 
     GstElementClass * gstelement_class = GST_ELEMENT_CLASS ( g_class );
     gst_element_class_set_details ( gstelement_class, &gst_streamsrc_details );
+
+    gst_element_class_add_pad_template ( gstelement_class,
+                                         gst_static_pad_template_get (&src_factory));
 }
 
 
@@ -66,6 +78,10 @@ gst_streamsrc_class_init ( GstStreamSrcClass * klass )
     gobject_class = G_OBJECT_CLASS( klass );
     parent_class = GST_ELEMENT_CLASS( g_type_class_ref( GST_TYPE_ELEMENT ) );
 
+    if (!G_IS_OBJECT_CLASS(gobject_class))
+       kdDebug() << "THIS IS NOT AN OBJECT CLASS\n";
+
+//why do these property installs fail?
     g_object_class_install_property ( G_OBJECT_CLASS ( klass ), ARG_BLOCKSIZE,
                                       g_param_spec_ulong ( "blocksize", "Block size",
                                                            "Size in bytes to read per buffer", 1, G_MAXULONG, DEFAULT_BLOCKSIZE,
@@ -94,20 +110,168 @@ gst_streamsrc_class_init ( GstStreamSrcClass * klass )
 
 
 void
-gst_streamsrc_init ( GstStreamSrc * streamsrc )
+gst_streamsrc_init ( GstStreamSrc *streamsrc, GstStreamSrcClass *streamsrcclass )
 {
     kdDebug() << k_funcinfo << endl;
 
-    streamsrc->srcpad = gst_pad_new ( "src", GST_PAD_SRC );
+    GstElementClass * klass = GST_ELEMENT_CLASS(streamsrcclass);
 
-    gst_pad_set_get_function ( streamsrc->srcpad, gst_streamsrc_get );
+    streamsrc->srcpad  = gst_pad_new_from_template(gst_element_class_get_pad_template(klass, "src"), "src");
+
+    kdDebug() << "srcpad: " << streamsrc->srcpad << endl; 
+
+    gst_pad_set_setcaps_function( streamsrc->srcpad, gst_streamsrc_setcaps);
+
     gst_element_add_pad ( GST_ELEMENT ( streamsrc ), streamsrc->srcpad );
+
+    kdDebug() << "here\n"; 
 
     streamsrc->stopped = false;
     streamsrc->curoffset = 0;
 
     // Properties
     streamsrc->blocksize = DEFAULT_BLOCKSIZE;
+}
+
+static void
+gst_streamsrc_loop(GstStreamSrc *streamsrc)
+{
+   GstFlowReturn ret;
+   GstState state = GST_STATE( GST_ELEMENT( streamsrc ) );
+
+
+   if ( state == GST_STATE_VOID_PENDING ||
+        state == GST_STATE_NULL )
+      return;
+
+   if ( streamsrc->stopped )
+   {
+      gst_element_send_event( GST_ELEMENT( streamsrc ), gst_event_new_flush_start());
+      return;
+   }
+
+   // Signal KIO/StreamProvider to resume transfer when buffer reaches our low limit
+   if ( *streamsrc->m_bufIndex < (int) streamsrc->buffer_resume )
+      g_signal_emit ( G_OBJECT( streamsrc ), gst_streamsrc_signals[SIGNAL_KIO_RESUME], 0 );
+   
+   if ( *streamsrc->m_bufStop && *streamsrc->m_bufIndex == 0 ) {
+      // Send EOS event when buffer is empty
+      kdDebug() << "Streamsrc EOS\n";
+      streamsrc->stopped = true;
+      gst_element_send_event( GST_ELEMENT( streamsrc ), gst_event_new_eos());
+
+      // commit suicide
+      gst_pad_stop_task( streamsrc->srcpad );
+      return;
+   }
+
+   // When buffering and buffer index is below minimum level, do nothing
+   else if ( *streamsrc->m_buffering && *streamsrc->m_bufIndex < (int) streamsrc->buffer_min )
+      return;
+   
+   *streamsrc->m_buffering = *streamsrc->m_bufIndex ? false : true;
+   const int readBytes = MIN( *streamsrc->m_bufIndex, streamsrc->blocksize );
+
+   if ( readBytes )
+   {
+      GstBuffer* buf = gst_buffer_new_and_alloc( readBytes );
+      guint8*    data = GST_BUFFER_DATA( buf );
+      
+      // Copy stream buffer content into gst buffer
+      memcpy( data, streamsrc->m_buf, readBytes );
+      // Move stream buffer content to beginning
+      memmove( streamsrc->m_buf, streamsrc->m_buf + readBytes, *streamsrc->m_bufIndex );
+      
+      // Adjust buffer index
+      *streamsrc->m_bufIndex -= readBytes;
+
+      gst_buffer_set_data(buf, data, readBytes);
+      streamsrc->curoffset += readBytes;
+      
+      /* now push buffer downstream */
+      ret = gst_pad_push (streamsrc->srcpad, buf);
+      
+      buf = NULL; /* gst_pad_push() took ownership of buffer */
+      
+      if (ret != GST_FLOW_OK) 
+      {
+         //kdDebug() << "pad_push failed: " << gst_flow_get_name (ret) << endl;
+         return;
+      }
+   }
+
+}
+
+
+
+GstStateChangeReturn
+gst_streamsrc_change_state (GstElement * element, GstStateChange trans)
+{
+   GstStateChangeReturn ret = GST_STATE_CHANGE_SUCCESS;
+   GstStreamSrc *streamsrc = GST_STREAMSRC (element);
+
+   kdDebug() << k_funcinfo << endl;
+
+   switch ( trans ) {
+      case GST_STATE_CHANGE_NULL_TO_READY:
+         break;
+      case GST_STATE_CHANGE_READY_TO_PAUSED:
+         gst_pad_start_task (streamsrc->srcpad, (GstTaskFunction) gst_streamsrc_loop, streamsrc);
+         break;
+      case GST_STATE_CHANGE_PAUSED_TO_PLAYING:
+         break;
+      default:
+         break;
+   }
+
+   if ( parent_class->change_state )
+   {
+      ret =  GST_ELEMENT_CLASS(parent_class)->change_state( element, trans );
+      kdDebug() << "parent class is not null and returns " << ret << endl;
+   }
+   else
+   {
+      kdDebug() << "parent class is null\n";
+      return GST_STATE_CHANGE_FAILURE;
+   }
+
+   switch ( trans ) {
+      case GST_STATE_CHANGE_PLAYING_TO_PAUSED:
+         break;
+      case GST_STATE_CHANGE_PAUSED_TO_READY:
+         gst_pad_stop_task (streamsrc->srcpad);
+         break;
+      case GST_STATE_CHANGE_READY_TO_NULL:
+         break;
+      default:
+         break;
+   }
+         
+   return GST_STATE_CHANGE_SUCCESS;
+}
+
+
+
+gboolean
+gst_streamsrc_setcaps(GstPad *pad, GstCaps *caps)
+{
+   //GstStructure *structure = gst_caps_get_structure (caps, 0);
+   GstStreamSrc *streamsrc = GST_STREAMSRC (GST_OBJECT_PARENT (pad));
+
+   /* we don't touch the properties of the data.
+    * That means we can set the given caps unmodified on the next
+    * element, and use that negotiation return value as ours. */
+   if (!gst_pad_set_caps (streamsrc->srcpad, caps))
+      return FALSE;
+   
+   /* Capsnego succeeded, get the stream properties for internal
+    * usage and return success. */
+   //gst_structure_get_int (structure, "rate", &streamsrc->samplerate);
+   //gst_structure_get_int (structure, "channels", &stream->channels);
+   
+   kdDebug() << "Caps negotiation succeeded in streamsrc\n";
+   
+   return TRUE;
 }
 
 
@@ -121,6 +285,7 @@ gst_streamsrc_new ( char* buf, int* index, bool* stop, bool* buffering )
     GstStreamSrc* object = GST_STREAMSRC( g_object_new( GST_TYPE_STREAMSRC, NULL ) );
     gst_object_set_name( (GstObject*) object, "StreamSrc" );
 
+    
     object->m_buf = buf;
     object->m_bufIndex = index;
     object->m_bufStop = stop;
@@ -133,14 +298,16 @@ gst_streamsrc_new ( char* buf, int* index, bool* stop, bool* buffering )
 void
 gst_streamsrc_dispose( GObject *object )
 {
-    kdDebug() << "BEGIN: " << k_funcinfo << endl;
+   kdDebug() << "BEGIN: " << k_funcinfo << endl;
 
-    GstStreamSrc* obj = GST_STREAMSRC( object );
-    *obj->m_buffering = false;
+   GstStreamSrc* obj = GST_STREAMSRC( object );
+   *obj->m_buffering = false;
 
-    G_OBJECT_CLASS( parent_class )->dispose( object );
+   gst_pad_stop_task (obj->srcpad);
+      
+   G_OBJECT_CLASS( parent_class )->dispose( object );
 
-    kdDebug() << "END: " << k_funcinfo << endl;
+   kdDebug() << "END: " << k_funcinfo << endl;
 }
 
 
@@ -197,73 +364,4 @@ gst_streamsrc_get_property ( GObject * object, guint prop_id, GValue * value, GP
 }
 
 
-GstElementStateReturn
-gst_streamsrc_change_state (GstElement * element)
-{
-    kdDebug() << k_funcinfo << endl;
-
-    switch (GST_STATE_TRANSITION (element)) {
-        case GST_STATE_NULL_TO_READY:
-            break;
-        case GST_STATE_READY_TO_NULL:
-            break;
-        case GST_STATE_READY_TO_PAUSED:
-            break;
-        case GST_STATE_PAUSED_TO_READY:
-            break;
-        default:
-            break;
-    }
-
-    if ( parent_class->change_state )
-        return parent_class->change_state( element );
-
-    return GST_STATE_SUCCESS;
-}
-
-
-GstData*
-gst_streamsrc_get ( GstPad* pad )
-{
-    g_return_val_if_fail( pad != NULL, NULL );
-    GstStreamSrc* const src = GST_STREAMSRC( GST_OBJECT_PARENT( pad ) );
-
-    if ( src->stopped )
-        return GST_DATA( gst_event_new( GST_EVENT_FLUSH ) );
-
-    // Signal KIO to resume transfer when buffer reaches our low limit
-    if ( *src->m_bufIndex < (int) src->buffer_resume )
-        g_signal_emit ( G_OBJECT( src ), gst_streamsrc_signals[SIGNAL_KIO_RESUME], 0 );
-
-    if ( *src->m_bufStop && *src->m_bufIndex == 0 ) {
-        // Send EOS event when buffer is empty
-        kdDebug() << "Streamsrc EOS\n";
-        src->stopped = true;
-        gst_element_set_eos( GST_ELEMENT( src ) );
-        return GST_DATA( gst_event_new( GST_EVENT_EOS ) );
-    }
-    // When buffering and buffer index is below minimum level, return filler event (dummy)
-    else if ( *src->m_buffering && *src->m_bufIndex < (int) src->buffer_min )
-        return GST_DATA( gst_event_new( GST_EVENT_FILLER ) );
-
-    *src->m_buffering = *src->m_bufIndex ? false : true;
-    const int readBytes = MIN( *src->m_bufIndex, src->blocksize );
-
-    GstBuffer* const buf = gst_buffer_new_and_alloc( readBytes );
-    guint8*    const data = GST_BUFFER_DATA( buf );
-
-    // Copy stream buffer content into gst buffer
-    memcpy( data, src->m_buf, readBytes );
-    // Move stream buffer content to beginning
-    memmove( src->m_buf, src->m_buf + readBytes, *src->m_bufIndex );
-
-    // Adjust buffer index
-    *src->m_bufIndex -= readBytes;
-
-    GST_BUFFER_OFFSET( buf )     = src->curoffset;
-    GST_BUFFER_OFFSET_END( buf ) = src->curoffset + readBytes;
-    src->curoffset += readBytes;
-
-    return GST_DATA ( buf );
-}
 

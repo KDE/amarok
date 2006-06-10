@@ -1,4 +1,5 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
+// (c) 2006 Paul Cifarelli <paul@cifarelli.net>
 // See COPYING file for licensing information.
 
 
@@ -20,6 +21,8 @@ G_BEGIN_DECLS
 #define GST_IS_STREAMSRC_CLASS(obj) \
   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_STREAMSRC))
 
+
+GType gst_streamsrc_get_type();
 
 typedef struct _GstStreamSrc GstStreamSrc;
 typedef struct _GstStreamSrcClass GstStreamSrcClass;
@@ -59,8 +62,8 @@ struct _GstStreamSrcClass
 GstStreamSrc* gst_streamsrc_new ( char* buf, int* index, bool* stop, bool* buffering );
 void gst_streamsrc_set_property( GObject * object, guint prop_id, const GValue * value, GParamSpec * pspec );
 void gst_streamsrc_get_property( GObject * object, guint prop_id, GValue * value, GParamSpec * pspec );
-GstElementStateReturn gst_streamsrc_change_state(GstElement* element);
-GstData *gst_streamsrc_get( GstPad * pad );
+GstStateChangeReturn gst_streamsrc_change_state(GstElement* element, GstStateChange trans );
+GstFlowReturn gst_streamsrc_get( GstPad * pad, guint64 offset, guint length, GstBuffer **buffer );
 void gst_streamsrc_dispose( GObject *object );
 
 

@@ -24,6 +24,7 @@
 
 #include "gstconfigdialog.h"
 #include "enginebase.h"
+#include "streamprovider.h"
 
 #include <qmutex.h>
 #include <qptrlist.h>
@@ -32,7 +33,6 @@
 #include <kio/jobclasses.h>
 
 #include <gst/gst.h>
-//#include "adapter.h"
 
 class QTimerEvent;
 class KURL;
@@ -69,6 +69,9 @@ class GstEngine : public Engine::Base
 
         amaroK::PluginConfig* configure() const;
 
+        void gstStatusText( const QString& str ) { emit statusText( str ); }
+        void gstMetaData( Engine::SimpleMetaBundle &bundle ) { emit metaData( bundle ); }
+
     public slots:
         bool load( const KURL&, bool stream );
         bool play( uint offset );
@@ -77,7 +80,7 @@ class GstEngine : public Engine::Base
         void seek( uint ms );
 
         /** Copies incoming radio stream data from StreamProvider into StreamSrc's buffer */
-//        void newStreamData( char* data, int size );
+        void newStreamData( char* data, int size );
 
         /** Set whether equalizer is enabled */
         void setEqualizerEnabled( bool );
@@ -92,10 +95,10 @@ class GstEngine : public Engine::Base
     private slots:
         void handlePipelineError();
         void endOfStreamReached();
-//        void kioFinished();
+        void kioFinished();
 
         /** Copies incoming data from KIO into StreamSrc's buffer */
-//        void newKioData( KIO::Job*, const QByteArray& array );
+        void newKioData( KIO::Job*, const QByteArray& array );
 
         /** Called when no output sink was selected. Shows the GStreamer engine settings dialog. */
         void errorNoOutput();
@@ -123,17 +126,23 @@ class GstEngine : public Engine::Base
 
         // CALLBACKS:
         /** Bus message */
-        static GstBusSyncReply bus_cb( GstBus*, GstMessage*, gpointer );
+        //static GstBusSyncReply bus_cb( GstBus*, GstMessage*, gpointer );
+        static gboolean bus_cb( GstBus*, GstMessage*, gpointer );
+        /** Called at end of track */
+        static void eos_cb( GstElement*, gpointer );
         /** Called when decodebin has generated a new pad */
         static void newPad_cb( GstElement*, GstPad*, gboolean, gpointer );
         /** Used by canDecode(). When called, the format probably can be decoded */
         static void candecode_newPad_cb( GstElement*, GstPad*, gboolean, gpointer );
         /** Used by canDecode(). Called after last pad so it makes no sense to wait anymore */
         static void candecode_last_cb( GstElement*, gpointer );
+        /** Called when new metadata tags have been found */
+        static void event_cb( GstPad*, GstEvent* event, gpointer arg);
+        //static void found_tag_cb( GstElement*, GstElement*, GstTagList*, gpointer );
         /** Duplicates audio data for application side processing */
         static void handoff_cb( GstPad*, GstBuffer*, gpointer );
         /** Called when the KIO buffer is empty */
-//        static void kio_resume_cb();
+        static void kio_resume_cb();
 
         /** Get a list of available plugins from a specified Class */
         QStringList getPluginList( const QCString& classname ) const;
@@ -148,7 +157,7 @@ class GstEngine : public Engine::Base
         bool setupAudioCD( const QString& device, unsigned track, bool pause );
 
         /** Beams the streaming buffer status to amaroK */
-//        void sendBufferStatus();
+        void sendBufferStatus();
 
         /////////////////////////////////////////////////////////////////////////////////////
         // DATA MEMBERS
@@ -181,8 +190,12 @@ class GstEngine : public Engine::Base
         GstElement* m_gst_audioscale;
         GstElement* m_gst_audiosink;
 
+        StreamProvider* m_gst_streamprovider;
+
         QString m_gst_error;
         QString m_gst_debug;
+
+        int m_metacount;
 
         //////////
         // scope
@@ -201,13 +214,14 @@ class GstEngine : public Engine::Base
         void clearScopeQ();
 
         // These variables are shared between gst-engine and streamsrc
-/*        char*    m_streamBuf;
+        char*    m_streamBuf;
         int      m_streamBufIndex;
         bool     m_streamBufStop;
         bool     m_streamBuffering;
 
         KIO::TransferJob* m_transferJob;
-        QMutex            m_mutexScope; */
+        QMutex            m_mutexScope;
+
         bool              m_pipelineFilled;
         float             m_fadeValue;
 
