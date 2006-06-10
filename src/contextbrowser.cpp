@@ -244,11 +244,8 @@ ContextBrowser::ContextBrowser( const char *name )
              Scrobbler::instance(), SLOT(subTrack( long, long, long )) );
 
     m_contextBar->addBrowser( m_contextTab, i18n( "Music" ) , "today" );
-    m_contextBar->addBrowser( m_lyricsTab , i18n( "Lyrics" ), "document" );
-    m_contextBar->addBrowser( m_wikiTab   , i18n( "Artist" ), "personal" );
-
-    m_contextBar->setBrowserVisible( m_lyricsTab, false );
-    m_contextBar->setBrowserVisible( m_wikiTab, false );
+    m_contextBar->addBrowser( m_lyricsTab , i18n( "Lyrics" ), "document", false );
+    m_contextBar->addBrowser( m_wikiTab   , i18n( "Artist" ), "personal", false );
 
     m_showRelated   = amaroK::config( "ContextBrowser" )->readBoolEntry( "ShowRelated", true );
     m_showSuggested = amaroK::config( "ContextBrowser" )->readBoolEntry( "ShowSuggested", true );
@@ -591,9 +588,9 @@ void ContextBrowser::engineStateChanged( Engine::State state, Engine::State oldS
                 showCurrentTrack();
             }
             blockSignals( true );
-            m_contextBar->setBrowserVisible( m_lyricsTab, false );
+            m_contextBar->setEnabled( m_lyricsTab, false );
+            m_contextBar->setEnabled( m_wikiTab, false );
             if ( m_contextBar->currentBrowser() != m_wikiTab ) {
-                m_contextBar->setBrowserVisible( m_wikiTab, false );
                 m_dirtyWikiPage = true;
             }
             else // current tab is wikitab, disable some buttons.
@@ -609,8 +606,8 @@ void ContextBrowser::engineStateChanged( Engine::State state, Engine::State oldS
             if ( oldState != Engine::Paused )
                 m_metadataHistory.clear();
             blockSignals( true );
-            m_contextBar->setBrowserVisible( m_lyricsTab, true );
-            m_contextBar->setBrowserVisible( m_wikiTab, true );
+            m_contextBar->setEnabled( m_lyricsTab, true );
+            m_contextBar->setEnabled( m_wikiTab, true );
             m_wikiToolBar->setItemEnabled( WIKI_ARTIST, true );
             m_wikiToolBar->setItemEnabled( WIKI_ALBUM, true );
             m_wikiToolBar->setItemEnabled( WIKI_TITLE, true );
@@ -646,34 +643,6 @@ void ContextBrowser::reloadStyleSheet()
     m_currentTrackPage->setUserStyleSheet( HTMLView::loadStyleSheet() );
     m_lyricsPage->setUserStyleSheet( HTMLView::loadStyleSheet() );
     m_wikiPage->setUserStyleSheet( HTMLView::loadStyleSheet() );
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
-// PROTECTED SLOTS
-//////////////////////////////////////////////////////////////////////////////////////////
-
-//parts of this function from ktabwidget.cpp, copyright (C) 2003 Zack Rusin and Stephan Binner
-//fucking setCurrentTab() isn't virtual so we have to override this instead =(
-void ContextBrowser::wheelDelta( int delta )
-{
-/*    if ( count() < 2 || delta == 0 )
-        return;
-
-    int index = currentPageIndex(), start = index;
-    do
-    {
-        if( delta < 0 )
-            index = (index + 1) % count();
-        else
-        {
-            index = index - 1;
-            if( index < 0 )
-                index = count() - 1;
-        }
-        if( index == start ) // full circle, none enabled
-            return;
-    } while( !isTabEnabled( page( index ) ) );
-    setCurrentPage( index );*/
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

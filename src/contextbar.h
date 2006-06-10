@@ -40,8 +40,7 @@ public:
     int count() const { return m_browsers.count(); }
     int visibleCount() const;
 
-    void addBrowser( QWidget*, const QString&, const QString& );
-    void setBrowserVisible( QWidget*, bool );
+    void addBrowser( QWidget*, const QString&, const QString&, const bool enabled = true );
     int restoreHeight();
 
     /// for internal use
@@ -57,18 +56,21 @@ public slots:
     void showHideBrowser( int );
     void showHideVisibleBrowser( int );
     void closeCurrentBrowser() { showHideBrowser( m_currentIndex ); }
+    void setEnabled( int, const bool );
+    void setEnabled( QWidget *widget , const bool enabled ) { setEnabled( indexForWidget( widget ), enabled ); }
 
 signals:
     void browserActivated( QWidget* );
 
 private:
     int indexForName( const QString& ) const;
+    int indexForWidget( const QWidget* ) const;
 
     void adjustWidgetSizes();
     uint maxBrowserHeight() const { return uint( height() / 1.5 );  }
 
 
-    uint           m_pos;         ///the x-axis position of m_divider
+    uint           m_pos;         ///the y-axis position of m_divider
     QVBox         *m_playlistBox; ///parent to playlist, playlist filter and toolbar
     QWidget       *m_divider;     ///a qsplitter like widget
     MultiTabBar   *m_tabBar;

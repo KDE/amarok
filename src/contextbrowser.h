@@ -68,9 +68,6 @@ class ContextBrowser : public QWidget, public EngineObserver
         void engineStateChanged( Engine::State, Engine::State = Engine::Empty );
         void paletteChange( const QPalette& );
 
-    protected slots:
-        void wheelDelta( int delta );
-
     private slots:
         void tabChanged( QWidget *page );
         void slotContextMenu( const QString& urlString, const QPoint& point );

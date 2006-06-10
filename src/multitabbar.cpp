@@ -376,7 +376,7 @@ bool MultiTabBarInternal::eventFilter( QObject *, QEvent *e )
                 newTab = i;
                 break;
             }
-            if ( m_tabs.at( newTab )->visible() )
+            if ( m_tabs.at( newTab )->visible() && m_tabs.at( newTab )->isEnabled() )
                 break;
             // try one tab more
             newTab -= delta;
@@ -1011,9 +1011,12 @@ void MultiTabBarTab::drawButtonAmarok( QPainter *paint )
     if ( isOn() ) {
         fillColor = blendColors( colorGroup().highlight(), colorGroup().background(), static_cast<int>( m_animCount * 3.5 ) );
         textColor = blendColors( colorGroup().highlightedText(), colorGroup().text(), static_cast<int>( m_animCount * 4.5 ) );
-    } else {
+    } else if ( isEnabled() ) {
         fillColor = blendColors( colorGroup().background(), colorGroup().highlight(), static_cast<int>( m_animCount * 3.5 ) );
         textColor = blendColors( colorGroup().text(), colorGroup().highlightedText(), static_cast<int>( m_animCount * 4.5 ) );
+    } else {
+        fillColor = colorGroup().background();
+        textColor = colorGroup().text();
     }
 
     if( m_position == MultiTabBar::Left || m_position == MultiTabBar::Right ) {
@@ -1249,6 +1252,11 @@ void MultiTabBar::fontChange( const QFont& /* oldFont */ )
     for ( uint i = 0;i < tabs() ->count();i++ )
         tabs() ->at( i ) ->resize();
     repaint();
+}
+
+void MultiTabBar::setTabEnabled( int id, bool enabled )
+{
+    tab( id )->setEnabled( enabled );
 }
 
 QPtrList<MultiTabBarTab>* MultiTabBar::tabs() { return m_internal->tabs();}

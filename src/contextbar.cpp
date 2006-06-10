@@ -104,6 +104,10 @@ ContextBar::restoreHeight()
 
     m_browserBox->resize( width(), height );
     m_pos = m_browserBox->height() + m_tabBar->height();
+
+    // without this, the browser isn't correctly resized if the start tab wasn't active when quitting last time
+    adjustWidgetSizes();
+
     return index;
 }
 
@@ -207,7 +211,7 @@ ContextBar::event( QEvent *e )
 }
 
 void
-ContextBar::addBrowser( QWidget *widget, const QString &title, const QString& icon )
+ContextBar::addBrowser( QWidget *widget, const QString &title, const QString &icon, const bool enabled )
 {
     const int id = m_tabBar->tabs()->count(); // the next available id
     const QString name( widget->name() );
@@ -219,6 +223,7 @@ ContextBar::addBrowser( QWidget *widget, const QString &title, const QString& ic
     m_tabBar->appendTab( SmallIcon( icon ), id, title );
     tab = m_tabBar->tab( id );
     tab->setFocusPolicy( QWidget::NoFocus ); //FIXME you can focus on the tab, but they respond to no input!
+    tab->setEnabled( enabled );
 
     //we use a SignalMapper to show/hide the corresponding browser when tabs are clicked
     connect( tab, SIGNAL(clicked()), m_mapper, SLOT(map()) );
@@ -329,18 +334,20 @@ ContextBar::indexForName( const QString &name ) const
     return -1;
 }
 
-void
-ContextBar::setBrowserVisible( QWidget *widget, bool visible )
+int
+ContextBar::indexForWidget( const QWidget *widget ) const
 {
-    return; //Code isn't finished yet...
-
-    int index = -1;
-    for( uint x = 0; x < m_browsers.count() && index == -1; ++x )
+    for( uint x = 0; x < m_browsers.count(); ++x )
         if( widget == m_browsers[x] )
-            index = x;
+            return x;
 
-    if( index != -1)
-        m_tabBar->tabs()->at( index )->setVisible( visible );
+    return -1;
+}
+
+void
+ContextBar::setEnabled( int index, const bool enabled )
+{
+    m_tabBar->setTabEnabled( index, enabled );
 }
 
 #include "contextbar.moc"

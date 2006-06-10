@@ -144,6 +144,11 @@ class MultiTabBar: public QWidget
         */
         uint sizePerTab();
 
+        /**
+        * enable or disable a tab
+        */
+        void setTabEnabled( int id, bool enabled );
+
     protected:
         friend class MultiTabBarButton;
         virtual void fontChange( const QFont& );
