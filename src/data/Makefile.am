@@ -3,7 +3,7 @@ amarokdatadir = \
 
 amarokdata_DATA = \
     Cool-Streams.xml \
-    amaroK_1.4_welcome.ogg \
+    Amarok_1.4_Welcome.ogg \
     ball.png \
     dot.png \
     equalizer_presets.xml \
