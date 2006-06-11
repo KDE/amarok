@@ -1019,12 +1019,12 @@ void MultiTabBarTab::drawButtonAmarok( QPainter *paint )
         textColor = colorGroup().text();
     }
 
+    const QPixmap icon = iconSet()->pixmap( QIconSet::Small, isEnabled() ? QIconSet::Normal : QIconSet::Disabled );
+
     if( m_position == MultiTabBar::Left || m_position == MultiTabBar::Right ) {
         QPixmap pixmap( height(), width() );
         pixmap.fill( fillColor );
         QPainter painter( &pixmap );
-
-        const QPixmap icon = iconSet() ->pixmap( QIconSet::Small, QIconSet::Normal );
 
         // Draw the frame
         painter.setPen( colorGroup().mid() );
@@ -1053,8 +1053,6 @@ void MultiTabBarTab::drawButtonAmarok( QPainter *paint )
         QPixmap pixmap( width(), height() );
         pixmap.fill( fillColor );
         QPainter painter( &pixmap );
-
-        const QPixmap icon = iconSet() ->pixmap( QIconSet::Small, QIconSet::Normal );
 
         // Draw the frame
         painter.setPen( colorGroup().mid() );
