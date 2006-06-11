@@ -412,7 +412,7 @@ class QuizPlugin < Plugin
             m.reply "Hint: #{q.hint}"
             q.hinted = true
 
-            if q.hintrange.length == 0
+            if q.hint == q.answer_core
                 m.reply "#{Bold}#{Color}04BUST!#{Color}#{Bold} This round is over. #{Color}04Minus one point for #{m.sourcenick}#{Color}."
 
                 stats = nil
