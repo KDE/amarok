@@ -365,7 +365,7 @@ AM_CONDITIONAL(with_helix, test x$build_helix != xno)
 AC_CHECK_HEADERS(linux/inotify.h)
 
 if test x"$ac_cv_header_linux_inotify_h" = x"yes"; then
-	AC_DEFINE(HAVE_INOTIFY, 1, [have inotify])
+    AC_DEFINE(HAVE_INOTIFY, 1, [have inotify])
 fi
 
 ###############################################################################
