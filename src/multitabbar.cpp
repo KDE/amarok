@@ -31,7 +31,6 @@
 
 #include <math.h>
 
-#include <qapplication.h>
 #include <qbutton.h>
 #include <qfontmetrics.h>
 #include <qlayout.h>
@@ -40,8 +39,10 @@
 #include <qstyle.h>
 #include <qtimer.h>
 
+#include <kapplication.h>
 #include <kconfig.h>
 #include <kdebug.h>
+#include <kiconeffect.h>
 #include <kiconloader.h>
 #include <klocale.h>
 #include <kpopupmenu.h>
@@ -1019,7 +1020,11 @@ void MultiTabBarTab::drawButtonAmarok( QPainter *paint )
         textColor = colorGroup().text();
     }
 
-    const QPixmap icon = iconSet()->pixmap( QIconSet::Small, isEnabled() ? QIconSet::Normal : QIconSet::Disabled );
+    QPixmap icon = iconSet()->pixmap( QIconSet::Small, QIconSet::Normal );
+
+    // Apply icon effect when widget disabled. Should really be cached, but *shrug*.
+    if( !isEnabled() )
+        icon = kapp->iconLoader()->iconEffect()->apply( icon, KIcon::Small, KIcon::DisabledState );
 
     if( m_position == MultiTabBar::Left || m_position == MultiTabBar::Right ) {
         QPixmap pixmap( height(), width() );
