@@ -46,8 +46,13 @@ Name[zh_CN]=xine 引擎
 Name[zh_TW]=xine 解碼引擎
 X-KDE-Library=libamarok_xine-engine
 Comment=Plugin for Amarok
+Comment[ga]=Breiseán AmaroK
+Comment[ja]=Amarok用プラグイン
 Comment[nl]=Plugin voor Amarok
+Comment[pt]='Plugin' para o Amarok
+Comment[pt_BR]='Plugin' para o Amarok
 Comment[sv]=Insticksprogram för Amarok
+Comment[zh_CN]=Amarok 插件
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-plugintype=engine

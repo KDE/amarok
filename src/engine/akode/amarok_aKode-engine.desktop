@@ -43,8 +43,13 @@ ServiceTypes=Amarok/Plugin
 X-KDE-Library=libamarok_aKode-engine
 Comment=aKode audio-engine for Amarok
 Comment[da]=aKode lyd-motor for Amarok
+Comment[ga]=Inneall fuaime aKode le haghaidh AmaroK
+Comment[ja]=Amarok用aKodeオーディオエンジン
 Comment[nl]=aKode audio-engine voor Amarok
+Comment[pt]=Motor de áudio do aKode para o Amarok
+Comment[pt_BR]=Motor de áudio do aKode para o Amarok
 Comment[sv]=aKode ljudgränssnitt för Amarok
+Comment[zh_CN]=Amarok 的 aKode 音频引擎
 
 X-KDE-Amarok-plugintype=engine
 X-KDE-Amarok-name=akode-engine
