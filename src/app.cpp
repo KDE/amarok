@@ -704,6 +704,7 @@ App::applyColorScheme()
     using amaroK::ColorScheme::AltBase;
     int h, s, v;
     QWidget* const browserBar = static_cast<QWidget*>( playlistWindow()->child( "BrowserBar" ) );
+    QWidget* const contextBrowser = static_cast<QWidget*>( ContextBrowser::instance() );
 
     if( AmarokConfig::schemeKDE() )
     {
@@ -711,6 +712,7 @@ App::applyColorScheme()
 
         playlistWindow()->unsetPalette();
         browserBar->unsetPalette();
+        contextBrowser->unsetPalette();
 
         PlayerWidget::determineAmarokColors();
     }
@@ -755,6 +757,7 @@ App::applyColorScheme()
         //all children() derive their palette from this
         playlistWindow()->setPalette( QPalette( group, group, group ) );
         browserBar->unsetPalette();
+        contextBrowser->setPalette( QPalette( group, group, group ) );
     }
 
     else if( AmarokConfig::schemeCustom() )
@@ -790,6 +793,7 @@ App::applyColorScheme()
         // we only colour the middle section since we only
         // allow the user to choose two colours
         browserBar->setPalette( QPalette( group, group, group ) );
+        contextBrowser->setPalette( QPalette( group, group, group ) );
         playlistWindow()->unsetPalette();
     }
 
