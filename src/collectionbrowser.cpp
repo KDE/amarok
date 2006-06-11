@@ -27,7 +27,7 @@
 #include "threadweaver.h"
 #include "qstringx.h"
 
-#include <taglib/tfile.h> //TagLib::File::isWritable
+#include <taglib/tfile.h>   //TagLib::File::isWritable
 
 #include <unistd.h>         //CollectionView ctor
 

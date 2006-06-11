@@ -258,7 +258,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
                         SLOT(dropped( const KFileItem*, QDropEvent*, const KURL::List& )) );
 
     setSpacing( 4 );
-    setFocusProxy( m_dir ); //so the dirOperator is focussed when we get focus events
+    setFocusProxy( m_dir ); //so the dirOperator is focused when we get focus events
     // Toolbar is more than 250px wide, BrowserBar doesn't allow that. -> Resizing issues.
     setMinimumWidth( 250 /* toolbar->sizeHint().width() */ );
 }
