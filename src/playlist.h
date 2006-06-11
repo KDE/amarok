@@ -200,7 +200,6 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void clear();
         void copyToClipboard( const QListViewItem* = 0 ) const;
         void deleteSelectedFiles();
-        void trashSelectedFiles();
         void ensureItemCentered( QListViewItem* item );
         void playCurrentTrack();
         void playNextTrack( const bool forceNext = true );

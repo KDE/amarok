@@ -114,9 +114,6 @@ namespace amaroK
      */
     LIBAMAROK_EXPORT QString saveLocation( const QString &directory = QString::null ); //defined in collectionreader.cpp
 
-    /// whether to allow deleting files
-    bool useDelete(); //defined in playlist.cpp
-
     KIO::Job *trashFiles( const KURL::List &files ); //defined in app.cpp
 
     /**

@@ -15,6 +15,7 @@
 #include "collectionbrowser.h"
 #include "collectiondb.h"
 #include "debug.h"
+#include "deletedialog.h"
 #include "directorylist.h"
 #include "k3bexporter.h"
 #include "mediabrowser.h"
@@ -1420,18 +1421,9 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18n("Organize File...", "Organize %n Files..." , selection.count() )
                 , ORGANIZE );
 
-        #if KDE_IS_VERSION( 3, 3, 91 )
-        const bool shiftPressed = KApplication::keyboardMouseState() & Qt::ShiftButton;
-        #else
-        const bool shiftPressed = KApplication::keyboardModifiers() & ShiftMask;
-        #endif
+        fileMenu.insertItem( SmallIconSet( "editdelete" ), i18n("Delete File...", "Delete %n Files..." , selection.count() )
+                , DELETE );
 
-        if( amaroK::useDelete() || shiftPressed )
-            fileMenu.insertItem( SmallIconSet( "editdelete" ), i18n("Delete File...", "Delete %n Files..." , selection.count() )
-                    , DELETE );
-        else
-            fileMenu.insertItem( SmallIconSet( "edittrash" ), i18n("Move to Trash...", "Move %n Files to Trash..." , selection.count() )
-                    , TRASH );
         menu.insertItem( SmallIconSet( "folder" ), i18n("Manage Files"), &fileMenu, FILE_MENU );
 
         if ( cat == CollectionBrowser::IdAlbum || cat == CollectionBrowser::IdVisYearAlbum ) {
@@ -1492,16 +1484,11 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                 organizeFiles( listSelected(), i18n( "Organize Collection Files" ), false /* don't add to collection, just move */ );
                 break;
             case DELETE:
-                deleteSelectedFiles();
-                break;
-            case TRASH:
-                // TODO We need to check which files have been trashed successfully
-                if( amaroK::trashFiles( selection ) )
-                {
-                    CollectionDB::instance()->removeSongs( selection );
-                    m_dirty = true;
-                    QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
-                }
+                KURL::List files = listSelected();
+                DeleteDialog::showTrashDialog(this, files);
+                CollectionDB::instance()->removeSongs( files );
+                m_dirty = true;
+                QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
                 break;
         }
     }
@@ -1581,37 +1568,6 @@ CollectionView::showTrackInfo() //SLOT
      }
 }
 
-void
-CollectionView::deleteSelectedFiles() //SLOT
-{
-
-     KURL::List urls = listSelected();
-
-    const int count  = urls.count();
-    QString text = i18n( "<p>You have selected one file to be <b>irreversibly</b> deleted.",
-                     "<p>You have selected %n files to be <b>irreversibly</b> deleted.", count );
-
-    int button = KMessageBox::warningContinueCancel( this,
-                                                     text,
-                                                     QString::null,
-                                                     KStdGuiItem::del() );
-
-    if ( button == KMessageBox::Continue )
-    {
-        // TODO We need to check which files have been deleted successfully
-        KIO::DeleteJob* job = KIO::del( urls );
-
-        job->setAutoErrorHandlingEnabled( false );
-
-        amaroK::StatusBar::instance()->newProgressOperation( job )
-                .setDescription( i18n("Deleting files") );
-
-        // we must handle delete errors somehow
-        CollectionDB::instance()->removeSongs( urls );
-        m_dirty = true;
-        QTimer::singleShot( 0, this, SLOT( renderView() ) );
-    }
-}
 
 void
 CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, bool copy )  //SLOT

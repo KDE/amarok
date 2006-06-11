@@ -211,7 +211,6 @@ class CollectionView : public KListView
         void fetchCover();
         /** Shows dialog with information on selected track */
         void showTrackInfo();
-        void deleteSelectedFiles();
 
     private:
         enum Tag { Title, Artist, Composer, Album, Genre, Length, DiscNumber, Track, Year,

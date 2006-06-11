@@ -72,6 +72,8 @@ libamarok_la_SOURCES = \
     cuefile.cpp \
     dbsetup.ui  \
     dbsetup.ui.h \
+    deletedialog.cpp \
+    deletedialogbase.ui \
     deviceconfiguredialog.cpp \
     devicemanager.cpp \
     directorylist.cpp \

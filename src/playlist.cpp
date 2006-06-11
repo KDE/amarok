@@ -21,6 +21,7 @@
 #include "collectiondb.h"
 #include "collectionbrowser.h"
 #include "columnlist.h"
+#include "deletedialog.h"
 #include "devicemanager.h"
 #include "enginecontroller.h"
 #include "expression.h"
@@ -90,16 +91,6 @@ extern "C"
 namespace amaroK
 {
     const DynamicMode *dynamicMode() { return Playlist::instance()->dynamicMode(); }
-    bool useDelete()
-    {
-#if KDE_IS_VERSION( 3, 3, 91 ) // prior versions don't have a good trashing mechanism
-        KConfig c( QString::null, true /*read only*/, true /*use globals*/ );
-        c.setGroup( "KDE" );
-        return c.readBoolEntry( "ShowDeleteCommand", true );
-#else
-        return true;
-#endif
-    }
 }
 
 /**
@@ -3395,60 +3386,9 @@ Playlist::deleteSelectedFiles() //SLOT
     for( MyIt it( this, MyIt::Selected );
          it.current();
          urls << static_cast<PlaylistItem*>( *it )->url(), ++it );
-
-    //NOTE we assume that currentItem is the main target
-    const int count  = urls.count();
-    QString text;
-    if (count == 1)  // remember: there are languages that use singular also for 0 or 2
-        text = i18n("<p>You have selected the file <i>'%1'</i> to be <b>irreversibly</b> deleted.")
-                    .arg(static_cast<PlaylistItem*>( currentItem() )->url().fileName() );
-    else
-        text = i18n( "<p>You have selected one file to be <b>irreversibly</b> deleted.",
-                     "<p>You have selected %n files to be <b>irreversibly</b> deleted.", count );
-
-    int button = KMessageBox::warningContinueCancel( this,
-                                                     text,
-                                                     QString::null,
-                                                     KStdGuiItem::del() );
-
-    if ( button == KMessageBox::Continue )
-    {
-        // TODO We need to check which files have been deleted successfully
-        KIO::DeleteJob* job = KIO::del( urls );
-        connect( job, SIGNAL(result( KIO::Job* )), SLOT(removeSelectedItems()) );
-
-        job->setAutoErrorHandlingEnabled( false );
-
-        amaroK::StatusBar::instance()->newProgressOperation( job )
-                .setDescription( i18n("Deleting files") );
-
-        // we must handle delete errors somehow
-        CollectionDB::instance()->removeSongs( urls );
-        QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
-    }
-}
-
-void
-Playlist::trashSelectedFiles() //SLOT
-{
-    if( isLocked() ) return;
-
-    KURL::List urls;
-
-    //assemble a list of what needs removing
-    for( MyIt it( this, MyIt::Selected );
-         it.current();
-         urls << static_cast<PlaylistItem*>( *it )->url(), ++it );
-
-    // TODO We need to check which files have been trashed successfully
-    if( KIO::Job* job = amaroK::trashFiles( urls ) )
-    {
-        connect( job, SIGNAL(result( KIO::Job* )), SLOT(removeSelectedItems()) );
-
-        // we must handle errors somehow
-        CollectionDB::instance()->removeSongs( urls );
-        QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
-    }
+    DeleteDialog::showTrashDialog(this, urls);
+    CollectionDB::instance()->removeSongs( urls );
+    QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
 }
 
 void
@@ -3879,20 +3819,9 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     popup.insertItem( SmallIconSet( "remove" ), i18n( "&Remove From Playlist" ), this, SLOT( removeSelectedItems() ), Key_Delete, REMOVE );
 
-    #if KDE_IS_VERSION( 3, 3, 91 )
-    const bool shiftPressed = KApplication::keyboardMouseState() & Qt::ShiftButton;
-    #else
-    const bool shiftPressed = KApplication::keyboardModifiers() & ShiftMask;
-    #endif
-
-    if( amaroK::useDelete() || shiftPressed )
-        popup.insertItem( SmallIconSet( "editdelete" ), itemCount == 1
+    popup.insertItem( SmallIconSet( "editdelete" ), itemCount == 1
                 ? i18n("&Delete File")
                 : i18n("&Delete Selected Files"), this, SLOT( deleteSelectedFiles() ), SHIFT+Key_Delete, DELETE );
-    else
-        popup.insertItem( SmallIconSet( "edittrash" ), itemCount == 1
-                ? i18n( "Move to &Trash" )
-                : i18n( "Move Files to &Trash" ), this, SLOT( trashSelectedFiles() ), SHIFT+Key_Delete, TRASH );
 
     popup.insertSeparator();
 

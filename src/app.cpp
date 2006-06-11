@@ -1071,7 +1071,8 @@ KIO::Job *App::trashFiles( const KURL::List &files )
     connect( job, SIGNAL( result( KIO::Job* ) ), this, SLOT( slotTrashResult( KIO::Job* ) ) );
     return job;
 #else
-    return 0;
+    KIO::Job* job = KIO::move( files, KGlobalSettings::trashPath() );
+    return job;
 #endif
 }
 
