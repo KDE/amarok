@@ -118,6 +118,7 @@ ContextBar::polish()
 
     QWidget::polish();
 
+/* None of the browsers have a minimum height right now
     uint M = 0;
     foreachType( BrowserList, m_browsers ) {
         const uint m = (*it)->minimumHeight();
@@ -130,6 +131,9 @@ ContextBar::polish()
     }
 
     m_browserBox->setMinimumHeight( M );
+*/
+    m_browserBox->setMinimumHeight( 150 );
+
     const int index = restoreHeight();
 
     if (index != -1)
