@@ -146,8 +146,6 @@ INotify::doJob()
 
     while ( 1 )
     {
-        debug() << "INotify Loop runs..." << endl;
-
         char buf[BUF_LEN];
         int len, i = 0;
         len = read( m_fd, buf, BUF_LEN );
@@ -168,9 +166,6 @@ INotify::doJob()
                 {
                     struct inotify_event *event;
                     event = (struct inotify_event *) &buf[i];
-
-                    if ( event->len )
-                        debug() << "INotify changed: " << event->name << endl;
 
                     i += EVENT_SIZE + event->len;
                 }
