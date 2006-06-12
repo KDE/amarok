@@ -1290,7 +1290,7 @@ Playlist::advanceDynamicTrack( PlaylistItem *item )
 
     //Just starting to play from stopped, don't append something needlessely
     bool dontAppend = EngineController::instance()->engine()->state() == Engine::Empty;
-        
+
     //keep upcomingTracks requirement, this seems to break StopAfterCurrent
     if( !dontAppend && m_stopAfterTrack != m_currentTrack )
     {
@@ -3789,7 +3789,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     popup.insertSeparator();
 
-    popup.insertItem( SmallIconSet( "edit" ), (itemCount == 1
+    popup.insertItem( SmallIconSet( amaroK::icon( "edit" ) ), (itemCount == 1
             ? i18n( "&Edit Tag '%1'" )
             : i18n( "&Edit '%1' Tag for Selected Tracks" )).arg( tagName ), 0, 0, Key_F2, EDIT );
 
@@ -3800,17 +3800,17 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
                         .arg( KStringHandler::rsqueeze( tag, 30 ).replace( "&", "&&" ) ), FILL_DOWN );
 
     if( itemCount == 1 )
-        popup.insertItem( SmallIconSet( "editcopy" ), i18n( "&Copy Tags to Clipboard" ), 0, 0, CTRL+Key_C, COPY );
+        popup.insertItem( SmallIconSet( amaroK::icon( "editcopy" ) ), i18n( "&Copy Tags to Clipboard" ), 0, 0, CTRL+Key_C, COPY );
 
     popup.insertSeparator();
 
     KPopupMenu burnMenu;
-    burnMenu.insertItem( SmallIconSet( "cdrom_unmount" ), ( itemCount > 1 ) ? i18n( "Selected Tracks" ) : i18n("This Track" ), BURN_SELECTION );
+    burnMenu.insertItem( SmallIconSet( amaroK::icon( "burn" ) ), ( itemCount > 1 ) ? i18n( "Selected Tracks" ) : i18n("This Track" ), BURN_SELECTION );
     if ( !item->album().isEmpty() )
-        burnMenu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("This Album: %1").arg( item->album().string().replace( "&", "&&" ) ), BURN_ALBUM );
+        burnMenu.insertItem( SmallIconSet( amaroK::icon( "burn" ) ), i18n("This Album: %1").arg( item->album().string().replace( "&", "&&" ) ), BURN_ALBUM );
     if ( !item->artist().isEmpty() )
-        burnMenu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("All Tracks by %1").arg( item->artist().string().replace( "&", "&&" ) ), BURN_ARTIST );
-    popup.insertItem( SmallIconSet( "cdwriter_unmount" ), i18n("Burn"), &burnMenu, BURN_MENU );
+        burnMenu.insertItem( SmallIconSet( amaroK::icon( "burn" ) ), i18n("All Tracks by %1").arg( item->artist().string().replace( "&", "&&" ) ), BURN_ARTIST );
+    popup.insertItem( SmallIconSet( amaroK::icon( "burn" ) ), i18n("Burn"), &burnMenu, BURN_MENU );
     popup.insertSeparator();
 
     if( itemCount > 1 )
@@ -3820,9 +3820,10 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         popup.insertSeparator();
     }
 
-    popup.insertItem( SmallIconSet( "remove" ), i18n( "&Remove From Playlist" ), this, SLOT( removeSelectedItems() ), Key_Delete, REMOVE );
+    popup.insertItem( SmallIconSet( amaroK::icon( "remove_from_playlist" ) ), i18n( "&R
+     Playlist" ), this, SLOT( removeSelectedItems() ), Key_Delete, REMOVE );
 
-    popup.insertItem( SmallIconSet( "editdelete" ), itemCount == 1
+    popup.insertItem( SmallIconSet( amaroK::icon( "remove" ) ), itemCount == 1
                 ? i18n("&Delete File")
                 : i18n("&Delete Selected Files"), this, SLOT( deleteSelectedFiles() ), SHIFT+Key_Delete, DELETE );
 
