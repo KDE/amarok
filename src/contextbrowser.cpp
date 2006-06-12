@@ -2139,10 +2139,12 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
     qb.clear();
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
+    qb.addReturnFunctionValue( QueryBuilder::funcMax, QueryBuilder::tabYear, QueryBuilder::valName );
     qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
-    qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName, true );
-    qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
-    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID );
+    qb.sortByFunction( QueryBuilder::funcMax, QueryBuilder::tabYear, QueryBuilder::valName, true );
+    qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName, true );
     qb.setOptions( QueryBuilder::optNoCompilations );
     values = qb.run();
 
@@ -2161,8 +2163,8 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
         uint vectorPlace = 0;
         // find album of the current track (if it exists)
         while ( vectorPlace < values.count() && values[ vectorPlace+1 ] != QString::number( album_id ) )
-            vectorPlace += 2;
-        for ( uint i = 0; i < values.count(); i += 2 )
+            vectorPlace += 3;
+        for ( uint i = 0; i < values.count(); i += 3 )
         {
             qb.clear();
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
