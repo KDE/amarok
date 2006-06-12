@@ -43,7 +43,7 @@
 
 TagDialog::TagDialog( const KURL& url, QWidget* parent )
     : TagDialogBase( parent )
-    , m_bundle( url )
+    , m_bundle( url, true )
     , m_score ( CollectionDB::instance()->getSongPercentage( url.path() ) )
     , m_playcount( CollectionDB::instance()->getPlayCount( url.path() ) )
     , m_firstPlay ( CollectionDB::instance()->getFirstPlay( url.path() ) )
