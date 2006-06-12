@@ -10,12 +10,12 @@ require 'fileutils'
 
 
 def copy_icons( res )
-    folder = "#{res}x#{res}"
+    folder = "#{res}x#{res}/actions"
 
     Dir.foreach( folder ) do |file|
         next if file[0, 1] == "."
         name = File.basename( file, ".png" )
-        FileUtils.cp( "#{folder}/#{file}", "hi#{res}-action-amarok_#{name}.png" )
+        FileUtils.cp( "#{folder}/#{file}", "hi#{res}-action-#{name}.png" )
     end
 end
 
