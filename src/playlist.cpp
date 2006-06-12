@@ -1857,6 +1857,8 @@ Playlist::setCurrentTrack( PlaylistItem *item )
                 // in random mode always jump, if previous track is visible
                 if( AmarokConfig::randomMode() )
                     ensureItemCentered( item );
+                else if( prev && prev == currentItem() )
+                    setCurrentItem( item );
 
                 //FIXME would be better to just never be annoying
                 // so if the user caused the track change, always show the new track
