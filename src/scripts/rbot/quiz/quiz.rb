@@ -308,6 +308,22 @@ class QuizPlugin < Plugin
         end
     end
 
+
+    # Stretches an IRC nick with dots, simply to make the client not trigger a hilight,
+    # which is annoying for those not watching. Example: markey -> m.a.r.k.e.y
+    #
+    def unhilight_nick( nick )
+        new_nick = ""
+
+        0.upto( nick.length - 1 ) do |i|
+            new_nick += nick[i, 1]
+            new_nick += "." unless i == nick.length - 1
+        end
+
+        return new_nick
+    end
+
+
     #######################################################################
     # Command handling
     #######################################################################
@@ -503,7 +519,7 @@ class QuizPlugin < Plugin
             player = q.rank_table[i]
             nick = player[0]
             score = player[1].score
-            m.reply "    #{i + 1}. #{nick} (#{score})"
+            m.reply "    #{i + 1}. #{unhilight_nick( nick )} (#{score})"
         end
     end
 
@@ -522,7 +538,7 @@ class QuizPlugin < Plugin
             player = q.rank_table[i]
             nick = player[0]
             score = player[1].score
-            ar << "#{i + 1}. #{nick} (#{score})"
+            ar << "#{i + 1}. #{unhilight_nick( nick )} (#{score})"
         end
         str = ar.join(" | ")
 
