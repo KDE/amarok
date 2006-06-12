@@ -2335,7 +2335,8 @@ Playlist::columnOrderChanged() //SLOT
         m_currentTrack->setPixmap( prevColumn, QPixmap() );
         setCurrentTrackPixmap();
     }
-
+    QResizeEvent e( size(), QSize() );
+    viewportResizeEvent( &e );
     emit columnsChanged();
 }
 
