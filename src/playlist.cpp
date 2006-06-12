@@ -3820,8 +3820,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         popup.insertSeparator();
     }
 
-    popup.insertItem( SmallIconSet( amaroK::icon( "remove_from_playlist" ) ), i18n( "&R
-     Playlist" ), this, SLOT( removeSelectedItems() ), Key_Delete, REMOVE );
+    popup.insertItem( SmallIconSet( amaroK::icon( "remove_from_playlist" ) ), i18n( "&Remove From Playlist" ), this, SLOT( removeSelectedItems() ), Key_Delete, REMOVE );
 
     popup.insertItem( SmallIconSet( amaroK::icon( "remove" ) ), itemCount == 1
                 ? i18n("&Delete File")
