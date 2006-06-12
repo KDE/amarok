@@ -416,21 +416,22 @@ void TagDialog::init()
     connect( kIntSpinBox_discNumber->child( "qt_spinbox_edit" ), SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
 
     // Connects for modification check
-    connect( kLineEdit_title,  SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
-    connect( kComboBox_composer, SIGNAL(activated( int )),              SLOT(checkModified()) );
-    connect( kComboBox_artist, SIGNAL(activated( int )),              SLOT(checkModified()) );
-    connect( kComboBox_artist, SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
-    connect( kComboBox_album,  SIGNAL(activated( int )),              SLOT(checkModified()) );
-    connect( kComboBox_album,  SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
-    connect( kComboBox_genre,  SIGNAL(activated( int )),              SLOT(checkModified()) );
-    connect( kComboBox_genre,  SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
-    connect( kComboBox_rating, SIGNAL(activated( int )),              SLOT(checkModified()) );
-    connect( kComboBox_rating, SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
-    connect( kIntSpinBox_track,SIGNAL(valueChanged( int )),           SLOT(checkModified()) );
-    connect( kIntSpinBox_year, SIGNAL(valueChanged( int )),           SLOT(checkModified()) );
-    connect( kIntSpinBox_score,SIGNAL(valueChanged( int )),           SLOT(checkModified()) );
-    connect( kTextEdit_comment,SIGNAL(textChanged()), SLOT(checkModified()) );
-    connect( kTextEdit_lyrics, SIGNAL(textChanged()), SLOT(checkModified()) );
+    connect( kLineEdit_title,   SIGNAL(textChanged( const QString& )),  SLOT(checkModified()) );
+    connect( kComboBox_composer,SIGNAL(activated( int )),               SLOT(checkModified()) );
+    connect( kComboBox_composer,SIGNAL(textChanged( const QString& )),  SLOT(checkModified()) );
+    connect( kComboBox_artist,  SIGNAL(activated( int )),               SLOT(checkModified()) );
+    connect( kComboBox_artist,  SIGNAL(textChanged( const QString& )),  SLOT(checkModified()) );
+    connect( kComboBox_album,   SIGNAL(activated( int )),               SLOT(checkModified()) );
+    connect( kComboBox_album,   SIGNAL(textChanged( const QString& )),  SLOT(checkModified()) );
+    connect( kComboBox_genre,   SIGNAL(activated( int )),               SLOT(checkModified()) );
+    connect( kComboBox_genre,   SIGNAL(textChanged( const QString& )),  SLOT(checkModified()) );
+    connect( kComboBox_rating,  SIGNAL(activated( int )),               SLOT(checkModified()) );
+    connect( kComboBox_rating,  SIGNAL(textChanged( const QString& )),  SLOT(checkModified()) );
+    connect( kIntSpinBox_track, SIGNAL(valueChanged( int )),            SLOT(checkModified()) );
+    connect( kIntSpinBox_year,  SIGNAL(valueChanged( int )),            SLOT(checkModified()) );
+    connect( kIntSpinBox_score, SIGNAL(valueChanged( int )),            SLOT(checkModified()) );
+    connect( kTextEdit_comment, SIGNAL(textChanged()),                  SLOT(checkModified()) );
+    connect( kTextEdit_lyrics,  SIGNAL(textChanged()),                  SLOT(checkModified()) );
 
     // Remember original button text
     m_buttonMbText = pushButton_musicbrainz->text();
