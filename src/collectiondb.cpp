@@ -5890,7 +5890,7 @@ QStringList
 QueryBuilder::run()
 {
     buildQuery();
-    debug() << m_query << endl;
+    //debug() << m_query << endl;
     return CollectionDB::instance()->query( m_query );
 }
 
