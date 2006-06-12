@@ -150,7 +150,7 @@ ContextBar::adjustWidgetSizes()
     const uint w    = width();
     const uint h    = height();
     const uint maxH = maxBrowserHeight();
-    const uint p    = (m_pos < maxH) ? m_pos : maxH;
+    const uint p    = (m_pos <= maxH) ? m_pos : h - m_divider->height();
     const uint pph  = p + m_divider->height();
     const uint tbh  = m_tabBar->height();
 
@@ -172,6 +172,9 @@ ContextBar::mouseMovedOverSplitter( QMouseEvent *e )
 
     if( newPos < minHeight )
         m_pos = minHeight;
+
+    else if( newPos > ( height() + maxHeight ) / 2 )  // Between maxHeight and full height
+        m_pos = height() - m_divider->height(); // Snap to bottom
 
     else if( newPos > maxHeight )
         m_pos = maxHeight;

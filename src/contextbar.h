@@ -67,7 +67,7 @@ private:
     int indexForWidget( const QWidget* ) const;
 
     void adjustWidgetSizes();
-    uint maxBrowserHeight() const { return uint( height() / 1.5 );  }
+    uint maxBrowserHeight() const { return uint( height() / 1.25 );  }
 
 
     uint           m_pos;         ///the y-axis position of m_divider
