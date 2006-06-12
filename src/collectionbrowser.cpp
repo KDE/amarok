@@ -243,6 +243,8 @@ CollectionBrowser::eventFilter( QObject *o, QEvent *e )
 
             case Key_Return:
             case Key_Enter:
+                if ( m_searchEdit->text().stripWhiteSpace().isEmpty() )
+                    return true;
                 m_view->selectAll();
                 Playlist::instance()->insertMedia( m_view->listSelected(), Playlist::Unique | Playlist::Append );
                 m_view->clearSelection();
@@ -1434,7 +1436,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 
         QString trueItemText;
 
-        //Work out the true name of the album ( where Unknown is "" ) , and the 
+        //Work out the true name of the album ( where Unknown is "" ) , and the
         if ( dynamic_cast<CollectionItem*>( item ) )
         {
             CollectionItem* collectItem = static_cast<CollectionItem*>( item );
@@ -2864,7 +2866,7 @@ DividerItem::shareTheSameGroup(const QString& itemStr, const QString& divStr, in
         if ( tmp.startsWith( "the ", false ) )
             CollectionView::manipulateThe( tmp, true );
         //Fall through
-    default: 
+    default:
         if ( !tmp.isEmpty() ) {
             if (divStr == "0-9" && QChar(tmp.at(0)).isDigit()) {
                 inGroup = true;
