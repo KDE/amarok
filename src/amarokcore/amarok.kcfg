@@ -292,7 +292,7 @@
     </entry>
     <entry key="Use Custom Icon Theme" type="Bool">
         <label>Whether amaroK's custom icon theme or the system icon theme is used.</label>
-        <default>false</default>
+        <default>true</default>
     </entry>
     <entry key="Collection Browser View Mode" type="Int">
         <label>Whether the collection view is in the flat or tree view mode</label>
