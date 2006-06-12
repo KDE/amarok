@@ -3386,9 +3386,12 @@ Playlist::deleteSelectedFiles() //SLOT
     for( MyIt it( this, MyIt::Selected );
          it.current();
          urls << static_cast<PlaylistItem*>( *it )->url(), ++it );
-    DeleteDialog::showTrashDialog(this, urls);
-    CollectionDB::instance()->removeSongs( urls );
-    QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
+    if( DeleteDialog::showTrashDialog(this, urls) )
+    {
+        CollectionDB::instance()->removeSongs( urls );
+        removeSelectedItems();
+        QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
+    }
 }
 
 void

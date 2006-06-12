@@ -32,6 +32,7 @@
 #include <qhbox.h>
 
 #include "amarok.h"
+#include "playlist.h"
 #include "collectiondb.h"
 #include "deletedialog.h"
 #include "statusbar.h"
@@ -130,24 +131,27 @@ void DeleteDialog::slotShouldDelete(bool shouldDelete)
     setButtonGuiItem(Ok, shouldDelete ? KStdGuiItem::del() : m_trashGuiItem);
 }
 
-void DeleteDialog::showTrashDialog(QWidget* parent, const KURL::List& files)
+bool DeleteDialog::showTrashDialog(QWidget* parent, const KURL::List& files)
 {
     DeleteDialog dialog(parent);
+    bool doDelete = dialog.confirmDeleteList(files);
 
-    if( dialog.confirmDeleteList(files) )
+    if( doDelete )
     {
         KIO::Job* job = 0;
         bool shouldDelete = dialog.shouldDelete();
         if ( ( shouldDelete && (job = KIO::del( files )) ) ||
              ( job = amaroK::trashFiles( files )   ) )
         {
-            job->connect( job, SIGNAL(result( KIO::Job* )), SLOT(removeSelectedItems()) );
+            // job->connect( job, SIGNAL(result( KIO::Job* )), SLOT(removeSelectedItems()) );
             if(shouldDelete) //amarok::trashFiles already does the progress operation
                 amaroK::StatusBar::instance()->newProgressOperation( job )
                     .setDescription( i18n("Deleting files") );
         }
 
     }
+
+    return doDelete;
 }
 #include "deletedialog.moc"
 
