@@ -33,28 +33,43 @@ amaroK::icon( const QString& name ) //declared in amarok.h
     static QMap<QString, QString> iconMap;
 
     if( iconMap.empty() ) {
-        iconMap["back"]             = "player_start";
-        iconMap["clock"]            = "history";
-        iconMap["collection"]       = "collection";
-        iconMap["device"]           = "usbpendrive_unmount";
-        iconMap["fastforward"]      = "2rightarrow";
-        iconMap["info"]             = "info";
-        iconMap["next"]             = "player_end";
-        iconMap["pause"]            = "player_pause";
-        iconMap["play"]             = "player_play";
-        iconMap["playlist"]         = "player_playlist_2";
-        iconMap["playlist_clear"]   = "view_remove";
-        iconMap["playlist_refresh"] = "rebuild";
-        iconMap["random"]           = "random";
-        iconMap["redo"]             = "redo";
-        iconMap["refresh"]          = "reload";
-        iconMap["rescan"]           = "reload";
-        iconMap["rewind"]           = "2leftarrow";
-        iconMap["stop"]             = "player_stop";
-        iconMap["podcast"]          = "sound";
-        iconMap["podcast2"]         = "favorites";
-        iconMap["undo"]             = "undo";
+        iconMap["artist"]             = "personal";
+        iconMap["back"]               = "player_start";
+        iconMap["clock"]              = "history";
+        iconMap["collection"]         = "collection";
+        iconMap["covermanager"]       = "covermanager";
+        iconMap["device"]             = "usbpendrive_unmount";
+        iconMap["equalizer"]          = "equalizer";
+        iconMap["fastforward"]        = "2rightarrow";
+        iconMap["files"]              = "folder";
+        iconMap["info"]               = "info";
+        iconMap["lyrics"]             = "document";
+        iconMap["music"]              = "today";
+        iconMap["next"]               = "player_end";
+        iconMap["pause"]              = "player_pause";
+        iconMap["play"]               = "player_play";
+        iconMap["playlist"]           = "player_playlist_2";
+        iconMap["playlist_clear"]     = "view_remove";
+        iconMap["playlist_refresh"]   = "rebuild";
+        iconMap["queue"]              = "goto";
+        iconMap["random"]             = "random";
+        iconMap["redo"]               = "redo";
+        iconMap["refresh"]            = "reload";
+        iconMap["rescan"]             = "reload";
+        iconMap["rewind"]             = "2leftarrow";
+        iconMap["scripts"]            = "pencil";
+        iconMap["settings_engine"]    = "amarok";
+        iconMap["settings_general"]   = "misc";
+        iconMap["settings_indicator"] = "tv";
+        iconMap["settings_playback"]  = "kmix";
+        iconMap["settings_view"]      = "colors";
+        iconMap["stop"]               = "player_stop";
+        iconMap["podcast"]            = "sound";
+        iconMap["podcast2"]           = "favorites";
+        iconMap["undo"]               = "undo";
+        iconMap["visualizations"]     = "visualizations";
     }
+
 
     if( iconMap.contains( name ) )
     {

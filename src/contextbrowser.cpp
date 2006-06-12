@@ -243,9 +243,9 @@ ContextBrowser::ContextBrowser( const char *name )
     connect( m_cuefile, SIGNAL(newCuePoint( long, long, long )),
              Scrobbler::instance(), SLOT(subTrack( long, long, long )) );
 
-    m_contextBar->addBrowser( m_contextTab, i18n( "Music" ) , "today" );
-    m_contextBar->addBrowser( m_lyricsTab , i18n( "Lyrics" ), "document", false );
-    m_contextBar->addBrowser( m_wikiTab   , i18n( "Artist" ), "personal", false );
+    m_contextBar->addBrowser( m_contextTab, i18n( "Music" ) , amaroK::icon( "music" ) );
+    m_contextBar->addBrowser( m_lyricsTab , i18n( "Lyrics" ), amaroK::icon( "lyrics" ), false );
+    m_contextBar->addBrowser( m_wikiTab   , i18n( "Artist" ), amaroK::icon( "artist" ), false );
 
     m_showRelated   = amaroK::config( "ContextBrowser" )->readBoolEntry( "ShowRelated", true );
     m_showSuggested = amaroK::config( "ContextBrowser" )->readBoolEntry( "ShowSuggested", true );

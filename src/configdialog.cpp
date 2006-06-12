@@ -160,11 +160,11 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     frame->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
     // add pages
-    addPage( m_opt1, i18n( "General" ), "misc", i18n( "Configure General Options" ) );
-    addPage( m_opt2, i18n( "Appearance" ), "colors", i18n( "Configure Amarok's Appearance" ) );
-    addPage( m_opt4, i18n( "Playback" ), "kmix", i18n( "Configure Playback" ) );
-    addPage( opt5,   i18n( "OSD" ), "tv", i18n( "Configure On-Screen-Display" ) );
-    addPage( opt6,   i18n( "Engine" ), "amarok", i18n( "Configure Engine" ) );
+    addPage( m_opt1, i18n( "General" ), amaroK::icon( "settings_general" ), i18n( "Configure General Options" ) );
+    addPage( m_opt2, i18n( "Appearance" ), amaroK::icon( "settings_view" ), i18n( "Configure Amarok's Appearance" ) );
+    addPage( m_opt4, i18n( "Playback" ), amaroK::icon( "settings_playback" ), i18n( "Configure Playback" ) );
+    addPage( opt5,   i18n( "OSD" ), amaroK::icon( "settings_indicator" ), i18n( "Configure On-Screen-Display" ) );
+    addPage( opt6,   i18n( "Engine" ), amaroK::icon( "settings_engine" ), i18n( "Configure Engine" ) );
     addPage( m_opt7, i18n( "Collection" ), amaroK::icon( "collection" ), i18n( "Configure Collection" ) );
     addPage( opt8,   i18n( "last.fm" ), "audioscrobbler", i18n( "Configure last.fm Support" ) );
     addPage( opt9,   i18n( "Media Devices" ), amaroK::icon( "device" ), i18n( "Configure Portable Player Support" ) );

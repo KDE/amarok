@@ -131,8 +131,8 @@ PlaylistWindow::PlaylistWindow()
 
     new KAction( i18n("Play Media..."), "fileopen", 0, this, SLOT(slotPlayMedia()), ac, "playlist_playmedia" );
     new KAction( i18n("Play Audio CD"), "cdaudio_unmount", 0, this, SLOT(playAudioCD()), ac, "play_audiocd" );
-    new KAction( i18n("Script Manager"), "pencil", 0, this, SLOT(showScriptSelector()), ac, "script_manager" );
-    new KAction( i18n("Queue Manager"), "goto", 0, this, SLOT(showQueueManager()), ac, "queue_manager" );
+    new KAction( i18n("Script Manager"), amaroK::icon( "scripts" ), 0, this, SLOT(showScriptSelector()), ac, "script_manager" );
+    new KAction( i18n("Queue Manager"), amaroK::icon( "queue" ), 0, this, SLOT(showQueueManager()), ac, "queue_manager" );
     new KAction( i18n("Statistics"), amaroK::icon( "info" ), 0, this, SLOT(showStatistics()), ac, "statistics" );
 
     ac->action( "options_configure_globals" )->setText( i18n( "Configure &Global Shortcuts..." ) );
@@ -297,10 +297,10 @@ void PlaylistWindow::init()
 
     //BEGIN Tools menu
     m_toolsMenu = new KPopupMenu( m_menubar );
-    m_toolsMenu->insertItem( SmallIconSet( "covermanager" ), i18n("&Cover Manager"), amaroK::Menu::ID_SHOW_COVER_MANAGER );
+    m_toolsMenu->insertItem( SmallIconSet( amaroK::icon( "covermanager" ) ), i18n("&Cover Manager"), amaroK::Menu::ID_SHOW_COVER_MANAGER );
     actionCollection()->action("queue_manager")->plug( m_toolsMenu );
-    m_toolsMenu->insertItem( SmallIconSet( "visualizations"), i18n("&Visualizations"), amaroK::Menu::ID_SHOW_VIS_SELECTOR );
-    m_toolsMenu->insertItem( SmallIconSet( "equalizer"), i18n("&Equalizer"), kapp, SLOT( slotConfigEqualizer() ), 0, amaroK::Menu::ID_CONFIGURE_EQUALIZER );
+    m_toolsMenu->insertItem( SmallIconSet( amaroK::icon( "visualizations" ) ), i18n("&Visualizations"), amaroK::Menu::ID_SHOW_VIS_SELECTOR );
+    m_toolsMenu->insertItem( SmallIconSet( amaroK::icon( "equalizer") ), i18n("&Equalizer"), kapp, SLOT( slotConfigEqualizer() ), 0, amaroK::Menu::ID_CONFIGURE_EQUALIZER );
     actionCollection()->action("script_manager")->plug( m_toolsMenu );
     actionCollection()->action("statistics")->plug( m_toolsMenu );
     m_toolsMenu->insertSeparator();
@@ -389,7 +389,7 @@ void PlaylistWindow::init()
 
         //DEBUG: Comment out the addBrowserMacro line and uncomment the m_browsers line (passing in a vfat device name) to see the "virtual root" functionality
 
-        addBrowserMacro( FileBrowser, "FileBrowser", i18n( "Files" ), "folder" )
+        addBrowserMacro( FileBrowser, "FileBrowser", i18n( "Files" ), amaroK::icon( "files" ) )
         //m_browsers->addBrowser( new FileBrowser( "FileBrowser", DeviceManager::instance()->getDevice( "hda5" ) ), i18n( "Files" ), "folder" );
 
         new MediaBrowser( "MediaBrowser" );
