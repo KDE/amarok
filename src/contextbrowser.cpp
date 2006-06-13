@@ -2903,7 +2903,7 @@ ContextBrowser::lyricsResult( QCString cXmlDoc, bool cached ) //SLOT
     m_lyricsPage->set( m_HTMLSource );
     saveHtmlData(); // Send html code to file
 
-    m_lyricsToolBar->getButton( LYRICS_BROWSER )->setEnabled(true);
+    m_lyricsToolBar->getButton( LYRICS_BROWSER )->setEnabled( !m_lyricCurrentUrl.isEmpty() );
     m_dirtyLyricsPage = false;
 }
 
