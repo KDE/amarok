@@ -1447,9 +1447,12 @@ CurrentTrackJob::showHomeByAlbums()
     // <Favorite Albums Information>
     if( ContextBrowser::instance()->m_showFavoriteAlbums )
     {
-        const int sortBy = ( AmarokConfig::useScores() || !AmarokConfig::useRatings() )
-            ? QueryBuilder::valPercentage
-            : QueryBuilder::valRating;
+        int sortBy = QueryBuilder::valPercentage;
+
+        if ( !AmarokConfig::useScores() && !AmarokConfig::useRatings() )
+            sortBy = QueryBuilder::valPlayCounter;
+        else if( !AmarokConfig::useScores() )
+            sortBy = QueryBuilder::valRating;
 
         qb.clear();
         qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
@@ -1489,10 +1492,14 @@ CurrentTrackJob::showHomeByAlbums()
 
         if ( faveAlbums.count() == 0 )
         {
+            QString rateStyle = i18n( "played" );
+            if ( sortBy == QueryBuilder::valRating )
+                rateStyle = i18n( "rated" );
+
             m_HTMLSource.append(
                     "<div id='favorites_box-body' class='box-body'><p>\n" +
-                    i18n( "A list of your favorite albums will appear here, once you have played a few of your songs." ) +
-                    "</p></div>\n" );
+                    i18n( "A list of your favorite albums will appear here, once you have %1 a few of your songs." )
+                    .arg( rateStyle ) + "</p></div>\n" );
         }
         else
         {
