@@ -18,9 +18,6 @@
             <height>320</height>
         </size>
     </property>
-    <property name="caption">
-        <string>DeleteDialogBase</string>
-    </property>
     <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
