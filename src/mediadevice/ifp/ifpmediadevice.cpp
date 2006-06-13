@@ -45,7 +45,7 @@ AMAROK_EXPORT_PLUGIN( IfpMediaDevice )
 #include <qcstring.h>
 #include <qregexp.h>
 
-namespace amaroK { 
+namespace amaroK {
     extern KConfig *config( const QString& );
     extern QString cleanPath( const QString&, bool );
 }
@@ -119,7 +119,7 @@ IfpMediaDevice::IfpMediaDevice()
 {
     m_name = "iRiver";
     m_hasMountPoint = false;
-    
+
     m_spacesToUnderscores = configBool("spacesToUnderscores");
     m_firstSort           = configString( "firstGrouping", "None" );
     m_secondSort          = configString( "secondGrouping", "None" );
@@ -138,7 +138,7 @@ IfpMediaDevice::~IfpMediaDevice()
     setConfigString( "secondGrouping"   , m_secondSort );
     setConfigString( "thirdGrouping"    , m_thirdSort );
     setConfigBool( "spacesToUnderscores", m_spacesToUnderscores );
-    
+
     closeDevice();
 }
 
@@ -206,7 +206,7 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
     }
 
     m_connected = true;
-    
+
     char info[20];
     ifp_model( &m_ifpdev, info, 20 );
     m_transferDir = QString(info);
@@ -281,7 +281,7 @@ MediaItem *
 IfpMediaDevice::newDirectory( const QString &name, MediaItem *parent )
 {
     if( !m_connected || name.isEmpty() ) return 0;
-    
+
     QString cleanedName = cleanPath( name );
 
     const QCString dirPath = QFile::encodeName( getFullPath( parent ) + "\\" + cleanedName );
@@ -301,18 +301,18 @@ IfpMediaDevice::newDirectoryRecursive( const QString &name, MediaItem *parent )
 {
     QStringList folders = QStringList::split( '\\', name );
     QString progress = "";
-    
+
     if( parent )
         progress += getFullPath( parent ) + "\\";
     else
         progress += "\\";
-    
+
     foreach( folders )
     {
         debug() << "Checking folder: " << progress << endl;
         progress += *it;
         const QCString dirPath = QFile::encodeName( progress );
-        
+
         if( ifp_exists( &m_ifpdev, dirPath ) == IFP_DIR )
         {
             m_tmpParent = parent;
@@ -338,11 +338,11 @@ MediaItem *
 IfpMediaDevice::findChildItem( const QString &name, MediaItem *parent )
 {
     QListViewItem *child;
-    
+
     parent ?
         child = parent->firstChild():
         child = m_view->firstChild();
-    
+
     while( child )
     {
         if( child->text(0) == name )
@@ -382,7 +382,7 @@ IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
     m_transferring = true;
 
     const QCString src  = QFile::encodeName( bundle.url().path() );
-    
+
     QString directory = "\\"; //root
     bool cleverFilename = false;
     bool addFileToView = true;
@@ -390,20 +390,20 @@ IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
     {
         addFileToView = false;
         directory += bundle.prettyText( bundle.columnIndex(m_firstSort) ) + "\\";
-        
+
         if( m_secondSort != "None" )
         {
             directory += bundle.prettyText( bundle.columnIndex(m_secondSort) ) + "\\";
-            
+
             if( m_thirdSort != "None" )
                 directory += bundle.prettyText( bundle.columnIndex(m_thirdSort) ) + "\\";
         }
         if( m_firstSort == "Album" || m_secondSort == "Album" || m_thirdSort == "Album" )
             cleverFilename = true;
     }
-    
+
     m_tmpParent = newDirectoryRecursive( directory, 0 ); // recursively create folders as required.
-    
+
     QString newFilename;
     // we don't put this in cleanPath because of remote directory delimiters
     const QString title = bundle.title().replace( '\\', '-' );
@@ -416,7 +416,7 @@ IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
     }
     else
         newFilename = cleanPath( bundle.prettyTitle() ) + "." + bundle.type();
-    
+
     const QCString dest = QFile::encodeName( cleanPath(directory + newFilename) );
 
     kapp->processEvents( 100 );
@@ -459,25 +459,25 @@ IfpMediaDevice::downloadSelectedItems()
     dialog.setCaption( kapp->makeStdCaption( i18n( "Choose a Download Directory" ) ) );
     dialog.urlRequester()->setMode( KFile::Directory | KFile::ExistingOnly );
     dialog.exec();
-    
+
     KURL destDir = dialog.selectedURL();
     if( destDir.isEmpty() )
         return;
-    
+
     destDir.adjustPath( 1 ); //add trailing slash
-    
+
 //     if( save != destDir.path() )
 //         config->writeEntry( "DownloadLocation", destDir.path() );
-    
+
     QListViewItemIterator it( m_view, QListViewItemIterator::Selected );
     for( ; it.current(); ++it )
     {
         QCString dest = QFile::encodeName( destDir.path() + (*it)->text(0) );
         QCString src = QFile::encodeName( getFullPath( *it ) );
-        
+
         downloadTrack( src, dest );
     }
-    
+
     hideProgress();
 }
 
@@ -653,8 +653,8 @@ IfpMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
         menu.insertItem( SmallIconSet( "down" ), i18n( "Download" ), DOWNLOAD );
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( "folder" ), i18n("Add Directory" ), DIRECTORY );
-        menu.insertItem( SmallIconSet( "editclear" ), i18n( "Rename" ), RENAME );
-        menu.insertItem( SmallIconSet( "editdelete" ), i18n( "Delete" ), DELETE );
+        menu.insertItem( SmallIconSet( "edit" ), i18n( "Rename" ), RENAME );
+        menu.insertItem( SmallIconSet( "remove" ), i18n( "Delete" ), DELETE );
 
         int id =  menu.exec( point );
         switch( id )
@@ -662,7 +662,7 @@ IfpMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
             case DOWNLOAD:
                 downloadSelectedItems();
                 break;
-                
+
             case DIRECTORY:
                 if( item->type() == MediaItem::DIRECTORY )
                     m_view->newDirectory( static_cast<MediaItem*>(item) );
@@ -702,7 +702,7 @@ QString IfpMediaDevice::cleanPath( const QString &component )
     result.simplifyWhiteSpace();
 
     result.remove( "?" ).replace( "*", " " ).replace( ":", " " );
-    
+
 //     if( m_spacesToUnderscores )
 //         result.replace( QRegExp( "\\s" ), "_" );
 
