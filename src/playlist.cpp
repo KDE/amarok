@@ -1055,7 +1055,8 @@ Playlist::playNextTrack( bool forceNext )
     if( !m_visCount || ( m_currentTrack && m_stopAfterTrack == m_currentTrack  ) )
     {
         if( dynamicMode() && m_visCount ) {
-            item->setEnabled( false );
+            if ( dynamicMode()->markHistory() )
+                item->setEnabled( false );
             advanceDynamicTrack( item );
             m_dynamicDirt = false;
         }
@@ -1250,7 +1251,7 @@ Playlist::playNextTrack( bool forceNext )
 
         if ( dynamicMode() && item != firstChild() )
         {
-            if( currentTrack() )
+            if( currentTrack() && dynamicMode()->markHistory() )
                 currentTrack()->setEnabled( false );
             advanceDynamicTrack();
         }
@@ -1717,7 +1718,7 @@ Playlist::activate( QListViewItem *item )
             }
 
         }
-        if( m_currentTrack && m_currentTrack != item )
+        if( m_currentTrack && m_currentTrack != item && dynamicMode()->markHistory() )
             m_currentTrack->setEnabled( false );
         advanceDynamicTrack();
     }
@@ -3013,7 +3014,7 @@ Playlist::customEvent( QCustomEvent *e )
                 after = static_cast<PlaylistItem *>( after->itemBelow() );
 
             PlaylistItem *prev = static_cast<PlaylistItem *>( after->itemAbove() );
-            if( prev )
+            if( prev && dynamicMode() && dynamicMode()->markHistory() )
                 prev->setEnabled( false );
 
             activate( after );
