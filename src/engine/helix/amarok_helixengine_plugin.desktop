@@ -40,6 +40,7 @@ Name[zh_CN]=Helix 引擎
 Name[zh_TW]=Helix 解碼引擎
 X-KDE-Library=libamarok_helixengine_plugin
 Comment=Plugin for Amarok
+Comment[el]=Πρόσθετο για το AmaroK
 Comment[ga]=Breiseán AmaroK
 Comment[it]=Plugin per Amarok
 Comment[ja]=Amarok用プラグイン
