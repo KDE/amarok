@@ -357,7 +357,10 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
     }
     else
     {
-        amaroK::StatusBar::instance()->shortMessage( i18n("Connecting to stream source...") );
+        if( url.protocol() == "cdda" )
+            amaroK::StatusBar::instance()->shortMessage( i18n("Starting CD Audio track...") );
+        else
+            amaroK::StatusBar::instance()->shortMessage( i18n("Connecting to stream source...") );
         debug() << "Connecting to protocol: " << url.protocol() << endl;
     }
 

@@ -3707,7 +3707,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         PLAY, PLAY_NEXT, STOP_DONE, VIEW, EDIT, FILL_DOWN, COPY, CROP_PLAYLIST, SAVE_PLAYLIST, REMOVE, DELETE,
         TRASH, BURN_MENU, BURN_SELECTION, BURN_ALBUM, BURN_ARTIST, REPEAT, LAST }; //keep LAST last
 
-    const bool canRename   = isRenameable( col );
+    const bool canRename   = isRenameable( col ) && item->url().isLocalFile();
     const bool isCurrent   = (item == m_currentTrack);
     const bool isPlaying   = EngineController::engine()->state() == Engine::Playing;
     const bool trackColumn = col == PlaylistItem::Track;
@@ -3843,6 +3843,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     popup.setItemEnabled( BURN_MENU, item->url().isLocalFile() && K3bExporter::isAvailable() );
     popup.setItemEnabled( REMOVE, !isLocked() ); // can't remove things when playlist is locked,
     popup.setItemEnabled( DELETE, !isLocked() && item->url().isLocalFile() ); // that's the whole point
+    popup.setItemEnabled( VIEW, item->url().isLocalFile() || itemCount == 1 ); // disable for CDAudio multiselection
 
     QValueList<QString> submenuTexts = m_customSubmenuItem.keys();
     for( QValueList<QString>::Iterator keyIt =submenuTexts.begin(); keyIt !=  submenuTexts.end(); ++keyIt )
@@ -4592,7 +4593,10 @@ Playlist::showTagDialog( QPtrList<QListViewItem> items )
         if ( !item->url().isLocalFile() )
         {
             StreamEditor dialog( this, item->title(), item->url().prettyURL(), true );
-            dialog.setCaption( i18n( "Remote Media" ) );
+            if( item->url().protocol() == "cdda" )
+                dialog.setCaption( i18n( "CD Audio" ) );
+            else
+                dialog.setCaption( i18n( "Remote Media" ) );
             dialog.exec();
         }
         else if ( QFile::exists( item->url().path() ) ) {
