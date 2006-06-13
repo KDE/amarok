@@ -3682,13 +3682,13 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         amaroK::actionCollection()->action("playlist_clear")->plug( &popup );
         DynamicMode *m = 0;
         if(dynamicMode())
-             popup.insertItem( SmallIconSet( "dynamic" ), i18n("Repopulate"), REPOPULATE);
+             popup.insertItem( SmallIconSet( amaroK::icon( "dynamic" ) ), i18n("Repopulate"), REPOPULATE);
         else
         {
             amaroK::actionCollection()->action("playlist_shuffle")->plug( &popup );
                 m = PlaylistBrowser::instance()->findDynamicModeByTitle( AmarokConfig::lastDynamicMode() );
                 if( m )
-                    popup.insertItem( SmallIconSet( "dynamic" ), i18n("Load %1").arg( m->title() ), ENABLEDYNAMIC);
+                    popup.insertItem( SmallIconSet( amaroK::icon( "dynamic" ) ), i18n("L&oad %1").arg( m->title() ), ENABLEDYNAMIC);
         }
         switch(popup.exec(p))
         {
@@ -3786,7 +3786,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     if( isCurrent && itemCount == 1 )
     {
-        popup.insertItem( SmallIconSet( "repeat_track" ), i18n( "&Repeat Track" ), REPEAT );
+        popup.insertItem( SmallIconSet( amaroK::icon( "repeat_track" ) ), i18n( "&Repeat Track" ), REPEAT );
         popup.setItemChecked( REPEAT, amaroK::repeatTrack() );
     }
 

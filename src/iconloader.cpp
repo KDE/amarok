@@ -64,10 +64,17 @@ amaroK::icon( const QString& name ) //declared in amarok.h
         iconMap["playlist_refresh"]     = "rebuild";
         iconMap["queue"]                = "goto";
         iconMap["random"]               = "random";
+        iconMap["random_album"]         = "cd";
+        iconMap["random_no"]            = "forward";
+        iconMap["random_track"]         = "random";
         iconMap["redo"]                 = "redo";
         iconMap["refresh"]              = "reload";
         iconMap["remove"]               = "editdelete";
         iconMap["remove_from_playlist"] = "remove";
+        iconMap["repeat_album"]         = "cdrom_unmount";
+        iconMap["repeat_no"]            = "bottom";
+        iconMap["repeat_playlist"]      = "repeat_playlist";
+        iconMap["repeat_track"]         = "repeat_track";
         iconMap["rescan"]               = "reload";
         iconMap["rewind"]               = "2leftarrow";
         iconMap["scripts"]              = "pencil";

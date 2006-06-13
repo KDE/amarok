@@ -460,7 +460,7 @@ RandomAction::RandomAction( KActionCollection *ac ) :
 {
     setItems( QStringList() << i18n( "&Off" ) << i18n( "&Tracks" ) << i18n( "&Albums" ) );
     setCurrentItem( AmarokConfig::randomMode() );
-    setIcons( QStringList() << "forward" << amaroK::icon( "random" ) << "cd" );
+    setIcons( QStringList() << amaroK::icon( "random_no" ) << amaroK::icon( "random_track" ) << amaroK::icon( "random_album" ) );
 }
 
 void
@@ -495,7 +495,7 @@ RepeatAction::RepeatAction( KActionCollection *ac ) :
 {
     setItems( QStringList() << i18n( "&Off" ) << i18n( "&Track" )
                             << i18n( "&Album" ) << i18n( "&Playlist" ) );
-    setIcons( QStringList() << "bottom" << "repeat_track" << "cdrom_mount" << "repeat_playlist" );
+    setIcons( QStringList() << amaroK::icon( "repeat_no" ) << amaroK::icon( "repeat_track" ) << amaroK::icon( "repeat_album" ) << amaroK::icon( "repeat_playlist" ) );
     setCurrentItem( AmarokConfig::repeat() );
 }
 
@@ -504,8 +504,7 @@ RepeatAction::RepeatAction( KActionCollection *ac ) :
 //////////////////////////////////////////////////////////////////////////////////////////
 BurnMenuAction::BurnMenuAction( KActionCollection *ac )
   : KAction( i18n( "Burn" ), 0, ac, "burn_menu" )
-{
-}
+{}
 
 int
 BurnMenuAction::plug( QWidget *w, int index )
@@ -550,9 +549,7 @@ BurnMenu::instance()
 
 void
 BurnMenu::slotAboutToShow()
-{
-
-}
+{}
 
 void
 BurnMenu::slotActivated( int index )
