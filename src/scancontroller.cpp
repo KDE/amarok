@@ -295,17 +295,17 @@ ScanController::startElement( const QString&, const QString& localName, const QS
     // filesize      Size of the track in bytes
 
 
+    if( localName == "dud" || localName == "tags" || localName == "playlist" ) {
+        incrementProgress();
+    }
+
     if( localName == "itemcount") {
         const int totalSteps = attrs.value( "count" ).toInt();
         debug() << "itemcount event: " << totalSteps << endl;
         setProgressTotalSteps( totalSteps );
     }
 
-    if( localName == "dud" || localName == "tags" || localName == "playlist" ) {
-        incrementProgress();
-    }
-
-    if( localName == "tags") {
+    else if( localName == "tags") {
         MetaBundle bundle;
         bundle.setPath      ( attrs.value( "path" ) );
         bundle.setTitle     ( attrs.value( "title" ) );
@@ -336,7 +336,7 @@ ScanController::startElement( const QString&, const QString& localName, const QS
         CollectionDB::instance()->addSong( &bundle, m_incremental );
     }
 
-    if( localName == "folder" ) {
+    else if( localName == "folder" ) {
         const QString folder = attrs.value( "path" );
         const QFileInfo info( folder );
 
@@ -349,13 +349,13 @@ ScanController::startElement( const QString&, const QString& localName, const QS
         }
     }
 
-    if( localName == "playlist" )
+    else if( localName == "playlist" )
         QApplication::postEvent( PlaylistBrowser::instance(), new PlaylistFoundEvent( attrs.value( "path" ) ) );
 
-    if( localName == "compilation" )
+    else if( localName == "compilation" )
         CollectionDB::instance()->checkCompilations( attrs.value( "path" ), !m_incremental);
 
-    if( localName == "image" ) {
+    else if( localName == "image" ) {
         // Deserialize CoverBundle list
         QStringList list = QStringList::split( "AMAROK_MAGIC", attrs.value( "list" ), true );
         QValueList< QPair<QString, QString> > covers;
@@ -368,7 +368,7 @@ ScanController::startElement( const QString&, const QString& localName, const QS
         CollectionDB::instance()->addImageToAlbum( attrs.value( "path" ), covers, CollectionDB::instance()->isConnected() );
     }
 
-    if( localName == "embed" ) {
+    else if( localName == "embed" ) {
         CollectionDB::instance()->addEmbeddedImage( attrs.value( "path" ), attrs.value( "hash" ), attrs.value( "description" ) );
     }
 
