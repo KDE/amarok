@@ -3072,7 +3072,7 @@ QString
 ContextBrowser::wikiURL( const QString &item )
 {
     return QString( "http://%1.wikipedia.org/wiki/" ).arg( wikiLocale() )
-        + KURL::encode_string_no_slash( item );
+        + KURL::encode_string_no_slash( item, 106 /*utf-8*/ );
 }
 
 void
