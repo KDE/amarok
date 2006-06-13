@@ -1705,7 +1705,7 @@ IpodMediaDevice::determineURLOnDevice(const MetaBundle &bundle)
     do
     {
         int num = std::rand() % 1000000;
-        int music_dirs = itdb_musicdirs_number(m_itdb) > 0 ? itdb_musicdirs_number(m_itdb) : 20; 
+        int music_dirs = itdb_musicdirs_number(m_itdb) > 0 ? itdb_musicdirs_number(m_itdb) : 20;
         int dir = num % music_dirs;
         QString dirname;
         dirname.sprintf( ":iPod_Control:Music:f%02d", dir );
@@ -1887,7 +1887,7 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                     item->type() == MediaItem::ALBUM ||
                     item->type() == MediaItem::TRACK )
             {
-                menu.insertItem( SmallIconSet( amaroK::icon( "editclear" ) ),
+                menu.insertItem( SmallIconSet( amaroK::icon( "edit" ) ),
                         i18n( "Edit &Information...", "Edit &Information for %n Tracks...", urls.count()),
                         RENAME );
             }
@@ -1895,12 +1895,12 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
 
         case MediaItem::ORPHANED:
         case MediaItem::ORPHANEDROOT:
-            menu.insertItem( SmallIconSet( amaroK::icon( "editrename" ) ), i18n( "Add to Database" ), ADD );
+            menu.insertItem( SmallIconSet( amaroK::icon( "edit" ) ), i18n( "Add to Database" ), ADD );
             menu.setItemEnabled( ADD, !locked );
             break;
 
         case MediaItem::PLAYLIST:
-            menu.insertItem( SmallIconSet( amaroK::icon( "editclear" ) ), i18n( "Rename" ), RENAME );
+            menu.insertItem( SmallIconSet( amaroK::icon( "edit" ) ), i18n( "Rename" ), RENAME );
             menu.setItemEnabled( RENAME, !locked );
             break;
 
@@ -1910,15 +1910,15 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
 
         if( item->type() == MediaItem::PODCASTSROOT || item->type() == MediaItem::PODCASTCHANNEL )
         {
-            menu.insertItem( SmallIconSet( amaroK::icon( "editdelete" ) ), i18n( "Delete Podcasts Already Played" ), DELETE_PLAYED );
+            menu.insertItem( SmallIconSet( amaroK::icon( "remove" ) ), i18n( "Delete Podcasts Already Played" ), DELETE_PLAYED );
             menu.setItemEnabled( DELETE_PLAYED, !locked );
         }
-        menu.insertItem( SmallIconSet( amaroK::icon( "editdelete" ) ), i18n( "Delete" ), DELETE );
+        menu.insertItem( SmallIconSet( amaroK::icon( "remove" ) ), i18n( "Delete" ), DELETE );
         menu.setItemEnabled( DELETE, !locked );
 
         KPopupMenu repairMenu;
-        repairMenu.insertItem( SmallIconSet( "SCAN" ), i18n( "Scan for Orphaned and Missing Files" ), REPAIR_SCAN );
-        repairMenu.insertItem( SmallIconSet( "COVERS" ), i18n( "Refresh Cover Images" ), REPAIR_COVERS );
+        repairMenu.insertItem( SmallIconSet( amaroK::icon( "playlist_refresh" ) ), i18n( "Scan for Orphaned and Missing Files" ), REPAIR_SCAN );
+        repairMenu.insertItem( SmallIconSet( amaroK::icon( "covermanager" ) ), i18n( "Refresh Cover Images" ), REPAIR_COVERS );
         repairMenu.setItemEnabled( REPAIR_COVERS, m_supportsArtwork );
         menu.insertItem( SmallIconSet( "folder" ), i18n("Repair iPod"), &repairMenu, REPAIR_MENU );
 

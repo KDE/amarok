@@ -3219,10 +3219,10 @@ MediaQueue::slotShowContextMenu( QListViewItem* item, const QPoint& point, int )
     enum Actions { REMOVE_SELECTED, CLEAR_ALL, START_TRANSFER };
 
     if( item )
-        menu.insertItem( SmallIconSet( amaroK::icon( "edittrash" ) ), i18n( "&Remove From Queue" ), REMOVE_SELECTED );
+        menu.insertItem( SmallIconSet( amaroK::icon( "remove_from_playlist" ) ), i18n( "&Remove From Queue" ), REMOVE_SELECTED );
 
-    menu.insertItem( SmallIconSet( amaroK::icon( "view_remove" ) ), i18n( "&Clear Queue" ), CLEAR_ALL );
-    menu.insertItem( SmallIconSet( amaroK::icon( "rebuild" ) ), i18n( "&Start Transfer" ), START_TRANSFER );
+    menu.insertItem( SmallIconSet( amaroK::icon( "playlist_clear" ) ), i18n( "&Clear Queue" ), CLEAR_ALL );
+    menu.insertItem( SmallIconSet( amaroK::icon( "playlist_refresh" ) ), i18n( "&Start Transfer" ), START_TRANSFER );
     menu.setItemEnabled( START_TRANSFER,
             MediaBrowser::instance()->currentDevice() &&
             MediaBrowser::instance()->currentDevice()->isConnected() );
