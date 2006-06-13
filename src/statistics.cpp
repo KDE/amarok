@@ -696,7 +696,7 @@ void
 StatisticsItem::setIcon( const QString &icon )
 {
     QString path = kapp->iconLoader()->iconPath( icon, -KIcon::SizeHuge );
-    path.replace( "32x32", "64x64" ); //HACK fucking KIconLoader only returns 32x32 max. Why?
+    path.replace( "32x32", "48x48" ); //HACK fucking KIconLoader only returns 32x32 max. Why?
 
 //     debug() << "ICONPATH: " << path << endl;
 
