@@ -632,7 +632,7 @@ GenericMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/ )
     QCString encodedPath = m_mim[item]->getEncodedFullName();
     debug() << "Deleting path: " << encodedPath << endl;
 
-    if ( !KIO::NetAccess::del( KURL(encodedPath), m_view ))
+    if ( !KIO::NetAccess::del( KURL::fromPathOrURL(encodedPath), m_view ))
     {
         debug() << "Could not delete!" << endl;
         return -1;
