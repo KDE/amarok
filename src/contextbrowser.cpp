@@ -209,13 +209,13 @@ ContextBrowser::ContextBrowser( const char *name )
 
     m_lyricsToolBar = new Browser::ToolBar( m_lyricsTab );
     m_lyricsToolBar->setIconText( KToolBar::IconTextRight, false );
-    m_lyricsToolBar->insertButton( "edit_add", LYRICS_ADD, true, i18n("Add") );
-    m_lyricsToolBar->insertButton( "edit", LYRICS_EDIT, true, i18n("Edit") );
-    m_lyricsToolBar->insertButton( "find", LYRICS_SEARCH, true, i18n("Search") );
-    m_lyricsToolBar->insertButton( "reload", LYRICS_REFRESH, true, i18n("Refresh") );
+    m_lyricsToolBar->insertButton( amaroK::icon( "add_lyrics" ), LYRICS_ADD, true, i18n("Add") );
+    m_lyricsToolBar->insertButton( amaroK::icon( "edit" ), LYRICS_EDIT, true, i18n("Edit") );
+    m_lyricsToolBar->insertButton( amaroK::icon( "search" ), LYRICS_SEARCH, true, i18n("Search") );
+    m_lyricsToolBar->insertButton( amaroK::icon( "refresh" ), LYRICS_REFRESH, true, i18n("Refresh") );
     m_lyricsToolBar->insertLineSeparator();
     m_lyricsToolBar->setIconText( KToolBar::IconOnly, false );
-    m_lyricsToolBar->insertButton( "exec", LYRICS_BROWSER, true, i18n("Open in external browser") );
+    m_lyricsToolBar->insertButton( amaroK::icon( "external" ), LYRICS_BROWSER, true, i18n("Open in external browser") );
 
     m_lyricsPage = new HTMLView( m_lyricsTab, "lyrics_page", true /* DNDEnabled */, true /* JScriptEnabled */ );
 
@@ -225,11 +225,11 @@ ContextBrowser::ContextBrowser( const char *name )
     m_wikiToolBar->insertButton( "back", WIKI_BACK, false, i18n("Back") );
     m_wikiToolBar->insertButton( "forward", WIKI_FORWARD, false, i18n("Forward") );
     m_wikiToolBar->insertLineSeparator();
-    m_wikiToolBar->insertButton( "personal", WIKI_ARTIST, false, i18n("Artist Page") );
-    m_wikiToolBar->insertButton( "cd", WIKI_ALBUM, false, i18n("Album Page") );
+    m_wikiToolBar->insertButton( amaroK::icon( "artist" ), WIKI_ARTIST, false, i18n("Artist Page") );
+    m_wikiToolBar->insertButton( amaroK::icon( "album" ), WIKI_ALBUM, false, i18n("Album Page") );
     m_wikiToolBar->insertButton( "contents", WIKI_TITLE, false, i18n("Title Page") );
     m_wikiToolBar->insertLineSeparator();
-    m_wikiToolBar->insertButton( "exec", WIKI_BROWSER, true, i18n("Open in external browser") );
+    m_wikiToolBar->insertButton( amaroK::icon( "external" ), WIKI_BROWSER, true, i18n("Open in external browser") );
     m_wikiToolBar->insertButton( "configure", WIKI_CONFIG, true, i18n("Change Locale") );
 
     m_wikiToolBar->setDelayedPopup( WIKI_BACK, m_wikiBackPopup );

@@ -171,7 +171,7 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     connect( m_gui->aboutButton,     SIGNAL( clicked() ), SLOT( slotAboutScript() ) );
 
     m_gui->installButton  ->setIconSet( SmallIconSet( "fileopen" ) );
-    m_gui->retrieveButton ->setIconSet( SmallIconSet( "khtml_kget" ) );
+    m_gui->retrieveButton ->setIconSet( SmallIconSet( amaroK::icon( "download" ) ) );
     m_gui->uninstallButton->setIconSet( SmallIconSet( "remove" ) );
     m_gui->runButton      ->setIconSet( SmallIconSet( amaroK::icon( "play" ) ) );
     m_gui->stopButton     ->setIconSet( SmallIconSet( amaroK::icon( "stop" ) ) );

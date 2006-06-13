@@ -938,7 +938,7 @@ DynamicEntry::DynamicEntry( QListViewItem *parent, QListViewItem *after, const Q
         : PlaylistBrowserEntry( parent, after, name )
         , DynamicMode( name )
 {
-    setPixmap( 0, SmallIcon("dynamic") );
+    setPixmap( 0, SmallIcon( amaroK::icon( "dynamic" ) ) );
     setDragEnabled( true );
 }
 
@@ -946,7 +946,7 @@ DynamicEntry::DynamicEntry( QListViewItem *parent, QListViewItem *after, const Q
         : PlaylistBrowserEntry( parent, after )
         , DynamicMode( xmlDefinition.attribute( "name" ) )
 {
-    setPixmap( 0, SmallIcon( "dynamic" ) );
+    setPixmap( 0, SmallIcon( amaroK::icon( "dynamic" ) ) );
     setDragEnabled( true );
 
     QDomElement e;

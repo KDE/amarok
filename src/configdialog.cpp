@@ -166,7 +166,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     addPage( opt5,   i18n( "OSD" ), amaroK::icon( "settings_indicator" ), i18n( "Configure On-Screen-Display" ) );
     addPage( opt6,   i18n( "Engine" ), amaroK::icon( "settings_engine" ), i18n( "Configure Engine" ) );
     addPage( m_opt7, i18n( "Collection" ), amaroK::icon( "collection" ), i18n( "Configure Collection" ) );
-    addPage( opt8,   i18n( "last.fm" ), "audioscrobbler", i18n( "Configure last.fm Support" ) );
+    addPage( opt8,   i18n( "last.fm" ), amaroK::icon( "audioscrobbler" ), i18n( "Configure last.fm Support" ) );
     addPage( opt9,   i18n( "Media Devices" ), amaroK::icon( "device" ), i18n( "Configure Portable Player Support" ) );
 
     // Show information labels (must be done after insertions)

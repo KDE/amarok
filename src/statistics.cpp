@@ -267,12 +267,12 @@ StatisticsList::renderView()
     m_newestItem = new StatisticsItem( i18n("Newest Items"), this, m_genreItem );
     m_newestItem->setSubtext( i18n("Listening since %1").arg( amaroK::verboseTimeSince( firstPlay ) ) );
 
-    m_trackItem ->setPixmap( QString("sound") );
-    m_mostplayedItem->setPixmap( QString("favorites") );
-    m_artistItem->setPixmap( QString("personal") );
-    m_albumItem ->setPixmap( QString("cdrom_unmount") );
-    m_genreItem ->setPixmap( QString("kfm") );
-    m_newestItem->setPixmap( amaroK::icon("clock") );
+    m_trackItem     ->setPixmap( amaroK::icon("track") );
+    m_mostplayedItem->setPixmap( amaroK::icon("mostplayed") );
+    m_artistItem    ->setPixmap( amaroK::icon("artist") );
+    m_albumItem     ->setPixmap( amaroK::icon("album") );
+    m_genreItem     ->setPixmap( amaroK::icon("favourite_genres") );
+    m_newestItem    ->setPixmap( amaroK::icon("clock") );
 }
 
 void
@@ -990,14 +990,14 @@ StatisticsDetailedItem::getURLs()
 {
     if( itemType() == StatisticsDetailedItem::TRACK )
         return KURL::List( KURL::fromPathOrURL(url()) );
-        
+
     QueryBuilder qb;
     QString query = QString::null;
     QString artist, album, track;   // track is unused here
     amaroK::albumArtistTrackFromUrl( m_url, artist, album, track );
 
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-    
+
     if( itemType() == StatisticsDetailedItem::ALBUM || itemType() == StatisticsDetailedItem::HISTORY )
     {
         if ( artist != "0" )

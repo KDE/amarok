@@ -33,20 +33,28 @@ amaroK::icon( const QString& name ) //declared in amarok.h
     static QMap<QString, QString> iconMap;
 
     if( iconMap.empty() ) {
+        iconMap["add_lyrics"]           = "edit_add";
+        iconMap["album"]                = "cdrom_unmount";
         iconMap["artist"]               = "personal";
+        iconMap["audioscrobbler"]       = "audioscrobbler";
         iconMap["back"]                 = "player_start";
         iconMap["burn"]                 = "cdrom_unmount";
         iconMap["clock"]                = "history";
         iconMap["collection"]           = "collection";
         iconMap["covermanager"]         = "covermanager";
         iconMap["device"]               = "usbpendrive_unmount";
+        iconMap["download"]             = "khtml_get";
+        iconMap["dynamic"]              = "dynamic";
         iconMap["edit"]                 = "edit";
         iconMap["editcopy"]             = "editcopy";
         iconMap["equalizer"]            = "equalizer";
+        iconMap["external"]             = "exec";
         iconMap["fastforward"]          = "2rightarrow";
+        iconMap["favourite_genres"]     = "kfm";
         iconMap["files"]                = "folder";
         iconMap["info"]                 = "info";
         iconMap["lyrics"]               = "document";
+        iconMap["mostplayed"]           = "favorites";
         iconMap["music"]                = "today";
         iconMap["next"]                 = "player_end";
         iconMap["pause"]                = "player_pause";
@@ -63,6 +71,7 @@ amaroK::icon( const QString& name ) //declared in amarok.h
         iconMap["rescan"]               = "reload";
         iconMap["rewind"]               = "2leftarrow";
         iconMap["scripts"]              = "pencil";
+        iconMap["search"]               = "find";
         iconMap["settings_engine"]      = "amarok";
         iconMap["settings_general"]     = "misc";
         iconMap["settings_indicator"]   = "tv";
@@ -71,6 +80,7 @@ amaroK::icon( const QString& name ) //declared in amarok.h
         iconMap["stop"]                 = "player_stop";
         iconMap["podcast"]              = "sound";
         iconMap["podcast2"]             = "favorites";
+        iconMap["track"]                = "sound";
         iconMap["undo"]                 = "undo";
         iconMap["visualizations"]       = "visualizations";
     }
