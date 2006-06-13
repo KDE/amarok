@@ -58,7 +58,7 @@ class StatisticsList : public KListView
     public:
         StatisticsList( QWidget *parent, const char *name=0 );
         ~StatisticsList() {};
-        
+
         QString filter()                           { return m_filter; }
         void    setFilter( const QString &filter ) { m_filter = filter; }
         void    renderView();
@@ -99,7 +99,7 @@ class StatisticsItem : public QObject, public KListViewItem
 
         void    paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align );
         void    paintFocus( QPainter*, const QColorGroup& , const QRect& ) {};  //reimp
-        void    setPixmap( const QString &pix );
+        void    setIcon( const QString &icon );
 
         void    enterHover();
         void    leaveHover();
@@ -108,7 +108,7 @@ class StatisticsItem : public QObject, public KListViewItem
         const bool isExpanded() { return m_isExpanded; }
 
         void    setSubtext( QString t ) { m_subText = t; }
-        
+
         int     rtti() const { return RTTI; }
         static  const int RTTI = 1000;    //header item
 
@@ -141,7 +141,7 @@ class StatisticsDetailedItem : public KListViewItem
         ~StatisticsDetailedItem() {};
 
         enum    ItemType { NONE, TRACK, ARTIST, ALBUM, GENRE, HISTORY };
-        
+
         void    setup();
         void    paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align );
 
@@ -150,13 +150,13 @@ class StatisticsDetailedItem : public KListViewItem
 
         void    setUrl( QString &url ) { m_url = url; }
         const   QString url() { return m_url; }
-        
+
         void    setSubtext( QString t ) { m_subText = t; }
         QString getSQL(); //get the sql query for all the urls the item represents
         KURL::List getURLs();
 
         void    paintFocus( QPainter*, const QColorGroup& , const QRect& ) {};  //reimp
-        
+
         int     rtti() const { return RTTI; }
         static  const int RTTI = 1001;    //detailed item
 

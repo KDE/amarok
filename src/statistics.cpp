@@ -267,12 +267,12 @@ StatisticsList::renderView()
     m_newestItem = new StatisticsItem( i18n("Newest Items"), this, m_genreItem );
     m_newestItem->setSubtext( i18n("Listening since %1").arg( amaroK::verboseTimeSince( firstPlay ) ) );
 
-    m_trackItem     ->setPixmap( amaroK::icon("track") );
-    m_mostplayedItem->setPixmap( amaroK::icon("mostplayed") );
-    m_artistItem    ->setPixmap( amaroK::icon("artist") );
-    m_albumItem     ->setPixmap( amaroK::icon("album") );
-    m_genreItem     ->setPixmap( amaroK::icon("favourite_genres") );
-    m_newestItem    ->setPixmap( amaroK::icon("clock") );
+    m_trackItem     ->setIcon( amaroK::icon("track") );
+    m_mostplayedItem->setIcon( amaroK::icon("mostplayed") );
+    m_artistItem    ->setIcon( amaroK::icon("artist") );
+    m_albumItem     ->setIcon( amaroK::icon("album") );
+    m_genreItem     ->setIcon( amaroK::icon("favourite_genres") );
+    m_newestItem    ->setIcon( amaroK::icon("clock") );
 }
 
 void
@@ -693,11 +693,14 @@ StatisticsItem::StatisticsItem( QString text, StatisticsList *parent, KListViewI
 }
 
 void
-StatisticsItem::setPixmap( const QString &pix )
+StatisticsItem::setIcon( const QString &icon )
 {
-    KIconLoader iconloader;
-    QPixmap icon = iconloader.loadIcon( pix, KIcon::Desktop, KIcon::SizeHuge );
-    KListViewItem::setPixmap( 0, icon );
+    QString path = kapp->iconLoader()->iconPath( icon, -KIcon::SizeHuge );
+    path.replace( "32x32", "64x64" ); //HACK fucking KIconLoader only returns 32x32 max. Why?
+
+//     debug() << "ICONPATH: " << path << endl;
+
+    setPixmap( 0, path );
 }
 
 void
