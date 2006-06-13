@@ -765,13 +765,20 @@ TagDialog::readMultipleTracks()
             artist = album = genre = comment = year = score = composer = discNumber = false;
             break;
         }
-        if ( artist && mb.artist()!=first.artist() ) { artist=false; };
-        if ( album && mb.album()!=first.album() ) { album=false; };
-        if ( genre && mb.genre()!=first.genre() ) { genre=false; };
-        if ( comment && mb.comment()!=first.comment() ) { comment=false; };
-        if ( year && mb.year()!=first.year() ) { year=false; };
-        if ( composer && mb.composer()!=first.composer() ) { composer=false; };
-        if ( discNumber && mb.discNumber()!=first.discNumber() ) { discNumber=false; };
+        if ( artist && mb.artist()!=first.artist() )
+            artist=false;
+        if ( album && mb.album()!=first.album() )
+            album=false;
+        if ( genre && mb.genre()!=first.genre() )
+            genre=false;
+        if ( comment && mb.comment()!=first.comment() )
+            comment=false;
+        if ( year && mb.year()!=first.year() )
+            year=false;
+        if ( composer && mb.composer()!=first.composer() )
+            composer=false;
+        if ( discNumber && mb.discNumber()!=first.discNumber() )
+            discNumber=false;
 
         uint scoreCurrent = CollectionDB::instance()->getSongPercentage( mb.url().path() );
         if ( score && scoreFirst != scoreCurrent )
