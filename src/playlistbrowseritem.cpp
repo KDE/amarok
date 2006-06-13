@@ -918,6 +918,13 @@ StreamEditor::StreamEditor( QWidget *parent, const QString &title, const QString
 
     if( !readonly )
         m_nameLineEdit->setFocus();
+    else
+    {
+        // In case of readonly ok button makes no sense
+        showButtonOK( false );
+        // Change Cancel to Close button
+        setButtonCancel( KStdGuiItem::close() );
+    }
 
     QSize min( 480, 110 );
     setInitialSize( min );
