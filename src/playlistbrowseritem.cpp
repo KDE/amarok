@@ -958,7 +958,6 @@ DynamicEntry::DynamicEntry( QListViewItem *parent, QListViewItem *after, const Q
     setPreviousCount( xmlDefinition.namedItem( "previous" ).toElement().text().toInt() );
 
     setAppendType( xmlDefinition.namedItem( "appendType" ).toElement().text().toInt() );
-    setAppendCount( xmlDefinition.namedItem( "appendCount" ).toElement().text().toInt() );
 
     if ( appendType() == 2 ) {
         setItems( QStringList::split( ',', xmlDefinition.namedItem( "items" ).toElement().text() ) );
@@ -999,11 +998,6 @@ QDomElement DynamicEntry::xml()
 
     attr = doc.createElement( "previous" );
     t = doc.createTextNode( QString::number( previousCount() ) );
-    attr.appendChild( t );
-    i.appendChild( attr );
-
-    attr = doc.createElement( "appendCount" );
-    t = doc.createTextNode( QString::number( appendCount() ) );
     attr.appendChild( t );
     i.appendChild( attr );
 

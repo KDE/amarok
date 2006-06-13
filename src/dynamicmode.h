@@ -56,7 +56,6 @@ class DynamicMode
         bool  markHistory() const;
         int   upcomingCount() const;
         int   previousCount() const;
-        int   appendCount() const;
         int   appendType() const;
 
     public: //setters
@@ -66,7 +65,6 @@ class DynamicMode
         void  setMarkHistory( bool mark );
         void  setUpcomingCount( int count );
         void  setPreviousCount( int count );
-        void  setAppendCount( int count );
         void  setAppendType( int type );
 
     private:
@@ -77,7 +75,6 @@ class DynamicMode
         bool    m_mark;
         int     m_upcoming;
         int     m_previous;
-        int     m_appendCount;
         int     m_appendType;
 };
 

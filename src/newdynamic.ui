@@ -19,20 +19,6 @@
         <property name="margin">
             <number>0</number>
         </property>
-        <widget class="QLabel" row="7" column="1">
-            <property name="name">
-                <cstring>textLabel3</cstring>
-            </property>
-            <property name="text">
-                <string>Tracks to append:</string>
-            </property>
-            <property name="toolTip" stdset="0">
-                <string>How many tracks to add to the playlist after each song</string>
-            </property>
-            <property name="whatsThis" stdset="0">
-                <string>How many tracks to add to the playlist after each song</string>
-            </property>
-        </widget>
         <widget class="QLabel" row="5" column="1">
             <property name="name">
                 <cstring>textLabel1</cstring>
@@ -224,31 +210,6 @@
                 </size>
             </property>
         </spacer>
-        <widget class="KIntSpinBox" row="7" column="5">
-            <property name="name">
-                <cstring>m_appendCountIntSpinBox</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>5</hsizetype>
-                    <vsizetype>0</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="maxValue">
-                <number>10</number>
-            </property>
-            <property name="minValue">
-                <number>1</number>
-            </property>
-            <property name="toolTip" stdset="0">
-                <string>How many tracks to add to the playlist after each song</string>
-            </property>
-            <property name="whatsThis" stdset="0">
-                <string>How many tracks to add to the playlist after each song</string>
-            </property>
-        </widget>
         <widget class="QCheckBox" row="3" column="1" rowspan="1" colspan="2">
             <property name="name">
                 <cstring>m_cycleTracks</cstring>
@@ -404,7 +365,6 @@
     <tabstop>m_markHistory</tabstop>
     <tabstop>m_previousIntSpinBox</tabstop>
     <tabstop>m_upcomingIntSpinBox</tabstop>
-    <tabstop>m_appendCountIntSpinBox</tabstop>
 </tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>

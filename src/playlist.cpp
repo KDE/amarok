@@ -1295,8 +1295,7 @@ Playlist::advanceDynamicTrack( PlaylistItem *item )
     //keep upcomingTracks requirement, this seems to break StopAfterCurrent
     if( !dontAppend && m_stopAfterTrack != m_currentTrack )
     {
-        const int appendNo = dynamicMode()->appendCount();
-        if( appendNo ) addSpecialTracks( appendNo, dynamicMode()->appendType() );
+        addSpecialTracks( 1, dynamicMode()->appendType() );
     }
     m_dynamicDirt = true;
 }

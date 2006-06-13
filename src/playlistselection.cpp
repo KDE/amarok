@@ -108,7 +108,6 @@ namespace ConfigDynamic
         nd->m_markHistory->setChecked( mode->markHistory() );
         nd->m_upcomingIntSpinBox->setValue( mode->upcomingCount() );
         nd->m_previousIntSpinBox->setValue( mode->previousCount() );
-        nd->m_appendCountIntSpinBox->setValue( mode->appendCount() );
 
         if( mode->appendType() == DynamicMode::CUSTOM )
         {
@@ -155,7 +154,6 @@ namespace ConfigDynamic
         saveMe->setMarkHistory( dialog->m_markHistory->isChecked() );
         saveMe->setUpcomingCount( dialog->m_upcomingIntSpinBox->value() );
         saveMe->setPreviousCount( dialog->m_previousIntSpinBox->value() );
-        saveMe->setAppendCount( dialog->m_appendCountIntSpinBox->value() );
 
         QStringList list;
         debug() << "Saving custom list..." << endl;
