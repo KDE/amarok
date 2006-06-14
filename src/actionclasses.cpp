@@ -116,10 +116,10 @@ Menu::Menu()
 
     insertSeparator();
 
-    insertItem( SmallIconSet( "covermanager" ), i18n( "C&over Manager" ), ID_SHOW_COVER_MANAGER );
+    insertItem( SmallIconSet( amaroK::icon( "covermanager" ) ), i18n( "C&over Manager" ), ID_SHOW_COVER_MANAGER );
     safePlug( ac, "queue_manager", this );
-    insertItem( SmallIconSet( "visualizations"), i18n( "&Visualizations" ), ID_SHOW_VIS_SELECTOR );
-    insertItem( SmallIconSet( "equalizer"), i18n( "E&qualizer" ), kapp, SLOT( slotConfigEqualizer() ), 0, ID_CONFIGURE_EQUALIZER );
+    insertItem( SmallIconSet( amaroK::icon( "visualizations" ) ), i18n( "&Visualizations" ), ID_SHOW_VIS_SELECTOR );
+    insertItem( SmallIconSet( amaroK::icon( "equalizer" ) ), i18n( "E&qualizer" ), kapp, SLOT( slotConfigEqualizer() ), 0, ID_CONFIGURE_EQUALIZER );
     safePlug( ac, "script_manager", this );
     safePlug( ac, "statistics", this );
 
