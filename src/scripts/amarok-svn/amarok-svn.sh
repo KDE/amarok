@@ -11,8 +11,8 @@
 # # # # # # # # # # # # # # # # # # # # # #   # # # # #   # # #   # #   # #   # #   #   #
 
 echo
-echo "Amarok-svn (Version 3.1.1)"
-echo "============================"
+echo "Amarok-svn (Version 3.2-SVN)"
+echo "=============================="
 echo
 
 ## Define global variables
@@ -66,7 +66,7 @@ function FlagUsage {
   echo
   echo "Options:"
   echo -e "  -r, --reset\t\tAsk for settings again."
-  echo -e "  -s, --select-server\tSpecify which SVN server to use. (Only needed if you want to use your SVN account.)"
+  echo -e "  -s, --select-server\tAsk which SVN server to use. (Only needed if you want to use your SVN account.)"
   echo -e "  -c, --clean\t\tClean the source tree before compiling Amarok."
   echo -e "  -h, --help\t\tShow this message."
   echo
@@ -173,7 +173,7 @@ CheckBinary kwriteconfig
 ## Check the build directory
 if [ -e "$BUILD_DIR" -a ! -f "$BUILD_DIR/.amarok-svn-dir" ]; then #if directory exist and isn't watermarked
   if [ -d "$BUILD_DIR" ]; then
-    Dialog --warningyesno "The directory you chose to build in ($BUILD_DIR) already exists, and it wasn't detected as an Amarok-svn directory.\nFiles in this directory can possibly be overwritten by the Amarok-svn procedures.\nDo you want to use this directory anyway?"
+    Dialog --warningyesno "The directory you choosed to build in ($BUILD_DIR) already exists, and it wasn't detected as an Amarok-svn directory.\nFiles in this directory can possibly be overwritten by the Amarok-svn procedures.\nDo you want to use this directory anyway?"
     if [ "$?" != "0" ]; then #If the user said no, exit.
       exit 1
     fi
