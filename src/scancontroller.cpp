@@ -61,13 +61,7 @@ class ScannerProcIO : public KProcIO {
  * This constructor is needed so that the correct codec is used. KProcIO defaults
  * to latin1, while the scanner uses UTF-8.
  */
-ScannerProcIO::ScannerProcIO()
-{
-    codec = QTextCodec::codecForName( "UTF-8" );
-    if( !codec ) {
-        ::error() << "Could not create UTF-8 codec for ScannerProcIO!" << endl;
-    }
-}
+ScannerProcIO::ScannerProcIO() : KProcIO( QTextCodec::codecForName( "UTF-8" ) ) {}
 
 
 ////////////////////////////////////////////////////////////////////////////////
