@@ -98,9 +98,13 @@ ContextBar::~ContextBar()
 int
 ContextBar::restoreHeight()
 {
-    const int index = indexForName( amaroK::config( "ContextBar" )->readEntry( "CurrentPane" ) );
-//    const int height = amaroK::config( "ContextBar" )->readNumEntry( "Height", browser( index )->sizeHint().height() );
-    const int height = amaroK::config( "ContextBar" )->readNumEntry( "Height", 200 );
+    int index;
+    if( amaroK::config( "ContextBar" )->hasKey( "CurrentPane" ) )
+        index = indexForName( amaroK::config( "ContextBar" )->readEntry( "CurrentPane" ) );
+    else
+        index = indexForName( "context_tab" );
+
+    const int height = amaroK::config( "ContextBar" )->readNumEntry( "Height", browser( index )->sizeHint().height() );
 
     m_browserBox->resize( width(), height );
     m_pos = m_browserBox->height() + m_tabBar->height();
@@ -138,7 +142,7 @@ ContextBar::polish()
 
     if (index != -1)
         // if we did it for -1 it ruins the browserBox size
-        showHideBrowser( index );
+       showHideBrowser( index );
 }
 
 void

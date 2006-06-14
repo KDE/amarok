@@ -52,7 +52,7 @@ protected:
 
 public slots:
     void showBrowser( const QString& name ) { showBrowser( indexForName( name ) ); }
-    void showBrowser( int index ) { if( index != m_currentIndex ) showHideBrowser( index ); }
+    void showBrowser( int index ) { if( m_currentIndex != -1 && index != m_currentIndex ) showHideBrowser( index ); }
     void showHideBrowser( int );
     void showHideVisibleBrowser( int );
     void closeCurrentBrowser() { showHideBrowser( m_currentIndex ); }
