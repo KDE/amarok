@@ -82,7 +82,6 @@ class LIBAMAROK_EXPORT App : public KApplication, public EngineObserver
         void slotConfigGlobalShortcuts();
         void slotConfigToolBars();
         void slotConfigEqualizer();
-        void firstRunWizard();
         void setUseScores( bool use );
         void setUseRatings( bool use );
         KIO::Job *trashFiles( const KURL::List &files );
@@ -97,6 +96,7 @@ class LIBAMAROK_EXPORT App : public KApplication, public EngineObserver
 
         void initGlobalShortcuts();
         void applyColorScheme();
+        void firstRunWizard();
 
         /** returns the leading window, either playerWindow or playlistWindow */
         QWidget *mainWindow() const;

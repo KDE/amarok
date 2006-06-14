@@ -125,7 +125,6 @@ Menu::Menu()
 
     insertSeparator();
 
-    insertItem( SmallIconSet( "wizard" ), i18n( "First-Run &Wizard" ), ID_SHOW_WIZARD );
     insertItem( SmallIconSet( amaroK::icon( "rescan" ) ), i18n("&Rescan Collection"), ID_RESCAN_COLLECTION );
     setItemEnabled( ID_RESCAN_COLLECTION, !ThreadWeaver::instance()->isJobPending( "CollectionScanner" ) );
 
@@ -193,11 +192,6 @@ Menu::slotActivated( int index )
     {
     case ID_SHOW_COVER_MANAGER:
         CoverManager::showOnce();
-        break;
-    case ID_SHOW_WIZARD:
-        pApp->firstRunWizard();
-        pApp->playlistWindow()->recreateGUI();
-        pApp->applySettings();
         break;
     case ID_SHOW_VIS_SELECTOR:
         Vis::Selector::instance()->show(); //doing it here means we delay creation of the widget

@@ -304,7 +304,6 @@ void PlaylistWindow::init()
     actionCollection()->action("script_manager")->plug( m_toolsMenu );
     actionCollection()->action("statistics")->plug( m_toolsMenu );
     m_toolsMenu->insertSeparator();
-    m_toolsMenu->insertItem( SmallIconSet( "wizard"), i18n("&First-Run Wizard"), amaroK::Menu::ID_SHOW_WIZARD );
     m_toolsMenu->insertItem( SmallIconSet( amaroK::icon( "rescan" ) ), i18n("&Rescan Collection"), amaroK::Menu::ID_RESCAN_COLLECTION );
 
     #if defined HAVE_XMMS || defined HAVE_LIBVISUAL
