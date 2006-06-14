@@ -1348,9 +1348,7 @@ CollectionView::invokeItem( QListViewItem* item ) //SLOT
 void
 CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SLOT
 {
-    if (dynamic_cast<DividerItem*>(item)) {
-        return;
-    }
+    if ( dynamic_cast<DividerItem*>( item ) ) return;
 
     if ( item ) {
         KPopupMenu menu( this );
@@ -1394,24 +1392,24 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 
         if( cat == CollectionBrowser::IdArtist )
         {
-            menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn All Tracks by This Artist"), BURN_ARTIST );
+            menu.insertItem( SmallIconSet( amaroK::icon( "burn" ) ), i18n("Burn All Tracks by This Artist"), BURN_ARTIST );
             menu.setItemEnabled( BURN_ARTIST, K3bExporter::isAvailable() );
         }
         else if( cat == CollectionBrowser::IdAlbum || cat == CollectionBrowser::IdVisYearAlbum )
         {
-            menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn This Album"), BURN_ALBUM );
+            menu.insertItem( SmallIconSet( amaroK::icon( "burn" ) ), i18n("Burn This Album"), BURN_ALBUM );
             menu.setItemEnabled( BURN_ALBUM, K3bExporter::isAvailable() );
         }
         else if( !item->isExpandable() )
         {
-            menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn to CD"), BURN_CD );
+            menu.insertItem( SmallIconSet( amaroK::icon( "burn" ) ), i18n("Burn to CD"), BURN_CD );
             menu.setItemEnabled( BURN_CD, K3bExporter::isAvailable() );
         }
 
         menu.insertSeparator();
 
         #ifdef AMAZON_SUPPORT
-        menu.insertItem( SmallIconSet( "www" ), i18n( "&Fetch Cover Image" ), this, SLOT( fetchCover() ), 0, COVER );
+        menu.insertItem( SmallIconSet( amaroK::icon( "download" ) ), i18n( "&Fetch Cover Image" ), this, SLOT( fetchCover() ), 0, COVER );
         menu.setItemEnabled(COVER, cat == CollectionBrowser::IdAlbum || cat == CollectionBrowser::IdVisYearAlbum );
         #endif
 
@@ -1423,7 +1421,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18n("Organize File...", "Organize %n Files..." , selection.count() )
                 , ORGANIZE );
 
-        fileMenu.insertItem( SmallIconSet( "editdelete" ), i18n("Delete File...", "Delete %n Files..." , selection.count() )
+        fileMenu.insertItem( SmallIconSet( amaroK::icon( "remove" ) ), i18n("Delete File...", "Delete %n Files..." , selection.count() )
                 , DELETE );
 
         menu.insertItem( SmallIconSet( "folder" ), i18n("Manage Files"), &fileMenu, FILE_MENU );

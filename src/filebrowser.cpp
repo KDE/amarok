@@ -180,10 +180,11 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         menu->insertItem( SmallIconSet( amaroK::icon( "collection" ) ), i18n( "&Organize Files..." ), OrganizeFiles );
         menu->insertItem( SmallIconSet( amaroK::icon( "collection" ) ), i18n( "&Copy Files to Collection..." ), CopyToCollection );
         menu->insertItem( SmallIconSet( amaroK::icon( "collection" ) ), i18n( "&Move Files to Collection..." ), MoveToCollection );
-        menu->insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn to CD..."), BurnCd );
+        menu->insertItem( SmallIconSet( amaroK::icon( "burn" ) ), i18n("Burn to CD..."), BurnCd );
         menu->insertSeparator();
         menu->insertItem( i18n( "&Select All Files" ), SelectAllFiles );
         menu->insertSeparator();
+        actionCollection->action( "delete" )->setIcon( amaroK::icon( "remove" ) );
         actionCollection->action( "delete" )->plug( menu );
         menu->insertSeparator();
         menu->insertItem( SmallIconSet( amaroK::icon( "info" ) ), i18n( "Edit Track &Information..." ), EditTags );
