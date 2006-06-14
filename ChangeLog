@@ -16,7 +16,9 @@ VERSION 1.4.1:
       updated as soon as a watched folder has changed.
 
   CHANGES:
-    * "Append Count" option of dynamic playlists has been removed. It is 
+    * Astraweb lyrics script was removed for being crappy and unmaintained. If
+      you want to maintain it, grab it from SVN and release on kde-apps.org.
+    * "Append Count" option of dynamic playlists has been removed. It is
       now always one. (BR 120044)
     * Context browser can now play/queue specific discs of an album or
       compilation.
