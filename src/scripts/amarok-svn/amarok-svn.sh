@@ -11,8 +11,8 @@
 # # # # # # # # # # # # # # # # # # # # # #   # # # # #   # # #   # #   # #   # #   #   #
 
 echo
-echo "Amarok-svn (Version 3.1)"
-echo "=========================="
+echo "Amarok-svn (Version 3.1.1)"
+echo "============================"
 echo
 
 ## Define global variables
@@ -89,15 +89,18 @@ function Clean {
 
 function Compile {
   COMP_START=`date +%s`
-  unsermake
-  echo
+  #Run unsermake twice because of some files that gets forgotten sometimes
+  #(We don't want to compile as root in unsermake install, and it doesn't hurt)
+  unsermake && unsermake
   if [ "$?" = "0" ]; then #If the command did finish successfully
+    echo
     #stopwatch.
     let COMP_TIME=`date +%s`-COMP_START
     let COMP_M=COMP_TIME/60
     let COMP_S=COMP_TIME%60
     echo "Compilation successful after $COMP_M minute(s) and $COMP_S second(s)."
   else
+    echo
     if [ "$CLEAN_BUILD" = "0" ]; then
       echo "Compilation Failed!"
       Dialog --warningyesno "Compilation failed!\nSometimes, a clean rebuild can fix this.\nDo you want to retry compiling with a clean source tree?\nIf you answer No, Amarok-svn will exit."
