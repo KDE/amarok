@@ -104,6 +104,8 @@ BrowserBar::restoreWidth()
     const int width = amaroK::config( "BrowserBar" )->readNumEntry( "Width", browser( index )->sizeHint().width() );
 
     m_browserBox->resize( width, height() );
+    m_pos = m_browserBox->width() + m_tabBar->width();
+
     return index;
 }
 
