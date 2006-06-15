@@ -1,7 +1,7 @@
 /***************************************************************************
     begin                : Tue Aug 31 21:54:20 EST 2004
-    copyright            : (C) 2004 by Michael Pyne
-    email                : michael.pyne@kdemail.net
+    copyright            : (C) 2004 by Michael Pyne <michael.pyne@kdemail.net>
+                           (C) 2006 by Ian Monroe <ian@monroe.nu>
 ***************************************************************************/
 
 /***************************************************************************

@@ -532,6 +532,7 @@ PlaylistFile::PlaylistFile( const QString &path )
 
     if( m_error.isEmpty() && m_bundles.isEmpty() )
         m_error = i18n( "The playlist did not contain any references to files." );
+    debug() << m_error << endl;
 }
 
 bool
@@ -706,12 +707,12 @@ PlaylistFile::loadXSPF( QTextStream &stream )
     foreachType( XSPFtrackList, trackList )
     {
         KURL location = (*it).location;
-        if( location.isEmpty() || !QFile::exists( location.url() ) )
-        {
-            QString artist = (*it).creator;
-            QString title  = (*it).title;
-            QString album  = (*it).album;
+        QString artist = (*it).creator;
+        QString title  = (*it).title;
+        QString album  = (*it).album;
 
+        if( location.isEmpty() || ( location.isLocalFile() && !QFile::exists( location.url() ) ) )
+        {
             QueryBuilder qb;
             qb.addMatch( QueryBuilder::tabArtist, QueryBuilder::valName, artist );
             qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valTitle, title );
@@ -725,6 +726,16 @@ PlaylistFile::loadXSPF( QTextStream &stream )
 
             MetaBundle b( values[0] );
 
+            m_bundles += b;
+        }
+        else
+        {
+            debug() << location << ' ' << artist << ' ' << title << ' ' << album << endl;
+            MetaBundle b;
+            b.setUrl( location );
+            b.setArtist( artist );
+            b.setTitle( title );
+            b.setAlbum( album );
             m_bundles += b;
         }
     }
