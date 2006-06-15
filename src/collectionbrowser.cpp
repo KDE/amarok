@@ -1424,7 +1424,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         fileMenu.insertItem( SmallIconSet( amaroK::icon( "remove" ) ), i18n("Delete File...", "Delete %n Files..." , selection.count() )
                 , DELETE );
 
-        menu.insertItem( SmallIconSet( "folder" ), i18n("Manage Files"), &fileMenu, FILE_MENU );
+        menu.insertItem( SmallIconSet( amaroK::icon( "files" ) ), i18n("Manage Files"), &fileMenu, FILE_MENU );
 
         if ( cat == CollectionBrowser::IdAlbum || cat == CollectionBrowser::IdVisYearAlbum ) {
             menu.insertSeparator();

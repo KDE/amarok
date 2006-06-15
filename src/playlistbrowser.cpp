@@ -84,7 +84,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     browserBox->setSpacing( 3 );
 
     //<Toolbar>
-    addMenuButton  = new KActionMenu( i18n("Add"), "fileopen", m_ac );
+    addMenuButton  = new KActionMenu( i18n("Add"), amaroK::icon( "add_playlist" ), m_ac );
     addMenuButton->setDelayed( false );
 
     KPopupMenu *addMenu  = addMenuButton->popupMenu();
@@ -98,7 +98,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     KAction *saveButton = new KAction( i18n("Save"), "filesave", 0, this, SLOT( slotSave() ), m_ac );
 
     renameButton   = new KAction( i18n("Rename"), "editclear", 0, this, SLOT( renameSelectedItem() ), m_ac );
-    removeButton   = new KAction( i18n("Remove"), "edittrash", 0, this, SLOT( removeSelectedItems() ), m_ac );
+    removeButton   = new KAction( i18n("Remove"), amaroK::icon( "remove" ), 0, this, SLOT( removeSelectedItems() ), m_ac );
 
     m_toolbar = new Browser::ToolBar( browserBox );
     m_toolbar->setIconText( KToolBar::IconTextRight, false ); //we want the open button to have text on right
