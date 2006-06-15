@@ -290,12 +290,14 @@ namespace amaroK
 
     void DcopPlayerHandler::enableRepeatPlaylist( bool enable )
     {
-        static_cast<KToggleAction*>(amaroK::actionCollection()->action( "repeat_playlist" ))->setChecked( enable );
+        static_cast<KSelectAction*>( amaroK::actionCollection()->action( "repeat" ) )
+               ->setCurrentItem( enable ? AmarokConfig::EnumRepeat::Playlist : AmarokConfig::EnumRepeat::Off );
     }
 
      void DcopPlayerHandler::enableRepeatTrack( bool enable)
     {
-        static_cast<KToggleAction*>(amaroK::actionCollection()->action( "repeat_track" ))->setChecked( enable );
+        static_cast<KSelectAction*>( amaroK::actionCollection()->action( "repeat" ) )
+               ->setCurrentItem( enable ? AmarokConfig::EnumRepeat::Track : AmarokConfig::EnumRepeat::Off );
     }
 
     void DcopPlayerHandler::mediaDeviceMount()
