@@ -1558,12 +1558,14 @@ CollectionView::showTrackInfo() //SLOT
      int selectedTracksNumber = urls.count();
 
      //If we have only one, call the full dialog. Otherwise, the multiple tracks one.
-     if (selectedTracksNumber == 1) {
+     if ( selectedTracksNumber == 1 )
+     {
           TagDialog* dialog = new TagDialog( urls.first() );
           dialog->show();
      }
-     else if (selectedTracksNumber)  {
-          TagDialog* dialog = new TagDialog( urls, instance() );
+     else if ( selectedTracksNumber )
+     {
+          TagDialog* dialog = new TagDialog( urls );
           dialog->show();
      }
 }
