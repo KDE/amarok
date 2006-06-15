@@ -52,7 +52,7 @@
 &lt;li&gt;%track: Track Number&lt;/li&gt;
 &lt;li&gt;%comment: Comment&lt;/li&gt;
 &lt;/ul&gt;
-For example, the file name scheme "[%track] %artist - %title" would match "[01] Deep Purple - Smoke on the water" but not "(Deep Purple) Smoke on the water". For that second name, you would use the scheme "(%a) %t".&lt;p/&gt;
+For example, the file name scheme "[%track] %artist - %title" would match "[01] Deep Purple - Smoke on the water" but not "(Deep Purple) Smoke on the water". For that second name, you would use the scheme "(%artist) %title".&lt;p/&gt;
 Note that the order in which the schemes appear in the list is relevant, since the tag guesser will go through the list from the top to the bottom, and use the first matching scheme.</string>
             </property>
             <property name="whatsThis" stdset="0">
