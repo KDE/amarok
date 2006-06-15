@@ -6,6 +6,7 @@ Name=Amarok
 Name[el]=AmaroK
 Name[ga]=AmaroK
 Name[pa]=ਅਮਰੋਕ
+Name[ru]=amaroK
 GenericName=Audio Player
 GenericName[bg]=Аудио плеър
 GenericName[bn]=অডিও প্লেয়ার
@@ -61,8 +62,8 @@ Comment[nl]=Oom Rodney zegt, "10/10, Amarok is werkelijk fantastisch!"
 Comment[pa]=ਅੰਕਲ ਰੋਡੀਨੇ ਕਹਿੰਦੇ ਹਨ, "10/10, ਅਮਰੋਕ ਸਹੀਂ 'ਚ ਸੁਪਰ ਹੈ!"
 Comment[pt]=O Tio Rodney diz, "10/10, Amarok é excelente!"
 Comment[pt_BR]=O Tio Rodney diz, "10/10, Amarok é excelente!"
+Comment[ru]=amaroK - просто лучший плеер.
 Comment[sv]=Farbror Rodney säger, "10/10, Amarok är verkligen fantastiskt!"
-Comment[zh_CN]=Amarok，开启您的音乐探秘之旅
 Icon=amarok
 #don't add inode/directory to mimetypes it leads to misbehavior
 MimeType=application/asx;audio/aac;audio/ac3;audio/basic;audio/midi;audio/mp4;audio/mpeg;audio/mpegurl;audio/prs.sid;audio/vnd.rn-realaudio;audio/vorbis;audio/x-adpcm;audio/x-aac;audio/x-aiff;audio/x-flac;audio/x-m4a;audio/x-matroska;audio/x-midi;audio/x-mod;audio/x-mp2;audio/x-mp3;audio/x-mpegurl;audio/x-ms-wma;audio/x-musepack;audio/x-oggflac;audio/x-pn-realaudio;audio/x-scpls;audio/x-speex;audio/x-vorbis;audio/x-wav;
