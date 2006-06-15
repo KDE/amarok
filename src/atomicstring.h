@@ -41,7 +41,7 @@
 #endif
 #include "amarok_export.h"
 
-class QString;
+#include <qstring.h>
 
 class LIBAMAROK_EXPORT AtomicString
 {

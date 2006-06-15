@@ -2,6 +2,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 
+#include "atomicstring.h"
 #include "xspfplaylist.h"
 #include "debug.h"
 
@@ -314,7 +315,7 @@ XSPFPlaylist::trackList()
                     track.annotation = subSubNode.firstChild().nodeValue();
                 else if ( subSubNode.nodeName() == "album" )
                     track.album = subSubNode.firstChild().nodeValue();
-                else if ( subSubNode.nodeName() == "tracknum" )
+                else if ( subSubNode.nodeName() == "trackNum" )
                     track.trackNum = (uint)subSubNode.firstChild().nodeValue().toInt();
                 else if ( subSubNode.nodeName() == "identifier" )
                     track.identifier = subSubNode.firstChild().nodeValue();

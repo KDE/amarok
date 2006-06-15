@@ -5,6 +5,8 @@
 #ifndef XSPFPlaylist_H
 #define XSPFPlaylist_H
 
+class AtomicString;
+
 #include <qstring.h>
 #include <qtextstream.h>
 #include <qdom.h>
@@ -23,11 +25,11 @@ typedef struct {
     KURL location;
     QString identifier;
     QString title;
-    QString creator;
+    AtomicString creator;
     QString annotation;
     KURL info;
     KURL image;
-    QString album;
+    AtomicString album;
     uint trackNum;
     uint duration;
     KURL link;

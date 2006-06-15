@@ -736,6 +736,8 @@ PlaylistFile::loadXSPF( QTextStream &stream )
             b.setArtist( artist );
             b.setTitle( title );
             b.setAlbum( album );
+            b.setComment( (*it).annotation );
+            b.setLength( (*it).duration / 1000 );
             m_bundles += b;
         }
     }
